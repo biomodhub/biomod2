@@ -1,0 +1,27 @@
+[general] 
+creator=R package 'raster' 
+created= 2013-02-20 14:35:45 
+[georeference] 
+nrows= 47 
+ncols= 120 
+xmin= -180 
+ymin= -57.499992177 
+xmax= 180 
+ymax= 83.500007823 
+projection= +proj=longlat +datum=WGS84 +no_defs +ellps=WGS84 +towgs84=0,0,0 
+[data] 
+datatype= FLT4S 
+byteorder= little 
+nbands= 1 
+bandorder= BIL 
+categorical= FALSE 
+minvalue= 54.5 
+maxvalue= 718.00005666835 
+nodatavalue= -3.4e+38 
+[legend] 
+legendtype=  
+values=  
+color=  
+[description] 
+layername= bio7 
+history=  

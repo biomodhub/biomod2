@@ -1,0 +1,251 @@
+####################################
+## external functions importation ##
+####################################
+
+### generic methods importation
+#import("graphics")
+#import("stats")
+import("lattice")
+import("methods") 
+import("raster")
+import("sp")
+import("ggplot2")
+import("parallel")
+
+importFrom("abind", abind, asub)
+import("reshape")
+#importFrom("gbm", gbm, gbm.perf)
+import("gbm")
+importFrom("MASS",stepAIC)
+#importFrom("mda", fda, mars)
+import("mda")
+import("earth")
+#importFrom("nnet", nnet)
+import("nnet")
+#importFrom("parallel", detectCores) # for gbm package
+import("pROC") # import the whole package to get S3 Methods
+#importFrom("rpart", prune, rpart)
+import("rpart")
+importFrom("randomForest",randomForest)
+#import("randomForest")
+### raster package is at time consider as dependencie
+#importFrom(raster, addLayer, calc, canProcessInMemory, cellFromXY, cv, extract, inMemory, maxValue, minValue, ncell, nlayers, predict, raster, rasterOptions, reclassify, readAll, sampleRandom, stack, Which, writeRaster)
+importFrom(rasterVis, levelplot)
+#importFrom(RColorBrewer, brewer.pal)
+### sp package is at time consider as dependencie
+#importFrom(sp, coordinates, read.asciigrid, SpatialPointsDataFrame, spplot)
+#import("survivial") # for gbm package
+#import("spline") # for gbm package
+#importFrom("gam", s)
+import("maxent")
+##importFrom("dplyr", "select", "bind_rows", "%>%")
+importFrom("dplyr", "bind_rows", "%>%")
+importFrom("tidyr", "gather")
+
+### imports for ecospat.xxx functions (to be removed at some point?)
+importFrom("dismo", kfold)
+importFrom("PresenceAbsence", presence.absence.accuracy)
+importFrom("caret", trainControl, twoClassSummary)
+importFrom("ENMeval", ENMevaluate)
+importFrom("foreach", "%dopar%")
+
+importFrom("grDevices", "colorRampPalette", "colors", "dev.new",
+           "dev.off", "gray", "jpeg", "pdf", "png", "postscript",
+           "rainbow", "tiff")
+importFrom("graphics", "abline", "axis", "layout", "legend", "par",
+           "plot.new", "points", "polygon", "rug")
+importFrom("stats", "as.formula", "binomial", "cor", "formula", "glm",
+           "median", "na.omit", "qt", "sd", "terms")
+importFrom("utils", "combn", "read.csv", "str", "write.table", "setTxtProgressBar", "txtProgressBar") 
+
+####################################
+##       biomod2 exports	  	  ##
+####################################
+
+### To export automaticaly all classes, methods and functions ###
+#exportPattern("^[[:alpha:]]+")
+#exportClassPattern("^[[:alpha:]]+")
+
+### To export only user level functions ###
+
+##### Classes
+exportClasses(
+	BIOMOD.EnsembleModeling.out,
+	BIOMOD.formated.data,
+	BIOMOD.formated.data.PA,
+	BIOMOD.Model.Options,
+	BIOMOD.models.out,
+	BIOMOD.projection.out
+
+)
+
+#exportClasses(
+#	BIOMOD.stored.array, 
+#	BIOMOD.stored.data,
+#	BIOMOD.stored.data.frame,
+#	BIOMOD.stored.files,
+#	BIOMOD.stored.formated.data,
+#	BIOMOD.stored.models.options, 
+#	BIOMOD.stored.models.out,
+#	BIOMOD.stored.raster.stack
+#)
+
+exportClasses(
+	biomod2_model,
+	biomod2_ensemble_model,
+	ANN_biomod2_model,
+	CTA_biomod2_model,
+	FDA_biomod2_model,
+	GAM_biomod2_model,
+	GBM_biomod2_model,
+	GLM_biomod2_model,
+	MARS_biomod2_model,
+	MAXENT.Phillips_biomod2_model,
+  MAXENT.Tsuruoka_biomod2_model,
+	RF_biomod2_model,
+	SRE_biomod2_model,
+	EMca_biomod2_model,
+	EMci_biomod2_model,
+	EMcv_biomod2_model,
+	EMmean_biomod2_model,
+	EMmedian_biomod2_model,
+	EMwmean_biomod2_model
+)
+
+##### Methods & Functions
+
+## user level
+exportMethods(
+	BinaryTransformation,
+	BIOMOD_RangeSize,
+	FilteringTransformation,
+	free,
+	plot,
+	predict,
+	RemoveProperly,
+	show
+)
+
+export(
+	BinaryTransformation,
+	BIOMOD_RangeSize,
+	FilteringTransformation,
+	free,
+	plot,
+	predict,
+	RemoveProperly,
+	show
+)
+
+exportMethods(
+	get_built_models,
+	get_evaluations,
+	get_calib_lines,
+	get_formal_data,
+	get_formal_model, 
+	get_kept_models,
+	get_needed_models,
+	get_options,
+	get_predictions,
+	get_projected_models,
+	get_scaling_model,
+	get_variables_importance
+)
+
+export(
+	get_built_models,
+	get_evaluations,
+	get_calib_lines,
+	get_formal_data,
+	get_formal_model, 
+	get_kept_models,
+	get_needed_models,
+	get_options,
+	get_predictions,
+	get_projected_models,
+	get_scaling_model,
+	get_variables_importance
+)
+
+export(
+	BIOMOD_ConvertOldRun,
+	BIOMOD_EnsembleForecasting,
+	BIOMOD_EnsembleModeling,
+	BIOMOD_FormatingData,
+	BIOMOD_LoadModels,
+	BIOMOD_Modeling,
+	BIOMOD_ModelingOptions, 
+	BIOMOD_Projection,
+	calculate.stat,
+	DF_to_ARRAY,
+	evaluate,
+	Find.Optim.Stat,
+	full_suffling,
+	getStatOptimValue,
+	level.plot,
+	LIST_to_ARRAY,
+	makeFormula,
+	models_scores_graph,
+	multiple.plot,
+	Print_Default_ModelingOptions,
+	ProbDensFunc,
+	randomise_data,
+	response.plot2,
+	sre,
+	update_objects,
+	variables_importance,
+  .create.maxent.bg.dir,
+	BIOMOD_cv,
+	BIOMOD_presenceonly,
+	BIOMOD_tuning,
+  sample.factor.levels
+)
+
+## to be hidden
+exportMethods(
+	disk.pseudo.abs.selection,
+	load_stored_object,
+	Projection,
+	random.pseudo.abs.selection,
+	sre.pseudo.abs.selection,
+	user.defined.pseudo.abs.selection,
+	.Models.prepare.data,
+	.Projection.do.proj, 
+	.transform.outputs
+)
+
+exportMethods(
+	getEMalgos, 
+	getEMbuiltModels, 
+	getEMeval, 
+	getEMkeptModels, 
+	getEM_needed_models, 
+	getFormalModel, 
+	getModelsBuiltModels, 
+	getModelsEvaluations, 
+	getModelsInputData, 
+	getModelsOptions, 
+	getModelsPrediction, 
+	getModelsPredictionEval, 
+	getModelsVarImport, 
+	getProjection,
+	getScalingModel
+)
+
+export(
+	check_data_range,
+	CustomIndexMaker,
+	get_var_range, 
+	get_var_type,
+	response.plot,
+	SampleMat2
+	#test_slots,
+	#update.objects_BIOMOD.formated.data,
+	#update.objects_biomod2_model,
+	#update.objects_BIOMOD.models.out
+)
+
+
+
+
+
