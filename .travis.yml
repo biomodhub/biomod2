@@ -1,0 +1,13 @@
+language: r
+sudo: false
+cache: packages
+
+warnings_are_errors: true
+
+## r_github_packages:
+##   - statnet/EpiModelHPC
+
+notifications:
+  email:
+    on_success: never
+    on_failure: change
