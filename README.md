@@ -1,7 +1,10 @@
 biomod2: Ensemble Platform for Species Distribution Modeling
 ===============
 
+[![Build Status](https://travis-ci.org/biomodhub/biomod2.svg?branch=master)](https://travis-ci.org/biomodhub/biomod2)
+
 **Functions for species distribution modeling, calibration and evaluation, ensemble of models.**
+
 
 
 ## Installation
