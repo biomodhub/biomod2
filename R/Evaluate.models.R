@@ -201,7 +201,6 @@ Find.Optim.Stat <- function(Stat = 'TSS',
       specificity <- (true.neg * 100)/sum(misc[,'0'])
       sensitivity <- (true.pos * 100)/sum(misc[,'1'])
     } else{
-#       require(pROC,quietly=T)
       roc1 <- pROC::roc(Obs, Fit, percent=T, direction="<")
       roc1.out <- pROC::coords(roc1, "best", ret=c("threshold", "sens", "spec"))
       ## if two optimal values are returned keep only the first one
