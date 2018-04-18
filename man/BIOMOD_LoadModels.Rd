@@ -16,7 +16,7 @@
 }
 
 \details{
-  This function is particulary useful when you plane to make some response plot analyses. It will induce models, built at \code{\link[biomod2]{BIOMOD_Modeling}} step, loading in your working space.
+  This function is particularly useful when you plane to make some response plot analyses. It will induce models, built at \code{\link[biomod2]{BIOMOD_Modeling}} step, loading in your working space.
 
   If you run this function referencing only \code{bm.out} argument, all models built will be loaded. However, you can make a models subselection using the additional arguments (see below).
 

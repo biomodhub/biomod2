@@ -43,7 +43,7 @@ BIOMOD_ModelingOptions(GLM = NULL,
 A \code{"\link[=BIOMOD.Model.Options-class]{BIOMOD.Model.Options}"} object given to \code{\link[biomod2]{BIOMOD_Modeling}}
 }
 \description{
-Parametrize and/or tune biomod's single models options.
+Parameterize and/or tune biomod's single models options.
 }
 \details{
 The aim of this function is to allow advanced user to change some default parameters of BIOMOD inner models.
@@ -53,7 +53,7 @@ The aim of this function is to allow advanced user to change some default parame
 
   The best way to use this function is to print default models options (\code{\link{Print_Default_ModelingOptions}}) or create a default 'BIOMOD.model.option object' and print it in your console. Then copy the output, change only the required parameters, and paste it as function arguments. (see example)
 
-  Here the detailed list of modifiable parameters. They correspond to the traditional parameters that could be setted out for each modeling technique (e.g. ?GLM)
+  Here the detailed list of modifiable parameters. They correspond to the traditional parameters that could be set out for each modeling technique (e.g. ?GLM)
 }
 \section{GLM (\code{\link[stats]{glm}})}{
 
@@ -69,7 +69,7 @@ The aim of this function is to allow advanced user to change some default parame
           \item{or construct specific formula}
         }}
 
-    \item{\code{test} (default \code{'AIC'}) : Information criteria for the stepwise selection procedure: AIC for Akaike Information Criteria, and BIC for Bayesian Information Criteria ('AIC' or 'BIC'). 'none' is also a supported value which implies to consider only the full model (no stepwise selection). This can lead to convergence issu and strange results.}
+    \item{\code{test} (default \code{'AIC'}) : Information criteria for the stepwise selection procedure: AIC for Akaike Information Criteria, and BIC for Bayesian Information Criteria ('AIC' or 'BIC'). 'none' is also a supported value which implies to consider only the full model (no stepwise selection). This can lead to convergence issues and strange results.}
 
     \item{\code{family} (default \code{binomial(link = 'logit')}) : a description of the error distribution and link function to be used in the model. This can be a character string naming a family function, a family function or the result of a call to a family function. (See \link{family} for details of family functions.) . BIOMOD only runs on presence-absence data so far, so binomial family by default.}
 
@@ -148,8 +148,8 @@ The aim of this function is to allow advanced user to change some default parame
 
   \itemize{
     \item{\code{NbCV} (default \code{5}) : nb of cross validation to find best size and decay parameters}
-    \item{\code{size}} (default \code{NULL}) : number of units in the hidden layer. If \code{NULL} then size parameter will be optimised by cross validation based on model AUC (\code{NbCv} cross validation; tested size will be the following c(2,4,6, 8) ). You can also specified a vector of size you want to test. The one giving the best model AUC will be then selected.
-    \item{\code{decay}} (default \code{NULL}) : parameter for weight decay. If \code{NULL} then decay parameter will be optimised by cross validation on model AUC (\code{NbCv} cross validation; tested decay will be the following c(0.001, 0.01, 0.05, 0.1) ). You can also specified a vector of decay you want to test. The one giving the best model AUC will be then selected.
+    \item{\code{size}} (default \code{NULL}) : number of units in the hidden layer. If \code{NULL} then size parameter will be optimized by cross validation based on model AUC (\code{NbCv} cross validation; tested size will be the following c(2,4,6, 8) ). You can also specified a vector of size you want to test. The one giving the best model AUC will be then selected.
+    \item{\code{decay}} (default \code{NULL}) : parameter for weight decay. If \code{NULL} then decay parameter will be optimized by cross validation on model AUC (\code{NbCv} cross validation; tested decay will be the following c(0.001, 0.01, 0.05, 0.1) ). You can also specified a vector of decay you want to test. The one giving the best model AUC will be then selected.
     \item{\code{rang} (default \code{0.1}) : Initial random weights on [-rang, rang]}
     \item{\code{maxit} (default \code{200}): maximum number of iterations.}
   }
@@ -215,9 +215,9 @@ The aim of this function is to allow advanced user to change some default parame
     \item{\code{path_to_maxent.jar} : character, the link to \pkg{maxent.jar} file (the working directory by default) }
     \item{\code{memory_allocated} : integer (default \code{512}), the amount of memory (in Mo) reserved for java to run MAXENT.Phillips. should be 64, 128, 256, 512, 1024, 2048... or NULL if you want to use default java memory limitation parameter.}
     \item{\code{background_data_dir} : character, path to a directory where explanatory variables are stored as ASCII files (raster format).
-      If specified MAXENT will generate it's own background data from expalantory variables rasters (as usually done in MAXENT studies). If not
+      If specified MAXENT will generate it's own background data from explanatory variables rasters (as usually done in MAXENT studies). If not
       set, then MAXENT will use the same pseudo absences than other models (generated within biomod2 at formatting step) as background data.}
-    \item{\code{maximumbackground} : integer, the maximum nuber of background data to sample. This parameter will be use only if \code{background_data_dir}
+    \item{\code{maximumbackground} : integer, the maximum number of background data to sample. This parameter will be use only if \code{background_data_dir}
       option has been set to a non default value.}
     \item{\code{maximumiterations} : integer (default \code{200}), maximum iteration done}
     \item{\code{visible} : logical (default \code{FALSE}), make the Maxent user interface visible}
@@ -250,7 +250,7 @@ The aim of this function is to allow advanced user to change some default parame
   }
 
   NOTE: if you use the \code{set_heldout} parameter then the data that will be held out will be taken in the
-  calibration data pool. It can be penilizing in case of low number of occurences dataset.
+  calibration data pool. It can be penalizing in case of low number of occurrences dataset.
 }
 \examples{
   ## default BIOMOD.model.option object

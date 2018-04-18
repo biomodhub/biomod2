@@ -35,7 +35,7 @@ BIOMOD_EnsembleModeling( modeling.output,
   \item{prob.cv}{Logical. Estimate the coefficient of variation across predictions}
   \item{prob.ci}{Logical . Estimate the confidence interval around the \code{prob.mean}}
   \item{prob.ci.alpha}{Numeric. Significance level for estimating the confidence interval. Default = 0.05}
-  \item{prob.median}{Logical. Estimate the mediane of probabilities}
+  \item{prob.median}{Logical. Estimate the median of probabilities}
   \item{committee.averaging}{Logical. Estimate the committee averaging across predictions}
   \item{prob.mean.weight}{Logical. Estimate the weighted sum of probabilities}
   \item{prob.mean.weight.decay}{Define the relative importance of the weights. A high value will strongly discriminate the 'good' models from the 'bad' ones (see the details section). If the value of this parameter is set to 'proportional' (default), then the attributed weights are proportional to the evaluation scores given by 'weight.method'(\code{eval.metric})}
@@ -132,7 +132,7 @@ BIOMOD_EnsembleModeling( modeling.output,
           The \code{prob.mean.weight.decay} is the ratio between a weight and the following or prior one. The formula is : W = W(-1) * \code{prob.mean.weight.decay}. For example, with the value of 1.6 and 4 weights wanted, the relative importance of the weights will be 1 /1.6/2.56(=1.6*1.6)/4.096(=2.56*1.6) from the weakest to the strongest, and gives 0.11/0.17/0.275/0.445 considering that the sum of the weights is equal to one. The lower the \code{prob.mean.weight.decay}, the smoother the differences between the weights enhancing a weak discrimination between models.
 
           The value 'proportional' (default) is also possible for the \code{prob.mean.weight.decay}: the weights are awarded for each method proportionally to their evaluation scores. The advantage is that the discrimination is more fair than with the \code{prob.mean.weight.decay}. In the latter case, close scores can strongly diverge in the weights they are awarded, when the proportional method will consider them as being fairly similar in prediction quality and award them a similar weight.
-          It is also possible to define a function as \code{prob.mean.weight.decay} argument. In this case the given function will be applied to models scores to transforme them into weights that will be used for wheigted mean ensemble model building. For instance if you specified \code{ function(x){x^2} } as \code{prob.mean.weight.decay}, the squared of evaluation score of each model will be used to weight formal models predictions.
+          It is also possible to define a function as \code{prob.mean.weight.decay} argument. In this case the given function will be applied to models scores to transform them into weights that will be used for weighted mean ensemble model building. For instance if you specified \code{ function(x){x^2} } as \code{prob.mean.weight.decay}, the squared of evaluation score of each model will be used to weight formal models predictions.
         }
 
       }

@@ -30,7 +30,7 @@ It's advise to give only a subset of \code{explVar} table to avoid useless memor
 
 \code{...} argument available values are :
 \itemize{
-  \item{k}{ the smooting parameter value (used only if \code{type = 's_smoother'}) corresponding to \code{k} parameter of \pkg{mgcv} \code{\link[mgcv]{s}}} or \code{df} \pkg{gam} \code{\link[gam]{s}} arguments.
+  \item{k}{ the smoothing parameter value (used only if \code{type = 's_smoother'}) corresponding to \code{k} parameter of \pkg{mgcv} \code{\link[mgcv]{s}}} or \code{df} \pkg{gam} \code{\link[gam]{s}} arguments.
 
 }
 }

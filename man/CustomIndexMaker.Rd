@@ -18,7 +18,7 @@ CustomIndexMaker()
 } %end detail section
 
 \value{
-  A \code{logical} specifying if operation succed or not
+  A \code{logical} specifying if operation succeed or not
 }
 
 \author{ Wilfried Thuiller, Damien Georges }

@@ -4,7 +4,7 @@
 \title{ Probability Density Function }
 \description{
   Using a variety of parameters in modelling will inevitably bring variability in predictions, especially when it comes to making future predictions.
-  This function enables an overall viewing of the future predictions range per species and gives the likelihood of range shift estimations. It will calculate the optimal way for condensing a difined proportion (50, 75, 90 and 95\% per default) of the data.
+  This function enables an overall viewing of the future predictions range per species and gives the likelihood of range shift estimations. It will calculate the optimal way for condensing a defined proportion (50, 75, 90 and 95\% per default) of the data.
 }
 \usage{
 ProbDensFunc(initial,
@@ -23,11 +23,11 @@ ProbDensFunc(initial,
   \item{cvsn}{ stands for "current vs new". If true, the range change calculations will be of two types: the percentage of cells currently occupied by the species to be lost, and the relative percentage of cells currently unoccupied but projected to be, namely 'new' cells, compared to current surface range.}
   \item{groups}{ an option for ungrouping the projections enabling a separated visualisation of the prediction range per given group. A matrix is expected where each column is a single prediction and each line is giving details of one parameter (See the examples section). }
   \item{resolution}{ the step used for classes of prediction in graphics. The default value is 5 }
-  \item{filename}{ the name of file (with extension) where plots will be stored. If not \code{NULL}, no ploting windows will be open}
-  \item{...}{futher arguments:
+  \item{filename}{ the name of file (with extension) where plots will be stored. If not \code{NULL}, no plotting windows will be open}
+  \item{...}{further arguments:
     \itemize{
-      \item{\code{lim}: ordered numeric vector indicating the proportion of data to consider for histogramme representation (by default : c(0.5,0.75,0.9,0.95) )}
-      \item{\code{nb.points.max}: the maximum number of points to sample, 25000 by default (usefull for huge \code{raster*} objects)}
+      \item{\code{lim}: ordered numeric vector indicating the proportion of data to consider for histogram representation (by default : c(0.5,0.75,0.9,0.95) )}
+      \item{\code{nb.points.max}: the maximum number of points to sample, 25000 by default (useful for huge \code{raster*} objects)}
     }}
 }
 

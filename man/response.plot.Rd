@@ -17,7 +17,7 @@ response.plot(model,
 
 \arguments{
   \item{model}{ the model for which you want the response curves to be plotted. Compatible with GAM, GBM, GLM, ANN, CTA, RF, FDA and MARS.}
-  \item{Data}{ the variables for which you want the response curves to be plotted. A data frame is wanted with one column per vriable. They have to have the same names 
+  \item{Data}{ the variables for which you want the response curves to be plotted. A data frame is wanted with one column per variable. They have to have the same names 
    as the ones used to calibrate the model.}
   \item{show.variables}{ give in the column numbers of 'Data' for selecting the variables that are wanted for plotting }
   \item{save.file}{ can be set to "pdf", "jpeg" or "tiff" to save the plot. Pdf options can be changed by setting the default values of pdf.options().}

@@ -19,7 +19,7 @@ tuning.maxent(occ, env = NULL, pres = NULL, bg = NULL, bg.coords = NULL,
 
 \item{models.options}{BIOMOD.models.options object returned by BIOMOD_ModelingOptions. Default: BIOMOD_ModelingOptions()}
 
-\item{trControl}{global control parameters for runing (default trainControl(method="cv",summaryFunction=twoClassSummary,classProbs=T),returnData = FALSE). for details see trainControl}
+\item{trControl}{global control parameters for running (default trainControl(method="cv",summaryFunction=twoClassSummary,classProbs=T),returnData = FALSE). for details see trainControl}
 
 \item{ctrl.GAM}{specify control parameters only for GAM (default trControl)}
 
@@ -55,7 +55,7 @@ tuning.maxent(occ, env = NULL, pres = NULL, bg = NULL, bg.coords = NULL,
 
 \item{type.GLM}{vector of modeling types chosen among 'simple', 'quadratic', 'polynomial' or 's_smoother' (default c('simple','quadratic','polynomial','s_smoother'))}
 
-\item{interaction.GLM}{vector of interaction type choosen among 0, 1. Default c(0,1)}
+\item{interaction.GLM}{vector of interaction type chosen among 0, 1. Default c(0,1)}
 
 \item{cvmethod.ME}{method used for data partitioning for MAXENT.Phillips (default: 'randomkfold')}
 
@@ -69,9 +69,9 @@ tuning.maxent(occ, env = NULL, pres = NULL, bg = NULL, bg.coords = NULL,
 
 \item{env.ME}{RasterStack of model predictor variables}
 
-\item{size.tune.ANN}{size parameters (number of units in the hidden layer) for ANN used for tuning (default: c(2,4,6,8)).  Will be optimised using the method specified in ctrl.ANN (if not available trControl).}
+\item{size.tune.ANN}{size parameters (number of units in the hidden layer) for ANN used for tuning (default: c(2,4,6,8)).  Will be optimized using the method specified in ctrl.ANN (if not available trControl).}
 
-\item{decay.tune.ANN}{weight decay parameters used for tuning for ANN (default: c(0.001, 0.01, 0.05, 0.1))  Will be optimised by method specified in ctrl.ANN (if not available trControl).}
+\item{decay.tune.ANN}{weight decay parameters used for tuning for ANN (default: c(0.001, 0.01, 0.05, 0.1))  Will be optimized by method specified in ctrl.ANN (if not available trControl).}
 
 \item{maxit.ANN}{maximum number of iterations for ANN (default 500)}
 

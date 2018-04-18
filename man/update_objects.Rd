@@ -17,7 +17,7 @@
 %- maybe also 'usage' for other objects documented here.
 \arguments{
   \item{obj}{ a \code{biomod2} object you want to update (e.g. 'BIOMOD.formated.data', 'biomod2_model' object)}
-  \item{recursive}{ logical, if TRUE all objects on which updated object is based will be also updtaed }
+  \item{recursive}{ logical, if TRUE all objects on which updated object is based will be also updated }
 }
 
 \details{

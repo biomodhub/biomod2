@@ -83,7 +83,7 @@ BIOMOD_Modeling( data,
   \item{\bold{Yweights & Prevalence}}{
 
     Allows to give more or less weight to some particular observations. If these arguments is kept to NULL (\code{Yweights = NULL}, \code{Prevalence = NULL}), each observation (presence or absence) has the same weight (independent of the number of presences and absences). If \code{Prevalence = 0.5} absences will be weighted equally to the presences (i.e. the weighted sum of presence equals the weighted sum of absences). If prevalence is set below or above 0.5 absences or presences are given more weight, respectively.
-In the particular case that pseudo-absence data have been generated \code{BIOMOD_FormatingData} (\code{PA.nb.rep > 0}), weights are by default (\code{Prevalence = NULL}) calculated such that prevalence is 0.5, meaning that the presences will have the same importance as the absences in the calibration process of the models. Automatically created \code{Yweights} will be composed of integers to prevent different modelling issues.
+In the particular case that pseudo-absence data have been generated \code{BIOMOD_FormatingData} (\code{PA.nb.rep > 0}), weights are by default (\code{Prevalence = NULL}) calculated such that prevalence is 0.5, meaning that the presences will have the same importance as the absences in the calibration process of the models. Automatically created \code{Yweights} will be composed of integers to prevent different modeling issues.
 Note that the \code{Prevalence} argument will always be ignored if \code{Yweights} are defined.
 
 
@@ -110,7 +110,7 @@ Note that the \code{Prevalence} argument will always be ignored if \code{Yweight
 
   \item{\bold{SaveObj}}{
 
-  If this argument is set to False, it may prevent the evaluation of the \sQuote{ensemble modelled} models in further steps. We strongly recommend to always keep this argument \code{TRUE} even it asks for free space onto the hard drive.
+  If this argument is set to False, it may prevent the evaluation of the \sQuote{ensemble modeled} models in further steps. We strongly recommend to always keep this argument \code{TRUE} even it asks for free space onto the hard drive.
   }
 
   \item{\bold{rescal.all.models}}{
@@ -121,7 +121,7 @@ Note that the \code{Prevalence} argument will always be ignored if \code{Yweight
 
   \item{\bold{do.full.models}}{
 
-  Building models with all information available may be usefull in some particular cases (i.e. rare species with few presences points). The main drawback of this method is that, if you don't give separated data for models evaluation, your models will be evaluated with the same data that the ones used for calibration. Thats will lead to over-optimistic evaluation scores. Be careful whith this '_Full' models interpretation.
+  Building models with all information available may be useful in some particular cases (i.e. rare species with few presences points). The main drawback of this method is that, if you don't give separated data for models evaluation, your models will be evaluated with the same data that the ones used for calibration. That will lead to over-optimistic evaluation scores. Be careful with this '_Full' models interpretation.
   }
 } % end of enumerate
 } % end of detail

@@ -21,7 +21,7 @@
 \title{ BIOMOD_FormatingData() outputs objects class}
 
 \description{
-BIOMOD.formated.data objects are created, used and returned by BIOMOD functions. It's contains the minimal set of data \pkg{biomod2} needs to work. Input data given to \code{\link[biomod2]{BIOMOD_FormatingData}} are rearanged to fit with \code{\link[biomod2]{BIOMOD_Modeling}} input format. All data are stored into matrix (even environemental raster) explaining why some objects appears to be quite heavy.
+BIOMOD.formated.data objects are created, used and returned by BIOMOD functions. It's contains the minimal set of data \pkg{biomod2} needs to work. Input data given to \code{\link[biomod2]{BIOMOD_FormatingData}} are rearranged to fit with \code{\link[biomod2]{BIOMOD_Modeling}} input format. All data are stored into matrix (even environmental raster) explaining why some objects appears to be quite heavy.
 
 If you ask for pseudo absences selection in \code{\link[biomod2]{BIOMOD_FormatingData}}, you will get a \code{BIOMOD.formated.data.PA}, else you will get a \code{BIOMOD.formated.data.PA} object.
 

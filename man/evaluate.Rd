@@ -20,7 +20,7 @@ evaluate(model, data, stat, as.array=FALSE)
 }
 
 \details{
-Given model predictive score is evaluated on the new data set. It is done comparing binary transformed model predictions (on data set) to species occurrences (first column of \code{data} arg). A list of available evaluation metrics is given in \code{\link[biomod2]{BIOMOD_Modeling}} help file. For metrics that compared binary/binary data, a set of threshold will be test to transform continuous model prediction within binary ones. The return scores are the ones obtained for the threshold optimising tested metric (best score).
+Given model predictive score is evaluated on the new data set. It is done comparing binary transformed model predictions (on data set) to species occurrences (first column of \code{data} arg). A list of available evaluation metrics is given in \code{\link[biomod2]{BIOMOD_Modeling}} help file. For metrics that compared binary/binary data, a set of threshold will be test to transform continuous model prediction within binary ones. The return scores are the ones obtained for the threshold optimizing tested metric (best score).
 }
 
 \value{

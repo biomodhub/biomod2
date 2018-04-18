@@ -26,7 +26,7 @@ level.plot( data.in,
   \item{XY}{ a 2 columns matrix of the same length as data.in giving the coordinates of the data points}
   \item{color.gradient}{ available : red, grey and blue }
   \item{cex}{ to change the point size : >1 will increase size, <1 will decrease it }
-  \item{level.range}{ the range of values for which you want the color gradient to be used, usefull to increase the resolution
+  \item{level.range}{ the range of values for which you want the color gradient to be used, useful to increase the resolution
   of the graph especially if you have extreme values (see examples section) }
   \item{show.scale}{ a feature for just keeping the graph without the scale (if set to False) }
   \item{title}{ the title wanted for the graph }

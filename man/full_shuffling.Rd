@@ -6,7 +6,7 @@
 %%  ~~function to do ... ~~
 }
 \description{
-  This function is developper tool to shuffle elegantly data-set. This function shuffle one column of a given data.set
+  This function is developer tool to shuffle elegantly data-set. This function shuffle one column of a given data.set
 %%  ~~ A concise (1-5 lines) description of what the function does. ~~
 }
 

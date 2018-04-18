@@ -48,7 +48,7 @@ Functions to get attributes of \code{\link[biomod2]{BIOMOD_EnsembleModeling}} ou
 
     \item{\bold{get_kept_models}}{
       \itemize{
-        \item{model}{"character" or "numeric" refering to model names (get_built_models()) or model id }
+        \item{model}{"character" or "numeric" referring to model names (get_built_models()) or model id }
       }
     }
 

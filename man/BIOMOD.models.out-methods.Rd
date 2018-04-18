@@ -53,7 +53,7 @@ Functions to get attributes of \code{\link[biomod2]{BIOMOD_Modeling}} outputs
 
     \item{\bold{get_evaluations}}{
       \itemize{
-        \item{\code{as.data.frame}:}{"logical", ( FALSE by default ) if TRUE, a standardized \code{data.frame} will be produced else an 4 dimentions \code{array} is returned }
+        \item{\code{as.data.frame}:}{"logical", ( FALSE by default ) if TRUE, a standardized \code{data.frame} will be produced else a 4-dimension \code{array} is returned }
       }
     }
 
@@ -91,18 +91,18 @@ Functions to get attributes of \code{\link[biomod2]{BIOMOD_Modeling}} outputs
   \enumerate{
     \item{\bold{get_predictions: }}{ an \code{array} (or a \code{data.frame}) containing models predictions over calibrating and testing data (those used for evaluate models)}
 
-    \item{\bold{get_calib_lines: }}{ an \code{array} (or a \code{data.frame}) having the same dimention than the outpurt of \bold{get_predictions()} of logical values. All lines containing TRUE have been used to calibrate the model}
+    \item{\bold{get_calib_lines: }}{ an \code{array} (or a \code{data.frame}) having the same dimension than the output of \bold{get_predictions()} of logical values. All lines containing TRUE have been used to calibrate the model}
 
     \item{\bold{get_evaluations: }}{ an \code{array}, a \code{data.frame} or a \code{list} containing models evaluation scores}
 
 
-    \item{\bold{get_variables_importance: }}{ an \code{array} containing models variables importances}
+    \item{\bold{get_variables_importance: }}{ an \code{array} containing models variables importance}
 
     \item{\bold{get_options: }}{ a \code{"\link[=BIOMOD.Model.Options-class]{BIOMOD.Model.Options}"} reporting options used to build individual models}
 
-    \item{\bold{get_formal_data: }}{a \code{"\link[=BIOMOD.formated.data-class]{BIOMOD.formated.data}"} object containing data used for models building and evavaluation, or a part of this object}
+    \item{\bold{get_formal_data: }}{a \code{"\link[=BIOMOD.formated.data-class]{BIOMOD.formated.data}"} object containing data used for models building and evaluation, or a part of this object}
 
-    \item{\bold{get_built_models: }}{a character vector giving the names of models succefully computed}
+    \item{\bold{get_built_models: }}{a character vector giving the names of models successfully computed}
 
   }
 }
