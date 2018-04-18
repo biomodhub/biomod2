@@ -4,7 +4,7 @@
 \title{ Probability Density Function }
 \description{
   Using a variety of parameters in modelling will inevitably bring variability in predictions, especially when it comes to making future predictions.
-  This function enables an overall viewing of the future predictions range per species and gives the likelihood of range shift estimations. It will calculate the optimal way for condensing a difined proportion (50, 75, 90 and 95\% per default) of the data. 
+  This function enables an overall viewing of the future predictions range per species and gives the likelihood of range shift estimations. It will calculate the optimal way for condensing a difined proportion (50, 75, 90 and 95\% per default) of the data.
 }
 \usage{
 ProbDensFunc(initial,
@@ -32,11 +32,11 @@ ProbDensFunc(initial,
 }
 
 \details{
-  The future range changes are calculated as a percentage of the species' present state. For example, if a species currently occupies 100 cells and 
+  The future range changes are calculated as a percentage of the species' present state. For example, if a species currently occupies 100 cells and
   is estimated by a model to cover 120 cells in the future, the range change will be + 20\%.
 
   Resolution : Note that modifying the resolution will directly influence the probability scale. Bigger classes will
-  cumulate a greater number of predictions and therefore represent a greater fraction of the total
+  accumulate a greater number of predictions and therefore represent a greater fraction of the total
   predictions. The probability is in fact that of the class and not of isolated events.
 }
 \value{
@@ -56,7 +56,7 @@ head(DataSpecies)
 # the name of studied species
 myRespName <- 'GuloGulo'
 
-# the presence/absences data for our species 
+# the presence/absences data for our species
 myResp <- as.numeric(DataSpecies[,myRespName])
 
 # remove all 0 from response vector to work with
@@ -69,16 +69,16 @@ myResp <- myResp[-rm_id]
 myRespXY <- DataSpecies[-rm_id,c("X_WGS84","Y_WGS84")]
 
 
-# Environmental variables extracted from BIOCLIM 
-myExpl = raster::stack( system.file( "external/bioclim/current/bio3.grd", 
+# Environmental variables extracted from BIOCLIM
+myExpl = raster::stack( system.file( "external/bioclim/current/bio3.grd",
                              package="biomod2"),
-                system.file( "external/bioclim/current/bio4.grd", 
-                             package="biomod2"), 
-                system.file( "external/bioclim/current/bio7.grd", 
-                             package="biomod2"),  
-                system.file( "external/bioclim/current/bio11.grd", 
-                             package="biomod2"), 
-                system.file( "external/bioclim/current/bio12.grd", 
+                system.file( "external/bioclim/current/bio4.grd",
+                             package="biomod2"),
+                system.file( "external/bioclim/current/bio7.grd",
+                             package="biomod2"),
+                system.file( "external/bioclim/current/bio11.grd",
+                             package="biomod2"),
+                system.file( "external/bioclim/current/bio12.grd",
                              package="biomod2"))
 
 # 1. Formatting Data
@@ -92,11 +92,11 @@ myBiomodData <- BIOMOD_FormatingData(resp.var = myResp,
 myBiomodOption <- BIOMOD_ModelingOptions()
 
 # 3. Doing Modelisation
-myBiomodModelOut <- BIOMOD_Modeling( myBiomodData, 
-                                     models = c('CTA','RF','GLM','GAM','ANN','MARS'), 
-                                     models.options = myBiomodOption, 
-                                     NbRunEval=5, 
-                                     DataSplit=70, 
+myBiomodModelOut <- BIOMOD_Modeling( myBiomodData,
+                                     models = c('CTA','RF','GLM','GAM','ANN','MARS'),
+                                     models.options = myBiomodOption,
+                                     NbRunEval=5,
+                                     DataSplit=70,
                                      Prevalence=0.5,
                                      models.eval.meth = c('TSS'),
                                      do.full.models = FALSE,
@@ -114,16 +114,16 @@ myBiomodEM <- BIOMOD_EnsembleModeling( modeling.output = myBiomodModelOut,
 
 # 5. Projection on future environmental conditions
 
-## load future environmental conditions from biomod2 package 
-myExpl_fut <- raster::stack( system.file( "external/bioclim/future/bio3.grd", 
+## load future environmental conditions from biomod2 package
+myExpl_fut <- raster::stack( system.file( "external/bioclim/future/bio3.grd",
                                   package="biomod2"),
-                     system.file( "external/bioclim/future/bio4.grd", 
-                                  package="biomod2"), 
-                     system.file( "external/bioclim/future/bio7.grd", 
-                                  package="biomod2"),  
-                     system.file( "external/bioclim/future/bio11.grd", 
-                                  package="biomod2"), 
-                     system.file( "external/bioclim/future/bio12.grd", 
+                     system.file( "external/bioclim/future/bio4.grd",
+                                  package="biomod2"),
+                     system.file( "external/bioclim/future/bio7.grd",
+                                  package="biomod2"),
+                     system.file( "external/bioclim/future/bio11.grd",
+                                  package="biomod2"),
+                     system.file( "external/bioclim/future/bio12.grd",
                                   package="biomod2"))
 
 myBiomodProjection <- BIOMOD_Projection(modeling.output = myBiomodModelOut,
@@ -150,19 +150,19 @@ find_groups <- function(diff_by_pix){
   data.set <- sapply(names(diff_by_pix),biomod2:::.extractModelNamesInfo,info='data.set')
   run.eval <- sapply(names(diff_by_pix),biomod2:::.extractModelNamesInfo,info='run.eval')
   models <- sapply(names(diff_by_pix),biomod2:::.extractModelNamesInfo,info='models')
-  return(rbind(data.set,run.eval,models))  
+  return(rbind(data.set,run.eval,models))
 }
 
 groups <- find_groups(projectionsBin)
 
 # 9. plot ProbDensFunct graphs
 ProbDensFunc(initial = ref,
-             projections = projectionsBin, 
-             plothist=TRUE, 
-             cvsn=TRUE, 
-             groups=groups, 
-             resolution=2, 
-             filename=NULL, 
+             projections = projectionsBin,
+             plothist=TRUE,
+             cvsn=TRUE,
+             groups=groups,
+             resolution=2,
+             filename=NULL,
              lim=c(0.5,0.8,0.95))
 
 ## 3 plots should be produced.. Should be convenient to save it within a device

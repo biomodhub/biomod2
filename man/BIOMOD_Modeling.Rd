@@ -6,17 +6,17 @@
   This function allows to calibrate and evaluate a range of species distribution models techniques run over a given species. Calibrations are made on the whole sample or a random subpart. The predictive power of the different models is estimated using a range of evaluation metrics.
 }
 \usage{
-BIOMOD_Modeling( data, 
+BIOMOD_Modeling( data,
                  models = c('GLM','GBM','GAM','CTA','ANN',
-                            'SRE','FDA','MARS','RF','MAXENT.Phillips', 
-                            "MAXENT.Tsuruoka"), 
-                 models.options = NULL, 
-                 NbRunEval=1, 
-                 DataSplit=100, 
+                            'SRE','FDA','MARS','RF','MAXENT.Phillips',
+                            "MAXENT.Tsuruoka"),
+                 models.options = NULL,
+                 NbRunEval=1,
+                 DataSplit=100,
                  Yweights=NULL,
                  Prevalence=NULL,
-                 VarImport=0, 
-                 models.eval.meth = c('KAPPA','TSS','ROC'), 
+                 VarImport=0,
+                 models.eval.meth = c('KAPPA','TSS','ROC'),
                  SaveObj = TRUE,
                  rescal.all.models = FALSE,
                  do.full.models = TRUE,
@@ -26,9 +26,9 @@ BIOMOD_Modeling( data,
 
 \arguments{
   \item{data}{\code{BIOMOD.formated.data} object returned by \code{\link[biomod2]{BIOMOD_FormatingData}}}
-  \item{models}{vector of models names choosen among 'GLM', 'GBM', 'GAM', 'CTA', 'ANN', 'SRE', 'FDA', 'MARS', 'RF', 'MAXENT.Phillips' and "MAXENT.Tsuruoka" } 
+  \item{models}{vector of models names chosen among 'GLM', 'GBM', 'GAM', 'CTA', 'ANN', 'SRE', 'FDA', 'MARS', 'RF', 'MAXENT.Phillips' and "MAXENT.Tsuruoka" }
   \item{models.options}{\code{BIOMOD.models.options} object returned by \code{\link[biomod2]{BIOMOD_ModelingOptions}}}
-  \item{NbRunEval}{Number of Evaluation run} 
+  \item{NbRunEval}{Number of Evaluation run}
   \item{DataSplit}{\% of data used to calibrate the models, the remaining part will be used for testing }
   \item{Yweights}{response points weights}
   \item{Prevalence}{either \code{NULL} (default) or a 0-1 numeric used to build 'weighted response weights'}
@@ -40,7 +40,7 @@ BIOMOD_Modeling( data,
   \item{modeling.id}{character, the ID (=name) of modeling procedure. A random number by default. }
   \item{\ldots}{ further arguments :
     \itemize{
-      \item{\code{DataSplitTable} : a \code{matrix}, \code{data.frame} or a 3D \code{array} filled with \code{TRUE/FALSE} to specify which part of data must be used for models calibration (\code{TRUE}) and for models validation (\code{FALSE}). Each column correspund to a 'RUN'. If filled, args \code{NbRunEval}, \code{DataSplit} and \code{do.full.models} will be ignored.}
+      \item{\code{DataSplitTable} : a \code{matrix}, \code{data.frame} or a 3D \code{array} filled with \code{TRUE/FALSE} to specify which part of data must be used for models calibration (\code{TRUE}) and for models validation (\code{FALSE}). Each column corresponds to a 'RUN'. If filled, args \code{NbRunEval}, \code{DataSplit} and \code{do.full.models} will be ignored.}
     }}
 }
 
@@ -49,14 +49,14 @@ BIOMOD_Modeling( data,
 \enumerate{
 
   \item{\bold{data}}{
-  
-  If you have decide to add pseudo absences to your original dataset (see \code{\link[biomod2]{BIOMOD_FormatingData}}), NbPseudoAbsences * \code{NbRunEval + 1} models will be created. 
-  
+
+  If you have decide to add pseudo absences to your original dataset (see \code{\link[biomod2]{BIOMOD_FormatingData}}), NbPseudoAbsences * \code{NbRunEval + 1} models will be created.
+
   }
-  
+
   \item{\bold{models}}{
-  
-    The set of models to be calibrated on the data. 10 modeling techniques are currently available: 
+
+    The set of models to be calibrated on the data. 10 modeling techniques are currently available:
     \itemize{
       \item{GLM : Generalized Linear Model (\code{\link[stats]{glm}})}
       \item{GAM : Generalized Additive Model (\code{\link[gam]{gam}}, \code{\link[mgcv]{gam}} or \code{\link[mgcv]{bam}}, see \code{\link[biomod2]{BIOMOD_ModelingOptions} for details on algorithm selection})}
@@ -70,28 +70,28 @@ BIOMOD_Modeling( data,
       \item{MAXENT.Phillips: Maximum Entropy (\url{http://www.cs.princeton.edu/~schapire/maxent/})}
       \item{MAXENT.Tsuruoka: low-memory multinomial logistic regression (\code{\link[maxent]{maxent}})}
     }
-    
+
   }
-  
+
 
    \item{\bold{NbRunEval & DataSplit}}{
-   
-     As already explained in the \code{\link{BIOMOD_FormatingData}} help file, the common trend is to split the original dataset into two subsets, one to calibrate the models, and another one to evaluate them. Here we provide the possibility to repeat this process (calibration and evaluation) N times (\code{NbRunEval} times). The proportion of data kept for calibration is determined by the \code{DataSplit} argument (100\% - \code{DataSplit} will be used to evaluate the model). This sort of cross-validation allows to have a quite robust test of the models when independent data are not available. Each technique will also be calibrated on the complete original data. All the models produced by BIOMOD and their related informations are saved on the hard drive. 
-     
+
+     As already explained in the \code{\link{BIOMOD_FormatingData}} help file, the common trend is to split the original dataset into two subsets, one to calibrate the models, and another one to evaluate them. Here we provide the possibility to repeat this process (calibration and evaluation) N times (\code{NbRunEval} times). The proportion of data kept for calibration is determined by the \code{DataSplit} argument (100\% - \code{DataSplit} will be used to evaluate the model). This sort of cross-validation allows to have a quite robust test of the models when independent data are not available. Each technique will also be calibrated on the complete original data. All the models produced by BIOMOD and their related informations are saved on the hard drive.
+
    }
-  
+
   \item{\bold{Yweights & Prevalence}}{
-  
+
     Allows to give more or less weight to some particular observations. If these arguments is kept to NULL (\code{Yweights = NULL}, \code{Prevalence = NULL}), each observation (presence or absence) has the same weight (independent of the number of presences and absences). If \code{Prevalence = 0.5} absences will be weighted equally to the presences (i.e. the weighted sum of presence equals the weighted sum of absences). If prevalence is set below or above 0.5 absences or presences are given more weight, respectively.
-In the particular case that pseudo-absence data have been generated \code{BIOMOD_FormatingData} (\code{PA.nb.rep > 0}), weights are by default (\code{Prevalence = NULL}) calculated such that prevalence is 0.5, meaning that the presences will have the same importance as the absences in the calibration process of the models. Automatically created \code{Yweights} will be composed of integers to prevent different modelling issues. 
-Note that the \code{Prevalence} argument will always be ignored if \code{Yweights} are defined. 
-    
-    
+In the particular case that pseudo-absence data have been generated \code{BIOMOD_FormatingData} (\code{PA.nb.rep > 0}), weights are by default (\code{Prevalence = NULL}) calculated such that prevalence is 0.5, meaning that the presences will have the same importance as the absences in the calibration process of the models. Automatically created \code{Yweights} will be composed of integers to prevent different modelling issues.
+Note that the \code{Prevalence} argument will always be ignored if \code{Yweights} are defined.
+
+
   }
-  
+
   \item{\bold{models.eval.meth}}{
-  
-    The available evaluations methods are : 
+
+    The available evaluations methods are :
     \itemize{
       \item{\sQuote{ROC} : Relative Operating Characteristic}
       \item{\sQuote{KAPPA} : Cohen's Kappa (Heidke skill score) }
@@ -104,43 +104,43 @@ Note that the \code{Prevalence} argument will always be ignored if \code{Yweight
       \item{\sQuote{CSI} : Critical success index (threat score)}
       \item{\sQuote{ETS} : Equitable threat score (Gilbert skill score)}
     }
-    Some of them are scaled to have all an optimum at 1. You can choose one of more (vector) evaluation metric. By Default, only 'KAPPA', 'TSS' and 'ROC' evaluation are done. Please refer to the CAWRC website (\url{http://www.cawcr.gov.au/projects/verification/#Methods_for_dichotomous_forecasts}) to get detailled description of each metric.
-    
+    Some of them are scaled to have all an optimum at 1. You can choose one of more (vector) evaluation metric. By Default, only 'KAPPA', 'TSS' and 'ROC' evaluation are done. Please refer to the CAWRC website (\url{http://www.cawcr.gov.au/projects/verification/#Methods_for_dichotomous_forecasts}) to get detailed description of each metric.
+
   }
-  
+
   \item{\bold{SaveObj}}{
-  
+
   If this argument is set to False, it may prevent the evaluation of the \sQuote{ensemble modelled} models in further steps. We strongly recommend to always keep this argument \code{TRUE} even it asks for free space onto the hard drive.
   }
-  
+
   \item{\bold{rescal.all.models}}{
-  
-  \bold{This parameter is quite experimental and we adcise not to use it. It should lead to reduction in projection scale amplitude }
-  Some categorical models have to be scaled in every case (\sQuote{FDA}, \sQuote{ANN}). But It may be interesting to scale all model computed to ensure that they will produced comparable predictions (0-1000 ladder). That's particularly useful when you do some ensemble forecasting to remove the scale prediction effect (the more extended projections are, the more they influence ensemble forecasting results). 
+
+  \bold{This parameter is quite experimental and we advise not to use it. It should lead to reduction in projection scale amplitude }
+  Some categorical models have to be scaled in every case (\sQuote{FDA}, \sQuote{ANN}). But It may be interesting to scale all model computed to ensure that they will produced comparable predictions (0-1000 ladder). That's particularly useful when you do some ensemble forecasting to remove the scale prediction effect (the more extended projections are, the more they influence ensemble forecasting results).
   }
 
   \item{\bold{do.full.models}}{
-  
-  Building models with all information available may be usefull in some particular cases (i.e. rare species with few presences points). The main drawback of this method is that, if you don't give separated data for models evaluation, your models will be evaluated with the same data that the ones used for calibration. Thats will lead to over-optimistic evaluation scores. Be carefull whith this '_Full' models interpretation.
+
+  Building models with all information available may be usefull in some particular cases (i.e. rare species with few presences points). The main drawback of this method is that, if you don't give separated data for models evaluation, your models will be evaluated with the same data that the ones used for calibration. Thats will lead to over-optimistic evaluation scores. Be careful whith this '_Full' models interpretation.
   }
 } % end of enumerate
-} % end of detail 
+} % end of detail
 
 \value{
   A BIOMOD.models.out object
-    
+
   See \code{"\link[=BIOMOD.models.out-class]{BIOMOD.models.out}"} for details.
-  
+
   Additional objects are stored out of R in two different directories for memory storage purposes. They are created by the function directly on the root
   of your working directory set in R ("models" directory). This one contains each calibrated model for each repetition and pseudo-absence run. A hidden folder \file{.DATA_BIOMOD} contains some files (predictions, original dataset copy, pseudo absences chosen...) used by other functions like \code{\link[biomod2]{BIOMOD_Projection}} or \code{\link[biomod2]{BIOMOD_EnsembleModeling}} .
-  
-  The models are currently stored as objects to be read exclusively in R. To load them back (the same stands for all objects stored on the hard disk) 
-  use the \code{\link{load}} function (see examples section below). 
-   
+
+  The models are currently stored as objects to be read exclusively in R. To load them back (the same stands for all objects stored on the hard disk)
+  use the \code{\link{load}} function (see examples section below).
+
 }
 
 
-\author{ 
+\author{
 Wilfried Thuiller, Damien Georges, Robin Engler
 }
 
@@ -157,7 +157,7 @@ head(DataSpecies)
 # the name of studied species
 myRespName <- 'GuloGulo'
 
-# the presence/absences data for our species 
+# the presence/absences data for our species
 myResp <- as.numeric(DataSpecies[,myRespName])
 
 # the XY coordinates of species data
@@ -165,15 +165,15 @@ myRespXY <- DataSpecies[,c("X_WGS84","Y_WGS84")]
 
 
 # Environmental variables extracted from BIOCLIM (bio_3, bio_4, bio_7, bio_11 & bio_12)
-myExpl = raster::stack( system.file( "external/bioclim/current/bio3.grd", 
+myExpl = raster::stack( system.file( "external/bioclim/current/bio3.grd",
                              package="biomod2"),
-                system.file( "external/bioclim/current/bio4.grd", 
-                             package="biomod2"), 
-                system.file( "external/bioclim/current/bio7.grd", 
-                             package="biomod2"),  
-                system.file( "external/bioclim/current/bio11.grd", 
-                             package="biomod2"), 
-                system.file( "external/bioclim/current/bio12.grd", 
+                system.file( "external/bioclim/current/bio4.grd",
+                             package="biomod2"),
+                system.file( "external/bioclim/current/bio7.grd",
+                             package="biomod2"),
+                system.file( "external/bioclim/current/bio11.grd",
+                             package="biomod2"),
+                system.file( "external/bioclim/current/bio12.grd",
                              package="biomod2"))
 
 # 1. Formatting Data
@@ -181,26 +181,26 @@ myBiomodData <- BIOMOD_FormatingData(resp.var = myResp,
                                      expl.var = myExpl,
                                      resp.xy = myRespXY,
                                      resp.name = myRespName)
-                                                                     
+
 # 2. Defining Models Options using default options.
 myBiomodOption <- BIOMOD_ModelingOptions()
 
 # 3. Doing Modelisation
 
-myBiomodModelOut <- BIOMOD_Modeling( myBiomodData, 
-                                       models = c('SRE','RF'), 
-                                       models.options = myBiomodOption, 
-                                       NbRunEval=2, 
-                                       DataSplit=80, 
-                                       VarImport=0, 
+myBiomodModelOut <- BIOMOD_Modeling( myBiomodData,
+                                       models = c('SRE','RF'),
+                                       models.options = myBiomodOption,
+                                       NbRunEval=2,
+                                       DataSplit=80,
+                                       VarImport=0,
                                        models.eval.meth = c('TSS','ROC'),
                                        do.full.models=FALSE,
                                        modeling.id="test")
-                                       
+
 ## print a summary of modeling stuff
 myBiomodModelOut
-                                       
-                                    
+
+
 }
 
 \keyword{ models }
