@@ -11,8 +11,8 @@
 
 \title{ BIOMOD.EnsembleModeling.out getters }
 
-\description{ 
-Functions to get attributs of \code{\link[biomod2]{BIOMOD_EnsembleModeling}} outputs
+\description{
+Functions to get attributes of \code{\link[biomod2]{BIOMOD_EnsembleModeling}} outputs
 }
 
 \usage{
@@ -36,24 +36,24 @@ Functions to get attributs of \code{\link[biomod2]{BIOMOD_EnsembleModeling}} out
 
 \details{
 
-  \ldots{ } available values : 
-  
+  \ldots{ } available values :
+
   \itemize{
-  
+
     \item{\bold{get_evaluations}}{
       \itemize{
         \item{\code{as.data.frame}:}{"logical", ( FALSE by default ) if TRUE, a standardized \code{data.frame} will be produced else a list is returned }
       }
     }
-    
+
     \item{\bold{get_kept_models}}{
       \itemize{
-        \item{model}{"character" or "numeric" refering to model names (get_built_models()) or model id }
+        \item{model}{"character" or "numeric" referring to model names (get_built_models()) or model id }
       }
     }
-    
-    
-  } 
+
+
+  }
 }
 
 
@@ -61,15 +61,15 @@ Functions to get attributs of \code{\link[biomod2]{BIOMOD_EnsembleModeling}} out
 
   \enumerate{
     \item{\bold{get_built_models: }}{ a \code{character} vector indicating set of ensemble-modeling algorithms ran}
-    
+
     \item{\bold{get_built_models: }}{ a \code{character} vector indicating the names of ensemble models computed }
-    
+
     \item{\bold{get_evaluations: }}{ an \code{array}, a \code{data.frame} or a \code{list} containing ensemble models evaluation scores}
-    
+
     \item{\bold{get_kept_models: }}{ an \code{character} vector indicating names of selected models for ensemble-models building}
-    
+
     \item{\bold{get_needed_models: }}{ an \code{character} vector indicating names of all needed models required to build all ensemble-models}
-    
+
   }
 }
 

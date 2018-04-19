@@ -9,8 +9,8 @@
 
 \title{ BIOMOD.projection.out getters }
 
-\description{ 
-Functions to get attributs of \code{\link[biomod2]{BIOMOD_Projection}} outputs
+\description{
+Functions to get attributes of \code{\link[biomod2]{BIOMOD_Projection}} outputs
 }
 
 \usage{
@@ -32,8 +32,8 @@ Functions to get attributs of \code{\link[biomod2]{BIOMOD_Projection}} outputs
 
 \details{
 
-  \ldots{ } available values : 
-  
+  \ldots{ } available values :
+
   \itemize{
     \item{get_predictions}
     \itemize{
@@ -42,7 +42,7 @@ Functions to get attributs of \code{\link[biomod2]{BIOMOD_Projection}} outputs
       \item{\code{model}:}{NULL or "character", \emph{type name} of models you want to extract projections }
       \item{\code{run.eval}:}{NULL or "character", \emph{run name} of models you want to extract projections }
       \item{\code{data.set}:}{NULL or "character", \emph{dataset name} of models you want to extract projections }
-      
+
     }
   }
 }
@@ -53,7 +53,7 @@ Functions to get attributs of \code{\link[biomod2]{BIOMOD_Projection}} outputs
   \enumerate{
     \item{\bold{get_predictions: }}{ an \code{array} or a \code{data.frame} containing models projections}
     \item{\bold{get_projected_models: }}{ \code{character} containing names of models that have been projected}
-    \item{\bold{free: }}{remove projection value from R memory and only keep the path to correspunding file on hard drive.}
+    \item{\bold{free: }}{remove projection value from R memory and only keep the path to corresponding file on hard drive.}
   }
 }
 

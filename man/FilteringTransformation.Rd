@@ -71,7 +71,7 @@ In the particular case that the data to convert is a \code{matrix}/\code{data.fr
 
 
 \value{
-An object of the same class than \code{data} with the values of data if suprerior to \code{threshold} and 0 if not.    
+An object of the same class than \code{data} with the values of data if superior to \code{threshold} and 0 if not.    
 }
 
 

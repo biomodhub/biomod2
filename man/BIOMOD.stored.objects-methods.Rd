@@ -5,8 +5,8 @@
 
 \title{BIOMOD.stored.objects functions}
 
-\description{ 
-Functions to play with attributs of \code{BIOMOD.stored.objects} objects
+\description{
+Functions to play with attributes of \code{BIOMOD.stored.objects} objects
 }
 
 \usage{

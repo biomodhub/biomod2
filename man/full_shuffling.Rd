@@ -6,7 +6,7 @@
 %%  ~~function to do ... ~~
 }
 \description{
-  This function is developper tool to shuffle elegantly data-set. This function suffle one column of a given data.set
+  This function is developer tool to shuffle elegantly data-set. This function shuffle one column of a given data.set
 %%  ~~ A concise (1-5 lines) description of what the function does. ~~
 }
 
@@ -15,13 +15,13 @@ full_suffling(x,id=NULL)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
-  \item{x}{ a \code{data.frame} you want to suffle}
-  \item{id}{ the columms you want to shuffle}
+  \item{x}{ a \code{data.frame} you want to shuffle}
+  \item{id}{ the columns you want to shuffle}
 }
 
 
 \value{
-  a \code{data.frame} with selected columns suffled compared to the original table.
+  a \code{data.frame} with selected columns shuffled compared to the original table.
 }
 
 \author{
@@ -41,6 +41,6 @@ full_suffling(xx,c(1,2))
 }
 % Add one or more standard keywords, see file 'KEYWORDS' in the
 % R documentation directory.
-\keyword{ suffle }
+\keyword{ shuffle }
 \keyword{ random }
 \keyword{ importance }% __ONLY ONE__ keyword per line

@@ -20,7 +20,7 @@ sre(Response = NULL,
   \item{NewData}{ The data for which you want to render predictions with the sre. It must be a matrix (resp. a data.frame, a SpatialPointsDataFrame or a RasterStack ) of the same type as the one given in Explanatory and with precisely the same variable names. }
   \item{Quant}{ the value defines the most extreme values for each variable not to be taken into account
    for determining the tolerance boundaries for the considered species.  }
-   \item{return_extremcond}{ boolean, if TRUE a matrix containing extrem conditions supported is returned}
+   \item{return_extremcond}{ boolean, if TRUE a matrix containing extreme conditions supported is returned}
 }
 \details{
 

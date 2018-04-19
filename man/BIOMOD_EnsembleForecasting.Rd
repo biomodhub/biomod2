@@ -24,7 +24,7 @@ BIOMOD_EnsembleForecasting( EM.output,
   \item{projection.output}{a \code{"\link[=BIOMOD.projection.out-class]{BIOMOD.projection.out}"} returned by \code{\link[biomod2]{BIOMOD_Projection}} }
   \item{new.env}{ a \code{RasterStack} or a \code{data.frame} object containing explanatory data for the studied area. Needed only if \code{projection.output} is \code{NULL}. Prefer to use \code{"\link[=BIOMOD.projection.out-class]{BIOMOD.projection.out}"} if you have ever done the calculations.}
   \item{xy.new.env}{the matching coordinates of \code{new.env} if \code{new.env} is defined and if it is a \code{data.frame}}
-  \item{selected.models}{ if not 'all', a character vector containing a subset of ensemble-models you want make projacion}
+  \item{selected.models}{ if not 'all', a character vector containing a subset of ensemble-models you want make projection}
   \item{proj.name}{the projection name (results will be saved within proj_proj.name directory). Only needed if \code{projection.output} is \code{NULL} }
   \item{binary.meth}{vector specifying the names of evaluation metrics and associated thresholds to transform the probabilities of presence into presence and absence (binary transformation).  }
   \item{filtered.meth}{vector specifying the names of evaluation metrics and associated thresholds to transform into 0 the probabilities of presence lower than the thresholds.}

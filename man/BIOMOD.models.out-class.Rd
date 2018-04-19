@@ -32,7 +32,7 @@ BIOMOD.models.out objects
     \item{\code{models.computed}:}{ "character", names of computed models }
     \item{\code{models.failed}:}{ "character", names of failed models }
     \item{\code{models.evaluation}:}{ "BIOMOD.stored.array", evaluations of each model computed according to selected evaluation methods }
-    \item{\code{variables.importances}:}{ "BIOMOD.stored.array", models variable importances }
+    \item{\code{variables.importances}:}{ "BIOMOD.stored.array", models variable importance }
     \item{\code{models.prediction}:}{ "BIOMOD.stored.array", predictions of each models on their own calibration + validation dataset }
     \item{\code{models.prediction.eval}:}{ "BIOMOD.stored.array", predictions of each models on evaluation dataset (if defined) }
     \item{\code{formated.input.data}:}{ "BIOMOD.stored.formated.data", input data }

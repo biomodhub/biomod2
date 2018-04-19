@@ -4,7 +4,7 @@
 \title{ Probability Density Function }
 \description{
   Using a variety of parameters in modelling will inevitably bring variability in predictions, especially when it comes to making future predictions.
-  This function enables an overall viewing of the future predictions range per species and gives the likelihood of range shift estimations. It will calculate the optimal way for condensing a difined proportion (50, 75, 90 and 95\% per default) of the data. 
+  This function enables an overall viewing of the future predictions range per species and gives the likelihood of range shift estimations. It will calculate the optimal way for condensing a defined proportion (50, 75, 90 and 95\% per default) of the data.
 }
 \usage{
 ProbDensFunc(initial,
@@ -23,20 +23,20 @@ ProbDensFunc(initial,
   \item{cvsn}{ stands for "current vs new". If true, the range change calculations will be of two types: the percentage of cells currently occupied by the species to be lost, and the relative percentage of cells currently unoccupied but projected to be, namely 'new' cells, compared to current surface range.}
   \item{groups}{ an option for ungrouping the projections enabling a separated visualisation of the prediction range per given group. A matrix is expected where each column is a single prediction and each line is giving details of one parameter (See the examples section). }
   \item{resolution}{ the step used for classes of prediction in graphics. The default value is 5 }
-  \item{filename}{ the name of file (with extension) where plots will be stored. If not \code{NULL}, no ploting windows will be open}
-  \item{...}{futher arguments:
+  \item{filename}{ the name of file (with extension) where plots will be stored. If not \code{NULL}, no plotting windows will be open}
+  \item{...}{further arguments:
     \itemize{
-      \item{\code{lim}: ordered numeric vector indicating the proportion of data to consider for histogramme representation (by default : c(0.5,0.75,0.9,0.95) )}
-      \item{\code{nb.points.max}: the maximum number of points to sample, 25000 by default (usefull for huge \code{raster*} objects)}
+      \item{\code{lim}: ordered numeric vector indicating the proportion of data to consider for histogram representation (by default : c(0.5,0.75,0.9,0.95) )}
+      \item{\code{nb.points.max}: the maximum number of points to sample, 25000 by default (useful for huge \code{raster*} objects)}
     }}
 }
 
 \details{
-  The future range changes are calculated as a percentage of the species' present state. For example, if a species currently occupies 100 cells and 
+  The future range changes are calculated as a percentage of the species' present state. For example, if a species currently occupies 100 cells and
   is estimated by a model to cover 120 cells in the future, the range change will be + 20\%.
 
   Resolution : Note that modifying the resolution will directly influence the probability scale. Bigger classes will
-  cumulate a greater number of predictions and therefore represent a greater fraction of the total
+  accumulate a greater number of predictions and therefore represent a greater fraction of the total
   predictions. The probability is in fact that of the class and not of isolated events.
 }
 \value{
@@ -56,7 +56,7 @@ head(DataSpecies)
 # the name of studied species
 myRespName <- 'GuloGulo'
 
-# the presence/absences data for our species 
+# the presence/absences data for our species
 myResp <- as.numeric(DataSpecies[,myRespName])
 
 # remove all 0 from response vector to work with
@@ -69,16 +69,16 @@ myResp <- myResp[-rm_id]
 myRespXY <- DataSpecies[-rm_id,c("X_WGS84","Y_WGS84")]
 
 
-# Environmental variables extracted from BIOCLIM 
-myExpl = raster::stack( system.file( "external/bioclim/current/bio3.grd", 
+# Environmental variables extracted from BIOCLIM
+myExpl = raster::stack( system.file( "external/bioclim/current/bio3.grd",
                              package="biomod2"),
-                system.file( "external/bioclim/current/bio4.grd", 
-                             package="biomod2"), 
-                system.file( "external/bioclim/current/bio7.grd", 
-                             package="biomod2"),  
-                system.file( "external/bioclim/current/bio11.grd", 
-                             package="biomod2"), 
-                system.file( "external/bioclim/current/bio12.grd", 
+                system.file( "external/bioclim/current/bio4.grd",
+                             package="biomod2"),
+                system.file( "external/bioclim/current/bio7.grd",
+                             package="biomod2"),
+                system.file( "external/bioclim/current/bio11.grd",
+                             package="biomod2"),
+                system.file( "external/bioclim/current/bio12.grd",
                              package="biomod2"))
 
 # 1. Formatting Data
@@ -92,11 +92,11 @@ myBiomodData <- BIOMOD_FormatingData(resp.var = myResp,
 myBiomodOption <- BIOMOD_ModelingOptions()
 
 # 3. Doing Modelisation
-myBiomodModelOut <- BIOMOD_Modeling( myBiomodData, 
-                                     models = c('CTA','RF','GLM','GAM','ANN','MARS'), 
-                                     models.options = myBiomodOption, 
-                                     NbRunEval=5, 
-                                     DataSplit=70, 
+myBiomodModelOut <- BIOMOD_Modeling( myBiomodData,
+                                     models = c('CTA','RF','GLM','GAM','ANN','MARS'),
+                                     models.options = myBiomodOption,
+                                     NbRunEval=5,
+                                     DataSplit=70,
                                      Prevalence=0.5,
                                      models.eval.meth = c('TSS'),
                                      do.full.models = FALSE,
@@ -114,16 +114,16 @@ myBiomodEM <- BIOMOD_EnsembleModeling( modeling.output = myBiomodModelOut,
 
 # 5. Projection on future environmental conditions
 
-## load future environmental conditions from biomod2 package 
-myExpl_fut <- raster::stack( system.file( "external/bioclim/future/bio3.grd", 
+## load future environmental conditions from biomod2 package
+myExpl_fut <- raster::stack( system.file( "external/bioclim/future/bio3.grd",
                                   package="biomod2"),
-                     system.file( "external/bioclim/future/bio4.grd", 
-                                  package="biomod2"), 
-                     system.file( "external/bioclim/future/bio7.grd", 
-                                  package="biomod2"),  
-                     system.file( "external/bioclim/future/bio11.grd", 
-                                  package="biomod2"), 
-                     system.file( "external/bioclim/future/bio12.grd", 
+                     system.file( "external/bioclim/future/bio4.grd",
+                                  package="biomod2"),
+                     system.file( "external/bioclim/future/bio7.grd",
+                                  package="biomod2"),
+                     system.file( "external/bioclim/future/bio11.grd",
+                                  package="biomod2"),
+                     system.file( "external/bioclim/future/bio12.grd",
                                   package="biomod2"))
 
 myBiomodProjection <- BIOMOD_Projection(modeling.output = myBiomodModelOut,
@@ -150,19 +150,19 @@ find_groups <- function(diff_by_pix){
   data.set <- sapply(names(diff_by_pix),biomod2:::.extractModelNamesInfo,info='data.set')
   run.eval <- sapply(names(diff_by_pix),biomod2:::.extractModelNamesInfo,info='run.eval')
   models <- sapply(names(diff_by_pix),biomod2:::.extractModelNamesInfo,info='models')
-  return(rbind(data.set,run.eval,models))  
+  return(rbind(data.set,run.eval,models))
 }
 
 groups <- find_groups(projectionsBin)
 
 # 9. plot ProbDensFunct graphs
 ProbDensFunc(initial = ref,
-             projections = projectionsBin, 
-             plothist=TRUE, 
-             cvsn=TRUE, 
-             groups=groups, 
-             resolution=2, 
-             filename=NULL, 
+             projections = projectionsBin,
+             plothist=TRUE,
+             cvsn=TRUE,
+             groups=groups,
+             resolution=2,
+             filename=NULL,
              lim=c(0.5,0.8,0.95))
 
 ## 3 plots should be produced.. Should be convenient to save it within a device

@@ -24,8 +24,8 @@
 
 \title{ BIOMOD.models.out getters }
 
-\description{ 
-Functions to get attributs of \code{\link[biomod2]{BIOMOD_Modeling}} outputs
+\description{
+Functions to get attributes of \code{\link[biomod2]{BIOMOD_Modeling}} outputs
 }
 
 \usage{
@@ -47,25 +47,25 @@ Functions to get attributs of \code{\link[biomod2]{BIOMOD_Modeling}} outputs
 
 \details{
 
-  \ldots{ } available values : 
-  
+  \ldots{ } available values :
+
   \itemize{
 
     \item{\bold{get_evaluations}}{
       \itemize{
-        \item{\code{as.data.frame}:}{"logical", ( FALSE by default ) if TRUE, a standardized \code{data.frame} will be produced else an 4 dimentions \code{array} is returned }
+        \item{\code{as.data.frame}:}{"logical", ( FALSE by default ) if TRUE, a standardized \code{data.frame} will be produced else a 4-dimension \code{array} is returned }
       }
     }
-    
+
     \item{\bold{get_calib_lines}}{
     }
-  
+
     \item{\bold{get_predictions (for BIOMOD_Modeling() outputs only)}}{
       \itemize{
         \item{\code{as.data.frame}:}{logical(default FALSE). If TRUE, models predictions will be returned as \code{data.frame} rather than \code{array}}
         \item{\code{evaluation}:}{logical (default FALSE). If TRUE, model prediction over evaluation data will be returned }}
     }
-    
+
     \item{\bold{get_formal_data}}{
       \itemize{
         \item{\code{subinfo}:}{character. Flag defining a specific information to extract from \code{"\link[=BIOMOD.formated.data-class]{BIOMOD.formated.data}"} object. Supported values are: }
@@ -77,8 +77,8 @@ Functions to get attributs of \code{\link[biomod2]{BIOMOD_Modeling}} outputs
             \item{\code{'expl.var'}:}{ Explanatory variables \code{data.frame} returned}
             \item{\code{'eval.expl.var'}:}{ Evaluation explanatory variables \code{data.frame} returned}
             \item{\code{'expl.var.names'}:}{ Explanatory variables names returned}
-            
-            
+
+
           }
       }
     }
@@ -91,19 +91,19 @@ Functions to get attributs of \code{\link[biomod2]{BIOMOD_Modeling}} outputs
   \enumerate{
     \item{\bold{get_predictions: }}{ an \code{array} (or a \code{data.frame}) containing models predictions over calibrating and testing data (those used for evaluate models)}
 
-    \item{\bold{get_calib_lines: }}{ an \code{array} (or a \code{data.frame}) having the same dimention than the outpurt of \bold{get_predictions()} of logical values. All lines containing TRUE have been used to calibrate the model}
-    
+    \item{\bold{get_calib_lines: }}{ an \code{array} (or a \code{data.frame}) having the same dimension than the output of \bold{get_predictions()} of logical values. All lines containing TRUE have been used to calibrate the model}
+
     \item{\bold{get_evaluations: }}{ an \code{array}, a \code{data.frame} or a \code{list} containing models evaluation scores}
-    
-    
-    \item{\bold{get_variables_importance: }}{ an \code{array} containing models variables importances}
-    
+
+
+    \item{\bold{get_variables_importance: }}{ an \code{array} containing models variables importance}
+
     \item{\bold{get_options: }}{ a \code{"\link[=BIOMOD.Model.Options-class]{BIOMOD.Model.Options}"} reporting options used to build individual models}
-    
-    \item{\bold{get_formal_data: }}{a \code{"\link[=BIOMOD.formated.data-class]{BIOMOD.formated.data}"} object containing data used for models building and evavaluation, or a part of this object}
-    
-    \item{\bold{get_built_models: }}{a character vector giving the names of models succefully computed} 
-  
+
+    \item{\bold{get_formal_data: }}{a \code{"\link[=BIOMOD.formated.data-class]{BIOMOD.formated.data}"} object containing data used for models building and evaluation, or a part of this object}
+
+    \item{\bold{get_built_models: }}{a character vector giving the names of models successfully computed}
+
   }
 }
 

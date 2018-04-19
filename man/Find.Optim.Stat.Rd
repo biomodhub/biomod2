@@ -18,7 +18,7 @@ Find.Optim.Stat(Stat='TSS',
 
 \item{Obs}{vector of observed values (binary)}
 
-\item{Nb.thresh.test}{integer, the numer of thresholds tested over the 
+\item{Nb.thresh.test}{integer, the number of thresholds tested over the 
 range of fitted value}
 
 \item{Fixed.thresh}{integer, if not \code{NULL}, the only threshold value tested}
@@ -39,7 +39,7 @@ to the best score for a given evaluation metric.
 }
 \details{
 Please refer to \code{\link[biomod2]{BIOMOD_Modeling}} to get more information about this metrics.
-  If you give a \code{Fixed.thresh}, no optimisation will be done. Only the score for this threshold will be returned.
+  If you give a \code{Fixed.thresh}, no optimization will be done. Only the score for this threshold will be returned.
 }
 \examples{
   a <- sample(c(0,1),100, replace=TRUE)

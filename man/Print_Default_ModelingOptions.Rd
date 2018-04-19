@@ -11,7 +11,7 @@ Print_Default_ModelingOptions()
 }
 
 \details{
-This function is useful to parameterize the selected models. It gives a formated list of all parameters the user can modify. You can copy this function output, modify all parameters you want in a text editor and paste the modified string as argument to (\link{BIOMOD_ModelingOptions}) function.
+This function is useful to parameterize the selected models. It gives a formatted list of all parameters the user can modify. You can copy this function output, modify all parameters you want in a text editor and paste the modified string as argument to (\link{BIOMOD_ModelingOptions}) function.
 }
 
 \value{ 

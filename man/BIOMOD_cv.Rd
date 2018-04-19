@@ -20,7 +20,7 @@ BIOMOD_cv(data, k = 5, repetition = 5, do.full.models = TRUE,
 
 \item{stratify}{stratification method of the cv. Could be "x", "y", "both" (default), "block" or the name of a predictor for environmental stratified cv.}
 
-\item{balance}{make balanced particions for "presences" (default) or "absences" (resp. pseudo-absences or background).}
+\item{balance}{make balanced partitions for "presences" (default) or "absences" (resp. pseudo-absences or background).}
 }
 \value{
 DataSplitTable matrix with k*repetition (+ 1 for Full models if  do.full.models = TRUE) columns for BIOMOD_Modeling function.
@@ -33,11 +33,11 @@ This function creates a DataSplitTable which could be used to evaluate models in
 }
 \details{
 Stratified cv could be used to test for model overfitting and for assessing transferability in geographic and environmental space. 
-  If balance = "presences" presences are divided (balanced) equally over the particions (e.g. Fig. 1b in Muscarelly et al. 2014).
+  If balance = "presences" presences are divided (balanced) equally over the partitions (e.g. Fig. 1b in Muscarelly et al. 2014).
   Pseudo-Absences will however be unbalanced over the particions especially if the presences are clumped on an edge of the study area.
   If balance = "absences" absences (resp. Pseudo-Absences or background) are divided (balanced) as equally as possible for the particions
   (geographical balanced bins given that absences are spread over the study area equally, approach similar to Fig. 1 in Wenger et Olden 2012).
-  Presences will however be unbalanced over the particians. Be careful: If the presences are clumped on an edge of the study area it is possible that all presences are in one bin.
+  Presences will however be unbalanced over the partitions. Be careful: If the presences are clumped on an edge of the study area it is possible that all presences are in one bin.
 }
 \examples{
 \dontrun{

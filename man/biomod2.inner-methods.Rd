@@ -41,7 +41,7 @@ biomod2 internal functions.
 
 
 \details{
-  All this functions are low level functions. Interested people can go into source code for futher details.
+  All this functions are low level functions. Interested people can go into source code for further details.
 }
 
 

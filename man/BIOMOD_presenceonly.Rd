@@ -25,7 +25,7 @@ BIOMOD.EnsembleModeling.out object with presence-only evaluation methods
 }
 \details{
 'em.by' of 'BIOMOD.EnsembleModeling' must be 'PA_dataset+repet' to have an 
-ensemble for each RUN of the 'NbRunEval' argument (BIOMOD_Modeling funtion)
+ensemble for each RUN of the 'NbRunEval' argument (BIOMOD_Modeling function)
 for evaluation.
 The Boyce index returns NA values for 'SRE' models because it is not possible
 to be calculated with binary predictions. This is also the reason why there 
