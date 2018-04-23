@@ -464,8 +464,8 @@ BIOMOD.formated.data.PA <-  function(sp, env, xy, sp.name,
       ## create data.mask for ploting
       data.mask.tmp <- reclassify(raster::subset(env,1), c(-Inf,Inf,-1))
       data.mask <- stack(data.mask.tmp)
-      xy_pres <- pa.data.tmp$xy[which(pa.data.tmp$sp==1),]
-      xy_abs <- pa.data.tmp$xy[which(pa.data.tmp$sp==0),]
+      xy_pres <- pa.data.tmp$xy[which(pa.data.tmp$sp==1), , drop = FALSE]
+      xy_abs <- pa.data.tmp$xy[which(pa.data.tmp$sp==0), , drop = FALSE]
       if(nrow(xy_pres)){
         data.mask[cellFromXY(data.mask.tmp, xy_pres)] <- 1
       }
@@ -483,8 +483,8 @@ BIOMOD.formated.data.PA <-  function(sp, env, xy, sp.name,
       for(pa in 1:ncol(as.data.frame(pa.data.tmp$pa.tab))){
         data.mask.tmp2 <- data.mask.tmp
         
-        xy_pres <- pa.data.tmp$xy[which(pa.data.tmp$sp==1 & as.data.frame(pa.data.tmp$pa.tab)[,pa]) ,]
-        xy_abs <- pa.data.tmp$xy[which( (pa.data.tmp$sp!=1 | is.na(pa.data.tmp$sp)) & as.data.frame(pa.data.tmp$pa.tab)[,pa]) ,]
+        xy_pres <- pa.data.tmp$xy[which(pa.data.tmp$sp==1 & as.data.frame(pa.data.tmp$pa.tab)[,pa]), , drop = FALSE]
+        xy_abs <- pa.data.tmp$xy[which( (pa.data.tmp$sp!=1 | is.na(pa.data.tmp$sp)) & as.data.frame(pa.data.tmp$pa.tab)[,pa]), , drop = FALSE]
         
         if(nrow(xy_pres)){
           id_pres <- cellFromXY(data.mask.tmp, xy_pres)
