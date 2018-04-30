@@ -252,7 +252,7 @@ BIOMOD_Modeling <- function( data,
                              "BIOMOD.formated.data.PA",
                              "BIOMOD.formated.data.indep",
                              "BIOMOD.formated.data.PA.indep") )){
-    stop( "data argument mut be a 'BIOMOD.formated.data' (obtain by running Initial.State function) ")
+    stop("data argument must be a 'BIOMOD.formated.data' (obtained by running Initial.State function) ")
   }
 
   # models checking
@@ -264,7 +264,7 @@ BIOMOD_Modeling <- function( data,
 
   if(sum(models %in% c('GLM','GBM','GAM','CTA','ANN','SRE','FDA','MARS','RF','MAXENT.Phillips', 'MAXENT.Tsuruoka')) != length(models)){
     stop(paste(models[which( (models %in% c('GLM','GBM','GAM','CTA','ANN','SRE','FDA','MARS','RF','MAXENT.Phillips', 'MAXENT.Tsuruoka'))
-                             == FALSE) ]," is not a availabe model !",sep=""))
+                             == FALSE) ]," is not an availabe model !",sep=""))
   }
 
   categorial_var <- unlist(sapply(colnames(data@data.env.var), function(x){if(is.factor(data@data.env.var[,x])) return(x) else return(NULL)} ))
@@ -274,7 +274,7 @@ BIOMOD_Modeling <- function( data,
     models.swich.off <- intersect(models, models.fact.unsuprort)
     if(length(models.swich.off)){
       models <- setdiff(models, models.swich.off)
-      cat(paste0("\n\t! ", paste(models.swich.off, collapse = ",", sep = " ")," were switch off because of categorical variables !"))
+      cat(paste0("\n\t! ", paste(models.swich.off, collapse = ",", sep = " ")," were switched off because of categorical variables !"))
     }
 
   }

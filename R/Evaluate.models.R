@@ -340,7 +340,7 @@ function(Misc, stat='TSS')
   }
 
   if((sum(colnames(Misc) %in% c('FALSE','TRUE','0','1')) < 2) | (sum(rownames(Misc) %in% c('FALSE','TRUE','0','1')) < 2) ){
-    stop("Unavailable contagency table given")
+    stop("Unavailable contingency table given")
   }
 
   if('0' %in% rownames(Misc)) rownames(Misc)[which(rownames(Misc)=='0')] <- 'FALSE'

@@ -491,7 +491,7 @@
   } else{
     chosen.models.check <- chosen.models %in% modeling.output@models.computed
     if(sum(!chosen.models.check) > 0){
-      stop(paste("Some selected models not exist : ", toString(chosen.models[!chosen.models.check]),
+      stop(paste("Some selected models do not exist: ", toString(chosen.models[!chosen.models.check]),
                  "\nPlease choose models in computed models ( ",
                  toString(modeling.output@models.computed), " )",sep=""))
     }
@@ -507,7 +507,7 @@
     }
     eval.metric.check <- eval.metric %in% dimnames(get_evaluations(modeling.output))[[1]]
     if(sum(!eval.metric.check) > 0){
-      stop(paste("Some selected evaluation metrics are not available : ", toString(eval.metric[!eval.metric.check]),
+      stop(paste("Some selected evaluation metrics are not available: ", toString(eval.metric[!eval.metric.check]),
                  "\nPlease choose some in those computed yet ( ",
                  toString(dimnames(get_evaluations(modeling.output))[[1]]), " )",sep=""))
     }
@@ -520,7 +520,7 @@
         stop("eval.metric.quality.threshold must be NULL or a numeric vector")
       }
       if(length(eval.metric) != length(eval.metric.quality.threshold)){
-        stop("you must give as many eval.metric.quality.threshold than eval.metric (if you give ones)")
+        stop("you must specify as many eval.metric.quality.threshold as eval.metric (if you specify some)")
       }
       cat("\n   > Evaluation & Weighting methods summary :\n")
       cat(paste(eval.metric, eval.metric.quality.threshold,  sep = " over ", collapse = "\n      "), fill=TRUE, labels = "     ")
@@ -538,7 +538,7 @@
     stop(paste(models.eval.meth[which( (models.eval.meth %in% c('FAR','SR','HSS','ORSS','TSS',
                                                                 'KAPPA','ACCURACY','BIAS', 'POD',
                                                                 'PODFD','CSI', 'ETS','HK','ROC'))
-                                       == FALSE) ]," is not a availabe models evaluation metric !",sep=""))
+                                       == FALSE) ]," is not an availabe model evaluation metric !",sep=""))
   }
 
   # 5. check selected EM algo
@@ -548,7 +548,7 @@
   }
   if(is.null(eval.metric)){
     if(committee.averaging | prob.mean.weight){
-      stop("You must choose eval.metric if you want to compute Comitee Averaging or Probability wegthing mean algorithmes")
+      stop("You must choose eval.metric if you want to compute Committee Averaging or Probability weighting mean algorithms")
     }
   }
 

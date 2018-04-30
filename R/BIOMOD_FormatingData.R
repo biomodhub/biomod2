@@ -221,7 +221,7 @@
   ### check resp and expl var compatibility
   if(is.data.frame(expl.var)){
     if(nrow(expl.var) != length(resp.var)){
-      stop("If explanatory variable is not a raster then dimentions of response variable and explanatory variable must match!")
+      stop("If explanatory variable is not a raster then dimensions of response variable and explanatory variable must match!")
     }
   }
 
@@ -338,7 +338,7 @@
 
     if(is.data.frame(eval.expl.var)){
       if(nrow(eval.expl.var) != length(eval.resp.var)){
-        stop("If explanatory variable is not a raster then dimentions of response variable and explanatory variable must match!")
+        stop("If explanatory variable is not a raster then dimensions of response variable and explanatory variable must match!")
       }
     }
 

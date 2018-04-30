@@ -186,7 +186,7 @@ setMethod("getModelsInputData", "BIOMOD.models.out",
             } else if(subinfo == 'eval.expl.var'){
               return(as.data.frame(getModelsInputData(obj)@eval.data.env.var))
             } else{
-              stop("Unknow subinfo tag")
+              stop("Unknown subinfo tag")
             }
 
           }

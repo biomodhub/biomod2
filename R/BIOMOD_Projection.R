@@ -354,7 +354,7 @@
   ## proj.name
   # The projection Name
   if(is.null(proj.name)){
-    stop("\nYou must define a name for Projection Outpus")
+    stop("\nYou must define a name for Projection Outputs")
   } else{
     dir.create(paste(modeling.output@sp.name,'/proj_',proj.name,'/',sep=''),
                showWarnings=FALSE)
@@ -363,7 +363,7 @@
   ## xy.new.env
   if(!is.null(xy.new.env)  & !inherits(new.env,'Raster')){
     xy.new.env = data.matrix(xy.new.env)
-    if(ncol(xy.new.env) != 2 | nrow(xy.new.env) != nrow(new.env)) stop("invalid xy coordinates argument given -- dimentions mis-match !")
+    if(ncol(xy.new.env) != 2 | nrow(xy.new.env) != nrow(new.env)) stop("invalid xy coordinates argument given -- dimensions mismatch !")
   } else {
     xy.new.env = matrix()
   }
@@ -386,7 +386,7 @@
   if( length(missing.files) > 0 ){
     stop(paste("Projection files missing : ", toString(missing.files), sep=''))
     if(length(missing.files) == length(files.check)){
-      stop("Impossible to find any models, migth be a problem of working directory")
+      stop("Impossible to find any models, might be a problem of working directory")
     }
   }
 
@@ -410,7 +410,7 @@
       if(!is.null(filtered.meth)){
         if(sum(!(filtered.meth %in% available.evaluation)) > 0){
           warning(paste(toString(filtered.meth[!(filtered.meth %in% available.evaluation)]),
-                        " Filtred Transformation were switched off because no corresponding",
+                        " Filtered Transformation were switched off because no corresponding",
                         " evaluation method found ", sep=""))
           filtered.meth <- filtered.meth[filtered.meth %in% available.evaluation]
         }
@@ -530,7 +530,7 @@
     }
 
   } else{
-    stop("Unsuported env arg")
+    stop("Unsupported env arg")
   }
 
   return(clamp.mask)

@@ -10,10 +10,10 @@
 #         }
 #     }
 #     else if(sum(ProbData) != 0) ProbData[ProbData < CutOffdata] <- 0
-#     
+#
 #     return(ProbData)
 # }
-# 
+#
 # FilteringTransformation_v2 <-
 # function(ProbData, CutOff){
 #   ProbData[ProbData < CutOff] <- 0
@@ -25,59 +25,59 @@ setGeneric("FilteringTransformation",
              standardGeneric("FilteringTransformation")
            })
 
-setMethod('FilteringTransformation', signature(data='data.frame'), 
+setMethod('FilteringTransformation', signature(data='data.frame'),
   function(data, threshold)
   {
     data <- data.matrix(data)
     data[t(t(data)<threshold)] <-0
-    
+
     ## check if some thresolds are NAs
     if(any(is.na(threshold))){
       data[,is.na(threshold)] <- NA
     }
     if(ncol(data)==1) data <- data[,1]
-  	return(data)    
-    
+  	return(data)
+
   })
 
-setMethod('FilteringTransformation', signature(data='matrix'), 
+setMethod('FilteringTransformation', signature(data='matrix'),
   function(data, threshold)
   {
     data <- as.data.frame(data)
     return(FilteringTransformation(data, threshold))
   })
 
-setMethod('FilteringTransformation', signature(data='numeric'), 
+setMethod('FilteringTransformation', signature(data='numeric'),
   function(data, threshold)
   {
     data <- as.data.frame(data)
     return(FilteringTransformation(data, threshold))
   })
 
-setMethod('FilteringTransformation', signature(data='array'), 
+setMethod('FilteringTransformation', signature(data='array'),
           function(data, threshold)
           {
             if(length(dim(data)) == length(dim(threshold))){
               if(sum( dim(data)[-1] != dim(threshold)[-1] ) > 0 ){
-                stop("data and threshold dimentions mismatch")
+                stop("data and threshold dimensions mismatch")
               }
             } else{
               if(sum( dim(data)[-1] != dim(threshold) ) > 0 ){
-                stop("data and threshold dimentions mismatch")
+                stop("data and threshold dimensions mismatch")
               }
-            }  
-            
+            }
+
             return(sweep(data,2:length(dim(data)),threshold,
-                         function(x,y) { 
+                         function(x,y) {
                            if(!is.na(x)){
                              return(ifelse(x>y,x,0))
-                           } else { 
+                           } else {
                              return(rep(NA,length(x)) )}
                          }))
           })
 
 
-setMethod('FilteringTransformation', signature(data='RasterLayer'), 
+setMethod('FilteringTransformation', signature(data='RasterLayer'),
   function(data, threshold)
   {
     if(!is.na(threshold)){
@@ -87,7 +87,7 @@ setMethod('FilteringTransformation', signature(data='RasterLayer'),
     }
   })
 
-setMethod('FilteringTransformation', signature(data='RasterStack'), 
+setMethod('FilteringTransformation', signature(data='RasterStack'),
   function(data, threshold)
   {
     if(length(threshold) == 1){
@@ -100,8 +100,8 @@ setMethod('FilteringTransformation', signature(data='RasterStack'),
     names(StkTmp) <- names(data)
     return(StkTmp)
   })
-          
-setMethod('FilteringTransformation', signature(data='RasterBrick'), 
+
+setMethod('FilteringTransformation', signature(data='RasterBrick'),
   function(data, threshold)
   {
     data <- raster::stack(data, RAT=FALSE)

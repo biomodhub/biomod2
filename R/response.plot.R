@@ -292,7 +292,7 @@
   mod_names <- NULL
   for(mod in models){
     if(!exists(mod)){
-      stop("you need to load the models selected!")
+      stop("you need to load the selected models!")
     }
 
     if(!inherits(get(mod), 'biomod2_model')){

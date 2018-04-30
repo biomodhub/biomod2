@@ -66,7 +66,7 @@ function(sp, env, nb.repet=1, strategy='random', distMin=0, distMax=NULL, nb.poi
   # 2. env input checking
   if(is.matrix(env) | is.data.frame(env)){
     if(nrow(env) != nrow(sp)){
-      stop("Species and Explanatory must have same dimentions")
+      stop("Species and Explanatory must have same dimensions")
     }
     env <- SpatialPointsDataFrame(coordinates(sp), as.data.frame(env))
   }

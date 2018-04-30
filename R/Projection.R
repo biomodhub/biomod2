@@ -315,7 +315,7 @@ setMethod('.Projection.do.proj', signature(env='data.frame'),
     model.type <- tail(unlist(strsplit(model.name, split="_")),1)
     if(!( model.type %in% c('GLM','GBM','GAM','CTA','ANN','SRE','FDA','MARS','RF', 'MAXENT.Phillips') )){
       if(!grep('EF.',model.type))
-        stop('Unknow model type')
+        stop('Unknown model type')
     }
 
     if(model.type == 'ANN'){
@@ -452,7 +452,7 @@ setMethod('.Projection.do.proj', signature(env='RasterStack'),
     model.type <- tail(unlist(strsplit(model.name, split="_")),1)
     if(!( model.type %in% c('GLM','GBM','GAM','CTA','ANN','SRE','FDA','MARS','RF', 'MAXENT.Phillips') )){
       if(!grep('EF.',model.type))
-        stop('Unknow model type')
+        stop('Unknown model type')
     }
 
     if(model.type == 'ANN'){

@@ -1478,7 +1478,7 @@ setMethod("get_formal_data", "BIOMOD.models.out",
             } else if(subinfo == 'eval.expl.var'){
               return(as.data.frame(get_formal_data(obj)@eval.data.env.var))
             } else{
-              stop("Unknow subinfo tag")
+              stop("Unknown subinfo tag")
             }
 
           }
