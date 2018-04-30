@@ -327,7 +327,7 @@ BIOMOD_Modeling <- function( data,
   }
 
   if(DataSplit < 50){
-    warning("You choose to allocate more data to evaluation than to calibration of your model
+    warning("You chose to allocate more data to evaluation than to calibration of your model
             (DataSplit<50)\nMake sure you really wanted to do that. \n", immediate.=T)
   }
 
