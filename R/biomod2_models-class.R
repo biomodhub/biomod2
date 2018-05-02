@@ -34,13 +34,13 @@ setClass('biomod2_model',
                    model_evaluation = matrix(),
                    model_variables_importance = matrix()),
          validity = function(object){
-           
+
            # check that scaler is a glm if it is defined
-           if(length(object@scaling_model)) 
-             if(sum(! ( c("glm", "lm") %in% class(object@scaling_model) ) ) > 0) 
+           if(length(object@scaling_model))
+             if(sum(! ( c("glm", "lm") %in% class(object@scaling_model) ) ) > 0)
                return(FALSE)
-           
-           return(TRUE) 
+
+           return(TRUE)
            } )
 
 setMethod('show', signature('biomod2_model'),
@@ -48,8 +48,8 @@ setMethod('show', signature('biomod2_model'),
             .bmCat("'biomod2_model'")
             cat("\n\t model name :", object@model_name, fill=.Options$width)
             cat("\n\t model class :", object@model_class, fill=.Options$width)
-            cat("\n\t This model", ifelse(length(object@scaling_model), "has", "does'nt have"),"its own scaler", fill=.Options$width)
-            
+            cat("\n\t This model", ifelse(length(object@scaling_model), "has", "doesn't have"),"its own scaler", fill=.Options$width)
+
             cat("\n")
             cat("\n\t response modelled :", object@resp_name, fill=.Options$width)
             cat("\n\n\t explanatory variables used:", fill=.Options$width)
@@ -57,7 +57,7 @@ setMethod('show', signature('biomod2_model'),
             for(i in 1: length(object@expl_var_names)){
               cat("\n\t", object@expl_var_names[i],"\t", object@expl_var_type[i], "\t", object@expl_var_range[[i]], fill=.Options$width)
             }
-            
+
             cat("\n")
             cat("\n\t NOTE : ")
             cat("\n\t\t You can access 'formal' model with get_formal_model function")
@@ -67,7 +67,7 @@ setMethod('show', signature('biomod2_model'),
           })
 
 # Models getters -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=- #
-setGeneric( "get_formal_model", 
+setGeneric( "get_formal_model",
             def = function(object){
               standardGeneric( "get_formal_model" )
             } )
@@ -77,7 +77,7 @@ setMethod('get_formal_model', signature('biomod2_model'),
             return(object@model)
           })
 
-setGeneric( "get_scaling_model", 
+setGeneric( "get_scaling_model",
             def = function(object){
               standardGeneric( "get_scaling_model" )
             } )
@@ -109,12 +109,12 @@ get_var_range <- function(data){
 # Function to check new data range compatibility with calibrating data #
 check_data_range <- function(model, new_data){
   ## TODO : remettre en marche cette fonction
-  
+
 #   # get calibration data caracteristics
 #   expl_var_names <- model@expl_var_names
 #   expl_var_type <- model@expl_var_type
 #   expl_var_range <- model@expl_var_range
-#   
+#
 #   if(inherits(new_data, "Raster")){ ## raster data case =-=-=-=-=-=-=- #
 #     # check var names compatibility
 #     nd_expl_var_names <- names(new_data)
@@ -125,7 +125,7 @@ check_data_range <- function(model, new_data){
 #     new_data <- raster::subset(new_data,expl_var_names)
 #     # check var types compatibility (factors)
 #     expl_var_fact <- (expl_var_type=='factor')
-#     nd_expl_var_fact <- is.factor(new_data)  
+#     nd_expl_var_fact <- is.factor(new_data)
 #     if(sum(! (expl_var_fact==nd_expl_var_fact))>0){
 #       stop("calibration and projections variables class mismatch")
 #     }
@@ -138,10 +138,10 @@ check_data_range <- function(model, new_data){
 #         nd_levels <- as.character(nd_levels[,ncol(nd_levels)])
 #         names(nd_levels) <- levels(raster::subset(new_data,fact_var_id))[[1]]$ID
 #         cd_levels <- as.character(unlist(expl_var_range[[fact_var_id]]))
-#         
+#
 #         ## detect new levels
 #         new_levels <- nd_levels[!(nd_levels %in% cd_levels)]
-#         
+#
 #         if(length(new_levels)){
 #           for(n_l in new_levels){
 #             # remove points where out of range factors have been detected
@@ -164,7 +164,7 @@ check_data_range <- function(model, new_data){
 #     # check var types compatibility (factors)
 #     expl_var_fact <- (expl_var_type=='factor')
 #     nd_expl_var_fact <- sapply(new_data,is.factor)
-# 
+#
 #     if(sum(! (expl_var_fact==nd_expl_var_fact))>0){
 #       stop("calibration and projections variables class mismatch")
 #     }
@@ -175,10 +175,10 @@ check_data_range <- function(model, new_data){
 #         ## check if new factors occurs
 #         nd_levels <- levels(new_data[,fact_var_id])
 #         cd_levels <- as.character(unlist(expl_var_range[[fact_var_id]]))
-#         
+#
 #         ## detect new levels
 #         new_levels <- nd_levels[!(nd_levels %in% cd_levels)]
-#         
+#
 #         if(length(new_levels)){
 #           # remove points where out of range factors have been detected
 # #           new_data <- new_data[- which(new_data[,fact_var_id] %in% new_levels),]
@@ -188,7 +188,7 @@ check_data_range <- function(model, new_data){
 #       }
 #     }
 #   }
-  
+
   return(new_data)
 }
 
@@ -207,23 +207,23 @@ setClass('ANN_biomod2_model',
 
 setMethod('predict', signature(object = 'ANN_biomod2_model'),
           function(object, newdata, ...){
-            
+
             args <- list(...)
-            
+
             do_check <- args$do_check
             if(is.null(do_check)) do_check <- TRUE
-    
+
             ## data checking
             if(do_check){
               newdata <- check_data_range(model=object, new_data=newdata)
             }
-            
-            if(inherits(newdata, 'Raster')){            
+
+            if(inherits(newdata, 'Raster')){
               return(.predict.ANN_biomod2_model.RasterStack(object, newdata, ... ))
             } else if(inherits(newdata, 'data.frame') | inherits(newdata, 'matrix')){
                return(.predict.ANN_biomod2_model.data.frame(object, newdata, ... ))
             } else{ stop("invalid newdata input") }
-            
+
           })
 
 .predict.ANN_biomod2_model.RasterStack <- function(object, newdata, ...){
@@ -231,27 +231,27 @@ setMethod('predict', signature(object = 'ANN_biomod2_model'),
   filename <- args$filename
   overwrite <- args$overwrite
   on_0_1000 <- args$on_0_1000
-  
+
   if (is.null(overwrite)) overwrite <- TRUE
   if (is.null(on_0_1000)) on_0_1000 <- FALSE
-  
+
 #   set.seed(555)
   proj <- predict(newdata, get_formal_model(object), type="raw")
-  
+
   if(length(get_scaling_model(object))){
     names(proj) <- "pred"
     proj <- .testnull(object = get_scaling_model(object), Prev = 0.5 , dat = proj)
   }
-  
+
   if(on_0_1000) proj <- round(proj*1000)
-  
+
   # save raster on hard drive ?
   if(!is.null(filename)){
     cat("\n\t\tWriting projection on hard drive...")
-    if(on_0_1000){ ## projections are stored as positive integer 
+    if(on_0_1000){ ## projections are stored as positive integer
       writeRaster(proj, filename=filename, overwrite=overwrite, datatype="INT2S", NAflag=-9999)
-    } else { ## keep default data format for saved raster 
-      writeRaster(proj, filename=filename, overwrite=overwrite) 
+    } else { ## keep default data format for saved raster
+      writeRaster(proj, filename=filename, overwrite=overwrite)
     }
     proj <- raster(filename,RAT=FALSE)
   }
@@ -263,23 +263,23 @@ setMethod('predict', signature(object = 'ANN_biomod2_model'),
   args <- list(...)
   on_0_1000 <- args$on_0_1000
   omit.na <- args$omit.na
-  
+
   if (is.null(on_0_1000)) on_0_1000 <- FALSE
   if (is.null(omit.na)) omit.na <- FALSE
-  
-  
-  
+
+
+
   ## check if na occurs in newdata cause they are not well supported
   if(omit.na){
     not_na_rows <- apply(newdata, 1, function(x){sum(is.na(x))==0})
   } else {
     not_na_rows <- rep(T, nrow(newdata))
   }
-  
-  
+
+
   set.seed(555)
   proj <- as.numeric( predict(get_formal_model(object), newdata[not_na_rows,,drop=F], type="raw") )
-  
+
   ## add original NAs in table if it needed
   if(sum(!not_na_rows) > 0 ){ # some NAs in formal dataset
     tmp <- rep(NA,length(not_na_rows))
@@ -287,14 +287,14 @@ setMethod('predict', signature(object = 'ANN_biomod2_model'),
     proj <- tmp
     rm('tmp')
   }
-  
+
   if(length(get_scaling_model(object))){
     proj <- data.frame(pred = proj)
     proj <- .testnull(object = get_scaling_model(object), Prev = 0.5 , dat = proj)
   }
-  
+
   if(on_0_1000) proj <- round(proj*1000)
-  
+
   return(proj)
 }
 
@@ -315,23 +315,23 @@ setClass('CTA_biomod2_model',
 
 setMethod('predict', signature(object = 'CTA_biomod2_model'),
           function(object, newdata, ...){
-            
+
             args <- list(...)
-            
+
             do_check <- args$do_check
             if(is.null(do_check)) do_check <- TRUE
-            
+
             ## data checking
             if(do_check){
               newdata <- check_data_range(model=object, new_data=newdata)
             }
-            
-            if(inherits(newdata, 'Raster')){            
+
+            if(inherits(newdata, 'Raster')){
               return(.predict.CTA_biomod2_model.RasterStack(object, newdata, ... ))
             } else if(inherits(newdata, 'data.frame') | inherits(newdata, 'matrix')){
               return(.predict.CTA_biomod2_model.data.frame(object, newdata, ... ))
             } else{ stop("invalid newdata input") }
-            
+
           })
 
 .predict.CTA_biomod2_model.RasterStack <- function(object, newdata, ...){
@@ -339,32 +339,32 @@ setMethod('predict', signature(object = 'CTA_biomod2_model'),
   filename <- args$filename
   overwrite <- args$overwrite
   on_0_1000 <- args$on_0_1000
-  
+
   if (is.null(overwrite)) overwrite <- TRUE
   if (is.null(on_0_1000)) on_0_1000 <- FALSE
-  
+
   set.seed(123) # to be able to refind our trees MAY BE BAD
   proj <- predict(newdata, model=get_formal_model(object), type='prob', index=2)
-  
+
   if(length(get_scaling_model(object))){
     names(proj) <- "pred"
     proj <- .testnull(object = get_scaling_model(object), Prev = 0.5 , dat = proj)
   }
-  
+
   if(on_0_1000) proj <- round(proj*1000)
-  
+
   # save raster on hard drive ?
   if(!is.null(filename)){
     cat("\n\t\tWriting projection on hard drive...")
-    if(on_0_1000){ ## projections are stored as positive integer 
+    if(on_0_1000){ ## projections are stored as positive integer
       writeRaster(proj, filename=filename, overwrite=overwrite, datatype="INT2S", NAflag=-9999)
-    } else { ## keep default data format for saved raster 
-      writeRaster(proj, filename=filename, overwrite=overwrite) 
+    } else { ## keep default data format for saved raster
+      writeRaster(proj, filename=filename, overwrite=overwrite)
     }
     proj <- raster(filename,RAT=FALSE)
   }
-  
-  
+
+
   return(proj)
 }
 
@@ -372,20 +372,20 @@ setMethod('predict', signature(object = 'CTA_biomod2_model'),
   args <- list(...)
   on_0_1000 <- args$on_0_1000
   omit.na <- args$omit.na
-  
+
   if (is.null(on_0_1000)) on_0_1000 <- FALSE
   if (is.null(omit.na)) omit.na <- FALSE
-  
+
   ## check if na occurs in newdata cause they are not well supported
   if(omit.na){
     not_na_rows <- apply(newdata, 1, function(x){sum(is.na(x))==0})
   } else {
     not_na_rows <- rep(T, nrow(newdata))
   }
-  
+
   set.seed(123)
   proj <- as.numeric(predict(get_formal_model(object), as.data.frame(newdata[not_na_rows,,drop=FALSE]),type="prob")[,2])
-  
+
   ## add original NAs in table if it needed
   if(sum(!not_na_rows) > 0 ){ # some NAs in formal dataset
     tmp <- rep(NA,length(not_na_rows))
@@ -393,14 +393,14 @@ setMethod('predict', signature(object = 'CTA_biomod2_model'),
     proj <- tmp
     rm('tmp')
   }
-  
+
   if(length(get_scaling_model(object))){
     proj <- data.frame(pred = proj)
     proj <- .testnull(object = get_scaling_model(object), Prev = 0.5 , dat = proj)
   }
-  
+
   if(on_0_1000) proj <- round(proj*1000)
-  
+
   return(proj)
 }
 
@@ -421,23 +421,23 @@ setClass('FDA_biomod2_model',
 
 setMethod('predict', signature(object = 'FDA_biomod2_model'),
           function(object, newdata, ...){
-            
+
             args <- list(...)
-            
+
             do_check <- args$do_check
             if(is.null(do_check)) do_check <- TRUE
-            
+
             ## data checking
             if(do_check){
               newdata <- check_data_range(model=object, new_data=newdata)
             }
-            
-            if(inherits(newdata, 'Raster')){            
+
+            if(inherits(newdata, 'Raster')){
               return(.predict.FDA_biomod2_model.RasterStack(object, newdata, ... ))
             } else if(inherits(newdata, 'data.frame') | inherits(newdata, 'matrix')){
               return(.predict.FDA_biomod2_model.data.frame(object, newdata, ... ))
             } else{ stop("invalid newdata input") }
-            
+
           })
 
 .predict.FDA_biomod2_model.RasterStack <- function(object, newdata, ...){
@@ -445,45 +445,45 @@ setMethod('predict', signature(object = 'FDA_biomod2_model'),
   filename <- args$filename
   overwrite <- args$overwrite
   on_0_1000 <- args$on_0_1000
-  
+
   if (is.null(overwrite)) overwrite <- TRUE
   if (is.null(on_0_1000)) on_0_1000 <- FALSE
-  
+
   proj <- predict(newdata, model=get_formal_model(object), type='posterior', index=2)
-  
+
   if(length(get_scaling_model(object))){
     names(proj) <- "pred"
     proj <- .testnull(object = get_scaling_model(object), Prev = 0.5 , dat = proj)
   }
-  
+
   if(on_0_1000) proj <- round(proj*1000)
-  
+
   # save raster on hard drive ?
   if(!is.null(filename)){
     cat("\n\t\tWriting projection on hard drive...")
-    if(on_0_1000){ ## projections are stored as positive integer 
+    if(on_0_1000){ ## projections are stored as positive integer
       writeRaster(proj, filename=filename, overwrite=overwrite, datatype="INT2S", NAflag=-9999)
-    } else { ## keep default data format for saved raster 
-      writeRaster(proj, filename=filename, overwrite=overwrite) 
+    } else { ## keep default data format for saved raster
+      writeRaster(proj, filename=filename, overwrite=overwrite)
     }
     proj <- raster(filename,RAT=FALSE)
   }
-  
-  
+
+
   return(proj)
 }
 
 .predict.FDA_biomod2_model.data.frame <- function(object, newdata, ...){
   args <- list(...)
   on_0_1000 <- args$on_0_1000
-  
+
   if (is.null(on_0_1000)) on_0_1000 <- FALSE
-  
+
   ## check if na occurs in newdata cause they are not well supported
   not_na_rows <- apply(newdata, 1, function(x){sum(is.na(x))==0})
-  
+
   proj <- as.numeric(predict(get_formal_model(object), as.data.frame(newdata[not_na_rows,,drop=FALSE]),type = "posterior")[,2])
-  
+
   ## add original NAs in table if it needed
   if(sum(!not_na_rows) > 0 ){ # some NAs in formal dataset
     tmp <- rep(NA,length(not_na_rows))
@@ -496,9 +496,9 @@ setMethod('predict', signature(object = 'FDA_biomod2_model'),
     proj <- data.frame(pred = proj)
     proj <- .testnull(object = get_scaling_model(object), Prev = 0.5 , dat = proj)
   }
-  
+
   if(on_0_1000) proj <- round(proj*1000)
-  
+
   return(proj)
 }
 
@@ -516,33 +516,33 @@ setClass('GAM_biomod2_model',
            # check model class
            if(! (object@model_subclass %in% c('GAM_mgcv', 'GAM_gam', 'BAM_mgcv') ) )
              return(FALSE)
-           
-           if(object@model_subclass %in% c('GAM_mgcv','GAM_gam')) 
+
+           if(object@model_subclass %in% c('GAM_mgcv','GAM_gam'))
              if(sum(! ( c("gam","glm","lm") %in% class(object@model) ) ) > 0)
                return(FALSE)
-           
-           if(object@model_subclass == 'BAM_mgcv') 
+
+           if(object@model_subclass == 'BAM_mgcv')
              if(sum(! ( c("bam","gam","glm","lm") %in% class(object@model) ) ) > 0)
-               return(FALSE)           
-             
+               return(FALSE)
+
            return(TRUE)
          })
 
 setMethod('predict', signature(object = 'GAM_biomod2_model'),
           function(object, newdata, ...){
-            
+
             args <- list(...)
-            
+
             do_check <- args$do_check
             if(is.null(do_check)) do_check <- TRUE
-            
-            
+
+
             if(object@model_subclass %in% c("GAM_mgcv","BAM_mgcv")){
               # cat("\n*** unloading gam package / loading mgcv package")
               if(isNamespaceLoaded("gam")){unloadNamespace("gam")}
               if(!isNamespaceLoaded("mgcv")){requireNamespace("mgcv", quietly = TRUE)}
             }
-            
+
             if(object@model_subclass == "GAM_gam"){
               # cat("\n*** unloading mgcv package / loading gam package")
               if(isNamespaceLoaded("mgcv")){
@@ -551,20 +551,20 @@ setMethod('predict', signature(object = 'GAM_biomod2_model'),
                 unloadNamespace("mgcv")
               }
               if(!isNamespaceLoaded("gam")){requireNamespace("gam", quietly = TRUE)}
-              
+
             }
-            
+
             ## data checking
             if(do_check){
               newdata <- check_data_range(model=object, new_data=newdata)
             }
-            
-            if(inherits(newdata, 'Raster')){            
+
+            if(inherits(newdata, 'Raster')){
               return(.predict.GAM_biomod2_model.RasterStack(object, newdata, ... ))
             } else if(inherits(newdata, 'data.frame') | inherits(newdata, 'matrix')){
               return(.predict.GAM_biomod2_model.data.frame(object, newdata, ... ))
             } else{ stop("invalid newdata input") }
-            
+
           })
 
 .predict.GAM_biomod2_model.RasterStack <- function(object, newdata, ...){
@@ -572,31 +572,31 @@ setMethod('predict', signature(object = 'GAM_biomod2_model'),
   filename <- args$filename
   overwrite <- args$overwrite
   on_0_1000 <- args$on_0_1000
-  
+
   if (is.null(overwrite)) overwrite <- TRUE
   if (is.null(on_0_1000)) on_0_1000 <- FALSE
-  
+
   proj <- .testnull(object = get_formal_model(object), Prev = 0.5 , dat = newdata)
-  
+
   if(length(get_scaling_model(object))){
     names(proj) <- "pred"
     proj <- .testnull(object = get_scaling_model(object), Prev = 0.5 , dat = proj)
   }
-  
+
   if(on_0_1000) proj <- round(proj*1000)
-  
+
   # save raster on hard drive ?
   if(!is.null(filename)){
     cat("\n\t\tWriting projection on hard drive...")
-    if(on_0_1000){ ## projections are stored as positive integer 
+    if(on_0_1000){ ## projections are stored as positive integer
       writeRaster(proj, filename=filename, overwrite=overwrite, datatype="INT2S", NAflag=-9999)
-    } else { ## keep default data format for saved raster 
-      writeRaster(proj, filename=filename, overwrite=overwrite) 
+    } else { ## keep default data format for saved raster
+      writeRaster(proj, filename=filename, overwrite=overwrite)
     }
     proj <- raster(filename,RAT=FALSE)
   }
-  
-  
+
+
   return(proj)
 }
 
@@ -604,20 +604,20 @@ setMethod('predict', signature(object = 'GAM_biomod2_model'),
   args <- list(...)
   on_0_1000 <- args$on_0_1000
   omit.na <- args$omit.na
-  
+
   if (is.null(on_0_1000)) on_0_1000 <- FALSE
   if (is.null(omit.na)) omit.na <- FALSE
-  
+
   ## check if na occurs in newdata cause they are not well supported
   if(omit.na){
     not_na_rows <- apply(newdata, 1, function(x){sum(is.na(x))==0})
   } else {
     not_na_rows <- rep(T, nrow(newdata))
   }
-  
+
   proj <- as.numeric(.testnull(object = get_formal_model(object), Prev = 0.5 , dat = as.data.frame(newdata[not_na_rows,,drop=FALSE])))
 #   proj <- as.numeric(.testnull(object = get_formal_model(object), Prev = 0.5 , dat = as.data.frame(newdata[not_na_rows,,drop=FALSE])))
-  
+
   ## add original NAs in table if it needed
   if(sum(!not_na_rows) > 0 ){ # some NAs in formal dataset
     tmp <- rep(NA,length(not_na_rows))
@@ -630,9 +630,9 @@ setMethod('predict', signature(object = 'GAM_biomod2_model'),
     proj <- data.frame(pred = proj)
     proj <- .testnull(object = get_scaling_model(object), Prev = 0.5 , dat = proj)
   }
-  
+
   if(on_0_1000) proj <- round(proj*1000)
-  
+
   return(proj)
 }
 
@@ -654,23 +654,23 @@ setClass('GBM_biomod2_model',
 
 setMethod('predict', signature(object = 'GBM_biomod2_model'),
           function(object, newdata, ...){
-            
+
             args <- list(...)
-            
+
             do_check <- args$do_check
             if(is.null(do_check)) do_check <- TRUE
-            
+
             ## data checking
             if(do_check){
               newdata <- check_data_range(model=object, new_data=newdata)
             }
-            
-            if(inherits(newdata, 'Raster')){            
+
+            if(inherits(newdata, 'Raster')){
               return(.predict.GBM_biomod2_model.RasterStack(object, newdata, ... ))
             } else if(inherits(newdata, 'data.frame') | inherits(newdata, 'matrix')){
               return(.predict.GBM_biomod2_model.data.frame(object, newdata, ... ))
             } else{ stop("invalid newdata input") }
-            
+
           })
 
 .predict.GBM_biomod2_model.RasterStack <- function(object, newdata, ...){
@@ -678,32 +678,32 @@ setMethod('predict', signature(object = 'GBM_biomod2_model'),
   filename <- args$filename
   overwrite <- args$overwrite
   on_0_1000 <- args$on_0_1000
-  
+
   if (is.null(overwrite)) overwrite <- TRUE
   if (is.null(on_0_1000)) on_0_1000 <- FALSE
-  
+
 #   proj <- predict(newdata, model=get_formal_model(object), n.trees = object@n.trees_optim, type = "response")
   proj <- predict(newdata, model=get_formal_model(object), fun=gbm::predict.gbm, n.trees = object@n.trees_optim, type = "response")
-  
+
   if(length(get_scaling_model(object))){
     names(proj) <- "pred"
     proj <- .testnull(object = get_scaling_model(object), Prev = 0.5 , dat = proj)
   }
-  
+
   if(on_0_1000) proj <- round(proj*1000)
-  
+
   # save raster on hard drive ?
   if(!is.null(filename)){
     cat("\n\t\tWriting projection on hard drive...")
-    if(on_0_1000){ ## projections are stored as positive integer 
+    if(on_0_1000){ ## projections are stored as positive integer
       writeRaster(proj, filename=filename, overwrite=overwrite, datatype="INT2S", NAflag=-9999)
-    } else { ## keep default data format for saved raster 
-      writeRaster(proj, filename=filename, overwrite=overwrite) 
+    } else { ## keep default data format for saved raster
+      writeRaster(proj, filename=filename, overwrite=overwrite)
     }
     proj <- raster(filename,RAT=FALSE)
   }
-  
-  
+
+
   return(proj)
 }
 
@@ -711,19 +711,19 @@ setMethod('predict', signature(object = 'GBM_biomod2_model'),
   args <- list(...)
   on_0_1000 <- args$on_0_1000
   omit.na <- args$omit.na
-  
+
   if (is.null(on_0_1000)) on_0_1000 <- FALSE
   if (is.null(omit.na)) omit.na <- FALSE
-  
+
   ## check if na occurs in newdata cause they are not well supported
   if(omit.na){
     not_na_rows <- apply(newdata, 1, function(x){sum(is.na(x))==0})
   } else {
     not_na_rows <- rep(T, nrow(newdata))
   }
-  
+
   proj <- as.numeric(predict(get_formal_model(object), as.data.frame(newdata[not_na_rows,,drop=FALSE]), n.trees = object@n.trees_optim, type = "response"))
-  
+
   ## add original NAs in table if it needed
   if(sum(!not_na_rows) > 0 ){ # some NAs in formal dataset
     tmp <- rep(NA,length(not_na_rows))
@@ -731,14 +731,14 @@ setMethod('predict', signature(object = 'GBM_biomod2_model'),
     proj <- tmp
     rm('tmp')
   }
-  
+
   if(length(get_scaling_model(object))){
     proj <- data.frame(pred = proj)
     proj <- .testnull(object = get_scaling_model(object), Prev = 0.5 , dat = proj)
   }
-  
+
   if(on_0_1000) proj <- round(proj*1000)
-  
+
   return(proj)
 }
 
@@ -759,25 +759,25 @@ setClass('GLM_biomod2_model',
 
 setMethod('predict', signature(object = 'GLM_biomod2_model'),
           function(object, newdata, ...){
-            
+
             args <- list(...)
-            
+
             do_check <- args$do_check
             if(is.null(do_check)) do_check <- TRUE
-            
+
             ## data checking
             if(do_check){
               newdata <- check_data_range(model=object, new_data=newdata)
             }
-            
-            if(inherits(newdata, 'Raster')){            
+
+            if(inherits(newdata, 'Raster')){
               return(.predict.GLM_biomod2_model.RasterStack(object, newdata, ... ))
             } else if(inherits(newdata, 'data.frame') | inherits(newdata, 'matrix')){
               ## transform matrix into dataframe to be able to use predict.glm fct
               if (inherits(newdata, 'matrix')) newdata <- as.data.frame(newdata)
               return(.predict.GLM_biomod2_model.data.frame(object, newdata, ... ))
             } else{ stop("invalid newdata input") }
-            
+
           })
 
 .predict.GLM_biomod2_model.RasterStack <- function(object, newdata, ...){
@@ -785,31 +785,31 @@ setMethod('predict', signature(object = 'GLM_biomod2_model'),
   filename <- args$filename
   overwrite <- args$overwrite
   on_0_1000 <- args$on_0_1000
-  
+
   if (is.null(overwrite)) overwrite <- TRUE
   if (is.null(on_0_1000)) on_0_1000 <- FALSE
-  
+
   proj <- .testnull(object = get_formal_model(object), Prev = 0.5 , dat = newdata)
-  
+
   if(length(get_scaling_model(object))){
     names(proj) <- "pred"
     proj <- .testnull(object = get_scaling_model(object), Prev = 0.5 , dat = proj)
   }
-  
+
   if(on_0_1000) proj <- round(proj*1000)
-  
+
   # save raster on hard drive ?
   if(!is.null(filename)){
     cat("\n\t\tWriting projection on hard drive...")
-    if(on_0_1000){ ## projections are stored as positive integer 
+    if(on_0_1000){ ## projections are stored as positive integer
       writeRaster(proj, filename=filename, overwrite=overwrite, datatype="INT2S", NAflag=-9999)
-    } else { ## keep default data format for saved raster 
-      writeRaster(proj, filename=filename, overwrite=overwrite) 
+    } else { ## keep default data format for saved raster
+      writeRaster(proj, filename=filename, overwrite=overwrite)
     }
     proj <- raster(filename,RAT=FALSE)
   }
-  
-  
+
+
   return(proj)
 }
 
@@ -817,19 +817,19 @@ setMethod('predict', signature(object = 'GLM_biomod2_model'),
   args <- list(...)
   on_0_1000 <- args$on_0_1000
   omit.na <- args$omit.na
-  
+
   if (is.null(on_0_1000)) on_0_1000 <- FALSE
   if (is.null(omit.na)) omit.na <- FALSE
-  
+
   ## check if na occurs in newdata cause they are not well supported
   if(omit.na){
     not_na_rows <- apply(newdata, 1, function(x){sum(is.na(x))==0})
   } else {
     not_na_rows <- rep(T, nrow(newdata))
   }
-  
+
   proj <- as.numeric(.testnull(object = get_formal_model(object), Prev = 0.5 , dat = newdata[not_na_rows,,drop=FALSE]))
-  
+
   ## add original NAs in table if it needed
   if(sum(!not_na_rows) > 0 ){ # some NAs in formal dataset
     tmp <- rep(NA,length(not_na_rows))
@@ -837,14 +837,14 @@ setMethod('predict', signature(object = 'GLM_biomod2_model'),
     proj <- tmp
     rm('tmp')
   }
-  
+
   if(length(get_scaling_model(object))){
     proj <- data.frame(pred = proj)
     proj <- .testnull(object = get_scaling_model(object), Prev = 0.5 , dat = proj)
   }
-  
+
   if(on_0_1000) proj <- round(proj*1000)
-  
+
   return(proj)
 }
 
@@ -865,23 +865,23 @@ setClass('MARS_biomod2_model',
 
 setMethod('predict', signature(object = 'MARS_biomod2_model'),
           function(object, newdata, ...){
-            
+
             args <- list(...)
-            
+
             do_check <- args$do_check
             if(is.null(do_check)) do_check <- TRUE
-            
+
             ## data checking
             if(do_check){
               newdata <- check_data_range(model=object, new_data=newdata)
             }
-            
-            if(inherits(newdata, 'Raster')){            
+
+            if(inherits(newdata, 'Raster')){
               return(.predict.MARS_biomod2_model.RasterStack(object, newdata, ... ))
             } else if(inherits(newdata, 'data.frame') | inherits(newdata, 'matrix')){
               return(.predict.MARS_biomod2_model.data.frame(object, newdata, ... ))
             } else{ stop("invalid newdata input") }
-            
+
           })
 
 .predict.MARS_biomod2_model.RasterStack <- function(object, newdata, ...){
@@ -889,16 +889,16 @@ setMethod('predict', signature(object = 'MARS_biomod2_model'),
   filename <- args$filename
   overwrite <- args$overwrite
   on_0_1000 <- args$on_0_1000
-  
+
   if (is.null(overwrite)) overwrite <- TRUE
   if (is.null(on_0_1000)) on_0_1000 <- FALSE
-  
+
   ##' @note we have to handle separatly rasterstack depending on the presence or not
   ##' of factorial variable.
   fact.var <- is.factor(newdata)
   if(any(fact.var)){
     ## get factor levels
-    fact.var.levels <- subset(levels(newdata), fact.var) 
+    fact.var.levels <- subset(levels(newdata), fact.var)
     proj <- calc(newdata, function(x) {
       xx <- data.frame(x)
       ## ensure that the data.frame has the right set of levels
@@ -912,28 +912,28 @@ setMethod('predict', signature(object = 'MARS_biomod2_model'),
   } else {
     proj <- predict(newdata, model = get_formal_model(object), type = 'response')
   }
-  
-  
-  
+
+
+
   if(length(get_scaling_model(object))){
     names(proj) <- "pred"
     proj <- .testnull(object = get_scaling_model(object), Prev = 0.5 , dat = proj)
   }
-  
+
   if(on_0_1000) proj <- round(proj*1000)
-  
+
   # save raster on hard drive ?
   if(!is.null(filename)){
     cat("\n\t\tWriting projection on hard drive...")
-    if(on_0_1000){ ## projections are stored as positive integer 
+    if(on_0_1000){ ## projections are stored as positive integer
       writeRaster(proj, filename=filename, overwrite=overwrite, datatype="INT2S", NAflag=-9999)
-    } else { ## keep default data format for saved raster 
-      writeRaster(proj, filename=filename, overwrite=overwrite) 
+    } else { ## keep default data format for saved raster
+      writeRaster(proj, filename=filename, overwrite=overwrite)
     }
     proj <- raster(filename,RAT=FALSE)
   }
-  
-  
+
+
   return(proj)
 }
 
@@ -941,20 +941,20 @@ setMethod('predict', signature(object = 'MARS_biomod2_model'),
   args <- list(...)
   on_0_1000 <- args$on_0_1000
   omit.na <- args$omit.na
-  
+
   if (is.null(on_0_1000)) on_0_1000 <- FALSE
   if (is.null(omit.na)) omit.na <- FALSE
-  
+
   ## check if na occurs in newdata cause they are not well supported
   if(omit.na){
     not_na_rows <- apply(newdata, 1, function(x){sum(is.na(x))==0})
   } else {
     not_na_rows <- rep(T, nrow(newdata))
   }
-  
+
   proj <- as.numeric(predict(get_formal_model(object), as.data.frame(newdata[not_na_rows,,drop=FALSE]), type = 'response'))
 
-  
+
   ## add original NAs in table if it needed
   if(sum(!not_na_rows) > 0 ){ # some NAs in formal dataset
     tmp <- rep(NA,length(not_na_rows))
@@ -962,14 +962,14 @@ setMethod('predict', signature(object = 'MARS_biomod2_model'),
     proj <- tmp
     rm('tmp')
   }
-  
+
   if(length(get_scaling_model(object))){
     proj <- data.frame(pred = proj)
     proj <- .testnull(object = get_scaling_model(object), Prev = 0.5 , dat = proj)
   }
-  
+
   if(on_0_1000) proj <- round(proj*1000)
-  
+
   return(proj)
 }
 
@@ -993,18 +993,18 @@ setMethod('predict', signature(object = 'MAXENT.Phillips_biomod2_model'),
             args <- list(...)
             do_check <- args$do_check
             if(is.null(do_check)) do_check <- TRUE
-            
+
             ## data checking
             if(do_check){
               newdata <- check_data_range(model=object, new_data=newdata)
             }
-            
-            if(inherits(newdata, 'Raster')){            
+
+            if(inherits(newdata, 'Raster')){
               return(.predict.MAXENT.Phillips_biomod2_model.RasterStack(object, newdata, silent=TRUE, ... ))
             } else if(inherits(newdata, 'data.frame') | inherits(newdata, 'matrix')){
               return(.predict.MAXENT.Phillips_biomod2_model.data.frame(object, newdata, silent=TRUE, ... ))
             } else{ stop("invalid newdata input") }
-            
+
           })
 
 
@@ -1016,52 +1016,52 @@ setMethod('predict', signature(object = 'MAXENT.Phillips_biomod2_model'),
   rm_tmp_files <- args$rm_tmp_files
   temp_workdir <- args$temp_workdir
   split.proj <- args$split.proj
-  
+
 #   if (is.null(temp_workdir)) temp_workdir <- paste("maxentWDtmp", format(Sys.time(), "%s"), sep="")
   if (is.null(rm_tmp_files)) rm_tmp_files <- TRUE
   if (is.null(overwrite)) overwrite <- TRUE
   if (is.null(on_0_1000)) on_0_1000 <- FALSE
   if(is.null(split.proj)) split.proj <- 1
-  
-  MWD <- .Prepare.Maxent.Proj.WorkDir(Data = newdata, species.name = object@resp_name, 
+
+  MWD <- .Prepare.Maxent.Proj.WorkDir(Data = newdata, species.name = object@resp_name,
                                       silent = TRUE, split.proj = split.proj )
-  
+
   # checking maxent.jar is present
   path_to_maxent.jar <- file.path(object@model_options$path_to_maxent.jar, "maxent.jar")
   if(!file.exists(path_to_maxent.jar)){
     path_to_maxent.jar <-  file.path(getwd(), "maxent.jar")
   }
-  
+
   if(!silent) cat("\n\t\tRunning Maxent...")
 
   for(spl in 1:split.proj){
     maxent.command <- paste0("java ", ifelse(is.null(object@model_options$memory_allocated),"",paste0("-mx", object@model_options$memory_allocated, "m")),
                             " -cp ", "\"", path_to_maxent.jar, "\"",
-                            " density.Project ", 
-                            "\"", list.files(path = object@model_output_dir, pattern = ".lambdas$", full.names = TRUE), "\" ", 
-                            "\"", MWD$m_workdir[[spl]], "\" ", 
-                            "\"", file.path(MWD$m_workdir[[spl]], "projMaxent.asc"), "\" ", 
-                            " doclamp=false visible=false autorun nowarnings notooltips") 
-    system(command = maxent.command, wait = TRUE, intern=TRUE)  
+                            " density.Project ",
+                            "\"", list.files(path = object@model_output_dir, pattern = ".lambdas$", full.names = TRUE), "\" ",
+                            "\"", MWD$m_workdir[[spl]], "\" ",
+                            "\"", file.path(MWD$m_workdir[[spl]], "projMaxent.asc"), "\" ",
+                            " doclamp=false visible=false autorun nowarnings notooltips")
+    system(command = maxent.command, wait = TRUE, intern=TRUE)
   }
 
   if(!silent) cat("\n\t\tReading Maxent outputs...")
 
   ## get the list of projections part by part
   proj.list <- lapply(file.path(unlist(MWD$m_workdir),"projMaxent.asc"), raster, RAT = FALSE, crs=projection(newdata))
-  ## merge all parts in a single raster 
+  ## merge all parts in a single raster
   if(length(proj.list) > 1){
-    proj <- do.call(raster::merge, proj.list)  
+    proj <- do.call(raster::merge, proj.list)
   } else {
     proj <- proj.list[[1]]
   }
-  
+
 #   # keep the coordinates ref system of new data
 #   # TO DO => do it in .Prepare.Maxent.Proj.WorkDir()
 #   proj.ref <- projection(newdata)
-  
-  # 
-  
+
+  #
+
   #   if(length(get_scaling_model(object))){
   #     names(proj) <- "pred"
   #     proj <- .testnull(object = get_scaling_model(object), Prev = 0.5 , dat = proj)
@@ -1072,26 +1072,26 @@ setMethod('predict', signature(object = 'MAXENT.Phillips_biomod2_model'),
   # save raster on hard drive ?
   if(!is.null(filename)){
     cat("\n\t\tWriting projection on hard drive...")
-    if(on_0_1000){ ## projections are stored as positive integer 
+    if(on_0_1000){ ## projections are stored as positive integer
       writeRaster(proj, filename=filename, overwrite=overwrite, datatype="INT2S", NAflag=-9999)
-    } else { ## keep default data format for saved raster 
-      writeRaster(proj, filename=filename, overwrite=overwrite) 
+    } else { ## keep default data format for saved raster
+      writeRaster(proj, filename=filename, overwrite=overwrite)
     }
     proj <- raster(filename,RAT=FALSE)
   } else if(!inMemory(proj)){
     proj <- readAll(proj) # to prevent from tmp files removing
   }
-  
-  
-  
-  
+
+
+
+
   if(!is.null(rm_tmp_files)){
     if(rm_tmp_files){
 #       unlink(x=file.path(object@resp_name, temp_workdir), recursive=TRUE, force=TRUE )
       .Delete.Maxent.WorkDir(MWD, silent=silent)
     }
   }
-  
+
   return(proj)
 }
 
@@ -1101,52 +1101,52 @@ setMethod('predict', signature(object = 'MAXENT.Phillips_biomod2_model'),
   temp_workdir <- args$temp_workdir
   rm_tmp_files <- args$rm_tmp_files
   xy <- args$xy
-  
+
   if (is.null(on_0_1000)) on_0_1000 <- FALSE
 #   if (is.null(temp_workdir)) temp_workdir <- paste("maxentWDtmp", format(Sys.time(), "%s"), sep="")
   if (is.null(rm_tmp_files)) rm_tmp_files <- TRUE
-  
+
 #   if( is.null(xy) ){
 #     if( sum(c('x','y') %in% colnames(newdata) ) == 2 ){
 #       coor_col <- c( which(colnames(newdata) == 'x'), which(colnames(newdata) == 'y') )
 #       xy <- newdata[,coor_col]
 #       newdata <- newdata[,- coor_col]
-#     } else { 
+#     } else {
 #       xy <- data.frame(x=rep(0,nrow(newdata)), y=rep(0,nrow(newdata)))
 #     }
 #   }
-  
+
   ## no xy needed for models projections
   xy <- NULL
-  
+
   ## check if na occurs in newdata cause they are not well supported
   not_na_rows <- apply(newdata, 1, function(x){sum(is.na(x))==0})
-  
+
   MWD <- .Prepare.Maxent.Proj.WorkDir(Data = as.data.frame(newdata[not_na_rows,,drop=FALSE]), xy = xy , species.name = object@resp_name, silent=T)
 #   .Prepare.Maxent.Proj.WorkDir(Data = newdata, species.name = object@resp_name, proj.name = temp_workdir )
-  
+
   # checking maxent.jar is present
   path_to_maxent.jar <- file.path(object@model_options$path_to_maxent.jar, "maxent.jar")
   if(!file.exists(path_to_maxent.jar)){
     path_to_maxent.jar <-  file.path(getwd(), "maxent.jar")
   }
-  
+
   if(!silent) cat("\n\t\tRunning Maxent...")
 
   maxent.command <- paste0("java ", ifelse(is.null(object@model_options$memory_allocated),"",paste0("-mx", object@model_options$memory_allocated, "m")),
                            " -cp ", "\"", path_to_maxent.jar, "\"",
-                           " density.Project ", 
-                           "\"", list.files(path = object@model_output_dir, pattern = ".lambdas$", full.names = TRUE), "\" ", 
-                           "\"", file.path(MWD$m_workdir, "Pred_swd.csv"), "\" ", 
+                           " density.Project ",
+                           "\"", list.files(path = object@model_output_dir, pattern = ".lambdas$", full.names = TRUE), "\" ",
+                           "\"", file.path(MWD$m_workdir, "Pred_swd.csv"), "\" ",
                            "\"", file.path(MWD$m_workdir, "projMaxent.asc") , "\" ",
-                           "doclamp=false visible=false autorun nowarnings notooltips") 
+                           "doclamp=false visible=false autorun nowarnings notooltips")
 
   system(command = maxent.command, wait = TRUE, intern=TRUE)
 
-  
+
   if(!silent) cat("\n\t\tReading Maxent outputs...")
   proj <- as.numeric(read.asciigrid(file.path(MWD$m_workdir, "projMaxent.asc"))@data[,1])
-  
+
   ## add original NAs in table
   if(sum(!not_na_rows) > 0 ){ # some NAs in formal dataset
     tmp <- rep(NA,length(not_na_rows))
@@ -1154,7 +1154,7 @@ setMethod('predict', signature(object = 'MAXENT.Phillips_biomod2_model'),
     proj <- tmp
     rm('tmp')
   }
-  
+
   if(!is.null(rm_tmp_files)){
     if(rm_tmp_files){
       .Delete.Maxent.WorkDir(MWD, silent=silent)
@@ -1165,11 +1165,11 @@ setMethod('predict', signature(object = 'MAXENT.Phillips_biomod2_model'),
 #     proj <- data.frame(pred = proj)
 #     proj <- .testnull(object = get_scaling_model(object), Prev = 0.5 , dat = proj)
 #   }
-  
+
   if(on_0_1000) proj <- round(proj*1000)
-  
+
   return(proj)
-  
+
 }
 
 ## MAXENT old Class ------------------------------------------------------------
@@ -1202,21 +1202,21 @@ setClass('MAXENT.Tsuruoka_biomod2_model',
 setMethod('predict', signature(object = 'MAXENT.Tsuruoka_biomod2_model'),
           function(object, newdata, ...){
             args <- list(...)
-            
+
             do_check <- args$do_check
             if(is.null(do_check)) do_check <- TRUE
-            
+
             ## data checking
             if(do_check){
               newdata <- check_data_range(model=object, new_data=newdata)
             }
-            
-            if(inherits(newdata, 'Raster')){            
+
+            if(inherits(newdata, 'Raster')){
               return(.predict.MAXENT.Tsuruoka_biomod2_model.RasterStack(object, newdata, ... ))
             } else if(inherits(newdata, 'data.frame') | inherits(newdata, 'matrix')){
               return(.predict.MAXENT.Tsuruoka_biomod2_model.data.frame(object, newdata, ... ))
             } else{ stop("invalid newdata input") }
-            
+
           })
 
 .predict.MAXENT.Tsuruoka_biomod2_model.RasterStack <- function(object, newdata, ...){
@@ -1224,10 +1224,10 @@ setMethod('predict', signature(object = 'MAXENT.Tsuruoka_biomod2_model'),
   filename <- args$filename
   overwrite <- args$overwrite
   on_0_1000 <- args$on_0_1000
-  
+
   if (is.null(overwrite)) overwrite <- TRUE
   if (is.null(on_0_1000)) on_0_1000 <- FALSE
-  
+
   proj <- calc(newdata, function(x) {
     proj.out <- rep(NA, nrow(x))
     x.no.na <- na.omit(x)
@@ -1237,25 +1237,25 @@ setMethod('predict', signature(object = 'MAXENT.Tsuruoka_biomod2_model'),
     }
     return(proj.out)
     })
-  
+
   if(length(get_scaling_model(object))){
     names(proj) <- "pred"
     proj <- .testnull(object = get_scaling_model(object), Prev = 0.5 , dat = proj)
   }
-  
+
   if(on_0_1000) proj <- round(proj*1000)
-  
+
   # save raster on hard drive ?
   if(!is.null(filename)){
     cat("\n\t\tWriting projection on hard drive...")
-    if(on_0_1000){ ## projections are stored as positive integer 
+    if(on_0_1000){ ## projections are stored as positive integer
       writeRaster(proj, filename=filename, overwrite=overwrite, datatype="INT2S", NAflag=-9999)
-    } else { ## keep default data format for saved raster 
-      writeRaster(proj, filename=filename, overwrite=overwrite) 
+    } else { ## keep default data format for saved raster
+      writeRaster(proj, filename=filename, overwrite=overwrite)
     }
     proj <- raster(filename,RAT=FALSE)
   }
-  
+
   return(proj)
 }
 
@@ -1263,19 +1263,19 @@ setMethod('predict', signature(object = 'MAXENT.Tsuruoka_biomod2_model'),
   args <- list(...)
   on_0_1000 <- args$on_0_1000
   omit.na <- args$omit.na
-  
+
   if (is.null(on_0_1000)) on_0_1000 <- FALSE
   if (is.null(omit.na)) omit.na <- FALSE
-  
+
   ## check if na occurs in newdata cause they are not well supported
   if(omit.na){
     not_na_rows <- apply(newdata, 1, function(x){sum(is.na(x))==0})
   } else {
     not_na_rows <- rep(T, nrow(newdata))
   }
-  
+
   proj <- as.numeric(predict(get_formal_model(object), as.data.frame(newdata[not_na_rows,,drop=FALSE]))[,'1'])
-  
+
   ## add original NAs in table if it needed
   if(sum(!not_na_rows) > 0 ){ # some NAs in formal dataset
     tmp <- rep(NA,length(not_na_rows))
@@ -1283,14 +1283,14 @@ setMethod('predict', signature(object = 'MAXENT.Tsuruoka_biomod2_model'),
     proj <- tmp
     rm('tmp')
   }
-  
+
   if(length(get_scaling_model(object))){
     proj <- data.frame(pred = proj)
     proj <- .testnull(object = get_scaling_model(object), Prev = 0.5 , dat = proj)
   }
-  
+
   if(on_0_1000) proj <- round(proj*1000)
-  
+
   return(proj)
 }
 
@@ -1310,21 +1310,21 @@ setClass('RF_biomod2_model',
 setMethod('predict', signature(object = 'RF_biomod2_model'),
           function(object, newdata, ...){
             args <- list(...)
-            
+
             do_check <- args$do_check
             if(is.null(do_check)) do_check <- TRUE
-            
+
             ## data checking
             if(do_check){
               newdata <- check_data_range(model=object, new_data=newdata)
             }
-            
-            if(inherits(newdata, 'Raster')){            
+
+            if(inherits(newdata, 'Raster')){
               return(.predict.RF_biomod2_model.RasterStack(object, newdata, ... ))
             } else if(inherits(newdata, 'data.frame') | inherits(newdata, 'matrix')){
               return(.predict.RF_biomod2_model.data.frame(object, newdata, ... ))
             } else{ stop("invalid newdata input") }
-            
+
           })
 
 .predict.RF_biomod2_model.RasterStack <- function(object, newdata, ...){
@@ -1332,30 +1332,30 @@ setMethod('predict', signature(object = 'RF_biomod2_model'),
   filename <- args$filename
   overwrite <- args$overwrite
   on_0_1000 <- args$on_0_1000
-  
+
   if (is.null(overwrite)) overwrite <- TRUE
   if (is.null(on_0_1000)) on_0_1000 <- FALSE
-  
+
   proj <- predict(newdata, model=get_formal_model(object), type='prob', index=2)
-  
+
   if(length(get_scaling_model(object))){
     names(proj) <- "pred"
     proj <- .testnull(object = get_scaling_model(object), Prev = 0.5 , dat = proj)
   }
-  
+
   if(on_0_1000) proj <- round(proj*1000)
-  
+
   # save raster on hard drive ?
   if(!is.null(filename)){
     cat("\n\t\tWriting projection on hard drive...")
-    if(on_0_1000){ ## projections are stored as positive integer 
+    if(on_0_1000){ ## projections are stored as positive integer
       writeRaster(proj, filename=filename, overwrite=overwrite, datatype="INT2S", NAflag=-9999)
-    } else { ## keep default data format for saved raster 
-      writeRaster(proj, filename=filename, overwrite=overwrite) 
+    } else { ## keep default data format for saved raster
+      writeRaster(proj, filename=filename, overwrite=overwrite)
     }
     proj <- raster(filename,RAT=FALSE)
   }
-  
+
   return(proj)
 }
 
@@ -1363,17 +1363,17 @@ setMethod('predict', signature(object = 'RF_biomod2_model'),
   args <- list(...)
   on_0_1000 <- args$on_0_1000
   omit.na <- args$omit.na
-  
+
   if (is.null(on_0_1000)) on_0_1000 <- FALSE
   if (is.null(omit.na)) omit.na <- FALSE
-  
+
   ## check if na occurs in newdata cause they are not well supported
   if(omit.na){
     not_na_rows <- apply(newdata, 1, function(x){sum(is.na(x))==0})
   } else {
     not_na_rows <- rep(T, nrow(newdata))
   }
-  
+
   proj <- as.numeric(predict(get_formal_model(object), as.data.frame(newdata[not_na_rows,,drop=FALSE]), type='prob')[,'1'])
 
   ## add original NAs in table if it needed
@@ -1383,14 +1383,14 @@ setMethod('predict', signature(object = 'RF_biomod2_model'),
     proj <- tmp
     rm('tmp')
   }
-  
+
   if(length(get_scaling_model(object))){
     proj <- data.frame(pred = proj)
     proj <- .testnull(object = get_scaling_model(object), Prev = 0.5 , dat = proj)
   }
-  
+
   if(on_0_1000) proj <- round(proj*1000)
-  
+
   return(proj)
 }
 
@@ -1410,21 +1410,21 @@ setClass('SRE_biomod2_model',
 setMethod('predict', signature(object = 'SRE_biomod2_model'),
           function(object, newdata, ...){
             args <- list(...)
-            
+
             do_check <- args$do_check
             if(is.null(do_check)) do_check <- TRUE
-            
+
             ## data checking
             if(do_check){
               newdata <- check_data_range(model=object, new_data=newdata)
             }
-            
-            if(inherits(newdata, 'Raster')){            
+
+            if(inherits(newdata, 'Raster')){
               return(.predict.SRE_biomod2_model.RasterStack(object, newdata, ... ))
             } else if(inherits(newdata, 'data.frame') | inherits(newdata, 'matrix')){
               return(.predict.SRE_biomod2_model.data.frame(object, newdata, ... ))
             } else{ stop("invalid newdata input") }
-            
+
           })
 
 .predict.SRE_biomod2_model.RasterStack <- function(object, newdata, ...){
@@ -1432,39 +1432,39 @@ setMethod('predict', signature(object = 'SRE_biomod2_model'),
   filename <- args$filename
   overwrite <- args$overwrite
   on_0_1000 <- args$on_0_1000
-  
+
   if (is.null(overwrite)) overwrite <- TRUE
   if (is.null(on_0_1000)) on_0_1000 <- FALSE
-  
+
   proj <- .sre.projection(NewData=newdata, ExtremCond=object@extremal_conditions)
-  
+
   if(on_0_1000) proj <- round(proj*1000)
 
   # save raster on hard drive ?
   if(!is.null(filename)){
     cat("\n\t\tWriting projection on hard drive...")
-    if(on_0_1000){ ## projections are stored as positive integer 
+    if(on_0_1000){ ## projections are stored as positive integer
       writeRaster(proj, filename=filename, overwrite=overwrite, datatype="INT2S", NAflag=-9999)
-    } else { ## keep default data format for saved raster 
-      writeRaster(proj, filename=filename, overwrite=overwrite) 
+    } else { ## keep default data format for saved raster
+      writeRaster(proj, filename=filename, overwrite=overwrite)
     }
     proj <- raster(filename,RAT=FALSE)
   }
-  
-  
+
+
   return(proj)
 }
 
 .predict.SRE_biomod2_model.data.frame <- function(object, newdata, ...){
   args <- list(...)
   on_0_1000 <- args$on_0_1000
-  
+
   if (is.null(on_0_1000)) on_0_1000 <- FALSE
-  
+
   proj <- .sre.projection(NewData=newdata, ExtremCond=object@extremal_conditions)
-  
+
   if(on_0_1000) proj <- round(proj*1000)
-  
+
   return(proj)
 }
 
@@ -1513,16 +1513,16 @@ setClass('EMmean_biomod2_model',
 setMethod('predict', signature(object = 'EMmean_biomod2_model'),
           function(object, newdata=NULL, formal_predictions=NULL, ...){
             args <- list(...)
-            
+
             do_check <- args$do_check
-            
+
             if(is.null(do_check)) do_check <- TRUE
-            
+
             ## data checking
             if(do_check){
               newdata <- check_data_range(model=object, new_data=newdata)
             }
-            
+
 #            ## check if models are formal loaded
 #             if(is.character(object@model)){
 #               cat("\n*** models that will be loaded", object@model)
@@ -1534,73 +1534,73 @@ setMethod('predict', signature(object = 'EMmean_biomod2_model'),
 #               names(model_tmp) <- object@model
 #               object@model <- model_tmp
 #             }
-            
-            if(inherits(newdata, 'Raster') | inherits(formal_predictions, 'Raster')){            
+
+            if(inherits(newdata, 'Raster') | inherits(formal_predictions, 'Raster')){
               return(.predict.EMmean_biomod2_model.RasterStack(object, newdata, formal_predictions, ... ))
             } else if(inherits(newdata, 'data.frame') | inherits(newdata, 'matrix') | inherits(formal_predictions, 'data.frame') | inherits(formal_predictions, 'matrix')){
               return(.predict.EMmean_biomod2_model.data.frame(object, newdata, formal_predictions,  ... ))
             } else{ stop("invalid newdata input") }
-            
+
           })
 
 .predict.EMmean_biomod2_model.RasterStack <- function(object, newdata=NULL, formal_predictions=NULL, ... ){
   args <- list(...)
-  
+
   on_0_1000 <- args$on_0_1000
   if (is.null(on_0_1000)) on_0_1000 <- FALSE
   filename <- args$filename
   if (is.null(filename)) filename <- ''
-  
+
   #formal_predictions <- args$formal_predictions
-  
+
   if(is.null(formal_predictions)){
     # make prediction of all models required
-    formal_predictions <- raster::stack(lapply(object@model, 
+    formal_predictions <- raster::stack(lapply(object@model,
           function(mod, resp_name, modeling.id){
             ## check if model is loaded on memory
             if(is.character(mod)) mod <- get(load(file.path(resp_name, "models", modeling.id, mod)))
             return(predict(mod, newdata=newdata, on_0_1000=on_0_1000))
           }, resp_name = object@resp_name, modeling.id = object@modeling.id))
   }
-  
-  out <- calc(formal_predictions, 
+
+  out <- calc(formal_predictions,
              function(x){
                m <- mean(x)
                if(on_0_1000) m <- round(m)
                return(m)
-             }, 
+             },
              filename = filename, overwrite = TRUE)
-  
+
   return(out)
-  
+
 }
 
 .predict.EMmean_biomod2_model.data.frame <- function(object, newdata=NULL, formal_predictions=NULL, ... ){
   args <- list(...)
-  
+
   on_0_1000 <- args$on_0_1000
   if (is.null(on_0_1000)) on_0_1000 <- FALSE
-  
+
   #formal_predictions <- args$formal_predictions
-  
+
   if(is.null(formal_predictions)){
     # make prediction of all models required
-    formal_predictions <- sapply(object@model, 
+    formal_predictions <- sapply(object@model,
                                    function(mod, resp_name, modeling.id){
                                      ## check if model is loaded on memory
                                      if(is.character(mod)) mod <- get(load(file.path(resp_name, "models", modeling.id, mod)))
                                      return(predict(mod, newdata=newdata, on_0_1000=on_0_1000))
                                    } , resp_name = object@resp_name, modeling.id = object@modeling.id)
   }
-  
+
   out <- rowMeans(formal_predictions, na.rm=T)
-  
+
   if (on_0_1000){
     out <- round(out)
-  } 
-  
+  }
+
   return(out)
-  
+
 }
 
 
@@ -1620,17 +1620,17 @@ setClass('EMmedian_biomod2_model',
 
 setMethod('predict', signature(object = 'EMmedian_biomod2_model'),
           function(object, newdata=NULL, formal_predictions=NULL, ...){
-            
+
             args <- list(...)
-            
+
             do_check <- args$do_check
             if(is.null(do_check)) do_check <- TRUE
-            
+
             ## data checking
             if(do_check){
               newdata <- check_data_range(model=object, new_data=newdata)
             }
-            
+
 #             ## check if models are formal loaded
 #             if(is.character(object@model)){
 #               model_tmp <- lapply(object@model, function(x){
@@ -1639,73 +1639,73 @@ setMethod('predict', signature(object = 'EMmedian_biomod2_model'),
 #               names(model_tmp) <- object@model
 #               object@model <- model_tmp
 #             }
-            
-            if(inherits(newdata, 'Raster') | inherits(formal_predictions, 'Raster')){            
+
+            if(inherits(newdata, 'Raster') | inherits(formal_predictions, 'Raster')){
               return(.predict.EMmedian_biomod2_model.RasterStack(object, newdata, formal_predictions, ... ))
             } else if(inherits(newdata, 'data.frame') | inherits(newdata, 'matrix') | inherits(formal_predictions, 'data.frame') | inherits(formal_predictions, 'matrix')){
               return(.predict.EMmedian_biomod2_model.data.frame(object, newdata, formal_predictions, ... ))
             } else{ stop("invalid newdata input") }
-            
+
           })
 
 .predict.EMmedian_biomod2_model.RasterStack <- function(object, newdata=NULL, formal_predictions=NULL, ... ){
   args <- list(...)
-  
+
   on_0_1000 <- args$on_0_1000
   if (is.null(on_0_1000)) on_0_1000 <- FALSE
   filename <- args$filename
   if (is.null(filename)) filename <- ''
-  
+
   #formal_predictions <- args$formal_predictions
-  
+
   if(is.null(formal_predictions)){
     # make prediction of all models required
-    formal_predictions <- raster::stack(lapply(object@model, 
+    formal_predictions <- raster::stack(lapply(object@model,
                                                function(mod, resp_name, modeling.id){
                                                  ## check if model is loaded on memory
                                                  if(is.character(mod)) mod <- get(load(file.path(resp_name, "models", modeling.id, mod)))
                                                  return(predict(mod, newdata=newdata, on_0_1000=on_0_1000))
                                                }, resp_name = object@resp_name, modeling.id = object@modeling.id))
   }
-  
+
   out <- calc(formal_predictions,
               function(x){
                 m <- median(x)
                 if(on_0_1000) m <- round(m)
                 return(m)
-              }, 
+              },
               filename = filename, overwrite = TRUE)
-  
+
   return(out)
 
 }
 
 .predict.EMmedian_biomod2_model.data.frame <- function(object, newdata=NULL, formal_predictions=NULL, ... ){
   args <- list(...)
-  
+
   on_0_1000 <- args$on_0_1000
   if (is.null(on_0_1000)) on_0_1000 <- FALSE
-  
+
   #formal_predictions <- args$formal_predictions
-  
+
   if(is.null(formal_predictions)){
     # make prediction of all models required
-    formal_predictions <- sapply(object@model, 
+    formal_predictions <- sapply(object@model,
                                  function(mod, resp_name, modeling.id){
                                    ## check if model is loaded on memory
                                    if(is.character(mod)) mod <- get(load(file.path(resp_name, "models", modeling.id, mod)))
                                    return(predict(mod, newdata=newdata, on_0_1000=on_0_1000))
                                  } , resp_name = object@resp_name, modeling.id = object@modeling.id)
   }
-  
+
   out <- apply(formal_predictions, 1, median, na.rm=T)
-  
+
   if (on_0_1000){
     out <- round(out)
-  } 
-  
+  }
+
   return(out)
-  
+
 }
 
 
@@ -1726,16 +1726,16 @@ setClass('EMcv_biomod2_model',
 
 setMethod('predict', signature(object = 'EMcv_biomod2_model'),
           function(object, newdata=NULL, formal_predictions=NULL, ...){
-            
+
             args <- list(...)
             do_check <- args$do_check
             if(is.null(do_check)) do_check <- TRUE
-            
+
             ## data checking
             if(do_check){
               newdata <- check_data_range(model=object, new_data=newdata)
             }
-            
+
 #             ## check if models are formal loaded
 #             if(is.character(object@model)){
 #               model_tmp <- lapply(object@model, function(x){
@@ -1744,80 +1744,80 @@ setMethod('predict', signature(object = 'EMcv_biomod2_model'),
 #               names(model_tmp) <- object@model
 #               object@model <- model_tmp
 #             }
-            
-            if(inherits(newdata, 'Raster') | inherits(formal_predictions, 'Raster')){            
+
+            if(inherits(newdata, 'Raster') | inherits(formal_predictions, 'Raster')){
               return(.predict.EMcv_biomod2_model.RasterStack(object, newdata, formal_predictions, ... ))
             } else if(inherits(newdata, 'data.frame') | inherits(newdata, 'matrix') | inherits(formal_predictions, 'data.frame') | inherits(formal_predictions, 'matrix')){
               return(.predict.EMcv_biomod2_model.data.frame(object, newdata, formal_predictions, ... ))
             } else{ stop("invalid newdata input") }
-            
+
           })
 
 .predict.EMcv_biomod2_model.RasterStack <- function(object, newdata=NULL, formal_predictions=NULL, ... ){
   args <- list(...)
-  
+
   on_0_1000 <- args$on_0_1000
   if (is.null(on_0_1000)) on_0_1000 <- FALSE
   filename <- args$filename
   if (is.null(filename)) filename <- ''
-  
+
   #formal_predictions <- args$formal_predictions
   mean_prediction <- args$mean_prediction
-  
+
   if(is.null(formal_predictions)){
     # make prediction of all models required
-    formal_predictions <- raster::stack(lapply(object@model, 
+    formal_predictions <- raster::stack(lapply(object@model,
                                                function(mod, resp_name, modeling.id){
                                                  ## check if model is loaded on memory
                                                  if(is.character(mod)) mod <- get(load(file.path(resp_name, "models", modeling.id, mod)))
                                                  return(predict(mod, newdata=newdata, on_0_1000=on_0_1000))
                                                }, resp_name = object@resp_name, modeling.id = object@modeling.id))
   }
-  
-  out <- calc(formal_predictions, cv, 
-              filename = filename, overwrite = TRUE, na.rm=TRUE, aszero=TRUE) 
-  
+
+  out <- calc(formal_predictions, cv,
+              filename = filename, overwrite = TRUE, na.rm=TRUE, aszero=TRUE)
+
   return(out)
-  
+
 }
 
 .predict.EMcv_biomod2_model.data.frame <- function(object, newdata=NULL, formal_predictions=NULL, ... ){
   args <- list(...)
-  
+
   on_0_1000 <- args$on_0_1000
   if (is.null(on_0_1000)) on_0_1000 <- FALSE
-  
+
   #formal_predictions <- args$formal_predictions
 #   mean_prediction <- args$mean_prediction # mean of predictions should be given for time saving
-  
+
   if(is.null(formal_predictions)){
     # make prediction of all models required
-    formal_predictions <- sapply(object@model, 
+    formal_predictions <- sapply(object@model,
                                  function(mod, resp_name, modeling.id){
                                    ## check if model is loaded on memory
                                    if(is.character(mod)) mod <- get(load(file.path(resp_name, "models", modeling.id, mod)))
                                    return(predict(mod, newdata=newdata, on_0_1000=on_0_1000))
                                  } , resp_name = object@resp_name, modeling.id = object@modeling.id)
   }
-  
+
 #   if(is.null(mean_prediction)){
 #     # calculate mean of predictions
 #     mean_prediction <- round(rowMeans(formal_predictions, na.rm=T))
 #   }
-#   # transforming 0 into Inf to produce null cv where mean is null 
+#   # transforming 0 into Inf to produce null cv where mean is null
 #   mean_prediction[mean_prediction==0] <- Inf
-#   
+#
 #   # calculate cv of formal models predictions
 #   sd_prediction <- apply(formal_predictions,1,sd, na.rm=T)
-#   
+#
 #   return(round(sd_prediction / mean_prediction, 2))
-  
+
   out <- apply(formal_predictions, 1, cv, na.rm=T, aszero=T)
-  
+
 #   if (on_0_1000){
 #     out <- round(out)
-#   } 
-  
+#   }
+
   return(out)
 
 }
@@ -1844,17 +1844,17 @@ setClass('EMci_biomod2_model',
 
 setMethod('predict', signature(object = 'EMci_biomod2_model'),
           function(object, newdata=NULL, formal_predictions=NULL, ...){
-            
+
             args <- list(...)
-            
+
             do_check <- args$do_check
             if(is.null(do_check)) do_check <- TRUE
-            
+
             ## data checking
             if(do_check){
               newdata <- check_data_range(model=object, new_data=newdata)
             }
-            
+
 #             ## check if models are formal loaded
 #             if(is.character(object@model)){
 #               model_tmp <- lapply(object@model, function(x){
@@ -1863,93 +1863,93 @@ setMethod('predict', signature(object = 'EMci_biomod2_model'),
 #               names(model_tmp) <- object@model
 #               object@model <- model_tmp
 #             }
-            
-            if(inherits(newdata, 'Raster') | inherits(formal_predictions, 'Raster')){            
+
+            if(inherits(newdata, 'Raster') | inherits(formal_predictions, 'Raster')){
               return(.predict.EMci_biomod2_model.RasterStack(object, newdata, formal_predictions, ... ))
             } else if(inherits(newdata, 'data.frame') | inherits(newdata, 'matrix') | inherits(formal_predictions, 'data.frame') | inherits(formal_predictions, 'matrix')){
               return(.predict.EMci_biomod2_model.data.frame(object, newdata, formal_predictions, ... ))
             } else{ stop("invalid newdata input") }
-            
+
           })
 
 .predict.EMci_biomod2_model.RasterStack <- function(object, newdata=NULL, formal_predictions=NULL, ... ){
   args <- list(...)
-  
+
   on_0_1000 <- args$on_0_1000
   if (is.null(on_0_1000)) on_0_1000 <- FALSE
   filename <- args$filename
   if (is.null(filename)) filename <- ''
-  
+
   #formal_predictions <- args$formal_predictions
   mean_prediction <- args$mean_prediction # mean of predictions should be given for time saving
   sd_prediction <- args$sd_prediction # mean of predictions should be given for time saving
-  
+
   if(is.null(formal_predictions)){
     # make prediction of all models required
-    formal_predictions <- raster::stack(lapply(object@model, 
+    formal_predictions <- raster::stack(lapply(object@model,
                                                function(mod, resp_name, modeling.id){
                                                  ## check if model is loaded on memory
                                                  if(is.character(mod)) mod <- get(load(file.path(resp_name, "models", modeling.id, mod)))
                                                  return(predict(mod, newdata=newdata, on_0_1000=on_0_1000))
                                                }, resp_name = object@resp_name, modeling.id = object@modeling.id))
   }
-  
+
   if(is.null(mean_prediction)){
     mean_prediction <- calc(formal_predictions, mean)
   }
-  
+
   if(is.null(sd_prediction)){
     sd_prediction <- calc(formal_predictions, sd)
   }
-  
+
   ci_prediction <- switch(object@side,
                           inferior = mean_prediction -  (sd_prediction * (qt((1-object@alpha/2), df = length(object@model) + 1 ) / sqrt(length(object@model))) ),
                           superior = mean_prediction +  (sd_prediction * (qt((1-object@alpha/2), df = length(object@model) + 1 ) / sqrt(length(object@model))) ))
-  
+
   # reclassify prediction to prevent from out of bounds prediction
   if (on_0_1000){
     ci_prediction <- reclassify(round(ci_prediction), c(-Inf,0,0, 1000,Inf,1000))
   } else {
     ci_prediction <- reclassify(ci_prediction, c(-Inf,0,0, 1,Inf,1))
   }
-  
+
   return(ci_prediction)
 }
 
 .predict.EMci_biomod2_model.data.frame <- function(object, newdata=NULL, formal_predictions=NULL, ... ){
   args <- list(...)
-  
+
   on_0_1000 <- args$on_0_1000
   if (is.null(on_0_1000)) on_0_1000 <- FALSE
-  
+
   #formal_predictions <- args$formal_predictions
   mean_prediction <- args$mean_prediction # mean of predictions should be given for time saving
   sd_prediction <- args$sd_prediction # mean of predictions should be given for time saving
-  
+
   if(is.null(formal_predictions)){
     # make prediction of all models required
-    formal_predictions <- sapply(object@model, 
+    formal_predictions <- sapply(object@model,
                                  function(mod, resp_name, modeling.id){
                                    ## check if model is loaded on memory
                                    if(is.character(mod)) mod <- get(load(file.path(resp_name, "models", modeling.id, mod)))
                                    return(predict(mod, newdata=newdata, on_0_1000=on_0_1000))
                                  } , resp_name = object@resp_name, modeling.id = object@modeling.id)
   }
-  
+
   if(is.null(mean_prediction)){
     # calculate mean of predictions
     mean_prediction <- round(rowMeans(formal_predictions, na.rm=T))
   }
-  
+
   if(is.null(sd_prediction)){
     # calculate cv of formal models predictions
     sd_prediction <- apply(formal_predictions,1,sd, na.rm=T)
   }
-  
+
   ci_prediction <- switch(object@side,
                           inferior = mean_prediction -  (sd_prediction * (qt((1-object@alpha/2), df = length(object@model) + 1 ) / sqrt(length(object@model))) ),
                           superior = mean_prediction +  (sd_prediction * (qt((1-object@alpha/2), df = length(object@model) + 1 ) / sqrt(length(object@model))) ))
-  
+
   # reclassify prediction to prevent from out of bounds prediction
   if (on_0_1000){
   ci_prediction <- round(ci_prediction)
@@ -1980,17 +1980,17 @@ setClass('EMca_biomod2_model',
 
 setMethod('predict', signature(object = 'EMca_biomod2_model'),
           function(object, newdata=NULL, formal_predictions=NULL, ...){
-            
+
             args <- list(...)
-            
+
             do_check <- args$do_check
             if(is.null(do_check)) do_check <- TRUE
-            
+
             ## data checking
             if(do_check){
               newdata <- check_data_range(model=object, new_data=newdata)
             }
-            
+
 #             ## check if models are formal loaded
 #             if(is.character(object@model)){
 #               model_tmp <- lapply(object@model, function(x){
@@ -1999,46 +1999,46 @@ setMethod('predict', signature(object = 'EMca_biomod2_model'),
 #               names(model_tmp) <- object@model
 #               object@model <- model_tmp
 #             }
-            
-            if(inherits(newdata, 'Raster') | inherits(formal_predictions, 'Raster')){            
+
+            if(inherits(newdata, 'Raster') | inherits(formal_predictions, 'Raster')){
               return(.predict.EMca_biomod2_model.RasterStack(object, newdata, formal_predictions, ... ))
             } else if(inherits(newdata, 'data.frame') | inherits(newdata, 'matrix') | inherits(formal_predictions, 'data.frame') | inherits(formal_predictions, 'matrix')){
               return(.predict.EMca_biomod2_model.data.frame(object, newdata, formal_predictions, ... ))
             } else{ stop("invalid newdata input") }
-            
+
           })
 
 .predict.EMca_biomod2_model.RasterStack <- function(object, newdata=NULL, formal_predictions=NULL, ... ){
   args <- list(...)
-  
+
   on_0_1000 <- args$on_0_1000
   if (is.null(on_0_1000)) on_0_1000 <- FALSE
   filename <- args$filename
   if (is.null(filename)) filename <- ''
-  
+
   #formal_predictions <- args$formal_predictions
-  
+
   if(is.null(formal_predictions)){
     # make prediction of all models required
-    formal_predictions <- raster::stack(lapply(object@model, 
+    formal_predictions <- raster::stack(lapply(object@model,
                                                function(mod, resp_name, modeling.id){
                                                  ## check if model is loaded on memory
                                                  if(is.character(mod)) mod <- get(load(file.path(resp_name, "models", modeling.id, mod)))
                                                  return(predict(mod, newdata=newdata, on_0_1000=on_0_1000))
                                                }, resp_name = object@resp_name, modeling.id = object@modeling.id))
   }
-  
+
   if (on_0_1000){
     thresh <- object@tresholds
   } else { thresh <- object@tresholds / 1000 }
-  
+
 #   out <- raster::mean(BinaryTransformation(formal_predictions, thresh), na.rm=T)
-  out <- calc(BinaryTransformation(formal_predictions, thresh), 
+  out <- calc(BinaryTransformation(formal_predictions, thresh),
                 function(x){
                   m <- mean(x)
                   if(on_0_1000) m <- round(m * 1000)
                   return(m)
-                  }, 
+                  },
               filename = filename, overwrite = TRUE)
 
   return(out)
@@ -2047,34 +2047,34 @@ setMethod('predict', signature(object = 'EMca_biomod2_model'),
 
 .predict.EMca_biomod2_model.data.frame <- function(object, newdata=NULL, formal_predictions=NULL, ... ){
   args <- list(...)
-  
+
   on_0_1000 <- args$on_0_1000
   if (is.null(on_0_1000)) on_0_1000 <- FALSE
-  
+
   #formal_predictions <- args$formal_predictions
-  
+
   if(is.null(formal_predictions)){
     # make prediction of all models required
-    formal_predictions <- sapply(object@model, 
+    formal_predictions <- sapply(object@model,
                                  function(mod, resp_name, modeling.id){
                                    ## check if model is loaded on memory
                                    if(is.character(mod)) mod <- get(load(file.path(resp_name, "models", modeling.id, mod)))
                                    return(predict(mod, newdata=newdata, on_0_1000=on_0_1000))
                                  } , resp_name = object@resp_name, modeling.id = object@modeling.id)
   }
-  
+
   if (on_0_1000){
     thresh <- object@tresholds
   } else { thresh <- object@tresholds / 1000 }
-  
+
   out <- apply(as.data.frame(BinaryTransformation(formal_predictions, thresh)), 1, mean, na.rm=T)
-  
+
   if (on_0_1000){
     out <- round(out * 1000)
-  } 
-  
+  }
+
   return(out)
-  
+
 }
 
 # EMwmean Class =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-= #
@@ -2088,17 +2088,17 @@ setClass('EMwmean_biomod2_model',
 
 setMethod('predict', signature(object = 'EMwmean_biomod2_model'),
           function(object, newdata=NULL, formal_predictions=NULL, ...){
-            
+
             args <- list(...)
-            
+
             do_check <- args$do_check
             if(is.null(do_check)) do_check <- TRUE
-            
+
             ## data checking
             if(do_check){
               newdata <- check_data_range(model=object, new_data=newdata)
             }
-            
+
 #             ## check if models are formal loaded
 #             if(is.character(object@model)){
 #               model_tmp <- lapply(object@model, function(x){
@@ -2107,72 +2107,72 @@ setMethod('predict', signature(object = 'EMwmean_biomod2_model'),
 #               names(model_tmp) <- object@model
 #               object@model <- model_tmp
 #             }
-            
-            if(inherits(newdata, 'Raster') | inherits(formal_predictions, 'Raster')){            
+
+            if(inherits(newdata, 'Raster') | inherits(formal_predictions, 'Raster')){
               return(.predict.EMwmean_biomod2_model.RasterStack(object, newdata, formal_predictions, ... ))
             } else if(inherits(newdata, 'data.frame') | inherits(newdata, 'matrix') | inherits(formal_predictions, 'data.frame') | inherits(formal_predictions, 'matrix')){
               return(.predict.EMwmean_biomod2_model.data.frame(object, newdata, formal_predictions, ... ))
             } else{ stop("invalid newdata input") }
-            
+
           })
 
 .predict.EMwmean_biomod2_model.RasterStack <- function(object, newdata=NULL, formal_predictions=NULL, ... ){
   args <- list(...)
-  
+
   on_0_1000 <- args$on_0_1000
   filename <- args$filename
   if (is.null(on_0_1000)) on_0_1000 <- FALSE
   if (is.null(filename)) filename <- ''
-  
+
   #formal_predictions <- args$formal_predictions
-  
+
   if(is.null(formal_predictions)){
     # make prediction of all models required
-    formal_predictions <- raster::stack(lapply(object@model, 
+    formal_predictions <- raster::stack(lapply(object@model,
                                                function(mod, resp_name, modeling.id){
                                                  ## check if model is loaded on memory
                                                  if(is.character(mod)) mod <- get(load(file.path(resp_name, "models", modeling.id, mod)))
                                                  return(predict(mod, newdata=newdata, on_0_1000=on_0_1000))
                                                }, resp_name = object@resp_name, modeling.id = object@modeling.id))
   }
-  
+
 #   out <- sum(formal_predictions * object@penalization_scores)
-  out <- calc(formal_predictions, 
+  out <- calc(formal_predictions,
               function(x){
                 wm <- sum(x * object@penalization_scores)
                 if(on_0_1000) wm <- round(wm)
                 return(wm)
-              }, 
+              },
               filename = filename, overwrite = TRUE)
-  
+
   return(out)
 
 }
 
 .predict.EMwmean_biomod2_model.data.frame <- function(object, newdata=NULL, formal_predictions=NULL, ... ){
   args <- list(...)
-  
+
   on_0_1000 <- args$on_0_1000
   if (is.null(on_0_1000)) on_0_1000 <- FALSE
-  
+
   #formal_predictions <- args$formal_predictions
-  
+
   if(is.null(formal_predictions)){
     # make prediction of all models required
-    formal_predictions <- sapply(object@model, 
+    formal_predictions <- sapply(object@model,
                                  function(mod, resp_name, modeling.id){
                                    ## check if model is loaded on memory
                                    if(is.character(mod)) mod <- get(load(file.path(resp_name, "models", modeling.id, mod)))
                                    return(predict(mod, newdata=newdata, on_0_1000=on_0_1000))
                                  } , resp_name = object@resp_name, modeling.id = object@modeling.id)
   }
-  
+
   out <- as.vector(as.matrix(formal_predictions) %*% object@penalization_scores)
-  
+
   if (on_0_1000){
     out <- round(out)
-  } 
-  
+  }
+
   return(out)
 
 }
