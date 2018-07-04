@@ -685,7 +685,8 @@ setClass("BIOMOD.Model.Options",
                                 keep.data = FALSE,
                                 verbose = FALSE,
                                 #                                 class.stratify.cv = 'bernoulli',
-                                perf.method = 'cv'),
+                                perf.method = 'cv',
+                                n.cores = 1),
 
                    GAM = list( algo = "GAM_mgcv",
                                type = "s_smoother",
@@ -1010,7 +1011,8 @@ setMethod('show', signature('BIOMOD.Model.Options'),
             cat("\n            keep.data = ", object@GBM$keep.data, ",", sep="")
             cat("\n            verbose = ", object@GBM$verbose, ",", sep="")
             #             cat("\n            class.stratify.cv = '", object@GBM$class.stratify.cv, "',", sep="")
-            cat("\n            perf.method = '", object@GBM$perf.method, "'),", sep="")
+            cat("\n            perf.method = '", object@GBM$perf.method, "',", sep="")
+            cat("\n            n.cores = ", ifelse(length(object@GBM$n.cores), object@GBM$n.cores,'NULL'), "),", sep="")
 
             ## GAM options
             cat("\n")

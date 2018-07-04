@@ -76,6 +76,7 @@
 ##'     \item{ \code{keep.data} (default \code{FALSE})}
 ##'     \item{ \code{verbose} (default \code{FALSE})}
 ##'     \item{ \code{perf.method} (default \code{'cv'})}
+##'     \item{ \code{n.cores} (default \code{1})}
 ##'   }
 ##'
 ##'
@@ -325,6 +326,7 @@
     if(!is.null(GBM$verbose )) { opt@GBM$verbose <- GBM$verbose }
 #     if(!is.null(GBM$class.stratify.cv )) { opt@GBM$class.stratify.cv <- GBM$cv.folds }
     if(!is.null(GBM$perf.method )) { opt@GBM$perf.method <- GBM$perf.method }
+    if(!is.null(GBM$n.cores)) { opt@GBM$n.cores <- GBM$n.cores } else { opt@GBM$n.cores <- NULL }
   }
 
 

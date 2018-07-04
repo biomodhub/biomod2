@@ -1,7 +1,7 @@
 Package: biomod2
 Type: Package
 Title: Ensemble Platform for Species Distribution Modeling
-Version: 3.3-17
+Version: 3.3-18
 Date: 2018-04-23
 Author: Wilfried Thuiller [aut, cre],
     Damien Georges [aut, cre],
@@ -14,7 +14,7 @@ BugReports: https://r-forge.r-project.org/forum/forum.php?forum_id=995&group_id=
 Description: Functions for species distribution modeling, calibration and
     evaluation, ensemble of models.
 Depends:
-    R (>= 3.2.1)
+    R (>= 3.4.0)
 Imports:
     stats,
     utils,
@@ -28,7 +28,7 @@ Imports:
     rasterVis,
     pROC,
     nnet,
-    gbm,
+    gbm (>= 2.1.3),
     mda,
     randomForest,
     rpart,

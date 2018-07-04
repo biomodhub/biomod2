@@ -246,7 +246,8 @@
                         n.trees = Options@GBM$n.trees,
                         verbose = Options@GBM$verbose,
                         #class.stratify.cv = Options@GBM$class.stratify.cv,
-                        cv.folds = Options@GBM$cv.folds ))##, n.cores=1)) ## to prevent from parallel issues
+                        cv.folds = Options@GBM$cv.folds, 
+                        n.cores = Options@GBM$n.cores)) ## to prevent from parallel issues
 
     if( !inherits(model.sp,"try-error") ){
       best.iter <- try(gbm.perf(model.sp, method = Options@GBM$perf.method , plot.it = FALSE))
