@@ -465,40 +465,83 @@
   function (rp.dat)
   {
     requireNamespace('dplyr')
-    out_ <- bind_rows(lapply(rp.dat, function(dat_) {
-      dat_$id <- rownames(dat_)
-      id.col.id <- which(colnames(dat_) == "id")
-      expl.dat_ <- dat_ %>% dplyr::select(1, id.col.id) %>%
-        tidyr::gather("expl.name", "expl.val", 1)
-      pred.dat_ <- dat_ %>% dplyr::select(-1, id.col.id) %>%
-        tidyr::gather("pred.name", "pred.val", (1:(ncol(dat_)-2)))
-      out.dat_ <- dplyr::full_join(expl.dat_, pred.dat_)
-      out.dat_$expl.name <- as.character(out.dat_$expl.name)
-      out.dat_$pred.name <- as.character(out.dat_$pred.name)
-      return(out.dat_)
-    }))
-    out_$expl.name <- factor(out_$expl.name, levels = unique(out_$expl.name))
+    out_ <- 
+      bind_rows(
+        lapply(
+          rp.dat, 
+          function(dat_) {
+            dat_$id <- rownames(dat_)
+            id.col.id <- which(colnames(dat_) == "id")
+            expl.dat_ <- dat_ %>% 
+              dplyr::select(1, id.col.id) %>%
+              tidyr::gather("expl.name", "expl.val", 1)
+            pred.dat_ <- dat_ %>% 
+              dplyr::select(-1, id.col.id) %>%
+              tidyr::gather("pred.name", "pred.val", (1:(ncol(dat_)-2)))
+            out.dat_ <- 
+              dplyr::full_join(expl.dat_, pred.dat_, by = 'id') %>%
+              mutate(
+                expl.name = as.character(expl.name),
+                pred.name = as.character(pred.name),
+                expl.val = as.numeric(expl.val)
+              )
+            return(out.dat_)
+          }
+        )
+      )
+    out_ <- out_ %>%
+      mutate(
+        expl.name = factor(expl.name)
+      )
     return(out_)
   }
 
 
-.as.ggdat.2D <- function(rp.dat){
-  out_ <- bind_rows(lapply(rp.dat, function(dat_){
-    dat_$id <- rownames(dat_)
-    #   dat_$expl.name <- as.character(dat_$expl.name)
-    #   dat_$pred.name <- as.character(dat_$pred.name)
-    id.col.id <- which(colnames(dat_) == "id")
-    expl1.dat_ <- dat_ %>% dplyr::select(1, id.col.id) %>% tidyr::gather("expl1.name", "expl1.val", 1)
-    expl2.dat_ <- dat_ %>% dplyr::select(2, id.col.id) %>% tidyr::gather("expl2.name", "expl2.val", 1)
-    pred.dat_ <- dat_ %>% dplyr::select(3, id.col.id) %>% tidyr::gather("pred.name", "pred.val", 1)
-    out.dat_  <- dplyr::full_join(dplyr::full_join(expl1.dat_, expl2.dat_), pred.dat_)
-    out.dat_$expl1.name <- as.character(out.dat_$expl1.name)
-    out.dat_$expl2.name <- as.character(out.dat_$expl2.name)
-    out.dat_$pred.name <- as.character(out.dat_$pred.name)
-    return(out.dat_)
+.as.ggdat.2D <- 
+  function(rp.dat){
+    out_ <- 
+      bind_rows(
+        lapply(
+          rp.dat, 
+          function(dat_) {
+            dat_$id <- rownames(dat_)
+            #   dat_$expl.name <- as.character(dat_$expl.name)
+            #   dat_$pred.name <- as.character(dat_$pred.name)
+            id.col.id <- which(colnames(dat_) == "id")
+            expl1.dat_ <- dat_ %>% 
+              dplyr::select(1, id.col.id) %>% 
+              tidyr::gather("expl1.name", "expl1.val", 1)
+            expl2.dat_ <- dat_ %>% 
+              dplyr::select(2, id.col.id) %>% 
+              tidyr::gather("expl2.name", "expl2.val", 1)
+            pred.dat_ <- dat_ %>% 
+              dplyr::select(3, id.col.id) %>% 
+              tidyr::gather("pred.name", "pred.val", 1)
+            out.dat_  <- 
+              dplyr::full_join(
+                dplyr::full_join(
+                  expl1.dat_, 
+                  expl2.dat_,
+                  by = 'id'
+                ), 
+                pred.dat_,
+                by = 'id'
+              )
+            out.dat_ <- out.dat_ %>%
+              mutate(
+                expl1.name = as.character(expl1.name),
+                expl2.name = as.character(expl2.name),
+                pred.name  = as.character(pred.name),
+                expl1.val = as.numeric(expl1.val),
+                expl2.val = as.numeric(expl2.val)
+              )
+            return(out.dat_)
   }))
   ## ensure that the stips are in the right order
-  out_$expl1.name <- factor(out_$expl1.name, levels = unique(out_$expl1.name))
-  out_$expl2.name <- factor(out_$expl2.name, levels = unique(out_$expl2.name))
+  out_ <- out_ %>%
+    mutate(
+      expl1.name = factor(expl1.name),
+      expl2.name <- factor(expl2.name)
+    )
   return(out_)
 }
