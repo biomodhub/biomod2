@@ -166,7 +166,8 @@
         if(isNamespaceLoaded("car")){unloadNamespace("car")} ## need to unload car before mgcv
         unloadNamespace("mgcv")
       }
-      if(!isNamespaceLoaded("gam")){requireNamespace("gam", quietly = TRUE)}
+      # if(!isNamespaceLoaded("gam")){requireNamespace("gam", quietly = TRUE)}
+      requireNamespace("gam", quietly = TRUE)
 
       cat('\n\t> GAM (gam) modelling...')
 
@@ -638,13 +639,14 @@
 
   # MAXENT.Tsuruoka models creation -=-=-=-=-=-=-=-=-=-=-=-=-=-=-= #
   if(Model == "MAXENT.Tsuruoka"){
-    model.sp <- try(maxent::maxent(feature_matrix = Data[calibLines, expl_var_names, drop = FALSE],
-                                   code_vector = as.factor(Data[calibLines, 1]),
-                                   l1_regularizer = Options@MAXENT.Tsuruoka$l1_regularizer,
-                                   l2_regularizer = Options@MAXENT.Tsuruoka$l2_regularizer,
-                                   use_sgd = Options@MAXENT.Tsuruoka$use_sgd,
-                                   set_heldout = Options@MAXENT.Tsuruoka$set_heldout,
-                                   verbose = Options@MAXENT.Tsuruoka$verbose))
+    model.sp <- try(stop('MAXENT.Tsuruoka is depreacated(because maxent package is not maintained anymore)'))
+    # model.sp <- try(maxent::maxent(feature_matrix = Data[calibLines, expl_var_names, drop = FALSE],
+    #                                code_vector = as.factor(Data[calibLines, 1]),
+    #                                l1_regularizer = Options@MAXENT.Tsuruoka$l1_regularizer,
+    #                                l2_regularizer = Options@MAXENT.Tsuruoka$l2_regularizer,
+    #                                use_sgd = Options@MAXENT.Tsuruoka$use_sgd,
+    #                                set_heldout = Options@MAXENT.Tsuruoka$set_heldout,
+    #                                verbose = Options@MAXENT.Tsuruoka$verbose))
 
     if( !inherits(model.sp,"try-error") ){
       model.bm <- new("MAXENT.Tsuruoka_biomod2_model",

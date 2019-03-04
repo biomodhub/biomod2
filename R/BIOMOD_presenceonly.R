@@ -10,7 +10,7 @@
 ##' @param modeling.output  "BIOMOD.models.out" object produced by a BIOMOD_Modeling run
 ##' @param EM.output        a "BIOMOD.EnsembleModeling.out" returned by BIOMOD_EnsembleModeling
 ##' @param bg.env           a data frame or matrix of environmental variables which was extracted from the background (might be used if presences should be compared to the background instead of Absences or Pseudo-Absences selected for modelling). 
-##' @param perc             Percentage of correctly classified presences for MPA (Default 90%).  
+##' @param perc             Percentage of correctly classified presences for MPA (Default 90\%).  
 ##' @param save.output      logical. If TRUE (Default) the output is saved to the ".BIOMOD_DATA" folder
 ##' 
 ##' @details
@@ -29,15 +29,15 @@
 ##' Engler, R., Guisan, A., and Rechsteiner L. 2004. An improved approach for predicting the distribution of rare and endangered species from occurrence and pseudo-absence data. Journal of Applied Ecology, 41(2), 263-274.
 ##' Hirzel, A. H., Le Lay, G., Helfer, V., Randin, C., and Guisan, A. 2006. Evaluating the ability of habitat suitability models to predict species presences. Ecological Modelling, 199(2), 142-152.
 ##' 
-##' @author
+##' @author 
 ##' Frank Breiner \email{frank.breiner@wsl.ch}
 ##' 
-##' @seealso
+##' @seealso 
 ##' \code{\link[ecospat]{ecospat.boyce}}, \code{\link[ecospat]{ecospat.mpa}}, \code{\link[biomod2]{BIOMOD_Modeling}}, \code{\link[biomod2]{BIOMOD_EnsembleModeling}}
 ##' 
 ##' @examples
 ##' \dontrun{
-##' require(PresenceAbsence)
+##' requireNamesapce(PresenceAbsence, 'PresenceAbsence', quietly = TRUE)
 ##' 
 ##' # species occurrences
 ##' DataSpecies <- read.csv(system.file("external/species/mammals_table.csv",
@@ -115,9 +115,10 @@
 ##' pres.only.eval <- BIOMOD_presenceonly(myBiomodModelOut, myBiomodEM, bg.env = bg.Values)
 ##' pres.only.eval$eval
 ##' }
-
 BIOMOD_presenceonly <- function(modeling.output = NULL, EM.output = NULL, bg.env = NULL, perc = 0.9, save.output = T){
-  if(!require(PresenceAbsence)){stop("PresenceAbsence package required!")}
+  # if(!require(PresenceAbsence)){stop("PresenceAbsence package required!")}
+  requireNamespace('PresenceAbsence', quietly = TRUE)
+  
   myModelEval <- myBiomodProjFF <- NULL
   
   if(!is.null(modeling.output)){  
@@ -138,10 +139,12 @@ BIOMOD_presenceonly <- function(modeling.output = NULL, EM.output = NULL, bg.env
         build.clamping.mask = F)      
       myModelPred <- as.data.frame(myBiomodProj.eval@proj@val)
       ### Change the colnames to the real model names
-      colnames(myModelPred) <- paste(myBiomodModelOut@sp.name,
-                                     rep(dimnames(myBiomodProj.eval@proj@val)[[4]],prod(dim(myBiomodProj.eval@proj@val)[2:3])),
-                                     rep(dimnames(myBiomodProj.eval@proj@val)[[3]],each = dim(myBiomodProj.eval@proj@val)[2]),
-                                     rep(dimnames(myBiomodProj.eval@proj@val)[[2]],dim(myBiomodProj.eval@proj@val)[3]), sep='_')
+      colnames(myModelPred) <- 
+        paste(
+          modeling.output@sp.name,
+          rep(dimnames(myBiomodProj.eval@proj@val)[[4]],prod(dim(myBiomodProj.eval@proj@val)[2:3])),
+          rep(dimnames(myBiomodProj.eval@proj@val)[[3]],each = dim(myBiomodProj.eval@proj@val)[2]),
+          rep(dimnames(myBiomodProj.eval@proj@val)[[2]],dim(myBiomodProj.eval@proj@val)[3]), sep='_')
     }
     if(modeling.output@has.evaluation.data == T){
       myModelPred.eval  <- as.data.frame(get(load(paste(modeling.output@"sp.name","/.BIOMOD_DATA/",modeling.output@modeling.id,"/models.prediction.eval", sep=""))))
@@ -238,7 +241,7 @@ BIOMOD_presenceonly <- function(modeling.output = NULL, EM.output = NULL, bg.env
         boyce.eval[boyce.eval[,1]==Model.name,5] <-  round(boy$HS[max(which(boy$F.ratio<1))],0)
         DATA<-cbind(1:length(Pred), test, Pred/1000)
         DATA[is.na(DATA[,2]),2] <- 0
-        DATA <- DATA[complete.cases(DATA),]
+        DATA <- DATA[stats::complete.cases(DATA),]
         if(!is.na(round(boy$HS[max(which(boy$F.ratio<1))],0)/1000)){
         EVAL<-presence.absence.accuracy(DATA, threshold=round(boy$HS[max(which(boy$F.ratio<1))],0)/1000) 
         boyce.eval[boyce.eval[,1]==Model.name,6] <-  EVAL$sensitivity 

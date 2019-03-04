@@ -183,7 +183,7 @@
       }
 
     }
-    if(legend){
+    if(legend & plot){
       plot.new()
       legend(x="center",
              legend = formal_names,
@@ -480,19 +480,17 @@
               tidyr::gather("pred.name", "pred.val", (1:(ncol(dat_)-2)))
             out.dat_ <- 
               dplyr::full_join(expl.dat_, pred.dat_, by = 'id') %>%
-              mutate(
-                expl.name = as.character(expl.name),
-                pred.name = as.character(pred.name),
-                expl.val = as.numeric(expl.val)
-              )
+              dplyr::mutate_at(c('expl.name', 'pred.name'), as.character) %>%
+              dplyr::mutate_at('expl.val', as.numeric)
             return(out.dat_)
           }
         )
       )
-    out_ <- out_ %>%
-      mutate(
-        expl.name = factor(expl.name)
-      )
+    
+    out_ <- 
+      out_ %>%
+      dplyr::mutate_at('expl.name', factor)
+    
     return(out_)
   }
 
@@ -528,20 +526,13 @@
                 by = 'id'
               )
             out.dat_ <- out.dat_ %>%
-              mutate(
-                expl1.name = as.character(expl1.name),
-                expl2.name = as.character(expl2.name),
-                pred.name  = as.character(pred.name),
-                expl1.val = as.numeric(expl1.val),
-                expl2.val = as.numeric(expl2.val)
-              )
+              dplyr::mutate_at(c('expl1.name', 'expl2.name', 'pred.name'), as.character) %>% 
+              dplyr::mutate_at(c('expl1.val', 'expl2.val'), as.numeric)
             return(out.dat_)
   }))
   ## ensure that the stips are in the right order
-  out_ <- out_ %>%
-    mutate(
-      expl1.name = factor(expl1.name),
-      expl2.name <- factor(expl2.name)
-    )
+  out_ <- 
+    out_ %>%
+    dplyr::mutate_at(c('expl1.name', 'expl2.name'), factor)
   return(out_)
 }

@@ -5,12 +5,16 @@
 \title{evaluate models with presences only metrics}
 \usage{
 BIOMOD_presenceonly(modeling.output = NULL, EM.output = NULL,
-  save.output = T)
+  bg.env = NULL, perc = 0.9, save.output = T)
 }
 \arguments{
 \item{modeling.output}{"BIOMOD.models.out" object produced by a BIOMOD_Modeling run}
 
 \item{EM.output}{a "BIOMOD.EnsembleModeling.out" returned by BIOMOD_EnsembleModeling}
+
+\item{bg.env}{a data frame or matrix of environmental variables which was extracted from the background (might be used if presences should be compared to the background instead of Absences or Pseudo-Absences selected for modelling).}
+
+\item{perc}{Percentage of correctly classified presences for MPA (Default 90\%).}
 
 \item{save.output}{logical. If TRUE (Default) the output is saved to the ".BIOMOD_DATA" folder}
 }
@@ -25,7 +29,7 @@ BIOMOD.EnsembleModeling.out object with presence-only evaluation methods
 }
 \details{
 'em.by' of 'BIOMOD.EnsembleModeling' must be 'PA_dataset+repet' to have an 
-ensemble for each RUN of the 'NbRunEval' argument (BIOMOD_Modeling function)
+ensemble for each RUN of the 'NbRunEval' argument (BIOMOD_Modeling funtion)
 for evaluation.
 The Boyce index returns NA values for 'SRE' models because it is not possible
 to be calculated with binary predictions. This is also the reason why there 
@@ -33,7 +37,7 @@ are sometimes NA values for 'GLM' models if they don not converge.
 }
 \examples{
 \dontrun{
-require(PresenceAbsence)
+requireNamesapce(PresenceAbsence, 'PresenceAbsence', quietly = TRUE)
 
 # species occurrences
 DataSpecies <- read.csv(system.file("external/species/mammals_table.csv",
@@ -104,15 +108,21 @@ myBiomodEM <- BIOMOD_EnsembleModeling( modeling.output = myBiomodModelOut,
 # evaluate Biomod models with the Boyce index and MPA
 pres.only.eval <- BIOMOD_presenceonly(myBiomodModelOut, myBiomodEM)
 pres.only.eval$eval
+
+# evaluate Biomod models with the Boyce index and MPA using Background data
+bg.Values <- getValues(myExpl)
+
+pres.only.eval <- BIOMOD_presenceonly(myBiomodModelOut, myBiomodEM, bg.env = bg.Values)
+pres.only.eval$eval
 }
-}
-\author{
-Frank Breiner
 }
 \references{
-Engler, R., A. Guisan, and L. Rechsteiner. 2004. An improved approach for predicting the distribution of rare and endangered species from occurrence and pseudo-absence data. Journal of Applied Ecology.
+Engler, R., Guisan, A., and Rechsteiner L. 2004. An improved approach for predicting the distribution of rare and endangered species from occurrence and pseudo-absence data. Journal of Applied Ecology, 41(2), 263-274.
+Hirzel, A. H., Le Lay, G., Helfer, V., Randin, C., and Guisan, A. 2006. Evaluating the ability of habitat suitability models to predict species presences. Ecological Modelling, 199(2), 142-152.
 }
 \seealso{
-ecospat.boyce, ecospat.mpa, BIOMOD_Modeling, BIOMOD_EnsembleModeling
+\code{\link[ecospat]{ecospat.boyce}}, \code{\link[ecospat]{ecospat.mpa}}, \code{\link[biomod2]{BIOMOD_Modeling}}, \code{\link[biomod2]{BIOMOD_EnsembleModeling}}
 }
-
+\author{
+Frank Breiner \email{frank.breiner@wsl.ch}
+}

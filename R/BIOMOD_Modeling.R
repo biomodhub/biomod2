@@ -261,6 +261,7 @@ BIOMOD_Modeling <- function( data,
   }
 
   models <- unique(models)
+  models.swich.off <- NULL
 
   if(sum(models %in% c('GLM','GBM','GAM','CTA','ANN','SRE','FDA','MARS','RF','MAXENT.Phillips', 'MAXENT.Tsuruoka')) != length(models)){
     stop(paste(models[which( (models %in% c('GLM','GBM','GAM','CTA','ANN','SRE','FDA','MARS','RF','MAXENT.Phillips', 'MAXENT.Tsuruoka'))
@@ -271,12 +272,18 @@ BIOMOD_Modeling <- function( data,
 
   if(length(categorial_var)){
     models.fact.unsuprort <- c("SRE", "MAXENT.Tsuruoka")
-    models.swich.off <- intersect(models, models.fact.unsuprort)
+    models.swich.off <- c(models.swich.off, intersect(models, models.fact.unsuprort))
     if(length(models.swich.off)){
       models <- setdiff(models, models.swich.off)
       cat(paste0("\n\t! ", paste(models.swich.off, collapse = ",", sep = " ")," were switched off because of categorical variables !"))
     }
-
+  }
+  
+  ## disable MAXENT.Tsuruoka because of package maintaining issue (request from B Ripley 03-2019)
+  if('MAXENT.Tsuruoka' %in% models){
+    models.swich.off <- unique(c(models.swich.off, "MAXENT.Tsuruoka"))
+    models <- setdiff(models, models.swich.off)
+    warning('MAXENT.Tsuruoka has been disabled because of package maintaining issue (request from cran team 03-2019)')
   }
 
   # models.options checking ( peut etre permetre l'utilisation de liste de params )

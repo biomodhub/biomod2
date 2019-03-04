@@ -366,6 +366,7 @@
 
     if(is.null(GAM$control )) {
       if(opt@GAM$algo == 'GAM_gam'){
+        requireNamespace('gam', quietly = TRUE)
         opt@GAM$control <- gam::gam.control()
       } else{ opt@GAM$control <- mgcv::gam.control() }
     } else{

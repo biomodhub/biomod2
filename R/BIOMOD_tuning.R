@@ -49,7 +49,7 @@
 ##' Kuhn, Max, and Kjell Johnson. 2013. Applied predictive modeling. New York: Springer.
 ##' Muscarella, Robert, et al. 2014. ENMeval: An R package for conducting spatially independent evaluations and estimating optimal model complexity for Maxent ecological niche models. \emph{Methods in Ecology and Evolution}, \bold{5}, 1198-1205.
 ##' 
-##' @seealso \code{\link[biomod2]{BIOMOD_ModelingOptions}, \code{\link[caret]{train}, \code{\link[ENMeval]{ENMevaluate}, \code{\link[maxent]{tune.maxent}
+##' @seealso \code{\link[biomod2]{BIOMOD_ModelingOptions}}, \code{\link[caret]{train}}, \code{\link[ENMeval]{ENMevaluate}}, \code{\link[maxent]{tune.maxent}}
 ##' 
 ##' @examples
 ##' \dontrun{
@@ -114,188 +114,6 @@
 ##' plot(Biomod.tuning$tune.CTA.rpart2)
 ##' plot(Biomod.tuning$tune.RF)
 ##' }
-
-
-#### Modified tuning function from the ENMeval package to tune MAXENT.Phillips (internal function for BIOMOD_tuning)
-
-tuning.maxent <-
-  function (occ, env=NULL,pres=NULL, bg=NULL, bg.coords=NULL, occ.grp=NULL, bg.grp=NULL, method=NULL, maxent.args, 
-            args.lab, categoricals=NULL, aggregation.factor=c(2,2), kfolds=NA, bin.output=FALSE, 
-            clamp, rasterPreds=FALSE, parallel=FALSE, numCores=NULL,RMvalues=seq(0.5, 4, 0.5), fc=c("L", "LQ", "H", "LQH", "LQHP", "LQHPT")) 
-  {
-    ###NEW
-    requireNamespace("ENMeval", quietly = TRUE)
-    maxent.args <- ENMeval::make.args(RMvalues, fc)
-    args.lab <- ENMeval::make.args(RMvalues, fc, labels = TRUE)
-    if(!is.null(pres)){occ<-pres}
-    if(!is.null(bg)){bg.coords<-bg}
-    #####
-    noccs <- nrow(occ)
-    if (method == "checkerboard1") 
-      group.data <- ENMeval::get.checkerboard1(occ, env, bg.coords, 
-                                               aggregation.factor)
-    if (method == "checkerboard2") 
-      group.data <- ENMeval::get.checkerboard2(occ, env, bg.coords, 
-                                               aggregation.factor)
-    if (method == "block") 
-      group.data <- ENMeval::get.block(occ, bg.coords)
-    if (method == "jackknife") 
-      group.data <- ENMeval::get.jackknife(occ, bg.coords)
-    if (method == "randomkfold") 
-      group.data <- ENMeval::get.randomkfold(occ, bg.coords, kfolds)
-    if (method == "user") 
-      group.data <- ENMeval::get.user(occ.grp, bg.grp)
-    nk <- length(unique(group.data$occ.grp))
-    ###NEW
-    if(is.null(pres)){
-      pres <- as.data.frame(extract(env, occ))}
-    if(is.null(bg)){
-      bg <- as.data.frame(extract(env, bg.coords))}
-    #####
-    if (any(is.na(colSums(pres)))) {
-      message("Warning: some predictors variables are NA at some occurrence points")
-    }
-    if (any(is.na(colSums(bg)))) {
-      message("Warning: some predictors variables are NA at some background points")
-    }
-    if (!is.null(categoricals)) {
-      for (i in 1:length(categoricals)) {
-        pres[, categoricals[i]] <- as.factor(pres[, categoricals[i]])
-        bg[, categoricals[i]] <- as.factor(bg[, categoricals[i]])
-      }
-    }
-    tune <- function() {
-      if (length(maxent.args) > 1 & !parallel) {
-        setTxtProgressBar(pb, i)
-      }
-      x <- rbind(pres, bg)
-      p <- c(rep(1, nrow(pres)), rep(0, nrow(bg)))
-      tmpfolder <- tempfile()
-      full.mod <- maxent(x, p, args = maxent.args[[i]], factors = categoricals, 
-                         path = tmpfolder)
-      pred.args <- c("outputformat=raw", ifelse(clamp == TRUE, 
-                                                "doclamp=true", "doclamp=false"))
-      if (rasterPreds == TRUE) {
-        predictive.map <- predict(full.mod, env, args = pred.args)
-      }
-      else {
-        predictive.map <- stack()
-      }
-      AUC.TEST <- double()
-      AUC.DIFF <- double()
-      OR10 <- double()
-      ORmin <- double()
-      for (k in 1:nk) {
-        train.val <- pres[group.data$occ.grp != k, ]
-        test.val <- pres[group.data$occ.grp == k, ]
-        bg.val <- bg[group.data$bg.grp != k, ]
-        x <- rbind(train.val, bg.val)
-        p <- c(rep(1, nrow(train.val)), rep(0, nrow(bg.val)))
-        mod <- maxent::maxent(x, p, args = maxent.args[[i]], factors = categoricals, 
-                              path = tmpfolder)
-        ### Specify dismo!!! Problems with biomod!
-        AUC.TEST[k] <- dismo::evaluate(test.val, bg, mod)@auc
-        AUC.DIFF[k] <- max(0, dismo::evaluate(train.val, bg, mod)@auc - 
-                             AUC.TEST[k])
-        ########
-        p.train <- predict(mod, train.val, args = pred.args)
-        p.test <- predict(mod, test.val, args = pred.args)
-        if (nrow(train.val) < 10) {
-          n90 <- floor(nrow(train.val) * 0.9)
-        }
-        else {
-          n90 <- ceiling(nrow(train.val) * 0.9)
-        }
-        train.thr.10 <- rev(sort(p.train))[n90]
-        OR10[k] <- mean(p.test < train.thr.10)
-        train.thr.min <- min(p.train)
-        ORmin[k] <- mean(p.test < train.thr.min)
-      }
-      unlink(tmpfolder, recursive = TRUE)
-      stats <- c(AUC.DIFF, AUC.TEST, OR10, ORmin)
-      return(list(full.mod, stats, predictive.map))
-    }
-    if (parallel == TRUE) {
-      requireNamespace("foreach")
-      allCores <- detectCores()
-      if (is.null(numCores)) {
-        numCores <- allCores
-      }
-      c1 <- makeCluster(numCores)
-      doParallel::registerDoParallel(c1)
-      numCoresUsed <- foreach::getDoParWorkers()
-      message(paste("Of", allCores, "total cores using", numCoresUsed))
-      message("Running in parallel...")
-      out <- foreach::foreach(i = seq_len(length(maxent.args)), .packages = c("dismo", 
-                                                                              "raster", "ENMeval")) %dopar% {
-                                                                                tune()
-                                                                              }
-      stopCluster(c1)
-    }
-    else {
-      pb <- txtProgressBar(0, length(maxent.args), style = 3)
-      out <- list()
-      for (i in 1:length(maxent.args)) {
-        out[[i]] <- tune()
-      }
-      close(pb)
-    }
-    full.mods <- sapply(out, function(x) x[[1]])
-    statsTbl <- as.data.frame(t(sapply(out, function(x) x[[2]])))
-    if (rasterPreds) {
-      predictive.maps <- stack(sapply(out, function(x) x[[3]]))
-    }
-    else {
-      predictive.maps <- stack()
-    }
-    AUC.DIFF <- statsTbl[, 1:nk]
-    AUC.TEST <- statsTbl[, (nk + 1):(2 * nk)]
-    OR10 <- statsTbl[, ((2 * nk) + 1):(3 * nk)]
-    ORmin <- statsTbl[, ((3 * nk) + 1):(4 * nk)]
-    names(AUC.DIFF) <- paste("AUC.DIFF_bin", 1:nk, sep = ".")
-    Mean.AUC.DIFF <- rowMeans(AUC.DIFF)
-    Var.AUC.DIFF <- ENMeval::corrected.var(AUC.DIFF, noccs)
-    names(AUC.TEST) <- paste("AUC_bin", 1:nk, sep = ".")
-    Mean.AUC <- rowMeans(AUC.TEST)
-    Var.AUC <- ENMeval::corrected.var(AUC.TEST, noccs)
-    names(OR10) <- paste("OR10_bin", 1:nk, sep = ".")
-    Mean.OR10 <- rowMeans(OR10)
-    Var.OR10 <- apply(OR10, 1, var)
-    names(ORmin) <- paste("ORmin_bin", 1:nk, sep = ".")
-    Mean.ORmin <- rowMeans(ORmin)
-    Var.ORmin <- apply(ORmin, 1, var)
-    full.AUC <- double()
-    for (i in 1:length(full.mods)) full.AUC[i] <- full.mods[[i]]@results[5]
-    nparm <- numeric()
-    for (i in 1:length(full.mods)) nparm[i] <- ENMeval::get.params(full.mods[[i]])
-    if (rasterPreds == TRUE) {
-      aicc <- ENMeval::calc.aicc(nparm, occ, predictive.maps)
-    }
-    else {
-      aicc <- rep(NaN, length(full.AUC))
-    }
-    features <- args.lab[[1]]
-    rm <- args.lab[[2]]
-    settings <- paste(args.lab[[1]], args.lab[[2]], sep = "_")
-    res <- data.frame(settings, features, rm, full.AUC, Mean.AUC, 
-                      Var.AUC, Mean.AUC.DIFF, Var.AUC.DIFF, Mean.OR10, Var.OR10, 
-                      Mean.ORmin, Var.ORmin, nparm, aicc)
-    if (bin.output == TRUE) {
-      res <- as.data.frame(cbind(res, AUC.TEST, AUC.DIFF, OR10, 
-                                 ORmin))
-    }
-    if (rasterPreds == TRUE) {
-      names(predictive.maps) <- settings
-    }
-    results <- ENMeval::ENMevaluation(results = res, predictions = predictive.maps, 
-                                      models = full.mods, partition.method = method, occ.pts = occ, 
-                                      occ.grp = group.data[[1]], bg.pts = bg.coords, bg.grp = group.data[[2]])
-    return(results)
-  }
-
-
-
-
 BIOMOD_tuning <- function(data,
                           models = c('GLM','GBM','GAM','CTA','ANN','SRE','FDA','MARS','RF','MAXENT.Phillips','MAXENT.Tsuruoka'),
                           models.options = BIOMOD_ModelingOptions(),
@@ -551,7 +369,7 @@ BIOMOD_tuning <- function(data,
     cat("Start tuning GLM\n")
     
     if(is.null(ctrl.GLM)){ctrl.GLM <- trControl}
-    if("s_smoother" %in% type.GLM){require("gam")}
+    if("s_smoother" %in% type.GLM){requireNamespace("gam", quietly = TRUE)}
     
     fm<-list()
     GLM.results<-NULL 
@@ -677,7 +495,7 @@ BIOMOD_tuning <- function(data,
       models.options@MAXENT.Tsuruoka$l2_regularizer <- tune.MAXENT.Tsuruoka$l2_regularizer[which.max(tune.MAXENT.Tsuruoka$accuracy)]
       models.options@MAXENT.Tsuruoka$use_sgd <- ifelse(tune.MAXENT.Tsuruoka[which.max(tune.MAXENT.Tsuruoka$accuracy),]$use_sgd==0,F,T)
       models.options@MAXENT.Tsuruoka$set_heldout <- tune.MAXENT.Tsuruoka$set_heldout[which.max(tune.MAXENT.Tsuruoka$accuracy)]
-    }else{ if('MAXENT.Tsuruoka' %in% models){cat("Tuning MAXENT.Tsuruoka failed!"); tune.MAXENT.Tsuruoka <- "FAILED"}}
+    } else { if('MAXENT.Tsuruoka' %in% models){cat("Tuning MAXENT.Tsuruoka failed!"); tune.MAXENT.Tsuruoka <- "FAILED"}}
   }  
   
   
@@ -685,3 +503,185 @@ BIOMOD_tuning <- function(data,
               tune.RF = tune.RF, tune.ANN = tune.ANN,  tune.MARS = tune.MARS, tune.FDA = tune.FDA, tune.GBM=tune.GBM,
               tune.GAM = tune.GAM, tune.MAXENT.Phillips = tune.MAXENT.Phillips, tune.MAXENT.Tsuruoka = tune.MAXENT.Tsuruoka, tune.GLM=tune.GLM))
 }
+
+
+##
+#### Modified tuning function from the ENMeval package to tune MAXENT.Phillips (internal function for BIOMOD_tuning)
+
+tuning.maxent <-
+  function (occ, env=NULL,pres=NULL, bg=NULL, bg.coords=NULL, occ.grp=NULL, bg.grp=NULL, method=NULL, maxent.args, 
+            args.lab, categoricals=NULL, aggregation.factor=c(2,2), kfolds=NA, bin.output=FALSE, 
+            clamp, rasterPreds=FALSE, parallel=FALSE, numCores=NULL,RMvalues=seq(0.5, 4, 0.5), fc=c("L", "LQ", "H", "LQH", "LQHP", "LQHPT")) 
+  {
+    ###NEW
+    requireNamespace("ENMeval", quietly = TRUE)
+    maxent.args <- ENMeval::make.args(RMvalues, fc)
+    args.lab <- ENMeval::make.args(RMvalues, fc, labels = TRUE)
+    if(!is.null(pres)){occ<-pres}
+    if(!is.null(bg)){bg.coords<-bg}
+    #####
+    noccs <- nrow(occ)
+    if (method == "checkerboard1") 
+      group.data <- ENMeval::get.checkerboard1(occ, env, bg.coords, 
+                                               aggregation.factor)
+    if (method == "checkerboard2") 
+      group.data <- ENMeval::get.checkerboard2(occ, env, bg.coords, 
+                                               aggregation.factor)
+    if (method == "block") 
+      group.data <- ENMeval::get.block(occ, bg.coords)
+    if (method == "jackknife") 
+      group.data <- ENMeval::get.jackknife(occ, bg.coords)
+    if (method == "randomkfold") 
+      group.data <- ENMeval::get.randomkfold(occ, bg.coords, kfolds)
+    if (method == "user") 
+      group.data <- ENMeval::get.user(occ.grp, bg.grp)
+    nk <- length(unique(group.data$occ.grp))
+    ###NEW
+    if(is.null(pres)){
+      pres <- as.data.frame(extract(env, occ))}
+    if(is.null(bg)){
+      bg <- as.data.frame(extract(env, bg.coords))}
+    #####
+    if (any(is.na(colSums(pres)))) {
+      message("Warning: some predictors variables are NA at some occurrence points")
+    }
+    if (any(is.na(colSums(bg)))) {
+      message("Warning: some predictors variables are NA at some background points")
+    }
+    if (!is.null(categoricals)) {
+      for (i in 1:length(categoricals)) {
+        pres[, categoricals[i]] <- as.factor(pres[, categoricals[i]])
+        bg[, categoricals[i]] <- as.factor(bg[, categoricals[i]])
+      }
+    }
+    tune <- function() {
+      if (length(maxent.args) > 1 & !parallel) {
+        setTxtProgressBar(pb, i)
+      }
+      x <- rbind(pres, bg)
+      p <- c(rep(1, nrow(pres)), rep(0, nrow(bg)))
+      tmpfolder <- tempfile()
+      full.mod <- dismo::maxent(x, p, args = maxent.args[[i]], factors = categoricals, 
+                                path = tmpfolder)
+      pred.args <- c("outputformat=raw", ifelse(clamp == TRUE, 
+                                                "doclamp=true", "doclamp=false"))
+      if (rasterPreds == TRUE) {
+        predictive.map <- predict(full.mod, env, args = pred.args)
+      }
+      else {
+        predictive.map <- stack()
+      }
+      AUC.TEST <- double()
+      AUC.DIFF <- double()
+      OR10 <- double()
+      ORmin <- double()
+      for (k in 1:nk) {
+        train.val <- pres[group.data$occ.grp != k, ]
+        test.val <- pres[group.data$occ.grp == k, ]
+        bg.val <- bg[group.data$bg.grp != k, ]
+        x <- rbind(train.val, bg.val)
+        p <- c(rep(1, nrow(train.val)), rep(0, nrow(bg.val)))
+        mod <- dismo::maxent(x, p, args = maxent.args[[i]], factors = categoricals, 
+                             path = tmpfolder)
+        ### Specify dismo!!! Problems with biomod!
+        AUC.TEST[k] <- dismo::evaluate(test.val, bg, mod)@auc
+        AUC.DIFF[k] <- max(0, dismo::evaluate(train.val, bg, mod)@auc - 
+                             AUC.TEST[k])
+        ########
+        p.train <- predict(mod, train.val, args = pred.args)
+        p.test <- predict(mod, test.val, args = pred.args)
+        if (nrow(train.val) < 10) {
+          n90 <- floor(nrow(train.val) * 0.9)
+        }
+        else {
+          n90 <- ceiling(nrow(train.val) * 0.9)
+        }
+        train.thr.10 <- rev(sort(p.train))[n90]
+        OR10[k] <- mean(p.test < train.thr.10)
+        train.thr.min <- min(p.train)
+        ORmin[k] <- mean(p.test < train.thr.min)
+      }
+      unlink(tmpfolder, recursive = TRUE)
+      stats <- c(AUC.DIFF, AUC.TEST, OR10, ORmin)
+      return(list(full.mod, stats, predictive.map))
+    }
+    if (parallel == TRUE) {
+      requireNamespace("foreach")
+      allCores <- detectCores()
+      if (is.null(numCores)) {
+        numCores <- allCores
+      }
+      c1 <- makeCluster(numCores)
+      doParallel::registerDoParallel(c1)
+      numCoresUsed <- foreach::getDoParWorkers()
+      message(paste("Of", allCores, "total cores using", numCoresUsed))
+      message("Running in parallel...")
+      out <- foreach::foreach(i = seq_len(length(maxent.args)), .packages = c("dismo", 
+                                                                              "raster", "ENMeval")) %dopar% {
+                                                                                tune()
+                                                                              }
+      stopCluster(c1)
+    }
+    else {
+      pb <- txtProgressBar(0, length(maxent.args), style = 3)
+      out <- list()
+      for (i in 1:length(maxent.args)) {
+        out[[i]] <- tune()
+      }
+      close(pb)
+    }
+    full.mods <- sapply(out, function(x) x[[1]])
+    statsTbl <- as.data.frame(t(sapply(out, function(x) x[[2]])))
+    if (rasterPreds) {
+      predictive.maps <- stack(sapply(out, function(x) x[[3]]))
+    }
+    else {
+      predictive.maps <- stack()
+    }
+    AUC.DIFF <- statsTbl[, 1:nk]
+    AUC.TEST <- statsTbl[, (nk + 1):(2 * nk)]
+    OR10 <- statsTbl[, ((2 * nk) + 1):(3 * nk)]
+    ORmin <- statsTbl[, ((3 * nk) + 1):(4 * nk)]
+    names(AUC.DIFF) <- paste("AUC.DIFF_bin", 1:nk, sep = ".")
+    Mean.AUC.DIFF <- rowMeans(AUC.DIFF)
+    Var.AUC.DIFF <- ENMeval::corrected.var(AUC.DIFF, noccs)
+    names(AUC.TEST) <- paste("AUC_bin", 1:nk, sep = ".")
+    Mean.AUC <- rowMeans(AUC.TEST)
+    Var.AUC <- ENMeval::corrected.var(AUC.TEST, noccs)
+    names(OR10) <- paste("OR10_bin", 1:nk, sep = ".")
+    Mean.OR10 <- rowMeans(OR10)
+    Var.OR10 <- apply(OR10, 1, var)
+    names(ORmin) <- paste("ORmin_bin", 1:nk, sep = ".")
+    Mean.ORmin <- rowMeans(ORmin)
+    Var.ORmin <- apply(ORmin, 1, var)
+    full.AUC <- double()
+    for (i in 1:length(full.mods)) full.AUC[i] <- full.mods[[i]]@results[5]
+    nparm <- numeric()
+    for (i in 1:length(full.mods)) nparm[i] <- ENMeval::get.params(full.mods[[i]])
+    if (rasterPreds == TRUE) {
+      aicc <- ENMeval::calc.aicc(nparm, occ, predictive.maps)
+    }
+    else {
+      aicc <- rep(NaN, length(full.AUC))
+    }
+    features <- args.lab[[1]]
+    rm <- args.lab[[2]]
+    settings <- paste(args.lab[[1]], args.lab[[2]], sep = "_")
+    res <- data.frame(settings, features, rm, full.AUC, Mean.AUC, 
+                      Var.AUC, Mean.AUC.DIFF, Var.AUC.DIFF, Mean.OR10, Var.OR10, 
+                      Mean.ORmin, Var.ORmin, nparm, aicc)
+    if (bin.output == TRUE) {
+      res <- as.data.frame(cbind(res, AUC.TEST, AUC.DIFF, OR10, 
+                                 ORmin))
+    }
+    if (rasterPreds == TRUE) {
+      names(predictive.maps) <- settings
+    }
+    results <- ENMeval::ENMevaluation(results = res, predictions = predictive.maps, 
+                                      models = full.mods, partition.method = method, occ.pts = occ, 
+                                      occ.grp = group.data[[1]], bg.pts = bg.coords, bg.grp = group.data[[2]])
+    return(results)
+  }
+
+
+

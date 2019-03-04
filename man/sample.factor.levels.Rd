@@ -15,7 +15,7 @@ been sampled. The factor levels within this mask will not be sampled.}
 \item{mask.in}{a Raster/list of Raster/data.frame mask (potentially a stack of 
 masks) indicating areas were we want to sample our factor level in priority.
 Note that if after having explore this masks some levels of the considered
-factorial variable remains unsampled, this levels will be sampled in the 
+factorial varialble remains unsampled, this levels will be sampled in the 
 reference input object (here 'x')}
 }
 \value{
@@ -32,12 +32,12 @@ In case any factorial variable is found in the input object then
   NULL is returned.
 }
 \note{
-- The x/mask.out/mask.in should be coherent in term of dimension (same number of 
-    rows for data.frame and same number of rows, column, identical resolution 
+- The x/mask.out/mask.in should be coherent in term of dimention (same number of 
+    rows for data.frame and same number of rows, column, identic resolution 
     and projection coordinates system for Raster* objects)
   - If mask.in contains several masks (RasterStack or multi-column data.frame)
     then the order of the mask matter. The mask will be considered successively.
-    The first will be use prioritarily to sample our variable factor levels and 
+    The first will be use prioritarly to sample our variable factor levels and 
     so on.
   - Raster* masks will be understood as: 
       - NA: out of of mask
@@ -80,4 +80,3 @@ sample.factor.levels(stk, mask.out = mask.out, mask.in = mask.in)
 \author{
 damien g.
 }
-

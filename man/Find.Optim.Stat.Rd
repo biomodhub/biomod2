@@ -11,14 +11,14 @@ Find.Optim.Stat(Stat='TSS',
                   Fixed.thresh = NULL)
 }
 \arguments{
-\item{Stat}{either 'ROC', TSS', 'KAPPA', 'ACCURACY', 'BIAS', 'POD', 'FAR', 
+\item{Stat}{either 'ROC', TSS', 'KAPPA', 'ACCURACY', 'BIAS', 'POD', 'FAR',
 'POFD', 'SR', 'CSI', 'ETS', 'HK', 'HSS', 'OR' or 'ORSS'}
 
 \item{Fit}{vector of fitted values (continuous)}
 
 \item{Obs}{vector of observed values (binary)}
 
-\item{Nb.thresh.test}{integer, the number of thresholds tested over the 
+\item{Nb.thresh.test}{integer, the numer of thresholds tested over the
 range of fitted value}
 
 \item{Fixed.thresh}{integer, if not \code{NULL}, the only threshold value tested}
@@ -33,47 +33,46 @@ A 1 row x 4 column \code{matrix} :
   }
 }
 \description{
-\code{Find.Optim.Stat} is an internal \pkg{biomod2} function 
-to find the threshold to convert continuous values into binary ones leading 
+\code{Find.Optim.Stat} is an internal \pkg{biomod2} function
+to find the threshold to convert continuous values into binary ones leading
 to the best score for a given evaluation metric.
 }
 \details{
 Please refer to \code{\link[biomod2]{BIOMOD_Modeling}} to get more information about this metrics.
-  If you give a \code{Fixed.thresh}, no optimization will be done. Only the score for this threshold will be returned.
+  If you give a \code{Fixed.thresh}, no optimisation will be done. Only the score for this threshold will be returned.
 }
 \examples{
   a <- sample(c(0,1),100, replace=TRUE)
-                
+
   ##' random drawing
   b <- runif(100,min=0,max=1000)
   Find.Optim.Stat(Stat='TSS',
                   Fit=b,
                   Obs=a)
-                
+
   ##' biased drawing
   BiasedDrawing <- function(x, m1=300, sd1=200, m2=700, sd2=200){
     return(ifelse(x<0.5, rnorm(1,m1,sd1), rnorm(1,m2,sd2)))
   }
-                
+
   c <- sapply(a,BiasedDrawing)
-                
+
   Find.Optim.Stat(Stat='TSS',
                   Fit=c,
                   Obs=a,
-                  Nb.thresh.test = 100)  
-                
-                
+                  Nb.thresh.test = 100)
+
+
+}
+\seealso{
+\code{\link[biomod2]{BIOMOD_Modeling}},
+  \code{\link[biomod2]{getStatOptimValue}},
+  \code{\link[biomod2]{calculate.stat}}
 }
 \author{
 Damien Georges
-}
-\seealso{
-\code{\link[biomod2]{BIOMOD_Modeling}}, 
-  \code{\link[biomod2]{getStatOptimValue}}, 
-  \code{\link[biomod2]{calculate.stat}}
 }
 \keyword{evaluate,}
 \keyword{evaluation}
 \keyword{models,}
 \keyword{options,}
-
