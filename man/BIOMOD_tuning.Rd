@@ -5,7 +5,7 @@
 \title{Tune models parameters}
 \usage{
 BIOMOD_tuning(data, models = c("GLM", "GBM", "GAM", "CTA", "ANN", "SRE",
-  "FDA", "MARS", "RF", "MAXENT.Phillips", "MAXENT.Tsuruoka"),
+  "FDA", "MARS", "RF", "MAXENT.Phillips"),
   models.options = BIOMOD_ModelingOptions(), method.ANN = "avNNet",
   method.RF = "rf", method.MARS = "earth", method.GAM = "gam",
   method.GLM = "glmStepAIC", trControl = NULL, metric = "ROC",
@@ -23,7 +23,7 @@ BIOMOD_tuning(data, models = c("GLM", "GBM", "GAM", "CTA", "ANN", "SRE",
 \arguments{
 \item{data}{BIOMOD.formated.data object returned by BIOMOD_FormatingData}
 
-\item{models}{vector of models names choosen among 'GLM', 'GBM', 'GAM', 'CTA', 'ANN', 'SRE', 'FDA', 'MARS', 'RF', 'MAXENT.Phillips' and 'MAXENT.Tsuruoka'}
+\item{models}{vector of models names choosen among 'GLM', 'GBM', 'GAM', 'CTA', 'ANN', 'SRE', 'FDA', 'MARS', 'RF', 'MAXENT.Phillips'}
 
 \item{models.options}{BIOMOD.models.options object returned by BIOMOD_ModelingOptions. Default: BIOMOD_ModelingOptions()}
 
@@ -165,7 +165,7 @@ Kuhn, Max, and Kjell Johnson. 2013. Applied predictive modeling. New York: Sprin
 Muscarella, Robert, et al. 2014. ENMeval: An R package for conducting spatially independent evaluations and estimating optimal model complexity for Maxent ecological niche models. \emph{Methods in Ecology and Evolution}, \bold{5}, 1198-1205.
 }
 \seealso{
-\code{\link[biomod2]{BIOMOD_ModelingOptions}}, \code{\link[caret]{train}}, \code{\link[ENMeval]{ENMevaluate}}, \code{\link[maxent]{tune.maxent}}
+\code{\link[biomod2]{BIOMOD_ModelingOptions}}, \code{\link[caret]{train}}, \code{\link[ENMeval]{ENMevaluate}},
 }
 \author{
 Frank Breiner \email{frank.breiner@wsl.ch}

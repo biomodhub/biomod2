@@ -1189,110 +1189,110 @@ setClass('MAXENT_biomod2_model',
 
 ## MAXENT.Tsuruoka Class -------------------------------------------------------
 
-setClass('MAXENT.Tsuruoka_biomod2_model',
-         representation(),
-         contains = 'biomod2_model',
-         prototype = list(model_class = 'MAXENT.Tsuruoka'),
-         validity = function(object){
-           # check model class
-           if(sum(! ( c("maxent") %in% class(object@model) ) ) > 0) return(FALSE)
-           return(TRUE)
-         })
+# setClass('MAXENT.Tsuruoka_biomod2_model',
+#          representation(),
+#          contains = 'biomod2_model',
+#          prototype = list(model_class = 'MAXENT.Tsuruoka'),
+#          validity = function(object){
+#            # check model class
+#            if(sum(! ( c("maxent") %in% class(object@model) ) ) > 0) return(FALSE)
+#            return(TRUE)
+#          })
 
-setMethod('predict', signature(object = 'MAXENT.Tsuruoka_biomod2_model'),
-          function(object, newdata, ...){
-            args <- list(...)
+# setMethod('predict', signature(object = 'MAXENT.Tsuruoka_biomod2_model'),
+#           function(object, newdata, ...){
+#             args <- list(...)
+# 
+#             do_check <- args$do_check
+#             if(is.null(do_check)) do_check <- TRUE
+# 
+#             ## data checking
+#             if(do_check){
+#               newdata <- check_data_range(model=object, new_data=newdata)
+#             }
+# 
+#             if(inherits(newdata, 'Raster')){
+#               return(.predict.MAXENT.Tsuruoka_biomod2_model.RasterStack(object, newdata, ... ))
+#             } else if(inherits(newdata, 'data.frame') | inherits(newdata, 'matrix')){
+#               return(.predict.MAXENT.Tsuruoka_biomod2_model.data.frame(object, newdata, ... ))
+#             } else{ stop("invalid newdata input") }
+# 
+#           })
 
-            do_check <- args$do_check
-            if(is.null(do_check)) do_check <- TRUE
+# .predict.MAXENT.Tsuruoka_biomod2_model.RasterStack <- function(object, newdata, ...){
+#   args <- list(...)
+#   filename <- args$filename
+#   overwrite <- args$overwrite
+#   on_0_1000 <- args$on_0_1000
+# 
+#   if (is.null(overwrite)) overwrite <- TRUE
+#   if (is.null(on_0_1000)) on_0_1000 <- FALSE
+# 
+#   proj <- calc(newdata, function(x) {
+#     proj.out <- rep(NA, nrow(x))
+#     x.no.na <- na.omit(x)
+#     if(nrow(x.no.na)){
+#       proj.not.na <- as.numeric(predict.maxent(get_formal_model(object), x.no.na)[, '1'])
+#       proj.out[-attr(x.no.na, "na.action")] <- proj.not.na
+#     }
+#     return(proj.out)
+#     })
+# 
+#   if(length(get_scaling_model(object))){
+#     names(proj) <- "pred"
+#     proj <- .testnull(object = get_scaling_model(object), Prev = 0.5 , dat = proj)
+#   }
+# 
+#   if(on_0_1000) proj <- round(proj*1000)
+# 
+#   # save raster on hard drive ?
+#   if(!is.null(filename)){
+#     cat("\n\t\tWriting projection on hard drive...")
+#     if(on_0_1000){ ## projections are stored as positive integer
+#       writeRaster(proj, filename=filename, overwrite=overwrite, datatype="INT2S", NAflag=-9999)
+#     } else { ## keep default data format for saved raster
+#       writeRaster(proj, filename=filename, overwrite=overwrite)
+#     }
+#     proj <- raster(filename,RAT=FALSE)
+#   }
+# 
+#   return(proj)
+# }
 
-            ## data checking
-            if(do_check){
-              newdata <- check_data_range(model=object, new_data=newdata)
-            }
-
-            if(inherits(newdata, 'Raster')){
-              return(.predict.MAXENT.Tsuruoka_biomod2_model.RasterStack(object, newdata, ... ))
-            } else if(inherits(newdata, 'data.frame') | inherits(newdata, 'matrix')){
-              return(.predict.MAXENT.Tsuruoka_biomod2_model.data.frame(object, newdata, ... ))
-            } else{ stop("invalid newdata input") }
-
-          })
-
-.predict.MAXENT.Tsuruoka_biomod2_model.RasterStack <- function(object, newdata, ...){
-  args <- list(...)
-  filename <- args$filename
-  overwrite <- args$overwrite
-  on_0_1000 <- args$on_0_1000
-
-  if (is.null(overwrite)) overwrite <- TRUE
-  if (is.null(on_0_1000)) on_0_1000 <- FALSE
-
-  proj <- calc(newdata, function(x) {
-    proj.out <- rep(NA, nrow(x))
-    x.no.na <- na.omit(x)
-    if(nrow(x.no.na)){
-      proj.not.na <- as.numeric(predict.maxent(get_formal_model(object), x.no.na)[, '1'])
-      proj.out[-attr(x.no.na, "na.action")] <- proj.not.na
-    }
-    return(proj.out)
-    })
-
-  if(length(get_scaling_model(object))){
-    names(proj) <- "pred"
-    proj <- .testnull(object = get_scaling_model(object), Prev = 0.5 , dat = proj)
-  }
-
-  if(on_0_1000) proj <- round(proj*1000)
-
-  # save raster on hard drive ?
-  if(!is.null(filename)){
-    cat("\n\t\tWriting projection on hard drive...")
-    if(on_0_1000){ ## projections are stored as positive integer
-      writeRaster(proj, filename=filename, overwrite=overwrite, datatype="INT2S", NAflag=-9999)
-    } else { ## keep default data format for saved raster
-      writeRaster(proj, filename=filename, overwrite=overwrite)
-    }
-    proj <- raster(filename,RAT=FALSE)
-  }
-
-  return(proj)
-}
-
-.predict.MAXENT.Tsuruoka_biomod2_model.data.frame <- function(object, newdata, ...){
-  args <- list(...)
-  on_0_1000 <- args$on_0_1000
-  omit.na <- args$omit.na
-
-  if (is.null(on_0_1000)) on_0_1000 <- FALSE
-  if (is.null(omit.na)) omit.na <- FALSE
-
-  ## check if na occurs in newdata cause they are not well supported
-  if(omit.na){
-    not_na_rows <- apply(newdata, 1, function(x){sum(is.na(x))==0})
-  } else {
-    not_na_rows <- rep(T, nrow(newdata))
-  }
-
-  proj <- as.numeric(predict(get_formal_model(object), as.data.frame(newdata[not_na_rows,,drop=FALSE]))[,'1'])
-
-  ## add original NAs in table if it needed
-  if(sum(!not_na_rows) > 0 ){ # some NAs in formal dataset
-    tmp <- rep(NA,length(not_na_rows))
-    tmp[not_na_rows] <- proj
-    proj <- tmp
-    rm('tmp')
-  }
-
-  if(length(get_scaling_model(object))){
-    proj <- data.frame(pred = proj)
-    proj <- .testnull(object = get_scaling_model(object), Prev = 0.5 , dat = proj)
-  }
-
-  if(on_0_1000) proj <- round(proj*1000)
-
-  return(proj)
-}
+# .predict.MAXENT.Tsuruoka_biomod2_model.data.frame <- function(object, newdata, ...){
+#   args <- list(...)
+#   on_0_1000 <- args$on_0_1000
+#   omit.na <- args$omit.na
+# 
+#   if (is.null(on_0_1000)) on_0_1000 <- FALSE
+#   if (is.null(omit.na)) omit.na <- FALSE
+# 
+#   ## check if na occurs in newdata cause they are not well supported
+#   if(omit.na){
+#     not_na_rows <- apply(newdata, 1, function(x){sum(is.na(x))==0})
+#   } else {
+#     not_na_rows <- rep(T, nrow(newdata))
+#   }
+# 
+#   proj <- as.numeric(predict(get_formal_model(object), as.data.frame(newdata[not_na_rows,,drop=FALSE]))[,'1'])
+# 
+#   ## add original NAs in table if it needed
+#   if(sum(!not_na_rows) > 0 ){ # some NAs in formal dataset
+#     tmp <- rep(NA,length(not_na_rows))
+#     tmp[not_na_rows] <- proj
+#     proj <- tmp
+#     rm('tmp')
+#   }
+# 
+#   if(length(get_scaling_model(object))){
+#     proj <- data.frame(pred = proj)
+#     proj <- .testnull(object = get_scaling_model(object), Prev = 0.5 , dat = proj)
+#   }
+# 
+#   if(on_0_1000) proj <- round(proj*1000)
+# 
+#   return(proj)
+# }
 
 ## End MAXENT.Tsuruoka Class ---------------------------------------------------
 

@@ -31,7 +31,7 @@
 ####################################################################################################
 
 BIOMOD_Modeling <- function( data,
-                               models = c('GLM','GBM','GAM','CTA','ANN','SRE','FDA','MARS','RF','MAXENT.Phillips', 'MAXENT.Tsuruoka'),
+                               models = c('GLM','GBM','GAM','CTA','ANN','SRE','FDA','MARS','RF','MAXENT.Phillips'),
                                models.options = NULL,
                                NbRunEval=1,
                                DataSplit=100,

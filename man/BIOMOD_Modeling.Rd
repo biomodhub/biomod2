@@ -8,8 +8,7 @@
 \usage{
 BIOMOD_Modeling( data,
                  models = c('GLM','GBM','GAM','CTA','ANN',
-                            'SRE','FDA','MARS','RF','MAXENT.Phillips',
-                            "MAXENT.Tsuruoka"),
+                            'SRE','FDA','MARS','RF','MAXENT.Phillips'),
                  models.options = NULL,
                  NbRunEval=1,
                  DataSplit=100,
@@ -26,7 +25,7 @@ BIOMOD_Modeling( data,
 
 \arguments{
   \item{data}{\code{BIOMOD.formated.data} object returned by \code{\link[biomod2]{BIOMOD_FormatingData}}}
-  \item{models}{vector of models names chosen among 'GLM', 'GBM', 'GAM', 'CTA', 'ANN', 'SRE', 'FDA', 'MARS', 'RF', 'MAXENT.Phillips' and "MAXENT.Tsuruoka" }
+  \item{models}{vector of models names chosen among 'GLM', 'GBM', 'GAM', 'CTA', 'ANN', 'SRE', 'FDA', 'MARS', 'RF', 'MAXENT.Phillips'  }
   \item{models.options}{\code{BIOMOD.models.options} object returned by \code{\link[biomod2]{BIOMOD_ModelingOptions}}}
   \item{NbRunEval}{Number of Evaluation run}
   \item{DataSplit}{\% of data used to calibrate the models, the remaining part will be used for testing }
@@ -68,7 +67,7 @@ BIOMOD_Modeling( data,
       \item{MARS: Multiple Adaptive Regression Splines (\code{\link[earth]{earth}})}
       \item{RF: Random Forest (\code{\link[randomForest]{randomForest}})}
       \item{MAXENT.Phillips: Maximum Entropy (\url{http://www.cs.princeton.edu/~schapire/maxent/})}
-      \item{MAXENT.Tsuruoka: low-memory multinomial logistic regression (\code{\link[maxent]{maxent}})}
+      %\item{MAXENT.Tsuruoka: low-memory multinomial logistic regression (\code{\link[maxent]{maxent}})}
     }
 
   }

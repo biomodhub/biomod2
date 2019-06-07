@@ -34,7 +34,6 @@ Please refer to \code{\link[biomod2]{BIOMOD_ModelingOptions}} for each model arg
     \item{\code{MARS}:}{ "list", list of MARS supported options }
     \item{\code{RF}:}{ "list", list of RF supported options }
     \item{\code{MAXENT.Phillips}:}{ "list", list of MAXENT.Phillips supported options }
-    \item{\code{MAXENT.Tsuruoka}:}{ "list", list of MAXENT.Tsuruoka supported options }
   }
 
 }

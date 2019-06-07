@@ -14,8 +14,7 @@
 ##'                          FDA = NULL,
 ##'                          MARS = NULL,
 ##'                          RF = NULL,
-##'                          MAXENT.Phillips = NULL,
-##'                          MAXENT.Tsuruoka = NULL)
+##'                          MAXENT.Phillips = NULL)
 ##'
 ##' @param GLM  list, GLM options
 ##' @param GBM  list, GBM options
@@ -27,7 +26,6 @@
 ##' @param MARS list, MARS options
 ##' @param RF list, RF options
 ##' @param MAXENT.Phillips  list, MAXENT.Phillips options
-##' @param MAXENT.Tsuruoka  list, MAXENT.Tsuruoka options
 ##'
 ##'
 ##' @details
@@ -209,15 +207,15 @@
 ##'     \item{\code{defaultprevalence} : numeric (default \code{0.5}), default prevalence of the species: probability of presence at ordinary occurrence points}
 ##'   }
 ##'
-##' @section MAXENT.Tsuruoka (\code{\link[maxent]{maxent}}):
-##'
-##'   \itemize{
-##'     \item{\code{l1_regularizer} (default \code{0.0}): An numeric turning on L1 regularization and setting the regularization parameter. A value of 0 will disable L1 regularization}
-##'     \item{\code{l2_regularizer} (default \code{0.0}): An numeric turning on L2 regularization and setting the regularization parameter. A value of 0 will disable L2 regularization}
-##'     \item{\code{use_sgd} (default \code{FALSE}): A logical indicating that SGD parameter estimation should be used. Defaults to FALSE}
-##'     \item{\code{set_heldout} (default \code{0}): An integer specifying the number of documents to hold out. Sets a held-out subset of your data to test against and prevent overfitting}
-##'     \item{\code{verbose} (default \code{FALSE}): A logical specifying whether to provide descriptive output about the training process}
-##'   }
+##' % @section MAXENT.Tsuruoka (\code{\link[maxent]{maxent}}):
+##' %
+##' % \itemize{
+##' %   \item{\code{l1_regularizer} (default \code{0.0}): An numeric turning on L1 regularization and setting the regularization parameter. A value of 0 will disable L1 regularization}
+##' %   \item{\code{l2_regularizer} (default \code{0.0}): An numeric turning on L2 regularization and setting the regularization parameter. A value of 0 will disable L2 regularization}
+##' %   \item{\code{use_sgd} (default \code{FALSE}): A logical indicating that SGD parameter estimation should be used. Defaults to FALSE}
+##' %   \item{\code{set_heldout} (default \code{0}): An integer specifying the number of documents to hold out. Sets a held-out subset of your data to test against and prevent overfitting}
+##' %   \item{\code{verbose} (default \code{FALSE}): A logical specifying whether to provide descriptive output about the training process}
+##' % }
 ##'
 ##'   NOTE: if you use the \code{set_heldout} parameter then the data that will be held out will be taken in the
 ##'   calibration data pool. It can be penilizing in case of low number of occurences dataset.
@@ -275,8 +273,7 @@
                         FDA = NULL,
                         MARS = NULL,
                         RF = NULL,
-                        MAXENT.Phillips = NULL,
-                        MAXENT.Tsuruoka = NULL
+                        MAXENT.Phillips = NULL
                         ){
   # 1. create a defaut BIOMOD.Model.Options object
   opt <- new('BIOMOD.Model.Options')
@@ -484,13 +481,13 @@
     opt@MAXENT.Phillips$path_to_maxent.jar <- getwd()
   }
 
-  if(!is.null(MAXENT.Tsuruoka)){
-    if(!is.null(MAXENT.Tsuruoka$l1_regularizer )) { opt@MAXENT.Tsuruoka$l1_regularizer <- MAXENT.Tsuruoka$l1_regularizer }
-    if(!is.null(MAXENT.Tsuruoka$l2_regularizer )) { opt@MAXENT.Tsuruoka$l2_regularizer <- MAXENT.Tsuruoka$l2_regularizer }
-    if(!is.null(MAXENT.Tsuruoka$use_sgd )) { opt@MAXENT.Tsuruoka$use_sgd <- MAXENT.Tsuruoka$use_sgd }
-    if(!is.null(MAXENT.Tsuruoka$set_heldout )) { opt@MAXENT.Tsuruoka$set_heldout <- MAXENT.Tsuruoka$set_heldout }
-    if(!is.null(MAXENT.Tsuruoka$verbose )) { opt@MAXENT.Tsuruoka$verbose <- MAXENT.Tsuruoka$verbose }
-  }
+  # if(!is.null(MAXENT.Tsuruoka)){
+  #   if(!is.null(MAXENT.Tsuruoka$l1_regularizer )) { opt@MAXENT.Tsuruoka$l1_regularizer <- MAXENT.Tsuruoka$l1_regularizer }
+  #   if(!is.null(MAXENT.Tsuruoka$l2_regularizer )) { opt@MAXENT.Tsuruoka$l2_regularizer <- MAXENT.Tsuruoka$l2_regularizer }
+  #   if(!is.null(MAXENT.Tsuruoka$use_sgd )) { opt@MAXENT.Tsuruoka$use_sgd <- MAXENT.Tsuruoka$use_sgd }
+  #   if(!is.null(MAXENT.Tsuruoka$set_heldout )) { opt@MAXENT.Tsuruoka$set_heldout <- MAXENT.Tsuruoka$set_heldout }
+  #   if(!is.null(MAXENT.Tsuruoka$verbose )) { opt@MAXENT.Tsuruoka$verbose <- MAXENT.Tsuruoka$verbose }
+  # }
 
   test <- as.logical(validObject(object = opt, test = TRUE, complete = FALSE))
 
