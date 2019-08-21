@@ -99,7 +99,17 @@ BIOMOD_Modeling <- function( data,
 
 
   # 3. rearanging data and determining calib and eval data -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=- #)
-  mod.prep.dat <- .Models.prepare.data(data, NbRunEval, DataSplit, Yweights, Prevalence, do.full.models, DataSplitTable)
+  # browser()
+  mod.prep.dat <- 
+    .Models.prepare.data(
+      data, 
+      NbRunEval, 
+      DataSplit, 
+      Yweights, 
+      Prevalence, 
+      do.full.models, 
+      DataSplitTable
+    )
   rm(data)
 
   # keeping calibLines
@@ -139,13 +149,13 @@ BIOMOD_Modeling <- function( data,
                           )
 
   # put outputs in good format and save those
-
-  models.out@models.computed <- .transform.outputs(modeling.out, out='models.run')
-  models.out@models.failed <- .transform.outputs(modeling.out, out='calib.failure')
+  browser()
+  models.out@models.computed <- .transform.outputs.list(modeling.out, out='models.run')
+  models.out@models.failed <- .transform.outputs.list(modeling.out, out='calib.failure')
 
   if(SaveObj){
     # save model evaluation
-    models.evaluation <- .transform.outputs(modeling.out, out='evaluation')
+    models.evaluation <- .transform.outputs.list(modeling.out, out='evaluation')
     save(models.evaluation, file = file.path(models.out@sp.name,".BIOMOD_DATA",models.out@modeling.id,"models.evaluation"), compress = compress.arg)
     models.out@models.evaluation@inMemory <- TRUE
     models.out@models.evaluation@link <- file.path(models.out@sp.name,".BIOMOD_DATA",models.out@modeling.id,"models.evaluation")
@@ -154,7 +164,7 @@ BIOMOD_Modeling <- function( data,
 
     # save model variables importances
     if(VarImport > 0 ){
-      variables.importances <- .transform.outputs(modeling.out, out='var.import')
+      variables.importances <- .transform.outputs.list(modeling.out, out='var.import')
 
       ## trick to put appropriate dimnames
 #       vi.dim.names <- dimnames(variables.importances)
@@ -170,7 +180,7 @@ BIOMOD_Modeling <- function( data,
     }
 
     # save model predictions
-    models.prediction <- .transform.outputs(modeling.out, out='prediction')
+    models.prediction <- .transform.outputs.list(modeling.out, out='prediction')
     save(models.prediction, file = file.path(models.out@sp.name,".BIOMOD_DATA",models.out@modeling.id,"models.prediction"),  compress=compress.arg)
     models.out@models.prediction@inMemory <- FALSE
     models.out@models.prediction@link <- file.path(models.out@sp.name,".BIOMOD_DATA",models.out@modeling.id,"models.prediction")
@@ -178,7 +188,7 @@ BIOMOD_Modeling <- function( data,
     rm(models.prediction)
 
     # save evaluation model predictions
-    models.prediction.eval <- .transform.outputs(modeling.out, out='prediction.eval')
+    models.prediction.eval <- .transform.outputs.list(modeling.out, out='prediction.eval')
     save(models.prediction.eval, file = file.path(models.out@sp.name,".BIOMOD_DATA",models.out@modeling.id,"models.prediction.eval"), compress = compress.arg)
     models.out@models.prediction.eval@inMemory <- FALSE
     models.out@models.prediction.eval@link <- file.path(models.out@sp.name,".BIOMOD_DATA",models.out@modeling.id,"models.prediction.eval")
@@ -256,17 +266,26 @@ BIOMOD_Modeling <- function( data,
   }
 
   # models checking
-  if( !is.character( models ) ){
+  if( !is.character( models ) )
+  {
     stop("models argument must be a 'character' vector")
   }
 
   models <- unique(models)
   models.swich.off <- NULL
 
-  if(sum(models %in% c('GLM','GBM','GAM','CTA','ANN','SRE','FDA','MARS','RF','MAXENT.Phillips', 'MAXENT.Tsuruoka')) != length(models)){
-    stop(paste(models[which( (models %in% c('GLM','GBM','GAM','CTA','ANN','SRE','FDA','MARS','RF','MAXENT.Phillips', 'MAXENT.Tsuruoka'))
-                             == FALSE) ]," is not an availabe model !",sep=""))
-  }
+  avail.models.list <- 
+    c(
+      'GLM', 'GBM', 'GAM', 'CTA', 'ANN', 'SRE', 'FDA', 'MARS', 'RF', 'MAXENT.Phillips', 
+      'MAXENT.Phillips.2'
+    )
+  
+  ## check if model is supported
+  purrr::map(models, ~ checkmate::assert_choice(.x, avail.models.list))
+  # if(sum(models %in% c('GLM','GBM','GAM','CTA','ANN','SRE','FDA','MARS','RF','MAXENT.Phillips', 'MAXENT.Tsuruoka')) != length(models)){
+  #   stop(paste(models[which( (models %in% c('GLM','GBM','GAM','CTA','ANN','SRE','FDA','MARS','RF','MAXENT.Phillips', 'MAXENT.Tsuruoka'))
+  #                            == FALSE) ]," is not an availabe model !",sep=""))
+  # }
 
   categorial_var <- unlist(sapply(colnames(data@data.env.var), function(x){if(is.factor(data@data.env.var[,x])) return(x) else return(NULL)} ))
 
@@ -303,8 +322,12 @@ BIOMOD_Modeling <- function( data,
     if(!file.exists(file.path(models.options@MAXENT.Phillips$path_to_maxent.jar ,"maxent.jar")) ){
       models = models[-which(models=='MAXENT.Phillips')]
       warning("The maxent.jar file is missing. You need to download this file (http://www.cs.princeton.edu/~schapire/maxent) and put the maxent.jar file in your working directory -> MAXENT.Phillips was switched off")
-    } else if(!.check.java.installed()){
-      models = models[-which(models=='MAXENT.Phillips')]
+    ## -- 
+    ## The java installation check is temporally disable cause it seems to cause 
+    ## issues on some Windows users machine.
+    ## --
+    # } else if(!.check.java.installed()){
+    #   models = models[-which(models=='MAXENT.Phillips')]
     } else if(nrow(data@coord)==1){
      # no coordinates
       warning("You must give XY coordinates if you want to run MAXENT.Phillips -> MAXENT.Phillips was switched off")

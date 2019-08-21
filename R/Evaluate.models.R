@@ -127,11 +127,14 @@ evaluate <- function(model, data, stat, as.array=FALSE){
 ##'
 ##'
 ##' @keywords models, options, evaluate, evaluation
-Find.Optim.Stat <- function(Stat = 'TSS',
-                            Fit,
-                            Obs,
-                            Nb.thresh.test = 100,
-                            Fixed.thresh = NULL){
+Find.Optim.Stat <- 
+  function(
+    Stat = 'TSS',
+    Fit,
+    Obs,
+    Nb.thresh.test = 100,
+    Fixed.thresh = NULL
+  ){
 
   ## remove all uninite values
   to_keep <- ( is.finite(Fit) & is.finite(Obs) )
@@ -201,8 +204,8 @@ Find.Optim.Stat <- function(Stat = 'TSS',
       specificity <- (true.neg * 100)/sum(misc[,'0'])
       sensitivity <- (true.pos * 100)/sum(misc[,'1'])
     } else{
-      roc1 <- pROC::roc(Obs, Fit, percent=T, direction="<")
-      roc1.out <- pROC::coords(roc1, "best", ret=c("threshold", "sens", "spec"))
+      roc1 <- pROC::roc(Obs, Fit, percent=T, direction="<", levels = c(0,1))
+      roc1.out <- pROC::coords(roc1, "best", ret = c("threshold", "sens", "spec"), transpose = TRUE)
       ## if two optimal values are returned keep only the first one
       if(!is.null(ncol(roc1.out))) roc1.out <- roc1.out[, 1]
       best.stat <- as.numeric(pROC::auc(roc1))/100

@@ -29,7 +29,7 @@ Imports:
     ggplot2,
     abind,
     rasterVis,
-    pROC,
+    pROC (>= 1.15.0),
     nnet,
     gbm (>= 2.1.3),
     mda,

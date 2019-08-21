@@ -214,6 +214,18 @@ exportMethods(
 	.transform.outputs
 )
 
+export(
+	disk.pseudo.abs.selection,
+	load_stored_object,
+	Projection,
+	random.pseudo.abs.selection,
+	sre.pseudo.abs.selection,
+	user.defined.pseudo.abs.selection,
+	.Models.prepare.data,
+	.Projection.do.proj, 
+	.transform.outputs
+)
+
 exportMethods(
 	getEMalgos, 
 	getEMbuiltModels, 
