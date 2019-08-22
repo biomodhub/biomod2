@@ -24,9 +24,9 @@
 \alias{user.defined.pseudo.abs.selection,ANY,RasterStack-method}
 \alias{user.defined.pseudo.abs.selection,ANY,SpatialPointsDataFrame-method}
 
-\alias{.transform.outputs}
-\alias{.transform.outputs,array-method}
-\alias{.transform.outputs,list-method}
+%\alias{.transform.outputs}
+%\alias{.transform.outputs,array-method}
+%\alias{.transform.outputs,list-method}
 
 \alias{.Models.prepare.data}
 \alias{.Models.prepare.data,BIOMOD.formated.data-method}

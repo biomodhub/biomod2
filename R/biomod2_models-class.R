@@ -1219,9 +1219,6 @@ setMethod(
   })
 
 .predict.MAXENT.Phillips.2_biomod2_model.RasterStack <- function(object, newdata, ...){
-  
-  ########################################### HERE ##########################################
-  browser()
   newdata.df <- 
     newdata %>%
     as.matrix()
@@ -1248,6 +1245,11 @@ setMethod(
   }
   
   if(on_0_1000) proj <- round(proj*1000)
+  
+  ## convert back to raster file
+  proj.ras <- raster(newdata)
+  proj.ras[apply(newdata.df, 1, function(.x) all(!is.na(.x)))] <- proj
+  proj <- proj.ras
   
   # save raster on hard drive ?
   if(!is.null(filename)){

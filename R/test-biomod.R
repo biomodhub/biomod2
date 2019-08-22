@@ -64,7 +64,7 @@ bm.mod
 
 # 4.1 Projection on current environemental conditions
 
-bm.proj <- 
+bm.proj <-
   BIOMOD_Projection(
     modeling.output = bm.mod,
     new.env = expl.var,
@@ -76,10 +76,10 @@ bm.proj <-
   )
 
 
-bm.maxent.mod.list <- 
-  BIOMOD_LoadModels(bm.mod, models='MAXENT.Phillips.2')
-bm.maxent.mod.1 <- get(bm.maxent.mod.list[1])
+# bm.maxent.mod.list <-
+#   BIOMOD_LoadModels(bm.mod, models='MAXENT.Phillips.2')
+# 
+# bm.maxent.mod.1 <- get(bm.maxent.mod.list[1])
+# 
+# bm.maxent.proj.1a <- predict(bm.maxent.mod.1, newdata = expl.var)
 
-bm.maxent.proj.1a <- predict(bm.maxent.mod.1, newdata = expl.var)
-
-myLoadedModels

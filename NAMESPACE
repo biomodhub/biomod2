@@ -198,7 +198,8 @@ export(
 	BIOMOD_cv,
 	BIOMOD_presenceonly,
 	BIOMOD_tuning,
-  sample.factor.levels
+  sample.factor.levels,
+	.transform.outputs.list
 )
 
 ## to be hidden
@@ -210,8 +211,7 @@ exportMethods(
 	sre.pseudo.abs.selection,
 	user.defined.pseudo.abs.selection,
 	.Models.prepare.data,
-	.Projection.do.proj, 
-	.transform.outputs
+	.Projection.do.proj
 )
 
 export(
@@ -222,8 +222,7 @@ export(
 	sre.pseudo.abs.selection,
 	user.defined.pseudo.abs.selection,
 	.Models.prepare.data,
-	.Projection.do.proj, 
-	.transform.outputs
+	.Projection.do.proj
 )
 
 exportMethods(

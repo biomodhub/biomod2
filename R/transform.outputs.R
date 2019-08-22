@@ -510,7 +510,18 @@
 # }
 
 
-
+#' Reshape biomod2 objects
+#' 
+#' This is an internal function (developper only)
+#'
+#' @inheritParams .transform.outputs.list
+#' @param modOut the object to transform given as a list
+#' 
+#'
+#' @return
+#' @export
+#'
+#' @examples
 .transform.outputs.array <-
   function(
     modOut, 
@@ -625,6 +636,20 @@
   }
 
 # =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=- #
+
+
+#' Reshape biomod2 objects
+#' 
+#' This is an internal function (developper only)
+#'
+#' @param modOut the object to transform given as a list
+#' @param out character, the type of input object
+#' @param dim.names character, if not `NULL` the resshaped object will be stored on the hard drive
+#'
+#' @return
+#' @export
+#'
+#' @examples
 .transform.outputs.list =
   function(
     modOut, 
