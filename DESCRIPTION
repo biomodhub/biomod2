@@ -45,7 +45,10 @@ Imports:
     foreach,
     earth,
     dplyr,
-    tidyr
+    tidyr,
+    checkmate,
+    maxnet, 
+    purrr
 Suggests:
     ade4,
     foreign,

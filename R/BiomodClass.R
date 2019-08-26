@@ -653,6 +653,52 @@ setMethod('show', signature('BIOMOD.formated.data.PA'),
           })
 
 
+##' @name BIOMOD.Model.Options-class
+##' 
+##' @docType class
+##' 
+##' @alias BIOMOD.Model.Options-class
+##' @alias show,BIOMOD.Model.Options-method
+##' 
+##' @title BIOMOD_ModelingOptions() outputs objects class
+##' 
+##' @description
+##' BIOMOD.Model.Options objects are created, used and returned
+##' by BIOMOD functions. These objects will contains for each
+##' model support within \pkg{biomod2}, a set of options that
+##' users can change. Please refer to 
+##' \code{\link[biomod2]{BIOMOD_ModelingOptions}} for further
+##'  details. 
+##'   
+##' - output of: \code{\link[biomod2]{BIOMOD_ModelingOptions}}
+##' - input of:  \code{\link[biomod2]{BIOMOD_Modeling}}
+##' 
+##' @Slots
+##' Please refer to \code{\link[biomod2]{BIOMOD_ModelingOptions}}
+##' for each model arguments supported.
+##' 
+##' @describe
+##' - \code{GLM}: "list", list of GLM supported options
+##' - \code{GBM}: "list", list of GBM supported options 
+##' - \code{GAM}: "list", list of GAM supported options
+##' - \code{CTA}: "list", list of CTA supported options
+##' - \code{ANN}: "list", list of ANN supported options
+##' - \code{SRE}: "list", list of SRE supported options
+##' - \code{FDA}: "list", list of FDA supported options
+##' - \code{MARS}: "list", list of MARS supported options
+##' - \code{RF}: "list", list of RF supported options
+##' - \code{MAXENT.Phillips}: "list", list of MAXENT.Phillips
+##'   supported options
+##' - \code{MAXENT.Phillips.2}: "list", list of maxnet
+##'   supported options
+##'   
+##' @author Damien Georges
+##' @seealso \code{\link[biomod2]{BIOMOD_ModelingOptions}}
+##' @keyword models, options
+##' 
+##' @examples
+##' showClass("BIOMOD.Model.Options")
+##' 
 setClass(
   "BIOMOD.Model.Options",
   representation(

@@ -19,7 +19,11 @@ import("gbm")
 importFrom("MASS",stepAIC)
 #importFrom("mda", fda, mars)
 import("mda")
+importFrom('maxnet', 'maxnet')
+importFrom('purrr', 'map')
 import("earth")
+import('checkmate')
+import('dplyr')
 #importFrom("nnet", nnet)
 import("nnet")
 #importFrom("parallel", detectCores) # for gbm package
@@ -101,6 +105,7 @@ exportClasses(
 	GLM_biomod2_model,
 	MARS_biomod2_model,
 	MAXENT.Phillips_biomod2_model,
+	MAXENT.Phillips.2_biomod2_model,
   #MAXENT.Tsuruoka_biomod2_model,
 	RF_biomod2_model,
 	SRE_biomod2_model,

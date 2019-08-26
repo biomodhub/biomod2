@@ -50,6 +50,10 @@
 \alias{MAXENT.Phillips_biomod2_model}
 \alias{predict,MAXENT.Phillips_biomod2_model-method}
 
+\alias{MAXENT.Phillips.2_biomod2_model-class}
+\alias{MAXENT.Phillips.2_biomod2_model}
+\alias{predict,MAXENT.Phillips.2_biomod2_model-method}
+
 %\alias{MAXENT.Tsuruoka_biomod2_model-class}
 %\alias{MAXENT.Tsuruoka_biomod2_model}
 %\alias{predict,MAXENT.Tsuruoka_biomod2_model-method}
