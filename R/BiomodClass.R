@@ -677,6 +677,8 @@ setMethod('show', signature('BIOMOD.formated.data.PA'),
 ##' - output of: \code{\link[biomod2]{BIOMOD_ModelingOptions}}
 ##' - input of:  \code{\link[biomod2]{BIOMOD_Modeling}}
 ##' 
+##' @param object init list of options
+##' 
 ##' @Slots
 ##' Please refer to \code{\link[biomod2]{BIOMOD_ModelingOptions }}
 ##' for each model arguments supported.

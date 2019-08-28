@@ -10,6 +10,9 @@
 \usage{
 \S4method{show}{BIOMOD.Model.Options}(object)
 }
+\arguments{
+\item{object}{init list of options}
+}
 \description{
 BIOMOD.Model.Options objects are created, used and returned
 by BIOMOD functions. These objects will contains for each
