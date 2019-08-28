@@ -12,6 +12,8 @@ import("sp")
 import("ggplot2")
 import("parallel")
 
+importFrom("rlang", ":=")
+
 importFrom("abind", abind, asub)
 import("reshape")
 #importFrom("gbm", gbm, gbm.perf)

@@ -3,7 +3,13 @@
 \docType{class}
 \name{BIOMOD.Model.Options-class}
 \alias{BIOMOD.Model.Options-class}
+\alias{show,BIOMOD.Model.Options-method}
+\alias{show,}
+\alias{BIOMOD.Model.Options-method}
 \title{BIOMOD_ModelingOptions() outputs objects class}
+\usage{
+\S4method{show}{BIOMOD.Model.Options}(object)
+}
 \description{
 BIOMOD.Model.Options objects are created, used and returned
 by BIOMOD functions. These objects will contains for each

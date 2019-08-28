@@ -321,6 +321,9 @@ setMethod('plot', signature(x='BIOMOD.formated.data', y="missing"),
 
           })
 
+##' @rdname BIOMOD.formated.data-objects
+##' @docType method
+##' @aliases show, BIOMOD.formated.data-method
 setMethod('show', signature('BIOMOD.formated.data'),
           function(object){
             .bmCat("'BIOMOD.formated.data'")
@@ -628,6 +631,9 @@ setMethod('plot', signature(x='BIOMOD.formated.data.PA', y="missing"),
               }
             } })
 
+##' @rdname BIOMOD.formated.data.PA-objects
+##' @docType method
+##' @aliases show, BIOMOD.formated.data.PA-method
 setMethod('show', signature('BIOMOD.formated.data.PA'),
           function(object){
             .bmCat("'BIOMOD.formated.data.PA'")
@@ -653,12 +659,10 @@ setMethod('show', signature('BIOMOD.formated.data.PA'),
           })
 
 
+##' @rdname BIOMOD.Model.Options-objects
 ##' @name BIOMOD.Model.Options-class
-##' 
 ##' @docType class
-##' 
-##' @alias BIOMOD.Model.Options-class
-##' @alias show,BIOMOD.Model.Options-method
+##' @alias  BIOMOD.Model.Options-class
 ##' 
 ##' @title BIOMOD_ModelingOptions() outputs objects class
 ##' 
@@ -674,7 +678,7 @@ setMethod('show', signature('BIOMOD.formated.data.PA'),
 ##' - input of:  \code{\link[biomod2]{BIOMOD_Modeling}}
 ##' 
 ##' @Slots
-##' Please refer to \code{\link[biomod2]{BIOMOD_ModelingOptions}}
+##' Please refer to \code{\link[biomod2]{BIOMOD_ModelingOptions }}
 ##' for each model arguments supported.
 ##' 
 ##' @describe
@@ -1063,30 +1067,15 @@ setClass(
            return(test)
          })
 
-## TO DO: ===
-## moove this function somewhere else
-cat_formula <-
-  function(
-    formula = NULL
-  ){
-    ifelse(
-      length(formula) < 1,
-      'NULL',
-      paste(
-        formula[2],
-        formula[1],
-        formula[3])
-    )
-  }
-
-
+##' @rdname BIOMOD.Model.Options-objects
+##' @aliases show, BIOMOD.Model.Options-method
 setMethod(
   'show', 
   signature('BIOMOD.Model.Options'),
   function(object){
     .bmCat(" 'BIOMOD.Model.Options' ")
     cat("\n")
-
+    
     ## GLM options
     cat("\nGLM = list( type = '", object@GLM$type, "',", sep="")
     cat("\n            interaction.level = ", object@GLM$interaction.level, ",", sep="")
@@ -1095,7 +1084,7 @@ setMethod(
     cat("\n            family = ", object@GLM$family$family,"(link = '",object@GLM$family$link,"'),", sep="")
     cat("\n            mustart = ", object@GLM$mustart, ",", sep="")
     cat("\n            control = glm.control(", .print.control(object@GLM$control), ") ),", sep="", fill=.Options$width)
-
+    
     ## GBM options
     cat("\n")
     cat("\nGBM = list( distribution = '", object@GBM$distribution, "',", sep="")
@@ -1111,7 +1100,7 @@ setMethod(
     #             cat("\n            class.stratify.cv = '", object@GBM$class.stratify.cv, "',", sep="")
     cat("\n            perf.method = '", object@GBM$perf.method, "',", sep="")
     cat("\n            n.cores = ", ifelse(length(object@GBM$n.cores), object@GBM$n.cores,'NULL'), "),", sep="")
-
+    
     ## GAM options
     cat("\n")
     cat("\nGAM = list( algo = '", object@GAM$algo, "',", sep="")
@@ -1120,7 +1109,7 @@ setMethod(
     cat("\n            interaction.level = ", object@GAM$interaction.level, ",", sep="")
     cat("\n            myFormula = ", ifelse(length(object@GAM$myFormula) < 1,'NULL',paste(object@GAM$myFormula[2],object@GAM$myFormula[1],object@GAM$myFormula[3])), ",", sep="")
     cat("\n            family = ", object@GAM$family$family,"(link = '",object@GAM$family$link,"'),", sep="")
-
+    
     if(object@GAM$algo=='GAM_mgcv'){
       cat("\n            method = '", object@GAM$method, "',", sep="")
       cat("\n            optimizer = c('", paste(object@GAM$optimizer,collapse="','"), "'),", sep="")
@@ -1128,18 +1117,18 @@ setMethod(
       cat("\n            knots = ",  ifelse(length(object@GLM$knots) < 1,'NULL',"'user.defined'"), ",", sep="")
       cat("\n            paraPen = ",  ifelse(length(object@GLM$paraPen) < 1,'NULL',"'user.defined'"), ",", sep="")
     }
-
+    
     cat("\n            control = list(", .print.control(object@GAM$control), ") ),", sep="", fill=.Options$width)
-
-
-
+    
+    
+    
     ## CTA options
     cat("\n")
     cat("\nCTA = list( method = '", object@CTA$method, "',", sep="")
     cat("\n            parms = '", object@CTA$parms, "',", sep="")
     cat("\n            cost = ", ifelse(length(object@CTA$cost)<1,'NULL',object@CTA$cost), ",", sep="")
     cat("\n            control = list(", .print.control(object@CTA$control), ") ),", sep="", fill=.Options$width)
-
+    
     ## ANN options
     cat("\n")
     cat("\nANN = list( NbCV = ", object@ANN$NbCV, ",", sep="")
@@ -1147,30 +1136,30 @@ setMethod(
     cat("\n            decay = ", ifelse(length(object@ANN$decay)<1,'NULL',object@ANN$decay), ",", sep="")
     cat("\n            rang = ", object@ANN$rang, ",", sep="")
     cat("\n            maxit = ", object@ANN$maxit, "),", sep="")
-
+    
     ## SRE options
     cat("\n")
     cat("\nSRE = list( quant = ", object@SRE$quant, "),", sep="")
-
+    
     ## FDA options
     cat("\n")
     cat("\nFDA = list( method = '", object@FDA$method, "',", sep="")
     cat("\n            add_args = ", ifelse(length(object@FDA$add_args)<1,
                                             'NULL',
                                             paste("list(", paste(.print.control(object@FDA$add_args), collapse=""), ")", sep="")), "),",sep="")
-
+    
     ## MARS options
     cat("\n")
     cat("\nMARS = list( type = '", object@MARS$type, "',", sep="")
     cat("\n             interaction.level = ", object@MARS$interaction.level, ",", sep="")
     cat("\n             myFormula = ",  ifelse(length(object@MARS$myFormula) < 1,'NULL',paste(object@GLM$myFormula[2],object@GLM$myFormula[1],object@GLM$myFormula[3])), ",", sep="")
-#             cat("\n             degree = ", object@MARS$degree, ",", sep="")
+    #             cat("\n             degree = ", object@MARS$degree, ",", sep="")
     cat("\n             nk = ", ifelse(length(object@MARS$nk) < 1,'NULL',object@MARS$nk), ",", sep="")
     cat("\n             penalty = ", object@MARS$penalty, ",", sep="")
     cat("\n             thresh = ", object@MARS$thresh, ",", sep="")
     cat("\n             nprune = ", ifelse(length(object@MARS$nprune) < 1,'NULL',object@MARS$nprune), ",", sep="")
     cat("\n             pmethod = '", object@MARS$pmethod, "'),", sep="")
-
+    
     ## RF options
     cat("\n")
     cat("\nRF = list( do.classif = ", object@RF$do.classif, ",", sep="")
@@ -1178,7 +1167,7 @@ setMethod(
     cat("\n           mtry = '", object@RF$mtry, "',", sep="")
     cat("\n           nodesize = ", object@RF$nodesize, ",", sep="")
     cat("\n           maxnodes = ", ifelse(length(object@RF$maxnodes) < 1,'NULL',object@RF$maxnodes), "),", sep="")
-
+    
     ## MAXENT.Phillips options
     cat("\n")
     cat("\nMAXENT.Phillips = list( path_to_maxent.jar = '", object@MAXENT.Phillips$path_to_maxent.jar, "',", sep="")
@@ -1214,7 +1203,7 @@ setMethod(
     cat("\n     regfun = <function>")
     cat("\n   )")
     cat("\n)")
-
+    
     # ## MAXENT.Tsuruoka
     # cat("\n")
     # cat("\nMAXENT.Tsuruoka = list( l1_regularizer = ", object@MAXENT.Tsuruoka$l1_regularizer, ",", sep="")
@@ -1222,9 +1211,27 @@ setMethod(
     # cat("\n                        use_sgd = ", object@MAXENT.Tsuruoka$use_sgd, ",", sep="")
     # cat("\n                        set_heldout = ", object@MAXENT.Tsuruoka$set_heldout, ",", sep="")
     # cat("\n                        verbose = ", object@MAXENT.Tsuruoka$verbose, ")", sep="")
-
+    
     .bmCat()
   })
+
+
+## TO DO: ===
+## moove this function somewhere else
+cat_formula <-
+  function(
+    formula = NULL
+  ){
+    ifelse(
+      length(formula) < 1,
+      'NULL',
+      paste(
+        formula[2],
+        formula[1],
+        formula[3])
+    )
+  }
+
 
 .print.control <- function(ctrl){
   out <-  paste(names(ctrl)[1], " = ", ctrl[[1]], sep="")
@@ -1411,6 +1418,9 @@ setClass(
     }
 )
 
+# #' @rdname BIOMOD.models.out-objects
+# #' @docType method
+# #' @aliases show, BIOMOD.models.out-method
 setMethod(
   'show', 
   signature('BIOMOD.models.out'),
@@ -1815,6 +1825,9 @@ setMethod('plot', signature(x='BIOMOD.projection.out', y="missing"),
 
           })
 
+##' @rdname BIOMOD.projection.out-objects
+##' @docType method
+##' @aliases show, BIOMOD.projection.out-method
 setMethod('show', signature('BIOMOD.projection.out'),
           function(object){
             .bmCat("'BIOMOD.projection.out'")
@@ -1886,7 +1899,9 @@ setClass("BIOMOD.EnsembleModeling.out",
            return(TRUE)
          })
 
-
+##' @rdname BIOMOD.EnsembleModeling.out-objects
+##' @docType method
+##' @aliases show, BIOMOD.EnsembleModeling.out-method
 setMethod('show', signature('BIOMOD.EnsembleModeling.out'),
           function(object){
             .bmCat("'BIOMOD.EnsembleModeling.out'")

@@ -48,7 +48,8 @@ Imports:
     tidyr,
     checkmate,
     maxnet, 
-    purrr
+    purrr,
+    rlang
 Suggests:
     ade4,
     foreign,

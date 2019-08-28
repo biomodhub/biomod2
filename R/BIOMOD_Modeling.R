@@ -533,14 +533,13 @@ BIOMOD_Modeling <- function( data,
 #' 
 #' This is an internal function (developper only)
 #'
-#' @inheritParams .transform.outputs.list
-#' @param modOut the object to transform given as a list
-#' 
+#' @param modOut the model object to transform given as a list
+#' @param out character, the type of output to be transformed
 #'
-#' @return
+#' @return extracted statistics of interest from the model object
+#'   as `array`.
 #' @export
 #'
-#' @examples
 .transform.outputs.array <-
   function(
     modOut, 
