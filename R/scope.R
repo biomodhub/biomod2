@@ -1,4 +1,4 @@
-`.scope` <-
+.scope <-
 function(enviroTrain, Smoother, degree)
 {
     XXX <- enviroTrain

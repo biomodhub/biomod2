@@ -1862,6 +1862,54 @@ setMethod(f='free',
 ####################################################################################################
 ### BIOMOD Storing Ensemble Modeling Objects #######################################################
 ####################################################################################################
+
+##' @name BIOMOD.EnsembleModeling.out-class
+##' @rdname BIOMOD.EnsembleModeling.out-objects
+##' @docType class
+##' 
+##' @aliases BIOMOD.EnsembleModeling.out-class
+##' @aliases BIOMOD.EnsembleModeling.out
+##' @aliases show,BIOMOD.EnsembleModeling.out-method
+##' 
+##' @title BIOMOD_EnsembleModeling() outputs objects class
+##' 
+##' @description
+##' EnsembleModeling objects are created, used and returned by BIOMOD
+##' functions. It's contains information relative to an \pkg{biomod2}
+##' ensemble modeling procedure.
+##' 
+##' - output of: \code{\link[biomod2]{BIOMOD_EnsembleModeling}}
+##' - input of: \code{\link[biomod2]{BIOMOD_EnsembleForecasting}}
+##' 
+##' @slot \code{sp.name}: "character", species name
+##' @slot \code{expl.var.names}: "character", explanatory variables
+##' names
+##' @slot \code{models.out.obj}: "BIOMOD.stored.models.out", object which
+##' contains information on individuals models that have been combined
+##' @slot \code{eval.metric}: "character", evaluation metrics chose for
+##' models selection
+##' @slot \code{eval.metric.quality.threshold}: "numeric", thresholds
+##' defined for models selection 
+##' @slot \code{em.computed}: "character", ensemble models built names
+##' @slot \code{em.by}: "character", way models are combined
+##' @slot \code{em.models}: "ANY", list of built biomod2.ensemble.models
+##' objects
+##' @slot \code{modeling.id}: "character", the id of the whole
+##' modelling process
+##' @slot \code{link}: "character", the path to corresponding hard drive
+##' saved object
+##' 
+##' @seealso \code{\link[biomod2]{BIOMOD_Projection}}, 
+##' \code{\link[biomod2]{BIOMOD_Modeling}}, 
+##' \code{\link[biomod2]{BIOMOD_EnsembleModeling}}, 
+##' \code{\link[biomod2]{BIOMOD_EnsembleForecasting}}
+##' 
+##' @keywords models, ensemble
+##' @author Damien Georges 
+##' 
+##' @examples
+##' showClass("BIOMOD.EnsembleModeling.out")
+##' 
 setClass("BIOMOD.EnsembleModeling.out",
          representation(sp.name = 'character',
                         expl.var.names = 'character',

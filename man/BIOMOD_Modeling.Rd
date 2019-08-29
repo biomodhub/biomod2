@@ -226,10 +226,10 @@ head(DataSpecies)
 myRespName <- 'GuloGulo'
 
 ##' the presence/absences data for our species
-myResp <- as.numeric(DataSpecies[,myRespName])
+myResp <- as.numeric(DataSpecies[, myRespName])
 
 ##' the XY coordinates of species data
-myRespXY <- DataSpecies[,c("X_WGS84","Y_WGS84")]
+myRespXY <- DataSpecies[, c("X_WGS84", "Y_WGS84")]
 
 
 ##' Environmental variables extracted from BIOCLIM (bio_3, 
