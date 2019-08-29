@@ -65,6 +65,10 @@ variables_importance(
 )
 
 }
+\seealso{
+\code{\link[biomod2]{randomise_data}}, 
+  \code{\link[biomod2]{full_suffling}}
+}
 \author{
 Damien Georges
 }

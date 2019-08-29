@@ -1,5 +1,5 @@
 ##' @name variables_importance
-##' @alias variables_importance
+##' @aliases variables_importance
 ##' @title Variables importance calculation
 ##' @description
 ##' This function will return a variable importance value for 
@@ -37,7 +37,7 @@
 ##' 
 ##' @author Damien Georges
 ##' @seealso \code{\link[biomod2]{randomise_data}}, 
-##'   \code{\link[biomod2]{full_suffling}
+##'   \code{\link[biomod2]{full_suffling}}
 ##'   
 ##' @keywords suffle
 ##' @keywords random

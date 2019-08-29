@@ -6,7 +6,7 @@
 \alias{show,BIOMOD.Model.Options-method}
 \alias{show,}
 \alias{BIOMOD.Model.Options-method}
-\title{BIOMOD_ModelingOptions() outputs objects class}
+\title{BIOMOD_ModelingOptions outputs objects class}
 \usage{
 \S4method{show}{BIOMOD.Model.Options}(object)
 }
@@ -24,6 +24,38 @@ users can change. Please refer to
 - output of: \code{\link[biomod2]{BIOMOD_ModelingOptions}}
 - input of:  \code{\link[biomod2]{BIOMOD_Modeling}}
 }
+\details{
+Please refer to \code{\link[biomod2]{BIOMOD_ModelingOptions}}
+for each model arguments supported.
+}
+\section{Slots}{
+
+\describe{
+\item{\code{GLM}}{"list", list of GLM supported options}
+
+\item{\code{GBM}}{"list", list of GBM supported options}
+
+\item{\code{GAM}}{"list", list of GAM supported options}
+
+\item{\code{CTA}}{"list", list of CTA supported options}
+
+\item{\code{ANN}}{"list", list of ANN supported options}
+
+\item{\code{SRE}}{"list", list of SRE supported options}
+
+\item{\code{FDA}}{"list", list of FDA supported options}
+
+\item{\code{MARS}}{"list", list of MARS supported options}
+
+\item{\code{RF}}{"list", list of RF supported options}
+
+\item{\code{MAXENT.Phillips}}{"list", list of MAXENT.Phillips
+supported options}
+
+\item{\code{MAXENT.Phillips.2}}{"list", list of maxnet
+supported options}
+}}
+
 \examples{
 showClass("BIOMOD.Model.Options")
 
@@ -34,3 +66,5 @@ showClass("BIOMOD.Model.Options")
 \author{
 Damien Georges
 }
+\keyword{models,}
+\keyword{options}

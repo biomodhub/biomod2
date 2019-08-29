@@ -2,15 +2,15 @@
 # BIOMOD objects definition
 # Damien Georges
 # 09/02/2012
-# v2.0
+# v2e("sp", quietly=TRUE)
+requireNamespace("raster", quietly=TRUE)
+requireNamespace(".0
 # =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=- #
 # This file defines the BIOMOD objects and all their methods
 # =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=- #
 
 # We choose here to create monospecific objects to make all procedures and parallelising easier
-requireNamespace("sp", quietly=TRUE)
-requireNamespace("raster", quietly=TRUE)
-requireNamespace("rasterVis", quietly=TRUE)
+requireNamespacrasterVis", quietly=TRUE)
 
 # 0. Generic Functions definition -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=--=- #
 setGeneric("get_predictions",
@@ -662,9 +662,9 @@ setMethod('show', signature('BIOMOD.formated.data.PA'),
 ##' @rdname BIOMOD.Model.Options-objects
 ##' @name BIOMOD.Model.Options-class
 ##' @docType class
-##' @alias  BIOMOD.Model.Options-class
+##' @aliases   BIOMOD.Model.Options-class
 ##' 
-##' @title BIOMOD_ModelingOptions() outputs objects class
+##' @title BIOMOD_ModelingOptions outputs objects class
 ##' 
 ##' @description
 ##' BIOMOD.Model.Options objects are created, used and returned
@@ -679,28 +679,27 @@ setMethod('show', signature('BIOMOD.formated.data.PA'),
 ##' 
 ##' @param object init list of options
 ##' 
-##' @Slots
-##' Please refer to \code{\link[biomod2]{BIOMOD_ModelingOptions }}
+##' @details  
+##' Please refer to \code{\link[biomod2]{BIOMOD_ModelingOptions}}
 ##' for each model arguments supported.
 ##' 
-##' @describe
-##' - \code{GLM}: "list", list of GLM supported options
-##' - \code{GBM}: "list", list of GBM supported options 
-##' - \code{GAM}: "list", list of GAM supported options
-##' - \code{CTA}: "list", list of CTA supported options
-##' - \code{ANN}: "list", list of ANN supported options
-##' - \code{SRE}: "list", list of SRE supported options
-##' - \code{FDA}: "list", list of FDA supported options
-##' - \code{MARS}: "list", list of MARS supported options
-##' - \code{RF}: "list", list of RF supported options
-##' - \code{MAXENT.Phillips}: "list", list of MAXENT.Phillips
+##' @slot GLM "list", list of GLM supported options
+##' @slot GBM "list", list of GBM supported options 
+##' @slot GAM "list", list of GAM supported options
+##' @slot CTA "list", list of CTA supported options
+##' @slot ANN "list", list of ANN supported options
+##' @slot SRE "list", list of SRE supported options
+##' @slot FDA "list", list of FDA supported options
+##' @slot MARS "list", list of MARS supported options
+##' @slot RF "list", list of RF supported options
+##' @slot MAXENT.Phillips "list", list of MAXENT.Phillips
 ##'   supported options
-##' - \code{MAXENT.Phillips.2}: "list", list of maxnet
+##' @slot MAXENT.Phillips.2 "list", list of maxnet
 ##'   supported options
 ##'   
 ##' @author Damien Georges
 ##' @seealso \code{\link[biomod2]{BIOMOD_ModelingOptions}}
-##' @keyword models, options
+##' @keywords models, options
 ##' 
 ##' @examples
 ##' showClass("BIOMOD.Model.Options")

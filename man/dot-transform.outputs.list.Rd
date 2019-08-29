@@ -13,6 +13,9 @@
 
 \item{dim.names}{character, if not `NULL` the resshaped object will be stored on the hard drive}
 }
+\value{
+list, the extracted statistics
+}
 \description{
 This is an internal function (developper only)
 }
