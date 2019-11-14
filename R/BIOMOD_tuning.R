@@ -38,6 +38,7 @@
 ##' @param MaxNWts.ANN     The maximum allowable number of weights for ANN (default 10 * (ncol(myBiomodData'at'data.env.var) + 1) + 10 + 1). 
 ##' @param parallel.ME     logical. If TRUE, the parallel computing is enabled for MAXENT.Phillips 
 ##' @param numCores.ME     number of cores used to train MAXENT.Phillips 
+##' @param Yweights        response points weights. This argument will only affect models that allow case weights. 
 ##' 
 ##' @return
 ##' BIOMOD.models.options object with optimized parameters
@@ -147,7 +148,8 @@ BIOMOD_tuning <- function(data,
                           metric.ME = 'ROC',
                           clamp.ME = TRUE,
                           parallel.ME = FALSE,
-                          numCores.ME = NULL){
+                          numCores.ME = NULL,
+                          Yweights = NULL){
   
   ## MAXENT: http://cran.r-project.org/web/packages/ENMeval/ENMeval.pdf --> ENMevaluate()
   ## or:    http://cran.r-project.org/web/packages/maxent/maxent.pdf -->  tune.maxent()
@@ -207,7 +209,8 @@ BIOMOD_tuning <- function(data,
                                  method = "gbm",
                                  tuneGrid = tune.grid,
                                  trControl = ctrl.GBM,
-                                 verbose = FALSE))
+                                 verbose = FALSE,
+                                 weights = Yweights))
     cat("Best optimization of coarse tuning:\n")
     cat(paste(tune.GBM$bestTune,"\n-=-=-=-=-=-=-=-=-=-=\n"))
     
@@ -231,7 +234,8 @@ BIOMOD_tuning <- function(data,
                                    method = "gbm",
                                    tuneGrid = tune.grid,
                                    trControl = ctrl.GBM,
-                                   verbose = FALSE))  
+                                   verbose = FALSE,
+                                   weights = Yweights))  
     }
     cat(paste("\n Finished tuning GBM\n","\n-=-=-=-=-=-=-=-=-=-=\n"))
     
@@ -259,7 +263,8 @@ BIOMOD_tuning <- function(data,
                                 method = method.RF,
                                 tuneLength = tuneLength.rf,
                                 trControl = ctrl.RF,
-                                metric = metric))
+                                metric = metric,
+                                weights = Yweights))
     cat(paste("Finished tuning RF\n","\n-=-=-=-=-=-=-=-=-=-=\n"))
     if(!is.null(tune.RF)){
       if(metric == 'TSS'){
@@ -295,7 +300,8 @@ BIOMOD_tuning <- function(data,
                                  trace = FALSE,
                                  MaxNWts.ANN = MaxNWts.ANN,
                                  maxit = maxit.ANN,
-                                 metric = metric))
+                                 metric = metric,
+                                 weights = Yweights))
     cat(paste("Finished tuning ANN\n","\n-=-=-=-=-=-=-=-=-=-=\n"))
     if(!is.null(tune.ANN)){
       if(metric == 'TSS'){
@@ -317,7 +323,8 @@ BIOMOD_tuning <- function(data,
     
     try(tune.GAM <-   caret::train(data@data.env.var, resp, 
                                    method = method.GAM,
-                                   trControl = ctrl.GAM))
+                                   trControl = ctrl.GAM,
+                                   weights = Yweights))
     cat(paste("Finished tuning GAM\n","\n-=-=-=-=-=-=-=-=-=-=\n"))
     
     if(!is.null(tune.GAM)){
@@ -342,7 +349,8 @@ BIOMOD_tuning <- function(data,
     try(tune.MARS <-   caret::train(data@data.env.var, resp, 
                                     method = method.MARS,
                                     tuneGrid = tune.grid,
-                                    trControl = ctrl.MARS))
+                                    trControl = ctrl.MARS,
+                                    weights = Yweights))
     
     cat(paste("Finished tuning MARS\n","\n-=-=-=-=-=-=-=-=-=-=\n"))
     
@@ -380,7 +388,8 @@ BIOMOD_tuning <- function(data,
         try(tune.GLM <-   caret::train( makeFormula("resp",data@data.env.var, type= type,interaction.level = IA),
                                         data=cbind(data@data.env.var,resp=resp),
                                         method = method.GLM,
-                                        trControl = ctrl.GLM))  
+                                        trControl = ctrl.GLM,
+                                        weights = Yweights))  
         try(GLM.results <-  rbind(GLM.results,cbind(tune.GLM$results,il=IA,type=type)))
         try(fm[[i]] <- formula(tune.GLM$finalModel))
       }
@@ -406,7 +415,8 @@ BIOMOD_tuning <- function(data,
     try(tune.FDA <- caret::train(data@data.env.var, factor(resp), 
                                  method = "fda",
                                  tuneGrid = tune.grid,                  
-                                 trControl = ctrl.FDA))
+                                 trControl = ctrl.FDA,
+                                 weights = Yweights))
     cat(paste("Finished tuning FDA\n","\n-=-=-=-=-=-=-=-=-=-=\n"))
     
     if(!is.null(tune.FDA)){
@@ -429,14 +439,16 @@ BIOMOD_tuning <- function(data,
                                        method = "rpart",
                                        tuneLength = tuneLength,
                                        trControl = ctrl.CTA,
-                                       metric=metric))
+                                       metric=metric,
+                                       weights = Yweights))
     
     cat("Tuning Max Tree Depth")
     try(tune.CTA.rpart2 <-  caret::train(data@data.env.var, resp,
                                          method = "rpart2",
                                          tuneLength = tuneLength,
                                          trControl = ctrl.CTA,
-                                         metric=metric))
+                                         metric=metric,
+                                         weights = Yweights))
     cat(paste("Finished tuning CTA\n","\n-=-=-=-=-=-=-=-=-=-=\n"))
     
     if(!is.null(tune.CTA.rpart)){
