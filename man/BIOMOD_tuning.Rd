@@ -18,7 +18,7 @@ BIOMOD_tuning(data, models = c("GLM", "GBM", "GAM", "CTA", "ANN", "SRE",
   "s_smoother"), interaction.GLM = c(0, 1),
   cvmethod.ME = "randomkfold", overlap.ME = FALSE, kfolds.ME = 10,
   n.bg.ME = 10000, env.ME = NULL, metric.ME = "ROC",
-  clamp.ME = TRUE, parallel.ME = FALSE, numCores.ME = NULL)
+  clamp.ME = TRUE, parallel.ME = FALSE, numCores.ME = NULL, weights = Yweights)
 }
 \arguments{
 \item{data}{BIOMOD.formated.data object returned by BIOMOD_FormatingData}
@@ -88,6 +88,7 @@ BIOMOD_tuning(data, models = c("GLM", "GBM", "GAM", "CTA", "ANN", "SRE",
 \item{parallel.ME}{logical. If TRUE, the parallel computing is enabled for MAXENT.Phillips}
 
 \item{numCores.ME}{number of cores used to train MAXENT.Phillips}
+\item{Yweights}{response points weights. This argument will only affect models that allow case weights. }
 }
 \value{
 BIOMOD.models.options object with optimized parameters
