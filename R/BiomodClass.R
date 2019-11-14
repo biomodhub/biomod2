@@ -68,10 +68,112 @@ setGeneric("load_stored_object",
              standardGeneric("load_stored_object")
            })
 
+##' @name BIOMOD.models.out-RemoveProperly
+##' @aliases RemoveProperly
+##' @aliases RemoveProperly,BIOMOD.models.out-method
+##' @title remove properly BIOMOD_Modeling outputs
+##' @description
+##' Functions to free properly a \code{\link[biomod2]{BIOMOD_Modeling}}
+##' outputs
+##' 
+##' @param obj \code{"\link[=BIOMOD.models.out-class]{BIOMOD.models.out}"} 
+##'   object
+##' @param obj.name the name of object in current environment, 
+##'   automatically filled
+##' @param ... extra arguments (not implemented yet)
+##' 
+##' @details
+##' This function will remove all objects created during a \code{biomod2}
+##' modeling run. It will free both objects saved in memory and objects
+##' saved on hard drive.
+##' @author Wilfried Thuiller, Damien Georges
+##' @examples
+##'   \dontrun{
+##'     ##' species occurrences
+##'     DataSpecies <- read.csv(system.file("external/species/mammals_table.csv",
+##'                                         package="biomod2"), row.names = 1)
+##'     head(DataSpecies)
+##'     
+##'     ##' the name of studied species
+##'     myRespName <- 'VulpesVulpes'
+##'     
+##'     ##' the presence/absences data for our species 
+##'     myResp <- as.numeric(DataSpecies[,myRespName])
+##'     
+##'     ##' the XY coordinates of species data
+##'     myRespXY <- DataSpecies[,c("X_WGS84","Y_WGS84")]
+##'     
+##'     
+##'     ##' Environmental variables extracted from BIOCLIM (bio_3, bio_4, bio_7, bio_11 & bio_12)
+##'     myExpl = raster::stack( system.file( "external/bioclim/current/bio3.grd", 
+##'                                          package="biomod2"),
+##'                             system.file( "external/bioclim/current/bio4.grd", 
+##'                                          package="biomod2"), 
+##'                             system.file( "external/bioclim/current/bio7.grd", 
+##'                                          package="biomod2"),  
+##'                             system.file( "external/bioclim/current/bio11.grd", 
+##'                                          package="biomod2"), 
+##'                             system.file( "external/bioclim/current/bio12.grd", 
+##'                                          package="biomod2"))
+##'     
+##'     ##' 1. Formatting Data
+##'     myBiomodData <- BIOMOD_FormatingData(resp.var = myResp,
+##'                                          expl.var = myExpl,
+##'                                          resp.xy = myRespXY,
+##'                                          resp.name = myRespName)
+##'     
+##'     ##' 2. Defining Models Options using default options.
+##'     myBiomodOption <- BIOMOD_ModelingOptions()
+##'     
+##'     ##' 3. Doing Modelisation
+##'     
+##'     myBiomodModelOut <- BIOMOD_Modeling( myBiomodData, 
+##'                                          models = c('SRE'), 
+##'                                          models.options = myBiomodOption, 
+##'                                          NbRunEval=1, 
+##'                                          DataSplit=80, 
+##'                                          Prevalence=0.5, 
+##'                                          VarImport=0, 
+##'                                          models.eval.meth = c('TSS','ROC'),
+##'                                          do.full.models=FALSE,
+##'                                          modeling.id="test2")
+##'     
+##'     ##' files have been created on hard drive
+##'     list.files(myRespName,all.files=TRUE,recursive=TRUE)
+##'     
+##'     ##' remove properly the modeling objects and all the file saved on hard drive
+##'     RemoveProperly(myBiomodModelOut)
+##'     
+##'     ##' check files had been removed
+##'     list.files(myRespName,all.files=TRUE,recursive=TRUE)
+##'   }
+##'   
+##' @export
+##' @docType methods
+##' @rdname RemoveProperly-methods
 setGeneric("RemoveProperly",
            function(obj, obj.name=deparse(substitute(obj)), ...){
              standardGeneric("RemoveProperly")
            })
+
+setMethod(
+  "RemoveProperly", "BIOMOD.models.out",
+  function(obj, obj.name=deparse(substitute(obj)))
+  {
+    cat("\n\t> Removing .BIOMOD_DATA files...")
+    unlink(file.path(obj@sp.name, ".BIOMOD_DATA", obj@modeling.id), recursive=T, force=TRUE)
+    cat("\n\t> Removing models...")
+    unlink(file.path(obj@sp.name, "models", obj@modeling.id), recursive=T, force=TRUE)
+    cat("\n\t> Removing object hard drive copy...")
+    unlink(obj@link, recursive=T, force=TRUE)
+    cat("\n\t> Removing object from memory...")
+    rm(list=obj.name,envir=sys.frame(-2))
+    cat("\nCompleted!")
+  }
+)
+
+
+
 
 setGeneric("free",
            function(obj, ...){
@@ -1630,18 +1732,6 @@ setMethod("get_built_models", "BIOMOD.models.out",
 )
 
 
-setMethod("RemoveProperly", "BIOMOD.models.out",
-          function(obj, obj.name=deparse(substitute(obj))){
-            cat("\n\t> Removing .BIOMOD_DATA files...")
-            unlink(file.path(obj@sp.name, ".BIOMOD_DATA", obj@modeling.id), recursive=T, force=TRUE)
-            cat("\n\t> Removing models...")
-            unlink(file.path(obj@sp.name, "models", obj@modeling.id), recursive=T, force=TRUE)
-            cat("\n\t> Removing object hard drive copy...")
-            unlink(obj@link, recursive=T, force=TRUE)
-            cat("\n\t> Removing object from memory...")
-            rm(list=obj.name,envir=sys.frame(-2))
-            cat("\nCompleted!")
-          })
 
 
 ####################################################################################################
@@ -1881,22 +1971,22 @@ setMethod(f='free',
 ##' - output of: \code{\link[biomod2]{BIOMOD_EnsembleModeling}}
 ##' - input of: \code{\link[biomod2]{BIOMOD_EnsembleForecasting}}
 ##' 
-##' @slot \code{sp.name}: "character", species name
-##' @slot \code{expl.var.names}: "character", explanatory variables
+##' @slot sp.name "character", species name
+##' @slot expl.var.names "character", explanatory variables
 ##' names
-##' @slot \code{models.out.obj}: "BIOMOD.stored.models.out", object which
+##' @slot models.out.obj "BIOMOD.stored.models.out", object which
 ##' contains information on individuals models that have been combined
-##' @slot \code{eval.metric}: "character", evaluation metrics chose for
+##' @slot eval.metric "character", evaluation metrics chose for
 ##' models selection
-##' @slot \code{eval.metric.quality.threshold}: "numeric", thresholds
+##' @slot eval.metric.quality.threshold "numeric", thresholds
 ##' defined for models selection 
-##' @slot \code{em.computed}: "character", ensemble models built names
-##' @slot \code{em.by}: "character", way models are combined
-##' @slot \code{em.models}: "ANY", list of built biomod2.ensemble.models
+##' @slot em.computed "character", ensemble models built names
+##' @slot em.by "character", way models are combined
+##' @slot em.models "ANY", list of built biomod2.ensemble.models
 ##' objects
-##' @slot \code{modeling.id}: "character", the id of the whole
+##' @slot modeling.id "character", the id of the whole
 ##' modelling process
-##' @slot \code{link}: "character", the path to corresponding hard drive
+##' @slot link "character", the path to corresponding hard drive
 ##' saved object
 ##' 
 ##' @seealso \code{\link[biomod2]{BIOMOD_Projection}}, 

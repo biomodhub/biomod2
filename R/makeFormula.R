@@ -1,6 +1,73 @@
-`makeFormula` <-
-function(respName, explVar, type = 'simple', interaction.level = 0, ...)
-{
+##' @name makeFormula
+##' @title Standardized formula maker
+##' 
+##' @description
+##' makeFormula is an internal \pkg{biomod2} function that can be useful
+##' to help users to build easily some standardized formula used later by
+##' statistical models.
+##' 
+##' @param respName a \code{character} indicating the response variable
+##' name
+##' @param explVar a \code{matrix} or a \code{data.frame}, the 
+##' explanatory variables table that will be considered at modelling step
+##' @param type either 'simple', 'quadratic', 'polynomial' or 's_smoother'
+##' defining the type of formula you want to build
+##' @param interaction.level an \code{integer}, the interaction level
+##' depth between explanatory variables
+##' @param \ldots some additional arguments (see details)
+##' 
+##' @details
+##' It is advised to give only a subset of \code{explVar} table to avoid
+##' useless memory consuming. If some explanatory variables are factorial
+##' ones, you have to give a \code{data.frame} for \code{explVar} where
+##' associated columns are define as \code{factor}.
+##' 
+##' \code{...} argument available values are :
+##' 
+##' - `k` the smoothing parameter value (used only if 
+##' \code{type = 's_smoother'}) corresponding to \code{k} parameter 
+##' of \pkg{mgcv} \code{\link[mgcv]{s}}  or \code{df} \pkg{gam} 
+##' \code{\link[gam]{s}} arguments.
+##'
+##' @return a \code{link[stats]{formula}} class object that can be
+##' directly given to most of \R statistical models.
+##' 
+##' @author Damien Georges
+##' 
+##' @seealso \code{\link[biomod2]{BIOMOD_ModelingOptions}}, 
+##' \code{link[stats]{formula}}
+##' 
+##' @keywords models, formula, options
+##' 
+##' @examples
+##' ##' create simulated data
+##' myResp <- sample(c(0, 1), 20, replace = TRUE)
+##' myExpl <- 
+##'   matrix(
+##'     runif(60), 
+##'     ncol = 3, 
+##'     dimnames=list(NULL, c('var1', 'var2', 'var3'))
+##'   )
+##' 
+##' ##' create a formula
+##' myFormula <- 
+##'   makeFormula( 
+##'     respName = 'myResp',
+##'     explVar = head(myExpl),
+##'     type = 'quadratic',
+##'     interaction.level = 0
+##'   )
+##'   
+##' ##' show formula created
+##' myFormula
+##'
+makeFormula <- function(
+  respName, 
+  explVar, 
+  type = 'simple', 
+  interaction.level = 0, 
+  ...
+){
   # =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=- #
   # This function return a string in a well formated way. May be give as formula argument to a "basic"
   # statistical model.

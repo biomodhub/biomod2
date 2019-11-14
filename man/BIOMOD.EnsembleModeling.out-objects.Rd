@@ -21,31 +21,31 @@ ensemble modeling procedure.
 \section{Slots}{
 
 \describe{
-\item{\code{\code{sp.name}:}}{"character", species name}
+\item{\code{sp.name}}{"character", species name}
 
-\item{\code{\code{expl.var.names}:}}{"character", explanatory variables
+\item{\code{expl.var.names}}{"character", explanatory variables
 names}
 
-\item{\code{\code{models.out.obj}:}}{"BIOMOD.stored.models.out", object which
+\item{\code{models.out.obj}}{"BIOMOD.stored.models.out", object which
 contains information on individuals models that have been combined}
 
-\item{\code{\code{eval.metric}:}}{"character", evaluation metrics chose for
+\item{\code{eval.metric}}{"character", evaluation metrics chose for
 models selection}
 
-\item{\code{\code{eval.metric.quality.threshold}:}}{"numeric", thresholds
+\item{\code{eval.metric.quality.threshold}}{"numeric", thresholds
 defined for models selection}
 
-\item{\code{\code{em.computed}:}}{"character", ensemble models built names}
+\item{\code{em.computed}}{"character", ensemble models built names}
 
-\item{\code{\code{em.by}:}}{"character", way models are combined}
+\item{\code{em.by}}{"character", way models are combined}
 
-\item{\code{\code{em.models}:}}{"ANY", list of built biomod2.ensemble.models
+\item{\code{em.models}}{"ANY", list of built biomod2.ensemble.models
 objects}
 
-\item{\code{\code{modeling.id}:}}{"character", the id of the whole
+\item{\code{modeling.id}}{"character", the id of the whole
 modelling process}
 
-\item{\code{\code{link}:}}{"character", the path to corresponding hard drive
+\item{\code{link}}{"character", the path to corresponding hard drive
 saved object}
 }}
 
