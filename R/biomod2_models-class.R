@@ -1209,10 +1209,8 @@ setMethod(
     }
     
     if(inherits(newdata, 'Raster')){
-      cat('\n raster >')
       return(.predict.MAXENT.Phillips.2_biomod2_model.RasterStack(object, newdata, ... ))
     } else if(inherits(newdata, 'data.frame') | inherits(newdata, 'matrix')){
-      cat('\n df >')
       return(.predict.MAXENT.Phillips.2_biomod2_model.data.frame(object, newdata, ... ))
     } else { stop("invalid newdata input") }
     

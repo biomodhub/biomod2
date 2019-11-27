@@ -1024,6 +1024,10 @@
   if(Model == 'MAXENT.Phillips'){
     cat('\nModel=MAXENT.Phillips')
   }
+  
+  if(Model == 'MAXENT.Phillips.2'){
+    cat('\nModel=MAXENT.Phillips (maxnet)')
+  }
 
   # if(Model == 'MAXENT.Tsuruoka'){
   #   cat('\nModel=MAXENT.Tsuruoka')
