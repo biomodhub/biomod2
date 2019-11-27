@@ -2,15 +2,15 @@
 # BIOMOD objects definition
 # Damien Georges
 # 09/02/2012
-# v2.0
+# v2e("sp", quietly=TRUE)
+requireNamespace("raster", quietly=TRUE)
+requireNamespace(".0
 # =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=- #
 # This file defines the BIOMOD objects and all their methods
 # =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=- #
 
 # We choose here to create monospecific objects to make all procedures and parallelising easier
-requireNamespace("sp", quietly=TRUE)
-requireNamespace("raster", quietly=TRUE)
-requireNamespace("rasterVis", quietly=TRUE)
+requireNamespacrasterVis", quietly=TRUE)
 
 # 0. Generic Functions definition -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=--=- #
 setGeneric("get_predictions",
@@ -68,10 +68,112 @@ setGeneric("load_stored_object",
              standardGeneric("load_stored_object")
            })
 
+##' @name BIOMOD.models.out-RemoveProperly
+##' @aliases RemoveProperly
+##' @aliases RemoveProperly,BIOMOD.models.out-method
+##' @title remove properly BIOMOD_Modeling outputs
+##' @description
+##' Functions to free properly a \code{\link[biomod2]{BIOMOD_Modeling}}
+##' outputs
+##' 
+##' @param obj \code{"\link[=BIOMOD.models.out-class]{BIOMOD.models.out}"} 
+##'   object
+##' @param obj.name the name of object in current environment, 
+##'   automatically filled
+##' @param ... extra arguments (not implemented yet)
+##' 
+##' @details
+##' This function will remove all objects created during a \code{biomod2}
+##' modeling run. It will free both objects saved in memory and objects
+##' saved on hard drive.
+##' @author Wilfried Thuiller, Damien Georges
+##' @examples
+##'   \dontrun{
+##'     ##' species occurrences
+##'     DataSpecies <- read.csv(system.file("external/species/mammals_table.csv",
+##'                                         package="biomod2"), row.names = 1)
+##'     head(DataSpecies)
+##'     
+##'     ##' the name of studied species
+##'     myRespName <- 'VulpesVulpes'
+##'     
+##'     ##' the presence/absences data for our species 
+##'     myResp <- as.numeric(DataSpecies[,myRespName])
+##'     
+##'     ##' the XY coordinates of species data
+##'     myRespXY <- DataSpecies[,c("X_WGS84","Y_WGS84")]
+##'     
+##'     
+##'     ##' Environmental variables extracted from BIOCLIM (bio_3, bio_4, bio_7, bio_11 & bio_12)
+##'     myExpl = raster::stack( system.file( "external/bioclim/current/bio3.grd", 
+##'                                          package="biomod2"),
+##'                             system.file( "external/bioclim/current/bio4.grd", 
+##'                                          package="biomod2"), 
+##'                             system.file( "external/bioclim/current/bio7.grd", 
+##'                                          package="biomod2"),  
+##'                             system.file( "external/bioclim/current/bio11.grd", 
+##'                                          package="biomod2"), 
+##'                             system.file( "external/bioclim/current/bio12.grd", 
+##'                                          package="biomod2"))
+##'     
+##'     ##' 1. Formatting Data
+##'     myBiomodData <- BIOMOD_FormatingData(resp.var = myResp,
+##'                                          expl.var = myExpl,
+##'                                          resp.xy = myRespXY,
+##'                                          resp.name = myRespName)
+##'     
+##'     ##' 2. Defining Models Options using default options.
+##'     myBiomodOption <- BIOMOD_ModelingOptions()
+##'     
+##'     ##' 3. Doing Modelisation
+##'     
+##'     myBiomodModelOut <- BIOMOD_Modeling( myBiomodData, 
+##'                                          models = c('SRE'), 
+##'                                          models.options = myBiomodOption, 
+##'                                          NbRunEval=1, 
+##'                                          DataSplit=80, 
+##'                                          Prevalence=0.5, 
+##'                                          VarImport=0, 
+##'                                          models.eval.meth = c('TSS','ROC'),
+##'                                          do.full.models=FALSE,
+##'                                          modeling.id="test2")
+##'     
+##'     ##' files have been created on hard drive
+##'     list.files(myRespName,all.files=TRUE,recursive=TRUE)
+##'     
+##'     ##' remove properly the modeling objects and all the file saved on hard drive
+##'     RemoveProperly(myBiomodModelOut)
+##'     
+##'     ##' check files had been removed
+##'     list.files(myRespName,all.files=TRUE,recursive=TRUE)
+##'   }
+##'   
+##' @export
+##' @docType methods
+##' @rdname RemoveProperly-methods
 setGeneric("RemoveProperly",
            function(obj, obj.name=deparse(substitute(obj)), ...){
              standardGeneric("RemoveProperly")
            })
+
+setMethod(
+  "RemoveProperly", "BIOMOD.models.out",
+  function(obj, obj.name=deparse(substitute(obj)))
+  {
+    cat("\n\t> Removing .BIOMOD_DATA files...")
+    unlink(file.path(obj@sp.name, ".BIOMOD_DATA", obj@modeling.id), recursive=T, force=TRUE)
+    cat("\n\t> Removing models...")
+    unlink(file.path(obj@sp.name, "models", obj@modeling.id), recursive=T, force=TRUE)
+    cat("\n\t> Removing object hard drive copy...")
+    unlink(obj@link, recursive=T, force=TRUE)
+    cat("\n\t> Removing object from memory...")
+    rm(list=obj.name,envir=sys.frame(-2))
+    cat("\nCompleted!")
+  }
+)
+
+
+
 
 setGeneric("free",
            function(obj, ...){
@@ -321,6 +423,9 @@ setMethod('plot', signature(x='BIOMOD.formated.data', y="missing"),
 
           })
 
+##' @rdname BIOMOD.formated.data-objects
+##' @docType method
+##' @aliases show, BIOMOD.formated.data-method
 setMethod('show', signature('BIOMOD.formated.data'),
           function(object){
             .bmCat("'BIOMOD.formated.data'")
@@ -628,6 +733,9 @@ setMethod('plot', signature(x='BIOMOD.formated.data.PA', y="missing"),
               }
             } })
 
+##' @rdname BIOMOD.formated.data.PA-objects
+##' @docType method
+##' @aliases show, BIOMOD.formated.data.PA-method
 setMethod('show', signature('BIOMOD.formated.data.PA'),
           function(object){
             .bmCat("'BIOMOD.formated.data.PA'")
@@ -653,122 +761,196 @@ setMethod('show', signature('BIOMOD.formated.data.PA'),
           })
 
 
-setClass("BIOMOD.Model.Options",
-         representation(GLM = "list",
-                        GBM = "list",
-                        GAM = "list",
-                        CTA = "list",
-                        ANN = "list",
-                        SRE = "list",
-                        FDA = "list",
-                        MARS = "list",
-                        RF = "list",
-                        MAXENT.Phillips = "list",
-                        MAXENT.Tsuruoka = "list"),
-
-         prototype(GLM = list( type = 'quadratic',
-                               interaction.level = 0,
-                               myFormula = NULL,
-                               test = 'AIC',
-                               family = binomial(link='logit'),
-                               mustart = 0.5,
-                               control = glm.control(maxit = 50)),
-
-                   GBM = list(  distribution = 'bernoulli',
-                                n.trees = 2500,
-                                interaction.depth = 7,
-                                n.minobsinnode = 5,
-                                shrinkage = 0.001,
-                                bag.fraction = 0.5,
-                                train.fraction = 1,
-                                cv.folds = 3,
-                                keep.data = FALSE,
-                                verbose = FALSE,
-                                #                                 class.stratify.cv = 'bernoulli',
-                                perf.method = 'cv',
-                                n.cores = 1),
-
-                   GAM = list( algo = "GAM_mgcv",
-                               type = "s_smoother",
-                               k = NULL,
-                               interaction.level = 0,
-                               myFormula = NULL,
-                               family = binomial(link='logit'),
-                               control = list(epsilon = 1e-06, trace = FALSE ,maxit = 100),
-                               method = "GCV.Cp",
-                               optimizer=c("outer","newton"),
-                               select=FALSE,
-                               knots=NULL,
-                               paraPen=NULL),
-
-                   CTA = list(method = 'class',
-                              parms = 'default',
-                              #                               control = rpart.control(xval = 5, minbucket = 5, minsplit = 5,
-                              #                                                       cp = 0.001, maxdepth = 25),
-                              control = list(xval = 5, minbucket = 5, minsplit = 5,
-                                             cp = 0.001, maxdepth = 25),
-                              cost = NULL ),
-
-                   ANN = list(NbCV = 5,
-                              size = NULL,
-                              decay = NULL,
-                              rang = 0.1,
-                              maxit = 200),
-
-                   SRE = list(quant = 0.025),
-
-                   FDA = list(method = 'mars',
-                              add_args = NULL),
-
-                   MARS = list(type = 'simple',
-                               interaction.level = 0,
-                               myFormula = NULL,
-#                                degree = 1,
-                               nk = NULL,
-                               penalty = 2,
-                               thresh = 0.001,
-                               nprune = NULL,
-                               pmethod = 'backward'),
-
-                   RF = list(do.classif = TRUE,
-                             ntree = 500,
-                             mtry = 'default',
-                             nodesize = 5,
-                             maxnodes= NULL),
-
-                   MAXENT.Phillips = list(path_to_maxent.jar = getwd(),
-                                 memory_allocated = 512,
-                                 background_data_dir = 'default',
-                                 maximumbackground = 'default',
-                                 maximumiterations = 200,
-                                 visible = FALSE,
-                                 linear = TRUE,
-                                 quadratic = TRUE,
-                                 product = TRUE,
-                                 threshold = TRUE,
-                                 hinge = TRUE,
-                                 lq2lqptthreshold = 80,
-                                 l2lqthreshold = 10,
-                                 hingethreshold = 15,
-                                 beta_threshold = -1.0,
-                                 beta_categorical = -1.0,
-                                 beta_lqp = -1.0,
-                                 beta_hinge = -1.0,
-                                 betamultiplier = 1,
-                                 defaultprevalence = 0.5),
-
-                   MAXENT.Tsuruoka = list(l1_regularizer = 0.0,
-                                          l2_regularizer = 0.0,
-                                          use_sgd = FALSE,
-                                          set_heldout = 0,
-                                          verbose = FALSE)
-
-         ),
-         validity = function(object){
-           test <- TRUE
-           ## GLM ##
-           if(!(object@GLM$type %in% c('simple','quadratic','polynomial','user.defined'))){ cat("\nGLM$type must be 'simple',  'quadratic', 'polynomial' or 'user.defined'"); test <- FALSE}
-           if(!is.numeric(object@GLM$interaction.level)){ cat("\nGLM$interaction.level must be a integer"); test <- FALSE } else{
+##' @rdname BIOMOD.Model.Options-objects
+##' @name BIOMOD.Model.Options-class
+##' @docType class
+##' @aliases   BIOMOD.Model.Options-class
+##' 
+##' @title BIOMOD_ModelingOptions outputs objects class
+##' 
+##' @description
+##' BIOMOD.Model.Options objects are created, used and returned
+##' by BIOMOD functions. These objects will contains for each
+##' model support within \pkg{biomod2}, a set of options that
+##' users can change. Please refer to 
+##' \code{\link[biomod2]{BIOMOD_ModelingOptions}} for further
+##'  details. 
+##'   
+##' - output of: \code{\link[biomod2]{BIOMOD_ModelingOptions}}
+##' - input of:  \code{\link[biomod2]{BIOMOD_Modeling}}
+##' 
+##' @param object init list of options
+##' 
+##' @details  
+##' Please refer to \code{\link[biomod2]{BIOMOD_ModelingOptions}}
+##' for each model arguments supported.
+##' 
+##' @slot GLM "list", list of GLM supported options
+##' @slot GBM "list", list of GBM supported options 
+##' @slot GAM "list", list of GAM supported options
+##' @slot CTA "list", list of CTA supported options
+##' @slot ANN "list", list of ANN supported options
+##' @slot SRE "list", list of SRE supported options
+##' @slot FDA "list", list of FDA supported options
+##' @slot MARS "list", list of MARS supported options
+##' @slot RF "list", list of RF supported options
+##' @slot MAXENT.Phillips "list", list of MAXENT.Phillips
+##'   supported options
+##' @slot MAXENT.Phillips.2 "list", list of maxnet
+##'   supported options
+##'   
+##' @author Damien Georges
+##' @seealso \code{\link[biomod2]{BIOMOD_ModelingOptions}}
+##' @keywords models, options
+##' 
+##' @examples
+##' showClass("BIOMOD.Model.Options")
+##' 
+setClass(
+  "BIOMOD.Model.Options",
+  representation(
+    GLM = "list",
+    GBM = "list",
+    GAM = "list",
+    CTA = "list",
+    ANN = "list",
+    SRE = "list",
+    FDA = "list",
+    MARS = "list",
+    RF = "list",
+    MAXENT.Phillips = "list",
+    MAXENT.Phillips.2 = "list"
+  ),
+  prototype(
+    GLM = 
+      list( 
+        type = 'quadratic',
+        interaction.level = 0,
+        myFormula = NULL,
+        test = 'AIC',
+        family = binomial(link = 'logit'),
+        mustart = 0.5,
+        control = glm.control(maxit = 50)
+      ),
+    GBM = 
+      list(
+        distribution = 'bernoulli',
+        n.trees = 2500,
+        interaction.depth = 7,
+        n.minobsinnode = 5,
+        shrinkage = 0.001,
+        bag.fraction = 0.5,
+        train.fraction = 1,
+        cv.folds = 3,
+        keep.data = FALSE,
+        verbose = FALSE,
+        # class.stratify.cv = 'bernoulli',
+        perf.method = 'cv',
+        n.cores = 1
+      ),
+    GAM = 
+      list( 
+        algo = "GAM_mgcv",
+        type = "s_smoother",
+        k = NULL,
+        interaction.level = 0,
+        myFormula = NULL,
+        family = binomial(link = 'logit'),
+        control = list(epsilon = 1e-06, trace = FALSE, maxit = 100),
+        method = "GCV.Cp",
+        optimizer = c("outer", "newton"),
+        select = FALSE,
+        knots = NULL,
+        paraPen = NULL
+      ),
+    CTA = 
+      list(
+        method = 'class',
+        parms = 'default',
+        # control = rpart.control(xval = 5, minbucket = 5, minsplit = 5, cp = 0.001, maxdepth = 25),
+        control = 
+          list(
+            xval = 5, 
+            minbucket = 5, 
+            minsplit = 5,
+            cp = 0.001, 
+            maxdepth = 25
+          ),
+        cost = NULL 
+      ),
+    ANN = 
+      list(
+        NbCV = 5,
+        size = NULL,
+        decay = NULL,
+        rang = 0.1,
+        maxit = 200
+      ),
+    SRE = 
+      list(
+        quant = 0.025
+      ),
+    FDA = 
+      list(
+        method = 'mars',
+        add_args = NULL
+      ),
+    MARS = 
+      list(
+        type = 'simple',
+        interaction.level = 0,
+        myFormula = NULL,
+        # degree = 1,
+        nk = NULL,
+        penalty = 2,
+        thresh = 0.001,
+        nprune = NULL,
+        pmethod = 'backward'
+      ),
+    RF = 
+      list(
+        do.classif = TRUE,
+        ntree = 500,
+        mtry = 'default',
+        nodesize = 5,
+        maxnodes= NULL
+      ),
+    MAXENT.Phillips = 
+      list(
+        path_to_maxent.jar = getwd(),
+        memory_allocated = 512,
+        background_data_dir = 'default',
+        maximumbackground = 'default',
+        maximumiterations = 200,
+        visible = FALSE,
+        linear = TRUE,
+        quadratic = TRUE,
+        product = TRUE,
+        threshold = TRUE,
+        hinge = TRUE,
+        lq2lqptthreshold = 80,
+        l2lqthreshold = 10,
+        hingethreshold = 15,
+        beta_threshold = -1.0,
+        beta_categorical = -1.0,
+        beta_lqp = -1.0,
+        beta_hinge = -1.0,
+        betamultiplier = 1,
+        defaultprevalence = 0.5
+      ),
+    MAXENT.Phillips.2 = 
+      list(
+        myFormula = NULL,
+        regmult = 1,
+        regfun = maxnet::maxnet.default.regularization
+      )
+  ),
+  validity = 
+    function(object){
+      test <- TRUE
+      ## GLM ##
+      if(!(object@GLM$type %in% c('simple','quadratic','polynomial','user.defined'))){ cat("\nGLM$type must be 'simple',  'quadratic', 'polynomial' or 'user.defined'"); test <- FALSE}
+      if(!is.numeric(object@GLM$interaction.level)){ cat("\nGLM$interaction.level must be a integer"); test <- FALSE } else{
              if(object@GLM$interaction.level < 0 | object@GLM$interaction.level%%1!=0){ cat("\nGLM$interaction.level must be a positive integer"); test <- FALSE }
            }
            if(!is.null(object@GLM$myFormula)) if(class(object@GLM$myFormula) != "formula"){ cat("\nGLM$myFormula must be NULL or a formula object"); test <- FALSE }
@@ -973,147 +1155,186 @@ setClass("BIOMOD.Model.Options",
            if(!is.numeric(object@MAXENT.Phillips$beta_hinge)){ cat("\nMAXENT.Phillips$beta_hinge must be a numeric"); test <- FALSE }
 		       if(!is.numeric(object@MAXENT.Phillips$betamultiplier)){ cat("\nMAXENT.Phillips$betamultiplier must be a numeric"); test <- FALSE }
            if(!is.numeric(object@MAXENT.Phillips$defaultprevalence)){ cat("\nMAXENT.Phillips$defaultprevalence must be a numeric"); test <- FALSE }
+           
+           ## MAXENT.Phillips.2
+           
+           ### TO BE DONE ===
 
-           ## MAXENT.Tsuruoka
-		       if(!is.numeric(object@MAXENT.Tsuruoka$l1_regularizer)){ cat("\nMAXENT.Tsuruoka$l1_regularizer must be a numeric"); test <- FALSE }
-		       if(!is.numeric(object@MAXENT.Tsuruoka$l2_regularizer)){ cat("\nMAXENT.Tsuruoka$l2_regularizer must be a numeric"); test <- FALSE }
-		       if(!is.logical(object@MAXENT.Tsuruoka$use_sgd)){ cat("\nMAXENT.Tsuruoka$use_sgd must be a logical"); test <- FALSE }
-		       if(!is.numeric(object@MAXENT.Tsuruoka$set_heldout)){ cat("\nMAXENT.Tsuruoka$set_heldout must be a numeric"); test <- FALSE }
-		       if(!is.logical(object@MAXENT.Tsuruoka$verbose)){ cat("\nMAXENT.Tsuruoka$verbose must be a logical"); test <- FALSE }
+#            ## MAXENT.Tsuruoka
+# 		       if(!is.numeric(object@MAXENT.Tsuruoka$l1_regularizer)){ cat("\nMAXENT.Tsuruoka$l1_regularizer must be a numeric"); test <- FALSE }
+# 		       if(!is.numeric(object@MAXENT.Tsuruoka$l2_regularizer)){ cat("\nMAXENT.Tsuruoka$l2_regularizer must be a numeric"); test <- FALSE }
+# 		       if(!is.logical(object@MAXENT.Tsuruoka$use_sgd)){ cat("\nMAXENT.Tsuruoka$use_sgd must be a logical"); test <- FALSE }
+# 		       if(!is.numeric(object@MAXENT.Tsuruoka$set_heldout)){ cat("\nMAXENT.Tsuruoka$set_heldout must be a numeric"); test <- FALSE }
+# 		       if(!is.logical(object@MAXENT.Tsuruoka$verbose)){ cat("\nMAXENT.Tsuruoka$verbose must be a logical"); test <- FALSE }
 
            return(test)
          })
 
-setMethod('show', signature('BIOMOD.Model.Options'),
-          function(object){
-            .bmCat(" 'BIOMOD.Model.Options' ")
-            cat("\n")
+##' @rdname BIOMOD.Model.Options-objects
+##' @aliases show, BIOMOD.Model.Options-method
+setMethod(
+  'show', 
+  signature('BIOMOD.Model.Options'),
+  function(object){
+    .bmCat(" 'BIOMOD.Model.Options' ")
+    cat("\n")
+    
+    ## GLM options
+    cat("\nGLM = list( type = '", object@GLM$type, "',", sep="")
+    cat("\n            interaction.level = ", object@GLM$interaction.level, ",", sep="")
+    cat("\n            myFormula = ",  ifelse(length(object@GLM$myFormula) < 1,'NULL',paste(object@GLM$myFormula[2],object@GLM$myFormula[1],object@GLM$myFormula[3])), ",", sep="")
+    cat("\n            test = '", object@GLM$test, "',", sep="")
+    cat("\n            family = ", object@GLM$family$family,"(link = '",object@GLM$family$link,"'),", sep="")
+    cat("\n            mustart = ", object@GLM$mustart, ",", sep="")
+    cat("\n            control = glm.control(", .print.control(object@GLM$control), ") ),", sep="", fill=.Options$width)
+    
+    ## GBM options
+    cat("\n")
+    cat("\nGBM = list( distribution = '", object@GBM$distribution, "',", sep="")
+    cat("\n            n.trees = ", object@GBM$n.trees, ",", sep="")
+    cat("\n            interaction.depth = ", object@GBM$interaction.depth, ",", sep="")
+    cat("\n            n.minobsinnode = ", object@GBM$n.minobsinnode, ",", sep="")
+    cat("\n            shrinkage = ", object@GBM$shrinkage, ",", sep="")
+    cat("\n            bag.fraction = ", object@GBM$bag.fraction, ",", sep="")
+    cat("\n            train.fraction = ", object@GBM$train.fraction, ",", sep="")
+    cat("\n            cv.folds = ", object@GBM$cv.folds, ",", sep="")
+    cat("\n            keep.data = ", object@GBM$keep.data, ",", sep="")
+    cat("\n            verbose = ", object@GBM$verbose, ",", sep="")
+    #             cat("\n            class.stratify.cv = '", object@GBM$class.stratify.cv, "',", sep="")
+    cat("\n            perf.method = '", object@GBM$perf.method, "',", sep="")
+    cat("\n            n.cores = ", ifelse(length(object@GBM$n.cores), object@GBM$n.cores,'NULL'), "),", sep="")
+    
+    ## GAM options
+    cat("\n")
+    cat("\nGAM = list( algo = '", object@GAM$algo, "',", sep="")
+    cat("\n            type = '", object@GAM$type, "',", sep="")
+    cat("\n            k = ", ifelse(length(object@GAM$k) < 1,'NULL',object@GAM$k), ",", sep="")
+    cat("\n            interaction.level = ", object@GAM$interaction.level, ",", sep="")
+    cat("\n            myFormula = ", ifelse(length(object@GAM$myFormula) < 1,'NULL',paste(object@GAM$myFormula[2],object@GAM$myFormula[1],object@GAM$myFormula[3])), ",", sep="")
+    cat("\n            family = ", object@GAM$family$family,"(link = '",object@GAM$family$link,"'),", sep="")
+    
+    if(object@GAM$algo=='GAM_mgcv'){
+      cat("\n            method = '", object@GAM$method, "',", sep="")
+      cat("\n            optimizer = c('", paste(object@GAM$optimizer,collapse="','"), "'),", sep="")
+      cat("\n            select = ", object@GAM$select, ",", sep="")
+      cat("\n            knots = ",  ifelse(length(object@GLM$knots) < 1,'NULL',"'user.defined'"), ",", sep="")
+      cat("\n            paraPen = ",  ifelse(length(object@GLM$paraPen) < 1,'NULL',"'user.defined'"), ",", sep="")
+    }
+    
+    cat("\n            control = list(", .print.control(object@GAM$control), ") ),", sep="", fill=.Options$width)
+    
+    
+    
+    ## CTA options
+    cat("\n")
+    cat("\nCTA = list( method = '", object@CTA$method, "',", sep="")
+    cat("\n            parms = '", object@CTA$parms, "',", sep="")
+    cat("\n            cost = ", ifelse(length(object@CTA$cost)<1,'NULL',object@CTA$cost), ",", sep="")
+    cat("\n            control = list(", .print.control(object@CTA$control), ") ),", sep="", fill=.Options$width)
+    
+    ## ANN options
+    cat("\n")
+    cat("\nANN = list( NbCV = ", object@ANN$NbCV, ",", sep="")
+    cat("\n            size = ", ifelse(length(object@ANN$size)<1,'NULL',object@ANN$size), ",", sep="")
+    cat("\n            decay = ", ifelse(length(object@ANN$decay)<1,'NULL',object@ANN$decay), ",", sep="")
+    cat("\n            rang = ", object@ANN$rang, ",", sep="")
+    cat("\n            maxit = ", object@ANN$maxit, "),", sep="")
+    
+    ## SRE options
+    cat("\n")
+    cat("\nSRE = list( quant = ", object@SRE$quant, "),", sep="")
+    
+    ## FDA options
+    cat("\n")
+    cat("\nFDA = list( method = '", object@FDA$method, "',", sep="")
+    cat("\n            add_args = ", ifelse(length(object@FDA$add_args)<1,
+                                            'NULL',
+                                            paste("list(", paste(.print.control(object@FDA$add_args), collapse=""), ")", sep="")), "),",sep="")
+    
+    ## MARS options
+    cat("\n")
+    cat("\nMARS = list( type = '", object@MARS$type, "',", sep="")
+    cat("\n             interaction.level = ", object@MARS$interaction.level, ",", sep="")
+    cat("\n             myFormula = ",  ifelse(length(object@MARS$myFormula) < 1,'NULL',paste(object@GLM$myFormula[2],object@GLM$myFormula[1],object@GLM$myFormula[3])), ",", sep="")
+    #             cat("\n             degree = ", object@MARS$degree, ",", sep="")
+    cat("\n             nk = ", ifelse(length(object@MARS$nk) < 1,'NULL',object@MARS$nk), ",", sep="")
+    cat("\n             penalty = ", object@MARS$penalty, ",", sep="")
+    cat("\n             thresh = ", object@MARS$thresh, ",", sep="")
+    cat("\n             nprune = ", ifelse(length(object@MARS$nprune) < 1,'NULL',object@MARS$nprune), ",", sep="")
+    cat("\n             pmethod = '", object@MARS$pmethod, "'),", sep="")
+    
+    ## RF options
+    cat("\n")
+    cat("\nRF = list( do.classif = ", object@RF$do.classif, ",", sep="")
+    cat("\n           ntree = ", object@RF$ntree, ",", sep="")
+    cat("\n           mtry = '", object@RF$mtry, "',", sep="")
+    cat("\n           nodesize = ", object@RF$nodesize, ",", sep="")
+    cat("\n           maxnodes = ", ifelse(length(object@RF$maxnodes) < 1,'NULL',object@RF$maxnodes), "),", sep="")
+    
+    ## MAXENT.Phillips options
+    cat("\n")
+    cat("\nMAXENT.Phillips = list( path_to_maxent.jar = '", object@MAXENT.Phillips$path_to_maxent.jar, "',", sep="")
+    cat("\n               memory_allocated = ", ifelse(length(object@MAXENT.Phillips$memory_allocated) < 1,'NULL',object@MAXENT.Phillips$memory_allocated), ",", sep="")
+    cat("\n               background_data_dir = ", ifelse(is.character(object@MAXENT.Phillips$background_data_dir), "'", ""), object@MAXENT.Phillips$background_data_dir, ifelse(is.character(object@MAXENT.Phillips$background_data_dir), "'", ""), ",", sep="")
+    cat("\n               maximumbackground = ", ifelse(is.character(object@MAXENT.Phillips$maximumbackground), "'", ""), object@MAXENT.Phillips$maximumbackground, ifelse(is.character(object@MAXENT.Phillips$maximumbackground), "'", ""), ",", sep="")
+    cat("\n               maximumiterations = ", object@MAXENT.Phillips$maximumiterations, ",", sep="")
+    cat("\n               visible = ", object@MAXENT.Phillips$visible, ",", sep="")
+    cat("\n               linear = ", object@MAXENT.Phillips$linear, ",", sep="")
+    cat("\n               quadratic = ", object@MAXENT.Phillips$quadratic, ",", sep="")
+    cat("\n               product = ", object@MAXENT.Phillips$product, ",", sep="")
+    cat("\n               threshold = ", object@MAXENT.Phillips$threshold, ",", sep="")
+    cat("\n               hinge = ", object@MAXENT.Phillips$hinge, ",", sep="")
+    cat("\n               lq2lqptthreshold = ", object@MAXENT.Phillips$lq2lqptthreshold, ",", sep="")
+    cat("\n               l2lqthreshold = ", object@MAXENT.Phillips$l2lqthreshold, ",", sep="")
+    cat("\n               hingethreshold = ", object@MAXENT.Phillips$hingethreshold, ",", sep="")
+    cat("\n               beta_threshold = ", object@MAXENT.Phillips$beta_threshold, ",", sep="")
+    cat("\n               beta_categorical = ", object@MAXENT.Phillips$beta_categorical, ",", sep="")
+    cat("\n               beta_lqp = ", object@MAXENT.Phillips$beta_lqp, ",", sep="")
+    cat("\n               beta_hinge = ", object@MAXENT.Phillips$beta_hinge, ",", sep="")
+    cat("\n               betamultiplier = ", object@MAXENT.Phillips$betamultiplier, ",", sep="")
+    cat("\n               defaultprevalence = ", object@MAXENT.Phillips$defaultprevalence, "),", sep="")
+    ## MAXENT.Phillips.2 options
+    cat("\n")
+    cat("\n MAXENT.Phillips.2 = ")
+    cat("\n   list(")
+    cat(
+      "\n     myFormula = ", 
+      cat_formula(object@MAXENT.Phillips.2$myFormula), 
+      ",", sep=""
+    )
+    cat("\n     regmult = ", object@MAXENT.Phillips.2$regmult, ",", sep="")
+    cat("\n     regfun = <function>")
+    cat("\n   )")
+    cat("\n)")
+    
+    # ## MAXENT.Tsuruoka
+    # cat("\n")
+    # cat("\nMAXENT.Tsuruoka = list( l1_regularizer = ", object@MAXENT.Tsuruoka$l1_regularizer, ",", sep="")
+    # cat("\n                        l2_regularizer = ", object@MAXENT.Tsuruoka$l2_regularizer, ",", sep="")
+    # cat("\n                        use_sgd = ", object@MAXENT.Tsuruoka$use_sgd, ",", sep="")
+    # cat("\n                        set_heldout = ", object@MAXENT.Tsuruoka$set_heldout, ",", sep="")
+    # cat("\n                        verbose = ", object@MAXENT.Tsuruoka$verbose, ")", sep="")
+    
+    .bmCat()
+  })
 
-            ## GLM options
-            cat("\nGLM = list( type = '", object@GLM$type, "',", sep="")
-            cat("\n            interaction.level = ", object@GLM$interaction.level, ",", sep="")
-            cat("\n            myFormula = ",  ifelse(length(object@GLM$myFormula) < 1,'NULL',paste(object@GLM$myFormula[2],object@GLM$myFormula[1],object@GLM$myFormula[3])), ",", sep="")
-            cat("\n            test = '", object@GLM$test, "',", sep="")
-            cat("\n            family = ", object@GLM$family$family,"(link = '",object@GLM$family$link,"'),", sep="")
-            cat("\n            mustart = ", object@GLM$mustart, ",", sep="")
-            cat("\n            control = glm.control(", .print.control(object@GLM$control), ") ),", sep="", fill=.Options$width)
 
-            ## GBM options
-            cat("\n")
-            cat("\nGBM = list( distribution = '", object@GBM$distribution, "',", sep="")
-            cat("\n            n.trees = ", object@GBM$n.trees, ",", sep="")
-            cat("\n            interaction.depth = ", object@GBM$interaction.depth, ",", sep="")
-            cat("\n            n.minobsinnode = ", object@GBM$n.minobsinnode, ",", sep="")
-            cat("\n            shrinkage = ", object@GBM$shrinkage, ",", sep="")
-            cat("\n            bag.fraction = ", object@GBM$bag.fraction, ",", sep="")
-            cat("\n            train.fraction = ", object@GBM$train.fraction, ",", sep="")
-            cat("\n            cv.folds = ", object@GBM$cv.folds, ",", sep="")
-            cat("\n            keep.data = ", object@GBM$keep.data, ",", sep="")
-            cat("\n            verbose = ", object@GBM$verbose, ",", sep="")
-            #             cat("\n            class.stratify.cv = '", object@GBM$class.stratify.cv, "',", sep="")
-            cat("\n            perf.method = '", object@GBM$perf.method, "',", sep="")
-            cat("\n            n.cores = ", ifelse(length(object@GBM$n.cores), object@GBM$n.cores,'NULL'), "),", sep="")
+## TO DO: ===
+## moove this function somewhere else
+cat_formula <-
+  function(
+    formula = NULL
+  ){
+    ifelse(
+      length(formula) < 1,
+      'NULL',
+      paste(
+        formula[2],
+        formula[1],
+        formula[3])
+    )
+  }
 
-            ## GAM options
-            cat("\n")
-            cat("\nGAM = list( algo = '", object@GAM$algo, "',", sep="")
-            cat("\n            type = '", object@GAM$type, "',", sep="")
-            cat("\n            k = ", ifelse(length(object@GAM$k) < 1,'NULL',object@GAM$k), ",", sep="")
-            cat("\n            interaction.level = ", object@GAM$interaction.level, ",", sep="")
-            cat("\n            myFormula = ", ifelse(length(object@GAM$myFormula) < 1,'NULL',paste(object@GAM$myFormula[2],object@GAM$myFormula[1],object@GAM$myFormula[3])), ",", sep="")
-            cat("\n            family = ", object@GAM$family$family,"(link = '",object@GAM$family$link,"'),", sep="")
-
-            if(object@GAM$algo=='GAM_mgcv'){
-              cat("\n            method = '", object@GAM$method, "',", sep="")
-              cat("\n            optimizer = c('", paste(object@GAM$optimizer,collapse="','"), "'),", sep="")
-              cat("\n            select = ", object@GAM$select, ",", sep="")
-              cat("\n            knots = ",  ifelse(length(object@GLM$knots) < 1,'NULL',"'user.defined'"), ",", sep="")
-              cat("\n            paraPen = ",  ifelse(length(object@GLM$paraPen) < 1,'NULL',"'user.defined'"), ",", sep="")
-            }
-
-            cat("\n            control = list(", .print.control(object@GAM$control), ") ),", sep="", fill=.Options$width)
-
-
-
-            ## CTA options
-            cat("\n")
-            cat("\nCTA = list( method = '", object@CTA$method, "',", sep="")
-            cat("\n            parms = '", object@CTA$parms, "',", sep="")
-            cat("\n            cost = ", ifelse(length(object@CTA$cost)<1,'NULL',object@CTA$cost), ",", sep="")
-            cat("\n            control = list(", .print.control(object@CTA$control), ") ),", sep="", fill=.Options$width)
-
-            ## ANN options
-            cat("\n")
-            cat("\nANN = list( NbCV = ", object@ANN$NbCV, ",", sep="")
-            cat("\n            size = ", ifelse(length(object@ANN$size)<1,'NULL',object@ANN$size), ",", sep="")
-            cat("\n            decay = ", ifelse(length(object@ANN$decay)<1,'NULL',object@ANN$decay), ",", sep="")
-            cat("\n            rang = ", object@ANN$rang, ",", sep="")
-            cat("\n            maxit = ", object@ANN$maxit, "),", sep="")
-
-            ## SRE options
-            cat("\n")
-            cat("\nSRE = list( quant = ", object@SRE$quant, "),", sep="")
-
-            ## FDA options
-            cat("\n")
-            cat("\nFDA = list( method = '", object@FDA$method, "',", sep="")
-            cat("\n            add_args = ", ifelse(length(object@FDA$add_args)<1,
-                                                    'NULL',
-                                                    paste("list(", paste(.print.control(object@FDA$add_args), collapse=""), ")", sep="")), "),",sep="")
-
-            ## MARS options
-            cat("\n")
-            cat("\nMARS = list( type = '", object@MARS$type, "',", sep="")
-            cat("\n             interaction.level = ", object@MARS$interaction.level, ",", sep="")
-            cat("\n             myFormula = ",  ifelse(length(object@MARS$myFormula) < 1,'NULL',paste(object@GLM$myFormula[2],object@GLM$myFormula[1],object@GLM$myFormula[3])), ",", sep="")
-#             cat("\n             degree = ", object@MARS$degree, ",", sep="")
-            cat("\n             nk = ", ifelse(length(object@MARS$nk) < 1,'NULL',object@MARS$nk), ",", sep="")
-            cat("\n             penalty = ", object@MARS$penalty, ",", sep="")
-            cat("\n             thresh = ", object@MARS$thresh, ",", sep="")
-            cat("\n             nprune = ", ifelse(length(object@MARS$nprune) < 1,'NULL',object@MARS$nprune), ",", sep="")
-            cat("\n             pmethod = '", object@MARS$pmethod, "'),", sep="")
-
-            ## RF options
-            cat("\n")
-            cat("\nRF = list( do.classif = ", object@RF$do.classif, ",", sep="")
-            cat("\n           ntree = ", object@RF$ntree, ",", sep="")
-            cat("\n           mtry = '", object@RF$mtry, "',", sep="")
-            cat("\n           nodesize = ", object@RF$nodesize, ",", sep="")
-            cat("\n           maxnodes = ", ifelse(length(object@RF$maxnodes) < 1,'NULL',object@RF$maxnodes), "),", sep="")
-
-            ## MAXENT.Phillips options
-            cat("\n")
-            cat("\nMAXENT.Phillips = list( path_to_maxent.jar = '", object@MAXENT.Phillips$path_to_maxent.jar, "',", sep="")
-            cat("\n               memory_allocated = ", ifelse(length(object@MAXENT.Phillips$memory_allocated) < 1,'NULL',object@MAXENT.Phillips$memory_allocated), ",", sep="")
-            cat("\n               background_data_dir = ", ifelse(is.character(object@MAXENT.Phillips$background_data_dir), "'", ""), object@MAXENT.Phillips$background_data_dir, ifelse(is.character(object@MAXENT.Phillips$background_data_dir), "'", ""), ",", sep="")
-            cat("\n               maximumbackground = ", ifelse(is.character(object@MAXENT.Phillips$maximumbackground), "'", ""), object@MAXENT.Phillips$maximumbackground, ifelse(is.character(object@MAXENT.Phillips$maximumbackground), "'", ""), ",", sep="")
-            cat("\n               maximumiterations = ", object@MAXENT.Phillips$maximumiterations, ",", sep="")
-            cat("\n               visible = ", object@MAXENT.Phillips$visible, ",", sep="")
-            cat("\n               linear = ", object@MAXENT.Phillips$linear, ",", sep="")
-            cat("\n               quadratic = ", object@MAXENT.Phillips$quadratic, ",", sep="")
-            cat("\n               product = ", object@MAXENT.Phillips$product, ",", sep="")
-            cat("\n               threshold = ", object@MAXENT.Phillips$threshold, ",", sep="")
-            cat("\n               hinge = ", object@MAXENT.Phillips$hinge, ",", sep="")
-            cat("\n               lq2lqptthreshold = ", object@MAXENT.Phillips$lq2lqptthreshold, ",", sep="")
-            cat("\n               l2lqthreshold = ", object@MAXENT.Phillips$l2lqthreshold, ",", sep="")
-            cat("\n               hingethreshold = ", object@MAXENT.Phillips$hingethreshold, ",", sep="")
-            cat("\n               beta_threshold = ", object@MAXENT.Phillips$beta_threshold, ",", sep="")
-            cat("\n               beta_categorical = ", object@MAXENT.Phillips$beta_categorical, ",", sep="")
-            cat("\n               beta_lqp = ", object@MAXENT.Phillips$beta_lqp, ",", sep="")
-            cat("\n               beta_hinge = ", object@MAXENT.Phillips$beta_hinge, ",", sep="")
-            cat("\n               betamultiplier = ", object@MAXENT.Phillips$betamultiplier, ",", sep="")
-            cat("\n               defaultprevalence = ", object@MAXENT.Phillips$defaultprevalence, "),", sep="")
-
-            ## MAXENT.Tsuruoka
-            cat("\n")
-            cat("\nMAXENT.Tsuruoka = list( l1_regularizer = ", object@MAXENT.Tsuruoka$l1_regularizer, ",", sep="")
-            cat("\n                        l2_regularizer = ", object@MAXENT.Tsuruoka$l2_regularizer, ",", sep="")
-            cat("\n                        use_sgd = ", object@MAXENT.Tsuruoka$use_sgd, ",", sep="")
-            cat("\n                        set_heldout = ", object@MAXENT.Tsuruoka$set_heldout, ",", sep="")
-            cat("\n                        verbose = ", object@MAXENT.Tsuruoka$verbose, ")", sep="")
-
-            .bmCat()
-          })
 
 .print.control <- function(ctrl){
   out <-  paste(names(ctrl)[1], " = ", ctrl[[1]], sep="")
@@ -1136,6 +1357,8 @@ setMethod('show', signature('BIOMOD.Model.Options'),
   return(out)
 
 }
+
+
 ####################################################################################################
 ### BIOMOD Storing Results Objects #################################################################
 ####################################################################################################
@@ -1245,60 +1468,76 @@ setMethod("load_stored_object", "BIOMOD.stored.data",
 
 
 
-setClass("BIOMOD.models.out",
-         representation(modeling.id = 'character',
-                        sp.name = 'character',
-                        expl.var.names = 'character',
-                        models.computed = 'character',
-                        models.failed = 'character',
-                        has.evaluation.data = 'logical',
-                        rescal.all.models = 'logical',
-                        models.evaluation = 'BIOMOD.stored.array',
-                        variables.importances = 'BIOMOD.stored.array',
-                        models.prediction = 'BIOMOD.stored.array',
-                        models.prediction.eval = 'BIOMOD.stored.array',
-                        formated.input.data = 'BIOMOD.stored.formated.data',
-                        calib.lines = 'BIOMOD.stored.array',
-                        models.options = 'BIOMOD.stored.models.options',
-                        link = 'character'),
-         prototype(modeling.id = as.character(format(Sys.time(), "%s")),
-                   sp.name='',
-                   expl.var.names = '',
-                   models.computed='',
-                   models.failed='',
-                   has.evaluation.data=FALSE,
-                   rescal.all.models=TRUE,
-                   models.evaluation = new('BIOMOD.stored.array'),
-                   variables.importances = new('BIOMOD.stored.array'),
-                   models.prediction = new('BIOMOD.stored.array'),
-                   models.prediction.eval = new('BIOMOD.stored.array'),
-                   formated.input.data = new('BIOMOD.stored.formated.data'),
-                   calib.lines = new('BIOMOD.stored.array'),
-                   models.options = new('BIOMOD.stored.models.options'),
-                   link=''),
-         validity = function(object){
-           return(TRUE)
-         })
+setClass(
+  "BIOMOD.models.out",
+  representation(
+    modeling.id = 'character',
+    sp.name = 'character',
+    expl.var.names = 'character',
+    models.computed = 'character',
+    models.failed = 'character',
+    has.evaluation.data = 'logical',
+    rescal.all.models = 'logical',
+    models.evaluation = 'BIOMOD.stored.array',
+    variables.importances = 'BIOMOD.stored.array',
+    models.prediction = 'BIOMOD.stored.array',
+    models.prediction.eval = 'BIOMOD.stored.array',
+    formated.input.data = 'BIOMOD.stored.formated.data',
+    calib.lines = 'BIOMOD.stored.array',
+    models.options = 'BIOMOD.stored.models.options',
+    link = 'character'
+  ),
+  prototype(
+    modeling.id = as.character(format(Sys.time(), "%s")),
+    sp.name = '',
+    expl.var.names = '',
+    models.computed = '',
+    models.failed = '',
+    has.evaluation.data = FALSE,
+    rescal.all.models = TRUE,
+    models.evaluation = new('BIOMOD.stored.array'),
+    variables.importances = new('BIOMOD.stored.array'),
+    models.prediction = new('BIOMOD.stored.array'),
+    models.prediction.eval = new('BIOMOD.stored.array'),
+    formated.input.data = new('BIOMOD.stored.formated.data'),
+    calib.lines = new('BIOMOD.stored.array'),
+    models.options = new('BIOMOD.stored.models.options'),
+    link = ''
+  ),
+  validity = 
+    function(object){
+      return(TRUE)
+    }
+)
 
-setClass("BIOMOD.stored.models.out",
-         contains = "BIOMOD.stored.data",
-         representation(val = 'BIOMOD.models.out'),
-         prototype(val = NULL),
-         validity = function(object){
-           return(TRUE)
-         })
+setClass(
+  "BIOMOD.stored.models.out",
+  contains = "BIOMOD.stored.data",
+  representation(val = 'BIOMOD.models.out'),
+  prototype(val = NULL),
+  validity = 
+    function(object){
+      return(TRUE)
+    }
+)
 
-setMethod('show', signature('BIOMOD.models.out'),
-          function(object){
-            .bmCat("BIOMOD.models.out")
-            cat("\nModeling id :", object@modeling.id, fill=.Options$width)
-            cat("\nSpecies modeled :", object@sp.name, fill=.Options$width)
-            cat("\nConsidered variables :", object@expl.var.names, fill=.Options$width)
-
-            cat("\n\nComputed Models : ", object@models.computed, fill=.Options$width)
-            cat("\n\nFailed Models : ", object@models.failed, fill=.Options$width)
-            .bmCat()
-          })
+# #' @rdname BIOMOD.models.out-objects
+# #' @docType method
+# #' @aliases show, BIOMOD.models.out-method
+setMethod(
+  'show', 
+  signature('BIOMOD.models.out'),
+  function(object){
+    .bmCat("BIOMOD.models.out")
+    cat("\nModeling id :", object@modeling.id, fill=.Options$width)
+    cat("\nSpecies modeled :", object@sp.name, fill=.Options$width)
+    cat("\nConsidered variables :", object@expl.var.names, fill=.Options$width)
+  
+    cat("\n\nComputed Models : ", object@models.computed, fill=.Options$width)
+    cat("\n\nFailed Models : ", object@models.failed, fill=.Options$width)
+    .bmCat()
+  }
+)
 
 
 setClass("BIOMOD.stored.models.out",
@@ -1493,18 +1732,6 @@ setMethod("get_built_models", "BIOMOD.models.out",
 )
 
 
-setMethod("RemoveProperly", "BIOMOD.models.out",
-          function(obj, obj.name=deparse(substitute(obj))){
-            cat("\n\t> Removing .BIOMOD_DATA files...")
-            unlink(file.path(obj@sp.name, ".BIOMOD_DATA", obj@modeling.id), recursive=T, force=TRUE)
-            cat("\n\t> Removing models...")
-            unlink(file.path(obj@sp.name, "models", obj@modeling.id), recursive=T, force=TRUE)
-            cat("\n\t> Removing object hard drive copy...")
-            unlink(obj@link, recursive=T, force=TRUE)
-            cat("\n\t> Removing object from memory...")
-            rm(list=obj.name,envir=sys.frame(-2))
-            cat("\nCompleted!")
-          })
 
 
 ####################################################################################################
@@ -1689,6 +1916,9 @@ setMethod('plot', signature(x='BIOMOD.projection.out', y="missing"),
 
           })
 
+##' @rdname BIOMOD.projection.out-objects
+##' @docType method
+##' @aliases show, BIOMOD.projection.out-method
 setMethod('show', signature('BIOMOD.projection.out'),
           function(object){
             .bmCat("'BIOMOD.projection.out'")
@@ -1722,6 +1952,54 @@ setMethod(f='free',
 ####################################################################################################
 ### BIOMOD Storing Ensemble Modeling Objects #######################################################
 ####################################################################################################
+
+##' @name BIOMOD.EnsembleModeling.out-class
+##' @rdname BIOMOD.EnsembleModeling.out-objects
+##' @docType class
+##' 
+##' @aliases BIOMOD.EnsembleModeling.out-class
+##' @aliases BIOMOD.EnsembleModeling.out
+##' @aliases show,BIOMOD.EnsembleModeling.out-method
+##' 
+##' @title BIOMOD_EnsembleModeling() outputs objects class
+##' 
+##' @description
+##' EnsembleModeling objects are created, used and returned by BIOMOD
+##' functions. It's contains information relative to an \pkg{biomod2}
+##' ensemble modeling procedure.
+##' 
+##' - output of: \code{\link[biomod2]{BIOMOD_EnsembleModeling}}
+##' - input of: \code{\link[biomod2]{BIOMOD_EnsembleForecasting}}
+##' 
+##' @slot sp.name "character", species name
+##' @slot expl.var.names "character", explanatory variables
+##' names
+##' @slot models.out.obj "BIOMOD.stored.models.out", object which
+##' contains information on individuals models that have been combined
+##' @slot eval.metric "character", evaluation metrics chose for
+##' models selection
+##' @slot eval.metric.quality.threshold "numeric", thresholds
+##' defined for models selection 
+##' @slot em.computed "character", ensemble models built names
+##' @slot em.by "character", way models are combined
+##' @slot em.models "ANY", list of built biomod2.ensemble.models
+##' objects
+##' @slot modeling.id "character", the id of the whole
+##' modelling process
+##' @slot link "character", the path to corresponding hard drive
+##' saved object
+##' 
+##' @seealso \code{\link[biomod2]{BIOMOD_Projection}}, 
+##' \code{\link[biomod2]{BIOMOD_Modeling}}, 
+##' \code{\link[biomod2]{BIOMOD_EnsembleModeling}}, 
+##' \code{\link[biomod2]{BIOMOD_EnsembleForecasting}}
+##' 
+##' @keywords models, ensemble
+##' @author Damien Georges 
+##' 
+##' @examples
+##' showClass("BIOMOD.EnsembleModeling.out")
+##' 
 setClass("BIOMOD.EnsembleModeling.out",
          representation(sp.name = 'character',
                         expl.var.names = 'character',
@@ -1760,7 +2038,9 @@ setClass("BIOMOD.EnsembleModeling.out",
            return(TRUE)
          })
 
-
+##' @rdname BIOMOD.EnsembleModeling.out-objects
+##' @docType method
+##' @aliases show, BIOMOD.EnsembleModeling.out-method
 setMethod('show', signature('BIOMOD.EnsembleModeling.out'),
           function(object){
             .bmCat("'BIOMOD.EnsembleModeling.out'")
@@ -1894,66 +2174,85 @@ setMethod("get_predictions", "BIOMOD.EnsembleModeling.out",
 # if( !isGeneric( ".Models.prepare.data" ) ) {
 # }
 
-setMethod('.Models.prepare.data', signature(data='BIOMOD.formated.data'),
-          function(data, NbRunEval, DataSplit, Yweights=NULL, Prevalence=NULL, do.full.models=TRUE, DataSplitTable=NULL){
-            list.out <- list()
-            name <- paste(data@sp.name,'_AllData',sep="")
-            xy <- data@coord
-            dataBM <- data.frame(cbind(data@data.species,data@data.env.var))
-            colnames(dataBM)[1] <- data@sp.name
+setMethod(
+  '.Models.prepare.data', 
+  signature(
+    data = 'BIOMOD.formated.data'
+  ),
+  function(
+    data, 
+    NbRunEval, 
+    DataSplit, 
+    Yweights = NULL, 
+    Prevalence = NULL, 
+    do.full.models = TRUE, 
+    DataSplitTable = NULL
+  ){
+    list.out <- list()
+    name <- paste0(data@sp.name, '_AllData')
+    xy <- data@coord
+    # dataBM <- data.frame(cbind(data@data.species, data@data.env.var))
+    # colnames(dataBM)[1] <- data@sp.name
+    dataBM <- 
+      bind_cols(
+        tibble(
+          !!data@sp.name := data@data.species
+        ),
+        data@data.env.var
+      )
+    
+    # dealing with evaluation data
+    if(data@has.data.eval){
+      evalDataBM <- data.frame(cbind(data@eval.data.species,data@eval.data.env.var[,,drop=FALSE]))
+      colnames(evalDataBM)[1] <- data@sp.name
+      eval.xy <- data@eval.coord
+    } else{ evalDataBM <- eval.xy <- NULL }
 
-            # dealing with evaluation data
-            if(data@has.data.eval){
-              evalDataBM <- data.frame(cbind(data@eval.data.species,data@eval.data.env.var[,,drop=FALSE]))
-              colnames(evalDataBM)[1] <- data@sp.name
-              eval.xy <- data@eval.coord
-            } else{ evalDataBM <- eval.xy <- NULL }
+    ### Calib/Valid lines
+    if(!is.null(DataSplitTable)){
+      calibLines <- DataSplitTable
+      colnames(calibLines) <- paste('_RUN',1:ncol(calibLines), sep='')
+    } else {
+      if(NbRunEval == 0){ # take all available data
+        calibLines <- matrix(rep(TRUE,length(data@data.species)),ncol=1)
+        colnames(calibLines) <- '_Full'
+      } else {
+        calibLines <- .SampleMat(data.sp = data@data.species,
+                                 dataSplit = DataSplit,
+                                 nbRun = NbRunEval,
+                                 data.env = data@data.env.var)
+        if(do.full.models){
+          calibLines <- cbind(calibLines, rep(TRUE,length(data@data.species)))
+          colnames(calibLines)[NbRunEval+1] <- '_Full'
+        }
+      }
+    }
+    ## force calib.lines object to be 3D array
+    if(length(dim(calibLines)) < 3 ){
+      dn_tmp <- dimnames(calibLines) ## keep track of dimnames
+      dim(calibLines) <- c(dim(calibLines),1)
+      dimnames(calibLines) <- list(dn_tmp[[1]], dn_tmp[[2]], "_AllData")
+    }
 
-            ### Calib/Valid lines
-            if(!is.null(DataSplitTable)){
-              calibLines <- DataSplitTable
-              colnames(calibLines) <- paste('_RUN',1:ncol(calibLines), sep='')
-            } else {
-              if(NbRunEval == 0){ # take all available data
-                calibLines <- matrix(rep(TRUE,length(data@data.species)),ncol=1)
-                colnames(calibLines) <- '_Full'
-              } else {
-                calibLines <- .SampleMat(data.sp = data@data.species,
-                                         dataSplit = DataSplit,
-                                         nbRun = NbRunEval,
-                                         data.env = data@data.env.var)
-                if(do.full.models){
-                  calibLines <- cbind(calibLines, rep(TRUE,length(data@data.species)))
-                  colnames(calibLines)[NbRunEval+1] <- '_Full'
-                }
-              }
-            }
-            ## force calib.lines object to be 3D array
-            if(length(dim(calibLines)) < 3 ){
-              dn_tmp <- dimnames(calibLines) ## keep track of dimnames
-              dim(calibLines) <- c(dim(calibLines),1)
-              dimnames(calibLines) <- list(dn_tmp[[1]], dn_tmp[[2]], "_AllData")
-            }
+    if(is.null(Yweights)){ # 1 for all points
+      if(!is.null(Prevalence)){
+        cat("\n\t> Automatic weights creation to rise a", Prevalence,"prevalence")
+        Yweights <- .automatic_weights_creation(data@data.species ,prev=Prevalence)
+      } else{
+        cat("\n\t> No weights : all observations will have the same weight")
+        Yweights <- rep(1,length(data@data.species))
+      }
 
-            if(is.null(Yweights)){ # 1 for all points
-              if(!is.null(Prevalence)){
-                cat("\n\t> Automatic weights creation to rise a", Prevalence,"prevalence")
-                Yweights <- .automatic_weights_creation(data@data.species ,prev=Prevalence)
-              } else{
-                cat("\n\t> No weights : all observations will have the same weight")
-                Yweights <- rep(1,length(data@data.species))
-              }
-
-            }
-            list.out[[name]] <- list(name=name,
-                                     xy=xy,
-                                     dataBM=dataBM,
-                                     calibLines=calibLines,
-                                     Yweights = Yweights,
-                                     evalDataBM = evalDataBM,
-                                     eval.xy = eval.xy)
-            return(list.out)
-          })
+    }
+    list.out[[name]] <- list(name=name,
+                             xy=xy,
+                             dataBM=dataBM,
+                             calibLines=calibLines,
+                             Yweights = Yweights,
+                             evalDataBM = evalDataBM,
+                             eval.xy = eval.xy)
+    return(list.out)
+  })
 
 setMethod('.Models.prepare.data', signature(data='BIOMOD.formated.data.PA'),
           function(data, NbRunEval, DataSplit, Yweights=NULL, Prevalence=NULL, do.full.models=TRUE, DataSplitTable=NULL){

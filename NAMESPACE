@@ -12,6 +12,8 @@ import("sp")
 import("ggplot2")
 import("parallel")
 
+importFrom("rlang", ":=")
+
 importFrom("abind", abind, asub)
 import("reshape")
 #importFrom("gbm", gbm, gbm.perf)
@@ -19,7 +21,11 @@ import("gbm")
 importFrom("MASS",stepAIC)
 #importFrom("mda", fda, mars)
 import("mda")
+importFrom('maxnet', 'maxnet')
+importFrom('purrr', 'map')
 import("earth")
+import('checkmate')
+import('dplyr')
 #importFrom("nnet", nnet)
 import("nnet")
 #importFrom("parallel", detectCores) # for gbm package
@@ -37,7 +43,7 @@ importFrom(rasterVis, levelplot)
 #import("survivial") # for gbm package
 #import("spline") # for gbm package
 #importFrom("gam", s)
-import("maxent")
+#import("maxent")
 ##importFrom("dplyr", "select", "bind_rows", "%>%")
 importFrom("dplyr", "bind_rows", "%>%")
 importFrom("tidyr", "gather")
@@ -101,7 +107,8 @@ exportClasses(
 	GLM_biomod2_model,
 	MARS_biomod2_model,
 	MAXENT.Phillips_biomod2_model,
-  MAXENT.Tsuruoka_biomod2_model,
+	MAXENT.Phillips.2_biomod2_model,
+  #MAXENT.Tsuruoka_biomod2_model,
 	RF_biomod2_model,
 	SRE_biomod2_model,
 	EMca_biomod2_model,
@@ -198,7 +205,8 @@ export(
 	BIOMOD_cv,
 	BIOMOD_presenceonly,
 	BIOMOD_tuning,
-  sample.factor.levels
+  sample.factor.levels,
+	.transform.outputs.list
 )
 
 ## to be hidden
@@ -210,8 +218,18 @@ exportMethods(
 	sre.pseudo.abs.selection,
 	user.defined.pseudo.abs.selection,
 	.Models.prepare.data,
-	.Projection.do.proj, 
-	.transform.outputs
+	.Projection.do.proj
+)
+
+export(
+	disk.pseudo.abs.selection,
+	load_stored_object,
+	Projection,
+	random.pseudo.abs.selection,
+	sre.pseudo.abs.selection,
+	user.defined.pseudo.abs.selection,
+	.Models.prepare.data,
+	.Projection.do.proj
 )
 
 exportMethods(

@@ -1,4 +1,4 @@
-`.scopeExpSyst` <-
+.scopeExpSyst <-
 function(enviroTrain, mod)
 {
     i <- 1

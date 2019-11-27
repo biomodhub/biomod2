@@ -1,25 +1,52 @@
-# `FilteringTransformation` <-
-# function(ProbData, CutOffdata)
-# {
-#     if(is.data.frame(ProbData)) {
-#         N <- dim(ProbData)[2]
-#         i <- 1
-#         while(i <= N) {
-#             if(sum(ProbData[,i])!=0) ProbData[ProbData[,i] < CutOffdata[i, 1],i] <- 0
-#             i <- i + 1
-#         }
-#     }
-#     else if(sum(ProbData) != 0) ProbData[ProbData < CutOffdata] <- 0
-#
-#     return(ProbData)
-# }
-#
-# FilteringTransformation_v2 <-
-# function(ProbData, CutOff){
-#   ProbData[ProbData < CutOff] <- 0
-#   return(ProbData)
-# }
-
+##' @name FilteringTransformation
+##' @aliases FilteringTransformation
+##' @aliases FilteringTransformation-methods
+##' @aliases FilteringTransformation,data.frame-method
+##' @aliases FilteringTransformation,matrix-method
+##' @aliases FilteringTransformation,numeric-method
+##' @aliases FilteringTransformation,array-method
+##' @aliases FilteringTransformation,RasterBrick-method
+##' @aliases FilteringTransformation,RasterLayer-method
+##' @aliases FilteringTransformation,RasterStack-method
+##' 
+##' @title Convert species' probability of occurrence into binary 
+##' presence-absence data using a predefined threshold
+##' 
+##' @description
+##' Function that converts an object containing probability values into 
+##' a filtered object according to a pre-defined threshold(s).
+##' 
+##' @docType method 
+##' 
+##' 
+##' @param data a numeric vector, a \code{matrix}, a \code{data.frame}, 
+##' a \code{RasterLayer} or a \code{RasterStack} containing the data to 
+##' be converted
+##' @param threshold a numeric value or a vector containing the threshold
+##' to be used for converting data.
+##' 
+##' @details
+##' If data is a vector or a raster object, then the threshold should be a
+##' numeric value. If data is matrix,dataframe or rasterStack, then the
+##' threshold should have, in theory, as many values as the number of
+##' columns or layers to transform.
+##' In the particular case that the data to convert is a 
+##' \code{matrix}/\code{data.frame} with several columns or a 
+##' \code{RasterStack} with several layers and the threshold is a single
+##' numeric value, the same threshold will be applied to all columns 
+##' (resp. layers).  
+##' 
+##' @return 
+##' An object of the same class than \code{data} with the values of data
+##' if superior to \code{threshold} and 0 if not.
+##' 
+##' @author Wilfried Thuiller, Damien Georges
+##'
+##' @examples
+##' xx <- rnorm(50,10)
+##' yy <- FilteringTransformation(xx, 10)
+##' 
+##' cbind(xx,yy)
 setGeneric("FilteringTransformation",
            function(data, threshold){
              standardGeneric("FilteringTransformation")

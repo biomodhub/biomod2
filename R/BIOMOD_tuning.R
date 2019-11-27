@@ -5,7 +5,7 @@
 ##' @description Function to tune biomod single models parameters
 ##'
 ##' @param data            BIOMOD.formated.data object returned by BIOMOD_FormatingData
-##' @param models          vector of models names choosen among 'GLM', 'GBM', 'GAM', 'CTA', 'ANN', 'SRE', 'FDA', 'MARS', 'RF', 'MAXENT.Phillips' and 'MAXENT.Tsuruoka'
+##' @param models          vector of models names choosen among 'GLM', 'GBM', 'GAM', 'CTA', 'ANN', 'SRE', 'FDA', 'MARS', 'RF', 'MAXENT.Phillips' 
 ##' @param models.options  BIOMOD.models.options object returned by BIOMOD_ModelingOptions. Default: BIOMOD_ModelingOptions()
 ##' @param trControl       global control parameters for runing (default trainControl(method="cv",summaryFunction=twoClassSummary,classProbs=T),returnData = FALSE). for details see trainControl
 ##' @param ctrl.GAM        specify control parameters only for GAM (default trControl)
@@ -50,7 +50,7 @@
 ##' Kuhn, Max, and Kjell Johnson. 2013. Applied predictive modeling. New York: Springer.
 ##' Muscarella, Robert, et al. 2014. ENMeval: An R package for conducting spatially independent evaluations and estimating optimal model complexity for Maxent ecological niche models. \emph{Methods in Ecology and Evolution}, \bold{5}, 1198-1205.
 ##' 
-##' @seealso \code{\link[biomod2]{BIOMOD_ModelingOptions}}, \code{\link[caret]{train}}, \code{\link[ENMeval]{ENMevaluate}}, \code{\link[maxent]{tune.maxent}}
+##' @seealso \code{\link[biomod2]{BIOMOD_ModelingOptions}}, \code{\link[caret]{train}}, \code{\link[ENMeval]{ENMevaluate}}, 
 ##' 
 ##' @examples
 ##' \dontrun{
@@ -116,7 +116,7 @@
 ##' plot(Biomod.tuning$tune.RF)
 ##' }
 BIOMOD_tuning <- function(data,
-                          models = c('GLM','GBM','GAM','CTA','ANN','SRE','FDA','MARS','RF','MAXENT.Phillips','MAXENT.Tsuruoka'),
+                          models = c('GLM','GBM','GAM','CTA','ANN','SRE','FDA','MARS','RF','MAXENT.Phillips'),
                           models.options = BIOMOD_ModelingOptions(),
                           method.ANN = 'avNNet',
                           method.RF = 'rf',
@@ -158,9 +158,11 @@ BIOMOD_tuning <- function(data,
     if(!isNamespaceLoaded('dplyr')){requireNamespace("dplyr", quietly = TRUE)}; 
     if(is.null(trControl)){trControl <- caret::trainControl(method="cv",summaryFunction=caret::twoClassSummary,classProbs=T, returnData = F)}}
   if("MAXENT.Phillips" %in% models){if(!isNamespaceLoaded('ENMeval')){requireNamespace("ENMeval", quietly = TRUE)}}#;packages<-c(packages,"ENMeval")}  
-  if("MAXENT.Tsuruoka" %in% models){if(!isNamespaceLoaded('maxent')){requireNamespace("maxent", quietly = TRUE)}}#;packages<-c(packages,"maxent")}  
+  # if("MAXENT.Tsuruoka" %in% models){if(!isNamespaceLoaded('maxent')){requireNamespace("maxent", quietly = TRUE)}}#;packages<-c(packages,"maxent")}  
   
-  tune.SRE <- tune.GLM <- tune.MAXENT.Tsuruoka <- tune.MAXENT.Phillips <- tune.GAM <- tune.GBM <- tune.CTA.rpart <- tune.CTA.rpart2 <- tune.RF <- tune.ANN <- tune.MARS <- tune.FDA <- NULL
+  tune.SRE <- tune.GLM <- tune.MAXENT.Phillips <- tune.GAM <- tune.GBM <- tune.CTA.rpart <- tune.CTA.rpart2 <- tune.RF <- tune.ANN <- tune.MARS <- tune.FDA <- NULL
+    # tune.MAXENT.Tsuruoka <- NULL
+    
   
   resp <- data@data.species
   
@@ -497,23 +499,25 @@ BIOMOD_tuning <- function(data,
   }
   
   
-  if('MAXENT.Tsuruoka' %in% models){
-    cat("Start tuning MAXENT.Tsuruoka\n")
-    try(tune.MAXENT.Tsuruoka <- as.data.frame(tune.maxent(data@data.env.var,data@data.species,nfold=kfolds.ME,showall=T)))
-    cat(paste("Finished tuning MAXENT.Tsuruoka\n","\n-=-=-=-=-=-=-=-=-=-=\n"))
-    
-    if(!is.null(tune.MAXENT.Tsuruoka)){
-      models.options@MAXENT.Tsuruoka$l1_regularizer <- tune.MAXENT.Tsuruoka$l1_regularizer[which.max(tune.MAXENT.Tsuruoka$accuracy)]
-      models.options@MAXENT.Tsuruoka$l2_regularizer <- tune.MAXENT.Tsuruoka$l2_regularizer[which.max(tune.MAXENT.Tsuruoka$accuracy)]
-      models.options@MAXENT.Tsuruoka$use_sgd <- ifelse(tune.MAXENT.Tsuruoka[which.max(tune.MAXENT.Tsuruoka$accuracy),]$use_sgd==0,F,T)
-      models.options@MAXENT.Tsuruoka$set_heldout <- tune.MAXENT.Tsuruoka$set_heldout[which.max(tune.MAXENT.Tsuruoka$accuracy)]
-    } else { if('MAXENT.Tsuruoka' %in% models){cat("Tuning MAXENT.Tsuruoka failed!"); tune.MAXENT.Tsuruoka <- "FAILED"}}
-  }  
+  # if('MAXENT.Tsuruoka' %in% models){
+  #   cat("Start tuning MAXENT.Tsuruoka\n")
+  #   try(tune.MAXENT.Tsuruoka <- as.data.frame(tune.maxent(data@data.env.var,data@data.species,nfold=kfolds.ME,showall=T)))
+  #   cat(paste("Finished tuning MAXENT.Tsuruoka\n","\n-=-=-=-=-=-=-=-=-=-=\n"))
+  #   
+  #   if(!is.null(tune.MAXENT.Tsuruoka)){
+  #     models.options@MAXENT.Tsuruoka$l1_regularizer <- tune.MAXENT.Tsuruoka$l1_regularizer[which.max(tune.MAXENT.Tsuruoka$accuracy)]
+  #     models.options@MAXENT.Tsuruoka$l2_regularizer <- tune.MAXENT.Tsuruoka$l2_regularizer[which.max(tune.MAXENT.Tsuruoka$accuracy)]
+  #     models.options@MAXENT.Tsuruoka$use_sgd <- ifelse(tune.MAXENT.Tsuruoka[which.max(tune.MAXENT.Tsuruoka$accuracy),]$use_sgd==0,F,T)
+  #     models.options@MAXENT.Tsuruoka$set_heldout <- tune.MAXENT.Tsuruoka$set_heldout[which.max(tune.MAXENT.Tsuruoka$accuracy)]
+  #   } else { if('MAXENT.Tsuruoka' %in% models){cat("Tuning MAXENT.Tsuruoka failed!"); tune.MAXENT.Tsuruoka <- "FAILED"}}
+  # }  
   
   
   return(list(models.options=models.options, tune.SRE =tune.SRE,  tune.CTA.rpart = tune.CTA.rpart, tune.CTA.rpart2 = tune.CTA.rpart2,
               tune.RF = tune.RF, tune.ANN = tune.ANN,  tune.MARS = tune.MARS, tune.FDA = tune.FDA, tune.GBM=tune.GBM,
-              tune.GAM = tune.GAM, tune.MAXENT.Phillips = tune.MAXENT.Phillips, tune.MAXENT.Tsuruoka = tune.MAXENT.Tsuruoka, tune.GLM=tune.GLM))
+              tune.GAM = tune.GAM, tune.MAXENT.Phillips = tune.MAXENT.Phillips, 
+              # tune.MAXENT.Tsuruoka = tune.MAXENT.Tsuruoka, 
+              tune.GLM=tune.GLM))
 }
 
 

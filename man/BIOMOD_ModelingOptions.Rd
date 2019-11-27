@@ -13,8 +13,7 @@ BIOMOD_ModelingOptions(GLM = NULL,
                          FDA = NULL,
                          MARS = NULL,
                          RF = NULL,
-                         MAXENT.Phillips = NULL,
-                         MAXENT.Tsuruoka = NULL)
+                         MAXENT.Phillips = NULL)
 }
 \arguments{
 \item{GLM}{list, GLM options}
@@ -36,8 +35,6 @@ BIOMOD_ModelingOptions(GLM = NULL,
 \item{RF}{list, RF options}
 
 \item{MAXENT.Phillips}{list, MAXENT.Phillips options}
-
-\item{MAXENT.Tsuruoka}{list, MAXENT.Tsuruoka options}
 }
 \value{
 A \code{"\link[=BIOMOD.Model.Options-class]{BIOMOD.Model.Options}"} object given to \code{\link[biomod2]{BIOMOD_Modeling}}
@@ -237,18 +234,16 @@ The aim of this function is to allow advanced user to change some default parame
     \item{\code{betamultiplier} : numeric (default \code{1}), multiply all automatic regularization parameters by this number. A higher number gives a more spread-out distribution.}
     \item{\code{defaultprevalence} : numeric (default \code{0.5}), default prevalence of the species: probability of presence at ordinary occurrence points}
   }
-}
 
-\section{MAXENT.Tsuruoka (\code{\link[maxent]{maxent}})}{
-
-
-  \itemize{
-    \item{\code{l1_regularizer} (default \code{0.0}): An numeric turning on L1 regularization and setting the regularization parameter. A value of 0 will disable L1 regularization}
-    \item{\code{l2_regularizer} (default \code{0.0}): An numeric turning on L2 regularization and setting the regularization parameter. A value of 0 will disable L2 regularization}
-    \item{\code{use_sgd} (default \code{FALSE}): A logical indicating that SGD parameter estimation should be used. Defaults to FALSE}
-    \item{\code{set_heldout} (default \code{0}): An integer specifying the number of documents to hold out. Sets a held-out subset of your data to test against and prevent overfitting}
-    \item{\code{verbose} (default \code{FALSE}): A logical specifying whether to provide descriptive output about the training process}
-  }
+% @section MAXENT.Tsuruoka (\code{\link[maxent]{maxent}}):
+%
+% \itemize{
+%   \item{\code{l1_regularizer} (default \code{0.0}): An numeric turning on L1 regularization and setting the regularization parameter. A value of 0 will disable L1 regularization}
+%   \item{\code{l2_regularizer} (default \code{0.0}): An numeric turning on L2 regularization and setting the regularization parameter. A value of 0 will disable L2 regularization}
+%   \item{\code{use_sgd} (default \code{FALSE}): A logical indicating that SGD parameter estimation should be used. Defaults to FALSE}
+%   \item{\code{set_heldout} (default \code{0}): An integer specifying the number of documents to hold out. Sets a held-out subset of your data to test against and prevent overfitting}
+%   \item{\code{verbose} (default \code{FALSE}): A logical specifying whether to provide descriptive output about the training process}
+% }
 
   NOTE: if you use the \code{set_heldout} parameter then the data that will be held out will be taken in the
   calibration data pool. It can be penilizing in case of low number of occurences dataset.

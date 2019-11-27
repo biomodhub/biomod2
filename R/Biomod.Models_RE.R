@@ -495,11 +495,9 @@
 
   # RF models creation =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=- #
   if (Model == "RF") {
-
     if(Options@RF$do.classif){
       # defining occurences as factor for doing classification and not regression in RF
-      dTmp <- Data[,1]
-      Data[,1] <- as.factor(Data[,1])
+      Data <- Data %>% mutate_at(resp_name, factor)
     }
 
     if(Options@RF$mtry == 'default'){
@@ -527,8 +525,7 @@
 
     if(Options@RF$do.classif){
       # canceling occurences class modifications
-      Data[,1] <- as.numeric(dTmp)
-      rm(dTmp)
+      Data <- Data %>% mutate_at(resp_name, function(.x) .x %>% as.character() %>% as.numeric())
     }
 
     if( !inherits(model.sp,"try-error") ){
@@ -636,31 +633,63 @@
     .Delete.Maxent.WorkDir(MWD)
   }
   # end MAXENT.Phillips models creation -=-=-=-=-=-=-=-=-=-=-=-=-= #
-
-  # MAXENT.Tsuruoka models creation -=-=-=-=-=-=-=-=-=-=-=-=-=-=-= #
-  if(Model == "MAXENT.Tsuruoka"){
-    model.sp <- try(stop('MAXENT.Tsuruoka is depreacated(because maxent package is not maintained anymore)'))
-    # model.sp <- try(maxent::maxent(feature_matrix = Data[calibLines, expl_var_names, drop = FALSE],
-    #                                code_vector = as.factor(Data[calibLines, 1]),
-    #                                l1_regularizer = Options@MAXENT.Tsuruoka$l1_regularizer,
-    #                                l2_regularizer = Options@MAXENT.Tsuruoka$l2_regularizer,
-    #                                use_sgd = Options@MAXENT.Tsuruoka$use_sgd,
-    #                                set_heldout = Options@MAXENT.Tsuruoka$set_heldout,
-    #                                verbose = Options@MAXENT.Tsuruoka$verbose))
-
-    if( !inherits(model.sp,"try-error") ){
-      model.bm <- new("MAXENT.Tsuruoka_biomod2_model",
-                      model = model.sp,
-                      model_name = model_name,
-                      model_class = 'MAXENT.Tsuruoka',
-                      model_options = Options@MAXENT.Tsuruoka,
-                      resp_name = resp_name,
-                      expl_var_names = expl_var_names,
-                      expl_var_type = get_var_type(Data[calibLines,expl_var_names,drop=F]),
-                      expl_var_range = get_var_range(Data[calibLines,expl_var_names,drop=F]))
+  
+  # MAXENT.Phillips models creation -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=- #
+  if(Model == "MAXENT.Phillips.2")
+  {
+    # browser()
+    model.sp <- 
+      try(
+        maxnet::maxnet(
+          p = Data %>% filter(calibLines) %>% pull(resp_name), 
+          data = Data %>% filter(calibLines) %>% select_at(expl_var_names)
+          # f = if(!is.null(Options@MAXENT.Phillips.2@))
+        )
+      )
+    
+    
+    if( !inherits(model.sp,"try-error") )
+    {
+      model.bm <- 
+        new(
+          "MAXENT.Phillips.2_biomod2_model",
+          model = model.sp,
+          model_name = model_name,
+          model_class = 'MAXENT.Phillips.2',
+          model_options = Options@MAXENT.Phillips.2,
+          resp_name = resp_name,
+          expl_var_names = expl_var_names,
+          expl_var_type = get_var_type(Data %>% filter(calibLines) %>% select_at(expl_var_names)),
+          expl_var_range = get_var_range(Data %>% filter(calibLines) %>% select_at(expl_var_names))
+        )
     }
   }
-  # end of MAXENT.Tsuruoka models creation -=-=-=-=-=-=-=-=-=-=-=- #
+  # end MAXENT.Phillips models creation -=-=-=-=-=-=-=-=-=-=-=-=-= #
+
+  # # MAXENT.Tsuruoka models creation -=-=-=-=-=-=-=-=-=-=-=-=-=-=-= #
+  # if(Model == "MAXENT.Tsuruoka"){
+  #   model.sp <- try(stop('MAXENT.Tsuruoka is depreacated(because maxent package is not maintained anymore)'))
+  #   # model.sp <- try(maxent::maxent(feature_matrix = Data[calibLines, expl_var_names, drop = FALSE],
+  #   #                                code_vector = as.factor(Data[calibLines, 1]),
+  #   #                                l1_regularizer = Options@MAXENT.Tsuruoka$l1_regularizer,
+  #   #                                l2_regularizer = Options@MAXENT.Tsuruoka$l2_regularizer,
+  #   #                                use_sgd = Options@MAXENT.Tsuruoka$use_sgd,
+  #   #                                set_heldout = Options@MAXENT.Tsuruoka$set_heldout,
+  #   #                                verbose = Options@MAXENT.Tsuruoka$verbose))
+  # 
+  #   if( !inherits(model.sp,"try-error") ){
+  #     model.bm <- new("MAXENT.Tsuruoka_biomod2_model",
+  #                     model = model.sp,
+  #                     model_name = model_name,
+  #                     model_class = 'MAXENT.Tsuruoka',
+  #                     model_options = Options@MAXENT.Tsuruoka,
+  #                     resp_name = resp_name,
+  #                     expl_var_names = expl_var_names,
+  #                     expl_var_type = get_var_type(Data[calibLines,expl_var_names,drop=F]),
+  #                     expl_var_range = get_var_range(Data[calibLines,expl_var_names,drop=F]))
+  #   }
+  # }
+  # # end of MAXENT.Tsuruoka models creation -=-=-=-=-=-=-=-=-=-=-=- #
 
   # make prediction =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=- #
   if((Model != "MAXENT.Phillips")){
@@ -726,12 +755,17 @@
 #       g.pred.without.na <- g.pred
 #     }
 
-    #Precision = max( (max(g.pred.without.na[evalLines]) - min(g.pred.without.na[evalLines]) ) / 50 , 1) # max 50 steps
-
-    cross.validation <- sapply(mod.eval.method,
-                               Find.Optim.Stat,
-                               Fit = g.pred[evalLines],
-                               Obs = Data[evalLines,1])#,Precision = Precision)
+    cross.validation <- 
+      sapply(
+        mod.eval.method,
+        function(.x){
+          Find.Optim.Stat(
+            Stat = .x,
+            Fit = g.pred[evalLines],
+            Obs = Data %>% filter(evalLines) %>% pull(1)
+          )
+        }
+      )
 
     rownames(cross.validation) <- c("Testing.data","Cutoff","Sensitivity", "Specificity")
 
@@ -991,9 +1025,9 @@
     cat('\nModel=MAXENT.Phillips')
   }
 
-  if(Model == 'MAXENT.Tsuruoka'){
-    cat('\nModel=MAXENT.Tsuruoka')
-  }
+  # if(Model == 'MAXENT.Tsuruoka'){
+  #   cat('\nModel=MAXENT.Tsuruoka')
+  # }
 
   #     if (Model == "GLM" | Model == "GAM")
   #         Prev <- sum(DataBIOMOD[, i + Biomod.material$NbVar])/nrow(DataBIOMOD)

@@ -1,6 +1,0 @@
-"File","Title","PDF","Depends","Keywords","R"
-"Simple_species_modelling.Rnw","A simple species modelling using the biomod2 package","Simple_species_modelling.pdf",,"biomod2, models, niches","Simple_species_modelling.R"
-"Include_MAXENT.Rnw","Some instructions to make biomod2 able to do MAXENT modelling","Include_MAXENT.pdf",,"biomod2, models, niches, maxent",
-"Available_input_data_combinations.Rnw","A scheme summurasing input data combinations supported","Available_input_data_combinations.pdf",,"biomod2, models, niches, formating, modeling",
-"Multi_species_computation.Rnw","An example of multi-species modelling (serial or parallele computation)","Multi_species_computation.pdf",,"biomod2, models, niches, multi, species, parallele","Multi_species_computation.R"
-"EnsembleModelingAssembly.Rnw","BIOMOD_EnsembleModeling(...) assembly rules description","EnsembleModelingAssembly.pdf",,"biomod2, models, niches, ensemble, projection, forecast",

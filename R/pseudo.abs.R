@@ -1,4 +1,4 @@
-`.pseudo.absences.sampling` <-
+.pseudo.absences.sampling <-
 function(sp, env, nb.repet=1, strategy='random', distMin=0, distMax=NULL, nb.points=NULL, quant.SRE = 0, PA.table = NULL){
 
   # 1. Parameters checking

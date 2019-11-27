@@ -1,31 +1,25 @@
-# =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
-# biomod2 package object updating
-# 13/06/18 - Damien G.
-# =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
-
-# Description =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
-# This file contains a set of function usefull
-# to update your biomod2 objects when you make
-# a package updating and you want to keep working
-# with simulation done with a previous version of
-# the package.
-#
-# The functions should be updated ecah time a slot
-# is added to a biomod2 object.
-#
-# The main function is update.objects which takes
-# a output of BIOMOD_FormatingData() (i.e
-# 'BIOMOD.formated.data' or 'BIOMOD.formated.data.PA')
-# or a BIOMOD_Modeling() output. If you set recursive
-# parameter to TRUE (default), all depending objects
-# (e.g individual models) will be also updated.
-# =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
-
-# to do =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
-# Implement the same functions for BIOMOD_ModelingOptions(),
-# BIOMOD_projection and BIOMOD_EnsembleModeling() outputs.
-# =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-#
-
+##' @name update_objects
+##' @aliases  update_objects
+##' @title update biomod2 objects
+##' @description 
+##' This function is wrapper to update objects construct with a old
+##' version of biomod2 to a current one
+##' 
+##' @param obj a \code{biomod2} object you want to update (e.g. 
+##'   'BIOMOD.formated.data', 'biomod2_model' object)
+##' @param recursive logical, if TRUE all objects on which updated object is based will be also updated
+##' 
+##' @details 
+##' This function will add/change/delete all object slots that have
+##' evolved between 2 versions of the package.
+##' If required, objects stored on hard drive will also be updated.
+##' 
+##' @return the updated version of the  biomod2 object is return
+##' 
+##' @author Damien Georges
+##' @seealso \code{\link{variables_importance}}, 
+##' \code{\link{full_suffling}}
+##' 
 update_objects <- function(obj, recursive=TRUE){
   if(inherits(obj,'BIOMOD.formated.data') | inherits(obj,'BIOMOD.formated.data.PA')){
     cat("\n=-=-=- BIOMOD.formated.data conversion")
