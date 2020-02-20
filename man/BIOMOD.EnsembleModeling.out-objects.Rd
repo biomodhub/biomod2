@@ -3,12 +3,14 @@
 \docType{class}
 \name{BIOMOD.EnsembleModeling.out-class}
 \alias{BIOMOD.EnsembleModeling.out-class}
+\alias{BIOMOD.EnsembleModeling.out}
 \alias{show,BIOMOD.EnsembleModeling.out-method}
-\alias{show,}
-\alias{BIOMOD.EnsembleModeling.out-method}
 \title{BIOMOD_EnsembleModeling() outputs objects class}
 \usage{
 \S4method{show}{BIOMOD.EnsembleModeling.out}(object)
+}
+\arguments{
+\item{object}{a BIOMOD.EnsembleModeling.out object}
 }
 \description{
 EnsembleModeling objects are created, used and returned by BIOMOD

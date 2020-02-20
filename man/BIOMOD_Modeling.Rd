@@ -4,13 +4,23 @@
 \alias{BIOMOD_Modeling}
 \title{Run a range of species distribution models}
 \usage{
-BIOMOD_Modeling(data, models = c("GLM", "GBM", "GAM", "CTA", "ANN",
-  "SRE", "FDA", "MARS", "RF", "MAXENT.Phillips", "MAXENT.Phillips.2"),
-  models.options = NULL, NbRunEval = 1, DataSplit = 100,
-  Yweights = NULL, Prevalence = NULL, VarImport = 0,
-  models.eval.meth = c("KAPPA", "TSS", "ROC"), SaveObj = TRUE,
-  rescal.all.models = FALSE, do.full.models = TRUE,
-  modeling.id = as.character(format(Sys.time(), "\%s")), ...)
+BIOMOD_Modeling(
+  data,
+  models = c("GLM", "GBM", "GAM", "CTA", "ANN", "SRE", "FDA", "MARS", "RF",
+    "MAXENT.Phillips", "MAXENT.Phillips.2"),
+  models.options = NULL,
+  NbRunEval = 1,
+  DataSplit = 100,
+  Yweights = NULL,
+  Prevalence = NULL,
+  VarImport = 0,
+  models.eval.meth = c("KAPPA", "TSS", "ROC"),
+  SaveObj = TRUE,
+  rescal.all.models = FALSE,
+  do.full.models = TRUE,
+  modeling.id = as.character(format(Sys.time(), "\%s")),
+  ...
+)
 }
 \arguments{
 \item{data}{\code{BIOMOD.formated.data} object returned by

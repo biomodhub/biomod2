@@ -1,7 +1,7 @@
 ##' @name response.plot
 ##' @title Analysis of the response curves of a model within Biomod
-##' @description Depreciated function, please use \code{\link[biomod2]{
-##' response.plot2}} instead
+##' @description Depreciated function, please use \code{
+##' response.plot2} instead
 ##' 
 ##' @param model the model for which you want the response curves to be
 ##' plotted. Compatible with GAM, GBM, GLM, ANN, CTA, RF, FDA and MARS.
@@ -22,7 +22,7 @@
 ##' array containing predictions is returned (see details)
 ##' 
 ##' @details
-##' Depreciated function, please use \code{\link[biomod2]{response.plot2}}
+##' Depreciated function, please use \code{response.plot2}
 ##' instead.
 ##' 
 ##' @author Wilfried Thuiller

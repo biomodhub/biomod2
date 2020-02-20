@@ -4,8 +4,15 @@
 \alias{BIOMOD_cv}
 \title{Custom models cross-validation procedure}
 \usage{
-BIOMOD_cv(data, k = 5, repetition = 5, do.full.models = TRUE,
-  stratified.cv = FALSE, stratify = "both", balance = "pres")
+BIOMOD_cv(
+  data,
+  k = 5,
+  repetition = 5,
+  do.full.models = TRUE,
+  stratified.cv = FALSE,
+  stratify = "both",
+  balance = "pres"
+)
 }
 \arguments{
 \item{data}{BIOMOD.formated.data object returned by BIOMOD_FormatingData}

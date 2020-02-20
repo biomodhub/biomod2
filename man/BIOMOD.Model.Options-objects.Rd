@@ -4,8 +4,6 @@
 \name{BIOMOD.Model.Options-class}
 \alias{BIOMOD.Model.Options-class}
 \alias{show,BIOMOD.Model.Options-method}
-\alias{show,}
-\alias{BIOMOD.Model.Options-method}
 \title{BIOMOD_ModelingOptions outputs objects class}
 \usage{
 \S4method{show}{BIOMOD.Model.Options}(object)

@@ -4,8 +4,7 @@
 \alias{variables_importance}
 \title{Variables importance calculation}
 \usage{
-variables_importance(model, data, method = "full_rand", nb_rand = 1,
-  ...)
+variables_importance(model, data, method = "full_rand", nb_rand = 1, ...)
 }
 \arguments{
 \item{model}{the model you want to study variables importance

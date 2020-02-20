@@ -4,8 +4,7 @@
 \alias{makeFormula}
 \title{Standardized formula maker}
 \usage{
-makeFormula(respName, explVar, type = "simple", interaction.level = 0,
-  ...)
+makeFormula(respName, explVar, type = "simple", interaction.level = 0, ...)
 }
 \arguments{
 \item{respName}{a \code{character} indicating the response variable

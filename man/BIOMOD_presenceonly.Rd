@@ -4,8 +4,13 @@
 \alias{BIOMOD_presenceonly}
 \title{evaluate models with presences only metrics}
 \usage{
-BIOMOD_presenceonly(modeling.output = NULL, EM.output = NULL,
-  bg.env = NULL, perc = 0.9, save.output = T)
+BIOMOD_presenceonly(
+  modeling.output = NULL,
+  EM.output = NULL,
+  bg.env = NULL,
+  perc = 0.9,
+  save.output = T
+)
 }
 \arguments{
 \item{modeling.output}{"BIOMOD.models.out" object produced by a BIOMOD_Modeling run}

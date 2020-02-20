@@ -4,8 +4,13 @@
 \alias{sre}
 \title{Surface Range Envelope}
 \usage{
-sre(Response = NULL, Explanatory = NULL, NewData = NULL,
-  Quant = 0.025, return_extremcond = FALSE)
+sre(
+  Response = NULL,
+  Explanatory = NULL,
+  NewData = NULL,
+  Quant = 0.025,
+  return_extremcond = FALSE
+)
 }
 \arguments{
 \item{Response}{a vector (resp. a matrix/data.frame, a 

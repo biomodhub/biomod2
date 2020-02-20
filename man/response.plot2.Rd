@@ -5,9 +5,18 @@
 \title{Function for for plotting predicted responses from species
 distribution models in 2 or 3 dimensions}
 \usage{
-response.plot2(models, Data, show.variables = seq(1:ncol(Data)),
-  do.bivariate = FALSE, fixed.var.metric = "mean", save.file = "no",
-  name = "response_curve", ImageSize = 480, plot = TRUE, ...)
+response.plot2(
+  models,
+  Data,
+  show.variables = seq(1:ncol(Data)),
+  do.bivariate = FALSE,
+  fixed.var.metric = "mean",
+  save.file = "no",
+  name = "response_curve",
+  ImageSize = 480,
+  plot = TRUE,
+  ...
+)
 }
 \arguments{
 \item{models}{a character vector specifying the models for which the

@@ -4,9 +4,15 @@
 \alias{response.plot}
 \title{Analysis of the response curves of a model within Biomod}
 \usage{
-response.plot(model, Data, show.variables = seq(1:ncol(Data)),
-  save.file = "no", name = "response_curve", ImageSize = 480,
-  plot = TRUE)
+response.plot(
+  model,
+  Data,
+  show.variables = seq(1:ncol(Data)),
+  save.file = "no",
+  name = "response_curve",
+  ImageSize = 480,
+  plot = TRUE
+)
 }
 \arguments{
 \item{model}{the model for which you want the response curves to be
@@ -34,11 +40,11 @@ different to "no". Affects "jpeg" and "tiff" outputs only. Default if
 array containing predictions is returned (see details)}
 }
 \description{
-Depreciated function, please use \code{\link[biomod2]{
-response.plot2}} instead
+Depreciated function, please use \code{
+response.plot2} instead
 }
 \details{
-Depreciated function, please use \code{\link[biomod2]{response.plot2}}
+Depreciated function, please use \code{response.plot2}
 instead.
 }
 \references{

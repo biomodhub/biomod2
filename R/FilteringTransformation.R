@@ -1,3 +1,4 @@
+##' @include BiomodClass.R
 ##' @name FilteringTransformation
 ##' @aliases FilteringTransformation
 ##' @aliases FilteringTransformation-methods
@@ -15,8 +16,6 @@
 ##' @description
 ##' Function that converts an object containing probability values into 
 ##' a filtered object according to a pre-defined threshold(s).
-##' 
-##' @docType method 
 ##' 
 ##' 
 ##' @param data a numeric vector, a \code{matrix}, a \code{data.frame}, 

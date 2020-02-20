@@ -4,8 +4,16 @@
 \alias{ProbDensFunc}
 \title{Probability Density Function}
 \usage{
-ProbDensFunc(initial, projections, groups = NULL, plothist = TRUE,
-  cvsn = TRUE, resolution = 5, filename = NULL, ...)
+ProbDensFunc(
+  initial,
+  projections,
+  groups = NULL,
+  plothist = TRUE,
+  cvsn = TRUE,
+  resolution = 5,
+  filename = NULL,
+  ...
+)
 }
 \arguments{
 \item{initial}{a vector (resp. a \code{SpatialPointsDataFrame}) in a

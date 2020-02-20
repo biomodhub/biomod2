@@ -7,7 +7,12 @@
 #import("stats")
 import("lattice")
 import("methods") 
-import("raster")
+#import("raster")
+importFrom(raster, raster, stack, subset, nlayers, addLayer, reclassify, distance, mask, levels)
+importFrom(raster, canProcessInMemory, rasterOptions, head, sampleRandom, ncell, extract, writeRaster)
+importFrom(raster, tail, calc, cv, inMemory, readAll, maxValue, minValue, quantile, aggregate, text)
+importFrom(raster, lines, density, persp, Which, extent, hist, filename, crop, cellStats, cellFromXY)
+importFrom(raster, xyFromCell, projection)
 import("sp")
 import("ggplot2")
 import("parallel")
@@ -15,7 +20,7 @@ import("parallel")
 importFrom("rlang", ":=")
 
 importFrom("abind", abind, asub)
-import("reshape")
+importFrom("reshape", melt.array, melt)
 #importFrom("gbm", gbm, gbm.perf)
 import("gbm")
 importFrom("MASS",stepAIC)
@@ -24,8 +29,7 @@ import("mda")
 importFrom('maxnet', 'maxnet')
 importFrom('purrr', 'map')
 import("earth")
-import('checkmate')
-import('dplyr')
+importFrom(checkmate, assert_choice, test_class)
 #importFrom("nnet", nnet)
 import("nnet")
 #importFrom("parallel", detectCores) # for gbm package
@@ -45,7 +49,8 @@ importFrom(rasterVis, levelplot)
 #importFrom("gam", s)
 #import("maxent")
 ##importFrom("dplyr", "select", "bind_rows", "%>%")
-importFrom("dplyr", "bind_rows", "%>%")
+# import('dplyr')
+importFrom("dplyr", "bind_rows", "filter", "pull", "select_at", "bind_cols", "%>%", 'select', 'full_join', 'mutate_at', 'tibble')
 importFrom("tidyr", "gather")
 
 ### imports for ecospat.xxx functions (to be removed at some point?)
@@ -129,7 +134,7 @@ exportMethods(
 	free,
 	plot,
 	predict,
-	RemoveProperly,
+	#RemoveProperly,
 	show
 )
 
@@ -140,7 +145,7 @@ export(
 	free,
 	plot,
 	predict,
-	RemoveProperly,
+	#RemoveProperly,
 	show
 )
 

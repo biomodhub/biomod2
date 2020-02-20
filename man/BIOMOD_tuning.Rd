@@ -4,21 +4,44 @@
 \alias{BIOMOD_tuning}
 \title{Tune models parameters}
 \usage{
-BIOMOD_tuning(data, models = c("GLM", "GBM", "GAM", "CTA", "ANN", "SRE",
-  "FDA", "MARS", "RF", "MAXENT.Phillips"),
-  models.options = BIOMOD_ModelingOptions(), method.ANN = "avNNet",
-  method.RF = "rf", method.MARS = "earth", method.GAM = "gam",
-  method.GLM = "glmStepAIC", trControl = NULL, metric = "ROC",
-  ctrl.CTA = NULL, ctrl.RF = NULL, ctrl.ANN = NULL,
-  ctrl.MARS = NULL, ctrl.FDA = NULL, ctrl.GAM = NULL,
-  ctrl.GBM = NULL, ctrl.GLM = NULL, tuneLength = 30,
-  decay.tune.ANN = c(0.001, 0.01, 0.05, 0.1), size.tune.ANN = c(2, 4,
-  6, 8), maxit.ANN = 500, MaxNWts.ANN = 10 * (ncol(data@data.env.var) +
-  1) + 10 + 1, type.GLM = c("simple", "quadratic", "polynomial",
-  "s_smoother"), interaction.GLM = c(0, 1),
-  cvmethod.ME = "randomkfold", overlap.ME = FALSE, kfolds.ME = 10,
-  n.bg.ME = 10000, env.ME = NULL, metric.ME = "ROC",
-  clamp.ME = TRUE, parallel.ME = FALSE, numCores.ME = NULL, weights = Yweights)
+BIOMOD_tuning(
+  data,
+  models = c("GLM", "GBM", "GAM", "CTA", "ANN", "SRE", "FDA", "MARS", "RF",
+    "MAXENT.Phillips"),
+  models.options = BIOMOD_ModelingOptions(),
+  method.ANN = "avNNet",
+  method.RF = "rf",
+  method.MARS = "earth",
+  method.GAM = "gam",
+  method.GLM = "glmStepAIC",
+  trControl = NULL,
+  metric = "ROC",
+  ctrl.CTA = NULL,
+  ctrl.RF = NULL,
+  ctrl.ANN = NULL,
+  ctrl.MARS = NULL,
+  ctrl.FDA = NULL,
+  ctrl.GAM = NULL,
+  ctrl.GBM = NULL,
+  ctrl.GLM = NULL,
+  tuneLength = 30,
+  decay.tune.ANN = c(0.001, 0.01, 0.05, 0.1),
+  size.tune.ANN = c(2, 4, 6, 8),
+  maxit.ANN = 500,
+  MaxNWts.ANN = 10 * (ncol(data@data.env.var) + 1) + 10 + 1,
+  type.GLM = c("simple", "quadratic", "polynomial", "s_smoother"),
+  interaction.GLM = c(0, 1),
+  cvmethod.ME = "randomkfold",
+  overlap.ME = FALSE,
+  kfolds.ME = 10,
+  n.bg.ME = 10000,
+  env.ME = NULL,
+  metric.ME = "ROC",
+  clamp.ME = TRUE,
+  parallel.ME = FALSE,
+  numCores.ME = NULL,
+  Yweights = NULL
+)
 }
 \arguments{
 \item{data}{BIOMOD.formated.data object returned by BIOMOD_FormatingData}
@@ -88,7 +111,8 @@ BIOMOD_tuning(data, models = c("GLM", "GBM", "GAM", "CTA", "ANN", "SRE",
 \item{parallel.ME}{logical. If TRUE, the parallel computing is enabled for MAXENT.Phillips}
 
 \item{numCores.ME}{number of cores used to train MAXENT.Phillips}
-\item{Yweights}{response points weights. This argument will only affect models that allow case weights. }
+
+\item{Yweights}{response points weights. This argument will only affect models that allow case weights.}
 }
 \value{
 BIOMOD.models.options object with optimized parameters
