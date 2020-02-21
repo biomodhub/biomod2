@@ -170,7 +170,7 @@ models_scores_graph <- function(obj, metrics = NULL, by = 'models', plot = TRUE,
 
 .models_scores_graph_check_args <- function(obj, metrics = NULL, by = 'models', args){
   ## check obj type
-  if(! ( class(obj) %in% c("BIOMOD.models.out", "BIOMOD.EnsembleModeling.out") ) ){
+  if(!inherits(obj, c("BIOMOD.models.out", "BIOMOD.EnsembleModeling.out"))){
     stop("obj must be a 'BIOMOD.models.out' or a 'BIOMOD.EnsembleModeling.out' object")
   }
   

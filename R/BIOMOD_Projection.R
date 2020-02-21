@@ -332,16 +332,16 @@
                                           selected.models, binary.meth, filtered.meth,
                                           compress, do.stack, output.format){#, clamping.level){
   ## modeling.output
-  if( class(modeling.output) != 'BIOMOD.models.out'){
+  if(!inherits(modeling.output, 'BIOMOD.models.out')){
     stop("'modeling.output' must be the result of BIOMOD_Modeling() computation")
   }
 
   ## new.env
   # NOTE : may be reorder variables if necessary
-  if( !(class(new.env) %in% c('matrix', 'data.frame', 'RasterStack') )){
+  if(!inherits(new.env, c('matrix', 'data.frame', 'RasterStack'))){
     stop("'new.env' must be a matrix, a data.frame or a RasterStack")
   }
-  if( class(new.env) == 'RasterStack' ){
+  if(inherits(new.env, 'RasterStack')){
     if(sum(!(names(new.env) %in% modeling.output@expl.var.names)) > 0 ){
       stop("'new.env' layer names don't match with explanatory variables used for buiding models")
     }
@@ -424,7 +424,7 @@
   }
 
   ## do.stack
-  if(class(new.env) != 'RasterStack'){
+  if(!inherits(new.env, 'RasterStack')){
     if(!do.stack) cat("\n\t\t! 'do.stack' arg is always set as TRUE for data.frame/matrix dataset")
     do.stack <- TRUE
   } else{

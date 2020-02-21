@@ -489,10 +489,13 @@ BIOMOD_Modeling <- function(
   add.args <- list(...)
 
   # data checking
-  if( !(class( data ) %in% c("BIOMOD.formated.data",
-                             "BIOMOD.formated.data.PA",
-                             "BIOMOD.formated.data.indep",
-                             "BIOMOD.formated.data.PA.indep") )){
+  if(
+    !inherits(
+      data, 
+      c("BIOMOD.formated.data", "BIOMOD.formated.data.PA", "BIOMOD.formated.data.indep", 
+        "BIOMOD.formated.data.PA.indep")
+    )
+  ){
     stop("data argument must be a 'BIOMOD.formated.data' (obtained by running Initial.State function) ")
   }
 
@@ -537,11 +540,11 @@ BIOMOD_Modeling <- function(
   }
 
   # models.options checking ( peut etre permetre l'utilisation de liste de params )
-  if( !is.null(models.options) && class(models.options) != "BIOMOD.Model.Options" ){
+  if(!is.null(models.options) & !inherits(models.options, "BIOMOD.Model.Options")){
     stop("models.options argument must be a 'BIOMOD.Model.Options.object' (obtained by running ... ) ")
   }
 
-  if( is.null(models.options)){
+  if(is.null(models.options)){
     warning("Models will run with 'defaults' parameters", immediate.=T)
     # create a default models.options object
     models.options <- BIOMOD_ModelingOptions() # MAXENT.Phillips = list( path_to_maxent.jar = getwd())
@@ -609,7 +612,7 @@ BIOMOD_Modeling <- function(
   # Defining evaluation runs.
   if(NbRunEval <= 0){
       DataSplit <- 100
-      if(!(class(data) %in% c("BIOMOD.formated.data.indep", "BIOMOD.formated.data.PA.indep") )){
+      if(!inherits(data, c("BIOMOD.formated.data.indep", "BIOMOD.formated.data.PA.indep"))){
         warning("The models will be evaluated on the calibration data only (NbRunEval=0 and no
                 independent data) \n\t it could lead to over-optimistic predictive performances.\n",
                 immediate.=T)
@@ -1240,8 +1243,6 @@ BIOMOD_Modeling <- function(
   }
 
 DF_to_ARRAY <- function(df){
-  #   cat("\n*** class(df) = ", class(df))
-  #   cat("\n*** colnames(df) = ", colnames(df))
   if(!is.data.frame(df) & !is.matrix(df)){
     if(is.list(df)){
       df.names <- names(df)

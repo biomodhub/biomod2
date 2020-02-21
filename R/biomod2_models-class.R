@@ -37,7 +37,7 @@ setClass('biomod2_model',
 
            # check that scaler is a glm if it is defined
            if(length(object@scaling_model))
-             if(sum(! ( c("glm", "lm") %in% class(object@scaling_model) ) ) > 0)
+             if(!inherits(object@scaling_model, c("glm", "lm"))) 
                return(FALSE)
 
            return(TRUE)
@@ -201,7 +201,7 @@ setClass('ANN_biomod2_model',
          prototype = list(model_class = 'ANN'),
          validity = function(object){
            # check model class
-           if(sum(! ( c("nnet") %in% class(object@model) ) ) > 0) return(FALSE)
+           if(!inherits(object@model, "nnet")) return(FALSE)
            return(TRUE)
            })
 
@@ -309,7 +309,7 @@ setClass('CTA_biomod2_model',
          prototype = list(model_class = 'CTA'),
          validity = function(object){
            # check model class
-           if(sum(! ( c("rpart") %in% class(object@model) ) ) > 0) return(FALSE)
+           if(!inherits(object@model, "rpart")) return(FALSE)
            return(TRUE)
          })
 
@@ -415,7 +415,7 @@ setClass('FDA_biomod2_model',
          prototype = list(model_class = 'FDA'),
          validity = function(object){
            # check model class
-           if(sum(! ( c("fda") %in% class(object@model) ) ) > 0) return(FALSE)
+           if(!inherits(object@model, "fda")) return(FALSE)
            return(TRUE)
          })
 
@@ -518,11 +518,11 @@ setClass('GAM_biomod2_model',
              return(FALSE)
 
            if(object@model_subclass %in% c('GAM_mgcv','GAM_gam'))
-             if(sum(! ( c("gam","glm","lm") %in% class(object@model) ) ) > 0)
+             if(!inherits(object@model, c("gam")))
                return(FALSE)
 
            if(object@model_subclass == 'BAM_mgcv')
-             if(sum(! ( c("bam","gam","glm","lm") %in% class(object@model) ) ) > 0)
+             if(!inherits(object@model, c("bam")))
                return(FALSE)
 
            return(TRUE)
@@ -648,7 +648,7 @@ setClass('GBM_biomod2_model',
                    n.trees_optim = 1000),
          validity = function(object){
            # check model class
-           if(sum(! ( c("gbm") %in% class(object@model) ) ) > 0) return(FALSE)
+           if(!inherits(object@model, "gbm")) return(FALSE)
            return(TRUE)
          })
 
@@ -753,7 +753,7 @@ setClass('GLM_biomod2_model',
          prototype = list(model_class = 'GLM'),
          validity = function(object){
            # check model class
-           if(sum(! ( c("glm", "lm") %in% class(object@model) ) ) > 0) return(FALSE)
+           if(!inherits(object@model, "glm")) return(FALSE)
            return(TRUE)
          })
 
@@ -859,7 +859,7 @@ setClass('MARS_biomod2_model',
          prototype = list(model_class = 'MARS'),
          validity = function(object){
            # check model class
-           if(is.element(class(object@model), c("MARS"))) return(FALSE)
+           if(!inherits(object@model, "MARS")) return(FALSE)
            return(TRUE)
          })
 
@@ -1417,7 +1417,7 @@ setClass('RF_biomod2_model',
          prototype = list(model_class = 'RF'),
          validity = function(object){
            # check model class
-           if(sum(! ( c("randomForest") %in% class(object@model) ) ) > 0) return(FALSE)
+           if(!inherits(object@model, "randomForest")) return(FALSE)
            return(TRUE)
          })
 

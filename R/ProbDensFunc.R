@@ -349,7 +349,7 @@ ProbDensFunc <- function(
 
   # check args types
   if(inherits(projections, 'Raster')){
-    if(class(initial) != 'RasterLayer' & class(initial) != 'SpatialPointsDataFrame')
+    if(!inherits(initial, 'RasterLayer', 'SpatialPointsDataFrame'))
       stop("If projections is a raster object, initial should be a 'RasterLayer' or a 'SaptialPointDataFrame'")
   } else if(is.matrix(projections)){
     if(!is.numeric(initial)){
@@ -361,7 +361,7 @@ ProbDensFunc <- function(
 
   # extract values
   if(inherits(projections, 'Raster')){
-    if(class(initial) == 'SpatialPointsDataFrame'){
+    if(inherits(initial, 'SpatialPointsDataFrame')){
       if(nrow(initial) > add.args$nb.points.max){
         initial[sort(sample(1:nrow(initial),size=add.args$nb.points.max)), drop=FALSE]
       }

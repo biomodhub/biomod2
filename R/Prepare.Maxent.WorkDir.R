@@ -90,7 +90,7 @@
 
 .Delete.Maxent.WorkDir <- function(MWD, silent=FALSE){
   if(!silent) cat('\n\tRemoving Maxent Temp Data..')
-  if(class(MWD) == "maxent_workdir_info"){
+  if(inherits(MWD, "maxent_workdir_info")){
     unlink(unique(sub("/part([[:digit:]]+)$", "", MWD$m_workdir)),recursive = TRUE, force = TRUE)
   } else{
     if(!silent) cat('\n\t! Invalid maxent work dir object -> MAXENT.Phillips temp files have not been removed')

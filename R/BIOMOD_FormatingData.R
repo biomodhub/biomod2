@@ -143,7 +143,7 @@
                         'RasterLayer', 'RasterStack',
                         'SpatialPointsDataFrame', 'SpatialPoints')
   ###### resp.var
-  if(!(class(resp.var) %in% available.types)){
+  if(!inherits(resp.var, available.types)){
     stop( paste("Response variable must be one of ", toString(available.types), sep="") )
   }
 
@@ -155,7 +155,7 @@
   }
 
   ###### expl.var
-  if(!(class(expl.var) %in% available.types[-which(available.types == 'SpatialPoints')])){
+  if(!inherits(expl.var, setdiff(available.types, 'SpatialPoints'))){
     stop( paste("Explanatory variable must be one of ", toString(available.types), sep="") )
   }
 
@@ -166,7 +166,7 @@
       cat("\n      ! XY coordinates of response variable will be ignored because spatial response object is given.")
     }
     resp.xy <- data.matrix(sp::coordinates(resp.var))
-    if(class(resp.var) == 'SpatialPointsDataFrame'){
+    if(inherits(resp.var, 'SpatialPointsDataFrame')){
       resp.var <- resp.var@data
     } else{
       cat("\n      ! Response variable is considered as only presences... Is it really what you want?")

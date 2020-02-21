@@ -851,10 +851,10 @@ setClass(
       if(!is.numeric(object@GLM$interaction.level)){ cat("\nGLM$interaction.level must be a integer"); test <- FALSE } else{
              if(object@GLM$interaction.level < 0 | object@GLM$interaction.level%%1!=0){ cat("\nGLM$interaction.level must be a positive integer"); test <- FALSE }
            }
-           if(!is.null(object@GLM$myFormula)) if(class(object@GLM$myFormula) != "formula"){ cat("\nGLM$myFormula must be NULL or a formula object"); test <- FALSE }
+           if(!is.null(object@GLM$myFormula)) if(!inherits(object@GLM$myFormula, "formula")){ cat("\nGLM$myFormula must be NULL or a formula object"); test <- FALSE }
            if(!(object@GLM$test %in% c('AIC','BIC','none'))){ cat("\nGLM$test must be 'AIC','BIC' or 'none'"); test <- FALSE}
            fam <- 'none'
-           if(class(object@GLM$family) != "family"){ cat("\nGLM$family must be a valid family object"); test <- FALSE }
+           if(!inherits(object@GLM$family, "family")){ cat("\nGLM$family must be a valid family object"); test <- FALSE }
            if(!is.list(object@GLM$control)){cat("\nGLM$control must be a list like that returned by glm.control"); test <- FALSE}
 
 
@@ -914,9 +914,9 @@ setClass(
              if(object@GAM$interaction.level < 0 | object@GAM$interaction.level%%1!=0){ cat("\nGAM$interaction.level must be a positive integer"); test <- FALSE }
            }
 
-           if(!is.null(object@GAM$myFormula)) if(class(object@GAM$myFormula) != "formula"){ cat("\nGAM$myFormula must be NULL or a formula object"); test <- FALSE }
+           if(!is.null(object@GAM$myFormula)) if(!inherits(object@GAM$myFormula, "formula")){ cat("\nGAM$myFormula must be NULL or a formula object"); test <- FALSE }
 
-           if(class(object@GAM$family) != "family"){ cat("\nGAM$family must be a valid family object"); test <- FALSE }
+           if(!inherits(object@GAM$family, "family")){ cat("\nGAM$family must be a valid family object"); test <- FALSE }
 
            if(!is.list(object@GAM$control)){cat("\nGAM$control must be a list like that returned by gam.control"); test <- FALSE}
            if(! object@GAM$method %in% c('GCV.Cp','GACV.Cp','REML', 'P-REML', 'ML', 'P-ML')){cat("\nGAM$method must be 'GCV.Cp','GACV.Cp','REML', 'P-REML', 'ML'or 'P-ML'"); test <- FALSE}
@@ -981,7 +981,7 @@ setClass(
            if(!is.numeric(object@MARS$interaction.level)){ cat("\nMARS$interaction.level must be a integer"); test <- FALSE } else{
              if(object@MARS$interaction.level < 0 | object@MARS$interaction.level%%1!=0){ cat("\nMARS$interaction.level must be a positive integer"); test <- FALSE }
            }
-           if(!is.null(object@MARS$myFormula)) if(class(object@MARS$myFormula) != "formula"){ cat("\nMARS$myFormula must be NULL or a formula object"); test <- FALSE }
+           if(!is.null(object@MARS$myFormula)) if(!inherits(object@MARS$myFormula, "formula")){ cat("\nMARS$myFormula must be NULL or a formula object"); test <- FALSE }
 #            if(!is.numeric(object@MARS$degree)){ cat("\nMARS$degree must be a integer"); test <- FALSE } else{
 #              if(object@MARS$degree < 0 | object@MARS$degree%%1!=0){ cat("\nMARS$degree must be a positive integer"); test <- FALSE }
 #            }
@@ -1765,7 +1765,7 @@ setMethod('plot', signature(x='BIOMOD.projection.out', y="missing"),
 
 
 
-            if(class(x@proj) == "BIOMOD.stored.raster.stack"){
+            if(inherits(x@proj, "BIOMOD.stored.raster.stack")){
               requireNamespace("rasterVis")
 
               ## define the breaks of the color key
@@ -1802,7 +1802,7 @@ setMethod('plot', signature(x='BIOMOD.projection.out', y="missing"),
                 cat("\n Plotting function failed.. You should try to do it by yourself!")
               }
 
-            } else if(class(x@proj) == "BIOMOD.stored.array"){
+            } else if(inherits(x@proj, "BIOMOD.stored.array")){
               if(ncol(x@xy.coord) != 2){
                 cat("\n ! Impossible to plot projections because xy coordinates are not available !")
               } else {

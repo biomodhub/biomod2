@@ -197,7 +197,7 @@ BIOMOD_presenceonly <- function(modeling.output = NULL, EM.output = NULL, bg.env
     Model.name <- boyce.eval[i,1]
     run <- strsplit(Model.name,split="_")[[1]][c(grep("RUN",strsplit(Model.name,split="_")[[1]]),grep("Full",strsplit(Model.name,split="_")[[1]]))]
     
-    if(class(calib.lines)=="matrix"){
+    if(inherits(calib.lines, "matrix")){
     if(sum(!calib.lines[,paste("_",run, sep="")])==0){      #this is the full model
       if(is.null(bg.env)){
       test <- myResp      

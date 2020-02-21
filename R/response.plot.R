@@ -595,7 +595,7 @@ response.plot2 <- function(
 .Construct.default.biomod2.modeling.obj <- function(mod){
 
   ## ANN ##
-  if(sum(!(c("nnet") %in% class(mod))) == 0){
+  if(inherits(mod, "nnet")){
     return(new("ANN_biomod2_model",
                model = mod,
                model_name = paste(ifelse(is.null(mod$terms[[2]]), "species",as.character(mod$terms[[2]])),"_AllData_",as.character(format(Sys.time(), "%OS6")),"_ANN", sep=""),
@@ -606,7 +606,7 @@ response.plot2 <- function(
 
 
   ## CTA ##
-  if(sum(!(c("rpart") %in% class(mod)) == 0 )){
+  if(inherits(mod, "rpart")){
 
     return(new("CTA_biomod2_model",
                model = mod,
@@ -617,7 +617,7 @@ response.plot2 <- function(
   }
 
   ## FDA ##
-  if(sum(!(c("fda") %in% class(mod)) == 0 )){
+  if(inherits(mod, "fda")){
     return(new("FDA_biomod2_model",
                model = mod,
                model_name = paste(as.character(mod$terms[[2]]),"_AllData_",as.character(format(Sys.time(), "%OS6")),"_FDA", sep=""),
@@ -627,7 +627,7 @@ response.plot2 <- function(
   }
 
   ## GAM ##
-  if(sum(!(c("gam") %in% class(mod)) == 0 )){
+  if(inherits(mod, "gam")){
     return(new("GAM_biomod2_model",
                model = mod,
                model_subclass = ifelse(mod$method=="glm.fit","GAM_gam","GAM_mgcv"),
@@ -638,7 +638,7 @@ response.plot2 <- function(
   }
 
   ## GBM ##
-  if(sum(!(c("gbm") %in% class(mod)) == 0 )){
+  if(inherits(mod, "gbm")){
     return(new("GBM_biomod2_model",
                model = mod,
                model_name = paste(as.character(mod$Terms[[2]]),"_AllData_",as.character(format(Sys.time(), "%OS6")),"_GBM", sep=""),
@@ -648,7 +648,7 @@ response.plot2 <- function(
   }
 
   ## GLM ##
-  if(sum(!(c("glm", "lm") %in% class(mod)) == 0 )){
+  if(inherits(mod, c("glm", "lm"))){
     return(new("GLM_biomod2_model",
                model = mod,
                model_name = paste(as.character(mod$terms[[2]]),"_AllData_",as.character(format(Sys.time(), "%OS6")),"_GLM", sep=""),
@@ -658,7 +658,7 @@ response.plot2 <- function(
   }
 
   ## MARS ##
-  if(sum(!(c("mars") %in% class(mod)) == 0 )){
+  if(inherits(mod, "mars")){
     return(new("MARS_biomod2_model",
                model = mod,
                model_name =paste("species_AllData_",as.character(format(Sys.time(), "%OS6")),"_MARS",sep=""),
@@ -668,7 +668,7 @@ response.plot2 <- function(
   }
 
   ## RF ##
-  if(sum(!(c("randomForest") %in% class(mod)) == 0 )){
+  if(inherits(mod, "randomForest")){
     return(new("RF_biomod2_model",
                model = mod,
                model_name =paste(ifelse(is.null(mod$terms[[2]]), "species",as.character(mod$terms[[2]])),"_AllData_",as.character(format(Sys.time(), "%OS6")),"_RF", sep=""),

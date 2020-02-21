@@ -286,7 +286,7 @@
     if(!is.null(GLM$test)) { opt@GLM$test <- GLM$test }
     if(!is.null(GLM$family)) {
       fam.test <- TRUE
-      if( class(GLM$family) == 'family'){
+      if(inherits(GLM$family, 'family')){
         opt@GLM$family <- GLM$family
       } else{
         if( is.character(GLM$family)){
@@ -342,7 +342,7 @@
     if(!is.null(GAM$myFormula )) { opt@GAM$myFormula <- GAM$myFormula }
     if(!is.null(GAM$family)) {
       fam.test <- TRUE
-      if( class(GAM$family) == 'family'){
+      if(inherits(GAM$family, 'family')){
         opt@GAM$family <- GAM$family
       } else{
         if( is.character(GAM$family)){
