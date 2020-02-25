@@ -207,8 +207,8 @@ The aim of this function is to allow advanced user to change some default parame
   NOTE: for mtry, you can give a 'real' value as described in randomForest help file or 'default' that implies default randomForest values
 }
 
-\section{MAXENT.Phillips (\url{www.cs.princeton.edu/~schapire/maxent/}) }{
-
+\section{[MAXENT.Phillips](https}{
+//biodiversityinformatics.amnh.org/open_source/maxent/) :
   \itemize{
     \item{\code{path_to_maxent.jar} : character, the link to \pkg{maxent.jar} file (the working directory by default) }
     \item{\code{memory_allocated} : integer (default \code{512}), the amount of memory (in Mo) reserved for java to run MAXENT.Phillips. should be 64, 128, 256, 512, 1024, 2048... or NULL if you want to use default java memory limitation parameter.}
@@ -245,8 +245,8 @@ The aim of this function is to allow advanced user to change some default parame
 %   \item{\code{verbose} (default \code{FALSE}): A logical specifying whether to provide descriptive output about the training process}
 % }
 
-  NOTE: if you use the \code{set_heldout} parameter then the data that will be held out will be taken in the
-  calibration data pool. It can be penilizing in case of low number of occurences dataset.
+% NOTE: if you use the \code{set_heldout} parameter then the data that will be held out will be taken in the
+% calibration data pool. It can be penilizing in case of low number of occurences dataset.
 }
 
 \examples{

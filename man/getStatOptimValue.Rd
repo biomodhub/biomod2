@@ -33,4 +33,6 @@
   getStatOptimValue('POFD')
 }
 
-\keyword{ models, formula, options }
+\keyword{models}
+\keyword{formula}
+\keyword{options}

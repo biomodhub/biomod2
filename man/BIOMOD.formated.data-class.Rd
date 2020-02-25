@@ -71,4 +71,6 @@ BIOMOD.formated.data
 showClass("BIOMOD.formated.data")
 }
 
-\keyword{models, data, formating}
+\keyword{models}
+\keyword{data}
+\keyword{formating}

@@ -208,10 +208,10 @@ responses from species distribution models. Ecological Modelling 186,
 \author{
 Wilfried Thuiller, Damien Georges
 }
-\keyword{models,}
-\keyword{multivariate,}
+\keyword{models}
+\keyword{multivariate}
 \keyword{nonlinear}
-\keyword{nonparametric,}
-\keyword{plot,}
-\keyword{regression,}
+\keyword{nonparametric}
+\keyword{plot}
+\keyword{regression}
 \keyword{tree}

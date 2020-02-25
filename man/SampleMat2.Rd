@@ -42,6 +42,6 @@ SampleMat2(ref=a, ratio=0.7)
 \author{
 Damien Georges
 }
-\keyword{formula,}
-\keyword{models,}
+\keyword{formula}
+\keyword{models}
 \keyword{options}

@@ -72,7 +72,6 @@ Please refer to \code{\link[biomod2]{BIOMOD_Modeling}} to get more information a
 \author{
 Damien Georges
 }
-\keyword{evaluate,}
 \keyword{evaluation}
-\keyword{models,}
-\keyword{options,}
+\keyword{models}
+\keyword{options}

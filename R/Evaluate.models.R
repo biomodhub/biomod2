@@ -126,7 +126,10 @@ evaluate <- function(model, data, stat, as.array=FALSE){
 ##'                   Nb.thresh.test = 100)
 ##'
 ##'
-##' @keywords models, options, evaluate, evaluation
+##' @keywords models
+##' @keywords options
+##' @keywords evaluation
+##' 
 Find.Optim.Stat <- 
   function(
     Stat = 'TSS',

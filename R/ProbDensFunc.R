@@ -60,7 +60,8 @@
 ##' @seealso \code{\link{BIOMOD_Projection}}, 
 ##' \code{\link{BIOMOD_EnsembleForecasting}}
 ##' 
-##' @keywords optimize, distribution
+##' @keywords optimize
+##' @keywords distribution
 ##' 
 ##' @examples 
 ##' \dontrun{

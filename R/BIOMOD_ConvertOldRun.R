@@ -31,6 +31,7 @@
 ##' @author Damien Georges
 ##' @seealso \code{\link{BIOMOD_Modeling}}
 ##' @keywords models
+##' 
 BIOMOD_ConvertOldRun <- function(savedObj, path = NULL){
   .bmCat("BIOMOD results migration")
 

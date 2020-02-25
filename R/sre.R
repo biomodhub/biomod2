@@ -55,7 +55,8 @@
 ##' \code{\link[biomod2]{BIOMOD_ModelingOptions}}, 
 ##' \code{\link[biomod2]{BIOMOD_Projection}}
 ##' 
-##' @keywords models, multivariate
+##' @keywords models
+##' @keywords multivariate
 ##' 
 ##' @examples
 ##' require(raster)

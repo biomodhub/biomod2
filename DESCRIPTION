@@ -1,8 +1,8 @@
 Package: biomod2
 Type: Package
 Title: Ensemble Platform for Species Distribution Modeling
-Version: 3.4-04
-Date: 2019-08-31
+Version: 3.4.6
+Date: 2020-02-24
 Author: Wilfried Thuiller [aut, cre],
     Damien Georges [aut, cre],
     Robin Engler [aut],
@@ -12,7 +12,7 @@ Contact: Wilfried Thuiller <wilfried.thuiller@ujf-grenoble.fr>, Damien Georges
     <damien.georges2@gmail.com>
 BugReports: https://r-forge.r-project.org/forum/forum.php?eforum_id=995&group_id=302
 Description: Functions for species distribution modeling, calibration and evaluation, 
-  ensemble of models, ensemble forecasting and visualization. biomod2 permits to run
+  ensemble of models, ensemble forecasting and visualization. The package permits to run
   consistently up to 10 single models on a presence/absences (resp presences/pseudo-absences)
   dataset and to combine them in ensemble models and ensemble projections. Some bench of other 
   evaluation and visualisation tools are also available within the package.

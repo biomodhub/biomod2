@@ -65,4 +65,4 @@ showClass("BIOMOD.EnsembleModeling.out")
 Damien Georges
 }
 \keyword{ensemble}
-\keyword{models,}
+\keyword{models}

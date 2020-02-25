@@ -135,7 +135,7 @@ Regression Trees (\code{\link[gbm]{gbm}})
 .. - RF: Random Forest (\code{\link[randomForest]{randomForest}})
 
 .. - MAXENT.Phillips: Maximum Entropy (
-\url{http://www.cs.princeton.edu/~schapire/maxent/})
+\url{https://biodiversityinformatics.amnh.org/open_source/maxent})
 
 .. - MAXENT.Phillips.2: Maximum Entropy 
 (\code{\link[maxnet]{maxnet}})

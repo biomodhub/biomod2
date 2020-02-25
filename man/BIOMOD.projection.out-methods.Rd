@@ -61,4 +61,7 @@ Functions to get attributes of \code{\link[biomod2]{BIOMOD_Projection}} outputs
 
 \seealso{ \code{\link{help}}}
 
-\keyword{ models, projection, project, forecast }
+\keyword{models}
+\keyword{projection}
+\keyword{project}
+\keyword{forecast}

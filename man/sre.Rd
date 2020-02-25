@@ -142,5 +142,5 @@ plot(sre.090, main="90 \%")
 \author{
 Wilfried Thuiller, Bruno Lafourcade, Damien Georges
 }
-\keyword{models,}
+\keyword{models}
 \keyword{multivariate}

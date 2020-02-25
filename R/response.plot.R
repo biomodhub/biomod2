@@ -32,8 +32,13 @@
 ##' predicted responses from species distribution models. Ecological
 ##' Modelling 186, 280-289.
 ##' 
-##' @keywords plot, models, regression, nonlinear, multivariate
-##' @keywords nonparametric, tree
+##' @keywords plot
+##' @keywords models
+##' @keywords regression
+##' @keywords nonlinear
+##' @keywords multivariate
+##' @keywords nonparametric
+##' @keywords tree
 ##' 
 response.plot <-
   function(model, Data, show.variables=seq(1:ncol(Data)), save.file="no", name="response_curve", ImageSize=480, plot=TRUE){
@@ -129,8 +134,13 @@ response.plot <-
 ##' 
 ##' @seealso \code{\link{BIOMOD_Modeling}}
 ##' 
-##' @keywords plot, models, regression, nonlinear
-##' @keywords multivariate, nonparametric, tree
+##' @keywords plot
+##' @keywords models
+##' @keywords regression
+##' @keywords nonlinear
+##' @keywords multivariate
+##' @keywords nonparametric
+##' @keywords tree
 ##' 
 ##' @examples
 ##' \dontrun{

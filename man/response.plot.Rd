@@ -56,10 +56,10 @@ Modelling 186, 280-289.
 \author{
 Wilfried Thuiller
 }
-\keyword{models,}
+\keyword{models}
 \keyword{multivariate}
-\keyword{nonlinear,}
-\keyword{nonparametric,}
-\keyword{plot,}
-\keyword{regression,}
+\keyword{nonlinear}
+\keyword{nonparametric}
+\keyword{plot}
+\keyword{regression}
 \keyword{tree}

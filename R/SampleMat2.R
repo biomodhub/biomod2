@@ -26,7 +26,9 @@
 ##' @author Damien Georges
 ##' 
 ##' @seealso \code{\link[biomod2]{BIOMOD_FormatingData}}
-##' @keywords models, formula, options
+##' @keywords models
+##' @keywords formula
+##' @keywords options
 ##' 
 ##' @export
 ##' 

@@ -64,5 +64,5 @@ showClass("BIOMOD.Model.Options")
 \author{
 Damien Georges
 }
-\keyword{models,}
+\keyword{models}
 \keyword{options}

@@ -37,7 +37,9 @@
 ##' @seealso \code{\link[biomod2]{BIOMOD_ModelingOptions}}, 
 ##' \code{link[stats]{formula}}
 ##' 
-##' @keywords models, formula, options
+##' @keywords models
+##' @keywords formula
+##' @keywords options
 ##' 
 ##' @examples
 ##' ##' create simulated data

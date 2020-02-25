@@ -210,4 +210,4 @@ ProbDensFunc(initial = ref,
 Wilfried Thuiller, Bruno Lafourcade, Damien Georges
 }
 \keyword{distribution}
-\keyword{optimize,}
+\keyword{optimize}

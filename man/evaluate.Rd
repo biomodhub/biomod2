@@ -107,4 +107,4 @@ evaluate(myBiomodModelOut, data=data, stat=c('ROC','TSS'))
 % R documentation directory.
 \keyword{ evaluation }
 \keyword{ models }
-\keyword{ score }% __ONLY ONE__ keyword per line
+\keyword{ score }

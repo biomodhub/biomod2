@@ -51,4 +51,7 @@ BIOMOD.projection.out object is created, used and returned by \pkg{biomod2} func
 showClass("BIOMOD.projection.out")
 }
 
-\keyword{models, projection, ensemble, forecast}
+\keyword{models}
+\keyword{projection}
+\keyword{ensemble}
+\keyword{forecast}

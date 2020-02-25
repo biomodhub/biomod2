@@ -699,7 +699,8 @@ setMethod('show', signature('BIOMOD.formated.data.PA'),
 ##'   
 ##' @author Damien Georges
 ##' @seealso \code{\link[biomod2]{BIOMOD_ModelingOptions}}
-##' @keywords models, options
+##' @keywords models
+##' @keywords options
 ##' 
 ##' @examples
 ##' showClass("BIOMOD.Model.Options")
@@ -1890,7 +1891,8 @@ setMethod(f='free',
 ##' \code{\link[biomod2]{BIOMOD_EnsembleModeling}}, 
 ##' \code{\link[biomod2]{BIOMOD_EnsembleForecasting}}
 ##' 
-##' @keywords models, ensemble
+##' @keywords models
+##' @keywords ensemble
 ##' @author Damien Georges 
 ##' 
 ##' @examples

@@ -73,6 +73,6 @@ myFormula
 \author{
 Damien Georges
 }
-\keyword{formula,}
-\keyword{models,}
+\keyword{formula}
+\keyword{models}
 \keyword{options}
