@@ -350,7 +350,7 @@ ProbDensFunc <- function(
 
   # check args types
   if(inherits(projections, 'Raster')){
-    if(!inherits(initial, 'RasterLayer', 'SpatialPointsDataFrame'))
+    if(!inherits(initial, c('RasterLayer', 'SpatialPointsDataFrame')))
       stop("If projections is a raster object, initial should be a 'RasterLayer' or a 'SaptialPointDataFrame'")
   } else if(is.matrix(projections)){
     if(!is.numeric(initial)){

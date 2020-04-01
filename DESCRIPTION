@@ -1,8 +1,8 @@
 Package: biomod2
 Type: Package
 Title: Ensemble Platform for Species Distribution Modeling
-Version: 3.4.6
-Date: 2020-02-24
+Version: 3.4.8
+Date: 2020-04-01
 Author: Wilfried Thuiller [aut, cre],
     Damien Georges [aut, cre],
     Robin Engler [aut],
@@ -58,7 +58,7 @@ Suggests:
     gam,
     testthat,
     ecospat
-License: GPL-2
+License: GPL-3
 RoxygenNote: 7.0.2
 Collate: 
     'BIOMOD_ConvertOldRun.R'
