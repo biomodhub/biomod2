@@ -859,7 +859,7 @@ setClass('MARS_biomod2_model',
          prototype = list(model_class = 'MARS'),
          validity = function(object){
            # check model class
-           if(!inherits(object@model, "MARS")) return(FALSE)
+           if(!inherits(object@model, c('earth', 'mars'))) return(FALSE)
            return(TRUE)
          })
 
