@@ -17,16 +17,37 @@
             return(AUC)
           })
       } else{
-          Eval[,3] = Eval[,3] + apply(Eval[,1:2], 1, Samp, Target, Input, W, FUN=function(x, Samp, Target, Input, W){
-          nn = nnet(eval(parse(text = paste("Target[Samp$calibration]",
-                  paste(.scopeExpSyst(Input[1:10, ,drop=FALSE], "GBM"), collapse = "")))),data=Input[Samp$calibration, ,drop=FALSE],
-                  weights=W[Samp$calibration], size = x[1], decay = x[2], maxit = maxit, trace = FALSE)
-            AUC = as.numeric(pROC::auc(pROC::roc(Target[Samp$evaluation], as.numeric(predict(nn, Input[Samp$evaluation,,drop=FALSE])))))
+          Eval[,3] = 
+            Eval[,3] + 
+            apply(
+              Eval[,1:2], 1, Samp, Target, Input, W, 
+              FUN = function(x, Samp, Target, Input, W){
+                nn = 
+                  nnet(
+                    eval(parse(text = paste("Target[Samp$calibration]", paste(.scopeExpSyst(Input[1:10, ,drop=FALSE], "GBM"), collapse = "")))),
+                    data = Input[Samp$calibration, ,drop=FALSE],
+                    weights = W[Samp$calibration], 
+                    size = x[1], 
+                    decay = x[2], 
+                    maxit = maxit, 
+                    trace = FALSE
+                  )
+                AUC <- 
+                  as.numeric(
+                    pROC::auc(
+                      pROC::roc(
+                        Target[Samp$evaluation], 
+                        as.numeric(predict(nn, Input[Samp$evaluation,,drop=FALSE])),
+                        levels = c(0, 1),
+                        direction = '<'
+                      )
+                    )
+                  )
             return(AUC)
           })
       }
   }
-  Eval[,3] = Eval[,3]/nbCV
-  z =which.max(Eval[,3])
+  Eval[, 3] = Eval[, 3] / nbCV
+  z = which.max(Eval[, 3])
   return(Eval[z, 1:2])
 }

@@ -451,17 +451,20 @@
 
     if(is.null(size) | is.null(decay) | length(size)>1 | length(decay)>1 ){
       ## define the size and decay to test
-      if(is.null(size)) size=c(2,4,6, 8)
-      if(is.null(decay)) decay=c(0.001, 0.01, 0.05, 0.1)
+      if(is.null(size)) size <- c(2, 4, 6, 8)
+      if(is.null(decay)) decay <- c(0.001, 0.01, 0.05, 0.1)
 
       ## do cross validation test to find the optimal values of size and decay parameters (prevent from overfitting)
-      CV_nnet = .CV.nnet(Input = Data[,expl_var_names,drop=FALSE],
-                         Target = Data[calibLines,1],
-                         size=size,
-                         decay=decay,
-                         maxit = Options@ANN$maxit,
-                         nbCV = Options@ANN$NbCV,
-                         W = Yweights[calibLines])
+      CV_nnet <- 
+        .CV.nnet(
+          Input = Data[,expl_var_names,drop=FALSE],
+          Target = Data[calibLines,1],
+          size = size,
+          decay = decay,
+          maxit = Options@ANN$maxit,
+          nbCV = Options@ANN$NbCV,
+          W = Yweights[calibLines]
+        )
 
       ## get the optimised parameters values
       decay <- CV_nnet[1, 2]
