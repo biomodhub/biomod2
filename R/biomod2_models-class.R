@@ -1219,7 +1219,7 @@ setMethod(
 .predict.MAXENT.Phillips.2_biomod2_model.RasterStack <- function(object, newdata, ...){
   newdata.df <- 
     newdata %>%
-    as.matrix()
+    raster::as.matrix()
   
   args <- list(...)
   filename <- args$filename
@@ -1238,8 +1238,8 @@ setMethod(
     )[, 1]
   
   if(length(get_scaling_model(object))){
-    names(proj) <- "pred"
-    proj <- .testnull(object = get_scaling_model(object), Prev = 0.5 , dat = proj)
+    proj.to.scale <- data.frame(pred = proj)
+    proj <- .testnull(object = get_scaling_model(object), Prev = 0.5 , dat = proj.to.scale)
   }
   
   if(on_0_1000) proj <- round(proj*1000)
