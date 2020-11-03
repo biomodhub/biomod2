@@ -95,7 +95,7 @@
     ## subselection of observations according to dataset used to produce ensemble models
     if(em.by %in% c("PA_dataset",'PA_dataset+algo','PA_dataset+repet')){
       if(unlist(strsplit(assemb,"_"))[3] != 'AllData'){
-        if(inherits(get_formal_data(modeling.output, "BIOMOD.formated.data.PA"))){
+        if(inherits(get_formal_data(modeling.output), "BIOMOD.formated.data.PA")){
           kept_cells <- get_formal_data(modeling.output)@PA[, unlist(strsplit(assemb,"_"))[3]]
         } else {
           kept_cells <- rep(T, length(obs))
