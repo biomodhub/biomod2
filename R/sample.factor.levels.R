@@ -228,7 +228,7 @@ sample.factor.levels <- function(x, mask.out = NULL, mask.in = NULL){
           selected.cells <- c(selected.cells, sapply(fact.level, function(fl){
             candidate.cells <- na.omit(which(x[, f] == fl))
             selected.cell <- NULL
-            if(length(candidate.cells) == 1){ ## single candiate cell
+            if(length(candidate.cells) <= 1){ ## single candidate cell
               selected.cell <- candidate.cells
             } else { ## multi candidate cells
               selected.cell <- sample(candidate.cells, 1)
