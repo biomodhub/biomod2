@@ -1,15 +1,16 @@
 Package: biomod2
 Type: Package
 Title: Ensemble Platform for Species Distribution Modeling
-Version: 3.4.12
-Date: 2020-04-24
+Version: 3.4.13
+Date: 2020-12-03
 Author: Wilfried Thuiller [aut, cre],
     Damien Georges [aut, cre],
+    Maya Gueguen [aut],
     Robin Engler [aut],
     Frank Breiner [aut]
 Maintainer: Damien Georges <damien.georges2@gmail.com>
 Contact: Wilfried Thuiller <wilfried.thuiller@ujf-grenoble.fr>, Damien Georges
-    <damien.georges2@gmail.com>
+    <damien.georges2@gmail.com>, Maya Gueguen <maya.gueguen@univ-grenoble-alpes.fr>
 BugReports: https://r-forge.r-project.org/forum/forum.php?eforum_id=995&group_id=302
 Description: Functions for species distribution modeling, calibration and evaluation, 
   ensemble of models, ensemble forecasting and visualization. The package permits to run

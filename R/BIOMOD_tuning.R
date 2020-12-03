@@ -558,10 +558,10 @@ tuning.maxent <-
     if(is.null(bg)){
       bg <- as.data.frame(extract(env, bg.coords))}
     #####
-    if (any(is.na(colSums(pres)))) {
+    if (any(is.na(pres))) {
       message("Warning: some predictors variables are NA at some occurrence points")
     }
-    if (any(is.na(colSums(bg)))) {
+    if (any(is.na((bg)))) {
       message("Warning: some predictors variables are NA at some background points")
     }
     if (!is.null(categoricals)) {
