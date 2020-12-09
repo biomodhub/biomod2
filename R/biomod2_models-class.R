@@ -1048,7 +1048,12 @@ setMethod('predict', signature(object = 'MAXENT.Phillips_biomod2_model'),
   if(!silent) cat("\n\t\tReading Maxent outputs...")
 
   ## get the list of projections part by part
-  proj.list <- lapply(file.path(unlist(MWD$m_workdir),"projMaxent.asc"), raster, RAT = FALSE, crs=projection(newdata))
+  # check crs is not NA
+  if(!is.na(projection(newdata))){
+    proj.list <- lapply(file.path(unlist(MWD$m_workdir),"projMaxent.asc"), raster, RAT = FALSE, crs=projection(newdata))
+  } else {
+    proj.list <- lapply(file.path(unlist(MWD$m_workdir),"projMaxent.asc"), raster, RAT = FALSE)
+  }
   ## merge all parts in a single raster
   if(length(proj.list) > 1){
     proj <- do.call(raster::merge, proj.list)
