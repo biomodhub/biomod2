@@ -104,7 +104,7 @@ BIOMOD_tuning(
 
 \item{env.ME}{RasterStack of model predictor variables}
 
-\item{metric.ME}{metric to select the optimal model for MAXENT.Phillips (Default: ROC). One out of Mean.AUC (or ROC), Mean.AUC.DIFF, Mean.ORmin, Mean.OR10 and AICc. see ?ENMevaluate and Muscarella et al. 2014}
+\item{metric.ME}{metric to select the optimal model for MAXENT.Phillips (Default: ROC). One out of "auc.val.avg", or the mean validation AUC, (or ROC), auc.diff.avg, or.mtp.avg, or.10p.avg and AICc. see ?ENMevaluate and Muscarella et al. 2014}
 
 \item{clamp.ME}{logical; If TRUE (Default) "Features are constrained to remain within the range of values in the training data" (Elith et al. 2011)}
 

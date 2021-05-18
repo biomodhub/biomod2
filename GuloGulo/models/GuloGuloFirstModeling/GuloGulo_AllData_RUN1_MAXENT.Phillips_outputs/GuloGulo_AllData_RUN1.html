@@ -1,0 +1,49 @@
+<title>Maxent model for GuloGulo_AllData_RUN1</title>
+<CENTER><H1>Maxent model for GuloGulo_AllData_RUN1</H1></CENTER>
+<br> This page contains some analysis of the Maxent model for GuloGulo_AllData_RUN1, created Wed May 19 04:40:41 JST 2021 using Maxent version 3.4.1.  If you would like to do further analyses, the raw data used here is linked to at the end of this page.<br>
+<br><HR><H2>Analysis of omission/commission</H2>
+The following picture shows the omission rate and predicted area as a function of the cumulative threshold.  The omission rate is is calculated both on the training presence records, and (if test data are used) on the test records.  The omission rate should be close to the predicted omission, because of the definition of the cumulative threshold.
+<br><img src="plots/GuloGulo_AllData_RUN1_omission.png"><br>
+<br> The next picture is the receiver operating characteristic (ROC) curve for the same data.  Note that the specificity is defined using predicted area, rather than true commission (see the paper by Phillips, Anderson and Schapire cited on the help page for discussion of what this means).  This implies that the maximum achievable AUC is less than 1.  If test data is drawn from the Maxent distribution itself, then the maximum possible test AUC would be 0.978 rather than 1; in practice the test AUC may exceed this bound.
+<br><img src="plots/GuloGulo_AllData_RUN1_roc.png"><br>
+<br>
+<br>
+Some common thresholds and corresponding omission rates are as follows.  If test data are available, binomial probabilities are calculated exactly if the number of test samples is at most 25, otherwise using a normal approximation to the binomial.  These are 1-sided p-values for the null hypothesis that test points are predicted no better than by a random prediction with the same fractional predicted area.  The "Balance" threshold minimizes 6 * training omission rate + .04 * cumulative threshold + 1.6 * fractional predicted area.<br>
+<br><table border cols=4 cellpadding=3><tr><th>Cumulative threshold</th><th>Logistic threshold</th><th>Description</th><th>Fractional predicted area</th><th>Training omission rate</th><tr align=center><td>1.000</td><td>0.008</td><td>Fixed cumulative value 1</td><td>0.107</td><td>0.163</td><tr align=center><td>5.000</td><td>0.039</td><td>Fixed cumulative value 5</td><td>0.049</td><td>0.259</td><tr align=center><td>10.000</td><td>0.128</td><td>Fixed cumulative value 10</td><td>0.035</td><td>0.321</td><tr align=center><td>0.000</td><td>0.000</td><td>Minimum training presence</td><td>0.901</td><td>0.000</td><tr align=center><td>0.073</td><td>0.000</td><td>10 percentile training presence</td><td>0.201</td><td>0.098</td><tr align=center><td>0.318</td><td>0.003</td><td>Equal training sensitivity and specificity</td><td>0.144</td><td>0.144</td><tr align=center><td>1.628</td><td>0.012</td><td>Maximum training sensitivity plus specificity</td><td>0.091</td><td>0.170</td><tr align=center><td>0.023</td><td>0.000</td><td>Balance training omission, predicted area and threshold value</td><td>0.266</td><td>0.043</td><tr align=center><td>16.457</td><td>0.177</td><td>Equate entropy of thresholded and original distributions</td><td>0.026</td><td>0.353</td></table><br>
+<br>(A link to the Explain tool was not made for this model.  The model uses product features, while the Explain tool can only be used for additive models.)<br><br>
+<br><HR><H2>Analysis of variable contributions</H2><br>
+The following table gives estimates of relative contributions of the environmental variables to the Maxent model.  To determine the first estimate, in each iteration of the training algorithm, the increase in regularized gain is added to the contribution of the corresponding variable, or subtracted from it if the change to the absolute value of lambda is negative.  For the second estimate, for each environmental variable in turn, the values of that variable on training presence and background data are randomly permuted.  The model is reevaluated on the permuted data, and the resulting drop in training AUC is shown in the table, normalized to percentages.  As with the variable jackknife, variable contributions should be interpreted with caution when the predictor variables are correlated.<br>
+<br><table border cols=3><tr><th>Variable</th><th>Percent contribution</th><th>Permutation importance</th><tr align=right><td>bio3</td><td>50.7</td><td>16.3</td></tr><tr align=right><td>bio7</td><td>35.7</td><td>20.3</td></tr><tr align=right><td>bio4</td><td>6.3</td><td>34.2</td></tr><tr align=right><td>bio12</td><td>4.5</td><td>10.9</td></tr><tr align=right><td>bio11</td><td>2.8</td><td>18.3</td></tr></table><br><br>
+<br><HR><H2>Raw data outputs and control parameters</H2><br>
+The data used in the above analysis is contained in the next links.  Please see the Help button for more information on these.<br>
+<a href = "GuloGulo_AllData_RUN1.csv">The model applied to the training environmental layers</a><br>
+<a href = "GuloGulo_AllData_RUN1_Pred_swd.csv">The model applied to the environmental layers in GuloGulo/models/GuloGuloFirstModeling/m_39511188/Predictions/Pred_swd.csv</a><br>
+<a href = "GuloGulo_AllData_RUN1.lambdas">The coefficients of the model</a><br>
+<a href = "GuloGulo_AllData_RUN1_omission.csv">The omission and predicted area for varying cumulative and raw thresholds</a><br>
+<a href = "GuloGulo_AllData_RUN1_samplePredictions.csv">The prediction strength at the training and (optionally) test presence sites</a><br>
+<a href = "maxentResults.csv">Results for all species modeled in the same Maxent run, with summary statistics and (optionally) jackknife results</a><br>
+<br><br>
+Regularized training gain is 54.649, training AUC is 0.942, unregularized training gain is 64.662.<br>
+Algorithm terminated after 500 iterations (2 seconds).<br>
+<br>
+The follow settings were used during the run:<br>
+529 presence records used for training.<br>
+1462 points used to determine the Maxent distribution (background points).<br>
+Environmental layers used (all continuous): bio11 bio12 bio3 bio4 bio7<br>
+Regularization values: linear/quadratic/product: 0.050, categorical: 0.250, threshold: 1.000, hinge: 0.500<br>
+Feature types used: hinge product linear threshold quadratic<br>
+outputformat: logistic<br>
+outputdirectory: GuloGulo/models/GuloGuloFirstModeling/GuloGulo_AllData_RUN1_MAXENT.Phillips_outputs<br>
+projectionlayers: GuloGulo/models/GuloGuloFirstModeling/m_39511188/Predictions/Pred_swd.csv<br>
+samplesfile: GuloGulo/models/GuloGuloFirstModeling/m_39511188/Sp_swd.csv<br>
+environmentallayers: GuloGulo/models/GuloGuloFirstModeling/m_39511188/Back_swd.csv<br>
+warnings: false<br>
+tooltips: false<br>
+askoverwrite: false<br>
+threshold: true<br>
+addsamplestobackground: false<br>
+autorun: true<br>
+visible: false<br>
+Command line used:  environmentallayers=GuloGulo/models/GuloGuloFirstModeling/m_39511188/Back_swd.csv samplesfile=GuloGulo/models/GuloGuloFirstModeling/m_39511188/Sp_swd.csv projectionlayers=GuloGulo/models/GuloGuloFirstModeling/m_39511188/Predictions/Pred_swd.csv outputdirectory=GuloGulo/models/GuloGuloFirstModeling/GuloGulo_AllData_RUN1_MAXENT.Phillips_outputs outputformat=logistic redoifexists visible=FALSE linear=TRUE quadratic=TRUE product=TRUE threshold=TRUE hinge=TRUE lq2lqptthreshold=80 l2lqthreshold=10 hingethreshold=15 beta_threshold=-1 beta_categorical=-1 beta_lqp=-1 beta_hinge=-1 betamultiplier=1 defaultprevalence=0.5 autorun nowarnings notooltips noaddsamplestobackground<br>
+<br>
+Command line to repeat this species model: java density.MaxEnt nowarnings noprefixes -E "" -E GuloGulo_AllData_RUN1 outputformat=logistic outputdirectory=GuloGulo/models/GuloGuloFirstModeling/GuloGulo_AllData_RUN1_MAXENT.Phillips_outputs projectionlayers=GuloGulo/models/GuloGuloFirstModeling/m_39511188/Predictions/Pred_swd.csv samplesfile=GuloGulo/models/GuloGuloFirstModeling/m_39511188/Sp_swd.csv environmentallayers=GuloGulo/models/GuloGuloFirstModeling/m_39511188/Back_swd.csv nowarnings notooltips noaskoverwrite threshold noaddsamplestobackground autorun novisible<br>
