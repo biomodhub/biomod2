@@ -211,7 +211,8 @@ export(
 	BIOMOD_presenceonly,
 	BIOMOD_tuning,
   sample.factor.levels,
-	.transform.outputs.list
+	.transform.outputs.list,
+	zzz_bm
 )
 
 ## to be hidden
