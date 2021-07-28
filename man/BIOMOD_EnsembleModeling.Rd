@@ -12,6 +12,7 @@ BIOMOD_EnsembleModeling( modeling.output,
                          em.by = 'PA_dataset+repet',
                          eval.metric = 'all',
                          eval.metric.quality.threshold = NULL,
+                         eval.metric.user.data = NULL,
                          models.eval.meth = c('KAPPA','TSS','ROC'),
                          prob.mean = TRUE,
                          prob.cv = FALSE,
@@ -28,8 +29,9 @@ BIOMOD_EnsembleModeling( modeling.output,
   \item{modeling.output}{a \code{"\link[=BIOMOD.models.out-class]{BIOMOD.models.out}"} returned by \code{\link[biomod2]{BIOMOD_Modeling}}}
   \item{chosen.models}{a character vector (either 'all' or a sub-selection of model names) that defines the models kept for building the ensemble models (might be useful for removing some non-preferred models)}
   \item{em.by}{Character. Flag defining the way the models will be combined to build the ensemble models. Available values are \code{'PA_dataset+repet'} (default), \code{'PA_dataset+algo'}, \code{'PA_dataset'}, \code{'algo'} and  \code{'all'}}
-  \item{eval.metric}{vector of names of evaluation metric used to build ensemble models. It is involved for formal models exclusion if \code{eval.metric.quality.threshold} is defined and/or for building ensemble models that are dependent of formal models evaluation scores (e.g. weighted mean and committee averaging). If 'all', the same evaluation metrics than those of \code{modeling.output} will be automatically selected}
+  \item{eval.metric}{vector of names of evaluation metric used to build ensemble models. It is involved for formal models exclusion if \code{eval.metric.quality.threshold} is defined and/or for building ensemble models that are dependent of formal models evaluation scores (e.g. weighted mean and committee averaging). If \code{'all'}, the same evaluation metrics than those of \code{modeling.output} will be automatically selected. If \code{'user.defined'}, evaluation metric values will be given by the user through \code{'eval.metric.user.data'} parameter.}
   \item{eval.metric.quality.threshold}{If not \code{NULL}, the minimum scores below which models will be excluded of the ensemble-models building.}
+  \item{eval.metric.user.data}{If not \code{NULL}, a data.frame with evaluation metric rownames, and selected models (matching \code{chosen.models} parameter value) colnames.}
   \item{models.eval.meth}{ the evaluation methods used to evaluate ensemble models ( see \code{"\link[=BIOMOD_Modeling]{BIOMOD_Modeling}"}  \bold{models.eval.meth} section for more detailed informations )}
   \item{prob.mean}{Logical. Estimate the mean probabilities across predictions }
   \item{prob.cv}{Logical. Estimate the coefficient of variation across predictions}
@@ -69,7 +71,7 @@ BIOMOD_EnsembleModeling( modeling.output,
       \itemize{
         \item{\bold{\code{eval.metric}}}{
 
-          The selected metrics here are necessary the ones chosen at the \code{\link[biomod2]{BIOMOD_Modeling}} step.
+          The selected metrics here are necessary the ones chosen at the \code{\link[biomod2]{BIOMOD_Modeling}} step (except if \code{eval.metric = 'user.defined'}, then the values can be provided through the \code{eval.metric.user.data} parameter).
           If you select several, ensembles will be built according to each of them.
           The chosen metrics will be used at different stages in this function :
           \enumerate{
@@ -83,8 +85,14 @@ BIOMOD_EnsembleModeling( modeling.output,
 
         \item{\bold{\code{eval.metric.quality.threshold}}}{
 
-          You have to give as many threshold as \code{eval.metric} you have selected.  If you have selected  several evaluation metrics , take care to ensure that the order of thresholds matches the order of \code{eval.metric}.
+          You have to give as many threshold as \code{eval.metric} you have selected. If you have selected several evaluation metrics , take care to ensure that the order of thresholds matches the order of \code{eval.metric}.
           All models having a score lower than these quality thresholds will not be kept for building ensemble-models.
+        }
+        
+        
+        \item{\bold{\code{eval.metric.user.data}}}{
+        A data.frame must be given if you define \code{eval.metric = 'user.defined'}. It allows you to use other evaluation metrics than those calculated within biomod2 models.
+        Your data.frame should have as many columns as \code{chosen.models} (with matching names), and as many rows as evaluation metrics you want to use (with corresponding rownames).
         }
       }
     }
