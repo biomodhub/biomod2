@@ -37,7 +37,7 @@
 ##' 
 ##' @examples
 ##' \dontrun{
-##' requireNamesapce(PresenceAbsence, 'PresenceAbsence', quietly = TRUE)
+##' requireNamespace(PresenceAbsence, 'PresenceAbsence', quietly = TRUE)
 ##' 
 ##' # species occurrences
 ##' DataSpecies <- read.csv(system.file("external/species/mammals_table.csv",
@@ -213,16 +213,17 @@ BIOMOD_presenceonly <- function(modeling.output = NULL, EM.output = NULL, bg.env
           Pred <- myModelPred[calib.lines,Model.name]
         # }
       }else{
-        test <- c(myResp[myResp==1],rep(0,nrow(bg.env)))    
-        Pred <- c(myModelPred.pres[,Model.name],myModelPred[,Model.name])       
+        test <- c(myResp[which(myResp == 1)], rep(0, nrow(bg.env)))    
+        Pred <- c(myModelPred.pres[, Model.name], myModelPred[, Model.name])       
       }
     }else{
       if(is.null(bg.env)){
         test <- myResp[ind.eval] #### CORRECTION
-        Pred <- myModelPred[ind.eval,Model.name] #### CORRECTION
+        Pred <- myModelPred[ind.eval, Model.name] #### CORRECTION
       }else{
-        test <- c(myResp[ind.eval & myResp==1],rep(0,nrow(bg.env))) #### CORRECTION
-        Pred <- c(myModelPred.pres[ind.eval & myResp==1,Model.name],myModelPred[,Model.name])  #### CORRECTION
+        test <- c(myResp[intersect(ind.eval, which(myResp == 1))], rep(0, nrow(bg.env))) #### CORRECTION
+        Pred <- c(myModelPred.pres[intersect(ind.eval, which(myResp == 1)), Model.name]
+                  , myModelPred[, Model.name])  #### CORRECTION
       }
     }
     #### CORRECTION ------------------------------------------------------------------------
