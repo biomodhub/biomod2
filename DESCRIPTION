@@ -1,14 +1,14 @@
 Package: biomod2
 Type: Package
 Title: Ensemble Platform for Species Distribution Modeling
-Version: 3.4.13
-Date: 2020-12-03
+Version: 3.5.1
+Date: 2021-07-28
 Author: Wilfried Thuiller [aut, cre],
     Damien Georges [aut, cre],
     Maya Gueguen [aut],
     Robin Engler [aut],
     Frank Breiner [aut]
-Maintainer: Damien Georges <damien.georges2@gmail.com>
+Maintainer: Damien Georges <damien.georges2@gmail.com>, Maya Gueguen <maya.gueguen@univ-grenoble-alpes.fr>
 Contact: Wilfried Thuiller <wilfried.thuiller@ujf-grenoble.fr>, Damien Georges
     <damien.georges2@gmail.com>, Maya Gueguen <maya.gueguen@univ-grenoble-alpes.fr>
 BugReports: https://r-forge.r-project.org/forum/forum.php?eforum_id=995&group_id=302
@@ -60,7 +60,7 @@ Suggests:
     testthat,
     ecospat
 License: GPL-3
-RoxygenNote: 7.0.2
+RoxygenNote: 7.1.1
 Collate: 
     'BIOMOD_ConvertOldRun.R'
     'BIOMOD_EnsembleForecasting.R'
@@ -104,3 +104,4 @@ Collate:
     'transform.outputs.R'
     'update_objects.R'
     'variables_importance.R'
+    'zzz.R'
