@@ -202,7 +202,7 @@ setMethod('random.pseudo.abs.selection', signature(env="SpatialPointsDataFrame")
               pa.tab <- matrix(FALSE, ncol=nb.repet, nrow=nrow(sp))
               colnames(pa.tab) <- paste("PA", 1:nb.repet, sep="")
               # select always the presences and the true absences
-              pa.tab[c(which(sp@data == 1), which(sp@data == 0)),] <- TRUE
+              pa.tab[c(which(sp@data > 0), which(sp@data == 0)),] <- TRUE
               # and a subset of candidates cells
               cand.cells <- which(is.na(sp@data))
               for(j in 1:ncol(pa.tab)){
@@ -243,7 +243,7 @@ setMethod('random.pseudo.abs.selection', signature(env="RasterStack"),
               pa.tab <- matrix(FALSE, ncol=nb.repet, nrow=nrow(sp))
               colnames(pa.tab) <- paste("PA", 1:nb.repet, sep="")
               # select always the presences and the true absences
-              pa.tab[c(which(sp@data == 1), which(sp@data == 0)),] <- TRUE
+              pa.tab[c(which(sp@data > 0), which(sp@data == 0)),] <- TRUE
               # and a subset of candidates cells
               cand.cells <- which(is.na(sp@data))
               for(j in 1:ncol(pa.tab)){
@@ -399,7 +399,7 @@ setMethod('sre.pseudo.abs.selection', signature(env="SpatialPointsDataFrame"),
               pa.tab <- matrix(FALSE, ncol=nb.repet, nrow=nrow(sp))
               colnames(pa.tab) <- paste("PA", 1:nb.repet, sep="")
               # select always the presences and the true absences
-              pa.tab[c(which(sp@data == 1), which(sp@data == 0)),] <- TRUE
+              pa.tab[c(which(sp@data > 0), which(sp@data == 0)),] <- TRUE
               # and a subset of candidates cells
               cand.cells <- which(!mask.in$mask.in)
               for(j in 1:ncol(pa.tab)){
@@ -434,8 +434,12 @@ setMethod('sre.pseudo.abs.selection', signature(env="RasterStack"),
 
             ## mask of already sampled points (presences/absences)
             mask.out <- raster::subset(env, 1)
-            mask.out[] <- NA; mask.out[cellFromXY(mask.out,
-                                                  coordinates(sp)[is.element(as.vector(sp@data), c(0, 1)), ])]
+            # mask.out[] <- NA; mask.out[cellFromXY(mask.out,
+            #                                       coordinates(sp)[is.element(as.vector(sp@data), c(0, 1)), ])]
+            mask.out[] <- NA
+            mask.out[cellFromXY(mask.out,
+                                coordinates(sp)[!is.element(as.vector(sp@data) >= 0, NA), ])]
+
 
 #             # removing cells in envelops, presences and absences
 #             mask[mask == 1] <- NA
@@ -522,7 +526,7 @@ setMethod('disk.pseudo.abs.selection', signature(env="SpatialPointsDataFrame"),
 
             # 1. determining selectable area
             coor <- coordinates(sp)
-            pres <- which(sp@data[,1]==1)
+            pres <- which(sp@data[,1]>0)
             true.abs <- which(sp@data[,1]==0)
             tmp.abs <- which(is.na(sp@data[,1])) #(1:ncol(sp@data))[-c(pres,true.abs)]
             outside <- rep(0, length(abs))
@@ -571,7 +575,7 @@ setMethod('disk.pseudo.abs.selection', signature(env="RasterStack"),
               dist.mask <- raster::subset(env,1, drop=TRUE)
               dist.mask[] <- NA
 
-              pres.xy <- coordinates(sp[which(sp@data[,1]==1),])
+              pres.xy <- coordinates(sp[which(sp@data[,1]>0),])
               dist.mask[cellFromXY(dist.mask,pres.xy)] <- 1
 
               dist.mask <- raster::distance(dist.mask)

@@ -300,13 +300,13 @@ response.plot2 <- function(
   for(i in 1:ncol(Data)){
     if(is.numeric(Data[,i])){
       ref_table[,i] <- switch(fixed.var.metric,
-                              mean = mean(Data[data_species==1,i]),
-                              median = median(Data[data_species==1,i]),
-                              min = min(Data[data_species==1,i]),
-                              max = max(Data[data_species==1,i]))
+                              mean = mean(Data[data_species>0,i]),
+                              median = median(Data[data_species>0,i]),
+                              min = min(Data[data_species>0,i]),
+                              max = max(Data[data_species>0,i]))
     } else{
       # return everytimes the majoritary class
-      sum_level <- summary(Data[data_species==1,i], na.rm = TRUE)
+      sum_level <- summary(Data[data_species>0,i], na.rm = TRUE)
       ref_table[,i] <- names(sum_level)[which.max(sum_level)]
     }
   }
