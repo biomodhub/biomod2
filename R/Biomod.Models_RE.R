@@ -305,6 +305,11 @@
       ## reexec warnings
       options(warn)
 
+      ## for some reason when stepAIC keeps the null model, $formula is screwed up
+      ## in this case replace the output with original model
+      if (identical(model.sp$coefficients, glmStart$coefficients)) {
+        model.sp <- glmStart
+      }
     } else {
       ## keep the total model
       model.sp <- try( glm(glm.formula,
@@ -314,6 +319,12 @@
                            weights = Yweights,
 #                            mustart = rep(Options@GLM$mustart, sum(calibLines)),
                            model = TRUE) )
+
+      ## for some reason when stepAIC keeps the null model, $formula is screwed up
+      ## in this case replace the output with original model
+      if (identical(model.sp$coefficients, glmStart$coefficients)) {
+        model.sp <- glmStart
+      }
     }
 
     if( !inherits(model.sp,"try-error") ){
