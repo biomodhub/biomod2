@@ -1455,7 +1455,11 @@ setMethod('predict', signature(object = 'RF_biomod2_model'),
   if (is.null(overwrite)) overwrite <- TRUE
   if (is.null(on_0_1000)) on_0_1000 <- FALSE
 
-  proj <- predict(newdata, model=get_formal_model(object), type='prob', index=2)
+  if (get_formal_model(object)$type == "regression") {
+    proj <- predict(newdata, model=get_formal_model(object))
+  } else {
+    proj <- predict(newdata, model=get_formal_model(object), type='prob', index=2)
+  }
 
   if(length(get_scaling_model(object))){
     names(proj) <- "pred"
@@ -1493,7 +1497,11 @@ setMethod('predict', signature(object = 'RF_biomod2_model'),
     not_na_rows <- rep(T, nrow(newdata))
   }
 
-  proj <- as.numeric(predict(get_formal_model(object), as.data.frame(newdata[not_na_rows,,drop=FALSE]), type='prob')[,'1'])
+  if (get_formal_model(object)$type == "regression") {
+    proj <- as.numeric(predict(get_formal_model(object), as.data.frame(newdata[not_na_rows,,drop=FALSE])))
+  } else {
+    proj <- as.numeric(predict(get_formal_model(object), as.data.frame(newdata[not_na_rows,,drop=FALSE]), type='prob')[,'1'])
+  }
 
   ## add original NAs in table if it needed
   if(sum(!not_na_rows) > 0 ){ # some NAs in formal dataset
