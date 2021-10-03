@@ -129,8 +129,8 @@ evaluate <- function(model, data, stat, as.array=FALSE){
 ##' @keywords models
 ##' @keywords options
 ##' @keywords evaluation
-##' 
-Find.Optim.Stat <- 
+
+Find.Optim.Stat <-
   function(
     Stat = 'TSS',
     Fit,
@@ -139,27 +139,27 @@ Find.Optim.Stat <-
     Fixed.thresh = NULL
   ){
 
-  ## remove all uninite values
-  to_keep <- ( is.finite(Fit) & is.finite(Obs) )
-  Fit <- Fit[to_keep]
-  Obs <- Obs[to_keep]
+    ## remove all uninite values
+    to_keep <- ( is.finite(Fit) & is.finite(Obs) )
+    Fit <- Fit[to_keep]
+    Obs <- Obs[to_keep]
 
-  ## guess fit value scale (e.g. 0-1 for a classic fit or 0-1000 for a biomod2 model fit)
-  fit.scale <- .guess.scale(Fit)
+    ## guess fit value scale (e.g. 0-1 for a classic fit or 0-1000 for a biomod2 model fit)
+    fit.scale <- .guess.scale(Fit)
 
-  ## check some data are still here.
-  if(!length(Obs) | !length(Fit)){
-    cat("Non finite obs or fit available => model evaluation skipped !")
-    eval.out <- matrix(NA,1,4, dimnames = list(Stat, c("best.stat","cutoff","sensitivity","specificity")))
-    return(eval.out)
-  }
+    ## check some data are still here.
+    if(!length(Obs) | !length(Fit)){
+      cat("Non finite obs or fit available => model evaluation skipped !")
+      eval.out <- matrix(NA,1,4, dimnames = list(Stat, c("best.stat","cutoff","sensitivity","specificity")))
+      return(eval.out)
+    }
 
-  if(length(unique(Obs)) == 1 | length(unique(Fit)) == 1){
-#     warning("\nObserved or fited data contains only a value.. Evaluation Methods switched off\n",immediate.=T)
-#     best.stat <- cutoff <- true.pos <- sensitivity <- true.neg <- specificity <- NA
+    if(length(unique(Obs)) == 1 | length(unique(Fit)) == 1){
+      #     warning("\nObserved or fited data contains only a value.. Evaluation Methods switched off\n",immediate.=T)
+      #     best.stat <- cutoff <- true.pos <- sensitivity <- true.neg <- specificity <- NA
       warning("\nObserved or fitted data contains a unique value... Be careful with this models predictions\n",immediate.=T)
       #best.stat <- cutoff <- true.pos <- sensitivity <- true.neg <- specificity <- NA
-  } #else {
+    } #else {
     if (!Stat %in% c('ROC', 'R2')) {
       if (length(setdiff(Obs, c(0, 1, NA)))) {
         stop("Response variably is non-binary. Use R2 eval.method instead")
@@ -173,13 +173,13 @@ Find.Optim.Stat <-
           valToTest <- round(c(mean(c(fit.scale["min"],valToTest)),
                                mean(c(fit.scale["max"],valToTest))))
         } else{
-#           mini <- max(min(quantile(Fit,0.05, na.rm=T), na.rm=T),0)
-#           maxi <- min(max(quantile(Fit,0.95, na.rm=T), na.rm=T),1000)
+          #           mini <- max(min(quantile(Fit,0.05, na.rm=T), na.rm=T),0)
+          #           maxi <- min(max(quantile(Fit,0.95, na.rm=T), na.rm=T),1000)
           mini <- max(min(Fit, na.rm=T), fit.scale["min"], na.rm = T)
           maxi <- min(max(Fit, na.rm=T), fit.scale["max"], na.rm = T)
-          valToTest <- try(unique( round(c(seq(mini, maxi,
-                                               length.out = Nb.thresh.test),
-                                           mini, maxi)) ))
+          valToTest <- try(unique(round(c(seq(mini, maxi,
+                                              length.out = Nb.thresh.test),
+                                          mini, maxi)) ))
           if(inherits(valToTest, "try-error")){
             valToTest <- seq(fit.scale["min"], fit.scale["max"],
                              length.out = Nb.thresh.test)
@@ -190,7 +190,7 @@ Find.Optim.Stat <-
                                  mean(fit.scale["max"], maxi)))
           }
         }
-#         valToTest <- unique( c(seq(mini,maxi,by=Precision), mini, maxi) )
+        #         valToTest <- unique( c(seq(mini,maxi,by=Precision), mini, maxi) )
       } else{
         valToTest <- Fixed.thresh
       }
@@ -224,7 +224,7 @@ Find.Optim.Stat <-
       sensitivity <- as.numeric(roc1.out["sensitivity"])
       specificity <- as.numeric(roc1.out["specificity"])
     }
-  #}
+    #}
     if (Stat == 'R2') {
       best.stat <- caret::defaultSummary(data.frame(obs = Obs, pred = Fit))[["Rsquared"]]
       cutoff <- NA
@@ -235,8 +235,8 @@ Find.Optim.Stat <-
     eval.out <- cbind(best.stat,cutoff,sensitivity,specificity)
     rownames(eval.out) <- Stat
 
-  return(eval.out)
-}
+    return(eval.out)
+  }
 
 getStatOptimValue <- function(stat){
   if(stat == 'TSS') return(1)
@@ -257,90 +257,90 @@ getStatOptimValue <- function(stat){
 }
 
 calculate.stat <-
-function(Misc, stat='TSS')
-{
-  # Contagency table checking
-  Misc <- .contagency.table.check(Misc)
+  function(Misc, stat='TSS')
+  {
+    # Contagency table checking
+    Misc <- .contagency.table.check(Misc)
 
-  # Defining Classification index
-  hits <- Misc['TRUE','1']
-  misses <- Misc['FALSE','1']
-  false_alarms <- Misc['TRUE','0']
-  correct_negatives <- Misc['FALSE','0']
+    # Defining Classification index
+    hits <- Misc['TRUE','1']
+    misses <- Misc['FALSE','1']
+    false_alarms <- Misc['TRUE','0']
+    correct_negatives <- Misc['FALSE','0']
 
-  total <- sum(Misc)
-  forecast_1 <- sum(Misc['TRUE',])
-  forecast_0 <- sum(Misc['FALSE',])
-  observed_1 <- sum(Misc[,'1'])
-  observed_0 <- sum(Misc[,'0'])
+    total <- sum(Misc)
+    forecast_1 <- sum(Misc['TRUE',])
+    forecast_0 <- sum(Misc['FALSE',])
+    observed_1 <- sum(Misc[,'1'])
+    observed_0 <- sum(Misc[,'0'])
 
-  # Calculating choosen evaluating metric
-  if(stat=='TSS'){
-    return( (hits/(hits+misses)) + (correct_negatives/(false_alarms+correct_negatives)) -1 )
+    # Calculating choosen evaluating metric
+    if(stat=='TSS'){
+      return( (hits/(hits+misses)) + (correct_negatives/(false_alarms+correct_negatives)) -1 )
+    }
+
+    if(stat=='KAPPA'){
+      Po <- (1/total) * (hits + correct_negatives)
+      Pe <- ((1/total)^2) * ((forecast_1 * observed_1) + (forecast_0 * observed_0))
+      return( (Po - Pe) / (1-Pe) )
+    }
+
+    if(stat=='ACCURACY'){
+      return( (hits + correct_negatives) / total)
+    }
+
+    if(stat=='BIAS'){
+      return( (hits + false_alarms) / (hits + misses))
+    }
+
+    if(stat=='POD'){
+      return( hits / (hits + misses))
+    }
+
+    if(stat=='FAR'){
+      return(false_alarms/(hits+false_alarms))
+    }
+
+    if(stat=='POFD'){
+      return(false_alarms / (correct_negatives + false_alarms))
+    }
+
+    if(stat=='SR'){
+      return(hits / (hits + false_alarms))
+    }
+
+    if(stat=='CSI'){
+      return(hits/(hits+misses+false_alarms))
+    }
+
+    if(stat=='ETS'){
+      hits_rand <- ((hits+misses)*(hits+false_alarms)) / total
+      return( (hits-hits_rand) / (hits+misses+false_alarms-hits_rand))
+    }
+
+    if(stat=='HK'){
+      return((hits/(hits+misses)) - (false_alarms/(false_alarms + correct_negatives)))
+    }
+
+    if(stat=='HSS'){
+      expected_correct_rand <- (1/total) * ( ((hits+misses)*(hits+false_alarms)) +
+                                               ((correct_negatives + misses)*(correct_negatives+false_alarms)) )
+      return((hits+correct_negatives-expected_correct_rand) / (total - expected_correct_rand))
+    }
+
+    if(stat=='OR'){
+      return((hits*correct_negatives)/(misses*false_alarms))
+    }
+
+    if(stat=='ORSS'){
+      return((hits*correct_negatives - misses*false_alarms) / (hits*correct_negatives + misses*false_alarms))
+    }
+
+    if(stat=="BOYCE"){
+
+    }
+
   }
-
-  if(stat=='KAPPA'){
-    Po <- (1/total) * (hits + correct_negatives)
-    Pe <- ((1/total)^2) * ((forecast_1 * observed_1) + (forecast_0 * observed_0))
-    return( (Po - Pe) / (1-Pe) )
-  }
-
-  if(stat=='ACCURACY'){
-    return( (hits + correct_negatives) / total)
-  }
-
-  if(stat=='BIAS'){
-    return( (hits + false_alarms) / (hits + misses))
-  }
-
-  if(stat=='POD'){
-    return( hits / (hits + misses))
-  }
-
-  if(stat=='FAR'){
-    return(false_alarms/(hits+false_alarms))
-  }
-
-  if(stat=='POFD'){
-    return(false_alarms / (correct_negatives + false_alarms))
-  }
-
-  if(stat=='SR'){
-    return(hits / (hits + false_alarms))
-  }
-
-  if(stat=='CSI'){
-    return(hits/(hits+misses+false_alarms))
-  }
-
-  if(stat=='ETS'){
-    hits_rand <- ((hits+misses)*(hits+false_alarms)) / total
-    return( (hits-hits_rand) / (hits+misses+false_alarms-hits_rand))
-  }
-
-  if(stat=='HK'){
-    return((hits/(hits+misses)) - (false_alarms/(false_alarms + correct_negatives)))
-  }
-
-  if(stat=='HSS'){
-    expected_correct_rand <- (1/total) * ( ((hits+misses)*(hits+false_alarms)) +
-      ((correct_negatives + misses)*(correct_negatives+false_alarms)) )
-    return((hits+correct_negatives-expected_correct_rand) / (total - expected_correct_rand))
-  }
-
-  if(stat=='OR'){
-    return((hits*correct_negatives)/(misses*false_alarms))
-  }
-
-  if(stat=='ORSS'){
-    return((hits*correct_negatives - misses*false_alarms) / (hits*correct_negatives + misses*false_alarms))
-  }
-
-  if(stat=="BOYCE"){
-
-  }
-
-}
 
 .contagency.table.check <- function(Misc){
   # Contagency table checking
@@ -350,10 +350,10 @@ function(Misc, stat='TSS')
       rownames(Misc) <- c('FALSE','TRUE')
     } else{
       a <- Misc
-    	Misc <- c(0,0)
-  		Misc <- rbind(Misc, a)
+      Misc <- c(0,0)
+      Misc <- rbind(Misc, a)
       rownames(Misc) <- c('FALSE','TRUE')
-  	}
+    }
   }
 
   if(ncol(Misc) != 2 | nrow(Misc) !=2 ){
