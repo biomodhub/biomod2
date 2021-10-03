@@ -98,7 +98,8 @@ setClass("BIOMOD.formated.data",
                         has.data.eval = "logical",
                         eval.coord = "data.frame",
                         eval.data.species = "numeric",
-                        eval.data.env.var = "data.frame"),
+                        eval.data.env.var = "data.frame",
+                        binaryResp = "logical"),
          validity = function(object){ return(TRUE) } )
 
 # 1.2 Constructors
@@ -110,7 +111,7 @@ setGeneric( "BIOMOD.formated.data",
 # }
 
 setMethod('BIOMOD.formated.data', signature(sp='numeric', env='data.frame' ),
-          function(sp,env,xy=NULL,sp.name=NULL, eval.sp=NULL, eval.env=NULL, eval.xy=NULL, na.rm=TRUE, data.mask=NULL ){
+          function(sp,env,xy=NULL,sp.name=NULL, eval.sp=NULL, eval.env=NULL, eval.xy=NULL, na.rm=TRUE, data.mask=NULL, binaryResp = TRUE){
             if(is.null(data.mask)) data.mask <- raster::stack()
 
             if(is.null(eval.sp)){
@@ -120,12 +121,14 @@ setMethod('BIOMOD.formated.data', signature(sp='numeric', env='data.frame' ),
                          data.env.var=env,
                          sp.name=sp.name,
                          data.mask=data.mask,
-                         has.data.eval=FALSE)
+                         has.data.eval=FALSE,
+                         binaryResp = binaryResp)
             } else{
               BFDeval <- BIOMOD.formated.data(sp=eval.sp,
                                               env=eval.env,
                                               xy=eval.xy,
-                                              sp.name=sp.name)
+                                              sp.name=sp.name,
+                                              binaryResp = binaryResp)
 
               if(raster::nlayers(BFDeval@data.mask)>0){
                 data.mask.tmp <- try(raster::addLayer(data.mask,BFDeval@data.mask))
@@ -144,8 +147,8 @@ setMethod('BIOMOD.formated.data', signature(sp='numeric', env='data.frame' ),
                          has.data.eval=TRUE,
                          eval.coord = BFDeval@coord,
                          eval.data.species = BFDeval@data.species,
-                         eval.data.env.var = BFDeval@data.env.var )
-
+                         eval.data.env.var = BFDeval@data.env.var,
+                         binaryResp = binaryResp)
 
               rm('BFDeval')
             }
@@ -184,26 +187,26 @@ setMethod('BIOMOD.formated.data', signature(sp='numeric', env='data.frame' ),
 )
 
 setMethod('BIOMOD.formated.data', signature(sp='data.frame'),
-          function(sp,env,xy=NULL,sp.name=NULL, eval.sp=NULL, eval.env=NULL, eval.xy=NULL, na.rm=TRUE){
+          function(sp,env,xy=NULL,sp.name=NULL, eval.sp=NULL, eval.env=NULL, eval.xy=NULL, na.rm=TRUE, binaryResp = TRUE){
             if(ncol(sp) > 1 ){
               stop("Invalid response variable")
             }
             sp <- as.numeric(unlist(sp))
-            BFD <- BIOMOD.formated.data(sp,env,xy,sp.name, eval.sp, eval.env, eval.xy, na.rm=na.rm)
+            BFD <- BIOMOD.formated.data(sp,env,xy,sp.name, eval.sp, eval.env, eval.xy, na.rm=na.rm, binaryResp = binaryResp)
             return(BFD)
           }
 )
 
 setMethod('BIOMOD.formated.data', signature(sp='numeric', env='matrix' ),
-          function(sp,env,xy=NULL,sp.name=NULL, eval.sp=NULL, eval.env=NULL, eval.xy=NULL, na.rm=TRUE){
+          function(sp,env,xy=NULL,sp.name=NULL, eval.sp=NULL, eval.env=NULL, eval.xy=NULL, na.rm=TRUE, binaryResp = TRUE){
             env <- as.data.frame(env)
-            BFD <- BIOMOD.formated.data(sp,env,xy,sp.name, eval.sp, eval.env, eval.xy, na.rm=na.rm)
+            BFD <- BIOMOD.formated.data(sp,env,xy,sp.name, eval.sp, eval.env, eval.xy, na.rm=na.rm, binaryResp = binaryResp)
             return(BFD)
           }
 )
 
 setMethod('BIOMOD.formated.data', signature(sp='numeric', env='RasterStack' ),
-          function(sp,env,xy=NULL,sp.name=NULL, eval.sp=NULL, eval.env=NULL, eval.xy=NULL, na.rm=TRUE){
+          function(sp,env,xy=NULL,sp.name=NULL, eval.sp=NULL, eval.env=NULL, eval.xy=NULL, na.rm=TRUE, binaryResp = TRUE){
             categorial_var <- names(env)[raster::is.factor(env)]
 
             # take the same eval environemental variables than calibrating ones
@@ -307,13 +310,23 @@ setMethod('plot', signature(x='BIOMOD.formated.data', y="missing"),
               plot(x=x@coord[,1], y=x@coord[,2], col=col[3], xlab = 'X', ylab = 'Y',
                    main = paste(x@sp.name, sep=""), pch=20 )
               # presences
-              points(x=x@coord[which(x@data.species == 1),1],
-                     y=x@coord[which(x@data.species == 1),2],
-                     col=col[1],pch=18)
-              # true absences
-              points(x=x@coord[which(x@data.species == 0),1],
-                     y=x@coord[which(x@data.species == 0),2],
-                     col=col[2],pch=18)
+              if (x@binaryResp) {
+                points(x=x@coord[which(x@data.species == 1),1],
+                       y=x@coord[which(x@data.species == 1),2],
+                       col=col[1],pch=18)
+                # true absences
+                points(x=x@coord[which(x@data.species == 0),1],
+                       y=x@coord[which(x@data.species == 0),2],
+                       col=col[2],pch=18)
+              } else {
+                points(x=x@coord[which(x@data.species > 0),1],
+                       y=x@coord[which(x@data.species > 0),2],
+                       col=col[1],pch=18)
+                # true absences
+                points(x=x@coord[which(x@data.species == 0),1],
+                       y=x@coord[which(x@data.species == 0),2],
+                       col=col[2],pch=18)
+              }
 
             }
 
@@ -328,15 +341,15 @@ setMethod('show', signature('BIOMOD.formated.data'),
           function(object){
             .bmCat("'BIOMOD.formated.data'")
             cat("\nsp.name = ", object@sp.name, fill=.Options$width)
-            cat("\n\t", sum(object@data.species, na.rm=TRUE), 'presences, ',
+            cat("\n\t", sum(object@data.species > 0, na.rm=TRUE), 'presences, ',
                 sum(object@data.species==0, na.rm=TRUE), 'true absences and ',
-                sum(is.na(object@data.species), na.rm=TRUE),'undifined points in dataset', fill=.Options$width)
+                sum(is.na(object@data.species), na.rm=TRUE),'undefined points in dataset', fill=.Options$width)
             cat("\n\n\t", ncol(object@data.env.var), 'explanatory variables\n', fill=.Options$width)
             print(summary(object@data.env.var))
 
             if(object@has.data.eval){
               cat("\n\nEvaluation data :", fill=.Options$width)
-              cat("\n\t", sum(object@eval.data.species, na.rm=TRUE), 'presences, ',
+              cat("\n\t", sum(object@eval.data.species > 0, na.rm=TRUE), 'presences, ',
                   sum(object@eval.data.species==0, na.rm=TRUE), 'true absences and ',
                   sum(is.na(object@eval.data.species), na.rm=TRUE),'undifined points in dataset', fill=.Options$width)
               cat("\n\n", fill=.Options$width)
@@ -378,7 +391,8 @@ BIOMOD.formated.data.PA <-  function(sp, env, xy, sp.name,
                                      PA.dist.max = NULL,
                                      PA.sre.quant = 0.025,
                                      PA.table = NULL,
-                                     na.rm=TRUE){
+                                     na.rm=TRUE,
+                                     binaryResp = TRUE){
 
   if(inherits(env,'Raster')){
     categorial_var <- names(env)[raster::is.factor(env)]
@@ -460,15 +474,23 @@ BIOMOD.formated.data.PA <-  function(sp, env, xy, sp.name,
                                 eval.sp=eval.sp,
                                 eval.env=eval.env,
                                 eval.xy=eval.xy,
-                                na.rm=na.rm) # because check is already done
+                                na.rm=na.rm,
+                                binaryResp = binaryResp) # because check is already done
 
     if(inherits(env,'Raster')){
 
       ## create data.mask for ploting
       data.mask.tmp <- reclassify(raster::subset(env,1), c(-Inf,Inf,-1))
       data.mask <- stack(data.mask.tmp)
-      xy_pres <- pa.data.tmp$xy[which(pa.data.tmp$sp==1), , drop = FALSE]
-      xy_abs <- pa.data.tmp$xy[which(pa.data.tmp$sp==0), , drop = FALSE]
+
+      if (binaryResp) {
+        xy_pres <- pa.data.tmp$xy[which(pa.data.tmp$sp==1), , drop = FALSE]
+        xy_abs <- pa.data.tmp$xy[which(pa.data.tmp$sp==0), , drop = FALSE]
+      } else {
+        xy_pres <- pa.data.tmp$xy[which(pa.data.tmp$sp>0), , drop = FALSE]
+        xy_abs <- pa.data.tmp$xy[which(pa.data.tmp$sp==0), , drop = FALSE]
+      }
+
       if(nrow(xy_pres)){
         data.mask[cellFromXY(data.mask.tmp, xy_pres)] <- 1
       }
@@ -486,9 +508,15 @@ BIOMOD.formated.data.PA <-  function(sp, env, xy, sp.name,
       for(pa in 1:ncol(as.data.frame(pa.data.tmp$pa.tab))){
         data.mask.tmp2 <- data.mask.tmp
 
-        xy_pres <- pa.data.tmp$xy[which(pa.data.tmp$sp==1 & as.data.frame(pa.data.tmp$pa.tab)[,pa]), , drop = FALSE]
-        xy_abs <- pa.data.tmp$xy[which( (pa.data.tmp$sp!=1 | is.na(pa.data.tmp$sp)) & as.data.frame(pa.data.tmp$pa.tab)[,pa]), , drop = FALSE]
+        if (binaryResp) {
+          xy_pres <- pa.data.tmp$xy[which(pa.data.tmp$sp==1 & as.data.frame(pa.data.tmp$pa.tab)[,pa]), , drop = FALSE]
+          xy_abs <- pa.data.tmp$xy[which( (pa.data.tmp$sp!=1 | is.na(pa.data.tmp$sp)) & as.data.frame(pa.data.tmp$pa.tab)[,pa]), , drop = FALSE]
+        } else {
+          xy_pres <- pa.data.tmp$xy[which(pa.data.tmp$sp > 0 & as.data.frame(pa.data.tmp$pa.tab)[,pa]), , drop = FALSE]
+          xy_abs <- pa.data.tmp$xy[which( (pa.data.tmp$sp == 0 | is.na(pa.data.tmp$sp)) & as.data.frame(pa.data.tmp$pa.tab)[,pa]), , drop = FALSE]
+        }
 
+        ## for backwards compatibility, but ideally the ëlse"code should work in both cases.
         if(nrow(xy_pres)){
           id_pres <- cellFromXY(data.mask.tmp, xy_pres)
           data.mask.tmp2[id_pres] <- 1
@@ -520,7 +548,8 @@ BIOMOD.formated.data.PA <-  function(sp, env, xy, sp.name,
                 eval.data.species = BFD@eval.data.species,
                 eval.data.env.var = BFD@eval.data.env.var,
                 PA = as.data.frame(pa.data.tmp$pa.tab),
-                PA.strategy = PA.strategy)
+                PA.strategy = PA.strategy,
+                binaryResp = binaryResp)
 
     rm(list='BFD')
   } else {
@@ -532,7 +561,8 @@ BIOMOD.formated.data.PA <-  function(sp, env, xy, sp.name,
                                  sp.name=sp.name,
                                  eval.sp=eval.sp,
                                  eval.env=eval.env,
-                                 eval.xy=eval.xy)
+                                 eval.xy=eval.xy,
+                                 binaryResp = binaryResp)
 
   }
 
@@ -602,28 +632,51 @@ setMethod('plot', signature(x='BIOMOD.formated.data.PA', y="missing"),
               # all points (~mask)
               plot(x=x@coord[,1], y=x@coord[,2], col=col[4], xlab = 'X', ylab = 'Y',
                    main = paste(x@sp.name," original data", sep=""), pch=20 )
-              # presences
-              points(x=x@coord[which(x@data.species == 1),1],
-                     y=x@coord[which(x@data.species == 1),2],
-                     col=col[1],pch=18)
-              # true absences
-              points(x=x@coord[which(x@data.species == 0),1],
-                     y=x@coord[which(x@data.species == 0),2],
-                     col=col[2],pch=18)
+
+              if (x@binaryResp) {
+                # presences
+                points(x=x@coord[which(x@data.species == 1),1],
+                       y=x@coord[which(x@data.species == 1),2],
+                       col=col[1],pch=18)
+                # true absences
+                points(x=x@coord[which(x@data.species == 0),1],
+                       y=x@coord[which(x@data.species == 0),2],
+                       col=col[2],pch=18)
+              } else {
+                # presences
+                points(x=x@coord[which(x@data.species > 0),1],
+                       y=x@coord[which(x@data.species > 0),2],
+                       col=col[1],pch=18)
+                # true absences
+                points(x=x@coord[which(x@data.species == 0),1],
+                       y=x@coord[which(x@data.species == 0),2],
+                       col=col[2],pch=18)
+              }
 
               # PA data
               for(i in 1:ncol(x@PA)){
                 # all points (~mask)
                 plot(x=x@coord[,1], y=x@coord[,2], col=col[4], xlab = 'X', ylab = 'Y',
                      main = paste(x@sp.name," Pseudo Absences ", i, sep=""), pch=20 )
-                # presences
-                points(x=x@coord[(x@data.species == 1) & x@PA[,i],1],
-                       y=x@coord[(x@data.species == 1) & x@PA[,i],2],
-                       col=col[1],pch=18)
-                # true absences
-                points(x=x@coord[(x@data.species == 0) & x@PA[,i],1],
-                       y=x@coord[(x@data.species == 0) & x@PA[,i],2],
-                       col=col[2],pch=18)
+                if (x@binaryResp) {
+                  # presences
+                  points(x=x@coord[(x@data.species == 1) & x@PA[,i],1],
+                         y=x@coord[(x@data.species == 1) & x@PA[,i],2],
+                         col=col[1],pch=18)
+                  # true absences
+                  points(x=x@coord[(x@data.species == 0) & x@PA[,i],1],
+                         y=x@coord[(x@data.species == 0) & x@PA[,i],2],
+                         col=col[2],pch=18)
+                } else  {
+                  # presences
+                  points(x=x@coord[(x@data.species > 0) & x@PA[,i],1],
+                         y=x@coord[(x@data.species > 0) & x@PA[,i],2],
+                         col=col[1],pch=18)
+                  # true absences
+                  points(x=x@coord[(x@data.species == 0) & x@PA[,i],1],
+                         y=x@coord[(x@data.species == 0) & x@PA[,i],2],
+                         col=col[2],pch=18)
+                }
                 # PA
                 points(x=x@coord[is.na(x@data.species) & x@PA[,i],1],
                        y=x@coord[is.na(x@data.species) & x@PA[,i],2],
@@ -2116,6 +2169,7 @@ setMethod(
         colnames(calibLines) <- '_Full'
       } else {
         calibLines <- .SampleMat(data.sp = data@data.species,
+                                 binaryResp = data@binaryResp,
                                  dataSplit = DataSplit,
                                  nbRun = NbRunEval,
                                  data.env = data@data.env.var)

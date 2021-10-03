@@ -13,7 +13,8 @@
 #               code for vector and sp.objects : 1=pres, 0=true_abs, -1=no_info
 #   expl.var <- Explanatory Variable as matrix, data.frame, sp.point.data.frame or rasterStack
 #   resp.xy <- coordiantes of reponse points (2 column matrix)
-#   resp.name <- name of considered specie
+#   resp.name <- name of considered species
+#   binaryResp <- is the response variable binary? If so, all values > 0 will be converted to 1s and all values <= 0 will be converted to 0s. Defaults to TRUE
 #   eval.resp.var <- independent response variable for models evaluations
 #   eval.expl.var <- independent explanatory variable for models evaluations
 #   eval.resp.xy <- independent response variable coordinates variable for models evaluations
@@ -36,6 +37,7 @@
                                    expl.var,
                                    resp.xy = NULL,
                                    resp.name = NULL,
+                                   binaryResp = TRUE,
                                    eval.resp.var = NULL,
                                    eval.expl.var = NULL,
                                    eval.resp.xy = NULL,
@@ -54,6 +56,7 @@
                                            expl.var,
                                            resp.xy,
                                            resp.name,
+                                           binaryResp,
                                            eval.resp.var,
                                            eval.expl.var,
                                            eval.resp.xy,
@@ -79,6 +82,7 @@
   PA.dist.max <- args$PA.dist.max
   PA.sre.quant <- args$PA.sre.quant
   PA.table <- args$PA.table
+  binaryResp <- args$binaryResp
 
   rm('args')
   gc()
@@ -93,14 +97,16 @@
                                 eval.sp=eval.resp.var,
                                 eval.env=eval.expl.var,
                                 eval.xy=eval.resp.xy,
-                                na.rm=na.rm)
+                                na.rm=na.rm,
+                                binaryResp = binaryResp)
   } else{ # Automatic Pseudo Absences Selection
     out <- BIOMOD.formated.data.PA(sp=resp.var, xy=resp.xy, env=expl.var, sp.name=resp.name,
                                    eval.sp=eval.resp.var, eval.env=eval.expl.var, eval.xy=eval.resp.xy,
                                    PA.NbRep=PA.nb.rep, PA.strategy=PA.strategy,
                                    PA.nb.absences = PA.nb.absences, PA.dist.min = PA.dist.min,
                                    PA.dist.max = PA.dist.max, PA.sre.quant = PA.sre.quant, PA.table=PA.table,
-                                   na.rm=na.rm)
+                                   na.rm=na.rm,
+                                   binaryResp = binaryResp)
   }
 
 
@@ -112,6 +118,7 @@
                                              expl.var,
                                              resp.xy,
                                              resp.name,
+                                             binaryResp = TRUE,
                                              eval.resp.var,
                                              eval.expl.var,
                                              eval.resp.xy,
@@ -209,12 +216,18 @@
   }
 
   ### convert response var into binary
+  if (binaryResp) {
     if (length(setdiff(resp.var, c(0, 1, NA)))) {
       cat("\n      ! Response variable is not binary, but binaryResp == TRUE... Is it really what you want?")
       cat("\n      ! Values > 0 will be covnerted to 1s")
     }
     resp.var[which(resp.var>0)] <- 1
     resp.var[which(resp.var<=0)] <- 0
+  } else {
+    if (any(resp.var > 1) | any(resp.var < 0)) {
+      stop("Response variable must be within the [0,1] interval")
+    }
+  }
 
   #### At this point :
   ####  - resp.var is a numeric
@@ -360,9 +373,15 @@
     eval.resp.var[which(eval.resp.var<=0)] <- 0
 
     ### check there are both presences and absences in evaluation dataset
+    if (binaryResp) {
       if( sum(eval.resp.var == 1) < 1 | sum(eval.resp.var == 0) < 1){
         stop("Evaluation response data must have both presences and absences")
       }
+    } else {
+      if( sum(eval.resp.var > 0) < 1 | sum(eval.resp.var == 0) < 1){
+        stop("Evaluation response data must have both presences and absences")
+      }
+    }
 
   } else {
     cat("\n      ! No data has been set aside for modeling evaluation")
@@ -375,6 +394,7 @@
                expl.var = expl.var,
                resp.xy = resp.xy,
                resp.name = resp.name,
+               binaryResp = binaryResp,
                eval.resp.var = eval.resp.var,
                eval.expl.var = eval.expl.var,
                eval.resp.xy = eval.resp.xy,
