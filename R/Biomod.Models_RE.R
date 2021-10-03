@@ -516,7 +516,7 @@
 
     if(Options@RF$mtry == 'default'){
       model.sp <- try(randomForest(formula = makeFormula(resp_name,head(Data), 'simple',0),
-                                   data = Data[calibLines,],
+                                   data = droplevels(Data[calibLines,]),
                                    ntree = Options@RF$ntree,
                                    #mtry = ifelse(Options@RF$ntree == 'default', round((ncol(Data)-1)/2), Options@RF$ntree ),
                                    importance = FALSE,
@@ -526,7 +526,7 @@
                                    maxnodes = Options@RF$maxnodes) )
     } else {
       model.sp <- try(randomForest(formula = makeFormula(resp_name,head(Data), 'simple',0),
-                                   data = Data[calibLines,],
+                                   data = droplevels(Data[calibLines,]),
                                    ntree = Options@RF$ntree,
                                    mtry = Options@RF$mtry,
                                    importance = FALSE,
