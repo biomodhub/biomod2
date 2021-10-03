@@ -14,6 +14,7 @@ BIOMOD_FormatingData(resp.var,
                      expl.var,
                      resp.xy = NULL,
                      resp.name = NULL,
+                     binaryResp = TRUE,
                      eval.resp.var = NULL,
                      eval.expl.var = NULL,
                      eval.resp.xy = NULL,
@@ -34,6 +35,8 @@ BIOMOD_FormatingData(resp.var,
   \item{expl.var}{ a \code{matrix}, \code{data.frame}, \code{\link[sp]{SpatialPointsDataFrame}} or \code{\link[raster:stack]{RasterStack}} containing your explanatory variables that will be \bold{used to build your models}.}
 
   \item{resp.xy}{ optional 2 columns \code{matrix} containing the X and Y coordinates of resp.var (only consider if resp.var is a vector) that will be \bold{used to build your models}.}
+
+  \item{binaryResp}{is \code{resp.var} binary? Defaults to TRUE, which will covert \code{resp.var} to a binary variable if it is not already so.}
 
   \item{eval.resp.var}{ a vector, \code{\link[sp]{SpatialPointsDataFrame}} your species data (a single species) in binary format (ones for presences, zeros for true absences and NA for indeterminate ) that will be \bold{used to evaluate the models with independent data (or past data for instance)}.}
 

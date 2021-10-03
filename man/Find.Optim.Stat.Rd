@@ -12,7 +12,7 @@ Find.Optim.Stat(Stat='TSS',
 }
 \arguments{
 \item{Stat}{either 'ROC', TSS', 'KAPPA', 'ACCURACY', 'BIAS', 'POD', 'FAR',
-'POFD', 'SR', 'CSI', 'ETS', 'HK', 'HSS', 'OR', 'ORSS' or 'R2' (only for continuos data)}
+'POFD', 'SR', 'CSI', 'ETS', 'HK', 'HSS', 'OR', 'ORSS' or 'R2' (only for continuous data)}
 
 \item{Fit}{vector of fitted values (continuous)}
 
