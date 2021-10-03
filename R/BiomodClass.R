@@ -239,7 +239,7 @@ setMethod('BIOMOD.formated.data', signature(sp='numeric', env='RasterStack' ),
               }
             }
 
-            BFD <- BIOMOD.formated.data(sp,env,xy,sp.name,eval.sp, eval.env, eval.xy, na.rm=na.rm, data.mask=data.mask)
+            BFD <- BIOMOD.formated.data(sp,env,xy,sp.name,eval.sp, eval.env, eval.xy, na.rm=na.rm, data.mask=data.mask, binaryResp = binaryResp)
             return(BFD)
           }
 )
