@@ -471,6 +471,11 @@ BIOMOD_tuning <- function(data,
   if('MAXENT.Phillips' %in% models){
     cat("Start tuning MAXENT.Phillips\n")
     if(cvmethod.ME != 'randomkfold'){kfolds.ME <- NA}
+
+    if (length(setdiff(unique(data@data.species), c(0,1, NA)))) {
+      stop("Continuous (i.e. non-binary) response variable not supported")
+    }
+
     try(tune.MAXENT.Phillips <- tuning.maxent(pres=data@data.env.var[data@data.species==1 & !is.na(data@data.species),],
                                               bg= data@data.env.var[data@data.species==0 | is.na(data@data.species),],
                                               method=cvmethod.ME, kfolds = kfolds.ME,#env.ME,

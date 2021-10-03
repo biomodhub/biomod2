@@ -1,6 +1,10 @@
 `level.plot` <-
 function(data.in, XY, color.gradient='red', cex=1, level.range=c(min(data.in),max(data.in)), show.scale=TRUE, title="level plot", SRC=FALSE, save.file="no", ImageSize="small", AddPresAbs=NULL, PresAbsSymbol=c(cex*0.8,16,4),...){
 
+  if (length(setdiff(AddPresAbs[,3], c(0, 1, NA)))) {
+    stop("Continuous (i.e. non-binary) response variable not supported")
+  }
+
   extra.args <- list(...)
   if(!is.null(extra.args$multiple.plot)){
     multiple.plot <- extra.args$multiple.plot

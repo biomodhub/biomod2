@@ -126,6 +126,10 @@ BIOMOD_presenceonly <- function(modeling.output = NULL, EM.output = NULL, bg.env
     calib.lines<-get(load(modeling.output@calib.lines@link))[,,1]
     myResp <- get(load(modeling.output@formated.input.data@link))@data.species
 
+    if (length(setdiff(unique(myResp), c(0,1,NA)))) {
+      stop("Continuous (i.e. non-binary) response variable not supported")
+    }
+
     myModelEval <- get_evaluations(modeling.output,as.data.frame=T)
     myModelEval[,1] <- as.character(myModelEval[,1])
     for(i in 1:nrow(myModelEval)){myModelEval[i,1] <- paste(c(modeling.output@sp.name,strsplit(as.character(myModelEval[i,1]),split="_")[[1]][3:1]),collapse="_")  }

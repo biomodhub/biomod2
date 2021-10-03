@@ -41,6 +41,9 @@ SampleMat2 <- function(
   ratio,
   as.logi = FALSE
 ){
+  if (length(setdiff(unique(ref), c(0, 1, NA)))) {
+    stop("Continuous (i.e. non-binary) response variable not supported")
+  }
   # set a new random seed to ensure that sampling is random (issue when CTA is involved and seed needs to be set to a fix number)
   set.seed(as.double(Sys.time()) + as.numeric(format(Sys.time(), "%OS6"))*1000000)
 

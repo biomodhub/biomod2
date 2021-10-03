@@ -4,6 +4,10 @@
                                     background_data_dir = 'default'){
   cat('\n\tCreating Maxent Temp Proj Data..')
 
+  if (length(setdiff(Data[,1], c(0, 1, NA)))) {
+    stop("Continuous (i.e. non-binary) response variable not supported")
+  }
+
   ## initialise output
   MWD <- list()
   class(MWD) <- "maxent_workdir_info"
