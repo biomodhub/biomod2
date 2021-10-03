@@ -77,7 +77,7 @@ evaluate <- function(model, data, stat, as.array=FALSE){
 ##'                   Fixed.thresh = NULL)
 ##'
 ##' @param Stat either 'ROC', TSS', 'KAPPA', 'ACCURACY', 'BIAS', 'POD', 'FAR',
-##'         'POFD', 'SR', 'CSI', 'ETS', 'HK', 'HSS', 'OR' or 'ORSS'
+##'         'POFD', 'SR', 'CSI', 'ETS', 'HK', 'HSS', 'OR', 'ORSS' or 'R2' (only for continuous data)
 ##' @param Fit vector of fitted values (continuous)
 ##' @param Obs vector of observed values (binary)
 ##' @param Nb.thresh.test integer, the numer of thresholds tested over the
@@ -160,7 +160,11 @@ Find.Optim.Stat <-
       warning("\nObserved or fitted data contains a unique value... Be careful with this models predictions\n",immediate.=T)
       #best.stat <- cutoff <- true.pos <- sensitivity <- true.neg <- specificity <- NA
   } #else {
-    if(Stat != 'ROC'){
+    if (!Stat %in% c('ROC', 'R2')) {
+      if (length(setdiff(Obs, c(0, 1, NA)))) {
+        stop("Response variably is non-binary. Use R2 eval.method instead")
+      }
+
       StatOptimum <- getStatOptimValue(Stat)
       if(is.null(Fixed.thresh)){ # test a range of threshold to get the one giving the best score
         if(length(unique(Fit)) == 1){
@@ -206,7 +210,11 @@ Find.Optim.Stat <-
       true.neg <- misc['FALSE','0']
       specificity <- (true.neg * 100)/sum(misc[,'0'])
       sensitivity <- (true.pos * 100)/sum(misc[,'1'])
-    } else{
+    }
+    if (Stat == 'ROC') {
+      if (length(setdiff(Obs, c(0, 1, NA)))) {
+        warning("Response variably is non-binary. Use R2 eval.method instead")
+      }
       roc1 <- pROC::roc(Obs, Fit, percent=T, direction="<", levels = c(0,1))
       roc1.out <- pROC::coords(roc1, "best", ret = c("threshold", "sens", "spec"), transpose = TRUE)
       ## if two optimal values are returned keep only the first one
@@ -217,8 +225,15 @@ Find.Optim.Stat <-
       specificity <- as.numeric(roc1.out["specificity"])
     }
   #}
-  eval.out <- cbind(best.stat,cutoff,sensitivity,specificity)
-  rownames(eval.out) <- Stat
+    if (Stat == 'R2') {
+      best.stat <- caret::defaultSummary(data.frame(obs = Obs, pred = Fit))[["Rsquared"]]
+      cutoff <- NA
+      sensitivity <- NA
+      specificity <- NA
+    }
+
+    eval.out <- cbind(best.stat,cutoff,sensitivity,specificity)
+    rownames(eval.out) <- Stat
 
   return(eval.out)
 }
