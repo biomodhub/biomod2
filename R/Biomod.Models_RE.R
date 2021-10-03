@@ -769,6 +769,20 @@
 #       g.pred.without.na <- g.pred
 #     }
 
+    ## is the data binary? if not, then rescale observations to *1000
+    if (!length(setdiff(Data[, 1, drop = TRUE], c(0, 1, NA)))) {
+      cross.validation <-
+        sapply(
+          mod.eval.method,
+          function(.x){
+            Find.Optim.Stat(
+              Stat = .x,
+              Fit = g.pred[evalLines],
+              Obs = Data %>% filter(evalLines) %>% pull(1)
+            )
+          }
+        )
+    } else {
     cross.validation <-
       sapply(
         mod.eval.method,
@@ -776,10 +790,11 @@
           Find.Optim.Stat(
             Stat = .x,
             Fit = g.pred[evalLines],
-            Obs = Data %>% filter(evalLines) %>% pull(1)
+            Obs = Data %>% filter(evalLines) %>% pull(1) * 1000
           )
         }
       )
+    }
 
     rownames(cross.validation) <- c("Testing.data","Cutoff","Sensitivity", "Specificity")
 
