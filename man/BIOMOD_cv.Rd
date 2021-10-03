@@ -39,7 +39,7 @@ This function creates a DataSplitTable which could be used to evaluate models in
   k-fold cross-validation (cv) or stratified cv instead of repeated split sample runs
 }
 \details{
-Stratified cv could be used to test for model overfitting and for assessing transferability in geographic and environmental space. 
+Stratified cv could be used to test for model overfitting and for assessing transferability in geographic and environmental space.
   If balance = "presences" presences are divided (balanced) equally over the particions (e.g. Fig. 1b in Muscarelly et al. 2014).
   Pseudo-Absences will however be unbalanced over the particions especially if the presences are clumped on an edge of the study area.
   If balance = "absences" absences (resp. Pseudo-Absences or background) are divided (balanced) as equally as possible for the particions
@@ -56,7 +56,7 @@ head(DataSpecies)
 the name of studied species
 myRespName <- 'GuloGulo'
 
-# the presence/absences data for our species 
+# the presence/absences data for our species
 myResp <- as.numeric(DataSpecies[,myRespName])
 
 # the XY coordinates of species data
@@ -64,15 +64,15 @@ myRespXY <- DataSpecies[,c("X_WGS84","Y_WGS84")]
 
 
 # Environmental variables extracted from BIOCLIM (bio_3, bio_4, bio_7, bio_11 & bio_12)
-myExpl = stack( system.file( "external/bioclim/current/bio3.grd", 
+myExpl = stack( system.file( "external/bioclim/current/bio3.grd",
                              package="biomod2"),
-                system.file( "external/bioclim/current/bio4.grd", 
-                             package="biomod2"), 
-                system.file( "external/bioclim/current/bio7.grd", 
-                             package="biomod2"),  
-                system.file( "external/bioclim/current/bio11.grd", 
-                             package="biomod2"), 
-                system.file( "external/bioclim/current/bio12.grd", 
+                system.file( "external/bioclim/current/bio4.grd",
+                             package="biomod2"),
+                system.file( "external/bioclim/current/bio7.grd",
+                             package="biomod2"),
+                system.file( "external/bioclim/current/bio11.grd",
+                             package="biomod2"),
+                system.file( "external/bioclim/current/bio12.grd",
                              package="biomod2"))
 
 # 1. Formatting Data
@@ -95,11 +95,11 @@ head(DataSplitTable)
 
 # 4. Doing Modelisation
 
-myBiomodModelOut <- BIOMOD_Modeling( myBiomodData, 
-                                     models = c('RF'), 
-                                     models.options = myBiomodOption, 
+myBiomodModelOut <- BIOMOD_Modeling( myBiomodData,
+                                     models = c('RF'),
+                                     models.options = myBiomodOption,
                                      DataSplitTable = DataSplitTable,
-                                     VarImport=0, 
+                                     VarImport=0,
                                      models.eval.meth = c('ROC'),
                                      do.full.models=FALSE,
                                      modeling.id="test")

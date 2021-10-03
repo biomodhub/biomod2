@@ -56,9 +56,9 @@ showClass("BIOMOD.EnsembleModeling.out")
 
 }
 \seealso{
-\code{\link[biomod2]{BIOMOD_Projection}}, 
-\code{\link[biomod2]{BIOMOD_Modeling}}, 
-\code{\link[biomod2]{BIOMOD_EnsembleModeling}}, 
+\code{\link[biomod2]{BIOMOD_Projection}},
+\code{\link[biomod2]{BIOMOD_Modeling}},
+\code{\link[biomod2]{BIOMOD_EnsembleModeling}},
 \code{\link[biomod2]{BIOMOD_EnsembleForecasting}}
 }
 \author{

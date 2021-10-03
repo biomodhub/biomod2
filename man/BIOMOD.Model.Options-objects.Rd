@@ -15,10 +15,10 @@
 BIOMOD.Model.Options objects are created, used and returned
 by BIOMOD functions. These objects will contains for each
 model support within \pkg{biomod2}, a set of options that
-users can change. Please refer to 
+users can change. Please refer to
 \code{\link[biomod2]{BIOMOD_ModelingOptions}} for further
- details. 
-  
+ details.
+
 - output of: \code{\link[biomod2]{BIOMOD_ModelingOptions}}
 - input of:  \code{\link[biomod2]{BIOMOD_Modeling}}
 }

@@ -13,17 +13,17 @@ sre(
 )
 }
 \arguments{
-\item{Response}{a vector (resp. a matrix/data.frame, a 
+\item{Response}{a vector (resp. a matrix/data.frame, a
 SpatialPointsDataFrame or a RasterLayer ) giving your species'
 presences and absences data}
 
-\item{Explanatory}{a matrix (resp. a data.frame, a 
+\item{Explanatory}{a matrix (resp. a data.frame, a
 SpatialPointsDataFrame or a RasterStack ) containing the environmental
 variables for the sites given in Response. It must have as many rows
 as there are elements in Response.}
 
 \item{NewData}{The data for which you want to render predictions with
-the sre. It must be a matrix (resp. a data.frame, a 
+the sre. It must be a matrix (resp. a data.frame, a
 SpatialPointsDataFrame or a RasterStack ) of the same type as the one
 given in Explanatory and with precisely the same variable names.}
 
@@ -45,7 +45,7 @@ The SRE performs a simple analysis of within which range of each
 variable the data is recorded and renders predictions.
 }
 \details{
-The more variables you put in, the more restrictive your model will 
+The more variables you put in, the more restrictive your model will
 be (if non-colinear variables).
 
 This method is very much influenced by the data input, and more
@@ -58,7 +58,7 @@ leads to notable changes in predictions.
 Note that, as a consequence of its functioning, the predictions are
 directly given in binary, a site being either potentially suitable for
 all the variables, either out of bounds for at least one variable and
-therefore considered unsuitable. 
+therefore considered unsuitable.
 
 The quants argument determines the threshold at which the data will be
 taken into account for calibration : the default of 0.05 induces that
@@ -70,9 +70,9 @@ of data not considered.
 \examples{
 require(raster)
 ##' species occurrences
-DataSpecies <- 
+DataSpecies <-
   read.csv(
-    system.file("external/species/mammals_table.csv", package = "biomod2"), 
+    system.file("external/species/mammals_table.csv", package = "biomod2"),
     row.names = 1
   )
 head(DataSpecies)
@@ -80,15 +80,15 @@ head(DataSpecies)
 ##' the name of studied species
 myRespName <- 'GuloGulo'
 
-##' the presence/absences data for our species 
+##' the presence/absences data for our species
 myResp <- as.numeric(DataSpecies[,myRespName])
 
 ##' the XY coordinates of species data
 myRespXY <- DataSpecies[which(myResp==1),c("X_WGS84","Y_WGS84")]
 
-##' Environmental variables extracted from BIOCLIM (bio_3, 
+##' Environmental variables extracted from BIOCLIM (bio_3,
 ##' bio_4, bio_7, bio_11 & bio_12)
-myExpl <- 
+myExpl <-
   raster::stack(
     system.file("external/bioclim/current/bio3.grd", package = "biomod2"),
     system.file("external/bioclim/current/bio4.grd", package = "biomod2"),
@@ -96,37 +96,37 @@ myExpl <-
     system.file("external/bioclim/current/bio11.grd", package = "biomod2"),
     system.file("external/bioclim/current/bio12.grd", package = "biomod2")
   )
-myResp <- 
+myResp <-
   raster::reclassify(
     subset(myExpl, 1, drop = TRUE), c(-Inf, Inf, 0)
   )
 myResp[cellFromXY(myResp,myRespXY)] <- 1
 
 ##' Compute some SRE for several quantile values
-sre.100 <- 
+sre.100 <-
   sre(
-    Response = myResp, 
-    Explanatory = myExpl, 
-    NewData=myExpl, 
+    Response = myResp,
+    Explanatory = myExpl,
+    NewData=myExpl,
     Quant = 0
   )
-  
-sre.095 <- 
+
+sre.095 <-
   sre(
-    Response = myResp, 
-    Explanatory = myExpl, 
-    NewData=myExpl, 
+    Response = myResp,
+    Explanatory = myExpl,
+    NewData=myExpl,
     Quant = 0.025
   )
 
-sre.090 <- 
+sre.090 <-
   sre(
-    Response = myResp, 
-    Explanatory = myExpl, 
-    NewData=myExpl, 
+    Response = myResp,
+    Explanatory = myExpl,
+    NewData=myExpl,
     Quant = 0.05
   )
-  
+
 ##' visualise results
 par(mfrow=c(2,2),mar=c(6, 5, 5, 3))
 plot(myResp, main = paste(myRespName, "original distrib."))
@@ -135,8 +135,8 @@ plot(sre.095, main="95 \%")
 plot(sre.090, main="90 \%")
 }
 \seealso{
-\code{\link[biomod2]{BIOMOD_Modeling}}, 
-\code{\link[biomod2]{BIOMOD_ModelingOptions}}, 
+\code{\link[biomod2]{BIOMOD_Modeling}},
+\code{\link[biomod2]{BIOMOD_ModelingOptions}},
 \code{\link[biomod2]{BIOMOD_Projection}}
 }
 \author{

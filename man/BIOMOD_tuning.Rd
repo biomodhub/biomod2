@@ -130,22 +130,22 @@ head(DataSpecies)
 # the name of studied species
 myRespName <- 'GuloGulo'
 
-# the presence/absences data for our species 
+# the presence/absences data for our species
 myResp <- as.numeric(DataSpecies[,myRespName])
 
 # the XY coordinates of species data
 myRespXY <- DataSpecies[,c("X_WGS84","Y_WGS84")]
 
 # Environmental variables extracted from BIOCLIM (bio_3, bio_4, bio_7, bio_11 & bio_12)
-myExpl = stack( system.file( "external/bioclim/current/bio3.grd", 
+myExpl = stack( system.file( "external/bioclim/current/bio3.grd",
                              package="biomod2"),
-                system.file( "external/bioclim/current/bio4.grd", 
-                             package="biomod2"), 
-                system.file( "external/bioclim/current/bio7.grd", 
-                             package="biomod2"),  
-                system.file( "external/bioclim/current/bio11.grd", 
-                             package="biomod2"), 
-                system.file( "external/bioclim/current/bio12.grd", 
+                system.file( "external/bioclim/current/bio4.grd",
+                             package="biomod2"),
+                system.file( "external/bioclim/current/bio7.grd",
+                             package="biomod2"),
+                system.file( "external/bioclim/current/bio11.grd",
+                             package="biomod2"),
+                system.file( "external/bioclim/current/bio12.grd",
                              package="biomod2"))
 # 1. Formatting Data
 myBiomodData <- BIOMOD_FormatingData(resp.var = myResp,
@@ -154,11 +154,11 @@ myBiomodData <- BIOMOD_FormatingData(resp.var = myResp,
                                      resp.name = myRespName)
 
 # 2. Defining Models Options using default options.
-### Duration for turing all models sequential with default settings 
+### Duration for turing all models sequential with default settings
 ### on 3.4 GHz processor: approx. 45 min tuning all models in parallel
 ### (on 8 cores) using foreach loops runs much faster: approx. 14 min
 
-#library(doParallel);cl<-makeCluster(8);doParallel::registerDoParallel(cl) 
+#library(doParallel);cl<-makeCluster(8);doParallel::registerDoParallel(cl)
 
 
 time.seq<-system.time(Biomod.tuning <- BIOMOD_tuning(myBiomodData,
@@ -166,12 +166,12 @@ time.seq<-system.time(Biomod.tuning <- BIOMOD_tuning(myBiomodData,
                                                              n.bg.ME = ncell(myExpl)))
 #stopCluster(cl)
 
-myBiomodModelOut <- BIOMOD_Modeling( myBiomodData, 
-                                     models = c('RF','CTA'), 
-                                     models.options = Biomod.tuning$models.options, 
-                                     NbRunEval=1, 
-                                     DataSplit=100, 
-                                     VarImport=0, 
+myBiomodModelOut <- BIOMOD_Modeling( myBiomodData,
+                                     models = c('RF','CTA'),
+                                     models.options = Biomod.tuning$models.options,
+                                     NbRunEval=1,
+                                     DataSplit=100,
+                                     VarImport=0,
                                      models.eval.meth = c('ROC'),
                                      do.full.models=FALSE,
                                      modeling.id="test")

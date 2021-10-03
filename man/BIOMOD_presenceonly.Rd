@@ -24,25 +24,25 @@ BIOMOD_presenceonly(
 \item{save.output}{logical. If TRUE (Default) the output is saved to the ".BIOMOD_DATA" folder}
 }
 \value{
-data.frame containing evaluation scores for the evaluation metrics used for 
+data.frame containing evaluation scores for the evaluation metrics used for
 the BIOMOD_Modeling function and additional Boyce index and MPA
 }
 \description{
-This function enables to evaluate BIOMOD.models.out and 
-BIOMOD.EnsembleModeling.out object with presence-only evaluation methods 
+This function enables to evaluate BIOMOD.models.out and
+BIOMOD.EnsembleModeling.out object with presence-only evaluation methods
 (Boyce index and Minimal Predicted Area MPA)
 }
 \details{
-'em.by' of 'BIOMOD.EnsembleModeling' must be 'PA_dataset+repet' to have an 
+'em.by' of 'BIOMOD.EnsembleModeling' must be 'PA_dataset+repet' to have an
 ensemble for each RUN of the 'NbRunEval' argument (BIOMOD_Modeling funtion)
 for evaluation.
 The Boyce index returns NA values for 'SRE' models because it is not possible
-to be calculated with binary predictions. This is also the reason why there 
+to be calculated with binary predictions. This is also the reason why there
 are sometimes NA values for 'GLM' models if they don not converge.
 }
 \examples{
 \dontrun{
-requireNamesapce(PresenceAbsence, 'PresenceAbsence', quietly = TRUE)
+requireNamespace(PresenceAbsence, 'PresenceAbsence', quietly = TRUE)
 
 # species occurrences
 DataSpecies <- read.csv(system.file("external/species/mammals_table.csv",
@@ -52,7 +52,7 @@ head(DataSpecies)
 # the name of studied species
 myRespName <- 'GuloGulo'
 
-# the presence/absences data for our species 
+# the presence/absences data for our species
 myResp <- as.numeric(DataSpecies[,myRespName])
 
 # the XY coordinates of species data
@@ -60,15 +60,15 @@ myRespXY <- DataSpecies[,c("X_WGS84","Y_WGS84")]
 
 
 # Environmental variables extracted from BIOCLIM (bio_3, bio_4, bio_7, bio_11 & bio_12)
-myExpl = stack( system.file( "external/bioclim/current/bio3.grd", 
+myExpl = stack( system.file( "external/bioclim/current/bio3.grd",
                              package="biomod2"),
-                system.file( "external/bioclim/current/bio4.grd", 
-                             package="biomod2"), 
-                system.file( "external/bioclim/current/bio7.grd", 
-                             package="biomod2"),  
-                system.file( "external/bioclim/current/bio11.grd", 
-                             package="biomod2"), 
-                system.file( "external/bioclim/current/bio12.grd", 
+                system.file( "external/bioclim/current/bio4.grd",
+                             package="biomod2"),
+                system.file( "external/bioclim/current/bio7.grd",
+                             package="biomod2"),
+                system.file( "external/bioclim/current/bio11.grd",
+                             package="biomod2"),
+                system.file( "external/bioclim/current/bio12.grd",
                              package="biomod2"))
 
 # 1. Formatting Data
@@ -82,13 +82,13 @@ myBiomodOption <- BIOMOD_ModelingOptions()
 
 # 3. Doing Modelisation
 
-myBiomodModelOut <- BIOMOD_Modeling( myBiomodData, 
-                                     models = c('SRE','CTA','RF'), 
-                                     models.options = myBiomodOption, 
-                                     NbRunEval=1, 
-                                     DataSplit=80, 
-                                     Yweights=NULL, 
-                                     VarImport=3, 
+myBiomodModelOut <- BIOMOD_Modeling( myBiomodData,
+                                     models = c('SRE','CTA','RF'),
+                                     models.options = myBiomodOption,
+                                     NbRunEval=1,
+                                     DataSplit=80,
+                                     Yweights=NULL,
+                                     VarImport=3,
                                      models.eval.meth = c('TSS','ROC'),
                                      SaveObj = TRUE,
                                      rescal.all.models = FALSE,
@@ -108,7 +108,7 @@ myBiomodEM <- BIOMOD_EnsembleModeling( modeling.output = myBiomodModelOut,
                                        prob.median = FALSE,
                                        committee.averaging = FALSE,
                                        prob.mean.weight = TRUE,
-                                       prob.mean.weight.decay = 'proportional' )   
+                                       prob.mean.weight.decay = 'proportional' )
 
 # evaluate Biomod models with the Boyce index and MPA
 pres.only.eval <- BIOMOD_presenceonly(myBiomodModelOut, myBiomodEM)

@@ -20,7 +20,7 @@ response.plot2(
 }
 \arguments{
 \item{models}{a character vector specifying the models for which the
-response curves have to be plotted. Compatible with GAM, GBM, GLM, 
+response curves have to be plotted. Compatible with GAM, GBM, GLM,
 ANN, CTA, RF, FDA, MARS and MAXENT.}
 
 \item{Data}{a dataframe containing the variables for which the
@@ -32,7 +32,7 @@ selecting the variables to be plotted. By default all columns are
 taken}
 
 \item{do.bivariate}{'logical', if FALSE (default), the predicted
-response curves are plotted for every singe variable independently 
+response curves are plotted for every singe variable independently
 (2 dimension). If TRUE, the predicted response curves are represented
 in 3 dimentions for all pairs of variables}
 
@@ -42,7 +42,7 @@ variables when the predicted response is estimated for one of the
 variables}
 
 \item{save.file}{can be set to "pdf", "jpeg" or "tiff" to save the
-plot. Pdf options can be changed by setting the default values of 
+plot. Pdf options can be changed by setting the default values of
 pdf.options().}
 
 \item{name}{the name of the file produced if save.file is different to
@@ -59,7 +59,7 @@ different to "no". Affects "jpeg" and "tiff" outputs only. Default if
 Have to match with \code{Data}. If given, the statistic used to fix
 variables value will be calculated only over presences points.
 (Considered only if \code{Data} is under table format)
-- \code{col} : vector of colors to be used (only for univariate 
+- \code{col} : vector of colors to be used (only for univariate
 case)
 - \code{lty} : vector of lines types to be used
 - \code{main} : character, the title of the graph (default one based
@@ -72,11 +72,11 @@ case)}
 a 4 dimentions array is returned. It contains the necessary
 outputs to produce the plots. This is useful to make your own custom
 response plot graphics.
-  
-Array returned structure : 
+
+Array returned structure :
 
 - First dimension: the dimension of the predictions
-- Second dimension: 2 or 3 columns: The first one (resp. the first 
+- Second dimension: 2 or 3 columns: The first one (resp. the first
 two) is (are) the explanatory variable(s) to plot, the last one, the
 probability of occurrence
 - Third dimension: The set of environmental variables for which the
@@ -92,7 +92,7 @@ the different statistical approaches on the same data.
 }
 \details{
 For building the predicted response curves, n-1 variables are set
-constant to a fixed value (mean, median, min or max i.e 
+constant to a fixed value (mean, median, min or max i.e
 \code{fixed.var.metric} arg) and only the remaining one (resp. 2 for
 3D response plot) is varying across its whole range (given by
 \code{Data}). n the case of categorical variable, the most represented
@@ -105,22 +105,22 @@ remaining variables are set to the mean.
 \examples{
 \dontrun{
 ##' species occurrences
-DataSpecies <- 
+DataSpecies <-
   read.csv(
-    system.file("external/species/mammals_table.csv", package="biomod2"), 
+    system.file("external/species/mammals_table.csv", package="biomod2"),
     row.names = 1
   )
 head(DataSpecies)
 ##' the name of studied species
 myRespName <- 'VulpesVulpes'
-    
-##' the presence/absences data for our species 
+
+##' the presence/absences data for our species
 myResp <- as.numeric(DataSpecies[, myRespName])
-    
+
 ##' the XY coordinates of species data
 myRespXY <- DataSpecies[, c("X_WGS84", "Y_WGS84")]
 
-myExpl <- 
+myExpl <-
   raster::stack(
     system.file("external/bioclim/current/bio3.grd", package = "biomod2"),
     system.file("external/bioclim/current/bio4.grd", package = "biomod2"),
@@ -130,7 +130,7 @@ myExpl <-
   )
 
 ##' 1. Formatting Data
-myBiomodData <- 
+myBiomodData <-
   BIOMOD_FormatingData(
     resp.var = myResp,
     expl.var = myExpl,
@@ -142,7 +142,7 @@ myBiomodData <-
 myBiomodOption <- BIOMOD_ModelingOptions()
 
 ##' 3. Doing Modelisation
-myBiomodModelOut <- 
+myBiomodModelOut <-
   BIOMOD_Modeling(
     myBiomodData,
     models = c('GLM','RF'),
@@ -158,9 +158,9 @@ myBiomodModelOut <-
 ##' 4.1 Load the models for which we want to extract the predicted
 ##' response curves
 myGLMs <- BIOMOD_LoadModels(myBiomodModelOut, models = 'GLM')
-    
+
 ##' 4.2 plot 2D response plots
-myRespPlot2D <- 
+myRespPlot2D <-
   response.plot2(
     models = myGLMs,
     Data = get_formal_data(myBiomodModelOut, 'expl.var'),
@@ -171,26 +171,26 @@ myRespPlot2D <-
     legend = TRUE,
     data_species = get_formal_data(myBiomodModelOut, 'resp.var')
   )
-    
+
 ##' 4.2 plot 3D response plots
 ###' here only for a lone model (i.e "VulpesVulpes_PA1_AllData_GLM")
-myRespPlot3D <- 
+myRespPlot3D <-
   response.plot2(
   models = myGLMs[1],
-  Data = get_formal_data(myBiomodModelOut, 'expl.var'), 
+  Data = get_formal_data(myBiomodModelOut, 'expl.var'),
   show.variables = get_formal_data(myBiomodModelOut, 'expl.var.names'),
   do.bivariate = TRUE,
   fixed.var.metric = 'median',
   data_species = get_formal_data(myBiomodModelOut, 'resp.var'),
   display_title = FALSE
 )
-    
+
 ##' all the values used to produce this plot are stored into the
-##' returned object you can redo plots by yourself and customised 
+##' returned object you can redo plots by yourself and customised
 ##' them
 dim(myRespPlot2D)
 dimnames(myRespPlot2D)
-    
+
 dim(myRespPlot3D)
 dimnames(myRespPlot3D)
 }

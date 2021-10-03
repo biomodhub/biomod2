@@ -69,7 +69,7 @@ It will calculate the optimal way for condensing a defined proportion
 \details{
 The future range changes are calculated as a percentage of the
 species' present state. For example, if a species currently occupies
-100 cells and is estimated by a model to cover 120 cells in the 
+100 cells and is estimated by a model to cover 120 cells in the
 future, the range change will be + 20\%.
 
 Resolution : Note that modifying the resolution will directly
@@ -203,7 +203,7 @@ ProbDensFunc(initial = ref,
 
 }
 \seealso{
-\code{\link{BIOMOD_Projection}}, 
+\code{\link{BIOMOD_Projection}},
 \code{\link{BIOMOD_EnsembleForecasting}}
 }
 \author{

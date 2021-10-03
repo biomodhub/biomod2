@@ -26,7 +26,7 @@ have to have the same names as the ones used to calibrate the model.}
 selecting the variables that are wanted for plotting}
 
 \item{save.file}{can be set to "pdf", "jpeg" or "tiff" to save the
-plot. Pdf options can be changed by setting the default values of 
+plot. Pdf options can be changed by setting the default values of
 pdf.options().}
 
 \item{name}{the name of the file produced if save.file is different to
