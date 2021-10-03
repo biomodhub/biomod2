@@ -8,8 +8,8 @@
 ##' range per species and gives the likelihood of range shift estimations.
 ##' It will calculate the optimal way for condensing a defined proportion
 ##' (50, 75, 90 and 95\% per default) of the data.
-##' 
-##' 
+##'
+##'
 ##' @param initial a vector (resp. a \code{SpatialPointsDataFrame}) in a
 ##' binary format (ones and zeros) representing the current distribution
 ##' of a species which will be used as a reference for the range change
@@ -33,58 +33,58 @@
 ##' @param filename the name of file (with extension) where plots will be
 ##' stored. If not \code{NULL}, no plotting windows will be open
 ##' @param ... further arguments:
-##' 
+##'
 ##' - \code{lim}: ordered numeric vector indicating the proportion of data
 ##' to consider for histogram representation (by default : c(0.5, 0.75,
 ##' 0.9, 0.95))
 ##' - \code{nb.points.max}: the maximum number of points to sample, 25000
 ##' by default (useful for huge \code{raster*} objects)
-##' 
+##'
 ##' @details
 ##' The future range changes are calculated as a percentage of the
 ##' species' present state. For example, if a species currently occupies
-##' 100 cells and is estimated by a model to cover 120 cells in the 
+##' 100 cells and is estimated by a model to cover 120 cells in the
 ##' future, the range change will be + 20\%.
-##' 
+##'
 ##' Resolution : Note that modifying the resolution will directly
 ##' influence the probability scale. Bigger classes will accumulate a
 ##' greater number of predictions and therefore represent a greater
 ##' fraction of the total predictions. The probability is in fact that of
 ##' the class and not of isolated events.
-##' 
+##'
 ##' @return This is a plotting function, no objects are returned or
 ##' created.
-##' 
-##' @author Wilfried Thuiller, Bruno Lafourcade, Damien Georges 
-##' 
-##' @seealso \code{\link{BIOMOD_Projection}}, 
+##'
+##' @author Wilfried Thuiller, Bruno Lafourcade, Damien Georges
+##'
+##' @seealso \code{\link{BIOMOD_Projection}},
 ##' \code{\link{BIOMOD_EnsembleForecasting}}
-##' 
+##'
 ##' @keywords optimize
 ##' @keywords distribution
-##' 
-##' @examples 
+##'
+##' @examples
 ##' \dontrun{
 ##' DataSpecies <- read.csv(system.file("external/species/mammals_table.csv",
 ##'                                     package="biomod2"), row.names = 1)
 ##' head(DataSpecies)
-##' 
+##'
 ##' ##' the name of studied species
 ##' myRespName <- 'GuloGulo'
-##' 
+##'
 ##' ##' the presence/absences data for our species
 ##' myResp <- as.numeric(DataSpecies[,myRespName])
-##' 
+##'
 ##' ##' remove all 0 from response vector to work with
 ##' ##' presence only data (Pseudo Absences selections)
 ##' rm_id <- which(myResp==0)
 ##' myResp <- myResp[-rm_id]
-##' 
-##' 
+##'
+##'
 ##' ##' the XY coordinates of species data
 ##' myRespXY <- DataSpecies[-rm_id,c("X_WGS84","Y_WGS84")]
-##' 
-##' 
+##'
+##'
 ##' ##' Environmental variables extracted from BIOCLIM
 ##' myExpl = raster::stack( system.file( "external/bioclim/current/bio3.grd",
 ##'                              package="biomod2"),
@@ -96,17 +96,17 @@
 ##'                              package="biomod2"),
 ##'                 system.file( "external/bioclim/current/bio12.grd",
 ##'                              package="biomod2"))
-##' 
+##'
 ##' ##' 1. Formatting Data
 ##' myBiomodData <- BIOMOD_FormatingData(resp.var = myResp,
 ##'                                      expl.var = myExpl,
 ##'                                      resp.xy = myRespXY,
 ##'                                      resp.name = myRespName,
 ##'                                      PA.nb.rep=3)
-##' 
+##'
 ##' ##' 2. Defining Models Options using default options.
 ##' myBiomodOption <- BIOMOD_ModelingOptions()
-##' 
+##'
 ##' ##' 3. Doing Modelisation
 ##' myBiomodModelOut <- BIOMOD_Modeling( myBiomodData,
 ##'                                      models = c('CTA','RF','GLM','GAM','ANN','MARS'),
@@ -118,7 +118,7 @@
 ##'                                      do.full.models = FALSE,
 ##'                                      rescal.all.models=T,
 ##'                                      modeling.id='test')
-##' 
+##'
 ##' ##' 4. Build ensemble-models that will be taken as reference
 ##' myBiomodEM <- BIOMOD_EnsembleModeling( modeling.output = myBiomodModelOut,
 ##'                                        chosen.models = 'all',
@@ -127,9 +127,9 @@
 ##'                                        eval.metric.quality.threshold = c(0.7),
 ##'                                        prob.mean = TRUE,
 ##'                                        prob.median = TRUE)
-##' 
+##'
 ##' ##' 5. Projection on future environmental conditions
-##' 
+##'
 ##' ###' load future environmental conditions from biomod2 package
 ##' myExpl_fut <- raster::stack( system.file( "external/bioclim/future/bio3.grd",
 ##'                                   package="biomod2"),
@@ -141,7 +141,7 @@
 ##'                                   package="biomod2"),
 ##'                      system.file( "external/bioclim/future/bio12.grd",
 ##'                                   package="biomod2"))
-##' 
+##'
 ##' myBiomodProjection <- BIOMOD_Projection(modeling.output = myBiomodModelOut,
 ##'                                         new.env = myExpl_fut,
 ##'                                         proj.name = 'future',
@@ -149,18 +149,18 @@
 ##'                                         binary.meth = 'TSS',
 ##'                                         compress = FALSE,
 ##'                                         build.clamping.mask = TRUE)
-##' 
+##'
 ##' BIOMOD_EnsembleForecasting(projection.output=myBiomodProjection,
 ##'                            EM.output=myBiomodEM,
 ##'                            binary.meth='TSS')
-##' 
+##'
 ##' ##' 6. load binary projections
 ##' consensusBin <- raster::stack('GuloGulo/proj_future/proj_future_GuloGulo_ensemble_TSSbin.grd')
 ##' projectionsBin <- raster::stack('GuloGulo/proj_future/proj_future_GuloGulo_TSSbin.grd')
-##' 
+##'
 ##' ##' 7. build a ref state based on ensemble-models
 ##' ref <- sampleRandom(subset(consensusBin, 1, drop=T), size=5000, sp=T, na.rm=T)
-##' 
+##'
 ##' ##' 8. autoatic creation of groups matrix
 ##' find_groups <- function(diff_by_pix){
 ##'   data.set <- sapply(names(diff_by_pix),biomod2:::.extractModelNamesInfo,info='data.set')
@@ -168,9 +168,9 @@
 ##'   models <- sapply(names(diff_by_pix),biomod2:::.extractModelNamesInfo,info='models')
 ##'   return(rbind(data.set,run.eval,models))
 ##' }
-##' 
+##'
 ##' groups <- find_groups(projectionsBin)
-##' 
+##'
 ##' ##' 9. plot ProbDensFunct graphs
 ##' ProbDensFunc(initial = ref,
 ##'              projections = projectionsBin,
@@ -180,12 +180,12 @@
 ##'              resolution=2,
 ##'              filename=NULL,
 ##'              lim=c(0.5,0.8,0.95))
-##' 
+##'
 ##' ###' 3 plots should be produced.. Should be convenient to save it within a device
 ##' ###' supporting multiple plots.
-##' 
+##'
 ##' }
-##' 
+##'
 ProbDensFunc <- function(
   initial,
   projections,

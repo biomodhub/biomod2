@@ -247,7 +247,7 @@
                         n.trees = Options@GBM$n.trees,
                         verbose = Options@GBM$verbose,
                         #class.stratify.cv = Options@GBM$class.stratify.cv,
-                        cv.folds = Options@GBM$cv.folds, 
+                        cv.folds = Options@GBM$cv.folds,
                         n.cores = Options@GBM$n.cores)) ## to prevent from parallel issues
 
     if( !inherits(model.sp,"try-error") ){
@@ -455,7 +455,7 @@
       if(is.null(decay)) decay <- c(0.001, 0.01, 0.05, 0.1)
 
       ## do cross validation test to find the optimal values of size and decay parameters (prevent from overfitting)
-      CV_nnet <- 
+      CV_nnet <-
         .CV.nnet(
           Input = Data[,expl_var_names,drop=FALSE],
           Target = Data[calibLines,1],
@@ -636,24 +636,24 @@
     .Delete.Maxent.WorkDir(MWD)
   }
   # end MAXENT.Phillips models creation -=-=-=-=-=-=-=-=-=-=-=-=-= #
-  
+
   # MAXENT.Phillips models creation -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=- #
   if(Model == "MAXENT.Phillips.2")
   {
     # browser()
-    model.sp <- 
+    model.sp <-
       try(
         maxnet::maxnet(
-          p = Data %>% filter(calibLines) %>% pull(resp_name), 
+          p = Data %>% filter(calibLines) %>% pull(resp_name),
           data = Data %>% filter(calibLines) %>% select_at(expl_var_names)
           # f = if(!is.null(Options@MAXENT.Phillips.2@))
         )
       )
-    
-    
+
+
     if( !inherits(model.sp,"try-error") )
     {
-      model.bm <- 
+      model.bm <-
         new(
           "MAXENT.Phillips.2_biomod2_model",
           model = model.sp,
@@ -679,7 +679,7 @@
   #   #                                use_sgd = Options@MAXENT.Tsuruoka$use_sgd,
   #   #                                set_heldout = Options@MAXENT.Tsuruoka$set_heldout,
   #   #                                verbose = Options@MAXENT.Tsuruoka$verbose))
-  # 
+  #
   #   if( !inherits(model.sp,"try-error") ){
   #     model.bm <- new("MAXENT.Tsuruoka_biomod2_model",
   #                     model = model.sp,
@@ -758,7 +758,7 @@
 #       g.pred.without.na <- g.pred
 #     }
 
-    cross.validation <- 
+    cross.validation <-
       sapply(
         mod.eval.method,
         function(.x){
@@ -1027,7 +1027,7 @@
   if(Model == 'MAXENT.Phillips'){
     cat('\nModel=MAXENT.Phillips')
   }
-  
+
   if(Model == 'MAXENT.Phillips.2'){
     cat('\nModel=MAXENT.Phillips (maxnet)')
   }

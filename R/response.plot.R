@@ -2,7 +2,7 @@
 ##' @title Analysis of the response curves of a model within Biomod
 ##' @description Depreciated function, please use \code{
 ##' response.plot2} instead
-##' 
+##'
 ##' @param model the model for which you want the response curves to be
 ##' plotted. Compatible with GAM, GBM, GLM, ANN, CTA, RF, FDA and MARS.
 ##' @param Data the variables for which you want the response curves to be
@@ -11,27 +11,27 @@
 ##' @param show.variables give in the column numbers of 'Data' for
 ##' selecting the variables that are wanted for plotting
 ##' @param save.file can be set to "pdf", "jpeg" or "tiff" to save the
-##' plot. Pdf options can be changed by setting the default values of 
+##' plot. Pdf options can be changed by setting the default values of
 ##' pdf.options().
 ##' @param name the name of the file produced if save.file is different to
 ##' "no" (extensions are already included)
 ##' @param ImageSize the size of the image in pixels if save.file is
 ##' different to "no". Affects "jpeg" and "tiff" outputs only. Default if
-##' 480 pixels which is the R default. 
+##' 480 pixels which is the R default.
 ##' @param plot if TRUE (the default) then a plot is produced. If not, an
 ##' array containing predictions is returned (see details)
-##' 
+##'
 ##' @details
 ##' Depreciated function, please use \code{response.plot2}
 ##' instead.
-##' 
+##'
 ##' @author Wilfried Thuiller
-##' 
+##'
 ##' @references Elith, J., Ferrier, S., Huettmann, FALSE. & Leathwick, J.
 ##' R. 2005 The evaluation strip: A new and robust method for plotting
 ##' predicted responses from species distribution models. Ecological
 ##' Modelling 186, 280-289.
-##' 
+##'
 ##' @keywords plot
 ##' @keywords models
 ##' @keywords regression
@@ -39,7 +39,7 @@
 ##' @keywords multivariate
 ##' @keywords nonparametric
 ##' @keywords tree
-##' 
+##'
 response.plot <-
   function(model, Data, show.variables=seq(1:ncol(Data)), save.file="no", name="response_curve", ImageSize=480, plot=TRUE){
 
@@ -51,15 +51,15 @@ response.plot <-
 ##' @name response.plot2
 ##' @title Function for for plotting predicted responses from species
 ##' distribution models in 2 or 3 dimensions
-##' 
+##'
 ##' @description Adaptation of the Evaluation Strip method proposed by
 ##' Elith et al.(2005). This function enables to plot the response curves
 ##' of a model independently of the algorithm used for building the model.
 ##' It therefore permits a direct comparison of predicted responses from
-##' the different statistical approaches on the same data. 
-##'   
+##' the different statistical approaches on the same data.
+##'
 ##' @param models a character vector specifying the models for which the
-##' response curves have to be plotted. Compatible with GAM, GBM, GLM, 
+##' response curves have to be plotted. Compatible with GAM, GBM, GLM,
 ##' ANN, CTA, RF, FDA, MARS and MAXENT.
 ##' @param Data a dataframe containing the variables for which the
 ##' response curves have to be plotted. They must have the same names as
@@ -68,7 +68,7 @@ response.plot <-
 ##' selecting the variables to be plotted. By default all columns are
 ##' taken
 ##' @param do.bivariate 'logical', if FALSE (default), the predicted
-##' response curves are plotted for every singe variable independently 
+##' response curves are plotted for every singe variable independently
 ##' (2 dimension). If TRUE, the predicted response curves are represented
 ##' in 3 dimentions for all pairs of variables
 ##' @param fixed.var.metric either 'mean' (default), 'median', 'min' or
@@ -76,7 +76,7 @@ response.plot <-
 ##' variables when the predicted response is estimated for one of the
 ##' variables
 ##' @param save.file can be set to "pdf", "jpeg" or "tiff" to save the
-##' plot. Pdf options can be changed by setting the default values of 
+##' plot. Pdf options can be changed by setting the default values of
 ##' pdf.options().
 ##' @param name the name of the file produced if save.file is different to
 ##' "no" (extensions are already included)
@@ -89,7 +89,7 @@ response.plot <-
 ##'   Have to match with \code{Data}. If given, the statistic used to fix
 ##'   variables value will be calculated only over presences points.
 ##'   (Considered only if \code{Data} is under table format)
-##'   - \code{col} : vector of colors to be used (only for univariate 
+##'   - \code{col} : vector of colors to be used (only for univariate
 ##'   case)
 ##'   - \code{lty} : vector of lines types to be used
 ##'   - \code{main} : character, the title of the graph (default one based
@@ -97,10 +97,10 @@ response.plot <-
 ##'   - \code{display_title} : logical, display or not graph title
 ##'   - \code{legend} : logical, add legend to plot (only for univariate
 ##'   case)
-##' 
+##'
 ##' @details
 ##' For building the predicted response curves, n-1 variables are set
-##' constant to a fixed value (mean, median, min or max i.e 
+##' constant to a fixed value (mean, median, min or max i.e
 ##' \code{fixed.var.metric} arg) and only the remaining one (resp. 2 for
 ##' 3D response plot) is varying across its whole range (given by
 ##' \code{Data}). n the case of categorical variable, the most represented
@@ -108,32 +108,32 @@ response.plot <-
 ##' shows the sensibility of the model to that specific variable. This
 ##' method does not account for interactions between variables.
 ##' In the evaluation strip initially proposed by Elith et al. 2005 the
-##' remaining variables are set to the mean. 
-##' 
+##' remaining variables are set to the mean.
+##'
 ##' @return a 4 dimentions array is returned. It contains the necessary
 ##' outputs to produce the plots. This is useful to make your own custom
 ##' response plot graphics.
-##'   
-##' Array returned structure : 
-##' 
+##'
+##' Array returned structure :
+##'
 ##' - First dimension: the dimension of the predictions
-##' - Second dimension: 2 or 3 columns: The first one (resp. the first 
+##' - Second dimension: 2 or 3 columns: The first one (resp. the first
 ##' two) is (are) the explanatory variable(s) to plot, the last one, the
 ##' probability of occurrence
 ##' - Third dimension: The set of environmental variables for which the
 ##' response.plot was asked to run.
 ##' - Fourth dimension:the selected models
-##' 
+##'
 ##' @author Wilfried Thuiller, Damien Georges
-##' 
-##' @references 
+##'
+##' @references
 ##' Elith, J., Ferrier, S., Huettmann, FALSE. & Leathwick, J. R. 2005 The
 ##' evaluation strip: A new and robust method for plotting predicted
 ##' responses from species distribution models. Ecological Modelling 186,
 ##' 280-289.
-##' 
+##'
 ##' @seealso \code{\link{BIOMOD_Modeling}}
-##' 
+##'
 ##' @keywords plot
 ##' @keywords models
 ##' @keywords regression
@@ -141,26 +141,26 @@ response.plot <-
 ##' @keywords multivariate
 ##' @keywords nonparametric
 ##' @keywords tree
-##' 
+##'
 ##' @examples
 ##' \dontrun{
 ##' ##' species occurrences
-##' DataSpecies <- 
+##' DataSpecies <-
 ##'   read.csv(
-##'     system.file("external/species/mammals_table.csv", package="biomod2"), 
+##'     system.file("external/species/mammals_table.csv", package="biomod2"),
 ##'     row.names = 1
 ##'   )
 ##' head(DataSpecies)
 ##' ##' the name of studied species
 ##' myRespName <- 'VulpesVulpes'
-##'     
-##' ##' the presence/absences data for our species 
+##'
+##' ##' the presence/absences data for our species
 ##' myResp <- as.numeric(DataSpecies[, myRespName])
-##'     
+##'
 ##' ##' the XY coordinates of species data
 ##' myRespXY <- DataSpecies[, c("X_WGS84", "Y_WGS84")]
 ##'
-##' myExpl <- 
+##' myExpl <-
 ##'   raster::stack(
 ##'     system.file("external/bioclim/current/bio3.grd", package = "biomod2"),
 ##'     system.file("external/bioclim/current/bio4.grd", package = "biomod2"),
@@ -170,19 +170,19 @@ response.plot <-
 ##'   )
 ##'
 ##' ##' 1. Formatting Data
-##' myBiomodData <- 
+##' myBiomodData <-
 ##'   BIOMOD_FormatingData(
 ##'     resp.var = myResp,
 ##'     expl.var = myExpl,
 ##'     resp.xy = myRespXY,
 ##'     resp.name = myRespName
 ##'   )
-##' 
+##'
 ##' ##' 2. Defining Models Options using default options.
 ##' myBiomodOption <- BIOMOD_ModelingOptions()
-##' 
+##'
 ##' ##' 3. Doing Modelisation
-##' myBiomodModelOut <- 
+##' myBiomodModelOut <-
 ##'   BIOMOD_Modeling(
 ##'     myBiomodData,
 ##'     models = c('GLM','RF'),
@@ -198,9 +198,9 @@ response.plot <-
 ##' ##' 4.1 Load the models for which we want to extract the predicted
 ##' ##' response curves
 ##' myGLMs <- BIOMOD_LoadModels(myBiomodModelOut, models = 'GLM')
-##'     
+##'
 ##' ##' 4.2 plot 2D response plots
-##' myRespPlot2D <- 
+##' myRespPlot2D <-
 ##'   response.plot2(
 ##'     models = myGLMs,
 ##'     Data = get_formal_data(myBiomodModelOut, 'expl.var'),
@@ -211,30 +211,30 @@ response.plot <-
 ##'     legend = TRUE,
 ##'     data_species = get_formal_data(myBiomodModelOut, 'resp.var')
 ##'   )
-##'     
+##'
 ##' ##' 4.2 plot 3D response plots
 ##' ###' here only for a lone model (i.e "VulpesVulpes_PA1_AllData_GLM")
-##' myRespPlot3D <- 
+##' myRespPlot3D <-
 ##'   response.plot2(
 ##'   models = myGLMs[1],
-##'   Data = get_formal_data(myBiomodModelOut, 'expl.var'), 
+##'   Data = get_formal_data(myBiomodModelOut, 'expl.var'),
 ##'   show.variables = get_formal_data(myBiomodModelOut, 'expl.var.names'),
 ##'   do.bivariate = TRUE,
 ##'   fixed.var.metric = 'median',
 ##'   data_species = get_formal_data(myBiomodModelOut, 'resp.var'),
 ##'   display_title = FALSE
 ##' )
-##'     
+##'
 ##' ##' all the values used to produce this plot are stored into the
-##' ##' returned object you can redo plots by yourself and customised 
+##' ##' returned object you can redo plots by yourself and customised
 ##' ##' them
 ##' dim(myRespPlot2D)
 ##' dimnames(myRespPlot2D)
-##'     
+##'
 ##' dim(myRespPlot3D)
 ##' dimnames(myRespPlot3D)
 ##' }
-##' 
+##'
 response.plot2 <- function(
   models,
   Data,
@@ -695,20 +695,20 @@ response.plot2 <- function(
   function (rp.dat)
   {
     requireNamespace('dplyr')
-    out_ <- 
+    out_ <-
       bind_rows(
         lapply(
-          rp.dat, 
+          rp.dat,
           function(dat_) {
             dat_$id <- rownames(dat_)
             id.col.id <- which(colnames(dat_) == "id")
-            expl.dat_ <- dat_ %>% 
+            expl.dat_ <- dat_ %>%
               dplyr::select(1, id.col.id) %>%
               tidyr::gather("expl.name", "expl.val", 1)
-            pred.dat_ <- dat_ %>% 
+            pred.dat_ <- dat_ %>%
               dplyr::select(-1, id.col.id) %>%
               tidyr::gather("pred.name", "pred.val", (1:(ncol(dat_)-2)))
-            out.dat_ <- 
+            out.dat_ <-
               dplyr::full_join(expl.dat_, pred.dat_, by = 'id') %>%
               dplyr::mutate_at(c('expl.name', 'pred.name'), as.character) %>%
               dplyr::mutate_at('expl.val', as.numeric)
@@ -716,52 +716,52 @@ response.plot2 <- function(
           }
         )
       )
-    
-    out_ <- 
+
+    out_ <-
       out_ %>%
       dplyr::mutate_at('expl.name', factor)
-    
+
     return(out_)
   }
 
 
-.as.ggdat.2D <- 
+.as.ggdat.2D <-
   function(rp.dat){
-    out_ <- 
+    out_ <-
       bind_rows(
         lapply(
-          rp.dat, 
+          rp.dat,
           function(dat_) {
             dat_$id <- rownames(dat_)
             #   dat_$expl.name <- as.character(dat_$expl.name)
             #   dat_$pred.name <- as.character(dat_$pred.name)
             id.col.id <- which(colnames(dat_) == "id")
-            expl1.dat_ <- dat_ %>% 
-              dplyr::select(1, id.col.id) %>% 
+            expl1.dat_ <- dat_ %>%
+              dplyr::select(1, id.col.id) %>%
               tidyr::gather("expl1.name", "expl1.val", 1)
-            expl2.dat_ <- dat_ %>% 
-              dplyr::select(2, id.col.id) %>% 
+            expl2.dat_ <- dat_ %>%
+              dplyr::select(2, id.col.id) %>%
               tidyr::gather("expl2.name", "expl2.val", 1)
-            pred.dat_ <- dat_ %>% 
-              dplyr::select(3, id.col.id) %>% 
+            pred.dat_ <- dat_ %>%
+              dplyr::select(3, id.col.id) %>%
               tidyr::gather("pred.name", "pred.val", 1)
-            out.dat_  <- 
+            out.dat_  <-
               dplyr::full_join(
                 dplyr::full_join(
-                  expl1.dat_, 
+                  expl1.dat_,
                   expl2.dat_,
                   by = 'id'
-                ), 
+                ),
                 pred.dat_,
                 by = 'id'
               )
             out.dat_ <- out.dat_ %>%
-              dplyr::mutate_at(c('expl1.name', 'expl2.name', 'pred.name'), as.character) %>% 
+              dplyr::mutate_at(c('expl1.name', 'expl2.name', 'pred.name'), as.character) %>%
               dplyr::mutate_at(c('expl1.val', 'expl2.val'), as.numeric)
             return(out.dat_)
   }))
   ## ensure that the stips are in the right order
-  out_ <- 
+  out_ <-
     out_ %>%
     dplyr::mutate_at(c('expl1.name', 'expl2.name'), factor)
   return(out_)

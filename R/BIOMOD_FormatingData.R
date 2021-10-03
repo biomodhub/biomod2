@@ -209,8 +209,8 @@
   }
 
   ### convert response var into binary
-  resp.var[which(resp.var>0)] <- 1
-  resp.var[which(resp.var<=0)] <- 0
+    resp.var[which(resp.var>0)] <- 1
+    resp.var[which(resp.var<=0)] <- 0
 
   #### At this point :
   ####  - resp.var is a numeric
@@ -356,9 +356,9 @@
     eval.resp.var[which(eval.resp.var<=0)] <- 0
 
     ### check there are both presences and absences in evaluation dataset
-    if( sum(eval.resp.var == 1) < 1 | sum(eval.resp.var == 0) < 1){
-      stop("Evaluation response data must have both presences and absences")
-    }
+      if( sum(eval.resp.var == 1) < 1 | sum(eval.resp.var == 0) < 1){
+        stop("Evaluation response data must have both presences and absences")
+      }
 
   } else {
     cat("\n      ! No data has been set aside for modeling evaluation")

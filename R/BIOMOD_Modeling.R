@@ -7,10 +7,10 @@
 ##' species. Calibrations are made on the whole sample or a
 ##' random subpart. The predictive power of the different models
 ##' is estimated using a range of evaluation metrics.
-##' 
+##'
 ##' @param data \code{BIOMOD.formated.data} object returned by
 ##'   \code{\link[biomod2]{BIOMOD_FormatingData}}
-##' @param models character, models to be computed names. To be 
+##' @param models character, models to be computed names. To be
 ##'   chosen among 'GLM', 'GBM', 'GAM', 'CTA', 'ANN', 'SRE',
 ##'   'FDA', 'MARS', 'RF', 'MAXENT.Phillips', 'MAXENT.Phillips.2'
 ##' @param models.options \code{BIOMOD.models.options} object
@@ -18,7 +18,7 @@
 ##' @param NbRunEval integer, number of Evaluation run.
 ##' @param DataSplit numeric, \% of data used to calibrate the
 ##'   models, the remaining part will be used for testing
-##' @param Yweights numeric, vector of weights (one per 
+##' @param Yweights numeric, vector of weights (one per
 ##'   observation)
 ##' @param Prevalence either \code{NULL} (default) or a 0-1
 ##'   numeric used to build 'weighted response weights'
@@ -36,7 +36,7 @@
 ##' @param modeling.id character, the ID (=name) of modeling
 ##'   procedure. A random number by default.
 ##' @param \ldots further arguments :
-##' 
+##'
 ##'  - \code{DataSplitTable} : a \code{matrix}, \code{data.frame}
 ##'    or a 3D \code{array} filled with \code{TRUE/FALSE} to
 ##'    specify which part of data must be used for models
@@ -44,56 +44,56 @@
 ##'    (\code{FALSE}). Each column corresponds to a 'RUN'. If
 ##'    filled, args \code{NbRunEval}, \code{DataSplit} and
 ##'    \code{do.full.models} will be ignored.
-##'    
-##' @details 
-##' 
+##'
+##' @details
+##'
 ##' 1. \bold{data}
 ##' .. If you have decide to add pseudo absences to your
-##' original dataset (see 
-##' \code{\link[biomod2]{BIOMOD_FormatingData}}), 
+##' original dataset (see
+##' \code{\link[biomod2]{BIOMOD_FormatingData}}),
 ##' NbPseudoAbsences * \code{NbRunEval + 1} models will be
 ##' created.
-##' 
+##'
 ##' 2. \bold{models}
 ##' .. The set of models to be calibrated on the data. 10
 ##' modeling techniques are currently available:
-##' 
-##' .. - GLM : Generalized Linear Model 
+##'
+##' .. - GLM : Generalized Linear Model
 ##' (\code{\link[stats]{glm}})
-##' 
+##'
 ##' .. - GAM : Generalized Additive Model (\code{\link[gam]{gam}},
-##' \code{\link[mgcv]{gam}} or \code{\link[mgcv]{bam}}, see 
-##' \code{\link[biomod2]{BIOMOD_ModelingOptions} for details on 
+##' \code{\link[mgcv]{gam}} or \code{\link[mgcv]{bam}}, see
+##' \code{\link[biomod2]{BIOMOD_ModelingOptions} for details on
 ##' algorithm selection})
-##' 
+##'
 ##' .. - GBM : Generalized Boosting Model or usually called Boosted
 ##' Regression Trees (\code{\link[gbm]{gbm}})
-##' 
+##'
 ##' .. - CTA: Classification Tree Analysis (\code{\link[rpart]{rpart}})
-##' 
+##'
 ##' .. - ANN: Artificial Neural Network (\code{\link[nnet]{nnet}})
-##' 
+##'
 ##' .. - SRE: Surface Range Envelop or usually called BIOCLIM
-##' 
+##'
 ##' .. - FDA: Flexible Discriminant Analysis (\code{\link[mda]{fda}})
-##' 
-##' .. - MARS: Multiple Adaptive Regression Splines 
+##'
+##' .. - MARS: Multiple Adaptive Regression Splines
 ##' (\code{\link[earth]{earth}})
-##' 
+##'
 ##' .. - RF: Random Forest (\code{\link[randomForest]{randomForest}})
-##' 
+##'
 ##' .. - MAXENT.Phillips: Maximum Entropy (
 ##' \url{https://biodiversityinformatics.amnh.org/open_source/maxent})
-##' 
-##' .. - MAXENT.Phillips.2: Maximum Entropy 
+##'
+##' .. - MAXENT.Phillips.2: Maximum Entropy
 ##' (\code{\link[maxnet]{maxnet}})
-##' 
+##'
 ##' 3. \bold{NbRunEval & DataSplit}
 ##' .. As already explained in the \code{\link{BIOMOD_FormatingData}}
-##' help file, the common trend is to split the original dataset into 
+##' help file, the common trend is to split the original dataset into
 ##' two subsets, one to calibrate the models, and another one to evaluate
 ##' them. Here we provide the possibility to repeat this process
-##' (calibration and evaluation) N times (\code{NbRunEval} times). 
+##' (calibration and evaluation) N times (\code{NbRunEval} times).
 ##' The proportion of data kept for calibration is determined by the
 ##' \code{DataSplit} argument (100\% - \code{DataSplit} will be used to
 ##' evaluate the model). This sort of cross-validation allows to have a
@@ -101,14 +101,14 @@
 ##' available. Each technique will also be calibrated on the complete
 ##' original data. All the models produced by BIOMOD and their related
 ##' informations are saved on the hard drive.
-##' 
+##'
 ##' 4. \bold{Yweights & Prevalence}
-##' .. Allows to give more or less weight to some particular 
-##' observations. If these arguments is kept to NULL 
-##' (\code{Yweights = NULL}, \code{Prevalence = NULL}), each 
-##' observation (presence or absence) has the same weight (independent 
-##' of the number of presences and absences). If \code{Prevalence = 0.5} 
-##' absences will be weighted equally to the presences (i.e. the 
+##' .. Allows to give more or less weight to some particular
+##' observations. If these arguments is kept to NULL
+##' (\code{Yweights = NULL}, \code{Prevalence = NULL}), each
+##' observation (presence or absence) has the same weight (independent
+##' of the number of presences and absences). If \code{Prevalence = 0.5}
+##' absences will be weighted equally to the presences (i.e. the
 ##' weighted sum of presence equals the weighted sum of absences). If
 ##' prevalence is set below or above 0.5 absences or presences are given
 ##' more weight, respectively.
@@ -121,13 +121,13 @@
 ##' prevent different modeling issues.
 ##' .. Note that the \code{Prevalence} argument will always be ignored if
 ##' \code{Yweights} are defined.
-##' 
+##'
 ##' 5. \bold{models.eval.meth}
 ##' .. The available evaluations methods are :
-##' 
+##'
 ##' .. - \code{ROC} : Relative Operating Characteristic
 ##' .. - \code{KAPPA} : Cohen's Kappa (Heidke skill score)
-##' .. - \code{TSS} : True kill statistic (Hanssen and Kuipers 
+##' .. - \code{TSS} : True kill statistic (Hanssen and Kuipers
 ##' discriminant, Peirce's skill score)
 ##' .. - \code{FAR} : False alarm ratio
 ##' .. - \code{SR} : Success ratio
@@ -136,13 +136,13 @@
 ##' .. - \code{POD} : Probability of detection (hit rate)
 ##' .. - \code{CSI} : Critical success index (threat score)
 ##' .. - \code{ETS} : Equitable threat score (Gilbert skill score)
-##' 
+##'
 ##' Some of them are scaled to have all an optimum at 1. You can choose
 ##' one of more (vector) evaluation metric. By Default, only 'KAPPA',
 ##' 'TSS' and 'ROC' evaluation are done. Please refer to the CAWRC
-##' website (\url{http://www.cawcr.gov.au/projects/verification/##'Methods_for_dichotomous_forecasts}) 
+##' website (\url{http://www.cawcr.gov.au/projects/verification/##'Methods_for_dichotomous_forecasts})
 ##' to get detailed description of each metric.
-##' 
+##'
 ##' 6. \bold{SaveObj}
 ##' If this argument is set to False, it may prevent the evaluation of
 ##' the \sQuote{ensemble modeled} models in further steps. We strongly
@@ -154,54 +154,54 @@
 ##' it. It should lead to reduction in projection scale amplitude}
 ##' Some categorical models have to be scaled in every case (
 ##' \sQuote{FDA}, \sQuote{ANN}). But It may be interesting to scale all
-##' model computed to ensure that they will produced comparable 
-##' predictions (0-1000 ladder). That's particularly useful when you 
+##' model computed to ensure that they will produced comparable
+##' predictions (0-1000 ladder). That's particularly useful when you
 ##' do some ensemble forecasting to remove the scale prediction effect
 ##' (the more extended projections are, the more they influence ensemble
 ##' forecasting results).
-##' 
+##'
 ##' 8. \bold{do.full.models}
 ##' Building models with all information available may be useful in some
 ##' particular cases (i.e. rare species with few presences points). The
 ##' main drawback of this method is that, if you don't give separated
 ##' data for models evaluation, your models will be evaluated with the
-##' same data that the ones used for calibration. That will lead to 
+##' same data that the ones used for calibration. That will lead to
 ##' over-optimistic evaluation scores. Be careful with this '_Full'
 ##' models interpretation.
-##' 
+##'
 ##' @return
 ##' A BIOMOD.models.out object
-##' See \code{"\link[=BIOMOD.models.out-class]{BIOMOD.models.out}"} 
+##' See \code{"\link[=BIOMOD.models.out-class]{BIOMOD.models.out}"}
 ##' for details.
 ##' Additional objects are stored out of R in two different directories
 ##' for memory storage purposes. They are created by the function
 ##' directly on the root of your working directory set in R ("models"
 ##' directory). This one contains each calibrated model for each
-##' repetition and pseudo-absence run. A hidden folder 
+##' repetition and pseudo-absence run. A hidden folder
 ##' \code{.DATA_BIOMOD} contains some files (predictions, original
 ##' dataset copy, pseudo absences chosen...) used by other functions like
-##' \code{\link[biomod2]{BIOMOD_Projection}} or 
+##' \code{\link[biomod2]{BIOMOD_Projection}} or
 ##' \code{\link[biomod2]{BIOMOD_EnsembleModeling}}.
-##' 
+##'
 ##' The models are currently stored as objects to be read exclusively in
 ##' R. To load them back (the same stands for all objects stored on the
 ##' hard disk) use the \code{\link{load}} function (see examples section below).
-##' 
+##'
 ##' @author Wilfried Thuiller, Damien Georges, Robin Engler
-##' @seealso \code{\link{BIOMOD_FormatingData}},  
-##'   \code{\link{BIOMOD_ModelingOptions}}, 
+##' @seealso \code{\link{BIOMOD_FormatingData}},
+##'   \code{\link{BIOMOD_ModelingOptions}},
 ##'   \code{\link{BIOMOD_Projection}}
-##' 
+##'
 ##' @keywords models
 ##' @keywords regression
 ##' @keywords nonlinear
 ##' @keywords multivariate
 ##' @keywords nonparametric
 ##' @keywords tree
-##'   
-##' @examples 
+##'
+##' @examples
 ##' ##' species occurrences
-##' DataSpecies <- 
+##' DataSpecies <-
 ##'   read.csv(
 ##'     system.file(
 ##'       "external/species/mammals_table.csv",
@@ -209,20 +209,20 @@
 ##'     )
 ##'   )
 ##' head(DataSpecies)
-##' 
+##'
 ##' ##' the name of studied species
 ##' myRespName <- 'GuloGulo'
-##' 
+##'
 ##' ##' the presence/absences data for our species
 ##' myResp <- as.numeric(DataSpecies[, myRespName])
-##' 
+##'
 ##' ##' the XY coordinates of species data
 ##' myRespXY <- DataSpecies[, c("X_WGS84", "Y_WGS84")]
-##' 
-##' 
-##' ##' Environmental variables extracted from BIOCLIM (bio_3, 
+##'
+##'
+##' ##' Environmental variables extracted from BIOCLIM (bio_3,
 ##' ##' bio_4, bio_7, bio_11 & bio_12)
-##' myExpl <- 
+##' myExpl <-
 ##'   raster::stack(
 ##'     system.file("external/bioclim/current/bio3.grd", package = "biomod2"),
 ##'     system.file("external/bioclim/current/bio4.grd", package = "biomod2"),
@@ -232,19 +232,19 @@
 ##'   )
 ##'
 ##' ##' 1. Formatting Data
-##' myBiomodData <- 
+##' myBiomodData <-
 ##'   BIOMOD_FormatingData(
 ##'     resp.var = myResp,
 ##'     expl.var = myExpl,
 ##'     resp.xy = myRespXY,
 ##'     resp.name = myRespName
 ##'   )
-##' 
+##'
 ##' ##' 2. Defining Models Options using default options.
 ##' myBiomodOption <- BIOMOD_ModelingOptions()
-##' 
+##'
 ##' ##' 3. Doing Modelisation
-##' myBiomodModelOut <- 
+##' myBiomodModelOut <-
 ##'   BIOMOD_Modeling(
 ##'     myBiomodData,
 ##'     models = c('SRE','RF'),
@@ -256,10 +256,10 @@
 ##'     do.full.models = FALSE,
 ##'     modeling.id = "test"
 ##'   )
-##' 
+##'
 ##' ##' print a summary of modeling stuff
 ##' myBiomodModelOut
-##' 
+##'
 BIOMOD_Modeling <- function(
   data,
   models = c('GLM','GBM','GAM','CTA','ANN','SRE','FDA','MARS','RF','MAXENT.Phillips', 'MAXENT.Phillips.2'),
@@ -331,14 +331,14 @@ BIOMOD_Modeling <- function(
 
   # 3. rearanging data and determining calib and eval data -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=- #)
   # browser()
-  mod.prep.dat <- 
+  mod.prep.dat <-
     .Models.prepare.data(
-      data, 
-      NbRunEval, 
-      DataSplit, 
-      Yweights, 
-      Prevalence, 
-      do.full.models, 
+      data,
+      NbRunEval,
+      DataSplit,
+      Yweights,
+      Prevalence,
+      do.full.models,
       DataSplitTable
     )
   rm(data)
@@ -491,8 +491,8 @@ BIOMOD_Modeling <- function(
   # data checking
   if(
     !inherits(
-      data, 
-      c("BIOMOD.formated.data", "BIOMOD.formated.data.PA", "BIOMOD.formated.data.indep", 
+      data,
+      c("BIOMOD.formated.data", "BIOMOD.formated.data.PA", "BIOMOD.formated.data.indep",
         "BIOMOD.formated.data.PA.indep")
     )
   ){
@@ -508,12 +508,12 @@ BIOMOD_Modeling <- function(
   models <- unique(models)
   models.swich.off <- NULL
 
-  avail.models.list <- 
+  avail.models.list <-
     c(
-      'GLM', 'GBM', 'GAM', 'CTA', 'ANN', 'SRE', 'FDA', 'MARS', 'RF', 'MAXENT.Phillips', 
+      'GLM', 'GBM', 'GAM', 'CTA', 'ANN', 'SRE', 'FDA', 'MARS', 'RF', 'MAXENT.Phillips',
       'MAXENT.Phillips.2'
     )
-  
+
   ## check if model is supported
   purrr::map(models, ~ checkmate::assert_choice(.x, avail.models.list))
   # if(sum(models %in% c('GLM','GBM','GAM','CTA','ANN','SRE','FDA','MARS','RF','MAXENT.Phillips', 'MAXENT.Tsuruoka')) != length(models)){
@@ -531,7 +531,7 @@ BIOMOD_Modeling <- function(
       cat(paste0("\n\t! ", paste(models.swich.off, collapse = ",", sep = " ")," were switched off because of categorical variables !"))
     }
   }
-  
+
   ## disable MAXENT.Tsuruoka because of package maintaining issue (request from B Ripley 03-2019)
   if('MAXENT.Tsuruoka' %in% models){
     models.swich.off <- unique(c(models.swich.off, "MAXENT.Tsuruoka"))
@@ -556,8 +556,8 @@ BIOMOD_Modeling <- function(
     if(!file.exists(file.path(models.options@MAXENT.Phillips$path_to_maxent.jar ,"maxent.jar")) ){
       models = models[-which(models=='MAXENT.Phillips')]
       warning("The maxent.jar file is missing. You need to download this file (http://www.cs.princeton.edu/~schapire/maxent) and put the maxent.jar file in your working directory -> MAXENT.Phillips was switched off")
-    ## -- 
-    ## The java installation check is temporally disable cause it seems to cause 
+    ## --
+    ## The java installation check is temporally disable cause it seems to cause
     ## issues on some Windows users machine.
     ## --
     # } else if(!.check.java.installed()){
@@ -764,7 +764,7 @@ BIOMOD_Modeling <- function(
 
 #####################################################################################################
 #' Reshape biomod2 objects
-#' 
+#'
 #' This is an internal function (developper only)
 #'
 #' @param modOut the model object to transform given as a list
@@ -776,7 +776,7 @@ BIOMOD_Modeling <- function(
 #'
 .transform.outputs.array <-
   function(
-    modOut, 
+    modOut,
     out = 'evaluation'
   ){
     # check out attr
@@ -784,7 +784,7 @@ BIOMOD_Modeling <- function(
       stop(paste("out argument must be one of ", toString(c('evaluation', 'prediction', 'var.import',
                                                             'calib.failure', 'models.run', 'prediction.eval' ))))
     }
-    
+
     # check dim of input list
     if(length(dim(modOut)) != 4 ){
       cat('\n',dim(modOut),'\n')
@@ -792,7 +792,7 @@ BIOMOD_Modeling <- function(
       warning("Not computed .transform.outputs because of an incompatible input list dimension", immediate=T)
       return(NULL)
     }
-    
+
     if(dim(modOut)[4] == 1 & length(unlist(strsplit(unlist(dimnames(modOut)[4]),'_'))) == 1 ){
       dataset.names <- 'AllData'
     } else{
@@ -802,15 +802,15 @@ BIOMOD_Modeling <- function(
         dataset.names <- paste('PA', 1:dim(modOut)[4])
       }
     }
-    
+
     run.eval.names <- sub('_','',unlist(dimnames(modOut)[3]))
     mod.names <- unlist(dimnames(modOut)[2])
-    
+
     if (out=='evaluation'){
       if( is.null(modOut['evaluation',1,1,1])){ return(NULL) }
       eval.meth.names <- rownames(as.data.frame(modOut['evaluation',1,1,1]))
       eval.col.names <- colnames(as.data.frame(modOut['evaluation',1,1,1]))
-      
+
       eval.out <- array(data = unlist(modOut['evaluation',,,]),
                         dim = c(length(eval.meth.names),
                                 length(eval.col.names),
@@ -822,10 +822,10 @@ BIOMOD_Modeling <- function(
                                         mod.names,
                                         run.eval.names,
                                         dataset.names))
-      
+
       return(eval.out)
     }
-    
+
     if (out=='prediction'){
       if( is.null(modOut['pred',1,1,1])){ return(NULL) }
       nb.pts.pred <- length(as.numeric(unlist(modOut['pred',1,1,1])))
@@ -838,10 +838,10 @@ BIOMOD_Modeling <- function(
                                         mod.names,
                                         run.eval.names,
                                         dataset.names))
-      
+
       return(pred.out)
     }
-    
+
     if (out=='prediction.eval'){
       if( is.null(modOut['pred.eval',1,1,1])){ return(NULL) }
       nb.pts.pred.eval <- length(as.numeric(unlist(modOut['pred.eval',1,1,1])))
@@ -854,14 +854,14 @@ BIOMOD_Modeling <- function(
                                              mod.names,
                                              run.eval.names,
                                              dataset.names))
-      
+
       return(pred.eval.out)
     }
-    
+
     if (out=='var.import'){
       if( is.null(unlist(modOut['var.import',1,1,1]))){ return(NULL) }
       nb.var <- length(as.numeric(unlist(modOut['var.import',1,1,1])))
-      
+
       vi.out <- array(data = unlist(modOut['var.import',,,]),
                       dim = c(nb.var,
                               length(mod.names),
@@ -871,27 +871,27 @@ BIOMOD_Modeling <- function(
                                       mod.names,
                                       run.eval.names,
                                       dataset.names))
-      
+
       return(vi.out)
     }
-    
+
     if (out == 'calib.failure'){
       cf.out <- unlist(modOut['calib.failure',,,])
       return(cf.out[!is.null(cf.out)])
     }
-    
+
     if (out == 'models.run'){
       mod.run.out <- unlist(modOut['ModelName',,,])
       return(mod.run.out[!is.null(mod.run.out)])
     }
-    
+
   }
 
 # =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=- #
 
 
 #' Reshape biomod2 objects
-#' 
+#'
 #' This is an internal function (developper only)
 #'
 #' @param modOut the object to transform given as a list
@@ -903,11 +903,11 @@ BIOMOD_Modeling <- function(
 #' @export
 .transform.outputs.list =
   function(
-    modOut, 
-    out = 'evaluation', 
+    modOut,
+    out = 'evaluation',
     dim.names = NULL
   ){
-    
+
     # check out attr
     if(!(out %in% c('evaluation', 'prediction', 'prediction.eval', 'var.import', 'calib.failure',
                     'models.run', 'EF.prediction', 'EF.PCA.median', 'EF.evaluation' ) )){
@@ -915,7 +915,7 @@ BIOMOD_Modeling <- function(
                                                             'calib.failure', 'models.run', 'EF.prediction',
                                                             'EF.PCA.median', 'EF.evaluation'))))
     }
-    
+
     if(length(modOut) == 1 & length(unlist(strsplit(unlist(names(modOut)),'_'))) == 1 ){
       dataset.names <- 'AllData'
     } else{
@@ -925,23 +925,23 @@ BIOMOD_Modeling <- function(
         dataset.names <- unlist(dim.names[1])
       }
     }
-    
+
     if(is.null(dim.names)){
       run.eval.names <- sub('_','',unlist(names(modOut[[1]]))) # may be good here to test that all names are identics
-      
+
       mod.names <- unlist(names(modOut[[1]][[1]]))
     } else{
       run.eval.names <- unlist(dim.names[2])
       mod.names <- unlist(dim.names[3])
     }
-    
+
     if (out=='evaluation'){
-      
+
       eval.tab <- NULL
       nb_pa <- length(modOut)
       nb_run <- length(modOut[[1]])
       nb_mod <- length(modOut[[1]][[1]])
-      
+
       for(i in 1:nb_pa){
         for(j in 1:nb_run){
           for(k in 1:nb_mod){
@@ -952,12 +952,12 @@ BIOMOD_Modeling <- function(
         }
         if(!is.null(eval.tab)){ break }
       }
-      
+
       if( is.null(eval.tab)){ return(NULL) }
-      
+
       eval.meth.names <- rownames(as.data.frame(eval.tab))
       eval.col.names <- colnames(as.data.frame(eval.tab))
-      
+
       eval.out <- lapply(names(modOut),function(d1){ # data set
         lapply(names(modOut[[d1]]), function(d2){ # run eval
           lapply(names(modOut[[d1]][[d2]]), function(d3){ # models
@@ -967,7 +967,7 @@ BIOMOD_Modeling <- function(
           })
         })
       })
-      
+
       eval.out <- array(data = unlist(eval.out),
                         dim = c(length(eval.meth.names),
                                 length(eval.col.names),
@@ -979,17 +979,17 @@ BIOMOD_Modeling <- function(
                                         mod.names,
                                         run.eval.names,
                                         dataset.names))
-      
+
       return(eval.out)
     }
-    
+
     if (out=='prediction'){
-      
+
       pred.tab <- NULL
       nb_pa <- length(modOut)
       nb_run <- length(modOut[[1]])
       nb_mod <- length(modOut[[1]][[1]])
-      
+
       for(i in 1:nb_pa){
         for(j in 1:nb_run){
           for(k in 1:nb_mod){
@@ -1000,12 +1000,12 @@ BIOMOD_Modeling <- function(
         }
         if(!is.null(pred.tab)){ break }
       }
-      
+
       if( is.null(pred.tab)){ return(NULL) }
-      
-      
+
+
       nb.pts.pred <- length(as.numeric(pred.tab))
-      
+
       pred.out <- lapply(names(modOut),function(d1){ # data set
         lapply(names(modOut[[d1]]), function(d2){ # run eval
           lapply(names(modOut[[d1]][[d2]]), function(d3){ # models
@@ -1017,7 +1017,7 @@ BIOMOD_Modeling <- function(
           })
         })
       })
-      
+
       pred.out <- array(data = unlist(pred.out),
                         dim = c(nb.pts.pred,
                                 length(mod.names),
@@ -1027,16 +1027,16 @@ BIOMOD_Modeling <- function(
                                         mod.names,
                                         run.eval.names,
                                         dataset.names))
-      
+
       return(pred.out)
     }
-    
+
     if (out=='prediction.eval'){
       pred.eval.tab <- NULL
       nb_pa <- length(modOut)
       nb_run <- length(modOut[[1]])
       nb_mod <- length(modOut[[1]][[1]])
-      
+
       for(i in 1:nb_pa){
         for(j in 1:nb_run){
           for(k in 1:nb_mod){
@@ -1047,12 +1047,12 @@ BIOMOD_Modeling <- function(
         }
         if(!is.null(pred.eval.tab)){ break }
       }
-      
+
       if( is.null(pred.eval.tab)){ return(NULL) }
-      
-      
+
+
       nb.pts.pred.eval <- length(as.numeric(pred.eval.tab))
-      
+
       pred.eval.out <- lapply(names(modOut),function(d1){ # data set
         lapply(names(modOut[[d1]]), function(d2){ # run eval
           lapply(names(modOut[[d1]][[d2]]), function(d3){ # models
@@ -1064,7 +1064,7 @@ BIOMOD_Modeling <- function(
           })
         })
       })
-      
+
       pred.eval.out <- array(data = unlist(pred.eval.out),
                              dim = c(nb.pts.pred.eval,
                                      length(mod.names),
@@ -1074,16 +1074,16 @@ BIOMOD_Modeling <- function(
                                              mod.names,
                                              run.eval.names,
                                              dataset.names))
-      
+
       return(pred.eval.out)
     }
-    
+
     if (out=='var.import'){
       vi.tab <- NULL
       nb_pa <- length(modOut)
       nb_run <- length(modOut[[1]])
       nb_mod <- length(modOut[[1]][[1]])
-      
+
       for(i in 1:nb_pa){
         for(j in 1:nb_run){
           for(k in 1:nb_mod){
@@ -1094,18 +1094,18 @@ BIOMOD_Modeling <- function(
         }
         if(!is.null(vi.tab)){ break }
       }
-      
+
       if( is.null(vi.tab)){ return(NULL) }
-      
+
       nb.var <- length(as.numeric(unlist(vi.tab)))
-      
+
       ef.mod <- grep(pattern="EF.",mod.names) # EF models
       if(length(ef.mod)>0){
         kept.mod <- mod.names[-ef.mod]
       } else{
         kept.mod <- mod.names
       }
-      
+
       vi.out <- lapply(names(modOut),function(d1){ # data set
         lapply(names(modOut[[d1]]), function(d2){ # run eval
           lapply(kept.mod, function(d3){ # models without EF ones
@@ -1117,7 +1117,7 @@ BIOMOD_Modeling <- function(
           })
         })
       })
-      
+
       vi.out <- array(data = unlist(vi.out),
                       dim = c(nb.var,
                               length(kept.mod),
@@ -1127,10 +1127,10 @@ BIOMOD_Modeling <- function(
                                       kept.mod,
                                       run.eval.names,
                                       dataset.names))
-      
+
       return(vi.out)
     }
-    
+
     if (out == 'calib.failure'){
       cf.out <- lapply(names(modOut),function(d1){ # data set
         lapply(names(modOut[[d1]]), function(d2){ # run eval
@@ -1145,7 +1145,7 @@ BIOMOD_Modeling <- function(
       if(!length(cf.out)) cf.out <- 'none'
       return(cf.out)
     }
-    
+
     if (out == 'models.run'){
       mod.run.out <- lapply(names(modOut),function(d1){ # data set
         lapply(names(modOut[[d1]]), function(d2){ # run eval
@@ -1160,13 +1160,13 @@ BIOMOD_Modeling <- function(
       if(!length(mod.run.out)) mod.run.out <- 'none'
       return(mod.run.out)
     }
-    
-    
+
+
     if (out == 'EF.prediction'){
       if( is.null(modOut[[1]][[1]][[1]][['EM']])){ return(NULL) }
-      
+
       nb.pts.ef.pred <- length(as.numeric(unlist(modOut[[1]][[1]][[1]][['EM']])))
-      
+
       ef.pred.out <- lapply(1:length(modOut),function(d1){ # data set
         lapply(1:length(modOut[[d1]]), function(d2){ # run eval
           lapply(1:length(modOut[[d1]][[d2]]), function(d3){ # models
@@ -1174,7 +1174,7 @@ BIOMOD_Modeling <- function(
           })
         })
       })
-      
+
       ef.pred.out <- array( data = unlist(ef.pred.out),
                             dim = c(nb.pts.ef.pred,
                                     length(modOut[[1]][[1]]),
@@ -1184,13 +1184,13 @@ BIOMOD_Modeling <- function(
                                             mod.names,
                                             run.eval.names,
                                             dataset.names))
-      
+
       return(ef.pred.out)
     }
-    
+
     if (out == 'EF.PCA.median'){
       if( is.null(modOut[[1]][[1]][[1]][['PCA.median']])){ return(NULL) }
-      
+
       ef.pca.out <- lapply(1:length(modOut),function(d1){ # data set
         lapply(1:length(modOut[[d1]]), function(d2){ # run eval
           lapply(1:length(modOut[[d1]][[d2]]), function(d3){ # models
@@ -1198,7 +1198,7 @@ BIOMOD_Modeling <- function(
           })
         })
       })
-      
+
       ef.pca.out <- array( data = unlist(ef.pca.out),
                            dim = c(1,
                                    length(modOut[[1]][[1]]),
@@ -1208,15 +1208,15 @@ BIOMOD_Modeling <- function(
                                            mod.names,
                                            run.eval.names,
                                            dataset.names))
-      
+
       return(ef.pca.out)
     }
-    
+
     if (out == 'EF.evaluation'){
       if( is.null(modOut[[1]][[1]][[1]][['EM.eval']])){ return(NULL) }
       eval.meth.names <- rownames(as.data.frame(modOut[[1]][[1]][[1]][['EM.eval']]))
       eval.col.names <- colnames(as.data.frame(modOut[[1]][[1]][[1]][['EM.eval']]))
-      
+
       ef.eval.out <- lapply(1:length(modOut),function(d1){ # data set
         lapply(1:length(modOut[[d1]]), function(d2){ # run eval
           lapply(1:length(modOut[[d1]][[d2]]), function(d3){ # models
@@ -1224,7 +1224,7 @@ BIOMOD_Modeling <- function(
           })
         })
       })
-      
+
       ef.eval.out <- array(data = unlist(ef.eval.out),
                            dim = c(length(eval.meth.names),
                                    length(eval.col.names),
@@ -1236,10 +1236,10 @@ BIOMOD_Modeling <- function(
                                            mod.names,
                                            run.eval.names,
                                            dataset.names))
-      
+
       return(ef.eval.out)
     }
-    
+
   }
 
 DF_to_ARRAY <- function(df){
@@ -1252,15 +1252,15 @@ DF_to_ARRAY <- function(df){
       stop("You have to give a data.frame")
     }
   }
-  
+
   a <- sapply(strsplit(colnames(df), '_'), tail, n=3)
   b <- lapply(1:3, function(id) return(unique(a[id,])))
   array.dim.names <- c(list(character(0)),rev(b))
   #   array.dim.names <- c(list(c(NULL)),rev(apply(sapply(strsplit(colnames(df), '_'), tail, n=3),1,unique)))
-  
+
   array.dim <- c(nrow(df),sapply(array.dim.names[-1],length))
   array.out <- array(data=NA, dim=array.dim, dimnames=array.dim.names)
-  
+
   for(x in colnames(df)){
     dimTmp <- rev(tail(unlist(strsplit(x, '_')), n=3))
     array.out[,dimTmp[1],dimTmp[2],dimTmp[3]] <- df[,x]
@@ -1274,18 +1274,18 @@ LIST_to_ARRAY <- function(ll){
   test <- sapply(ll,dim)
   test <- apply(test,1,function(x){length(unique(x))==1})
   if(!all(test)) stop("list elements differ in dimension")
-  
+
   formal.dim.names <- dimnames(ll[[1]])
   new.dim.names <- rev(apply(sapply(strsplit(names(ll), '_'), tail, n=3),1,unique))
   array.dim.names <- c(formal.dim.names,new.dim.names)
   array.dim <- sapply(array.dim.names,length)
-  
+
   array.out <- array(data=NA, dim=array.dim, dimnames=array.dim.names)
-  
+
   for(x in names(ll)){
     dimTmp <- rev(tail(unlist(strsplit(x, '_')), n=3))
     dimTmp <- paste( paste(rep(",",length(formal.dim.names)),collapse="") , paste("'",dimTmp,"'",sep="",collapse=","),collapse="")
-    
+
     eval(parse(text=paste("array.out[",dimTmp,"] <-  ll[[x]]",sep="")))
   }
   return(array.out)
