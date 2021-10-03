@@ -209,6 +209,10 @@
   }
 
   ### convert response var into binary
+    if (length(setdiff(resp.var, c(0, 1, NA)))) {
+      cat("\n      ! Response variable is not binary, but binaryResp == TRUE... Is it really what you want?")
+      cat("\n      ! Values > 0 will be covnerted to 1s")
+    }
     resp.var[which(resp.var>0)] <- 1
     resp.var[which(resp.var<=0)] <- 0
 

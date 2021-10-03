@@ -233,6 +233,11 @@ ProbDensFunc <- function(
            png = png(filename))
   }
 
+  if (length(setdiff(initial, c(0, 1, NA)))) {
+    warning("Continuous (i.e. non-binary) response variable supplied. Values > 0 will be converted to 1s")
+    initial[initial > 0] <- 1
+  }
+
   # area stores the species range change calculations
   area <- (apply(projections,2,sum, na.rm=T) / sum(initial, na.rm=T) - 1 ) * 100
   a <- round( (min(area, na.rm=TRUE)-(resolution+10))/10 ) *10

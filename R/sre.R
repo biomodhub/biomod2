@@ -142,6 +142,10 @@ sre <- function(
   Quant <- args$Quant
   rm("args")
 
+  if (length(setdiff(Response, c(0, 1, NA)))) {
+    warning("Continuous (i.e. non-binary) response variable supplied. Values > 0 will be converted to 1s")
+    Response[Response > 0] <- 1
+  }
 
   # 2. Determining suitables conditions and make the projection
   lout <- list()
