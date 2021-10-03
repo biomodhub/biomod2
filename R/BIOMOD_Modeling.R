@@ -679,11 +679,16 @@ BIOMOD_Modeling <- function(
 }
 
 # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-= #
-.SampleMat <- function(data.sp, dataSplit, nbRun = 1, data.env = NULL){
+.SampleMat <- function(data.sp, binaryResp = TRUE, dataSplit, nbRun = 1, data.env = NULL){
   # return a matrix with nbRun columns of boolean (T: calib, F= eval)
   # data.sp is a 0,1 vector
-  pres <- which(data.sp == 1)
-  abs <- (1:length(data.sp))[-pres]
+  if (binaryResp) {
+    pres <- which(data.sp == 1)
+    abs <- (1:length(data.sp))[-pres]
+  } else {
+    pres <- which(data.sp > 0)
+    abs <- (1:length(data.sp))[-pres]
+  }
 
   nbPresEval <- round(length(pres) * dataSplit/100)
   nbAbsEval <- round(length(abs) * dataSplit/100)
