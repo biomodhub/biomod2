@@ -35,12 +35,15 @@
 #
 # # 1. Formatting Data
 # bm.formdat <-
-#   BIOMOD_FormatingData(
+#   BIOMOD_FormatingData(binaryResp = FALSE,
 #     resp.var = resp.var,
 #     expl.var = expl.var,
 #     resp.xy = resp.xy,
 #     resp.name = resp.name
 #   )
+#
+# ## binaryResp = FALSE works with:
+# ## GLM, RF, GAM, SRE
 #
 # # 2. Defining Models Options using default options.
 # bm.opt <- BIOMOD_ModelingOptions()
