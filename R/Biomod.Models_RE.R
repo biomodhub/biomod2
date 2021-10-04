@@ -1071,7 +1071,7 @@
 
   # Evaluation Check
   available.eval.meth <- c('ROC','KAPPA','TSS','ACCURACY','BIAS','POD','FAR','POFD','SR','CSI',
-                           'ETS','HK','HSS','OR','ORSS', 'R2')
+                           'ETS','HK','HSS','OR','ORSS', 'R2', 'RMSE')
 
   #   if( Model %in% c('SRE') ) available.eval.meth <- available.eval.meth[which(available.eval.meth!='ROC')]
   if(sum(!(mod.eval.method %in% available.eval.meth)) > 0 ){

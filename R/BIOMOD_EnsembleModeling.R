@@ -546,10 +546,10 @@
   models.eval.meth <- unique(models.eval.meth)
 
   if(sum(models.eval.meth %in% c('FAR','SR','HSS','ORSS','TSS','KAPPA','ACCURACY','BIAS',
-                                 'POD','PODFD','CSI','ETS','HK','ROC', 'R2')) != length(models.eval.meth)){
+                                 'POD','PODFD','CSI','ETS','HK','ROC', 'R2', 'RMSE')) != length(models.eval.meth)){
     stop(paste(models.eval.meth[which( (models.eval.meth %in% c('FAR','SR','HSS','ORSS','TSS',
                                                                 'KAPPA','ACCURACY','BIAS', 'POD',
-                                                                'PODFD','CSI', 'ETS','HK','ROC', 'R2'))
+                                                                'PODFD','CSI', 'ETS','HK','ROC', 'R2', 'RMSE'))
                                        == FALSE) ]," is not an available model evaluation metric !",sep=""))
   }
 

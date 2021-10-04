@@ -26,7 +26,7 @@
 ##'   importance
 ##' @param models.eval.meth vector of names of evaluation metric
 ##'   among 'KAPPA', 'TSS', 'ROC', 'FAR', 'SR', 'ACCURACY',
-##'   'BIAS', 'POD', 'CSI', 'ETS' and 'R2' (only for continuous data)
+##'   'BIAS', 'POD', 'CSI', 'ETS', 'R2' and 'RMSE' (the last two only for continuous data)
 ##' @param SaveObj keep all results and outputs on hard drive or
 ##'   not (NOTE: strongly recommended)
 ##' @param rescal.all.models if true, all model prediction will
@@ -624,10 +624,10 @@ BIOMOD_Modeling <- function(
   models.eval.meth <- unique(models.eval.meth)
 
   if(sum(models.eval.meth %in% c('FAR','SR','HSS','ORSS','TSS','KAPPA','ACCURACY','BIAS',
-                              'POD','PODFD','CSI','ETS','HK','ROC', 'R2')) != length(models.eval.meth)){
+                              'POD','PODFD','CSI','ETS','HK','ROC', 'R2', 'RMSE')) != length(models.eval.meth)){
     stop(paste(models.eval.meth[which( (models.eval.meth %in% c('FAR','SR','HSS','ORSS','TSS',
                                                                 'KAPPA','ACCURACY','BIAS', 'POD',
-                                                                'PODFD','CSI', 'ETS','HK','ROC', 'R2'))
+                                                                'PODFD','CSI', 'ETS','HK','ROC', 'R2', 'RMSE'))
                                        == FALSE) ]," is not a availabe models evaluation metric !",sep=""))
   }
 

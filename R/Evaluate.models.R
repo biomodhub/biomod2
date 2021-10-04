@@ -77,7 +77,7 @@ evaluate <- function(model, data, stat, as.array=FALSE){
 ##'                   Fixed.thresh = NULL)
 ##'
 ##' @param Stat either 'ROC', TSS', 'KAPPA', 'ACCURACY', 'BIAS', 'POD', 'FAR',
-##'         'POFD', 'SR', 'CSI', 'ETS', 'HK', 'HSS', 'OR', 'ORSS' or 'R2' (only for continuous data)
+##'         'POFD', 'SR', 'CSI', 'ETS', 'HK', 'HSS', 'OR', 'ORSS', 'R2' or 'RMSE' (the last two only for continuous data)
 ##' @param Fit vector of fitted values (continuous)
 ##' @param Obs vector of observed values (binary)
 ##' @param Nb.thresh.test integer, the numer of thresholds tested over the
@@ -160,9 +160,9 @@ Find.Optim.Stat <-
       warning("\nObserved or fitted data contains a unique value... Be careful with this models predictions\n",immediate.=T)
       #best.stat <- cutoff <- true.pos <- sensitivity <- true.neg <- specificity <- NA
     } #else {
-    if (!Stat %in% c('ROC', 'R2')) {
+    if (!Stat %in% c('ROC', 'R2', 'RMSE')) {
       if (length(setdiff(Obs, c(0, 1, NA)))) {
-        stop("Response variably is non-binary. Use R2 eval.method instead")
+        stop("Response variably is non-binary. Use R2 or RMSE eval.method instead")
       }
 
       StatOptimum <- getStatOptimValue(Stat)
@@ -213,7 +213,7 @@ Find.Optim.Stat <-
     }
     if (Stat == 'ROC') {
       if (length(setdiff(Obs, c(0, 1, NA)))) {
-        warning("Response variably is non-binary. Use R2 eval.method instead")
+        warning("Response variably is non-binary. Use R2 or RMSE eval.method instead")
       }
       roc1 <- pROC::roc(Obs, Fit, percent=T, direction="<", levels = c(0,1))
       roc1.out <- pROC::coords(roc1, "best", ret = c("threshold", "sens", "spec"), transpose = TRUE)
@@ -225,8 +225,9 @@ Find.Optim.Stat <-
       specificity <- as.numeric(roc1.out["specificity"])
     }
     #}
-    if (Stat == 'R2') {
-      best.stat <- caret::defaultSummary(data.frame(obs = Obs, pred = Fit))[["Rsquared"]]
+    if (Stat %in% c('R2', 'RMSE')) {
+      Stat2 <- if (Stat == 'R2') "Rsquared" else "RMSE"
+      best.stat <- caret::defaultSummary(data.frame(obs = Obs, pred = Fit))[[Stat2]]
       cutoff <- NA
       sensitivity <- NA
       specificity <- NA
