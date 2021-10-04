@@ -448,7 +448,7 @@
   if(!is.null(RF)){
     if(!is.null(RF$type )) { opt@RF$type <- RF$type }
 #     if(!is.null(RF$interaction.level )) { opt@RF$interaction.level <- RF$interaction.level }
-#     if(!is.null(RF$do.classif )) { opt@RF$do.classif <- RF$do.classif }
+    if(!is.null(RF$do.classif )) { opt@RF$do.classif <- RF$do.classif }
     if(!is.null(RF$ntree )) { opt@RF$ntree <- RF$ntree }
     if(!is.null(RF$mtry )) { opt@RF$mtry <- RF$mtry }
     if(!is.null(RF$nodesize )) { opt@RF$nodesize <- RF$nodesize }
