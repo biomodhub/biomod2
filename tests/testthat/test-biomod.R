@@ -2,7 +2,7 @@ library(readr)
 library(dplyr)
 library(rlang)
 # library(biomod2)
-# devtools::load_all(".")
+devtools::load_all(".")
 
 # test with binary respone variable?
 binaryResp <- FALSE
@@ -52,23 +52,28 @@ bm.formdat <-
   )
 
 ## binaryResp = FALSE works with:
-## GLM, RF, GAM, SRE
+## GLM, RF, GAM, MARS
 
 # 2. Defining Models Options using default options.
-bm.opt <- BIOMOD_ModelingOptions()
 
 # 3. Doing Modelisation
 if (binaryResp) {
+  bm.opt <- BIOMOD_ModelingOptions()
+  models <- c('SRE','RF', 'MAXENT.Phillips.2')
   models.eval.meth <- c('TSS','ROC')
 } else {
   models.eval.meth <- "R2"
+  models <- c("GLM", "RF", "MARS", "GAM")
+  bm.opt <- BIOMOD_ModelingOptions(RF = list(do.classif = FALSE),
+                                   GAM = list(k = 3),
+                                   MARS = list(glm = list(family = binomial), interaction.level = 1))
 }
+
 
 bm.mod <-
   BIOMOD_Modeling(
     bm.formdat,
-    # models = c('SRE','RF', 'MAXENT.Phillips.2'),
-    models = "GLM",
+    models = models,
     models.options = bm.opt,
     NbRunEval = 2,
     DataSplit = 80,
@@ -81,7 +86,7 @@ bm.mod <-
 ## print a summary of modeling stuff
 bm.mod
 
-# 4.1 Projection on current environemental conditions
+# 4.1 Projection on current environmental conditions
 if (binaryResp) {
   binary.meth <- 'TSS'
 } else {
@@ -98,13 +103,20 @@ bm.proj <-
     build.clamping.mask = FALSE
   )
 
+if (binaryResp) {
+  eval.metric.quality.threshold <- NULL
+} else {
+  eval.metric.quality.threshold <- 0.3
+}
+
 bm.ensemb <- BIOMOD_EnsembleModeling(bm.mod, em.by = "all",
                                      eval.metric = models.eval.meth,
-                                     eval.metric.quality.threshold = 0.3,
+                                     eval.metric.quality.threshold = eval.metric.quality.threshold,
                                      models.eval.meth = models.eval.meth)
 
 
 bm.ensembProj <- BIOMOD_EnsembleForecasting(EM.output = bm.ensemb, projection.output = bm.proj)
+plot(bm.ensembProj)
 
 # bm.maxent.mod.list <-
 #   BIOMOD_LoadModels(bm.mod, models='MAXENT.Phillips.2')
