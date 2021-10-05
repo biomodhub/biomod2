@@ -62,7 +62,7 @@ if (binaryResp) {
   models <- c('SRE','RF', 'MAXENT.Phillips.2')
   models.eval.meth <- c('TSS','ROC')
 } else {
-  models.eval.meth <- "R2"
+  models.eval.meth <- c("R2", "RMSE")
   models <- c("GLM", "RF", "MARS", "GAM")
   bm.opt <- BIOMOD_ModelingOptions(RF = list(do.classif = FALSE),
                                    GAM = list(k = 3),
