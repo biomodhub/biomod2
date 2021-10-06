@@ -49,7 +49,7 @@ importance}
 
 \item{models.eval.meth}{vector of names of evaluation metric
 among 'KAPPA', 'TSS', 'ROC', 'FAR', 'SR', 'ACCURACY',
-'BIAS', 'POD', 'CSI', 'ETS' and 'R2' (only for continuous data)}
+'BIAS', 'POD', 'CSI', 'ETS', 'R2' and 'RMSE' (the last two only for continuous data)}
 
 \item{SaveObj}{keep all results and outputs on hard drive or
 not (NOTE: strongly recommended)}

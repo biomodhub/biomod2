@@ -179,13 +179,13 @@ The aim of this function is to allow advanced user to change some default parame
     \item{\code{myFormula} : a typical formula object (see example). If not NULL, type and interaction.level args are switched off.
       You can choose to either:
         \itemize{
-          \item{generate automatically the GLM formula by using the type and interaction.level arguments
+          \item{generate automatically the GLM formula (using \code{family = binomial} by default) by using the type and interaction.level arguments
             type (default \code{'simple'}) : formula given to the model ('simple', 'quadratic' or 'polynomial').
             interaction.level (default \code{0}) : integer corresponding to the interaction level between variables considered. Consider that interactions quickly enlarge the number of effective variables used into the GLM/MARS.}
           \item{or construct specific formula}
         }}
     %    \item{\code{degree} (default \code{2})}
-    \item{\code{nk}} (default \code{NULL}) : an optional integer specifying the maximum number of model terms. If NULL is given then default mars function value is used ( i.e max(21, 2 * nb_expl_var + 1) )
+    \item{\code{nk}} (default \code{NULL}) : an optional integer specifying the maximum number of model terms. If NULL is given then default mars function value is used ( i.e min(200, 2 * nb_expl_var + 1) )
     \item{\code{penalty} (default \code{2})}
     \item{\code{thresh} (default \code{0.001})}
     \item{\code{nprune} (default \code{NULL})}
