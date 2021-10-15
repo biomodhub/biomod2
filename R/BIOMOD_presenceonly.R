@@ -9,7 +9,8 @@
 ##' 
 ##' @param modeling.output  "BIOMOD.models.out" object produced by a BIOMOD_Modeling run
 ##' @param EM.output        a "BIOMOD.EnsembleModeling.out" returned by BIOMOD_EnsembleModeling
-##' @param bg.env           a data frame or matrix of environmental variables which was extracted from the background (might be used if presences should be compared to the background instead of Absences or Pseudo-Absences selected for modelling). 
+##' @param bg.env           a data frame or matrix of environmental variables which was extracted from the background 
+##' (might be used if presences should be compared to the background instead of Absences or Pseudo-Absences selected for modelling). 
 ##' @param perc             Percentage of correctly classified presences for MPA (Default 90\%).  
 ##' @param save.output      logical. If TRUE (Default) the output is saved to the ".BIOMOD_DATA" folder
 ##' 
@@ -122,22 +123,30 @@ BIOMOD_presenceonly <- function(modeling.output = NULL, EM.output = NULL, bg.env
   
   myModelEval <- myBiomodProjFF <- NULL
   
-  if(!is.null(modeling.output)){  
-    calib.lines<-get(load(modeling.output@calib.lines@link))[,,1]
+  if(!is.null(modeling.output)){
+    calib.lines <- get(load(modeling.output@calib.lines@link))[,,1]
+    calib.notNA <- which(!is.na(calib.lines[,1])) ## CORRECTION : remove NA (pseudo-absences) from run1
+    calib.lines <- calib.lines[calib.notNA,] ## CORRECTION : keep only lines associated to sites
     myResp <- get(load(modeling.output@formated.input.data@link))@data.species
+    myResp <- myResp[calib.notNA] ## CORRECTION : keep only lines associated to sites 
     
     myModelEval <- get_evaluations(modeling.output,as.data.frame=T)
     myModelEval[,1] <- as.character(myModelEval[,1])
-    for(i in 1:nrow(myModelEval)){myModelEval[i,1] <- paste(c(modeling.output@sp.name,strsplit(as.character(myModelEval[i,1]),split="_")[[1]][3:1]),collapse="_")  } 
+    for(i in 1:nrow(myModelEval)){
+      myModelEval[i,1] <- paste(c(modeling.output@sp.name
+                                  , strsplit(as.character(myModelEval[i,1]), split="_")[[1]][3:1])
+                                , collapse="_")
+    }
     
     myModelPred <- get_predictions(modeling.output,as.data.frame=T)
     if(!is.null(bg.env)){
-      myModelPred.pres <- myModelPred[myResp==1,]
+      # myModelPred.pres <- myModelPred[which(myResp==1),] ## CORRECTION
+      myModelPred.sites <- as.data.frame(myModelPred) ## CORRECTION
       myBiomodProj.eval <- BIOMOD_Projection(
         new.env = bg.env,
         proj.name = paste(modeling.output@modeling.id,"cv_EF_eval",sep="_"),
         modeling.output = modeling.output,
-        build.clamping.mask = F)      
+        build.clamping.mask = F)
       myModelPred <- as.data.frame(myBiomodProj.eval@proj@val)
       ### Change the colnames to the real model names
       colnames(myModelPred) <- 
@@ -145,11 +154,18 @@ BIOMOD_presenceonly <- function(modeling.output = NULL, EM.output = NULL, bg.env
           modeling.output@sp.name,
           rep(dimnames(myBiomodProj.eval@proj@val)[[4]],prod(dim(myBiomodProj.eval@proj@val)[2:3])),
           rep(dimnames(myBiomodProj.eval@proj@val)[[3]],each = dim(myBiomodProj.eval@proj@val)[2]),
-          rep(dimnames(myBiomodProj.eval@proj@val)[[2]],dim(myBiomodProj.eval@proj@val)[3]), sep='_')
+          rep(dimnames(myBiomodProj.eval@proj@val)[[2]],dim(myBiomodProj.eval@proj@val)[3])
+          , sep='_')
     }
     if(modeling.output@has.evaluation.data == T){
-      myModelPred.eval  <- as.data.frame(get(load(paste(modeling.output@"sp.name","/.BIOMOD_DATA/",modeling.output@modeling.id,"/models.prediction.eval", sep=""))))
-      for(i in 1:ncol(myModelPred.eval)){colnames(myModelPred.eval)[i] <- paste(c(modeling.output@sp.name,strsplit(colnames(myModelPred.eval)[i],split="[.]")[[1]][3:1]),collapse="_")  }       
+      myModelPred.eval  <- as.data.frame(get(load(paste(modeling.output@"sp.name","/.BIOMOD_DATA/"
+                                                        , modeling.output@modeling.id
+                                                        , "/models.prediction.eval", sep=""))))
+      for(i in 1:ncol(myModelPred.eval)){
+        colnames(myModelPred.eval)[i] <- paste(c(modeling.output@sp.name
+                                                 , strsplit(colnames(myModelPred.eval)[i],split="[.]")[[1]][3:1])
+                                               , collapse="_")
+      }       
     }
   }
   
@@ -163,22 +179,20 @@ BIOMOD_presenceonly <- function(modeling.output = NULL, EM.output = NULL, bg.env
     }
     
     myBiomodProjFF <- get_predictions(EM.output,as.data.frame=T)  
-    
     if(!is.null(bg.env)){
-      myBiomodProjFF.pres <- as.data.frame(myBiomodProjFF[myResp==1,])
-      colnames(myBiomodProjFF.pres) <- colnames(myBiomodProjFF)
+      # myBiomodProjFF.pres <- as.data.frame(myBiomodProjFF[which(myResp==1),])
+      # colnames(myBiomodProjFF.pres) <- colnames(myBiomodProjFF)
+      myBiomodProjFF.sites <- as.data.frame(myBiomodProjFF)
+      myModelPred.sites <- cbind(myModelPred.sites, myBiomodProjFF.sites)
       myBiomodProjFF <- BIOMOD_EnsembleForecasting(
         proj.name = paste(modeling.output@modeling.id,"cv_EF_bg",sep="_"), 
         projection.output = myBiomodProj.eval,
         EM.output = EM.output)    
       myBiomodProjFF <- as.data.frame(myBiomodProjFF@proj@val)     
-      myModelPred.pres <- cbind(myModelPred.pres,myBiomodProjFF.pres)
     }
     myModelPred <- cbind(myModelPred, myBiomodProjFF)
-    
     if(modeling.output@has.evaluation.data == T){
       myBiomodProjFF.eval <- get_predictions(EM.output,as.data.frame=T,evaluation=T)  
-      
       #colnames(myBiomodProjFF.eval) <- gsub("AllAlgos_ROC_EMwmean","EF",  colnames(myBiomodProjFF.eval))
       myModelPred.eval <- cbind(myModelPred.eval, myBiomodProjFF.eval)      
     }  
@@ -189,71 +203,68 @@ BIOMOD_presenceonly <- function(modeling.output = NULL, EM.output = NULL, bg.env
   mpa.eval$Eval.metric <- "mpa"
   boyce.eval[,3:7]<-mpa.eval[,3:7]<-NA
   
-  ###MPA & BOYCE     
+  ### MPA & BOYCE     
   for(i in 1:nrow(boyce.eval)){
     n <- length(strsplit(as.character(boyce.eval[i,1]),split="_")[[1]])
     tec <- paste(strsplit(as.character(boyce.eval[i,1]),split="_")[[1]][3:n],collapse="_") 
     Model.name <- boyce.eval[i,1]
-    run <- strsplit(Model.name,split="_")[[1]][c(grep("RUN",strsplit(Model.name,split="_")[[1]]),grep("Full",strsplit(Model.name,split="_")[[1]]))]
+    run <- strsplit(Model.name,split="_")[[1]][c(grep("RUN",strsplit(Model.name,split="_")[[1]])
+                                                 , grep("Full",strsplit(Model.name,split="_")[[1]]))]
     
     #### CORRECTION ------------------------------------------------------------------------
     if(inherits(calib.lines, "matrix")){
-      ind.eval = which(calib.lines[,paste("_",run, sep="")] == FALSE) #### CORRECTION
-    }else{
-      ind.eval = which(calib.lines == FALSE) #### CORRECTION
+      ind.eval = which(calib.lines[,paste("_", run, sep="")] == FALSE)
+    } else {
+      ind.eval = which(calib.lines == FALSE)
     }
     
-    if(length(ind.eval)==0){      #this is the full model ##### CORRECTION
-      if(is.null(bg.env)){
-        # if(inherits(calib.lines, "matrix")){ #### PROBLEM : this part gives problem with the cbind after (not same number of rows)
-        #   test <- myResp
-        #   Pred<-myModelPred[,Model.name]
-        # }else{
-          test <- myResp[calib.lines]     
-          Pred <- myModelPred[calib.lines,Model.name]
-        # }
-      }else{
-        test <- c(myResp[which(myResp == 1)], rep(0, nrow(bg.env)))    
-        Pred <- c(myModelPred.pres[, Model.name], myModelPred[, Model.name])       
+    if(length(ind.eval)==0){
+      ind.obs = which(myResp ==1)
+    } else {
+      ind.obs = intersect(ind.eval, which(myResp ==1))
+    }
+    
+    if(is.null(bg.env)){
+      if(length(ind.eval)==0){
+        test <- myResp     
+        Pred <- myModelPred[, Model.name]
+      } else {
+        test <- myResp[ind.eval]
+        Pred <- myModelPred[ind.eval, Model.name]
       }
-    }else{
-      if(is.null(bg.env)){
-        test <- myResp[ind.eval] #### CORRECTION
-        Pred <- myModelPred[ind.eval, Model.name] #### CORRECTION
-      }else{
-        test <- c(myResp[intersect(ind.eval, which(myResp == 1))], rep(0, nrow(bg.env))) #### CORRECTION
-        Pred <- c(myModelPred.pres[intersect(ind.eval, which(myResp == 1)), Model.name]
-                  , myModelPred[, Model.name])  #### CORRECTION
-      }
+    } else{
+      test <- c(myResp[ind.obs], rep(0, nrow(bg.env)))
+      Pred <- c(myModelPred.sites[ind.obs, Model.name], myModelPred[, Model.name])
     }
     #### CORRECTION ------------------------------------------------------------------------
     
-    
-    ind.1 = which(test == 1)
     ind.notNA = which(!is.na(Pred))
-    ind.obs = intersect(ind.1, ind.notNA)
+    ind.b = which(boyce.eval[,1]==Model.name)
+    ind.m = which(mpa.eval[,1]==Model.name)
     
     if (length(ind.obs) > 0){ #### CORRECTION
-      boy <- ecospat::ecospat.boyce(fit=Pred[ind.notNA],obs=Pred[ind.obs], PEplot=F) #### CORRECTION
-      boyce.eval[boyce.eval[,1]==Model.name,3] <- boy$Spearman.cor
-      if( sum(boy$F.ratio<1,na.rm=T)>0){
-        boyce.eval[boyce.eval[,1]==Model.name,5] <- round(boy$HS[max(which(boy$F.ratio<1))],0)
+      boy <- ecospat::ecospat.boyce(fit=Pred[ind.notNA], obs=Pred[1:length(ind.obs)], PEplot=F) #### CORRECTION
+      boyce.eval[ind.b,3] <- boy$Spearman.cor
+      if(sum(boy$F.ratio<1,na.rm=T)>0){
+        boyce.eval[ind.b,5] <- round(boy$HS[max(which(boy$F.ratio<1))],0)
         DATA<-cbind(1:length(Pred), test, Pred/1000) #### PROBLEM
         DATA[is.na(DATA[,2]),2] <- 0
         DATA <- DATA[stats::complete.cases(DATA),]
         if(!is.na(round(boy$HS[max(which(boy$F.ratio<1))],0)/1000)){
-          EVAL<-presence.absence.accuracy(DATA, threshold=round(boy$HS[max(which(boy$F.ratio<1))],0)/1000) 
-          boyce.eval[boyce.eval[,1]==Model.name,6] <-  EVAL$sensitivity 
-          boyce.eval[boyce.eval[,1]==Model.name,7] <-  EVAL$specificity
-        }else{boyce.eval[boyce.eval[,1]==Model.name,6:7] <-  NA}
-      }else{
-        boyce.eval[boyce.eval[,1]==Model.name,7] <-  boyce.eval[boyce.eval[,1]==Model.name,6] <-  boyce.eval[boyce.eval[,1]==Model.name,5] <- NA 	
+          EVAL <- presence.absence.accuracy(DATA, threshold=round(boy$HS[max(which(boy$F.ratio<1))],0)/1000) 
+          boyce.eval[ind.b,6] <- EVAL$sensitivity 
+          boyce.eval[ind.b,7] <- EVAL$specificity
+        } else {
+          boyce.eval[ind.b,6:7] <- NA
+        }
+      } else {
+        boyce.eval[ind.b,7] <- boyce.eval[ind.b,6] <- boyce.eval[ind.b,5] <- NA 	
       }
       
-      mpa.eval[mpa.eval[,1]==Model.name,5] <- ecospat::ecospat.mpa(Pred[ind.obs], perc = perc) #### CORRECTION
-      EVAL<-presence.absence.accuracy(DATA, threshold=ecospat::ecospat.mpa(Pred[ind.obs], perc = perc)/1000) #### CORRECTION
-      mpa.eval[mpa.eval[,1]==Model.name,6] <-  EVAL$sensitivity 
-      mpa.eval[mpa.eval[,1]==Model.name,7] <-  EVAL$specificity  
+      mpa.eval[ind.m,5] <- ecospat::ecospat.mpa(Pred[1:length(ind.obs)], perc = perc) #### CORRECTION
+      EVAL<-presence.absence.accuracy(DATA, threshold=ecospat::ecospat.mpa(Pred[1:length(ind.obs)], perc = perc)/1000) #### CORRECTION
+      mpa.eval[ind.m,6] <-  EVAL$sensitivity 
+      mpa.eval[ind.m,7] <-  EVAL$specificity  
     }
     
     if(modeling.output@has.evaluation.data == T){
@@ -261,9 +272,9 @@ BIOMOD_presenceonly <- function(modeling.output = NULL, EM.output = NULL, bg.env
       Pred.eval <- myModelPred.eval[,Model.name]
       
       boy <- ecospat::ecospat.boyce(fit=Pred.eval,obs=Pred.eval[myResp.eval==1 & ind.1], PEplot=F) #### CORRECTION
-      boyce.eval[boyce.eval[,1]==Model.name,"Evaluating.data"] <- boy$Spearman.cor
+      boyce.eval[ind.mod, "Evaluating.data"] <- boy$Spearman.cor
       
-      mpa.eval[mpa.eval[,1]==Model.name,"Evaluating.data"] <- ecospat::ecospat.mpa(Pred.eval[myResp.eval==1 & ind.1], perc = perc) #### CORRECTION
+      mpa.eval[ind.m,"Evaluating.data"] <- ecospat::ecospat.mpa(Pred.eval[myResp.eval==1 & ind.1], perc = perc) #### CORRECTION
     }
   }
   myModelEval[,6:7] <- round(myModelEval[,6:7],1)
@@ -272,7 +283,9 @@ BIOMOD_presenceonly <- function(modeling.output = NULL, EM.output = NULL, bg.env
   
   if(modeling.output@has.evaluation.data == T){
     if(!is.null(EM.output)){
-      output <- list(eval=rbind(myModelEval,boyce.eval,mpa.eval),myBiomodProjFF=myBiomodProjFF,myBiomodProjEF.eval=myBiomodProjFF.eval) 
+      output <- list(eval=rbind(myModelEval,boyce.eval,mpa.eval)
+                     , myBiomodProjFF=myBiomodProjFF
+                     , myBiomodProjEF.eval=myBiomodProjFF.eval) 
     }else{
       output <- list(eval=rbind(myModelEval,boyce.eval,mpa.eval))      
     }
