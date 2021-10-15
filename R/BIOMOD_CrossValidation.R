@@ -108,76 +108,83 @@
 ##' }
 
 
-BIOMOD_CrossValidation <-
-  function (data, k = 5, repetition = 5, do.full.models = TRUE, 
-            stratified.cv = FALSE, stratify = "both", balance = "pres") 
+BIOMOD_CrossValidation <- function (data, k = 5, repetition = 5, do.full.models = TRUE
+                                    , stratified.cv = FALSE, stratify = "both", balance = "pres") 
+{
+  DataSplitTable.y <- DataSplitTable.x <- DataSplitTable <- NULL
+  
+  ## STRATIFIED (X, Y, BOTH) / BLOCK / ENVIRONMENTAL CROSS VALIDATION -----------------------------
+  if (stratified.cv)
   {
-    DataSplitTable.y <- DataSplitTable.x <- DataSplitTable <- NULL
-    if (stratified.cv) {
-      repetition <- 1
-      if (balance == "absences") {
-        balance <- data@data.species == 1 | data@data.species == 0
-      } else {
-        balance <- data@data.species == 1
-      }
-      if (stratify == "x" | stratify == "both") {
-        DataSplitTable.x <- matrix(NA, nrow(data@coord), k)
-        bands <- quantile(data@coord[balance, 1], probs = seq(0, 100, 100/k)/100)
-        bands[1] <- bands[1] - 1
-        bands[k + 1] <- bands[k + 1] + 1
-        for (i in 1:k) {
-          DataSplitTable.x[, i] <- data@coord[, 1] >= bands[i] & data@coord[, 1] < bands[i + 1]
-        }
-        if (stratify == "x") {
-          DataSplitTable <- DataSplitTable.x
-        }
-      }
-      if (stratify == "y" | stratify == "both") {
-        DataSplitTable.y <- matrix(NA, nrow(data@coord), k)
-        bands <- quantile(data@coord[balance, 2], probs = seq(0, 100, 100/k)/100)
-        bands[1] <- bands[1] - 1
-        bands[k + 1] <- bands[k + 1] + 1
-        for (i in 1:k) {
-          DataSplitTable.y[, i] <- data@coord[, 2] >= bands[i] & data@coord[, 2] < bands[i + 1]
-        }
-        if (stratify == "y") {
-          DataSplitTable <- DataSplitTable.y
-        }
-      }
-      if (stratify == "both") {
-        DataSplitTable <- cbind(DataSplitTable.x, DataSplitTable.y)
-      }
-      if (stratify == "block") {
-        DataSplitTable <- as.data.frame(matrix(NA, nrow(data@coord), 4))
-        blocks<-ENMeval::get.block(data@coord[data@data.species==1,],
-                                   data@coord[data@data.species==0,])
-        for(i in 1:4){
-          DataSplitTable[data@data.species == 1,i] <- blocks[[1]]!=i     
-          DataSplitTable[data@data.species == 0,i] <- blocks[[2]]!=i     
-        }
-      }      
-      if (stratify != "block" & stratify != "x" & stratify != "y" & stratify != "both") {
-        DataSplitTable2 <- as.data.frame(matrix(NA, nrow(data@coord), k))
-        bands <- quantile(data@data.env.var[balance, stratify], probs = seq(0, 100, 100/k)/100)
-        bands[1] <- bands[1] - 1
-        bands[k + 1] <- bands[k + 1] + 1
-        for (i in 1:k) {
-          DataSplitTable2[, i] <- data@data.env.var[balance, stratify] <= bands[i] | data@data.env.var[balance, stratify] > bands[i + 1]
-        }
-      }
+    if (balance == "absences") {
+      balance <- (data@data.species == 1 | data@data.species == 0)
     } else {
-      for (rep in 1:repetition) {
-        fold <- dismo::kfold(data@data.species, by = data@data.species, k = k)
-        for (i in 1:k) {
-          DataSplitTable <- cbind(DataSplitTable, fold != i)
-        }
-      }
-    }
-    colnames(DataSplitTable) <- paste("RUN", 1:ncol(DataSplitTable), sep = "")
-    if (do.full.models == TRUE) {
-      DataSplitTable <- cbind(DataSplitTable, T)
-      colnames(DataSplitTable)[ncol(DataSplitTable)] <- "Full"
+      balance <- (data@data.species == 1)
     }
     
-    return(DataSplitTable)
+    ## (X, Y, BOTH) STRATIFIED CROSS VALIDATION  -------------------------------
+    if (stratify == "x" | stratify == "both") {
+      DataSplitTable.x <- matrix(NA, nrow(data@coord), k)
+      bands <- quantile(data@coord[balance, 1], probs = seq(0, 100, 100 / k) / 100)
+      bands[1] <- bands[1] - 1
+      bands[k + 1] <- bands[k + 1] + 1
+      for (i in 1:k) {
+        DataSplitTable.x[, i] <- (data@coord[, 1] >= bands[i] & data@coord[, 1] < bands[i + 1])
+      }
+      if (stratify == "x") { DataSplitTable <- DataSplitTable.x }
+    }
+    if (stratify == "y" | stratify == "both") {
+      DataSplitTable.y <- matrix(NA, nrow(data@coord), k)
+      bands <- quantile(data@coord[balance, 2], probs = seq(0, 100, 100 / k) / 100)
+      bands[1] <- bands[1] - 1
+      bands[k + 1] <- bands[k + 1] + 1
+      for (i in 1:k) {
+        DataSplitTable.y[, i] <- (data@coord[, 2] >= bands[i] & data@coord[, 2] < bands[i + 1])
+      }
+      if (stratify == "y") { DataSplitTable <- DataSplitTable.y }
+    }
+    if (stratify == "both") { ## Merge X and Y tables
+      DataSplitTable <- cbind(DataSplitTable.x, DataSplitTable.y)
+    }
+    
+    ## BLOCK STRATIFIED CROSS VALIDATION --------------------------------------
+    if (stratify == "block") {
+      DataSplitTable <- as.data.frame(matrix(NA, nrow(data@coord), 4))
+      blocks<-ENMeval::get.block(data@coord[data@data.species == 1, ]
+                                 , data@coord[data@data.species == 0, ])
+      for (i in 1:4) {
+        DataSplitTable[data@data.species == 1, i] <- blocks[[1]] != i
+        DataSplitTable[data@data.species == 0, i] <- blocks[[2]] != i     
+      }
+    }
+    
+    ## ENVIRONMENTAL STRATIFIED CROSS VALIDATION ------------------------------
+    if (stratify != "block" & stratify != "x" & stratify != "y" & stratify != "both") {
+      DataSplitTable2 <- as.data.frame(matrix(NA, nrow(data@coord), k))
+      bands <- quantile(data@data.env.var[balance, stratify], probs = seq(0, 100, 100 / k) / 100)
+      bands[1] <- bands[1] - 1
+      bands[k + 1] <- bands[k + 1] + 1
+      for (i in 1:k) {
+        DataSplitTable2[, i] <- (data@data.env.var[balance, stratify] <= bands[i] | 
+                                   data@data.env.var[balance, stratify] > bands[i + 1])
+      }
+    }
+  } else {
+    ## K-FOLD CROSS VALIDATION --------------------------------------------------------------------
+    for (rep in 1:repetition) {
+      fold <- dismo::kfold(data@data.species, by = data@data.species, k = k)
+      for (i in 1:k) {
+        DataSplitTable <- cbind(DataSplitTable, fold != i)
+      }
+    }
   }
+  
+  ## CLEAN FINAL TABLE ----------------------------------------------------------------------------
+  colnames(DataSplitTable) <- paste("RUN", 1:ncol(DataSplitTable), sep = "")
+  if (do.full.models == TRUE) {
+    DataSplitTable <- cbind(DataSplitTable, T)
+    colnames(DataSplitTable)[ncol(DataSplitTable)] <- "Full"
+  }
+  
+  return(DataSplitTable)
+}
