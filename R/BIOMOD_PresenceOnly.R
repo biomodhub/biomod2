@@ -309,7 +309,7 @@ BIOMOD_PresenceOnly <- function(modeling.output = NULL, EM.output = NULL, bg.env
   if (save.output) {
     if (!is.null(modeling.output)) { sp <- modeling.output@sp.name }
     if (!is.null(EM.output)) { sp <- EM.output@sp.name }
-    save(output, file = paste0(sp, "/.BIOMOD_DATA/", modeling.output@modeling.id, "/presenceonlyevaluation_", sp))
+    save(output, file = paste0(sp, "/.BIOMOD_DATA/", modeling.output@modeling.id, "/presenceonly.evaluation_", sp))
   }
   return(output)
 }

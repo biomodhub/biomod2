@@ -1,5 +1,5 @@
-##' @name BIOMOD_cv
-##' @aliases BIOMOD_cv
+##' @name BIOMOD_CrossValidation
+##' @aliases BIOMOD_CrossValidation
 ##' 
 ##' @title Custom models cross-validation procedure
 ##' 
@@ -77,8 +77,8 @@
 ##' 
 ##' # 3. Creating DataSplitTable
 ##' 
-##' DataSplitTable <- BIOMOD_cv(myBiomodData, k=5, rep=2, do.full.models=F)
-##' DataSplitTable.y <- BIOMOD_cv(myBiomodData,stratified.cv=T, stratify="y", k=2)
+##' DataSplitTable <- BIOMOD_CrossValidation(myBiomodData, k=5, rep=2, do.full.models=F)
+##' DataSplitTable.y <- BIOMOD_CrossValidation(myBiomodData,stratified.cv=T, stratify="y", k=2)
 ##' colnames(DataSplitTable.y)[1:2] <- c("RUN11","RUN12")
 ##' DataSplitTable <- cbind(DataSplitTable,DataSplitTable.y)
 ##' head(DataSplitTable)
@@ -108,7 +108,7 @@
 ##' }
 
 
-BIOMOD_cv <-
+BIOMOD_CrossValidation <-
   function (data, k = 5, repetition = 5, do.full.models = TRUE, 
             stratified.cv = FALSE, stratify = "both", balance = "pres") 
   {
