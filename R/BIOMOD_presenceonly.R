@@ -245,13 +245,14 @@ BIOMOD_presenceonly <- function(modeling.output = NULL, EM.output = NULL, bg.env
     ind.m = which(mpa.eval[,1]==Model.name)
     
     if (length(ind.obs) > 0){ #### CORRECTION
+      DATA<-cbind(1:length(Pred), test, Pred/1000) #### PROBLEM
+      DATA[is.na(DATA[,2]),2] <- 0
+      DATA <- DATA[stats::complete.cases(DATA),]
+      
       boy <- ecospat::ecospat.boyce(fit=Pred[ind.notNA], obs=Pred[1:length(ind.obs)], PEplot=F) #### CORRECTION
       boyce.eval[ind.b,3] <- boy$Spearman.cor
       if(sum(boy$F.ratio<1,na.rm=T)>0){
         boyce.eval[ind.b,5] <- round(boy$HS[max(which(boy$F.ratio<1))],0)
-        DATA<-cbind(1:length(Pred), test, Pred/1000) #### PROBLEM
-        DATA[is.na(DATA[,2]),2] <- 0
-        DATA <- DATA[stats::complete.cases(DATA),]
         if(!is.na(round(boy$HS[max(which(boy$F.ratio<1))],0)/1000)){
           EVAL <- presence.absence.accuracy(DATA, threshold=round(boy$HS[max(which(boy$F.ratio<1))],0)/1000) 
           boyce.eval[ind.b,6] <- EVAL$sensitivity 
