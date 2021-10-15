@@ -229,8 +229,8 @@ BIOMOD_presenceonly <- function(modeling.output = NULL, EM.output = NULL, bg.env
     cat("\n\n ==> LENGTH ind.obs : ", length(ind.obs))
     
     if(is.null(bg.env)){
-      test <- myResp[ind.obs]
-      Pred <- myModelPred[ind.obs, Model.name]
+      # test <- myResp[ind.obs]
+      # Pred <- myModelPred[ind.obs, Model.name]
       # if(length(ind.eval)==0){
       #   test <- myResp
       #   Pred <- myModelPred[, Model.name]
@@ -238,9 +238,18 @@ BIOMOD_presenceonly <- function(modeling.output = NULL, EM.output = NULL, bg.env
       #   test <- myResp[ind.eval]
       #   Pred <- myModelPred[ind.eval, Model.name]
       # }
+      if(length(ind.eval)==0){
+        test <- myResp
+        Pred <- myModelPred[, Model.name]
+      } else {
+        test <- myResp[ind.eval]
+        Pred <- myModelPred[ind.eval, Model.name]
+      }
+      Pred.obs <- Pred[which(test == 1)]
     } else {
       test <- c(myResp[ind.obs], rep(0, nrow(bg.env)))
       Pred <- c(myModelPred.sites[ind.obs, Model.name], myModelPred[, Model.name])
+      Pred.obs <- Pred[1:length(ind.obs)]
     }
     #### CORRECTION ------------------------------------------------------------------------
     
@@ -259,7 +268,7 @@ BIOMOD_presenceonly <- function(modeling.output = NULL, EM.output = NULL, bg.env
       DATA <- DATA[stats::complete.cases(DATA),]
       print(head(DATA))
       
-      boy <- ecospat::ecospat.boyce(fit=Pred[ind.notNA], obs=Pred[1:length(ind.obs)], PEplot=F) #### CORRECTION
+      boy <- ecospat::ecospat.boyce(fit=Pred[ind.notNA], obs=Pred.obs, PEplot=F) #### CORRECTION
       print(boy)
       boyce.eval[ind.b,3] <- boy$Spearman.cor
       if(sum(boy$F.ratio<1,na.rm=T)>0){
@@ -276,9 +285,9 @@ BIOMOD_presenceonly <- function(modeling.output = NULL, EM.output = NULL, bg.env
         boyce.eval[ind.b,7] <- boyce.eval[ind.b,6] <- boyce.eval[ind.b,5] <- NA 	
       }
       
-      mpa.eval[ind.m,5] <- ecospat::ecospat.mpa(Pred[1:length(ind.obs)], perc = perc) #### CORRECTION
+      mpa.eval[ind.m,5] <- ecospat::ecospat.mpa(Pred.obs, perc = perc) #### CORRECTION
       print(mpa.eval[ind.m,5])
-      EVAL <- presence.absence.accuracy(DATA, threshold=ecospat::ecospat.mpa(Pred[1:length(ind.obs)], perc = perc)/1000) #### CORRECTION
+      EVAL <- presence.absence.accuracy(DATA, threshold=ecospat::ecospat.mpa(Pred.obs, perc = perc)/1000) #### CORRECTION
       print(EVAL)
       mpa.eval[ind.m,6] <- EVAL$sensitivity 
       mpa.eval[ind.m,7] <- EVAL$specificity  
