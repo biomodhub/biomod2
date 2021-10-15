@@ -158,9 +158,9 @@ BIOMOD_presenceonly <- function(modeling.output = NULL, EM.output = NULL, bg.env
           , sep='_')
     }
     if(modeling.output@has.evaluation.data == T){
-      myModelPred.eval  <- as.data.frame(get(load(paste(modeling.output@"sp.name","/.BIOMOD_DATA/"
+      myModelPred.eval  <- as.data.frame(get(load(paste0(modeling.output@"sp.name","/.BIOMOD_DATA/"
                                                         , modeling.output@modeling.id
-                                                        , "/models.prediction.eval", sep=""))))
+                                                        , "/models.prediction.eval"))))
       for(i in 1:ncol(myModelPred.eval)){
         colnames(myModelPred.eval)[i] <- paste(c(modeling.output@sp.name
                                                  , strsplit(colnames(myModelPred.eval)[i],split="[.]")[[1]][3:1])
@@ -213,16 +213,20 @@ BIOMOD_presenceonly <- function(modeling.output = NULL, EM.output = NULL, bg.env
     
     #### CORRECTION ------------------------------------------------------------------------
     if(inherits(calib.lines, "matrix")){
-      ind.eval = which(calib.lines[,paste("_", run, sep="")] == FALSE)
+      ind.eval = which(calib.lines[, paste0("_", run)] == FALSE)
     } else {
       ind.eval = which(calib.lines == FALSE)
     }
     
-    if(length(ind.eval)==0){
-      ind.obs = which(myResp ==1)
+    cat("\n\n ==> LENGTH ind.eval : ", length(ind.eval))
+    
+    if(length(ind.eval) == 0){
+      ind.obs = which(myResp == 1)
     } else {
-      ind.obs = intersect(ind.eval, which(myResp ==1))
+      ind.obs = intersect(ind.eval, which(myResp == 1))
     }
+    cat("\n\n ==> LENGTH which(myResp == 1) : ", length(which(myResp == 1)))
+    cat("\n\n ==> LENGTH ind.obs : ", length(ind.obs))
     
     if(is.null(bg.env)){
       test <- myResp[ind.obs]
@@ -244,17 +248,25 @@ BIOMOD_presenceonly <- function(modeling.output = NULL, EM.output = NULL, bg.env
     ind.b = which(boyce.eval[,1]==Model.name)
     ind.m = which(mpa.eval[,1]==Model.name)
     
+    cat("\n\n ==> LENGTH test : ", length(test))
+    cat("\n\n ==> LENGTH Pred : ", length(Pred))
+    cat("\n\n ==> LENGTH ind.notNA : ", length(ind.notNA))
+    
+    
     if (length(ind.obs) > 0){ #### CORRECTION
       DATA<-cbind(1:length(Pred), test, Pred/1000) #### PROBLEM
       DATA[is.na(DATA[,2]),2] <- 0
       DATA <- DATA[stats::complete.cases(DATA),]
+      print(head(DATA))
       
       boy <- ecospat::ecospat.boyce(fit=Pred[ind.notNA], obs=Pred[1:length(ind.obs)], PEplot=F) #### CORRECTION
+      print(boy)
       boyce.eval[ind.b,3] <- boy$Spearman.cor
       if(sum(boy$F.ratio<1,na.rm=T)>0){
         boyce.eval[ind.b,5] <- round(boy$HS[max(which(boy$F.ratio<1))],0)
         if(!is.na(round(boy$HS[max(which(boy$F.ratio<1))],0)/1000)){
-          EVAL <- presence.absence.accuracy(DATA, threshold=round(boy$HS[max(which(boy$F.ratio<1))],0)/1000) 
+          EVAL <- presence.absence.accuracy(DATA, threshold=round(boy$HS[max(which(boy$F.ratio<1))],0)/1000)
+          print(EVAL)
           boyce.eval[ind.b,6] <- EVAL$sensitivity 
           boyce.eval[ind.b,7] <- EVAL$specificity
         } else {
@@ -265,9 +277,11 @@ BIOMOD_presenceonly <- function(modeling.output = NULL, EM.output = NULL, bg.env
       }
       
       mpa.eval[ind.m,5] <- ecospat::ecospat.mpa(Pred[1:length(ind.obs)], perc = perc) #### CORRECTION
-      EVAL<-presence.absence.accuracy(DATA, threshold=ecospat::ecospat.mpa(Pred[1:length(ind.obs)], perc = perc)/1000) #### CORRECTION
-      mpa.eval[ind.m,6] <-  EVAL$sensitivity 
-      mpa.eval[ind.m,7] <-  EVAL$specificity  
+      print(mpa.eval[ind.m,5])
+      EVAL <- presence.absence.accuracy(DATA, threshold=ecospat::ecospat.mpa(Pred[1:length(ind.obs)], perc = perc)/1000) #### CORRECTION
+      print(EVAL)
+      mpa.eval[ind.m,6] <- EVAL$sensitivity 
+      mpa.eval[ind.m,7] <- EVAL$specificity  
     }
     
     if(modeling.output@has.evaluation.data == T){
@@ -297,7 +311,7 @@ BIOMOD_presenceonly <- function(modeling.output = NULL, EM.output = NULL, bg.env
         sp<-modeling.output@sp.name}
       if(!is.null(EM.output)){
         sp<-EM.output@sp.name}      
-      save(output, paste(sp, "/.BIOMOD_DATA/",modeling.output@modeling.id,"/presenceonlyevaluation_",sp, sep=""))
+      save(output, paste0(sp, "/.BIOMOD_DATA/", modeling.output@modeling.id, "/presenceonlyevaluation_", sp))
     }
     return(output)
   }else{
@@ -311,7 +325,7 @@ BIOMOD_presenceonly <- function(modeling.output = NULL, EM.output = NULL, bg.env
         sp<-modeling.output@sp.name}
       if(!is.null(EM.output)){
         sp<-EM.output@sp.name}      
-      save(output, file=paste(sp, "/.BIOMOD_DATA/",modeling.output@modeling.id,"/presenceonlyevaluation_",sp, sep=""))
+      save(output, file=paste0(sp, "/.BIOMOD_DATA/", modeling.output@modeling.id, "/presenceonlyevaluation_", sp))
     }
     return(output)
   }
