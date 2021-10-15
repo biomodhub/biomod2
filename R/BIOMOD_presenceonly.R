@@ -225,14 +225,16 @@ BIOMOD_presenceonly <- function(modeling.output = NULL, EM.output = NULL, bg.env
     }
     
     if(is.null(bg.env)){
-      if(length(ind.eval)==0){
-        test <- myResp     
-        Pred <- myModelPred[, Model.name]
-      } else {
-        test <- myResp[ind.eval]
-        Pred <- myModelPred[ind.eval, Model.name]
-      }
-    } else{
+      test <- myResp[ind.obs]
+      Pred <- myModelPred[ind.obs, Model.name]
+      # if(length(ind.eval)==0){
+      #   test <- myResp
+      #   Pred <- myModelPred[, Model.name]
+      # } else {
+      #   test <- myResp[ind.eval]
+      #   Pred <- myModelPred[ind.eval, Model.name]
+      # }
+    } else {
       test <- c(myResp[ind.obs], rep(0, nrow(bg.env)))
       Pred <- c(myModelPred.sites[ind.obs, Model.name], myModelPred[, Model.name])
     }
