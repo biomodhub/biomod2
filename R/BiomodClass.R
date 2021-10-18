@@ -1599,13 +1599,16 @@ setMethod("get_formal_data", "BIOMOD.models.out",
                 } else{ return(NA) }
               }
             } else if(subinfo == 'MinMax'){
-              return(apply(get_formal_data(obj, "expl.var"),2, function(x){
-                if(is.numeric(x)){
-                  return( list(min = min(x,na.rm=T), max = max(x, na.rm=T) ) )
-                } else if(is.factor(x)){
+              MinMax = foreach::foreach(i = 1:ncol(env)) %do% {
+                x = env[, i]
+                if (is.numeric(x)) {
+                  return(list(min = min(x, na.rm = T), max = max(x, na.rm = T)))
+                } else if (is.factor(x)) {
                   return(list(levels = levels(x)))
                 }
-              }) )
+              }
+              names(MinMax) = colnames(env)
+              return(MinMax)
             } else if(subinfo == 'expl.var'){
               return(as.data.frame(get_formal_data(obj)@data.env.var))
             } else if(subinfo == 'expl.var.names'){
