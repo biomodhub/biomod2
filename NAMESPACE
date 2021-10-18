@@ -58,7 +58,7 @@ importFrom("dismo", kfold)
 importFrom("PresenceAbsence", presence.absence.accuracy)
 importFrom("caret", trainControl, twoClassSummary)
 importFrom("ENMeval", ENMevaluate)
-importFrom("foreach", "%dopar%")
+importFrom("foreach", "%do%", "%dopar%")
 
 importFrom("grDevices", "colorRampPalette", "colors", "dev.new",
            "dev.off", "gray", "jpeg", "pdf", "png", "postscript",
@@ -207,8 +207,8 @@ export(
 	update_objects,
 	variables_importance,
   .create.maxent.bg.dir,
-	BIOMOD_cv,
-	BIOMOD_presenceonly,
+	BIOMOD_CrossValidation,
+	BIOMOD_PresenceOnly,
 	BIOMOD_tuning,
   sample.factor.levels,
 	.transform.outputs.list,

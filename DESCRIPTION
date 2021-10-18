@@ -1,8 +1,8 @@
 Package: biomod2
 Type: Package
 Title: Ensemble Platform for Species Distribution Modeling
-Version: 3.5.1
-Date: 2021-07-28
+Version: 3.5.2
+Date: 2021-10-18
 Author: Wilfried Thuiller [aut, cre],
     Damien Georges [aut, cre],
     Maya Gueguen [aut],
@@ -18,7 +18,7 @@ Description: Functions for species distribution modeling, calibration and evalua
   dataset and to combine them in ensemble models and ensemble projections. Some bench of other 
   evaluation and visualisation tools are also available within the package.
 Depends:
-    R (>= 3.4.0)
+    R (>= 4.1.1)
 Imports:
     stats,
     utils,
@@ -71,8 +71,8 @@ Collate:
     'BIOMOD_ModelingOptions.R'
     'BIOMOD_Projection.R'
     'BIOMOD_RangeSize.R'
-    'BIOMOD_cv.R'
-    'BIOMOD_presenceonly.R'
+    'BIOMOD_CrossValidation.R'
+    'BIOMOD_PresenceOnly.R'
     'BIOMOD_tuning.R'
     'BinaryTransformation.R'
     'Biomod.Models_RE.R'
