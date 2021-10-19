@@ -60,11 +60,11 @@ setClass("BIOMOD.stored.models.options",
          prototype(val = NULL),
          validity = function(object){ return(TRUE) })
 
-setClass("BIOMOD.stored.models.out",
-         contains = "BIOMOD.stored.data",
-         representation(val = 'BIOMOD.models.out'),
-         prototype(val = NULL),
-         validity = function(object){ return(TRUE) } )
+# setClass("BIOMOD.stored.models.out",
+#          contains = "BIOMOD.stored.data",
+#          representation(val = 'BIOMOD.models.out'),
+#          prototype(val = NULL),
+#          validity = function(object){ return(TRUE) } )
 
 
 ###################################################################################################

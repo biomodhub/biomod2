@@ -13,6 +13,7 @@ requireNamespace(".0
 # We choose here to create monospecific objects to make all procedures and parallelising easier
 requireNamespacrasterVis", quietly=TRUE)
 
+##' @include biomod2_classes_3.R
 
 
 ###################################################################################################
@@ -74,6 +75,12 @@ setClass("BIOMOD.models.out",
                    calib.lines = new('BIOMOD.stored.array'),
                    models.options = new('BIOMOD.stored.models.options'),
                    link = ''),
+         validity = function(object){ return(TRUE) } )
+
+setClass("BIOMOD.stored.models.out",
+         contains = "BIOMOD.stored.data",
+         representation(val = 'BIOMOD.models.out'),
+         prototype(val = NULL),
          validity = function(object){ return(TRUE) } )
 
 

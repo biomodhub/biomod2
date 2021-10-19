@@ -13,7 +13,7 @@ requireNamespace(".0
 # We choose here to create monospecific objects to make all procedures and parallelising easier
 requireNamespacrasterVis", quietly=TRUE)
 
-
+##' @include biomod2_classes_1.R
 
 ###################################################################################################
 ## 1. BIOMOD.formated.data

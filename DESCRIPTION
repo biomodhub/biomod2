@@ -9,9 +9,9 @@ Author: Wilfried Thuiller [aut, cre],
     Robin Engler [aut],
     Frank Breiner [aut]
 Maintainer: Damien Georges <damien.georges2@gmail.com>, Maya Gueguen <maya.gueguen@univ-grenoble-alpes.fr>
-Contact: Wilfried Thuiller <wilfried.thuiller@ujf-grenoble.fr>, Damien Georges
+Contact: Wilfried Thuiller <wilfried.thuiller@univ-grenoble-alpes.fr>, Damien Georges
     <damien.georges2@gmail.com>, Maya Gueguen <maya.gueguen@univ-grenoble-alpes.fr>
-BugReports: https://r-forge.r-project.org/forum/forum.php?eforum_id=995&group_id=302
+BugReports: https://github.com/biomodhub/biomod2/issues
 Description: Functions for species distribution modeling, calibration and evaluation, 
   ensemble of models, ensemble forecasting and visualization. The package permits to run
   consistently up to 10 single models on a presence/absences (resp presences/pseudo-absences)
@@ -63,20 +63,19 @@ License: GPL-3
 RoxygenNote: 7.1.1
 Collate: 
     'BIOMOD_ConvertOldRun.R'
+    'BIOMOD_CrossValidation.R'
     'BIOMOD_EnsembleForecasting.R'
     'BIOMOD_EnsembleModeling.R'
     'BIOMOD_FormatingData.R'
     'BIOMOD_LoadModels.R'
     'BIOMOD_Modeling.R'
     'BIOMOD_ModelingOptions.R'
+    'BIOMOD_PresenceOnly.R'
     'BIOMOD_Projection.R'
     'BIOMOD_RangeSize.R'
-    'BIOMOD_CrossValidation.R'
-    'BIOMOD_PresenceOnly.R'
     'BIOMOD_tuning.R'
     'BinaryTransformation.R'
     'Biomod.Models_RE.R'
-    'BiomodClass.R'
     'CVnnet.R'
     'CleverCut.R'
     'CustomIndexMaker.R'
@@ -87,7 +86,11 @@ Collate:
     'Projection.R'
     'Rescaler4.R'
     'SampleMat2.R'
-    'biomod2_models-class.R'
+    'biomod2_classes_1.R'
+    'biomod2_classes_2.R'
+    'biomod2_classes_3.R'
+    'biomod2_classes_4.R'
+    'biomod2_internal.R'
     'deprecated_functions.R'
     'functionkeep.R'
     'level.plot.R'

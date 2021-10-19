@@ -1,4 +1,4 @@
-##' @include BiomodClass.R
+##' @include biomod2_classes_4.R
 ##' @name FilteringTransformation
 ##' @aliases FilteringTransformation
 ##' @aliases FilteringTransformation-methods
