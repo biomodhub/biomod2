@@ -207,7 +207,7 @@ check_data_range <- function(model, new_data)
   return(new_data)
 }
 
-
+## FOR SINGLE MODELS ----------------------------------------------------------
 .template_predict = function(mod, object, newdata, ...)
 {
   args <- list(...)
@@ -294,5 +294,45 @@ check_data_range <- function(model, new_data)
   return(proj)
 }
 
+## FOR ENSEMBLE MODELS --------------------------------------------------------
+.template_predictEM = function(mod, object, newdata, formal_predictions, ...)
+{
+  args <- list(...)
+  do_check <- args$do_check
+  if (is.null(do_check)) { do_check <- TRUE }
+  if (do_check) { newdata <- check_data_range(model = object, new_data = newdata) }
+  
+  if (inherits(newdata, 'Raster') | inherits(formal_predictions, 'Raster')) {
+    eval(parse(text = paste0("res = .predict.", mod, "_biomod2_model.RasterStack(object, newdata, formal_predictions, ...)")))
+    return(res)
+  } else if (inherits(newdata, 'data.frame') | inherits(newdata, 'matrix') | 
+             inherits(formal_predictions, 'data.frame') | inherits(formal_predictions, 'matrix')) {
+    eval(parse(text = paste0("res = .predict.", mod, "_biomod2_model.data.frame(object, newdata, formal_predictions, ...)")))
+    return(res)
+  } else {
+    stop("invalid newdata input")
+  }
+}
 
-
+.template_predictEM.formal_predictions = function(object, newdata, formal_predictions, ...)
+{
+  args <- list(...)
+  filename <- args$filename
+  on_0_1000 <- args$on_0_1000
+  
+  if (is.null(filename)) { filename <- "" }
+  if (is.null(on_0_1000)) { on_0_1000 <- FALSE }
+  
+  if (is.null(formal_predictions)) {
+    # make prediction of all models required
+    formal_predictions <- raster::stack(lapply(object@model,
+                                               function(mod, resp_name, modeling.id)
+                                               {
+                                                 ## check if model is loaded on memory
+                                                 if (is.character(mod)) { mod <- get(load(file.path(resp_name, "models", modeling.id, mod))) }
+                                                 return(predict(mod, newdata = newdata, on_0_1000 = on_0_1000))
+                                               }, resp_name = object@resp_name, modeling.id = object@modeling.id))
+  }
+  
+  return(formal_predictions)
+}
