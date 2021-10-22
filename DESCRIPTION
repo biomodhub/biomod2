@@ -90,6 +90,7 @@ Collate:
     'biomod2_classes_2.R'
     'biomod2_classes_3.R'
     'biomod2_classes_4.R'
+    'biomod2_classes_5.R'
     'biomod2_internal.R'
     'deprecated_functions.R'
     'functionkeep.R'
