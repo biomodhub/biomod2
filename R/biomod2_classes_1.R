@@ -797,9 +797,9 @@ setClass("BIOMOD.Model.Options",
            }
            test <- .fun_testIfPosInt(test, "GBM$interaction.depth", object@GBM$interaction.depth)
            test <- .fun_testIfPosInt(test, "GBM$n.minobsinnode", object@GBM$n.minobsinnode)
-           test <- .fun_testIfPosNum(test, "GBM$shrinkage", object@GLM$shrinkage)
-           test <- .fun_testIf01(test, "GBM$bag.fraction", object@GLM$bag.fraction)
-           test <- .fun_testIf01(test, "GBM$train.fraction", object@GLM$train.fraction)
+           test <- .fun_testIfPosNum(test, "GBM$shrinkage", object@GBM$shrinkage)
+           test <- .fun_testIf01(test, "GBM$bag.fraction", object@GBM$bag.fraction)
+           test <- .fun_testIf01(test, "GBM$train.fraction", object@GBM$train.fraction)
            test <- .fun_testIfPosInt(test, "GBM$cv.folds", object@GBM$cv.folds)
            if(!is.logical(object@GBM$keep.data)){ cat("\nGBM$keep.data must be a logical"); test <- FALSE }
            if(!is.logical(object@GBM$verbose)){ cat("\nGBM$verbose must be a logical"); test <- FALSE }
