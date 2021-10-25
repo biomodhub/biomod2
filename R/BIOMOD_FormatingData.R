@@ -266,7 +266,7 @@
   if(!is.null(eval.resp.var)){
     # do the same test than previous one
     ###### eval.resp.var
-    if(!(class(eval.resp.var) %in% available.types)){
+    if(!(class(eval.resp.var)[1] %in% available.types)){
       stop( paste("Response variable must be one of ", toString(available.types), sep="") )
     }
 
@@ -279,7 +279,7 @@
 
     ###### expl.var
     if(!is.null(eval.expl.var)){
-      if(!(class(eval.expl.var) %in% available.types[-which(available.types == 'SpatialPoints')])){
+      if(!(class(eval.expl.var)[1] %in% available.types[-which(available.types == 'SpatialPoints')])){
         stop( paste("Explanatory variable must be one of ", toString(available.types), sep="") )
       }
     } else{
@@ -294,7 +294,7 @@
         cat("\n      ! XY coordinates of response variable will be ignored because spatial response object is given.")
       }
       eval.resp.xy <- data.matrix(sp::coordinates(eval.resp.var))
-      if(class(eval.resp.var) == 'SpatialPointsDataFrame'){
+      if(class(eval.resp.var)[1] == 'SpatialPointsDataFrame'){
         eval.resp.var <- eval.resp.var@data
       } else{
         cat("\n      ! Response variable is considered as only presences... Is it really what you want?")
