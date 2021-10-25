@@ -167,8 +167,14 @@ setMethod('predict', signature(object = 'EMcv_biomod2_model'),
   filename <- args$filename
   if (is.null(filename)) { filename <- "" }
   
-  out <- calc(formal_predictions, cv, filename = filename, overwrite = TRUE, na.rm = TRUE, aszero = TRUE)
-  return(out)
+  if (nlayers(formal_predictions) > 1) {
+    out <- calc(formal_predictions, cv, filename = filename, overwrite = TRUE, na.rm = TRUE, aszero = TRUE)
+    return(out)
+  } else {
+    warning(paste0("\n Model EMcv was not computed because only one single model was kept in ensemble modeling ("
+                   , names(formal_predictions), ")"))
+    return(NULL)
+  }
 }
 
 .predict.EMcv_biomod2_model.data.frame <- function(object, newdata = NULL, formal_predictions = NULL, ...)
@@ -177,8 +183,14 @@ setMethod('predict', signature(object = 'EMcv_biomod2_model'),
     formal_predictions = .template_predictEM.formal_predictions(object, newdata, formal_predictions...)
   }
   
-  out <- apply(formal_predictions, 1, cv, na.rm = T, aszero = T)
-  return(out)
+  if (ncol(formal_predictions) > 1) {
+    out <- apply(formal_predictions, 1, cv, na.rm = T, aszero = T)
+    return(out)
+  } else {
+    warning(paste0("\n Model EMcv was not computed because only one single model was kept in ensemble modeling ("
+                   , colnames(formal_predictions), ")"))
+    return(NULL)
+  }
 }
 
 
