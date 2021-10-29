@@ -1,7 +1,7 @@
 ##' ###############################################################################################
 ##' @name BIOMOD_FormatingData
 ##' @aliases BIOMOD_FormatingData
-##' @author Wilfried Thuiller, Damien Georges
+##' @author Damien Georges, Wilfried Thuiller
 ##' 
 ##' @title Format input data, and select pseudo-absences if wanted, for usage in \pkg{biomod2}
 ##' 
@@ -72,7 +72,7 @@
 ##' explanatory variables should be removed from the analysis or not
 ##' 
 ##' 
-##' @return 
+##' @value 
 ##' 
 ##' A \code{BIOMOD.formated.data} object that can be used to build species distribution model(s) 
 ##' with the \code{\link[biomod2]{BIOMOD_Modeling}} function. \code{print} and \code{plot} 
