@@ -150,36 +150,41 @@
   
   ef.out <- NULL
   # 2. Do the ensemble modeling
-  for( em.comp in EM.output@em.computed[which(EM.output@em.computed %in% selected.models)]){
+  proj_names <- vector()
+  for (em.comp in EM.output@em.computed[which(EM.output@em.computed %in% selected.models)]) {
     cat("\n\n\t> Projecting", em.comp, "...")
     model.tmp <- NULL
     file_name_tmp <- file.path(indiv_proj_dir, paste0(em.comp,output.format))
-    BIOMOD_LoadModels(EM.output, full.name=em.comp, as='model.tmp')
-    if(inherits(formal_pred,'Raster')){
+    BIOMOD_LoadModels(EM.output, full.name = em.comp, as = 'model.tmp')
+    if (inherits(formal_pred, 'Raster')) {
       ef.tmp <- predict(model.tmp, 
-                        formal_predictions = raster::subset(formal_pred, subset=model.tmp@model, drop=FALSE),
+                        formal_predictions = raster::subset(formal_pred, subset = model.tmp@model, drop = FALSE),
                         on_0_1000 = on_0_1000, 
                         filename = ifelse(output.format == '.RData', '', file_name_tmp))
     } else {
-      ef.tmp <- predict(model.tmp, formal_predictions = formal_pred[,model.tmp@model, drop=FALSE], on_0_1000 = on_0_1000)
+      ef.tmp <- predict(model.tmp, formal_predictions = formal_pred[, model.tmp@model, drop = FALSE], on_0_1000 = on_0_1000)
     }
-        
-    if(inherits(ef.tmp,'Raster')){
-      if(do.stack){
-        if(length(ef.out)) ef.out <- stack(ef.out,ef.tmp) else ef.out <- raster::stack(ef.tmp)
+    
+    if (!is.null(ef.tmp)) {
+      proj_names <- c(proj_names, em.comp)
+      if (inherits(ef.tmp,'Raster')) {
+        if (do.stack) {
+          if (length(ef.out)) ef.out <- stack(ef.out, ef.tmp) else ef.out <- raster::stack(ef.tmp)
+        } else {
+          file_name_tmp <- file.path(indiv_proj_dir,paste(em.comp,output.format,sep=""))
+          if(output.format== '.RData'){
+            save(ef.tmp, file=file_name_tmp, compress=compress)
+          } 
+          saved.files <- c(saved.files, file_name_tmp)
+        }
       } else {
-        file_name_tmp <- file.path(indiv_proj_dir,paste(em.comp,output.format,sep=""))
-        if(output.format== '.RData'){
-          save(ef.tmp, file=file_name_tmp, compress=compress)
-        } 
-        saved.files <- c(saved.files, file_name_tmp)
+        ef.out <- cbind(ef.out,ef.tmp)
       }
-    } else{
-      ef.out <- cbind(ef.out,ef.tmp)
-    } 
+    }
   }
   
-  proj_out@models.projected <- EM.output@em.computed[which(EM.output@em.computed %in% selected.models)]
+  # proj_out@models.projected <- EM.output@em.computed[which(EM.output@em.computed %in% selected.models)]
+  proj_out@models.projected <- proj_names
   
   if(do.stack){
     if( inherits(ef.out, "Raster") ) {
