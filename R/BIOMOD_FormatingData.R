@@ -67,7 +67,7 @@
 ##' \code{PA.nb.rep}, and containing \code{TRUE} or \code{FALSE} values defining which points 
 ##' will be used to build the species distribution model(s) for each repetition (see Details)
 ##' 
-##' @param na.rm  (\emph{optional, default} \code{TRUE}) \cr 
+##' @param na.rm (\emph{optional, default} \code{TRUE}) \cr 
 ##' A \code{logical} value defining whether points having one or several missing values for 
 ##' explanatory variables should be removed from the analysis or not
 ##' 
