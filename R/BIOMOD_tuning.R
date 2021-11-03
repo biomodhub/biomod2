@@ -387,7 +387,7 @@ BIOMOD_tuning <- function(data,
     for(type in type.GLM){
       for(IA in interaction.GLM){
         i<-i+1
-        try(tune.GLM <-   caret::train( makeFormula("resp",data@data.env.var, type= type,interaction.level = IA),
+        try(tune.GLM <-   caret::train( bm_MakeFormula("resp",data@data.env.var, type= type,interaction.level = IA),
                                         data=cbind(data@data.env.var,resp=resp),
                                         method = method.GLM,
                                         trControl = ctrl.GLM,

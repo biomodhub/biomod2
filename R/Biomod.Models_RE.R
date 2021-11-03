@@ -86,7 +86,7 @@
       cost.tmp <- Options@CTA$cost
     }
     if(Options@CTA$parms == 'default'){
-      model.sp <- try( rpart(makeFormula(colnames(Data)[1],
+      model.sp <- try( rpart(bm_MakeFormula(colnames(Data)[1],
                                          head(Data[,-c(1,ncol(Data)), drop=FALSE]),
                                          'simple', 0),
                              data = Data[calibLines,],
@@ -95,7 +95,7 @@
                              cost = cost.tmp,
                              control = eval(Options@CTA$control)) )
     } else{
-      model.sp <- try( rpart(makeFormula(colnames(Data)[1],
+      model.sp <- try( rpart(bm_MakeFormula(colnames(Data)[1],
                                          head(Data[,-c(1,ncol(Data)), drop=FALSE]),
                                          'simple', 0),
                              data = Data[calibLines,],
@@ -190,7 +190,7 @@
 
       if(is.null(Options@GAM$myFormula)){
         cat("\n\tAutomatic formula generation...")
-        gam.formula <- makeFormula(resp_name,head(Data[,expl_var_names,drop=FALSE]),Options@GAM$type, Options@GAM$interaction.level, k=Options@GAM$k)
+        gam.formula <- bm_MakeFormula(resp_name,head(Data[,expl_var_names,drop=FALSE]),Options@GAM$type, Options@GAM$interaction.level, k=Options@GAM$k)
       } else{
         gam.formula <- Options@GAM$myFormula
       }
@@ -234,7 +234,7 @@
   # GBM models creation =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=- #
   if (Model == "GBM") {
 
-    model.sp <- try(gbm(formula = makeFormula(colnames(Data)[1],head(Data)[,expl_var_names,drop=FALSE], 'simple',0),
+    model.sp <- try(gbm(formula = bm_MakeFormula(colnames(Data)[1],head(Data)[,expl_var_names,drop=FALSE], 'simple',0),
                         data = Data[calibLines,,drop=FALSE],
                         distribution = Options@GBM$distribution,
                         var.monotone = rep(0, length = ncol(Data)-2), # -2 because of removing of sp and weights
@@ -275,7 +275,7 @@
 
     ## build the most complete model formula
     if(is.null(Options@GLM$myFormula)){
-      glm.formula <- makeFormula(colnames(Data)[1],head(Data),Options@GLM$type, Options@GLM$interaction.level)
+      glm.formula <- bm_MakeFormula(colnames(Data)[1],head(Data),Options@GLM$type, Options@GLM$interaction.level)
     } else{
       glm.formula <- Options@GLM$myFormula
     }
@@ -376,7 +376,7 @@
 
     ## build the most complete model formula
     if(is.null(Options@MARS$myFormula)){
-      mars.formula <- makeFormula(colnames(Data)[1],head(Data)[, -ncol(Data), drop = FALSE],Options@MARS$type, Options@MARS$interaction.level)
+      mars.formula <- bm_MakeFormula(colnames(Data)[1],head(Data)[, -ncol(Data), drop = FALSE],Options@MARS$type, Options@MARS$interaction.level)
     } else{
       mars.formula <- Options@MARS$myFormula
     }
@@ -421,7 +421,7 @@
   # FDA models creation =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=- #
   if (Model == "FDA") {
     model.sp <- try( do.call(fda,
-                             c( list( formula = makeFormula(colnames(Data)[1],head(Data)[,expl_var_names,drop=FALSE], 'simple',0),
+                             c( list( formula = bm_MakeFormula(colnames(Data)[1],head(Data)[,expl_var_names,drop=FALSE], 'simple',0),
                                       data = Data[calibLines,,drop=FALSE],
                                       method = eval(parse(text=call(Options@FDA$method))),
                                       weights = Yweights[calibLines] ),
@@ -471,7 +471,7 @@
       size <- CV_nnet[1,1]
     }
 
-    model.sp <- try(nnet(formula = makeFormula(resp_name,head(Data[,expl_var_names,drop=FALSE]), 'simple',0),
+    model.sp <- try(nnet(formula = bm_MakeFormula(resp_name,head(Data[,expl_var_names,drop=FALSE]), 'simple',0),
                          data = Data[calibLines,,drop=FALSE],
                          size = size,
                          rang = Options@ANN$rang,
@@ -504,7 +504,7 @@
     }
 
     if(Options@RF$mtry == 'default'){
-      model.sp <- try(randomForest(formula = makeFormula(resp_name,head(Data), 'simple',0),
+      model.sp <- try(randomForest(formula = bm_MakeFormula(resp_name,head(Data), 'simple',0),
                                    data = Data[calibLines,],
                                    ntree = Options@RF$ntree,
                                    #mtry = ifelse(Options@RF$ntree == 'default', round((ncol(Data)-1)/2), Options@RF$ntree ),
@@ -514,7 +514,7 @@
                                    nodesize = Options@RF$nodesize,
                                    maxnodes = Options@RF$maxnodes) )
     } else {
-      model.sp <- try(randomForest(formula = makeFormula(resp_name,head(Data), 'simple',0),
+      model.sp <- try(randomForest(formula = bm_MakeFormula(resp_name,head(Data), 'simple',0),
                                    data = Data[calibLines,],
                                    ntree = Options@RF$ntree,
                                    mtry = Options@RF$mtry,
