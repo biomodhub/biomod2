@@ -196,7 +196,7 @@ export(
 	getStatOptimValue,
 	level.plot,
 	LIST_to_ARRAY,
-	makeFormula,
+	bm_MakeFormula,
 	models_scores_graph,
 	multiple.plot,
 	Print_Default_ModelingOptions,
@@ -239,20 +239,20 @@ export(
 )
 
 exportMethods(
-	getEMalgos, 
-	getEMbuiltModels, 
-	getEMeval, 
-	getEMkeptModels, 
-	getEM_needed_models, 
-	getFormalModel, 
-	getModelsBuiltModels, 
-	getModelsEvaluations, 
+	#getEMalgos, 
+	#getEMbuiltModels, 
+	#getEMeval, 
+	#getEMkeptModels, 
+	#getEM_needed_models, 
+	#getFormalModel, 
+	#getModelsBuiltModels, 
+	#getModelsEvaluations, 
 	getModelsInputData, 
-	getModelsOptions, 
-	getModelsPrediction, 
-	getModelsPredictionEval, 
-	getModelsVarImport, 
-	getProjection,
+	#getModelsOptions, 
+	#getModelsPrediction, 
+	#getModelsPredictionEval, 
+	#getModelsVarImport, 
+	#getProjection,
 	getScalingModel
 )
 
