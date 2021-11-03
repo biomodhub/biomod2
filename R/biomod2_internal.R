@@ -1,4 +1,35 @@
 
+## BIOMOD SPECIFIC CAT ----------------------------------------------------------------------------
+
+.bmCat <- function(x = NULL, ...)
+{
+  if (is.null(x))
+  {
+    cat("\n")
+    cat(paste(rep("-=", round(.Options$width / 2)), collapse = ""))
+    cat("\n")
+  } else
+  {
+    x.length = nchar(x) + 2
+    y.length = (.Options$width - x.length) / 2
+    cat("\n")
+    cat(paste(rep("-=", round(y.length / 2)), collapse = "")
+        , x
+        , paste(rep("-=", round(y.length / 2)), collapse = ""))
+    cat("\n")
+  }
+}
+
+## CLEVER CUT (plot BIOMOD_FormatingData) ---------------------------------------------------------
+## used in biomod2_classes_1.R file
+
+.clever_cut <- function(x)
+{
+  nb_col = ceiling(sqrt(x))
+  nb_row = ceiling(x / nb_col)
+  return(c(nb_row, nb_col))
+}
+
 ## AUTOMATIC WEIGHTS (BIOMOD_FormatingData) -------------------------------------------------------
 ## used in biomod2_classes_1.R file
 

@@ -504,7 +504,7 @@ setMethod('plot', signature(x = 'BIOMOD.formated.data.PA', y = "missing"),
               if (is.null(col) | length(col) < 3) { col = c('green', 'red', 'orange', 'grey') }
               
               ## PLOT -----------------------------------------------------------------------------
-              par(mfrow = c(.CleverCut(ncol(x@PA) + 1)))
+              par(mfrow = c(.clever_cut(ncol(x@PA) + 1)))
               
               # all points (~mask)
               plot(
