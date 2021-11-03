@@ -176,7 +176,7 @@
                                         ", weights = Yweights[calibLines])" ,sep="")))
       model.sp <- try( gam::step.Gam(gamStart, .scope(Data[1:3,-c(1,ncol(Data))], "gam::s", Options@GAM$k),
                                      data = Data[calibLines,,drop=FALSE],
-      #                                keep = .functionkeep,
+      #                                keep = .fun_keep,
                                      direction = "both",
                                      trace= Options@GAM$control$trace,
                                      control = Options@GAM$control))#eval(control.list)) )

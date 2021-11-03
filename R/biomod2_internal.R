@@ -30,6 +30,18 @@
   return(c(nb_row, nb_col))
 }
 
+## GET RESIDUAL DEVIANCE AND AIC (in GAM, deprecated ?) -------------------------------------------
+## used in Biomod.Models_RE.R file
+
+# .fun_keep <- function(object, AIC)
+# {
+#   list(df.resid = object$df.resid
+#        , deviance = object$deviance
+#        , term = as.character(object$formula)[3]
+#        , AIC = AIC)
+# }
+
+
 ## AUTOMATIC WEIGHTS (BIOMOD_FormatingData) -------------------------------------------------------
 ## used in biomod2_classes_1.R file
 
