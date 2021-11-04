@@ -210,7 +210,7 @@ export(
 	BIOMOD_CrossValidation,
 	BIOMOD_PresenceOnly,
 	BIOMOD_tuning,
-  sample.factor.levels,
+  bm_SampleFactorLevels,
 	.transform.outputs.list,
 	zzz_bm
 )
