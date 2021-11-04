@@ -82,7 +82,7 @@ Collate:
     'Prepare.Maxent.WorkDir.R'
     'ProbDensFunc.R'
     'Projection.R'
-    'Rescaler4.R'
+    'bm_Rescaler.R'
     'bm_SampleBinaryVector.R'
     'biomod2_classes_1.R'
     'biomod2_classes_2.R'

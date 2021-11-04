@@ -1,4 +1,4 @@
-.Rescaler5 <- function(dataToRescale,
+bm_Rescaler <- function(dataToRescale,
                        ref = NULL,
                        name,
                        original = FALSE,
