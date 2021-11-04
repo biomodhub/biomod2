@@ -417,6 +417,26 @@ check_data_range <- function(model, new_data)
 # }
 
 
+## CHECK IF JAVA INSTALLED (deprecated ?) ---------------------------------------------------------
+## used in BIOMOD_Projection file
+
+# .check.java.installed <- function()
+# {
+#   if (.Platform$OS.type == "unix") {
+#     java.test <- try(expr = eval(system("command -v java", intern = TRUE)) , silent = TRUE)
+#   } else if (.Platform$OS.type == "windows") {
+#     java.test <- try(expr = eval(system("java", intern = TRUE)), silent = TRUE)
+#   } else { java.test <- "" }
+#   
+#   if (!is.null(attr(java.test, "class"))) {
+#     cat("\n! java software seems not be correctly installed\n  > MAXENT.Phillips modelling was switched off!")
+#     return(FALSE)
+#   } else {
+#     return(TRUE)
+#   }
+# }
+
+
 ## TRANSFORME DF OR LIST TO ARRAY (BIOMOD_Projection) ---------------------------------------------
 ## used in BIOMOD_Projection, Projection files
 
@@ -467,7 +487,6 @@ DF_to_ARRAY <- function(df)
 #   }
 #   return(array.out)
 # }
-
 
 
 ## RANDOMISE DATA (bm_VariablesImportance, only full shuffling available) -------------------------
