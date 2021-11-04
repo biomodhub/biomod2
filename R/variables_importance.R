@@ -1,14 +1,10 @@
 ##' ###############################################################################################
-##' @name BIOMOD_FormatingData
-##' @aliases BIOMOD_FormatingData
+##' @name bm_VariableImportance
+##' @aliases bm_VariableImportance
 ##' @author Damien Georges
 ##' 
-##' 
-##' ##' @name variables_importance
-##' @aliases variables_importance
-##' 
-##' 
 ##' @title Variables importance calculation
+##' 
 ##' @description
 ##' This function will return a variable importance value for 
 ##' each variable involved within your model.
@@ -65,7 +61,7 @@
 ##' 
 ##' ###############################################################################################
 
-variables_importance <- function( model, 
+bm_VariableImportance <- function(model, 
                                   data, 
                                   method = "full_rand", 
                                   nb_rand = 1, 

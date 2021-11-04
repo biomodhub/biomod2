@@ -816,7 +816,7 @@
   # Variables Importance -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=- #
   if (VarImport > 0){ # do Varimp stuff
     cat("\n\tEvaluating Predictor Contributions...", "\n")
-    variables.importance <- variables_importance(model.bm, Data[, expl_var_names,drop=FALSE], nb_rand=VarImport)
+    variables.importance <- bm_VariableImportance(model.bm, Data[, expl_var_names,drop=FALSE], nb_rand=VarImport)
     model.bm@model_variables_importance <- variables.importance$mat
     ## we stored only the mean of variables importance run
     ListOut$var.import <- round(rowMeans(variables.importance$mat, na.rm=T),digits=3)

@@ -421,7 +421,7 @@
         #### Var Importance calculation ####
         if (VarImport > 0){ # do Varimp stuff
           cat("\n\t\t\tEvaluating Predictor Contributions...", "\n")
-          variables.importance <- variables_importance(model.bm, expl, nb_rand=VarImport)
+          variables.importance <- bm_VariableImportance(model.bm, expl, nb_rand=VarImport)
           model.bm@model_variables_importance <- variables.importance$mat
           ## remove useless objects
           rm(list=c('variables.importance') )
