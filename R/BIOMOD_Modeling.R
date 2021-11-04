@@ -697,7 +697,7 @@ BIOMOD_Modeling <- function(
     ## force to sample at least one level of each factorial variable for calibration
     fact.cell.samp <- NULL
     if(!is.null(data.env)){
-      fact.cell.samp <- sample.factor.levels(data.env)
+      fact.cell.samp <- bm_SampleFactorLevels(data.env)
       mat.out[fact.cell.samp, i] <- TRUE
     }
     mat.out[sample(setdiff(pres, fact.cell.samp),
