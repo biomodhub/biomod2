@@ -215,12 +215,12 @@ setMethod('predict', signature(object = 'GAM_biomod2_model'),
 
 .predict.GAM_biomod2_model.RasterStack <- function(object, newdata, ...)
 {
-  return(.template_predict.RasterStack(seedval = NULL, predcommand = ".testnull(object = get_formal_model(object), Prev = 0.5 , dat = newdata)", object, newdata, ...))
+  return(.template_predict.RasterStack(seedval = NULL, predcommand = ".run_pred(object = get_formal_model(object), Prev = 0.5 , dat = newdata)", object, newdata, ...))
 }
 
 .predict.GAM_biomod2_model.data.frame <- function(object, newdata, ...)
 {
-  return(.template_predict.data.frame(seedval = 555, predcommand = "as.numeric(.testnull(object = get_formal_model(object), Prev = 0.5 , dat = as.data.frame(newdata[not_na_rows, , drop = FALSE])))", object, newdata, ...))
+  return(.template_predict.data.frame(seedval = 555, predcommand = "as.numeric(.run_pred(object = get_formal_model(object), Prev = 0.5 , dat = as.data.frame(newdata[not_na_rows, , drop = FALSE])))", object, newdata, ...))
 } 
 
 
@@ -273,12 +273,12 @@ setMethod('predict', signature(object = 'GLM_biomod2_model'),
 
 .predict.GLM_biomod2_model.RasterStack <- function(object, newdata, ...)
 {
-  return(.template_predict.RasterStack(seedval = NULL, predcommand = ".testnull(object = get_formal_model(object), Prev = 0.5 , dat = newdata)", object, newdata, ...))
+  return(.template_predict.RasterStack(seedval = NULL, predcommand = ".run_pred(object = get_formal_model(object), Prev = 0.5 , dat = newdata)", object, newdata, ...))
 }
 
 .predict.GLM_biomod2_model.data.frame <- function(object, newdata, ...)
 {
-  return(.template_predict.data.frame(seedval = NULL, predcommand = "as.numeric(.testnull(object = get_formal_model(object), Prev = 0.5 , dat = as.data.frame(newdata[not_na_rows, , drop = FALSE])))", object, newdata, ...))
+  return(.template_predict.data.frame(seedval = NULL, predcommand = "as.numeric(.run_pred(object = get_formal_model(object), Prev = 0.5 , dat = as.data.frame(newdata[not_na_rows, , drop = FALSE])))", object, newdata, ...))
 }
 
 
@@ -334,7 +334,7 @@ setMethod('predict', signature(object = 'MARS_biomod2_model'),
   
   if (length(get_scaling_model(object))) {
     names(proj) <- "pred"
-    proj <- .testnull(object = get_scaling_model(object), Prev = 0.5 , dat = proj)
+    proj <- .run_pred(object = get_scaling_model(object), Prev = 0.5 , dat = proj)
   }
   
   if (on_0_1000) { proj <- round(proj * 1000)}
@@ -543,7 +543,7 @@ setMethod('predict', signature(object = 'MAXENT.Phillips.2_biomod2_model'),
   
   if (length(get_scaling_model(object))) {
     proj.to.scale <- data.frame(pred = proj)
-    proj <- .testnull(object = get_scaling_model(object), Prev = 0.5 , dat = proj.to.scale)
+    proj <- .run_pred(object = get_scaling_model(object), Prev = 0.5 , dat = proj.to.scale)
   }
   
   if (on_0_1000) { proj <- round(proj * 1000) }
@@ -613,7 +613,7 @@ setMethod('predict', signature(object = 'MAXENT.Phillips.2_biomod2_model'),
 # 
 #   if (length(get_scaling_model(object))) {
 #     names(proj) <- "pred"
-#     proj <- .testnull(object = get_scaling_model(object), Prev = 0.5 , dat = proj)
+#     proj <- .run_pred(object = get_scaling_model(object), Prev = 0.5 , dat = proj)
 #   }
 # 
 #   if (on_0_1000) { proj <- round(proj * 1000) }

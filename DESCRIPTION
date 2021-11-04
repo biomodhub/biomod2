@@ -99,7 +99,6 @@ Collate:
     'bm_SampleFactorLevels.R'
     'scope.R'
     'sre.R'
-    'testnull.R'
     'update_objects.R'
     'bm_VariablesImportance.R'
     'zzz.R'

@@ -241,6 +241,39 @@ check_data_range <- function(model, new_data)
   return(new_data)
 }
 
+.run_pred <- function(object, Prev = 0.5 , dat)
+{
+  if (is.finite(object$deviance) && 
+      is.finite(object$null.deviance) && 
+      object$deviance != object$null.deviance)
+  {
+    if (inherits(dat, 'Raster')) {
+      pred <- predict(object = dat, model = object, type = "response")
+    } else {
+      pred <- predict(object, dat, type = "response")
+    }
+  }
+  
+  if (!exists('pred')) {
+    if (inherits(dat, 'Raster')) {
+      pred <- raster::subset(dat, 1, drop = TRUE)
+      if (Prev < 0.5) {
+        pred <- reclassify(x = pred, rcl = c(-Inf, Inf, 0))
+      } else {
+        pred <- reclassify(x = pred, rcl = c(-Inf, Inf, 1))
+      }
+    } else {
+      if (Prev < 0.5) {
+        pred <- rep(0, nrow(dat))
+      } else {
+        pred <- rep(1, nrow(dat))
+      }
+    }
+  }
+  
+  return(pred)
+}
+
 ## FOR SINGLE MODELS ----------------------------------------------------------
 .template_predict = function(mod, object, newdata, ...)
 {
@@ -275,7 +308,7 @@ check_data_range <- function(model, new_data)
   
   if (length(get_scaling_model(object))) {
     names(proj) <- "pred"
-    proj <- .testnull(object = get_scaling_model(object), Prev = 0.5 , dat = proj)
+    proj <- .run_pred(object = get_scaling_model(object), Prev = 0.5 , dat = proj)
   }
   if (on_0_1000) { proj <- round(proj * 1000) }
   
@@ -321,7 +354,7 @@ check_data_range <- function(model, new_data)
   
   if (length(get_scaling_model(object))) {
     proj <- data.frame(pred = proj)
-    proj <- .testnull(object = get_scaling_model(object), Prev = 0.5, dat = proj)
+    proj <- .run_pred(object = get_scaling_model(object), Prev = 0.5, dat = proj)
   }
   if (on_0_1000) { proj <- round(proj * 1000) }
   
