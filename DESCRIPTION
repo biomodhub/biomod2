@@ -100,7 +100,6 @@ Collate:
     'scope.R'
     'sre.R'
     'testnull.R'
-    'transform.outputs.R'
     'update_objects.R'
-    'variables_importance.R'
+    'bm_VariablesImportance.R'
     'zzz.R'

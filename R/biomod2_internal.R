@@ -385,7 +385,7 @@ check_data_range <- function(model, new_data)
 
 
 ## RANDOMISE DATA (only full shuffling available) -------------------------------------------------
-## used in bm_VariableImportance.R file
+## used in bm_VariablesImportance file
 
 .randomise_data <- function(data, variable, method)
 {

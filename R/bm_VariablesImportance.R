@@ -1,6 +1,6 @@
 ##' ###############################################################################################
-##' @name bm_VariableImportance
-##' @aliases bm_VariableImportance
+##' @name bm_VariablesImportance
+##' @aliases bm_VariablesImportance
 ##' @author Damien Georges
 ##' 
 ##' @title Variables importance calculation
@@ -52,7 +52,7 @@
 ##'   
 ##' mod <- glm(a ~ b + c, data = xx)
 ##' 
-##' variables_importance(
+##' bm_VariablesImportance(
 ##'   model = mod, 
 ##'   data = xx[, c('b', 'c')], 
 ##'   method = "full_rand", 
@@ -61,7 +61,7 @@
 ##' 
 ##' ###############################################################################################
 
-bm_VariableImportance <- function(model, 
+bm_VariablesImportance <- function(model, 
                                   data, 
                                   method = "full_rand", 
                                   nb_rand = 1, 
