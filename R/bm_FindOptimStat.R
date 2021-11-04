@@ -261,7 +261,6 @@ bm_CalculateStat <- function(Misc, stat = 'TSS')
                }
                , 'OR' = (hits * correct_negatives) / (misses * false_alarms)
                , 'ORSS' = (hits * correct_negatives - misses * false_alarms) / (hits * correct_negatives + misses * false_alarms)
-               , 'BOYCE' = NULL
-  }
+  )
 }
 

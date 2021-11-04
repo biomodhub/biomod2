@@ -78,6 +78,7 @@ Collate:
     'CVnnet.R'
     'CustomIndexMaker.R'
     'Evaluate.models.R'
+    'bm_FindOptimStat.R'
     'FilteringTransformation.R'
     'Prepare.Maxent.WorkDir.R'
     'ProbDensFunc.R'
