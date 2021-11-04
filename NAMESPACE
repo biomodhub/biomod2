@@ -189,7 +189,6 @@ export(
 	BIOMOD_Projection,
 	bm_CalculateStat,
 	DF_to_ARRAY,
-	evaluate,
 	bm_FindOptimStat,
 	get_optim_value,
 	level.plot,
