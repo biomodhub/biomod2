@@ -1,6 +1,8 @@
 ##' ###############################################################################################
 ##' @name bm_SampleFactorLevels
-##' @aliases bm_SampleFactorLevels, bm_SampleFactorLevels.raster, bm_SampleFactorLevels.data.frame
+##' @aliases bm_SampleFactorLevels
+##' @aliases bm_SampleFactorLevels.raster
+##' @aliases bm_SampleFactorLevels.data.frame
 ##' @author Damien Georges
 ##' 
 ##' @title Tool to ensure the sampling of all levels of a factorial variable 

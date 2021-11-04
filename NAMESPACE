@@ -198,7 +198,7 @@ export(
 	bm_MakeFormula,
 	models_scores_graph,
 	multiple.plot,
-	Print_Default_ModelingOptions,
+	bm_DefaultModelingOptions,
 	ProbDensFunc,
 	randomise_data,
 	response.plot2,

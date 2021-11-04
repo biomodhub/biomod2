@@ -1,7 +1,7 @@
 ##' ###############################################################################################
 ##' @name BIOMOD_ModelingOptions
 ##' @aliases BIOMOD_ModelingOptions
-##' @aliases Print_Default_ModelingOptions
+##' @aliases bm_DefaultModelingOptions
 ##' @author Damien Georges, Wilfried Thuiller
 ##' 
 ##' @title Configure the modeling options for each selected model
@@ -42,8 +42,8 @@
 ##' models. 10 single models are available within the package, and their options can be set 
 ##' with this function through \code{list} objects.
 ##' 
-##' The \code{\link{Print_Default_ModelingOptions}} function prints all default parameter values 
-##' for all available models. This output can be copied and pasted to be used as is (with wanted 
+##' The \code{\link{bm_DefaultModelingOptions}} function prints all default parameter values for 
+##' all available models. This output can be copied and pasted to be used as is (with wanted 
 ##' changes) as function arguments (see Examples).
 ##' 
 ##' Below is the detailed list of all modifiable parameters for each available model.
@@ -314,7 +314,7 @@
 ##' myBiomodOptions
 ##'
 ##' ##' you also can directly print default parameters and then follow the same processus
-##' Print_Default_ModelingOptions()
+##' bm_DefaultModelingOptions()
 ##'
 ##' ###############################################################################################
 
@@ -545,7 +545,7 @@
 
 ###################################################################################################
 
-Print_Default_ModelingOptions <- function()
+bm_DefaultModelingOptions <- function()
 {
   cat('\n Defaut modeling options. copy, change what you want paste it as arg to BIOMOD_ModelingOptions\n\n')
   opt_tmp <- BIOMOD_ModelingOptions()
