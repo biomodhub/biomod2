@@ -1,66 +1,70 @@
 ##' ###############################################################################################
 ##' @name bm_FindOptimStat
 ##' @aliases bm_FindOptimStat
+##' @aliases bm_CalculateStat
+##' @aliases get_optim_value
 ##' @author Damien Georges
 ##' 
 ##' @title Calculate the best score according to a given evaluation method
 ##'
-##' @description \code{Find.Optim.Stat} is an internal \pkg{biomod2} function
-##' to find the threshold to convert continuous values into binary ones leading
-##' to the best score for a given evaluation metric.
+##' @description 
+##' 
+##' This internal \pkg{biomod2} function allows the user to find the threshold to convert 
+##' continuous values into binary ones leading to the best score for a given evaluation metric.
+##'
+##' @param Stat a \code{character} corresponding to the evaluation metric to be used, must be 
+##' either \code{ROC}, \code{TSS}, \code{KAPPA}, \code{ACCURACY}, \code{BIAS}, \code{POD}, 
+##' \code{FAR}, \code{POFD}, \code{SR}, \code{CSI}, \code{ETS}, \code{HK}, \code{HSS}, \code{OR} 
+##' or \code{ORSS}
+##' @param Fit a \code{vector} of fitted values (continuous)
+##' @param Obs a \code{vector} of observed values (binary, \code{0} or \code{1})
+##' @param Nb.thresh.test an \code{integer} corresponding to the number of thresholds to be 
+##' tested over the range of fitted values
+##' @param Fixed.thresh (\emph{optional, default} \code{NULL}) \cr 
+##' An \code{integer} corresponding to the only threshold value to be tested
 ##'
 ##'
-##' @param Stat either 'ROC', TSS', 'KAPPA', 'ACCURACY', 'BIAS', 'POD', 'FAR',
-##'         'POFD', 'SR', 'CSI', 'ETS', 'HK', 'HSS', 'OR' or 'ORSS'
-##' @param Fit vector of fitted values (continuous)
-##' @param Obs vector of observed values (binary)
-##' @param Nb.thresh.test integer, the numer of thresholds tested over the
-##'        range of fitted value
-##' @param Fixed.thresh integer, if not \code{NULL}, the only threshold value tested
-##'
+##' @value
+##' 
+##' A 1 row x 4 columns \code{matrix} containing :
+##' \itemize{
+##'   \item{\code{best.iter}}{ : the best score obtained for the chosen evaluation metric}
+##'   \item{\code{cutoff}}{ : the associated cut-off used to transform the continuous values into 
+##'   binary}
+##'   \item{\code{sensibility}}{ : the sensibility obtained on fitted values with this threshold}
+##'   \item{\code{specificity}}{ : the specificity obtained on fitted values with this threshold}
+##' }
 ##'
 ##' @details
-##'   Please refer to \code{\link[biomod2]{BIOMOD_Modeling}} to get more information about this metrics.
-##'   If you give a \code{Fixed.thresh}, no optimisation will be done. Only the score for this threshold will be returned.
-##'
-##'
-##' @return
-##'   A 1 row x 4 column \code{matrix} :
-##'   \itemize{
-##'     \item{\code{best.iter}:}{ the best score obtained for chosen statistic}
-##'     \item{\code{cutoff}:}{ the associated cut-off used for transform fitted vector into binary}
-##'     \item{\code{sensibility}:}{ the sensibility with this threshold}
-##'     \item{\code{specificity}:}{ the specificity with this threshold}
-##'   }
+##' 
+##' \emph{Please refer to \code{\link{BIOMOD_Modeling}} to get more information about these 
+##' evaluation metrics.}
+##' 
+##' Note that if a value is given to \code{Fixed.thresh}, no optimisation will be done., and 
+##' only the score for this threshold will be returned.
 ##'
 ##'
 ##' @keywords models, options, evaluation
 ##' 
 ##'
-##' @seealso \code{\link[biomod2]{BIOMOD_Modeling}}
+##' @seealso \code{\link{BIOMOD_Modeling}}, \code{\link{BIOMOD_EnsembleModeling}}
 ##'
 ##'
 ##' @examples
 ##' 
-##'   a <- sample(c(0,1),100, replace=TRUE)
+##' ## generate a binary vector
+##' a <- sample(c(0, 1), 100, replace = TRUE)
 ##'
-##'   ##' random drawing
-##'   b <- runif(100,min=0,max=1000)
-##'   bm_FindOptimStat(Stat='TSS',
-##'                   Fit=b,
-##'                   Obs=a)
+##' ## random drawing
+##' b <- runif(100, min = 0, max = 1000)
+##' bm_FindOptimStat(Stat = 'TSS', Fit = b, Obs = a)
 ##'
-##'   ##' biased drawing
-##'   BiasedDrawing <- function(x, m1=300, sd1=200, m2=700, sd2=200){
-##'     return(ifelse(x<0.5, rnorm(1,m1,sd1), rnorm(1,m2,sd2)))
-##'   }
-##'
-##'   c <- sapply(a,BiasedDrawing)
-##'
-##'   bm_FindOptimStat(Stat='TSS',
-##'                   Fit=c,
-##'                   Obs=a,
-##'                   Nb.thresh.test = 100)
+##' ## biased drawing
+##' BiasedDrawing <- function(x, m1 = 300, sd1 = 200, m2 = 700, sd2 = 200) {
+##'   return(ifelse(x < 0.5, rnorm(1, m1, sd1), rnorm(1, m2, sd2)))
+##' }
+##' c <- sapply(a, BiasedDrawing)
+##' bm_FindOptimStat(Stat = 'TSS', Fit = c, Obs = a, Nb.thresh.test = 100)
 ##'
 ##' 
 ##' ###############################################################################################
@@ -160,7 +164,6 @@ get_optim_value <- function(stat)
   switch(stat
          , 'TSS' = 1
          , 'KAPPA' = 1
-         , 'PBC' = 1
          , 'ACCURACY' = 1
          , 'BIAS' = 1
          , 'POD' = 1
