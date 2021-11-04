@@ -100,7 +100,6 @@ Collate:
     'response.plot.R'
     'sample.factor.levels.R'
     'scope.R'
-    'scopeExpSyst.R'
     'sre.R'
     'testnull.R'
     'transform.outputs.R'
