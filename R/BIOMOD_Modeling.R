@@ -449,6 +449,7 @@ BIOMOD_Modeling <- function(
 
 # -=-=-=- Several hidden functions -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=- #
 
+###################################################################################################
 
 .Models.dependencies <- function(silent=TRUE, models.options = NULL){
   # Loading all required libraries
@@ -481,7 +482,7 @@ BIOMOD_Modeling <- function(
 #   require(abind, quietly=silent)
 }
 
-# -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-= #
+###################################################################################################
 
 .Models.check.args <- function(data, models, models.options, NbRunEval, DataSplit,
                                Yweights, VarImport, models.eval.meth, Prevalence, do.full.models, SaveObj, ...){
@@ -665,7 +666,7 @@ BIOMOD_Modeling <- function(
               DataSplitTable=add.args$DataSplitTable))
 }
 
-# -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-= #
+###################################################################################################
 
 .Models.prepare.workdir <- function(sp.name, modeling.id){
   cat("\nCreating suitable Workdir...\n")
@@ -678,7 +679,8 @@ BIOMOD_Modeling <- function(
 #   }
 }
 
-# -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-= #
+###################################################################################################
+
 .SampleMat <- function(data.sp, dataSplit, nbRun = 1, data.env = NULL){
   # return a matrix with nbRun columns of boolean (T: calib, F= eval)
   # data.sp is a 0,1 vector
@@ -708,7 +710,7 @@ BIOMOD_Modeling <- function(
   return(mat.out)
 }
 
-# -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-= #
+###################################################################################################
 
 .Models.print.modeling.summary <- function( mod.prep.dat, models){
   cat("\n\n")
@@ -725,7 +727,7 @@ BIOMOD_Modeling <- function(
   .bmCat()
 }
 
-# -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-= #
+###################################################################################################
 
 .Models.check.EF.args <- function(models, models.eval.meth, models.options){
   # the models selected for doing EF
@@ -746,7 +748,7 @@ BIOMOD_Modeling <- function(
             EF.weight = EF.weight))
 }
 
-# -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-= #
+###################################################################################################
 .check.java.installed <- function(){
 
   if(.Platform$OS.type == "unix"){
@@ -1241,54 +1243,3 @@ BIOMOD_Modeling <- function(
     }
     
   }
-
-DF_to_ARRAY <- function(df){
-  if(!is.data.frame(df) & !is.matrix(df)){
-    if(is.list(df)){
-      df.names <- names(df)
-      df <- as.data.frame(df)
-      names(df) <- df.names
-    } else{
-      stop("You have to give a data.frame")
-    }
-  }
-  
-  a <- sapply(strsplit(colnames(df), '_'), tail, n=3)
-  b <- lapply(1:3, function(id) return(unique(a[id,])))
-  array.dim.names <- c(list(character(0)),rev(b))
-  #   array.dim.names <- c(list(c(NULL)),rev(apply(sapply(strsplit(colnames(df), '_'), tail, n=3),1,unique)))
-  
-  array.dim <- c(nrow(df),sapply(array.dim.names[-1],length))
-  array.out <- array(data=NA, dim=array.dim, dimnames=array.dim.names)
-  
-  for(x in colnames(df)){
-    dimTmp <- rev(tail(unlist(strsplit(x, '_')), n=3))
-    array.out[,dimTmp[1],dimTmp[2],dimTmp[3]] <- df[,x]
-  }
-  return(array.out)
-}
-
-LIST_to_ARRAY <- function(ll){
-  test <- sapply(ll, is.array)
-  if(!all(test)) stop("list elements should be arrays")
-  test <- sapply(ll,dim)
-  test <- apply(test,1,function(x){length(unique(x))==1})
-  if(!all(test)) stop("list elements differ in dimension")
-  
-  formal.dim.names <- dimnames(ll[[1]])
-  new.dim.names <- rev(apply(sapply(strsplit(names(ll), '_'), tail, n=3),1,unique))
-  array.dim.names <- c(formal.dim.names,new.dim.names)
-  array.dim <- sapply(array.dim.names,length)
-  
-  array.out <- array(data=NA, dim=array.dim, dimnames=array.dim.names)
-  
-  for(x in names(ll)){
-    dimTmp <- rev(tail(unlist(strsplit(x, '_')), n=3))
-    dimTmp <- paste( paste(rep(",",length(formal.dim.names)),collapse="") , paste("'",dimTmp,"'",sep="",collapse=","),collapse="")
-    
-    eval(parse(text=paste("array.out[",dimTmp,"] <-  ll[[x]]",sep="")))
-  }
-  return(array.out)
-}
-
-

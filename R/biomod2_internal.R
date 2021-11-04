@@ -417,6 +417,59 @@ check_data_range <- function(model, new_data)
 # }
 
 
+## TRANSFORME DF OR LIST TO ARRAY (BIOMOD_Projection) ---------------------------------------------
+## used in BIOMOD_Projection, Projection files
+
+DF_to_ARRAY <- function(df)
+{
+  if (!is.data.frame(df) & !is.matrix(df)) {
+    if (is.list(df)) {
+      df.names <- names(df)
+      df <- as.data.frame(df)
+      names(df) <- df.names
+    } else {
+      stop("You have to give a data.frame")
+    }
+  }
+  
+  a <- sapply(strsplit(colnames(df), '_'), tail, n = 3)
+  b <- lapply(1:3, function(id) return(unique(a[id, ])))
+  array.dim.names <- c(list(character(0)), rev(b))
+  array.dim <- c(nrow(df), sapply(array.dim.names[-1], length))
+  array.out <- array(data = NA, dim = array.dim, dimnames = array.dim.names)
+  
+  for (x in colnames(df)) {
+    dimTmp <- rev(tail(unlist(strsplit(x, '_')), n = 3))
+    array.out[, dimTmp[1], dimTmp[2], dimTmp[3]] <- df[, x]
+  }
+  return(array.out)
+}
+
+# LIST_to_ARRAY <- function(ll)
+# {
+#   test <- sapply(ll, is.array)
+#   if (!all(test)) { stop("list elements should be arrays") }
+#   test <- sapply(ll,dim)
+#   test <- apply(test, 1, function(x) {  length(unique(x)) == 1 })
+#   if (!all(test)) { stop("list elements differ in dimension") }
+#   
+#   formal.dim.names <- dimnames(ll[[1]])
+#   new.dim.names <- rev(apply(sapply(strsplit(names(ll), '_'), tail, n = 3), 1, unique))
+#   array.dim.names <- c(formal.dim.names, new.dim.names)
+#   array.dim <- sapply(array.dim.names, length)
+#   array.out <- array(data = NA, dim = array.dim, dimnames = array.dim.names)
+#   
+#   for(x in names(ll)){
+#     dimTmp <- rev(tail(unlist(strsplit(x, '_')), n = 3))
+#     dimTmp <- paste(paste(rep(",", length(formal.dim.names)), collapse = "")
+#                     , paste("'", dimTmp, "'", sep = "", collapse = ","), collapse = "")
+#     eval(parse(text = paste0("array.out[", dimTmp, "] <-  ll[[x]]")))
+#   }
+#   return(array.out)
+# }
+
+
+
 ## RANDOMISE DATA (bm_VariablesImportance, only full shuffling available) -------------------------
 ## used in bm_VariablesImportance file
 
