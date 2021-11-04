@@ -45,10 +45,7 @@
 ##' @keywords models, options, evaluation
 ##' 
 ##'
-##' @seealso
-##'   \code{\link[biomod2]{BIOMOD_Modeling}},
-##'   \code{\link[biomod2]{getStatOptimValue}},
-##'   \code{\link[biomod2]{calculate.stat}}
+##' @seealso \code{\link[biomod2]{BIOMOD_Modeling}}
 ##'
 ##'
 ##' @examples
@@ -83,86 +80,82 @@ Find.Optim.Stat <- function(Stat = 'TSS',
                             Nb.thresh.test = 100,
                             Fixed.thresh = NULL)
 {
-  
-  ## remove all uninite values
-  to_keep <- ( is.finite(Fit) & is.finite(Obs) )
+  ## remove all unfinite values
+  to_keep <- (is.finite(Fit) & is.finite(Obs))
   Fit <- Fit[to_keep]
   Obs <- Obs[to_keep]
   
-  ## guess fit value scale (e.g. 0-1 for a classic fit or 0-1000 for a biomod2 model fit)
-  fit.scale <- .guess.scale(Fit)
-  
-  ## check some data are still here.
-  if(!length(Obs) | !length(Fit)){
+  ## check some data is still here
+  if (!length(Obs) | !length(Fit)) {
     cat("Non finite obs or fit available => model evaluation skipped !")
-    eval.out <- matrix(NA,1,4, dimnames = list(Stat, c("best.stat","cutoff","sensitivity","specificity")))
+    eval.out <- matrix(NA, 1, 4, dimnames = list(Stat, c("best.stat", "cutoff", "sensitivity", "specificity")))
     return(eval.out)
   }
   
-  if(length(unique(Obs)) == 1 | length(unique(Fit)) == 1){
-    #     warning("\nObserved or fited data contains only a value.. Evaluation Methods switched off\n",immediate.=T)
-    #     best.stat <- cutoff <- true.pos <- sensitivity <- true.neg <- specificity <- NA
-    warning("\nObserved or fitted data contains a unique value... Be careful with this models predictions\n",immediate.=T)
-    #best.stat <- cutoff <- true.pos <- sensitivity <- true.neg <- specificity <- NA
-  } #else {
-  if(Stat != 'ROC'){
-    StatOptimum <- getStatOptimValue(Stat)
-    if(is.null(Fixed.thresh)){ # test a range of threshold to get the one giving the best score
-      if(length(unique(Fit)) == 1){
+  if (length(unique(Obs)) == 1 | length(unique(Fit)) == 1) {
+    warning("\nObserved or fitted data contains a unique value... Be careful with this models predictions\n", immediate. = TRUE)
+  }
+  
+  
+  if (Stat != 'ROC') { ## for all evaluation metrics other than ROC -------------------------------
+    StatOptimum <- get_optim_value(Stat)
+    
+    ## 1. get threshold values to be tested -----------------------------------
+    if (is.null(Fixed.thresh)) { # test a range of threshold to get the one giving the best score
+      
+      ## guess fit value scale (e.g. 0-1 for a classic fit or 0-1000 for a biomod2 model fit)
+      fit.scale <- .guess_scale(Fit)
+      
+      if (length(unique(Fit)) == 1) {
         valToTest <- unique(Fit)
-        ## add 2 values to test based on maen with 0 and the guessed max of Fit (1 or 1000)
-        valToTest <- round(c(mean(c(fit.scale["min"],valToTest)),
-                             mean(c(fit.scale["max"],valToTest))))
-      } else{
-        #           mini <- max(min(quantile(Fit,0.05, na.rm=T), na.rm=T),0)
-        #           maxi <- min(max(quantile(Fit,0.95, na.rm=T), na.rm=T),1000)
-        mini <- max(min(Fit, na.rm=T), fit.scale["min"], na.rm = T)
-        maxi <- min(max(Fit, na.rm=T), fit.scale["max"], na.rm = T)
-        valToTest <- try(unique( round(c(seq(mini, maxi,
-                                             length.out = Nb.thresh.test),
-                                         mini, maxi)) ))
-        if(inherits(valToTest, "try-error")){
-          valToTest <- seq(fit.scale["min"], fit.scale["max"],
-                           length.out = Nb.thresh.test)
+        ## add 2 values to test based on mean with 0 and the guessed max of Fit (1 or 1000)
+        valToTest <- round(c(mean(c(fit.scale["min"], valToTest)),
+                             mean(c(fit.scale["max"], valToTest))))
+      } else {
+        mini <- max(min(Fit, na.rm = TRUE), fit.scale["min"], na.rm = TRUE)
+        maxi <- min(max(Fit, na.rm = TRUE), fit.scale["max"], na.rm = TRUE)
+        valToTest <- try(unique(round(c(seq(mini, maxi, length.out = Nb.thresh.test), mini, maxi))))
+        if (inherits(valToTest, "try-error")) {
+          valToTest <- seq(fit.scale["min"], fit.scale["max"], length.out = Nb.thresh.test)
         }
         # deal with unique value to test case
-        if(length(valToTest)<3){
-          valToTest <- round(c(mean(fit.scale["min"],mini), valToTest,
-                               mean(fit.scale["max"], maxi)))
+        if (length(valToTest) < 3) {
+          valToTest <- round(c(mean(fit.scale["min"], mini), valToTest, mean(fit.scale["max"], maxi)))
         }
       }
-      #         valToTest <- unique( c(seq(mini,maxi,by=Precision), mini, maxi) )
-    } else{
+    } else { # test only one value
       valToTest <- Fixed.thresh
     }
     
-    calcStat <- sapply(lapply(valToTest, function(x){return(table(Fit>x,Obs))} ), calculate.stat, stat=Stat)
+    ## 2. apply the bm_CalculateStat function ---------------------------------
+    calcStat <- sapply(lapply(valToTest, function(x) {
+      return(table(Fit > x, Obs))
+    }), bm_CalculateStat, stat = Stat)
     
-    # scal on 0-1 ladder.. 1 is the best
+    ## 3. scale obtained scores and find best value ---------------------------
     calcStat <- 1 - abs(StatOptimum - calcStat)
-    
-    best.stat <- max(calcStat, na.rm=T)
-    
-    cutoff <- median(valToTest[which(calcStat==best.stat)]) # if several values are selected
+    best.stat <- max(calcStat, na.rm = TRUE)
+    cutoff <- median(valToTest[which(calcStat == best.stat)]) # if several values are selected
     
     misc <- table(Fit >= cutoff, Obs)
-    misc <- .contagency.table.check(misc)
-    true.pos <- misc['TRUE','1']
-    true.neg <- misc['FALSE','0']
-    specificity <- (true.neg * 100)/sum(misc[,'0'])
-    sensitivity <- (true.pos * 100)/sum(misc[,'1'])
-  } else{
-    roc1 <- pROC::roc(Obs, Fit, percent=T, direction="<", levels = c(0,1))
+    misc <- .contingency_table_check(misc)
+    true.pos <- misc['TRUE', '1']
+    true.neg <- misc['FALSE', '0']
+    specificity <- (true.neg * 100) / sum(misc[, '0'])
+    sensitivity <- (true.pos * 100) / sum(misc[, '1'])
+    
+  } else { ## specific procedure for ROC value ----------------------------------------------------
+    roc1 <- pROC::roc(Obs, Fit, percent = TRUE, direction = "<", levels = c(0, 1))
     roc1.out <- pROC::coords(roc1, "best", ret = c("threshold", "sens", "spec"), transpose = TRUE)
     ## if two optimal values are returned keep only the first one
-    if(!is.null(ncol(roc1.out))) roc1.out <- roc1.out[, 1]
-    best.stat <- as.numeric(pROC::auc(roc1))/100
+    if (!is.null(ncol(roc1.out))) { roc1.out <- roc1.out[, 1] }
+    best.stat <- as.numeric(pROC::auc(roc1)) / 100
     cutoff <- as.numeric(roc1.out["threshold"])
     sensitivity <- as.numeric(roc1.out["sensitivity"])
     specificity <- as.numeric(roc1.out["specificity"])
   }
-  #}
-  eval.out <- cbind(best.stat,cutoff,sensitivity,specificity)
+
+  eval.out <- cbind(best.stat, cutoff, sensitivity, specificity)
   rownames(eval.out) <- Stat
   
   return(eval.out)
@@ -170,145 +163,30 @@ Find.Optim.Stat <- function(Stat = 'TSS',
 
 ###################################################################################################
 
-getStatOptimValue <- function(stat){
-  if(stat == 'TSS') return(1)
-  if(stat == 'KAPPA') return(1)
-  if(stat == 'PBC') return(1)
-  if(stat == 'ACCURACY') return(1)
-  if(stat == 'BIAS') return(1)
-  if(stat == 'POD') return(1)
-  if(stat == 'FAR') return(0)
-  if(stat == 'POFD') return(0)
-  if(stat == 'SR') return(1)
-  if(stat == 'CSI') return(1)
-  if(stat == 'ETS') return(1)
-  if(stat == 'HK') return(1)
-  if(stat == 'HSS') return(1)
-  if(stat == 'OR') return(1000000)
-  if(stat == 'ORSS') return(1)
+get_optim_value <- function(stat)
+{
+  switch(stat
+         , 'TSS' = 1
+         , 'KAPPA' = 1
+         , 'PBC' = 1
+         , 'ACCURACY' = 1
+         , 'BIAS' = 1
+         , 'POD' = 1
+         , 'FAR' = 0
+         , 'POFD' = 0
+         , 'SR' = 1
+         , 'CSI' = 1
+         , 'ETS' = 1
+         , 'HK' = 1
+         , 'HSS' = 1
+         , 'OR' = 1000000
+         , 'ORSS' = 1
+  )
 }
 
 ###################################################################################################
 
-calculate.stat <- function(Misc, stat='TSS')
-{
-  # Contagency table checking
-  Misc <- .contagency.table.check(Misc)
-  
-  # Defining Classification index
-  hits <- Misc['TRUE','1']
-  misses <- Misc['FALSE','1']
-  false_alarms <- Misc['TRUE','0']
-  correct_negatives <- Misc['FALSE','0']
-  
-  total <- sum(Misc)
-  forecast_1 <- sum(Misc['TRUE',])
-  forecast_0 <- sum(Misc['FALSE',])
-  observed_1 <- sum(Misc[,'1'])
-  observed_0 <- sum(Misc[,'0'])
-  
-  # Calculating choosen evaluating metric
-  if(stat=='TSS'){
-    return( (hits/(hits+misses)) + (correct_negatives/(false_alarms+correct_negatives)) -1 )
-  }
-  
-  if(stat=='KAPPA'){
-    Po <- (1/total) * (hits + correct_negatives)
-    Pe <- ((1/total)^2) * ((forecast_1 * observed_1) + (forecast_0 * observed_0))
-    return( (Po - Pe) / (1-Pe) )
-  }
-  
-  if(stat=='ACCURACY'){
-    return( (hits + correct_negatives) / total)
-  }
-  
-  if(stat=='BIAS'){
-    return( (hits + false_alarms) / (hits + misses))
-  }
-  
-  if(stat=='POD'){
-    return( hits / (hits + misses))
-  }
-  
-  if(stat=='FAR'){
-    return(false_alarms/(hits+false_alarms))
-  }
-  
-  if(stat=='POFD'){
-    return(false_alarms / (correct_negatives + false_alarms))
-  }
-  
-  if(stat=='SR'){
-    return(hits / (hits + false_alarms))
-  }
-  
-  if(stat=='CSI'){
-    return(hits/(hits+misses+false_alarms))
-  }
-  
-  if(stat=='ETS'){
-    hits_rand <- ((hits+misses)*(hits+false_alarms)) / total
-    return( (hits-hits_rand) / (hits+misses+false_alarms-hits_rand))
-  }
-  
-  if(stat=='HK'){
-    return((hits/(hits+misses)) - (false_alarms/(false_alarms + correct_negatives)))
-  }
-  
-  if(stat=='HSS'){
-    expected_correct_rand <- (1/total) * ( ((hits+misses)*(hits+false_alarms)) +
-                                             ((correct_negatives + misses)*(correct_negatives+false_alarms)) )
-    return((hits+correct_negatives-expected_correct_rand) / (total - expected_correct_rand))
-  }
-  
-  if(stat=='OR'){
-    return((hits*correct_negatives)/(misses*false_alarms))
-  }
-  
-  if(stat=='ORSS'){
-    return((hits*correct_negatives - misses*false_alarms) / (hits*correct_negatives + misses*false_alarms))
-  }
-  
-  if(stat=="BOYCE"){
-    
-  }
-  
-}
-
-
-###################################################################################################
-
-.contagency.table.check <- function(Misc)
-{
-  # Contagency table checking
-  if(dim(Misc)[1]==1){
-    if(row.names(Misc)[1]=="FALSE"){
-      Misc <- rbind(Misc, c(0,0))
-      rownames(Misc) <- c('FALSE','TRUE')
-    } else{
-      a <- Misc
-      Misc <- c(0,0)
-      Misc <- rbind(Misc, a)
-      rownames(Misc) <- c('FALSE','TRUE')
-    }
-  }
-  
-  if(ncol(Misc) != 2 | nrow(Misc) !=2 ){
-    Misc = matrix(0, ncol=2, nrow=2, dimnames=list(c('FALSE','TRUE'), c('0','1')))
-  }
-  
-  if((sum(colnames(Misc) %in% c('FALSE','TRUE','0','1')) < 2) | (sum(rownames(Misc) %in% c('FALSE','TRUE','0','1')) < 2) ){
-    stop("Unavailable contingency table given")
-  }
-  
-  if('0' %in% rownames(Misc)) rownames(Misc)[which(rownames(Misc)=='0')] <- 'FALSE'
-  if('1' %in% rownames(Misc)) rownames(Misc)[which(rownames(Misc)=='1')] <- 'TRUE'
-  
-  return(Misc)
-}
-
-
-.guess.scale <- function(Fit)
+.guess_scale <- function(Fit)
 {
   min <- 0
   max <- ifelse(max(Fit, na.rm = TRUE) <= 1, 1, 1000)
@@ -316,3 +194,82 @@ calculate.stat <- function(Misc, stat='TSS')
   names(out) <- c("min", "max")
   return(out)
 }
+
+.contingency_table_check <- function(Misc)
+{
+  # Contingency table checking
+  if (dim(Misc)[1] == 1) {
+    if (row.names(Misc)[1] == "FALSE") {
+      Misc <- rbind(Misc, c(0, 0))
+      rownames(Misc) <- c('FALSE', 'TRUE')
+    } else {
+      a <- Misc
+      Misc <- c(0, 0)
+      Misc <- rbind(Misc, a)
+      rownames(Misc) <- c('FALSE', 'TRUE')
+    }
+  }
+  
+  if (ncol(Misc) != 2 | nrow(Misc) != 2) {
+    Misc = matrix(0, ncol = 2, nrow = 2, dimnames = list(c('FALSE', 'TRUE'), c('0', '1')))
+  }
+  
+  if ((sum(colnames(Misc) %in% c('FALSE', 'TRUE', '0', '1')) < 2) | 
+      (sum(rownames(Misc) %in% c('FALSE', 'TRUE', '0', '1')) < 2) ) {
+    stop("Unavailable contingency table given")
+  }
+  
+  if ('0' %in% rownames(Misc)) { rownames(Misc)[which(rownames(Misc) == '0')] <- 'FALSE' }
+  if ('1' %in% rownames(Misc)) { rownames(Misc)[which(rownames(Misc) == '1')] <- 'TRUE' }
+  
+  return(Misc)
+}
+
+bm_CalculateStat <- function(Misc, stat = 'TSS')
+{
+  ## check contagency table
+  Misc <- .contingency_table_check(Misc)
+  
+  ## calculate basic classification information -------------------------------
+  hits <- Misc['TRUE', '1'] ## true positives
+  misses <- Misc['FALSE', '1'] ##  false positives
+  false_alarms <- Misc['TRUE', '0'] ## false negatives 
+  correct_negatives <- Misc['FALSE', '0'] ## true negatives
+  
+  total <- sum(Misc)
+  forecast_1 <- sum(Misc['TRUE', ])
+  forecast_0 <- sum(Misc['FALSE', ])
+  observed_1 <- sum(Misc[, '1'])
+  observed_0 <- sum(Misc[, '0'])
+  
+  ## calculate chosen evaluation metric ---------------------------------------
+  out = switch(stat
+               , 'TSS' = (hits / (hits + misses)) + (correct_negatives / (false_alarms + correct_negatives)) - 1
+               , 'KAPPA' = {
+                 Po <- (1 / total) * (hits + correct_negatives)
+                 Pe <- ((1 / total) ^ 2) * ((forecast_1 * observed_1) + (forecast_0 * observed_0))
+                 return((Po - Pe) / (1 - Pe))
+               }
+               , 'ACCURACY' = (hits + correct_negatives) / total
+               , 'BIAS' = (hits + false_alarms) / (hits + misses)
+               , 'POD' =  hits / (hits + misses)
+               , 'FAR' = false_alarms / (hits + false_alarms)
+               , 'POFD' = false_alarms / (correct_negatives + false_alarms)
+               , 'SR' = hits / (hits + false_alarms)
+               , 'CSI' = hits / (hits + misses + false_alarms)
+               , 'ETS' = {
+                 hits_rand <- ((hits + misses) * (hits + false_alarms)) / total
+                 return((hits - hits_rand) / (hits + misses + false_alarms - hits_rand))
+               }
+               , 'HK' = (hits / (hits + misses)) - (false_alarms / (false_alarms + correct_negatives))
+               , 'HSS' = {
+                 expected_correct_rand <- (1 / total) * 
+                   (((hits + misses) * (hits + false_alarms)) + ((correct_negatives + misses) * (correct_negatives + false_alarms)))
+                 return((hits + correct_negatives - expected_correct_rand) / (total - expected_correct_rand))
+               }
+               , 'OR' = (hits * correct_negatives) / (misses * false_alarms)
+               , 'ORSS' = (hits * correct_negatives - misses * false_alarms) / (hits * correct_negatives + misses * false_alarms)
+               , 'BOYCE' = NULL
+  }
+}
+
