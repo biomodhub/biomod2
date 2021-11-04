@@ -262,7 +262,7 @@ export(
 	get_var_range, 
 	get_var_type,
 	response.plot,
-	SampleMat2
+	bm_SampleBinaryVector
 	#test_slots,
 	#update.objects_BIOMOD.formated.data,
 	#update.objects_biomod2_model,

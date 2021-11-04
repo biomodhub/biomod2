@@ -84,7 +84,7 @@ Collate:
     'ProbDensFunc.R'
     'Projection.R'
     'Rescaler4.R'
-    'SampleMat2.R'
+    'bm_SampleBinaryVector.R'
     'biomod2_classes_1.R'
     'biomod2_classes_2.R'
     'biomod2_classes_3.R'

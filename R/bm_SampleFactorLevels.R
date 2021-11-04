@@ -5,8 +5,8 @@
 ##' 
 ##' @title Tool to ensure the sampling of all levels of a factorial variable 
 ##' 
-##' @description This function samples randomly an element of each level of all the factorial 
-##' variables contained in a \code{raster*} or \code{data.frame} object.
+##' @description This internal \pkg{biomod2} function samples randomly an element of each level of 
+##' all the factorial variables contained in a \code{raster*} or \code{data.frame} object.
 ##' 
 ##' @param x a \code{data.frame} or \code{\link[raster:stack]{RasterStack}} object containing the 
 ##' explanatory variables (in columns or layers)
