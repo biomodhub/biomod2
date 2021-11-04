@@ -4,51 +4,74 @@
 ##' @author Damien Georges
 ##' 
 ##' @title Tool to ensure the sampling of all levels of a factorial variable 
-##' @description This function will sample randomly an element of each level
-##'   of all the factorial variables contains in a Raster* object or a data.frame
 ##' 
-##' @param x         a Raster* object or a data.frame
-##' @param mask.out  a Raster/data.frame mask containing area that have already 
-##'   been sampled. The factor levels within this mask will not be sampled.
-##' @param mask.in   a Raster/list of Raster/data.frame mask (potentially a stack of 
-##'   masks) indicating areas were we want to sample our factor level in priority.
-##'   Note that if after having explore this masks some levels of the considered
-##'   factorial varialble remains unsampled, this levels will be sampled in the 
-##'   reference input object (here 'x')
-##'      
-##' @note 
-##'   - The x/mask.out/mask.in should be coherent in term of dimention (same number of 
-##'     rows for data.frame and same number of rows, column, identic resolution 
-##'     and projection coordinates system for Raster* objects)
-##'   - If mask.in contains several masks (RasterStack or multi-column data.frame)
-##'     then the order of the mask matter. The mask will be considered successively.
-##'     The first will be use prioritarly to sample our variable factor levels and 
-##'     so on.
-##'   - Raster* masks will be understood as: 
-##'       - NA: out of of mask
-##'       - not NA: in mask
-##'   - data.frame masks will be understood as:
-##'       - FALSE: out of mask
-##'       - TRUE: in mask
+##' @description This function samples randomly an element of each level of all the factorial 
+##' variables contained in a \code{raster*} or \code{data.frame} object.
 ##' 
-##' @details In case any factorial variable is found in the input object then 
-##'   NULL is returned.
-##'   
-##' @return a numeric vector the number (cell number for Raster* objects or row 
-##'   number for data.frame) where each will refer to a single level of a single
-##'   factorial variable.
+##' @param x a \code{data.frame} or \code{\link[raster:stack]{RasterStack}} object containing the 
+##' explanatory variables (in columns or layers)
+##' @param mask.out a \code{data.frame} or \code{\link[raster:raster]{raster}} object containing 
+##' the area that has already been sampled (\emph{factor levels within this mask will not be 
+##' sampled})
+##' @param mask.in a \code{data.frame}, \code{\link[raster:raster]{raster}} or 
+##' \code{\link[raster:stack]{RasterStack}} object containing areas where factor levels are to be 
+##' sampled in priority. \emph{Note that if after having explored these masks, some factor levels 
+##' remain unsampled, they will be sampled in the reference input object \code{x}.}
+##' 
+##' 
+##' @value 
+##' 
+##' A \code{numeric vector} containing point IDs (either cell number for \code{raster*} objects, 
+##' or row number for \code{data.frame}), each refering to a single level of a single factorial 
+##' variable.
+##' 
+##' In case any factorial variable is found in the input object, \code{NULL} is returned.
+##' 
+##'
+##' @details 
+##' 
+##' The \code{x}, \code{mask.out} and \code{mask.in} parameters must be coherent in terms of 
+##' dimensions :
+##' \itemize{
+##'   \item same number of rows for \code{data.frame} objects
+##'   \item same resolution, projection system and number of cells for \code{raster*} objects
+##' }
+##' 
+##' If \code{mask.in} contains several masks (either it is a 
+##' \code{\link[raster:stack]{RasterStack}} object or a multi-columns \code{data.frame}), then 
+##' the order of masks / columns matters : they will be considered successively to sample missing 
+##' factor levels.
+##' 
+##' \itemize{
+##'   \item \code{raster*} masks will be understood as :
+##'   \itemize{
+##'     \item \code{NA} : out of mask
+##'     \item \code{not NA} : in mask
+##'   }
+##'   \item \code{data.frame} masks will be understood as :
+##'   \itemize{
+##'     \item \code{FALSE} : out of mask
+##'     \item \code{TRUE} : in mask
+##'   }
+##' }
+##' 
 ##'   
 ##' @examples
-##' ## example with raster* object ---------- 
+##' 
+##' ## Example with raster* object ----------------------------------
+##' 
 ##' library(raster)
+##' 
 ##' ## create a factorial raster
 ##' r1 <- raster()
 ##' r1[] <- 1; r1[1] <- 2; r1[2:3] <- 3
 ##' r1 <- as.factor(r1)
+##' 
 ##' ## create a continuous raster
 ##' r2 <- raster()
 ##' r2[] <- rnorm(ncell(r2))
-##' ## pull the raster into a RasterStack
+##' 
+##' ## put the raster into a RasterStack
 ##' stk <- stack(r1, r2)
 ##' is.factor(stk)
 ##' 
@@ -56,7 +79,7 @@
 ##' mask.out <- r1
 ##' mask.out[] <- NA; mask.out[2:3] <- 1
 ##' 
-##' ## define a list of mask where we want to sample in priority
+##' ## define a list of masks where we want to sample in priority
 ##' mask.in.1 <- mask.in.2 <- r1
 ##' mask.in.1[1:10] <- NA ## only level 1 should be sampled in this mask
 ##' mask.in.2[1] <- NA ## only levels 1 and 3 should be sampled in this mask
@@ -64,9 +87,9 @@
 ##'                 mask.in.2 = mask.in.2)
 ##' 
 ##' ## test different version of the function
-##' sample.factor.levels(stk, mask.out = mask.out)
-##' sample.factor.levels(stk, mask.in = mask.in)
-##' sample.factor.levels(stk, mask.out = mask.out, mask.in = mask.in)
+##' bm_SampleFactorLevels(stk, mask.out = mask.out)
+##' bm_SampleFactorLevels(stk, mask.in = mask.in)
+##' bm_SampleFactorLevels(stk, mask.out = mask.out, mask.in = mask.in)
 ##' 
 ##' 
 ##' ###############################################################################################
