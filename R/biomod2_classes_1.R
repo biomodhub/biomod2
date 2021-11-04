@@ -1095,10 +1095,10 @@ setMethod('.Models.prepare.data', signature('BIOMOD.formated.data'),
                 calibLines <- matrix(rep(TRUE, length(data@data.species)), ncol = 1)
                 colnames(calibLines) <- '_Full'
               } else {
-                calibLines <- .SampleMat(data.sp = data@data.species,
-                                         dataSplit = DataSplit,
-                                         nbRun = NbRunEval,
-                                         data.env = data@data.env.var)
+                calibLines <- .sample_mat(data.sp = data@data.species,
+                                          dataSplit = DataSplit,
+                                          nbRun = NbRunEval,
+                                          data.env = data@data.env.var)
                 if (do.full.models) {
                   calibLines <- cbind(calibLines, rep(TRUE, length(data@data.species)))
                   colnames(calibLines)[NbRunEval + 1] <- '_Full'
@@ -1166,7 +1166,7 @@ setMethod('.Models.prepare.data', signature(data='BIOMOD.formated.data.PA'),
                   colnames(calibLines) <- '_Full'
                 } else {
                   calibLines <- matrix(NA, nrow = length(data@data.species), ncol = NbRunEval)
-                  sampled.mat <- .SampleMat(
+                  sampled.mat <- .sample_mat(
                     data.sp = data@data.species[data@PA[, pa]],
                     dataSplit = DataSplit,
                     nbRun = NbRunEval,

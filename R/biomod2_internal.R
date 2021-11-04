@@ -57,6 +57,38 @@
   return(Yweights)
 }
 
+## CREATE DATASPLITTABLE (BIOMOD_FormatingData) ---------------------------------------------------
+## used in biomod2_classes_1.R file
+
+.sample_mat <- function(data.sp, dataSplit, nbRun = 1, data.env = NULL)
+{
+  # data.sp is a 0, 1 vector
+  # return a matrix with nbRun columns of boolean (T: calib, F= eval)
+  
+  pres <- which(data.sp == 1)
+  abs <- (1:length(data.sp))[-pres]
+  
+  nbPresEval <- round(length(pres) * dataSplit / 100)
+  nbAbsEval <- round(length(abs) * dataSplit / 100)
+  
+  mat.out <- matrix(FALSE, nrow = length(data.sp), ncol = nbRun)
+  colnames(mat.out) <- paste0('_RUN', 1:nbRun)
+  
+  for (i in 1:ncol(mat.out)) {
+    ## force to sample at least one level of each factorial variable for calibration
+    fact.cell.samp <- NULL
+    if (!is.null(data.env)) {
+      fact.cell.samp <- bm_SampleFactorLevels(data.env)
+      mat.out[fact.cell.samp, i] <- TRUE
+    }
+    mat.out[sample(setdiff(pres, fact.cell.samp),
+                   max(nbPresEval - length(fact.cell.samp), 0)), i] <- TRUE
+    mat.out[sample(setdiff(abs, fact.cell.samp),
+                   max(nbAbsEval - length(fact.cell.samp), 0)), i] <- TRUE
+  }
+  return(mat.out)
+}
+
 
 ## TEST PARAMETERS (BIOMOD_ModelingOptions) -------------------------------------------------------
 ## used in biomod2_classes_1.R file

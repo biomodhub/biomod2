@@ -680,37 +680,6 @@ BIOMOD_Modeling <- function(
   #   }
 }
 
-###################################################################################################
-
-.SampleMat <- function(data.sp, dataSplit, nbRun = 1, data.env = NULL)
-{
-  # return a matrix with nbRun columns of boolean (T: calib, F= eval)
-  # data.sp is a 0,1 vector
-  pres <- which(data.sp == 1)
-  abs <- (1:length(data.sp))[-pres]
-  
-  nbPresEval <- round(length(pres) * dataSplit/100)
-  nbAbsEval <- round(length(abs) * dataSplit/100)
-  
-  mat.out <- matrix(FALSE,
-                    nrow = length(data.sp),
-                    ncol = nbRun)
-  colnames(mat.out) <- paste('_RUN',1:nbRun, sep='')
-  
-  for (i in 1:ncol(mat.out)){
-    ## force to sample at least one level of each factorial variable for calibration
-    fact.cell.samp <- NULL
-    if(!is.null(data.env)){
-      fact.cell.samp <- bm_SampleFactorLevels(data.env)
-      mat.out[fact.cell.samp, i] <- TRUE
-    }
-    mat.out[sample(setdiff(pres, fact.cell.samp),
-                   max(nbPresEval - length(fact.cell.samp), 0)), i] <- TRUE
-    mat.out[sample(setdiff(abs, fact.cell.samp),
-                   max(nbAbsEval - length(fact.cell.samp), 0)), i] <- TRUE
-  }
-  return(mat.out)
-}
 
 ###################################################################################################
 
