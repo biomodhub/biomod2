@@ -135,26 +135,3 @@ full_suffling <- function(x,id=NULL){
   }
   return(out)
 }
-
-
-##### TEST #####
-# setwd("~/__BIOMOD__/DevComputing/")
-# x <- rbinom(n=100,size=1,prob=0.3)
-# y <- rnorm(100)
-# z <- rnorm(100)
-# data <- as.data.frame(cbind(x,y,z))
-#
-# myGLM <- glm(x~y*z,family='binomial')
-#
-# VI <- variables_importance(myGLM, data, nb_rand=10)
-#
-# ##
-# library(biomod2)
-#
-# load("GuloGulo/GuloGulo.test.models.out")
-# xx <- BIOMOD_LoadModels(GuloGulo.test.models.out,models='MAXENT.Phillips')
-#
-# VI <- variables_importance(get(xx[1]), getModelsInputData(GuloGulo.test.models.out,'expl.var'), nb_rand=10)
-
-
-

@@ -180,7 +180,6 @@ export(
 )
 
 export(
-	BIOMOD_ConvertOldRun,
 	BIOMOD_EnsembleForecasting,
 	BIOMOD_EnsembleModeling,
 	BIOMOD_FormatingData,
@@ -236,24 +235,6 @@ export(
 	user.defined.pseudo.abs.selection,
 	.Models.prepare.data,
 	.Projection.do.proj
-)
-
-exportMethods(
-	#getEMalgos, 
-	#getEMbuiltModels, 
-	#getEMeval, 
-	#getEMkeptModels, 
-	#getEM_needed_models, 
-	#getFormalModel, 
-	#getModelsBuiltModels, 
-	#getModelsEvaluations, 
-	getModelsInputData, 
-	#getModelsOptions, 
-	#getModelsPrediction, 
-	#getModelsPredictionEval, 
-	#getModelsVarImport, 
-	#getProjection,
-	getScalingModel
 )
 
 export(
