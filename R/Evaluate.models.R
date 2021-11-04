@@ -23,7 +23,7 @@ evaluate <- function(model, data, stat, as.array=FALSE){
     thresh <- mod@model_evaluation[1,'Cutoff']
     cat("\n! no 'true' threshold defined for",stat,"... ", rownames(mod@model_evaluation)[1], "ones' taken.")
   }
-  eval <- Find.Optim.Stat(Stat=stat, Fit=fit, Obs=obs, Fixed.thresh=thresh)
+  eval <- bm_FindOptimStat(Stat=stat, Fit=fit, Obs=obs, Fixed.thresh=thresh)
   return(eval)
 }
 

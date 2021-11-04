@@ -762,7 +762,7 @@
       sapply(
         mod.eval.method,
         function(.x){
-          Find.Optim.Stat(
+          bm_FindOptimStat(
             Stat = .x,
             Fit = g.pred[evalLines],
             Obs = Data %>% filter(evalLines) %>% pull(1)
@@ -786,7 +786,7 @@
 
       true.evaluation <- sapply(mod.eval.method,
                                 function(x){
-                                  return( Find.Optim.Stat(Stat = x,
+                                  return( bm_FindOptimStat(Stat = x,
                                                           Fit = g.pred.eval.without.na,
                                                           Obs = evalData[,1],
                                                           Fixed.thresh = cross.validation["Cutoff",x]) )

@@ -1,22 +1,14 @@
 ##' ###############################################################################################
-##' @name BIOMOD_FormatingData
-##' @aliases BIOMOD_FormatingData
+##' @name bm_FindOptimStat
+##' @aliases bm_FindOptimStat
 ##' @author Damien Georges
 ##' 
-##' 
-##' ##' @name Find.Optim.Stat
 ##' @title Calculate the best score according to a given evaluation method
 ##'
 ##' @description \code{Find.Optim.Stat} is an internal \pkg{biomod2} function
 ##' to find the threshold to convert continuous values into binary ones leading
 ##' to the best score for a given evaluation metric.
 ##'
-##' @usage
-##'   Find.Optim.Stat(Stat='TSS',
-##'                   Fit,
-##'                   Obs,
-##'                   Nb.thresh.test = 100,
-##'                   Fixed.thresh = NULL)
 ##'
 ##' @param Stat either 'ROC', TSS', 'KAPPA', 'ACCURACY', 'BIAS', 'POD', 'FAR',
 ##'         'POFD', 'SR', 'CSI', 'ETS', 'HK', 'HSS', 'OR' or 'ORSS'
@@ -54,7 +46,7 @@
 ##'
 ##'   ##' random drawing
 ##'   b <- runif(100,min=0,max=1000)
-##'   Find.Optim.Stat(Stat='TSS',
+##'   bm_FindOptimStat(Stat='TSS',
 ##'                   Fit=b,
 ##'                   Obs=a)
 ##'
@@ -65,7 +57,7 @@
 ##'
 ##'   c <- sapply(a,BiasedDrawing)
 ##'
-##'   Find.Optim.Stat(Stat='TSS',
+##'   bm_FindOptimStat(Stat='TSS',
 ##'                   Fit=c,
 ##'                   Obs=a,
 ##'                   Nb.thresh.test = 100)
@@ -74,7 +66,7 @@
 ##' ###############################################################################################
 
 
-Find.Optim.Stat <- function(Stat = 'TSS',
+bm_FindOptimStat <- function(Stat = 'TSS',
                             Fit,
                             Obs,
                             Nb.thresh.test = 100,

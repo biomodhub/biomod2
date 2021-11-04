@@ -383,7 +383,7 @@
             }
             
             cross.validation <- sapply(models.eval.meth,
-                                       Find.Optim.Stat,
+                                       bm_FindOptimStat,
                                        Fit = pred.bm[eval_lines],
                                        Obs = obs[eval_lines])
             rownames(cross.validation) <- c("Testing.data","Cutoff","Sensitivity", "Specificity")
@@ -399,7 +399,7 @@
                                                          models.eval.meth))
             } else {
               true.evaluation <- sapply(models.eval.meth, function(x){
-                Find.Optim.Stat(
+                bm_FindOptimStat(
                   Fit = eval_pred.bm * 1000,
                   Obs = eval.obs,
                   Fixed.thresh = cross.validation["Cutoff",x])})
