@@ -204,7 +204,7 @@ export(
   .create.maxent.bg.dir,
 	BIOMOD_CrossValidation,
 	BIOMOD_PresenceOnly,
-	BIOMOD_tuning,
+	BIOMOD_Tuning,
   bm_SampleFactorLevels,
 	.transform.outputs.list,
 	zzz_bm

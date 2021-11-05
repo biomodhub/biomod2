@@ -180,7 +180,7 @@
 ##' ###############################################################################################
 
 
-BIOMOD_tuning <- function(data,
+BIOMOD_Tuning <- function(data,
                           models = c('GLM', 'GBM', 'GAM', 'CTA', 'ANN', 'SRE', 'FDA', 'MARS', 'RF', 'MAXENT.Phillips'),
                           models.options = BIOMOD_ModelingOptions(),
                           method.ANN = 'avNNet',
@@ -311,7 +311,7 @@ BIOMOD_tuning <- function(data,
         n.trees <- seq(2500, 10000, by = 2500)
       } else if(tune.GBM$bestTune$n.trees == 1000) {
         n.trees <- seq(750, 2000, by = 250)
-      } if(tune.GBM$bestTune$n.trees == 500) {
+      } else if(tune.GBM$bestTune$n.trees == 500) {
         n.trees <- seq(100, 1000, by = 50)
       }
       

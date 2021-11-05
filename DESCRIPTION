@@ -72,7 +72,7 @@ Collate:
     'BIOMOD_PresenceOnly.R'
     'BIOMOD_Projection.R'
     'BIOMOD_RangeSize.R'
-    'BIOMOD_tuning.R'
+    'BIOMOD_Tuning.R'
     'BinaryTransformation.R'
     'Biomod.Models_RE.R'
     'CVnnet.R'
