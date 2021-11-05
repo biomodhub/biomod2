@@ -192,7 +192,6 @@ export(
 	bm_FindOptimStat,
 	get_optim_value,
 	level.plot,
-	LIST_to_ARRAY,
 	bm_MakeFormula,
 	models_scores_graph,
 	multiple.plot,

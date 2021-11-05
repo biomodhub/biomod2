@@ -946,7 +946,7 @@ BIOMOD_Modeling <- function(
               return(data.frame(modOut[[d1]][[d2]][[d3]][['evaluation']]))
             } else { 
               return(matrix(NA, ncol = length(eval.col.names), nrow = length(eval.meth.names)
-                            , dimnames = list(eval.meth.names, eval.col.names))
+                            , dimnames = list(eval.meth.names, eval.col.names)))
             }
           } else if (out == "prediction" || out == "prediction.eval" || 
                      (out == "var.import" && d3 %in% kept.mod)) {
@@ -955,8 +955,6 @@ BIOMOD_Modeling <- function(
             } else {
               return(as.numeric(modOut[[d1]][[d2]][[d3]][[name_slot]]))
             }
-          } else if (out == "var.import") {
-            
           }
         })
       })
@@ -977,8 +975,12 @@ BIOMOD_Modeling <- function(
     output <- lapply(names(modOut),function(d1){ # data set
       lapply(names(modOut[[d1]]), function(d2){ # run eval
         lapply(names(modOut[[d1]][[d2]]), function(d3){ # models
-          return(modOut[[d1]][[d2]][[d3]][[name_slot]])
-          # return(as.character(modOut[[d1]][[d2]][[d3]][['ModelName']]))
+          res = modOut[[d1]][[d2]][[d3]][[name_slot]]
+          if (out == "calib.failure") {
+            return(as.numeric(res))
+          } else if (out == "models.run") {
+            return(as.character(res))
+          }
         })
       })
     })
@@ -995,12 +997,12 @@ BIOMOD_Modeling <- function(
   if (out %in% c("EF.prediction", "EF.PCA.median", "EF.evaluation"))
   {
     name_slot = ifelse(out == "EF.prediction", "EM"
-                       ifelse(out == "EF.PCA.median", "PCA.median", "EM.eval"))
+                       , ifelse(out == "EF.PCA.median", "PCA.median", "EM.eval"))
     
     if (is.null(modOut[[1]][[1]][[1]][[name_slot]])) { return(NULL) }
     
     nb.tmp = 1
-    dimnames.out = list(NULL, mod.names, run.eval.names, dataset.names))
+    dimnames.out = list(NULL, mod.names, run.eval.names, dataset.names)
     if (out == "EF.prediction") {
       nb.tmp <- length(as.numeric(unlist(modOut[[1]][[1]][[1]][[name_slot]])))
     } else if (out == "EF.evaluation") {
@@ -1008,7 +1010,7 @@ BIOMOD_Modeling <- function(
       eval.col.names <- colnames(as.data.frame(modOut[[1]][[1]][[1]][[name_slot]]))
       nb.tmp = c(length(eval.meth.names), length(eval.col.names))
       dimnames.out = list(eval.meth.names, eval.col.names
-                          , mod.names, run.eval.names, dataset.names))
+                          , mod.names, run.eval.names, dataset.names)
     }
     dim.out = c(nb.tmp,
                 length(modOut[[1]][[1]]),
