@@ -21,7 +21,7 @@ devtools::install_github("biomodhub/biomod2", dependencies = TRUE)
 
 `biomod2` code is currently being cleaned up, hence some function names might change a bit...
 
-Sorry for the inconvenience, and please **feel free to indicate if you notice some strange new behaviours ** !
+Sorry for the inconvenience, and please **feel free to indicate if you notice some strange new behaviors** !
 
 - **stable version** (from [cran](https://CRAN.R-project.org/package=biomod2))
 
