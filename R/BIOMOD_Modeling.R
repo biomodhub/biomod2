@@ -729,115 +729,115 @@ BIOMOD_Modeling <- function(
 #'   as `array`.
 #' @export
 #'
-.transform.outputs.array <- function(modOut, out = 'evaluation')
-{
-  # check out attr
-  if(!(out %in% c('evaluation', 'prediction', 'var.import', 'calib.failure', 'models.run', 'prediction.eval' ) )){
-    stop(paste("out argument must be one of ", toString(c('evaluation', 'prediction', 'var.import',
-                                                          'calib.failure', 'models.run', 'prediction.eval' ))))
-  }
-  
-  # check dim of input list
-  if(length(dim(modOut)) != 4 ){
-    cat('\n',dim(modOut),'\n')
-    print(dimnames(modOut))
-    warning("Not computed .transform.outputs because of an incompatible input list dimension", immediate=T)
-    return(NULL)
-  }
-  
-  if(dim(modOut)[4] == 1 & length(unlist(strsplit(unlist(dimnames(modOut)[4]),'_'))) == 1 ){
-    dataset.names <- 'AllData'
-  } else{
-    if(length(dimnames(modOut)[[4]]) > 0){
-      dataset.names <- unlist(sapply(unlist(dimnames(modOut)[4]), function(name){return(tail(unlist(strsplit(name,'_')),1))}))
-    } else {
-      dataset.names <- paste('PA', 1:dim(modOut)[4])
-    }
-  }
-  
-  run.eval.names <- sub('_','',unlist(dimnames(modOut)[3]))
-  mod.names <- unlist(dimnames(modOut)[2])
-  
-  if (out=='evaluation'){
-    if( is.null(modOut['evaluation',1,1,1])){ return(NULL) }
-    eval.meth.names <- rownames(as.data.frame(modOut['evaluation',1,1,1]))
-    eval.col.names <- colnames(as.data.frame(modOut['evaluation',1,1,1]))
-    
-    eval.out <- array(data = unlist(modOut['evaluation',,,]),
-                      dim = c(length(eval.meth.names),
-                              length(eval.col.names),
-                              length(mod.names),
-                              length(run.eval.names),
-                              length(dataset.names)),
-                      dimnames = list(eval.meth.names,
-                                      eval.col.names,
-                                      mod.names,
-                                      run.eval.names,
-                                      dataset.names))
-    
-    return(eval.out)
-  }
-  
-  if (out=='prediction'){
-    if( is.null(modOut['pred',1,1,1])){ return(NULL) }
-    nb.pts.pred <- length(as.numeric(unlist(modOut['pred',1,1,1])))
-    pred.out <- array(data = unlist(modOut['pred',,,]),
-                      dim = c(nb.pts.pred,
-                              length(mod.names),
-                              length(run.eval.names),
-                              length(dataset.names)),
-                      dimnames = list(NULL,
-                                      mod.names,
-                                      run.eval.names,
-                                      dataset.names))
-    
-    return(pred.out)
-  }
-  
-  if (out=='prediction.eval'){
-    if( is.null(modOut['pred.eval',1,1,1])){ return(NULL) }
-    nb.pts.pred.eval <- length(as.numeric(unlist(modOut['pred.eval',1,1,1])))
-    pred.eval.out <- array(data = unlist(modOut['pred.eval',,,]),
-                           dim = c(nb.pts.pred.eval,
-                                   length(mod.names),
-                                   length(run.eval.names),
-                                   length(dataset.names)),
-                           dimnames = list(NULL,
-                                           mod.names,
-                                           run.eval.names,
-                                           dataset.names))
-    
-    return(pred.eval.out)
-  }
-  
-  if (out=='var.import'){
-    if( is.null(unlist(modOut['var.import',1,1,1]))){ return(NULL) }
-    nb.var <- length(as.numeric(unlist(modOut['var.import',1,1,1])))
-    
-    vi.out <- array(data = unlist(modOut['var.import',,,]),
-                    dim = c(nb.var,
-                            length(mod.names),
-                            length(run.eval.names),
-                            length(dataset.names)),
-                    dimnames = list(paste('Var',1:nb.var,sep=''), # to change
-                                    mod.names,
-                                    run.eval.names,
-                                    dataset.names))
-    
-    return(vi.out)
-  }
-  
-  if (out == 'calib.failure'){
-    cf.out <- unlist(modOut['calib.failure',,,])
-    return(cf.out[!is.null(cf.out)])
-  }
-  
-  if (out == 'models.run'){
-    mod.run.out <- unlist(modOut['ModelName',,,])
-    return(mod.run.out[!is.null(mod.run.out)])
-  }
-  
-}
+# .transform.outputs.array <- function(modOut, out = 'evaluation')
+# {
+#   # check out attr
+#   if(!(out %in% c('evaluation', 'prediction', 'var.import', 'calib.failure', 'models.run', 'prediction.eval' ) )){
+#     stop(paste("out argument must be one of ", toString(c('evaluation', 'prediction', 'var.import',
+#                                                           'calib.failure', 'models.run', 'prediction.eval' ))))
+#   }
+#   
+#   # check dim of input list
+#   if(length(dim(modOut)) != 4 ){
+#     cat('\n',dim(modOut),'\n')
+#     print(dimnames(modOut))
+#     warning("Not computed .transform.outputs because of an incompatible input list dimension", immediate=T)
+#     return(NULL)
+#   }
+#   
+#   if(dim(modOut)[4] == 1 & length(unlist(strsplit(unlist(dimnames(modOut)[4]),'_'))) == 1 ){
+#     dataset.names <- 'AllData'
+#   } else{
+#     if(length(dimnames(modOut)[[4]]) > 0){
+#       dataset.names <- unlist(sapply(unlist(dimnames(modOut)[4]), function(name){return(tail(unlist(strsplit(name,'_')),1))}))
+#     } else {
+#       dataset.names <- paste('PA', 1:dim(modOut)[4])
+#     }
+#   }
+#   
+#   run.eval.names <- sub('_','',unlist(dimnames(modOut)[3]))
+#   mod.names <- unlist(dimnames(modOut)[2])
+#   
+#   if (out=='evaluation'){
+#     if( is.null(modOut['evaluation',1,1,1])){ return(NULL) }
+#     eval.meth.names <- rownames(as.data.frame(modOut['evaluation',1,1,1]))
+#     eval.col.names <- colnames(as.data.frame(modOut['evaluation',1,1,1]))
+#     
+#     eval.out <- array(data = unlist(modOut['evaluation',,,]),
+#                       dim = c(length(eval.meth.names),
+#                               length(eval.col.names),
+#                               length(mod.names),
+#                               length(run.eval.names),
+#                               length(dataset.names)),
+#                       dimnames = list(eval.meth.names,
+#                                       eval.col.names,
+#                                       mod.names,
+#                                       run.eval.names,
+#                                       dataset.names))
+#     
+#     return(eval.out)
+#   }
+#   
+#   if (out=='prediction'){
+#     if( is.null(modOut['pred',1,1,1])){ return(NULL) }
+#     nb.pts.pred <- length(as.numeric(unlist(modOut['pred',1,1,1])))
+#     pred.out <- array(data = unlist(modOut['pred',,,]),
+#                       dim = c(nb.pts.pred,
+#                               length(mod.names),
+#                               length(run.eval.names),
+#                               length(dataset.names)),
+#                       dimnames = list(NULL,
+#                                       mod.names,
+#                                       run.eval.names,
+#                                       dataset.names))
+#     
+#     return(pred.out)
+#   }
+#   
+#   if (out=='prediction.eval'){
+#     if( is.null(modOut['pred.eval',1,1,1])){ return(NULL) }
+#     nb.pts.pred.eval <- length(as.numeric(unlist(modOut['pred.eval',1,1,1])))
+#     pred.eval.out <- array(data = unlist(modOut['pred.eval',,,]),
+#                            dim = c(nb.pts.pred.eval,
+#                                    length(mod.names),
+#                                    length(run.eval.names),
+#                                    length(dataset.names)),
+#                            dimnames = list(NULL,
+#                                            mod.names,
+#                                            run.eval.names,
+#                                            dataset.names))
+#     
+#     return(pred.eval.out)
+#   }
+#   
+#   if (out=='var.import'){
+#     if( is.null(unlist(modOut['var.import',1,1,1]))){ return(NULL) }
+#     nb.var <- length(as.numeric(unlist(modOut['var.import',1,1,1])))
+#     
+#     vi.out <- array(data = unlist(modOut['var.import',,,]),
+#                     dim = c(nb.var,
+#                             length(mod.names),
+#                             length(run.eval.names),
+#                             length(dataset.names)),
+#                     dimnames = list(paste('Var',1:nb.var,sep=''), # to change
+#                                     mod.names,
+#                                     run.eval.names,
+#                                     dataset.names))
+#     
+#     return(vi.out)
+#   }
+#   
+#   if (out == 'calib.failure'){
+#     cf.out <- unlist(modOut['calib.failure',,,])
+#     return(cf.out[!is.null(cf.out)])
+#   }
+#   
+#   if (out == 'models.run'){
+#     mod.run.out <- unlist(modOut['ModelName',,,])
+#     return(mod.run.out[!is.null(mod.run.out)])
+#   }
+#   
+# }
 
 # =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=- #
 
@@ -855,337 +855,184 @@ BIOMOD_Modeling <- function(
 #' @export
 .transform.outputs.list = function(modOut, out = 'evaluation', dim.names = NULL)
 {
+  out_list = c('evaluation', 'prediction', 'prediction.eval', 'var.import', 'calib.failure',
+               'models.run', 'EF.prediction', 'EF.PCA.median', 'EF.evaluation')
+  test = .fun_testIfIn(TRUE, "out", out, out_list)
   
-  # check out attr
-  if(!(out %in% c('evaluation', 'prediction', 'prediction.eval', 'var.import', 'calib.failure',
-                  'models.run', 'EF.prediction', 'EF.PCA.median', 'EF.evaluation' ) )){
-    stop(paste("out argument must be one of ", toString(c('evaluation', 'prediction', 'prediction.eval', 'var.import',
-                                                          'calib.failure', 'models.run', 'EF.prediction',
-                                                          'EF.PCA.median', 'EF.evaluation'))))
-  }
-  
-  if(length(modOut) == 1 & length(unlist(strsplit(unlist(names(modOut)),'_'))) == 1 ){
+  ## 0.a get dataset names ------------------------------------------------------------------------
+  if (length(modOut) == 1 && length(unlist(strsplit(unlist(names(modOut)), '_'))) == 1) {
     dataset.names <- 'AllData'
-  } else{
-    if(is.null(dim.names)){
-      dataset.names <- unlist(sapply(unlist(names(modOut)), function(name){return(tail(unlist(strsplit(name,'_')),1))}))
-    } else{
-      dataset.names <- unlist(dim.names[1])
-    }
+  } else if (is.null(dim.names)) {
+    dataset.names <- unlist(sapply(unlist(names(modOut)), function(name) {
+      return(tail(unlist(strsplit(name, '_')), 1))
+    }))
+  } else {
+    dataset.names <- unlist(dim.names[1])
   }
   
-  if(is.null(dim.names)){
-    run.eval.names <- sub('_','',unlist(names(modOut[[1]]))) # may be good here to test that all names are identics
-    
+  ## 0.b get run.eval and model names -------------------------------------------------------------
+  if (is.null(dim.names)) {
+    run.eval.names <- sub('_', '', unlist(names(modOut[[1]]))) # may be good here to test that all names are identics
     mod.names <- unlist(names(modOut[[1]][[1]]))
-  } else{
+  } else {
     run.eval.names <- unlist(dim.names[2])
     mod.names <- unlist(dim.names[3])
   }
   
-  if (out=='evaluation'){
-    
-    eval.tab <- NULL
-    nb_pa <- length(modOut)
-    nb_run <- length(modOut[[1]])
-    nb_mod <- length(modOut[[1]][[1]])
-    
-    for(i in 1:nb_pa){
-      for(j in 1:nb_run){
-        for(k in 1:nb_mod){
-          eval.tab <- modOut[[i]][[j]][[k]][['evaluation']]
-          if(!is.null(eval.tab)){ break }
-        }
-        if(!is.null(eval.tab)){ break }
-      }
-      if(!is.null(eval.tab)){ break }
-    }
-    
-    if( is.null(eval.tab)){ return(NULL) }
-    
-    eval.meth.names <- rownames(as.data.frame(eval.tab))
-    eval.col.names <- colnames(as.data.frame(eval.tab))
-    
-    eval.out <- lapply(names(modOut),function(d1){ # data set
-      lapply(names(modOut[[d1]]), function(d2){ # run eval
-        lapply(names(modOut[[d1]][[d2]]), function(d3){ # models
-          if(is.null(modOut[[d1]][[d2]][[d3]][['calib.failure']])){
-            return(data.frame(modOut[[d1]][[d2]][[d3]][['evaluation']]))
-          } else { matrix(NA, ncol=length(eval.col.names), nrow=length(eval.meth.names), dimnames=list(eval.meth.names,eval.col.names))}
-        })
-      })
-    })
-    
-    eval.out <- array(data = unlist(eval.out),
-                      dim = c(length(eval.meth.names),
-                              length(eval.col.names),
-                              length(mod.names),
-                              length(run.eval.names),
-                              length(dataset.names)),
-                      dimnames = list(eval.meth.names,
-                                      eval.col.names,
-                                      mod.names,
-                                      run.eval.names,
-                                      dataset.names))
-    
-    return(eval.out)
-  }
+  ## 1. CASE evaluation / prediction / prediction.eval / var.import -------------------------------
   
-  if (out=='prediction'){
-    
-    pred.tab <- NULL
+  if (out %in% c("evaluation", "prediction", "prediction.eval", "var.import"))
+  {
     nb_pa <- length(modOut)
     nb_run <- length(modOut[[1]])
     nb_mod <- length(modOut[[1]][[1]])
     
+    name_slot = out
+    if (out == "prediction") { name_slot = "pred" }
+    if (out == "prediction.eval") { name_slot = "pred.eval" }
+    
+    output <- NULL
     for(i in 1:nb_pa){
       for(j in 1:nb_run){
         for(k in 1:nb_mod){
-          pred.tab <- modOut[[i]][[j]][[k]][['pred']]
-          if(!is.null(pred.tab)){ break }
+          output <- modOut[[i]][[j]][[k]][[name_slot]]
+          if(!is.null(output)){ break }
         }
-        if(!is.null(pred.tab)){ break }
+        if(!is.null(output)){ break }
       }
-      if(!is.null(pred.tab)){ break }
+      if(!is.null(output)){ break }
+    }
+    if( is.null(output)){ return(NULL) }
+    
+    if (out == "evaluation") {
+      eval.meth.names <- rownames(as.data.frame(output))
+      eval.col.names <- colnames(as.data.frame(output))
+      dimnames.out = list(eval.meth.names,
+                          eval.col.names,
+                          mod.names,
+                          run.eval.names,
+                          dataset.names)
+      dim.out = c(length(eval.meth.names),
+                  length(eval.col.names),
+                  length(mod.names),
+                  length(run.eval.names),
+                  length(dataset.names))
+    } else if (out %in% c("prediction", "prediction.eval", "var.import")) {
+      kept.mod = mod.names
+      if (out == "var.import") {
+        ef.mod <- grep(pattern = "EF.", mod.names) # EF models
+        if (length(ef.mod) > 0) {
+          kept.mod <- mod.names[-ef.mod]
+        }
+      }
+      
+      nb.tmp <- length(as.numeric(output))
+      dimnames.out = list(NULL, kept.mod, run.eval.names, dataset.names)
+      if (out == "var.import") {
+        dimnames.out = list(names(modOut[[1]][[1]][[1]][['var.import']]), # to change
+                            , kept.mod, run.eval.names, dataset.names)
+      }
+      dim.out = c(nb.tmp,
+                  length(kept.mod),
+                  length(run.eval.names),
+                  length(dataset.names))
     }
     
-    if( is.null(pred.tab)){ return(NULL) }
-    
-    
-    nb.pts.pred <- length(as.numeric(pred.tab))
-    
-    pred.out <- lapply(names(modOut),function(d1){ # data set
-      lapply(names(modOut[[d1]]), function(d2){ # run eval
+    output <- lapply(names(modOut), function(d1) { # data set
+      lapply(names(modOut[[d1]]), function(d2) { # run eval
         lapply(names(modOut[[d1]][[d2]]), function(d3){ # models
-          if(is.null(modOut[[d1]][[d2]][[d3]][['pred']])){
-            return(rep(NA,nb.pts.pred))
-          } else{
-            return(as.numeric(modOut[[d1]][[d2]][[d3]][['pred']]))
+          if (out == "evaluation") {
+            if (is.null(modOut[[d1]][[d2]][[d3]][['calib.failure']])) {
+              return(data.frame(modOut[[d1]][[d2]][[d3]][['evaluation']]))
+            } else { 
+              return(matrix(NA, ncol = length(eval.col.names), nrow = length(eval.meth.names)
+                            , dimnames = list(eval.meth.names, eval.col.names))
+            }
+          } else if (out == "prediction" || out == "prediction.eval" || 
+                     (out == "var.import" && d3 %in% kept.mod)) {
+            if (is.null(modOut[[d1]][[d2]][[d3]][[name_slot]])) {
+              return(rep(NA, nb.pts.pred))
+            } else {
+              return(as.numeric(modOut[[d1]][[d2]][[d3]][[name_slot]]))
+            }
+          } else if (out == "var.import") {
+            
           }
         })
       })
     })
+    data.out = unlist(output)
     
-    pred.out <- array(data = unlist(pred.out),
-                      dim = c(nb.pts.pred,
-                              length(mod.names),
-                              length(run.eval.names),
-                              length(dataset.names)),
-                      dimnames = list(NULL,
-                                      mod.names,
-                                      run.eval.names,
-                                      dataset.names))
-    
-    return(pred.out)
+    res.out <- array(data = data.out, dim = dim.out, dimnames = dimnames.out)
+    return(res.out)
   }
   
-  if (out=='prediction.eval'){
-    pred.eval.tab <- NULL
-    nb_pa <- length(modOut)
-    nb_run <- length(modOut[[1]])
-    nb_mod <- length(modOut[[1]][[1]])
+  ## 2. CASE calib.failure / models.run -----------------------------------------------------------
+  
+  if (out %in% c("calib.failure", "models.run"))
+  {
+    name_slot = out
+    if (out == "models.run") { name_slot = "ModelName" }
     
-    for(i in 1:nb_pa){
-      for(j in 1:nb_run){
-        for(k in 1:nb_mod){
-          pred.eval.tab <- modOut[[i]][[j]][[k]][['pred.eval']]
-          if(!is.null(pred.eval.tab)){ break }
-        }
-        if(!is.null(pred.eval.tab)){ break }
-      }
-      if(!is.null(pred.eval.tab)){ break }
-    }
-    
-    if( is.null(pred.eval.tab)){ return(NULL) }
-    
-    
-    nb.pts.pred.eval <- length(as.numeric(pred.eval.tab))
-    
-    pred.eval.out <- lapply(names(modOut),function(d1){ # data set
+    output <- lapply(names(modOut),function(d1){ # data set
       lapply(names(modOut[[d1]]), function(d2){ # run eval
         lapply(names(modOut[[d1]][[d2]]), function(d3){ # models
-          if(is.null(modOut[[d1]][[d2]][[d3]][['pred.eval']])){
-            return(rep(NA,nb.pts.pred.eval))
-          } else{
-            return(as.numeric(modOut[[d1]][[d2]][[d3]][['pred.eval']]))
+          return(modOut[[d1]][[d2]][[d3]][[name_slot]])
+          # return(as.character(modOut[[d1]][[d2]][[d3]][['ModelName']]))
+        })
+      })
+    })
+    
+    res.out <- unlist(output)
+    if (length(res.out)) { res.out <- na.omit(res.out) }
+    if (length(res.out)) { res.out <- res.out[!is.null(res.out)] }
+    if (!length(res.out)) { res.out <- 'none' }
+    return(res.out)
+  }
+
+  ## 3. CASE EF.prediction / EF.PCA.median / EF.evaluation ----------------------------------------
+  
+  if (out %in% c("EF.prediction", "EF.PCA.median", "EF.evaluation"))
+  {
+    name_slot = ifelse(out == "EF.prediction", "EM"
+                       ifelse(out == "EF.PCA.median", "PCA.median", "EM.eval"))
+    
+    if (is.null(modOut[[1]][[1]][[1]][[name_slot]])) { return(NULL) }
+    
+    nb.tmp = 1
+    dimnames.out = list(NULL, mod.names, run.eval.names, dataset.names))
+    if (out == "EF.prediction") {
+      nb.tmp <- length(as.numeric(unlist(modOut[[1]][[1]][[1]][[name_slot]])))
+    } else if (out == "EF.evaluation") {
+      eval.meth.names <- rownames(as.data.frame(modOut[[1]][[1]][[1]][[name_slot]]))
+      eval.col.names <- colnames(as.data.frame(modOut[[1]][[1]][[1]][[name_slot]]))
+      nb.tmp = c(length(eval.meth.names), length(eval.col.names))
+      dimnames.out = list(eval.meth.names, eval.col.names
+                          , mod.names, run.eval.names, dataset.names))
+    }
+    dim.out = c(nb.tmp,
+                length(modOut[[1]][[1]]),
+                length(modOut[[1]]),
+                length(modOut))
+
+    
+    output <- lapply(1:length(modOut),function(d1){ # data set
+      lapply(1:length(modOut[[d1]]), function(d2){ # run eval
+        lapply(1:length(modOut[[d1]][[d2]]), function(d3){ # models
+          res = modOut[[d1]][[d2]][[d3]][[name_slot]]
+          if (out == "EF.prediction") {
+            return(as.numeric(res))
+          } else if (out == "EF.PCA.median") {
+            return(as.character(res))
+          } else if (out == "EF.evaluation") {
+            return(data.frame(res))
           }
         })
       })
     })
+    data.out = unlist(output)
     
-    pred.eval.out <- array(data = unlist(pred.eval.out),
-                           dim = c(nb.pts.pred.eval,
-                                   length(mod.names),
-                                   length(run.eval.names),
-                                   length(dataset.names)),
-                           dimnames = list(NULL,
-                                           mod.names,
-                                           run.eval.names,
-                                           dataset.names))
-    
-    return(pred.eval.out)
+    res.out <- array(data = data.out, dim = dim.out, dimnames = dimnames.out)
+    return(res.out)
   }
-  
-  if (out=='var.import'){
-    vi.tab <- NULL
-    nb_pa <- length(modOut)
-    nb_run <- length(modOut[[1]])
-    nb_mod <- length(modOut[[1]][[1]])
-    
-    for(i in 1:nb_pa){
-      for(j in 1:nb_run){
-        for(k in 1:nb_mod){
-          vi.tab <- modOut[[i]][[j]][[k]][['var.import']]
-          if(!is.null(vi.tab)){ break }
-        }
-        if(!is.null(vi.tab)){ break }
-      }
-      if(!is.null(vi.tab)){ break }
-    }
-    
-    if( is.null(vi.tab)){ return(NULL) }
-    
-    nb.var <- length(as.numeric(unlist(vi.tab)))
-    
-    ef.mod <- grep(pattern="EF.",mod.names) # EF models
-    if(length(ef.mod)>0){
-      kept.mod <- mod.names[-ef.mod]
-    } else{
-      kept.mod <- mod.names
-    }
-    
-    vi.out <- lapply(names(modOut),function(d1){ # data set
-      lapply(names(modOut[[d1]]), function(d2){ # run eval
-        lapply(kept.mod, function(d3){ # models without EF ones
-          if(is.null(modOut[[d1]][[d2]][[d3]][['var.import']])){
-            return(rep(NA,nb.var))
-          } else{
-            return(as.matrix(modOut[[d1]][[d2]][[d3]][['var.import']]))
-          }
-        })
-      })
-    })
-    
-    vi.out <- array(data = unlist(vi.out),
-                    dim = c(nb.var,
-                            length(kept.mod),
-                            length(run.eval.names),
-                            length(dataset.names)),
-                    dimnames = list(names(modOut[[1]][[1]][[1]][['var.import']]), # to change
-                                    kept.mod,
-                                    run.eval.names,
-                                    dataset.names))
-    
-    return(vi.out)
-  }
-  
-  if (out == 'calib.failure'){
-    cf.out <- lapply(names(modOut),function(d1){ # data set
-      lapply(names(modOut[[d1]]), function(d2){ # run eval
-        lapply(names(modOut[[d1]][[d2]]), function(d3){ # models
-          return(modOut[[d1]][[d2]][[d3]][['calib.failure']])
-        })
-      })
-    })
-    cf.out <- unlist(cf.out)
-    if(length(cf.out)) cf.out <- na.omit(cf.out)
-    if(length(cf.out)) cf.out <- cf.out[!is.null(cf.out)]
-    if(!length(cf.out)) cf.out <- 'none'
-    return(cf.out)
-  }
-  
-  if (out == 'models.run'){
-    mod.run.out <- lapply(names(modOut),function(d1){ # data set
-      lapply(names(modOut[[d1]]), function(d2){ # run eval
-        lapply(names(modOut[[d1]][[d2]]), function(d3){ # models
-          return(as.character(modOut[[d1]][[d2]][[d3]][['ModelName']]))
-        })
-      })
-    })
-    mod.run.out <- unlist(mod.run.out)
-    if(length(mod.run.out)) mod.run.out <- na.omit(mod.run.out)
-    if(length(mod.run.out)) mod.run.out <- mod.run.out[!is.null(mod.run.out)]
-    if(!length(mod.run.out)) mod.run.out <- 'none'
-    return(mod.run.out)
-  }
-  
-  
-  if (out == 'EF.prediction'){
-    if( is.null(modOut[[1]][[1]][[1]][['EM']])){ return(NULL) }
-    
-    nb.pts.ef.pred <- length(as.numeric(unlist(modOut[[1]][[1]][[1]][['EM']])))
-    
-    ef.pred.out <- lapply(1:length(modOut),function(d1){ # data set
-      lapply(1:length(modOut[[d1]]), function(d2){ # run eval
-        lapply(1:length(modOut[[d1]][[d2]]), function(d3){ # models
-          return(as.numeric(modOut[[d1]][[d2]][[d3]][['EM']]))
-        })
-      })
-    })
-    
-    ef.pred.out <- array( data = unlist(ef.pred.out),
-                          dim = c(nb.pts.ef.pred,
-                                  length(modOut[[1]][[1]]),
-                                  length(modOut[[1]]),
-                                  length(modOut)),
-                          dimnames = list(NULL,
-                                          mod.names,
-                                          run.eval.names,
-                                          dataset.names))
-    
-    return(ef.pred.out)
-  }
-  
-  if (out == 'EF.PCA.median'){
-    if( is.null(modOut[[1]][[1]][[1]][['PCA.median']])){ return(NULL) }
-    
-    ef.pca.out <- lapply(1:length(modOut),function(d1){ # data set
-      lapply(1:length(modOut[[d1]]), function(d2){ # run eval
-        lapply(1:length(modOut[[d1]][[d2]]), function(d3){ # models
-          return(as.character(modOut[[d1]][[d2]][[d3]][['PCA.median']]))
-        })
-      })
-    })
-    
-    ef.pca.out <- array( data = unlist(ef.pca.out),
-                         dim = c(1,
-                                 length(modOut[[1]][[1]]),
-                                 length(modOut[[1]]),
-                                 length(modOut)),
-                         dimnames = list(NULL,
-                                         mod.names,
-                                         run.eval.names,
-                                         dataset.names))
-    
-    return(ef.pca.out)
-  }
-  
-  if (out == 'EF.evaluation'){
-    if( is.null(modOut[[1]][[1]][[1]][['EM.eval']])){ return(NULL) }
-    eval.meth.names <- rownames(as.data.frame(modOut[[1]][[1]][[1]][['EM.eval']]))
-    eval.col.names <- colnames(as.data.frame(modOut[[1]][[1]][[1]][['EM.eval']]))
-    
-    ef.eval.out <- lapply(1:length(modOut),function(d1){ # data set
-      lapply(1:length(modOut[[d1]]), function(d2){ # run eval
-        lapply(1:length(modOut[[d1]][[d2]]), function(d3){ # models
-          return(data.frame(modOut[[d1]][[d2]][[d3]][['EM.eval']]))
-        })
-      })
-    })
-    
-    ef.eval.out <- array(data = unlist(ef.eval.out),
-                         dim = c(length(eval.meth.names),
-                                 length(eval.col.names),
-                                 length(modOut[[1]][[1]]),
-                                 length(modOut[[1]]),
-                                 length(modOut)),
-                         dimnames = list(eval.meth.names,
-                                         eval.col.names,
-                                         mod.names,
-                                         run.eval.names,
-                                         dataset.names))
-    
-    return(ef.eval.out)
-  }
-  
 }
