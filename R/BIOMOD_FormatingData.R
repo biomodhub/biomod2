@@ -206,7 +206,7 @@
 ##'                        system.file(myFiles[4], package = "biomod2"),
 ##'                        system.file(myFiles[5], package = "biomod2"))
 ##' 
-##' # 1. Formatting Data
+##' # 1. Formating Data
 ##' myBiomodData <- BIOMOD_FormatingData(resp.var = myResp,
 ##'                                      expl.var = myExpl,
 ##'                                      resp.xy = myRespXY,
