@@ -17,6 +17,12 @@ You can install `biomod2` in R using `devtools`:
 devtools::install_github("biomodhub/biomod2", dependencies = TRUE)
 ```
 
+!!! **BE AWARE !**
+
+`biomod2` code is currently being cleaned up, hence some function names might change a bit...
+
+Sorry for the inconvenience, and please **feel free to indicate if you notice some strange new behaviours ** !
+
 - **stable version** (from [cran](https://CRAN.R-project.org/package=biomod2))
 
 ```
@@ -28,10 +34,7 @@ install.packages("biomod2", dependencies = TRUE)
 
  - Wilfried Thuiller [aut, cre]
  - Damien Georges [aut, cre]
+ - Maya Gueguen [aut],
  - Robin Engler [aut]
  - Frank Breiner [aut]
-
-
-## Selected litterature
-
 
