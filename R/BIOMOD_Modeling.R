@@ -27,6 +27,7 @@
 ##' @param models.eval.meth vector of names of evaluation metric
 ##'   among 'KAPPA', 'TSS', 'ROC', 'FAR', 'SR', 'ACCURACY',
 ##'   'BIAS', 'POD', 'CSI', 'ETS', 'R2' and 'RMSE' (the last two only for continuous data)
+##' @param wdir a directory where objects and outputs will be saved. Defaults to current working directory
 ##' @param SaveObj keep all results and outputs on hard drive or
 ##'   not (NOTE: strongly recommended)
 ##' @param rescal.all.models if true, all model prediction will
@@ -271,6 +272,7 @@ BIOMOD_Modeling <- function(
   VarImport = 0,
   models.eval.meth = c('KAPPA','TSS','ROC'),
   SaveObj = TRUE,
+  wdir = NULL,
   rescal.all.models = FALSE,
   do.full.models = TRUE,
   modeling.id = as.character(format(Sys.time(), "%s")),
@@ -312,7 +314,7 @@ BIOMOD_Modeling <- function(
   # 2. creating simulation directories =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-= #
   # create the directories in which various objects will be stored (models, predictions and
   # projections). Projections' directories are created in the Projection() function.
-  .Models.prepare.workdir(data@sp.name, models.out@modeling.id)
+  .Models.prepare.workdir(data@sp.name, models.out@modeling.id, wdir = wdir)
 
 
   # 3. Saving Data and Model.option objects -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-= #
@@ -667,8 +669,11 @@ BIOMOD_Modeling <- function(
 
 # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-= #
 
-.Models.prepare.workdir <- function(sp.name, modeling.id){
+.Models.prepare.workdir <- function(sp.name, modeling.id, wdir = NULL) {
   cat("\nCreating suitable Workdir...\n")
+  if (!is.null(wdir)) {
+    sp.name <- file.path(wdir, sp.name)
+  }
   dir.create(sp.name, showWarnings=FALSE, recursive=TRUE)
   dir.create(file.path(sp.name,".BIOMOD_DATA",modeling.id), showWarnings=FALSE, recursive=TRUE)
   dir.create(file.path(sp.name, "models",modeling.id), showWarnings=FALSE, recursive=T)
