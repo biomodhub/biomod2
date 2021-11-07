@@ -207,7 +207,7 @@ setMethod('random.pseudo.abs.selection', signature(env="SpatialPointsDataFrame")
               cand.cells <- which(is.na(sp@data))
               for(j in 1:ncol(pa.tab)){
                 ## force to get at least one value of each factorial variable
-                fact.level.cells <- sample.factor.levels(x = as.data.frame(env),
+                fact.level.cells <- bm_SampleFactorLevels(x = as.data.frame(env),
                                                          mask.out = pa.tab[, j, drop = FALSE])
                 if(length(fact.level.cells)){
                   pa.tab[fact.level.cells, j] <- TRUE
@@ -283,7 +283,7 @@ setMethod('random.pseudo.abs.selection', signature(env="RasterStack"),
                 ## define a compy of the sampling mask
                 mask.env.tmp <- mask.env
                 ## force to get at least one value of each factorial variable
-                fact.level.cells <- sample.factor.levels(env, mask.out = mask.out)
+                fact.level.cells <- bm_SampleFactorLevels(env, mask.out = mask.out)
                 if(length(fact.level.cells)){
                   SR <- c(SR, fact.level.cells)
                   ## update the mask by removing already selected cells
@@ -404,7 +404,7 @@ setMethod('sre.pseudo.abs.selection', signature(env="SpatialPointsDataFrame"),
               cand.cells <- which(!mask.in$mask.in)
               for(j in 1:ncol(pa.tab)){
                 ## force to get at least one value of each factorial variable
-                fact.level.cells <- sample.factor.levels(as.data.frame(env),
+                fact.level.cells <- bm_SampleFactorLevels(as.data.frame(env),
                                                          mask.out = pa.tab[, j, drop = FALSE],
                                                          mask.in = mask.in)
                 pa.tab[c(fact.level.cells,
@@ -463,7 +463,7 @@ setMethod('sre.pseudo.abs.selection', signature(env="RasterStack"),
               ## define a compy of the sampling mask
               mask.in.tmp <- mask.in
               ## force to get at least one value of each factorial variable
-              fact.level.cells <- sample.factor.levels(env,
+              fact.level.cells <- bm_SampleFactorLevels(env,
                                                        mask.out  = mask.out,
                                                        mask.in = mask.in)
               if(length(fact.level.cells)){
@@ -604,7 +604,7 @@ setMethod('disk.pseudo.abs.selection', signature(env="RasterStack"),
                 ## define a compy of the sampling mask
                 mask.in.tmp <- mask.in
                 ## force to get at least one value of each factorial variable
-                fact.level.cells <- sample.factor.levels(env, mask.out = mask.out)
+                fact.level.cells <- bm_SampleFactorLevels(env, mask.out = mask.out)
                 if(length(fact.level.cells)){
                   SR <- c(SR, fact.level.cells)
                   ## update the mask by removing already selected cells

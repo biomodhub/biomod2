@@ -322,7 +322,7 @@ setMethod('.Projection.do.proj', signature(env='data.frame'),
     if(model.type == 'ANN'){
       set.seed(555) # to be able to refind our trees MAY BE BAD
       # proj automaticly scaled
-      return(data.frame( proj = as.integer(.Rescaler5(as.numeric(predict(model.sp, env, type = "raw")),
+      return(data.frame( proj = as.integer(bm_Rescaler(as.numeric(predict(model.sp, env, type = "raw")),
                                               name = model.name ) * 1000)))
     }
 
@@ -330,7 +330,7 @@ setMethod('.Projection.do.proj', signature(env='data.frame'),
       proj <- as.integer(as.numeric(predict(model.sp, env,type="prob")[,2]) * 1000)
 
       if(scaled.models){
-        proj <- as.integer(.Rescaler5(proj/1000, name = model.name ) * 1000)
+        proj <- as.integer(bm_Rescaler(proj/1000, name = model.name ) * 1000)
       }
 
       return( data.frame( proj = proj) )
@@ -338,7 +338,7 @@ setMethod('.Projection.do.proj', signature(env='data.frame'),
 
     if(model.type == 'FDA'){
       # proj automaticly scaled
-      return( data.frame( proj = as.integer(.Rescaler5(as.numeric(predict(model.sp, env, type = "posterior")[, 2]),
+      return( data.frame( proj = as.integer(bm_Rescaler(as.numeric(predict(model.sp, env, type = "posterior")[, 2]),
                                               name = model.name) * 1000)))
     }
 
@@ -347,27 +347,27 @@ setMethod('.Projection.do.proj', signature(env='data.frame'),
       proj <- as.integer(predict.gbm(model.sp, env, best.iter, type = "response") * 1000)
 
       if(scaled.models){
-        proj <- as.integer(.Rescaler5(proj/1000, name = model.name ) * 1000)
+        proj <- as.integer(bm_Rescaler(proj/1000, name = model.name ) * 1000)
       }
 
       return(data.frame( proj = proj))
     }
 
     if(model.type == 'GLM'){
-      proj <- as.integer(.testnull(model.sp, Prev=0.5, env) * 1000)
+      proj <- as.integer(.run_pred(model.sp, Prev=0.5, env) * 1000)
 
       if(scaled.models){
-        proj <- as.integer(.Rescaler5(proj/1000, name = model.name ) * 1000)
+        proj <- as.integer(bm_Rescaler(proj/1000, name = model.name ) * 1000)
       }
 
       return( data.frame(proj = proj) )
     }
 
     if(model.type == 'GAM'){
-      proj <- as.integer(.testnull(model.sp, Prev=0.5, env) * 1000)
+      proj <- as.integer(.run_pred(model.sp, Prev=0.5, env) * 1000)
 
       if(scaled.models){
-        proj <- as.integer(.Rescaler5(proj/1000, name = model.name ) * 1000)
+        proj <- as.integer(bm_Rescaler(proj/1000, name = model.name ) * 1000)
       }
 
       return( data.frame( proj = proj ) )
@@ -375,7 +375,7 @@ setMethod('.Projection.do.proj', signature(env='data.frame'),
 
 #     if(model.type == 'MARS'){
 #       # proj automaticly scaled
-#       return(data.frame( proj = as.integer(.Rescaler5(as.numeric(predict(model.sp, env)),
+#       return(data.frame( proj = as.integer(bm_Rescaler(as.numeric(predict(model.sp, env)),
 #                                               name = model.name) * 1000)))
 #     }
 
@@ -383,7 +383,7 @@ setMethod('.Projection.do.proj', signature(env='data.frame'),
       proj <- as.integer(as.numeric(predict(model.sp,env, type='prob')[,'1']) *1000)
 
       if(scaled.models){
-        proj <- as.integer(.Rescaler5(proj/1000, name = model.name ) * 1000)
+        proj <- as.integer(bm_Rescaler(proj/1000, name = model.name ) * 1000)
       }
 
       return( data.frame( proj = proj ))
@@ -402,7 +402,7 @@ setMethod('.Projection.do.proj', signature(env='data.frame'),
         proj <- as.integer(predict( object=model.sp, newdata=env, proj_name=proj.name, xy=xy) * 1000)
 
 #         if(scaled.models){
-          proj <- as.integer(.Rescaler5(proj/1000, name = model.name ) * 1000)
+          proj <- as.integer(bm_Rescaler(proj/1000, name = model.name ) * 1000)
 #         }
 
         return( data.frame( proj = proj ))
@@ -417,7 +417,7 @@ setMethod('.Projection.do.proj', signature(env='data.frame'),
 #
 #         maxent.proj <- read.asciigrid(paste(species.name=.extractModelNamesInfo(model.name, info='species'), "/", proj.name , "/MaxentTmpData/projMaxent.asc", sep=""))@data
 #         .Delete.Maxent.WorkDir(species.name=paste(species.name=.extractModelNamesInfo(model.name, info='species'), "/", proj.name,sep=""))
-#         return(proj = as.integer(.Rescaler5(as.numeric(maxent.proj[,1]),
+#         return(proj = as.integer(bm_Rescaler(as.numeric(maxent.proj[,1]),
 #                                               name = model.name) * 1000))
       } else {
         cat('\n MAXENT.Phillips need coordinates to run! NA returned ')
@@ -459,7 +459,7 @@ setMethod('.Projection.do.proj', signature(env='RasterStack'),
     if(model.type == 'ANN'){
       set.seed(555) # to be able to refind our trees MAY BE BAD
       proj.ras <- predict(env, model.sp, type="raw")
-      proj.ras[!is.na(proj.ras[])] <- .Rescaler5(proj.ras[!is.na(proj.ras[])], ref=NULL,
+      proj.ras[!is.na(proj.ras[])] <- bm_Rescaler(proj.ras[!is.na(proj.ras[])], ref=NULL,
                                                  name=model.name, original=FALSE)
       return( round(proj.ras * 1000))
     }
@@ -468,7 +468,7 @@ setMethod('.Projection.do.proj', signature(env='RasterStack'),
       set.seed(123) # to be able to refind our trees MAY BE BAD
       proj.ras <- predict(env, model=model.sp, type='prob', index=2)
       if(scaled.models){
-        proj.ras[!is.na(proj.ras[])] <- .Rescaler5( proj.ras[!is.na(proj.ras[])], ref=NULL,
+        proj.ras[!is.na(proj.ras[])] <- bm_Rescaler( proj.ras[!is.na(proj.ras[])], ref=NULL,
                                                     name=model.name, original=FALSE)
       }
       return( round(proj.ras*1000) )
@@ -476,7 +476,7 @@ setMethod('.Projection.do.proj', signature(env='RasterStack'),
 
     if(model.type == 'FDA'){
       pred.ras <- predict(env, model.sp, type="post", index=2)
-      pred.ras[!is.na(pred.ras[])] <- .Rescaler5(pred.ras[!is.na(pred.ras[])], ref=NULL,
+      pred.ras[!is.na(pred.ras[])] <- bm_Rescaler(pred.ras[!is.na(pred.ras[])], ref=NULL,
                                                  name=model.name, original=FALSE)
       return( round(pred.ras * 1000))
     }
@@ -490,7 +490,7 @@ setMethod('.Projection.do.proj', signature(env='RasterStack'),
 
       proj.ras <- predict(env, model.sp, n.trees=best.iter, type='response')
       if(scaled.models){
-        proj.ras[!is.na(proj.ras[])] <- .Rescaler5( proj.ras[!is.na(proj.ras[])], ref=NULL,
+        proj.ras[!is.na(proj.ras[])] <- bm_Rescaler( proj.ras[!is.na(proj.ras[])], ref=NULL,
                                                     name=model.name, original=FALSE)
       }
 
@@ -500,7 +500,7 @@ setMethod('.Projection.do.proj', signature(env='RasterStack'),
     if(model.type == 'GLM'){
       proj.ras <- predict(env, model=model.sp, type='response')
       if(scaled.models){
-        proj.ras[!is.na(proj.ras[])] <- .Rescaler5( proj.ras[!is.na(proj.ras[])], ref=NULL,
+        proj.ras[!is.na(proj.ras[])] <- bm_Rescaler( proj.ras[!is.na(proj.ras[])], ref=NULL,
                                                     name=model.name, original=FALSE)
       }
 
@@ -510,7 +510,7 @@ setMethod('.Projection.do.proj', signature(env='RasterStack'),
     if(model.type == 'GAM'){
       proj.ras <- predict(env, model=model.sp, type='response')
       if(scaled.models){
-        proj.ras[!is.na(proj.ras[])] <- .Rescaler5( proj.ras[!is.na(proj.ras[])], ref=NULL,
+        proj.ras[!is.na(proj.ras[])] <- bm_Rescaler( proj.ras[!is.na(proj.ras[])], ref=NULL,
                                                     name=model.name, original=FALSE)
       }
       return( round(proj.ras*1000) )
@@ -518,7 +518,7 @@ setMethod('.Projection.do.proj', signature(env='RasterStack'),
 
     if(model.type == 'MARS'){
       pred.ras <- predict(env, model.sp)
-      pred.ras[!is.na(pred.ras[])] <- .Rescaler5(pred.ras[!is.na(pred.ras[])], ref=NULL,
+      pred.ras[!is.na(pred.ras[])] <- bm_Rescaler(pred.ras[!is.na(pred.ras[])], ref=NULL,
                                                  name=model.name, original=FALSE)
       return( round(pred.ras * 1000) )
     }
@@ -526,7 +526,7 @@ setMethod('.Projection.do.proj', signature(env='RasterStack'),
     if(model.type == 'RF'){
       proj.ras <- predict(env, model=model.sp, type='prob', index=2)
       if(scaled.models){
-        proj.ras[!is.na(proj.ras[])] <- .Rescaler5( proj.ras[!is.na(proj.ras[])], ref=NULL,
+        proj.ras[!is.na(proj.ras[])] <- bm_Rescaler( proj.ras[!is.na(proj.ras[])], ref=NULL,
                                                     name=model.name, original=FALSE)
       }
       return( round(proj.ras*1000) )
@@ -549,7 +549,7 @@ setMethod('.Projection.do.proj', signature(env='RasterStack'),
       proj.ras <- predict( object=model.sp, newdata=env, proj_name=proj.name)
 
 #       if(scaled.models){
-        proj.ras[!is.na(proj.ras[])] <- .Rescaler5(proj.ras[!is.na(proj.ras[])], ref=NULL,
+        proj.ras[!is.na(proj.ras[])] <- bm_Rescaler(proj.ras[!is.na(proj.ras[])], ref=NULL,
                                                    name=model.name, original=FALSE)
 #       }
 

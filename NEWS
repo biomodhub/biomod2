@@ -1,3 +1,17 @@
+3.5-3 (2021-11-02)
+  * clean BIOMOD classes definitions and functions (biomod2_classes files)
+  * clean BIOMOD_FormatingData function
+  * clean BIOMOD_ModelingOptions function
+  * fix BIOMOD_FormatingData : test class condition only a first element (to deal with matrix / array objects)
+  * fix BIOMOD_EnsembleForecasting for EMcv model when only one single model was kept
+
+
+3.5-2 (2021-10-18)
+  * fix BIOMOD_PresenceOnly function (previously BIOMOD_presenceonly)
+  * fix BIOMOD_CrossValidation function (previously BIOMOD_cv)
+  * fix internal function to find MinMax values, when factor included : should get clamping mask to work
+  
+
 3.3-20 (2019-03-05)
   * Remove maxent Tsurukoa because not maintained anymore (required by CRAN team)
   

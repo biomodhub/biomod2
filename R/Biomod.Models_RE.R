@@ -86,7 +86,7 @@
       cost.tmp <- Options@CTA$cost
     }
     if(Options@CTA$parms == 'default'){
-      model.sp <- try( rpart(makeFormula(colnames(Data)[1],
+      model.sp <- try( rpart(bm_MakeFormula(colnames(Data)[1],
                                          head(Data[,-c(1,ncol(Data)), drop=FALSE]),
                                          'simple', 0),
                              data = Data[calibLines,],
@@ -95,7 +95,7 @@
                              cost = cost.tmp,
                              control = eval(Options@CTA$control)) )
     } else{
-      model.sp <- try( rpart(makeFormula(colnames(Data)[1],
+      model.sp <- try( rpart(bm_MakeFormula(colnames(Data)[1],
                                          head(Data[,-c(1,ncol(Data)), drop=FALSE]),
                                          'simple', 0),
                              data = Data[calibLines,],
@@ -176,7 +176,7 @@
                                         ", weights = Yweights[calibLines])" ,sep="")))
       model.sp <- try( gam::step.Gam(gamStart, .scope(Data[1:3,-c(1,ncol(Data))], "gam::s", Options@GAM$k),
                                      data = Data[calibLines,,drop=FALSE],
-      #                                keep = .functionkeep,
+      #                                keep = .fun_keep,
                                      direction = "both",
                                      trace= Options@GAM$control$trace,
                                      control = Options@GAM$control))#eval(control.list)) )
@@ -190,7 +190,7 @@
 
       if(is.null(Options@GAM$myFormula)){
         cat("\n\tAutomatic formula generation...")
-        gam.formula <- makeFormula(resp_name,head(Data[,expl_var_names,drop=FALSE]),Options@GAM$type, Options@GAM$interaction.level, k=Options@GAM$k)
+        gam.formula <- bm_MakeFormula(resp_name,head(Data[,expl_var_names,drop=FALSE]),Options@GAM$type, Options@GAM$interaction.level, k=Options@GAM$k)
       } else{
         gam.formula <- Options@GAM$myFormula
       }
@@ -234,7 +234,7 @@
   # GBM models creation =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=- #
   if (Model == "GBM") {
 
-    model.sp <- try(gbm(formula = makeFormula(colnames(Data)[1],head(Data)[,expl_var_names,drop=FALSE], 'simple',0),
+    model.sp <- try(gbm(formula = bm_MakeFormula(colnames(Data)[1],head(Data)[,expl_var_names,drop=FALSE], 'simple',0),
                         data = Data[calibLines,,drop=FALSE],
                         distribution = Options@GBM$distribution,
                         var.monotone = rep(0, length = ncol(Data)-2), # -2 because of removing of sp and weights
@@ -275,7 +275,7 @@
 
     ## build the most complete model formula
     if(is.null(Options@GLM$myFormula)){
-      glm.formula <- makeFormula(colnames(Data)[1],head(Data),Options@GLM$type, Options@GLM$interaction.level)
+      glm.formula <- bm_MakeFormula(colnames(Data)[1],head(Data),Options@GLM$type, Options@GLM$interaction.level)
     } else{
       glm.formula <- Options@GLM$myFormula
     }
@@ -387,7 +387,7 @@
 
     ## build the most complete model formula
     if(is.null(Options@MARS$myFormula)){
-      mars.formula <- makeFormula(colnames(Data)[1],head(Data)[, -ncol(Data), drop = FALSE],Options@MARS$type, Options@MARS$interaction.level)
+      mars.formula <- bm_MakeFormula(colnames(Data)[1],head(Data)[, -ncol(Data), drop = FALSE],Options@MARS$type, Options@MARS$interaction.level)
     } else{
       mars.formula <- Options@MARS$myFormula
     }
@@ -432,7 +432,7 @@
   # FDA models creation =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=- #
   if (Model == "FDA") {
     model.sp <- try( do.call(fda,
-                             c( list( formula = makeFormula(colnames(Data)[1],head(Data)[,expl_var_names,drop=FALSE], 'simple',0),
+                             c( list( formula = bm_MakeFormula(colnames(Data)[1],head(Data)[,expl_var_names,drop=FALSE], 'simple',0),
                                       data = Data[calibLines,,drop=FALSE],
                                       method = eval(parse(text=call(Options@FDA$method))),
                                       weights = Yweights[calibLines] ),
@@ -482,7 +482,7 @@
       size <- CV_nnet[1,1]
     }
 
-    model.sp <- try(nnet(formula = makeFormula(resp_name,head(Data[,expl_var_names,drop=FALSE]), 'simple',0),
+    model.sp <- try(nnet(formula = bm_MakeFormula(resp_name,head(Data[,expl_var_names,drop=FALSE]), 'simple',0),
                          data = Data[calibLines,,drop=FALSE],
                          size = size,
                          rang = Options@ANN$rang,
@@ -515,7 +515,7 @@
     }
 
     if(Options@RF$mtry == 'default'){
-      model.sp <- try(randomForest(formula = makeFormula(resp_name,head(Data), 'simple',0),
+      model.sp <- try(randomForest(formula = bm_MakeFormula(resp_name,head(Data), 'simple',0),
                                    data = droplevels(Data[calibLines,]),
                                    ntree = Options@RF$ntree,
                                    #mtry = ifelse(Options@RF$ntree == 'default', round((ncol(Data)-1)/2), Options@RF$ntree ),
@@ -525,7 +525,7 @@
                                    nodesize = Options@RF$nodesize,
                                    maxnodes = Options@RF$maxnodes) )
     } else {
-      model.sp <- try(randomForest(formula = makeFormula(resp_name,head(Data), 'simple',0),
+      model.sp <- try(randomForest(formula = bm_MakeFormula(resp_name,head(Data), 'simple',0),
                                    data = droplevels(Data[calibLines,]),
                                    ntree = Options@RF$ntree,
                                    mtry = Options@RF$mtry,
@@ -787,7 +787,7 @@
       sapply(
         mod.eval.method,
         function(.x){
-          Find.Optim.Stat(
+          bm_FindOptimStat(
             Stat = .x,
             Fit = g.pred[evalLines],
             Obs = Data %>% filter(evalLines) %>% pull(1) * 1000
@@ -812,7 +812,7 @@
 
       true.evaluation <- sapply(mod.eval.method,
                                 function(x){
-                                  return( Find.Optim.Stat(Stat = x,
+                                  return( bm_FindOptimStat(Stat = x,
                                                           Fit = g.pred.eval.without.na,
                                                           Obs = evalData[,1],
                                                           Fixed.thresh = cross.validation["Cutoff",x]) )
@@ -842,7 +842,7 @@
   # Variables Importance -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=- #
   if (VarImport > 0){ # do Varimp stuff
     cat("\n\tEvaluating Predictor Contributions...", "\n")
-    variables.importance <- variables_importance(model.bm, Data[, expl_var_names,drop=FALSE], nb_rand=VarImport)
+    variables.importance <- bm_VariablesImportance(model.bm, Data[, expl_var_names,drop=FALSE], nb_rand=VarImport)
     model.bm@model_variables_importance <- variables.importance$mat
     ## we stored only the mean of variables importance run
     ListOut$var.import <- round(rowMeans(variables.importance$mat, na.rm=T),digits=3)
@@ -871,7 +871,7 @@
 #           shuffled.pred <- try(round(as.numeric(read.csv(file.path(model.bm@model_output_dir, paste(nam, vari, run, "swd.csv", sep="_")))[,3])*1000) )
 #           ## scal suffled.pred if necessary
 #           if(length(getScalingModel(model.bm))){
-#             shuffled.pred <- try( round(.testnull(object = getScalingModel(model.bm), Prev = 0.5 , dat = data.frame(pred = shuffled.pred/1000) ) *1000) )
+#             shuffled.pred <- try( round(.run_pred(object = getScalingModel(model.bm), Prev = 0.5 , dat = data.frame(pred = shuffled.pred/1000) ) *1000) )
 #             #               shuffled.pred <- round(as.numeric(predict(getScalingModel(model.bm), shuffled.pred/1000))*1000)
 #           }
 #           ## remove useless files on hard drive

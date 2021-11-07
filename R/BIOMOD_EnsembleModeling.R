@@ -383,7 +383,7 @@
             }
 
             cross.validation <- sapply(models.eval.meth,
-                                       Find.Optim.Stat,
+                                       bm_FindOptimStat,
                                        Fit = pred.bm[eval_lines],
                                        Obs = obs[eval_lines])
             rownames(cross.validation) <- c("Testing.data","Cutoff","Sensitivity", "Specificity")
@@ -399,7 +399,7 @@
                                                          models.eval.meth))
             } else {
               true.evaluation <- sapply(models.eval.meth, function(x){
-                Find.Optim.Stat(
+                bm_FindOptimStat(
                   Fit = eval_pred.bm * 1000,
                   Obs = eval.obs,
                   Fixed.thresh = cross.validation["Cutoff",x])})
@@ -421,7 +421,7 @@
         #### Var Importance calculation ####
         if (VarImport > 0){ # do Varimp stuff
           cat("\n\t\t\tEvaluating Predictor Contributions...", "\n")
-          variables.importance <- variables_importance(model.bm, expl, nb_rand=VarImport)
+          variables.importance <- bm_VariablesImportance(model.bm, expl, nb_rand=VarImport)
           model.bm@model_variables_importance <- variables.importance$mat
           ## remove useless objects
           rm(list=c('variables.importance') )

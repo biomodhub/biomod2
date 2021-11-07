@@ -58,7 +58,7 @@ importFrom("dismo", kfold)
 importFrom("PresenceAbsence", presence.absence.accuracy)
 importFrom("caret", trainControl, twoClassSummary)
 importFrom("ENMeval", ENMevaluate)
-importFrom("foreach", "%dopar%")
+importFrom("foreach", "%do%", "%dopar%")
 
 importFrom("grDevices", "colorRampPalette", "colors", "dev.new",
            "dev.off", "gray", "jpeg", "pdf", "png", "postscript",
@@ -180,7 +180,6 @@ export(
 )
 
 export(
-	BIOMOD_ConvertOldRun,
 	BIOMOD_EnsembleForecasting,
 	BIOMOD_EnsembleModeling,
 	BIOMOD_FormatingData,
@@ -188,29 +187,25 @@ export(
 	BIOMOD_Modeling,
 	BIOMOD_ModelingOptions, 
 	BIOMOD_Projection,
-	calculate.stat,
+	bm_CalculateStat,
 	DF_to_ARRAY,
-	evaluate,
-	Find.Optim.Stat,
-	full_suffling,
-	getStatOptimValue,
+	bm_FindOptimStat,
+	get_optim_value,
 	level.plot,
-	LIST_to_ARRAY,
-	makeFormula,
+	bm_MakeFormula,
 	models_scores_graph,
 	multiple.plot,
-	Print_Default_ModelingOptions,
+	bm_DefaultModelingOptions,
 	ProbDensFunc,
-	randomise_data,
 	response.plot2,
 	sre,
 	update_objects,
-	variables_importance,
+	bm_VariablesImportance,
   .create.maxent.bg.dir,
-	BIOMOD_cv,
-	BIOMOD_presenceonly,
-	BIOMOD_tuning,
-  sample.factor.levels,
+	BIOMOD_CrossValidation,
+	BIOMOD_PresenceOnly,
+	BIOMOD_Tuning,
+  bm_SampleFactorLevels,
 	.transform.outputs.list,
 	zzz_bm
 )
@@ -238,31 +233,13 @@ export(
 	.Projection.do.proj
 )
 
-exportMethods(
-	getEMalgos, 
-	getEMbuiltModels, 
-	getEMeval, 
-	getEMkeptModels, 
-	getEM_needed_models, 
-	getFormalModel, 
-	getModelsBuiltModels, 
-	getModelsEvaluations, 
-	getModelsInputData, 
-	getModelsOptions, 
-	getModelsPrediction, 
-	getModelsPredictionEval, 
-	getModelsVarImport, 
-	getProjection,
-	getScalingModel
-)
-
 export(
 	check_data_range,
 	CustomIndexMaker,
 	get_var_range, 
 	get_var_type,
 	response.plot,
-	SampleMat2
+	bm_SampleBinaryVector
 	#test_slots,
 	#update.objects_BIOMOD.formated.data,
 	#update.objects_biomod2_model,

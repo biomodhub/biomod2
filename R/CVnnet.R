@@ -6,7 +6,7 @@
   Eval[,2] = rep(decay, each=4)
   for(i in 1:nbCV){
       set.seed(555)
-      Samp = SampleMat2(Target, 0.5)
+      Samp = bm_SampleBinaryVector(Target, 0.5)
       
       if(is.null(W)){
           Eval[,3] = Eval[,3] + apply(Eval[,1:2], 1, Samp, Target, Input, FUN=function(x, Samp, Target, Input){

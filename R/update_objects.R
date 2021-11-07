@@ -17,8 +17,6 @@
 ##' @return the updated version of the  biomod2 object is return
 ##' 
 ##' @author Damien Georges
-##' @seealso \code{\link{variables_importance}}, 
-##' \code{\link{full_suffling}}
 ##' 
 update_objects <- function(obj, recursive=TRUE){
   if(inherits(obj,'BIOMOD.formated.data') | inherits(obj,'BIOMOD.formated.data.PA')){
