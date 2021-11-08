@@ -16,7 +16,6 @@ BIOMOD_Modeling(
   VarImport = 0,
   models.eval.meth = c("KAPPA", "TSS", "ROC"),
   SaveObj = TRUE,
-  wdir = NULL,
   rescal.all.models = FALSE,
   do.full.models = TRUE,
   modeling.id = as.character(format(Sys.time(), "\%s")),
@@ -54,8 +53,6 @@ among 'KAPPA', 'TSS', 'ROC', 'FAR', 'SR', 'ACCURACY',
 
 \item{SaveObj}{keep all results and outputs on hard drive or
 not (NOTE: strongly recommended)}
-
-\item{wdir}{a directory where objects and outputs will be saved. Defaults to current working directory}
 
 \item{rescal.all.models}{if true, all model prediction will
 be scaled with a binomial GLM}
