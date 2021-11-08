@@ -218,13 +218,13 @@ ProbDensFunc <- function(
   lim = args$lim
   one_plot = args$one_plot
 
-  rm(list='args')
+  rm(list = 'args')
 
   # results will be stored in out
   out <- list()
 
-  # oppen the divice if filename
-  if(length(filename)){
+  # open the device if filename
+  if (length(filename)) {
     switch(tools::file_ext(filename),
            pdf = pdf(filename),
            jpeg = jpeg(filename),

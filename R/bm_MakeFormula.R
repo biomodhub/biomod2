@@ -95,7 +95,7 @@ bm_MakeFormula <- function(respName,
 
   ## 2. Create the formula ------------------------------------------------------------------------
   junk <- c(1)
-  switch(EXPR = type
+  switch(type
          , "simple" = {
            junk <- paste(junk, paste(explVarNames, collapse = " + "), sep = " + ")
          }

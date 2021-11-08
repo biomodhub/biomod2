@@ -41,7 +41,7 @@
 ##' @keywords tree
 ##'
 response.plot <-
-  function(model, Data, show.variables=seq(1:ncol(Data)), save.file="no", name="response_curve", ImageSize=480, plot=TRUE){
+  function(model, Data, show.variables=seq(1:ncol(Data)), save.file="no", name="response_curve", ImageSize=480, plot=TRUE) {
 
     cat("\n! Deprecated function, please use response.plot2 instead!")
     return(TRUE)
@@ -246,7 +246,7 @@ response.plot2 <- function(
   ImageSize = 480,
   plot = TRUE,
   ...
-){
+) {
 
   # 1. args checking -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-= #
   add.args <- list(...)
@@ -297,23 +297,23 @@ response.plot2 <- function(
   ref_table <- Data[1,,drop=F]
   rownames(ref_table) <- NULL
 
-  for (i in 1:ncol(Data)){
-    if (is.numeric(Data[,i])){
+  for (i in 1:ncol(Data)) {
+    if (is.numeric(Data[,i])) {
       ref_table[,i] <- switch(fixed.var.metric,
-                              mean = mean(Data[data_species>0,i]),
-                              median = median(Data[data_species>0,i]),
-                              min = min(Data[data_species>0,i]),
-                              max = max(Data[data_species>0,i]))
+                              mean = mean(Data[data_species > 0, i]),
+                              median = median(Data[data_species > 0, i]),
+                              min = min(Data[data_species > 0, i]),
+                              max = max(Data[data_species > 0, i]))
     } else{
       # return everytimes the majoritary class
-      sum_level <- summary(Data[data_species>0,i], na.rm = TRUE)
+      sum_level <- summary(Data[data_species > 0,i], na.rm = TRUE)
       ref_table[,i] <- names(sum_level)[which.max(sum_level)]
     }
   }
 
 
 
-  if (plot){
+  if (plot) {
     # X. Open a graphic file for plotting restults
     if (save.file=="pdf") pdf(paste(name, "pdf", sep="."))
     if (save.file=="jpeg") jpeg(paste(name, "jpeg", sep="."), width=ImageSize, height=ImageSize)
@@ -322,7 +322,7 @@ response.plot2 <- function(
 
     # XX. parametrize our plot window
 
-    if (!do.bivariate){
+    if (!do.bivariate) {
       nb.graphs <- length(show.variables)
     } else{
       nb.graphs <- length(models) *  ( (length(show.variables)-1) * length(show.variables) / 2 )
@@ -330,7 +330,7 @@ response.plot2 <- function(
 
     if (legend) nb.graphs <- nb.graphs + 1
 
-    if (display_title){
+    if (display_title) {
       W.width <- ceiling(sqrt(nb.graphs))
       W.height <- ceiling(nb.graphs/W.width)
 
@@ -350,8 +350,8 @@ response.plot2 <- function(
   }
 
 
-  if (!do.bivariate){
-    for (vari in show.variables){
+  if (!do.bivariate) {
+    for (vari in show.variables) {
       if (plot) {
         if (on_0_1000) ylim <- c(0,1000) else ylim <- c(0,1)
 
@@ -374,14 +374,14 @@ response.plot2 <- function(
 
       Data.r.tmp <- eval(parse(text=paste("cbind(",vari,"=pts.tmp,ref_table[,-which(colnames(ref_table)==vari),drop=F])",sep="")))
       Data.r.tmp <- Data.r.tmp[,colnames(ref_table),drop=F]
-      if (length(factor_id)){
-        for (f in factor_id){
+      if (length(factor_id)) {
+        for (f in factor_id) {
           Data.r.tmp[,f] <- factor(as.character(Data.r.tmp[,f]), levels=levels(Data[,f]))
         }
       }
 
 
-      for (model in models){
+      for (model in models) {
 
 
         # 0. get model
@@ -396,7 +396,7 @@ response.plot2 <- function(
 
         # 4. Ploting results
         if (plot ) {
-          if (is.factor(Data[,vari])){
+          if (is.factor(Data[,vari])) {
             points(pts.tmp[1:length(levels(Data[,vari]))], proj.tmp[1:length(levels(Data[,vari]))], col=col[which(models==model)], lty = lty[which(models==model)])
           } else{
             lines(pts.tmp[1:nb.pts], proj.tmp[1:nb.pts], col=col[which(models==model)], lty = lty[which(models==model)])
@@ -404,7 +404,7 @@ response.plot2 <- function(
         }
 
         # 5. Storing results
-        if (length(list.out[[vari]]) == 0){ #init
+        if (length(list.out[[vari]]) == 0) { #init
           eval(parse(text=paste("list.out[['",vari,"']] <- data.frame(",vari,"=pts.tmp, ",mod.name,"=proj.tmp)",sep="")))
         } else{
           eval(parse(text=paste("list.out[['",vari,"']] <- cbind(list.out[['",vari,"']],",mod.name,"=proj.tmp)",sep="")))
@@ -413,7 +413,7 @@ response.plot2 <- function(
       }
 
     }
-    if (legend & plot){
+    if (legend & plot) {
       plot.new()
       legend(x="center",
              legend = formal_names,
@@ -423,8 +423,8 @@ response.plot2 <- function(
     }
 
   } else{ ## bivariate case
-    for (vari1 in show.variables[-length(show.variables)]){
-      for (vari2 in show.variables[-(1:which(show.variables == vari1))]){
+    for (vari1 in show.variables[-length(show.variables)]) {
+      for (vari2 in show.variables[-(1:which(show.variables == vari1))]) {
 
 
         # creating Tmp data
@@ -435,13 +435,13 @@ response.plot2 <- function(
 
         Data.r.tmp <- eval(parse(text=paste("cbind(",vari1,"=pts.tmp1,",vari2,"=pts.tmp2, ref_table[,-which(colnames(ref_table)%in% c(vari1,vari2)),drop=F])",sep="")))
         Data.r.tmp <- Data.r.tmp[,colnames(ref_table),drop=F]
-        if (length(factor_id)){
-          for (f in factor_id){
+        if (length(factor_id)) {
+          for (f in factor_id) {
             Data.r.tmp[,f] <- factor(as.character(Data.r.tmp[,f]), levels=levels(Data[,f]))
           }
         }
 
-        for (model in models){
+        for (model in models) {
 
           # 0. get model
           mod <- get(model)
@@ -452,7 +452,7 @@ response.plot2 <- function(
 
           # 4. Storing results
           vari <- paste(vari1,vari2,sep="_")
-          if (length(list.out[[vari]]) == 0){ #init
+          if (length(list.out[[vari]]) == 0) { #init
             eval(parse(text=paste("list.out[['",vari,"']] <- data.frame(",vari1,"=pts.tmp1,",vari2,"=pts.tmp2, ",mod.name,"=proj.tmp)",sep="")))
           } else{
             eval(parse(text=paste("list.out[['",vari,"']] <- cbind(list.out[['",vari,"']],",mod.name,"=proj.tmp)",sep="")))
@@ -491,12 +491,12 @@ response.plot2 <- function(
   if (save.file=="pdf" | save.file=="jpeg" | save.file=="tiff" | save.file=="postscript") dev.off()
 
   # delete temp files if somes has been created
-  if (file.exists(file.path(get(models[1])@resp_name,'RespPlotTmp'))){
+  if (file.exists(file.path(get(models[1])@resp_name,'RespPlotTmp'))) {
     unlink(path.expand(file.path(get(models[1])@resp_name,'RespPlotTmp')), recursive=TRUE, force=TRUE)
   }
 
   # transform list.out into ggplot firendly shape
-  if (do.bivariate){
+  if (do.bivariate) {
     gg.out <- .as.ggdat.2D(list.out)
   } else {
     gg.out <- .as.ggdat.1D(list.out)
@@ -506,26 +506,26 @@ response.plot2 <- function(
 }
 
 # =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-= #
-.response.plot2.check.arg <- function(models, Data, show.variables, save.file, name, ImageSize, plot, fixed.var.metric, do.bivariate, add.args){
+.response.plot2.check.arg <- function(models, Data, show.variables, save.file, name, ImageSize, plot, fixed.var.metric, do.bivariate, add.args) {
 
   # 1. check add.args
-  #   if (sum(! (names(add.args) %in% c("nb.pts","xy"))) > 0){
+  #   if (sum(! (names(add.args) %in% c("nb.pts","xy"))) > 0) {
   #     warning(paste(toString(names(add.args)[which(! (names(add.args) %in% c("nb.pts")))]), " are unknown arguments", sep="" ))
   #   }
 
 
   ### check of models args =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-= #
-  if (!is.character(models)){
+  if (!is.character(models)) {
     stop("models must be a character vector of models names")
   }
 
   mod_names <- NULL
-  for (mod in models){
-    if (!exists(mod)){
+  for (mod in models) {
+    if (!exists(mod)) {
       stop("you need to load the selected models!")
     }
 
-    if (!inherits(get(mod), 'biomod2_model')){
+    if (!inherits(get(mod), 'biomod2_model')) {
 
       # create a biomod2 modeling object
       mod_tmp <- .Construct.default.biomod2.modeling.obj(get(mod))
@@ -540,13 +540,13 @@ response.plot2 <- function(
 
 
   ### defining the number split in each variables range =-=-=-=-=- #
-  if (!is.null(add.args$nb.pts)){
-    if (do.bivariate){
+  if (!is.null(add.args$nb.pts)) {
+    if (do.bivariate) {
       # total number of points is the square of the difined
       add.args$nb.pts <- add.args$nb.pts^2
     }
   } else{
-    if (!do.bivariate){
+    if (!do.bivariate) {
       add.args$nb.pts <- 100
     } else{
       add.args$nb.pts <- 25^2
@@ -554,13 +554,13 @@ response.plot2 <- function(
   }
 
   ### check of data args =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-= #
-  if (inherits(Data,"Raster")){
+  if (inherits(Data,"Raster")) {
     cat("\n   > Extracting raster infos..")
     DataTmp <- matrix(0,ncol=nlayers(Data), nrow=add.args$nb.pts)
     colnames(DataTmp) <- names(Data)
     maxVal <- maxValue(Data)
     minVal <- minValue(Data)
-    for (i in 1:ncol(DataTmp)){
+    for (i in 1:ncol(DataTmp)) {
       DataTmp[,i] <- seq(minVal[i],maxVal[i],length.out=add.args$nb.pts)
     }
     Data <- DataTmp
@@ -572,9 +572,9 @@ response.plot2 <- function(
   if ( ( length(show.variables) > ncol(Data) ) | (sum(!(show.variables %in% colnames(Data)))) ) stop("columns wanted in show.variables do not match the data \n")
 
   # remove factorial var in do.bivariate case
-  if (do.bivariate){
+  if (do.bivariate) {
     fact_var <- sapply(Data[,show.variables, drop=F], is.factor)
-    if (sum(fact_var)>0){
+    if (sum(fact_var)>0) {
       cat("\n\tFactorial variables have been automatically removed!")
       show.variables <- show.variables[!fact_var]
     }
@@ -602,10 +602,10 @@ response.plot2 <- function(
 
 ###
 
-.Construct.default.biomod2.modeling.obj <- function(mod){
+.Construct.default.biomod2.modeling.obj <- function(mod) {
 
   ## ANN ##
-  if (inherits(mod, "nnet")){
+  if (inherits(mod, "nnet")) {
     return(new("ANN_biomod2_model",
                model = mod,
                model_name = paste(ifelse(is.null(mod$terms[[2]]), "species",as.character(mod$terms[[2]])),"_AllData_",as.character(format(Sys.time(), "%OS6")),"_ANN", sep=""),
@@ -616,7 +616,7 @@ response.plot2 <- function(
 
 
   ## CTA ##
-  if (inherits(mod, "rpart")){
+  if (inherits(mod, "rpart")) {
 
     return(new("CTA_biomod2_model",
                model = mod,
@@ -627,7 +627,7 @@ response.plot2 <- function(
   }
 
   ## FDA ##
-  if (inherits(mod, "fda")){
+  if (inherits(mod, "fda")) {
     return(new("FDA_biomod2_model",
                model = mod,
                model_name = paste(as.character(mod$terms[[2]]),"_AllData_",as.character(format(Sys.time(), "%OS6")),"_FDA", sep=""),
@@ -637,7 +637,7 @@ response.plot2 <- function(
   }
 
   ## GAM ##
-  if (inherits(mod, "gam")){
+  if (inherits(mod, "gam")) {
     return(new("GAM_biomod2_model",
                model = mod,
                model_subclass = ifelse(mod$method=="glm.fit","GAM_gam","GAM_mgcv"),
@@ -648,7 +648,7 @@ response.plot2 <- function(
   }
 
   ## GBM ##
-  if (inherits(mod, "gbm")){
+  if (inherits(mod, "gbm")) {
     return(new("GBM_biomod2_model",
                model = mod,
                model_name = paste(as.character(mod$Terms[[2]]),"_AllData_",as.character(format(Sys.time(), "%OS6")),"_GBM", sep=""),
@@ -658,7 +658,7 @@ response.plot2 <- function(
   }
 
   ## GLM ##
-  if (inherits(mod, c("glm", "lm"))){
+  if (inherits(mod, c("glm", "lm"))) {
     return(new("GLM_biomod2_model",
                model = mod,
                model_name = paste(as.character(mod$terms[[2]]),"_AllData_",as.character(format(Sys.time(), "%OS6")),"_GLM", sep=""),
@@ -668,7 +668,7 @@ response.plot2 <- function(
   }
 
   ## MARS ##
-  if (inherits(mod, "mars")){
+  if (inherits(mod, "mars")) {
     return(new("MARS_biomod2_model",
                model = mod,
                model_name =paste("species_AllData_",as.character(format(Sys.time(), "%OS6")),"_MARS",sep=""),
@@ -678,7 +678,7 @@ response.plot2 <- function(
   }
 
   ## RF ##
-  if (inherits(mod, "randomForest")){
+  if (inherits(mod, "randomForest")) {
     return(new("RF_biomod2_model",
                model = mod,
                model_name =paste(ifelse(is.null(mod$terms[[2]]), "species",as.character(mod$terms[[2]])),"_AllData_",as.character(format(Sys.time(), "%OS6")),"_RF", sep=""),
@@ -726,7 +726,7 @@ response.plot2 <- function(
 
 
 .as.ggdat.2D <-
-  function(rp.dat){
+  function(rp.dat) {
     out_ <-
       bind_rows(
         lapply(
