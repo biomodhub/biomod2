@@ -44,9 +44,15 @@ BIOMOD_Tuning(
 )
 }
 \arguments{
+\item{data}{a \code{\link{BIOMOD.formated.data}} object returned by the
+\code{\link{BIOMOD_FormatingData}} function}
+
 \item{models}{a \code{vector} containing model names to be tuned, must be among \code{GLM},
 \code{GBM}, \code{GAM}, \code{CTA}, \code{ANN}, \code{SRE}, \code{FDA}, \code{MARS},
 \code{RF}, \code{MAXENT.Phillips}}
+
+\item{models.options}{a \code{\link{BIOMOD.models.options}} object returned by the
+\code{\link{BIOMOD_ModelingOptions}} function}
 
 \item{method.ANN}{a \code{character} corresponding to the classification or regression model
 to use for \code{ANN}, must be \code{avNNet} (see
@@ -70,6 +76,10 @@ http://topepo.github.io/caret/Generalized_Linear_Model.html)}
 
 \item{trControl}{global control parameters that can be obtained from
 \code{\link[caret]{trainControl}} function}
+
+\item{metric}{a \code{character} corresponding to the evaluation metric used to select
+optimal models and tune parameters, must be either \code{ROC} or \code{TSS}
+(\emph{maximizing Sensitivity and Specificity})}
 
 \item{ctrl.CTA}{control parameters for \code{CTA}}
 
@@ -137,6 +147,10 @@ A \code{logical} value defining whether to enable parallel computing for
 train \code{MAXENT.Phillips}}
 
 \item{Yweights}{a \code{vector} of response points weights for models allowing case weights}
+}
+\value{
+A \code{BIOMOD.models.options} object (see \code{\link{BIOMOD_ModelingOptions}}) with
+optimized parameters
 }
 \description{
 Function to tune \pkg{biomod2} single models parameters

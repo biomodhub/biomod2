@@ -9,16 +9,24 @@ bm_SampleBinaryVector(ref, ratio, as.logi = FALSE)
 \arguments{
 \item{ref}{a \code{vector} containing binary values (either \code{0} or \code{1})}
 
-\item{ratio}{a \code{numeric} between \code{0} and \code{1} corresponding to the proportion 
+\item{ratio}{a \code{numeric} between \code{0} and \code{1} corresponding to the proportion
 of \code{ref} values to sample}
 
-\item{as.logi}{(\emph{optional, default} \code{FALSE}) \cr 
-A \code{logical} value defining whether a \code{vector} of \code{TRUE/FALSE} values should 
-be returned (if \code{as.logi = TRUE}) or a \code{vector} containing the indices of 
+\item{as.logi}{(\emph{optional, default} \code{FALSE}) \cr
+A \code{logical} value defining whether a \code{vector} of \code{TRUE/FALSE} values should
+be returned (if \code{as.logi = TRUE}) or a \code{vector} containing the indices of
 \code{ref} elements to keep}
 }
+\value{
+A \code{list} containing to elements is returned :
+\describe{
+  \item{calibration}{IDs of elements selected for calibration}
+  \item{evaluation}{IDs of elements selected for evaluation (complementary to the calibration
+  set)}
+}
+}
 \description{
-This internal \pkg{biomod2} function allows the user to sample a binary vector 
+This internal \pkg{biomod2} function allows the user to sample a binary vector
 keeping the same proportion of \code{0} and \code{1} as the initial vector.
 }
 \details{

@@ -27,7 +27,7 @@
 ##' A \code{logical} value defining whether the output is to be saved within the
 ##' \code{.BIOMOD_DATA} folder or not
 ##'
-##' @value
+##' @return
 ##'
 ##' A \code{data.frame} containing evaluation scores both for the evaluation metrics used in the
 ##' \code{\link{BIOMOD_Modeling}} function and additional Boyce index and Minimal Predicted Area.

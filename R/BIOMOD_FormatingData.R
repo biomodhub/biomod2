@@ -73,16 +73,14 @@
 ##' Is the response variable binary, or to be treated as binary? If so, all values > 0 will be
 ##' converted to 1s and all values <= 0 will be converted to 0s.
 ##'
-##' @value
+##' @return
 ##'
 ##' A \code{BIOMOD.formated.data} object that can be used to build species distribution model(s)
 ##' with the \code{\link[biomod2]{BIOMOD_Modeling}} function. \code{print} and \code{plot}
 ##' functions are available to have a summary of the created object.
 ##'
 ##'
-##' @details
-##'
-##' This function gathers and formats all input data needed to run \pkg{biomod2} models. It
+##' @details This function gathers and formats all input data needed to run \pkg{biomod2} models. It
 ##' supports different kind of inputs (e.g. \code{matrix}, \code{SpatialPoints},
 ##' \code{RasterStack}) and provides different methods to select pseudo-absences if needed.
 ##'

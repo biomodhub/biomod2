@@ -7,12 +7,12 @@
 ##'
 ##' @description Function to tune \pkg{biomod2} single models parameters
 ##'
-##' @param data a \code{\link{BIOMOD.formated.data} object returned by the
+##' @param data a \code{\link{BIOMOD.formated.data}} object returned by the
 ##' \code{\link{BIOMOD_FormatingData}} function
 ##' @param models a \code{vector} containing model names to be tuned, must be among \code{GLM},
 ##' \code{GBM}, \code{GAM}, \code{CTA}, \code{ANN}, \code{SRE}, \code{FDA}, \code{MARS},
 ##' \code{RF}, \code{MAXENT.Phillips}
-##' @param models.options a \code{\link{BIOMOD.models.options} object returned by the
+##' @param models.options a \code{\link{BIOMOD.models.options}} object returned by the
 ##' \code{\link{BIOMOD_ModelingOptions}} function
 ##' @param trControl global control parameters that can be obtained from
 ##' \code{\link[caret]{trainControl}} function
@@ -26,7 +26,7 @@
 ##' @param ctrl.FDA control parameters for \code{FDA}
 ##' @param metric a \code{character} corresponding to the evaluation metric used to select
 ##' optimal models and tune parameters, must be either \code{ROC} or \code{TSS}
-##' (\emph{maximizing Sensitivity and Specificity)
+##' (\emph{maximizing Sensitivity and Specificity})
 ##' @param metric.ME a \code{character} corresponding to the evaluation metric used to select
 ##' optimal model and tune parameters for \code{MAXENT.Phillips}, must be either
 ##' \code{auc.val.avg}, \code{auc.diff.avg}, \code{or.mtp.avg}, \code{or.10p.avg} or \code{AICc}
@@ -78,7 +78,7 @@
 ##' @param Yweights a \code{vector} of response points weights for models allowing case weights
 ##'
 ##'
-##' @value
+##' @return
 ##'
 ##' A \code{BIOMOD.models.options} object (see \code{\link{BIOMOD_ModelingOptions}}) with
 ##' optimized parameters

@@ -9,19 +9,23 @@ bm_MakeFormula(respName, explVar, type = "simple", interaction.level = 0, ...)
 \arguments{
 \item{respName}{a \code{character} defining the response variable name}
 
-\item{explVar}{a \code{matrix} or \code{data.frame} corresponding to the explanatory 
+\item{explVar}{a \code{matrix} or \code{data.frame} corresponding to the explanatory
 variables table that will be considered at modelling step}
 
-\item{type}{a \code{character} defining the wanted type of formula, must be \code{simple}, 
+\item{type}{a \code{character} defining the wanted type of formula, must be \code{simple},
 \code{quadratic}, \code{polynomial} or \code{s_smoother}}
 
-\item{interaction.level}{an \code{integer} corresponding to the interaction level depth 
+\item{interaction.level}{an \code{integer} corresponding to the interaction level depth
 between explanatory variables}
 
 \item{\ldots}{some additional arguments (see Details)}
 }
+\value{
+A \code{link[stats]{formula}} class object that can be directly given to most of \R
+statistical models.
+}
 \description{
-This internal \pkg{biomod2} function allows the user to create easily a standardized formula 
+This internal \pkg{biomod2} function allows the user to create easily a standardized formula
 that can be used later by statistical models.
 }
 \details{
@@ -29,15 +33,15 @@ that can be used later by statistical models.
 
 
 
-It is advised to give only a subset of \code{explVar} table to avoid useless memory consuming. 
-If some explanatory variables are factorial, \code{explVar} must be a \code{data.frame} whose 
+It is advised to give only a subset of \code{explVar} table to avoid useless memory consuming.
+If some explanatory variables are factorial, \code{explVar} must be a \code{data.frame} whose
 corresponding columns are defined as \code{factor}.
 
 \code{...} argument available values are :
 
 \itemize{
-  \item{\code{k}}{ : an \code{integer} corresponding to the smoothing parameter value of 
-  \code{\link[mgcv]{s}} or \code{\link[gam]{s}} arguments (\emph{used only if 
+  \item{\code{k}}{ : an \code{integer} corresponding to the smoothing parameter value of
+  \code{\link[mgcv]{s}} or \code{\link[gam]{s}} arguments (\emph{used only if
   \code{type = 's_smoother'}})}
 }
 }
@@ -45,7 +49,7 @@ corresponding columns are defined as \code{factor}.
 
 ## Create simulated data
 myResp <- sample(c(0, 1), 20, replace = TRUE)
-myExpl <- matrix(runif(60), 
+myExpl <- matrix(runif(60),
                  ncol = 3,
                  dimnames = list(NULL, c('var1', 'var2', 'var3')))
 
@@ -54,14 +58,14 @@ myFormula <- m_MakeFormula(respName = 'myResp',
                            explVar = head(myExpl),
                            type = 'quadratic',
                            interaction.level = 0)
-  
+
 ## Show formula created
 myFormula
 
 ###############################################################################################
 }
 \seealso{
-\code{\link[biomod2]{BIOMOD_ModelingOptions}}, 
+\code{\link[biomod2]{BIOMOD_ModelingOptions}},
 \code{link[stats]{formula}}
 }
 \author{

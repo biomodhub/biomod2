@@ -17,6 +17,10 @@
 extracted statistics of interest from the model object
   as `array`.
 
+Reshape biomod2 objects
+
+This is an internal function (developper only)
+
 list, the extracted statistics
 }
 \description{

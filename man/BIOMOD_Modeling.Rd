@@ -230,7 +230,7 @@ DataSpecies <-
   read.csv(
     system.file(
       "external/species/mammals_table.csv",
-      package="biomod2"
+      package = "biomod2"
     )
   )
 head(DataSpecies)

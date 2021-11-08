@@ -30,7 +30,7 @@
 ##' @param RF a \code{list} containing RF options
 ##' @param MAXENT.Phillips a \code{list} containing MAXENT.Phillips options
 ##'
-##' @value
+##' @return
 ##'
 ##' A \code{BIOMOD.Model.Options} object that can be used to build species distribution model(s)
 ##' with the \code{\link[biomod2]{BIOMOD_Modeling}} function.
@@ -48,7 +48,7 @@
 ##'
 ##' Below is the detailed list of all modifiable parameters for each available model.
 ##'
-##' @section \bold{GLM (\code{\link[stats]{glm}})}
+##' @section \bold{GLM (\code{\link[stats]{glm}}):}
 ##' \itemize{
 ##'   \item{\code{myFormula}}{ : a typical \code{formula} object (see Examples). \cr If not
 ##'   \code{NULL}, \code{type} and \code{interaction.level} parameters are switched off. \cr
@@ -79,8 +79,7 @@
 ##'   \code{\link{glm.control}})}
 ##' }
 ##'
-##' @section \bold{GBM (default \code{\link[gbm]{gbm}})}
-##'
+##' @section \bold{GBM (default \code{\link[gbm]{gbm}}):}
 ##' Please refer to \code{\link[gbm]{gbm}} help file for more details.
 ##' \itemize{
 ##'   \item{\code{distribution = 'bernoulli'}}
@@ -97,14 +96,14 @@
 ##'   \item{\code{n.cores = 1}}
 ##' }
 ##'
-##' @section \bold{GAM (\code{\link[gam]{gam}} or \code{\link[mgcv]{gam}})}
+##' @section \bold{GAM (\code{\link[gam]{gam}} or \code{\link[mgcv]{gam}}):}
 ##' \itemize{
 ##'   \item{\code{algo = 'GAM_gam'}}{ : a \code{character} defining the chosen GAM function, must
 ##'   be \code{GAM_gam} (see \code{\link[gam]{gam}}), \code{GAM_mgcv} (see \code{\link[mgcv]{gam}})
 ##'   or \code{BAM_mgcv} (see \code{\link[mgcv]{bam}})}
-##'   \item{\code{myFormula}}{ : a typical \code{formula} object (see Examples). \cr If not
-##'   \code{NULL}, \code{type} and \code{interaction.level} parameters are switched off. \cr
-##'   You can choose to either :
+##'   \item{\code{myFormula}}{ : a typical \code{formula} object (see Examples). \cr
+##'   If not \code{NULL}, \code{type} and \code{interaction.level} parameters are switched off. \cr
+##'   You can choose to either:
 ##'   \itemize{
 ##'     \item{generate automatically the GAM formula with the following parameters :
 ##'     \itemize{
@@ -137,18 +136,17 @@
 ##'   }
 ##' }
 ##'
-##' @section \bold{CTA (\code{\link[rpart]{rpart}})}
-##'
+##' @section \bold{CTA (\code{\link[rpart]{rpart}}):}
 ##' Please refer to \code{\link[rpart]{rpart}} help file for more details.
 ##' \itemize{
 ##'   \item{\code{method = 'class'}}
-##'   \item{\code{parms = 'default'}{ : if \code{'default'}, default \pkg{rpart}
-##'   \code{parms} value are kept}
+##'   \item{\code{parms = 'default'}{: if \code{'default'}, default \pkg{rpart}
+##'   \code{parms} values are kept}}
 ##'   \item{\code{cost = NULL}}
 ##'   \item{\code{control}}{ : see \code{\link[rpart]{rpart.control}}}
 ##' }
 ##'
-##' @section \bold{ANN (\code{\link[nnet]{nnet}})}
+##' @section \bold{ANN (\code{\link[nnet]{nnet}}):}
 ##' \itemize{
 ##'   \item{\code{NbCV = 5}}{ : an \code{integer} corresponding to the number of cross-validation
 ##'   repetitions to find best size and decay parameters}
@@ -168,13 +166,13 @@
 ##'   iterations}
 ##' }
 ##'
-##' @section \bold{SRE (\code{\link[biomod2]{sre}})}
+##' @section \bold{SRE (\code{\link[biomod2]{sre}}):}
 ##' \itemize{
 ##'   \item{\code{quant = 0.025}}{ : a \code{numeric} corresponding to the quantile of 'extreme
 ##'   environmental variable' removed to select species envelops}
 ##' }
 ##'
-##' @section \bold{FDA (\code{\link[mda]{fda}})}
+##' @section \bold{FDA (\code{\link[mda]{fda}}):}
 ##'
 ##' Please refer to \code{\link[mda]{fda}} help file for more details.
 ##' \itemize{
@@ -183,7 +181,7 @@
 ##'   given to the \ldots options of \code{\link[mda]{fda}} function}
 ##' }
 ##'
-##' @section \bold{MARS (\code{\link[earth]{earth}})}
+##' @section \bold{MARS (\code{\link[earth]{earth}}):}
 ##'
 ##' Please refer to \code{\link[earth]{earth}} help file for more details.
 ##' \itemize{
@@ -213,7 +211,7 @@
 ##'   \item{\code{pmethod = 'backward'}}
 ##' }
 ##'
-##' @section \bold{RF (\code{\link[randomForest]{randomForest}})}
+##' @section \bold{RF (\code{\link[randomForest]{randomForest}}):}
 ##' \itemize{
 ##'   \item{\code{do.classif = TRUE}}{ : if \code{TRUE} \emph{random.forest classification} will
 ##'   be computed, otherwise \emph{random.forest regression} will be done}
@@ -223,7 +221,7 @@
 ##'   \item{\code{maxnodes = NULL}}
 ##' }
 ##'
-##' @section \bold{\href{https://biodiversityinformatics.amnh.org/open_source/maxent/}{MAXENT.Phillips}}
+##' @section \bold{\href{https://biodiversityinformatics.amnh.org/open_source/maxent/}{MAXENT.Phillips}:}
 ##' \itemize{
 ##'   \item{\code{path_to_maxent.jar = getwd()}}{ : a \code{character} corresponding to \pkg{maxent.jar}
 ##'   file link}

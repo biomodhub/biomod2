@@ -30,6 +30,16 @@ tested over the range of fitted values}
 \item{Fixed.thresh}{(\emph{optional, default} \code{NULL}) \cr
 An \code{integer} corresponding to the only threshold value to be tested}
 }
+\value{
+A 1 row x 4 columns \code{matrix} containing :
+\itemize{
+  \item{\code{best.iter}}{ : the best score obtained for the chosen evaluation metric}
+  \item{\code{cutoff}}{ : the associated cut-off used to transform the continuous values into
+  binary}
+  \item{\code{sensibility}}{ : the sensibility obtained on fitted values with this threshold}
+  \item{\code{specificity}}{ : the specificity obtained on fitted values with this threshold}
+}
+}
 \description{
 This internal \pkg{biomod2} function allows the user to find the threshold to convert
 continuous values into binary ones leading to the best score for a given evaluation metric.

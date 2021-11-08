@@ -24,7 +24,7 @@
 ##' An \code{integer} corresponding to the only threshold value to be tested
 ##'
 ##'
-##' @value
+##' @return
 ##'
 ##' A 1 row x 4 columns \code{matrix} containing :
 ##' \itemize{

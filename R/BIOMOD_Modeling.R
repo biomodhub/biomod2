@@ -731,7 +731,6 @@ BIOMOD_Modeling <- function(
 #'
 #' @return extracted statistics of interest from the model object
 #'   as `array`.
-#' @export
 #'
 # .transform.outputs.array <- function(modOut, out = 'evaluation')
 # {

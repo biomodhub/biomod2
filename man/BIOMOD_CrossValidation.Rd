@@ -15,6 +15,9 @@ BIOMOD_CrossValidation(
 )
 }
 \arguments{
+\item{data}{a \code{\link{BIOMOD.formated.data}} object returned by the
+\code{\link{BIOMOD_FormatingData}} function}
+
 \item{k}{an \code{integer} corresponding to the number of bins/partitions for k-fold cv}
 
 \item{repetition}{an \code{integer} corresponding to the number of repetitions of k-fold cv
@@ -32,6 +35,11 @@ or the name of a predictor for environmental stratified cv}
 \item{do.full.models}{(\emph{optional, default} \code{TRUE}) \cr
 A \code{logical} value defining if models should be also calibrated and validated with the
 whole dataset}
+}
+\value{
+A \code{DataSplitTable} \code{matrix} with \code{k * repetition} (\emph{+ 1 if
+\code{do.full.models = TRUE}}) columns that can be given as parameter to the
+\code{\link{BIOMOD_Modeling}} function.
 }
 \description{
 This function creates a \code{DataSplitTable} that can be given as parameter to

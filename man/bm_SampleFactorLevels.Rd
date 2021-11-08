@@ -9,20 +9,27 @@
 bm_SampleFactorLevels(x, mask.out = NULL, mask.in = NULL)
 }
 \arguments{
-\item{x}{a \code{data.frame} or \code{\link[raster:stack]{RasterStack}} object containing the 
+\item{x}{a \code{data.frame} or \code{\link[raster:stack]{RasterStack}} object containing the
 explanatory variables (in columns or layers)}
 
-\item{mask.out}{a \code{data.frame} or \code{\link[raster:raster]{raster}} object containing 
-the area that has already been sampled (\emph{factor levels within this mask will not be 
+\item{mask.out}{a \code{data.frame} or \code{\link[raster:raster]{raster}} object containing
+the area that has already been sampled (\emph{factor levels within this mask will not be
 sampled})}
 
-\item{mask.in}{a \code{data.frame}, \code{\link[raster:raster]{raster}} or 
-\code{\link[raster:stack]{RasterStack}} object containing areas where factor levels are to be 
-sampled in priority. \emph{Note that if after having explored these masks, some factor levels 
+\item{mask.in}{a \code{data.frame}, \code{\link[raster:raster]{raster}} or
+\code{\link[raster:stack]{RasterStack}} object containing areas where factor levels are to be
+sampled in priority. \emph{Note that if after having explored these masks, some factor levels
 remain unsampled, they will be sampled in the reference input object \code{x}.}}
 }
+\value{
+A \code{numeric vector} containing point IDs (either cell number for \code{raster*} objects,
+or row number for \code{data.frame}), each refering to a single level of a single factorial
+variable.
+
+In case any factorial variable is found in the input object, \code{NULL} is returned.
+}
 \description{
-This internal \pkg{biomod2} function samples randomly an element of each level of 
+This internal \pkg{biomod2} function samples randomly an element of each level of
 all the factorial variables contained in a \code{raster*} or \code{data.frame} object.
 }
 \details{
@@ -30,16 +37,16 @@ all the factorial variables contained in a \code{raster*} or \code{data.frame} o
 
 
 
-The \code{x}, \code{mask.out} and \code{mask.in} parameters must be coherent in terms of 
+The \code{x}, \code{mask.out} and \code{mask.in} parameters must be coherent in terms of
 dimensions :
 \itemize{
   \item same number of rows for \code{data.frame} objects
   \item same resolution, projection system and number of cells for \code{raster*} objects
 }
 
-If \code{mask.in} contains several masks (either it is a 
-\code{\link[raster:stack]{RasterStack}} object or a multi-columns \code{data.frame}), then 
-the order of masks / columns matters : they will be considered successively to sample missing 
+If \code{mask.in} contains several masks (either it is a
+\code{\link[raster:stack]{RasterStack}} object or a multi-columns \code{data.frame}), then
+the order of masks / columns matters : they will be considered successively to sample missing
 factor levels.
 
 \itemize{
@@ -82,7 +89,7 @@ mask.out[] <- NA; mask.out[2:3] <- 1
 mask.in.1 <- mask.in.2 <- r1
 mask.in.1[1:10] <- NA ## only level 1 should be sampled in this mask
 mask.in.2[1] <- NA ## only levels 1 and 3 should be sampled in this mask
-mask.in <- list(mask.in.1 = mask.in.1, 
+mask.in <- list(mask.in.1 = mask.in.1,
                 mask.in.2 = mask.in.2)
 
 ## test different version of the function

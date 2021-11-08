@@ -2,81 +2,81 @@
 ##' @name bm_MakeFormula
 ##' @aliases bm_MakeFormula
 ##' @author Damien Georges
-##' 
+##'
 ##' @title Standardized formula maker
-##' 
+##'
 ##' @description
-##' 
-##' This internal \pkg{biomod2} function allows the user to create easily a standardized formula 
+##'
+##' This internal \pkg{biomod2} function allows the user to create easily a standardized formula
 ##' that can be used later by statistical models.
-##' 
+##'
 ##' @param respName a \code{character} defining the response variable name
-##' @param explVar a \code{matrix} or \code{data.frame} corresponding to the explanatory 
+##' @param explVar a \code{matrix} or \code{data.frame} corresponding to the explanatory
 ##' variables table that will be considered at modelling step
-##' @param type a \code{character} defining the wanted type of formula, must be \code{simple}, 
+##' @param type a \code{character} defining the wanted type of formula, must be \code{simple},
 ##' \code{quadratic}, \code{polynomial} or \code{s_smoother}
-##' @param interaction.level an \code{integer} corresponding to the interaction level depth 
+##' @param interaction.level an \code{integer} corresponding to the interaction level depth
 ##' between explanatory variables
 ##' @param \ldots some additional arguments (see Details)
-##' 
-##' 
-##' @value 
-##' 
-##' A \code{link[stats]{formula}} class object that can be directly given to most of \R 
+##'
+##'
+##' @return
+##'
+##' A \code{link[stats]{formula}} class object that can be directly given to most of \R
 ##' statistical models.
-##' 
-##' 
+##'
+##'
 ##' @details
-##' 
-##' It is advised to give only a subset of \code{explVar} table to avoid useless memory consuming. 
-##' If some explanatory variables are factorial, \code{explVar} must be a \code{data.frame} whose 
+##'
+##' It is advised to give only a subset of \code{explVar} table to avoid useless memory consuming.
+##' If some explanatory variables are factorial, \code{explVar} must be a \code{data.frame} whose
 ##' corresponding columns are defined as \code{factor}.
-##' 
+##'
 ##' \code{...} argument available values are :
-##' 
+##'
 ##' \itemize{
-##'   \item{\code{k}}{ : an \code{integer} corresponding to the smoothing parameter value of 
-##'   \code{\link[mgcv]{s}} or \code{\link[gam]{s}} arguments (\emph{used only if 
+##'   \item{\code{k}}{ : an \code{integer} corresponding to the smoothing parameter value of
+##'   \code{\link[mgcv]{s}} or \code{\link[gam]{s}} arguments (\emph{used only if
 ##'   \code{type = 's_smoother'}})}
 ##' }
-##' 
-##' 
-##' @seealso \code{\link[biomod2]{BIOMOD_ModelingOptions}}, 
+##'
+##'
+##' @seealso \code{\link[biomod2]{BIOMOD_ModelingOptions}},
 ##' \code{link[stats]{formula}}
-##' 
-##' 
+##'
+##'
 ##' @keywords models, formula, options
-##' 
-##' 
+##'
+##'
 ##' @examples
-##' 
+##'
 ##' ## Create simulated data
 ##' myResp <- sample(c(0, 1), 20, replace = TRUE)
-##' myExpl <- matrix(runif(60), 
+##' myExpl <- matrix(runif(60),
 ##'                  ncol = 3,
 ##'                  dimnames = list(NULL, c('var1', 'var2', 'var3')))
-##' 
+##'
 ##' ## Create a formula
 ##' myFormula <- m_MakeFormula(respName = 'myResp',
 ##'                            explVar = head(myExpl),
 ##'                            type = 'quadratic',
 ##'                            interaction.level = 0)
-##'   
+##'
 ##' ## Show formula created
 ##' myFormula
 ##'
 ##' ###############################################################################################
 
 
-bm_MakeFormula <- function(respName, 
-                           explVar, 
-                           type = 'simple', 
-                           interaction.level = 0, 
+bm_MakeFormula <- function(respName,
+                           explVar,
+                           type = 'simple',
+                           interaction.level = 0,
                            ...)
 {
   ## 1. Check parameters --------------------------------------------------------------------------
   sup_args <- list(...)
-  
+
   if (!is.character(respName) || length(respName)!=1) {
     stop("respName must be a unique response variable name")
   }
@@ -84,15 +84,15 @@ bm_MakeFormula <- function(respName,
     stop("explVar must be a data.frame or matrix")
   }
   test <- .fun_testIfIn(TRUE, "type", type, c("simple", "quadratic", "polynomial", "s_smoother"))
-  
+
   explVarNames <- colnames(explVar)
   if (respName %in% explVarNames) { # remove the response variable if given in explVar
     explVar <- explVar[, -which(explVarNames == respName), drop = FALSE]
     explVarNames <- colnames(explVar)
   }
-  
+
   interaction.level <- min(interaction.level, ncol(explVar))
-  
+
   ## 2. Create the formula ------------------------------------------------------------------------
   junk <- c(1)
   switch(EXPR = type
@@ -124,8 +124,8 @@ bm_MakeFormula <- function(respName,
              } else { junk <- paste(junk, explVarNames[v], sep = " + ") }
            }
          })
-                
-  
+
+
   ## 3. Add interactions if requested -------------------------------------------------------------
   junk.inter <- NULL
   if (interaction.level > 0) {
@@ -135,7 +135,7 @@ bm_MakeFormula <- function(respName,
     }
   }
   if (length(junk.inter)) { junk <- paste0(junk, junk.inter) }
-  
+
   ## 4. Return the formula ------------------------------------------------------------------------
   return(as.formula(paste0(respName," ~ ", junk)))
 }
