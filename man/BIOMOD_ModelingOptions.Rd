@@ -59,41 +59,40 @@ changes) as function arguments (see Examples).
 
 Below is the detailed list of all modifiable parameters for each available model.
 }
-\section{\bold{GLM (\code{\link[stats]{glm}})}{
-}
+\section{\bold{GLM (\code{\link[stats]{glm}})}}{
+
 \itemize{
-  \item{\code{myFormula}}{ : a typical \code{formula} object (see Examples). \cr If not
+  \item{\code{myFormula}}{: a typical \code{formula} object (see Examples). \cr If not
   \code{NULL}, \code{type} and \code{interaction.level} parameters are switched off. \cr
-  You can choose to either :
+  You can choose to either:
   \itemize{
-    \item{generate automatically the GLM formula with the following parameters :
+    \item{generate automatically the GLM formula with the following parameters:}{}
     \itemize{
-      \item{\code{type = 'quadratic'}}{ : formula given to the model, must
+      \item{\code{type = 'quadratic'}}{: formula given to the model, must
       be \code{simple}, \code{quadratic} or \code{polynomial}}
-      \item{\code{interaction.level = 0}}{ : an \code{integer} corresponding
+      \item{\code{interaction.level = 0}}{: an \code{integer} corresponding
       to the interaction level between considered variables considered (\emph{be aware that
       interactions quickly enlarge the number of effective variables used into the GLM !})}
     }
-    }
-    \item{or construct specific formula}
+    \item{or construct specific formula}{}
   }
   }
-  \item{\code{test = 'AIC'}}{ : information criteria for the stepwise
+  \item{\code{test = 'AIC'}}{: information criteria for the stepwise
   selection procedure, must be \code{AIC} (\emph{Akaike Information Criteria}, \code{BIC}
   (\emph{Bayesian Information Criteria}) or \code{none} (\emph{consider only the full model,
   no stepwise selection, but this can lead to convergence issue and strange results !})}
-  \item{\code{family = binomial(link = 'logit')}}{ : a \code{character}
+  \item{\code{family = binomial(link = 'logit')}}{: a \code{character}
   defining the error distribution and link function to be used in the model, mus be a family
   name, a family function or the result of a call to a family function (see \link{family})
   (\emph{so far, \pkg{biomod2} only runs on presence-absence data, so binomial family is the
   default !})}
-  \item{\code{control}}{ : a \code{list} of parameters to control the fitting process (passed to
+  \item{\code{control}}{: a \code{list} of parameters to control the fitting process (passed to
   \code{\link{glm.control}})}
 }
 }
 
-\section{\bold{GBM (default \code{\link[gbm]{gbm}})}{
-}
+\section{\bold{GBM (default \code{\link[gbm]{gbm}})}}{
+
 Please refer to \code{\link[gbm]{gbm}} help file for more details.
 \itemize{
   \item{\code{distribution = 'bernoulli'}}
@@ -111,50 +110,50 @@ Please refer to \code{\link[gbm]{gbm}} help file for more details.
 }
 }
 
-\section{\bold{GAM (\code{\link[gam]{gam}} or \code{\link[mgcv]{gam}})}{
-}
+\section{\bold{GAM (\code{\link[gam]{gam}} or \code{\link[mgcv]{gam}})}}{
+
 \itemize{
-  \item{\code{algo = 'GAM_gam'}}{ : a \code{character} defining the chosen GAM function, must
+  \item{\code{algo = 'GAM_gam'}}: {a \code{character} defining the chosen GAM function, must
   be \code{GAM_gam} (see \code{\link[gam]{gam}}), \code{GAM_mgcv} (see \code{\link[mgcv]{gam}})
   or \code{BAM_mgcv} (see \code{\link[mgcv]{bam}})}
-  \item{\code{myFormula}}{ : a typical \code{formula} object (see Examples). \cr
+  \item{\code{myFormula}}{: a typical \code{formula} object (see Examples). \cr
   If not \code{NULL}, \code{type} and \code{interaction.level} parameters are switched off. \cr
   You can choose to either:
   \itemize{
-    \item{generate automatically the GAM formula with the following parameters :
+    \item{generate automatically the GAM formula with the following parameters:}{
     \itemize{
-      \item{\code{type = 's_smoother'}}{ : the smoother used to generate the formula}
-      \item{\code{interaction.level = 0}}{ : an \code{integer} corresponding
+      \item{\code{type = 's_smoother'}}{: the smoother used to generate the formula}
+      \item{\code{interaction.level = 0}}{: an \code{integer} corresponding
       to the interaction level between considered variables considered (\emph{be aware that
       interactions quickly enlarge the number of effective variables used into the GLM !})}
     }
     }
-    \item{or construct specific formula}
-  }
+    \item{or construct specific formula}{}
+    }
   }
   \item{\code{k = -1}}{a smooth term in a formula argument to gam, must be \code{-1} or
   \code{4} (see \pkg{gam} \code{\link[gam]{s}} or \pkg{mgcv} \code{\link[mgcv]{s}})}
-  \item{\code{family = binomial(link = 'logit')}}{ : a \code{character} defining
+  \item{\code{family = binomial(link = 'logit')}}{: a \code{character} defining
   the error distribution and link function to be used in the model, mus be a family name, a
   family function or the result of a call to a family function (see \link{family})
   (\emph{so far, \pkg{biomod2} only runs on presence-absence data, so binomial family is the
   default !})}
-  \item{\code{control}}{ : a \code{list} of parameters to control the fitting process (passed to
+  \item{\code{control}}{: a \code{list} of parameters to control the fitting process (passed to
   \code{\link[mgcv]{gam.control}} or \code{\link[gam]{gam.control}})}
   \item{some options specific to \code{GAM_mgcv} (ignored if \code{algo = 'GAM_gam'})}{
   \itemize{
-    \item{\code{method = 'GCV.Cp'})}
-    \item{\code{optimizer = c('outer','newton')}}
-    \item{\code{select = FALSE}}
-    \item{\code{knots = NULL}}
-    \item{\code{paramPen = NULL}}
+    \item{\code{method = 'GCV.Cp'})}{}
+    \item{\code{optimizer = c('outer','newton')}}{}
+    \item{\code{select = FALSE}}{}
+    \item{\code{knots = NULL}}{}
+    \item{\code{paramPen = NULL}}{}
   }
   }
 }
 }
 
-\section{\bold{CTA (\code{\link[rpart]{rpart}})}{
-}
+\section{\bold{CTA (\code{\link[rpart]{rpart}})}}{
+
 Please refer to \code{\link[rpart]{rpart}} help file for more details.
 \itemize{
   \item{\code{method = 'class'}}
@@ -165,8 +164,8 @@ Please refer to \code{\link[rpart]{rpart}} help file for more details.
 }
 }
 
-\section{\bold{ANN (\code{\link[nnet]{nnet}})}{
-}
+\section{\bold{ANN (\code{\link[nnet]{nnet}})}}{
+
 \itemize{
   \item{\code{NbCV = 5}}{ : an \code{integer} corresponding to the number of cross-validation
   repetitions to find best size and decay parameters}
@@ -187,16 +186,16 @@ Please refer to \code{\link[rpart]{rpart}} help file for more details.
 }
 }
 
-\section{\bold{SRE (\code{\link[biomod2]{sre}})}{
-}
+\section{\bold{SRE (\code{\link[biomod2]{sre}})}}{
+
 \itemize{
   \item{\code{quant = 0.025}}{ : a \code{numeric} corresponding to the quantile of 'extreme
   environmental variable' removed to select species envelops}
 }
 }
 
-\section{\bold{FDA (\code{\link[mda]{fda}})}{
-}
+\section{\bold{FDA (\code{\link[mda]{fda}})}}{
+
 
 Please refer to \code{\link[mda]{fda}} help file for more details.
 \itemize{
@@ -206,8 +205,8 @@ Please refer to \code{\link[mda]{fda}} help file for more details.
 }
 }
 
-\section{\bold{MARS (\code{\link[earth]{earth}})}{
-}
+\section{\bold{MARS (\code{\link[earth]{earth}})}}{
+
 
 Please refer to \code{\link[earth]{earth}} help file for more details.
 \itemize{
@@ -238,8 +237,8 @@ Please refer to \code{\link[earth]{earth}} help file for more details.
 }
 }
 
-\section{\bold{RF (\code{\link[randomForest]{randomForest}})}{
-}
+\section{\bold{RF (\code{\link[randomForest]{randomForest}})}}{
+
 \itemize{
   \item{\code{do.classif = TRUE}}{ : if \code{TRUE} \emph{random.forest classification} will
   be computed, otherwise \emph{random.forest regression} will be done}
@@ -250,18 +249,19 @@ Please refer to \code{\link[earth]{earth}} help file for more details.
 }
 }
 
-\section{\bold{\href{https}{
-//biodiversityinformatics.amnh.org/open_source/maxent/}{MAXENT.Phillips}:}
+\section{\bold{MAXENT.Phillips}}{
+
+Please refer to \href{https://biodiversityinformatics.amnh.org/open_source/maxent/}{MAXENT.Phillips} for more details.
 \itemize{
   \item{\code{path_to_maxent.jar = getwd()}}{ : a \code{character} corresponding to \pkg{maxent.jar}
   file link}
   \item{\code{memory_allocated = 512}}{ : an \code{integer} corresponding to the amount of memory
-  (in Mo) reserved for \code{java} to run \code{MAXENT.Phillips}, must be \code{64}, \code{128},
-  \code{256}, \code{512}, \code{1024}... or \code{NULL} to use default \code{java} memory
+  (in Mb) reserved for \code{java} to run \code{MAXENT.Phillips}, must be \code{64}, \code{128},
+  \code{256}, \code{512}, \code{1024}, ... or \code{NULL} to use default \code{java} memory
   limitation parameter}
   \item{\code{background_data_dir}}{ : a \code{character} corresponding to directory path where
   explanatory variables are stored as \code{ASCII} files (raster format). \cr
-  If specified \code{MAXENT.Phillips} will generate its own background data from explanatory
+  If specified, \code{MAXENT.Phillips} will generate its own background data from explanatory
   variables rasters (as usually done in \code{MAXENT} studies). Otherwise \pkg{biomod2}
   pseudo-absences will be used (see \code{\link{BIOMOD_FormatingData}})}
   \item{\code{maximumbackground}}{ : an \code{integer} corresponding to the maximum number of
@@ -294,7 +294,7 @@ Please refer to \code{\link[earth]{earth}} help file for more details.
   of the species (\emph{probability of presence at ordinary occurrence points})}
 }
 
-% @section \bold{MAXENT.Tsuruoka (\code{\link[maxent]{maxent}})}
+% @section \bold{MAXENT.Tsuruoka (\code{\link[maxent]{maxent}})}:
 % \itemize{
 %   \item{\code{l1_regularizer = 0.0}}{ : a \code{numeric} turning on L1 regularization and setting
 %   the regularization parameter (\emph{a value of \code{0} will disable L1 regularization})}
@@ -332,7 +332,7 @@ myBiomodOptions <- BIOMOD_ModelingOptions(
 ## check changes were done
 myBiomodOptions
 
-##' you can prefer to establish your own GLM formula
+#' you can prefer to establish your own GLM formula
 myBiomodOptions <- BIOMOD_ModelingOptions(
   GLM = list(myFormula = formula("Sp277 ~ bio3 +
                 log(bio10) + poly(bio16,2) + bio19 + bio3:bio19")))
@@ -340,7 +340,7 @@ myBiomodOptions <- BIOMOD_ModelingOptions(
 ## check changes were done
 myBiomodOptions
 
-##' you also can directly print default parameters and then follow the same processus
+#' you also can directly print default parameters and then follow the same processus
 bm_DefaultModelingOptions()
 
 ###############################################################################################
