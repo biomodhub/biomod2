@@ -63,7 +63,7 @@
 ##' (in meters, see Details)
 ##' @param PA.table (\emph{optional, default} \code{NULL}) \cr
 ##' If pseudo-absence selection and \code{PA.strategy = 'user.defined'}, a \code{matrix} or
-##' \code{data.frame} with as many rows as \code {resp.var} values, as many columns as
+##' \code{data.frame} with as many rows as \code{resp.var} values, as many columns as
 ##' \code{PA.nb.rep}, and containing \code{TRUE} or \code{FALSE} values defining which points
 ##' will be used to build the species distribution model(s) for each repetition (see Details)
 ##' @param na.rm (\emph{optional, default} \code{TRUE}) \cr
