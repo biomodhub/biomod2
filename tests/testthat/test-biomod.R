@@ -103,11 +103,7 @@ bm.proj <-
     build.clamping.mask = FALSE
   )
 
-if (binaryResp) {
-  eval.metric.quality.threshold <- NULL
-} else {
-  eval.metric.quality.threshold <- 0.3
-}
+eval.metric.quality.threshold <- 0.3
 
 bm.ensemb <- BIOMOD_EnsembleModeling(bm.mod, em.by = "all",
                                      eval.metric = models.eval.meth,
