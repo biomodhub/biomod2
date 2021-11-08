@@ -38,12 +38,12 @@
 .automatic_weights_creation <- function(resp, prev = 0.5, subset = NULL)
 {
   if (is.null(subset)) { subset <- rep(TRUE, length(resp)) }
-  
+
   nbPres <- sum(resp[subset], na.rm = TRUE)
   # The number of true absences + pseudo absences to maintain true value of prevalence
   nbAbsKept <- sum(subset, na.rm = T) - sum(resp[subset], na.rm = TRUE)
   Yweights <- rep(1, length(resp))
-  
+
   if (nbAbsKept > nbPres) {
     # code absences as 1
     Yweights[which(resp > 0)] <- (prev * nbAbsKept) / (nbPres * (1 - prev))
@@ -53,7 +53,7 @@
   }
   Yweights = round(Yweights[])
   Yweights[!subset] <- 0
-  
+
   return(Yweights)
 }
 
@@ -64,16 +64,15 @@
 {
   # data.sp is a 0, 1 vector
   # return a matrix with nbRun columns of boolean (T: calib, F= eval)
-  
-  pres <- which(data.sp == 1)
+  pres <- which(data.sp > 0)
   abs <- (1:length(data.sp))[-pres]
-  
+
   nbPresEval <- round(length(pres) * dataSplit / 100)
   nbAbsEval <- round(length(abs) * dataSplit / 100)
-  
+
   mat.out <- matrix(FALSE, nrow = length(data.sp), ncol = nbRun)
   colnames(mat.out) <- paste0('_RUN', 1:nbRun)
-  
+
   for (i in 1:ncol(mat.out)) {
     ## force to sample at least one level of each factorial variable for calibration
     fact.cell.samp <- NULL
@@ -191,7 +190,7 @@ get_var_range <- function(data)
 check_data_range <- function(model, new_data)
 {
   ## TODO : remettre en marche cette fonction
-  
+
   #   # get calibration data caracteristics
   #   expl_var_names <- model@expl_var_names
   #   expl_var_type <- model@expl_var_type
@@ -275,8 +274,8 @@ check_data_range <- function(model, new_data)
 
 .run_pred <- function(object, Prev = 0.5 , dat)
 {
-  if (is.finite(object$deviance) && 
-      is.finite(object$null.deviance) && 
+  if (is.finite(object$deviance) &&
+      is.finite(object$null.deviance) &&
       object$deviance != object$null.deviance)
   {
     if (inherits(dat, 'Raster')) {
@@ -285,7 +284,7 @@ check_data_range <- function(model, new_data)
       pred <- predict(object, dat, type = "response")
     }
   }
-  
+
   if (!exists('pred')) {
     if (inherits(dat, 'Raster')) {
       pred <- raster::subset(dat, 1, drop = TRUE)
@@ -302,7 +301,7 @@ check_data_range <- function(model, new_data)
       }
     }
   }
-  
+
   return(pred)
 }
 
@@ -313,7 +312,7 @@ check_data_range <- function(model, new_data)
   do_check <- args$do_check
   if (is.null(do_check)) { do_check <- TRUE }
   if (do_check) { newdata <- check_data_range(model = object, new_data = newdata) }
-  
+
   if (inherits(newdata, 'Raster')) {
     eval(parse(text = paste0("res = .predict.", mod, "_biomod2_model.RasterStack(object, newdata, ...)")))
     return(res)
@@ -331,19 +330,19 @@ check_data_range <- function(model, new_data)
   filename <- args$filename
   overwrite <- args$overwrite
   on_0_1000 <- args$on_0_1000
-  
+
   if (is.null(overwrite)) { overwrite <- TRUE }
   if (is.null(on_0_1000)) { on_0_1000 <- FALSE }
-  
+
   set.seed(seedval)
   eval(parse(text = paste0("proj <- ", predcommand)))
-  
+
   if (length(get_scaling_model(object))) {
     names(proj) <- "pred"
     proj <- .run_pred(object = get_scaling_model(object), Prev = 0.5 , dat = proj)
   }
   if (on_0_1000) { proj <- round(proj * 1000) }
-  
+
   # save raster on hard drive ?
   if (!is.null(filename)) {
     cat("\n\t\tWriting projection on hard drive...")
@@ -362,20 +361,20 @@ check_data_range <- function(model, new_data)
   args <- list(...)
   on_0_1000 <- args$on_0_1000
   omit.na <- args$omit.na
-  
+
   if (is.null(on_0_1000)) { on_0_1000 <- FALSE }
   if (is.null(omit.na)) { omit.na <- FALSE }
-  
+
   ## check if na occurs in newdata cause they are not well supported
   if (omit.na) {
     not_na_rows <- apply(newdata, 1, function(x) { sum(is.na(x)) == 0 })
   } else {
     not_na_rows <- rep(T, nrow(newdata))
   }
-  
+
   set.seed(seedval)
   eval(parse(text = paste0("proj <- ", predcommand)))
-  
+
   ## add original NA from formal dataset
   if (sum(!not_na_rows) > 0) {
     tmp <- rep(NA, length(not_na_rows))
@@ -383,13 +382,13 @@ check_data_range <- function(model, new_data)
     proj <- tmp
     rm('tmp')
   }
-  
+
   if (length(get_scaling_model(object))) {
     proj <- data.frame(pred = proj)
     proj <- .run_pred(object = get_scaling_model(object), Prev = 0.5, dat = proj)
   }
   if (on_0_1000) { proj <- round(proj * 1000) }
-  
+
   return(proj)
 }
 
@@ -400,11 +399,11 @@ check_data_range <- function(model, new_data)
   do_check <- args$do_check
   if (is.null(do_check)) { do_check <- TRUE }
   if (do_check) { newdata <- check_data_range(model = object, new_data = newdata) }
-  
+
   if (inherits(newdata, 'Raster') | inherits(formal_predictions, 'Raster')) {
     eval(parse(text = paste0("res = .predict.", mod, "_biomod2_model.RasterStack(object, newdata, formal_predictions, ...)")))
     return(res)
-  } else if (inherits(newdata, 'data.frame') | inherits(newdata, 'matrix') | 
+  } else if (inherits(newdata, 'data.frame') | inherits(newdata, 'matrix') |
              inherits(formal_predictions, 'data.frame') | inherits(formal_predictions, 'matrix')) {
     eval(parse(text = paste0("res = .predict.", mod, "_biomod2_model.data.frame(object, newdata, formal_predictions, ...)")))
     return(res)
@@ -418,10 +417,10 @@ check_data_range <- function(model, new_data)
   args <- list(...)
   filename <- args$filename
   on_0_1000 <- args$on_0_1000
-  
+
   if (is.null(filename)) { filename <- "" }
   if (is.null(on_0_1000)) { on_0_1000 <- FALSE }
-  
+
   if (is.null(formal_predictions)) {
     # make prediction of all models required
     formal_predictions <- raster::stack(lapply(object@model,
@@ -432,7 +431,7 @@ check_data_range <- function(model, new_data)
                                                  return(predict(mod, newdata = newdata, on_0_1000 = on_0_1000))
                                                }, resp_name = object@resp_name, modeling.id = object@modeling.id))
   }
-  
+
   return(formal_predictions)
 }
 
@@ -459,7 +458,7 @@ check_data_range <- function(model, new_data)
 #   } else if (.Platform$OS.type == "windows") {
 #     java.test <- try(expr = eval(system("java", intern = TRUE)), silent = TRUE)
 #   } else { java.test <- "" }
-#   
+#
 #   if (!is.null(attr(java.test, "class"))) {
 #     cat("\n! java software seems not be correctly installed\n  > MAXENT.Phillips modelling was switched off!")
 #     return(FALSE)
@@ -483,13 +482,13 @@ DF_to_ARRAY <- function(df)
       stop("You have to give a data.frame")
     }
   }
-  
+
   a <- sapply(strsplit(colnames(df), '_'), tail, n = 3)
   b <- lapply(1:3, function(id) return(unique(a[id, ])))
   array.dim.names <- c(list(character(0)), rev(b))
   array.dim <- c(nrow(df), sapply(array.dim.names[-1], length))
   array.out <- array(data = NA, dim = array.dim, dimnames = array.dim.names)
-  
+
   for (x in colnames(df)) {
     dimTmp <- rev(tail(unlist(strsplit(x, '_')), n = 3))
     array.out[, dimTmp[1], dimTmp[2], dimTmp[3]] <- df[, x]
@@ -504,13 +503,13 @@ DF_to_ARRAY <- function(df)
 #   test <- sapply(ll,dim)
 #   test <- apply(test, 1, function(x) {  length(unique(x)) == 1 })
 #   if (!all(test)) { stop("list elements differ in dimension") }
-#   
+#
 #   formal.dim.names <- dimnames(ll[[1]])
 #   new.dim.names <- rev(apply(sapply(strsplit(names(ll), '_'), tail, n = 3), 1, unique))
 #   array.dim.names <- c(formal.dim.names, new.dim.names)
 #   array.dim <- sapply(array.dim.names, length)
 #   array.out <- array(data = NA, dim = array.dim, dimnames = array.dim.names)
-#   
+#
 #   for(x in names(ll)){
 #     dimTmp <- rev(tail(unlist(strsplit(x, '_')), n = 3))
 #     dimTmp <- paste(paste(rep(",", length(formal.dim.names)), collapse = "")
@@ -536,11 +535,11 @@ DF_to_ARRAY <- function(df)
   if (!(is.vector(x) | is.matrix(x) | is.data.frame(x))) {
     stop("x must be a 1 or 2 dimension odject")
   }
-  
+
   ## Set a new random seed to ensure that sampling is random
   ## (issue when CTA is involved and seed needs to be set to a fix number)
   set.seed(as.double(Sys.time()) + as.numeric(format(Sys.time(), "%OS6")) * 1000000)
-  
+
   out <- NULL
   if (is.null(id)) {
     out <- x[sample.int(length(x))]
@@ -548,6 +547,6 @@ DF_to_ARRAY <- function(df)
     out <- x
     for (idd in id) { out[, idd] <- out[sample.int(nrow(x)), idd]  }
   }
-  
+
   return(out)
 }

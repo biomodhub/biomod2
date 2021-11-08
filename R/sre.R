@@ -131,7 +131,7 @@ sre <- function(
   NewData = NULL,
   Quant = 0.025,
   return_extremcond = FALSE
-){
+) {
 
   # 1. Checking of input arguments validity
   args <- .check.params.sre(Response, Explanatory, NewData, Quant)

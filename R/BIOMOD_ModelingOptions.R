@@ -3,7 +3,7 @@
 ##' @aliases BIOMOD_ModelingOptions
 ##' @aliases bm_DefaultModelingOptions
 ##' @author Damien Georges, Wilfried Thuiller
-##' 
+##'
 ##' @title Configure the modeling options for each selected model
 ##'
 ##' @description Parametrize and/or tune \pkg{biomod2}'s single models options.
@@ -30,57 +30,57 @@
 ##' @param RF a \code{list} containing RF options
 ##' @param MAXENT.Phillips a \code{list} containing MAXENT.Phillips options
 ##'
-##' @value 
-##' 
-##' A \code{BIOMOD.Model.Options} object that can be used to build species distribution model(s) 
+##' @value
+##'
+##' A \code{BIOMOD.Model.Options} object that can be used to build species distribution model(s)
 ##' with the \code{\link[biomod2]{BIOMOD_Modeling}} function.
-##' 
-##' 
+##'
+##'
 ##' @details
-##' 
-##' This function allows advanced user to change some default parameters of \pkg{biomod2} inner 
-##' models. 10 single models are available within the package, and their options can be set 
+##'
+##' This function allows advanced user to change some default parameters of \pkg{biomod2} inner
+##' models. 10 single models are available within the package, and their options can be set
 ##' with this function through \code{list} objects.
-##' 
-##' The \code{\link{bm_DefaultModelingOptions}} function prints all default parameter values for 
-##' all available models. This output can be copied and pasted to be used as is (with wanted 
+##'
+##' The \code{\link{bm_DefaultModelingOptions}} function prints all default parameter values for
+##' all available models. This output can be copied and pasted to be used as is (with wanted
 ##' changes) as function arguments (see Examples).
-##' 
+##'
 ##' Below is the detailed list of all modifiable parameters for each available model.
 ##'
 ##' @section \bold{GLM (\code{\link[stats]{glm}})}
 ##' \itemize{
-##'   \item{\code{myFormula}}{ : a typical \code{formula} object (see Examples). \cr If not 
-##'   \code{NULL}, \code{type} and \code{interaction.level} parameters are switched off. \cr 
+##'   \item{\code{myFormula}}{ : a typical \code{formula} object (see Examples). \cr If not
+##'   \code{NULL}, \code{type} and \code{interaction.level} parameters are switched off. \cr
 ##'   You can choose to either :
 ##'   \itemize{
 ##'     \item{generate automatically the GLM formula with the following parameters :
 ##'     \itemize{
-##'       \item{\code{type = 'quadratic'}}{ : formula given to the model, must 
+##'       \item{\code{type = 'quadratic'}}{ : formula given to the model, must
 ##'       be \code{simple}, \code{quadratic} or \code{polynomial}}
-##'       \item{\code{interaction.level = 0}}{ : an \code{integer} corresponding 
-##'       to the interaction level between considered variables considered (\emph{be aware that 
+##'       \item{\code{interaction.level = 0}}{ : an \code{integer} corresponding
+##'       to the interaction level between considered variables considered (\emph{be aware that
 ##'       interactions quickly enlarge the number of effective variables used into the GLM !})}
 ##'     }
 ##'     }
 ##'     \item{or construct specific formula}
 ##'   }
 ##'   }
-##'   \item{\code{test = 'AIC'}}{ : information criteria for the stepwise 
-##'   selection procedure, must be \code{AIC} (\emph{Akaike Information Criteria}, \code{BIC} 
-##'   (\emph{Bayesian Information Criteria}) or \code{none} (\emph{consider only the full model, 
+##'   \item{\code{test = 'AIC'}}{ : information criteria for the stepwise
+##'   selection procedure, must be \code{AIC} (\emph{Akaike Information Criteria}, \code{BIC}
+##'   (\emph{Bayesian Information Criteria}) or \code{none} (\emph{consider only the full model,
 ##'   no stepwise selection, but this can lead to convergence issue and strange results !})}
-##'   \item{\code{family = binomial(link = 'logit')}}{ : a \code{character} 
-##'   defining the error distribution and link function to be used in the model, mus be a family 
-##'   name, a family function or the result of a call to a family function (see \link{family}) 
-##'   (\emph{so far, \pkg{biomod2} only runs on presence-absence data, so binomial family is the 
+##'   \item{\code{family = binomial(link = 'logit')}}{ : a \code{character}
+##'   defining the error distribution and link function to be used in the model, mus be a family
+##'   name, a family function or the result of a call to a family function (see \link{family})
+##'   (\emph{so far, \pkg{biomod2} only runs on presence-absence data, so binomial family is the
 ##'   default !})}
-##'   \item{\code{control}}{ : a \code{list} of parameters to control the fitting process (passed to 
+##'   \item{\code{control}}{ : a \code{list} of parameters to control the fitting process (passed to
 ##'   \code{\link{glm.control}})}
 ##' }
 ##'
 ##' @section \bold{GBM (default \code{\link[gbm]{gbm}})}
-##' 
+##'
 ##' Please refer to \code{\link[gbm]{gbm}} help file for more details.
 ##' \itemize{
 ##'   \item{\code{distribution = 'bernoulli'}}
@@ -99,32 +99,32 @@
 ##'
 ##' @section \bold{GAM (\code{\link[gam]{gam}} or \code{\link[mgcv]{gam}})}
 ##' \itemize{
-##'   \item{\code{algo = 'GAM_gam'}}{ : a \code{character} defining the chosen GAM function, must 
-##'   be \code{GAM_gam} (see \code{\link[gam]{gam}}), \code{GAM_mgcv} (see \code{\link[mgcv]{gam}}) 
+##'   \item{\code{algo = 'GAM_gam'}}{ : a \code{character} defining the chosen GAM function, must
+##'   be \code{GAM_gam} (see \code{\link[gam]{gam}}), \code{GAM_mgcv} (see \code{\link[mgcv]{gam}})
 ##'   or \code{BAM_mgcv} (see \code{\link[mgcv]{bam}})}
-##'   \item{\code{myFormula}}{ : a typical \code{formula} object (see Examples). \cr If not 
-##'   \code{NULL}, \code{type} and \code{interaction.level} parameters are switched off. \cr 
+##'   \item{\code{myFormula}}{ : a typical \code{formula} object (see Examples). \cr If not
+##'   \code{NULL}, \code{type} and \code{interaction.level} parameters are switched off. \cr
 ##'   You can choose to either :
 ##'   \itemize{
 ##'     \item{generate automatically the GAM formula with the following parameters :
 ##'     \itemize{
 ##'       \item{\code{type = 's_smoother'}}{ : the smoother used to generate the formula}
-##'       \item{\code{interaction.level = 0}}{ : an \code{integer} corresponding 
-##'       to the interaction level between considered variables considered (\emph{be aware that 
+##'       \item{\code{interaction.level = 0}}{ : an \code{integer} corresponding
+##'       to the interaction level between considered variables considered (\emph{be aware that
 ##'       interactions quickly enlarge the number of effective variables used into the GLM !})}
 ##'     }
 ##'     }
 ##'     \item{or construct specific formula}
 ##'   }
 ##'   }
-##'   \item{\code{k = -1}}{a smooth term in a formula argument to gam, must be \code{-1} or 
+##'   \item{\code{k = -1}}{a smooth term in a formula argument to gam, must be \code{-1} or
 ##'   \code{4} (see \pkg{gam} \code{\link[gam]{s}} or \pkg{mgcv} \code{\link[mgcv]{s}})}
-##'   \item{\code{family = binomial(link = 'logit')}}{ : a \code{character} defining 
-##'   the error distribution and link function to be used in the model, mus be a family name, a 
-##'   family function or the result of a call to a family function (see \link{family}) 
-##'   (\emph{so far, \pkg{biomod2} only runs on presence-absence data, so binomial family is the 
+##'   \item{\code{family = binomial(link = 'logit')}}{ : a \code{character} defining
+##'   the error distribution and link function to be used in the model, mus be a family name, a
+##'   family function or the result of a call to a family function (see \link{family})
+##'   (\emph{so far, \pkg{biomod2} only runs on presence-absence data, so binomial family is the
 ##'   default !})}
-##'   \item{\code{control}}{ : a \code{list} of parameters to control the fitting process (passed to 
+##'   \item{\code{control}}{ : a \code{list} of parameters to control the fitting process (passed to
 ##'   \code{\link[mgcv]{gam.control}} or \code{\link[gam]{gam.control}})}
 ##'   \item{some options specific to \code{GAM_mgcv} (ignored if \code{algo = 'GAM_gam'})}{
 ##'   \itemize{
@@ -138,11 +138,11 @@
 ##' }
 ##'
 ##' @section \bold{CTA (\code{\link[rpart]{rpart}})}
-##' 
+##'
 ##' Please refer to \code{\link[rpart]{rpart}} help file for more details.
 ##' \itemize{
 ##'   \item{\code{method = 'class'}}
-##'   \item{\code{parms = 'default'}{ : if \code{'default'}, default \pkg{rpart} 
+##'   \item{\code{parms = 'default'}{ : if \code{'default'}, default \pkg{rpart}
 ##'   \code{parms} value are kept}
 ##'   \item{\code{cost = NULL}}
 ##'   \item{\code{control}}{ : see \code{\link[rpart]{rpart.control}}}
@@ -150,62 +150,63 @@
 ##'
 ##' @section \bold{ANN (\code{\link[nnet]{nnet}})}
 ##' \itemize{
-##'   \item{\code{NbCV = 5}}{ : an \code{integer} corresponding to the number of cross-validation 
+##'   \item{\code{NbCV = 5}}{ : an \code{integer} corresponding to the number of cross-validation
 ##'   repetitions to find best size and decay parameters}
-##'   \item{\code{size = NULL}}{ : an \code{integer} corresponding to the number of units in the 
-##'   hidden layer. If \code{NULL} then size parameter will be optimized by cross-validation based 
-##'   on model AUC (\code{NbCv} cross-validations ; tested size will be the following : 
-##'   \code{c(2, 4, 6, 8)}). It is also possible to give a \code{vector} of size values to be tested, 
+##'   \item{\code{size = NULL}}{ : an \code{integer} corresponding to the number of units in the
+##'   hidden layer. If \code{NULL} then size parameter will be optimized by cross-validation based
+##'   on model AUC (\code{NbCv} cross-validations ; tested size will be the following :
+##'   \code{c(2, 4, 6, 8)}). It is also possible to give a \code{vector} of size values to be tested,
 ##'   and the one giving the best model AUC will be kept.}
-##'   \item{\code{decay = NULL}}{ : a \code{numeric} corresponding to weight decay. If \code{NULL} 
-##'   then decay parameter will be optimized by cross-validation based on model AUC (\code{NbCv} 
-##'   cross-validations ; tested size will be the following : \code{c(0.001, 0.01, 0.05, 0.1)}). 
-##'   It is also possible to give a \code{vector} of decay values to be tested, and the one giving 
+##'   \item{\code{decay = NULL}}{ : a \code{numeric} corresponding to weight decay. If \code{NULL}
+##'   then decay parameter will be optimized by cross-validation based on model AUC (\code{NbCv}
+##'   cross-validations ; tested size will be the following : \code{c(0.001, 0.01, 0.05, 0.1)}).
+##'   It is also possible to give a \code{vector} of decay values to be tested, and the one giving
 ##'   the best model AUC will be kept.}
-##'   \item{\code{rang = 0.1}}{ : a \code{numeric} corresponding to the initial random weights on 
+##'   \item{\code{rang = 0.1}}{ : a \code{numeric} corresponding to the initial random weights on
 ##'   [-rang, rang]}
-##'   \item{\code{maxit = 200}}{ : an \code{integer} corresponding to the maximum number of 
+##'   \item{\code{maxit = 200}}{ : an \code{integer} corresponding to the maximum number of
 ##'   iterations}
 ##' }
 ##'
 ##' @section \bold{SRE (\code{\link[biomod2]{sre}})}
 ##' \itemize{
-##'   \item{\code{quant = 0.025}}{ : a \code{numeric} corresponding to the quantile of 'extreme 
+##'   \item{\code{quant = 0.025}}{ : a \code{numeric} corresponding to the quantile of 'extreme
 ##'   environmental variable' removed to select species envelops}
 ##' }
 ##'
 ##' @section \bold{FDA (\code{\link[mda]{fda}})}
-##' 
+##'
 ##' Please refer to \code{\link[mda]{fda}} help file for more details.
 ##' \itemize{
 ##'   \item{\code{method = 'mars'}}
-##'   \item{\code{add_args = NULL}}{ : a \code{list} of additional parameters to \code{method} and 
+##'   \item{\code{add_args = NULL}}{ : a \code{list} of additional parameters to \code{method} and
 ##'   given to the \ldots options of \code{\link[mda]{fda}} function}
 ##' }
 ##'
 ##' @section \bold{MARS (\code{\link[earth]{earth}})}
-##' 
+##'
 ##' Please refer to \code{\link[earth]{earth}} help file for more details.
 ##' \itemize{
-##'   \item{\code{myFormula}}{ : a typical \code{formula} object (see Examples). \cr If not 
-##'   \code{NULL}, \code{type} and \code{interaction.level} parameters are switched off. \cr 
+##'   \item{\code{myFormula}}{ : a typical \code{formula} object (see Examples). \cr If not
+##'   \code{NULL}, \code{type} and \code{interaction.level} parameters are switched off. \cr
 ##'   You can choose to either :
 ##'   \itemize{
-##'     \item{generate automatically the MARS formula with the following parameters :
+##'     \item{generate automatically the MARS formula (by default the binomial family is used)
+##'     with the following parameters :
 ##'     \itemize{
-##'       \item{\code{type = 'simple'}}{ : formula given to the model, must 
+##'       \item{\code{type = 'simple'}}{ : formula given to the model, must
 ##'       be \code{simple}, \code{quadratic} or \code{polynomial}}
-##'       \item{\code{interaction.level = 0}}{ : an \code{integer} corresponding 
-##'       to the interaction level between considered variables considered (\emph{be aware that 
+##'       \item{\code{interaction.level = 0}}{ : an \code{integer} corresponding
+##'       to the interaction level between considered variables considered (\emph{be aware that
 ##'       interactions quickly enlarge the number of effective variables used into the MARS !})}
 ##'     }
 ##'     }
 ##'     \item{or construct specific formula}
 ##'   }
 ##'   }
-##'   \item{\code{nk = NULL}}{ : an \code{integer} corresponding to the maximum number of model 
-##'   terms. If \code{NULL} default MARS function value is used : 
-##'   \code{max(21, 2 * nb_expl_var + 1)}}
+##'   \item{\code{nk = NULL}}{ : an \code{integer} corresponding to the maximum number of model
+##'   terms. If \code{NULL} default MARS function value is used :
+##'   \code{min(200, 2 * nb_expl_var + 1)}}
 ##'   \item{\code{penalty = 2}}
 ##'   \item{\code{thresh = 0.001}}
 ##'   \item{\code{nprune = NULL}}
@@ -214,7 +215,7 @@
 ##'
 ##' @section \bold{RF (\code{\link[randomForest]{randomForest}})}
 ##' \itemize{
-##'   \item{\code{do.classif = TRUE}}{ : if \code{TRUE} \emph{random.forest classification} will 
+##'   \item{\code{do.classif = TRUE}}{ : if \code{TRUE} \emph{random.forest classification} will
 ##'   be computed, otherwise \emph{random.forest regression} will be done}
 ##'   \item{\code{ntree = 500}}
 ##'   \item{\code{mtry = 'default'}}
@@ -224,20 +225,20 @@
 ##'
 ##' @section \bold{\href{https://biodiversityinformatics.amnh.org/open_source/maxent/}{MAXENT.Phillips}}
 ##' \itemize{
-##'   \item{\code{path_to_maxent.jar = getwd()}}{ : a \code{character} corresponding to \pkg{maxent.jar} 
+##'   \item{\code{path_to_maxent.jar = getwd()}}{ : a \code{character} corresponding to \pkg{maxent.jar}
 ##'   file link}
-##'   \item{\code{memory_allocated = 512}}{ : an \code{integer} corresponding to the amount of memory 
-##'   (in Mo) reserved for \code{java} to run \code{MAXENT.Phillips}, must be \code{64}, \code{128}, 
-##'   \code{256}, \code{512}, \code{1024}... or \code{NULL} to use default \code{java} memory 
+##'   \item{\code{memory_allocated = 512}}{ : an \code{integer} corresponding to the amount of memory
+##'   (in Mo) reserved for \code{java} to run \code{MAXENT.Phillips}, must be \code{64}, \code{128},
+##'   \code{256}, \code{512}, \code{1024}... or \code{NULL} to use default \code{java} memory
 ##'   limitation parameter}
-##'   \item{\code{background_data_dir}}{ : a \code{character} corresponding to directory path where 
+##'   \item{\code{background_data_dir}}{ : a \code{character} corresponding to directory path where
 ##'   explanatory variables are stored as \code{ASCII} files (raster format). \cr
-##'   If specified \code{MAXENT.Phillips} will generate its own background data from explanatory 
-##'   variables rasters (as usually done in \code{MAXENT} studies). Otherwise \pkg{biomod2} 
+##'   If specified \code{MAXENT.Phillips} will generate its own background data from explanatory
+##'   variables rasters (as usually done in \code{MAXENT} studies). Otherwise \pkg{biomod2}
 ##'   pseudo-absences will be used (see \code{\link{BIOMOD_FormatingData}})}
-##'   \item{\code{maximumbackground}}{ : an \code{integer} corresponding to the maximum number of 
+##'   \item{\code{maximumbackground}}{ : an \code{integer} corresponding to the maximum number of
 ##'   background data to sample if the \code{background_data_dir} parameter has been set}
-##'   \item{\code{maximumiterations = 200}}{ : an \code{integer} corresponding to the maximum number of 
+##'   \item{\code{maximumiterations = 200}}{ : an \code{integer} corresponding to the maximum number of
 ##'   iterations to do}
 ##'   \item{\code{visible = FALSE}}{ : a \code{logical} to make the \code{MAXENT} user interface available}
 ##'   \item{\code{linear = TRUE}}{ : a \code{logical} to allow linear features to be used}
@@ -245,37 +246,37 @@
 ##'   \item{\code{product = TRUE}}{ : a \code{logical} to allow product features to be used}
 ##'   \item{\code{threshold = TRUE}}{ : a \code{logical} to allow threshold features to be used}
 ##'   \item{\code{hinge = TRUE}}{ : a \code{logical} to allow hinge features to be used}
-##'   \item{\code{lq2lqptthreshold = 80}}{ : an \code{integer} corresponding to the number of samples 
+##'   \item{\code{lq2lqptthreshold = 80}}{ : an \code{integer} corresponding to the number of samples
 ##'   at which product and threshold features start being used}
-##'   \item{\code{l2lqthreshold = 10}}{ : an \code{integer} corresponding to the number of samples at 
+##'   \item{\code{l2lqthreshold = 10}}{ : an \code{integer} corresponding to the number of samples at
 ##'   which quadratic features start being used}
-##'   \item{\code{hingethreshold = 15}}{ : an \code{integer} corresponding to the number of samples at 
+##'   \item{\code{hingethreshold = 15}}{ : an \code{integer} corresponding to the number of samples at
 ##'   which hinge features start being used}
-##'   \item{\code{beta_threshold = -1.0}}{ : a \code{numeric} corresponding to the regularization 
+##'   \item{\code{beta_threshold = -1.0}}{ : a \code{numeric} corresponding to the regularization
 ##'   parameter to be applied to all threshold features (\emph{negative value enables automatic setting})}
-##'   \item{\code{beta_categorical = -1.0}}{ : a \code{numeric} corresponding to the regularization 
+##'   \item{\code{beta_categorical = -1.0}}{ : a \code{numeric} corresponding to the regularization
 ##'   parameter to be applied to all categorical features (\emph{negative value enables automatic setting})}
-##'   \item{\code{beta_lqp = -1.0}}{ : a \code{numeric} corresponding to the regularization parameter 
+##'   \item{\code{beta_lqp = -1.0}}{ : a \code{numeric} corresponding to the regularization parameter
 ##'   to be applied to all linear, quadratic and product features (\emph{negative value enables automatic setting})}
-##'   \item{\code{beta_hinge = -1.0}}{ : a \code{numeric} corresponding to the regularization parameter 
+##'   \item{\code{beta_hinge = -1.0}}{ : a \code{numeric} corresponding to the regularization parameter
 ##'   to be applied to all hinge features (\emph{negative value enables automatic setting})}
-##'   \item{\code{betamultiplier = 1}}{ : a \code{numeric} to multiply all automatic regularization 
+##'   \item{\code{betamultiplier = 1}}{ : a \code{numeric} to multiply all automatic regularization
 ##'   parameters (\emph{higher number gives a more spread-out distribution})}
-##'   \item{\code{defaultprevalence = 0.5}}{ : a \code{numeric} corresponding to the default prevalence 
+##'   \item{\code{defaultprevalence = 0.5}}{ : a \code{numeric} corresponding to the default prevalence
 ##'   of the species (\emph{probability of presence at ordinary occurrence points})}
 ##' }
 ##'
 ##' % @section \bold{MAXENT.Tsuruoka (\code{\link[maxent]{maxent}})}
 ##' % \itemize{
-##' %   \item{\code{l1_regularizer = 0.0}}{ : a \code{numeric} turning on L1 regularization and setting 
+##' %   \item{\code{l1_regularizer = 0.0}}{ : a \code{numeric} turning on L1 regularization and setting
 ##' %   the regularization parameter (\emph{a value of \code{0} will disable L1 regularization})}
-##' %   \item{\code{l2_regularizer = 0.0}}{ : a \code{numeric} turning on L2 regularization and setting 
+##' %   \item{\code{l2_regularizer = 0.0}}{ : a \code{numeric} turning on L2 regularization and setting
 ##' %   the regularization parameter (\emph{a value of \code{0} will disable L2 regularization})}
 ##' %   \item{\code{use_sgd = FALSE}}{ : a \code{logical} to use SGD parameter estimation}
-##' %   \item{\code{set_heldout = 0}}{ : an \code{integer} corresponding to the number of documents to 
-##' %   hold out (\emph{to test against and prevent overfitting, use carefully in case of dataset with 
+##' %   \item{\code{set_heldout = 0}}{ : an \code{integer} corresponding to the number of documents to
+##' %   hold out (\emph{to test against and prevent overfitting, use carefully in case of dataset with
 ##' %   low number of occurrences})}
-##' %   \item{\code{verbose = FALSE}}{ : a \code{logical} specifying whether to provide descriptive 
+##' %   \item{\code{verbose = FALSE}}{ : a \code{logical} specifying whether to provide descriptive
 ##' %   output about the training process}
 ##' % }
 ##'
@@ -283,7 +284,7 @@
 ##' @keywords models, options
 ##'
 ##' @examples
-##' 
+##'
 ##' ## default BIOMOD.model.option object
 ##' myBiomodOptions <- BIOMOD_ModelingOptions()
 ##'
@@ -331,11 +332,11 @@
 {
   ## 1. create a defaut BIOMOD.Model.Options object ---------------------------
   opt <- new('BIOMOD.Model.Options')
-  
+
   ## 2. modify it if necessary ------------------------------------------------
   fam_GLM = fam_GAM = c('binomial', 'gaussian', 'Gamma', 'inverse.gaussian'
                         , 'poisson', 'quasi', 'quasibinomial', 'quasipoisson')
-  
+
   ## 2.1 GLM ------------------------------------------------------------------
   if (!is.null(GLM)) {
     if (!is.null(GLM$type)) { opt@GLM$type <- GLM$type }
@@ -362,7 +363,7 @@
     if (!is.null(GLM$mustart)) { opt@GLM$mustart <- GLM$mustart }
     if (!is.null(GLM$control)) { opt@GLM$control <- GLM$control }
   }
-  
+
   ## 2.2 GBM ------------------------------------------------------------------
   if (!is.null(GBM)){
     if (!is.null(GBM$distribution)) { opt@GBM$distribution <- GBM$distribution }
@@ -378,7 +379,7 @@
     if (!is.null(GBM$perf.method)) { opt@GBM$perf.method <- GBM$perf.method }
     if (!is.null(GBM$n.cores)) { opt@GBM$n.cores <- GBM$n.cores } else { opt@GBM$n.cores <- NULL }
   }
-  
+
   ## 2.3 GAM ------------------------------------------------------------------
   if (!is.null(GAM)) {
     if (!is.null(GAM$algo)) { opt@GAM$algo <- GAM$algo }
@@ -409,7 +410,7 @@
         opt@GAM$family <- binomial(link = 'logit')
       }
     }
-    
+
     if (is.null(GAM$control)) {
       if (opt@GAM$algo == 'GAM_gam') {
         requireNamespace('gam', quietly = TRUE)
@@ -432,7 +433,7 @@
       names(control.list) <- names(default.control.list)
       opt@GAM$control <- control.list
     }
-    
+
     if (!is.null(GAM$method)) { opt@GAM$method <- GAM$method }
     if (!is.null(GAM$optimizer)) { opt@GAM$optimizer <- GAM$optimizer }
     if (!is.null(GAM$select)) { opt@GAM$select <- GAM$select }
@@ -447,7 +448,7 @@
       opt@GAM$k <- -1
     }
   }
-  
+
   ## 2.4 CTA ------------------------------------------------------------------
   if (!is.null(CTA)) {
     if (!is.null(CTA$method)) { opt@CTA$method <- CTA$method }
@@ -455,7 +456,7 @@
     if (!is.null(CTA$control)) { opt@CTA$control <- CTA$control }
     if (!is.null(CTA$cost)) { opt@CTA$cost <- CTA$cost }
   }
-  
+
   ## 2.5 ANN ------------------------------------------------------------------
   if (!is.null(ANN)) {
     if (!is.null(ANN$NbCV)) { opt@ANN$NbCV <- ANN$NbCV }
@@ -464,18 +465,18 @@
     if (!is.null(ANN$rang)) { opt@ANN$rang <- ANN$rang }
     if (!is.null(ANN$maxit)) { opt@ANN$maxit <- ANN$maxit }
   }
-  
+
   ## 2.6 SRE ------------------------------------------------------------------
   if (!is.null(SRE)) {
     if (!is.null(SRE$quant)) { opt@SRE$quant <- SRE$quant }
   }
-  
+
   ## 2.7 FDA ------------------------------------------------------------------
   if (!is.null(FDA)) {
     if (!is.null(FDA$method)) { opt@FDA$method <- FDA$method }
     if (!is.null(FDA$add_args)) { opt@FDA$add_args <- FDA$add_args } ## additional args such as degree, nk
   }
-  
+
   ## 2.8 MARS -----------------------------------------------------------------
   if (!is.null(MARS)) {
     if (!is.null(MARS$type)) { opt@MARS$type <- MARS$type }
@@ -487,7 +488,7 @@
     if (!is.null(MARS$nprune)) { opt@MARS$nprune <- MARS$nprune }
     if (!is.null(MARS$pmethod)) { opt@MARS$pmethod <- MARS$pmethod }
   }
-  
+
   ## 2.9 RF -------------------------------------------------------------------
   if (!is.null(RF)) {
     if (!is.null(RF$type)) { opt@RF$type <- RF$type }
@@ -497,7 +498,7 @@
     if (!is.null(RF$nodesize)) { opt@RF$nodesize <- RF$nodesize }
     if (!is.null(RF$maxnodes)) { opt@RF$maxnodes <- RF$maxnodes }
   }
-  
+
   ## 2.10 MAXENT.Phillips -----------------------------------------------------
   if (!is.null(MAXENT.Phillips)) {
     if (!is.null(MAXENT.Phillips$path_to_maxent.jar)) {
@@ -525,7 +526,7 @@
   } else {
     opt@MAXENT.Phillips$path_to_maxent.jar <- getwd()
   }
-  
+
   # if (!is.null(MAXENT.Tsuruoka)) {
   #   if (!is.null(MAXENT.Tsuruoka$l1_regularizer)) { opt@MAXENT.Tsuruoka$l1_regularizer <- MAXENT.Tsuruoka$l1_regularizer }
   #   if (!is.null(MAXENT.Tsuruoka$l2_regularizer)) { opt@MAXENT.Tsuruoka$l2_regularizer <- MAXENT.Tsuruoka$l2_regularizer }
@@ -533,10 +534,10 @@
   #   if (!is.null(MAXENT.Tsuruoka$set_heldout)) { opt@MAXENT.Tsuruoka$set_heldout <- MAXENT.Tsuruoka$set_heldout }
   #   if (!is.null(MAXENT.Tsuruoka$verbose)) { opt@MAXENT.Tsuruoka$verbose <- MAXENT.Tsuruoka$verbose }
   # }
-  
+
   ## 3. test validity ---------------------------------------------------------
   test <- as.logical(validObject(object = opt, test = TRUE, complete = FALSE))
-  
+
   if (!test) {
     cat("\n\n!!! NULL object returned because of invalid parameters given !!!")
     return(NULL)

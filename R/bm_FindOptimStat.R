@@ -4,54 +4,54 @@
 ##' @aliases bm_CalculateStat
 ##' @aliases get_optim_value
 ##' @author Damien Georges
-##' 
+##'
 ##' @title Calculate the best score according to a given evaluation method
 ##'
-##' @description 
-##' 
-##' This internal \pkg{biomod2} function allows the user to find the threshold to convert 
+##' @description
+##'
+##' This internal \pkg{biomod2} function allows the user to find the threshold to convert
 ##' continuous values into binary ones leading to the best score for a given evaluation metric.
 ##'
-##' @param Stat a \code{character} corresponding to the evaluation metric to be used, must be 
-##' either \code{ROC}, \code{TSS}, \code{KAPPA}, \code{ACCURACY}, \code{BIAS}, \code{POD}, 
-##' \code{FAR}, \code{POFD}, \code{SR}, \code{CSI}, \code{ETS}, \code{HK}, \code{HSS}, \code{OR} 
-##' or \code{ORSS}
+##' @param Stat a \code{character} corresponding to the evaluation metric to be used, must be
+##' either \code{ROC}, \code{TSS}, \code{KAPPA}, \code{ACCURACY}, \code{BIAS}, \code{POD},
+##' \code{FAR}, \code{POFD}, \code{SR}, \code{CSI}, \code{ETS}, \code{HK}, \code{HSS}, \code{OR},
+##' \code{ORSS}, \code{R2} or \code{RMSE} (the last two only for continuous data)
 ##' @param Fit a \code{vector} of fitted values (continuous)
 ##' @param Obs a \code{vector} of observed values (binary, \code{0} or \code{1})
-##' @param Nb.thresh.test an \code{integer} corresponding to the number of thresholds to be 
+##' @param Nb.thresh.test an \code{integer} corresponding to the number of thresholds to be
 ##' tested over the range of fitted values
-##' @param Fixed.thresh (\emph{optional, default} \code{NULL}) \cr 
+##' @param Fixed.thresh (\emph{optional, default} \code{NULL}) \cr
 ##' An \code{integer} corresponding to the only threshold value to be tested
 ##'
 ##'
 ##' @value
-##' 
+##'
 ##' A 1 row x 4 columns \code{matrix} containing :
 ##' \itemize{
 ##'   \item{\code{best.iter}}{ : the best score obtained for the chosen evaluation metric}
-##'   \item{\code{cutoff}}{ : the associated cut-off used to transform the continuous values into 
+##'   \item{\code{cutoff}}{ : the associated cut-off used to transform the continuous values into
 ##'   binary}
 ##'   \item{\code{sensibility}}{ : the sensibility obtained on fitted values with this threshold}
 ##'   \item{\code{specificity}}{ : the specificity obtained on fitted values with this threshold}
 ##' }
 ##'
 ##' @details
-##' 
-##' \emph{Please refer to \code{\link{BIOMOD_Modeling}} to get more information about these 
+##'
+##' \emph{Please refer to \code{\link{BIOMOD_Modeling}} to get more information about these
 ##' evaluation metrics.}
-##' 
-##' Note that if a value is given to \code{Fixed.thresh}, no optimisation will be done., and 
+##'
+##' Note that if a value is given to \code{Fixed.thresh}, no optimisation will be done., and
 ##' only the score for this threshold will be returned.
 ##'
 ##'
 ##' @keywords models, options, evaluation
-##' 
+##'
 ##'
 ##' @seealso \code{\link{BIOMOD_Modeling}}, \code{\link{BIOMOD_EnsembleModeling}}
 ##'
 ##'
 ##' @examples
-##' 
+##'
 ##' ## generate a binary vector
 ##' a <- sample(c(0, 1), 100, replace = TRUE)
 ##'
@@ -66,42 +66,46 @@
 ##' c <- sapply(a, BiasedDrawing)
 ##' bm_FindOptimStat(Stat = 'TSS', Fit = c, Obs = a, Nb.thresh.test = 100)
 ##'
-##' 
+##'
 ##' ###############################################################################################
 
 
 bm_FindOptimStat <- function(Stat = 'TSS',
-                            Fit,
-                            Obs,
-                            Nb.thresh.test = 100,
-                            Fixed.thresh = NULL)
+                             Fit,
+                             Obs,
+                             Nb.thresh.test = 100,
+                             Fixed.thresh = NULL)
 {
   ## remove all unfinite values
   to_keep <- (is.finite(Fit) & is.finite(Obs))
   Fit <- Fit[to_keep]
   Obs <- Obs[to_keep]
-  
+
   ## check some data is still here
   if (!length(Obs) | !length(Fit)) {
     cat("Non finite obs or fit available => model evaluation skipped !")
     eval.out <- matrix(NA, 1, 4, dimnames = list(Stat, c("best.stat", "cutoff", "sensitivity", "specificity")))
     return(eval.out)
   }
-  
+
   if (length(unique(Obs)) == 1 | length(unique(Fit)) == 1) {
-    warning("\nObserved or fitted data contains a unique value... Be careful with this models predictions\n", immediate. = TRUE)
+    warning("\nObserved or fitted data contains a unique value... Be careful with these models' predictions\n", immediate. = TRUE)
   }
-  
-  
-  if (Stat != 'ROC') { ## for all evaluation metrics other than ROC -------------------------------
+
+
+  if (!Stat %in% c('ROC', 'R2', 'RMSE')) { ## for all evaluation metrics other than ROC/R2/RMSE -------------------------------
+    if (length(setdiff(Obs, c(0, 1, NA)))) {
+      stop("Response variably is non-binary. Use R2 or RMSE eval.method instead")
+    }
+
     StatOptimum <- get_optim_value(Stat)
-    
+
     ## 1. get threshold values to be tested -----------------------------------
     if (is.null(Fixed.thresh)) { # test a range of threshold to get the one giving the best score
-      
+
       ## guess fit value scale (e.g. 0-1 for a classic fit or 0-1000 for a biomod2 model fit)
       fit.scale <- .guess_scale(Fit)
-      
+
       if (length(unique(Fit)) == 1) {
         valToTest <- unique(Fit)
         ## add 2 values to test based on mean with 0 and the guessed max of Fit (1 or 1000)
@@ -122,25 +126,31 @@ bm_FindOptimStat <- function(Stat = 'TSS',
     } else { # test only one value
       valToTest <- Fixed.thresh
     }
-    
+
     ## 2. apply the bm_CalculateStat function ---------------------------------
     calcStat <- sapply(lapply(valToTest, function(x) {
       return(table(Fit > x, Obs))
     }), bm_CalculateStat, stat = Stat)
-    
+
     ## 3. scale obtained scores and find best value ---------------------------
     calcStat <- 1 - abs(StatOptimum - calcStat)
     best.stat <- max(calcStat, na.rm = TRUE)
     cutoff <- median(valToTest[which(calcStat == best.stat)]) # if several values are selected
-    
+
     misc <- table(Fit >= cutoff, Obs)
     misc <- .contingency_table_check(misc)
     true.pos <- misc['TRUE', '1']
     true.neg <- misc['FALSE', '0']
     specificity <- (true.neg * 100) / sum(misc[, '0'])
     sensitivity <- (true.pos * 100) / sum(misc[, '1'])
-    
-  } else { ## specific procedure for ROC value ----------------------------------------------------
+
+  }
+
+  if (Stat == 'ROC') { ## specific procedure for ROC value ----------------------------------------------------
+    if (length(setdiff(Obs, c(0, 1, NA)))) {
+      warning("Response variably is non-binary. Use R2 or RMSE eval.method instead")
+    }
+
     roc1 <- pROC::roc(Obs, Fit, percent = TRUE, direction = "<", levels = c(0, 1))
     roc1.out <- pROC::coords(roc1, "best", ret = c("threshold", "sens", "spec"), transpose = TRUE)
     ## if two optimal values are returned keep only the first one
@@ -151,9 +161,17 @@ bm_FindOptimStat <- function(Stat = 'TSS',
     specificity <- as.numeric(roc1.out["specificity"])
   }
 
+  if (Stat %in% c('R2', 'RMSE')) {
+    Stat2 <- if (Stat == 'R2') "Rsquared" else "RMSE"
+    best.stat <- caret::defaultSummary(data.frame(obs = Obs, pred = Fit))[[Stat2]]
+    cutoff <- NA
+    sensitivity <- NA
+    specificity <- NA
+  }
+
   eval.out <- cbind(best.stat, cutoff, sensitivity, specificity)
   rownames(eval.out) <- Stat
-  
+
   return(eval.out)
 }
 
@@ -204,19 +222,19 @@ get_optim_value <- function(stat)
       rownames(Misc) <- c('FALSE', 'TRUE')
     }
   }
-  
+
   if (ncol(Misc) != 2 | nrow(Misc) != 2) {
     Misc = matrix(0, ncol = 2, nrow = 2, dimnames = list(c('FALSE', 'TRUE'), c('0', '1')))
   }
-  
-  if ((sum(colnames(Misc) %in% c('FALSE', 'TRUE', '0', '1')) < 2) | 
+
+  if ((sum(colnames(Misc) %in% c('FALSE', 'TRUE', '0', '1')) < 2) |
       (sum(rownames(Misc) %in% c('FALSE', 'TRUE', '0', '1')) < 2) ) {
     stop("Unavailable contingency table given")
   }
-  
+
   if ('0' %in% rownames(Misc)) { rownames(Misc)[which(rownames(Misc) == '0')] <- 'FALSE' }
   if ('1' %in% rownames(Misc)) { rownames(Misc)[which(rownames(Misc) == '1')] <- 'TRUE' }
-  
+
   return(Misc)
 }
 
@@ -224,19 +242,19 @@ bm_CalculateStat <- function(Misc, stat = 'TSS')
 {
   ## check contagency table
   Misc <- .contingency_table_check(Misc)
-  
+
   ## calculate basic classification information -------------------------------
   hits <- Misc['TRUE', '1'] ## true positives
   misses <- Misc['FALSE', '1'] ##  false positives
-  false_alarms <- Misc['TRUE', '0'] ## false negatives 
+  false_alarms <- Misc['TRUE', '0'] ## false negatives
   correct_negatives <- Misc['FALSE', '0'] ## true negatives
-  
+
   total <- sum(Misc)
   forecast_1 <- sum(Misc['TRUE', ])
   forecast_0 <- sum(Misc['FALSE', ])
   observed_1 <- sum(Misc[, '1'])
   observed_0 <- sum(Misc[, '0'])
-  
+
   ## calculate chosen evaluation metric ---------------------------------------
   out = switch(stat
                , 'TSS' = (hits / (hits + misses)) + (correct_negatives / (false_alarms + correct_negatives)) - 1
@@ -258,7 +276,7 @@ bm_CalculateStat <- function(Misc, stat = 'TSS')
                }
                , 'HK' = (hits / (hits + misses)) - (false_alarms / (false_alarms + correct_negatives))
                , 'HSS' = {
-                 expected_correct_rand <- (1 / total) * 
+                 expected_correct_rand <- (1 / total) *
                    (((hits + misses) * (hits + false_alarms)) + ((correct_negatives + misses) * (correct_negatives + false_alarms)))
                  return((hits + correct_negatives - expected_correct_rand) / (total - expected_correct_rand))
                }
