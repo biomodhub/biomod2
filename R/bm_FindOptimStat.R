@@ -194,6 +194,8 @@ get_optim_value <- function(stat)
          , 'HSS' = 1
          , 'OR' = 1000000
          , 'ORSS' = 1
+         , 'R2' = 1
+         , 'RMSE' = 0
   )
 }
 
