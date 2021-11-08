@@ -318,13 +318,15 @@ BIOMOD_Modeling <- function(
   # 3. Saving Data and Model.option objects -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-= #
   if (SaveObj) {
     # save Input Data
-    save(data, file = file.path(models.out@sp.name,".BIOMOD_DATA",models.out@modeling.id,"formated.input.data"), compress = compress.arg)
+    save(data, file = file.path(models.out@sp.name,".BIOMOD_DATA", models.out@modeling.id,"formated.input.data"),
+         compress = compress.arg)
     models.out@formated.input.data@inMemory <- FALSE
-    models.out@formated.input.data@link <- file.path(models.out@sp.name,".BIOMOD_DATA",models.out@modeling.id,"formated.input.data")
+    models.out@formated.input.data@link <- file.path(models.out@sp.name,".BIOMOD_DATA", models.out@modeling.id, "formated.input.data")
     # save Model Options
-    save(models.options, file = file.path(models.out@sp.name,".BIOMOD_DATA",models.out@modeling.id,"models.options"), compress = compress.arg)
+    save(models.options, file = file.path(models.out@sp.name,".BIOMOD_DATA",models.out@modeling.id,"models.options"),
+         compress = compress.arg)
     models.out@models.options@inMemory <- FALSE
-    models.out@models.options@link <- file.path(models.out@sp.name,".BIOMOD_DATA",models.out@modeling.id,"models.options")
+    models.out@models.options@link <- file.path(models.out@sp.name,".BIOMOD_DATA", models.out@modeling.id, "models.options")
 
   }
 
