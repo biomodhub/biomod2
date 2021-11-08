@@ -123,7 +123,7 @@
 ##'                                       prob.mean.weight.decay = 'proportional')
 ##'
 ##'
-##' requireNamespace(PresenceAbsence, 'PresenceAbsence', quietly = TRUE)
+##' requireNamespace("PresenceAbsence", quietly = TRUE)
 ##'
 ##' # evaluate Biomod models with the Boyce index and MPA
 ##' pres.only.eval <- BIOMOD_PresenceOnly(myBiomodModelOut, myBiomodEM)
