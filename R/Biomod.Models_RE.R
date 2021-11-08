@@ -775,7 +775,7 @@
         sapply(
           mod.eval.method,
           function(.x){
-            Find.Optim.Stat(
+            bm_FindOptimStat(
               Stat = .x,
               Fit = g.pred[evalLines],
               Obs = Data %>% filter(evalLines) %>% pull(1)
