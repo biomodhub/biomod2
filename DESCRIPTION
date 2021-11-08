@@ -18,7 +18,7 @@ Description: Functions for species distribution modeling, calibration and evalua
   dataset and to combine them in ensemble models and ensemble projections. Some bench of other 
   evaluation and visualisation tools are also available within the package.
 Depends:
-    R (>= 4.1.1)
+    R (>= 4.0.4)
 Imports:
     stats,
     utils,
@@ -77,28 +77,28 @@ Collate:
     'Biomod.Models_RE.R'
     'CVnnet.R'
     'CustomIndexMaker.R'
-    'bm_FindOptimStat.R'
     'FilteringTransformation.R'
     'Prepare.Maxent.WorkDir.R'
     'ProbDensFunc.R'
     'Projection.R'
-    'bm_Rescaler.R'
-    'bm_SampleBinaryVector.R'
     'biomod2_classes_1.R'
     'biomod2_classes_2.R'
     'biomod2_classes_3.R'
     'biomod2_classes_4.R'
     'biomod2_classes_5.R'
     'biomod2_internal.R'
-    'level.plot.R'
+    'bm_FindOptimStat.R'
     'bm_MakeFormula.R'
+    'bm_Rescaler.R'
+    'bm_SampleBinaryVector.R'
+    'bm_SampleFactorLevels.R'
+    'bm_VariablesImportance.R'
+    'level.plot.R'
     'models_scores_graph.R'
     'multiple.plot.r'
     'pseudo.abs.R'
     'response.plot.R'
-    'bm_SampleFactorLevels.R'
     'scope.R'
     'sre.R'
     'update_objects.R'
-    'bm_VariablesImportance.R'
     'zzz.R'
