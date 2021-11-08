@@ -149,10 +149,12 @@ BIOMOD_LoadModels <- function(bm.out, ... ){
 
   info.tmp <- as.data.frame(strsplit(model.names, "_"))
 
-  return( switch(info,
-                 species = paste(unique(unlist(info.tmp[-c(nrow(info.tmp), nrow(info.tmp)-1, nrow(info.tmp)-2),])), collapse="_"),
-                 data.set = paste(unique(unlist(info.tmp[(nrow(info.tmp)-2),]))),
-                 run.eval = paste(unique(unlist(info.tmp[(nrow(info.tmp)-1),]))),
-                 models = paste(unique(unlist(info.tmp[(nrow(info.tmp)),]))) ) )
+  return(switch(info,
+                species = paste(unique(unlist(info.tmp[-c(nrow(info.tmp), nrow(info.tmp) - 1, nrow(info.tmp) - 2),])), collapse = "_"),
+                data.set = paste(unique(unlist(info.tmp[(nrow(info.tmp) - 2),]))),
+                run.eval = paste(unique(unlist(info.tmp[(nrow(info.tmp) - 1),]))),
+                models = paste(unique(unlist(info.tmp[(nrow(info.tmp)),])))
+  )
+  )
 
 }

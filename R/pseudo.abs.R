@@ -1,49 +1,49 @@
 .pseudo.absences.sampling <-
-function(sp, env, nb.repet=1, strategy='random', distMin=0, distMax=NULL, nb.points=NULL, quant.SRE = 0, PA.table = NULL){
+  function(sp, env, nb.repet=1, strategy='random', distMin=0, distMax=NULL, nb.points=NULL, quant.SRE = 0, PA.table = NULL){
 
-  # 1. Parameters checking
-  args <- .check.params.pseudo.absences.sampling(sp, env, nb.repet, strategy, distMin, distMax, nb.points, quant.SRE)
+    # 1. Parameters checking
+    args <- .check.params.pseudo.absences.sampling(sp, env, nb.repet, strategy, distMin, distMax, nb.points, quant.SRE)
 
-  sp <- args$sp
-  env <- args$env
-  nb.repet <- args$nb.repet
-  strategy <- args$strategy
-  distMin <- args$distMin
-  distMax <- args$distMax
-  nb.points <- args$nb.points
-  quant.SRE <- args$quant.SRE
+    sp <- args$sp
+    env <- args$env
+    nb.repet <- args$nb.repet
+    strategy <- args$strategy
+    distMin <- args$distMin
+    distMax <- args$distMax
+    nb.points <- args$nb.points
+    quant.SRE <- args$quant.SRE
 
-  rm("args")
+    rm("args")
 
-  if( (nb.repet == 0 | nb.points <= 0) & strategy != 'user.defined'){
-    out <- NULL
-  } else {
-    out <- switch(strategy,
-                   user.defined = user.defined.pseudo.abs.selection(sp, env, PA.table),
-                   random = random.pseudo.abs.selection( sp, env, nb.points, nb.repet ),
-                   sre = sre.pseudo.abs.selection(sp, env, quant.SRE, nb.points, nb.repet),
-                   disk = disk.pseudo.abs.selection(sp, env, distMin, distMax, nb.points, nb.repet))
+    if( (nb.repet == 0 | nb.points <= 0) & strategy != 'user.defined'){
+      out <- NULL
+    } else {
+      out <- switch(strategy,
+                    user.defined = user.defined.pseudo.abs.selection(sp, env, PA.table),
+                    random = random.pseudo.abs.selection( sp, env, nb.points, nb.repet ),
+                    sre = sre.pseudo.abs.selection(sp, env, quant.SRE, nb.points, nb.repet),
+                    disk = disk.pseudo.abs.selection(sp, env, distMin, distMax, nb.points, nb.repet))
+    }
+
+    return(out)
+
+    #   # 2. Check if NA are present in sp or not to determine which dataset to use
+    #   if(sum(is.na(sp@data)) > 0 ){ # PA will be taken into response variable
+    #     cat("\n*** PA selection")
+    #     pa.tab <- switch(strategy,
+    #                      random = random.pseudo.abs.selection(data=sp, nb.points=nb.points, nb.repet=nb.repet),
+    #                      sre = sre.pseudo.abs.selection(sp),
+    #                      disk = disk.pseudo.abs.selection(sp))
+    #     .arranging.pa.table()
+    #   } else{ # PA will be taken into explanatory variables
+    #     if(inherits(env, 'Raster')){ # Raster env var case
+    #
+    #     } else if(inherits(env, 'SpatialPoints')){ # spatial data.frame case
+    #
+    #     }
+    #
+    #   }
   }
-
-  return(out)
-
-#   # 2. Check if NA are present in sp or not to determine which dataset to use
-#   if(sum(is.na(sp@data)) > 0 ){ # PA will be taken into response variable
-#     cat("\n*** PA selection")
-#     pa.tab <- switch(strategy,
-#                      random = random.pseudo.abs.selection(data=sp, nb.points=nb.points, nb.repet=nb.repet),
-#                      sre = sre.pseudo.abs.selection(sp),
-#                      disk = disk.pseudo.abs.selection(sp))
-#     .arranging.pa.table()
-#   } else{ # PA will be taken into explanatory variables
-#     if(inherits(env, 'Raster')){ # Raster env var case
-#
-#     } else if(inherits(env, 'SpatialPoints')){ # spatial data.frame case
-#
-#     }
-#
-#   }
-}
 
 
 # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-= #
@@ -106,13 +106,13 @@ function(sp, env, nb.repet=1, strategy='random', distMin=0, distMax=NULL, nb.poi
   # 5. Distances checking
   if(!is.null(distMin)){
     if(distMin < 0){
-        distMin <- 0
+      distMin <- 0
     }
   }
 
   if(!is.null(distMax)){
     if(distMax < 0){
-        distMax <- NULL
+      distMax <- NULL
     }
   }
 
@@ -181,10 +181,10 @@ function(sp, env, nb.repet=1, strategy='random', distMin=0, distMax=NULL, nb.poi
 
 # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-= #
 # if( !isGeneric( "random.pseudo.abs.selection" ) ) {
-  setGeneric( "random.pseudo.abs.selection",
-              def = function(sp,env, ...){
-                      standardGeneric( "random.pseudo.abs.selection" )
-                      } )
+setGeneric( "random.pseudo.abs.selection",
+            def = function(sp,env, ...){
+              standardGeneric( "random.pseudo.abs.selection" )
+            } )
 # }
 
 setMethod('random.pseudo.abs.selection', signature(env="SpatialPointsDataFrame"),
@@ -208,7 +208,7 @@ setMethod('random.pseudo.abs.selection', signature(env="SpatialPointsDataFrame")
               for(j in 1:ncol(pa.tab)){
                 ## force to get at least one value of each factorial variable
                 fact.level.cells <- bm_SampleFactorLevels(x = as.data.frame(env),
-                                                         mask.out = pa.tab[, j, drop = FALSE])
+                                                          mask.out = pa.tab[, j, drop = FALSE])
                 if(length(fact.level.cells)){
                   pa.tab[fact.level.cells, j] <- TRUE
                   cand.cells <- setdiff(cand.cells, fact.level.cells)
@@ -229,7 +229,7 @@ setMethod('random.pseudo.abs.selection', signature(env="SpatialPointsDataFrame")
 
 setMethod('random.pseudo.abs.selection', signature(env="RasterStack"),
           function( sp, env, nb.points, nb.repet ){
-#             require('raster',quietly=T)
+            #             require('raster',quietly=T)
             cat("\n   > random pseudo absences selection")
 
             # 1. Check if NA are present in sp or not to determine which dataset to use
@@ -345,20 +345,20 @@ setMethod('user.defined.pseudo.abs.selection', signature(env="SpatialPointsDataF
           function( sp, env, pa.table ){
             cat("\n   > User defined pseudo absences selection")
 
-              return(list(xy = coordinates(sp),
-                          sp = as.vector(sp@data),
-                          env = as.data.frame(env@data),
-                          pa.tab = pa.table))
+            return(list(xy = coordinates(sp),
+                        sp = as.vector(sp@data),
+                        env = as.data.frame(env@data),
+                        pa.tab = pa.table))
 
           })
 
 setMethod('user.defined.pseudo.abs.selection', signature(env="RasterStack"),
           function( sp, env, pa.table ){
-#             require('raster',quietly=T)
+            #             require('raster',quietly=T)
             cat("\n   > User defined pseudo absences selection")
 
-#             env <- as.data.frame(extract(env, coordinates(sp), method='bilinear'))
-              env <- as.data.frame(extract(env, coordinates(sp)))
+            #             env <- as.data.frame(extract(env, coordinates(sp), method='bilinear'))
+            env <- as.data.frame(extract(env, coordinates(sp)))
 
 
             return(list(xy = coordinates(sp),
@@ -370,10 +370,10 @@ setMethod('user.defined.pseudo.abs.selection', signature(env="RasterStack"),
 
 # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-= #
 # if( !isGeneric( "random.pseudo.abs.selection" ) ) {
-  setGeneric( "sre.pseudo.abs.selection",
-              def = function(sp,env, ...){
-                      standardGeneric( "sre.pseudo.abs.selection" )
-                      } )
+setGeneric( "sre.pseudo.abs.selection",
+            def = function(sp,env, ...){
+              standardGeneric( "sre.pseudo.abs.selection" )
+            } )
 # }
 setMethod('sre.pseudo.abs.selection', signature(env="SpatialPointsDataFrame"),
           function(sp, env, quant.SRE, nb.points, nb.repet){
@@ -383,41 +383,41 @@ setMethod('sre.pseudo.abs.selection', signature(env="SpatialPointsDataFrame"),
             mask.in <- sre(Response = sp, Explanatory = env, NewData = env@data, Quant = quant.SRE)
             ## we want to sample PA out of the SRE => have to revert the mask
             mask.in <- data.frame(mask.in = !as.logical(mask.in))
-#             # mask of already sampled points (presneces/absences)
-#             mask[mask == 0] <- NA
-#             mask[which(as.vector(sp@data)==1),1] <- 1
-#             mask[which(as.vector(sp@data)==0),1] <- 0
+            #             # mask of already sampled points (presneces/absences)
+            #             mask[mask == 0] <- NA
+            #             mask[which(as.vector(sp@data)==1),1] <- 1
+            #             mask[which(as.vector(sp@data)==0),1] <- 0
 
             # 2. Check if NA are present in sp or not to determine which dataset to use
-#             if(.nb.available.pa.cells(mask) > 0 ){ # PA will be taken into response variable
-              nb.cells <- .nb.available.pa.cells(mask.in$mask.in, PA.flag = TRUE)
-              if(nb.cells <= nb.points){
-                nb.repet <- 1
-                nb.points <- nb.cells
-                cat("\n   > All available cells have been selected (", nb.points, "pseudo absences selected )")
-              }
-              pa.tab <- matrix(FALSE, ncol=nb.repet, nrow=nrow(sp))
-              colnames(pa.tab) <- paste("PA", 1:nb.repet, sep="")
-              # select always the presences and the true absences
-              pa.tab[c(which(sp@data > 0), which(sp@data == 0)),] <- TRUE
-              # and a subset of candidates cells
-              cand.cells <- which(!mask.in$mask.in)
-              for(j in 1:ncol(pa.tab)){
-                ## force to get at least one value of each factorial variable
-                fact.level.cells <- bm_SampleFactorLevels(as.data.frame(env),
-                                                         mask.out = pa.tab[, j, drop = FALSE],
-                                                         mask.in = mask.in)
-                pa.tab[c(fact.level.cells,
-                         sample(x = setdiff(cand.cells, fact.level.cells),
-                                size = nb.points - length(fact.level.cells),
-                                replace = FALSE)), j] <- TRUE
-              }
-              return(list(xy = coordinates(sp),
-                          sp = as.vector(sp@data),
-                          env = as.data.frame(env@data),
-                          pa.tab = pa.tab))
+            #             if(.nb.available.pa.cells(mask) > 0 ){ # PA will be taken into response variable
+            nb.cells <- .nb.available.pa.cells(mask.in$mask.in, PA.flag = TRUE)
+            if(nb.cells <= nb.points){
+              nb.repet <- 1
+              nb.points <- nb.cells
+              cat("\n   > All available cells have been selected (", nb.points, "pseudo absences selected )")
+            }
+            pa.tab <- matrix(FALSE, ncol=nb.repet, nrow=nrow(sp))
+            colnames(pa.tab) <- paste("PA", 1:nb.repet, sep="")
+            # select always the presences and the true absences
+            pa.tab[c(which(sp@data > 0), which(sp@data == 0)),] <- TRUE
+            # and a subset of candidates cells
+            cand.cells <- which(!mask.in$mask.in)
+            for(j in 1:ncol(pa.tab)){
+              ## force to get at least one value of each factorial variable
+              fact.level.cells <- bm_SampleFactorLevels(as.data.frame(env),
+                                                        mask.out = pa.tab[, j, drop = FALSE],
+                                                        mask.in = mask.in)
+              pa.tab[c(fact.level.cells,
+                       sample(x = setdiff(cand.cells, fact.level.cells),
+                              size = nb.points - length(fact.level.cells),
+                              replace = FALSE)), j] <- TRUE
+            }
+            return(list(xy = coordinates(sp),
+                        sp = as.vector(sp@data),
+                        env = as.data.frame(env@data),
+                        pa.tab = pa.tab))
 
-#             }
+            #             }
           })
 
 
@@ -441,10 +441,10 @@ setMethod('sre.pseudo.abs.selection', signature(env="RasterStack"),
                                 coordinates(sp)[!is.element(as.vector(sp@data) >= 0, NA), ])]
 
 
-#             # removing cells in envelops, presences and absences
-#             mask[mask == 1] <- NA
-#             mask[cellFromXY(mask, coordinates(sp)[which(as.vector(sp@data) ==1 ), ])] <- NA
-#             mask[cellFromXY(mask, coordinates(sp)[which(as.vector(sp@data) == 0), ])] <- NA
+            #             # removing cells in envelops, presences and absences
+            #             mask[mask == 1] <- NA
+            #             mask[cellFromXY(mask, coordinates(sp)[which(as.vector(sp@data) ==1 ), ])] <- NA
+            #             mask[cellFromXY(mask, coordinates(sp)[which(as.vector(sp@data) == 0), ])] <- NA
 
 
             # checking of nb candidates
@@ -464,8 +464,8 @@ setMethod('sre.pseudo.abs.selection', signature(env="RasterStack"),
               mask.in.tmp <- mask.in
               ## force to get at least one value of each factorial variable
               fact.level.cells <- bm_SampleFactorLevels(env,
-                                                       mask.out  = mask.out,
-                                                       mask.in = mask.in)
+                                                        mask.out  = mask.out,
+                                                        mask.in = mask.in)
               if(length(fact.level.cells)){
                 SR <- c(SR, fact.level.cells)
                 ## update the mask by removing already selected cells
@@ -504,7 +504,7 @@ setMethod('sre.pseudo.abs.selection', signature(env="RasterStack"),
             env <- extract(env, xy)
 
             pa.tab <- rbind(matrix(TRUE,nrow=(nrow(xy)-length(selected.cells)), ncol=ncol(pa.tab)),
-                           pa.tab)
+                            pa.tab)
 
             return(list(xy = xy,
                         sp = sp,
@@ -516,9 +516,9 @@ setMethod('sre.pseudo.abs.selection', signature(env="RasterStack"),
 # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-= #
 
 setGeneric( "disk.pseudo.abs.selection",
-              def = function(sp,env, ...){
-                      standardGeneric( "disk.pseudo.abs.selection" )
-                      } )
+            def = function(sp,env, ...){
+              standardGeneric( "disk.pseudo.abs.selection" )
+            } )
 
 setMethod('disk.pseudo.abs.selection', signature(env="SpatialPointsDataFrame"),
           function(sp, env, distMin, distMax, nb.points, nb.repet){
@@ -564,7 +564,7 @@ setMethod('disk.pseudo.abs.selection', signature(env="RasterStack"),
             # 1. Check if NA are present in sp or not to determine which dataset to use
             if(.nb.available.pa.cells(sp) > 0 ){ # PA will be taken into response variable
               env.tmp <- SpatialPointsDataFrame(coords = coordinates(sp),
-#                                                 data = as.data.frame(extract(env,coordinates(sp),method='bilinear'))
+                                                #                                                 data = as.data.frame(extract(env,coordinates(sp),method='bilinear'))
                                                 data = as.data.frame(extract(env,coordinates(sp))))
 
               return(disk.pseudo.abs.selection(sp, env.tmp, distMin, distMax, nb.points, nb.repet))

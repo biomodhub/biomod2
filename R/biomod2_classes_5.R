@@ -39,21 +39,21 @@ setMethod('predict', signature(object = 'EMmean_biomod2_model'),
   if (is.null(formal_predictions)) {
     formal_predictions = .template_predictEM.formal_predictions(object, newdata, formal_predictions...)
   }
-  
+
   args <- list(...)
   filename <- args$filename
   on_0_1000 <- args$on_0_1000
-  
+
   if (is.null(filename)) { filename <- "" }
   if (is.null(on_0_1000)) { on_0_1000 <- FALSE }
-  
+
   out <- calc(formal_predictions, function(x)
   {
     m <- mean(x)
     if (on_0_1000) { m <- round(m) }
     return(m)
   }, filename = filename, overwrite = TRUE)
-  
+
   return(out)
 }
 
@@ -107,21 +107,21 @@ setMethod('predict', signature(object = 'EMmedian_biomod2_model'),
   if (is.null(formal_predictions)) {
     formal_predictions = .template_predictEM.formal_predictions(object, newdata, formal_predictions...)
   }
-  
+
   args <- list(...)
   filename <- args$filename
   on_0_1000 <- args$on_0_1000
-  
+
   if (is.null(filename)) { filename <- "" }
   if (is.null(on_0_1000)) { on_0_1000 <- FALSE }
-  
+
   out <- calc(formal_predictions, function(x)
   {
     m <- median(x)
     if (on_0_1000) { m <- round(m) }
     return(m)
   }, filename = filename, overwrite = TRUE)
-  
+
   return(out)
 }
 
@@ -130,11 +130,11 @@ setMethod('predict', signature(object = 'EMmedian_biomod2_model'),
   if (is.null(formal_predictions)) {
     formal_predictions = .template_predictEM.formal_predictions(object, newdata, formal_predictions...)
   }
-  
+
   args <- list(...)
   on_0_1000 <- args$on_0_1000
   if (is.null(on_0_1000)) { on_0_1000 <- FALSE }
-  
+
   out <- apply(formal_predictions, 1, median, na.rm = T)
   if (on_0_1000) { out <- round(out) }
   return(out)
@@ -162,11 +162,11 @@ setMethod('predict', signature(object = 'EMcv_biomod2_model'),
   if (is.null(formal_predictions)) {
     formal_predictions = .template_predictEM.formal_predictions(object, newdata, formal_predictions...)
   }
-  
+
   args <- list(...)
   filename <- args$filename
   if (is.null(filename)) { filename <- "" }
-  
+
   if (nlayers(formal_predictions) > 1) {
     out <- calc(formal_predictions, cv, filename = filename, overwrite = TRUE, na.rm = TRUE, aszero = TRUE)
     return(out)
@@ -182,7 +182,7 @@ setMethod('predict', signature(object = 'EMcv_biomod2_model'),
   if (is.null(formal_predictions)) {
     formal_predictions = .template_predictEM.formal_predictions(object, newdata, formal_predictions...)
   }
-  
+
   if (ncol(formal_predictions) > 1) {
     out <- apply(formal_predictions, 1, cv, na.rm = T, aszero = T)
     return(out)
@@ -226,18 +226,18 @@ setMethod('predict', signature(object = 'EMci_biomod2_model'),
   sd_prediction <- args$sd_prediction # mean of predictions should be given for time saving
   if (is.null(mean_prediction)) { mean_prediction <- calc(formal_predictions, mean) }
   if (is.null(sd_prediction)) { sd_prediction <- calc(formal_predictions, sd) }
-  
+
   ci_prediction <- switch(object@side,
-                          inferior = mean_prediction -  (sd_prediction * (qt((1 - object@alpha / 2), df = length(object@model) + 1 ) / sqrt(length(object@model))) ),
-                          superior = mean_prediction +  (sd_prediction * (qt((1 - object@alpha / 2), df = length(object@model) + 1 ) / sqrt(length(object@model))) ))
-  
+                          inferior = mean_prediction - (sd_prediction * (qt((1 - object@alpha / 2), df = length(object@model) + 1 ) / sqrt(length(object@model))) ),
+                          superior = mean_prediction + (sd_prediction * (qt((1 - object@alpha / 2), df = length(object@model) + 1 ) / sqrt(length(object@model))) ))
+
   # reclassify prediction to prevent from out of bounds prediction
   if (on_0_1000) {
     ci_prediction <- reclassify(round(ci_prediction), c(-Inf, 0, 0, 1000, Inf, 1000))
   } else {
     ci_prediction <- reclassify(ci_prediction, c(-Inf, 0, 0, 1, Inf, 1))
   }
-  
+
   return(ci_prediction)
 }
 
@@ -246,7 +246,7 @@ setMethod('predict', signature(object = 'EMci_biomod2_model'),
   if (is.null(formal_predictions)) {
     formal_predictions = .template_predictEM.formal_predictions(object, newdata, formal_predictions...)
   }
-  
+
   args <- list(...)
   on_0_1000 <- args$on_0_1000
   if (is.null(on_0_1000)) { on_0_1000 <- FALSE }
@@ -254,11 +254,11 @@ setMethod('predict', signature(object = 'EMci_biomod2_model'),
   sd_prediction <- args$sd_prediction # mean of predictions should be given for time saving
   if (is.null(mean_prediction)) { mean_prediction <- round(rowMeans(formal_predictions, na.rm = T)) }
   if (is.null(sd_prediction)) { sd_prediction <- apply(formal_predictions, 1, sd, na.rm =  T) }
-  
+
   ci_prediction <- switch(object@side,
-                          inferior = mean_prediction -  (sd_prediction * (qt((1-object@alpha/2), df = length(object@model) + 1 ) / sqrt(length(object@model))) ),
-                          superior = mean_prediction +  (sd_prediction * (qt((1-object@alpha/2), df = length(object@model) + 1 ) / sqrt(length(object@model))) ))
-  
+                          inferior = mean_prediction - (sd_prediction * (qt((1-object@alpha/2), df = length(object@model) + 1 ) / sqrt(length(object@model))) ),
+                          superior = mean_prediction + (sd_prediction * (qt((1-object@alpha/2), df = length(object@model) + 1 ) / sqrt(length(object@model))) ))
+
   # reclassify prediction to prevent from out of bounds prediction
   if (on_0_1000) {
     ci_prediction <- round(ci_prediction)
@@ -268,7 +268,7 @@ setMethod('predict', signature(object = 'EMci_biomod2_model'),
     ci_prediction[ci_prediction > 1] <- 1
     ci_prediction[ci_prediction < 0] <- 0
   }
-  
+
   return(ci_prediction)
 }
 
@@ -294,23 +294,23 @@ setMethod('predict', signature(object = 'EMca_biomod2_model'),
   if (is.null(formal_predictions)) {
     formal_predictions = .template_predictEM.formal_predictions(object, newdata, formal_predictions...)
   }
-  
+
   args <- list(...)
   filename <- args$filename
   on_0_1000 <- args$on_0_1000
-  
+
   if (is.null(filename)) { filename <- "" }
   if (is.null(on_0_1000)) { on_0_1000 <- FALSE }
-  
+
   if (on_0_1000) { thresh <- object@tresholds } else { thresh <- object@tresholds / 1000 }
-  
+
   out <- calc(BinaryTransformation(formal_predictions, thresh), function(x)
   {
     m <- mean(x)
     if (on_0_1000) { m <- round(m * 1000) }
     return(m)
   }, filename = filename, overwrite = TRUE)
-  
+
   return(out)
 }
 
@@ -320,13 +320,13 @@ setMethod('predict', signature(object = 'EMca_biomod2_model'),
   if (is.null(formal_predictions)) {
     formal_predictions = .template_predictEM.formal_predictions(object, newdata, formal_predictions...)
   }
-  
+
   args <- list(...)
   on_0_1000 <- args$on_0_1000
   if (is.null(on_0_1000)) { on_0_1000 <- FALSE }
-  
+
   if (on_0_1000) { thresh <- object@tresholds } else { thresh <- object@tresholds / 1000 }
-  
+
   out <- apply(as.data.frame(BinaryTransformation(formal_predictions, thresh)), 1, mean, na.rm = T)
   if (on_0_1000) { out <- round(out * 1000) }
   return(out)
@@ -354,21 +354,21 @@ setMethod('predict', signature(object = 'EMwmean_biomod2_model'),
   if (is.null(formal_predictions)) {
     formal_predictions = .template_predictEM.formal_predictions(object, newdata, formal_predictions...)
   }
-  
+
   args <- list(...)
   filename <- args$filename
   on_0_1000 <- args$on_0_1000
-  
+
   if (is.null(filename)) { filename <- "" }
   if (is.null(on_0_1000)) { on_0_1000 <- FALSE }
-  
+
   out <- calc(formal_predictions, function(x)
   {
     wm <- sum(x * object@penalization_scores)
     if (on_0_1000) { wm <- round(wm) }
     return(wm)
   }, filename = filename, overwrite = TRUE)
-  
+
   return(out)
 }
 
@@ -377,11 +377,11 @@ setMethod('predict', signature(object = 'EMwmean_biomod2_model'),
   if (is.null(formal_predictions)) {
     formal_predictions = .template_predictEM.formal_predictions(object, newdata, formal_predictions...)
   }
-  
+
   args <- list(...)
   on_0_1000 <- args$on_0_1000
   if (is.null(on_0_1000)) { on_0_1000 <- FALSE }
-  
+
   out <- as.vector(as.matrix(formal_predictions) %*% object@penalization_scores)
   if (on_0_1000) { out <- round(out) }
   return(out)

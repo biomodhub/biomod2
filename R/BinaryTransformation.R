@@ -38,7 +38,7 @@
 ##' @docType methods
 ##' @rdname BinaryTransformation-methods
 setGeneric("BinaryTransformation",
-           function(data, threshold){
+           function(data, threshold) {
              standardGeneric("BinaryTransformation")
            })
 
@@ -48,12 +48,12 @@ setMethod('BinaryTransformation', signature(data='data.frame'),
   function(data, threshold)
   {
     # cat("\n*** in setMethod('BinaryTransformation', signature(data='data.frame')")
-  	FUN2 <- function(x,y){
+  	FUN2 <- function(x,y) {
   		moa <- apply((x>y),2,as.integer)
-  		if(ncol(moa)==1) return(moa[,1])
+  		if (ncol(moa)==1) return(moa[,1])
   		else return(moa)
   	}
-    if(is.numeric(threshold)){
+    if (is.numeric(threshold)) {
       return(sweep(data.matrix(data), 2, threshold, FUN2))
     } else { ## return NAs
       return( matrix(NA, ncol=ncol(data), nrow=nrow(data), dimnames=dimnames(data)) )
@@ -87,19 +87,19 @@ setMethod('BinaryTransformation', signature(data='array'),
           function(data, threshold)
           {
             # cat("\n*** in setMethod('BinaryTransformation', signature(data='array')")
-            if(length(dim(data)) == length(dim(threshold))){
-              if(sum( dim(data)[-1] != dim(threshold)[-1] ) > 0 ){
+            if (length(dim(data)) == length(dim(threshold))) {
+              if (sum( dim(data)[-1] != dim(threshold)[-1] ) > 0 ) {
                 stop("data and threshold dimensions mismatch")
               }
             } else{
-              if(sum( dim(data)[-1] != dim(threshold) ) > 0 ){
+              if (sum( dim(data)[-1] != dim(threshold) ) > 0 ) {
                 stop("data and threshold dimensions mismatch")
               }
             }
 
             return(sweep(data,2:length(dim(data)),threshold,
                          function(x,y) {
-                           if(!any(is.na(x))){
+                           if (!any(is.na(x))) {
                              return(x>y)
                             } else {
                              return(rep(NA,length(x)) )}
@@ -112,7 +112,7 @@ setMethod('BinaryTransformation', signature(data='RasterLayer'),
   function(data, threshold)
   {
     # cat("\n*** in setMethod('BinaryTransformation', signature(data='RasterLayer')")
-    if(!is.na(threshold)){
+    if (!is.na(threshold)) {
       return(reclassify(data,c(-Inf,threshold,0, threshold,+Inf,1)))
     } else{ ## return a empty map (NA everywhere)
       return(reclassify(data,c(-Inf,Inf,NA)))
@@ -125,13 +125,13 @@ setMethod('BinaryTransformation', signature(data='RasterLayer'),
 setMethod('BinaryTransformation', signature(data='RasterStack'),
   function(data, threshold)
   {
-    if(length(threshold) == 1){
+    if (length(threshold) == 1) {
       threshold <- rep(threshold, raster::nlayers(data))
     }
-    return(calc(data, function(x){x >= threshold}))
+    return(calc(data, function(x) {x >= threshold}))
 #     ## old version
 #     StkTmp <- raster::stack()
-#     for(i in 1:raster::nlayers(data)){
+#     for (i in 1:raster::nlayers(data)) {
 #       StkTmp <- raster::addLayer(StkTmp, BinaryTransformation(raster::subset(data,i,drop=TRUE), threshold[i]))
 #     }
 #     names(StkTmp) <- names(data)
