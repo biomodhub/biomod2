@@ -103,6 +103,10 @@ bm.proj <-
     build.clamping.mask = FALSE
   )
 
+if (!binaryResp) {
+  models.eval.meth <- "R2"
+}
+
 eval.metric.quality.threshold <- 0.3
 
 bm.ensemb <- BIOMOD_EnsembleModeling(bm.mod, em.by = "all",
