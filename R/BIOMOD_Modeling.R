@@ -930,7 +930,7 @@ BIOMOD_Modeling <- function(
       dimnames.out = list(NULL, kept.mod, run.eval.names, dataset.names)
       if (out == "var.import") {
         dimnames.out = list(names(modOut[[1]][[1]][[1]][['var.import']]), # to change
-                            , kept.mod, run.eval.names, dataset.names)
+                            kept.mod, run.eval.names, dataset.names)
       }
       dim.out = c(nb.tmp,
                   length(kept.mod),
