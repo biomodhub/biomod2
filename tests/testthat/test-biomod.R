@@ -59,7 +59,7 @@ bm.formdat <-
 # 3. Doing Modelisation
 if (binaryResp) {
   bm.opt <- BIOMOD_ModelingOptions()
-  models <- c('SRE','RF', 'MAXENT.Phillips.2')
+  models <- c('SRE','RF', "CTA", 'MAXENT.Phillips.2')
   models.eval.meth <- c('TSS','ROC')
 } else {
   models.eval.meth <- c("R2", "RMSE")
