@@ -14,6 +14,9 @@
 \item{dim.names}{character, if not `NULL` the resshaped object will be stored on the hard drive}
 }
 \value{
+extracted statistics of interest from the model object
+  as `array`.
+
 list, the extracted statistics
 }
 \description{
