@@ -120,8 +120,6 @@ myBiomodEM <- BIOMOD_EnsembleModeling(modeling.output = myBiomodModelOut,
                                       prob.mean.weight.decay = 'proportional')
 
 
-requireNamespace(PresenceAbsence, 'PresenceAbsence', quietly = TRUE)
-
 # evaluate Biomod models with the Boyce index and MPA
 pres.only.eval <- BIOMOD_PresenceOnly(myBiomodModelOut, myBiomodEM)
 pres.only.eval$eval
