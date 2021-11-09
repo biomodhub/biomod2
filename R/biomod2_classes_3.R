@@ -130,6 +130,7 @@ setMethod("get_formal_data", "BIOMOD.models.out",
                 return(data)
               } else { return(NA) }
             } else if (subinfo == 'MinMax') {
+              env <- get_formal_data(obj)@data.env.var
               MinMax = foreach::foreach(i = 1:ncol(env)) %do% {
                 x = env[, i]
                 if (is.numeric(x)) {
