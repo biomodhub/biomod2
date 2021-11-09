@@ -17,8 +17,8 @@ requireNamespacrasterVis", quietly=TRUE)
 
 
 ###################################################################################################
-## 0. Generic Functions definition 
-## Used for different classes 
+## 0. Generic Functions definition
+## Used for different classes
 ##    A = BIOMOD.models.out, B = BIOMOD.projection.out, C = BIOMOD.EnsembleModeling.out
 ###################################################################################################
 
@@ -165,10 +165,10 @@ setMethod("get_predictions", "BIOMOD.models.out",
               warning("calibration data returned because no evaluation data available")
               evaluation = FALSE
             }
-            
+
             # select calibration or eval data
             if (evaluation) { pred <- obj@models.prediction.eval } else { pred <- obj@models.prediction }
-            
+
             if (!as.data.frame) {
               if (pred@inMemory) {
                 return(pred@val)
@@ -183,7 +183,7 @@ setMethod("get_predictions", "BIOMOD.models.out",
               } else if (pred@link != '') {
                 mod.pred <- as.data.frame(get(load(pred@link)))
               } else { return(NULL) }
-              
+
               names(mod.pred) <- unlist(lapply(strsplit(names(mod.pred), ".", fixed = TRUE), function(x)
               {
                 x.rev <- rev(x) ## we reverse the order of the splitted vector to have algo at the end
@@ -207,17 +207,17 @@ setMethod("get_evaluations", "BIOMOD.models.out",
           function(obj, ...)
           {
             args <- list(...)
-            
+
             ## fill some additional parameters
             as.data.frame <- ifelse(!is.null(args$as.data.frame), args$as.data.frame, FALSE)
-            
+
             out <- NULL
             if (obj@models.evaluation@inMemory ) {
               out <- obj@models.evaluation@val
             } else if(obj@models.evaluation@link != '') {
               out <- get(load(obj@models.evaluation@link))
             }
-            
+
             ## transform into data.frame object if needed
             if(as.data.frame)
             {
@@ -236,11 +236,11 @@ setMethod("get_evaluations", "BIOMOD.models.out",
                   ind.em = intersect(ind.mrd, which(tmp$eval.metric == em))
                   out <- rbind(out, data.frame( Model.name = mod,
                                                 Eval.metric = em,
-                                                Testing.data = as.numeric( tmp[intersect(ind.em, which(tmp$test == "Testing.data")), "value", drop = T]), 
+                                                Testing.data = as.numeric( tmp[intersect(ind.em, which(tmp$test == "Testing.data")), "value", drop = T]),
                                                 Evaluating.data = ifelse("Evaluating.data" %in% tmp$test
-                                                                         , as.numeric(tmp[intersect(ind.em, which(tmp$test == "Evaluating.data")), "value", drop = T]), NA ), 
-                                                Cutoff = as.numeric(tmp[intersect(ind.em, which(tmp$test == "Cutoff")), "value", drop = T]), 
-                                                Sensitivity = as.numeric(tmp[intersect(ind.em, which(tmp$test == "Sensitivity")), "value", drop = T]), 
+                                                                         , as.numeric(tmp[intersect(ind.em, which(tmp$test == "Evaluating.data")), "value", drop = T]), NA ),
+                                                Cutoff = as.numeric(tmp[intersect(ind.em, which(tmp$test == "Cutoff")), "value", drop = T]),
+                                                Sensitivity = as.numeric(tmp[intersect(ind.em, which(tmp$test == "Sensitivity")), "value", drop = T]),
                                                 Specificity = as.numeric(tmp[intersect(ind.em, which(tmp$test == "Specificity")), "value", drop = T]))
                   )
                 } # end loop on eval metric
@@ -294,19 +294,19 @@ setMethod('plot', signature(x = 'BIOMOD.projection.out', y = "missing"),
           function(x, col = NULL, str.grep = NULL)
           {
             models_selected <- x@models.projected
-            if (length(str.grep)) { 
+            if (length(str.grep)) {
               models_selected <- grep(paste(str.grep, collapse = "|"), models_selected, value = T)
             }
             if (!length(models_selected)) { stop("invalid str.grep arg") }
-            
+
             if(inherits(x@proj, "BIOMOD.stored.raster.stack")){
               requireNamespace("rasterVis")
-              
+
               my.at <- seq(0, 1000, by = 100) ## breaks of color key
               my.labs.at <- seq(0, 1000, by = 250) ## labels placed vertically centered
               my.lab <- seq(0, 1000, by = 250) ## labels
               my.col <- colorRampPalette(c("grey90", "yellow4", "green4"))(100) ## colors
-              
+
               ## try to use levelplot function
               try_plot <- try(levelplot(get_predictions(x, full.name = models_selected),
                                         at = my.at,
@@ -388,7 +388,7 @@ setMethod("get_predictions", "BIOMOD.projection.out",
               grep_full <- paste0(grep_data.set, "_", grep_run.eval, "_", grep_model, "$")
               models_selected <- grep(pattern = grep_full, models_selected, value = T)
             }
-            
+
             if (length(models_selected))
             {
               proj <- load_stored_object(obj@proj)
@@ -402,7 +402,7 @@ setMethod("get_predictions", "BIOMOD.projection.out",
               } else { ## matrix (e.g. from ensemble models projections)
                 proj <- proj[, models_selected, drop = FALSE]
               }
-              
+
               if(as.data.frame)
               {
                 proj <- as.data.frame(proj)
@@ -437,20 +437,20 @@ setMethod("get_predictions", "BIOMOD.projection.out",
 ##' @name BIOMOD.EnsembleModeling.out-class
 ##' @rdname BIOMOD.EnsembleModeling.out-objects
 ##' @docType class
-##' 
+##'
 ##' @aliases BIOMOD.EnsembleModeling.out-class
 ##' @aliases BIOMOD.EnsembleModeling.out
-##' 
+##'
 ##' @title BIOMOD_EnsembleModeling() outputs objects class
-##' 
+##'
 ##' @description
 ##' EnsembleModeling objects are created, used and returned by BIOMOD
 ##' functions. It's contains information relative to an \pkg{biomod2}
 ##' ensemble modeling procedure.
-##' 
+##'
 ##' - output of: \code{\link[biomod2]{BIOMOD_EnsembleModeling}}
 ##' - input of: \code{\link[biomod2]{BIOMOD_EnsembleForecasting}}
-##' 
+##'
 ##' @slot sp.name "character", species name
 ##' @slot expl.var.names "character", explanatory variables
 ##' names
@@ -459,7 +459,7 @@ setMethod("get_predictions", "BIOMOD.projection.out",
 ##' @slot eval.metric "character", evaluation metrics chose for
 ##' models selection
 ##' @slot eval.metric.quality.threshold "numeric", thresholds
-##' defined for models selection 
+##' defined for models selection
 ##' @slot em.computed "character", ensemble models built names
 ##' @slot em.by "character", way models are combined
 ##' @slot em.models "ANY", list of built biomod2.ensemble.models
@@ -468,19 +468,19 @@ setMethod("get_predictions", "BIOMOD.projection.out",
 ##' modelling process
 ##' @slot link "character", the path to corresponding hard drive
 ##' saved object
-##' 
-##' @seealso \code{\link[biomod2]{BIOMOD_Projection}}, 
-##' \code{\link[biomod2]{BIOMOD_Modeling}}, 
-##' \code{\link[biomod2]{BIOMOD_EnsembleModeling}}, 
+##'
+##' @seealso \code{\link[biomod2]{BIOMOD_Projection}},
+##' \code{\link[biomod2]{BIOMOD_Modeling}},
+##' \code{\link[biomod2]{BIOMOD_EnsembleModeling}},
 ##' \code{\link[biomod2]{BIOMOD_EnsembleForecasting}}
-##' 
+##'
 ##' @keywords models
 ##' @keywords ensemble
-##' @author Damien Georges 
-##' 
+##' @author Damien Georges
+##'
 ##' @examples
 ##' showClass("BIOMOD.EnsembleModeling.out")
-##' 
+##'
 setClass("BIOMOD.EnsembleModeling.out",
          representation(sp.name = 'character',
                         expl.var.names = 'character',
@@ -529,7 +529,7 @@ setMethod('show', signature('BIOMOD.EnsembleModeling.out'),
             cat("\nexpl.var.names :", object@expl.var.names, fill=.Options$width)
             cat("\n")
             cat("\nmodels computed:", toString(object@em.computed), fill=.Options$width)
-            
+
             .bmCat()
           })
 
@@ -576,7 +576,7 @@ setMethod("get_predictions", "BIOMOD.EnsembleModeling.out",
             ## note: ensemble models predicitons are stored within the directory
             ##  <sp.name>/.BIOMOD_DATA/<modelling.id>/ensemble.models/ensemble.models.projections/
             ##  This function is just a friendly way to load this data
-            
+
             ## get the path to projections files we want to load
             files.to.load <- file.path(obj@sp.name, ".BIOMOD_DATA", obj@modeling.id, "ensemble.models",
                                        "ensemble.models.predictions", paste0(obj@em.computed, ".predictions"))
@@ -592,17 +592,17 @@ setMethod("get_evaluations", "BIOMOD.EnsembleModeling.out",
           function(obj, ...)
           {
             args <- list(...)
-            
+
             ## fill some additional parameters
             as.data.frame <- ifelse(!is.null(args$as.data.frame), args$as.data.frame, FALSE)
-            
+
             ## extract evaluation scores as a list
             out <- list()
             models <- obj@em.computed ## list of computed models
             for (mod in models) {
               out[[mod]] <- obj@em.models[[mod]]@model_evaluation[, , drop = F]
             }
-            
+
             ## transform into data.frame object if needed
             if(as.data.frame)
             {
@@ -617,11 +617,11 @@ setMethod("get_evaluations", "BIOMOD.EnsembleModeling.out",
                   ind.em = which(tmp$model.name == mod & tmp$eval.metric == em)
                   out <- rbind(out, data.frame( Model.name = mod,
                                                 Eval.metric = em,
-                                                Testing.data = as.numeric(tmp[intersect(ind.em, which(tmp$test == "Testing.data")), "value", drop = T]), 
+                                                Testing.data = as.numeric(tmp[intersect(ind.em, which(tmp$test == "Testing.data")), "value", drop = T]),
                                                 Evaluating.data = ifelse("Evaluating.data" %in% tmp$test
-                                                                         , as.numeric(tmp[intersect(ind.em, which(tmp$test == "Evaluating.data")), "value", drop =  T]), NA ), 
-                                                Cutoff = as.numeric(tmp[intersect(ind.em, which(tmp$test == "Cutoff")), "value", drop = T]), 
-                                                Sensitivity = as.numeric(tmp[intersect(ind.em, which(tmp$test == "Sensitivity")), "value", drop = T]), 
+                                                                         , as.numeric(tmp[intersect(ind.em, which(tmp$test == "Evaluating.data")), "value", drop =  T]), NA ),
+                                                Cutoff = as.numeric(tmp[intersect(ind.em, which(tmp$test == "Cutoff")), "value", drop = T]),
+                                                Sensitivity = as.numeric(tmp[intersect(ind.em, which(tmp$test == "Sensitivity")), "value", drop = T]),
                                                 Specificity = as.numeric(tmp[intersect(ind.em, which(tmp$test == "Specificity")), "value", drop = T]))
                   )
                 } # end loop on eval metric

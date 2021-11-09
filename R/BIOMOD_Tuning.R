@@ -701,8 +701,6 @@ tuning.maxent <- function(pres,
 }
 
 #' @rdname BIOMOD_Tuning
-#' @export
 #' @aliases BIOMOD_Tuning
-
-## necessary for backwards compatibility with ecospat (it looks for `BIOMOD_tuning`)
-BIOMOD_tuning <- BIOMOD_Tuning
+#' @export
+BIOMOD_tuning <- BIOMOD_Tuning ## necessary for backwards compatibility with ecospat (it looks for `BIOMOD_tuning`)
