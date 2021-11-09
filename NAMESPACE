@@ -6,7 +6,7 @@
 #import("graphics")
 #import("stats")
 import("lattice")
-import("methods") 
+import("methods")
 #import("raster")
 importFrom(raster, raster, stack, subset, nlayers, addLayer, reclassify, distance, mask, levels)
 importFrom(raster, canProcessInMemory, rasterOptions, head, sampleRandom, ncell, extract, writeRaster)
@@ -67,7 +67,7 @@ importFrom("graphics", "abline", "axis", "layout", "legend", "par",
            "plot.new", "points", "polygon", "rug")
 importFrom("stats", "as.formula", "binomial", "cor", "formula", "glm",
            "median", "na.omit", "qt", "sd", "terms")
-importFrom("utils", "combn", "read.csv", "str", "write.table", "setTxtProgressBar", "txtProgressBar") 
+importFrom("utils", "combn", "read.csv", "str", "write.table", "setTxtProgressBar", "txtProgressBar")
 
 ####################################
 ##       biomod2 exports	  	  ##
@@ -87,16 +87,15 @@ exportClasses(
 	BIOMOD.Model.Options,
 	BIOMOD.models.out,
 	BIOMOD.projection.out
-
 )
 
 #exportClasses(
-#	BIOMOD.stored.array, 
+#	BIOMOD.stored.array,
 #	BIOMOD.stored.data,
 #	BIOMOD.stored.data.frame,
 #	BIOMOD.stored.files,
 #	BIOMOD.stored.formated.data,
-#	BIOMOD.stored.models.options, 
+#	BIOMOD.stored.models.options,
 #	BIOMOD.stored.models.out,
 #	BIOMOD.stored.raster.stack
 #)
@@ -154,7 +153,7 @@ exportMethods(
 	get_evaluations,
 	get_calib_lines,
 	get_formal_data,
-	get_formal_model, 
+	get_formal_model,
 	get_kept_models,
 	get_needed_models,
 	get_options,
@@ -169,7 +168,7 @@ export(
 	get_evaluations,
 	get_calib_lines,
 	get_formal_data,
-	get_formal_model, 
+	get_formal_model,
 	get_kept_models,
 	get_needed_models,
 	get_options,
@@ -185,7 +184,7 @@ export(
 	BIOMOD_FormatingData,
 	BIOMOD_LoadModels,
 	BIOMOD_Modeling,
-	BIOMOD_ModelingOptions, 
+	BIOMOD_ModelingOptions,
 	BIOMOD_Projection,
 	bm_CalculateStat,
 	DF_to_ARRAY,
@@ -205,6 +204,7 @@ export(
 	BIOMOD_CrossValidation,
 	BIOMOD_PresenceOnly,
 	BIOMOD_Tuning,
+	BIOMOD_tuning,
   bm_SampleFactorLevels,
 	.transform.outputs.list,
 	zzz_bm
@@ -236,7 +236,7 @@ export(
 export(
 	check_data_range,
 	CustomIndexMaker,
-	get_var_range, 
+	get_var_range,
 	get_var_type,
 	response.plot,
 	bm_SampleBinaryVector
