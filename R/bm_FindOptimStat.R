@@ -240,9 +240,48 @@ get_optim_value <- function(stat)
   return(Misc)
 }
 
+
+#' @name bm_CalculateStat
+#' @alias bm_CalculateStat
+#'
+#' @title Calculate evaluation metrics based on a misclassification table - only for binary predictions
+#'
+#' @description \code{bm_CalculateStat} is used internally in \pkg{biomod2} to get scores, based on a misclassification table
+#' of some referenced evaluation metrics.
+#'
+#' @usage bm_CalculateStat(Misc, stat='TSS')
+#'
+#' @param Misc a misclassification table
+#' @param stat either 'TSS', 'KAPPA', 'ACCURACY', 'BIAS', 'POD', 'FAR', 'POFD', 'SR', 'CSI', 'ETS', 'HK', 'HSS', 'OR' or 'ORSS'
+#'
+#' @details Please refer to \code{\link[biomod2]{BIOMOD_Modeling}} to get more information about these metrics.
+#'
+#' @return The \code{stat} score for the \code{Misc} table.
+#'
+#' @author Damien Georges
+#'
+#' @seealso \code{\link[biomod2]{BIOMOD_Modeling}}, \code{\link[biomod2]{getStatOptimValue}}, \code{\link[biomod2]{bm_FindOptimStat}}
+#'
+#' @examples
+#'   a <- sample(c(0,1),100, replace=TRUE)
+#'   b <- sample(c(0,1),100, replace=TRUE)
+#'
+#'   miscTab_aa <- table(a,a)
+#'   miscTab_ab <- table(a,b)
+#'
+#'   # perfect score
+#'   bm_CalculateStat(miscTab_aa, stat='TSS')
+#'   # random score
+#'   bm_CalculateStat(miscTab_ab, stat='TSS')
+#'
+#' @keyword models
+#' @keyword formula
+#' @keyword options
+
+
 bm_CalculateStat <- function(Misc, stat = 'TSS')
 {
-  ## check contagency table
+  ## check contingency table
   Misc <- .contingency_table_check(Misc)
 
   ## calculate basic classification information -------------------------------
