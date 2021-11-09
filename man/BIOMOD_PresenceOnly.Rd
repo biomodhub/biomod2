@@ -125,7 +125,7 @@ pres.only.eval <- BIOMOD_PresenceOnly(myBiomodModelOut, myBiomodEM)
 pres.only.eval$eval
 
 # evaluate Biomod models with the Boyce index and MPA using Background data
-bg.Values <- getValues(myExpl)
+bg.Values <- raster::getValues(myExpl)
 pres.only.eval <- BIOMOD_PresenceOnly(myBiomodModelOut, myBiomodEM, bg.env = bg.Values)
 pres.only.eval$eval
 

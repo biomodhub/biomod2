@@ -54,7 +54,7 @@ myExpl <- matrix(runif(60),
                  dimnames = list(NULL, c('var1', 'var2', 'var3')))
 
 ## Create a formula
-myFormula <- m_MakeFormula(respName = 'myResp',
+myFormula <- bm_MakeFormula(respName = 'myResp',
                            explVar = head(myExpl),
                            type = 'quadratic',
                            interaction.level = 0)
