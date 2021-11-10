@@ -21,7 +21,7 @@
 ##' each variable
 ##' 
 ##' 
-##' @value 
+##' @return  
 ##' 
 ##' A \code{BIOMOD.variables.importance} object containing :
 ##' \describe{

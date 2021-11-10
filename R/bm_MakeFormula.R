@@ -20,7 +20,7 @@
 ##' @param \ldots some additional arguments (see Details)
 ##' 
 ##' 
-##' @value 
+##' @return  
 ##' 
 ##' A \code{link[stats]{formula}} class object that can be directly given to most of \R 
 ##' statistical models.

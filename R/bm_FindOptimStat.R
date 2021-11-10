@@ -24,7 +24,7 @@
 ##' An \code{integer} corresponding to the only threshold value to be tested
 ##'
 ##'
-##' @value
+##' @return 
 ##' 
 ##' A 1 row x 4 columns \code{matrix} containing :
 ##' \itemize{
@@ -34,6 +34,7 @@
 ##'   \item{\code{sensibility}}{ : the sensibility obtained on fitted values with this threshold}
 ##'   \item{\code{specificity}}{ : the specificity obtained on fitted values with this threshold}
 ##' }
+##' 
 ##'
 ##' @details
 ##' 

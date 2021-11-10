@@ -17,7 +17,7 @@
 ##' \code{ref} elements to keep
 ##' 
 ##' 
-##' @value
+##' @return 
 ##'  
 ##' A \code{list} containing to elements is returned :
 ##' \describe{

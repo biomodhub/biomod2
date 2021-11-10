@@ -78,7 +78,7 @@
 ##' @param Yweights a \code{vector} of response points weights for models allowing case weights
 ##' 
 ##' 
-##' @value
+##' @return 
 ##' 
 ##' A \code{BIOMOD.models.options} object (see \code{\link{BIOMOD_ModelingOptions}}) with 
 ##' optimized parameters
@@ -622,14 +622,14 @@ BIOMOD_Tuning <- function(data,
     cat(paste("\n-=-=-=-=-=-=-=-=-=-=\n", "Start tuning MAXENT.Phillips\n"))
     if (cvmethod.ME != 'randomkfold') { kfolds.ME <- NA }
     
-    try(tune.MAXENT.Phillips <- tuning.maxent(pres = data@data.env.var[data@data.species == 1 & !is.na(data@data.species), ],
-                                              bg = data@data.env.var[data@data.species == 0 | is.na(data@data.species), ],
-                                              method = cvmethod.ME, 
-                                              kfolds = kfolds.ME, #env.ME,
-                                              clamp = clamp.ME, 
-                                              parallel = parallel.ME, 
-                                              numCores = numCores.ME,
-                                              categoricals = NULL))
+    try(tune.MAXENT.Phillips <- .tuning.maxent(pres = data@data.env.var[data@data.species == 1 & !is.na(data@data.species), ],
+                                               bg = data@data.env.var[data@data.species == 0 | is.na(data@data.species), ],
+                                               method = cvmethod.ME, 
+                                               kfolds = kfolds.ME, #env.ME,
+                                               clamp = clamp.ME, 
+                                               parallel = parallel.ME, 
+                                               numCores = numCores.ME,
+                                               categoricals = NULL))
     
     if (!is.null(tune.MAXENT.Phillips)) {
       if (!metric.ME %in% c("auc.val.avg", "auc.diff.avg", "or.mtp.avg", "or.10p.avg", "AICc")) {
@@ -680,7 +680,7 @@ BIOMOD_Tuning <- function(data,
 ###################################################################################################
 #### Modified tuning function from the ENMeval package to tune MAXENT.Phillips (internal function for BIOMOD_tuning)
 
-tuning.maxent <- function(pres,
+.tuning.maxent <- function(pres,
                           bg,
                           method,
                           kfolds,

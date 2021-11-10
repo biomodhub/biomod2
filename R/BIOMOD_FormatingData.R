@@ -10,6 +10,7 @@
 ##' models. It allows to select pseudo-absences if no absence data is available, with different 
 ##' strategies (see Details).
 ##' 
+##' 
 ##' @param resp.name (\emph{optional, default} \code{NULL}) \cr 
 ##' A \code{character} containing the species name.
 ##' 
@@ -72,7 +73,7 @@
 ##' explanatory variables should be removed from the analysis or not
 ##' 
 ##' 
-##' @value 
+##' @return 
 ##' 
 ##' A \code{BIOMOD.formated.data} object that can be used to build species distribution model(s) 
 ##' with the \code{\link[biomod2]{BIOMOD_Modeling}} function. \code{print} and \code{plot} 

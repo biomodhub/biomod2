@@ -21,7 +21,7 @@
 ##' remain unsampled, they will be sampled in the reference input object \code{x}.}
 ##' 
 ##' 
-##' @value 
+##' @return  
 ##' 
 ##' A \code{numeric vector} containing point IDs (either cell number for \code{raster*} objects, 
 ##' or row number for \code{data.frame}), each refering to a single level of a single factorial 

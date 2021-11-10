@@ -25,7 +25,7 @@
 ##' whole dataset
 ##' 
 ##' 
-##' @value
+##' @return 
 ##' 
 ##' A \code{DataSplitTable} {matrix} with \code{k * repetition} (\emph{+ 1 if 
 ##' \code{do.full.models = TRUE}) columns that can be given as parameter to the 

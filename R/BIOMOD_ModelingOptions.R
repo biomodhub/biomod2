@@ -30,7 +30,8 @@
 ##' @param RF a \code{list} containing RF options
 ##' @param MAXENT.Phillips a \code{list} containing MAXENT.Phillips options
 ##'
-##' @value 
+##'
+##' @return 
 ##' 
 ##' A \code{BIOMOD.Model.Options} object that can be used to build species distribution model(s) 
 ##' with the \code{\link[biomod2]{BIOMOD_Modeling}} function.
@@ -305,7 +306,7 @@
 ##' ## check changes were done
 ##' myBiomodOptions
 ##'
-##' ##' you can prefer to establish your own GLM formula
+##' ## you can prefer to establish your own GLM formula
 ##' myBiomodOptions <- BIOMOD_ModelingOptions(
 ##'   GLM = list(myFormula = formula("Sp277 ~ bio3 +
 ##'                 log(bio10) + poly(bio16,2) + bio19 + bio3:bio19")))
@@ -313,7 +314,7 @@
 ##' ## check changes were done
 ##' myBiomodOptions
 ##'
-##' ##' you also can directly print default parameters and then follow the same processus
+##' ## you also can directly print default parameters and then follow the same processus
 ##' bm_DefaultModelingOptions()
 ##'
 ##' ###############################################################################################
