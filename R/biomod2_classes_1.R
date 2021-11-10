@@ -1133,7 +1133,7 @@ setMethod('.Models.prepare.data', signature('BIOMOD.formated.data'),
           }
 )
 
-setMethod('.Models.prepare.data', signature(data='BIOMOD.formated.data.PA'),
+setMethod('.Models.prepare.data', signature('BIOMOD.formated.data.PA'),
           function(data, NbRunEval, DataSplit, Yweights = NULL, Prevalence = NULL
                    , do.full.models = TRUE, DataSplitTable = NULL)
           {

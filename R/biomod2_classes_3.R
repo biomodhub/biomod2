@@ -53,7 +53,7 @@ setClass("BIOMOD.models.out",
                         has.evaluation.data = 'logical',
                         rescal.all.models = 'logical',
                         models.evaluation = 'BIOMOD.stored.array',
-                        variables.importances = 'BIOMOD.stored.array',
+                        variables.importance = 'BIOMOD.stored.array',
                         models.prediction = 'BIOMOD.stored.array',
                         models.prediction.eval = 'BIOMOD.stored.array',
                         formated.input.data = 'BIOMOD.stored.formated.data',
@@ -68,7 +68,7 @@ setClass("BIOMOD.models.out",
                    has.evaluation.data = FALSE,
                    rescal.all.models = TRUE,
                    models.evaluation = new('BIOMOD.stored.array'),
-                   variables.importances = new('BIOMOD.stored.array'),
+                   variables.importance = new('BIOMOD.stored.array'),
                    models.prediction = new('BIOMOD.stored.array'),
                    models.prediction.eval = new('BIOMOD.stored.array'),
                    formated.input.data = new('BIOMOD.stored.formated.data'),
@@ -251,10 +251,10 @@ setMethod("get_evaluations", "BIOMOD.models.out",
 
 setMethod("get_variables_importance", "BIOMOD.models.out",
           function(obj, ...) {
-            if (obj@variables.importances@inMemory) {
-              return(obj@variables.importances@val)
-            } else if (obj@variables.importances@link != '') {
-              return(get(load(obj@variables.importances@link)))
+            if (obj@variables.importance@inMemory) {
+              return(obj@variables.importance@val)
+            } else if (obj@variables.importance@link != '') {
+              return(get(load(obj@variables.importance@link)))
             } else { return(NA) }
           }
 )

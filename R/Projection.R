@@ -131,7 +131,7 @@ setMethod( 'Projection', signature(new.env.data = 'RasterStack'),
            do.stack = FALSE){
 
     # 1. loading resuired libraries =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=- #
-    .Models.dependencies(silent=TRUE, models.options=models.options)
+    # .Models.dependencies(silent=TRUE, models.options=models.options)
 
     # 2. extract model info  =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-= #
 

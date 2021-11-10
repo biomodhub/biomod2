@@ -93,6 +93,15 @@
 ## TEST PARAMETERS (BIOMOD_ModelingOptions) -------------------------------------------------------
 ## used in biomod2_classes_1.R file
 
+.fun_testIfInherits <- function(test, objName, objValue, values)
+{
+  if (!inherits(objValue, values)) {
+    cat("\n", paste0(objName, " must be a '", paste0(values[1:(length(values) -1)], collapse = "', '"), "' or '", values[length(values)], "' object"))
+    test <- FALSE
+  }
+  return(test)
+}
+
 .fun_testIfIn <- function(test, objName, objValue, values)
 {
   if (!(objValue %in% values)) {

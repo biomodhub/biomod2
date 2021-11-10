@@ -23,7 +23,7 @@
 ##' 
 ##' @value 
 ##' 
-##' A \code{BIOMOD_variables_importances} object containing :
+##' A \code{BIOMOD.variables.importance} object containing :
 ##' \describe{
 ##'   \item{mat}{a \code{data.frame} containing variables importance scores for each 
 ##'   permutation run}
@@ -94,7 +94,7 @@ bm_VariablesImportance <- function(model,
     }
   }
   
-  class(out) <- "BIOMOD_variables_importances"
+  class(out) <- "BIOMOD.variables.importance"
   return(out)
 }
 
