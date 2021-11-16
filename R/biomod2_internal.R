@@ -433,13 +433,13 @@ check_data_range <- function(model, new_data)
   
   if (is.null(formal_predictions)) {
     # make prediction of all models required
-    formal_predictions <- raster::stack(lapply(object@model,
-                                               function(mod, resp_name, modeling.id)
-                                               {
-                                                 ## check if model is loaded on memory
-                                                 if (is.character(mod)) { mod <- get(load(file.path(resp_name, "models", modeling.id, mod))) }
-                                                 return(predict(mod, newdata = newdata, on_0_1000 = on_0_1000))
-                                               }, resp_name = object@resp_name, modeling.id = object@modeling.id))
+    formal_predictions <- sapply(object@model,
+                                 function(mod, resp_name, modeling.id)
+                                 {
+                                   ## check if model is loaded on memory
+                                   if (is.character(mod)) { mod <- get(load(file.path(resp_name, "models", modeling.id, mod))) }
+                                   return(predict(mod, newdata = newdata, on_0_1000 = on_0_1000))
+                                 }, resp_name = object@resp_name, modeling.id = object@modeling.id)
   }
   
   return(formal_predictions)
