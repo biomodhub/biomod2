@@ -37,7 +37,7 @@ setMethod('predict', signature(object = 'EMmean_biomod2_model'),
 .predict.EMmean_biomod2_model.RasterStack <- function(object, newdata = NULL, formal_predictions = NULL, ...)
 {
   if (is.null(formal_predictions)) {
-    formal_predictions = .template_predictEM.formal_predictions(object, newdata, formal_predictions...)
+    formal_predictions = .template_predictEM.formal_predictions(object, newdata, formal_predictions, ...)
   }
   
   args <- list(...)
@@ -105,7 +105,7 @@ setMethod('predict', signature(object = 'EMmedian_biomod2_model'),
 .predict.EMmedian_biomod2_model.RasterStack <- function(object, newdata = NULL, formal_predictions = NULL, ...)
 {
   if (is.null(formal_predictions)) {
-    formal_predictions = .template_predictEM.formal_predictions(object, newdata, formal_predictions...)
+    formal_predictions = .template_predictEM.formal_predictions(object, newdata, formal_predictions, ...)
   }
   
   args <- list(...)
@@ -128,7 +128,7 @@ setMethod('predict', signature(object = 'EMmedian_biomod2_model'),
 .predict.EMmedian_biomod2_model.data.frame <- function(object, newdata = NULL, formal_predictions = NULL, ...)
 {
   if (is.null(formal_predictions)) {
-    formal_predictions = .template_predictEM.formal_predictions(object, newdata, formal_predictions...)
+    formal_predictions = .template_predictEM.formal_predictions(object, newdata, formal_predictions, ...)
   }
   
   args <- list(...)
@@ -160,7 +160,7 @@ setMethod('predict', signature(object = 'EMcv_biomod2_model'),
 .predict.EMcv_biomod2_model.RasterStack <- function(object, newdata = NULL, formal_predictions = NULL, ...)
 {
   if (is.null(formal_predictions)) {
-    formal_predictions = .template_predictEM.formal_predictions(object, newdata, formal_predictions...)
+    formal_predictions = .template_predictEM.formal_predictions(object, newdata, formal_predictions, ...)
   }
   
   args <- list(...)
@@ -180,7 +180,7 @@ setMethod('predict', signature(object = 'EMcv_biomod2_model'),
 .predict.EMcv_biomod2_model.data.frame <- function(object, newdata = NULL, formal_predictions = NULL, ...)
 {
   if (is.null(formal_predictions)) {
-    formal_predictions = .template_predictEM.formal_predictions(object, newdata, formal_predictions...)
+    formal_predictions = .template_predictEM.formal_predictions(object, newdata, formal_predictions, ...)
   }
   
   if (ncol(formal_predictions) > 1) {
@@ -217,7 +217,7 @@ setMethod('predict', signature(object = 'EMci_biomod2_model'),
 .predict.EMci_biomod2_model.RasterStack <- function(object, newdata = NULL, formal_predictions = NULL, ...)
 {
   if (is.null(formal_predictions)) {
-    formal_predictions = .template_predictEM.formal_predictions(object, newdata, formal_predictions...)
+    formal_predictions = .template_predictEM.formal_predictions(object, newdata, formal_predictions, ...)
   }
   args <- list(...)
   on_0_1000 <- args$on_0_1000
@@ -244,7 +244,7 @@ setMethod('predict', signature(object = 'EMci_biomod2_model'),
 .predict.EMci_biomod2_model.data.frame <- function(object, newdata = NULL, formal_predictions = NULL, ...)
 {
   if (is.null(formal_predictions)) {
-    formal_predictions = .template_predictEM.formal_predictions(object, newdata, formal_predictions...)
+    formal_predictions = .template_predictEM.formal_predictions(object, newdata, formal_predictions, ...)
   }
   
   args <- list(...)
@@ -292,7 +292,7 @@ setMethod('predict', signature(object = 'EMca_biomod2_model'),
 .predict.EMca_biomod2_model.RasterStack <- function(object, newdata = NULL, formal_predictions = NULL, ...)
 {
   if (is.null(formal_predictions)) {
-    formal_predictions = .template_predictEM.formal_predictions(object, newdata, formal_predictions...)
+    formal_predictions = .template_predictEM.formal_predictions(object, newdata, formal_predictions, ...)
   }
   
   args <- list(...)
@@ -315,10 +315,10 @@ setMethod('predict', signature(object = 'EMca_biomod2_model'),
 }
 
 
-.predict.EMmca_biomod2_model.data.frame <- function(object, newdata = NULL, formal_predictions = NULL, ...)
+.predict.EMca_biomod2_model.data.frame <- function(object, newdata = NULL, formal_predictions = NULL, ...)
 {
   if (is.null(formal_predictions)) {
-    formal_predictions = .template_predictEM.formal_predictions(object, newdata, formal_predictions...)
+    formal_predictions = .template_predictEM.formal_predictions(object, newdata, formal_predictions, ...)
   }
   
   args <- list(...)
@@ -352,7 +352,7 @@ setMethod('predict', signature(object = 'EMwmean_biomod2_model'),
 .predict.EMwmean_biomod2_model.RasterStack <- function(object, newdata = NULL, formal_predictions = NULL, ...)
 {
   if (is.null(formal_predictions)) {
-    formal_predictions = .template_predictEM.formal_predictions(object, newdata, formal_predictions...)
+    formal_predictions = .template_predictEM.formal_predictions(object, newdata, formal_predictions, ...)
   }
   
   args <- list(...)
@@ -375,7 +375,7 @@ setMethod('predict', signature(object = 'EMwmean_biomod2_model'),
 .predict.EMwmean_biomod2_model.data.frame <- function(object, newdata = NULL, formal_predictions = NULL, ...)
 {
   if (is.null(formal_predictions)) {
-    formal_predictions = .template_predictEM.formal_predictions(object, newdata, formal_predictions...)
+    formal_predictions = .template_predictEM.formal_predictions(object, newdata, formal_predictions, ...)
   }
   
   args <- list(...)
