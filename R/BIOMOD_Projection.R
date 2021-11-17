@@ -245,14 +245,14 @@
         for(i in 1:length(proj_out@proj@link)){
           file.tmp <- proj_out@proj@link[i]
           thres.tmp <- asub(thresholds, eval.meth[drop=FALSE], 1, drop=FALSE)[,i]
-          writeRaster(x = BinaryTransformation(raster(file.tmp, RAT=FALSE),thres.tmp),
+          writeRaster(x = bm_BinaryTransformation(raster(file.tmp, RAT=FALSE),thres.tmp),
                       filename = sub(output.format, paste0("_",eval.meth,"bin", output.format), file.tmp),
                       overwrite=TRUE,
                       datatype = "INT2S",NAflag=-9999)
         }
       } else {
         nameBin <- paste0(nameProjSp, "_", eval.meth, "bin")
-        assign(x = nameBin, value = BinaryTransformation(proj,asub(thresholds, eval.meth[drop=FALSE], 1, drop=FALSE)))
+        assign(x = nameBin, value = bm_BinaryTransformation(proj,asub(thresholds, eval.meth[drop=FALSE], 1, drop=FALSE)))
         
         if(output.format == '.RData'){
           save(list = nameBin, file = file.path(namePath, paste0(nameBin, output.format)), compress=compress)
@@ -274,14 +274,14 @@
         for(i in 1:length(proj_out@proj@link)){
           file.tmp <- proj_out@proj@link[i]
           thres.tmp <- asub(thresholds, eval.meth[drop=FALSE], 1, drop=FALSE)[,i]
-          writeRaster(x = FilteringTransformation(raster(file.tmp, RAT=FALSE),thres.tmp),
+          writeRaster(x = bm_BinaryTransformation(raster(file.tmp, RAT=FALSE),thres.tmp, doFiltering = TRUE),
                       filename = sub(output.format, paste0("_",eval.meth,"filt", output.format), file.tmp),
                       overwrite=TRUE, datatype=ifelse(on_0_1000,"INT2S","FLT4S"), NAflag=-9999
           )
         }
       } else {
         nameFilt <- paste0(nameProjSp, "_", eval.meth, "filt")
-        assign(x = nameFilt, value = FilteringTransformation(proj,asub(thresholds, eval.meth[drop=FALSE], 1, drop=FALSE)))
+        assign(x = nameFilt, value = bm_BinaryTransformation(proj,asub(thresholds, eval.meth[drop=FALSE], 1, drop=FALSE), doFiltering = TRUE))
         
         if(output.format == '.RData'){
           save(list = nameFilt, file = file.path(namePath, paste0(nameFilt, output.format)), compress=compress)
@@ -502,8 +502,8 @@
     for (e.v in names(MinMax)) {
       if (!is.null(MinMax[[e.v]]$min)) { # numeric variable
         clamp.mask <- clamp.mask + 
-          BinaryTransformation(raster::subset(env, e.v, drop = TRUE), MinMax[[e.v]]$max) + ## pix with values outside of calib range
-          (ref.mask - BinaryTransformation(raster::subset(env, e.v, drop = TRUE), MinMax[[e.v]]$min)) ## pix with no values (within env[[1]] area)
+          bm_BinaryTransformation(raster::subset(env, e.v, drop = TRUE), MinMax[[e.v]]$max) + ## pix with values outside of calib range
+          (ref.mask - bm_BinaryTransformation(raster::subset(env, e.v, drop = TRUE), MinMax[[e.v]]$min)) ## pix with no values (within env[[1]] area)
       } else if (!is.null(MinMax[[e.v]]$levels)) { # factorial variable
         clamp.mask <- clamp.mask + 
           (raster::subset(env, e.v, drop = TRUE) %in% MinMax[[e.v]]$levels) ## pix with values outside of calib range
@@ -519,8 +519,8 @@
     for (e.v in names(MinMax)) {
       if (!is.null(MinMax[[e.v]]$min)) { # numeric variable
         clamp.mask <- clamp.mask + 
-          BinaryTransformation(env[, e.v], MinMax[[e.v]]$max) + ## pix with values outside of calib range
-          (1 - BinaryTransformation(env[, e.v], MinMax[[e.v]]$min)) ## pix with no values (within env[[1]] area)
+          bm_BinaryTransformation(env[, e.v], MinMax[[e.v]]$max) + ## pix with values outside of calib range
+          (1 - bm_BinaryTransformation(env[, e.v], MinMax[[e.v]]$min)) ## pix with no values (within env[[1]] area)
       } else if (!is.null(MinMax[[e.v]]$levels)) { # factorial variable
         clamp.mask <- clamp.mask + (env[, e.v] %in% MinMax[[e.v]]$levels)
       }

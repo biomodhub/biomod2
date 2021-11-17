@@ -233,14 +233,14 @@
         for(i in 1:length(proj_out@proj@link)){
           file.tmp <- proj_out@proj@link[i]
           thres.tmp <- thresholds[i]
-          proj_bin <- BinaryTransformation(raster(file.tmp, RAT=FALSE),thres.tmp)
+          proj_bin <- bm_BinaryTransformation(raster(file.tmp, RAT=FALSE),thres.tmp)
           writeRaster(x = proj_bin,
                       filename = sub(output.format, paste("_",eval.meth,"bin", output.format, sep=""), file.tmp), 
                       overwrite=TRUE ) ## , datatype = "INT2S",NAflag=-9999)
         }
       } else {
         assign(x = paste("proj_",proj.name, "_", EM.output@sp.name,"_ensemble_",eval.meth,"bin", sep=""),
-               value = BinaryTransformation(ef.out,thresholds))
+               value = bm_BinaryTransformation(ef.out,thresholds))
         
         if(output.format == '.RData'){
           save(list = paste("proj_",proj.name, "_", EM.output@sp.name,"_ensemble_",eval.meth,"bin", sep=""), 
@@ -264,14 +264,14 @@
           file.tmp <- proj_out@proj@link[i]
           thres.tmp <- thresholds[i]
           ## TODO : define the raster dataformat (depends if em.cv has been computed)
-          filt_proj <- FilteringTransformation(raster(file.tmp, RAT=FALSE),thres.tmp)
+          filt_proj <- bm_BinaryTransformation(raster(file.tmp, RAT=FALSE),thres.tmp, doFiltering = TRUE)
           writeRaster(x = filt_proj,
                       filename = sub(output.format, paste("_",eval.meth,"filt", output.format, sep=""), file.tmp), 
                       overwrite=TRUE)
         }
       } else {
         assign(x = paste("proj_",proj.name, "_", EM.output@sp.name,"_ensemble_",eval.meth,"filt", sep=""),
-               value = FilteringTransformation(ef.out,thresholds))
+               value = bm_BinaryTransformation(ef.out,thresholds, doFiltering = TRUE))
         
         if(output.format == '.RData'){
           save(list = paste("proj_",proj.name, "_", EM.output@sp.name,"_ensemble_",eval.meth,"filt", sep=""), 

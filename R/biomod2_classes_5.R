@@ -304,7 +304,7 @@ setMethod('predict', signature(object = 'EMca_biomod2_model'),
   
   if (on_0_1000) { thresh <- object@tresholds } else { thresh <- object@tresholds / 1000 }
   
-  out <- calc(BinaryTransformation(formal_predictions, thresh), function(x)
+  out <- calc(bm_BinaryTransformation(formal_predictions, thresh), function(x)
   {
     m <- mean(x)
     if (on_0_1000) { m <- round(m * 1000) }
@@ -327,7 +327,7 @@ setMethod('predict', signature(object = 'EMca_biomod2_model'),
   
   if (on_0_1000) { thresh <- object@tresholds } else { thresh <- object@tresholds / 1000 }
   
-  out <- rowMeans(as.data.frame(BinaryTransformation(formal_predictions, thresh)), na.rm = TRUE)
+  out <- rowMeans(as.data.frame(bm_BinaryTransformation(formal_predictions, thresh)), na.rm = TRUE)
   if (on_0_1000) { out <- round(out * 1000) }
   return(out)
 }

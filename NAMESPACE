@@ -128,9 +128,8 @@ exportClasses(
 
 ## user level
 exportMethods(
-	BinaryTransformation,
+	bm_BinaryTransformation,
 	BIOMOD_RangeSize,
-	FilteringTransformation,
 	free,
 	plot,
 	predict,
@@ -139,9 +138,8 @@ exportMethods(
 )
 
 export(
-	BinaryTransformation,
+	bm_BinaryTransformation,
 	BIOMOD_RangeSize,
-	FilteringTransformation,
 	free,
 	plot,
 	predict,
