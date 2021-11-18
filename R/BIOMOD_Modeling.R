@@ -291,8 +291,8 @@ BIOMOD_Modeling <- function(data,
   .Models.save.object <- function(objName, objValue)
   {
     save(objValue, file = file.path(name.BIOMOD_DATA, objName), compress = compress.arg)
-    eval(parse(text = paste0("models.out@", objName, "@inMemory <- FALSE")))
-    eval(parse(text = paste0("models.out@", objName, "@link <- file.path(name.BIOMOD_DATA, objName)")))
+    eval(parse(text = paste0("models.out@", objName, "@inMemory <<- FALSE")))
+    eval(parse(text = paste0("models.out@", objName, "@link <<- file.path(name.BIOMOD_DATA, objName)")))
   }
   
   ## 3.1 Save input data and models options -----------------------------------
@@ -343,6 +343,7 @@ BIOMOD_Modeling <- function(data,
   if (SaveObj) {
     models.evaluation <- .transform.outputs.list(modeling.out, out = 'evaluation')
     .Models.save.object("models.evaluation", models.evaluation)
+    
     models.out@models.evaluation@val <- models.evaluation
     rm(models.evaluation)
     
@@ -481,8 +482,10 @@ BIOMOD_Modeling <- function(data,
   models.eval.meth <- unique(models.eval.meth)
   avail.eval.meth.list <- c('TSS', 'KAPPA', 'ACCURACY', 'BIAS', 'POD', 'FAR', 'POFD'
                             , 'SR', 'CSI', 'ETS', 'HK', 'HSS', 'OR', 'ORSS')
-  .fun_testIfIn(TRUE, "models.eval.meth", models.eval.meth, avail.eval.meth.list)
-    
+  for (i.meth in models.eval.meth) {
+    .fun_testIfIn(TRUE, "models.eval.meth", i.meth, avail.eval.meth.list)
+  }
+  
   ## 7. Check Prevalence arguments --------------------------------------------
   if (!is.null(Prevalence)) {
     .fun_testIf01(TRUE, "Prevalence", Prevalence)
@@ -629,7 +632,7 @@ BIOMOD_Modeling <- function(data,
       nb.tmp <- length(as.numeric(output))
       dimnames.out = list(NULL, kept.mod, run.eval.names, dataset.names)
       if (out == "var.import") {
-        dimnames.out = list(names(modOut[[1]][[1]][[1]][['var.import']]), # to change
+        dimnames.out = list(names(modOut[[1]][[1]][[1]][['var.import']]) # to change ?
                             , kept.mod, run.eval.names, dataset.names)
       }
       dim.out = c(nb.tmp,

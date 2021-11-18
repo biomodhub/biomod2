@@ -211,7 +211,7 @@ setMethod("get_evaluations", "BIOMOD.models.out",
             as.data.frame <- ifelse(!is.null(args$as.data.frame), args$as.data.frame, FALSE)
             
             out <- NULL
-            if (obj@models.evaluation@inMemory ) {
+            if (obj@models.evaluation@inMemory) {
               out <- obj@models.evaluation@val
             } else if(obj@models.evaluation@link != '') {
               out <- get(load(obj@models.evaluation@link))
