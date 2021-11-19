@@ -288,17 +288,18 @@ BIOMOD_Modeling <- function(data,
   
   ## 3. Prepare internal function to save elements ------------------------------------------------
   name.BIOMOD_DATA = file.path(models.out@sp.name, ".BIOMOD_DATA", models.out@modeling.id)
-  .Models.save.object <- function(objName, objValue)
+  .Models.save.object <- function(objName, objValue, mod.out)
   {
     save(objValue, file = file.path(name.BIOMOD_DATA, objName), compress = compress.arg)
-    eval(parse(text = paste0("models.out@", objName, "@inMemory <<- FALSE")))
-    eval(parse(text = paste0("models.out@", objName, "@link <<- file.path(name.BIOMOD_DATA, objName)")))
+    eval(parse(text = paste0("mod.out@", objName, "@inMemory <- FALSE")))
+    eval(parse(text = paste0("mod.out@", objName, "@link <- file.path(name.BIOMOD_DATA, objName)")))
+    return(mod.out)
   }
   
   ## 3.1 Save input data and models options -----------------------------------
   if (SaveObj) {
-    .Models.save.object("formated.input.data", data)
-    .Models.save.object("models.options", models.options)
+    models.out = .Models.save.object("formated.input.data", data, models.out)
+    models.out = .Models.save.object("models.options", models.options, models.out)
   }
   
   ## 3.2 Get and save calibration lines ---------------------------------------
@@ -317,7 +318,7 @@ BIOMOD_Modeling <- function(data,
       calib.lines <- abind(calib.lines, mod.prep.dat[[pa]]$calibLines, along = 3)
     }
   } 
-  .Models.save.object("calib.lines", calib.lines)
+  models.out = .Models.save.object("calib.lines", calib.lines, models.out)
   rm(calib.lines)
   
   ## 4. Print modeling summary in console ---------------------------------------------------------
@@ -342,24 +343,24 @@ BIOMOD_Modeling <- function(data,
   ## models evaluation, variables importance, models prediction, predictions evaluation
   if (SaveObj) {
     models.evaluation <- .transform.outputs.list(modeling.out, out = 'evaluation')
-    .Models.save.object("models.evaluation", models.evaluation)
+    models.out = .Models.save.object("models.evaluation", models.evaluation, models.out)
     
     models.out@models.evaluation@val <- models.evaluation
     rm(models.evaluation)
     
     if (VarImport > 0) {
       variables.importance <- .transform.outputs.list(modeling.out, out = 'var.import')
-      .Models.save.object("variables.importance", variables.importance)
+      models.out = .Models.save.object("variables.importance", variables.importance, models.out)
       models.out@variables.importance@val <- variables.importance
       rm(variables.importance)
     }
     
     models.prediction <- .transform.outputs.list(modeling.out, out = 'prediction')
-    .Models.save.object("models.prediction", models.prediction)
+    models.out = .Models.save.object("models.prediction", models.prediction, models.out)
     rm(models.prediction)
     
     models.prediction.eval <- .transform.outputs.list(modeling.out, out = 'prediction.eval')
-    .Models.save.object("models.prediction.eval", models.prediction.eval)
+    models.out = .Models.save.object("models.prediction.eval", models.prediction.eval, models.out)
     rm(models.prediction.eval)
   }
   rm(modeling.out)
