@@ -139,20 +139,19 @@ BIOMOD_LoadModels <- function(bm.out, ... ){
 
 # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-= #
 
-'.extractModelNamesInfo' <- function(model.names, info = 'species'){
-  if(!is.character(model.names)){
-    stop("model.names must be a character vector")
-  }
-  if(!is.character(info) | length(info) != 1 | !(info %in% c('species', 'data.set', 'models', 'run.eval')) ){
+.extractModelNamesInfo <- function(model.names, info = 'species')
+{
+  if (!is.character(model.names)) { stop("model.names must be a character vector") }
+  if (!is.character(info) | length(info) != 1 | !(info %in% c('species', 'data.set', 'models', 'run.eval'))) {
     stop("info must be 'species', 'data.set', 'models' or 'run.eval'")
   }
 
   info.tmp <- as.data.frame(strsplit(model.names, "_"))
 
-  return( switch(info,
-                 species = paste(unique(unlist(info.tmp[-c(nrow(info.tmp), nrow(info.tmp)-1, nrow(info.tmp)-2),])), collapse="_"),
-                 data.set = paste(unique(unlist(info.tmp[(nrow(info.tmp)-2),]))),
-                 run.eval = paste(unique(unlist(info.tmp[(nrow(info.tmp)-1),]))),
-                 models = paste(unique(unlist(info.tmp[(nrow(info.tmp)),]))) ) )
-
+  return(switch(info,
+                species = paste(unique(unlist(info.tmp[-c(nrow(info.tmp), nrow(info.tmp) - 1,  nrow(info.tmp) - 2), ])), collapse = "_"), 
+                data.set = paste(unique(unlist(info.tmp[(nrow(info.tmp) - 2), ]))), 
+                run.eval = paste(unique(unlist(info.tmp[(nrow(info.tmp) - 1), ]))), 
+                models = paste(unique(unlist(info.tmp[(nrow(info.tmp)), ])))
+  ))
 }
