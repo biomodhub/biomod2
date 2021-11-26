@@ -366,116 +366,63 @@ setMethod('.Projection.do.proj', signature(env = 'RasterStack'),
               rm(list = model.name)
             }
             
-            
-            
             # check model.type
-            model.type <- tail(unlist(strsplit(model.name, split="_")),1)
-            if(!( model.type %in% c('GLM','GBM','GAM','CTA','ANN','SRE','FDA','MARS','RF', 'MAXENT.Phillips') )){
-              if(!grep('EF.',model.type))
-                stop('Unknown model type')
+            model.type <- tail(unlist(strsplit(model.name, split = "_")), 1)
+            avail.models.list <- c('GLM', 'GBM', 'GAM', 'CTA', 'ANN', 'SRE'
+                                   , 'FDA', 'MARS', 'RF', 'MAXENT.Phillips')
+            if (!(model.type %in% avail.models.list) && !grep('EF.',model.type)) {
+              stop('Unknown model type')
             }
             
-            if(model.type == 'ANN'){
-              set.seed(555) # to be able to refind our trees MAY BE BAD
-              proj.ras <- predict(env, model.sp, type="raw")
-              proj.ras[!is.na(proj.ras[])] <- bm_Rescaler(proj.ras[!is.na(proj.ras[])], ref=NULL,
-                                                          name=model.name, original=FALSE)
-              return( round(proj.ras * 1000))
-            }
+            proj.ras = switch(model.type
+                              , 'ANN' = {
+                                set.seed(555) # to be able to refind our trees MAY BE BAD
+                                return(predict(env, model.sp, type = "raw"))
+                              }
+                              , 'CTA' = {
+                                return(predict(env, model.sp, type = 'prob', index = 2))
+                              }
+                              , 'FDA' = {
+                                return(predict(env, model.sp, type = 'post', index = 2))
+                              }
+                              , 'GBM' = {
+                                if (file.exists(paste(model.dir, '/', model.name, '_best.iter'))) {
+                                  load(paste(model.dir, '/', model.name, '_best.iter'))
+                                } else {
+                                  best.iter <- gbm.perf(model.sp, method = "cv", plot.it = FALSE) # may be better to load it
+                                }
+                                return(predict(env, model.sp, n.trees = best.iter, type = 'response'))
+                              }
+                              , 'GLM' = {
+                                return(predict(env, model.sp, type = 'response'))
+                              }
+                              , 'GAM' = {
+                                return(predict(env, model.sp, type = 'response'))
+                              }
+                              , 'MARS' = {
+                                return(predict(env, model.sp))
+                              }
+                              , 'RF' = {
+                                return(predict(env, model.sp, type = 'prob', index = 2))
+                              }
+                              , 'SRE' = {
+                                # loading data of the corresponding run
+                                data.sre = get(load(paste0(model.dir, '/', model.name, '/Data_', model.name)))
+                                return(raster::subset(sre(data.sre$Response, data.sre$Explanatory, env, data.sre$Quant), 1, drop = TRUE) * 1000)
+                              }
+                              , 'MAXENT.Phillips' = {
+                                return(predict(object = model.sp, newdata = env, proj_name = proj.name))
+                              }
+            )
             
-            if(model.type == 'CTA'){
-              set.seed(123) # to be able to refind our trees MAY BE BAD
-              proj.ras <- predict(env, model=model.sp, type='prob', index=2)
-              if(scaled.models){
-                proj.ras[!is.na(proj.ras[])] <- bm_Rescaler( proj.ras[!is.na(proj.ras[])], ref=NULL,
-                                                             name=model.name, original=FALSE)
+            if (model.name != "SRE") {
+              if (model.name %in% c('ANN', 'FDA', 'MARS') ||
+                  (model.name %in% c('CTA', 'GBM', 'GLM', 'GAM', 'RF') && scaled.models)) {
+                proj.ras[!is.na(proj.ras[])] <- bm_Rescaler(proj.ras[!is.na(proj.ras[])]
+                                                            , ref = NULL, name = model.name, original = FALSE)
               }
-              return( round(proj.ras*1000) )
-            }
-            
-            if(model.type == 'FDA'){
-              pred.ras <- predict(env, model.sp, type="post", index=2)
-              pred.ras[!is.na(pred.ras[])] <- bm_Rescaler(pred.ras[!is.na(pred.ras[])], ref=NULL,
-                                                          name=model.name, original=FALSE)
-              return( round(pred.ras * 1000))
-            }
-            
-            if(model.type == 'GBM'){
-              if(file.exists(paste(model.dir,'/',model.name,'_best.iter'))){
-                load(paste(model.dir,'/',model.name,'_best.iter'))
-              } else{
-                best.iter <- gbm.perf(model.sp, method = "cv", plot.it = FALSE) # may be better to load it
-              }
-              
-              proj.ras <- predict(env, model.sp, n.trees=best.iter, type='response')
-              if(scaled.models){
-                proj.ras[!is.na(proj.ras[])] <- bm_Rescaler( proj.ras[!is.na(proj.ras[])], ref=NULL,
-                                                             name=model.name, original=FALSE)
-              }
-              
-              return( round(proj.ras*1000) )
-            }
-            
-            if(model.type == 'GLM'){
-              proj.ras <- predict(env, model=model.sp, type='response')
-              if(scaled.models){
-                proj.ras[!is.na(proj.ras[])] <- bm_Rescaler( proj.ras[!is.na(proj.ras[])], ref=NULL,
-                                                             name=model.name, original=FALSE)
-              }
-              
-              return( round(proj.ras*1000) )
-            }
-            
-            if(model.type == 'GAM'){
-              proj.ras <- predict(env, model=model.sp, type='response')
-              if(scaled.models){
-                proj.ras[!is.na(proj.ras[])] <- bm_Rescaler( proj.ras[!is.na(proj.ras[])], ref=NULL,
-                                                             name=model.name, original=FALSE)
-              }
-              return( round(proj.ras*1000) )
-            }
-            
-            if(model.type == 'MARS'){
-              pred.ras <- predict(env, model.sp)
-              pred.ras[!is.na(pred.ras[])] <- bm_Rescaler(pred.ras[!is.na(pred.ras[])], ref=NULL,
-                                                          name=model.name, original=FALSE)
-              return( round(pred.ras * 1000) )
-            }
-            
-            if(model.type == 'RF'){
-              proj.ras <- predict(env, model=model.sp, type='prob', index=2)
-              if(scaled.models){
-                proj.ras[!is.na(proj.ras[])] <- bm_Rescaler( proj.ras[!is.na(proj.ras[])], ref=NULL,
-                                                             name=model.name, original=FALSE)
-              }
-              return( round(proj.ras*1000) )
-            }
-            
-            if(model.type == 'SRE'){
-              #       cat('\n SRE prediction not supported yet ! ')
-              load(paste(model.dir,'/',model.name,'/Data_',model.name, sep=""))
-              data.sre <- get(paste('Data_',model.name, sep=""))
-              rm(list=paste('Data_',model.name, sep=""))
-              #       sre.out <- eval(parse(text=paste("sre(Data_",model.name,"$Response, Data_",
-              #                                    model.name,"$Explanatory, env, Data_",model.name,
-              #                                    "$Quant)*1000", sep="")))
-              sre.out <- raster::subset(sre(data.sre$Response, data.sre$Explanatory, env, data.sre$Quant), 1, drop=TRUE) * 1000
-              
-              return(sre.out)
-            }
-            
-            if(model.type == 'MAXENT.Phillips'){
-              proj.ras <- predict( object=model.sp, newdata=env, proj_name=proj.name)
-              
-              #       if(scaled.models){
-              proj.ras[!is.na(proj.ras[])] <- bm_Rescaler(proj.ras[!is.na(proj.ras[])], ref=NULL,
-                                                          name=model.name, original=FALSE)
-              #       }
-              
-              return(round(proj.ras*1000))
-              
-              
-              
+              return(round(proj.ras * 1000))
+            } else {
+              return(proj.ras)
             }
           })
-
