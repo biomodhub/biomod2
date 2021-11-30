@@ -625,146 +625,126 @@
   
 }
 
+###################################################################################################
 
-# =-=-=-=-=-=-=-=- em.models.assembling function -=-=-=-=-=-=-=- #
-.em.models.assembling <- function(chosen.models, em.by){
+.em.models.assembling <- function(chosen.models, em.by)
+{
   assembl.list = list()
-  
-  if(em.by == 'PA_dataset'){
-    for(dat in .extractModelNamesInfo(chosen.models, info='data.set')){
-      #       assembl.list[[paste(dat,"_AllRun", sep="")]] <- chosen.models[grep(paste("_",dat,"_",sep=""), chosen.models)]
-      assembl.list[[paste("mergedAlgo_mergedRun_", dat, sep="")]] <- chosen.models[grep(paste("_",dat,"_",sep=""), chosen.models)]
+  if (em.by == 'PA_dataset') {
+    for (dat in .extractModelNamesInfo(chosen.models, info = 'data.set')) {
+      assembl.list[[paste0("mergedAlgo_mergedRun_", dat)]] <- chosen.models[grep(paste0("_", dat, "_"), chosen.models)]
     }
-    return(assembl.list)
-  }
-  
-  if(em.by == 'algo'){
-    for(algo in .extractModelNamesInfo(chosen.models, info='models')){
-      #       assembl.list[[paste(algo,"_AllRun", sep="")]] <- chosen.models[grep(paste("_",algo,sep=""), chosen.models)]
-      assembl.list[[paste(algo,"_mergedRun_mergedData", sep="")]] <- chosen.models[grep(paste("_",algo,sep=""), chosen.models)]
+  } else if (em.by == 'algo') {
+    for (algo in .extractModelNamesInfo(chosen.models, info = 'models')) {
+      assembl.list[[paste0(algo, "_mergedRun_mergedData")]] <- chosen.models[grep(paste0("_", algo), chosen.models)]
     }
-    return(assembl.list)
-  }
-  
-  if(em.by == 'all'){
-    #     assembl.list[["TotalConsensus"]] <- chosen.models
-    assembl.list[[paste("mergedAlgo_mergedRun_mergedData", sep="")]] <- chosen.models
-    return(assembl.list)
-  }
-  
-  if(em.by == 'PA_dataset+repet'){
-    for(dat in .extractModelNamesInfo(chosen.models, info='data.set')){
-      for(repet in .extractModelNamesInfo(chosen.models, info='run.eval')){
-        mod.tmp <- intersect(x=grep(paste("_",dat,"_",sep=""), chosen.models),
-                             y=grep(paste("_",repet,"_",sep=""), chosen.models))
-        if(length(mod.tmp)){
-          #           assembl.list[[paste(dat,"_",repet,'_AllAlgos', sep="")]] <- chosen.models[mod.tmp]
-          assembl.list[[paste("mergedAlgo_",repet,"_",dat, sep="")]] <- chosen.models[mod.tmp]
+  } else if (em.by == 'all') {
+    assembl.list[["mergedAlgo_mergedRun_mergedData"]] <- chosen.models
+  } else if (em.by == 'PA_dataset+repet') {
+    for (dat in .extractModelNamesInfo(chosen.models, info = 'data.set')) {
+      for (repet in .extractModelNamesInfo(chosen.models, info = 'run.eval')) {
+        mod.tmp <- intersect(x = grep(paste0("_", dat, "_"), chosen.models)
+                             , y = grep(paste0("_", repet, "_"), chosen.models))
+        if (length(mod.tmp)) {
+          assembl.list[[paste0("mergedAlgo_", repet, "_", dat)]] <- chosen.models[mod.tmp]
         }
       }
     }
-    return(assembl.list)
-  }
-  
-  if(em.by == 'PA_dataset+algo'){
-    for(dat in .extractModelNamesInfo(chosen.models, info='data.set')){
-      for(algo in .extractModelNamesInfo(chosen.models, info='models')){
-        mod.tmp <- intersect(x=grep(paste("_",dat,"_",sep=""), chosen.models),
-                             y=grep(paste("_",algo,sep=""), chosen.models))
-        if(length(mod.tmp)){
-          #           assembl.list[[paste(dat,"_AllRepet_",algo, sep="")]] <- chosen.models[mod.tmp]
-          assembl.list[[paste(algo,"_mergedRun_", dat, sep="")]] <- chosen.models[mod.tmp]
+  } else if (em.by == 'PA_dataset+algo') {
+    for (dat in .extractModelNamesInfo(chosen.models, info = 'data.set')) {
+      for (algo in .extractModelNamesInfo(chosen.models, info = 'models')) {
+        mod.tmp <- intersect(x = grep(paste0("_", dat, "_"), chosen.models)
+                             , y = grep(paste0("_", algo), chosen.models))
+        if (length(mod.tmp)) {
+          assembl.list[[paste0(algo, "_mergedRun_", dat)]] <- chosen.models[mod.tmp]
         }
       }
     }
-    return(assembl.list)
   }
-  
+  return(assembl.list)
 }
-# =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=- #
 
 
+###################################################################################################
 
-.get_needed_predictions <- function(modeling.output, em.by, models.kept, eval.metric, eval.metric.quality.threshold, eval.metric.user, eval.metric.user.data){
-  out <- list(predictions = NULL,
-              models.kept = NULL,
-              models.kept.scores = NULL)
-  for(eval.m in eval.metric){
-    if( eval.m != 'none'){
-      if(eval.metric.user){
+.get_needed_predictions <- function(modeling.output, em.by, models.kept, eval.metric
+                                    , eval.metric.quality.threshold, eval.metric.user
+                                    , eval.metric.user.data)
+{
+  out <- list(predictions = NULL, models.kept = NULL, models.kept.scores = NULL)
+  for (eval.m in eval.metric) {
+    if (eval.m != 'none') {
+      if (eval.metric.user) {
         models.kept.scores <- eval.metric.user.data[eval.m, models.kept]
       } else {
-        models.kept.scores <- unlist(lapply(models.kept, function(x){
-          mod <- tail(unlist(strsplit(x,"_")), 3)[3]
-          run <- tail(unlist(strsplit(x,"_")), 3)[2]
-          dat <- tail(unlist(strsplit(x,"_")), 3)[1]
+        models.kept.scores <- unlist(lapply(models.kept, function(x) {
+          mod <- tail(unlist(strsplit(x, "_")), 3)[3]
+          run <- tail(unlist(strsplit(x, "_")), 3)[2]
+          dat <- tail(unlist(strsplit(x, "_")), 3)[1]
           # select evaluations scores obtained for Evaluation Data if exists or CV if not
-          if(modeling.output@has.evaluation.data){
+          if (modeling.output@has.evaluation.data) {
             return(get_evaluations(modeling.output)[eval.m, "Evaluating.data", mod, run, dat])
           } else{
             return(get_evaluations(modeling.output)[eval.m, "Testing.data", mod, run, dat])
           }
         }))
-       }
+      }
       ## set NA to -1
-      if(!is.null(models.kept.scores)){
+      if (!is.null(models.kept.scores)) {
         models.kept.scores[is.na(models.kept.scores)] <- -1
       }
       out$models.kept[[eval.m]] <- models.kept[models.kept.scores > eval.metric.quality.threshold[which(eval.metric == eval.m)]]
       out$models.kept.scores[[eval.m]] <- models.kept.scores[models.kept.scores > eval.metric.quality.threshold[which(eval.metric == eval.m)]]
-    } else{
+    } else {
       out$models.kept[[eval.m]] <- models.kept
     }
   }
   
   models.kept.union <- unique(unlist(out$models.kept))
   
-  if(length(models.kept.union) ){
-    #     if(modeling.output@has.evaluation.data){
-    #       out$predictions <- as.data.frame(get_predictionsEval(modeling.output, as.data.frame = TRUE)[,models.kept.union, drop=F])
-    #     } else{
+  if (length(models.kept.union)) {
     ## load prediction on each PA dataset
-    if(em.by %in% c("PA_dataset",'PA_dataset+algo','PA_dataset+repet')){
-      out$predictions <- as.data.frame(get_predictions(modeling.output, as.data.frame = TRUE)[,models.kept.union, drop=F])
-    } else{ ## redo prediction on full data.set
+    if (em.by %in% c("PA_dataset", 'PA_dataset+algo', 'PA_dataset+repet')) {
+      out$predictions <- as.data.frame(get_predictions(modeling.output, as.data.frame = TRUE)[, models.kept.union, drop = FALSE])
+    } else{
+      ## redo prediction on full data.set
       cat("\n   ! Models projections for whole zonation required...")
-      temp_name <- paste('tmp_',sub(".","",as.character(format(Sys.time(), "%OS6")), fixed=T),sep="")
+      temp_name <- paste0('tmp_', sub(".", "", as.character(format(Sys.time(), "%OS6")), fixed = TRUE))
       out$predictions <- BIOMOD_Projection(modeling.output = modeling.output,
                                            new.env = get_formal_data(modeling.output)@data.env.var,
                                            proj.name = temp_name,
                                            xy.new.env = get_formal_data(modeling.output)@coord,
                                            selected.models = models.kept.union,
                                            compress = TRUE,
-                                           build.clamping.mask = F,
-                                           do.stack=T, silent = T)@proj@val
+                                           build.clamping.mask = FALSE,
+                                           do.stack = TRUE,
+                                           silent = TRUE
+      )@proj@val
       
       # transform array into data.frame
       out$predictions <- as.data.frame(out$predictions)
-      names(out$predictions) <- unlist(lapply(strsplit(names(out$predictions),".", fixed=TRUE),
-                                              function(x){
-                                                x.rev <- rev(x) ## we reverse the order of the splitted vector to have algo a t the end
-                                                data.set.id <- x.rev[1]
-                                                cross.valid.id <- x.rev[2]
-                                                algo.id <- paste(rev(x.rev[3:length(x.rev)]), collapse = ".", sep = "")
-                                                model.id <- paste(modeling.output@sp.name,
-                                                                  data.set.id,
-                                                                  cross.valid.id,
-                                                                  algo.id, sep="_")
-                                                return(model.id)
-                                              }))
+      names(out$predictions) <- unlist(lapply(strsplit(names(out$predictions), ".", fixed = TRUE), function(x)
+      {
+        x.rev <- rev(x) ## we reverse the order of the splitted vector to have algo a t the end
+        data.set.id <- x.rev[1]
+        cross.valid.id <- x.rev[2]
+        algo.id <- paste0(rev(x.rev[3:length(x.rev)]), collapse = ".")
+        model.id <- paste(modeling.output@sp.name,
+                          data.set.id,
+                          cross.valid.id,
+                          algo.id,
+                          sep = "_")
+        return(model.id)
+      }))
       # keep only wanted columns
-      out$predictions <- out$predictions[,models.kept.union, drop=F]
-      unlink(file.path(modeling.output@sp.name,paste("proj_", temp_name, sep="") ),recursive = TRUE, force = TRUE)
+      out$predictions <- out$predictions[, models.kept.union, drop = FALSE]
+      unlink(file.path(modeling.output@sp.name, paste0("proj_", temp_name))
+             , recursive = TRUE, force = TRUE)
       cat("\n")
     }
-    #     }
     return(out)
   } else {
     cat("\n   ! No models kept due to threshold filtering... Ensemble Modeling was skipped!")
     return(NULL)
   }
 }
-
-
-
-
