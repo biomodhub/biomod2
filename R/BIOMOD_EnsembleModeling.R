@@ -1,19 +1,216 @@
-'BIOMOD_EnsembleModeling' <- function(modeling.output,
-                                      chosen.models = 'all',
-                                      em.by = 'PA_dataset+repet',
-                                      eval.metric = 'all',
-                                      eval.metric.quality.threshold = NULL,
-                                      eval.metric.user.data = NULL,
-                                      models.eval.meth = c('KAPPA','TSS','ROC'),
-                                      prob.mean = TRUE,
-                                      prob.cv = FALSE,
-                                      prob.ci = FALSE,
-                                      prob.ci.alpha = 0.05,
-                                      prob.median = FALSE,
-                                      committee.averaging = FALSE,
-                                      prob.mean.weight = FALSE,
-                                      prob.mean.weight.decay = 'proportional',
-                                      VarImport = 0)
+##' ###############################################################################################
+##' @name BIOMOD_EnsembleModeling
+##' @aliases BIOMOD_EnsembleModeling
+##' @author Wilfried Thuiller, Damien Georges, Robin Engler
+##' 
+##' @title Create and evaluate an ensemble set of models and predictions
+##' 
+##' @description This function allows to combine a range of models built with the 
+##' \code{\link[biomod2]{BIOMOD_Modeling}} function in one (or several) ensemble model. Modeling 
+##' uncertainty can be assessed as well as variables importance, ensemble predictions can be 
+##' evaluated against original data, and created ensemble models can be projected over new 
+##' conditions (see Details).
+##' 
+##' 
+##' @param modeling.output a \code{\link{BIOMOD.models.out} object returned by the 
+##' \code{\link{BIOMOD_Modeling}} function
+##' @param chosen.models a \code{vector} containing model names to be kept, must be either 
+##' \code{all} or a sub-selection of model names
+##' @param em.by a \code{character} corresponding to the way kept models will be combined to build 
+##' the ensemble models, must be among \code{PA_dataset+repet}, \code{PA_dataset+algo}, 
+##' \code{PA_dataset}, \code{algo}, \code{all}
+##' @param eval.metric a \code{vector} containing evaluation metric names to be used together with 
+##' \code{eval.metric.quality.threshold} to exclude single models based on their evaluation scores 
+##' (for ensemble methods like probability weighted mean or committee averaging). Must be among  
+##' \code{all} (same evaluation metrics than those of \code{modeling.output}), \code{user.defined} 
+##' (and defined through \code{eval.metric.user.data}) or \code{ROC}, \code{TSS}, \code{KAPPA}, 
+##' \code{ACCURACY}, \code{BIAS}, \code{POD}, \code{FAR}, \code{POFD}, \code{SR}, \code{CSI}, 
+##' \code{ETS}, \code{HK}, \code{HSS}, \code{OR}, \code{ORSS}
+##' @param eval.metric.quality.threshold (\emph{optional, default} \code{NULL}) \cr 
+##' A \code{numeric} corresponding to the minimum score below which single models will be excluded 
+##' from the ensemble model building
+##' @param eval.metric.user.data (\emph{optional, default} \code{NULL}) \cr 
+##' A \code{data.frame} containing minimum scores below which each model will be excluded 
+##' from the ensemble model building, with evaluation metric rownames, and \code{chosen.models} 
+##' colnames
+##' @param VarImport (\emph{optional, default} \code{NULL}) \cr 
+##' An \code{integer} corresponding to the number of permutations to be done for each variable to 
+##' estimate variable importance
+##' @param models.eval.meth a \code{vector} containing evaluation metric names to be used, must 
+##' be among \code{ROC}, \code{TSS}, \code{KAPPA}, \code{ACCURACY}, \code{BIAS}, \code{POD}, 
+##' \code{FAR}, \code{POFD}, \code{SR}, \code{CSI}, \code{ETS}, \code{HK}, \code{HSS}, \code{OR}, 
+##' \code{ORSS}
+##' @param prob.mean (\emph{optional, default} \code{TRUE}) \cr 
+##' A \code{logical} value defining whether to compute the mean probabilities 
+##' across predictions or not
+##' @param prob.median (\emph{optional, default} \code{FALSE}) \cr 
+##' A \code{logical} value defining whether to compute the median probabilities  
+##' across predictions or not
+##' @param prob.cv (\emph{optional, default} \code{FALSE}) \cr 
+##' A \code{logical} value defining whether to compute the coefficient of 
+##' variation across predictions or not
+##' @param prob.ci (\emph{optional, default} \code{FALSE}) \cr 
+##' A \code{logical} value defining whether to compute te confidence interval 
+##' around the \code{prob.mean} ensemble model or not
+##' @param prob.ci.alpha (\emph{optional, default} \code{0.05}) \cr 
+##' A \code{numeric} value corresponding to the significance level to estimate confidence interval
+##' @param committee.averaging (\emph{optional, default} \code{FALSE}) \cr 
+##' A \code{logical} value defining whether to compute the committee 
+##' averaging across predictions or not
+##' @param prob.mean.weight (\emph{optional, default} \code{FALSE}) \cr 
+##' A \code{logical} value defining whether to compute the weighted sum of 
+##' probabilities across predictions or not
+##' @param prob.mean.weight.decay (\emph{optional, default} \code{proportional}) \cr 
+##' A value defining the relative importance of the weights (if \code{prob.mean.weight = TRUE}). 
+##' A high value will strongly discriminate \emph{good} models from the \emph{bad} ones (see 
+##' Details), while \code{proportional} will attribute weights proportionally to the models 
+##' evaluation scores
+##' 
+##' 
+##' @return
+##' 
+##' A \code{BIOMOD.EnsembleModeling.out} object containing models outputs, or links to saved outputs.
+##' Models outputs are stored out of \R (for memory storage reasons) in 2 different folders 
+##' created in the current working directory :
+##' \enumerate{
+##'   \item a \emph{models} folder, named after the \code{resp.name} argument of 
+##'   \code{\link{BIOMOD_FormatingData}}, and containing all ensemble models
+##'   \item a \emph{hidden} folder, named \code{.BIOMOD_DATA}, and containing outputs related 
+##'   files (original dataset, calibration lines, pseudo-absences selected, predictions, 
+##'   variables importance, evaluation values...), that can be retrieved with 
+##'   \code{\href{}{get_[...]}} or \code{\link{load}} functions, and used by other 
+##'   \pkg{biomod2} functions, like \code{\link{BIOMOD_EnsembleForecasting}}
+##' }
+##' 
+##' 
+##' @details 
+##' 
+##' 
+##' 1. \bold{Models sub-selection (\code{chosen.models})}
+##' .. Applying \code{\link{get_built_models}} function to the \code{modeling.output} object 
+##' gives the names of the single models created with the \code{\link{BIOMOD_Modeling}} function. 
+##' The \code{chosen.models} argument can take either a sub-selection of these single model names, 
+##' or the \code{all} default value, to decide which single models will be used for the ensemble 
+##' model building.
+##' 
+##' 2. \bold{Models assembly rules (\code{em.by})}
+##' .. The set of models to be calibrated on the data. 
+##' 10 modeling techniques are currently available :
+##' 
+##' 3. \bold{Evaluation metrics}
+##' .. The set of models to be calibrated on the data. 
+##' 10 modeling techniques are currently available :
+##' 
+##' 4. \bold{Ensemble-models algorithms}
+##' .. The set of models to be calibrated on the data. 
+##' 10 modeling techniques are currently available :
+##' 
+##' .. - \code{GLM} : Generalized Linear Model (\code{\link[stats]{glm}})
+##' 
+##' .. - \code{GAM} :
+##' 
+##' .. - \code{GAM} :
+##' 
+##' .. - \code{GAM} :
+##' .. - \code{GAM} :
+##' .. - \code{GAM} :
+##' .. - \code{GAM} :
+##' .. - \code{GAM} :
+##' 
+##' 
+##' @keywords models, ensemble, weights
+##' 
+##' 
+##' @seealso \code{\link{BIOMOD_FormatingData}}, \code{\link{BIOMOD_ModelingOptions}}, 
+##' \code{\link{BIOMOD_CrossValidation}}, \code{ \link{bm_VariablesImportance}}, 
+##' \code{\link{BIOMOD_Modeling}}, \code{\link{BIOMOD_EnsembleForecasting}}
+##' 
+##'   
+##' @examples
+##' 
+##' # species occurrences
+##' DataSpecies <- read.csv(system.file("external/species/mammals_table.csv", package="biomod2"), row.names = 1)
+##' head(DataSpecies)
+##' 
+##' # the name of studied species
+##' myRespName <- 'GuloGulo'
+##' 
+##' # the presence/absences data for our species
+##' myResp <- as.numeric(DataSpecies[, myRespName])
+##' 
+##' # the XY coordinates of species data
+##' myRespXY <- DataSpecies[, c("X_WGS84", "Y_WGS84")]
+##' 
+##' 
+##' # Environmental variables extracted from BIOCLIM (bio_3, bio_4, bio_7, bio_11 & bio_12)
+##' myFiles = paste0("external/bioclim/current/bio", c(3, 4, 7, 11, 12), ".grd")
+##' myExpl = raster::stack(system.file(myFiles[1], package = "biomod2"),
+##'                        system.file(myFiles[2], package = "biomod2"),
+##'                        system.file(myFiles[3], package = "biomod2"),
+##'                        system.file(myFiles[4], package = "biomod2"),
+##'                        system.file(myFiles[5], package = "biomod2"))
+##' 
+##' # 1. Formating Data
+##' myBiomodData <- BIOMOD_FormatingData(resp.var = myResp,
+##'                                      expl.var = myExpl,
+##'                                      resp.xy = myRespXY,
+##'                                      resp.name = myRespName)
+##' 
+##' # 2. Defining Models Options using default options.
+##' myBiomodOption <- BIOMOD_ModelingOptions()
+##' 
+##' # 3. Doing Modelisation
+##' myBiomodModelOut <- BIOMOD_Modeling(myBiomodData,
+##'                                     models = c('SRE','RF'),
+##'                                     models.options = myBiomodOption,
+##'                                     NbRunEval = 2,
+##'                                     DataSplit = 80,
+##'                                     VarImport = 3,
+##'                                     models.eval.meth = c('TSS', 'ROC'),
+##'                                     do.full.models = FALSE,
+##'                                     modeling.id = 'test')
+##'                     
+##' # 4. Doing Ensemble Modeling
+##' myBiomodEM <- BIOMOD_EnsembleModeling(modeling.output = myBiomodModelOut,
+##'                                       chosen.models = 'all',
+##'                                       em.by = 'all',
+##'                                       eval.metric = c('TSS'),
+##'                                       eval.metric.quality.threshold = c(0.7),
+##'                                       models.eval.meth = c('TSS', 'ROC'),
+##'                                       prob.mean = TRUE,
+##'                                       prob.median = FALSE,
+##'                                       prob.cv = FALSE,
+##'                                       prob.ci = FALSE,
+##'                                       prob.ci.alpha = 0.05,
+##'                                       committee.averaging = FALSE,
+##'                                       prob.mean.weight = TRUE,
+##'                                       prob.mean.weight.decay = 'proportional')
+##' 
+##' # print summary
+##' myBiomodEM
+##' 
+##' # get evaluation scores
+##' get_evaluations(myBiomodEM)
+##' 
+##' 
+##' ###############################################################################################
+
+BIOMOD_EnsembleModeling <- function(modeling.output,
+                                    chosen.models = 'all',
+                                    em.by = 'PA_dataset+repet',
+                                    eval.metric = 'all',
+                                    eval.metric.quality.threshold = NULL,
+                                    eval.metric.user.data = NULL,
+                                    VarImport = 0,
+                                    models.eval.meth = c('KAPPA','TSS','ROC'),
+                                    prob.mean = TRUE,
+                                    prob.median = FALSE,
+                                    prob.cv = FALSE,
+                                    prob.ci = FALSE,
+                                    prob.ci.alpha = 0.05,
+                                    committee.averaging = FALSE,
+                                    prob.mean.weight = FALSE,
+                                    prob.mean.weight.decay = 'proportional')
 {
   .bmCat("Build Ensemble Models")
   

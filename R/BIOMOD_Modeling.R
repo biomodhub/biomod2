@@ -74,7 +74,7 @@
 ##' 
 ##' 
 ##' 1. \bold{data}
-##' .. If you have decide to add pseudo absences to your original dataset (see 
+##' .. If you have decided to add pseudo absences to your original dataset (see 
 ##' \code{\link{BIOMOD_FormatingData}}), \code{PA.nb.rep *(NbRunEval + 1)} models will be created.
 ##' 
 ##' 
@@ -229,10 +229,10 @@
 ##'                                     models.options = myBiomodOption,
 ##'                                     NbRunEval = 2,
 ##'                                     DataSplit = 80,
-##'                                     VarImport = 0,
+##'                                     VarImport = 3,
 ##'                                     models.eval.meth = c('TSS','ROC'),
 ##'                                     do.full.models = FALSE,
-##'                                     modeling.id = "test")
+##'                                     modeling.id = 'test')
 ##' 
 ##' # print a summary of modeling stuff
 ##' myBiomodModelOut
