@@ -258,7 +258,7 @@ BIOMOD_Modeling <- function(data,
 {
   ## 0. Check arguments ---------------------------------------------------------------------------
   args <- .Models.check.args(data, models, models.options, NbRunEval, DataSplit, Yweights
-                             , VarImport, models.eval.meth, Prevalence, do.full.models, SaveObj,...)
+                             , VarImport, models.eval.meth, Prevalence, do.full.models, SaveObj, ...)
   models <- args$models
   models.options <- args$models.options
   NbRunEval <- args$NbRunEval
@@ -382,7 +382,7 @@ BIOMOD_Modeling <- function(data,
 .Models.check.args <- function(data, models, models.options, NbRunEval, DataSplit, Yweights
                                , VarImport, models.eval.meth, Prevalence, do.full.models, SaveObj, ...)
 {
-  ## 0. Checking data and models arguments ------------------------------------
+  ## 0. Check data and models arguments ---------------------------------------
   cat('\n\nChecking Models arguments...\n')
   add.args <- list(...)
   
@@ -483,9 +483,7 @@ BIOMOD_Modeling <- function(data,
   models.eval.meth <- unique(models.eval.meth)
   avail.eval.meth.list <- c('TSS', 'KAPPA', 'ACCURACY', 'BIAS', 'POD', 'FAR', 'POFD'
                             , 'SR', 'CSI', 'ETS', 'HK', 'HSS', 'OR', 'ORSS')
-  for (i.meth in models.eval.meth) {
-    .fun_testIfIn(TRUE, "models.eval.meth", i.meth, avail.eval.meth.list)
-  }
+  .fun_testIfIn(TRUE, "models.eval.meth", models.eval.meth, avail.eval.meth.list)
   
   ## 7. Check Prevalence arguments --------------------------------------------
   if (!is.null(Prevalence)) {

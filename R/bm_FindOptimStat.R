@@ -72,10 +72,10 @@
 
 
 bm_FindOptimStat <- function(Stat = 'TSS',
-                            Fit,
-                            Obs,
-                            Nb.thresh.test = 100,
-                            Fixed.thresh = NULL)
+                             Fit,
+                             Obs,
+                             Nb.thresh.test = 100,
+                             Fixed.thresh = NULL)
 {
   ## remove all unfinite values
   to_keep <- (is.finite(Fit) & is.finite(Obs))
