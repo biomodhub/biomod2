@@ -673,13 +673,6 @@ BIOMOD_EnsembleModeling <- function(modeling.output,
       eval.metric.user = TRUE
       if (!is.null(eval.metric.user.data)) {
         .fun_testIfIn(TRUE, "chosen.models", chosen.models, colnames(eval.metric.user.data))
-        # chosen.models.check <- chosen.models %in% colnames(eval.metric.user.data)
-        # if (sum(!chosen.models.check) > 0) {
-        #   stop(paste0("Some selected models do not have eval values in `eval.metric.user.data`: "
-        #               , toString(chosen.models[!chosen.models.check])
-        #               , "\nPlease provide eval values for all selected models ( "
-        #               , toString(chosen.models), " )"))
-        # }
         eval.metric.user.data <- eval.metric.user.data[, chosen.models, drop = FALSE]
         eval.metric <- rownames(eval.metric.user.data)
       } else {
@@ -690,13 +683,6 @@ BIOMOD_EnsembleModeling <- function(modeling.output,
         eval.metric <- dimnames(get_evaluations(modeling.output))[[1]]
       }
       .fun_testIfIn(TRUE, "eval.metric", eval.metric, dimnames(get_evaluations(modeling.output))[[1]])
-      # eval.metric.check <- eval.metric %in% dimnames(get_evaluations(modeling.output))[[1]]
-      # if(sum(!eval.metric.check) > 0){
-      #   stop(paste0("Some selected evaluation metrics are not available: "
-      #               , toString(eval.metric[!eval.metric.check])
-      #               , "\nPlease choose some in those computed yet ( "
-      #               , toString(dimnames(get_evaluations(modeling.output))[[1]]), " )"))
-      # }
     }
   }
   
