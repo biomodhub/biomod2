@@ -1,30 +1,196 @@
-####################################################################################################
-# BIOMOD_Projection
-# Damien.G
-# feb 2012
-####################################################################################################
+##' ###############################################################################################
+##' @name BIOMOD_Projection
+##' @aliases BIOMOD_Projection
+##' @author Wilfried Thuiller, Damien Georges
+##' 
+##' @title Project a range of calibrated species distribution models onto new environment
+##' 
+##' @description This function allows to project a range of models built with the 
+##' \code{\link[biomod2]{BIOMOD_Modeling}} function onto new environmental data (which can 
+##' represent new areas, resolution or time scales for example).
+##' 
+##' 
+##' @param modeling.output a \code{\link{BIOMOD.models.out} object returned by the 
+##' \code{\link{BIOMOD_Modeling}} function
+##' @param proj.name a \code{character} corresponding to the name (ID) of the projection set 
+##' (\emph{a new folder will be created within the simulation folder with this name})
+##' @param new.env a \code{matrix}, \code{data.frame} or \code{\link[raster:stack]{RasterStack}} 
+##' object containing the new explanatory variables (in columns or layers, with names matching the 
+##' variables names given to the \code{\link{BIOMOD_FormatingData}} function to build 
+##' \code{modeling.output}) that will be used to project the species distribution model(s)
+##' @param new.env.xy (\emph{optional, default} \code{NULL}) \cr 
+##' If \code{new.env} is a \code{matrix} or a \code{data.frame}, a 2-columns \code{matrix} 
+##' containing the corresponding \code{X} and \code{Y} coordinates that will be used to project 
+##' the species distribution model(s)
+##' @param chosen.models a \code{vector} containing model names to be kept, must be either 
+##' \code{all} or a sub-selection of model names
+##' 
+##' @param binary.meth (\emph{optional, default} \code{NULL}) \cr 
+##' A \code{vector} containing evaluation metric names to be used to transform prediction values 
+##' into binary values based on models evaluation scores obtained with the 
+##' \code{\link{BIOMOD_Modeling}} function. Must be among \code{all} (same evaluation metrics than 
+##' those of \code{modeling.output}) or \code{ROC}, \code{TSS}, \code{KAPPA}, \code{ACCURACY}, 
+##' \code{BIAS}, \code{POD}, \code{FAR}, \code{POFD}, \code{SR}, \code{CSI}, \code{ETS}, 
+##' \code{HK}, \code{HSS}, \code{OR}, \code{ORSS}
+##' @param filtered.meth (\emph{optional, default} \code{NULL}) \cr 
+##' A \code{vector} containing evaluation metric names to be used to transform prediction values 
+##' into filtered values based on models evaluation scores obtained with the 
+##' \code{\link{BIOMOD_Modeling}} function. Must be among \code{all} (same evaluation metrics than 
+##' those of \code{modeling.output}) or \code{ROC}, \code{TSS}, \code{KAPPA}, \code{ACCURACY}, 
+##' \code{BIAS}, \code{POD}, \code{FAR}, \code{POFD}, \code{SR}, \code{CSI}, \code{ETS}, 
+##' \code{HK}, \code{HSS}, \code{OR}, \code{ORSS}
+##' 
+##' @param compress (\emph{optional, default} \code{TRUE}) \cr 
+##' A \code{logical} or a \code{character} value defining whether and how objects should be 
+##' compressed when saved on hard drive. Must be either \code{TRUE}, \code{FALSE}, \code{xz} or 
+##' \code{gzip} (see Details)
+##' @param build.clamping.mask (\emph{optional, default} \code{TRUE}) \cr 
+##' A \code{logical} value defining whether a clamping mask should be built and saved on hard 
+##' drive or not (see Details)
+##' 
+##' @param ... (\emph{optional, see Details}) 
+##' 
+##' 
+##' @return
+##' 
+##' A \code{BIOMOD.projection.out} object containing models projections, or links to saved outputs.
+##' Models projections are stored out of \R (for memory storage reasons) in \code{proj.name} folder 
+##' created in the current working directory :
+##' \enumerate{
+##'   \item the output is a 4-dimensional array if \code{new.env} is a \code{matrix} or a 
+##'   \code{data.frame}
+##'   \item it is a \code{rasterStack} if \code{new.env} is a \code{rasterStack} (or several 
+##'   \code{rasterLayer} objects, if \code{new.env} is too large)
+##'   \item raw projections, as well as binary and filtered projections (if asked), are saved in 
+##'   the \code{proj.name} folder
+##' }
+##' 
+##' 
+##' @details 
+##' 
+##' If \code{chosen.models = 'all'}, projections are done for all evaluation and pseudo absences 
+##' runs if applicable. These projections may be used later by the 
+##' \code{\link{BIOMOD_EnsembleForecasting}} function.
+##' 
+##' If \code{build.clamping.mask = TRUE}, a raster file will be saved within the projection folder. 
+##' This mask values will correspond to the number of variables in each pixel that are out of their 
+##' calibration / training range, identifying locations where predictions are uncertain.
+##' 
+##' \code{...} can take the following values :
+##' \itemize{
+##   \item{\code{clamping.level} : }{a \code{logical} value defining whether \code{clamping.mask} 
+##   cells with at least one variable out of its calibration range are to be removed from the 
+##   projections or not
+##'   \item{\code{omit.na} : }{a \code{logical} value defining whether all not fully referenced 
+##'   environmental points will get \code{NA} as predictions or not}
+##'   \item{\code{on_0_1000} : }{a \code{logical} value defining whether \code{0 - 1} probabilities 
+##'   are to be converted to \code{0 - 1000} scale to save memory on backup}
+##'   \item{\code{do.stack} : }{a \code{logical} value defining whether all projections are to be 
+##'   saved as one \code{RasterStack} object or several \code{RasterLayer} files (the default if 
+##'   projections are too heavy to be all loaded at once in memory)}
+##'   \item{\code{keep.in.memory} : }{a \code{logical} value defining whether all projections are 
+##'   to be kept loaded at once in memory, or only links pointing to hard drive are to be returned}
+##'   \item{\code{output.format} : }{a \code{character} value corresponding to the projections 
+##'   saving format on hard drive, must be either \code{.grd}, \code{.img} or \code{.RData} (the 
+##'   default if \code{new.env} is given as \code{matrix} or \code{data.frame})}
+##'   \item{\code{silent} : }{a \code{logical} value defining whether console outputs are to be 
+##'   printed or not}
+##' }
+##' 
+##' 
+##' @keywords models, projection
+##' 
+##' 
+##' @seealso \code{\link{BIOMOD_FormatingData}}, \code{\link{BIOMOD_ModelingOptions}}, 
+##' \code{\link{BIOMOD_Modeling}}
+##' 
+##'   
+##' @examples
+##' 
+##' # species occurrences
+##' DataSpecies <- read.csv(system.file("external/species/mammals_table.csv", package="biomod2"), row.names = 1)
+##' head(DataSpecies)
+##' 
+##' # the name of studied species
+##' myRespName <- 'GuloGulo'
+##' 
+##' # the presence/absences data for our species
+##' myResp <- as.numeric(DataSpecies[, myRespName])
+##' 
+##' # the XY coordinates of species data
+##' myRespXY <- DataSpecies[, c("X_WGS84", "Y_WGS84")]
+##' 
+##' 
+##' # Environmental variables extracted from BIOCLIM (bio_3, bio_4, bio_7, bio_11 & bio_12)
+##' myFiles = paste0("external/bioclim/current/bio", c(3, 4, 7, 11, 12), ".grd")
+##' myExpl = raster::stack(system.file(myFiles[1], package = "biomod2"),
+##'                        system.file(myFiles[2], package = "biomod2"),
+##'                        system.file(myFiles[3], package = "biomod2"),
+##'                        system.file(myFiles[4], package = "biomod2"),
+##'                        system.file(myFiles[5], package = "biomod2"))
+##' 
+##' # 1. Formating Data
+##' myBiomodData <- BIOMOD_FormatingData(resp.var = myResp,
+##'                                      expl.var = myExpl,
+##'                                      resp.xy = myRespXY,
+##'                                      resp.name = myRespName)
+##' 
+##' # 2. Defining Models Options using default options.
+##' myBiomodOption <- BIOMOD_ModelingOptions()
+##' 
+##' # 3. Doing Modelisation
+##' myBiomodModelOut <- BIOMOD_Modeling(myBiomodData,
+##'                                     models = c('SRE','RF'),
+##'                                     models.options = myBiomodOption,
+##'                                     NbRunEval = 2,
+##'                                     DataSplit = 80,
+##'                                     VarImport = 3,
+##'                                     models.eval.meth = c('TSS','ROC'),
+##'                                     do.full.models = FALSE,
+##'                                     modeling.id = 'test')
+##' 
+##' # 4.1 Projecting on current environmental conditions
+##' myBiomodProjection <- BIOMOD_Projection(modeling.output = myBiomodModelOut,
+##'                                         new.env = myExpl,
+##'                                         proj.name = 'current',
+##'                                         chosen.models = 'all',
+##'                                         binary.meth = 'TSS',
+##'                                         compress = FALSE,
+##'                                         build.clamping.mask = FALSE)
+##' 
+##' \dontrun{
+##' # 4.2 Projecting on future environmental conditions
+##' 
+##' # Environmental variables extracted from BIOCLIM (bio_3, bio_4, bio_7, bio_11 & bio_12)
+##' myFiles = paste0("external/bioclim/future/bio", c(3, 4, 7, 11, 12), ".grd")
+##' myExplFuture = raster::stack(system.file(myFiles[1], package = "biomod2"),
+##'                              system.file(myFiles[2], package = "biomod2"),
+##'                              system.file(myFiles[3], package = "biomod2"),
+##'                              system.file(myFiles[4], package = "biomod2"),
+##'                              system.file(myFiles[5], package = "biomod2"))
+##' 
+##' myBiomodProjectionFuture <- BIOMOD_Projection(modeling.output = myBiomodModelOut,
+##'                                               new.env = myExplFuture,
+##'                                               proj.name = 'future',
+##'                                               chosen.models = 'all',
+##'                                               binary.meth = 'TSS',
+##'                                               compress = FALSE,
+##'                                               build.clamping.mask = TRUE)
+##' 
+##' # print summary and plot projections
+##' myBiomodProjectionFuture
+##' plot(myBiomodProjectionFuture)
+##' }
+##' 
+##' 
+##' ###############################################################################################
 
-# AIM :
-#   Project models from BIOMOD_Modeling with different explanatory variables
-
-# INPUT :
-
-
-# OUTPUT :
-
-
-
-# NOTE :
-#   It would be nice to add done projections to input Biomod.models.object
-#   .BIOMOD_Projection.check.args <- may be reorder variables if necessary
-
-####################################################################################################
 
 BIOMOD_Projection <- function(modeling.output,
-                              new.env,
                               proj.name,
-                              xy.new.env = NULL,
-                              selected.models = 'all',
+                              new.env,
+                              new.env.xy = NULL,
+                              chosen.models = 'all',
                               binary.meth = NULL,
                               filtered.meth = NULL,
                               compress = TRUE,
@@ -36,30 +202,29 @@ BIOMOD_Projection <- function(modeling.output,
   omit.na <- args$omit.na # omit all non full filled environmental cells (always TRUE if env is a raster object)
   silent <- args$silent # echo advancement or not
   do.stack <- args$do.stack # store output in a lone stack
-  clamping.level <- args$clamping.levels # remove all cells where at least clamping.level variables are out of their calibrating range
-  output.format <- args$output.format # raster output format
   keep.in.memory <- args$keep.in.memory # store results on memory or only on hard drive
   on_0_1000 <- args$on_0_1000 # transform projections on a 0 - 1000 scale to limit memory consumption
-  split.proj <- args$split.proj
   
   if (is.null(omit.na)) { omit.na <- TRUE }
   if (is.null(silent)) { silent <- FALSE }
   if (is.null(do.stack)) { do.stack <- TRUE }
   if (is.null(keep.in.memory)) { keep.in.memory <- TRUE }
   if (is.null(on_0_1000)) { on_0_1000 <- TRUE } # by default we return projections on a 0 -  1000 scale.
-  if (is.null(split.proj)) { split.proj <- 1 } # by default we return projections on a 0 -  1000 scale.
   if (!silent) { .bmCat("Do Models Projections") }
   
-  args <- .BIOMOD_Projection.check.args(modeling.output, new.env, proj.name, xy.new.env, selected.models,
+  # clamping.level <- args$clamping.levels # remove all cells where at least clamping.level variables are out of their calibrating range
+  output.format <- args$output.format # raster output format
+  
+  args <- .BIOMOD_Projection.check.args(modeling.output, proj.name, new.env, new.env.xy, chosen.models,
                                         binary.meth, filtered.meth, compress, do.stack, output.format)
   
   proj.name <- args$proj.name
-  selected.models <- args$selected.models
+  new.env.xy <- args$new.env.xy
+  chosen.models <- args$chosen.models
   binary.meth <- args$binary.meth
   filtered.meth <- args$filtered.meth
   compress <- args$compress
   do.stack <- args$do.stack
-  xy.new.env <- args$xy.new.env
   output.format <- args$output.format
   rm(args)
   
@@ -68,9 +233,9 @@ BIOMOD_Projection <- function(modeling.output,
                   proj.names = proj.name,
                   sp.name =  modeling.output@sp.name,
                   expl.var.names = modeling.output@expl.var.names,
-                  models.projected = selected.models,
+                  models.projected = chosen.models,
                   scaled.models = modeling.output@rescal.all.models,
-                  xy.coord = xy.new.env,
+                  xy.coord = new.env.xy,
                   modeling.object.id = modeling.output@modeling.id)
   proj_out@modeling.object@link = modeling.output@link
   if (inherits(new.env, 'Raster')) {
@@ -111,7 +276,7 @@ BIOMOD_Projection <- function(modeling.output,
   
   ## 4. MAKING PROJECTIONS ------------------------------------------------------------------------
   if (!do.stack) {
-    proj <- sapply(selected.models, function(mod.name)
+    proj <- sapply(chosen.models, function(mod.name)
     {
       cat("\n\t> Projecting", mod.name, "...")
       filename <- file.path(namePath, "individual_projections"
@@ -120,20 +285,20 @@ BIOMOD_Projection <- function(modeling.output,
     })
     
   } else {
-    proj <- lapply(selected.models, function(mod.name)
+    proj <- lapply(chosen.models, function(mod.name)
     {
       cat("\n\t> Projecting", mod.name, "...")
       BIOMOD_LoadModels(modeling.output, full.name = mod.name, as = "mod")
-      pred.tmp <- predict(mod, new.env, on_0_1000 = on_0_1000, filename = filename, omit.na = omit.na, split.proj = split.proj)
+      pred.tmp <- predict(mod, new.env, on_0_1000 = on_0_1000, filename = filename, omit.na = omit.na, split.proj = 1)
       return(pred.tmp)
     })
     ## Putting predictions into the right format
     if (inherits(new.env, "Raster")) {
       proj <- stack(proj)
-      names(proj) <- selected.models
+      names(proj) <- chosen.models
     } else {
       proj <- as.data.frame(proj)
-      names(proj) <- selected.models
+      names(proj) <- chosen.models
       proj <- DF_to_ARRAY(proj)
     }
     if (keep.in.memory) {
@@ -166,8 +331,8 @@ BIOMOD_Projection <- function(modeling.output,
     
     ## Get all evaluation thresholds
     if (inherits(new.env, "Raster")) {
-      thresholds <- matrix(0, nrow = length(eval.meth), ncol = length(selected.models), dimnames = list(eval.meth, selected.models))
-      for (mod in selected.models) {
+      thresholds <- matrix(0, nrow = length(eval.meth), ncol = length(chosen.models), dimnames = list(eval.meth, chosen.models))
+      for (mod in chosen.models) {
         PA.run <- .extractModelNamesInfo(model.names = mod, info = 'data.set')
         eval.run <- .extractModelNamesInfo(model.names = mod, info = 'run.eval')
         algo.run <- .extractModelNamesInfo(model.names = mod, info = 'models')
@@ -176,7 +341,7 @@ BIOMOD_Projection <- function(modeling.output,
       }
     } else {
       thresholds <- array(0, dim = c(length(eval.meth), dim(proj)[-1]), dimnames = c(list(eval.meth), dimnames(proj)[-1]))
-      for (mod in selected.models) {
+      for (mod in chosen.models) {
         PA.run <- .extractModelNamesInfo(model.names = mod, info = 'data.set')
         eval.run <- .extractModelNamesInfo(model.names = mod, info = 'run.eval')
         algo.run <- .extractModelNamesInfo(model.names = mod, info = 'models')
@@ -266,8 +431,8 @@ BIOMOD_Projection <- function(modeling.output,
 
 ###################################################################################################
 
-.BIOMOD_Projection.check.args <- function(modeling.output, new.env, proj.name, xy.new.env,
-                                          selected.models, binary.meth, filtered.meth,
+.BIOMOD_Projection.check.args <- function(modeling.output, proj.name, new.env, new.env.xy,
+                                          chosen.models, binary.meth, filtered.meth,
                                           compress, do.stack, output.format)
 {
   ## 1. Check modeling.output -------------------------------------------------
@@ -288,28 +453,28 @@ BIOMOD_Projection <- function(modeling.output,
     .fun_testIfIn(TRUE, "colnames(new.env)", colnames(new.env), modeling.output@expl.var.names))
   }
   
-  ## 4. Check xy.new.env ------------------------------------------------------
-  if (!is.null(xy.new.env)  & !inherits(new.env, 'Raster')) {
-    xy.new.env = data.matrix(xy.new.env)
-    if (ncol(xy.new.env) != 2 || nrow(xy.new.env) != nrow(new.env)) {
+  ## 4. Check new.env.xy ------------------------------------------------------
+  if (!is.null(new.env.xy)  & !inherits(new.env, 'Raster')) {
+    new.env.xy = data.matrix(new.env.xy)
+    if (ncol(new.env.xy) != 2 || nrow(new.env.xy) != nrow(new.env)) {
       stop("invalid xy coordinates argument given -- dimensions mismatch !")
     }
   } else {
-    xy.new.env = matrix()
+    new.env.xy = matrix()
   }
   
-  ## 5. Check selected.models -------------------------------------------------
-  if (selected.models[1] == 'all') {
-    selected.models <- modeling.output@models.computed
+  ## 5. Check chosen.models -------------------------------------------------
+  if (chosen.models[1] == 'all') {
+    chosen.models <- modeling.output@models.computed
   } else {
-    selected.models <- intersect(selected.models, modeling.output@models.computed)
+    chosen.models <- intersect(chosen.models, modeling.output@models.computed)
   }
-  if (length(selected.models) < 1) {
+  if (length(chosen.models) < 1) {
     stop('No models selected')
   }
   
   ## check that given models exist
-  files.check <- paste0(modeling.output@sp.name, '/models/', modeling.output@modeling.id, "/", selected.models)
+  files.check <- paste0(modeling.output@sp.name, '/models/', modeling.output@modeling.id, "/", chosen.models)
   not.checked.files <- grep('MAXENT.Phillips|SRE', files.check)
   if (length(not.checked.files) > 0) {
     files.check <- files.check[-not.checked.files]
@@ -353,7 +518,7 @@ BIOMOD_Projection <- function(modeling.output,
     if (!do.stack) { cat("\n\t\t! 'do.stack' arg is always set as TRUE for data.frame/matrix dataset") }
     do.stack <- TRUE
   } else if (do.stack) { # test if there is enough memory to work with RasterStack
-    test = canProcessInMemory(raster::subset(new.env, 1), 2 * length(selected.models) + nlayers(new.env))
+    test = canProcessInMemory(raster::subset(new.env, 1), 2 * length(chosen.models) + nlayers(new.env))
     if (!test) { rasterOptions(todisk = TRUE) }
   }
   
@@ -375,8 +540,8 @@ BIOMOD_Projection <- function(modeling.output,
   
   
   return(list(proj.name = proj.name,
-              xy.new.env = xy.new.env,
-              selected.models = selected.models,
+              new.env.xy = new.env.xy,
+              chosen.models = chosen.models,
               binary.meth = binary.meth,
               filtered.meth = filtered.meth,
               compress = compress,
