@@ -217,7 +217,6 @@ BIOMOD_Projection <- function(modeling.output,
   
   args <- .BIOMOD_Projection.check.args(modeling.output, proj.name, new.env, new.env.xy, chosen.models,
                                         binary.meth, filtered.meth, compress, do.stack, output.format)
-  
   proj.name <- args$proj.name
   new.env.xy <- args$new.env.xy
   chosen.models <- args$chosen.models
@@ -422,7 +421,8 @@ BIOMOD_Projection <- function(modeling.output,
   ## 6. SAVE MODEL OBJECT ON HARD DRIVE -----------------------------------------------------------
   ## save a copy of output object without value to be lighter
   nameOut <- paste0(modeling.output@sp.name, ".", proj.name, ".projection.out")
-  assign(nameOut, free(proj_out))
+  if (!keep.in.memory) { proj_out <- free(proj_out) }
+  assign(nameOut, proj_out)
   save(list = nameOut, file = file.path(namePath, nameOut))
   
   if (!silent) { .bmCat("Done") }
