@@ -1,14 +1,195 @@
+##' ###############################################################################################
+##' @name BIOMOD_EnsembleForecasting
+##' @aliases BIOMOD_EnsembleForecasting
+##' @author Wilfried Thuiller, Damien Georges, Robin Engler
+##' 
+##' @title Project ensemble species distribution models onto new environment
+##' 
+##' @description This function allows to project ensemble models built with the 
+##' \code{\link[biomod2]{BIOMOD_EnsembleModeling}} function onto new environmental data (which can 
+##' represent new areas, resolution or time scales for example).
+##' 
+##' 
+##' @param EM.output a \code{\link{BIOMOD.EnsembleModeling.out} object returned by the 
+##' \code{\link{BIOMOD_EnsembleModeling}} function
+##' @param projection.output a \code{\link{BIOMOD.projection.out} object returned by the 
+##' \code{\link{BIOMOD_Projection}} function
+##' @param proj.name (\emph{optional, default} \code{NULL}) \cr 
+##' If \code{projection.output = NULL}, a \code{character} corresponding to the name (ID) of the 
+##' projection set (\emph{a new folder will be created within the simulation folder with this 
+##' name})
+##' @param new.env (\emph{optional, default} \code{NULL}) \cr 
+##' If \code{projection.output = NULL}, a \code{matrix}, \code{data.frame} or 
+##' \code{\link[raster:stack]{RasterStack}} object containing the new explanatory variables (in 
+##' columns or layers, with names matching the variables names given to the 
+##' \code{\link{BIOMOD_FormatingData}} function to build \code{EM.output}) that will be used to 
+##' project the ensemble species distribution model(s)
+##' @param new.env.xy (\emph{optional, default} \code{NULL}) \cr 
+##' If \code{new.env} is a \code{matrix} or a \code{data.frame}, a 2-columns \code{matrix} 
+##' containing the corresponding \code{X} and \code{Y} coordinates that will be used to project 
+##' the ensemble species distribution model(s)
+##' @param chosen.models a \code{vector} containing model names to be kept, must be either 
+##' \code{all} or a sub-selection of model names
+##' 
+##' @param binary.meth (\emph{optional, default} \code{NULL}) \cr 
+##' A \code{vector} containing evaluation metric names to be used to transform prediction values 
+##' into binary values based on models evaluation scores obtained with the 
+##' \code{\link{BIOMOD_Modeling}} function. Must be among \code{all} (same evaluation metrics than 
+##' those of \code{modeling.output}) or \code{ROC}, \code{TSS}, \code{KAPPA}, \code{ACCURACY}, 
+##' \code{BIAS}, \code{POD}, \code{FAR}, \code{POFD}, \code{SR}, \code{CSI}, \code{ETS}, 
+##' \code{HK}, \code{HSS}, \code{OR}, \code{ORSS}
+##' @param filtered.meth (\emph{optional, default} \code{NULL}) \cr 
+##' A \code{vector} containing evaluation metric names to be used to transform prediction values 
+##' into filtered values based on models evaluation scores obtained with the 
+##' \code{\link{BIOMOD_Modeling}} function. Must be among \code{all} (same evaluation metrics than 
+##' those of \code{modeling.output}) or \code{ROC}, \code{TSS}, \code{KAPPA}, \code{ACCURACY}, 
+##' \code{BIAS}, \code{POD}, \code{FAR}, \code{POFD}, \code{SR}, \code{CSI}, \code{ETS}, 
+##' \code{HK}, \code{HSS}, \code{OR}, \code{ORSS}
+##' 
+##' @param compress (\emph{optional, default} \code{TRUE}) \cr 
+##' A \code{logical} or a \code{character} value defining whether and how objects should be 
+##' compressed when saved on hard drive. Must be either \code{TRUE}, \code{FALSE}, \code{xz} or 
+##' \code{gzip} (see Details)
+##' 
+##' @param ... (\emph{optional, see Details}) 
+##' 
+##' 
+##' @return
+##' 
+##' A \code{BIOMOD.projection.out} object containing models projections, or links to saved outputs.
+##' Models projections are stored out of \R (for memory storage reasons) in \code{proj.name} folder 
+##' created in the current working directory :
+##' \enumerate{
+##'   \item the output is a 4-dimensional array if \code{new.env} is a \code{matrix} or a 
+##'   \code{data.frame}
+##'   \item it is a \code{rasterStack} if \code{new.env} is a \code{rasterStack} (or several 
+##'   \code{rasterLayer} objects, if \code{new.env} is too large)
+##'   \item raw projections, as well as binary and filtered projections (if asked), are saved in 
+##'   the \code{proj.name} folder
+##' }
+##' 
+##' 
+##' @details 
+##' 
+##' If \code{chosen.models = 'all'}, projections are done for all evaluation and pseudo absences 
+##' runs if applicable. These projections may be used later by the 
+##' \code{\link{BIOMOD_EnsembleForecasting}} function.
+##' 
+##' If \code{build.clamping.mask = TRUE}, a raster file will be saved within the projection folder. 
+##' This mask values will correspond to the number of variables in each pixel that are out of their 
+##' calibration / training range, identifying locations where predictions are uncertain.
+##' 
+##' \code{...} can take the following values :
+##' \itemize{
+##'   \item{\code{on_0_1000} : }{a \code{logical} value defining whether \code{0 - 1} probabilities 
+##'   are to be converted to \code{0 - 1000} scale to save memory on backup}
+##'   \item{\code{do.stack} : }{a \code{logical} value defining whether all projections are to be 
+##'   saved as one \code{RasterStack} object or several \code{RasterLayer} files (the default if 
+##'   projections are too heavy to be all loaded at once in memory)}
+##'   \item{\code{keep.in.memory} : }{a \code{logical} value defining whether all projections are 
+##'   to be kept loaded at once in memory, or only links pointing to hard drive are to be returned}
+##'   \item{\code{output.format} : }{a \code{character} value corresponding to the projections 
+##'   saving format on hard drive, must be either \code{.grd}, \code{.img} or \code{.RData} (the 
+##'   default if \code{new.env} is given as \code{matrix} or \code{data.frame})}
+##   \item{\code{silent} : }{a \code{logical} value defining whether console outputs are to be 
+##   printed or not}
+##' }
+##' 
+##' 
+##' @keywords models, projection
+##' 
+##' 
+##' @seealso \code{\link{BIOMOD_FormatingData}}, \code{\link{BIOMOD_ModelingOptions}}, 
+##' \code{\link{BIOMOD_Modeling}}, \code{\link{BIOMOD_EnsembleModeling}}
+##' 
+##'   
+##' @examples
+##' 
+##' # species occurrences
+##' DataSpecies <- read.csv(system.file("external/species/mammals_table.csv", package="biomod2"), row.names = 1)
+##' head(DataSpecies)
+##' 
+##' # the name of studied species
+##' myRespName <- 'GuloGulo'
+##' 
+##' # the presence/absences data for our species
+##' myResp <- as.numeric(DataSpecies[, myRespName])
+##' 
+##' # the XY coordinates of species data
+##' myRespXY <- DataSpecies[, c("X_WGS84", "Y_WGS84")]
+##' 
+##' 
+##' # Environmental variables extracted from BIOCLIM (bio_3, bio_4, bio_7, bio_11 & bio_12)
+##' myFiles = paste0("external/bioclim/current/bio", c(3, 4, 7, 11, 12), ".grd")
+##' myExpl = raster::stack(system.file(myFiles[1], package = "biomod2"),
+##'                        system.file(myFiles[2], package = "biomod2"),
+##'                        system.file(myFiles[3], package = "biomod2"),
+##'                        system.file(myFiles[4], package = "biomod2"),
+##'                        system.file(myFiles[5], package = "biomod2"))
+##' 
+##' # 1. Formating Data
+##' myBiomodData <- BIOMOD_FormatingData(resp.var = myResp,
+##'                                      expl.var = myExpl,
+##'                                      resp.xy = myRespXY,
+##'                                      resp.name = myRespName)
+##' 
+##' # 2. Defining Models Options using default options.
+##' myBiomodOption <- BIOMOD_ModelingOptions()
+##' 
+##' # 3. Doing Modelisation
+##' myBiomodModelOut <- BIOMOD_Modeling(myBiomodData,
+##'                                     models = c('SRE','RF'),
+##'                                     models.options = myBiomodOption,
+##'                                     NbRunEval = 2,
+##'                                     DataSplit = 80,
+##'                                     VarImport = 0,
+##'                                     models.eval.meth = c('TSS','ROC'),
+##'                                     do.full.models = FALSE,
+##'                                     modeling.id = 'test')
+##'                                     
+##' # 4. Doing Ensemble Modeling
+##' myBiomodEM <- BIOMOD_EnsembleModeling(modeling.output = myBiomodModelOut,
+##'                                       chosen.models = 'all',
+##'                                       em.by = 'all',
+##'                                       eval.metric = c('TSS'),
+##'                                       eval.metric.quality.threshold = c(0.7),
+##'                                       models.eval.meth = c('TSS', 'ROC'),
+##'                                       prob.mean = TRUE,
+##'                                       prob.median = FALSE,
+##'                                       prob.cv = FALSE,
+##'                                       prob.ci = FALSE,
+##'                                       prob.ci.alpha = 0.05,
+##'                                       committee.averaging = FALSE,
+##'                                       prob.mean.weight = TRUE,
+##'                                       prob.mean.weight.decay = 'proportional')
+##' 
+##' # 5. Projecting on current environmental conditions
+##' myBiomodProjection <- BIOMOD_Projection(modeling.output = myBiomodModelOut,
+##'                                         new.env = myExpl,
+##'                                         proj.name = 'current',
+##'                                         chosen.models = 'all',
+##'                                         binary.meth = 'TSS',
+##'                                         compress = FALSE,
+##'                                         build.clamping.mask = FALSE)
+##' 
+##' # 6. Projecting Ensemble on current environmental conditions
+##' myBiomodEMProjection <- BIOMOD_EnsembleForecasting(EM.output = myBiomodEM, 
+##'                                                    projection.output = myBiomodProjection)
+##' 
+##' 
+##' ###############################################################################################
 
-BIOMOD_EnsembleForecasting <- function( EM.output,
-                                        projection.output = NULL,
-                                        new.env = NULL,
-                                        xy.new.env = NULL,
-                                        selected.models = 'all',
-                                        proj.name = NULL,
-                                        binary.meth = NULL,
-                                        filtered.meth = NULL,
-                                        compress = TRUE,
-                                        ...)
+
+BIOMOD_EnsembleForecasting <- function(EM.output,
+                                       projection.output = NULL,
+                                       proj.name = NULL,
+                                       new.env = NULL,
+                                       new.env.xy = NULL,
+                                       chosen.models = 'all',
+                                       binary.meth = NULL,
+                                       filtered.meth = NULL,
+                                       compress = TRUE,
+                                       ...)
 {
   .bmCat("Do Ensemble Models Projections")
   
@@ -23,11 +204,11 @@ BIOMOD_EnsembleForecasting <- function( EM.output,
   if (is.null(compress)) { compress <- FALSE }
   if (is.null(on_0_1000)) { on_0_1000 <- TRUE } # by default outputs are return on a 0 - 1000 scale 
   
-  args <- .BIOMOD_EnsembleForecasting.check.args(EM.output, projection.output, new.env,
-                                                 selected.models, proj.name, binary.meth, filtered.meth)
+  args <- .BIOMOD_EnsembleForecasting.check.args(EM.output, projection.output, proj.name, new.env,
+                                                 chosen.models, binary.meth, filtered.meth)
   projection.output <- args$projection.output
   EM.output <- args$EM.output
-  selected.models <- args$selected.models
+  chosen.models <- args$chosen.models
   proj.name <- args$proj.name
   # total.consensus <- args$total.consensus
   binary.meth <- args$binary.meth
@@ -58,11 +239,11 @@ BIOMOD_EnsembleForecasting <- function( EM.output,
     }
   } 
   
-  if (is.null(xy.new.env)) {
+  if (is.null(new.env.xy)) {
     if (!is.null(projection.output)) {
-      xy.new.env <- projection.output@xy.coord
+      new.env.xy <- projection.output@xy.coord
     } else {
-      xy.new.env <- matrix()
+      new.env.xy <- matrix()
     }
   } 
   rm(args)
@@ -72,8 +253,8 @@ BIOMOD_EnsembleForecasting <- function( EM.output,
                   proj.names = proj.name,
                   sp.name =  EM.output@sp.name,
                   expl.var.names = EM.output@expl.var.names,
-                  models.projected = selected.models,
-                  xy.coord = xy.new.env,
+                  models.projected = chosen.models,
+                  xy.coord = new.env.xy,
                   modeling.object.id = EM.output@modeling.id)
   proj_out@modeling.object@link = EM.output@link
   
@@ -97,7 +278,7 @@ BIOMOD_EnsembleForecasting <- function( EM.output,
   
   
   ## 3. Get needed projections --------------------------------------------------------------------
-  needed_predictions <- get_needed_models(EM.output, selected.models=selected.models)
+  needed_predictions <- get_needed_models(EM.output, chosen.models=chosen.models)
   if (length(projection.output)) {
     formal_pred <- get_predictions(projection.output,
                                    full.name = needed_predictions,
@@ -108,8 +289,8 @@ BIOMOD_EnsembleForecasting <- function( EM.output,
     formal_pred <- BIOMOD_Projection(modeling.output = load_stored_object(EM.output@models.out.obj),
                                      new.env = new.env,
                                      proj.name = tmp_dir,
-                                     xy.new.env = NULL,
-                                     selected.models = needed_predictions,
+                                     new.env.xy = NULL,
+                                     chosen.models = needed_predictions,
                                      compress = TRUE,
                                      build.clamping.mask = FALSE,
                                      do.stack = TRUE,
@@ -126,7 +307,7 @@ BIOMOD_EnsembleForecasting <- function( EM.output,
   ## 4. MAKING PROJECTIONS ------------------------------------------------------------------------
   ef.out <- NULL
   saved.files <- proj_names <- vector()
-  for (em.comp in EM.output@em.computed[which(EM.output@em.computed %in% selected.models)]) {
+  for (em.comp in EM.output@em.computed[which(EM.output@em.computed %in% chosen.models)]) {
     cat("\n\n\t> Projecting", em.comp, "...")
     file_name_tmp <- file.path(indiv_proj_dir, paste0(em.comp,output.format))
     
@@ -165,7 +346,7 @@ BIOMOD_EnsembleForecasting <- function( EM.output,
     }
   }
   
-  # proj_out@models.projected <- EM.output@em.computed[which(EM.output@em.computed %in% selected.models)]
+  # proj_out@models.projected <- EM.output@em.computed[which(EM.output@em.computed %in% chosen.models)]
   proj_out@models.projected <- proj_names
   
   if(do.stack) {
@@ -199,7 +380,7 @@ BIOMOD_EnsembleForecasting <- function( EM.output,
     eval.meth <- unique(c(binary.meth, filtered.meth))
     
     ## Get all evaluation thresholds
-    thresholds <- sapply(selected.models, function(x) {
+    thresholds <- sapply(chosen.models, function(x) {
       get_evaluations(EM.output)[[x]][eval.meth, "Cutoff"]
     })
     if (!on_0_1000) { thresholds <- thresholds / 1000 }
@@ -288,9 +469,9 @@ BIOMOD_EnsembleForecasting <- function( EM.output,
 
 .BIOMOD_EnsembleForecasting.check.args <- function(EM.output,
                                                    projection.output,
-                                                   new.env,
-                                                   selected.models,
                                                    proj.name,
+                                                   new.env,
+                                                   chosen.models,
                                                    # total.consensus,
                                                    binary.meth,
                                                    filtered.meth)
@@ -308,20 +489,20 @@ BIOMOD_EnsembleForecasting <- function( EM.output,
     .fun_testIfInherits(TRUE, "projection.output", projection.output, "BIOMOD.projection.out")
     
     ## check all needed predictions are available
-    needed_pred <- get_needed_models(EM.output, selected.models = selected.models)  
+    needed_pred <- get_needed_models(EM.output, chosen.models = chosen.models)  
     missing_pred <- needed_pred[!(needed_pred %in% projection.output@models.projected)]
     if (length(missing_pred)) {
       stop("Some models predictions missing :", toString(missing_pred))
     }
   }
   
-  ## 3. Check selected.models -------------------------------------------------
-  if (selected.models[1] == 'all') {
-    selected.models <- get_built_models(EM.output)
+  ## 3. Check chosen.models -------------------------------------------------
+  if (chosen.models[1] == 'all') {
+    chosen.models <- get_built_models(EM.output)
   } else {
-    selected.models <- intersect(selected.models, get_built_models(EM.output))
+    chosen.models <- intersect(chosen.models, get_built_models(EM.output))
   }
-  if (length(selected.models) < 1) {
+  if (length(chosen.models) < 1) {
     stop('No models selected')
   }
   
@@ -356,7 +537,7 @@ BIOMOD_EnsembleForecasting <- function( EM.output,
   
   return(list(projection.output = projection.output,
               EM.output = EM.output,
-              selected.models = selected.models,
+              chosen.models = chosen.models,
               proj.name = proj.name,
               # total.consensus = total.consensus,
               binary.meth = binary.meth,
