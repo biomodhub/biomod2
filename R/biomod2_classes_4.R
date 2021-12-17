@@ -1,10 +1,13 @@
 # =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=- #
 # BIOMOD models definition(to make it easier to access plot, predict, ...)
-# Damien Georges, Maya Guéguen
+# Damien Georges, Maya Gueguen
 # 20/11/2012, update 22/10/2021
 # =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=- #
 
 
+##' 
+##' @importFrom raster raster merge as.matrix
+##' 
 
 ###################################################################################################
 ## 7. biomod2_model
@@ -422,7 +425,7 @@ setMethod('predict', signature(object = 'MAXENT.Phillips_biomod2_model'),
   }
   ## merge all parts in a single raster
   if (length(proj.list) > 1) {
-    proj <- do.call(raster::merge, proj.list)
+    proj <- do.call(merge, proj.list)
   } else {
     proj <- proj.list[[1]]
   }
@@ -529,7 +532,7 @@ setMethod('predict', signature(object = 'MAXENT.Phillips.2_biomod2_model'),
 
 .predict.MAXENT.Phillips.2_biomod2_model.RasterStack <- function(object, newdata, ...)
 {
-  newdata.df <- newdata %>% raster::as.matrix()
+  newdata.df <- newdata %>% as.matrix()
   
   args <- list(...)
   filename <- args$filename

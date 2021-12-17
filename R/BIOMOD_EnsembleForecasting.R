@@ -10,9 +10,9 @@
 ##' represent new areas, resolution or time scales for example).
 ##' 
 ##' 
-##' @param EM.output a \code{\link{BIOMOD.EnsembleModeling.out} object returned by the 
+##' @param EM.output a \code{\link{BIOMOD.EnsembleModeling.out}} object returned by the 
 ##' \code{\link{BIOMOD_EnsembleModeling}} function
-##' @param projection.output a \code{\link{BIOMOD.projection.out} object returned by the 
+##' @param projection.output a \code{\link{BIOMOD.projection.out}} object returned by the 
 ##' \code{\link{BIOMOD_Projection}} function
 ##' @param proj.name (\emph{optional, default} \code{NULL}) \cr 
 ##' If \code{projection.output = NULL}, a \code{character} corresponding to the name (ID) of the 

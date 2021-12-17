@@ -1,6 +1,6 @@
 # =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=- #
 # BIOMOD models definition(to make it easier to access plot, predict, ...)
-# Damien Georges, Maya Guéguen
+# Damien Georges, Maya Gueguen
 # 20/11/2012, update 22/10/2021
 # =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=- #
 

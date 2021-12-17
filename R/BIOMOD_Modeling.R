@@ -10,14 +10,14 @@
 ##' validation, and the predictive power of the different models can be estimated using a range 
 ##' of evaluation metrics (see Details).
 ##' 
-##' @param data a \code{\link{BIOMOD.formated.data} object returned by the 
+##' @param data a \code{\link{BIOMOD.formated.data}} object returned by the 
 ##' \code{\link{BIOMOD_FormatingData}} function
 ##' @param modeling.id a \code{character} corresponding to the name (ID) of the simulation set 
 ##' (\emph{a random number by default})
 ##' @param models a \code{vector} containing model names to be computed, must be among \code{GLM}, 
 ##' \code{GBM}, \code{GAM}, \code{CTA}, \code{ANN}, \code{SRE}, \code{FDA}, \code{MARS}, 
 ##' \code{RF}, \code{MAXENT.Phillips}, \code{MAXENT.Phillips.2}
-##' @param models.options a \code{\link{BIOMOD.models.options} object returned by the 
+##' @param models.options a \code{\link{BIOMOD.models.options}} object returned by the 
 ##' \code{\link{BIOMOD_ModelingOptions}} function
 ##' @param NbRunEval an \code{integer} corresponding to the number of repetitions to be done for 
 ##' calibration/validation splitting (\emph{if specified, \code{DataSplit} and 

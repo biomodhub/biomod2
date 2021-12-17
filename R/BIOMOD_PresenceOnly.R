@@ -1,7 +1,7 @@
 ##' ###############################################################################################
 ##' @name BIOMOD_PresenceOnly
 ##' @aliases BIOMOD_PresenceOnly
-##' @author Frank Breiner \email{frank.breiner@wsl.ch}, Maya Guéguen
+##' @author Frank Breiner \email{frank.breiner@wsl.ch}, Maya Gueguen
 ##' 
 ##' @title Evaluate models with presence-only metrics
 ##' 

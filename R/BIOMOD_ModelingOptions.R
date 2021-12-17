@@ -49,7 +49,7 @@
 ##' 
 ##' Below is the detailed list of all modifiable parameters for each available model.
 ##'
-##' @section \bold{GLM (\code{\link[stats]{glm}})}
+##' @section \bold{GLM (\code{\link[stats]{glm}})} :
 ##' \itemize{
 ##'   \item{\code{myFormula}}{ : a typical \code{formula} object (see Examples). \cr If not 
 ##'   \code{NULL}, \code{type} and \code{interaction.level} parameters are switched off. \cr 
@@ -80,7 +80,7 @@
 ##'   \code{\link{glm.control}})}
 ##' }
 ##'
-##' @section \bold{GBM (default \code{\link[gbm]{gbm}})}
+##' @section \bold{GBM (default \code{\link[gbm]{gbm}})} :
 ##' 
 ##' Please refer to \code{\link[gbm]{gbm}} help file for more details.
 ##' \itemize{
@@ -98,7 +98,7 @@
 ##'   \item{\code{n.cores = 1}}
 ##' }
 ##'
-##' @section \bold{GAM (\code{\link[gam]{gam}} or \code{\link[mgcv]{gam}})}
+##' @section \bold{GAM (\code{\link[gam]{gam}} or \code{\link[mgcv]{gam}})} :
 ##' \itemize{
 ##'   \item{\code{algo = 'GAM_gam'}}{ : a \code{character} defining the chosen GAM function, must 
 ##'   be \code{GAM_gam} (see \code{\link[gam]{gam}}), \code{GAM_mgcv} (see \code{\link[mgcv]{gam}}) 
@@ -138,18 +138,18 @@
 ##'   }
 ##' }
 ##'
-##' @section \bold{CTA (\code{\link[rpart]{rpart}})}
+##' @section \bold{CTA (\code{\link[rpart]{rpart}})} :
 ##' 
 ##' Please refer to \code{\link[rpart]{rpart}} help file for more details.
 ##' \itemize{
 ##'   \item{\code{method = 'class'}}
-##'   \item{\code{parms = 'default'}{ : if \code{'default'}, default \pkg{rpart} 
+##'   \item{\code{parms = 'default'}}{ : if \code{'default'}, default \pkg{rpart} 
 ##'   \code{parms} value are kept}
 ##'   \item{\code{cost = NULL}}
 ##'   \item{\code{control}}{ : see \code{\link[rpart]{rpart.control}}}
 ##' }
 ##'
-##' @section \bold{ANN (\code{\link[nnet]{nnet}})}
+##' @section \bold{ANN (\code{\link[nnet]{nnet}})} :
 ##' \itemize{
 ##'   \item{\code{NbCV = 5}}{ : an \code{integer} corresponding to the number of cross-validation 
 ##'   repetitions to find best size and decay parameters}
@@ -169,13 +169,13 @@
 ##'   iterations}
 ##' }
 ##'
-##' @section \bold{SRE (\code{\link[biomod2]{sre}})}
+##' @section \bold{SRE (\code{\link[biomod2]{sre}})} :
 ##' \itemize{
 ##'   \item{\code{quant = 0.025}}{ : a \code{numeric} corresponding to the quantile of 'extreme 
 ##'   environmental variable' removed to select species envelops}
 ##' }
 ##'
-##' @section \bold{FDA (\code{\link[mda]{fda}})}
+##' @section \bold{FDA (\code{\link[mda]{fda}})} :
 ##' 
 ##' Please refer to \code{\link[mda]{fda}} help file for more details.
 ##' \itemize{
@@ -184,7 +184,7 @@
 ##'   given to the \ldots options of \code{\link[mda]{fda}} function}
 ##' }
 ##'
-##' @section \bold{MARS (\code{\link[earth]{earth}})}
+##' @section \bold{MARS (\code{\link[earth]{earth}})} :
 ##' 
 ##' Please refer to \code{\link[earth]{earth}} help file for more details.
 ##' \itemize{
@@ -213,7 +213,7 @@
 ##'   \item{\code{pmethod = 'backward'}}
 ##' }
 ##'
-##' @section \bold{RF (\code{\link[randomForest]{randomForest}})}
+##' @section \bold{RF (\code{\link[randomForest]{randomForest}})} :
 ##' \itemize{
 ##'   \item{\code{do.classif = TRUE}}{ : if \code{TRUE} \emph{random.forest classification} will 
 ##'   be computed, otherwise \emph{random.forest regression} will be done}
@@ -223,7 +223,7 @@
 ##'   \item{\code{maxnodes = NULL}}
 ##' }
 ##'
-##' @section \bold{\href{https://biodiversityinformatics.amnh.org/open_source/maxent/}{MAXENT.Phillips}}
+##' @section \bold{MAXENT.Phillips (\emph{biodiversityinformatics.amnh.org/open_source/maxent/})} :
 ##' \itemize{
 ##'   \item{\code{path_to_maxent.jar = getwd()}}{ : a \code{character} corresponding to \pkg{maxent.jar} 
 ##'   file link}
@@ -266,7 +266,7 @@
 ##'   of the species (\emph{probability of presence at ordinary occurrence points})}
 ##' }
 ##'
-##' % @section \bold{MAXENT.Tsuruoka (\code{\link[maxent]{maxent}})}
+##' % @section \bold{MAXENT.Tsuruoka (\code{\link[maxent]{maxent}})} :
 ##' % \itemize{
 ##' %   \item{\code{l1_regularizer = 0.0}}{ : a \code{numeric} turning on L1 regularization and setting 
 ##' %   the regularization parameter (\emph{a value of \code{0} will disable L1 regularization})}
@@ -308,8 +308,8 @@
 ##'
 ##' ## you can prefer to establish your own GLM formula
 ##' myBiomodOptions <- BIOMOD_ModelingOptions(
-##'   GLM = list(myFormula = formula("Sp277 ~ bio3 +
-##'                 log(bio10) + poly(bio16,2) + bio19 + bio3:bio19")))
+##'   GLM = list(myFormula = formula('Sp277 ~ bio3 +
+##'                 log(bio10) + poly(bio16, 2) + bio19 + bio3:bio19')))
 ##'
 ##' ## check changes were done
 ##' myBiomodOptions
@@ -317,18 +317,19 @@
 ##' ## you also can directly print default parameters and then follow the same processus
 ##' bm_DefaultModelingOptions()
 ##'
+##'
 ##' ###############################################################################################
 
-'BIOMOD_ModelingOptions' <- function(GLM = NULL,
-                                     GBM = NULL,
-                                     GAM = NULL,
-                                     CTA = NULL,
-                                     ANN = NULL,
-                                     SRE = NULL,
-                                     FDA = NULL,
-                                     MARS = NULL,
-                                     RF = NULL,
-                                     MAXENT.Phillips = NULL)
+BIOMOD_ModelingOptions <- function(GLM = NULL,
+                                   GBM = NULL,
+                                   GAM = NULL,
+                                   CTA = NULL,
+                                   ANN = NULL,
+                                   SRE = NULL,
+                                   FDA = NULL,
+                                   MARS = NULL,
+                                   RF = NULL,
+                                   MAXENT.Phillips = NULL)
 {
   ## 1. create a defaut BIOMOD.Model.Options object ---------------------------
   opt <- new('BIOMOD.Model.Options')

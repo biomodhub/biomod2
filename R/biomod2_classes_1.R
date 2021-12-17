@@ -1,19 +1,23 @@
 # =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=- #
 # BIOMOD objects definition
-# Damien Georges, Maya Guéguen
+# Damien Georges, Maya Gueguen
 # 09/02/2012, update 18/10/2021
 # =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=- #
 
-requireNamespace("raster", quietly=TRUE)
-requireNamespace(".0
-# =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=- #
-# This file defines the BIOMOD objects and all their methods
-# =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=- #
+# requireNamespace("raster", quietly=TRUE)
+# requireNamespace(".0
+# # =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=- #
+# # This file defines the BIOMOD objects and all their methods
+# # =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=- #
+# 
+# # We choose here to create monospecific objects to make all procedures and parallelising easier
+# requireNamespacrasterVis", quietly=TRUE)
 
-# We choose here to create monospecific objects to make all procedures and parallelising easier
-requireNamespacrasterVis", quietly=TRUE)
+# @include biomod2_classes_1.R
 
-##' @include biomod2_classes_1.R
+##' 
+##' @importFrom raster stack nlayers addLayer is.factor subset
+##' 
 
 ###################################################################################################
 ## 1. BIOMOD.formated.data
@@ -41,7 +45,7 @@ setMethod('BIOMOD.formated.data', signature(sp = 'numeric', env = 'data.frame'),
                    , eval.sp = NULL, eval.env = NULL, eval.xy = NULL
                    , na.rm = TRUE, data.mask = NULL)
           {
-            if (is.null(data.mask)) { data.mask <- raster::stack() }
+            if (is.null(data.mask)) { data.mask <- stack() }
             
             if (is.null(eval.sp)) { ## NO EVALUATION DATA -----------------------------------------
               BFD <- new(
@@ -61,8 +65,8 @@ setMethod('BIOMOD.formated.data', signature(sp = 'numeric', env = 'data.frame'),
                 sp.name = sp.name
               )
               
-              if (raster::nlayers(BFDeval@data.mask) > 0) {
-                data.mask.tmp <- try(raster::addLayer(data.mask, BFDeval@data.mask))
+              if (nlayers(BFDeval@data.mask) > 0) {
+                data.mask.tmp <- try(addLayer(data.mask, BFDeval@data.mask))
                 if (!inherits(data.mask.tmp, "try-error")) {
                   data.mask <- data.mask.tmp
                   names(data.mask) <- c("calibration", "validation")
@@ -136,7 +140,7 @@ setMethod('BIOMOD.formated.data', signature(sp = 'numeric', env = 'RasterStack')
                    , eval.sp = NULL, eval.env = NULL, eval.xy = NULL
                    , na.rm = TRUE)
           {
-            categorial_var <- names(env)[raster::is.factor(env)]
+            categorial_var <- names(env)[is.factor(env)]
             
             ## Keep same env variable for eval than calib (+ check for factor)
             if (!is.null(eval.sp) && is.null(eval.env)) {
@@ -151,10 +155,10 @@ setMethod('BIOMOD.formated.data', signature(sp = 'numeric', env = 'RasterStack')
             if (is.null(xy)) { xy <- as.data.frame(coordinates(env)) }
             
             ## Prepare mask of studied area
-            data.mask = reclassify(raster::subset(env, 1, drop = T), c(-Inf, Inf, -1))
+            data.mask = reclassify(subset(env, 1, drop = T), c(-Inf, Inf, -1))
             data.mask[cellFromXY(data.mask, xy[which(sp == 1), ])] <- 1
             data.mask[cellFromXY(data.mask, xy[which(sp == 0), ])] <- 0
-            data.mask <- raster::stack(data.mask)
+            data.mask <- stack(data.mask)
             names(data.mask) <- sp.name
             
             ## Keep same env variable for eval than calib (+ check for factor)
@@ -175,7 +179,7 @@ setMethod('BIOMOD.formated.data', signature(sp = 'numeric', env = 'RasterStack')
 setMethod('plot', signature(x = 'BIOMOD.formated.data', y = "missing"),
           function(x, coord = NULL, col = NULL)
           {
-            if (raster::nlayers(x@data.mask) > 0)
+            if (nlayers(x@data.mask) > 0)
             {
               requireNamespace("rasterVis")
               
@@ -325,7 +329,7 @@ BIOMOD.formated.data.PA <-  function(sp, env, xy, sp.name
 {
   
   categorial_var <- NULL
-  if (inherits(env, 'Raster')) { categorial_var <- names(env)[raster::is.factor(env)] }
+  if (inherits(env, 'Raster')) { categorial_var <- names(env)[is.factor(env)] }
   
   ## Keep same env variable for eval than calib (+ check for factor)
   if (!is.null(eval.sp) && is.null(eval.env)) {
@@ -391,7 +395,7 @@ BIOMOD.formated.data.PA <-  function(sp, env, xy, sp.name
     if(inherits(env,'Raster'))
     {
       ## create data.mask for ploting
-      data.mask.tmp <- reclassify(raster::subset(env, 1), c(-Inf, Inf, -1))
+      data.mask.tmp <- reclassify(subset(env, 1), c(-Inf, Inf, -1))
       data.mask <- stack(data.mask.tmp)
       xy_pres <- pa.data.tmp$xy[which(pa.data.tmp$sp == 1), , drop = FALSE]
       xy_abs <- pa.data.tmp$xy[which(pa.data.tmp$sp == 0), , drop = FALSE]
@@ -460,7 +464,7 @@ BIOMOD.formated.data.PA <-  function(sp, env, xy, sp.name
 setMethod('plot', signature(x = 'BIOMOD.formated.data.PA', y = "missing"),
           function(x, coord = NULL, col = NULL)
           {
-            if (raster::nlayers(x@data.mask) > 0)
+            if (nlayers(x@data.mask) > 0)
             {
               requireNamespace("rasterVis")
               

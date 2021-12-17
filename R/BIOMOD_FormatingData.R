@@ -1,20 +1,20 @@
-##' ###############################################################################################
+###################################################################################################
 ##' @name BIOMOD_FormatingData
 ##' @aliases BIOMOD_FormatingData
 ##' @author Damien Georges, Wilfried Thuiller
 ##' 
 ##' @title Format input data, and select pseudo-absences if wanted, for usage in \pkg{biomod2}
 ##' 
-##' @description This function gathers together all input data needed (xy, presences/absences, 
-##' explanatory variables, and the same for evaluation data if available) to run \pkg{biomod2} 
-##' models. It allows to select pseudo-absences if no absence data is available, with different 
-##' strategies (see Details).
+##' @description This function gathers together all input data needed (\emph{xy, 
+##' presences/absences, explanatory variables, and the same for evaluation data if available}) to 
+##' run \pkg{biomod2} models. It allows to select pseudo-absences if no absence data is available, 
+##' with different strategies (see \href{BIOMOD_FormatingData.html#details}{Details}).
 ##' 
 ##' 
 ##' @param resp.name (\emph{optional, default} \code{NULL}) \cr 
 ##' A \code{character} containing the species name.
 ##' 
-##' @param resp.var a \code{vector}, \code{\link[sp]{SpatialPoints}} (if presence-only) or 
+##' @param resp.var a \code{vector}, \code{\link[sp]{SpatialPoints}} (\emph{if presence-only}) or 
 ##' \code{\link[sp]{SpatialPointsDataFrame}} object containing binary data (\code{0} : absence, 
 ##' \code{1} : presence, \code{NA} : indeterminate) for a single species that will be used to 
 ##' build the species distribution model(s)
@@ -26,7 +26,7 @@
 ##' \code{X} and \code{Y} coordinates that will be used to build the species distribution model(s)
 ##' 
 ##' @param eval.resp.var (\emph{optional, default} \code{NULL}) \cr 
-##' A \code{vector}, \code{\link[sp]{SpatialPoints}} (if presence-only) or 
+##' A \code{vector}, \code{\link[sp]{SpatialPoints}} (\emph{if presence-only}) or 
 ##' \code{\link[sp]{SpatialPointsDataFrame}} object containing binary data (\code{0} : absence, 
 ##' \code{1} : presence, \code{NA} : indeterminate) for a single species that will be used to 
 ##' evaluate the species distribution model(s) with independent data
@@ -49,24 +49,25 @@
 ##' @param PA.strategy (\emph{optional, default} \code{NULL}) \cr 
 ##' If pseudo-absence selection, a \code{character} defining the strategy that will be used to 
 ##' select the pseudo-absence points (must be \code{random}, \code{sre}, \code{disk} or 
-##' \code{user.defined}, see Details)
+##' \code{user.defined}, see \href{BIOMOD_FormatingData.html#details}{Details})
 ##' @param PA.sre.quant (\emph{optional, default} \code{0}) \cr 
 ##' If pseudo-absence selection and \code{PA.strategy = 'sre'}, a \code{numeric} between \code{0} 
 ##' and \code{1} defining the quantile used to make the \code{sre} pseudo-absence selection 
-##' (see Details)
+##' (see \href{BIOMOD_FormatingData.html#details}{Details})
 ##' @param PA.dist.min (\emph{optional, default} \code{0}) \cr 
 ##' If pseudo-absence selection and \code{PA.strategy = 'sre'}, a \code{numeric} defining the 
 ##' minimal distance to presence points used to make the \code{disk} pseudo-absence selection 
-##' (in meters, see Details)
+##' (in meters, see \href{BIOMOD_FormatingData.html#details}{Details})
 ##' @param PA.dist.max (\emph{optional, default} \code{0}) \cr 
 ##' If pseudo-absence selection and \code{PA.strategy = 'sre'}, a \code{numeric} defining the 
 ##' maximal distance to presence points used to make the \code{disk} pseudo-absence selection 
-##' (in meters, see Details)
+##' (in meters, see \href{BIOMOD_FormatingData.html#details}{Details})
 ##' @param PA.table (\emph{optional, default} \code{NULL}) \cr 
 ##' If pseudo-absence selection and \code{PA.strategy = 'user.defined'}, a \code{matrix} or 
-##' \code{data.frame} with as many rows as \code {resp.var} values, as many columns as 
+##' \code{data.frame} with as many rows as \code{resp.var} values, as many columns as 
 ##' \code{PA.nb.rep}, and containing \code{TRUE} or \code{FALSE} values defining which points 
-##' will be used to build the species distribution model(s) for each repetition (see Details)
+##' will be used to build the species distribution model(s) for each repetition (see 
+##' \href{BIOMOD_FormatingData.html#details}{Details})
 ##' 
 ##' @param na.rm (\emph{optional, default} \code{TRUE}) \cr 
 ##' A \code{logical} value defining whether points having one or several missing values for 
@@ -76,7 +77,7 @@
 ##' @return 
 ##' 
 ##' A \code{BIOMOD.formated.data} object that can be used to build species distribution model(s) 
-##' with the \code{\link[biomod2]{BIOMOD_Modeling}} function. \code{print} and \code{plot} 
+##' with the \code{\link[biomod2]{BIOMOD_Modeling}} function. \cr \code{print} and \code{plot} 
 ##' functions are available to have a summary of the created object.
 ##' 
 ##' 
@@ -84,41 +85,37 @@
 ##' 
 ##' This function gathers and formats all input data needed to run \pkg{biomod2} models. It 
 ##' supports different kind of inputs (e.g. \code{matrix}, \code{SpatialPoints}, 
-##' \code{RasterStack}) and provides different methods to select pseudo-absences if needed.
+##' \code{RasterStack}) and provides different methods to select pseudo-absences if needed. \cr \cr
 ##' 
 ##' \bold{Concerning explanatory variables and XY coordinates :} 
 ##' \itemize{
-##'   \item{if \code{rasterLayer} or \code{rasterStack} provided (for \code{expl.var} or 
+##'   \item if \code{rasterLayer} or \code{rasterStack} provided (for \code{expl.var} or 
 ##'   \code{eval.expl.var}), \pkg{biomod2} will extract the corresponding values from XY 
 ##'   coordinates provided (\code{resp.xy} or \code{eval.resp.xy} respectively). \cr
 ##'   \emph{Be sure to give the XY coordinates in the same projection system than the 
 ##'   raster objects !}
-##'   }
-##'   \item{if \code{SpatialPointsDataFrame} provided (for \code{resp.var} or 
-##'   \code{eval.resp.var}), the same rule applies (same projection system !).
-##'   }
-##'   \item{if \code{data.frame} provided (for \code{expl.var} or \code{eval.expl.var}), 
+##'   \item if \code{SpatialPointsDataFrame} provided (for \code{resp.var} or 
+##'   \code{eval.resp.var}), the same rule applies (\emph{same projection system !}).
+##'   \item if \code{data.frame} provided (for \code{expl.var} or \code{eval.expl.var}), 
 ##'   \pkg{biomod2} will simply merge it (\code{cbind}) with \code{resp.var} without 
 ##'   considering XY coordinates. \cr
 ##'   \emph{Be sure to give explanatory and response values in the same row order !}
-##'   }
 ##' }
 ##' 
 ##' \bold{Concerning pseudo-absence selection :}
 ##' \itemize{
 ##'   \item{if both presence and absence data are available, and there is enough absences :
-##'   set \code{PA.nb.rep = 0} and no pseudo-absence will be selected
+##'   set \code{PA.nb.rep = 0} and no pseudo-absence will be selected.
 ##'   }
 ##'   \item{if no absence data (or not enough) is available, several pseudo-absence repetitions  
 ##'   are recommended (to estimate the effect of pseudo-absence selection), as well as high 
 ##'   number of pseudo-absence points. \cr
 ##'   \emph{Be sure not to select more pseudo-absence points than maximum number of pixels in 
-##'   the studied area ! \cr \cr}
+##'   the studied area ! \cr \cr \cr \cr}
 ##'   }
 ##' }
 ##' 
-##' More specifically...
-##' \enumerate{
+##' \describe{
 ##'   \item{Response variable}{
 ##'   \pkg{biomod2} models single species at a time (no multi-species). Hence, \code{resp.var} 
 ##'   must be a uni-dimensional object (either a \code{vector}, a one-column 
@@ -131,8 +128,8 @@
 ##'   }
 ##'   If no true absences are available, pseudo-absence selection must be done. \cr
 ##'   If \code{resp.var} is a non-spatial object (\code{vector}, \code{matrix} or 
-##'   \code{data.frame}), XY coordinates must be provided through \code{resp.xy}. If 
-##'   pseudo-absence points are to be selected, \code{NA} points must be provided in order to 
+##'   \code{data.frame}), XY coordinates must be provided through \code{resp.xy}. \cr 
+##'   If pseudo-absence points are to be selected, \code{NA} points must be provided in order to 
 ##'   select pseudo-absences among them.
 ##'   }
 ##'   \item{Explanatory variables}{
@@ -143,7 +140,7 @@
 ##'   Although \pkg{biomod2} provides tools to automatically divide dataset into calibration and 
 ##'   validation parts through the modeling process (see \code{NbRunEval} and \code{DataSplit} 
 ##'   parameters in \code{\link{BIOMOD_Modeling}} function ; or \code{\link{BIOMOD_CrossValidation} 
-##'   function}, it is also possible (and strongly advised) to directly provide two independent 
+##'   function}), it is also possible (and strongly advised) to directly provide two independent 
 ##'   datasets, one for calibration and one for validation.
 ##'   }
 ##'   \item{Pseudo-absence selection}{
@@ -153,7 +150,7 @@
 ##'   (if provided as a \code{rasterStack}) or to the points identified as \code{NA} in 
 ##'   \code{resp.var} (if \code{expl.var} provided as a \code{matrix} or \code{data.frame}). \cr
 ##'   Several methods are available to do this selection :
-##'   \itemize{
+##'   \describe{
 ##'     \item{random}{all points of initial background are pseudo-absence candidates. 
 ##'     \code{PA.nb.absences} are drawn randomly, for each \code{PA.nb.rep} requested.
 ##'     }
@@ -167,10 +164,10 @@
 ##'     \item{disk}{pseudo-absences are selected within circles around presence points defined by 
 ##'     \code{PA.dist.min} and \code{PA.dist.max} distance values (in meters). It allows to select 
 ##'     pseudo-absence points that are not too close to (avoid same niche and pseudo-replication) 
-##'     or too far (localized sampling strategy) from presences
+##'     or too far (localized sampling strategy) from presences.
 ##'     }
 ##'     \item{user.defined}{pseudo-absences are defined in advance and given as \code{data.frame} 
-##'     through the \code{PA.table} parameter
+##'     through the \code{PA.table} parameter.
 ##'     }
 ##'   }
 ##'   }
@@ -186,7 +183,8 @@
 ##' @examples
 ##' 
 ##' # species occurrences
-##' DataSpecies <- read.csv(system.file("external/species/mammals_table.csv", package="biomod2"), row.names = 1)
+##' myFile <- system.file("external/species/mammals_table.csv", package="biomod2")
+##' DataSpecies <- read.csv(myFile, row.names = 1)
 ##' head(DataSpecies)
 ##' 
 ##' # the name of studied species
@@ -217,23 +215,28 @@
 ##' plot(myBiomodData)
 ##' 
 ##' 
-##' ###############################################################################################
+##' @importFrom sp coordinates
+##' @importFrom raster stack
+##' 
+##' @export
+##' 
+###################################################################################################
 
-'BIOMOD_FormatingData' <- function(resp.var,
-                                   expl.var,
-                                   resp.xy = NULL,
-                                   resp.name = NULL,
-                                   eval.resp.var = NULL,
-                                   eval.expl.var = NULL,
-                                   eval.resp.xy = NULL,
-                                   PA.nb.rep = 0,
-                                   PA.nb.absences = 1000,
-                                   PA.strategy = 'random',
-                                   PA.dist.min = 0,
-                                   PA.dist.max = NULL,
-                                   PA.sre.quant = 0.025,
-                                   PA.table = NULL,
-                                   na.rm = TRUE)
+BIOMOD_FormatingData <- function(resp.var,
+                                 expl.var,
+                                 resp.xy = NULL,
+                                 resp.name = NULL,
+                                 eval.resp.var = NULL,
+                                 eval.expl.var = NULL,
+                                 eval.resp.xy = NULL,
+                                 PA.nb.rep = 0,
+                                 PA.nb.absences = 1000,
+                                 PA.strategy = 'random',
+                                 PA.dist.min = 0,
+                                 PA.dist.max = NULL,
+                                 PA.sre.quant = 0.025,
+                                 PA.table = NULL,
+                                 na.rm = TRUE)
 {
   .bmCat(paste0(resp.name, " Data Formating"))
 
@@ -350,7 +353,7 @@
     if (!is.null(resp.xy)) {
       cat("\n      ! XY coordinates of response variable will be ignored because spatial response object is given.")
     }
-    resp.xy <- data.matrix(sp::coordinates(resp.var))
+    resp.xy <- data.matrix(coordinates(resp.var))
     if (inherits(resp.var, 'SpatialPointsDataFrame')) {
       resp.var <- resp.var@data
     } else {
@@ -373,7 +376,7 @@
   }
 
   if (inherits(expl.var, 'Raster')) {
-    expl.var <- raster::stack(expl.var, RAT = FALSE)
+    expl.var <- stack(expl.var, RAT = FALSE)
   }
 
   if (inherits(expl.var, 'SpatialPoints')) {
@@ -460,7 +463,7 @@
       if (!is.null(eval.resp.xy)) {
         cat("\n      ! XY coordinates of response variable will be ignored because spatial response object is given.")
       }
-      eval.resp.xy <- data.matrix(sp::coordinates(eval.resp.var))
+      eval.resp.xy <- data.matrix(coordinates(eval.resp.var))
       if (class(eval.resp.var)[1] == 'SpatialPointsDataFrame') {
         eval.resp.var <- eval.resp.var@data
       } else {
@@ -483,7 +486,7 @@
     }
     
     if (inherits(eval.expl.var, 'Raster')) {
-      eval.expl.var <- raster::stack(eval.expl.var)
+      eval.expl.var <- stack(eval.expl.var)
     }
     
     if (inherits(eval.expl.var, 'SpatialPoints')) {
@@ -529,18 +532,18 @@
 
   ### PA arguments are not checked here because it will be done later... (may be will do it here later)
 
-  return(list( resp.var = resp.var,
-               expl.var = expl.var,
-               resp.xy = resp.xy,
-               resp.name = resp.name,
-               eval.resp.var = eval.resp.var,
-               eval.expl.var = eval.expl.var,
-               eval.resp.xy = eval.resp.xy,
-               PA.nb.rep = PA.nb.rep,
-               PA.nb.absences = PA.nb.absences,
-               PA.strategy = PA.strategy,
-               PA.dist.min = PA.dist.min,
-               PA.dist.max = PA.dist.max,
-               PA.sre.quant = PA.sre.quant,
-               PA.table = PA.table))
+  return(list(resp.var = resp.var,
+              expl.var = expl.var,
+              resp.xy = resp.xy,
+              resp.name = resp.name,
+              eval.resp.var = eval.resp.var,
+              eval.expl.var = eval.expl.var,
+              eval.resp.xy = eval.resp.xy,
+              PA.nb.rep = PA.nb.rep,
+              PA.nb.absences = PA.nb.absences,
+              PA.strategy = PA.strategy,
+              PA.dist.min = PA.dist.min,
+              PA.dist.max = PA.dist.max,
+              PA.sre.quant = PA.sre.quant,
+              PA.table = PA.table))
 }

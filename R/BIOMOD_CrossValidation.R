@@ -9,7 +9,7 @@
 ##' the \code{\link{BIOMOD_Modeling}} function to evaluate models with repeated k-fold or 
 ##' stratified cross-validation (cv) instead of repeated split samples.
 ##' 
-##' @param data a \code{\link{BIOMOD.formated.data} object returned by the 
+##' @param data a \code{\link{BIOMOD.formated.data}} object returned by the 
 ##' \code{\link{BIOMOD_FormatingData}} function
 ##' @param k an \code{integer} corresponding to the number of bins/partitions for k-fold cv
 ##' @param repetition an \code{integer} corresponding to the number of repetitions of k-fold cv 
@@ -28,7 +28,7 @@
 ##' @return 
 ##' 
 ##' A \code{DataSplitTable} {matrix} with \code{k * repetition} (\emph{+ 1 if 
-##' \code{do.full.models = TRUE}) columns that can be given as parameter to the 
+##' \code{do.full.models = TRUE}}) columns that can be given as parameter to the 
 ##' \code{\link{BIOMOD_Modeling}} function.
 ##' 
 ##' 

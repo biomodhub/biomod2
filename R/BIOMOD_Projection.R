@@ -10,7 +10,7 @@
 ##' represent new areas, resolution or time scales for example).
 ##' 
 ##' 
-##' @param modeling.output a \code{\link{BIOMOD.models.out} object returned by the 
+##' @param modeling.output a \code{\link{BIOMOD.models.out}} object returned by the 
 ##' \code{\link{BIOMOD_Modeling}} function
 ##' @param proj.name a \code{character} corresponding to the name (ID) of the projection set 
 ##' (\emph{a new folder will be created within the simulation folder with this name})
@@ -448,9 +448,9 @@ BIOMOD_Projection <- function(modeling.output,
   ## 3. Check new.env ---------------------------------------------------------
   .fun_testIfInherits(TRUE, "new.env", new.env, c('matrix', 'data.frame', 'RasterStack'))
   if (inherits(new.env, 'RasterStack')) {
-    .fun_testIfIn(TRUE, "names(new.env)", names(new.env), modeling.output@expl.var.names))
+    .fun_testIfIn(TRUE, "names(new.env)", names(new.env), modeling.output@expl.var.names)
   } else {
-    .fun_testIfIn(TRUE, "colnames(new.env)", colnames(new.env), modeling.output@expl.var.names))
+    .fun_testIfIn(TRUE, "colnames(new.env)", colnames(new.env), modeling.output@expl.var.names)
   }
   
   ## 4. Check new.env.xy ------------------------------------------------------

@@ -1,19 +1,25 @@
 # =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=- #
 # BIOMOD objects definition
-# Damien Georges, Maya Guéguen
+# Damien Georges, Maya Gueguen
 # 09/02/2012, update 18/10/2021
 # =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=- #
 
-requireNamespace("raster", quietly=TRUE)
-requireNamespace(".0
-# =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=- #
-# This file defines the BIOMOD objects and all their methods
-# =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=- #
+# requireNamespace("raster", quietly=TRUE)
+# requireNamespace(".0
+# # =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=- #
+# # This file defines the BIOMOD objects and all their methods
+# # =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=- #
+# 
+# # We choose here to create monospecific objects to make all procedures and parallelising easier
+# requireNamespacrasterVis", quietly=TRUE)
 
-# We choose here to create monospecific objects to make all procedures and parallelising easier
-requireNamespacrasterVis", quietly=TRUE)
+## @importFrom methods setClass setGeneric setMethod setRefClass
+## @importClassesFrom raster RasterLayer RasterStack
 
 
+##' 
+##' @importFrom raster stack
+##' 
 
 ###################################################################################################
 ## BIOMOD.stored[...] objects
@@ -36,11 +42,11 @@ setClass("BIOMOD.stored.data.frame",
          prototype(val = data.frame()),
          validity = function(object){ return(TRUE) })
 
-setClass("BIOMOD.stored.raster.stack",
-         contains = "BIOMOD.stored.data",
-         representation(val = 'RasterStack'),
-         prototype(val = stack()),
-         validity = function(object){ return(TRUE) })
+# setClass("BIOMOD.stored.raster.stack",
+#          contains = "BIOMOD.stored.data",
+#          representation(val = 'RasterStack'),
+#          prototype(val = stack()),
+#          validity = function(object){ return(TRUE) })
 
 setClass("BIOMOD.stored.files",
          contains = "BIOMOD.stored.data",
@@ -83,7 +89,7 @@ setMethod("load_stored_object", "BIOMOD.stored.data",
               if (length(obj@link) == 1 & all(grepl(".RData", obj@link))) {
                 return(get(load(obj@link)))
               } else if (all(grepl(".grd", obj@link) | grepl(".img", obj@link))) {
-                out <- raster::stack(x = obj@link, RAT = FALSE)
+                out <- stack(x = obj@link, RAT = FALSE)
                 ## rename layer in case of individual projections
                 if (all(grepl("individual_projections", obj@link))) {
                   # remove directories arch and extention

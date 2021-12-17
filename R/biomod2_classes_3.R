@@ -1,20 +1,24 @@
 # =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=- #
 # BIOMOD objects definition
-# Damien Georges, Maya Guéguen
+# Damien Georges, Maya Gueguen
 # 09/02/2012, update 18/10/2021
 # =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=- #
 
-requireNamespace("raster", quietly=TRUE)
-requireNamespace(".0
-# =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=- #
-# This file defines the BIOMOD objects and all their methods
-# =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=- #
+# requireNamespace("raster", quietly=TRUE)
+# requireNamespace(".0
+# # =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=- #
+# # This file defines the BIOMOD objects and all their methods
+# # =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=- #
+# 
+# # We choose here to create monospecific objects to make all procedures and parallelising easier
+# requireNamespacrasterVis", quietly=TRUE)
 
-# We choose here to create monospecific objects to make all procedures and parallelising easier
-requireNamespacrasterVis", quietly=TRUE)
+## @include biomod2_classes_3.R
 
-##' @include biomod2_classes_3.R
 
+##' 
+##' @importFrom raster subset
+##' 
 
 ###################################################################################################
 ## 0. Generic Functions definition 
@@ -393,7 +397,7 @@ setMethod("get_predictions", "BIOMOD.projection.out",
               proj <- load_stored_object(obj@proj)
               names(proj) <- obj@models.projected
               if (inherits(proj, 'Raster')) {
-                proj <- raster::subset(proj, models_selected, drop = FALSE)
+                proj <- subset(proj, models_selected, drop = FALSE)
               } else if (length(dim(proj)) == 4) { ## 4D arrays
                 proj <- proj[, .extractModelNamesInfo(model.names = models_selected, info = 'models'),
                              .extractModelNamesInfo(model.names = models_selected, info = 'run.eval'),

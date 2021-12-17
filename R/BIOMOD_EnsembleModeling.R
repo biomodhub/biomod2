@@ -12,7 +12,7 @@
 ##' conditions (see Details).
 ##' 
 ##' 
-##' @param modeling.output a \code{\link{BIOMOD.models.out} object returned by the 
+##' @param modeling.output a \code{\link{BIOMOD.models.out}} object returned by the 
 ##' \code{\link{BIOMOD_Modeling}} function
 ##' @param chosen.models a \code{vector} containing model names to be kept, must be either 
 ##' \code{all} or a sub-selection of model names
@@ -78,13 +78,12 @@
 ##'   \item a \emph{hidden} folder, named \code{.BIOMOD_DATA}, and containing outputs related 
 ##'   files (original dataset, calibration lines, pseudo-absences selected, predictions, 
 ##'   variables importance, evaluation values...), that can be retrieved with 
-##'   \code{\href{}{get_[...]}} or \code{\link{load}} functions, and used by other 
+##'   \code{\href{reference/index.html}{get_[...]}} or \code{\link{load}} functions, and used by other 
 ##'   \pkg{biomod2} functions, like \code{\link{BIOMOD_EnsembleForecasting}}
 ##' }
 ##' 
 ##' 
 ##' @details 
-##' 
 ##' 
 ##' 1. \bold{Models sub-selection (\code{chosen.models})}
 ##' .. Applying \code{\link{get_built_models}} function to the \code{modeling.output} object 
@@ -160,7 +159,7 @@
 ##' model). The lower is the score, the better are the models. CV is a nice complement to the mean 
 ##' probability.
 ##' 
-##' .. - \code{prob.ci} & \code{prob.ci.alpha} : Confidence interval around the mean of 
+##' .. - \code{prob.ci} \& \code{prob.ci.alpha} : Confidence interval around the mean of 
 ##' probabilities of the selected models 
 ##' It is also a nice complement to the mean probability. It creates 2 ensemble models :
 ##' \itemize{
@@ -189,14 +188,14 @@
 ##' agree to predict \code{0} or \code{1} respectively. When the prediction is around \code{0.5}, 
 ##' it means that half the models predict \code{1} and the other half \code{0}.
 ##' 
-##' .. - \code{prob.mean.weight} & \code{prob.mean.weight.decay} :
+##' .. - \code{prob.mean.weight} \& \code{prob.mean.weight.decay} :
 ##' Probabilities from the selected models are weighted according to their evaluation scores 
 ##' obtained when building the \code{model.output} object with the \code{BIOMOD_Modeling} function 
 ##' (better a model is, more importance it has in the ensemble) and summed.
 ##' 
 ##' The \code{prob.mean.weight.decay} is the ratio between a weight and the next or previous one. 
 ##' The formula is : \code{W = W(-1) * prob.mean.weight.decay}. For example, with the value of 
-##' \code{1.6} and \code{4 weights wanted, the relative importance of the weights will be 
+##' \code{1.6} and \code{4} weights wanted, the relative importance of the weights will be 
 ##' \code{1/1.6/2.56(=1.6*1.6)/4.096(=2.56*1.6)} from the weakest to the strongest, and gives 
 ##' \code{0.11/0.17/0.275/0.445} considering that the sum of the weights is equal to one. The 
 ##' lower the \code{prob.mean.weight.decay}, the smoother the differences between the weights 
@@ -217,7 +216,7 @@
 ##' 
 ##' 
 ##' @seealso \code{\link{BIOMOD_FormatingData}}, \code{\link{BIOMOD_ModelingOptions}}, 
-##' \code{\link{BIOMOD_CrossValidation}}, \code{ \link{bm_VariablesImportance}}, 
+##' \code{\link{BIOMOD_CrossValidation}}, \code{\link{bm_VariablesImportance}}, 
 ##' \code{\link{BIOMOD_Modeling}}, \code{\link{BIOMOD_EnsembleForecasting}}
 ##' 
 ##'   
