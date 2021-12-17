@@ -24,10 +24,6 @@ This function will add/change/delete all object slots that have
 evolved between 2 versions of the package.
 If required, objects stored on hard drive will also be updated.
 }
-\seealso{
-\code{\link{variables_importance}}, 
-\code{\link{full_suffling}}
-}
 \author{
 Damien Georges
 }
