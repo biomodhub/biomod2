@@ -1,4 +1,4 @@
-##' ###############################################################################################
+###################################################################################################
 ##' @name BIOMOD_Tuning
 ##' @aliases BIOMOD_Tuning
 ##' @author Frank Breiner \email{frank.breiner@wsl.ch}
@@ -9,9 +9,9 @@
 ##'
 ##' @param data a \code{\link{BIOMOD.formated.data}} object returned by the 
 ##' \code{\link{BIOMOD_FormatingData}} function
-##' @param models a \code{vector} containing model names to be tuned, must be among \code{GLM}, 
-##' \code{GBM}, \code{GAM}, \code{CTA}, \code{ANN}, \code{SRE}, \code{FDA}, \code{MARS}, 
-##' \code{RF}, \code{MAXENT.Phillips}
+##' @param models a \code{vector} containing model names to be tuned, \cr 
+##' must be among \code{GLM}, \code{GBM}, \code{GAM}, \code{CTA}, \code{ANN}, \code{SRE}, 
+##' \code{FDA}, \code{MARS}, \code{RF}, \code{MAXENT.Phillips}
 ##' @param models.options a \code{\link{BIOMOD.models.options}} object returned by the 
 ##' \code{\link{BIOMOD_ModelingOptions}} function
 ##' @param trControl global control parameters that can be obtained from 
@@ -32,26 +32,28 @@
 ##' \code{auc.val.avg}, \code{auc.diff.avg}, \code{or.mtp.avg}, \code{or.10p.avg} or \code{AICc}
 ##' @param tuneLength (see \code{\link[caret]{train}})
 ##' @param method.RF a \code{character} corresponding to the classification or regression model 
-##' to use for \code{RF}, must be \code{rf} (see 
-##' http://topepo.github.io/caret/Random_Forest.html)
+##' to use for \code{RF}, \cr 
+##' must be \code{rf} (see \url{http://topepo.github.io/caret/Random_Forest.html})
 ##' @param method.ANN a \code{character} corresponding to the classification or regression model 
-##' to use for \code{ANN}, must be \code{avNNet} (see 
-##' http://topepo.github.io/caret/Neural_Network.html)
+##' to use for \code{ANN}, \cr 
+##' must be \code{avNNet} (see \url{http://topepo.github.io/caret/Neural_Network.html})
 ##' @param method.MARS a \code{character} corresponding to the classification or regression model 
-##' to use for \code{MARS}, must be \code{earth} (see 
-##' http://topepo.github.io/caret/Multivariate_Adaptive_Regression_Splines.html)
+##' to use for \code{MARS}, \cr 
+##' must be \code{earth} (see 
+##' \url{http://topepo.github.io/caret/Multivariate_Adaptive_Regression_Splines.html})
 ##' @param method.GAM a \code{character} corresponding to the classification or regression model 
-##' to use for \code{GAM}, must be \code{gam} (see 
-##' http://topepo.github.io/caret/Generalized_Additive_Model.html)
+##' to use for \code{GAM}, \cr 
+##' must be \code{gam} (see \url{http://topepo.github.io/caret/Generalized_Additive_Model.html})
 ##' @param method.GLM a \code{character} corresponding to the classification or regression model 
-##' to use for \code{GLM}, must be \code{glmStepAIC} (see 
-##' http://topepo.github.io/caret/Generalized_Linear_Model.html)
+##' to use for \code{GLM}, \cr 
+##' must be \code{glmStepAIC} (see 
+##' \url{http://topepo.github.io/caret/Generalized_Linear_Model.html})
 ##' @param type.GLM a \code{vector} of \code{character} corresponding to modeling types for 
-##' \code{GLM}, must be among \code{simple}, \code{quadratic}, \code{polynomial}, 
+##' \code{GLM}, \cr must be among \code{simple}, \code{quadratic}, \code{polynomial}, 
 ##' \code{s_smoother}
 ##' @param interaction.GLM a \code{vector} of interaction types, must be amond \code{0}, \code{1}
 ##' @param cvmethod.ME a \code{character} corresponding to the method used to partition data for 
-##' \code{MAXENT.Phillips}, must be \code{randomkfold}
+##' \code{MAXENT.Phillips}, \cr must be \code{randomkfold}
 ##' @param kfolds.ME an \code{integer} corresponding to the number of bins for k-fold 
 ##' cross-validation for \code{MAXENT.Phillips}
 ##' @param overlap.ME (\emph{optional, default} \code{FALSE}) \cr 
@@ -86,15 +88,15 @@
 ##' 
 ##' @details 
 ##' 
-##' \code{trControl} parameter is set by default to :
-##' \code{caret::trainControl(method = 'cv', summaryFunction = caret::twoClassSummary, 
-##' classProbs = TRUE, returnData = FALSE)}.
-##' 
-##' All control parameters for other models are set to \code{trControl} if unspecified.
-##' 
-##' For more details on \code{MAXENT.Phillips} tuning, please refer to  
-##' \code{\link[ENMeval]{ENMevaluate}}.
-##' For more details on other models tuning, please refer to \code{\link[caret]{train}}.
+##' \itemize{
+##'   \item \code{trControl} parameter is set by default to : \cr
+##'   \code{caret::trainControl(method = 'cv', summaryFunction = caret::twoClassSummary,} \cr
+##'   \code{classProbs = TRUE, returnData = FALSE)}.
+##'   \item All control parameters for other models are set to \code{trControl} if unspecified.
+##'   \item For more details on \code{MAXENT.Phillips} tuning, please refer to 
+##'   \code{\link[ENMeval]{ENMevaluate}}.
+##'   \item For more details on other models tuning, please refer to \code{\link[caret]{train}}.
+##' }
 ##' 
 ##' 
 ##' @references
@@ -116,7 +118,8 @@
 ##' @examples
 ##' 
 ##' # species occurrences
-##' DataSpecies <- read.csv(system.file("external/species/mammals_table.csv", package="biomod2"), row.names = 1)
+##' myFile <- system.file("external/species/mammals_table.csv", package="biomod2")
+##' DataSpecies <- read.csv(myFile, row.names = 1)
 ##' head(DataSpecies)
 ##' 
 ##' # the name of studied species
@@ -176,8 +179,16 @@
 ##'                                     modeling.id = 'test')
 ##' 
 ##' 
+##' @importFrom foreach foreach
+##' @importFrom caret trainControl train twoClassSummary
+##' @importFrom dismo kfold
+##' @importFrom PresenceAbsence optimal.thresholds presence.absence.accuracy
+##' @importFrom ENMeval ENMevaluate
 ##' 
-##' ###############################################################################################
+##' 
+##' @export
+##' 
+###################################################################################################
 
 
 BIOMOD_Tuning <- function(data,
@@ -227,10 +238,10 @@ BIOMOD_Tuning <- function(data,
     if (!isNamespaceLoaded("caret")) { requireNamespace("caret", quietly = TRUE) }
     if (!isNamespaceLoaded('dplyr')) { requireNamespace("dplyr", quietly = TRUE) }
     if (is.null(trControl)) {
-      trControl <- caret::trainControl(method = "cv",
-                                       summaryFunction = caret::twoClassSummary,
-                                       classProbs = TRUE,
-                                       returnData = FALSE)
+      trControl <- trainControl(method = "cv",
+                                summaryFunction = twoClassSummary,
+                                classProbs = TRUE,
+                                returnData = FALSE)
     }
     if ("MAXENT.Phillips" %in% models && !isNamespaceLoaded('ENMeval')) { requireNamespace("ENMeval", quietly = TRUE) }
     # if ("MAXENT.Tsuruoka" %in% models && !isNamespaceLoaded('maxent')) { requireNamespace("maxent", quietly = TRUE) }
@@ -251,7 +262,7 @@ BIOMOD_Tuning <- function(data,
     
     tune.SRE = foreach(rep = 1:trControl$repeats, .combine = "rbind") %do%
       {
-        fold <- dismo::kfold(resp, by = resp, k = trControl$number)
+        fold <- kfold(resp, by = resp, k = trControl$number)
         RES = foreach (quant = c(0, 0.0125, 0.025, 0.05, 0.1), .combine = "rbind") %:%
           foreach (i = 1:trControl$number, .combine = "rbind") %do%
           {
@@ -264,7 +275,7 @@ BIOMOD_Tuning <- function(data,
                                 return_extremcond = FALSE))
             
             RES = presence.absence.accuracy(DATA, threshold = as.vector(
-              PresenceAbsence::optimal.thresholds(DATA, opt.methods = 3)[2], mode = "numeric"))
+              optimal.thresholds(DATA, opt.methods = 3)[2], mode = "numeric"))
             return(data.frame(RES, quant = quant))
           }
         return(RES)
@@ -292,13 +303,13 @@ BIOMOD_Tuning <- function(data,
                              .n.trees = c(500, 1000, 2500),
                              .shrinkage = c(0.001, 0.01, 0.1),
                              .n.minobsinnode = 10)
-    try(tune.GBM <- caret::train(data@data.env.var, 
-                                 resp,
-                                 method = "gbm",
-                                 tuneGrid = tune.grid,
-                                 trControl = ctrl.GBM,
-                                 verbose = FALSE,
-                                 weights = Yweights))
+    try(tune.GBM <- train(data@data.env.var, 
+                          resp,
+                          method = "gbm",
+                          tuneGrid = tune.grid,
+                          trControl = ctrl.GBM,
+                          verbose = FALSE,
+                          weights = Yweights))
     
     cat("Best optimization of coarse tuning:\n")
     cat(paste(tune.GBM$bestTune,"\n-=-=-=-=-=-=-=-=-=-=\n"))
@@ -324,13 +335,13 @@ BIOMOD_Tuning <- function(data,
                                               tune.GBM$bestTune$shrinkage * 5), 
                                .n.minobsinnode = 10)
       tune.GBM <- NULL
-      try(tune.GBM <- caret::train(data@data.env.var, 
-                                   resp,
-                                   method = "gbm",
-                                   tuneGrid = tune.grid,
-                                   trControl = ctrl.GBM,
-                                   verbose = FALSE,
-                                   weights = Yweights))  
+      try(tune.GBM <- train(data@data.env.var, 
+                            resp,
+                            method = "gbm",
+                            tuneGrid = tune.grid,
+                            trControl = ctrl.GBM,
+                            verbose = FALSE,
+                            weights = Yweights))  
     }
     
     if (!is.null(tune.GBM)) {
@@ -359,13 +370,13 @@ BIOMOD_Tuning <- function(data,
     if (is.null(ctrl.RF)) { ctrl.RF <- trControl }
     tuneLength.rf <- min(tuneLength, ncol(data@data.env.var))
     
-    try(tune.RF <- caret::train(data@data.env.var, 
-                                resp,
-                                method = method.RF,
-                                tuneLength = tuneLength.rf,
-                                trControl = ctrl.RF,
-                                metric = metric,
-                                weights = Yweights))
+    try(tune.RF <- train(data@data.env.var, 
+                         resp,
+                         method = method.RF,
+                         tuneLength = tuneLength.rf,
+                         trControl = ctrl.RF,
+                         metric = metric,
+                         weights = Yweights))
     
     if (!is.null(tune.RF)) { ## give both mtry as bestTune
       if (metric == 'TSS') {
@@ -396,19 +407,19 @@ BIOMOD_Tuning <- function(data,
     tune.grid <- expand.grid(.decay = decay.tune.ANN,
                              .size = size.tune.ANN,
                              .bag = FALSE)
-    try(tune.ANN <- caret::train(data@data.env.var, 
-                                 resp, 
-                                 method = method.ANN,
-                                 tuneGrid = tune.grid,
-                                 trControl = ctrl.ANN,
-                                 ## Automatically standardize data prior to modeling and prediction
-                                 preProc = c("center", "scale"),
-                                 linout = TRUE,
-                                 trace = FALSE,
-                                 MaxNWts.ANN = MaxNWts.ANN,
-                                 maxit = maxit.ANN,
-                                 metric = metric,
-                                 weights = Yweights))
+    try(tune.ANN <- train(data@data.env.var, 
+                          resp, 
+                          method = method.ANN,
+                          tuneGrid = tune.grid,
+                          trControl = ctrl.ANN,
+                          ## Automatically standardize data prior to modeling and prediction
+                          preProc = c("center", "scale"),
+                          linout = TRUE,
+                          trace = FALSE,
+                          MaxNWts.ANN = MaxNWts.ANN,
+                          maxit = maxit.ANN,
+                          metric = metric,
+                          weights = Yweights))
     if (!is.null(tune.ANN)) {
       if (metric == 'TSS') {
         tmp = which.max(apply(tune.ANN$results[, c("Sens", "Spec")], 1, sum) - 1)
@@ -434,11 +445,11 @@ BIOMOD_Tuning <- function(data,
     cat(paste("\n-=-=-=-=-=-=-=-=-=-=\n", "Start tuning GAM\n"))
     if (is.null(ctrl.GAM)) { ctrl.GAM <- trControl }
     
-    try(tune.GAM <-   caret::train(data@data.env.var, 
-                                   resp, 
-                                   method = method.GAM,
-                                   trControl = ctrl.GAM,
-                                   weights = Yweights))
+    try(tune.GAM <- train(data@data.env.var, 
+                          resp, 
+                          method = method.GAM,
+                          trControl = ctrl.GAM,
+                          weights = Yweights))
     if (!is.null(tune.GAM)) {
       if (metric == 'TSS') {
         tmp = which.max(apply(tune.GAM$results[, c("Sens", "Spec")], 1, sum) - 1)
@@ -468,12 +479,12 @@ BIOMOD_Tuning <- function(data,
     }
     
     tune.grid <- expand.grid(.degree = 1:2, .nprune = nprune)
-    try(tune.MARS <- caret::train(data@data.env.var, 
-                                  resp, 
-                                  method = method.MARS,
-                                  tuneGrid = tune.grid,
-                                  trControl = ctrl.MARS,
-                                  weights = Yweights))
+    try(tune.MARS <- train(data@data.env.var, 
+                           resp, 
+                           method = method.MARS,
+                           tuneGrid = tune.grid,
+                           trControl = ctrl.MARS,
+                           weights = Yweights))
     
     if (!is.null(tune.MARS)) {
       if (metric == 'TSS') {
@@ -511,14 +522,14 @@ BIOMOD_Tuning <- function(data,
     GLM.results = foreach (type = type.GLM, .combine = "rbind") %:%
       foreach (IA = interaction.GLM, .combine = "rbind") %do%
       {
-        try(tune.GLM <- caret::train(bm_MakeFormula("resp",
-                                                    data@data.env.var,
-                                                    type = type,
-                                                    interaction.level = IA),
-                                     data = cbind(data@data.env.var, resp = resp),
-                                     method = method.GLM,
-                                     trControl = ctrl.GLM,
-                                     weights = Yweights))
+        try(tune.GLM <- train(bm_MakeFormula("resp",
+                                             data@data.env.var,
+                                             type = type,
+                                             interaction.level = IA),
+                              data = cbind(data@data.env.var, resp = resp),
+                              method = method.GLM,
+                              trControl = ctrl.GLM,
+                              weights = Yweights))
         try(fm[[length(fm) + 1]] <- formula(tune.GLM$finalModel))
         try(RES <- cbind(tune.GLM$results, il = IA, type = type))
         return(RES)
@@ -541,12 +552,12 @@ BIOMOD_Tuning <- function(data,
     if (is.null(ctrl.FDA)) { ctrl.FDA <- trControl }
     
     tune.grid <- expand.grid(.degree = 1:2, .nprune = 2:38)
-    try(tune.FDA <- caret::train(data@data.env.var, 
-                                 factor(resp), 
-                                 method = "fda",
-                                 tuneGrid = tune.grid,                  
-                                 trControl = ctrl.FDA,
-                                 weights = Yweights))
+    try(tune.FDA <- train(data@data.env.var, 
+                          factor(resp), 
+                          method = "fda",
+                          tuneGrid = tune.grid,                  
+                          trControl = ctrl.FDA,
+                          weights = Yweights))
     
     if (!is.null(tune.FDA)) {
       if (metric == 'TSS') {
@@ -572,22 +583,22 @@ BIOMOD_Tuning <- function(data,
     if (is.null(ctrl.CTA)) { ctrl.CTA <- trControl }
     
     cat("Tuning Complexity Parameter")    
-    try(tune.CTA.rpart <- caret::train(data@data.env.var, 
-                                       resp, 
-                                       method = "rpart",
-                                       tuneLength = tuneLength,
-                                       trControl = ctrl.CTA,
-                                       metric = metric,
-                                       weights = Yweights))
+    try(tune.CTA.rpart <- train(data@data.env.var, 
+                                resp, 
+                                method = "rpart",
+                                tuneLength = tuneLength,
+                                trControl = ctrl.CTA,
+                                metric = metric,
+                                weights = Yweights))
     
     cat("Tuning Max Tree Depth")
-    try(tune.CTA.rpart2 <-  caret::train(data@data.env.var, 
-                                         resp,
-                                         method = "rpart2",
-                                         tuneLength = tuneLength,
-                                         trControl = ctrl.CTA,
-                                         metric = metric,
-                                         weights = Yweights))
+    try(tune.CTA.rpart2 <-  train(data@data.env.var, 
+                                  resp,
+                                  method = "rpart2",
+                                  tuneLength = tuneLength,
+                                  trControl = ctrl.CTA,
+                                  metric = metric,
+                                  weights = Yweights))
     
     if (!is.null(tune.CTA.rpart)) {
       if (metric == 'TSS') {
@@ -681,25 +692,25 @@ BIOMOD_Tuning <- function(data,
 #### Modified tuning function from the ENMeval package to tune MAXENT.Phillips (internal function for BIOMOD_tuning)
 
 .tuning.maxent <- function(pres,
-                          bg,
-                          method,
-                          kfolds,
-                          clamp,
-                          parallel,
-                          numCores,
-                          categoricals,
-                          tune.args = list(rm = seq(0.5, 1, 0.5), fc = c("L")))
+                           bg,
+                           method,
+                           kfolds,
+                           clamp,
+                           parallel,
+                           numCores,
+                           categoricals,
+                           tune.args = list(rm = seq(0.5, 1, 0.5), fc = c("L")))
 {
   requireNamespace("ENMeval", quietly = TRUE)
-  results <- ENMeval::ENMevaluate(occs = pres,
-                                  bg = bg,
-                                  tune.args = tune.args,
-                                  partitions = method,
-                                  algorithm = "maxent.jar",
-                                  partition.settings = list(kfolds = kfolds),
-                                  doClamp = clamp,
-                                  parallel = parallel,
-                                  numCores = numCores)
+  results <- ENMevaluate(occs = pres,
+                         bg = bg,
+                         tune.args = tune.args,
+                         partitions = method,
+                         algorithm = "maxent.jar",
+                         partition.settings = list(kfolds = kfolds),
+                         doClamp = clamp,
+                         parallel = parallel,
+                         numCores = numCores)
   return(results)
 }
 

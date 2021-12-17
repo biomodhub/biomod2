@@ -1,4 +1,4 @@
-##' ###############################################################################################
+###################################################################################################
 ##' @name BIOMOD_Modeling
 ##' @aliases BIOMOD_Modeling
 ##' @author Wilfried Thuiller, Damien Georges, Robin Engler
@@ -8,7 +8,7 @@
 ##' @description This function allows to calibrate and evaluate a range of modeling techniques 
 ##' for a given species distribution. The dataset can be split up for independent calibration and 
 ##' validation, and the predictive power of the different models can be estimated using a range 
-##' of evaluation metrics (see Details).
+##' of evaluation metrics (see \href{BIOMOD_Modeling.html#details}{Details}).
 ##' 
 ##' @param data a \code{\link{BIOMOD.formated.data}} object returned by the 
 ##' \code{\link{BIOMOD_FormatingData}} function
@@ -20,7 +20,7 @@
 ##' @param models.options a \code{\link{BIOMOD.models.options}} object returned by the 
 ##' \code{\link{BIOMOD_ModelingOptions}} function
 ##' @param NbRunEval an \code{integer} corresponding to the number of repetitions to be done for 
-##' calibration/validation splitting (\emph{if specified, \code{DataSplit} and 
+##' calibration/validation splitting \cr (\emph{if specified, \code{DataSplit} and 
 ##' \code{do.full.models} will be ignored})
 ##' @param DataSplit a \code{numeric} between \code{0} and \code{1} corresponding to the 
 ##' percentage of data used to calibrate the models (calibration/validation splitting)
@@ -33,10 +33,10 @@
 ##' dataset must be computed or not
 ##' @param Yweights (\emph{optional, default} \code{NULL}) \cr 
 ##' A \code{vector} of \code{numeric} values corresponding to observation weights (one per 
-##' observation, see Details)
+##' observation, see \href{BIOMOD_Modeling.html#details}{Details})
 ##' @param Prevalence (\emph{optional, default} \code{NULL}) \cr 
 ##' A \code{numeric} between \code{0} and \code{1} corresponding to the species prevalence to 
-##' build 'weighted response weights' (see Details)
+##' build '\emph{weighted response weights}' (see \href{BIOMOD_Modeling.html#details}{Details})
 ##' @param VarImport (\emph{optional, default} \code{NULL}) \cr 
 ##' An \code{integer} corresponding to the number of permutations to be done for each variable to 
 ##' estimate variable importance
@@ -54,7 +54,7 @@
 ##' 
 ##' @return
 ##' 
-##' A \code{BIOMOD.models.out} object containing models outputs, or links to saved outputs.
+##' A \code{BIOMOD.models.out} object containing models outputs, or links to saved outputs. \cr
 ##' Models outputs are stored out of \R (for memory storage reasons) in 2 different folders 
 ##' created in the current working directory :
 ##' \enumerate{
@@ -72,114 +72,104 @@
 ##' 
 ##' @details 
 ##' 
+##' \describe{
+##'   \item{data}{If you have decided to add pseudo absences to your original dataset (see 
+##'   \code{\link{BIOMOD_FormatingData}}), \cr \code{PA.nb.rep *(NbRunEval + 1)} models will be 
+##'   created.}
+##'   
+##'   \item{models}{The set of models to be calibrated on the data. 10 modeling techniques 
+##'   are currently available :
+##'   \itemize{
+##'     \item \code{GLM} : Generalized Linear Model (\code{\link[stats]{glm}})
+##'     \item \code{GAM} : Generalized Additive Model (\code{\link[gam]{gam}}, \code{\link[mgcv]{gam}} 
+##'     or \code{\link[mgcv]{bam}}) \cr 
+##'     (see \code{\link{BIOMOD_ModelingOptions} for details on algorithm selection})
+##'     \item \code{GBM} : Generalized Boosting Model, or usually called Boosted Regression Trees 
+##'     (\code{\link[gbm]{gbm}})
+##'     \item \code{CTA} : Classification Tree Analysis (\code{\link[rpart]{rpart}})
+##'     \item \code{ANN} : Artificial Neural Network (\code{\link[nnet]{nnet}})
+##'     \item \code{SRE} : Surface Range Envelop or usually called BIOCLIM
+##'     \item \code{FDA} : Flexible Discriminant Analysis (\code{\link[mda]{fda}})
+##'     \item \code{MARS} : Multiple Adaptive Regression Splines (\code{\link[earth]{earth}})
+##'     \item \code{RF} : Random Forest (\code{\link[randomForest]{randomForest}})
+##'     \item \code{MAXENT.Phillips} : Maximum Entropy 
+##'     (\url{https://biodiversityinformatics.amnh.org/open_source/maxent})
+##'     \item \code{MAXENT.Phillips.2} : Maximum Entropy (\code{\link[maxnet]{maxnet}})
+##'   }}
+##'   
+##'   \item{NbRunEval & DataSplit}{
+##'   \itemize{
+##'     \item Most simple method in machine learning to calibrate and evaluate a model is to 
+##'     split the original dataset in two, one to calibrate the model and the other one to 
+##'     evaluate it. The \code{DataSplit} argument defines the percentage of data that will be 
+##'     randomly selected and used for the calibration part, the remaining data constituting the 
+##'     evaluation part. This process is repeated \code{NbRunEval} times, to be sure not to 
+##'     include bias both in the modeling and evaluation parts.
+##'     \item Other validation methods are also available to the user :
+##'     \itemize{
+##'       \item evaluation dataset can be directly given to the 
+##'       \code{\link{BIOMOD_FormatingData}} function
+##'       \item \code{DataSplitTable} argument can be used and obtained from the 
+##'       \code{\link{BIOMOD_CrossValidation}} function
+##'     }
+##'   }}
+##'   
+##'   \item{Yweights & Prevalence}{More or less weight can be given to some specific observations.
+##'   \itemize{
+##'     \item If \code{Yweights = Prevalence = NULL}, each observation (presence or absence) will 
+##'     have the same weight, no matter the total number of presences and absences.
+##'     \item If \code{Prevalence = 0.5}, presences and absences will be weighted equally 
+##'     (\emph{i.e. the weighted sum of presences equals the weighted sum of absences}). 
+##'     \item If \code{Prevalence} is set below (\emph{above}) \code{0.5}, more weight will be 
+##'     given to absences (\emph{presences}).
+##'     \item If \code{Yweights} is defined, \code{Prevalence} argument will be ignored, and each 
+##'     observation will have its own weight.
+##'     \item If pseudo-absences have been generated (\code{PA.nb.rep > 0} in 
+##'     \code{\link{BIOMOD_FormatingData}}), weights are by default calculated such that 
+##'     \code{Prevalence = 0.5}. \emph{Automatically created \code{Yweights} will be \code{integer} 
+##'     values to prevent some modeling issues.}
+##'   }}
 ##' 
-##' 1. \bold{data}
-##' .. If you have decided to add pseudo absences to your original dataset (see 
-##' \code{\link{BIOMOD_FormatingData}}), \code{PA.nb.rep *(NbRunEval + 1)} models will be created.
-##' 
-##' 
-##' 2. \bold{models}
-##' .. The set of models to be calibrated on the data. 
-##' 10 modeling techniques are currently available :
-##' 
-##' .. - \code{GLM} : Generalized Linear Model (\code{\link[stats]{glm}})
-##' 
-##' .. - \code{GAM} : Generalized Additive Model (\code{\link[gam]{gam}}, \code{\link[mgcv]{gam}} 
-##' or \code{\link[mgcv]{bam}} (see \code{\link{BIOMOD_ModelingOptions} for details on algorithm 
-##' selection})
-##' 
-##' .. - \code{GBM} : Generalized Boosting Model, or usually called Boosted Regression Trees 
-##' (\code{\link[gbm]{gbm}})
-##' 
-##' .. - \code{CTA} : Classification Tree Analysis (\code{\link[rpart]{rpart}})
-##' 
-##' .. - \code{ANN} : Artificial Neural Network (\code{\link[nnet]{nnet}})
-##' 
-##' .. - \code{SRE} : Surface Range Envelop or usually called BIOCLIM
-##' 
-##' .. - \code{FDA} : Flexible Discriminant Analysis (\code{\link[mda]{fda}})
-##' 
-##' .. - \code{MARS} : Multiple Adaptive Regression Splines (\code{\link[earth]{earth}})
-##' 
-##' .. - \code{RF} : Random Forest (\code{\link[randomForest]{randomForest}})
-##' 
-##' .. - \code{MAXENT.Phillips} : Maximum Entropy 
-##' (\url{https://biodiversityinformatics.amnh.org/open_source/maxent})
-##' 
-##' .. - \code{MAXENT.Phillips.2} : Maximum Entropy (\code{\link[maxnet]{maxnet}})
-##' 
-##' 
-##' 3. \bold{NbRunEval & DataSplit}
-##' .. Most simple method in machine learning to calibrate and evaluate a model is to split the 
-##' original dataset in two, one to calibrate the model and the other one to evaluate it. The 
-##' \code{DataSplit} argument defines the percentage of data that will be randomly selected and 
-##' used for the calibration part, the remaining data constituting the evaluation part. This 
-##' process is repeated \code{NbRunEval} times, to be sure not to include bias both in the 
-##' modeling and evaluation parts.
-##' .. Other validation methods are also available to the user :
-##' \itemize{
-##'   \item evaluation dataset can be directly given to the \code{\link{BIOMOD_FormatingData}} 
-##'   function
-##'   \item \code{DataSplitTable} argument can be used and obtained from the 
-##'   \code{\link{BIOMOD_CrossValidation}} function
+##'   \item{models.eval.meth}{
+##'   \itemize{
+##'     \item \code{ROC} : Relative Operating Characteristic
+##'     \item \code{KAPPA} : Cohen's Kappa (Heidke skill score)
+##'     \item \code{TSS} : True kill statistic (Hanssen and Kuipers discriminant, Peirce's skill 
+##'     score)
+##'     \item \code{FAR} : False alarm ratio
+##'     \item \code{SR} : Success ratio
+##'     \item \code{ACCURANCY} : Accuracy (fraction correct)
+##'     \item \code{BIAS} : Bias score (frequency bias)
+##'     \item \code{POD} : Probability of detection (hit rate)
+##'     \item \code{CSI} : Critical success index (threat score)
+##'     \item \code{ETS} : Equitable threat score (Gilbert skill score)
+##'   }
+##'   Optimal value of each method can be obtained with the \code{\link{get_optim_value}} 
+##'   function. Several evaluation metrics can be selected. \emph{Please refer to the 
+##'   \href{http://www.cawcr.gov.au/projects/verification/##'Methods_for_dichotomous_forecasts}{CAWRC website} 
+##'   to get detailed description of each metric.}
+##'   }
+##'   
+##'   \item{SaveObj}{\emph{If this argument is set to \code{FALSE}, it may prevent the evaluation 
+##'   of the ensemble models (see \code{\link{BIOMOD_EnsembleModeling}}) in further steps. Strong 
+##'   recommandation is to keep \code{SaveObj = TRUE}, even if it requires to have some free 
+##'   space onto the hard drive.}
+##'   }
+##'   
+##'   \item{rescal.all.models}{\bold{This parameter is quite experimental and it is recommended 
+##'   not to use it. It may lead to reduction in projection scale amplitude.} Some categorical 
+##'   models always have to be scaled (\code{FDA}, \code{ANN}), but it may be interesting to 
+##'   scale all computed models to ensure comparable predictions (\code{0-1000} range). It might 
+##'   be particularly useful when doing ensemble forecasting to remove the scale prediction effect 
+##'   (\emph{the more extended projections are, the more they influence ensemble forecasting 
+##'   results}).
+##'   }
+##'   
+##'   \item{do.full.models}{Building models with all available information may be useful in some 
+##'   particular cases (\emph{e.g. rare species with few presences points}). But calibration and 
+##'   evaluation datasets will be the same, which might lead to over-optimistic evaluation scores.
+##'   }
 ##' }
-##' 
-##' 
-##' 4. \bold{Yweights & Prevalence}
-##' .. More or less weight can be given to some specific observations.
-##' .. If \code{Yweights = Prevalence = NULL}, each observation (presence or absence) will have the 
-##' same weight, no matter the total number of presences and absences. If \code{Prevalence = 0.5}, 
-##' presences and absences will be weighted equally (i.e. the weighted sum of presences equals the 
-##' weighted sum of absences). If \code{Prevalence} is set below (\emph{above}) \code{0.5}, more 
-##' weight will be given to absences (\emph{presences}).
-##' .. If \code{Yweights} is defined, \code{Prevalence} argument will be ignored, and each 
-##' observation will have its own weight.
-##' .. If pseudo-absences have been generated (\code{PA.nb.rep > 0} in 
-##' \code{\link{BIOMOD_FormatingData}}), weights are by default calculated such that 
-##' \code{Prevalence = 0.5}. \emph{Automatically created \code{Yweights} will be \code{integer} 
-##' values to prevent some modeling issues.}
-##' 
-##' 
-##' 5. \bold{models.eval.meth}
-##' .. The available evaluations methods are :
-##' 
-##' .. - \code{ROC} : Relative Operating Characteristic
-##' .. - \code{KAPPA} : Cohen's Kappa (Heidke skill score)
-##' .. - \code{TSS} : True kill statistic (Hanssen and Kuipers discriminant, Peirce's skill score)
-##' .. - \code{FAR} : False alarm ratio
-##' .. - \code{SR} : Success ratio
-##' .. - \code{ACCURANCY} : Accuracy (fraction correct)
-##' .. - \code{BIAS} : Bias score (frequency bias)
-##' .. - \code{POD} : Probability of detection (hit rate)
-##' .. - \code{CSI} : Critical success index (threat score)
-##' .. - \code{ETS} : Equitable threat score (Gilbert skill score)
-##' 
-##' .. Optimal value of each method can be obtained with the \code{\link{get_optim_value}} 
-##' function. Several evaluation metrics can be selected. Please refer to the 
-##' \href{http://www.cawcr.gov.au/projects/verification/##'Methods_for_dichotomous_forecasts}{CAWRC website} 
-##' to get detailed description of each metric.
-##' 
-##' 
-##' 6. \bold{SaveObj}
-##' .. \emph{If this argument is set to \code{FALSE}, it may prevent the evaluation of the 
-##' ensemble models (see \code{\link{BIOMOD_EnsembleModeling}}) in further steps. Strong 
-##' recommandation is to keep \code{SaveObj = TRUE}, even if it requires to have some free 
-##' space onto the hard drive.}
-##'
-##'
-##' 7. \bold{rescal.all.models}
-##' .. \bold{This parameter is quite experimental and it is recommended not to use it. It may  
-##' lead to reduction in projection scale amplitude.} Some categorical models always have to be 
-##' scaled (\code{FDA}, \code{ANN}), but it may be interesting to scale all computed models to 
-##' ensure comparable predictions (\code{0-1000} range). It might be particularly useful when 
-##' doing ensemble forecasting to remove the scale prediction effect (the more extended 
-##' projections are, the more they influence ensemble forecasting results).
-##' 
-##' 
-##' 8. \bold{do.full.models}
-##' .. Building models with all available information may be useful in some particular cases 
-##' (e.g. rare species with few presences points). But calibration and evaluation datasets will 
-##' be the same, which might lead to over-optimistic evaluation scores.
 ##' 
 ##' 
 ##' @keywords models, regression, nonlinear, multivariate, nonparametric, tree
@@ -193,7 +183,8 @@
 ##' @examples
 ##' 
 ##' # species occurrences
-##' DataSpecies <- read.csv(system.file("external/species/mammals_table.csv", package="biomod2"), row.names = 1)
+##' myFile <- system.file("external/species/mammals_table.csv", package="biomod2")
+##' DataSpecies <- read.csv(myFile, row.names = 1)
 ##' head(DataSpecies)
 ##' 
 ##' # the name of studied species
@@ -238,7 +229,13 @@
 ##' myBiomodModelOut
 ##' 
 ##' 
-##' ###############################################################################################
+##' @importFrom purr map
+##' @importFrom checkmate assert_choice
+##' 
+##' @export
+##' 
+##' 
+###################################################################################################
 
 
 BIOMOD_Modeling <- function(data,
@@ -394,7 +391,7 @@ BIOMOD_Modeling <- function(data,
   ## check if model is supported
   avail.models.list <- c('GLM', 'GBM', 'GAM', 'CTA', 'ANN', 'SRE', 'FDA', 'MARS'
                          , 'RF', 'MAXENT.Phillips', 'MAXENT.Phillips.2')
-  purrr::map(models, ~ checkmate::assert_choice(.x, avail.models.list))
+  map(models, ~ assert_choice(.x, avail.models.list))
   
   
   ## 1. Remove models not supporting categorical variables --------------------

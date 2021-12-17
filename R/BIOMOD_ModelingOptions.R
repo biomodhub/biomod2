@@ -1,4 +1,4 @@
-##' ###############################################################################################
+###################################################################################################
 ##' @name BIOMOD_ModelingOptions
 ##' @aliases BIOMOD_ModelingOptions
 ##' @aliases bm_DefaultModelingOptions
@@ -40,19 +40,20 @@
 ##' @details
 ##' 
 ##' This function allows advanced user to change some default parameters of \pkg{biomod2} inner 
-##' models. 10 single models are available within the package, and their options can be set 
+##' models. \cr 10 single models are available within the package, and their options can be set 
 ##' with this function through \code{list} objects.
 ##' 
 ##' The \code{\link{bm_DefaultModelingOptions}} function prints all default parameter values for 
 ##' all available models. This output can be copied and pasted to be used as is (with wanted 
-##' changes) as function arguments (see Examples).
+##' changes) as function arguments (see \href{BIOMOD_ModelingOptions.html#examples}{Examples}).
 ##' 
 ##' Below is the detailed list of all modifiable parameters for each available model.
 ##'
-##' @section \bold{GLM (\code{\link[stats]{glm}})} :
+##' @section GLM : (\code{\link[stats]{glm}})
 ##' \itemize{
-##'   \item{\code{myFormula}}{ : a typical \code{formula} object (see Examples). \cr If not 
-##'   \code{NULL}, \code{type} and \code{interaction.level} parameters are switched off. \cr 
+##'   \item{\code{myFormula}}{ : a typical \code{formula} object (see 
+##'   \href{BIOMOD_ModelingOptions.html#examples}{Examples}). \cr If not \code{NULL}, \code{type} 
+##'   and \code{interaction.level} parameters are switched off. \cr 
 ##'   You can choose to either :
 ##'   \itemize{
 ##'     \item{generate automatically the GLM formula with the following parameters :
@@ -80,9 +81,9 @@
 ##'   \code{\link{glm.control}})}
 ##' }
 ##'
-##' @section \bold{GBM (default \code{\link[gbm]{gbm}})} :
+##' @section GBM : (default \code{\link[gbm]{gbm}})
 ##' 
-##' Please refer to \code{\link[gbm]{gbm}} help file for more details.
+##' \emph{Please refer to \code{\link[gbm]{gbm}} help file for more details.}
 ##' \itemize{
 ##'   \item{\code{distribution = 'bernoulli'}}
 ##'   \item{\code{n.trees = 2500}}
@@ -98,13 +99,14 @@
 ##'   \item{\code{n.cores = 1}}
 ##' }
 ##'
-##' @section \bold{GAM (\code{\link[gam]{gam}} or \code{\link[mgcv]{gam}})} :
+##' @section GAM : (\code{\link[gam]{gam}} or \code{\link[mgcv]{gam}})
 ##' \itemize{
 ##'   \item{\code{algo = 'GAM_gam'}}{ : a \code{character} defining the chosen GAM function, must 
 ##'   be \code{GAM_gam} (see \code{\link[gam]{gam}}), \code{GAM_mgcv} (see \code{\link[mgcv]{gam}}) 
 ##'   or \code{BAM_mgcv} (see \code{\link[mgcv]{bam}})}
-##'   \item{\code{myFormula}}{ : a typical \code{formula} object (see Examples). \cr If not 
-##'   \code{NULL}, \code{type} and \code{interaction.level} parameters are switched off. \cr 
+##'   \item{\code{myFormula}}{ : a typical \code{formula} object (see 
+##'   \href{BIOMOD_ModelingOptions.html#examples}{Examples}). \cr If not \code{NULL}, \code{type} 
+##'   and \code{interaction.level} parameters are switched off. \cr 
 ##'   You can choose to either :
 ##'   \itemize{
 ##'     \item{generate automatically the GAM formula with the following parameters :
@@ -127,7 +129,7 @@
 ##'   default !})}
 ##'   \item{\code{control}}{ : a \code{list} of parameters to control the fitting process (passed to 
 ##'   \code{\link[mgcv]{gam.control}} or \code{\link[gam]{gam.control}})}
-##'   \item{some options specific to \code{GAM_mgcv} (ignored if \code{algo = 'GAM_gam'})}{
+##'   \item{some options specific to \code{GAM_mgcv} (\emph{ignored if \code{algo = 'GAM_gam'}})}{
 ##'   \itemize{
 ##'     \item{\code{method = 'GCV.Cp'})}
 ##'     \item{\code{optimizer = c('outer','newton')}}
@@ -138,9 +140,9 @@
 ##'   }
 ##' }
 ##'
-##' @section \bold{CTA (\code{\link[rpart]{rpart}})} :
+##' @section CTA : (\code{\link[rpart]{rpart}})
 ##' 
-##' Please refer to \code{\link[rpart]{rpart}} help file for more details.
+##' \emph{Please refer to \code{\link[rpart]{rpart}} help file for more details.}
 ##' \itemize{
 ##'   \item{\code{method = 'class'}}
 ##'   \item{\code{parms = 'default'}}{ : if \code{'default'}, default \pkg{rpart} 
@@ -149,7 +151,7 @@
 ##'   \item{\code{control}}{ : see \code{\link[rpart]{rpart.control}}}
 ##' }
 ##'
-##' @section \bold{ANN (\code{\link[nnet]{nnet}})} :
+##' @section ANN : (\code{\link[nnet]{nnet}})
 ##' \itemize{
 ##'   \item{\code{NbCV = 5}}{ : an \code{integer} corresponding to the number of cross-validation 
 ##'   repetitions to find best size and decay parameters}
@@ -164,32 +166,33 @@
 ##'   It is also possible to give a \code{vector} of decay values to be tested, and the one giving 
 ##'   the best model AUC will be kept.}
 ##'   \item{\code{rang = 0.1}}{ : a \code{numeric} corresponding to the initial random weights on 
-##'   [-rang, rang]}
+##'   \code{[-rang, rang]}}
 ##'   \item{\code{maxit = 200}}{ : an \code{integer} corresponding to the maximum number of 
 ##'   iterations}
 ##' }
 ##'
-##' @section \bold{SRE (\code{\link[biomod2]{sre}})} :
+##' @section SRE : (\code{\link[biomod2]{sre}})
 ##' \itemize{
-##'   \item{\code{quant = 0.025}}{ : a \code{numeric} corresponding to the quantile of 'extreme 
-##'   environmental variable' removed to select species envelops}
+##'   \item{\code{quant = 0.025}}{ : a \code{numeric} corresponding to the quantile of 
+##'   '\emph{extreme environmental variable}' removed to select species envelops}
 ##' }
 ##'
-##' @section \bold{FDA (\code{\link[mda]{fda}})} :
+##' @section FDA : (\code{\link[mda]{fda}})
 ##' 
-##' Please refer to \code{\link[mda]{fda}} help file for more details.
+##' \emph{Please refer to \code{\link[mda]{fda}} help file for more details.}
 ##' \itemize{
 ##'   \item{\code{method = 'mars'}}
 ##'   \item{\code{add_args = NULL}}{ : a \code{list} of additional parameters to \code{method} and 
-##'   given to the \ldots options of \code{\link[mda]{fda}} function}
+##'   given to the \code{...} options of \code{\link[mda]{fda}} function}
 ##' }
 ##'
-##' @section \bold{MARS (\code{\link[earth]{earth}})} :
+##' @section MARS : (\code{\link[earth]{earth}})
 ##' 
-##' Please refer to \code{\link[earth]{earth}} help file for more details.
+##' \emph{Please refer to \code{\link[earth]{earth}} help file for more details.}
 ##' \itemize{
-##'   \item{\code{myFormula}}{ : a typical \code{formula} object (see Examples). \cr If not 
-##'   \code{NULL}, \code{type} and \code{interaction.level} parameters are switched off. \cr 
+##'   \item{\code{myFormula}}{ : a typical \code{formula} object (see 
+##'   \href{BIOMOD_ModelingOptions.html#examples}{Examples}). \cr If not \code{NULL}, \code{type} 
+##'   and \code{interaction.level} parameters are switched off. \cr 
 ##'   You can choose to either :
 ##'   \itemize{
 ##'     \item{generate automatically the MARS formula with the following parameters :
@@ -205,15 +208,15 @@
 ##'   }
 ##'   }
 ##'   \item{\code{nk = NULL}}{ : an \code{integer} corresponding to the maximum number of model 
-##'   terms. If \code{NULL} default MARS function value is used : 
-##'   \code{max(21, 2 * nb_expl_var + 1)}}
+##'   terms. \cr 
+##'   If \code{NULL} default MARS function value is used : \code{max(21, 2 * nb_expl_var + 1)}}
 ##'   \item{\code{penalty = 2}}
 ##'   \item{\code{thresh = 0.001}}
 ##'   \item{\code{nprune = NULL}}
 ##'   \item{\code{pmethod = 'backward'}}
 ##' }
 ##'
-##' @section \bold{RF (\code{\link[randomForest]{randomForest}})} :
+##' @section RF : (\code{\link[randomForest]{randomForest}})
 ##' \itemize{
 ##'   \item{\code{do.classif = TRUE}}{ : if \code{TRUE} \emph{random.forest classification} will 
 ##'   be computed, otherwise \emph{random.forest regression} will be done}
@@ -223,7 +226,7 @@
 ##'   \item{\code{maxnodes = NULL}}
 ##' }
 ##'
-##' @section \bold{MAXENT.Phillips (\emph{biodiversityinformatics.amnh.org/open_source/maxent/})} :
+##' @section MAXENT.Phillips : (\url{https://biodiversityinformatics.amnh.org/open_source/maxent})
 ##' \itemize{
 ##'   \item{\code{path_to_maxent.jar = getwd()}}{ : a \code{character} corresponding to \pkg{maxent.jar} 
 ##'   file link}
@@ -318,7 +321,12 @@
 ##' bm_DefaultModelingOptions()
 ##'
 ##'
-##' ###############################################################################################
+##' @importFrom gam gam.control
+##' @importFrom mgcv gam.control
+##'
+##' @export
+##'
+###################################################################################################
 
 BIOMOD_ModelingOptions <- function(GLM = NULL,
                                    GBM = NULL,

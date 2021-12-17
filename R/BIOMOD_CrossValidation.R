@@ -1,4 +1,4 @@
-##' ###############################################################################################
+###################################################################################################
 ##' @name BIOMOD_CrossValidation
 ##' @aliases BIOMOD_CrossValidation
 ##' @author Frank Breiner \email{frank.breiner@wsl.ch}
@@ -16,10 +16,10 @@
 ##' (\emph{set to \code{1} if \code{stratified.cv = TRUE}})
 ##' @param stratified.cv a \code{logical} defining whether stratified cv should be run 
 ##' @param stratify a \code{character} corresponding to the stratification method of the cv 
-##' (\emph{if \code{stratified.cv = TRUE}}, must be \code{x}, \code{y}, \code{both}, \code{block} 
+##' (\emph{if \code{stratified.cv = TRUE}}), must be \code{x}, \code{y}, \code{both}, \code{block} 
 ##' or the name of a predictor for environmental stratified cv
 ##' @param balance a \code{character} defining whether partitions should be balanced for 
-##' \code{presences} or \code{absences} (\emph{resp. pseudo-absences or background})
+##' \code{presences} or \code{absences} (resp. pseudo-absences or background)
 ##' @param do.full.models (\emph{optional, default} \code{TRUE}) \cr 
 ##' A \code{logical} value defining if models should be also calibrated and validated with the 
 ##' whole dataset
@@ -34,15 +34,17 @@
 ##' 
 ##' @details
 ##' 
-##' Stratified cross-validation may be used to test for model overfitting and to assess 
-##' transferability in geographic and environmental space.
-##' 
-##' \code{x} and \code{y} stratification was described in \emph{Wenger and Olden 2012} (see 
-##' References). While \code{y} stratification uses \code{k} partitions along the y-gradient, 
-##' \code{x} stratification does the same for the x-gradient, and \code{both} combines them.
-##' 
-##' \code{block} stratification was described in \emph{Muscarella et al. 2014} (see References). 
-##' Four bins of equal size are partitioned (bottom-left, bottom-right, top-left and top-right).
+##' \bold{Stratified cross-validation} may be used to test for model overfitting and to assess 
+##' transferability in geographic and environmental space : 
+##' \itemize{
+##'   \item \code{x} and \code{y} stratification was described in \emph{Wenger and Olden 2012} 
+##'   (see \href{BIOMOD_CrossValidation.html#References}{References}). While \code{y} 
+##'   stratification uses \code{k} partitions along the y-gradient, \code{x} stratification does 
+##'   the same for the x-gradient, and \code{both} combines them.
+##'   \item \code{block} stratification was described in \emph{Muscarella et al. 2014} (see 
+##'   \href{BIOMOD_CrossValidation.html#References}{References}). Four bins of equal size are 
+##'   partitioned (bottom-left, bottom-right, top-left and top-right).
+##' }
 ##' 
 ##' If \code{balance = 'presences'}, presences are divided (balanced) equally over the 
 ##' partitions (e.g. \emph{Fig. 1b in Muscarelly et al. 2014}). Pseudo-absences will however be 
@@ -75,7 +77,8 @@
 ##' @examples
 ##' 
 ##' # species occurrences
-##' DataSpecies <- read.csv(system.file("external/species/mammals_table.csv", package="biomod2"), row.names = 1)
+##' myFile <- system.file("external/species/mammals_table.csv", package="biomod2")
+##' DataSpecies <- read.csv(myFile, row.names = 1)
 ##' head(DataSpecies)
 ##' 
 ##' # the name of studied species
@@ -139,7 +142,7 @@
 ##' boxplot(eval$Testing.data ~ eval$strat, ylab = "ROC AUC")
 ##' 
 ##' 
-##' ###############################################################################################
+###################################################################################################
 
 
 BIOMOD_CrossValidation <- function(data,
