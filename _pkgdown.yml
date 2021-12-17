@@ -1,0 +1,45 @@
+
+navbar:
+  structure:
+    left:
+    - home
+    - reference
+    right:
+    - github
+  components:
+    home:
+      icon: fa-home fa-lg
+      href: index.html
+    reference:
+      text: Reference
+      icon: fa-book fa-lg
+      href: reference/index.html
+    github:
+      icon: fa-github fa-lg
+      href: https://github.com/biomodhub/biomod2.git
+
+
+reference:
+  - title: BIOMOD main functions
+    contents:
+      - "BIOMOD_FormatingData"
+      - "BIOMOD_CrossValidation"
+      - "BIOMOD_ModelingOptions"
+      - "BIOMOD_Tuning"
+      - "BIOMOD_Modeling"
+      - "BIOMOD_Projection"
+      - "BIOMOD_EnsembleModeling"
+      - "BIOMOD_EnsembleForecasting"
+      - "BIOMOD_RangeSize"
+      - "BIOMOD_LoadModels"
+      - "BIOMOD_PresenceOnly"
+  - title: BIOMOD secondary functions
+    contents:
+      - "bm_MakeFormula"
+      - "bm_SampleBinaryVector"
+      - "bm_SampleFactorLevels"
+      - "bm_Rescaler"
+      - "bm_FindOptimStat"
+      - "bm_BinaryTransformation"
+      - "bm_VariablesImportance"
+
