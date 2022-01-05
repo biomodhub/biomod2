@@ -50,7 +50,7 @@ models. \cr 10 single models are available within the package, and their options
 with this function through \code{list} objects.
 
 The \code{\link{bm_DefaultModelingOptions}} function prints all default parameter values for 
-all available models. This output can be copied and pasted to be used as is (with wanted 
+all available models. \cr This output can be copied and pasted to be used as is (with wanted 
 changes) as function arguments (see \href{BIOMOD_ModelingOptions.html#examples}{Examples}).
 
 Below is the detailed list of all modifiable parameters for each available model.
@@ -253,45 +253,51 @@ Below is the detailed list of all modifiable parameters for each available model
 \section{MAXENT.Phillips }{
  (\url{https://biodiversityinformatics.amnh.org/open_source/maxent})
 \itemize{
-  \item{\code{path_to_maxent.jar = getwd()}}{ : a \code{character} corresponding to \pkg{maxent.jar} 
-  file link}
-  \item{\code{memory_allocated = 512}}{ : an \code{integer} corresponding to the amount of memory 
-  (in Mo) reserved for \code{java} to run \code{MAXENT.Phillips}, must be \code{64}, \code{128}, 
-  \code{256}, \code{512}, \code{1024}... or \code{NULL} to use default \code{java} memory 
-  limitation parameter}
-  \item{\code{background_data_dir}}{ : a \code{character} corresponding to directory path where 
-  explanatory variables are stored as \code{ASCII} files (raster format). \cr
-  If specified \code{MAXENT.Phillips} will generate its own background data from explanatory 
+  \item{\code{path_to_maxent.jar = getwd()}}{ : a \code{character} corresponding to 
+  \pkg{maxent.jar} file link}
+  \item{\code{memory_allocated = 512}}{ : an \code{integer} corresponding to the amount of 
+  memory (in Mo) reserved for \code{java} to run \code{MAXENT.Phillips}, must be \code{64}, 
+  \code{128}, \code{256}, \code{512}, \code{1024}... or \code{NULL} to use default \code{java} 
+  memory limitation parameter}
+  \item{\code{background_data_dir}}{ : a \code{character} corresponding to directory path 
+  where explanatory variables are stored as \code{ASCII} files (raster format). If specified, 
+  \code{MAXENT.Phillips} will generate its own background data from explanatory 
   variables rasters (as usually done in \code{MAXENT} studies). Otherwise \pkg{biomod2} 
   pseudo-absences will be used (see \code{\link{BIOMOD_FormatingData}})}
   \item{\code{maximumbackground}}{ : an \code{integer} corresponding to the maximum number of 
   background data to sample if the \code{background_data_dir} parameter has been set}
-  \item{\code{maximumiterations = 200}}{ : an \code{integer} corresponding to the maximum number of 
-  iterations to do}
-  \item{\code{visible = FALSE}}{ : a \code{logical} to make the \code{MAXENT} user interface available}
+  \item{\code{maximumiterations = 200}}{ : an \code{integer} corresponding to the maximum 
+  number of iterations to do}
+  \item{\code{visible = FALSE}}{ : a \code{logical} to make the \code{MAXENT} user interface 
+  available}
   \item{\code{linear = TRUE}}{ : a \code{logical} to allow linear features to be used}
   \item{\code{quadratic = TRUE}}{ : a \code{logical} to allow quadratic features to be used}
   \item{\code{product = TRUE}}{ : a \code{logical} to allow product features to be used}
   \item{\code{threshold = TRUE}}{ : a \code{logical} to allow threshold features to be used}
   \item{\code{hinge = TRUE}}{ : a \code{logical} to allow hinge features to be used}
-  \item{\code{lq2lqptthreshold = 80}}{ : an \code{integer} corresponding to the number of samples 
-  at which product and threshold features start being used}
-  \item{\code{l2lqthreshold = 10}}{ : an \code{integer} corresponding to the number of samples at 
-  which quadratic features start being used}
-  \item{\code{hingethreshold = 15}}{ : an \code{integer} corresponding to the number of samples at 
-  which hinge features start being used}
+  \item{\code{lq2lqptthreshold = 80}}{ : an \code{integer} corresponding to the number of 
+  samples at which product and threshold features start being used}
+  \item{\code{l2lqthreshold = 10}}{ : an \code{integer} corresponding to the number of samples 
+  at which quadratic features start being used}
+  \item{\code{hingethreshold = 15}}{ : an \code{integer} corresponding to the number of 
+  samples at which hinge features start being used}
   \item{\code{beta_threshold = -1.0}}{ : a \code{numeric} corresponding to the regularization 
-  parameter to be applied to all threshold features (\emph{negative value enables automatic setting})}
-  \item{\code{beta_categorical = -1.0}}{ : a \code{numeric} corresponding to the regularization 
-  parameter to be applied to all categorical features (\emph{negative value enables automatic setting})}
-  \item{\code{beta_lqp = -1.0}}{ : a \code{numeric} corresponding to the regularization parameter 
-  to be applied to all linear, quadratic and product features (\emph{negative value enables automatic setting})}
-  \item{\code{beta_hinge = -1.0}}{ : a \code{numeric} corresponding to the regularization parameter 
-  to be applied to all hinge features (\emph{negative value enables automatic setting})}
-  \item{\code{betamultiplier = 1}}{ : a \code{numeric} to multiply all automatic regularization 
-  parameters (\emph{higher number gives a more spread-out distribution})}
-  \item{\code{defaultprevalence = 0.5}}{ : a \code{numeric} corresponding to the default prevalence 
-  of the species (\emph{probability of presence at ordinary occurrence points})}
+  parameter to be applied to all threshold features 
+  (\emph{negative value enables automatic setting})}
+  \item{\code{beta_categorical = -1.0}}{ : a \code{numeric} corresponding to the 
+  regularization parameter to be applied to all categorical features 
+  (\emph{negative value enables automatic setting})}
+  \item{\code{beta_lqp = -1.0}}{ : a \code{numeric} corresponding to the regularization 
+  parameter to be applied to all linear, quadratic and product features 
+  (\emph{negative value enables automatic setting})}
+  \item{\code{beta_hinge = -1.0}}{ : a \code{numeric} corresponding to the regularization 
+  parameter to be applied to all hinge features 
+  (\emph{negative value enables automatic setting})}
+  \item{\code{betamultiplier = 1}}{ : a \code{numeric} to multiply all automatic 
+  regularization parameters \cr 
+  (\emph{higher number gives a more spread-out distribution})}
+  \item{\code{defaultprevalence = 0.5}}{ : a \code{numeric} corresponding to the default 
+  prevalence of the species \cr (\emph{probability of presence at ordinary occurrence points})}
 }
 
 % @section \bold{MAXENT.Tsuruoka (\code{\link[maxent]{maxent}})} :

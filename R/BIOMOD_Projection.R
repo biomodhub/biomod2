@@ -1,4 +1,4 @@
-##' ###############################################################################################
+###################################################################################################
 ##' @name BIOMOD_Projection
 ##' @aliases BIOMOD_Projection
 ##' @author Wilfried Thuiller, Damien Georges
@@ -6,8 +6,8 @@
 ##' @title Project a range of calibrated species distribution models onto new environment
 ##' 
 ##' @description This function allows to project a range of models built with the 
-##' \code{\link[biomod2]{BIOMOD_Modeling}} function onto new environmental data (which can 
-##' represent new areas, resolution or time scales for example).
+##' \code{\link[biomod2]{BIOMOD_Modeling}} function onto new environmental data (\emph{which can 
+##' represent new areas, resolution or time scales for example}).
 ##' 
 ##' 
 ##' @param modeling.output a \code{\link{BIOMOD.models.out}} object returned by the 
@@ -19,9 +19,9 @@
 ##' variables names given to the \code{\link{BIOMOD_FormatingData}} function to build 
 ##' \code{modeling.output}) that will be used to project the species distribution model(s)
 ##' @param new.env.xy (\emph{optional, default} \code{NULL}) \cr 
-##' If \code{new.env} is a \code{matrix} or a \code{data.frame}, a 2-columns \code{matrix} 
-##' containing the corresponding \code{X} and \code{Y} coordinates that will be used to project 
-##' the species distribution model(s)
+##' If \code{new.env} is a \code{matrix} or a \code{data.frame}, a 2-columns \code{matrix} or 
+##' \code{data.frame} containing the corresponding \code{X} and \code{Y} coordinates that will be 
+##' used to project the species distribution model(s)
 ##' @param chosen.models a \code{vector} containing model names to be kept, must be either 
 ##' \code{all} or a sub-selection of model names
 ##' 
@@ -43,19 +43,19 @@
 ##' @param compress (\emph{optional, default} \code{TRUE}) \cr 
 ##' A \code{logical} or a \code{character} value defining whether and how objects should be 
 ##' compressed when saved on hard drive. Must be either \code{TRUE}, \code{FALSE}, \code{xz} or 
-##' \code{gzip} (see Details)
+##' \code{gzip} (see \href{BIOMOD_Projection.html#details}{Details})
 ##' @param build.clamping.mask (\emph{optional, default} \code{TRUE}) \cr 
 ##' A \code{logical} value defining whether a clamping mask should be built and saved on hard 
-##' drive or not (see Details)
+##' drive or not (see \href{BIOMOD_Projection.html#details}{Details}))
 ##' 
-##' @param ... (\emph{optional, see Details}) 
+##' @param ... (\emph{optional, see \href{BIOMOD_Projection.html#details}{Details})}) 
 ##' 
 ##' 
 ##' @return
 ##' 
-##' A \code{BIOMOD.projection.out} object containing models projections, or links to saved outputs.
-##' Models projections are stored out of \R (for memory storage reasons) in \code{proj.name} folder 
-##' created in the current working directory :
+##' A \code{BIOMOD.projection.out} object containing models projections, or links to saved 
+##' outputs. \cr Models projections are stored out of \R (for memory storage reasons) in 
+##' \code{proj.name} folder created in the current working directory :
 ##' \enumerate{
 ##'   \item the output is a 4-dimensional array if \code{new.env} is a \code{matrix} or a 
 ##'   \code{data.frame}
@@ -69,12 +69,12 @@
 ##' @details 
 ##' 
 ##' If \code{chosen.models = 'all'}, projections are done for all evaluation and pseudo absences 
-##' runs if applicable. These projections may be used later by the 
-##' \code{\link{BIOMOD_EnsembleForecasting}} function.
+##' runs if applicable. \cr These projections may be used later by the 
+##' \code{\link{BIOMOD_EnsembleForecasting}} function. \cr \cr 
 ##' 
 ##' If \code{build.clamping.mask = TRUE}, a raster file will be saved within the projection folder. 
 ##' This mask values will correspond to the number of variables in each pixel that are out of their 
-##' calibration / training range, identifying locations where predictions are uncertain.
+##' calibration / training range, identifying locations where predictions are uncertain. \cr \cr
 ##' 
 ##' \code{...} can take the following values :
 ##' \itemize{
@@ -86,8 +86,8 @@
 ##'   \item{\code{on_0_1000} : }{a \code{logical} value defining whether \code{0 - 1} probabilities 
 ##'   are to be converted to \code{0 - 1000} scale to save memory on backup}
 ##'   \item{\code{do.stack} : }{a \code{logical} value defining whether all projections are to be 
-##'   saved as one \code{RasterStack} object or several \code{RasterLayer} files (the default if 
-##'   projections are too heavy to be all loaded at once in memory)}
+##'   saved as one \code{RasterStack} object or several \code{RasterLayer} files (\emph{the default 
+##'   if projections are too heavy to be all loaded at once in memory})}
 ##'   \item{\code{keep.in.memory} : }{a \code{logical} value defining whether all projections are 
 ##'   to be kept loaded at once in memory, or only links pointing to hard drive are to be returned}
 ##'   \item{\code{output.format} : }{a \code{character} value corresponding to the projections 
@@ -108,7 +108,8 @@
 ##' @examples
 ##' 
 ##' # species occurrences
-##' DataSpecies <- read.csv(system.file("external/species/mammals_table.csv", package="biomod2"), row.names = 1)
+##' myFile <- system.file("external/species/mammals_table.csv", package="biomod2")
+##' DataSpecies <- read.csv(myFile, row.names = 1)
 ##' head(DataSpecies)
 ##' 
 ##' # the name of studied species
@@ -183,7 +184,7 @@
 ##' }
 ##' 
 ##' 
-##' ###############################################################################################
+###################################################################################################
 
 
 BIOMOD_Projection <- function(modeling.output,

@@ -60,7 +60,7 @@ Suggests:
     testthat,
     ecospat
 License: GPL-3
-RoxygenNote: 7.1.1
+RoxygenNote: 7.1.2
 Collate: 
     'BIOMOD_CrossValidation.R'
     'BIOMOD_EnsembleForecasting.R'

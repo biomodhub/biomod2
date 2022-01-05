@@ -22,8 +22,9 @@
 ##' or \code{\link[raster:stack]{RasterStack}} object containing the explanatory variables 
 ##' (in columns or layers) that will be used to build the species distribution model(s)
 ##' @param resp.xy (\emph{optional, default} \code{NULL}) \cr 
-##' If \code{resp.var} is a \code{vector}, a 2-columns \code{matrix} containing the corresponding 
-##' \code{X} and \code{Y} coordinates that will be used to build the species distribution model(s)
+##' If \code{resp.var} is a \code{vector}, a 2-columns \code{matrix} or \code{data.frame} 
+##' containing the corresponding \code{X} and \code{Y} coordinates that will be used to build the 
+##' species distribution model(s)
 ##' 
 ##' @param eval.resp.var (\emph{optional, default} \code{NULL}) \cr 
 ##' A \code{vector}, \code{\link[sp]{SpatialPoints}} (\emph{if presence-only}) or 
@@ -36,9 +37,9 @@
 ##' columns or layers) that will be used to evaluate the species distribution model(s) with 
 ##' independent data
 ##' @param eval.resp.xy (\emph{optional, default} \code{NULL}) \cr 
-##' If \code{resp.var} is a \code{vector}, a 2-columns \code{matrix} containing the corresponding 
-##' \code{X} and \code{Y} coordinates that will be used to evaluate the species distribution 
-##' model(s) with independent data
+##' If \code{resp.var} is a \code{vector}, a 2-columns \code{matrix} or \code{data.frame} 
+##' containing the corresponding \code{X} and \code{Y} coordinates that will be used to evaluate 
+##' the species distribution model(s) with independent data
 ##' 
 ##' @param PA.nb.rep (\emph{optional, default} \code{0}) \cr 
 ##' If pseudo-absence selection, the number of sets (repetitions) of pseudo-absence points that 
