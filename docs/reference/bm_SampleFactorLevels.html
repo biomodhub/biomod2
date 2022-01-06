@@ -89,16 +89,14 @@ In case any factorial variable is found in the input object, <code>NULL</code> i
     </div>
     <div id="details">
     <h2>Details</h2>
-    <p>###############################################################################################</p>
-
-
-<p>The <code>x</code>, <code>mask.out</code> and <code>mask.in</code> parameters must be coherent in terms of 
+    <p>The <code>x</code>, <code>mask.out</code> and <code>mask.in</code> parameters must be coherent in terms of 
 dimensions :</p><ul><li><p>same number of rows for <code>data.frame</code> objects</p></li>
-<li><p>same resolution, projection system and number of cells for <code>raster*</code> objects</p></li>
+<li><p>same resolution, projection system and number of cells for <code>raster*</code> objects 
+  <br><br></p></li>
 </ul><p>If <code>mask.in</code> contains several masks (either it is a 
 <code><a href="https://rdrr.io/pkg/raster/man/stack.html" class="external-link">RasterStack</a></code> object or a multi-columns <code>data.frame</code>), then 
 the order of masks / columns matters : they will be considered successively to sample missing 
-factor levels.</p>
+factor levels. <br><br></p>
 <ul><li><p><code>raster*</code> masks will be understood as :</p><ul><li><p><code>NA</code> : out of mask</p></li>
 <li><p><code>not NA</code> : in mask</p></li>
 </ul></li>
@@ -148,7 +146,6 @@ factor levels.</p>
 <span class="fu">bm_SampleFactorLevels</span><span class="op">(</span><span class="va">stk</span>, mask.out <span class="op">=</span> <span class="va">mask.out</span>, mask.in <span class="op">=</span> <span class="va">mask.in</span><span class="op">)</span>
 
 
-<span class="co">###############################################################################################</span>
 </code></pre></div>
     </div>
   </div>

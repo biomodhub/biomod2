@@ -29,9 +29,6 @@ A \code{list} containing to elements is returned :
 This internal \pkg{biomod2} function allows the user to sample a binary vector 
 keeping the same proportion of \code{0} and \code{1} as the initial vector.
 }
-\details{
-###############################################################################################
-}
 \examples{
 
 ## generate a binary vector
@@ -39,7 +36,6 @@ a <- sample(c(0,1), 100, replace = TRUE)
 
 bm_SampleBinaryVector(ref = a, ratio = 0.7)
 
-###############################################################################################
 }
 \seealso{
 \code{\link[biomod2]{BIOMOD_FormatingData}}

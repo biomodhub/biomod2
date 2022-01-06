@@ -53,14 +53,10 @@ A \code{list} containing two objects :
 \description{
 This function allows to calculate the absolute number of locations (pixels) lost, 
 stable and gained, as well as the corresponding relative proportions, between two (or more) 
-binary projections of (ensemble) species distribution models (which can represent new time 
-scales or environmental scenarios for example).
+binary projections of (ensemble) species distribution models (\emph{which can represent new 
+time scales or environmental scenarios for example}).
 }
 \details{
-###############################################################################################
-
-
-
 Note that \bold{this function is only relevant to compare binary projections, made on the 
 same area with the same resolution}.
 
@@ -70,7 +66,8 @@ same area with the same resolution}.
 \examples{
 
 # species occurrences
-DataSpecies <- read.csv(system.file("external/species/mammals_table.csv", package="biomod2"), row.names = 1)
+myFile <- system.file("external/species/mammals_table.csv", package="biomod2")
+DataSpecies <- read.csv(myFile, row.names = 1)
 head(DataSpecies)
 
 # the name of studied species
@@ -153,7 +150,6 @@ plot(myBiomodRangeSize$Diff.By.Pixel)
 
 
 
-###############################################################################################
 }
 \seealso{
 \code{\link{BIOMOD_FormatingData}}, \code{\link{BIOMOD_ModelingOptions}}, 

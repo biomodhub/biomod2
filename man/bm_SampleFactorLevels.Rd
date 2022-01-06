@@ -33,21 +33,18 @@ This internal \pkg{biomod2} function samples randomly an element of each level o
 all the factorial variables contained in a \code{raster*} or \code{data.frame} object.
 }
 \details{
-###############################################################################################
-
-
-
 The \code{x}, \code{mask.out} and \code{mask.in} parameters must be coherent in terms of 
 dimensions :
 \itemize{
   \item same number of rows for \code{data.frame} objects
-  \item same resolution, projection system and number of cells for \code{raster*} objects
+  \item same resolution, projection system and number of cells for \code{raster*} objects 
+  \cr \cr
 }
 
 If \code{mask.in} contains several masks (either it is a 
 \code{\link[raster:stack]{RasterStack}} object or a multi-columns \code{data.frame}), then 
 the order of masks / columns matters : they will be considered successively to sample missing 
-factor levels.
+factor levels. \cr \cr
 
 \itemize{
   \item \code{raster*} masks will be understood as :
@@ -98,7 +95,6 @@ bm_SampleFactorLevels(stk, mask.in = mask.in)
 bm_SampleFactorLevels(stk, mask.out = mask.out, mask.in = mask.in)
 
 
-###############################################################################################
 }
 \author{
 Damien Georges

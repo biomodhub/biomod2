@@ -31,7 +31,7 @@ tested over the range of fitted values}
 An \code{integer} corresponding to the only threshold value to be tested}
 }
 \value{
-A 1 row x 4 columns \code{matrix} containing :
+A \code{1} row x \code{4} columns \code{matrix} containing :
 \itemize{
   \item{\code{best.iter}}{ : the best score obtained for the chosen evaluation metric}
   \item{\code{cutoff}}{ : the associated cut-off used to transform the continuous values into 
@@ -45,10 +45,6 @@ This internal \pkg{biomod2} function allows the user to find the threshold to co
 continuous values into binary ones leading to the best score for a given evaluation metric.
 }
 \details{
-###############################################################################################
-
-
-
 \emph{Please refer to \code{\link{BIOMOD_Modeling}} to get more information about these 
 evaluation metrics.}
 
@@ -72,7 +68,6 @@ c <- sapply(a, BiasedDrawing)
 bm_FindOptimStat(Stat = 'TSS', Fit = c, Obs = a, Nb.thresh.test = 100)
 
 
-###############################################################################################
 }
 \seealso{
 \code{\link{BIOMOD_Modeling}}, \code{\link{BIOMOD_EnsembleModeling}}

@@ -1,4 +1,4 @@
-##' ###############################################################################################
+###################################################################################################
 ##' @name bm_FindOptimStat
 ##' @aliases bm_FindOptimStat
 ##' @aliases bm_CalculateStat
@@ -26,7 +26,7 @@
 ##'
 ##' @return 
 ##' 
-##' A 1 row x 4 columns \code{matrix} containing :
+##' A \code{1} row x \code{4} columns \code{matrix} containing :
 ##' \itemize{
 ##'   \item{\code{best.iter}}{ : the best score obtained for the chosen evaluation metric}
 ##'   \item{\code{cutoff}}{ : the associated cut-off used to transform the continuous values into 
@@ -68,7 +68,7 @@
 ##' bm_FindOptimStat(Stat = 'TSS', Fit = c, Obs = a, Nb.thresh.test = 100)
 ##'
 ##' 
-##' ###############################################################################################
+###################################################################################################
 
 
 bm_FindOptimStat <- function(Stat = 'TSS',

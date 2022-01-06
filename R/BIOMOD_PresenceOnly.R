@@ -1,4 +1,4 @@
-##' ###############################################################################################
+###################################################################################################
 ##' @name BIOMOD_PresenceOnly
 ##' @aliases BIOMOD_PresenceOnly
 ##' @author Frank Breiner \email{frank.breiner@wsl.ch}, Maya Gueguen
@@ -18,8 +18,8 @@
 ##' \code{\link{BIOMOD_EnsembleModeling}} function
 ##' @param bg.env (\emph{optional, default} \code{NULL}) \cr 
 ##' A \code{matrix} or \code{data.frame} object containing values of environmental variables 
-##' extracted from the background (if presences are to be compared to background instead of 
-##' absences or pseudo-absences selected for modeling)
+##' extracted from the background (\emph{if presences are to be compared to background instead of 
+##' absences or pseudo-absences selected for modeling})
 ##' @param perc a \code{numeric} between \code{0} and \code{1} corresponding to the percentage of 
 ##' correctly classified presences for Minimal Predicted Area (see 
 ##' \code{\link[ecospat]{ecospat.mpa}})
@@ -37,12 +37,13 @@
 ##' @details
 ##' 
 ##' \code{em.by} parameter of \code{\link{BIOMOD_EnsembleModeling}} must have been set to 
-##' \code{PA_dataset+repet} in order to have an ensemble for each RUN of the \code{NbRunEval} 
-##' parameter of the \code{\link{BIOMOD_Modeling}} function for evaluation.
+##' \code{PA_dataset+repet} in order to have an ensemble for each \emph{RUN} of the 
+##' \code{NbRunEval} parameter of the \code{\link{BIOMOD_Modeling}} function for evaluation. 
+##' \cr \cr
 ##' 
 ##' The Boyce index returns \code{NA} values for \code{SRE} models because it can not be 
-##' calculated with binary predictions. This is also the reason why some \code{NA} values might 
-##' appear for \code{GLM} models if they do not converge.
+##' calculated with binary predictions. \cr This is also the reason why some \code{NA} values 
+##' might appear for \code{GLM} models if they do not converge.
 ##' 
 ##' 
 ##' @references
@@ -64,7 +65,8 @@
 ##' @examples
 ##' 
 ##' # species occurrences
-##' DataSpecies <- read.csv(system.file("external/species/mammals_table.csv", package="biomod2"), row.names = 1)
+##' myFile <- system.file("external/species/mammals_table.csv", package="biomod2")
+##' DataSpecies <- read.csv(myFile, row.names = 1)
 ##' head(DataSpecies)
 ##' 
 ##' # the name of studied species
@@ -136,7 +138,7 @@
 ##' pres.only.eval$eval
 ##' 
 ##' 
-##' ###############################################################################################
+###################################################################################################
 
 
 BIOMOD_PresenceOnly <- function(modeling.output = NULL, 

@@ -18,10 +18,10 @@ variables table that will be considered at modelling step}
 \item{interaction.level}{an \code{integer} corresponding to the interaction level depth 
 between explanatory variables}
 
-\item{\ldots}{some additional arguments (see Details)}
+\item{\ldots}{some additional arguments (see \href{bm_MakeFormula.html#details}{Details})}
 }
 \value{
-A \code{link[stats]{formula}} class object that can be directly given to most of \R 
+A \code{\link[stats]{formula}} class object that can be directly given to most of \R 
 statistical models.
 }
 \description{
@@ -29,15 +29,11 @@ This internal \pkg{biomod2} function allows the user to create easily a standard
 that can be used later by statistical models.
 }
 \details{
-###############################################################################################
-
-
-
 It is advised to give only a subset of \code{explVar} table to avoid useless memory consuming. 
-If some explanatory variables are factorial, \code{explVar} must be a \code{data.frame} whose 
-corresponding columns are defined as \code{factor}.
+\cr If some explanatory variables are factorial, \code{explVar} must be a \code{data.frame} 
+whose corresponding columns are defined as \code{factor}. \cr \cr
 
-\code{...} argument available values are :
+\code{...} can take the following values :
 
 \itemize{
   \item{\code{k}}{ : an \code{integer} corresponding to the smoothing parameter value of 
@@ -54,19 +50,18 @@ myExpl <- matrix(runif(60),
                  dimnames = list(NULL, c('var1', 'var2', 'var3')))
 
 ## Create a formula
-myFormula <- m_MakeFormula(respName = 'myResp',
-                           explVar = head(myExpl),
-                           type = 'quadratic',
-                           interaction.level = 0)
+myFormula <- bm_MakeFormula(respName = 'myResp',
+                            explVar = head(myExpl),
+                            type = 'quadratic',
+                            interaction.level = 0)
   
 ## Show formula created
 myFormula
 
-###############################################################################################
 }
 \seealso{
 \code{\link[biomod2]{BIOMOD_ModelingOptions}}, 
-\code{link[stats]{formula}}
+\code{\link[stats]{formula}}
 }
 \author{
 Damien Georges

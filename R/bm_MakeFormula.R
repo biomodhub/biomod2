@@ -1,4 +1,4 @@
-##' ###############################################################################################
+###################################################################################################
 ##' @name bm_MakeFormula
 ##' @aliases bm_MakeFormula
 ##' @author Damien Georges
@@ -17,22 +17,22 @@
 ##' \code{quadratic}, \code{polynomial} or \code{s_smoother}
 ##' @param interaction.level an \code{integer} corresponding to the interaction level depth 
 ##' between explanatory variables
-##' @param \ldots some additional arguments (see Details)
+##' @param \ldots some additional arguments (see \href{bm_MakeFormula.html#details}{Details})
 ##' 
 ##' 
 ##' @return  
 ##' 
-##' A \code{link[stats]{formula}} class object that can be directly given to most of \R 
+##' A \code{\link[stats]{formula}} class object that can be directly given to most of \R 
 ##' statistical models.
 ##' 
 ##' 
 ##' @details
 ##' 
 ##' It is advised to give only a subset of \code{explVar} table to avoid useless memory consuming. 
-##' If some explanatory variables are factorial, \code{explVar} must be a \code{data.frame} whose 
-##' corresponding columns are defined as \code{factor}.
+##' \cr If some explanatory variables are factorial, \code{explVar} must be a \code{data.frame} 
+##' whose corresponding columns are defined as \code{factor}. \cr \cr
 ##' 
-##' \code{...} argument available values are :
+##' \code{...} can take the following values :
 ##' 
 ##' \itemize{
 ##'   \item{\code{k}}{ : an \code{integer} corresponding to the smoothing parameter value of 
@@ -42,7 +42,7 @@
 ##' 
 ##' 
 ##' @seealso \code{\link[biomod2]{BIOMOD_ModelingOptions}}, 
-##' \code{link[stats]{formula}}
+##' \code{\link[stats]{formula}}
 ##' 
 ##' 
 ##' @keywords models, formula, options
@@ -57,15 +57,15 @@
 ##'                  dimnames = list(NULL, c('var1', 'var2', 'var3')))
 ##' 
 ##' ## Create a formula
-##' myFormula <- m_MakeFormula(respName = 'myResp',
-##'                            explVar = head(myExpl),
-##'                            type = 'quadratic',
-##'                            interaction.level = 0)
+##' myFormula <- bm_MakeFormula(respName = 'myResp',
+##'                             explVar = head(myExpl),
+##'                             type = 'quadratic',
+##'                             interaction.level = 0)
 ##'   
 ##' ## Show formula created
 ##' myFormula
 ##'
-##' ###############################################################################################
+###################################################################################################
 
 
 bm_MakeFormula <- function(respName, 

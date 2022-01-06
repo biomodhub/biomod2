@@ -32,10 +32,6 @@ This internal \pkg{biomod2} function allows the user to compute a variable impor
 for each variable involved in the given model.
 }
 \details{
-###############################################################################################
-
-
-
 For each variable to be evaluated :
 \enumerate{
   \item shuffle the original variable
@@ -65,7 +61,6 @@ bm_VariablesImportance(model = mod,
                        nb_rand = 3)
 
 
-###############################################################################################
 }
 \author{
 Damien Georges

@@ -79,21 +79,18 @@ variables table that will be considered at modelling step</p></dd>
 <dd><p>an <code>integer</code> corresponding to the interaction level depth 
 between explanatory variables</p></dd>
 <dt>...</dt>
-<dd><p>some additional arguments (see Details)</p></dd>
+<dd><p>some additional arguments (see <a href="bm_MakeFormula.html#details">Details</a>)</p></dd>
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>A <code>link[stats]{formula}</code> class object that can be directly given to most of <span style="R">R</span>statistical models.</p>
+    <p>A <code><a href="https://rdrr.io/r/stats/formula.html" class="external-link">formula</a></code> class object that can be directly given to most of <span style="R">R</span>statistical models.</p>
     </div>
     <div id="details">
     <h2>Details</h2>
-    <p>###############################################################################################</p>
-
-
-<p>It is advised to give only a subset of <code>explVar</code> table to avoid useless memory consuming. 
-If some explanatory variables are factorial, <code>explVar</code> must be a <code>data.frame</code> whose 
-corresponding columns are defined as <code>factor</code>.</p>
-<p><code>...</code> argument available values are :</p>
+    <p>It is advised to give only a subset of <code>explVar</code> table to avoid useless memory consuming. 
+<br> If some explanatory variables are factorial, <code>explVar</code> must be a <code>data.frame</code> 
+whose corresponding columns are defined as <code>factor</code>. <br><br></p>
+<p><code>...</code> can take the following values :</p>
 <ul><li><p><code>k</code> : an <code>integer</code> corresponding to the smoothing parameter value of 
   <code><a href="https://rdrr.io/pkg/mgcv/man/s.html" class="external-link">s</a></code> or <code><a href="https://rdrr.io/pkg/gam/man/s.html" class="external-link">s</a></code> arguments (<em>used only if 
   <code>type = 's_smoother'</code></em>)</p></li>
@@ -101,7 +98,7 @@ corresponding columns are defined as <code>factor</code>.</p>
     <div id="see-also">
     <h2>See also</h2>
     <div class="dont-index"><p><code><a href="BIOMOD_ModelingOptions.html">BIOMOD_ModelingOptions</a></code>, 
-<code>link[stats]{formula}</code></p></div>
+<code><a href="https://rdrr.io/r/stats/formula.html" class="external-link">formula</a></code></p></div>
     </div>
     <div id="author">
     <h2>Author</h2>
@@ -118,15 +115,14 @@ corresponding columns are defined as <code>factor</code>.</p>
                  dimnames <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="cn">NULL</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">'var1'</span>, <span class="st">'var2'</span>, <span class="st">'var3'</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>
 
 <span class="co">## Create a formula</span>
-<span class="va">myFormula</span> <span class="op">&lt;-</span> <span class="fu">m_MakeFormula</span><span class="op">(</span>respName <span class="op">=</span> <span class="st">'myResp'</span>,
-                           explVar <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/raster/man/headtail.html" class="external-link">head</a></span><span class="op">(</span><span class="va">myExpl</span><span class="op">)</span>,
-                           type <span class="op">=</span> <span class="st">'quadratic'</span>,
-                           interaction.level <span class="op">=</span> <span class="fl">0</span><span class="op">)</span>
+<span class="va">myFormula</span> <span class="op">&lt;-</span> <span class="fu">bm_MakeFormula</span><span class="op">(</span>respName <span class="op">=</span> <span class="st">'myResp'</span>,
+                            explVar <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/raster/man/headtail.html" class="external-link">head</a></span><span class="op">(</span><span class="va">myExpl</span><span class="op">)</span>,
+                            type <span class="op">=</span> <span class="st">'quadratic'</span>,
+                            interaction.level <span class="op">=</span> <span class="fl">0</span><span class="op">)</span>
   
 <span class="co">## Show formula created</span>
 <span class="va">myFormula</span>
 
-<span class="co">###############################################################################################</span>
 </code></pre></div>
     </div>
   </div>

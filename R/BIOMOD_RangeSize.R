@@ -1,4 +1,4 @@
-##' ###############################################################################################
+###################################################################################################
 ##' @name BIOMOD_RangeSize
 ##' @aliases BIOMOD_RangeSize
 ##' @author Wilfried Thuiller, Damien Georges, Bruno Lafourcade
@@ -7,8 +7,8 @@
 ##' 
 ##' @description This function allows to calculate the absolute number of locations (pixels) lost, 
 ##' stable and gained, as well as the corresponding relative proportions, between two (or more) 
-##' binary projections of (ensemble) species distribution models (which can represent new time 
-##' scales or environmental scenarios for example).
+##' binary projections of (ensemble) species distribution models (\emph{which can represent new 
+##' time scales or environmental scenarios for example}).
 ##' 
 ##' 
 ##' @param CurrentProj an \code{array}, \code{data.frame}, \code{\link[raster:stack]{RasterLayer}} 
@@ -76,7 +76,8 @@
 ##' @examples
 ##' 
 ##' # species occurrences
-##' DataSpecies <- read.csv(system.file("external/species/mammals_table.csv", package="biomod2"), row.names = 1)
+##' myFile <- system.file("external/species/mammals_table.csv", package="biomod2")
+##' DataSpecies <- read.csv(myFile, row.names = 1)
 ##' head(DataSpecies)
 ##' 
 ##' # the name of studied species
@@ -161,7 +162,7 @@
 ## @importFrom raster RasterLayer RasterStack
 ##' 
 ##' 
-##' ###############################################################################################
+###################################################################################################
 
 
 setGeneric("BIOMOD_RangeSize",

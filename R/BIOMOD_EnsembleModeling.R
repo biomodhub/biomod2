@@ -9,7 +9,7 @@
 ##' \code{\link[biomod2]{BIOMOD_Modeling}} function in one (or several) ensemble model. Modeling 
 ##' uncertainty can be assessed as well as variables importance, ensemble predictions can be 
 ##' evaluated against original data, and created ensemble models can be projected over new 
-##' conditions (see \href{BIOMOD_EnsembleModeling.html#details}{Details})).
+##' conditions (see \href{BIOMOD_EnsembleModeling.html#details}{Details}).
 ##' 
 ##' 
 ##' @param modeling.output a \code{\link{BIOMOD.models.out}} object returned by the 
@@ -164,9 +164,9 @@
 ##'     the mean of probabilities of the selected models \cr 
 ##'     It is also a nice complement to the mean probability. It creates 2 ensemble models : 
 ##'     \itemize{
-##'       \item lower one : there is less than a \code{100 * prob.ci.alpha / 2} \% of chance to 
+##'       \item \emph{LOWER} : there is less than \code{100 * prob.ci.alpha / 2} \% of chance to 
 ##'       get probabilities lower than the given ones
-##'       \item upper one : there is less than a \code{100 * prob.ci.alpha / 2} \% of chance to 
+##'       \item \emph{UPPER} : there is less than \code{100 * prob.ci.alpha / 2} \% of chance to 
 ##'       get probabilities upper than the given ones
 ##'     }
 ##'     These intervals are calculated with the following function :
@@ -188,7 +188,8 @@
 ##'     The interesting feature of this measure is that it gives both a prediction and a measure 
 ##'     of uncertainty. When the prediction is close to \code{0} or \code{1}, it means that all 
 ##'     models agree to predict \code{0} or \code{1} respectively. When the prediction is around 
-##'     \code{0.5}, it means that half the models predict \code{1} and the other half \code{0}.}
+##'     \code{0.5}, it means that half the models predict \code{1} and the other half \code{0}. 
+##'     \cr}
 ##'     
 ##'     \item{\bold{\code{prob.mean.weight}} & \bold{\code{prob.mean.weight.decay}} : }{
 ##'     Probabilities from the selected models are weighted according to their evaluation scores 

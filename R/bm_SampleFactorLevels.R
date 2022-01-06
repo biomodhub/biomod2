@@ -1,4 +1,4 @@
-##' ###############################################################################################
+###################################################################################################
 ##' @name bm_SampleFactorLevels
 ##' @aliases bm_SampleFactorLevels
 ##' @aliases bm_SampleFactorLevels.raster
@@ -36,13 +36,14 @@
 ##' dimensions :
 ##' \itemize{
 ##'   \item same number of rows for \code{data.frame} objects
-##'   \item same resolution, projection system and number of cells for \code{raster*} objects
+##'   \item same resolution, projection system and number of cells for \code{raster*} objects 
+##'   \cr \cr
 ##' }
 ##' 
 ##' If \code{mask.in} contains several masks (either it is a 
 ##' \code{\link[raster:stack]{RasterStack}} object or a multi-columns \code{data.frame}), then 
 ##' the order of masks / columns matters : they will be considered successively to sample missing 
-##' factor levels.
+##' factor levels. \cr \cr
 ##' 
 ##' \itemize{
 ##'   \item \code{raster*} masks will be understood as :
@@ -94,7 +95,7 @@
 ##' bm_SampleFactorLevels(stk, mask.out = mask.out, mask.in = mask.in)
 ##' 
 ##' 
-##' ###############################################################################################
+###################################################################################################
 
 bm_SampleFactorLevels <- function(x, mask.out = NULL, mask.in = NULL)
 {
