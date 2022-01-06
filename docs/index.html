@@ -23,6 +23,8 @@
 <![endif]-->
 </head>
 <body data-spy="scroll" data-target="#toc">
+    
+
     <div class="container template-home">
       <header><div class="navbar navbar-default navbar-fixed-top" role="navigation">
   <div class="container">
@@ -35,7 +37,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="index.html">biomod2</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">3.5.4</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">3.5.4</span>
       </span>
     </div>
 
@@ -57,7 +59,7 @@
       </ul>
 <ul class="nav navbar-nav navbar-right">
 <li>
-  <a href="https://github.com/biomodhub/biomod2.git">
+  <a href="https://github.com/biomodhub/biomod2.git" class="external-link">
     <span class="fa fa-github fa-lg"></span>
      
   </a>
@@ -74,85 +76,90 @@
 
       </header><div class="row">
   <div class="contents col-md-9">
-<div id="biomod2-ensemble-platform-for-species-distribution-modeling" class="section level1">
-<div class="page-header"><h1 class="hasAnchor">
-<a href="#biomod2-ensemble-platform-for-species-distribution-modeling" class="anchor"></a>biomod2: Ensemble Platform for Species Distribution Modeling</h1></div>
+<div class="section level1">
+<div class="page-header"><h1 id="biomod2-ensemble-platform-for-species-distribution-modeling">biomod2: Ensemble Platform for Species Distribution Modeling<a class="anchor" aria-label="anchor" href="#biomod2-ensemble-platform-for-species-distribution-modeling"></a>
+</h1></div>
 
 <p><strong>Functions for species distribution modeling, calibration and evaluation, ensemble of models.</strong></p>
-<div id="installation" class="section level2">
-<h2 class="hasAnchor">
-<a href="#installation" class="anchor"></a>Installation</h2>
-<p>You can install <code>biomod2</code> in R using <code>devtools</code>:</p>
-<ul>
-<li>
-<strong>devel version</strong> (from <a href="https://github.com/biomodhub/biomod2">biomodhub</a>)</li>
-</ul>
-<pre><code><a href="https://devtools.r-lib.org/reference/remote-reexports.html">devtools::install_github("biomodhub/biomod2", dependencies = TRUE)</a></code></pre>
-<p>!!! <strong>BE AWARE !</strong></p>
+<p><br><br> !!! <strong>BE AWARE !</strong></p>
 <p><code>biomod2</code> code is currently being cleaned up, hence some function names might change a bit…</p>
 <p>Sorry for the inconvenience, and please <strong>feel free to indicate if you notice some strange new behaviors</strong> !</p>
+<div class="section level2">
+<h2 id="installation">Installation<a class="anchor" aria-label="anchor" href="#installation"></a>
+</h2>
 <ul>
 <li>
-<strong>stable version</strong> (from <a href="https://CRAN.R-project.org/package=biomod2">cran</a>)</li>
+<strong>stable version</strong> (from <a href="https://CRAN.R-project.org/package=biomod2" class="external-link">cran</a>)</li>
 </ul>
-<pre><code><a href="https://rdrr.io/r/utils/install.packages.html">install.packages("biomod2", dependencies = TRUE)</a></code></pre>
-</div>
-<div id="development-team" class="section level2">
-<h2 class="hasAnchor">
-<a href="#development-team" class="anchor"></a>Development team</h2>
+<pre><code><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"biomod2"</span>, dependencies <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></code></pre>
 <ul>
-<li>Wilfried Thuiller [aut, cre]</li>
-<li>Damien Georges [aut, cre]</li>
-<li>Maya Gueguen [aut],</li>
-<li>Robin Engler [aut]</li>
-<li>Frank Breiner [aut]</li>
+<li>
+<strong>devel version</strong> (from <a href="https://github.com/biomodhub/biomod2" class="external-link">biomodhub</a>)</li>
 </ul>
+<pre><code><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://devtools.r-lib.org/" class="external-link">devtools</a></span><span class="op">)</span>
+<span class="fu">devtools</span><span class="fu">::</span><span class="fu"><a href="https://devtools.r-lib.org/reference/remote-reexports.html" class="external-link">install_github</a></span><span class="op">(</span><span class="st">"biomodhub/biomod2"</span>, dependencies <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></code></pre>
 </div>
 </div>
   </div>
 
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <div class="links">
-<h2>Links</h2>
+<h2 data-toc-skip>Links</h2>
 <ul class="list-unstyled">
-<li>Download from CRAN at <br><a href="https://cloud.r-project.org/package=biomod2">https://​cloud.r-project.org/​package=biomod2</a>
-</li>
-<li>Browse source code at <br><a href="https://github.com/biomodhub/biomod2/">https://​github.com/​biomodhub/​biomod2/​</a>
-</li>
-<li>Report a bug at <br><a href="https://github.com/biomodhub/biomod2/issues">https://​github.com/​biomodhub/​biomod2/​issues</a>
-</li>
-</ul>
-</div>
-<div class="license">
-<h2>License</h2>
-<ul class="list-unstyled">
-<li><a href="https://www.r-project.org/Licenses/GPL-3">GPL-3</a></li>
-</ul>
-</div>
-<div class="developers">
-<h2>Developers</h2>
-<ul class="list-unstyled">
-<li>Damien Georges <br><small class="roles"> Maintainer </small>  </li>
-<li><a href="authors.html">All authors...</a></li>
+<li><a href="https://cloud.r-project.org/package=biomod2" class="external-link">View on CRAN</a></li>
+<li><a href="https://github.com/biomodhub/biomod2/" class="external-link">Browse source code</a></li>
+<li><a href="https://github.com/biomodhub/biomod2/issues" class="external-link">Report a bug</a></li>
 </ul>
 </div>
 
-  <div class="dev-status">
-<h2>Dev status</h2>
+<div class="license">
+<h2 data-toc-skip>License</h2>
 <ul class="list-unstyled">
-<li><a href="https://travis-ci.org/biomodhub/biomod2"><img src="https://travis-ci.org/biomodhub/biomod2.svg?branch=master" alt="Build Status"></a></li>
+<li><a href="https://www.r-project.org/Licenses/GPL-3" class="external-link">GPL-3</a></li>
 </ul>
 </div>
+
+
+<div class="citation">
+<h2 data-toc-skip>Citation</h2>
+<ul class="list-unstyled">
+<li><a href="authors.html#citation">Citing biomod2</a></li>
+</ul>
 </div>
+
+<div class="developers">
+<h2 data-toc-skip>Developers</h2>
+<ul class="list-unstyled">
+<li>
+<a href="http://www.will.chez-alice.fr/" class="external-link">Wilfried Thuiller</a> <br><small class="roles"> Author, maintainer </small>  </li>
+<li>
+<a href="https://www.iarc.who.int/staff_member/damien-georges/" class="external-link">Damien Georges</a> <br><small class="roles"> Author, maintainer </small>  </li>
+<li>
+<a href="https://mayagueguen.github.io" class="external-link">Maya Guéguen</a> <br><small class="roles"> Author, maintainer </small>  </li>
+<li>Engler Robin <br><small class="roles"> Author </small>  </li>
+<li>Breiner Frank <br><small class="roles"> Author </small>  </li>
+</ul>
+</div>
+
+<div class="dev-status">
+<h2 data-toc-skip>Dev status</h2>
+<ul class="list-unstyled">
+<li><a href="https://travis-ci.org/biomodhub/biomod2" class="external-link"><img src="https://travis-ci.org/biomodhub/biomod2.svg?branch=master" alt="Build Status"></a></li>
+</ul>
+</div>
+
+  </div>
 </div>
 
 
       <footer><div class="copyright">
-  <p>Developed by Damien Georges.</p>
+  <p></p>
+<p>Developed by <a href="http://www.will.chez-alice.fr/" class="external-link">Wilfried Thuiller</a>, <a href="https://www.iarc.who.int/staff_member/damien-georges/" class="external-link">Damien Georges</a>, <a href="https://mayagueguen.github.io" class="external-link">Maya Guéguen</a>, Engler Robin, Breiner Frank.</p>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
+  <p></p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.1.</p>
 </div>
 
       </footer>
@@ -160,6 +167,8 @@
 
   
 
+
+  
 
   </body>
 </html>

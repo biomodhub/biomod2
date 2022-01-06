@@ -3,9 +3,17 @@ Type: Package
 Title: Ensemble Platform for Species Distribution Modeling
 Version: 3.5.4
 Date: 2021-11-10
+Authors@R: c(person("Wilfried", "Thuiller", role = c("aut", "cre")
+                    , email = "wilfried.thuiller@univ-grenoble-alpes.fr"),
+             person("Damien", "Georges", role = c("aut", "cre")),
+             person("Maya", "Guéguen", role = c("aut", "cre")
+                    , email = "maya.gueguen@univ-grenoble-alpes.fr"),
+             person("Engler", "Robin", role = "aut"),
+             person("Breiner", "Frank", role = "aut"
+                    , email = "frank.breiner@wsl.ch"))
 Author: Wilfried Thuiller [aut, cre],
     Damien Georges [aut, cre],
-    Maya Gueguen [aut],
+    Maya Gueguen [aut, cre],
     Robin Engler [aut],
     Frank Breiner [aut]
 Maintainer: Damien Georges <damien.georges2@gmail.com>, Maya Gueguen <maya.gueguen@univ-grenoble-alpes.fr>

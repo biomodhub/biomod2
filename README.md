@@ -5,36 +5,29 @@ biomod2: Ensemble Platform for Species Distribution Modeling
 
 **Functions for species distribution modeling, calibration and evaluation, ensemble of models.**
 
-
-
-## Installation
-
-You can install `biomod2` in R using `devtools`:
-
-- **devel version** (from [biomodhub](https://github.com/biomodhub/biomod2))
-
-```
-devtools::install_github("biomodhub/biomod2", dependencies = TRUE)
-```
-
+<br/><br/>
 !!! **BE AWARE !**
 
 `biomod2` code is currently being cleaned up, hence some function names might change a bit...
 
 Sorry for the inconvenience, and please **feel free to indicate if you notice some strange new behaviors** !
 
+
+## Installation
+
 - **stable version** (from [cran](https://CRAN.R-project.org/package=biomod2))
 
-```
+```R
 install.packages("biomod2", dependencies = TRUE)
 ```
 
 
-## Development team
+- **devel version** (from [biomodhub](https://github.com/biomodhub/biomod2))
 
- - Wilfried Thuiller [aut, cre]
- - Damien Georges [aut, cre]
- - Maya Gueguen [aut],
- - Robin Engler [aut]
- - Frank Breiner [aut]
+```R
+library(devtools)
+devtools::install_github("biomodhub/biomod2", dependencies = TRUE)
+```
+
+
 
