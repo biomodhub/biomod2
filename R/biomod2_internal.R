@@ -96,9 +96,9 @@
 .fun_testIfInherits <- function(test, objName, objValue, values)
 {
   if (!inherits(objValue, values)) {
-    cat("\n", paste0(objName, " must be a '", paste0(values[1:(length(values) -1)], collapse = "', '")
-                     , ifelse(length(values) > 1, paste0("' or '", values[length(values)]), "")
-                     , "' object"))
+    stop(paste0("\n", paste0(objName, " must be a '", paste0(values[1:(length(values) -1)], collapse = "', '")
+                             , ifelse(length(values) > 1, paste0("' or '", values[length(values)]), "")
+                             , "' object")))
     test <- FALSE
   }
   return(test)
@@ -107,9 +107,9 @@
 .fun_testIfIn <- function(test, objName, objValue, values)
 {
   if (sum(objValue %in% values) < length(objValue)) {
-    cat("\n", paste0(objName, " must be '", paste0(values[1:(length(values) -1)], collapse = "', '")
-                     , ifelse(length(values) > 1, paste0("' or '", values[length(values)]))
-                     , "'"))
+    stop(paste0("\n", paste0(objName, " must be '", paste0(values[1:(length(values) -1)], collapse = "', '")
+                             , ifelse(length(values) > 1, paste0("' or '", values[length(values)]))
+                             , "'")))
     test <- FALSE
   }
   return(test)
@@ -118,10 +118,10 @@
 .fun_testIfPosNum <- function(test, objName, objValue)
 {
   if (!is.numeric(objValue)) {
-    cat("\n", objName, "must be a numeric")
+    stop(paste0("\n", objName, "must be a numeric"))
     test <- FALSE
   } else if (objValue < 0) {
-    cat("\n", objName, "must be a positive numeric")
+    stop(paste0("\n", objName, "must be a positive numeric"))
     test <- FALSE
   }
   return(test)
@@ -131,7 +131,7 @@
 {
   test <- .fun_testIfPosNum(test, objName, objValue)
   if (test && objValue > 1) {
-    cat("\n", objName, "must be a 0 to 1 numeric")
+    stop(paste0("\n", objName, "must be a 0 to 1 numeric"))
     test <- FALSE
   }
   return(test)
@@ -140,10 +140,10 @@
 .fun_testIfPosInt <- function(test, objName, objValue)
 {
   if (!is.numeric(objValue)) {
-    cat("\n", objName, "must be a integer")
+    cat(paste0("\n", objName, "must be a integer"))
     test <- FALSE
   } else if (objValue < 0 | objValue %% 1 != 0) {
-    cat("\n", objName, "must be a positive integer")
+    cat(paste0("\n", objName, "must be a positive integer"))
     test <- FALSE
   }
   return(test)

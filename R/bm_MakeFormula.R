@@ -87,7 +87,7 @@ bm_MakeFormula <- function(respName,
   if (!is.data.frame(explVar) &&  !is.matrix(explVar)) {
     stop("explVar must be a data.frame or matrix")
   }
-  test <- .fun_testIfIn(TRUE, "type", type, c("simple", "quadratic", "polynomial", "s_smoother"))
+  .fun_testIfIn(TRUE, "type", type, c("simple", "quadratic", "polynomial", "s_smoother"))
   
   explVarNames <- colnames(explVar)
   if (respName %in% explVarNames) { # remove the response variable if given in explVar

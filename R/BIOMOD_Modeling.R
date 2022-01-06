@@ -556,7 +556,7 @@ BIOMOD_Modeling <- function(data,
 {
   out_list = c('evaluation', 'prediction', 'prediction.eval', 'var.import', 'calib.failure',
                'models.run', 'EF.prediction', 'EF.PCA.median', 'EF.evaluation')
-  test = .fun_testIfIn(TRUE, "out", out, out_list)
+  .fun_testIfIn(TRUE, "out", out, out_list)
   
   ## 0.a get dataset names ------------------------------------------------------------------------
   if (length(modOut) == 1 && length(unlist(strsplit(unlist(names(modOut)), '_'))) == 1) {
