@@ -1,4 +1,4 @@
-.Biomod.Models.loop <- function(X,
+bm_ModelsLoop <- function(X,
                                 modeling.id,
                                 Model,
                                 Options,
@@ -6,7 +6,8 @@
                                 mod.eval.method,
                                 SavePred,
                                 xy=NULL,
-                                scal.models = TRUE){
+                                scal.models = TRUE)
+{
   cat("\n\n-=-=-=- Run : ",X$name, '\n')
   res.sp.run <- list()
 

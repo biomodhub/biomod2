@@ -323,7 +323,7 @@ BIOMOD_Modeling <- function(data,
   
   ## 5. Run models with loop over PA --------------------------------------------------------------
   modeling.out <- lapply(mod.prep.dat,
-                         .Biomod.Models.loop,
+                         bm_ModelsLoop,
                          modeling.id = models.out@modeling.id,
                          Model = models,
                          Options = models.options,

@@ -97,28 +97,28 @@
   }
 }
 
-.create.maxent.bg.dir <- function(expl.stk, bm.dat, ...){
-  args <-NULL
-  args <- list(...)
-  if(is.null(args$out.dir)) args$out.dir <- file.path(bm.dat@sp.name, "maxent.env.layers")
-  if(is.null(args$NAflag)) args$NAflag <- -9999
-
-  ## create the output directory
-  dir.create(args$out.dir, showWarnings = FALSE, recursive = TRUE)
-  ## save a copy of the environmental layers
-  test.write <- sapply(names(bm.dat@data.env.var), function(ev){
-    out.file <- file.path(args$out.dir, paste0(ev, ".asc"))
-    cat("\n> writting", out.file)
-    writeRaster(subset(expl.stk, ev),
-                format = 'ascii',
-                NAflag = args$NAflag,
-                filename = out.file,
-                overwrite = TRUE)
-  })
-
-  ## return the path to the sirectory where rasters are stored
-  return(args$out.dir)
-}
+# .create.maxent.bg.dir <- function(expl.stk, bm.dat, ...){
+#   args <-NULL
+#   args <- list(...)
+#   if(is.null(args$out.dir)) args$out.dir <- file.path(bm.dat@sp.name, "maxent.env.layers")
+#   if(is.null(args$NAflag)) args$NAflag <- -9999
+# 
+#   ## create the output directory
+#   dir.create(args$out.dir, showWarnings = FALSE, recursive = TRUE)
+#   ## save a copy of the environmental layers
+#   test.write <- sapply(names(bm.dat@data.env.var), function(ev){
+#     out.file <- file.path(args$out.dir, paste0(ev, ".asc"))
+#     cat("\n> writting", out.file)
+#     writeRaster(subset(expl.stk, ev),
+#                 format = 'ascii',
+#                 NAflag = args$NAflag,
+#                 filename = out.file,
+#                 overwrite = TRUE)
+#   })
+# 
+#   ## return the path to the sirectory where rasters are stored
+#   return(args$out.dir)
+# }
 
 # Maxent Projection working directory preparation -=-=-=-=-=-=-=- #
 
