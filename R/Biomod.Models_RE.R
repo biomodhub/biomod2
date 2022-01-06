@@ -552,7 +552,7 @@
 
   # SRE models creation =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=- #
   if (Model == "SRE"){
-    model.sp <- try(sre(Response = Data[calibLines,1],
+    model.sp <- try(bm_SRE(Response = Data[calibLines,1],
                         Explanatory = Data[calibLines,expl_var_names,drop=FALSE],
                         NewData = NULL,
                         Quant = Options@SRE$quant,

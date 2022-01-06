@@ -268,11 +268,11 @@ BIOMOD_Tuning <- function(data,
           {
             DATA <- cbind(1:sum(fold == i)
                           , resp[fold == i]
-                          , sre(Response = resp[fold != i],
-                                Explanatory = data@data.env.var[fold != i, ],
-                                NewData = data@data.env.var[fold == i, ],
-                                Quant = quant,
-                                return_extremcond = FALSE))
+                          , bm_SRE(Response = resp[fold != i],
+                                   Explanatory = data@data.env.var[fold != i, ],
+                                   NewData = data@data.env.var[fold == i, ],
+                                   Quant = quant,
+                                   return_extremcond = FALSE))
             
             RES = presence.absence.accuracy(DATA, threshold = as.vector(
               optimal.thresholds(DATA, opt.methods = 3)[2], mode = "numeric"))

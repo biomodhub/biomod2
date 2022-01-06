@@ -317,7 +317,7 @@ setMethod('.Projection.do.proj', signature(env = 'data.frame'),
                           , 'SRE' = {
                             # loading data of the corresponding run
                             load(paste0(model.dir, '/', model.name, '/Data_', model.name))
-                            return(eval(parse(text = paste0("sre(Data_", model.name, "$Response, Data_",
+                            return(eval(parse(text = paste0("bm_SRE(Data_", model.name, "$Response, Data_",
                                                             model.name, "$Explanatory, env, Data_",
                                                             model.name, "$Quant) * 1000"))))
                           }
@@ -407,7 +407,7 @@ setMethod('.Projection.do.proj', signature(env = 'RasterStack'),
                               , 'SRE' = {
                                 # loading data of the corresponding run
                                 data.sre = get(load(paste0(model.dir, '/', model.name, '/Data_', model.name)))
-                                return(raster::subset(sre(data.sre$Response, data.sre$Explanatory, env, data.sre$Quant), 1, drop = TRUE) * 1000)
+                                return(raster::subset(bm_SRE(data.sre$Response, data.sre$Explanatory, env, data.sre$Quant), 1, drop = TRUE) * 1000)
                               }
                               , 'MAXENT.Phillips' = {
                                 return(predict(object = model.sp, newdata = env, proj_name = proj.name))

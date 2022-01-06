@@ -207,19 +207,17 @@ bm_SRE <- function(Response = NULL,
   
   ## RETURN results -------------------------------------------------------------------------------
   
-  if(return_extremcond){
+  if (return_extremcond) {
     return(as.data.frame(extrem.cond))
-  } else{
+  } else {
     # 3. Rearranging the lout object
-    if(is.data.frame(NewData)){
+    if (is.data.frame(NewData)) {
       lout <- simplify2array(lout)
       colnames(lout) <- resp.names
-    }
-    
-    if(inherits(NewData, 'Raster')){
+    } else if (inherits(NewData, 'Raster')) {
       lout <- stack(lout)
-      if(nlayers(lout)==1){
-        lout <- raster::subset(lout,1,drop=TRUE)
+      if (nlayers(lout) == 1) {
+        lout <- subset(lout, 1, drop = TRUE)
       }
       names(lout) <- resp.names
     }

@@ -380,7 +380,7 @@ setMethod('sre.pseudo.abs.selection', signature(env="SpatialPointsDataFrame"),
             cat("\n   > SRE pseudo absences selection")
 
             # 1. calculate sre to determine availables
-            mask.in <- sre(Response = sp, Explanatory = env, NewData = env@data, Quant = quant.SRE)
+            mask.in <- bm_SRE(Response = sp, Explanatory = env, NewData = env@data, Quant = quant.SRE)
             ## we want to sample PA out of the SRE => have to revert the mask
             mask.in <- data.frame(mask.in = !as.logical(mask.in))
 #             # mask of already sampled points (presneces/absences)
@@ -428,7 +428,7 @@ setMethod('sre.pseudo.abs.selection', signature(env="RasterStack"),
 
             # 1. calculate sre to determine availables
             ## mask in which we want to sample
-            mask.in <- sre(Response = sp, Explanatory = env, NewData = env, Quant = quant.SRE)
+            mask.in <- bm_SRE(Response = sp, Explanatory = env, NewData = env, Quant = quant.SRE)
             ## remove all points that are in the cpecies SRE
             mask.in[mask.in[] > 0] <- NA
 
