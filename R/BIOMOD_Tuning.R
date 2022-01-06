@@ -1,7 +1,7 @@
 ###################################################################################################
 ##' @name BIOMOD_Tuning
 ##' @aliases BIOMOD_Tuning
-##' @author Frank Breiner \email{frank.breiner@wsl.ch}
+##' @author Frank Breiner
 ##' 
 ##' @title Tune models parameters
 ##' 

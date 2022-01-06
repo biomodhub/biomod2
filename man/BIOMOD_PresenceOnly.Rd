@@ -146,5 +146,5 @@ pres.only.eval$eval
 \code{\link[biomod2]{BIOMOD_Modeling}}, \code{\link[biomod2]{BIOMOD_EnsembleModeling}}
 }
 \author{
-Frank Breiner \email{frank.breiner@wsl.ch}, Maya Gueguen
+Frank Breiner, Maya Gueguen
 }

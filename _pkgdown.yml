@@ -1,9 +1,7 @@
 authors:
   Wilfried Thuiller:
     href: http://www.will.chez-alice.fr/
-  Damien Georges:
-    href: https://www.iarc.who.int/staff_member/damien-georges/
-  Maya Guéguen:
+  Maya Gueguen:
     href: https://mayagueguen.github.io
 
 navbar:
@@ -45,6 +43,7 @@ reference:
       - "bm_MakeFormula"
       - "bm_SampleBinaryVector"
       - "bm_SampleFactorLevels"
+      - "bm_SRE"
       - "bm_Rescaler"
       - "bm_FindOptimStat"
       - "bm_BinaryTransformation"

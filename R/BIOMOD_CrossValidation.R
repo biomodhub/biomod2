@@ -1,7 +1,7 @@
 ###################################################################################################
 ##' @name BIOMOD_CrossValidation
 ##' @aliases BIOMOD_CrossValidation
-##' @author Frank Breiner \email{frank.breiner@wsl.ch}
+##' @author Frank Breiner
 ##' 
 ##' @title Custom models cross-validation procedure
 ##' 

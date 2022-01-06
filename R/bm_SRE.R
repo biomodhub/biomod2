@@ -1,130 +1,122 @@
-##' @name sre
+###################################################################################################
+##' @name bm_SRE
+##' @author Wilfried Thuiller, Bruno Lafourcade, Damien Georges 
+##' 
 ##' @title Surface Range Envelope
-##' @description 
-##' Run a rectilinear surface range envelop (equivalent to BIOCLIM) using
-##' the extreme percentiles as recommended by Nix or Busby.
-##' The SRE performs a simple analysis of within which range of each
-##' variable the data is recorded and renders predictions.
 ##' 
-##' @param Response  a vector (resp. a matrix/data.frame, a 
-##' SpatialPointsDataFrame or a RasterLayer ) giving your species'
-##' presences and absences data
-##' @param Explanatory a matrix (resp. a data.frame, a 
-##' SpatialPointsDataFrame or a RasterStack ) containing the environmental
-##' variables for the sites given in Response. It must have as many rows
-##' as there are elements in Response.
-##' @param NewData The data for which you want to render predictions with
-##' the sre. It must be a matrix (resp. a data.frame, a 
-##' SpatialPointsDataFrame or a RasterStack ) of the same type as the one
-##' given in Explanatory and with precisely the same variable names.
-##' @param Quant the value defines the most extreme values for each
-##' variable not to be taken into account for determining the tolerance
-##' boundaries for the considered species.
-##' @param return_extremcond boolean, if TRUE a matrix containing extreme
-##' conditions supported is returned
+##' @description This function allows the user to run a rectilinear surface range envelop (SRE) 
+##' (equivalent to \href{https://caws.org.nz/PPQ567/PPQ\%2006-1\%20pp008-9\%20Busby.pdf}{BIOCLIM}) 
+##' using the extreme percentiles (as recommended by Nix or Busby, see 
+##' \href{bm_SRE.html#references}{References} and \href{bm_SRE.html#details}{Details}).
 ##' 
-##' @details 
-##' The more variables you put in, the more restrictive your model will 
-##' be (if non-colinear variables).
+##' @param Response a \code{vector}, \code{matrix}, \code{data.frame}, 
+##' \code{\link[sp]{SpatialPointsDataFrame}} or \code{\link[raster:raster]{raster}} object 
+##' containing observed binary data (\code{0} : absence, \code{1} : presence)
+##' @param Explanatory a \code{matrix}, \code{data.frame}, 
+##' \code{\link[sp]{SpatialPointsDataFrame}} or \code{\link[raster:stack]{RasterStack}} object 
+##' containing the explanatory variables (in columns or layers) that will be used to build the 
+##' SRE model
+##' @param NewData a \code{matrix}, \code{data.frame}, \code{\link[sp]{SpatialPointsDataFrame}} 
+##' or \code{\link[raster:stack]{RasterStack}} object containing the explanatory variables 
+##' (in columns or layers) that will be used to predict the SRE model
+##' @param Quant a \code{numeric} corresponding to the most extreme value for each variable 
+##' not to be taken into account for determining the tolerance boundaries of the considered 
+##' species
+##' @param return_extremcond (\emph{optional, default} \code{FALSE}) \cr 
+##' A \code{logical} value defining whether a \code{matrix} containing extreme conditions 
+##' supported should be returned or not
 ##' 
-##' This method is very much influenced by the data input, and more
-##' specifically by the extremes.
-##' 
-##' Where a linear model can discriminate the extreme values from the main
-##' tendency, the SRE considers it equal as any other data point which
-##' leads to notable changes in predictions.
-##' 
-##' Note that, as a consequence of its functioning, the predictions are
-##' directly given in binary, a site being either potentially suitable for
-##' all the variables, either out of bounds for at least one variable and
-##' therefore considered unsuitable. 
-##' 
-##' The quants argument determines the threshold at which the data will be
-##' taken into account for calibration : the default of 0.05 induces that
-##' the 5\% most extreme values will be avoided for each variable on each
-##' side of its distribution along the gradient. So it in fact takes 5\%
-##' away at each end of the variables distribution, giving a total of 10\%
-##' of data not considered.
 ##' 
 ##' @return 
-##' A vector (resp. a RasterLayer ) of the same length as there are rows
-##' in NewData giving the prediction in binary (1=presence, 0=absence)
 ##' 
-##' @author Wilfried Thuiller, Bruno Lafourcade, Damien Georges 
-##' @seealso \code{\link[biomod2]{BIOMOD_Modeling}}, 
-##' \code{\link[biomod2]{BIOMOD_ModelingOptions}}, 
-##' \code{\link[biomod2]{BIOMOD_Projection}}
+##' A \code{vector} or a \code{\link[raster:raster]{raster}} object, containing binary (\code{0} 
+##' or \code{1}) values.
 ##' 
-##' @keywords models
-##' @keywords multivariate
+##' 
+##' @details 
+##' 
+##' \emph{Please refer to References to get more information about surface range envelop models.}
+##' 
+##' This method is highly influenced by the extremes of the data input. Whereas a linear model 
+##' can discriminate the extreme values from the main tendency, the SRE considers them as 
+##' important as any other data point leading to changes in predictions. \cr \cr
+##' 
+##' \emph{The more (non-colinear) variables, the more restrictive the model will be.} \cr \cr
+##' 
+##' Predictions are returned as binary (\code{0} or \code{1}) values, a site being either 
+##' potentially suitable for all the variables, or out of bounds for at least one variable and 
+##' therefore considered unsuitable. \cr \cr
+##' 
+##' \code{Quant} determines the threshold from which the data will be taken into account for 
+##' calibration. The default value of \code{0.05} induces that the \code{5\%} most extreme values 
+##' will be avoided for each variable on each side of its distribution along the gradient, meaning 
+##' that a total of \code{10\%} of the data will not be considered.
+##' 
+##' 
+##' @references
+##' 
+##' \itemize{
+##'   \item Nix, H.A., 1986. A biogeographic analysis of Australian elapid snakes. In: 
+##'   \emph{Atlas of Elapid Snakes of Australia.} (Ed.) R. Longmore, pp. 4-15. 
+##'   \bold{Australian Flora and Fauna Series Number 7.} 
+##'   Australian Government Publishing Service: Canberra.
+##'   \item Busby, Jeremy. BIOCLIM - a bioclimate analysis and prediction system. 
+##'   \emph{Plant protection quarterly} \bold{6} (1991): 8-9.
+##' }
+##' 
+##' @keywords models, surface range envelop, sre, quantile
+##' 
+##' @seealso \code{\link{BIOMOD_FormatingData}}, \code{\link{BIOMOD_ModelingOptions}},
+##' \code{\link{BIOMOD_Tuning}}, \code{\link{BIOMOD_Modeling}}, \code{\link{BIOMOD_Projection}}
+##' 
 ##' 
 ##' @examples
-##' require(raster)
-##' ##' species occurrences
-##' DataSpecies <- 
-##'   read.csv(
-##'     system.file("external/species/mammals_table.csv", package = "biomod2"), 
-##'     row.names = 1
-##'   )
+##' 
+##' # species occurrences
+##' myFile <- system.file("external/species/mammals_table.csv", package="biomod2")
+##' DataSpecies <- read.csv(myFile, row.names = 1)
 ##' head(DataSpecies)
 ##' 
-##' ##' the name of studied species
+##' # the name of studied species
 ##' myRespName <- 'GuloGulo'
 ##' 
-##' ##' the presence/absences data for our species 
-##' myResp <- as.numeric(DataSpecies[,myRespName])
+##' # the presence/absences data for our species
+##' myResp <- as.numeric(DataSpecies[, myRespName])
 ##' 
-##' ##' the XY coordinates of species data
-##' myRespXY <- DataSpecies[which(myResp==1),c("X_WGS84","Y_WGS84")]
-##' 
-##' ##' Environmental variables extracted from BIOCLIM (bio_3, 
-##' ##' bio_4, bio_7, bio_11 & bio_12)
-##' myExpl <- 
-##'   raster::stack(
-##'     system.file("external/bioclim/current/bio3.grd", package = "biomod2"),
-##'     system.file("external/bioclim/current/bio4.grd", package = "biomod2"),
-##'     system.file("external/bioclim/current/bio7.grd", package = "biomod2"),
-##'     system.file("external/bioclim/current/bio11.grd", package = "biomod2"),
-##'     system.file("external/bioclim/current/bio12.grd", package = "biomod2")
-##'   )
-
-##' myResp <- 
-##'   raster::reclassify(
-##'     subset(myExpl, 1, drop = TRUE), c(-Inf, Inf, 0)
-##'   )
+##' # the XY coordinates of species data
+##' require(raster)
+##' myRespXY <- DataSpecies[which(myResp == 1), c("X_WGS84", "Y_WGS84")]
+##' myResp <- reclassify(subset(myExpl, 1, drop = TRUE), c(-Inf, Inf, 0))
 ##' myResp[cellFromXY(myResp,myRespXY)] <- 1
 ##' 
-##' ##' Compute some SRE for several quantile values
-##' sre.100 <- 
-##'   sre(
-##'     Response = myResp, 
-##'     Explanatory = myExpl, 
-##'     NewData=myExpl, 
-##'     Quant = 0
-##'   )
-##'   
-##' sre.095 <- 
-##'   sre(
-##'     Response = myResp, 
-##'     Explanatory = myExpl, 
-##'     NewData=myExpl, 
-##'     Quant = 0.025
-##'   )
 ##' 
-##' sre.090 <- 
-##'   sre(
-##'     Response = myResp, 
-##'     Explanatory = myExpl, 
-##'     NewData=myExpl, 
-##'     Quant = 0.05
-##'   )
+##' # Environmental variables extracted from BIOCLIM (bio_3, bio_4, bio_7, bio_11 & bio_12)
+##' myFiles = paste0("external/bioclim/current/bio", c(3, 4, 7, 11, 12), ".grd")
+##' myExpl = raster::stack(system.file(myFiles[1], package = "biomod2"),
+##'                        system.file(myFiles[2], package = "biomod2"),
+##'                        system.file(myFiles[3], package = "biomod2"),
+##'                        system.file(myFiles[4], package = "biomod2"),
+##'                        system.file(myFiles[5], package = "biomod2"))
+##' 
+##' 
+##' # 1. Compute some SRE for several quantile values
+##' sre.100 <- bm_SRE(Response = myResp, Explanatory = myExpl, NewData = myExpl, Quant = 0)
+##' sre.095 <- bm_SRE(Response = myResp, Explanatory = myExpl, NewData = myExpl, Quant = 0.025)
+##' sre.090 <- bm_SRE(Response = myResp, Explanatory = myExpl, NewData = myExpl, Quant = 0.05)
 ##'   
-##' ##' visualise results
-##' par(mfrow=c(2,2),mar=c(6, 5, 5, 3))
+##' # 2. Visualization of results
+##' par(mfrow = c(2,2), mar = c(6, 5, 5, 3))
 ##' plot(myResp, main = paste(myRespName, "original distrib."))
-##' plot(sre.100, main="full data calibration")
-##' plot(sre.095, main="95 %")
-##' plot(sre.090, main="90 %")
+##' plot(sre.100, main = "full data calibration")
+##' plot(sre.095, main = "95 %")
+##' plot(sre.090, main = "90 %")
+##' 
+##' 
+##' @importFrom raster stack subset nlayers names mask reclassify coordinates cellFromXY
+##' 
+##' @export
+##' 
+##' 
 ###################################################################################################
 
 
@@ -166,7 +158,7 @@ bm_SRE <- function(Response = NULL,
       occ.pts[x.ooc.pts] <- rep(NA, length(x.ooc.pts))
       extrem.cond <- quantile(mask(Explanatory, occ.pts),
                               probs = c(0 + Quant, 1 - Quant),
-                              na.rm = TRUE))
+                              na.rm = TRUE)
       if (!return_extremcond) {
         lout[[j]] <- .sre.projection(NewData, extrem.cond)
       }
@@ -303,7 +295,7 @@ bm_SRE <- function(Response = NULL,
   
   ## 3. Check Quant argument --------------------------------------------------
   if (Quant < 0 || Quant >= 0.5) {
-    stop("\n Quantmust be a 0 to 0.5 numeric"))
+    stop("\n Quantmust be a 0 to 0.5 numeric")
   }
   
   return(list(Response = Response,

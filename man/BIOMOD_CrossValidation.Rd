@@ -154,5 +154,5 @@ boxplot(eval$Testing.data ~ eval$strat, ylab = "ROC AUC")
 \code{\link[ENMeval]{get.block}}
 }
 \author{
-Frank Breiner \email{frank.breiner@wsl.ch}
+Frank Breiner
 }

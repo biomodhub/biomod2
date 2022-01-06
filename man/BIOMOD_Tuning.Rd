@@ -248,5 +248,5 @@ myBiomodModelOut <- BIOMOD_Modeling(myBiomodData,
 \code{\link[biomod2]{BIOMOD_ModelingOptions}}
 }
 \author{
-Frank Breiner \email{frank.breiner@wsl.ch}
+Frank Breiner
 }

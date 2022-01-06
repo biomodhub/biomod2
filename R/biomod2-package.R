@@ -10,7 +10,7 @@
   {
     RFver <- read.dcf(file = system.file("DESCRIPTION", package = pkgname), fields = "Version")
     
-    if (CustomIndexMaker()) {
+    if (.CustomIndexMaker()) {
       packageStartupMessage("Custom index built!")
     }
     

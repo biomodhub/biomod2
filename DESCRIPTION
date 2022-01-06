@@ -6,16 +6,18 @@ Date: 2021-11-10
 Authors@R: c(person("Wilfried", "Thuiller", role = c("aut", "cre")
                     , email = "wilfried.thuiller@univ-grenoble-alpes.fr"),
              person("Damien", "Georges", role = c("aut", "cre")),
-             person("Maya", "Guéguen", role = c("aut", "cre")
+             person("Maya", "Gueguen", role = c("aut", "cre")
                     , email = "maya.gueguen@univ-grenoble-alpes.fr"),
              person("Engler", "Robin", role = "aut"),
              person("Breiner", "Frank", role = "aut"
-                    , email = "frank.breiner@wsl.ch"))
+                    , email = "frank.breiner@wsl.ch"),
+             person("Lafourcade", "Bruno", role = "aut"))
 Author: Wilfried Thuiller [aut, cre],
     Damien Georges [aut, cre],
     Maya Gueguen [aut, cre],
     Robin Engler [aut],
-    Frank Breiner [aut]
+    Frank Breiner [aut],
+    Bruno Lafourcade [aut]
 Maintainer: Damien Georges <damien.georges2@gmail.com>, Maya Gueguen <maya.gueguen@univ-grenoble-alpes.fr>
 Contact: Wilfried Thuiller <wilfried.thuiller@univ-grenoble-alpes.fr>, Damien Georges
     <damien.georges2@gmail.com>, Maya Gueguen <maya.gueguen@univ-grenoble-alpes.fr>
@@ -83,7 +85,7 @@ Collate:
     'BIOMOD_Tuning.R'
     'Biomod.Models_RE.R'
     'CVnnet.R'
-    'CustomIndexMaker.R'
+    'biomod2-package.R'
     'Prepare.Maxent.WorkDir.R'
     'ProbDensFunc.R'
     'Projection.R'
@@ -106,6 +108,6 @@ Collate:
     'pseudo.abs.R'
     'response.plot.R'
     'scope.R'
-    'sre.R'
+    'bm_SRE.R'
     'update_objects.R'
     'zzz.R'
