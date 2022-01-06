@@ -125,78 +125,88 @@
 ##' plot(sre.100, main="full data calibration")
 ##' plot(sre.095, main="95 %")
 ##' plot(sre.090, main="90 %")
-sre <- function(
-  Response = NULL, 
-  Explanatory = NULL, 
-  NewData = NULL, 
-  Quant = 0.025, 
-  return_extremcond = FALSE
-){
+###################################################################################################
 
-  # 1. Checking of input arguments validity
-  args <- .check.params.sre(Response, Explanatory, NewData, Quant)
 
+bm_SRE <- function(Response = NULL, 
+                Explanatory = NULL, 
+                NewData = NULL, 
+                Quant = 0.025, 
+                return_extremcond = FALSE)
+{
+  ## 0. Check arguments ---------------------------------------------------------------------------
+  args <- .bm_SRE.check.args(Response, Explanatory, NewData, Quant)
   Response <- args$Response
   Explanatory <- args$Explanatory
   NewData <- args$NewData
   Quant <- args$Quant
   rm("args")
-
-
-  # 2. Determining suitables conditions and make the projection
+  
+  ## 1. Determine suitable conditions and make the projection -------------------------------------
   lout <- list()
-  if(is.data.frame(Response) | is.matrix(Response)){
+  if (is.data.frame(Response) | is.matrix(Response)) ## matrix or data.frame ------------
+  {
     nb.resp <- ncol(Response)
     resp.names <- colnames(Response)
-    for(j in 1:nb.resp){
-      occ.pts <- which(Response[,j]==1)
-      extrem.cond <- t(apply(as.data.frame(Explanatory[occ.pts,]), 2,
-                           quantile, probs = c(0 + Quant, 1 - Quant), na.rm = TRUE))
-
-      if(!return_extremcond)
+    for (j in 1:nb.resp) {
+      occ.pts <- which(Response[, j] == 1)
+      extrem.cond <- t(apply(as.data.frame(Explanatory[occ.pts, ]), 2, quantile
+                             , probs = c(0 + Quant, 1 - Quant), na.rm = TRUE))
+      if (!return_extremcond) {
         lout[[j]] <- .sre.projection(NewData, extrem.cond)
+      }
     }
-  }
-
-  if(inherits(Response, 'Raster')){
+  } else if (inherits(Response, 'Raster')) ## raster ------------------------------------
+  {
     nb.resp <- nlayers(Response)
     resp.names <- names(Response)
-    for(j in 1:nb.resp){
-      occ.pts <- raster::subset(Response,j, drop=T)
-      x.ooc.pts <- Which(occ.pts != 1, cells=TRUE, na.rm=T)
+    for (j in 1:nb.resp) {
+      occ.pts <- subset(Response, j, drop = TRUE)
+      x.ooc.pts <- Which(occ.pts != 1, cells = TRUE, na.rm = TRUE)
       occ.pts[x.ooc.pts] <- rep(NA, length(x.ooc.pts))
-      extrem.cond <- quantile(raster::mask(Explanatory, occ.pts), probs = c(0 + Quant, 1 - Quant), na.rm = TRUE)
-
-      if(!return_extremcond)
+      extrem.cond <- quantile(mask(Explanatory, occ.pts),
+                              probs = c(0 + Quant, 1 - Quant),
+                              na.rm = TRUE))
+      if (!return_extremcond) {
         lout[[j]] <- .sre.projection(NewData, extrem.cond)
+      }
     }
-  }
-
-  if(inherits(Response, 'SpatialPoints')){
+  } else if (inherits(Response, 'SpatialPoints')) ## SpatialPoints ----------------------
+  {
     nb.resp <- ncol(Response@data)
     resp.names <- colnames(Response@data)
-    for(j in 1:nb.resp){
-      occ.pts <- which(Response@data[,j]==1)
-      if(is.data.frame(Explanatory) | is.matrix(Explanatory)){
-        extrem.cond <- t(apply(as.data.frame(Explanatory[occ.pts,]), 2,
-                           quantile, probs = c(0 + Quant, 1 - Quant), na.rm = TRUE))
-      } else { if(inherits(Explanatory, 'Raster')){
-        maskTmp <- raster::subset(Explanatory,1, drop=T)
-#         maskTmp <- reclassify(maskTmp, c(-Inf,Inf,NA))
-        maskTmp[] <- NA
-        maskTmp[cellFromXY(maskTmp, coordinates(Response)[occ.pts,])] <- 1
-        extrem.cond <- quantile(raster::mask(Explanatory, maskTmp), probs = c(0 + Quant, 1 - Quant), na.rm = TRUE)
-      } else { if(inherits(Explanatory, 'SpatialPoints')){
-        ## May be good to check corespondances of Response and Explanatory variables
-        extrem.cond <- t(apply(as.data.frame(Explanatory[occ.pts,]), 2,
-                   quantile, probs = c(0 + Quant, 1 - Quant), na.rm = TRUE))
-      } else { stop("Unsuported case!") } } }
-
-      if(!return_extremcond)
+    for (j in 1:nb.resp) {
+      occ.pts <- which(Response@data[, j] == 1)
+      if (is.data.frame(Explanatory) || is.matrix(Explanatory)) {
+        extrem.cond <- t(apply(as.data.frame(Explanatory[occ.pts, ]), 2, quantile
+                               , probs = c(0 + Quant, 1 - Quant), na.rm = TRUE))
+      } else {
+        if (inherits(Explanatory, 'Raster')) {
+          maskTmp <- subset(Explanatory, 1, drop = TRUE)
+          maskTmp[] <- NA
+          maskTmp[cellFromXY(maskTmp, coordinates(Response)[occ.pts, ])] <- 1
+          extrem.cond <- quantile(mask(Explanatory, maskTmp),
+                                  probs = c(0 + Quant, 1 - Quant),
+                                  na.rm = TRUE)
+        } else {
+          if (inherits(Explanatory, 'SpatialPoints')) {
+            ## May be good to check corespondances of Response and Explanatory variables
+            extrem.cond <- t(apply(as.data.frame(Explanatory[occ.pts, ]), 2, quantile
+                                   , probs = c(0 + Quant, 1 - Quant), na.rm = TRUE))
+          } else {
+            stop("Unsuported case!")
+          }
+        }
+      }
+      if (!return_extremcond) {
         lout[[j]] <- .sre.projection(NewData, extrem.cond)
+      }
     }
   }
-
+  
+  
+  ## RETURN results -------------------------------------------------------------------------------
+  
   if(return_extremcond){
     return(as.data.frame(extrem.cond))
   } else{
@@ -205,7 +215,7 @@ sre <- function(
       lout <- simplify2array(lout)
       colnames(lout) <- resp.names
     }
-
+    
     if(inherits(NewData, 'Raster')){
       lout <- stack(lout)
       if(nlayers(lout)==1){
@@ -213,201 +223,116 @@ sre <- function(
       }
       names(lout) <- resp.names
     }
-
     return(lout)
   }
 }
 
-# -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-= #
 
-.check.params.sre <- function(Response = NULL, Explanatory = NULL, NewData = NULL, Quant = 0.025){
-  # check quantile validity
-  if (Quant >= 0.5 | Quant < 0){
-    stop("\n settings in Quant should be a value between 0 and 0.5 ")
-  }
+###################################################################################################
 
-  # check compatibility between response and explanatory
-  if(is.vector(Response) | is.data.frame(Response) | is.matrix(Response) ){
+.bm_SRE.check.args <- function(Response = NULL, Explanatory = NULL, NewData = NULL, Quant = 0.025)
+{
+  ## 0. Check compatibility between Response and Explanatory arguments --------
+  if (is.vector(Response) || is.matrix(Response) || is.data.frame(Response))
+  {
     Response <- as.data.frame(Response)
-
-    if(!is.vector(Explanatory) & !is.data.frame(Explanatory) & !is.matrix(Explanatory) & !inherits(Explanatory, 'SpatialPoints')){
-      stop("If Response variable is a vector, a matrix or a data.frame then Explanatory must also be one")
+    
+    if (!is.vector(Explanatory) || !is.matrix(Explanatory) || is.data.frame(Explanatory) || !inherits(Explanatory, 'SpatialPoints'))
+    {
+      stop("\n Response and Explanatory arguments must be of same type (both vector, both matrix, etc)")
     } else {
-      if(inherits(Explanatory, 'SpatialPoints')){
+      if (inherits(Explanatory, 'SpatialPoints')) {
         Explanatory <- as.data.frame(Explanatory@data)
       }
       Explanatory <- as.data.frame(Explanatory)
       nb.expl.vars <- ncol(Explanatory)
       names.expl.vars <- colnames(Explanatory)
-      if(nrow(Response) != nrow(Explanatory)){
-        stop("Response and Explanatory variables have not the same number of rows")
+      if (nrow(Response) != nrow(Explanatory)) {
+        stop("Response and Explanatory arguments must have the same number of rows")
       }
     }
   }
-
-  if(inherits(Explanatory, 'SpatialPoints')){
+  
+  if (inherits(Explanatory, 'SpatialPoints')) {
     Explanatory <- as.data.frame(Explanatory@data)
     nb.expl.vars <- ncol(Explanatory)
     names.expl.vars <- colnames(Explanatory)
   }
-
-  if(inherits(Response, 'Raster')){
-    if(!inherits(Explanatory, 'Raster')){
-      stop("If Response variable is raster object then Explanatory must also be one")
+  
+  if (inherits(Response, 'Raster')) {
+    if (!inherits(Explanatory, 'Raster')) {
+      stop("\n Response and Explanatory arguments must be of same type (both vector, both raster, etc)")
     }
     nb.expl.vars <- nlayers(Explanatory)
     names.expl.vars <- names(Explanatory)
   }
-
-  ## check explanatory variables class
+  
+  
+  ## 1. Check Explanatory argument --------------------------------------------
   test_no_factorial_var <- TRUE
-  if(is.data.frame(Explanatory)){
-    if(any(unlist(lapply(Explanatory, is.factor)))){
-      test_no_factorial_var <- FALSE
-    }
-  } else if (inherits(Explanatory, 'Raster')){
-    if(any(is.factor(Explanatory))){
-      test_no_factorial_var <- FALSE
-    }
+  if ((is.data.frame(Explanatory) && any(unlist(lapply(Explanatory, is.factor)))) ||
+      (inherits(Explanatory, 'Raster') && any(is.factor(Explanatory)))) {
+    test_no_factorial_var <- FALSE
   }
-
-  if(!test_no_factorial_var) stop("SRE algorithm does not handle factorial variables")
-
-
-  # If no NewData given, projection will be done on Explanatory variables
-  if(is.null(NewData)){
+  if (!test_no_factorial_var) stop("SRE algorithm does not handle factorial variables")
+  
+  
+  ## 2. Check NewData argument ------------------------------------------------
+  if (is.null(NewData)) { ## if no NewData, projection done on Explanatory variables
     NewData <- Explanatory
-  } else {
-    # check of compatible number of explanatories variable
-    if(is.vector(NewData) | is.data.frame(NewData) | is.matrix(NewData)){
+  } else { ## check of compatible number of explanatory variables
+    if (is.vector(NewData) || is.data.frame(NewData) || is.matrix(NewData))
+    {
       NewData <- as.data.frame(NewData)
-      if(sum(!(names.expl.vars %in% colnames(NewData))) > 0 ){
+      if (sum(!(names.expl.vars %in% colnames(NewData))) > 0) {
         stop("Explanatory variables names differs in the 2 dataset given")
       }
       NewData <- NewData[,names.expl.vars]
-      if(ncol(NewData) != nb.expl.vars){
+      if (ncol(NewData) != nb.expl.vars) {
         stop("Incompatible number of variables in NewData objects")
       }
-    } else if(!inherits(NewData, 'Raster')){
+    } else if (!inherits(NewData, 'Raster')) {
       NewData <- stack(NewData)
-      if(sum(!(names.expl.vars %in% names(NewData))) > 0 ){
+      if (sum(!(names.expl.vars %in% names(NewData))) > 0) {
         stop("Explanatory variables names differs in the 2 dataset given")
       }
-      NewData <- raster::subset(NewData, names.expl.vars)
-      if(nlayers(NewData) != nb.expl.vars ){
+      NewData <- subset(NewData, names.expl.vars)
+      if (nlayers(NewData) != nb.expl.vars) {
         stop("Incompatible number of variables in NewData objects")
       }
     }
   }
-
+  
+  ## 3. Check Quant argument --------------------------------------------------
+  if (Quant < 0 || Quant >= 0.5) {
+    stop("\n Quantmust be a 0 to 0.5 numeric"))
+  }
+  
   return(list(Response = Response,
               Explanatory = Explanatory,
               NewData = NewData,
               Quant = Quant))
-
 }
 
-# -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-= #
 
-.sre.projection <- function(NewData, ExtremCond){
+###################################################################################################
 
-  if(is.data.frame(NewData)|is.matrix(NewData)){
-    out <- rep(1,nrow(NewData))
-    for(j in 1:ncol(NewData)){
-      out <- out * as.numeric(NewData[,j] >= ExtremCond[j,1] &  NewData[,j] <= ExtremCond[j,2])
+.sre.projection <- function(NewData, ExtremCond)
+{
+  if (is.data.frame(NewData) || is.matrix(NewData)) {
+    out <- rep(1, nrow(NewData))
+    for (j in 1:ncol(NewData)) {
+      out <- out * as.numeric(NewData[, j] >= ExtremCond[j, 1] &
+                                NewData[, j] <= ExtremCond[j, 2])
     }
-  }
-
-  if(inherits(NewData, "Raster")){
-    out <- reclassify(raster::subset(NewData,1,drop=TRUE), c(-Inf, Inf, 1))
-    for(j in 1:nlayers(NewData)){
-      out <- out * ( raster::subset(NewData,j,drop=TRUE) >= ExtremCond[j,1] ) * ( raster::subset(NewData,j,drop=TRUE) <= ExtremCond[j,2] )
+  } else if (inherits(NewData, "Raster")) {
+    out <- reclassify(subset(NewData, 1, drop = TRUE), c(-Inf, Inf, 1))
+    for (j in 1:nlayers(NewData)) {
+      out <- out * (subset(NewData, j, drop = TRUE) >= ExtremCond[j, 1]) * 
+        (subset(NewData, j, drop = TRUE) <= ExtremCond[j, 2])
     }
-    out <- raster::subset(out,1,drop=TRUE)
+    out <- subset(out, 1, drop = TRUE)
   }
-
   return(out)
 }
 
-# -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-= #
-
-#
-#
-# sre <- function (Response = NULL, Explanatory = NULL, NewData = NULL, Quant = 0.025)
-# {
-#   # check quantile validity
-#   if (Quant >= 0.5 | Quant < 0){
-#     stop("\n settings in Quant should be a value between 0 and 0.5 ")
-#   }
-#   quants <- c(0 + Quant, 1 - Quant)
-#
-#   # puting response in an appropriate form if necessary
-#   if(inherits(Response, 'Raster')){
-#     stop("Response raster stack not suported yet!")
-#   } else {
-#     Response <- as.data.frame(Response)
-#   }
-#
-#   if(!inherits(NewData, 'Raster')){
-#
-#   }
-#
-#
-#   if (class(Explanatory)[1] != "RasterStack") {
-#
-#     if (is.vector(Explanatory)){
-#       Explanatory <- as.data.frame(Explanatory)
-#       NewData <- as.data.frame(NewData)
-#       names(Explanatory) <- names(NewData) <- "VarTmp"
-#     }
-#     NbVar <- ncol(Explanatory)
-#   }
-#       if (class(NewData)[1] != "RasterStack"){
-#         Pred <- as.data.frame(matrix(0,
-#                                      nr = nrow(NewData),
-#                                      nc = ncol(Response),
-#                                      dimnames = list(seq(nrow(NewData)), colnames(Response))))
-#       }
-#
-#       for (i in 1:ncol(Response)){
-#           ref <- as.data.frame(Explanatory[Response[, i] == 1, ])
-#           if(ncol(ref)==1){ names(ref) <- names(Explanatory)}
-#           if (class(NewData)[1] == "RasterStack") {
-#             # select a lone layer
-#             TF <- subset(NewData, 1)
-#             # put all cell at 1
-#             TF <- TF >= TF@data@min
-#           }
-#           else TF <- rep(1, nrow(NewData))
-#
-#           for (j in 1:NbVar) {
-#               capQ <- quantile(ref[, j], probs = quants, na.rm = TRUE)
-#               if (class(NewData)[1] != "RasterStack") {
-#                 TF <- TF * (NewData[, names(ref)[j]] >= capQ[1])
-#                 TF <- TF * (NewData[, names(ref)[j]] <= capQ[2])
-#               }
-#               else {
-#                 TFmin <- NewData@layers[[which(NewData@layernames ==
-#                   names(ref)[j])]] >= capQ[1]
-#                 TFmax <- NewData@layers[[which(NewData@layernames ==
-#                   names(ref)[j])]] <= capQ[2]
-#                 TF <- TF * TFmin * TFmax
-#               }
-#           }
-#           if (class(TF)[1] != "RasterLayer")
-#               Pred[, i] <- TF
-#           else Pred <- TF
-#       }
-#   } else{
-#
-#   }
-#
-#   if (class(NewData)[1] != "RasterStack" & ncol(Response) == 1)
-#   	Pred <- Pred[[1]]
-#
-#   return(Pred)
-#
-# }
-#
-#
-#

@@ -32,8 +32,7 @@
 
 
 setGeneric("Projection",
-           def = function(models.name, modeling.work.dir = getwd(),
-                          new.env.data, ...)
+           def = function(models.name, modeling.work.dir = getwd(), new.env.data, ...)
            {
              standardGeneric( "Projection" )
            })
