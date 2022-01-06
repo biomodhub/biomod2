@@ -293,6 +293,9 @@
 ##' get_evaluations(myBiomodEM)
 ##' 
 ##' 
+##' @export
+##' 
+##' 
 ###################################################################################################
 
 BIOMOD_EnsembleModeling <- function(modeling.output,

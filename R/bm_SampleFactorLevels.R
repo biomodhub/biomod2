@@ -95,6 +95,11 @@
 ##' bm_SampleFactorLevels(stk, mask.out = mask.out, mask.in = mask.in)
 ##' 
 ##' 
+##' @importFrom raster is.factor as.factor levels subset mask
+##' 
+##' @export
+##' 
+##' 
 ###################################################################################################
 
 bm_SampleFactorLevels <- function(x, mask.out = NULL, mask.in = NULL)
@@ -128,7 +133,7 @@ bm_SampleFactorLevels.raster <- function(x, mask.out = NULL, mask.in = NULL)
       selected.cells <- NULL
       
       ## get the factor levels on the full dataset
-      fact.level <- fact.level.original <- unlist(raster::levels(subset(x, f)))
+      fact.level <- fact.level.original <- unlist(levels(subset(x, f)))
       cat("\n\t> fact.level for",  names(x)[f], ":\t", paste(fact.level, names(fact.level), sep = ":", collapse = "\t"))
       
       ## mask containing points that have already been sampled ------------------------------------

@@ -138,6 +138,12 @@
 ##' pres.only.eval$eval
 ##' 
 ##' 
+##' @importFrom ecospat ecospat.boyce ecospat.mpa
+##' @importFrom PresenceAbsence presence.absence.accuracy
+##' 
+##' @export
+##' 
+##' 
 ###################################################################################################
 
 
@@ -281,10 +287,10 @@ BIOMOD_PresenceOnly <- function(modeling.output = NULL,
       ## Prepare table to compute evaluation scores
       DATA <- cbind(1:length(Pred), Test, Pred / 1000)
       DATA[is.na(DATA[, 2]), 2] <- 0
-      DATA <- DATA[stats::complete.cases(DATA), ]
+      DATA <- DATA[complete.cases(DATA), ]
       
       ## Boyce index
-      boy <- ecospat::ecospat.boyce(fit = Pred[ind.notNA], obs = Pred.obs, PEplot = F)
+      boy <- ecospat.boyce(fit = Pred[ind.notNA], obs = Pred.obs, PEplot = F)
       boyce.eval[ind.b, 3] <- boy$Spearman.cor
       if (sum(boy$F.ratio < 1, na.rm = T) > 0) {
         boyce.eval[ind.b, 5] <- round(boy$HS[max(which(boy$F.ratio < 1))], 0)
@@ -300,7 +306,7 @@ BIOMOD_PresenceOnly <- function(modeling.output = NULL,
       }
       
       ## MPA index
-      mpa <- ecospat::ecospat.mpa(Pred.obs, perc = perc)
+      mpa <- ecospat.mpa(Pred.obs, perc = perc)
       mpa.eval[ind.m, 5] <- mpa
       EVAL <- presence.absence.accuracy(DATA, threshold = mpa / 1000)
       mpa.eval[ind.m, 6] <- EVAL$sensitivity
@@ -312,9 +318,9 @@ BIOMOD_PresenceOnly <- function(modeling.output = NULL,
       myResp.eval <- get(load(modeling.output@formated.input.data@link))@eval.data.species
       Pred.eval <- myModelPred.eval[, Model.name]
       
-      boy <- ecospat::ecospat.boyce(fit = Pred.eval, obs = Pred.eval[myResp.eval == 1 & ind.1], PEplot=F)
+      boy <- ecospat.boyce(fit = Pred.eval, obs = Pred.eval[myResp.eval == 1 & ind.1], PEplot=F)
       boyce.eval[ind.b, "Evaluating.data"] <- boy$Spearman.cor
-      mpa.eval[ind.m,"Evaluating.data"] <- ecospat::ecospat.mpa(Pred.eval[myResp.eval == 1 & ind.1], perc = perc)
+      mpa.eval[ind.m,"Evaluating.data"] <- ecospat.mpa(Pred.eval[myResp.eval == 1 & ind.1], perc = perc)
     }
   }
   myModelEval[, 6:7] <- round(myModelEval[, 6:7], 1)

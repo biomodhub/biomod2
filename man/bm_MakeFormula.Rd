@@ -58,6 +58,7 @@ myFormula <- bm_MakeFormula(respName = 'myResp',
 ## Show formula created
 myFormula
 
+
 }
 \seealso{
 \code{\link[biomod2]{BIOMOD_ModelingOptions}}, 

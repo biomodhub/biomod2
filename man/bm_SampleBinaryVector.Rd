@@ -36,6 +36,7 @@ a <- sample(c(0,1), 100, replace = TRUE)
 
 bm_SampleBinaryVector(ref = a, ratio = 0.7)
 
+
 }
 \seealso{
 \code{\link[biomod2]{BIOMOD_FormatingData}}

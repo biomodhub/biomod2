@@ -179,6 +179,11 @@
 ##'                                                    projection.output = myBiomodProjection)
 ##' 
 ##' 
+##' @importFrom raster stack subset predict writeRaster
+##' 
+##' @export
+##' 
+##' 
 ###################################################################################################
 
 
@@ -317,7 +322,7 @@ BIOMOD_EnsembleForecasting <- function(EM.output,
     BIOMOD_LoadModels(EM.output, full.name = em.comp, as = 'model.tmp')
     if (inherits(formal_pred, 'Raster')) {
       ef.tmp <- predict(model.tmp,
-                        formal_predictions = raster::subset(formal_pred, subset = model.tmp@model, drop = FALSE),
+                        formal_predictions = subset(formal_pred, subset = model.tmp@model, drop = FALSE),
                         on_0_1000 = on_0_1000,
                         filename = ifelse(output.format == '.RData', '', file_name_tmp))
     } else {

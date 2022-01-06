@@ -1,6 +1,5 @@
 ###################################################################################################
 ##' @name bm_VariablesImportance
-##' @aliases bm_VariablesImportance
 ##' @author Damien Georges
 ##' 
 ##' @title Variables' importance calculation
@@ -63,6 +62,9 @@
 ##'                        data = xx[, c('b', 'c')],
 ##'                        method = "full_rand",
 ##'                        nb_rand = 3)
+##' 
+##' 
+##' @export
 ##' 
 ##' 
 ###################################################################################################

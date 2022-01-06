@@ -20,7 +20,7 @@ navbar:
 
 
 reference:
-  - title: BIOMOD main functions
+  - title: Main functions
     contents:
       - "BIOMOD_FormatingData"
       - "BIOMOD_CrossValidation"
@@ -33,7 +33,7 @@ reference:
       - "BIOMOD_RangeSize"
       - "BIOMOD_LoadModels"
       - "BIOMOD_PresenceOnly"
-  - title: BIOMOD secondary functions
+  - title: Secundary functions
     contents:
       - "bm_MakeFormula"
       - "bm_SampleBinaryVector"

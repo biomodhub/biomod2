@@ -184,6 +184,11 @@
 ##' }
 ##' 
 ##' 
+##' @importFrom raster stack subset nlayers writeRaster rasterOptions canProcessInMemory
+##' 
+##' @export
+##' 
+##' 
 ###################################################################################################
 
 
@@ -519,7 +524,7 @@ BIOMOD_Projection <- function(modeling.output,
     if (!do.stack) { cat("\n\t\t! 'do.stack' arg is always set as TRUE for data.frame/matrix dataset") }
     do.stack <- TRUE
   } else if (do.stack) { # test if there is enough memory to work with RasterStack
-    test = canProcessInMemory(raster::subset(new.env, 1), 2 * length(chosen.models) + nlayers(new.env))
+    test = canProcessInMemory(subset(new.env, 1), 2 * length(chosen.models) + nlayers(new.env))
     if (!test) { rasterOptions(todisk = TRUE) }
   }
   
@@ -557,22 +562,22 @@ BIOMOD_Projection <- function(modeling.output,
 {
   if (inherits(env, 'Raster'))
   { ## raster case ------------------------------------------------------------
-    env <- raster::stack(env)
-    env <- raster::subset(env, names(MinMax))
+    env <- stack(env)
+    env <- subset(env, names(MinMax))
     
     ## create an empty mask
-    clamp.mask <- ref.mask <- raster::subset(env, 1, drop = TRUE)
+    clamp.mask <- ref.mask <- subset(env, 1, drop = TRUE)
     clamp.mask[!is.na(clamp.mask[])] <- 0
     ref.mask[!is.na(clamp.mask[])] <- 1
     
     for (e.v in names(MinMax)) {
       if (!is.null(MinMax[[e.v]]$min)) { # numeric variable
         clamp.mask <- clamp.mask + 
-          bm_BinaryTransformation(raster::subset(env, e.v, drop = TRUE), MinMax[[e.v]]$max) + ## pix with values outside of calib range
-          (ref.mask - bm_BinaryTransformation(raster::subset(env, e.v, drop = TRUE), MinMax[[e.v]]$min)) ## pix with no values (within env[[1]] area)
+          bm_BinaryTransformation(subset(env, e.v, drop = TRUE), MinMax[[e.v]]$max) + ## pix with values outside of calib range
+          (ref.mask - bm_BinaryTransformation(subset(env, e.v, drop = TRUE), MinMax[[e.v]]$min)) ## pix with no values (within env[[1]] area)
       } else if (!is.null(MinMax[[e.v]]$levels)) { # factorial variable
         clamp.mask <- clamp.mask + 
-          (raster::subset(env, e.v, drop = TRUE) %in% MinMax[[e.v]]$levels) ## pix with values outside of calib range
+          (subset(env, e.v, drop = TRUE) %in% MinMax[[e.v]]$levels) ## pix with values outside of calib range
       }
     }
     

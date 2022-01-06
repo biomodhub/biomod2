@@ -162,6 +162,11 @@
 ## @importFrom raster RasterLayer RasterStack
 ##' 
 ##' 
+##' @importFrom raster stack names addLayer
+##' 
+##' @export
+##' 
+##' 
 ###################################################################################################
 
 
