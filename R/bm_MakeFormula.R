@@ -1,6 +1,5 @@
 ###################################################################################################
 ##' @name bm_MakeFormula
-##' @aliases bm_MakeFormula
 ##' @author Damien Georges
 ##' 
 ##' @title Standardized formula maker
