@@ -44,6 +44,7 @@ reference:
       - "bm_SampleBinaryVector"
       - "bm_SampleFactorLevels"
       - "bm_ModelsLoop"
+      - "bm_CVnnet"
       - "bm_SRE"
       - "bm_Rescaler"
       - "bm_FindOptimStat"

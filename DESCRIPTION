@@ -84,7 +84,7 @@ Collate:
     'BIOMOD_RangeSize.R'
     'BIOMOD_Tuning.R'
     'bm_ModelsLoop.R'
-    'CVnnet.R'
+    'bm_CVnnet.R'
     'biomod2-package.R'
     'Prepare.Maxent.WorkDir.R'
     'ProbDensFunc.R'
