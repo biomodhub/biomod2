@@ -59,7 +59,7 @@ setMethod('show', signature('biomod2_model'),
             cat("\n\t model name :", object@model_name, fill = .Options$width)
             cat("\n\t model class :", object@model_class, fill = .Options$width)
             cat("\n\t This model", ifelse(length(object@scaling_model), "has", "doesn't have"), "its own scaler", fill = .Options$width)
-
+            
             cat("\n")
             cat("\n\t response modelled:", object@resp_name, fill = .Options$width)
             cat("\n\n\t explanatory variables used:", fill = .Options$width)
@@ -67,12 +67,12 @@ setMethod('show', signature('biomod2_model'),
             for (i in 1:length(object@expl_var_names)) {
               cat("\n\t", object@expl_var_names[i],"\t", object@expl_var_type[i], "\t", object@expl_var_range[[i]], fill = .Options$width)
             }
-
+            
             cat("\n")
             cat("\n\t NOTE : ")
             cat("\n\t\t You can access 'formal' model with get_formal_model function")
             cat(ifelse(length(object@scaling_model), "\n\t\t You can access scaling model with get_scaling_model function\n", "\n"))
-
+            
             .bmCat()
           })
 
@@ -187,13 +187,13 @@ setMethod('predict', signature(object = 'GAM_biomod2_model'),
             args <- list(...)
             do_check <- args$do_check
             if (is.null(do_check)) { do_check <- TRUE }
-
+            
             if (object@model_subclass %in% c("GAM_mgcv", "BAM_mgcv")) {
               # cat("\n*** unloading gam package / loading mgcv package")
               if (isNamespaceLoaded("gam")) { unloadNamespace("gam") }
               if (!isNamespaceLoaded("mgcv")) { requireNamespace("mgcv", quietly = TRUE) }
             }
-
+            
             if (object@model_subclass == "GAM_gam") {
               # cat("\n*** unloading mgcv package / loading gam package")
               if (isNamespaceLoaded("mgcv")) {
@@ -386,16 +386,16 @@ setMethod('predict', signature(object = 'MAXENT.Phillips_biomod2_model'),
   rm_tmp_files <- args$rm_tmp_files
   temp_workdir <- args$temp_workdir
   split.proj <- args$split.proj
-
+  
   # if (is.null(temp_workdir)) temp_workdir <- paste("maxentWDtmp", format(Sys.time(), "%s"), sep="")
   if (is.null(rm_tmp_files)) { rm_tmp_files <- TRUE }
   if (is.null(overwrite)) { overwrite <- TRUE }
   if (is.null(on_0_1000)) { on_0_1000 <- FALSE }
   if (is.null(split.proj)) { split.proj <- 1 }
-
-  MWD <- .Prepare.Maxent.Proj.WorkDir(Data = newdata, species.name = object@resp_name,
-                                      silent = TRUE, split.proj = split.proj )
-
+  
+  MWD <- bm_MAXENTprepareWorkdir(Data = newdata, species.name = object@resp_name,
+                                 silent = TRUE, split.proj = split.proj )
+  
   # checking maxent.jar is present
   path_to_maxent.jar <- file.path(object@model_options$path_to_maxent.jar, "maxent.jar")
   if (!file.exists(path_to_maxent.jar)) {
@@ -405,17 +405,17 @@ setMethod('predict', signature(object = 'MAXENT.Phillips_biomod2_model'),
   if (!silent) { cat("\n\t\tRunning Maxent...") }
   for (spl in 1:split.proj) {
     maxent.command <- paste0("java ", ifelse(is.null(object@model_options$memory_allocated), "", paste0("-mx", object@model_options$memory_allocated, "m")),
-                            " -cp ", "\"", path_to_maxent.jar, "\"",
-                            " density.Project ",
-                            "\"", list.files(path = object@model_output_dir, pattern = ".lambdas$", full.names = TRUE), "\" ",
-                            "\"", MWD$m_workdir[[spl]], "\" ",
-                            "\"", file.path(MWD$m_workdir[[spl]], "projMaxent.asc"), "\" ",
-                            " doclamp=false visible=false autorun nowarnings notooltips")
+                             " -cp ", "\"", path_to_maxent.jar, "\"",
+                             " density.Project ",
+                             "\"", list.files(path = object@model_output_dir, pattern = ".lambdas$", full.names = TRUE), "\" ",
+                             "\"", MWD$m_workdir[[spl]], "\" ",
+                             "\"", file.path(MWD$m_workdir[[spl]], "projMaxent.asc"), "\" ",
+                             " doclamp=false visible=false autorun nowarnings notooltips")
     system(command = maxent.command, wait = TRUE, intern = TRUE)
   }
   
   if(!silent) { cat("\n\t\tReading Maxent outputs...") }
-
+  
   ## get the list of projections part by part
   # check crs is not NA
   if (!is.na(projection(newdata))) {
@@ -429,9 +429,9 @@ setMethod('predict', signature(object = 'MAXENT.Phillips_biomod2_model'),
   } else {
     proj <- proj.list[[1]]
   }
-
+  
   if (on_0_1000) { proj <- round(proj * 1000) }
-
+  
   # save raster on hard drive ?
   if (!is.null(filename)) {
     cat("\n\t\tWriting projection on hard drive...")
@@ -444,9 +444,9 @@ setMethod('predict', signature(object = 'MAXENT.Phillips_biomod2_model'),
   } else if (!inMemory(proj)) {
     proj <- readAll(proj) # to prevent from tmp files removing
   }
-
+  
   if (!is.null(rm_tmp_files) && rm_tmp_files) {
-    .Delete.Maxent.WorkDir(MWD, silent = silent)
+    bm_MAXENTdeleteWorkdir(MWD, silent = silent)
   }
   return(proj)
 }
@@ -458,25 +458,25 @@ setMethod('predict', signature(object = 'MAXENT.Phillips_biomod2_model'),
   temp_workdir <- args$temp_workdir
   rm_tmp_files <- args$rm_tmp_files
   xy <- args$xy
-
+  
   if (is.null(on_0_1000)) { on_0_1000 <- FALSE }
   if (is.null(rm_tmp_files)) { rm_tmp_files <- TRUE }
-
+  
   ## no xy needed for models projections
   xy <- NULL
-
+  
   ## check if na occurs in newdata cause they are not well supported
   not_na_rows <- apply(newdata, 1, function(x){sum(is.na(x))==0})
-
-  MWD <- .Prepare.Maxent.Proj.WorkDir(Data = as.data.frame(newdata[not_na_rows, , drop = FALSE])
-                                      , xy = xy , species.name = object@resp_name, silent = T)
-
+  
+  MWD <- bm_MAXENTprepareWorkdir(Data = as.data.frame(newdata[not_na_rows, , drop = FALSE])
+                                 , xy = xy , species.name = object@resp_name, silent = T)
+  
   # checking maxent.jar is present
   path_to_maxent.jar <- file.path(object@model_options$path_to_maxent.jar, "maxent.jar")
   if (!file.exists(path_to_maxent.jar)) {
     path_to_maxent.jar <-  file.path(getwd(), "maxent.jar")
   }
-
+  
   if (!silent) cat("\n\t\tRunning Maxent...")
   maxent.command <- paste0("java ", ifelse(is.null(object@model_options$memory_allocated), "", paste0("-mx", object@model_options$memory_allocated, "m")),
                            " -cp ", "\"", path_to_maxent.jar, "\"",
@@ -486,10 +486,10 @@ setMethod('predict', signature(object = 'MAXENT.Phillips_biomod2_model'),
                            "\"", file.path(MWD$m_workdir, "projMaxent.asc") , "\" ",
                            "doclamp=false visible=false autorun nowarnings notooltips")
   system(command = maxent.command, wait = TRUE, intern = TRUE)
-
+  
   if (!silent) { cat("\n\t\tReading Maxent outputs...") }
   proj <- as.numeric(read.asciigrid(file.path(MWD$m_workdir, "projMaxent.asc"))@data[, 1])
-
+  
   ## add original NA from formal dataset
   if (sum(!not_na_rows) > 0) {
     tmp <- rep(NA, length(not_na_rows))
@@ -497,9 +497,9 @@ setMethod('predict', signature(object = 'MAXENT.Phillips_biomod2_model'),
     proj <- tmp
     rm('tmp')
   }
-
+  
   if (!is.null(rm_tmp_files) && rm_tmp_files) {
-    .Delete.Maxent.WorkDir(MWD, silent = silent)
+    bm_MAXENTdeleteWorkdir(MWD, silent = silent)
   }
   if (on_0_1000) { proj <- round(proj * 1000) }
   return(proj)

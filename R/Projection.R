@@ -252,7 +252,7 @@ setMethod('Projection', signature(new.env.data = 'RasterStack'),
             
             ## remove MAXENT.Phillips tmp dir if exists
             if (file.exists(file.path(sp.name, proj.name, 'MaxentTmpData'))) {
-              .Delete.Maxent.WorkDir(file.path(sp.name, proj.name))
+              bm_MAXENTdeleteWorkdir(file.path(sp.name, proj.name))
             }
             
             return(invisible(proj.stack))

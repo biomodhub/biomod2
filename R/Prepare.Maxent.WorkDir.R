@@ -1,6 +1,6 @@
 
 
-.Prepare.Maxent.WorkDir <- function(Data, xy, calibLines = NULL, RunName = NULL,
+bm_MAXENTprepareWorkdir <- function(Data, xy, calibLines = NULL, RunName = NULL,
                                     VarImport = 0, evalData = NULL, evalxy =  NULL,
                                     species.name = NULL, modeling.id = '',
                                     background_data_dir = 'default')
@@ -93,7 +93,7 @@
 
 
 
-.Delete.Maxent.WorkDir <- function(MWD, silent = FALSE)
+bm_MAXENTdeleteWorkdir <- function(MWD, silent = FALSE)
 {
   if (!silent) { cat('\n\tRemoving Maxent Temp Data..') }
   if (inherits(MWD, "maxent_workdir_info")) {
@@ -131,7 +131,7 @@ setMethod('.Prepare.Maxent.Proj.WorkDir', signature(Data='data.frame'),
             if (is.null(xy)) { xy <- matrix(1, nrow = nrow(Data), ncol = 2, dimnames = list(NULL, c("X", "Y"))) }
             Proj_swd <- cbind(rep("proj", nrow(xy)), xy, Data)
             colnames(Proj_swd)  <- c("proj", "X", "Y", colnames(Data))
-
+            
             m_predictFile <- file.path(m_workdir, "Pred_swd.csv")
             write.table(Proj_swd, file = m_predictFile, quote = FALSE,  row.names = FALSE, col.names = TRUE, sep = ",")
             MWD$m_predictFile <- m_predictFile
@@ -144,7 +144,7 @@ setMethod('.Prepare.Maxent.Proj.WorkDir', signature(Data = 'RasterStack'),
           def = function(Data, species.name = ".", proj.name = ".", silent = FALSE, split.proj = 1)
           {
             if (!silent) { cat('\n\t\tCreating Maxent Temp Proj Data...') }
-
+            
             ## initialise output
             MWD <- list()
             class(MWD) <- "maxent_workdir_info"

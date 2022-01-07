@@ -549,7 +549,7 @@ bm_ModelsLoop <- function(X,
     ## 2.10 MAXENT.Phillips model -----------------------------------------------
 
     cat('\n\t> MAXENT.Phillips modelling...')
-    MWD <- .Prepare.Maxent.WorkDir(Data, xy, calibLines, nam, VarImport = 0,
+    MWD <- bm_MAXENTprepareWorkdir(Data, xy, calibLines, nam, VarImport = 0,
                                    evalData, eval.xy, species.name = resp_name,
                                    modeling.id = modeling.id,
                                    background_data_dir = Options@MAXENT.Phillips$background_data_dir)
@@ -601,7 +601,7 @@ bm_ModelsLoop <- function(X,
     # for MAXENT.Phillips predicitons are calculated in the same time than models building to save time.
     cat("\n Getting predictions...")
     g.pred <- try(round(as.numeric(read.csv(MWD$m_outputFile)[, 3]) * 1000))
-    .Delete.Maxent.WorkDir(MWD) # remove tmp dir
+    bm_MAXENTdeleteWorkdir(MWD) # remove tmp dir
     
   } else if(Model == "MAXENT.Phillips.2")
   {
