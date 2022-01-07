@@ -6,64 +6,63 @@
 ##' 
 ##' @description
 ##' 
-##' This internal \pkg{biomod2} function allows the user to create easily a standardized formula 
-##' that can be used later by statistical models.
+##' This internal \pkg{biomod2} function allows the user to compute all single species 
+##' distribution models (asked by the \code{\link{BIOMOD_Modeling}} function).
 ##' 
-##' @param respName a \code{character} defining the response variable name
-##' @param explVar a \code{matrix} or \code{data.frame} corresponding to the explanatory 
-##' variables table that will be considered at modelling step
-##' @param type a \code{character} defining the wanted type of formula, must be \code{simple}, 
-##' \code{quadratic}, \code{polynomial} or \code{s_smoother}
-##' @param interaction.level an \code{integer} corresponding to the interaction level depth 
-##' between explanatory variables
-##' @param \ldots some additional arguments (see \href{bm_MakeFormula.html#details}{Details})
+##' @param X a \code{BIOMOD.formated.data} or \code{BIOMOD.formated.data.PA} object returned by the 
+##' \code{\link{BIOMOD_FormatingData}} function
+##' @param modeling.id a \code{character} corresponding to the name (ID) of the simulation set 
+##' (\emph{a random number by default})
+##' @param Model a \code{character} corresponding to the model name to be computed, must be either 
+##' \code{GLM}, \code{GBM}, \code{GAM}, \code{CTA}, \code{ANN}, \code{SRE}, \code{FDA}, 
+##' \code{MARS}, \code{RF}, \code{MAXENT.Phillips}, \code{MAXENT.Phillips.2}
+##' @param Options a \code{\link{BIOMOD.models.options}} object returned by the 
+##' \code{\link{BIOMOD_ModelingOptions}} function
+##' @param VarImport (\emph{optional, default} \code{NULL}) \cr 
+##' An \code{integer} corresponding to the number of permutations to be done for each variable to 
+##' estimate variable importance
+##' @param mod.eval.method a \code{vector} containing evaluation metric names to be used, must 
+##' be among \code{ROC}, \code{TSS}, \code{KAPPA}, \code{ACCURACY}, \code{BIAS}, \code{POD}, 
+##' \code{FAR}, \code{POFD}, \code{SR}, \code{CSI}, \code{ETS}, \code{HK}, \code{HSS}, \code{OR}, 
+##' \code{ORSS}
+##' @param SavePred (\emph{optional, default} \code{TRUE}) \cr 
+##' A \code{logical} value defining whether all results and outputs must be saved on hard drive 
+##' or not (\emph{! strongly recommended !})
+##' @param scal.models (\emph{optional, default} \code{FALSE}) \cr 
+##' A \code{logical} value defining whether all models predictions must be scaled with a binomial 
+##' GLM or not
 ##' 
 ##' 
 ##' @return  
 ##' 
-##' A \code{\link[stats]{formula}} class object that can be directly given to most of \R 
-##' statistical models.
-##' 
-##' 
-##' @details
-##' 
-##' It is advised to give only a subset of \code{explVar} table to avoid useless memory consuming. 
-##' \cr If some explanatory variables are factorial, \code{explVar} must be a \code{data.frame} 
-##' whose corresponding columns are defined as \code{factor}. \cr \cr
-##' 
-##' \code{...} can take the following values :
-##' 
+##' A \code{list} containing for each model a \code{list} containing the following elements :
 ##' \itemize{
-##'   \item{\code{k}}{ : an \code{integer} corresponding to the smoothing parameter value of 
-##'   \code{\link[mgcv]{s}} or \code{\link[gam]{s}} arguments (\emph{used only if 
-##'   \code{type = 's_smoother'}})}
+##'   \item{\code{ModelName} : }{the name of correctly computed model}
+##'   \item{\code{calib.failure} : }{the name of incorrectly computed model}
+##'   \item{\code{pred} : }{the prediction outputs for calibration data}
+##'   \item{\code{pred.eval} : }{the prediction outputs for validation data}
+##'   \item{\code{evaluation} : }{the evaluation outputs returned by the 
+##'   \code{\link{bm_FindOptimStat}} function}
+##'   \item{\code{var.import} : }{the mean of variables importance returned by the 
+##'   \code{\link{bm_VariablesImportance}} function}
 ##' }
 ##' 
 ##' 
-##' @seealso \code{\link[biomod2]{BIOMOD_ModelingOptions}}, 
-##' \code{\link[stats]{formula}}
+##' 
+##' @seealso \code{\link{BIOMOD_ModelingOptions}}, \code{\link{BIOMOD_Modeling}}, 
+##' \code{\link{bm_MakeFormula}}, \code{\link{bm_Rescaler}}, \code{\link{bm_FindOptimStat}}, 
+##' \code{\link{bm_VariablesImportance}}
 ##' 
 ##' 
-##' @keywords models, formula, options
+##' @keywords models, formula, options, CTA, GLM, GBM, GAM, RF, ANN, FDA, SRE, MARS, MAXENT
 ##' 
 ##' 
-##' @examples
-##' 
-##' ## Create simulated data
-##' myResp <- sample(c(0, 1), 20, replace = TRUE)
-##' myExpl <- matrix(runif(60), 
-##'                  ncol = 3,
-##'                  dimnames = list(NULL, c('var1', 'var2', 'var3')))
-##' 
-##' ## Create a formula
-##' myFormula <- bm_MakeFormula(respName = 'myResp',
-##'                             explVar = head(myExpl),
-##'                             type = 'quadratic',
-##'                             interaction.level = 0)
-##'   
-##' ## Show formula created
-##' myFormula
-##' 
+##' @importFrom rpart rpart
+##' @importFrom gam gam step.Gam s
+##' @importFrom mgcv gam bam
+##' @importFrom nnet nnet
+##' @importFrom dplyr mutate_at filter select_at
+##' @importFrom maxnet maxnet
 ##' 
 ##' @export
 ##' 
@@ -77,8 +76,7 @@ bm_ModelsLoop <- function(X,
                           Options,
                           VarImport,
                           mod.eval.method,
-                          SavePred,
-                          xy = NULL,
+                          SavePred = TRUE,
                           scal.models = TRUE)
 {
   cat("\n\n-=-=-=- Run : ", X$name, '\n')
@@ -144,11 +142,12 @@ bm_ModelsLoop <- function(X,
   }))
   
   ## 1. Create output object ----------------------------------------------------------------------
-  ListOut <- list(evaluation = NULL,
-                  var.import = NULL,
+  ListOut <- list(ModelName = NULL,
+                  calib.failure = NULL,
                   pred = NULL,
                   pred.eval = NULL,
-                  calib.failure = NULL)
+                  evaluation = NULL,
+                  var.import = NULL)
   
   ## 2. CREATE MODELS -----------------------------------------------------------------------------
   
@@ -510,8 +509,8 @@ bm_ModelsLoop <- function(X,
     if (Options@RF$do.classif) {
       # canceling occurences class modifications
       Data <- Data %>% mutate_at(resp_name, function(.x) {
-        .x %>% as.character() %>% as.numeric())
-      }
+        .x %>% as.character() %>% as.numeric()
+      })
     }
     
     if (!inherits(model.sp, "try-error")) {

@@ -23,9 +23,9 @@ An object of the same class than \code{data} and containing either binary (\code
 \code{1}) values, or filtered values.
 }
 \description{
-This function allows to convert probability (not necessary between \code{0} and 
-\code{1}) values into binary presence-absence (\code{0} or \code{1}) values according to a 
-predefined threshold (see \href{bm_BinaryTransformation.html#details}{Details}).
+This internal \pkg{biomod2} function allows to convert probability (not necessary between 
+\code{0} and \code{1}) values into binary presence-absence (\code{0} or \code{1}) values 
+according to a predefined threshold (see \href{bm_BinaryTransformation.html#details}{Details}).
 }
 \details{
 If \code{data} is a \code{vector} or \code{\link[raster:raster]{raster}}, \code{threshold} 

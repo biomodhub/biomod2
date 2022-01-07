@@ -39,8 +39,9 @@ A \code{vector} or a \code{\link[raster:raster]{raster}} object, containing bina
 or \code{1}) values.
 }
 \description{
-This function allows the user to run a rectilinear surface range envelop (SRE) 
-(equivalent to \href{https://caws.org.nz/PPQ567/PPQ\%2006-1\%20pp008-9\%20Busby.pdf}{BIOCLIM}) 
+This internal \pkg{biomod2} function allows the user to run a rectilinear surface range 
+envelop (SRE) (equivalent to 
+\href{https://caws.org.nz/PPQ567/PPQ\%2006-1\%20pp008-9\%20Busby.pdf}{BIOCLIM}) 
 using the extreme percentiles (as recommended by Nix or Busby, see 
 \href{bm_SRE.html#references}{References} and \href{bm_SRE.html#details}{Details}).
 }

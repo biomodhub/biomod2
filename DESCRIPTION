@@ -83,7 +83,7 @@ Collate:
     'BIOMOD_Projection.R'
     'BIOMOD_RangeSize.R'
     'BIOMOD_Tuning.R'
-    'Biomod.Models_RE.R'
+    'bm_ModelsLoop.R'
     'CVnnet.R'
     'biomod2-package.R'
     'Prepare.Maxent.WorkDir.R'
