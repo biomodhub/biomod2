@@ -158,11 +158,7 @@
 ##' plot(myBiomodRangeSize$Diff.By.Pixel)
 ##' 
 ##' 
-## @importFrom methods setClass setGeneric setMethod setRefClass
-## @importFrom raster RasterLayer RasterStack
-##' 
-##' 
-##' @importFrom raster stack names addLayer
+##' @importFrom raster stack addLayer
 ##' 
 ##' @export
 ##' 

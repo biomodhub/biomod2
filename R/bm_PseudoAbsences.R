@@ -52,7 +52,7 @@
 ##'
 ##' 
 ##' @importFrom raster extract coordinates subset reclassify mask cellFromXY xyFromCell distance
-##' @importFrom sp SpatialPointsDataFrame coordinates as.data.frame
+##' @importFrom sp SpatialPointsDataFrame coordinates
 ##' 
 ##' @export
 ##' 

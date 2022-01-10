@@ -138,7 +138,7 @@
 ##' pres.only.eval$eval
 ##' 
 ##' 
-##' @importFrom ecospat ecospat.boyce ecospat.mpa
+## @importFrom ecospat ecospat.boyce ecospat.mpa
 ##' @importFrom PresenceAbsence presence.absence.accuracy
 ##' 
 ##' @export
@@ -290,8 +290,8 @@ BIOMOD_PresenceOnly <- function(modeling.output = NULL,
       DATA <- DATA[complete.cases(DATA), ]
       
       ## Boyce index
-      boy <- ecospat.boyce(fit = Pred[ind.notNA], obs = Pred.obs, PEplot = F)
-      boyce.eval[ind.b, 3] <- boy$Spearman.cor
+      boy <- ecospat::ecospat.boyce(fit = Pred[ind.notNA], obs = Pred.obs, PEplot = FALSE)
+      boyce.eval[ind.b, 3] <- boy$cor
       if (sum(boy$F.ratio < 1, na.rm = T) > 0) {
         boyce.eval[ind.b, 5] <- round(boy$HS[max(which(boy$F.ratio < 1))], 0)
         if (!is.na(boyce.eval[ind.b, 5] / 1000)) {
@@ -306,7 +306,7 @@ BIOMOD_PresenceOnly <- function(modeling.output = NULL,
       }
       
       ## MPA index
-      mpa <- ecospat.mpa(Pred.obs, perc = perc)
+      mpa <- ecospat::ecospat.mpa(Pred.obs, perc = perc)
       mpa.eval[ind.m, 5] <- mpa
       EVAL <- presence.absence.accuracy(DATA, threshold = mpa / 1000)
       mpa.eval[ind.m, 6] <- EVAL$sensitivity
@@ -314,13 +314,13 @@ BIOMOD_PresenceOnly <- function(modeling.output = NULL,
     }
     
     ## Compute Boyce and MPA values for evaluation data -----------------------
-    if (modeling.output@has.evaluation.data == T) {
+    if (modeling.output@has.evaluation.data == TRUE) {
       myResp.eval <- get(load(modeling.output@formated.input.data@link))@eval.data.species
       Pred.eval <- myModelPred.eval[, Model.name]
       
-      boy <- ecospat.boyce(fit = Pred.eval, obs = Pred.eval[myResp.eval == 1 & ind.1], PEplot=F)
-      boyce.eval[ind.b, "Evaluating.data"] <- boy$Spearman.cor
-      mpa.eval[ind.m,"Evaluating.data"] <- ecospat.mpa(Pred.eval[myResp.eval == 1 & ind.1], perc = perc)
+      boy <- ecospat::ecospat.boyce(fit = Pred.eval, obs = Pred.eval[myResp.eval == 1 & ind.1], PEplot = FALSE)
+      boyce.eval[ind.b, "Evaluating.data"] <- boy$cor
+      mpa.eval[ind.m,"Evaluating.data"] <- ecospat::ecospat.mpa(Pred.eval[myResp.eval == 1 & ind.1], perc = perc)
     }
   }
   myModelEval[, 6:7] <- round(myModelEval[, 6:7], 1)
@@ -329,7 +329,7 @@ BIOMOD_PresenceOnly <- function(modeling.output = NULL,
   
   ## SAVE OUTPUTS ---------------------------------------------------------------------------------
   if (!is.null(EM.output)) {
-    if (modeling.output@has.evaluation.data == T) {
+    if (modeling.output@has.evaluation.data == TRUE) {
       output <- list(eval = rbind(myModelEval, boyce.eval,mpa.eval)
                      , myBiomodProjFF = myBiomodProjFF
                      , myBiomodProjEF.eval = myBiomodProjFF.eval) 

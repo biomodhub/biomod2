@@ -229,7 +229,7 @@
 ##' myBiomodModelOut
 ##' 
 ##' 
-##' @importFrom purr map
+##' @importFrom purrr map
 ##' @importFrom checkmate assert_choice
 ##' 
 ##' @export

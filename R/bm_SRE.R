@@ -115,7 +115,7 @@
 ##' plot(sre.090, main = "90 %")
 ##' 
 ##' 
-##' @importFrom raster stack subset nlayers names mask reclassify coordinates cellFromXY
+##' @importFrom raster stack subset nlayers mask reclassify coordinates cellFromXY
 ##' 
 ##' @export
 ##' 
