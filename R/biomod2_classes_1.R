@@ -352,15 +352,15 @@ BIOMOD.formated.data.PA <-  function(sp, env, xy, sp.name
     }
   }
   
-  pa.data.tmp <- .pseudo.absences.sampling(sp = sp,
-                                           env = env,
-                                           nb.repet = PA.NbRep,
-                                           strategy = PA.strategy,
-                                           nb.points = PA.nb.absences,
-                                           distMin = PA.dist.min,
-                                           distMax = PA.dist.max,
-                                           quant.SRE = PA.sre.quant,
-                                           PA.table = PA.table)
+  pa.data.tmp <- bm_PseudoAbsences(sp = sp,
+                                   env = env,
+                                   nb.repet = PA.NbRep,
+                                   strategy = PA.strategy,
+                                   nb.points = PA.nb.absences,
+                                   distMin = PA.dist.min,
+                                   distMax = PA.dist.max,
+                                   quant.SRE = PA.sre.quant,
+                                   PA.table = PA.table)
   
   if (!is.null(pa.data.tmp))
   {
