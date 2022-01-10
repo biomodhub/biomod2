@@ -16,14 +16,14 @@ BIOMOD.Model.Options objects are created, used and returned
 by BIOMOD functions. These objects will contains for each
 model support within \pkg{biomod2}, a set of options that
 users can change. Please refer to 
-\code{\link[biomod2]{BIOMOD_ModelingOptions}} for further
+\code{\link{BIOMOD_ModelingOptions}} for further
  details. 
   
-- output of: \code{\link[biomod2]{BIOMOD_ModelingOptions}}
-- input of:  \code{\link[biomod2]{BIOMOD_Modeling}}
+- output of: \code{\link{BIOMOD_ModelingOptions}}
+- input of:  \code{\link{BIOMOD_Modeling}}
 }
 \details{
-Please refer to \code{\link[biomod2]{BIOMOD_ModelingOptions}}
+Please refer to \code{\link{BIOMOD_ModelingOptions}}
 for each model arguments supported.
 }
 \section{Slots}{
@@ -59,7 +59,7 @@ showClass("BIOMOD.Model.Options")
 
 }
 \seealso{
-\code{\link[biomod2]{BIOMOD_ModelingOptions}}
+\code{\link{BIOMOD_ModelingOptions}}
 }
 \author{
 Damien Georges

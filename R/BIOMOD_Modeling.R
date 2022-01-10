@@ -1,6 +1,5 @@
 ###################################################################################################
 ##' @name BIOMOD_Modeling
-##' @aliases BIOMOD_Modeling
 ##' @author Wilfried Thuiller, Damien Georges, Robin Engler
 ##' 
 ##' @title Run a range of species distribution models
@@ -368,7 +367,7 @@ BIOMOD_Modeling <- function(data,
   assign(x = name.OUT, value = models.out)
   save(list = name.OUT, file = models.out@link)
   
-  .bmCat("Done")
+  .bm_cat("Done")
   return(models.out)
 }
 
@@ -526,12 +525,12 @@ BIOMOD_Modeling <- function(data,
 .Models.print.modeling.summary <- function(mod.prep.dat, models)
 {
   cat("\n\n")
-  .bmCat(paste(unlist(strsplit(mod.prep.dat[[1]]$name, '_'))[1], "Modeling Summary"))
+  .bm_cat(paste(unlist(strsplit(mod.prep.dat[[1]]$name, '_'))[1], "Modeling Summary"))
   cat("\n", ncol(mod.prep.dat[[1]]$dataBM) - 1, " environmental variables (", colnames(mod.prep.dat[[1]]$dataBM)[-1], ")")
   cat("\nNumber of evaluation repetitions :", ncol(mod.prep.dat[[1]]$calibLines))
   cat("\nModels selected :", models, "\n")
   cat("\nTotal number of model runs:", ncol(mod.prep.dat[[1]]$calibLines) * length(models) * length(mod.prep.dat), "\n")
-  .bmCat()
+  .bm_cat()
 }
 
 

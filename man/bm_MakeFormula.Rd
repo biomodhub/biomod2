@@ -61,7 +61,7 @@ myFormula
 
 }
 \seealso{
-\code{\link[biomod2]{BIOMOD_ModelingOptions}}, 
+\code{\link{BIOMOD_ModelingOptions}}, 
 \code{\link[stats]{formula}}
 }
 \author{

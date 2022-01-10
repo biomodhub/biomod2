@@ -1,6 +1,5 @@
 ###################################################################################################
 ##' @name BIOMOD_CrossValidation
-##' @aliases BIOMOD_CrossValidation
 ##' @author Frank Breiner
 ##' 
 ##' @title Custom models cross-validation procedure

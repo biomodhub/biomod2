@@ -39,7 +39,7 @@ bm_SampleBinaryVector(ref = a, ratio = 0.7)
 
 }
 \seealso{
-\code{\link[biomod2]{BIOMOD_FormatingData}}
+\code{\link{BIOMOD_FormatingData}}
 }
 \author{
 Damien Georges

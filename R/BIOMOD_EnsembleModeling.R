@@ -1,12 +1,11 @@
 ###################################################################################################
 ##' @name BIOMOD_EnsembleModeling
-##' @aliases BIOMOD_EnsembleModeling
 ##' @author Wilfried Thuiller, Damien Georges, Robin Engler
 ##' 
 ##' @title Create and evaluate an ensemble set of models and predictions
 ##' 
 ##' @description This function allows to combine a range of models built with the 
-##' \code{\link[biomod2]{BIOMOD_Modeling}} function in one (or several) ensemble model. Modeling 
+##' \code{\link{BIOMOD_Modeling}} function in one (or several) ensemble model. Modeling 
 ##' uncertainty can be assessed as well as variables importance, ensemble predictions can be 
 ##' evaluated against original data, and created ensemble models can be projected over new 
 ##' conditions (see \href{BIOMOD_EnsembleModeling.html#details}{Details}).
@@ -315,7 +314,7 @@ BIOMOD_EnsembleModeling <- function(modeling.output,
                                     prob.mean.weight = FALSE,
                                     prob.mean.weight.decay = 'proportional')
 {
-  .bmCat("Build Ensemble Models")
+  .bm_cat("Build Ensemble Models")
   
   ## 0. Check arguments ---------------------------------------------------------------------------
   args <- .BIOMOD_EnsembleModeling.check.args(modeling.output,
@@ -638,7 +637,7 @@ BIOMOD_EnsembleModeling <- function(modeling.output,
   assign(x = model.name, value = EM)
   save(list = model.name, file = file.path(EM@sp.name, model.name))
   
-  .bmCat("Done")
+  .bm_cat("Done")
   return(EM)
 }
 

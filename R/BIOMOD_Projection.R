@@ -1,12 +1,11 @@
 ###################################################################################################
 ##' @name BIOMOD_Projection
-##' @aliases BIOMOD_Projection
 ##' @author Wilfried Thuiller, Damien Georges
 ##' 
 ##' @title Project a range of calibrated species distribution models onto new environment
 ##' 
 ##' @description This function allows to project a range of models built with the 
-##' \code{\link[biomod2]{BIOMOD_Modeling}} function onto new environmental data (\emph{which can 
+##' \code{\link{BIOMOD_Modeling}} function onto new environmental data (\emph{which can 
 ##' represent new areas, resolution or time scales for example}).
 ##' 
 ##' 
@@ -216,7 +215,7 @@ BIOMOD_Projection <- function(modeling.output,
   if (is.null(do.stack)) { do.stack <- TRUE }
   if (is.null(keep.in.memory)) { keep.in.memory <- TRUE }
   if (is.null(on_0_1000)) { on_0_1000 <- TRUE } # by default we return projections on a 0 -  1000 scale.
-  if (!silent) { .bmCat("Do Models Projections") }
+  if (!silent) { .bm_cat("Do Models Projections") }
   
   # clamping.level <- args$clamping.levels # remove all cells where at least clamping.level variables are out of their calibrating range
   output.format <- args$output.format # raster output format
@@ -431,7 +430,7 @@ BIOMOD_Projection <- function(modeling.output,
   assign(nameOut, proj_out)
   save(list = nameOut, file = file.path(namePath, nameOut))
   
-  if (!silent) { .bmCat("Done") }
+  if (!silent) { .bm_cat("Done") }
   return(proj_out)
 }
 

@@ -143,7 +143,7 @@ pres.only.eval$eval
 }
 \seealso{
 \code{\link[ecospat]{ecospat.boyce}}, \code{\link[ecospat]{ecospat.mpa}}, 
-\code{\link[biomod2]{BIOMOD_Modeling}}, \code{\link[biomod2]{BIOMOD_EnsembleModeling}}
+\code{\link{BIOMOD_Modeling}}, \code{\link{BIOMOD_EnsembleModeling}}
 }
 \author{
 Frank Breiner, Maya Gueguen

@@ -1,6 +1,5 @@
 ###################################################################################################
 ##' @name BIOMOD_FormatingData
-##' @aliases BIOMOD_FormatingData
 ##' @author Damien Georges, Wilfried Thuiller
 ##' 
 ##' @title Format input data, and select pseudo-absences if wanted, for usage in \pkg{biomod2}
@@ -78,7 +77,7 @@
 ##' @return 
 ##' 
 ##' A \code{BIOMOD.formated.data} object that can be used to build species distribution model(s) 
-##' with the \code{\link[biomod2]{BIOMOD_Modeling}} function. \cr \code{print} and \code{plot} 
+##' with the \code{\link{BIOMOD_Modeling}} function. \cr \code{print} and \code{plot} 
 ##' functions are available to have a summary of the created object.
 ##' 
 ##' 
@@ -239,7 +238,7 @@ BIOMOD_FormatingData <- function(resp.var,
                                  PA.table = NULL,
                                  na.rm = TRUE)
 {
-  .bmCat(paste0(resp.name, " Data Formating"))
+  .bm_cat(paste0(resp.name, " Data Formating"))
 
   ## 1. check args ------------------------------------------------------------
   args <- .BIOMOD_FormatingData.check.args(resp.var,
@@ -302,7 +301,7 @@ BIOMOD_FormatingData <- function(resp.var,
                                    PA.table = PA.table,
                                    na.rm = na.rm)
   }
-  .bmCat("Done")
+  .bm_cat("Done")
   return(out)
 }
 

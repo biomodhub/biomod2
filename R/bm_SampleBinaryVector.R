@@ -1,6 +1,5 @@
 ###################################################################################################
 ##' @name bm_SampleBinaryVector
-##' @aliases bm_SampleBinaryVector
 ##' @author Damien Georges
 ##' 
 ##' @title Sample binary vector
@@ -27,7 +26,7 @@
 ##' }
 ##'   
 ##'   
-##' @seealso \code{\link[biomod2]{BIOMOD_FormatingData}}
+##' @seealso \code{\link{BIOMOD_FormatingData}}
 ##' 
 ##' 
 ##' @keywords models, formula, options

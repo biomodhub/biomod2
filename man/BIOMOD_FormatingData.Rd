@@ -98,7 +98,7 @@ explanatory variables should be removed from the analysis or not}
 }
 \value{
 A \code{BIOMOD.formated.data} object that can be used to build species distribution model(s) 
-with the \code{\link[biomod2]{BIOMOD_Modeling}} function. \cr \code{print} and \code{plot} 
+with the \code{\link{BIOMOD_Modeling}} function. \cr \code{print} and \code{plot} 
 functions are available to have a summary of the created object.
 }
 \description{

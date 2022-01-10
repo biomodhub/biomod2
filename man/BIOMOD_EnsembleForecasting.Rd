@@ -82,7 +82,7 @@ outputs. \cr Models projections are stored out of \R (for memory storage reasons
 }
 \description{
 This function allows to project ensemble models built with the 
-\code{\link[biomod2]{BIOMOD_EnsembleModeling}} function onto new environmental data 
+\code{\link{BIOMOD_EnsembleModeling}} function onto new environmental data 
 (\emph{which can represent new areas, resolution or time scales for example}).
 }
 \details{

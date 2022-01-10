@@ -1,9 +1,3 @@
-# =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=- #
-# BIOMOD models definition(to make it easier to access plot, predict, ...)
-# Damien Georges, Maya Gueguen
-# 20/11/2012, update 22/10/2021
-# =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=- #
-
 
 ##' 
 ##' @importFrom raster raster merge as.matrix
@@ -55,7 +49,7 @@ setMethod('get_scaling_model', signature('biomod2_model'), function(object) { re
 setMethod('show', signature('biomod2_model'),
           function(object)
           {
-            .bmCat("'biomod2_model'")
+            .bm_cat("'biomod2_model'")
             cat("\n\t model name :", object@model_name, fill = .Options$width)
             cat("\n\t model class :", object@model_class, fill = .Options$width)
             cat("\n\t This model", ifelse(length(object@scaling_model), "has", "doesn't have"), "its own scaler", fill = .Options$width)
@@ -73,7 +67,7 @@ setMethod('show', signature('biomod2_model'),
             cat("\n\t\t You can access 'formal' model with get_formal_model function")
             cat(ifelse(length(object@scaling_model), "\n\t\t You can access scaling model with get_scaling_model function\n", "\n"))
             
-            .bmCat()
+            .bm_cat()
           })
 
 

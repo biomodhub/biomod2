@@ -1,6 +1,5 @@
 ###################################################################################################
 ##' @name BIOMOD_RangeSize
-##' @aliases BIOMOD_RangeSize
 ##' @author Wilfried Thuiller, Damien Georges, Bruno Lafourcade
 ##' 
 ##' @title Analyze the range size differences between projections of species distribution models

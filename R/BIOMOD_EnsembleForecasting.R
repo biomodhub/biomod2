@@ -1,12 +1,11 @@
 ###################################################################################################
 ##' @name BIOMOD_EnsembleForecasting
-##' @aliases BIOMOD_EnsembleForecasting
 ##' @author Wilfried Thuiller, Damien Georges, Robin Engler
 ##' 
 ##' @title Project ensemble species distribution models onto new environment
 ##' 
 ##' @description This function allows to project ensemble models built with the 
-##' \code{\link[biomod2]{BIOMOD_EnsembleModeling}} function onto new environmental data 
+##' \code{\link{BIOMOD_EnsembleModeling}} function onto new environmental data 
 ##' (\emph{which can represent new areas, resolution or time scales for example}).
 ##' 
 ##' 
@@ -198,7 +197,7 @@ BIOMOD_EnsembleForecasting <- function(EM.output,
                                        compress = TRUE,
                                        ...)
 {
-  .bmCat("Do Ensemble Models Projections")
+  .bm_cat("Do Ensemble Models Projections")
   
   ## 0. Check arguments ---------------------------------------------------------------------------
   args <- list(...)
@@ -456,7 +455,7 @@ BIOMOD_EnsembleForecasting <- function(EM.output,
   assign(nameOut, proj_out)
   save(list = nameOut, file = file.path(namePath, nameOut))
   
-  .bmCat("Done")
+  .bm_cat("Done")
   return(proj_out)
 }
 

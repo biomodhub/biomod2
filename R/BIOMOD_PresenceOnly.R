@@ -1,6 +1,5 @@
 ###################################################################################################
 ##' @name BIOMOD_PresenceOnly
-##' @aliases BIOMOD_PresenceOnly
 ##' @author Frank Breiner, Maya Gueguen
 ##' 
 ##' @title Evaluate models with presence-only metrics
@@ -59,7 +58,7 @@
 ##' 
 ##' 
 ##' @seealso \code{\link[ecospat]{ecospat.boyce}}, \code{\link[ecospat]{ecospat.mpa}}, 
-##' \code{\link[biomod2]{BIOMOD_Modeling}}, \code{\link[biomod2]{BIOMOD_EnsembleModeling}}
+##' \code{\link{BIOMOD_Modeling}}, \code{\link{BIOMOD_EnsembleModeling}}
 ##' 
 ##' 
 ##' @examples

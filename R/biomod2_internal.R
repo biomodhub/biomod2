@@ -1,7 +1,7 @@
 
 ## BIOMOD SPECIFIC CAT ----------------------------------------------------------------------------
 
-.bmCat <- function(x = NULL, ...)
+.bm_cat <- function(x = NULL, ...)
 {
   if (is.null(x))
   {
@@ -41,7 +41,7 @@
   
   nbPres <- sum(resp[subset], na.rm = TRUE)
   # The number of true absences + pseudo absences to maintain true value of prevalence
-  nbAbsKept <- sum(subset, na.rm = T) - sum(resp[subset], na.rm = TRUE)
+  nbAbsKept <- sum(subset, na.rm = TRUE) - sum(resp[subset], na.rm = TRUE)
   Yweights <- rep(1, length(resp))
   
   if (nbAbsKept > nbPres) {
@@ -153,12 +153,12 @@
 ## PRINTS (BIOMOD_ModelingOptions) ----------------------------------------------------------------
 ## used in biomod2_classes_1.R file
 
-.print.formula <- function(formula = NULL)
+.print_formula <- function(formula = NULL)
 {
   ifelse(length(formula) < 1, 'NULL', paste(formula[2], formula[1], formula[3]))
 }
 
-.print.control <- function(ctrl)
+.print_control <- function(ctrl)
 {
   out <-  paste0(names(ctrl)[1], " = ", ctrl[[1]])
   if (length(ctrl) > 1)

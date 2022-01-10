@@ -79,7 +79,7 @@ outputs. \cr Models projections are stored out of \R (for memory storage reasons
 }
 \description{
 This function allows to project a range of models built with the 
-\code{\link[biomod2]{BIOMOD_Modeling}} function onto new environmental data (\emph{which can 
+\code{\link{BIOMOD_Modeling}} function onto new environmental data (\emph{which can 
 represent new areas, resolution or time scales for example}).
 }
 \details{

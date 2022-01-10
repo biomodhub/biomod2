@@ -109,7 +109,7 @@ folders created in the current working directory :
 }
 \description{
 This function allows to combine a range of models built with the 
-\code{\link[biomod2]{BIOMOD_Modeling}} function in one (or several) ensemble model. Modeling 
+\code{\link{BIOMOD_Modeling}} function in one (or several) ensemble model. Modeling 
 uncertainty can be assessed as well as variables importance, ensemble predictions can be 
 evaluated against original data, and created ensemble models can be projected over new 
 conditions (see \href{BIOMOD_EnsembleModeling.html#details}{Details}).

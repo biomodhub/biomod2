@@ -39,7 +39,7 @@ BIOMOD_ModelingOptions(GLM = NULL,
 }
 \value{
 A \code{BIOMOD.Model.Options} object that can be used to build species distribution model(s) 
-with the \code{\link[biomod2]{BIOMOD_Modeling}} function.
+with the \code{\link{BIOMOD_Modeling}} function.
 }
 \description{
 Parametrize and/or tune \pkg{biomod2}'s single models options.

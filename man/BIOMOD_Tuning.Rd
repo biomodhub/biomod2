@@ -245,7 +245,7 @@ myBiomodModelOut <- BIOMOD_Modeling(myBiomodData,
 }
 \seealso{
 \code{\link[caret]{train}}, \code{\link[ENMeval]{ENMevaluate}}, 
-\code{\link[biomod2]{BIOMOD_ModelingOptions}}
+\code{\link{BIOMOD_ModelingOptions}}
 }
 \author{
 Frank Breiner

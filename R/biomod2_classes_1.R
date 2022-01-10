@@ -1,19 +1,3 @@
-# =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=- #
-# BIOMOD objects definition
-# Damien Georges, Maya Gueguen
-# 09/02/2012, update 18/10/2021
-# =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=- #
-
-# requireNamespace("raster", quietly=TRUE)
-# requireNamespace(".0
-# # =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=- #
-# # This file defines the BIOMOD objects and all their methods
-# # =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=- #
-# 
-# # We choose here to create monospecific objects to make all procedures and parallelising easier
-# requireNamespacrasterVis", quietly=TRUE)
-
-# @include biomod2_classes_1.R
 
 ##' 
 ##' @importFrom raster stack nlayers addLayer is.factor subset
@@ -259,7 +243,7 @@ setMethod('plot', signature(x = 'BIOMOD.formated.data', y = "missing"),
 setMethod('show', signature('BIOMOD.formated.data'),
           function(object)
           {
-            .bmCat("'BIOMOD.formated.data'")
+            .bm_cat("'BIOMOD.formated.data'")
             cat("\nsp.name = ", object@sp.name, fill = .Options$width)
             cat(
               "\n\t",
@@ -293,7 +277,7 @@ setMethod('show', signature('BIOMOD.formated.data'),
               print(summary(object@eval.data.env.var))
             }
             
-            .bmCat()
+            .bm_cat()
           }
 )
 
@@ -579,7 +563,7 @@ setMethod('plot', signature(x = 'BIOMOD.formated.data.PA', y = "missing"),
 setMethod('show', signature('BIOMOD.formated.data.PA'),
           function(object)
           {
-            .bmCat("'BIOMOD.formated.data.PA'")
+            .bm_cat("'BIOMOD.formated.data.PA'")
             cat("\nsp.name = ", object@sp.name, fill = .Options$width)
             cat(
               "\n\t",
@@ -623,7 +607,7 @@ setMethod('show', signature('BIOMOD.formated.data.PA'),
               'absences in each (true abs + pseudo abs)',
               fill = .Options$width
             )
-            .bmCat()
+            .bm_cat()
           }
 )
 
@@ -646,16 +630,16 @@ setMethod('show', signature('BIOMOD.formated.data.PA'),
 ##' by BIOMOD functions. These objects will contains for each
 ##' model support within \pkg{biomod2}, a set of options that
 ##' users can change. Please refer to 
-##' \code{\link[biomod2]{BIOMOD_ModelingOptions}} for further
+##' \code{\link{BIOMOD_ModelingOptions}} for further
 ##'  details. 
 ##'   
-##' - output of: \code{\link[biomod2]{BIOMOD_ModelingOptions}}
-##' - input of:  \code{\link[biomod2]{BIOMOD_Modeling}}
+##' - output of: \code{\link{BIOMOD_ModelingOptions}}
+##' - input of:  \code{\link{BIOMOD_Modeling}}
 ##' 
 ##' @param object init list of options
 ##' 
 ##' @details  
-##' Please refer to \code{\link[biomod2]{BIOMOD_ModelingOptions}}
+##' Please refer to \code{\link{BIOMOD_ModelingOptions}}
 ##' for each model arguments supported.
 ##' 
 ##' @slot GLM "list", list of GLM supported options
@@ -673,7 +657,7 @@ setMethod('show', signature('BIOMOD.formated.data.PA'),
 ##'   supported options
 ##'   
 ##' @author Damien Georges
-##' @seealso \code{\link[biomod2]{BIOMOD_ModelingOptions}}
+##' @seealso \code{\link{BIOMOD_ModelingOptions}}
 ##' @keywords models
 ##' @keywords options
 ##' 
@@ -923,7 +907,7 @@ setClass("BIOMOD.Model.Options",
 setMethod('show', signature('BIOMOD.Model.Options'),
           function(object)
           {
-            .bmCat(" 'BIOMOD.Model.Options' ")
+            .bm_cat(" 'BIOMOD.Model.Options' ")
             cat("\n")
             
             ## GLM options
@@ -935,7 +919,7 @@ setMethod('show', signature('BIOMOD.Model.Options'),
             cat("\n            test = '", object@GLM$test, "',", sep = "")
             cat("\n            family = ", object@GLM$family$family, "(link = '", object@GLM$family$link, "'),", sep = "")
             cat("\n            mustart = ", object@GLM$mustart, ",", sep = "")
-            cat("\n            control = glm.control(", .print.control(object@GLM$control), ") ),", sep = "", fill = .Options$width)
+            cat("\n            control = glm.control(", .print_control(object@GLM$control), ") ),", sep = "", fill = .Options$width)
             
             ## GBM options
             cat("\n")
@@ -970,14 +954,14 @@ setMethod('show', signature('BIOMOD.Model.Options'),
               cat("\n            knots = ",  ifelse(length(object@GLM$knots) < 1, 'NULL', "'user.defined'"), ",", sep = "")
               cat("\n            paraPen = ",  ifelse(length(object@GLM$paraPen) < 1, 'NULL', "'user.defined'"), ",", sep = "")
             }
-            cat("\n            control = list(", .print.control(object@GAM$control), ") ),", sep = "", fill = .Options$width)
+            cat("\n            control = list(", .print_control(object@GAM$control), ") ),", sep = "", fill = .Options$width)
             
             ## CTA options
             cat("\n")
             cat("\nCTA = list( method = '", object@CTA$method, "',", sep = "")
             cat("\n            parms = '", object@CTA$parms, "',", sep = "")
             cat("\n            cost = ", ifelse(length(object@CTA$cost) < 1, 'NULL', object@CTA$cost), ",", sep = "")
-            cat("\n            control = list(", .print.control(object@CTA$control), ") ),", sep = "", fill = .Options$width)
+            cat("\n            control = list(", .print_control(object@CTA$control), ") ),", sep = "", fill = .Options$width)
             
             ## ANN options
             cat("\n")
@@ -995,7 +979,7 @@ setMethod('show', signature('BIOMOD.Model.Options'),
             cat("\n")
             cat("\nFDA = list( method = '", object@FDA$method, "',", sep = "")
             cat("\n            add_args = ", ifelse(length(object@FDA$add_args) < 1, 'NULL'
-                                                    , paste("list(", paste(.print.control(object@FDA$add_args), collapse = "")
+                                                    , paste("list(", paste(.print_control(object@FDA$add_args), collapse = "")
                                                             , ")", sep = "")), "),", sep = "")
             
             ## MARS options
@@ -1048,7 +1032,7 @@ setMethod('show', signature('BIOMOD.Model.Options'),
             
             ## MAXENT.Phillips.2 options
             cat("\n")
-            cat("\n MAXENT.Phillips.2 = list( myFormula = ", .print.formula(object@MAXENT.Phillips.2$myFormula), ",", sep = "")
+            cat("\n MAXENT.Phillips.2 = list( myFormula = ", .print_formula(object@MAXENT.Phillips.2$myFormula), ",", sep = "")
             cat("\n     regmult = ", object@MAXENT.Phillips.2$regmult, ",", sep = "")
             cat("\n     regfun = <function> )")
             cat("\n)")
@@ -1061,7 +1045,7 @@ setMethod('show', signature('BIOMOD.Model.Options'),
             # cat("\n                        set_heldout = ", object@MAXENT.Tsuruoka$set_heldout, ",", sep="")
             # cat("\n                        verbose = ", object@MAXENT.Tsuruoka$verbose, ")", sep="")
             
-            .bmCat()
+            .bm_cat()
           }
 )
 

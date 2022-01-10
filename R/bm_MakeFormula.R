@@ -40,7 +40,7 @@
 ##' }
 ##' 
 ##' 
-##' @seealso \code{\link[biomod2]{BIOMOD_ModelingOptions}}, 
+##' @seealso \code{\link{BIOMOD_ModelingOptions}}, 
 ##' \code{\link[stats]{formula}}
 ##' 
 ##' 

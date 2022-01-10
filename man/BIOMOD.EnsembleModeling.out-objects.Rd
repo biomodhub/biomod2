@@ -17,8 +17,8 @@ EnsembleModeling objects are created, used and returned by BIOMOD
 functions. It's contains information relative to an \pkg{biomod2}
 ensemble modeling procedure.
 
-- output of: \code{\link[biomod2]{BIOMOD_EnsembleModeling}}
-- input of: \code{\link[biomod2]{BIOMOD_EnsembleForecasting}}
+- output of: \code{\link{BIOMOD_EnsembleModeling}}
+- input of: \code{\link{BIOMOD_EnsembleForecasting}}
 }
 \section{Slots}{
 
@@ -56,10 +56,10 @@ showClass("BIOMOD.EnsembleModeling.out")
 
 }
 \seealso{
-\code{\link[biomod2]{BIOMOD_Projection}}, 
-\code{\link[biomod2]{BIOMOD_Modeling}}, 
-\code{\link[biomod2]{BIOMOD_EnsembleModeling}}, 
-\code{\link[biomod2]{BIOMOD_EnsembleForecasting}}
+\code{\link{BIOMOD_Projection}}, 
+\code{\link{BIOMOD_Modeling}}, 
+\code{\link{BIOMOD_EnsembleModeling}}, 
+\code{\link{BIOMOD_EnsembleForecasting}}
 }
 \author{
 Damien Georges

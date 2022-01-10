@@ -1,20 +1,3 @@
-# =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=- #
-# BIOMOD objects definition
-# Damien Georges, Maya Gueguen
-# 09/02/2012, update 18/10/2021
-# =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=- #
-
-# requireNamespace("raster", quietly=TRUE)
-# requireNamespace(".0
-# # =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=- #
-# # This file defines the BIOMOD objects and all their methods
-# # =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=- #
-# 
-# # We choose here to create monospecific objects to make all procedures and parallelising easier
-# requireNamespacrasterVis", quietly=TRUE)
-
-## @include biomod2_classes_3.R
-
 
 ##' 
 ##' @importFrom raster subset
@@ -95,13 +78,13 @@ setClass("BIOMOD.stored.models.out",
 setMethod('show', signature('BIOMOD.models.out'),
           function(object)
           {
-            .bmCat("BIOMOD.models.out")
+            .bm_cat("BIOMOD.models.out")
             cat("\nModeling id :", object@modeling.id, fill = .Options$width)
             cat("\nSpecies modeled :", object@sp.name, fill = .Options$width)
             cat("\nConsidered variables :", object@expl.var.names, fill = .Options$width)
             cat("\n\nComputed Models : ", object@models.computed, fill = .Options$width)
             cat("\n\nFailed Models : ", object@models.failed, fill = .Options$width)
-            .bmCat()
+            .bm_cat()
           }
 )
 
@@ -348,7 +331,7 @@ setMethod('plot', signature(x = 'BIOMOD.projection.out', y = "missing"),
 ##' @aliases show, BIOMOD.projection.out-method
 setMethod('show', signature('BIOMOD.projection.out'),
           function(object){
-            .bmCat("'BIOMOD.projection.out'")
+            .bm_cat("'BIOMOD.projection.out'")
             cat("\nProjection directory :", paste0(object@sp.name, "/", object@proj.names), fill = .Options$width)
             cat("\n")
             cat("\nsp.name :", object@sp.name, fill = .Options$width)
@@ -356,7 +339,7 @@ setMethod('show', signature('BIOMOD.projection.out'),
             cat("\n")
             cat("\nmodeling id :", object@modeling.object.id , "(", object@modeling.object@link , ")", fill = .Options$width)
             cat("\nmodels projected :", toString(object@models.projected), fill = .Options$width)
-            .bmCat()
+            .bm_cat()
           })
 
 ## ------------------------------------------------------------------------------------------------
@@ -451,8 +434,8 @@ setMethod("get_predictions", "BIOMOD.projection.out",
 ##' functions. It's contains information relative to an \pkg{biomod2}
 ##' ensemble modeling procedure.
 ##' 
-##' - output of: \code{\link[biomod2]{BIOMOD_EnsembleModeling}}
-##' - input of: \code{\link[biomod2]{BIOMOD_EnsembleForecasting}}
+##' - output of: \code{\link{BIOMOD_EnsembleModeling}}
+##' - input of: \code{\link{BIOMOD_EnsembleForecasting}}
 ##' 
 ##' @slot sp.name "character", species name
 ##' @slot expl.var.names "character", explanatory variables
@@ -472,10 +455,10 @@ setMethod("get_predictions", "BIOMOD.projection.out",
 ##' @slot link "character", the path to corresponding hard drive
 ##' saved object
 ##' 
-##' @seealso \code{\link[biomod2]{BIOMOD_Projection}}, 
-##' \code{\link[biomod2]{BIOMOD_Modeling}}, 
-##' \code{\link[biomod2]{BIOMOD_EnsembleModeling}}, 
-##' \code{\link[biomod2]{BIOMOD_EnsembleForecasting}}
+##' @seealso \code{\link{BIOMOD_Projection}}, 
+##' \code{\link{BIOMOD_Modeling}}, 
+##' \code{\link{BIOMOD_EnsembleModeling}}, 
+##' \code{\link{BIOMOD_EnsembleForecasting}}
 ##' 
 ##' @keywords models
 ##' @keywords ensemble
@@ -527,13 +510,13 @@ setClass("BIOMOD.EnsembleModeling.out",
 ##' @param object a BIOMOD.EnsembleModeling.out object
 setMethod('show', signature('BIOMOD.EnsembleModeling.out'),
           function(object){
-            .bmCat("'BIOMOD.EnsembleModeling.out'")
+            .bm_cat("'BIOMOD.EnsembleModeling.out'")
             cat("\nsp.name :", object@sp.name, fill=.Options$width)
             cat("\nexpl.var.names :", object@expl.var.names, fill=.Options$width)
             cat("\n")
             cat("\nmodels computed:", toString(object@em.computed), fill=.Options$width)
             
-            .bmCat()
+            .bm_cat()
           })
 
 ## ------------------------------------------------------------------------------------------------
