@@ -105,7 +105,7 @@ Collate:
     'level.plot.R'
     'models_scores_graph.R'
     'multiple.plot.r'
-    'pseudo.abs.R'
+    'bm_PseudoAbsences.R'
     'response.plot.R'
     'scope.R'
     'bm_SRE.R'

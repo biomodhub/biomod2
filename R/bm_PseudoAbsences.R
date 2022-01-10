@@ -1,3 +1,63 @@
+###################################################################################################
+##' @name bm_PseudoAbsences
+##' @author Wilfried Thuiller, Damien Georges
+##' 
+##' @title Select pseudo-absences
+##' 
+##' @description 
+##' 
+##' This internal \pkg{biomod2} function allows to select pseudo-absences according to 4 different 
+##' methods : \code{random}, \code{sre}, \code{disk} or \code{user.defined} (see 
+##' \href{bm_PseudoAbsences/html#details}{Details}).
+##' 
+##' @param sp
+##' @param env
+##' @param nb.repet
+##' @param strategy
+##' @param distMin
+##' @param distMax
+##' @param nb.points
+##' @param quant.SRE
+##' @param PA.table (\emph{optional, default} \code{NULL}) \cr
+##' 
+##' 
+##' 
+##' @return 
+##' 
+##' A \code{list} containing the following elements :
+##' \itemize{
+##'   \item{\code{xy} : }{the coordinates of the species observations}
+##'   \item{\code{sp} : }{the values of the species observations (\code{0}, \code{1} or \code{NA})}
+##'   \item{\code{env} : }{the explanatory variables}
+##'   \item{\code{pa.tab} : }{the corresponding table of selected pseudo-absences (indicated by 
+##'   \code{TRUE} or \code{FALSE})}
+##' }
+##' 
+##'
+##' @details
+##' 
+##' \bold{Concerning random selection :}
+##' 
+##' \bold{Concerning SRE selection :}
+##' 
+##' \bold{Concerning disk selection :}
+##' 
+##' \bold{Concerning user defined selection :}
+##' 
+##'
+##' @keywords pseudo-absence, random, SRE, disk
+##' 
+##' 
+##' @seealso \code{\link{BIOMOD_FormatingData}}
+##'
+##' 
+##' @importFrom raster extract coordinates subset reclassify mask cellFromXY xyFromCell distance
+##' @importFrom sp SpatialPointsDataFrame coordinates as.data.frame
+##' 
+##' @export
+##' 
+##' 
+###################################################################################################
 
 
 bm_PseudoAbsences <- function(sp, env, nb.repet = 1, strategy = 'random', distMin = 0, distMax = NULL
@@ -265,8 +325,8 @@ setMethod('random.pseudo.abs.selection', signature(env = "RasterStack"),
               cat("\n   > Pseudo absences are selected in explanatory variables")
               
               # create a mask containing all not already sampled points (presences and absences)
-              mask.env <- mask.out <- raster::subset(env, 1, drop = TRUE)
-              mask.env <- raster::reclassify(mask.env, c(-Inf, Inf, -1)) ## the area we want to sample
+              mask.env <- mask.out <- subset(env, 1, drop = TRUE)
+              mask.env <- reclassify(mask.env, c(-Inf, Inf, -1)) ## the area we want to sample
               mask.out[] <- NA
               
               # add presences and true absences in our mask
@@ -396,7 +456,7 @@ setMethod('sre.pseudo.abs.selection', signature(env = "RasterStack"),
             mask.in[mask.in[] > 0] <- NA ## remove points that are in SRE
             
             ## mask of already sampled points (presences/absences)
-            mask.out <- raster::subset(env, 1)
+            mask.out <- subset(env, 1)
             mask.out[] <- NA
             
             # 1. Check if NA are present in sp observations or not to determine which dataset to use
@@ -517,14 +577,14 @@ setMethod('disk.pseudo.abs.selection', signature(env = "RasterStack"),
               cat("\n   > Pseudo absences are selected in explanatory variables")
               
               # create a mask
-              dist.mask <- raster::subset(env, 1, drop = TRUE)
+              dist.mask <- subset(env, 1, drop = TRUE)
               dist.mask[] <- NA
               
               pres.xy <- coordinates(sp[which(sp@data[, 1] == 1), ])
               dist.mask[cellFromXY(dist.mask, pres.xy)] <- 1
               
-              dist.mask <- raster::distance(dist.mask)
-              dist.mask <- mask(dist.mask, raster::subset(env, 1, drop = TRUE))
+              dist.mask <- distance(dist.mask)
+              dist.mask <- mask(dist.mask, subset(env, 1, drop = TRUE))
 
               if (is.null(distMax)) { distMax <- Inf }
               mask.in <- reclassify(dist.mask, c(-Inf, distMin, NA, distMin, distMax, -1, distMax, Inf, NA))

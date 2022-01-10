@@ -43,6 +43,7 @@ reference:
       - "bm_MakeFormula"
       - "bm_SampleBinaryVector"
       - "bm_SampleFactorLevels"
+      - "bm_PseudoAbsences"
       - "bm_ModelsLoop"
       - "bm_CVnnet"
       - "bm_SRE"

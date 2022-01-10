@@ -70,6 +70,7 @@
 ##' 
 ###################################################################################################
 
+
 setGeneric("bm_BinaryTransformation",
            function(data, threshold, doFiltering = FALSE)
            {

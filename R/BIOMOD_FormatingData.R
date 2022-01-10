@@ -103,7 +103,7 @@
 ##'   \emph{Be sure to give explanatory and response values in the same row order !}
 ##' }
 ##' 
-##' \bold{Concerning pseudo-absence selection :}
+##' \bold{Concerning pseudo-absence selection (see \code{\link{bm_PseudoAbsences}}) :}
 ##' \itemize{
 ##'   \item{if both presence and absence data are available, and there is enough absences :
 ##'   set \code{PA.nb.rep = 0} and no pseudo-absence will be selected.
@@ -178,7 +178,7 @@
 ##' @keywords dataset, format, evaluation, pseudo-absence
 ##' 
 ##' 
-##' @seealso \code{\link{BIOMOD_Modeling}}
+##' @seealso \code{\link{bm_PseudoAbsences}}, \code{\link{BIOMOD_Modeling}}
 ##' 
 ##' 
 ##' @examples

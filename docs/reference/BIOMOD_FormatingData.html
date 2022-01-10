@@ -180,7 +180,7 @@ supports different kind of inputs (e.g. <code>matrix</code>, <code>SpatialPoints
 <li><p>if <code>data.frame</code> provided (for <code>expl.var</code> or <code>eval.expl.var</code>), 
   <span class="pkg">biomod2</span> will simply merge it (<code>cbind</code>) with <code>resp.var</code> without 
   considering XY coordinates. <br><em>Be sure to give explanatory and response values in the same row order !</em></p></li>
-</ul><p><b>Concerning pseudo-absence selection :</b></p><ul><li><p>if both presence and absence data are available, and there is enough absences :
+</ul><p><b>Concerning pseudo-absence selection (see <code><a href="bm_PseudoAbsences.html">bm_PseudoAbsences</a></code>) :</b></p><ul><li><p>if both presence and absence data are available, and there is enough absences :
   set <code>PA.nb.rep = 0</code> and no pseudo-absence will be selected.</p></li>
 <li><p>if no absence data (or not enough) is available, several pseudo-absence repetitions  
   are recommended (to estimate the effect of pseudo-absence selection), as well as high 
@@ -244,7 +244,7 @@ supports different kind of inputs (e.g. <code>matrix</code>, <code>SpatialPoints
 </dl></div>
     <div id="see-also">
     <h2>See also</h2>
-    <div class="dont-index"><p><code><a href="BIOMOD_Modeling.html">BIOMOD_Modeling</a></code></p></div>
+    <div class="dont-index"><p><code><a href="bm_PseudoAbsences.html">bm_PseudoAbsences</a></code>, <code><a href="BIOMOD_Modeling.html">BIOMOD_Modeling</a></code></p></div>
     </div>
     <div id="author">
     <h2>Author</h2>
@@ -257,7 +257,7 @@ supports different kind of inputs (e.g. <code>matrix</code>, <code>SpatialPoints
 <span class="co"># species occurrences</span>
 <span class="va">myFile</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"external/species/mammals_table.csv"</span>, package<span class="op">=</span><span class="st">"biomod2"</span><span class="op">)</span>
 <span class="va">DataSpecies</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/utils/read.table.html" class="external-link">read.csv</a></span><span class="op">(</span><span class="va">myFile</span>, row.names <span class="op">=</span> <span class="fl">1</span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/pkg/raster/man/headtail.html" class="external-link">head</a></span><span class="op">(</span><span class="va">DataSpecies</span><span class="op">)</span>
+<span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">DataSpecies</span><span class="op">)</span>
 
 <span class="co"># the name of studied species</span>
 <span class="va">myRespName</span> <span class="op">&lt;-</span> <span class="st">'GuloGulo'</span>
@@ -284,7 +284,7 @@ supports different kind of inputs (e.g. <code>matrix</code>, <code>SpatialPoints
                                      resp.name <span class="op">=</span> <span class="va">myRespName</span><span class="op">)</span>
 
 <span class="va">myBiomodData</span>
-<span class="fu"><a href="https://rdrr.io/pkg/raster/man/plot.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">myBiomodData</span><span class="op">)</span>
+<span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">myBiomodData</span><span class="op">)</span>
 
 
 </code></pre></div>

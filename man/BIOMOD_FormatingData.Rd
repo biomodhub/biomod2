@@ -127,7 +127,7 @@ supports different kind of inputs (e.g. \code{matrix}, \code{SpatialPoints},
   \emph{Be sure to give explanatory and response values in the same row order !}
 }
 
-\bold{Concerning pseudo-absence selection :}
+\bold{Concerning pseudo-absence selection (see \code{\link{bm_PseudoAbsences}}) :}
 \itemize{
   \item{if both presence and absence data are available, and there is enough absences :
   set \code{PA.nb.rep = 0} and no pseudo-absence will be selected.
@@ -235,7 +235,7 @@ plot(myBiomodData)
 
 }
 \seealso{
-\code{\link{BIOMOD_Modeling}}
+\code{\link{bm_PseudoAbsences}}, \code{\link{BIOMOD_Modeling}}
 }
 \author{
 Damien Georges, Wilfried Thuiller
