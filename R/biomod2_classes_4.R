@@ -680,7 +680,7 @@ setMethod('predict', signature(object = 'SRE_biomod2_model'),
 
 .predict.SRE_biomod2_model.RasterStack <- function(object, newdata, ...)
 {
-  return(.template_predict.RasterStack(seedval = NULL, predcommand = ".sre.projection(NewData = newdata, ExtremCond = object@extremal_conditions)", object, newdata, ...))
+  return(.template_predict.RasterStack(seedval = NULL, predcommand = ".sre_projection(NewData = newdata, ExtremCond = object@extremal_conditions)", object, newdata, ...))
 }
 
 .predict.SRE_biomod2_model.data.frame <- function(object, newdata, ...)
@@ -688,7 +688,7 @@ setMethod('predict', signature(object = 'SRE_biomod2_model'),
   args <- list(...)
   on_0_1000 <- args$on_0_1000
   if (is.null(on_0_1000)) { on_0_1000 <- FALSE }
-  proj <- .sre.projection(NewData = newdata, ExtremCond = object@extremal_conditions)
+  proj <- .sre_projection(NewData = newdata, ExtremCond = object@extremal_conditions)
   if (on_0_1000) { proj <- round(proj * 1000) }
   return(proj)
 }

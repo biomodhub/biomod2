@@ -188,21 +188,21 @@ BIOMOD_LoadModels <- function(bm.out, ... )
   
   ## 2.1 Check add.args : models ----------------------------------------------
   if (!is.null(add.args$models)) {
-    infos = .extractModelNamesInfo(model.names = avail_models, info = 'models')
+    infos = .extract_modelNamesInfo(model.names = avail_models, info = 'models')
     .fun_testIfIn(TRUE, "add.args$models", add.args$models, infos)
     add.args$models = paste0("_", add.args$models)
   }
   
   ## 2.2 Check add.args : run.eval --------------------------------------------
   if (!is.null(add.args$run.eval)) {
-    infos = .extractModelNamesInfo(model.names = avail_models, info = 'run.eval')
+    infos = .extract_modelNamesInfo(model.names = avail_models, info = 'run.eval')
     .fun_testIfIn(TRUE, "add.args$run.eval", add.args$run.eval, infos)
     add.args$run.eval = paste0("_", add.args$run.eval)
   }
   
   ## 2.3 Check add.args : data.set --------------------------------------------
   if (!is.null(add.args$data.set)) {
-    infos = .extractModelNamesInfo(model.names = avail_models, info = 'data.set')
+    infos = .extract_modelNamesInfo(model.names = avail_models, info = 'data.set')
     .fun_testIfIn(TRUE, "add.args$data.set", add.args$data.set, infos)
     add.args$data.set = paste0("_", add.args$data.set, "_")
   }
@@ -222,22 +222,3 @@ BIOMOD_LoadModels <- function(bm.out, ... )
   return(list(add.args = add.args))
 }
 
-
-###################################################################################################
-
-.extractModelNamesInfo <- function(model.names, info = 'species')
-{
-  if (!is.character(model.names)) { stop("model.names must be a character vector") }
-  if (!is.character(info) | length(info) != 1 | !(info %in% c('species', 'data.set', 'models', 'run.eval'))) {
-    stop("info must be 'species', 'data.set', 'models' or 'run.eval'")
-  }
-  
-  info.tmp <- as.data.frame(strsplit(model.names, "_"))
-  
-  return(switch(info,
-                species = paste(unique(unlist(info.tmp[-c(nrow(info.tmp), nrow(info.tmp) - 1,  nrow(info.tmp) - 2), ])), collapse = "_"), 
-                data.set = paste(unique(unlist(info.tmp[(nrow(info.tmp) - 2), ]))), 
-                run.eval = paste(unique(unlist(info.tmp[(nrow(info.tmp) - 1), ]))), 
-                models = paste(unique(unlist(info.tmp[(nrow(info.tmp)), ])))
-  ))
-}

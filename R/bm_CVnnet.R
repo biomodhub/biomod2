@@ -73,7 +73,7 @@ bm_CVnnet = function(Input,
                                   W.tmp,
                                   FUN = function(x, Samp, Target, Input, W.tmp) {
                                     nn = nnet(eval(parse(text = paste("Target[Samp$calibration]",
-                                                                      paste(.scopeExpSyst(Input[1:10, , drop = FALSE], "GBM"), collapse = "")))),
+                                                                      paste(.scope_expSyst(Input[1:10, , drop = FALSE], "GBM"), collapse = "")))),
                                               data = Input[Samp$calibration, , drop = FALSE],
                                               weights = W.tmp[Samp$calibration],
                                               size = x[1],

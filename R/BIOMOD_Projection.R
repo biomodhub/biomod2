@@ -337,18 +337,18 @@ BIOMOD_Projection <- function(modeling.output,
     if (inherits(new.env, "Raster")) {
       thresholds <- matrix(0, nrow = length(eval.meth), ncol = length(chosen.models), dimnames = list(eval.meth, chosen.models))
       for (mod in chosen.models) {
-        PA.run <- .extractModelNamesInfo(model.names = mod, info = 'data.set')
-        eval.run <- .extractModelNamesInfo(model.names = mod, info = 'run.eval')
-        algo.run <- .extractModelNamesInfo(model.names = mod, info = 'models')
+        PA.run <- .extract_modelNamesInfo(model.names = mod, info = 'data.set')
+        eval.run <- .extract_modelNamesInfo(model.names = mod, info = 'run.eval')
+        algo.run <- .extract_modelNamesInfo(model.names = mod, info = 'models')
         thresholds[eval.meth, mod] <- get_evaluations(modeling.output)[eval.meth, "Cutoff", algo.run, eval.run, PA.run]
         if (!on_0_1000) { thresholds[eval.meth, mod]  <- thresholds[eval.meth, mod] / 1000 }
       }
     } else {
       thresholds <- array(0, dim = c(length(eval.meth), dim(proj)[-1]), dimnames = c(list(eval.meth), dimnames(proj)[-1]))
       for (mod in chosen.models) {
-        PA.run <- .extractModelNamesInfo(model.names = mod, info = 'data.set')
-        eval.run <- .extractModelNamesInfo(model.names = mod, info = 'run.eval')
-        algo.run <- .extractModelNamesInfo(model.names = mod, info = 'models')
+        PA.run <- .extract_modelNamesInfo(model.names = mod, info = 'data.set')
+        eval.run <- .extract_modelNamesInfo(model.names = mod, info = 'run.eval')
+        algo.run <- .extract_modelNamesInfo(model.names = mod, info = 'models')
         thresholds[eval.meth, algo.run, eval.run, PA.run] <- get_evaluations(modeling.output)[eval.meth, "Cutoff", algo.run, eval.run, PA.run]
         if (!on_0_1000) {
           thresholds[eval.meth, algo.run, eval.run, PA.run]  <- thresholds[eval.meth, algo.run, eval.run, PA.run] / 1000

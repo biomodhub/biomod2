@@ -382,9 +382,9 @@ setMethod("get_predictions", "BIOMOD.projection.out",
               if (inherits(proj, 'Raster')) {
                 proj <- subset(proj, models_selected, drop = FALSE)
               } else if (length(dim(proj)) == 4) { ## 4D arrays
-                proj <- proj[, .extractModelNamesInfo(model.names = models_selected, info = 'models'),
-                             .extractModelNamesInfo(model.names = models_selected, info = 'run.eval'),
-                             .extractModelNamesInfo(model.names = models_selected, info = 'data.set'), drop = FALSE]
+                proj <- proj[, .extract_modelNamesInfo(model.names = models_selected, info = 'models'),
+                             .extract_modelNamesInfo(model.names = models_selected, info = 'run.eval'),
+                             .extract_modelNamesInfo(model.names = models_selected, info = 'data.set'), drop = FALSE]
               } else { ## matrix (e.g. from ensemble models projections)
                 proj <- proj[, models_selected, drop = FALSE]
               }

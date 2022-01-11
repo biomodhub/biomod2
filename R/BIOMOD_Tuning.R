@@ -632,7 +632,7 @@ BIOMOD_Tuning <- function(data,
     cat(paste("\n-=-=-=-=-=-=-=-=-=-=\n", "Start tuning MAXENT.Phillips\n"))
     if (cvmethod.ME != 'randomkfold') { kfolds.ME <- NA }
     
-    try(tune.MAXENT.Phillips <- .tuning_maxent(pres = data@data.env.var[data@data.species == 1 & !is.na(data@data.species), ],
+    try(tune.MAXENT.Phillips <- .maxent_tuning(pres = data@data.env.var[data@data.species == 1 & !is.na(data@data.species), ],
                                                bg = data@data.env.var[data@data.species == 0 | is.na(data@data.species), ],
                                                method = cvmethod.ME, 
                                                kfolds = kfolds.ME, #env.ME,
@@ -690,7 +690,7 @@ BIOMOD_Tuning <- function(data,
 ###################################################################################################
 #### Modified tuning function from the ENMeval package to tune MAXENT.Phillips (internal function for BIOMOD_tuning)
 
-.tuning_maxent <- function(pres,
+.maxent_tuning <- function(pres,
                            bg,
                            method,
                            kfolds,

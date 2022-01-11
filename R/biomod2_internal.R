@@ -352,36 +352,6 @@ check_data_range <- function(model, new_data)
 }
 
 
-## TRANSFORME DF OR LIST TO ARRAY (BIOMOD_Projection) ---------------------------------------------
-## used in BIOMOD_Projection, Projection files
-
-# DF_to_ARRAY <- function(df)
-# {
-#   if (!is.data.frame(df) & !is.matrix(df)) {
-#     if (is.list(df)) {
-#       df.names <- names(df)
-#       df <- as.data.frame(df)
-#       names(df) <- df.names
-#     } else {
-#       stop("You have to give a data.frame")
-#     }
-#   }
-#   
-#   a <- sapply(strsplit(colnames(df), '_'), tail, n = 3)
-#   b <- lapply(1:3, function(id) return(unique(a[id, ])))
-#   array.dim.names <- c(list(character(0)), rev(b))
-#   array.dim <- c(nrow(df), sapply(array.dim.names[-1], length))
-#   array.out <- array(data = NA, dim = array.dim, dimnames = array.dim.names)
-#   
-#   for (x in colnames(df)) {
-#     dimTmp <- rev(tail(unlist(strsplit(x, '_')), n = 3))
-#     array.out[, dimTmp[1], dimTmp[2], dimTmp[3]] <- df[, x]
-#   }
-#   return(array.out)
-# }
-
-
-
 ## PREPARE and DELETE workdir for MAXENT ----------------------------------------------------------
 ## used in biomod2_classes_4, bm_RunModelsLoop files
 .maxent.prepare.workdir <- function(Data, xy, calibLines = NULL, RunName = NULL,
@@ -487,108 +457,6 @@ check_data_range <- function(model, new_data)
 }
 
 
-# setGeneric(".Prepare.Maxent.Proj.WorkDir",
-#            def = function(Data, ...) {
-#              standardGeneric(".Prepare.Maxent.Proj.WorkDir")
-#            })
-# 
-# setMethod('.Prepare.Maxent.Proj.WorkDir', signature(Data='data.frame'),
-#           def = function(Data, xy, species.name =".", proj.name=".", silent=FALSE)
-#           {
-#             if (!silent) { cat('\n\t\tCreating Maxent Temp Proj Data...') }
-#             
-#             ## initialise output
-#             MWD <- list()
-#             class(MWD) <- "maxent_workdir_info"
-#             
-#             ## define all paths to files needed by MAXENT.Phillips
-#             m_workdir <- file.path(species.name, proj.name, paste0('m_', sub(".", "", as.character(format(Sys.time(), "%OS6")), fixed = TRUE)))
-#             while (file.exists(m_workdir)) { # check wordir unicity
-#               m_workdir <- file.path(species.name, proj.name, paste0('m_', sub(".", "", as.character(format(Sys.time(), "%OS6")), fixed = TRUE)))
-#             }
-#             dir.create(m_workdir, recursive = TRUE, showWarnings = FALSE)
-#             MWD$m_workdir <- m_workdir
-#             
-#             # Proj Data
-#             if (is.null(xy)) { xy <- matrix(1, nrow = nrow(Data), ncol = 2, dimnames = list(NULL, c("X", "Y"))) }
-#             Proj_swd <- cbind(rep("proj", nrow(xy)), xy, Data)
-#             colnames(Proj_swd)  <- c("proj", "X", "Y", colnames(Data))
-#             
-#             m_predictFile <- file.path(m_workdir, "Pred_swd.csv")
-#             write.table(Proj_swd, file = m_predictFile, quote = FALSE,  row.names = FALSE, col.names = TRUE, sep = ",")
-#             MWD$m_predictFile <- m_predictFile
-#             
-#             return(MWD)
-#           })
-# 
-# setMethod('.Prepare.Maxent.Proj.WorkDir', signature(Data = 'RasterStack'), 
-#           def = function(Data, species.name = ".", proj.name = ".", silent = FALSE, split.proj = 1)
-#           {
-#             if (!silent) { cat('\n\t\tCreating Maxent Temp Proj Data...') }
-#             
-#             ## initialise output
-#             MWD <- list()
-#             class(MWD) <- "maxent_workdir_info"
-#             
-#             ## define all paths to files needed by MAXENT.Phillips
-#             m_workdir <- file.path(species.name, proj.name, paste0('m_', sub(".", "", as.character(format(Sys.time(), "%OS6")), fixed = TRUE)))
-#             while (file.exists(m_workdir)) { # check wordir unicity
-#               m_workdir <- file.path(species.name, proj.name, paste0('m_', sub(".", "", as.character(format(Sys.time(), "%OS6")), fixed = TRUE)))
-#             }
-#             
-#             ## create the list of extent our raster will be crop at
-#             pred.nrow <- nrow(Data)
-#             pred.ncol <- ncol(Data)
-#             seq.col <- round(seq(1, pred.ncol, length.out = split.proj + 1))
-#             ext.list <- lapply(1:split.proj, function(i) { extent(Data, 1, pred.nrow, seq.col[i], seq.col[i + 1]) })
-#             
-#             # Proj Data
-#             m_predictFile <- NULL
-#             for (spl in 1:split.proj) {
-#               
-#               ## create tmp directory
-#               m_workdirTmp <- file.path(m_workdir, paste0("part", spl))
-#               dir.create(m_workdirTmp, showWarnings = FALSE, recursive = TRUE)
-#               MWD$m_workdir[[paste0("part", spl)]] <- m_workdirTmp
-#               
-#               for (l in names(Data)) {
-#                 m_predictFileTmp <- file.path(m_workdirTmp, paste0(l, '.asc'))
-#                 
-#                 if (!file.exists(m_predictFileTmp)) {
-#                   ras = raster::subset(Data, l, drop = TRUE)
-#                   
-#                   if (!silent) { cat("\n\t\t\t > ", l, "\t:\t") }
-#                   if (split.proj == 1) { ## no croping in this case => just write the raster as an ascii file
-#                     if (grepl(".asc", filename(ras))) {
-#                       if (!silent) { cat("copying ascii file") }
-#                       file.copy(filename(ras), m_predictFileTmp)
-#                     } else {
-#                       if (!silent) { cat("creating ascii file") }
-#                       writeRaster(ras, filename = m_predictFileTmp, format = 'ascii', overwrite = TRUE)
-#                     }
-#                   } else { ## crop the raster within parts
-#                     crop(ras, ext.list[[spl]], filename = m_predictFileTmp, format='ascii', overwrite = TRUE)
-#                   }
-#                 } else if (!silent) { cat("\n", m_predictFileTmp, 'already created !') }
-#                 m_predictFile <- c(m_predictFile, m_predictFileTmp)
-#               }
-#               MWD$m_predictFile[[paste0("part", spl)]] <- m_predictFile
-#             }
-#             return(MWD)
-#           })
-# 
-# setMethod('.Prepare.Maxent.Proj.WorkDir',
-#           signature(Data = 'RasterLayer'),
-#           def = function(Data,
-#                          species.name = ".",
-#                          proj.name = ".",
-#                          silent = FALSE) {
-#             .Prepare.Maxent.Proj.WorkDir(Data = stack(Data),
-#                                          species.name = species.name,
-#                                          proj.name = proj.name ,
-#                                          silent = silent)
-#           })
-
 ## CREATE MODEL FORMULA ---------------------------------------------------------------------------
 ## used in bm_CVnnet, bm_RunModelsLoop files
 
@@ -621,42 +489,8 @@ check_data_range <- function(model, new_data)
   return(step.list)
 }
 
-# .scope2 <- function(enviroTrain, formula, Smoother, degree)
-# {
-#   # 0. args checking
-#   if (is.character(formula)) { formula <- as.formula(formula) }
-#   if (!inherits(formula, "formula")) { stop("formula must be a formula object") }
-#   if (is.matrix(enviroTrain)) { enviroTrain <- as.data.frame(enviroTrain) }
-#   
-#   # 1. detect factorial variables
-#   factVar <- as.list(names(enviroTrain))
-#   factVar <- lapply(factVar, is.factor)
-#   names(factVar) <- names(enviroTrain)
-#   
-#   # 2. create the output squeletom
-#   step.list <- as.list(attr(terms(formula), "term.labels"))
-#   
-#   # 3. filling the output obj
-#   step.list <- lapply(step.list, function(x)
-#   {
-#     junk <- paste0("~1 + ", x)
-#     if (length(factVar[[x]])) { # x is a simple variable
-#       if (!factVar[[x]]) { # x is not a factor
-#         junk <- paste0(junk, " + ", Smoother, "(", x, ",", degree, ")")
-#       }
-#     } else {
-#       junk <- paste0(junk, " + ", Smoother, "(", x, ",", degree, ")")
-#     }
-#     return(formula(junk))
-#   })
-#   names(step.list) <- attr(terms(formula), "term.labels")
-#   
-#   return(step.list)
-# }
 
-###################################################################################################
-
-.scopeExpSyst <- function(enviroTrain, mod)
+.scope_expSyst <- function(enviroTrain, mod)
 {
   i <- 1
   junk2 <- c()
@@ -685,5 +519,26 @@ check_data_range <- function(model, new_data)
   
   junk2 <- eval(parse(text = paste("~", paste(junk2, collapse = "+"))))
   return(junk2)
+}
+
+
+## EXTRACT model names according to specific infos ------------------------------------------------
+## used in bm_CVnnet, bm_RunModelsLoop files
+
+.extract_modelNamesInfo <- function(model.names, info = 'species')
+{
+  if (!is.character(model.names)) { stop("model.names must be a character vector") }
+  if (!is.character(info) | length(info) != 1 | !(info %in% c('species', 'data.set', 'models', 'run.eval'))) {
+    stop("info must be 'species', 'data.set', 'models' or 'run.eval'")
+  }
+  
+  info.tmp <- as.data.frame(strsplit(model.names, "_"))
+  
+  return(switch(info,
+                species = paste(unique(unlist(info.tmp[-c(nrow(info.tmp), nrow(info.tmp) - 1,  nrow(info.tmp) - 2), ])), collapse = "_"), 
+                data.set = paste(unique(unlist(info.tmp[(nrow(info.tmp) - 2), ]))), 
+                run.eval = paste(unique(unlist(info.tmp[(nrow(info.tmp) - 1), ]))), 
+                models = paste(unique(unlist(info.tmp[(nrow(info.tmp)), ])))
+  ))
 }
 

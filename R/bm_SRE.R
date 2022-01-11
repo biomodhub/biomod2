@@ -148,7 +148,7 @@ bm_SRE <- function(Response = NULL,
       extrem.cond <- t(apply(as.data.frame(Explanatory[occ.pts, ]), 2, quantile
                              , probs = c(0 + Quant, 1 - Quant), na.rm = TRUE))
       if (!return_extremcond) {
-        lout[[j]] <- .sre.projection(NewData, extrem.cond)
+        lout[[j]] <- .sre_projection(NewData, extrem.cond)
       }
     }
   } else if (inherits(Response, 'Raster')) ## raster ------------------------------------
@@ -163,7 +163,7 @@ bm_SRE <- function(Response = NULL,
                               probs = c(0 + Quant, 1 - Quant),
                               na.rm = TRUE)
       if (!return_extremcond) {
-        lout[[j]] <- .sre.projection(NewData, extrem.cond)
+        lout[[j]] <- .sre_projection(NewData, extrem.cond)
       }
     }
   } else if (inherits(Response, 'SpatialPoints')) ## SpatialPoints ----------------------
@@ -194,7 +194,7 @@ bm_SRE <- function(Response = NULL,
         }
       }
       if (!return_extremcond) {
-        lout[[j]] <- .sre.projection(NewData, extrem.cond)
+        lout[[j]] <- .sre_projection(NewData, extrem.cond)
       }
     }
   }
@@ -310,7 +310,7 @@ bm_SRE <- function(Response = NULL,
 
 ###################################################################################################
 
-.sre.projection <- function(NewData, ExtremCond)
+.sre_projection <- function(NewData, ExtremCond)
 {
   if (is.data.frame(NewData) || is.matrix(NewData)) {
     out <- rep(1, nrow(NewData))
