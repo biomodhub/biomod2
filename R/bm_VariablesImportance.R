@@ -122,3 +122,34 @@ bm_VariablesImportance <- function(model,
   return(args)
 }
 
+
+###################################################################################################
+
+.randomise_data <- function(data, variable, method)
+{
+  if (method == 'full_rand') {
+    return(.full_shuffling(data, variable))
+  }
+}
+
+.full_shuffling <- function(x, id = NULL)
+{
+  if (!(is.vector(x) | is.matrix(x) | is.data.frame(x))) {
+    stop("x must be a 1 or 2 dimension odject")
+  }
+  
+  ## Set a new random seed to ensure that sampling is random
+  ## (issue when CTA is involved and seed needs to be set to a fix number)
+  set.seed(as.double(Sys.time()) + as.numeric(format(Sys.time(), "%OS6")) * 1000000)
+  
+  out <- NULL
+  if (is.null(id)) {
+    out <- x[sample.int(length(x))]
+  } else {
+    out <- x
+    for (idd in id) { out[, idd] <- out[sample.int(nrow(x)), idd]  }
+  }
+  
+  return(out)
+}
+

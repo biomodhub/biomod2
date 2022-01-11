@@ -21,75 +21,6 @@
 }
 
 
-## CLEVER CUT (plot BIOMOD_FormatingData) ---------------------------------------------------------
-## used in biomod2_classes_1.R file
-
-.clever_cut <- function(x)
-{
-  nb_col = ceiling(sqrt(x))
-  nb_row = ceiling(x / nb_col)
-  return(c(nb_row, nb_col))
-}
-
-
-## AUTOMATIC WEIGHTS (BIOMOD_FormatingData) -------------------------------------------------------
-## used in biomod2_classes_1.R file
-
-.automatic_weights_creation <- function(resp, prev = 0.5, subset = NULL)
-{
-  if (is.null(subset)) { subset <- rep(TRUE, length(resp)) }
-  
-  nbPres <- sum(resp[subset], na.rm = TRUE)
-  # The number of true absences + pseudo absences to maintain true value of prevalence
-  nbAbsKept <- sum(subset, na.rm = TRUE) - sum(resp[subset], na.rm = TRUE)
-  Yweights <- rep(1, length(resp))
-  
-  if (nbAbsKept > nbPres) {
-    # code absences as 1
-    Yweights[which(resp > 0)] <- (prev * nbAbsKept) / (nbPres * (1 - prev))
-  } else {
-    # code presences as 1
-    Yweights[which(resp == 0 | is.na(resp))] <- (nbPres * (1 - prev)) / (prev * nbAbsKept)
-  }
-  Yweights = round(Yweights[])
-  Yweights[!subset] <- 0
-  
-  return(Yweights)
-}
-
-## CREATE DATASPLITTABLE (BIOMOD_FormatingData) ---------------------------------------------------
-## used in biomod2_classes_1.R file
-
-.sample_mat <- function(data.sp, dataSplit, nbRun = 1, data.env = NULL)
-{
-  # data.sp is a 0, 1 vector
-  # return a matrix with nbRun columns of boolean (T: calib, F= eval)
-  
-  pres <- which(data.sp == 1)
-  abs <- (1:length(data.sp))[-pres]
-  
-  nbPresEval <- round(length(pres) * dataSplit / 100)
-  nbAbsEval <- round(length(abs) * dataSplit / 100)
-  
-  mat.out <- matrix(FALSE, nrow = length(data.sp), ncol = nbRun)
-  colnames(mat.out) <- paste0('_RUN', 1:nbRun)
-  
-  for (i in 1:ncol(mat.out)) {
-    ## force to sample at least one level of each factorial variable for calibration
-    fact.cell.samp <- NULL
-    if (!is.null(data.env)) {
-      fact.cell.samp <- bm_SampleFactorLevels(data.env)
-      mat.out[fact.cell.samp, i] <- TRUE
-    }
-    mat.out[sample(setdiff(pres, fact.cell.samp),
-                   max(nbPresEval - length(fact.cell.samp), 0)), i] <- TRUE
-    mat.out[sample(setdiff(abs, fact.cell.samp),
-                   max(nbAbsEval - length(fact.cell.samp), 0)), i] <- TRUE
-  }
-  return(mat.out)
-}
-
-
 ## TEST PARAMETERS (BIOMOD_ModelingOptions) -------------------------------------------------------
 ## used in biomod2_classes_1.R file
 
@@ -149,35 +80,6 @@
   return(test)
 }
 
-
-## PRINTS (BIOMOD_ModelingOptions) ----------------------------------------------------------------
-## used in biomod2_classes_1.R file
-
-.print_formula <- function(formula = NULL)
-{
-  ifelse(length(formula) < 1, 'NULL', paste(formula[2], formula[1], formula[3]))
-}
-
-.print_control <- function(ctrl)
-{
-  out <-  paste0(names(ctrl)[1], " = ", ctrl[[1]])
-  if (length(ctrl) > 1)
-  {
-    i = 2
-    while (i <= length(ctrl)) {
-      if (is.list(ctrl[[i]])) {
-        out <- c(out, paste0(", ", names(ctrl)[i], " = list(",
-                             paste0(names(ctrl[[i]]), "=", unlist(ctrl[[i]]), collapse = ", "),
-                             ")"))
-        i <- i + 1
-      } else {
-        out <- c(out, paste0(", ", names(ctrl)[i], " = ", ctrl[[i]]))
-        i <- i + 1
-      }
-    }
-  }
-  return(out)
-}
 
 
 ## TEMPLATES TO PREDICT MODELS (BIOMOD_Modeling) --------------------------------------------------
@@ -450,117 +352,338 @@ check_data_range <- function(model, new_data)
 }
 
 
-## GET RESIDUAL DEVIANCE AND AIC (in GAM, deprecated ?) -------------------------------------------
-## used in Biomod.Models_RE.R file
-
-# .fun_keep <- function(object, AIC)
-# {
-#   list(df.resid = object$df.resid
-#        , deviance = object$deviance
-#        , term = as.character(object$formula)[3]
-#        , AIC = AIC)
-# }
-
-
-## CHECK IF JAVA INSTALLED (deprecated ?) ---------------------------------------------------------
-## used in BIOMOD_Projection file
-
-# .check.java.installed <- function()
-# {
-#   if (.Platform$OS.type == "unix") {
-#     java.test <- try(expr = eval(system("command -v java", intern = TRUE)) , silent = TRUE)
-#   } else if (.Platform$OS.type == "windows") {
-#     java.test <- try(expr = eval(system("java", intern = TRUE)), silent = TRUE)
-#   } else { java.test <- "" }
-#   
-#   if (!is.null(attr(java.test, "class"))) {
-#     cat("\n! java software seems not be correctly installed\n  > MAXENT.Phillips modelling was switched off!")
-#     return(FALSE)
-#   } else {
-#     return(TRUE)
-#   }
-# }
-
-
 ## TRANSFORME DF OR LIST TO ARRAY (BIOMOD_Projection) ---------------------------------------------
 ## used in BIOMOD_Projection, Projection files
 
-DF_to_ARRAY <- function(df)
-{
-  if (!is.data.frame(df) & !is.matrix(df)) {
-    if (is.list(df)) {
-      df.names <- names(df)
-      df <- as.data.frame(df)
-      names(df) <- df.names
-    } else {
-      stop("You have to give a data.frame")
-    }
-  }
-  
-  a <- sapply(strsplit(colnames(df), '_'), tail, n = 3)
-  b <- lapply(1:3, function(id) return(unique(a[id, ])))
-  array.dim.names <- c(list(character(0)), rev(b))
-  array.dim <- c(nrow(df), sapply(array.dim.names[-1], length))
-  array.out <- array(data = NA, dim = array.dim, dimnames = array.dim.names)
-  
-  for (x in colnames(df)) {
-    dimTmp <- rev(tail(unlist(strsplit(x, '_')), n = 3))
-    array.out[, dimTmp[1], dimTmp[2], dimTmp[3]] <- df[, x]
-  }
-  return(array.out)
-}
-
-# LIST_to_ARRAY <- function(ll)
+# DF_to_ARRAY <- function(df)
 # {
-#   test <- sapply(ll, is.array)
-#   if (!all(test)) { stop("list elements should be arrays") }
-#   test <- sapply(ll,dim)
-#   test <- apply(test, 1, function(x) {  length(unique(x)) == 1 })
-#   if (!all(test)) { stop("list elements differ in dimension") }
+#   if (!is.data.frame(df) & !is.matrix(df)) {
+#     if (is.list(df)) {
+#       df.names <- names(df)
+#       df <- as.data.frame(df)
+#       names(df) <- df.names
+#     } else {
+#       stop("You have to give a data.frame")
+#     }
+#   }
 #   
-#   formal.dim.names <- dimnames(ll[[1]])
-#   new.dim.names <- rev(apply(sapply(strsplit(names(ll), '_'), tail, n = 3), 1, unique))
-#   array.dim.names <- c(formal.dim.names, new.dim.names)
-#   array.dim <- sapply(array.dim.names, length)
+#   a <- sapply(strsplit(colnames(df), '_'), tail, n = 3)
+#   b <- lapply(1:3, function(id) return(unique(a[id, ])))
+#   array.dim.names <- c(list(character(0)), rev(b))
+#   array.dim <- c(nrow(df), sapply(array.dim.names[-1], length))
 #   array.out <- array(data = NA, dim = array.dim, dimnames = array.dim.names)
 #   
-#   for(x in names(ll)){
+#   for (x in colnames(df)) {
 #     dimTmp <- rev(tail(unlist(strsplit(x, '_')), n = 3))
-#     dimTmp <- paste(paste(rep(",", length(formal.dim.names)), collapse = "")
-#                     , paste("'", dimTmp, "'", sep = "", collapse = ","), collapse = "")
-#     eval(parse(text = paste0("array.out[", dimTmp, "] <-  ll[[x]]")))
+#     array.out[, dimTmp[1], dimTmp[2], dimTmp[3]] <- df[, x]
 #   }
 #   return(array.out)
 # }
 
 
-## RANDOMISE DATA (bm_VariablesImportance, only full shuffling available) -------------------------
-## used in bm_VariablesImportance file
 
-.randomise_data <- function(data, variable, method)
+## PREPARE and DELETE workdir for MAXENT ----------------------------------------------------------
+## used in biomod2_classes_4, bm_RunModelsLoop files
+.maxent.prepare.workdir <- function(Data, xy, calibLines = NULL, RunName = NULL,
+                                    VarImport = 0, evalData = NULL, evalxy =  NULL,
+                                    species.name = NULL, modeling.id = '',
+                                    background_data_dir = 'default')
 {
-  if (method == 'full_rand') {
-    return(.full_shuffling(data, variable))
+  cat('\n\t\tCreating Maxent Temp Proj Data...')
+  
+  ## initialise output
+  MWD <- list()
+  class(MWD) <- "maxent_workdir_info"
+  
+  ## default parameters setting
+  if (is.null(RunName)) { RunName <- colnames(Data)[1] }
+  if (is.null(species.name)) { species.name <- colnames(Data)[1] }
+  if (is.null(calibLines)) { calibLines <- rep(TRUE, nrow(Data)) }
+  
+  ## define all paths to files needed by MAXENT.Phillips
+  nameFolder = file.path(species.name, 'models', modeling.id)
+  m_workdir <- file.path(nameFolder, paste0('m_', sub(".", "", as.character(format(Sys.time(), "%OS6")), fixed = TRUE)))
+  while (file.exists(m_workdir)) { # check wordir unicity
+    m_workdir <- file.path(nameFolder, paste0('m_', sub(".", "", as.character(format(Sys.time(), "%OS6")), fixed = TRUE)))
+  }
+  m_outdir <- file.path(nameFolder, paste0(RunName, '_MAXENT.Phillips_outputs'))
+  m_predictDir <- file.path(m_workdir, "Predictions")
+  
+  MWD$m_workdir <- m_workdir
+  MWD$m_outdir <- m_outdir
+  MWD$m_outputFile <- file.path(m_outdir, paste0(RunName, '_Pred_swd.csv'))
+  MWD$m_predictDir <- m_predictDir
+  
+  ## directories creation
+  dir.create(m_workdir, showWarnings = FALSE, recursive = TRUE, mode = '777')
+  dir.create(m_outdir, showWarnings = FALSE, recursive = TRUE, mode = '777')
+  dir.create(m_predictDir, showWarnings = FALSE, recursive = TRUE, mode = '777')
+  
+  
+  ## Presence Data --------------------------------------------------------------------------------
+  presLines <- which((Data[, 1] == 1) & calibLines)
+  absLines <- which((Data[, 1] == 0) & calibLines)
+  Sp_swd <- cbind(rep(RunName, length(presLines))
+                  , xy[presLines, ]
+                  , Data[presLines, 2:ncol(Data), drop = FALSE])
+  colnames(Sp_swd) <- c('species', 'X', 'Y', colnames(Data)[2:ncol(Data)])
+  
+  m_speciesFile <- file.path(m_workdir, "Sp_swd.csv")
+  write.table(Sp_swd, file = m_speciesFile, quote = FALSE, row.names = FALSE, sep = ",")
+  MWD$m_speciesFile <- m_speciesFile
+  
+  
+  ## Background Data (create background file only if needed) --------------------------------------
+  if (background_data_dir == 'default') {
+    # keep only 0 of calib lines
+    Back_swd <- cbind(rep("background", length(absLines))
+                      , xy[absLines, ]
+                      , Data[absLines, 2:ncol(Data), drop = FALSE])
+    colnames(Back_swd) <- c("background", colnames(Back_swd)[-1])
+    
+    m_backgroundFile <- file.path(m_workdir, "Back_swd.csv")
+    write.table(Back_swd, file = m_backgroundFile, quote = FALSE, row.names = FALSE, col.names = TRUE, sep = ",")
+    MWD$m_backgroundFile <- m_backgroundFile
+  } else { ## use background directory given as an option
+    MWD$m_backgroundFile <- background_data_dir
+  }
+  
+  
+  ## Prediction Data ------------------------------------------------------------------------------
+  Pred_swd <- cbind(rep("predict", nrow(xy))
+                    , xy
+                    , Data[, 2:ncol(Data), drop = FALSE])
+  colnames(Pred_swd)  <- c("predict", colnames(xy), colnames(Data)[-1])
+  
+  m_predictFile <- file.path(m_predictDir, "Pred_swd.csv")
+  write.table(Pred_swd, file = m_predictFile, quote = FALSE, row.names = FALSE, col.names = TRUE, sep = ",")
+  MWD$m_predictFile <- m_predictFile
+  
+  
+  ## dealing with independent evaluation data -----------------------------------------------------
+  if (!is.null(evalData)) {
+    Pred_eval_swd <- cbind(rep("predictEval", nrow(evalxy))
+                           , evalxy
+                           , evalData[, 2:ncol(evalData), drop = FALSE])
+    colnames(Pred_eval_swd) <- c("predict", colnames(Back_swd)[-1])
+    
+    m_predictEvalFile <- file.path(m_predictDir, "PredEval_swd.csv")
+    write.table(Pred_eval_swd, file = m_predictEvalFile, quote = FALSE, row.names = FALSE, col.names = TRUE, sep = ",")
+    MWD$m_predictEvalFile <- m_predictEvalFile
+  }
+  
+  return(MWD)
+}
+
+
+.maxent.delete.workdir <- function(MWD, silent = FALSE)
+{
+  if (!silent) { cat('\n\tRemoving Maxent Temp Data..') }
+  if (inherits(MWD, "maxent_workdir_info")) {
+    unlink(unique(sub("/part([[:digit:]]+)$", "", MWD$m_workdir)), recursive = TRUE, force = TRUE)
+  } else if (!silent) {
+    cat('\n\t! Invalid maxent work dir object -> MAXENT.Phillips temp files have not been removed')
   }
 }
 
-.full_shuffling <- function(x, id = NULL)
+
+# setGeneric(".Prepare.Maxent.Proj.WorkDir",
+#            def = function(Data, ...) {
+#              standardGeneric(".Prepare.Maxent.Proj.WorkDir")
+#            })
+# 
+# setMethod('.Prepare.Maxent.Proj.WorkDir', signature(Data='data.frame'),
+#           def = function(Data, xy, species.name =".", proj.name=".", silent=FALSE)
+#           {
+#             if (!silent) { cat('\n\t\tCreating Maxent Temp Proj Data...') }
+#             
+#             ## initialise output
+#             MWD <- list()
+#             class(MWD) <- "maxent_workdir_info"
+#             
+#             ## define all paths to files needed by MAXENT.Phillips
+#             m_workdir <- file.path(species.name, proj.name, paste0('m_', sub(".", "", as.character(format(Sys.time(), "%OS6")), fixed = TRUE)))
+#             while (file.exists(m_workdir)) { # check wordir unicity
+#               m_workdir <- file.path(species.name, proj.name, paste0('m_', sub(".", "", as.character(format(Sys.time(), "%OS6")), fixed = TRUE)))
+#             }
+#             dir.create(m_workdir, recursive = TRUE, showWarnings = FALSE)
+#             MWD$m_workdir <- m_workdir
+#             
+#             # Proj Data
+#             if (is.null(xy)) { xy <- matrix(1, nrow = nrow(Data), ncol = 2, dimnames = list(NULL, c("X", "Y"))) }
+#             Proj_swd <- cbind(rep("proj", nrow(xy)), xy, Data)
+#             colnames(Proj_swd)  <- c("proj", "X", "Y", colnames(Data))
+#             
+#             m_predictFile <- file.path(m_workdir, "Pred_swd.csv")
+#             write.table(Proj_swd, file = m_predictFile, quote = FALSE,  row.names = FALSE, col.names = TRUE, sep = ",")
+#             MWD$m_predictFile <- m_predictFile
+#             
+#             return(MWD)
+#           })
+# 
+# setMethod('.Prepare.Maxent.Proj.WorkDir', signature(Data = 'RasterStack'), 
+#           def = function(Data, species.name = ".", proj.name = ".", silent = FALSE, split.proj = 1)
+#           {
+#             if (!silent) { cat('\n\t\tCreating Maxent Temp Proj Data...') }
+#             
+#             ## initialise output
+#             MWD <- list()
+#             class(MWD) <- "maxent_workdir_info"
+#             
+#             ## define all paths to files needed by MAXENT.Phillips
+#             m_workdir <- file.path(species.name, proj.name, paste0('m_', sub(".", "", as.character(format(Sys.time(), "%OS6")), fixed = TRUE)))
+#             while (file.exists(m_workdir)) { # check wordir unicity
+#               m_workdir <- file.path(species.name, proj.name, paste0('m_', sub(".", "", as.character(format(Sys.time(), "%OS6")), fixed = TRUE)))
+#             }
+#             
+#             ## create the list of extent our raster will be crop at
+#             pred.nrow <- nrow(Data)
+#             pred.ncol <- ncol(Data)
+#             seq.col <- round(seq(1, pred.ncol, length.out = split.proj + 1))
+#             ext.list <- lapply(1:split.proj, function(i) { extent(Data, 1, pred.nrow, seq.col[i], seq.col[i + 1]) })
+#             
+#             # Proj Data
+#             m_predictFile <- NULL
+#             for (spl in 1:split.proj) {
+#               
+#               ## create tmp directory
+#               m_workdirTmp <- file.path(m_workdir, paste0("part", spl))
+#               dir.create(m_workdirTmp, showWarnings = FALSE, recursive = TRUE)
+#               MWD$m_workdir[[paste0("part", spl)]] <- m_workdirTmp
+#               
+#               for (l in names(Data)) {
+#                 m_predictFileTmp <- file.path(m_workdirTmp, paste0(l, '.asc'))
+#                 
+#                 if (!file.exists(m_predictFileTmp)) {
+#                   ras = raster::subset(Data, l, drop = TRUE)
+#                   
+#                   if (!silent) { cat("\n\t\t\t > ", l, "\t:\t") }
+#                   if (split.proj == 1) { ## no croping in this case => just write the raster as an ascii file
+#                     if (grepl(".asc", filename(ras))) {
+#                       if (!silent) { cat("copying ascii file") }
+#                       file.copy(filename(ras), m_predictFileTmp)
+#                     } else {
+#                       if (!silent) { cat("creating ascii file") }
+#                       writeRaster(ras, filename = m_predictFileTmp, format = 'ascii', overwrite = TRUE)
+#                     }
+#                   } else { ## crop the raster within parts
+#                     crop(ras, ext.list[[spl]], filename = m_predictFileTmp, format='ascii', overwrite = TRUE)
+#                   }
+#                 } else if (!silent) { cat("\n", m_predictFileTmp, 'already created !') }
+#                 m_predictFile <- c(m_predictFile, m_predictFileTmp)
+#               }
+#               MWD$m_predictFile[[paste0("part", spl)]] <- m_predictFile
+#             }
+#             return(MWD)
+#           })
+# 
+# setMethod('.Prepare.Maxent.Proj.WorkDir',
+#           signature(Data = 'RasterLayer'),
+#           def = function(Data,
+#                          species.name = ".",
+#                          proj.name = ".",
+#                          silent = FALSE) {
+#             .Prepare.Maxent.Proj.WorkDir(Data = stack(Data),
+#                                          species.name = species.name,
+#                                          proj.name = proj.name ,
+#                                          silent = silent)
+#           })
+
+## CREATE MODEL FORMULA ---------------------------------------------------------------------------
+## used in bm_CVnnet, bm_RunModelsLoop files
+
+.scope <- function(enviroTrain, Smoother, degree)
 {
-  if (!(is.vector(x) | is.matrix(x) | is.data.frame(x))) {
-    stop("x must be a 1 or 2 dimension odject")
+  XXX <- enviroTrain
+  deg <- degree
+  vnames <- names(XXX[])
+  step.list <- as.list(vnames)
+  names(step.list) <- vnames
+  NbVar <- dim(enviroTrain)[2]
+  i <- 1
+  while (i <= NbVar)
+  {
+    vname <- names(XXX)[i]
+    # loops through independent variable names
+    junk <- paste0("1 + ", vname)
+    # minimum scope
+    if (is.numeric(XXX[, i])) {
+      junk <- c(junk, paste0(Smoother, "(", vname, ",", deg, ")"))
+      junk <- eval(parse(text = paste("~", paste(junk, collapse = "+"))))
+    } else if (is.factor(XXX[, i])) {
+      junk <- c(junk, vname)
+      junk <- eval(parse(text = paste("~", paste(junk, collapse = "+"))))
+    }
+    step.list[[vname]] <- junk
+    i <- i + 1
   }
   
-  ## Set a new random seed to ensure that sampling is random
-  ## (issue when CTA is involved and seed needs to be set to a fix number)
-  set.seed(as.double(Sys.time()) + as.numeric(format(Sys.time(), "%OS6")) * 1000000)
-  
-  out <- NULL
-  if (is.null(id)) {
-    out <- x[sample.int(length(x))]
-  } else {
-    out <- x
-    for (idd in id) { out[, idd] <- out[sample.int(nrow(x)), idd]  }
-  }
-  
-  return(out)
+  return(step.list)
 }
+
+# .scope2 <- function(enviroTrain, formula, Smoother, degree)
+# {
+#   # 0. args checking
+#   if (is.character(formula)) { formula <- as.formula(formula) }
+#   if (!inherits(formula, "formula")) { stop("formula must be a formula object") }
+#   if (is.matrix(enviroTrain)) { enviroTrain <- as.data.frame(enviroTrain) }
+#   
+#   # 1. detect factorial variables
+#   factVar <- as.list(names(enviroTrain))
+#   factVar <- lapply(factVar, is.factor)
+#   names(factVar) <- names(enviroTrain)
+#   
+#   # 2. create the output squeletom
+#   step.list <- as.list(attr(terms(formula), "term.labels"))
+#   
+#   # 3. filling the output obj
+#   step.list <- lapply(step.list, function(x)
+#   {
+#     junk <- paste0("~1 + ", x)
+#     if (length(factVar[[x]])) { # x is a simple variable
+#       if (!factVar[[x]]) { # x is not a factor
+#         junk <- paste0(junk, " + ", Smoother, "(", x, ",", degree, ")")
+#       }
+#     } else {
+#       junk <- paste0(junk, " + ", Smoother, "(", x, ",", degree, ")")
+#     }
+#     return(formula(junk))
+#   })
+#   names(step.list) <- attr(terms(formula), "term.labels")
+#   
+#   return(step.list)
+# }
+
+###################################################################################################
+
+.scopeExpSyst <- function(enviroTrain, mod)
+{
+  i <- 1
+  junk2 <- c()
+  while (i <= dim(enviroTrain)[2])
+  {
+    vname <- names(enviroTrain)[i]
+    
+    if (mod %in% c("NNET", "FDA", "GLMs", "CTA", "GBM")) {
+      junk <- vname
+    } else if (mod == "GLMq") {
+      if (is.numeric(enviroTrain[, i])) {
+        junk <- paste0(vname, "+I(", vname, "^2)+I(", vname, "^3)")
+      } else if (is.factor(enviroTrain[, i])) {
+        junk <- vname
+      }
+    } else if (mod == "GLMp") {
+      if (is.numeric(enviroTrain[, i])) {
+        junk <- paste0(vname, "+I(", vname, "^2)+I(", vname, "^3)+", "poly(", vname, ",2) + poly(", vname, ",3)")
+      } else if(is.factor(enviroTrain[, i])) {
+        junk <- vname
+      }
+    }
+    junk2 <- c(junk2, junk)
+    i <- i + 1
+  }
+  
+  junk2 <- eval(parse(text = paste("~", paste(junk2, collapse = "+"))))
+  return(junk2)
+}
+

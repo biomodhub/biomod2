@@ -196,7 +196,6 @@ bm_SampleFactorLevels.raster <- function(x, mask.out = NULL, mask.in = NULL)
   }
 }
 
-
 bm_SampleFactorLevels.data.frame <- function(x, mask.out = NULL, mask.in = NULL)
 {
   ## check if some factorial variables are in the input data

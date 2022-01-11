@@ -22,9 +22,9 @@
 ##' @param NewData a \code{matrix}, \code{data.frame}, \code{\link[sp]{SpatialPointsDataFrame}} 
 ##' or \code{\link[raster:stack]{RasterStack}} object containing the explanatory variables 
 ##' (in columns or layers) that will be used to predict the SRE model
-##' @param Quant a \code{numeric} corresponding to the most extreme value for each variable 
-##' not to be taken into account for determining the tolerance boundaries of the considered 
-##' species
+##' @param Quant a \code{numeric} between \code{0} and \code{0.5} corresponding to the most 
+##' extreme value for each variable not to be taken into account for determining the tolerance 
+##' boundaries of the considered species
 ##' @param return_extremcond (\emph{optional, default} \code{FALSE}) \cr 
 ##' A \code{logical} value defining whether a \code{matrix} containing extreme conditions 
 ##' supported should be returned or not
@@ -124,10 +124,10 @@
 
 
 bm_SRE <- function(Response = NULL, 
-                Explanatory = NULL, 
-                NewData = NULL, 
-                Quant = 0.025, 
-                return_extremcond = FALSE)
+                   Explanatory = NULL, 
+                   NewData = NULL, 
+                   Quant = 0.025, 
+                   return_extremcond = FALSE)
 {
   ## 0. Check arguments ---------------------------------------------------------------------------
   args <- .bm_SRE.check.args(Response, Explanatory, NewData, Quant)

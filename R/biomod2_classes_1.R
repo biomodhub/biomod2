@@ -1,11 +1,119 @@
+###################################################################################################
+##' @name BIOMOD.formated.data
+##' @aliases BIOMOD.formated.data
+##' @aliases BIOMOD.formated.data.PA
+##' @author Damien Georges
+##' 
+##' @title BIOMOD.formated.data
+##' 
+###################################################################################################
 
-##' 
-##' @importFrom raster stack nlayers addLayer is.factor subset
-##' 
+NULL
+
+
+###################################################################################################
+
+.clever_cut <- function(x)
+{
+  nb_col = ceiling(sqrt(x))
+  nb_row = ceiling(x / nb_col)
+  return(c(nb_row, nb_col))
+}
+
+
+.automatic_weights_creation <- function(resp, prev = 0.5, subset = NULL)
+{
+  if (is.null(subset)) { subset <- rep(TRUE, length(resp)) }
+  
+  nbPres <- sum(resp[subset], na.rm = TRUE)
+  # The number of true absences + pseudo absences to maintain true value of prevalence
+  nbAbsKept <- sum(subset, na.rm = TRUE) - sum(resp[subset], na.rm = TRUE)
+  Yweights <- rep(1, length(resp))
+  
+  if (nbAbsKept > nbPres) {
+    # code absences as 1
+    Yweights[which(resp > 0)] <- (prev * nbAbsKept) / (nbPres * (1 - prev))
+  } else {
+    # code presences as 1
+    Yweights[which(resp == 0 | is.na(resp))] <- (nbPres * (1 - prev)) / (prev * nbAbsKept)
+  }
+  Yweights = round(Yweights[])
+  Yweights[!subset] <- 0
+  
+  return(Yweights)
+}
+
+
+.sample_mat <- function(data.sp, dataSplit, nbRun = 1, data.env = NULL)
+{
+  # data.sp is a 0, 1 vector
+  # return a matrix with nbRun columns of boolean (T: calib, F= eval)
+  
+  pres <- which(data.sp == 1)
+  abs <- (1:length(data.sp))[-pres]
+  
+  nbPresEval <- round(length(pres) * dataSplit / 100)
+  nbAbsEval <- round(length(abs) * dataSplit / 100)
+  
+  mat.out <- matrix(FALSE, nrow = length(data.sp), ncol = nbRun)
+  colnames(mat.out) <- paste0('_RUN', 1:nbRun)
+  
+  for (i in 1:ncol(mat.out)) {
+    ## force to sample at least one level of each factorial variable for calibration
+    fact.cell.samp <- NULL
+    if (!is.null(data.env)) {
+      fact.cell.samp <- bm_SampleFactorLevels(data.env)
+      mat.out[fact.cell.samp, i] <- TRUE
+    }
+    mat.out[sample(setdiff(pres, fact.cell.samp),
+                   max(nbPresEval - length(fact.cell.samp), 0)), i] <- TRUE
+    mat.out[sample(setdiff(abs, fact.cell.samp),
+                   max(nbAbsEval - length(fact.cell.samp), 0)), i] <- TRUE
+  }
+  return(mat.out)
+}
+
+
+.print_formula <- function(formula = NULL)
+{
+  ifelse(length(formula) < 1, 'NULL', paste(formula[2], formula[1], formula[3]))
+}
+
+.print_control <- function(ctrl)
+{
+  out <-  paste0(names(ctrl)[1], " = ", ctrl[[1]])
+  if (length(ctrl) > 1)
+  {
+    i = 2
+    while (i <= length(ctrl)) {
+      if (is.list(ctrl[[i]])) {
+        out <- c(out, paste0(", ", names(ctrl)[i], " = list(",
+                             paste0(names(ctrl[[i]]), "=", unlist(ctrl[[i]]), collapse = ", "),
+                             ")"))
+        i <- i + 1
+      } else {
+        out <- c(out, paste0(", ", names(ctrl)[i], " = ", ctrl[[i]]))
+        i <- i + 1
+      }
+    }
+  }
+  return(out)
+}
+
 
 ###################################################################################################
 ## 1. BIOMOD.formated.data
 ###################################################################################################
+
+##'
+##' @rdname BIOMOD.formated.data
+##' 
+##' @aliases BIOMOD.formated.data-method
+##' @aliases plot
+##' @aliases show
+##' 
+##' @importFrom raster stack nlayers addLayer is.factor subset
+##' 
 
 # 1.1 Class Definition ----------------------------------------------------------------------------
 setClass("BIOMOD.formated.data",
@@ -237,9 +345,6 @@ setMethod('plot', signature(x = 'BIOMOD.formated.data', y = "missing"),
           }
 )
 
-##' @rdname BIOMOD.formated.data-objects
-##' @docType method
-##' @aliases show, BIOMOD.formated.data-method
 setMethod('show', signature('BIOMOD.formated.data'),
           function(object)
           {
@@ -1046,164 +1151,6 @@ setMethod('show', signature('BIOMOD.Model.Options'),
             # cat("\n                        verbose = ", object@MAXENT.Tsuruoka$verbose, ")", sep="")
             
             .bm_cat()
-          }
-)
-
-
-###################################################################################################
-## USED IN BIOMOD_Modeling FUNCTION
-###################################################################################################
-
-setGeneric(".Models.prepare.data", def = function(data, ...) { standardGeneric(".Models.prepare.data") })
-
-setMethod('.Models.prepare.data', signature('BIOMOD.formated.data'),
-          function(data, NbRunEval, DataSplit, Yweights = NULL, Prevalence = NULL
-                   , do.full.models = TRUE, DataSplitTable = NULL)
-          {
-            list.out <- list()
-            name <- paste0(data@sp.name, '_AllData')
-            xy <- data@coord
-            dataBM <- bind_cols(tibble(!!data@sp.name := data@data.species), data@data.env.var)
-            
-            ## dealing with evaluation data
-            if (data@has.data.eval) {
-              evalDataBM <- data.frame(cbind(data@eval.data.species, data@eval.data.env.var[, , drop = FALSE]))
-              colnames(evalDataBM)[1] <- data@sp.name
-              eval.xy <- data@eval.coord
-            } else {
-              evalDataBM <- eval.xy <- NULL
-            }
-            
-            ## Calib/Valid lines
-            if (!is.null(DataSplitTable)) {
-              calibLines <- DataSplitTable
-              colnames(calibLines) <- paste('_RUN', 1:ncol(calibLines), sep = '')
-            } else {
-              if (NbRunEval == 0) { # take all available data
-                calibLines <- matrix(rep(TRUE, length(data@data.species)), ncol = 1)
-                colnames(calibLines) <- '_Full'
-              } else {
-                calibLines <- .sample_mat(data.sp = data@data.species,
-                                          dataSplit = DataSplit,
-                                          nbRun = NbRunEval,
-                                          data.env = data@data.env.var)
-                if (do.full.models) {
-                  calibLines <- cbind(calibLines, rep(TRUE, length(data@data.species)))
-                  colnames(calibLines)[NbRunEval + 1] <- '_Full'
-                }
-              }
-            }
-            ## force calib.lines object to be 3D array
-            if (length(dim(calibLines)) < 3) {
-              dn_tmp <- dimnames(calibLines) ## keep track of dimnames
-              dim(calibLines) <- c(dim(calibLines), 1)
-              dimnames(calibLines) <- list(dn_tmp[[1]], dn_tmp[[2]], "_AllData")
-            }
-            
-            if (is.null(Yweights)) { # 1 for all points
-              if (!is.null(Prevalence)) {
-                cat("\n\t> Automatic weights creation to rise a", Prevalence, "prevalence")
-                Yweights <- .automatic_weights_creation(data@data.species , prev = Prevalence)
-              } else {
-                cat("\n\t> No weights : all observations will have the same weight")
-                Yweights <- rep(1, length(data@data.species))
-              }
-            }
-            
-            list.out[[name]] <- list(name = name,
-                                     xy = xy,
-                                     dataBM = dataBM, 
-                                     calibLines = calibLines,
-                                     Yweights = Yweights,
-                                     evalDataBM = evalDataBM,
-                                     eval.xy = eval.xy)
-            return(list.out)
-          }
-)
-
-setMethod('.Models.prepare.data', signature('BIOMOD.formated.data.PA'),
-          function(data, NbRunEval, DataSplit, Yweights = NULL, Prevalence = NULL
-                   , do.full.models = TRUE, DataSplitTable = NULL)
-          {
-            list.out <- list()
-            formal_weights <- Yweights
-            for (pa in 1:ncol(data@PA))
-            {
-              Yweights <- formal_weights
-              name <- paste0(data@sp.name, "_", colnames(data@PA)[pa])
-              xy <- data@coord[data@PA[, pa], ]
-              resp <- data@data.species[data@PA[, pa]] # response variable (with pseudo absences selected)
-              resp[is.na(resp)] <- 0
-              dataBM <- data.frame(cbind(resp, data@data.env.var[data@PA[, pa], , drop = FALSE]))
-              colnames(dataBM)[1] <- data@sp.name
-              
-              ## Calib/Valid lines
-              if (!is.null(DataSplitTable))
-              {
-                if (length(dim(DataSplitTable)) == 2) {
-                  calibLines <- DataSplitTable
-                } else {
-                  calibLines <- asub(DataSplitTable, pa, 3, drop = TRUE)
-                }
-                colnames(calibLines) <- paste0('_RUN', 1:ncol(calibLines))
-                calibLines[which(!data@PA[, pa]), ] <- NA
-              } else {
-                if (NbRunEval == 0) { # take all available data
-                  calibLines <- matrix(NA, nrow = length(data@data.species), ncol = 1)
-                  calibLines[data@PA[, pa], 1] <- TRUE
-                  colnames(calibLines) <- '_Full'
-                } else {
-                  calibLines <- matrix(NA, nrow = length(data@data.species), ncol = NbRunEval)
-                  sampled.mat <- .sample_mat(
-                    data.sp = data@data.species[data@PA[, pa]],
-                    dataSplit = DataSplit,
-                    nbRun = NbRunEval,
-                    data.env = data@data.env.var[data@PA[, pa], , drop = FALSE]
-                  )
-                  calibLines[data@PA[, pa], ] <- sampled.mat
-                  colnames(calibLines) <- colnames(sampled.mat)
-                  if (do.full.models) {
-                    calibLines <- cbind(calibLines, rep(NA, length(data@data.species)))
-                    calibLines[data@PA[, pa], NbRunEval + 1] <- TRUE
-                    colnames(calibLines)[NbRunEval + 1] <- '_Full'
-                  }
-                }
-              }
-              
-              ## force calib.lines object to be 3D array
-              if (length(dim(calibLines)) < 3) {
-                dn_tmp <- dimnames(calibLines) ## keep track of dimnames
-                dim(calibLines) <- c(dim(calibLines), 1)
-                dimnames(calibLines) <- list(dn_tmp[[1]], dn_tmp[[2]], paste0("_PA", pa))
-              }
-              
-              # dealing with evaluation data
-              if (data@has.data.eval) {
-                evalDataBM <- data.frame(cbind(data@eval.data.species, data@eval.data.env.var))
-                colnames(evalDataBM)[1] <- data@sp.name
-                eval.xy <- data@eval.coord
-              } else {
-                evalDataBM <- eval.xy <- NULL
-              }
-              
-              if (is.null(Yweights)) { # prevalence of 0.5... may be parametrize
-                if (is.null(Prevalence)) { Prevalence <- 0.5 }
-                cat("\n\t\t\t! Weights where automatically defined for", name, "to rise a", Prevalence, "prevalence !")
-                Yweights <- rep(NA, length(data@data.species))
-                Yweights[data@PA[, pa]] <- .automatic_weights_creation(as.numeric(dataBM[, 1]) , prev = Prevalence)
-              } else { # remove useless weights
-                Yweights[!data@PA[, pa]] <- NA
-              }
-              
-              list.out[[name]] <- list(name = name,
-                                       xy = xy, 
-                                       dataBM = dataBM,
-                                       calibLines = calibLines,
-                                       Yweights = Yweights,
-                                       evalDataBM = evalDataBM,
-                                       eval.xy = eval.xy)
-            }
-            return(list.out)
           }
 )
 

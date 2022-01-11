@@ -387,8 +387,7 @@ setMethod('predict', signature(object = 'MAXENT.Phillips_biomod2_model'),
   if (is.null(on_0_1000)) { on_0_1000 <- FALSE }
   if (is.null(split.proj)) { split.proj <- 1 }
   
-  MWD <- bm_MAXENTprepareWorkdir(Data = newdata, species.name = object@resp_name,
-                                 silent = TRUE, split.proj = split.proj )
+  MWD <- .maxent.prepare.workdir(Data = newdata, species.name = object@resp_name)
   
   # checking maxent.jar is present
   path_to_maxent.jar <- file.path(object@model_options$path_to_maxent.jar, "maxent.jar")
@@ -440,7 +439,7 @@ setMethod('predict', signature(object = 'MAXENT.Phillips_biomod2_model'),
   }
   
   if (!is.null(rm_tmp_files) && rm_tmp_files) {
-    bm_MAXENTdeleteWorkdir(MWD, silent = silent)
+    .maxent.delete.workdir(MWD, silent = silent)
   }
   return(proj)
 }
@@ -462,8 +461,8 @@ setMethod('predict', signature(object = 'MAXENT.Phillips_biomod2_model'),
   ## check if na occurs in newdata cause they are not well supported
   not_na_rows <- apply(newdata, 1, function(x){sum(is.na(x))==0})
   
-  MWD <- bm_MAXENTprepareWorkdir(Data = as.data.frame(newdata[not_na_rows, , drop = FALSE])
-                                 , xy = xy , species.name = object@resp_name, silent = T)
+  MWD <- .maxent.prepare.workdir(Data = as.data.frame(newdata[not_na_rows, , drop = FALSE])
+                                 , xy = xy, species.name = object@resp_name)
   
   # checking maxent.jar is present
   path_to_maxent.jar <- file.path(object@model_options$path_to_maxent.jar, "maxent.jar")
@@ -493,7 +492,7 @@ setMethod('predict', signature(object = 'MAXENT.Phillips_biomod2_model'),
   }
   
   if (!is.null(rm_tmp_files) && rm_tmp_files) {
-    bm_MAXENTdeleteWorkdir(MWD, silent = silent)
+    .maxent.delete.workdir(MWD, silent = silent)
   }
   if (on_0_1000) { proj <- round(proj * 1000) }
   return(proj)

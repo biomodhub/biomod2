@@ -263,7 +263,7 @@ BIOMOD_Projection <- function(modeling.output,
     if (!silent) { cat("\n\t> Building clamping mask\n") }
     nameMask <- paste0(nameProjSp, "_ClampingMask")
     MinMax <- get_formal_data(modeling.output, 'MinMax')
-    assign(x = nameMask, value = .build.clamping.mask(new.env, MinMax))
+    assign(x = nameMask, value = .build_clamping_mask(new.env, MinMax))
     
     if (output.format == '.RData') {
       save(list = nameMask,
@@ -557,7 +557,7 @@ BIOMOD_Projection <- function(modeling.output,
 
 ###################################################################################################
 
-.build.clamping.mask <- function(env, MinMax)
+.build_clamping_mask <- function(env, MinMax)
 {
   if (inherits(env, 'Raster'))
   { ## raster case ------------------------------------------------------------

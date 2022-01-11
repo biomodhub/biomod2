@@ -26,9 +26,9 @@ SRE model}
 or \code{\link[raster:stack]{RasterStack}} object containing the explanatory variables 
 (in columns or layers) that will be used to predict the SRE model}
 
-\item{Quant}{a \code{numeric} corresponding to the most extreme value for each variable 
-not to be taken into account for determining the tolerance boundaries of the considered 
-species}
+\item{Quant}{a \code{numeric} between \code{0} and \code{0.5} corresponding to the most 
+extreme value for each variable not to be taken into account for determining the tolerance 
+boundaries of the considered species}
 
 \item{return_extremcond}{(\emph{optional, default} \code{FALSE}) \cr 
 A \code{logical} value defining whether a \code{matrix} containing extreme conditions 

@@ -79,8 +79,38 @@ methods : <code>random</code>, <code>sre</code>, <code>disk</code> or <code>user
 
     <div id="arguments">
     <h2>Arguments</h2>
-    <dl><dt>PA.table</dt>
-<dd><p>(<em>optional, default</em> <code>NULL</code>) <br></p></dd>
+    <dl><dt>sp</dt>
+<dd><p>the species observations</p></dd>
+<dt>env</dt>
+<dd><p>the explanatory variables</p></dd>
+<dt>nb.repet</dt>
+<dd><p>the number of repetitions</p></dd>
+<dt>strategy</dt>
+<dd><p>a <code>character</code> corresponding to the pseudo-absence selection strategy, 
+must be among <code>random</code>, <code>sre</code>, <code>disk</code> or <code>user.defined</code></p></dd>
+<dt>distMin</dt>
+<dd><p>(<em>optional, default</em> <code>0</code>) <br>
+If <code>strategy = 'disk'</code>, the minimum distance away from presence points to select 
+pseudo-absences</p></dd>
+<dt>distMax</dt>
+<dd><p>(<em>optional, default</em> <code>NULL</code>) <br>
+If <code>strategy = 'disk'</code>, the maximum distance away from presence points to select 
+pseudo-absences</p></dd>
+<dt>nb.points</dt>
+<dd><p>(<em>optional, default</em> <code>NULL</code>) <br>
+If <code>strategy</code> is <code>random</code>, <code>sre</code> or <code>disk</code>, the number of pseudo-absences 
+to be selected</p></dd>
+<dt>quant.SRE</dt>
+<dd><p>(<em>optional, default</em> <code>0</code>) <br>
+If <code>strategy = 'sre'</code>, a <code>numeric</code> between <code>0</code> and <code>0.5</code> corresponding to 
+the most extreme value for each variable not to be taken into account for determining the 
+tolerance boundaries of the considered species (see <code><a href="bm_SRE.html">bm_SRE</a></code>)</p></dd>
+<dt>PA.table</dt>
+<dd><p>(<em>optional, default</em> <code>NULL</code>) <br>
+If <code>strategy = 'user.defined'</code>, a <code>matrix</code> or <code>data.frame</code> with as many rows as 
+<code>resp.var</code> values, as many columns as <code>PA.nb.rep</code>, and containing <code>TRUE</code> or 
+<code>FALSE</code> values defining which points will be used to build the species distribution 
+model(s) for each repetition (see <code><a href="BIOMOD_FormatingData.html">BIOMOD_FormatingData</a></code>)</p></dd>
 </dl></div>
     <div id="value">
     <h2>Value</h2>

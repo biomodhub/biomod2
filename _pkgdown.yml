@@ -25,6 +25,9 @@ navbar:
 
 
 reference:
+  - title: Objects
+    contents:
+      - "BIOMOD.formated.data"
   - title: Main functions
     contents:
       - "BIOMOD_FormatingData"
@@ -44,7 +47,7 @@ reference:
       - "bm_SampleBinaryVector"
       - "bm_SampleFactorLevels"
       - "bm_PseudoAbsences"
-      - "bm_ModelsLoop"
+      - "bm_RunModelsLoop"
       - "bm_CVnnet"
       - "bm_SRE"
       - "bm_Rescaler"

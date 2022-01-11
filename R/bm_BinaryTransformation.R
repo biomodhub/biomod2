@@ -82,7 +82,7 @@ setMethod('bm_BinaryTransformation', signature('data.frame'),
           {
             if (is.numeric(threshold) && !is.na(threshold)) {
               data <- data.matrix(data)
-              return(.convertBin.matrix(data, threshold, doFiltering))
+              return(.convert_bin.matrix(data, threshold, doFiltering))
             } else { ## return NAs
               return(matrix(NA, ncol = ncol(data), nrow = nrow(data)
                             , dimnames = dimnames(data)))
@@ -117,9 +117,9 @@ setMethod('bm_BinaryTransformation', signature('array'),
             }
             
             if (doFiltering) {
-              return(sweep(data, 2:length(dim(data)), threshold, .convertBin.array.filt))
+              return(sweep(data, 2:length(dim(data)), threshold, .convert_bin.array.filt))
             } else {
-              return(sweep(data, 2:length(dim(data)), threshold, .convertBin.array))
+              return(sweep(data, 2:length(dim(data)), threshold, .convert_bin.array))
             }
           })
 
@@ -162,22 +162,22 @@ setMethod('bm_BinaryTransformation', signature('RasterBrick'),
 
 ###################################################################################################
 
-# .convertBin.matrix = function(x, y) {
+# .convert_bin.matrix = function(x, y) {
 #   moa <- apply((x > y), 2, as.integer)
 #   if (ncol(moa) == 1) { return(moa[, 1]) } else { return(moa) }
 # }
 # FUN1 = function(data, threshold) {
-#   return(sweep(data, 2, threshold, .convertBin.matrix))
+#   return(sweep(data, 2, threshold, .convert_bin.matrix))
 # }
 
-.convertBin.matrix = function(data, threshold, doFiltering = FALSE) {
+.convert_bin.matrix = function(data, threshold, doFiltering = FALSE) {
   ind.0 = t(t(data)<threshold)
   data[ind.0] <- 0
   if (!doFiltering) { data[!ind.0] <- 1 }
   if (ncol(data) == 1) { return(data[, 1]) } else { return(data) }
 }
 
-.convertBin.array = function(x, y) {
+.convert_bin.array = function(x, y) {
   if (!any(is.na(x))) {
     return(x >= y)
   } else {
@@ -185,7 +185,7 @@ setMethod('bm_BinaryTransformation', signature('RasterBrick'),
   }
 }
 
-.convertBin.array.filt = function(x, y) {
+.convert_bin.array.filt = function(x, y) {
   if (!any(is.na(x))) {
     return(ifelse(x >= y, x, 0))
   } else {

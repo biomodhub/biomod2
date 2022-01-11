@@ -374,7 +374,7 @@ BIOMOD_EnsembleModeling <- function(modeling.output,
   ## 2. Do Ensemble modeling ----------------------------------------------------------------------
   
   ## make a list of models names that will be combined together according to em.by argument
-  em.mod.assemb <- .em.models.assembling(chosen.models, em.by)
+  em.mod.assemb <- .get_models_assembling(chosen.models, em.by)
   for (assemb in names(em.mod.assemb))
   {
     cat("\n\n  >", assemb, "ensemble modeling")
@@ -772,7 +772,7 @@ BIOMOD_EnsembleModeling <- function(modeling.output,
 
 ###################################################################################################
 
-.em.models.assembling <- function(chosen.models, em.by)
+.get_models_assembling <- function(chosen.models, em.by)
 {
   assembl.list = list()
   if (em.by == 'PA_dataset') {

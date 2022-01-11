@@ -2,6 +2,10 @@
 % Please edit documentation in R/bm_PseudoAbsences.R
 \name{bm_PseudoAbsences}
 \alias{bm_PseudoAbsences}
+\alias{bm_PseudoAbsences_random}
+\alias{bm_PseudoAbsences_sre}
+\alias{bm_PseudoAbsences_disk}
+\alias{bm_PseudoAbsences_user.defined}
 \title{Select pseudo-absences}
 \usage{
 bm_PseudoAbsences(
@@ -17,7 +21,37 @@ bm_PseudoAbsences(
 )
 }
 \arguments{
-\item{PA.table}{(\emph{optional, default} \code{NULL}) \cr}
+\item{sp}{the species observations}
+
+\item{env}{the explanatory variables}
+
+\item{nb.repet}{the number of repetitions}
+
+\item{strategy}{a \code{character} corresponding to the pseudo-absence selection strategy, 
+must be among \code{random}, \code{sre}, \code{disk} or \code{user.defined}}
+
+\item{distMin}{(\emph{optional, default} \code{0}) \cr
+If \code{strategy = 'disk'}, the minimum distance away from presence points to select 
+pseudo-absences}
+
+\item{distMax}{(\emph{optional, default} \code{NULL}) \cr
+If \code{strategy = 'disk'}, the maximum distance away from presence points to select 
+pseudo-absences}
+
+\item{nb.points}{(\emph{optional, default} \code{NULL}) \cr
+If \code{strategy} is \code{random}, \code{sre} or \code{disk}, the number of pseudo-absences 
+to be selected}
+
+\item{quant.SRE}{(\emph{optional, default} \code{0}) \cr
+If \code{strategy = 'sre'}, a \code{numeric} between \code{0} and \code{0.5} corresponding to 
+the most extreme value for each variable not to be taken into account for determining the 
+tolerance boundaries of the considered species (see \code{\link{bm_SRE}})}
+
+\item{PA.table}{(\emph{optional, default} \code{NULL}) \cr
+If \code{strategy = 'user.defined'}, a \code{matrix} or \code{data.frame} with as many rows as 
+\code{resp.var} values, as many columns as \code{PA.nb.rep}, and containing \code{TRUE} or 
+\code{FALSE} values defining which points will be used to build the species distribution 
+model(s) for each repetition (see \code{\link{BIOMOD_FormatingData}})}
 }
 \value{
 A \code{list} containing the following elements :

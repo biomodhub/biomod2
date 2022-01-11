@@ -1,5 +1,10 @@
 ###################################################################################################
 ##' @name bm_PseudoAbsences
+##' @aliases bm_PseudoAbsences
+##' @aliases bm_PseudoAbsences_random
+##' @aliases bm_PseudoAbsences_sre
+##' @aliases bm_PseudoAbsences_disk
+##' @aliases bm_PseudoAbsences_user.defined
 ##' @author Wilfried Thuiller, Damien Georges
 ##' 
 ##' @title Select pseudo-absences
@@ -10,16 +15,29 @@
 ##' methods : \code{random}, \code{sre}, \code{disk} or \code{user.defined} (see 
 ##' \href{bm_PseudoAbsences/html#details}{Details}).
 ##' 
-##' @param sp
-##' @param env
-##' @param nb.repet
-##' @param strategy
-##' @param distMin
-##' @param distMax
-##' @param nb.points
-##' @param quant.SRE
+##' @param sp the species observations
+##' @param env the explanatory variables
+##' @param nb.repet the number of repetitions
+##' @param strategy a \code{character} corresponding to the pseudo-absence selection strategy, 
+##' must be among \code{random}, \code{sre}, \code{disk} or \code{user.defined}
+##' @param nb.points (\emph{optional, default} \code{NULL}) \cr
+##' If \code{strategy} is \code{random}, \code{sre} or \code{disk}, the number of pseudo-absences 
+##' to be selected
+##' @param quant.SRE (\emph{optional, default} \code{0}) \cr
+##' If \code{strategy = 'sre'}, a \code{numeric} between \code{0} and \code{0.5} corresponding to 
+##' the most extreme value for each variable not to be taken into account for determining the 
+##' tolerance boundaries of the considered species (see \code{\link{bm_SRE}})
+##' @param distMin (\emph{optional, default} \code{0}) \cr
+##' If \code{strategy = 'disk'}, the minimum distance away from presence points to select 
+##' pseudo-absences
+##' @param distMax (\emph{optional, default} \code{NULL}) \cr
+##' If \code{strategy = 'disk'}, the maximum distance away from presence points to select 
+##' pseudo-absences
 ##' @param PA.table (\emph{optional, default} \code{NULL}) \cr
-##' 
+##' If \code{strategy = 'user.defined'}, a \code{matrix} or \code{data.frame} with as many rows as 
+##' \code{resp.var} values, as many columns as \code{PA.nb.rep}, and containing \code{TRUE} or 
+##' \code{FALSE} values defining which points will be used to build the species distribution 
+##' model(s) for each repetition (see \code{\link{BIOMOD_FormatingData}})
 ##' 
 ##' 
 ##' @return 
@@ -80,10 +98,10 @@ bm_PseudoAbsences <- function(sp, env, nb.repet = 1, strategy = 'random', distMi
     out <- NULL
   } else {
     out <- switch(strategy,
-                  user.defined = user.defined.pseudo.abs.selection(sp, env, PA.table),
-                  random = random.pseudo.abs.selection( sp, env, nb.points, nb.repet ),
-                  sre = sre.pseudo.abs.selection(sp, env, quant.SRE, nb.points, nb.repet),
-                  disk = disk.pseudo.abs.selection(sp, env, distMin, distMax, nb.points, nb.repet))
+                  user.defined = bm_PseudoAbsences_user.defined(sp, env, PA.table),
+                  random = bm_PseudoAbsences_random( sp, env, nb.points, nb.repet ),
+                  sre = bm_PseudoAbsences_sre(sp, env, quant.SRE, nb.points, nb.repet),
+                  disk = bm_PseudoAbsences_disk(sp, env, distMin, distMax, nb.points, nb.repet))
   }
   
   return(out)
@@ -124,7 +142,7 @@ bm_PseudoAbsences <- function(sp, env, nb.repet = 1, strategy = 'random', distMi
     if (is.null(nb.points)) {
       stop("You must give the number of pseudo absences you want")
     } else{
-      nbTrueAbs <- .get.nb.true.abs(sp)
+      nbTrueAbs <- .get_nb_true_abs(sp)
       if (nbTrueAbs >= nb.points) {
         cat("\n    ! There is more 'true absences' than desired pseudo absences. No pseudo absences selection done.")
         nb.points = 0
@@ -162,7 +180,7 @@ bm_PseudoAbsences <- function(sp, env, nb.repet = 1, strategy = 'random', distMi
 
 ###################################################################################################
 
-.get.nb.true.abs <- function(sp)
+.get_nb_true_abs <- function(sp)
 {
   if (is.vector(sp)) {
     return(sum(sp == 0, na.rm = TRUE))
@@ -174,7 +192,7 @@ bm_PseudoAbsences <- function(sp, env, nb.repet = 1, strategy = 'random', distMi
 }
 
 
-.nb.available.pa.cells <- function(data, PA.flag = NA)
+.get_nb_available_pa_cells <- function(data, PA.flag = NA)
 {
   if (is.vector(data) || is.data.frame(data) || is.matrix(data)) {
     return(ifelse(is.na(PA.flag), sum(is.na(data)), sum(data == PA.flag, na.rm = TRUE)))
@@ -185,19 +203,8 @@ bm_PseudoAbsences <- function(sp, env, nb.repet = 1, strategy = 'random', distMi
   }
 }
 
-# .rand.pseudo.abs.selection <- function(data, nb.points)
-# {
-#   if(is.vector(data)) {
-#     return(sample(1:length(data), nb.points, replace = FALSE))
-#   } else if (inherits(data, 'SpatialPoints')) {
-#     return(sample(1:nrow(data@data), nb.points, replace = FALSE))
-#   } else if (inherits(data, 'Raster')) {
-#     return(sort(sampleRandom(x = data, size = nb.points, cells = TRUE)[, "cell"]))
-#   }
-# }
 
-
-.add_PA_rownames <- function(xy)
+.add_pa_rownames <- function(xy)
 {
   rn <- row.names(xy)
   missing_rn <- which(rn == "")
@@ -211,12 +218,12 @@ bm_PseudoAbsences <- function(sp, env, nb.repet = 1, strategy = 'random', distMi
 
 ###################################################################################################
 
-setGeneric("user.defined.pseudo.abs.selection",
+setGeneric("bm_PseudoAbsences_user.defined",
            def = function(sp,env, ...) {
-             standardGeneric( "user.defined.pseudo.abs.selection")
+             standardGeneric( "bm_PseudoAbsences_user.defined")
            })
 
-setMethod('user.defined.pseudo.abs.selection', signature(env = "SpatialPointsDataFrame"),
+setMethod('bm_PseudoAbsences_user.defined', signature(env = "SpatialPointsDataFrame"),
           function(sp, env, pa.table) {
             cat("\n   > User defined pseudo absences selection")
             return(list(xy = coordinates(sp),
@@ -225,7 +232,7 @@ setMethod('user.defined.pseudo.abs.selection', signature(env = "SpatialPointsDat
                         pa.tab = pa.table))
           })
 
-setMethod('user.defined.pseudo.abs.selection', signature(env = "RasterStack"), 
+setMethod('bm_PseudoAbsences_user.defined', signature(env = "RasterStack"), 
           function(sp, env, pa.table) {
             cat("\n   > User defined pseudo absences selection")
             env <- as.data.frame(extract(env, coordinates(sp)))
@@ -238,18 +245,18 @@ setMethod('user.defined.pseudo.abs.selection', signature(env = "RasterStack"),
 
 ###################################################################################################
 
-setGeneric("random.pseudo.abs.selection",
+setGeneric("bm_PseudoAbsences_random",
            def = function(sp, env, ...) {
-             standardGeneric( "random.pseudo.abs.selection")
+             standardGeneric( "bm_PseudoAbsences_random")
            })
 
-setMethod('random.pseudo.abs.selection', signature(env = "SpatialPointsDataFrame"),
+setMethod('bm_PseudoAbsences_random', signature(env = "SpatialPointsDataFrame"),
           function(sp, env, nb.points, nb.repet)
           {
             cat("\n   > random pseudo absences selection")
             
             # 1. Check if NA are present in sp observations or not to determine which dataset to use
-            nb.cells <- .nb.available.pa.cells(sp)
+            nb.cells <- .get_nb_available_pa_cells(sp)
             if (nb.cells > 0) { # PA will be taken into response variable
               
               # 2. If nb NA < nb.points, select all NA cells
@@ -289,13 +296,13 @@ setMethod('random.pseudo.abs.selection', signature(env = "SpatialPointsDataFrame
             }
           })
 
-setMethod('random.pseudo.abs.selection', signature(env = "RasterStack"),
+setMethod('bm_PseudoAbsences_random', signature(env = "RasterStack"),
           function(sp, env, nb.points, nb.repet)
             {
             cat("\n   > random pseudo absences selection")
             
             # 1. Check if NA are present in sp observations or not to determine which dataset to use
-            nb.cells <- .nb.available.pa.cells(sp)
+            nb.cells <- .get_nb_available_pa_cells(sp)
             if (nb.cells > 0) { # PA will be taken into response variable
               
               # 2. If nb NA < nb.points, select all NA cells
@@ -335,7 +342,7 @@ setMethod('random.pseudo.abs.selection', signature(env = "RasterStack"),
               mask.out[in.cells] <- 1
               
               # checking of nb candidates
-              nb.cells <- .nb.available.pa.cells(mask.env, PA.flag = -1)
+              nb.cells <- .get_nb_available_pa_cells(mask.env, PA.flag = -1)
               
               # 2. If nb NA < nb.points, select all NA cells
               if (nb.cells <= nb.points) {
@@ -382,7 +389,7 @@ setMethod('random.pseudo.abs.selection', signature(env = "RasterStack"),
               
               # putting presences, true absences and pseudo absences together
               xy <- rbind(coordinates(sp), xyFromCell(mask.env, selected.cells))
-              xy <- .add_PA_rownames(xy)
+              xy <- .add_pa_rownames(xy)
               sp <- as.numeric(unlist(c(as.vector(sp@data), rep(NA, length(selected.cells))), use.names = FALSE))
               env <- extract(env, xy)
               pa.tab <- rbind(matrix(TRUE, nrow = (nrow(xy) - length(selected.cells)),
@@ -398,12 +405,12 @@ setMethod('random.pseudo.abs.selection', signature(env = "RasterStack"),
 
 ###################################################################################################
 
-setGeneric("sre.pseudo.abs.selection",
+setGeneric("bm_PseudoAbsences_sre",
            def = function(sp, env, ...) {
-             standardGeneric("sre.pseudo.abs.selection")
+             standardGeneric("bm_PseudoAbsences_sre")
            })
 
-setMethod('sre.pseudo.abs.selection', signature(env = "SpatialPointsDataFrame"), 
+setMethod('bm_PseudoAbsences_sre', signature(env = "SpatialPointsDataFrame"), 
           function(sp, env, quant.SRE, nb.points, nb.repet)
           {
             cat("\n   > SRE pseudo absences selection")
@@ -413,7 +420,7 @@ setMethod('sre.pseudo.abs.selection', signature(env = "SpatialPointsDataFrame"),
             mask.in <- data.frame(mask.in = !as.logical(mask.in)) ## revert the mask to sample PA out of SRE
             
             # 1. Check if NA are present in sp observations or not to determine which dataset to use
-            nb.cells <- .nb.available.pa.cells(mask.in$mask.in, PA.flag = TRUE)
+            nb.cells <- .get_nb_available_pa_cells(mask.in$mask.in, PA.flag = TRUE)
             
             # 2. If nb NA < nb.points, select all NA cells
             if (nb.cells <= nb.points) {
@@ -446,7 +453,7 @@ setMethod('sre.pseudo.abs.selection', signature(env = "SpatialPointsDataFrame"),
                         pa.tab = pa.tab))
           })
 
-setMethod('sre.pseudo.abs.selection', signature(env = "RasterStack"), 
+setMethod('bm_PseudoAbsences_sre', signature(env = "RasterStack"), 
           function(sp, env, quant.SRE, nb.points, nb.repet)
           {
             cat("\n   > SRE pseudo absences selection")
@@ -460,7 +467,7 @@ setMethod('sre.pseudo.abs.selection', signature(env = "RasterStack"),
             mask.out[] <- NA
             
             # 1. Check if NA are present in sp observations or not to determine which dataset to use
-            nb.cells <- .nb.available.pa.cells(mask.in, PA.flag = 0)
+            nb.cells <- .get_nb_available_pa_cells(mask.in, PA.flag = 0)
             
             # 2. If nb NA < nb.points, select all NA cells
             if (nb.cells <= nb.points) {
@@ -508,7 +515,7 @@ setMethod('sre.pseudo.abs.selection', signature(env = "RasterStack"),
             # putting presences, true absences and pseudo absences together
             xy <- rbind(coordinates(sp)[which(!is.na(as.vector(sp@data))), ],
                         xyFromCell(mask.in, selected.cells))
-            xy <- .add_PA_rownames(xy)
+            xy <- .add_pa_rownames(xy)
             sp <- as.numeric(unlist(c(na.omit(as.vector(sp@data)), rep(NA, length(selected.cells))), use.names = FALSE))
             env <- extract(env, xy)
             pa.tab <- rbind(matrix(TRUE, nrow = (nrow(xy) - length(selected.cells)),
@@ -523,12 +530,12 @@ setMethod('sre.pseudo.abs.selection', signature(env = "RasterStack"),
 
 ###################################################################################################
 
-setGeneric("disk.pseudo.abs.selection",
+setGeneric("bm_PseudoAbsences_disk",
            def = function(sp, env, ...) {
-             standardGeneric("disk.pseudo.abs.selection")
+             standardGeneric("bm_PseudoAbsences_disk")
            })
 
-setMethod('disk.pseudo.abs.selection', signature(env = "SpatialPointsDataFrame"),
+setMethod('bm_PseudoAbsences_disk', signature(env = "SpatialPointsDataFrame"),
           function(sp, env, distMin, distMax, nb.points, nb.repet)
             {
             cat("\n   > Disk pseudo absences selection")
@@ -557,22 +564,22 @@ setMethod('disk.pseudo.abs.selection', signature(env = "SpatialPointsDataFrame")
             selected.abs <- tmp.abs[(inside == length(pres)) & (outside > 0)]
             
             # 2. adding presences and true absences and selecting randomly pseudo absences
-            return(random.pseudo.abs.selection(sp[c(pres, true.abs, selected.abs), ],
+            return(bm_PseudoAbsences_random(sp[c(pres, true.abs, selected.abs), ],
                                                env[c(pres, true.abs, selected.abs), ],
                                                nb.points, nb.repet))
           })
 
-setMethod('disk.pseudo.abs.selection', signature(env = "RasterStack"),
+setMethod('bm_PseudoAbsences_disk', signature(env = "RasterStack"),
           function(sp, env, distMin, distMax, nb.points, nb.repet)
           {
             cat("\n   > Disk pseudo absences selection")
             
             # 1. Check if NA are present in sp observations or not to determine which dataset to use
-            nb.cells <- .nb.available.pa.cells(sp)
+            nb.cells <- .get_nb_available_pa_cells(sp)
             if (nb.cells > 0) { # PA will be taken into response variable
               env.tmp <- SpatialPointsDataFrame(coords = coordinates(sp),
                                                 data = as.data.frame(extract(env, coordinates(sp))))
-              return(disk.pseudo.abs.selection(sp, env.tmp, distMin, distMax, nb.points, nb.repet))
+              return(bm_PseudoAbsences_disk(sp, env.tmp, distMin, distMax, nb.points, nb.repet))
             } else {
               cat("\n   > Pseudo absences are selected in explanatory variables")
               
@@ -590,8 +597,7 @@ setMethod('disk.pseudo.abs.selection', signature(env = "RasterStack"),
               mask.in <- reclassify(dist.mask, c(-Inf, distMin, NA, distMin, distMax, -1, distMax, Inf, NA))
 
               # 2. selecting randomly pseudo absences
-              return(random.pseudo.abs.selection(sp, env = mask.in, nb.points, nb.repet))
+              return(bm_PseudoAbsences_random(sp, env = mask.in, nb.points, nb.repet))
             }
           })
-
 

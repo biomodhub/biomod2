@@ -93,9 +93,9 @@ SRE model</p></dd>
 or <code><a href="https://rdrr.io/pkg/raster/man/stack.html" class="external-link">RasterStack</a></code> object containing the explanatory variables 
 (in columns or layers) that will be used to predict the SRE model</p></dd>
 <dt>Quant</dt>
-<dd><p>a <code>numeric</code> corresponding to the most extreme value for each variable 
-not to be taken into account for determining the tolerance boundaries of the considered 
-species</p></dd>
+<dd><p>a <code>numeric</code> between <code>0</code> and <code>0.5</code> corresponding to the most 
+extreme value for each variable not to be taken into account for determining the tolerance 
+boundaries of the considered species</p></dd>
 <dt>return_extremcond</dt>
 <dd><p>(<em>optional, default</em> <code>FALSE</code>) <br> 
 A <code>logical</code> value defining whether a <code>matrix</code> containing extreme conditions 
@@ -177,10 +177,10 @@ that a total of <code>10%</code> of the data will not be considered.</p>
   
 <span class="co"># 2. Visualization of results</span>
 <span class="fu"><a href="https://rdrr.io/r/graphics/par.html" class="external-link">par</a></span><span class="op">(</span>mfrow <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">2</span>,<span class="fl">2</span><span class="op">)</span>, mar <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">6</span>, <span class="fl">5</span>, <span class="fl">5</span>, <span class="fl">3</span><span class="op">)</span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/pkg/raster/man/plot.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">myResp</span>, main <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste</a></span><span class="op">(</span><span class="va">myRespName</span>, <span class="st">"original distrib."</span><span class="op">)</span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/pkg/raster/man/plot.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">sre.100</span>, main <span class="op">=</span> <span class="st">"full data calibration"</span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/pkg/raster/man/plot.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">sre.095</span>, main <span class="op">=</span> <span class="st">"95 %"</span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/pkg/raster/man/plot.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">sre.090</span>, main <span class="op">=</span> <span class="st">"90 %"</span><span class="op">)</span>
+<span class="fu"><a href="BIOMOD.formated.data.html">plot</a></span><span class="op">(</span><span class="va">myResp</span>, main <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste</a></span><span class="op">(</span><span class="va">myRespName</span>, <span class="st">"original distrib."</span><span class="op">)</span><span class="op">)</span>
+<span class="fu"><a href="BIOMOD.formated.data.html">plot</a></span><span class="op">(</span><span class="va">sre.100</span>, main <span class="op">=</span> <span class="st">"full data calibration"</span><span class="op">)</span>
+<span class="fu"><a href="BIOMOD.formated.data.html">plot</a></span><span class="op">(</span><span class="va">sre.095</span>, main <span class="op">=</span> <span class="st">"95 %"</span><span class="op">)</span>
+<span class="fu"><a href="BIOMOD.formated.data.html">plot</a></span><span class="op">(</span><span class="va">sre.090</span>, main <span class="op">=</span> <span class="st">"90 %"</span><span class="op">)</span>
 
 
 </code></pre></div>

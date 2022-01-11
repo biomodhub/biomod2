@@ -1,5 +1,7 @@
 ###################################################################################################
-##' @name bm_ModelsLoop
+##' @name bm_RunModelsLoop
+##' @aliases bm_RunModelsLoop
+##' @aliases bm_RunModel
 ##' @author Damien Georges
 ##' 
 ##' @title Loop to compute all single species distribution models
@@ -70,14 +72,14 @@
 ###################################################################################################
 
 
-bm_ModelsLoop <- function(X,
-                          modeling.id,
-                          Model,
-                          Options,
-                          VarImport,
-                          mod.eval.method,
-                          SavePred = TRUE,
-                          scal.models = TRUE)
+bm_RunModelsLoop <- function(X,
+                             modeling.id,
+                             Model,
+                             Options,
+                             VarImport,
+                             mod.eval.method,
+                             SavePred = TRUE,
+                             scal.models = TRUE)
 {
   cat("\n\n-=-=-=- Run : ", X$name, '\n')
   res.sp.run <- list()
@@ -88,7 +90,7 @@ bm_ModelsLoop <- function(X,
     cat('\n\n-=-=-=--=-=-=-', run.name, '\n')
     
     res.sp.run[[run.id]] <- lapply(Model,
-                                   .Biomod.Models,
+                                   bm_RunModel,
                                    Data = X$dataBM,
                                    Options = Options,
                                    calibLines = na.omit(X$calibLines[, i, ]), ## transform 3D calibLines obj into a 1D vector
@@ -111,13 +113,13 @@ bm_ModelsLoop <- function(X,
 
 ###################################################################################################
 
-.Biomod.Models <- function(Model, Data, Options, calibLines, Yweights, nam, VarImport = 0,
-                           mod.eval.method = c('ROC','TSS','KAPPA'), evalData = NULL,
-                           SavePred = FALSE,
-                           xy = NULL, eval.xy = NULL, scal.models = TRUE, modeling.id = '')
+bm_RunModel <- function(Model, Data, Options, calibLines, Yweights, nam, VarImport = 0,
+                        mod.eval.method = c('ROC','TSS','KAPPA'), evalData = NULL,
+                        SavePred = FALSE,
+                        xy = NULL, eval.xy = NULL, scal.models = TRUE, modeling.id = '')
 {
   ## 0. Check arguments ---------------------------------------------------------------------------
-  args <- .Biomod.Models.check(Model, Data, Options, calibLines, Yweights, mod.eval.method, evalData, scal.models)
+  args <- .bm_RunModel.check.args(Model, Data, Options, calibLines, Yweights, mod.eval.method, evalData, scal.models)
   if (is.null(args)) { # trouble in input data -> Not Run
     return(0)
   } else {
@@ -371,9 +373,9 @@ bm_ModelsLoop <- function(X,
     if (is.null(Options@MARS$myFormula)) {
       cat("\n\tAutomatic formula generation...")
       mars.formula <- bm_MakeFormula(respName = colnames(Data)[1]
-                                    , explVar = head(Data)[, -ncol(Data), drop = FALSE]
-                                    , type = Options@MARS$type
-                                    , interaction.level = Options@MARS$interaction.level)
+                                     , explVar = head(Data)[, -ncol(Data), drop = FALSE]
+                                     , type = Options@MARS$type
+                                     , interaction.level = Options@MARS$interaction.level)
     } else {
       mars.formula <- Options@MARS$myFormula
     }
@@ -434,7 +436,7 @@ bm_ModelsLoop <- function(X,
     }
   } else if (Model == "ANN") {
     ## 2.7 ANN model ------------------------------------------------------------
-
+    
     cat('\n\t> ANN modelling...')
     size = Options@ANN$size
     decay = Options@ANN$decay
@@ -526,7 +528,7 @@ bm_ModelsLoop <- function(X,
     }
   } else if (Model == "SRE") {
     ## 2.9 SRE model ------------------------------------------------------------
-
+    
     cat('\n\t> SRE modelling...')
     model.sp <- try(bm_SRE(Response = Data[calibLines, 1],
                            Explanatory = Data[calibLines, expl_var_names, drop = FALSE],
@@ -547,9 +549,9 @@ bm_ModelsLoop <- function(X,
     }
   } else if (Model == "MAXENT.Phillips") {
     ## 2.10 MAXENT.Phillips model -----------------------------------------------
-
+    
     cat('\n\t> MAXENT.Phillips modelling...')
-    MWD <- bm_MAXENTprepareWorkdir(Data, xy, calibLines, nam, VarImport = 0,
+    MWD <- .maxent.prepare.workdir(Data, xy, calibLines, nam, VarImport = 0,
                                    evalData, eval.xy, species.name = resp_name,
                                    modeling.id = modeling.id,
                                    background_data_dir = Options@MAXENT.Phillips$background_data_dir)
@@ -601,12 +603,12 @@ bm_ModelsLoop <- function(X,
     # for MAXENT.Phillips predicitons are calculated in the same time than models building to save time.
     cat("\n Getting predictions...")
     g.pred <- try(round(as.numeric(read.csv(MWD$m_outputFile)[, 3]) * 1000))
-    bm_MAXENTdeleteWorkdir(MWD) # remove tmp dir
+    .maxent.delete.workdir(MWD) # remove tmp dir
     
   } else if(Model == "MAXENT.Phillips.2")
   {
     ## 2.11 MAXENT.Phillips.2 model ---------------------------------------------
-
+    
     cat('\n\t> MAXENT.Phillips modelling...')
     model.sp <- try(maxnet::maxnet(p = Data %>% filter(calibLines) %>% pull(resp_name), 
                                    data = Data %>% filter(calibLines) %>% select_at(expl_var_names)
@@ -625,7 +627,7 @@ bm_ModelsLoop <- function(X,
                       expl_var_range = get_var_range(Data[calibLines, expl_var_names, drop = FALSE]))
     }
   }
-
+  
   ## 2.12 MAXENT.Tsuruoka model -----------------------------------------------
   # if(Model == "MAXENT.Tsuruoka"){
   #   model.sp <- try(stop('MAXENT.Tsuruoka is depreacated(because maxent package is not maintained anymore)'))
@@ -773,8 +775,8 @@ bm_ModelsLoop <- function(X,
 
 ###################################################################################################
 
-.Biomod.Models.check <- function(Model, Data, Options, calibLines, Yweights, mod.eval.method
-                                 , evalData, scal.models, criteria = NULL, Prev = NULL)
+.bm_RunModel.check.args <- function(Model, Data, Options, calibLines, Yweights, mod.eval.method
+                                    , evalData, scal.models, criteria = NULL, Prev = NULL)
 {
   ## 0. Do some cleaning over Data argument -----------------------------------
   resp_name <- colnames(Data)[1] ## species name

@@ -1,21 +1,3 @@
-# =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=- #
-# BIOMOD objects definition
-# Damien Georges, Maya Gueguen
-# 09/02/2012, update 18/10/2021
-# =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=- #
-
-# requireNamespace("raster", quietly=TRUE)
-# requireNamespace(".0
-# # =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=- #
-# # This file defines the BIOMOD objects and all their methods
-# # =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=- #
-# 
-# # We choose here to create monospecific objects to make all procedures and parallelising easier
-# requireNamespacrasterVis", quietly=TRUE)
-
-## @importFrom methods setClass setGeneric setMethod setRefClass
-## @importClassesFrom raster RasterLayer RasterStack
-
 
 ##' 
 ##' @importFrom raster stack
