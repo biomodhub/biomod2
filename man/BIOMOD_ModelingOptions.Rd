@@ -38,7 +38,7 @@ BIOMOD_ModelingOptions(GLM = NULL,
 \item{MAXENT.Phillips}{a \code{list} containing MAXENT.Phillips options}
 }
 \value{
-A \code{BIOMOD.Model.Options} object that can be used to build species distribution model(s) 
+A \code{BIOMOD.model.options} object that can be used to build species distribution model(s) 
 with the \code{\link{BIOMOD_Modeling}} function.
 }
 \description{
@@ -317,7 +317,7 @@ Below is the detailed list of all modifiable parameters for each available model
 
 \examples{
 
-## default BIOMOD.model.option object
+## default BIOMOD.model.options object
 myBiomodOptions <- BIOMOD_ModelingOptions()
 
 ## print the object

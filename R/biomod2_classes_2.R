@@ -1,6 +1,53 @@
 
+##' @name BIOMOD.stored.data
+##' @aliases BIOMOD.stored.data
+##' @aliases BIOMOD.stored.array
+##' @aliases BIOMOD.stored.data.frame
+##' @aliases BIOMOD.stored.raster.stack
+##' @aliases BIOMOD.stored.files
+##' @aliases BIOMOD.stored.formated.data
+##' @aliases BIOMOD.stored.models.options
+##' @author Damien Georges
+##' 
+##' @title \code{BIOMOD_EnsembleModeling()} output object class
+##' 
+##' @description Classes used by \code{\link{BIOMOD_Modeling}} and 
+##' \code{\link{BIOMOD_EnsembleModeling}} to build their output object (see 
+##' \code{\link{BIOMOD.models.out}} objects)
+##' 
+##' @slot inMemory a \code{logical} defining whether the \code{val} slot has been loaded in 
+##' memory or not
+##' @slot link a \code{character} containing the file name of the saved \code{val} slot
+##' @slot val an object of type depending on the \code{BIOMOD.stored.[...]} class (see 
+##' \href{BIOMOD.stored.data.html#details}{Details})
+##' 
+##' @details 
+##' 
+##' \code{BIOMOD.stored.data} is the basic object containing the slots \code{inMemory} and 
+##' \code{link}. \cr All listed classes below are derived from \code{BIOMOD.stored.data}, and 
+##' contain a \code{val} slot of specific type :
+##' 
+##' \itemize{
+##'   \item{\code{BIOMOD.stored.array} : }{\code{val} is an \code{array}}
+##'   \item{\code{BIOMOD.stored.data.frame} : }{\code{val} is a \code{data.frame}}
+##'   \item{\code{BIOMOD.stored.raster.stack} : }{\code{val} is a 
+##'   \code{\link[raster]{RasterStack}}}
+##'   \item{\code{BIOMOD.stored.files} : }{\code{val} is a \code{character}}
+##'   \item{\code{BIOMOD.stored.formated.data} : }{\code{val} is a 
+##'   \code{\link{BIOMOD.formated.data}} object}
+##'   \item{\code{BIOMOD.stored.models.options} : }{\code{val} is a 
+##'   \code{\link{BIOMOD.model.options}} object}
+##' }
+##' 
+##' 
+##' @seealso \code{\link{BIOMOD.formated.data}}, \code{\link{BIOMOD.model.options}}, 
+##' \code{\link{BIOMOD_Modeling}}, \code{\link{BIOMOD_EnsembleModeling}}, 
+##' \code{\link{BIOMOD_Projection}}, \code{\link{BIOMOD_EnsembleForecasting}}
+##' 
 ##' 
 ##' @importFrom raster stack
+##' 
+##' @export
 ##' 
 
 ###################################################################################################
@@ -24,11 +71,11 @@ setClass("BIOMOD.stored.data.frame",
          prototype(val = data.frame()),
          validity = function(object){ return(TRUE) })
 
-# setClass("BIOMOD.stored.raster.stack",
-#          contains = "BIOMOD.stored.data",
-#          representation(val = 'RasterStack'),
-#          prototype(val = stack()),
-#          validity = function(object){ return(TRUE) })
+setClass("BIOMOD.stored.raster.stack",
+         contains = "BIOMOD.stored.data",
+         representation(val = 'RasterStack'),
+         prototype(val = stack()),
+         validity = function(object){ return(TRUE) })
 
 setClass("BIOMOD.stored.files",
          contains = "BIOMOD.stored.data",
@@ -44,15 +91,15 @@ setClass("BIOMOD.stored.formated.data",
 
 setClass("BIOMOD.stored.models.options",
          contains = "BIOMOD.stored.data",
-         representation(val = 'BIOMOD.Model.Options'),
+         representation(val = 'BIOMOD.model.options'),
          prototype(val = NULL),
          validity = function(object){ return(TRUE) })
 
-# setClass("BIOMOD.stored.models.out",
-#          contains = "BIOMOD.stored.data",
-#          representation(val = 'BIOMOD.models.out'),
-#          prototype(val = NULL),
-#          validity = function(object){ return(TRUE) } )
+setClass("BIOMOD.stored.models.out",
+         contains = "BIOMOD.stored.data",
+         representation(val = 'BIOMOD.models.out'),
+         prototype(val = NULL),
+         validity = function(object){ return(TRUE) } )
 
 
 ###################################################################################################

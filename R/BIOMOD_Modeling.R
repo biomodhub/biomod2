@@ -427,7 +427,7 @@ BIOMOD_Modeling <- function(data,
   
   ## 3. Check models.options arguments ----------------------------------------
   if (!is.null(models.options)) {
-    .fun_testIfInherits(TRUE, "models.options", models.options, "BIOMOD.Model.Options")
+    .fun_testIfInherits(TRUE, "models.options", models.options, "BIOMOD.model.options")
   } else {
     warning("Models will run with 'defaults' parameters", immediate. = TRUE)
     models.options <- BIOMOD_ModelingOptions()
@@ -535,6 +535,10 @@ BIOMOD_Modeling <- function(data,
 
 
 ###################################################################################################
+
+##'
+##' @include biomod2_classes_1.R
+##'
 
 setGeneric(".BIOMOD_Modeling.prepare.data", def = function(data, ...) { standardGeneric(".BIOMOD_Modeling.prepare.data") })
 

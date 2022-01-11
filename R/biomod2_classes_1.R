@@ -1,17 +1,4 @@
-###################################################################################################
-##' @name BIOMOD.formated.data
-##' @aliases BIOMOD.formated.data
-##' @aliases BIOMOD.formated.data.PA
-##' @author Damien Georges
-##' 
-##' @title BIOMOD.formated.data
-##' 
-###################################################################################################
 
-NULL
-
-
-###################################################################################################
 
 .clever_cut <- function(x)
 {
@@ -19,7 +6,6 @@ NULL
   nb_row = ceiling(x / nb_col)
   return(c(nb_row, nb_col))
 }
-
 
 .automatic_weights_creation <- function(resp, prev = 0.5, subset = NULL)
 {
@@ -42,7 +28,6 @@ NULL
   
   return(Yweights)
 }
-
 
 .sample_mat <- function(data.sp, dataSplit, nbRun = 1, data.env = NULL)
 {
@@ -72,7 +57,6 @@ NULL
   }
   return(mat.out)
 }
-
 
 .print_formula <- function(formula = NULL)
 {
@@ -105,14 +89,80 @@ NULL
 ## 1. BIOMOD.formated.data
 ###################################################################################################
 
-##'
-##' @rdname BIOMOD.formated.data
+##' @name BIOMOD.formated.data
+##' @author Damien Georges
 ##' 
-##' @aliases BIOMOD.formated.data-method
-##' @aliases plot
-##' @aliases show
+##' @title \code{BIOMOD_FormatingData()} output object class
+##' 
+##' @description Class returned by \code{\link{BIOMOD_FormatingData}}, and used by 
+##' \code{\link{BIOMOD_Tuning}}, \code{\link{BIOMOD_Modeling}} and 
+##' \code{\link{BIOMOD_CrossValidation}}
+##' 
+##' 
+##' @slot sp.name a \code{character} corresponding to the species name
+##' @slot coord a 2-columns \code{data.frame} containing the corresponding \code{X} and \code{Y} 
+##' coordinates
+##' @slot data.species a \code{vector} containing the species observations (\code{0}, \code{1} or 
+##' \code{NA})
+##' @slot data.env.var a \code{data.frame} containing explanatory variables
+##' @slot data.mask a \code{\link[raster:stack]{RasterStack}} object containing the mask of the 
+##' studied area
+##' @slot has.data.eval a \code{logical} value defining whether evaluation data is given
+##' @slot eval.coord (\emph{optional, default} \code{NULL}) \cr 
+##' A 2-columns \code{data.frame} containing the corresponding \code{X} and \code{Y} 
+##' coordinates for evaluation data
+##' @slot eval.data.species (\emph{optional, default} \code{NULL}) \cr 
+##' A \code{vector} containing the species observations (\code{0}, \code{1} or \code{NA}) for 
+##' evaluation data
+##' @slot eval.data.env.var (\emph{optional, default} \code{NULL}) \cr 
+##' A \code{data.frame} containing explanatory variables for evaluation data
+##' 
+##' 
+##' @seealso \code{\link{BIOMOD_FormatingData}}, \code{\link{BIOMOD_Tuning}}, 
+##' \code{\link{BIOMOD_Modeling}}, \code{\link{BIOMOD_CrossValidation}}
+##' 
+##' 
+##' @examples
+##' 
+##' showClass("BIOMOD.formated.data")
+##' 
+##' ## ------------------------------------------------------------------------
+##' # species occurrences
+##' myFile <- system.file("external/species/mammals_table.csv", package="biomod2")
+##' DataSpecies <- read.csv(myFile, row.names = 1)
+##' head(DataSpecies)
+##' 
+##' # the name of studied species
+##' myRespName <- 'GuloGulo'
+##' 
+##' # the presence/absences data for our species
+##' myResp <- as.numeric(DataSpecies[, myRespName])
+##' 
+##' # the XY coordinates of species data
+##' myRespXY <- DataSpecies[, c("X_WGS84", "Y_WGS84")]
+##' 
+##' 
+##' # Environmental variables extracted from BIOCLIM (bio_3, bio_4, bio_7, bio_11 & bio_12)
+##' myFiles = paste0("external/bioclim/current/bio", c(3, 4, 7, 11, 12), ".grd")
+##' myExpl = raster::stack(system.file(myFiles[1], package = "biomod2"),
+##'                        system.file(myFiles[2], package = "biomod2"),
+##'                        system.file(myFiles[3], package = "biomod2"),
+##'                        system.file(myFiles[4], package = "biomod2"),
+##'                        system.file(myFiles[5], package = "biomod2"))
+##' 
+##' # 1. Formating Data
+##' myBiomodData <- BIOMOD_FormatingData(resp.var = myResp,
+##'                                      expl.var = myExpl,
+##'                                      resp.xy = myRespXY,
+##'                                      resp.name = myRespName)
+##' 
+##' myBiomodData
+##' plot(myBiomodData)
+##' 
 ##' 
 ##' @importFrom raster stack nlayers addLayer is.factor subset
+##' 
+##' @export
 ##' 
 
 # 1.1 Class Definition ----------------------------------------------------------------------------
@@ -131,6 +181,7 @@ setClass("BIOMOD.formated.data",
 
 # 1.2 Constructors --------------------------------------------------------------------------------
 setGeneric("BIOMOD.formated.data", def = function(sp, env, ...) { standardGeneric("BIOMOD.formated.data") })
+
 
 setMethod('BIOMOD.formated.data', signature(sp = 'numeric', env = 'data.frame'),
           function(sp, env, xy = NULL, sp.name = NULL
@@ -295,7 +346,7 @@ setMethod('plot', signature(x = 'BIOMOD.formated.data', y = "missing"),
                 x@data.mask,
                 at = my.at,
                 cuts = my.cuts,
-                margin = T,
+                margin = TRUE,
                 col.regions = my.col.regions,
                 main = paste(x@sp.name, "datasets"),
                 colorkey = list(labels = list(labels = my.lab, at = my.labs.at))
@@ -350,16 +401,14 @@ setMethod('show', signature('BIOMOD.formated.data'),
           {
             .bm_cat("'BIOMOD.formated.data'")
             cat("\nsp.name = ", object@sp.name, fill = .Options$width)
-            cat(
-              "\n\t",
-              sum(object@data.species, na.rm = TRUE),
-              'presences, ',
-              sum(object@data.species == 0, na.rm = TRUE),
-              'true absences and ',
-              sum(is.na(object@data.species), na.rm = TRUE),
-              'undifined points in dataset',
-              fill = .Options$width
-            )
+            cat("\n\t",
+                sum(object@data.species, na.rm = TRUE),
+                'presences, ',
+                sum(object@data.species == 0, na.rm = TRUE),
+                'true absences and ',
+                sum(is.na(object@data.species), na.rm = TRUE),
+                'undifined points in dataset',
+                fill = .Options$width)
             cat("\n\n\t",
                 ncol(object@data.env.var),
                 'explanatory variables\n',
@@ -368,16 +417,14 @@ setMethod('show', signature('BIOMOD.formated.data'),
             
             if (object@has.data.eval) {
               cat("\n\nEvaluation data :", fill = .Options$width)
-              cat(
-                "\n\t",
-                sum(object@eval.data.species, na.rm = TRUE),
-                'presences, ',
-                sum(object@eval.data.species == 0, na.rm = TRUE),
-                'true absences and ',
-                sum(is.na(object@eval.data.species), na.rm = TRUE),
-                'undifined points in dataset',
-                fill = .Options$width
-              )
+              cat("\n\t",
+                  sum(object@eval.data.species, na.rm = TRUE),
+                  'presences, ',
+                  sum(object@eval.data.species == 0, na.rm = TRUE),
+                  'true absences and ',
+                  sum(is.na(object@eval.data.species), na.rm = TRUE),
+                  'undifined points in dataset',
+                  fill = .Options$width)
               cat("\n\n", fill = .Options$width)
               print(summary(object@eval.data.env.var))
             }
@@ -393,6 +440,85 @@ setMethod('show', signature('BIOMOD.formated.data'),
 ## this class inherits from BIOMOD.formated.data and have one more slot 'PA' giving PA selected
 ###################################################################################################
 
+##' @name BIOMOD.formated.data.PA
+##' @author Damien Georges
+##' 
+##' @title \code{BIOMOD_FormatingData()} output object class (with pseudo-absences)
+##' 
+##' @description Class returned by \code{\link{BIOMOD_FormatingData}}, and used by 
+##' \code{\link{BIOMOD_Tuning}}, \code{\link{BIOMOD_Modeling}} and 
+##' \code{\link{BIOMOD_CrossValidation}}
+##' 
+##' 
+##' @slot sp.name a \code{character} corresponding to the species name
+##' @slot coord a 2-columns \code{data.frame} containing the corresponding \code{X} and \code{Y} 
+##' coordinates
+##' @slot data.species a \code{vector} containing the species observations (\code{0}, \code{1} or 
+##' \code{NA})
+##' @slot data.env.var a \code{data.frame} containing explanatory variables
+##' @slot data.mask a \code{\link[raster:stack]{RasterStack}} object containing the mask of the 
+##' studied area
+##' @slot has.data.eval a \code{logical} value defining whether evaluation data is given
+##' @slot eval.coord (\emph{optional, default} \code{NULL}) \cr 
+##' A 2-columns \code{data.frame} containing the corresponding \code{X} and \code{Y} 
+##' coordinates for evaluation data
+##' @slot eval.data.species (\emph{optional, default} \code{NULL}) \cr 
+##' A \code{vector} containing the species observations (\code{0}, \code{1} or \code{NA}) for 
+##' evaluation data
+##' @slot eval.data.env.var (\emph{optional, default} \code{NULL}) \cr 
+##' A \code{data.frame} containing explanatory variables for evaluation data
+##' @slot PA.strategy a \code{character} corresponding to the species name
+##' @slot PA a 2-columns \code{data.frame} containing the corresponding \code{X} and \code{Y} 
+##' coordinates
+##' 
+##' @seealso \code{\link{BIOMOD_FormatingData}}, \code{\link{BIOMOD_Tuning}}, 
+##' \code{\link{BIOMOD_Modeling}}, \code{\link{BIOMOD_CrossValidation}}
+##' 
+##' 
+##' @examples
+##' 
+##' ## ------------------------------------------------------------------------
+##' # species occurrences
+##' myFile <- system.file("external/species/mammals_table.csv", package="biomod2")
+##' DataSpecies <- read.csv(myFile, row.names = 1)
+##' head(DataSpecies)
+##' 
+##' # the name of studied species
+##' myRespName <- 'GuloGulo'
+##' 
+##' # the presence/absences data for our species
+##' myResp <- as.numeric(DataSpecies[, myRespName])
+##' 
+##' # the XY coordinates of species data
+##' myRespXY <- DataSpecies[, c("X_WGS84", "Y_WGS84")]
+##' 
+##' 
+##' # Environmental variables extracted from BIOCLIM (bio_3, bio_4, bio_7, bio_11 & bio_12)
+##' myFiles = paste0("external/bioclim/current/bio", c(3, 4, 7, 11, 12), ".grd")
+##' myExpl = raster::stack(system.file(myFiles[1], package = "biomod2"),
+##'                        system.file(myFiles[2], package = "biomod2"),
+##'                        system.file(myFiles[3], package = "biomod2"),
+##'                        system.file(myFiles[4], package = "biomod2"),
+##'                        system.file(myFiles[5], package = "biomod2"))
+##' 
+##' # 1. Formating Data
+##' myBiomodData <- BIOMOD_FormatingData(resp.var = myResp,
+##'                                      expl.var = myExpl,
+##'                                      resp.xy = myRespXY,
+##'                                      resp.name = myRespName,
+##'                                      PA.nb.rep = 0,
+##'                                      PA.nb.absences = 1000,
+##'                                      PA.strategy = 'random')
+##' 
+##' myBiomodData
+##' plot(myBiomodData)
+##' 
+##' 
+##' @importFrom raster stack nlayers addLayer is.factor subset
+##' 
+##' @export
+##' 
+
 # 2.1 Class Definition ----------------------------------------------------------------------------
 setClass("BIOMOD.formated.data.PA",
          contains = "BIOMOD.formated.data",
@@ -401,20 +527,30 @@ setClass("BIOMOD.formated.data.PA",
 
 
 # 2.2 Constructors --------------------------------------------------------------------------------
-# setGeneric("BIOMOD.formated.data.PA", def = function(sp, env, ...) { standardGeneric("BIOMOD.formated.data.PA") })
-# 
-# setMethod('BIOMOD.formated.data.PA', signature(sp = 'numeric', env = 'data.frame'),
-#           function(sp, env, xy = NULL, sp.name = NULL
-#                    , eval.sp = NULL, eval.env = NULL, eval.xy = NULL
-#                    , na.rm = TRUE, data.mask = NULL)
-#           {
+setGeneric("BIOMOD.formated.data.PA", def = function(sp, env, ...) { standardGeneric("BIOMOD.formated.data.PA") })
 
-BIOMOD.formated.data.PA <-  function(sp, env, xy, sp.name
-                                     , eval.sp = NULL, eval.env = NULL, eval.xy = NULL
-                                     , PA.NbRep = 1, PA.strategy = 'random', PA.nb.absences = NULL
-                                     , PA.dist.min = 0, PA.dist.max = NULL
-                                     , PA.sre.quant = 0.025, PA.table = NULL
-                                     , na.rm = TRUE)
+setMethod('BIOMOD.formated.data.PA', signature(sp = 'numeric', env = 'data.frame'),
+          function(sp, env, xy = NULL, sp.name = NULL
+                   , eval.sp = NULL, eval.env = NULL, eval.xy = NULL
+                   , PA.NbRep = 1, PA.strategy = 'random', PA.nb.absences = NULL
+                   , PA.dist.min = 0, PA.dist.max = NULL
+                   , PA.sre.quant = 0.025, PA.table = NULL
+                   , na.rm = TRUE)
+          {
+            .BIOMOD.formated.data.PA(sp, env, xy, sp.name
+                                     , eval.sp, eval.env, eval.xy
+                                     , PA.NbRep, PA.strategy, PA.nb.absences
+                                     , PA.dist.min, PA.dist.max
+                                     , PA.sre.quant, PA.table
+                                     , na.rm)
+          })
+
+.BIOMOD.formated.data.PA <-  function(sp, env, xy, sp.name
+                                      , eval.sp = NULL, eval.env = NULL, eval.xy = NULL
+                                      , PA.NbRep = 1, PA.strategy = 'random', PA.nb.absences = NULL
+                                      , PA.dist.min = 0, PA.dist.max = NULL
+                                      , PA.sre.quant = 0.025, PA.table = NULL
+                                      , na.rm = TRUE)
 {
   
   categorial_var <- NULL
@@ -719,59 +855,52 @@ setMethod('show', signature('BIOMOD.formated.data.PA'),
 
 
 ###################################################################################################
-## 3. BIOMOD.Model.Options
+## 3. BIOMOD.model.options
 ###################################################################################################
 
-
-##' @rdname BIOMOD.Model.Options-objects
-##' @name BIOMOD.Model.Options-class
-##' @docType class
-##' @aliases   BIOMOD.Model.Options-class
-##' 
-##' @title BIOMOD_ModelingOptions outputs objects class
-##' 
-##' @description
-##' BIOMOD.Model.Options objects are created, used and returned
-##' by BIOMOD functions. These objects will contains for each
-##' model support within \pkg{biomod2}, a set of options that
-##' users can change. Please refer to 
-##' \code{\link{BIOMOD_ModelingOptions}} for further
-##'  details. 
-##'   
-##' - output of: \code{\link{BIOMOD_ModelingOptions}}
-##' - input of:  \code{\link{BIOMOD_Modeling}}
-##' 
-##' @param object init list of options
-##' 
-##' @details  
-##' Please refer to \code{\link{BIOMOD_ModelingOptions}}
-##' for each model arguments supported.
-##' 
-##' @slot GLM "list", list of GLM supported options
-##' @slot GBM "list", list of GBM supported options 
-##' @slot GAM "list", list of GAM supported options
-##' @slot CTA "list", list of CTA supported options
-##' @slot ANN "list", list of ANN supported options
-##' @slot SRE "list", list of SRE supported options
-##' @slot FDA "list", list of FDA supported options
-##' @slot MARS "list", list of MARS supported options
-##' @slot RF "list", list of RF supported options
-##' @slot MAXENT.Phillips "list", list of MAXENT.Phillips
-##'   supported options
-##' @slot MAXENT.Phillips.2 "list", list of maxnet
-##'   supported options
-##'   
+##' @name BIOMOD.model.options
 ##' @author Damien Georges
-##' @seealso \code{\link{BIOMOD_ModelingOptions}}
-##' @keywords models
-##' @keywords options
+##' 
+##' @title \code{BIOMOD_ModelingOptions()} output object class
+##' 
+##' @description Class returned by \code{\link{BIOMOD_ModelingOptions}}, and used by 
+##' \code{\link{BIOMOD_Tuning}} and \code{\link{BIOMOD_Modeling}}
+##' 
+##' @slot GLM a \code{list} containing GLM options
+##' @slot GBM a \code{list} containing GBM options
+##' @slot GAM a \code{list} containing GAM options
+##' @slot CTA a \code{list} containing CTA options
+##' @slot ANN a \code{list} containing ANN options
+##' @slot SRE a \code{list} containing SRE options
+##' @slot FDA a \code{list} containing FDA options
+##' @slot MARS a \code{list} containing MARS options
+##' @slot RF a \code{list} containing RF options
+##' @slot MAXENT.Phillips a \code{list} containing MAXENT.Phillips options
+##' @slot MAXENT.Phillips.2 a \code{list} containing MAXENT.Phillips options
+##' 
+##' 
+##' @seealso \code{\link{BIOMOD_ModelingOptions}}, \code{\link{BIOMOD_Tuning}}, 
+##' \code{\link{BIOMOD_Modeling}}
+##' 
 ##' 
 ##' @examples
-##' showClass("BIOMOD.Model.Options")
+##' 
+##' showClass("BIOMOD.model.options")
+##' 
+##' ## ------------------------------------------------------------------------
+##' ## default BIOMOD.model.options object
+##' myBiomodOptions <- BIOMOD_ModelingOptions()
+##'
+##' ## print the object
+##' myBiomodOptions
+##'
+##' 
+##' @importFrom raster stack nlayers addLayer is.factor subset
+##' 
+##' @export
 ##' 
 
-
-setClass("BIOMOD.Model.Options",
+setClass("BIOMOD.model.options",
          representation(GLM = "list",
                         GBM = "list",
                         GAM = "list",
@@ -1007,12 +1136,10 @@ setClass("BIOMOD.Model.Options",
 )
 
 
-
-##' @rdname BIOMOD.Model.Options-objects
-setMethod('show', signature('BIOMOD.Model.Options'),
+setMethod('show', signature('BIOMOD.model.options'),
           function(object)
           {
-            .bm_cat(" 'BIOMOD.Model.Options' ")
+            .bm_cat(" 'BIOMOD.model.options' ")
             cat("\n")
             
             ## GLM options
