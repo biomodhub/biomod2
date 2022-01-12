@@ -9,6 +9,7 @@ navbar:
     left:
     - home
     - reference
+    - manual
     right:
     - github
   components:
@@ -19,6 +20,10 @@ navbar:
       text: Reference
       icon: fa-book fa-lg
       href: reference/index.html
+    manual:
+      text: Manual & Examples
+      icon: fas fa-stethoscope
+      href: articles/manual.html
     github:
       icon: fa-github fa-lg
       href: https://github.com/biomodhub/biomod2.git

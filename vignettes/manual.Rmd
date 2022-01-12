@@ -1,0 +1,191 @@
+---
+title: "Manual & Examples"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Manual & Examples}
+  %\VignetteEngine{knitr::knitr}
+  %\VignetteEncoding{UTF-8}
+---
+
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.13/css/all.css" integrity="sha384-DNOHZ68U8hZfKXOrtjWvjxusGo9WQnrNx2sqG0tfsghAvtVlRW3tvkXWZh58N9jp" crossorigin="anonymous">
+
+
+
+## <i class="fas fa-code"></i> Complete code example
+
+### 1. Load dataset and variables
+
+```R
+library(biomod2)
+library(raster)
+
+
+# Load species occurrences
+myFile <- system.file('external/species/mammals_table.csv', package = 'biomod2')
+DataSpecies <- read.csv(myFile, row.names = 1)
+head(DataSpecies)
+
+# Select the name of the studied species
+myRespName <- 'GuloGulo'
+
+# Get corresponding presence/absence data
+myResp <- as.numeric(DataSpecies[, myRespName])
+
+# Get corresponding XY coordinates
+myRespXY <- DataSpecies[, c('X_WGS84', 'Y_WGS84')]
+
+
+# Load environmental variables extracted from BIOCLIM (bio_3, bio_4, bio_7, bio_11 & bio_12)
+myFiles = paste0('external/bioclim/current/bio', c(3, 4, 7, 11, 12), '.grd')
+myExpl = raster::stack(system.file(myFiles, package = 'biomod2'))
+```
+
+
+### 2. Prepare data & parameters
+
+#### Format data (observations & explanatory variables)
+
+```R
+# Format Data with true absences
+myBiomodData <- BIOMOD_FormatingData(resp.var = myResp,
+                                     expl.var = myExpl,
+                                     resp.xy = myRespXY,
+                                     resp.name = myRespName)
+
+myBiomodData
+plot(myBiomodData)
+```
+
+```R
+# Format Data with pseudo-absences : random method
+myBiomodData.r <- BIOMOD_FormatingData(resp.var = myResp,
+                                       expl.var = myExpl,
+                                       resp.xy = myRespXY,
+                                       resp.name = myRespName,
+                                       PA.nb.rep = 4,
+                                       PA.nb.absences = 1000,
+                                       PA.strategy = 'random')
+                                       
+# Format Data with pseudo-absences : disk method
+myBiomodData.d <- BIOMOD_FormatingData(resp.var = myResp,
+                                       expl.var = myExpl,
+                                       resp.xy = myRespXY,
+                                       resp.name = myRespName,
+                                       PA.nb.rep = 4,
+                                       PA.nb.absences = 1000,
+                                       PA.strategy = 'disk',
+                                       PA.dist.min = 0,
+                                       PA.dist.max = 100)
+                                       
+# Format Data with pseudo-absences : SRE method
+myBiomodData.s <- BIOMOD_FormatingData(resp.var = myResp,
+                                       expl.var = myExpl,
+                                       resp.xy = myRespXY,
+                                       resp.name = myRespName,
+                                       PA.nb.rep = 4,
+                                       PA.nb.absences = 1000,
+                                       PA.strategy = 'sre',
+                                       PA.sre.quant = 0.025)
+                                       
+# Format Data with pseudo-absences : user.defined method
+myPAtable <- data.frame(PA1 = rep(FALSE, length(myResp)),
+                        PA2 = rep(FALSE, length(myResp)))
+myBiomodData.u <- BIOMOD_FormatingData(resp.var = myResp,
+                                       expl.var = myExpl,
+                                       resp.xy = myRespXY,
+                                       resp.name = myRespName,
+                                       PA.strategy = 'user.defined',
+                                       PA.table = myPAtable)
+
+myBiomodData
+plot(myBiomodData)
+```
+
+#### Parameterize modeling options
+
+```R
+# Print default modeling options
+bm_DefaultModelingOptions()
+myBiomodOptions <- BIOMOD_ModelingOptions()
+myBiomodOptions
+
+# Part (or totality) of the print can be copied and customized
+# Below is an example to compute quadratic GLM and select best model with 'BIC' criterium
+myBiomodOptions <- BIOMOD_ModelingOptions(
+  GLM = list(type = 'quadratic',
+             interaction.level = 0,
+             myFormula = NULL,
+             test = 'BIC',
+             family = 'binomial',
+             control = glm.control(epsilon = 1e-08,
+                                   maxit = 1000,
+                                   trace = FALSE)))
+
+myBiomodOptions
+
+# It is also possible to give a specific GLM formula
+myBiomodOptions <- BIOMOD_ModelingOptions(
+  GLM = list(myFormula = formula('Sp277 ~ bio3 +
+                log(bio10) + poly(bio16, 2) + bio19 + bio3:bio19')))
+
+myBiomodOptions
+```
+
+```R
+### Duration for turing all models sequential with default settings 
+### on 3.4 GHz processor: approx. 45 min tuning all models in parallel
+### (on 8 cores) using foreach loops runs much faster: approx. 14 min
+
+# library(doParallel)
+# cl <- makeCluster(8)
+# doParallel::registerDoParallel(cl) 
+
+time.seq <- system.time(
+  bm.tuning <- BIOMOD_Tuning(myBiomodData,
+                             env.ME = myExpl,
+                             n.bg.ME = ncell(myExpl))
+)
+
+# stopCluster(cl)
+
+par(mfrow = c(1,3))
+plot(bm.tuning$tune.CTA.rpart)
+plot(bm.tuning$tune.CTA.rpart2)
+plot(bm.tuning$tune.RF)
+```
+
+
+### 3. Model single models
+
+```R
+# 2. Defining Models Options using default options.
+myBiomodOption <- BIOMOD_ModelingOptions()
+
+# 3. Doing Modelisation
+myBiomodModelOut <- BIOMOD_Modeling(myBiomodData,
+                                    models = c('SRE','RF'),
+                                    models.options = myBiomodOption,
+                                    NbRunEval = 2,
+                                    DataSplit = 80,
+                                    VarImport = 3,
+                                    models.eval.meth = c('TSS','ROC'),
+                                    do.full.models = FALSE,
+                                    modeling.id = 'test')
+
+# print a summary of modeling stuff
+myBiomodModelOut
+```
+
+### 4. Model ensemble models
+
+```R
+
+```
+
+### 5. Project single and ensemble models
+
+```R
+
+```
+
+
