@@ -350,6 +350,7 @@ myBiomodOptions
 bm_DefaultModelingOptions()
 
 
+
 }
 \author{
 Damien Georges, Wilfried Thuiller
