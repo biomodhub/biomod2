@@ -327,8 +327,8 @@
 ##' bm_DefaultModelingOptions()
 ##'
 ##'
-##' @importFrom gam gam.control
-##' @importFrom mgcv gam.control
+## @importFrom gam gam.control
+## @importFrom mgcv gam.control
 ##'
 ##' @export
 ##'
@@ -430,12 +430,17 @@ BIOMOD_ModelingOptions <- function(GLM = NULL,
       if (opt@GAM$algo == 'GAM_gam') {
         requireNamespace('gam', quietly = TRUE)
         opt@GAM$control <- gam::gam.control()
-      } else{ opt@GAM$control <- mgcv::gam.control() }
+      } else {
+        requireNamespace('mgcv', quietly = TRUE)
+        opt@GAM$control <- mgcv::gam.control()
+      }
     } else {
       user.control.list <- GAM$control
       if (opt@GAM$algo == 'GAM_gam') {
+        requireNamespace('gam', quietly = TRUE)
         default.control.list <- gam::gam.control()
       } else {
+        requireNamespace('mgcv', quietly = TRUE)
         default.control.list <- mgcv::gam.control()
       }
       control.list <- lapply(names(default.control.list), function(x) {

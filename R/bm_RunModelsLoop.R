@@ -59,12 +59,19 @@
 ##' @keywords models, formula, options, CTA, GLM, GBM, GAM, RF, ANN, FDA, SRE, MARS, MAXENT
 ##' 
 ##' 
-##' @importFrom rpart rpart
-##' @importFrom gam gam step.Gam s
-##' @importFrom mgcv gam bam
+##' @importFrom rpart rpart prune
+## @importFrom caret 
+## @importFrom car 
+## @importFrom gam gam step.Gam s
+## @importFrom mgcv gam bam
+##' @importFrom gbm gbm
+##' @importFrom MASS stepAIC
 ##' @importFrom nnet nnet
-##' @importFrom dplyr mutate_at filter select_at
+##' @importFrom earth earth
+##' @importFrom mda fda mars
+##' @importFrom dplyr mutate_at filter select_at %>% pull
 ##' @importFrom maxnet maxnet
+##' @importFrom randomForest randomForest
 ##' 
 ##' @export
 ##' 
@@ -158,7 +165,9 @@ bm_RunModel <- function(Model, Data, Options, calibLines, Yweights, nam, VarImpo
     cat('\n\t> CTA modelling...')
     
     # converting cost argument
-    cost.tmp = ifelse(is.null(Options@CTA$cost), rep(1,(ncol(Data)-2)), Options@CTA$cost)
+    cost.tmp = Options@CTA$cost
+    if (is.null(Options@CTA$cost)) { cost.tmp = rep(1, (ncol(Data) - 2)) }
+
     # defining rpart parameters for splitting function
     parms.tmp = Options@CTA$parms
     if (Options@CTA$parms == 'default') { parms.tmp = NULL }
@@ -492,22 +501,22 @@ bm_RunModel <- function(Model, Data, Options, calibLines, Yweights, nam, VarImpo
       Data <- Data %>% mutate_at(resp_name, factor)
     }
     
-    mtry.tmp = Options@RF$mtry
-    if (Options@RF$mtry == 'default') { mtry.tmp = NULL }
-    
+    # mtry.tmp = Options@RF$mtry
+    # if (Options@RF$mtry == 'default') { mtry.tmp = NULL }
+
     model.sp <- try(randomForest(formula = bm_MakeFormula(respName = resp_name
                                                           , explVar = head(Data)
                                                           , type = 'simple'
                                                           , interaction.level = 0),
                                  data = Data[calibLines, ],
                                  ntree = Options@RF$ntree,
-                                 mtry = mtry.tmp, 
+                                 # mtry = mtry.tmp, 
                                  importance = FALSE,
                                  norm.votes = TRUE,
                                  strata = factor(c(0, 1)),
                                  nodesize = Options@RF$nodesize,
                                  maxnodes = Options@RF$maxnodes))
-    
+
     if (Options@RF$do.classif) {
       # canceling occurences class modifications
       Data <- Data %>% mutate_at(resp_name, function(.x) {
@@ -663,7 +672,7 @@ bm_RunModel <- function(Model, Data, Options, calibLines, Yweights, nam, VarImpo
     cat("\n\tModel scaling...")
     model.bm@scaling_model <- try(.scaling_model(g.pred / 1000, Data[, 1, drop = TRUE], weights = Yweights))
     ## with weights
-    g.pred <- try(predict(model.bm, Data[, expl_var_names, drop = FALSE], on_0_1000 = RUE))
+    g.pred <- try(predict(model.bm, Data[, expl_var_names, drop = FALSE], on_0_1000 = TRUE))
   }
   
   ## check predictions existence and stop execution if not ok -----------------
@@ -701,7 +710,7 @@ bm_RunModel <- function(Model, Data, Options, calibLines, Yweights, nam, VarImpo
   }
   
   
-  ## 4. EVALUTE MODEL -----------------------------------------------------------------------------
+  ## 4. EVALUATE MODEL ----------------------------------------------------------------------------
   if (length(mod.eval.method) > 0) {
     cat("\n\tEvaluating Model stuff...")
     
@@ -901,8 +910,8 @@ bm_RunModel <- function(Model, Data, Options, calibLines, Yweights, nam, VarImpo
   avail.eval.meth.list <- c('TSS', 'KAPPA', 'ACCURACY', 'BIAS', 'POD', 'FAR', 'POFD'
                             , 'SR', 'CSI', 'ETS', 'HK', 'HSS', 'OR', 'ORSS', 'ROC')
   # .fun_testIfIn(TRUE, "mod.eval.method", mod.eval.method, avail.eval.meth.list)
-  if (sum(!(mod.eval.method %in% available.eval.meth)) > 0) {
-    tmp = which(mod.eval.method %in% available.eval.meth)
+  if (sum(!(mod.eval.method %in% avail.eval.meth.list)) > 0) {
+    tmp = which(mod.eval.method %in% avail.eval.meth.list)
     warnings(paste0(toString(mod.eval.method[!tmp]), ' were switched off !'), imediate = TRUE)
     mod.eval.method <- mod.eval.method[tmp]
   }

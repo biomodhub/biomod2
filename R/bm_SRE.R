@@ -230,7 +230,7 @@ bm_SRE <- function(Response = NULL,
   {
     Response <- as.data.frame(Response)
     
-    if (!is.vector(Explanatory) || !is.matrix(Explanatory) || is.data.frame(Explanatory) || !inherits(Explanatory, 'SpatialPoints'))
+    if (!is.vector(Explanatory) && !is.matrix(Explanatory) && !is.data.frame(Explanatory) && !inherits(Explanatory, 'SpatialPoints'))
     {
       stop("\n Response and Explanatory arguments must be of same type (both vector, both matrix, etc)")
     } else {

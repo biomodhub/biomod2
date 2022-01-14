@@ -180,6 +180,7 @@ get_optim_value <- function(stat)
          , 'HSS' = 1
          , 'OR' = 1000000
          , 'ORSS' = 1
+         , 'ROC' = 1
   )
 }
 

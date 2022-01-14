@@ -300,12 +300,12 @@ BIOMOD_Modeling <- function(data,
   
   ## 3.2 Get and save calibration lines ---------------------------------------
   mod.prep.dat <- .BIOMOD_Modeling.prepare.data(data, 
-                                       NbRunEval, 
-                                       DataSplit, 
-                                       Yweights, 
-                                       Prevalence, 
-                                       do.full.models, 
-                                       DataSplitTable)
+                                                NbRunEval, 
+                                                DataSplit, 
+                                                Yweights, 
+                                                Prevalence, 
+                                                do.full.models, 
+                                                DataSplitTable)
   rm(data)
   
   calib.lines <- mod.prep.dat[[1]]$calibLines
@@ -488,7 +488,7 @@ BIOMOD_Modeling <- function(data,
   ## 6. Check models.eval.meth arguments --------------------------------------
   models.eval.meth <- unique(models.eval.meth)
   avail.eval.meth.list <- c('TSS', 'KAPPA', 'ACCURACY', 'BIAS', 'POD', 'FAR', 'POFD'
-                            , 'SR', 'CSI', 'ETS', 'HK', 'HSS', 'OR', 'ORSS')
+                            , 'SR', 'CSI', 'ETS', 'HK', 'HSS', 'OR', 'ORSS', 'ROC')
   .fun_testIfIn(TRUE, "models.eval.meth", models.eval.meth, avail.eval.meth.list)
   
   ## 7. Check Prevalence arguments --------------------------------------------
@@ -538,6 +538,8 @@ BIOMOD_Modeling <- function(data,
 
 ##'
 ##' @include biomod2_classes_1.R
+##' 
+##' @importFrom dplyr bind_cols tibble
 ##'
 
 setGeneric(".BIOMOD_Modeling.prepare.data", def = function(data, ...) { standardGeneric(".BIOMOD_Modeling.prepare.data") })
@@ -809,7 +811,7 @@ setMethod('.BIOMOD_Modeling.prepare.data', signature('BIOMOD.formated.data.PA'),
           } else if (out == "prediction" || out == "prediction.eval" || 
                      (out == "var.import" && d3 %in% kept.mod)) {
             if (is.null(modOut[[d1]][[d2]][[d3]][[name_slot]])) {
-              return(rep(NA, nb.pts.pred))
+              return(rep(NA, nb.tmp))
             } else {
               return(as.numeric(modOut[[d1]][[d2]][[d3]][[name_slot]]))
             }

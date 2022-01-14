@@ -545,6 +545,22 @@ setMethod('BIOMOD.formated.data.PA', signature(sp = 'numeric', env = 'data.frame
                                      , na.rm)
           })
 
+setMethod('BIOMOD.formated.data.PA', signature(sp = 'numeric', env = 'RasterStack'),
+          function(sp, env, xy = NULL, sp.name = NULL
+                   , eval.sp = NULL, eval.env = NULL, eval.xy = NULL
+                   , PA.NbRep = 1, PA.strategy = 'random', PA.nb.absences = NULL
+                   , PA.dist.min = 0, PA.dist.max = NULL
+                   , PA.sre.quant = 0.025, PA.table = NULL
+                   , na.rm = TRUE)
+          {
+            .BIOMOD.formated.data.PA(sp, env, xy, sp.name
+                                     , eval.sp, eval.env, eval.xy
+                                     , PA.NbRep, PA.strategy, PA.nb.absences
+                                     , PA.dist.min, PA.dist.max
+                                     , PA.sre.quant, PA.table
+                                     , na.rm)
+          })
+
 .BIOMOD.formated.data.PA <-  function(sp, env, xy, sp.name
                                       , eval.sp = NULL, eval.env = NULL, eval.xy = NULL
                                       , PA.NbRep = 1, PA.strategy = 'random', PA.nb.absences = NULL
@@ -637,8 +653,8 @@ setMethod('BIOMOD.formated.data.PA', signature(sp = 'numeric', env = 'data.frame
         data.mask.tmp2 <- data.mask.tmp
         
         ind.pa <- as.data.frame(pa.data.tmp$pa.tab)[, pa]
-        xy_pres <- pa.data.tmp$xy[which(pa.data.tmp$sp == 1 & ind.pa), , drop = FALSE]
-        xy_abs <- pa.data.tmp$xy[which((pa.data.tmp$sp != 1 | is.na(pa.data.tmp$sp)) & ind.pa), , drop = FALSE]
+        xy_pres <- pa.data.tmp$xy[which(pa.data.tmp$sp == 1 & ind.pa == TRUE), , drop = FALSE]
+        xy_abs <- pa.data.tmp$xy[which((pa.data.tmp$sp != 1 | is.na(pa.data.tmp$sp)) & ind.pa == TRUE), , drop = FALSE]
         if (nrow(xy_pres)) {
           id_pres <- cellFromXY(data.mask.tmp, xy_pres)
           data.mask.tmp2[id_pres] <- 1
@@ -672,7 +688,7 @@ setMethod('BIOMOD.formated.data.PA', signature(sp = 'numeric', env = 'data.frame
   {
     cat("\n   ! PA selection not done", fill = .Options$width)
     
-    BFDP <- BIOMOD.formated.data(sp = sp,
+    BFDP <- BIOMOD.formated.data(sp = as.vector(sp@data),
                                  env = env,
                                  xy = xy,
                                  sp.name = sp.name, 

@@ -238,6 +238,7 @@ BIOMOD_Tuning <- function(data,
     if (!isNamespaceLoaded('dplyr')) { requireNamespace("dplyr", quietly = TRUE) }
     if (is.null(trControl)) {
       trControl <- trainControl(method = "cv",
+                                repeats = 3,
                                 summaryFunction = twoClassSummary,
                                 classProbs = TRUE,
                                 returnData = FALSE)
@@ -250,10 +251,11 @@ BIOMOD_Tuning <- function(data,
     tune.CTA.rpart <- tune.CTA.rpart2 <- tune.RF <- tune.ANN <- tune.MARS <- tune.FDA <- NULL
   # tune.MAXENT.Tsuruoka <- NULL
   
+  resp <- data@data.species
+  # if (is.null(Yweights)) { Yweights = rep(1, length(data@data.species))}
   
   
   ## 1.1 SRE --------------------------------------------------------------------------------------
-  resp <- data@data.species
   
   if ('SRE' %in% models)
   {
@@ -286,7 +288,7 @@ BIOMOD_Tuning <- function(data,
     } else if (metric == 'TSS') {
       models.options@SRE$quant <- t[which.max(t$sensitivity + t$specificity - 1), "quant"]
     }
-    cat(paste("Finished tuning SRE\n", "\n-=-=-=-=-=-=-=-=-=-=\n"))
+    cat(paste("Finished tuning SRE", "\n-=-=-=-=-=-=-=-=-=-=\n"))
   }
   
   if(metric == 'ROC' | metric == 'TSS'){ resp <- as.factor(ifelse(resp == 1 & !is.na(resp), "Presence", "Absence")) }
@@ -295,7 +297,7 @@ BIOMOD_Tuning <- function(data,
   
   if ('GBM' %in% models)
   {  
-    cat(paste("\n-=-=-=-=-=-=-=-=-=-=\n", "Start tuning GBM. Start coarse tuning\n"))
+    cat(paste("\n-=-=-=-=-=-=-=-=-=-=\n", "Start coarse tuning GBM\n"))
     if (is.null(ctrl.GBM)) { ctrl.GBM <- trControl }
     
     tune.grid <- expand.grid(.interaction.depth = seq(2, 8, by = 3),
@@ -311,10 +313,10 @@ BIOMOD_Tuning <- function(data,
                           weights = Yweights))
     
     cat("Best optimization of coarse tuning:\n")
-    cat(paste(tune.GBM$bestTune,"\n-=-=-=-=-=-=-=-=-=-=\n"))
+    cat(paste(tune.GBM$bestTune, collapse = ' / '), "\n")
     
     if (!is.null(tune.GBM)) {
-      cat("Start fine tuning\n")
+      cat(" Start fine tuning GBM\n")
       
       if (tune.GBM$bestTune$n.trees == 2500) {
         cat("Best optimization with large trees! Tuning GBM will take a while.\n")
@@ -358,7 +360,7 @@ BIOMOD_Tuning <- function(data,
       cat("Tuning GBM failed!")
       tune.GBM <- "FAILED"
     }
-    cat(paste("\n Finished tuning GBM\n","\n-=-=-=-=-=-=-=-=-=-=\n"))
+    cat(paste("Finished tuning GBM", "\n-=-=-=-=-=-=-=-=-=-=\n"))
   }
   
   ## 1.3 RF ---------------------------------------------------------------------------------------
@@ -387,7 +389,7 @@ BIOMOD_Tuning <- function(data,
       cat("Tuning RF failed!")
       tune.RF <- "FAILED"
     }
-    cat(paste("Finished tuning RF\n","\n-=-=-=-=-=-=-=-=-=-=\n"))
+    cat(paste("Finished tuning RF", "\n-=-=-=-=-=-=-=-=-=-=\n"))
   }
   
   ## 1.4 ANN --------------------------------------------------------------------------------------
@@ -434,7 +436,7 @@ BIOMOD_Tuning <- function(data,
       cat("Tuning ANN failed!")
       tune.ANN <- "FAILED"
     }
-    cat(paste("Finished tuning ANN\n","\n-=-=-=-=-=-=-=-=-=-=\n"))
+    cat(paste("Finished tuning ANN", "\n-=-=-=-=-=-=-=-=-=-=\n"))
   }
   
   ## 1.5 GAM --------------------------------------------------------------------------------------
@@ -462,7 +464,7 @@ BIOMOD_Tuning <- function(data,
       cat("Tuning GAM failed!")
       tune.GAM <- "FAILED"
     }
-    cat(paste("Finished tuning GAM\n","\n-=-=-=-=-=-=-=-=-=-=\n"))
+    cat(paste("Finished tuning GAM", "\n-=-=-=-=-=-=-=-=-=-=\n"))
   }
   
   ## 1.6 MARS -------------------------------------------------------------------------------------
@@ -506,7 +508,7 @@ BIOMOD_Tuning <- function(data,
       cat("Tuning MARS failed!")
       tune.MARS <- "FAILED"
     }
-    cat(paste("Finished tuning MARS\n","\n-=-=-=-=-=-=-=-=-=-=\n"))
+    cat(paste("Finished tuning MARS", "\n-=-=-=-=-=-=-=-=-=-=\n"))
   }
   
   ## 1.7 GLM --------------------------------------------------------------------------------------
@@ -527,8 +529,8 @@ BIOMOD_Tuning <- function(data,
                                              interaction.level = IA),
                               data = cbind(data@data.env.var, resp = resp),
                               method = method.GLM,
-                              trControl = ctrl.GLM,
-                              weights = Yweights))
+                              trControl = ctrl.GLM))
+                              # weights = Yweights))
         try(fm[[length(fm) + 1]] <- formula(tune.GLM$finalModel))
         try(RES <- cbind(tune.GLM$results, il = IA, type = type))
         return(RES)
@@ -540,7 +542,7 @@ BIOMOD_Tuning <- function(data,
     models.options@GLM$myFormula <- formula(paste(data@sp.name, "~", gsub("`", "", as.character(fm[[glm.best]])[3])))
     models.options@GLM$test <- "none" 
     
-    cat(paste("Finished tuning GLM\n","\n-=-=-=-=-=-=-=-=-=-=\n"))
+    cat(paste("Finished tuning GLM", "\n-=-=-=-=-=-=-=-=-=-=\n"))
   }      
   
   ## 1.8 FDA --------------------------------------------------------------------------------------
@@ -571,7 +573,7 @@ BIOMOD_Tuning <- function(data,
       cat("Tuning FDA failed!")
       tune.FDA <- "FAILED"
     }
-    cat(paste("Finished tuning FDA\n","\n-=-=-=-=-=-=-=-=-=-=\n"))
+    cat(paste("Finished tuning FDA", "\n-=-=-=-=-=-=-=-=-=-=\n"))
   }
   
   ## 1.9 CTA --------------------------------------------------------------------------------------
@@ -622,7 +624,7 @@ BIOMOD_Tuning <- function(data,
       cat("Tuning CTA maxdepth failed!")
       tune.CTA.rpart2 <- "FAILED"
     }
-    cat(paste("Finished tuning CTA\n","\n-=-=-=-=-=-=-=-=-=-=\n"))
+    cat(paste("Finished tuning CTA", "\n-=-=-=-=-=-=-=-=-=-=\n"))
   }
   
   ## 1.10 MAXENT.Phillips -------------------------------------------------------------------------
@@ -661,7 +663,7 @@ BIOMOD_Tuning <- function(data,
       cat("Tuning MAXENT.Phillips failed!")
       tune.MAXENT.Phillips <- "FAILED"
     }
-    cat(paste("Finished tuning MAXENT.Phillips\n","\n-=-=-=-=-=-=-=-=-=-=\n"))
+    cat(paste("Finished tuning MAXENT.Phillips", "\n-=-=-=-=-=-=-=-=-=-=\n"))
   }
   
   

@@ -8,10 +8,10 @@ Authors@R: c(person("Wilfried", "Thuiller", role = c("aut", "cre")
              person("Damien", "Georges", role = c("aut", "cre")),
              person("Maya", "Gueguen", role = c("aut", "cre")
                     , email = "maya.gueguen@univ-grenoble-alpes.fr"),
-             person("Engler", "Robin", role = "aut"),
-             person("Breiner", "Frank", role = "aut"
+             person("Robin", "Engler", role = "aut"),
+             person("Frank", "Breiner", role = "aut"
                     , email = "frank.breiner@wsl.ch"),
-             person("Lafourcade", "Bruno", role = "aut"))
+             person("Bruno", "Lafourcade", role = "aut"))
 Author: Wilfried Thuiller [aut, cre],
     Damien Georges [aut, cre],
     Maya Gueguen [aut, cre],
