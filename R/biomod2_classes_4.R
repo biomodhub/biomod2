@@ -1,11 +1,179 @@
 
+##' @name getters.bm
+##' @aliases get_formal_model
+##' @aliases get_scaling_model
+##' @author Damien Georges
 ##' 
-##' @importFrom raster raster merge as.matrix
+##' @title Functions to extract informations from \code{\link{biomod2_model}} objects
 ##' 
+##' @description These functions allow the user to easily retrieve single models (formal or scaled) 
+##' from \code{\link{biomod2_model}} objects from the modeling step.
+##' 
+##' @usage 
+##' 
+##' ## for signature 'biomod2_model' 
+##' get_formal_model(obj)
+##' get_scaling_model(obj)
+##' 
+##' 
+##' @param obj a \code{\link{biomod2_model}} object
+##' 
+##' 
+##' @export
+##' 
+
+setGeneric("get_formal_model", def = function(object) { standardGeneric("get_formal_model") })
+
+setGeneric("get_scaling_model", def = function(object) { standardGeneric("get_scaling_model") })
+
+
+##' @name predict.bm
+##' @aliases predict
+##' @aliases .predict.ANN_biomod2_model.RasterStack
+##' @aliases .predict.ANN_biomod2_model.data.frame
+##' @aliases .predict.CTA_biomod2_model.RasterStack
+##' @aliases .predict.CTA_biomod2_model.data.frame
+##' @aliases .predict.FDA_biomod2_model.RasterStack
+##' @aliases .predict.FDA_biomod2_model.data.frame
+##' @aliases .predict.GAM_biomod2_model.RasterStack
+##' @aliases .predict.GAM_biomod2_model.data.frame
+##' @aliases .predict.GBM_biomod2_model.RasterStack
+##' @aliases .predict.GBM_biomod2_model.data.frame
+##' @aliases .predict.GLM_biomod2_model.RasterStack
+##' @aliases .predict.GLM_biomod2_model.data.frame
+##' @aliases .predict.MARS_biomod2_model.RasterStack
+##' @aliases .predict.MARS_biomod2_model.data.frame
+##' @aliases .predict.MAXENT.Phillips_biomod2_model.RasterStack
+##' @aliases .predict.MAXENT.Phillips_biomod2_model.data.frame
+##' @aliases .predict.MAXENT.Phillips.2_biomod2_model.RasterStack
+##' @aliases .predict.MAXENT.Phillips.2_biomod2_model.data.frame
+##' @aliases .predict.RF_biomod2_model.RasterStack
+##' @aliases .predict.RF_biomod2_model.data.frame
+##' @aliases .predict.SRE_biomod2_model.RasterStack
+##' @aliases .predict.SRE_biomod2_model.data.frame
+##' @author Damien Georges
+##' 
+##' @title Functions to get predictions from \code{\link{biomod2_model}} objects
+##' 
+##' @description This function allows the user to predict single models from 
+##' \code{\link{biomod2_model}} on (new) explanatory variables.
+##' 
+##' @usage
+##' 
+##' ## for signature 'biomod2_model'
+##' predict(obj)
+## .predict.ANN_biomod2_model.RasterStack(obj, ...)
+## .predict.ANN_biomod2_model.data.frame(obj, ...)
+## .predict.CTA_biomod2_model.RasterStack(obj, ...)
+## .predict.CTA_biomod2_model.data.frame(obj, ...)
+## .predict.FDA_biomod2_model.RasterStack(obj, ...)
+## .predict.FDA_biomod2_model.data.frame(obj, ...)
+## .predict.GAM_biomod2_model.RasterStack(obj, ...)
+## .predict.GAM_biomod2_model.data.frame(obj, ...)
+## .predict.GBM_biomod2_model.RasterStack(obj, ...)
+## .predict.GBM_biomod2_model.data.frame(obj, ...)
+## .predict.GLM_biomod2_model.RasterStack(obj, ...)
+## .predict.GLM_biomod2_model.data.frame(obj, ...)
+## .predict.MARS_biomod2_model.RasterStack(obj, ...)
+## .predict.MARS_biomod2_model.data.frame(obj, ...)
+## .predict.MAXENT.Phillips_biomod2_model.RasterStack(obj, ...)
+## .predict.MAXENT.Phillips_biomod2_model.data.frame(obj, ...)
+## .predict.MAXENT.Phillips.2_biomod2_model.RasterStack(obj, ...)
+## .predict.MAXENT.Phillips.2_biomod2_model.data.frame(obj, ...)
+## .predict.RF_biomod2_model.RasterStack(obj, ...)
+## .predict.RF_biomod2_model.data.frame(obj, ...)
+## .predict.SRE_biomod2_model.RasterStack(obj, ...)
+## .predict.SRE_biomod2_model.data.frame(obj, ...)
+##' 
+##' 
+##' @param obj a \code{\link{biomod2_model}} object
+##' 
+##' 
+##' @export
+##' 
+
+setGeneric("predict", def = function(object, ...) { standardGeneric("predict") })
+
 
 ###################################################################################################
 ## 7. biomod2_model
 ###################################################################################################
+
+##' @name biomod2_model
+##' @aliases ANN_biomod2_model
+##' @aliases CTA_biomod2_model
+##' @aliases FDA_biomod2_model
+##' @aliases GAM_biomod2_model
+##' @aliases GBM_biomod2_model
+##' @aliases GLM_biomod2_model
+##' @aliases MARS_biomod2_model
+##' @aliases MAXENT.Phillips_biomod2_model
+##' @aliases MAXENT.Phillips.2_biomod2_model
+##' @aliases RF_biomod2_model
+##' @aliases SRE_biomod2_model
+##' @author Damien Georges
+##' 
+##' @title Single model output object class (when running \code{BIOMOD_Modeling()})
+##' 
+##' @description Class created by \code{\link{BIOMOD_Modeling}} and \code{\link{bm_RunModel}}
+##' 
+##' @slot model_name a \code{character} corresponding to the model name
+##' @slot model_class a \code{character} corresponding to the model class
+##' @slot model_options a \code{list} containing the model options
+##' @slot model the corresponding model object
+##' @slot scaling_model the corresponding scaled model object
+##' @slot resp_name a \code{character} corresponding to the species name
+##' @slot expl_var_names a \code{vector} containing names of explanatory variables
+##' @slot expl_var_type a \code{vector} containing classes of explanatory variables
+##' @slot expl_var_range a \code{list} containing ranges of explanatory variables
+##' @slot model_evaluation a \code{matrix} containing the model evaluations
+##' @slot model_variables_importance a \code{matrix} containing the model variables importance
+##' 
+##' @details 
+##' 
+##' \code{biomod2_model} is the basic object for \pkg{biomod2} single species distribution models. 
+##' \cr All listed classes below are derived from \code{biomod2_model}, and have a 
+##' \code{model_class} slot specific value :
+##' 
+##' \itemize{
+##'   \item{\code{ANN_biomod2_model} : }{\code{model_class} is \code{ANN}}
+##'   \item{\code{CTA_biomod2_model} : }{\code{model_class} is \code{CTA}}
+##'   \item{\code{FDA_biomod2_model} : }{\code{model_class} is \code{FDA}}
+##'   \item{\code{GBM_biomod2_model} : }{\code{model_class} is \code{GBM}}
+##'   \item{\code{GLM_biomod2_model} : }{\code{model_class} is \code{GLM}}
+##'   \item{\code{MARS_biomod2_model} : }{\code{model_class} is \code{MARS}}
+##'   \item{\code{MAXENT.Phillips_biomod2_model} : }{\code{model_class} is \code{MAXENT.Phillips}}
+##'   \item{\code{MAXENT.Phillips.2_biomod2_model} : }{\code{model_class} is 
+##'   \code{MAXENT.Phillips.2}}
+##'   \item{\code{RF_biomod2_model} : }{\code{model_class} is \code{RF}}
+##'   \item{\code{SRE_biomod2_model} : }{\code{model_class} is \code{SRE}}
+##' }
+##' 
+##' 
+##' @seealso \code{\link{BIOMOD_Modeling}}, \code{\link{bm_RunModel}}
+##' 
+##' 
+##' @examples
+##' 
+##' showClass("biomod2_model")
+##' showClass("ANN_biomod2_model")
+##' showClass("CTA_biomod2_model")
+##' showClass("FDA_biomod2_model")
+##' showClass("GAM_biomod2_model")
+##' showClass("GBM_biomod2_model")
+##' showClass("GLM_biomod2_model")
+##' showClass("MARS_biomod2_model")
+##' showClass("MAXENT.Phillips_biomod2_model")
+##' showClass("MAXENT.Phillips.2_biomod2_model")
+##' showClass("RF_biomod2_model")
+##' showClass("SRE_biomod2_model")
+##' 
+##'
+##' 
+##' @importFrom raster raster merge as.matrix
+##' 
+##' @export
+##' 
 
 # 7.1 Class Definition ----------------------------------------------------------------------------
 setClass('biomod2_model',
@@ -36,11 +204,7 @@ setClass('biomod2_model',
          })
 
 # 7.2 Getters -------------------------------------------------------------------------------------
-setGeneric("get_formal_model", def = function(object) { standardGeneric("get_formal_model") })
-
 setMethod('get_formal_model', signature('biomod2_model'), function(object) { return(object@model) })
-
-setGeneric("get_scaling_model", def = function(object) { standardGeneric("get_scaling_model") })
 
 setMethod('get_scaling_model', signature('biomod2_model'), function(object) { return(object@scaling_model) })
 

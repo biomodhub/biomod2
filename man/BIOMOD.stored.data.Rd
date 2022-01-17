@@ -9,6 +9,7 @@
 \alias{BIOMOD.stored.files}
 \alias{BIOMOD.stored.formated.data}
 \alias{BIOMOD.stored.models.options}
+\alias{BIOMOD.stored.models.out}
 \title{\code{BIOMOD_EnsembleModeling()} output object class}
 \description{
 Classes used by \code{\link{BIOMOD_Modeling}} and 
@@ -53,6 +54,7 @@ showClass("BIOMOD.stored.raster.stack")
 showClass("BIOMOD.stored.files") 
 showClass("BIOMOD.stored.formated.data") 
 showClass("BIOMOD.stored.models.options") 
+showClass("BIOMOD.stored.models.out") 
 
 
 }

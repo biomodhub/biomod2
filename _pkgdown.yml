@@ -30,19 +30,8 @@ navbar:
 
 
 reference:
-  - title: Objects
-    contents:
-      - "BIOMOD.formated.data"
-      - "BIOMOD.formated.data.PA"
-      - "BIOMOD.model.options"
-      - "BIOMOD.stored.data"
-      - "BIOMOD.models.out"
-      - "BIOMOD.projection.out"
-      - "BIOMOD.ensemble.models.out"
-  - title: Getters
-    contents:
-      - "get_[...]"
-  - title: Main functions
+  - title: Modeling species distributions
+  - subtitle: Main functions
     contents:
       - "BIOMOD_FormatingData"
       - "BIOMOD_CrossValidation"
@@ -55,7 +44,7 @@ reference:
       - "BIOMOD_RangeSize"
       - "BIOMOD_LoadModels"
       - "BIOMOD_PresenceOnly"
-  - title: Secundary functions
+  - subtitle: Secundary functions
     contents:
       - "bm_MakeFormula"
       - "bm_SampleBinaryVector"
@@ -68,4 +57,24 @@ reference:
       - "bm_FindOptimStat"
       - "bm_BinaryTransformation"
       - "bm_VariablesImportance"
+  - title: Toolbox
+  - subtitle: Objects
+    contents:
+      - "BIOMOD.formated.data"
+      - "BIOMOD.formated.data.PA"
+      - "BIOMOD.model.options"
+      - "BIOMOD.stored.data"
+      - "biomod2_model"
+      - "biomod2_ensemble_model"
+      - "BIOMOD.models.out"
+      - "BIOMOD.projection.out"
+      - "BIOMOD.ensemble.models.out"
+  - subtitle: Getters
+    contents:
+      - "load_stored_object"
+      - "getters.bm"
+      - "predict.bm"
+      - "predict.em"
+      - "getters.out"
+
 

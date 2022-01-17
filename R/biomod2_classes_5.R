@@ -1,14 +1,114 @@
-# =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=- #
-# BIOMOD models definition(to make it easier to access plot, predict, ...)
-# Damien Georges, Maya Gueguen
-# 20/11/2012, update 22/10/2021
-# =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=- #
 
+##' @name predict.em
+##' @aliases predict
+##' @aliases .predict.EMmean_biomod2_model.RasterStack
+##' @aliases .predict.EMmean_biomod2_model.data.frame
+##' @aliases .predict.EMmedian_biomod2_model.RasterStack
+##' @aliases .predict.EMmedian_biomod2_model.data.frame
+##' @aliases .predict.EMcv_biomod2_model.RasterStack
+##' @aliases .predict.EMcv_biomod2_model.data.frame
+##' @aliases .predict.EMci_biomod2_model.RasterStack
+##' @aliases .predict.EMci_biomod2_model.data.frame
+##' @aliases .predict.EMca_biomod2_model.RasterStack
+##' @aliases .predict.EMca_biomod2_model.data.frame
+##' @aliases .predict.EMwmean_biomod2_model.RasterStack
+##' @aliases .predict.EMwmean_biomod2_model.data.frame
+##' @author Damien Georges
+##' 
+##' @title Functions to get predictions from \code{\link{biomod2_ensemble_model}} objects
+##' 
+##' @description This function allows the user to predict single models from 
+##' \code{\link{biomod2_ensemble_model}} on (new) explanatory variables.
+##' 
+##' @usage
+##' 
+##' ## for signature 'biomod2_ensemble_model'
+##' predict(obj)
+## .predict.EMmean_biomod2_model.RasterStack(obj, ...)
+## .predict.EMmean_biomod2_model.data.frame(obj, ...)
+## .predict.EMmedian_biomod2_model.RasterStack(obj, ...)
+## .predict.EMmedian_biomod2_model.data.frame(obj, ...)
+## .predict.EMcv_biomod2_model.RasterStack(obj, ...)
+## .predict.EMcv_biomod2_model.data.frame(obj, ...)
+## .predict.EMci_biomod2_model.RasterStack(obj, ...)
+## .predict.EMci_biomod2_model.data.frame(obj, ...)
+## .predict.EMca_biomod2_model.RasterStack(obj, ...)
+## .predict.EMca_biomod2_model.data.frame(obj, ...)
+## .predict.EMwmean_biomod2_model.RasterStack(obj, ...)
+## .predict.EMwmean_biomod2_model.data.frame(obj, ...)
+##' 
+##' 
+##' @param obj a \code{\link{biomod2_ensemble_model}} object
+##' 
+##' 
+##' @export
+##' 
 
+setGeneric("predict", def = function(object, ...) { standardGeneric("predict") })
 
 ###################################################################################################
 ## 9. biomod2_ensemble_model
 ###################################################################################################
+
+##' @name biomod2_ensemble_model
+##' @aliases biomod2_ensemble_model
+##' @aliases EMmean_biomod2_model
+##' @aliases EMmedian_biomod2_model
+##' @aliases EMcv_biomod2_model
+##' @aliases EMci_biomod2_model
+##' @aliases EMca_biomod2_model
+##' @aliases EMwmean_biomod2_model
+##' @author Damien Georges
+##' 
+##' @title Ensemble model output object class (when running \code{BIOMOD_EnsembleModeling()})
+##' 
+##' @description Class created by \code{\link{BIOMOD_EnsembleModeling}}
+##' 
+##' @slot model_name a \code{character} corresponding to the model name
+##' @slot model_class a \code{character} corresponding to the model class
+##' @slot model_options a \code{list} containing the model options
+##' @slot model the corresponding model object
+##' @slot scaling_model the corresponding scaled model object
+##' @slot resp_name a \code{character} corresponding to the species name
+##' @slot expl_var_names a \code{vector} containing names of explanatory variables
+##' @slot expl_var_type a \code{vector} containing classes of explanatory variables
+##' @slot expl_var_range a \code{list} containing ranges of explanatory variables
+##' @slot model_evaluation a \code{matrix} containing the model evaluations
+##' @slot model_variables_importance a \code{matrix} containing the model variables importance
+##' 
+##' @details 
+##' 
+##' \code{biomod2_model} is the basic object for \pkg{biomod2} ensemble species distribution models. 
+##' \cr All listed classes below are derived from \code{biomod2_model}, and have a 
+##' \code{model_class} slot specific value :
+##' 
+##' \itemize{
+##'   \item{\code{biomod2_ensemble_model} : }{\code{model_class} is \code{EM}}
+##'   \item{\code{EMmean_biomod2_model} : }{\code{model_class} is \code{EMmean}}
+##'   \item{\code{EMmedian_biomod2_model} : }{\code{model_class} is \code{EMmedian}}
+##'   \item{\code{EMcv_biomod2_model} : }{\code{model_class} is \code{EMcv}}
+##'   \item{\code{EMci_biomod2_model} : }{\code{model_class} is \code{EMci}}
+##'   \item{\code{EMca_biomod2_model} : }{\code{model_class} is \code{EMca}}
+##'   \item{\code{EMwmean_biomod2_model} : }{\code{model_class} is \code{EMwmean}}
+##' }
+##' 
+##' 
+##' @seealso \code{\link{biomod2_model}}, \code{\link{BIOMOD_EnsembleModeling}}
+##' 
+##' 
+##' @examples
+##' 
+##' showClass("biomod2_ensemble_model")
+##' showClass("EMmean_biomod2_model")
+##' showClass("EMmedian_biomod2_model")
+##' showClass("EMcv_biomod2_model")
+##' showClass("EMci_biomod2_model")
+##' showClass("EMca_biomod2_model")
+##' showClass("EMwmean_biomod2_model")
+##' 
+##' 
+##' @export
+##' 
 
 # 9.1 Class Definition ----------------------------------------------------------------------------
 setClass('biomod2_ensemble_model',
@@ -148,7 +248,7 @@ setMethod('predict', signature(object = 'EMmedian_biomod2_model'),
 setClass('EMcv_biomod2_model',
          representation(),
          contains = 'biomod2_ensemble_model',
-         prototype = list(model_class = 'EMmedian'),
+         prototype = list(model_class = 'EMcv'),
          validity = function(object) { return(TRUE) })
 
 setMethod('predict', signature(object = 'EMcv_biomod2_model'),

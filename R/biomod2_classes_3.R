@@ -5,7 +5,7 @@
 ##    A = BIOMOD.models.out, B = BIOMOD.projection.out, C = BIOMOD.ensemble.models.out
 ###################################################################################################
 
-##' @name get_[...]
+##' @name getters.out
 ##' @aliases get_options
 ##' @aliases get_calib_lines
 ##' @aliases get_formal_data
@@ -19,7 +19,8 @@
 ##' @aliases get_variables_importance
 ##' @author Damien Georges
 ##' 
-##' @title Functions to extract informations from \pkg{biomod2} objects
+##' @title Functions to extract informations from \code{\link{BIOMOD.models.out}}, 
+##' \code{\link{BIOMOD.projection.out}} or \code{\link{BIOMOD.ensemble.models.out}} objects
 ##' 
 ##' @description These functions allow the user to easily retrieve informations stored in the 
 ##' different \pkg{biomod2} objects from the different modeling steps, such as modeling options 

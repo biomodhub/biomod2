@@ -7,6 +7,7 @@
 ##' @aliases BIOMOD.stored.files
 ##' @aliases BIOMOD.stored.formated.data
 ##' @aliases BIOMOD.stored.models.options
+##' @aliases BIOMOD.stored.models.out
 ##' @author Damien Georges
 ##' 
 ##' @title \code{BIOMOD_EnsembleModeling()} output object class
@@ -54,6 +55,7 @@
 ##' showClass("BIOMOD.stored.files") 
 ##' showClass("BIOMOD.stored.formated.data") 
 ##' showClass("BIOMOD.stored.models.options") 
+##' showClass("BIOMOD.stored.models.out") 
 ##' 
 ##' 
 ##' @importFrom raster stack
@@ -116,6 +118,21 @@ setClass("BIOMOD.stored.models.out",
 ###################################################################################################
 ## LOAD BIOMOD.stored[...] objects
 ###################################################################################################
+
+##' @name load_stored_object
+##' @author Damien Georges
+##' 
+##' @title Functions to load \code{\link{BIOMOD.stored.data}} objects
+##' 
+##' @description This functions allow the user to load \code{\link{BIOMOD.stored.data}} objects 
+##' into memory.
+##' 
+##' 
+##' @param obj a \code{\link{BIOMOD.stored.data}} object
+##' 
+##' 
+##' @export
+##' 
 
 setGeneric("load_stored_object", function(obj, ...) { standardGeneric("load_stored_object") })
 
