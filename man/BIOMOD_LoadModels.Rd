@@ -7,7 +7,7 @@
 BIOMOD_LoadModels(bm.out, ...)
 }
 \arguments{
-\item{bm.out}{a \code{BIOMOD.models.out} (or \code{BIOMOD.EnsembleModeling.out}) object that 
+\item{bm.out}{a \code{BIOMOD.models.out} (or \code{BIOMOD.ensemble.models.out}) object that 
 can be obtained from \code{\link{BIOMOD_Modeling}} (or \code{\link{BIOMOD_EnsembleModeling}}) 
 function}
 

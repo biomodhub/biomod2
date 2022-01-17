@@ -94,7 +94,7 @@ A high value will strongly discriminate \emph{good} models from the \emph{bad} o
 attribute weights proportionally to the models evaluation scores}
 }
 \value{
-A \code{BIOMOD.EnsembleModeling.out} object containing models outputs, or links to saved 
+A \code{BIOMOD.ensemble.models.out} object containing models outputs, or links to saved 
 outputs. \cr Models outputs are stored out of \R (for memory storage reasons) in 2 different 
 folders created in the current working directory :
 \enumerate{

@@ -45,6 +45,17 @@
 ##' \code{\link{BIOMOD_Projection}}, \code{\link{BIOMOD_EnsembleForecasting}}
 ##' 
 ##' 
+##' @examples 
+##' 
+##' showClass("BIOMOD.stored.data")
+##' showClass("BIOMOD.stored.array") 
+##' showClass("BIOMOD.stored.data.frame") 
+##' showClass("BIOMOD.stored.raster.stack") 
+##' showClass("BIOMOD.stored.files") 
+##' showClass("BIOMOD.stored.formated.data") 
+##' showClass("BIOMOD.stored.models.options") 
+##' 
+##' 
 ##' @importFrom raster stack
 ##' 
 ##' @export

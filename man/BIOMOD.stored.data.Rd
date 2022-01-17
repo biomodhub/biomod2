@@ -44,6 +44,18 @@ memory or not}
 \href{BIOMOD.stored.data.html#details}{Details})}
 }}
 
+\examples{
+
+showClass("BIOMOD.stored.data")
+showClass("BIOMOD.stored.array") 
+showClass("BIOMOD.stored.data.frame") 
+showClass("BIOMOD.stored.raster.stack") 
+showClass("BIOMOD.stored.files") 
+showClass("BIOMOD.stored.formated.data") 
+showClass("BIOMOD.stored.models.options") 
+
+
+}
 \seealso{
 \code{\link{BIOMOD.formated.data}}, \code{\link{BIOMOD.model.options}}, 
 \code{\link{BIOMOD_Modeling}}, \code{\link{BIOMOD_EnsembleModeling}}, 

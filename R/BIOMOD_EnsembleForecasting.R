@@ -9,7 +9,7 @@
 ##' (\emph{which can represent new areas, resolution or time scales for example}).
 ##' 
 ##' 
-##' @param EM.output a \code{\link{BIOMOD.EnsembleModeling.out}} object returned by the 
+##' @param EM.output a \code{\link{BIOMOD.ensemble.models.out}} object returned by the 
 ##' \code{\link{BIOMOD_EnsembleModeling}} function
 ##' @param projection.output a \code{\link{BIOMOD.projection.out}} object returned by the 
 ##' \code{\link{BIOMOD_Projection}} function
@@ -483,7 +483,7 @@ BIOMOD_EnsembleForecasting <- function(EM.output,
                                                    filtered.meth)
 {
   ## 1. Check EM.output -------------------------------------------------------
-  .fun_testIfInherits(TRUE, "EM.output", EM.output, "BIOMOD.EnsembleModeling.out")
+  .fun_testIfInherits(TRUE, "EM.output", EM.output, "BIOMOD.ensemble.models.out")
   
   ## 2. Check needed data and predictions -------------------------------------
   if ((is.null(projection.output) && is.null(new.env)) ||

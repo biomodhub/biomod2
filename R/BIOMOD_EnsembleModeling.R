@@ -68,7 +68,7 @@
 ##' 
 ##' @return
 ##' 
-##' A \code{BIOMOD.EnsembleModeling.out} object containing models outputs, or links to saved 
+##' A \code{BIOMOD.ensemble.models.out} object containing models outputs, or links to saved 
 ##' outputs. \cr Models outputs are stored out of \R (for memory storage reasons) in 2 different 
 ##' folders created in the current working directory :
 ##' \enumerate{
@@ -362,7 +362,7 @@ BIOMOD_EnsembleModeling <- function(modeling.output,
   
   
   ## 1. Create output object ----------------------------------------------------------------------
-  EM <- new('BIOMOD.EnsembleModeling.out',
+  EM <- new('BIOMOD.ensemble.models.out',
             sp.name = modeling.output@sp.name,
             expl.var.names = modeling.output@expl.var.names,
             em.by = em.by,

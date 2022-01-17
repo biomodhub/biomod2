@@ -5,7 +5,7 @@
 ##' @title Evaluate models with presence-only metrics
 ##' 
 ##' @description This function computes presence-only evaluation metrics (Boyce index and Minimal 
-##' Predicted Area) for \code{BIOMOD.models.out} or \code{BIOMOD.EnsembleModeling.out} objects 
+##' Predicted Area) for \code{BIOMOD.models.out} or \code{BIOMOD.ensemble.models.out} objects 
 ##' that can be obtained from \code{\link{BIOMOD_Modeling}} or 
 ##' \code{\link{BIOMOD_EnsembleModeling}} functions.
 ##' 
@@ -13,7 +13,7 @@
 ##' A \code{BIOMOD.models.out} object that can be obtained from \code{\link{BIOMOD_Modeling}} 
 ##' function
 ##' @param EM.output (\emph{optional, default} \code{NULL}) \cr 
-##' A \code{BIOMOD.EnsembleModeling.out} object that can be obtained from 
+##' A \code{BIOMOD.ensemble.models.out} object that can be obtained from 
 ##' \code{\link{BIOMOD_EnsembleModeling}} function
 ##' @param bg.env (\emph{optional, default} \code{NULL}) \cr 
 ##' A \code{matrix} or \code{data.frame} object containing values of environmental variables 

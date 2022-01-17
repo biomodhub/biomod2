@@ -8,7 +8,7 @@
 ##' or \code{\link{BIOMOD_EnsembleModeling}} functions.
 ##' 
 ##' 
-##' @param bm.out a \code{BIOMOD.models.out} (or \code{BIOMOD.EnsembleModeling.out}) object that 
+##' @param bm.out a \code{BIOMOD.models.out} (or \code{BIOMOD.ensemble.models.out}) object that 
 ##' can be obtained from \code{\link{BIOMOD_Modeling}} (or \code{\link{BIOMOD_EnsembleModeling}}) 
 ##' function
 ##' @param ... (\emph{optional, see \href{BIOMOD_LoadModels.html#details}{Details})}) 
@@ -179,7 +179,7 @@ BIOMOD_LoadModels <- function(bm.out, ... )
 .BIOMOD_LoadModels.check.args <- function(bm.out, add.args)
 {
   ## 1. Check bm.out ----------------------------------------------------------
-  .fun_testIfInherits(TRUE, "bm.out", bm.out, c("BIOMOD.models.out", "BIOMOD.EnsembleModeling.out"))
+  .fun_testIfInherits(TRUE, "bm.out", bm.out, c("BIOMOD.models.out", "BIOMOD.ensemble.models.out"))
   
   ## 2. Check add.args --------------------------------------------------------
   available.args <- c("models", "run.eval", "data.set", "path", "as", "full.name")

@@ -814,9 +814,6 @@ setMethod('plot', signature(x = 'BIOMOD.formated.data.PA', y = "missing"),
           }
 )
 
-##' @rdname BIOMOD.formated.data.PA-objects
-##' @docType method
-##' @aliases show, BIOMOD.formated.data.PA-method
 setMethod('show', signature('BIOMOD.formated.data.PA'),
           function(object)
           {

@@ -18,7 +18,7 @@ BIOMOD_EnsembleForecasting(
 )
 }
 \arguments{
-\item{EM.output}{a \code{\link{BIOMOD.EnsembleModeling.out}} object returned by the 
+\item{EM.output}{a \code{\link{BIOMOD.ensemble.models.out}} object returned by the 
 \code{\link{BIOMOD_EnsembleModeling}} function}
 
 \item{projection.output}{a \code{\link{BIOMOD.projection.out}} object returned by the 

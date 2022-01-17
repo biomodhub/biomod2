@@ -238,7 +238,7 @@ BIOMOD_Projection <- function(modeling.output,
                   sp.name =  modeling.output@sp.name,
                   expl.var.names = modeling.output@expl.var.names,
                   models.projected = chosen.models,
-                  scaled.models = modeling.output@rescal.all.models,
+                  models.scaled = modeling.output@rescal.all.models,
                   xy.coord = new.env.xy,
                   modeling.object.id = modeling.output@modeling.id)
   proj_out@modeling.object@link = modeling.output@link
@@ -598,4 +598,32 @@ BIOMOD_Projection <- function(modeling.output,
     }
   } else { stop("Unsupported env arg") }
   return(clamp.mask)
+}
+
+
+###################################################################################################
+
+DF_to_ARRAY <- function(df)
+{
+  if (!is.data.frame(df) & !is.matrix(df)) {
+    if (is.list(df)) {
+      df.names <- names(df)
+      df <- as.data.frame(df)
+      names(df) <- df.names
+    } else {
+      stop("You have to give a data.frame")
+    }
+  }
+
+  a <- sapply(strsplit(colnames(df), '_'), tail, n = 3)
+  b <- lapply(1:3, function(id) return(unique(a[id, ])))
+  array.dim.names <- c(list(character(0)), rev(b))
+  array.dim <- c(nrow(df), sapply(array.dim.names[-1], length))
+  array.out <- array(data = NA, dim = array.dim, dimnames = array.dim.names)
+
+  for (x in colnames(df)) {
+    dimTmp <- rev(tail(unlist(strsplit(x, '_')), n = 3))
+    array.out[, dimTmp[1], dimTmp[2], dimTmp[3]] <- df[, x]
+  }
+  return(array.out)
 }
