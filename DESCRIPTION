@@ -84,6 +84,7 @@ Collate:
     'BIOMOD_Projection.R'
     'BIOMOD_RangeSize.R'
     'BIOMOD_Tuning.R'
+    'DEPRECATED.R'
     'ProbDensFunc.R'
     'biomod2-package.R'
     'biomod2_classes_2.R'
