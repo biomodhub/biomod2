@@ -163,6 +163,11 @@ bm_FindOptimStat <- function(Stat = 'TSS',
 
 ###################################################################################################
 
+##'
+##' @rdname bm_FindOptimStat
+##' @export
+##'
+
 get_optim_value <- function(stat)
 {
   switch(stat
@@ -224,6 +229,11 @@ get_optim_value <- function(stat)
   
   return(Misc)
 }
+
+##'
+##' @rdname bm_FindOptimStat
+##' @export
+##'
 
 bm_CalculateStat <- function(Misc, stat = 'TSS')
 {

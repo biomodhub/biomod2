@@ -120,6 +120,11 @@ bm_RunModelsLoop <- function(X,
 
 ###################################################################################################
 
+##' 
+##' @rdname bm_RunModelsLoop
+##' @export
+##' 
+
 bm_RunModel <- function(Model, Data, Options, calibLines, Yweights, nam, VarImport = 0,
                         mod.eval.method = c('ROC','TSS','KAPPA'), evalData = NULL,
                         SavePred = FALSE,

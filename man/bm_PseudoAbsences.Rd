@@ -6,6 +6,14 @@
 \alias{bm_PseudoAbsences_sre}
 \alias{bm_PseudoAbsences_disk}
 \alias{bm_PseudoAbsences_user.defined}
+\alias{bm_PseudoAbsences_user.defined,ANY,SpatialPointsDataFrame-method}
+\alias{bm_PseudoAbsences_user.defined,ANY,RasterStack-method}
+\alias{bm_PseudoAbsences_random,ANY,SpatialPointsDataFrame-method}
+\alias{bm_PseudoAbsences_random,ANY,RasterStack-method}
+\alias{bm_PseudoAbsences_sre,ANY,SpatialPointsDataFrame-method}
+\alias{bm_PseudoAbsences_sre,ANY,RasterStack-method}
+\alias{bm_PseudoAbsences_disk,ANY,SpatialPointsDataFrame-method}
+\alias{bm_PseudoAbsences_disk,ANY,RasterStack-method}
 \title{Select pseudo-absences}
 \usage{
 bm_PseudoAbsences(
@@ -19,6 +27,30 @@ bm_PseudoAbsences(
   quant.SRE = 0,
   PA.table = NULL
 )
+
+bm_PseudoAbsences_user.defined(sp, env, ...)
+
+\S4method{bm_PseudoAbsences_user.defined}{ANY,SpatialPointsDataFrame}(sp, env, pa.table)
+
+\S4method{bm_PseudoAbsences_user.defined}{ANY,RasterStack}(sp, env, pa.table)
+
+bm_PseudoAbsences_random(sp, env, ...)
+
+\S4method{bm_PseudoAbsences_random}{ANY,SpatialPointsDataFrame}(sp, env, nb.points, nb.repet)
+
+\S4method{bm_PseudoAbsences_random}{ANY,RasterStack}(sp, env, nb.points, nb.repet)
+
+bm_PseudoAbsences_sre(sp, env, ...)
+
+\S4method{bm_PseudoAbsences_sre}{ANY,SpatialPointsDataFrame}(sp, env, quant.SRE, nb.points, nb.repet)
+
+\S4method{bm_PseudoAbsences_sre}{ANY,RasterStack}(sp, env, quant.SRE, nb.points, nb.repet)
+
+bm_PseudoAbsences_disk(sp, env, ...)
+
+\S4method{bm_PseudoAbsences_disk}{ANY,SpatialPointsDataFrame}(sp, env, distMin, distMax, nb.points, nb.repet)
+
+\S4method{bm_PseudoAbsences_disk}{ANY,RasterStack}(sp, env, distMin, distMax, nb.points, nb.repet)
 }
 \arguments{
 \item{sp}{the species observations}

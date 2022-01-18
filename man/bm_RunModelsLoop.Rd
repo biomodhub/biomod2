@@ -15,6 +15,23 @@ bm_RunModelsLoop(
   SavePred = TRUE,
   scal.models = TRUE
 )
+
+bm_RunModel(
+  Model,
+  Data,
+  Options,
+  calibLines,
+  Yweights,
+  nam,
+  VarImport = 0,
+  mod.eval.method = c("ROC", "TSS", "KAPPA"),
+  evalData = NULL,
+  SavePred = FALSE,
+  xy = NULL,
+  eval.xy = NULL,
+  scal.models = TRUE,
+  modeling.id = ""
+)
 }
 \arguments{
 \item{X}{a \code{BIOMOD.formated.data} or \code{BIOMOD.formated.data.PA} object returned by the 

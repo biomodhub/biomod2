@@ -30,7 +30,7 @@ navbar:
 
 
 reference:
-  - title: --------------------------- Modeling species distributions
+  - title: Modeling species distributions
   - subtitle: Main functions
     contents:
       - "BIOMOD_FormatingData"
@@ -57,7 +57,7 @@ reference:
       - "bm_FindOptimStat"
       - "bm_BinaryTransformation"
       - "bm_VariablesImportance"
-  - title: ------------------------------------------------------- Toolbox
+  - title: Toolbox
   - subtitle: Objects
     contents:
       - "BIOMOD.formated.data"
@@ -73,8 +73,8 @@ reference:
     contents:
       - "load_stored_object"
       - "getters.bm"
+      - "getters.out"
       - "predict.bm"
       - "predict.em"
-      - "getters.out"
 
 

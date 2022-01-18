@@ -329,7 +329,8 @@
 ##'
 ## @importFrom gam gam.control
 ## @importFrom mgcv gam.control
-##'
+##' 
+##' 
 ##' @export
 ##'
 ###################################################################################################
@@ -566,9 +567,14 @@ BIOMOD_ModelingOptions <- function(GLM = NULL,
 
 ###################################################################################################
 
+##'
+##' @rdname BIOMOD_ModelingOptions
+##' @export
+##'
+
 bm_DefaultModelingOptions <- function()
 {
-  cat('\n Defaut modeling options. copy, change what you want paste it as arg to BIOMOD_ModelingOptions\n\n')
+  cat('\n Defaut modeling options. Copy, change what you want, and paste it as arg to BIOMOD_ModelingOptions().\n\n')
   opt_tmp <- BIOMOD_ModelingOptions()
   print(opt_tmp)
 }

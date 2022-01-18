@@ -25,10 +25,37 @@
 \alias{.predict.RF_biomod2_model.data.frame}
 \alias{.predict.SRE_biomod2_model.RasterStack}
 \alias{.predict.SRE_biomod2_model.data.frame}
+\alias{predict,ANN_biomod2_model-method}
+\alias{predict,CTA_biomod2_model-method}
+\alias{predict,FDA_biomod2_model-method}
+\alias{predict,GAM_biomod2_model-method}
+\alias{predict,GBM_biomod2_model-method}
+\alias{predict,MARS_biomod2_model-method}
+\alias{predict,MAXENT.Phillips_biomod2_model-method}
+\alias{predict,MAXENT.Phillips.2_biomod2_model-method}
+\alias{predict,RF_biomod2_model-method}
+\alias{predict,SRE_biomod2_model-method}
 \title{Functions to get predictions from \code{\link{biomod2_model}} objects}
 \usage{
-## for signature 'biomod2_model'
-predict(obj)
+\S4method{predict}{ANN_biomod2_model}(object, newdata, ...)
+
+\S4method{predict}{CTA_biomod2_model}(object, newdata, ...)
+
+\S4method{predict}{FDA_biomod2_model}(object, newdata, ...)
+
+\S4method{predict}{GAM_biomod2_model}(object, newdata, ...)
+
+\S4method{predict}{GBM_biomod2_model}(object, newdata, ...)
+
+\S4method{predict}{MARS_biomod2_model}(object, newdata, ...)
+
+\S4method{predict}{MAXENT.Phillips_biomod2_model}(object, newdata, ...)
+
+\S4method{predict}{MAXENT.Phillips.2_biomod2_model}(object, newdata, ...)
+
+\S4method{predict}{RF_biomod2_model}(object, newdata, ...)
+
+\S4method{predict}{SRE_biomod2_model}(object, newdata, ...)
 }
 \arguments{
 \item{obj}{a \code{\link{biomod2_model}} object}

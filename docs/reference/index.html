@@ -61,7 +61,7 @@
     </div>
 
     <table class="ref-index"><colgroup><col class="alias"><col class="title"></colgroup><tbody><tr><th colspan="2">
-          <h2 id="-modeling-species-distributions">--------------------------- Modeling species distributions <a href="#-modeling-species-distributions" class="anchor" aria-hidden="true"></a></h2>
+          <h2 id="modeling-species-distributions">Modeling species distributions <a href="#modeling-species-distributions" class="anchor" aria-hidden="true"></a></h2>
           <p class="section-desc"></p>
         </th>
       </tr></tbody><tbody><tr><th colspan="2">
@@ -77,7 +77,7 @@
         </td>
         <td><p>Custom models cross-validation procedure</p></td>
       </tr><tr><td>
-          <p><code><a href="BIOMOD_ModelingOptions.html">BIOMOD_ModelingOptions()</a></code> </p>
+          <p><code><a href="BIOMOD_ModelingOptions.html">BIOMOD_ModelingOptions()</a></code> <code><a href="BIOMOD_ModelingOptions.html">bm_DefaultModelingOptions()</a></code> </p>
         </td>
         <td><p>Configure the modeling options for each selected model</p></td>
       </tr><tr><td>
@@ -129,11 +129,11 @@
         </td>
         <td><p>Tool to ensure the sampling of all levels of a factorial variable</p></td>
       </tr><tr><td>
-          <p><code><a href="bm_PseudoAbsences.html">bm_PseudoAbsences()</a></code> </p>
+          <p><code><a href="bm_PseudoAbsences.html">bm_PseudoAbsences()</a></code> <code><a href="bm_PseudoAbsences.html">bm_PseudoAbsences_user.defined()</a></code> <code><a href="bm_PseudoAbsences.html">bm_PseudoAbsences_random()</a></code> <code><a href="bm_PseudoAbsences.html">bm_PseudoAbsences_sre()</a></code> <code><a href="bm_PseudoAbsences.html">bm_PseudoAbsences_disk()</a></code> </p>
         </td>
         <td><p>Select pseudo-absences</p></td>
       </tr><tr><td>
-          <p><code><a href="bm_RunModelsLoop.html">bm_RunModelsLoop()</a></code> </p>
+          <p><code><a href="bm_RunModelsLoop.html">bm_RunModelsLoop()</a></code> <code><a href="bm_RunModelsLoop.html">bm_RunModel()</a></code> </p>
         </td>
         <td><p>Loop to compute all single species distribution models</p></td>
       </tr><tr><td>
@@ -149,7 +149,7 @@
         </td>
         <td><p>Rescale values between <code>0</code> and <code>1</code> with a binomial GLM</p></td>
       </tr><tr><td>
-          <p><code><a href="bm_FindOptimStat.html">bm_FindOptimStat()</a></code> </p>
+          <p><code><a href="bm_FindOptimStat.html">bm_FindOptimStat()</a></code> <code><a href="bm_FindOptimStat.html">get_optim_value()</a></code> <code><a href="bm_FindOptimStat.html">bm_CalculateStat()</a></code> </p>
         </td>
         <td><p>Calculate the best score according to a given evaluation method</p></td>
       </tr><tr><td>
@@ -161,7 +161,7 @@
         </td>
         <td><p>Variables' importance calculation</p></td>
       </tr></tbody><tbody><tr><th colspan="2">
-          <h2 id="-toolbox">------------------------------------------------------- Toolbox <a href="#-toolbox" class="anchor" aria-hidden="true"></a></h2>
+          <h2 id="toolbox">Toolbox <a href="#toolbox" class="anchor" aria-hidden="true"></a></h2>
           <p class="section-desc"></p>
         </th>
       </tr></tbody><tbody><tr><th colspan="2">
@@ -217,18 +217,18 @@
         </td>
         <td><p>Functions to extract informations from <code>biomod2_model</code> objects</p></td>
       </tr><tr><td>
-          <p><code><a href="predict.bm.html">predict()</a></code> </p>
-        </td>
-        <td><p>Functions to get predictions from <code>biomod2_model</code> objects</p></td>
-      </tr><tr><td>
-          <p><code><a href="predict.em.html">predict()</a></code> </p>
-        </td>
-        <td><p>Functions to get predictions from <code>biomod2_ensemble_model</code> objects</p></td>
-      </tr><tr><td>
           <p><code><a href="getters.out.html">get_options()</a></code> <code><a href="getters.out.html">get_calib_lines()</a></code> <code><a href="getters.out.html">get_formal_data()</a></code> <code><a href="getters.out.html">get_projected_models()</a></code> <code><a href="getters.out.html">free()</a></code> <code><a href="getters.out.html">get_predictions()</a></code> <code><a href="getters.out.html">get_needed_models()</a></code> <code><a href="getters.out.html">get_kept_models()</a></code> <code><a href="getters.out.html">get_built_models()</a></code> <code><a href="getters.out.html">get_evaluations()</a></code> <code><a href="getters.out.html">get_variables_importance()</a></code> </p>
         </td>
         <td><p>Functions to extract informations from <code>BIOMOD.models.out</code>, 
 <code>BIOMOD.projection.out</code> or <code>BIOMOD.ensemble.models.out</code> objects</p></td>
+      </tr><tr><td>
+          <p><code><a href="predict.bm.html">predict(<i>&lt;ANN_biomod2_model&gt;</i>)</a></code> <code><a href="predict.bm.html">predict(<i>&lt;CTA_biomod2_model&gt;</i>)</a></code> <code><a href="predict.bm.html">predict(<i>&lt;FDA_biomod2_model&gt;</i>)</a></code> <code><a href="predict.bm.html">predict(<i>&lt;GAM_biomod2_model&gt;</i>)</a></code> <code><a href="predict.bm.html">predict(<i>&lt;GBM_biomod2_model&gt;</i>)</a></code> <code><a href="predict.bm.html">predict(<i>&lt;MARS_biomod2_model&gt;</i>)</a></code> <code><a href="predict.bm.html">predict(<i>&lt;MAXENT.Phillips_biomod2_model&gt;</i>)</a></code> <code><a href="predict.bm.html">predict(<i>&lt;MAXENT.Phillips.2_biomod2_model&gt;</i>)</a></code> <code><a href="predict.bm.html">predict(<i>&lt;RF_biomod2_model&gt;</i>)</a></code> <code><a href="predict.bm.html">predict(<i>&lt;SRE_biomod2_model&gt;</i>)</a></code> </p>
+        </td>
+        <td><p>Functions to get predictions from <code>biomod2_model</code> objects</p></td>
+      </tr><tr><td>
+          <p><code><a href="predict.em.html">predict(<i>&lt;EMmean_biomod2_model&gt;</i>)</a></code> <code><a href="predict.em.html">predict(<i>&lt;EMmedian_biomod2_model&gt;</i>)</a></code> <code><a href="predict.em.html">predict(<i>&lt;EMcv_biomod2_model&gt;</i>)</a></code> <code><a href="predict.em.html">predict(<i>&lt;EMci_biomod2_model&gt;</i>)</a></code> <code><a href="predict.em.html">predict(<i>&lt;EMca_biomod2_model&gt;</i>)</a></code> <code><a href="predict.em.html">predict(<i>&lt;EMwmean_biomod2_model&gt;</i>)</a></code> </p>
+        </td>
+        <td><p>Functions to get predictions from <code>biomod2_ensemble_model</code> objects</p></td>
       </tr></tbody></table></div>
 
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">

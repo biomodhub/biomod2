@@ -20,31 +20,11 @@
 ##' @description This function allows the user to predict single models from 
 ##' \code{\link{biomod2_ensemble_model}} on (new) explanatory variables.
 ##' 
-##' @usage
-##' 
-##' ## for signature 'biomod2_ensemble_model'
-##' predict(obj)
-## .predict.EMmean_biomod2_model.RasterStack(obj, ...)
-## .predict.EMmean_biomod2_model.data.frame(obj, ...)
-## .predict.EMmedian_biomod2_model.RasterStack(obj, ...)
-## .predict.EMmedian_biomod2_model.data.frame(obj, ...)
-## .predict.EMcv_biomod2_model.RasterStack(obj, ...)
-## .predict.EMcv_biomod2_model.data.frame(obj, ...)
-## .predict.EMci_biomod2_model.RasterStack(obj, ...)
-## .predict.EMci_biomod2_model.data.frame(obj, ...)
-## .predict.EMca_biomod2_model.RasterStack(obj, ...)
-## .predict.EMca_biomod2_model.data.frame(obj, ...)
-## .predict.EMwmean_biomod2_model.RasterStack(obj, ...)
-## .predict.EMwmean_biomod2_model.data.frame(obj, ...)
-##' 
-##' 
 ##' @param obj a \code{\link{biomod2_ensemble_model}} object
 ##' 
-##' 
-##' @export
-##' 
+NULL
 
-setGeneric("predict", def = function(object, ...) { standardGeneric("predict") })
+#setGeneric("predict", def = function(object, ...) { standardGeneric("predict") })
 
 ###################################################################################################
 ## 9. biomod2_ensemble_model
@@ -128,6 +108,11 @@ setClass('EMmean_biomod2_model',
          prototype = list(model_class = 'EMmean'),
          validity = function(object) { return(TRUE) })
 
+##' 
+##' @rdname predict.em
+##' @export
+##' 
+
 setMethod('predict', signature(object = 'EMmean_biomod2_model'),
           function(object, newdata = NULL, formal_predictions = NULL, ...)
           {
@@ -196,6 +181,11 @@ setClass('EMmedian_biomod2_model',
          prototype = list(model_class = 'EMmedian'),
          validity = function(object) { return(TRUE) })
 
+##' 
+##' @rdname predict.em
+##' @export
+##' 
+
 setMethod('predict', signature(object = 'EMmedian_biomod2_model'),
           function(object, newdata = NULL, formal_predictions = NULL, ...)
           {
@@ -250,6 +240,11 @@ setClass('EMcv_biomod2_model',
          contains = 'biomod2_ensemble_model',
          prototype = list(model_class = 'EMcv'),
          validity = function(object) { return(TRUE) })
+
+##' 
+##' @rdname predict.em
+##' @export
+##' 
 
 setMethod('predict', signature(object = 'EMcv_biomod2_model'),
           function(object, newdata = NULL, formal_predictions = NULL, ...)
@@ -307,6 +302,11 @@ setClass('EMci_biomod2_model',
              stop("side arg should be 'inferior' or 'superior")
            } else { return(TRUE) }
          })
+
+##' 
+##' @rdname predict.em
+##' @export
+##' 
 
 setMethod('predict', signature(object = 'EMci_biomod2_model'),
           function(object, newdata = NULL, formal_predictions = NULL, ...)
@@ -383,6 +383,11 @@ setClass('EMca_biomod2_model',
          prototype = list(model_class = 'EMca'),
          validity = function(object) { return(TRUE) })
 
+##' 
+##' @rdname predict.em
+##' @export
+##' 
+
 setMethod('predict', signature(object = 'EMca_biomod2_model'),
           function(object, newdata = NULL, formal_predictions = NULL, ...)
           {
@@ -414,7 +419,6 @@ setMethod('predict', signature(object = 'EMca_biomod2_model'),
   return(out)
 }
 
-
 .predict.EMca_biomod2_model.data.frame <- function(object, newdata = NULL, formal_predictions = NULL, ...)
 {
   if (is.null(formal_predictions)) {
@@ -442,6 +446,11 @@ setClass('EMwmean_biomod2_model',
          contains = 'biomod2_ensemble_model',
          prototype = list(model_class = 'EMwmean'),
          validity = function(object) { return(TRUE) })
+
+##' 
+##' @rdname predict.em
+##' @export
+##' 
 
 setMethod('predict', signature(object = 'EMwmean_biomod2_model'),
           function(object, newdata = NULL, formal_predictions = NULL, ...)

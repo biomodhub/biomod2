@@ -15,6 +15,8 @@ BIOMOD_ModelingOptions(GLM = NULL,
                               MARS = NULL,
                               RF = NULL,
                               MAXENT.Phillips = NULL)
+
+bm_DefaultModelingOptions()
 }
 \arguments{
 \item{GLM}{a \code{list} containing GLM options}
@@ -348,6 +350,7 @@ myBiomodOptions
 
 ## you also can directly print default parameters and then follow the same processus
 bm_DefaultModelingOptions()
+
 
 
 

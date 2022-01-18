@@ -81,7 +81,39 @@ methods : <code>random</code>, <code>sre</code>, <code>disk</code> or <code>user
   nb.points <span class="op">=</span> <span class="cn">NULL</span>,
   quant.SRE <span class="op">=</span> <span class="fl">0</span>,
   PA.table <span class="op">=</span> <span class="cn">NULL</span>
-<span class="op">)</span></code></pre></div>
+<span class="op">)</span>
+
+<span class="fu">bm_PseudoAbsences_user.defined</span><span class="op">(</span><span class="va">sp</span>, <span class="va">env</span>, <span class="va">...</span><span class="op">)</span>
+
+<span class="co"># S4 method for ANY,SpatialPointsDataFrame</span>
+<span class="fu">bm_PseudoAbsences_user.defined</span><span class="op">(</span><span class="va">sp</span>, <span class="va">env</span>, <span class="va">pa.table</span><span class="op">)</span>
+
+<span class="co"># S4 method for ANY,RasterStack</span>
+<span class="fu">bm_PseudoAbsences_user.defined</span><span class="op">(</span><span class="va">sp</span>, <span class="va">env</span>, <span class="va">pa.table</span><span class="op">)</span>
+
+<span class="fu">bm_PseudoAbsences_random</span><span class="op">(</span><span class="va">sp</span>, <span class="va">env</span>, <span class="va">...</span><span class="op">)</span>
+
+<span class="co"># S4 method for ANY,SpatialPointsDataFrame</span>
+<span class="fu">bm_PseudoAbsences_random</span><span class="op">(</span><span class="va">sp</span>, <span class="va">env</span>, <span class="va">nb.points</span>, <span class="va">nb.repet</span><span class="op">)</span>
+
+<span class="co"># S4 method for ANY,RasterStack</span>
+<span class="fu">bm_PseudoAbsences_random</span><span class="op">(</span><span class="va">sp</span>, <span class="va">env</span>, <span class="va">nb.points</span>, <span class="va">nb.repet</span><span class="op">)</span>
+
+<span class="fu">bm_PseudoAbsences_sre</span><span class="op">(</span><span class="va">sp</span>, <span class="va">env</span>, <span class="va">...</span><span class="op">)</span>
+
+<span class="co"># S4 method for ANY,SpatialPointsDataFrame</span>
+<span class="fu">bm_PseudoAbsences_sre</span><span class="op">(</span><span class="va">sp</span>, <span class="va">env</span>, <span class="va">quant.SRE</span>, <span class="va">nb.points</span>, <span class="va">nb.repet</span><span class="op">)</span>
+
+<span class="co"># S4 method for ANY,RasterStack</span>
+<span class="fu">bm_PseudoAbsences_sre</span><span class="op">(</span><span class="va">sp</span>, <span class="va">env</span>, <span class="va">quant.SRE</span>, <span class="va">nb.points</span>, <span class="va">nb.repet</span><span class="op">)</span>
+
+<span class="fu">bm_PseudoAbsences_disk</span><span class="op">(</span><span class="va">sp</span>, <span class="va">env</span>, <span class="va">...</span><span class="op">)</span>
+
+<span class="co"># S4 method for ANY,SpatialPointsDataFrame</span>
+<span class="fu">bm_PseudoAbsences_disk</span><span class="op">(</span><span class="va">sp</span>, <span class="va">env</span>, <span class="va">distMin</span>, <span class="va">distMax</span>, <span class="va">nb.points</span>, <span class="va">nb.repet</span><span class="op">)</span>
+
+<span class="co"># S4 method for ANY,RasterStack</span>
+<span class="fu">bm_PseudoAbsences_disk</span><span class="op">(</span><span class="va">sp</span>, <span class="va">env</span>, <span class="va">distMin</span>, <span class="va">distMax</span>, <span class="va">nb.points</span>, <span class="va">nb.repet</span><span class="op">)</span></code></pre></div>
     </div>
 
     <div id="arguments">

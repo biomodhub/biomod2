@@ -31,6 +31,8 @@ contain a \code{val} slot of specific type :
   \code{\link{BIOMOD.formated.data}} object}
   \item{\code{BIOMOD.stored.models.options} : }{\code{val} is a 
   \code{\link{BIOMOD.model.options}} object}
+  \item{\code{BIOMOD.stored.models.out} : }{\code{val} is a 
+  \code{\link{BIOMOD.models.out}} object}
 }
 }
 \section{Slots}{
@@ -59,7 +61,8 @@ showClass("BIOMOD.stored.models.out")
 
 }
 \seealso{
-\code{\link{BIOMOD.formated.data}}, \code{\link{BIOMOD.model.options}}, 
+\code{\link{BIOMOD.formated.data}}, \code{\link{BIOMOD.model.options}},
+\code{\link{BIOMOD.models.out}},  
 \code{\link{BIOMOD_Modeling}}, \code{\link{BIOMOD_EnsembleModeling}}, 
 \code{\link{BIOMOD_Projection}}, \code{\link{BIOMOD_EnsembleForecasting}}
 }

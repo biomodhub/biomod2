@@ -13,6 +13,10 @@ bm_FindOptimStat(
   Nb.thresh.test = 100,
   Fixed.thresh = NULL
 )
+
+get_optim_value(stat)
+
+bm_CalculateStat(Misc, stat = "TSS")
 }
 \arguments{
 \item{Stat}{a \code{character} corresponding to the evaluation metric to be used, must be 

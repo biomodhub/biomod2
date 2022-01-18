@@ -15,10 +15,25 @@
 \alias{.predict.EMca_biomod2_model.data.frame}
 \alias{.predict.EMwmean_biomod2_model.RasterStack}
 \alias{.predict.EMwmean_biomod2_model.data.frame}
+\alias{predict,EMmean_biomod2_model-method}
+\alias{predict,EMmedian_biomod2_model-method}
+\alias{predict,EMcv_biomod2_model-method}
+\alias{predict,EMci_biomod2_model-method}
+\alias{predict,EMca_biomod2_model-method}
+\alias{predict,EMwmean_biomod2_model-method}
 \title{Functions to get predictions from \code{\link{biomod2_ensemble_model}} objects}
 \usage{
-## for signature 'biomod2_ensemble_model'
-predict(obj)
+\S4method{predict}{EMmean_biomod2_model}(object, newdata = NULL, formal_predictions = NULL, ...)
+
+\S4method{predict}{EMmedian_biomod2_model}(object, newdata = NULL, formal_predictions = NULL, ...)
+
+\S4method{predict}{EMcv_biomod2_model}(object, newdata = NULL, formal_predictions = NULL, ...)
+
+\S4method{predict}{EMci_biomod2_model}(object, newdata = NULL, formal_predictions = NULL, ...)
+
+\S4method{predict}{EMca_biomod2_model}(object, newdata = NULL, formal_predictions = NULL, ...)
+
+\S4method{predict}{EMwmean_biomod2_model}(object, newdata = NULL, formal_predictions = NULL, ...)
 }
 \arguments{
 \item{obj}{a \code{\link{biomod2_ensemble_model}} object}

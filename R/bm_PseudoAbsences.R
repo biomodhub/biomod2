@@ -216,10 +216,20 @@ bm_PseudoAbsences <- function(sp, env, nb.repet = 1, strategy = 'random', distMi
 
 ###################################################################################################
 
+##'
+##' @rdname bm_PseudoAbsences
+##' @export
+##'
+
 setGeneric("bm_PseudoAbsences_user.defined",
-           def = function(sp,env, ...) {
+           def = function(sp, env, ...) {
              standardGeneric( "bm_PseudoAbsences_user.defined")
            })
+
+##'
+##' @rdname bm_PseudoAbsences
+##' @export
+##'
 
 setMethod('bm_PseudoAbsences_user.defined', signature(env = "SpatialPointsDataFrame"),
           function(sp, env, pa.table) {
@@ -229,6 +239,11 @@ setMethod('bm_PseudoAbsences_user.defined', signature(env = "SpatialPointsDataFr
                         env = as.data.frame(env@data),
                         pa.tab = pa.table))
           })
+
+##'
+##' @rdname bm_PseudoAbsences
+##' @export
+##'
 
 setMethod('bm_PseudoAbsences_user.defined', signature(env = "RasterStack"), 
           function(sp, env, pa.table) {
@@ -243,10 +258,20 @@ setMethod('bm_PseudoAbsences_user.defined', signature(env = "RasterStack"),
 
 ###################################################################################################
 
+##'
+##' @rdname bm_PseudoAbsences
+##' @export
+##'
+
 setGeneric("bm_PseudoAbsences_random",
            def = function(sp, env, ...) {
              standardGeneric( "bm_PseudoAbsences_random")
            })
+
+##'
+##' @rdname bm_PseudoAbsences
+##' @export
+##'
 
 setMethod('bm_PseudoAbsences_random', signature(env = "SpatialPointsDataFrame"),
           function(sp, env, nb.points, nb.repet)
@@ -293,6 +318,11 @@ setMethod('bm_PseudoAbsences_random', signature(env = "SpatialPointsDataFrame"),
               return(NULL)
             }
           })
+
+##'
+##' @rdname bm_PseudoAbsences
+##' @export
+##'
 
 setMethod('bm_PseudoAbsences_random', signature(env = "RasterStack"),
           function(sp, env, nb.points, nb.repet)
@@ -408,10 +438,20 @@ setMethod('bm_PseudoAbsences_random', signature(env = "RasterStack"),
 
 ###################################################################################################
 
+##'
+##' @rdname bm_PseudoAbsences
+##' @export
+##'
+
 setGeneric("bm_PseudoAbsences_sre",
            def = function(sp, env, ...) {
              standardGeneric("bm_PseudoAbsences_sre")
            })
+
+##'
+##' @rdname bm_PseudoAbsences
+##' @export
+##'
 
 setMethod('bm_PseudoAbsences_sre', signature(env = "SpatialPointsDataFrame"), 
           function(sp, env, quant.SRE, nb.points, nb.repet)
@@ -455,6 +495,11 @@ setMethod('bm_PseudoAbsences_sre', signature(env = "SpatialPointsDataFrame"),
                         env = as.data.frame(env@data),
                         pa.tab = pa.tab))
           })
+
+##'
+##' @rdname bm_PseudoAbsences
+##' @export
+##'
 
 setMethod('bm_PseudoAbsences_sre', signature(env = "RasterStack"), 
           function(sp, env, quant.SRE, nb.points, nb.repet)
@@ -533,10 +578,20 @@ setMethod('bm_PseudoAbsences_sre', signature(env = "RasterStack"),
 
 ###################################################################################################
 
+##'
+##' @rdname bm_PseudoAbsences
+##' @export
+##'
+
 setGeneric("bm_PseudoAbsences_disk",
            def = function(sp, env, ...) {
              standardGeneric("bm_PseudoAbsences_disk")
            })
+
+##'
+##' @rdname bm_PseudoAbsences
+##' @export
+##'
 
 setMethod('bm_PseudoAbsences_disk', signature(env = "SpatialPointsDataFrame"),
           function(sp, env, distMin, distMax, nb.points, nb.repet)
@@ -571,6 +626,11 @@ setMethod('bm_PseudoAbsences_disk', signature(env = "SpatialPointsDataFrame"),
                                                env[c(pres, true.abs, selected.abs), ],
                                                nb.points, nb.repet))
           })
+
+##'
+##' @rdname bm_PseudoAbsences
+##' @export
+##'
 
 setMethod('bm_PseudoAbsences_disk', signature(env = "RasterStack"),
           function(sp, env, distMin, distMax, nb.points, nb.repet)

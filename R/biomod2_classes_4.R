@@ -58,41 +58,11 @@ setGeneric("get_scaling_model", def = function(object) { standardGeneric("get_sc
 ##' @description This function allows the user to predict single models from 
 ##' \code{\link{biomod2_model}} on (new) explanatory variables.
 ##' 
-##' @usage
-##' 
-##' ## for signature 'biomod2_model'
-##' predict(obj)
-## .predict.ANN_biomod2_model.RasterStack(obj, ...)
-## .predict.ANN_biomod2_model.data.frame(obj, ...)
-## .predict.CTA_biomod2_model.RasterStack(obj, ...)
-## .predict.CTA_biomod2_model.data.frame(obj, ...)
-## .predict.FDA_biomod2_model.RasterStack(obj, ...)
-## .predict.FDA_biomod2_model.data.frame(obj, ...)
-## .predict.GAM_biomod2_model.RasterStack(obj, ...)
-## .predict.GAM_biomod2_model.data.frame(obj, ...)
-## .predict.GBM_biomod2_model.RasterStack(obj, ...)
-## .predict.GBM_biomod2_model.data.frame(obj, ...)
-## .predict.GLM_biomod2_model.RasterStack(obj, ...)
-## .predict.GLM_biomod2_model.data.frame(obj, ...)
-## .predict.MARS_biomod2_model.RasterStack(obj, ...)
-## .predict.MARS_biomod2_model.data.frame(obj, ...)
-## .predict.MAXENT.Phillips_biomod2_model.RasterStack(obj, ...)
-## .predict.MAXENT.Phillips_biomod2_model.data.frame(obj, ...)
-## .predict.MAXENT.Phillips.2_biomod2_model.RasterStack(obj, ...)
-## .predict.MAXENT.Phillips.2_biomod2_model.data.frame(obj, ...)
-## .predict.RF_biomod2_model.RasterStack(obj, ...)
-## .predict.RF_biomod2_model.data.frame(obj, ...)
-## .predict.SRE_biomod2_model.RasterStack(obj, ...)
-## .predict.SRE_biomod2_model.data.frame(obj, ...)
-##' 
-##' 
 ##' @param obj a \code{\link{biomod2_model}} object
 ##' 
-##' 
-##' @export
-##' 
+NULL
 
-setGeneric("predict", def = function(object, ...) { standardGeneric("predict") })
+#setGeneric("predict", def = function(object, ...) { standardGeneric("predict") })
 
 
 ###################################################################################################
@@ -246,6 +216,11 @@ setClass('ANN_biomod2_model',
          prototype = list(model_class = 'ANN'),
          validity = function(object) { if(!inherits(object@model, "nnet")) { return(FALSE) } else { return(TRUE) }})
 
+##' 
+##' @rdname predict.bm
+##' @export
+##' 
+
 setMethod('predict', signature(object = 'ANN_biomod2_model'),
           function(object, newdata, ...)
           {
@@ -275,6 +250,11 @@ setClass('CTA_biomod2_model',
            if (!inherits(object@model, "rpart")) { return(FALSE) } else { return(TRUE) }
          })
 
+##' 
+##' @rdname predict.bm
+##' @export
+##' 
+
 setMethod('predict', signature(object = 'CTA_biomod2_model'),
           function(object, newdata, ...)
           {
@@ -303,6 +283,11 @@ setClass('FDA_biomod2_model',
          validity = function(object) { ## check model class
            if (!inherits(object@model, "fda")) { return(FALSE) } else { return(TRUE) }
          })
+
+##' 
+##' @rdname predict.bm
+##' @export
+##' 
 
 setMethod('predict', signature(object = 'FDA_biomod2_model'),
           function(object, newdata, ...)
@@ -338,6 +323,11 @@ setClass('GAM_biomod2_model',
              return(TRUE)
            }
          })
+
+##' 
+##' @rdname predict.bm
+##' @export
+##' 
 
 setMethod('predict', signature(object = 'GAM_biomod2_model'),
           function(object, newdata, ...)
@@ -397,6 +387,11 @@ setClass('GBM_biomod2_model',
            if (!inherits(object@model, "gbm")) { return(FALSE) } else { return(TRUE) }
          })
 
+##' 
+##' @rdname predict.bm
+##' @export
+##' 
+
 setMethod('predict', signature(object = 'GBM_biomod2_model'),
           function(object, newdata, ...)
           {
@@ -454,6 +449,11 @@ setClass('MARS_biomod2_model',
          validity = function(object) { ## check model class
            if (!inherits(object@model, c('earth', 'MARS', 'mars'))) { return(FALSE) } else { return(TRUE) }
          })
+
+##' 
+##' @rdname predict.bm
+##' @export
+##' 
 
 setMethod('predict', signature(object = 'MARS_biomod2_model'),
           function(object, newdata, ...)
@@ -528,6 +528,11 @@ setClass('MAXENT.Phillips_biomod2_model',
          contains = 'biomod2_model',
          prototype = list(model_class = 'MAXENT.Phillips'),
          validity = function(object) { return(TRUE) })
+
+##' 
+##' @rdname predict.bm
+##' @export
+##' 
 
 setMethod('predict', signature(object = 'MAXENT.Phillips_biomod2_model'),
           function(object, newdata, ...)
@@ -681,6 +686,11 @@ setClass( 'MAXENT.Phillips.2_biomod2_model',
           prototype = list(model_class = 'MAXENT.Phillips.2'),
           validity = function(object) { checkmate::test_class(object@model, 'maxnet') })
 
+##' 
+##' @rdname predict.bm
+##' @export
+##' 
+
 setMethod('predict', signature(object = 'MAXENT.Phillips.2_biomod2_model'),
           function(object, newdata, ...)
           {
@@ -809,6 +819,11 @@ setClass('RF_biomod2_model',
            if (!inherits(object@model, "randomForest")) { return(FALSE)} else { return(TRUE) }
          })
 
+##' 
+##' @rdname predict.bm
+##' @export
+##' 
+
 setMethod('predict', signature(object = 'RF_biomod2_model'),
           function(object, newdata, ...)
           {
@@ -835,6 +850,11 @@ setClass('SRE_biomod2_model',
          contains = 'biomod2_model',
          prototype = list(model_class = 'SRE'),
          validity = function(object){ return(TRUE) })
+
+##' 
+##' @rdname predict.bm
+##' @export
+##' 
 
 setMethod('predict', signature(object = 'SRE_biomod2_model'),
           function(object, newdata, ...)

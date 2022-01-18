@@ -38,10 +38,13 @@
 ##'   \code{\link{BIOMOD.formated.data}} object}
 ##'   \item{\code{BIOMOD.stored.models.options} : }{\code{val} is a 
 ##'   \code{\link{BIOMOD.model.options}} object}
+##'   \item{\code{BIOMOD.stored.models.out} : }{\code{val} is a 
+##'   \code{\link{BIOMOD.models.out}} object}
 ##' }
 ##' 
 ##' 
-##' @seealso \code{\link{BIOMOD.formated.data}}, \code{\link{BIOMOD.model.options}}, 
+##' @seealso \code{\link{BIOMOD.formated.data}}, \code{\link{BIOMOD.model.options}},
+##' \code{\link{BIOMOD.models.out}},  
 ##' \code{\link{BIOMOD_Modeling}}, \code{\link{BIOMOD_EnsembleModeling}}, 
 ##' \code{\link{BIOMOD_Projection}}, \code{\link{BIOMOD_EnsembleForecasting}}
 ##' 
@@ -108,11 +111,11 @@ setClass("BIOMOD.stored.models.options",
          prototype(val = NULL),
          validity = function(object){ return(TRUE) })
 
-setClass("BIOMOD.stored.models.out",
-         contains = "BIOMOD.stored.data",
-         representation(val = 'BIOMOD.models.out'),
-         prototype(val = NULL),
-         validity = function(object){ return(TRUE) } )
+# setClass("BIOMOD.stored.models.out",
+#          contains = "BIOMOD.stored.data",
+#          representation(val = 'BIOMOD.models.out'),
+#          prototype(val = NULL),
+#          validity = function(object){ return(TRUE) } )
 
 
 ###################################################################################################

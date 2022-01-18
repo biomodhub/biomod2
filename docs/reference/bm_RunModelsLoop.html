@@ -78,6 +78,23 @@ distribution models (asked by the <code><a href="BIOMOD_Modeling.html">BIOMOD_Mo
   <span class="va">mod.eval.method</span>,
   SavePred <span class="op">=</span> <span class="cn">TRUE</span>,
   scal.models <span class="op">=</span> <span class="cn">TRUE</span>
+<span class="op">)</span>
+
+<span class="fu">bm_RunModel</span><span class="op">(</span>
+  <span class="va">Model</span>,
+  <span class="va">Data</span>,
+  <span class="va">Options</span>,
+  <span class="va">calibLines</span>,
+  <span class="va">Yweights</span>,
+  <span class="va">nam</span>,
+  VarImport <span class="op">=</span> <span class="fl">0</span>,
+  mod.eval.method <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"ROC"</span>, <span class="st">"TSS"</span>, <span class="st">"KAPPA"</span><span class="op">)</span>,
+  evalData <span class="op">=</span> <span class="cn">NULL</span>,
+  SavePred <span class="op">=</span> <span class="cn">FALSE</span>,
+  xy <span class="op">=</span> <span class="cn">NULL</span>,
+  eval.xy <span class="op">=</span> <span class="cn">NULL</span>,
+  scal.models <span class="op">=</span> <span class="cn">TRUE</span>,
+  modeling.id <span class="op">=</span> <span class="st">""</span>
 <span class="op">)</span></code></pre></div>
     </div>
 
