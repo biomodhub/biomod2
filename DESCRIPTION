@@ -96,6 +96,7 @@ Collate:
     'bm_CVnnet.R'
     'bm_FindOptimStat.R'
     'bm_MakeFormula.R'
+    'bm_PlotEvalBoxplot.R'
     'bm_PlotEvalMean.R'
     'bm_PseudoAbsences.R'
     'bm_Rescaler.R'

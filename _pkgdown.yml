@@ -58,6 +58,7 @@ reference:
       - "bm_BinaryTransformation"
       - "bm_VariablesImportance"
       - "bm_PlotEvalMean"
+      - "bm_PlotEvalBoxplot"
   - title: Toolbox
   - subtitle: Objects
     contents:

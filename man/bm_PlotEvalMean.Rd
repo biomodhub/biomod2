@@ -23,7 +23,7 @@ be among \code{ROC}, \code{TSS}, \code{KAPPA}, \code{ACCURACY}, \code{BIAS}, \co
 \code{ORSS}}
 
 \item{group.by}{a \code{character} corresponding to the way kept models will be combined to 
-compute mean and sd evaluation scores, must be among \code{model}, \code{algo}, \code{run}
+compute mean and sd evaluation scores, must be among \code{model}, \code{algo}, \code{run}, 
 \code{dataset}}
 
 \item{plot}{(\emph{optional, default} \code{TRUE}) \cr 

@@ -20,7 +20,7 @@
 ##' \code{FAR}, \code{POFD}, \code{SR}, \code{CSI}, \code{ETS}, \code{HK}, \code{HSS}, \code{OR}, 
 ##' \code{ORSS}
 ##' @param group.by a \code{character} corresponding to the way kept models will be combined to 
-##' compute mean and sd evaluation scores, must be among \code{model}, \code{algo}, \code{run}
+##' compute mean and sd evaluation scores, must be among \code{model}, \code{algo}, \code{run}, 
 ##' \code{dataset}
 ##' @param plot (\emph{optional, default} \code{TRUE}) \cr 
 ##' A \code{logical} value defining whether the plot is to be rendered or not
@@ -139,7 +139,7 @@ bm_PlotEvalMean <- function(modeling.output, eval.metric = NULL, group.by = 'alg
   .fun_testIfIn(TRUE, "group.by", group.by, c('model', 'algo', 'run', 'dataset'))
 
   ## 4. Check extra args argument ---------------------------------------------
-  .fun_testIfIn(TRUE, "names(args)", names(args), c('xlim', 'ylim', 'main', 'col'))
+  .fun_testIfIn(TRUE, "names(args)", names(args), c('xlim', 'ylim', 'main'))
   
   
   return(list(eval.metric = eval.metric,
