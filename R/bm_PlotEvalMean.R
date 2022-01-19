@@ -1,32 +1,69 @@
-############################
-# models_scores_graph fct
-# Damien G. - 2014/10/22
-############################
-
-## Description ##
-# This function is a graphic tools to represent evaluation
-# scores of models produced within biomod2 according to 2
-# different evalution methods. Models can be grouped in several
-# ways (by algo, by cv run, ...) to highlight potential differences
-# in models quality due to chosen models, cross validation sampling 
-# bias,...
-
-## Input ##
-# modeling.output : an biomod2 modeling or ensemble-modeling modeling.outputect
-# eval.metric : charcter vector of 2 chosen eval.metric (e.g c("ROC", "TSS"))
-# by : the way models are grouped ('models', 'algos', 'cv_run' or 'data_set')
-# plot : if you want to produce plot or not
-# ... : several graphical options
-
-## Ouput ##
-# the ggplot2 modeling.outputect used to produce the graph is returned. That implies that 
-# user should quite easily customize this plot.
-
+###################################################################################################
+##' @name bm_PlotEvalMean
+##' @author Damien Georges, Maya Gueguen
+##' 
+##' @title Plot mean evaluation scores
+##' 
+##' @description
+##' 
+##' This function represents mean evaluation scores of species distribution models, from 
+##' \code{BIOMOD.models.out} or \code{BIOMOD.ensemble.models.out} objects that can be obtained 
+##' from \code{\link{BIOMOD_Modeling}} or \code{\link{BIOMOD_EnsembleModeling}} functions. Scores 
+##' are represented according to 2 different evaluation methods, and models can be grouped (see 
+##' \href{bm_PlotEvalMean.html#details}{Details}).
+##' 
+##' @param modeling.output a \code{\link{BIOMOD.models.out}} or \code{BIOMOD.ensemble.models.out} 
+##' object that can be obtained from \code{\link{BIOMOD_Modeling}} or 
+##' \code{\link{BIOMOD_EnsembleModeling}} functions
+##' @param eval.metric a \code{vector} containing evaluation metric names to be used, must 
+##' be among \code{ROC}, \code{TSS}, \code{KAPPA}, \code{ACCURACY}, \code{BIAS}, \code{POD}, 
+##' \code{FAR}, \code{POFD}, \code{SR}, \code{CSI}, \code{ETS}, \code{HK}, \code{HSS}, \code{OR}, 
+##' \code{ORSS}
+##' @param group.by a \code{character} corresponding to the way kept models will be combined to 
+##' compute mean and sd evaluation scores, must be among \code{model}, \code{algo}, \code{run}
+##' \code{dataset}
+##' @param plot (\emph{optional, default} \code{TRUE}) \cr 
+##' A \code{logical} value defining whether the plot is to be rendered or not
+##' @param \ldots some additional arguments (see \href{bm_PlotEvalMean.html#details}{Details})
+##' 
+##' 
+##' @return  
+##' 
+##' A \code{ggplot} object representing mean and standard deviation of evaluation scores 
+##' according to 2 different evaluation methods.
+##' 
+##' 
+##' @details
+##' 
+##' \code{...} can take the following values :
+##' 
+##' \itemize{
+##'   \item{\code{xlim}}{ : an \code{integer} corresponding to the x maximum limit to represent}
+##'   \item{\code{ylim}}{ : an \code{integer} corresponding to the y maximum limit to represent}
+##'   \item{\code{main}}{ : a \code{character} corresponding to the graphic title}
+##'   \item{\code{col}}{ : a \code{vector} containing new color values}
+##' }
+##' 
+##' 
+##' @seealso \code{\link{BIOMOD_Modeling}}, \code{\link{BIOMOD_EnsembleModeling}}, 
+##' \code{\link{get_evaluations}}
+##' 
+##' @keywords evaluation, ggplot
+##' 
+##' 
+##' @examples
+##' 
+##' 
+##' @importFrom ggplot2 ggplot aes_string geom_point geom_errorbarh geom_errorbar xlab ylab
+##' theme element_blank element_rect coord_cartesian labs
 ##' 
 ##' @export
 ##' 
+##' 
+###################################################################################################
 
-bm_PlotEvalMean <- function(modeling.output, eval.metric = NULL, group.by = 'Algo', plot = TRUE, ...)
+
+bm_PlotEvalMean <- function(modeling.output, eval.metric = NULL, group.by = 'algo', plot = TRUE, ...)
 {
   ## 0. Check arguments ---------------------------------------------------------------------------
   args <- .bm_PlotEvalMean.check.args(modeling.output, eval.metric, group.by, list(...))
@@ -35,6 +72,9 @@ bm_PlotEvalMean <- function(modeling.output, eval.metric = NULL, group.by = 'Alg
   ylim <- args$ylim
   main <- args$main
   rm(args)
+  
+  tmp = strsplit(group.by, '')[[1]]
+  group.by <- paste0(toupper(tmp[1]), paste0(tmp[2:length(tmp)], collapse = ''))
   
   ## 1. Get data for graphic ----------------------------------------------------------------------
   ## Get evaluation values
@@ -63,7 +103,8 @@ bm_PlotEvalMean <- function(modeling.output, eval.metric = NULL, group.by = 'Alg
     geom_errorbar(limits2, width = 0) + ## add vertical error bars
     xlab(eval.metric[1]) +
     ylab(eval.metric[2]) +
-    theme(legend.title = element_blank())
+    theme(legend.title = element_blank()
+          , legend.key = element_rect(fill = "white"))
   
   if (length(ylim) | length(xlim)) { ## fix scale
     gg <- gg + coord_cartesian(ylim = ylim, xlim = xlim)
@@ -95,7 +136,7 @@ bm_PlotEvalMean <- function(modeling.output, eval.metric = NULL, group.by = 'Alg
   }
   
   ## 3. Check group.by argument -----------------------------------------------
-  .fun_testIfIn(TRUE, "group.by", group.by, c('Model', 'Algo', 'Run', 'Dataset'))
+  .fun_testIfIn(TRUE, "group.by", group.by, c('model', 'algo', 'run', 'dataset'))
 
   ## 4. Check extra args argument ---------------------------------------------
   .fun_testIfIn(TRUE, "names(args)", names(args), c('xlim', 'ylim', 'main', 'col'))

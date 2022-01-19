@@ -57,6 +57,7 @@ reference:
       - "bm_FindOptimStat"
       - "bm_BinaryTransformation"
       - "bm_VariablesImportance"
+      - "bm_PlotEvalMean"
   - title: Toolbox
   - subtitle: Objects
     contents:
