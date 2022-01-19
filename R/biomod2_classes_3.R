@@ -26,29 +26,6 @@
 ##' different \pkg{biomod2} objects from the different modeling steps, such as modeling options 
 ##' and formated data, models used or not, predictions, evaluations, variables importance.
 ##' 
-##' @usage 
-##' 
-##' ## for signature 'BIOMOD.models.out' 
-##' get_options(obj)
-##' get_calib_lines(obj)
-##' get_formal_data(obj)
-##' 
-##' ## for signature 'BIOMOD.projection.out'
-##' get_projected_models(obj)
-##' free(obj)
-##' 
-##' ## for signature 'BIOMOD.models.out', 'BIOMOD.projection.out' or 'BIOMOD.ensemble.models.out'
-##' get_predictions(obj)
-##' 
-##' ## for signature 'BIOMOD.ensemble.models.out'
-##' get_needed_models(obj)
-##' get_kept_models(obj)
-##' 
-##' ## for signature 'BIOMOD.models.out' or 'BIOMOD.ensemble.models.out'
-##' get_built_models(obj)
-##' get_evaluations(obj)
-##' get_variables_importance(obj)
-##' 
 ##' 
 ##' @param obj a \code{\link{BIOMOD.models.out}}, \code{\link{BIOMOD.projection.out}} or 
 ##' \code{\link{BIOMOD.ensemble.models.out}} object
@@ -58,8 +35,7 @@
 ##' @importFrom foreach foreach
 ##' @importFrom abind abind
 ##' 
-##' @export
-##' 
+NULL
 
 setGeneric("get_options", function(obj, ...) { standardGeneric("get_options") }) ## A
 setGeneric("get_calib_lines", function(obj, ...) { standardGeneric("get_calib_lines") }) ## A
@@ -235,6 +211,11 @@ setMethod('show', signature('BIOMOD.models.out'),
 
 ## ------------------------------------------------------------------------------------------------
 
+##' 
+##' @rdname getters.out
+##' @export
+##' 
+
 setMethod("get_options", "BIOMOD.models.out",
           function(obj) {
             if (obj@models.options@inMemory) {
@@ -245,12 +226,22 @@ setMethod("get_options", "BIOMOD.models.out",
           }
 )
 
+##' 
+##' @rdname getters.out
+##' @export
+##'
+
 setMethod("get_calib_lines", "BIOMOD.models.out",
           function(obj, as.data.frame = FALSE, ...) {
             calib_lines <- load_stored_object(obj@calib.lines)
             return(calib_lines)
           }
 )
+
+##' 
+##' @rdname getters.out
+##' @export
+##' 
 
 setMethod("get_formal_data", "BIOMOD.models.out",
           function(obj, subinfo = NULL) {
@@ -287,6 +278,11 @@ setMethod("get_formal_data", "BIOMOD.models.out",
 )
 
 ## ------------------------------------------------------------------------------------------------
+
+##' 
+##' @rdname getters.out
+##' @export
+##' 
 
 setMethod("get_predictions", "BIOMOD.models.out",
           function(obj, as.data.frame = FALSE, evaluation = FALSE)
@@ -332,7 +328,17 @@ setMethod("get_predictions", "BIOMOD.models.out",
           }
 )
 
+##' 
+##' @rdname getters.out
+##' @export
+##' 
+
 setMethod("get_built_models", "BIOMOD.models.out", function(obj, ...) { return(obj@models.computed) })
+
+##' 
+##' @rdname getters.out
+##' @export
+##' 
 
 setMethod("get_evaluations", "BIOMOD.models.out",
           function(obj, ...)
@@ -353,7 +359,7 @@ setMethod("get_evaluations", "BIOMOD.models.out",
             if(as.data.frame)
             {
               tmp <- melt.array(out, varnames = c("eval.metric", "test", "m", "r", "d"))
-              model_names <- unique(apply(tmp[, c("m", "r", "d"), drop = F], 1, paste, collapse = "_"))
+              model_names <- unique(apply(tmp[, c("m", "r", "d"), drop = FALSE], 1, paste, collapse = "_"))
               out <- data.frame() #NULL
               for (mod in model_names)
               {
@@ -361,18 +367,21 @@ setMethod("get_evaluations", "BIOMOD.models.out",
                 r = unlist(strsplit(mod, "_"))[2]
                 d = unlist(strsplit(mod, "_"))[3]
                 ind.mrd = which(tmp$m == m & tmp$r == r & tmp$d == d)
-                eval.met = as.character(unique(tmp[ind.mrd, "eval.metric", drop = T]))
+                eval.met = as.character(unique(tmp[ind.mrd, "eval.metric", drop = TRUE]))
                 for(em in eval.met)
                 {
                   ind.em = intersect(ind.mrd, which(tmp$eval.metric == em))
                   out <- rbind(out, data.frame( Model.name = mod,
+                                                Model = m,
+                                                Run = r,
+                                                Dataset = d,
                                                 Eval.metric = em,
-                                                Testing.data = as.numeric( tmp[intersect(ind.em, which(tmp$test == "Testing.data")), "value", drop = T]), 
+                                                Testing.data = as.numeric( tmp[intersect(ind.em, which(tmp$test == "Testing.data")), "value", drop = TRUE]), 
                                                 Evaluating.data = ifelse("Evaluating.data" %in% tmp$test
-                                                                         , as.numeric(tmp[intersect(ind.em, which(tmp$test == "Evaluating.data")), "value", drop = T]), NA ), 
-                                                Cutoff = as.numeric(tmp[intersect(ind.em, which(tmp$test == "Cutoff")), "value", drop = T]), 
-                                                Sensitivity = as.numeric(tmp[intersect(ind.em, which(tmp$test == "Sensitivity")), "value", drop = T]), 
-                                                Specificity = as.numeric(tmp[intersect(ind.em, which(tmp$test == "Specificity")), "value", drop = T]))
+                                                                         , as.numeric(tmp[intersect(ind.em, which(tmp$test == "Evaluating.data")), "value", drop = TRUE]), NA ), 
+                                                Cutoff = as.numeric(tmp[intersect(ind.em, which(tmp$test == "Cutoff")), "value", drop = TRUE]), 
+                                                Sensitivity = as.numeric(tmp[intersect(ind.em, which(tmp$test == "Sensitivity")), "value", drop = TRUE]), 
+                                                Specificity = as.numeric(tmp[intersect(ind.em, which(tmp$test == "Specificity")), "value", drop = TRUE]))
                   )
                 } # end loop on eval metric
               } # end loop on models names
@@ -380,6 +389,11 @@ setMethod("get_evaluations", "BIOMOD.models.out",
             return(out)
           }
 )
+
+##' 
+##' @rdname getters.out
+##' @export
+##' 
 
 setMethod("get_variables_importance", "BIOMOD.models.out",
           function(obj, ...) {
@@ -580,7 +594,17 @@ setMethod('show', signature('BIOMOD.projection.out'),
 
 ## ------------------------------------------------------------------------------------------------
 
+##' 
+##' @rdname getters.out
+##' @export
+##' 
+
 setMethod("get_projected_models", "BIOMOD.projection.out", function(obj){ return(obj@models.projected) })
+
+##' 
+##' @rdname getters.out
+##' @export
+##' 
 
 setMethod('free', signature('BIOMOD.projection.out'),
           function(obj) {
@@ -594,6 +618,11 @@ setMethod('free', signature('BIOMOD.projection.out'),
             obj@proj@inMemory = FALSE
             return(obj)
           })
+
+##' 
+##' @rdname getters.out
+##' @export
+##' 
 
 setMethod("get_predictions", "BIOMOD.projection.out",
           function(obj, as.data.frame = FALSE, full.name = NULL, model = NULL, run.eval = NULL, data.set = NULL)
@@ -808,6 +837,11 @@ setMethod('show', signature('BIOMOD.ensemble.models.out'),
 
 ## ------------------------------------------------------------------------------------------------
 
+##' 
+##' @rdname getters.out
+##' @export
+##' 
+
 setMethod("get_needed_models", "BIOMOD.ensemble.models.out",
           function(obj, selected.models = 'all', ...) {
             add.args <- list(...)
@@ -822,6 +856,11 @@ setMethod("get_needed_models", "BIOMOD.ensemble.models.out",
           })
 
 
+##' 
+##' @rdname getters.out
+##' @export
+##' 
+
 setMethod("get_kept_models", "BIOMOD.ensemble.models.out",
           function(obj, model, ...) {
             if (is.character(model) | is.numeric(model)) {
@@ -834,6 +873,11 @@ setMethod("get_kept_models", "BIOMOD.ensemble.models.out",
           })
 
 ## ------------------------------------------------------------------------------------------------
+
+##' 
+##' @rdname getters.out
+##' @export
+##' 
 
 setMethod("get_predictions", "BIOMOD.ensemble.models.out",
           function(obj, ...)
@@ -851,7 +895,17 @@ setMethod("get_predictions", "BIOMOD.ensemble.models.out",
             return(bm.pred)
           })
 
+##' 
+##' @rdname getters.out
+##' @export
+##' 
+
 setMethod("get_built_models", "BIOMOD.ensemble.models.out", function(obj, ...){ return(obj@em.computed) })
+
+##' 
+##' @rdname getters.out
+##' @export
+##' 
 
 setMethod("get_evaluations", "BIOMOD.ensemble.models.out",
           function(obj, ...)
@@ -876,18 +930,24 @@ setMethod("get_evaluations", "BIOMOD.ensemble.models.out",
               out <- data.frame() #NULL
               for (mod in unique(tmp$model.name))
               {
-                eval.met = as.character(unique(tmp[which(tmp$model.name == mod), "eval.metric", drop = T]))
+                m = unlist(strsplit(mod, "_"))[1]
+                r = unlist(strsplit(mod, "_"))[2]
+                d = unlist(strsplit(mod, "_"))[3]
+                eval.met = as.character(unique(tmp[which(tmp$model.name == mod), "eval.metric", drop = TRUE]))
                 for(em in eval.met)
                 {
                   ind.em = which(tmp$model.name == mod & tmp$eval.metric == em)
                   out <- rbind(out, data.frame( Model.name = mod,
+                                                Model = m,
+                                                Run = r,
+                                                Dataset = d,
                                                 Eval.metric = em,
-                                                Testing.data = as.numeric(tmp[intersect(ind.em, which(tmp$test == "Testing.data")), "value", drop = T]), 
+                                                Testing.data = as.numeric(tmp[intersect(ind.em, which(tmp$test == "Testing.data")), "value", drop = TRUE]), 
                                                 Evaluating.data = ifelse("Evaluating.data" %in% tmp$test
-                                                                         , as.numeric(tmp[intersect(ind.em, which(tmp$test == "Evaluating.data")), "value", drop =  T]), NA ), 
-                                                Cutoff = as.numeric(tmp[intersect(ind.em, which(tmp$test == "Cutoff")), "value", drop = T]), 
-                                                Sensitivity = as.numeric(tmp[intersect(ind.em, which(tmp$test == "Sensitivity")), "value", drop = T]), 
-                                                Specificity = as.numeric(tmp[intersect(ind.em, which(tmp$test == "Specificity")), "value", drop = T]))
+                                                                         , as.numeric(tmp[intersect(ind.em, which(tmp$test == "Evaluating.data")), "value", drop =  TRUE]), NA ), 
+                                                Cutoff = as.numeric(tmp[intersect(ind.em, which(tmp$test == "Cutoff")), "value", drop = TRUE]), 
+                                                Sensitivity = as.numeric(tmp[intersect(ind.em, which(tmp$test == "Sensitivity")), "value", drop = TRUE]), 
+                                                Specificity = as.numeric(tmp[intersect(ind.em, which(tmp$test == "Specificity")), "value", drop = TRUE]))
                   )
                 } # end loop on eval metric
               } # end loop on models names
@@ -895,6 +955,11 @@ setMethod("get_evaluations", "BIOMOD.ensemble.models.out",
             return(out)
           }
 )
+
+##' 
+##' @rdname getters.out
+##' @export
+##' 
 
 setMethod("get_variables_importance", "BIOMOD.ensemble.models.out",
           function(obj, ...) {

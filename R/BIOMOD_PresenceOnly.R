@@ -166,16 +166,16 @@ BIOMOD_PresenceOnly <- function(modeling.output = NULL,
     myResp <- myResp[calib.notNA] ## keep only lines associated to sites (no pseudo-absences)
     
     ## Get evaluation scores
-    myModelEval <- get_evaluations(modeling.output, as.data.frame = T)
-    myModelEval[,1] <- as.character(myModelEval[, 1])
+    myModelEval <- get_evaluations(modeling.output, as.data.frame = TRUE)
+    myModelEval[, 1] <- as.character(myModelEval[, 1])
     for (i in 1:nrow(myModelEval)) {
       myModelEval[i, 1] < - paste(c(modeling.output@sp.name
-                                    , strsplit(as.character(myModelEval[i,1]), split = "_")[[1]][3:1])
+                                    , strsplit(as.character(myModelEval[i, 1]), split = "_")[[1]][3:1])
                                   , collapse = "_")
     }
     
     ## Get predictions on observations
-    myModelPred <- get_predictions(modeling.output, as.data.frame = T)
+    myModelPred <- get_predictions(modeling.output, as.data.frame = TRUE)
     if (!is.null(bg.env)) {
       myModelPred.sites <- as.data.frame(myModelPred)
       myBiomodProj.eval <- BIOMOD_Projection(
@@ -210,12 +210,12 @@ BIOMOD_PresenceOnly <- function(modeling.output = NULL,
     if (EM.output@em.by != 'PA_dataset+repet') { stop("em.by of 'BIOMOD.EnsembleModeling' must be 'PA_dataset+repet'") }
     
     ## Get evaluation scores
-    myModelEvalEF <- get_evaluations(EM.output, as.data.frame = T)
+    myModelEvalEF <- get_evaluations(EM.output, as.data.frame = TRUE)
     myModelEvalEF[, 1] <- paste(modeling.output@sp.name, as.character(myModelEvalEF[, 1]), sep = "_")
     if (!is.null(modeling.output)) { myModelEval <- rbind(myModelEval, myModelEvalEF) }
     
     ## Get predictions on observations
-    myBiomodProjFF <- get_predictions(EM.output, as.data.frame = T)  
+    myBiomodProjFF <- get_predictions(EM.output, as.data.frame = TRUE)  
     if (!is.null(bg.env)) {
       myBiomodProjFF.sites <- as.data.frame(myBiomodProjFF)
       myModelPred.sites <- cbind(myModelPred.sites, myBiomodProjFF.sites)

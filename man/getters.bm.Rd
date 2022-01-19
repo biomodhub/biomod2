@@ -4,11 +4,13 @@
 \alias{getters.bm}
 \alias{get_formal_model}
 \alias{get_scaling_model}
+\alias{get_formal_model,biomod2_model-method}
+\alias{get_scaling_model,biomod2_model-method}
 \title{Functions to extract informations from \code{\link{biomod2_model}} objects}
 \usage{
-## for signature 'biomod2_model' 
-get_formal_model(obj)
-get_scaling_model(obj)
+\S4method{get_formal_model}{biomod2_model}(object)
+
+\S4method{get_scaling_model}{biomod2_model}(object)
 }
 \arguments{
 \item{obj}{a \code{\link{biomod2_model}} object}

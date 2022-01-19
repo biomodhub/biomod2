@@ -13,29 +13,63 @@
 \alias{get_built_models}
 \alias{get_evaluations}
 \alias{get_variables_importance}
+\alias{get_options,BIOMOD.models.out-method}
+\alias{get_calib_lines,BIOMOD.models.out-method}
+\alias{get_formal_data,BIOMOD.models.out-method}
+\alias{get_predictions,BIOMOD.models.out-method}
+\alias{get_built_models,BIOMOD.models.out-method}
+\alias{get_evaluations,BIOMOD.models.out-method}
+\alias{get_variables_importance,BIOMOD.models.out-method}
+\alias{get_projected_models,BIOMOD.projection.out-method}
+\alias{free,BIOMOD.projection.out-method}
+\alias{get_predictions,BIOMOD.projection.out-method}
+\alias{get_needed_models,BIOMOD.ensemble.models.out-method}
+\alias{get_kept_models,BIOMOD.ensemble.models.out-method}
+\alias{get_predictions,BIOMOD.ensemble.models.out-method}
+\alias{get_built_models,BIOMOD.ensemble.models.out-method}
+\alias{get_evaluations,BIOMOD.ensemble.models.out-method}
+\alias{get_variables_importance,BIOMOD.ensemble.models.out-method}
 \title{Functions to extract informations from \code{\link{BIOMOD.models.out}}, 
 \code{\link{BIOMOD.projection.out}} or \code{\link{BIOMOD.ensemble.models.out}} objects}
 \usage{
-## for signature 'BIOMOD.models.out' 
-get_options(obj)
-get_calib_lines(obj)
-get_formal_data(obj)
+\S4method{get_options}{BIOMOD.models.out}(obj)
 
-## for signature 'BIOMOD.projection.out'
-get_projected_models(obj)
-free(obj)
+\S4method{get_calib_lines}{BIOMOD.models.out}(obj, as.data.frame = FALSE, ...)
 
-## for signature 'BIOMOD.models.out', 'BIOMOD.projection.out' or 'BIOMOD.ensemble.models.out'
-get_predictions(obj)
+\S4method{get_formal_data}{BIOMOD.models.out}(obj, subinfo = NULL)
 
-## for signature 'BIOMOD.ensemble.models.out'
-get_needed_models(obj)
-get_kept_models(obj)
+\S4method{get_predictions}{BIOMOD.models.out}(obj, as.data.frame = FALSE, evaluation = FALSE)
 
-## for signature 'BIOMOD.models.out' or 'BIOMOD.ensemble.models.out'
-get_built_models(obj)
-get_evaluations(obj)
-get_variables_importance(obj)
+\S4method{get_built_models}{BIOMOD.models.out}(obj, ...)
+
+\S4method{get_evaluations}{BIOMOD.models.out}(obj, ...)
+
+\S4method{get_variables_importance}{BIOMOD.models.out}(obj, ...)
+
+\S4method{get_projected_models}{BIOMOD.projection.out}(obj)
+
+\S4method{free}{BIOMOD.projection.out}(obj)
+
+\S4method{get_predictions}{BIOMOD.projection.out}(
+  obj,
+  as.data.frame = FALSE,
+  full.name = NULL,
+  model = NULL,
+  run.eval = NULL,
+  data.set = NULL
+)
+
+\S4method{get_needed_models}{BIOMOD.ensemble.models.out}(obj, selected.models = "all", ...)
+
+\S4method{get_kept_models}{BIOMOD.ensemble.models.out}(obj, model, ...)
+
+\S4method{get_predictions}{BIOMOD.ensemble.models.out}(obj, ...)
+
+\S4method{get_built_models}{BIOMOD.ensemble.models.out}(obj, ...)
+
+\S4method{get_evaluations}{BIOMOD.ensemble.models.out}(obj, ...)
+
+\S4method{get_variables_importance}{BIOMOD.ensemble.models.out}(obj, ...)
 }
 \arguments{
 \item{obj}{a \code{\link{BIOMOD.models.out}}, \code{\link{BIOMOD.projection.out}} or 

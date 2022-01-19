@@ -9,18 +9,10 @@
 ##' @description These functions allow the user to easily retrieve single models (formal or scaled) 
 ##' from \code{\link{biomod2_model}} objects from the modeling step.
 ##' 
-##' @usage 
-##' 
-##' ## for signature 'biomod2_model' 
-##' get_formal_model(obj)
-##' get_scaling_model(obj)
-##' 
 ##' 
 ##' @param obj a \code{\link{biomod2_model}} object
 ##' 
-##' 
-##' @export
-##' 
+NULL
 
 setGeneric("get_formal_model", def = function(object) { standardGeneric("get_formal_model") })
 
@@ -174,7 +166,18 @@ setClass('biomod2_model',
          })
 
 # 7.2 Getters -------------------------------------------------------------------------------------
+
+##' 
+##' @rdname getters.bm
+##' @export
+##' 
+
 setMethod('get_formal_model', signature('biomod2_model'), function(object) { return(object@model) })
+
+##' 
+##' @rdname getters.bm
+##' @export
+##' 
 
 setMethod('get_scaling_model', signature('biomod2_model'), function(object) { return(object@scaling_model) })
 
