@@ -15,6 +15,7 @@ FilteringTransformation <- function(...) { .Deprecated("BinaryTransformation") }
 Find.Optim.Stat <- function(...) { .Deprecated("bm_FindOptimStat") }
 getStatOptimValue <- function(...) { .Deprecated("get_optim_value") }
 makeFormula <- function(...) { .Deprecated("bm_MakeFormula") }
+models_scores_graph <- function(...) { .Deprecated("bm_PlotEvalMean") }
 Print_Default_ModelingOptions <- function(...) { .Deprecated("bm_DefaultModelingOptions") }
 sample.factor.levels <- function(...) { .Deprecated("bm_SampleFactorLevels") }
 sre <- function(...) { .Deprecated("bm_SRE") }
@@ -28,7 +29,6 @@ variables_importance <- function(...) { .Deprecated("bm_VariablesImportance") }
 # evaluate
 # full_suffling
 # level.plot
-# models_scores_graph
 # multiple.plot
 # ProbDensFunc
 # randomise_data

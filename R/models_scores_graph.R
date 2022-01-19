@@ -12,206 +12,98 @@
 # bias,...
 
 ## Input ##
-# obj : an biomod2 modeling or ensemble-modeling object
-# metrics : charcter vector of 2 chosen metrics (e.g c("ROC", "TSS"))
+# modeling.output : an biomod2 modeling or ensemble-modeling modeling.outputect
+# eval.metric : charcter vector of 2 chosen eval.metric (e.g c("ROC", "TSS"))
 # by : the way models are grouped ('models', 'algos', 'cv_run' or 'data_set')
 # plot : if you want to produce plot or not
 # ... : several graphical options
 
 ## Ouput ##
-# the ggplot2 object used to produce the graph is returned. That implies that 
+# the ggplot2 modeling.outputect used to produce the graph is returned. That implies that 
 # user should quite easily customize this plot.
 
-## Main code ##
-models_scores_graph <- function(obj, metrics = NULL, by = 'models', plot = TRUE, ...){
-  
-  ## get additional args
-  args = list(...)
-  
-  ## check args
-  ck_args <- .models_scores_graph_check_args(obj, metrics = metrics, by = by, args = args)
-  
-  metrics <- ck_args$metrics
-  xlim <- ck_args$xlim
-  ylim <- ck_args$ylim
-  main <- ck_args$main
-  
-  ## get models scores
-  scores <- get_evaluations(obj, as.data.frame = T )
-  
-  ## add some columns to enable different wy of grouping scores
-  scores$mod = sapply(as.character(scores$Model.name), function(x) { xx <- unlist( strsplit(x,"_") ); xx[1] } )
-  scores$alg = sapply(as.character(scores$Model.name), function(x) { xx <- unlist( strsplit(x,"_") ); xx[length(xx) - 2] } )
-  scores$run = sapply(as.character(scores$Model.name), function(x) { xx <- unlist( strsplit(x,"_") ); xx[length(xx) - 1] } )
-  scores$dat = sapply(as.character(scores$Model.name), function(x) { xx <- unlist( strsplit(x,"_") ); xx[length(xx)] } )
-  
-  ## extract some usefull info
-  eval_data <- ifelse( all(is.na( scores$Evaluating.data )), "Testing.data", "Evaluating.data")
-  
-  ## calculate summaries statistics
-  
-  ### models mean scores calculation
-  models_mean <- switch(by,
-                        models = sapply( unique(scores$mod) , 
-                                         function(x){ 
-                                           sapply( metrics,  
-                                                   function(xx, x){
-                                                     mean(scores[ scores$mod == x & scores$Eval.metric == xx,eval_data, drop=T], na.rm=T)
-                                                   },
-                                                   x = x ) 
-                                           }),
-                        algos = sapply( unique(scores$alg) , 
-                                         function(x){ 
-                                           sapply( metrics,  
-                                                   function(xx, x){
-                                                     mean(scores[ scores$alg == x & scores$Eval.metric == xx,eval_data, drop=T], na.rm=T)
-                                                   },
-                                                   x = x ) 
-                                         }),
-                        cv_run = sapply( unique(scores$run) , 
-                                      function(x){ 
-                                        sapply( metrics,  
-                                                function(xx, x){
-                                                  mean(scores[ scores$run == x & scores$Eval.metric == xx,eval_data, drop=T], na.rm=T)
-                                                },
-                                                x = x ) 
-                                      }),
-                        data_set = sapply( unique(scores$dat) , 
-                                           function(x){ 
-                                             sapply( metrics,  
-                                                     function(xx, x){
-                                                       mean(scores[ scores$dat == x & scores$Eval.metric == xx,eval_data, drop=T], na.rm=T)
-                                                     },
-                                                     x = x ) 
-                                           }) )
-  
-  ### sd of models scores calculation
-  models_sd <- switch(by,
-                        models = sapply( unique(scores$mod) , 
-                                         function(x){ 
-                                           sapply( metrics,  
-                                                   function(xx, x){
-                                                     sd(scores[ scores$mod == x & scores$Eval.metric == xx,eval_data, drop=T], na.rm=T)
-                                                   },
-                                                   x = x ) 
-                                         }),
-                        algos = sapply( unique(scores$alg) , 
-                                       function(x){ 
-                                         sapply( metrics,  
-                                                 function(xx, x){
-                                                   sd(scores[ scores$alg == x & scores$Eval.metric == xx,eval_data, drop=T], na.rm=T)
-                                                 },
-                                                 x = x ) 
-                                       }),
-                        cv_run = sapply( unique(scores$run) , 
-                                      function(x){ 
-                                        sapply( metrics,  
-                                                function(xx, x){
-                                                  sd(scores[ scores$run == x & scores$Eval.metric == xx,eval_data, drop=T], na.rm=T)
-                                                },
-                                                x = x ) 
-                                      }),
-                        data_set = sapply( unique(scores$dat) , 
-                                           function(x){ 
-                                             sapply( metrics,  
-                                                     function(xx, x){
-                                                       sd(scores[ scores$dat == x & scores$Eval.metric == xx,eval_data, drop=T], na.rm=T)
-                                                     },
-                                                     x = x ) 
-                                           }) )
-  
-  ### merge data to fit with ggplot2 formalism
-  ggdat <- merge( 
-            data.frame(name = colnames(models_mean), t(models_mean) ),
-            data.frame(name = colnames(models_sd), t(models_sd) ),
-            by = "name" )
-  
-  colnames(ggdat) <- c("name", "mean1", "mean2", "sd1", "sd2")
-  
-  #   ggdat <- data.frame( 
-  #             merge( 
-  #               reshape2::melt(models_mean), 
-  #               reshape2::melt(models_sd),
-  #               by = c("X1","X2") ) )
-  #   
-  #   colnames(ggdat) <- c("metric","name","mean","sd")
+##' 
+##' @export
+##' 
 
-  ## produce plots
-  gg <- ggplot(ggdat, aes_string(x="mean1", y="mean2", colour="name", fill = NULL))
-  
-  ### add mean poins
-  gg <- gg + geom_point()  
-
-  
-  ### add axis names and remove legend name
-  gg <- gg + xlab(metrics[1]) + ylab(metrics[2]) + theme(legend.title=element_blank())
-  
-  ### fix scale
-  if( length(ylim) | length(xlim)){
-    gg <- gg + coord_cartesian(ylim=ylim, xlim=xlim)
-  }
-  
-  ### add title
-  if(length(main)){
-    gg <- gg + labs(title=main)
-  }
-  
-  ### add error bars
-  limits1 <- aes_string(xmax = "mean1 + sd1", xmin= "mean1 - sd1", fill = NULL)
-  limits2 <- aes_string(ymax = "mean2 + sd2", ymin= "mean2 - sd2", fill = NULL)
-  gg <- gg + geom_errorbar(limits2,width=0) + geom_errorbarh(limits1, height=0)
-
-  if(plot){
-    print(gg)
-  }
-  
-  invisible(gg)
-} ## end of models_scores_graph function
-
-.models_scores_graph_check_args <- function(obj, metrics = NULL, by = 'models', args){
-  ## check obj type
-  if(!inherits(obj, c("BIOMOD.models.out", "BIOMOD.ensemble.models.out"))){
-    stop("obj must be a 'BIOMOD.models.out' or a 'BIOMOD.ensemble.models.out' object")
-  }
-  
-  ## check metrics
-  scores <- get_evaluations(obj, as.data.frame = T )
-  
-  avail_metrics <- unique( scores$Eval.metric )
-  if( length(avail_metrics)<2 ){
-    stop("at least 2 different evaluations metrics needed")
-  }
-  if (is.null(metrics)){
-    metrics <- avail_metrics[1:2]
-    warnings(toString(metrics), " evaluation metrics automatically selected")
-  }
-  
-  ## check by
-  if(! (by %in% c('models', 'algos', 'cv_run', 'data_set') ) ){
-    stop("by arg should be one of 'models', 'algos', 'cv_run' or 'data_set'")
-  }
-  
-  ## check extra args
-  test_args_names <- ! ( names(args) %in% c("xlim", "ylim", "main", "col"))
-  if( any ( test_args_names ) ){
-    stop("unknown ", toString( names(args)[ test_args_names ] )," args")
-  }
-  
-  
+bm_PlotEvalMean <- function(modeling.output, eval.metric = NULL, group.by = 'Algo', plot = TRUE, ...)
+{
+  ## 0. Check arguments ---------------------------------------------------------------------------
+  args <- .bm_PlotEvalMean.check.args(modeling.output, eval.metric, group.by, list(...))
+  eval.metric <- args$eval.metric
   xlim <- args$xlim
   ylim <- args$ylim
   main <- args$main
+  rm(args)
   
-  return(list(metrics = metrics,
-              xlim = xlim,
-              ylim = ylim,
-              main = main))
+  ## 1. Get data for graphic ----------------------------------------------------------------------
+  ## Get evaluation values
+  scores <- get_evaluations(modeling.output, as.data.frame = TRUE)
   
-} ## end of checking args function
+  ## Choose which dataset (calibration or validation) should be used
+  eval.data <- ifelse(all(is.na(scores$Evaluating.data)), "Testing.data", "Evaluating.data")
+  
+  ## Compute mean and sd evaluation scores
+  models_mean = tapply(X = scores[, eval.data], INDEX = list(scores$Eval.metric, scores[, group.by]), FUN = mean, na.rm = TRUE)
+  models_sd = tapply(X = scores[, eval.data], INDEX = list(scores$Eval.metric, scores[, group.by]), FUN = sd, na.rm = TRUE)
+  
+  ## Prepare data table for graphic
+  ggdat <- merge(data.frame(name = colnames(models_mean), t(models_mean)),
+                 data.frame(name = colnames(models_sd), t(models_sd)), 
+                 by = "name" )
+  colnames(ggdat) <- c("name", "mean1", "mean2", "sd1", "sd2")
+  
+  limits1 <- aes_string(xmax = "mean1 + sd1", xmin = "mean1 - sd1", fill = NULL)
+  limits2 <- aes_string(ymax = "mean2 + sd2", ymin = "mean2 - sd2", fill = NULL)
+  
+  ## 2. PLOT graphic ------------------------------------------------------------------------------
+  gg <- ggplot(ggdat, aes_string(x = "mean1", y = "mean2", colour = "name", fill = NULL)) +
+    geom_point() + ## add mean points
+    geom_errorbarh(limits1, height = 0) + ## add horizontal error bars
+    geom_errorbar(limits2, width = 0) + ## add vertical error bars
+    xlab(eval.metric[1]) +
+    ylab(eval.metric[2]) +
+    theme(legend.title = element_blank())
+  
+  if (length(ylim) | length(xlim)) { ## fix scale
+    gg <- gg + coord_cartesian(ylim = ylim, xlim = xlim)
+  }
+  
+  if (length(main)) { ## add title
+    gg <- gg + labs(title = main)
+  }
+  
+  if (plot){ print(gg) }
+  invisible(gg)
+}
 
-# x11()
-# models_scores_graph(myBiomodModelOut, by = 'cv_run', metrics=c("ROC","TSS"))
-# models_scores_graph(myBiomodEM, by = 'algos', metrics=c("ROC","TSS"))
-# 
-# str(gg)
-# get_evaluations(myBiomodModelOut, as.data.frame=T)
+
+###################################################################################################
+
+.bm_PlotEvalMean.check.args <- function(modeling.output, eval.metric = NULL, group.by = 'Algo', args)
+{
+  ## 1. Check modeling.output argument ----------------------------------------
+  .fun_testIfInherits(TRUE, "modeling.output", modeling.output, c("BIOMOD.models.out", "BIOMOD.ensemble.models.out"))
+  
+  ## 2. Check eval.metric argument --------------------------------------------
+  scores <- get_evaluations(modeling.output, as.data.frame = TRUE)
+  avail_eval.metric <- unique(scores$Eval.metric)
+  if (length(avail_eval.metric) < 2) { stop("At least 2 different evaluations eval.metric needed") }
+  if (is.null(eval.metric)) {
+    eval.metric <- avail_eval.metric[1:2]
+    warnings(toString(eval.metric), " evaluation eval.metric automatically selected")
+  }
+  
+  ## 3. Check group.by argument -----------------------------------------------
+  .fun_testIfIn(TRUE, "group.by", group.by, c('Model', 'Algo', 'Run', 'Dataset'))
+
+  ## 4. Check extra args argument ---------------------------------------------
+  .fun_testIfIn(TRUE, "names(args)", names(args), c('xlim', 'ylim', 'main', 'col'))
+  
+  
+  return(list(eval.metric = eval.metric,
+              xlim = args$xlim,
+              ylim = args$ylim,
+              main = args$main))
+} 
+

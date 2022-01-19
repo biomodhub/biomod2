@@ -235,6 +235,7 @@ response.plot <-
 ##' dimnames(myRespPlot3D)
 ##' }
 ##' 
+##' @export
 response.plot2 <- function(
   models,
   Data,
