@@ -291,7 +291,7 @@ setMethod('bm_PseudoAbsences_random', signature(env = "SpatialPointsDataFrame"),
               
               # 3. Select always the presences and the true absences
               pa.tab <- matrix(FALSE, ncol = nb.repet, nrow = nrow(sp))
-              colnames(pa.tab) <- paste("PA", 1:nb.repet)
+              colnames(pa.tab) <- paste0("PA", 1:nb.repet)
               pa.tab[c(which(sp@data == 1), which(sp@data == 0)),] <- TRUE
               
               # 4. For each repetition, select among NA cells
@@ -342,7 +342,7 @@ setMethod('bm_PseudoAbsences_random', signature(env = "RasterStack"),
               
               # 3. Select always the presences and the true absences
               pa.tab <- matrix(FALSE, ncol = nb.repet, nrow = nrow(sp))
-              colnames(pa.tab) <- paste("PA", 1:nb.repet)
+              colnames(pa.tab) <- paste0("PA", 1:nb.repet)
               pa.tab[c(which(sp@data == 1), which(sp@data == 0)),] <- TRUE
               
               # 4. For each repetition, select among NA cells
@@ -414,7 +414,7 @@ setMethod('bm_PseudoAbsences_random', signature(env = "RasterStack"),
                 # putting cells in good format
                 selected.cells <- sort(unique(as.vector(pa.tab.tmp)))
                 pa.tab <- matrix(FALSE, ncol = nb.repet, nrow = length(selected.cells))
-                colnames(pa.tab) <- paste("PA", 1:nb.repet)
+                colnames(pa.tab) <- paste0("PA", 1:nb.repet)
                 for (j in 1:ncol(pa.tab)) {
                   pa.tab[selected.cells %in% pa.tab.tmp[,j], j] <- TRUE
                 }
@@ -474,7 +474,7 @@ setMethod('bm_PseudoAbsences_sre', signature(env = "SpatialPointsDataFrame"),
             
             # 3. Select always the presences and the true absences
             pa.tab <- matrix(FALSE, ncol = nb.repet, nrow = nrow(sp))
-            colnames(pa.tab) <- paste("PA", 1:nb.repet)
+            colnames(pa.tab) <- paste0("PA", 1:nb.repet)
             pa.tab[c(which(sp@data == 1), which(sp@data == 0)),] <- TRUE
             
             # 4. For each repetition, select among NA cells
@@ -555,7 +555,7 @@ setMethod('bm_PseudoAbsences_sre', signature(env = "RasterStack"),
             # putting cells in good format
             selected.cells <- sort(unique(as.vector(pa.tab.tmp)))
             pa.tab <- matrix(FALSE, ncol = nb.repet, nrow = length(selected.cells))
-            colnames(pa.tab) <- paste("PA", 1:nb.repet)
+            colnames(pa.tab) <- paste0("PA", 1:nb.repet)
             for (j in 1:ncol(pa.tab)) {
               pa.tab[selected.cells %in% pa.tab.tmp[,j], j] <- TRUE
             }

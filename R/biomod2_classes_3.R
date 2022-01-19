@@ -32,6 +32,7 @@
 ##' 
 ##' 
 ##' @importFrom reshape melt.array
+##' @importFrom reshape2 melt
 ##' @importFrom foreach foreach
 ##' @importFrom abind abind
 ##' 
@@ -358,21 +359,21 @@ setMethod("get_evaluations", "BIOMOD.models.out",
             ## transform into data.frame object if needed
             if(as.data.frame)
             {
-              tmp <- melt.array(out, varnames = c("eval.metric", "test", "m", "r", "d"))
-              model_names <- unique(apply(tmp[, c("m", "r", "d"), drop = FALSE], 1, paste, collapse = "_"))
+              tmp <- melt.array(out, varnames = c("eval.metric", "test", "a", "r", "d"))
+              model_names <- unique(apply(tmp[, c("a", "r", "d"), drop = FALSE], 1, paste, collapse = "_"))
               out <- data.frame() #NULL
               for (mod in model_names)
               {
-                m = unlist(strsplit(mod, "_"))[1]
+                a = unlist(strsplit(mod, "_"))[1]
                 r = unlist(strsplit(mod, "_"))[2]
                 d = unlist(strsplit(mod, "_"))[3]
-                ind.mrd = which(tmp$m == m & tmp$r == r & tmp$d == d)
+                ind.mrd = which(tmp$a == a & tmp$r == r & tmp$d == d)
                 eval.met = as.character(unique(tmp[ind.mrd, "eval.metric", drop = TRUE]))
                 for(em in eval.met)
                 {
                   ind.em = intersect(ind.mrd, which(tmp$eval.metric == em))
                   out <- rbind(out, data.frame( Model.name = mod,
-                                                Model = m,
+                                                Algo = a,
                                                 Run = r,
                                                 Dataset = d,
                                                 Eval.metric = em,
@@ -919,7 +920,7 @@ setMethod("get_evaluations", "BIOMOD.ensemble.models.out",
             out <- list()
             models <- obj@em.computed ## list of computed models
             for (mod in models) {
-              out[[mod]] <- obj@em.models[[mod]]@model_evaluation[, , drop = F]
+              out[[mod]] <- obj@em.models[[mod]]@model_evaluation[, , drop = FALSE]
             }
             
             ## transform into data.frame object if needed
@@ -931,14 +932,16 @@ setMethod("get_evaluations", "BIOMOD.ensemble.models.out",
               for (mod in unique(tmp$model.name))
               {
                 m = unlist(strsplit(mod, "_"))[1]
-                r = unlist(strsplit(mod, "_"))[2]
-                d = unlist(strsplit(mod, "_"))[3]
+                a = unlist(strsplit(mod, "_"))[2]
+                r = unlist(strsplit(mod, "_"))[3]
+                d = unlist(strsplit(mod, "_"))[4]
                 eval.met = as.character(unique(tmp[which(tmp$model.name == mod), "eval.metric", drop = TRUE]))
                 for(em in eval.met)
                 {
                   ind.em = which(tmp$model.name == mod & tmp$eval.metric == em)
                   out <- rbind(out, data.frame( Model.name = mod,
                                                 Model = m,
+                                                Algo = a,
                                                 Run = r,
                                                 Dataset = d,
                                                 Eval.metric = em,
