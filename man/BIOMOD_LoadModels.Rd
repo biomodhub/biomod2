@@ -33,9 +33,12 @@ subselection of models can be done using the following additional arguments :
   \item{\code{run.eval} : }{a \code{vector} containing repetition set to be loaded, must be 
   among \code{RUN1}, \code{RUN2}, \code{...}, \code{Full}}
   \item{\code{data.set} : }{a \code{vector} containing pseudo-absence set to be loaded, must 
-  be among \code{PA1}, \code{PA2}, \code{...}}
+  be among \code{PA1}, \code{PA2}, \code{...} \cr \cr}
   \item{\code{path} : }{a \code{character} corresponding to the location of the species folder 
-  (if different from the current working directory)}
+  (if different from the current working directory) \cr \cr}
+  \item{\code{full.name} : }{a \code{vector} containing model names to be kept, must be either 
+  \code{all} or a sub-selection of model names \cr \cr}
+  \item{\code{as} : }{a \code{character} to contain the loaded models}
 }
 }
 \examples{
