@@ -69,7 +69,8 @@
 ##' @seealso \code{\link{BIOMOD_FormatingData}}
 ##'
 ##' 
-##' @importFrom raster extract coordinates subset reclassify mask cellFromXY xyFromCell distance
+##' @importFrom raster extract coordinates subset reclassify mask cellFromXY xyFromCell distance 
+##' sampleRandom
 ##' @importFrom sp SpatialPointsDataFrame coordinates
 ##' 
 ##' @export

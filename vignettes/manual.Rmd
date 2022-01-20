@@ -165,7 +165,7 @@ myBiomodOptions
 ```R
 # Model single models
 myBiomodModelOut <- BIOMOD_Modeling(myBiomodData,
-                                    models = 'ANN', #c('SRE','RF'),
+                                    models = c('FDA','RF'),
                                     models.options = myBiomodOptions,
                                     NbRunEval = 2,
                                     DataSplit = 80,

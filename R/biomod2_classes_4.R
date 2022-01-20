@@ -467,7 +467,7 @@ setMethod('predict', signature(object = 'MARS_biomod2_model'),
 .predict.MARS_biomod2_model.RasterStack <- function(object, newdata, ...)
 {
   args <- list(...)
-  filename <- args$filename
+  namefile <- args$namefile
   overwrite <- args$overwrite
   on_0_1000 <- args$on_0_1000
   
@@ -504,14 +504,14 @@ setMethod('predict', signature(object = 'MARS_biomod2_model'),
   if (on_0_1000) { proj <- round(proj * 1000)}
   
   # save raster on hard drive ?
-  if (!is.null(filename)) {
+  if (!is.null(namefile)) {
     cat("\n\t\tWriting projection on hard drive...")
     if (on_0_1000) { ## projections are stored as positive integer
-      writeRaster(proj, filename = filename, overwrite = overwrite, datatype = "INT2S", NAflag = -9999)
+      writeRaster(proj, filename = namefile, overwrite = overwrite, datatype = "INT2S", NAflag = -9999)
     } else { ## keep default data format for saved raster
-      writeRaster(proj, filename = filename, overwrite = overwrite)
+      writeRaster(proj, filename = namefile, overwrite = overwrite)
     }
-    proj <- raster(filename, RAT = FALSE)
+    proj <- raster(namefile, RAT = FALSE)
   }
   return(proj)
 }
@@ -546,7 +546,7 @@ setMethod('predict', signature(object = 'MAXENT.Phillips_biomod2_model'),
 .predict.MAXENT.Phillips_biomod2_model.RasterStack <- function(object, newdata, silent = TRUE,  ...)
 {
   args <- list(...)
-  filename <- args$filename
+  namefile <- args$namefile
   overwrite <- args$overwrite
   on_0_1000 <- args$on_0_1000
   rm_tmp_files <- args$rm_tmp_files
@@ -598,14 +598,14 @@ setMethod('predict', signature(object = 'MAXENT.Phillips_biomod2_model'),
   if (on_0_1000) { proj <- round(proj * 1000) }
   
   # save raster on hard drive ?
-  if (!is.null(filename)) {
+  if (!is.null(namefile)) {
     cat("\n\t\tWriting projection on hard drive...")
     if (on_0_1000) { ## projections are stored as positive integer
-      writeRaster(proj, filename = filename, overwrite = overwrite, datatype = "INT2S", NAflag = -9999)
+      writeRaster(proj, filename = namefile, overwrite = overwrite, datatype = "INT2S", NAflag = -9999)
     } else { ## keep default data format for saved raster
-      writeRaster(proj, filename = filename, overwrite = overwrite)
+      writeRaster(proj, filename = namefile, overwrite = overwrite)
     }
-    proj <- raster(filename, RAT = FALSE)
+    proj <- raster(namefile, RAT = FALSE)
   } else if (!inMemory(proj)) {
     proj <- readAll(proj) # to prevent from tmp files removing
   }
@@ -705,7 +705,7 @@ setMethod('predict', signature(object = 'MAXENT.Phillips.2_biomod2_model'),
   newdata.df <- newdata %>% as.matrix()
   
   args <- list(...)
-  filename <- args$filename
+  namefile <- args$namefile
   overwrite <- args$overwrite
   on_0_1000 <- args$on_0_1000
   
@@ -727,14 +727,14 @@ setMethod('predict', signature(object = 'MAXENT.Phillips.2_biomod2_model'),
   proj <- proj.ras
   
   # save raster on hard drive ?
-  if (!is.null(filename)) {
+  if (!is.null(namefile)) {
     cat("\n\t\tWriting projection on hard drive...")
     if (on_0_1000) { ## projections are stored as positive integer
-      writeRaster(proj, filename = filename, overwrite = overwrite, datatype = "INT2S", NAflag = -9999)
+      writeRaster(proj, filename = namefile, overwrite = overwrite, datatype = "INT2S", NAflag = -9999)
     } else { ## keep default data format for saved raster
-      writeRaster(proj, filename = filename, overwrite = overwrite)
+      writeRaster(proj, filename = namefile, overwrite = overwrite)
     }
-    proj <- raster(filename, RAT = FALSE)
+    proj <- raster(namefile, RAT = FALSE)
   }
   
   return(proj)
@@ -767,7 +767,7 @@ setMethod('predict', signature(object = 'MAXENT.Phillips.2_biomod2_model'),
 # .predict.MAXENT.Tsuruoka_biomod2_model.RasterStack <- function(object, newdata, ...)*
 # {
 #   args <- list(...)
-#   filename <- args$filename
+#   namefile <- args$namefile
 #   overwrite <- args$overwrite
 #   on_0_1000 <- args$on_0_1000
 # 
@@ -792,14 +792,14 @@ setMethod('predict', signature(object = 'MAXENT.Phillips.2_biomod2_model'),
 #   if (on_0_1000) { proj <- round(proj * 1000) }
 # 
 #   # save raster on hard drive ?
-#   if (!is.null(filename)) {
+#   if (!is.null(namefile)) {
 #     cat("\n\t\tWriting projection on hard drive...")
 #     if (on_0_1000) { ## projections are stored as positive integer
-#       writeRaster(proj, filename = filename, overwrite = overwrite, datatype = "INT2S", NAflag = -9999)
+#       writeRaster(proj, filename = namefile, overwrite = overwrite, datatype = "INT2S", NAflag = -9999)
 #     } else { ## keep default data format for saved raster
-#       writeRaster(proj, filename = filename, overwrite = overwrite)
+#       writeRaster(proj, filename = namefile, overwrite = overwrite)
 #     }
-#     proj <- raster(filename, RAT = FALSE)
+#     proj <- raster(namefile, RAT = FALSE)
 #   }
 #   return(proj)
 # }

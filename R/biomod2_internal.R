@@ -243,7 +243,7 @@ check_data_range <- function(model, new_data)
 .template_predict.RasterStack = function(seedval = NULL, predcommand, object, newdata, ...)
 {
   args <- list(...)
-  filename <- args$filename
+  namefile <- args$namefile
   overwrite <- args$overwrite
   on_0_1000 <- args$on_0_1000
   
@@ -260,14 +260,15 @@ check_data_range <- function(model, new_data)
   if (on_0_1000) { proj <- round(proj * 1000) }
   
   # save raster on hard drive ?
-  if (!is.null(filename)) {
+  if (!is.null(namefile)) {
     cat("\n\t\tWriting projection on hard drive...")
     if (on_0_1000) { ## projections are stored as positive integer
-      writeRaster(proj, filename = filename, overwrite = overwrite, datatype = "INT2S", NAflag = -9999)
+      print(namefile)
+      writeRaster(proj, filename = namefile, overwrite = overwrite, datatype = "INT2S", NAflag = -9999)
     } else { ## keep default data format for saved raster
-      writeRaster(proj, filename = filename, overwrite = overwrite)
+      writeRaster(proj, filename = namefile, overwrite = overwrite)
     }
-    proj <- raster(filename, RAT = FALSE)
+    proj <- raster(namefile, RAT = FALSE)
   }
   return(proj)
 }
@@ -331,10 +332,10 @@ check_data_range <- function(model, new_data)
 .template_predictEM.formal_predictions = function(object, newdata, formal_predictions, ...)
 {
   args <- list(...)
-  filename <- args$filename
+  namefile <- args$namefile
   on_0_1000 <- args$on_0_1000
   
-  if (is.null(filename)) { filename <- "" }
+  if (is.null(namefile)) { namefile <- "" }
   if (is.null(on_0_1000)) { on_0_1000 <- FALSE }
   
   if (is.null(formal_predictions)) {

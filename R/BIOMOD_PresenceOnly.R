@@ -169,9 +169,9 @@ BIOMOD_PresenceOnly <- function(modeling.output = NULL,
     myModelEval <- get_evaluations(modeling.output, as.data.frame = TRUE)
     myModelEval[, 1] <- as.character(myModelEval[, 1])
     for (i in 1:nrow(myModelEval)) {
-      myModelEval[i, 1] < - paste(c(modeling.output@sp.name
-                                    , strsplit(as.character(myModelEval[i, 1]), split = "_")[[1]][3:1])
-                                  , collapse = "_")
+      myModelEval[i, 1] <- paste(c(modeling.output@sp.name
+                                   , strsplit(as.character(myModelEval[i, 1]), split = "_")[[1]][3:1])
+                                 , collapse = "_")
     }
     
     ## Get predictions on observations
