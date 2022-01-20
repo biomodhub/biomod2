@@ -59,6 +59,7 @@ reference:
       - "bm_VariablesImportance"
       - "bm_PlotEvalMean"
       - "bm_PlotEvalBoxplot"
+      - "bm_PlotVarImpBoxplot"
   - title: Toolbox
   - subtitle: Objects
     contents:

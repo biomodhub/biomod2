@@ -98,6 +98,7 @@ Collate:
     'bm_MakeFormula.R'
     'bm_PlotEvalBoxplot.R'
     'bm_PlotEvalMean.R'
+    'bm_PlotVarImpBoxplot.R'
     'bm_PseudoAbsences.R'
     'bm_Rescaler.R'
     'bm_RunModelsLoop.R'

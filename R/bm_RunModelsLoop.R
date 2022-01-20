@@ -770,10 +770,10 @@ bm_RunModel <- function(Model, Data, Options, calibLines, Yweights, nam, VarImpo
     variables.importance <- bm_VariablesImportance(model = model.bm
                                                    , data = Data[, expl_var_names, drop = FALSE]
                                                    , nb_rand = VarImport)
-    model.bm@model_variables_importance <- variables.importance$mat
+    model.bm@model_variables_importance <- variables.importance
     
     ## only the mean of variables importance run is returned
-    ListOut$var.import <- round(rowMeans(variables.importance$mat, na.rm = TRUE), digits = 3)
+    ListOut$var.import <- round(rowMeans(variables.importance, na.rm = TRUE), digits = 3)
     rm(variables.importance)
   }
   

@@ -21,11 +21,7 @@ variables importance calculation}
 each variable}
 }
 \value{
-A \code{BIOMOD.variables.importance} object containing :
-\describe{
-  \item{mat}{a \code{data.frame} containing variables importance scores for each 
-  permutation run}
-}
+A \code{matrix} containing variables importance scores for each permutation run.
 }
 \description{
 This internal \pkg{biomod2} function allows the user to compute a variable importance value 

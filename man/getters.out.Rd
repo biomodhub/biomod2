@@ -42,9 +42,9 @@
 
 \S4method{get_built_models}{BIOMOD.models.out}(obj, ...)
 
-\S4method{get_evaluations}{BIOMOD.models.out}(obj, ...)
+\S4method{get_evaluations}{BIOMOD.models.out}(obj, as.data.frame = FALSE, ...)
 
-\S4method{get_variables_importance}{BIOMOD.models.out}(obj, ...)
+\S4method{get_variables_importance}{BIOMOD.models.out}(obj, as.data.frame = FALSE, ...)
 
 \S4method{get_projected_models}{BIOMOD.projection.out}(obj)
 
@@ -67,9 +67,9 @@
 
 \S4method{get_built_models}{BIOMOD.ensemble.models.out}(obj, ...)
 
-\S4method{get_evaluations}{BIOMOD.ensemble.models.out}(obj, ...)
+\S4method{get_evaluations}{BIOMOD.ensemble.models.out}(obj, as.data.frame = FALSE, ...)
 
-\S4method{get_variables_importance}{BIOMOD.ensemble.models.out}(obj, ...)
+\S4method{get_variables_importance}{BIOMOD.ensemble.models.out}(obj, as.data.frame = FALSE, ...)
 }
 \arguments{
 \item{obj}{a \code{\link{BIOMOD.models.out}}, \code{\link{BIOMOD.projection.out}} or 
