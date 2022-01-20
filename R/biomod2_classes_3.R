@@ -342,13 +342,8 @@ setMethod("get_built_models", "BIOMOD.models.out", function(obj, ...) { return(o
 ##' 
 
 setMethod("get_evaluations", "BIOMOD.models.out",
-          function(obj, ...)
+          function(obj, as.data.frame = FALSE, ...)
           {
-            args <- list(...)
-            
-            ## fill some additional parameters
-            as.data.frame <- ifelse(!is.null(args$as.data.frame), args$as.data.frame, FALSE)
-            
             out <- NULL
             if (obj@models.evaluation@inMemory) {
               out <- obj@models.evaluation@val
@@ -359,34 +354,14 @@ setMethod("get_evaluations", "BIOMOD.models.out",
             ## transform into data.frame object if needed
             if(as.data.frame)
             {
-              tmp <- melt.array(out, varnames = c("eval.metric", "test", "a", "r", "d"))
-              model_names <- unique(apply(tmp[, c("a", "r", "d"), drop = FALSE], 1, paste, collapse = "_"))
-              out <- data.frame() #NULL
-              for (mod in model_names)
-              {
-                a = unlist(strsplit(mod, "_"))[1]
-                r = unlist(strsplit(mod, "_"))[2]
-                d = unlist(strsplit(mod, "_"))[3]
-                ind.mrd = which(tmp$a == a & tmp$r == r & tmp$d == d)
-                eval.met = as.character(unique(tmp[ind.mrd, "eval.metric", drop = TRUE]))
-                for(em in eval.met)
-                {
-                  ind.em = intersect(ind.mrd, which(tmp$eval.metric == em))
-                  out <- rbind(out, data.frame( Model.name = mod,
-                                                Algo = a,
-                                                Run = r,
-                                                Dataset = d,
-                                                Eval.metric = em,
-                                                Testing.data = as.numeric( tmp[intersect(ind.em, which(tmp$test == "Testing.data")), "value", drop = TRUE]), 
-                                                Evaluating.data = ifelse("Evaluating.data" %in% tmp$test
-                                                                         , as.numeric(tmp[intersect(ind.em, which(tmp$test == "Evaluating.data")), "value", drop = TRUE]), NA ), 
-                                                Cutoff = as.numeric(tmp[intersect(ind.em, which(tmp$test == "Cutoff")), "value", drop = TRUE]), 
-                                                Sensitivity = as.numeric(tmp[intersect(ind.em, which(tmp$test == "Sensitivity")), "value", drop = TRUE]), 
-                                                Specificity = as.numeric(tmp[intersect(ind.em, which(tmp$test == "Specificity")), "value", drop = TRUE]))
-                  )
-                } # end loop on eval metric
-              } # end loop on models names
+              tmp = melt(out, varnames = c("Eval.metric", "tmp", "Algo", "Run", "Dataset"))
+              tmp$Model.name = paste0(tmp$Algo, "_", tmp$Run, "_", tmp$Dataset)
+              tmp.split = split(tmp, tmp$tmp)
+              tmp.split = lapply(tmp.split, function(x) x[, c("Model.name", "Algo", "Run", "Dataset", "Eval.metric", "value")])
+              for (i in 1:length(tmp.split)) { colnames(tmp.split[[i]])[6] = names(tmp.split)[i] }
+              out = Reduce(function(x, y) merge(x, y, by = c("Model.name", "Algo", "Run", "Dataset", "Eval.metric")), tmp.split)
             }
+            
             return(out)
           }
 )
@@ -397,12 +372,33 @@ setMethod("get_evaluations", "BIOMOD.models.out",
 ##' 
 
 setMethod("get_variables_importance", "BIOMOD.models.out",
-          function(obj, ...) {
-            if (obj@variables.importance@inMemory) {
-              return(obj@variables.importance@val)
-            } else if (obj@variables.importance@link != '') {
-              return(get(load(obj@variables.importance@link)))
-            } else { return(NA) }
+          function(obj, as.data.frame = FALSE, ...)
+          {
+            out <- NULL
+            # if (obj@variables.importance@inMemory) {
+            #   out <- obj@variables.importance@val
+            # } else if(obj@variables.importance@link != '') {
+            #   out <- get(load(obj@variables.importance@link))
+            # }
+            BIOMOD_LoadModels(obj)
+            for (mod in get_built_models(obj)) {
+              out_tmp <- get(mod)@model_variables_importance
+              out <- abind(out, out_tmp, along = 3)
+            }
+            dimnames(out)[[3]] <- get_built_models(obj)
+            
+            if(!is.null(out) && as.data.frame == TRUE)
+            {
+              tmp = melt(out, varnames = c("Expl.var", "Rand", "L1"))
+              tmp$Model.name = sapply(as.character(tmp$L1), function(x) { paste(strsplit(x, "_")[[1]][-1], collapse = "_") })
+              tmp$Algo = sapply(tmp$Model.name, function(x) { strsplit(x, "_")[[1]][3] })
+              tmp$Run = sapply(tmp$Model.name, function(x) { strsplit(x, "_")[[1]][2] })
+              tmp$Dataset = sapply(tmp$Model.name, function(x) { strsplit(x, "_")[[1]][1] })
+              out = tmp[, c("Model.name", "Algo", "Run", "Dataset", "Expl.var", "Rand", "value")]
+              colnames(out)[7] = "Var.imp"
+            }
+            
+            return(out)
           }
 )
 
@@ -909,13 +905,8 @@ setMethod("get_built_models", "BIOMOD.ensemble.models.out", function(obj, ...){ 
 ##' 
 
 setMethod("get_evaluations", "BIOMOD.ensemble.models.out",
-          function(obj, ...)
+          function(obj, as.data.frame = FALSE, ...)
           {
-            args <- list(...)
-            
-            ## fill some additional parameters
-            as.data.frame <- ifelse(!is.null(args$as.data.frame), args$as.data.frame, FALSE)
-            
             ## extract evaluation scores as a list
             out <- list()
             models <- obj@em.computed ## list of computed models
@@ -926,35 +917,18 @@ setMethod("get_evaluations", "BIOMOD.ensemble.models.out",
             ## transform into data.frame object if needed
             if(as.data.frame)
             {
-              tmp <- melt(out, varnames = c("eval.metric", "test"))
-              tmp$model.name <- sapply(tmp$L1, function(x) { paste(unlist(strsplit(x, "_"))[-1], collapse = "_") })
-              out <- data.frame() #NULL
-              for (mod in unique(tmp$model.name))
-              {
-                m = unlist(strsplit(mod, "_"))[1]
-                a = unlist(strsplit(mod, "_"))[2]
-                r = unlist(strsplit(mod, "_"))[3]
-                d = unlist(strsplit(mod, "_"))[4]
-                eval.met = as.character(unique(tmp[which(tmp$model.name == mod), "eval.metric", drop = TRUE]))
-                for(em in eval.met)
-                {
-                  ind.em = which(tmp$model.name == mod & tmp$eval.metric == em)
-                  out <- rbind(out, data.frame( Model.name = mod,
-                                                Model = m,
-                                                Algo = a,
-                                                Run = r,
-                                                Dataset = d,
-                                                Eval.metric = em,
-                                                Testing.data = as.numeric(tmp[intersect(ind.em, which(tmp$test == "Testing.data")), "value", drop = TRUE]), 
-                                                Evaluating.data = ifelse("Evaluating.data" %in% tmp$test
-                                                                         , as.numeric(tmp[intersect(ind.em, which(tmp$test == "Evaluating.data")), "value", drop =  TRUE]), NA ), 
-                                                Cutoff = as.numeric(tmp[intersect(ind.em, which(tmp$test == "Cutoff")), "value", drop = TRUE]), 
-                                                Sensitivity = as.numeric(tmp[intersect(ind.em, which(tmp$test == "Sensitivity")), "value", drop = TRUE]), 
-                                                Specificity = as.numeric(tmp[intersect(ind.em, which(tmp$test == "Specificity")), "value", drop = TRUE]))
-                  )
-                } # end loop on eval metric
-              } # end loop on models names
-            } # end as.data.frame == TRUE
+              tmp = melt(out, varnames = c("Eval.metric", "tmp"))
+              tmp$Model.name = sapply(tmp$L1, function(x) { paste(strsplit(x, "_")[[1]][-1], collapse = "_") })
+              tmp$Model = sapply(tmp$Model.name, function(x) { strsplit(x, "_")[[1]][1] })
+              tmp$Algo = sapply(tmp$Model.name, function(x) { strsplit(x, "_")[[1]][2] })
+              tmp$Run = sapply(tmp$Model.name, function(x) { strsplit(x, "_")[[1]][3] })
+              tmp$Dataset = sapply(tmp$Model.name, function(x) { strsplit(x, "_")[[1]][4] })
+              tmp.split = split(tmp, tmp$tmp)
+              tmp.split = lapply(tmp.split, function(x) x[, c("Model.name", "Algo", "Run", "Dataset", "Eval.metric", "value")])
+              for (i in 1:length(tmp.split)) { colnames(tmp.split[[i]])[6] = names(tmp.split)[i] }
+              out = Reduce(function(x, y) merge(x, y, by = c("Model.name", "Algo", "Run", "Dataset", "Eval.metric")), tmp.split)
+            }
+            
             return(out)
           }
 )
@@ -965,13 +939,28 @@ setMethod("get_evaluations", "BIOMOD.ensemble.models.out",
 ##' 
 
 setMethod("get_variables_importance", "BIOMOD.ensemble.models.out",
-          function(obj, ...) {
-            vi <- NULL
+          function(obj, as.data.frame = FALSE, ...)
+          {
+            out <- NULL
             for (mod in get_built_models(obj)) {
-              vi_tmp <- obj@em.models[[mod]]@model_variables_importance
-              vi <- abind(vi, vi_tmp, along = 3)
+              out_tmp <- obj@em.models[[mod]]@model_variables_importance
+              out <- abind(out, out_tmp, along = 3)
             }
-            dimnames(vi)[[3]] <- get_built_models(obj)
-            return(vi)
-          })
-
+            dimnames(out)[[3]] <- get_built_models(obj)
+            
+            if(!is.null(out) && as.data.frame == TRUE)
+            {
+              tmp = melt(out, varnames = c("Expl.var", "Rand", "L1"))
+              tmp$Model.name = sapply(as.character(tmp$L1), function(x) { paste(strsplit(x, "_")[[1]][-1], collapse = "_") })
+              tmp$Model = sapply(tmp$Model.name, function(x) { strsplit(x, "_")[[1]][1] })
+              tmp$Algo = sapply(tmp$Model.name, function(x) { strsplit(x, "_")[[1]][2] })
+              tmp$Run = sapply(tmp$Model.name, function(x) { strsplit(x, "_")[[1]][3] })
+              tmp$Dataset = sapply(tmp$Model.name, function(x) { strsplit(x, "_")[[1]][4] })
+              out = tmp[, c("Model.name", "Algo", "Run", "Dataset", "Expl.var", "Rand", "value")]
+              colnames(out)[7] = "Var.imp"
+            }
+            
+            return(out)
+          }
+)
+          

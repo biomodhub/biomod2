@@ -22,11 +22,7 @@
 ##' 
 ##' @return  
 ##' 
-##' A \code{BIOMOD.variables.importance} object containing :
-##' \describe{
-##'   \item{mat}{a \code{data.frame} containing variables importance scores for each 
-##'   permutation run}
-##' }
+##' A \code{matrix} containing variables importance scores for each permutation run.
 ##' 
 ##' 
 ##' @details
@@ -81,22 +77,20 @@ bm_VariablesImportance <- function(model,
   if (inherits(ref, "try-error")) { stop("Unable to make model prediction") }
   
   ## Prepare output matrix
-  out <- list()
-  out$mat <- matrix(0, nrow = length(args$variables), ncol = nb_rand
-                    , dimnames = list(args$variables, paste0('rand', 1:nb_rand)))
+  out <- matrix(0, nrow = length(args$variables), ncol = nb_rand
+                , dimnames = list(args$variables, paste0('rand', 1:nb_rand)))
   
   ## Make randomisation
   for (r in 1:nb_rand) {
     for (v in args$variables) {
       data_rand <- .randomise_data(args$data, v, method)
       shuffled.pred <- predict(args$model, data_rand)
-      out$mat[v, r] <- 1 - max(round(
+      out[v, r] <- 1 - max(round(
         cor(x = ref, y = shuffled.pred, use = "pairwise.complete.obs", method = "pearson")
         , digits = 6), 0, na.rm = TRUE)
     }
   }
   
-  class(out) <- "BIOMOD.variables.importance"
   return(out)
 }
 
