@@ -35,7 +35,7 @@ multiple.plot <- function(Data, coor, color.gradient = 'red', plots.per.window =
     if (save.file == "pdf") {
         pdf(paste0(title, ".pdf"))
     } else if (save.file == "jpeg") {
-        jpeg(paste0(title, ".jpeg"), width = SizeInPix, height = SizeInPix, pointsize = FontSize, uality = 85)
+        jpeg(paste0(title, ".jpeg"), width = SizeInPix, height = SizeInPix, pointsize = FontSize, quality = 85)
     } else if (save.file == "tiff") {
         tiff(paste0(title, ".tiff"), width = SizeInPix, height = SizeInPix, pointsize = FontSize)
     } else if (save.file == "postscript") {

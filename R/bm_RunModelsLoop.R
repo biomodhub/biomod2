@@ -565,7 +565,7 @@ bm_RunModel <- function(Model, Data, Options, calibLines, Yweights, nam, VarImpo
     ## 2.10 MAXENT.Phillips model -----------------------------------------------
     
     cat('\n\t> MAXENT.Phillips modelling...')
-    MWD <- .maxent.prepare.workdir(Data, xy, calibLines, nam, VarImport = 0,
+    MWD <- .maxent.prepare.workdir(Data, xy, calibLines, RunName = nam,
                                    evalData, eval.xy, species.name = resp_name,
                                    modeling.id = modeling.id,
                                    background_data_dir = Options@MAXENT.Phillips$background_data_dir)
@@ -576,7 +576,7 @@ bm_RunModel <- function(Model, Data, Options, calibLines, Yweights, nam, VarImpo
                                 paste0("-mx", Options@MAXENT.Phillips$memory_allocated, "m")), 
                          " -jar ", file.path(Options@MAXENT.Phillips$path_to_maxent.jar, "maxent.jar"),
                          " environmentallayers=\"", MWD$m_backgroundFile, 
-                         "\" samplesfile = \"", MWD$m_speciesFile,
+                         "\" samplesfile=\"", MWD$m_speciesFile,
                          "\" projectionlayers=\"", gsub(", ", ",", toString(MWD$m_predictFile)),
                          "\" outputdirectory=\"", MWD$m_outdir, "\"",
                          " outputformat=logistic ", 
@@ -584,12 +584,12 @@ bm_RunModel <- function(Model, Data, Options, calibLines, Yweights, nam, VarImpo
                                 paste0(" togglelayertype=", categorial_var, collapse = " "),
                                 ""),
                          " redoifexists",
-                         " visible = ", Options@MAXENT.Phillips$visible,
-                         " linear = ", Options@MAXENT.Phillips$linear,
-                         " quadratic = ", Options@MAXENT.Phillips$quadratic,
-                         " product = ", Options@MAXENT.Phillips$product,
-                         " threshold = ", Options@MAXENT.Phillips$threshold,
-                         " hinge = ", Options@MAXENT.Phillips$hinge,
+                         " visible=", Options@MAXENT.Phillips$visible,
+                         " linear=", Options@MAXENT.Phillips$linear,
+                         " quadratic=", Options@MAXENT.Phillips$quadratic,
+                         " product=", Options@MAXENT.Phillips$product,
+                         " threshold=", Options@MAXENT.Phillips$threshold,
+                         " hinge=", Options@MAXENT.Phillips$hinge,
                          " lq2lqptthreshold=", Options@MAXENT.Phillips$lq2lqptthreshold,
                          " l2lqthreshold=", Options@MAXENT.Phillips$l2lqthreshold,
                          " hingethreshold=", Options@MAXENT.Phillips$hingethreshold,
@@ -617,6 +617,12 @@ bm_RunModel <- function(Model, Data, Options, calibLines, Yweights, nam, VarImpo
     # for MAXENT.Phillips predicitons are calculated in the same time than models building to save time.
     cat("\n Getting predictions...")
     g.pred <- try(round(as.numeric(read.csv(MWD$m_outputFile)[, 3]) * 1000))
+    
+    cat("\n Getting predictor contributions...")
+    variables.importance <- bm_VariablesImportance(model = model.bm
+                                                   , data = Data[, expl_var_names, drop = FALSE]
+                                                   , nb_rand = VarImport
+                                                   , temp_workdir = MWD$m_workdir)
     .maxent.delete.workdir(MWD) # remove tmp dir
     
   } else if(Model == "MAXENT.Phillips.2")
@@ -668,7 +674,7 @@ bm_RunModel <- function(Model, Data, Options, calibLines, Yweights, nam, VarImpo
   
   
   ## 3. CREATE PREDICTIONS ------------------------------------------------------------------------
-  if ((Model != "MAXENT.Phillips")) {
+  if (Model != "MAXENT.Phillips") {
     g.pred <- try(predict(model.bm, Data[, expl_var_names, drop = FALSE], on_0_1000 = TRUE))
   }
   
@@ -696,7 +702,7 @@ bm_RunModel <- function(Model, Data, Options, calibLines, Yweights, nam, VarImpo
   if (test_pred_ok) {
     # keep the model name
     ListOut$ModelName <- model_name
-  } else{
+  } else {
     # keep the name of uncompleted modelisations
     cat("\n   ! Note : ", model_name, "failed!\n")
     ListOut$calib.failure = model_name
@@ -767,9 +773,11 @@ bm_RunModel <- function(Model, Data, Options, calibLines, Yweights, nam, VarImpo
   ## 5. COMPUTE VARIABLES IMPORTANCE --------------------------------------------------------------
   if (VarImport > 0) {
     cat("\n\tEvaluating Predictor Contributions...", "\n")
-    variables.importance <- bm_VariablesImportance(model = model.bm
-                                                   , data = Data[, expl_var_names, drop = FALSE]
-                                                   , nb_rand = VarImport)
+    if (Model != "MAXENT.Phillips") {
+      variables.importance <- bm_VariablesImportance(model = model.bm
+                                                     , data = Data[, expl_var_names, drop = FALSE]
+                                                     , nb_rand = VarImport)
+    }
     model.bm@model_variables_importance <- variables.importance
     
     ## only the mean of variables importance run is returned

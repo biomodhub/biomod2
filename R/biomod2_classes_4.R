@@ -549,17 +549,12 @@ setMethod('predict', signature(object = 'MAXENT.Phillips_biomod2_model'),
   namefile <- args$namefile
   overwrite <- args$overwrite
   on_0_1000 <- args$on_0_1000
-  rm_tmp_files <- args$rm_tmp_files
   temp_workdir <- args$temp_workdir
   split.proj <- args$split.proj
   
-  # if (is.null(temp_workdir)) temp_workdir <- paste("maxentWDtmp", format(Sys.time(), "%s"), sep="")
-  if (is.null(rm_tmp_files)) { rm_tmp_files <- TRUE }
   if (is.null(overwrite)) { overwrite <- TRUE }
   if (is.null(on_0_1000)) { on_0_1000 <- FALSE }
   if (is.null(split.proj)) { split.proj <- 1 }
-  
-  MWD <- .maxent.prepare.workdir(Data = newdata, species.name = object@resp_name)
   
   # checking maxent.jar is present
   path_to_maxent.jar <- file.path(object@model_options$path_to_maxent.jar, "maxent.jar")
@@ -573,8 +568,8 @@ setMethod('predict', signature(object = 'MAXENT.Phillips_biomod2_model'),
                              " -cp ", "\"", path_to_maxent.jar, "\"",
                              " density.Project ",
                              "\"", list.files(path = object@model_output_dir, pattern = ".lambdas$", full.names = TRUE), "\" ",
-                             "\"", MWD$m_workdir[[spl]], "\" ",
-                             "\"", file.path(MWD$m_workdir[[spl]], "projMaxent.asc"), "\" ",
+                             "\"", temp_workdir[[spl]], "\" ",
+                             "\"", file.path(temp_workdir[[spl]], "projMaxent.asc"), "\" ",
                              " doclamp=false visible=false autorun nowarnings notooltips")
     system(command = maxent.command, wait = TRUE, intern = TRUE)
   }
@@ -584,9 +579,9 @@ setMethod('predict', signature(object = 'MAXENT.Phillips_biomod2_model'),
   ## get the list of projections part by part
   # check crs is not NA
   if (!is.na(projection(newdata))) {
-    proj.list <- lapply(file.path(unlist(MWD$m_workdir), "projMaxent.asc"), raster, RAT = FALSE, crs = projection(newdata))
+    proj.list <- lapply(file.path(unlist(temp_workdir), "projMaxent.asc"), raster, RAT = FALSE, crs = projection(newdata))
   } else {
-    proj.list <- lapply(file.path(unlist(MWD$m_workdir), "projMaxent.asc"), raster, RAT = FALSE)
+    proj.list <- lapply(file.path(unlist(temp_workdir), "projMaxent.asc"), raster, RAT = FALSE)
   }
   ## merge all parts in a single raster
   if (length(proj.list) > 1) {
@@ -610,9 +605,6 @@ setMethod('predict', signature(object = 'MAXENT.Phillips_biomod2_model'),
     proj <- readAll(proj) # to prevent from tmp files removing
   }
   
-  if (!is.null(rm_tmp_files) && rm_tmp_files) {
-    .maxent.delete.workdir(MWD, silent = silent)
-  }
   return(proj)
 }
 
@@ -621,20 +613,17 @@ setMethod('predict', signature(object = 'MAXENT.Phillips_biomod2_model'),
   args <- list(...)
   on_0_1000 <- args$on_0_1000
   temp_workdir <- args$temp_workdir
-  rm_tmp_files <- args$rm_tmp_files
-  xy <- args$xy
   
   if (is.null(on_0_1000)) { on_0_1000 <- FALSE }
-  if (is.null(rm_tmp_files)) { rm_tmp_files <- TRUE }
-  
-  ## no xy needed for models projections
-  xy <- NULL
   
   ## check if na occurs in newdata cause they are not well supported
-  not_na_rows <- apply(newdata, 1, function(x){sum(is.na(x))==0})
+  not_na_rows <- apply(newdata, 1, function(x){ sum(is.na(x)) == 0 })
   
-  MWD <- .maxent.prepare.workdir(Data = as.data.frame(newdata[not_na_rows, , drop = FALSE])
-                                 , xy = xy, species.name = object@resp_name)
+  ## Prediction data
+  Pred_swd <- read.csv(file.path(temp_workdir, "Predictions/Pred_swd.csv"))
+  Pred_swd <- cbind(Pred_swd[, 1:3], newdata)
+  m_predictFile <- file.path(temp_workdir, "Predictions/Pred_swdBis.csv")
+  write.table(Pred_swd, file = m_predictFile, quote = FALSE, row.names = FALSE, col.names = TRUE, sep = ",")
   
   # checking maxent.jar is present
   path_to_maxent.jar <- file.path(object@model_options$path_to_maxent.jar, "maxent.jar")
@@ -647,13 +636,13 @@ setMethod('predict', signature(object = 'MAXENT.Phillips_biomod2_model'),
                            " -cp ", "\"", path_to_maxent.jar, "\"",
                            " density.Project ",
                            "\"", list.files(path = object@model_output_dir, pattern = ".lambdas$", full.names = TRUE), "\" ",
-                           "\"", file.path(MWD$m_workdir, "Pred_swd.csv"), "\" ",
-                           "\"", file.path(MWD$m_workdir, "projMaxent.asc") , "\" ",
+                           "\"", m_predictFile, "\" ",
+                           "\"", file.path(temp_workdir, "projMaxent.asc") , "\" ",
                            "doclamp=false visible=false autorun nowarnings notooltips")
   system(command = maxent.command, wait = TRUE, intern = TRUE)
   
   if (!silent) { cat("\n\t\tReading Maxent outputs...") }
-  proj <- as.numeric(read.asciigrid(file.path(MWD$m_workdir, "projMaxent.asc"))@data[, 1])
+  proj <- as.numeric(read.asciigrid(file.path(temp_workdir, "projMaxent.asc"))@data[, 1])
   
   ## add original NA from formal dataset
   if (sum(!not_na_rows) > 0) {
@@ -663,9 +652,6 @@ setMethod('predict', signature(object = 'MAXENT.Phillips_biomod2_model'),
     rm('tmp')
   }
   
-  if (!is.null(rm_tmp_files) && rm_tmp_files) {
-    .maxent.delete.workdir(MWD, silent = silent)
-  }
   if (on_0_1000) { proj <- round(proj * 1000) }
   return(proj)
 }

@@ -4,7 +4,7 @@
 \alias{bm_VariablesImportance}
 \title{Variables' importance calculation}
 \usage{
-bm_VariablesImportance(model, data, method = "full_rand", nb_rand = 1)
+bm_VariablesImportance(model, data, method = "full_rand", nb_rand = 1, ...)
 }
 \arguments{
 \item{model}{a \code{BIOMOD.models.out} object (coming either from 

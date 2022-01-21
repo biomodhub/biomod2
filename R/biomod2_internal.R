@@ -263,7 +263,6 @@ check_data_range <- function(model, new_data)
   if (!is.null(namefile)) {
     cat("\n\t\tWriting projection on hard drive...")
     if (on_0_1000) { ## projections are stored as positive integer
-      print(namefile)
       writeRaster(proj, filename = namefile, overwrite = overwrite, datatype = "INT2S", NAflag = -9999)
     } else { ## keep default data format for saved raster
       writeRaster(proj, filename = namefile, overwrite = overwrite)
@@ -356,7 +355,7 @@ check_data_range <- function(model, new_data)
 ## PREPARE and DELETE workdir for MAXENT ----------------------------------------------------------
 ## used in biomod2_classes_4, bm_RunModelsLoop files
 .maxent.prepare.workdir <- function(Data, xy, calibLines = NULL, RunName = NULL,
-                                    VarImport = 0, evalData = NULL, evalxy =  NULL,
+                                    evalData = NULL, evalxy =  NULL,
                                     species.name = NULL, modeling.id = '',
                                     background_data_dir = 'default')
 {
@@ -379,7 +378,6 @@ check_data_range <- function(model, new_data)
   }
   m_outdir <- file.path(nameFolder, paste0(RunName, '_MAXENT.Phillips_outputs'))
   m_predictDir <- file.path(m_workdir, "Predictions")
-  
   MWD$m_workdir <- m_workdir
   MWD$m_outdir <- m_outdir
   MWD$m_outputFile <- file.path(m_outdir, paste0(RunName, '_Pred_swd.csv'))
@@ -389,7 +387,6 @@ check_data_range <- function(model, new_data)
   dir.create(m_workdir, showWarnings = FALSE, recursive = TRUE, mode = '777')
   dir.create(m_outdir, showWarnings = FALSE, recursive = TRUE, mode = '777')
   dir.create(m_predictDir, showWarnings = FALSE, recursive = TRUE, mode = '777')
-  
   
   ## Presence Data --------------------------------------------------------------------------------
   presLines <- which((Data[, 1] == 1) & calibLines)
@@ -403,9 +400,9 @@ check_data_range <- function(model, new_data)
   write.table(Sp_swd, file = m_speciesFile, quote = FALSE, row.names = FALSE, sep = ",")
   MWD$m_speciesFile <- m_speciesFile
   
-  
   ## Background Data (create background file only if needed) --------------------------------------
-  if (background_data_dir == 'default') {
+  if (background_data_dir == 'default')
+  {
     # keep only 0 of calib lines
     Back_swd <- cbind(rep("background", length(absLines))
                       , xy[absLines, ]
@@ -419,7 +416,6 @@ check_data_range <- function(model, new_data)
     MWD$m_backgroundFile <- background_data_dir
   }
   
-  
   ## Prediction Data ------------------------------------------------------------------------------
   Pred_swd <- cbind(rep("predict", nrow(xy))
                     , xy
@@ -429,7 +425,6 @@ check_data_range <- function(model, new_data)
   m_predictFile <- file.path(m_predictDir, "Pred_swd.csv")
   write.table(Pred_swd, file = m_predictFile, quote = FALSE, row.names = FALSE, col.names = TRUE, sep = ",")
   MWD$m_predictFile <- m_predictFile
-  
   
   ## dealing with independent evaluation data -----------------------------------------------------
   if (!is.null(evalData)) {
@@ -449,7 +444,7 @@ check_data_range <- function(model, new_data)
 
 .maxent.delete.workdir <- function(MWD, silent = FALSE)
 {
-  if (!silent) { cat('\n\tRemoving Maxent Temp Data..') }
+  if (!silent) { cat('\n\t\tRemoving Maxent Temp Data..') }
   if (inherits(MWD, "maxent_workdir_info")) {
     unlink(unique(sub("/part([[:digit:]]+)$", "", MWD$m_workdir)), recursive = TRUE, force = TRUE)
   } else if (!silent) {

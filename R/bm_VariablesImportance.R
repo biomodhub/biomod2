@@ -68,28 +68,41 @@
 bm_VariablesImportance <- function(model, 
                                    data, 
                                    method = "full_rand", 
-                                   nb_rand = 1)
+                                   nb_rand = 1,
+                                   ...)
 {
-  args <- .bm_VariablesImportance.check.args(model = model, data = data, method = method)
+  args <- .bm_VariablesImportance.check.args(model = model, data = data, method = method, ...)
+  model = args$model
+  data = args$data
+  method = args$method
+  variables = args$variables
+  temp_workdir = args$temp_workdir
+  rm(args)
   
   ## Test if prediction is computable
-  ref <- try(predict(args$model, args$data))
+  ref <- try(predict(model, data, temp_workdir = temp_workdir))
   if (inherits(ref, "try-error")) { stop("Unable to make model prediction") }
   
   ## Prepare output matrix
-  out <- matrix(0, nrow = length(args$variables), ncol = nb_rand
-                , dimnames = list(args$variables, paste0('rand', 1:nb_rand)))
+  out <- matrix(0, nrow = length(variables), ncol = nb_rand
+                , dimnames = list(variables, paste0('rand', 1:nb_rand)))
   
   ## Make randomisation
+  cat('\n')
+  PROGRESS = txtProgressBar(min = 0, max = nb_rand * length(variables), style = 3)
+  i.iter = 0
   for (r in 1:nb_rand) {
-    for (v in args$variables) {
-      data_rand <- .randomise_data(args$data, v, method)
-      shuffled.pred <- predict(args$model, data_rand)
+    for (v in variables) {
+      data_rand <- .randomise_data(data, v, method)
+      shuffled.pred <- predict(model, data_rand, temp_workdir = temp_workdir)
       out[v, r] <- 1 - max(round(
         cor(x = ref, y = shuffled.pred, use = "pairwise.complete.obs", method = "pearson")
         , digits = 6), 0, na.rm = TRUE)
+      i.iter = i.iter + 1
+      setTxtProgressBar(pb = PROGRESS, value = i.iter)
     }
   }
+  close(PROGRESS)
   
   return(out)
 }
@@ -98,22 +111,26 @@ bm_VariablesImportance <- function(model,
 ###################################################################################################
 
 
-.bm_VariablesImportance.check.args <- function(...)
+.bm_VariablesImportance.check.args <- function(model, data, method, ...)
 {
   args <- list(...)
   
   # test that input data is supported
   supported_models <- c("biomod2_model", "nnet", "rpart", "fda", "gam", "glm", "lm", "gbm", "mars", "randomForest")
-  if (!inherits(args$model, supported_models)) { stop("Model class unsupported") }
+  if (!inherits(model, supported_models)) { stop("Model class unsupported") }
   
   # test method is supported
   supported_methods <- c("full_rand")
-  if (!(args$method %in% supported_methods)) { stop("Unknown method") }
+  if (!(method %in% supported_methods)) { stop("Unknown method") }
   
   # get variables names
-  if (is.null(args$variables)) { args$variables <- colnames(args$data) }
+  if (is.null(args$variables)) { args$variables <- colnames(data) }
   
-  return(args)
+  return(list(model = model
+              , data = data
+              , method = method
+              , variables = args$variables
+              , temp_workdir = args$temp_workdir))
 }
 
 
