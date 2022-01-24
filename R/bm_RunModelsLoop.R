@@ -772,7 +772,7 @@ bm_RunModel <- function(Model, Data, Options, calibLines, Yweights, nam, VarImpo
   
   ## 5. COMPUTE VARIABLES IMPORTANCE --------------------------------------------------------------
   if (VarImport > 0) {
-    cat("\n\tEvaluating Predictor Contributions...", "\n")
+    cat("\n\tEvaluating Predictor Contributions...")
     if (Model != "MAXENT.Phillips") {
       variables.importance <- bm_VariablesImportance(model = model.bm
                                                      , data = Data[, expl_var_names, drop = FALSE]
@@ -783,6 +783,7 @@ bm_RunModel <- function(Model, Data, Options, calibLines, Yweights, nam, VarImpo
     ## only the mean of variables importance run is returned
     ListOut$var.import <- round(rowMeans(variables.importance, na.rm = TRUE), digits = 3)
     rm(variables.importance)
+    cat("\n")
   }
   
   
