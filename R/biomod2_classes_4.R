@@ -620,11 +620,16 @@ setMethod('predict', signature(object = 'MAXENT.Phillips_biomod2_model'),
   not_na_rows <- apply(newdata, 1, function(x){ sum(is.na(x)) == 0 })
   
   ## Prediction data
-  Pred_swd <- read.csv(file.path(temp_workdir, "Predictions/Pred_swd.csv"))
-  Pred_swd <- cbind(Pred_swd[, 1:3], newdata)
-  m_predictFile <- file.path(temp_workdir, "Predictions/Pred_swdBis.csv")
-  write.table(Pred_swd, file = m_predictFile, quote = FALSE, row.names = FALSE, col.names = TRUE, sep = ",")
-  
+  if (!is.null(temp_workdir)) {
+    Pred_swd <- read.csv(file.path(temp_workdir, "Predictions/Pred_swd.csv"))
+    Pred_swd <- cbind(Pred_swd[, 1:3], newdata)
+    m_predictFile <- file.path(temp_workdir, "Predictions/Pred_swdBis.csv")
+    write.table(Pred_swd, file = m_predictFile, quote = FALSE, row.names = FALSE, col.names = TRUE, sep = ",")
+  } else {
+    # temp_workdir
+    # m_predictFile
+  }
+
   # checking maxent.jar is present
   path_to_maxent.jar <- file.path(object@model_options$path_to_maxent.jar, "maxent.jar")
   if (!file.exists(path_to_maxent.jar)) {
