@@ -77,8 +77,8 @@ plot(myBiomodData)
 #                                        PA.nb.rep = 4,
 #                                        PA.nb.absences = 1000,
 #                                        PA.strategy = 'disk',
-#                                        PA.dist.min = 0,
-#                                        PA.dist.max = 100)
+#                                        PA.dist.min = 10,
+#                                        PA.dist.max = 30)
 # 
 # # Format Data with pseudo-absences : SRE method
 # myBiomodData.s <- BIOMOD_FormatingData(resp.var = myResp.PA,
@@ -93,7 +93,7 @@ plot(myBiomodData)
 # # Format Data with pseudo-absences : user.defined method
 # myPAtable <- data.frame(PA1 = ifelse(myResp == 1, TRUE, FALSE),
 #                         PA2 = ifelse(myResp == 1, TRUE, FALSE))
-# for (i in 1:ncol(myPAtable)) myPAtable[sample(1:nrow(myPAtable), 500), i] = TRUE
+# for (i in 1:ncol(myPAtable)) myPAtable[sample(which(myPAtable[, i] == FALSE), 500), i] = TRUE
 # myBiomodData.u <- BIOMOD_FormatingData(resp.var = myResp.PA,
 #                                        expl.var = myExpl,
 #                                        resp.xy = myRespXY,
@@ -165,7 +165,7 @@ myBiomodOptions
 ```R
 # Model single models
 myBiomodModelOut <- BIOMOD_Modeling(myBiomodData,
-                                    models = c('MAXENT.Phillips'),
+                                    #models = c('MAXENT.Phillips'),
                                     models.options = myBiomodOptions,
                                     NbRunEval = 2,
                                     DataSplit = 80,
@@ -189,11 +189,11 @@ myBiomodEM <- BIOMOD_EnsembleModeling(modeling.output = myBiomodModelOut,
                                       VarImport = 3,
                                       models.eval.meth = c('TSS', 'ROC'),
                                       prob.mean = TRUE,
-                                      prob.median = FALSE,
-                                      prob.cv = FALSE,
-                                      prob.ci = FALSE,
+                                      prob.median = TRUE,
+                                      prob.cv = TRUE,
+                                      prob.ci = TRUE,
                                       prob.ci.alpha = 0.05,
-                                      committee.averaging = FALSE,
+                                      committee.averaging = TRUE,
                                       prob.mean.weight = TRUE,
                                       prob.mean.weight.decay = 'proportional')
 

@@ -330,7 +330,7 @@ setMethod('plot', signature(x = 'BIOMOD.formated.data', y = "missing"),
               if (min(cellStats(x@data.mask, min)) == -1) { # there is undefined area
                 my.at <- seq(-1.5, 1.5, by = 1) ## breaks of color key
                 my.labs.at <- seq(-1, 1, by = 1) ## labels placed vertically
-                my.lab <- c("undifined", "absences", "presences") ## labels
+                my.lab <- c("undefined", "absences", "presences") ## labels
                 my.col.regions = c("lightgrey", "red4", "green4") ## colors
                 my.cuts <- 2 ## cuts
               } else { # no undefined area.. remove it from plot
@@ -407,7 +407,7 @@ setMethod('show', signature('BIOMOD.formated.data'),
                 sum(object@data.species == 0, na.rm = TRUE),
                 'true absences and ',
                 sum(is.na(object@data.species), na.rm = TRUE),
-                'undifined points in dataset',
+                'undefined points in dataset',
                 fill = .Options$width)
             cat("\n\n\t",
                 ncol(object@data.env.var),
@@ -423,7 +423,7 @@ setMethod('show', signature('BIOMOD.formated.data'),
                   sum(object@eval.data.species == 0, na.rm = TRUE),
                   'true absences and ',
                   sum(is.na(object@eval.data.species), na.rm = TRUE),
-                  'undifined points in dataset',
+                  'undefined points in dataset',
                   fill = .Options$width)
               cat("\n\n", fill = .Options$width)
               print(summary(object@eval.data.env.var))
@@ -515,6 +515,7 @@ setMethod('show', signature('BIOMOD.formated.data'),
 ##' 
 ##' 
 ##' @importFrom raster stack nlayers addLayer is.factor subset
+##' @importFrom rasterVis levelplot
 ##' 
 ##' @export
 ##' 
@@ -713,7 +714,7 @@ setMethod('plot', signature(x = 'BIOMOD.formated.data.PA', y = "missing"),
               if (min(cellStats(x@data.mask, min)) == -1) { # there is undefined area
                 my.at <- seq(-1.5, 1.5, by = 1) ## breaks of color key
                 my.labs.at <- seq(-1, 1, by = 1) ## labels placed vertically
-                my.lab <- c("undifined", "absences", "presences") ## labels
+                my.lab <- c("undefined", "absences", "presences") ## labels
                 my.col.regions = c("lightgrey", "red4", "green4") ## colors
                 my.cuts <- 2 ## cuts
               } else { # no undefined area.. remove it from plot
@@ -826,7 +827,7 @@ setMethod('show', signature('BIOMOD.formated.data.PA'),
               sum(object@data.species == 0, na.rm = TRUE),
               'true absences and ',
               sum(is.na(object@data.species), na.rm = TRUE),
-              'undifined points in dataset',
+              'undefined points in dataset',
               fill = .Options$width
             )
             cat("\n\n\t",
@@ -844,7 +845,7 @@ setMethod('show', signature('BIOMOD.formated.data.PA'),
                 sum(object@eval.data.species == 0, na.rm = TRUE),
                 'true absences and ',
                 sum(is.na(object@eval.data.species), na.rm = TRUE),
-                'undifined points in dataset',
+                'undefined points in dataset',
                 fill = .Options$width
               )
               cat("\n\n", fill = .Options$width)

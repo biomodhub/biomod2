@@ -498,6 +498,7 @@ setMethod("get_variables_importance", "BIOMOD.models.out",
 ##' 
 ##' 
 ##' @importFrom raster subset
+##' @importFrom rasterVis levelplot
 ##' 
 ##' @export
 ##' 
@@ -546,7 +547,7 @@ setMethod('plot', signature(x = 'BIOMOD.projection.out', y = "missing"),
               ## try to use levelplot function
               try_plot <- try(levelplot(get_predictions(x, full.name = models_selected),
                                         at = my.at,
-                                        margin = T,
+                                        margin = TRUE,
                                         col.regions = my.col,
                                         main = paste(x@sp.name, x@proj.names, "projections"),
                                         colorkey = list(labels = list(labels = my.lab, at = my.labs.at))
@@ -567,7 +568,7 @@ setMethod('plot', signature(x = 'BIOMOD.projection.out', y = "missing"),
               if (ncol(x@xy.coord) != 2) {
                 cat("\n ! Impossible to plot projections because xy coordinates are not available !")
               } else {
-                multiple.plot(Data = get_predictions(x, full.name = models_selected, as.data.frame = T),
+                multiple.plot(Data = get_predictions(x, full.name = models_selected, as.data.frame = TRUE),
                               coor = x@xy.coord)
               }
             } else {
