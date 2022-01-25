@@ -187,19 +187,6 @@ bm_PlotVarImpBoxplot(myBiomodModelOut, group.by = c('expl.var', 'algo', 'dataset
 bm_PlotVarImpBoxplot(myBiomodModelOut, group.by = c('algo', 'expl.var', 'dataset'))
 ```
 
-```R
-# Project single models
-myBiomodProj <- BIOMOD_Projection(myBiomodModelOut,
-                                  proj.name = 'Init_data',
-                                  new.env = myExpl,
-                                  chosen.models = 'all',
-                                  binary.meth = 'all',
-                                  filtered.meth = 'all',
-                                  build.clamping.mask = TRUE)
-
-myBiomodProj
-plot(myBiomodProj)
-```
 
 ### 4. Ensemble models
 
@@ -237,10 +224,41 @@ bm_PlotVarImpBoxplot(myBiomodEM, group.by = c('model', 'expl.var', 'dataset'))
 
 ```
 
-### 5. Project single and ensemble models
+### 5. Project models
+
+#### Single models
 
 ```R
+myBiomodProj <- BIOMOD_Projection(myBiomodModelOut,
+                                  proj.name = 'Init_data',
+                                  new.env = myExpl,
+                                  chosen.models = 'all',
+                                  binary.meth = 'all',
+                                  filtered.meth = 'all',
+                                  build.clamping.mask = TRUE)
 
+myBiomodProj
+plot(myBiomodProj)
+```
+
+#### Ensemble models
+
+```R
+myBiomodEMProj <- BIOMOD_EnsembleForecasting(EM.output = myBiomodEM, 
+                                             projection.output = myBiomodProj,
+                                             chosen.models = 'all',
+                                             binary.meth = 'all',
+                                             filtered.meth = 'all')
+                                             
+myBiomodEMProj <- BIOMOD_EnsembleForecasting(EM.output = myBiomodEM,
+                                             proj.name = 'Init_dataEM',
+                                             new.env = myExpl,
+                                             chosen.models = 'all',
+                                             binary.meth = 'all',
+                                             filtered.meth = 'all')
+                                             
+myBiomodEMProj
+plot(myBiomodEMProj)
 ```
 
 

@@ -216,7 +216,6 @@ BIOMOD_EnsembleForecasting <- function(EM.output,
   EM.output <- args$EM.output
   chosen.models <- args$chosen.models
   proj.name <- args$proj.name
-  # total.consensus <- args$total.consensus
   binary.meth <- args$binary.meth
   filtered.meth <- args$filtered.meth
   
@@ -278,13 +277,13 @@ BIOMOD_EnsembleForecasting <- function(EM.output,
   ## 2. Create simulation directories -------------------------------------------------------------
   nameProj <- paste0("proj_", proj.name)
   nameProjSp <- paste0(nameProj, "_", EM.output@sp.name, "_ensemble")
-  nameEval <- paste0(nameProjSp, "_", eval.meth)
   namePath <- file.path(EM.output@sp.name, nameProj)
-  .BIOMOD_EnsembleForecasting.prepare.workdir(sp.name = EM.output@sp.name, proj.folder = nameProj)
+  indiv_proj_dir <- .BIOMOD_EnsembleForecasting.prepare.workdir(sp.name = EM.output@sp.name
+                                                                , proj.folder = nameProj)
   
   
   ## 3. Get needed projections --------------------------------------------------------------------
-  needed_predictions <- get_needed_models(EM.output, chosen.models=chosen.models)
+  needed_predictions <- get_needed_models(EM.output, chosen.models = chosen.models)
   if (length(projection.output)) {
     formal_pred <- get_predictions(projection.output,
                                    full.name = needed_predictions,
@@ -314,7 +313,7 @@ BIOMOD_EnsembleForecasting <- function(EM.output,
   ef.out <- NULL
   saved.files <- proj_names <- vector()
   for (em.comp in EM.output@em.computed[which(EM.output@em.computed %in% chosen.models)]) {
-    cat("\n\n\t> Projecting", em.comp, "...")
+    cat("\n\t> Projecting", em.comp, "...")
     file_name_tmp <- file.path(indiv_proj_dir, paste0(em.comp,output.format))
     
     model.tmp <- NULL
@@ -405,7 +404,7 @@ BIOMOD_EnsembleForecasting <- function(EM.output,
                       overwrite = TRUE)
         }
       } else {
-        nameBin = paste0(nameEval, "bin")
+        nameBin = paste0(nameProjSp, "_", eval.meth, "bin")
         assign(x = nameBin, value = bm_BinaryTransformation(ef.out, thresholds))
         
         if (output.format == '.RData') {
@@ -433,7 +432,7 @@ BIOMOD_EnsembleForecasting <- function(EM.output,
                       overwrite = TRUE)
         }
       } else {
-        nameFilt = paste0(nameEval, "filt")
+        nameFilt = paste0(nameProjSp, "_", eval.meth, "filt")
         assign(x = nameFilt, value = bm_BinaryTransformation(ef.out, thresholds, doFiltering = TRUE))
         if (output.format == '.RData') {
           save(list = nameFilt,
@@ -446,6 +445,7 @@ BIOMOD_EnsembleForecasting <- function(EM.output,
         }
       }
     }
+    cat("\n")
   }
   
   ## 6. SAVE MODEL OBJECT ON HARD DRIVE -----------------------------------------------------------
@@ -468,7 +468,8 @@ BIOMOD_EnsembleForecasting <- function(EM.output,
   cat("\nCreating suitable Workdir...\n")
   dir.create(file.path(sp.name, proj.folder), showWarnings = FALSE, recursive = TRUE, mode = "777")
   indiv_proj_dir <- file.path(sp.name, proj.folder, "individual_projections")
-  dir.create( indiv_proj_dir, showWarnings = FALSE, recursive = TRUE, mode = "777")
+  dir.create(indiv_proj_dir, showWarnings = FALSE, recursive = TRUE, mode = "777")
+  return(indiv_proj_dir)
 }
 
 ###################################################################################################
@@ -525,21 +526,30 @@ BIOMOD_EnsembleForecasting <- function(EM.output,
   #   total.consensus <- FALSE
   # }
 
-  ## 6. Check binary.meth and filtered.meth -----------------------------------
-  if (!is.null(binary.meth)) {
-    #     if(sum(!(binary.meth %in% EM.output@eval.metric))){
-    #       stop(paste0("binary methods must be compatible with Ensemble Modeling evaluation metrics (e.g. ",
-    #                  toString(EM.output@eval.metric)," )"))
-    #     }
+  ## 6. Check binary.meth & filtered.meth -------------------------------------
+  if (!is.null(binary.meth) | !is.null(filtered.meth)) {
+    models.evaluation <- get_evaluations(EM.output)
+    if (is.null(models.evaluation)) {
+      warning("Binary and/or Filtered transformations of projection not ran because of models evaluation information missing")
+    } else {
+      available.evaluation <- unique(dimnames(models.evaluation[[1]])[[1]])
+      if (!is.null(binary.meth) && binary.meth[1] == 'all') {
+        binary.meth <- available.evaluation
+      } else if (!is.null(binary.meth) && sum(!(binary.meth %in% available.evaluation)) > 0) {
+        warning(paste0(toString(binary.meth[!(binary.meth %in% available.evaluation)]),
+                       " Binary Transformation were switched off because no corresponding evaluation method found"))
+        binary.meth <- binary.meth[binary.meth %in% available.evaluation]
+      }
+      
+      if (!is.null(filtered.meth) && filtered.meth[1] == 'all') {
+        filtered.meth <- available.evaluation
+      } else if (!is.null(filtered.meth) && sum(!(filtered.meth %in% available.evaluation)) > 0) {
+        warning(paste0(toString(filtered.meth[!(filtered.meth %in% available.evaluation)]),
+                       " Filtered Transformation were switched off because no corresponding evaluation method found"))
+        filtered.meth <- filtered.meth[filtered.meth %in% available.evaluation]
+      }
+    }
   }
-  
-  if (!is.null(filtered.meth)) {
-    #     if(sum(!(filtered.meth %in% EM.output@eval.metric))){
-    #       stop(paste0("filtering methods must be compatible with Ensemble Modeling evaluation metrics (e.g. ",
-    #                  toString(EM.output@eval.metric)," )"))
-    #     }
-  }
-  
   
   return(list(projection.output = projection.output,
               EM.output = EM.output,

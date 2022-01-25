@@ -508,7 +508,7 @@ BIOMOD_Projection <- function(modeling.output,
     if (is.null(models.evaluation)) {
       warning("Binary and/or Filtered transformations of projection not ran because of models evaluation information missing")
     } else {
-      available.evaluation <- unique(unlist(dimnames(models.evaluation)[1]))
+      available.evaluation <- unique(dimnames(models.evaluation)[[1]])
       if (!is.null(binary.meth) && binary.meth[1] == 'all') {
         binary.meth <- available.evaluation
       } else if (!is.null(binary.meth) && sum(!(binary.meth %in% available.evaluation)) > 0) {
