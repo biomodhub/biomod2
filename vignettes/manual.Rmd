@@ -160,12 +160,11 @@ myBiomodOptions
 ```
 
 
-### 3. Model single models
+### 3. Single models
 
 ```R
 # Model single models
 myBiomodModelOut <- BIOMOD_Modeling(myBiomodData,
-                                    #models = c('MAXENT.Phillips'),
                                     models.options = myBiomodOptions,
                                     NbRunEval = 2,
                                     DataSplit = 80,
@@ -175,9 +174,33 @@ myBiomodModelOut <- BIOMOD_Modeling(myBiomodData,
                                     modeling.id = 'test')
 
 myBiomodModelOut
+
+# Get evaluation scores & variables importance
+get_evaluations(myBiomodModelOut)
+get_variables_importance(myBiomodModelOut, as.data.frame = TRUE)
+
+# Represent evaluation scores & variables importance
+bm_PlotEvalMean(myBiomodModelOut)
+bm_PlotEvalBoxplot(myBiomodModelOut, group.by = c('algo', 'run'))
+bm_PlotVarImpBoxplot(myBiomodModelOut, group.by = c('expl.var', 'algo', 'algo'))
+bm_PlotVarImpBoxplot(myBiomodModelOut, group.by = c('expl.var', 'algo', 'dataset'))
+bm_PlotVarImpBoxplot(myBiomodModelOut, group.by = c('algo', 'expl.var', 'dataset'))
 ```
 
-### 4. Model ensemble models
+```R
+# Project single models
+myBiomodProj <- BIOMOD_Projection(myBiomodModelOut,
+                                  proj.name = 'Init_data',
+                                  new.env = myExpl,
+                                  chosen.models = 'all',
+                                  binary.meth = 'all',
+                                  filtered.meth = 'all',
+                                  build.clamping.mask = TRUE)
+
+myBiomodProj
+```
+
+### 4. Ensemble models
 
 ```R
 # Model ensemble models

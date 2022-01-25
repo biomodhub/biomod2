@@ -33,7 +33,7 @@
 ##' 
 ##' @importFrom reshape melt.array
 ##' @importFrom reshape2 melt
-##' @importFrom foreach foreach
+##' @importFrom foreach foreach %do%
 ##' @importFrom abind abind
 ##' 
 NULL
@@ -254,10 +254,12 @@ setMethod("get_formal_data", "BIOMOD.models.out",
                 return(data)
               } else { return(NA) }
             } else if (subinfo == 'MinMax') {
+              env = as.data.frame(get_formal_data(obj)@data.env.var)
               MinMax = foreach(i = 1:ncol(env)) %do% {
                 x = env[, i]
                 if (is.numeric(x)) {
-                  return(list(min = min(x, na.rm = T), max = max(x, na.rm = T)))
+                  return(list(min = min(x, na.rm = TRUE)
+                              , max = max(x, na.rm = TRUE)))
                 } else if (is.factor(x)) {
                   return(list(levels = levels(x)))
                 }

@@ -17,7 +17,6 @@
 \alias{.predict.GLM_biomod2_model.data.frame}
 \alias{.predict.MARS_biomod2_model.RasterStack}
 \alias{.predict.MARS_biomod2_model.data.frame}
-\alias{.predict.MAXENT.Phillips_biomod2_model.RasterStack}
 \alias{.predict.MAXENT.Phillips_biomod2_model.data.frame}
 \alias{.predict.MAXENT.Phillips.2_biomod2_model.RasterStack}
 \alias{.predict.MAXENT.Phillips.2_biomod2_model.data.frame}

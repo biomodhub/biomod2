@@ -35,7 +35,6 @@ setGeneric("get_scaling_model", def = function(object) { standardGeneric("get_sc
 ##' @aliases .predict.GLM_biomod2_model.data.frame
 ##' @aliases .predict.MARS_biomod2_model.RasterStack
 ##' @aliases .predict.MARS_biomod2_model.data.frame
-##' @aliases .predict.MAXENT.Phillips_biomod2_model.RasterStack
 ##' @aliases .predict.MAXENT.Phillips_biomod2_model.data.frame
 ##' @aliases .predict.MAXENT.Phillips.2_biomod2_model.RasterStack
 ##' @aliases .predict.MAXENT.Phillips.2_biomod2_model.data.frame
@@ -543,85 +542,28 @@ setMethod('predict', signature(object = 'MAXENT.Phillips_biomod2_model'),
             return(.template_predict(mod = "MAXENT.Phillips", object, newdata, ...))
           })
 
-.predict.MAXENT.Phillips_biomod2_model.RasterStack <- function(object, newdata, silent = TRUE,  ...)
-{
-  args <- list(...)
-  namefile <- args$namefile
-  overwrite <- args$overwrite
-  on_0_1000 <- args$on_0_1000
-  temp_workdir <- args$temp_workdir
-  split.proj <- args$split.proj
-  
-  if (is.null(overwrite)) { overwrite <- TRUE }
-  if (is.null(on_0_1000)) { on_0_1000 <- FALSE }
-  if (is.null(split.proj)) { split.proj <- 1 }
-  
-  # checking maxent.jar is present
-  path_to_maxent.jar <- file.path(object@model_options$path_to_maxent.jar, "maxent.jar")
-  if (!file.exists(path_to_maxent.jar)) {
-    path_to_maxent.jar <-  file.path(getwd(), "maxent.jar")
-  }
-  
-  if (!silent) { cat("\n\t\tRunning Maxent...") }
-  for (spl in 1:split.proj) {
-    maxent.command <- paste0("java ", ifelse(is.null(object@model_options$memory_allocated), "", paste0("-mx", object@model_options$memory_allocated, "m")),
-                             " -cp ", "\"", path_to_maxent.jar, "\"",
-                             " density.Project ",
-                             "\"", list.files(path = object@model_output_dir, pattern = ".lambdas$", full.names = TRUE), "\" ",
-                             "\"", temp_workdir[[spl]], "\" ",
-                             "\"", file.path(temp_workdir[[spl]], "projMaxent.asc"), "\" ",
-                             " doclamp=false visible=false autorun nowarnings notooltips")
-    system(command = maxent.command, wait = TRUE, intern = TRUE)
-  }
-  
-  if(!silent) { cat("\n\t\tReading Maxent outputs...") }
-  
-  ## get the list of projections part by part
-  # check crs is not NA
-  if (!is.na(projection(newdata))) {
-    proj.list <- lapply(file.path(unlist(temp_workdir), "projMaxent.asc"), raster, RAT = FALSE, crs = projection(newdata))
-  } else {
-    proj.list <- lapply(file.path(unlist(temp_workdir), "projMaxent.asc"), raster, RAT = FALSE)
-  }
-  ## merge all parts in a single raster
-  if (length(proj.list) > 1) {
-    proj <- do.call(merge, proj.list)
-  } else {
-    proj <- proj.list[[1]]
-  }
-  
-  if (on_0_1000) { proj <- round(proj * 1000) }
-  
-  # save raster on hard drive ?
-  if (!is.null(namefile)) {
-    cat("\n\t\tWriting projection on hard drive...")
-    if (on_0_1000) { ## projections are stored as positive integer
-      writeRaster(proj, filename = namefile, overwrite = overwrite, datatype = "INT2S", NAflag = -9999)
-    } else { ## keep default data format for saved raster
-      writeRaster(proj, filename = namefile, overwrite = overwrite)
-    }
-    proj <- raster(namefile, RAT = FALSE)
-  } else if (!inMemory(proj)) {
-    proj <- readAll(proj) # to prevent from tmp files removing
-  }
-  
-  return(proj)
-}
-
 .predict.MAXENT.Phillips_biomod2_model.data.frame <- function(object, newdata, silent = TRUE, ...)
 {
   args <- list(...)
   on_0_1000 <- args$on_0_1000
   temp_workdir <- args$temp_workdir
+  do_raster <- args$do_raster
+  newraster <- args$newraster
   
   if (is.null(on_0_1000)) { on_0_1000 <- FALSE }
+  if (is.null(do_raster)) { do_raster <- FALSE }
   
   ## check if na occurs in newdata cause they are not well supported
   not_na_rows <- apply(newdata, 1, function(x){ sum(is.na(x)) == 0 })
+  newdata = as.data.frame(newdata[not_na_rows, , drop = FALSE])
   
   ## Prediction data
   Pred_swd <- read.csv(file.path(temp_workdir, "Predictions/Pred_swd.csv"))
-  Pred_swd <- cbind(Pred_swd[, 1:3], newdata)
+  if (nrow(Pred_swd) != nrow(newdata)) {
+    Pred_swd = newdata
+  } else {
+    Pred_swd <- cbind(Pred_swd[, 1:3], newdata)
+  }
   m_predictFile <- file.path(temp_workdir, "Predictions/Pred_swdBis.csv")
   write.table(Pred_swd, file = m_predictFile, quote = FALSE, row.names = FALSE, col.names = TRUE, sep = ",")
   
@@ -644,12 +586,21 @@ setMethod('predict', signature(object = 'MAXENT.Phillips_biomod2_model'),
   if (!silent) { cat("\n\t\tReading Maxent outputs...") }
   proj <- as.numeric(read.asciigrid(file.path(temp_workdir, "projMaxent.asc"))@data[, 1])
   
-  ## add original NA from formal dataset
-  if (sum(!not_na_rows) > 0) {
-    tmp <- rep(NA, length(not_na_rows))
-    tmp[not_na_rows] <- proj
-    proj <- tmp
-    rm('tmp')
+  if (do_raster) {
+    newraster[which(newraster[] == 1)] = proj
+    proj <- newraster
+    
+    if (!inMemory(proj)) {
+      proj <- readAll(proj) # to prevent from tmp files removing
+    }
+  } else {
+    ## add original NA from formal dataset
+    if (sum(!not_na_rows) > 0) {
+      tmp <- rep(NA, length(not_na_rows))
+      tmp[not_na_rows] <- proj
+      proj <- tmp
+      rm('tmp')
+    }
   }
   
   if (on_0_1000) { proj <- round(proj * 1000) }

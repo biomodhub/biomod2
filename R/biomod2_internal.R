@@ -203,7 +203,7 @@ check_data_range <- function(model, new_data)
   
   if (!exists('pred')) {
     if (inherits(dat, 'Raster')) {
-      pred <- raster::subset(dat, 1, drop = TRUE)
+      pred <- subset(dat, 1, drop = TRUE)
       if (Prev < 0.5) {
         pred <- reclassify(x = pred, rcl = c(-Inf, Inf, 0))
       } else {
@@ -229,11 +229,22 @@ check_data_range <- function(model, new_data)
   if (is.null(do_check)) { do_check <- TRUE }
   if (do_check) { newdata <- check_data_range(model = object, new_data = newdata) }
   
+  ## Special case for MAXENT.Phillips
+  do_raster = FALSE
+  newproj = NA
+  if (mod == "MAXENT.Phillips" && inherits(newdata, 'Raster')) {
+    newraster = newdata[[1]]
+    newraster[] = NA
+    newdata = na.exclude(rasterToPoints(newdata))
+    newraster[cellFromXY(newraster, newdata[, 1:2])] = 1
+    do_raster = TRUE
+  }
+  
   if (inherits(newdata, 'Raster')) {
     eval(parse(text = paste0("res = .predict.", mod, "_biomod2_model.RasterStack(object, newdata, ...)")))
     return(res)
   } else if (inherits(newdata, 'data.frame') | inherits(newdata, 'matrix')) {
-    eval(parse(text = paste0("res = .predict.", mod, "_biomod2_model.data.frame(object, newdata, ...)")))
+    eval(parse(text = paste0("res = .predict.", mod, "_biomod2_model.data.frame(object, newdata, do_raster = do_raster, newraster = newraster, ...)")))
     return(res)
   } else {
     stop("invalid newdata input")
