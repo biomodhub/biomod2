@@ -622,9 +622,7 @@ bm_RunModel <- function(Model, Data, Options, calibLines, Yweights, nam, VarImpo
     variables.importance <- bm_VariablesImportance(model = model.bm
                                                    , data = Data[, expl_var_names, drop = FALSE]
                                                    , nb_rand = VarImport
-                                                   , temp_workdir = MWD$m_workdir)
-    .maxent.delete.workdir(MWD) # remove tmp dir
-    
+                                                   , temp_workdir = MWD$m_outdir)
   } else if(Model == "MAXENT.Phillips.2")
   {
     ## 2.11 MAXENT.Phillips.2 model ---------------------------------------------

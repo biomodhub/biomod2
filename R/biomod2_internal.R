@@ -340,11 +340,18 @@ check_data_range <- function(model, new_data)
   if (is.null(formal_predictions)) {
     # make prediction of all models required
     formal_predictions <- sapply(object@model,
-                                 function(mod, resp_name, modeling.id)
+                                 function(mod.name, resp_name, modeling.id)
                                  {
                                    ## check if model is loaded on memory
-                                   if (is.character(mod)) { mod <- get(load(file.path(resp_name, "models", modeling.id, mod))) }
-                                   return(predict(mod, newdata = newdata, on_0_1000 = on_0_1000))
+                                   if (is.character(mod.name)) {
+                                     mod <- get(load(file.path(resp_name, "models", modeling.id, mod.name)))
+                                   }
+                                   temp_workdir = NULL
+                                   if (length(grep("MAXENT.Phillips$", mod.name)) == 1) {
+                                     temp_workdir = mod@model_output_dir
+                                   }
+                                   return(predict(mod, newdata = newdata, on_0_1000 = on_0_1000
+                                                  , temp_workdir = temp_workdir))
                                  }, resp_name = object@resp_name, modeling.id = object@modeling.id)
   }
   
@@ -372,19 +379,13 @@ check_data_range <- function(model, new_data)
   
   ## define all paths to files needed by MAXENT.Phillips
   nameFolder = file.path(species.name, 'models', modeling.id)
-  m_workdir <- file.path(nameFolder, paste0('m_', sub(".", "", as.character(format(Sys.time(), "%OS6")), fixed = TRUE)))
-  while (file.exists(m_workdir)) { # check wordir unicity
-    m_workdir <- file.path(nameFolder, paste0('m_', sub(".", "", as.character(format(Sys.time(), "%OS6")), fixed = TRUE)))
-  }
   m_outdir <- file.path(nameFolder, paste0(RunName, '_MAXENT.Phillips_outputs'))
-  m_predictDir <- file.path(m_workdir, "Predictions")
-  MWD$m_workdir <- m_workdir
+  m_predictDir <- file.path(m_outdir, "Predictions")
   MWD$m_outdir <- m_outdir
   MWD$m_outputFile <- file.path(m_outdir, paste0(RunName, '_Pred_swd.csv'))
   MWD$m_predictDir <- m_predictDir
   
   ## directories creation
-  dir.create(m_workdir, showWarnings = FALSE, recursive = TRUE, mode = '777')
   dir.create(m_outdir, showWarnings = FALSE, recursive = TRUE, mode = '777')
   dir.create(m_predictDir, showWarnings = FALSE, recursive = TRUE, mode = '777')
   
@@ -396,7 +397,7 @@ check_data_range <- function(model, new_data)
                   , Data[presLines, 2:ncol(Data), drop = FALSE])
   colnames(Sp_swd) <- c('species', 'X', 'Y', colnames(Data)[2:ncol(Data)])
   
-  m_speciesFile <- file.path(m_workdir, "Sp_swd.csv")
+  m_speciesFile <- file.path(m_outdir, "Sp_swd.csv")
   write.table(Sp_swd, file = m_speciesFile, quote = FALSE, row.names = FALSE, sep = ",")
   MWD$m_speciesFile <- m_speciesFile
   
@@ -409,7 +410,7 @@ check_data_range <- function(model, new_data)
                       , Data[absLines, 2:ncol(Data), drop = FALSE])
     colnames(Back_swd) <- c("background", colnames(Back_swd)[-1])
     
-    m_backgroundFile <- file.path(m_workdir, "Back_swd.csv")
+    m_backgroundFile <- file.path(m_outdir, "Back_swd.csv")
     write.table(Back_swd, file = m_backgroundFile, quote = FALSE, row.names = FALSE, col.names = TRUE, sep = ",")
     MWD$m_backgroundFile <- m_backgroundFile
   } else { ## use background directory given as an option
@@ -439,17 +440,6 @@ check_data_range <- function(model, new_data)
   }
   
   return(MWD)
-}
-
-
-.maxent.delete.workdir <- function(MWD, silent = FALSE)
-{
-  if (!silent) { cat('\n\t\tRemoving Maxent Temp Data..') }
-  if (inherits(MWD, "maxent_workdir_info")) {
-    unlink(unique(sub("/part([[:digit:]]+)$", "", MWD$m_workdir)), recursive = TRUE, force = TRUE)
-  } else if (!silent) {
-    cat('\n\t! Invalid maxent work dir object -> MAXENT.Phillips temp files have not been removed')
-  }
 }
 
 

@@ -142,25 +142,31 @@ setMethod('predict', signature(object = 'EMmean_biomod2_model'),
   return(out)
 }
 
-.predict.EMmean_biomod2_model.data.frame <- function(object, newdata=NULL, formal_predictions=NULL, ... ){
+.predict.EMmean_biomod2_model.data.frame <- function(object, newdata = NULL, formal_predictions = NULL, ... )
+{
   args <- list(...)
 
   on_0_1000 <- args$on_0_1000
   if (is.null(on_0_1000)) on_0_1000 <- FALSE
 
-  #formal_predictions <- args$formal_predictions
-
   if(is.null(formal_predictions)){
     # make prediction of all models required
     formal_predictions <- sapply(object@model,
-                                   function(mod, resp_name, modeling.id){
+                                   function(mod.name, resp_name, modeling.id){
                                      ## check if model is loaded on memory
-                                     if(is.character(mod)) mod <- get(load(file.path(resp_name, "models", modeling.id, mod)))
-                                     return(predict(mod, newdata=newdata, on_0_1000=on_0_1000))
+                                     if (is.character(mod.name)) {
+                                       mod <- get(load(file.path(resp_name, "models", modeling.id, mod.name)))
+                                     }
+                                     temp_workdir = NULL
+                                     if (length(grep("MAXENT.Phillips$", mod.name)) == 1) {
+                                       temp_workdir = mod@model_output_dir
+                                     }
+                                     return(predict(mod, newdata = newdata, on_0_1000 = on_0_1000
+                                                    , temp_workdir = temp_workdir))
                                    } , resp_name = object@resp_name, modeling.id = object@modeling.id)
   }
 
-  out <- rowMeans(formal_predictions, na.rm=T)
+  out <- rowMeans(formal_predictions, na.rm = TRUE)
 
   if (on_0_1000){
     out <- round(out)
@@ -378,7 +384,7 @@ setMethod('predict', signature(object = 'EMci_biomod2_model'),
 ###################################################################################################
 
 setClass('EMca_biomod2_model',
-         representation(tresholds = 'numeric'),
+         representation(thresholds = 'numeric'),
          contains = 'biomod2_ensemble_model',
          prototype = list(model_class = 'EMca'),
          validity = function(object) { return(TRUE) })
@@ -407,7 +413,7 @@ setMethod('predict', signature(object = 'EMca_biomod2_model'),
   if (is.null(filename)) { filename <- "" }
   if (is.null(on_0_1000)) { on_0_1000 <- FALSE }
   
-  if (on_0_1000) { thresh <- object@tresholds } else { thresh <- object@tresholds / 1000 }
+  if (on_0_1000) { thresh <- object@thresholds } else { thresh <- object@thresholds / 1000 }
   
   out <- calc(bm_BinaryTransformation(formal_predictions, thresh), function(x)
   {
@@ -429,7 +435,7 @@ setMethod('predict', signature(object = 'EMca_biomod2_model'),
   on_0_1000 <- args$on_0_1000
   if (is.null(on_0_1000)) { on_0_1000 <- FALSE }
   
-  if (on_0_1000) { thresh <- object@tresholds } else { thresh <- object@tresholds / 1000 }
+  if (on_0_1000) { thresh <- object@thresholds } else { thresh <- object@thresholds / 1000 }
   
   out <- rowMeans(as.data.frame(bm_BinaryTransformation(formal_predictions, thresh)), na.rm = TRUE)
   if (on_0_1000) { out <- round(out * 1000) }

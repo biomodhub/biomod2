@@ -284,7 +284,8 @@ BIOMOD_Projection <- function(modeling.output,
     {
       cat("\n\t> Projecting", mod.name, "...")
       filename <- file.path(namePath, "individual_projections"
-                            , paste0(nameProj, "_", mod.name, ifelse(output.format == ".RData", ".grd", output.format)))
+                            , paste0(nameProj, "_", mod.name, ifelse(output.format == ".RData"
+                                                                     , ".grd", output.format)))
       return(filename)
     })
     
@@ -293,7 +294,13 @@ BIOMOD_Projection <- function(modeling.output,
     {
       cat("\n\t> Projecting", mod.name, "...")
       BIOMOD_LoadModels(modeling.output, full.name = mod.name, as = "mod")
-      pred.tmp <- predict(mod, new.env, on_0_1000 = on_0_1000, filename = filename, omit.na = omit.na, split.proj = 1)
+      temp_workdir = NULL
+      if (length(grep("MAXENT.Phillips$", mod.name)) == 1) {
+        temp_workdir = mod@model_output_dir
+      }
+      pred.tmp <- predict(mod, new.env, on_0_1000 = on_0_1000, filename = filename
+                          , omit.na = omit.na, split.proj = 1
+                          , temp_workdir = temp_workdir)
       return(pred.tmp)
     })
     ## Putting predictions into the right format
@@ -373,7 +380,8 @@ BIOMOD_Projection <- function(modeling.output,
         }
       } else {
         nameBin <- paste0(nameProjSp, "_", eval.meth, "bin")
-        assign(x = nameBin, value = bm_BinaryTransformation(proj, asub(thresholds, eval.meth[drop = FALSE], 1, drop = FALSE)))
+        assign(x = nameBin, value = bm_BinaryTransformation(proj, asub(thresholds, eval.meth[drop = FALSE]
+                                                                       , 1, drop = FALSE)))
         
         if (output.format == '.RData') {
           save(list = nameBin,
@@ -406,7 +414,8 @@ BIOMOD_Projection <- function(modeling.output,
         }
       } else {
         nameFilt <- paste0(nameProjSp, "_", eval.meth, "filt")
-        assign(x = nameFilt, value = bm_BinaryTransformation(proj, asub(thresholds, eval.meth[drop = FALSE], 1, drop = FALSE), doFiltering = TRUE))
+        assign(x = nameFilt, value = bm_BinaryTransformation(proj, asub(thresholds, eval.meth[drop = FALSE]
+                                                                        , 1, drop = FALSE), doFiltering = TRUE))
         
         if (output.format == '.RData') {
           save(list = nameFilt,
