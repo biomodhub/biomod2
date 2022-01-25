@@ -84,8 +84,12 @@ bm_PlotEvalMean <- function(modeling.output, eval.metric = NULL, group.by = 'alg
   eval.data <- ifelse(all(is.na(scores$Evaluating.data)), "Testing.data", "Evaluating.data")
   
   ## Compute mean and sd evaluation scores
-  models_mean = tapply(X = scores[, eval.data], INDEX = list(scores$Eval.metric, scores[, group.by]), FUN = mean, na.rm = TRUE)
-  models_sd = tapply(X = scores[, eval.data], INDEX = list(scores$Eval.metric, scores[, group.by]), FUN = sd, na.rm = TRUE)
+  models_mean = tapply(X = scores[, eval.data]
+                       , INDEX = list(scores$Eval.metric, scores[, group.by])
+                       , FUN = mean, na.rm = TRUE)
+  models_sd = tapply(X = scores[, eval.data]
+                     , INDEX = list(scores$Eval.metric, scores[, group.by])
+                     , FUN = sd, na.rm = TRUE)
   
   ## Prepare data table for graphic
   ggdat <- merge(data.frame(name = colnames(models_mean), t(models_mean)),

@@ -223,9 +223,17 @@ myBiomodEM <- BIOMOD_EnsembleModeling(modeling.output = myBiomodModelOut,
 
 myBiomodEM
 
+
 # Get evaluation scores & variables importance
-get_evaluations(myBiomodEM)
-get_variables_importance(myBiomodEM)
+get_evaluations(myBiomodEM, as.data.frame = TRUE)
+get_variables_importance(myBiomodEM, as.data.frame = TRUE)
+
+# Represent evaluation scores & variables importance
+bm_PlotEvalMean(myBiomodEM, group.by = 'model')
+bm_PlotEvalBoxplot(myBiomodEM, group.by = c('model', 'model'))
+bm_PlotVarImpBoxplot(myBiomodEM, group.by = c('expl.var', 'model', 'model'))
+bm_PlotVarImpBoxplot(myBiomodEM, group.by = c('expl.var', 'model', 'dataset'))
+bm_PlotVarImpBoxplot(myBiomodEM, group.by = c('model', 'expl.var', 'dataset'))
 
 ```
 

@@ -927,9 +927,9 @@ setMethod("get_evaluations", "BIOMOD.ensemble.models.out",
               tmp$Run = sapply(tmp$Model.name, function(x) { strsplit(x, "_")[[1]][3] })
               tmp$Dataset = sapply(tmp$Model.name, function(x) { strsplit(x, "_")[[1]][4] })
               tmp.split = split(tmp, tmp$tmp)
-              tmp.split = lapply(tmp.split, function(x) x[, c("Model.name", "Algo", "Run", "Dataset", "Eval.metric", "value")])
-              for (i in 1:length(tmp.split)) { colnames(tmp.split[[i]])[6] = names(tmp.split)[i] }
-              out = Reduce(function(x, y) merge(x, y, by = c("Model.name", "Algo", "Run", "Dataset", "Eval.metric")), tmp.split)
+              tmp.split = lapply(tmp.split, function(x) x[, c("Model.name", "Model", "Algo", "Run", "Dataset", "Eval.metric", "value")])
+              for (i in 1:length(tmp.split)) { colnames(tmp.split[[i]])[7] = names(tmp.split)[i] }
+              out = Reduce(function(x, y) merge(x, y, by = c("Model.name", "Model", "Algo", "Run", "Dataset", "Eval.metric")), tmp.split)
             }
             
             return(out)
@@ -959,8 +959,8 @@ setMethod("get_variables_importance", "BIOMOD.ensemble.models.out",
               tmp$Algo = sapply(tmp$Model.name, function(x) { strsplit(x, "_")[[1]][2] })
               tmp$Run = sapply(tmp$Model.name, function(x) { strsplit(x, "_")[[1]][3] })
               tmp$Dataset = sapply(tmp$Model.name, function(x) { strsplit(x, "_")[[1]][4] })
-              out = tmp[, c("Model.name", "Algo", "Run", "Dataset", "Expl.var", "Rand", "value")]
-              colnames(out)[7] = "Var.imp"
+              out = tmp[, c("Model.name", "Model", "Algo", "Run", "Dataset", "Expl.var", "Rand", "value")]
+              colnames(out)[8] = "Var.imp"
             }
             
             return(out)

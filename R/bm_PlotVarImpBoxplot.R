@@ -46,7 +46,7 @@
 ##' 
 ##' 
 ##' @importFrom ggplot2 ggplot aes_string geom_boxplot facet_wrap xlab ylab
-##' theme element_blank element_rect labs scale_y_continuous
+##' theme element_blank element_rect element_text labs scale_y_continuous
 ##' 
 ##' @export
 ##' 
@@ -81,7 +81,8 @@ bm_PlotVarImpBoxplot <- function(modeling.output, group.by = c('run', 'expl.var'
     xlab("") +
     ylab("") +
     theme(legend.title = element_blank()
-          , legend.key = element_rect(fill = "white"))
+          , legend.key = element_rect(fill = "white")
+          , axis.text.x = element_text(angle = 45, hjust = 1))
   
   if (length(main)) { ## add title
     gg <- gg + labs(title = main)

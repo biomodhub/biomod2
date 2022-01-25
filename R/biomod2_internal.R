@@ -231,7 +231,7 @@ check_data_range <- function(model, new_data)
   
   ## Special case for MAXENT.Phillips
   do_raster = FALSE
-  newproj = NA
+  newraster = NULL
   if (mod == "MAXENT.Phillips" && inherits(newdata, 'Raster')) {
     newraster = newdata[[1]]
     newraster[] = NA

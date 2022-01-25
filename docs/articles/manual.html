@@ -300,9 +300,17 @@
 
 <span class="va">myBiomodEM</span>
 
+
 <span class="co"># Get evaluation scores &amp; variables importance</span>
-<span class="fu"><a href="../reference/getters.out.html">get_evaluations</a></span><span class="op">(</span><span class="va">myBiomodEM</span><span class="op">)</span>
-<span class="fu"><a href="../reference/getters.out.html">get_variables_importance</a></span><span class="op">(</span><span class="va">myBiomodEM</span><span class="op">)</span></code></pre></div>
+<span class="fu"><a href="../reference/getters.out.html">get_evaluations</a></span><span class="op">(</span><span class="va">myBiomodEM</span>, as.data.frame <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>
+<span class="fu"><a href="../reference/getters.out.html">get_variables_importance</a></span><span class="op">(</span><span class="va">myBiomodEM</span>, as.data.frame <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>
+
+<span class="co"># Represent evaluation scores &amp; variables importance</span>
+<span class="fu"><a href="../reference/bm_PlotEvalMean.html">bm_PlotEvalMean</a></span><span class="op">(</span><span class="va">myBiomodEM</span>, group.by <span class="op">=</span> <span class="st">'model'</span><span class="op">)</span>
+<span class="fu"><a href="../reference/bm_PlotEvalBoxplot.html">bm_PlotEvalBoxplot</a></span><span class="op">(</span><span class="va">myBiomodEM</span>, group.by <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">'model'</span>, <span class="st">'model'</span><span class="op">)</span><span class="op">)</span>
+<span class="fu"><a href="../reference/bm_PlotVarImpBoxplot.html">bm_PlotVarImpBoxplot</a></span><span class="op">(</span><span class="va">myBiomodEM</span>, group.by <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">'expl.var'</span>, <span class="st">'model'</span>, <span class="st">'model'</span><span class="op">)</span><span class="op">)</span>
+<span class="fu"><a href="../reference/bm_PlotVarImpBoxplot.html">bm_PlotVarImpBoxplot</a></span><span class="op">(</span><span class="va">myBiomodEM</span>, group.by <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">'expl.var'</span>, <span class="st">'model'</span>, <span class="st">'dataset'</span><span class="op">)</span><span class="op">)</span>
+<span class="fu"><a href="../reference/bm_PlotVarImpBoxplot.html">bm_PlotVarImpBoxplot</a></span><span class="op">(</span><span class="va">myBiomodEM</span>, group.by <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">'model'</span>, <span class="st">'expl.var'</span>, <span class="st">'dataset'</span><span class="op">)</span><span class="op">)</span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="project-single-and-ensemble-models">5. Project single and ensemble models<a class="anchor" aria-label="anchor" href="#project-single-and-ensemble-models"></a>
