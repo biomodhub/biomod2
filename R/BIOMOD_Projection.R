@@ -184,6 +184,7 @@
 ##' 
 ##' 
 ##' @importFrom raster stack subset nlayers writeRaster rasterOptions canProcessInMemory
+##' @importFrom abind asub
 ##' 
 ##' @export
 ##' 
@@ -508,13 +509,17 @@ BIOMOD_Projection <- function(modeling.output,
       warning("Binary and/or Filtered transformations of projection not ran because of models evaluation information missing")
     } else {
       available.evaluation <- unique(unlist(dimnames(models.evaluation)[1]))
-      if (!is.null(binary.meth) && sum(!(binary.meth %in% available.evaluation)) > 0) {
+      if (!is.null(binary.meth) && binary.meth[1] == 'all') {
+        binary.meth <- available.evaluation
+      } else if (!is.null(binary.meth) && sum(!(binary.meth %in% available.evaluation)) > 0) {
         warning(paste0(toString(binary.meth[!(binary.meth %in% available.evaluation)]),
                        " Binary Transformation were switched off because no corresponding evaluation method found"))
         binary.meth <- binary.meth[binary.meth %in% available.evaluation]
       }
       
-      if (!is.null(filtered.meth) && sum(!(filtered.meth %in% available.evaluation)) > 0) {
+      if (!is.null(filtered.meth) && filtered.meth[1] == 'all') {
+        filtered.meth <- available.evaluation
+      } else if (!is.null(filtered.meth) && sum(!(filtered.meth %in% available.evaluation)) > 0) {
         warning(paste0(toString(filtered.meth[!(filtered.meth %in% available.evaluation)]),
                        " Filtered Transformation were switched off because no corresponding evaluation method found"))
         filtered.meth <- filtered.meth[filtered.meth %in% available.evaluation]

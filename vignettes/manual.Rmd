@@ -198,6 +198,7 @@ myBiomodProj <- BIOMOD_Projection(myBiomodModelOut,
                                   build.clamping.mask = TRUE)
 
 myBiomodProj
+plot(myBiomodProj)
 ```
 
 ### 4. Ensemble models
