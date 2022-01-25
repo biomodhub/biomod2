@@ -159,8 +159,9 @@ myBiomodOptions
 # plot(bm.tuning$tune.RF)
 ```
 
+### 3. Run modelisation
 
-### 3. Single models
+#### Single models
 
 ```R
 # Model single models
@@ -188,7 +189,7 @@ bm_PlotVarImpBoxplot(myBiomodModelOut, group.by = c('algo', 'expl.var', 'dataset
 ```
 
 
-### 4. Ensemble models
+#### Ensemble models
 
 ```R
 # Model ensemble models
@@ -224,13 +225,13 @@ bm_PlotVarImpBoxplot(myBiomodEM, group.by = c('model', 'expl.var', 'dataset'))
 
 ```
 
-### 5. Project models
+### 4. Project models
 
 #### Single models
 
 ```R
 myBiomodProj <- BIOMOD_Projection(myBiomodModelOut,
-                                  proj.name = 'Init_data',
+                                  proj.name = 'Current',
                                   new.env = myExpl,
                                   chosen.models = 'all',
                                   binary.meth = 'all',
@@ -251,7 +252,7 @@ myBiomodEMProj <- BIOMOD_EnsembleForecasting(EM.output = myBiomodEM,
                                              filtered.meth = 'all')
                                              
 myBiomodEMProj <- BIOMOD_EnsembleForecasting(EM.output = myBiomodEM,
-                                             proj.name = 'Init_dataEM',
+                                             proj.name = 'CurrentEM',
                                              new.env = myExpl,
                                              chosen.models = 'all',
                                              binary.meth = 'all',
@@ -259,6 +260,32 @@ myBiomodEMProj <- BIOMOD_EnsembleForecasting(EM.output = myBiomodEM,
                                              
 myBiomodEMProj
 plot(myBiomodEMProj)
+```
+
+### 5. Compare range sizes
+
+```R
+# Load environmental variables extracted from BIOCLIM (bio_3, bio_4, bio_7, bio_11 & bio_12)
+myFiles = paste0('external/bioclim/future/bio', c(3, 4, 7, 11, 12), '.grd')
+myExplFuture = raster::stack(system.file(myFiles, package = 'biomod2'))
+
+# Project onto future conditions
+myBiomodProjectionFuture <- BIOMOD_Projection(modeling.output = myBiomodModelOut,
+                                              new.env = myExplFuture,
+                                              proj.name = 'Future',
+                                              chosen.models = 'all',
+                                              binary.meth = 'TSS',
+                                              build.clamping.mask = TRUE)
+
+# Load current and future binary projections
+CurrentProj <- stack("GuloGulo/proj_Current/proj_Current_GuloGulo_TSSbin.grd")
+FutureProj <- stack("GuloGulo/proj_Future/proj_Future_GuloGulo_TSSbin.grd")
+
+# Compute differences
+myBiomodRangeSize <- BIOMOD_RangeSize(CurrentProj = CurrentProj, FutureProj = FutureProj)
+
+myBiomodRangeSize$Compt.By.Models
+plot(myBiomodRangeSize$Diff.By.Pixel)
 ```
 
 
