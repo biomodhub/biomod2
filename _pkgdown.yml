@@ -9,7 +9,7 @@ navbar:
     left:
     - home
     - reference
-    - manual
+    - examples
     right:
     - github
   components:
@@ -20,10 +20,19 @@ navbar:
       text: Reference
       icon: fa-book fa-lg
       href: reference/index.html
-    manual:
-      text: Manual & Examples
+    examples:
+      text: Examples
       icon: fas fa-stethoscope
-      href: articles/manual.html
+      menu:
+        - text: Main functions
+          href: articles/examples_1_mainFunctions.html
+        - text: Secundary functions^
+          href: articles/examples_2_secundaryFunctions.html
+        - text: "---------"
+        - text: Pseudo-absences
+          href: articles/vignette_pseudoAbsences.html
+        - text: Evaluation / variables importance
+          href: articles/vignette_evalVarImp.html
     github:
       icon: fa-github fa-lg
       href: https://github.com/biomodhub/biomod2.git

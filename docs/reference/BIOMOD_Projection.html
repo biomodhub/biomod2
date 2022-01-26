@@ -19,7 +19,7 @@ represent new areas, resolution or time scales for example)."><!-- mathjax --><s
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">biomod2</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">3.5.4</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">4.0</span>
       </span>
     </div>
 
@@ -37,13 +37,28 @@ represent new areas, resolution or time scales for example)."><!-- mathjax --><s
     Reference
   </a>
 </li>
-<li>
-  <a href="../articles/manual.html">
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
     <span class="fas fa-stethoscope"></span>
      
-    Manual &amp; Examples
+    Examples
+     
+    <span class="caret"></span>
   </a>
-</li>
+  <ul class="dropdown-menu" role="menu"><li>
+      <a href="../articles/examples_1_mainFunctions.html">Main functions</a>
+    </li>
+    <li>
+      <a href="../articles/examples_2_secundaryFunctions.html">Secundary functions^</a>
+    </li>
+    <li class="divider">
+    <li>
+      <a href="../articles/vignette_pseudoAbsences.html">Pseudo-absences</a>
+    </li>
+    <li>
+      <a href="../articles/vignette_evalVarImp.html">Evaluation / variables importance</a>
+    </li>
+  </ul></li>
       </ul><ul class="nav navbar-nav navbar-right"><li>
   <a href="https://github.com/biomodhub/biomod2.git" class="external-link">
     <span class="fa fa-github fa-lg"></span>
@@ -184,7 +199,7 @@ calibration / training range, identifying locations where predictions are uncert
 <span class="co"># species occurrences</span>
 <span class="va">myFile</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"external/species/mammals_table.csv"</span>, package<span class="op">=</span><span class="st">"biomod2"</span><span class="op">)</span>
 <span class="va">DataSpecies</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/utils/read.table.html" class="external-link">read.csv</a></span><span class="op">(</span><span class="va">myFile</span>, row.names <span class="op">=</span> <span class="fl">1</span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">DataSpecies</span><span class="op">)</span>
+<span class="fu"><a href="https://rdrr.io/pkg/raster/man/headtail.html" class="external-link">head</a></span><span class="op">(</span><span class="va">DataSpecies</span><span class="op">)</span>
 
 <span class="co"># the name of studied species</span>
 <span class="va">myRespName</span> <span class="op">&lt;-</span> <span class="st">'GuloGulo'</span>
@@ -254,7 +269,7 @@ calibration / training range, identifying locations where predictions are uncert
 
 <span class="co"># print summary and plot projections</span>
 <span class="va">myBiomodProjectionFuture</span>
-<span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">myBiomodProjectionFuture</span><span class="op">)</span>
+<span class="fu"><a href="https://rdrr.io/pkg/raster/man/plot.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">myBiomodProjectionFuture</span><span class="op">)</span>
 <span class="op">}</span>
 
 

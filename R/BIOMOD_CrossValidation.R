@@ -141,6 +141,12 @@
 ##' boxplot(eval$Testing.data ~ eval$strat, ylab = "ROC AUC")
 ##' 
 ##' 
+##' @importFrom ENMeval get.block
+##' @importFrom dismo kfold
+##' 
+##' @export
+##' 
+##' 
 ###################################################################################################
 
 
@@ -191,8 +197,8 @@ BIOMOD_CrossValidation <- function(data,
     ## BLOCK STRATIFIED CROSS VALIDATION --------------------------------------
     if (stratify == "block") {
       DataSplitTable <- as.data.frame(matrix(NA, nrow(data@coord), 4))
-      blocks<-ENMeval::get.block(data@coord[data@data.species == 1, ]
-                                 , data@coord[data@data.species == 0, ])
+      blocks <- get.block(data@coord[data@data.species == 1, ]
+                          , data@coord[data@data.species == 0, ])
       for (i in 1:4) {
         DataSplitTable[data@data.species == 1, i] <- blocks[[1]] != i
         DataSplitTable[data@data.species == 0, i] <- blocks[[2]] != i     
@@ -213,7 +219,7 @@ BIOMOD_CrossValidation <- function(data,
   } else {
     ## K-FOLD CROSS VALIDATION --------------------------------------------------------------------
     for (rep in 1:repetition) {
-      fold <- dismo::kfold(data@data.species, by = data@data.species, k = k)
+      fold <- kfold(data@data.species, by = data@data.species, k = k)
       for (i in 1:k) {
         DataSplitTable <- cbind(DataSplitTable, fold != i)
       }

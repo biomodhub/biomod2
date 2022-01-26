@@ -56,21 +56,25 @@
   <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
     <span class="fas fa-stethoscope"></span>
      
-    Manual &amp; Examples
+    Examples
      
     <span class="caret"></span>
   </a>
   <ul class="dropdown-menu" role="menu">
-<li class="divider">
-    </li>
 <li>
-      <a href="../articles/manual.html">Main functions</a>
+      <a href="../articles/examples_1_mainFunctions.html">Main functions</a>
     </li>
-    <li class="dropdown-header">Secundary functions</li>
+    <li>
+      <a href="../articles/examples_2_secundaryFunctions.html">Secundary functions^</a>
+    </li>
     <li class="divider">
     </li>
-<li class="dropdown-header">Pseudo-absences</li>
-    <li class="dropdown-header">Evaluation / variables importance</li>
+<li>
+      <a href="../articles/vignette_pseudoAbsences.html">Pseudo-absences</a>
+    </li>
+    <li>
+      <a href="../articles/vignette_evalVarImp.html">Evaluation / variables importance</a>
+    </li>
   </ul>
 </li>
       </ul>
@@ -97,8 +101,8 @@
       <h1 data-toc-skip>Main functions</h1>
             
       
-      <small class="dont-index">Source: <a href="https://github.com/biomodhub/biomod2/blob/HEAD/vignettes/manual.Rmd" class="external-link"><code>vignettes/manual.Rmd</code></a></small>
-      <div class="hidden name"><code>manual.Rmd</code></div>
+      <small class="dont-index">Source: <a href="https://github.com/biomodhub/biomod2/blob/HEAD/vignettes/examples_1_mainFunctions.Rmd" class="external-link"><code>vignettes/examples_1_mainFunctions.Rmd</code></a></small>
+      <div class="hidden name"><code>examples_1_mainFunctions.Rmd</code></div>
 
     </div>
 
@@ -117,7 +121,6 @@
 <code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va">biomod2</span><span class="op">)</span>
 <span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://rspatial.org/raster" class="external-link">raster</a></span><span class="op">)</span>
 
-
 <span class="co"># Load species occurrences (6 species available)</span>
 <span class="va">myFile</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">'external/species/mammals_table.csv'</span>, package <span class="op">=</span> <span class="st">'biomod2'</span><span class="op">)</span>
 <span class="va">DataSpecies</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/utils/read.table.html" class="external-link">read.csv</a></span><span class="op">(</span><span class="va">myFile</span>, row.names <span class="op">=</span> <span class="fl">1</span><span class="op">)</span>
@@ -131,7 +134,6 @@
 
 <span class="co"># Get corresponding XY coordinates</span>
 <span class="va">myRespXY</span> <span class="op">&lt;-</span> <span class="va">DataSpecies</span><span class="op">[</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">'X_WGS84'</span>, <span class="st">'Y_WGS84'</span><span class="op">)</span><span class="op">]</span>
-
 
 <span class="co"># Load environmental variables extracted from BIOCLIM (bio_3, bio_4, bio_7, bio_11 &amp; bio_12)</span>
 <span class="va">myFiles</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">'external/bioclim/current/bio'</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">3</span>, <span class="fl">4</span>, <span class="fl">7</span>, <span class="fl">11</span>, <span class="fl">12</span><span class="op">)</span>, <span class="st">'.grd'</span><span class="op">)</span>
@@ -153,6 +155,10 @@
 
 <span class="va">myBiomodData</span>
 <span class="fu"><a href="https://rdrr.io/pkg/raster/man/plot.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">myBiomodData</span><span class="op">)</span></code></pre></div>
+</div>
+<div class="section level4">
+<h4 id="pseudo-absences-extraction">Pseudo-absences extraction<a class="anchor" aria-label="anchor" href="#pseudo-absences-extraction"></a>
+</h4>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># # Transform true absences into potential pseudo-absences</span>
 <span class="co"># myResp.PA &lt;- ifelse(myResp == 1, 1, NA)</span>
@@ -208,9 +214,16 @@
 <span class="co"># plot(myBiomodData.u)</span></code></pre></div>
 </div>
 <div class="section level4">
-<h4 id="parameterize-modeling-options">Parameterize modeling options<a class="anchor" aria-label="anchor" href="#parameterize-modeling-options"></a>
+<h4 id="cross-validation-datasets">Cross-validation datasets<a class="anchor" aria-label="anchor" href="#cross-validation-datasets"></a>
 </h4>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">myBiomodCV</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/BIOMOD_CrossValidation.html">BIOMOD_CrossValidation</a></span><span class="op">(</span><span class="va">myBiomodData</span><span class="op">)</span>
+<span class="va">myBiomodCV</span></code></pre></div>
+</div>
+<div class="section level4">
+<h4 id="parameterize-modeling-options">Parameterize modeling options<a class="anchor" aria-label="anchor" href="#parameterize-modeling-options"></a>
+</h4>
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># Print default modeling options</span>
 <span class="fu"><a href="../reference/BIOMOD_ModelingOptions.html">bm_DefaultModelingOptions</a></span><span class="op">(</span><span class="op">)</span>
 <span class="va">myBiomodOptions</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/BIOMOD_ModelingOptions.html">BIOMOD_ModelingOptions</a></span><span class="op">(</span><span class="op">)</span>
@@ -233,7 +246,7 @@
 <span class="co"># myForm &lt;- 'Sp277 ~ bio3 + log(bio10) + poly(bio16, 2) + bio19 + bio3:bio19'</span>
 <span class="co"># myBiomodOptions &lt;- BIOMOD_ModelingOptions(GLM = list(myFormula = formula(myForm)))</span>
 <span class="co"># myBiomodOptions</span></code></pre></div>
-<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co">### Duration for turing all models sequential with default settings </span>
 <span class="co">### on 3.4 GHz processor: approx. 45 min tuning all models in parallel</span>
 <span class="co">### (on 8 cores) using foreach loops runs much faster: approx. 14 min</span>
@@ -261,7 +274,7 @@
 <div class="section level4">
 <h4 id="single-models">Single models<a class="anchor" aria-label="anchor" href="#single-models"></a>
 </h4>
-<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># Model single models</span>
 <span class="va">myBiomodModelOut</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/BIOMOD_Modeling.html">BIOMOD_Modeling</a></span><span class="op">(</span><span class="va">myBiomodData</span>,
                                     models.options <span class="op">=</span> <span class="va">myBiomodOptions</span>,
@@ -288,7 +301,7 @@
 <div class="section level4">
 <h4 id="ensemble-models">Ensemble models<a class="anchor" aria-label="anchor" href="#ensemble-models"></a>
 </h4>
-<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># Model ensemble models</span>
 <span class="va">myBiomodEM</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/BIOMOD_EnsembleModeling.html">BIOMOD_EnsembleModeling</a></span><span class="op">(</span>modeling.output <span class="op">=</span> <span class="va">myBiomodModelOut</span>,
                                       chosen.models <span class="op">=</span> <span class="st">'all'</span>,
@@ -308,7 +321,6 @@
 
 <span class="va">myBiomodEM</span>
 
-
 <span class="co"># Get evaluation scores &amp; variables importance</span>
 <span class="fu"><a href="../reference/getters.out.html">get_evaluations</a></span><span class="op">(</span><span class="va">myBiomodEM</span>, as.data.frame <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>
 <span class="fu"><a href="../reference/getters.out.html">get_variables_importance</a></span><span class="op">(</span><span class="va">myBiomodEM</span>, as.data.frame <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>
@@ -320,6 +332,13 @@
 <span class="fu"><a href="../reference/bm_PlotVarImpBoxplot.html">bm_PlotVarImpBoxplot</a></span><span class="op">(</span><span class="va">myBiomodEM</span>, group.by <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">'expl.var'</span>, <span class="st">'model'</span>, <span class="st">'dataset'</span><span class="op">)</span><span class="op">)</span>
 <span class="fu"><a href="../reference/bm_PlotVarImpBoxplot.html">bm_PlotVarImpBoxplot</a></span><span class="op">(</span><span class="va">myBiomodEM</span>, group.by <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">'model'</span>, <span class="st">'expl.var'</span>, <span class="st">'dataset'</span><span class="op">)</span><span class="op">)</span></code></pre></div>
 </div>
+<div class="section level4">
+<h4 id="presence-only-evaluation">Presence-only evaluation<a class="anchor" aria-label="anchor" href="#presence-only-evaluation"></a>
+</h4>
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">myBiomodPO</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/BIOMOD_PresenceOnly.html">BIOMOD_PresenceOnly</a></span><span class="op">(</span>modeling.output <span class="op">=</span> <span class="va">myBiomodModelOut</span><span class="op">)</span>
+<span class="va">myBiomodPO</span></code></pre></div>
+</div>
 </div>
 <div class="section level3">
 <h3 id="project-models">
@@ -328,7 +347,7 @@
 <div class="section level4">
 <h4 id="single-models-1">Single models<a class="anchor" aria-label="anchor" href="#single-models-1"></a>
 </h4>
-<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">myBiomodProj</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/BIOMOD_Projection.html">BIOMOD_Projection</a></span><span class="op">(</span><span class="va">myBiomodModelOut</span>,
                                   proj.name <span class="op">=</span> <span class="st">'Current'</span>,
                                   new.env <span class="op">=</span> <span class="va">myExpl</span>,
@@ -343,7 +362,7 @@
 <div class="section level4">
 <h4 id="ensemble-models-1">Ensemble models<a class="anchor" aria-label="anchor" href="#ensemble-models-1"></a>
 </h4>
-<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">myBiomodEMProj</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/BIOMOD_EnsembleForecasting.html">BIOMOD_EnsembleForecasting</a></span><span class="op">(</span>EM.output <span class="op">=</span> <span class="va">myBiomodEM</span>, 
                                              projection.output <span class="op">=</span> <span class="va">myBiomodProj</span>,
                                              chosen.models <span class="op">=</span> <span class="st">'all'</span>,
@@ -365,7 +384,7 @@
 <h3 id="compare-range-sizes">
 <i class="fas fa-ruler-combined"></i> Compare range sizes<a class="anchor" aria-label="anchor" href="#compare-range-sizes"></a>
 </h3>
-<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># Load environmental variables extracted from BIOCLIM (bio_3, bio_4, bio_7, bio_11 &amp; bio_12)</span>
 <span class="va">myFiles</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">'external/bioclim/future/bio'</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">3</span>, <span class="fl">4</span>, <span class="fl">7</span>, <span class="fl">11</span>, <span class="fl">12</span><span class="op">)</span>, <span class="st">'.grd'</span><span class="op">)</span>
 <span class="va">myExplFuture</span> <span class="op">=</span> <span class="fu">raster</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/raster/man/stack.html" class="external-link">stack</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="va">myFiles</span>, package <span class="op">=</span> <span class="st">'biomod2'</span><span class="op">)</span><span class="op">)</span>

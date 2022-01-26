@@ -1,8 +1,8 @@
 ---
-title: "Manual & Examples"
+title: "Main functions"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Manual & Examples}
+  %\VignetteIndexEntry{Main functions}
   %\VignetteEngine{knitr::knitr}
   %\VignetteEncoding{UTF-8}
 ---
@@ -13,12 +13,11 @@ vignette: >
 
 ## <i class="fas fa-code"></i> Complete code example
 
-### 1. Load dataset and variables
+### <i class="fas fa-truck-loading"></i> Load dataset and variables
 
 ```R
 library(biomod2)
 library(raster)
-
 
 # Load species occurrences (6 species available)
 myFile <- system.file('external/species/mammals_table.csv', package = 'biomod2')
@@ -34,14 +33,13 @@ myResp <- as.numeric(DataSpecies[, myRespName])
 # Get corresponding XY coordinates
 myRespXY <- DataSpecies[, c('X_WGS84', 'Y_WGS84')]
 
-
 # Load environmental variables extracted from BIOCLIM (bio_3, bio_4, bio_7, bio_11 & bio_12)
 myFiles = paste0('external/bioclim/current/bio', c(3, 4, 7, 11, 12), '.grd')
 myExpl = raster::stack(system.file(myFiles, package = 'biomod2'))
 ```
 
 
-### 2. Prepare data & parameters
+### <i class="fas fa-tasks"></i> Prepare data & parameters
 
 #### Format data (observations & explanatory variables)
 
@@ -159,7 +157,7 @@ myBiomodOptions
 # plot(bm.tuning$tune.RF)
 ```
 
-### 3. Run modelisation
+### <i class="fas fa-cogs"></i> Run modelisation
 
 #### Single models
 
@@ -211,7 +209,6 @@ myBiomodEM <- BIOMOD_EnsembleModeling(modeling.output = myBiomodModelOut,
 
 myBiomodEM
 
-
 # Get evaluation scores & variables importance
 get_evaluations(myBiomodEM, as.data.frame = TRUE)
 get_variables_importance(myBiomodEM, as.data.frame = TRUE)
@@ -225,7 +222,7 @@ bm_PlotVarImpBoxplot(myBiomodEM, group.by = c('model', 'expl.var', 'dataset'))
 
 ```
 
-### 4. Project models
+### <i class="fas fa-globe-europe"></i> Project models
 
 #### Single models
 
@@ -262,7 +259,7 @@ myBiomodEMProj
 plot(myBiomodEMProj)
 ```
 
-### 5. Compare range sizes
+### <i class="fas fa-ruler-combined"></i> Compare range sizes
 
 ```R
 # Load environmental variables extracted from BIOCLIM (bio_3, bio_4, bio_7, bio_11 & bio_12)

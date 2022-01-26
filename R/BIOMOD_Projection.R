@@ -431,6 +431,7 @@ BIOMOD_Projection <- function(modeling.output,
         }
       }
     }
+    cat("\n")
   }
   
   ## 6. SAVE MODEL OBJECT ON HARD DRIVE -----------------------------------------------------------
