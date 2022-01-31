@@ -69,6 +69,7 @@ reference:
       - "bm_PlotEvalMean"
       - "bm_PlotEvalBoxplot"
       - "bm_PlotVarImpBoxplot"
+      - "bm_PlotResponseCurves"
   - title: Toolbox
   - subtitle: Objects
     contents:

@@ -17,6 +17,7 @@ getStatOptimValue <- function(...) { .Deprecated("get_optim_value") }
 makeFormula <- function(...) { .Deprecated("bm_MakeFormula") }
 models_scores_graph <- function(...) { .Deprecated("bm_PlotEvalMean") }
 Print_Default_ModelingOptions <- function(...) { .Deprecated("bm_DefaultModelingOptions") }
+response.plot2 <- function(...) { .Deprecated("bm_PlotResponseCurves") }
 sample.factor.levels <- function(...) { .Deprecated("bm_SampleFactorLevels") }
 sre <- function(...) { .Deprecated("bm_SRE") }
 .transform.outputs.array <- function(...) { .Deprecated() }

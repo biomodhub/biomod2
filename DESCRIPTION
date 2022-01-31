@@ -98,6 +98,7 @@ Collate:
     'bm_MakeFormula.R'
     'bm_PlotEvalBoxplot.R'
     'bm_PlotEvalMean.R'
+    'bm_PlotResponseCurves.R'
     'bm_PlotVarImpBoxplot.R'
     'bm_PseudoAbsences.R'
     'bm_Rescaler.R'
@@ -108,5 +109,4 @@ Collate:
     'bm_VariablesImportance.R'
     'level.plot.R'
     'multiple.plot.r'
-    'response.plot.R'
     'zzz.R'

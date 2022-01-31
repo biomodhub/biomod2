@@ -1,53 +1,3 @@
-##' @name response.plot
-##' @title Analysis of the response curves of a model within Biomod
-##' @description Depreciated function, please use \code{
-##' bm_PlotResponseCurves} instead
-##' 
-##' @param model the model for which you want the response curves to be
-##' plotted. Compatible with GAM, GBM, GLM, ANN, CTA, RF, FDA and MARS.
-##' @param Data the variables for which you want the response curves to be
-##' plotted. A data frame is wanted with one column per variable. They
-##' have to have the same names as the ones used to calibrate the model.
-##' @param show.variables give in the column numbers of 'Data' for
-##' selecting the variables that are wanted for plotting
-##' @param save.file can be set to "pdf", "jpeg" or "tiff" to save the
-##' plot. Pdf options can be changed by setting the default values of 
-##' pdf.options().
-##' @param name the name of the file produced if save.file is different to
-##' "no" (extensions are already included)
-##' @param ImageSize the size of the image in pixels if save.file is
-##' different to "no". Affects "jpeg" and "tiff" outputs only. Default if
-##' 480 pixels which is the R default. 
-##' @param plot if TRUE (the default) then a plot is produced. If not, an
-##' array containing predictions is returned (see details)
-##' 
-##' @details
-##' Depreciated function, please use \code{bm_PlotResponseCurves}
-##' instead.
-##' 
-##' @author Wilfried Thuiller
-##' 
-##' @references Elith, J., Ferrier, S., Huettmann, FALSE. & Leathwick, J.
-##' R. 2005 The evaluation strip: A new and robust method for plotting
-##' predicted responses from species distribution models. Ecological
-##' Modelling 186, 280-289.
-##' 
-##' @keywords plot
-##' @keywords models
-##' @keywords regression
-##' @keywords nonlinear
-##' @keywords multivariate
-##' @keywords nonparametric
-##' @keywords tree
-##' 
-response.plot <-
-  function(model, Data, show.variables=seq(1:ncol(Data)), save.file="no", name="response_curve", ImageSize=480, plot=TRUE){
-    
-    cat("\n! Deprecated function, please use bm_PlotResponseCurves instead!")
-    return(TRUE)
-  }
-
-
 ##' @name bm_PlotResponseCurves
 ##' @title Function for for plotting predicted responses from species
 ##' distribution models in 2 or 3 dimensions
@@ -234,8 +184,20 @@ response.plot <-
 ##' dim(myRespPlot3D)
 ##' dimnames(myRespPlot3D)
 ##' }
+
+
+
+##' 
+##' 
+##' @importFrom dplyr %>% bind_rows select full_join mutate_at
+##' @importFrom tidyr gather
+##' @importFrom foreach foreach
 ##' 
 ##' @export
+##' 
+##' 
+###################################################################################################
+
 
 
 bm_PlotResponseCurves <- function(models,
@@ -423,10 +385,9 @@ bm_PlotResponseCurves <- function(models,
   } else {
     ## BIVARIATE CASE -----------------------------------------------------------------------------
     
-    list.out = foreach(vari1 = show.variables[-length(show.variables)]) %:%
+    list.out = foreach(vari1 = show.variables[-length(show.variables)], .combine = "c") %:%
       foreach(vari2 = show.variables[-(1:which(show.variables == vari1))]) %do%
       {
-        
         pts.tmp1 <- rep(seq(min(Data[, vari1], na.rm = TRUE), max(Data[, vari1], na.rm = TRUE)
                             , length.out = sqrt(nb.pts)), each = sqrt(nb.pts))
         pts.tmp2 <- rep(seq(min(Data[, vari2], na.rm = TRUE), max(Data[, vari2], na.rm = TRUE)
@@ -538,7 +499,7 @@ bm_PlotResponseCurves <- function(models,
     add.args$nb.pts <- add.args$nb.pts ^ 2
   } else if (is.null(add.args$nb.pts) && do.bivariate == FALSE) {
     add.args$nb.pts <- 100
-  } else if (is.null(add.args$nb.pts) && do.bivariate == FALSE) {
+  } else if (is.null(add.args$nb.pts) && do.bivariate == TRUE) {
     add.args$nb.pts <- 25 ^ 2
   }
   
@@ -639,27 +600,26 @@ bm_PlotResponseCurves <- function(models,
 
 .as.ggdat.1D <- function(rp.dat)
 {
-  requireNamespace('dplyr')
   out_ <- bind_rows(
     lapply(rp.dat, function(dat_)
     {
       dat_$id <- rownames(dat_)
       id.col.id <- which(colnames(dat_) == "id")
       expl.dat_ <- dat_ %>% 
-        dplyr::select(1, id.col.id) %>%
-        tidyr::gather("expl.name", "expl.val", 1)
+        select(1, id.col.id) %>%
+        gather("expl.name", "expl.val", 1)
       pred.dat_ <- dat_ %>% 
-        dplyr::select(-1, id.col.id) %>%
-        tidyr::gather("pred.name", "pred.val", (1:(ncol(dat_)-2)))
+        select(-1, id.col.id) %>%
+        gather("pred.name", "pred.val", (1:(ncol(dat_)-2)))
       out.dat_ <- 
-        dplyr::full_join(expl.dat_, pred.dat_, by = 'id') %>%
-        dplyr::mutate_at(c('expl.name', 'pred.name'), as.character) %>%
-        dplyr::mutate_at('expl.val', as.numeric)
+        full_join(expl.dat_, pred.dat_, by = 'id') %>%
+        mutate_at(c('expl.name', 'pred.name'), as.character) %>%
+        mutate_at('expl.val', as.numeric)
       return(out.dat_)
     })
   )
-  
-  out_ <- out_ %>% dplyr::mutate_at('expl.name', factor)
+  ## ensure that the stips are in the right order
+  out_ <- out_ %>% mutate_at('expl.name', factor)
   return(out_)
 }
 
@@ -674,24 +634,24 @@ bm_PlotResponseCurves <- function(models,
       #   dat_$pred.name <- as.character(dat_$pred.name)
       id.col.id <- which(colnames(dat_) == "id")
       expl1.dat_ <- dat_ %>% 
-        dplyr::select(1, id.col.id) %>% 
-        tidyr::gather("expl1.name", "expl1.val", 1)
+        select(1, id.col.id) %>% 
+        gather("expl1.name", "expl1.val", 1)
       expl2.dat_ <- dat_ %>% 
-        dplyr::select(2, id.col.id) %>% 
-        tidyr::gather("expl2.name", "expl2.val", 1)
+        select(2, id.col.id) %>% 
+        gather("expl2.name", "expl2.val", 1)
       pred.dat_ <- dat_ %>% 
-        dplyr::select(3, id.col.id) %>% 
-        tidyr::gather("pred.name", "pred.val", 1)
-      out.dat_  <- dplyr::full_join(dplyr::full_join(expl1.dat_, expl2.dat_, by = 'id'), 
-                                    pred.dat_,
-                                    by = 'id')
+        select(3, id.col.id) %>% 
+        gather("pred.name", "pred.val", 1)
+      out.dat_  <- full_join(full_join(expl1.dat_, expl2.dat_, by = 'id'), 
+                             pred.dat_,
+                             by = 'id')
       out.dat_ <- out.dat_ %>%
-        dplyr::mutate_at(c('expl1.name', 'expl2.name', 'pred.name'), as.character) %>% 
-        dplyr::mutate_at(c('expl1.val', 'expl2.val'), as.numeric)
+        mutate_at(c('expl1.name', 'expl2.name', 'pred.name'), as.character) %>% 
+        mutate_at(c('expl1.val', 'expl2.val'), as.numeric)
       return(out.dat_)
     }))
   ## ensure that the stips are in the right order
-  out_ <- out_ %>% dplyr::mutate_at(c('expl1.name', 'expl2.name'), factor)
+  out_ <- out_ %>% mutate_at(c('expl1.name', 'expl2.name'), factor)
   return(out_)
 }
 
