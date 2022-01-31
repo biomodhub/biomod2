@@ -1,7 +1,7 @@
 ##' @name response.plot
 ##' @title Analysis of the response curves of a model within Biomod
 ##' @description Depreciated function, please use \code{
-##' response.plot2} instead
+##' bm_PlotResponseCurves} instead
 ##' 
 ##' @param model the model for which you want the response curves to be
 ##' plotted. Compatible with GAM, GBM, GLM, ANN, CTA, RF, FDA and MARS.
@@ -22,7 +22,7 @@
 ##' array containing predictions is returned (see details)
 ##' 
 ##' @details
-##' Depreciated function, please use \code{response.plot2}
+##' Depreciated function, please use \code{bm_PlotResponseCurves}
 ##' instead.
 ##' 
 ##' @author Wilfried Thuiller
@@ -43,12 +43,12 @@
 response.plot <-
   function(model, Data, show.variables=seq(1:ncol(Data)), save.file="no", name="response_curve", ImageSize=480, plot=TRUE){
     
-    cat("\n! Deprecated function, please use response.plot2 instead!")
+    cat("\n! Deprecated function, please use bm_PlotResponseCurves instead!")
     return(TRUE)
   }
 
 
-##' @name response.plot2
+##' @name bm_PlotResponseCurves
 ##' @title Function for for plotting predicted responses from species
 ##' distribution models in 2 or 3 dimensions
 ##' 
@@ -201,7 +201,7 @@ response.plot <-
 ##'     
 ##' ##' 4.2 plot 2D response plots
 ##' myRespPlot2D <- 
-##'   response.plot2(
+##'   bm_PlotResponseCurves(
 ##'     models = myGLMs,
 ##'     Data = get_formal_data(myBiomodModelOut, 'expl.var'),
 ##'     show.variables = get_formal_data(myBiomodModelOut,'expl.var.names'),
@@ -215,7 +215,7 @@ response.plot <-
 ##' ##' 4.2 plot 3D response plots
 ##' ###' here only for a lone model (i.e "VulpesVulpes_PA1_AllData_GLM")
 ##' myRespPlot3D <- 
-##'   response.plot2(
+##'   bm_PlotResponseCurves(
 ##'   models = myGLMs[1],
 ##'   Data = get_formal_data(myBiomodModelOut, 'expl.var'), 
 ##'   show.variables = get_formal_data(myBiomodModelOut, 'expl.var.names'),
@@ -236,22 +236,24 @@ response.plot <-
 ##' }
 ##' 
 ##' @export
-response.plot2 <- function(models,
-                           Data,
-                           show.variables = seq(1:ncol(Data)),
-                           do.bivariate = FALSE,
-                           fixed.var.metric = 'mean',
-                           save.file = "no",
-                           name = "response_curve",
-                           ImageSize = 480,
-                           plot = TRUE,
-                           ...)
+
+
+bm_PlotResponseCurves <- function(models,
+                                  Data,
+                                  show.variables = seq(1:ncol(Data)),
+                                  do.bivariate = FALSE,
+                                  fixed.var.metric = 'mean',
+                                  save.file = "no",
+                                  name = "response_curve",
+                                  ImageSize = 480,
+                                  plot = TRUE,
+                                  ...)
 {
   ## 0. Check arguments ---------------------------------------------------------------------------
   formal_names <- models
   
-  args <- .response.plot2.check.arg(models, Data, show.variables, save.file, name, ImageSize
-                                    , plot, fixed.var.metric, do.bivariate, ...)
+  args <- .bm_PlotResponseCurves.check.args(models, Data, show.variables, save.file, name, ImageSize
+                                            , plot, fixed.var.metric, do.bivariate, ...)
   models <- args$models
   Data <- args$Data
   show.variables <- args$show.variables
@@ -503,8 +505,8 @@ response.plot2 <- function(models,
 
 ###################################################################################################
 
-.response.plot2.check.arg <- function(models, Data, show.variables, save.file, name, ImageSize
-                                      , plot, fixed.var.metric, do.bivariate, ...)
+.bm_PlotResponseCurves.check.args <- function(models, Data, show.variables, save.file, name, ImageSize
+                                              , plot, fixed.var.metric, do.bivariate, ...)
 {
   add.args <- list(...)
   
