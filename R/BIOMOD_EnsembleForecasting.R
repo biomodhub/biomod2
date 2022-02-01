@@ -28,7 +28,8 @@
 ##' \code{data.frame} containing the corresponding \code{X} and \code{Y} coordinates that will 
 ##' be used to project the ensemble species distribution model(s)
 ##' @param chosen.models a \code{vector} containing model names to be kept, must be either 
-##' \code{all} or a sub-selection of model names
+##' \code{all} or a sub-selection of model names that can be obtained with the 
+##' \code{\link{get_built_models}} function
 ##' 
 ##' @param binary.meth (\emph{optional, default} \code{NULL}) \cr 
 ##' A \code{vector} containing evaluation metric names to be used to transform prediction values 

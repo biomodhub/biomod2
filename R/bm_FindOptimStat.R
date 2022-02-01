@@ -68,6 +68,9 @@
 ##' bm_FindOptimStat(Stat = 'TSS', Fit = c, Obs = a, Nb.thresh.test = 100)
 ##'
 ##' 
+##' @importFrom pROC roc coords auc
+##' 
+##' 
 ##' @export
 ##' 
 ##' 
@@ -145,11 +148,11 @@ bm_FindOptimStat <- function(Stat = 'TSS',
     sensitivity <- (true.pos * 100) / sum(misc[, '1'])
     
   } else { ## specific procedure for ROC value ----------------------------------------------------
-    roc1 <- pROC::roc(Obs, Fit, percent = TRUE, direction = "<", levels = c(0, 1))
-    roc1.out <- pROC::coords(roc1, "best", ret = c("threshold", "sens", "spec"), transpose = TRUE)
+    roc1 <- roc(Obs, Fit, percent = TRUE, direction = "<", levels = c(0, 1))
+    roc1.out <- coords(roc1, "best", ret = c("threshold", "sens", "spec"), transpose = TRUE)
     ## if two optimal values are returned keep only the first one
     if (!is.null(ncol(roc1.out))) { roc1.out <- roc1.out[, 1] }
-    best.stat <- as.numeric(pROC::auc(roc1)) / 100
+    best.stat <- as.numeric(auc(roc1)) / 100
     cutoff <- as.numeric(roc1.out["threshold"])
     sensitivity <- as.numeric(roc1.out["sensitivity"])
     specificity <- as.numeric(roc1.out["specificity"])

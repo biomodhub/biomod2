@@ -14,7 +14,8 @@
 ##' @param modeling.output a \code{\link{BIOMOD.models.out}} object returned by the 
 ##' \code{\link{BIOMOD_Modeling}} function
 ##' @param chosen.models a \code{vector} containing model names to be kept, must be either 
-##' \code{all} or a sub-selection of model names
+##' \code{all} or a sub-selection of model names that can be obtained with the 
+##' \code{\link{get_built_models}} function
 ##' @param em.by a \code{character} corresponding to the way kept models will be combined to build 
 ##' the ensemble models, must be among \code{PA_dataset+repet}, \code{PA_dataset+algo}, 
 ##' \code{PA_dataset}, \code{algo}, \code{all}

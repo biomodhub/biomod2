@@ -42,7 +42,8 @@ If \code{new.env} is a \code{matrix} or a \code{data.frame}, a 2-columns \code{m
 be used to project the ensemble species distribution model(s)}
 
 \item{chosen.models}{a \code{vector} containing model names to be kept, must be either 
-\code{all} or a sub-selection of model names}
+\code{all} or a sub-selection of model names that can be obtained with the 
+\code{\link{get_built_models}} function}
 
 \item{binary.meth}{(\emph{optional, default} \code{NULL}) \cr 
 A \code{vector} containing evaluation metric names to be used to transform prediction values 

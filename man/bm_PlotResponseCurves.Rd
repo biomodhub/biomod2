@@ -2,217 +2,156 @@
 % Please edit documentation in R/bm_PlotResponseCurves.R
 \name{bm_PlotResponseCurves}
 \alias{bm_PlotResponseCurves}
-\title{Function for for plotting predicted responses from species
-distribution models in 2 or 3 dimensions}
+\title{Plot response curves}
 \usage{
 bm_PlotResponseCurves(
-  models,
-  Data,
-  show.variables = seq(1:ncol(Data)),
-  do.bivariate = FALSE,
+  modeling.output,
+  chosen.models = "all",
+  new.env = get_formal_data(modeling.output, "expl.var"),
+  show.variables = get_formal_data(modeling.output, "expl.var.names"),
   fixed.var.metric = "mean",
-  save.file = "no",
-  name = "response_curve",
-  ImageSize = 480,
+  do.bivariate = FALSE,
   plot = TRUE,
   ...
 )
 }
 \arguments{
-\item{models}{a character vector specifying the models for which the
-response curves have to be plotted. Compatible with GAM, GBM, GLM, 
-ANN, CTA, RF, FDA, MARS and MAXENT.}
+\item{modeling.output}{a \code{\link{BIOMOD.models.out}} or \code{BIOMOD.ensemble.models.out} 
+object that can be obtained from \code{\link{BIOMOD_Modeling}} or 
+\code{\link{BIOMOD_EnsembleModeling}} functions}
 
-\item{Data}{a dataframe containing the variables for which the
-response curves have to be plotted. They must have the same names as
-the ones used to calibrate the model. RasterStack are also supported.}
+\item{chosen.models}{a \code{vector} containing model names to be kept, must be either 
+\code{all} or a sub-selection of model names that can be obtained with the 
+\code{\link{get_built_models}} function}
 
-\item{show.variables}{the names or the column numbers of 'Data' for
-selecting the variables to be plotted. By default all columns are
-taken}
+\item{new.env}{a \code{matrix}, \code{data.frame} or \code{\link[raster:stack]{RasterStack}} 
+object containing the new explanatory variables (in columns or layers, with names matching the 
+variables names given to the \code{\link{BIOMOD_FormatingData}} function to build 
+\code{modeling.output}) that will be used to project the species distribution model(s)}
 
-\item{do.bivariate}{'logical', if FALSE (default), the predicted
-response curves are plotted for every singe variable independently 
-(2 dimension). If TRUE, the predicted response curves are represented
-in 3 dimentions for all pairs of variables}
+\item{show.variables}{a \code{vector} containing the names of the explanatory variables 
+present into \code{new.env} parameter and to be plotted}
 
-\item{fixed.var.metric}{either 'mean' (default), 'median', 'min' or
-'max' specifying the statistic used to fix as constant the remaining
-variables when the predicted response is estimated for one of the
-variables}
+\item{fixed.var.metric}{a \code{character} corresponding to the statistic to be used to fix as 
+constant the remaining variables other than the one used to predict response, must be either 
+\code{mean}, \code{median}, \code{min}, \code{max}}
 
-\item{save.file}{can be set to "pdf", "jpeg" or "tiff" to save the
-plot. Pdf options can be changed by setting the default values of 
-pdf.options().}
+\item{do.bivariate}{(\emph{optional, default} \code{FALSE}) \cr 
+A \code{logical} value defining whether the response curves are to be represented in 3 
+dimensions (meaning 2 explanatory variables at a time) or not (meaning only 1)}
 
-\item{name}{the name of the file produced if save.file is different to
-"no" (extensions are already included)}
+\item{plot}{(\emph{optional, default} \code{TRUE}) \cr 
+A \code{logical} value defining whether the plot is to be rendered or not}
 
-\item{ImageSize}{the size of the image in pixels if save.file is
-different to "no". Affects "jpeg" and "tiff" outputs only. Default if
-480 pixels which is the R default.}
-
-\item{plot}{if TRUE (the default) then a plot is produced}
-
-\item{\ldots}{further arguments :
-- \code{data_species} : vector containing data species occurrences.
-Have to match with \code{Data}. If given, the statistic used to fix
-variables value will be calculated only over presences points.
-(Considered only if \code{Data} is under table format)
-- \code{col} : vector of colors to be used (only for univariate 
-case)
-- \code{lty} : vector of lines types to be used
-- \code{main} : character, the title of the graph (default one based
-on first model class is automatically produced if not referred)
-- \code{display_title} : logical, display or not graph title
-- \code{legend} : logical, add legend to plot (only for univariate
-case)}
+\item{\ldots}{some additional arguments (see 
+\href{bm_PlotResponseCurves.html#details}{Details})}
 }
 \value{
-a 4 dimentions array is returned. It contains the necessary
-outputs to produce the plots. This is useful to make your own custom
-response plot graphics.
-  
-Array returned structure : 
-
-- First dimension: the dimension of the predictions
-- Second dimension: 2 or 3 columns: The first one (resp. the first 
-two) is (are) the explanatory variable(s) to plot, the last one, the
-probability of occurrence
-- Third dimension: The set of environmental variables for which the
-response.plot was asked to run.
-- Fourth dimension:the selected models
+A \code{ggplot} object representing response curves.
 }
 \description{
-Adaptation of the Evaluation Strip method proposed by
-Elith et al.(2005). This function enables to plot the response curves
-of a model independently of the algorithm used for building the model.
-It therefore permits a direct comparison of predicted responses from
-the different statistical approaches on the same data.
+This function represents response curves of species distribution models, from 
+\code{BIOMOD.models.out} or \code{BIOMOD.ensemble.models.out} objects that can be obtained 
+from \code{\link{BIOMOD_Modeling}} or \code{\link{BIOMOD_EnsembleModeling}} functions.
+Response curves can be represented in either 2 or 3 dimensions (meaning 1 or 2 explanatory 
+variables at a time, see \href{bm_PlotResponseCurves.html#details}{Details}).
 }
 \details{
-For building the predicted response curves, n-1 variables are set
-constant to a fixed value (mean, median, min or max i.e 
-\code{fixed.var.metric} arg) and only the remaining one (resp. 2 for
-3D response plot) is varying across its whole range (given by
-\code{Data}). n the case of categorical variable, the most represented
-class is taken. The variations observed and the curve thus obtained
-shows the sensibility of the model to that specific variable. This
-method does not account for interactions between variables.
-In the evaluation strip initially proposed by Elith et al. 2005 the
-remaining variables are set to the mean.
+This function is an adaptation of the Evaluation Strip method proposed by Elith et al. (2005). 
+To build the predicted response curves :
+\itemize{
+  \item \code{n-1} variables are set constant to a fixed value determined by the 
+  \code{fixed.var.metric} parameter (in the case of categorical variable, the most represented 
+  class is taken)
+  \item the remaining variable is made to vary throughout its range given by the \code{new.env} 
+  parameter 
+  \item predicted values are computed with these \code{n-1} fixed variables, and this 
+  studied variable varying 
+}
+If \code{do.bivariate = TRUE}, 2 variables are varying at the same time. \cr \cr
+
+The response curves obtained show the sensibility of the model to the studied variable. \cr 
+Note that this method does not account for interactions between variables. \cr \cr
+
+\code{...} can take the following values :
+
+\itemize{
+  \item{\code{main}}{ : a \code{character} corresponding to the graphic title}
+}
 }
 \examples{
-\dontrun{
-##' species occurrences
-DataSpecies <- 
-  read.csv(
-    system.file("external/species/mammals_table.csv", package="biomod2"), 
-    row.names = 1
-  )
+
+# species occurrences
+myFile <- system.file("external/species/mammals_table.csv", package="biomod2")
+DataSpecies <- read.csv(myFile, row.names = 1)
 head(DataSpecies)
-##' the name of studied species
-myRespName <- 'VulpesVulpes'
-    
-##' the presence/absences data for our species 
+
+# the name of studied species
+myRespName <- 'GuloGulo'
+
+# the presence/absences data for our species
 myResp <- as.numeric(DataSpecies[, myRespName])
-    
-##' the XY coordinates of species data
+
+# the XY coordinates of species data
 myRespXY <- DataSpecies[, c("X_WGS84", "Y_WGS84")]
 
-myExpl <- 
-  raster::stack(
-    system.file("external/bioclim/current/bio3.grd", package = "biomod2"),
-    system.file("external/bioclim/current/bio4.grd", package = "biomod2"),
-    system.file("external/bioclim/current/bio7.grd", package = "biomod2"),
-    system.file("external/bioclim/current/bio11.grd", package = "biomod2"),
-    system.file("external/bioclim/current/bio12.grd", package = "biomod2")
-  )
 
-##' 1. Formatting Data
-myBiomodData <- 
-  BIOMOD_FormatingData(
-    resp.var = myResp,
-    expl.var = myExpl,
-    resp.xy = myRespXY,
-    resp.name = myRespName
-  )
+# Environmental variables extracted from BIOCLIM (bio_3, bio_4, bio_7, bio_11 & bio_12)
+myFiles = paste0("external/bioclim/current/bio", c(3, 4, 7, 11, 12), ".grd")
+myExpl = raster::stack(system.file(myFiles[1], package = "biomod2"),
+                       system.file(myFiles[2], package = "biomod2"),
+                       system.file(myFiles[3], package = "biomod2"),
+                       system.file(myFiles[4], package = "biomod2"),
+                       system.file(myFiles[5], package = "biomod2"))
 
-##' 2. Defining Models Options using default options.
+# 1. Formating Data
+myBiomodData <- BIOMOD_FormatingData(resp.var = myResp,
+                                     expl.var = myExpl,
+                                     resp.xy = myRespXY,
+                                     resp.name = myRespName)
+
+# 2. Defining Models Options using default options.
 myBiomodOption <- BIOMOD_ModelingOptions()
 
-##' 3. Doing Modelisation
-myBiomodModelOut <- 
-  BIOMOD_Modeling(
-    myBiomodData,
-    models = c('GLM','RF'),
-    models.options = myBiomodOption,
-    NbRunEval = 2,
-    DataSplit = 80,
-    VarImport = 0,
-    models.eval.meth = c('TSS','ROC'),
-    do.full.models = FALSE,
-    modeling.id = "test"
-  )
-##' 4. Plot response curves
-##' 4.1 Load the models for which we want to extract the predicted
-##' response curves
-myGLMs <- BIOMOD_LoadModels(myBiomodModelOut, models = 'GLM')
-    
-##' 4.2 plot 2D response plots
-myRespPlot2D <- 
-  bm_PlotResponseCurves(
-    models = myGLMs,
-    Data = get_formal_data(myBiomodModelOut, 'expl.var'),
-    show.variables = get_formal_data(myBiomodModelOut,'expl.var.names'),
-    do.bivariate = FALSE,
-    fixed.var.metric = 'median',
-    col = c("blue", "red"),
-    legend = TRUE,
-    data_species = get_formal_data(myBiomodModelOut, 'resp.var')
-  )
-    
-##' 4.2 plot 3D response plots
-###' here only for a lone model (i.e "VulpesVulpes_PA1_AllData_GLM")
-myRespPlot3D <- 
-  bm_PlotResponseCurves(
-  models = myGLMs[1],
-  Data = get_formal_data(myBiomodModelOut, 'expl.var'), 
-  show.variables = get_formal_data(myBiomodModelOut, 'expl.var.names'),
-  do.bivariate = TRUE,
-  fixed.var.metric = 'median',
-  data_species = get_formal_data(myBiomodModelOut, 'resp.var'),
-  display_title = FALSE
-)
-    
-##' all the values used to produce this plot are stored into the
-##' returned object you can redo plots by yourself and customised 
-##' them
-dim(myRespPlot2D)
-dimnames(myRespPlot2D)
-    
-dim(myRespPlot3D)
-dimnames(myRespPlot3D)
-}
+# 3. Doing Modelisation
+myBiomodModelOut <- BIOMOD_Modeling(myBiomodData,
+                                    models = c('SRE','RF'),
+                                    models.options = myBiomodOption,
+                                    NbRunEval = 2,
+                                    DataSplit = 80,
+                                    VarImport = 3,
+                                    models.eval.meth = c('TSS','ROC'),
+                                    do.full.models = FALSE,
+                                    modeling.id = 'test')
 
+# 4.1 Plotting 2D response curves
+myRespPlot2D <- bm_PlotResponseCurves(myBiomodModelOut,
+                                      chosen.models = get_built_models(myBiomodModelOut)[c(1:3, 12:14)],
+                                      do.bivariate = FALSE,
+                                      fixed.var.metric = 'median')
+                                      
+# 4.2 Plotting 3D response curves
+myRespPlot3D <- bm_PlotResponseCurves(myBiomodModelOut,
+                                      chosen.models = get_built_models(myBiomodModelOut)[3],
+                                      do.bivariate = TRUE,
+                                      fixed.var.metric = 'median')
+                                      
+                                      
 
 }
 \references{
-Elith, J., Ferrier, S., Huettmann, FALSE. & Leathwick, J. R. 2005 The
-evaluation strip: A new and robust method for plotting predicted
-responses from species distribution models. Ecological Modelling 186,
-280-289.
+\itemize{
+  \item Elith, J., Ferrier, S., Huettmann, FALSE. and Leathwick, J. R. 2005. The evaluation 
+  strip: A new and robust method for plotting predicted responses from species distribution 
+  models. \emph{Ecological Modelling}, \bold{186}, 280-289.
+}
 }
 \seealso{
 \code{\link{BIOMOD_Modeling}}
 }
 \author{
-Wilfried Thuiller, Damien Georges
+Damien Georges, Maya Gueguen
 }
-\keyword{models}
-\keyword{multivariate}
-\keyword{nonlinear}
-\keyword{nonparametric}
-\keyword{plot}
-\keyword{regression}
-\keyword{tree}
+\keyword{curve}
+\keyword{ggplot,}
+\keyword{response}

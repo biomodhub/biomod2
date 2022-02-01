@@ -756,8 +756,8 @@ bm_RunModel <- function(Model, Data, Options, calibLines, Yweights, nam, VarImpo
                          Fixed.thresh = cross.validation["Cutoff", x])
       })
       
-      cross.validation <- rbind(cross.validation["Testing.data",], true.evaluation)
-      rownames(cross.validation) <- c("Testing.data","Evaluating.data","Cutoff","Sensitivity", "Specificity")
+      cross.validation <- rbind(cross.validation["Testing.data", ], true.evaluation)
+      rownames(cross.validation) <- c("Testing.data", "Evaluating.data", "Cutoff", "Sensitivity", "Specificity")
     }
     
     ## store results
