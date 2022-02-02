@@ -17,6 +17,8 @@ getStatOptimValue <- function(...) { .Deprecated("get_optim_value") }
 makeFormula <- function(...) { .Deprecated("bm_MakeFormula") }
 models_scores_graph <- function(...) { .Deprecated("bm_PlotEvalMean") }
 Print_Default_ModelingOptions <- function(...) { .Deprecated("bm_DefaultModelingOptions") }
+ProbDensFunc <- function(...) { .Deprecated("bm_PlotRangeSize") }
+response.plot <- function(...) { .Deprecated("bm_PlotResponseCurves") }
 response.plot2 <- function(...) { .Deprecated("bm_PlotResponseCurves") }
 sample.factor.levels <- function(...) { .Deprecated("bm_SampleFactorLevels") }
 sre <- function(...) { .Deprecated("bm_SRE") }
@@ -31,9 +33,6 @@ variables_importance <- function(...) { .Deprecated("bm_VariablesImportance") }
 # full_suffling
 # level.plot
 # multiple.plot
-# ProbDensFunc
 # randomise_data
-# response.plot
-# response.plot2
 # SampleMat2
 # zzz_bm

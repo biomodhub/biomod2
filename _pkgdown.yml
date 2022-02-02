@@ -70,6 +70,7 @@ reference:
       - "bm_PlotEvalBoxplot"
       - "bm_PlotVarImpBoxplot"
       - "bm_PlotResponseCurves"
+      - "bm_PlotRangeSize"
   - title: Toolbox
   - subtitle: Objects
     contents:

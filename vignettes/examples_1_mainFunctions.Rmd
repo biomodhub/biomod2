@@ -193,6 +193,10 @@ bm_PlotEvalBoxplot(myBiomodModelOut, group.by = c('algo', 'run'))
 bm_PlotVarImpBoxplot(myBiomodModelOut, group.by = c('expl.var', 'algo', 'algo'))
 bm_PlotVarImpBoxplot(myBiomodModelOut, group.by = c('expl.var', 'algo', 'dataset'))
 bm_PlotVarImpBoxplot(myBiomodModelOut, group.by = c('algo', 'expl.var', 'dataset'))
+
+# Represent response curves
+bm_PlotResponseCurves(myBiomodModelOut)
+bm_PlotResponseCurves(myBiomodModelOut, do.bivariate = TRUE)
 ```
 
 
@@ -228,6 +232,10 @@ bm_PlotEvalBoxplot(myBiomodEM, group.by = c('model', 'model'))
 bm_PlotVarImpBoxplot(myBiomodEM, group.by = c('expl.var', 'model', 'model'))
 bm_PlotVarImpBoxplot(myBiomodEM, group.by = c('expl.var', 'model', 'dataset'))
 bm_PlotVarImpBoxplot(myBiomodEM, group.by = c('model', 'expl.var', 'dataset'))
+
+# Represent response curves
+bm_PlotResponseCurves(myBiomodEM)
+bm_PlotResponseCurves(myBiomodEM, do.bivariate = TRUE)
 ```
 
 
@@ -299,6 +307,9 @@ myBiomodRangeSize <- BIOMOD_RangeSize(CurrentProj = CurrentProj, FutureProj = Fu
 
 myBiomodRangeSize$Compt.By.Models
 plot(myBiomodRangeSize$Diff.By.Pixel)
+
+# Represent main results 
+bm_PlotRangeSize(myBiomodRangeSize)
 ```
 
 

@@ -386,6 +386,7 @@ bm_PlotResponseCurves <- function(modeling.output
   if (length(chosen.models) < 1) {
     stop('No models selected')
   }
+  models <- chosen.models
   
   ## check that given models exist
   files.check <- paste0(modeling.output@sp.name, '/models/', modeling.output@modeling.id, "/", chosen.models)
@@ -400,28 +401,6 @@ bm_PlotResponseCurves <- function(modeling.output
       stop("Impossible to find any models, might be a problem of working directory")
     }
   }
-  
-  # ## load the models
-  # BIOMOD_LoadModels(modeling.output, chosen.models)
-  # 
-  # ## get the corresponding names
-  # mod_names <- NULL
-  # for (mod in chosen.models) {
-  #   if (!exists(mod)) {
-  #     stop("you need to load the selected models!")
-  #   }
-  # 
-  #   if (!inherits(get(mod), 'biomod2_model')) {
-  #     # create a biomod2 modeling object
-  #     mod_tmp <- .get_biomod2_model_object(get(mod))
-  #     assign(mod_tmp@model_name, mod_tmp, envir = parent.frame(n = 1))
-  #     mod_names <- c(mod_names, mod_tmp@model_name)
-  #   } else {
-  #     mod_names <- c(mod_names, mod)
-  #   }
-  # }
-  # models <- mod_names
-  models <- chosen.models
   
   ## 2. Check add.args$nb.pts argument ----------------------------------------
   ## defining the number split in each variables range
@@ -470,55 +449,55 @@ bm_PlotResponseCurves <- function(modeling.output
 
 ###################################################################################################
 
-.get_biomod2_model_object <- function(mod)
-{
-  
-  tmp.time <- paste0("_AllData_", as.character(format(Sys.time(), "%OS6")))
-  if (inherits(mod, "nnet")) {
-    tmp.class = 'ANN'
-  } else if (inherits(mod, "rpart")) {
-    tmp.class = 'CTA'
-  } else if (inherits(mod, "fda")) {
-    tmp.class = 'FDA'
-  } else if (inherits(mod, "gam")) {
-    tmp.class = 'GAM'
-  } else if (inherits(mod, "gbm")) {
-    tmp.class = 'GBM'
-  } else if (inherits(mod, c("glm", "lm"))) {
-    tmp.class = 'GLM'
-  } else if (inherits(mod, "mars")) {
-    tmp.class = 'MARS'
-  } else if (inherits(mod, "randomForest")) {
-    tmp.class = 'RF'
-  }
-  
-  tmp.subclass = ""
-  if (tmp.class %in% c('ANN', 'RF')) {
-    tmp.resp = ifelse(is.null(mod$terms[[2]]), "species", as.character(mod$terms[[2]]))
-    tmp.expl = ifelse(is.character(attr(mod$terms, "term.labels")), attr(mod$terms, "term.labels"), "")
-  } else if (tmp.class %in% c('CTA', 'FDA', 'GAM', 'GBM', 'GLM')) {
-    tmp.resp = as.character(mod$terms[[2]])
-    tmp.expl = attr(mod$terms, "term.labels")
-    if (tmp.class == 'GAM') {
-      tmp.subclass = ifelse(mod$method == "glm.fit", "GAM_gam", "GAM_mgcv")
-    }
-  } else if (tmp.class == 'MARS') {
-    tmp.resp = "species"
-    tmp.expl = as.character(colnames(mod$factor))
-  } else {
-    stop("Unknown model class")
-  }
-  tmp.name = paste0(tmp.resp, tmp.time, "_", tmp.class)
-  
-  return(new(paste0(tmp.class, "_biomod2_model"),
-             model = mod,
-             model_name = tmp.name,
-             model_class = tmp.class,
-             model_subclass = tmp.subclass,
-             resp_name = tmp.resp,
-             expl_var_names = tmp.expl
-  ))
-}
+# .get_biomod2_model_object <- function(mod)
+# {
+#   
+#   tmp.time <- paste0("_AllData_", as.character(format(Sys.time(), "%OS6")))
+#   if (inherits(mod, "nnet")) {
+#     tmp.class = 'ANN'
+#   } else if (inherits(mod, "rpart")) {
+#     tmp.class = 'CTA'
+#   } else if (inherits(mod, "fda")) {
+#     tmp.class = 'FDA'
+#   } else if (inherits(mod, "gam")) {
+#     tmp.class = 'GAM'
+#   } else if (inherits(mod, "gbm")) {
+#     tmp.class = 'GBM'
+#   } else if (inherits(mod, c("glm", "lm"))) {
+#     tmp.class = 'GLM'
+#   } else if (inherits(mod, "mars")) {
+#     tmp.class = 'MARS'
+#   } else if (inherits(mod, "randomForest")) {
+#     tmp.class = 'RF'
+#   }
+#   
+#   tmp.subclass = ""
+#   if (tmp.class %in% c('ANN', 'RF')) {
+#     tmp.resp = ifelse(is.null(mod$terms[[2]]), "species", as.character(mod$terms[[2]]))
+#     tmp.expl = ifelse(is.character(attr(mod$terms, "term.labels")), attr(mod$terms, "term.labels"), "")
+#   } else if (tmp.class %in% c('CTA', 'FDA', 'GAM', 'GBM', 'GLM')) {
+#     tmp.resp = as.character(mod$terms[[2]])
+#     tmp.expl = attr(mod$terms, "term.labels")
+#     if (tmp.class == 'GAM') {
+#       tmp.subclass = ifelse(mod$method == "glm.fit", "GAM_gam", "GAM_mgcv")
+#     }
+#   } else if (tmp.class == 'MARS') {
+#     tmp.resp = "species"
+#     tmp.expl = as.character(colnames(mod$factor))
+#   } else {
+#     stop("Unknown model class")
+#   }
+#   tmp.name = paste0(tmp.resp, tmp.time, "_", tmp.class)
+#   
+#   return(new(paste0(tmp.class, "_biomod2_model"),
+#              model = mod,
+#              model_name = tmp.name,
+#              model_class = tmp.class,
+#              model_subclass = tmp.subclass,
+#              resp_name = tmp.resp,
+#              expl_var_names = tmp.expl
+#   ))
+# }
 
 
 ###################################################################################################
