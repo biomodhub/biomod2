@@ -51,6 +51,11 @@ setGeneric("get_scaling_model", def = function(object) { standardGeneric("get_sc
 ##' 
 ##' @param obj a \code{\link{biomod2_model}} object
 ##' 
+##' @importFrom raster raster as.matrix is.factor subset calc writeRaster readAll
+##' predict reclassify rasterToPoints cellFromXY
+##' @importFrom sp read.asciigrid
+##' @importFrom gbm predict.gbm
+##' 
 NULL
 
 #setGeneric("predict", def = function(object, ...) { standardGeneric("predict") })
@@ -130,8 +135,6 @@ NULL
 ##' showClass("SRE_biomod2_model")
 ##' 
 ##'
-##' 
-##' @importFrom raster raster merge as.matrix
 ##' 
 ##' @export
 ##' 
@@ -404,7 +407,7 @@ setMethod('predict', signature(object = 'GBM_biomod2_model'),
 
 .predict.GBM_biomod2_model.RasterStack <- function(object, newdata, ...)
 {
-  return(.template_predict.RasterStack(seedval = NULL, predcommand = "predict(newdata, model = get_formal_model(object), fun = gbm::predict.gbm, n.trees = object@n.trees_optim, type = 'response')", object, newdata, ...))
+  return(.template_predict.RasterStack(seedval = NULL, predcommand = "predict(newdata, model = get_formal_model(object), fun = predict.gbm, n.trees = object@n.trees_optim, type = 'response')", object, newdata, ...))
 }
 
 .predict.GBM_biomod2_model.data.frame <- function(object, newdata, ...)
@@ -424,6 +427,11 @@ setClass('GLM_biomod2_model',
          validity = function(object) { ## check model class
            if (!inherits(object@model, "glm")) { return(FALSE) } else { return(TRUE) }
          })
+
+##' 
+##' @rdname predict.bm
+##' @export
+##' 
 
 setMethod('predict', signature(object = 'GLM_biomod2_model'),
           function(object, newdata, ...)
@@ -475,8 +483,7 @@ setMethod('predict', signature(object = 'MARS_biomod2_model'),
   if (is.null(overwrite)) { overwrite <- TRUE }
   if (is.null(on_0_1000)) { on_0_1000 <- FALSE }
   
-  ##' @note we have to handle separatly rasterstack depending on the presence or not
-  ##' of factorial variable.
+  ## handle separately rasterstack depending on the presence or not of factorial variable
   fact.var <- is.factor(newdata)
   if (any(fact.var))
   {
@@ -611,24 +618,16 @@ setMethod('predict', signature(object = 'MAXENT.Phillips_biomod2_model'),
   return(proj)
 }
 
-##' @note Here is define a conversion of the MAXENT models until the biomod 2.xx
-##'   This model class was equivqlent to the current 'MAXENT.Phillips_biomod2_model'
-
-setClass('MAXENT_biomod2_model',
-         contains = 'MAXENT.Phillips_biomod2_model',
-         prototype = list(model_class = 'MAXENT'),
-         validity = function(object) { return(TRUE) })
-
 
 ###################################################################################################
 ## 8.9 MAXENT.Phillips.2_biomod2_model
 ###################################################################################################
 
-setClass( 'MAXENT.Phillips.2_biomod2_model',
-          representation(),
-          contains = 'biomod2_model',
-          prototype = list(model_class = 'MAXENT.Phillips.2'),
-          validity = function(object) { checkmate::test_class(object@model, 'maxnet') })
+setClass('MAXENT.Phillips.2_biomod2_model',
+         representation(),
+         contains = 'biomod2_model',
+         prototype = list(model_class = 'MAXENT.Phillips.2'),
+         validity = function(object) { if(!inherits(object@model, "maxnet")) { return(FALSE) } else { return(TRUE) }})
 
 ##' 
 ##' @rdname predict.bm

@@ -37,6 +37,7 @@
 ##' 
 ##' 
 ##' @importFrom pROC auc roc
+##' @importFrom nnet nnet
 ##' 
 ##' @export
 ##' 

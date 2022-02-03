@@ -2,9 +2,30 @@
 % Please edit documentation in R/bm_BinaryTransformation.R
 \name{bm_BinaryTransformation}
 \alias{bm_BinaryTransformation}
+\alias{bm_BinaryTransformation,data.frame-method}
+\alias{bm_BinaryTransformation,matrix-method}
+\alias{bm_BinaryTransformation,numeric-method}
+\alias{bm_BinaryTransformation,array-method}
+\alias{bm_BinaryTransformation,RasterLayer-method}
+\alias{bm_BinaryTransformation,RasterStack-method}
+\alias{bm_BinaryTransformation,RasterBrick-method}
 \title{Convert probability values into binary values using a predefined threshold}
 \usage{
 bm_BinaryTransformation(data, threshold, doFiltering = FALSE)
+
+\S4method{bm_BinaryTransformation}{data.frame}(data, threshold, doFiltering = FALSE)
+
+\S4method{bm_BinaryTransformation}{matrix}(data, threshold, doFiltering = FALSE)
+
+\S4method{bm_BinaryTransformation}{numeric}(data, threshold, doFiltering = FALSE)
+
+\S4method{bm_BinaryTransformation}{array}(data, threshold, doFiltering = FALSE)
+
+\S4method{bm_BinaryTransformation}{RasterLayer}(data, threshold, doFiltering = FALSE)
+
+\S4method{bm_BinaryTransformation}{RasterStack}(data, threshold, doFiltering = FALSE)
+
+\S4method{bm_BinaryTransformation}{RasterBrick}(data, threshold, doFiltering = FALSE)
 }
 \arguments{
 \item{data}{a \code{vector}, a \code{matrix} or \code{data.frame}, a 

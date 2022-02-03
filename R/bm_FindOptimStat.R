@@ -70,7 +70,6 @@
 ##' 
 ##' @importFrom pROC roc coords auc
 ##' 
-##' 
 ##' @export
 ##' 
 ##' 

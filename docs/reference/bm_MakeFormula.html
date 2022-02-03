@@ -93,7 +93,7 @@ that can be used later by statistical models.</p>
 <dd><p>a <code>character</code> defining the response variable name</p></dd>
 <dt>explVar</dt>
 <dd><p>a <code>matrix</code> or <code>data.frame</code> corresponding to the explanatory 
-variables table that will be considered at modelling step</p></dd>
+variables table that will be considered at modeling step</p></dd>
 <dt>type</dt>
 <dd><p>a <code>character</code> defining the wanted type of formula, must be <code>simple</code>, 
 <code>quadratic</code>, <code>polynomial</code> or <code>s_smoother</code></p></dd>
@@ -138,7 +138,7 @@ whose corresponding columns are defined as <code>factor</code>. <br><br></p>
 
 <span class="co">## Create a formula</span>
 <span class="va">myFormula</span> <span class="op">&lt;-</span> <span class="fu">bm_MakeFormula</span><span class="op">(</span>respName <span class="op">=</span> <span class="st">'myResp'</span>,
-                            explVar <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">myExpl</span><span class="op">)</span>,
+                            explVar <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/raster/man/headtail.html" class="external-link">head</a></span><span class="op">(</span><span class="va">myExpl</span><span class="op">)</span>,
                             type <span class="op">=</span> <span class="st">'quadratic'</span>,
                             interaction.level <span class="op">=</span> <span class="fl">0</span><span class="op">)</span>
   

@@ -10,7 +10,7 @@ bm_MakeFormula(respName, explVar, type = "simple", interaction.level = 0, ...)
 \item{respName}{a \code{character} defining the response variable name}
 
 \item{explVar}{a \code{matrix} or \code{data.frame} corresponding to the explanatory 
-variables table that will be considered at modelling step}
+variables table that will be considered at modeling step}
 
 \item{type}{a \code{character} defining the wanted type of formula, must be \code{simple}, 
 \code{quadratic}, \code{polynomial} or \code{s_smoother}}

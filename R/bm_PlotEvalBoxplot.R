@@ -48,7 +48,7 @@
 ##' @examples
 ##' 
 ##' 
-##' @importFrom ggplot2 ggplot aes_string geom_boxplot facet_wrap xlab ylab
+##' @importFrom ggplot2 ggplot aes_string geom_boxplot facet_wrap xlab 
 ##' theme element_blank element_rect element_text labs
 ##' 
 ##' @export
@@ -83,7 +83,7 @@ bm_PlotEvalBoxplot <- function(modeling.output, group.by = c('algo', 'run'), plo
   ## 2. PLOT graphic ------------------------------------------------------------------------------
   gg <- ggplot(ggdat, aes_string(x = group.by[1], y = eval.data, fill = group.by[2])) +
     geom_boxplot() + ## add boxplot
-    facet_wrap(~ Eval.metric, scales = scales) +
+    facet_wrap("Eval.metric", scales = scales) +
     xlab("") +
     theme(legend.title = element_blank()
           , legend.key = element_rect(fill = "white")

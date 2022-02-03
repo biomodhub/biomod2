@@ -140,7 +140,7 @@
 ##' @importFrom reshape2 melt
 ##' @importFrom patchwork plot_layout
 ##' @importFrom ggplot2 ggplot aes_string geom_col geom_raster facet_wrap xlab ylab labs 
-##' theme element_blank element_rect element_text scale_fill_manual
+##' theme element_blank element_rect scale_fill_manual
 ##' 
 ##' @export
 ##' 

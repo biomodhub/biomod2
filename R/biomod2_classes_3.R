@@ -869,7 +869,7 @@ setMethod("get_predictions", "BIOMOD.ensemble.models.out",
           function(obj, ...)
           {
             ## note: ensemble models predicitons are stored within the directory
-            ##  <sp.name>/.BIOMOD_DATA/<modelling.id>/ensemble.models/ensemble.models.projections/
+            ##  <sp.name>/.BIOMOD_DATA/<modeling.id>/ensemble.models/ensemble.models.projections/
             ##  This function is just a friendly way to load this data
             
             ## get the path to projections files we want to load

@@ -2,9 +2,24 @@
 % Please edit documentation in R/BIOMOD_RangeSize.R
 \name{BIOMOD_RangeSize}
 \alias{BIOMOD_RangeSize}
+\alias{BIOMOD_RangeSize,data.frame,data.frame-method}
+\alias{BIOMOD_RangeSize,array,array-method}
+\alias{BIOMOD_RangeSize,RasterStack,RasterStack-method}
+\alias{BIOMOD_RangeSize,RasterLayer,RasterStack-method}
+\alias{BIOMOD_RangeSize,RasterLayer,RasterLayer-method}
 \title{Analyze the range size differences between projections of species distribution models}
 \usage{
 BIOMOD_RangeSize(CurrentProj, FutureProj, ...)
+
+\S4method{BIOMOD_RangeSize}{data.frame,data.frame}(CurrentProj, FutureProj)
+
+\S4method{BIOMOD_RangeSize}{array,array}(CurrentProj, FutureProj)
+
+\S4method{BIOMOD_RangeSize}{RasterStack,RasterStack}(CurrentProj, FutureProj)
+
+\S4method{BIOMOD_RangeSize}{RasterLayer,RasterStack}(CurrentProj, FutureProj)
+
+\S4method{BIOMOD_RangeSize}{RasterLayer,RasterLayer}(CurrentProj, FutureProj)
 }
 \arguments{
 \item{CurrentProj}{an \code{array}, \code{data.frame}, \code{\link[raster:stack]{RasterLayer}} 

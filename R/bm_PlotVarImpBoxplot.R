@@ -45,8 +45,8 @@
 ##' @examples
 ##' 
 ##' 
-##' @importFrom ggplot2 ggplot aes_string geom_boxplot facet_wrap xlab ylab
-##' theme element_blank element_rect element_text labs scale_y_continuous
+##' @importFrom ggplot2 ggplot aes_string geom_boxplot facet_wrap xlab ylab labs 
+##' theme element_blank element_rect element_text scale_y_continuous
 ##' 
 ##' @export
 ##' 

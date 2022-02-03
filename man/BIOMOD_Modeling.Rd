@@ -248,6 +248,7 @@ myBiomodModelOut <- BIOMOD_Modeling(myBiomodData,
 myBiomodModelOut
 
 
+
 }
 \seealso{
 \code{\link{BIOMOD_FormatingData}}, \code{\link{BIOMOD_ModelingOptions}}, 

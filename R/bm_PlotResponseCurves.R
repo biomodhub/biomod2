@@ -143,8 +143,8 @@
 ##' 
 ##' @importFrom foreach foreach %:%
 ##' @importFrom reshape2 melt
-##' @importFrom ggplot2 ggplot aes_string geom_line geom_rug geom_raster facet_wrap xlab ylab
-##' theme element_blank element_rect element_text labs scale_fill_viridis_c
+##' @importFrom ggplot2 ggplot aes_string geom_line geom_rug geom_raster facet_wrap xlab ylab labs 
+##' theme element_blank element_rect element_text scale_fill_viridis_c
 ##' 
 ##' @export
 ##' 
@@ -447,59 +447,6 @@ bm_PlotResponseCurves <- function(modeling.output
               main = main,
               data_species = data_species))
 }
-
-
-###################################################################################################
-
-# .get_biomod2_model_object <- function(mod)
-# {
-#   
-#   tmp.time <- paste0("_AllData_", as.character(format(Sys.time(), "%OS6")))
-#   if (inherits(mod, "nnet")) {
-#     tmp.class = 'ANN'
-#   } else if (inherits(mod, "rpart")) {
-#     tmp.class = 'CTA'
-#   } else if (inherits(mod, "fda")) {
-#     tmp.class = 'FDA'
-#   } else if (inherits(mod, "gam")) {
-#     tmp.class = 'GAM'
-#   } else if (inherits(mod, "gbm")) {
-#     tmp.class = 'GBM'
-#   } else if (inherits(mod, c("glm", "lm"))) {
-#     tmp.class = 'GLM'
-#   } else if (inherits(mod, "mars")) {
-#     tmp.class = 'MARS'
-#   } else if (inherits(mod, "randomForest")) {
-#     tmp.class = 'RF'
-#   }
-#   
-#   tmp.subclass = ""
-#   if (tmp.class %in% c('ANN', 'RF')) {
-#     tmp.resp = ifelse(is.null(mod$terms[[2]]), "species", as.character(mod$terms[[2]]))
-#     tmp.expl = ifelse(is.character(attr(mod$terms, "term.labels")), attr(mod$terms, "term.labels"), "")
-#   } else if (tmp.class %in% c('CTA', 'FDA', 'GAM', 'GBM', 'GLM')) {
-#     tmp.resp = as.character(mod$terms[[2]])
-#     tmp.expl = attr(mod$terms, "term.labels")
-#     if (tmp.class == 'GAM') {
-#       tmp.subclass = ifelse(mod$method == "glm.fit", "GAM_gam", "GAM_mgcv")
-#     }
-#   } else if (tmp.class == 'MARS') {
-#     tmp.resp = "species"
-#     tmp.expl = as.character(colnames(mod$factor))
-#   } else {
-#     stop("Unknown model class")
-#   }
-#   tmp.name = paste0(tmp.resp, tmp.time, "_", tmp.class)
-#   
-#   return(new(paste0(tmp.class, "_biomod2_model"),
-#              model = mod,
-#              model_name = tmp.name,
-#              model_class = tmp.class,
-#              model_subclass = tmp.subclass,
-#              resp_name = tmp.resp,
-#              expl_var_names = tmp.expl
-#   ))
-# }
 
 
 ###################################################################################################

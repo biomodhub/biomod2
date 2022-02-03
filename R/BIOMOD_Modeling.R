@@ -228,8 +228,6 @@
 ##' myBiomodModelOut
 ##' 
 ##' 
-##' @importFrom purrr map
-##' @importFrom checkmate assert_choice
 ##' 
 ##' @export
 ##' 
@@ -391,7 +389,7 @@ BIOMOD_Modeling <- function(data,
   ## check if model is supported
   avail.models.list <- c('GLM', 'GBM', 'GAM', 'CTA', 'ANN', 'SRE', 'FDA', 'MARS'
                          , 'RF', 'MAXENT.Phillips', 'MAXENT.Phillips.2')
-  map(models, ~ assert_choice(.x, avail.models.list))
+  .fun_testIfIn(TRUE, "models", models, avail.models.list)
   
   
   ## 1. Remove models not supporting categorical variables --------------------

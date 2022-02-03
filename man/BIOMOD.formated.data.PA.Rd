@@ -3,7 +3,52 @@
 \docType{class}
 \name{BIOMOD.formated.data.PA}
 \alias{BIOMOD.formated.data.PA}
+\alias{BIOMOD.formated.data.PA,numeric,data.frame-method}
+\alias{BIOMOD.formated.data.PA,numeric,RasterStack-method}
+\alias{plot,BIOMOD.formated.data.PA,missing-method}
+\alias{show,BIOMOD.formated.data.PA-method}
 \title{\code{BIOMOD_FormatingData()} output object class (with pseudo-absences)}
+\usage{
+\S4method{BIOMOD.formated.data.PA}{numeric,data.frame}(
+  sp,
+  env,
+  xy = NULL,
+  sp.name = NULL,
+  eval.sp = NULL,
+  eval.env = NULL,
+  eval.xy = NULL,
+  PA.NbRep = 1,
+  PA.strategy = "random",
+  PA.nb.absences = NULL,
+  PA.dist.min = 0,
+  PA.dist.max = NULL,
+  PA.sre.quant = 0.025,
+  PA.table = NULL,
+  na.rm = TRUE
+)
+
+\S4method{BIOMOD.formated.data.PA}{numeric,RasterStack}(
+  sp,
+  env,
+  xy = NULL,
+  sp.name = NULL,
+  eval.sp = NULL,
+  eval.env = NULL,
+  eval.xy = NULL,
+  PA.NbRep = 1,
+  PA.strategy = "random",
+  PA.nb.absences = NULL,
+  PA.dist.min = 0,
+  PA.dist.max = NULL,
+  PA.sre.quant = 0.025,
+  PA.table = NULL,
+  na.rm = TRUE
+)
+
+\S4method{plot}{BIOMOD.formated.data.PA,missing}(x, coord = NULL, col = NULL)
+
+\S4method{show}{BIOMOD.formated.data.PA}(object)
+}
 \description{
 Class returned by \code{\link{BIOMOD_FormatingData}}, and used by 
 \code{\link{BIOMOD_Tuning}}, \code{\link{BIOMOD_Modeling}} and 

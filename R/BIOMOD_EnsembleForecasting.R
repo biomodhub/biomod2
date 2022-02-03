@@ -287,7 +287,7 @@ BIOMOD_EnsembleForecasting <- function(EM.output,
           if (length(ef.out)) {
             ef.out <- stack(ef.out, ef.tmp)
           } else {
-            ef.out <- raster::stack(ef.tmp)
+            ef.out <- stack(ef.tmp)
           }
         } else {
           file_name_tmp <- file.path(indiv_proj_dir, paste0(em.comp, output.format))

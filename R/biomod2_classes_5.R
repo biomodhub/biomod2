@@ -22,6 +22,8 @@
 ##' 
 ##' @param obj a \code{\link{biomod2_ensemble_model}} object
 ##' 
+##' @importFrom raster calc reclassify
+##' 
 NULL
 
 #setGeneric("predict", def = function(object, ...) { standardGeneric("predict") })
@@ -285,7 +287,7 @@ setMethod('predict', signature(object = 'EMcv_biomod2_model'),
   }
   
   if (ncol(formal_predictions) > 1) {
-    out <- apply(formal_predictions, 1, cv, na.rm = T, aszero = T)
+    out <- apply(formal_predictions, 1, cv, na.rm = TRUE, aszero = TRUE)
     return(out)
   } else {
     warning(paste0("\n Model EMcv was not computed because only one single model was kept in ensemble modeling ("

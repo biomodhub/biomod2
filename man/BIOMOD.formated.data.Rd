@@ -3,7 +3,63 @@
 \docType{class}
 \name{BIOMOD.formated.data}
 \alias{BIOMOD.formated.data}
+\alias{BIOMOD.formated.data,numeric,data.frame-method}
+\alias{BIOMOD.formated.data,data.frame,ANY-method}
+\alias{BIOMOD.formated.data,numeric,matrix-method}
+\alias{BIOMOD.formated.data,numeric,RasterStack-method}
+\alias{plot,BIOMOD.formated.data,missing-method}
+\alias{show,BIOMOD.formated.data-method}
 \title{\code{BIOMOD_FormatingData()} output object class}
+\usage{
+\S4method{BIOMOD.formated.data}{numeric,data.frame}(
+  sp,
+  env,
+  xy = NULL,
+  sp.name = NULL,
+  eval.sp = NULL,
+  eval.env = NULL,
+  eval.xy = NULL,
+  na.rm = TRUE,
+  data.mask = NULL
+)
+
+\S4method{BIOMOD.formated.data}{data.frame,ANY}(
+  sp,
+  env,
+  xy = NULL,
+  sp.name = NULL,
+  eval.sp = NULL,
+  eval.env = NULL,
+  eval.xy = NULL,
+  na.rm = TRUE
+)
+
+\S4method{BIOMOD.formated.data}{numeric,matrix}(
+  sp,
+  env,
+  xy = NULL,
+  sp.name = NULL,
+  eval.sp = NULL,
+  eval.env = NULL,
+  eval.xy = NULL,
+  na.rm = TRUE
+)
+
+\S4method{BIOMOD.formated.data}{numeric,RasterStack}(
+  sp,
+  env,
+  xy = NULL,
+  sp.name = NULL,
+  eval.sp = NULL,
+  eval.env = NULL,
+  eval.xy = NULL,
+  na.rm = TRUE
+)
+
+\S4method{plot}{BIOMOD.formated.data,missing}(x, coord = NULL, col = NULL)
+
+\S4method{show}{BIOMOD.formated.data}(object)
+}
 \description{
 Class returned by \code{\link{BIOMOD_FormatingData}}, and used by 
 \code{\link{BIOMOD_Tuning}}, \code{\link{BIOMOD_Modeling}} and 

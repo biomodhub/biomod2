@@ -173,6 +173,11 @@ setGeneric("BIOMOD_RangeSize",
 
 ###################################################################################################
 
+##'
+##' @rdname BIOMOD_RangeSize
+##' @export
+##'
+
 setMethod('BIOMOD_RangeSize', signature(CurrentProj = 'data.frame', FutureProj = 'data.frame'),
           function(CurrentProj, FutureProj)
           {
@@ -215,6 +220,10 @@ setMethod('BIOMOD_RangeSize', signature(CurrentProj = 'data.frame', FutureProj =
             invisible(Output)
           })
 
+##'
+##' @rdname BIOMOD_RangeSize
+##' @export
+##'
 
 setMethod('BIOMOD_RangeSize', signature(CurrentProj = 'array', FutureProj = 'array'),
           function(CurrentProj, FutureProj)
@@ -251,6 +260,11 @@ setMethod('BIOMOD_RangeSize', signature(CurrentProj = 'array', FutureProj = 'arr
 
 
 ###################################################################################################
+
+##'
+##' @rdname BIOMOD_RangeSize
+##' @export
+##'
 
 setMethod('BIOMOD_RangeSize', signature(CurrentProj = 'RasterStack', FutureProj = 'RasterStack'),
           function(CurrentProj, FutureProj)
@@ -293,6 +307,10 @@ setMethod('BIOMOD_RangeSize', signature(CurrentProj = 'RasterStack', FutureProj 
             return(list(Compt.By.Models = CBS, Diff.By.Pixel = sp.stack))
           })
 
+##'
+##' @rdname BIOMOD_RangeSize
+##' @export
+##'
 
 setMethod('BIOMOD_RangeSize', signature(CurrentProj = 'RasterLayer', FutureProj = 'RasterStack'),
           function(CurrentProj, FutureProj)
@@ -334,6 +352,10 @@ setMethod('BIOMOD_RangeSize', signature(CurrentProj = 'RasterLayer', FutureProj 
             return(list(Compt.By.Models = CBS, Diff.By.Pixel = sp.stack))
           })
 
+##'
+##' @rdname BIOMOD_RangeSize
+##' @export
+##'
 
 setMethod('BIOMOD_RangeSize',
           signature(CurrentProj = 'RasterLayer', FutureProj = 'RasterLayer'),

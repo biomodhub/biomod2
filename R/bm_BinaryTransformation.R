@@ -77,6 +77,11 @@ setGeneric("bm_BinaryTransformation",
              standardGeneric("bm_BinaryTransformation")
            })
 
+##'
+##' @rdname bm_BinaryTransformation
+##' @export
+##'
+
 setMethod('bm_BinaryTransformation', signature('data.frame'),
           function(data, threshold, doFiltering = FALSE)
           {
@@ -89,6 +94,11 @@ setMethod('bm_BinaryTransformation', signature('data.frame'),
             }
           })
 
+##'
+##' @rdname bm_BinaryTransformation
+##' @export
+##'
+
 setMethod('bm_BinaryTransformation', signature('matrix'),
           function(data, threshold, doFiltering = FALSE)
           {
@@ -96,12 +106,22 @@ setMethod('bm_BinaryTransformation', signature('matrix'),
             return(bm_BinaryTransformation(data, threshold, doFiltering))
           })
 
+##'
+##' @rdname bm_BinaryTransformation
+##' @export
+##'
+
 setMethod('bm_BinaryTransformation', signature('numeric'),
           function(data, threshold, doFiltering = FALSE)
           {
             data <- as.data.frame(data)
             return(bm_BinaryTransformation(data, threshold, doFiltering))
           })
+
+##'
+##' @rdname bm_BinaryTransformation
+##' @export
+##'
 
 setMethod('bm_BinaryTransformation', signature('array'),
           function(data, threshold, doFiltering = FALSE)
@@ -123,6 +143,11 @@ setMethod('bm_BinaryTransformation', signature('array'),
             }
           })
 
+##'
+##' @rdname bm_BinaryTransformation
+##' @export
+##'
+
 setMethod('bm_BinaryTransformation', signature('RasterLayer'),
           function(data, threshold, doFiltering = FALSE)
           {
@@ -136,6 +161,11 @@ setMethod('bm_BinaryTransformation', signature('RasterLayer'),
               return(reclassify(data, c(-Inf, Inf, NA)))
             }
           })
+
+##'
+##' @rdname bm_BinaryTransformation
+##' @export
+##'
 
 setMethod('bm_BinaryTransformation', signature('RasterStack'),
           function(data, threshold, doFiltering = FALSE)
@@ -152,6 +182,11 @@ setMethod('bm_BinaryTransformation', signature('RasterStack'),
             return(StkTmp)
           })
 
+##'
+##' @rdname bm_BinaryTransformation
+##' @export
+##'
+
 setMethod('bm_BinaryTransformation', signature('RasterBrick'),
           function(data, threshold, doFiltering = FALSE)
           {
@@ -161,14 +196,6 @@ setMethod('bm_BinaryTransformation', signature('RasterBrick'),
 
 
 ###################################################################################################
-
-# .convert_bin.matrix = function(x, y) {
-#   moa <- apply((x > y), 2, as.integer)
-#   if (ncol(moa) == 1) { return(moa[, 1]) } else { return(moa) }
-# }
-# FUN1 = function(data, threshold) {
-#   return(sweep(data, 2, threshold, .convert_bin.matrix))
-# }
 
 .convert_bin.matrix = function(data, threshold, doFiltering = FALSE) {
   ind.0 = t(t(data)<threshold)

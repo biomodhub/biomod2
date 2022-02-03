@@ -11,7 +11,7 @@
 ##' 
 ##' @param respName a \code{character} defining the response variable name
 ##' @param explVar a \code{matrix} or \code{data.frame} corresponding to the explanatory 
-##' variables table that will be considered at modelling step
+##' variables table that will be considered at modeling step
 ##' @param type a \code{character} defining the wanted type of formula, must be \code{simple}, 
 ##' \code{quadratic}, \code{polynomial} or \code{s_smoother}
 ##' @param interaction.level an \code{integer} corresponding to the interaction level depth 

@@ -29,6 +29,7 @@
 \alias{predict,FDA_biomod2_model-method}
 \alias{predict,GAM_biomod2_model-method}
 \alias{predict,GBM_biomod2_model-method}
+\alias{predict,GLM_biomod2_model-method}
 \alias{predict,MARS_biomod2_model-method}
 \alias{predict,MAXENT.Phillips_biomod2_model-method}
 \alias{predict,MAXENT.Phillips.2_biomod2_model-method}
@@ -45,6 +46,8 @@
 \S4method{predict}{GAM_biomod2_model}(object, newdata, ...)
 
 \S4method{predict}{GBM_biomod2_model}(object, newdata, ...)
+
+\S4method{predict}{GLM_biomod2_model}(object, newdata, ...)
 
 \S4method{predict}{MARS_biomod2_model}(object, newdata, ...)
 

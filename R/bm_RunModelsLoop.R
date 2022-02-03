@@ -154,7 +154,7 @@ bm_RunModel <- function(Model, Data, Options, calibLines, Yweights, nam, VarImpo
   
   if (Model == "CTA") {
     ## 2.1 CTA model ------------------------------------------------------------
-    cat('\n\t> CTA modelling...')
+    cat('\n\t> CTA modeling...')
     
     # converting cost argument
     cost.tmp = Options@CTA$cost
@@ -236,7 +236,7 @@ bm_RunModel <- function(Model, Data, Options, calibLines, Yweights, nam, VarImpo
       }
       
       if (Options@GAM$algo == 'GAM_mgcv') {
-        cat('\n\t> GAM (mgcv) modelling...')
+        cat('\n\t> GAM (mgcv) modeling...')
         model.sp <- try(mgcv::gam(gam.formula,
                                   data = Data[calibLines, , drop = FALSE],
                                   family = Options@GAM$family,
@@ -244,7 +244,7 @@ bm_RunModel <- function(Model, Data, Options, calibLines, Yweights, nam, VarImpo
                                   control = Options@GAM$control))
         
       } else if (Options@GAM$algo == 'BAM_mgcv') { ## big data.frame gam version
-        cat('\n\t> BAM (mgcv) modelling...')
+        cat('\n\t> BAM (mgcv) modeling...')
         model.sp <- try(mgcv::bam(gam.formula,
                                   data = Data[calibLines, , drop = FALSE],
                                   family = Options@GAM$family,
@@ -268,7 +268,7 @@ bm_RunModel <- function(Model, Data, Options, calibLines, Yweights, nam, VarImpo
   } else if (Model == "GBM") {
     ## 2.3 GBM model ------------------------------------------------------------
     
-    cat('\n\t> GBM modelling...')
+    cat('\n\t> GBM modeling...')
     model.sp <- try(gbm(formula = bm_MakeFormula(respName = colnames(Data)[1]
                                                  , explVar = head(Data)[, expl_var_names, drop = FALSE]
                                                  , type = 'simple'
@@ -306,7 +306,7 @@ bm_RunModel <- function(Model, Data, Options, calibLines, Yweights, nam, VarImpo
   } else if (Model == "GLM"){
     ## 2.4 GLM model ------------------------------------------------------------
     
-    cat('\n\t> GLM modelling...')
+    cat('\n\t> GLM modeling...')
     if (is.null(Options@GLM$myFormula)) {
       cat("\n\tAutomatic formula generation...")
       glm.formula <- bm_MakeFormula(respName = colnames(Data)[1]
@@ -370,7 +370,7 @@ bm_RunModel <- function(Model, Data, Options, calibLines, Yweights, nam, VarImpo
   } else if (Model == "MARS"){
     ## 2.5 MARS model -----------------------------------------------------------
     
-    cat('\n\t> MARS modelling...')
+    cat('\n\t> MARS modeling...')
     if (is.null(Options@MARS$myFormula)) {
       cat("\n\tAutomatic formula generation...")
       mars.formula <- bm_MakeFormula(respName = colnames(Data)[1]
@@ -414,7 +414,7 @@ bm_RunModel <- function(Model, Data, Options, calibLines, Yweights, nam, VarImpo
   } else if (Model == "FDA") {
     ## 2.6 FDA model ------------------------------------------------------------
     
-    cat('\n\t> FDA modelling...')
+    cat('\n\t> FDA modeling...')
     model.sp <- try(do.call(fda, c(list(formula = bm_MakeFormula(respName = colnames(Data)[1]
                                                                  , explVar = head(Data)[, expl_var_names, drop = FALSE]
                                                                  , type = 'simple'
@@ -438,7 +438,7 @@ bm_RunModel <- function(Model, Data, Options, calibLines, Yweights, nam, VarImpo
   } else if (Model == "ANN") {
     ## 2.7 ANN model ------------------------------------------------------------
     
-    cat('\n\t> ANN modelling...')
+    cat('\n\t> ANN modeling...')
     size = Options@ANN$size
     decay = Options@ANN$decay
     if (is.null(size) | is.null(decay) | length(size) > 1 | length(decay) > 1) {
@@ -487,7 +487,7 @@ bm_RunModel <- function(Model, Data, Options, calibLines, Yweights, nam, VarImpo
   } else if (Model == "RF") {
     ## 2.8 RF model -------------------------------------------------------------
     
-    cat('\n\t> RF modelling...')
+    cat('\n\t> RF modeling...')
     if (Options@RF$do.classif) {
       # defining occurences as factor for doing classification and not regression in RF
       Data <- Data %>% mutate_at(resp_name, factor)
@@ -530,7 +530,7 @@ bm_RunModel <- function(Model, Data, Options, calibLines, Yweights, nam, VarImpo
   } else if (Model == "SRE") {
     ## 2.9 SRE model ------------------------------------------------------------
     
-    cat('\n\t> SRE modelling...')
+    cat('\n\t> SRE modeling...')
     model.sp <- try(bm_SRE(Response = Data[calibLines, 1],
                            Explanatory = Data[calibLines, expl_var_names, drop = FALSE],
                            NewData = NULL,
@@ -551,7 +551,7 @@ bm_RunModel <- function(Model, Data, Options, calibLines, Yweights, nam, VarImpo
   } else if (Model == "MAXENT.Phillips") {
     ## 2.10 MAXENT.Phillips model -----------------------------------------------
     
-    cat('\n\t> MAXENT.Phillips modelling...')
+    cat('\n\t> MAXENT.Phillips modeling...')
     MWD <- .maxent.prepare.workdir(Data, xy, calibLines, RunName = nam,
                                    evalData, eval.xy, species.name = resp_name,
                                    modeling.id = modeling.id,
@@ -614,10 +614,10 @@ bm_RunModel <- function(Model, Data, Options, calibLines, Yweights, nam, VarImpo
   {
     ## 2.11 MAXENT.Phillips.2 model ---------------------------------------------
     
-    cat('\n\t> MAXENT.Phillips modelling...')
-    model.sp <- try(maxnet::maxnet(p = Data %>% filter(calibLines) %>% pull(resp_name), 
-                                   data = Data %>% filter(calibLines) %>% select_at(expl_var_names)
-                                   # f = if(!is.null(Options@MAXENT.Phillips.2@))
+    cat('\n\t> MAXENT.Phillips modeling...')
+    model.sp <- try(maxnet(p = Data %>% filter(calibLines) %>% pull(resp_name), 
+                           data = Data %>% filter(calibLines) %>% select_at(expl_var_names)
+                           # f = if(!is.null(Options@MAXENT.Phillips.2@))
     ))
     
     if (!inherits(model.sp, "try-error")) {

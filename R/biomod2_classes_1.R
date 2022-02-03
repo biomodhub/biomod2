@@ -96,6 +96,10 @@ setClass("BIOMOD.formated.data",
 # 1.2 Constructors --------------------------------------------------------------------------------
 setGeneric("BIOMOD.formated.data", def = function(sp, env, ...) { standardGeneric("BIOMOD.formated.data") })
 
+##' 
+##' @rdname BIOMOD.formated.data
+##' @export
+##' 
 
 setMethod('BIOMOD.formated.data', signature(sp = 'numeric', env = 'data.frame'),
           function(sp, env, xy = NULL, sp.name = NULL
@@ -169,6 +173,11 @@ setMethod('BIOMOD.formated.data', signature(sp = 'numeric', env = 'data.frame'),
           }
 )
 
+##' 
+##' @rdname BIOMOD.formated.data
+##' @export
+##' 
+
 setMethod('BIOMOD.formated.data', signature(sp = 'data.frame'),
           function(sp, env, xy = NULL, sp.name = NULL
                    , eval.sp = NULL, eval.env = NULL, eval.xy = NULL
@@ -181,6 +190,11 @@ setMethod('BIOMOD.formated.data', signature(sp = 'data.frame'),
           }
 )
 
+##' 
+##' @rdname BIOMOD.formated.data
+##' @export
+##' 
+
 setMethod('BIOMOD.formated.data', signature(sp = 'numeric', env = 'matrix'),
           function(sp, env, xy = NULL, sp.name = NULL
                    , eval.sp = NULL, eval.env = NULL, eval.xy = NULL
@@ -191,6 +205,11 @@ setMethod('BIOMOD.formated.data', signature(sp = 'numeric', env = 'matrix'),
             return(BFD)
           }
 )
+
+##' 
+##' @rdname BIOMOD.formated.data
+##' @export
+##' 
 
 setMethod('BIOMOD.formated.data', signature(sp = 'numeric', env = 'RasterStack'),
           function(sp, env, xy = NULL, sp.name = NULL
@@ -233,6 +252,12 @@ setMethod('BIOMOD.formated.data', signature(sp = 'numeric', env = 'RasterStack')
 
 
 # 1.3 Other Functions -----------------------------------------------------------------------------
+
+##' 
+##' @rdname BIOMOD.formated.data
+##' @export
+##' 
+
 setMethod('plot', signature(x = 'BIOMOD.formated.data', y = "missing"),
           function(x, coord = NULL, col = NULL)
           {
@@ -309,6 +334,11 @@ setMethod('plot', signature(x = 'BIOMOD.formated.data', y = "missing"),
             }
           }
 )
+
+##' 
+##' @rdname BIOMOD.formated.data
+##' @export
+##' 
 
 setMethod('show', signature('BIOMOD.formated.data'),
           function(object)
@@ -443,6 +473,11 @@ setClass("BIOMOD.formated.data.PA",
 # 2.2 Constructors --------------------------------------------------------------------------------
 setGeneric("BIOMOD.formated.data.PA", def = function(sp, env, ...) { standardGeneric("BIOMOD.formated.data.PA") })
 
+##' 
+##' @rdname BIOMOD.formated.data.PA
+##' @export
+##' 
+
 setMethod('BIOMOD.formated.data.PA', signature(sp = 'numeric', env = 'data.frame'),
           function(sp, env, xy = NULL, sp.name = NULL
                    , eval.sp = NULL, eval.env = NULL, eval.xy = NULL
@@ -458,6 +493,11 @@ setMethod('BIOMOD.formated.data.PA', signature(sp = 'numeric', env = 'data.frame
                                      , PA.sre.quant, PA.table
                                      , na.rm)
           })
+
+##' 
+##' @rdname BIOMOD.formated.data.PA
+##' @export
+##' 
 
 setMethod('BIOMOD.formated.data.PA', signature(sp = 'numeric', env = 'RasterStack'),
           function(sp, env, xy = NULL, sp.name = NULL
@@ -616,6 +656,12 @@ setMethod('BIOMOD.formated.data.PA', signature(sp = 'numeric', env = 'RasterStac
 
 
 # 2.3 other functions -----------------------------------------------------------------------------
+
+##' 
+##' @rdname BIOMOD.formated.data.PA
+##' @export
+##' 
+
 setMethod('plot', signature(x = 'BIOMOD.formated.data.PA', y = "missing"),
           function(x, coord = NULL, col = NULL)
           {
@@ -728,6 +774,11 @@ setMethod('plot', signature(x = 'BIOMOD.formated.data.PA', y = "missing"),
           }
 )
 
+##' 
+##' @rdname BIOMOD.formated.data.PA
+##' @export
+##' 
+
 setMethod('show', signature('BIOMOD.formated.data.PA'),
           function(object)
           {
@@ -821,8 +872,6 @@ setMethod('show', signature('BIOMOD.formated.data.PA'),
 ##' ## print the object
 ##' myBiomodOptions
 ##'
-##' 
-##' @importFrom raster stack nlayers addLayer is.factor subset
 ##' 
 ##' @export
 ##' 
@@ -1061,7 +1110,6 @@ setClass("BIOMOD.model.options",
            return(test)
          }
 )
-
 
 setMethod('show', signature('BIOMOD.model.options'),
           function(object)
