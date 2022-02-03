@@ -21,8 +21,7 @@
 }
 
 
-## TEST PARAMETERS (BIOMOD_ModelingOptions) -------------------------------------------------------
-## used in biomod2_classes_1.R file
+## TEST PARAMETERS --------------------------------------------------------------------------------
 
 .fun_testIfInherits <- function(test, objName, objValue, values)
 {
@@ -82,10 +81,12 @@
 
 
 
-## TEMPLATES TO PREDICT MODELS (BIOMOD_Modeling) --------------------------------------------------
-## used in biomod2_classes_4.R file
 
-# Fuction to get variables ranges
+## TEMPLATES TO PREDICT MODELS --------------------------------------------------------------------
+## used in biomod2_classes_4.R, biomod2_classes_5.R files
+
+# Functions to get variables ranges
+# used bm_RunModelsLoop, BIOMOD_EnsembleModeling
 get_var_type <- function(data) { return(sapply(data, class)) }
 
 get_var_range <- function(data)
@@ -102,7 +103,8 @@ get_var_range <- function(data)
   return(xx)
 }
 
-# Function to check new data range compatibility with calibrating data #
+# Function to check new data range compatibility with calibrating data
+# used in biomod2_classes_4.R file, .template_[...] functions
 check_data_range <- function(model, new_data)
 {
   ## TODO : remettre en marche cette fonction
@@ -370,90 +372,6 @@ check_data_range <- function(model, new_data)
 }
 
 
-## PREPARE and DELETE workdir for MAXENT ----------------------------------------------------------
-## used in biomod2_classes_4, bm_RunModelsLoop files
-.maxent.prepare.workdir <- function(Data, xy, calibLines = NULL, RunName = NULL,
-                                    evalData = NULL, evalxy =  NULL,
-                                    species.name = NULL, modeling.id = '',
-                                    background_data_dir = 'default')
-{
-  cat('\n\t\tCreating Maxent Temp Proj Data...')
-  
-  ## initialise output
-  MWD <- list()
-  class(MWD) <- "maxent_workdir_info"
-  
-  ## default parameters setting
-  if (is.null(RunName)) { RunName <- colnames(Data)[1] }
-  if (is.null(species.name)) { species.name <- colnames(Data)[1] }
-  if (is.null(calibLines)) { calibLines <- rep(TRUE, nrow(Data)) }
-  
-  ## define all paths to files needed by MAXENT.Phillips
-  nameFolder = file.path(species.name, 'models', modeling.id)
-  m_outdir <- file.path(nameFolder, paste0(RunName, '_MAXENT.Phillips_outputs'))
-  m_predictDir <- file.path(m_outdir, "Predictions")
-  MWD$m_outdir <- m_outdir
-  MWD$m_outputFile <- file.path(m_outdir, paste0(RunName, '_Pred_swd.csv'))
-  MWD$m_predictDir <- m_predictDir
-  
-  ## directories creation
-  dir.create(m_outdir, showWarnings = FALSE, recursive = TRUE, mode = '777')
-  dir.create(m_predictDir, showWarnings = FALSE, recursive = TRUE, mode = '777')
-  
-  ## Presence Data --------------------------------------------------------------------------------
-  presLines <- which((Data[, 1] == 1) & calibLines)
-  absLines <- which((Data[, 1] == 0) & calibLines)
-  Sp_swd <- cbind(rep(RunName, length(presLines))
-                  , xy[presLines, ]
-                  , Data[presLines, 2:ncol(Data), drop = FALSE])
-  colnames(Sp_swd) <- c('species', 'X', 'Y', colnames(Data)[2:ncol(Data)])
-  
-  m_speciesFile <- file.path(m_outdir, "Sp_swd.csv")
-  write.table(Sp_swd, file = m_speciesFile, quote = FALSE, row.names = FALSE, sep = ",")
-  MWD$m_speciesFile <- m_speciesFile
-  
-  ## Background Data (create background file only if needed) --------------------------------------
-  if (background_data_dir == 'default')
-  {
-    # keep only 0 of calib lines
-    Back_swd <- cbind(rep("background", length(absLines))
-                      , xy[absLines, ]
-                      , Data[absLines, 2:ncol(Data), drop = FALSE])
-    colnames(Back_swd) <- c("background", colnames(Back_swd)[-1])
-    
-    m_backgroundFile <- file.path(m_outdir, "Back_swd.csv")
-    write.table(Back_swd, file = m_backgroundFile, quote = FALSE, row.names = FALSE, col.names = TRUE, sep = ",")
-    MWD$m_backgroundFile <- m_backgroundFile
-  } else { ## use background directory given as an option
-    MWD$m_backgroundFile <- background_data_dir
-  }
-  
-  ## Prediction Data ------------------------------------------------------------------------------
-  Pred_swd <- cbind(rep("predict", nrow(xy))
-                    , xy
-                    , Data[, 2:ncol(Data), drop = FALSE])
-  colnames(Pred_swd)  <- c("predict", colnames(xy), colnames(Data)[-1])
-  
-  m_predictFile <- file.path(m_predictDir, "Pred_swd.csv")
-  write.table(Pred_swd, file = m_predictFile, quote = FALSE, row.names = FALSE, col.names = TRUE, sep = ",")
-  MWD$m_predictFile <- m_predictFile
-  
-  ## dealing with independent evaluation data -----------------------------------------------------
-  if (!is.null(evalData)) {
-    Pred_eval_swd <- cbind(rep("predictEval", nrow(evalxy))
-                           , evalxy
-                           , evalData[, 2:ncol(evalData), drop = FALSE])
-    colnames(Pred_eval_swd) <- c("predict", colnames(Back_swd)[-1])
-    
-    m_predictEvalFile <- file.path(m_predictDir, "PredEval_swd.csv")
-    write.table(Pred_eval_swd, file = m_predictEvalFile, quote = FALSE, row.names = FALSE, col.names = TRUE, sep = ",")
-    MWD$m_predictEvalFile <- m_predictEvalFile
-  }
-  
-  return(MWD)
-}
-
-
 ## CREATE MODEL FORMULA ---------------------------------------------------------------------------
 ## used in bm_CVnnet, bm_RunModelsLoop files
 
@@ -485,7 +403,6 @@ check_data_range <- function(model, new_data)
   
   return(step.list)
 }
-
 
 .scope_expSyst <- function(enviroTrain, mod)
 {
@@ -520,7 +437,7 @@ check_data_range <- function(model, new_data)
 
 
 ## EXTRACT model names according to specific infos ------------------------------------------------
-## used in bm_CVnnet, bm_RunModelsLoop files
+## used in biomod2_classes_3.R, BIOMOD_LoadModels, BIOMOD_Projection, BIOMOD_EnsembleModeling, bm_PlotRangeSize
 
 .extract_modelNamesInfo <- function(model.names, info = 'species')
 {
@@ -539,3 +456,223 @@ check_data_range <- function(model, new_data)
   ))
 }
 
+
+
+## FUNCTIONS for 'plot' and 'show' objects --------------------------------------------------------
+## used in biomod2_classes_1.R file
+
+.clever_cut <- function(x)
+{
+  nb_col = ceiling(sqrt(x))
+  nb_row = ceiling(x / nb_col)
+  return(c(nb_row, nb_col))
+}
+
+.print_formula <- function(formula = NULL)
+{
+  ifelse(length(formula) < 1, 'NULL', paste(formula[2], formula[1], formula[3]))
+}
+
+.print_control <- function(ctrl)
+{
+  out <-  paste0(names(ctrl)[1], " = ", ctrl[[1]])
+  if (length(ctrl) > 1)
+  {
+    i = 2
+    while (i <= length(ctrl)) {
+      if (is.list(ctrl[[i]])) {
+        out <- c(out, paste0(", ", names(ctrl)[i], " = list(",
+                             paste0(names(ctrl[[i]]), "=", unlist(ctrl[[i]]), collapse = ", "),
+                             ")"))
+        i <- i + 1
+      } else {
+        out <- c(out, paste0(", ", names(ctrl)[i], " = ", ctrl[[i]]))
+        i <- i + 1
+      }
+    }
+  }
+  return(out)
+}
+
+
+## PLOT MULTIPLE and LEVEL plots ------------------------------------------------------------------
+## used in biomod2_classes_3.R file
+
+.level.plot <- function(data.in, XY, color.gradient = 'red', level.range = c(min(data.in), max(data.in))
+                        , show.scale = TRUE, SRC = FALSE
+                        , AddPresAbs = NULL, cex = 1, PresAbsSymbol = c(cex * 0.8, 16, 4), ...)
+{
+  extra.args <- list(...)
+  multiple.plot <- FALSE
+  if (!is.null(extra.args$multiple.plot)) {
+    multiple.plot <- extra.args$multiple.plot
+  }
+  
+  .fun_testIfIn(TRUE, "color.gradient", color.gradient, c('grey', 'red', 'blue'))
+  if (ncol(XY) != 2) { stop("\n wrong coordinates given in 'XY': there should be two columns \n") }
+  if (nrow(XY) != length(data.in)) { stop("\n data and coordinates should be of the same length \n") }
+  if (SRC == TRUE && length(unique(data.in)) > 4) {
+    cat("\n not possible to render SRC plot -> more than four different values in data ")
+    SRC <- FALSE
+  }
+  
+  if (SRC == TRUE) {
+    color.system <- c("red", "lightgreen", "grey", "darkgreen")
+    col_id <- data.in + 3
+    title <- "SRC plot"
+  } else
+  {
+    color.system = switch(color.gradient
+                          , 'grey' = gray(seq(0.95, 0, length.out = 102))
+                          , 'blue' = c('grey88'
+                                       , rainbow(45, start = 0.5, end = 0.65)
+                                       , rainbow(10, start = 0.65, end = 0.7)
+                                       , rainbow(45, start = 0.7, end = 0.85)
+                                       , 'red')
+                          , 'red' = c('grey88'
+                                      , c(rep(c(colors()[c(417, 417, 515)]), each = 5)
+                                          , rev(rainbow(55, start = 0.13, end = 0.23))
+                                          , rev(rainbow(50, start = 0.08, end = 0.13)[seq(1, 50, length.out = 15)])
+                                          , rev(rainbow(50, end = 0.08)[seq(1, 50, length.out = 15)]))
+                                      , 'brown2')
+    )
+    
+    # define a vector to make correspondence between values and colors
+    val_seq <- c(seq(level.range[1], level.range[2], length.out = 101), Inf)
+    col_id <- sapply(data.in, function(x) { return(which(x <= val_seq)[1]) })
+    title <- "Level plot"
+  }
+  
+  
+  ## PLOT points ------------------------------------------------------------------------
+  plot(XY[, 2] ~ XY[, 1],
+       col = color.system[col_id],
+       cex = cex,
+       pch = 19,
+       xlab = '',
+       ylab = '',
+       xaxt = 'n',
+       yaxt = 'n',
+       main = title)
+  
+  if (!show.scale && !is.null(AddPresAbs)) { 
+    ## Add presence/absence if requested by user:
+    points(AddPresAbs[AddPresAbs[, 3] == 1, 1:2], col = "black", pch = pchPres, cex = cex2)
+    points(AddPresAbs[AddPresAbs[, 3] == 0, 1:2], col = "black", pch = pchAbs, cex = cex2)
+    
+  } else if (show.scale) {
+    if (!multiple.plot) {
+      layout(matrix(c(1, 2), nrow = 1), widths = c(5, 1), heights = c(1, 1))
+    }
+    
+    if (!is.null(AddPresAbs)) {
+      ## Add presence/absence if requested by user:
+      cex2 <- PresAbsSymbol[1]
+      pchPres <- PresAbsSymbol[2]
+      pchAbs <- PresAbsSymbol[3]
+      
+      points(AddPresAbs[AddPresAbs[, 3] == 1, 1:2], col = "black", pch = pchPres, cex = cex2)
+      points(AddPresAbs[AddPresAbs[, 3] == 0, 1:2], col = "black", pch = pchAbs, cex = cex2)
+    }
+    
+    ## PLOT -----------------------------------------------------------------------------
+    par(mar = c(0.1, 0.1, 0.1, 0.1))
+    plot(x = c(-1, 1),
+         y = c(0, 1),
+         xlim = c(0, 1),
+         ylim = c(0, 1),
+         type = "n",
+         axes = FALSE)
+    polygon(x = c(-2, -2, 2, 2),
+            y = c(-2, 2, 2, -2),
+            col = "#f5fcba",
+            border = NA)
+    
+    if (SRC) {
+      legend(0, 0.8, legend = list(' (1) new', ' (0) stable', '(-1) kept', '(-2) lost'), cex = 1, fill = rev(color.system), bty = 'n')
+    } else {
+      lmin = round(level.range[1], digits = 2)
+      if (level.range[1] != min(data.in)) {
+        lmin <- paste0(lmin, " or lower")
+      }
+      lmax = round(level.range[2], digits = 2)
+      if (level.range[2] != max(data.in)) {
+        lmax <- paste0(lmax, " or over")
+      }
+      
+      legend.txt = list(lmax, '', '', '', '',
+                        round((3 * level.range[2] + level.range[1]) / 4, digits = 2),
+                        '', '', '', '',
+                        round(sum(level.range) / 2, digits = 2),
+                        '', '', '', '',
+                        round((level.range[2] + 3 * level.range[1]) / 4, digits = 2),
+                        '', '', '', '',
+                        lmin)
+      yy = ifelse(multiple.plot, 1.05, 0.92)
+      cexx = ifelse(multiple.plot, cex, 1)
+      legend(0.2, yy, legend = legend.txt, cex = cexx, bty = 'n'
+             , fill = rev(color.system[c(1, seq(2, 101, length.out = 19), 102)]))
+    }
+  }
+}
+
+.multiple.plot <- function(Data, coor
+                           , color.gradient = 'red', plots.per.window = 9, cex = 1
+                           , AddPresAbs = NULL, PresAbsSymbol = c(cex * 0.8, 16, 4))
+{
+  .fun_testIfIn(TRUE, "color.gradient", color.gradient, c('grey', 'red', 'blue'))
+  if (nrow(coor) != nrow(Data)) { stop("\n data and coordinates should be of the same length \n") }
+  
+  ## Take off NA data
+  Data <- Data[, !is.na(Data[1, ])]
+  
+  ## FUNCTION plotting color boxes
+  pbox <- function(co) {
+    plot(x = c(-1, 1), y = c(0, 1), xlim = c(0, 1), ylim = c(0, 1), type = "n", axes = FALSE)
+    polygon(x = c(-2,-2, 2, 2), y = c(-2, 2, 2,-2), col = co, border = NA)
+  }
+  
+  ## Calculate the number of windows to open
+  NbPlots <- ncol(Data)
+  NbWindows <- ceiling(NbPlots / plots.per.window)
+  if (NbWindows == 1) { plots.per.window <- NbPlots }
+  
+  for (W in 1:NbWindows)
+  {
+    dev.new() 
+    
+    Wstart <- (W - 1) * plots.per.window + 1
+    if (W * plots.per.window > NbPlots) { Wfinal <- NbPlots } else { Wfinal <- W * plots.per.window }
+    DataW <- as.data.frame(Data[, Wstart:Wfinal])
+    colnames(DataW) <- colnames(Data)[Wstart:Wfinal]
+    
+    #determine the organisation of the plots on the window
+    W.width <- ceiling(sqrt(plots.per.window))
+    W.height <- ceiling(plots.per.window / W.width)
+    
+    #create object for scaling the legend
+    legendcex <- 0.64 + 1 / exp(W.height)
+    
+    #matrix of indexes for ordering the layout
+    mat <- c(1,2)
+    for (i in 1:(W.width - 1)) { mat <- c(mat, mat[1:2] + 4 * i) }
+    mat <- rbind(mat, mat + 2)
+    for (i in 1:(W.height - 1)) { mat <- rbind(mat, mat[1:2, ] + W.width * 4 * i) }
+    
+    layout(mat, widths = rep(c(1, 0.3), W.width), heights = rep(c(0.2, 1), W.height))
+    
+    par(mar = c(0.1, 0.1, 0.1, 0.1))
+    for (i in 1:(Wfinal - Wstart + 1)) {
+      pbox("grey98")
+      text(x = 0.5, y = 0.8, pos = 1, cex = 1.6, labels = colnames(DataW)[i], col = "#4c57eb")
+      pbox("grey98")
+      .level.plot(DataW[, i], XY = coor, color.gradient = color.gradient, cex = cex, title = ""
+                  , AddPresAbs = AddPresAbs, PresAbsSymbol = PresAbsSymbol, multiple.plot = TRUE)
+    }
+    
+    #fill gaps by grey boxes
+    if (W.width * W.height - plots.per.window != 0) {
+      for (i in 1:((W.width * W.height - plots.per.window) * 4)) { pbox("grey98") }
+    }
+  } #W loop
+}

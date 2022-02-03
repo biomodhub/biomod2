@@ -185,7 +185,7 @@ setMethod('get_scaling_model', signature('biomod2_model'), function(object) { re
 setMethod('show', signature('biomod2_model'),
           function(object)
           {
-            .bm_cat("'biomod2_model'")
+            .bm_cat("biomod2_model")
             cat("\n\t model name :", object@model_name, fill = .Options$width)
             cat("\n\t model class :", object@model_class, fill = .Options$width)
             cat("\n\t This model", ifelse(length(object@scaling_model), "has", "doesn't have"), "its own scaler", fill = .Options$width)
@@ -334,10 +334,10 @@ setClass('GAM_biomod2_model',
 setMethod('predict', signature(object = 'GAM_biomod2_model'),
           function(object, newdata, ...)
           {
-            args <- list(...)
-            do_check <- args$do_check
-            if (is.null(do_check)) { do_check <- TRUE }
-            
+            # args <- list(...)
+            # do_check <- args$do_check
+            # if (is.null(do_check)) { do_check <- TRUE }
+
             if (object@model_subclass %in% c("GAM_mgcv", "BAM_mgcv")) {
               # cat("\n*** unloading gam package / loading mgcv package")
               if (isNamespaceLoaded("gam")) { unloadNamespace("gam") }
@@ -354,16 +354,18 @@ setMethod('predict', signature(object = 'GAM_biomod2_model'),
               if (!isNamespaceLoaded("gam")) { requireNamespace("gam", quietly = TRUE) }
             }
             
-            ## data checking
-            if (do_check) { newdata <- check_data_range(model = object, new_data = newdata) }
+            return(.template_predict(mod = "GAM", object, newdata, ...))
             
-            if (inherits(newdata, 'Raster')) {
-              return(.predict.GAM_biomod2_model.RasterStack(object, newdata, ...))
-            } else if (inherits(newdata, 'data.frame') | inherits(newdata, 'matrix')) {
-              return(.predict.GAM_biomod2_model.data.frame(object, newdata, ...))
-            } else {
-              stop("invalid newdata input")
-            }
+            # ## data checking
+            # if (do_check) { newdata <- check_data_range(model = object, new_data = newdata) }
+            # 
+            # if (inherits(newdata, 'Raster')) {
+            #   return(.predict.GAM_biomod2_model.RasterStack(object, newdata, ...))
+            # } else if (inherits(newdata, 'data.frame') | inherits(newdata, 'matrix')) {
+            #   return(.predict.GAM_biomod2_model.data.frame(object, newdata, ...))
+            # } else {
+            #   stop("invalid newdata input")
+            # }
           })
 
 .predict.GAM_biomod2_model.RasterStack <- function(object, newdata, ...)
@@ -542,7 +544,7 @@ setMethod('predict', signature(object = 'MAXENT.Phillips_biomod2_model'),
             return(.template_predict(mod = "MAXENT.Phillips", object, newdata, ...))
           })
 
-.predict.MAXENT.Phillips_biomod2_model.data.frame <- function(object, newdata, silent = TRUE, ...)
+.predict.MAXENT.Phillips_biomod2_model.data.frame <- function(object, newdata, ...)
 {
   args <- list(...)
   on_0_1000 <- args$on_0_1000
@@ -575,7 +577,7 @@ setMethod('predict', signature(object = 'MAXENT.Phillips_biomod2_model'),
     path_to_maxent.jar <-  file.path(getwd(), "maxent.jar")
   }
   
-  if (!silent) cat("\n\t\tRunning Maxent...")
+  cat("\n\t\tRunning Maxent...")
   maxent.command <- paste0("java ", ifelse(is.null(object@model_options$memory_allocated), "", paste0("-mx", object@model_options$memory_allocated, "m")),
                            " -cp ", "\"", path_to_maxent.jar, "\"",
                            " density.Project ",
@@ -585,7 +587,7 @@ setMethod('predict', signature(object = 'MAXENT.Phillips_biomod2_model'),
                            "doclamp=false visible=false autorun nowarnings notooltips")
   system(command = maxent.command, wait = TRUE, intern = TRUE)
   
-  if (!silent) { cat("\n\t\tReading Maxent outputs...") }
+  cat("\n\t\tReading Maxent outputs...")
   proj <- as.numeric(read.asciigrid(file.path(temp_workdir, "projMaxent.asc"))@data[, 1])
   
   if (do_raster) {

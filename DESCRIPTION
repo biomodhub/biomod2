@@ -108,5 +108,4 @@ Collate:
     'bm_SampleBinaryVector.R'
     'bm_SampleFactorLevels.R'
     'bm_VariablesImportance.R'
-    'level.plot.R'
     'zzz.R'

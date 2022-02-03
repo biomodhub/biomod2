@@ -570,8 +570,8 @@ setMethod('plot', signature(x = 'BIOMOD.projection.out', y = "missing"),
               if (ncol(x@xy.coord) != 2) {
                 cat("\n ! Impossible to plot projections because xy coordinates are not available !")
               } else {
-                multiple.plot(Data = get_predictions(x, full.name = models_selected, as.data.frame = TRUE),
-                              coor = x@xy.coord)
+                .multiple.plot(Data = get_predictions(x, full.name = models_selected, as.data.frame = TRUE)
+                               , coor = x@xy.coord)
               }
             } else {
               cat("\n !  Biomod Projection plotting issue !", fill = .Options$width)
@@ -581,7 +581,7 @@ setMethod('plot', signature(x = 'BIOMOD.projection.out', y = "missing"),
 
 setMethod('show', signature('BIOMOD.projection.out'),
           function(object){
-            .bm_cat("'BIOMOD.projection.out'")
+            .bm_cat("BIOMOD.projection.out")
             cat("\nProjection directory :", paste0(object@sp.name, "/", object@proj.names), fill = .Options$width)
             cat("\n")
             cat("\nsp.name :", object@sp.name, fill = .Options$width)
@@ -798,13 +798,6 @@ setClass("BIOMOD.ensemble.models.out",
                         em.models = 'ANY',
                         modeling.id = 'character',
                         link = 'character'),
-         #                         em.models.kept = 'list',
-         #                         em.prediction = 'BIOMOD.stored.array',
-         #                         em.evaluation = 'BIOMOD.stored.array',
-         #                         em.res = 'list',
-         #                         em.ci.alpha = 'numeric',
-         #                         em.weight = 'list',
-         #                         em.bin.tresh = 'list'),
          prototype(sp.name = '',
                    expl.var.names = '',
                    models.out.obj = new('BIOMOD.stored.models.out'),
@@ -814,20 +807,13 @@ setClass("BIOMOD.ensemble.models.out",
                    em.computed = character(),
                    modeling.id = '.',
                    link = ''),
-         #                     em.models.kept = NULL,
-         #                     em.prediction = NULL,
-         #                     #                     em.evaluation = NULL,
-         #                     em.res = list(),
-         #                     em.ci.alpha = 0.05,
-         #                     em.weight = list(),
-         #                     em.bin.tresh = list()),
          validity = function(object){ return(TRUE) })
 
 
 # 6.3 Other functions -----------------------------------------------------------------------------
 setMethod('show', signature('BIOMOD.ensemble.models.out'),
           function(object){
-            .bm_cat("'BIOMOD.ensemble.models.out'")
+            .bm_cat("BIOMOD.ensemble.models.out")
             cat("\nsp.name :", object@sp.name, fill = .Options$width)
             cat("\nexpl.var.names :", object@expl.var.names, fill = .Options$width)
             cat("\n")

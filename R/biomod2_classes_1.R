@@ -1,90 +1,4 @@
 
-
-.clever_cut <- function(x)
-{
-  nb_col = ceiling(sqrt(x))
-  nb_row = ceiling(x / nb_col)
-  return(c(nb_row, nb_col))
-}
-
-.automatic_weights_creation <- function(resp, prev = 0.5, subset = NULL)
-{
-  if (is.null(subset)) { subset <- rep(TRUE, length(resp)) }
-  
-  nbPres <- sum(resp[subset], na.rm = TRUE)
-  # The number of true absences + pseudo absences to maintain true value of prevalence
-  nbAbsKept <- sum(subset, na.rm = TRUE) - sum(resp[subset], na.rm = TRUE)
-  Yweights <- rep(1, length(resp))
-  
-  if (nbAbsKept > nbPres) {
-    # code absences as 1
-    Yweights[which(resp > 0)] <- (prev * nbAbsKept) / (nbPres * (1 - prev))
-  } else {
-    # code presences as 1
-    Yweights[which(resp == 0 | is.na(resp))] <- (nbPres * (1 - prev)) / (prev * nbAbsKept)
-  }
-  Yweights = round(Yweights[])
-  Yweights[!subset] <- 0
-  
-  return(Yweights)
-}
-
-.sample_mat <- function(data.sp, dataSplit, nbRun = 1, data.env = NULL)
-{
-  # data.sp is a 0, 1 vector
-  # return a matrix with nbRun columns of boolean (T: calib, F= eval)
-  
-  pres <- which(data.sp == 1)
-  abs <- (1:length(data.sp))[-pres]
-  
-  nbPresEval <- round(length(pres) * dataSplit / 100)
-  nbAbsEval <- round(length(abs) * dataSplit / 100)
-  
-  mat.out <- matrix(FALSE, nrow = length(data.sp), ncol = nbRun)
-  colnames(mat.out) <- paste0('_RUN', 1:nbRun)
-  
-  for (i in 1:ncol(mat.out)) {
-    ## force to sample at least one level of each factorial variable for calibration
-    fact.cell.samp <- NULL
-    if (!is.null(data.env)) {
-      fact.cell.samp <- bm_SampleFactorLevels(data.env)
-      mat.out[fact.cell.samp, i] <- TRUE
-    }
-    mat.out[sample(setdiff(pres, fact.cell.samp),
-                   max(nbPresEval - length(fact.cell.samp), 0)), i] <- TRUE
-    mat.out[sample(setdiff(abs, fact.cell.samp),
-                   max(nbAbsEval - length(fact.cell.samp), 0)), i] <- TRUE
-  }
-  return(mat.out)
-}
-
-.print_formula <- function(formula = NULL)
-{
-  ifelse(length(formula) < 1, 'NULL', paste(formula[2], formula[1], formula[3]))
-}
-
-.print_control <- function(ctrl)
-{
-  out <-  paste0(names(ctrl)[1], " = ", ctrl[[1]])
-  if (length(ctrl) > 1)
-  {
-    i = 2
-    while (i <= length(ctrl)) {
-      if (is.list(ctrl[[i]])) {
-        out <- c(out, paste0(", ", names(ctrl)[i], " = list(",
-                             paste0(names(ctrl[[i]]), "=", unlist(ctrl[[i]]), collapse = ", "),
-                             ")"))
-        i <- i + 1
-      } else {
-        out <- c(out, paste0(", ", names(ctrl)[i], " = ", ctrl[[i]]))
-        i <- i + 1
-      }
-    }
-  }
-  return(out)
-}
-
-
 ###################################################################################################
 ## 1. BIOMOD.formated.data
 ###################################################################################################
@@ -399,7 +313,7 @@ setMethod('plot', signature(x = 'BIOMOD.formated.data', y = "missing"),
 setMethod('show', signature('BIOMOD.formated.data'),
           function(object)
           {
-            .bm_cat("'BIOMOD.formated.data'")
+            .bm_cat("BIOMOD.formated.data")
             cat("\nsp.name = ", object@sp.name, fill = .Options$width)
             cat("\n\t",
                 sum(object@data.species, na.rm = TRUE),
@@ -428,7 +342,6 @@ setMethod('show', signature('BIOMOD.formated.data'),
               cat("\n\n", fill = .Options$width)
               print(summary(object@eval.data.env.var))
             }
-            
             .bm_cat()
           }
 )
@@ -818,7 +731,7 @@ setMethod('plot', signature(x = 'BIOMOD.formated.data.PA', y = "missing"),
 setMethod('show', signature('BIOMOD.formated.data.PA'),
           function(object)
           {
-            .bm_cat("'BIOMOD.formated.data.PA'")
+            .bm_cat("BIOMOD.formated.data.PA")
             cat("\nsp.name = ", object@sp.name, fill = .Options$width)
             cat(
               "\n\t",
@@ -1153,7 +1066,7 @@ setClass("BIOMOD.model.options",
 setMethod('show', signature('BIOMOD.model.options'),
           function(object)
           {
-            .bm_cat(" 'BIOMOD.model.options' ")
+            .bm_cat("BIOMOD.model.options")
             cat("\n")
             
             ## GLM options
