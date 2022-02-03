@@ -69,7 +69,7 @@
 ##' 
 ##' @seealso \code{\link{BIOMOD_FormatingData}}, \code{\link{BIOMOD_ModelingOptions}}, 
 ##' \code{\link{BIOMOD_Projection}}, \code{\link{BIOMOD_EnsembleModeling}}, 
-##' \code{\link{BIOMOD_EnsembleForecasting}}, \code{\link{level.plot}}
+##' \code{\link{BIOMOD_EnsembleForecasting}}, \code{\link{bm_PlotRangeSize}}
 ##' 
 ##'   
 ##' @examples
@@ -176,6 +176,7 @@ setGeneric("BIOMOD_RangeSize",
 setMethod('BIOMOD_RangeSize', signature(CurrentProj = 'data.frame', FutureProj = 'data.frame'),
           function(CurrentProj, FutureProj)
           {
+            .bm_cat("Do Range Size Computation")
             args <- .BIOMOD_RangeSize.check.args(CurrentProj, FutureProj)
 
             CompteurSp <- function(Data, Value)
@@ -210,6 +211,7 @@ setMethod('BIOMOD_RangeSize', signature(CurrentProj = 'data.frame', FutureProj =
                                                                        , "CurrentRangeSize", "FutureRangeSize.NoDisp", "FutureRangeSize.FullDisp"))
             
             Output <- list(Compt.By.Models = Compt.By.Models, Diff.By.Pixel = Diff.By.Pixel)
+            .bm_cat("Done")
             invisible(Output)
           })
 
@@ -253,6 +255,7 @@ setMethod('BIOMOD_RangeSize', signature(CurrentProj = 'array', FutureProj = 'arr
 setMethod('BIOMOD_RangeSize', signature(CurrentProj = 'RasterStack', FutureProj = 'RasterStack'),
           function(CurrentProj, FutureProj)
           {
+            .bm_cat("Do Range Size Computation")
             args <- .BIOMOD_RangeSize.check.args(CurrentProj, FutureProj)
             
             names.res = c("Loss", "Stable0", "Stable1", "Gain"
@@ -285,6 +288,8 @@ setMethod('BIOMOD_RangeSize', signature(CurrentProj = 'RasterStack', FutureProj 
               CBS[i, 7] <- round(CBS[i, 10] / CBS[i, 8] * 100 - 100, digits = 3)
             }
             names(sp.stack) <- rownames(CBS)
+            
+            .bm_cat("Done")
             return(list(Compt.By.Models = CBS, Diff.By.Pixel = sp.stack))
           })
 
@@ -292,6 +297,8 @@ setMethod('BIOMOD_RangeSize', signature(CurrentProj = 'RasterStack', FutureProj 
 setMethod('BIOMOD_RangeSize', signature(CurrentProj = 'RasterLayer', FutureProj = 'RasterStack'),
           function(CurrentProj, FutureProj)
           {
+            .bm_cat("Do Range Size Computation")
+            
             names.res = c("Loss", "Stable0", "Stable1", "Gain"
                           , "PercLoss", "PercGain", "SpeciesRangeChange"
                           , "CurrentRangeSize", "FutureRangeSize.NoDisp", "FutureRangeSize.FullDisp")
@@ -322,6 +329,8 @@ setMethod('BIOMOD_RangeSize', signature(CurrentProj = 'RasterLayer', FutureProj 
               CBS[i, 7] <- round(CBS[i, 10] / CBS[i, 8] * 100 - 100, digits = 3)
             }
             names(sp.stack) <- rownames(CBS)
+            
+            .bm_cat("Done")
             return(list(Compt.By.Models = CBS, Diff.By.Pixel = sp.stack))
           })
 

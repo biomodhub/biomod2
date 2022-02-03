@@ -92,8 +92,6 @@
 ##'   \item{\code{output.format} : }{a \code{character} value corresponding to the projections 
 ##'   saving format on hard drive, must be either \code{.grd}, \code{.img} or \code{.RData} (the 
 ##'   default if \code{new.env} is given as \code{matrix} or \code{data.frame})}
-##   \item{\code{silent} : }{a \code{logical} value defining whether console outputs are to be 
-##   printed or not}
 ##' }
 ##' 
 ##' 
@@ -198,61 +196,14 @@ BIOMOD_EnsembleForecasting <- function(EM.output,
                                        compress = TRUE,
                                        ...)
 {
-  .bm_cat("Do Ensemble Models Projections")
+  .bm_cat("Do Ensemble Models Projection")
   
   ## 0. Check arguments ---------------------------------------------------------------------------
-  args <- list(...)
-  output.format <- args$output.format # raster output format
-  compress <- args$compress # compress or not output
-  do.stack <- args$do.stack # save raster as stack or layers
-  keep.in.memory <- args$keep.in.memory # store results on memory or only on hard drive
-  on_0_1000 <- args$on_0_1000 # convert 0-1 predictions on 0-1000 scale to limit memory consuming
-  
-  if (is.null(compress)) { compress <- FALSE }
-  if (is.null(on_0_1000)) { on_0_1000 <- TRUE } # by default outputs are return on a 0 - 1000 scale 
-  
   args <- .BIOMOD_EnsembleForecasting.check.args(EM.output, projection.output, proj.name, new.env,
-                                                 chosen.models, binary.meth, filtered.meth)
-  projection.output <- args$projection.output
-  EM.output <- args$EM.output
-  chosen.models <- args$chosen.models
-  proj.name <- args$proj.name
-  binary.meth <- args$binary.meth
-  filtered.meth <- args$filtered.meth
-  
-  if (is.null(output.format)) {
-    if (length(projection.output)) {
-      output.format = ifelse(projection.output@type != 'RasterStack', ".RData", ".grd")
-    } else {
-      output.format = ifelse(!inherits(new.env, 'Raster'), ".RData", ".grd")
-    }
-  }
-  
-  if (is.null(do.stack)) {
-    do.stack <- TRUE # if no info at all set it TRUE
-    # if not explicitly defined apply same rules than projection.output ones
-    if (!is.null(projection.output) &&
-        all(grepl("individual_projections", projection.output@proj@link))) {
-      do.stack <- FALSE
-    }
-  }
-  
-  if (is.null(keep.in.memory)) {
-    keep.in.memory <- TRUE # if no info at all set it TRUE
-    # if not explicitly defined apply same rules than projection.output ones
-    if (!is.null(projection.output)) {
-      keep.in.memory <- projection.output@proj@inMemory
-    }
-  } 
-  
-  if (is.null(new.env.xy)) {
-    if (!is.null(projection.output)) {
-      new.env.xy <- projection.output@xy.coord
-    } else {
-      new.env.xy <- matrix()
-    }
-  } 
+                                                 chosen.models, binary.meth, filtered.meth, ...)
+  for (argi in names(args)) { assign(x = argi, value = args[[argi]]) }
   rm(args)
+
   
   ## 1. Create output object ----------------------------------------------------------------------
   proj_out <- new('BIOMOD.projection.out',
@@ -300,7 +251,6 @@ BIOMOD_EnsembleForecasting <- function(EM.output,
                                      compress = TRUE,
                                      build.clamping.mask = FALSE,
                                      do.stack = TRUE,
-                                     silent = TRUE,
                                      on_0_1000 = on_0_1000)
     # getting the results
     formal_pred <- get_predictions(formal_pred,
@@ -475,15 +425,11 @@ BIOMOD_EnsembleForecasting <- function(EM.output,
 
 ###################################################################################################
 
-.BIOMOD_EnsembleForecasting.check.args <- function(EM.output,
-                                                   projection.output,
-                                                   proj.name,
-                                                   new.env,
-                                                   chosen.models,
-                                                   # total.consensus,
-                                                   binary.meth,
-                                                   filtered.meth)
+.BIOMOD_EnsembleForecasting.check.args <- function(EM.output, projection.output, proj.name, new.env,
+                                                   chosen.models, binary.meth, filtered.meth, ...)
 {
+  args <- list(...)
+  
   ## 1. Check EM.output -------------------------------------------------------
   .fun_testIfInherits(TRUE, "EM.output", EM.output, "BIOMOD.ensemble.models.out")
   
@@ -521,13 +467,7 @@ BIOMOD_EnsembleForecasting <- function(EM.output,
     proj.name <- projection.output@proj.names
   }
   
-  ## 5. Check total.consensus -------------------------------------------------
-  # if (total.consensus && length(EM.output@em.computed) < 2) {
-  #   cat("\n      ! Total consensus projection was switched off because only one Ensemble modeling was done")
-  #   total.consensus <- FALSE
-  # }
-
-  ## 6. Check binary.meth & filtered.meth -------------------------------------
+  ## 5. Check binary.meth & filtered.meth -------------------------------------
   if (!is.null(binary.meth) | !is.null(filtered.meth)) {
     models.evaluation <- get_evaluations(EM.output)
     if (is.null(models.evaluation)) {
@@ -552,11 +492,57 @@ BIOMOD_EnsembleForecasting <- function(EM.output,
     }
   }
   
+  ## 6. Check output.format ---------------------------------------------------
+  output.format <- args$output.format
+  if (is.null(output.format)) {
+    if (length(projection.output)) {
+      output.format = ifelse(projection.output@type != 'RasterStack', ".RData", ".grd")
+    } else {
+      output.format = ifelse(!inherits(new.env, 'Raster'), ".RData", ".grd")
+    }
+  }
+  
+  ## 7. Check do.stack --------------------------------------------------------
+  do.stack <- args$do.stack
+  if (is.null(do.stack)) {
+    do.stack <- TRUE # if no info at all set it TRUE
+    # if not explicitly defined apply same rules than projection.output ones
+    if (!is.null(projection.output) &&
+        all(grepl("individual_projections", projection.output@proj@link))) {
+      do.stack <- FALSE
+    }
+  }
+  
+  ## 8. Check keep.in.memory --------------------------------------------------
+  keep.in.memory <- args$keep.in.memory
+  if (is.null(keep.in.memory)) {
+    keep.in.memory <- TRUE # if no info at all set it TRUE
+    # if not explicitly defined apply same rules than projection.output ones
+    if (!is.null(projection.output)) {
+      keep.in.memory <- projection.output@proj@inMemory
+    }
+  }
+  
+  ## 9. Check new.env.xy ------------------------------------------------------
+  new.env.xy <- args$new.env.xy
+  if (is.null(new.env.xy)) {
+    if (!is.null(projection.output)) {
+      new.env.xy <- projection.output@xy.coord
+    } else {
+      new.env.xy <- matrix()
+    }
+  }
+  
   return(list(projection.output = projection.output,
               EM.output = EM.output,
               chosen.models = chosen.models,
               proj.name = proj.name,
-              # total.consensus = total.consensus,
               binary.meth = binary.meth,
-              filtered.meth = filtered.meth))
+              filtered.meth = filtered.meth,
+              output.format = output.format,
+              compress = ifelse(is.null(args$compress), FALSE, args$compress),
+              on_0_1000 = ifelse(is.null(args$on_0_1000), TRUE, args$on_0_1000),
+              do.stack = do.stack,
+              keep.in.memory = keep.in.memory,
+              new.env.xy = new.env.xy))
 }

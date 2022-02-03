@@ -93,8 +93,6 @@
 ##'   \item{\code{output.format} : }{a \code{character} value corresponding to the projections 
 ##'   saving format on hard drive, must be either \code{.grd}, \code{.img} or \code{.RData} (the 
 ##'   default if \code{new.env} is given as \code{matrix} or \code{data.frame})}
-##'   \item{\code{silent} : }{a \code{logical} value defining whether console outputs are to be 
-##'   printed or not}
 ##' }
 ##' 
 ##' 
@@ -204,34 +202,12 @@ BIOMOD_Projection <- function(modeling.output,
                               build.clamping.mask = TRUE,
                               ...)
 {
+  .bm_cat("Do Single Models Projection")
+  
   ## 0. Check arguments ---------------------------------------------------------------------------
-  args <- list(...)
-  omit.na <- args$omit.na # omit all non full filled environmental cells (always TRUE if env is a raster object)
-  silent <- args$silent # echo advancement or not
-  do.stack <- args$do.stack # store output in a lone stack
-  keep.in.memory <- args$keep.in.memory # store results on memory or only on hard drive
-  on_0_1000 <- args$on_0_1000 # transform projections on a 0 - 1000 scale to limit memory consumption
-  
-  if (is.null(omit.na)) { omit.na <- TRUE }
-  if (is.null(silent)) { silent <- FALSE }
-  if (is.null(do.stack)) { do.stack <- TRUE }
-  if (is.null(keep.in.memory)) { keep.in.memory <- TRUE }
-  if (is.null(on_0_1000)) { on_0_1000 <- TRUE } # by default we return projections on a 0 -  1000 scale.
-  if (!silent) { .bm_cat("Do Models Projections") }
-  
-  # clamping.level <- args$clamping.levels # remove all cells where at least clamping.level variables are out of their calibrating range
-  output.format <- args$output.format # raster output format
-  
-  args <- .BIOMOD_Projection.check.args(modeling.output, proj.name, new.env, new.env.xy, chosen.models,
-                                        binary.meth, filtered.meth, compress, do.stack, output.format)
-  proj.name <- args$proj.name
-  new.env.xy <- args$new.env.xy
-  chosen.models <- args$chosen.models
-  binary.meth <- args$binary.meth
-  filtered.meth <- args$filtered.meth
-  compress <- args$compress
-  do.stack <- args$do.stack
-  output.format <- args$output.format
+  args <- .BIOMOD_Projection.check.args(modeling.output, proj.name, new.env, new.env.xy
+                                        , chosen.models, binary.meth, filtered.meth, compress, ...)
+  for (argi in names(args)) { assign(x = argi, value = args[[argi]]) }
   rm(args)
   
   ## 1. Create output object ----------------------------------------------------------------------
@@ -262,7 +238,7 @@ BIOMOD_Projection <- function(modeling.output,
   
   ## 3. Define the clamping mask ------------------------------------------------------------------
   if (build.clamping.mask) {
-    if (!silent) { cat("\n\t> Building clamping mask\n") }
+    cat("\n\t> Building clamping mask\n")
     nameMask <- paste0(nameProjSp, "_ClampingMask")
     MinMax <- get_formal_data(modeling.output, 'MinMax')
     assign(x = nameMask, value = .build_clamping_mask(new.env, MinMax))
@@ -312,7 +288,7 @@ BIOMOD_Projection <- function(modeling.output,
     } else {
       proj <- as.data.frame(proj)
       names(proj) <- chosen.models
-      proj <- DF_to_ARRAY(proj)
+      proj <- .DF_to_ARRAY(proj)
     }
     if (keep.in.memory) {
       proj_out@proj@val <- proj
@@ -442,16 +418,17 @@ BIOMOD_Projection <- function(modeling.output,
   assign(nameOut, proj_out)
   save(list = nameOut, file = file.path(namePath, nameOut))
   
-  if (!silent) { .bm_cat("Done") }
+  .bm_cat("Done")
   return(proj_out)
 }
 
 ###################################################################################################
 
 .BIOMOD_Projection.check.args <- function(modeling.output, proj.name, new.env, new.env.xy,
-                                          chosen.models, binary.meth, filtered.meth,
-                                          compress, do.stack, output.format)
+                                          chosen.models, binary.meth, filtered.meth, compress, ...)
 {
+  args <- list(...)
+  
   ## 1. Check modeling.output -------------------------------------------------
   .fun_testIfInherits(TRUE, "modeling.output", modeling.output, "BIOMOD.models.out")
   
@@ -535,6 +512,7 @@ BIOMOD_Projection <- function(modeling.output,
   }
   
   ## 8. Check do.stack --------------------------------------------------------
+  do.stack <- ifelse(is.null(args$do.stack), TRUE, args$do.stack)
   if (!inherits(new.env, 'RasterStack')) {
     if (!do.stack) { cat("\n\t\t! 'do.stack' arg is always set as TRUE for data.frame/matrix dataset") }
     do.stack <- TRUE
@@ -544,6 +522,7 @@ BIOMOD_Projection <- function(modeling.output,
   }
   
   ## 9. Check output.format ---------------------------------------------------
+  output.format <- args$output.format # raster output format
   if (!is.null(output.format)) {
     if (!output.format %in% c(".img", ".grd", ".RData")) {
       stop(paste0("output.format argument should be one of '.img','.grd' or '.RData'\n"
@@ -552,10 +531,7 @@ BIOMOD_Projection <- function(modeling.output,
     if (output.format %in% c(".img", ".grd") && !inherits(new.env, "Raster")) {
       warning("output.format was automatically set to '.RData' because environmental conditions are not given as a raster object")
     }
-  }
-  
-  ## set default values
-  if (is.null(output.format)) {
+  } else {
     output.format <- ifelse(!inherits(new.env, "Raster"), ".RData", ".grd")
   }
   
@@ -567,7 +543,11 @@ BIOMOD_Projection <- function(modeling.output,
               filtered.meth = filtered.meth,
               compress = compress,
               do.stack = do.stack,
-              output.format = output.format))
+              output.format = output.format,
+              omit.na = ifelse(is.null(args$omit.na), TRUE, args$omit.na),
+              do.stack = do.stack,
+              keep.in.memory = ifelse(is.null(args$keep.in.memory), TRUE, args$keep.in.memory),
+              on_0_1000 = ifelse(is.null(args$on_0_1000), TRUE, args$on_0_1000)))
 }
 
 
@@ -619,7 +599,7 @@ BIOMOD_Projection <- function(modeling.output,
 
 ###################################################################################################
 
-DF_to_ARRAY <- function(df)
+.DF_to_ARRAY <- function(df)
 {
   if (!is.data.frame(df) & !is.matrix(df)) {
     if (is.list(df)) {

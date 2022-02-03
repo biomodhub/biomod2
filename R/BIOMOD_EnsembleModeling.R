@@ -333,24 +333,9 @@ BIOMOD_EnsembleModeling <- function(modeling.output,
                                               prob.mean.weight,
                                               prob.mean.weight.decay,
                                               em.by)
-  
-  modeling.output <- args$modeling.output
-  chosen.models <- args$chosen.models
-  eval.metric <- args$eval.metric
-  eval.metric.quality.threshold <- args$eval.metric.quality.threshold
-  eval.metric.user <- args$eval.metric.user
-  eval.metric.user.data <- args$eval.metric.user.data
-  models.eval.meth <- args$models.eval.meth
-  prob.mean <- args$prob.mean
-  prob.cv <- args$prob.cv
-  prob.ci <- args$prob.ci
-  prob.ci.alpha <- args$prob.ci.alpha
-  prob.median <- args$prob.median
-  committee.averaging <- args$committee.averaging
-  prob.mean.weight <- args$prob.mean.weight
-  prob.mean.weight.decay  <- args$prob.mean.weight.decay
-  em.by <- args$em.by
+  for (argi in names(args)) { assign(x = argi, value = args[[argi]]) }
   rm(args)
+  
   
   ## Get selected options
   em.avail <- c('prob.mean', 'prob.cv', 'prob.ci.inf', 'prob.ci.sup',
@@ -867,7 +852,6 @@ BIOMOD_EnsembleModeling <- function(modeling.output,
                                            compress = TRUE,
                                            build.clamping.mask = FALSE,
                                            do.stack = TRUE,
-                                           silent = TRUE
       )@proj@val
       
       # transform array into data.frame

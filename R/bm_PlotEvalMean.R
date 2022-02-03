@@ -66,12 +66,10 @@
 bm_PlotEvalMean <- function(modeling.output, eval.metric = NULL, group.by = 'algo', plot = TRUE, ...)
 {
   ## 0. Check arguments ---------------------------------------------------------------------------
-  args <- .bm_PlotEvalMean.check.args(modeling.output, eval.metric, group.by, list(...))
-  eval.metric <- args$eval.metric
-  xlim <- args$xlim
-  ylim <- args$ylim
-  main <- args$main
+  args <- .bm_PlotEvalMean.check.args(modeling.output, eval.metric, group.by, ...)
+  for (argi in names(args)) { assign(x = argi, value = args[[argi]]) }
   rm(args)
+  
   
   tmp = strsplit(group.by, '')[[1]]
   group.by <- paste0(toupper(tmp[1]), paste0(tmp[2:length(tmp)], collapse = ''))
@@ -125,8 +123,10 @@ bm_PlotEvalMean <- function(modeling.output, eval.metric = NULL, group.by = 'alg
 
 ###################################################################################################
 
-.bm_PlotEvalMean.check.args <- function(modeling.output, eval.metric = NULL, group.by = 'Algo', args)
+.bm_PlotEvalMean.check.args <- function(modeling.output, eval.metric = NULL, group.by = 'Algo', ...)
 {
+  args <- list(...)
+  
   ## 1. Check modeling.output argument ----------------------------------------
   .fun_testIfInherits(TRUE, "modeling.output", modeling.output, c("BIOMOD.models.out", "BIOMOD.ensemble.models.out"))
   

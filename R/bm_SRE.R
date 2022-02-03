@@ -131,11 +131,8 @@ bm_SRE <- function(Response = NULL,
 {
   ## 0. Check arguments ---------------------------------------------------------------------------
   args <- .bm_SRE.check.args(Response, Explanatory, NewData, Quant)
-  Response <- args$Response
-  Explanatory <- args$Explanatory
-  NewData <- args$NewData
-  Quant <- args$Quant
-  rm("args")
+  for (argi in names(args)) { assign(x = argi, value = args[[argi]]) }
+  rm(args)
   
   ## 1. Determine suitable conditions and make the projection -------------------------------------
   lout <- list()

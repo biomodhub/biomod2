@@ -84,14 +84,7 @@ bm_PseudoAbsences <- function(sp, env, nb.repet = 1, strategy = 'random', distMi
 {
   ## 0. Check arguments ---------------------------------------------------------------------------
   args <- .bm_PseudoAbsences.check.args(sp, env, nb.repet, strategy, distMin, distMax, nb.points, quant.SRE)
-  sp <- args$sp
-  env <- args$env
-  nb.repet <- args$nb.repet
-  strategy <- args$strategy
-  distMin <- args$distMin
-  distMax <- args$distMax
-  nb.points <- args$nb.points
-  quant.SRE <- args$quant.SRE
+  for (argi in names(args)) { assign(x = argi, value = args[[argi]]) }
   rm(args)
   
   ## 1. Create output object ----------------------------------------------------------------------

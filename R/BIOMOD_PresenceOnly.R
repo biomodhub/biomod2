@@ -152,7 +152,7 @@ BIOMOD_PresenceOnly <- function(modeling.output = NULL,
                                 perc = 0.9, 
                                 save.output = TRUE)
 {
-  requireNamespace('PresenceAbsence', quietly = TRUE)
+  .bm_cat("Do Presence-Only Evaluation")
   
   myModelEval <- myBiomodProjFF <- NULL
   
@@ -344,5 +344,7 @@ BIOMOD_PresenceOnly <- function(modeling.output = NULL,
     if (!is.null(EM.output)) { sp <- EM.output@sp.name }
     save(output, file = paste0(sp, "/.BIOMOD_DATA/", modeling.output@modeling.id, "/presenceonly.evaluation_", sp))
   }
+  
+  .bm_cat("Done")
   return(output)
 }

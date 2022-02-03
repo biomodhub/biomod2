@@ -165,24 +165,9 @@ bm_PlotResponseCurves <- function(modeling.output
   formal_names <- chosen.models
   
   args <- .bm_PlotResponseCurves.check.args(modeling.output, chosen.models, new.env, show.variables, do.bivariate, ...)
-  models <- args$models
-  new.env <- args$new.env
-  show.variables <- args$show.variables
-  do.bivariate <- args$do.bivariate
-  nb.pts <- args$nb.pts
+  for (argi in names(args)) { assign(x = argi, value = args[[argi]]) }
   rm(args)
   
-  add.args <- list(...)
-  on_0_1000 <- add.args$on_0_1000
-  main <- add.args$main
-  data_species <- add.args$data_species
-  use.formal.names <- add.args$use.formal.names
-  rm(add.args)
-  
-  if (is.null(on_0_1000)) { on_0_1000 <- FALSE }
-  if (is.null(main)) { main <- try(paste0("Response curves for ", modeling.output@sp.name, "'s models")) }
-  if (is.null(data_species)) { data_species <- rep(1, nrow(new.env)) } else { data_species[data_species != 1 | is.na(data_species)] <- 0 }
-  if (is.null(use.formal.names)) { use.formal.names <- FALSE }
   
   ## 1. Create output object ----------------------------------------------------------------------
   ref_table <- new.env[1, , drop = FALSE]
@@ -372,7 +357,7 @@ bm_PlotResponseCurves <- function(modeling.output
 
 .bm_PlotResponseCurves.check.args <- function(modeling.output, chosen.models, new.env, show.variables, do.bivariate, ...)
 {
-  add.args <- list(...)
+  args <- list(...)
   
   ## 1. Check modeling.output argument ----------------------------------------
   .fun_testIfInherits(TRUE, "modeling.output", modeling.output, c("BIOMOD.models.out", "BIOMOD.ensemble.models.out"))
@@ -402,25 +387,26 @@ bm_PlotResponseCurves <- function(modeling.output
     }
   }
   
-  ## 2. Check add.args$nb.pts argument ----------------------------------------
+  ## 2. Check args$nb.pts argument ----------------------------------------
   ## defining the number split in each variables range
-  if (!is.null(add.args$nb.pts) && do.bivariate == TRUE) {
-    add.args$nb.pts <- add.args$nb.pts ^ 2
-  } else if (is.null(add.args$nb.pts) && do.bivariate == FALSE) {
-    add.args$nb.pts <- 100
-  } else if (is.null(add.args$nb.pts) && do.bivariate == TRUE) {
-    add.args$nb.pts <- 25 ^ 2
+  nb.pts <- args$nb.pts
+  if (!is.null(nb.pts) && do.bivariate == TRUE) {
+    nb.pts <- nb.pts ^ 2
+  } else if (is.null(nb.pts) && do.bivariate == FALSE) {
+    nb.pts <- 100
+  } else if (is.null(nb.pts) && do.bivariate == TRUE) {
+    nb.pts <- 25 ^ 2
   }
   
   ## 3. Check new.env argument ---------------------------------------------------
   if (inherits(new.env, "Raster")) {
     cat("\n   > Extracting raster infos..")
-    DataTmp <- matrix(0, ncol = nlayers(new.env), nrow = add.args$nb.pts)
+    DataTmp <- matrix(0, ncol = nlayers(new.env), nrow = nb.pts)
     colnames(DataTmp) <- names(new.env)
     maxVal <- maxValue(new.env)
     minVal <- minValue(new.env)
     for (i in 1:ncol(DataTmp)) {
-      DataTmp[, i] <- seq(minVal[i], maxVal[i], length.out = add.args$nb.pts)
+      DataTmp[, i] <- seq(minVal[i], maxVal[i], length.out = nb.pts)
     }
     new.env <- DataTmp
   }
@@ -439,11 +425,27 @@ bm_PlotResponseCurves <- function(modeling.output
     }
   }
   
+  ## 5. Check main argument ---------------------------------------------------
+  main <- args$main
+  if (is.null(main)) { main <- try(paste0("Response curves for ", modeling.output@sp.name, "'s models")) }
+  
+  ## 6. Check data_species argument -------------------------------------------
+  data_species <- args$data_species
+  if (is.null(data_species)) {
+    data_species <- rep(1, nrow(new.env))
+  } else {
+    data_species[data_species != 1 | is.na(data_species)] <- 0
+  }
+  
   return(list(models = models,
               new.env = new.env,
               show.variables = show.variables,
               do.bivariate = do.bivariate,
-              nb.pts = add.args$nb.pts))
+              nb.pts = nb.pts,
+              on_0_1000 = ifelse(is.null(args$on_0_1000), FALSE, args$on_0_1000),
+              use.formal.names = ifelse(is.null(args$use.formal.names), FALSE, args$use.formal.names),
+              main = main,
+              data_species = data_species))
 }
 
 

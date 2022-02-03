@@ -252,21 +252,12 @@ BIOMOD_Modeling <- function(data,
                             do.full.models = TRUE,
                             ...)
 {
+  .bm_cat("Build Single Models")
+  
   ## 0. Check arguments ---------------------------------------------------------------------------
   args <- .BIOMOD_Modeling.check.args(data, models, models.options, NbRunEval, DataSplit, Yweights
-                             , VarImport, models.eval.meth, Prevalence, do.full.models, SaveObj, ...)
-  models <- args$models
-  models.options <- args$models.options
-  NbRunEval <- args$NbRunEval
-  DataSplit <- args$DataSplit
-  Yweights <- args$Yweights
-  VarImport <- args$VarImport
-  models.eval.meth <- args$models.eval.meth
-  Prevalence <- args$Prevalence
-  do.full.models <- args$do.full.models
-  DataSplitTable <- args$DataSplitTable
-  SaveObj <- args$SaveObj
-  compress.arg = TRUE #ifelse(.Platform$OS.type == 'windows', 'gzip', 'xz'))
+                                      , VarImport, models.eval.meth, Prevalence, do.full.models, SaveObj, ...)
+  for (argi in names(args)) { assign(x = argi, value = args[[argi]]) }
   rm(args)
   
   ## 1. Create output object ----------------------------------------------------------------------
@@ -286,7 +277,7 @@ BIOMOD_Modeling <- function(data,
   name.BIOMOD_DATA = file.path(models.out@sp.name, ".BIOMOD_DATA", models.out@modeling.id)
   .Models.save.object <- function(objName, objValue, mod.out)
   {
-    save(objValue, file = file.path(name.BIOMOD_DATA, objName), compress = compress.arg)
+    save(objValue, file = file.path(name.BIOMOD_DATA, objName), compress = TRUE)
     eval(parse(text = paste0("mod.out@", objName, "@inMemory <- FALSE")))
     eval(parse(text = paste0("mod.out@", objName, "@link <- file.path(name.BIOMOD_DATA, objName)")))
     return(mod.out)
@@ -386,11 +377,11 @@ BIOMOD_Modeling <- function(data,
 ###################################################################################################
 
 .BIOMOD_Modeling.check.args <- function(data, models, models.options, NbRunEval, DataSplit, Yweights
-                               , VarImport, models.eval.meth, Prevalence, do.full.models, SaveObj, ...)
+                                        , VarImport, models.eval.meth, Prevalence, do.full.models, SaveObj, ...)
 {
   ## 0. Check data and models arguments ---------------------------------------
   cat('\n\nChecking Models arguments...\n')
-  add.args <- list(...)
+  args <- list(...)
   
   .fun_testIfInherits(TRUE, "data", data, c("BIOMOD.formated.data", "BIOMOD.formated.data.PA"))
   if (!is.character(models)) { stop("models must be a 'character' vector") }
@@ -454,11 +445,12 @@ BIOMOD_Modeling <- function(data,
   }
   
   ## 4. Check NbRunEval and DataSplitTable arguments --------------------------
-  if (!is.null(add.args$DataSplitTable)) {
+  DataSplitTable <- args$DataSplitTable
+  if (!is.null(DataSplitTable)) {
     cat("\n! User defined data-split table was given -> NbRunEval, DataSplit and do.full.models argument will be ignored")
-    if (!(length(dim(add.args$DataSplitTable) %in% c(2, 3)))) { stop("DataSplitTable must be a matrix or a 3D array") }
-    if (dim(add.args$DataSplitTable)[1] != length(data@data.species)) { stop("DataSplitTable must have as many rows (dim1) than your species as data") }
-    NbRunEval <- dim(add.args$DataSplitTable)[2]
+    if (!(length(dim(DataSplitTable) %in% c(2, 3)))) { stop("DataSplitTable must be a matrix or a 3D array") }
+    if (dim(DataSplitTable)[1] != length(data@data.species)) { stop("DataSplitTable must have as many rows (dim1) than your species as data") }
+    NbRunEval <- dim(DataSplitTable)[2]
     DataSplit <- 50
     do.full.models <- FALSE
   }
@@ -516,7 +508,7 @@ BIOMOD_Modeling <- function(data,
               Prevalence = Prevalence,
               do.full.models = do.full.models,
               SaveObj = SaveObj,
-              DataSplitTable=add.args$DataSplitTable))
+              DataSplitTable = DataSplitTable))
 }
 
 
@@ -537,8 +529,6 @@ BIOMOD_Modeling <- function(data,
 ###################################################################################################
 
 ##'
-##' @include biomod2_classes_1.R
-##' 
 ##' @importFrom dplyr bind_cols tibble
 ##'
 
@@ -696,6 +686,60 @@ setMethod('.BIOMOD_Modeling.prepare.data', signature('BIOMOD.formated.data.PA'),
 )
 
 
+###################################################################################################
+
+.automatic_weights_creation <- function(resp, prev = 0.5, subset = NULL)
+{
+  if (is.null(subset)) { subset <- rep(TRUE, length(resp)) }
+  
+  nbPres <- sum(resp[subset], na.rm = TRUE)
+  # The number of true absences + pseudo absences to maintain true value of prevalence
+  nbAbsKept <- sum(subset, na.rm = TRUE) - sum(resp[subset], na.rm = TRUE)
+  Yweights <- rep(1, length(resp))
+  
+  if (nbAbsKept > nbPres) {
+    # code absences as 1
+    Yweights[which(resp > 0)] <- (prev * nbAbsKept) / (nbPres * (1 - prev))
+  } else {
+    # code presences as 1
+    Yweights[which(resp == 0 | is.na(resp))] <- (nbPres * (1 - prev)) / (prev * nbAbsKept)
+  }
+  Yweights = round(Yweights[])
+  Yweights[!subset] <- 0
+  
+  return(Yweights)
+}
+
+.sample_mat <- function(data.sp, dataSplit, nbRun = 1, data.env = NULL)
+{
+  # data.sp is a 0, 1 vector
+  # return a matrix with nbRun columns of boolean (T: calib, F= eval)
+  
+  pres <- which(data.sp == 1)
+  abs <- (1:length(data.sp))[-pres]
+  
+  nbPresEval <- round(length(pres) * dataSplit / 100)
+  nbAbsEval <- round(length(abs) * dataSplit / 100)
+  
+  mat.out <- matrix(FALSE, nrow = length(data.sp), ncol = nbRun)
+  colnames(mat.out) <- paste0('_RUN', 1:nbRun)
+  
+  for (i in 1:ncol(mat.out)) {
+    ## force to sample at least one level of each factorial variable for calibration
+    fact.cell.samp <- NULL
+    if (!is.null(data.env)) {
+      fact.cell.samp <- bm_SampleFactorLevels(data.env)
+      mat.out[fact.cell.samp, i] <- TRUE
+    }
+    mat.out[sample(setdiff(pres, fact.cell.samp),
+                   max(nbPresEval - length(fact.cell.samp), 0)), i] <- TRUE
+    mat.out[sample(setdiff(abs, fact.cell.samp),
+                   max(nbAbsEval - length(fact.cell.samp), 0)), i] <- TRUE
+  }
+  return(mat.out)
+}
+
+
 ## ###############################################################################################
 ## 
 ## Reshape biomod2 objects
@@ -711,7 +755,6 @@ setMethod('.BIOMOD_Modeling.prepare.data', signature('BIOMOD.formated.data.PA'),
 ## @export
 ## 
 ## ###############################################################################################
-
 
 .transform_outputs_list = function(modOut, out = 'evaluation', dim.names = NULL)
 {
@@ -851,7 +894,7 @@ setMethod('.BIOMOD_Modeling.prepare.data', signature('BIOMOD.formated.data.PA'),
     if (!length(res.out)) { res.out <- 'none' }
     return(res.out)
   }
-
+  
   ## 3. CASE EF.prediction / EF.PCA.median / EF.evaluation ----------------------------------------
   
   if (out %in% c("EF.prediction", "EF.PCA.median", "EF.evaluation"))
@@ -876,7 +919,7 @@ setMethod('.BIOMOD_Modeling.prepare.data', signature('BIOMOD.formated.data.PA'),
                 length(modOut[[1]][[1]]),
                 length(modOut[[1]]),
                 length(modOut))
-
+    
     
     output <- lapply(1:length(modOut),function(d1) { # data set
       lapply(1:length(modOut[[d1]]), function(d2) { # run eval

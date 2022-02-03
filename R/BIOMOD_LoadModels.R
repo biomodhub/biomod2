@@ -106,10 +106,11 @@
 
 BIOMOD_LoadModels <- function(bm.out, ... )
 {
+  .bm_cat("Load Models")
+
   ## 0. Check arguments ---------------------------------------------------------------------------
-  add.args <- list(...)
-  args <- .BIOMOD_LoadModels.check.args(bm.out, add.args)
-  add.args <- args$add.args
+  args <- .BIOMOD_LoadModels.check.args(bm.out, ...)
+  for (argi in names(args)) { assign(x = argi, value = args[[argi]]) }
   rm(args)
   
   ## Get names of models to load
@@ -117,14 +118,14 @@ BIOMOD_LoadModels <- function(bm.out, ... )
   envir <- parent.frame()
   
   ## Create list or a sub-list of models to load ----------------------------------------
-  if (!is.null(add.args$full.name)) {
-    models.to.load <- add.args$full.name
+  if (!is.null(full.name)) {
+    models.to.load <- full.name
   } else { ## make a subselection
     
     ## subselection on models
-    if (!is.null(add.args$models)) {
+    if (!is.null(models)) {
       model.to.load.tmp <- c()
-      for (mod in add.args$models) {
+      for (mod in models) {
         if (sum(grepl(mod, models.to.load)) > 0) {
           model.to.load.tmp <- c(model.to.load.tmp, grep(mod, models.to.load, value = TRUE))
         }
@@ -133,9 +134,9 @@ BIOMOD_LoadModels <- function(bm.out, ... )
     }
     
     ## subselection on run.Eval
-    if (!is.null(add.args$run.eval)) {
+    if (!is.null(run.eval)) {
       model.to.load.tmp <- c()
-      for (re in add.args$run.eval) {
+      for (re in run.eval) {
         if (sum(grepl(re, models.to.load)) > 0) {
           model.to.load.tmp <- c(model.to.load.tmp, grep(re, models.to.load, value = TRUE))
         }
@@ -144,9 +145,9 @@ BIOMOD_LoadModels <- function(bm.out, ... )
     }
     
     ## subselection on data.set
-    if (!is.null(add.args$data.set)) {
+    if (!is.null(data.set)) {
       model.to.load.tmp <- c()
-      for (ds in add.args$data.set) {
+      for (ds in data.set) {
         if (sum(grepl(ds,  models.to.load)) > 0) {
           model.to.load.tmp <- c(model.to.load.tmp, grep(ds, models.to.load, value = TRUE))
         }
@@ -162,15 +163,15 @@ BIOMOD_LoadModels <- function(bm.out, ... )
   
   ## LOAD the selected models -----------------------------------------------------------
   nameFile = file.path(bm.out@sp.name, "models", bm.out@modeling.id)
-  if (!is.null(add.args$as) && length(models.to.load) == 1) {
-    assign(x = add.args$as,
+  .bm_cat("Done")
+  if (!is.null(as) && length(models.to.load) == 1) {
+    assign(x = as,
            value = get(load(file = file.path(nameFile, models.to.load))),
            envir = envir)
     invisible(TRUE)
   } else {
     for (mtl in models.to.load) {
-      load(file = file.path(bm.out@sp.name, "models", bm.out@modeling.id, mtl),
-           envir = envir)
+      load(file = file.path(bm.out@sp.name, "models", bm.out@modeling.id, mtl), envir = envir)
     }
     return(models.to.load)
   }
@@ -179,49 +180,61 @@ BIOMOD_LoadModels <- function(bm.out, ... )
 
 ###################################################################################################
 
-.BIOMOD_LoadModels.check.args <- function(bm.out, add.args)
+.BIOMOD_LoadModels.check.args <- function(bm.out, ...)
 {
+  args <- list(...)
+  
   ## 1. Check bm.out ----------------------------------------------------------
   .fun_testIfInherits(TRUE, "bm.out", bm.out, c("BIOMOD.models.out", "BIOMOD.ensemble.models.out"))
   
-  ## 2. Check add.args --------------------------------------------------------
+  ## 2. Check args ------------------------------------------------------------
   available.args <- c("models", "run.eval", "data.set", "path", "as", "full.name")
-  .fun_testIfIn(TRUE, "names(add.args)", names(add.args), available.args)
+  .fun_testIfIn(TRUE, "names(args)", names(args), available.args)
   avail_models <- get_built_models(bm.out) ## get all available model names
   
   ## 2.1 Check add.args : models ----------------------------------------------
-  if (!is.null(add.args$models)) {
+  models <- args$models
+  if (!is.null(models)) {
     infos = .extract_modelNamesInfo(model.names = avail_models, info = 'models')
-    .fun_testIfIn(TRUE, "add.args$models", add.args$models, infos)
-    add.args$models = paste0("_", add.args$models)
+    .fun_testIfIn(TRUE, "models", models, infos)
+    models = paste0("_", models)
   }
   
   ## 2.2 Check add.args : run.eval --------------------------------------------
-  if (!is.null(add.args$run.eval)) {
+  run.eval <- args$run.eval
+  if (!is.null(run.eval)) {
     infos = .extract_modelNamesInfo(model.names = avail_models, info = 'run.eval')
-    .fun_testIfIn(TRUE, "add.args$run.eval", add.args$run.eval, infos)
-    add.args$run.eval = paste0("_", add.args$run.eval)
+    .fun_testIfIn(TRUE, "run.eval", run.eval, infos)
+    run.eval = paste0("_", run.eval)
   }
   
   ## 2.3 Check add.args : data.set --------------------------------------------
-  if (!is.null(add.args$data.set)) {
+  data.set <- args$data.set
+  if (!is.null(data.set)) {
     infos = .extract_modelNamesInfo(model.names = avail_models, info = 'data.set')
-    .fun_testIfIn(TRUE, "add.args$data.set", add.args$data.set, infos)
-    add.args$data.set = paste0("_", add.args$data.set, "_")
+    .fun_testIfIn(TRUE, "data.set", data.set, infos)
+    data.set = paste0("_", data.set, "_")
   }
   
   ## 2.4 Check path : data.set ------------------------------------------------
-  if (!is.null(add.args$path) && !(bm.out@sp.name %in% list.dirs(path = add.args$path))) {
+  path <- args$path
+  if (!is.null(path) && !(bm.out@sp.name %in% list.dirs(path = path))) {
     stop("invalid path given")
   } else {
-    add.args$path = "."
+    path = "."
   }
   
   ## 2.5 Check path : full.name ------------------------------------------------
-  if (!is.null(add.args$full.name)) {
-    .fun_testIfIn(TRUE, "add.args$full.name", add.args$full.name, avail_models)
+  full.name <- args$full.name
+  if (!is.null(full.name)) {
+    .fun_testIfIn(TRUE, "full.name", full.name, avail_models)
   }
   
-  return(list(add.args = add.args))
+  return(list(models = models,
+              run.eval = run.eval,
+              data.set = data.set, 
+              path = path, 
+              as = args$as, 
+              full.name = full.name))
 }
 

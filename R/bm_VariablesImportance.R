@@ -72,11 +72,7 @@ bm_VariablesImportance <- function(model,
                                    ...)
 {
   args <- .bm_VariablesImportance.check.args(model = model, data = data, method = method, ...)
-  model = args$model
-  data = args$data
-  method = args$method
-  variables = args$variables
-  temp_workdir = args$temp_workdir
+  for (argi in names(args)) { assign(x = argi, value = args[[argi]]) }
   rm(args)
   
   ## Test if prediction is computable

@@ -132,22 +132,9 @@ bm_RunModel <- function(Model, Data, Options, calibLines, Yweights, nam, VarImpo
 {
   ## 0. Check arguments ---------------------------------------------------------------------------
   args <- .bm_RunModel.check.args(Model, Data, Options, calibLines, Yweights, mod.eval.method, evalData, scal.models)
-  if (is.null(args)) { # trouble in input data -> Not Run
-    return(0)
-  } else {
-    Data <- args$Data
-    Yweights <- args$Yweights
-    evalLines <- args$evalLines
-    Type <- args$Type
-    criteria <- args$criteria
-    Prev <- args$Prev
-    mod.eval.method <- args$mod.eval.method
-    evalData <- args$evalData
-    scal.models <- args$scal.models
-    resp_name <- args$resp_name
-    expl_var_names <- args$expl_var_names
-    compress.arg <- TRUE # ifelse(.Platform$OS.type == 'windows', 'gzip', 'xz')
-  }
+  for (argi in names(args)) { assign(x = argi, value = args[[argi]]) }
+  rm(args)
+  
   
   ## get model name and names of categorical variables
   model_name <- paste0(nam, '_', Model)
@@ -788,7 +775,7 @@ bm_RunModel <- function(Model, Data, Options, calibLines, Yweights, nam, VarImpo
   ## 6. SAVE MODEL OBJECT ON HARD DRIVE -----------------------------------------------------------
   nameModel = paste(nam, Model, sep = "_") 
   assign(x = nameModel, value = model.bm)
-  save(list = nameModel, file = file.path(resp_name, "models", modeling.id, nameModel), compress = compress.arg)
+  save(list = nameModel, file = file.path(resp_name, "models", modeling.id, nameModel), compress = TRUE)
   
   
   return(ListOut)
@@ -940,4 +927,86 @@ bm_RunModel <- function(Model, Data, Options, calibLines, Yweights, nam, VarImpo
               scal.models = scal.models,
               resp_name = resp_name,
               expl_var_names = expl_var_names))
+}
+
+
+.maxent.prepare.workdir <- function(Data, xy, calibLines = NULL, RunName = NULL,
+                                    evalData = NULL, evalxy =  NULL,
+                                    species.name = NULL, modeling.id = '',
+                                    background_data_dir = 'default')
+{
+  cat('\n\t\tCreating Maxent Temp Proj Data...')
+  
+  ## initialise output
+  MWD <- list()
+  class(MWD) <- "maxent_workdir_info"
+  
+  ## default parameters setting
+  if (is.null(RunName)) { RunName <- colnames(Data)[1] }
+  if (is.null(species.name)) { species.name <- colnames(Data)[1] }
+  if (is.null(calibLines)) { calibLines <- rep(TRUE, nrow(Data)) }
+  
+  ## define all paths to files needed by MAXENT.Phillips
+  nameFolder = file.path(species.name, 'models', modeling.id)
+  m_outdir <- file.path(nameFolder, paste0(RunName, '_MAXENT.Phillips_outputs'))
+  m_predictDir <- file.path(m_outdir, "Predictions")
+  MWD$m_outdir <- m_outdir
+  MWD$m_outputFile <- file.path(m_outdir, paste0(RunName, '_Pred_swd.csv'))
+  MWD$m_predictDir <- m_predictDir
+  
+  ## directories creation
+  dir.create(m_outdir, showWarnings = FALSE, recursive = TRUE, mode = '777')
+  dir.create(m_predictDir, showWarnings = FALSE, recursive = TRUE, mode = '777')
+  
+  ## Presence Data --------------------------------------------------------------------------------
+  presLines <- which((Data[, 1] == 1) & calibLines)
+  absLines <- which((Data[, 1] == 0) & calibLines)
+  Sp_swd <- cbind(rep(RunName, length(presLines))
+                  , xy[presLines, ]
+                  , Data[presLines, 2:ncol(Data), drop = FALSE])
+  colnames(Sp_swd) <- c('species', 'X', 'Y', colnames(Data)[2:ncol(Data)])
+  
+  m_speciesFile <- file.path(m_outdir, "Sp_swd.csv")
+  write.table(Sp_swd, file = m_speciesFile, quote = FALSE, row.names = FALSE, sep = ",")
+  MWD$m_speciesFile <- m_speciesFile
+  
+  ## Background Data (create background file only if needed) --------------------------------------
+  if (background_data_dir == 'default')
+  {
+    # keep only 0 of calib lines
+    Back_swd <- cbind(rep("background", length(absLines))
+                      , xy[absLines, ]
+                      , Data[absLines, 2:ncol(Data), drop = FALSE])
+    colnames(Back_swd) <- c("background", colnames(Back_swd)[-1])
+    
+    m_backgroundFile <- file.path(m_outdir, "Back_swd.csv")
+    write.table(Back_swd, file = m_backgroundFile, quote = FALSE, row.names = FALSE, col.names = TRUE, sep = ",")
+    MWD$m_backgroundFile <- m_backgroundFile
+  } else { ## use background directory given as an option
+    MWD$m_backgroundFile <- background_data_dir
+  }
+  
+  ## Prediction Data ------------------------------------------------------------------------------
+  Pred_swd <- cbind(rep("predict", nrow(xy))
+                    , xy
+                    , Data[, 2:ncol(Data), drop = FALSE])
+  colnames(Pred_swd)  <- c("predict", colnames(xy), colnames(Data)[-1])
+  
+  m_predictFile <- file.path(m_predictDir, "Pred_swd.csv")
+  write.table(Pred_swd, file = m_predictFile, quote = FALSE, row.names = FALSE, col.names = TRUE, sep = ",")
+  MWD$m_predictFile <- m_predictFile
+  
+  ## dealing with independent evaluation data -----------------------------------------------------
+  if (!is.null(evalData)) {
+    Pred_eval_swd <- cbind(rep("predictEval", nrow(evalxy))
+                           , evalxy
+                           , evalData[, 2:ncol(evalData), drop = FALSE])
+    colnames(Pred_eval_swd) <- c("predict", colnames(Back_swd)[-1])
+    
+    m_predictEvalFile <- file.path(m_predictDir, "PredEval_swd.csv")
+    write.table(Pred_eval_swd, file = m_predictEvalFile, quote = FALSE, row.names = FALSE, col.names = TRUE, sep = ",")
+    MWD$m_predictEvalFile <- m_predictEvalFile
+  }
+  
+  return(MWD)
 }

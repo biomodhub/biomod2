@@ -255,23 +255,8 @@ BIOMOD_FormatingData <- function(resp.var,
                                            PA.dist.max,
                                            PA.sre.quant,
                                            PA.table)
-  resp.var <- args$resp.var
-  expl.var <- args$expl.var
-  resp.xy <- args$resp.xy
-  resp.name <- args$resp.name
-  eval.resp.var <- args$eval.resp.var
-  eval.expl.var <- args$eval.expl.var
-  eval.resp.xy <- args$eval.resp.xy
-  PA.nb.rep <- args$PA.nb.rep
-  PA.nb.absences <- args$PA.nb.absences
-  PA.strategy <- args$PA.strategy
-  PA.dist.min <- args$PA.dist.min
-  PA.dist.max <- args$PA.dist.max
-  PA.sre.quant <- args$PA.sre.quant
-  PA.table <- args$PA.table
-
-  rm('args')
-  gc()
+  for (argi in names(args)) { assign(x = argi, value = args[[argi]]) }
+  rm(args)
 
   ## 2. build BIOMOD.formated.data object -------------------------------------
   out <- NULL

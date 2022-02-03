@@ -158,6 +158,7 @@ BIOMOD_CrossValidation <- function(data,
                                    balance = "presences",
                                    do.full.models = TRUE)
 {
+  .bm_cat("Build Cross-Validation Table")
   DataSplitTable.y <- DataSplitTable.x <- DataSplitTable <- NULL
   
   ## STRATIFIED (X, Y, BOTH) / BLOCK / ENVIRONMENTAL CROSS VALIDATION -----------------------------
@@ -233,5 +234,6 @@ BIOMOD_CrossValidation <- function(data,
     colnames(DataSplitTable)[ncol(DataSplitTable)] <- "Full"
   }
   
+  .bm_cat("Done")
   return(DataSplitTable)
 }

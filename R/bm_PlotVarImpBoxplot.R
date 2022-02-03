@@ -57,10 +57,11 @@
 bm_PlotVarImpBoxplot <- function(modeling.output, group.by = c('run', 'expl.var', 'algo'), plot = TRUE, ...)
 {
   ## 0. Check arguments ---------------------------------------------------------------------------
-  args <- .bm_PlotVarImpBoxplot.check.args(modeling.output, group.by, list(...))
-  main <- args$main
+  args <- .bm_PlotVarImpBoxplot.check.args(modeling.output, group.by, ...)
+  for (argi in names(args)) { assign(x = argi, value = args[[argi]]) }
   rm(args)
-  
+
+    
   for (i in 1:length(group.by)) {
     tmp = strsplit(group.by[i], '')[[1]]
     group.by[i] <- paste0(toupper(tmp[1]), paste0(tmp[2:length(tmp)], collapse = ''))
@@ -95,8 +96,10 @@ bm_PlotVarImpBoxplot <- function(modeling.output, group.by = c('run', 'expl.var'
 
 ###################################################################################################
 
-.bm_PlotVarImpBoxplot.check.args <- function(modeling.output, group.by = 'Algo', args)
+.bm_PlotVarImpBoxplot.check.args <- function(modeling.output, group.by = 'Algo', ...)
 {
+  args <- list(...)
+  
   ## 1. Check modeling.output argument ----------------------------------------
   .fun_testIfInherits(TRUE, "modeling.output", modeling.output, c("BIOMOD.models.out", "BIOMOD.ensemble.models.out"))
   

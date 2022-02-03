@@ -226,6 +226,7 @@ BIOMOD_Tuning <- function(data,
                           numCores.ME = NULL,
                           Yweights = NULL)
 {
+  .bm_cat("Tune Modeling Options")
   
   ## MAXENT: http://cran.r-project.org/web/packages/ENMeval/ENMeval.pdf --> ENMevaluate()
   ## or:    http://cran.r-project.org/web/packages/maxent/maxent.pdf -->  tune.maxent()
@@ -680,7 +681,7 @@ BIOMOD_Tuning <- function(data,
   #   } else { if('MAXENT.Tsuruoka' %in% models){cat("Tuning MAXENT.Tsuruoka failed!"); tune.MAXENT.Tsuruoka <- "FAILED"}}
   # }  
   
-  
+  .bm_cat("Done")
   return(list(models.options=models.options, tune.SRE =tune.SRE,  tune.CTA.rpart = tune.CTA.rpart, tune.CTA.rpart2 = tune.CTA.rpart2,
               tune.RF = tune.RF, tune.ANN = tune.ANN,  tune.MARS = tune.MARS, tune.FDA = tune.FDA, tune.GBM=tune.GBM,
               tune.GAM = tune.GAM, tune.MAXENT.Phillips = tune.MAXENT.Phillips, 
