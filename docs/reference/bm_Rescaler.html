@@ -142,7 +142,7 @@ function to get more information about this procedure.</em></p>
 <span class="va">b</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/which.html" class="external-link">which</a></span><span class="op">(</span><span class="va">b</span> <span class="op">&gt;</span> <span class="fl">1000</span><span class="op">)</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="fl">1000</span>
 
 <span class="va">b_rescaled</span> <span class="op">&lt;-</span> <span class="fu">bm_Rescaler</span><span class="op">(</span>dataToRescale <span class="op">=</span> <span class="va">b</span>, name <span class="op">=</span> <span class="st">"TEST"</span>, doModel <span class="op">=</span> <span class="cn">TRUE</span>, ref <span class="op">=</span> <span class="va">a</span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/pkg/raster/man/plot.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">b</span>, <span class="va">b_rescaled</span><span class="op">)</span>
+<span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">b</span>, <span class="va">b_rescaled</span><span class="op">)</span>
 <span class="fu"><a href="https://rdrr.io/r/graphics/abline.html" class="external-link">abline</a></span><span class="op">(</span>a <span class="op">=</span> <span class="fl">0</span>, b <span class="op">=</span> <span class="fl">0.001</span>, lty <span class="op">=</span> <span class="fl">2</span><span class="op">)</span>
 
 

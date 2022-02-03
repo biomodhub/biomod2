@@ -106,8 +106,6 @@ calibration / training range, identifying locations where predictions are uncert
   \item{\code{output.format} : }{a \code{character} value corresponding to the projections 
   saving format on hard drive, must be either \code{.grd}, \code{.img} or \code{.RData} (the 
   default if \code{new.env} is given as \code{matrix} or \code{data.frame})}
-  \item{\code{silent} : }{a \code{logical} value defining whether console outputs are to be 
-  printed or not}
 }
 }
 \examples{

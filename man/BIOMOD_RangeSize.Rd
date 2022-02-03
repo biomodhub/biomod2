@@ -152,7 +152,7 @@ plot(myBiomodRangeSize$Diff.By.Pixel)
 \seealso{
 \code{\link{BIOMOD_FormatingData}}, \code{\link{BIOMOD_ModelingOptions}}, 
 \code{\link{BIOMOD_Projection}}, \code{\link{BIOMOD_EnsembleModeling}}, 
-\code{\link{BIOMOD_EnsembleForecasting}}, \code{\link{level.plot}}
+\code{\link{BIOMOD_EnsembleForecasting}}, \code{\link{bm_PlotRangeSize}}
 }
 \author{
 Wilfried Thuiller, Damien Georges, Bruno Lafourcade
