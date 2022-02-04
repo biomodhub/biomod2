@@ -9,11 +9,10 @@
 ##' 
 ##' @title Select pseudo-absences
 ##' 
-##' @description 
-##' 
-##' This internal \pkg{biomod2} function allows to select pseudo-absences according to 4 different 
-##' methods : \code{random}, \code{sre}, \code{disk} or \code{user.defined} (see 
+##' @description This internal \pkg{biomod2} function allows to select pseudo-absences according 
+##' to 4 different methods : \code{random}, \code{sre}, \code{disk} or \code{user.defined} (see 
 ##' \href{bm_PseudoAbsences/html#details}{Details}).
+##' 
 ##' 
 ##' @param sp the species observations
 ##' @param env the explanatory variables
@@ -66,7 +65,8 @@
 ##' @keywords pseudo-absence, random, SRE, disk
 ##' 
 ##' 
-##' @seealso \code{\link{BIOMOD_FormatingData}}
+##' @seealso \code{\link{biomod.formated.data.PA}}, \code{\link{BIOMOD_FormatingData}}
+##' @family Secundary functions
 ##'
 ##' 
 ##' @importFrom raster extract coordinates subset reclassify mask cellFromXY xyFromCell distance 

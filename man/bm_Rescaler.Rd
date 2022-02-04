@@ -27,8 +27,8 @@ A \code{vector} containing values to weight \code{dataToRescale} and influence p
 A \code{vector} containing rescaled values between \code{0} and \code{1}.
 }
 \description{
-This internal \pkg{biomod2} function allows the user to rescale predicted values from \code{0} 
-to \code{1} with a binomial GLM (see \href{bm_Rescaler.html#details}{Details}).
+This internal \pkg{biomod2} function allows the user to rescale predicted values 
+from \code{0} to \code{1} with a binomial GLM (see \href{bm_Rescaler.html#details}{Details}).
 }
 \details{
 \emph{Please refer to parameter \code{rescal.all.models} in \code{\link{BIOMOD_Modeling}} 
@@ -57,12 +57,29 @@ abline(a = 0, b = 0.001, lty = 2)
 
 }
 \seealso{
-\code{\link{BIOMOD_Modeling}}, \code{\link{bm_Projection}}, 
-\code{\link{BIOMOD_Projection}}
+\code{\link{bm_RunModelsLoop}}, \code{\link{BIOMOD_Modeling}}
+
+Other Secundary functions: 
+\code{\link{bm_BinaryTransformation}()},
+\code{\link{bm_CVnnet}()},
+\code{\link{bm_FindOptimStat}()},
+\code{\link{bm_MakeFormula}()},
+\code{\link{bm_PlotEvalBoxplot}()},
+\code{\link{bm_PlotEvalMean}()},
+\code{\link{bm_PlotRangeSize}()},
+\code{\link{bm_PlotResponseCurves}()},
+\code{\link{bm_PlotVarImpBoxplot}()},
+\code{\link{bm_PseudoAbsences}()},
+\code{\link{bm_RunModelsLoop}()},
+\code{\link{bm_SRE}()},
+\code{\link{bm_SampleBinaryVector}()},
+\code{\link{bm_SampleFactorLevels}()},
+\code{\link{bm_VariablesImportance}()}
 }
 \author{
 Damien Georges
 }
+\concept{Secundary functions}
 \keyword{glm}
 \keyword{models,}
 \keyword{projection,}

@@ -7,10 +7,10 @@
 ##' 
 ##' @title Calculate the best score according to a given evaluation method
 ##'
-##' @description 
-##' 
-##' This internal \pkg{biomod2} function allows the user to find the threshold to convert 
-##' continuous values into binary ones leading to the best score for a given evaluation metric.
+##' @description This internal \pkg{biomod2} function allows the user to find the threshold to 
+##' convert continuous values into binary ones leading to the best score for a given evaluation 
+##' metric.
+##'
 ##'
 ##' @param Stat a \code{character} corresponding to the evaluation metric to be used, must be 
 ##' either \code{ROC}, \code{TSS}, \code{KAPPA}, \code{ACCURACY}, \code{BIAS}, \code{POD}, 
@@ -48,9 +48,11 @@
 ##' @keywords models, options, evaluation
 ##' 
 ##'
-##' @seealso \code{\link{BIOMOD_Modeling}}, \code{\link{BIOMOD_EnsembleModeling}}
-##'
-##'
+##' @seealso \code{\link{BIOMOD_Modeling}}, \code{\link{bm_RunModelsLoop}}, 
+##' \code{\link{BIOMOD_EnsembleModeling}}
+##' @family Secundary functions
+##' 
+##' 
 ##' @examples
 ##' 
 ##' ## generate a binary vector

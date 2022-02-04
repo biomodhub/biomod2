@@ -16,6 +16,7 @@
 ##' \code{\link{BIOMOD_EnsembleModeling}} to build their output object (see 
 ##' \code{\link{BIOMOD.models.out}} objects)
 ##' 
+##' 
 ##' @slot inMemory a \code{logical} defining whether the \code{val} slot has been loaded in 
 ##' memory or not
 ##' @slot link a \code{character} containing the file name of the saved \code{val} slot
@@ -44,9 +45,10 @@
 ##' 
 ##' 
 ##' @seealso \code{\link{BIOMOD.formated.data}}, \code{\link{BIOMOD.model.options}},
-##' \code{\link{BIOMOD.models.out}},  
+##' \code{\link{BIOMOD.models.out}}, 
 ##' \code{\link{BIOMOD_Modeling}}, \code{\link{BIOMOD_EnsembleModeling}}, 
 ##' \code{\link{BIOMOD_Projection}}, \code{\link{BIOMOD_EnsembleForecasting}}
+##' @family Toolbox objects
 ##' 
 ##' 
 ##' @examples 
@@ -130,9 +132,10 @@ setClass("BIOMOD.stored.models.options",
 ##' @description This functions allow the user to load \code{\link{BIOMOD.stored.data}} objects 
 ##' into memory.
 ##' 
-##' 
 ##' @param obj a \code{\link{BIOMOD.stored.data}} object
 ##' 
+##' @seealso \code{\link{BIOMOD.stored.data}}
+##' @family Toolbox functions
 ##' 
 ##' @export
 ##' 

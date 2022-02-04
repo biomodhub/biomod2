@@ -13,6 +13,16 @@ load_stored_object(obj, ...)
 This functions allow the user to load \code{\link{BIOMOD.stored.data}} objects 
 into memory.
 }
+\seealso{
+\code{\link{BIOMOD.stored.data}}
+
+Other Toolbox functions: 
+\code{\link{getters.bm}},
+\code{\link{getters.out}},
+\code{\link{predict.bm}},
+\code{\link{predict.em}}
+}
 \author{
 Damien Georges
 }
+\concept{Toolbox functions}

@@ -4,11 +4,9 @@
 ##' 
 ##' @title Plot species range change
 ##' 
-##' @description
-##' 
-##' This function represents species range change from object that can be obtained from 
-##' \code{\link{BIOMOD_RangeSize}} function. Several graphics can be obtained, representing global 
-##' counts or proportions of gains / losses, as well as spatial representations (see 
+##' @description This function represents species range change from object that can be obtained 
+##' from \code{\link{BIOMOD_RangeSize}} function. Several graphics can be obtained, representing 
+##' global counts or proportions of gains / losses, as well as spatial representations (see 
 ##' \href{bm_PlotRangeSize.html#details}{Details}).
 ##' 
 ##' 
@@ -47,9 +45,12 @@
 ##' \emph{Please see \code{\link{BIOMOD_RangeSize}} function for more details about the values.}
 ##' 
 ##' 
-##' @seealso \code{\link{BIOMOD_RangeSize}}
-##' 
 ##' @keywords ggplot, species range change, projections, gain, loss
+##' 
+##' 
+##' @seealso \code{\link{BIOMOD_RangeSize}}
+##' @family Secundary functions
+##' @family Plot functions
 ##' 
 ##' 
 ##' @examples

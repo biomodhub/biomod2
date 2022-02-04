@@ -42,8 +42,8 @@
 ##' }
 ##' 
 ##' 
-##' 
 ##' @seealso \code{\link{BIOMOD_Modeling}}, \code{\link{BIOMOD_EnsembleModeling}}
+##' @family Main functions
 ##' 
 ##' 
 ##' @examples

@@ -67,9 +67,9 @@
 ##' @keywords species range change, projections, gain, loss
 ##' 
 ##' 
-##' @seealso \code{\link{BIOMOD_FormatingData}}, \code{\link{BIOMOD_ModelingOptions}}, 
-##' \code{\link{BIOMOD_Projection}}, \code{\link{BIOMOD_EnsembleModeling}}, 
-##' \code{\link{BIOMOD_EnsembleForecasting}}, \code{\link{bm_PlotRangeSize}}
+##' @seealso \code{\link{BIOMOD_Projection}}, \code{\link{BIOMOD_EnsembleForecasting}}, 
+##' \code{\link{bm_PlotRangeSize}}
+##' @family Main functions
 ##' 
 ##'   
 ##' @examples

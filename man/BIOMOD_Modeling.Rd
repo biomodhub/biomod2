@@ -253,11 +253,26 @@ myBiomodModelOut
 \seealso{
 \code{\link{BIOMOD_FormatingData}}, \code{\link{BIOMOD_ModelingOptions}}, 
 \code{\link{BIOMOD_CrossValidation}}, \code{ \link{bm_VariablesImportance}}, 
-\code{\link{BIOMOD_Projection}}, \code{\link{BIOMOD_EnsembleModeling}}
+\code{\link{BIOMOD_Projection}}, \code{\link{BIOMOD_EnsembleModeling}},
+\code{\link{bm_PlotEvalMean}}, \code{\link{bm_PlotEvalBoxplot}}, 
+\code{\link{bm_PlotVarImpBoxplot}}, \code{\link{bm_PlotResponseCurves}}
+
+Other Main functions: 
+\code{\link{BIOMOD_CrossValidation}()},
+\code{\link{BIOMOD_EnsembleForecasting}()},
+\code{\link{BIOMOD_EnsembleModeling}()},
+\code{\link{BIOMOD_FormatingData}()},
+\code{\link{BIOMOD_LoadModels}()},
+\code{\link{BIOMOD_ModelingOptions}()},
+\code{\link{BIOMOD_PresenceOnly}()},
+\code{\link{BIOMOD_Projection}()},
+\code{\link{BIOMOD_RangeSize}()},
+\code{\link{BIOMOD_Tuning}()}
 }
 \author{
 Wilfried Thuiller, Damien Georges, Robin Engler
 }
+\concept{Main functions}
 \keyword{models,}
 \keyword{multivariate,}
 \keyword{nonlinear,}

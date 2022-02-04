@@ -83,7 +83,18 @@ showClass("SRE_biomod2_model")
 }
 \seealso{
 \code{\link{BIOMOD_Modeling}}, \code{\link{bm_RunModel}}
+
+Other Toolbox objects: 
+\code{\link{BIOMOD.ensemble.models.out}},
+\code{\link{BIOMOD.formated.data.PA}},
+\code{\link{BIOMOD.formated.data}},
+\code{\link{BIOMOD.model.options}},
+\code{\link{BIOMOD.models.out}},
+\code{\link{BIOMOD.projection.out}},
+\code{\link{BIOMOD.stored.data}},
+\code{\link{biomod2_ensemble_model}}
 }
 \author{
 Damien Georges
 }
+\concept{Toolbox objects}

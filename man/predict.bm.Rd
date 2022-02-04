@@ -66,6 +66,16 @@
 This function allows the user to predict single models from 
 \code{\link{biomod2_model}} on (new) explanatory variables.
 }
+\seealso{
+\code{\link{biomod2_model}}
+
+Other Toolbox functions: 
+\code{\link{getters.bm}},
+\code{\link{getters.out}},
+\code{\link{load_stored_object}()},
+\code{\link{predict.em}}
+}
 \author{
 Damien Georges
 }
+\concept{Toolbox functions}

@@ -6,6 +6,7 @@
 ##' 
 ##' @description Function to tune \pkg{biomod2} single models parameters
 ##'
+##'
 ##' @param data a \code{\link{BIOMOD.formated.data}} object returned by the 
 ##' \code{\link{BIOMOD_FormatingData}} function
 ##' @param models a \code{vector} containing model names to be tuned, \cr 
@@ -111,7 +112,8 @@
 ##' 
 ##' 
 ##' @seealso \code{\link[caret]{train}}, \code{\link[ENMeval]{ENMevaluate}}, 
-##' \code{\link{BIOMOD_ModelingOptions}}
+##' \code{\link{BIOMOD_ModelingOptions}}, \code{\link{BIOMOD_Modeling}}
+##' @family Main functions
 ##' 
 ##' 
 ##' @examples

@@ -4,11 +4,10 @@
 ##' 
 ##' @title Convert probability values into binary values using a predefined threshold
 ##' 
-##' @description 
-##' 
-##' This internal \pkg{biomod2} function allows to convert probability (not necessary between 
-##' \code{0} and \code{1}) values into binary presence-absence (\code{0} or \code{1}) values 
+##' @description This internal \pkg{biomod2} function allows to convert probability (not necessary 
+##' between \code{0} and \code{1}) values into binary presence-absence (\code{0} or \code{1}) values 
 ##' according to a predefined threshold (see \href{bm_BinaryTransformation.html#details}{Details}).
+##' 
 ##' 
 ##' @param data a \code{vector}, a \code{matrix} or \code{data.frame}, a 
 ##' \code{\link[raster:raster]{raster}} or \code{\link[raster:stack]{RasterStack}} containing the 
@@ -50,8 +49,9 @@
 ##' 
 ##' 
 ##' @seealso \code{\link{BIOMOD_Projection}}, \code{\link{BIOMOD_EnsembleForecasting}}
+##' @family Secundary functions
 ##'
-##'
+##' 
 ##' @examples
 ##' 
 ##' ## generate 'probability' vector

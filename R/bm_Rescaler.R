@@ -4,11 +4,10 @@
 ##' 
 ##' @title Rescale values between \code{0} and \code{1} with a binomial GLM
 ##'
-##' @description 
-##' 
-##' This internal \pkg{biomod2} function allows the user to rescale predicted values from \code{0} 
-##' to \code{1} with a binomial GLM (see \href{bm_Rescaler.html#details}{Details}).
+##' @description This internal \pkg{biomod2} function allows the user to rescale predicted values 
+##' from \code{0} to \code{1} with a binomial GLM (see \href{bm_Rescaler.html#details}{Details}).
 ##'
+##' 
 ##' @param dataToRescale a \code{vector} containing predicted values to be rescaled
 ##' @param name a \code{character} corresponding to model name to be used, must be among \code{GLM}, 
 ##' \code{GBM}, \code{GAM}, \code{CTA}, \code{ANN}, \code{SRE}, \code{FDA}, \code{MARS}, 
@@ -25,7 +24,8 @@
 ##' @return 
 ##' 
 ##' A \code{vector} containing rescaled values between \code{0} and \code{1}.
-##'
+##' 
+##' 
 ##' @details
 ##' 
 ##' \emph{Please refer to parameter \code{rescal.all.models} in \code{\link{BIOMOD_Modeling}} 
@@ -38,8 +38,8 @@
 ##' @keywords models, projection, rescale, glm
 ##' 
 ##'
-##' @seealso \code{\link{BIOMOD_Modeling}}, \code{\link{bm_Projection}}, 
-##' \code{\link{BIOMOD_Projection}}
+##' @seealso \code{\link{bm_RunModelsLoop}}, \code{\link{BIOMOD_Modeling}}
+##' @family Secundary functions
 ##'
 ##'
 ##' @examples

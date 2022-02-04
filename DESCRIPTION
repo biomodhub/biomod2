@@ -47,6 +47,7 @@ Imports:
     mda,
     randomForest,
     maxnet,
+    caret,
     rpart,
     MASS,
     pROC (>= 1.15.0),
@@ -54,8 +55,7 @@ Imports:
     dismo,
     ENMeval,
     earth,
-    dplyr,
-    tidyr
+    dplyr
 Suggests:
     Hmisc,
     gam,

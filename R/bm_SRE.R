@@ -4,13 +4,12 @@
 ##' 
 ##' @title Surface Range Envelope
 ##' 
-##' @description 
-##' 
-##' This internal \pkg{biomod2} function allows the user to run a rectilinear surface range 
-##' envelop (SRE) (equivalent to 
+##' @description This internal \pkg{biomod2} function allows the user to run a rectilinear surface 
+##' range envelop (SRE) (equivalent to 
 ##' \href{https://caws.org.nz/PPQ567/PPQ\%2006-1\%20pp008-9\%20Busby.pdf}{BIOCLIM}) 
 ##' using the extreme percentiles (as recommended by Nix or Busby, see 
 ##' \href{bm_SRE.html#references}{References} and \href{bm_SRE.html#details}{Details}).
+##' 
 ##' 
 ##' @param Response a \code{vector}, \code{matrix}, \code{data.frame}, 
 ##' \code{\link[sp]{SpatialPointsDataFrame}} or \code{\link[raster:raster]{raster}} object 
@@ -69,8 +68,11 @@
 ##' 
 ##' @keywords models, surface range envelop, sre, quantile
 ##' 
-##' @seealso \code{\link{BIOMOD_FormatingData}}, \code{\link{BIOMOD_ModelingOptions}},
-##' \code{\link{BIOMOD_Tuning}}, \code{\link{BIOMOD_Modeling}}, \code{\link{BIOMOD_Projection}}
+##' 
+##' @seealso \code{\link{bm_PseudoAbsences}}, \code{\link{BIOMOD_FormatingData}}, 
+##' \code{\link{BIOMOD_ModelingOptions}}, \code{\link{BIOMOD_Tuning}}, 
+##' \code{\link{bm_RunModelsLoop}}, \code{\link{BIOMOD_Modeling}},
+##' @family Secundary functions
 ##' 
 ##' 
 ##' @examples

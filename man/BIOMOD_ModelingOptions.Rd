@@ -247,6 +247,7 @@ Below is the detailed list of all modifiable parameters for each available model
   be computed, otherwise \emph{random.forest regression} will be done}
   \item{\code{ntree = 500}}
   \item{\code{mtry = 'default'}}
+  \item{\code{sampsize = NULL}}
   \item{\code{nodesize = 5}}
   \item{\code{maxnodes = NULL}}
 }
@@ -355,8 +356,24 @@ bm_DefaultModelingOptions()
 
 
 }
+\seealso{
+\code{\link{BIOMOD_Tuning}}, \code{\link{BIOMOD_Modeling}}
+
+Other Main functions: 
+\code{\link{BIOMOD_CrossValidation}()},
+\code{\link{BIOMOD_EnsembleForecasting}()},
+\code{\link{BIOMOD_EnsembleModeling}()},
+\code{\link{BIOMOD_FormatingData}()},
+\code{\link{BIOMOD_LoadModels}()},
+\code{\link{BIOMOD_Modeling}()},
+\code{\link{BIOMOD_PresenceOnly}()},
+\code{\link{BIOMOD_Projection}()},
+\code{\link{BIOMOD_RangeSize}()},
+\code{\link{BIOMOD_Tuning}()}
+}
 \author{
 Damien Georges, Wilfried Thuiller
 }
+\concept{Main functions}
 \keyword{models,}
 \keyword{options}

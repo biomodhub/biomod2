@@ -165,13 +165,25 @@ plot(myBiomodRangeSize$Diff.By.Pixel)
 
 }
 \seealso{
-\code{\link{BIOMOD_FormatingData}}, \code{\link{BIOMOD_ModelingOptions}}, 
-\code{\link{BIOMOD_Projection}}, \code{\link{BIOMOD_EnsembleModeling}}, 
-\code{\link{BIOMOD_EnsembleForecasting}}, \code{\link{bm_PlotRangeSize}}
+\code{\link{BIOMOD_Projection}}, \code{\link{BIOMOD_EnsembleForecasting}}, 
+\code{\link{bm_PlotRangeSize}}
+
+Other Main functions: 
+\code{\link{BIOMOD_CrossValidation}()},
+\code{\link{BIOMOD_EnsembleForecasting}()},
+\code{\link{BIOMOD_EnsembleModeling}()},
+\code{\link{BIOMOD_FormatingData}()},
+\code{\link{BIOMOD_LoadModels}()},
+\code{\link{BIOMOD_ModelingOptions}()},
+\code{\link{BIOMOD_Modeling}()},
+\code{\link{BIOMOD_PresenceOnly}()},
+\code{\link{BIOMOD_Projection}()},
+\code{\link{BIOMOD_Tuning}()}
 }
 \author{
 Wilfried Thuiller, Damien Georges, Bruno Lafourcade
 }
+\concept{Main functions}
 \keyword{change,}
 \keyword{gain,}
 \keyword{loss}

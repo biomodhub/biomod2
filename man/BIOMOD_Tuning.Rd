@@ -245,8 +245,21 @@ myBiomodModelOut <- BIOMOD_Modeling(myBiomodData,
 }
 \seealso{
 \code{\link[caret]{train}}, \code{\link[ENMeval]{ENMevaluate}}, 
-\code{\link{BIOMOD_ModelingOptions}}
+\code{\link{BIOMOD_ModelingOptions}}, \code{\link{BIOMOD_Modeling}}
+
+Other Main functions: 
+\code{\link{BIOMOD_CrossValidation}()},
+\code{\link{BIOMOD_EnsembleForecasting}()},
+\code{\link{BIOMOD_EnsembleModeling}()},
+\code{\link{BIOMOD_FormatingData}()},
+\code{\link{BIOMOD_LoadModels}()},
+\code{\link{BIOMOD_ModelingOptions}()},
+\code{\link{BIOMOD_Modeling}()},
+\code{\link{BIOMOD_PresenceOnly}()},
+\code{\link{BIOMOD_Projection}()},
+\code{\link{BIOMOD_RangeSize}()}
 }
 \author{
 Frank Breiner
 }
+\concept{Main functions}

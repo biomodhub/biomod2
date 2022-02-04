@@ -99,7 +99,9 @@
 ##' 
 ##' 
 ##' @seealso \code{\link{BIOMOD_FormatingData}}, \code{\link{BIOMOD_ModelingOptions}}, 
-##' \code{\link{BIOMOD_Modeling}}, \code{\link{BIOMOD_EnsembleModeling}}
+##' \code{\link{BIOMOD_Modeling}}, \code{\link{BIOMOD_EnsembleModeling}}, 
+##' \code{\link{BIOMOD_Rangesize}}
+##' @family Main functions
 ##' 
 ##'   
 ##' @examples

@@ -12,6 +12,10 @@
 ##' 
 ##' @param obj a \code{\link{biomod2_model}} object
 ##' 
+##' 
+##' @seealso \code{\link{biomod2_model}}
+##' @family Toolbox functions
+##' 
 NULL
 
 setGeneric("get_formal_model", def = function(object) { standardGeneric("get_formal_model") })
@@ -49,7 +53,13 @@ setGeneric("get_scaling_model", def = function(object) { standardGeneric("get_sc
 ##' @description This function allows the user to predict single models from 
 ##' \code{\link{biomod2_model}} on (new) explanatory variables.
 ##' 
+##' 
 ##' @param obj a \code{\link{biomod2_model}} object
+##' 
+##' 
+##' @seealso \code{\link{biomod2_model}}
+##' @family Toolbox functions
+##' 
 ##' 
 ##' @importFrom raster raster as.matrix is.factor subset calc writeRaster readAll
 ##' predict reclassify rasterToPoints cellFromXY
@@ -82,6 +92,7 @@ NULL
 ##' @title Single model output object class (when running \code{BIOMOD_Modeling()})
 ##' 
 ##' @description Class created by \code{\link{BIOMOD_Modeling}} and \code{\link{bm_RunModel}}
+##' 
 ##' 
 ##' @slot model_name a \code{character} corresponding to the model name
 ##' @slot model_class a \code{character} corresponding to the model class
@@ -117,6 +128,7 @@ NULL
 ##' 
 ##' 
 ##' @seealso \code{\link{BIOMOD_Modeling}}, \code{\link{bm_RunModel}}
+##' @family Toolbox objects
 ##' 
 ##' 
 ##' @examples

@@ -28,11 +28,11 @@ A \code{logical} value defining whether the plot is to be rendered or not}
 A \code{ggplot} object representing boxplot of variables importance.
 }
 \description{
-This function represents boxplot of variables importance of species distribution models, from 
-\code{BIOMOD.models.out} or \code{BIOMOD.ensemble.models.out} objects that can be obtained 
-from \code{\link{BIOMOD_Modeling}} or \code{\link{BIOMOD_EnsembleModeling}} functions. Scores 
-are represented according to 3 grouping methods (see 
-\href{bm_PlotVarImpBoxplot.html#details}{Details}).
+This function represents boxplot of variables importance of species distribution 
+models, from \code{\link{BIOMOD.models.out}} or \code{\link{BIOMOD.ensemble.models.out}} 
+objects that can be obtained from \code{\link{BIOMOD_Modeling}} or 
+\code{\link{BIOMOD_EnsembleModeling}} functions. Scores are represented according to 3 
+grouping methods (see \href{bm_PlotVarImpBoxplot.html#details}{Details}).
 }
 \details{
 \code{...} can take the following values :
@@ -46,12 +46,38 @@ are represented according to 3 grouping methods (see
 
 }
 \seealso{
+\code{\link{BIOMOD.models.out}}, \code{\link{BIOMOD.ensemble.models.out}}, 
 \code{\link{BIOMOD_Modeling}}, \code{\link{BIOMOD_EnsembleModeling}}, 
 \code{\link{get_variables_importance}}
+
+Other Secundary functions: 
+\code{\link{bm_BinaryTransformation}()},
+\code{\link{bm_CVnnet}()},
+\code{\link{bm_FindOptimStat}()},
+\code{\link{bm_MakeFormula}()},
+\code{\link{bm_PlotEvalBoxplot}()},
+\code{\link{bm_PlotEvalMean}()},
+\code{\link{bm_PlotRangeSize}()},
+\code{\link{bm_PlotResponseCurves}()},
+\code{\link{bm_PseudoAbsences}()},
+\code{\link{bm_Rescaler}()},
+\code{\link{bm_RunModelsLoop}()},
+\code{\link{bm_SRE}()},
+\code{\link{bm_SampleBinaryVector}()},
+\code{\link{bm_SampleFactorLevels}()},
+\code{\link{bm_VariablesImportance}()}
+
+Other Plot functions: 
+\code{\link{bm_PlotEvalBoxplot}()},
+\code{\link{bm_PlotEvalMean}()},
+\code{\link{bm_PlotRangeSize}()},
+\code{\link{bm_PlotResponseCurves}()}
 }
 \author{
 Damien Georges, Maya Gueguen
 }
+\concept{Plot functions}
+\concept{Secundary functions}
 \keyword{boxplot}
 \keyword{evaluation,}
 \keyword{ggplot,}

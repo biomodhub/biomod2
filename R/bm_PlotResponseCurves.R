@@ -4,13 +4,11 @@
 ##' 
 ##' @title Plot response curves
 ##' 
-##' @description
-##' 
-##' This function represents response curves of species distribution models, from 
-##' \code{BIOMOD.models.out} or \code{BIOMOD.ensemble.models.out} objects that can be obtained 
-##' from \code{\link{BIOMOD_Modeling}} or \code{\link{BIOMOD_EnsembleModeling}} functions.
-##' Response curves can be represented in either 2 or 3 dimensions (meaning 1 or 2 explanatory 
-##' variables at a time, see \href{bm_PlotResponseCurves.html#details}{Details}).
+##' @description This function represents response curves of species distribution models, from 
+##' \code{\link{BIOMOD.models.out}} or \code{\link{BIOMOD.ensemble.models.out}} objects that can 
+##' be obtained from \code{\link{BIOMOD_Modeling}} or \code{\link{BIOMOD_EnsembleModeling}} 
+##' functions. Response curves can be represented in either 2 or 3 dimensions (meaning 1 or 2 
+##' explanatory variables at a time, see \href{bm_PlotResponseCurves.html#details}{Details}).
 ##' 
 ##'   
 ##' @param modeling.output a \code{\link{BIOMOD.models.out}} or \code{BIOMOD.ensemble.models.out} 
@@ -76,10 +74,13 @@
 ##' }
 ##' 
 ##' 
-##' @seealso \code{\link{BIOMOD_Modeling}}
-##' 
-##' 
 ##' @keywords ggplot, response curve
+##' 
+##' 
+##' @seealso \code{\link{BIOMOD.models.out}}, \code{\link{BIOMOD.ensemble.models.out}}, 
+##' \code{\link{BIOMOD_Modeling}}, \code{\link{BIOMOD_EnsembleModeling}}
+##' @family Secundary functions
+##' @family Plot functions
 ##' 
 ##' 
 ##' @examples

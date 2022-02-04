@@ -6,10 +6,9 @@
 ##' 
 ##' @title Loop to compute all single species distribution models
 ##' 
-##' @description
+##' @description This internal \pkg{biomod2} function allows the user to compute all single 
+##' species istribution models (asked by the \code{\link{BIOMOD_Modeling}} function).
 ##' 
-##' This internal \pkg{biomod2} function allows the user to compute all single species 
-##' distribution models (asked by the \code{\link{BIOMOD_Modeling}} function).
 ##' 
 ##' @param X a \code{BIOMOD.formated.data} or \code{BIOMOD.formated.data.PA} object returned by the 
 ##' \code{\link{BIOMOD_FormatingData}} function
@@ -50,13 +49,14 @@
 ##' }
 ##' 
 ##' 
+##' @keywords models, formula, options, CTA, GLM, GBM, GAM, RF, ANN, FDA, SRE, MARS, MAXENT
+##' 
 ##' 
 ##' @seealso \code{\link{BIOMOD_ModelingOptions}}, \code{\link{BIOMOD_Modeling}}, 
-##' \code{\link{bm_MakeFormula}}, \code{\link{bm_Rescaler}}, \code{\link{bm_FindOptimStat}}, 
-##' \code{\link{bm_VariablesImportance}}
+##' \code{\link{bm_MakeFormula}}, \code{\link{bm_SampleFactorLevels}}, \code{\link{bm_Rescaler}}, 
+##' \code{\link{bm_FindOptimStat}}, \code{\link{bm_VariablesImportance}}
+##' @family Secundary functions
 ##' 
-##' 
-##' @keywords models, formula, options, CTA, GLM, GBM, GAM, RF, ANN, FDA, SRE, MARS, MAXENT
 ##' 
 ##' 
 ##' @importFrom rpart rpart prune
@@ -506,6 +506,7 @@ bm_RunModel <- function(Model, Data, Options, calibLines, Yweights, nam, VarImpo
                                  importance = FALSE,
                                  norm.votes = TRUE,
                                  strata = factor(c(0, 1)),
+                                 sampsize = Options@RF$sampsize,
                                  nodesize = Options@RF$nodesize,
                                  maxnodes = Options@RF$maxnodes))
 

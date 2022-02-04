@@ -178,6 +178,7 @@
 ##' 
 ##' 
 ##' @seealso \code{\link{bm_PseudoAbsences}}, \code{\link{BIOMOD_Modeling}}
+##' @family Main functions
 ##' 
 ##' 
 ##' @examples

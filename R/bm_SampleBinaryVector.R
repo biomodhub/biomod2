@@ -7,6 +7,7 @@
 ##' @description This internal \pkg{biomod2} function allows the user to sample a binary vector 
 ##' keeping the same proportion of \code{0} and \code{1} as the initial vector.
 ##' 
+##' 
 ##' @param ref a \code{vector} containing binary values (either \code{0} or \code{1})
 ##' @param ratio a \code{numeric} between \code{0} and \code{1} corresponding to the proportion 
 ##' of \code{ref} values to sample
@@ -26,12 +27,12 @@
 ##' }
 ##'   
 ##'   
-##' @seealso \code{\link{BIOMOD_FormatingData}}
-##' 
-##' 
 ##' @keywords models, formula, options
 ##' 
-##' @export
+##' 
+##' @seealso \code{\link{bm_CVnnet}}
+##' @family Secundary functions
+##' 
 ##' 
 ##' @examples
 ##' 

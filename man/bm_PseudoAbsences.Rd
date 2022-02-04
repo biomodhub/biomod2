@@ -96,8 +96,8 @@ A \code{list} containing the following elements :
 }
 }
 \description{
-This internal \pkg{biomod2} function allows to select pseudo-absences according to 4 different 
-methods : \code{random}, \code{sre}, \code{disk} or \code{user.defined} (see 
+This internal \pkg{biomod2} function allows to select pseudo-absences according 
+to 4 different methods : \code{random}, \code{sre}, \code{disk} or \code{user.defined} (see 
 \href{bm_PseudoAbsences/html#details}{Details}).
 }
 \details{
@@ -110,11 +110,29 @@ methods : \code{random}, \code{sre}, \code{disk} or \code{user.defined} (see
 \bold{Concerning user defined selection :}
 }
 \seealso{
-\code{\link{BIOMOD_FormatingData}}
+\code{\link{biomod.formated.data.PA}}, \code{\link{BIOMOD_FormatingData}}
+
+Other Secundary functions: 
+\code{\link{bm_BinaryTransformation}()},
+\code{\link{bm_CVnnet}()},
+\code{\link{bm_FindOptimStat}()},
+\code{\link{bm_MakeFormula}()},
+\code{\link{bm_PlotEvalBoxplot}()},
+\code{\link{bm_PlotEvalMean}()},
+\code{\link{bm_PlotRangeSize}()},
+\code{\link{bm_PlotResponseCurves}()},
+\code{\link{bm_PlotVarImpBoxplot}()},
+\code{\link{bm_Rescaler}()},
+\code{\link{bm_RunModelsLoop}()},
+\code{\link{bm_SRE}()},
+\code{\link{bm_SampleBinaryVector}()},
+\code{\link{bm_SampleFactorLevels}()},
+\code{\link{bm_VariablesImportance}()}
 }
 \author{
 Wilfried Thuiller, Damien Georges
 }
+\concept{Secundary functions}
 \keyword{SRE,}
 \keyword{disk}
 \keyword{pseudo-absence,}

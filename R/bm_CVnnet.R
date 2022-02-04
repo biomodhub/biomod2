@@ -4,10 +4,10 @@
 ##' 
 ##' @title Cross-validation for Neural Networks
 ##' 
-##' @description 
+##' @description This internal \pkg{biomod2} function allows the user to compute cross-validation 
+##' for neural networks in ANN model (see \code{\link[nnet]{nnet}} and 
+##' \code{\link{BIOMOD_Modeling}}).
 ##' 
-##' This internal \pkg{biomod2} function allows the user to compute cross-validation for neural 
-##' networks in ANN model (see \code{\link[nnet]{nnet}} and \code{\link{BIOMOD_Modeling}}).
 ##' 
 ##' @param Input complete dataset with explanatory variables
 ##' @param Target calibration dataset with observed presence / absence
@@ -27,13 +27,12 @@
 ##'   \item{\code{AUC} : }{the corresponding Area Under Curve}
 ##' }
 ##' 
+##' @keywords neural networks, cross-validation
 ##' 
 ##' 
 ##' @seealso \code{\link{BIOMOD_ModelingOptions}}, \code{\link{BIOMOD_Modeling}}, 
-##' \code{\link{bm_SampleBinaryVector}}
-##' 
-##' 
-##' @keywords neural networks, cross-validation
+##' \code{\link{bm_SampleBinaryVector}}, \code{\link{bm_RunModelsLoop}}
+##' @family Secundary functions
 ##' 
 ##' 
 ##' @importFrom pROC auc roc

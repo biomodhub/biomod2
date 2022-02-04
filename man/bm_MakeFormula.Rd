@@ -25,8 +25,8 @@ A \code{\link[stats]{formula}} class object that can be directly given to most o
 statistical models.
 }
 \description{
-This internal \pkg{biomod2} function allows the user to create easily a standardized formula 
-that can be used later by statistical models.
+This internal \pkg{biomod2} function allows the user to create easily a 
+standardized formula that can be used later by statistical models.
 }
 \details{
 It is advised to give only a subset of \code{explVar} table to avoid useless memory consuming. 
@@ -61,12 +61,30 @@ myFormula
 
 }
 \seealso{
-\code{\link{BIOMOD_ModelingOptions}}, 
-\code{\link[stats]{formula}}
+\code{\link[stats]{formula}}, \code{\link{BIOMOD_ModelingOptions}}, 
+\code{\link{BIOMOD_Tuning}}, \code{\link{bm_RunModelsLoop}}
+
+Other Secundary functions: 
+\code{\link{bm_BinaryTransformation}()},
+\code{\link{bm_CVnnet}()},
+\code{\link{bm_FindOptimStat}()},
+\code{\link{bm_PlotEvalBoxplot}()},
+\code{\link{bm_PlotEvalMean}()},
+\code{\link{bm_PlotRangeSize}()},
+\code{\link{bm_PlotResponseCurves}()},
+\code{\link{bm_PlotVarImpBoxplot}()},
+\code{\link{bm_PseudoAbsences}()},
+\code{\link{bm_Rescaler}()},
+\code{\link{bm_RunModelsLoop}()},
+\code{\link{bm_SRE}()},
+\code{\link{bm_SampleBinaryVector}()},
+\code{\link{bm_SampleFactorLevels}()},
+\code{\link{bm_VariablesImportance}()}
 }
 \author{
 Damien Georges
 }
+\concept{Secundary functions}
 \keyword{formula,}
 \keyword{models,}
 \keyword{options}

@@ -58,6 +58,11 @@
 ##'   }
 ##' }
 ##' 
+##' 
+##' @seealso \code{\link{bm_PseudoAbsences}}, \code{\link{bm_RunModelsLoop}}, 
+##' \code{\link{BIOMOD_Modeling}}
+##' @family Secundary functions
+##' 
 ##'   
 ##' @examples
 ##' 

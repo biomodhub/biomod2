@@ -4,10 +4,9 @@
 ##' 
 ##' @title Variables' importance calculation
 ##' 
-##' @description
+##' @description This internal \pkg{biomod2} function allows the user to compute a variable 
+##' importance value for each variable involved in the given model.
 ##' 
-##' This internal \pkg{biomod2} function allows the user to compute a variable importance value 
-##' for each variable involved in the given model.
 ##' 
 ##' @param model a \code{BIOMOD.models.out} object (coming either from 
 ##' \code{\link{BIOMOD_Modeling}} or \code{\link{BIOMOD_EnsembleModeling}} function) and for 
@@ -44,6 +43,12 @@
 ##' 
 ##' 
 ##' @keywords shuffle, random, importance, Pearson correlation
+##' 
+##' 
+##' @seealso \code{\link{bm_RunModelsLoop}}, \code{\link{BIOMOD_Modeling}}, 
+##' \code{\link{BIOMOD_EnsembleModeling}}, \code{\link{bm_PlotVarImpBoxplot}}, 
+##' \code{\link{get_variables_importance}}
+##' @family Secundary functions
 ##' 
 ##' 
 ##' @examples

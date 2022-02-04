@@ -51,10 +51,10 @@ A \code{ggplot} object representing response curves.
 }
 \description{
 This function represents response curves of species distribution models, from 
-\code{BIOMOD.models.out} or \code{BIOMOD.ensemble.models.out} objects that can be obtained 
-from \code{\link{BIOMOD_Modeling}} or \code{\link{BIOMOD_EnsembleModeling}} functions.
-Response curves can be represented in either 2 or 3 dimensions (meaning 1 or 2 explanatory 
-variables at a time, see \href{bm_PlotResponseCurves.html#details}{Details}).
+\code{\link{BIOMOD.models.out}} or \code{\link{BIOMOD.ensemble.models.out}} objects that can 
+be obtained from \code{\link{BIOMOD_Modeling}} or \code{\link{BIOMOD_EnsembleModeling}} 
+functions. Response curves can be represented in either 2 or 3 dimensions (meaning 1 or 2 
+explanatory variables at a time, see \href{bm_PlotResponseCurves.html#details}{Details}).
 }
 \details{
 This function is an adaptation of the Evaluation Strip method proposed by Elith et al. (2005). 
@@ -147,11 +147,37 @@ myRespPlot3D <- bm_PlotResponseCurves(myBiomodModelOut,
 }
 }
 \seealso{
-\code{\link{BIOMOD_Modeling}}
+\code{\link{BIOMOD.models.out}}, \code{\link{BIOMOD.ensemble.models.out}}, 
+\code{\link{BIOMOD_Modeling}}, \code{\link{BIOMOD_EnsembleModeling}}
+
+Other Secundary functions: 
+\code{\link{bm_BinaryTransformation}()},
+\code{\link{bm_CVnnet}()},
+\code{\link{bm_FindOptimStat}()},
+\code{\link{bm_MakeFormula}()},
+\code{\link{bm_PlotEvalBoxplot}()},
+\code{\link{bm_PlotEvalMean}()},
+\code{\link{bm_PlotRangeSize}()},
+\code{\link{bm_PlotVarImpBoxplot}()},
+\code{\link{bm_PseudoAbsences}()},
+\code{\link{bm_Rescaler}()},
+\code{\link{bm_RunModelsLoop}()},
+\code{\link{bm_SRE}()},
+\code{\link{bm_SampleBinaryVector}()},
+\code{\link{bm_SampleFactorLevels}()},
+\code{\link{bm_VariablesImportance}()}
+
+Other Plot functions: 
+\code{\link{bm_PlotEvalBoxplot}()},
+\code{\link{bm_PlotEvalMean}()},
+\code{\link{bm_PlotRangeSize}()},
+\code{\link{bm_PlotVarImpBoxplot}()}
 }
 \author{
 Damien Georges, Maya Gueguen
 }
+\concept{Plot functions}
+\concept{Secundary functions}
 \keyword{curve}
 \keyword{ggplot,}
 \keyword{response}

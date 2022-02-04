@@ -188,10 +188,24 @@ myBiomodEMProjection <- BIOMOD_EnsembleForecasting(EM.output = myBiomodEM,
 }
 \seealso{
 \code{\link{BIOMOD_FormatingData}}, \code{\link{BIOMOD_ModelingOptions}}, 
-\code{\link{BIOMOD_Modeling}}, \code{\link{BIOMOD_EnsembleModeling}}
+\code{\link{BIOMOD_Modeling}}, \code{\link{BIOMOD_EnsembleModeling}}, 
+\code{\link{BIOMOD_Rangesize}}
+
+Other Main functions: 
+\code{\link{BIOMOD_CrossValidation}()},
+\code{\link{BIOMOD_EnsembleModeling}()},
+\code{\link{BIOMOD_FormatingData}()},
+\code{\link{BIOMOD_LoadModels}()},
+\code{\link{BIOMOD_ModelingOptions}()},
+\code{\link{BIOMOD_Modeling}()},
+\code{\link{BIOMOD_PresenceOnly}()},
+\code{\link{BIOMOD_Projection}()},
+\code{\link{BIOMOD_RangeSize}()},
+\code{\link{BIOMOD_Tuning}()}
 }
 \author{
 Wilfried Thuiller, Damien Georges, Robin Engler
 }
+\concept{Main functions}
 \keyword{models,}
 \keyword{projection}

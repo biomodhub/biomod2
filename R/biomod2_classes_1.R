@@ -9,8 +9,8 @@
 ##' @title \code{BIOMOD_FormatingData()} output object class
 ##' 
 ##' @description Class returned by \code{\link{BIOMOD_FormatingData}}, and used by 
-##' \code{\link{BIOMOD_Tuning}}, \code{\link{BIOMOD_Modeling}} and 
-##' \code{\link{BIOMOD_CrossValidation}}
+##' \code{\link{BIOMOD_Tuning}}, \code{\link{BIOMOD_CrossValidation}} and 
+##' \code{\link{BIOMOD_Modeling}}
 ##' 
 ##' 
 ##' @slot sp.name a \code{character} corresponding to the species name
@@ -33,7 +33,9 @@
 ##' 
 ##' 
 ##' @seealso \code{\link{BIOMOD_FormatingData}}, \code{\link{BIOMOD_Tuning}}, 
-##' \code{\link{BIOMOD_Modeling}}, \code{\link{BIOMOD_CrossValidation}}
+##' \code{\link{BIOMOD_CrossValidation}}, \code{\link{BIOMOD_Modeling}}, 
+##' \code{\link{bm_RunModelsLoop}}
+##' @family Toolbox objects
 ##' 
 ##' 
 ##' @examples
@@ -389,8 +391,8 @@ setMethod('show', signature('BIOMOD.formated.data'),
 ##' @title \code{BIOMOD_FormatingData()} output object class (with pseudo-absences)
 ##' 
 ##' @description Class returned by \code{\link{BIOMOD_FormatingData}}, and used by 
-##' \code{\link{BIOMOD_Tuning}}, \code{\link{BIOMOD_Modeling}} and 
-##' \code{\link{BIOMOD_CrossValidation}}
+##' \code{\link{BIOMOD_Tuning}}, \code{\link{BIOMOD_CrossValidation}} and 
+##' \code{\link{BIOMOD_Modeling}}
 ##' 
 ##' 
 ##' @slot sp.name a \code{character} corresponding to the species name
@@ -414,11 +416,16 @@ setMethod('show', signature('BIOMOD.formated.data'),
 ##' @slot PA a 2-columns \code{data.frame} containing the corresponding \code{X} and \code{Y} 
 ##' coordinates
 ##' 
+##' 
 ##' @seealso \code{\link{BIOMOD_FormatingData}}, \code{\link{BIOMOD_Tuning}}, 
-##' \code{\link{BIOMOD_Modeling}}, \code{\link{BIOMOD_CrossValidation}}
+##' \code{\link{BIOMOD_CrossValidation}}, \code{\link{BIOMOD_Modeling}}, 
+##' \code{\link{bm_RunModelsLoop}}
+##' @family Toolbox objects
 ##' 
 ##' 
 ##' @examples
+##' 
+##' showClass("BIOMOD.formated.data.PA")
 ##' 
 ##' ## ------------------------------------------------------------------------
 ##' # species occurrences
@@ -844,6 +851,7 @@ setMethod('show', signature('BIOMOD.formated.data.PA'),
 ##' @description Class returned by \code{\link{BIOMOD_ModelingOptions}}, and used by 
 ##' \code{\link{BIOMOD_Tuning}} and \code{\link{BIOMOD_Modeling}}
 ##' 
+##' 
 ##' @slot GLM a \code{list} containing GLM options
 ##' @slot GBM a \code{list} containing GBM options
 ##' @slot GAM a \code{list} containing GAM options
@@ -859,6 +867,7 @@ setMethod('show', signature('BIOMOD.formated.data.PA'),
 ##' 
 ##' @seealso \code{\link{BIOMOD_ModelingOptions}}, \code{\link{BIOMOD_Tuning}}, 
 ##' \code{\link{BIOMOD_Modeling}}
+##' @family Toolbox objects
 ##' 
 ##' 
 ##' @examples

@@ -24,8 +24,8 @@ each variable}
 A \code{matrix} containing variables importance scores for each permutation run.
 }
 \description{
-This internal \pkg{biomod2} function allows the user to compute a variable importance value 
-for each variable involved in the given model.
+This internal \pkg{biomod2} function allows the user to compute a variable 
+importance value for each variable involved in the given model.
 }
 \details{
 For each variable to be evaluated :
@@ -58,9 +58,32 @@ bm_VariablesImportance(model = mod,
 
 
 }
+\seealso{
+\code{\link{bm_RunModelsLoop}}, \code{\link{BIOMOD_Modeling}}, 
+\code{\link{BIOMOD_EnsembleModeling}}, \code{\link{bm_PlotVarImpBoxplot}}, 
+\code{\link{get_variables_importance}}
+
+Other Secundary functions: 
+\code{\link{bm_BinaryTransformation}()},
+\code{\link{bm_CVnnet}()},
+\code{\link{bm_FindOptimStat}()},
+\code{\link{bm_MakeFormula}()},
+\code{\link{bm_PlotEvalBoxplot}()},
+\code{\link{bm_PlotEvalMean}()},
+\code{\link{bm_PlotRangeSize}()},
+\code{\link{bm_PlotResponseCurves}()},
+\code{\link{bm_PlotVarImpBoxplot}()},
+\code{\link{bm_PseudoAbsences}()},
+\code{\link{bm_Rescaler}()},
+\code{\link{bm_RunModelsLoop}()},
+\code{\link{bm_SRE}()},
+\code{\link{bm_SampleBinaryVector}()},
+\code{\link{bm_SampleFactorLevels}()}
+}
 \author{
 Damien Georges
 }
+\concept{Secundary functions}
 \keyword{Pearson}
 \keyword{correlation}
 \keyword{importance,}

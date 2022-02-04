@@ -20,7 +20,13 @@
 ##' @description This function allows the user to predict single models from 
 ##' \code{\link{biomod2_ensemble_model}} on (new) explanatory variables.
 ##' 
+##' 
 ##' @param obj a \code{\link{biomod2_ensemble_model}} object
+##' 
+##' 
+##' @seealso \code{\link{biomod2_ensemble_model}}
+##' @family Toolbox functions
+##' 
 ##' 
 ##' @importFrom raster calc reclassify
 ##' 
@@ -45,6 +51,7 @@ NULL
 ##' @title Ensemble model output object class (when running \code{BIOMOD_EnsembleModeling()})
 ##' 
 ##' @description Class created by \code{\link{BIOMOD_EnsembleModeling}}
+##' 
 ##' 
 ##' @slot model_name a \code{character} corresponding to the model name
 ##' @slot model_class a \code{character} corresponding to the model class
@@ -76,6 +83,7 @@ NULL
 ##' 
 ##' 
 ##' @seealso \code{\link{biomod2_model}}, \code{\link{BIOMOD_EnsembleModeling}}
+##' @family Toolbox objects
 ##' 
 ##' 
 ##' @examples

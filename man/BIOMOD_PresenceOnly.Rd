@@ -40,8 +40,8 @@ A \code{data.frame} containing evaluation scores both for the evaluation metrics
 }
 \description{
 This function computes presence-only evaluation metrics (Boyce index and Minimal 
-Predicted Area) for \code{BIOMOD.models.out} or \code{BIOMOD.ensemble.models.out} objects 
-that can be obtained from \code{\link{BIOMOD_Modeling}} or 
+Predicted Area) for \code{\link{BIOMOD.models.out}} or \code{\link{BIOMOD.ensemble.models.out}} 
+objects that can be obtained from \code{\link{BIOMOD_Modeling}} or 
 \code{\link{BIOMOD_EnsembleModeling}} functions.
 }
 \details{
@@ -143,8 +143,22 @@ pres.only.eval$eval
 }
 \seealso{
 \code{\link[ecospat]{ecospat.boyce}}, \code{\link[ecospat]{ecospat.mpa}}, 
-\code{\link{BIOMOD_Modeling}}, \code{\link{BIOMOD_EnsembleModeling}}
+\code{\link{BIOMOD.models.out}}, \code{\link{BIOMOD_Modeling}}, 
+\code{\link{BIOMOD.ensemble.models.out}}, \code{\link{BIOMOD_EnsembleModeling}}
+
+Other Main functions: 
+\code{\link{BIOMOD_CrossValidation}()},
+\code{\link{BIOMOD_EnsembleForecasting}()},
+\code{\link{BIOMOD_EnsembleModeling}()},
+\code{\link{BIOMOD_FormatingData}()},
+\code{\link{BIOMOD_LoadModels}()},
+\code{\link{BIOMOD_ModelingOptions}()},
+\code{\link{BIOMOD_Modeling}()},
+\code{\link{BIOMOD_Projection}()},
+\code{\link{BIOMOD_RangeSize}()},
+\code{\link{BIOMOD_Tuning}()}
 }
 \author{
 Frank Breiner, Maya Gueguen
 }
+\concept{Main functions}

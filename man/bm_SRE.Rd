@@ -39,8 +39,8 @@ A \code{vector} or a \code{\link[raster:raster]{raster}} object, containing bina
 or \code{1}) values.
 }
 \description{
-This internal \pkg{biomod2} function allows the user to run a rectilinear surface range 
-envelop (SRE) (equivalent to 
+This internal \pkg{biomod2} function allows the user to run a rectilinear surface 
+range envelop (SRE) (equivalent to 
 \href{https://caws.org.nz/PPQ567/PPQ\%2006-1\%20pp008-9\%20Busby.pdf}{BIOCLIM}) 
 using the extreme percentiles (as recommended by Nix or Busby, see 
 \href{bm_SRE.html#references}{References} and \href{bm_SRE.html#details}{Details}).
@@ -117,12 +117,31 @@ plot(sre.090, main = "90 \%")
 }
 }
 \seealso{
-\code{\link{BIOMOD_FormatingData}}, \code{\link{BIOMOD_ModelingOptions}},
-\code{\link{BIOMOD_Tuning}}, \code{\link{BIOMOD_Modeling}}, \code{\link{BIOMOD_Projection}}
+\code{\link{bm_PseudoAbsences}}, \code{\link{BIOMOD_FormatingData}}, 
+\code{\link{BIOMOD_ModelingOptions}}, \code{\link{BIOMOD_Tuning}}, 
+\code{\link{bm_RunModelsLoop}}, \code{\link{BIOMOD_Modeling}},
+
+Other Secundary functions: 
+\code{\link{bm_BinaryTransformation}()},
+\code{\link{bm_CVnnet}()},
+\code{\link{bm_FindOptimStat}()},
+\code{\link{bm_MakeFormula}()},
+\code{\link{bm_PlotEvalBoxplot}()},
+\code{\link{bm_PlotEvalMean}()},
+\code{\link{bm_PlotRangeSize}()},
+\code{\link{bm_PlotResponseCurves}()},
+\code{\link{bm_PlotVarImpBoxplot}()},
+\code{\link{bm_PseudoAbsences}()},
+\code{\link{bm_Rescaler}()},
+\code{\link{bm_RunModelsLoop}()},
+\code{\link{bm_SampleBinaryVector}()},
+\code{\link{bm_SampleFactorLevels}()},
+\code{\link{bm_VariablesImportance}()}
 }
 \author{
 Wilfried Thuiller, Bruno Lafourcade, Damien Georges
 }
+\concept{Secundary functions}
 \keyword{envelop,}
 \keyword{models,}
 \keyword{quantile}

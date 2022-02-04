@@ -19,6 +19,16 @@
 These functions allow the user to easily retrieve single models (formal or scaled) 
 from \code{\link{biomod2_model}} objects from the modeling step.
 }
+\seealso{
+\code{\link{biomod2_model}}
+
+Other Toolbox functions: 
+\code{\link{getters.out}},
+\code{\link{load_stored_object}()},
+\code{\link{predict.bm}},
+\code{\link{predict.em}}
+}
 \author{
 Damien Georges
 }
+\concept{Toolbox functions}

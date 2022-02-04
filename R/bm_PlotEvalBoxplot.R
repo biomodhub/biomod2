@@ -4,13 +4,12 @@
 ##' 
 ##' @title Plot boxplot of evaluation scores
 ##' 
-##' @description
+##' @description This function represents boxplot of evaluation scores of species distribution 
+##' models, from \code{\link{BIOMOD.models.out}} or \code{\link{BIOMOD.ensemble.models.out}} 
+##' objects that can be obtained from \code{\link{BIOMOD_Modeling}} or 
+##' \code{\link{BIOMOD_EnsembleModeling}} functions. Scores are represented according to 2 
+##' grouping methods (see \href{bm_PlotEvalBoxplot.html#details}{Details}).
 ##' 
-##' This function represents boxplot of evaluation scores of species distribution models, from 
-##' \code{BIOMOD.models.out} or \code{BIOMOD.ensemble.models.out} objects that can be obtained 
-##' from \code{\link{BIOMOD_Modeling}} or \code{\link{BIOMOD_EnsembleModeling}} functions. Scores 
-##' are represented according to 2 grouping methods (see 
-##' \href{bm_PlotEvalBoxplot.html#details}{Details}).
 ##' 
 ##' @param modeling.output a \code{\link{BIOMOD.models.out}} or \code{BIOMOD.ensemble.models.out} 
 ##' object that can be obtained from \code{\link{BIOMOD_Modeling}} or 
@@ -39,10 +38,14 @@
 ##' }
 ##' 
 ##' 
-##' @seealso \code{\link{BIOMOD_Modeling}}, \code{\link{BIOMOD_EnsembleModeling}}, 
-##' \code{\link{get_evaluations}}
-##' 
 ##' @keywords evaluation, ggplot, boxplot
+##' 
+##' 
+##' @seealso \code{\link{BIOMOD.models.out}}, \code{\link{BIOMOD.ensemble.models.out}}, 
+##' \code{\link{BIOMOD_Modeling}}, \code{\link{BIOMOD_EnsembleModeling}}, 
+##' \code{\link{get_evaluations}}
+##' @family Secundary functions
+##' @family Plot functions
 ##' 
 ##' 
 ##' @examples

@@ -35,9 +35,9 @@ A \code{logical} value defining whether the plots are to be rendered or not}
 A \code{list} containing \code{ggplot} objects representing species range change.
 }
 \description{
-This function represents species range change from object that can be obtained from 
-\code{\link{BIOMOD_RangeSize}} function. Several graphics can be obtained, representing global 
-counts or proportions of gains / losses, as well as spatial representations (see 
+This function represents species range change from object that can be obtained 
+from \code{\link{BIOMOD_RangeSize}} function. Several graphics can be obtained, representing 
+global counts or proportions of gains / losses, as well as spatial representations (see 
 \href{bm_PlotRangeSize.html#details}{Details}).
 }
 \details{
@@ -143,10 +143,35 @@ bm_PlotRangeSize(myBiomodRangeSize)
 }
 \seealso{
 \code{\link{BIOMOD_RangeSize}}
+
+Other Secundary functions: 
+\code{\link{bm_BinaryTransformation}()},
+\code{\link{bm_CVnnet}()},
+\code{\link{bm_FindOptimStat}()},
+\code{\link{bm_MakeFormula}()},
+\code{\link{bm_PlotEvalBoxplot}()},
+\code{\link{bm_PlotEvalMean}()},
+\code{\link{bm_PlotResponseCurves}()},
+\code{\link{bm_PlotVarImpBoxplot}()},
+\code{\link{bm_PseudoAbsences}()},
+\code{\link{bm_Rescaler}()},
+\code{\link{bm_RunModelsLoop}()},
+\code{\link{bm_SRE}()},
+\code{\link{bm_SampleBinaryVector}()},
+\code{\link{bm_SampleFactorLevels}()},
+\code{\link{bm_VariablesImportance}()}
+
+Other Plot functions: 
+\code{\link{bm_PlotEvalBoxplot}()},
+\code{\link{bm_PlotEvalMean}()},
+\code{\link{bm_PlotResponseCurves}()},
+\code{\link{bm_PlotVarImpBoxplot}()}
 }
 \author{
 Maya Gueguen
 }
+\concept{Plot functions}
+\concept{Secundary functions}
 \keyword{change,}
 \keyword{gain,}
 \keyword{ggplot,}

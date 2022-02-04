@@ -31,6 +31,11 @@
 ##' \code{\link{BIOMOD.ensemble.models.out}} object
 ##' 
 ##' 
+##' @seealso \code{\link{BIOMOD.models.out}}, \code{\link{BIOMOD.projection.out}}, 
+##' \code{\link{BIOMOD.ensemble.models.out}}
+##' @family Toolbox functions
+##' 
+##' 
 ##' @importFrom reshape melt.array
 ##' @importFrom reshape2 melt
 ##' @importFrom foreach foreach %do%
@@ -67,8 +72,8 @@ setGeneric("get_variables_importance", function(obj, ...) { standardGeneric("get
 ##' @title \code{BIOMOD_Modeling()} output object class
 ##' 
 ##' @description Class returned by \code{\link{BIOMOD_Modeling}}, and used by 
-##' \code{\link{BIOMOD_LoadModels}}, \code{\link{BIOMOD_PresenceOnly}} and 
-##' \code{\link{BIOMOD_EnsembleModeling}}
+##' \code{\link{BIOMOD_LoadModels}}, \code{\link{BIOMOD_PresenceOnly}}, 
+##' \code{\link{BIOMOD_Projection}} and \code{\link{BIOMOD_EnsembleModeling}}
 ##' 
 ##' 
 ##' @slot modeling.id a \code{character} corresponding to the name (ID) of the simulation set 
@@ -96,7 +101,11 @@ setGeneric("get_variables_importance", function(obj, ...) { standardGeneric("get
 ##' 
 ##' 
 ##' @seealso \code{\link{BIOMOD_Modeling}}, \code{\link{BIOMOD_LoadModels}}, 
-##' \code{\link{BIOMOD_PresenceOnly}}, \code{\link{BIOMOD_EnsembleModeling}}
+##' \code{\link{BIOMOD_PresenceOnly}}, \code{\link{BIOMOD_Projection}}, 
+##' \code{\link{BIOMOD_EnsembleModeling}}, \code{\link{bm_VariablesImportance}}, 
+##' \code{\link{bm_PlotEvalMean}}, \code{\link{bm_PlotEvalBoxplot}}, 
+##' \code{\link{bm_PlotVarImpBoxplot}}, \code{\link{bm_PlotResponseCurves}}
+##' @family Toolbox objects
 ##' 
 ##' 
 ##' @examples
@@ -435,6 +444,7 @@ setMethod("get_variables_importance", "BIOMOD.models.out",
 ##' 
 ##' 
 ##' @seealso \code{\link{BIOMOD_Projection}}, \code{\link{BIOMOD_EnsembleForecasting}}
+##' @family Toolbox objects
 ##' 
 ##' 
 ##' @examples
@@ -711,8 +721,11 @@ setMethod("get_predictions", "BIOMOD.projection.out",
 ##' @slot link a \code{character} containing the file name of the saved object
 ##' 
 ##' 
-##' @seealso \code{\link{BIOMOD_Modeling}}, \code{\link{BIOMOD_LoadModels}}, 
-##' \code{\link{BIOMOD_PresenceOnly}}, \code{\link{BIOMOD_EnsembleModeling}}
+##' @seealso \code{\link{BIOMOD_EnsembleModeling}}, \code{\link{BIOMOD_LoadModels}}, 
+##' \code{\link{BIOMOD_PresenceOnly}}, \code{\link{bm_VariablesImportance}}, 
+##' \code{\link{bm_PlotEvalMean}}, \code{\link{bm_PlotEvalBoxplot}}, 
+##' \code{\link{bm_PlotVarImpBoxplot}}, \code{\link{bm_PlotResponseCurves}}
+##' @family Toolbox objects
 ##' 
 ##' 
 ##' @examples

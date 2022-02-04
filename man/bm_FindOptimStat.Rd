@@ -45,8 +45,9 @@ A \code{1} row x \code{4} columns \code{matrix} containing :
 }
 }
 \description{
-This internal \pkg{biomod2} function allows the user to find the threshold to convert 
-continuous values into binary ones leading to the best score for a given evaluation metric.
+This internal \pkg{biomod2} function allows the user to find the threshold to 
+convert continuous values into binary ones leading to the best score for a given evaluation 
+metric.
 }
 \details{
 \emph{Please refer to \code{\link{BIOMOD_Modeling}} to get more information about these 
@@ -74,11 +75,30 @@ bm_FindOptimStat(Stat = 'TSS', Fit = c, Obs = a, Nb.thresh.test = 100)
 
 }
 \seealso{
-\code{\link{BIOMOD_Modeling}}, \code{\link{BIOMOD_EnsembleModeling}}
+\code{\link{BIOMOD_Modeling}}, \code{\link{bm_RunModelsLoop}}, 
+\code{\link{BIOMOD_EnsembleModeling}}
+
+Other Secundary functions: 
+\code{\link{bm_BinaryTransformation}()},
+\code{\link{bm_CVnnet}()},
+\code{\link{bm_MakeFormula}()},
+\code{\link{bm_PlotEvalBoxplot}()},
+\code{\link{bm_PlotEvalMean}()},
+\code{\link{bm_PlotRangeSize}()},
+\code{\link{bm_PlotResponseCurves}()},
+\code{\link{bm_PlotVarImpBoxplot}()},
+\code{\link{bm_PseudoAbsences}()},
+\code{\link{bm_Rescaler}()},
+\code{\link{bm_RunModelsLoop}()},
+\code{\link{bm_SRE}()},
+\code{\link{bm_SampleBinaryVector}()},
+\code{\link{bm_SampleFactorLevels}()},
+\code{\link{bm_VariablesImportance}()}
 }
 \author{
 Damien Georges
 }
+\concept{Secundary functions}
 \keyword{evaluation}
 \keyword{models,}
 \keyword{options,}

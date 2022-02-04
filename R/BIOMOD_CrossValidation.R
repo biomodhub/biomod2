@@ -8,6 +8,7 @@
 ##' the \code{\link{BIOMOD_Modeling}} function to evaluate models with repeated k-fold or 
 ##' stratified cross-validation (cv) instead of repeated split samples.
 ##' 
+##' 
 ##' @param data a \code{\link{BIOMOD.formated.data}} object returned by the 
 ##' \code{\link{BIOMOD_FormatingData}} function
 ##' @param k an \code{integer} corresponding to the number of bins/partitions for k-fold cv
@@ -70,7 +71,9 @@
 ##' }
 ##' 
 ##' 
-##' @seealso \code{\link[ENMeval]{get.block}}
+##' @seealso \code{\link[ENMeval]{get.block}}, \code{\link{BIOMOD_FormatingData}}, 
+##' \code{\link{BIOMOD_Modeling}}
+##' @family Main functions
 ##'
 ##'
 ##' @examples

@@ -9,6 +9,7 @@
 ##' validation, and the predictive power of the different models can be estimated using a range 
 ##' of evaluation metrics (see \href{BIOMOD_Modeling.html#details}{Details}).
 ##' 
+##' 
 ##' @param data a \code{\link{BIOMOD.formated.data}} object returned by the 
 ##' \code{\link{BIOMOD_FormatingData}} function
 ##' @param modeling.id a \code{character} corresponding to the name (ID) of the simulation set 
@@ -176,7 +177,10 @@
 ##' 
 ##' @seealso \code{\link{BIOMOD_FormatingData}}, \code{\link{BIOMOD_ModelingOptions}}, 
 ##' \code{\link{BIOMOD_CrossValidation}}, \code{ \link{bm_VariablesImportance}}, 
-##' \code{\link{BIOMOD_Projection}}, \code{\link{BIOMOD_EnsembleModeling}}
+##' \code{\link{BIOMOD_Projection}}, \code{\link{BIOMOD_EnsembleModeling}},
+##' \code{\link{bm_PlotEvalMean}}, \code{\link{bm_PlotEvalBoxplot}}, 
+##' \code{\link{bm_PlotVarImpBoxplot}}, \code{\link{bm_PlotResponseCurves}}
+##' @family Main functions
 ##' 
 ##'   
 ##' @examples

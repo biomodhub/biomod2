@@ -62,8 +62,8 @@
 }
 \description{
 Class returned by \code{\link{BIOMOD_FormatingData}}, and used by 
-\code{\link{BIOMOD_Tuning}}, \code{\link{BIOMOD_Modeling}} and 
-\code{\link{BIOMOD_CrossValidation}}
+\code{\link{BIOMOD_Tuning}}, \code{\link{BIOMOD_CrossValidation}} and 
+\code{\link{BIOMOD_Modeling}}
 }
 \section{Slots}{
 
@@ -136,8 +136,20 @@ plot(myBiomodData)
 }
 \seealso{
 \code{\link{BIOMOD_FormatingData}}, \code{\link{BIOMOD_Tuning}}, 
-\code{\link{BIOMOD_Modeling}}, \code{\link{BIOMOD_CrossValidation}}
+\code{\link{BIOMOD_CrossValidation}}, \code{\link{BIOMOD_Modeling}}, 
+\code{\link{bm_RunModelsLoop}}
+
+Other Toolbox objects: 
+\code{\link{BIOMOD.ensemble.models.out}},
+\code{\link{BIOMOD.formated.data.PA}},
+\code{\link{BIOMOD.model.options}},
+\code{\link{BIOMOD.models.out}},
+\code{\link{BIOMOD.projection.out}},
+\code{\link{BIOMOD.stored.data}},
+\code{\link{biomod2_ensemble_model}},
+\code{\link{biomod2_model}}
 }
 \author{
 Damien Georges
 }
+\concept{Toolbox objects}

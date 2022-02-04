@@ -80,6 +80,17 @@ These functions allow the user to easily retrieve informations stored in the
 different \pkg{biomod2} objects from the different modeling steps, such as modeling options 
 and formated data, models used or not, predictions, evaluations, variables importance.
 }
+\seealso{
+\code{\link{BIOMOD.models.out}}, \code{\link{BIOMOD.projection.out}}, 
+\code{\link{BIOMOD.ensemble.models.out}}
+
+Other Toolbox functions: 
+\code{\link{getters.bm}},
+\code{\link{load_stored_object}()},
+\code{\link{predict.bm}},
+\code{\link{predict.em}}
+}
 \author{
 Damien Georges
 }
+\concept{Toolbox functions}

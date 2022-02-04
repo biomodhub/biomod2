@@ -4,10 +4,9 @@
 ##' 
 ##' @title Standardized formula maker
 ##' 
-##' @description
+##' @description This internal \pkg{biomod2} function allows the user to create easily a 
+##' standardized formula that can be used later by statistical models.
 ##' 
-##' This internal \pkg{biomod2} function allows the user to create easily a standardized formula 
-##' that can be used later by statistical models.
 ##' 
 ##' @param respName a \code{character} defining the response variable name
 ##' @param explVar a \code{matrix} or \code{data.frame} corresponding to the explanatory 
@@ -40,11 +39,12 @@
 ##' }
 ##' 
 ##' 
-##' @seealso \code{\link{BIOMOD_ModelingOptions}}, 
-##' \code{\link[stats]{formula}}
-##' 
-##' 
 ##' @keywords models, formula, options
+##' 
+##' 
+##' @seealso \code{\link[stats]{formula}}, \code{\link{BIOMOD_ModelingOptions}}, 
+##' \code{\link{BIOMOD_Tuning}}, \code{\link{bm_RunModelsLoop}}
+##' @family Secundary functions
 ##' 
 ##' 
 ##' @examples

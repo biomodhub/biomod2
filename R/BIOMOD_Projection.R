@@ -99,8 +99,9 @@
 ##' @keywords models, projection
 ##' 
 ##' 
-##' @seealso \code{\link{BIOMOD_FormatingData}}, \code{\link{BIOMOD_ModelingOptions}}, 
-##' \code{\link{BIOMOD_Modeling}}
+##' @seealso \code{\link{BIOMOD_Modeling}}, \code{\link{BIOMOD_EnsembleModeling}}, 
+##' \code{\link{BIOMOD_RangeSize}}
+##' @family Main functions
 ##' 
 ##'   
 ##' @examples

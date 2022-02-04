@@ -8,6 +8,7 @@
 ##'
 ##' @description Parametrize and/or tune \pkg{biomod2}'s single models options.
 ##'
+##'
 ##' @usage BIOMOD_ModelingOptions(GLM = NULL,
 ##'                               GBM = NULL,
 ##'                               GAM = NULL,
@@ -222,6 +223,7 @@
 ##'   be computed, otherwise \emph{random.forest regression} will be done}
 ##'   \item{\code{ntree = 500}}
 ##'   \item{\code{mtry = 'default'}}
+##'   \item{\code{sampsize = NULL}}
 ##'   \item{\code{nodesize = 5}}
 ##'   \item{\code{maxnodes = NULL}}
 ##' }
@@ -291,7 +293,12 @@
 ##'
 ##'
 ##' @keywords models, options
-##'
+##' 
+##' 
+##' @seealso \code{\link{BIOMOD_Tuning}}, \code{\link{BIOMOD_Modeling}}
+##' @family Main functions
+##' 
+##' 
 ##' @examples
 ##' 
 ##' ## default BIOMOD.model.options object
@@ -518,6 +525,7 @@ BIOMOD_ModelingOptions <- function(GLM = NULL,
     if (!is.null(RF$type)) { opt@RF$type <- RF$type }
     if (!is.null(RF$ntree)) { opt@RF$ntree <- RF$ntree }
     if (!is.null(RF$mtry)) { opt@RF$mtry <- RF$mtry }
+    if (!is.null(RF$sampsize)) { opt@RF$sampsize <- RF$sampsize }
     if (!is.null(RF$nodesize)) { opt@RF$nodesize <- RF$nodesize }
     if (!is.null(RF$maxnodes)) { opt@RF$maxnodes <- RF$maxnodes }
   }
