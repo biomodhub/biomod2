@@ -23,6 +23,7 @@
 \alias{get_projected_models,BIOMOD.projection.out-method}
 \alias{free,BIOMOD.projection.out-method}
 \alias{get_predictions,BIOMOD.projection.out-method}
+\alias{get_formal_data,BIOMOD.ensemble.models.out-method}
 \alias{get_needed_models,BIOMOD.ensemble.models.out-method}
 \alias{get_kept_models,BIOMOD.ensemble.models.out-method}
 \alias{get_predictions,BIOMOD.ensemble.models.out-method}
@@ -58,6 +59,8 @@
   run.eval = NULL,
   data.set = NULL
 )
+
+\S4method{get_formal_data}{BIOMOD.ensemble.models.out}(obj, subinfo = NULL)
 
 \S4method{get_needed_models}{BIOMOD.ensemble.models.out}(obj, selected.models = "all", ...)
 

@@ -231,12 +231,15 @@ bm_RunModel <- function(Model, Data, Options, calibLines, Yweights, nam, VarImpo
                                       , type = Options@GAM$type
                                       , interaction.level = Options@GAM$interaction.level
                                       , k = Options@GAM$k)
+        tmp = gsub("gam::", "", gam.formula)
+        gam.formula = as.formula(paste0(tmp[c(2,1,3)], collapse = " "))
       } else {
         gam.formula <- Options@GAM$myFormula
       }
       
       if (Options@GAM$algo == 'GAM_mgcv') {
         cat('\n\t> GAM (mgcv) modeling...')
+        
         model.sp <- try(mgcv::gam(gam.formula,
                                   data = Data[calibLines, , drop = FALSE],
                                   family = Options@GAM$family,
@@ -506,7 +509,7 @@ bm_RunModel <- function(Model, Data, Options, calibLines, Yweights, nam, VarImpo
                                  importance = FALSE,
                                  norm.votes = TRUE,
                                  strata = factor(c(0, 1)),
-                                 sampsize = Options@RF$sampsize,
+                                 sampsize = ifelse(!is.null(Options@RF$sampsize), Options@RF$sampsize, nrow(Data[calibLines, ])),
                                  nodesize = Options@RF$nodesize,
                                  maxnodes = Options@RF$maxnodes))
 
@@ -903,7 +906,7 @@ bm_RunModel <- function(Model, Data, Options, calibLines, Yweights, nam, VarImpo
   
   ## 5. Check Prev argument ---------------------------------------------------
   if (Model == "GLM" | Model == "GAM") {
-    Prev <- sum(Data[, 1], na.rm = T) / length(Data[, 1])
+    Prev <- sum(Data[, 1], na.rm = TRUE) / length(Data[, 1])
   }
   
   ## 6. Check models.eval.meth arguments --------------------------------------

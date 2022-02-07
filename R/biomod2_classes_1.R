@@ -957,6 +957,7 @@ setClass("BIOMOD.model.options",
                    RF = list(do.classif = TRUE,
                              ntree = 500,
                              mtry = 'default',
+                             sampsize = NULL,
                              nodesize = 5,
                              maxnodes= NULL),
                    MAXENT.Phillips = list(path_to_maxent.jar = getwd(),
@@ -1077,6 +1078,7 @@ setClass("BIOMOD.model.options",
            if(!is.logical(object@RF$do.classif)){ cat("\nRF$do.classif must be a logical"); test <- FALSE }
            test <- .fun_testIfPosInt(test, "RF$ntree", object@RF$ntree)
            if (object@RF$mtry != 'default') { test <- .fun_testIfPosInt(test, "RF$mtry", object@RF$mtry) }
+           if(!is.null(object@RF$sampsize)) { test <- .fun_testIfPosInt(test, "RF$sampsize", object@RF$sampsize) }
            test <- .fun_testIfPosInt(test, "RF$nodesize", object@RF$nodesize)
            if(length(object@RF$maxnodes)) { test <- .fun_testIfPosInt(test, "RF$maxnodes", object@RF$maxnodes) }
            
@@ -1217,6 +1219,7 @@ setMethod('show', signature('BIOMOD.model.options'),
             cat("\nRF = list( do.classif = ", object@RF$do.classif, ",", sep = "")
             cat("\n           ntree = ", object@RF$ntree, ",", sep = "")
             cat("\n           mtry = '", object@RF$mtry, "',", sep = "")
+            cat("\n           sampsize = ", ifelse(length(object@RF$sampsize) < 1, 'NULL', object@RF$sampsize), ",", sep = "")
             cat("\n           nodesize = ", object@RF$nodesize, ",", sep = "")
             cat("\n           maxnodes = ", ifelse(length(object@RF$maxnodes) < 1, 'NULL', object@RF$maxnodes),  "),", sep = "")
             

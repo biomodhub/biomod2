@@ -538,6 +538,7 @@ BIOMOD_Tuning <- function(data,
         try(RES <- cbind(tune.GLM$results, il = IA, type = type))
         return(RES)
       }
+    tune.GLM <- GLM.results
     
     glm.best <- which.max(GLM.results$ROC)
     models.options@GLM$interaction.level <- GLM.results[glm.best, "il"]
@@ -685,10 +686,9 @@ BIOMOD_Tuning <- function(data,
   
   .bm_cat("Done")
   return(list(models.options=models.options, tune.SRE =tune.SRE,  tune.CTA.rpart = tune.CTA.rpart, tune.CTA.rpart2 = tune.CTA.rpart2,
-              tune.RF = tune.RF, tune.ANN = tune.ANN,  tune.MARS = tune.MARS, tune.FDA = tune.FDA, tune.GBM=tune.GBM,
-              tune.GAM = tune.GAM, tune.MAXENT.Phillips = tune.MAXENT.Phillips, 
+              tune.RF = tune.RF, tune.ANN = tune.ANN,  tune.MARS = tune.MARS, tune.FDA = tune.FDA, tune.GBM = tune.GBM,
+              tune.GAM = tune.GAM, tune.GLM = tune.GLM, tune.MAXENT.Phillips = tune.MAXENT.Phillips))
               # tune.MAXENT.Tsuruoka = tune.MAXENT.Tsuruoka, 
-              tune.GLM=tune.GLM))
 }
 
 
@@ -705,7 +705,6 @@ BIOMOD_Tuning <- function(data,
                            categoricals,
                            tune.args = list(rm = seq(0.5, 1, 0.5), fc = c("L")))
 {
-  requireNamespace("ENMeval", quietly = TRUE)
   results <- ENMevaluate(occs = pres,
                          bg = bg,
                          tune.args = tune.args,

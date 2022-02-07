@@ -365,9 +365,17 @@ bm_PlotResponseCurves <- function(modeling.output
   
   ## 2. Check chosen.models -------------------------------------------------
   if (chosen.models[1] == 'all') {
-    chosen.models <- modeling.output@models.computed
+    if (inherits(modeling.output, "BIOMOD.models.out")) {
+      chosen.models <- modeling.output@models.computed
+    } else if (inherits(modeling.output, "BIOMOD.ensemble.models.out")) {
+      chosen.models <- modeling.output@em.computed
+    } 
   } else {
-    chosen.models <- intersect(chosen.models, modeling.output@models.computed)
+    if (inherits(modeling.output, "BIOMOD.models.out")) {
+      chosen.models <- intersect(chosen.models, modeling.output@models.computed)
+    } else if (inherits(modeling.output, "BIOMOD.ensemble.models.out")) {
+      chosen.models <- intersect(chosen.models, modeling.output@em.computed)
+    } 
   }
   if (length(chosen.models) < 1) {
     stop('No models selected')

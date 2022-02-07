@@ -106,7 +106,7 @@
 
 BIOMOD_LoadModels <- function(bm.out, ... )
 {
-  .bm_cat("Load Models")
+  # .bm_cat("Load Models")
 
   ## 0. Check arguments ---------------------------------------------------------------------------
   args <- .BIOMOD_LoadModels.check.args(bm.out, ...)
@@ -163,7 +163,7 @@ BIOMOD_LoadModels <- function(bm.out, ... )
   
   ## LOAD the selected models -----------------------------------------------------------
   nameFile = file.path(bm.out@sp.name, "models", bm.out@modeling.id)
-  .bm_cat("Done")
+  # .bm_cat("Done")
   if (!is.null(as) && length(models.to.load) == 1) {
     assign(x = as,
            value = get(load(file = file.path(nameFile, models.to.load))),

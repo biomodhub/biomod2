@@ -354,7 +354,7 @@ BIOMOD_ModelingOptions <- function(GLM = NULL,
                                    RF = NULL,
                                    MAXENT.Phillips = NULL)
 {
-  .bm_cat("Build Modeling Options")
+  # .bm_cat("Build Modeling Options")
   
   ## 1. create a defaut BIOMOD.model.options object ---------------------------
   opt <- new('BIOMOD.model.options')
@@ -573,7 +573,7 @@ BIOMOD_ModelingOptions <- function(GLM = NULL,
     cat("\n\n!!! NULL object returned because of invalid parameters given !!!")
     return(NULL)
   }
-  .bm_cat("Done")
+  # .bm_cat("Done")
   return(opt)
 }
 

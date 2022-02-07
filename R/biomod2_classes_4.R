@@ -596,7 +596,7 @@ setMethod('predict', signature(object = 'MAXENT.Phillips_biomod2_model'),
     path_to_maxent.jar <-  file.path(getwd(), "maxent.jar")
   }
   
-  cat("\n\t\tRunning Maxent...")
+  # cat("\n\t\tRunning Maxent...")
   maxent.command <- paste0("java ", ifelse(is.null(object@model_options$memory_allocated), "", paste0("-mx", object@model_options$memory_allocated, "m")),
                            " -cp ", "\"", path_to_maxent.jar, "\"",
                            " density.Project ",
@@ -606,7 +606,7 @@ setMethod('predict', signature(object = 'MAXENT.Phillips_biomod2_model'),
                            "doclamp=false visible=false autorun nowarnings notooltips")
   system(command = maxent.command, wait = TRUE, intern = TRUE)
   
-  cat("\n\t\tReading Maxent outputs...")
+  # cat("\n\t\tReading Maxent outputs...")
   proj <- as.numeric(read.asciigrid(file.path(temp_workdir, "projMaxent.asc"))@data[, 1])
   
   if (do_raster) {

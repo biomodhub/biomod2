@@ -49,7 +49,6 @@ myBiomodData <- BIOMOD_FormatingData(resp.var = myResp,
                                      expl.var = myExpl,
                                      resp.xy = myRespXY,
                                      resp.name = myRespName)
-
 myBiomodData
 plot(myBiomodData)
 ```
@@ -115,7 +114,7 @@ plot(myBiomodData)
 
 ```R
 myBiomodCV <- BIOMOD_CrossValidation(myBiomodData)
-myBiomodCV
+head(myBiomodCV)
 ```
 
 #### Parameterize modeling options
@@ -160,10 +159,14 @@ myBiomodOptions
 # 
 # # stopCluster(cl)
 # 
-# par(mfrow = c(1,3))
 # plot(bm.tuning$tune.CTA.rpart)
 # plot(bm.tuning$tune.CTA.rpart2)
 # plot(bm.tuning$tune.RF)
+# plot(bm.tuning$tune.ANN)
+# plot(bm.tuning$tune.MARS)
+# plot(bm.tuning$tune.FDA)
+# plot(bm.tuning$tune.GBM)
+# plot(bm.tuning$tune.GAM)
 ```
 
 ### <i class="fas fa-cogs"></i> Run modelisation
@@ -180,7 +183,6 @@ myBiomodModelOut <- BIOMOD_Modeling(myBiomodData,
                                     models.eval.meth = c('TSS','ROC'),
                                     do.full.models = FALSE,
                                     modeling.id = 'test')
-
 myBiomodModelOut
 
 # Get evaluation scores & variables importance
@@ -195,8 +197,16 @@ bm_PlotVarImpBoxplot(myBiomodModelOut, group.by = c('expl.var', 'algo', 'dataset
 bm_PlotVarImpBoxplot(myBiomodModelOut, group.by = c('algo', 'expl.var', 'dataset'))
 
 # Represent response curves
-bm_PlotResponseCurves(myBiomodModelOut)
-bm_PlotResponseCurves(myBiomodModelOut, do.bivariate = TRUE)
+bm_PlotResponseCurves(myBiomodModelOut, 
+                      chosen.models = get_built_models(myBiomodModelOut)[c(1:3, 12:14)],
+                      fixed.var.metric = 'median')
+bm_PlotResponseCurves(myBiomodModelOut, 
+                      chosen.models = get_built_models(myBiomodModelOut)[c(1:3, 12:14)],
+                      fixed.var.metric = 'min')
+bm_PlotResponseCurves(myBiomodModelOut, 
+                      chosen.models = get_built_models(myBiomodModelOut)[3],
+                      fixed.var.metric = 'median',
+                      do.bivariate = TRUE)
 ```
 
 
@@ -219,7 +229,6 @@ myBiomodEM <- BIOMOD_EnsembleModeling(modeling.output = myBiomodModelOut,
                                       committee.averaging = TRUE,
                                       prob.mean.weight = TRUE,
                                       prob.mean.weight.decay = 'proportional')
-
 myBiomodEM
 
 # Get evaluation scores & variables importance
@@ -234,16 +243,24 @@ bm_PlotVarImpBoxplot(myBiomodEM, group.by = c('expl.var', 'model', 'dataset'))
 bm_PlotVarImpBoxplot(myBiomodEM, group.by = c('model', 'expl.var', 'dataset'))
 
 # Represent response curves
-bm_PlotResponseCurves(myBiomodEM)
-bm_PlotResponseCurves(myBiomodEM, do.bivariate = TRUE)
+bm_PlotResponseCurves(myBiomodEM, 
+                      chosen.models = get_built_models(myBiomodEM)[c(1, 6, 7)],
+                      fixed.var.metric = 'median')
+bm_PlotResponseCurves(myBiomodEM, 
+                      chosen.models = get_built_models(myBiomodEM)[c(1, 6, 7)],
+                      fixed.var.metric = 'min')
+bm_PlotResponseCurves(myBiomodEM, 
+                      chosen.models = get_built_models(myBiomodEM)[7],
+                      fixed.var.metric = 'median',
+                      do.bivariate = TRUE)
 ```
 
 
 #### Presence-only evaluation
 
 ```R
-myBiomodPO <- BIOMOD_PresenceOnly(modeling.output = myBiomodModelOut)
-myBiomodPO
+# myBiomodPO <- BIOMOD_PresenceOnly(modeling.output = myBiomodModelOut)
+# myBiomodPO
 ```
 
 ### <i class="fas fa-globe-europe"></i> Project models
@@ -258,7 +275,6 @@ myBiomodProj <- BIOMOD_Projection(myBiomodModelOut,
                                   binary.meth = 'all',
                                   filtered.meth = 'all',
                                   build.clamping.mask = TRUE)
-
 myBiomodProj
 plot(myBiomodProj)
 ```

@@ -120,9 +120,9 @@ bm_MakeFormula <- function(respName,
            for (v in 1:ncol(explVar)) {
              if (is.numeric(explVar[, v])) {
                if (is.null(sup_args$k)) {
-                 junk <- paste(junk, paste0("s(", explVarNames[v], ")"), sep = " + ")
+                 junk <- paste(junk, paste0("gam::s(", explVarNames[v], ")"), sep = " + ")
                } else {
-                 junk <- paste(junk, paste0("s(", explVarNames[v], ",k=", sup_args$k, ")"), sep = " + ")
+                 junk <- paste(junk, paste0("gam::s(", explVarNames[v], ",k=", sup_args$k, ")"), sep = " + ")
                }
              } else { junk <- paste(junk, explVarNames[v], sep = " + ") }
            }

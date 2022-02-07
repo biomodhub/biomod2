@@ -492,6 +492,8 @@ BIOMOD_Modeling <- function(data,
       cat("\n\t MAXENT.Phillips default prevalence option was updated to fit with modeling prevalence (i.e", Prevalence, ")")
       models.options@MAXENT.Phillips$defaultprevalence = Prevalence
     }
+  } else {
+    Prevalence = 0.5
   }
   
   ##### TO BE CHANGE BUT PREVENT FROM BUGS LATER :  Force object saving parameter

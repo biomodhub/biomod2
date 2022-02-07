@@ -289,6 +289,7 @@ setMethod("get_formal_data", "BIOMOD.models.out",
           }
 )
 
+
 ## ------------------------------------------------------------------------------------------------
 
 ##' 
@@ -835,6 +836,50 @@ setMethod('show', signature('BIOMOD.ensemble.models.out'),
           })
 
 ## ------------------------------------------------------------------------------------------------
+
+##' 
+##' @rdname getters.out
+##' @export
+##' 
+
+setMethod("get_formal_data", "BIOMOD.ensemble.models.out",
+          function(obj, subinfo = NULL) {
+            if (is.null(subinfo)) {
+              if (obj@models.out.obj@inMemory) {
+                return(obj@models.out.obj@val)
+              } else if (obj@models.out.obj@link != '') {
+                data <- get(load(obj@models.out.obj@link))
+                return(data)
+              } else { return(NA) }
+            } else {
+              bm_form = get(load(get_formal_data(obj)@formated.input.data@link))
+              if (subinfo == 'MinMax') {
+                env = as.data.frame(bm_form@data.env.var)
+                MinMax = foreach(i = 1:ncol(env)) %do% {
+                  x = env[, i]
+                  if (is.numeric(x)) {
+                    return(list(min = min(x, na.rm = TRUE)
+                                , max = max(x, na.rm = TRUE)))
+                  } else if (is.factor(x)) {
+                    return(list(levels = levels(x)))
+                  }
+                }
+                names(MinMax) = colnames(env)
+                return(MinMax)
+              } else if (subinfo == 'expl.var') {
+                return(as.data.frame(bm_form@data.env.var))
+              } else if (subinfo == 'expl.var.names') {
+                return(obj@expl.var.names)
+              } else if (subinfo == 'resp.var') {
+                return(as.numeric(bm_form@data.species))
+              } else if (subinfo == 'eval.resp.var') {
+                return(as.numeric(bm_form@eval.data.species))
+              } else if (subinfo == 'eval.expl.var') {
+                return(as.data.frame(bm_form@eval.data.env.var))
+              } else { stop("Unknown subinfo tag")}
+            }
+          }
+)
 
 ##' 
 ##' @rdname getters.out
