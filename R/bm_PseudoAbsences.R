@@ -65,7 +65,7 @@
 ##' @keywords pseudo-absence, random, SRE, disk
 ##' 
 ##' 
-##' @seealso \code{\link{biomod.formated.data.PA}}, \code{\link{BIOMOD_FormatingData}}
+##' @seealso \code{\link{BIOMOD.formated.data.PA}}, \code{\link{BIOMOD_FormatingData}}
 ##' @family Secundary functions
 ##'
 ##' 

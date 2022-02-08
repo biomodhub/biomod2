@@ -151,7 +151,7 @@ train \code{MAXENT.Phillips}}
 \item{Yweights}{a \code{vector} of response points weights for models allowing case weights}
 }
 \value{
-A \code{BIOMOD.models.options} object (see \code{\link{BIOMOD_ModelingOptions}}) with 
+A \code{\link{BIOMOD.models.options}} object (see \code{\link{BIOMOD_ModelingOptions}}) with 
 optimized parameters
 }
 \description{

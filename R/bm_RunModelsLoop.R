@@ -7,7 +7,7 @@
 ##' @title Loop to compute all single species distribution models
 ##' 
 ##' @description This internal \pkg{biomod2} function allows the user to compute all single 
-##' species istribution models (asked by the \code{\link{BIOMOD_Modeling}} function).
+##' species distribution models (asked by the \code{\link{BIOMOD_Modeling}} function).
 ##' 
 ##' 
 ##' @param X a \code{BIOMOD.formated.data} or \code{BIOMOD.formated.data.PA} object returned by the 

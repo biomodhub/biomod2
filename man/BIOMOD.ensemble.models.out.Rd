@@ -116,7 +116,7 @@ myBiomodEM
 Other Toolbox objects: 
 \code{\link{BIOMOD.formated.data.PA}},
 \code{\link{BIOMOD.formated.data}},
-\code{\link{BIOMOD.model.options}},
+\code{\link{BIOMOD.models.options}},
 \code{\link{BIOMOD.models.out}},
 \code{\link{BIOMOD.projection.out}},
 \code{\link{BIOMOD.stored.data}},

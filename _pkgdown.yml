@@ -76,7 +76,7 @@ reference:
     contents:
       - "BIOMOD.formated.data"
       - "BIOMOD.formated.data.PA"
-      - "BIOMOD.model.options"
+      - "BIOMOD.models.options"
       - "BIOMOD.stored.data"
       - "biomod2_model"
       - "biomod2_ensemble_model"

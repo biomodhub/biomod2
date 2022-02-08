@@ -82,7 +82,7 @@
 ##' 
 ##' @return 
 ##' 
-##' A \code{BIOMOD.models.options} object (see \code{\link{BIOMOD_ModelingOptions}}) with 
+##' A \code{\link{BIOMOD.models.options}} object (see \code{\link{BIOMOD_ModelingOptions}}) with 
 ##' optimized parameters
 ##' 
 ##' 

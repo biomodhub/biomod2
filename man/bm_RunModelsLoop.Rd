@@ -38,7 +38,7 @@ bm_RunModel(
 \code{\link{BIOMOD_FormatingData}} function}
 
 \item{modeling.id}{a \code{character} corresponding to the name (ID) of the simulation set 
-(\emph{a random number by default})}
+(\emph{a random number by default})s}
 
 \item{Model}{a \code{character} corresponding to the model name to be computed, must be either 
 \code{GLM}, \code{GBM}, \code{GAM}, \code{CTA}, \code{ANN}, \code{SRE}, \code{FDA}, 
@@ -79,7 +79,7 @@ A \code{list} containing for each model a \code{list} containing the following e
 }
 \description{
 This internal \pkg{biomod2} function allows the user to compute all single 
-species istribution models (asked by the \code{\link{BIOMOD_Modeling}} function).
+species distribution models (asked by the \code{\link{BIOMOD_Modeling}} function).
 }
 \seealso{
 \code{\link{BIOMOD_ModelingOptions}}, \code{\link{BIOMOD_Modeling}}, 

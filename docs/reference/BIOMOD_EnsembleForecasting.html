@@ -188,7 +188,7 @@ of their calibration / training range, identifying locations where predictions a
     <h2>See also</h2>
     <div class="dont-index"><p><code><a href="BIOMOD_FormatingData.html">BIOMOD_FormatingData</a></code>, <code><a href="BIOMOD_ModelingOptions.html">BIOMOD_ModelingOptions</a></code>, 
 <code><a href="BIOMOD_Modeling.html">BIOMOD_Modeling</a></code>, <code><a href="BIOMOD_EnsembleModeling.html">BIOMOD_EnsembleModeling</a></code>, 
-<code>BIOMOD_Rangesize</code></p>
+<code><a href="BIOMOD_RangeSize.html">BIOMOD_RangeSize</a></code></p>
 <p>Other Main functions: 
 <code><a href="BIOMOD_CrossValidation.html">BIOMOD_CrossValidation</a>()</code>,
 <code><a href="BIOMOD_EnsembleModeling.html">BIOMOD_EnsembleModeling</a>()</code>,
@@ -212,7 +212,7 @@ of their calibration / training range, identifying locations where predictions a
 <span class="co"># species occurrences</span>
 <span class="va">myFile</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"external/species/mammals_table.csv"</span>, package<span class="op">=</span><span class="st">"biomod2"</span><span class="op">)</span>
 <span class="va">DataSpecies</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/utils/read.table.html" class="external-link">read.csv</a></span><span class="op">(</span><span class="va">myFile</span>, row.names <span class="op">=</span> <span class="fl">1</span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/pkg/raster/man/headtail.html" class="external-link">head</a></span><span class="op">(</span><span class="va">DataSpecies</span><span class="op">)</span>
+<span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">DataSpecies</span><span class="op">)</span>
 
 <span class="co"># the name of studied species</span>
 <span class="va">myRespName</span> <span class="op">&lt;-</span> <span class="st">'GuloGulo'</span>

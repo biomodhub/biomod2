@@ -40,8 +40,8 @@ bm_DefaultModelingOptions()
 \item{MAXENT.Phillips}{a \code{list} containing MAXENT.Phillips options}
 }
 \value{
-A \code{BIOMOD.model.options} object that can be used to build species distribution model(s) 
-with the \code{\link{BIOMOD_Modeling}} function.
+A \code{\link{BIOMOD.models.options}} object that can be used to build species distribution 
+model(s) with the \code{\link{BIOMOD_Modeling}} function.
 }
 \description{
 Parametrize and/or tune \pkg{biomod2}'s single models options.
@@ -320,7 +320,7 @@ Below is the detailed list of all modifiable parameters for each available model
 
 \examples{
 
-## default BIOMOD.model.options object
+## default BIOMOD.models.options object
 myBiomodOptions <- BIOMOD_ModelingOptions()
 
 ## print the object

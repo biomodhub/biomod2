@@ -420,7 +420,7 @@ BIOMOD_Modeling <- function(data,
   
   ## 3. Check models.options arguments ----------------------------------------
   if (!is.null(models.options)) {
-    .fun_testIfInherits(TRUE, "models.options", models.options, "BIOMOD.model.options")
+    .fun_testIfInherits(TRUE, "models.options", models.options, "BIOMOD.models.options")
   } else {
     warning("Models will run with 'defaults' parameters", immediate. = TRUE)
     models.options <- BIOMOD_ModelingOptions()

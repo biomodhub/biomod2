@@ -30,7 +30,7 @@ contain a \code{val} slot of specific type :
   \item{\code{BIOMOD.stored.formated.data} : }{\code{val} is a 
   \code{\link{BIOMOD.formated.data}} object}
   \item{\code{BIOMOD.stored.models.options} : }{\code{val} is a 
-  \code{\link{BIOMOD.model.options}} object}
+  \code{\link{BIOMOD.models.options}} object}
   \item{\code{BIOMOD.stored.models.out} : }{\code{val} is a 
   \code{\link{BIOMOD.models.out}} object}
 }
@@ -61,7 +61,7 @@ showClass("BIOMOD.stored.models.out")
 
 }
 \seealso{
-\code{\link{BIOMOD.formated.data}}, \code{\link{BIOMOD.model.options}},
+\code{\link{BIOMOD.formated.data}}, \code{\link{BIOMOD.models.options}},
 \code{\link{BIOMOD.models.out}}, 
 \code{\link{BIOMOD_Modeling}}, \code{\link{BIOMOD_EnsembleModeling}}, 
 \code{\link{BIOMOD_Projection}}, \code{\link{BIOMOD_EnsembleForecasting}}
@@ -70,7 +70,7 @@ Other Toolbox objects:
 \code{\link{BIOMOD.ensemble.models.out}},
 \code{\link{BIOMOD.formated.data.PA}},
 \code{\link{BIOMOD.formated.data}},
-\code{\link{BIOMOD.model.options}},
+\code{\link{BIOMOD.models.options}},
 \code{\link{BIOMOD.models.out}},
 \code{\link{BIOMOD.projection.out}},
 \code{\link{biomod2_ensemble_model}},

@@ -34,8 +34,8 @@
 ##'
 ##' @return 
 ##' 
-##' A \code{BIOMOD.model.options} object that can be used to build species distribution model(s) 
-##' with the \code{\link{BIOMOD_Modeling}} function.
+##' A \code{\link{BIOMOD.models.options}} object that can be used to build species distribution 
+##' model(s) with the \code{\link{BIOMOD_Modeling}} function.
 ##' 
 ##' 
 ##' @details
@@ -301,7 +301,7 @@
 ##' 
 ##' @examples
 ##' 
-##' ## default BIOMOD.model.options object
+##' ## default BIOMOD.models.options object
 ##' myBiomodOptions <- BIOMOD_ModelingOptions()
 ##'
 ##' ## print the object
@@ -356,8 +356,8 @@ BIOMOD_ModelingOptions <- function(GLM = NULL,
 {
   # .bm_cat("Build Modeling Options")
   
-  ## 1. create a defaut BIOMOD.model.options object ---------------------------
-  opt <- new('BIOMOD.model.options')
+  ## 1. create a defaut BIOMOD.models.options object --------------------------
+  opt <- new('BIOMOD.models.options')
   
   ## 2. modify it if necessary ------------------------------------------------
   fam_GLM = fam_GAM = c('binomial', 'gaussian', 'Gamma', 'inverse.gaussian'

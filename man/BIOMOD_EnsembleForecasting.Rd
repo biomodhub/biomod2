@@ -189,7 +189,7 @@ myBiomodEMProjection <- BIOMOD_EnsembleForecasting(EM.output = myBiomodEM,
 \seealso{
 \code{\link{BIOMOD_FormatingData}}, \code{\link{BIOMOD_ModelingOptions}}, 
 \code{\link{BIOMOD_Modeling}}, \code{\link{BIOMOD_EnsembleModeling}}, 
-\code{\link{BIOMOD_Rangesize}}
+\code{\link{BIOMOD_RangeSize}}
 
 Other Main functions: 
 \code{\link{BIOMOD_CrossValidation}()},

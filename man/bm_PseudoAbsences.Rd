@@ -110,7 +110,7 @@ to 4 different methods : \code{random}, \code{sre}, \code{disk} or \code{user.de
 \bold{Concerning user defined selection :}
 }
 \seealso{
-\code{\link{biomod.formated.data.PA}}, \code{\link{BIOMOD_FormatingData}}
+\code{\link{BIOMOD.formated.data.PA}}, \code{\link{BIOMOD_FormatingData}}
 
 Other Secundary functions: 
 \code{\link{bm_BinaryTransformation}()},

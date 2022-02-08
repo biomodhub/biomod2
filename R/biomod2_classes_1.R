@@ -840,10 +840,10 @@ setMethod('show', signature('BIOMOD.formated.data.PA'),
 
 
 ###################################################################################################
-## 3. BIOMOD.model.options
+## 3. BIOMOD.models.options
 ###################################################################################################
 
-##' @name BIOMOD.model.options
+##' @name BIOMOD.models.options
 ##' @author Damien Georges
 ##' 
 ##' @title \code{BIOMOD_ModelingOptions()} output object class
@@ -872,10 +872,10 @@ setMethod('show', signature('BIOMOD.formated.data.PA'),
 ##' 
 ##' @examples
 ##' 
-##' showClass("BIOMOD.model.options")
+##' showClass("BIOMOD.models.options")
 ##' 
 ##' ## ------------------------------------------------------------------------
-##' ## default BIOMOD.model.options object
+##' ## default BIOMOD.models.options object
 ##' myBiomodOptions <- BIOMOD_ModelingOptions()
 ##'
 ##' ## print the object
@@ -885,7 +885,7 @@ setMethod('show', signature('BIOMOD.formated.data.PA'),
 ##' @export
 ##' 
 
-setClass("BIOMOD.model.options",
+setClass("BIOMOD.models.options",
          representation(GLM = "list",
                         GBM = "list",
                         GAM = "list",
@@ -1122,10 +1122,10 @@ setClass("BIOMOD.model.options",
          }
 )
 
-setMethod('show', signature('BIOMOD.model.options'),
+setMethod('show', signature('BIOMOD.models.options'),
           function(object)
           {
-            .bm_cat("BIOMOD.model.options")
+            .bm_cat("BIOMOD.models.options")
             cat("\n")
             
             ## GLM options

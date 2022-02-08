@@ -105,7 +105,7 @@ Other Toolbox objects:
 \code{\link{BIOMOD.ensemble.models.out}},
 \code{\link{BIOMOD.formated.data.PA}},
 \code{\link{BIOMOD.formated.data}},
-\code{\link{BIOMOD.model.options}},
+\code{\link{BIOMOD.models.options}},
 \code{\link{BIOMOD.models.out}},
 \code{\link{BIOMOD.stored.data}},
 \code{\link{biomod2_ensemble_model}},
