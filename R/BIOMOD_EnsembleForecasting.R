@@ -106,77 +106,89 @@
 ##'   
 ##' @examples
 ##' 
-##' # species occurrences
-##' myFile <- system.file("external/species/mammals_table.csv", package="biomod2")
+##' # Load species occurrences (6 species available)
+##' myFile <- system.file('external/species/mammals_table.csv', package = 'biomod2')
 ##' DataSpecies <- read.csv(myFile, row.names = 1)
 ##' head(DataSpecies)
 ##' 
-##' # the name of studied species
+##' # Select the name of the studied species
 ##' myRespName <- 'GuloGulo'
 ##' 
-##' # the presence/absences data for our species
+##' # Get corresponding presence/absence data
 ##' myResp <- as.numeric(DataSpecies[, myRespName])
 ##' 
-##' # the XY coordinates of species data
-##' myRespXY <- DataSpecies[, c("X_WGS84", "Y_WGS84")]
+##' # Get corresponding XY coordinates
+##' myRespXY <- DataSpecies[, c('X_WGS84', 'Y_WGS84')]
+##' 
+##' # Load environmental variables extracted from BIOCLIM (bio_3, bio_4, bio_7, bio_11 & bio_12)
+##' myFiles = paste0('external/bioclim/current/bio', c(3, 4, 7, 11, 12), '.grd')
+##' myExpl = raster::stack(system.file(myFiles, package = 'biomod2'))
 ##' 
 ##' 
-##' # Environmental variables extracted from BIOCLIM (bio_3, bio_4, bio_7, bio_11 & bio_12)
-##' myFiles = paste0("external/bioclim/current/bio", c(3, 4, 7, 11, 12), ".grd")
-##' myExpl = raster::stack(system.file(myFiles[1], package = "biomod2"),
-##'                        system.file(myFiles[2], package = "biomod2"),
-##'                        system.file(myFiles[3], package = "biomod2"),
-##'                        system.file(myFiles[4], package = "biomod2"),
-##'                        system.file(myFiles[5], package = "biomod2"))
-##' 
-##' # 1. Formating Data
+##' # ---------------------------------------------------------------
+##' # Format Data with true absences
 ##' myBiomodData <- BIOMOD_FormatingData(resp.var = myResp,
 ##'                                      expl.var = myExpl,
 ##'                                      resp.xy = myRespXY,
 ##'                                      resp.name = myRespName)
 ##' 
-##' # 2. Defining Models Options using default options.
-##' myBiomodOption <- BIOMOD_ModelingOptions()
+##' # Create default modeling options
+##' myBiomodOptions <- BIOMOD_ModelingOptions()
 ##' 
-##' # 3. Doing Modelisation
+##' # Model single models
 ##' myBiomodModelOut <- BIOMOD_Modeling(myBiomodData,
-##'                                     models = c('SRE','RF'),
-##'                                     models.options = myBiomodOption,
+##'                                     models.options = myBiomodOptions,
 ##'                                     NbRunEval = 2,
 ##'                                     DataSplit = 80,
-##'                                     VarImport = 0,
+##'                                     VarImport = 3,
 ##'                                     models.eval.meth = c('TSS','ROC'),
 ##'                                     do.full.models = FALSE,
 ##'                                     modeling.id = 'test')
-##'                                     
-##' # 4. Doing Ensemble Modeling
+##' 
+##' # Project single models
+##' myBiomodProj <- BIOMOD_Projection(myBiomodModelOut,
+##'                                   proj.name = 'Current',
+##'                                   new.env = myExpl,
+##'                                   chosen.models = 'all',
+##'                                   binary.meth = 'all',
+##'                                   filtered.meth = 'all',
+##'                                   build.clamping.mask = TRUE)
+##' 
+##' # Model ensemble models
 ##' myBiomodEM <- BIOMOD_EnsembleModeling(modeling.output = myBiomodModelOut,
 ##'                                       chosen.models = 'all',
 ##'                                       em.by = 'all',
 ##'                                       eval.metric = c('TSS'),
 ##'                                       eval.metric.quality.threshold = c(0.7),
+##'                                       VarImport = 3,
 ##'                                       models.eval.meth = c('TSS', 'ROC'),
 ##'                                       prob.mean = TRUE,
-##'                                       prob.median = FALSE,
-##'                                       prob.cv = FALSE,
-##'                                       prob.ci = FALSE,
+##'                                       prob.median = TRUE,
+##'                                       prob.cv = TRUE,
+##'                                       prob.ci = TRUE,
 ##'                                       prob.ci.alpha = 0.05,
-##'                                       committee.averaging = FALSE,
+##'                                       committee.averaging = TRUE,
 ##'                                       prob.mean.weight = TRUE,
 ##'                                       prob.mean.weight.decay = 'proportional')
 ##' 
-##' # 5. Projecting on current environmental conditions
-##' myBiomodProjection <- BIOMOD_Projection(modeling.output = myBiomodModelOut,
-##'                                         new.env = myExpl,
-##'                                         proj.name = 'current',
-##'                                         chosen.models = 'all',
-##'                                         binary.meth = 'TSS',
-##'                                         compress = FALSE,
-##'                                         build.clamping.mask = FALSE)
 ##' 
-##' # 6. Projecting Ensemble on current environmental conditions
-##' myBiomodEMProjection <- BIOMOD_EnsembleForecasting(EM.output = myBiomodEM, 
-##'                                                    projection.output = myBiomodProjection)
+##' # ---------------------------------------------------------------
+##' # Project ensemble models (from single projections)
+##' myBiomodEMProj <- BIOMOD_EnsembleForecasting(EM.output = myBiomodEM, 
+##'                                              projection.output = myBiomodProj,
+##'                                              chosen.models = 'all',
+##'                                              binary.meth = 'all',
+##'                                              filtered.meth = 'all')
+##' 
+##' # Project ensemble models (building single projections)
+##' myBiomodEMProj <- BIOMOD_EnsembleForecasting(EM.output = myBiomodEM,
+##'                                              proj.name = 'CurrentEM',
+##'                                              new.env = myExpl,
+##'                                              chosen.models = 'all',
+##'                                              binary.meth = 'all',
+##'                                              filtered.meth = 'all')
+##' myBiomodEMProj
+##' plot(myBiomodEMProj)
 ##' 
 ##' 
 ##' @importFrom raster stack subset predict writeRaster

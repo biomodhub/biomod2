@@ -43,9 +43,9 @@ reference:
   - subtitle: Main functions
     contents:
       - "BIOMOD_FormatingData"
-      - "BIOMOD_CrossValidation"
       - "BIOMOD_ModelingOptions"
       - "BIOMOD_Tuning"
+      - "BIOMOD_CrossValidation"
       - "BIOMOD_Modeling"
       - "BIOMOD_Projection"
       - "BIOMOD_EnsembleModeling"

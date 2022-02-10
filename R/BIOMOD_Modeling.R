@@ -185,52 +185,70 @@
 ##'   
 ##' @examples
 ##' 
-##' # species occurrences
-##' myFile <- system.file("external/species/mammals_table.csv", package="biomod2")
+##' # Load species occurrences (6 species available)
+##' myFile <- system.file('external/species/mammals_table.csv', package = 'biomod2')
 ##' DataSpecies <- read.csv(myFile, row.names = 1)
 ##' head(DataSpecies)
 ##' 
-##' # the name of studied species
+##' # Select the name of the studied species
 ##' myRespName <- 'GuloGulo'
 ##' 
-##' # the presence/absences data for our species
+##' # Get corresponding presence/absence data
 ##' myResp <- as.numeric(DataSpecies[, myRespName])
 ##' 
-##' # the XY coordinates of species data
-##' myRespXY <- DataSpecies[, c("X_WGS84", "Y_WGS84")]
+##' # Get corresponding XY coordinates
+##' myRespXY <- DataSpecies[, c('X_WGS84', 'Y_WGS84')]
+##' 
+##' # Load environmental variables extracted from BIOCLIM (bio_3, bio_4, bio_7, bio_11 & bio_12)
+##' myFiles = paste0('external/bioclim/current/bio', c(3, 4, 7, 11, 12), '.grd')
+##' myExpl = raster::stack(system.file(myFiles, package = 'biomod2'))
 ##' 
 ##' 
-##' # Environmental variables extracted from BIOCLIM (bio_3, bio_4, bio_7, bio_11 & bio_12)
-##' myFiles = paste0("external/bioclim/current/bio", c(3, 4, 7, 11, 12), ".grd")
-##' myExpl = raster::stack(system.file(myFiles[1], package = "biomod2"),
-##'                        system.file(myFiles[2], package = "biomod2"),
-##'                        system.file(myFiles[3], package = "biomod2"),
-##'                        system.file(myFiles[4], package = "biomod2"),
-##'                        system.file(myFiles[5], package = "biomod2"))
-##' 
-##' # 1. Formating Data
+##' # ---------------------------------------------------------------
+##' # Format Data with true absences
 ##' myBiomodData <- BIOMOD_FormatingData(resp.var = myResp,
 ##'                                      expl.var = myExpl,
 ##'                                      resp.xy = myRespXY,
 ##'                                      resp.name = myRespName)
 ##' 
-##' # 2. Defining Models Options using default options.
-##' myBiomodOption <- BIOMOD_ModelingOptions()
+##' # Create default modeling options
+##' myBiomodOptions <- BIOMOD_ModelingOptions()
 ##' 
-##' # 3. Doing Modelisation
+##' 
+##' # ---------------------------------------------------------------
+##' # Model single models
 ##' myBiomodModelOut <- BIOMOD_Modeling(myBiomodData,
-##'                                     models = c('SRE','RF'),
-##'                                     models.options = myBiomodOption,
+##'                                     models.options = myBiomodOptions,
 ##'                                     NbRunEval = 2,
 ##'                                     DataSplit = 80,
 ##'                                     VarImport = 3,
 ##'                                     models.eval.meth = c('TSS','ROC'),
 ##'                                     do.full.models = FALSE,
 ##'                                     modeling.id = 'test')
-##' 
-##' # print a summary of modeling stuff
 ##' myBiomodModelOut
 ##' 
+##' # Get evaluation scores & variables importance
+##' get_evaluations(myBiomodModelOut)
+##' get_variables_importance(myBiomodModelOut, as.data.frame = TRUE)
+##' 
+##' # Represent evaluation scores & variables importance
+##' bm_PlotEvalMean(myBiomodModelOut)
+##' bm_PlotEvalBoxplot(myBiomodModelOut, group.by = c('algo', 'run'))
+##' bm_PlotVarImpBoxplot(myBiomodModelOut, group.by = c('expl.var', 'algo', 'algo'))
+##' bm_PlotVarImpBoxplot(myBiomodModelOut, group.by = c('expl.var', 'algo', 'dataset'))
+##' bm_PlotVarImpBoxplot(myBiomodModelOut, group.by = c('algo', 'expl.var', 'dataset'))
+##' 
+##' # Represent response curves
+##' bm_PlotResponseCurves(myBiomodModelOut, 
+##'                       chosen.models = get_built_models(myBiomodModelOut)[c(1:3, 12:14)],
+##'                       fixed.var.metric = 'median')
+##' bm_PlotResponseCurves(myBiomodModelOut, 
+##'                       chosen.models = get_built_models(myBiomodModelOut)[c(1:3, 12:14)],
+##'                       fixed.var.metric = 'min')
+##' bm_PlotResponseCurves(myBiomodModelOut, 
+##'                       chosen.models = get_built_models(myBiomodModelOut)[3],
+##'                       fixed.var.metric = 'median',
+##'                       do.bivariate = TRUE)
 ##' 
 ##' 
 ##' @export

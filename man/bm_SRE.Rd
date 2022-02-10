@@ -65,31 +65,29 @@ that a total of \code{10\%} of the data will not be considered.
 }
 \examples{
 
-# species occurrences
-myFile <- system.file("external/species/mammals_table.csv", package="biomod2")
+# Load species occurrences (6 species available)
+myFile <- system.file('external/species/mammals_table.csv', package = 'biomod2')
 DataSpecies <- read.csv(myFile, row.names = 1)
 head(DataSpecies)
 
-# the name of studied species
+# Select the name of the studied species
 myRespName <- 'GuloGulo'
 
-# the presence/absences data for our species
+# Get corresponding presence/absence data
 myResp <- as.numeric(DataSpecies[, myRespName])
 
-# the XY coordinates of species data
-require(raster)
+# Get corresponding XY coordinates
+myRespXY <- DataSpecies[, c('X_WGS84', 'Y_WGS84')]
+
+
+# Load environmental variables extracted from BIOCLIM (bio_3, bio_4, bio_7, bio_11 & bio_12)
+myFiles = paste0('external/bioclim/current/bio', c(3, 4, 7, 11, 12), '.grd')
+myExpl = raster::stack(system.file(myFiles, package = 'biomod2'))
+
+# Transform myResp into a raster
 myRespXY <- DataSpecies[which(myResp == 1), c("X_WGS84", "Y_WGS84")]
 myResp <- reclassify(subset(myExpl, 1, drop = TRUE), c(-Inf, Inf, 0))
-myResp[cellFromXY(myResp,myRespXY)] <- 1
-
-
-# Environmental variables extracted from BIOCLIM (bio_3, bio_4, bio_7, bio_11 & bio_12)
-myFiles = paste0("external/bioclim/current/bio", c(3, 4, 7, 11, 12), ".grd")
-myExpl = raster::stack(system.file(myFiles[1], package = "biomod2"),
-                       system.file(myFiles[2], package = "biomod2"),
-                       system.file(myFiles[3], package = "biomod2"),
-                       system.file(myFiles[4], package = "biomod2"),
-                       system.file(myFiles[5], package = "biomod2"))
+myResp[cellFromXY(myResp, myRespXY)] <- 1
 
 
 # 1. Compute some SRE for several quantile values
@@ -98,11 +96,9 @@ sre.095 <- bm_SRE(Response = myResp, Explanatory = myExpl, NewData = myExpl, Qua
 sre.090 <- bm_SRE(Response = myResp, Explanatory = myExpl, NewData = myExpl, Quant = 0.05)
   
 # 2. Visualization of results
-par(mfrow = c(2,2), mar = c(6, 5, 5, 3))
-plot(myResp, main = paste(myRespName, "original distrib."))
-plot(sre.100, main = "full data calibration")
-plot(sre.095, main = "95 \%")
-plot(sre.090, main = "90 \%")
+res <- stack(myResp.v, sre.100, sre.095, sre.090)
+names(res) <- c("Original distribution", "Full data calibration", "Over 95 percent", "Over 90 percent")
+plot(res, zlim = c(0, 1))
 
 
 }

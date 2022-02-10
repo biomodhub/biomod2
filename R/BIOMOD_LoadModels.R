@@ -48,52 +48,48 @@
 ##' 
 ##' @examples
 ##' 
-##' # species occurrences
-##' myFile <- system.file("external/species/mammals_table.csv", package="biomod2")
+##' # Load species occurrences (6 species available)
+##' myFile <- system.file('external/species/mammals_table.csv', package = 'biomod2')
 ##' DataSpecies <- read.csv(myFile, row.names = 1)
 ##' head(DataSpecies)
 ##' 
-##' # the name of studied species
+##' # Select the name of the studied species
 ##' myRespName <- 'GuloGulo'
 ##' 
-##' # the presence/absences data for our species
+##' # Get corresponding presence/absence data
 ##' myResp <- as.numeric(DataSpecies[, myRespName])
 ##' 
-##' # the XY coordinates of species data
-##' myRespXY <- DataSpecies[, c("X_WGS84", "Y_WGS84")]
+##' # Get corresponding XY coordinates
+##' myRespXY <- DataSpecies[, c('X_WGS84', 'Y_WGS84')]
+##' 
+##' # Load environmental variables extracted from BIOCLIM (bio_3, bio_4, bio_7, bio_11 & bio_12)
+##' myFiles = paste0('external/bioclim/current/bio', c(3, 4, 7, 11, 12), '.grd')
+##' myExpl = raster::stack(system.file(myFiles, package = 'biomod2'))
 ##' 
 ##' 
-##' # Environmental variables extracted from BIOCLIM (bio_3, bio_4, bio_7, bio_11 & bio_12)
-##' myFiles = paste0("external/bioclim/current/bio", c(3, 4, 7, 11, 12), ".grd")
-##' myExpl = raster::stack(system.file(myFiles[1], package = "biomod2"),
-##'                        system.file(myFiles[2], package = "biomod2"),
-##'                        system.file(myFiles[3], package = "biomod2"),
-##'                        system.file(myFiles[4], package = "biomod2"),
-##'                        system.file(myFiles[5], package = "biomod2"))
-##' 
-##' # 1. Formatting Data
+##' # ---------------------------------------------------------------
+##' # Format Data with true absences
 ##' myBiomodData <- BIOMOD_FormatingData(resp.var = myResp,
 ##'                                      expl.var = myExpl,
 ##'                                      resp.xy = myRespXY,
 ##'                                      resp.name = myRespName)
 ##' 
-##' # 2. Defining Models Options using default options.
-##' myBiomodOption <- BIOMOD_ModelingOptions()
+##' # Create default modeling options
+##' myBiomodOptions <- BIOMOD_ModelingOptions()
 ##' 
-##' # 3. Doing Modelisation
-##' myBiomodModelOut <- BIOMOD_Modeling(myBiomodData, 
-##'                                     models = c('SRE', 'CTA', 'RF'), 
-##'                                     models.options = myBiomodOption, 
-##'                                     NbRunEval = 1, 
-##'                                     DataSplit = 80, 
-##'                                     Yweights = NULL, 
-##'                                     VarImport = 0, 
+##' # Model single models
+##' myBiomodModelOut <- BIOMOD_Modeling(myBiomodData,
+##'                                     models.options = myBiomodOptions,
+##'                                     NbRunEval = 2,
+##'                                     DataSplit = 80,
+##'                                     VarImport = 3,
 ##'                                     models.eval.meth = c('TSS','ROC'),
-##'                                     SaveObj = TRUE,
-##'                                     rescal.all.models = FALSE,
-##'                                     do.full.models = FALSE)
-##'                                     
-##' # 4. Loading some models built
+##'                                     do.full.models = FALSE,
+##'                                     modeling.id = 'test')
+##' 
+##' 
+##' # ---------------------------------------------------------------
+##' # Loading some models built
 ##' myLoadedModels <- BIOMOD_LoadModels(myBiomodModelOut, models = 'RF')
 ##' myLoadedModels
 ##' 

@@ -183,37 +183,88 @@
 ##' 
 ##' @examples
 ##' 
-##' # species occurrences
-##' myFile <- system.file("external/species/mammals_table.csv", package="biomod2")
+##' # Load species occurrences (6 species available)
+##' myFile <- system.file('external/species/mammals_table.csv', package = 'biomod2')
 ##' DataSpecies <- read.csv(myFile, row.names = 1)
 ##' head(DataSpecies)
 ##' 
-##' # the name of studied species
+##' # Select the name of the studied species
 ##' myRespName <- 'GuloGulo'
 ##' 
-##' # the presence/absences data for our species
+##' # Get corresponding presence/absence data
 ##' myResp <- as.numeric(DataSpecies[, myRespName])
 ##' 
-##' # the XY coordinates of species data
-##' myRespXY <- DataSpecies[, c("X_WGS84", "Y_WGS84")]
+##' # Get corresponding XY coordinates
+##' myRespXY <- DataSpecies[, c('X_WGS84', 'Y_WGS84')]
+##' 
+##' # Load environmental variables extracted from BIOCLIM (bio_3, bio_4, bio_7, bio_11 & bio_12)
+##' myFiles = paste0('external/bioclim/current/bio', c(3, 4, 7, 11, 12), '.grd')
+##' myExpl = raster::stack(system.file(myFiles, package = 'biomod2'))
 ##' 
 ##' 
-##' # Environmental variables extracted from BIOCLIM (bio_3, bio_4, bio_7, bio_11 & bio_12)
-##' myFiles = paste0("external/bioclim/current/bio", c(3, 4, 7, 11, 12), ".grd")
-##' myExpl = raster::stack(system.file(myFiles[1], package = "biomod2"),
-##'                        system.file(myFiles[2], package = "biomod2"),
-##'                        system.file(myFiles[3], package = "biomod2"),
-##'                        system.file(myFiles[4], package = "biomod2"),
-##'                        system.file(myFiles[5], package = "biomod2"))
-##' 
-##' # 1. Formating Data
+##' # ---------------------------------------------------------------
+##' # Format Data with true absences
 ##' myBiomodData <- BIOMOD_FormatingData(resp.var = myResp,
 ##'                                      expl.var = myExpl,
 ##'                                      resp.xy = myRespXY,
 ##'                                      resp.name = myRespName)
-##' 
 ##' myBiomodData
 ##' plot(myBiomodData)
+##' 
+##' 
+##' # ---------------------------------------------------------------
+##' # # Transform true absences into potential pseudo-absences
+##' # myResp.PA <- ifelse(myResp == 1, 1, NA)
+##' # 
+##' # # Format Data with pseudo-absences : random method
+##' # myBiomodData.r <- BIOMOD_FormatingData(resp.var = myResp.PA,
+##' #                                        expl.var = myExpl,
+##' #                                        resp.xy = myRespXY,
+##' #                                        resp.name = myRespName,
+##' #                                        PA.nb.rep = 4,
+##' #                                        PA.nb.absences = 1000,
+##' #                                        PA.strategy = 'random')
+##' # 
+##' # # Format Data with pseudo-absences : disk method
+##' # myBiomodData.d <- BIOMOD_FormatingData(resp.var = myResp.PA,
+##' #                                        expl.var = myExpl,
+##' #                                        resp.xy = myRespXY,
+##' #                                        resp.name = myRespName,
+##' #                                        PA.nb.rep = 4,
+##' #                                        PA.nb.absences = 500,
+##' #                                        PA.strategy = 'disk',
+##' #                                        PA.dist.min = 5,
+##' #                                        PA.dist.max = 35)
+##' # 
+##' # # Format Data with pseudo-absences : SRE method
+##' # myBiomodData.s <- BIOMOD_FormatingData(resp.var = myResp.PA,
+##' #                                        expl.var = myExpl,
+##' #                                        resp.xy = myRespXY,
+##' #                                        resp.name = myRespName,
+##' #                                        PA.nb.rep = 4,
+##' #                                        PA.nb.absences = 1000,
+##' #                                        PA.strategy = 'sre',
+##' #                                        PA.sre.quant = 0.025)
+##' # 
+##' # # Format Data with pseudo-absences : user.defined method
+##' # myPAtable <- data.frame(PA1 = ifelse(myResp == 1, TRUE, FALSE),
+##' #                         PA2 = ifelse(myResp == 1, TRUE, FALSE))
+##' # for (i in 1:ncol(myPAtable)) myPAtable[sample(which(myPAtable[, i] == FALSE), 500), i] = TRUE
+##' # myBiomodData.u <- BIOMOD_FormatingData(resp.var = myResp.PA,
+##' #                                        expl.var = myExpl,
+##' #                                        resp.xy = myRespXY,
+##' #                                        resp.name = myRespName,
+##' #                                        PA.strategy = 'user.defined',
+##' #                                        PA.table = myPAtable)
+##' # 
+##' # myBiomodData.r
+##' # myBiomodData.d
+##' # myBiomodData.s
+##' # myBiomodData.u
+##' # plot(myBiomodData.r)
+##' # plot(myBiomodData.d)
+##' # plot(myBiomodData.s)
+##' # plot(myBiomodData.u)
 ##' 
 ##' 
 ##' @importFrom sp coordinates

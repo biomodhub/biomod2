@@ -34,8 +34,8 @@ myResp <- as.numeric(DataSpecies[, myRespName])
 myRespXY <- DataSpecies[, c('X_WGS84', 'Y_WGS84')]
 
 # Load environmental variables extracted from BIOCLIM (bio_3, bio_4, bio_7, bio_11 & bio_12)
-myFiles = paste0('external/bioclim/current/bio', c(3, 4, 7, 11, 12), '.grd')
-myExpl = raster::stack(system.file(myFiles, package = 'biomod2'))
+myFiles <- paste0('external/bioclim/current/bio', c(3, 4, 7, 11, 12), '.grd')
+myExpl <- raster::stack(system.file(myFiles, package = 'biomod2'))
 ```
 
 
@@ -110,18 +110,13 @@ plot(myBiomodData)
 # plot(myBiomodData.u)
 ```
 
-#### Cross-validation datasets
-
-```R
-myBiomodCV <- BIOMOD_CrossValidation(myBiomodData)
-head(myBiomodCV)
-```
-
 #### Parameterize modeling options
 
 ```R
 # Print default modeling options
 bm_DefaultModelingOptions()
+
+# Create default modeling options
 myBiomodOptions <- BIOMOD_ModelingOptions()
 myBiomodOptions
 
@@ -167,6 +162,30 @@ myBiomodOptions
 # plot(bm.tuning$tune.FDA)
 # plot(bm.tuning$tune.GBM)
 # plot(bm.tuning$tune.GAM)
+#
+# # Get tuned modeling options
+# myBiomodOptions <- bm.tuning$models.options
+```
+
+#### Cross-validation datasets
+
+```R
+# Create the different validation datasets
+myBiomodCV <- BIOMOD_CrossValidation(myBiomodData)
+head(myBiomodCV)
+
+# # Several validation strategies can be combined
+# DataSplitTable.b <- BIOMOD_CrossValidation(myBiomodData,
+#                                            k = 5,
+#                                            rep = 2,
+#                                            do.full.models = FALSE)
+# DataSplitTable.y <- BIOMOD_CrossValidation(myBiomodData,
+#                                            k = 2,
+#                                            stratified.cv = TRUE,
+#                                            stratify = "y")
+# colnames(DataSplitTable.y)[1:2] <- c("RUN11", "RUN12")
+# myBiomodCV <- cbind(DataSplitTable.b, DataSplitTable.y)
+# head(myBiomodCV)
 ```
 
 ### <i class="fas fa-cogs"></i> Run modelisation
@@ -179,6 +198,7 @@ myBiomodModelOut <- BIOMOD_Modeling(myBiomodData,
                                     models.options = myBiomodOptions,
                                     NbRunEval = 2,
                                     DataSplit = 80,
+                                    # DataSplitTable = myBiomodCV,
                                     VarImport = 3,
                                     models.eval.meth = c('TSS','ROC'),
                                     do.full.models = FALSE,
@@ -259,8 +279,16 @@ bm_PlotResponseCurves(myBiomodEM,
 #### Presence-only evaluation
 
 ```R
-# myBiomodPO <- BIOMOD_PresenceOnly(modeling.output = myBiomodModelOut)
-# myBiomodPO
+# Evaluate models with Boyce index and MPA
+myBiomodPO <- BIOMOD_PresenceOnly(modeling.output = myBiomodModelOut,
+                                  EM.output = myBiomodEM)
+myBiomodPO$eval
+
+# Evaluate models with Boyce index and MPA (using background data)
+myBiomodPO <- BIOMOD_PresenceOnly(modeling.output = myBiomodModelOut,
+                                  EM.output = myBiomodEM, 
+                                  bg.env = getValues(myExpl))
+myBiomodPO$eval
 ```
 
 ### <i class="fas fa-globe-europe"></i> Project models
@@ -268,6 +296,7 @@ bm_PlotResponseCurves(myBiomodEM,
 #### Single models
 
 ```R
+# Project single models
 myBiomodProj <- BIOMOD_Projection(myBiomodModelOut,
                                   proj.name = 'Current',
                                   new.env = myExpl,
@@ -282,19 +311,20 @@ plot(myBiomodProj)
 #### Ensemble models
 
 ```R
+# Project ensemble models (from single projections)
 myBiomodEMProj <- BIOMOD_EnsembleForecasting(EM.output = myBiomodEM, 
                                              projection.output = myBiomodProj,
                                              chosen.models = 'all',
                                              binary.meth = 'all',
                                              filtered.meth = 'all')
                                              
+# Project ensemble models (building single projections)
 myBiomodEMProj <- BIOMOD_EnsembleForecasting(EM.output = myBiomodEM,
                                              proj.name = 'CurrentEM',
                                              new.env = myExpl,
                                              chosen.models = 'all',
                                              binary.meth = 'all',
                                              filtered.meth = 'all')
-                                             
 myBiomodEMProj
 plot(myBiomodEMProj)
 ```

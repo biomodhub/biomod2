@@ -38,7 +38,7 @@ bm_RunModel(
 \code{\link{BIOMOD_FormatingData}} function}
 
 \item{modeling.id}{a \code{character} corresponding to the name (ID) of the simulation set 
-(\emph{a random number by default})s}
+(\emph{a random number by default})}
 
 \item{Model}{a \code{character} corresponding to the model name to be computed, must be either 
 \code{GLM}, \code{GBM}, \code{GAM}, \code{CTA}, \code{ANN}, \code{SRE}, \code{FDA}, 

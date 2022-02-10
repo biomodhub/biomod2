@@ -78,70 +78,74 @@
 ##'
 ##' @examples
 ##' 
-##' # species occurrences
-##' myFile <- system.file("external/species/mammals_table.csv", package="biomod2")
+##' # Load species occurrences (6 species available)
+##' myFile <- system.file('external/species/mammals_table.csv', package = 'biomod2')
 ##' DataSpecies <- read.csv(myFile, row.names = 1)
 ##' head(DataSpecies)
 ##' 
-##' # the name of studied species
+##' # Select the name of the studied species
 ##' myRespName <- 'GuloGulo'
 ##' 
-##' # the presence/absences data for our species
+##' # Get corresponding presence/absence data
 ##' myResp <- as.numeric(DataSpecies[, myRespName])
 ##' 
-##' # the XY coordinates of species data
-##' myRespXY <- DataSpecies[, c("X_WGS84", "Y_WGS84")]
+##' # Get corresponding XY coordinates
+##' myRespXY <- DataSpecies[, c('X_WGS84', 'Y_WGS84')]
+##' 
+##' # Load environmental variables extracted from BIOCLIM (bio_3, bio_4, bio_7, bio_11 & bio_12)
+##' myFiles = paste0('external/bioclim/current/bio', c(3, 4, 7, 11, 12), '.grd')
+##' myExpl = raster::stack(system.file(myFiles, package = 'biomod2'))
 ##' 
 ##' 
-##' # Environmental variables extracted from BIOCLIM (bio_3, bio_4, bio_7, bio_11 & bio_12)
-##' myFiles = paste0("external/bioclim/current/bio", c(3, 4, 7, 11, 12), ".grd")
-##' myExpl = raster::stack(system.file(myFiles[1], package = "biomod2"),
-##'                        system.file(myFiles[2], package = "biomod2"),
-##'                        system.file(myFiles[3], package = "biomod2"),
-##'                        system.file(myFiles[4], package = "biomod2"),
-##'                        system.file(myFiles[5], package = "biomod2"))
-##' 
-##' # 1. Formatting Data
+##' # ---------------------------------------------------------------
+##' # Format Data with true absences
 ##' myBiomodData <- BIOMOD_FormatingData(resp.var = myResp,
 ##'                                      expl.var = myExpl,
 ##'                                      resp.xy = myRespXY,
 ##'                                      resp.name = myRespName)
 ##' 
-##' # 2. Defining Models Options using default options.
-##' myBiomodOption <- BIOMOD_ModelingOptions()
+##' # Create default modeling options
+##' myBiomodOptions <- BIOMOD_ModelingOptions()
 ##' 
+##'  
+##' # ---------------------------------------------------------------
+##' # Create the different validation datasets
+##' myBiomodCV <- BIOMOD_CrossValidation(myBiomodData)
+##' head(myBiomodCV)
 ##' 
-##' # 3. Creating DataSplitTable
-##' DataSplitTable <- BIOMOD_CrossValidation(myBiomodData,
-##'                                          k = 5,
-##'                                          rep = 2,
-##'                                          do.full.models = FALSE)
+##' # Several validation strategies can be combined
+##' DataSplitTable.b <- BIOMOD_CrossValidation(myBiomodData,
+##'                                           k = 5,
+##'                                           rep = 2,
+##'                                           do.full.models = FALSE)
 ##' DataSplitTable.y <- BIOMOD_CrossValidation(myBiomodData,
-##'                                            k = 2,
-##'                                            stratified.cv = TRUE,
-##'                                            stratify = "y")
+##'                                           k = 2,
+##'                                           stratified.cv = TRUE,
+##'                                           stratify = "y")
 ##' colnames(DataSplitTable.y)[1:2] <- c("RUN11", "RUN12")
-##' DataSplitTable <- cbind(DataSplitTable, DataSplitTable.y)
-##' head(DataSplitTable)
+##' myBiomodCV <- cbind(DataSplitTable.b, DataSplitTable.y)
+##' head(myBiomodCV)
 ##' 
-##' # 4. Doing Modelisation
-##' myBiomodModelOut <- BIOMOD_Modeling(myBiomodData, 
-##'                                     models = c('RF'), 
-##'                                     models.options = myBiomodOption, 
-##'                                     DataSplitTable = DataSplitTable,
-##'                                     VarImport = 0, 
-##'                                     models.eval.meth = c('ROC'),
+##' # Model single models
+##' myBiomodModelOut <- BIOMOD_Modeling(myBiomodData,
+##'                                     models = c('RF', 'GLM'),
+##'                                     models.options = myBiomodOptions,
+##'                                     NbRunEval = 2,
+##'                                     DataSplitTable = myBiomodCV,
+##'                                     VarImport = 3,
+##'                                     models.eval.meth = c('TSS','ROC'),
 ##'                                     do.full.models = FALSE,
-##'                                     modeling.id = "test")
+##'                                     modeling.id = 'mod.CV')
 ##' 
-##' ## get cv evaluations
-##' eval <- get_evaluations(myBiomodModelOut, as.data.frame = TRUE)
+##' # Get evaluation scores & variables importance
+##' myEval <- get_evaluations(myBiomodModelOut.CV, as.data.frame = TRUE)
+##' myEval$CV.strategy <- "Random"
+##' myEval$CV.strategy[grepl("13", myEval$Model.name)] <- "Full"
+##' myEval$CV.strategy[grepl("11|12", myEval$Model.name)] <- "Stratified"
+##' head(myEval)
 ##' 
-##' eval$strat <- "Random"
-##' eval$strat[grepl("13", eval$Model.name)] <- "Full"
-##' eval$strat[grepl("11", eval$Model.name)|grepl("12", eval$Model.name)] <- "Strat"
-##' 
-##' boxplot(eval$Testing.data ~ eval$strat, ylab = "ROC AUC")
+##' boxplot(myEval$Testing.data ~ interaction(myEval$Algo, myEval$CV.strategy),
+##'         xlab = "", ylab = "ROC AUC", col = rep(c("brown", "cadetblue"), 3))
 ##' 
 ##' 
 ##' @importFrom ENMeval get.block

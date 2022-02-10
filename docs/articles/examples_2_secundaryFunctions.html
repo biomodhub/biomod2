@@ -109,44 +109,167 @@
     
     
 <p><link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.13/css/all.css" integrity="sha384-DNOHZ68U8hZfKXOrtjWvjxusGo9WQnrNx2sqG0tfsghAvtVlRW3tvkXWZh58N9jp" crossorigin="anonymous"></p>
-<div class="section level2">
-<h2 id="complete-code-example">
-<i class="fas fa-code"></i> Complete code example<a class="anchor" aria-label="anchor" href="#complete-code-example"></a>
-</h2>
 <div class="section level3">
-<h3 id="load-dataset-and-variables">
-<i class="fas fa-truck-loading"></i> Load dataset and variables<a class="anchor" aria-label="anchor" href="#load-dataset-and-variables"></a>
+<h3 id="prepare-data-for-examples">
+<i class="fas fa-truck-loading"></i> Prepare data for examples<a class="anchor" aria-label="anchor" href="#prepare-data-for-examples"></a>
 </h3>
+<div class="section level4">
+<h4 id="vector-data">Vector data<a class="anchor" aria-label="anchor" href="#vector-data"></a>
+</h4>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va">biomod2</span><span class="op">)</span>
-<span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://rspatial.org/raster" class="external-link">raster</a></span><span class="op">)</span>
+<code class="sourceCode R"><span class="co">## Generate a binary vector -------------------------------------------------------------</span>
+<span class="va">vec.a</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/sample.html" class="external-link">sample</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">1</span><span class="op">)</span>, <span class="fl">100</span>, replace <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>
 
-<span class="co"># Load species occurrences (6 species available)</span>
+<span class="co">## Generate a 0-1000 vector (random drawing) --------------------------------------------</span>
+<span class="va">vec.b</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/Uniform.html" class="external-link">runif</a></span><span class="op">(</span><span class="fl">100</span>, min <span class="op">=</span> <span class="fl">0</span>, max <span class="op">=</span> <span class="fl">1000</span><span class="op">)</span>
+
+<span class="co">## Generate a 0-1000 vector (biased drawing) --------------------------------------------</span>
+<span class="va">BiasedDrawing</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">x</span>, <span class="va">m1</span> <span class="op">=</span> <span class="fl">300</span>, <span class="va">sd1</span> <span class="op">=</span> <span class="fl">200</span>, <span class="va">m2</span> <span class="op">=</span> <span class="fl">700</span>, <span class="va">sd2</span> <span class="op">=</span> <span class="fl">200</span><span class="op">)</span> <span class="op">{</span>
+  <span class="kw"><a href="https://rdrr.io/r/base/function.html" class="external-link">return</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/ifelse.html" class="external-link">ifelse</a></span><span class="op">(</span><span class="va">x</span> <span class="op">&lt;</span> <span class="fl">0.5</span>, <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="fl">1</span>, <span class="va">m1</span>, <span class="va">sd1</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="fl">1</span>, <span class="va">m2</span>, <span class="va">sd2</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>
+<span class="op">}</span>
+<span class="va">vec.c</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">sapply</a></span><span class="op">(</span><span class="va">vec.a</span>, <span class="va">BiasedDrawing</span><span class="op">)</span>
+<span class="va">vec.c</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/which.html" class="external-link">which</a></span><span class="op">(</span><span class="va">vec.c</span> <span class="op">&lt;</span> <span class="fl">0</span><span class="op">)</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="fl">0</span>
+<span class="va">vec.c</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/which.html" class="external-link">which</a></span><span class="op">(</span><span class="va">vec.c</span> <span class="op">&gt;</span> <span class="fl">1000</span><span class="op">)</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="fl">1000</span>
+
+<span class="co">## Generate a 0-1000 vector (normal distribution) ---------------------------------------</span>
+<span class="va">vec.d</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="fl">100</span>, <span class="fl">500</span><span class="op">)</span></code></pre></div>
+</div>
+<div class="section level4">
+<h4 id="observations-explanatory-variables">Observations &amp; explanatory variables<a class="anchor" aria-label="anchor" href="#observations-explanatory-variables"></a>
+</h4>
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va">biomod2</span><span class="op">)</span>
+<span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://rspatial.org/raster" class="external-link">raster</a></span><span class="op">)</span></code></pre></div>
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="co">## Create simple simulated data ---------------------------------------------------------</span>
+<span class="va">myResp.s</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/sample.html" class="external-link">sample</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">1</span><span class="op">)</span>, <span class="fl">20</span>, replace <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>
+<span class="va">myExpl.s</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span>var1 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sample.html" class="external-link">sample</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">1</span><span class="op">)</span>, <span class="fl">100</span>, replace <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>,
+                       var2 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="fl">100</span><span class="op">)</span>,
+                       var3 <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">100</span><span class="op">)</span>
+                       
+<span class="co">## Create raster data -------------------------------------------------------------------</span>
+<span class="va">ras.1</span> <span class="op">&lt;-</span> <span class="va">ras.2</span> <span class="op">&lt;-</span> <span class="va">mask.out</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/raster/man/raster.html" class="external-link">raster</a></span><span class="op">(</span>nrows <span class="op">=</span> <span class="fl">10</span>, ncols <span class="op">=</span> <span class="fl">10</span><span class="op">)</span>
+<span class="va">ras.1</span><span class="op">[</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/raster/man/factor.html" class="external-link">as.factor</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">2</span>, <span class="fl">3</span>, <span class="fl">4</span>, <span class="fl">5</span><span class="op">)</span>, each <span class="op">=</span> <span class="fl">20</span><span class="op">)</span><span class="op">)</span>
+<span class="va">ras.2</span><span class="op">[</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="fl">100</span><span class="op">)</span>
+<span class="va">stk</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/raster/man/stack.html" class="external-link">stack</a></span><span class="op">(</span><span class="va">ras.1</span>, <span class="va">ras.2</span><span class="op">)</span>
+<span class="fu"><a href="https://rdrr.io/pkg/raster/man/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">stk</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"varFact"</span>, <span class="st">"varNorm"</span><span class="op">)</span>
+
+<span class="co">## define a mask for already sampled points</span>
+<span class="va">mask.out</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">40</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="fl">1</span>
+
+<span class="co">## define a list of masks where we want to sample in priority</span>
+<span class="va">mask.in</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="va">ras.1</span>, <span class="va">ras.1</span><span class="op">)</span>
+<span class="va">mask.in</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">80</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="cn">NA</span> <span class="co">## only level 5 should be sampled in this mask</span>
+<span class="va">mask.in</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span><span class="op">[</span><span class="fl">21</span><span class="op">:</span><span class="fl">80</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="cn">NA</span> <span class="co">## only levels 1 and 5 should be sampled in this mask</span>
+
+<span class="co">## Load real data -----------------------------------------------------------------------</span>
 <span class="va">myFile</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">'external/species/mammals_table.csv'</span>, package <span class="op">=</span> <span class="st">'biomod2'</span><span class="op">)</span>
 <span class="va">DataSpecies</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/utils/read.table.html" class="external-link">read.csv</a></span><span class="op">(</span><span class="va">myFile</span>, row.names <span class="op">=</span> <span class="fl">1</span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/pkg/raster/man/headtail.html" class="external-link">head</a></span><span class="op">(</span><span class="va">DataSpecies</span><span class="op">)</span>
+<span class="va">myResp.r</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/numeric.html" class="external-link">as.numeric</a></span><span class="op">(</span><span class="va">DataSpecies</span><span class="op">[</span>, <span class="st">'GuloGulo'</span><span class="op">]</span><span class="op">)</span>
 
-<span class="co"># Select the name of the studied species</span>
-<span class="va">myRespName</span> <span class="op">&lt;-</span> <span class="st">'GuloGulo'</span>
+<span class="va">myFiles</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">'external/bioclim/current/bio'</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">3</span>, <span class="fl">4</span>, <span class="fl">7</span>, <span class="fl">11</span>, <span class="fl">12</span><span class="op">)</span>, <span class="st">'.grd'</span><span class="op">)</span>
+<span class="va">myExpl.r</span> <span class="op">&lt;-</span> <span class="fu">raster</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/raster/man/stack.html" class="external-link">stack</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="va">myFiles</span>, package <span class="op">=</span> <span class="st">'biomod2'</span><span class="op">)</span><span class="op">)</span>
 
-<span class="co"># Get corresponding presence/absence data</span>
-<span class="va">myResp</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/numeric.html" class="external-link">as.numeric</a></span><span class="op">(</span><span class="va">DataSpecies</span><span class="op">[</span>, <span class="va">myRespName</span><span class="op">]</span><span class="op">)</span>
-
-<span class="co"># Get corresponding XY coordinates</span>
-<span class="va">myRespXY</span> <span class="op">&lt;-</span> <span class="va">DataSpecies</span><span class="op">[</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">'X_WGS84'</span>, <span class="st">'Y_WGS84'</span><span class="op">)</span><span class="op">]</span>
-
-<span class="co"># Load environmental variables extracted from BIOCLIM (bio_3, bio_4, bio_7, bio_11 &amp; bio_12)</span>
-<span class="va">myFiles</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">'external/bioclim/current/bio'</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">3</span>, <span class="fl">4</span>, <span class="fl">7</span>, <span class="fl">11</span>, <span class="fl">12</span><span class="op">)</span>, <span class="st">'.grd'</span><span class="op">)</span>
-<span class="va">myExpl</span> <span class="op">=</span> <span class="fu">raster</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/raster/man/stack.html" class="external-link">stack</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="va">myFiles</span>, package <span class="op">=</span> <span class="st">'biomod2'</span><span class="op">)</span><span class="op">)</span></code></pre></div>
+<span class="va">myRespXY</span> <span class="op">&lt;-</span> <span class="va">DataSpecies</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/which.html" class="external-link">which</a></span><span class="op">(</span><span class="va">myResp.r</span> <span class="op">==</span> <span class="fl">1</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">'X_WGS84'</span>, <span class="st">'Y_WGS84'</span><span class="op">)</span><span class="op">]</span>
+<span class="va">myResp.v</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/raster/man/reclassify.html" class="external-link">reclassify</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/pkg/raster/man/subset.html" class="external-link">subset</a></span><span class="op">(</span><span class="va">myExpl.r</span>, <span class="fl">1</span>, drop <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">-</span><span class="cn">Inf</span>, <span class="cn">Inf</span>, <span class="fl">0</span><span class="op">)</span><span class="op">)</span>
+<span class="va">myResp.v</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/pkg/raster/man/cellFrom.html" class="external-link">cellFromXY</a></span><span class="op">(</span><span class="va">myResp.v</span>, <span class="va">myRespXY</span><span class="op">)</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="fl">1</span></code></pre></div>
+</div>
+</div>
+<div class="section level3">
+<h3 id="secundary-functions-vector-data">
+<i class="fas fa-cog"></i> Secundary functions : vector data<a class="anchor" aria-label="anchor" href="#secundary-functions-vector-data"></a>
+</h3>
+<div class="section level4">
+<h4 id="generate-calibration-evaluatation-datasets">Generate calibration / evaluatation datasets<a class="anchor" aria-label="anchor" href="#generate-calibration-evaluatation-datasets"></a>
+</h4>
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="../reference/bm_SampleBinaryVector.html">bm_SampleBinaryVector</a></span><span class="op">(</span>ref <span class="op">=</span> <span class="va">vec.a</span>, ratio <span class="op">=</span> <span class="fl">0.7</span><span class="op">)</span></code></pre></div>
+<!-- #### Rescale values between 0-1 with a binomial GLM -->
+<!-- ```R -->
+<!-- vec.b_rescaled <- bm_Rescaler(dataToRescale = vec.b, -->
+<!--                               name = "TEST", -->
+<!--                               doModel = TRUE, -->
+<!--                               ref = vec.a) -->
+<!-- plot(vec.b, vec.b_rescaled) -->
+<!-- abline(a = 0, b = 0.001, lty = 2) -->
+<!-- ``` -->
+</div>
+<div class="section level4">
+<h4 id="find-optimal-threshold-for-a-specific-evaluation-metric">Find optimal threshold for a specific evaluation metric<a class="anchor" aria-label="anchor" href="#find-optimal-threshold-for-a-specific-evaluation-metric"></a>
+</h4>
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="../reference/bm_FindOptimStat.html">bm_FindOptimStat</a></span><span class="op">(</span>Stat <span class="op">=</span> <span class="st">'TSS'</span>, Fit <span class="op">=</span> <span class="va">vec.b</span>, Obs <span class="op">=</span> <span class="va">vec.a</span><span class="op">)</span>
+<span class="fu"><a href="../reference/bm_FindOptimStat.html">bm_FindOptimStat</a></span><span class="op">(</span>Stat <span class="op">=</span> <span class="st">'TSS'</span>, Fit <span class="op">=</span> <span class="va">vec.c</span>, Obs <span class="op">=</span> <span class="va">vec.a</span>, Nb.thresh.test <span class="op">=</span> <span class="fl">100</span><span class="op">)</span></code></pre></div>
+</div>
+<div class="section level4">
+<h4 id="from-continuous-to-binary-filtered-vector">From continuous to binary / filtered vector<a class="anchor" aria-label="anchor" href="#from-continuous-to-binary-filtered-vector"></a>
+</h4>
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">vec.d_bin</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/bm_BinaryTransformation.html">bm_BinaryTransformation</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">vec.d</span>, threshold <span class="op">=</span> <span class="fl">500</span><span class="op">)</span>
+<span class="va">vec.d_filt</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/bm_BinaryTransformation.html">bm_BinaryTransformation</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">vec.d</span>, threshold <span class="op">=</span> <span class="fl">500</span>, doFiltering <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>
+<span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">cbind</a></span><span class="op">(</span><span class="va">vec.d</span>, <span class="va">vec.d_bin</span>, <span class="va">vec.d_filt</span><span class="op">)</span></code></pre></div>
+</div>
+</div>
+<div class="section level3">
+<h3 id="secundary-functions-explanatory-variables">
+<i class="fas fa-cogs"></i> Secundary functions : explanatory variables<a class="anchor" aria-label="anchor" href="#secundary-functions-explanatory-variables"></a>
+</h3>
+<div class="section level4">
+<h4 id="generate-automatic-formula">Generate automatic formula<a class="anchor" aria-label="anchor" href="#generate-automatic-formula"></a>
+</h4>
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="../reference/bm_MakeFormula.html">bm_MakeFormula</a></span><span class="op">(</span>respName <span class="op">=</span> <span class="st">'myResp.s'</span>,
+               explVar <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/raster/man/headtail.html" class="external-link">head</a></span><span class="op">(</span><span class="va">myExpl.s</span><span class="op">)</span>,
+               type <span class="op">=</span> <span class="st">'quadratic'</span>,
+               interaction.level <span class="op">=</span> <span class="fl">0</span><span class="op">)</span></code></pre></div>
+</div>
+<div class="section level4">
+<h4 id="sample-all-factor-levels">Sample all factor levels<a class="anchor" aria-label="anchor" href="#sample-all-factor-levels"></a>
+</h4>
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">samp1</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/bm_SampleFactorLevels.html">bm_SampleFactorLevels</a></span><span class="op">(</span><span class="va">stk</span>, mask.out <span class="op">=</span> <span class="va">mask.out</span><span class="op">)</span>
+<span class="va">samp2</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/bm_SampleFactorLevels.html">bm_SampleFactorLevels</a></span><span class="op">(</span><span class="va">stk</span>, mask.in <span class="op">=</span> <span class="va">mask.in</span><span class="op">)</span>
+<span class="va">samp3</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/bm_SampleFactorLevels.html">bm_SampleFactorLevels</a></span><span class="op">(</span><span class="va">stk</span>, mask.out <span class="op">=</span> <span class="va">mask.out</span>, mask.in <span class="op">=</span> <span class="va">mask.in</span><span class="op">)</span></code></pre></div>
+</div>
+<div class="section level4">
+<h4 id="compute-species-range-envelop-model">Compute Species Range Envelop model<a class="anchor" aria-label="anchor" href="#compute-species-range-envelop-model"></a>
+</h4>
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="co"># Compute SRE for several quantile values</span>
+<span class="va">sre.100</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/bm_SRE.html">bm_SRE</a></span><span class="op">(</span>Response <span class="op">=</span> <span class="va">myResp.v</span>,
+                  Explanatory <span class="op">=</span> <span class="va">myExpl.r</span>,
+                  NewData <span class="op">=</span> <span class="va">myExpl.r</span>,
+                  Quant <span class="op">=</span> <span class="fl">0</span><span class="op">)</span>
+<span class="va">sre.095</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/bm_SRE.html">bm_SRE</a></span><span class="op">(</span>Response <span class="op">=</span> <span class="va">myResp.v</span>,
+                  Explanatory <span class="op">=</span> <span class="va">myExpl.r</span>,
+                  NewData <span class="op">=</span> <span class="va">myExpl.r</span>,
+                  Quant <span class="op">=</span> <span class="fl">0.025</span><span class="op">)</span>
+<span class="va">sre.090</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/bm_SRE.html">bm_SRE</a></span><span class="op">(</span>Response <span class="op">=</span> <span class="va">myResp.v</span>,
+                  Explanatory <span class="op">=</span> <span class="va">myExpl.r</span>,
+                  NewData <span class="op">=</span> <span class="va">myExpl.r</span>,
+                  Quant <span class="op">=</span> <span class="fl">0.05</span><span class="op">)</span>
+  
+<span class="co"># Visualize results</span>
+<span class="va">res</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/raster/man/stack.html" class="external-link">stack</a></span><span class="op">(</span><span class="va">myResp.v</span>, <span class="va">sre.100</span>, <span class="va">sre.095</span>, <span class="va">sre.090</span><span class="op">)</span>
+<span class="fu"><a href="https://rdrr.io/pkg/raster/man/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">res</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Original distribution"</span>, <span class="st">"Full data calibration"</span>, <span class="st">"Over 95 percent"</span>, <span class="st">"Over 90 percent"</span><span class="op">)</span>
+<span class="fu"><a href="https://rdrr.io/pkg/raster/man/plot.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">res</span>, zlim <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">1</span><span class="op">)</span><span class="op">)</span></code></pre></div>
+</div>
+<div class="section level4">
+<h4 id="compute-variables-importance">Compute variables importance<a class="anchor" aria-label="anchor" href="#compute-variables-importance"></a>
+</h4>
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">mod</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/glm.html" class="external-link">glm</a></span><span class="op">(</span><span class="va">var1</span> <span class="op">~</span> <span class="va">var2</span> <span class="op">+</span> <span class="va">var3</span>, data <span class="op">=</span> <span class="va">myExpl.s</span><span class="op">)</span>
+<span class="fu"><a href="../reference/bm_VariablesImportance.html">bm_VariablesImportance</a></span><span class="op">(</span>model <span class="op">=</span> <span class="va">mod</span>, 
+                       data <span class="op">=</span> <span class="va">myExpl.s</span><span class="op">[</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">'var2'</span>, <span class="st">'var3'</span><span class="op">)</span><span class="op">]</span>,
+                       method <span class="op">=</span> <span class="st">"full_rand"</span>,
+                       nb_rand <span class="op">=</span> <span class="fl">3</span><span class="op">)</span></code></pre></div>
 </div>
 </div>
   </div>
 
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
 
-        <nav id="toc" data-toggle="toc"><h2 data-toc-skip>Contents</h2>
-    </nav>
-</div>
+      </div>
 
 </div>
 

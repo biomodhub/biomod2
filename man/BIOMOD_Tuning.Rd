@@ -170,66 +170,60 @@ Function to tune \pkg{biomod2} single models parameters
 }
 \examples{
 
-# species occurrences
-myFile <- system.file("external/species/mammals_table.csv", package="biomod2")
+# Load species occurrences (6 species available)
+myFile <- system.file('external/species/mammals_table.csv', package = 'biomod2')
 DataSpecies <- read.csv(myFile, row.names = 1)
 head(DataSpecies)
 
-# the name of studied species
+# Select the name of the studied species
 myRespName <- 'GuloGulo'
 
-# the presence/absences data for our species
+# Get corresponding presence/absence data
 myResp <- as.numeric(DataSpecies[, myRespName])
 
-# the XY coordinates of species data
-myRespXY <- DataSpecies[, c("X_WGS84", "Y_WGS84")]
+# Get corresponding XY coordinates
+myRespXY <- DataSpecies[, c('X_WGS84', 'Y_WGS84')]
+
+# Load environmental variables extracted from BIOCLIM (bio_3, bio_4, bio_7, bio_11 & bio_12)
+myFiles = paste0('external/bioclim/current/bio', c(3, 4, 7, 11, 12), '.grd')
+myExpl = raster::stack(system.file(myFiles, package = 'biomod2'))
 
 
-# Environmental variables extracted from BIOCLIM (bio_3, bio_4, bio_7, bio_11 & bio_12)
-myFiles = paste0("external/bioclim/current/bio", c(3, 4, 7, 11, 12), ".grd")
-myExpl = raster::stack(system.file(myFiles[1], package = "biomod2"),
-                       system.file(myFiles[2], package = "biomod2"),
-                       system.file(myFiles[3], package = "biomod2"),
-                       system.file(myFiles[4], package = "biomod2"),
-                       system.file(myFiles[5], package = "biomod2"))
-
-# 1. Formating Data
+# ---------------------------------------------------------------
+# Format Data with true absences
 myBiomodData <- BIOMOD_FormatingData(resp.var = myResp,
                                      expl.var = myExpl,
                                      resp.xy = myRespXY,
                                      resp.name = myRespName)
 
-# 2. Defining Models Options using default options
+
+# ---------------------------------------------------------------
 ### Duration for turing all models sequential with default settings 
 ### on 3.4 GHz processor: approx. 45 min tuning all models in parallel
 ### (on 8 cores) using foreach loops runs much faster: approx. 14 min
 
 # library(doParallel)
-# cl<-makeCluster(8)
+# cl <- makeCluster(8)
 # doParallel::registerDoParallel(cl) 
 
 time.seq <- system.time(
-  bm.tuning <- BIOMOD_Tuning(myBiomodData,
-                             env.ME = myExpl,
-                             n.bg.ME = ncell(myExpl))
+  bm.tuning <- BIOMOD_Tuning(myBiomodData, env.ME = myExpl, n.bg.ME = ncell(myExpl))
 )
 
 # stopCluster(cl)
 
-par(mfrow = c(1,3))
 plot(bm.tuning$tune.CTA.rpart)
 plot(bm.tuning$tune.CTA.rpart2)
 plot(bm.tuning$tune.RF)
+plot(bm.tuning$tune.ANN)
+plot(bm.tuning$tune.MARS)
+plot(bm.tuning$tune.FDA)
+plot(bm.tuning$tune.GBM)
+plot(bm.tuning$tune.GAM)
 
-myBiomodModelOut <- BIOMOD_Modeling(myBiomodData, 
-                                    models = c('RF', 'CTA'), 
-                                    models.options = bm.tuning$models.options, 
-                                    NbRunEval = 1, 
-                                    DataSplit = 100, 
-                                    VarImport = 0,
-                                    models.eval.meth = c('ROC'),
-                                    do.full.models = FALSE,
-                                    modeling.id = 'test')
+
+# Get tuned modeling options
+myBiomodOptions <- bm.tuning$models.options
 
 
 }

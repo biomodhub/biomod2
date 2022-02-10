@@ -369,37 +369,58 @@ changes) as function arguments (see <a href="BIOMOD_ModelingOptions.html#example
     <div id="ref-examples">
     <h2>Examples</h2>
     <div class="sourceCode"><pre class="sourceCode r"><code>
-<span class="co">## default BIOMOD.models.options object</span>
-<span class="va">myBiomodOptions</span> <span class="op">&lt;-</span> <span class="fu">BIOMOD_ModelingOptions</span><span class="op">(</span><span class="op">)</span>
+<span class="co"># Load species occurrences (6 species available)</span>
+<span class="va">myFile</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">'external/species/mammals_table.csv'</span>, package <span class="op">=</span> <span class="st">'biomod2'</span><span class="op">)</span>
+<span class="va">DataSpecies</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/utils/read.table.html" class="external-link">read.csv</a></span><span class="op">(</span><span class="va">myFile</span>, row.names <span class="op">=</span> <span class="fl">1</span><span class="op">)</span>
+<span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">DataSpecies</span><span class="op">)</span>
 
-<span class="co">## print the object</span>
-<span class="va">myBiomodOptions</span>
+<span class="co"># Select the name of the studied species</span>
+<span class="va">myRespName</span> <span class="op">&lt;-</span> <span class="st">'GuloGulo'</span>
 
-<span class="co">## you can copy a part of the print, change it and custom your options</span>
-<span class="co">## here we want to compute quadratic GLM and select best model with 'BIC' criterium</span>
-<span class="va">myBiomodOptions</span> <span class="op">&lt;-</span> <span class="fu">BIOMOD_ModelingOptions</span><span class="op">(</span>
-  GLM <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>type <span class="op">=</span> <span class="st">'quadratic'</span>,
-             interaction.level <span class="op">=</span> <span class="fl">0</span>,
-             myFormula <span class="op">=</span> <span class="cn">NULL</span>,
-             test <span class="op">=</span> <span class="st">'BIC'</span>,
-             family <span class="op">=</span> <span class="st">'binomial'</span>,
-             control <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/glm.control.html" class="external-link">glm.control</a></span><span class="op">(</span>epsilon <span class="op">=</span> <span class="fl">1e-08</span>,
-                                   maxit <span class="op">=</span> <span class="fl">1000</span>,
-                                   trace <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>
+<span class="co"># Get corresponding presence/absence data</span>
+<span class="va">myResp</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/numeric.html" class="external-link">as.numeric</a></span><span class="op">(</span><span class="va">DataSpecies</span><span class="op">[</span>, <span class="va">myRespName</span><span class="op">]</span><span class="op">)</span>
 
-<span class="co">## check changes were done</span>
-<span class="va">myBiomodOptions</span>
+<span class="co"># Get corresponding XY coordinates</span>
+<span class="va">myRespXY</span> <span class="op">&lt;-</span> <span class="va">DataSpecies</span><span class="op">[</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">'X_WGS84'</span>, <span class="st">'Y_WGS84'</span><span class="op">)</span><span class="op">]</span>
 
-<span class="co">## you can prefer to establish your own GLM formula</span>
-<span class="va">myBiomodOptions</span> <span class="op">&lt;-</span> <span class="fu">BIOMOD_ModelingOptions</span><span class="op">(</span>
-  GLM <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>myFormula <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/formula.html" class="external-link">formula</a></span><span class="op">(</span><span class="st">'Sp277 ~ bio3 +
-                log(bio10) + poly(bio16, 2) + bio19 + bio3:bio19'</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>
+<span class="co"># Load environmental variables extracted from BIOCLIM (bio_3, bio_4, bio_7, bio_11 &amp; bio_12)</span>
+<span class="va">myFiles</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">'external/bioclim/current/bio'</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">3</span>, <span class="fl">4</span>, <span class="fl">7</span>, <span class="fl">11</span>, <span class="fl">12</span><span class="op">)</span>, <span class="st">'.grd'</span><span class="op">)</span>
+<span class="va">myExpl</span> <span class="op">=</span> <span class="fu">raster</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/raster/man/stack.html" class="external-link">stack</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="va">myFiles</span>, package <span class="op">=</span> <span class="st">'biomod2'</span><span class="op">)</span><span class="op">)</span>
 
-<span class="co">## check changes were done</span>
-<span class="va">myBiomodOptions</span>
 
-<span class="co">## you also can directly print default parameters and then follow the same processus</span>
+<span class="co"># ---------------------------------------------------------------</span>
+<span class="co"># Format Data with true absences</span>
+<span class="va">myBiomodData</span> <span class="op">&lt;-</span> <span class="fu"><a href="BIOMOD_FormatingData.html">BIOMOD_FormatingData</a></span><span class="op">(</span>resp.var <span class="op">=</span> <span class="va">myResp</span>,
+                                     expl.var <span class="op">=</span> <span class="va">myExpl</span>,
+                                     resp.xy <span class="op">=</span> <span class="va">myRespXY</span>,
+                                     resp.name <span class="op">=</span> <span class="va">myRespName</span><span class="op">)</span>
+
+
+<span class="co"># ---------------------------------------------------------------</span>
+<span class="co"># Print default modeling options</span>
 <span class="fu">bm_DefaultModelingOptions</span><span class="op">(</span><span class="op">)</span>
+
+<span class="co"># Create default modeling options</span>
+<span class="va">myBiomodOptions</span> <span class="op">&lt;-</span> <span class="fu">BIOMOD_ModelingOptions</span><span class="op">(</span><span class="op">)</span>
+<span class="va">myBiomodOptions</span>
+
+<span class="co"># # Part (or totality) of the print can be copied and customized</span>
+<span class="co"># # Below is an example to compute quadratic GLM and select best model with 'BIC' criterium</span>
+<span class="co"># myBiomodOptions &lt;- BIOMOD_ModelingOptions(</span>
+<span class="co">#   GLM = list(type = 'quadratic',</span>
+<span class="co">#              interaction.level = 0,</span>
+<span class="co">#              myFormula = NULL,</span>
+<span class="co">#              test = 'BIC',</span>
+<span class="co">#              family = 'binomial',</span>
+<span class="co">#              control = glm.control(epsilon = 1e-08,</span>
+<span class="co">#                                    maxit = 1000,</span>
+<span class="co">#                                    trace = FALSE)))</span>
+<span class="co"># myBiomodOptions</span>
+<span class="co"># </span>
+<span class="co"># # It is also possible to give a specific GLM formula</span>
+<span class="co"># myForm &lt;- 'Sp277 ~ bio3 + log(bio10) + poly(bio16, 2) + bio19 + bio3:bio19'</span>
+<span class="co"># myBiomodOptions &lt;- BIOMOD_ModelingOptions(GLM = list(myFormula = formula(myForm)))</span>
+<span class="co"># myBiomodOptions</span>
 
 
 

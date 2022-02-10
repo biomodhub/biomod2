@@ -74,87 +74,80 @@
 ##'   
 ##' @examples
 ##' 
-##' # species occurrences
-##' myFile <- system.file("external/species/mammals_table.csv", package="biomod2")
+##' # Load species occurrences (6 species available)
+##' myFile <- system.file('external/species/mammals_table.csv', package = 'biomod2')
 ##' DataSpecies <- read.csv(myFile, row.names = 1)
 ##' head(DataSpecies)
 ##' 
-##' # the name of studied species
+##' # Select the name of the studied species
 ##' myRespName <- 'GuloGulo'
 ##' 
-##' # the presence/absences data for our species
+##' # Get corresponding presence/absence data
 ##' myResp <- as.numeric(DataSpecies[, myRespName])
 ##' 
-##' # the XY coordinates of species data
-##' myRespXY <- DataSpecies[, c("X_WGS84", "Y_WGS84")]
+##' # Get corresponding XY coordinates
+##' myRespXY <- DataSpecies[, c('X_WGS84', 'Y_WGS84')]
+##' 
+##' # Load environmental variables extracted from BIOCLIM (bio_3, bio_4, bio_7, bio_11 & bio_12)
+##' myFiles = paste0('external/bioclim/current/bio', c(3, 4, 7, 11, 12), '.grd')
+##' myExpl = raster::stack(system.file(myFiles, package = 'biomod2'))
 ##' 
 ##' 
-##' # Environmental variables extracted from BIOCLIM (bio_3, bio_4, bio_7, bio_11 & bio_12)
-##' myFiles = paste0("external/bioclim/current/bio", c(3, 4, 7, 11, 12), ".grd")
-##' myExpl = raster::stack(system.file(myFiles[1], package = "biomod2"),
-##'                        system.file(myFiles[2], package = "biomod2"),
-##'                        system.file(myFiles[3], package = "biomod2"),
-##'                        system.file(myFiles[4], package = "biomod2"),
-##'                        system.file(myFiles[5], package = "biomod2"))
-##' 
-##' # 1. Formating Data
+##' # ---------------------------------------------------------------
+##' # Format Data with true absences
 ##' myBiomodData <- BIOMOD_FormatingData(resp.var = myResp,
 ##'                                      expl.var = myExpl,
 ##'                                      resp.xy = myRespXY,
 ##'                                      resp.name = myRespName)
 ##' 
-##' # 2. Defining Models Options using default options.
-##' myBiomodOption <- BIOMOD_ModelingOptions()
+##' # Create default modeling options
+##' myBiomodOptions <- BIOMOD_ModelingOptions()
 ##' 
-##' # 3. Doing Modelisation
+##' # Model single models
 ##' myBiomodModelOut <- BIOMOD_Modeling(myBiomodData,
-##'                                     models = c('SRE','RF'),
-##'                                     models.options = myBiomodOption,
+##'                                     models.options = myBiomodOptions,
 ##'                                     NbRunEval = 2,
 ##'                                     DataSplit = 80,
-##'                                     VarImport = 0,
+##'                                     VarImport = 3,
 ##'                                     models.eval.meth = c('TSS','ROC'),
 ##'                                     do.full.models = FALSE,
 ##'                                     modeling.id = 'test')
 ##' 
-##' # 4.1 Projecting on current environmental conditions
-##' myBiomodProjection <- BIOMOD_Projection(modeling.output = myBiomodModelOut,
-##'                                         new.env = myExpl,
-##'                                         proj.name = 'current',
-##'                                         chosen.models = 'all',
-##'                                         binary.meth = 'TSS',
-##'                                         compress = FALSE,
-##'                                         build.clamping.mask = FALSE)
+##' # Project single models
+##' myBiomodProj <- BIOMOD_Projection(myBiomodModelOut,
+##'                                   proj.name = 'Current',
+##'                                   new.env = myExpl,
+##'                                   chosen.models = 'all',
+##'                                   binary.meth = 'all',
+##'                                   filtered.meth = 'all',
+##'                                   build.clamping.mask = TRUE)
 ##' 
-##' # 4.2 Projecting on future environmental conditions
 ##' 
-##' # Environmental variables extracted from BIOCLIM (bio_3, bio_4, bio_7, bio_11 & bio_12)
-##' myFiles = paste0("external/bioclim/future/bio", c(3, 4, 7, 11, 12), ".grd")
-##' myExplFuture = raster::stack(system.file(myFiles[1], package = "biomod2"),
-##'                              system.file(myFiles[2], package = "biomod2"),
-##'                              system.file(myFiles[3], package = "biomod2"),
-##'                              system.file(myFiles[4], package = "biomod2"),
-##'                              system.file(myFiles[5], package = "biomod2"))
+##' # ---------------------------------------------------------------
+##' # Load environmental variables extracted from BIOCLIM (bio_3, bio_4, bio_7, bio_11 & bio_12)
+##' myFiles = paste0('external/bioclim/future/bio', c(3, 4, 7, 11, 12), '.grd')
+##' myExplFuture = raster::stack(system.file(myFiles, package = 'biomod2'))
 ##' 
+##' # Project onto future conditions
 ##' myBiomodProjectionFuture <- BIOMOD_Projection(modeling.output = myBiomodModelOut,
 ##'                                               new.env = myExplFuture,
-##'                                               proj.name = 'future',
+##'                                               proj.name = 'Future',
 ##'                                               chosen.models = 'all',
 ##'                                               binary.meth = 'TSS',
-##'                                               compress = FALSE,
 ##'                                               build.clamping.mask = TRUE)
 ##' 
-##' # 5. Detecting predicted species range change
+##' # Load current and future binary projections
+##' CurrentProj <- stack("GuloGulo/proj_Current/proj_Current_GuloGulo_TSSbin.grd")
+##' FutureProj <- stack("GuloGulo/proj_Future/proj_Future_GuloGulo_TSSbin.grd")
 ##' 
-##' # load binary projections
-##' CurrentProj <- raster::stack("GuloGulo/proj_current/proj_current_GuloGulo_TSSbin.grd")
-##' futurePred <- raster::stack("GuloGulo/proj_future/proj_future_GuloGulo_TSSbin.grd")
+##' # Compute differences
+##' myBiomodRangeSize <- BIOMOD_RangeSize(CurrentProj = CurrentProj, FutureProj = FutureProj)
 ##' 
-##' myBiomodRangeSize <- BIOMOD_RangeSize(CurrentProj = CurrentProj, FutureProj = futurePred)
-##' 
-##' # print summary and visualize changes
 ##' myBiomodRangeSize$Compt.By.Models
 ##' plot(myBiomodRangeSize$Diff.By.Pixel)
+##' 
+##' # Represent main results 
+##' bm_PlotRangeSize(myBiomodRangeSize)
 ##' 
 ##' 
 ##' @importFrom raster stack addLayer

@@ -320,37 +320,58 @@ Below is the detailed list of all modifiable parameters for each available model
 
 \examples{
 
-## default BIOMOD.models.options object
-myBiomodOptions <- BIOMOD_ModelingOptions()
+# Load species occurrences (6 species available)
+myFile <- system.file('external/species/mammals_table.csv', package = 'biomod2')
+DataSpecies <- read.csv(myFile, row.names = 1)
+head(DataSpecies)
 
-## print the object
-myBiomodOptions
+# Select the name of the studied species
+myRespName <- 'GuloGulo'
 
-## you can copy a part of the print, change it and custom your options
-## here we want to compute quadratic GLM and select best model with 'BIC' criterium
-myBiomodOptions <- BIOMOD_ModelingOptions(
-  GLM = list(type = 'quadratic',
-             interaction.level = 0,
-             myFormula = NULL,
-             test = 'BIC',
-             family = 'binomial',
-             control = glm.control(epsilon = 1e-08,
-                                   maxit = 1000,
-                                   trace = FALSE)))
+# Get corresponding presence/absence data
+myResp <- as.numeric(DataSpecies[, myRespName])
 
-## check changes were done
-myBiomodOptions
+# Get corresponding XY coordinates
+myRespXY <- DataSpecies[, c('X_WGS84', 'Y_WGS84')]
 
-## you can prefer to establish your own GLM formula
-myBiomodOptions <- BIOMOD_ModelingOptions(
-  GLM = list(myFormula = formula('Sp277 ~ bio3 +
-                log(bio10) + poly(bio16, 2) + bio19 + bio3:bio19')))
+# Load environmental variables extracted from BIOCLIM (bio_3, bio_4, bio_7, bio_11 & bio_12)
+myFiles = paste0('external/bioclim/current/bio', c(3, 4, 7, 11, 12), '.grd')
+myExpl = raster::stack(system.file(myFiles, package = 'biomod2'))
 
-## check changes were done
-myBiomodOptions
 
-## you also can directly print default parameters and then follow the same processus
+# ---------------------------------------------------------------
+# Format Data with true absences
+myBiomodData <- BIOMOD_FormatingData(resp.var = myResp,
+                                     expl.var = myExpl,
+                                     resp.xy = myRespXY,
+                                     resp.name = myRespName)
+
+
+# ---------------------------------------------------------------
+# Print default modeling options
 bm_DefaultModelingOptions()
+
+# Create default modeling options
+myBiomodOptions <- BIOMOD_ModelingOptions()
+myBiomodOptions
+
+# # Part (or totality) of the print can be copied and customized
+# # Below is an example to compute quadratic GLM and select best model with 'BIC' criterium
+# myBiomodOptions <- BIOMOD_ModelingOptions(
+#   GLM = list(type = 'quadratic',
+#              interaction.level = 0,
+#              myFormula = NULL,
+#              test = 'BIC',
+#              family = 'binomial',
+#              control = glm.control(epsilon = 1e-08,
+#                                    maxit = 1000,
+#                                    trace = FALSE)))
+# myBiomodOptions
+# 
+# # It is also possible to give a specific GLM formula
+# myForm <- 'Sp277 ~ bio3 + log(bio10) + poly(bio16, 2) + bio19 + bio3:bio19'
+# myBiomodOptions <- BIOMOD_ModelingOptions(GLM = list(myFormula = formula(myForm)))
+# myBiomodOptions
 
 
 

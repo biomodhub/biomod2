@@ -61,38 +61,28 @@ factor levels. \cr \cr
 }
 \examples{
 
-## Example with raster* object ----------------------------------
-
 library(raster)
 
-## create a factorial raster
-r1 <- raster()
-r1[] <- 1; r1[1] <- 2; r1[2:3] <- 3
-r1 <- as.factor(r1)
-
-## create a continuous raster
-r2 <- raster()
-r2[] <- rnorm(ncell(r2))
-
-## put the raster into a RasterStack
-stk <- stack(r1, r2)
-is.factor(stk)
+## create 2 input variables
+ras.1 <- ras.2 <- mask.out <- raster(nrows = 10, ncols = 10)
+ras.1[] <- as.factor(rep(c(1, 2, 3, 4, 5), each = 20))
+ras.2[] <- rnorm(100)
+stk <- stack(ras.1, ras.2)
+names(stk) <- c("varFact", "varNorm")
 
 ## define a mask for already sampled points
-mask.out <- r1
-mask.out[] <- NA; mask.out[2:3] <- 1
+mask.out[1:40] <- 1
 
 ## define a list of masks where we want to sample in priority
-mask.in.1 <- mask.in.2 <- r1
-mask.in.1[1:10] <- NA ## only level 1 should be sampled in this mask
-mask.in.2[1] <- NA ## only levels 1 and 3 should be sampled in this mask
-mask.in <- list(mask.in.1 = mask.in.1, 
-                mask.in.2 = mask.in.2)
+mask.in <- list(ras.1, ras.1)
+mask.in[[1]][1:80] <- NA ## only level 5 should be sampled in this mask
+mask.in[[1]][21:80] <- NA ## only levels 1 and 5 should be sampled in this mask
+
 
 ## test different version of the function
-bm_SampleFactorLevels(stk, mask.out = mask.out)
-bm_SampleFactorLevels(stk, mask.in = mask.in)
-bm_SampleFactorLevels(stk, mask.out = mask.out, mask.in = mask.in)
+samp1 = bm_SampleFactorLevels(stk, mask.out = mask.out)
+samp2 = bm_SampleFactorLevels(stk, mask.in = mask.in)
+samp3 = bm_SampleFactorLevels(stk, mask.out = mask.out, mask.in = mask.in)
 
 
 }
