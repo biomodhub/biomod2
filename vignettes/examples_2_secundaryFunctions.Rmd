@@ -10,7 +10,12 @@ vignette: >
 <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.13/css/all.css" integrity="sha384-DNOHZ68U8hZfKXOrtjWvjxusGo9WQnrNx2sqG0tfsghAvtVlRW3tvkXWZh58N9jp" crossorigin="anonymous">
 
 
-### <i class="fas fa-truck-loading"></i> Prepare data for examples
+
+## <i class="fas fa-code"></i> Small code examples
+
+Here are presented, in small and unlinked examples, secundary functions (starting with `bm_[...]`) of `biomod2`. Most of these functions are internally called by some main functions (starting with `BIOMOD_[...]`) of `biomod2`, but can be easily used as such.
+
+### <i class="fas fa-truck-loading"></i> Prepare data
 
 #### Vector data
 
@@ -30,8 +35,23 @@ vec.c[which(vec.c < 0)] <- 0
 vec.c[which(vec.c > 1000)] <- 1000
 
 ## Generate a 0-1000 vector (normal distribution) ---------------------------------------
-vec.d <- rnorm(100, 500)
+vec.d <- rnorm(100, 500, 100)
 ```
+
+<!-- png("vignettes/pictures/examples_2_plot1.png", width = 800, height = 300) -->
+<!-- pdf("vignettes/pictures/examples_2_plot1.pdf", width = 8, height = 5) -->
+<!-- par(mfrow = c(1, 4)) -->
+<!-- barplot(table(vec.a), main = "vec.a") -->
+<!-- hist(vec.b, main = "vec.b", xlab = "", xlim = c(0, 1000)) -->
+<!-- hist(vec.c, main = "vec.c", xlab = "", xlim = c(0, 1000)) -->
+<!-- hist(vec.d, main = "vec.d", xlab = "", xlim = c(0, 1000)) -->
+<!-- dev.off() -->
+
+<div style="text-align:center;">
+<p><img src="pictures/examples_2_plot1.png" alt="EXAMPLE 2 vector data" style="width:600px;"></p>
+</div>
+
+
 
 #### Observations & explanatory variables
 
@@ -74,6 +94,32 @@ myRespXY <- DataSpecies[which(myResp.r == 1), c('X_WGS84', 'Y_WGS84')]
 myResp.v <- reclassify(subset(myExpl.r, 1, drop = TRUE), c(-Inf, Inf, 0))
 myResp.v[cellFromXY(myResp.v, myRespXY)] <- 1
 ```
+
+<!-- library(foreach) -->
+<!-- library(ggplot2) -->
+<!-- library(patchwork) -->
+<!-- pp.list = foreach(ras = list(stk$varFact, stk$varNorm, myExpl.r$bio3, myExpl.r$bio4 -->
+<!--                              , myExpl.r$bio7, myExpl.r$bio11, myExpl.r$bio12)) %do% -->
+<!--   { -->
+<!--     df = as.data.frame(rasterToPoints(ras)) -->
+<!--     pp = ggplot(df, aes_string(x = "x", y = "y", fill = colnames(df)[3])) + -->
+<!--       geom_raster() + -->
+<!--       coord_equal() + -->
+<!--       labs(x = "", y = "") + -->
+<!--       scale_fill_viridis_c() -->
+<!--     return(pp) -->
+<!--   } -->
+<!-- pp1 = pp.list[[1]] / pp.list[[2]] -->
+<!-- pp2 = pp.list[[3]] + pp.list[[4]] + pp.list[[5]] +  -->
+<!--   pp.list[[6]] + pp.list[[7]] + plot_layout(ncol = 2) -->
+<!-- pdf("vignettes/pictures/examples_2_plot2.pdf", width = 10, height = 8) -->
+<!-- (pp1 | pp2) + plot_layout(ncol = 2, width = c(1, 2)) -->
+<!-- dev.off() -->
+
+<div style="text-align:center;">
+<p><img src="pictures/examples_2_plot2.png" alt="EXAMPLE 2 vector data" style="width:700px;"></p>
+</div>
+
 
 
 ### <i class="fas fa-cog"></i> Secundary functions : vector data
