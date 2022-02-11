@@ -172,13 +172,13 @@ meaning that :</p><ul><li><p><code>data &lt; threshold</code> will return 0</p><
     <div id="ref-examples">
     <h2>Examples</h2>
     <div class="sourceCode"><pre class="sourceCode r"><code>
-<span class="co">## generate 'probability' vector</span>
-<span class="va">xx</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="fl">50</span>, <span class="fl">10</span><span class="op">)</span>
+<span class="co">## Generate a 0-1000 vector (normal distribution)</span>
+<span class="va">vec.d</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="fl">100</span>, <span class="fl">500</span>, <span class="fl">100</span><span class="op">)</span>
 
-<span class="va">yy</span> <span class="op">&lt;-</span> <span class="fu">bm_BinaryTransformation</span><span class="op">(</span>data <span class="op">=</span> <span class="va">xx</span>, threshold <span class="op">=</span> <span class="fl">10</span><span class="op">)</span>
-<span class="va">yy_filt</span> <span class="op">&lt;-</span> <span class="fu">bm_BinaryTransformation</span><span class="op">(</span>data <span class="op">=</span> <span class="va">xx</span>, threshold <span class="op">=</span> <span class="fl">10</span>, doFiltering <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>
-
-<span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">cbind</a></span><span class="op">(</span><span class="va">xx</span>, <span class="va">yy</span>, <span class="va">yy_filt</span><span class="op">)</span>
+<span class="co">## From continuous to binary / filtered vector</span>
+<span class="va">vec.d_bin</span> <span class="op">&lt;-</span> <span class="fu">bm_BinaryTransformation</span><span class="op">(</span>data <span class="op">=</span> <span class="va">vec.d</span>, threshold <span class="op">=</span> <span class="fl">500</span><span class="op">)</span>
+<span class="va">vec.d_filt</span> <span class="op">&lt;-</span> <span class="fu">bm_BinaryTransformation</span><span class="op">(</span>data <span class="op">=</span> <span class="va">vec.d</span>, threshold <span class="op">=</span> <span class="fl">500</span>, doFiltering <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>
+<span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">cbind</a></span><span class="op">(</span><span class="va">vec.d</span>, <span class="va">vec.d_bin</span>, <span class="va">vec.d_filt</span><span class="op">)</span>
 
 
 </code></pre></div>

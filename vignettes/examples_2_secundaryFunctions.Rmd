@@ -117,7 +117,7 @@ myResp.v[cellFromXY(myResp.v, myRespXY)] <- 1
 <!-- dev.off() -->
 
 <div style="text-align:center;">
-<p><img src="pictures/examples_2_plot2.png" alt="EXAMPLE 2 vector data" style="width:700px;"></p>
+<img src="pictures/examples_2_plot2.png" alt="EXAMPLE 2 explanatory variables" style="width:700px;">
 </div>
 
 

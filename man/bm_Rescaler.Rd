@@ -39,19 +39,18 @@ Note that scaling model are saved within
 }
 \examples{
 
-## generate a binary vector
-a <- sample(c(0, 1), 100, replace = TRUE)
+## Generate a binary vector
+vec.a <- sample(c(0, 1), 100, replace = TRUE)
 
-## biased drawing
-BiasedDrawing <- function(x, m1 = 300, sd1 = 200, m2 = 700, sd2 = 200) {
-  return(ifelse(x < 0.5, rnorm(1, m1, sd1), rnorm(1, m2, sd2)))
-}
-b <- sapply(a, BiasedDrawing)
-b[which(b < 0)] <- 0
-b[which(b > 1000)] <- 1000
+## Generate a 0-1000 vector (random drawing)
+vec.b <- runif(100, min = 0, max = 1000)
 
-b_rescaled <- bm_Rescaler(dataToRescale = b, name = "TEST", doModel = TRUE, ref = a)
-plot(b, b_rescaled)
+## Rescale values between 0-1 with a binomial GLM
+vec.b_rescaled <- bm_Rescaler(dataToRescale = vec.b,
+                              name = "TEST",
+                              doModel = TRUE,
+                              ref = vec.a)
+plot(vec.b, vec.b_rescaled)
 abline(a = 0, b = 0.001, lty = 2)
 
 

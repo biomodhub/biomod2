@@ -68,13 +68,13 @@ meaning that :
 }
 \examples{
 
-## generate 'probability' vector
-xx <- rnorm(50, 10)
+## Generate a 0-1000 vector (normal distribution)
+vec.d <- rnorm(100, 500, 100)
 
-yy <- bm_BinaryTransformation(data = xx, threshold = 10)
-yy_filt <- bm_BinaryTransformation(data = xx, threshold = 10, doFiltering = TRUE)
-
-cbind(xx, yy, yy_filt)
+## From continuous to binary / filtered vector
+vec.d_bin <- bm_BinaryTransformation(data = vec.d, threshold = 500)
+vec.d_filt <- bm_BinaryTransformation(data = vec.d, threshold = 500, doFiltering = TRUE)
+cbind(vec.d, vec.d_bin, vec.d_filt)
 
 
 }

@@ -43,6 +43,55 @@ grouping methods (see \href{bm_PlotVarImpBoxplot.html#details}{Details}).
 }
 \examples{
 
+# Load species occurrences (6 species available)
+myFile <- system.file('external/species/mammals_table.csv', package = 'biomod2')
+DataSpecies <- read.csv(myFile, row.names = 1)
+head(DataSpecies)
+
+# Select the name of the studied species
+myRespName <- 'GuloGulo'
+
+# Get corresponding presence/absence data
+myResp <- as.numeric(DataSpecies[, myRespName])
+
+# Get corresponding XY coordinates
+myRespXY <- DataSpecies[, c('X_WGS84', 'Y_WGS84')]
+
+# Load environmental variables extracted from BIOCLIM (bio_3, bio_4, bio_7, bio_11 & bio_12)
+myFiles = paste0('external/bioclim/current/bio', c(3, 4, 7, 11, 12), '.grd')
+myExpl = raster::stack(system.file(myFiles, package = 'biomod2'))
+
+
+# ---------------------------------------------------------------
+# Format Data with true absences
+myBiomodData <- BIOMOD_FormatingData(resp.var = myResp,
+                                     expl.var = myExpl,
+                                     resp.xy = myRespXY,
+                                     resp.name = myRespName)
+
+# Create default modeling options
+myBiomodOptions <- BIOMOD_ModelingOptions()
+
+# Model single models
+myBiomodModelOut <- BIOMOD_Modeling(myBiomodData,
+                                    models.options = myBiomodOptions,
+                                    NbRunEval = 2,
+                                    DataSplit = 80,
+                                    VarImport = 3,
+                                    models.eval.meth = c('TSS','ROC'),
+                                    do.full.models = FALSE,
+                                    modeling.id = 'test')
+
+
+# ---------------------------------------------------------------
+# Get variables importance
+get_variables_importance(myBiomodModelOut, as.data.frame = TRUE)
+
+# Represent variables importance
+bm_PlotVarImpBoxplot(myBiomodModelOut, group.by = c('expl.var', 'algo', 'algo'))
+bm_PlotVarImpBoxplot(myBiomodModelOut, group.by = c('expl.var', 'algo', 'dataset'))
+bm_PlotVarImpBoxplot(myBiomodModelOut, group.by = c('algo', 'expl.var', 'dataset'))
+
 
 }
 \seealso{

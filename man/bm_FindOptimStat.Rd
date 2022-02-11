@@ -58,19 +58,23 @@ only the score for this threshold will be returned.
 }
 \examples{
 
-## generate a binary vector
-a <- sample(c(0, 1), 100, replace = TRUE)
+## Generate a binary vector
+vec.a <- sample(c(0, 1), 100, replace = TRUE)
 
-## random drawing
-b <- runif(100, min = 0, max = 1000)
-bm_FindOptimStat(Stat = 'TSS', Fit = b, Obs = a)
+## Generate a 0-1000 vector (random drawing)
+vec.b <- runif(100, min = 0, max = 1000)
 
-## biased drawing
+## Generate a 0-1000 vector (biased drawing)
 BiasedDrawing <- function(x, m1 = 300, sd1 = 200, m2 = 700, sd2 = 200) {
   return(ifelse(x < 0.5, rnorm(1, m1, sd1), rnorm(1, m2, sd2)))
 }
-c <- sapply(a, BiasedDrawing)
-bm_FindOptimStat(Stat = 'TSS', Fit = c, Obs = a, Nb.thresh.test = 100)
+vec.c <- sapply(vec.a, BiasedDrawing)
+vec.c[which(vec.c < 0)] <- 0
+vec.c[which(vec.c > 1000)] <- 1000
+
+## Find optimal threshold for a specific evaluation metric
+bm_FindOptimStat(Stat = 'TSS', Fit = vec.b, Obs = vec.a)
+bm_FindOptimStat(Stat = 'TSS', Fit = vec.c, Obs = vec.a, Nb.thresh.test = 100)
 
 
 }

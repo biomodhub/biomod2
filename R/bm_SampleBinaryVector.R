@@ -36,10 +36,11 @@
 ##' 
 ##' @examples
 ##' 
-##' ## generate a binary vector
-##' a <- sample(c(0,1), 100, replace = TRUE)
+##' ## Generate a binary vector
+##' vec.a <- sample(c(0, 1), 100, replace = TRUE)
 ##' 
-##' bm_SampleBinaryVector(ref = a, ratio = 0.7)
+##' ## Generate calibration / evaluatation datasets
+##' bm_SampleBinaryVector(ref = vec.a, ratio = 0.7)
 ##' 
 ##' 
 ##' @export

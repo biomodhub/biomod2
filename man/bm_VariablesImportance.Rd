@@ -45,14 +45,16 @@ The same principle is used in \code{\link[randomForest]{randomForest}}.
 }
 \examples{
 
-xx <- data.frame(a = sample(c(0, 1), 100, replace = TRUE),
-                 b = rnorm(100),
-                 c = 1:100)
-  
-mod <- glm(a ~ b + c, data = xx)
+## Create simple simulated data
+myResp.s <- sample(c(0, 1), 20, replace = TRUE)
+myExpl.s <- data.frame(var1 = sample(c(0, 1), 100, replace = TRUE),
+                       var2 = rnorm(100),
+                       var3 = 1:100)
 
+## Compute variables importance
+mod <- glm(var1 ~ var2 + var3, data = myExpl.s)
 bm_VariablesImportance(model = mod, 
-                       data = xx[, c('b', 'c')],
+                       data = myExpl.s[, c('var2', 'var3')],
                        method = "full_rand",
                        nb_rand = 3)
 

@@ -43,20 +43,17 @@ whose corresponding columns are defined as \code{factor}. \cr \cr
 }
 \examples{
 
-## Create simulated data
-myResp <- sample(c(0, 1), 20, replace = TRUE)
-myExpl <- matrix(runif(60), 
-                 ncol = 3,
-                 dimnames = list(NULL, c('var1', 'var2', 'var3')))
+## Create simple simulated data
+myResp.s <- sample(c(0, 1), 20, replace = TRUE)
+myExpl.s <- data.frame(var1 = sample(c(0, 1), 100, replace = TRUE),
+                       var2 = rnorm(100),
+                       var3 = 1:100)
 
-## Create a formula
-myFormula <- bm_MakeFormula(respName = 'myResp',
-                            explVar = head(myExpl),
-                            type = 'quadratic',
-                            interaction.level = 0)
-  
-## Show formula created
-myFormula
+## Generate automatic formula
+bm_MakeFormula(respName = 'myResp.s',
+               explVar = head(myExpl.s),
+               type = 'quadratic',
+               interaction.level = 0)
 
 
 }

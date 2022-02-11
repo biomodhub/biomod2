@@ -145,19 +145,18 @@ function to get more information about this procedure.</em></p>
     <div id="ref-examples">
     <h2>Examples</h2>
     <div class="sourceCode"><pre class="sourceCode r"><code>
-<span class="co">## generate a binary vector</span>
-<span class="va">a</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/sample.html" class="external-link">sample</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">1</span><span class="op">)</span>, <span class="fl">100</span>, replace <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>
+<span class="co">## Generate a binary vector</span>
+<span class="va">vec.a</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/sample.html" class="external-link">sample</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">1</span><span class="op">)</span>, <span class="fl">100</span>, replace <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>
 
-<span class="co">## biased drawing</span>
-<span class="va">BiasedDrawing</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">x</span>, <span class="va">m1</span> <span class="op">=</span> <span class="fl">300</span>, <span class="va">sd1</span> <span class="op">=</span> <span class="fl">200</span>, <span class="va">m2</span> <span class="op">=</span> <span class="fl">700</span>, <span class="va">sd2</span> <span class="op">=</span> <span class="fl">200</span><span class="op">)</span> <span class="op">{</span>
-  <span class="kw"><a href="https://rdrr.io/r/base/function.html" class="external-link">return</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/ifelse.html" class="external-link">ifelse</a></span><span class="op">(</span><span class="va">x</span> <span class="op">&lt;</span> <span class="fl">0.5</span>, <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="fl">1</span>, <span class="va">m1</span>, <span class="va">sd1</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="fl">1</span>, <span class="va">m2</span>, <span class="va">sd2</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>
-<span class="op">}</span>
-<span class="va">b</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">sapply</a></span><span class="op">(</span><span class="va">a</span>, <span class="va">BiasedDrawing</span><span class="op">)</span>
-<span class="va">b</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/which.html" class="external-link">which</a></span><span class="op">(</span><span class="va">b</span> <span class="op">&lt;</span> <span class="fl">0</span><span class="op">)</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="fl">0</span>
-<span class="va">b</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/which.html" class="external-link">which</a></span><span class="op">(</span><span class="va">b</span> <span class="op">&gt;</span> <span class="fl">1000</span><span class="op">)</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="fl">1000</span>
+<span class="co">## Generate a 0-1000 vector (random drawing)</span>
+<span class="va">vec.b</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/Uniform.html" class="external-link">runif</a></span><span class="op">(</span><span class="fl">100</span>, min <span class="op">=</span> <span class="fl">0</span>, max <span class="op">=</span> <span class="fl">1000</span><span class="op">)</span>
 
-<span class="va">b_rescaled</span> <span class="op">&lt;-</span> <span class="fu">bm_Rescaler</span><span class="op">(</span>dataToRescale <span class="op">=</span> <span class="va">b</span>, name <span class="op">=</span> <span class="st">"TEST"</span>, doModel <span class="op">=</span> <span class="cn">TRUE</span>, ref <span class="op">=</span> <span class="va">a</span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">b</span>, <span class="va">b_rescaled</span><span class="op">)</span>
+<span class="co">## Rescale values between 0-1 with a binomial GLM</span>
+<span class="va">vec.b_rescaled</span> <span class="op">&lt;-</span> <span class="fu">bm_Rescaler</span><span class="op">(</span>dataToRescale <span class="op">=</span> <span class="va">vec.b</span>,
+                              name <span class="op">=</span> <span class="st">"TEST"</span>,
+                              doModel <span class="op">=</span> <span class="cn">TRUE</span>,
+                              ref <span class="op">=</span> <span class="va">vec.a</span><span class="op">)</span>
+<span class="fu"><a href="https://rdrr.io/pkg/raster/man/plot.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">vec.b</span>, <span class="va">vec.b_rescaled</span><span class="op">)</span>
 <span class="fu"><a href="https://rdrr.io/r/graphics/abline.html" class="external-link">abline</a></span><span class="op">(</span>a <span class="op">=</span> <span class="fl">0</span>, b <span class="op">=</span> <span class="fl">0.001</span>, lty <span class="op">=</span> <span class="fl">2</span><span class="op">)</span>
 
 

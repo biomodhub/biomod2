@@ -65,37 +65,33 @@ that a total of \code{10\%} of the data will not be considered.
 }
 \examples{
 
-# Load species occurrences (6 species available)
+## Load real data
 myFile <- system.file('external/species/mammals_table.csv', package = 'biomod2')
 DataSpecies <- read.csv(myFile, row.names = 1)
-head(DataSpecies)
+myResp.r <- as.numeric(DataSpecies[, 'GuloGulo'])
 
-# Select the name of the studied species
-myRespName <- 'GuloGulo'
+myFiles <- paste0('external/bioclim/current/bio', c(3, 4, 7, 11, 12), '.grd')
+myExpl.r <- raster::stack(system.file(myFiles, package = 'biomod2'))
 
-# Get corresponding presence/absence data
-myResp <- as.numeric(DataSpecies[, myRespName])
+myRespXY <- DataSpecies[which(myResp.r == 1), c('X_WGS84', 'Y_WGS84')]
+myResp.v <- reclassify(subset(myExpl.r, 1, drop = TRUE), c(-Inf, Inf, 0))
+myResp.v[cellFromXY(myResp.v, myRespXY)] <- 1
 
-# Get corresponding XY coordinates
-myRespXY <- DataSpecies[, c('X_WGS84', 'Y_WGS84')]
+## Compute SRE for several quantile values
+sre.100 <- bm_SRE(Response = myResp.v,
+                  Explanatory = myExpl.r,
+                  NewData = myExpl.r,
+                  Quant = 0)
+sre.095 <- bm_SRE(Response = myResp.v,
+                  Explanatory = myExpl.r,
+                  NewData = myExpl.r,
+                  Quant = 0.025)
+sre.090 <- bm_SRE(Response = myResp.v,
+                  Explanatory = myExpl.r,
+                  NewData = myExpl.r,
+                  Quant = 0.05)
 
-
-# Load environmental variables extracted from BIOCLIM (bio_3, bio_4, bio_7, bio_11 & bio_12)
-myFiles = paste0('external/bioclim/current/bio', c(3, 4, 7, 11, 12), '.grd')
-myExpl = raster::stack(system.file(myFiles, package = 'biomod2'))
-
-# Transform myResp into a raster
-myRespXY <- DataSpecies[which(myResp == 1), c("X_WGS84", "Y_WGS84")]
-myResp <- reclassify(subset(myExpl, 1, drop = TRUE), c(-Inf, Inf, 0))
-myResp[cellFromXY(myResp, myRespXY)] <- 1
-
-
-# 1. Compute some SRE for several quantile values
-sre.100 <- bm_SRE(Response = myResp, Explanatory = myExpl, NewData = myExpl, Quant = 0)
-sre.095 <- bm_SRE(Response = myResp, Explanatory = myExpl, NewData = myExpl, Quant = 0.025)
-sre.090 <- bm_SRE(Response = myResp, Explanatory = myExpl, NewData = myExpl, Quant = 0.05)
-  
-# 2. Visualization of results
+## Visualize results
 res <- stack(myResp.v, sre.100, sre.095, sre.090)
 names(res) <- c("Original distribution", "Full data calibration", "Over 95 percent", "Over 90 percent")
 plot(res, zlim = c(0, 1))

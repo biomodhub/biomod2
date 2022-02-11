@@ -146,20 +146,17 @@ whose corresponding columns are defined as <code>factor</code>. <br><br></p>
     <div id="ref-examples">
     <h2>Examples</h2>
     <div class="sourceCode"><pre class="sourceCode r"><code>
-<span class="co">## Create simulated data</span>
-<span class="va">myResp</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/sample.html" class="external-link">sample</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">1</span><span class="op">)</span>, <span class="fl">20</span>, replace <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>
-<span class="va">myExpl</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">matrix</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/Uniform.html" class="external-link">runif</a></span><span class="op">(</span><span class="fl">60</span><span class="op">)</span>, 
-                 ncol <span class="op">=</span> <span class="fl">3</span>,
-                 dimnames <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="cn">NULL</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">'var1'</span>, <span class="st">'var2'</span>, <span class="st">'var3'</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>
+<span class="co">## Create simple simulated data</span>
+<span class="va">myResp.s</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/sample.html" class="external-link">sample</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">1</span><span class="op">)</span>, <span class="fl">20</span>, replace <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>
+<span class="va">myExpl.s</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span>var1 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sample.html" class="external-link">sample</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">1</span><span class="op">)</span>, <span class="fl">100</span>, replace <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>,
+                       var2 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="fl">100</span><span class="op">)</span>,
+                       var3 <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">100</span><span class="op">)</span>
 
-<span class="co">## Create a formula</span>
-<span class="va">myFormula</span> <span class="op">&lt;-</span> <span class="fu">bm_MakeFormula</span><span class="op">(</span>respName <span class="op">=</span> <span class="st">'myResp'</span>,
-                            explVar <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">myExpl</span><span class="op">)</span>,
-                            type <span class="op">=</span> <span class="st">'quadratic'</span>,
-                            interaction.level <span class="op">=</span> <span class="fl">0</span><span class="op">)</span>
-  
-<span class="co">## Show formula created</span>
-<span class="va">myFormula</span>
+<span class="co">## Generate automatic formula</span>
+<span class="fu">bm_MakeFormula</span><span class="op">(</span>respName <span class="op">=</span> <span class="st">'myResp.s'</span>,
+               explVar <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/raster/man/headtail.html" class="external-link">head</a></span><span class="op">(</span><span class="va">myExpl.s</span><span class="op">)</span>,
+               type <span class="op">=</span> <span class="st">'quadratic'</span>,
+               interaction.level <span class="op">=</span> <span class="fl">0</span><span class="op">)</span>
 
 
 </code></pre></div>

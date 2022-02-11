@@ -68,7 +68,7 @@
 ##' 
 ##' library(raster)
 ##' 
-##' ## create 2 input variables
+##' ## Create raster data
 ##' ras.1 <- ras.2 <- mask.out <- raster(nrows = 10, ncols = 10)
 ##' ras.1[] <- as.factor(rep(c(1, 2, 3, 4, 5), each = 20))
 ##' ras.2[] <- rnorm(100)
@@ -83,11 +83,10 @@
 ##' mask.in[[1]][1:80] <- NA ## only level 5 should be sampled in this mask
 ##' mask.in[[1]][21:80] <- NA ## only levels 1 and 5 should be sampled in this mask
 ##' 
-##' 
-##' ## test different version of the function
-##' samp1 = bm_SampleFactorLevels(stk, mask.out = mask.out)
-##' samp2 = bm_SampleFactorLevels(stk, mask.in = mask.in)
-##' samp3 = bm_SampleFactorLevels(stk, mask.out = mask.out, mask.in = mask.in)
+##' ## Sample all factor levels
+##' samp1 <- bm_SampleFactorLevels(stk, mask.out = mask.out)
+##' samp2 <- bm_SampleFactorLevels(stk, mask.in = mask.in)
+##' samp3 <- bm_SampleFactorLevels(stk, mask.out = mask.out, mask.in = mask.in)
 ##' 
 ##' 
 ##' @importFrom raster is.factor as.factor levels subset mask
