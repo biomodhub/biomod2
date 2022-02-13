@@ -10,8 +10,7 @@
 ##' with different strategies (see \href{BIOMOD_FormatingData.html#details}{Details}).
 ##' 
 ##' 
-##' @param resp.name (\emph{optional, default} \code{NULL}) \cr 
-##' A \code{character} containing the species name.
+##' @param resp.name a \code{character} containing the species name.
 ##' 
 ##' @param resp.var a \code{vector}, \code{\link[sp]{SpatialPoints}} (\emph{if presence-only}) or 
 ##' \code{\link[sp]{SpatialPointsDataFrame}} object containing binary data (\code{0} : absence, 
@@ -62,7 +61,7 @@
 ##' If pseudo-absence selection and \code{PA.strategy = 'sre'}, a \code{numeric} defining the 
 ##' maximal distance to presence points used to make the \code{disk} pseudo-absence selection 
 ##' (in meters, see \href{BIOMOD_FormatingData.html#details}{Details})
-##' @param PA.table (\emph{optional, default} \code{NULL}) \cr 
+##' @param PA.user.table (\emph{optional, default} \code{NULL}) \cr 
 ##' If pseudo-absence selection and \code{PA.strategy = 'user.defined'}, a \code{matrix} or 
 ##' \code{data.frame} with as many rows as \code{resp.var} values, as many columns as 
 ##' \code{PA.nb.rep}, and containing \code{TRUE} or \code{FALSE} values defining which points 
@@ -167,7 +166,7 @@
 ##'     or too far (localized sampling strategy) from presences.
 ##'     }
 ##'     \item{user.defined}{pseudo-absences are defined in advance and given as \code{data.frame} 
-##'     through the \code{PA.table} parameter.
+##'     through the \code{PA.user.table} parameter.
 ##'     }
 ##'   }
 ##'   }
@@ -255,7 +254,7 @@
 ##' #                                        resp.xy = myRespXY,
 ##' #                                        resp.name = myRespName,
 ##' #                                        PA.strategy = 'user.defined',
-##' #                                        PA.table = myPAtable)
+##' #                                        PA.user.table = myPAtable)
 ##' # 
 ##' # myBiomodData.r
 ##' # myBiomodData.d
@@ -274,10 +273,10 @@
 ##' 
 ###################################################################################################
 
-BIOMOD_FormatingData <- function(resp.var,
+BIOMOD_FormatingData <- function(resp.name,
+                                 resp.var,
                                  expl.var,
                                  resp.xy = NULL,
-                                 resp.name = NULL,
                                  eval.resp.var = NULL,
                                  eval.expl.var = NULL,
                                  eval.resp.xy = NULL,
@@ -287,16 +286,16 @@ BIOMOD_FormatingData <- function(resp.var,
                                  PA.dist.min = 0,
                                  PA.dist.max = NULL,
                                  PA.sre.quant = 0.025,
-                                 PA.table = NULL,
+                                 PA.user.table = NULL,
                                  na.rm = TRUE)
 {
   .bm_cat(paste0(resp.name, " Data Formating"))
 
   ## 1. check args ------------------------------------------------------------
-  args <- .BIOMOD_FormatingData.check.args(resp.var,
+  args <- .BIOMOD_FormatingData.check.args(resp.name,
+                                           resp.var,
                                            expl.var,
                                            resp.xy,
-                                           resp.name,
                                            eval.resp.var,
                                            eval.expl.var,
                                            eval.resp.xy,
@@ -306,7 +305,7 @@ BIOMOD_FormatingData <- function(resp.var,
                                            PA.dist.min,
                                            PA.dist.max,
                                            PA.sre.quant,
-                                           PA.table)
+                                           PA.user.table)
   for (argi in names(args)) { assign(x = argi, value = args[[argi]]) }
   rm(args)
 
@@ -335,7 +334,7 @@ BIOMOD_FormatingData <- function(resp.var,
                                    PA.dist.min = PA.dist.min,
                                    PA.dist.max = PA.dist.max,
                                    PA.sre.quant = PA.sre.quant,
-                                   PA.table = PA.table,
+                                   PA.user.table = PA.user.table,
                                    na.rm = na.rm)
   }
   .bm_cat("Done")
@@ -345,10 +344,10 @@ BIOMOD_FormatingData <- function(resp.var,
 
 ###################################################################################################
 
-.BIOMOD_FormatingData.check.args <- function(resp.var,
+.BIOMOD_FormatingData.check.args <- function(resp.name,
+                                             resp.var,
                                              expl.var,
                                              resp.xy,
-                                             resp.name,
                                              eval.resp.var,
                                              eval.expl.var,
                                              eval.resp.xy,
@@ -358,7 +357,7 @@ BIOMOD_FormatingData <- function(resp.var,
                                              PA.dist.min,
                                              PA.dist.max,
                                              PA.sre.quant,
-                                             PA.table)
+                                             PA.user.table)
 {
   ## 0. Checking names (resp.name available ?) --------------------------------
   if (grepl('_', resp.name) | grepl(' ', resp.name)) {
@@ -447,7 +446,7 @@ BIOMOD_FormatingData <- function(resp.var,
   }
   
   ## PA strategy
-  if (is.null(PA.table) & PA.nb.rep < 1) {
+  if (is.null(PA.user.table) & PA.nb.rep < 1) {
     cat("\n> No pseudo absences selection !")
     PA.strategy <- "none"
     PA.nb.rep <- 0
@@ -458,20 +457,20 @@ BIOMOD_FormatingData <- function(resp.var,
     PA.strategy <- "random"
   }
 
-  if (!is.null(PA.table)) {
+  if (!is.null(PA.user.table)) {
     cat("\n> Pseudo absences used will be user defined ones !")
     PA.strategy <- "user.defined"
     PA.nb.rep <- 0
   }
 
   if (PA.strategy == "user.defined") {
-    if (!(is.matrix(PA.table) | is.data.frame(PA.table)))
-      stop("\n PA.table must be a matrix or a data.frame")
+    if (!(is.matrix(PA.user.table) | is.data.frame(PA.user.table)))
+      stop("\n PA.user.table must be a matrix or a data.frame")
     
-    if (nrow(PA.table) != length(resp.var))
-      stop("\n PA.table must have as many row than the number of observation of your response variable")
+    if (nrow(PA.user.table) != length(resp.var))
+      stop("\n PA.user.table must have as many row than the number of observation of your response variable")
     
-    colnames(PA.table) <- paste0("PA", 1:ncol(PA.table))
+    colnames(PA.user.table) <- paste0("PA", 1:ncol(PA.user.table))
   }
 
   ## 2. Checking eval.resp.var ------------------------------------------------
@@ -582,5 +581,5 @@ BIOMOD_FormatingData <- function(resp.var,
               PA.dist.min = PA.dist.min,
               PA.dist.max = PA.dist.max,
               PA.sre.quant = PA.sre.quant,
-              PA.table = PA.table))
+              PA.user.table = PA.user.table))
 }
