@@ -9,34 +9,34 @@
 ##' represent new areas, resolution or time scales for example}).
 ##' 
 ##' 
-##' @param modeling.output a \code{\link{BIOMOD.models.out}} object returned by the 
+##' @param bm.mod a \code{\link{BIOMOD.models.out}} object returned by the 
 ##' \code{\link{BIOMOD_Modeling}} function
 ##' @param proj.name a \code{character} corresponding to the name (ID) of the projection set 
 ##' (\emph{a new folder will be created within the simulation folder with this name})
 ##' @param new.env a \code{matrix}, \code{data.frame} or \code{\link[raster:stack]{RasterStack}} 
 ##' object containing the new explanatory variables (in columns or layers, with names matching the 
 ##' variables names given to the \code{\link{BIOMOD_FormatingData}} function to build 
-##' \code{modeling.output}) that will be used to project the species distribution model(s)
+##' \code{bm.mod}) that will be used to project the species distribution model(s)
 ##' @param new.env.xy (\emph{optional, default} \code{NULL}) \cr 
 ##' If \code{new.env} is a \code{matrix} or a \code{data.frame}, a 2-columns \code{matrix} or 
 ##' \code{data.frame} containing the corresponding \code{X} and \code{Y} coordinates that will be 
 ##' used to project the species distribution model(s)
-##' @param chosen.models a \code{vector} containing model names to be kept, must be either 
+##' @param models.chosen a \code{vector} containing model names to be kept, must be either 
 ##' \code{all} or a sub-selection of model names that can be obtained with the 
 ##' \code{\link{get_built_models}} function
 ##' 
-##' @param binary.meth (\emph{optional, default} \code{NULL}) \cr 
+##' @param metric.binary (\emph{optional, default} \code{NULL}) \cr 
 ##' A \code{vector} containing evaluation metric names to be used to transform prediction values 
 ##' into binary values based on models evaluation scores obtained with the 
 ##' \code{\link{BIOMOD_Modeling}} function. Must be among \code{all} (same evaluation metrics than 
-##' those of \code{modeling.output}) or \code{ROC}, \code{TSS}, \code{KAPPA}, \code{ACCURACY}, 
+##' those of \code{bm.mod}) or \code{ROC}, \code{TSS}, \code{KAPPA}, \code{ACCURACY}, 
 ##' \code{BIAS}, \code{POD}, \code{FAR}, \code{POFD}, \code{SR}, \code{CSI}, \code{ETS}, 
 ##' \code{HK}, \code{HSS}, \code{OR}, \code{ORSS}
-##' @param filtered.meth (\emph{optional, default} \code{NULL}) \cr 
+##' @param metric.filter (\emph{optional, default} \code{NULL}) \cr 
 ##' A \code{vector} containing evaluation metric names to be used to transform prediction values 
 ##' into filtered values based on models evaluation scores obtained with the 
 ##' \code{\link{BIOMOD_Modeling}} function. Must be among \code{all} (same evaluation metrics than 
-##' those of \code{modeling.output}) or \code{ROC}, \code{TSS}, \code{KAPPA}, \code{ACCURACY}, 
+##' those of \code{bm.mod}) or \code{ROC}, \code{TSS}, \code{KAPPA}, \code{ACCURACY}, 
 ##' \code{BIAS}, \code{POD}, \code{FAR}, \code{POFD}, \code{SR}, \code{CSI}, \code{ETS}, 
 ##' \code{HK}, \code{HSS}, \code{OR}, \code{ORSS}
 ##' 
@@ -68,7 +68,7 @@
 ##' 
 ##' @details 
 ##' 
-##' If \code{chosen.models = 'all'}, projections are done for all evaluation and pseudo absences 
+##' If \code{models.chosen = 'all'}, projections are done for all evaluation and pseudo absences 
 ##' runs if applicable. \cr These projections may be used later by the 
 ##' \code{\link{BIOMOD_EnsembleForecasting}} function. \cr \cr 
 ##' 
@@ -86,8 +86,9 @@
 ##'   \item{\code{on_0_1000} : }{a \code{logical} value defining whether \code{0 - 1} probabilities 
 ##'   are to be converted to \code{0 - 1000} scale to save memory on backup}
 ##'   \item{\code{do.stack} : }{a \code{logical} value defining whether all projections are to be 
-##'   saved as one \code{RasterStack} object or several \code{RasterLayer} files (\emph{the default 
-##'   if projections are too heavy to be all loaded at once in memory})}
+##'   saved as one \code{\link[raster:stack]{RasterStack}} object or several 
+##'   \code{\link[raster]{RasterLayer}} files (\emph{the default if projections are too heavy to 
+##'   be all loaded at once in memory})}
 ##'   \item{\code{keep.in.memory} : }{a \code{logical} value defining whether all projections are 
 ##'   to be kept loaded at once in memory, or only links pointing to hard drive are to be returned}
 ##'   \item{\code{output.format} : }{a \code{character} value corresponding to the projections 
@@ -151,9 +152,9 @@
 ##' myBiomodProj <- BIOMOD_Projection(myBiomodModelOut,
 ##'                                   proj.name = 'Current',
 ##'                                   new.env = myExpl,
-##'                                   chosen.models = 'all',
-##'                                   binary.meth = 'all',
-##'                                   filtered.meth = 'all',
+##'                                   models.chosen = 'all',
+##'                                   metric.binary = 'all',
+##'                                   metric.filter = 'all',
 ##'                                   build.clamping.mask = TRUE)
 ##' myBiomodProj
 ##' plot(myBiomodProj)
@@ -168,13 +169,13 @@
 ###################################################################################################
 
 
-BIOMOD_Projection <- function(modeling.output,
+BIOMOD_Projection <- function(bm.mod,
                               proj.name,
                               new.env,
                               new.env.xy = NULL,
-                              chosen.models = 'all',
-                              binary.meth = NULL,
-                              filtered.meth = NULL,
+                              models.chosen = 'all',
+                              metric.binary = NULL,
+                              metric.filter = NULL,
                               compress = TRUE,
                               build.clamping.mask = TRUE,
                               ...)
@@ -182,21 +183,21 @@ BIOMOD_Projection <- function(modeling.output,
   .bm_cat("Do Single Models Projection")
   
   ## 0. Check arguments ---------------------------------------------------------------------------
-  args <- .BIOMOD_Projection.check.args(modeling.output, proj.name, new.env, new.env.xy
-                                        , chosen.models, binary.meth, filtered.meth, compress, ...)
+  args <- .BIOMOD_Projection.check.args(bm.mod, proj.name, new.env, new.env.xy
+                                        , models.chosen, metric.binary, metric.filter, compress, ...)
   for (argi in names(args)) { assign(x = argi, value = args[[argi]]) }
   rm(args)
   
   ## 1. Create output object ----------------------------------------------------------------------
   proj_out <- new('BIOMOD.projection.out',
                   proj.names = proj.name,
-                  sp.name =  modeling.output@sp.name,
-                  expl.var.names = modeling.output@expl.var.names,
-                  models.projected = chosen.models,
-                  models.scaled = modeling.output@rescal.all.models,
+                  sp.name =  bm.mod@sp.name,
+                  expl.var.names = bm.mod@expl.var.names,
+                  models.projected = models.chosen,
+                  models.scaled = bm.mod@rescal.all.models,
                   xy.coord = new.env.xy,
-                  modeling.object.id = modeling.output@modeling.id)
-  proj_out@modeling.object@link = modeling.output@link
+                  modeling.object.id = bm.mod@modeling.id)
+  proj_out@modeling.object@link = bm.mod@link
   if (inherits(new.env, 'Raster')) {
     proj_out@proj <- new('BIOMOD.stored.raster.stack')
   } else {
@@ -205,8 +206,8 @@ BIOMOD_Projection <- function(modeling.output,
   
   ## 2. Create simulation directories -------------------------------------------------------------
   nameProj <- paste0("proj_", proj.name)
-  nameProjSp <- paste0(nameProj, "_", modeling.output@sp.name)
-  namePath <- file.path(modeling.output@sp.name, nameProj)
+  nameProjSp <- paste0(nameProj, "_", bm.mod@sp.name)
+  namePath <- file.path(bm.mod@sp.name, nameProj)
   dir.create(namePath, showWarnings = FALSE, recursive = TRUE, mode = "777")
   if (!do.stack) {
     dir.create(file.path(namePath, "individual_projections"),
@@ -217,7 +218,7 @@ BIOMOD_Projection <- function(modeling.output,
   if (build.clamping.mask) {
     cat("\n\t> Building clamping mask\n")
     nameMask <- paste0(nameProjSp, "_ClampingMask")
-    MinMax <- get_formal_data(modeling.output, 'MinMax')
+    MinMax <- get_formal_data(bm.mod, 'MinMax')
     assign(x = nameMask, value = .build_clamping_mask(new.env, MinMax))
     
     if (output.format == '.RData') {
@@ -235,7 +236,7 @@ BIOMOD_Projection <- function(modeling.output,
   
   ## 4. MAKING PROJECTIONS ------------------------------------------------------------------------
   if (!do.stack) {
-    proj <- sapply(chosen.models, function(mod.name)
+    proj <- sapply(models.chosen, function(mod.name)
     {
       cat("\n\t> Projecting", mod.name, "...")
       filename <- file.path(namePath, "individual_projections"
@@ -245,10 +246,10 @@ BIOMOD_Projection <- function(modeling.output,
     })
     
   } else {
-    proj <- lapply(chosen.models, function(mod.name)
+    proj <- lapply(models.chosen, function(mod.name)
     {
       cat("\n\t> Projecting", mod.name, "...")
-      BIOMOD_LoadModels(modeling.output, full.name = mod.name, as = "mod")
+      BIOMOD_LoadModels(bm.mod, full.name = mod.name, as = "mod")
       temp_workdir = NULL
       if (length(grep("MAXENT.Phillips$", mod.name)) == 1) {
         temp_workdir = mod@model_output_dir
@@ -261,10 +262,10 @@ BIOMOD_Projection <- function(modeling.output,
     ## Putting predictions into the right format
     if (inherits(new.env, "Raster")) {
       proj <- stack(proj)
-      names(proj) <- chosen.models
+      names(proj) <- models.chosen
     } else {
       proj <- as.data.frame(proj)
-      names(proj) <- chosen.models
+      names(proj) <- models.chosen
       proj <- .DF_to_ARRAY(proj)
     }
     if (keep.in.memory) {
@@ -290,28 +291,28 @@ BIOMOD_Projection <- function(modeling.output,
   
   
   ## 5. Compute binary and/or filtered transformation ---------------------------------------------
-  if (!is.null(binary.meth) | !is.null(filtered.meth))
+  if (!is.null(metric.binary) | !is.null(metric.filter))
   {
     cat("\n")
-    eval.meth <- unique(c(binary.meth, filtered.meth))
+    eval.meth <- unique(c(metric.binary, metric.filter))
     
     ## Get all evaluation thresholds
     if (inherits(new.env, "Raster")) {
-      thresholds <- matrix(0, nrow = length(eval.meth), ncol = length(chosen.models), dimnames = list(eval.meth, chosen.models))
-      for (mod in chosen.models) {
+      thresholds <- matrix(0, nrow = length(eval.meth), ncol = length(models.chosen), dimnames = list(eval.meth, models.chosen))
+      for (mod in models.chosen) {
         PA.run <- .extract_modelNamesInfo(model.names = mod, info = 'data.set')
         eval.run <- .extract_modelNamesInfo(model.names = mod, info = 'run.eval')
         algo.run <- .extract_modelNamesInfo(model.names = mod, info = 'models')
-        thresholds[eval.meth, mod] <- get_evaluations(modeling.output)[eval.meth, "Cutoff", algo.run, eval.run, PA.run]
+        thresholds[eval.meth, mod] <- get_evaluations(bm.mod)[eval.meth, "Cutoff", algo.run, eval.run, PA.run]
         if (!on_0_1000) { thresholds[eval.meth, mod]  <- thresholds[eval.meth, mod] / 1000 }
       }
     } else {
       thresholds <- array(0, dim = c(length(eval.meth), dim(proj)[-1]), dimnames = c(list(eval.meth), dimnames(proj)[-1]))
-      for (mod in chosen.models) {
+      for (mod in models.chosen) {
         PA.run <- .extract_modelNamesInfo(model.names = mod, info = 'data.set')
         eval.run <- .extract_modelNamesInfo(model.names = mod, info = 'run.eval')
         algo.run <- .extract_modelNamesInfo(model.names = mod, info = 'models')
-        thresholds[eval.meth, algo.run, eval.run, PA.run] <- get_evaluations(modeling.output)[eval.meth, "Cutoff", algo.run, eval.run, PA.run]
+        thresholds[eval.meth, algo.run, eval.run, PA.run] <- get_evaluations(bm.mod)[eval.meth, "Cutoff", algo.run, eval.run, PA.run]
         if (!on_0_1000) {
           thresholds[eval.meth, algo.run, eval.run, PA.run]  <- thresholds[eval.meth, algo.run, eval.run, PA.run] / 1000
         }
@@ -319,7 +320,7 @@ BIOMOD_Projection <- function(modeling.output,
     }
     
     ## Do binary transformation
-    for (eval.meth in binary.meth) {
+    for (eval.meth in metric.binary) {
       cat("\n\t> Building", eval.meth, "binaries")
       if (!do.stack) {
         for (i in 1:length(proj_out@proj@link)) {
@@ -353,7 +354,7 @@ BIOMOD_Projection <- function(modeling.output,
     }
     
     ## Do filtered transformation
-    for (eval.meth in filtered.meth) {
+    for (eval.meth in metric.filter) {
       cat("\n\t> Building", eval.meth, "filtered")
       if (!do.stack) {
         for (i in 1:length(proj_out@proj@link)) {
@@ -390,7 +391,7 @@ BIOMOD_Projection <- function(modeling.output,
   
   ## 6. SAVE MODEL OBJECT ON HARD DRIVE -----------------------------------------------------------
   ## save a copy of output object without value to be lighter
-  nameOut <- paste0(modeling.output@sp.name, ".", proj.name, ".projection.out")
+  nameOut <- paste0(bm.mod@sp.name, ".", proj.name, ".projection.out")
   if (!keep.in.memory) { proj_out <- free(proj_out) }
   assign(nameOut, proj_out)
   save(list = nameOut, file = file.path(namePath, nameOut))
@@ -401,27 +402,27 @@ BIOMOD_Projection <- function(modeling.output,
 
 ###################################################################################################
 
-.BIOMOD_Projection.check.args <- function(modeling.output, proj.name, new.env, new.env.xy,
-                                          chosen.models, binary.meth, filtered.meth, compress, ...)
+.BIOMOD_Projection.check.args <- function(bm.mod, proj.name, new.env, new.env.xy,
+                                          models.chosen, metric.binary, metric.filter, compress, ...)
 {
   args <- list(...)
   
-  ## 1. Check modeling.output -------------------------------------------------
-  .fun_testIfInherits(TRUE, "modeling.output", modeling.output, "BIOMOD.models.out")
+  ## 1. Check bm.mod ----------------------------------------------------------
+  .fun_testIfInherits(TRUE, "bm.mod", bm.mod, "BIOMOD.models.out")
   
   ## 2. Check proj.name -------------------------------------------------------
   if (is.null(proj.name)) {
     stop("\nYou must define a name for Projection Outputs")
   } else {
-    dir.create(paste0(modeling.output@sp.name, '/proj_', proj.name, '/'), showWarnings = FALSE)
+    dir.create(paste0(bm.mod@sp.name, '/proj_', proj.name, '/'), showWarnings = FALSE)
   }
   
   ## 3. Check new.env ---------------------------------------------------------
   .fun_testIfInherits(TRUE, "new.env", new.env, c('matrix', 'data.frame', 'RasterStack'))
   if (inherits(new.env, 'RasterStack')) {
-    .fun_testIfIn(TRUE, "names(new.env)", names(new.env), modeling.output@expl.var.names)
+    .fun_testIfIn(TRUE, "names(new.env)", names(new.env), bm.mod@expl.var.names)
   } else {
-    .fun_testIfIn(TRUE, "colnames(new.env)", colnames(new.env), modeling.output@expl.var.names)
+    .fun_testIfIn(TRUE, "colnames(new.env)", colnames(new.env), bm.mod@expl.var.names)
   }
   
   ## 4. Check new.env.xy ------------------------------------------------------
@@ -434,18 +435,18 @@ BIOMOD_Projection <- function(modeling.output,
     new.env.xy = matrix()
   }
   
-  ## 5. Check chosen.models -------------------------------------------------
-  if (chosen.models[1] == 'all') {
-    chosen.models <- modeling.output@models.computed
+  ## 5. Check models.chosen ---------------------------------------------------
+  if (models.chosen[1] == 'all') {
+    models.chosen <- bm.mod@models.computed
   } else {
-    chosen.models <- intersect(chosen.models, modeling.output@models.computed)
+    models.chosen <- intersect(models.chosen, bm.mod@models.computed)
   }
-  if (length(chosen.models) < 1) {
+  if (length(models.chosen) < 1) {
     stop('No models selected')
   }
   
   ## check that given models exist
-  files.check <- paste0(modeling.output@sp.name, '/models/', modeling.output@modeling.id, "/", chosen.models)
+  files.check <- paste0(bm.mod@sp.name, '/models/', bm.mod@modeling.id, "/", models.chosen)
   not.checked.files <- grep('MAXENT.Phillips|SRE', files.check)
   if (length(not.checked.files) > 0) {
     files.check <- files.check[-not.checked.files]
@@ -458,27 +459,27 @@ BIOMOD_Projection <- function(modeling.output,
     }
   }
   
-  ## 6. Check binary.meth & filtered.meth -------------------------------------
-  if (!is.null(binary.meth) | !is.null(filtered.meth)) {
-    models.evaluation <- get_evaluations(modeling.output)
+  ## 6. Check metric.binary & metric.filter -----------------------------------
+  if (!is.null(metric.binary) | !is.null(metric.filter)) {
+    models.evaluation <- get_evaluations(bm.mod)
     if (is.null(models.evaluation)) {
       warning("Binary and/or Filtered transformations of projection not ran because of models evaluation information missing")
     } else {
       available.evaluation <- unique(dimnames(models.evaluation)[[1]])
-      if (!is.null(binary.meth) && binary.meth[1] == 'all') {
-        binary.meth <- available.evaluation
-      } else if (!is.null(binary.meth) && sum(!(binary.meth %in% available.evaluation)) > 0) {
-        warning(paste0(toString(binary.meth[!(binary.meth %in% available.evaluation)]),
+      if (!is.null(metric.binary) && metric.binary[1] == 'all') {
+        metric.binary <- available.evaluation
+      } else if (!is.null(metric.binary) && sum(!(metric.binary %in% available.evaluation)) > 0) {
+        warning(paste0(toString(metric.binary[!(metric.binary %in% available.evaluation)]),
                        " Binary Transformation were switched off because no corresponding evaluation method found"))
-        binary.meth <- binary.meth[binary.meth %in% available.evaluation]
+        metric.binary <- metric.binary[metric.binary %in% available.evaluation]
       }
       
-      if (!is.null(filtered.meth) && filtered.meth[1] == 'all') {
-        filtered.meth <- available.evaluation
-      } else if (!is.null(filtered.meth) && sum(!(filtered.meth %in% available.evaluation)) > 0) {
-        warning(paste0(toString(filtered.meth[!(filtered.meth %in% available.evaluation)]),
+      if (!is.null(metric.filter) && metric.filter[1] == 'all') {
+        metric.filter <- available.evaluation
+      } else if (!is.null(metric.filter) && sum(!(metric.filter %in% available.evaluation)) > 0) {
+        warning(paste0(toString(metric.filter[!(metric.filter %in% available.evaluation)]),
                        " Filtered Transformation were switched off because no corresponding evaluation method found"))
-        filtered.meth <- filtered.meth[filtered.meth %in% available.evaluation]
+        metric.filter <- metric.filter[metric.filter %in% available.evaluation]
       }
     }
   }
@@ -494,7 +495,7 @@ BIOMOD_Projection <- function(modeling.output,
     if (!do.stack) { cat("\n\t\t! 'do.stack' arg is always set as TRUE for data.frame/matrix dataset") }
     do.stack <- TRUE
   } else if (do.stack) { # test if there is enough memory to work with RasterStack
-    test = canProcessInMemory(subset(new.env, 1), 2 * length(chosen.models) + nlayers(new.env))
+    test = canProcessInMemory(subset(new.env, 1), 2 * length(models.chosen) + nlayers(new.env))
     if (!test) { rasterOptions(todisk = TRUE) }
   }
   
@@ -515,9 +516,9 @@ BIOMOD_Projection <- function(modeling.output,
   
   return(list(proj.name = proj.name,
               new.env.xy = new.env.xy,
-              chosen.models = chosen.models,
-              binary.meth = binary.meth,
-              filtered.meth = filtered.meth,
+              models.chosen = models.chosen,
+              metric.binary = metric.binary,
+              metric.filter = metric.filter,
               compress = compress,
               do.stack = do.stack,
               output.format = output.format,

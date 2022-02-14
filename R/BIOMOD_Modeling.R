@@ -268,20 +268,21 @@ BIOMOD_Modeling <- function(bm.format,
                             bm.options = NULL,
                             nb.rep = 1,
                             data.split.perc = 100,
+                            data.split.table = NULL,
+                            do.full.models = TRUE,
                             weights = NULL,
                             prevalence = NULL,
+                            metric.eval = c('KAPPA', 'TSS', 'ROC'),
                             var.import = 0,
-                            metric.eval = c('KAPPA','TSS','ROC'),
                             save.output = TRUE,
-                            scale.models = FALSE,
-                            do.full.models = TRUE,
-                            ...)
+                            scale.models = FALSE)
 {
   .bm_cat("Build Single Models")
   
   ## 0. Check arguments ---------------------------------------------------------------------------
-  args <- .BIOMOD_Modeling.check.args(bm.format, models, bm.options, nb.rep, data.split.perc, weights
-                                      , var.import, metric.eval, prevalence, do.full.models, save.output, ...)
+  args <- .BIOMOD_Modeling.check.args(bm.format, models, bm.options, nb.rep, data.split.perc, data.split.table
+                                      , do.full.models, weights, prevalence, metric.eval, var.import
+                                      , save.output, scale.models)
   for (argi in names(args)) { assign(x = argi, value = args[[argi]]) }
   rm(args)
   
@@ -401,12 +402,12 @@ BIOMOD_Modeling <- function(bm.format,
 
 ###################################################################################################
 
-.BIOMOD_Modeling.check.args <- function(bm.format, models, bm.options, nb.rep, data.split.perc, weights
-                                        , var.import, metric.eval, prevalence, do.full.models, save.output, ...)
+.BIOMOD_Modeling.check.args <- function(bm.format, models, bm.options, nb.rep, data.split.perc, data.split.table
+                                        , do.full.models, weights, prevalence, metric.eval, var.import
+                                        , save.output, scale.models)
 {
   ## 0. Check bm.format and models arguments ----------------------------------
   cat('\n\nChecking Models arguments...\n')
-  args <- list(...)
   
   .fun_testIfInherits(TRUE, "bm.format", bm.format, c("BIOMOD.formated.data", "BIOMOD.formated.data.PA"))
   if (!is.character(models)) { stop("models must be a 'character' vector") }
@@ -470,7 +471,6 @@ BIOMOD_Modeling <- function(bm.format,
   }
   
   ## 4. Check nb.rep and data.split.table arguments ---------------------------
-  data.split.table <- args$data.split.table
   if (!is.null(data.split.table)) {
     cat("\n! User defined data-split table was given -> nb.rep, data.split.perc and do.full.models argument will be ignored")
     if (!(length(dim(data.split.table) %in% c(2, 3)))) { stop("data.split.table must be a matrix or a 3D array") }

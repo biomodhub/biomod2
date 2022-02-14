@@ -11,35 +11,37 @@
 ##' conditions (see \href{BIOMOD_EnsembleModeling.html#details}{Details}).
 ##' 
 ##' 
-##' @param modeling.output a \code{\link{BIOMOD.models.out}} object returned by the 
+##' @param bm.mod a \code{\link{BIOMOD.models.out}} object returned by the 
 ##' \code{\link{BIOMOD_Modeling}} function
-##' @param chosen.models a \code{vector} containing model names to be kept, must be either 
+##' @param models.chosen a \code{vector} containing model names to be kept, must be either 
 ##' \code{all} or a sub-selection of model names that can be obtained with the 
 ##' \code{\link{get_built_models}} function
 ##' @param em.by a \code{character} corresponding to the way kept models will be combined to build 
 ##' the ensemble models, must be among \code{PA_dataset+repet}, \code{PA_dataset+algo}, 
 ##' \code{PA_dataset}, \code{algo}, \code{all}
-##' @param eval.metric a \code{vector} containing evaluation metric names to be used together with 
-##' \code{eval.metric.quality.threshold} to exclude single models based on their evaluation scores 
+##' @param metric.select a \code{vector} containing evaluation metric names to be used together with 
+##' \code{metric.select.thresh} to exclude single models based on their evaluation scores 
 ##' (for ensemble methods like probability weighted mean or committee averaging). Must be among  
-##' \code{all} (same evaluation metrics than those of \code{modeling.output}), \code{user.defined} 
-##' (and defined through \code{eval.metric.user.data}) or \code{ROC}, \code{TSS}, \code{KAPPA}, 
+##' \code{all} (same evaluation metrics than those of \code{bm.mod}), \code{user.defined} 
+##' (and defined through \code{metric.select.table}) or \code{ROC}, \code{TSS}, \code{KAPPA}, 
 ##' \code{ACCURACY}, \code{BIAS}, \code{POD}, \code{FAR}, \code{POFD}, \code{SR}, \code{CSI}, 
 ##' \code{ETS}, \code{HK}, \code{HSS}, \code{OR}, \code{ORSS}
-##' @param eval.metric.quality.threshold (\emph{optional, default} \code{NULL}) \cr 
+##' @param metric.select.thresh (\emph{optional, default} \code{NULL}) \cr 
 ##' A \code{vector} of \code{numeric} values corresponding to the minimum scores (one for each 
-##' \code{eval.metric}) below which single models will be excluded from the ensemble model building
-##' @param eval.metric.user.data (\emph{optional, default} \code{NULL}) \cr 
-##' A \code{data.frame} containing evaluation scores calculated for each single models and that 
-##' will be compared to \code{eval.metric.quality.threshold} values to exclude some of them from 
-##' the ensemble model building, with evaluation metric rownames, and \code{chosen.models} colnames
-##' @param VarImport (\emph{optional, default} \code{NULL}) \cr 
-##' An \code{integer} corresponding to the number of permutations to be done for each variable to 
-##' estimate variable importance
-##' @param models.eval.meth a \code{vector} containing evaluation metric names to be used, must 
+##' \code{metric.select}) below which single models will be excluded from the ensemble model 
+##' building
+##' @param metric.select.table (\emph{optional, default} \code{NULL}) \cr 
+##' If \code{metric.select = 'user.defined'}, a \code{data.frame} containing evaluation scores 
+##' calculated for each single models and that will be compared to \code{metric.select.thresh} 
+##' values to exclude some of them from the ensemble model building, with \code{metric.select} 
+##' rownames, and \code{models.chosen} colnames
+##' @param metric.eval a \code{vector} containing evaluation metric names to be used, must 
 ##' be among \code{ROC}, \code{TSS}, \code{KAPPA}, \code{ACCURACY}, \code{BIAS}, \code{POD}, 
 ##' \code{FAR}, \code{POFD}, \code{SR}, \code{CSI}, \code{ETS}, \code{HK}, \code{HSS}, \code{OR}, 
 ##' \code{ORSS}
+##' @param var.import (\emph{optional, default} \code{NULL}) \cr 
+##' An \code{integer} corresponding to the number of permutations to be done for each variable to 
+##' estimate variable importance
 ##' @param prob.mean (\emph{optional, default} \code{TRUE}) \cr 
 ##' A \code{logical} value defining whether to compute the mean probabilities 
 ##' across predictions or not
@@ -78,7 +80,7 @@
 ##'   \item a \emph{hidden} folder, named \code{.BIOMOD_DATA}, and containing outputs related 
 ##'   files (original dataset, calibration lines, pseudo-absences selected, predictions, 
 ##'   variables importance, evaluation values...), that can be retrieved with 
-##'   \code{\href{reference/index.html}{get_[...]}} or \code{\link{load}} functions, and used by other 
+##'   \code{\href{getters.out.html}{get_[...]}} or \code{\link{load}} functions, and used by other 
 ##'   \pkg{biomod2} functions, like \code{\link{BIOMOD_EnsembleForecasting}}
 ##' }
 ##' 
@@ -86,9 +88,9 @@
 ##' @details 
 ##' 
 ##' \describe{
-##'   \item{Models sub-selection (\code{chosen.models})}{Applying \code{\link{get_built_models}} 
-##'   function to the \code{modeling.output} object gives the names of the single models created 
-##'   with the \code{\link{BIOMOD_Modeling}} function. The \code{chosen.models} argument can take 
+##'   \item{Models sub-selection (\code{models.chosen})}{Applying \code{\link{get_built_models}} 
+##'   function to the \code{bm.mod} object gives the names of the single models created 
+##'   with the \code{\link{BIOMOD_Modeling}} function. The \code{models.chosen} argument can take 
 ##'   either a sub-selection of these single model names, or the \code{all} default value, to 
 ##'   decide which single models will be used for the ensemble model building.}
 ##' 
@@ -113,30 +115,30 @@
 ##' 
 ##'   \item{Evaluation metrics}{
 ##'   \itemize{
-##'     \item{\bold{\code{eval.metric}} : }{the selected metrics must be chosen among the ones used 
+##'     \item{\bold{\code{metric.select}} : }{the selected metrics must be chosen among the ones used 
 ##'     within the \code{\link{BIOMOD_Modeling}} function to build the \code{model.output} object, 
-##'     unless \code{eval.metric = 'user.defined'} and therefore values will be provided through 
-##'     the \code{eval.metric.user.data} parameter. \cr In the case of the selection of several 
+##'     unless \code{metric.select = 'user.defined'} and therefore values will be provided through 
+##'     the \code{metric.select.table} parameter. \cr In the case of the selection of several 
 ##'     metrics, they will be used at different steps of the ensemble modeling function : 
 ##'     \enumerate{
 ##'       \item remove \emph{low quality} single models, having a score lower than 
-##'       \code{eval.metric.quality.threshold}
+##'       \code{metric.select.thresh}
 ##'       \item perform the binary transformation needed if \code{committee.averaging = TRUE}
 ##'       \item weight models if \code{prob.mean.weight = TRUE}
 ##'       \item test and/or evaluate the ensemble models built
 ##'     }
 ##'     }
-##'     \item{\bold{\code{eval.metric.quality.threshold}} : }{as many values as evaluation metrics 
-##'     selected with the \code{eval.metric} parameter, and defining the corresponding quality 
+##'     \item{\bold{\code{metric.select.thresh}} : }{as many values as evaluation metrics 
+##'     selected with the \code{metric.select} parameter, and defining the corresponding quality 
 ##'     thresholds below which the single models will be excluded from the ensemble model 
 ##'     building.}
-##'     \item{\bold{\code{eval.metric.user.data}} : }{a \code{data.frame} must be given if 
-##'     \code{eval.metric = 'user.defined'} to allow the use of evaluation metrics other than 
+##'     \item{\bold{\code{metric.select.table}} : }{a \code{data.frame} must be given if 
+##'     \code{metric.select = 'user.defined'} to allow the use of evaluation metrics other than 
 ##'     those calculated within \pkg{biomod2}. The \code{data.frame} must contain as many columns 
-##'     as \code{chosen.models} with matching names, and as many rows as evaluation metrics to be 
-##'     used. The number of rows must match the length of the \code{eval.metric.quality.threshold} 
+##'     as \code{models.chosen} with matching names, and as many rows as evaluation metrics to be 
+##'     used. The number of rows must match the length of the \code{metric.select.thresh} 
 ##'     parameter. The values contained in the \code{data.frame} will be compared to those defined 
-##'     in \code{eval.metric.quality.threshold} to remove \emph{low quality} single models from 
+##'     in \code{metric.select.thresh} to remove \emph{low quality} single models from 
 ##'     the ensemble model building.}
 ##'   }
 ##'   }
@@ -264,21 +266,21 @@
 ##'                                     models.options = myBiomodOptions,
 ##'                                     NbRunEval = 2,
 ##'                                     DataSplit = 80,
-##'                                     VarImport = 3,
-##'                                     models.eval.meth = c('TSS','ROC'),
+##'                                     var.import = 3,
+##'                                     metric.eval = c('TSS','ROC'),
 ##'                                     do.full.models = FALSE,
 ##'                                     modeling.id = 'test')
 ##' 
 ##' 
 ##' # ---------------------------------------------------------------
 ##' # Model ensemble models
-##' myBiomodEM <- BIOMOD_EnsembleModeling(modeling.output = myBiomodModelOut,
-##'                                       chosen.models = 'all',
+##' myBiomodEM <- BIOMOD_EnsembleModeling(bm.mod = myBiomodModelOut,
+##'                                       models.chosen = 'all',
 ##'                                       em.by = 'all',
-##'                                       eval.metric = c('TSS'),
-##'                                       eval.metric.quality.threshold = c(0.7),
-##'                                       VarImport = 3,
-##'                                       models.eval.meth = c('TSS', 'ROC'),
+##'                                       metric.select = c('TSS'),
+##'                                       metric.select.thresh = c(0.7),
+##'                                       var.import = 3,
+##'                                       metric.eval = c('TSS', 'ROC'),
 ##'                                       prob.mean = TRUE,
 ##'                                       prob.median = TRUE,
 ##'                                       prob.cv = TRUE,
@@ -302,13 +304,13 @@
 ##' 
 ##' # Represent response curves
 ##' bm_PlotResponseCurves(myBiomodEM, 
-##'                       chosen.models = get_built_models(myBiomodEM)[c(1, 6, 7)],
+##'                       models.chosen = get_built_models(myBiomodEM)[c(1, 6, 7)],
 ##'                       fixed.var.metric = 'median')
 ##' bm_PlotResponseCurves(myBiomodEM, 
-##'                       chosen.models = get_built_models(myBiomodEM)[c(1, 6, 7)],
+##'                       models.chosen = get_built_models(myBiomodEM)[c(1, 6, 7)],
 ##'                       fixed.var.metric = 'min')
 ##' bm_PlotResponseCurves(myBiomodEM, 
-##'                       chosen.models = get_built_models(myBiomodEM)[7],
+##'                       models.chosen = get_built_models(myBiomodEM)[7],
 ##'                       fixed.var.metric = 'median',
 ##'                       do.bivariate = TRUE)
 ##' 
@@ -318,14 +320,14 @@
 ##' 
 ###################################################################################################
 
-BIOMOD_EnsembleModeling <- function(modeling.output,
-                                    chosen.models = 'all',
+BIOMOD_EnsembleModeling <- function(bm.mod,
+                                    models.chosen = 'all',
                                     em.by = 'PA_dataset+repet',
-                                    eval.metric = 'all',
-                                    eval.metric.quality.threshold = NULL,
-                                    eval.metric.user.data = NULL,
-                                    VarImport = 0,
-                                    models.eval.meth = c('KAPPA','TSS','ROC'),
+                                    metric.select = 'all',
+                                    metric.select.thresh = NULL,
+                                    metric.select.table = NULL,
+                                    metric.eval = c('KAPPA', 'TSS', 'ROC'),
+                                    var.import = 0,
                                     prob.mean = TRUE,
                                     prob.median = FALSE,
                                     prob.cv = FALSE,
@@ -338,12 +340,12 @@ BIOMOD_EnsembleModeling <- function(modeling.output,
   .bm_cat("Build Ensemble Models")
   
   ## 0. Check arguments ---------------------------------------------------------------------------
-  args <- .BIOMOD_EnsembleModeling.check.args(modeling.output,
-                                              chosen.models,
-                                              eval.metric,
-                                              eval.metric.quality.threshold,
-                                              eval.metric.user.data,
-                                              models.eval.meth,
+  args <- .BIOMOD_EnsembleModeling.check.args(bm.mod,
+                                              models.chosen,
+                                              metric.select,
+                                              metric.select.thresh,
+                                              metric.select.table,
+                                              metric.eval,
                                               prob.mean,
                                               prob.cv,
                                               prob.ci,
@@ -363,42 +365,42 @@ BIOMOD_EnsembleModeling <- function(modeling.output,
   em.algo <- em.avail[c(prob.mean, prob.cv,  prob.ci,  prob.ci,
                         prob.median, committee.averaging, prob.mean.weight)]
   em.options <- list(em.by = em.by)
-  expl_var_type = get_var_type(get_formal_data(modeling.output, 'expl.var'))
-  expl_var_range = get_var_range(get_formal_data(modeling.output, 'expl.var'))
+  expl_var_type = get_var_type(get_formal_data(bm.mod, 'expl.var'))
+  expl_var_range = get_var_range(get_formal_data(bm.mod, 'expl.var'))
   
   
   ## 1. Create output object ----------------------------------------------------------------------
   EM <- new('BIOMOD.ensemble.models.out',
-            sp.name = modeling.output@sp.name,
-            expl.var.names = modeling.output@expl.var.names,
+            sp.name = bm.mod@sp.name,
+            expl.var.names = bm.mod@expl.var.names,
             em.by = em.by,
-            modeling.id = modeling.output@modeling.id)
-  EM@models.out.obj@link <- file.path(modeling.output@sp.name,
-                                      paste0(modeling.output@sp.name, ".",
-                                             modeling.output@modeling.id, ".models.out"))
+            modeling.id = bm.mod@modeling.id)
+  EM@models.out.obj@link <- file.path(bm.mod@sp.name,
+                                      paste0(bm.mod@sp.name, ".",
+                                             bm.mod@modeling.id, ".models.out"))
   
   ## 2. Do Ensemble modeling ----------------------------------------------------------------------
   
   ## make a list of models names that will be combined together according to em.by argument
-  em.mod.assemb <- .get_models_assembling(chosen.models, em.by)
+  em.mod.assemb <- .get_models_assembling(models.chosen, em.by)
   for (assemb in names(em.mod.assemb))
   {
     cat("\n\n  >", assemb, "ensemble modeling")
     models.kept <- em.mod.assemb[[assemb]]
     
     #### defined data that will be used for models performances calculation ####
-    if (modeling.output@has.evaluation.data) {
-      eval.obs <- get_formal_data(modeling.output, 'eval.resp.var')
-      eval.expl <- get_formal_data(modeling.output, 'eval.expl.var')
+    if (bm.mod@has.evaluation.data) {
+      eval.obs <- get_formal_data(bm.mod, 'eval.resp.var')
+      eval.expl <- get_formal_data(bm.mod, 'eval.expl.var')
     }
     
     ## subselection of observations according to dataset used to produce ensemble models
-    obs <-  get_formal_data(modeling.output, 'resp.var')
-    expl <- get_formal_data(modeling.output, 'expl.var')
+    obs <-  get_formal_data(bm.mod, 'resp.var')
+    expl <- get_formal_data(bm.mod, 'expl.var')
     if (em.by %in% c("PA_dataset", 'PA_dataset+algo', 'PA_dataset+repet') &&
         unlist(strsplit(assemb, "_"))[3] != 'AllData') {
-      if (inherits(get_formal_data(modeling.output), "BIOMOD.formated.data.PA")) {
-        kept_cells <- get_formal_data(modeling.output)@PA[, unlist(strsplit(assemb, "_"))[3]]
+      if (inherits(get_formal_data(bm.mod), "BIOMOD.formated.data.PA")) {
+        kept_cells <- get_formal_data(bm.mod)@PA[, unlist(strsplit(assemb, "_"))[3]]
       } else {
         kept_cells <- rep(TRUE, length(obs))
       }
@@ -410,13 +412,13 @@ BIOMOD_EnsembleModeling <- function(modeling.output,
     
     #### get needed models predictions ############################################################
     ## if no prediction selected => swith to next model
-    needed_predictions <- .get_needed_predictions(modeling.output, em.by, models.kept
-                                                  , eval.metric, eval.metric.quality.threshold
-                                                  , eval.metric.user, eval.metric.user.data)
+    needed_predictions <- .get_needed_predictions(bm.mod, em.by, models.kept
+                                                  , metric.select, metric.select.thresh
+                                                  , metric.select.user, metric.select.table)
     if (!length(needed_predictions)) next
     
     ## LOOP over evaluation metrics ##
-    for (eval.m in eval.metric)
+    for (eval.m in metric.select)
     {
       models.kept <- needed_predictions$models.kept[[eval.m]]
       models.kept.scores <- needed_predictions$models.kept.scores[[eval.m]]
@@ -452,7 +454,7 @@ BIOMOD_EnsembleModeling <- function(modeling.output,
             mod <- tail(unlist(strsplit(x,"_")), 3)[3]
             run <- tail(unlist(strsplit(x,"_")), 3)[2]
             dat <- tail(unlist(strsplit(x,"_")), 3)[1]
-            return(get_evaluations(modeling.output)[eval.m, "Cutoff", mod, run, dat])
+            return(get_evaluations(bm.mod)[eval.m, "Cutoff", mod, run, dat])
           }))
           names(models.kept.thresh) <- models.kept.tmp
           models.kept.tmp = models.kept.tmp[is.finite(models.kept.thresh)]
@@ -510,17 +512,17 @@ BIOMOD_EnsembleModeling <- function(modeling.output,
         
         #### Models building ##################################################
         cat("\n   >", algo.1, "...")
-        model_name <- paste0(modeling.output@sp.name, "_", algo.2, "By", eval.m, "_", assemb)
+        model_name <- paste0(bm.mod@sp.name, "_", algo.2, "By", eval.m, "_", assemb)
         model.bm <- new(paste0(algo.3, "_biomod2_model"),
                         model = models.kept.tmp,
                         model_name = model_name,
                         model_class = algo.3,
                         model_options = em.options,
-                        resp_name = modeling.output@sp.name,
-                        expl_var_names = modeling.output@expl.var.names,
+                        resp_name = bm.mod@sp.name,
+                        expl_var_names = bm.mod@expl.var.names,
                         expl_var_type = expl_var_type,
                         expl_var_range = expl_var_range,
-                        modeling.id = modeling.output@modeling.id)
+                        modeling.id = bm.mod@modeling.id)
         
         if (algo == 'prob.ci.inf') {
           model.bm@alpha <- prob.ci.alpha
@@ -562,18 +564,18 @@ BIOMOD_EnsembleModeling <- function(modeling.output,
         
         #### Models Evaluation ################################################
         
-        if (length(models.eval.meth)) {
+        if (length(metric.eval)) {
           cat("\n\t\t\tEvaluating Model stuff...")
           
           if (algo == 'prob.cv') { ## switch off evaluation process
-            cross.validation <- matrix(NA, 4, length(models.eval.meth),
+            cross.validation <- matrix(NA, 4, length(metric.eval),
                                        dimnames = list(c("Testing.data", "Cutoff", "Sensitivity", "Specificity"),
-                                                       models.eval.meth))
+                                                       metric.eval))
           } else {
             if (em.by == "PA_dataset+repet") {
               ## select the same evaluation data than formal models
               ## get formal models calib/eval lines
-              calib_lines <- get_calib_lines(modeling.output)
+              calib_lines <- get_calib_lines(bm.mod)
               ## get info on wich dataset and which repet this ensemble model is based on
               pa_dataset_id <- paste0("_", unlist(strsplit(assemb, "_"))[3])
               repet_id <- paste0("_", unlist(strsplit(assemb, "_"))[2])
@@ -590,7 +592,7 @@ BIOMOD_EnsembleModeling <- function(modeling.output,
               eval_lines <- rep(TRUE, length(pred.bm))
             }
             
-            cross.validation <- sapply(models.eval.meth,
+            cross.validation <- sapply(metric.eval,
                                        bm_FindOptimStat,
                                        Fit = pred.bm[eval_lines],
                                        Obs = obs[eval_lines])
@@ -599,12 +601,12 @@ BIOMOD_EnsembleModeling <- function(modeling.output,
           
           if (exists('eval_pred.bm')) {
             if (algo == 'prob.cv') { ## switch off evaluation process
-              cross.validation <- matrix(NA, 5, length(models.eval.meth),
+              cross.validation <- matrix(NA, 5, length(metric.eval),
                                          dimnames = list(c("Testing.data", "Evaluating.data", "Cutoff"
                                                            , "Sensitivity", "Specificity"),
-                                                         models.eval.meth))
+                                                         metric.eval))
             } else {
-              true.evaluation <- sapply(models.eval.meth, function(x) {
+              true.evaluation <- sapply(metric.eval, function(x) {
                 bm_FindOptimStat(Fit = eval_pred.bm * 1000,
                                  Obs = eval.obs,
                                  Fixed.thresh = cross.validation["Cutoff", x])
@@ -620,17 +622,17 @@ BIOMOD_EnsembleModeling <- function(modeling.output,
         
         #### Models Variable Importance #######################################
         
-        if (VarImport > 0) {
+        if (var.import > 0) {
           cat("\n\t\t\tEvaluating Predictor Contributions...", "\n")
           model.bm@model_variables_importance <- bm_VariablesImportance(model.bm
                                                                         , expl
-                                                                        , nb_rand = VarImport)
+                                                                        , nb_rand = var.import)
         }
         
         #### Models saving #####
         assign(model_name, model.bm)
-        save(list = model_name, file = file.path(modeling.output@sp.name, "models",
-                                                 modeling.output@modeling.id, model_name))
+        save(list = model_name, file = file.path(bm.mod@sp.name, "models",
+                                                 bm.mod@modeling.id, model_name))
         
         #### Add to sumary objects ####
         EM@em.models <- c(EM@em.models, model.bm)
@@ -651,12 +653,12 @@ BIOMOD_EnsembleModeling <- function(modeling.output,
 
 ###################################################################################################
 
-.BIOMOD_EnsembleModeling.check.args <- function(modeling.output,
-                                                chosen.models,
-                                                eval.metric,
-                                                eval.metric.quality.threshold,
-                                                eval.metric.user.data,
-                                                models.eval.meth,
+.BIOMOD_EnsembleModeling.check.args <- function(bm.mod,
+                                                models.chosen,
+                                                metric.select,
+                                                metric.select.thresh,
+                                                metric.select.table,
+                                                metric.eval,
                                                 prob.mean,
                                                 prob.cv,
                                                 prob.ci,
@@ -667,65 +669,65 @@ BIOMOD_EnsembleModeling <- function(modeling.output,
                                                 prob.mean.weight.decay,
                                                 em.by)
 {
-  ## 1. Check modeling.output -------------------------------------------------
-  .fun_testIfInherits(TRUE, "modeling.output", modeling.output, "BIOMOD.models.out")
+  ## 1. Check bm.mod ----------------------------------------------------------
+  .fun_testIfInherits(TRUE, "bm.mod", bm.mod, "BIOMOD.models.out")
   
-  ## 2. Check chosen.models ---------------------------------------------------
-  if (!length(chosen.models) | (length(chosen.models) == 1 && chosen.models[1] == 'all')) {
+  ## 2. Check models.chosen ---------------------------------------------------
+  if (!length(models.chosen) | (length(models.chosen) == 1 && models.chosen[1] == 'all')) {
     cat("\n   ! all models available will be included in ensemble.modeling")
-    chosen.models <- modeling.output@models.computed
+    models.chosen <- bm.mod@models.computed
   } else {
-    .fun_testIfIn(TRUE, "chosen.models", chosen.models, modeling.output@models.computed)
+    .fun_testIfIn(TRUE, "models.chosen", models.chosen, bm.mod@models.computed)
   }
   
-  ## 3. Check eval.metric -----------------------------------------------------
-  if (!is.null(eval.metric)) {
-    if (!is.character(eval.metric)) {
-      stop("eval.metric must be a character vector or NULL")
+  ## 3. Check metric.select ---------------------------------------------------
+  if (!is.null(metric.select)) {
+    if (!is.character(metric.select)) {
+      stop("metric.select must be a character vector or NULL")
     }
-    eval.metric.user = FALSE
-    if ('user.defined' %in% eval.metric) {
-      eval.metric.user = TRUE
-      if (!is.null(eval.metric.user.data)) {
-        .fun_testIfIn(TRUE, "chosen.models", chosen.models, colnames(eval.metric.user.data))
-        eval.metric.user.data <- eval.metric.user.data[, chosen.models, drop = FALSE]
-        eval.metric <- rownames(eval.metric.user.data)
+    metric.select.user = FALSE
+    if ('user.defined' %in% metric.select) {
+      metric.select.user = TRUE
+      if (!is.null(metric.select.table)) {
+        .fun_testIfIn(TRUE, "models.chosen", models.chosen, colnames(metric.select.table))
+        metric.select.table <- metric.select.table[, models.chosen, drop = FALSE]
+        metric.select <- rownames(metric.select.table)
       } else {
-        stop("eval.metric.user.data must be a data.frame or NULL")
+        stop("metric.select.table must be a data.frame or NULL")
       }
     } else {
-      if ('all' %in% eval.metric) {
-        eval.metric <- dimnames(get_evaluations(modeling.output))[[1]]
+      if ('all' %in% metric.select) {
+        metric.select <- dimnames(get_evaluations(bm.mod))[[1]]
       }
-      .fun_testIfIn(TRUE, "eval.metric", eval.metric, dimnames(get_evaluations(modeling.output))[[1]])
+      .fun_testIfIn(TRUE, "metric.select", metric.select, dimnames(get_evaluations(bm.mod))[[1]])
     }
   }
   
-  ## 4. Check eval.metric.quality.threshold -----------------------------------
-  if (!is.null(eval.metric)) {
-    if (!is.null(eval.metric.quality.threshold)) {
-      if (!is.numeric(eval.metric.quality.threshold)) {
-        stop("eval.metric.quality.threshold must be NULL or a numeric vector")
+  ## 4. Check metric.select.thresh --------------------------------------------
+  if (!is.null(metric.select)) {
+    if (!is.null(metric.select.thresh)) {
+      if (!is.numeric(metric.select.thresh)) {
+        stop("metric.select.thresh must be NULL or a numeric vector")
       }
-      if (length(eval.metric) != length(eval.metric.quality.threshold)) {
-        stop("you must specify as many eval.metric.quality.threshold as eval.metric (if you specify some)")
+      if (length(metric.select) != length(metric.select.thresh)) {
+        stop("you must specify as many metric.select.thresh as metric.select (if you specify some)")
       }
       cat("\n   > Evaluation & Weighting methods summary :\n")
-      cat(paste(eval.metric, eval.metric.quality.threshold, sep = " over ", collapse = "\n      ")
+      cat(paste(metric.select, metric.select.thresh, sep = " over ", collapse = "\n      ")
           , fill = TRUE, labels = "     ")
     } else {
-      cat("\n   ! No eval.metric.quality.threshold -> All models will be kept for Ensemble Modeling")
-      eval.metric.quality.threshold <- rep(0, length(eval.metric))
+      cat("\n   ! No metric.select.thresh -> All models will be kept for Ensemble Modeling")
+      metric.select.thresh <- rep(0, length(metric.select))
     }
   } else {
-    eval.metric <- 'none'
+    metric.select <- 'none'
   }
   
-  ## 5. Check model.eval.meth -------------------------------------------------
-  models.eval.meth <- unique(models.eval.meth)
+  ## 5. Check metric.eval -----------------------------------------------------
+  metric.eval <- unique(metric.eval)
   avail.eval.meth.list <- c('TSS', 'KAPPA', 'ACCURACY', 'BIAS', 'POD', 'FAR', 'POFD'
                             , 'SR', 'CSI', 'ETS', 'HK', 'HSS', 'OR', 'ORSS', 'ROC')
-  .fun_testIfIn(TRUE, "models.eval.meth", models.eval.meth, avail.eval.meth.list)
+  .fun_testIfIn(TRUE, "metric.eval", metric.eval, avail.eval.meth.list)
   
   ## 6. Check selected EM algo ------------------------------------------------
   if (!is.logical(prob.mean) | !is.logical(prob.median) |
@@ -733,8 +735,8 @@ BIOMOD_EnsembleModeling <- function(modeling.output,
       !is.logical(committee.averaging) | !is.logical(prob.mean.weight)) {
     stop("prob.mean, prob.cv, prob.ci, prob.median, committee.averaging and prob.mean.weight arguments must be logical")
   }
-  if (is.null(eval.metric) && (committee.averaging | prob.mean.weight)) {
-    stop("You must choose eval.metric if you want to compute Committee Averaging or Probability Weighted Mean algorithms")
+  if (is.null(metric.select) && (committee.averaging | prob.mean.weight)) {
+    stop("You must choose metric.select if you want to compute Committee Averaging or Probability Weighted Mean algorithms")
   }
   
   ## 6.1 Check alpha for Confident interval
@@ -760,13 +762,13 @@ BIOMOD_EnsembleModeling <- function(modeling.output,
   .fun_testIfIn(TRUE, "em.by", em.by, c('PA_dataset', 'algo', 'all', 'PA_dataset+repet', 'PA_dataset+algo'))
   
   
-  return(list(modeling.output = modeling.output,
-              chosen.models = chosen.models,
-              eval.metric = eval.metric,
-              eval.metric.quality.threshold = eval.metric.quality.threshold,
-              eval.metric.user = eval.metric.user,
-              eval.metric.user.data = eval.metric.user.data,
-              models.eval.meth = models.eval.meth,
+  return(list(bm.mod = bm.mod,
+              models.chosen = models.chosen,
+              metric.select = metric.select,
+              metric.select.thresh = metric.select.thresh,
+              metric.select.user = metric.select.user,
+              metric.select.table = metric.select.table,
+              metric.eval = metric.eval,
               prob.mean = prob.mean,
               prob.cv = prob.cv,
               prob.ci = prob.ci,
@@ -780,36 +782,36 @@ BIOMOD_EnsembleModeling <- function(modeling.output,
 
 ###################################################################################################
 
-.get_models_assembling <- function(chosen.models, em.by)
+.get_models_assembling <- function(models.chosen, em.by)
 {
   assembl.list = list()
   if (em.by == 'PA_dataset') {
-    for (dat in .extract_modelNamesInfo(chosen.models, info = 'data.set')) {
-      assembl.list[[paste0("mergedAlgo_mergedRun_", dat)]] <- chosen.models[grep(paste0("_", dat, "_"), chosen.models)]
+    for (dat in .extract_modelNamesInfo(models.chosen, info = 'data.set')) {
+      assembl.list[[paste0("mergedAlgo_mergedRun_", dat)]] <- models.chosen[grep(paste0("_", dat, "_"), models.chosen)]
     }
   } else if (em.by == 'algo') {
-    for (algo in .extract_modelNamesInfo(chosen.models, info = 'models')) {
-      assembl.list[[paste0(algo, "_mergedRun_mergedData")]] <- chosen.models[grep(paste0("_", algo), chosen.models)]
+    for (algo in .extract_modelNamesInfo(models.chosen, info = 'models')) {
+      assembl.list[[paste0(algo, "_mergedRun_mergedData")]] <- models.chosen[grep(paste0("_", algo), models.chosen)]
     }
   } else if (em.by == 'all') {
-    assembl.list[["mergedAlgo_mergedRun_mergedData"]] <- chosen.models
+    assembl.list[["mergedAlgo_mergedRun_mergedData"]] <- models.chosen
   } else if (em.by == 'PA_dataset+repet') {
-    for (dat in .extract_modelNamesInfo(chosen.models, info = 'data.set')) {
-      for (repet in .extract_modelNamesInfo(chosen.models, info = 'run.eval')) {
-        mod.tmp <- intersect(x = grep(paste0("_", dat, "_"), chosen.models)
-                             , y = grep(paste0("_", repet, "_"), chosen.models))
+    for (dat in .extract_modelNamesInfo(models.chosen, info = 'data.set')) {
+      for (repet in .extract_modelNamesInfo(models.chosen, info = 'run.eval')) {
+        mod.tmp <- intersect(x = grep(paste0("_", dat, "_"), models.chosen)
+                             , y = grep(paste0("_", repet, "_"), models.chosen))
         if (length(mod.tmp)) {
-          assembl.list[[paste0("mergedAlgo_", repet, "_", dat)]] <- chosen.models[mod.tmp]
+          assembl.list[[paste0("mergedAlgo_", repet, "_", dat)]] <- models.chosen[mod.tmp]
         }
       }
     }
   } else if (em.by == 'PA_dataset+algo') {
-    for (dat in .extract_modelNamesInfo(chosen.models, info = 'data.set')) {
-      for (algo in .extract_modelNamesInfo(chosen.models, info = 'models')) {
-        mod.tmp <- intersect(x = grep(paste0("_", dat, "_"), chosen.models)
-                             , y = grep(paste0("_", algo), chosen.models))
+    for (dat in .extract_modelNamesInfo(models.chosen, info = 'data.set')) {
+      for (algo in .extract_modelNamesInfo(models.chosen, info = 'models')) {
+        mod.tmp <- intersect(x = grep(paste0("_", dat, "_"), models.chosen)
+                             , y = grep(paste0("_", algo), models.chosen))
         if (length(mod.tmp)) {
-          assembl.list[[paste0(algo, "_mergedRun_", dat)]] <- chosen.models[mod.tmp]
+          assembl.list[[paste0(algo, "_mergedRun_", dat)]] <- models.chosen[mod.tmp]
         }
       }
     }
@@ -820,25 +822,25 @@ BIOMOD_EnsembleModeling <- function(modeling.output,
 
 ###################################################################################################
 
-.get_needed_predictions <- function(modeling.output, em.by, models.kept, eval.metric
-                                    , eval.metric.quality.threshold, eval.metric.user
-                                    , eval.metric.user.data)
+.get_needed_predictions <- function(bm.mod, em.by, models.kept, metric.select
+                                    , metric.select.thresh, metric.select.user
+                                    , metric.select.table)
 {
   out <- list(predictions = NULL, models.kept = NULL, models.kept.scores = NULL)
-  for (eval.m in eval.metric) {
+  for (eval.m in metric.select) {
     if (eval.m != 'none') {
-      if (eval.metric.user) {
-        models.kept.scores <- eval.metric.user.data[eval.m, models.kept]
+      if (metric.select.user) {
+        models.kept.scores <- metric.select.table[eval.m, models.kept]
       } else {
         models.kept.scores <- unlist(lapply(models.kept, function(x) {
           mod <- tail(unlist(strsplit(x, "_")), 3)[3]
           run <- tail(unlist(strsplit(x, "_")), 3)[2]
           dat <- tail(unlist(strsplit(x, "_")), 3)[1]
           # select evaluations scores obtained for Evaluation Data if exists or CV if not
-          if (modeling.output@has.evaluation.data) {
-            return(get_evaluations(modeling.output)[eval.m, "Evaluating.data", mod, run, dat])
+          if (bm.mod@has.evaluation.data) {
+            return(get_evaluations(bm.mod)[eval.m, "Evaluating.data", mod, run, dat])
           } else {
-            return(get_evaluations(modeling.output)[eval.m, "Testing.data", mod, run, dat])
+            return(get_evaluations(bm.mod)[eval.m, "Testing.data", mod, run, dat])
           }
         }))
       }
@@ -846,7 +848,7 @@ BIOMOD_EnsembleModeling <- function(modeling.output,
       if (!is.null(models.kept.scores)) {
         models.kept.scores[is.na(models.kept.scores)] <- -1
       }
-      thresh = eval.metric.quality.threshold[which(eval.metric == eval.m)]
+      thresh = metric.select.thresh[which(metric.select == eval.m)]
       out$models.kept[[eval.m]] <- models.kept[models.kept.scores > thresh]
       out$models.kept.scores[[eval.m]] <- models.kept.scores[models.kept.scores > thresh]
     } else {
@@ -859,15 +861,15 @@ BIOMOD_EnsembleModeling <- function(modeling.output,
   if (length(models.kept.union)) {
     ## load prediction on each PA dataset
     if (em.by %in% c("PA_dataset", 'PA_dataset+algo', 'PA_dataset+repet')) {
-      out$predictions <- as.data.frame(get_predictions(modeling.output, as.data.frame = TRUE)[, models.kept.union, drop = FALSE])
+      out$predictions <- as.data.frame(get_predictions(bm.mod, as.data.frame = TRUE)[, models.kept.union, drop = FALSE])
     } else{
       ## redo prediction on full data.set
       cat("\n   ! Models projections for whole zonation required...")
       temp_name <- paste0('tmp_', sub(".", "", as.character(format(Sys.time(), "%OS6")), fixed = TRUE))
-      out$predictions <- BIOMOD_Projection(modeling.output = modeling.output,
-                                           new.env = get_formal_data(modeling.output)@data.env.var,
+      out$predictions <- BIOMOD_Projection(bm.mod = bm.mod,
+                                           new.env = get_formal_data(bm.mod)@data.env.var,
                                            proj.name = temp_name,
-                                           xy.new.env = get_formal_data(modeling.output)@coord,
+                                           xy.new.env = get_formal_data(bm.mod)@coord,
                                            selected.models = models.kept.union,
                                            compress = TRUE,
                                            build.clamping.mask = FALSE,
@@ -882,7 +884,7 @@ BIOMOD_EnsembleModeling <- function(modeling.output,
         data.set.id <- x.rev[1]
         cross.valid.id <- x.rev[2]
         algo.id <- paste0(rev(x.rev[3:length(x.rev)]), collapse = ".")
-        model.id <- paste(modeling.output@sp.name,
+        model.id <- paste(bm.mod@sp.name,
                           data.set.id,
                           cross.valid.id,
                           algo.id,
@@ -891,7 +893,7 @@ BIOMOD_EnsembleModeling <- function(modeling.output,
       }))
       # keep only wanted columns
       out$predictions <- out$predictions[, models.kept.union, drop = FALSE]
-      unlink(file.path(modeling.output@sp.name, paste0("proj_", temp_name))
+      unlink(file.path(bm.mod@sp.name, paste0("proj_", temp_name))
              , recursive = TRUE, force = TRUE)
       cat("\n")
     }

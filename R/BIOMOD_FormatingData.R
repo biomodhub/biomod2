@@ -89,11 +89,11 @@
 ##' 
 ##' \bold{Concerning explanatory variables and XY coordinates :} 
 ##' \itemize{
-##'   \item if \code{rasterLayer} or \code{\link[raster:stack]{RasterStack}} provided (for 
-##'   \code{expl.var} or \code{eval.expl.var}), \pkg{biomod2} will extract the corresponding 
-##'   values from XY coordinates provided (\code{resp.xy} or \code{eval.resp.xy} respectively). 
-##'   \cr \emph{Be sure to give the XY coordinates in the same projection system than the 
-##'   raster objects !}
+##'   \item if \code{\link[raster]{rasterLayer}} or \code{\link[raster:stack]{RasterStack}} 
+##'   provided (for \code{expl.var} or \code{eval.expl.var}), \pkg{biomod2} will extract the 
+##'   corresponding values from XY coordinates provided (\code{resp.xy} or \code{eval.resp.xy} 
+##'   respectively). \cr \emph{Be sure to give the XY coordinates in the same projection system 
+##'   than the raster objects !}
 ##'   \item if \code{\link[sp]{SpatialPointsDataFrame}} provided (for \code{resp.var} or 
 ##'   \code{eval.resp.var}), the same rule applies (\emph{same projection system !}).
 ##'   \item if \code{data.frame} provided (for \code{expl.var} or \code{eval.expl.var}), 
