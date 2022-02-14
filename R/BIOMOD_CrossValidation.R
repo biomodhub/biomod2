@@ -9,25 +9,25 @@
 ##' stratified cross-validation (CV) instead of repeated split samples.
 ##' 
 ##' 
-##' @param data a \code{\link{BIOMOD.formated.data}} object returned by the 
-##' \code{\link{BIOMOD_FormatingData}} function
+##' @param bm.format a \code{\link{BIOMOD.formated.data}} or \code{\link{BIOMOD.formated.data.PA}} 
+##' object returned by the \code{\link{BIOMOD_FormatingData}} function
 ##' @param k an \code{integer} corresponding to the number of bins/partitions for k-fold CV
-##' @param repetition an \code{integer} corresponding to the number of repetitions of k-fold CV 
-##' (\emph{set to \code{1} if \code{stratified.cv = TRUE}})
-##' @param stratified.cv a \code{logical} defining whether stratified CV should be run 
-##' @param stratify a \code{character} corresponding to the stratification method of the CV 
-##' (\emph{if \code{stratified.cv = TRUE}}), must be \code{x}, \code{y}, \code{both}, \code{block} 
+##' @param nb.rep an \code{integer} corresponding to the number of repetitions of k-fold CV 
+##' (\emph{set to \code{1} if \code{do.stratification = TRUE}})
+##' @param do.stratification a \code{logical} defining whether stratified CV should be run 
+##' @param method a \code{character} corresponding to the CV stratification method (\emph{if 
+##' \code{do.stratification = TRUE}}), must be \code{x}, \code{y}, \code{both}, \code{block} 
 ##' or the name of a predictor for environmental stratified CV
 ##' @param balance a \code{character} defining whether partitions should be balanced for 
 ##' \code{presences} or \code{absences} (resp. pseudo-absences or background)
-##' @param do.full.models (\emph{optional, default} \code{TRUE}) \cr 
-##' A \code{logical} value defining if models should be also calibrated and validated with the 
-##' whole dataset
+##' @param do.full.models (\emph{optional, default} \code{TRUE}) \cr  
+##' A \code{logical} value defining whether models should be also calibrated and validated over 
+##' the whole dataset or not
 ##' 
 ##' 
 ##' @return 
 ##' 
-##' A \code{DataSplitTable} {matrix} with \code{k * repetition} (\emph{+ 1 if 
+##' A \code{DataSplitTable} {matrix} with \code{k * nb.rep} (\emph{+ 1 if 
 ##' \code{do.full.models = TRUE}}) columns that can be given as parameter to the 
 ##' \code{\link{BIOMOD_Modeling}} function.
 ##' 
@@ -71,8 +71,8 @@
 ##' }
 ##' 
 ##' 
-##' @seealso \code{\link[ENMeval]{get.block}}, \code{\link{BIOMOD_FormatingData}}, 
-##' \code{\link{BIOMOD_Modeling}}
+##' @seealso \code{\link[ENMeval]{get.block}}, \code{\link[dismo]{kfold}}, 
+##' \code{\link{BIOMOD_FormatingData}}, \code{\link{BIOMOD_Modeling}}
 ##' @family Main functions
 ##'
 ##'
@@ -120,8 +120,8 @@
 ##'                                           do.full.models = FALSE)
 ##' DataSplitTable.y <- BIOMOD_CrossValidation(myBiomodData,
 ##'                                           k = 2,
-##'                                           stratified.cv = TRUE,
-##'                                           stratify = "y")
+##'                                           do.stratification = TRUE,
+##'                                           method = "y")
 ##' colnames(DataSplitTable.y)[1:2] <- c("RUN11", "RUN12")
 ##' myBiomodCV <- cbind(DataSplitTable.b, DataSplitTable.y)
 ##' head(myBiomodCV)
@@ -157,11 +157,11 @@
 ###################################################################################################
 
 
-BIOMOD_CrossValidation <- function(data,
+BIOMOD_CrossValidation <- function(bm.format,
                                    k = 5,
-                                   repetition = 5,
-                                   stratified.cv = FALSE,
-                                   stratify = "both",
+                                   nb.rep = 5,
+                                   do.stratification = FALSE,
+                                   method = "both",
                                    balance = "presences",
                                    do.full.models = TRUE)
 {
@@ -169,65 +169,65 @@ BIOMOD_CrossValidation <- function(data,
   DataSplitTable.y <- DataSplitTable.x <- DataSplitTable <- NULL
   
   ## STRATIFIED (X, Y, BOTH) / BLOCK / ENVIRONMENTAL CROSS VALIDATION -----------------------------
-  if (stratified.cv)
+  if (do.stratification)
   {
     if (balance == "absences") {
-      balance <- (data@data.species == 1 | data@data.species == 0)
+      balance <- (bm.format@data.species == 1 | bm.format@data.species == 0)
     } else {
-      balance <- (data@data.species == 1)
+      balance <- (bm.format@data.species == 1)
     }
     
     ## (X, Y, BOTH) STRATIFIED CROSS VALIDATION  -------------------------------
-    if (stratify == "x" | stratify == "both") {
-      DataSplitTable.x <- matrix(NA, nrow(data@coord), k)
-      bands <- quantile(data@coord[balance, 1], probs = seq(0, 100, 100 / k) / 100)
+    if (method == "x" | method == "both") {
+      DataSplitTable.x <- matrix(NA, nrow(bm.format@coord), k)
+      bands <- quantile(bm.format@coord[balance, 1], probs = seq(0, 100, 100 / k) / 100)
       bands[1] <- bands[1] - 1
       bands[k + 1] <- bands[k + 1] + 1
       for (i in 1:k) {
-        DataSplitTable.x[, i] <- (data@coord[, 1] >= bands[i] & data@coord[, 1] < bands[i + 1])
+        DataSplitTable.x[, i] <- (bm.format@coord[, 1] >= bands[i] & bm.format@coord[, 1] < bands[i + 1])
       }
-      if (stratify == "x") { DataSplitTable <- DataSplitTable.x }
+      if (method == "x") { DataSplitTable <- DataSplitTable.x }
     }
-    if (stratify == "y" | stratify == "both") {
-      DataSplitTable.y <- matrix(NA, nrow(data@coord), k)
-      bands <- quantile(data@coord[balance, 2], probs = seq(0, 100, 100 / k) / 100)
+    if (method == "y" | method == "both") {
+      DataSplitTable.y <- matrix(NA, nrow(bm.format@coord), k)
+      bands <- quantile(bm.format@coord[balance, 2], probs = seq(0, 100, 100 / k) / 100)
       bands[1] <- bands[1] - 1
       bands[k + 1] <- bands[k + 1] + 1
       for (i in 1:k) {
-        DataSplitTable.y[, i] <- (data@coord[, 2] >= bands[i] & data@coord[, 2] < bands[i + 1])
+        DataSplitTable.y[, i] <- (bm.format@coord[, 2] >= bands[i] & bm.format@coord[, 2] < bands[i + 1])
       }
-      if (stratify == "y") { DataSplitTable <- DataSplitTable.y }
+      if (method == "y") { DataSplitTable <- DataSplitTable.y }
     }
-    if (stratify == "both") { ## Merge X and Y tables
+    if (method == "both") { ## Merge X and Y tables
       DataSplitTable <- cbind(DataSplitTable.x, DataSplitTable.y)
     }
     
     ## BLOCK STRATIFIED CROSS VALIDATION --------------------------------------
-    if (stratify == "block") {
-      DataSplitTable <- as.data.frame(matrix(NA, nrow(data@coord), 4))
-      blocks <- get.block(data@coord[data@data.species == 1, ]
-                          , data@coord[data@data.species == 0, ])
+    if (method == "block") {
+      DataSplitTable <- as.data.frame(matrix(NA, nrow(bm.format@coord), 4))
+      blocks <- get.block(bm.format@coord[bm.format@data.species == 1, ]
+                          , bm.format@coord[bm.format@data.species == 0, ])
       for (i in 1:4) {
-        DataSplitTable[data@data.species == 1, i] <- blocks[[1]] != i
-        DataSplitTable[data@data.species == 0, i] <- blocks[[2]] != i     
+        DataSplitTable[bm.format@data.species == 1, i] <- blocks[[1]] != i
+        DataSplitTable[bm.format@data.species == 0, i] <- blocks[[2]] != i     
       }
     }
     
     ## ENVIRONMENTAL STRATIFIED CROSS VALIDATION ------------------------------
-    if (stratify != "block" & stratify != "x" & stratify != "y" & stratify != "both") {
-      DataSplitTable2 <- as.data.frame(matrix(NA, nrow(data@coord), k))
-      bands <- quantile(data@data.env.var[balance, stratify], probs = seq(0, 100, 100 / k) / 100)
+    if (method != "block" & method != "x" & method != "y" & method != "both") {
+      DataSplitTable2 <- as.data.frame(matrix(NA, nrow(bm.format@coord), k))
+      bands <- quantile(bm.format@data.env.var[balance, method], probs = seq(0, 100, 100 / k) / 100)
       bands[1] <- bands[1] - 1
       bands[k + 1] <- bands[k + 1] + 1
       for (i in 1:k) {
-        DataSplitTable2[, i] <- (data@data.env.var[balance, stratify] <= bands[i] | 
-                                   data@data.env.var[balance, stratify] > bands[i + 1])
+        DataSplitTable2[, i] <- (bm.format@data.env.var[balance, method] <= bands[i] | 
+                                   bm.format@data.env.var[balance, method] > bands[i + 1])
       }
     }
   } else {
     ## K-FOLD CROSS VALIDATION --------------------------------------------------------------------
-    for (rep in 1:repetition) {
-      fold <- kfold(data@data.species, by = data@data.species, k = k)
+    for (rep in 1:nb.rep) {
+      fold <- kfold(bm.format@data.species, by = bm.format@data.species, k = k)
       for (i in 1:k) {
         DataSplitTable <- cbind(DataSplitTable, fold != i)
       }
