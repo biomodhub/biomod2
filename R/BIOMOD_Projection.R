@@ -59,8 +59,9 @@
 ##' \enumerate{
 ##'   \item the output is a 4-dimensional array if \code{new.env} is a \code{matrix} or a 
 ##'   \code{data.frame}
-##'   \item it is a \code{rasterStack} if \code{new.env} is a \code{rasterStack} (or several 
-##'   \code{rasterLayer} objects, if \code{new.env} is too large)
+##'   \item it is a \code{\link[raster:stack]{RasterStack}} if \code{new.env} is a 
+##'   \code{\link[raster:stack]{RasterStack}} (or several \code{\link[raster:stack]{RasterLayer}} 
+##'   objects, if \code{new.env} is too large)
 ##'   \item raw projections, as well as binary and filtered projections (if asked), are saved in 
 ##'   the \code{proj.name} folder
 ##' }
@@ -87,7 +88,7 @@
 ##'   are to be converted to \code{0 - 1000} scale to save memory on backup}
 ##'   \item{\code{do.stack} : }{a \code{logical} value defining whether all projections are to be 
 ##'   saved as one \code{\link[raster:stack]{RasterStack}} object or several 
-##'   \code{\link[raster]{RasterLayer}} files (\emph{the default if projections are too heavy to 
+##'   \code{\link[raster:stack]{RasterLayer}} files (\emph{the default if projections are too heavy to 
 ##'   be all loaded at once in memory})}
 ##'   \item{\code{keep.in.memory} : }{a \code{logical} value defining whether all projections are 
 ##'   to be kept loaded at once in memory, or only links pointing to hard drive are to be returned}

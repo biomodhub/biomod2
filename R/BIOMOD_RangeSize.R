@@ -10,10 +10,10 @@
 ##' time scales or environmental scenarios for example}).
 ##' 
 ##' 
-##' @param CurrentProj an \code{array}, \code{data.frame}, \code{\link[raster:stack]{RasterLayer}} 
+##' @param proj.current an \code{array}, \code{data.frame}, \code{\link[raster:stack]{RasterLayer}} 
 ##' or \code{\link[raster:stack]{RasterStack}} object containing the initial binary projection(s) 
 ##' of the (ensemble) species distribution model(s)
-##' @param FutureProj an \code{array}, \code{data.frame}, \code{\link[raster:stack]{RasterLayer}} 
+##' @param proj.future an \code{array}, \code{data.frame}, \code{\link[raster:stack]{RasterLayer}} 
 ##' or \code{\link[raster:stack]{RasterStack}} object containing the final binary projection(s) 
 ##' of the (ensemble) species distribution model(s)
 ##' 
@@ -43,8 +43,8 @@
 ##'     migration}
 ##'   }
 ##'   }
-##'   \item{Diff.By.Pixel}{an object in the same form than the input data (\code{CurrentProj} and 
-##'   \code{FutureProj}) and containing a value for each point/pixel of each comparison among :
+##'   \item{Diff.By.Pixel}{an object in the same form than the input data (\code{proj.current} and 
+##'   \code{proj.future}) and containing a value for each point/pixel of each comparison among :
 ##'   \itemize{
 ##'     \item \code{-2} : predicted to be lost
 ##'     \item \code{-1} : predicted to remain occupied
@@ -61,7 +61,7 @@
 ##' same area with the same resolution}.
 ##' 
 ##' \code{Diff.By.Pixel} object is obtained by applying the simple following formula :
-##' \deqn{FutureProj - 2 * CurrentProj}
+##' \deqn{proj.future - 2 * proj.current}
 ##' 
 ##' 
 ##' @keywords species range change, projections, gain, loss
@@ -137,11 +137,11 @@
 ##'                                               build.clamping.mask = TRUE)
 ##' 
 ##' # Load current and future binary projections
-##' CurrentProj <- stack("GuloGulo/proj_Current/proj_Current_GuloGulo_TSSbin.grd")
-##' FutureProj <- stack("GuloGulo/proj_Future/proj_Future_GuloGulo_TSSbin.grd")
+##' proj.current <- stack("GuloGulo/proj_Current/proj_Current_GuloGulo_TSSbin.grd")
+##' proj.future <- stack("GuloGulo/proj_Future/proj_Future_GuloGulo_TSSbin.grd")
 ##' 
 ##' # Compute differences
-##' myBiomodRangeSize <- BIOMOD_RangeSize(CurrentProj = CurrentProj, FutureProj = FutureProj)
+##' myBiomodRangeSize <- BIOMOD_RangeSize(proj.current = proj.current, proj.future = proj.future)
 ##' 
 ##' myBiomodRangeSize$Compt.By.Models
 ##' plot(myBiomodRangeSize$Diff.By.Pixel)
@@ -159,7 +159,7 @@
 
 
 setGeneric("BIOMOD_RangeSize",
-           def = function(CurrentProj, FutureProj, ...) {
+           def = function(proj.current, proj.future, ...) {
              standardGeneric("BIOMOD_RangeSize")
            })
 
@@ -171,11 +171,11 @@ setGeneric("BIOMOD_RangeSize",
 ##' @export
 ##'
 
-setMethod('BIOMOD_RangeSize', signature(CurrentProj = 'data.frame', FutureProj = 'data.frame'),
-          function(CurrentProj, FutureProj)
+setMethod('BIOMOD_RangeSize', signature(proj.current = 'data.frame', proj.future = 'data.frame'),
+          function(proj.current, proj.future)
           {
             .bm_cat("Do Range Size Computation")
-            args <- .BIOMOD_RangeSize.check.args(CurrentProj, FutureProj)
+            args <- .BIOMOD_RangeSize.check.args(proj.current, proj.future)
 
             CompteurSp <- function(Data, Value)
             {
@@ -194,7 +194,7 @@ setMethod('BIOMOD_RangeSize', signature(CurrentProj = 'data.frame', FutureProj =
               }
             }
             
-            Diff.By.Pixel <- as.data.frame(FutureProj - 2 * CurrentProj)
+            Diff.By.Pixel <- as.data.frame(proj.future - 2 * proj.current)
             Compt.By.Models <- as.data.frame(CompteurSp(Diff.By.Pixel, c(-2, 0, -1, 1)))
             Compt.By.Models[, 8] <- Compt.By.Models[, 1] + Compt.By.Models[, 3]
             Compt.By.Models[, 9] <- Compt.By.Models[, 3]
@@ -204,7 +204,7 @@ setMethod('BIOMOD_RangeSize', signature(CurrentProj = 'data.frame', FutureProj =
             Compt.By.Models[, 6] <- (100 * Compt.By.Models[, 4]) / Compt.By.Models[, 8]
             Compt.By.Models[, 7] <- Compt.By.Models[, 6] - Compt.By.Models[, 5]
 
-            dimnames(Compt.By.Models) <- list(colnames(CurrentProj), c("Loss", "Stable0", "Stable1", "Gain"
+            dimnames(Compt.By.Models) <- list(colnames(proj.current), c("Loss", "Stable0", "Stable1", "Gain"
                                                                        , "PercLoss", "PercGain", "SpeciesRangeChange"
                                                                        , "CurrentRangeSize", "FutureRangeSize.NoDisp", "FutureRangeSize.FullDisp"))
             
@@ -218,15 +218,15 @@ setMethod('BIOMOD_RangeSize', signature(CurrentProj = 'data.frame', FutureProj =
 ##' @export
 ##'
 
-setMethod('BIOMOD_RangeSize', signature(CurrentProj = 'array', FutureProj = 'array'),
-          function(CurrentProj, FutureProj)
+setMethod('BIOMOD_RangeSize', signature(proj.current = 'array', proj.future = 'array'),
+          function(proj.current, proj.future)
           {
             
             ## Transform Current array into data.frame
-            CurrentProj <- as.data.frame(CurrentProj)
-            names(CurrentProj) <- unlist(lapply(strsplit(names(CurrentProj), ".", fixed = TRUE), function(x)
+            proj.current <- as.data.frame(proj.current)
+            names(proj.current) <- unlist(lapply(strsplit(names(proj.current), ".", fixed = TRUE), function(x)
             { return(paste(x[3], x[2], x[1], sep = "_")) }))
-            names(CurrentProj) <- unlist(lapply(strsplit(names(CurrentProj), ".", fixed = TRUE), function(x)
+            names(proj.current) <- unlist(lapply(strsplit(names(proj.current), ".", fixed = TRUE), function(x)
             {
               x.rev <- rev(x) ## reverse the order of splitted vector to have algo at the end
               data.set.id <- x.rev[1]
@@ -237,8 +237,8 @@ setMethod('BIOMOD_RangeSize', signature(CurrentProj = 'array', FutureProj = 'arr
             }))
 
             ## Transform Future array into data.frame
-            FutureProj <- as.data.frame(FutureProj)
-            names(FutureProj) <- unlist(lapply(strsplit(names(FutureProj), ".", fixed = TRUE), function(x)
+            proj.future <- as.data.frame(proj.future)
+            names(proj.future) <- unlist(lapply(strsplit(names(proj.future), ".", fixed = TRUE), function(x)
             {
               x.rev <- rev(x) ## reverse the order of splitted vector to have algo at the end
               data.set.id <- x.rev[1]
@@ -248,7 +248,7 @@ setMethod('BIOMOD_RangeSize', signature(CurrentProj = 'array', FutureProj = 'arr
               return(model.id)
             }))
             
-            return(BIOMOD_RangeSize(CurrentProj, FutureProj))
+            return(BIOMOD_RangeSize(proj.current, proj.future))
           })
 
 
@@ -259,24 +259,24 @@ setMethod('BIOMOD_RangeSize', signature(CurrentProj = 'array', FutureProj = 'arr
 ##' @export
 ##'
 
-setMethod('BIOMOD_RangeSize', signature(CurrentProj = 'RasterStack', FutureProj = 'RasterStack'),
-          function(CurrentProj, FutureProj)
+setMethod('BIOMOD_RangeSize', signature(proj.current = 'RasterStack', proj.future = 'RasterStack'),
+          function(proj.current, proj.future)
           {
             .bm_cat("Do Range Size Computation")
-            args <- .BIOMOD_RangeSize.check.args(CurrentProj, FutureProj)
+            args <- .BIOMOD_RangeSize.check.args(proj.current, proj.future)
             
             names.res = c("Loss", "Stable0", "Stable1", "Gain"
                           , "PercLoss", "PercGain", "SpeciesRangeChange"
                           , "CurrentRangeSize", "FutureRangeSize.NoDisp", "FutureRangeSize.FullDisp")
-            CBS <- matrix(ncol = 10, nrow = length(CurrentProj@layers),
-                          dimnames = list(names(CurrentProj), names.res))
+            CBS <- matrix(ncol = 10, nrow = length(proj.current@layers),
+                          dimnames = list(names(proj.current), names.res))
 
             sp.stack <- stack()
-            for (i in 1:length(CurrentProj@layers)) {
+            for (i in 1:length(proj.current@layers)) {
               
               ## DiffByPixel
-              Cur <- CurrentProj@layers[[i]]
-              Fut <- FutureProj@layers[[i]]
+              Cur <- proj.current@layers[[i]]
+              Fut <- proj.future@layers[[i]]
               Ras <- Fut - (Cur + Cur)
               sp.stack <- addLayer(sp.stack, Ras)
               
@@ -305,23 +305,23 @@ setMethod('BIOMOD_RangeSize', signature(CurrentProj = 'RasterStack', FutureProj 
 ##' @export
 ##'
 
-setMethod('BIOMOD_RangeSize', signature(CurrentProj = 'RasterLayer', FutureProj = 'RasterStack'),
-          function(CurrentProj, FutureProj)
+setMethod('BIOMOD_RangeSize', signature(proj.current = 'RasterLayer', proj.future = 'RasterStack'),
+          function(proj.current, proj.future)
           {
             .bm_cat("Do Range Size Computation")
             
             names.res = c("Loss", "Stable0", "Stable1", "Gain"
                           , "PercLoss", "PercGain", "SpeciesRangeChange"
                           , "CurrentRangeSize", "FutureRangeSize.NoDisp", "FutureRangeSize.FullDisp")
-            CBS <- matrix(ncol = 10, nrow = length(FutureProj@layers),
-                          dimnames = list(names(FutureProj), names.res))
+            CBS <- matrix(ncol = 10, nrow = length(proj.future@layers),
+                          dimnames = list(names(proj.future), names.res))
             
             sp.stack <- stack()
-            for (i in 1:length(FutureProj@layers)) {
+            for (i in 1:length(proj.future@layers)) {
               
               ## DiffByPixel
-              Cur <- CurrentProj
-              Fut <- FutureProj@layers[[i]]
+              Cur <- proj.current
+              Fut <- proj.future@layers[[i]]
               Ras <- Fut - (Cur + Cur)
               sp.stack <- addLayer(sp.stack, Ras)
               
@@ -351,19 +351,19 @@ setMethod('BIOMOD_RangeSize', signature(CurrentProj = 'RasterLayer', FutureProj 
 ##'
 
 setMethod('BIOMOD_RangeSize',
-          signature(CurrentProj = 'RasterLayer', FutureProj = 'RasterLayer'),
-          function(CurrentProj, FutureProj) {
-            BIOMOD_RangeSize(CurrentProj = CurrentProj, FutureProj = stack(FutureProj))
+          signature(proj.current = 'RasterLayer', proj.future = 'RasterLayer'),
+          function(proj.current, proj.future) {
+            BIOMOD_RangeSize(proj.current = proj.current, proj.future = stack(proj.future))
           })
 
 
 
 ###################################################################################################
 
-.BIOMOD_RangeSize.check.args <- function(CurrentProj, FutureProj)
+.BIOMOD_RangeSize.check.args <- function(proj.current, proj.future)
 {
   # dimensions checking
-  if (sum(!(dim(CurrentProj) == dim(FutureProj)) > 0)) {
-    stop("CurrentProj & FutureProj dimensions mismatched!")
+  if (sum(!(dim(proj.current) == dim(proj.future)) > 0)) {
+    stop("proj.current & proj.future dimensions mismatched!")
   }
 }

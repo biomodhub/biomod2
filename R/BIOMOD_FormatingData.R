@@ -89,7 +89,7 @@
 ##' 
 ##' \bold{Concerning explanatory variables and XY coordinates :} 
 ##' \itemize{
-##'   \item if \code{\link[raster]{rasterLayer}} or \code{\link[raster:stack]{RasterStack}} 
+##'   \item if \code{\link[raster:stack]{RasterLayer}} or \code{\link[raster:stack]{RasterStack}} 
 ##'   provided (for \code{expl.var} or \code{eval.expl.var}), \pkg{biomod2} will extract the 
 ##'   corresponding values from XY coordinates provided (\code{resp.xy} or \code{eval.resp.xy} 
 ##'   respectively). \cr \emph{Be sure to give the XY coordinates in the same projection system 
