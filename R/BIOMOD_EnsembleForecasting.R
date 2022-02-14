@@ -51,7 +51,7 @@
 ##' compressed when saved on hard drive. Must be either \code{TRUE}, \code{FALSE}, \code{xz} or 
 ##' \code{gzip} (see \href{BIOMOD_EnsembleForecasting.html#details}{Details})
 ##' 
-##' @param ... (\emph{optional, see \href{BIOMOD_EnsembleForecasting.html#details}{Details}}) 
+##' @param \ldots (\emph{optional, see \href{BIOMOD_EnsembleForecasting.html#details}{Details}}) 
 ##' 
 ##' 
 ##' @return

@@ -16,8 +16,8 @@
 ##' either \code{ROC}, \code{TSS}, \code{KAPPA}, \code{ACCURACY}, \code{BIAS}, \code{POD}, 
 ##' \code{FAR}, \code{POFD}, \code{SR}, \code{CSI}, \code{ETS}, \code{HK}, \code{HSS}, \code{OR} 
 ##' or \code{ORSS}
-##' @param Fit a \code{vector} of fitted values (continuous)
 ##' @param Obs a \code{vector} of observed values (binary, \code{0} or \code{1})
+##' @param Fit a \code{vector} of fitted values (continuous)
 ##' @param Nb.thresh.test an \code{integer} corresponding to the number of thresholds to be 
 ##' tested over the range of fitted values
 ##' @param Fixed.thresh (\emph{optional, default} \code{NULL}) \cr 
@@ -83,15 +83,15 @@
 
 
 bm_FindOptimStat <- function(Stat = 'TSS',
-                             Fit,
                              Obs,
+                             Fit,
                              Nb.thresh.test = 100,
                              Fixed.thresh = NULL)
 {
   ## remove all unfinite values
   to_keep <- (is.finite(Fit) & is.finite(Obs))
-  Fit <- Fit[to_keep]
   Obs <- Obs[to_keep]
+  Fit <- Fit[to_keep]
   
   ## check some data is still here
   if (!length(Obs) | !length(Fit)) {

@@ -8,8 +8,8 @@
 \usage{
 bm_FindOptimStat(
   Stat = "TSS",
-  Fit,
   Obs,
+  Fit,
   Nb.thresh.test = 100,
   Fixed.thresh = NULL
 )
@@ -24,9 +24,9 @@ either \code{ROC}, \code{TSS}, \code{KAPPA}, \code{ACCURACY}, \code{BIAS}, \code
 \code{FAR}, \code{POFD}, \code{SR}, \code{CSI}, \code{ETS}, \code{HK}, \code{HSS}, \code{OR} 
 or \code{ORSS}}
 
-\item{Fit}{a \code{vector} of fitted values (continuous)}
-
 \item{Obs}{a \code{vector} of observed values (binary, \code{0} or \code{1})}
+
+\item{Fit}{a \code{vector} of fitted values (continuous)}
 
 \item{Nb.thresh.test}{an \code{integer} corresponding to the number of thresholds to be 
 tested over the range of fitted values}
@@ -92,7 +92,6 @@ Other Secundary functions:
 \code{\link{bm_PlotResponseCurves}()},
 \code{\link{bm_PlotVarImpBoxplot}()},
 \code{\link{bm_PseudoAbsences}()},
-\code{\link{bm_Rescaler}()},
 \code{\link{bm_RunModelsLoop}()},
 \code{\link{bm_SRE}()},
 \code{\link{bm_SampleBinaryVector}()},

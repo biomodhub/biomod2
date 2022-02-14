@@ -5,10 +5,10 @@
 \title{Format input data, and select pseudo-absences if wanted, for usage in \pkg{biomod2}}
 \usage{
 BIOMOD_FormatingData(
+  resp.name,
   resp.var,
   expl.var,
   resp.xy = NULL,
-  resp.name = NULL,
   eval.resp.var = NULL,
   eval.expl.var = NULL,
   eval.resp.xy = NULL,
@@ -18,11 +18,13 @@ BIOMOD_FormatingData(
   PA.dist.min = 0,
   PA.dist.max = NULL,
   PA.sre.quant = 0.025,
-  PA.table = NULL,
+  PA.user.table = NULL,
   na.rm = TRUE
 )
 }
 \arguments{
+\item{resp.name}{a \code{character} containing the species name.}
+
 \item{resp.var}{a \code{vector}, \code{\link[sp]{SpatialPoints}} (\emph{if presence-only}) or 
 \code{\link[sp]{SpatialPointsDataFrame}} object containing binary data (\code{0} : absence, 
 \code{1} : presence, \code{NA} : indeterminate) for a single species that will be used to 
@@ -36,9 +38,6 @@ or \code{\link[raster:stack]{RasterStack}} object containing the explanatory var
 If \code{resp.var} is a \code{vector}, a 2-columns \code{matrix} or \code{data.frame} 
 containing the corresponding \code{X} and \code{Y} coordinates that will be used to build the 
 species distribution model(s)}
-
-\item{resp.name}{(\emph{optional, default} \code{NULL}) \cr 
-A \code{character} containing the species name.}
 
 \item{eval.resp.var}{(\emph{optional, default} \code{NULL}) \cr 
 A \code{vector}, \code{\link[sp]{SpatialPoints}} (\emph{if presence-only}) or 
@@ -85,7 +84,7 @@ If pseudo-absence selection and \code{PA.strategy = 'sre'}, a \code{numeric} bet
 and \code{1} defining the quantile used to make the \code{sre} pseudo-absence selection 
 (see \href{BIOMOD_FormatingData.html#details}{Details})}
 
-\item{PA.table}{(\emph{optional, default} \code{NULL}) \cr 
+\item{PA.user.table}{(\emph{optional, default} \code{NULL}) \cr 
 If pseudo-absence selection and \code{PA.strategy = 'user.defined'}, a \code{matrix} or 
 \code{data.frame} with as many rows as \code{resp.var} values, as many columns as 
 \code{PA.nb.rep}, and containing \code{TRUE} or \code{FALSE} values defining which points 
@@ -192,7 +191,7 @@ supports different kind of inputs (e.g. \code{matrix}, \code{SpatialPoints},
     or too far (localized sampling strategy) from presences.
     }
     \item{user.defined}{pseudo-absences are defined in advance and given as \code{data.frame} 
-    through the \code{PA.table} parameter.
+    through the \code{PA.user.table} parameter.
     }
   }
   }
@@ -272,7 +271,7 @@ plot(myBiomodData)
 #                                        resp.xy = myRespXY,
 #                                        resp.name = myRespName,
 #                                        PA.strategy = 'user.defined',
-#                                        PA.table = myPAtable)
+#                                        PA.user.table = myPAtable)
 # 
 # myBiomodData.r
 # myBiomodData.d

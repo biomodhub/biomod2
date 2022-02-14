@@ -11,7 +11,7 @@
 ##' @param bm.out a \code{BIOMOD.models.out} (or \code{BIOMOD.ensemble.models.out}) object that 
 ##' can be obtained from \code{\link{BIOMOD_Modeling}} (or \code{\link{BIOMOD_EnsembleModeling}}) 
 ##' function
-##' @param ... (\emph{optional, see \href{BIOMOD_LoadModels.html#details}{Details})}) 
+##' @param \ldots (\emph{optional, see \href{BIOMOD_LoadModels.html#details}{Details})}) 
 ##' 
 ##' 
 ##' @return 

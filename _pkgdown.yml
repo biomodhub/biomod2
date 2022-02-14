@@ -62,7 +62,6 @@ reference:
       - "bm_RunModelsLoop"
       - "bm_CVnnet"
       - "bm_SRE"
-      - "bm_Rescaler"
       - "bm_FindOptimStat"
       - "bm_BinaryTransformation"
       - "bm_VariablesImportance"

@@ -48,7 +48,7 @@
 ##' A \code{logical} value defining whether a clamping mask should be built and saved on hard 
 ##' drive or not (see \href{BIOMOD_Projection.html#details}{Details}))
 ##' 
-##' @param ... (\emph{optional, see \href{BIOMOD_Projection.html#details}{Details})}) 
+##' @param \ldots (\emph{optional, see \href{BIOMOD_Projection.html#details}{Details})}) 
 ##' 
 ##' 
 ##' @return
