@@ -7,9 +7,9 @@
 ##' @description Function to tune \pkg{biomod2} single models parameters
 ##'
 ##'
-##' @param bm.format a \code{\link{BIOMOD.formated.data}} object returned by the 
-##' \code{\link{BIOMOD_FormatingData}} function
-##' @param bm.options a \code{\link{BIOMOD.models.options}} object returned by the 
+##' @param bm.format a \code{\link{BIOMOD.formated.data}} or \code{\link{BIOMOD.formated.data.PA}} 
+##' object returned by the \code{\link{BIOMOD_FormatingData}} function
+##' @param bm.options a \code{\link{BIOMOD.models.options}} object returned by the  
 ##' \code{\link{BIOMOD_ModelingOptions}} function
 ##' @param models a \code{vector} containing model names to be tuned, \cr 
 ##' must be among \code{GLM}, \code{GBM}, \code{GAM}, \code{CTA}, \code{ANN}, \code{SRE}, 
@@ -17,7 +17,7 @@
 ##' @param metric.eval a \code{character} corresponding to the evaluation metric used to select 
 ##' optimal models and tune parameters, must be either \code{ROC} or \code{TSS} 
 ##' (\emph{maximizing Sensitivity and Specificity})
-##' @param ctrl.train global control parameters that can be obtained from 
+##' @param ctrl.train global control parameters that can be obtained from the 
 ##' \code{\link[caret]{trainControl}} function
 ##' @param ctrl.train.tuneLength (see \code{tuneLength} parameter in \code{\link[caret]{train}})
 ##' @param ctrl.ANN control parameters for \code{ANN}
@@ -62,7 +62,7 @@
 ##' cross-validation for \code{MAXENT.Phillips}
 ##' @param ME.overlap (\emph{optional, default} \code{FALSE}) \cr 
 ##' A \code{logical} value defining whether to calculate pairwise metric of niche overlap or not 
-##' (see \code{\link{calc.niche.overlap}})
+##' (see \code{\link[ENMeval]{calc.niche.overlap}})
 ##' @param ME.clamp (\emph{optional, default} \code{TRUE}) \cr 
 ##' A \code{logical} value defining whether \emph{Features are constrained to remain within the 
 ##' range of values in the training data} (Elith et al. 2011) or not
@@ -77,7 +77,7 @@
 ##' @param RF.method a \code{character} corresponding to the classification or regression model 
 ##' to use for \code{RF}, \cr 
 ##' must be \code{rf} (see \url{http://topepo.github.io/caret/Random_Forest.html})
-##' @param weights a \code{vector} of response points weights for models allowing case weights
+##' @param weights a \code{vector} of \code{numeric} values corresponding to observation weights
 ##' 
 ##' 
 ##' @return 
@@ -111,7 +111,8 @@
 ##' }
 ##' 
 ##' 
-##' @seealso \code{\link[caret]{train}}, \code{\link[ENMeval]{ENMevaluate}}, 
+##' @seealso \code{\link[caret]{trainControl}}, \code{\link[caret]{train}}, 
+##' \code{\link[ENMeval]{calc.niche.overlap}}, \code{\link[ENMeval]{ENMevaluate}}, 
 ##' \code{\link{BIOMOD_ModelingOptions}}, \code{\link{BIOMOD_Modeling}}
 ##' @family Main functions
 ##' 

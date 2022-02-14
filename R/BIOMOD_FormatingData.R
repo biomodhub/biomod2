@@ -10,7 +10,7 @@
 ##' with different strategies (see \href{BIOMOD_FormatingData.html#details}{Details}).
 ##' 
 ##' 
-##' @param resp.name a \code{character} containing the species name
+##' @param resp.name a \code{character} corresponding to the species name
 ##' 
 ##' @param resp.var a \code{vector}, \code{\link[sp]{SpatialPoints}} (\emph{if presence-only}) or 
 ##' \code{\link[sp]{SpatialPointsDataFrame}} object containing binary data (\code{0} : absence, 
@@ -47,18 +47,18 @@
 ##' each pseudo-absence repetition (true absences included)
 ##' @param PA.strategy (\emph{optional, default} \code{NULL}) \cr 
 ##' If pseudo-absence selection, a \code{character} defining the strategy that will be used to 
-##' select the pseudo-absence points (must be \code{random}, \code{sre}, \code{disk} or 
-##' \code{user.defined}, see \href{BIOMOD_FormatingData.html#details}{Details})
+##' select the pseudo-absence points. Must be \code{random}, \code{sre}, \code{disk} or 
+##' \code{user.defined} (see \href{BIOMOD_FormatingData.html#details}{Details})
 ##' @param PA.sre.quant (\emph{optional, default} \code{0}) \cr 
 ##' If pseudo-absence selection and \code{PA.strategy = 'sre'}, a \code{numeric} between \code{0} 
 ##' and \code{1} defining the quantile used to make the \code{sre} pseudo-absence selection 
 ##' (see \href{BIOMOD_FormatingData.html#details}{Details})
 ##' @param PA.dist.min (\emph{optional, default} \code{0}) \cr 
-##' If pseudo-absence selection and \code{PA.strategy = 'sre'}, a \code{numeric} defining the 
+##' If pseudo-absence selection and \code{PA.strategy = 'disk'}, a \code{numeric} defining the 
 ##' minimal distance to presence points used to make the \code{disk} pseudo-absence selection 
 ##' (in meters, see \href{BIOMOD_FormatingData.html#details}{Details})
 ##' @param PA.dist.max (\emph{optional, default} \code{0}) \cr 
-##' If pseudo-absence selection and \code{PA.strategy = 'sre'}, a \code{numeric} defining the 
+##' If pseudo-absence selection and \code{PA.strategy = 'disk'}, a \code{numeric} defining the 
 ##' maximal distance to presence points used to make the \code{disk} pseudo-absence selection 
 ##' (in meters, see \href{BIOMOD_FormatingData.html#details}{Details})
 ##' @param PA.user.table (\emph{optional, default} \code{NULL}) \cr 
@@ -83,17 +83,18 @@
 ##' @details  
 ##' 
 ##' This function gathers and formats all input data needed to run \pkg{biomod2} models. It 
-##' supports different kind of inputs (e.g. \code{matrix}, \code{SpatialPoints}, 
-##' \code{RasterStack}) and provides different methods to select pseudo-absences if needed. \cr \cr
+##' supports different kind of inputs (e.g. \code{matrix}, \code{\link[sp]{SpatialPoints}}, 
+##' \code{\link[raster:stack]{RasterStack}}) and provides different methods to select 
+##' pseudo-absences if needed. \cr \cr
 ##' 
 ##' \bold{Concerning explanatory variables and XY coordinates :} 
 ##' \itemize{
-##'   \item if \code{rasterLayer} or \code{rasterStack} provided (for \code{expl.var} or 
-##'   \code{eval.expl.var}), \pkg{biomod2} will extract the corresponding values from XY 
-##'   coordinates provided (\code{resp.xy} or \code{eval.resp.xy} respectively). \cr
-##'   \emph{Be sure to give the XY coordinates in the same projection system than the 
+##'   \item if \code{rasterLayer} or \code{\link[raster:stack]{RasterStack}} provided (for 
+##'   \code{expl.var} or \code{eval.expl.var}), \pkg{biomod2} will extract the corresponding 
+##'   values from XY coordinates provided (\code{resp.xy} or \code{eval.resp.xy} respectively). 
+##'   \cr \emph{Be sure to give the XY coordinates in the same projection system than the 
 ##'   raster objects !}
-##'   \item if \code{SpatialPointsDataFrame} provided (for \code{resp.var} or 
+##'   \item if \code{\link[sp]{SpatialPointsDataFrame}} provided (for \code{resp.var} or 
 ##'   \code{eval.resp.var}), the same rule applies (\emph{same projection system !}).
 ##'   \item if \code{data.frame} provided (for \code{expl.var} or \code{eval.expl.var}), 
 ##'   \pkg{biomod2} will simply merge it (\code{cbind}) with \code{resp.var} without 
@@ -117,9 +118,9 @@
 ##' \describe{
 ##'   \item{Response variable}{
 ##'   \pkg{biomod2} models single species at a time (no multi-species). Hence, \code{resp.var} 
-##'   must be a uni-dimensional object (either a \code{vector}, a one-column 
-##'   \code{matrix/data.frame/SpatialPointsDataFrame}, or a \code{SpatialPoints} object if 
-##'   presence-only), containing values among :
+##'   must be a uni-dimensional object (either a \code{vector}, a one-column \code{matrix}, 
+##'   \code{data.frame} or \code{\link[sp]{SpatialPointsDataFrame}}, or a 
+##'   \code{\link[sp]{SpatialPoints}} object if presence-only), containing values among :
 ##'   \itemize{
 ##'     \item \code{1} : presences
 ##'     \item \code{0} : true absences (if any)
@@ -146,8 +147,9 @@
 ##'   If no true absences are available, pseudo-absences must be selected from the 
 ##'   \emph{background data}, meaning data there is no information whether the species of 
 ##'   interest occurs or not. It corresponds either to the remaining pixels of the \code{expl.var} 
-##'   (if provided as a \code{rasterStack}) or to the points identified as \code{NA} in 
-##'   \code{resp.var} (if \code{expl.var} provided as a \code{matrix} or \code{data.frame}). \cr
+##'   (if provided as a \code{\link[raster:stack]{RasterStack}}) or to the points identified as 
+##'   \code{NA} in \code{resp.var} (if \code{expl.var} provided as a \code{matrix} or 
+##'   \code{data.frame}). \cr 
 ##'   Several methods are available to do this selection :
 ##'   \describe{
 ##'     \item{random}{all points of initial background are pseudo-absence candidates. 
@@ -290,7 +292,7 @@ BIOMOD_FormatingData <- function(resp.name,
                                  na.rm = TRUE)
 {
   .bm_cat(paste0(resp.name, " Data Formating"))
-
+  
   ## 1. check args ------------------------------------------------------------
   args <- .BIOMOD_FormatingData.check.args(resp.name,
                                            resp.var,
@@ -308,7 +310,7 @@ BIOMOD_FormatingData <- function(resp.name,
                                            PA.user.table)
   for (argi in names(args)) { assign(x = argi, value = args[[argi]]) }
   rm(args)
-
+  
   ## 2. build BIOMOD.formated.data object -------------------------------------
   out <- NULL
   if( PA.strategy == 'none') { # no Pseudo Absences
@@ -365,26 +367,26 @@ BIOMOD_FormatingData <- function(resp.name,
     resp.name <- paste(unlist(strsplit(resp.name, ' ')), collapse = '.')
     cat('\n Response variable name was converted into', resp.name)
   }
-
+  
   available.types <- c('numeric', 'data.frame', 'matrix',
                        'RasterLayer', 'RasterStack',
                        'SpatialPointsDataFrame', 'SpatialPoints')
-
+  
   ## 1. Checking resp.var -----------------------------------------------------
   
   if (!inherits(resp.var, available.types)) { ## resp.var
     stop(paste0("Response variable must be one of ", toString(available.types)))
   }
-
+  
   if (inherits(resp.var, 'Raster')) { ## resp.var raster object not supported yet
     stop("Raster response variable not supported yet ! \nPlease extract your Presences and your absences by yourself")
     #### TO DO #### extract the 0 and 1 in sp format
   }
-
+  
   if (!inherits(expl.var, setdiff(available.types, 'SpatialPoints'))) { ## expl.var
     stop(paste0("Explanatory variable must be one of ", toString(available.types)))
   }
-
+  
   if (inherits(resp.var, 'SpatialPoints')) { ## resp.xy
     if (!is.null(resp.xy)) {
       cat("\n      ! XY coordinates of response variable will be ignored because spatial response object is given.")
@@ -397,7 +399,7 @@ BIOMOD_FormatingData <- function(resp.name,
       resp.var <- rep(1, nrow(resp.xy))
     }
   }
-
+  
   ## transforming into numeric if data.frame or matrix
   if (is.matrix(resp.var) | is.data.frame(resp.var)) {
     if (ncol(resp.var) > 1) {
@@ -406,19 +408,19 @@ BIOMOD_FormatingData <- function(resp.name,
       resp.var <- as.numeric(resp.var[, 1])
     }
   }
-
+  
   if(is.matrix(expl.var) | is.numeric(expl.var)) {
     expl.var <- as.data.frame(expl.var)
   }
-
+  
   if (inherits(expl.var, 'Raster')) {
     expl.var <- stack(expl.var, RAT = FALSE)
   }
-
+  
   if (inherits(expl.var, 'SpatialPoints')) {
     expl.var <- as.data.frame(expl.var@data)
   }
-
+  
   ## checking xy coordinates validity
   if(!is.null(resp.xy)){
     if(ncol(resp.xy)!=2){
@@ -429,17 +431,17 @@ BIOMOD_FormatingData <- function(resp.name,
     }
     resp.xy <- as.data.frame(resp.xy)
   }
-
+  
   ## converting response var into binary
   resp.var[which(resp.var > 0)] <- 1
   resp.var[which(resp.var <= 0)] <- 0
-
+  
   #### At this point :
   ####  - resp.var is a numeric
   ####  - resp.xy is NULL or a data.frame
   ####  - expl.var is a data.frame or a RasterStack
   ####  - sp.name is a character
-
+  
   ## checking resp and expl var compatibility
   if (is.data.frame(expl.var) && nrow(expl.var) != length(resp.var)) {
     stop("If explanatory variable is not a raster then dimensions of response variable and explanatory variable must match!")
@@ -451,18 +453,18 @@ BIOMOD_FormatingData <- function(resp.name,
     PA.strategy <- "none"
     PA.nb.rep <- 0
   }
-
+  
   if (is.null(PA.strategy) &  PA.nb.rep > 0) {
     cat("\n> Pseudo absences will be selected randomly !")
     PA.strategy <- "random"
   }
-
+  
   if (!is.null(PA.user.table)) {
     cat("\n> Pseudo absences used will be user defined ones !")
     PA.strategy <- "user.defined"
     PA.nb.rep <- 0
   }
-
+  
   if (PA.strategy == "user.defined") {
     if (!(is.matrix(PA.user.table) | is.data.frame(PA.user.table)))
       stop("\n PA.user.table must be a matrix or a data.frame")
@@ -472,19 +474,19 @@ BIOMOD_FormatingData <- function(resp.name,
     
     colnames(PA.user.table) <- paste0("PA", 1:ncol(PA.user.table))
   }
-
+  
   ## 2. Checking eval.resp.var ------------------------------------------------
-
+  
   if (!is.null(eval.resp.var)) {
     if (!(class(eval.resp.var)[1] %in% available.types)) { ## eval.respvar
       stop(paste0("Response variable must be one of ", toString(available.types)))
     }
-
+    
     if (inherits(eval.resp.var, 'Raster')) { ## eval.resp.var raster object not supported yet
       stop("Raster response variable not supported yet ! \nPlease extract your Presences and your absences by yourself")
       #### TO DO #### extract the 0 and 1 in sp format
     }
-
+    
     if (!is.null(eval.expl.var)) { ## eval.expl.var
       if (!(class(eval.expl.var)[1] %in% available.types[-which(available.types == 'SpatialPoints')])) {
         stop(paste0("Explanatory variable must be one of ", toString(available.types)))
@@ -494,7 +496,7 @@ BIOMOD_FormatingData <- function(resp.name,
         stop("If explanatory variable is not a raster and you want to consider evaluation response variable, you have to give evaluation explanatory variables")
       }
     }
-
+    
     if (inherits(eval.resp.var, 'SpatialPoints')) { ## eval.resp.xy
       if (!is.null(eval.resp.xy)) {
         cat("\n      ! XY coordinates of response variable will be ignored because spatial response object is given.")
@@ -507,7 +509,7 @@ BIOMOD_FormatingData <- function(resp.name,
         eval.resp.var <- rep(1, nrow(eval.resp.xy))
       }
     }
-
+    
     ### transforming into numeric if data.frame or matrix
     if (is.matrix(eval.resp.var) | is.data.frame(eval.resp.var)) {
       if (ncol(eval.resp.var) > 1) {
@@ -516,7 +518,7 @@ BIOMOD_FormatingData <- function(resp.name,
         eval.resp.var <- as.numeric(eval.resp.var[, 1])
       }
     }
-
+    
     if (is.matrix(eval.expl.var) | is.numeric(eval.expl.var)) {
       eval.expl.var <- as.data.frame(eval.expl.var)
     }
@@ -528,7 +530,7 @@ BIOMOD_FormatingData <- function(resp.name,
     if (inherits(eval.expl.var, 'SpatialPoints')) {
       eval.expl.var <- as.data.frame(eval.expl.var@data)
     }
-
+    
     ## checking xy coordinates validity
     if (!is.null(eval.resp.xy)) {
       if (ncol(eval.resp.xy) != 2) {
@@ -539,11 +541,11 @@ BIOMOD_FormatingData <- function(resp.name,
       }
       eval.resp.xy <- as.data.frame(eval.resp.xy)
     }
-
+    
     if (is.data.frame(eval.expl.var) && nrow(eval.expl.var) != length(eval.resp.var)) {
       stop("If explanatory variable is not a raster then dimensions of response variable and explanatory variable must match!")
     }
-
+    
     ## remove NA from evaluation data
     if (sum(is.na(eval.resp.var)) > 0) {
       cat("\n      ! NAs have been automatically removed from Evaluation data")
@@ -552,11 +554,11 @@ BIOMOD_FormatingData <- function(resp.name,
       }
       eval.resp.var <- na.omit(eval.resp.var)
     }
-
+    
     ## converting response var into binary
     eval.resp.var[which(eval.resp.var > 0)] <- 1
     eval.resp.var[which(eval.resp.var <= 0)] <- 0
-
+    
     ## check there are both presences and absences in evaluation dataset
     if (sum(eval.resp.var == 1) < 1 | sum(eval.resp.var == 0) < 1) {
       stop("Evaluation response data must have both presences and absences")
@@ -565,9 +567,9 @@ BIOMOD_FormatingData <- function(resp.name,
     cat("\n      ! No data has been set aside for modeling evaluation")
     eval.expl.var <- eval.resp.xy <- NULL
   }
-
+  
   ### PA arguments are not checked here because it will be done later... (may be will do it here later)
-
+  
   return(list(resp.var = resp.var,
               expl.var = expl.var,
               resp.xy = resp.xy,
