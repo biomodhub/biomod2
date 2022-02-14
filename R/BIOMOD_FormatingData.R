@@ -10,7 +10,7 @@
 ##' with different strategies (see \href{BIOMOD_FormatingData.html#details}{Details}).
 ##' 
 ##' 
-##' @param resp.name a \code{character} containing the species name.
+##' @param resp.name a \code{character} containing the species name
 ##' 
 ##' @param resp.var a \code{vector}, \code{\link[sp]{SpatialPoints}} (\emph{if presence-only}) or 
 ##' \code{\link[sp]{SpatialPointsDataFrame}} object containing binary data (\code{0} : absence, 

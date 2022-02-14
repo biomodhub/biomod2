@@ -6,18 +6,18 @@
 ##' 
 ##' @description This function creates a \code{DataSplitTable} that can be given as parameter to 
 ##' the \code{\link{BIOMOD_Modeling}} function to evaluate models with repeated k-fold or 
-##' stratified cross-validation (cv) instead of repeated split samples.
+##' stratified cross-validation (CV) instead of repeated split samples.
 ##' 
 ##' 
 ##' @param data a \code{\link{BIOMOD.formated.data}} object returned by the 
 ##' \code{\link{BIOMOD_FormatingData}} function
-##' @param k an \code{integer} corresponding to the number of bins/partitions for k-fold cv
-##' @param repetition an \code{integer} corresponding to the number of repetitions of k-fold cv 
+##' @param k an \code{integer} corresponding to the number of bins/partitions for k-fold CV
+##' @param repetition an \code{integer} corresponding to the number of repetitions of k-fold CV 
 ##' (\emph{set to \code{1} if \code{stratified.cv = TRUE}})
-##' @param stratified.cv a \code{logical} defining whether stratified cv should be run 
-##' @param stratify a \code{character} corresponding to the stratification method of the cv 
+##' @param stratified.cv a \code{logical} defining whether stratified CV should be run 
+##' @param stratify a \code{character} corresponding to the stratification method of the CV 
 ##' (\emph{if \code{stratified.cv = TRUE}}), must be \code{x}, \code{y}, \code{both}, \code{block} 
-##' or the name of a predictor for environmental stratified cv
+##' or the name of a predictor for environmental stratified CV
 ##' @param balance a \code{character} defining whether partitions should be balanced for 
 ##' \code{presences} or \code{absences} (resp. pseudo-absences or background)
 ##' @param do.full.models (\emph{optional, default} \code{TRUE}) \cr 
