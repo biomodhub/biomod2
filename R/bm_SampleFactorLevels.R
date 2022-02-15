@@ -10,15 +10,15 @@
 ##' @description This internal \pkg{biomod2} function samples randomly an element of each level of 
 ##' all the factorial variables contained in a \code{raster*} or \code{data.frame} object.
 ##' 
-##' @param x a \code{data.frame} or \code{\link[raster:stack]{RasterStack}} object containing the 
-##' explanatory variables (in columns or layers)
+##' @param expl.var a \code{data.frame} or \code{\link[raster:stack]{RasterStack}} object 
+##' containing the explanatory variables (in columns or layers)
 ##' @param mask.out a \code{data.frame} or \code{\link[raster:raster]{raster}} object containing 
 ##' the area that has already been sampled (\emph{factor levels within this mask will not be 
 ##' sampled})
 ##' @param mask.in a \code{data.frame}, \code{\link[raster:raster]{raster}} or 
 ##' \code{\link[raster:stack]{RasterStack}} object containing areas where factor levels are to be 
 ##' sampled in priority. \emph{Note that if after having explored these masks, some factor levels 
-##' remain unsampled, they will be sampled in the reference input object \code{x}.}
+##' remain unsampled, they will be sampled in the reference input object \code{expl.var}.}
 ##' 
 ##' 
 ##' @return  
@@ -32,7 +32,7 @@
 ##'
 ##' @details 
 ##' 
-##' The \code{x}, \code{mask.out} and \code{mask.in} parameters must be coherent in terms of 
+##' The \code{expl.var}, \code{mask.out} and \code{mask.in} parameters must be coherent in terms of 
 ##' dimensions :
 ##' \itemize{
 ##'   \item same number of rows for \code{data.frame} objects
@@ -96,29 +96,26 @@
 ##' 
 ###################################################################################################
 
-bm_SampleFactorLevels <- function(x, mask.out = NULL, mask.in = NULL)
+bm_SampleFactorLevels <- function(expl.var, mask.out = NULL, mask.in = NULL)
 {
-  ## make some checking of given parameters
-  ## TODO(damien)
-  
-  if (inherits(x, 'Raster')) {
-    fact.level.cells <- bm_SampleFactorLevels.raster(x, mask.out = mask.out, mask.in = mask.in)
+  if (inherits(expl.var, 'Raster')) {
+    fact.level.cells <- bm_SampleFactorLevels.raster(expl.var, mask.out = mask.out, mask.in = mask.in)
     return(fact.level.cells)
-  } else if (inherits(x, 'data.frame')) {
-    fact.level.cells <- bm_SampleFactorLevels.data.frame(x, mask.out = mask.out, mask.in = mask.in)
+  } else if (inherits(expl.var, 'data.frame')) {
+    fact.level.cells <- bm_SampleFactorLevels.data.frame(expl.var, mask.out = mask.out, mask.in = mask.in)
     return(fact.level.cells)
   } else {
     warning(paste0("\nunsupported input data.",
-                   "\nx should be a Raster* object or a data.frame.",
+                   "\nexpl.var should be a Raster* object or a data.frame.",
                    "\n NULL returned"))
     return(NULL)
   }
 }
 
-bm_SampleFactorLevels.raster <- function(x, mask.out = NULL, mask.in = NULL)
+bm_SampleFactorLevels.raster <- function(expl.var, mask.out = NULL, mask.in = NULL)
 {
   ## check if some factorial variables are in the input data
-  fact.var <- which(is.factor(x))
+  fact.var <- which(is.factor(expl.var))
   if(any(fact.var))
   { ## some factorial variables present
     fact.level.cells <- as.numeric(unlist(sapply(fact.var, function(f)
@@ -127,14 +124,14 @@ bm_SampleFactorLevels.raster <- function(x, mask.out = NULL, mask.in = NULL)
       selected.cells <- NULL
       
       ## get the factor levels on the full dataset
-      fact.level <- fact.level.original <- unlist(levels(subset(x, f)))
-      cat("\n\t> fact.level for",  names(x)[f], ":\t", paste(fact.level, names(fact.level), sep = ":", collapse = "\t"))
+      fact.level <- fact.level.original <- unlist(levels(subset(expl.var, f)))
+      cat("\n\t> fact.level for",  names(expl.var)[f], ":\t", paste(fact.level, names(fact.level), sep = ":", collapse = "\t"))
       
       ## mask containing points that have already been sampled ------------------------------------
       if (!is.null(mask.out))
       {
         ## check the factor levels that have already been sampled
-        fact.levels.sampled <- unlist(levels(as.factor(mask(subset(x, f), mask.out))))
+        fact.levels.sampled <- unlist(levels(as.factor(mask(subset(expl.var, f), mask.out))))
         ## update levels names (lost during mask conversion)
         attr(fact.levels.sampled, "names") <- attr(fact.level.original, "names")[fact.levels.sampled]
         cat("\n\t - according to mask.out levels", fact.levels.sampled, "have already been sampled")
@@ -153,7 +150,7 @@ bm_SampleFactorLevels.raster <- function(x, mask.out = NULL, mask.in = NULL)
             if (length(fact.level)) ## if there still is some levels to sample
             {
               ## update the masked version of the factorial raster
-              x.f.masked <- as.factor(mask(subset(x, f), mask.in[[mask.in.id]]))
+              x.f.masked <- as.factor(mask(subset(expl.var, f), mask.in[[mask.in.id]]))
               x.f.levels <- unlist(levels(x.f.masked))
               ## update levels names (lost during mask conversion)
               attr(x.f.levels, "names") <- attr(fact.level.original, "names")[x.f.levels]              
@@ -178,7 +175,7 @@ bm_SampleFactorLevels.raster <- function(x, mask.out = NULL, mask.in = NULL)
         if (length(fact.level)){
           cat("\n\t - levels", fact.level, "will be sampled in the original raster")
           selected.cells <- c(selected.cells, sapply(fact.level, function(fl) {
-            sample(which(subset(x, f)[] == fl), 1)
+            sample(which(subset(expl.var, f)[] == fl), 1)
           }))
         }
       }
@@ -190,10 +187,10 @@ bm_SampleFactorLevels.raster <- function(x, mask.out = NULL, mask.in = NULL)
   }
 }
 
-bm_SampleFactorLevels.data.frame <- function(x, mask.out = NULL, mask.in = NULL)
+bm_SampleFactorLevels.data.frame <- function(expl.var, mask.out = NULL, mask.in = NULL)
 {
   ## check if some factorial variables are in the input data
-  fact.var <- which(sapply(x, is.factor))
+  fact.var <- which(sapply(expl.var, is.factor))
   if(any(fact.var))
   { ## some factorial variables present
     fact.level.cells <- as.numeric(unlist(sapply(fact.var, function(f)
@@ -202,16 +199,16 @@ bm_SampleFactorLevels.data.frame <- function(x, mask.out = NULL, mask.in = NULL)
       selected.cells <- NULL
       
       ## get the factor levels on the full dataset
-      fact.level <- fact.level.original <- levels(x[, f])
-      cat("\n\t> fact.level for",  colnames(x)[f], ":\t", paste(1:length(fact.level), fact.level, sep = ":", collapse = "\t"))
+      fact.level <- fact.level.original <- levels(expl.var[, f])
+      cat("\n\t> fact.level for",  colnames(expl.var)[f], ":\t", paste(1:length(fact.level), fact.level, sep = ":", collapse = "\t"))
       
       ## mask containing points that have already been sampled ------------------------------------
       if (!is.null(mask.out))
       {
         ## check the factor levels that have already been sampled
-        fact.levels.sampled <- unique(na.omit(as.character(x[mask.out[, 1], f])))
+        fact.levels.sampled <- unique(na.omit(as.character(expl.var[mask.out[, 1], f])))
         ## remove already sampled points from candidates
-        x[mask.out[, 1], ] <- NA
+        expl.var[mask.out[, 1], ] <- NA
         cat("\n\t - according to mask.out levels", fact.levels.sampled, "have already been sampled")
         ## update the list of factor levels to sample
         fact.level <- setdiff(fact.level, fact.levels.sampled)
@@ -228,7 +225,7 @@ bm_SampleFactorLevels.data.frame <- function(x, mask.out = NULL, mask.in = NULL)
             if (length(fact.level)) ## if there still is some levels to sample
             {
               ## update the masked version of the factorial raster
-              x.f.masked <- as.character(x[, f])
+              x.f.masked <- as.character(expl.var[, f])
               x.f.masked[!mask.in[, mask.in.id]] <- NA
               x.f.levels <- unique(na.omit(x.f.masked))
               ## get the list of levels that could be sampled in this mask
@@ -259,7 +256,7 @@ bm_SampleFactorLevels.data.frame <- function(x, mask.out = NULL, mask.in = NULL)
         if (length(fact.level)){
           cat("\n\t - levels", fact.level, "will be sampled in the original data.frame")
           selected.cells <- c(selected.cells, sapply(fact.level, function(fl) {
-            candidate.cells <- na.omit(which(x[, f] == fl))
+            candidate.cells <- na.omit(which(expl.var[, f] == fl))
             selected.cell <- NULL
             if (length(candidate.cells) <= 1) { ## single candidate cell
               selected.cell <- candidate.cells

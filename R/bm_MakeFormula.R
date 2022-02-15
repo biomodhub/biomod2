@@ -8,11 +8,11 @@
 ##' standardized formula that can be used later by statistical models.
 ##' 
 ##' 
-##' @param respName a \code{character} defining the response variable name
-##' @param explVar a \code{matrix} or \code{data.frame} corresponding to the explanatory 
-##' variables table that will be considered at modeling step
-##' @param type a \code{character} defining the wanted type of formula, must be \code{simple}, 
-##' \code{quadratic}, \code{polynomial} or \code{s_smoother}
+##' @param resp.name a \code{character} corresponding to the response variable name
+##' @param expl.var a \code{matrix} or \code{data.frame} containing the explanatory variables that 
+##' will be used at the modeling step
+##' @param type a \code{character} corresponding to the wanted type of formula, must be 
+##' \code{simple}, \code{quadratic}, \code{polynomial} or \code{s_smoother}
 ##' @param interaction.level an \code{integer} corresponding to the interaction level depth 
 ##' between explanatory variables
 ##' @param \ldots some additional arguments (see \href{bm_MakeFormula.html#details}{Details})
@@ -26,8 +26,8 @@
 ##' 
 ##' @details
 ##' 
-##' It is advised to give only a subset of \code{explVar} table to avoid useless memory consuming. 
-##' \cr If some explanatory variables are factorial, \code{explVar} must be a \code{data.frame} 
+##' It is advised to give only a subset of \code{expl.var} table to avoid useless memory consuming. 
+##' \cr If some explanatory variables are factorial, \code{expl.var} must be a \code{data.frame} 
 ##' whose corresponding columns are defined as \code{factor}. \cr \cr
 ##' 
 ##' \code{...} can take the following values :
@@ -42,8 +42,9 @@
 ##' @keywords models, formula, options
 ##' 
 ##' 
-##' @seealso \code{\link[stats]{formula}}, \code{\link{BIOMOD_ModelingOptions}}, 
-##' \code{\link{BIOMOD_Tuning}}, \code{\link{bm_RunModelsLoop}}
+##' @seealso \code{\link[stats]{formula}}, \code{\link[mgcv]{s}}, \code{\link[gam]{s}}, 
+##' \code{\link{BIOMOD_ModelingOptions}}, \code{\link{BIOMOD_Tuning}}, 
+##' \code{\link{bm_RunModelsLoop}}
 ##' @family Secundary functions
 ##' 
 ##' 
@@ -56,8 +57,8 @@
 ##'                        var3 = 1:100)
 ##' 
 ##' ## Generate automatic formula
-##' bm_MakeFormula(respName = 'myResp.s',
-##'                explVar = head(myExpl.s),
+##' bm_MakeFormula(resp.name = 'myResp.s',
+##'                expl.var = head(myExpl.s),
 ##'                type = 'quadratic',
 ##'                interaction.level = 0)
 ##' 
@@ -68,8 +69,8 @@
 ###################################################################################################
 
 
-bm_MakeFormula <- function(respName, 
-                           explVar, 
+bm_MakeFormula <- function(resp.name, 
+                           expl.var, 
                            type = 'simple', 
                            interaction.level = 0, 
                            ...)
@@ -77,21 +78,21 @@ bm_MakeFormula <- function(respName,
   ## 1. Check parameters --------------------------------------------------------------------------
   sup_args <- list(...)
   
-  if (!is.character(respName) || length(respName)!=1) {
-    stop("respName must be a unique response variable name")
+  if (!is.character(resp.name) || length(resp.name)!=1) {
+    stop("resp.name must be a unique response variable name")
   }
-  if (!is.data.frame(explVar) &&  !is.matrix(explVar)) {
-    stop("explVar must be a data.frame or matrix")
+  if (!is.data.frame(expl.var) &&  !is.matrix(expl.var)) {
+    stop("expl.var must be a data.frame or matrix")
   }
   .fun_testIfIn(TRUE, "type", type, c("simple", "quadratic", "polynomial", "s_smoother"))
   
-  explVarNames <- colnames(explVar)
-  if (respName %in% explVarNames) { # remove the response variable if given in explVar
-    explVar <- explVar[, -which(explVarNames == respName), drop = FALSE]
-    explVarNames <- colnames(explVar)
+  explVarNames <- colnames(expl.var)
+  if (resp.name %in% explVarNames) { # remove the response variable if given in expl.var
+    expl.var <- expl.var[, -which(explVarNames == resp.name), drop = FALSE]
+    explVarNames <- colnames(expl.var)
   }
   
-  interaction.level <- min(interaction.level, ncol(explVar))
+  interaction.level <- min(interaction.level, ncol(expl.var))
   
   ## 2. Create the formula ------------------------------------------------------------------------
   junk <- c(1)
@@ -100,22 +101,22 @@ bm_MakeFormula <- function(respName,
            junk <- paste(junk, paste(explVarNames, collapse = " + "), sep = " + ")
          }
          , "quadratic" = {
-           for (v in 1:ncol(explVar)) {
-             if (is.numeric(explVar[, v])) {
+           for (v in 1:ncol(expl.var)) {
+             if (is.numeric(expl.var[, v])) {
                junk <- paste(junk, paste0(explVarNames[v], "+I(", explVarNames[v], "^2)"), sep = " + ")
              } else { junk <- paste(junk, explVarNames[v], sep = " + ") }
            }
          }
          , "polynomial" = {
-           for (v in 1:ncol(explVar)) {
-             if (is.numeric(explVar[, v])) {
+           for (v in 1:ncol(expl.var)) {
+             if (is.numeric(expl.var[, v])) {
                junk <- paste(junk, paste0(explVarNames[v], "+I(", explVarNames[v], "^2)+I(", explVarNames[v], "^3)"), sep = " + ")
              } else { junk <- paste(junk, explVarNames[v], sep = " + ") }
            }
          }
          , "s_smoother" = {
-           for (v in 1:ncol(explVar)) {
-             if (is.numeric(explVar[, v])) {
+           for (v in 1:ncol(expl.var)) {
+             if (is.numeric(expl.var[, v])) {
                if (is.null(sup_args$k)) {
                  junk <- paste(junk, paste0("gam::s(", explVarNames[v], ")"), sep = " + ")
                } else {
@@ -124,7 +125,7 @@ bm_MakeFormula <- function(respName,
              } else { junk <- paste(junk, explVarNames[v], sep = " + ") }
            }
          })
-                
+  
   
   ## 3. Add interactions if requested -------------------------------------------------------------
   junk.inter <- NULL
@@ -137,5 +138,5 @@ bm_MakeFormula <- function(respName,
   if (length(junk.inter)) { junk <- paste0(junk, junk.inter) }
   
   ## 4. Return the formula ------------------------------------------------------------------------
-  return(as.formula(paste0(respName," ~ ", junk)))
+  return(as.formula(paste0(resp.name," ~ ", junk)))
 }
