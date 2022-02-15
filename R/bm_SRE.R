@@ -11,20 +11,20 @@
 ##' \href{bm_SRE.html#references}{References} and \href{bm_SRE.html#details}{Details}).
 ##' 
 ##' 
-##' @param Response a \code{vector}, \code{matrix}, \code{data.frame}, 
-##' \code{\link[sp]{SpatialPointsDataFrame}} or \code{\link[raster:raster]{raster}} object 
-##' containing observed binary data (\code{0} : absence, \code{1} : presence)
-##' @param Explanatory a \code{matrix}, \code{data.frame}, 
-##' \code{\link[sp]{SpatialPointsDataFrame}} or \code{\link[raster:stack]{RasterStack}} object 
-##' containing the explanatory variables (in columns or layers) that will be used to build the 
-##' SRE model
-##' @param NewData a \code{matrix}, \code{data.frame}, \code{\link[sp]{SpatialPointsDataFrame}} 
-##' or \code{\link[raster:stack]{RasterStack}} object containing the explanatory variables 
-##' (in columns or layers) that will be used to predict the SRE model
-##' @param Quant a \code{numeric} between \code{0} and \code{0.5} corresponding to the most 
-##' extreme value for each variable not to be taken into account for determining the tolerance 
-##' boundaries of the considered species
-##' @param return_extremcond (\emph{optional, default} \code{FALSE}) \cr 
+##' @param resp.var a \code{vector}, \code{\link[sp]{SpatialPoints}} or 
+##' \code{\link[sp]{SpatialPointsDataFrame}} object containing binary data (\code{0} : absence, 
+##' \code{1} : presence, \code{NA} : indeterminate) for a single species
+##' @param expl.var a \code{matrix}, \code{data.frame}, \code{\link[sp]{SpatialPointsDataFrame}} 
+##' or \code{\link[raster:stack]{RasterStack}} object containing the explanatory variables (in 
+##' columns or layers) that will be used to build the SRE model
+##' @param new.env a \code{matrix}, \code{data.frame}, \code{\link[sp]{SpatialPointsDataFrame}} 
+##' or \code{\link[raster:stack]{RasterStack}} object containing the explanatory variables (in 
+##' columns or layers) that will be used to predict the SRE model
+##' @param quant a \code{numeric} between \code{0} and \code{0.5} defining the half-quantile 
+##' corresponding to the most extreme value for each variable not to be taken into account for 
+##' determining the tolerance boundaries of the considered species (see 
+##' \href{bm_SRE.html#details}{Details})
+##' @param do.extrem (\emph{optional, default} \code{FALSE}) \cr 
 ##' A \code{logical} value defining whether a \code{matrix} containing extreme conditions 
 ##' supported should be returned or not
 ##' 
@@ -49,7 +49,7 @@
 ##' potentially suitable for all the variables, or out of bounds for at least one variable and 
 ##' therefore considered unsuitable. \cr \cr
 ##' 
-##' \code{Quant} determines the threshold from which the data will be taken into account for 
+##' \code{quant} determines the threshold from which the data will be taken into account for 
 ##' calibration. The default value of \code{0.05} induces that the \code{5\%} most extreme values 
 ##' will be avoided for each variable on each side of its distribution along the gradient, meaning 
 ##' that a total of \code{10\%} of the data will not be considered.
@@ -90,18 +90,18 @@
 ##' myResp.v[cellFromXY(myResp.v, myRespXY)] <- 1
 ##' 
 ##' ## Compute SRE for several quantile values
-##' sre.100 <- bm_SRE(Response = myResp.v,
-##'                   Explanatory = myExpl.r,
-##'                   NewData = myExpl.r,
-##'                   Quant = 0)
-##' sre.095 <- bm_SRE(Response = myResp.v,
-##'                   Explanatory = myExpl.r,
-##'                   NewData = myExpl.r,
-##'                   Quant = 0.025)
-##' sre.090 <- bm_SRE(Response = myResp.v,
-##'                   Explanatory = myExpl.r,
-##'                   NewData = myExpl.r,
-##'                   Quant = 0.05)
+##' sre.100 <- bm_SRE(resp.var = myResp.v,
+##'                   expl.var = myExpl.r,
+##'                   new.env = myExpl.r,
+##'                   quant = 0)
+##' sre.095 <- bm_SRE(resp.var = myResp.v,
+##'                   expl.var = myExpl.r,
+##'                   new.env = myExpl.r,
+##'                   quant = 0.025)
+##' sre.090 <- bm_SRE(resp.var = myResp.v,
+##'                   expl.var = myExpl.r,
+##'                   new.env = myExpl.r,
+##'                   quant = 0.05)
 ##' 
 ##' ## Visualize results
 ##' res <- stack(myResp.v, sre.100, sre.095, sre.090)
@@ -117,75 +117,75 @@
 ###################################################################################################
 
 
-bm_SRE <- function(Response = NULL, 
-                   Explanatory = NULL, 
-                   NewData = NULL, 
-                   Quant = 0.025, 
-                   return_extremcond = FALSE)
+bm_SRE <- function(resp.var = NULL, 
+                   expl.var = NULL, 
+                   new.env = NULL, 
+                   quant = 0.025, 
+                   do.extrem = FALSE)
 {
   ## 0. Check arguments ---------------------------------------------------------------------------
-  args <- .bm_SRE.check.args(Response, Explanatory, NewData, Quant)
+  args <- .bm_SRE.check.args(resp.var, expl.var, new.env, quant)
   for (argi in names(args)) { assign(x = argi, value = args[[argi]]) }
   rm(args)
   
   ## 1. Determine suitable conditions and make the projection -------------------------------------
   lout <- list()
-  if (is.data.frame(Response) | is.matrix(Response)) ## matrix or data.frame ------------
+  if (is.data.frame(resp.var) | is.matrix(resp.var)) ## matrix or data.frame ------------
   {
-    nb.resp <- ncol(Response)
-    resp.names <- colnames(Response)
+    nb.resp <- ncol(resp.var)
+    resp.names <- colnames(resp.var)
     for (j in 1:nb.resp) {
-      occ.pts <- which(Response[, j] == 1)
-      extrem.cond <- t(apply(as.data.frame(Explanatory[occ.pts, ]), 2, quantile
-                             , probs = c(0 + Quant, 1 - Quant), na.rm = TRUE))
-      if (!return_extremcond) {
-        lout[[j]] <- .sre_projection(NewData, extrem.cond)
+      occ.pts <- which(resp.var[, j] == 1)
+      extrem.cond <- t(apply(as.data.frame(expl.var[occ.pts, ]), 2, quantile
+                             , probs = c(0 + quant, 1 - quant), na.rm = TRUE))
+      if (!do.extrem) {
+        lout[[j]] <- .sre_projection(new.env, extrem.cond)
       }
     }
-  } else if (inherits(Response, 'Raster')) ## raster ------------------------------------
+  } else if (inherits(resp.var, 'Raster')) ## raster ------------------------------------
   {
-    nb.resp <- nlayers(Response)
-    resp.names <- names(Response)
+    nb.resp <- nlayers(resp.var)
+    resp.names <- names(resp.var)
     for (j in 1:nb.resp) {
-      occ.pts <- subset(Response, j, drop = TRUE)
+      occ.pts <- subset(resp.var, j, drop = TRUE)
       x.ooc.pts <- Which(occ.pts != 1, cells = TRUE, na.rm = TRUE)
       occ.pts[x.ooc.pts] <- rep(NA, length(x.ooc.pts))
-      extrem.cond <- quantile(mask(Explanatory, occ.pts),
-                              probs = c(0 + Quant, 1 - Quant),
+      extrem.cond <- quantile(mask(expl.var, occ.pts),
+                              probs = c(0 + quant, 1 - quant),
                               na.rm = TRUE)
-      if (!return_extremcond) {
-        lout[[j]] <- .sre_projection(NewData, extrem.cond)
+      if (!do.extrem) {
+        lout[[j]] <- .sre_projection(new.env, extrem.cond)
       }
     }
-  } else if (inherits(Response, 'SpatialPoints')) ## SpatialPoints ----------------------
+  } else if (inherits(resp.var, 'SpatialPoints')) ## SpatialPoints ----------------------
   {
-    nb.resp <- ncol(Response@data)
-    resp.names <- colnames(Response@data)
+    nb.resp <- ncol(resp.var@data)
+    resp.names <- colnames(resp.var@data)
     for (j in 1:nb.resp) {
-      occ.pts <- which(Response@data[, j] == 1)
-      if (is.data.frame(Explanatory) || is.matrix(Explanatory)) {
-        extrem.cond <- t(apply(as.data.frame(Explanatory[occ.pts, ]), 2, quantile
-                               , probs = c(0 + Quant, 1 - Quant), na.rm = TRUE))
+      occ.pts <- which(resp.var@data[, j] == 1)
+      if (is.data.frame(expl.var) || is.matrix(expl.var)) {
+        extrem.cond <- t(apply(as.data.frame(expl.var[occ.pts, ]), 2, quantile
+                               , probs = c(0 + quant, 1 - quant), na.rm = TRUE))
       } else {
-        if (inherits(Explanatory, 'Raster')) {
-          maskTmp <- subset(Explanatory, 1, drop = TRUE)
+        if (inherits(expl.var, 'Raster')) {
+          maskTmp <- subset(expl.var, 1, drop = TRUE)
           maskTmp[] <- NA
-          maskTmp[cellFromXY(maskTmp, coordinates(Response)[occ.pts, ])] <- 1
-          extrem.cond <- quantile(mask(Explanatory, maskTmp),
-                                  probs = c(0 + Quant, 1 - Quant),
+          maskTmp[cellFromXY(maskTmp, coordinates(resp.var)[occ.pts, ])] <- 1
+          extrem.cond <- quantile(mask(expl.var, maskTmp),
+                                  probs = c(0 + quant, 1 - quant),
                                   na.rm = TRUE)
         } else {
-          if (inherits(Explanatory, 'SpatialPoints')) {
-            ## May be good to check corespondances of Response and Explanatory variables
-            extrem.cond <- t(apply(as.data.frame(Explanatory[occ.pts, ]), 2, quantile
-                                   , probs = c(0 + Quant, 1 - Quant), na.rm = TRUE))
+          if (inherits(expl.var, 'SpatialPoints')) {
+            ## May be good to check corespondances of resp.var and expl.var variables
+            extrem.cond <- t(apply(as.data.frame(expl.var[occ.pts, ]), 2, quantile
+                                   , probs = c(0 + quant, 1 - quant), na.rm = TRUE))
           } else {
             stop("Unsuported case!")
           }
         }
       }
-      if (!return_extremcond) {
-        lout[[j]] <- .sre_projection(NewData, extrem.cond)
+      if (!do.extrem) {
+        lout[[j]] <- .sre_projection(new.env, extrem.cond)
       }
     }
   }
@@ -193,14 +193,14 @@ bm_SRE <- function(Response = NULL,
   
   ## RETURN results -------------------------------------------------------------------------------
   
-  if (return_extremcond) {
+  if (do.extrem) {
     return(as.data.frame(extrem.cond))
   } else {
     # 3. Rearranging the lout object
-    if (is.data.frame(NewData)) {
+    if (is.data.frame(new.env)) {
       lout <- simplify2array(lout)
       colnames(lout) <- resp.names
-    } else if (inherits(NewData, 'Raster')) {
+    } else if (inherits(new.env, 'Raster')) {
       lout <- stack(lout)
       if (nlayers(lout) == 1) {
         lout <- subset(lout, 1, drop = TRUE)
@@ -214,106 +214,106 @@ bm_SRE <- function(Response = NULL,
 
 ###################################################################################################
 
-.bm_SRE.check.args <- function(Response = NULL, Explanatory = NULL, NewData = NULL, Quant = 0.025)
+.bm_SRE.check.args <- function(resp.var = NULL, expl.var = NULL, new.env = NULL, quant = 0.025)
 {
-  ## 0. Check compatibility between Response and Explanatory arguments --------
-  if (is.vector(Response) || is.matrix(Response) || is.data.frame(Response))
+  ## 0. Check compatibility between resp.var and expl.var arguments -----------
+  if (is.vector(resp.var) || is.matrix(resp.var) || is.data.frame(resp.var))
   {
-    Response <- as.data.frame(Response)
+    resp.var <- as.data.frame(resp.var)
     
-    if (!is.vector(Explanatory) && !is.matrix(Explanatory) && !is.data.frame(Explanatory) && !inherits(Explanatory, 'SpatialPoints'))
+    if (!is.vector(expl.var) && !is.matrix(expl.var) && !is.data.frame(expl.var) && !inherits(expl.var, 'SpatialPoints'))
     {
-      stop("\n Response and Explanatory arguments must be of same type (both vector, both matrix, etc)")
+      stop("\n resp.var and expl.var arguments must be of same type (both vector, both matrix, etc)")
     } else {
-      if (inherits(Explanatory, 'SpatialPoints')) {
-        Explanatory <- as.data.frame(Explanatory@data)
+      if (inherits(expl.var, 'SpatialPoints')) {
+        expl.var <- as.data.frame(expl.var@data)
       }
-      Explanatory <- as.data.frame(Explanatory)
-      nb.expl.vars <- ncol(Explanatory)
-      names.expl.vars <- colnames(Explanatory)
-      if (nrow(Response) != nrow(Explanatory)) {
-        stop("Response and Explanatory arguments must have the same number of rows")
+      expl.var <- as.data.frame(expl.var)
+      nb.expl.vars <- ncol(expl.var)
+      names.expl.vars <- colnames(expl.var)
+      if (nrow(resp.var) != nrow(expl.var)) {
+        stop("resp.var and expl.var arguments must have the same number of rows")
       }
     }
   }
   
-  if (inherits(Explanatory, 'SpatialPoints')) {
-    Explanatory <- as.data.frame(Explanatory@data)
-    nb.expl.vars <- ncol(Explanatory)
-    names.expl.vars <- colnames(Explanatory)
+  if (inherits(expl.var, 'SpatialPoints')) {
+    expl.var <- as.data.frame(expl.var@data)
+    nb.expl.vars <- ncol(expl.var)
+    names.expl.vars <- colnames(expl.var)
   }
   
-  if (inherits(Response, 'Raster')) {
-    if (!inherits(Explanatory, 'Raster')) {
-      stop("\n Response and Explanatory arguments must be of same type (both vector, both raster, etc)")
+  if (inherits(resp.var, 'Raster')) {
+    if (!inherits(expl.var, 'Raster')) {
+      stop("\n resp.var and expl.var arguments must be of same type (both vector, both raster, etc)")
     }
-    nb.expl.vars <- nlayers(Explanatory)
-    names.expl.vars <- names(Explanatory)
+    nb.expl.vars <- nlayers(expl.var)
+    names.expl.vars <- names(expl.var)
   }
   
   
-  ## 1. Check Explanatory argument --------------------------------------------
+  ## 1. Check expl.var argument -----------------------------------------------
   test_no_factorial_var <- TRUE
-  if ((is.data.frame(Explanatory) && any(unlist(lapply(Explanatory, is.factor)))) ||
-      (inherits(Explanatory, 'Raster') && any(is.factor(Explanatory)))) {
+  if ((is.data.frame(expl.var) && any(unlist(lapply(expl.var, is.factor)))) ||
+      (inherits(expl.var, 'Raster') && any(is.factor(expl.var)))) {
     test_no_factorial_var <- FALSE
   }
   if (!test_no_factorial_var) stop("SRE algorithm does not handle factorial variables")
   
   
-  ## 2. Check NewData argument ------------------------------------------------
-  if (is.null(NewData)) { ## if no NewData, projection done on Explanatory variables
-    NewData <- Explanatory
+  ## 2. Check new.env argument ------------------------------------------------
+  if (is.null(new.env)) { ## if no new.env, projection done on expl.var variables
+    new.env <- expl.var
   } else { ## check of compatible number of explanatory variables
-    if (is.vector(NewData) || is.data.frame(NewData) || is.matrix(NewData))
+    if (is.vector(new.env) || is.data.frame(new.env) || is.matrix(new.env))
     {
-      NewData <- as.data.frame(NewData)
-      if (sum(!(names.expl.vars %in% colnames(NewData))) > 0) {
-        stop("Explanatory variables names differs in the 2 dataset given")
+      new.env <- as.data.frame(new.env)
+      if (sum(!(names.expl.vars %in% colnames(new.env))) > 0) {
+        stop("expl.var variables names differs in the 2 dataset given")
       }
-      NewData <- NewData[,names.expl.vars]
-      if (ncol(NewData) != nb.expl.vars) {
-        stop("Incompatible number of variables in NewData objects")
+      new.env <- new.env[,names.expl.vars]
+      if (ncol(new.env) != nb.expl.vars) {
+        stop("Incompatible number of variables in new.env objects")
       }
-    } else if (!inherits(NewData, 'Raster')) {
-      NewData <- stack(NewData)
-      if (sum(!(names.expl.vars %in% names(NewData))) > 0) {
-        stop("Explanatory variables names differs in the 2 dataset given")
+    } else if (!inherits(new.env, 'Raster')) {
+      new.env <- stack(new.env)
+      if (sum(!(names.expl.vars %in% names(new.env))) > 0) {
+        stop("expl.var variables names differs in the 2 dataset given")
       }
-      NewData <- subset(NewData, names.expl.vars)
-      if (nlayers(NewData) != nb.expl.vars) {
-        stop("Incompatible number of variables in NewData objects")
+      new.env <- subset(new.env, names.expl.vars)
+      if (nlayers(new.env) != nb.expl.vars) {
+        stop("Incompatible number of variables in new.env objects")
       }
     }
   }
   
-  ## 3. Check Quant argument --------------------------------------------------
-  if (Quant < 0 || Quant >= 0.5) {
-    stop("\n Quantmust be a 0 to 0.5 numeric")
+  ## 3. Check quant argument --------------------------------------------------
+  if (quant < 0 || quant >= 0.5) {
+    stop("\n quantmust be a 0 to 0.5 numeric")
   }
   
-  return(list(Response = Response,
-              Explanatory = Explanatory,
-              NewData = NewData,
-              Quant = Quant))
+  return(list(resp.var = resp.var,
+              expl.var = expl.var,
+              new.env = new.env,
+              quant = quant))
 }
 
 
 ###################################################################################################
 
-.sre_projection <- function(NewData, ExtremCond)
+.sre_projection <- function(new.env, extrem.cond)
 {
-  if (is.data.frame(NewData) || is.matrix(NewData)) {
-    out <- rep(1, nrow(NewData))
-    for (j in 1:ncol(NewData)) {
-      out <- out * as.numeric(NewData[, j] >= ExtremCond[j, 1] &
-                                NewData[, j] <= ExtremCond[j, 2])
+  if (is.data.frame(new.env) || is.matrix(new.env)) {
+    out <- rep(1, nrow(new.env))
+    for (j in 1:ncol(new.env)) {
+      out <- out * as.numeric(new.env[, j] >= extrem.cond[j, 1] &
+                                new.env[, j] <= extrem.cond[j, 2])
     }
-  } else if (inherits(NewData, "Raster")) {
-    out <- reclassify(subset(NewData, 1, drop = TRUE), c(-Inf, Inf, 1))
-    for (j in 1:nlayers(NewData)) {
-      out <- out * (subset(NewData, j, drop = TRUE) >= ExtremCond[j, 1]) * 
-        (subset(NewData, j, drop = TRUE) <= ExtremCond[j, 2])
+  } else if (inherits(new.env, "Raster")) {
+    out <- reclassify(subset(new.env, 1, drop = TRUE), c(-Inf, Inf, 1))
+    for (j in 1:nlayers(new.env)) {
+      out <- out * (subset(new.env, j, drop = TRUE) >= extrem.cond[j, 1]) * 
+        (subset(new.env, j, drop = TRUE) <= extrem.cond[j, 2])
     }
     out <- subset(out, 1, drop = TRUE)
   }

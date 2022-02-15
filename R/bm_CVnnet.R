@@ -11,11 +11,12 @@
 ##' 
 ##' @param Input complete dataset with explanatory variables
 ##' @param Target calibration dataset with observed presence / absence
-##' @param size in modeling options : ANN$size
-##' @param decay in modeling options ANN$decay
-##' @param maxit in modeling options ANN$maxit
-##' @param nbCV in modeling options ANN$nbCV
-##' @param W weights over calibration lines
+##' @param size (see parameter ANN$size in \code{\link{BIOMOD_ModelingOptions}})
+##' @param decay (see parameter ANN$decay in \code{\link{BIOMOD_ModelingOptions}})
+##' @param maxit (see parameter ANN$maxit in \code{\link{BIOMOD_ModelingOptions}})
+##' @param nbCV (see parameter ANN$nbCV in \code{\link{BIOMOD_ModelingOptions}})
+##' @param weights a \code{vector} of \code{numeric} values corresponding to weights over 
+##' calibration lines
 ##' 
 ##' 
 ##' @return  
@@ -30,7 +31,8 @@
 ##' @keywords neural networks, cross-validation
 ##' 
 ##' 
-##' @seealso \code{\link{BIOMOD_ModelingOptions}}, \code{\link{BIOMOD_Modeling}}, 
+##' @seealso \code{\link[nnet]{nnet}}, \code{\link[pROC]{auc}}, \code{\link[pROC]{roc}}, 
+##' \code{\link{BIOMOD_ModelingOptions}}, \code{\link{BIOMOD_Modeling}}, 
 ##' \code{\link{bm_SampleBinaryVector}}, \code{\link{bm_RunModelsLoop}}
 ##' @family Secundary functions
 ##' 
@@ -50,7 +52,7 @@ bm_CVnnet = function(Input,
                      decay = c(0.001, 0.01, 0.05, 0.1),
                      maxit = 200,
                      nbCV = 5,
-                     W = NULL)
+                     weights = NULL)
 {
   ## Prepare output table
   Eval = data.frame(matrix(0, ncol = 3, nrow = 16, dimnames = list(NULL, c("Size", "Decay", "AUC"))))
@@ -62,7 +64,7 @@ bm_CVnnet = function(Input,
     set.seed(555)
     Samp = bm_SampleBinaryVector(ref = Target, ratio = 0.5)
     
-    W.tmp = ifelse(is.null(W), rep(1, length(Target)), W)
+    weights.tmp = ifelse(is.null(weights), rep(1, length(Target)), weights)
     
     
     Eval[, 3] = Eval[, 3] + apply(Eval[, 1:2],
@@ -70,12 +72,12 @@ bm_CVnnet = function(Input,
                                   Samp,
                                   Target,
                                   Input,
-                                  W.tmp,
-                                  FUN = function(x, Samp, Target, Input, W.tmp) {
+                                  weights.tmp,
+                                  FUN = function(x, Samp, Target, Input, weights.tmp) {
                                     nn = nnet(eval(parse(text = paste("Target[Samp$calibration]",
                                                                       paste(.scope_expSyst(Input[1:10, , drop = FALSE], "GBM"), collapse = "")))),
                                               data = Input[Samp$calibration, , drop = FALSE],
-                                              weights = W.tmp[Samp$calibration],
+                                              weights = weights.tmp[Samp$calibration],
                                               size = x[1],
                                               decay = x[2],
                                               maxit = maxit,
