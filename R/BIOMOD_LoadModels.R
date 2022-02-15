@@ -9,7 +9,7 @@
 ##' 
 ##' 
 ##' @param bm.out a \code{\link{BIOMOD.models.out}} or \code{\link{BIOMOD.ensemble.models.out}} 
-##' object that can be obtained from \code{\link{BIOMOD_Modeling}} or 
+##' object that can be obtained with the \code{\link{BIOMOD_Modeling}} or 
 ##' \code{\link{BIOMOD_EnsembleModeling}} functions
 ##' 
 ##' @param \ldots (\emph{optional, see \href{BIOMOD_LoadModels.html#details}{Details})}) 

@@ -12,16 +12,16 @@
 ##' metric.
 ##'
 ##'
-##' @param Stat a \code{character} corresponding to the evaluation metric to be used, must be 
-##' either \code{ROC}, \code{TSS}, \code{KAPPA}, \code{ACCURACY}, \code{BIAS}, \code{POD}, 
+##' @param metric.eval a \code{character} corresponding to the evaluation metric to be used, must 
+##' be either \code{ROC}, \code{TSS}, \code{KAPPA}, \code{ACCURACY}, \code{BIAS}, \code{POD}, 
 ##' \code{FAR}, \code{POFD}, \code{SR}, \code{CSI}, \code{ETS}, \code{HK}, \code{HSS}, \code{OR} 
 ##' or \code{ORSS}
-##' @param Obs a \code{vector} of observed values (binary, \code{0} or \code{1})
-##' @param Fit a \code{vector} of fitted values (continuous)
-##' @param Nb.thresh.test an \code{integer} corresponding to the number of thresholds to be 
+##' @param obs a \code{vector} of observed values (binary, \code{0} or \code{1})
+##' @param fit a \code{vector} of fitted values (continuous)
+##' @param nb.thresh an \code{integer} corresponding to the number of thresholds to be 
 ##' tested over the range of fitted values
-##' @param Fixed.thresh (\emph{optional, default} \code{NULL}) \cr 
-##' An \code{integer} corresponding to the only threshold value to be tested
+##' @param threshold (\emph{optional, default} \code{NULL}) \cr 
+##' A \code{numeric} corresponding to the threshold used to convert the given data
 ##'
 ##'
 ##' @return 
@@ -41,7 +41,7 @@
 ##' \emph{Please refer to \code{\link{BIOMOD_Modeling}} to get more information about these 
 ##' evaluation metrics.}
 ##' 
-##' Note that if a value is given to \code{Fixed.thresh}, no optimisation will be done., and 
+##' Note that if a value is given to \code{threshold}, no optimisation will be done., and 
 ##' only the score for this threshold will be returned.
 ##'
 ##'
@@ -70,8 +70,8 @@
 ##' vec.c[which(vec.c > 1000)] <- 1000
 ##' 
 ##' ## Find optimal threshold for a specific evaluation metric
-##' bm_FindOptimStat(Stat = 'TSS', Fit = vec.b, Obs = vec.a)
-##' bm_FindOptimStat(Stat = 'TSS', Fit = vec.c, Obs = vec.a, Nb.thresh.test = 100)
+##' bm_FindOptimStat(metric.eval = 'TSS', fit = vec.b, obs = vec.a)
+##' bm_FindOptimStat(metric.eval = 'TSS', fit = vec.c, obs = vec.a, nb.thresh = 100)
 ##'
 ##' 
 ##' @importFrom pROC roc coords auc
@@ -82,49 +82,49 @@
 ###################################################################################################
 
 
-bm_FindOptimStat <- function(Stat = 'TSS',
-                             Obs,
-                             Fit,
-                             Nb.thresh.test = 100,
-                             Fixed.thresh = NULL)
+bm_FindOptimStat <- function(metric.eval = 'TSS',
+                             obs,
+                             fit,
+                             nb.thresh = 100,
+                             threshold = NULL)
 {
   ## remove all unfinite values
-  to_keep <- (is.finite(Fit) & is.finite(Obs))
-  Obs <- Obs[to_keep]
-  Fit <- Fit[to_keep]
+  to_keep <- (is.finite(fit) & is.finite(obs))
+  obs <- obs[to_keep]
+  fit <- fit[to_keep]
   
   ## check some data is still here
-  if (!length(Obs) | !length(Fit)) {
+  if (!length(obs) | !length(fit)) {
     cat("Non finite obs or fit available => model evaluation skipped !")
-    eval.out <- matrix(NA, 1, 4, dimnames = list(Stat, c("best.stat", "cutoff", "sensitivity", "specificity")))
+    eval.out <- matrix(NA, 1, 4, dimnames = list(metric.eval, c("best.stat", "cutoff", "sensitivity", "specificity")))
     return(eval.out)
   }
   
-  if (length(unique(Obs)) == 1 | length(unique(Fit)) == 1) {
+  if (length(unique(obs)) == 1 | length(unique(fit)) == 1) {
     warning("\nObserved or fitted data contains a unique value... Be careful with this models predictions\n", immediate. = TRUE)
   }
   
   
-  if (Stat != 'ROC') { ## for all evaluation metrics other than ROC -------------------------------
-    StatOptimum <- get_optim_value(Stat)
+  if (metric.eval != 'ROC') { ## for all evaluation metrics other than ROC ------------------------
+    StatOptimum <- get_optim_value(metric.eval)
     
     ## 1. get threshold values to be tested -----------------------------------
-    if (is.null(Fixed.thresh)) { # test a range of threshold to get the one giving the best score
+    if (is.null(threshold)) { # test a range of threshold to get the one giving the best score
       
       ## guess fit value scale (e.g. 0-1 for a classic fit or 0-1000 for a biomod2 model fit)
-      fit.scale <- .guess_scale(Fit)
+      fit.scale <- .guess_scale(fit)
       
-      if (length(unique(Fit)) == 1) {
-        valToTest <- unique(Fit)
-        ## add 2 values to test based on mean with 0 and the guessed max of Fit (1 or 1000)
+      if (length(unique(fit)) == 1) {
+        valToTest <- unique(fit)
+        ## add 2 values to test based on mean with 0 and the guessed max of fit (1 or 1000)
         valToTest <- round(c(mean(c(fit.scale["min"], valToTest)),
                              mean(c(fit.scale["max"], valToTest))))
       } else {
-        mini <- max(min(Fit, na.rm = TRUE), fit.scale["min"], na.rm = TRUE)
-        maxi <- min(max(Fit, na.rm = TRUE), fit.scale["max"], na.rm = TRUE)
-        valToTest <- try(unique(round(c(seq(mini, maxi, length.out = Nb.thresh.test), mini, maxi))))
+        mini <- max(min(fit, na.rm = TRUE), fit.scale["min"], na.rm = TRUE)
+        maxi <- min(max(fit, na.rm = TRUE), fit.scale["max"], na.rm = TRUE)
+        valToTest <- try(unique(round(c(seq(mini, maxi, length.out = nb.thresh), mini, maxi))))
         if (inherits(valToTest, "try-error")) {
-          valToTest <- seq(fit.scale["min"], fit.scale["max"], length.out = Nb.thresh.test)
+          valToTest <- seq(fit.scale["min"], fit.scale["max"], length.out = nb.thresh)
         }
         # deal with unique value to test case
         if (length(valToTest) < 3) {
@@ -132,20 +132,20 @@ bm_FindOptimStat <- function(Stat = 'TSS',
         }
       }
     } else { # test only one value
-      valToTest <- Fixed.thresh
+      valToTest <- threshold
     }
     
     ## 2. apply the bm_CalculateStat function ---------------------------------
     calcStat <- sapply(lapply(valToTest, function(x) {
-      return(table(Fit > x, Obs))
-    }), bm_CalculateStat, stat = Stat)
+      return(table(fit > x, obs))
+    }), bm_CalculateStat, metric.eval = metric.eval)
     
     ## 3. scale obtained scores and find best value ---------------------------
     calcStat <- 1 - abs(StatOptimum - calcStat)
     best.stat <- max(calcStat, na.rm = TRUE)
     cutoff <- median(valToTest[which(calcStat == best.stat)]) # if several values are selected
     
-    misc <- table(Fit >= cutoff, Obs)
+    misc <- table(fit >= cutoff, obs)
     misc <- .contingency_table_check(misc)
     true.pos <- misc['TRUE', '1']
     true.neg <- misc['FALSE', '0']
@@ -153,7 +153,7 @@ bm_FindOptimStat <- function(Stat = 'TSS',
     sensitivity <- (true.pos * 100) / sum(misc[, '1'])
     
   } else { ## specific procedure for ROC value ----------------------------------------------------
-    roc1 <- roc(Obs, Fit, percent = TRUE, direction = "<", levels = c(0, 1))
+    roc1 <- roc(obs, fit, percent = TRUE, direction = "<", levels = c(0, 1))
     roc1.out <- coords(roc1, "best", ret = c("threshold", "sens", "spec"), transpose = TRUE)
     ## if two optimal values are returned keep only the first one
     if (!is.null(ncol(roc1.out))) { roc1.out <- roc1.out[, 1] }
@@ -162,9 +162,9 @@ bm_FindOptimStat <- function(Stat = 'TSS',
     sensitivity <- as.numeric(roc1.out["sensitivity"])
     specificity <- as.numeric(roc1.out["specificity"])
   }
-
+  
   eval.out <- cbind(best.stat, cutoff, sensitivity, specificity)
-  rownames(eval.out) <- Stat
+  rownames(eval.out) <- metric.eval
   
   return(eval.out)
 }
@@ -176,9 +176,9 @@ bm_FindOptimStat <- function(Stat = 'TSS',
 ##' @export
 ##'
 
-get_optim_value <- function(stat)
+get_optim_value <- function(metric.eval)
 {
-  switch(stat
+  switch(metric.eval
          , 'TSS' = 1
          , 'KAPPA' = 1
          , 'ACCURACY' = 1
@@ -199,43 +199,43 @@ get_optim_value <- function(stat)
 
 ###################################################################################################
 
-.guess_scale <- function(Fit)
+.guess_scale <- function(fit)
 {
   min <- 0
-  max <- ifelse(max(Fit, na.rm = TRUE) <= 1, 1, 1000)
+  max <- ifelse(max(fit, na.rm = TRUE) <= 1, 1, 1000)
   out <- c(min, max)
   names(out) <- c("min", "max")
   return(out)
 }
 
-.contingency_table_check <- function(Misc)
+.contingency_table_check <- function(misc)
 {
   # Contingency table checking
-  if (dim(Misc)[1] == 1) {
-    if (row.names(Misc)[1] == "FALSE") {
-      Misc <- rbind(Misc, c(0, 0))
-      rownames(Misc) <- c('FALSE', 'TRUE')
+  if (dim(misc)[1] == 1) {
+    if (row.names(misc)[1] == "FALSE") {
+      misc <- rbind(misc, c(0, 0))
+      rownames(misc) <- c('FALSE', 'TRUE')
     } else {
-      a <- Misc
-      Misc <- c(0, 0)
-      Misc <- rbind(Misc, a)
-      rownames(Misc) <- c('FALSE', 'TRUE')
+      a <- misc
+      misc <- c(0, 0)
+      misc <- rbind(misc, a)
+      rownames(misc) <- c('FALSE', 'TRUE')
     }
   }
   
-  if (ncol(Misc) != 2 | nrow(Misc) != 2) {
-    Misc = matrix(0, ncol = 2, nrow = 2, dimnames = list(c('FALSE', 'TRUE'), c('0', '1')))
+  if (ncol(misc) != 2 | nrow(misc) != 2) {
+    misc = matrix(0, ncol = 2, nrow = 2, dimnames = list(c('FALSE', 'TRUE'), c('0', '1')))
   }
   
-  if ((sum(colnames(Misc) %in% c('FALSE', 'TRUE', '0', '1')) < 2) | 
-      (sum(rownames(Misc) %in% c('FALSE', 'TRUE', '0', '1')) < 2) ) {
+  if ((sum(colnames(misc) %in% c('FALSE', 'TRUE', '0', '1')) < 2) | 
+      (sum(rownames(misc) %in% c('FALSE', 'TRUE', '0', '1')) < 2) ) {
     stop("Unavailable contingency table given")
   }
   
-  if ('0' %in% rownames(Misc)) { rownames(Misc)[which(rownames(Misc) == '0')] <- 'FALSE' }
-  if ('1' %in% rownames(Misc)) { rownames(Misc)[which(rownames(Misc) == '1')] <- 'TRUE' }
+  if ('0' %in% rownames(misc)) { rownames(misc)[which(rownames(misc) == '0')] <- 'FALSE' }
+  if ('1' %in% rownames(misc)) { rownames(misc)[which(rownames(misc) == '1')] <- 'TRUE' }
   
-  return(Misc)
+  return(misc)
 }
 
 ##'
@@ -243,25 +243,25 @@ get_optim_value <- function(stat)
 ##' @export
 ##'
 
-bm_CalculateStat <- function(Misc, stat = 'TSS')
+bm_CalculateStat <- function(misc, metric.eval = 'TSS')
 {
   ## check contagency table
-  Misc <- .contingency_table_check(Misc)
+  misc <- .contingency_table_check(misc)
   
   ## calculate basic classification information -------------------------------
-  hits <- Misc['TRUE', '1'] ## true positives
-  misses <- Misc['FALSE', '1'] ##  false positives
-  false_alarms <- Misc['TRUE', '0'] ## false negatives 
-  correct_negatives <- Misc['FALSE', '0'] ## true negatives
+  hits <- misc['TRUE', '1'] ## true positives
+  misses <- misc['FALSE', '1'] ##  false positives
+  false_alarms <- misc['TRUE', '0'] ## false negatives 
+  correct_negatives <- misc['FALSE', '0'] ## true negatives
   
-  total <- sum(Misc)
-  forecast_1 <- sum(Misc['TRUE', ])
-  forecast_0 <- sum(Misc['FALSE', ])
-  observed_1 <- sum(Misc[, '1'])
-  observed_0 <- sum(Misc[, '0'])
+  total <- sum(misc)
+  forecast_1 <- sum(misc['TRUE', ])
+  forecast_0 <- sum(misc['FALSE', ])
+  observed_1 <- sum(misc[, '1'])
+  observed_0 <- sum(misc[, '0'])
   
   ## calculate chosen evaluation metric ---------------------------------------
-  out = switch(stat
+  out = switch(metric.eval
                , 'TSS' = (hits / (hits + misses)) + (correct_negatives / (false_alarms + correct_negatives)) - 1
                , 'KAPPA' = {
                  Po <- (1 / total) * (hits + correct_negatives)

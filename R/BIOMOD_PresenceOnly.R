@@ -6,7 +6,7 @@
 ##' 
 ##' @description This function computes presence-only evaluation metrics (Boyce index and Minimal 
 ##' Predicted Area) for \code{\link{BIOMOD.models.out}} or \code{\link{BIOMOD.ensemble.models.out}} 
-##' objects that can be obtained from \code{\link{BIOMOD_Modeling}} or 
+##' objects that can be obtained with the \code{\link{BIOMOD_Modeling}} or 
 ##' \code{\link{BIOMOD_EnsembleModeling}} functions.
 ##' 
 ##' 

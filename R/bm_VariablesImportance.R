@@ -8,14 +8,14 @@
 ##' importance value for each variable involved in the given model.
 ##' 
 ##' 
-##' @param model a \code{BIOMOD.models.out} object (coming either from 
-##' \code{\link{BIOMOD_Modeling}} or \code{\link{BIOMOD_EnsembleModeling}} function) and for 
-##' which variables importance is to be computed
-##' @param data a \code{data.frame} containing the explanatory variables to use to perform 
-##' variables importance calculation
-##' @param method a \code{character} corresponding to the randomisation method, must be 
+##' @param bm.model a \code{biomod2_model} object (or \code{nnet}, \code{rpart}, \code{fda}, 
+##' \code{gam}, \code{glm}, \code{lm}, \code{gbm}, \code{mars}, \code{randomForest}) that can be 
+##' obtained with the \code{\link{get_formal_model}} function 
+##' @param expl.var a \code{data.frame} containing the explanatory variables that will be used to 
+##' compute the variables importance
+##' @param method a \code{character} corresponding to the randomisation method to be used, must be 
 ##' \code{full_rand} (\emph{only method available so far})
-##' @param nb_rand an \code{integer} corresponding to the number of permutations to be done for 
+##' @param nb.rep an \code{integer} corresponding to the number of permutations to be done for 
 ##' each variable
 ##' 
 ##' 
@@ -45,7 +45,8 @@
 ##' @keywords shuffle, random, importance, Pearson correlation
 ##' 
 ##' 
-##' @seealso \code{\link{bm_RunModelsLoop}}, \code{\link{BIOMOD_Modeling}}, 
+##' @seealso \code{\link[randomForest]{randomForest}}, 
+##' \code{\link{bm_RunModelsLoop}}, \code{\link{BIOMOD_Modeling}}, 
 ##' \code{\link{BIOMOD_EnsembleModeling}}, \code{\link{bm_PlotVarImpBoxplot}}, 
 ##' \code{\link{get_variables_importance}}
 ##' @family Secundary functions
@@ -61,10 +62,10 @@
 ##' 
 ##' ## Compute variables importance
 ##' mod <- glm(var1 ~ var2 + var3, data = myExpl.s)
-##' bm_VariablesImportance(model = mod, 
-##'                        data = myExpl.s[, c('var2', 'var3')],
+##' bm_VariablesImportance(bm.model = mod, 
+##'                        expl.var = myExpl.s[, c('var2', 'var3')],
 ##'                        method = "full_rand",
-##'                        nb_rand = 3)
+##'                        nb.rep = 3)
 ##' 
 ##' 
 ##' @export
@@ -72,32 +73,32 @@
 ##' 
 ###################################################################################################
 
-bm_VariablesImportance <- function(model, 
-                                   data, 
+bm_VariablesImportance <- function(bm.model, 
+                                   expl.var, 
                                    method = "full_rand", 
-                                   nb_rand = 1,
+                                   nb.rep = 1,
                                    ...)
 {
-  args <- .bm_VariablesImportance.check.args(model = model, data = data, method = method, ...)
+  args <- .bm_VariablesImportance.check.args(bm.model = bm.model, expl.var = expl.var, method = method, ...)
   for (argi in names(args)) { assign(x = argi, value = args[[argi]]) }
   rm(args)
   
   ## Test if prediction is computable
-  ref <- try(predict(model, data, temp_workdir = temp_workdir))
+  ref <- try(predict(bm.model, expl.var, temp_workdir = temp_workdir))
   if (inherits(ref, "try-error")) { stop("Unable to make model prediction") }
   
   ## Prepare output matrix
-  out <- matrix(0, nrow = length(variables), ncol = nb_rand
-                , dimnames = list(variables, paste0('rand', 1:nb_rand)))
+  out <- matrix(0, nrow = length(variables), ncol = nb.rep
+                , dimnames = list(variables, paste0('rand', 1:nb.rep)))
   
   ## Make randomisation
   cat('\n')
-  PROGRESS = txtProgressBar(min = 0, max = nb_rand * length(variables), style = 3)
+  PROGRESS = txtProgressBar(min = 0, max = nb.rep * length(variables), style = 3)
   i.iter = 0
-  for (r in 1:nb_rand) {
+  for (r in 1:nb.rep) {
     for (v in variables) {
-      data_rand <- .randomise_data(data, v, method)
-      shuffled.pred <- predict(model, data_rand, temp_workdir = temp_workdir)
+      data_rand <- .randomise_data(expl.var, v, method)
+      shuffled.pred <- predict(bm.model, data_rand, temp_workdir = temp_workdir)
       out[v, r] <- 1 - max(round(
         cor(x = ref, y = shuffled.pred, use = "pairwise.complete.obs", method = "pearson")
         , digits = 6), 0, na.rm = TRUE)
@@ -114,23 +115,23 @@ bm_VariablesImportance <- function(model,
 ###################################################################################################
 
 
-.bm_VariablesImportance.check.args <- function(model, data, method, ...)
+.bm_VariablesImportance.check.args <- function(bm.model, expl.var, method, ...)
 {
   args <- list(...)
   
   # test that input data is supported
-  supported_models <- c("biomod2_model", "nnet", "rpart", "fda", "gam", "glm", "lm", "gbm", "mars", "randomForest")
-  if (!inherits(model, supported_models)) { stop("Model class unsupported") }
+  .fun_testIfInherits(TRUE, "bm.model", bm.model, c("biomod2_model", "nnet", "rpart", "fda", "gam"
+                                                    , "glm", "lm", "gbm", "mars", "randomForest"))
   
   # test method is supported
   supported_methods <- c("full_rand")
   if (!(method %in% supported_methods)) { stop("Unknown method") }
   
   # get variables names
-  if (is.null(args$variables)) { args$variables <- colnames(data) }
+  if (is.null(args$variables)) { args$variables <- colnames(expl.var) }
   
-  return(list(model = model
-              , data = data
+  return(list(bm.model = bm.model
+              , expl.var = expl.var
               , method = method
               , variables = args$variables
               , temp_workdir = args$temp_workdir))
@@ -139,10 +140,10 @@ bm_VariablesImportance <- function(model,
 
 ###################################################################################################
 
-.randomise_data <- function(data, variable, method)
+.randomise_data <- function(expl.var, variable, method)
 {
   if (method == 'full_rand') {
-    return(.full_shuffling(data, variable))
+    return(.full_shuffling(expl.var, variable))
   }
 }
 

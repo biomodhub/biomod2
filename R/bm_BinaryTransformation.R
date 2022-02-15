@@ -12,9 +12,8 @@
 ##' @param data a \code{vector}, a \code{matrix} or \code{data.frame}, a 
 ##' \code{\link[raster:raster]{raster}} or \code{\link[raster:stack]{RasterStack}} containing the 
 ##' data to be converted
-##' @param threshold a \code{numeric} corresponding to the threshold used to convert the given 
-##' data
-##' @param doFiltering (\emph{optional, default} \code{FALSE}) \cr 
+##' @param threshold a \code{numeric} corresponding to the threshold used to convert the given data
+##' @param do.filtering (\emph{optional, default} \code{FALSE}) \cr 
 ##' A \code{logical} value defining whether filtered data should be returned, or binary one 
 ##' (see \href{bm_BinaryTransformation.html#details}{Details})
 ##' 
@@ -35,8 +34,8 @@
 ##' \code{numeric} value is given, the same threshold will be applied to all columns or layers. 
 ##' \cr \cr
 ##' 
-##' If \code{doFiltering = FALSE}, binary (\code{0} or \code{1}) values are returned. \cr 
-##' If \code{doFiltering = TRUE}, values will be \emph{filtered} according to \code{threshold}, 
+##' If \code{do.filtering = FALSE}, binary (\code{0} or \code{1}) values are returned. \cr 
+##' If \code{do.filtering = TRUE}, values will be \emph{filtered} according to \code{threshold}, 
 ##' meaning that :
 ##' \itemize{
 ##'   \item \code{data < threshold} will return 0
@@ -59,7 +58,7 @@
 ##' 
 ##' ## From continuous to binary / filtered vector
 ##' vec.d_bin <- bm_BinaryTransformation(data = vec.d, threshold = 500)
-##' vec.d_filt <- bm_BinaryTransformation(data = vec.d, threshold = 500, doFiltering = TRUE)
+##' vec.d_filt <- bm_BinaryTransformation(data = vec.d, threshold = 500, do.filtering = TRUE)
 ##' cbind(vec.d, vec.d_bin, vec.d_filt)
 ##'
 ##' 
@@ -72,7 +71,7 @@
 
 
 setGeneric("bm_BinaryTransformation",
-           function(data, threshold, doFiltering = FALSE)
+           function(data, threshold, do.filtering = FALSE)
            {
              standardGeneric("bm_BinaryTransformation")
            })
@@ -83,11 +82,11 @@ setGeneric("bm_BinaryTransformation",
 ##'
 
 setMethod('bm_BinaryTransformation', signature('data.frame'),
-          function(data, threshold, doFiltering = FALSE)
+          function(data, threshold, do.filtering = FALSE)
           {
             if (is.numeric(threshold) && !is.na(threshold)) {
               data <- data.matrix(data)
-              return(.convert_bin.matrix(data, threshold, doFiltering))
+              return(.convert_bin.matrix(data, threshold, do.filtering))
             } else { ## return NAs
               return(matrix(NA, ncol = ncol(data), nrow = nrow(data)
                             , dimnames = dimnames(data)))
@@ -100,10 +99,10 @@ setMethod('bm_BinaryTransformation', signature('data.frame'),
 ##'
 
 setMethod('bm_BinaryTransformation', signature('matrix'),
-          function(data, threshold, doFiltering = FALSE)
+          function(data, threshold, do.filtering = FALSE)
           {
             data <- as.data.frame(data)
-            return(bm_BinaryTransformation(data, threshold, doFiltering))
+            return(bm_BinaryTransformation(data, threshold, do.filtering))
           })
 
 ##'
@@ -112,10 +111,10 @@ setMethod('bm_BinaryTransformation', signature('matrix'),
 ##'
 
 setMethod('bm_BinaryTransformation', signature('numeric'),
-          function(data, threshold, doFiltering = FALSE)
+          function(data, threshold, do.filtering = FALSE)
           {
             data <- as.data.frame(data)
-            return(bm_BinaryTransformation(data, threshold, doFiltering))
+            return(bm_BinaryTransformation(data, threshold, do.filtering))
           })
 
 ##'
@@ -124,7 +123,7 @@ setMethod('bm_BinaryTransformation', signature('numeric'),
 ##'
 
 setMethod('bm_BinaryTransformation', signature('array'),
-          function(data, threshold, doFiltering = FALSE)
+          function(data, threshold, do.filtering = FALSE)
           {
             if (length(dim(data)) == length(dim(threshold))) {
               if (sum(dim(data)[-1] != dim(threshold)[-1]) > 0) {
@@ -136,7 +135,7 @@ setMethod('bm_BinaryTransformation', signature('array'),
               }
             }
             
-            if (doFiltering) {
+            if (do.filtering) {
               return(sweep(data, 2:length(dim(data)), threshold, .convert_bin.array.filt))
             } else {
               return(sweep(data, 2:length(dim(data)), threshold, .convert_bin.array))
@@ -149,10 +148,10 @@ setMethod('bm_BinaryTransformation', signature('array'),
 ##'
 
 setMethod('bm_BinaryTransformation', signature('RasterLayer'),
-          function(data, threshold, doFiltering = FALSE)
+          function(data, threshold, do.filtering = FALSE)
           {
             if(!is.na(threshold)){
-              if (doFiltering) {
+              if (do.filtering) {
                 return(reclassify(data, c(-Inf, threshold, 0)))
               } else {
                 return(reclassify(data,c(-Inf, threshold, 0, threshold, +Inf, 1)))
@@ -168,14 +167,14 @@ setMethod('bm_BinaryTransformation', signature('RasterLayer'),
 ##'
 
 setMethod('bm_BinaryTransformation', signature('RasterStack'),
-          function(data, threshold, doFiltering = FALSE)
+          function(data, threshold, do.filtering = FALSE)
           {
             if(length(threshold) == 1) {
               threshold <- rep(threshold, nlayers(data))
             }
             StkTmp <- stack()
             for (i in 1:nlayers(data)) {
-              ras = bm_BinaryTransformation(subset(data, i, drop = TRUE), threshold[i], doFiltering)
+              ras = bm_BinaryTransformation(subset(data, i, drop = TRUE), threshold[i], do.filtering)
               StkTmp <- addLayer(StkTmp, ras)
             }
             names(StkTmp) <- names(data)
@@ -188,19 +187,19 @@ setMethod('bm_BinaryTransformation', signature('RasterStack'),
 ##'
 
 setMethod('bm_BinaryTransformation', signature('RasterBrick'),
-          function(data, threshold, doFiltering = FALSE)
+          function(data, threshold, do.filtering = FALSE)
           {
             data <- stack(data, RAT = FALSE)
-            return(bm_BinaryTransformation(data, threshold, doFiltering))
+            return(bm_BinaryTransformation(data, threshold, do.filtering))
           })
 
 
 ###################################################################################################
 
-.convert_bin.matrix = function(data, threshold, doFiltering = FALSE) {
+.convert_bin.matrix = function(data, threshold, do.filtering = FALSE) {
   ind.0 = t(t(data)<threshold)
   data[ind.0] <- 0
-  if (!doFiltering) { data[!ind.0] <- 1 }
+  if (!do.filtering) { data[!ind.0] <- 1 }
   if (ncol(data) == 1) { return(data[, 1]) } else { return(data) }
 }
 
