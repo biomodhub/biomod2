@@ -10,7 +10,7 @@
 ##' \href{bm_PlotRangeSize.html#details}{Details}).
 ##' 
 ##' 
-##' @param range.output an object that can be obtained from \code{\link{BIOMOD_RangeSize}} function
+##' @param bm.range an object returned by the \code{\link{BIOMOD_RangeSize}} function
 ##' @param do.count (\emph{optional, default} \code{TRUE}) \cr 
 ##' A \code{logical} value defining whether the count plot is to be computed or not
 ##' @param do.perc (\emph{optional, default} \code{TRUE}) \cr 
@@ -19,7 +19,7 @@
 ##' A \code{logical} value defining whether the maps plot is to be computed or not
 ##' @param do.mean (\emph{optional, default} \code{TRUE}) \cr 
 ##' A \code{logical} value defining whether the mean maps plot is to be computed or not
-##' @param plot (\emph{optional, default} \code{TRUE}) \cr 
+##' @param do.plot (\emph{optional, default} \code{TRUE}) \cr 
 ##' A \code{logical} value defining whether the plots are to be rendered or not
 ##' 
 ##' 
@@ -144,19 +144,19 @@
 ###################################################################################################
 
 
-bm_PlotRangeSize <- function(range.output, do.count = TRUE, do.perc = TRUE, do.maps = TRUE, do.mean = TRUE, plot = TRUE)
+bm_PlotRangeSize <- function(bm.range, do.count = TRUE, do.perc = TRUE, do.maps = TRUE, do.mean = TRUE, do.plot = TRUE)
 {
   ## 0. Check arguments ---------------------------------------------------------------------------
-  if (!is.list(range.output) ||
-      (is.list(range.output) && length(range.output) != 2) ||
-      (is.list(range.output) && length(range.output) == 2 && sum(names(range.output) == c("Compt.By.Models", "Diff.By.Pixel")) != 2)) {
-    stop("'range.output' must be an object obtained by the BIOMOD_RangeSize function")
+  if (!is.list(bm.range) ||
+      (is.list(bm.range) && length(bm.range) != 2) ||
+      (is.list(bm.range) && length(bm.range) == 2 && sum(names(bm.range) == c("Compt.By.Models", "Diff.By.Pixel")) != 2)) {
+    stop("'bm.range' must be an object obtained by the BIOMOD_RangeSize function")
   }
   
   ## 1. Create PLOTS for Compt.By.Models ----------------------------------------------------------
   if (do.count || do.perc)
   {
-    ggdat = as.data.frame(range.output$Compt.By.Models)
+    ggdat = as.data.frame(bm.range$Compt.By.Models)
     
     ## Get models information
     ggdat$full.name = rownames(ggdat)
@@ -175,7 +175,7 @@ bm_PlotRangeSize <- function(range.output, do.count = TRUE, do.perc = TRUE, do.m
     ggdat = melt(ggdat, measure.vars = c("CurrentRangeSize", "FutureRangeSize.NoDisp", "FutureRangeSize.FullDisp")
                  , variable.name = "range.level", value.name = "range.value")
     
-    ## a. Count plot ------------------------------------------------------------
+    ## a. Count plot ----------------------------------------------------------
     if (do.count) {
       gg.count = ggplot(ggdat[which(ggdat$count.level != "Stable0"), ]
                         , aes_string(x = "group.value", y = "count.value", fill = "count.level")) +
@@ -191,7 +191,7 @@ bm_PlotRangeSize <- function(range.output, do.count = TRUE, do.perc = TRUE, do.m
               , legend.position = "top")
     } else { gg.count = NULL }
     
-    ## b. Percentage plot -------------------------------------------------------
+    ## b. Percentage plot -----------------------------------------------------
     if (do.perc) {
       gg.perc = ggplot(ggdat, aes_string(x = "group.value", y = "perc.value", fill = "perc.level")) +
         geom_col(position = "dodge") +
@@ -211,7 +211,7 @@ bm_PlotRangeSize <- function(range.output, do.count = TRUE, do.perc = TRUE, do.m
   ## 2. Create PLOTS for Diff.By.Pixel ------------------------------------------------------------
   if (do.maps || do.mean)
   {
-    ggdat = range.output$Diff.By.Pixel
+    ggdat = bm.range$Diff.By.Pixel
     ggdat = as.data.frame(rasterToPoints(ggdat))
     
     ## Get models information
@@ -227,7 +227,7 @@ bm_PlotRangeSize <- function(range.output, do.count = TRUE, do.perc = TRUE, do.m
     ggdat$group.level = sapply(ggdat$group.level, function(x) 
       switch(x, 'species' = 'Species', 'data.set' = 'Dataset', 'run.eval' = 'Run', 'models' = 'Algo'))
     
-    ## c. SRC maps per model ----------------------------------------------------
+    ## c. SRC maps per model --------------------------------------------------
     if (do.maps) {
       gg.maps = ggplot(ggdat, aes_string(x = "x", y = "y", fill = "as.factor(SRC)")) +
         geom_raster() +
@@ -247,7 +247,7 @@ bm_PlotRangeSize <- function(range.output, do.count = TRUE, do.perc = TRUE, do.m
               , legend.position = "top")
     } else { gg.maps = NULL }
     
-    ## d. SRC mean maps per group.level -----------------------------------------
+    ## d. SRC mean maps per group.level ---------------------------------------
     if (do.mean) {
       
       tab1 = tapply(X = ggdat$SRC
@@ -313,7 +313,7 @@ bm_PlotRangeSize <- function(range.output, do.count = TRUE, do.perc = TRUE, do.m
   
   
   ## RETURN PLOTS
-  if (plot) { 
+  if (do.plot) { 
     print(gg.count)
     print(gg.perc)
     print(gg.maps)

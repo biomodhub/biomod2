@@ -11,12 +11,12 @@
 ##' grouping methods (see \href{bm_PlotEvalBoxplot.html#details}{Details}).
 ##' 
 ##' 
-##' @param modeling.output a \code{\link{BIOMOD.models.out}} or \code{BIOMOD.ensemble.models.out} 
-##' object that can be obtained from \code{\link{BIOMOD_Modeling}} or 
+##' @param bm.out a \code{\link{BIOMOD.models.out}} or \code{\link{BIOMOD.ensemble.models.out}} 
+##' object that can be obtained with the \code{\link{BIOMOD_Modeling}} or 
 ##' \code{\link{BIOMOD_EnsembleModeling}} functions
 ##' @param group.by a 2-length \code{vector} containing the way kept models will be represented,
 ##' must be among \code{model}, \code{algo}, \code{run}, \code{dataset}
-##' @param plot (\emph{optional, default} \code{TRUE}) \cr 
+##' @param do.plot (\emph{optional, default} \code{TRUE}) \cr 
 ##' A \code{logical} value defining whether the plot is to be rendered or not
 ##' @param \ldots some additional arguments (see \href{bm_PlotEvalMean.html#details}{Details})
 ##' 
@@ -107,14 +107,14 @@
 ###################################################################################################
 
 
-bm_PlotEvalBoxplot <- function(modeling.output, group.by = c('algo', 'run'), plot = TRUE, ...)
+bm_PlotEvalBoxplot <- function(bm.out, group.by = c('algo', 'run'), plot = TRUE, ...)
 {
   ## 0. Check arguments ---------------------------------------------------------------------------
-  args <- .bm_PlotEvalBoxplot.check.args(modeling.output, group.by, ...)
+  args <- .bm_PlotEvalBoxplot.check.args(bm.out, group.by, ...)
   for (argi in names(args)) { assign(x = argi, value = args[[argi]]) }
   rm(args)
-
-    
+  
+  
   for (i in 1:length(group.by)) {
     tmp = strsplit(group.by[i], '')[[1]]
     group.by[i] <- paste0(toupper(tmp[1]), paste0(tmp[2:length(tmp)], collapse = ''))
@@ -122,7 +122,7 @@ bm_PlotEvalBoxplot <- function(modeling.output, group.by = c('algo', 'run'), plo
   
   ## 1. Get data for graphic ----------------------------------------------------------------------
   ## Get evaluation values
-  scores <- get_evaluations(modeling.output, as.data.frame = TRUE)
+  scores <- get_evaluations(bm.out, as.data.frame = TRUE)
   
   ## Choose which dataset (calibration or validation) should be used
   eval.data <- ifelse(all(is.na(scores$Evaluating.data)), "Testing.data", "Evaluating.data")
@@ -143,26 +143,26 @@ bm_PlotEvalBoxplot <- function(modeling.output, group.by = c('algo', 'run'), plo
     gg <- gg + labs(title = main)
   }
   
-  if (plot){ print(gg) }
+  if (do.plot){ print(gg) }
   invisible(gg)
 }
 
 
 ###################################################################################################
 
-.bm_PlotEvalBoxplot.check.args <- function(modeling.output, group.by = 'Algo', ...)
+.bm_PlotEvalBoxplot.check.args <- function(bm.out, group.by = 'Algo', ...)
 {
   args <- list(...)
   
-  ## 1. Check modeling.output argument ----------------------------------------
-  .fun_testIfInherits(TRUE, "modeling.output", modeling.output, c("BIOMOD.models.out", "BIOMOD.ensemble.models.out"))
+  ## 1. Check bm.out argument -------------------------------------------------
+  .fun_testIfInherits(TRUE, "bm.out", bm.out, c("BIOMOD.models.out", "BIOMOD.ensemble.models.out"))
   
   ## 3. Check group.by argument -----------------------------------------------
   if (length(group.by) != 2) { stop("2 group values needed") }
   for (i in 1:length(group.by)) {
     .fun_testIfIn(TRUE, paste0("group.by[", i, "]"), group.by[i], c('model', 'algo', 'run', 'dataset'))
   }
-
+  
   ## 4. Check extra args argument ---------------------------------------------
   .fun_testIfIn(TRUE, "names(args)", names(args), c('main', 'scales'))
   if ("scales" %in% names(args)) {

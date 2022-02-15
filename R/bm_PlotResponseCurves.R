@@ -11,25 +11,25 @@
 ##' explanatory variables at a time, see \href{bm_PlotResponseCurves.html#details}{Details}).
 ##' 
 ##'   
-##' @param modeling.output a \code{\link{BIOMOD.models.out}} or \code{BIOMOD.ensemble.models.out} 
-##' object that can be obtained from \code{\link{BIOMOD_Modeling}} or 
+##' @param bm.out a \code{\link{BIOMOD.models.out}} or \code{\link{BIOMOD.ensemble.models.out}} 
+##' object that can be obtained with the \code{\link{BIOMOD_Modeling}} or 
 ##' \code{\link{BIOMOD_EnsembleModeling}} functions
-##' @param chosen.models a \code{vector} containing model names to be kept, must be either 
+##' @param models.chosen a \code{vector} containing model names to be kept, must be either 
 ##' \code{all} or a sub-selection of model names that can be obtained with the 
 ##' \code{\link{get_built_models}} function
 ##' @param new.env a \code{matrix}, \code{data.frame} or \code{\link[raster:stack]{RasterStack}} 
 ##' object containing the new explanatory variables (in columns or layers, with names matching the 
 ##' variables names given to the \code{\link{BIOMOD_FormatingData}} function to build 
-##' \code{modeling.output}) that will be used to project the species distribution model(s)
+##' \code{bm.out}) that will be used to project the species distribution model(s)
 ##' @param show.variables a \code{vector} containing the names of the explanatory variables 
 ##' present into \code{new.env} parameter and to be plotted
 ##' @param do.bivariate (\emph{optional, default} \code{FALSE}) \cr 
 ##' A \code{logical} value defining whether the response curves are to be represented in 3 
 ##' dimensions (meaning 2 explanatory variables at a time) or not (meaning only 1)
-##' @param fixed.var.metric a \code{character} corresponding to the statistic to be used to fix as 
+##' @param fixed.var a \code{character} corresponding to the statistic to be used to fix as 
 ##' constant the remaining variables other than the one used to predict response, must be either 
 ##' \code{mean}, \code{median}, \code{min}, \code{max}
-##' @param plot (\emph{optional, default} \code{TRUE}) \cr 
+##' @param do.plot (\emph{optional, default} \code{TRUE}) \cr 
 ##' A \code{logical} value defining whether the plot is to be rendered or not
 ##' @param \ldots some additional arguments (see 
 ##' \href{bm_PlotResponseCurves.html#details}{Details})
@@ -46,7 +46,7 @@
 ##' To build the predicted response curves :
 ##' \itemize{
 ##'   \item \code{n-1} variables are set constant to a fixed value determined by the 
-##'   \code{fixed.var.metric} parameter (in the case of categorical variable, the most represented 
+##'   \code{fixed.var} parameter (in the case of categorical variable, the most represented 
 ##'   class is taken)
 ##'   \item the remaining variable is made to vary throughout its range given by the \code{new.env} 
 ##'   parameter 
@@ -128,14 +128,14 @@
 ##' # ---------------------------------------------------------------
 ##' # Represent response curves
 ##' bm_PlotResponseCurves(myBiomodModelOut, 
-##'                       chosen.models = get_built_models(myBiomodModelOut)[c(1:3, 12:14)],
-##'                       fixed.var.metric = 'median')
+##'                       models.chosen = get_built_models(myBiomodModelOut)[c(1:3, 12:14)],
+##'                       fixed.var = 'median')
 ##' bm_PlotResponseCurves(myBiomodModelOut, 
-##'                       chosen.models = get_built_models(myBiomodModelOut)[c(1:3, 12:14)],
-##'                       fixed.var.metric = 'min')
+##'                       models.chosen = get_built_models(myBiomodModelOut)[c(1:3, 12:14)],
+##'                       fixed.var = 'min')
 ##' bm_PlotResponseCurves(myBiomodModelOut, 
-##'                       chosen.models = get_built_models(myBiomodModelOut)[3],
-##'                       fixed.var.metric = 'median',
+##'                       models.chosen = get_built_models(myBiomodModelOut)[3],
+##'                       fixed.var = 'median',
 ##'                       do.bivariate = TRUE)
 ##'                                       
 ##'                                       
@@ -151,19 +151,19 @@
 ###################################################################################################
 
 
-bm_PlotResponseCurves <- function(modeling.output
-                                  , chosen.models = 'all'
-                                  , new.env = get_formal_data(modeling.output, 'expl.var')
-                                  , show.variables = get_formal_data(modeling.output, 'expl.var.names')
-                                  , fixed.var.metric = 'mean'
+bm_PlotResponseCurves <- function(bm.out
+                                  , models.chosen = 'all'
+                                  , new.env = get_formal_data(bm.out, 'expl.var')
+                                  , show.variables = get_formal_data(bm.out, 'expl.var.names')
+                                  , fixed.var = 'mean'
                                   , do.bivariate = FALSE
-                                  , plot = TRUE
+                                  , do.plot = TRUE
                                   , ...)
 {
   ## 0. Check arguments ---------------------------------------------------------------------------
-  formal_names <- chosen.models
+  formal_names <- models.chosen
   
-  args <- .bm_PlotResponseCurves.check.args(modeling.output, chosen.models, new.env, show.variables, do.bivariate, ...)
+  args <- .bm_PlotResponseCurves.check.args(bm.out, models.chosen, new.env, show.variables, do.bivariate, ...)
   for (argi in names(args)) { assign(x = argi, value = args[[argi]]) }
   rm(args)
   
@@ -173,7 +173,7 @@ bm_PlotResponseCurves <- function(modeling.output
   rownames(ref_table) <- NULL
   for (i in 1:ncol(new.env)) {
     if (is.numeric(new.env[, i])) {
-      ref_table[, i] <- switch(fixed.var.metric,
+      ref_table[, i] <- switch(fixed.var,
                                mean = mean(new.env[data_species == 1, i]),
                                median = median(new.env[data_species == 1, i]),
                                min = min(new.env[data_species == 1, i]),
@@ -190,7 +190,7 @@ bm_PlotResponseCurves <- function(modeling.output
   if (!do.bivariate)
   {
     ## NON-BIVARIATE CASE -------------------------------------------------------------------------
-   
+    
     PROGRESS = txtProgressBar(min = 0, max = length(show.variables) * length(models), style = 3)
     i.iter = 0
     
@@ -202,7 +202,7 @@ bm_PlotResponseCurves <- function(modeling.output
           pts.tmp <- seq(min(new.env[, vari], na.rm = TRUE), max(new.env[, vari], na.rm = TRUE), length.out = nb.pts)
         }
         
-        ## Creating tmp data --------------------------------------------------------------
+        ## Creating tmp data ------------------------------------------------------------
         tmp = ref_table[, -which(colnames(ref_table) == vari), drop = FALSE]
         new.env.r.tmp <- eval(parse(text = paste0("cbind(", vari, "= pts.tmp, tmp)")))
         new.env.r.tmp <- new.env.r.tmp[, colnames(ref_table), drop = FALSE]
@@ -212,10 +212,10 @@ bm_PlotResponseCurves <- function(modeling.output
           }
         }
         
-        ## Load models --------------------------------------------------------------------
-        BIOMOD_LoadModels(modeling.output, full.name = models)
+        ## Load models ------------------------------------------------------------------
+        BIOMOD_LoadModels(bm.out, full.name = models)
         
-        ## Getting predictions for each model ---------------------------------------------
+        ## Getting predictions for each model -------------------------------------------
         tab.out = foreach(model = models, .combine = "cbind") %do% 
           {
             mod <- get(model)
@@ -253,7 +253,7 @@ bm_PlotResponseCurves <- function(modeling.output
         pts.tmp2 <- rep(seq(min(new.env[, vari2], na.rm = TRUE), max(new.env[, vari2], na.rm = TRUE)
                             , length.out = sqrt(nb.pts)), sqrt(nb.pts))
         
-        ## Creating tmp data --------------------------------------------------------------
+        ## Creating tmp data ------------------------------------------------------------
         tmp = ref_table[, -which(colnames(ref_table) %in% c(vari1, vari2)), drop = FALSE]
         new.env.r.tmp <- eval(parse(text = paste0("cbind(", vari1," = pts.tmp1, ", vari2, " = pts.tmp2, tmp)")))
         new.env.r.tmp <- new.env.r.tmp[, colnames(ref_table), drop = FALSE]
@@ -263,10 +263,10 @@ bm_PlotResponseCurves <- function(modeling.output
           }
         }
         
-        ## Load models --------------------------------------------------------------------
-        BIOMOD_LoadModels(modeling.output, full.name = models)
+        ## Load models ------------------------------------------------------------------
+        BIOMOD_LoadModels(bm.out, full.name = models)
         
-        ## Getting predictions for each model ---------------------------------------------
+        ## Getting predictions for each model -------------------------------------------
         tab.out = foreach(model = models, .combine = "cbind") %do% 
           {
             mod <- get(model)
@@ -342,46 +342,46 @@ bm_PlotResponseCurves <- function(modeling.output
             , legend.position = "bottom"
             , axis.text.x = element_text(angle = 45, hjust = 1))
   }
-
+  
   if (length(main)) { ## add title
     gg <- gg + labs(title = main)
   }
-
-  if (plot){ print(gg) }
+  
+  if (do.plot){ print(gg) }
   invisible(gg)
 }
 
 
 ###################################################################################################
 
-.bm_PlotResponseCurves.check.args <- function(modeling.output, chosen.models, new.env, show.variables, do.bivariate, ...)
+.bm_PlotResponseCurves.check.args <- function(bm.out, models.chosen, new.env, show.variables, do.bivariate, ...)
 {
   args <- list(...)
   
-  ## 1. Check modeling.output argument ----------------------------------------
-  .fun_testIfInherits(TRUE, "modeling.output", modeling.output, c("BIOMOD.models.out", "BIOMOD.ensemble.models.out"))
+  ## 1. Check bm.out argument -------------------------------------------------
+  .fun_testIfInherits(TRUE, "bm.out", bm.out, c("BIOMOD.models.out", "BIOMOD.ensemble.models.out"))
   
-  ## 2. Check chosen.models -------------------------------------------------
-  if (chosen.models[1] == 'all') {
-    if (inherits(modeling.output, "BIOMOD.models.out")) {
-      chosen.models <- modeling.output@models.computed
-    } else if (inherits(modeling.output, "BIOMOD.ensemble.models.out")) {
-      chosen.models <- modeling.output@em.computed
+  ## 2. Check models.chosen ---------------------------------------------------
+  if (models.chosen[1] == 'all') {
+    if (inherits(bm.out, "BIOMOD.models.out")) {
+      models.chosen <- bm.out@models.computed
+    } else if (inherits(bm.out, "BIOMOD.ensemble.models.out")) {
+      models.chosen <- bm.out@em.computed
     } 
   } else {
-    if (inherits(modeling.output, "BIOMOD.models.out")) {
-      chosen.models <- intersect(chosen.models, modeling.output@models.computed)
-    } else if (inherits(modeling.output, "BIOMOD.ensemble.models.out")) {
-      chosen.models <- intersect(chosen.models, modeling.output@em.computed)
+    if (inherits(bm.out, "BIOMOD.models.out")) {
+      models.chosen <- intersect(models.chosen, bm.out@models.computed)
+    } else if (inherits(bm.out, "BIOMOD.ensemble.models.out")) {
+      models.chosen <- intersect(models.chosen, bm.out@em.computed)
     } 
   }
-  if (length(chosen.models) < 1) {
+  if (length(models.chosen) < 1) {
     stop('No models selected')
   }
-  models <- chosen.models
+  models <- models.chosen
   
   ## check that given models exist
-  files.check <- paste0(modeling.output@sp.name, '/models/', modeling.output@modeling.id, "/", chosen.models)
+  files.check <- paste0(bm.out@sp.name, '/models/', bm.out@modeling.id, "/", models.chosen)
   not.checked.files <- grep('MAXENT.Phillips|SRE', files.check)
   if (length(not.checked.files) > 0) {
     files.check <- files.check[-not.checked.files]
@@ -394,7 +394,7 @@ bm_PlotResponseCurves <- function(modeling.output
     }
   }
   
-  ## 2. Check args$nb.pts argument ----------------------------------------
+  ## 2. Check args$nb.pts argument --------------------------------------------
   ## defining the number split in each variables range
   nb.pts <- args$nb.pts
   if (!is.null(nb.pts) && do.bivariate == TRUE) {
@@ -405,7 +405,7 @@ bm_PlotResponseCurves <- function(modeling.output
     nb.pts <- 25 ^ 2
   }
   
-  ## 3. Check new.env argument ---------------------------------------------------
+  ## 3. Check new.env argument ------------------------------------------------
   if (inherits(new.env, "Raster")) {
     cat("\n   > Extracting raster infos..")
     DataTmp <- matrix(0, ncol = nlayers(new.env), nrow = nb.pts)
@@ -434,7 +434,7 @@ bm_PlotResponseCurves <- function(modeling.output
   
   ## 5. Check main argument ---------------------------------------------------
   main <- args$main
-  if (is.null(main)) { main <- try(paste0("Response curves for ", modeling.output@sp.name, "'s models")) }
+  if (is.null(main)) { main <- try(paste0("Response curves for ", bm.out@sp.name, "'s models")) }
   
   ## 6. Check data_species argument -------------------------------------------
   data_species <- args$data_species
