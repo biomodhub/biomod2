@@ -40,18 +40,19 @@
 ##' the species distribution model(s) with independent data
 ##' 
 ##' @param PA.nb.rep (\emph{optional, default} \code{0}) \cr 
-##' If pseudo-absence selection, the number of sets (repetitions) of pseudo-absence points that 
-##' will be drawn
-##' @param PA.nb.absences (\emph{optional, default} \code{0}) \cr 
-##' If pseudo-absence selection, the number of pseudo-absence points that will be selected for 
-##' each pseudo-absence repetition (true absences included)
+##' If pseudo-absence selection, an \code{integer} corresponding to the number of sets 
+##' (repetitions) of pseudo-absence points that will be drawn
 ##' @param PA.strategy (\emph{optional, default} \code{NULL}) \cr 
 ##' If pseudo-absence selection, a \code{character} defining the strategy that will be used to 
 ##' select the pseudo-absence points. Must be \code{random}, \code{sre}, \code{disk} or 
 ##' \code{user.defined} (see \href{BIOMOD_FormatingData.html#details}{Details})
+##' @param PA.nb.absences (\emph{optional, default} \code{0}) \cr 
+##' If pseudo-absence selection, and \code{PA.strategy = 'random'} or \code{PA.strategy = 'sre'} 
+##' or \code{PA.strategy = 'disk'}, an \code{integer} corresponding to the number of pseudo-absence 
+##' points that will be selected for each pseudo-absence repetition (true absences included)
 ##' @param PA.sre.quant (\emph{optional, default} \code{0}) \cr 
 ##' If pseudo-absence selection and \code{PA.strategy = 'sre'}, a \code{numeric} between \code{0} 
-##' and \code{1} defining the quantile used to make the \code{sre} pseudo-absence selection 
+##' and \code{0.5} defining the half-quantile used to make the \code{sre} pseudo-absence selection 
 ##' (see \href{BIOMOD_FormatingData.html#details}{Details})
 ##' @param PA.dist.min (\emph{optional, default} \code{0}) \cr 
 ##' If pseudo-absence selection and \code{PA.strategy = 'disk'}, a \code{numeric} defining the 

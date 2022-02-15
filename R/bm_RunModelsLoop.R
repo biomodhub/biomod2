@@ -10,35 +10,35 @@
 ##' species distribution models (asked by the \code{\link{BIOMOD_Modeling}} function).
 ##' 
 ##' 
-##' @param X a \code{BIOMOD.formated.data} or \code{BIOMOD.formated.data.PA} object returned by the 
-##' \code{\link{BIOMOD_FormatingData}} function
+##' @param bm.format a \code{\link{BIOMOD.formated.data}} or \code{\link{BIOMOD.formated.data.PA}} 
+##' object returned by the \code{\link{BIOMOD_FormatingData}} function
 ##' @param modeling.id a \code{character} corresponding to the name (ID) of the simulation set 
 ##' (\emph{a random number by default})
-##' @param Model a \code{character} corresponding to the model name to be computed, must be either 
+##' @param model a \code{character} corresponding to the model name to be computed, must be either 
 ##' \code{GLM}, \code{GBM}, \code{GAM}, \code{CTA}, \code{ANN}, \code{SRE}, \code{FDA}, 
 ##' \code{MARS}, \code{RF}, \code{MAXENT.Phillips}, \code{MAXENT.Phillips.2}
-##' @param Options a \code{\link{BIOMOD.models.options}} object returned by the 
+##' @param bm.options a \code{\link{BIOMOD.models.options}} object returned by the  
 ##' \code{\link{BIOMOD_ModelingOptions}} function
-##' @param VarImport (\emph{optional, default} \code{NULL}) \cr 
-##' An \code{integer} corresponding to the number of permutations to be done for each variable to 
-##' estimate variable importance
-##' @param mod.eval.method a \code{vector} containing evaluation metric names to be used, must 
+##' @param metric.eval a \code{vector} containing evaluation metric names to be used, must 
 ##' be among \code{ROC}, \code{TSS}, \code{KAPPA}, \code{ACCURACY}, \code{BIAS}, \code{POD}, 
 ##' \code{FAR}, \code{POFD}, \code{SR}, \code{CSI}, \code{ETS}, \code{HK}, \code{HSS}, \code{OR}, 
 ##' \code{ORSS}
-##' @param SavePred (\emph{optional, default} \code{TRUE}) \cr 
-##' A \code{logical} value defining whether all results and outputs must be saved on hard drive 
-##' or not (\emph{! strongly recommended !})
-##' @param scal.models (\emph{optional, default} \code{FALSE}) \cr 
-##' A \code{logical} value defining whether all models predictions must be scaled with a binomial 
-##' GLM or not
+##' @param var.import (\emph{optional, default} \code{NULL}) \cr 
+##' An \code{integer} corresponding to the number of permutations to be done for each variable to 
+##' estimate variable importance
+##' @param save.output (\emph{optional, default} \code{TRUE}) \cr 
+##' A \code{logical} value defining whether all outputs should be saved on hard drive or not 
+##' (\emph{! strongly recommended !})
+##' @param scale.models (\emph{optional, default} \code{FALSE}) \cr 
+##' A \code{logical} value defining whether all models predictions should be scaled with a 
+##' binomial GLM or not
 ##' 
 ##' 
 ##' @return  
 ##' 
 ##' A \code{list} containing for each model a \code{list} containing the following elements :
 ##' \itemize{
-##'   \item{\code{ModelName} : }{the name of correctly computed model}
+##'   \item{\code{model} : }{the name of correctly computed model}
 ##'   \item{\code{calib.failure} : }{the name of incorrectly computed model}
 ##'   \item{\code{pred} : }{the prediction outputs for calibration data}
 ##'   \item{\code{pred.eval} : }{the prediction outputs for validation data}
@@ -52,7 +52,11 @@
 ##' @keywords models, formula, options, CTA, GLM, GBM, GAM, RF, ANN, FDA, SRE, MARS, MAXENT
 ##' 
 ##' 
-##' @seealso \code{\link{BIOMOD_ModelingOptions}}, \code{\link{BIOMOD_Modeling}}, 
+##' @seealso \code{\link[rpart]{rpart}}, \code{\link[rpart]{prune}}, \code{\link[gbm]{gbm}}, 
+##' \code{\link[MASS]{stepAIC}}, \code{\link[nnet]{nnet}}, \code{\link[earth]{earth}}, 
+##' \code{\link[mda]{fda}}, \code{\link[mda]{mars}}, \code{\link[maxnet]{maxnet}}, 
+##' \code{\link[randomForest]{randomForest}}, 
+##' \code{\link{BIOMOD_ModelingOptions}}, \code{\link{BIOMOD_Modeling}}, 
 ##' \code{\link{bm_MakeFormula}}, \code{\link{bm_SampleFactorLevels}}, \code{\link{bm_Rescaler}}, 
 ##' \code{\link{bm_FindOptimStat}}, \code{\link{bm_VariablesImportance}}
 ##' @family Secundary functions
@@ -79,39 +83,39 @@
 ###################################################################################################
 
 
-bm_RunModelsLoop <- function(X,
+bm_RunModelsLoop <- function(bm.format,
                              modeling.id,
-                             Model,
-                             Options,
-                             VarImport,
-                             mod.eval.method,
-                             SavePred = TRUE,
-                             scal.models = TRUE)
+                             model,
+                             bm.options,
+                             var.import,
+                             metric.eval,
+                             save.output = TRUE,
+                             scale.models = TRUE)
 {
-  cat("\n\n-=-=-=- Run : ", X$name, '\n')
+  cat("\n\n-=-=-=- Run : ", bm.format$name, '\n')
   res.sp.run <- list()
   
-  for (i in 1:ncol(X$calibLines)) { # loop on RunEval
-    run.id = dimnames(X$calibLines)[[2]][i]
-    run.name = paste0(X$name, run.id)
+  for (i in 1:ncol(bm.format$calibLines)) { # loop on RunEval
+    run.id = dimnames(bm.format$calibLines)[[2]][i]
+    run.name = paste0(bm.format$name, run.id)
     cat('\n\n-=-=-=--=-=-=-', run.name, '\n')
     
-    res.sp.run[[run.id]] <- lapply(Model,
+    res.sp.run[[run.id]] <- lapply(model,
                                    bm_RunModel,
-                                   Data = X$dataBM,
-                                   Options = Options,
-                                   calibLines = na.omit(X$calibLines[, i, ]), ## transform 3D calibLines obj into a 1D vector
-                                   Yweights = na.omit(X$Yweights), 
+                                   Data = bm.format$dataBM,
+                                   bm.options = bm.options,
+                                   calibLines = na.omit(bm.format$calibLines[, i, ]), ## transform 3D calibLines obj into a 1D vector
+                                   weights = na.omit(bm.format$weights), 
                                    nam = run.name,
-                                   VarImport = VarImport,
-                                   mod.eval.method = mod.eval.method,
-                                   evalData = X$evalDataBM,
-                                   SavePred = TRUE, ## SavePred
-                                   xy = X$xy,
-                                   eval.xy = X$eval.xy,
-                                   scal.models = scal.models,
+                                   var.import = var.import,
+                                   metric.eval = metric.eval,
+                                   evalData = bm.format$evalDataBM,
+                                   save.output = TRUE, ## save.output
+                                   xy = bm.format$xy,
+                                   eval.xy = bm.format$eval.xy,
+                                   scale.models = scale.models,
                                    modeling.id = modeling.id)
-    names(res.sp.run[[run.id]]) <- Model
+    names(res.sp.run[[run.id]]) <- model
   }
   
   return(res.sp.run)
@@ -125,25 +129,25 @@ bm_RunModelsLoop <- function(X,
 ##' @export
 ##' 
 
-bm_RunModel <- function(Model, Data, Options, calibLines, Yweights, nam, VarImport = 0,
-                        mod.eval.method = c('ROC','TSS','KAPPA'), evalData = NULL,
-                        SavePred = FALSE,
-                        xy = NULL, eval.xy = NULL, scal.models = TRUE, modeling.id = '')
+bm_RunModel <- function(model, Data, bm.options, calibLines, weights, nam, var.import = 0,
+                        metric.eval = c('ROC','TSS','KAPPA'), evalData = NULL,
+                        save.output = FALSE,
+                        xy = NULL, eval.xy = NULL, scale.models = TRUE, modeling.id = '')
 {
   ## 0. Check arguments ---------------------------------------------------------------------------
-  args <- .bm_RunModel.check.args(Model, Data, Options, calibLines, Yweights, mod.eval.method, evalData, scal.models)
+  args <- .bm_RunModel.check.args(model, Data, bm.options, calibLines, weights, metric.eval, evalData, scale.models)
   for (argi in names(args)) { assign(x = argi, value = args[[argi]]) }
   rm(args)
   
   
   ## get model name and names of categorical variables
-  model_name <- paste0(nam, '_', Model)
+  model_name <- paste0(nam, '_', model)
   categorial_var <- unlist(sapply(expl_var_names, function(x) {
     if (is.factor(Data[, x])) { return(x) } else { return(NULL) }
   }))
   
   ## 1. Create output object ----------------------------------------------------------------------
-  ListOut <- list(ModelName = NULL,
+  ListOut <- list(model = NULL,
                   calib.failure = NULL,
                   pred = NULL,
                   pred.eval = NULL,
@@ -152,17 +156,17 @@ bm_RunModel <- function(Model, Data, Options, calibLines, Yweights, nam, VarImpo
   
   ## 2. CREATE MODELS -----------------------------------------------------------------------------
   
-  if (Model == "CTA") {
-    ## 2.1 CTA model ------------------------------------------------------------
+  if (model == "CTA") {
+    ## 2.1 CTA model ----------------------------------------------------------
     cat('\n\t> CTA modeling...')
     
     # converting cost argument
-    cost.tmp = Options@CTA$cost
-    if (is.null(Options@CTA$cost)) { cost.tmp = rep(1, (ncol(Data) - 2)) }
-
+    cost.tmp = bm.options@CTA$cost
+    if (is.null(bm.options@CTA$cost)) { cost.tmp = rep(1, (ncol(Data) - 2)) }
+    
     # defining rpart parameters for splitting function
-    parms.tmp = Options@CTA$parms
-    if (Options@CTA$parms == 'default') { parms.tmp = NULL }
+    parms.tmp = bm.options@CTA$parms
+    if (bm.options@CTA$parms == 'default') { parms.tmp = NULL }
     
     model.sp <- try(rpart(
       bm_MakeFormula(respName = colnames(Data)[1]
@@ -170,11 +174,11 @@ bm_RunModel <- function(Model, Data, Options, calibLines, Yweights, nam, VarImpo
                      , type = 'simple'
                      , interaction.level = 0),
       data = Data[calibLines, ],
-      weights = Yweights,
-      method = Options@CTA$method,
+      weights = weights,
+      method = bm.options@CTA$method,
       parms = parms.tmp,
       cost = cost.tmp,
-      control = eval(Options@CTA$control)
+      control = eval(bm.options@CTA$control)
     ))
     
     if (!inherits(model.sp, "try-error")) {
@@ -189,16 +193,16 @@ bm_RunModel <- function(Model, Data, Options, calibLines, Yweights, nam, VarImpo
                       model = model.sp,
                       model_name = model_name,
                       model_class = 'CTA',
-                      model_options = Options@CTA,
+                      model_options = bm.options@CTA,
                       resp_name = resp_name,
                       expl_var_names = expl_var_names,
                       expl_var_type = get_var_type(Data[calibLines, expl_var_names, drop = FALSE]),
                       expl_var_range = get_var_range(Data[calibLines, expl_var_names, drop = FALSE]))
     }
-  } else if (Model == "GAM"){
-    ## 2.2 GAM model ------------------------------------------------------------
+  } else if (model == "GAM"){
+    ## 2.2 GAM model ----------------------------------------------------------
     
-    if (Options@GAM$algo == 'GAM_gam') { ## gam package
+    if (bm.options@GAM$algo == 'GAM_gam') { ## gam package
       # package loading
       if (isNamespaceLoaded("mgcv")) {
         if (isNamespaceLoaded("caret")) { unloadNamespace("caret") } ## need to unload caret before car
@@ -210,49 +214,49 @@ bm_RunModel <- function(Model, Data, Options, calibLines, Yweights, nam, VarImpo
       # NOTE : To be able to take into account GAM options and weights we have to do a eval(parse(...))
       # it's due to GAM implementation (using of match.call() troubles)
       gamStart <- eval(parse(text = paste0("gam::gam(", colnames(Data)[1], "~1 ,"
-                                           , " data = Data[calibLines,,drop=FALSE], family = ", Options@GAM$family$family
-                                           , "(link = '", Options@GAM$family$link, "')"
-                                           , ", weights = Yweights[calibLines])")))
+                                           , " data = Data[calibLines,,drop=FALSE], family = ", bm.options@GAM$family$family
+                                           , "(link = '", bm.options@GAM$family$link, "')"
+                                           , ", weights = weights[calibLines])")))
       model.sp <- try(gam::step.Gam(gamStart,
-                                    .scope(Data[1:3, -c(1, ncol(Data))], "gam::s", Options@GAM$k),
+                                    .scope(Data[1:3, -c(1, ncol(Data))], "gam::s", bm.options@GAM$k),
                                     data = Data[calibLines, , drop = FALSE],
                                     direction = "both",
-                                    trace = Options@GAM$control$trace,
-                                    control = Options@GAM$control))
+                                    trace = bm.options@GAM$control$trace,
+                                    control = bm.options@GAM$control))
     } else { ## mgcv package
       # package loading
       if (isNamespaceLoaded("gam")) { unloadNamespace("gam") }
       if (!isNamespaceLoaded("mgcv")) { requireNamespace("mgcv", quietly = TRUE) }
       
-      if (is.null(Options@GAM$myFormula)) {
+      if (is.null(bm.options@GAM$myFormula)) {
         cat("\n\tAutomatic formula generation...")
         gam.formula <- bm_MakeFormula(respName = resp_name
                                       , explVar = head(Data[, expl_var_names, drop = FALSE])
-                                      , type = Options@GAM$type
-                                      , interaction.level = Options@GAM$interaction.level
-                                      , k = Options@GAM$k)
+                                      , type = bm.options@GAM$type
+                                      , interaction.level = bm.options@GAM$interaction.level
+                                      , k = bm.options@GAM$k)
         tmp = gsub("gam::", "", gam.formula)
         gam.formula = as.formula(paste0(tmp[c(2,1,3)], collapse = " "))
       } else {
-        gam.formula <- Options@GAM$myFormula
+        gam.formula <- bm.options@GAM$myFormula
       }
       
-      if (Options@GAM$algo == 'GAM_mgcv') {
+      if (bm.options@GAM$algo == 'GAM_mgcv') {
         cat('\n\t> GAM (mgcv) modeling...')
         
         model.sp <- try(mgcv::gam(gam.formula,
                                   data = Data[calibLines, , drop = FALSE],
-                                  family = Options@GAM$family,
-                                  weights = Yweights,
-                                  control = Options@GAM$control))
+                                  family = bm.options@GAM$family,
+                                  weights = weights,
+                                  control = bm.options@GAM$control))
         
-      } else if (Options@GAM$algo == 'BAM_mgcv') { ## big data.frame gam version
+      } else if (bm.options@GAM$algo == 'BAM_mgcv') { ## big data.frame gam version
         cat('\n\t> BAM (mgcv) modeling...')
         model.sp <- try(mgcv::bam(gam.formula,
                                   data = Data[calibLines, , drop = FALSE],
-                                  family = Options@GAM$family,
-                                  weights = Yweights,
-                                  control = Options@GAM$control))
+                                  family = bm.options@GAM$family,
+                                  weights = weights,
+                                  control = bm.options@GAM$control))
       }
     }
     
@@ -261,15 +265,15 @@ bm_RunModel <- function(Model, Data, Options, calibLines, Yweights, nam, VarImpo
                       model = model.sp,
                       model_name = model_name,
                       model_class = 'GAM',
-                      model_subclass = Options@GAM$algo,
-                      model_options = Options@GAM,
+                      model_subclass = bm.options@GAM$algo,
+                      model_options = bm.options@GAM,
                       resp_name = resp_name,
                       expl_var_names = expl_var_names,
                       expl_var_type = get_var_type(Data[calibLines, expl_var_names, drop = FALSE]),
                       expl_var_range = get_var_range(Data[calibLines, expl_var_names, drop = FALSE]))
     }
-  } else if (Model == "GBM") {
-    ## 2.3 GBM model ------------------------------------------------------------
+  } else if (model == "GBM") {
+    ## 2.3 GBM model ----------------------------------------------------------
     
     cat('\n\t> GBM modeling...')
     model.sp <- try(gbm(formula = bm_MakeFormula(respName = colnames(Data)[1]
@@ -277,57 +281,57 @@ bm_RunModel <- function(Model, Data, Options, calibLines, Yweights, nam, VarImpo
                                                  , type = 'simple'
                                                  , interaction.level = 0),
                         data = Data[calibLines, , drop = FALSE],
-                        distribution = Options@GBM$distribution,
+                        distribution = bm.options@GBM$distribution,
                         var.monotone = rep(0, length = ncol(Data) - 2), # -2 because of removing of sp and weights
-                        weights = Yweights,
-                        interaction.depth = Options@GBM$interaction.depth,
-                        n.minobsinnode = Options@GBM$n.minobsinnode,
-                        shrinkage = Options@GBM$shrinkage,
-                        bag.fraction = Options@GBM$bag.fraction,
-                        train.fraction = Options@GBM$train.fraction,
-                        n.trees = Options@GBM$n.trees,
-                        verbose = Options@GBM$verbose,
-                        #class.stratify.cv = Options@GBM$class.stratify.cv,
-                        cv.folds = Options@GBM$cv.folds,
-                        n.cores = Options@GBM$n.cores
+                        weights = weights,
+                        interaction.depth = bm.options@GBM$interaction.depth,
+                        n.minobsinnode = bm.options@GBM$n.minobsinnode,
+                        shrinkage = bm.options@GBM$shrinkage,
+                        bag.fraction = bm.options@GBM$bag.fraction,
+                        train.fraction = bm.options@GBM$train.fraction,
+                        n.trees = bm.options@GBM$n.trees,
+                        verbose = bm.options@GBM$verbose,
+                        #class.stratify.cv = bm.options@GBM$class.stratify.cv,
+                        cv.folds = bm.options@GBM$cv.folds,
+                        n.cores = bm.options@GBM$n.cores
     ))
     
     if (!inherits(model.sp, "try-error")) {
-      best.iter <- try(gbm.perf(model.sp, method = Options@GBM$perf.method , plot.it = FALSE))
+      best.iter <- try(gbm.perf(model.sp, method = bm.options@GBM$perf.method , plot.it = FALSE))
       
       model.bm <- new("GBM_biomod2_model",
                       model = model.sp,
                       model_name = model_name,
                       model_class = 'GBM',
                       n.trees_optim = best.iter,
-                      model_options = Options@GBM,
+                      model_options = bm.options@GBM,
                       resp_name = resp_name,
                       expl_var_names = expl_var_names,
                       expl_var_type = get_var_type(Data[calibLines, expl_var_names, drop = FALSE]), 
                       expl_var_range = get_var_range(Data[calibLines, expl_var_names, drop = FALSE]))
     }
-  } else if (Model == "GLM"){
-    ## 2.4 GLM model ------------------------------------------------------------
+  } else if (model == "GLM"){
+    ## 2.4 GLM model ----------------------------------------------------------
     
     cat('\n\t> GLM modeling...')
-    if (is.null(Options@GLM$myFormula)) {
+    if (is.null(bm.options@GLM$myFormula)) {
       cat("\n\tAutomatic formula generation...")
       glm.formula <- bm_MakeFormula(respName = colnames(Data)[1]
                                     , explVar = head(Data)
-                                    , type = Options@GLM$type
-                                    , interaction.level = Options@GLM$interaction.level)
+                                    , type = bm.options@GLM$type
+                                    , interaction.level = bm.options@GLM$interaction.level)
     } else {
-      glm.formula <- Options@GLM$myFormula
+      glm.formula <- bm.options@GLM$myFormula
     }
     
-    if (Options@GLM$test != 'none') {
+    if (bm.options@GLM$test != 'none') {
       ## make the model selection
       glmStart <- glm(eval(parse(text = paste0(colnames(Data)[1], "~1"))), 
                       data = Data[calibLines, , drop = FALSE], 
-                      family = Options@GLM$family,
-                      control = eval(Options@GLM$control),
-                      weights = Yweights[calibLines],
-                      mustart = rep(Options@GLM$mustart, sum(calibLines)), 
+                      family = bm.options@GLM$family,
+                      control = eval(bm.options@GLM$control),
+                      weights = weights[calibLines],
+                      mustart = rep(bm.options@GLM$mustart, sum(calibLines)), 
                       model = TRUE)
       
       ## remove warnings
@@ -339,9 +343,9 @@ bm_RunModel <- function(Model, Data, Options, calibLines, Yweights, nam, VarImpo
                               direction = "both",
                               trace = FALSE,
                               k = criteria,
-                              weights = Yweights[calibLines], 
+                              weights = weights[calibLines], 
                               steps = 10000,
-                              mustart = rep(Options@GLM$mustart, sum(calibLines))))
+                              mustart = rep(bm.options@GLM$mustart, sum(calibLines))))
       ## reexec warnings
       options(warn)
       
@@ -349,10 +353,10 @@ bm_RunModel <- function(Model, Data, Options, calibLines, Yweights, nam, VarImpo
       ## keep the total model
       model.sp <- try(glm(glm.formula,
                           data = cbind(Data[calibLines, , drop = FALSE], 
-                                       matrix(Yweights[calibLines], ncol = 1, dimnames = list(NULL, "Yweights"))), 
-                          family = Options@GLM$family,
-                          control = eval(Options@GLM$control),
-                          weights = Yweights,
+                                       matrix(weights[calibLines], ncol = 1, dimnames = list(NULL, "weights"))), 
+                          family = bm.options@GLM$family,
+                          control = eval(bm.options@GLM$control),
+                          weights = weights,
                           model = TRUE))
     }
     
@@ -364,58 +368,58 @@ bm_RunModel <- function(Model, Data, Options, calibLines, Yweights, nam, VarImpo
                       model = model.sp,
                       model_name = model_name,
                       model_class = 'GLM',
-                      model_options = Options@GLM,
+                      model_options = bm.options@GLM,
                       resp_name = resp_name,
                       expl_var_names = expl_var_names,
                       expl_var_type = get_var_type(Data[calibLines, expl_var_names, drop = FALSE]),
                       expl_var_range = get_var_range(Data[calibLines, expl_var_names, drop = FALSE]))
     }
-  } else if (Model == "MARS"){
-    ## 2.5 MARS model -----------------------------------------------------------
+  } else if (model == "MARS"){
+    ## 2.5 MARS model ---------------------------------------------------------
     
     cat('\n\t> MARS modeling...')
-    if (is.null(Options@MARS$myFormula)) {
+    if (is.null(bm.options@MARS$myFormula)) {
       cat("\n\tAutomatic formula generation...")
       mars.formula <- bm_MakeFormula(respName = colnames(Data)[1]
                                      , explVar = head(Data)[, -ncol(Data), drop = FALSE]
-                                     , type = Options@MARS$type
-                                     , interaction.level = Options@MARS$interaction.level)
+                                     , type = bm.options@MARS$type
+                                     , interaction.level = bm.options@MARS$interaction.level)
     } else {
-      mars.formula <- Options@MARS$myFormula
+      mars.formula <- bm.options@MARS$myFormula
     }
     
     ## deal with nk argument : if not defined, set up to default mars value i.e max(21, 2 * ncol(x) + 1)
-    nk <- Options@MARS$nk
+    nk <- bm.options@MARS$nk
     if (is.null(nk)) {
       nk <- min(200, max(20, 2 * length(expl_var_names))) + 1
     }
     
     model.sp <- try(earth(formula = mars.formula,
                           data = Data[calibLines, , drop = FALSE], 
-                          weights = Yweights,
+                          weights = weights,
                           glm = list(family = binomial),
                           ncross = 0,
                           keepxy = FALSE,
-                          # degree = Options@MARS$degree,
-                          pmethod = Options@MARS$pmethod,
-                          nprune = Options@MARS$nprune,
+                          # degree = bm.options@MARS$degree,
+                          pmethod = bm.options@MARS$pmethod,
+                          nprune = bm.options@MARS$nprune,
                           nk = nk,
-                          penalty = Options@MARS$penalty,
-                          thresh = Options@MARS$thresh))
+                          penalty = bm.options@MARS$penalty,
+                          thresh = bm.options@MARS$thresh))
     
     if (!inherits(model.sp, "try-error")) {
       model.bm <- new("MARS_biomod2_model",
                       model = model.sp,
                       model_name = model_name,
                       model_class = 'MARS',
-                      model_options = Options@MARS,
+                      model_options = bm.options@MARS,
                       resp_name = resp_name,
                       expl_var_names = expl_var_names,
                       expl_var_type = get_var_type(Data[calibLines, expl_var_names, drop = FALSE]), 
                       expl_var_range = get_var_range(Data[calibLines, expl_var_names, drop = FALSE]))
     }
-  } else if (Model == "FDA") {
-    ## 2.6 FDA model ------------------------------------------------------------
+  } else if (model == "FDA") {
+    ## 2.6 FDA model ----------------------------------------------------------
     
     cat('\n\t> FDA modeling...')
     model.sp <- try(do.call(fda, c(list(formula = bm_MakeFormula(respName = colnames(Data)[1]
@@ -423,27 +427,27 @@ bm_RunModel <- function(Model, Data, Options, calibLines, Yweights, nam, VarImpo
                                                                  , type = 'simple'
                                                                  , interaction.level = 0),
                                         data = Data[calibLines, , drop = FALSE], 
-                                        method = eval(parse(text = call(Options@FDA$method))),
-                                        weights = Yweights[calibLines]),
-                                   Options@FDA$add_args)))
+                                        method = eval(parse(text = call(bm.options@FDA$method))),
+                                        weights = weights[calibLines]),
+                                   bm.options@FDA$add_args)))
     
     if (!inherits(model.sp, "try-error")) {
       model.bm <- new("FDA_biomod2_model",
                       model = model.sp,
                       model_name = model_name,
                       model_class = 'FDA',
-                      model_options = Options@FDA,
+                      model_options = bm.options@FDA,
                       resp_name = resp_name,
                       expl_var_names = expl_var_names,
                       expl_var_type = get_var_type(Data[calibLines, expl_var_names, drop = FALSE]),
                       expl_var_range = get_var_range(Data[calibLines, expl_var_names, drop = FALSE]))
     }
-  } else if (Model == "ANN") {
-    ## 2.7 ANN model ------------------------------------------------------------
+  } else if (model == "ANN") {
+    ## 2.7 ANN model ----------------------------------------------------------
     
     cat('\n\t> ANN modeling...')
-    size = Options@ANN$size
-    decay = Options@ANN$decay
+    size = bm.options@ANN$size
+    decay = bm.options@ANN$decay
     if (is.null(size) | is.null(decay) | length(size) > 1 | length(decay) > 1) {
       
       ## define the size and decay to test
@@ -455,9 +459,9 @@ bm_RunModel <- function(Model, Data, Options, calibLines, Yweights, nam, VarImpo
                            Target = Data[calibLines, 1], 
                            size = size,
                            decay = decay,
-                           maxit = Options@ANN$maxit,
-                           nbCV = Options@ANN$NbCV,
-                           W = Yweights[calibLines])
+                           maxit = bm.options@ANN$maxit,
+                           nbCV = bm.options@ANN$NbCV,
+                           W = weights[calibLines])
       
       ## get the optimised parameters values
       decay <- CV_nnet[1, 2]
@@ -470,10 +474,10 @@ bm_RunModel <- function(Model, Data, Options, calibLines, Yweights, nam, VarImpo
                                                   , interaction.level = 0),
                          data = Data[calibLines, , drop = FALSE], 
                          size = size,
-                         rang = Options@ANN$rang,
+                         rang = bm.options@ANN$rang,
                          decay = decay,
-                         weights = Yweights,
-                         maxit = Options@ANN$maxit,
+                         weights = weights,
+                         maxit = bm.options@ANN$maxit,
                          trace = FALSE))
     
     if (!inherits(model.sp, "try-error")) {
@@ -481,39 +485,39 @@ bm_RunModel <- function(Model, Data, Options, calibLines, Yweights, nam, VarImpo
                       model = model.sp,
                       model_name = model_name,
                       model_class = 'ANN',
-                      model_options = Options@ANN,
+                      model_options = bm.options@ANN,
                       resp_name = resp_name,
                       expl_var_names = expl_var_names,
                       expl_var_type = get_var_type(Data[calibLines, expl_var_names, drop = FALSE]), 
                       expl_var_range = get_var_range(Data[calibLines, expl_var_names, drop = FALSE]))
     }
-  } else if (Model == "RF") {
-    ## 2.8 RF model -------------------------------------------------------------
+  } else if (model == "RF") {
+    ## 2.8 RF model -----------------------------------------------------------
     
     cat('\n\t> RF modeling...')
-    if (Options@RF$do.classif) {
+    if (bm.options@RF$do.classif) {
       # defining occurences as factor for doing classification and not regression in RF
       Data <- Data %>% mutate_at(resp_name, factor)
     }
     
-    # mtry.tmp = Options@RF$mtry
-    # if (Options@RF$mtry == 'default') { mtry.tmp = NULL }
-
+    # mtry.tmp = bm.options@RF$mtry
+    # if (bm.options@RF$mtry == 'default') { mtry.tmp = NULL }
+    
     model.sp <- try(randomForest(formula = bm_MakeFormula(respName = resp_name
                                                           , explVar = head(Data)
                                                           , type = 'simple'
                                                           , interaction.level = 0),
                                  data = Data[calibLines, ],
-                                 ntree = Options@RF$ntree,
+                                 ntree = bm.options@RF$ntree,
                                  # mtry = mtry.tmp, 
                                  importance = FALSE,
                                  norm.votes = TRUE,
                                  strata = factor(c(0, 1)),
-                                 sampsize = ifelse(!is.null(Options@RF$sampsize), Options@RF$sampsize, nrow(Data[calibLines, ])),
-                                 nodesize = Options@RF$nodesize,
-                                 maxnodes = Options@RF$maxnodes))
-
-    if (Options@RF$do.classif) {
+                                 sampsize = ifelse(!is.null(bm.options@RF$sampsize), bm.options@RF$sampsize, nrow(Data[calibLines, ])),
+                                 nodesize = bm.options@RF$nodesize,
+                                 maxnodes = bm.options@RF$maxnodes))
+    
+    if (bm.options@RF$do.classif) {
       # canceling occurences class modifications
       Data <- Data %>% mutate_at(resp_name, function(.x) {
         .x %>% as.character() %>% as.numeric()
@@ -525,20 +529,20 @@ bm_RunModel <- function(Model, Data, Options, calibLines, Yweights, nam, VarImpo
                       model = model.sp,
                       model_name = model_name,
                       model_class = 'RF',
-                      model_options = Options@RF,
+                      model_options = bm.options@RF,
                       resp_name = resp_name,
                       expl_var_names = expl_var_names,
                       expl_var_type = get_var_type(Data[calibLines, expl_var_names, drop = FALSE]), 
                       expl_var_range = get_var_range(Data[calibLines, expl_var_names, drop = FALSE]))
     }
-  } else if (Model == "SRE") {
-    ## 2.9 SRE model ------------------------------------------------------------
+  } else if (model == "SRE") {
+    ## 2.9 SRE model ----------------------------------------------------------
     
     cat('\n\t> SRE modeling...')
     model.sp <- try(bm_SRE(Response = Data[calibLines, 1],
                            Explanatory = Data[calibLines, expl_var_names, drop = FALSE],
                            NewData = NULL,
-                           Quant = Options@SRE$quant,
+                           Quant = bm.options@SRE$quant,
                            return_extremcond = TRUE))
     
     if (!inherits(model.sp, "try-error")) {
@@ -546,26 +550,26 @@ bm_RunModel <- function(Model, Data, Options, calibLines, Yweights, nam, VarImpo
                       extremal_conditions = model.sp,
                       model_name = model_name,
                       model_class = 'SRE',
-                      model_options = Options@SRE,
+                      model_options = bm.options@SRE,
                       resp_name = resp_name,
                       expl_var_names = expl_var_names,
                       expl_var_type = get_var_type(Data[calibLines, expl_var_names, drop = FALSE]), 
                       expl_var_range = get_var_range(Data[calibLines, expl_var_names, drop = FALSE]))
     }
-  } else if (Model == "MAXENT.Phillips") {
-    ## 2.10 MAXENT.Phillips model -----------------------------------------------
+  } else if (model == "MAXENT.Phillips") {
+    ## 2.10 MAXENT.Phillips model ---------------------------------------------
     
     cat('\n\t> MAXENT.Phillips modeling...')
     MWD <- .maxent.prepare.workdir(Data, xy, calibLines, RunName = nam,
                                    evalData, eval.xy, species.name = resp_name,
                                    modeling.id = modeling.id,
-                                   background_data_dir = Options@MAXENT.Phillips$background_data_dir)
+                                   background_data_dir = bm.options@MAXENT.Phillips$background_data_dir)
     
     maxent.cmd <- paste0("java ",
-                         ifelse(is.null(Options@MAXENT.Phillips$memory_allocated),
+                         ifelse(is.null(bm.options@MAXENT.Phillips$memory_allocated),
                                 "",
-                                paste0("-mx", Options@MAXENT.Phillips$memory_allocated, "m")), 
-                         " -jar ", file.path(Options@MAXENT.Phillips$path_to_maxent.jar, "maxent.jar"),
+                                paste0("-mx", bm.options@MAXENT.Phillips$memory_allocated, "m")), 
+                         " -jar ", file.path(bm.options@MAXENT.Phillips$path_to_maxent.jar, "maxent.jar"),
                          " environmentallayers=\"", MWD$m_backgroundFile, 
                          "\" samplesfile=\"", MWD$m_speciesFile,
                          "\" projectionlayers=\"", gsub(", ", ",", toString(MWD$m_predictFile)),
@@ -575,21 +579,21 @@ bm_RunModel <- function(Model, Data, Options, calibLines, Yweights, nam, VarImpo
                                 paste0(" togglelayertype=", categorial_var, collapse = " "),
                                 ""),
                          " redoifexists",
-                         " visible=", Options@MAXENT.Phillips$visible,
-                         " linear=", Options@MAXENT.Phillips$linear,
-                         " quadratic=", Options@MAXENT.Phillips$quadratic,
-                         " product=", Options@MAXENT.Phillips$product,
-                         " threshold=", Options@MAXENT.Phillips$threshold,
-                         " hinge=", Options@MAXENT.Phillips$hinge,
-                         " lq2lqptthreshold=", Options@MAXENT.Phillips$lq2lqptthreshold,
-                         " l2lqthreshold=", Options@MAXENT.Phillips$l2lqthreshold,
-                         " hingethreshold=", Options@MAXENT.Phillips$hingethreshold,
-                         " beta_threshold=", Options@MAXENT.Phillips$beta_threshold,
-                         " beta_categorical=", Options@MAXENT.Phillips$beta_categorical,
-                         " beta_lqp=", Options@MAXENT.Phillips$beta_lqp,
-                         " beta_hinge=", Options@MAXENT.Phillips$beta_hinge,
-                         " betamultiplier=", Options@MAXENT.Phillips$betamultiplier,
-                         " defaultprevalence=", Options@MAXENT.Phillips$defaultprevalence,
+                         " visible=", bm.options@MAXENT.Phillips$visible,
+                         " linear=", bm.options@MAXENT.Phillips$linear,
+                         " quadratic=", bm.options@MAXENT.Phillips$quadratic,
+                         " product=", bm.options@MAXENT.Phillips$product,
+                         " threshold=", bm.options@MAXENT.Phillips$threshold,
+                         " hinge=", bm.options@MAXENT.Phillips$hinge,
+                         " lq2lqptthreshold=", bm.options@MAXENT.Phillips$lq2lqptthreshold,
+                         " l2lqthreshold=", bm.options@MAXENT.Phillips$l2lqthreshold,
+                         " hingethreshold=", bm.options@MAXENT.Phillips$hingethreshold,
+                         " beta_threshold=", bm.options@MAXENT.Phillips$beta_threshold,
+                         " beta_categorical=", bm.options@MAXENT.Phillips$beta_categorical,
+                         " beta_lqp=", bm.options@MAXENT.Phillips$beta_lqp,
+                         " beta_hinge=", bm.options@MAXENT.Phillips$beta_hinge,
+                         " betamultiplier=", bm.options@MAXENT.Phillips$betamultiplier,
+                         " defaultprevalence=", bm.options@MAXENT.Phillips$defaultprevalence,
                          " autorun nowarnings notooltips noaddsamplestobackground")
     
     system(command = maxent.cmd, wait = TRUE, intern = TRUE,
@@ -599,7 +603,7 @@ bm_RunModel <- function(Model, Data, Options, calibLines, Yweights, nam, VarImpo
                     model_output_dir = MWD$m_outdir,
                     model_name = model_name,
                     model_class = 'MAXENT.Phillips',
-                    model_options = Options@MAXENT.Phillips,
+                    model_options = bm.options@MAXENT.Phillips,
                     resp_name = resp_name,
                     expl_var_names = expl_var_names,
                     expl_var_type = get_var_type(Data[calibLines, expl_var_names, drop = FALSE]), 
@@ -612,16 +616,16 @@ bm_RunModel <- function(Model, Data, Options, calibLines, Yweights, nam, VarImpo
     cat("\n Getting predictor contributions...")
     variables.importance <- bm_VariablesImportance(model = model.bm
                                                    , data = Data[, expl_var_names, drop = FALSE]
-                                                   , nb_rand = VarImport
+                                                   , nb_rand = var.import
                                                    , temp_workdir = MWD$m_outdir)
-  } else if(Model == "MAXENT.Phillips.2")
+  } else if(model == "MAXENT.Phillips.2")
   {
-    ## 2.11 MAXENT.Phillips.2 model ---------------------------------------------
+    ## 2.11 MAXENT.Phillips.2 model -------------------------------------------
     
     cat('\n\t> MAXENT.Phillips modeling...')
     model.sp <- try(maxnet(p = Data %>% filter(calibLines) %>% pull(resp_name), 
                            data = Data %>% filter(calibLines) %>% select_at(expl_var_names)
-                           # f = if(!is.null(Options@MAXENT.Phillips.2@))
+                           # f = if(!is.null(bm.options@MAXENT.Phillips.2@))
     ))
     
     if (!inherits(model.sp, "try-error")) {
@@ -629,7 +633,7 @@ bm_RunModel <- function(Model, Data, Options, calibLines, Yweights, nam, VarImpo
                       model = model.sp,
                       model_name = model_name,
                       model_class = 'MAXENT.Phillips.2',
-                      model_options = Options@MAXENT.Phillips.2,
+                      model_options = bm.options@MAXENT.Phillips.2,
                       resp_name = resp_name,
                       expl_var_names = expl_var_names,
                       expl_var_type = get_var_type(Data[calibLines, expl_var_names, drop = FALSE]), 
@@ -638,22 +642,22 @@ bm_RunModel <- function(Model, Data, Options, calibLines, Yweights, nam, VarImpo
   }
   
   ## 2.12 MAXENT.Tsuruoka model -----------------------------------------------
-  # if(Model == "MAXENT.Tsuruoka"){
+  # if(model == "MAXENT.Tsuruoka"){
   #   model.sp <- try(stop('MAXENT.Tsuruoka is depreacated(because maxent package is not maintained anymore)'))
   #   # model.sp <- try(maxent::maxent(feature_matrix = Data[calibLines, expl_var_names, drop = FALSE],
   #   #                                code_vector = as.factor(Data[calibLines, 1]),
-  #   #                                l1_regularizer = Options@MAXENT.Tsuruoka$l1_regularizer,
-  #   #                                l2_regularizer = Options@MAXENT.Tsuruoka$l2_regularizer,
-  #   #                                use_sgd = Options@MAXENT.Tsuruoka$use_sgd,
-  #   #                                set_heldout = Options@MAXENT.Tsuruoka$set_heldout,
-  #   #                                verbose = Options@MAXENT.Tsuruoka$verbose))
+  #   #                                l1_regularizer = bm.options@MAXENT.Tsuruoka$l1_regularizer,
+  #   #                                l2_regularizer = bm.options@MAXENT.Tsuruoka$l2_regularizer,
+  #   #                                use_sgd = bm.options@MAXENT.Tsuruoka$use_sgd,
+  #   #                                set_heldout = bm.options@MAXENT.Tsuruoka$set_heldout,
+  #   #                                verbose = bm.options@MAXENT.Tsuruoka$verbose))
   # 
   #   if( !inherits(model.sp,"try-error") ){
   #     model.bm <- new("MAXENT.Tsuruoka_biomod2_model",
   #                     model = model.sp,
   #                     model_name = model_name,
   #                     model_class = 'MAXENT.Tsuruoka',
-  #                     model_options = Options@MAXENT.Tsuruoka,
+  #                     model_options = bm.options@MAXENT.Tsuruoka,
   #                     resp_name = resp_name,
   #                     expl_var_names = expl_var_names,
   #                     expl_var_type = get_var_type(Data[calibLines,expl_var_names,drop=F]),
@@ -663,14 +667,14 @@ bm_RunModel <- function(Model, Data, Options, calibLines, Yweights, nam, VarImpo
   
   
   ## 3. CREATE PREDICTIONS ------------------------------------------------------------------------
-  if (Model != "MAXENT.Phillips") {
+  if (model != "MAXENT.Phillips") {
     g.pred <- try(predict(model.bm, Data[, expl_var_names, drop = FALSE], on_0_1000 = TRUE))
   }
   
   ## scale or not predictions -------------------------------------------------
-  if (scal.models & !inherits(g.pred, 'try-error')) {
+  if (scale.models & !inherits(g.pred, 'try-error')) {
     cat("\n\tModel scaling...")
-    model.bm@scaling_model <- try(.scaling_model(g.pred / 1000, Data[, 1, drop = TRUE], weights = Yweights))
+    model.bm@scaling_model <- try(.scaling_model(g.pred / 1000, Data[, 1, drop = TRUE], weights = weights))
     ## with weights
     g.pred <- try(predict(model.bm, Data[, expl_var_names, drop = FALSE], on_0_1000 = TRUE))
   }
@@ -690,7 +694,7 @@ bm_RunModel <- function(Model, Data, Options, calibLines, Yweights, nam, VarImpo
   
   if (test_pred_ok) {
     # keep the model name
-    ListOut$ModelName <- model_name
+    ListOut$model <- model_name
   } else {
     # keep the name of uncompleted modelisations
     cat("\n   ! Note : ", model_name, "failed!\n")
@@ -704,14 +708,14 @@ bm_RunModel <- function(Model, Data, Options, calibLines, Yweights, nam, VarImpo
   }
   
   ## SAVE predictions ---------------------------------------------------------
-  if (SavePred) {
+  if (save.output) {
     ListOut$pred <- g.pred
     if (exists("g.pred.eval")) { ListOut$pred.eval <- g.pred.eval }
   }
   
   
   ## 4. EVALUATE MODEL ----------------------------------------------------------------------------
-  if (length(mod.eval.method) > 0) {
+  if (length(metric.eval) > 0) {
     cat("\n\tEvaluating Model stuff...")
     
     ## Check no NA in g.pred to avoid evaluation failures
@@ -721,7 +725,7 @@ bm_RunModel <- function(Model, Data, Options, calibLines, Yweights, nam, VarImpo
       cat('\n\tNote : some NA occurs in predictions')
     }
     
-    cross.validation <- sapply(mod.eval.method, function(.x) {
+    cross.validation <- sapply(metric.eval, function(.x) {
       bm_FindOptimStat(Stat = .x,
                        Fit = g.pred[evalLines],
                        Obs = Data %>% filter(evalLines) %>% pull(1))
@@ -740,7 +744,7 @@ bm_RunModel <- function(Model, Data, Options, calibLines, Yweights, nam, VarImpo
         g.pred.eval.without.na <- g.pred.eval
       }
       
-      true.evaluation <- sapply(mod.eval.method, function(x) {
+      true.evaluation <- sapply(metric.eval, function(x) {
         bm_FindOptimStat(Stat = x,
                          Fit = g.pred.eval.without.na,
                          Obs = evalData[, 1],
@@ -760,12 +764,12 @@ bm_RunModel <- function(Model, Data, Options, calibLines, Yweights, nam, VarImpo
   
   
   ## 5. COMPUTE VARIABLES IMPORTANCE --------------------------------------------------------------
-  if (VarImport > 0) {
+  if (var.import > 0) {
     cat("\n\tEvaluating Predictor Contributions...")
-    if (Model != "MAXENT.Phillips") {
+    if (model != "MAXENT.Phillips") {
       variables.importance <- bm_VariablesImportance(model = model.bm
                                                      , data = Data[, expl_var_names, drop = FALSE]
-                                                     , nb_rand = VarImport)
+                                                     , nb_rand = var.import)
     }
     model.bm@model_variables_importance <- variables.importance
     
@@ -777,7 +781,7 @@ bm_RunModel <- function(Model, Data, Options, calibLines, Yweights, nam, VarImpo
   
   
   ## 6. SAVE MODEL OBJECT ON HARD DRIVE -----------------------------------------------------------
-  nameModel = paste(nam, Model, sep = "_") 
+  nameModel = paste(nam, model, sep = "_") 
   assign(x = nameModel, value = model.bm)
   save(list = nameModel, file = file.path(resp_name, "models", modeling.id, nameModel), compress = TRUE)
   
@@ -788,8 +792,8 @@ bm_RunModel <- function(Model, Data, Options, calibLines, Yweights, nam, VarImpo
 
 ###################################################################################################
 
-.bm_RunModel.check.args <- function(Model, Data, Options, calibLines, Yweights, mod.eval.method
-                                    , evalData, scal.models, criteria = NULL, Prev = NULL)
+.bm_RunModel.check.args <- function(model, Data, bm.options, calibLines, weights, metric.eval
+                                    , evalData, scale.models, criteria = NULL, Prev = NULL)
 {
   ## 0. Do some cleaning over Data argument -----------------------------------
   resp_name <- colnames(Data)[1] ## species name
@@ -806,7 +810,7 @@ bm_RunModel <- function(Model, Data, Options, calibLines, Yweights, nam, VarImpo
         sum(Data[calibLines, 1] == 0) == sum(calibLines) ||
         sum(Data[evalLines, 1] == 0) == 0 ||
         sum(Data[evalLines, 1] == 0) == sum(evalLines)) {
-      warning(paste0(colnames(Data)[1], " ", Model,
+      warning(paste0(colnames(Data)[1], " ", model,
                      " was switched off because of no both presences and absences data given"),
               immediate. = TRUE)
       return(NULL)
@@ -816,119 +820,119 @@ bm_RunModel <- function(Model, Data, Options, calibLines, Yweights, nam, VarImpo
     # ...test if there is absences AND presences in whole dataset
     if (sum(Data[, 1] == 0) == 0 ||
         sum(Data[, 1] == 0) == nrow(Data)) {
-      warning(paste0(colnames(Data)[1], " ", Model,
+      warning(paste0(colnames(Data)[1], " ", model,
                      " was switched off because of no both presences and absences data given (full model)"),
               immediate. = TRUE)
       return(NULL)
     }
   }
   
-  ## 2. Check Yweights argument -----------------------------------------------
-  if (is.null(Yweights)) { Yweights <- rep(1, nrow(Data)) }
+  ## 2. Check weights argument ------------------------------------------------
+  if (is.null(weights)) { weights <- rep(1, nrow(Data)) }
   ## These models require data and weights to be in the same dataset
-  if (Model %in% c('GBM', 'CTA', 'ANN', 'FDA', 'GAM', 'MARS')) {
-    Data <- cbind(Data, Yweights)
+  if (model %in% c('GBM', 'CTA', 'ANN', 'FDA', 'GAM', 'MARS')) {
+    Data <- cbind(Data, weights)
   }
   
-  ## 3. Check scal.models argument --------------------------------------------
-  if (Model == "SRE") { scal.models <- FALSE } else if (Model %in% c("ANN", "FDA")) { scal.models <- TRUE }
+  ## 3. Check scale.models argument -------------------------------------------
+  if (model == "SRE") { scale.models <- FALSE } else if (model %in% c("ANN", "FDA")) { scale.models <- TRUE }
   
   
-  ## 4. Check Options argument ------------------------------------------------
-  if (Model == "GLM") {
+  ## 4. Check bm.options argument ---------------------------------------------
+  if (model == "GLM") {
     cat('\nModel=GLM')
-    if (!is.null(Options@GLM$myFormula)) {
-      cat('\n\tformula = ', paste(Options@GLM$myFormula[2],
-                                  Options@GLM$myFormula[1],
-                                  Options@GLM$myFormula[3]))
+    if (!is.null(bm.options@GLM$myFormula)) {
+      cat('\n\tformula = ', paste(bm.options@GLM$myFormula[2],
+                                  bm.options@GLM$myFormula[1],
+                                  bm.options@GLM$myFormula[3]))
     } else {
-      cat(' (', Options@GLM$type, 'with',
-          ifelse(Options@GLM$interaction.level == 0,
+      cat(' (', bm.options@GLM$type, 'with',
+          ifelse(bm.options@GLM$interaction.level == 0,
                  'no interaction )',
-                 paste('order', Options@GLM$interaction.level, 'interaction level )')
+                 paste('order', bm.options@GLM$interaction.level, 'interaction level )')
           ))
     }
-    if (Options@GLM$test == "AIC") {
+    if (bm.options@GLM$test == "AIC") {
       criteria <- 2
       cat("\n\tStepwise procedure using AIC criteria")
-    } else if (Options@GLM$test == "BIC") {
+    } else if (bm.options@GLM$test == "BIC") {
       criteria <- log(ncol(Data))
       cat("\n\tStepwise procedure using BIC criteria")
-    } else if (Options@GLM$test == "none") {
+    } else if (bm.options@GLM$test == "none") {
       criteria <- 0
       cat("\n\tNo stepwise procedure")
       cat("\n\t! You might be confronted to model convergence issues !")
     }
-  } else if (Model == "GBM") {
+  } else if (model == "GBM") {
     cat("\nModel=Generalised Boosting Regression \n")
-    cat("\t", Options@GBM$n.trees, "maximum different trees and ", Options@GBM$cv.folds, " Fold Cross-Validation")
+    cat("\t", bm.options@GBM$n.trees, "maximum different trees and ", bm.options@GBM$cv.folds, " Fold Cross-Validation")
     set.seed(456) # to be able to refind our trees MAY BE BAD
-  } else if (Model == "GAM") {
+  } else if (model == "GAM") {
     cat("\nModel=GAM")
-    cat("\n\t", Options@GAM$algo, "algorithm chosen")
-  } else if (Model == "CTA") {
+    cat("\n\t", bm.options@GAM$algo, "algorithm chosen")
+  } else if (model == "CTA") {
     cat("\nModel=Classification tree \n")
-    cat("\t", Options@CTA$control$xval, "Fold Cross-Validation")
+    cat("\t", bm.options@CTA$control$xval, "Fold Cross-Validation")
     set.seed(123) # to be able to refind our trees MAY BE BAD
-  } else if (Model == "ANN") {
+  } else if (model == "ANN") {
     cat("\nModel=Artificial Neural Network \n")
-    cat("\t", Options@ANN$NbCV, "Fold Cross Validation + 3 Repetitions")
+    cat("\t", bm.options@ANN$NbCV, "Fold Cross Validation + 3 Repetitions")
     set.seed(555) # to be able to refind our trees MAY BE BAD
-  } else if (Model == "SRE") {
+  } else if (model == "SRE") {
     cat("\nModel=Surface Range Envelop")
-  } else if (Model == "FDA"){
+  } else if (model == "FDA"){
     cat("\nModel=Flexible Discriminant Analysis")
-  } else if (Model == "MARS"){
+  } else if (model == "MARS"){
     cat("\nModel=Multiple Adaptive Regression Splines")
-    if (!is.null(Options@MARS$myFormula)) {
-      cat('\n\tformula = ', paste(Options@MARS$myFormula[2],
-                                  Options@MARS$myFormula[1],
-                                  Options@MARS$myFormula[3]))
+    if (!is.null(bm.options@MARS$myFormula)) {
+      cat('\n\tformula = ', paste(bm.options@MARS$myFormula[2],
+                                  bm.options@MARS$myFormula[1],
+                                  bm.options@MARS$myFormula[3]))
     } else {
-      cat(' (', Options@MARS$type, 'with',
-          ifelse(Options@MARS$interaction.level == 0,
+      cat(' (', bm.options@MARS$type, 'with',
+          ifelse(bm.options@MARS$interaction.level == 0,
                  'no interaction )',
-                 paste('order', Options@MARS$interaction.level, 'interaction level )')
+                 paste('order', bm.options@MARS$interaction.level, 'interaction level )')
           ))
     }
     cat("\n")
-  } else if (Model == "RF") {
+  } else if (model == "RF") {
     cat("\nModel=Breiman and Cutler's random forests for classification and regression")
     set.seed(71)
-  } else if (Model == 'MAXENT.Phillips') {
+  } else if (model == 'MAXENT.Phillips') {
     cat('\nModel=MAXENT.Phillips')
-  } else if (Model == 'MAXENT.Phillips.2') {
+  } else if (model == 'MAXENT.Phillips.2') {
     cat('\nModel=MAXENT.Phillips (maxnet)')
   }
-  # else if (Model == 'MAXENT.Tsuruoka') {
+  # else if (model == 'MAXENT.Tsuruoka') {
   #   cat('\nModel=MAXENT.Tsuruoka')
   # }
   
   ## 5. Check Prev argument ---------------------------------------------------
-  if (Model == "GLM" | Model == "GAM") {
+  if (model == "GLM" | model == "GAM") {
     Prev <- sum(Data[, 1], na.rm = TRUE) / length(Data[, 1])
   }
   
   ## 6. Check models.eval.meth arguments --------------------------------------
-  mod.eval.method <- unique(mod.eval.method)
+  metric.eval <- unique(metric.eval)
   avail.eval.meth.list <- c('TSS', 'KAPPA', 'ACCURACY', 'BIAS', 'POD', 'FAR', 'POFD'
                             , 'SR', 'CSI', 'ETS', 'HK', 'HSS', 'OR', 'ORSS', 'ROC')
-  # .fun_testIfIn(TRUE, "mod.eval.method", mod.eval.method, avail.eval.meth.list)
-  if (sum(!(mod.eval.method %in% avail.eval.meth.list)) > 0) {
-    tmp = which(mod.eval.method %in% avail.eval.meth.list)
-    warnings(paste0(toString(mod.eval.method[!tmp]), ' were switched off !'), imediate = TRUE)
-    mod.eval.method <- mod.eval.method[tmp]
+  # .fun_testIfIn(TRUE, "metric.eval", metric.eval, avail.eval.meth.list)
+  if (sum(!(metric.eval %in% avail.eval.meth.list)) > 0) {
+    tmp = which(metric.eval %in% avail.eval.meth.list)
+    warnings(paste0(toString(metric.eval[!tmp]), ' were switched off !'), imediate = TRUE)
+    metric.eval <- metric.eval[tmp]
   }
   
   
   return(list(Data = Data,
-              Yweights = Yweights,
+              weights = weights,
               evalLines = evalLines,
               criteria = criteria,
               Prev = Prev, 
-              mod.eval.method = mod.eval.method,
+              metric.eval = metric.eval,
               evalData = evalData,
-              scal.models = scal.models,
+              scale.models = scale.models,
               resp_name = resp_name,
               expl_var_names = expl_var_names))
 }
