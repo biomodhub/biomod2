@@ -62,7 +62,7 @@ bm_CVnnet = function(Input,
   
   for (i in 1:nbCV) {
     set.seed(555)
-    Samp = bm_SampleBinaryVector(ref = Target, ratio = 0.5)
+    Samp = bm_SampleBinaryVector(obs = Target, ratio = 0.5)
     
     weights.tmp = ifelse(is.null(weights), rep(1, length(Target)), weights)
     

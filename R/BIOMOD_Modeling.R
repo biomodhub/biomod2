@@ -755,7 +755,7 @@ setMethod('.BIOMOD_Modeling.prepare.data', signature('BIOMOD.formated.data.PA'),
     ## force to sample at least one level of each factorial variable for calibration
     fact.cell.samp <- NULL
     if (!is.null(data.env)) {
-      fact.cell.samp <- bm_SampleFactorLevels(data.env)
+      fact.cell.samp <- bm_SampleFactorLevels(expl.var = data.env)
       mat.out[fact.cell.samp, i] <- TRUE
     }
     mat.out[sample(setdiff(pres, fact.cell.samp),

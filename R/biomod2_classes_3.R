@@ -392,7 +392,7 @@ setMethod("get_variables_importance", "BIOMOD.models.out",
             # } else if(obj@variables.importance@link != '') {
             #   out <- get(load(obj@variables.importance@link))
             # }
-            BIOMOD_LoadModels(obj)
+            BIOMOD_LoadModels(bm.out = obj)
             for (mod in get_built_models(obj)) {
               out_tmp <- get(mod)@model_variables_importance
               out <- abind(out, out_tmp, along = 3)

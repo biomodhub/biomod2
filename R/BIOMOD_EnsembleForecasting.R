@@ -257,7 +257,7 @@ BIOMOD_EnsembleForecasting <- function(bm.em,
   } else {
     # make prediction according to given environment
     tmp_dir <- paste0('Tmp', format(Sys.time(), "%s"))
-    formal_pred <- BIOMOD_Projection(modeling.output = load_stored_object(bm.em@models.out.obj),
+    formal_pred <- BIOMOD_Projection(bm.mod = load_stored_object(bm.em@models.out.obj),
                                      new.env = new.env,
                                      proj.name = tmp_dir,
                                      new.env.xy = NULL,
@@ -282,7 +282,7 @@ BIOMOD_EnsembleForecasting <- function(bm.em,
     file_name_tmp <- file.path(indiv_proj_dir, paste0(em.comp,output.format))
     
     model.tmp <- NULL
-    BIOMOD_LoadModels(bm.em, full.name = em.comp, as = 'model.tmp')
+    BIOMOD_LoadModels(bm.out = bm.em, full.name = em.comp, as = 'model.tmp')
     if (inherits(formal_pred, 'Raster')) {
       ef.tmp <- predict(model.tmp,
                         formal_predictions = subset(formal_pred, subset = model.tmp@model, drop = FALSE),
@@ -390,7 +390,7 @@ BIOMOD_EnsembleForecasting <- function(bm.em,
       if (!do.stack) {
         for (i in 1:length(proj_out@proj@link)) {
           file.tmp <- proj_out@proj@link[i]
-          writeRaster(x = bm_BinaryTransformation(raster(file.tmp, RAT = FALSE), thresholds[i], doFiltering = TRUE),
+          writeRaster(x = bm_BinaryTransformation(raster(file.tmp, RAT = FALSE), thresholds[i], do.filtering = TRUE),
                       filename = sub(output.format,
                                      paste0("_", eval.meth, "filt", output.format),
                                      file.tmp),
@@ -398,7 +398,7 @@ BIOMOD_EnsembleForecasting <- function(bm.em,
         }
       } else {
         nameFilt = paste0(nameProjSp, "_", eval.meth, "filt")
-        assign(x = nameFilt, value = bm_BinaryTransformation(ef.out, thresholds, doFiltering = TRUE))
+        assign(x = nameFilt, value = bm_BinaryTransformation(ef.out, thresholds, do.filtering = TRUE))
         if (output.format == '.RData') {
           save(list = nameFilt,
                file = file.path(namePath, paste0(nameFilt, output.format)),

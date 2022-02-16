@@ -213,7 +213,7 @@ bm_PlotResponseCurves <- function(bm.out
         }
         
         ## Load models ------------------------------------------------------------------
-        BIOMOD_LoadModels(bm.out, full.name = models)
+        BIOMOD_LoadModels(bm.out = bm.out, full.name = models)
         
         ## Getting predictions for each model -------------------------------------------
         tab.out = foreach(model = models, .combine = "cbind") %do% 
@@ -264,7 +264,7 @@ bm_PlotResponseCurves <- function(bm.out
         }
         
         ## Load models ------------------------------------------------------------------
-        BIOMOD_LoadModels(bm.out, full.name = models)
+        BIOMOD_LoadModels(bm.out = bm.out, full.name = models)
         
         ## Getting predictions for each model -------------------------------------------
         tab.out = foreach(model = models, .combine = "cbind") %do% 

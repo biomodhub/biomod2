@@ -624,9 +624,9 @@ BIOMOD_EnsembleModeling <- function(bm.mod,
         
         if (var.import > 0) {
           cat("\n\t\t\tEvaluating Predictor Contributions...", "\n")
-          model.bm@model_variables_importance <- bm_VariablesImportance(model.bm
-                                                                        , expl
-                                                                        , nb_rand = var.import)
+          model.bm@model_variables_importance <- bm_VariablesImportance(bm.model = model.bm
+                                                                        , expl.var = expl
+                                                                        , nb.rep = var.import)
         }
         
         #### Models saving #####

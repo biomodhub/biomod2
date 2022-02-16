@@ -175,11 +175,10 @@ BIOMOD_PresenceOnly <- function(bm.mod = NULL,
     myModelPred <- get_predictions(bm.mod, as.data.frame = TRUE)
     if (!is.null(bg.env)) {
       myModelPred.sites <- as.data.frame(myModelPred)
-      myBiomodProj.eval <- BIOMOD_Projection(
-        new.env = bg.env,
-        proj.name = paste(bm.mod@modeling.id, "cv_EF_eval", sep = "_"), 
-        bm.mod = bm.mod,
-        build.clamping.mask = F)
+      myBiomodProj.eval <- BIOMOD_Projection(bm.mod = bm.mod,
+                                             proj.name = paste(bm.mod@modeling.id, "cv_EF_eval", sep = "_"), 
+                                             new.env = bg.env,
+                                             build.clamping.mask = FALSE)
       myModelPred <- as.data.frame(myBiomodProj.eval@proj@val)
       colnames(myModelPred) <- paste(
         bm.mod@sp.name,
@@ -216,17 +215,16 @@ BIOMOD_PresenceOnly <- function(bm.mod = NULL,
     if (!is.null(bg.env)) {
       myBiomodProjFF.sites <- as.data.frame(myBiomodProjFF)
       myModelPred.sites <- cbind(myModelPred.sites, myBiomodProjFF.sites)
-      myBiomodProjFF <- BIOMOD_EnsembleForecasting(
-        proj.name = paste(bm.mod@modeling.id, "cv_EF_bg", sep = "_"), 
-        projection.output = myBiomodProj.eval,
-        bm.em = bm.em)    
+      myBiomodProjFF <- BIOMOD_EnsembleForecasting(bm.em = bm.em,
+                                                   bm.proj = myBiomodProj.eval,
+                                                   proj.name = paste(bm.mod@modeling.id, "cv_EF_bg", sep = "_"))
       myBiomodProjFF <- as.data.frame(myBiomodProjFF@proj@val)     
     }
     if (!is.null(bm.mod)) { myModelPred <- cbind(myModelPred, myBiomodProjFF) }
     
     ## Get predictions on evaluation data
     if (bm.mod@has.evaluation.data == T) {
-      myBiomodProjFF.eval <- get_predictions(bm.em, as.data.frame = T, evaluation = T)  
+      myBiomodProjFF.eval <- get_predictions(bm.em, as.data.frame = TRUE, evaluation = TRUE)
       myModelPred.eval <- cbind(myModelPred.eval, myBiomodProjFF.eval)      
     }  
   }

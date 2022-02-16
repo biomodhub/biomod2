@@ -267,11 +267,11 @@ BIOMOD_Tuning <- function(bm.format,
           {
             DATA <- cbind(1:sum(fold == i)
                           , resp[fold == i]
-                          , bm_SRE(Response = resp[fold != i],
-                                   Explanatory = bm.format@data.env.var[fold != i, ],
-                                   NewData = bm.format@data.env.var[fold == i, ],
-                                   Quant = quant,
-                                   return_extremcond = FALSE))
+                          , bm_SRE(resp.var = resp[fold != i],
+                                   expl.var = bm.format@data.env.var[fold != i, ],
+                                   new.env = bm.format@data.env.var[fold == i, ],
+                                   quant = quant,
+                                   do.extrem = FALSE))
             
             RES = presence.absence.accuracy(DATA, threshold = as.vector(
               optimal.thresholds(DATA, opt.methods = 3)[2], mode = "numeric"))
@@ -521,8 +521,8 @@ BIOMOD_Tuning <- function(bm.format,
     GLM.results = foreach (type = GLM.type, .combine = "rbind") %:%
       foreach (IA = GLM.interaction, .combine = "rbind") %do%
       {
-        try(tune.GLM <- train(bm_MakeFormula("resp",
-                                             bm.format@data.env.var,
+        try(tune.GLM <- train(bm_MakeFormula(resp.name = "resp",
+                                             expl.var = bm.format@data.env.var,
                                              type = type,
                                              interaction.level = IA),
                               data = cbind(bm.format@data.env.var, resp = resp),

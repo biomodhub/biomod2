@@ -250,7 +250,7 @@ BIOMOD_Projection <- function(bm.mod,
     proj <- lapply(models.chosen, function(mod.name)
     {
       cat("\n\t> Projecting", mod.name, "...")
-      BIOMOD_LoadModels(bm.mod, full.name = mod.name, as = "mod")
+      BIOMOD_LoadModels(bm.out = bm.mod, full.name = mod.name, as = "mod")
       temp_workdir = NULL
       if (length(grep("MAXENT.Phillips$", mod.name)) == 1) {
         temp_workdir = mod@model_output_dir
@@ -361,7 +361,7 @@ BIOMOD_Projection <- function(bm.mod,
         for (i in 1:length(proj_out@proj@link)) {
           file.tmp <- proj_out@proj@link[i]
           thres.tmp <- asub(thresholds, eval.meth[drop = FALSE], 1, drop = FALSE)[, i]
-          writeRaster(x = bm_BinaryTransformation(raster(file.tmp, RAT = FALSE), thres.tmp, doFiltering = TRUE),
+          writeRaster(x = bm_BinaryTransformation(raster(file.tmp, RAT = FALSE), thres.tmp, do.filtering = TRUE),
                       filename = sub(output.format,
                                      paste0("_", eval.meth, "filt", output.format),
                                      file.tmp),
@@ -372,7 +372,7 @@ BIOMOD_Projection <- function(bm.mod,
       } else {
         nameFilt <- paste0(nameProjSp, "_", eval.meth, "filt")
         assign(x = nameFilt, value = bm_BinaryTransformation(proj, asub(thresholds, eval.meth[drop = FALSE]
-                                                                        , 1, drop = FALSE), doFiltering = TRUE))
+                                                                        , 1, drop = FALSE), do.filtering = TRUE))
         
         if (output.format == '.RData') {
           save(list = nameFilt,

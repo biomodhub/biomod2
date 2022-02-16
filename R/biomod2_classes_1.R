@@ -554,15 +554,15 @@ setMethod('BIOMOD.formated.data.PA', signature(sp = 'numeric', env = 'RasterStac
     }
   }
   
-  pa.data.tmp <- bm_PseudoAbsences(sp = sp,
-                                   env = env,
-                                   nb.repet = PA.NbRep,
+  pa.data.tmp <- bm_PseudoAbsences(resp.var = sp,
+                                   expl.var = env,
+                                   nb.rep = PA.NbRep,
                                    strategy = PA.strategy,
-                                   nb.points = PA.nb.absences,
-                                   distMin = PA.dist.min,
-                                   distMax = PA.dist.max,
-                                   quant.SRE = PA.sre.quant,
-                                   PA.table = PA.table)
+                                   nb.absences = PA.nb.absences,
+                                   sre.quant = PA.sre.quant,
+                                   dist.min = PA.dist.min,
+                                   dist.max = PA.dist.max,
+                                   user.table = PA.table)
   
   if (!is.null(pa.data.tmp))
   {

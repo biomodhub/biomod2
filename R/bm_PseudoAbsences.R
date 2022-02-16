@@ -61,11 +61,27 @@
 ##' 
 ##' \bold{Concerning random selection :}
 ##' 
+##' The idea is to select pseudo-absences randomly in spatial locations where the species has not 
+##' been sampled. This method is the simplest one and the most appropriate if lacking information 
+##' about the presence sampling (non-exhaustive, biased sampling, etc). \cr \cr
+##' 
 ##' \bold{Concerning SRE selection :}
+##' 
+##' The idea is to select pseudo-absences in spatial locations whose environmental conditions are 
+##' different from those of the presence points. This method is appropriate when most of the 
+##' environmental space of the species has been sampled. \cr \cr
 ##' 
 ##' \bold{Concerning disk selection :}
 ##' 
+##' The idea is to select pseudo-absences, not too close from presence points, but not too far 
+##' away either. This method is appropriate when most of the spatial range of the species has 
+##' been sampled. \cr \cr
+##' 
 ##' \bold{Concerning user defined selection :}
+##' 
+##' The user can provide pseudo-absences locations through a table containing spatial locations 
+##' in rows, pseudo-absences repetitions in columns, and \code{TRUE/FALSE} values indicating 
+##' whether each point is to be considered as pseudo-absence or not for each dataset.
 ##' 
 ##'
 ##' @keywords pseudo-absence, random, SRE, disk
@@ -298,7 +314,7 @@ setMethod('bm_PseudoAbsences_random', signature(expl.var = "SpatialPointsDataFra
               cand.cells <- which(is.na(resp.var@data))
               for (j in 1:ncol(pa.tab)) {
                 ## force to get at least one value of each factorial variable
-                fact.level.cells <- bm_SampleFactorLevels(x = as.data.frame(expl.var),
+                fact.level.cells <- bm_SampleFactorLevels(expl.var = as.data.frame(expl.var),
                                                           mask.out = pa.tab[, j, drop = FALSE])
                 if (length(fact.level.cells)) {
                   pa.tab[fact.level.cells, j] <- TRUE
@@ -390,7 +406,7 @@ setMethod('bm_PseudoAbsences_random', signature(expl.var = "RasterStack"),
                   mask.env.tmp <- mask.env ## define a copy of the sampling mask
                   
                   ## force to get at least one value of each factorial variable
-                  fact.level.cells <- bm_SampleFactorLevels(expl.var, mask.out = mask.out)
+                  fact.level.cells <- bm_SampleFactorLevels(expl.var = expl.var, mask.out = mask.out)
                   if (length(fact.level.cells)) {
                     SR <- c(SR, fact.level.cells)
                     mask.env.tmp[SR] <- NA ## update the mask by removing already selected cells
@@ -459,7 +475,7 @@ setMethod('bm_PseudoAbsences_sre', signature(expl.var = "SpatialPointsDataFrame"
             cat("\n   > SRE pseudo absences selection")
             
             # 0. calculate SRE to determine available pixels
-            mask.in <- bm_SRE(Response = resp.var, Explanatory = expl.var, NewData = expl.var@data, Quant = sre.quant)
+            mask.in <- bm_SRE(resp.var = resp.var, expl.var = expl.var, new.env = expl.var@data, quant = sre.quant)
             mask.in <- data.frame(mask.in = !as.logical(mask.in)) ## revert the mask to sample PA out of SRE
             
             # 1. Check if NA are present in resp.var observations or not to determine which dataset to use
@@ -481,7 +497,7 @@ setMethod('bm_PseudoAbsences_sre', signature(expl.var = "SpatialPointsDataFrame"
             cand.cells <- which(!mask.in$mask.in)
             for (j in 1:ncol(pa.tab)) {
               ## force to get at least one value of each factorial variable
-              fact.level.cells <- bm_SampleFactorLevels(as.data.frame(expl.var),
+              fact.level.cells <- bm_SampleFactorLevels(expl.var = as.data.frame(expl.var),
                                                         mask.out = pa.tab[, j, drop = FALSE],
                                                         mask.in = mask.in)
               pa.tab[c(fact.level.cells,
@@ -507,7 +523,7 @@ setMethod('bm_PseudoAbsences_sre', signature(expl.var = "RasterStack"),
             cat("\n   > SRE pseudo absences selection")
             
             # 0. calculate SRE to determine available pixels
-            mask.in <- bm_SRE(Response = resp.var, Explanatory = expl.var, NewData = expl.var, Quant = sre.quant)
+            mask.in <- bm_SRE(resp.var = resp.var, expl.var = expl.var, new.env = expl.var, quant = sre.quant)
             mask.in[mask.in[] > 0] <- NA ## remove points that are in SRE
             
             ## mask of already sampled points (presences/absences)
@@ -531,7 +547,7 @@ setMethod('bm_PseudoAbsences_sre', signature(expl.var = "RasterStack"),
               mask.in.tmp <- mask.in ## define a copy of the sampling mask
               
               ## force to get at least one value of each factorial variable
-              fact.level.cells <- bm_SampleFactorLevels(expl.var, mask.out = mask.out, mask.in = mask.in)
+              fact.level.cells <- bm_SampleFactorLevels(expl.var = expl.var, mask.out = mask.out, mask.in = mask.in)
               if (length(fact.level.cells)) {
                 SR <- c(SR, fact.level.cells)
                 mask.in.tmp[SR] <- NA ## update the mask by removing already selected cells

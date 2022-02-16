@@ -169,8 +169,8 @@ bm_RunModel <- function(model, Data, bm.options, calibLines, weights, nam, var.i
     if (bm.options@CTA$parms == 'default') { parms.tmp = NULL }
     
     model.sp <- try(rpart(
-      bm_MakeFormula(respName = colnames(Data)[1]
-                     , explVar = head(Data[, -c(1, ncol(Data)), drop = FALSE])
+      bm_MakeFormula(resp.name = colnames(Data)[1]
+                     , expl.var = head(Data[, -c(1, ncol(Data)), drop = FALSE])
                      , type = 'simple'
                      , interaction.level = 0),
       data = Data[calibLines, ],
@@ -230,8 +230,8 @@ bm_RunModel <- function(model, Data, bm.options, calibLines, weights, nam, var.i
       
       if (is.null(bm.options@GAM$myFormula)) {
         cat("\n\tAutomatic formula generation...")
-        gam.formula <- bm_MakeFormula(respName = resp_name
-                                      , explVar = head(Data[, expl_var_names, drop = FALSE])
+        gam.formula <- bm_MakeFormula(resp.name = resp_name
+                                      , expl.var = head(Data[, expl_var_names, drop = FALSE])
                                       , type = bm.options@GAM$type
                                       , interaction.level = bm.options@GAM$interaction.level
                                       , k = bm.options@GAM$k)
@@ -276,8 +276,8 @@ bm_RunModel <- function(model, Data, bm.options, calibLines, weights, nam, var.i
     ## 2.3 GBM model ----------------------------------------------------------
     
     cat('\n\t> GBM modeling...')
-    model.sp <- try(gbm(formula = bm_MakeFormula(respName = colnames(Data)[1]
-                                                 , explVar = head(Data)[, expl_var_names, drop = FALSE]
+    model.sp <- try(gbm(formula = bm_MakeFormula(resp.name = colnames(Data)[1]
+                                                 , expl.var = head(Data)[, expl_var_names, drop = FALSE]
                                                  , type = 'simple'
                                                  , interaction.level = 0),
                         data = Data[calibLines, , drop = FALSE],
@@ -316,8 +316,8 @@ bm_RunModel <- function(model, Data, bm.options, calibLines, weights, nam, var.i
     cat('\n\t> GLM modeling...')
     if (is.null(bm.options@GLM$myFormula)) {
       cat("\n\tAutomatic formula generation...")
-      glm.formula <- bm_MakeFormula(respName = colnames(Data)[1]
-                                    , explVar = head(Data)
+      glm.formula <- bm_MakeFormula(resp.name = colnames(Data)[1]
+                                    , expl.var = head(Data)
                                     , type = bm.options@GLM$type
                                     , interaction.level = bm.options@GLM$interaction.level)
     } else {
@@ -380,8 +380,8 @@ bm_RunModel <- function(model, Data, bm.options, calibLines, weights, nam, var.i
     cat('\n\t> MARS modeling...')
     if (is.null(bm.options@MARS$myFormula)) {
       cat("\n\tAutomatic formula generation...")
-      mars.formula <- bm_MakeFormula(respName = colnames(Data)[1]
-                                     , explVar = head(Data)[, -ncol(Data), drop = FALSE]
+      mars.formula <- bm_MakeFormula(resp.name = colnames(Data)[1]
+                                     , expl.var = head(Data)[, -ncol(Data), drop = FALSE]
                                      , type = bm.options@MARS$type
                                      , interaction.level = bm.options@MARS$interaction.level)
     } else {
@@ -422,8 +422,8 @@ bm_RunModel <- function(model, Data, bm.options, calibLines, weights, nam, var.i
     ## 2.6 FDA model ----------------------------------------------------------
     
     cat('\n\t> FDA modeling...')
-    model.sp <- try(do.call(fda, c(list(formula = bm_MakeFormula(respName = colnames(Data)[1]
-                                                                 , explVar = head(Data)[, expl_var_names, drop = FALSE]
+    model.sp <- try(do.call(fda, c(list(formula = bm_MakeFormula(resp.name = colnames(Data)[1]
+                                                                 , expl.var = head(Data)[, expl_var_names, drop = FALSE]
                                                                  , type = 'simple'
                                                                  , interaction.level = 0),
                                         data = Data[calibLines, , drop = FALSE], 
@@ -461,15 +461,15 @@ bm_RunModel <- function(model, Data, bm.options, calibLines, weights, nam, var.i
                            decay = decay,
                            maxit = bm.options@ANN$maxit,
                            nbCV = bm.options@ANN$NbCV,
-                           W = weights[calibLines])
+                           weights = weights[calibLines])
       
       ## get the optimised parameters values
       decay <- CV_nnet[1, 2]
       size <- CV_nnet[1, 1]
     }
     
-    model.sp <- try(nnet(formula = bm_MakeFormula(respName = resp_name
-                                                  , explVar = head(Data[, expl_var_names, drop = FALSE])
+    model.sp <- try(nnet(formula = bm_MakeFormula(resp.name = resp_name
+                                                  , expl.var = head(Data[, expl_var_names, drop = FALSE])
                                                   , type = 'simple'
                                                   , interaction.level = 0),
                          data = Data[calibLines, , drop = FALSE], 
@@ -503,8 +503,8 @@ bm_RunModel <- function(model, Data, bm.options, calibLines, weights, nam, var.i
     # mtry.tmp = bm.options@RF$mtry
     # if (bm.options@RF$mtry == 'default') { mtry.tmp = NULL }
     
-    model.sp <- try(randomForest(formula = bm_MakeFormula(respName = resp_name
-                                                          , explVar = head(Data)
+    model.sp <- try(randomForest(formula = bm_MakeFormula(resp.name = resp_name
+                                                          , expl.var = head(Data)
                                                           , type = 'simple'
                                                           , interaction.level = 0),
                                  data = Data[calibLines, ],
@@ -539,11 +539,11 @@ bm_RunModel <- function(model, Data, bm.options, calibLines, weights, nam, var.i
     ## 2.9 SRE model ----------------------------------------------------------
     
     cat('\n\t> SRE modeling...')
-    model.sp <- try(bm_SRE(Response = Data[calibLines, 1],
-                           Explanatory = Data[calibLines, expl_var_names, drop = FALSE],
-                           NewData = NULL,
-                           Quant = bm.options@SRE$quant,
-                           return_extremcond = TRUE))
+    model.sp <- try(bm_SRE(resp.var = Data[calibLines, 1],
+                           expl.var = Data[calibLines, expl_var_names, drop = FALSE],
+                           new.env = NULL,
+                           quant = bm.options@SRE$quant,
+                           do.extrem = TRUE))
     
     if (!inherits(model.sp, "try-error")) {
       model.bm <- new("SRE_biomod2_model",
@@ -614,9 +614,9 @@ bm_RunModel <- function(model, Data, bm.options, calibLines, weights, nam, var.i
     g.pred <- try(round(as.numeric(read.csv(MWD$m_outputFile)[, 3]) * 1000))
     
     cat("\n Getting predictor contributions...")
-    variables.importance <- bm_VariablesImportance(model = model.bm
-                                                   , data = Data[, expl_var_names, drop = FALSE]
-                                                   , nb_rand = var.import
+    variables.importance <- bm_VariablesImportance(bm.model = model.bm
+                                                   , expl.var = Data[, expl_var_names, drop = FALSE]
+                                                   , nb.rep = var.import
                                                    , temp_workdir = MWD$m_outdir)
   } else if(model == "MAXENT.Phillips.2")
   {
@@ -726,9 +726,9 @@ bm_RunModel <- function(model, Data, bm.options, calibLines, weights, nam, var.i
     }
     
     cross.validation <- sapply(metric.eval, function(.x) {
-      bm_FindOptimStat(Stat = .x,
-                       Fit = g.pred[evalLines],
-                       Obs = Data %>% filter(evalLines) %>% pull(1))
+      bm_FindOptimStat(metric.eval = .x,
+                       obs = Data %>% filter(evalLines) %>% pull(1),
+                       fit = g.pred[evalLines])
     })
     rownames(cross.validation) <- c("Testing.data", "Cutoff", "Sensitivity", "Specificity")
     
@@ -745,10 +745,10 @@ bm_RunModel <- function(model, Data, bm.options, calibLines, weights, nam, var.i
       }
       
       true.evaluation <- sapply(metric.eval, function(x) {
-        bm_FindOptimStat(Stat = x,
-                         Fit = g.pred.eval.without.na,
-                         Obs = evalData[, 1],
-                         Fixed.thresh = cross.validation["Cutoff", x])
+        bm_FindOptimStat(metric.eval = x,
+                         obs = evalData[, 1],
+                         fit = g.pred.eval.without.na,
+                         threshold = cross.validation["Cutoff", x])
       })
       
       cross.validation <- rbind(cross.validation["Testing.data", ], true.evaluation)
@@ -767,9 +767,9 @@ bm_RunModel <- function(model, Data, bm.options, calibLines, weights, nam, var.i
   if (var.import > 0) {
     cat("\n\tEvaluating Predictor Contributions...")
     if (model != "MAXENT.Phillips") {
-      variables.importance <- bm_VariablesImportance(model = model.bm
-                                                     , data = Data[, expl_var_names, drop = FALSE]
-                                                     , nb_rand = var.import)
+      variables.importance <- bm_VariablesImportance(bm.model = model.bm
+                                                     , expl.var = Data[, expl_var_names, drop = FALSE]
+                                                     , nb.rep = var.import)
     }
     model.bm@model_variables_importance <- variables.importance
     
