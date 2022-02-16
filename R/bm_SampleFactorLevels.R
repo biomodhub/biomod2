@@ -84,9 +84,9 @@
 ##' mask.in[[1]][21:80] <- NA ## only levels 1 and 5 should be sampled in this mask
 ##' 
 ##' ## Sample all factor levels
-##' samp1 <- bm_SampleFactorLevels(stk, mask.out = mask.out)
-##' samp2 <- bm_SampleFactorLevels(stk, mask.in = mask.in)
-##' samp3 <- bm_SampleFactorLevels(stk, mask.out = mask.out, mask.in = mask.in)
+##' samp1 <- bm_SampleFactorLevels(expl.var = stk, mask.out = mask.out)
+##' samp2 <- bm_SampleFactorLevels(expl.var = stk, mask.in = mask.in)
+##' samp3 <- bm_SampleFactorLevels(expl.var = stk, mask.out = mask.out, mask.in = mask.in)
 ##' 
 ##' 
 ##' @importFrom raster is.factor as.factor levels subset mask

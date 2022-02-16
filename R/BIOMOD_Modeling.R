@@ -204,8 +204,8 @@
 ##' myRespXY <- DataSpecies[, c('X_WGS84', 'Y_WGS84')]
 ##' 
 ##' # Load environmental variables extracted from BIOCLIM (bio_3, bio_4, bio_7, bio_11 & bio_12)
-##' myFiles = paste0('external/bioclim/current/bio', c(3, 4, 7, 11, 12), '.grd')
-##' myExpl = raster::stack(system.file(myFiles, package = 'biomod2'))
+##' myFiles <- paste0('external/bioclim/current/bio', c(3, 4, 7, 11, 12), '.grd')
+##' myExpl <- raster::stack(system.file(myFiles, package = 'biomod2'))
 ##' 
 ##' 
 ##' # ---------------------------------------------------------------
@@ -221,14 +221,14 @@
 ##' 
 ##' # ---------------------------------------------------------------
 ##' # Model single models
-##' myBiomodModelOut <- BIOMOD_Modeling(myBiomodData,
+##' myBiomodModelOut <- BIOMOD_Modeling(bm.format = myBiomodData,
+##'                                     modeling.id = 'AllModels',
 ##'                                     bm.options = myBiomodOptions,
 ##'                                     nb.rep = 2,
 ##'                                     data.split.perc = 80,
-##'                                     var.import = 3,
 ##'                                     metric.eval = c('TSS','ROC'),
-##'                                     do.full.models = FALSE,
-##'                                     modeling.id = 'test')
+##'                                     var.import = 3,
+##'                                     do.full.models = FALSE)
 ##' myBiomodModelOut
 ##' 
 ##' # Get evaluation scores & variables importance
@@ -236,22 +236,22 @@
 ##' get_variables_importance(myBiomodModelOut, as.data.frame = TRUE)
 ##' 
 ##' # Represent evaluation scores & variables importance
-##' bm_PlotEvalMean(myBiomodModelOut)
-##' bm_PlotEvalBoxplot(myBiomodModelOut, group.by = c('algo', 'run'))
-##' bm_PlotVarImpBoxplot(myBiomodModelOut, group.by = c('expl.var', 'algo', 'algo'))
-##' bm_PlotVarImpBoxplot(myBiomodModelOut, group.by = c('expl.var', 'algo', 'dataset'))
-##' bm_PlotVarImpBoxplot(myBiomodModelOut, group.by = c('algo', 'expl.var', 'dataset'))
+##' bm_PlotEvalMean(bm.out = myBiomodModelOut)
+##' bm_PlotEvalBoxplot(bm.out = myBiomodModelOut, group.by = c('algo', 'run'))
+##' bm_PlotVarImpBoxplot(bm.out = myBiomodModelOut, group.by = c('expl.var', 'algo', 'algo'))
+##' bm_PlotVarImpBoxplot(bm.out = myBiomodModelOut, group.by = c('expl.var', 'algo', 'dataset'))
+##' bm_PlotVarImpBoxplot(bm.out = myBiomodModelOut, group.by = c('algo', 'expl.var', 'dataset'))
 ##' 
 ##' # Represent response curves
-##' bm_PlotResponseCurves(myBiomodModelOut, 
-##'                       chosen.models = get_built_models(myBiomodModelOut)[c(1:3, 12:14)],
-##'                       fixed.var.metric = 'median')
-##' bm_PlotResponseCurves(myBiomodModelOut, 
-##'                       chosen.models = get_built_models(myBiomodModelOut)[c(1:3, 12:14)],
-##'                       fixed.var.metric = 'min')
-##' bm_PlotResponseCurves(myBiomodModelOut, 
-##'                       chosen.models = get_built_models(myBiomodModelOut)[3],
-##'                       fixed.var.metric = 'median',
+##' bm_PlotResponseCurves(bm.out = myBiomodModelOut, 
+##'                       models.chosen = get_built_models(myBiomodModelOut)[c(1:3, 12:14)],
+##'                       fixed.var = 'median')
+##' bm_PlotResponseCurves(bm.out = myBiomodModelOut, 
+##'                       models.chosen = get_built_models(myBiomodModelOut)[c(1:3, 12:14)],
+##'                       fixed.var = 'min')
+##' bm_PlotResponseCurves(bm.out = myBiomodModelOut, 
+##'                       models.chosen = get_built_models(myBiomodModelOut)[3],
+##'                       fixed.var = 'median',
 ##'                       do.bivariate = TRUE)
 ##' 
 ##' 

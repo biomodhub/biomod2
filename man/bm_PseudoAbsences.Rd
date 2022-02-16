@@ -17,73 +17,93 @@
 \title{Select pseudo-absences}
 \usage{
 bm_PseudoAbsences(
-  sp,
-  env,
-  nb.repet = 1,
+  resp.var,
+  expl.var,
+  nb.rep = 1,
   strategy = "random",
-  distMin = 0,
-  distMax = NULL,
-  nb.points = NULL,
-  quant.SRE = 0,
-  PA.table = NULL
+  dist.min = 0,
+  dist.max = NULL,
+  nb.absences = NULL,
+  sre.quant = 0,
+  user.table = NULL
 )
 
-bm_PseudoAbsences_user.defined(sp, env, ...)
+bm_PseudoAbsences_user.defined(resp.var, expl.var, ...)
 
-\S4method{bm_PseudoAbsences_user.defined}{ANY,SpatialPointsDataFrame}(sp, env, pa.table)
+\S4method{bm_PseudoAbsences_user.defined}{ANY,SpatialPointsDataFrame}(resp.var, expl.var, user.table)
 
-\S4method{bm_PseudoAbsences_user.defined}{ANY,RasterStack}(sp, env, pa.table)
+\S4method{bm_PseudoAbsences_user.defined}{ANY,RasterStack}(resp.var, expl.var, user.table)
 
-bm_PseudoAbsences_random(sp, env, ...)
+bm_PseudoAbsences_random(resp.var, expl.var, ...)
 
-\S4method{bm_PseudoAbsences_random}{ANY,SpatialPointsDataFrame}(sp, env, nb.points, nb.repet)
+\S4method{bm_PseudoAbsences_random}{ANY,SpatialPointsDataFrame}(resp.var, expl.var, nb.absences, nb.rep)
 
-\S4method{bm_PseudoAbsences_random}{ANY,RasterStack}(sp, env, nb.points, nb.repet)
+\S4method{bm_PseudoAbsences_random}{ANY,RasterStack}(resp.var, expl.var, nb.absences, nb.rep)
 
-bm_PseudoAbsences_sre(sp, env, ...)
+bm_PseudoAbsences_sre(resp.var, expl.var, ...)
 
-\S4method{bm_PseudoAbsences_sre}{ANY,SpatialPointsDataFrame}(sp, env, quant.SRE, nb.points, nb.repet)
+\S4method{bm_PseudoAbsences_sre}{ANY,SpatialPointsDataFrame}(resp.var, expl.var, sre.quant, nb.absences, nb.rep)
 
-\S4method{bm_PseudoAbsences_sre}{ANY,RasterStack}(sp, env, quant.SRE, nb.points, nb.repet)
+\S4method{bm_PseudoAbsences_sre}{ANY,RasterStack}(resp.var, expl.var, sre.quant, nb.absences, nb.rep)
 
-bm_PseudoAbsences_disk(sp, env, ...)
+bm_PseudoAbsences_disk(resp.var, expl.var, ...)
 
-\S4method{bm_PseudoAbsences_disk}{ANY,SpatialPointsDataFrame}(sp, env, distMin, distMax, nb.points, nb.repet)
+\S4method{bm_PseudoAbsences_disk}{ANY,SpatialPointsDataFrame}(
+  resp.var,
+  expl.var,
+  dist.min,
+  dist.max,
+  nb.absences,
+  nb.rep
+)
 
-\S4method{bm_PseudoAbsences_disk}{ANY,RasterStack}(sp, env, distMin, distMax, nb.points, nb.repet)
+\S4method{bm_PseudoAbsences_disk}{ANY,RasterStack}(
+  resp.var,
+  expl.var,
+  dist.min,
+  dist.max,
+  nb.absences,
+  nb.rep
+)
 }
 \arguments{
-\item{sp}{the species observations}
+\item{resp.var}{a \code{vector}, \code{\link[sp]{SpatialPoints}} or 
+\code{\link[sp]{SpatialPointsDataFrame}} object containing binary data (\code{0} : absence, 
+\code{1} : presence, \code{NA} : indeterminate) for a single species that will be used to 
+find the pseudo-absences}
 
-\item{env}{the explanatory variables}
+\item{expl.var}{a \code{matrix}, \code{data.frame}, \code{\link[sp]{SpatialPointsDataFrame}} 
+or \code{\link[raster:stack]{RasterStack}} object containing the explanatory variables (in 
+columns or layers) that will be used to find the pseudo-absences}
 
-\item{nb.repet}{the number of repetitions}
+\item{nb.rep}{an \code{integer} corresponding to the number of sets (repetitions) of 
+pseudo-absence points that will be drawn}
 
 \item{strategy}{a \code{character} corresponding to the pseudo-absence selection strategy, 
 must be among \code{random}, \code{sre}, \code{disk} or \code{user.defined}}
 
-\item{distMin}{(\emph{optional, default} \code{0}) \cr
-If \code{strategy = 'disk'}, the minimum distance away from presence points to select 
-pseudo-absences}
+\item{dist.min}{(\emph{optional, default} \code{0}) \cr
+If \code{strategy = 'disk'}, a \code{numeric} defining the minimal distance to presence points 
+used to make the \code{disk} pseudo-absence selection (in meters)}
 
-\item{distMax}{(\emph{optional, default} \code{NULL}) \cr
-If \code{strategy = 'disk'}, the maximum distance away from presence points to select 
-pseudo-absences}
+\item{dist.max}{(\emph{optional, default} \code{NULL}) \cr
+If \code{strategy = 'disk'}, a \code{numeric} defining the maximal distance to presence points 
+used to make the \code{disk} pseudo-absence selection (in meters)}
 
-\item{nb.points}{(\emph{optional, default} \code{NULL}) \cr
-If \code{strategy} is \code{random}, \code{sre} or \code{disk}, the number of pseudo-absences 
-to be selected}
+\item{nb.absences}{(\emph{optional, default} \code{NULL}) \cr
+If \code{strategy = 'random'} or \code{strategy = 'sre'} or \code{strategy = 'disk'}, an 
+\code{integer} corresponding to the number of pseudo-absence points that will be selected for 
+each pseudo-absence repetition (true absences included)}
 
-\item{quant.SRE}{(\emph{optional, default} \code{0}) \cr
-If \code{strategy = 'sre'}, a \code{numeric} between \code{0} and \code{0.5} corresponding to 
-the most extreme value for each variable not to be taken into account for determining the 
-tolerance boundaries of the considered species (see \code{\link{bm_SRE}})}
+\item{sre.quant}{(\emph{optional, default} \code{0}) \cr
+If \code{strategy = 'sre'}, a \code{numeric} between \code{0} and \code{0.5} defining the 
+half-quantile used to make the \code{sre} pseudo-absence selection (see \code{\link{bm_SRE}})}
 
-\item{PA.table}{(\emph{optional, default} \code{NULL}) \cr
+\item{user.table}{(\emph{optional, default} \code{NULL}) \cr
 If \code{strategy = 'user.defined'}, a \code{matrix} or \code{data.frame} with as many rows as 
-\code{resp.var} values, as many columns as \code{PA.nb.rep}, and containing \code{TRUE} or 
+\code{resp.var} values, as many columns as \code{nb.rep}, and containing \code{TRUE} or 
 \code{FALSE} values defining which points will be used to build the species distribution 
-model(s) for each repetition (see \code{\link{BIOMOD_FormatingData}})}
+model(s) for each repetition}
 }
 \value{
 A \code{list} containing the following elements :
@@ -103,11 +123,27 @@ to 4 different methods : \code{random}, \code{sre}, \code{disk} or \code{user.de
 \details{
 \bold{Concerning random selection :}
 
+The idea is to select pseudo-absences randomly in spatial locations where the species has not 
+been sampled. This method is the simplest one and the most appropriate if lacking information 
+about the presence sampling (non-exhaustive, biased sampling, etc). \cr \cr
+
 \bold{Concerning SRE selection :}
+
+The idea is to select pseudo-absences in spatial locations whose environmental conditions are 
+different from those of the presence points. This method is appropriate when most of the 
+environmental space of the species has been sampled. \cr \cr
 
 \bold{Concerning disk selection :}
 
+The idea is to select pseudo-absences, not too close from presence points, but not too far 
+away either. This method is appropriate when most of the spatial range of the species has 
+been sampled. \cr \cr
+
 \bold{Concerning user defined selection :}
+
+The user can provide pseudo-absences locations through a table containing spatial locations 
+in rows, pseudo-absences repetitions in columns, and \code{TRUE/FALSE} values indicating 
+whether each point is to be considered as pseudo-absence or not for each dataset.
 }
 \seealso{
 \code{\link{BIOMOD.formated.data.PA}}, \code{\link{BIOMOD_FormatingData}}

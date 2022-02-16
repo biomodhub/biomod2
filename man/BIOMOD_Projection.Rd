@@ -5,20 +5,20 @@
 \title{Project a range of calibrated species distribution models onto new environment}
 \usage{
 BIOMOD_Projection(
-  modeling.output,
+  bm.mod,
   proj.name,
   new.env,
   new.env.xy = NULL,
-  chosen.models = "all",
-  binary.meth = NULL,
-  filtered.meth = NULL,
+  models.chosen = "all",
+  metric.binary = NULL,
+  metric.filter = NULL,
   compress = TRUE,
   build.clamping.mask = TRUE,
   ...
 )
 }
 \arguments{
-\item{modeling.output}{a \code{\link{BIOMOD.models.out}} object returned by the 
+\item{bm.mod}{a \code{\link{BIOMOD.models.out}} object returned by the 
 \code{\link{BIOMOD_Modeling}} function}
 
 \item{proj.name}{a \code{character} corresponding to the name (ID) of the projection set 
@@ -27,30 +27,30 @@ BIOMOD_Projection(
 \item{new.env}{a \code{matrix}, \code{data.frame} or \code{\link[raster:stack]{RasterStack}} 
 object containing the new explanatory variables (in columns or layers, with names matching the 
 variables names given to the \code{\link{BIOMOD_FormatingData}} function to build 
-\code{modeling.output}) that will be used to project the species distribution model(s)}
+\code{bm.mod}) that will be used to project the species distribution model(s)}
 
 \item{new.env.xy}{(\emph{optional, default} \code{NULL}) \cr 
 If \code{new.env} is a \code{matrix} or a \code{data.frame}, a 2-columns \code{matrix} or 
 \code{data.frame} containing the corresponding \code{X} and \code{Y} coordinates that will be 
 used to project the species distribution model(s)}
 
-\item{chosen.models}{a \code{vector} containing model names to be kept, must be either 
+\item{models.chosen}{a \code{vector} containing model names to be kept, must be either 
 \code{all} or a sub-selection of model names that can be obtained with the 
 \code{\link{get_built_models}} function}
 
-\item{binary.meth}{(\emph{optional, default} \code{NULL}) \cr 
+\item{metric.binary}{(\emph{optional, default} \code{NULL}) \cr 
 A \code{vector} containing evaluation metric names to be used to transform prediction values 
 into binary values based on models evaluation scores obtained with the 
 \code{\link{BIOMOD_Modeling}} function. Must be among \code{all} (same evaluation metrics than 
-those of \code{modeling.output}) or \code{ROC}, \code{TSS}, \code{KAPPA}, \code{ACCURACY}, 
+those of \code{bm.mod}) or \code{ROC}, \code{TSS}, \code{KAPPA}, \code{ACCURACY}, 
 \code{BIAS}, \code{POD}, \code{FAR}, \code{POFD}, \code{SR}, \code{CSI}, \code{ETS}, 
 \code{HK}, \code{HSS}, \code{OR}, \code{ORSS}}
 
-\item{filtered.meth}{(\emph{optional, default} \code{NULL}) \cr 
+\item{metric.filter}{(\emph{optional, default} \code{NULL}) \cr 
 A \code{vector} containing evaluation metric names to be used to transform prediction values 
 into filtered values based on models evaluation scores obtained with the 
 \code{\link{BIOMOD_Modeling}} function. Must be among \code{all} (same evaluation metrics than 
-those of \code{modeling.output}) or \code{ROC}, \code{TSS}, \code{KAPPA}, \code{ACCURACY}, 
+those of \code{bm.mod}) or \code{ROC}, \code{TSS}, \code{KAPPA}, \code{ACCURACY}, 
 \code{BIAS}, \code{POD}, \code{FAR}, \code{POFD}, \code{SR}, \code{CSI}, \code{ETS}, 
 \code{HK}, \code{HSS}, \code{OR}, \code{ORSS}}
 
@@ -63,7 +63,7 @@ compressed when saved on hard drive. Must be either \code{TRUE}, \code{FALSE}, \
 A \code{logical} value defining whether a clamping mask should be built and saved on hard 
 drive or not (see \href{BIOMOD_Projection.html#details}{Details}))}
 
-\item{...}{(\emph{optional, see \href{BIOMOD_Projection.html#details}{Details})})}
+\item{\ldots}{(\emph{optional, see \href{BIOMOD_Projection.html#details}{Details})})}
 }
 \value{
 A \code{BIOMOD.projection.out} object containing models projections, or links to saved 
@@ -72,8 +72,9 @@ outputs. \cr Models projections are stored out of \R (for memory storage reasons
 \enumerate{
   \item the output is a 4-dimensional array if \code{new.env} is a \code{matrix} or a 
   \code{data.frame}
-  \item it is a \code{rasterStack} if \code{new.env} is a \code{rasterStack} (or several 
-  \code{rasterLayer} objects, if \code{new.env} is too large)
+  \item it is a \code{\link[raster:stack]{RasterStack}} if \code{new.env} is a 
+  \code{\link[raster:stack]{RasterStack}} (or several \code{\link[raster:stack]{RasterLayer}} 
+  objects, if \code{new.env} is too large)
   \item raw projections, as well as binary and filtered projections (if asked), are saved in 
   the \code{proj.name} folder
 }
@@ -84,7 +85,7 @@ This function allows to project a range of models built with the
 represent new areas, resolution or time scales for example}).
 }
 \details{
-If \code{chosen.models = 'all'}, projections are done for all evaluation and pseudo absences 
+If \code{models.chosen = 'all'}, projections are done for all evaluation and pseudo absences 
 runs if applicable. \cr These projections may be used later by the 
 \code{\link{BIOMOD_EnsembleForecasting}} function. \cr \cr 
 
@@ -99,8 +100,9 @@ calibration / training range, identifying locations where predictions are uncert
   \item{\code{on_0_1000} : }{a \code{logical} value defining whether \code{0 - 1} probabilities 
   are to be converted to \code{0 - 1000} scale to save memory on backup}
   \item{\code{do.stack} : }{a \code{logical} value defining whether all projections are to be 
-  saved as one \code{RasterStack} object or several \code{RasterLayer} files (\emph{the default 
-  if projections are too heavy to be all loaded at once in memory})}
+  saved as one \code{\link[raster:stack]{RasterStack}} object or several 
+  \code{\link[raster:stack]{RasterLayer}} files (\emph{the default if projections are too heavy to 
+  be all loaded at once in memory})}
   \item{\code{keep.in.memory} : }{a \code{logical} value defining whether all projections are 
   to be kept loaded at once in memory, or only links pointing to hard drive are to be returned}
   \item{\code{output.format} : }{a \code{character} value corresponding to the projections 
@@ -125,8 +127,8 @@ myResp <- as.numeric(DataSpecies[, myRespName])
 myRespXY <- DataSpecies[, c('X_WGS84', 'Y_WGS84')]
 
 # Load environmental variables extracted from BIOCLIM (bio_3, bio_4, bio_7, bio_11 & bio_12)
-myFiles = paste0('external/bioclim/current/bio', c(3, 4, 7, 11, 12), '.grd')
-myExpl = raster::stack(system.file(myFiles, package = 'biomod2'))
+myFiles <- paste0('external/bioclim/current/bio', c(3, 4, 7, 11, 12), '.grd')
+myExpl <- raster::stack(system.file(myFiles, package = 'biomod2'))
 
 
 # ---------------------------------------------------------------
@@ -140,24 +142,24 @@ myBiomodData <- BIOMOD_FormatingData(resp.var = myResp,
 myBiomodOptions <- BIOMOD_ModelingOptions()
 
 # Model single models
-myBiomodModelOut <- BIOMOD_Modeling(myBiomodData,
-                                    models.options = myBiomodOptions,
-                                    NbRunEval = 2,
-                                    DataSplit = 80,
-                                    VarImport = 3,
-                                    models.eval.meth = c('TSS','ROC'),
-                                    do.full.models = FALSE,
-                                    modeling.id = 'test')
+myBiomodModelOut <- BIOMOD_Modeling(bm.format = myBiomodData,
+                                    modeling.id = 'AllModels',
+                                    bm.options = myBiomodOptions,
+                                    nb.rep = 2,
+                                    data.split.perc = 80,
+                                    metric.eval = c('TSS','ROC'),
+                                    var.import = 3,
+                                    do.full.models = FALSE)
 
 
 # ---------------------------------------------------------------
 # Project single models
-myBiomodProj <- BIOMOD_Projection(myBiomodModelOut,
+myBiomodProj <- BIOMOD_Projection(bm.mod = myBiomodModelOut,
                                   proj.name = 'Current',
                                   new.env = myExpl,
-                                  chosen.models = 'all',
-                                  binary.meth = 'all',
-                                  filtered.meth = 'all',
+                                  models.chosen = 'all',
+                                  metric.binary = 'all',
+                                  metric.filter = 'all',
                                   build.clamping.mask = TRUE)
 myBiomodProj
 plot(myBiomodProj)

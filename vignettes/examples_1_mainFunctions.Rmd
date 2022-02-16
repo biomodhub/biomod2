@@ -100,7 +100,7 @@ plot(myBiomodData)
 #                                        resp.xy = myRespXY,
 #                                        resp.name = myRespName,
 #                                        PA.strategy = 'user.defined',
-#                                        PA.table = myPAtable)
+#                                        PA.user.table = myPAtable)
 # 
 # myBiomodData.r
 # myBiomodData.d
@@ -151,7 +151,7 @@ myBiomodOptions
 # # doParallel::registerDoParallel(cl) 
 # 
 # time.seq <- system.time(
-#   bm.tuning <- BIOMOD_Tuning(myBiomodData, env.ME = myExpl, n.bg.ME = ncell(myExpl))
+#   bm.tuning <- BIOMOD_Tuning(bm.format = myBiomodData, ME.env = myExpl, ME.n.bg = ncell(myExpl))
 # )
 # 
 # # stopCluster(cl)
@@ -173,18 +173,18 @@ myBiomodOptions
 
 ```R
 # Create the different validation datasets
-myBiomodCV <- BIOMOD_CrossValidation(myBiomodData)
+myBiomodCV <- BIOMOD_CrossValidation(bm.format = myBiomodData)
 head(myBiomodCV)
 
 # # Several validation strategies can be combined
-# DataSplitTable.b <- BIOMOD_CrossValidation(myBiomodData,
+# DataSplitTable.b <- BIOMOD_CrossValidation(bm.format = myBiomodData,
 #                                            k = 5,
-#                                            rep = 2,
+#                                            nb.rep = 2,
 #                                            do.full.models = FALSE)
-# DataSplitTable.y <- BIOMOD_CrossValidation(myBiomodData,
+# DataSplitTable.y <- BIOMOD_CrossValidation(bm.format = myBiomodData,
 #                                            k = 2,
-#                                            stratified.cv = TRUE,
-#                                            stratify = "y")
+#                                            do.stratification = TRUE,
+#                                            method = "y")
 # colnames(DataSplitTable.y)[1:2] <- c("RUN11", "RUN12")
 # myBiomodCV <- cbind(DataSplitTable.b, DataSplitTable.y)
 # head(myBiomodCV)
@@ -196,15 +196,15 @@ head(myBiomodCV)
 
 ```R
 # Model single models
-myBiomodModelOut <- BIOMOD_Modeling(myBiomodData,
-                                    models.options = myBiomodOptions,
-                                    NbRunEval = 2,
-                                    DataSplit = 80,
-                                    # DataSplitTable = myBiomodCV,
-                                    VarImport = 3,
-                                    models.eval.meth = c('TSS','ROC'),
-                                    do.full.models = FALSE,
-                                    modeling.id = 'test')
+myBiomodModelOut <- BIOMOD_Modeling(bm.format = myBiomodData,
+                                    bm.options = myBiomodOptions,
+                                    modeling.id = 'AllModels',
+                                    nb.rep = 2,
+                                    data.split.perc = 80,
+                                    # data.split.table = myBiomodCV,
+                                    var.import = 3,
+                                    metric.eval = c('TSS','ROC'),
+                                    do.full.models = FALSE)
 myBiomodModelOut
 
 # Get evaluation scores & variables importance
@@ -212,22 +212,22 @@ get_evaluations(myBiomodModelOut)
 get_variables_importance(myBiomodModelOut, as.data.frame = TRUE)
 
 # Represent evaluation scores & variables importance
-bm_PlotEvalMean(myBiomodModelOut)
-bm_PlotEvalBoxplot(myBiomodModelOut, group.by = c('algo', 'run'))
-bm_PlotVarImpBoxplot(myBiomodModelOut, group.by = c('expl.var', 'algo', 'algo'))
-bm_PlotVarImpBoxplot(myBiomodModelOut, group.by = c('expl.var', 'algo', 'dataset'))
-bm_PlotVarImpBoxplot(myBiomodModelOut, group.by = c('algo', 'expl.var', 'dataset'))
+bm_PlotEvalMean(bm.out = myBiomodModelOut)
+bm_PlotEvalBoxplot(bm.out = myBiomodModelOut, group.by = c('algo', 'run'))
+bm_PlotVarImpBoxplot(bm.out = myBiomodModelOut, group.by = c('expl.var', 'algo', 'algo'))
+bm_PlotVarImpBoxplot(bm.out = myBiomodModelOut, group.by = c('expl.var', 'algo', 'dataset'))
+bm_PlotVarImpBoxplot(bm.out = myBiomodModelOut, group.by = c('algo', 'expl.var', 'dataset'))
 
 # Represent response curves
-bm_PlotResponseCurves(myBiomodModelOut, 
-                      chosen.models = get_built_models(myBiomodModelOut)[c(1:3, 12:14)],
-                      fixed.var.metric = 'median')
-bm_PlotResponseCurves(myBiomodModelOut, 
-                      chosen.models = get_built_models(myBiomodModelOut)[c(1:3, 12:14)],
-                      fixed.var.metric = 'min')
-bm_PlotResponseCurves(myBiomodModelOut, 
-                      chosen.models = get_built_models(myBiomodModelOut)[3],
-                      fixed.var.metric = 'median',
+bm_PlotResponseCurves(bm.out = myBiomodModelOut, 
+                      models.chosen = get_built_models(myBiomodModelOut)[c(1:3, 12:14)],
+                      fixed.var = 'median')
+bm_PlotResponseCurves(bm.out = myBiomodModelOut, 
+                      models.chosen = get_built_models(myBiomodModelOut)[c(1:3, 12:14)],
+                      fixed.var = 'min')
+bm_PlotResponseCurves(bm.out = myBiomodModelOut, 
+                      models.chosen = get_built_models(myBiomodModelOut)[3],
+                      fixed.var = 'median',
                       do.bivariate = TRUE)
 ```
 
@@ -236,13 +236,13 @@ bm_PlotResponseCurves(myBiomodModelOut,
 
 ```R
 # Model ensemble models
-myBiomodEM <- BIOMOD_EnsembleModeling(modeling.output = myBiomodModelOut,
-                                      chosen.models = 'all',
+myBiomodEM <- BIOMOD_EnsembleModeling(bm.mod = myBiomodModelOut,
+                                      models.chosen = 'all',
                                       em.by = 'all',
-                                      eval.metric = c('TSS'),
-                                      eval.metric.quality.threshold = c(0.7),
-                                      VarImport = 3,
-                                      models.eval.meth = c('TSS', 'ROC'),
+                                      metric.select = c('TSS'),
+                                      metric.select.thresh = c(0.7),
+                                      var.import = 3,
+                                      metric.eval = c('TSS', 'ROC'),
                                       prob.mean = TRUE,
                                       prob.median = TRUE,
                                       prob.cv = TRUE,
@@ -258,22 +258,22 @@ get_evaluations(myBiomodEM, as.data.frame = TRUE)
 get_variables_importance(myBiomodEM, as.data.frame = TRUE)
 
 # Represent evaluation scores & variables importance
-bm_PlotEvalMean(myBiomodEM, group.by = 'model')
-bm_PlotEvalBoxplot(myBiomodEM, group.by = c('model', 'model'))
-bm_PlotVarImpBoxplot(myBiomodEM, group.by = c('expl.var', 'model', 'model'))
-bm_PlotVarImpBoxplot(myBiomodEM, group.by = c('expl.var', 'model', 'dataset'))
-bm_PlotVarImpBoxplot(myBiomodEM, group.by = c('model', 'expl.var', 'dataset'))
+bm_PlotEvalMean(bm.out = myBiomodEM, group.by = 'model')
+bm_PlotEvalBoxplot(bm.out = myBiomodEM, group.by = c('model', 'model'))
+bm_PlotVarImpBoxplot(bm.out = myBiomodEM, group.by = c('expl.var', 'model', 'model'))
+bm_PlotVarImpBoxplot(bm.out = myBiomodEM, group.by = c('expl.var', 'model', 'dataset'))
+bm_PlotVarImpBoxplot(bm.out = myBiomodEM, group.by = c('model', 'expl.var', 'dataset'))
 
 # Represent response curves
-bm_PlotResponseCurves(myBiomodEM, 
-                      chosen.models = get_built_models(myBiomodEM)[c(1, 6, 7)],
-                      fixed.var.metric = 'median')
-bm_PlotResponseCurves(myBiomodEM, 
-                      chosen.models = get_built_models(myBiomodEM)[c(1, 6, 7)],
-                      fixed.var.metric = 'min')
-bm_PlotResponseCurves(myBiomodEM, 
-                      chosen.models = get_built_models(myBiomodEM)[7],
-                      fixed.var.metric = 'median',
+bm_PlotResponseCurves(bm.out = myBiomodEM, 
+                      models.chosen = get_built_models(myBiomodEM)[c(1, 6, 7)],
+                      fixed.var = 'median')
+bm_PlotResponseCurves(bm.out = myBiomodEM, 
+                      models.chosen = get_built_models(myBiomodEM)[c(1, 6, 7)],
+                      fixed.var = 'min')
+bm_PlotResponseCurves(bm.out = myBiomodEM, 
+                      models.chosen = get_built_models(myBiomodEM)[7],
+                      fixed.var = 'median',
                       do.bivariate = TRUE)
 ```
 
@@ -282,13 +282,13 @@ bm_PlotResponseCurves(myBiomodEM,
 
 ```R
 # Evaluate models with Boyce index and MPA
-myBiomodPO <- BIOMOD_PresenceOnly(modeling.output = myBiomodModelOut,
-                                  EM.output = myBiomodEM)
+myBiomodPO <- BIOMOD_PresenceOnly(bm.mod = myBiomodModelOut,
+                                  bm.em = myBiomodEM)
 myBiomodPO$eval
 
 # Evaluate models with Boyce index and MPA (using background data)
-myBiomodPO <- BIOMOD_PresenceOnly(modeling.output = myBiomodModelOut,
-                                  EM.output = myBiomodEM, 
+myBiomodPO <- BIOMOD_PresenceOnly(bm.mod = myBiomodModelOut,
+                                  bm.em = myBiomodEM, 
                                   bg.env = getValues(myExpl))
 myBiomodPO$eval
 ```
@@ -299,12 +299,12 @@ myBiomodPO$eval
 
 ```R
 # Project single models
-myBiomodProj <- BIOMOD_Projection(myBiomodModelOut,
+myBiomodProj <- BIOMOD_Projection(bm.mod = myBiomodModelOut,
                                   proj.name = 'Current',
                                   new.env = myExpl,
-                                  chosen.models = 'all',
-                                  binary.meth = 'all',
-                                  filtered.meth = 'all',
+                                  models.chosen = 'all',
+                                  metric.binary = 'all',
+                                  metric.filter = 'all',
                                   build.clamping.mask = TRUE)
 myBiomodProj
 plot(myBiomodProj)
@@ -314,19 +314,19 @@ plot(myBiomodProj)
 
 ```R
 # Project ensemble models (from single projections)
-myBiomodEMProj <- BIOMOD_EnsembleForecasting(EM.output = myBiomodEM, 
-                                             projection.output = myBiomodProj,
-                                             chosen.models = 'all',
-                                             binary.meth = 'all',
-                                             filtered.meth = 'all')
+myBiomodEMProj <- BIOMOD_EnsembleForecasting(bm.em = myBiomodEM, 
+                                             bm.proj = myBiomodProj,
+                                             models.chosen = 'all',
+                                             metric.binary = 'all',
+                                             metric.filter = 'all')
                                              
 # Project ensemble models (building single projections)
-myBiomodEMProj <- BIOMOD_EnsembleForecasting(EM.output = myBiomodEM,
+myBiomodEMProj <- BIOMOD_EnsembleForecasting(bm.em = myBiomodEM,
                                              proj.name = 'CurrentEM',
                                              new.env = myExpl,
-                                             chosen.models = 'all',
-                                             binary.meth = 'all',
-                                             filtered.meth = 'all')
+                                             models.chosen = 'all',
+                                             metric.binary = 'all',
+                                             metric.filter = 'all')
 myBiomodEMProj
 plot(myBiomodEMProj)
 ```
@@ -339,11 +339,11 @@ myFiles = paste0('external/bioclim/future/bio', c(3, 4, 7, 11, 12), '.grd')
 myExplFuture = raster::stack(system.file(myFiles, package = 'biomod2'))
 
 # Project onto future conditions
-myBiomodProjectionFuture <- BIOMOD_Projection(modeling.output = myBiomodModelOut,
-                                              new.env = myExplFuture,
+myBiomodProjectionFuture <- BIOMOD_Projection(bm.mod = myBiomodModelOut,
                                               proj.name = 'Future',
-                                              chosen.models = 'all',
-                                              binary.meth = 'TSS',
+                                              new.env = myExplFuture,
+                                              models.chosen = 'all',
+                                              metric.binary = 'TSS',
                                               build.clamping.mask = TRUE)
 
 # Load current and future binary projections
@@ -351,13 +351,13 @@ CurrentProj <- stack("GuloGulo/proj_Current/proj_Current_GuloGulo_TSSbin.grd")
 FutureProj <- stack("GuloGulo/proj_Future/proj_Future_GuloGulo_TSSbin.grd")
 
 # Compute differences
-myBiomodRangeSize <- BIOMOD_RangeSize(CurrentProj = CurrentProj, FutureProj = FutureProj)
+myBiomodRangeSize <- BIOMOD_RangeSize(proj.current = CurrentProj, proj.future = FutureProj)
 
 myBiomodRangeSize$Compt.By.Models
 plot(myBiomodRangeSize$Diff.By.Pixel)
 
 # Represent main results 
-bm_PlotRangeSize(myBiomodRangeSize)
+bm_PlotRangeSize(bm.range = myBiomodRangeSize)
 ```
 
 

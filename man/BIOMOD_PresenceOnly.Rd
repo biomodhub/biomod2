@@ -5,20 +5,18 @@
 \title{Evaluate models with presence-only metrics}
 \usage{
 BIOMOD_PresenceOnly(
-  modeling.output = NULL,
-  EM.output = NULL,
+  bm.mod = NULL,
+  bm.em = NULL,
   bg.env = NULL,
   perc = 0.9,
   save.output = TRUE
 )
 }
 \arguments{
-\item{modeling.output}{(\emph{optional, default} \code{NULL}) \cr 
-A \code{BIOMOD.models.out} object that can be obtained from \code{\link{BIOMOD_Modeling}} 
-function}
+\item{bm.mod}{a \code{\link{BIOMOD.models.out}} object returned by the 
+\code{\link{BIOMOD_Modeling}} function}
 
-\item{EM.output}{(\emph{optional, default} \code{NULL}) \cr 
-A \code{BIOMOD.ensemble.models.out} object that can be obtained from 
+\item{bm.em}{a \code{\link{BIOMOD.ensemble.models.out}} object returned by the 
 \code{\link{BIOMOD_EnsembleModeling}} function}
 
 \item{bg.env}{(\emph{optional, default} \code{NULL}) \cr 
@@ -41,7 +39,7 @@ A \code{data.frame} containing evaluation scores both for the evaluation metrics
 \description{
 This function computes presence-only evaluation metrics (Boyce index and Minimal 
 Predicted Area) for \code{\link{BIOMOD.models.out}} or \code{\link{BIOMOD.ensemble.models.out}} 
-objects that can be obtained from \code{\link{BIOMOD_Modeling}} or 
+objects that can be obtained with the \code{\link{BIOMOD_Modeling}} or 
 \code{\link{BIOMOD_EnsembleModeling}} functions.
 }
 \details{
@@ -71,8 +69,8 @@ myResp <- as.numeric(DataSpecies[, myRespName])
 myRespXY <- DataSpecies[, c('X_WGS84', 'Y_WGS84')]
 
 # Load environmental variables extracted from BIOCLIM (bio_3, bio_4, bio_7, bio_11 & bio_12)
-myFiles = paste0('external/bioclim/current/bio', c(3, 4, 7, 11, 12), '.grd')
-myExpl = raster::stack(system.file(myFiles, package = 'biomod2'))
+myFiles <- paste0('external/bioclim/current/bio', c(3, 4, 7, 11, 12), '.grd')
+myExpl <- raster::stack(system.file(myFiles, package = 'biomod2'))
 
 
 # ---------------------------------------------------------------
@@ -86,23 +84,23 @@ myBiomodData <- BIOMOD_FormatingData(resp.var = myResp,
 myBiomodOptions <- BIOMOD_ModelingOptions()
 
 # Model single models
-myBiomodModelOut <- BIOMOD_Modeling(myBiomodData,
-                                    models.options = myBiomodOptions,
-                                    NbRunEval = 2,
-                                    DataSplit = 80,
-                                    VarImport = 3,
-                                    models.eval.meth = c('TSS','ROC'),
-                                    do.full.models = FALSE,
-                                    modeling.id = 'test')
+myBiomodModelOut <- BIOMOD_Modeling(bm.format = myBiomodData,
+                                    modeling.id = 'AllModels',
+                                    bm.options = myBiomodOptions,
+                                    nb.rep = 2,
+                                    data.split.perc = 80,
+                                    metric.eval = c('TSS','ROC'),
+                                    var.import = 3,
+                                    do.full.models = FALSE)
 
 # Model ensemble models
-myBiomodEM <- BIOMOD_EnsembleModeling(modeling.output = myBiomodModelOut,
-                                      chosen.models = 'all',
+myBiomodEM <- BIOMOD_EnsembleModeling(bm.mod = myBiomodModelOut,
+                                      models.chosen = 'all',
                                       em.by = 'all',
-                                      eval.metric = c('TSS'),
-                                      eval.metric.quality.threshold = c(0.7),
-                                      VarImport = 3,
-                                      models.eval.meth = c('TSS', 'ROC'),
+                                      metric.select = c('TSS'),
+                                      metric.select.thresh = c(0.7),
+                                      metric.eval = c('TSS', 'ROC'),
+                                      var.import = 3,
                                       prob.mean = TRUE,
                                       prob.median = TRUE,
                                       prob.cv = TRUE,
@@ -115,13 +113,13 @@ myBiomodEM <- BIOMOD_EnsembleModeling(modeling.output = myBiomodModelOut,
 
 # ---------------------------------------------------------------
 # Evaluate models with Boyce index and MPA
-myBiomodPO <- BIOMOD_PresenceOnly(modeling.output = myBiomodModelOut,
-                                  EM.output = myBiomodEM)
+myBiomodPO <- BIOMOD_PresenceOnly(bm.mod = myBiomodModelOut,
+                                  bm.em = myBiomodEM)
 myBiomodPO$eval
 
 # Evaluate models with Boyce index and MPA (using background data)
-myBiomodPO <- BIOMOD_PresenceOnly(modeling.output = myBiomodModelOut,
-                                  EM.output = myBiomodEM, 
+myBiomodPO <- BIOMOD_PresenceOnly(bm.mod = myBiomodModelOut,
+                                  bm.em = myBiomodEM, 
                                   bg.env = getValues(myExpl))
 myBiomodPO$eval
 

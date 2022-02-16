@@ -211,7 +211,7 @@
 <!-- (pp1 | pp2) + plot_layout(ncol = 2, width = c(1, 2)) -->
 <!-- dev.off() -->
 <div style="text-align:center;">
-<p><img src="pictures/examples_2_plot2.PNG" alt="EXAMPLE 2 explanatory variables" style="width:700px;"></p>
+<p><img src="pictures/examples_2_plot2.png" alt="EXAMPLE 2 explanatory variables" style="width:700px;"></p>
 </div>
 </div>
 </div>
@@ -238,15 +238,15 @@
 <h4 id="find-optimal-threshold-for-a-specific-evaluation-metric">Find optimal threshold for a specific evaluation metric<a class="anchor" aria-label="anchor" href="#find-optimal-threshold-for-a-specific-evaluation-metric"></a>
 </h4>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="../reference/bm_FindOptimStat.html">bm_FindOptimStat</a></span><span class="op">(</span>Stat <span class="op">=</span> <span class="st">'TSS'</span>, Fit <span class="op">=</span> <span class="va">vec.b</span>, Obs <span class="op">=</span> <span class="va">vec.a</span><span class="op">)</span>
-<span class="fu"><a href="../reference/bm_FindOptimStat.html">bm_FindOptimStat</a></span><span class="op">(</span>Stat <span class="op">=</span> <span class="st">'TSS'</span>, Fit <span class="op">=</span> <span class="va">vec.c</span>, Obs <span class="op">=</span> <span class="va">vec.a</span>, Nb.thresh.test <span class="op">=</span> <span class="fl">100</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span class="fu"><a href="../reference/bm_FindOptimStat.html">bm_FindOptimStat</a></span><span class="op">(</span>metric.eval <span class="op">=</span> <span class="st">'TSS'</span>, obs <span class="op">=</span> <span class="va">vec.a</span>, fit <span class="op">=</span> <span class="va">vec.b</span><span class="op">)</span>
+<span class="fu"><a href="../reference/bm_FindOptimStat.html">bm_FindOptimStat</a></span><span class="op">(</span>metric.eval <span class="op">=</span> <span class="st">'TSS'</span>, obs <span class="op">=</span> <span class="va">vec.a</span>, fit <span class="op">=</span> <span class="va">vec.c</span>, nb.thresh <span class="op">=</span> <span class="fl">100</span><span class="op">)</span></code></pre></div>
 </div>
 <div class="section level4">
 <h4 id="from-continuous-to-binary-filtered-vector">From continuous to binary / filtered vector<a class="anchor" aria-label="anchor" href="#from-continuous-to-binary-filtered-vector"></a>
 </h4>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">vec.d_bin</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/bm_BinaryTransformation.html">bm_BinaryTransformation</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">vec.d</span>, threshold <span class="op">=</span> <span class="fl">500</span><span class="op">)</span>
-<span class="va">vec.d_filt</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/bm_BinaryTransformation.html">bm_BinaryTransformation</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">vec.d</span>, threshold <span class="op">=</span> <span class="fl">500</span>, doFiltering <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>
+<span class="va">vec.d_filt</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/bm_BinaryTransformation.html">bm_BinaryTransformation</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">vec.d</span>, threshold <span class="op">=</span> <span class="fl">500</span>, do.filtering <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>
 <span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">cbind</a></span><span class="op">(</span><span class="va">vec.d</span>, <span class="va">vec.d_bin</span>, <span class="va">vec.d_filt</span><span class="op">)</span></code></pre></div>
 </div>
 </div>
@@ -258,8 +258,8 @@
 <h4 id="generate-automatic-formula">Generate automatic formula<a class="anchor" aria-label="anchor" href="#generate-automatic-formula"></a>
 </h4>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="../reference/bm_MakeFormula.html">bm_MakeFormula</a></span><span class="op">(</span>respName <span class="op">=</span> <span class="st">'myResp.s'</span>,
-               explVar <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/raster/man/headtail.html" class="external-link">head</a></span><span class="op">(</span><span class="va">myExpl.s</span><span class="op">)</span>,
+<code class="sourceCode R"><span class="fu"><a href="../reference/bm_MakeFormula.html">bm_MakeFormula</a></span><span class="op">(</span>resp.name <span class="op">=</span> <span class="st">'myResp.s'</span>,
+               expl.var <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/raster/man/headtail.html" class="external-link">head</a></span><span class="op">(</span><span class="va">myExpl.s</span><span class="op">)</span>,
                type <span class="op">=</span> <span class="st">'quadratic'</span>,
                interaction.level <span class="op">=</span> <span class="fl">0</span><span class="op">)</span></code></pre></div>
 </div>
@@ -267,27 +267,27 @@
 <h4 id="sample-all-factor-levels">Sample all factor levels<a class="anchor" aria-label="anchor" href="#sample-all-factor-levels"></a>
 </h4>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">samp1</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/bm_SampleFactorLevels.html">bm_SampleFactorLevels</a></span><span class="op">(</span><span class="va">stk</span>, mask.out <span class="op">=</span> <span class="va">mask.out</span><span class="op">)</span>
-<span class="va">samp2</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/bm_SampleFactorLevels.html">bm_SampleFactorLevels</a></span><span class="op">(</span><span class="va">stk</span>, mask.in <span class="op">=</span> <span class="va">mask.in</span><span class="op">)</span>
-<span class="va">samp3</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/bm_SampleFactorLevels.html">bm_SampleFactorLevels</a></span><span class="op">(</span><span class="va">stk</span>, mask.out <span class="op">=</span> <span class="va">mask.out</span>, mask.in <span class="op">=</span> <span class="va">mask.in</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span class="va">samp1</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/bm_SampleFactorLevels.html">bm_SampleFactorLevels</a></span><span class="op">(</span>expl.var <span class="op">=</span> <span class="va">stk</span>, mask.out <span class="op">=</span> <span class="va">mask.out</span><span class="op">)</span>
+<span class="va">samp2</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/bm_SampleFactorLevels.html">bm_SampleFactorLevels</a></span><span class="op">(</span>expl.var <span class="op">=</span> <span class="va">stk</span>, mask.in <span class="op">=</span> <span class="va">mask.in</span><span class="op">)</span>
+<span class="va">samp3</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/bm_SampleFactorLevels.html">bm_SampleFactorLevels</a></span><span class="op">(</span>expl.var <span class="op">=</span> <span class="va">stk</span>, mask.out <span class="op">=</span> <span class="va">mask.out</span>, mask.in <span class="op">=</span> <span class="va">mask.in</span><span class="op">)</span></code></pre></div>
 </div>
 <div class="section level4">
 <h4 id="compute-species-range-envelop-model">Compute Species Range Envelop model<a class="anchor" aria-label="anchor" href="#compute-species-range-envelop-model"></a>
 </h4>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># Compute SRE for several quantile values</span>
-<span class="va">sre.100</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/bm_SRE.html">bm_SRE</a></span><span class="op">(</span>Response <span class="op">=</span> <span class="va">myResp.v</span>,
-                  Explanatory <span class="op">=</span> <span class="va">myExpl.r</span>,
-                  NewData <span class="op">=</span> <span class="va">myExpl.r</span>,
-                  Quant <span class="op">=</span> <span class="fl">0</span><span class="op">)</span>
-<span class="va">sre.095</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/bm_SRE.html">bm_SRE</a></span><span class="op">(</span>Response <span class="op">=</span> <span class="va">myResp.v</span>,
-                  Explanatory <span class="op">=</span> <span class="va">myExpl.r</span>,
-                  NewData <span class="op">=</span> <span class="va">myExpl.r</span>,
-                  Quant <span class="op">=</span> <span class="fl">0.025</span><span class="op">)</span>
-<span class="va">sre.090</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/bm_SRE.html">bm_SRE</a></span><span class="op">(</span>Response <span class="op">=</span> <span class="va">myResp.v</span>,
-                  Explanatory <span class="op">=</span> <span class="va">myExpl.r</span>,
-                  NewData <span class="op">=</span> <span class="va">myExpl.r</span>,
-                  Quant <span class="op">=</span> <span class="fl">0.05</span><span class="op">)</span>
+<span class="va">sre.100</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/bm_SRE.html">bm_SRE</a></span><span class="op">(</span>resp.var <span class="op">=</span> <span class="va">myResp.v</span>,
+                  expl.var <span class="op">=</span> <span class="va">myExpl.r</span>,
+                  new.env <span class="op">=</span> <span class="va">myExpl.r</span>,
+                  quant <span class="op">=</span> <span class="fl">0</span><span class="op">)</span>
+<span class="va">sre.095</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/bm_SRE.html">bm_SRE</a></span><span class="op">(</span>resp.var <span class="op">=</span> <span class="va">myResp.v</span>,
+                  expl.var <span class="op">=</span> <span class="va">myExpl.r</span>,
+                  new.env <span class="op">=</span> <span class="va">myExpl.r</span>,
+                  quant <span class="op">=</span> <span class="fl">0.025</span><span class="op">)</span>
+<span class="va">sre.090</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/bm_SRE.html">bm_SRE</a></span><span class="op">(</span>resp.var <span class="op">=</span> <span class="va">myResp.v</span>,
+                  expl.var <span class="op">=</span> <span class="va">myExpl.r</span>,
+                  new.env <span class="op">=</span> <span class="va">myExpl.r</span>,
+                  quant <span class="op">=</span> <span class="fl">0.05</span><span class="op">)</span>
   
 <span class="co"># Visualize results</span>
 <span class="va">res</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/raster/man/stack.html" class="external-link">stack</a></span><span class="op">(</span><span class="va">myResp.v</span>, <span class="va">sre.100</span>, <span class="va">sre.095</span>, <span class="va">sre.090</span><span class="op">)</span>
@@ -299,10 +299,10 @@
 </h4>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">mod</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/glm.html" class="external-link">glm</a></span><span class="op">(</span><span class="va">var1</span> <span class="op">~</span> <span class="va">var2</span> <span class="op">+</span> <span class="va">var3</span>, data <span class="op">=</span> <span class="va">myExpl.s</span><span class="op">)</span>
-<span class="fu"><a href="../reference/bm_VariablesImportance.html">bm_VariablesImportance</a></span><span class="op">(</span>model <span class="op">=</span> <span class="va">mod</span>, 
-                       data <span class="op">=</span> <span class="va">myExpl.s</span><span class="op">[</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">'var2'</span>, <span class="st">'var3'</span><span class="op">)</span><span class="op">]</span>,
+<span class="fu"><a href="../reference/bm_VariablesImportance.html">bm_VariablesImportance</a></span><span class="op">(</span>bm.model <span class="op">=</span> <span class="va">mod</span>, 
+                       expl.var <span class="op">=</span> <span class="va">myExpl.s</span><span class="op">[</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">'var2'</span>, <span class="st">'var3'</span><span class="op">)</span><span class="op">]</span>,
                        method <span class="op">=</span> <span class="st">"full_rand"</span>,
-                       nb_rand <span class="op">=</span> <span class="fl">3</span><span class="op">)</span></code></pre></div>
+                       nb.rep <span class="op">=</span> <span class="fl">3</span><span class="op">)</span></code></pre></div>
 </div>
 </div>
 </div>

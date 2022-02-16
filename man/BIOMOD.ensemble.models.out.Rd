@@ -43,66 +43,64 @@ build the ensemble models, must be among \code{PA_dataset+repet}, \code{PA_datas
 showClass("BIOMOD.ensemble.models.out")
 
 ## ------------------------------------------------------------------------
-# species occurrences
-myFile <- system.file("external/species/mammals_table.csv", package="biomod2")
+
+# Load species occurrences (6 species available)
+myFile <- system.file('external/species/mammals_table.csv', package = 'biomod2')
 DataSpecies <- read.csv(myFile, row.names = 1)
 head(DataSpecies)
 
-# the name of studied species
+# Select the name of the studied species
 myRespName <- 'GuloGulo'
 
-# the presence/absences data for our species
+# Get corresponding presence/absence data
 myResp <- as.numeric(DataSpecies[, myRespName])
 
-# the XY coordinates of species data
-myRespXY <- DataSpecies[, c("X_WGS84", "Y_WGS84")]
+# Get corresponding XY coordinates
+myRespXY <- DataSpecies[, c('X_WGS84', 'Y_WGS84')]
+
+# Load environmental variables extracted from BIOCLIM (bio_3, bio_4, bio_7, bio_11 & bio_12)
+myFiles <- paste0('external/bioclim/current/bio', c(3, 4, 7, 11, 12), '.grd')
+myExpl <- raster::stack(system.file(myFiles, package = 'biomod2'))
 
 
-# Environmental variables extracted from BIOCLIM (bio_3, bio_4, bio_7, bio_11 & bio_12)
-myFiles = paste0("external/bioclim/current/bio", c(3, 4, 7, 11, 12), ".grd")
-myExpl = raster::stack(system.file(myFiles[1], package = "biomod2"),
-                       system.file(myFiles[2], package = "biomod2"),
-                       system.file(myFiles[3], package = "biomod2"),
-                       system.file(myFiles[4], package = "biomod2"),
-                       system.file(myFiles[5], package = "biomod2"))
-
-# 1. Formating Data
+# ---------------------------------------------------------------
+# Format Data with true absences
 myBiomodData <- BIOMOD_FormatingData(resp.var = myResp,
                                      expl.var = myExpl,
                                      resp.xy = myRespXY,
                                      resp.name = myRespName)
 
-# 2. Defining Models Options using default options.
-myBiomodOption <- BIOMOD_ModelingOptions()
+# Create default modeling options
+myBiomodOptions <- BIOMOD_ModelingOptions()
 
-# 3. Doing Modelisation
-myBiomodModelOut <- BIOMOD_Modeling(myBiomodData,
-                                    models = c('SRE','RF'),
-                                    models.options = myBiomodOption,
-                                    NbRunEval = 2,
-                                    DataSplit = 80,
-                                    VarImport = 3,
-                                    models.eval.meth = c('TSS', 'ROC'),
-                                    do.full.models = FALSE,
-                                    modeling.id = 'test')
-                    
-# 4. Doing Ensemble Modeling
-myBiomodEM <- BIOMOD_EnsembleModeling(modeling.output = myBiomodModelOut,
-                                      chosen.models = 'all',
+# Model single models
+myBiomodModelOut <- BIOMOD_Modeling(bm.format = myBiomodData,
+                                    modeling.id = 'AllModels',
+                                    bm.options = myBiomodOptions,
+                                    nb.rep = 2,
+                                    data.split.perc = 80,
+                                    metric.eval = c('TSS','ROC'),
+                                    var.import = 3,
+                                    do.full.models = FALSE)
+
+
+# ---------------------------------------------------------------
+# Model ensemble models
+myBiomodEM <- BIOMOD_EnsembleModeling(bm.mod = myBiomodModelOut,
+                                      models.chosen = 'all',
                                       em.by = 'all',
-                                      eval.metric = c('TSS'),
-                                      eval.metric.quality.threshold = c(0.7),
-                                      models.eval.meth = c('TSS', 'ROC'),
+                                      metric.select = c('TSS'),
+                                      metric.select.thresh = c(0.7),
+                                      metric.eval = c('TSS', 'ROC'),
+                                      var.import = 3,
                                       prob.mean = TRUE,
-                                      prob.median = FALSE,
-                                      prob.cv = FALSE,
-                                      prob.ci = FALSE,
+                                      prob.median = TRUE,
+                                      prob.cv = TRUE,
+                                      prob.ci = TRUE,
                                       prob.ci.alpha = 0.05,
-                                      committee.averaging = FALSE,
+                                      committee.averaging = TRUE,
                                       prob.mean.weight = TRUE,
                                       prob.mean.weight.decay = 'proportional')
-
-# print summary
 myBiomodEM
 
 

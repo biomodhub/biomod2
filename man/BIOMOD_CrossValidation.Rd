@@ -5,46 +5,46 @@
 \title{Custom models cross-validation procedure}
 \usage{
 BIOMOD_CrossValidation(
-  data,
+  bm.format,
   k = 5,
-  repetition = 5,
-  stratified.cv = FALSE,
-  stratify = "both",
+  nb.rep = 5,
+  do.stratification = FALSE,
+  method = "both",
   balance = "presences",
   do.full.models = TRUE
 )
 }
 \arguments{
-\item{data}{a \code{\link{BIOMOD.formated.data}} object returned by the 
-\code{\link{BIOMOD_FormatingData}} function}
+\item{bm.format}{a \code{\link{BIOMOD.formated.data}} or \code{\link{BIOMOD.formated.data.PA}} 
+object returned by the \code{\link{BIOMOD_FormatingData}} function}
 
-\item{k}{an \code{integer} corresponding to the number of bins/partitions for k-fold cv}
+\item{k}{an \code{integer} corresponding to the number of bins/partitions for k-fold CV}
 
-\item{repetition}{an \code{integer} corresponding to the number of repetitions of k-fold cv 
-(\emph{set to \code{1} if \code{stratified.cv = TRUE}})}
+\item{nb.rep}{an \code{integer} corresponding to the number of repetitions of k-fold CV 
+(\emph{set to \code{1} if \code{do.stratification = TRUE}})}
 
-\item{stratified.cv}{a \code{logical} defining whether stratified cv should be run}
+\item{do.stratification}{a \code{logical} defining whether stratified CV should be run}
 
-\item{stratify}{a \code{character} corresponding to the stratification method of the cv 
-(\emph{if \code{stratified.cv = TRUE}}), must be \code{x}, \code{y}, \code{both}, \code{block} 
-or the name of a predictor for environmental stratified cv}
+\item{method}{a \code{character} corresponding to the CV stratification method (\emph{if 
+\code{do.stratification = TRUE}}), must be \code{x}, \code{y}, \code{both}, \code{block} 
+or the name of a predictor for environmental stratified CV}
 
 \item{balance}{a \code{character} defining whether partitions should be balanced for 
 \code{presences} or \code{absences} (resp. pseudo-absences or background)}
 
-\item{do.full.models}{(\emph{optional, default} \code{TRUE}) \cr 
-A \code{logical} value defining if models should be also calibrated and validated with the 
-whole dataset}
+\item{do.full.models}{(\emph{optional, default} \code{TRUE}) \cr
+A \code{logical} value defining whether models should be also calibrated and validated over 
+the whole dataset or not}
 }
 \value{
-A \code{DataSplitTable} {matrix} with \code{k * repetition} (\emph{+ 1 if 
+A \code{DataSplitTable} {matrix} with \code{k * nb.rep} (\emph{+ 1 if 
 \code{do.full.models = TRUE}}) columns that can be given as parameter to the 
 \code{\link{BIOMOD_Modeling}} function.
 }
 \description{
 This function creates a \code{DataSplitTable} that can be given as parameter to 
 the \code{\link{BIOMOD_Modeling}} function to evaluate models with repeated k-fold or 
-stratified cross-validation (cv) instead of repeated split samples.
+stratified cross-validation (CV) instead of repeated split samples.
 }
 \details{
 \bold{Stratified cross-validation} may be used to test for model overfitting and to assess 
@@ -87,8 +87,8 @@ myResp <- as.numeric(DataSpecies[, myRespName])
 myRespXY <- DataSpecies[, c('X_WGS84', 'Y_WGS84')]
 
 # Load environmental variables extracted from BIOCLIM (bio_3, bio_4, bio_7, bio_11 & bio_12)
-myFiles = paste0('external/bioclim/current/bio', c(3, 4, 7, 11, 12), '.grd')
-myExpl = raster::stack(system.file(myFiles, package = 'biomod2'))
+myFiles <- paste0('external/bioclim/current/bio', c(3, 4, 7, 11, 12), '.grd')
+myExpl <- raster::stack(system.file(myFiles, package = 'biomod2'))
 
 
 # ---------------------------------------------------------------
@@ -104,32 +104,32 @@ myBiomodOptions <- BIOMOD_ModelingOptions()
  
 # ---------------------------------------------------------------
 # Create the different validation datasets
-myBiomodCV <- BIOMOD_CrossValidation(myBiomodData)
+myBiomodCV <- BIOMOD_CrossValidation(bm.format = myBiomodData)
 head(myBiomodCV)
 
 # Several validation strategies can be combined
-DataSplitTable.b <- BIOMOD_CrossValidation(myBiomodData,
-                                          k = 5,
-                                          rep = 2,
-                                          do.full.models = FALSE)
-DataSplitTable.y <- BIOMOD_CrossValidation(myBiomodData,
-                                          k = 2,
-                                          stratified.cv = TRUE,
-                                          stratify = "y")
+DataSplitTable.b <- BIOMOD_CrossValidation(bm.format = myBiomodData,
+                                           k = 5,
+                                           nb.rep = 2,
+                                           do.full.models = FALSE)
+DataSplitTable.y <- BIOMOD_CrossValidation(bm.format = myBiomodData,
+                                           k = 2,
+                                           do.stratification = TRUE,
+                                           method = "y")
 colnames(DataSplitTable.y)[1:2] <- c("RUN11", "RUN12")
 myBiomodCV <- cbind(DataSplitTable.b, DataSplitTable.y)
 head(myBiomodCV)
 
 # Model single models
-myBiomodModelOut <- BIOMOD_Modeling(myBiomodData,
+myBiomodModelOut <- BIOMOD_Modeling(bm.format = myBiomodData,
+                                    modeling.id = 'mod.CV',
                                     models = c('RF', 'GLM'),
-                                    models.options = myBiomodOptions,
-                                    NbRunEval = 2,
-                                    DataSplitTable = myBiomodCV,
-                                    VarImport = 3,
-                                    models.eval.meth = c('TSS','ROC'),
-                                    do.full.models = FALSE,
-                                    modeling.id = 'mod.CV')
+                                    bm.options = myBiomodOptions,
+                                    nb.rep = 2,
+                                    data.split.table = myBiomodCV,
+                                    metric.eval = c('TSS','ROC'),
+                                    var.import = 3,
+                                    do.full.models = FALSE)
 
 # Get evaluation scores & variables importance
 myEval <- get_evaluations(myBiomodModelOut.CV, as.data.frame = TRUE)
@@ -155,8 +155,8 @@ boxplot(myEval$Testing.data ~ interaction(myEval$Algo, myEval$CV.strategy),
 }
 }
 \seealso{
-\code{\link[ENMeval]{get.block}}, \code{\link{BIOMOD_FormatingData}}, 
-\code{\link{BIOMOD_Modeling}}
+\code{\link[ENMeval]{get.block}}, \code{\link[dismo]{kfold}}, 
+\code{\link{BIOMOD_FormatingData}}, \code{\link{BIOMOD_Modeling}}
 
 Other Main functions: 
 \code{\link{BIOMOD_EnsembleForecasting}()},

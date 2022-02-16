@@ -4,16 +4,22 @@
 \alias{bm_MakeFormula}
 \title{Standardized formula maker}
 \usage{
-bm_MakeFormula(respName, explVar, type = "simple", interaction.level = 0, ...)
+bm_MakeFormula(
+  resp.name,
+  expl.var,
+  type = "simple",
+  interaction.level = 0,
+  ...
+)
 }
 \arguments{
-\item{respName}{a \code{character} defining the response variable name}
+\item{resp.name}{a \code{character} corresponding to the response variable name}
 
-\item{explVar}{a \code{matrix} or \code{data.frame} corresponding to the explanatory 
-variables table that will be considered at modeling step}
+\item{expl.var}{a \code{matrix} or \code{data.frame} containing the explanatory variables that 
+will be used at the modeling step}
 
-\item{type}{a \code{character} defining the wanted type of formula, must be \code{simple}, 
-\code{quadratic}, \code{polynomial} or \code{s_smoother}}
+\item{type}{a \code{character} corresponding to the wanted type of formula, must be 
+\code{simple}, \code{quadratic}, \code{polynomial} or \code{s_smoother}}
 
 \item{interaction.level}{an \code{integer} corresponding to the interaction level depth 
 between explanatory variables}
@@ -29,8 +35,8 @@ This internal \pkg{biomod2} function allows the user to create easily a
 standardized formula that can be used later by statistical models.
 }
 \details{
-It is advised to give only a subset of \code{explVar} table to avoid useless memory consuming. 
-\cr If some explanatory variables are factorial, \code{explVar} must be a \code{data.frame} 
+It is advised to give only a subset of \code{expl.var} table to avoid useless memory consuming. 
+\cr If some explanatory variables are factorial, \code{expl.var} must be a \code{data.frame} 
 whose corresponding columns are defined as \code{factor}. \cr \cr
 
 \code{...} can take the following values :
@@ -50,16 +56,17 @@ myExpl.s <- data.frame(var1 = sample(c(0, 1), 100, replace = TRUE),
                        var3 = 1:100)
 
 ## Generate automatic formula
-bm_MakeFormula(respName = 'myResp.s',
-               explVar = head(myExpl.s),
+bm_MakeFormula(resp.name = 'myResp.s',
+               expl.var = head(myExpl.s),
                type = 'quadratic',
                interaction.level = 0)
 
 
 }
 \seealso{
-\code{\link[stats]{formula}}, \code{\link{BIOMOD_ModelingOptions}}, 
-\code{\link{BIOMOD_Tuning}}, \code{\link{bm_RunModelsLoop}}
+\code{\link[stats]{formula}}, \code{\link[mgcv]{s}}, \code{\link[gam]{s}}, 
+\code{\link{BIOMOD_ModelingOptions}}, \code{\link{BIOMOD_Tuning}}, 
+\code{\link{bm_RunModelsLoop}}
 
 Other Secundary functions: 
 \code{\link{bm_BinaryTransformation}()},

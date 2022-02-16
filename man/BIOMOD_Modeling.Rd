@@ -5,26 +5,26 @@
 \title{Run a range of species distribution models}
 \usage{
 BIOMOD_Modeling(
-  data,
+  bm.format,
   modeling.id = as.character(format(Sys.time(), "\%s")),
   models = c("GLM", "GBM", "GAM", "CTA", "ANN", "SRE", "FDA", "MARS", "RF",
     "MAXENT.Phillips", "MAXENT.Phillips.2"),
-  models.options = NULL,
-  NbRunEval = 1,
-  DataSplit = 100,
-  Yweights = NULL,
-  Prevalence = NULL,
-  VarImport = 0,
-  models.eval.meth = c("KAPPA", "TSS", "ROC"),
-  SaveObj = TRUE,
-  rescal.all.models = FALSE,
+  bm.options = NULL,
+  nb.rep = 1,
+  data.split.perc = 100,
+  data.split.table = NULL,
   do.full.models = TRUE,
-  ...
+  weights = NULL,
+  prevalence = NULL,
+  metric.eval = c("KAPPA", "TSS", "ROC"),
+  var.import = 0,
+  save.output = TRUE,
+  scale.models = FALSE
 )
 }
 \arguments{
-\item{data}{a \code{\link{BIOMOD.formated.data}} object returned by the 
-\code{\link{BIOMOD_FormatingData}} function}
+\item{bm.format}{a \code{\link{BIOMOD.formated.data}} or \code{\link{BIOMOD.formated.data.PA}} 
+object returned by the \code{\link{BIOMOD_FormatingData}} function}
 
 \item{modeling.id}{a \code{character} corresponding to the name (ID) of the simulation set 
 (\emph{a random number by default})}
@@ -33,49 +33,49 @@ BIOMOD_Modeling(
 \code{GBM}, \code{GAM}, \code{CTA}, \code{ANN}, \code{SRE}, \code{FDA}, \code{MARS}, 
 \code{RF}, \code{MAXENT.Phillips}, \code{MAXENT.Phillips.2}}
 
-\item{models.options}{a \code{\link{BIOMOD.models.options}} object returned by the 
+\item{bm.options}{a \code{\link{BIOMOD.models.options}} object returned by the
 \code{\link{BIOMOD_ModelingOptions}} function}
 
-\item{NbRunEval}{an \code{integer} corresponding to the number of repetitions to be done for 
-calibration/validation splitting \cr (\emph{if specified, \code{DataSplit} and 
+\item{nb.rep}{an \code{integer} corresponding to the number of repetitions to be done for 
+calibration/validation splitting \cr (\emph{if specified, \code{data.split.perc} and 
 \code{do.full.models} will be ignored})}
 
-\item{DataSplit}{a \code{numeric} between \code{0} and \code{1} corresponding to the 
+\item{data.split.perc}{a \code{numeric} between \code{0} and \code{1} corresponding to the 
 percentage of data used to calibrate the models (calibration/validation splitting)}
 
-\item{Yweights}{(\emph{optional, default} \code{NULL}) \cr 
+\item{data.split.table}{(\emph{optional, default} \code{NULL}) \cr 
+A \code{matrix} or \code{data.frame} defining for each repetition (in columns) which 
+observation lines should be used for models calibration (\code{TRUE}) and validation 
+(\code{FALSE}) (see \code{\link{BIOMOD_CrossValidation}})}
+
+\item{do.full.models}{(\emph{optional, default} \code{TRUE}) \cr 
+A \code{logical} value defining whether models calibrated and evaluated over the whole 
+dataset should be computed or not}
+
+\item{weights}{(\emph{optional, default} \code{NULL}) \cr 
 A \code{vector} of \code{numeric} values corresponding to observation weights (one per 
 observation, see \href{BIOMOD_Modeling.html#details}{Details})}
 
-\item{Prevalence}{(\emph{optional, default} \code{NULL}) \cr 
+\item{prevalence}{(\emph{optional, default} \code{NULL}) \cr 
 A \code{numeric} between \code{0} and \code{1} corresponding to the species prevalence to 
 build '\emph{weighted response weights}' (see \href{BIOMOD_Modeling.html#details}{Details})}
 
-\item{VarImport}{(\emph{optional, default} \code{NULL}) \cr 
-An \code{integer} corresponding to the number of permutations to be done for each variable to 
-estimate variable importance}
-
-\item{models.eval.meth}{a \code{vector} containing evaluation metric names to be used, must 
+\item{metric.eval}{a \code{vector} containing evaluation metric names to be used, must 
 be among \code{ROC}, \code{TSS}, \code{KAPPA}, \code{ACCURACY}, \code{BIAS}, \code{POD}, 
 \code{FAR}, \code{POFD}, \code{SR}, \code{CSI}, \code{ETS}, \code{HK}, \code{HSS}, \code{OR}, 
 \code{ORSS}}
 
-\item{SaveObj}{(\emph{optional, default} \code{TRUE}) \cr 
-A \code{logical} value defining whether all results and outputs must be saved on hard drive 
-or not (\emph{! strongly recommended !})}
+\item{var.import}{(\emph{optional, default} \code{NULL}) \cr 
+An \code{integer} corresponding to the number of permutations to be done for each variable to 
+estimate variable importance}
 
-\item{rescal.all.models}{(\emph{optional, default} \code{FALSE}) \cr 
-A \code{logical} value defining whether all models predictions must be scaled with a binomial 
-GLM or not}
+\item{save.output}{(\emph{optional, default} \code{TRUE}) \cr 
+A \code{logical} value defining whether all outputs should be saved on hard drive or not 
+(\emph{! strongly recommended !})}
 
-\item{do.full.models}{(\emph{optional, default} \code{TRUE}) \cr 
-A \code{logical} value defining whether models calibrated and evaluated over the whole 
-dataset must be computed or not}
-
-\item{DataSplitTable}{(\emph{optional, default} \code{NULL}) \cr 
-A \code{matrix} or \code{data.frame} defining for each repetition (in columns) which 
-observation lines should be used for models calibration (\code{TRUE}) and validation 
-(\code{FALSE}) (see \code{\link{BIOMOD_CrossValidation}})}
+\item{scale.models}{(\emph{optional, default} \code{FALSE}) \cr 
+A \code{logical} value defining whether all models predictions should be scaled with a 
+binomial GLM or not}
 }
 \value{
 A \code{BIOMOD.models.out} object containing models outputs, or links to saved outputs. \cr
@@ -88,7 +88,7 @@ created in the current working directory :
   \item a \emph{hidden} folder, named \code{.BIOMOD_DATA}, and containing outputs related 
   files (original dataset, calibration lines, pseudo-absences selected, predictions, 
   variables importance, evaluation values...), that can be retrieved with 
-  \code{\href{}{get_[...]}} or \code{\link{load}} functions, and used by other 
+  \code{\href{getters.out.html}{get_[...]}} or \code{\link{load}} functions, and used by other 
   \pkg{biomod2} functions, like \code{\link{BIOMOD_Projection}} or 
   \code{\link{BIOMOD_EnsembleModeling}}
 }
@@ -101,8 +101,8 @@ of evaluation metrics (see \href{BIOMOD_Modeling.html#details}{Details}).
 }
 \details{
 \describe{
-  \item{data}{If you have decided to add pseudo absences to your original dataset (see 
-  \code{\link{BIOMOD_FormatingData}}), \cr \code{PA.nb.rep *(NbRunEval + 1)} models will be 
+  \item{bm.format}{If you have decided to add pseudo absences to your original dataset (see 
+  \code{\link{BIOMOD_FormatingData}}), \cr \code{PA.nb.rep *(nb.rep + 1)} models will be 
   created.}
   
   \item{models}{The set of models to be calibrated on the data. 10 modeling techniques 
@@ -125,40 +125,40 @@ of evaluation metrics (see \href{BIOMOD_Modeling.html#details}{Details}).
     \item \code{MAXENT.Phillips.2} : Maximum Entropy (\code{\link[maxnet]{maxnet}})
   }}
   
-  \item{NbRunEval & DataSplit}{
+  \item{nb.rep & data.split.perc}{
   \itemize{
     \item Most simple method in machine learning to calibrate and evaluate a model is to 
     split the original dataset in two, one to calibrate the model and the other one to 
-    evaluate it. The \code{DataSplit} argument defines the percentage of data that will be 
+    evaluate it. The \code{data.split.perc} argument defines the percentage of data that will be 
     randomly selected and used for the calibration part, the remaining data constituting the 
-    evaluation part. This process is repeated \code{NbRunEval} times, to be sure not to 
+    evaluation part. This process is repeated \code{nb.rep} times, to be sure not to 
     include bias both in the modeling and evaluation parts.
     \item Other validation methods are also available to the user :
     \itemize{
       \item evaluation dataset can be directly given to the 
       \code{\link{BIOMOD_FormatingData}} function
-      \item \code{DataSplitTable} argument can be used and obtained from the 
+      \item \code{data.split.table} argument can be used and obtained from the 
       \code{\link{BIOMOD_CrossValidation}} function
     }
   }}
   
-  \item{Yweights & Prevalence}{More or less weight can be given to some specific observations.
+  \item{weights & prevalence}{More or less weight can be given to some specific observations.
   \itemize{
-    \item If \code{Yweights = Prevalence = NULL}, each observation (presence or absence) will 
+    \item If \code{weights = prevalence = NULL}, each observation (presence or absence) will 
     have the same weight, no matter the total number of presences and absences.
-    \item If \code{Prevalence = 0.5}, presences and absences will be weighted equally 
+    \item If \code{prevalence = 0.5}, presences and absences will be weighted equally 
     (\emph{i.e. the weighted sum of presences equals the weighted sum of absences}). 
-    \item If \code{Prevalence} is set below (\emph{above}) \code{0.5}, more weight will be 
+    \item If \code{prevalence} is set below (\emph{above}) \code{0.5}, more weight will be 
     given to absences (\emph{presences}).
-    \item If \code{Yweights} is defined, \code{Prevalence} argument will be ignored, and each 
+    \item If \code{weights} is defined, \code{prevalence} argument will be ignored, and each 
     observation will have its own weight.
     \item If pseudo-absences have been generated (\code{PA.nb.rep > 0} in 
     \code{\link{BIOMOD_FormatingData}}), weights are by default calculated such that 
-    \code{Prevalence = 0.5}. \emph{Automatically created \code{Yweights} will be \code{integer} 
+    \code{prevalence = 0.5}. \emph{Automatically created \code{weights} will be \code{integer} 
     values to prevent some modeling issues.}
   }}
 
-  \item{models.eval.meth}{
+  \item{metric.eval}{
   \itemize{
     \item \code{ROC} : Relative Operating Characteristic
     \item \code{KAPPA} : Cohen's Kappa (Heidke skill score)
@@ -178,13 +178,13 @@ of evaluation metrics (see \href{BIOMOD_Modeling.html#details}{Details}).
   to get detailed description of each metric.}
   }
   
-  \item{SaveObj}{\emph{If this argument is set to \code{FALSE}, it may prevent the evaluation 
+  \item{save.output}{\emph{If this argument is set to \code{FALSE}, it may prevent the evaluation 
   of the ensemble models (see \code{\link{BIOMOD_EnsembleModeling}}) in further steps. Strong 
-  recommandation is to keep \code{SaveObj = TRUE}, even if it requires to have some free 
+  recommandation is to keep \code{save.output = TRUE}, even if it requires to have some free 
   space onto the hard drive.}
   }
   
-  \item{rescal.all.models}{\bold{This parameter is quite experimental and it is recommended 
+  \item{scale.models}{\bold{This parameter is quite experimental and it is recommended 
   not to use it. It may lead to reduction in projection scale amplitude.} Some categorical 
   models always have to be scaled (\code{FDA}, \code{ANN}), but it may be interesting to 
   scale all computed models to ensure comparable predictions (\code{0-1000} range). It might 
@@ -216,8 +216,8 @@ myResp <- as.numeric(DataSpecies[, myRespName])
 myRespXY <- DataSpecies[, c('X_WGS84', 'Y_WGS84')]
 
 # Load environmental variables extracted from BIOCLIM (bio_3, bio_4, bio_7, bio_11 & bio_12)
-myFiles = paste0('external/bioclim/current/bio', c(3, 4, 7, 11, 12), '.grd')
-myExpl = raster::stack(system.file(myFiles, package = 'biomod2'))
+myFiles <- paste0('external/bioclim/current/bio', c(3, 4, 7, 11, 12), '.grd')
+myExpl <- raster::stack(system.file(myFiles, package = 'biomod2'))
 
 
 # ---------------------------------------------------------------
@@ -233,14 +233,14 @@ myBiomodOptions <- BIOMOD_ModelingOptions()
 
 # ---------------------------------------------------------------
 # Model single models
-myBiomodModelOut <- BIOMOD_Modeling(myBiomodData,
-                                    models.options = myBiomodOptions,
-                                    NbRunEval = 2,
-                                    DataSplit = 80,
-                                    VarImport = 3,
-                                    models.eval.meth = c('TSS','ROC'),
-                                    do.full.models = FALSE,
-                                    modeling.id = 'test')
+myBiomodModelOut <- BIOMOD_Modeling(bm.format = myBiomodData,
+                                    modeling.id = 'AllModels',
+                                    bm.options = myBiomodOptions,
+                                    nb.rep = 2,
+                                    data.split.perc = 80,
+                                    metric.eval = c('TSS','ROC'),
+                                    var.import = 3,
+                                    do.full.models = FALSE)
 myBiomodModelOut
 
 # Get evaluation scores & variables importance
@@ -248,27 +248,31 @@ get_evaluations(myBiomodModelOut)
 get_variables_importance(myBiomodModelOut, as.data.frame = TRUE)
 
 # Represent evaluation scores & variables importance
-bm_PlotEvalMean(myBiomodModelOut)
-bm_PlotEvalBoxplot(myBiomodModelOut, group.by = c('algo', 'run'))
-bm_PlotVarImpBoxplot(myBiomodModelOut, group.by = c('expl.var', 'algo', 'algo'))
-bm_PlotVarImpBoxplot(myBiomodModelOut, group.by = c('expl.var', 'algo', 'dataset'))
-bm_PlotVarImpBoxplot(myBiomodModelOut, group.by = c('algo', 'expl.var', 'dataset'))
+bm_PlotEvalMean(bm.out = myBiomodModelOut)
+bm_PlotEvalBoxplot(bm.out = myBiomodModelOut, group.by = c('algo', 'run'))
+bm_PlotVarImpBoxplot(bm.out = myBiomodModelOut, group.by = c('expl.var', 'algo', 'algo'))
+bm_PlotVarImpBoxplot(bm.out = myBiomodModelOut, group.by = c('expl.var', 'algo', 'dataset'))
+bm_PlotVarImpBoxplot(bm.out = myBiomodModelOut, group.by = c('algo', 'expl.var', 'dataset'))
 
 # Represent response curves
-bm_PlotResponseCurves(myBiomodModelOut, 
-                      chosen.models = get_built_models(myBiomodModelOut)[c(1:3, 12:14)],
-                      fixed.var.metric = 'median')
-bm_PlotResponseCurves(myBiomodModelOut, 
-                      chosen.models = get_built_models(myBiomodModelOut)[c(1:3, 12:14)],
-                      fixed.var.metric = 'min')
-bm_PlotResponseCurves(myBiomodModelOut, 
-                      chosen.models = get_built_models(myBiomodModelOut)[3],
-                      fixed.var.metric = 'median',
+bm_PlotResponseCurves(bm.out = myBiomodModelOut, 
+                      models.chosen = get_built_models(myBiomodModelOut)[c(1:3, 12:14)],
+                      fixed.var = 'median')
+bm_PlotResponseCurves(bm.out = myBiomodModelOut, 
+                      models.chosen = get_built_models(myBiomodModelOut)[c(1:3, 12:14)],
+                      fixed.var = 'min')
+bm_PlotResponseCurves(bm.out = myBiomodModelOut, 
+                      models.chosen = get_built_models(myBiomodModelOut)[3],
+                      fixed.var = 'median',
                       do.bivariate = TRUE)
 
 
 }
 \seealso{
+\code{\link[stats]{glm}}, \code{\link[gam]{gam}}, \code{\link[mgcv]{gam}}, 
+\code{\link[mgcv]{bam}}, \code{\link[gbm]{gbm}}, \code{\link[rpart]{rpart}}, 
+code{\link[nnet]{nnet}}, \code{\link[mda]{fda}}, \code{\link[earth]{earth}}, 
+\code{\link[randomForest]{randomForest}}, \code{\link[maxnet]{maxnet}},
 \code{\link{BIOMOD_FormatingData}}, \code{\link{BIOMOD_ModelingOptions}}, 
 \code{\link{BIOMOD_CrossValidation}}, \code{ \link{bm_VariablesImportance}}, 
 \code{\link{BIOMOD_Projection}}, \code{\link{BIOMOD_EnsembleModeling}},

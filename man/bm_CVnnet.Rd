@@ -11,7 +11,7 @@ bm_CVnnet(
   decay = c(0.001, 0.01, 0.05, 0.1),
   maxit = 200,
   nbCV = 5,
-  W = NULL
+  weights = NULL
 )
 }
 \arguments{
@@ -19,15 +19,16 @@ bm_CVnnet(
 
 \item{Target}{calibration dataset with observed presence / absence}
 
-\item{size}{in modeling options : ANN$size}
+\item{size}{(see parameter ANN$size in \code{\link{BIOMOD_ModelingOptions}})}
 
-\item{decay}{in modeling options ANN$decay}
+\item{decay}{(see parameter ANN$decay in \code{\link{BIOMOD_ModelingOptions}})}
 
-\item{maxit}{in modeling options ANN$maxit}
+\item{maxit}{(see parameter ANN$maxit in \code{\link{BIOMOD_ModelingOptions}})}
 
-\item{nbCV}{in modeling options ANN$nbCV}
+\item{nbCV}{(see parameter ANN$nbCV in \code{\link{BIOMOD_ModelingOptions}})}
 
-\item{W}{weights over calibration lines}
+\item{weights}{a \code{vector} of \code{numeric} values corresponding to weights over 
+calibration lines}
 }
 \value{
 A \code{data.frame} containing the following elements :
@@ -43,6 +44,7 @@ for neural networks in ANN model (see \code{\link[nnet]{nnet}} and
 \code{\link{BIOMOD_Modeling}}).
 }
 \seealso{
+\code{\link[nnet]{nnet}}, \code{\link[pROC]{auc}}, \code{\link[pROC]{roc}}, 
 \code{\link{BIOMOD_ModelingOptions}}, \code{\link{BIOMOD_Modeling}}, 
 \code{\link{bm_SampleBinaryVector}}, \code{\link{bm_RunModelsLoop}}
 

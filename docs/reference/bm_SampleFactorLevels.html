@@ -84,14 +84,14 @@ all the factorial variables contained in a <code>raster*</code> or <code>data.fr
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">bm_SampleFactorLevels</span><span class="op">(</span><span class="va">x</span>, mask.out <span class="op">=</span> <span class="cn">NULL</span>, mask.in <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">bm_SampleFactorLevels</span><span class="op">(</span><span class="va">expl.var</span>, mask.out <span class="op">=</span> <span class="cn">NULL</span>, mask.in <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></code></pre></div>
     </div>
 
     <div id="arguments">
     <h2>Arguments</h2>
-    <dl><dt>x</dt>
-<dd><p>a <code>data.frame</code> or <code><a href="https://rdrr.io/pkg/raster/man/stack.html" class="external-link">RasterStack</a></code> object containing the 
-explanatory variables (in columns or layers)</p></dd>
+    <dl><dt>expl.var</dt>
+<dd><p>a <code>data.frame</code> or <code><a href="https://rdrr.io/pkg/raster/man/stack.html" class="external-link">RasterStack</a></code> object 
+containing the explanatory variables (in columns or layers)</p></dd>
 <dt>mask.out</dt>
 <dd><p>a <code>data.frame</code> or <code><a href="https://rdrr.io/pkg/raster/man/raster.html" class="external-link">raster</a></code> object containing 
 the area that has already been sampled (<em>factor levels within this mask will not be 
@@ -100,7 +100,7 @@ sampled</em>)</p></dd>
 <dd><p>a <code>data.frame</code>, <code><a href="https://rdrr.io/pkg/raster/man/raster.html" class="external-link">raster</a></code> or 
 <code><a href="https://rdrr.io/pkg/raster/man/stack.html" class="external-link">RasterStack</a></code> object containing areas where factor levels are to be 
 sampled in priority. <em>Note that if after having explored these masks, some factor levels 
-remain unsampled, they will be sampled in the reference input object <code>x</code>.</em></p></dd>
+remain unsampled, they will be sampled in the reference input object <code>expl.var</code>.</em></p></dd>
 </dl></div>
     <div id="value">
     <h2>Value</h2>
@@ -111,7 +111,7 @@ In case any factorial variable is found in the input object, <code>NULL</code> i
     </div>
     <div id="details">
     <h2>Details</h2>
-    <p>The <code>x</code>, <code>mask.out</code> and <code>mask.in</code> parameters must be coherent in terms of 
+    <p>The <code>expl.var</code>, <code>mask.out</code> and <code>mask.in</code> parameters must be coherent in terms of 
 dimensions :</p><ul><li><p>same number of rows for <code>data.frame</code> objects</p></li>
 <li><p>same resolution, projection system and number of cells for <code>raster*</code> objects 
   <br><br></p></li>
@@ -141,7 +141,6 @@ factor levels. <br><br></p>
 <code><a href="bm_PlotResponseCurves.html">bm_PlotResponseCurves</a>()</code>,
 <code><a href="bm_PlotVarImpBoxplot.html">bm_PlotVarImpBoxplot</a>()</code>,
 <code><a href="bm_PseudoAbsences.html">bm_PseudoAbsences</a>()</code>,
-<code><a href="bm_Rescaler.html">bm_Rescaler</a>()</code>,
 <code><a href="bm_RunModelsLoop.html">bm_RunModelsLoop</a>()</code>,
 <code><a href="bm_SRE.html">bm_SRE</a>()</code>,
 <code><a href="bm_SampleBinaryVector.html">bm_SampleBinaryVector</a>()</code>,
@@ -173,9 +172,9 @@ factor levels. <br><br></p>
 <span class="va">mask.in</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span><span class="op">[</span><span class="fl">21</span><span class="op">:</span><span class="fl">80</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="cn">NA</span> <span class="co">## only levels 1 and 5 should be sampled in this mask</span>
 
 <span class="co">## Sample all factor levels</span>
-<span class="va">samp1</span> <span class="op">&lt;-</span> <span class="fu">bm_SampleFactorLevels</span><span class="op">(</span><span class="va">stk</span>, mask.out <span class="op">=</span> <span class="va">mask.out</span><span class="op">)</span>
-<span class="va">samp2</span> <span class="op">&lt;-</span> <span class="fu">bm_SampleFactorLevels</span><span class="op">(</span><span class="va">stk</span>, mask.in <span class="op">=</span> <span class="va">mask.in</span><span class="op">)</span>
-<span class="va">samp3</span> <span class="op">&lt;-</span> <span class="fu">bm_SampleFactorLevels</span><span class="op">(</span><span class="va">stk</span>, mask.out <span class="op">=</span> <span class="va">mask.out</span>, mask.in <span class="op">=</span> <span class="va">mask.in</span><span class="op">)</span>
+<span class="va">samp1</span> <span class="op">&lt;-</span> <span class="fu">bm_SampleFactorLevels</span><span class="op">(</span>expl.var <span class="op">=</span> <span class="va">stk</span>, mask.out <span class="op">=</span> <span class="va">mask.out</span><span class="op">)</span>
+<span class="va">samp2</span> <span class="op">&lt;-</span> <span class="fu">bm_SampleFactorLevels</span><span class="op">(</span>expl.var <span class="op">=</span> <span class="va">stk</span>, mask.in <span class="op">=</span> <span class="va">mask.in</span><span class="op">)</span>
+<span class="va">samp3</span> <span class="op">&lt;-</span> <span class="fu">bm_SampleFactorLevels</span><span class="op">(</span>expl.var <span class="op">=</span> <span class="va">stk</span>, mask.out <span class="op">=</span> <span class="va">mask.out</span>, mask.in <span class="op">=</span> <span class="va">mask.in</span><span class="op">)</span>
 
 
 </code></pre></div>

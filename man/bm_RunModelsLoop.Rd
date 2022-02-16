@@ -6,68 +6,68 @@
 \title{Loop to compute all single species distribution models}
 \usage{
 bm_RunModelsLoop(
-  X,
+  bm.format,
   modeling.id,
-  Model,
-  Options,
-  VarImport,
-  mod.eval.method,
-  SavePred = TRUE,
-  scal.models = TRUE
+  model,
+  bm.options,
+  var.import,
+  metric.eval,
+  save.output = TRUE,
+  scale.models = TRUE
 )
 
 bm_RunModel(
-  Model,
+  model,
   Data,
-  Options,
+  bm.options,
   calibLines,
-  Yweights,
+  weights,
   nam,
-  VarImport = 0,
-  mod.eval.method = c("ROC", "TSS", "KAPPA"),
+  var.import = 0,
+  metric.eval = c("ROC", "TSS", "KAPPA"),
   evalData = NULL,
-  SavePred = FALSE,
+  save.output = FALSE,
   xy = NULL,
   eval.xy = NULL,
-  scal.models = TRUE,
+  scale.models = TRUE,
   modeling.id = ""
 )
 }
 \arguments{
-\item{X}{a \code{BIOMOD.formated.data} or \code{BIOMOD.formated.data.PA} object returned by the 
-\code{\link{BIOMOD_FormatingData}} function}
+\item{bm.format}{a \code{\link{BIOMOD.formated.data}} or \code{\link{BIOMOD.formated.data.PA}} 
+object returned by the \code{\link{BIOMOD_FormatingData}} function}
 
 \item{modeling.id}{a \code{character} corresponding to the name (ID) of the simulation set 
 (\emph{a random number by default})}
 
-\item{Model}{a \code{character} corresponding to the model name to be computed, must be either 
+\item{model}{a \code{character} corresponding to the model name to be computed, must be either 
 \code{GLM}, \code{GBM}, \code{GAM}, \code{CTA}, \code{ANN}, \code{SRE}, \code{FDA}, 
 \code{MARS}, \code{RF}, \code{MAXENT.Phillips}, \code{MAXENT.Phillips.2}}
 
-\item{Options}{a \code{\link{BIOMOD.models.options}} object returned by the 
+\item{bm.options}{a \code{\link{BIOMOD.models.options}} object returned by the
 \code{\link{BIOMOD_ModelingOptions}} function}
 
-\item{VarImport}{(\emph{optional, default} \code{NULL}) \cr 
+\item{var.import}{(\emph{optional, default} \code{NULL}) \cr 
 An \code{integer} corresponding to the number of permutations to be done for each variable to 
 estimate variable importance}
 
-\item{mod.eval.method}{a \code{vector} containing evaluation metric names to be used, must 
+\item{metric.eval}{a \code{vector} containing evaluation metric names to be used, must 
 be among \code{ROC}, \code{TSS}, \code{KAPPA}, \code{ACCURACY}, \code{BIAS}, \code{POD}, 
 \code{FAR}, \code{POFD}, \code{SR}, \code{CSI}, \code{ETS}, \code{HK}, \code{HSS}, \code{OR}, 
 \code{ORSS}}
 
-\item{SavePred}{(\emph{optional, default} \code{TRUE}) \cr 
-A \code{logical} value defining whether all results and outputs must be saved on hard drive 
-or not (\emph{! strongly recommended !})}
+\item{save.output}{(\emph{optional, default} \code{TRUE}) \cr 
+A \code{logical} value defining whether all outputs should be saved on hard drive or not 
+(\emph{! strongly recommended !})}
 
-\item{scal.models}{(\emph{optional, default} \code{FALSE}) \cr 
-A \code{logical} value defining whether all models predictions must be scaled with a binomial 
-GLM or not}
+\item{scale.models}{(\emph{optional, default} \code{FALSE}) \cr 
+A \code{logical} value defining whether all models predictions should be scaled with a 
+binomial GLM or not}
 }
 \value{
 A \code{list} containing for each model a \code{list} containing the following elements :
 \itemize{
-  \item{\code{ModelName} : }{the name of correctly computed model}
+  \item{\code{model} : }{the name of correctly computed model}
   \item{\code{calib.failure} : }{the name of incorrectly computed model}
   \item{\code{pred} : }{the prediction outputs for calibration data}
   \item{\code{pred.eval} : }{the prediction outputs for validation data}
@@ -82,6 +82,10 @@ This internal \pkg{biomod2} function allows the user to compute all single
 species distribution models (asked by the \code{\link{BIOMOD_Modeling}} function).
 }
 \seealso{
+\code{\link[rpart]{rpart}}, \code{\link[rpart]{prune}}, \code{\link[gbm]{gbm}}, 
+\code{\link[MASS]{stepAIC}}, \code{\link[nnet]{nnet}}, \code{\link[earth]{earth}}, 
+\code{\link[mda]{fda}}, \code{\link[mda]{mars}}, \code{\link[maxnet]{maxnet}}, 
+\code{\link[randomForest]{randomForest}}, 
 \code{\link{BIOMOD_ModelingOptions}}, \code{\link{BIOMOD_Modeling}}, 
 \code{\link{bm_MakeFormula}}, \code{\link{bm_SampleFactorLevels}}, \code{\link{bm_Rescaler}}, 
 \code{\link{bm_FindOptimStat}}, \code{\link{bm_VariablesImportance}}

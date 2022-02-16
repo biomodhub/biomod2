@@ -93,7 +93,7 @@ for neural networks in ANN model (see <code><a href="https://rdrr.io/pkg/nnet/ma
   decay <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.001</span>, <span class="fl">0.01</span>, <span class="fl">0.05</span>, <span class="fl">0.1</span><span class="op">)</span>,
   maxit <span class="op">=</span> <span class="fl">200</span>,
   nbCV <span class="op">=</span> <span class="fl">5</span>,
-  W <span class="op">=</span> <span class="cn">NULL</span>
+  weights <span class="op">=</span> <span class="cn">NULL</span>
 <span class="op">)</span></code></pre></div>
     </div>
 
@@ -104,15 +104,16 @@ for neural networks in ANN model (see <code><a href="https://rdrr.io/pkg/nnet/ma
 <dt>Target</dt>
 <dd><p>calibration dataset with observed presence / absence</p></dd>
 <dt>size</dt>
-<dd><p>in modeling options : ANN$size</p></dd>
+<dd><p>(see parameter ANN$size in <code><a href="BIOMOD_ModelingOptions.html">BIOMOD_ModelingOptions</a></code>)</p></dd>
 <dt>decay</dt>
-<dd><p>in modeling options ANN$decay</p></dd>
+<dd><p>(see parameter ANN$decay in <code><a href="BIOMOD_ModelingOptions.html">BIOMOD_ModelingOptions</a></code>)</p></dd>
 <dt>maxit</dt>
-<dd><p>in modeling options ANN$maxit</p></dd>
+<dd><p>(see parameter ANN$maxit in <code><a href="BIOMOD_ModelingOptions.html">BIOMOD_ModelingOptions</a></code>)</p></dd>
 <dt>nbCV</dt>
-<dd><p>in modeling options ANN$nbCV</p></dd>
-<dt>W</dt>
-<dd><p>weights over calibration lines</p></dd>
+<dd><p>(see parameter ANN$nbCV in <code><a href="BIOMOD_ModelingOptions.html">BIOMOD_ModelingOptions</a></code>)</p></dd>
+<dt>weights</dt>
+<dd><p>a <code>vector</code> of <code>numeric</code> values corresponding to weights over 
+calibration lines</p></dd>
 </dl></div>
     <div id="value">
     <h2>Value</h2>
@@ -122,7 +123,8 @@ for neural networks in ANN model (see <code><a href="https://rdrr.io/pkg/nnet/ma
 </ul></div>
     <div id="see-also">
     <h2>See also</h2>
-    <div class="dont-index"><p><code><a href="BIOMOD_ModelingOptions.html">BIOMOD_ModelingOptions</a></code>, <code><a href="BIOMOD_Modeling.html">BIOMOD_Modeling</a></code>, 
+    <div class="dont-index"><p><code><a href="https://rdrr.io/pkg/nnet/man/nnet.html" class="external-link">nnet</a></code>, <code><a href="https://rdrr.io/pkg/pROC/man/auc.html" class="external-link">auc</a></code>, <code><a href="https://rdrr.io/pkg/pROC/man/roc.html" class="external-link">roc</a></code>, 
+<code><a href="BIOMOD_ModelingOptions.html">BIOMOD_ModelingOptions</a></code>, <code><a href="BIOMOD_Modeling.html">BIOMOD_Modeling</a></code>, 
 <code><a href="bm_SampleBinaryVector.html">bm_SampleBinaryVector</a></code>, <code><a href="bm_RunModelsLoop.html">bm_RunModelsLoop</a></code></p>
 <p>Other Secundary functions: 
 <code><a href="bm_BinaryTransformation.html">bm_BinaryTransformation</a>()</code>,
@@ -134,7 +136,6 @@ for neural networks in ANN model (see <code><a href="https://rdrr.io/pkg/nnet/ma
 <code><a href="bm_PlotResponseCurves.html">bm_PlotResponseCurves</a>()</code>,
 <code><a href="bm_PlotVarImpBoxplot.html">bm_PlotVarImpBoxplot</a>()</code>,
 <code><a href="bm_PseudoAbsences.html">bm_PseudoAbsences</a>()</code>,
-<code><a href="bm_Rescaler.html">bm_Rescaler</a>()</code>,
 <code><a href="bm_RunModelsLoop.html">bm_RunModelsLoop</a>()</code>,
 <code><a href="bm_SRE.html">bm_SRE</a>()</code>,
 <code><a href="bm_SampleBinaryVector.html">bm_SampleBinaryVector</a>()</code>,

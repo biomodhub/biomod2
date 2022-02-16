@@ -144,15 +144,15 @@ bm_SampleBinaryVector(ref = vec.a, ratio = 0.7)
 #### Find optimal threshold for a specific evaluation metric
 
 ```R
-bm_FindOptimStat(Stat = 'TSS', Fit = vec.b, Obs = vec.a)
-bm_FindOptimStat(Stat = 'TSS', Fit = vec.c, Obs = vec.a, Nb.thresh.test = 100)
+bm_FindOptimStat(metric.eval = 'TSS', obs = vec.a, fit = vec.b)
+bm_FindOptimStat(metric.eval = 'TSS', obs = vec.a, fit = vec.c, nb.thresh = 100)
 ```
 
 #### From continuous to binary / filtered vector
 
 ```R
 vec.d_bin <- bm_BinaryTransformation(data = vec.d, threshold = 500)
-vec.d_filt <- bm_BinaryTransformation(data = vec.d, threshold = 500, doFiltering = TRUE)
+vec.d_filt <- bm_BinaryTransformation(data = vec.d, threshold = 500, do.filtering = TRUE)
 cbind(vec.d, vec.d_bin, vec.d_filt)
 ```
 
@@ -163,8 +163,8 @@ cbind(vec.d, vec.d_bin, vec.d_filt)
 #### Generate automatic formula
 
 ```R
-bm_MakeFormula(respName = 'myResp.s',
-               explVar = head(myExpl.s),
+bm_MakeFormula(resp.name = 'myResp.s',
+               expl.var = head(myExpl.s),
                type = 'quadratic',
                interaction.level = 0)
 ```
@@ -172,27 +172,27 @@ bm_MakeFormula(respName = 'myResp.s',
 #### Sample all factor levels
 
 ```R
-samp1 <- bm_SampleFactorLevels(stk, mask.out = mask.out)
-samp2 <- bm_SampleFactorLevels(stk, mask.in = mask.in)
-samp3 <- bm_SampleFactorLevels(stk, mask.out = mask.out, mask.in = mask.in)
+samp1 <- bm_SampleFactorLevels(expl.var = stk, mask.out = mask.out)
+samp2 <- bm_SampleFactorLevels(expl.var = stk, mask.in = mask.in)
+samp3 <- bm_SampleFactorLevels(expl.var = stk, mask.out = mask.out, mask.in = mask.in)
 ```
 
 #### Compute Species Range Envelop model
 
 ```R
 # Compute SRE for several quantile values
-sre.100 <- bm_SRE(Response = myResp.v,
-                  Explanatory = myExpl.r,
-                  NewData = myExpl.r,
-                  Quant = 0)
-sre.095 <- bm_SRE(Response = myResp.v,
-                  Explanatory = myExpl.r,
-                  NewData = myExpl.r,
-                  Quant = 0.025)
-sre.090 <- bm_SRE(Response = myResp.v,
-                  Explanatory = myExpl.r,
-                  NewData = myExpl.r,
-                  Quant = 0.05)
+sre.100 <- bm_SRE(resp.var = myResp.v,
+                  expl.var = myExpl.r,
+                  new.env = myExpl.r,
+                  quant = 0)
+sre.095 <- bm_SRE(resp.var = myResp.v,
+                  expl.var = myExpl.r,
+                  new.env = myExpl.r,
+                  quant = 0.025)
+sre.090 <- bm_SRE(resp.var = myResp.v,
+                  expl.var = myExpl.r,
+                  new.env = myExpl.r,
+                  quant = 0.05)
   
 # Visualize results
 res <- stack(myResp.v, sre.100, sre.095, sre.090)
@@ -204,9 +204,9 @@ plot(res, zlim = c(0, 1))
 
 ```R
 mod <- glm(var1 ~ var2 + var3, data = myExpl.s)
-bm_VariablesImportance(model = mod, 
-                       data = myExpl.s[, c('var2', 'var3')],
+bm_VariablesImportance(bm.model = mod, 
+                       expl.var = myExpl.s[, c('var2', 'var3')],
                        method = "full_rand",
-                       nb_rand = 3)
+                       nb.rep = 3)
 ```
 

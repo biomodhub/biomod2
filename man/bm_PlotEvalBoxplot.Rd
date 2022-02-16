@@ -4,22 +4,17 @@
 \alias{bm_PlotEvalBoxplot}
 \title{Plot boxplot of evaluation scores}
 \usage{
-bm_PlotEvalBoxplot(
-  modeling.output,
-  group.by = c("algo", "run"),
-  plot = TRUE,
-  ...
-)
+bm_PlotEvalBoxplot(bm.out, group.by = c("algo", "run"), plot = TRUE, ...)
 }
 \arguments{
-\item{modeling.output}{a \code{\link{BIOMOD.models.out}} or \code{BIOMOD.ensemble.models.out} 
-object that can be obtained from \code{\link{BIOMOD_Modeling}} or 
+\item{bm.out}{a \code{\link{BIOMOD.models.out}} or \code{\link{BIOMOD.ensemble.models.out}} 
+object that can be obtained with the \code{\link{BIOMOD_Modeling}} or 
 \code{\link{BIOMOD_EnsembleModeling}} functions}
 
 \item{group.by}{a 2-length \code{vector} containing the way kept models will be represented,
 must be among \code{model}, \code{algo}, \code{run}, \code{dataset}}
 
-\item{plot}{(\emph{optional, default} \code{TRUE}) \cr 
+\item{do.plot}{(\emph{optional, default} \code{TRUE}) \cr 
 A \code{logical} value defining whether the plot is to be rendered or not}
 
 \item{\ldots}{some additional arguments (see \href{bm_PlotEvalMean.html#details}{Details})}
@@ -61,8 +56,8 @@ myResp <- as.numeric(DataSpecies[, myRespName])
 myRespXY <- DataSpecies[, c('X_WGS84', 'Y_WGS84')]
 
 # Load environmental variables extracted from BIOCLIM (bio_3, bio_4, bio_7, bio_11 & bio_12)
-myFiles = paste0('external/bioclim/current/bio', c(3, 4, 7, 11, 12), '.grd')
-myExpl = raster::stack(system.file(myFiles, package = 'biomod2'))
+myFiles <- paste0('external/bioclim/current/bio', c(3, 4, 7, 11, 12), '.grd')
+myExpl <- raster::stack(system.file(myFiles, package = 'biomod2'))
 
 
 # ---------------------------------------------------------------
@@ -76,14 +71,14 @@ myBiomodData <- BIOMOD_FormatingData(resp.var = myResp,
 myBiomodOptions <- BIOMOD_ModelingOptions()
 
 # Model single models
-myBiomodModelOut <- BIOMOD_Modeling(myBiomodData,
-                                    models.options = myBiomodOptions,
-                                    NbRunEval = 2,
-                                    DataSplit = 80,
-                                    VarImport = 3,
-                                    models.eval.meth = c('TSS','ROC'),
-                                    do.full.models = FALSE,
-                                    modeling.id = 'test')
+myBiomodModelOut <- BIOMOD_Modeling(bm.format = myBiomodData,
+                                    modeling.id = 'AllModels',
+                                    bm.options = myBiomodOptions,
+                                    nb.rep = 2,
+                                    data.split.perc = 80,
+                                    metric.eval = c('TSS','ROC'),
+                                    var.import = 3,
+                                    do.full.models = FALSE)
 
 
 # ---------------------------------------------------------------
@@ -91,7 +86,7 @@ myBiomodModelOut <- BIOMOD_Modeling(myBiomodData,
 get_evaluations(myBiomodModelOut)
 
 # Represent evaluation scores
-bm_PlotEvalBoxplot(myBiomodModelOut, group.by = c('algo', 'run'))
+bm_PlotEvalBoxplot(bm.out = myBiomodModelOut, group.by = c('algo', 'run'))
 
 
 }

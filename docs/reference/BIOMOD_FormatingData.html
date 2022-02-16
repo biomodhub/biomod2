@@ -89,10 +89,10 @@ with different strategies (see <a href="BIOMOD_FormatingData.html#details">Detai
 
     <div id="ref-usage">
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">BIOMOD_FormatingData</span><span class="op">(</span>
+  <span class="va">resp.name</span>,
   <span class="va">resp.var</span>,
   <span class="va">expl.var</span>,
   resp.xy <span class="op">=</span> <span class="cn">NULL</span>,
-  resp.name <span class="op">=</span> <span class="cn">NULL</span>,
   eval.resp.var <span class="op">=</span> <span class="cn">NULL</span>,
   eval.expl.var <span class="op">=</span> <span class="cn">NULL</span>,
   eval.resp.xy <span class="op">=</span> <span class="cn">NULL</span>,
@@ -102,14 +102,16 @@ with different strategies (see <a href="BIOMOD_FormatingData.html#details">Detai
   PA.dist.min <span class="op">=</span> <span class="fl">0</span>,
   PA.dist.max <span class="op">=</span> <span class="cn">NULL</span>,
   PA.sre.quant <span class="op">=</span> <span class="fl">0.025</span>,
-  PA.table <span class="op">=</span> <span class="cn">NULL</span>,
+  PA.user.table <span class="op">=</span> <span class="cn">NULL</span>,
   na.rm <span class="op">=</span> <span class="cn">TRUE</span>
 <span class="op">)</span></code></pre></div>
     </div>
 
     <div id="arguments">
     <h2>Arguments</h2>
-    <dl><dt>resp.var</dt>
+    <dl><dt>resp.name</dt>
+<dd><p>a <code>character</code> corresponding to the species name</p></dd>
+<dt>resp.var</dt>
 <dd><p>a <code>vector</code>, <code><a href="https://rdrr.io/pkg/sp/man/SpatialPoints.html" class="external-link">SpatialPoints</a></code> (<em>if presence-only</em>) or 
 <code><a href="https://rdrr.io/pkg/sp/man/SpatialPoints.html" class="external-link">SpatialPointsDataFrame</a></code> object containing binary data (<code>0</code> : absence, 
 <code>1</code> : presence, <code>NA</code> : indeterminate) for a single species that will be used to 
@@ -123,9 +125,6 @@ or <code><a href="https://rdrr.io/pkg/raster/man/stack.html" class="external-lin
 If <code>resp.var</code> is a <code>vector</code>, a 2-columns <code>matrix</code> or <code>data.frame</code> 
 containing the corresponding <code>X</code> and <code>Y</code> coordinates that will be used to build the 
 species distribution model(s)</p></dd>
-<dt>resp.name</dt>
-<dd><p>(<em>optional, default</em> <code>NULL</code>) <br> 
-A <code>character</code> containing the species name.</p></dd>
 <dt>eval.resp.var</dt>
 <dd><p>(<em>optional, default</em> <code>NULL</code>) <br> 
 A <code>vector</code>, <code><a href="https://rdrr.io/pkg/sp/man/SpatialPoints.html" class="external-link">SpatialPoints</a></code> (<em>if presence-only</em>) or 
@@ -145,33 +144,34 @@ containing the corresponding <code>X</code> and <code>Y</code> coordinates that 
 the species distribution model(s) with independent data</p></dd>
 <dt>PA.nb.rep</dt>
 <dd><p>(<em>optional, default</em> <code>0</code>) <br> 
-If pseudo-absence selection, the number of sets (repetitions) of pseudo-absence points that 
-will be drawn</p></dd>
+If pseudo-absence selection, an <code>integer</code> corresponding to the number of sets 
+(repetitions) of pseudo-absence points that will be drawn</p></dd>
 <dt>PA.nb.absences</dt>
 <dd><p>(<em>optional, default</em> <code>0</code>) <br> 
-If pseudo-absence selection, the number of pseudo-absence points that will be selected for 
-each pseudo-absence repetition (true absences included)</p></dd>
+If pseudo-absence selection, and <code>PA.strategy = 'random'</code> or <code>PA.strategy = 'sre'</code> 
+or <code>PA.strategy = 'disk'</code>, an <code>integer</code> corresponding to the number of pseudo-absence 
+points that will be selected for each pseudo-absence repetition (true absences included)</p></dd>
 <dt>PA.strategy</dt>
 <dd><p>(<em>optional, default</em> <code>NULL</code>) <br> 
 If pseudo-absence selection, a <code>character</code> defining the strategy that will be used to 
-select the pseudo-absence points (must be <code>random</code>, <code>sre</code>, <code>disk</code> or 
-<code>user.defined</code>, see <a href="BIOMOD_FormatingData.html#details">Details</a>)</p></dd>
+select the pseudo-absence points. Must be <code>random</code>, <code>sre</code>, <code>disk</code> or 
+<code>user.defined</code> (see <a href="BIOMOD_FormatingData.html#details">Details</a>)</p></dd>
 <dt>PA.dist.min</dt>
 <dd><p>(<em>optional, default</em> <code>0</code>) <br> 
-If pseudo-absence selection and <code>PA.strategy = 'sre'</code>, a <code>numeric</code> defining the 
+If pseudo-absence selection and <code>PA.strategy = 'disk'</code>, a <code>numeric</code> defining the 
 minimal distance to presence points used to make the <code>disk</code> pseudo-absence selection 
 (in meters, see <a href="BIOMOD_FormatingData.html#details">Details</a>)</p></dd>
 <dt>PA.dist.max</dt>
 <dd><p>(<em>optional, default</em> <code>0</code>) <br> 
-If pseudo-absence selection and <code>PA.strategy = 'sre'</code>, a <code>numeric</code> defining the 
+If pseudo-absence selection and <code>PA.strategy = 'disk'</code>, a <code>numeric</code> defining the 
 maximal distance to presence points used to make the <code>disk</code> pseudo-absence selection 
 (in meters, see <a href="BIOMOD_FormatingData.html#details">Details</a>)</p></dd>
 <dt>PA.sre.quant</dt>
 <dd><p>(<em>optional, default</em> <code>0</code>) <br> 
 If pseudo-absence selection and <code>PA.strategy = 'sre'</code>, a <code>numeric</code> between <code>0</code> 
-and <code>1</code> defining the quantile used to make the <code>sre</code> pseudo-absence selection 
+and <code>0.5</code> defining the half-quantile used to make the <code>sre</code> pseudo-absence selection 
 (see <a href="BIOMOD_FormatingData.html#details">Details</a>)</p></dd>
-<dt>PA.table</dt>
+<dt>PA.user.table</dt>
 <dd><p>(<em>optional, default</em> <code>NULL</code>) <br> 
 If pseudo-absence selection and <code>PA.strategy = 'user.defined'</code>, a <code>matrix</code> or 
 <code>data.frame</code> with as many rows as <code>resp.var</code> values, as many columns as 
@@ -191,13 +191,15 @@ with the <code><a href="BIOMOD_Modeling.html">BIOMOD_Modeling</a></code> functio
     <div id="details">
     <h2>Details</h2>
     <p>This function gathers and formats all input data needed to run <span class="pkg">biomod2</span> models. It 
-supports different kind of inputs (e.g. <code>matrix</code>, <code>SpatialPoints</code>, 
-<code>RasterStack</code>) and provides different methods to select pseudo-absences if needed. <br><br></p>
-<p><b>Concerning explanatory variables and XY coordinates :</b></p><ul><li><p>if <code>rasterLayer</code> or <code>rasterStack</code> provided (for <code>expl.var</code> or 
-  <code>eval.expl.var</code>), <span class="pkg">biomod2</span> will extract the corresponding values from XY 
-  coordinates provided (<code>resp.xy</code> or <code>eval.resp.xy</code> respectively). <br><em>Be sure to give the XY coordinates in the same projection system than the 
-  raster objects !</em></p></li>
-<li><p>if <code>SpatialPointsDataFrame</code> provided (for <code>resp.var</code> or 
+supports different kind of inputs (e.g. <code>matrix</code>, <code><a href="https://rdrr.io/pkg/sp/man/SpatialPoints.html" class="external-link">SpatialPoints</a></code>, 
+<code><a href="https://rdrr.io/pkg/raster/man/stack.html" class="external-link">RasterStack</a></code>) and provides different methods to select 
+pseudo-absences if needed. <br><br></p>
+<p><b>Concerning explanatory variables and XY coordinates :</b></p><ul><li><p>if <code><a href="https://rdrr.io/pkg/raster/man/stack.html" class="external-link">RasterLayer</a></code> or <code><a href="https://rdrr.io/pkg/raster/man/stack.html" class="external-link">RasterStack</a></code> 
+  provided (for <code>expl.var</code> or <code>eval.expl.var</code>), <span class="pkg">biomod2</span> will extract the 
+  corresponding values from XY coordinates provided (<code>resp.xy</code> or <code>eval.resp.xy</code> 
+  respectively). <br><em>Be sure to give the XY coordinates in the same projection system 
+  than the raster objects !</em></p></li>
+<li><p>if <code><a href="https://rdrr.io/pkg/sp/man/SpatialPoints.html" class="external-link">SpatialPointsDataFrame</a></code> provided (for <code>resp.var</code> or 
   <code>eval.resp.var</code>), the same rule applies (<em>same projection system !</em>).</p></li>
 <li><p>if <code>data.frame</code> provided (for <code>expl.var</code> or <code>eval.expl.var</code>), 
   <span class="pkg">biomod2</span> will simply merge it (<code>cbind</code>) with <code>resp.var</code> without 
@@ -210,9 +212,9 @@ supports different kind of inputs (e.g. <code>matrix</code>, <code>SpatialPoints
   the studied area ! <br><br><br><br></em></p></li>
 </ul><dl><dt>Response variable</dt>
 <dd><p><span class="pkg">biomod2</span> models single species at a time (no multi-species). Hence, <code>resp.var</code> 
-  must be a uni-dimensional object (either a <code>vector</code>, a one-column 
-  <code>matrix/data.frame/SpatialPointsDataFrame</code>, or a <code>SpatialPoints</code> object if 
-  presence-only), containing values among :</p><ul><li><p><code>1</code> : presences</p></li>
+  must be a uni-dimensional object (either a <code>vector</code>, a one-column <code>matrix</code>, 
+  <code>data.frame</code> or <code><a href="https://rdrr.io/pkg/sp/man/SpatialPoints.html" class="external-link">SpatialPointsDataFrame</a></code>, or a 
+  <code><a href="https://rdrr.io/pkg/sp/man/SpatialPoints.html" class="external-link">SpatialPoints</a></code> object if presence-only), containing values among :</p><ul><li><p><code>1</code> : presences</p></li>
 <li><p><code>0</code> : true absences (if any)</p></li>
 <li><p><code>NA</code> : no information point (might be used to select pseudo-absences if any)</p></li>
 </ul><p>If no true absences are available, pseudo-absence selection must be done. <br>
@@ -236,8 +238,9 @@ supports different kind of inputs (e.g. <code>matrix</code>, <code>SpatialPoints
 <dd><p>If no true absences are available, pseudo-absences must be selected from the 
   <em>background data</em>, meaning data there is no information whether the species of 
   interest occurs or not. It corresponds either to the remaining pixels of the <code>expl.var</code> 
-  (if provided as a <code>rasterStack</code>) or to the points identified as <code>NA</code> in 
-  <code>resp.var</code> (if <code>expl.var</code> provided as a <code>matrix</code> or <code>data.frame</code>). <br>
+  (if provided as a <code><a href="https://rdrr.io/pkg/raster/man/stack.html" class="external-link">RasterStack</a></code>) or to the points identified as 
+  <code>NA</code> in <code>resp.var</code> (if <code>expl.var</code> provided as a <code>matrix</code> or 
+  <code>data.frame</code>). <br> 
   Several methods are available to do this selection :</p><dl><dt>random</dt>
 <dd><p>all points of initial background are pseudo-absence candidates. 
     <code>PA.nb.absences</code> are drawn randomly, for each <code>PA.nb.rep</code> requested.</p></dd>
@@ -257,7 +260,7 @@ supports different kind of inputs (e.g. <code>matrix</code>, <code>SpatialPoints
 
     <dt>user.defined</dt>
 <dd><p>pseudo-absences are defined in advance and given as <code>data.frame</code> 
-    through the <code>PA.table</code> parameter.</p></dd>
+    through the <code>PA.user.table</code> parameter.</p></dd>
 
   
 </dl><p></p></dd>
@@ -290,7 +293,7 @@ supports different kind of inputs (e.g. <code>matrix</code>, <code>SpatialPoints
 <span class="co"># Load species occurrences (6 species available)</span>
 <span class="va">myFile</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">'external/species/mammals_table.csv'</span>, package <span class="op">=</span> <span class="st">'biomod2'</span><span class="op">)</span>
 <span class="va">DataSpecies</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/utils/read.table.html" class="external-link">read.csv</a></span><span class="op">(</span><span class="va">myFile</span>, row.names <span class="op">=</span> <span class="fl">1</span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">DataSpecies</span><span class="op">)</span>
+<span class="fu"><a href="https://rdrr.io/pkg/raster/man/headtail.html" class="external-link">head</a></span><span class="op">(</span><span class="va">DataSpecies</span><span class="op">)</span>
 
 <span class="co"># Select the name of the studied species</span>
 <span class="va">myRespName</span> <span class="op">&lt;-</span> <span class="st">'GuloGulo'</span>
@@ -302,8 +305,8 @@ supports different kind of inputs (e.g. <code>matrix</code>, <code>SpatialPoints
 <span class="va">myRespXY</span> <span class="op">&lt;-</span> <span class="va">DataSpecies</span><span class="op">[</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">'X_WGS84'</span>, <span class="st">'Y_WGS84'</span><span class="op">)</span><span class="op">]</span>
 
 <span class="co"># Load environmental variables extracted from BIOCLIM (bio_3, bio_4, bio_7, bio_11 &amp; bio_12)</span>
-<span class="va">myFiles</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">'external/bioclim/current/bio'</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">3</span>, <span class="fl">4</span>, <span class="fl">7</span>, <span class="fl">11</span>, <span class="fl">12</span><span class="op">)</span>, <span class="st">'.grd'</span><span class="op">)</span>
-<span class="va">myExpl</span> <span class="op">=</span> <span class="fu">raster</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/raster/man/stack.html" class="external-link">stack</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="va">myFiles</span>, package <span class="op">=</span> <span class="st">'biomod2'</span><span class="op">)</span><span class="op">)</span>
+<span class="va">myFiles</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">'external/bioclim/current/bio'</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">3</span>, <span class="fl">4</span>, <span class="fl">7</span>, <span class="fl">11</span>, <span class="fl">12</span><span class="op">)</span>, <span class="st">'.grd'</span><span class="op">)</span>
+<span class="va">myExpl</span> <span class="op">&lt;-</span> <span class="fu">raster</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/raster/man/stack.html" class="external-link">stack</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="va">myFiles</span>, package <span class="op">=</span> <span class="st">'biomod2'</span><span class="op">)</span><span class="op">)</span>
 
 
 <span class="co"># ---------------------------------------------------------------</span>
@@ -313,7 +316,7 @@ supports different kind of inputs (e.g. <code>matrix</code>, <code>SpatialPoints
                                      resp.xy <span class="op">=</span> <span class="va">myRespXY</span>,
                                      resp.name <span class="op">=</span> <span class="va">myRespName</span><span class="op">)</span>
 <span class="va">myBiomodData</span>
-<span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">myBiomodData</span><span class="op">)</span>
+<span class="fu"><a href="https://rdrr.io/pkg/raster/man/plot.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">myBiomodData</span><span class="op">)</span>
 
 
 <span class="co"># ---------------------------------------------------------------</span>
@@ -359,7 +362,7 @@ supports different kind of inputs (e.g. <code>matrix</code>, <code>SpatialPoints
 <span class="co">#                                        resp.xy = myRespXY,</span>
 <span class="co">#                                        resp.name = myRespName,</span>
 <span class="co">#                                        PA.strategy = 'user.defined',</span>
-<span class="co">#                                        PA.table = myPAtable)</span>
+<span class="co">#                                        PA.user.table = myPAtable)</span>
 <span class="co"># </span>
 <span class="co"># myBiomodData.r</span>
 <span class="co"># myBiomodData.d</span>

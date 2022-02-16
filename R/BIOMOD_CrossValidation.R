@@ -93,8 +93,8 @@
 ##' myRespXY <- DataSpecies[, c('X_WGS84', 'Y_WGS84')]
 ##' 
 ##' # Load environmental variables extracted from BIOCLIM (bio_3, bio_4, bio_7, bio_11 & bio_12)
-##' myFiles = paste0('external/bioclim/current/bio', c(3, 4, 7, 11, 12), '.grd')
-##' myExpl = raster::stack(system.file(myFiles, package = 'biomod2'))
+##' myFiles <- paste0('external/bioclim/current/bio', c(3, 4, 7, 11, 12), '.grd')
+##' myExpl <- raster::stack(system.file(myFiles, package = 'biomod2'))
 ##' 
 ##' 
 ##' # ---------------------------------------------------------------
@@ -110,32 +110,32 @@
 ##'  
 ##' # ---------------------------------------------------------------
 ##' # Create the different validation datasets
-##' myBiomodCV <- BIOMOD_CrossValidation(myBiomodData)
+##' myBiomodCV <- BIOMOD_CrossValidation(bm.format = myBiomodData)
 ##' head(myBiomodCV)
 ##' 
 ##' # Several validation strategies can be combined
-##' DataSplitTable.b <- BIOMOD_CrossValidation(myBiomodData,
-##'                                           k = 5,
-##'                                           rep = 2,
-##'                                           do.full.models = FALSE)
-##' DataSplitTable.y <- BIOMOD_CrossValidation(myBiomodData,
-##'                                           k = 2,
-##'                                           do.stratification = TRUE,
-##'                                           method = "y")
+##' DataSplitTable.b <- BIOMOD_CrossValidation(bm.format = myBiomodData,
+##'                                            k = 5,
+##'                                            nb.rep = 2,
+##'                                            do.full.models = FALSE)
+##' DataSplitTable.y <- BIOMOD_CrossValidation(bm.format = myBiomodData,
+##'                                            k = 2,
+##'                                            do.stratification = TRUE,
+##'                                            method = "y")
 ##' colnames(DataSplitTable.y)[1:2] <- c("RUN11", "RUN12")
 ##' myBiomodCV <- cbind(DataSplitTable.b, DataSplitTable.y)
 ##' head(myBiomodCV)
 ##' 
 ##' # Model single models
-##' myBiomodModelOut <- BIOMOD_Modeling(myBiomodData,
+##' myBiomodModelOut <- BIOMOD_Modeling(bm.format = myBiomodData,
+##'                                     modeling.id = 'mod.CV',
 ##'                                     models = c('RF', 'GLM'),
-##'                                     models.options = myBiomodOptions,
-##'                                     NbRunEval = 2,
-##'                                     DataSplitTable = myBiomodCV,
-##'                                     VarImport = 3,
-##'                                     models.eval.meth = c('TSS','ROC'),
-##'                                     do.full.models = FALSE,
-##'                                     modeling.id = 'mod.CV')
+##'                                     bm.options = myBiomodOptions,
+##'                                     nb.rep = 2,
+##'                                     data.split.table = myBiomodCV,
+##'                                     metric.eval = c('TSS','ROC'),
+##'                                     var.import = 3,
+##'                                     do.full.models = FALSE)
 ##' 
 ##' # Get evaluation scores & variables importance
 ##' myEval <- get_evaluations(myBiomodModelOut.CV, as.data.frame = TRUE)

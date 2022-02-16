@@ -91,34 +91,34 @@ using the extreme percentiles (as recommended by Nix or Busby, see
 
     <div id="ref-usage">
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">bm_SRE</span><span class="op">(</span>
-  Response <span class="op">=</span> <span class="cn">NULL</span>,
-  Explanatory <span class="op">=</span> <span class="cn">NULL</span>,
-  NewData <span class="op">=</span> <span class="cn">NULL</span>,
-  Quant <span class="op">=</span> <span class="fl">0.025</span>,
-  return_extremcond <span class="op">=</span> <span class="cn">FALSE</span>
+  resp.var <span class="op">=</span> <span class="cn">NULL</span>,
+  expl.var <span class="op">=</span> <span class="cn">NULL</span>,
+  new.env <span class="op">=</span> <span class="cn">NULL</span>,
+  quant <span class="op">=</span> <span class="fl">0.025</span>,
+  do.extrem <span class="op">=</span> <span class="cn">FALSE</span>
 <span class="op">)</span></code></pre></div>
     </div>
 
     <div id="arguments">
     <h2>Arguments</h2>
-    <dl><dt>Response</dt>
-<dd><p>a <code>vector</code>, <code>matrix</code>, <code>data.frame</code>, 
-<code><a href="https://rdrr.io/pkg/sp/man/SpatialPoints.html" class="external-link">SpatialPointsDataFrame</a></code> or <code><a href="https://rdrr.io/pkg/raster/man/raster.html" class="external-link">raster</a></code> object 
-containing observed binary data (<code>0</code> : absence, <code>1</code> : presence)</p></dd>
-<dt>Explanatory</dt>
-<dd><p>a <code>matrix</code>, <code>data.frame</code>, 
-<code><a href="https://rdrr.io/pkg/sp/man/SpatialPoints.html" class="external-link">SpatialPointsDataFrame</a></code> or <code><a href="https://rdrr.io/pkg/raster/man/stack.html" class="external-link">RasterStack</a></code> object 
-containing the explanatory variables (in columns or layers) that will be used to build the 
-SRE model</p></dd>
-<dt>NewData</dt>
+    <dl><dt>resp.var</dt>
+<dd><p>a <code>vector</code>, <code><a href="https://rdrr.io/pkg/sp/man/SpatialPoints.html" class="external-link">SpatialPoints</a></code> or 
+<code><a href="https://rdrr.io/pkg/sp/man/SpatialPoints.html" class="external-link">SpatialPointsDataFrame</a></code> object containing binary data (<code>0</code> : absence, 
+<code>1</code> : presence, <code>NA</code> : indeterminate) for a single species</p></dd>
+<dt>expl.var</dt>
 <dd><p>a <code>matrix</code>, <code>data.frame</code>, <code><a href="https://rdrr.io/pkg/sp/man/SpatialPoints.html" class="external-link">SpatialPointsDataFrame</a></code> 
-or <code><a href="https://rdrr.io/pkg/raster/man/stack.html" class="external-link">RasterStack</a></code> object containing the explanatory variables 
-(in columns or layers) that will be used to predict the SRE model</p></dd>
-<dt>Quant</dt>
-<dd><p>a <code>numeric</code> between <code>0</code> and <code>0.5</code> corresponding to the most 
-extreme value for each variable not to be taken into account for determining the tolerance 
-boundaries of the considered species</p></dd>
-<dt>return_extremcond</dt>
+or <code><a href="https://rdrr.io/pkg/raster/man/stack.html" class="external-link">RasterStack</a></code> object containing the explanatory variables (in 
+columns or layers) that will be used to build the SRE model</p></dd>
+<dt>new.env</dt>
+<dd><p>a <code>matrix</code>, <code>data.frame</code>, <code><a href="https://rdrr.io/pkg/sp/man/SpatialPoints.html" class="external-link">SpatialPointsDataFrame</a></code> 
+or <code><a href="https://rdrr.io/pkg/raster/man/stack.html" class="external-link">RasterStack</a></code> object containing the explanatory variables (in 
+columns or layers) that will be used to predict the SRE model</p></dd>
+<dt>quant</dt>
+<dd><p>a <code>numeric</code> between <code>0</code> and <code>0.5</code> defining the half-quantile 
+corresponding to the most extreme value for each variable not to be taken into account for 
+determining the tolerance boundaries of the considered species (see 
+<a href="bm_SRE.html#details">Details</a>)</p></dd>
+<dt>do.extrem</dt>
 <dd><p>(<em>optional, default</em> <code>FALSE</code>) <br> 
 A <code>logical</code> value defining whether a <code>matrix</code> containing extreme conditions 
 supported should be returned or not</p></dd>
@@ -137,7 +137,7 @@ important as any other data point leading to changes in predictions. <br><br></p
 <p>Predictions are returned as binary (<code>0</code> or <code>1</code>) values, a site being either 
 potentially suitable for all the variables, or out of bounds for at least one variable and 
 therefore considered unsuitable. <br><br></p>
-<p><code>Quant</code> determines the threshold from which the data will be taken into account for 
+<p><code>quant</code> determines the threshold from which the data will be taken into account for 
 calibration. The default value of <code>0.05</code> induces that the <code>5%</code> most extreme values 
 will be avoided for each variable on each side of its distribution along the gradient, meaning 
 that a total of <code>10%</code> of the data will not be considered.</p>
@@ -168,7 +168,6 @@ that a total of <code>10%</code> of the data will not be considered.</p>
 <code><a href="bm_PlotResponseCurves.html">bm_PlotResponseCurves</a>()</code>,
 <code><a href="bm_PlotVarImpBoxplot.html">bm_PlotVarImpBoxplot</a>()</code>,
 <code><a href="bm_PseudoAbsences.html">bm_PseudoAbsences</a>()</code>,
-<code><a href="bm_Rescaler.html">bm_Rescaler</a>()</code>,
 <code><a href="bm_RunModelsLoop.html">bm_RunModelsLoop</a>()</code>,
 <code><a href="bm_SampleBinaryVector.html">bm_SampleBinaryVector</a>()</code>,
 <code><a href="bm_SampleFactorLevels.html">bm_SampleFactorLevels</a>()</code>,
@@ -195,18 +194,18 @@ that a total of <code>10%</code> of the data will not be considered.</p>
 <span class="va">myResp.v</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/pkg/raster/man/cellFrom.html" class="external-link">cellFromXY</a></span><span class="op">(</span><span class="va">myResp.v</span>, <span class="va">myRespXY</span><span class="op">)</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="fl">1</span>
 
 <span class="co">## Compute SRE for several quantile values</span>
-<span class="va">sre.100</span> <span class="op">&lt;-</span> <span class="fu">bm_SRE</span><span class="op">(</span>Response <span class="op">=</span> <span class="va">myResp.v</span>,
-                  Explanatory <span class="op">=</span> <span class="va">myExpl.r</span>,
-                  NewData <span class="op">=</span> <span class="va">myExpl.r</span>,
-                  Quant <span class="op">=</span> <span class="fl">0</span><span class="op">)</span>
-<span class="va">sre.095</span> <span class="op">&lt;-</span> <span class="fu">bm_SRE</span><span class="op">(</span>Response <span class="op">=</span> <span class="va">myResp.v</span>,
-                  Explanatory <span class="op">=</span> <span class="va">myExpl.r</span>,
-                  NewData <span class="op">=</span> <span class="va">myExpl.r</span>,
-                  Quant <span class="op">=</span> <span class="fl">0.025</span><span class="op">)</span>
-<span class="va">sre.090</span> <span class="op">&lt;-</span> <span class="fu">bm_SRE</span><span class="op">(</span>Response <span class="op">=</span> <span class="va">myResp.v</span>,
-                  Explanatory <span class="op">=</span> <span class="va">myExpl.r</span>,
-                  NewData <span class="op">=</span> <span class="va">myExpl.r</span>,
-                  Quant <span class="op">=</span> <span class="fl">0.05</span><span class="op">)</span>
+<span class="va">sre.100</span> <span class="op">&lt;-</span> <span class="fu">bm_SRE</span><span class="op">(</span>resp.var <span class="op">=</span> <span class="va">myResp.v</span>,
+                  expl.var <span class="op">=</span> <span class="va">myExpl.r</span>,
+                  new.env <span class="op">=</span> <span class="va">myExpl.r</span>,
+                  quant <span class="op">=</span> <span class="fl">0</span><span class="op">)</span>
+<span class="va">sre.095</span> <span class="op">&lt;-</span> <span class="fu">bm_SRE</span><span class="op">(</span>resp.var <span class="op">=</span> <span class="va">myResp.v</span>,
+                  expl.var <span class="op">=</span> <span class="va">myExpl.r</span>,
+                  new.env <span class="op">=</span> <span class="va">myExpl.r</span>,
+                  quant <span class="op">=</span> <span class="fl">0.025</span><span class="op">)</span>
+<span class="va">sre.090</span> <span class="op">&lt;-</span> <span class="fu">bm_SRE</span><span class="op">(</span>resp.var <span class="op">=</span> <span class="va">myResp.v</span>,
+                  expl.var <span class="op">=</span> <span class="va">myExpl.r</span>,
+                  new.env <span class="op">=</span> <span class="va">myExpl.r</span>,
+                  quant <span class="op">=</span> <span class="fl">0.05</span><span class="op">)</span>
 
 <span class="co">## Visualize results</span>
 <span class="va">res</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/raster/man/stack.html" class="external-link">stack</a></span><span class="op">(</span><span class="va">myResp.v</span>, <span class="va">sre.100</span>, <span class="va">sre.095</span>, <span class="va">sre.090</span><span class="op">)</span>

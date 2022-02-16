@@ -7,32 +7,32 @@
 \title{Calculate the best score according to a given evaluation method}
 \usage{
 bm_FindOptimStat(
-  Stat = "TSS",
-  Obs,
-  Fit,
-  Nb.thresh.test = 100,
-  Fixed.thresh = NULL
+  metric.eval = "TSS",
+  obs,
+  fit,
+  nb.thresh = 100,
+  threshold = NULL
 )
 
-get_optim_value(stat)
+get_optim_value(metric.eval)
 
-bm_CalculateStat(Misc, stat = "TSS")
+bm_CalculateStat(misc, metric.eval = "TSS")
 }
 \arguments{
-\item{Stat}{a \code{character} corresponding to the evaluation metric to be used, must be 
-either \code{ROC}, \code{TSS}, \code{KAPPA}, \code{ACCURACY}, \code{BIAS}, \code{POD}, 
+\item{metric.eval}{a \code{character} corresponding to the evaluation metric to be used, must 
+be either \code{ROC}, \code{TSS}, \code{KAPPA}, \code{ACCURACY}, \code{BIAS}, \code{POD}, 
 \code{FAR}, \code{POFD}, \code{SR}, \code{CSI}, \code{ETS}, \code{HK}, \code{HSS}, \code{OR} 
 or \code{ORSS}}
 
-\item{Obs}{a \code{vector} of observed values (binary, \code{0} or \code{1})}
+\item{obs}{a \code{vector} of observed values (binary, \code{0} or \code{1})}
 
-\item{Fit}{a \code{vector} of fitted values (continuous)}
+\item{fit}{a \code{vector} of fitted values (continuous)}
 
-\item{Nb.thresh.test}{an \code{integer} corresponding to the number of thresholds to be 
+\item{nb.thresh}{an \code{integer} corresponding to the number of thresholds to be 
 tested over the range of fitted values}
 
-\item{Fixed.thresh}{(\emph{optional, default} \code{NULL}) \cr 
-An \code{integer} corresponding to the only threshold value to be tested}
+\item{threshold}{(\emph{optional, default} \code{NULL}) \cr 
+A \code{numeric} corresponding to the threshold used to convert the given data}
 }
 \value{
 A \code{1} row x \code{4} columns \code{matrix} containing :
@@ -53,7 +53,7 @@ metric.
 \emph{Please refer to \code{\link{BIOMOD_Modeling}} to get more information about these 
 evaluation metrics.}
 
-Note that if a value is given to \code{Fixed.thresh}, no optimisation will be done., and 
+Note that if a value is given to \code{threshold}, no optimisation will be done., and 
 only the score for this threshold will be returned.
 }
 \examples{
@@ -73,8 +73,8 @@ vec.c[which(vec.c < 0)] <- 0
 vec.c[which(vec.c > 1000)] <- 1000
 
 ## Find optimal threshold for a specific evaluation metric
-bm_FindOptimStat(Stat = 'TSS', Fit = vec.b, Obs = vec.a)
-bm_FindOptimStat(Stat = 'TSS', Fit = vec.c, Obs = vec.a, Nb.thresh.test = 100)
+bm_FindOptimStat(metric.eval = 'TSS', fit = vec.b, obs = vec.a)
+bm_FindOptimStat(metric.eval = 'TSS', fit = vec.c, obs = vec.a, nb.thresh = 100)
 
 
 }

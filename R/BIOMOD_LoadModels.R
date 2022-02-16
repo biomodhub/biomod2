@@ -64,8 +64,8 @@
 ##' myRespXY <- DataSpecies[, c('X_WGS84', 'Y_WGS84')]
 ##' 
 ##' # Load environmental variables extracted from BIOCLIM (bio_3, bio_4, bio_7, bio_11 & bio_12)
-##' myFiles = paste0('external/bioclim/current/bio', c(3, 4, 7, 11, 12), '.grd')
-##' myExpl = raster::stack(system.file(myFiles, package = 'biomod2'))
+##' myFiles <- paste0('external/bioclim/current/bio', c(3, 4, 7, 11, 12), '.grd')
+##' myExpl <- raster::stack(system.file(myFiles, package = 'biomod2'))
 ##' 
 ##' 
 ##' # ---------------------------------------------------------------
@@ -79,19 +79,19 @@
 ##' myBiomodOptions <- BIOMOD_ModelingOptions()
 ##' 
 ##' # Model single models
-##' myBiomodModelOut <- BIOMOD_Modeling(myBiomodData,
-##'                                     models.options = myBiomodOptions,
-##'                                     NbRunEval = 2,
-##'                                     DataSplit = 80,
-##'                                     VarImport = 3,
-##'                                     models.eval.meth = c('TSS','ROC'),
-##'                                     do.full.models = FALSE,
-##'                                     modeling.id = 'test')
+##' myBiomodModelOut <- BIOMOD_Modeling(bm.format = myBiomodData,
+##'                                     modeling.id = 'AllModels',
+##'                                     bm.options = myBiomodOptions,
+##'                                     nb.rep = 2,
+##'                                     data.split.perc = 80,
+##'                                     metric.eval = c('TSS','ROC'),
+##'                                     var.import = 3,
+##'                                     do.full.models = FALSE)
 ##' 
 ##' 
 ##' # ---------------------------------------------------------------
 ##' # Loading some models built
-##' myLoadedModels <- BIOMOD_LoadModels(myBiomodModelOut, models = 'RF')
+##' myLoadedModels <- BIOMOD_LoadModels(bm.out = myBiomodModelOut, models = 'RF')
 ##' myLoadedModels
 ##' 
 ##' 

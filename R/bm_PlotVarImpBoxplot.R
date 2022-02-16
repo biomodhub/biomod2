@@ -62,8 +62,8 @@
 ##' myRespXY <- DataSpecies[, c('X_WGS84', 'Y_WGS84')]
 ##' 
 ##' # Load environmental variables extracted from BIOCLIM (bio_3, bio_4, bio_7, bio_11 & bio_12)
-##' myFiles = paste0('external/bioclim/current/bio', c(3, 4, 7, 11, 12), '.grd')
-##' myExpl = raster::stack(system.file(myFiles, package = 'biomod2'))
+##' myFiles <- paste0('external/bioclim/current/bio', c(3, 4, 7, 11, 12), '.grd')
+##' myExpl <- raster::stack(system.file(myFiles, package = 'biomod2'))
 ##' 
 ##' 
 ##' # ---------------------------------------------------------------
@@ -77,14 +77,14 @@
 ##' myBiomodOptions <- BIOMOD_ModelingOptions()
 ##' 
 ##' # Model single models
-##' myBiomodModelOut <- BIOMOD_Modeling(myBiomodData,
-##'                                     models.options = myBiomodOptions,
-##'                                     NbRunEval = 2,
-##'                                     DataSplit = 80,
-##'                                     VarImport = 3,
-##'                                     models.eval.meth = c('TSS','ROC'),
-##'                                     do.full.models = FALSE,
-##'                                     modeling.id = 'test')
+##' myBiomodModelOut <- BIOMOD_Modeling(bm.format = myBiomodData,
+##'                                     modeling.id = 'AllModels',
+##'                                     bm.options = myBiomodOptions,
+##'                                     nb.rep = 2,
+##'                                     data.split.perc = 80,
+##'                                     metric.eval = c('TSS','ROC'),
+##'                                     var.import = 3,
+##'                                     do.full.models = FALSE)
 ##' 
 ##' 
 ##' # ---------------------------------------------------------------
@@ -92,9 +92,9 @@
 ##' get_variables_importance(myBiomodModelOut, as.data.frame = TRUE)
 ##' 
 ##' # Represent variables importance
-##' bm_PlotVarImpBoxplot(myBiomodModelOut, group.by = c('expl.var', 'algo', 'algo'))
-##' bm_PlotVarImpBoxplot(myBiomodModelOut, group.by = c('expl.var', 'algo', 'dataset'))
-##' bm_PlotVarImpBoxplot(myBiomodModelOut, group.by = c('algo', 'expl.var', 'dataset'))
+##' bm_PlotVarImpBoxplot(bm.out = myBiomodModelOut, group.by = c('expl.var', 'algo', 'algo'))
+##' bm_PlotVarImpBoxplot(bm.out = myBiomodModelOut, group.by = c('expl.var', 'algo', 'dataset'))
+##' bm_PlotVarImpBoxplot(bm.out = myBiomodModelOut, group.by = c('algo', 'expl.var', 'dataset'))
 ##' 
 ##' 
 ##' @importFrom ggplot2 ggplot aes_string geom_boxplot facet_wrap xlab ylab labs 

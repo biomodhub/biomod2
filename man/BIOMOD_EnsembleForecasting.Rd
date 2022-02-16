@@ -5,35 +5,35 @@
 \title{Project ensemble species distribution models onto new environment}
 \usage{
 BIOMOD_EnsembleForecasting(
-  EM.output,
-  projection.output = NULL,
+  bm.em,
+  bm.proj = NULL,
   proj.name = NULL,
   new.env = NULL,
   new.env.xy = NULL,
-  chosen.models = "all",
-  binary.meth = NULL,
-  filtered.meth = NULL,
+  models.chosen = "all",
+  metric.binary = NULL,
+  metric.filter = NULL,
   compress = TRUE,
   ...
 )
 }
 \arguments{
-\item{EM.output}{a \code{\link{BIOMOD.ensemble.models.out}} object returned by the 
+\item{bm.em}{a \code{\link{BIOMOD.ensemble.models.out}} object returned by the 
 \code{\link{BIOMOD_EnsembleModeling}} function}
 
-\item{projection.output}{a \code{\link{BIOMOD.projection.out}} object returned by the 
+\item{bm.proj}{a \code{\link{BIOMOD.projection.out}} object returned by the 
 \code{\link{BIOMOD_Projection}} function}
 
 \item{proj.name}{(\emph{optional, default} \code{NULL}) \cr 
-If \code{projection.output = NULL}, a \code{character} corresponding to the name (ID) of the 
+If \code{bm.proj = NULL}, a \code{character} corresponding to the name (ID) of the 
 projection set (\emph{a new folder will be created within the simulation folder with this 
 name})}
 
 \item{new.env}{(\emph{optional, default} \code{NULL}) \cr 
-If \code{projection.output = NULL}, a \code{matrix}, \code{data.frame} or 
+If \code{bm.proj = NULL}, a \code{matrix}, \code{data.frame} or 
 \code{\link[raster:stack]{RasterStack}} object containing the new explanatory variables (in 
 columns or layers, with names matching the variables names given to the 
-\code{\link{BIOMOD_FormatingData}} function to build \code{EM.output}) that will be used to 
+\code{\link{BIOMOD_FormatingData}} function to build \code{bm.em}) that will be used to 
 project the ensemble species distribution model(s)}
 
 \item{new.env.xy}{(\emph{optional, default} \code{NULL}) \cr 
@@ -41,11 +41,11 @@ If \code{new.env} is a \code{matrix} or a \code{data.frame}, a 2-columns \code{m
 \code{data.frame} containing the corresponding \code{X} and \code{Y} coordinates that will 
 be used to project the ensemble species distribution model(s)}
 
-\item{chosen.models}{a \code{vector} containing model names to be kept, must be either 
+\item{models.chosen}{a \code{vector} containing model names to be kept, must be either 
 \code{all} or a sub-selection of model names that can be obtained with the 
 \code{\link{get_built_models}} function}
 
-\item{binary.meth}{(\emph{optional, default} \code{NULL}) \cr 
+\item{metric.binary}{(\emph{optional, default} \code{NULL}) \cr 
 A \code{vector} containing evaluation metric names to be used to transform prediction values 
 into binary values based on models evaluation scores obtained with the 
 \code{\link{BIOMOD_Modeling}} function. Must be among \code{all} (same evaluation metrics than 
@@ -53,7 +53,7 @@ those of \code{modeling.output}) or \code{ROC}, \code{TSS}, \code{KAPPA}, \code{
 \code{BIAS}, \code{POD}, \code{FAR}, \code{POFD}, \code{SR}, \code{CSI}, \code{ETS}, 
 \code{HK}, \code{HSS}, \code{OR}, \code{ORSS}}
 
-\item{filtered.meth}{(\emph{optional, default} \code{NULL}) \cr 
+\item{metric.filter}{(\emph{optional, default} \code{NULL}) \cr 
 A \code{vector} containing evaluation metric names to be used to transform prediction values 
 into filtered values based on models evaluation scores obtained with the 
 \code{\link{BIOMOD_Modeling}} function. Must be among \code{all} (same evaluation metrics than 
@@ -66,7 +66,7 @@ A \code{logical} or a \code{character} value defining whether and how objects sh
 compressed when saved on hard drive. Must be either \code{TRUE}, \code{FALSE}, \code{xz} or 
 \code{gzip} (see \href{BIOMOD_EnsembleForecasting.html#details}{Details})}
 
-\item{...}{(\emph{optional, see \href{BIOMOD_EnsembleForecasting.html#details}{Details}})}
+\item{\ldots}{(\emph{optional, see \href{BIOMOD_EnsembleForecasting.html#details}{Details}})}
 }
 \value{
 A \code{BIOMOD.projection.out} object containing models projections, or links to saved 
@@ -87,7 +87,7 @@ This function allows to project ensemble models built with the
 (\emph{which can represent new areas, resolution or time scales for example}).
 }
 \details{
-If \code{chosen.models = 'all'}, projections are done for all evaluation and pseudo absences 
+If \code{models.chosen = 'all'}, projections are done for all evaluation and pseudo absences 
 runs if applicable. \cr These projections may be used later by the 
 \code{\link{BIOMOD_EnsembleForecasting}} function. \cr \cr
 
@@ -127,8 +127,8 @@ myResp <- as.numeric(DataSpecies[, myRespName])
 myRespXY <- DataSpecies[, c('X_WGS84', 'Y_WGS84')]
 
 # Load environmental variables extracted from BIOCLIM (bio_3, bio_4, bio_7, bio_11 & bio_12)
-myFiles = paste0('external/bioclim/current/bio', c(3, 4, 7, 11, 12), '.grd')
-myExpl = raster::stack(system.file(myFiles, package = 'biomod2'))
+myFiles <- paste0('external/bioclim/current/bio', c(3, 4, 7, 11, 12), '.grd')
+myExpl <- raster::stack(system.file(myFiles, package = 'biomod2'))
 
 
 # ---------------------------------------------------------------
@@ -142,32 +142,32 @@ myBiomodData <- BIOMOD_FormatingData(resp.var = myResp,
 myBiomodOptions <- BIOMOD_ModelingOptions()
 
 # Model single models
-myBiomodModelOut <- BIOMOD_Modeling(myBiomodData,
-                                    models.options = myBiomodOptions,
-                                    NbRunEval = 2,
-                                    DataSplit = 80,
-                                    VarImport = 3,
-                                    models.eval.meth = c('TSS','ROC'),
-                                    do.full.models = FALSE,
-                                    modeling.id = 'test')
+myBiomodModelOut <- BIOMOD_Modeling(bm.format = myBiomodData,
+                                    modeling.id = 'AllModels',
+                                    bm.options = myBiomodOptions,
+                                    nb.rep = 2,
+                                    data.split.perc = 80,
+                                    metric.eval = c('TSS','ROC'),
+                                    var.import = 3,
+                                    do.full.models = FALSE)
 
 # Project single models
-myBiomodProj <- BIOMOD_Projection(myBiomodModelOut,
+myBiomodProj <- BIOMOD_Projection(bm.mod = myBiomodModelOut,
                                   proj.name = 'Current',
                                   new.env = myExpl,
-                                  chosen.models = 'all',
-                                  binary.meth = 'all',
-                                  filtered.meth = 'all',
+                                  models.chosen = 'all',
+                                  metric.binary = 'all',
+                                  metric.filter = 'all',
                                   build.clamping.mask = TRUE)
 
 # Model ensemble models
-myBiomodEM <- BIOMOD_EnsembleModeling(modeling.output = myBiomodModelOut,
-                                      chosen.models = 'all',
+myBiomodEM <- BIOMOD_EnsembleModeling(bm.mod = myBiomodModelOut,
+                                      models.chosen = 'all',
                                       em.by = 'all',
-                                      eval.metric = c('TSS'),
-                                      eval.metric.quality.threshold = c(0.7),
-                                      VarImport = 3,
-                                      models.eval.meth = c('TSS', 'ROC'),
+                                      metric.select = c('TSS'),
+                                      metric.select.thresh = c(0.7),
+                                      metric.eval = c('TSS', 'ROC'),
+                                      var.import = 3,
                                       prob.mean = TRUE,
                                       prob.median = TRUE,
                                       prob.cv = TRUE,
@@ -180,19 +180,19 @@ myBiomodEM <- BIOMOD_EnsembleModeling(modeling.output = myBiomodModelOut,
 
 # ---------------------------------------------------------------
 # Project ensemble models (from single projections)
-myBiomodEMProj <- BIOMOD_EnsembleForecasting(EM.output = myBiomodEM, 
-                                             projection.output = myBiomodProj,
-                                             chosen.models = 'all',
-                                             binary.meth = 'all',
-                                             filtered.meth = 'all')
+myBiomodEMProj <- BIOMOD_EnsembleForecasting(bm.em = myBiomodEM, 
+                                             bm.proj = myBiomodProj,
+                                             models.chosen = 'all',
+                                             metric.binary = 'all',
+                                             metric.filter = 'all')
 
 # Project ensemble models (building single projections)
-myBiomodEMProj <- BIOMOD_EnsembleForecasting(EM.output = myBiomodEM,
+myBiomodEMProj <- BIOMOD_EnsembleForecasting(bm.em = myBiomodEM,
                                              proj.name = 'CurrentEM',
                                              new.env = myExpl,
-                                             chosen.models = 'all',
-                                             binary.meth = 'all',
-                                             filtered.meth = 'all')
+                                             models.chosen = 'all',
+                                             metric.binary = 'all',
+                                             metric.filter = 'all')
 myBiomodEMProj
 plot(myBiomodEMProj)
 

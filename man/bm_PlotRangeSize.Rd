@@ -5,16 +5,16 @@
 \title{Plot species range change}
 \usage{
 bm_PlotRangeSize(
-  range.output,
+  bm.range,
   do.count = TRUE,
   do.perc = TRUE,
   do.maps = TRUE,
   do.mean = TRUE,
-  plot = TRUE
+  do.plot = TRUE
 )
 }
 \arguments{
-\item{range.output}{an object that can be obtained from \code{\link{BIOMOD_RangeSize}} function}
+\item{bm.range}{an object returned by the \code{\link{BIOMOD_RangeSize}} function}
 
 \item{do.count}{(\emph{optional, default} \code{TRUE}) \cr 
 A \code{logical} value defining whether the count plot is to be computed or not}
@@ -28,7 +28,7 @@ A \code{logical} value defining whether the maps plot is to be computed or not}
 \item{do.mean}{(\emph{optional, default} \code{TRUE}) \cr 
 A \code{logical} value defining whether the mean maps plot is to be computed or not}
 
-\item{plot}{(\emph{optional, default} \code{TRUE}) \cr 
+\item{do.plot}{(\emph{optional, default} \code{TRUE}) \cr 
 A \code{logical} value defining whether the plots are to be rendered or not}
 }
 \value{
@@ -72,8 +72,8 @@ myResp <- as.numeric(DataSpecies[, myRespName])
 myRespXY <- DataSpecies[, c('X_WGS84', 'Y_WGS84')]
 
 # Load environmental variables extracted from BIOCLIM (bio_3, bio_4, bio_7, bio_11 & bio_12)
-myFiles = paste0('external/bioclim/current/bio', c(3, 4, 7, 11, 12), '.grd')
-myExpl = raster::stack(system.file(myFiles, package = 'biomod2'))
+myFiles <- paste0('external/bioclim/current/bio', c(3, 4, 7, 11, 12), '.grd')
+myExpl <- raster::stack(system.file(myFiles, package = 'biomod2'))
 
 
 # ---------------------------------------------------------------
@@ -87,22 +87,22 @@ myBiomodData <- BIOMOD_FormatingData(resp.var = myResp,
 myBiomodOptions <- BIOMOD_ModelingOptions()
 
 # Model single models
-myBiomodModelOut <- BIOMOD_Modeling(myBiomodData,
-                                    models.options = myBiomodOptions,
-                                    NbRunEval = 2,
-                                    DataSplit = 80,
-                                    VarImport = 3,
-                                    models.eval.meth = c('TSS','ROC'),
-                                    do.full.models = FALSE,
-                                    modeling.id = 'test')
+myBiomodModelOut <- BIOMOD_Modeling(bm.format = myBiomodData,
+                                    modeling.id = 'AllModels',
+                                    bm.options = myBiomodOptions,
+                                    nb.rep = 2,
+                                    data.split.perc = 80,
+                                    metric.eval = c('TSS','ROC'),
+                                    var.import = 3,
+                                    do.full.models = FALSE)
 
 # Project single models
-myBiomodProj <- BIOMOD_Projection(myBiomodModelOut,
+myBiomodProj <- BIOMOD_Projection(bm.mod = myBiomodModelOut,
                                   proj.name = 'Current',
                                   new.env = myExpl,
-                                  chosen.models = 'all',
-                                  binary.meth = 'all',
-                                  filtered.meth = 'all',
+                                  models.chosen = 'all',
+                                  metric.binary = 'all',
+                                  metric.filter = 'all',
                                   build.clamping.mask = TRUE)
 
 
@@ -112,11 +112,11 @@ myFiles = paste0('external/bioclim/future/bio', c(3, 4, 7, 11, 12), '.grd')
 myExplFuture = raster::stack(system.file(myFiles, package = 'biomod2'))
 
 # Project onto future conditions
-myBiomodProjectionFuture <- BIOMOD_Projection(modeling.output = myBiomodModelOut,
-                                              new.env = myExplFuture,
+myBiomodProjectionFuture <- BIOMOD_Projection(bm.mod = myBiomodModelOut,
                                               proj.name = 'Future',
-                                              chosen.models = 'all',
-                                              binary.meth = 'TSS',
+                                              new.env = myExplFuture,
+                                              models.chosen = 'all',
+                                              metric.binary = 'TSS',
                                               build.clamping.mask = TRUE)
 
 # Load current and future binary projections
@@ -124,7 +124,7 @@ CurrentProj <- stack("GuloGulo/proj_Current/proj_Current_GuloGulo_TSSbin.grd")
 FutureProj <- stack("GuloGulo/proj_Future/proj_Future_GuloGulo_TSSbin.grd")
 
 # Compute differences
-myBiomodRangeSize <- BIOMOD_RangeSize(CurrentProj = CurrentProj, FutureProj = FutureProj)
+myBiomodRangeSize <- BIOMOD_RangeSize(proj.current = CurrentProj, proj.future = FutureProj)
 
 
 # ---------------------------------------------------------------
@@ -132,7 +132,7 @@ myBiomodRangeSize$Compt.By.Models
 plot(myBiomodRangeSize$Diff.By.Pixel)
 
 # Represent main results 
-bm_PlotRangeSize(myBiomodRangeSize)
+bm_PlotRangeSize(bm.range = myBiomodRangeSize)
 
 
 }

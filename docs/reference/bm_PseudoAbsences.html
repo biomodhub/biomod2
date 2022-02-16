@@ -87,84 +87,104 @@ to 4 different methods : <code>random</code>, <code>sre</code>, <code>disk</code
 
     <div id="ref-usage">
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">bm_PseudoAbsences</span><span class="op">(</span>
-  <span class="va">sp</span>,
-  <span class="va">env</span>,
-  nb.repet <span class="op">=</span> <span class="fl">1</span>,
+  <span class="va">resp.var</span>,
+  <span class="va">expl.var</span>,
+  nb.rep <span class="op">=</span> <span class="fl">1</span>,
   strategy <span class="op">=</span> <span class="st">"random"</span>,
-  distMin <span class="op">=</span> <span class="fl">0</span>,
-  distMax <span class="op">=</span> <span class="cn">NULL</span>,
-  nb.points <span class="op">=</span> <span class="cn">NULL</span>,
-  quant.SRE <span class="op">=</span> <span class="fl">0</span>,
-  PA.table <span class="op">=</span> <span class="cn">NULL</span>
+  dist.min <span class="op">=</span> <span class="fl">0</span>,
+  dist.max <span class="op">=</span> <span class="cn">NULL</span>,
+  nb.absences <span class="op">=</span> <span class="cn">NULL</span>,
+  sre.quant <span class="op">=</span> <span class="fl">0</span>,
+  user.table <span class="op">=</span> <span class="cn">NULL</span>
 <span class="op">)</span>
 
-<span class="fu">bm_PseudoAbsences_user.defined</span><span class="op">(</span><span class="va">sp</span>, <span class="va">env</span>, <span class="va">...</span><span class="op">)</span>
+<span class="fu">bm_PseudoAbsences_user.defined</span><span class="op">(</span><span class="va">resp.var</span>, <span class="va">expl.var</span>, <span class="va">...</span><span class="op">)</span>
 
 <span class="co"># S4 method for ANY,SpatialPointsDataFrame</span>
-<span class="fu">bm_PseudoAbsences_user.defined</span><span class="op">(</span><span class="va">sp</span>, <span class="va">env</span>, <span class="va">pa.table</span><span class="op">)</span>
+<span class="fu">bm_PseudoAbsences_user.defined</span><span class="op">(</span><span class="va">resp.var</span>, <span class="va">expl.var</span>, <span class="va">user.table</span><span class="op">)</span>
 
 <span class="co"># S4 method for ANY,RasterStack</span>
-<span class="fu">bm_PseudoAbsences_user.defined</span><span class="op">(</span><span class="va">sp</span>, <span class="va">env</span>, <span class="va">pa.table</span><span class="op">)</span>
+<span class="fu">bm_PseudoAbsences_user.defined</span><span class="op">(</span><span class="va">resp.var</span>, <span class="va">expl.var</span>, <span class="va">user.table</span><span class="op">)</span>
 
-<span class="fu">bm_PseudoAbsences_random</span><span class="op">(</span><span class="va">sp</span>, <span class="va">env</span>, <span class="va">...</span><span class="op">)</span>
+<span class="fu">bm_PseudoAbsences_random</span><span class="op">(</span><span class="va">resp.var</span>, <span class="va">expl.var</span>, <span class="va">...</span><span class="op">)</span>
 
 <span class="co"># S4 method for ANY,SpatialPointsDataFrame</span>
-<span class="fu">bm_PseudoAbsences_random</span><span class="op">(</span><span class="va">sp</span>, <span class="va">env</span>, <span class="va">nb.points</span>, <span class="va">nb.repet</span><span class="op">)</span>
+<span class="fu">bm_PseudoAbsences_random</span><span class="op">(</span><span class="va">resp.var</span>, <span class="va">expl.var</span>, <span class="va">nb.absences</span>, <span class="va">nb.rep</span><span class="op">)</span>
 
 <span class="co"># S4 method for ANY,RasterStack</span>
-<span class="fu">bm_PseudoAbsences_random</span><span class="op">(</span><span class="va">sp</span>, <span class="va">env</span>, <span class="va">nb.points</span>, <span class="va">nb.repet</span><span class="op">)</span>
+<span class="fu">bm_PseudoAbsences_random</span><span class="op">(</span><span class="va">resp.var</span>, <span class="va">expl.var</span>, <span class="va">nb.absences</span>, <span class="va">nb.rep</span><span class="op">)</span>
 
-<span class="fu">bm_PseudoAbsences_sre</span><span class="op">(</span><span class="va">sp</span>, <span class="va">env</span>, <span class="va">...</span><span class="op">)</span>
+<span class="fu">bm_PseudoAbsences_sre</span><span class="op">(</span><span class="va">resp.var</span>, <span class="va">expl.var</span>, <span class="va">...</span><span class="op">)</span>
 
 <span class="co"># S4 method for ANY,SpatialPointsDataFrame</span>
-<span class="fu">bm_PseudoAbsences_sre</span><span class="op">(</span><span class="va">sp</span>, <span class="va">env</span>, <span class="va">quant.SRE</span>, <span class="va">nb.points</span>, <span class="va">nb.repet</span><span class="op">)</span>
+<span class="fu">bm_PseudoAbsences_sre</span><span class="op">(</span><span class="va">resp.var</span>, <span class="va">expl.var</span>, <span class="va">sre.quant</span>, <span class="va">nb.absences</span>, <span class="va">nb.rep</span><span class="op">)</span>
 
 <span class="co"># S4 method for ANY,RasterStack</span>
-<span class="fu">bm_PseudoAbsences_sre</span><span class="op">(</span><span class="va">sp</span>, <span class="va">env</span>, <span class="va">quant.SRE</span>, <span class="va">nb.points</span>, <span class="va">nb.repet</span><span class="op">)</span>
+<span class="fu">bm_PseudoAbsences_sre</span><span class="op">(</span><span class="va">resp.var</span>, <span class="va">expl.var</span>, <span class="va">sre.quant</span>, <span class="va">nb.absences</span>, <span class="va">nb.rep</span><span class="op">)</span>
 
-<span class="fu">bm_PseudoAbsences_disk</span><span class="op">(</span><span class="va">sp</span>, <span class="va">env</span>, <span class="va">...</span><span class="op">)</span>
+<span class="fu">bm_PseudoAbsences_disk</span><span class="op">(</span><span class="va">resp.var</span>, <span class="va">expl.var</span>, <span class="va">...</span><span class="op">)</span>
 
 <span class="co"># S4 method for ANY,SpatialPointsDataFrame</span>
-<span class="fu">bm_PseudoAbsences_disk</span><span class="op">(</span><span class="va">sp</span>, <span class="va">env</span>, <span class="va">distMin</span>, <span class="va">distMax</span>, <span class="va">nb.points</span>, <span class="va">nb.repet</span><span class="op">)</span>
+<span class="fu">bm_PseudoAbsences_disk</span><span class="op">(</span>
+  <span class="va">resp.var</span>,
+  <span class="va">expl.var</span>,
+  <span class="va">dist.min</span>,
+  <span class="va">dist.max</span>,
+  <span class="va">nb.absences</span>,
+  <span class="va">nb.rep</span>
+<span class="op">)</span>
 
 <span class="co"># S4 method for ANY,RasterStack</span>
-<span class="fu">bm_PseudoAbsences_disk</span><span class="op">(</span><span class="va">sp</span>, <span class="va">env</span>, <span class="va">distMin</span>, <span class="va">distMax</span>, <span class="va">nb.points</span>, <span class="va">nb.repet</span><span class="op">)</span></code></pre></div>
+<span class="fu">bm_PseudoAbsences_disk</span><span class="op">(</span>
+  <span class="va">resp.var</span>,
+  <span class="va">expl.var</span>,
+  <span class="va">dist.min</span>,
+  <span class="va">dist.max</span>,
+  <span class="va">nb.absences</span>,
+  <span class="va">nb.rep</span>
+<span class="op">)</span></code></pre></div>
     </div>
 
     <div id="arguments">
     <h2>Arguments</h2>
-    <dl><dt>sp</dt>
-<dd><p>the species observations</p></dd>
-<dt>env</dt>
-<dd><p>the explanatory variables</p></dd>
-<dt>nb.repet</dt>
-<dd><p>the number of repetitions</p></dd>
+    <dl><dt>resp.var</dt>
+<dd><p>a <code>vector</code>, <code><a href="https://rdrr.io/pkg/sp/man/SpatialPoints.html" class="external-link">SpatialPoints</a></code> or 
+<code><a href="https://rdrr.io/pkg/sp/man/SpatialPoints.html" class="external-link">SpatialPointsDataFrame</a></code> object containing binary data (<code>0</code> : absence, 
+<code>1</code> : presence, <code>NA</code> : indeterminate) for a single species that will be used to 
+find the pseudo-absences</p></dd>
+<dt>expl.var</dt>
+<dd><p>a <code>matrix</code>, <code>data.frame</code>, <code><a href="https://rdrr.io/pkg/sp/man/SpatialPoints.html" class="external-link">SpatialPointsDataFrame</a></code> 
+or <code><a href="https://rdrr.io/pkg/raster/man/stack.html" class="external-link">RasterStack</a></code> object containing the explanatory variables (in 
+columns or layers) that will be used to find the pseudo-absences</p></dd>
+<dt>nb.rep</dt>
+<dd><p>an <code>integer</code> corresponding to the number of sets (repetitions) of 
+pseudo-absence points that will be drawn</p></dd>
 <dt>strategy</dt>
 <dd><p>a <code>character</code> corresponding to the pseudo-absence selection strategy, 
 must be among <code>random</code>, <code>sre</code>, <code>disk</code> or <code>user.defined</code></p></dd>
-<dt>distMin</dt>
+<dt>dist.min</dt>
 <dd><p>(<em>optional, default</em> <code>0</code>) <br>
-If <code>strategy = 'disk'</code>, the minimum distance away from presence points to select 
-pseudo-absences</p></dd>
-<dt>distMax</dt>
+If <code>strategy = 'disk'</code>, a <code>numeric</code> defining the minimal distance to presence points 
+used to make the <code>disk</code> pseudo-absence selection (in meters)</p></dd>
+<dt>dist.max</dt>
 <dd><p>(<em>optional, default</em> <code>NULL</code>) <br>
-If <code>strategy = 'disk'</code>, the maximum distance away from presence points to select 
-pseudo-absences</p></dd>
-<dt>nb.points</dt>
+If <code>strategy = 'disk'</code>, a <code>numeric</code> defining the maximal distance to presence points 
+used to make the <code>disk</code> pseudo-absence selection (in meters)</p></dd>
+<dt>nb.absences</dt>
 <dd><p>(<em>optional, default</em> <code>NULL</code>) <br>
-If <code>strategy</code> is <code>random</code>, <code>sre</code> or <code>disk</code>, the number of pseudo-absences 
-to be selected</p></dd>
-<dt>quant.SRE</dt>
+If <code>strategy = 'random'</code> or <code>strategy = 'sre'</code> or <code>strategy = 'disk'</code>, an 
+<code>integer</code> corresponding to the number of pseudo-absence points that will be selected for 
+each pseudo-absence repetition (true absences included)</p></dd>
+<dt>sre.quant</dt>
 <dd><p>(<em>optional, default</em> <code>0</code>) <br>
-If <code>strategy = 'sre'</code>, a <code>numeric</code> between <code>0</code> and <code>0.5</code> corresponding to 
-the most extreme value for each variable not to be taken into account for determining the 
-tolerance boundaries of the considered species (see <code><a href="bm_SRE.html">bm_SRE</a></code>)</p></dd>
-<dt>PA.table</dt>
+If <code>strategy = 'sre'</code>, a <code>numeric</code> between <code>0</code> and <code>0.5</code> defining the 
+half-quantile used to make the <code>sre</code> pseudo-absence selection (see <code><a href="bm_SRE.html">bm_SRE</a></code>)</p></dd>
+<dt>user.table</dt>
 <dd><p>(<em>optional, default</em> <code>NULL</code>) <br>
 If <code>strategy = 'user.defined'</code>, a <code>matrix</code> or <code>data.frame</code> with as many rows as 
-<code>resp.var</code> values, as many columns as <code>PA.nb.rep</code>, and containing <code>TRUE</code> or 
+<code>resp.var</code> values, as many columns as <code>nb.rep</code>, and containing <code>TRUE</code> or 
 <code>FALSE</code> values defining which points will be used to build the species distribution 
-model(s) for each repetition (see <code><a href="BIOMOD_FormatingData.html">BIOMOD_FormatingData</a></code>)</p></dd>
+model(s) for each repetition</p></dd>
 </dl></div>
     <div id="value">
     <h2>Value</h2>
@@ -177,9 +197,21 @@ model(s) for each repetition (see <code><a href="BIOMOD_FormatingData.html">BIOM
     <div id="details">
     <h2>Details</h2>
     <p><b>Concerning random selection :</b></p>
+<p>The idea is to select pseudo-absences randomly in spatial locations where the species has not 
+been sampled. This method is the simplest one and the most appropriate if lacking information 
+about the presence sampling (non-exhaustive, biased sampling, etc). <br><br></p>
 <p><b>Concerning SRE selection :</b></p>
+<p>The idea is to select pseudo-absences in spatial locations whose environmental conditions are 
+different from those of the presence points. This method is appropriate when most of the 
+environmental space of the species has been sampled. <br><br></p>
 <p><b>Concerning disk selection :</b></p>
+<p>The idea is to select pseudo-absences, not too close from presence points, but not too far 
+away either. This method is appropriate when most of the spatial range of the species has 
+been sampled. <br><br></p>
 <p><b>Concerning user defined selection :</b></p>
+<p>The user can provide pseudo-absences locations through a table containing spatial locations 
+in rows, pseudo-absences repetitions in columns, and <code>TRUE/FALSE</code> values indicating 
+whether each point is to be considered as pseudo-absence or not for each dataset.</p>
     </div>
     <div id="see-also">
     <h2>See also</h2>
@@ -194,7 +226,6 @@ model(s) for each repetition (see <code><a href="BIOMOD_FormatingData.html">BIOM
 <code><a href="bm_PlotRangeSize.html">bm_PlotRangeSize</a>()</code>,
 <code><a href="bm_PlotResponseCurves.html">bm_PlotResponseCurves</a>()</code>,
 <code><a href="bm_PlotVarImpBoxplot.html">bm_PlotVarImpBoxplot</a>()</code>,
-<code><a href="bm_Rescaler.html">bm_Rescaler</a>()</code>,
 <code><a href="bm_RunModelsLoop.html">bm_RunModelsLoop</a>()</code>,
 <code><a href="bm_SRE.html">bm_SRE</a>()</code>,
 <code><a href="bm_SampleBinaryVector.html">bm_SampleBinaryVector</a>()</code>,

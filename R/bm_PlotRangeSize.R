@@ -70,8 +70,8 @@
 ##' myRespXY <- DataSpecies[, c('X_WGS84', 'Y_WGS84')]
 ##' 
 ##' # Load environmental variables extracted from BIOCLIM (bio_3, bio_4, bio_7, bio_11 & bio_12)
-##' myFiles = paste0('external/bioclim/current/bio', c(3, 4, 7, 11, 12), '.grd')
-##' myExpl = raster::stack(system.file(myFiles, package = 'biomod2'))
+##' myFiles <- paste0('external/bioclim/current/bio', c(3, 4, 7, 11, 12), '.grd')
+##' myExpl <- raster::stack(system.file(myFiles, package = 'biomod2'))
 ##' 
 ##' 
 ##' # ---------------------------------------------------------------
@@ -85,22 +85,22 @@
 ##' myBiomodOptions <- BIOMOD_ModelingOptions()
 ##' 
 ##' # Model single models
-##' myBiomodModelOut <- BIOMOD_Modeling(myBiomodData,
-##'                                     models.options = myBiomodOptions,
-##'                                     NbRunEval = 2,
-##'                                     DataSplit = 80,
-##'                                     VarImport = 3,
-##'                                     models.eval.meth = c('TSS','ROC'),
-##'                                     do.full.models = FALSE,
-##'                                     modeling.id = 'test')
+##' myBiomodModelOut <- BIOMOD_Modeling(bm.format = myBiomodData,
+##'                                     modeling.id = 'AllModels',
+##'                                     bm.options = myBiomodOptions,
+##'                                     nb.rep = 2,
+##'                                     data.split.perc = 80,
+##'                                     metric.eval = c('TSS','ROC'),
+##'                                     var.import = 3,
+##'                                     do.full.models = FALSE)
 ##' 
 ##' # Project single models
-##' myBiomodProj <- BIOMOD_Projection(myBiomodModelOut,
+##' myBiomodProj <- BIOMOD_Projection(bm.mod = myBiomodModelOut,
 ##'                                   proj.name = 'Current',
 ##'                                   new.env = myExpl,
-##'                                   chosen.models = 'all',
-##'                                   binary.meth = 'all',
-##'                                   filtered.meth = 'all',
+##'                                   models.chosen = 'all',
+##'                                   metric.binary = 'all',
+##'                                   metric.filter = 'all',
 ##'                                   build.clamping.mask = TRUE)
 ##' 
 ##' 
@@ -110,11 +110,11 @@
 ##' myExplFuture = raster::stack(system.file(myFiles, package = 'biomod2'))
 ##' 
 ##' # Project onto future conditions
-##' myBiomodProjectionFuture <- BIOMOD_Projection(modeling.output = myBiomodModelOut,
-##'                                               new.env = myExplFuture,
+##' myBiomodProjectionFuture <- BIOMOD_Projection(bm.mod = myBiomodModelOut,
 ##'                                               proj.name = 'Future',
-##'                                               chosen.models = 'all',
-##'                                               binary.meth = 'TSS',
+##'                                               new.env = myExplFuture,
+##'                                               models.chosen = 'all',
+##'                                               metric.binary = 'TSS',
 ##'                                               build.clamping.mask = TRUE)
 ##' 
 ##' # Load current and future binary projections
@@ -122,7 +122,7 @@
 ##' FutureProj <- stack("GuloGulo/proj_Future/proj_Future_GuloGulo_TSSbin.grd")
 ##' 
 ##' # Compute differences
-##' myBiomodRangeSize <- BIOMOD_RangeSize(CurrentProj = CurrentProj, FutureProj = FutureProj)
+##' myBiomodRangeSize <- BIOMOD_RangeSize(proj.current = CurrentProj, proj.future = FutureProj)
 ##' 
 ##' 
 ##' # ---------------------------------------------------------------
@@ -130,7 +130,7 @@
 ##' plot(myBiomodRangeSize$Diff.By.Pixel)
 ##' 
 ##' # Represent main results 
-##' bm_PlotRangeSize(myBiomodRangeSize)
+##' bm_PlotRangeSize(bm.range = myBiomodRangeSize)
 ##' 
 ##' 
 ##' @importFrom reshape2 melt

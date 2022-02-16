@@ -4,18 +4,18 @@
 \alias{bm_SampleBinaryVector}
 \title{Sample binary vector}
 \usage{
-bm_SampleBinaryVector(ref, ratio, as.logi = FALSE)
+bm_SampleBinaryVector(obs, ratio, as.logical = FALSE)
 }
 \arguments{
-\item{ref}{a \code{vector} containing binary values (either \code{0} or \code{1})}
+\item{obs}{a \code{vector} containing binary values (either \code{0} or \code{1})}
 
 \item{ratio}{a \code{numeric} between \code{0} and \code{1} corresponding to the proportion 
-of \code{ref} values to sample}
+of \code{obs} values to sample}
 
-\item{as.logi}{(\emph{optional, default} \code{FALSE}) \cr 
+\item{as.logical}{(\emph{optional, default} \code{FALSE}) \cr 
 A \code{logical} value defining whether a \code{vector} of \code{TRUE/FALSE} values should 
-be returned (if \code{as.logi = TRUE}) or a \code{vector} containing the indices of 
-\code{ref} elements to keep}
+be returned (if \code{as.logical = TRUE}) or a \code{vector} containing the indices of 
+\code{obs} elements to keep}
 }
 \value{
 A \code{list} containing to elements is returned :
@@ -35,7 +35,7 @@ keeping the same proportion of \code{0} and \code{1} as the initial vector.
 vec.a <- sample(c(0, 1), 100, replace = TRUE)
 
 ## Generate calibration / evaluatation datasets
-bm_SampleBinaryVector(ref = vec.a, ratio = 0.7)
+bm_SampleBinaryVector(obs = vec.a, ratio = 0.7)
 
 
 }

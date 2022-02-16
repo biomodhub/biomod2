@@ -5,34 +5,34 @@
 \title{Plot response curves}
 \usage{
 bm_PlotResponseCurves(
-  modeling.output,
-  chosen.models = "all",
-  new.env = get_formal_data(modeling.output, "expl.var"),
-  show.variables = get_formal_data(modeling.output, "expl.var.names"),
-  fixed.var.metric = "mean",
+  bm.out,
+  models.chosen = "all",
+  new.env = get_formal_data(bm.out, "expl.var"),
+  show.variables = get_formal_data(bm.out, "expl.var.names"),
+  fixed.var = "mean",
   do.bivariate = FALSE,
-  plot = TRUE,
+  do.plot = TRUE,
   ...
 )
 }
 \arguments{
-\item{modeling.output}{a \code{\link{BIOMOD.models.out}} or \code{BIOMOD.ensemble.models.out} 
-object that can be obtained from \code{\link{BIOMOD_Modeling}} or 
+\item{bm.out}{a \code{\link{BIOMOD.models.out}} or \code{\link{BIOMOD.ensemble.models.out}} 
+object that can be obtained with the \code{\link{BIOMOD_Modeling}} or 
 \code{\link{BIOMOD_EnsembleModeling}} functions}
 
-\item{chosen.models}{a \code{vector} containing model names to be kept, must be either 
+\item{models.chosen}{a \code{vector} containing model names to be kept, must be either 
 \code{all} or a sub-selection of model names that can be obtained with the 
 \code{\link{get_built_models}} function}
 
 \item{new.env}{a \code{matrix}, \code{data.frame} or \code{\link[raster:stack]{RasterStack}} 
 object containing the new explanatory variables (in columns or layers, with names matching the 
 variables names given to the \code{\link{BIOMOD_FormatingData}} function to build 
-\code{modeling.output}) that will be used to project the species distribution model(s)}
+\code{bm.out}) that will be used to project the species distribution model(s)}
 
 \item{show.variables}{a \code{vector} containing the names of the explanatory variables 
 present into \code{new.env} parameter and to be plotted}
 
-\item{fixed.var.metric}{a \code{character} corresponding to the statistic to be used to fix as 
+\item{fixed.var}{a \code{character} corresponding to the statistic to be used to fix as 
 constant the remaining variables other than the one used to predict response, must be either 
 \code{mean}, \code{median}, \code{min}, \code{max}}
 
@@ -40,7 +40,7 @@ constant the remaining variables other than the one used to predict response, mu
 A \code{logical} value defining whether the response curves are to be represented in 3 
 dimensions (meaning 2 explanatory variables at a time) or not (meaning only 1)}
 
-\item{plot}{(\emph{optional, default} \code{TRUE}) \cr 
+\item{do.plot}{(\emph{optional, default} \code{TRUE}) \cr 
 A \code{logical} value defining whether the plot is to be rendered or not}
 
 \item{\ldots}{some additional arguments (see 
@@ -61,7 +61,7 @@ This function is an adaptation of the Evaluation Strip method proposed by Elith 
 To build the predicted response curves :
 \itemize{
   \item \code{n-1} variables are set constant to a fixed value determined by the 
-  \code{fixed.var.metric} parameter (in the case of categorical variable, the most represented 
+  \code{fixed.var} parameter (in the case of categorical variable, the most represented 
   class is taken)
   \item the remaining variable is made to vary throughout its range given by the \code{new.env} 
   parameter 
@@ -96,8 +96,8 @@ myResp <- as.numeric(DataSpecies[, myRespName])
 myRespXY <- DataSpecies[, c('X_WGS84', 'Y_WGS84')]
 
 # Load environmental variables extracted from BIOCLIM (bio_3, bio_4, bio_7, bio_11 & bio_12)
-myFiles = paste0('external/bioclim/current/bio', c(3, 4, 7, 11, 12), '.grd')
-myExpl = raster::stack(system.file(myFiles, package = 'biomod2'))
+myFiles <- paste0('external/bioclim/current/bio', c(3, 4, 7, 11, 12), '.grd')
+myExpl <- raster::stack(system.file(myFiles, package = 'biomod2'))
 
 
 # ---------------------------------------------------------------
@@ -111,27 +111,27 @@ myBiomodData <- BIOMOD_FormatingData(resp.var = myResp,
 myBiomodOptions <- BIOMOD_ModelingOptions()
 
 # Model single models
-myBiomodModelOut <- BIOMOD_Modeling(myBiomodData,
-                                    models.options = myBiomodOptions,
-                                    NbRunEval = 2,
-                                    DataSplit = 80,
-                                    VarImport = 3,
-                                    models.eval.meth = c('TSS','ROC'),
-                                    do.full.models = FALSE,
-                                    modeling.id = 'test')
+myBiomodModelOut <- BIOMOD_Modeling(bm.format = myBiomodData,
+                                    modeling.id = 'AllModels',
+                                    bm.options = myBiomodOptions,
+                                    nb.rep = 2,
+                                    data.split.perc = 80,
+                                    metric.eval = c('TSS','ROC'),
+                                    var.import = 3,
+                                    do.full.models = FALSE)
 
 
 # ---------------------------------------------------------------
 # Represent response curves
-bm_PlotResponseCurves(myBiomodModelOut, 
-                      chosen.models = get_built_models(myBiomodModelOut)[c(1:3, 12:14)],
-                      fixed.var.metric = 'median')
-bm_PlotResponseCurves(myBiomodModelOut, 
-                      chosen.models = get_built_models(myBiomodModelOut)[c(1:3, 12:14)],
-                      fixed.var.metric = 'min')
-bm_PlotResponseCurves(myBiomodModelOut, 
-                      chosen.models = get_built_models(myBiomodModelOut)[3],
-                      fixed.var.metric = 'median',
+bm_PlotResponseCurves(bm.out = myBiomodModelOut, 
+                      models.chosen = get_built_models(myBiomodModelOut)[c(1:3, 12:14)],
+                      fixed.var = 'median')
+bm_PlotResponseCurves(bm.out = myBiomodModelOut, 
+                      models.chosen = get_built_models(myBiomodModelOut)[c(1:3, 12:14)],
+                      fixed.var = 'min')
+bm_PlotResponseCurves(bm.out = myBiomodModelOut, 
+                      models.chosen = get_built_models(myBiomodModelOut)[3],
+                      fixed.var = 'median',
                       do.bivariate = TRUE)
                                       
                                       

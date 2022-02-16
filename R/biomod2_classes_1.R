@@ -43,35 +43,32 @@
 ##' showClass("BIOMOD.formated.data")
 ##' 
 ##' ## ------------------------------------------------------------------------
-##' # species occurrences
-##' myFile <- system.file("external/species/mammals_table.csv", package="biomod2")
+##' 
+##' # Load species occurrences (6 species available)
+##' myFile <- system.file('external/species/mammals_table.csv', package = 'biomod2')
 ##' DataSpecies <- read.csv(myFile, row.names = 1)
 ##' head(DataSpecies)
 ##' 
-##' # the name of studied species
+##' # Select the name of the studied species
 ##' myRespName <- 'GuloGulo'
 ##' 
-##' # the presence/absences data for our species
+##' # Get corresponding presence/absence data
 ##' myResp <- as.numeric(DataSpecies[, myRespName])
 ##' 
-##' # the XY coordinates of species data
-##' myRespXY <- DataSpecies[, c("X_WGS84", "Y_WGS84")]
+##' # Get corresponding XY coordinates
+##' myRespXY <- DataSpecies[, c('X_WGS84', 'Y_WGS84')]
+##' 
+##' # Load environmental variables extracted from BIOCLIM (bio_3, bio_4, bio_7, bio_11 & bio_12)
+##' myFiles <- paste0('external/bioclim/current/bio', c(3, 4, 7, 11, 12), '.grd')
+##' myExpl <- raster::stack(system.file(myFiles, package = 'biomod2'))
 ##' 
 ##' 
-##' # Environmental variables extracted from BIOCLIM (bio_3, bio_4, bio_7, bio_11 & bio_12)
-##' myFiles = paste0("external/bioclim/current/bio", c(3, 4, 7, 11, 12), ".grd")
-##' myExpl = raster::stack(system.file(myFiles[1], package = "biomod2"),
-##'                        system.file(myFiles[2], package = "biomod2"),
-##'                        system.file(myFiles[3], package = "biomod2"),
-##'                        system.file(myFiles[4], package = "biomod2"),
-##'                        system.file(myFiles[5], package = "biomod2"))
-##' 
-##' # 1. Formating Data
+##' # ---------------------------------------------------------------
+##' # Format Data with true absences
 ##' myBiomodData <- BIOMOD_FormatingData(resp.var = myResp,
 ##'                                      expl.var = myExpl,
 ##'                                      resp.xy = myRespXY,
 ##'                                      resp.name = myRespName)
-##' 
 ##' myBiomodData
 ##' plot(myBiomodData)
 ##' 
@@ -428,38 +425,35 @@ setMethod('show', signature('BIOMOD.formated.data'),
 ##' showClass("BIOMOD.formated.data.PA")
 ##' 
 ##' ## ------------------------------------------------------------------------
-##' # species occurrences
-##' myFile <- system.file("external/species/mammals_table.csv", package="biomod2")
+##' 
+##' # Load species occurrences (6 species available)
+##' myFile <- system.file('external/species/mammals_table.csv', package = 'biomod2')
 ##' DataSpecies <- read.csv(myFile, row.names = 1)
 ##' head(DataSpecies)
 ##' 
-##' # the name of studied species
+##' # Select the name of the studied species
 ##' myRespName <- 'GuloGulo'
 ##' 
-##' # the presence/absences data for our species
+##' # Get corresponding presence/absence data
 ##' myResp <- as.numeric(DataSpecies[, myRespName])
 ##' 
-##' # the XY coordinates of species data
-##' myRespXY <- DataSpecies[, c("X_WGS84", "Y_WGS84")]
+##' # Get corresponding XY coordinates
+##' myRespXY <- DataSpecies[, c('X_WGS84', 'Y_WGS84')]
+##' 
+##' # Load environmental variables extracted from BIOCLIM (bio_3, bio_4, bio_7, bio_11 & bio_12)
+##' myFiles <- paste0('external/bioclim/current/bio', c(3, 4, 7, 11, 12), '.grd')
+##' myExpl <- raster::stack(system.file(myFiles, package = 'biomod2'))
 ##' 
 ##' 
-##' # Environmental variables extracted from BIOCLIM (bio_3, bio_4, bio_7, bio_11 & bio_12)
-##' myFiles = paste0("external/bioclim/current/bio", c(3, 4, 7, 11, 12), ".grd")
-##' myExpl = raster::stack(system.file(myFiles[1], package = "biomod2"),
-##'                        system.file(myFiles[2], package = "biomod2"),
-##'                        system.file(myFiles[3], package = "biomod2"),
-##'                        system.file(myFiles[4], package = "biomod2"),
-##'                        system.file(myFiles[5], package = "biomod2"))
-##' 
-##' # 1. Formating Data
+##' # ---------------------------------------------------------------
+##' # Format Data with pseudo-absences : random method
 ##' myBiomodData <- BIOMOD_FormatingData(resp.var = myResp,
 ##'                                      expl.var = myExpl,
 ##'                                      resp.xy = myRespXY,
 ##'                                      resp.name = myRespName,
 ##'                                      PA.nb.rep = 0,
-##'                                      PA.nb.absences = 1000,
-##'                                      PA.strategy = 'random')
-##' 
+##'                                      PA.strategy = 'random',
+##'                                      PA.nb.absences = 1000)
 ##' myBiomodData
 ##' plot(myBiomodData)
 ##' 

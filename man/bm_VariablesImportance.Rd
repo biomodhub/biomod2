@@ -4,20 +4,26 @@
 \alias{bm_VariablesImportance}
 \title{Variables' importance calculation}
 \usage{
-bm_VariablesImportance(model, data, method = "full_rand", nb_rand = 1, ...)
+bm_VariablesImportance(
+  bm.model,
+  expl.var,
+  method = "full_rand",
+  nb.rep = 1,
+  ...
+)
 }
 \arguments{
-\item{model}{a \code{BIOMOD.models.out} object (coming either from 
-\code{\link{BIOMOD_Modeling}} or \code{\link{BIOMOD_EnsembleModeling}} function) and for 
-which variables importance is to be computed}
+\item{bm.model}{a \code{biomod2_model} object (or \code{nnet}, \code{rpart}, \code{fda}, 
+\code{gam}, \code{glm}, \code{lm}, \code{gbm}, \code{mars}, \code{randomForest}) that can be 
+obtained with the \code{\link{get_formal_model}} function}
 
-\item{data}{a \code{data.frame} containing the explanatory variables to use to perform 
-variables importance calculation}
+\item{expl.var}{a \code{data.frame} containing the explanatory variables that will be used to 
+compute the variables importance}
 
-\item{method}{a \code{character} corresponding to the randomisation method, must be 
+\item{method}{a \code{character} corresponding to the randomisation method to be used, must be 
 \code{full_rand} (\emph{only method available so far})}
 
-\item{nb_rand}{an \code{integer} corresponding to the number of permutations to be done for 
+\item{nb.rep}{an \code{integer} corresponding to the number of permutations to be done for 
 each variable}
 }
 \value{
@@ -53,14 +59,15 @@ myExpl.s <- data.frame(var1 = sample(c(0, 1), 100, replace = TRUE),
 
 ## Compute variables importance
 mod <- glm(var1 ~ var2 + var3, data = myExpl.s)
-bm_VariablesImportance(model = mod, 
-                       data = myExpl.s[, c('var2', 'var3')],
+bm_VariablesImportance(bm.model = mod, 
+                       expl.var = myExpl.s[, c('var2', 'var3')],
                        method = "full_rand",
-                       nb_rand = 3)
+                       nb.rep = 3)
 
 
 }
 \seealso{
+\code{\link[randomForest]{randomForest}}, 
 \code{\link{bm_RunModelsLoop}}, \code{\link{BIOMOD_Modeling}}, 
 \code{\link{BIOMOD_EnsembleModeling}}, \code{\link{bm_PlotVarImpBoxplot}}, 
 \code{\link{get_variables_importance}}

@@ -5,14 +5,14 @@
 \title{Create and evaluate an ensemble set of models and predictions}
 \usage{
 BIOMOD_EnsembleModeling(
-  modeling.output,
-  chosen.models = "all",
+  bm.mod,
+  models.chosen = "all",
   em.by = "PA_dataset+repet",
-  eval.metric = "all",
-  eval.metric.quality.threshold = NULL,
-  eval.metric.user.data = NULL,
-  VarImport = 0,
-  models.eval.meth = c("KAPPA", "TSS", "ROC"),
+  metric.select = "all",
+  metric.select.thresh = NULL,
+  metric.select.table = NULL,
+  metric.eval = c("KAPPA", "TSS", "ROC"),
+  var.import = 0,
   prob.mean = TRUE,
   prob.median = FALSE,
   prob.cv = FALSE,
@@ -24,10 +24,10 @@ BIOMOD_EnsembleModeling(
 )
 }
 \arguments{
-\item{modeling.output}{a \code{\link{BIOMOD.models.out}} object returned by the 
+\item{bm.mod}{a \code{\link{BIOMOD.models.out}} object returned by the 
 \code{\link{BIOMOD_Modeling}} function}
 
-\item{chosen.models}{a \code{vector} containing model names to be kept, must be either 
+\item{models.chosen}{a \code{vector} containing model names to be kept, must be either 
 \code{all} or a sub-selection of model names that can be obtained with the 
 \code{\link{get_built_models}} function}
 
@@ -35,31 +35,33 @@ BIOMOD_EnsembleModeling(
 the ensemble models, must be among \code{PA_dataset+repet}, \code{PA_dataset+algo}, 
 \code{PA_dataset}, \code{algo}, \code{all}}
 
-\item{eval.metric}{a \code{vector} containing evaluation metric names to be used together with 
-\code{eval.metric.quality.threshold} to exclude single models based on their evaluation scores 
+\item{metric.select}{a \code{vector} containing evaluation metric names to be used together with 
+\code{metric.select.thresh} to exclude single models based on their evaluation scores 
 (for ensemble methods like probability weighted mean or committee averaging). Must be among  
-\code{all} (same evaluation metrics than those of \code{modeling.output}), \code{user.defined} 
-(and defined through \code{eval.metric.user.data}) or \code{ROC}, \code{TSS}, \code{KAPPA}, 
+\code{all} (same evaluation metrics than those of \code{bm.mod}), \code{user.defined} 
+(and defined through \code{metric.select.table}) or \code{ROC}, \code{TSS}, \code{KAPPA}, 
 \code{ACCURACY}, \code{BIAS}, \code{POD}, \code{FAR}, \code{POFD}, \code{SR}, \code{CSI}, 
 \code{ETS}, \code{HK}, \code{HSS}, \code{OR}, \code{ORSS}}
 
-\item{eval.metric.quality.threshold}{(\emph{optional, default} \code{NULL}) \cr 
+\item{metric.select.thresh}{(\emph{optional, default} \code{NULL}) \cr 
 A \code{vector} of \code{numeric} values corresponding to the minimum scores (one for each 
-\code{eval.metric}) below which single models will be excluded from the ensemble model building}
+\code{metric.select}) below which single models will be excluded from the ensemble model 
+building}
 
-\item{eval.metric.user.data}{(\emph{optional, default} \code{NULL}) \cr 
-A \code{data.frame} containing evaluation scores calculated for each single models and that 
-will be compared to \code{eval.metric.quality.threshold} values to exclude some of them from 
-the ensemble model building, with evaluation metric rownames, and \code{chosen.models} colnames}
+\item{metric.select.table}{(\emph{optional, default} \code{NULL}) \cr 
+If \code{metric.select = 'user.defined'}, a \code{data.frame} containing evaluation scores 
+calculated for each single models and that will be compared to \code{metric.select.thresh} 
+values to exclude some of them from the ensemble model building, with \code{metric.select} 
+rownames, and \code{models.chosen} colnames}
 
-\item{VarImport}{(\emph{optional, default} \code{NULL}) \cr 
-An \code{integer} corresponding to the number of permutations to be done for each variable to 
-estimate variable importance}
-
-\item{models.eval.meth}{a \code{vector} containing evaluation metric names to be used, must 
+\item{metric.eval}{a \code{vector} containing evaluation metric names to be used, must 
 be among \code{ROC}, \code{TSS}, \code{KAPPA}, \code{ACCURACY}, \code{BIAS}, \code{POD}, 
 \code{FAR}, \code{POFD}, \code{SR}, \code{CSI}, \code{ETS}, \code{HK}, \code{HSS}, \code{OR}, 
 \code{ORSS}}
+
+\item{var.import}{(\emph{optional, default} \code{NULL}) \cr 
+An \code{integer} corresponding to the number of permutations to be done for each variable to 
+estimate variable importance}
 
 \item{prob.mean}{(\emph{optional, default} \code{TRUE}) \cr 
 A \code{logical} value defining whether to compute the mean probabilities 
@@ -104,7 +106,7 @@ folders created in the current working directory :
   \item a \emph{hidden} folder, named \code{.BIOMOD_DATA}, and containing outputs related 
   files (original dataset, calibration lines, pseudo-absences selected, predictions, 
   variables importance, evaluation values...), that can be retrieved with 
-  \code{\href{reference/index.html}{get_[...]}} or \code{\link{load}} functions, and used by other 
+  \code{\href{getters.out.html}{get_[...]}} or \code{\link{load}} functions, and used by other 
   \pkg{biomod2} functions, like \code{\link{BIOMOD_EnsembleForecasting}}
 }
 }
@@ -117,9 +119,9 @@ conditions (see \href{BIOMOD_EnsembleModeling.html#details}{Details}).
 }
 \details{
 \describe{
-  \item{Models sub-selection (\code{chosen.models})}{Applying \code{\link{get_built_models}} 
-  function to the \code{modeling.output} object gives the names of the single models created 
-  with the \code{\link{BIOMOD_Modeling}} function. The \code{chosen.models} argument can take 
+  \item{Models sub-selection (\code{models.chosen})}{Applying \code{\link{get_built_models}} 
+  function to the \code{bm.mod} object gives the names of the single models created 
+  with the \code{\link{BIOMOD_Modeling}} function. The \code{models.chosen} argument can take 
   either a sub-selection of these single model names, or the \code{all} default value, to 
   decide which single models will be used for the ensemble model building.}
 
@@ -144,30 +146,30 @@ conditions (see \href{BIOMOD_EnsembleModeling.html#details}{Details}).
 
   \item{Evaluation metrics}{
   \itemize{
-    \item{\bold{\code{eval.metric}} : }{the selected metrics must be chosen among the ones used 
+    \item{\bold{\code{metric.select}} : }{the selected metrics must be chosen among the ones used 
     within the \code{\link{BIOMOD_Modeling}} function to build the \code{model.output} object, 
-    unless \code{eval.metric = 'user.defined'} and therefore values will be provided through 
-    the \code{eval.metric.user.data} parameter. \cr In the case of the selection of several 
+    unless \code{metric.select = 'user.defined'} and therefore values will be provided through 
+    the \code{metric.select.table} parameter. \cr In the case of the selection of several 
     metrics, they will be used at different steps of the ensemble modeling function : 
     \enumerate{
       \item remove \emph{low quality} single models, having a score lower than 
-      \code{eval.metric.quality.threshold}
+      \code{metric.select.thresh}
       \item perform the binary transformation needed if \code{committee.averaging = TRUE}
       \item weight models if \code{prob.mean.weight = TRUE}
       \item test and/or evaluate the ensemble models built
     }
     }
-    \item{\bold{\code{eval.metric.quality.threshold}} : }{as many values as evaluation metrics 
-    selected with the \code{eval.metric} parameter, and defining the corresponding quality 
+    \item{\bold{\code{metric.select.thresh}} : }{as many values as evaluation metrics 
+    selected with the \code{metric.select} parameter, and defining the corresponding quality 
     thresholds below which the single models will be excluded from the ensemble model 
     building.}
-    \item{\bold{\code{eval.metric.user.data}} : }{a \code{data.frame} must be given if 
-    \code{eval.metric = 'user.defined'} to allow the use of evaluation metrics other than 
+    \item{\bold{\code{metric.select.table}} : }{a \code{data.frame} must be given if 
+    \code{metric.select = 'user.defined'} to allow the use of evaluation metrics other than 
     those calculated within \pkg{biomod2}. The \code{data.frame} must contain as many columns 
-    as \code{chosen.models} with matching names, and as many rows as evaluation metrics to be 
-    used. The number of rows must match the length of the \code{eval.metric.quality.threshold} 
+    as \code{models.chosen} with matching names, and as many rows as evaluation metrics to be 
+    used. The number of rows must match the length of the \code{metric.select.thresh} 
     parameter. The values contained in the \code{data.frame} will be compared to those defined 
-    in \code{eval.metric.quality.threshold} to remove \emph{low quality} single models from 
+    in \code{metric.select.thresh} to remove \emph{low quality} single models from 
     the ensemble model building.}
   }
   }
@@ -264,8 +266,8 @@ myResp <- as.numeric(DataSpecies[, myRespName])
 myRespXY <- DataSpecies[, c('X_WGS84', 'Y_WGS84')]
 
 # Load environmental variables extracted from BIOCLIM (bio_3, bio_4, bio_7, bio_11 & bio_12)
-myFiles = paste0('external/bioclim/current/bio', c(3, 4, 7, 11, 12), '.grd')
-myExpl = raster::stack(system.file(myFiles, package = 'biomod2'))
+myFiles <- paste0('external/bioclim/current/bio', c(3, 4, 7, 11, 12), '.grd')
+myExpl <- raster::stack(system.file(myFiles, package = 'biomod2'))
 
 
 # ---------------------------------------------------------------
@@ -279,25 +281,25 @@ myBiomodData <- BIOMOD_FormatingData(resp.var = myResp,
 myBiomodOptions <- BIOMOD_ModelingOptions()
 
 # Model single models
-myBiomodModelOut <- BIOMOD_Modeling(myBiomodData,
-                                    models.options = myBiomodOptions,
-                                    NbRunEval = 2,
-                                    DataSplit = 80,
-                                    VarImport = 3,
-                                    models.eval.meth = c('TSS','ROC'),
-                                    do.full.models = FALSE,
-                                    modeling.id = 'test')
+myBiomodModelOut <- BIOMOD_Modeling(bm.format = myBiomodData,
+                                    modeling.id = 'AllModels',
+                                    bm.options = myBiomodOptions,
+                                    nb.rep = 2,
+                                    data.split.perc = 80,
+                                    metric.eval = c('TSS','ROC'),
+                                    var.import = 3,
+                                    do.full.models = FALSE)
 
 
 # ---------------------------------------------------------------
 # Model ensemble models
-myBiomodEM <- BIOMOD_EnsembleModeling(modeling.output = myBiomodModelOut,
-                                      chosen.models = 'all',
+myBiomodEM <- BIOMOD_EnsembleModeling(bm.mod = myBiomodModelOut,
+                                      models.chosen = 'all',
                                       em.by = 'all',
-                                      eval.metric = c('TSS'),
-                                      eval.metric.quality.threshold = c(0.7),
-                                      VarImport = 3,
-                                      models.eval.meth = c('TSS', 'ROC'),
+                                      metric.select = c('TSS'),
+                                      metric.select.thresh = c(0.7),
+                                      metric.eval = c('TSS', 'ROC'),
+                                      var.import = 3,
                                       prob.mean = TRUE,
                                       prob.median = TRUE,
                                       prob.cv = TRUE,
@@ -313,22 +315,22 @@ get_evaluations(myBiomodEM, as.data.frame = TRUE)
 get_variables_importance(myBiomodEM, as.data.frame = TRUE)
 
 # Represent evaluation scores & variables importance
-bm_PlotEvalMean(myBiomodEM, group.by = 'model')
-bm_PlotEvalBoxplot(myBiomodEM, group.by = c('model', 'model'))
-bm_PlotVarImpBoxplot(myBiomodEM, group.by = c('expl.var', 'model', 'model'))
-bm_PlotVarImpBoxplot(myBiomodEM, group.by = c('expl.var', 'model', 'dataset'))
-bm_PlotVarImpBoxplot(myBiomodEM, group.by = c('model', 'expl.var', 'dataset'))
+bm_PlotEvalMean(bm.out = myBiomodEM, group.by = 'model')
+bm_PlotEvalBoxplot(bm.out = myBiomodEM, group.by = c('model', 'model'))
+bm_PlotVarImpBoxplot(bm.out = myBiomodEM, group.by = c('expl.var', 'model', 'model'))
+bm_PlotVarImpBoxplot(bm.out = myBiomodEM, group.by = c('expl.var', 'model', 'dataset'))
+bm_PlotVarImpBoxplot(bm.out = myBiomodEM, group.by = c('model', 'expl.var', 'dataset'))
 
 # Represent response curves
-bm_PlotResponseCurves(myBiomodEM, 
-                      chosen.models = get_built_models(myBiomodEM)[c(1, 6, 7)],
-                      fixed.var.metric = 'median')
-bm_PlotResponseCurves(myBiomodEM, 
-                      chosen.models = get_built_models(myBiomodEM)[c(1, 6, 7)],
-                      fixed.var.metric = 'min')
-bm_PlotResponseCurves(myBiomodEM, 
-                      chosen.models = get_built_models(myBiomodEM)[7],
-                      fixed.var.metric = 'median',
+bm_PlotResponseCurves(bm.out = myBiomodEM, 
+                      models.chosen = get_built_models(myBiomodEM)[c(1, 6, 7)],
+                      fixed.var = 'median')
+bm_PlotResponseCurves(bm.out = myBiomodEM, 
+                      models.chosen = get_built_models(myBiomodEM)[c(1, 6, 7)],
+                      fixed.var = 'min')
+bm_PlotResponseCurves(bm.out = myBiomodEM, 
+                      models.chosen = get_built_models(myBiomodEM)[7],
+                      fixed.var = 'median',
                       do.bivariate = TRUE)
 
 

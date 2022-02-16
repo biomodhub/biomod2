@@ -11,31 +11,30 @@
 \alias{bm_BinaryTransformation,RasterBrick-method}
 \title{Convert probability values into binary values using a predefined threshold}
 \usage{
-bm_BinaryTransformation(data, threshold, doFiltering = FALSE)
+bm_BinaryTransformation(data, threshold, do.filtering = FALSE)
 
-\S4method{bm_BinaryTransformation}{data.frame}(data, threshold, doFiltering = FALSE)
+\S4method{bm_BinaryTransformation}{data.frame}(data, threshold, do.filtering = FALSE)
 
-\S4method{bm_BinaryTransformation}{matrix}(data, threshold, doFiltering = FALSE)
+\S4method{bm_BinaryTransformation}{matrix}(data, threshold, do.filtering = FALSE)
 
-\S4method{bm_BinaryTransformation}{numeric}(data, threshold, doFiltering = FALSE)
+\S4method{bm_BinaryTransformation}{numeric}(data, threshold, do.filtering = FALSE)
 
-\S4method{bm_BinaryTransformation}{array}(data, threshold, doFiltering = FALSE)
+\S4method{bm_BinaryTransformation}{array}(data, threshold, do.filtering = FALSE)
 
-\S4method{bm_BinaryTransformation}{RasterLayer}(data, threshold, doFiltering = FALSE)
+\S4method{bm_BinaryTransformation}{RasterLayer}(data, threshold, do.filtering = FALSE)
 
-\S4method{bm_BinaryTransformation}{RasterStack}(data, threshold, doFiltering = FALSE)
+\S4method{bm_BinaryTransformation}{RasterStack}(data, threshold, do.filtering = FALSE)
 
-\S4method{bm_BinaryTransformation}{RasterBrick}(data, threshold, doFiltering = FALSE)
+\S4method{bm_BinaryTransformation}{RasterBrick}(data, threshold, do.filtering = FALSE)
 }
 \arguments{
 \item{data}{a \code{vector}, a \code{matrix} or \code{data.frame}, a 
 \code{\link[raster:raster]{raster}} or \code{\link[raster:stack]{RasterStack}} containing the 
 data to be converted}
 
-\item{threshold}{a \code{numeric} corresponding to the threshold used to convert the given 
-data}
+\item{threshold}{a \code{numeric} corresponding to the threshold used to convert the given data}
 
-\item{doFiltering}{(\emph{optional, default} \code{FALSE}) \cr 
+\item{do.filtering}{(\emph{optional, default} \code{FALSE}) \cr 
 A \code{logical} value defining whether filtered data should be returned, or binary one 
 (see \href{bm_BinaryTransformation.html#details}{Details})}
 }
@@ -57,8 +56,8 @@ as many values as the number of columns or layers contained in \code{data}. If o
 \code{numeric} value is given, the same threshold will be applied to all columns or layers. 
 \cr \cr
 
-If \code{doFiltering = FALSE}, binary (\code{0} or \code{1}) values are returned. \cr 
-If \code{doFiltering = TRUE}, values will be \emph{filtered} according to \code{threshold}, 
+If \code{do.filtering = FALSE}, binary (\code{0} or \code{1}) values are returned. \cr 
+If \code{do.filtering = TRUE}, values will be \emph{filtered} according to \code{threshold}, 
 meaning that :
 \itemize{
   \item \code{data < threshold} will return 0
@@ -73,7 +72,7 @@ vec.d <- rnorm(100, 500, 100)
 
 ## From continuous to binary / filtered vector
 vec.d_bin <- bm_BinaryTransformation(data = vec.d, threshold = 500)
-vec.d_filt <- bm_BinaryTransformation(data = vec.d, threshold = 500, doFiltering = TRUE)
+vec.d_filt <- bm_BinaryTransformation(data = vec.d, threshold = 500, do.filtering = TRUE)
 cbind(vec.d, vec.d_bin, vec.d_filt)
 
 

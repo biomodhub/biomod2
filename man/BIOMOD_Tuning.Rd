@@ -5,91 +5,67 @@
 \title{Tune models parameters}
 \usage{
 BIOMOD_Tuning(
-  data,
+  bm.format,
+  bm.options = BIOMOD_ModelingOptions(),
   models = c("GLM", "GBM", "GAM", "CTA", "ANN", "SRE", "FDA", "MARS", "RF",
     "MAXENT.Phillips"),
-  models.options = BIOMOD_ModelingOptions(),
-  method.ANN = "avNNet",
-  method.RF = "rf",
-  method.MARS = "earth",
-  method.GAM = "gam",
-  method.GLM = "glmStepAIC",
-  trControl = NULL,
-  metric = "ROC",
-  ctrl.CTA = NULL,
-  ctrl.RF = NULL,
+  metric.eval = "ROC",
+  ctrl.train = NULL,
+  ctrl.train.tuneLength = 30,
   ctrl.ANN = NULL,
-  ctrl.MARS = NULL,
+  ctrl.CTA = NULL,
   ctrl.FDA = NULL,
   ctrl.GAM = NULL,
   ctrl.GBM = NULL,
   ctrl.GLM = NULL,
-  tuneLength = 30,
-  decay.tune.ANN = c(0.001, 0.01, 0.05, 0.1),
-  size.tune.ANN = c(2, 4, 6, 8),
-  maxit.ANN = 500,
-  MaxNWts.ANN = 10 * (ncol(data@data.env.var) + 1) + 10 + 1,
-  type.GLM = c("simple", "quadratic", "polynomial", "s_smoother"),
-  interaction.GLM = c(0, 1),
-  cvmethod.ME = "randomkfold",
-  overlap.ME = FALSE,
-  kfolds.ME = 10,
-  n.bg.ME = 10000,
-  env.ME = NULL,
-  metric.ME = "ROC",
-  clamp.ME = TRUE,
-  parallel.ME = FALSE,
-  numCores.ME = NULL,
-  Yweights = NULL
+  ctrl.MARS = NULL,
+  ctrl.RF = NULL,
+  ANN.method = "avNNet",
+  ANN.decay.tune = c(0.001, 0.01, 0.05, 0.1),
+  ANN.size.tune = c(2, 4, 6, 8),
+  ANN.maxit = 500,
+  ANN.MaxNWts = 10 * (ncol(bm.format@data.env.var) + 1) + 10 + 1,
+  MARS.method = "earth",
+  GAM.method = "gam",
+  GLM.method = "glmStepAIC",
+  GLM.type = c("simple", "quadratic", "polynomial", "s_smoother"),
+  GLM.interaction = c(0, 1),
+  ME.cvmethod = "randomkfold",
+  ME.overlap = FALSE,
+  ME.kfolds = 10,
+  ME.n.bg = 10000,
+  ME.env = NULL,
+  ME.metric = "ROC",
+  ME.clamp = TRUE,
+  ME.parallel = FALSE,
+  ME.numCores = NULL,
+  RF.method = "rf",
+  weights = NULL
 )
 }
 \arguments{
-\item{data}{a \code{\link{BIOMOD.formated.data}} object returned by the 
-\code{\link{BIOMOD_FormatingData}} function}
+\item{bm.format}{a \code{\link{BIOMOD.formated.data}} or \code{\link{BIOMOD.formated.data.PA}} 
+object returned by the \code{\link{BIOMOD_FormatingData}} function}
+
+\item{bm.options}{a \code{\link{BIOMOD.models.options}} object returned by the
+\code{\link{BIOMOD_ModelingOptions}} function}
 
 \item{models}{a \code{vector} containing model names to be tuned, \cr 
 must be among \code{GLM}, \code{GBM}, \code{GAM}, \code{CTA}, \code{ANN}, \code{SRE}, 
 \code{FDA}, \code{MARS}, \code{RF}, \code{MAXENT.Phillips}}
 
-\item{models.options}{a \code{\link{BIOMOD.models.options}} object returned by the 
-\code{\link{BIOMOD_ModelingOptions}} function}
-
-\item{method.ANN}{a \code{character} corresponding to the classification or regression model 
-to use for \code{ANN}, \cr 
-must be \code{avNNet} (see \url{http://topepo.github.io/caret/Neural_Network.html})}
-
-\item{method.RF}{a \code{character} corresponding to the classification or regression model 
-to use for \code{RF}, \cr 
-must be \code{rf} (see \url{http://topepo.github.io/caret/Random_Forest.html})}
-
-\item{method.MARS}{a \code{character} corresponding to the classification or regression model 
-to use for \code{MARS}, \cr 
-must be \code{earth} (see 
-\url{http://topepo.github.io/caret/Multivariate_Adaptive_Regression_Splines.html})}
-
-\item{method.GAM}{a \code{character} corresponding to the classification or regression model 
-to use for \code{GAM}, \cr 
-must be \code{gam} (see \url{http://topepo.github.io/caret/Generalized_Additive_Model.html})}
-
-\item{method.GLM}{a \code{character} corresponding to the classification or regression model 
-to use for \code{GLM}, \cr 
-must be \code{glmStepAIC} (see 
-\url{http://topepo.github.io/caret/Generalized_Linear_Model.html})}
-
-\item{trControl}{global control parameters that can be obtained from 
-\code{\link[caret]{trainControl}} function}
-
-\item{metric}{a \code{character} corresponding to the evaluation metric used to select 
+\item{metric.eval}{a \code{character} corresponding to the evaluation metric used to select 
 optimal models and tune parameters, must be either \code{ROC} or \code{TSS} 
 (\emph{maximizing Sensitivity and Specificity})}
 
-\item{ctrl.CTA}{control parameters for \code{CTA}}
+\item{ctrl.train}{global control parameters that can be obtained from the 
+\code{\link[caret]{trainControl}} function}
 
-\item{ctrl.RF}{control parameters for \code{RF}}
+\item{ctrl.train.tuneLength}{(see \code{tuneLength} parameter in \code{\link[caret]{train}})}
 
 \item{ctrl.ANN}{control parameters for \code{ANN}}
 
-\item{ctrl.MARS}{control parameters for \code{MARS}}
+\item{ctrl.CTA}{control parameters for \code{CTA}}
 
 \item{ctrl.FDA}{control parameters for \code{FDA}}
 
@@ -99,56 +75,80 @@ optimal models and tune parameters, must be either \code{ROC} or \code{TSS}
 
 \item{ctrl.GLM}{control parameters for \code{GLM}}
 
-\item{tuneLength}{(see \code{\link[caret]{train}})}
+\item{ctrl.MARS}{control parameters for \code{MARS}}
 
-\item{decay.tune.ANN}{a \code{vector} of weight decay parameters for \code{ANN}}
+\item{ctrl.RF}{control parameters for \code{RF}}
 
-\item{size.tune.ANN}{a \code{vector} of size parameters (number of units in the hidden layer) 
+\item{ANN.method}{a \code{character} corresponding to the classification or regression model 
+to use for \code{ANN}, \cr 
+must be \code{avNNet} (see \url{http://topepo.github.io/caret/Neural_Network.html})}
+
+\item{ANN.decay.tune}{a \code{vector} of weight decay parameters for \code{ANN}}
+
+\item{ANN.size.tune}{a \code{vector} of size parameters (number of units in the hidden layer) 
 for \code{ANN}}
 
-\item{maxit.ANN}{an \code{integer} corresponding to the maximum number of iterations for 
+\item{ANN.maxit}{an \code{integer} corresponding to the maximum number of iterations for 
 \code{ANN}}
 
-\item{MaxNWts.ANN}{an \code{integer} corresponding to the maximum allowable number of weights 
+\item{ANN.MaxNWts}{an \code{integer} corresponding to the maximum allowable number of weights 
 for \code{ANN}}
 
-\item{type.GLM}{a \code{vector} of \code{character} corresponding to modeling types for 
+\item{MARS.method}{a \code{character} corresponding to the classification or regression model 
+to use for \code{MARS}, \cr 
+must be \code{earth} (see 
+\url{http://topepo.github.io/caret/Multivariate_Adaptive_Regression_Splines.html})}
+
+\item{GAM.method}{a \code{character} corresponding to the classification or regression model 
+to use for \code{GAM}, \cr 
+must be \code{gam} (see \url{http://topepo.github.io/caret/Generalized_Additive_Model.html})}
+
+\item{GLM.method}{a \code{character} corresponding to the classification or regression model 
+to use for \code{GLM}, \cr 
+must be \code{glmStepAIC} (see 
+\url{http://topepo.github.io/caret/Generalized_Linear_Model.html})}
+
+\item{GLM.type}{a \code{vector} of \code{character} corresponding to modeling types for 
 \code{GLM}, \cr must be among \code{simple}, \code{quadratic}, \code{polynomial}, 
 \code{s_smoother}}
 
-\item{interaction.GLM}{a \code{vector} of interaction types, must be amond \code{0}, \code{1}}
+\item{GLM.interaction}{a \code{vector} of interaction types, must be among \code{0}, \code{1}}
 
-\item{cvmethod.ME}{a \code{character} corresponding to the method used to partition data for 
+\item{ME.cvmethod}{a \code{character} corresponding to the method used to partition data for 
 \code{MAXENT.Phillips}, \cr must be \code{randomkfold}}
 
-\item{overlap.ME}{(\emph{optional, default} \code{FALSE}) \cr 
+\item{ME.overlap}{(\emph{optional, default} \code{FALSE}) \cr 
 A \code{logical} value defining whether to calculate pairwise metric of niche overlap or not 
-(see \code{\link{calc.niche.overlap}})}
+(see \code{\link[ENMeval]{calc.niche.overlap}})}
 
-\item{kfolds.ME}{an \code{integer} corresponding to the number of bins for k-fold 
+\item{ME.kfolds}{an \code{integer} corresponding to the number of bins for k-fold 
 cross-validation for \code{MAXENT.Phillips}}
 
-\item{n.bg.ME}{an \code{integer} corresponding to the number of background points used to run 
+\item{ME.n.bg}{an \code{integer} corresponding to the number of background points used to run 
 \code{MAXENT.Phillips}}
 
-\item{env.ME}{a \code{RasterStack} object containing model predictor variables}
+\item{ME.env}{a \code{RasterStack} object containing model predictor variables}
 
-\item{metric.ME}{a \code{character} corresponding to the evaluation metric used to select 
+\item{ME.metric}{a \code{character} corresponding to the evaluation metric used to select 
 optimal model and tune parameters for \code{MAXENT.Phillips}, must be either 
 \code{auc.val.avg}, \code{auc.diff.avg}, \code{or.mtp.avg}, \code{or.10p.avg} or \code{AICc}}
 
-\item{clamp.ME}{(\emph{optional, default} \code{TRUE}) \cr 
+\item{ME.clamp}{(\emph{optional, default} \code{TRUE}) \cr 
 A \code{logical} value defining whether \emph{Features are constrained to remain within the 
 range of values in the training data} (Elith et al. 2011) or not}
 
-\item{parallel.ME}{(\emph{optional, default} \code{TRUE}) \cr 
+\item{ME.parallel}{(\emph{optional, default} \code{TRUE}) \cr 
 A \code{logical} value defining whether to enable parallel computing for 
 \code{MAXENT.Phillips} or not}
 
-\item{numCores.ME}{an \code{integer} corresponding to the number of cores to be used to 
+\item{ME.numCores}{an \code{integer} corresponding to the number of cores to be used to 
 train \code{MAXENT.Phillips}}
 
-\item{Yweights}{a \code{vector} of response points weights for models allowing case weights}
+\item{RF.method}{a \code{character} corresponding to the classification or regression model 
+to use for \code{RF}, \cr 
+must be \code{rf} (see \url{http://topepo.github.io/caret/Random_Forest.html})}
+
+\item{weights}{a \code{vector} of \code{numeric} values corresponding to observation weights}
 }
 \value{
 A \code{\link{BIOMOD.models.options}} object (see \code{\link{BIOMOD_ModelingOptions}}) with 
@@ -159,10 +159,10 @@ Function to tune \pkg{biomod2} single models parameters
 }
 \details{
 \itemize{
-  \item \code{trControl} parameter is set by default to : \cr
+  \item \code{ctrl.train} parameter is set by default to : \cr
   \code{caret::trainControl(method = 'cv', summaryFunction = caret::twoClassSummary,} \cr
   \code{classProbs = TRUE, returnData = FALSE)}.
-  \item All control parameters for other models are set to \code{trControl} if unspecified.
+  \item All control parameters for other models are set to \code{ctrl.train} if unspecified.
   \item For more details on \code{MAXENT.Phillips} tuning, please refer to 
   \code{\link[ENMeval]{ENMevaluate}}.
   \item For more details on other models tuning, please refer to \code{\link[caret]{train}}.
@@ -185,8 +185,8 @@ myResp <- as.numeric(DataSpecies[, myRespName])
 myRespXY <- DataSpecies[, c('X_WGS84', 'Y_WGS84')]
 
 # Load environmental variables extracted from BIOCLIM (bio_3, bio_4, bio_7, bio_11 & bio_12)
-myFiles = paste0('external/bioclim/current/bio', c(3, 4, 7, 11, 12), '.grd')
-myExpl = raster::stack(system.file(myFiles, package = 'biomod2'))
+myFiles <- paste0('external/bioclim/current/bio', c(3, 4, 7, 11, 12), '.grd')
+myExpl <- raster::stack(system.file(myFiles, package = 'biomod2'))
 
 
 # ---------------------------------------------------------------
@@ -207,7 +207,7 @@ myBiomodData <- BIOMOD_FormatingData(resp.var = myResp,
 # doParallel::registerDoParallel(cl) 
 
 time.seq <- system.time(
-  bm.tuning <- BIOMOD_Tuning(myBiomodData, env.ME = myExpl, n.bg.ME = ncell(myExpl))
+  bm.tuning <- BIOMOD_Tuning(bm.format = myBiomodData, ME.env = myExpl, ME.n.bg = ncell(myExpl))
 )
 
 # stopCluster(cl)
@@ -238,7 +238,8 @@ myBiomodOptions <- bm.tuning$models.options
 }
 }
 \seealso{
-\code{\link[caret]{train}}, \code{\link[ENMeval]{ENMevaluate}}, 
+\code{\link[caret]{trainControl}}, \code{\link[caret]{train}}, 
+\code{\link[ENMeval]{calc.niche.overlap}}, \code{\link[ENMeval]{ENMevaluate}}, 
 \code{\link{BIOMOD_ModelingOptions}}, \code{\link{BIOMOD_Modeling}}
 
 Other Main functions: 

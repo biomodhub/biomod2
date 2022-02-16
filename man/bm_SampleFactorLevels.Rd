@@ -6,11 +6,11 @@
 \alias{bm_SampleFactorLevels.data.frame}
 \title{Tool to ensure the sampling of all levels of a factorial variable}
 \usage{
-bm_SampleFactorLevels(x, mask.out = NULL, mask.in = NULL)
+bm_SampleFactorLevels(expl.var, mask.out = NULL, mask.in = NULL)
 }
 \arguments{
-\item{x}{a \code{data.frame} or \code{\link[raster:stack]{RasterStack}} object containing the 
-explanatory variables (in columns or layers)}
+\item{expl.var}{a \code{data.frame} or \code{\link[raster:stack]{RasterStack}} object 
+containing the explanatory variables (in columns or layers)}
 
 \item{mask.out}{a \code{data.frame} or \code{\link[raster:raster]{raster}} object containing 
 the area that has already been sampled (\emph{factor levels within this mask will not be 
@@ -19,7 +19,7 @@ sampled})}
 \item{mask.in}{a \code{data.frame}, \code{\link[raster:raster]{raster}} or 
 \code{\link[raster:stack]{RasterStack}} object containing areas where factor levels are to be 
 sampled in priority. \emph{Note that if after having explored these masks, some factor levels 
-remain unsampled, they will be sampled in the reference input object \code{x}.}}
+remain unsampled, they will be sampled in the reference input object \code{expl.var}.}}
 }
 \value{
 A \code{numeric vector} containing point IDs (either cell number for \code{raster*} objects, 
@@ -33,7 +33,7 @@ This internal \pkg{biomod2} function samples randomly an element of each level o
 all the factorial variables contained in a \code{raster*} or \code{data.frame} object.
 }
 \details{
-The \code{x}, \code{mask.out} and \code{mask.in} parameters must be coherent in terms of 
+The \code{expl.var}, \code{mask.out} and \code{mask.in} parameters must be coherent in terms of 
 dimensions :
 \itemize{
   \item same number of rows for \code{data.frame} objects
@@ -79,9 +79,9 @@ mask.in[[1]][1:80] <- NA ## only level 5 should be sampled in this mask
 mask.in[[1]][21:80] <- NA ## only levels 1 and 5 should be sampled in this mask
 
 ## Sample all factor levels
-samp1 <- bm_SampleFactorLevels(stk, mask.out = mask.out)
-samp2 <- bm_SampleFactorLevels(stk, mask.in = mask.in)
-samp3 <- bm_SampleFactorLevels(stk, mask.out = mask.out, mask.in = mask.in)
+samp1 <- bm_SampleFactorLevels(expl.var = stk, mask.out = mask.out)
+samp2 <- bm_SampleFactorLevels(expl.var = stk, mask.in = mask.in)
+samp3 <- bm_SampleFactorLevels(expl.var = stk, mask.out = mask.out, mask.in = mask.in)
 
 
 }

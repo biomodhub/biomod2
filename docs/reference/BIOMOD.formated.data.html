@@ -136,7 +136,7 @@ BIOMOD_Modeling"><!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax/
 <span class="op">)</span>
 
 <span class="co"># S4 method for BIOMOD.formated.data,missing</span>
-<span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">x</span>, coord <span class="op">=</span> <span class="cn">NULL</span>, col <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span>
+<span class="fu"><a href="https://rdrr.io/pkg/raster/man/plot.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">x</span>, coord <span class="op">=</span> <span class="cn">NULL</span>, col <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span>
 
 <span class="co"># S4 method for BIOMOD.formated.data</span>
 <span class="fu">show</span><span class="op">(</span><span class="va">object</span><span class="op">)</span></code></pre></div>
@@ -217,37 +217,34 @@ A <code>data.frame</code> containing explanatory variables for evaluation data</
 <span class="fu">showClass</span><span class="op">(</span><span class="st">"BIOMOD.formated.data"</span><span class="op">)</span>
 
 <span class="co">## ------------------------------------------------------------------------</span>
-<span class="co"># species occurrences</span>
-<span class="va">myFile</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"external/species/mammals_table.csv"</span>, package<span class="op">=</span><span class="st">"biomod2"</span><span class="op">)</span>
-<span class="va">DataSpecies</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/utils/read.table.html" class="external-link">read.csv</a></span><span class="op">(</span><span class="va">myFile</span>, row.names <span class="op">=</span> <span class="fl">1</span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">DataSpecies</span><span class="op">)</span>
 
-<span class="co"># the name of studied species</span>
+<span class="co"># Load species occurrences (6 species available)</span>
+<span class="va">myFile</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">'external/species/mammals_table.csv'</span>, package <span class="op">=</span> <span class="st">'biomod2'</span><span class="op">)</span>
+<span class="va">DataSpecies</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/utils/read.table.html" class="external-link">read.csv</a></span><span class="op">(</span><span class="va">myFile</span>, row.names <span class="op">=</span> <span class="fl">1</span><span class="op">)</span>
+<span class="fu"><a href="https://rdrr.io/pkg/raster/man/headtail.html" class="external-link">head</a></span><span class="op">(</span><span class="va">DataSpecies</span><span class="op">)</span>
+
+<span class="co"># Select the name of the studied species</span>
 <span class="va">myRespName</span> <span class="op">&lt;-</span> <span class="st">'GuloGulo'</span>
 
-<span class="co"># the presence/absences data for our species</span>
+<span class="co"># Get corresponding presence/absence data</span>
 <span class="va">myResp</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/numeric.html" class="external-link">as.numeric</a></span><span class="op">(</span><span class="va">DataSpecies</span><span class="op">[</span>, <span class="va">myRespName</span><span class="op">]</span><span class="op">)</span>
 
-<span class="co"># the XY coordinates of species data</span>
-<span class="va">myRespXY</span> <span class="op">&lt;-</span> <span class="va">DataSpecies</span><span class="op">[</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"X_WGS84"</span>, <span class="st">"Y_WGS84"</span><span class="op">)</span><span class="op">]</span>
+<span class="co"># Get corresponding XY coordinates</span>
+<span class="va">myRespXY</span> <span class="op">&lt;-</span> <span class="va">DataSpecies</span><span class="op">[</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">'X_WGS84'</span>, <span class="st">'Y_WGS84'</span><span class="op">)</span><span class="op">]</span>
+
+<span class="co"># Load environmental variables extracted from BIOCLIM (bio_3, bio_4, bio_7, bio_11 &amp; bio_12)</span>
+<span class="va">myFiles</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">'external/bioclim/current/bio'</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">3</span>, <span class="fl">4</span>, <span class="fl">7</span>, <span class="fl">11</span>, <span class="fl">12</span><span class="op">)</span>, <span class="st">'.grd'</span><span class="op">)</span>
+<span class="va">myExpl</span> <span class="op">&lt;-</span> <span class="fu">raster</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/raster/man/stack.html" class="external-link">stack</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="va">myFiles</span>, package <span class="op">=</span> <span class="st">'biomod2'</span><span class="op">)</span><span class="op">)</span>
 
 
-<span class="co"># Environmental variables extracted from BIOCLIM (bio_3, bio_4, bio_7, bio_11 &amp; bio_12)</span>
-<span class="va">myFiles</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">"external/bioclim/current/bio"</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">3</span>, <span class="fl">4</span>, <span class="fl">7</span>, <span class="fl">11</span>, <span class="fl">12</span><span class="op">)</span>, <span class="st">".grd"</span><span class="op">)</span>
-<span class="va">myExpl</span> <span class="op">=</span> <span class="fu">raster</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/raster/man/stack.html" class="external-link">stack</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="va">myFiles</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span>, package <span class="op">=</span> <span class="st">"biomod2"</span><span class="op">)</span>,
-                       <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="va">myFiles</span><span class="op">[</span><span class="fl">2</span><span class="op">]</span>, package <span class="op">=</span> <span class="st">"biomod2"</span><span class="op">)</span>,
-                       <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="va">myFiles</span><span class="op">[</span><span class="fl">3</span><span class="op">]</span>, package <span class="op">=</span> <span class="st">"biomod2"</span><span class="op">)</span>,
-                       <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="va">myFiles</span><span class="op">[</span><span class="fl">4</span><span class="op">]</span>, package <span class="op">=</span> <span class="st">"biomod2"</span><span class="op">)</span>,
-                       <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="va">myFiles</span><span class="op">[</span><span class="fl">5</span><span class="op">]</span>, package <span class="op">=</span> <span class="st">"biomod2"</span><span class="op">)</span><span class="op">)</span>
-
-<span class="co"># 1. Formating Data</span>
+<span class="co"># ---------------------------------------------------------------</span>
+<span class="co"># Format Data with true absences</span>
 <span class="va">myBiomodData</span> <span class="op">&lt;-</span> <span class="fu"><a href="BIOMOD_FormatingData.html">BIOMOD_FormatingData</a></span><span class="op">(</span>resp.var <span class="op">=</span> <span class="va">myResp</span>,
                                      expl.var <span class="op">=</span> <span class="va">myExpl</span>,
                                      resp.xy <span class="op">=</span> <span class="va">myRespXY</span>,
                                      resp.name <span class="op">=</span> <span class="va">myRespName</span><span class="op">)</span>
-
 <span class="va">myBiomodData</span>
-<span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">myBiomodData</span><span class="op">)</span>
+<span class="fu"><a href="https://rdrr.io/pkg/raster/man/plot.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">myBiomodData</span><span class="op">)</span>
 
 
 </code></pre></div>

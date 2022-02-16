@@ -23,7 +23,7 @@ BIOMOD_FormatingData(
 )
 }
 \arguments{
-\item{resp.name}{a \code{character} containing the species name.}
+\item{resp.name}{a \code{character} corresponding to the species name}
 
 \item{resp.var}{a \code{vector}, \code{\link[sp]{SpatialPoints}} (\emph{if presence-only}) or 
 \code{\link[sp]{SpatialPointsDataFrame}} object containing binary data (\code{0} : absence, 
@@ -57,31 +57,32 @@ containing the corresponding \code{X} and \code{Y} coordinates that will be used
 the species distribution model(s) with independent data}
 
 \item{PA.nb.rep}{(\emph{optional, default} \code{0}) \cr 
-If pseudo-absence selection, the number of sets (repetitions) of pseudo-absence points that 
-will be drawn}
+If pseudo-absence selection, an \code{integer} corresponding to the number of sets 
+(repetitions) of pseudo-absence points that will be drawn}
 
 \item{PA.nb.absences}{(\emph{optional, default} \code{0}) \cr 
-If pseudo-absence selection, the number of pseudo-absence points that will be selected for 
-each pseudo-absence repetition (true absences included)}
+If pseudo-absence selection, and \code{PA.strategy = 'random'} or \code{PA.strategy = 'sre'} 
+or \code{PA.strategy = 'disk'}, an \code{integer} corresponding to the number of pseudo-absence 
+points that will be selected for each pseudo-absence repetition (true absences included)}
 
 \item{PA.strategy}{(\emph{optional, default} \code{NULL}) \cr 
 If pseudo-absence selection, a \code{character} defining the strategy that will be used to 
-select the pseudo-absence points (must be \code{random}, \code{sre}, \code{disk} or 
-\code{user.defined}, see \href{BIOMOD_FormatingData.html#details}{Details})}
+select the pseudo-absence points. Must be \code{random}, \code{sre}, \code{disk} or 
+\code{user.defined} (see \href{BIOMOD_FormatingData.html#details}{Details})}
 
 \item{PA.dist.min}{(\emph{optional, default} \code{0}) \cr 
-If pseudo-absence selection and \code{PA.strategy = 'sre'}, a \code{numeric} defining the 
+If pseudo-absence selection and \code{PA.strategy = 'disk'}, a \code{numeric} defining the 
 minimal distance to presence points used to make the \code{disk} pseudo-absence selection 
 (in meters, see \href{BIOMOD_FormatingData.html#details}{Details})}
 
 \item{PA.dist.max}{(\emph{optional, default} \code{0}) \cr 
-If pseudo-absence selection and \code{PA.strategy = 'sre'}, a \code{numeric} defining the 
+If pseudo-absence selection and \code{PA.strategy = 'disk'}, a \code{numeric} defining the 
 maximal distance to presence points used to make the \code{disk} pseudo-absence selection 
 (in meters, see \href{BIOMOD_FormatingData.html#details}{Details})}
 
 \item{PA.sre.quant}{(\emph{optional, default} \code{0}) \cr 
 If pseudo-absence selection and \code{PA.strategy = 'sre'}, a \code{numeric} between \code{0} 
-and \code{1} defining the quantile used to make the \code{sre} pseudo-absence selection 
+and \code{0.5} defining the half-quantile used to make the \code{sre} pseudo-absence selection 
 (see \href{BIOMOD_FormatingData.html#details}{Details})}
 
 \item{PA.user.table}{(\emph{optional, default} \code{NULL}) \cr 
@@ -108,17 +109,18 @@ with different strategies (see \href{BIOMOD_FormatingData.html#details}{Details}
 }
 \details{
 This function gathers and formats all input data needed to run \pkg{biomod2} models. It 
-supports different kind of inputs (e.g. \code{matrix}, \code{SpatialPoints}, 
-\code{RasterStack}) and provides different methods to select pseudo-absences if needed. \cr \cr
+supports different kind of inputs (e.g. \code{matrix}, \code{\link[sp]{SpatialPoints}}, 
+\code{\link[raster:stack]{RasterStack}}) and provides different methods to select 
+pseudo-absences if needed. \cr \cr
 
 \bold{Concerning explanatory variables and XY coordinates :} 
 \itemize{
-  \item if \code{rasterLayer} or \code{rasterStack} provided (for \code{expl.var} or 
-  \code{eval.expl.var}), \pkg{biomod2} will extract the corresponding values from XY 
-  coordinates provided (\code{resp.xy} or \code{eval.resp.xy} respectively). \cr
-  \emph{Be sure to give the XY coordinates in the same projection system than the 
-  raster objects !}
-  \item if \code{SpatialPointsDataFrame} provided (for \code{resp.var} or 
+  \item if \code{\link[raster:stack]{RasterLayer}} or \code{\link[raster:stack]{RasterStack}} 
+  provided (for \code{expl.var} or \code{eval.expl.var}), \pkg{biomod2} will extract the 
+  corresponding values from XY coordinates provided (\code{resp.xy} or \code{eval.resp.xy} 
+  respectively). \cr \emph{Be sure to give the XY coordinates in the same projection system 
+  than the raster objects !}
+  \item if \code{\link[sp]{SpatialPointsDataFrame}} provided (for \code{resp.var} or 
   \code{eval.resp.var}), the same rule applies (\emph{same projection system !}).
   \item if \code{data.frame} provided (for \code{expl.var} or \code{eval.expl.var}), 
   \pkg{biomod2} will simply merge it (\code{cbind}) with \code{resp.var} without 
@@ -142,9 +144,9 @@ supports different kind of inputs (e.g. \code{matrix}, \code{SpatialPoints},
 \describe{
   \item{Response variable}{
   \pkg{biomod2} models single species at a time (no multi-species). Hence, \code{resp.var} 
-  must be a uni-dimensional object (either a \code{vector}, a one-column 
-  \code{matrix/data.frame/SpatialPointsDataFrame}, or a \code{SpatialPoints} object if 
-  presence-only), containing values among :
+  must be a uni-dimensional object (either a \code{vector}, a one-column \code{matrix}, 
+  \code{data.frame} or \code{\link[sp]{SpatialPointsDataFrame}}, or a 
+  \code{\link[sp]{SpatialPoints}} object if presence-only), containing values among :
   \itemize{
     \item \code{1} : presences
     \item \code{0} : true absences (if any)
@@ -171,8 +173,9 @@ supports different kind of inputs (e.g. \code{matrix}, \code{SpatialPoints},
   If no true absences are available, pseudo-absences must be selected from the 
   \emph{background data}, meaning data there is no information whether the species of 
   interest occurs or not. It corresponds either to the remaining pixels of the \code{expl.var} 
-  (if provided as a \code{rasterStack}) or to the points identified as \code{NA} in 
-  \code{resp.var} (if \code{expl.var} provided as a \code{matrix} or \code{data.frame}). \cr
+  (if provided as a \code{\link[raster:stack]{RasterStack}}) or to the points identified as 
+  \code{NA} in \code{resp.var} (if \code{expl.var} provided as a \code{matrix} or 
+  \code{data.frame}). \cr 
   Several methods are available to do this selection :
   \describe{
     \item{random}{all points of initial background are pseudo-absence candidates. 
@@ -214,8 +217,8 @@ myResp <- as.numeric(DataSpecies[, myRespName])
 myRespXY <- DataSpecies[, c('X_WGS84', 'Y_WGS84')]
 
 # Load environmental variables extracted from BIOCLIM (bio_3, bio_4, bio_7, bio_11 & bio_12)
-myFiles = paste0('external/bioclim/current/bio', c(3, 4, 7, 11, 12), '.grd')
-myExpl = raster::stack(system.file(myFiles, package = 'biomod2'))
+myFiles <- paste0('external/bioclim/current/bio', c(3, 4, 7, 11, 12), '.grd')
+myExpl <- raster::stack(system.file(myFiles, package = 'biomod2'))
 
 
 # ---------------------------------------------------------------

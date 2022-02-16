@@ -88,31 +88,31 @@ time scales or environmental scenarios for example</em>).</p>
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">BIOMOD_RangeSize</span><span class="op">(</span><span class="va">CurrentProj</span>, <span class="va">FutureProj</span>, <span class="va">...</span><span class="op">)</span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">BIOMOD_RangeSize</span><span class="op">(</span><span class="va">proj.current</span>, <span class="va">proj.future</span>, <span class="va">...</span><span class="op">)</span>
 
 <span class="co"># S4 method for data.frame,data.frame</span>
-<span class="fu">BIOMOD_RangeSize</span><span class="op">(</span><span class="va">CurrentProj</span>, <span class="va">FutureProj</span><span class="op">)</span>
+<span class="fu">BIOMOD_RangeSize</span><span class="op">(</span><span class="va">proj.current</span>, <span class="va">proj.future</span><span class="op">)</span>
 
 <span class="co"># S4 method for array,array</span>
-<span class="fu">BIOMOD_RangeSize</span><span class="op">(</span><span class="va">CurrentProj</span>, <span class="va">FutureProj</span><span class="op">)</span>
+<span class="fu">BIOMOD_RangeSize</span><span class="op">(</span><span class="va">proj.current</span>, <span class="va">proj.future</span><span class="op">)</span>
 
 <span class="co"># S4 method for RasterStack,RasterStack</span>
-<span class="fu">BIOMOD_RangeSize</span><span class="op">(</span><span class="va">CurrentProj</span>, <span class="va">FutureProj</span><span class="op">)</span>
+<span class="fu">BIOMOD_RangeSize</span><span class="op">(</span><span class="va">proj.current</span>, <span class="va">proj.future</span><span class="op">)</span>
 
 <span class="co"># S4 method for RasterLayer,RasterStack</span>
-<span class="fu">BIOMOD_RangeSize</span><span class="op">(</span><span class="va">CurrentProj</span>, <span class="va">FutureProj</span><span class="op">)</span>
+<span class="fu">BIOMOD_RangeSize</span><span class="op">(</span><span class="va">proj.current</span>, <span class="va">proj.future</span><span class="op">)</span>
 
 <span class="co"># S4 method for RasterLayer,RasterLayer</span>
-<span class="fu">BIOMOD_RangeSize</span><span class="op">(</span><span class="va">CurrentProj</span>, <span class="va">FutureProj</span><span class="op">)</span></code></pre></div>
+<span class="fu">BIOMOD_RangeSize</span><span class="op">(</span><span class="va">proj.current</span>, <span class="va">proj.future</span><span class="op">)</span></code></pre></div>
     </div>
 
     <div id="arguments">
     <h2>Arguments</h2>
-    <dl><dt>CurrentProj</dt>
+    <dl><dt>proj.current</dt>
 <dd><p>an <code>array</code>, <code>data.frame</code>, <code><a href="https://rdrr.io/pkg/raster/man/stack.html" class="external-link">RasterLayer</a></code> 
 or <code><a href="https://rdrr.io/pkg/raster/man/stack.html" class="external-link">RasterStack</a></code> object containing the initial binary projection(s) 
 of the (ensemble) species distribution model(s)</p></dd>
-<dt>FutureProj</dt>
+<dt>proj.future</dt>
 <dd><p>an <code>array</code>, <code>data.frame</code>, <code><a href="https://rdrr.io/pkg/raster/man/stack.html" class="external-link">RasterLayer</a></code> 
 or <code><a href="https://rdrr.io/pkg/raster/man/stack.html" class="external-link">RasterStack</a></code> object containing the final binary projection(s) 
 of the (ensemble) species distribution model(s)</p></dd>
@@ -140,8 +140,8 @@ of the (ensemble) species distribution model(s)</p></dd>
 </ul><p></p></dd>
 
   <dt>Diff.By.Pixel</dt>
-<dd><p>an object in the same form than the input data (<code>CurrentProj</code> and 
-  <code>FutureProj</code>) and containing a value for each point/pixel of each comparison among :</p><ul><li><p><code>-2</code> : predicted to be lost</p></li>
+<dd><p>an object in the same form than the input data (<code>proj.current</code> and 
+  <code>proj.future</code>) and containing a value for each point/pixel of each comparison among :</p><ul><li><p><code>-2</code> : predicted to be lost</p></li>
 <li><p><code>-1</code> : predicted to remain occupied</p></li>
 <li><p><code>0</code> : predicted to remain unoccupied</p></li>
 <li><p><code>1</code> : predicted to be gained</p></li>
@@ -154,7 +154,7 @@ of the (ensemble) species distribution model(s)</p></dd>
     <p>Note that <b>this function is only relevant to compare binary projections, made on the 
 same area with the same resolution</b>.</p>
 <p><code>Diff.By.Pixel</code> object is obtained by applying the simple following formula :
-$$FutureProj - 2 * CurrentProj$$</p>
+$$proj.future - 2 * proj.current$$</p>
     </div>
     <div id="see-also">
     <h2>See also</h2>
@@ -183,7 +183,7 @@ $$FutureProj - 2 * CurrentProj$$</p>
 <span class="co"># Load species occurrences (6 species available)</span>
 <span class="va">myFile</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">'external/species/mammals_table.csv'</span>, package <span class="op">=</span> <span class="st">'biomod2'</span><span class="op">)</span>
 <span class="va">DataSpecies</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/utils/read.table.html" class="external-link">read.csv</a></span><span class="op">(</span><span class="va">myFile</span>, row.names <span class="op">=</span> <span class="fl">1</span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">DataSpecies</span><span class="op">)</span>
+<span class="fu"><a href="https://rdrr.io/pkg/raster/man/headtail.html" class="external-link">head</a></span><span class="op">(</span><span class="va">DataSpecies</span><span class="op">)</span>
 
 <span class="co"># Select the name of the studied species</span>
 <span class="va">myRespName</span> <span class="op">&lt;-</span> <span class="st">'GuloGulo'</span>
@@ -195,8 +195,8 @@ $$FutureProj - 2 * CurrentProj$$</p>
 <span class="va">myRespXY</span> <span class="op">&lt;-</span> <span class="va">DataSpecies</span><span class="op">[</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">'X_WGS84'</span>, <span class="st">'Y_WGS84'</span><span class="op">)</span><span class="op">]</span>
 
 <span class="co"># Load environmental variables extracted from BIOCLIM (bio_3, bio_4, bio_7, bio_11 &amp; bio_12)</span>
-<span class="va">myFiles</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">'external/bioclim/current/bio'</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">3</span>, <span class="fl">4</span>, <span class="fl">7</span>, <span class="fl">11</span>, <span class="fl">12</span><span class="op">)</span>, <span class="st">'.grd'</span><span class="op">)</span>
-<span class="va">myExpl</span> <span class="op">=</span> <span class="fu">raster</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/raster/man/stack.html" class="external-link">stack</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="va">myFiles</span>, package <span class="op">=</span> <span class="st">'biomod2'</span><span class="op">)</span><span class="op">)</span>
+<span class="va">myFiles</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">'external/bioclim/current/bio'</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">3</span>, <span class="fl">4</span>, <span class="fl">7</span>, <span class="fl">11</span>, <span class="fl">12</span><span class="op">)</span>, <span class="st">'.grd'</span><span class="op">)</span>
+<span class="va">myExpl</span> <span class="op">&lt;-</span> <span class="fu">raster</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/raster/man/stack.html" class="external-link">stack</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="va">myFiles</span>, package <span class="op">=</span> <span class="st">'biomod2'</span><span class="op">)</span><span class="op">)</span>
 
 
 <span class="co"># ---------------------------------------------------------------</span>
@@ -210,22 +210,22 @@ $$FutureProj - 2 * CurrentProj$$</p>
 <span class="va">myBiomodOptions</span> <span class="op">&lt;-</span> <span class="fu"><a href="BIOMOD_ModelingOptions.html">BIOMOD_ModelingOptions</a></span><span class="op">(</span><span class="op">)</span>
 
 <span class="co"># Model single models</span>
-<span class="va">myBiomodModelOut</span> <span class="op">&lt;-</span> <span class="fu"><a href="BIOMOD_Modeling.html">BIOMOD_Modeling</a></span><span class="op">(</span><span class="va">myBiomodData</span>,
-                                    models.options <span class="op">=</span> <span class="va">myBiomodOptions</span>,
-                                    NbRunEval <span class="op">=</span> <span class="fl">2</span>,
-                                    DataSplit <span class="op">=</span> <span class="fl">80</span>,
-                                    VarImport <span class="op">=</span> <span class="fl">3</span>,
-                                    models.eval.meth <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">'TSS'</span>,<span class="st">'ROC'</span><span class="op">)</span>,
-                                    do.full.models <span class="op">=</span> <span class="cn">FALSE</span>,
-                                    modeling.id <span class="op">=</span> <span class="st">'test'</span><span class="op">)</span>
+<span class="va">myBiomodModelOut</span> <span class="op">&lt;-</span> <span class="fu"><a href="BIOMOD_Modeling.html">BIOMOD_Modeling</a></span><span class="op">(</span>bm.format <span class="op">=</span> <span class="va">myBiomodData</span>,
+                                    modeling.id <span class="op">=</span> <span class="st">'AllModels'</span>,
+                                    bm.options <span class="op">=</span> <span class="va">myBiomodOptions</span>,
+                                    nb.rep <span class="op">=</span> <span class="fl">2</span>,
+                                    data.split.perc <span class="op">=</span> <span class="fl">80</span>,
+                                    metric.eval <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">'TSS'</span>,<span class="st">'ROC'</span><span class="op">)</span>,
+                                    var.import <span class="op">=</span> <span class="fl">3</span>,
+                                    do.full.models <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span>
 
 <span class="co"># Project single models</span>
-<span class="va">myBiomodProj</span> <span class="op">&lt;-</span> <span class="fu"><a href="BIOMOD_Projection.html">BIOMOD_Projection</a></span><span class="op">(</span><span class="va">myBiomodModelOut</span>,
+<span class="va">myBiomodProj</span> <span class="op">&lt;-</span> <span class="fu"><a href="BIOMOD_Projection.html">BIOMOD_Projection</a></span><span class="op">(</span>bm.mod <span class="op">=</span> <span class="va">myBiomodModelOut</span>,
                                   proj.name <span class="op">=</span> <span class="st">'Current'</span>,
                                   new.env <span class="op">=</span> <span class="va">myExpl</span>,
-                                  chosen.models <span class="op">=</span> <span class="st">'all'</span>,
-                                  binary.meth <span class="op">=</span> <span class="st">'all'</span>,
-                                  filtered.meth <span class="op">=</span> <span class="st">'all'</span>,
+                                  models.chosen <span class="op">=</span> <span class="st">'all'</span>,
+                                  metric.binary <span class="op">=</span> <span class="st">'all'</span>,
+                                  metric.filter <span class="op">=</span> <span class="st">'all'</span>,
                                   build.clamping.mask <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>
 
 
@@ -235,25 +235,25 @@ $$FutureProj - 2 * CurrentProj$$</p>
 <span class="va">myExplFuture</span> <span class="op">=</span> <span class="fu">raster</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/raster/man/stack.html" class="external-link">stack</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="va">myFiles</span>, package <span class="op">=</span> <span class="st">'biomod2'</span><span class="op">)</span><span class="op">)</span>
 
 <span class="co"># Project onto future conditions</span>
-<span class="va">myBiomodProjectionFuture</span> <span class="op">&lt;-</span> <span class="fu"><a href="BIOMOD_Projection.html">BIOMOD_Projection</a></span><span class="op">(</span>modeling.output <span class="op">=</span> <span class="va">myBiomodModelOut</span>,
-                                              new.env <span class="op">=</span> <span class="va">myExplFuture</span>,
+<span class="va">myBiomodProjectionFuture</span> <span class="op">&lt;-</span> <span class="fu"><a href="BIOMOD_Projection.html">BIOMOD_Projection</a></span><span class="op">(</span>bm.mod <span class="op">=</span> <span class="va">myBiomodModelOut</span>,
                                               proj.name <span class="op">=</span> <span class="st">'Future'</span>,
-                                              chosen.models <span class="op">=</span> <span class="st">'all'</span>,
-                                              binary.meth <span class="op">=</span> <span class="st">'TSS'</span>,
+                                              new.env <span class="op">=</span> <span class="va">myExplFuture</span>,
+                                              models.chosen <span class="op">=</span> <span class="st">'all'</span>,
+                                              metric.binary <span class="op">=</span> <span class="st">'TSS'</span>,
                                               build.clamping.mask <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>
 
 <span class="co"># Load current and future binary projections</span>
-<span class="va">CurrentProj</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/utils/stack.html" class="external-link">stack</a></span><span class="op">(</span><span class="st">"GuloGulo/proj_Current/proj_Current_GuloGulo_TSSbin.grd"</span><span class="op">)</span>
-<span class="va">FutureProj</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/utils/stack.html" class="external-link">stack</a></span><span class="op">(</span><span class="st">"GuloGulo/proj_Future/proj_Future_GuloGulo_TSSbin.grd"</span><span class="op">)</span>
+<span class="va">proj.current</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/raster/man/stack.html" class="external-link">stack</a></span><span class="op">(</span><span class="st">"GuloGulo/proj_Current/proj_Current_GuloGulo_TSSbin.grd"</span><span class="op">)</span>
+<span class="va">proj.future</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/raster/man/stack.html" class="external-link">stack</a></span><span class="op">(</span><span class="st">"GuloGulo/proj_Future/proj_Future_GuloGulo_TSSbin.grd"</span><span class="op">)</span>
 
 <span class="co"># Compute differences</span>
-<span class="va">myBiomodRangeSize</span> <span class="op">&lt;-</span> <span class="fu">BIOMOD_RangeSize</span><span class="op">(</span>CurrentProj <span class="op">=</span> <span class="va">CurrentProj</span>, FutureProj <span class="op">=</span> <span class="va">FutureProj</span><span class="op">)</span>
+<span class="va">myBiomodRangeSize</span> <span class="op">&lt;-</span> <span class="fu">BIOMOD_RangeSize</span><span class="op">(</span>proj.current <span class="op">=</span> <span class="va">proj.current</span>, proj.future <span class="op">=</span> <span class="va">proj.future</span><span class="op">)</span>
 
 <span class="va">myBiomodRangeSize</span><span class="op">$</span><span class="va">Compt.By.Models</span>
-<span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">myBiomodRangeSize</span><span class="op">$</span><span class="va">Diff.By.Pixel</span><span class="op">)</span>
+<span class="fu"><a href="https://rdrr.io/pkg/raster/man/plot.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">myBiomodRangeSize</span><span class="op">$</span><span class="va">Diff.By.Pixel</span><span class="op">)</span>
 
 <span class="co"># Represent main results </span>
-<span class="fu"><a href="bm_PlotRangeSize.html">bm_PlotRangeSize</a></span><span class="op">(</span><span class="va">myBiomodRangeSize</span><span class="op">)</span>
+<span class="fu"><a href="bm_PlotRangeSize.html">bm_PlotRangeSize</a></span><span class="op">(</span>bm.range <span class="op">=</span> <span class="va">myBiomodRangeSize</span><span class="op">)</span>
 
 
 </code></pre></div>

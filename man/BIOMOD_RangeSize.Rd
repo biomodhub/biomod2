@@ -9,24 +9,24 @@
 \alias{BIOMOD_RangeSize,RasterLayer,RasterLayer-method}
 \title{Analyze the range size differences between projections of species distribution models}
 \usage{
-BIOMOD_RangeSize(CurrentProj, FutureProj, ...)
+BIOMOD_RangeSize(proj.current, proj.future, ...)
 
-\S4method{BIOMOD_RangeSize}{data.frame,data.frame}(CurrentProj, FutureProj)
+\S4method{BIOMOD_RangeSize}{data.frame,data.frame}(proj.current, proj.future)
 
-\S4method{BIOMOD_RangeSize}{array,array}(CurrentProj, FutureProj)
+\S4method{BIOMOD_RangeSize}{array,array}(proj.current, proj.future)
 
-\S4method{BIOMOD_RangeSize}{RasterStack,RasterStack}(CurrentProj, FutureProj)
+\S4method{BIOMOD_RangeSize}{RasterStack,RasterStack}(proj.current, proj.future)
 
-\S4method{BIOMOD_RangeSize}{RasterLayer,RasterStack}(CurrentProj, FutureProj)
+\S4method{BIOMOD_RangeSize}{RasterLayer,RasterStack}(proj.current, proj.future)
 
-\S4method{BIOMOD_RangeSize}{RasterLayer,RasterLayer}(CurrentProj, FutureProj)
+\S4method{BIOMOD_RangeSize}{RasterLayer,RasterLayer}(proj.current, proj.future)
 }
 \arguments{
-\item{CurrentProj}{an \code{array}, \code{data.frame}, \code{\link[raster:stack]{RasterLayer}} 
+\item{proj.current}{an \code{array}, \code{data.frame}, \code{\link[raster:stack]{RasterLayer}} 
 or \code{\link[raster:stack]{RasterStack}} object containing the initial binary projection(s) 
 of the (ensemble) species distribution model(s)}
 
-\item{FutureProj}{an \code{array}, \code{data.frame}, \code{\link[raster:stack]{RasterLayer}} 
+\item{proj.future}{an \code{array}, \code{data.frame}, \code{\link[raster:stack]{RasterLayer}} 
 or \code{\link[raster:stack]{RasterStack}} object containing the final binary projection(s) 
 of the (ensemble) species distribution model(s)}
 }
@@ -54,8 +54,8 @@ A \code{list} containing two objects :
     migration}
   }
   }
-  \item{Diff.By.Pixel}{an object in the same form than the input data (\code{CurrentProj} and 
-  \code{FutureProj}) and containing a value for each point/pixel of each comparison among :
+  \item{Diff.By.Pixel}{an object in the same form than the input data (\code{proj.current} and 
+  \code{proj.future}) and containing a value for each point/pixel of each comparison among :
   \itemize{
     \item \code{-2} : predicted to be lost
     \item \code{-1} : predicted to remain occupied
@@ -76,7 +76,7 @@ Note that \bold{this function is only relevant to compare binary projections, ma
 same area with the same resolution}.
 
 \code{Diff.By.Pixel} object is obtained by applying the simple following formula :
-\deqn{FutureProj - 2 * CurrentProj}
+\deqn{proj.future - 2 * proj.current}
 }
 \examples{
 
@@ -95,8 +95,8 @@ myResp <- as.numeric(DataSpecies[, myRespName])
 myRespXY <- DataSpecies[, c('X_WGS84', 'Y_WGS84')]
 
 # Load environmental variables extracted from BIOCLIM (bio_3, bio_4, bio_7, bio_11 & bio_12)
-myFiles = paste0('external/bioclim/current/bio', c(3, 4, 7, 11, 12), '.grd')
-myExpl = raster::stack(system.file(myFiles, package = 'biomod2'))
+myFiles <- paste0('external/bioclim/current/bio', c(3, 4, 7, 11, 12), '.grd')
+myExpl <- raster::stack(system.file(myFiles, package = 'biomod2'))
 
 
 # ---------------------------------------------------------------
@@ -110,22 +110,22 @@ myBiomodData <- BIOMOD_FormatingData(resp.var = myResp,
 myBiomodOptions <- BIOMOD_ModelingOptions()
 
 # Model single models
-myBiomodModelOut <- BIOMOD_Modeling(myBiomodData,
-                                    models.options = myBiomodOptions,
-                                    NbRunEval = 2,
-                                    DataSplit = 80,
-                                    VarImport = 3,
-                                    models.eval.meth = c('TSS','ROC'),
-                                    do.full.models = FALSE,
-                                    modeling.id = 'test')
+myBiomodModelOut <- BIOMOD_Modeling(bm.format = myBiomodData,
+                                    modeling.id = 'AllModels',
+                                    bm.options = myBiomodOptions,
+                                    nb.rep = 2,
+                                    data.split.perc = 80,
+                                    metric.eval = c('TSS','ROC'),
+                                    var.import = 3,
+                                    do.full.models = FALSE)
 
 # Project single models
-myBiomodProj <- BIOMOD_Projection(myBiomodModelOut,
+myBiomodProj <- BIOMOD_Projection(bm.mod = myBiomodModelOut,
                                   proj.name = 'Current',
                                   new.env = myExpl,
-                                  chosen.models = 'all',
-                                  binary.meth = 'all',
-                                  filtered.meth = 'all',
+                                  models.chosen = 'all',
+                                  metric.binary = 'all',
+                                  metric.filter = 'all',
                                   build.clamping.mask = TRUE)
 
 
@@ -135,25 +135,25 @@ myFiles = paste0('external/bioclim/future/bio', c(3, 4, 7, 11, 12), '.grd')
 myExplFuture = raster::stack(system.file(myFiles, package = 'biomod2'))
 
 # Project onto future conditions
-myBiomodProjectionFuture <- BIOMOD_Projection(modeling.output = myBiomodModelOut,
-                                              new.env = myExplFuture,
+myBiomodProjectionFuture <- BIOMOD_Projection(bm.mod = myBiomodModelOut,
                                               proj.name = 'Future',
-                                              chosen.models = 'all',
-                                              binary.meth = 'TSS',
+                                              new.env = myExplFuture,
+                                              models.chosen = 'all',
+                                              metric.binary = 'TSS',
                                               build.clamping.mask = TRUE)
 
 # Load current and future binary projections
-CurrentProj <- stack("GuloGulo/proj_Current/proj_Current_GuloGulo_TSSbin.grd")
-FutureProj <- stack("GuloGulo/proj_Future/proj_Future_GuloGulo_TSSbin.grd")
+proj.current <- stack("GuloGulo/proj_Current/proj_Current_GuloGulo_TSSbin.grd")
+proj.future <- stack("GuloGulo/proj_Future/proj_Future_GuloGulo_TSSbin.grd")
 
 # Compute differences
-myBiomodRangeSize <- BIOMOD_RangeSize(CurrentProj = CurrentProj, FutureProj = FutureProj)
+myBiomodRangeSize <- BIOMOD_RangeSize(proj.current = proj.current, proj.future = proj.future)
 
 myBiomodRangeSize$Compt.By.Models
 plot(myBiomodRangeSize$Diff.By.Pixel)
 
 # Represent main results 
-bm_PlotRangeSize(myBiomodRangeSize)
+bm_PlotRangeSize(bm.range = myBiomodRangeSize)
 
 
 }

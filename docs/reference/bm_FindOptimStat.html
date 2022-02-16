@@ -87,35 +87,35 @@ metric.</p>
 
     <div id="ref-usage">
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">bm_FindOptimStat</span><span class="op">(</span>
-  Stat <span class="op">=</span> <span class="st">"TSS"</span>,
-  <span class="va">Fit</span>,
-  <span class="va">Obs</span>,
-  Nb.thresh.test <span class="op">=</span> <span class="fl">100</span>,
-  Fixed.thresh <span class="op">=</span> <span class="cn">NULL</span>
+  metric.eval <span class="op">=</span> <span class="st">"TSS"</span>,
+  <span class="va">obs</span>,
+  <span class="va">fit</span>,
+  nb.thresh <span class="op">=</span> <span class="fl">100</span>,
+  threshold <span class="op">=</span> <span class="cn">NULL</span>
 <span class="op">)</span>
 
-<span class="fu">get_optim_value</span><span class="op">(</span><span class="va">stat</span><span class="op">)</span>
+<span class="fu">get_optim_value</span><span class="op">(</span><span class="va">metric.eval</span><span class="op">)</span>
 
-<span class="fu">bm_CalculateStat</span><span class="op">(</span><span class="va">Misc</span>, stat <span class="op">=</span> <span class="st">"TSS"</span><span class="op">)</span></code></pre></div>
+<span class="fu">bm_CalculateStat</span><span class="op">(</span><span class="va">misc</span>, metric.eval <span class="op">=</span> <span class="st">"TSS"</span><span class="op">)</span></code></pre></div>
     </div>
 
     <div id="arguments">
     <h2>Arguments</h2>
-    <dl><dt>Stat</dt>
-<dd><p>a <code>character</code> corresponding to the evaluation metric to be used, must be 
-either <code>ROC</code>, <code>TSS</code>, <code>KAPPA</code>, <code>ACCURACY</code>, <code>BIAS</code>, <code>POD</code>, 
+    <dl><dt>metric.eval</dt>
+<dd><p>a <code>character</code> corresponding to the evaluation metric to be used, must 
+be either <code>ROC</code>, <code>TSS</code>, <code>KAPPA</code>, <code>ACCURACY</code>, <code>BIAS</code>, <code>POD</code>, 
 <code>FAR</code>, <code>POFD</code>, <code>SR</code>, <code>CSI</code>, <code>ETS</code>, <code>HK</code>, <code>HSS</code>, <code>OR</code> 
 or <code>ORSS</code></p></dd>
-<dt>Fit</dt>
-<dd><p>a <code>vector</code> of fitted values (continuous)</p></dd>
-<dt>Obs</dt>
+<dt>obs</dt>
 <dd><p>a <code>vector</code> of observed values (binary, <code>0</code> or <code>1</code>)</p></dd>
-<dt>Nb.thresh.test</dt>
+<dt>fit</dt>
+<dd><p>a <code>vector</code> of fitted values (continuous)</p></dd>
+<dt>nb.thresh</dt>
 <dd><p>an <code>integer</code> corresponding to the number of thresholds to be 
 tested over the range of fitted values</p></dd>
-<dt>Fixed.thresh</dt>
+<dt>threshold</dt>
 <dd><p>(<em>optional, default</em> <code>NULL</code>) <br> 
-An <code>integer</code> corresponding to the only threshold value to be tested</p></dd>
+A <code>numeric</code> corresponding to the threshold used to convert the given data</p></dd>
 </dl></div>
     <div id="value">
     <h2>Value</h2>
@@ -129,7 +129,7 @@ An <code>integer</code> corresponding to the only threshold value to be tested</
     <h2>Details</h2>
     <p><em>Please refer to <code><a href="BIOMOD_Modeling.html">BIOMOD_Modeling</a></code> to get more information about these 
 evaluation metrics.</em></p>
-<p>Note that if a value is given to <code>Fixed.thresh</code>, no optimisation will be done., and 
+<p>Note that if a value is given to <code>threshold</code>, no optimisation will be done., and 
 only the score for this threshold will be returned.</p>
     </div>
     <div id="see-also">
@@ -146,7 +146,6 @@ only the score for this threshold will be returned.</p>
 <code><a href="bm_PlotResponseCurves.html">bm_PlotResponseCurves</a>()</code>,
 <code><a href="bm_PlotVarImpBoxplot.html">bm_PlotVarImpBoxplot</a>()</code>,
 <code><a href="bm_PseudoAbsences.html">bm_PseudoAbsences</a>()</code>,
-<code><a href="bm_Rescaler.html">bm_Rescaler</a>()</code>,
 <code><a href="bm_RunModelsLoop.html">bm_RunModelsLoop</a>()</code>,
 <code><a href="bm_SRE.html">bm_SRE</a>()</code>,
 <code><a href="bm_SampleBinaryVector.html">bm_SampleBinaryVector</a>()</code>,
@@ -176,8 +175,8 @@ only the score for this threshold will be returned.</p>
 <span class="va">vec.c</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/which.html" class="external-link">which</a></span><span class="op">(</span><span class="va">vec.c</span> <span class="op">&gt;</span> <span class="fl">1000</span><span class="op">)</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="fl">1000</span>
 
 <span class="co">## Find optimal threshold for a specific evaluation metric</span>
-<span class="fu">bm_FindOptimStat</span><span class="op">(</span>Stat <span class="op">=</span> <span class="st">'TSS'</span>, Fit <span class="op">=</span> <span class="va">vec.b</span>, Obs <span class="op">=</span> <span class="va">vec.a</span><span class="op">)</span>
-<span class="fu">bm_FindOptimStat</span><span class="op">(</span>Stat <span class="op">=</span> <span class="st">'TSS'</span>, Fit <span class="op">=</span> <span class="va">vec.c</span>, Obs <span class="op">=</span> <span class="va">vec.a</span>, Nb.thresh.test <span class="op">=</span> <span class="fl">100</span><span class="op">)</span>
+<span class="fu">bm_FindOptimStat</span><span class="op">(</span>metric.eval <span class="op">=</span> <span class="st">'TSS'</span>, fit <span class="op">=</span> <span class="va">vec.b</span>, obs <span class="op">=</span> <span class="va">vec.a</span><span class="op">)</span>
+<span class="fu">bm_FindOptimStat</span><span class="op">(</span>metric.eval <span class="op">=</span> <span class="st">'TSS'</span>, fit <span class="op">=</span> <span class="va">vec.c</span>, obs <span class="op">=</span> <span class="va">vec.a</span>, nb.thresh <span class="op">=</span> <span class="fl">100</span><span class="op">)</span>
 
 
 </code></pre></div>

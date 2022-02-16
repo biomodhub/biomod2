@@ -86,28 +86,28 @@ according to a predefined threshold (see <a href="bm_BinaryTransformation.html#d
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">bm_BinaryTransformation</span><span class="op">(</span><span class="va">data</span>, <span class="va">threshold</span>, doFiltering <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">bm_BinaryTransformation</span><span class="op">(</span><span class="va">data</span>, <span class="va">threshold</span>, do.filtering <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span>
 
 <span class="co"># S4 method for data.frame</span>
-<span class="fu">bm_BinaryTransformation</span><span class="op">(</span><span class="va">data</span>, <span class="va">threshold</span>, doFiltering <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span>
+<span class="fu">bm_BinaryTransformation</span><span class="op">(</span><span class="va">data</span>, <span class="va">threshold</span>, do.filtering <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span>
 
 <span class="co"># S4 method for matrix</span>
-<span class="fu">bm_BinaryTransformation</span><span class="op">(</span><span class="va">data</span>, <span class="va">threshold</span>, doFiltering <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span>
+<span class="fu">bm_BinaryTransformation</span><span class="op">(</span><span class="va">data</span>, <span class="va">threshold</span>, do.filtering <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span>
 
 <span class="co"># S4 method for numeric</span>
-<span class="fu">bm_BinaryTransformation</span><span class="op">(</span><span class="va">data</span>, <span class="va">threshold</span>, doFiltering <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span>
+<span class="fu">bm_BinaryTransformation</span><span class="op">(</span><span class="va">data</span>, <span class="va">threshold</span>, do.filtering <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span>
 
 <span class="co"># S4 method for array</span>
-<span class="fu">bm_BinaryTransformation</span><span class="op">(</span><span class="va">data</span>, <span class="va">threshold</span>, doFiltering <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span>
+<span class="fu">bm_BinaryTransformation</span><span class="op">(</span><span class="va">data</span>, <span class="va">threshold</span>, do.filtering <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span>
 
 <span class="co"># S4 method for RasterLayer</span>
-<span class="fu">bm_BinaryTransformation</span><span class="op">(</span><span class="va">data</span>, <span class="va">threshold</span>, doFiltering <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span>
+<span class="fu">bm_BinaryTransformation</span><span class="op">(</span><span class="va">data</span>, <span class="va">threshold</span>, do.filtering <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span>
 
 <span class="co"># S4 method for RasterStack</span>
-<span class="fu">bm_BinaryTransformation</span><span class="op">(</span><span class="va">data</span>, <span class="va">threshold</span>, doFiltering <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span>
+<span class="fu">bm_BinaryTransformation</span><span class="op">(</span><span class="va">data</span>, <span class="va">threshold</span>, do.filtering <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span>
 
 <span class="co"># S4 method for RasterBrick</span>
-<span class="fu">bm_BinaryTransformation</span><span class="op">(</span><span class="va">data</span>, <span class="va">threshold</span>, doFiltering <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></code></pre></div>
+<span class="fu">bm_BinaryTransformation</span><span class="op">(</span><span class="va">data</span>, <span class="va">threshold</span>, do.filtering <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></code></pre></div>
     </div>
 
     <div id="arguments">
@@ -117,9 +117,8 @@ according to a predefined threshold (see <a href="bm_BinaryTransformation.html#d
 <code><a href="https://rdrr.io/pkg/raster/man/raster.html" class="external-link">raster</a></code> or <code><a href="https://rdrr.io/pkg/raster/man/stack.html" class="external-link">RasterStack</a></code> containing the 
 data to be converted</p></dd>
 <dt>threshold</dt>
-<dd><p>a <code>numeric</code> corresponding to the threshold used to convert the given 
-data</p></dd>
-<dt>doFiltering</dt>
+<dd><p>a <code>numeric</code> corresponding to the threshold used to convert the given data</p></dd>
+<dt>do.filtering</dt>
 <dd><p>(<em>optional, default</em> <code>FALSE</code>) <br> 
 A <code>logical</code> value defining whether filtered data should be returned, or binary one 
 (see <a href="bm_BinaryTransformation.html#details">Details</a>)</p></dd>
@@ -138,8 +137,8 @@ If <code>data</code> is a <code>matrix</code>, <code>data.frame</code> or
 as many values as the number of columns or layers contained in <code>data</code>. If only one 
 <code>numeric</code> value is given, the same threshold will be applied to all columns or layers. 
 <br><br></p>
-<p>If <code>doFiltering = FALSE</code>, binary (<code>0</code> or <code>1</code>) values are returned. <br> 
-If <code>doFiltering = TRUE</code>, values will be <em>filtered</em> according to <code>threshold</code>, 
+<p>If <code>do.filtering = FALSE</code>, binary (<code>0</code> or <code>1</code>) values are returned. <br> 
+If <code>do.filtering = TRUE</code>, values will be <em>filtered</em> according to <code>threshold</code>, 
 meaning that :</p><ul><li><p><code>data &lt; threshold</code> will return 0</p></li>
 <li><p><code>data &gt;= threshold </code> will return the actual values of <code>data</code> (not 
   transformed in <code>1</code>)</p></li>
@@ -157,7 +156,6 @@ meaning that :</p><ul><li><p><code>data &lt; threshold</code> will return 0</p><
 <code><a href="bm_PlotResponseCurves.html">bm_PlotResponseCurves</a>()</code>,
 <code><a href="bm_PlotVarImpBoxplot.html">bm_PlotVarImpBoxplot</a>()</code>,
 <code><a href="bm_PseudoAbsences.html">bm_PseudoAbsences</a>()</code>,
-<code><a href="bm_Rescaler.html">bm_Rescaler</a>()</code>,
 <code><a href="bm_RunModelsLoop.html">bm_RunModelsLoop</a>()</code>,
 <code><a href="bm_SRE.html">bm_SRE</a>()</code>,
 <code><a href="bm_SampleBinaryVector.html">bm_SampleBinaryVector</a>()</code>,
@@ -177,7 +175,7 @@ meaning that :</p><ul><li><p><code>data &lt; threshold</code> will return 0</p><
 
 <span class="co">## From continuous to binary / filtered vector</span>
 <span class="va">vec.d_bin</span> <span class="op">&lt;-</span> <span class="fu">bm_BinaryTransformation</span><span class="op">(</span>data <span class="op">=</span> <span class="va">vec.d</span>, threshold <span class="op">=</span> <span class="fl">500</span><span class="op">)</span>
-<span class="va">vec.d_filt</span> <span class="op">&lt;-</span> <span class="fu">bm_BinaryTransformation</span><span class="op">(</span>data <span class="op">=</span> <span class="va">vec.d</span>, threshold <span class="op">=</span> <span class="fl">500</span>, doFiltering <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>
+<span class="va">vec.d_filt</span> <span class="op">&lt;-</span> <span class="fu">bm_BinaryTransformation</span><span class="op">(</span>data <span class="op">=</span> <span class="va">vec.d</span>, threshold <span class="op">=</span> <span class="fl">500</span>, do.filtering <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>
 <span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">cbind</a></span><span class="op">(</span><span class="va">vec.d</span>, <span class="va">vec.d_bin</span>, <span class="va">vec.d_filt</span><span class="op">)</span>
 
 

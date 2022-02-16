@@ -7,11 +7,11 @@
 BIOMOD_LoadModels(bm.out, ...)
 }
 \arguments{
-\item{bm.out}{a \code{BIOMOD.models.out} (or \code{BIOMOD.ensemble.models.out}) object that 
-can be obtained from \code{\link{BIOMOD_Modeling}} (or \code{\link{BIOMOD_EnsembleModeling}}) 
-function}
+\item{bm.out}{a \code{\link{BIOMOD.models.out}} or \code{\link{BIOMOD.ensemble.models.out}} 
+object that can be obtained with the \code{\link{BIOMOD_Modeling}} or 
+\code{\link{BIOMOD_EnsembleModeling}} functions}
 
-\item{...}{(\emph{optional, see \href{BIOMOD_LoadModels.html#details}{Details})})}
+\item{\ldots}{(\emph{optional, see \href{BIOMOD_LoadModels.html#details}{Details})})}
 }
 \value{
 A \code{vector} containing the names of the loaded models.
@@ -58,8 +58,8 @@ myResp <- as.numeric(DataSpecies[, myRespName])
 myRespXY <- DataSpecies[, c('X_WGS84', 'Y_WGS84')]
 
 # Load environmental variables extracted from BIOCLIM (bio_3, bio_4, bio_7, bio_11 & bio_12)
-myFiles = paste0('external/bioclim/current/bio', c(3, 4, 7, 11, 12), '.grd')
-myExpl = raster::stack(system.file(myFiles, package = 'biomod2'))
+myFiles <- paste0('external/bioclim/current/bio', c(3, 4, 7, 11, 12), '.grd')
+myExpl <- raster::stack(system.file(myFiles, package = 'biomod2'))
 
 
 # ---------------------------------------------------------------
@@ -73,19 +73,19 @@ myBiomodData <- BIOMOD_FormatingData(resp.var = myResp,
 myBiomodOptions <- BIOMOD_ModelingOptions()
 
 # Model single models
-myBiomodModelOut <- BIOMOD_Modeling(myBiomodData,
-                                    models.options = myBiomodOptions,
-                                    NbRunEval = 2,
-                                    DataSplit = 80,
-                                    VarImport = 3,
-                                    models.eval.meth = c('TSS','ROC'),
-                                    do.full.models = FALSE,
-                                    modeling.id = 'test')
+myBiomodModelOut <- BIOMOD_Modeling(bm.format = myBiomodData,
+                                    modeling.id = 'AllModels',
+                                    bm.options = myBiomodOptions,
+                                    nb.rep = 2,
+                                    data.split.perc = 80,
+                                    metric.eval = c('TSS','ROC'),
+                                    var.import = 3,
+                                    do.full.models = FALSE)
 
 
 # ---------------------------------------------------------------
 # Loading some models built
-myLoadedModels <- BIOMOD_LoadModels(myBiomodModelOut, models = 'RF')
+myLoadedModels <- BIOMOD_LoadModels(bm.out = myBiomodModelOut, models = 'RF')
 myLoadedModels
 
 

@@ -5,32 +5,32 @@
 \title{Surface Range Envelope}
 \usage{
 bm_SRE(
-  Response = NULL,
-  Explanatory = NULL,
-  NewData = NULL,
-  Quant = 0.025,
-  return_extremcond = FALSE
+  resp.var = NULL,
+  expl.var = NULL,
+  new.env = NULL,
+  quant = 0.025,
+  do.extrem = FALSE
 )
 }
 \arguments{
-\item{Response}{a \code{vector}, \code{matrix}, \code{data.frame}, 
-\code{\link[sp]{SpatialPointsDataFrame}} or \code{\link[raster:raster]{raster}} object 
-containing observed binary data (\code{0} : absence, \code{1} : presence)}
+\item{resp.var}{a \code{vector}, \code{\link[sp]{SpatialPoints}} or 
+\code{\link[sp]{SpatialPointsDataFrame}} object containing binary data (\code{0} : absence, 
+\code{1} : presence, \code{NA} : indeterminate) for a single species}
 
-\item{Explanatory}{a \code{matrix}, \code{data.frame}, 
-\code{\link[sp]{SpatialPointsDataFrame}} or \code{\link[raster:stack]{RasterStack}} object 
-containing the explanatory variables (in columns or layers) that will be used to build the 
-SRE model}
+\item{expl.var}{a \code{matrix}, \code{data.frame}, \code{\link[sp]{SpatialPointsDataFrame}} 
+or \code{\link[raster:stack]{RasterStack}} object containing the explanatory variables (in 
+columns or layers) that will be used to build the SRE model}
 
-\item{NewData}{a \code{matrix}, \code{data.frame}, \code{\link[sp]{SpatialPointsDataFrame}} 
-or \code{\link[raster:stack]{RasterStack}} object containing the explanatory variables 
-(in columns or layers) that will be used to predict the SRE model}
+\item{new.env}{a \code{matrix}, \code{data.frame}, \code{\link[sp]{SpatialPointsDataFrame}} 
+or \code{\link[raster:stack]{RasterStack}} object containing the explanatory variables (in 
+columns or layers) that will be used to predict the SRE model}
 
-\item{Quant}{a \code{numeric} between \code{0} and \code{0.5} corresponding to the most 
-extreme value for each variable not to be taken into account for determining the tolerance 
-boundaries of the considered species}
+\item{quant}{a \code{numeric} between \code{0} and \code{0.5} defining the half-quantile 
+corresponding to the most extreme value for each variable not to be taken into account for 
+determining the tolerance boundaries of the considered species (see 
+\href{bm_SRE.html#details}{Details})}
 
-\item{return_extremcond}{(\emph{optional, default} \code{FALSE}) \cr 
+\item{do.extrem}{(\emph{optional, default} \code{FALSE}) \cr 
 A \code{logical} value defining whether a \code{matrix} containing extreme conditions 
 supported should be returned or not}
 }
@@ -58,7 +58,7 @@ Predictions are returned as binary (\code{0} or \code{1}) values, a site being e
 potentially suitable for all the variables, or out of bounds for at least one variable and 
 therefore considered unsuitable. \cr \cr
 
-\code{Quant} determines the threshold from which the data will be taken into account for 
+\code{quant} determines the threshold from which the data will be taken into account for 
 calibration. The default value of \code{0.05} induces that the \code{5\%} most extreme values 
 will be avoided for each variable on each side of its distribution along the gradient, meaning 
 that a total of \code{10\%} of the data will not be considered.
@@ -78,18 +78,18 @@ myResp.v <- reclassify(subset(myExpl.r, 1, drop = TRUE), c(-Inf, Inf, 0))
 myResp.v[cellFromXY(myResp.v, myRespXY)] <- 1
 
 ## Compute SRE for several quantile values
-sre.100 <- bm_SRE(Response = myResp.v,
-                  Explanatory = myExpl.r,
-                  NewData = myExpl.r,
-                  Quant = 0)
-sre.095 <- bm_SRE(Response = myResp.v,
-                  Explanatory = myExpl.r,
-                  NewData = myExpl.r,
-                  Quant = 0.025)
-sre.090 <- bm_SRE(Response = myResp.v,
-                  Explanatory = myExpl.r,
-                  NewData = myExpl.r,
-                  Quant = 0.05)
+sre.100 <- bm_SRE(resp.var = myResp.v,
+                  expl.var = myExpl.r,
+                  new.env = myExpl.r,
+                  quant = 0)
+sre.095 <- bm_SRE(resp.var = myResp.v,
+                  expl.var = myExpl.r,
+                  new.env = myExpl.r,
+                  quant = 0.025)
+sre.090 <- bm_SRE(resp.var = myResp.v,
+                  expl.var = myExpl.r,
+                  new.env = myExpl.r,
+                  quant = 0.05)
 
 ## Visualize results
 res <- stack(myResp.v, sre.100, sre.095, sre.090)
