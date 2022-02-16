@@ -49,13 +49,6 @@
      
   </a>
 </li>
-<li>
-  <a href="reference/index.html">
-    <span class="fa fa-book fa-lg"></span>
-     
-    Reference
-  </a>
-</li>
 <li class="dropdown">
   <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
     <span class="fas fa-stethoscope"></span>
@@ -81,8 +74,22 @@
     </li>
   </ul>
 </li>
+<li>
+  <a href="reference/index.html">
+    <span class="fa fa-book fa-lg"></span>
+     
+    Reference
+  </a>
+</li>
       </ul>
 <ul class="nav navbar-nav navbar-right">
+<li>
+  <a href="articles/news.html">
+    <span class="fas fa-newspaper"></span>
+     
+    News
+  </a>
+</li>
 <li>
   <a href="https://github.com/biomodhub/biomod2.git" class="external-link">
     <span class="fa fa-github fa-lg"></span>
@@ -101,32 +108,75 @@
 
       </header><div class="row">
   <div class="contents col-md-9">
-<div class="section level1">
-<div class="page-header"><h1 id="biomod2-ensemble-platform-for-species-distribution-modeling">biomod2: Ensemble Platform for Species Distribution Modeling<a class="anchor" aria-label="anchor" href="#biomod2-ensemble-platform-for-species-distribution-modeling"></a>
-</h1></div>
 
+
+<p><br></p>
 <p><strong>Functions for species distribution modeling, calibration and evaluation, ensemble of models.</strong></p>
-<p><br><br> !!! <strong>BE AWARE !</strong></p>
-<p><code>biomod2</code> code is currently being cleaned up, hence some function names might change a bit…</p>
-<p>Sorry for the inconvenience, and please <strong>feel free to indicate if you notice some strange new behaviors</strong> !</p>
-<div class="section level2">
-<h2 id="installation">Installation<a class="anchor" aria-label="anchor" href="#installation"></a>
-</h2>
+<p><br><br></p>
+<div class="section level3">
+<h3 id="-installation">
+<i class="fas fa-tools"></i> Installation<a class="anchor" aria-label="anchor" href="#-installation"></a>
+</h3>
+<p><br></p>
 <ul>
 <li>
-<strong>stable version</strong> (from <a href="https://CRAN.R-project.org/package=biomod2" class="external-link">cran</a>)</li>
+<strong>Stable version</strong> (3.5.1) from <a href="https://CRAN.R-project.org/package=biomod2" class="external-link">cran</a> :</li>
 </ul>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"biomod2"</span>, dependencies <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></code></pre></div>
+<p><br></p>
 <ul>
 <li>
-<strong>devel version</strong> (from <a href="https://github.com/biomodhub/biomod2" class="external-link">biomodhub</a>)</li>
+<strong>Development version</strong> (4.0) from <a href="https://github.com/biomodhub/biomod2" class="external-link">biomodhub</a> :</li>
 </ul>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://devtools.r-lib.org/" class="external-link">devtools</a></span><span class="op">)</span>
 <span class="fu">devtools</span><span class="fu">::</span><span class="fu"><a href="https://devtools.r-lib.org/reference/remote-reexports.html" class="external-link">install_github</a></span><span class="op">(</span><span class="st">"biomodhub/biomod2"</span>, dependencies <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></code></pre></div>
+<p><br><br></p>
+</div>
+<div class="section level3">
+<h3 id="-breaking-news">
+<i class="fas fa-envelope-open-text"></i> Breaking news<a class="anchor" aria-label="anchor" href="#-breaking-news"></a>
+</h3>
+<p><strong>! <code>biomod2 4.0</code> is now available !</strong></p>
+<p><code>/!\</code> Package fresh start… meaning some changes in function names and parameters. We apologize for the trouble <code>&gt;{o.o}&lt;</code> <br> Sorry for the inconvenience, and please <strong>feel free to indicate if you notice some strange new behaviors</strong> !</p>
+<div class="section level4">
+<h4 id="-what-is-changed-">
+<i class="fas fa-exchange-alt"></i> What is changed ?<a class="anchor" aria-label="anchor" href="#-what-is-changed-"></a>
+</h4>
+<ul>
+<li>all code functions have been cleaned, and old / unused functions have been removed</li>
+<li>function names have been standardized (<code>BIOMOD_</code> for main functions, <code>bm_</code> for secundary functions)</li>
+<li>parameter names have been standardized (same typo, same names for similar parameters across functions)</li>
+<li>all documentation and examples have been cleaned up</li>
+</ul>
+</div>
+<div class="section level4">
+<h4 id="-what-is-new-">
+<i class="fas fa-plus-square"></i> What is new ?<a class="anchor" aria-label="anchor" href="#-what-is-new-"></a>
+</h4>
+<ul>
+<li>plot functions have been re-written with <code>ggplot2</code>
+</li>
+<li>
+<a href="https://biomodhub.github.io/biomod2/" class="external-link"><code>biomod2</code> website</a> has been created, with proper <code>roxygen2</code> documentation and help vignettes</li>
+</ul>
+</div>
+<div class="section level4">
+<h4 id="-but-why-">
+<i class="fas fa-question-circle"></i> But… why ?<a class="anchor" aria-label="anchor" href="#-but-why-"></a>
+</h4>
+<ul>
+<li>“<em>For every minute spent on organizing, an hour is earned.</em>” — Benjamin Franklin
+<ul>
+<li>better documentation, better formation, better help provided</li>
+<li>new improvements to come (update of single models, implementation of abundance models, etc)</li>
+</ul>
+</li>
+</ul>
 </div>
 </div>
+
   </div>
 
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
