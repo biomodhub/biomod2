@@ -143,9 +143,9 @@ myBiomodOptions
 
 ```R
 ### Duration for turing all models sequential with default settings 
-### on 3.4 GHz processor: approx. 45 min tuning all models in parallel
-### (on 8 cores) using foreach loops runs much faster: approx. 14 min
-
+### on 1 x 2.5 GHz processor: approx. 45 min tuning all models 
+### on 8 x 2.5 GHz processor: approx. 15 min tuning all models 
+# 
 # # library(doParallel)
 # # cl <- makeCluster(8)
 # # doParallel::registerDoParallel(cl) 
@@ -205,6 +205,7 @@ myBiomodModelOut <- BIOMOD_Modeling(bm.format = myBiomodData,
                                     var.import = 3,
                                     metric.eval = c('TSS','ROC'),
                                     do.full.models = FALSE)
+                                    # nb.cpu = 8)
 myBiomodModelOut
 
 # Get evaluation scores & variables importance

@@ -31,7 +31,8 @@ bm_RunModel(
   metric.eval = c("ROC", "TSS", "KAPPA"),
   var.import = 0,
   save.output = FALSE,
-  scale.models = TRUE
+  scale.models = TRUE,
+  nb.cpu = 1
 )
 }
 \arguments{

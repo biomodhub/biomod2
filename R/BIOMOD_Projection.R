@@ -264,6 +264,10 @@ BIOMOD_Projection <- function(bm.mod,
     proj <- foreach(mod.name = models.chosen) %dopar%
     {
       cat("\n\t> Projecting", mod.name, "...")
+      filename <- file.path(namePath, "individual_projections"
+                            , paste0(nameProj, "_", mod.name, ifelse(output.format == ".RData"
+                                                                     , ".grd", output.format)))
+      
       BIOMOD_LoadModels(bm.out = bm.mod, full.name = mod.name, as = "mod")
       temp_workdir = NULL
       if (length(grep("MAXENT.Phillips$", mod.name)) == 1) {

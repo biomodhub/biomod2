@@ -17,6 +17,9 @@
 ##' \code{full_rand} (\emph{only method available so far})
 ##' @param nb.rep an \code{integer} corresponding to the number of permutations to be done for 
 ##' each variable
+## @param nb.cpu (\emph{optional, default} \code{1}) \cr 
+## An \code{integer} value corresponding to the number of computing resources to be used to 
+## parallelize the single models computation
 ##' 
 ##' 
 ##' @return  
@@ -68,6 +71,9 @@
 ##'                        nb.rep = 3)
 ##' 
 ##' 
+##' @importFrom foreach foreach %:% %dopar%
+## @importFrom doParallel registerDoParallel
+##' 
 ##' @export
 ##' 
 ##' 
@@ -77,6 +83,7 @@ bm_VariablesImportance <- function(bm.model,
                                    expl.var, 
                                    method = "full_rand", 
                                    nb.rep = 1,
+                                   # nb.cpu = 1,
                                    ...)
 {
   args <- .bm_VariablesImportance.check.args(bm.model = bm.model, expl.var = expl.var, method = method, ...)
@@ -87,25 +94,31 @@ bm_VariablesImportance <- function(bm.model,
   ref <- try(predict(bm.model, expl.var, temp_workdir = temp_workdir))
   if (inherits(ref, "try-error")) { stop("Unable to make model prediction") }
   
-  ## Prepare output matrix
-  out <- matrix(0, nrow = length(variables), ncol = nb.rep
-                , dimnames = list(variables, paste0('rand', 1:nb.rep)))
-  
   ## Make randomisation
   cat('\n')
   PROGRESS = txtProgressBar(min = 0, max = nb.rep * length(variables), style = 3)
   i.iter = 0
-  for (r in 1:nb.rep) {
-    for (v in variables) {
+  # if (nb.cpu > 1) {
+  #   if (.getOS() != "windows") {
+  #     registerDoParallel(cores = nb.cpu)
+  #   } else {
+  #     warning("Parallelisation with `foreach` is not available for Windows. Sorry.")
+  #   }
+  # }
+  out = foreach (r = 1:nb.rep, .combine = "rbind") %:%
+    foreach (v = variables, .combine = "rbind") %dopar%
+    {
       data_rand <- .randomise_data(expl.var, v, method)
       shuffled.pred <- predict(bm.model, data_rand, temp_workdir = temp_workdir)
-      out[v, r] <- 1 - max(round(
+      out_vr <- 1 - max(round(
         cor(x = ref, y = shuffled.pred, use = "pairwise.complete.obs", method = "pearson")
         , digits = 6), 0, na.rm = TRUE)
       i.iter = i.iter + 1
       setTxtProgressBar(pb = PROGRESS, value = i.iter)
+      return(data.frame(v = v, r = r, out = out_vr))
     }
-  }
+  out = tapply(X = out$out, INDEX = list(out$v, out$r), FUN = mean)
+  colnames(out) = paste0('rand', colnames(out))
   close(PROGRESS)
   
   return(out)

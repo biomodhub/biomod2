@@ -250,9 +250,9 @@
 <span class="co"># myBiomodOptions</span></code></pre></div>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co">### Duration for turing all models sequential with default settings </span>
-<span class="co">### on 3.4 GHz processor: approx. 45 min tuning all models in parallel</span>
-<span class="co">### (on 8 cores) using foreach loops runs much faster: approx. 14 min</span>
-
+<span class="co">### on 1 x 2.5 GHz processor: approx. 45 min tuning all models </span>
+<span class="co">### on 8 x 2.5 GHz processor: approx. 15 min tuning all models </span>
+<span class="co"># </span>
 <span class="co"># # library(doParallel)</span>
 <span class="co"># # cl &lt;- makeCluster(8)</span>
 <span class="co"># # doParallel::registerDoParallel(cl) </span>
@@ -315,6 +315,7 @@
                                     var.import <span class="op">=</span> <span class="fl">3</span>,
                                     metric.eval <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">'TSS'</span>,<span class="st">'ROC'</span><span class="op">)</span>,
                                     do.full.models <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span>
+                                    <span class="co"># nb.cpu = 8)</span>
 <span class="va">myBiomodModelOut</span>
 
 <span class="co"># Get evaluation scores &amp; variables importance</span>

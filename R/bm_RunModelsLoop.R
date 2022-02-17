@@ -147,7 +147,7 @@ bm_RunModelsLoop <- function(bm.format,
 bm_RunModel <- function(model, Data, modeling.id = '', bm.options, calib.lines, weights, nam,
                         xy = NULL, eval.data = NULL, eval.xy = NULL, 
                         metric.eval = c('ROC','TSS','KAPPA'), var.import = 0,
-                        save.output = FALSE, scale.models = TRUE)
+                        save.output = FALSE, scale.models = TRUE, nb.cpu = 1)
 {
   ## 0. Check arguments ---------------------------------------------------------------------------
   args <- .bm_RunModel.check.args(model, Data, bm.options, calib.lines, weights, eval.data, metric.eval, scale.models)

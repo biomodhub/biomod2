@@ -349,10 +349,6 @@ setClass('GAM_biomod2_model',
 setMethod('predict', signature(object = 'GAM_biomod2_model'),
           function(object, newdata, ...)
           {
-            # args <- list(...)
-            # do_check <- args$do_check
-            # if (is.null(do_check)) { do_check <- TRUE }
-
             if (object@model_subclass %in% c("GAM_mgcv", "BAM_mgcv")) {
               # cat("\n*** unloading gam package / loading mgcv package")
               if (isNamespaceLoaded("gam")) { unloadNamespace("gam") }
@@ -370,17 +366,6 @@ setMethod('predict', signature(object = 'GAM_biomod2_model'),
             }
             
             return(.template_predict(mod = "GAM", object, newdata, ...))
-            
-            # ## data checking
-            # if (do_check) { newdata <- check_data_range(model = object, new_data = newdata) }
-            # 
-            # if (inherits(newdata, 'Raster')) {
-            #   return(.predict.GAM_biomod2_model.RasterStack(object, newdata, ...))
-            # } else if (inherits(newdata, 'data.frame') | inherits(newdata, 'matrix')) {
-            #   return(.predict.GAM_biomod2_model.data.frame(object, newdata, ...))
-            # } else {
-            #   stop("invalid newdata input")
-            # }
           })
 
 .predict.GAM_biomod2_model.RasterStack <- function(object, newdata, ...)
@@ -587,7 +572,11 @@ setMethod('predict', signature(object = 'MAXENT.Phillips_biomod2_model'),
   } else {
     Pred_swd <- cbind(Pred_swd[, 1:3], newdata)
   }
-  m_predictFile <- file.path(temp_workdir, "Predictions/Pred_swdBis.csv")
+  # m_predictFile <- file.path(temp_workdir, "Predictions/Pred_swdBis.csv")
+  m_predictFile <- file.path(temp_workdir, "Predictions", paste0("Pred_swdBis_", sample(1:100000, 1), ".csv"))
+  while (file.exists(m_predictFile)) {
+    m_predictFile <- file.path(temp_workdir, "Predictions", paste0("Pred_swdBis_", sample(1:100000, 1), ".csv"))
+  }
   write.table(Pred_swd, file = m_predictFile, quote = FALSE, row.names = FALSE, col.names = TRUE, sep = ",")
   
   # checking maxent.jar is present
