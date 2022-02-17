@@ -82,7 +82,7 @@ setGeneric("get_variables_importance", function(obj, ...) { standardGeneric("get
 ##' @slot models.computed a \code{vector} containing names of computed models
 ##' @slot models.failed a \code{vector} containing names of failed models
 ##' @slot has.evaluation.data a \code{logical} value defining whether evaluation data is given
-##' @slot rescal.all.models a \code{logical} value defining whether models have been rescaled or 
+##' @slot scale.models a \code{logical} value defining whether models have been rescaled or 
 ##' not
 ##' @slot models.evaluation a \code{\link{BIOMOD.stored.array}} object containing models evaluation
 ##' @slot variables.importance a \code{\link{BIOMOD.stored.array}} object containing variables 
@@ -169,14 +169,14 @@ setClass("BIOMOD.models.out",
                         models.computed = 'character',
                         models.failed = 'character',
                         has.evaluation.data = 'logical',
-                        rescal.all.models = 'logical',
+                        scale.models = 'logical',
+                        formated.input.data = 'BIOMOD.stored.formated.data',
+                        calib.lines = 'BIOMOD.stored.array',
+                        models.options = 'BIOMOD.stored.models.options',
                         models.evaluation = 'BIOMOD.stored.array',
                         variables.importance = 'BIOMOD.stored.array',
                         models.prediction = 'BIOMOD.stored.array',
                         models.prediction.eval = 'BIOMOD.stored.array',
-                        formated.input.data = 'BIOMOD.stored.formated.data',
-                        calib.lines = 'BIOMOD.stored.array',
-                        models.options = 'BIOMOD.stored.models.options',
                         link = 'character'),
          prototype(modeling.id = as.character(format(Sys.time(), "%s")),
                    sp.name = '',
@@ -184,14 +184,14 @@ setClass("BIOMOD.models.out",
                    models.computed = '',
                    models.failed = '',
                    has.evaluation.data = FALSE,
-                   rescal.all.models = TRUE,
+                   scale.models = TRUE,
+                   formated.input.data = new('BIOMOD.stored.formated.data'),
+                   calib.lines = new('BIOMOD.stored.array'),
+                   models.options = new('BIOMOD.stored.models.options'),
                    models.evaluation = new('BIOMOD.stored.array'),
                    variables.importance = new('BIOMOD.stored.array'),
                    models.prediction = new('BIOMOD.stored.array'),
                    models.prediction.eval = new('BIOMOD.stored.array'),
-                   formated.input.data = new('BIOMOD.stored.formated.data'),
-                   calib.lines = new('BIOMOD.stored.array'),
-                   models.options = new('BIOMOD.stored.models.options'),
                    link = ''),
          validity = function(object){ return(TRUE) } )
 

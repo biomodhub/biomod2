@@ -48,6 +48,10 @@
 ##' A \code{logical} value defining whether a clamping mask should be built and saved on hard 
 ##' drive or not (see \href{BIOMOD_Projection.html#details}{Details}))
 ##' 
+##' @param nb.cpu (\emph{optional, default} \code{1}) \cr 
+##' An \code{integer} value corresponding to the number of computing resources to be used to 
+##' parallelize the single models computation
+##' 
 ##' @param \ldots (\emph{optional, see \href{BIOMOD_Projection.html#details}{Details})}) 
 ##' 
 ##' 
@@ -161,6 +165,8 @@
 ##' plot(myBiomodProj)
 ##' 
 ##' 
+##' @importFrom foreach foreach %dopar%
+##' @importFrom doParallel registerDoParallel
 ##' @importFrom raster stack subset nlayers writeRaster rasterOptions canProcessInMemory
 ##' @importFrom abind asub
 ##' 
@@ -179,6 +185,7 @@ BIOMOD_Projection <- function(bm.mod,
                               metric.filter = NULL,
                               compress = TRUE,
                               build.clamping.mask = TRUE,
+                              nb.cpu = 1,
                               ...)
 {
   .bm_cat("Do Single Models Projection")
@@ -195,7 +202,7 @@ BIOMOD_Projection <- function(bm.mod,
                   sp.name =  bm.mod@sp.name,
                   expl.var.names = bm.mod@expl.var.names,
                   models.projected = models.chosen,
-                  models.scaled = bm.mod@rescal.all.models,
+                  models.scaled = bm.mod@scale.models,
                   xy.coord = new.env.xy,
                   modeling.object.id = bm.mod@modeling.id)
   proj_out@modeling.object@link = bm.mod@link
@@ -247,7 +254,14 @@ BIOMOD_Projection <- function(bm.mod,
     })
     
   } else {
-    proj <- lapply(models.chosen, function(mod.name)
+    if (nb.cpu > 1) {
+      if (.getOS() != "windows") {
+        registerDoParallel(cores = nb.cpu)
+      } else {
+        warning("Parallelisation with `foreach` is not available for Windows. Sorry.")
+      }
+    }
+    proj <- foreach(mod.name = models.chosen) %dopar%
     {
       cat("\n\t> Projecting", mod.name, "...")
       BIOMOD_LoadModels(bm.out = bm.mod, full.name = mod.name, as = "mod")
@@ -259,7 +273,7 @@ BIOMOD_Projection <- function(bm.mod,
                           , omit.na = omit.na, split.proj = 1
                           , temp_workdir = temp_workdir)
       return(pred.tmp)
-    })
+    }
     ## Putting predictions into the right format
     if (inherits(new.env, "Raster")) {
       proj <- stack(proj)

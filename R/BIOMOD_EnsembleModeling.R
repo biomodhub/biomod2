@@ -67,6 +67,9 @@
 ##' A high value will strongly discriminate \emph{good} models from the \emph{bad} ones (see 
 ##' \href{BIOMOD_EnsembleModeling.html#details}{Details}), while \code{proportional} will 
 ##' attribute weights proportionally to the models evaluation scores
+##' @param nb.cpu (\emph{optional, default} \code{1}) \cr 
+##' An \code{integer} value corresponding to the number of computing resources to be used to 
+##' parallelize the single models computation
 ##' 
 ##' 
 ##' @return
@@ -335,7 +338,8 @@ BIOMOD_EnsembleModeling <- function(bm.mod,
                                     prob.ci.alpha = 0.05,
                                     committee.averaging = FALSE,
                                     prob.mean.weight = FALSE,
-                                    prob.mean.weight.decay = 'proportional')
+                                    prob.mean.weight.decay = 'proportional',
+                                    nb.cpu = 1)
 {
   .bm_cat("Build Ensemble Models")
   
@@ -414,7 +418,8 @@ BIOMOD_EnsembleModeling <- function(bm.mod,
     ## if no prediction selected => swith to next model
     needed_predictions <- .get_needed_predictions(bm.mod, em.by, models.kept
                                                   , metric.select, metric.select.thresh
-                                                  , metric.select.user, metric.select.table)
+                                                  , metric.select.user, metric.select.table
+                                                  , nb.cpu)
     if (!length(needed_predictions)) next
     
     ## LOOP over evaluation metrics ##
@@ -824,7 +829,7 @@ BIOMOD_EnsembleModeling <- function(bm.mod,
 
 .get_needed_predictions <- function(bm.mod, em.by, models.kept, metric.select
                                     , metric.select.thresh, metric.select.user
-                                    , metric.select.table)
+                                    , metric.select.table, nb.cpu)
 {
   out <- list(predictions = NULL, models.kept = NULL, models.kept.scores = NULL)
   for (eval.m in metric.select) {
@@ -862,7 +867,7 @@ BIOMOD_EnsembleModeling <- function(bm.mod,
     ## load prediction on each PA dataset
     if (em.by %in% c("PA_dataset", 'PA_dataset+algo', 'PA_dataset+repet')) {
       out$predictions <- as.data.frame(get_predictions(bm.mod, as.data.frame = TRUE)[, models.kept.union, drop = FALSE])
-    } else{
+    } else {
       ## redo prediction on full data.set
       cat("\n   ! Models projections for whole zonation required...")
       temp_name <- paste0('tmp_', sub(".", "", as.character(format(Sys.time(), "%OS6")), fixed = TRUE))
@@ -874,6 +879,7 @@ BIOMOD_EnsembleModeling <- function(bm.mod,
                                            compress = TRUE,
                                            build.clamping.mask = FALSE,
                                            do.stack = TRUE,
+                                           nb.cpu = nb.cpu
       )@proj@val
       
       # transform array into data.frame

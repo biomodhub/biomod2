@@ -50,6 +50,9 @@
 ##' A \code{logical} or a \code{character} value defining whether and how objects should be 
 ##' compressed when saved on hard drive. Must be either \code{TRUE}, \code{FALSE}, \code{xz} or 
 ##' \code{gzip} (see \href{BIOMOD_EnsembleForecasting.html#details}{Details})
+##' @param nb.cpu (\emph{optional, default} \code{1}) \cr 
+##' An \code{integer} value corresponding to the number of computing resources to be used to 
+##' parallelize the single models computation
 ##' 
 ##' @param \ldots (\emph{optional, see \href{BIOMOD_EnsembleForecasting.html#details}{Details}}) 
 ##' 
@@ -208,6 +211,7 @@ BIOMOD_EnsembleForecasting <- function(bm.em,
                                        metric.binary = NULL,
                                        metric.filter = NULL,
                                        compress = TRUE,
+                                       nb.cpu = 1,
                                        ...)
 {
   .bm_cat("Do Ensemble Models Projection")
@@ -265,7 +269,8 @@ BIOMOD_EnsembleForecasting <- function(bm.em,
                                      compress = TRUE,
                                      build.clamping.mask = FALSE,
                                      do.stack = TRUE,
-                                     on_0_1000 = on_0_1000)
+                                     on_0_1000 = on_0_1000,
+                                     nb.cpu = nb.cpu)
     # getting the results
     formal_pred <- get_predictions(formal_pred,
                                    full.name = needed_predictions,

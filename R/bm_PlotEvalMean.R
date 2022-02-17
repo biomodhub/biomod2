@@ -4,11 +4,12 @@
 ##' 
 ##' @title Plot mean evaluation scores
 ##' 
-##' @description This function represents mean evaluation scores of species distribution models, 
-##' from \code{\link{BIOMOD.models.out}} or \code{\link{BIOMOD.ensemble.models.out}} objects that 
-##' can be obtained from \code{\link{BIOMOD_Modeling}} or \code{\link{BIOMOD_EnsembleModeling}} 
-##' functions. Scores are represented according to 2 different evaluation methods, and models can 
-##' be grouped (see \href{bm_PlotEvalMean.html#details}{Details}).
+##' @description This function represents mean evaluation scores (and their standard deviation) 
+##' of species distribution models, from \code{\link{BIOMOD.models.out}} or 
+##' \code{\link{BIOMOD.ensemble.models.out}} objects that can be obtained from 
+##' \code{\link{BIOMOD_Modeling}} or \code{\link{BIOMOD_EnsembleModeling}} functions. Scores are 
+##' represented according to 2 different evaluation methods, and models can be grouped 
+##' (see \href{bm_PlotEvalMean.html#details}{Details}).
 ##' 
 ##' 
 ##' @param bm.out a \code{\link{BIOMOD.models.out}} or \code{\link{BIOMOD.ensemble.models.out}} 
@@ -127,6 +128,7 @@ bm_PlotEvalMean <- function(bm.out, metric.eval = NULL, group.by = 'algo', do.pl
   ## 1. Get data for graphic ----------------------------------------------------------------------
   ## Get evaluation values
   scores <- get_evaluations(bm.out, as.data.frame = TRUE)
+  scores$Eval.metric <- as.character(scores$Eval.metric)
   
   ## Choose which dataset (calibration or validation) should be used
   eval.data <- ifelse(all(is.na(scores$Evaluating.data)), "Testing.data", "Evaluating.data")
@@ -181,12 +183,18 @@ bm_PlotEvalMean <- function(bm.out, metric.eval = NULL, group.by = 'algo', do.pl
   .fun_testIfInherits(TRUE, "bm.out", bm.out, c("BIOMOD.models.out", "BIOMOD.ensemble.models.out"))
   
   ## 2. Check metric.eval argument --------------------------------------------
-  scores <- get_evaluations(bm.out, as.data.frame = TRUE)
-  avail_metric.eval <- unique(scores$Eval.metric)
-  if (length(avail_metric.eval) < 2) { stop("At least 2 different evaluations metric.eval needed") }
   if (is.null(metric.eval)) {
-    metric.eval <- avail_metric.eval[1:2]
+    scores <- get_evaluations(bm.out, as.data.frame = TRUE)
+    metric.eval <- sort(unique(as.character(scores$Eval.metric)))[1:2]
     warnings(toString(metric.eval), " evaluation metric.eval automatically selected")
+  } else {
+    metric.eval = sort(unique(as.character(metric.eval)))
+    if (length(metric.eval) < 2) {
+      stop("2 different evaluations metric.eval needed")
+    } else if (length(metric.eval) > 2) {
+      metric.eval = metric.eval[1:2]
+      warning("2 different evaluations metric.eval needed, only the first 2 will be kept")
+    }
   }
   
   ## 3. Check group.by argument -----------------------------------------------

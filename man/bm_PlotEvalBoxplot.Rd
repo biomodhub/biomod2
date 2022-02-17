@@ -4,7 +4,7 @@
 \alias{bm_PlotEvalBoxplot}
 \title{Plot boxplot of evaluation scores}
 \usage{
-bm_PlotEvalBoxplot(bm.out, group.by = c("algo", "run"), plot = TRUE, ...)
+bm_PlotEvalBoxplot(bm.out, group.by = c("algo", "run"), do.plot = TRUE, ...)
 }
 \arguments{
 \item{bm.out}{a \code{\link{BIOMOD.models.out}} or \code{\link{BIOMOD.ensemble.models.out}} 

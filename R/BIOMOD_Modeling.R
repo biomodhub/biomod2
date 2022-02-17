@@ -50,6 +50,9 @@
 ##' @param scale.models (\emph{optional, default} \code{FALSE}) \cr 
 ##' A \code{logical} value defining whether all models predictions should be scaled with a 
 ##' binomial GLM or not
+##' @param nb.cpu (\emph{optional, default} \code{1}) \cr 
+##' An \code{integer} value corresponding to the number of computing resources to be used to 
+##' parallelize the single models computation
 ##' 
 ##' 
 ##' @return
@@ -275,14 +278,15 @@ BIOMOD_Modeling <- function(bm.format,
                             metric.eval = c('KAPPA', 'TSS', 'ROC'),
                             var.import = 0,
                             save.output = TRUE,
-                            scale.models = FALSE)
+                            scale.models = FALSE,
+                            nb.cpu = 1)
 {
   .bm_cat("Build Single Models")
   
   ## 0. Check arguments ---------------------------------------------------------------------------
   args <- .BIOMOD_Modeling.check.args(bm.format, models, bm.options, nb.rep, data.split.perc, data.split.table
                                       , do.full.models, weights, prevalence, metric.eval, var.import
-                                      , save.output, scale.models)
+                                      , save.output, scale.models, nb.cpu)
   for (argi in names(args)) { assign(x = argi, value = args[[argi]]) }
   rm(args)
   
@@ -312,7 +316,7 @@ BIOMOD_Modeling <- function(bm.format,
   ## 3.1 Save input data and models options -----------------------------------
   if (save.output) {
     models.out = .Models.save.object("formated.input.data", bm.format, models.out)
-    models.out = .Models.save.object("bm.options", bm.options, models.out)
+    models.out = .Models.save.object("models.options", bm.options, models.out)
   }
   
   ## 3.2 Get and save calibration lines ---------------------------------------
@@ -325,10 +329,10 @@ BIOMOD_Modeling <- function(bm.format,
                                                 data.split.table)
   rm(bm.format)
   
-  calib.lines <- mod.prep.dat[[1]]$calibLines
+  calib.lines <- mod.prep.dat[[1]]$calib.lines
   if (length(mod.prep.dat) > 1) { ## stack calib lines matrix along array 3rd-dimension
     for (pa in 2:length(mod.prep.dat)) {
-      calib.lines <- abind(calib.lines, mod.prep.dat[[pa]]$calibLines, along = 3)
+      calib.lines <- abind(calib.lines, mod.prep.dat[[pa]]$calib.lines, along = 3)
     }
   } 
   models.out = .Models.save.object("calib.lines", calib.lines, models.out)
@@ -339,14 +343,15 @@ BIOMOD_Modeling <- function(bm.format,
   
   ## 5. Run models with loop over PA --------------------------------------------------------------
   mod.out <- lapply(mod.prep.dat,
-                    bm_RunModelsLoop,
+                    FUN = bm_RunModelsLoop,
                     modeling.id = models.out@modeling.id,
-                    Model = models,
-                    Options = bm.options,
+                    model = models,
+                    bm.options = bm.options,
                     var.import = var.import,
-                    mod.eval.method = metric.eval,
+                    metric.eval = metric.eval,
                     save.output = save.output,
-                    scale.models = scale.models)
+                    scale.models = scale.models,
+                    nb.cpu = nb.cpu)
   
   ## 3.3 Rearrange and save outputs -------------------------------------------
   models.out@models.computed <- .transform_outputs_list(mod.out, out = 'models.run')
@@ -404,7 +409,7 @@ BIOMOD_Modeling <- function(bm.format,
 
 .BIOMOD_Modeling.check.args <- function(bm.format, models, bm.options, nb.rep, data.split.perc, data.split.table
                                         , do.full.models, weights, prevalence, metric.eval, var.import
-                                        , save.output, scale.models)
+                                        , save.output, scale.models, nb.cpu)
 {
   ## 0. Check bm.format and models arguments ----------------------------------
   cat('\n\nChecking Models arguments...\n')
@@ -546,9 +551,9 @@ BIOMOD_Modeling <- function(bm.format,
   cat("\n\n")
   .bm_cat(paste(unlist(strsplit(mod.prep.dat[[1]]$name, '_'))[1], "Modeling Summary"))
   cat("\n", ncol(mod.prep.dat[[1]]$dataBM) - 1, " environmental variables (", colnames(mod.prep.dat[[1]]$dataBM)[-1], ")")
-  cat("\nNumber of evaluation repetitions :", ncol(mod.prep.dat[[1]]$calibLines))
+  cat("\nNumber of evaluation repetitions :", ncol(mod.prep.dat[[1]]$calib.lines))
   cat("\nModels selected :", models, "\n")
-  cat("\nTotal number of model runs:", ncol(mod.prep.dat[[1]]$calibLines) * length(models) * length(mod.prep.dat), "\n")
+  cat("\nTotal number of model runs:", ncol(mod.prep.dat[[1]]$calib.lines) * length(models) * length(mod.prep.dat), "\n")
   .bm_cat()
 }
 
@@ -572,37 +577,37 @@ setMethod('.BIOMOD_Modeling.prepare.data', signature('BIOMOD.formated.data'),
             
             ## dealing with evaluation data
             if (bm.format@has.data.eval) {
-              evalDataBM <- data.frame(cbind(bm.format@eval.data.species, bm.format@eval.data.env.var[, , drop = FALSE]))
-              colnames(evalDataBM)[1] <- bm.format@sp.name
+              eval.data <- data.frame(cbind(bm.format@eval.data.species, bm.format@eval.data.env.var[, , drop = FALSE]))
+              colnames(eval.data)[1] <- bm.format@sp.name
               eval.xy <- bm.format@eval.coord
             } else {
-              evalDataBM <- eval.xy <- NULL
+              eval.data <- eval.xy <- NULL
             }
             
             ## Calib/Valid lines
             if (!is.null(data.split.table)) {
-              calibLines <- data.split.table
-              colnames(calibLines) <- paste('_RUN', 1:ncol(calibLines), sep = '')
+              calib.lines <- data.split.table
+              colnames(calib.lines) <- paste('_RUN', 1:ncol(calib.lines), sep = '')
             } else {
               if (nb.rep == 0) { # take all available data
-                calibLines <- matrix(rep(TRUE, length(bm.format@data.species)), ncol = 1)
-                colnames(calibLines) <- '_Full'
+                calib.lines <- matrix(rep(TRUE, length(bm.format@data.species)), ncol = 1)
+                colnames(calib.lines) <- '_Full'
               } else {
-                calibLines <- .sample_mat(data.sp = bm.format@data.species,
+                calib.lines <- .sample_mat(data.sp = bm.format@data.species,
                                           data.split = data.split.perc,
                                           nb.rep = nb.rep,
                                           data.env = bm.format@data.env.var)
                 if (do.full.models) {
-                  calibLines <- cbind(calibLines, rep(TRUE, length(bm.format@data.species)))
-                  colnames(calibLines)[nb.rep + 1] <- '_Full'
+                  calib.lines <- cbind(calib.lines, rep(TRUE, length(bm.format@data.species)))
+                  colnames(calib.lines)[nb.rep + 1] <- '_Full'
                 }
               }
             }
             ## force calib.lines object to be 3D array
-            if (length(dim(calibLines)) < 3) {
-              dn_tmp <- dimnames(calibLines) ## keep track of dimnames
-              dim(calibLines) <- c(dim(calibLines), 1)
-              dimnames(calibLines) <- list(dn_tmp[[1]], dn_tmp[[2]], "_AllData")
+            if (length(dim(calib.lines)) < 3) {
+              dn_tmp <- dimnames(calib.lines) ## keep track of dimnames
+              dim(calib.lines) <- c(dim(calib.lines), 1)
+              dimnames(calib.lines) <- list(dn_tmp[[1]], dn_tmp[[2]], "_AllData")
             }
             
             if (is.null(weights)) { # 1 for all points
@@ -618,9 +623,9 @@ setMethod('.BIOMOD_Modeling.prepare.data', signature('BIOMOD.formated.data'),
             list.out[[name]] <- list(name = name,
                                      xy = xy,
                                      dataBM = dataBM, 
-                                     calibLines = calibLines,
+                                     calib.lines = calib.lines,
                                      weights = weights,
-                                     evalDataBM = evalDataBM,
+                                     eval.data = eval.data,
                                      eval.xy = eval.xy)
             return(list.out)
           }
@@ -646,49 +651,49 @@ setMethod('.BIOMOD_Modeling.prepare.data', signature('BIOMOD.formated.data.PA'),
               if (!is.null(data.split.table))
               {
                 if (length(dim(data.split.table)) == 2) {
-                  calibLines <- data.split.table
+                  calib.lines <- data.split.table
                 } else {
-                  calibLines <- asub(data.split.table, pa, 3, drop = TRUE)
+                  calib.lines <- asub(data.split.table, pa, 3, drop = TRUE)
                 }
-                colnames(calibLines) <- paste0('_RUN', 1:ncol(calibLines))
-                calibLines[which(!bm.format@PA[, pa]), ] <- NA
+                colnames(calib.lines) <- paste0('_RUN', 1:ncol(calib.lines))
+                calib.lines[which(!bm.format@PA[, pa]), ] <- NA
               } else {
                 if (nb.rep == 0) { # take all available data
-                  calibLines <- matrix(NA, nrow = length(bm.format@data.species), ncol = 1)
-                  calibLines[bm.format@PA[, pa], 1] <- TRUE
-                  colnames(calibLines) <- '_Full'
+                  calib.lines <- matrix(NA, nrow = length(bm.format@data.species), ncol = 1)
+                  calib.lines[bm.format@PA[, pa], 1] <- TRUE
+                  colnames(calib.lines) <- '_Full'
                 } else {
-                  calibLines <- matrix(NA, nrow = length(bm.format@data.species), ncol = nb.rep)
+                  calib.lines <- matrix(NA, nrow = length(bm.format@data.species), ncol = nb.rep)
                   sampled.mat <- .sample_mat(
                     data.sp = bm.format@data.species[bm.format@PA[, pa]],
                     data.split = data.split.perc,
                     nb.rep = nb.rep,
                     data.env = bm.format@data.env.var[bm.format@PA[, pa], , drop = FALSE]
                   )
-                  calibLines[bm.format@PA[, pa], ] <- sampled.mat
-                  colnames(calibLines) <- colnames(sampled.mat)
+                  calib.lines[bm.format@PA[, pa], ] <- sampled.mat
+                  colnames(calib.lines) <- colnames(sampled.mat)
                   if (do.full.models) {
-                    calibLines <- cbind(calibLines, rep(NA, length(bm.format@data.species)))
-                    calibLines[bm.format@PA[, pa], nb.rep + 1] <- TRUE
-                    colnames(calibLines)[nb.rep + 1] <- '_Full'
+                    calib.lines <- cbind(calib.lines, rep(NA, length(bm.format@data.species)))
+                    calib.lines[bm.format@PA[, pa], nb.rep + 1] <- TRUE
+                    colnames(calib.lines)[nb.rep + 1] <- '_Full'
                   }
                 }
               }
               
               ## force calib.lines object to be 3D array
-              if (length(dim(calibLines)) < 3) {
-                dn_tmp <- dimnames(calibLines) ## keep track of dimnames
-                dim(calibLines) <- c(dim(calibLines), 1)
-                dimnames(calibLines) <- list(dn_tmp[[1]], dn_tmp[[2]], paste0("_PA", pa))
+              if (length(dim(calib.lines)) < 3) {
+                dn_tmp <- dimnames(calib.lines) ## keep track of dimnames
+                dim(calib.lines) <- c(dim(calib.lines), 1)
+                dimnames(calib.lines) <- list(dn_tmp[[1]], dn_tmp[[2]], paste0("_PA", pa))
               }
               
               # dealing with evaluation data
               if (bm.format@has.data.eval) {
-                evalDataBM <- data.frame(cbind(bm.format@eval.data.species, bm.format@eval.data.env.var))
-                colnames(evalDataBM)[1] <- bm.format@sp.name
+                eval.data <- data.frame(cbind(bm.format@eval.data.species, bm.format@eval.data.env.var))
+                colnames(eval.data)[1] <- bm.format@sp.name
                 eval.xy <- bm.format@eval.coord
               } else {
-                evalDataBM <- eval.xy <- NULL
+                eval.data <- eval.xy <- NULL
               }
               
               if (is.null(weights)) { # prevalence of 0.5... may be parametrize
@@ -703,9 +708,9 @@ setMethod('.BIOMOD_Modeling.prepare.data', signature('BIOMOD.formated.data.PA'),
               list.out[[name]] <- list(name = name,
                                        xy = xy, 
                                        dataBM = dataBM,
-                                       calibLines = calibLines,
+                                       calib.lines = calib.lines,
                                        weights = weights,
-                                       evalDataBM = evalDataBM,
+                                       eval.data = eval.data,
                                        eval.xy = eval.xy)
             }
             return(list.out)
@@ -900,7 +905,7 @@ setMethod('.BIOMOD_Modeling.prepare.data', signature('BIOMOD.formated.data.PA'),
   if (out %in% c("calib.failure", "models.run"))
   {
     name_slot = out
-    if (out == "models.run") { name_slot = "ModelName" }
+    if (out == "models.run") { name_slot = "model" }
     
     output <- lapply(names(mod.out),function(d1) { # data set
       lapply(names(mod.out[[d1]]), function(d2) { # run eval

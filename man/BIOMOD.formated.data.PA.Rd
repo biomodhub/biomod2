@@ -23,7 +23,7 @@
   PA.dist.min = 0,
   PA.dist.max = NULL,
   PA.sre.quant = 0.025,
-  PA.table = NULL,
+  PA.user.table = NULL,
   na.rm = TRUE
 )
 
@@ -41,7 +41,7 @@
   PA.dist.min = 0,
   PA.dist.max = NULL,
   PA.sre.quant = 0.025,
-  PA.table = NULL,
+  PA.user.table = NULL,
   na.rm = TRUE
 )
 

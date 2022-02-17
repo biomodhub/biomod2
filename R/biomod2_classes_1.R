@@ -484,14 +484,14 @@ setMethod('BIOMOD.formated.data.PA', signature(sp = 'numeric', env = 'data.frame
                    , eval.sp = NULL, eval.env = NULL, eval.xy = NULL
                    , PA.NbRep = 1, PA.strategy = 'random', PA.nb.absences = NULL
                    , PA.dist.min = 0, PA.dist.max = NULL
-                   , PA.sre.quant = 0.025, PA.table = NULL
+                   , PA.sre.quant = 0.025, PA.user.table = NULL
                    , na.rm = TRUE)
           {
             .BIOMOD.formated.data.PA(sp, env, xy, sp.name
                                      , eval.sp, eval.env, eval.xy
                                      , PA.NbRep, PA.strategy, PA.nb.absences
                                      , PA.dist.min, PA.dist.max
-                                     , PA.sre.quant, PA.table
+                                     , PA.sre.quant, PA.user.table
                                      , na.rm)
           })
 
@@ -505,14 +505,14 @@ setMethod('BIOMOD.formated.data.PA', signature(sp = 'numeric', env = 'RasterStac
                    , eval.sp = NULL, eval.env = NULL, eval.xy = NULL
                    , PA.NbRep = 1, PA.strategy = 'random', PA.nb.absences = NULL
                    , PA.dist.min = 0, PA.dist.max = NULL
-                   , PA.sre.quant = 0.025, PA.table = NULL
+                   , PA.sre.quant = 0.025, PA.user.table = NULL
                    , na.rm = TRUE)
           {
             .BIOMOD.formated.data.PA(sp, env, xy, sp.name
                                      , eval.sp, eval.env, eval.xy
                                      , PA.NbRep, PA.strategy, PA.nb.absences
                                      , PA.dist.min, PA.dist.max
-                                     , PA.sre.quant, PA.table
+                                     , PA.sre.quant, PA.user.table
                                      , na.rm)
           })
 
@@ -520,7 +520,7 @@ setMethod('BIOMOD.formated.data.PA', signature(sp = 'numeric', env = 'RasterStac
                                       , eval.sp = NULL, eval.env = NULL, eval.xy = NULL
                                       , PA.NbRep = 1, PA.strategy = 'random', PA.nb.absences = NULL
                                       , PA.dist.min = 0, PA.dist.max = NULL
-                                      , PA.sre.quant = 0.025, PA.table = NULL
+                                      , PA.sre.quant = 0.025, PA.user.table = NULL
                                       , na.rm = TRUE)
 {
   
@@ -556,7 +556,7 @@ setMethod('BIOMOD.formated.data.PA', signature(sp = 'numeric', env = 'RasterStac
                                    sre.quant = PA.sre.quant,
                                    dist.min = PA.dist.min,
                                    dist.max = PA.dist.max,
-                                   user.table = PA.table)
+                                   user.table = PA.user.table)
   
   if (!is.null(pa.data.tmp))
   {

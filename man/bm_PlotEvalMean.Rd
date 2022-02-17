@@ -36,11 +36,12 @@ A \code{ggplot} object representing mean and standard deviation of evaluation sc
 according to 2 different evaluation methods.
 }
 \description{
-This function represents mean evaluation scores of species distribution models, 
-from \code{\link{BIOMOD.models.out}} or \code{\link{BIOMOD.ensemble.models.out}} objects that 
-can be obtained from \code{\link{BIOMOD_Modeling}} or \code{\link{BIOMOD_EnsembleModeling}} 
-functions. Scores are represented according to 2 different evaluation methods, and models can 
-be grouped (see \href{bm_PlotEvalMean.html#details}{Details}).
+This function represents mean evaluation scores (and their standard deviation) 
+of species distribution models, from \code{\link{BIOMOD.models.out}} or 
+\code{\link{BIOMOD.ensemble.models.out}} objects that can be obtained from 
+\code{\link{BIOMOD_Modeling}} or \code{\link{BIOMOD_EnsembleModeling}} functions. Scores are 
+represented according to 2 different evaluation methods, and models can be grouped 
+(see \href{bm_PlotEvalMean.html#details}{Details}).
 }
 \details{
 \code{...} can take the following values :

@@ -107,7 +107,7 @@
 ###################################################################################################
 
 
-bm_PlotEvalBoxplot <- function(bm.out, group.by = c('algo', 'run'), plot = TRUE, ...)
+bm_PlotEvalBoxplot <- function(bm.out, group.by = c('algo', 'run'), do.plot = TRUE, ...)
 {
   ## 0. Check arguments ---------------------------------------------------------------------------
   args <- .bm_PlotEvalBoxplot.check.args(bm.out, group.by, ...)
