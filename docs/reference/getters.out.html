@@ -161,6 +161,101 @@ and formated data, models used or not, predictions, evaluations, variables impor
 <dd><p>a <code><a href="BIOMOD.models.out.html">BIOMOD.models.out</a></code>, <code><a href="BIOMOD.projection.out.html">BIOMOD.projection.out</a></code> or 
 <code><a href="BIOMOD.ensemble.models.out.html">BIOMOD.ensemble.models.out</a></code> object</p></dd>
 </dl></div>
+    <div id="value">
+    <h2>Value</h2>
+    <dl><dt><code>get_options</code></dt>
+<dd><p>a <code><a href="BIOMOD.stored.data.html">BIOMOD.stored.models.options</a></code> object from the 
+  <code>models.options</code> slot of a <code><a href="BIOMOD.models.out.html">BIOMOD.models.out</a></code> object</p></dd>
+
+  <dt><code>get_calib_lines</code></dt>
+<dd><p>a <code><a href="BIOMOD.stored.data.html">BIOMOD.stored.array</a></code> object from the 
+  <code>calib.lines</code> slot of a <code><a href="BIOMOD.models.out.html">BIOMOD.models.out</a></code> object</p></dd>
+
+  
+  <dt><code>get_projected_models</code></dt>
+<dd><p>a <code>vector</code> from the <code>models.projected</code> slot of a 
+  <code><a href="BIOMOD.projection.out.html">BIOMOD.projection.out</a></code> object</p></dd>
+
+  
+  <dt><code>get_predictions</code></dt>
+<dd><p>a <code><a href="BIOMOD.stored.data.html">BIOMOD.stored.data</a></code> object from the <code>proj</code> slot 
+  of a <code><a href="BIOMOD.models.out.html">BIOMOD.models.out</a></code>, <code><a href="BIOMOD.projection.out.html">BIOMOD.projection.out</a></code> or 
+  <code><a href="BIOMOD.ensemble.models.out.html">BIOMOD.ensemble.models.out</a></code> object</p></dd>
+
+  
+  <dt><code>get_needed_models</code></dt>
+<dd><p>a <code>vector</code> containing names of the needed models of a 
+  <code><a href="BIOMOD.ensemble.models.out.html">BIOMOD.ensemble.models.out</a></code> object</p></dd>
+
+  <dt><code>get_kept_models</code></dt>
+<dd><p>a <code>vector</code> containing names of the kept models of a 
+  <code><a href="BIOMOD.ensemble.models.out.html">BIOMOD.ensemble.models.out</a></code> object</p></dd>
+
+  
+  <dt><code>get_formal_data</code></dt>
+<dd><p>depending on the <code>subinfo</code> parameter :</p><dl><dt><code>NULL</code></dt>
+<dd><p>a <code><a href="BIOMOD.stored.data.html">BIOMOD.stored.formated.data</a></code> (or 
+    <code>BIOMOD.stored.models.out</code>) object from the <code>formated.input.data</code> (or 
+    <code>models.out.obj</code>) slot of a <code><a href="BIOMOD.models.out.html">BIOMOD.models.out</a></code> (or 
+    <code><a href="BIOMOD.ensemble.models.out.html">BIOMOD.ensemble.models.out</a></code>) object</p></dd>
+
+    
+    <dt><code>expl.var.names</code></dt>
+<dd><p>a <code>vector</code> from the <code>expl.var.names</code> slot of a 
+    <code><a href="BIOMOD.models.out.html">BIOMOD.models.out</a></code> or <code><a href="BIOMOD.ensemble.models.out.html">BIOMOD.ensemble.models.out</a></code> object</p></dd>
+
+    <dt><code>resp.var</code></dt>
+<dd><p>a <code>vector</code> from the <code>data.species</code> slot of the 
+    <code>formated.input.data</code> slot of a <code><a href="BIOMOD.models.out.html">BIOMOD.models.out</a></code> or 
+    <code><a href="BIOMOD.ensemble.models.out.html">BIOMOD.ensemble.models.out</a></code> object</p></dd>
+
+    
+    <dt><code>expl.var</code></dt>
+<dd><p>a <code>data.frame</code> from the <code>data.env.var</code> slot of the 
+    <code>formated.input.data</code> slot of a <code><a href="BIOMOD.models.out.html">BIOMOD.models.out</a></code> or 
+    <code><a href="BIOMOD.ensemble.models.out.html">BIOMOD.ensemble.models.out</a></code> object</p></dd>
+
+    
+    <dt><code>MinMax</code></dt>
+<dd><p>a <code>list</code> of minimum and maximum values (or levels if factorial) of 
+    variable contained in the <code>data.env.var</code> slot of the 
+    <code>formated.input.data</code> slot of a <code><a href="BIOMOD.models.out.html">BIOMOD.models.out</a></code> or 
+    <code><a href="BIOMOD.ensemble.models.out.html">BIOMOD.ensemble.models.out</a></code> object</p></dd>
+
+    
+    <dt><code>eval.resp.var</code></dt>
+<dd><p>a <code>vector</code> from the <code>eval.data.species</code> slot of the 
+    <code>formated.input.data</code> slot of a <code><a href="BIOMOD.models.out.html">BIOMOD.models.out</a></code> or 
+    <code><a href="BIOMOD.ensemble.models.out.html">BIOMOD.ensemble.models.out</a></code> object</p></dd>
+
+    
+    <dt><code>eval.expl.var</code></dt>
+<dd><p>a <code>data.frame</code> from the <code>eval.data.env.var</code> slot of the 
+    <code>formated.input.data</code> slot of a <code><a href="BIOMOD.models.out.html">BIOMOD.models.out</a></code> or 
+    <code><a href="BIOMOD.ensemble.models.out.html">BIOMOD.ensemble.models.out</a></code> object</p></dd>
+
+  
+</dl><p></p></dd>
+
+  <dt><code>get_built_models</code></dt>
+<dd><p>a <code>vector</code> from the <code>models.computed</code> slot (or 
+  <code>em.computed</code>) of a <code><a href="BIOMOD.models.out.html">BIOMOD.models.out</a></code> (or 
+  <code><a href="BIOMOD.ensemble.models.out.html">BIOMOD.ensemble.models.out</a></code>) object</p></dd>
+
+  <dt><code>get_evaluations</code></dt>
+<dd><p>a <code><a href="BIOMOD.stored.data.html">BIOMOD.stored.array</a></code> (or <code>matrix</code>) from the 
+  <code>models.evaluation</code> slot (or <code>model_evaluation</code> of each model in 
+  <code>em.computed</code>) of a <code><a href="BIOMOD.models.out.html">BIOMOD.models.out</a></code> (or 
+  <code><a href="BIOMOD.ensemble.models.out.html">BIOMOD.ensemble.models.out</a></code>) object</p></dd>
+
+  <dt><code>get_variables_importance</code></dt>
+<dd><p>a <code><a href="BIOMOD.stored.data.html">BIOMOD.stored.array</a></code> from the 
+  <code>variables.importance</code> slot (or <code>model_variables_importance</code> of each model in 
+  <code>em.models</code>) of a <code><a href="BIOMOD.models.out.html">BIOMOD.models.out</a></code> (or 
+  <code><a href="BIOMOD.ensemble.models.out.html">BIOMOD.ensemble.models.out</a></code>) object</p></dd>
+
+
+</dl></div>
     <div id="see-also">
     <h2>See also</h2>
     <div class="dont-index"><p><code><a href="BIOMOD.models.out.html">BIOMOD.models.out</a></code>, <code><a href="BIOMOD.projection.out.html">BIOMOD.projection.out</a></code>, 

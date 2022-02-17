@@ -13,6 +13,16 @@
 ##' @param obj a \code{\link{biomod2_model}} object
 ##' 
 ##' 
+##' @return 
+##' 
+##' \describe{
+##'   \item{\code{get_formal_model}}{an object from the \code{model} slot of a 
+##'   \code{\link{biomod2_model}} object}
+##'   \item{\code{get_scaling_model}}{an object from the \code{scaling_model} slot of a 
+##'   \code{\link{biomod2_model}} object}
+##' }
+##' 
+##' 
 ##' @seealso \code{\link{biomod2_model}}
 ##' @family Toolbox functions
 ##' 

@@ -15,6 +15,14 @@
 \arguments{
 \item{obj}{a \code{\link{biomod2_model}} object}
 }
+\value{
+\describe{
+  \item{\code{get_formal_model}}{an object from the \code{model} slot of a 
+  \code{\link{biomod2_model}} object}
+  \item{\code{get_scaling_model}}{an object from the \code{scaling_model} slot of a 
+  \code{\link{biomod2_model}} object}
+}
+}
 \description{
 These functions allow the user to easily retrieve single models (formal or scaled) 
 from \code{\link{biomod2_model}} objects from the modeling step.

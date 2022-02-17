@@ -31,6 +31,72 @@
 ##' \code{\link{BIOMOD.ensemble.models.out}} object
 ##' 
 ##' 
+##' @return 
+##' 
+##' \describe{
+##'   \item{\code{get_options}}{a \code{\link{BIOMOD.stored.models.options}} object from the 
+##'   \code{models.options} slot of a \code{\link{BIOMOD.models.out}} object}
+##'   \item{\code{get_calib_lines}}{a \code{\link{BIOMOD.stored.array}} object from the 
+##'   \code{calib.lines} slot of a \code{\link{BIOMOD.models.out}} object}
+##'   
+##'   \item{\code{get_projected_models}}{a \code{vector} from the \code{models.projected} slot of a 
+##'   \code{\link{BIOMOD.projection.out}} object}
+##'   
+##'   \item{\code{get_predictions}}{a \code{\link{BIOMOD.stored.data}} object from the \code{proj} slot 
+##'   of a \code{\link{BIOMOD.models.out}}, \code{\link{BIOMOD.projection.out}} or 
+##'   \code{\link{BIOMOD.ensemble.models.out}} object}
+##'   
+##'   \item{\code{get_needed_models}}{a \code{vector} containing names of the needed models of a 
+##'   \code{\link{BIOMOD.ensemble.models.out}} object}
+##'   \item{\code{get_kept_models}}{a \code{vector} containing names of the kept models of a 
+##'   \code{\link{BIOMOD.ensemble.models.out}} object}
+##'   
+##'   \item{\code{get_formal_data}}{depending on the \code{subinfo} parameter :
+##'   \describe{
+##'     \item{\code{NULL}}{a \code{\link{BIOMOD.stored.formated.data}} (or 
+##'     \code{\link{BIOMOD.stored.models.out}}) object from the \code{formated.input.data} (or 
+##'     \code{models.out.obj}) slot of a \code{\link{BIOMOD.models.out}} (or 
+##'     \code{\link{BIOMOD.ensemble.models.out}}) object}
+##'     
+##'     \item{\code{expl.var.names}}{a \code{vector} from the \code{expl.var.names} slot of a 
+##'     \code{\link{BIOMOD.models.out}} or \code{\link{BIOMOD.ensemble.models.out}} object}
+
+##'     \item{\code{resp.var}}{a \code{vector} from the \code{data.species} slot of the 
+##'     \code{formated.input.data} slot of a \code{\link{BIOMOD.models.out}} or 
+##'     \code{\link{BIOMOD.ensemble.models.out}} object}
+##'     
+##'     \item{\code{expl.var}}{a \code{data.frame} from the \code{data.env.var} slot of the 
+##'     \code{formated.input.data} slot of a \code{\link{BIOMOD.models.out}} or 
+##'     \code{\link{BIOMOD.ensemble.models.out}} object}
+##'     
+##'     \item{\code{MinMax}}{a \code{list} of minimum and maximum values (or levels if factorial) of 
+##'     variable contained in the \code{data.env.var} slot of the 
+##'     \code{formated.input.data} slot of a \code{\link{BIOMOD.models.out}} or 
+##'     \code{\link{BIOMOD.ensemble.models.out}} object}
+##'     
+##'     \item{\code{eval.resp.var}}{a \code{vector} from the \code{eval.data.species} slot of the 
+##'     \code{formated.input.data} slot of a \code{\link{BIOMOD.models.out}} or 
+##'     \code{\link{BIOMOD.ensemble.models.out}} object}
+##'     
+##'     \item{\code{eval.expl.var}}{a \code{data.frame} from the \code{eval.data.env.var} slot of the 
+##'     \code{formated.input.data} slot of a \code{\link{BIOMOD.models.out}} or 
+##'     \code{\link{BIOMOD.ensemble.models.out}} object}
+##'   }
+##'   }
+##'   \item{\code{get_built_models}}{a \code{vector} from the \code{models.computed} slot (or 
+##'   \code{em.computed}) of a \code{\link{BIOMOD.models.out}} (or 
+##'   \code{\link{BIOMOD.ensemble.models.out}}) object}
+##'   \item{\code{get_evaluations}}{a \code{\link{BIOMOD.stored.array}} (or \code{matrix}) from the 
+##'   \code{models.evaluation} slot (or \code{model_evaluation} of each model in 
+##'   \code{em.computed}) of a \code{\link{BIOMOD.models.out}} (or 
+##'   \code{\link{BIOMOD.ensemble.models.out}}) object}
+##'   \item{\code{get_variables_importance}}{a \code{\link{BIOMOD.stored.array}} from the 
+##'   \code{variables.importance} slot (or \code{model_variables_importance} of each model in 
+##'   \code{em.models}) of a \code{\link{BIOMOD.models.out}} (or 
+##'   \code{\link{BIOMOD.ensemble.models.out}}) object}
+##' }
+##' 
+##' 
 ##' @seealso \code{\link{BIOMOD.models.out}}, \code{\link{BIOMOD.projection.out}}, 
 ##' \code{\link{BIOMOD.ensemble.models.out}}
 ##' @family Toolbox functions
@@ -45,7 +111,6 @@ NULL
 
 setGeneric("get_options", function(obj, ...) { standardGeneric("get_options") }) ## A
 setGeneric("get_calib_lines", function(obj, ...) { standardGeneric("get_calib_lines") }) ## A
-setGeneric("get_formal_data", function(obj, ...) { standardGeneric("get_formal_data") }) ## A
 
 setGeneric("get_projected_models", function(obj, ...) { standardGeneric("get_projected_models") }) ## B
 setGeneric("free", function(obj, ...) { standardGeneric("free") }) ## B
@@ -55,6 +120,7 @@ setGeneric("get_predictions", function(obj, ...) { standardGeneric("get_predicti
 setGeneric("get_needed_models", function(obj, ...) { standardGeneric("get_needed_models") }) ## C
 setGeneric("get_kept_models", function(obj, ...) { standardGeneric("get_kept_models") }) ## C
 
+setGeneric("get_formal_data", function(obj, ...) { standardGeneric("get_formal_data") }) ## AC
 setGeneric("get_built_models", function(obj, ...) { standardGeneric("get_built_models") }) ## AC
 setGeneric("get_evaluations", function(obj, ...) { standardGeneric("get_evaluations") }) ## AC
 setGeneric("get_variables_importance", function(obj, ...) { standardGeneric("get_variables_importance") }) ## AC
