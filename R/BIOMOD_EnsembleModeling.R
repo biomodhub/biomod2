@@ -594,8 +594,8 @@ BIOMOD_EnsembleModeling <- function(bm.mod,
             
             cross.validation <- sapply(metric.eval,
                                        bm_FindOptimStat,
-                                       Fit = pred.bm[eval_lines],
-                                       Obs = obs[eval_lines])
+                                       obs = obs[eval_lines],
+                                       fit = pred.bm[eval_lines])
             rownames(cross.validation) <- c("Testing.data", "Cutoff", "Sensitivity", "Specificity")
           }
           
@@ -607,9 +607,9 @@ BIOMOD_EnsembleModeling <- function(bm.mod,
                                                          metric.eval))
             } else {
               true.evaluation <- sapply(metric.eval, function(x) {
-                bm_FindOptimStat(Fit = eval_pred.bm * 1000,
-                                 Obs = eval.obs,
-                                 Fixed.thresh = cross.validation["Cutoff", x])
+                bm_FindOptimStat(obs = eval.obs,
+                                 fit = eval_pred.bm * 1000,
+                                 threshold = cross.validation["Cutoff", x])
               })
               cross.validation <- rbind(cross.validation["Testing.data", ], true.evaluation)
               rownames(cross.validation) <- c("Testing.data", "Evaluating.data", "Cutoff", "Sensitivity", "Specificity")
