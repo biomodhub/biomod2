@@ -10,27 +10,28 @@ bm_RunModelsLoop(
   modeling.id,
   model,
   bm.options,
-  var.import,
   metric.eval,
+  var.import,
   save.output = TRUE,
-  scale.models = TRUE
+  scale.models = TRUE,
+  nb.cpu = 1
 )
 
 bm_RunModel(
   model,
   Data,
+  modeling.id = "",
   bm.options,
-  calibLines,
+  calib.lines,
   weights,
   nam,
-  var.import = 0,
-  metric.eval = c("ROC", "TSS", "KAPPA"),
-  evalData = NULL,
-  save.output = FALSE,
   xy = NULL,
+  eval.data = NULL,
   eval.xy = NULL,
-  scale.models = TRUE,
-  modeling.id = ""
+  metric.eval = c("ROC", "TSS", "KAPPA"),
+  var.import = 0,
+  save.output = FALSE,
+  scale.models = TRUE
 )
 }
 \arguments{
@@ -47,14 +48,14 @@ object returned by the \code{\link{BIOMOD_FormatingData}} function}
 \item{bm.options}{a \code{\link{BIOMOD.models.options}} object returned by the
 \code{\link{BIOMOD_ModelingOptions}} function}
 
-\item{var.import}{(\emph{optional, default} \code{NULL}) \cr 
-An \code{integer} corresponding to the number of permutations to be done for each variable to 
-estimate variable importance}
-
 \item{metric.eval}{a \code{vector} containing evaluation metric names to be used, must 
 be among \code{ROC}, \code{TSS}, \code{KAPPA}, \code{ACCURACY}, \code{BIAS}, \code{POD}, 
 \code{FAR}, \code{POFD}, \code{SR}, \code{CSI}, \code{ETS}, \code{HK}, \code{HSS}, \code{OR}, 
 \code{ORSS}}
+
+\item{var.import}{(\emph{optional, default} \code{NULL}) \cr 
+An \code{integer} corresponding to the number of permutations to be done for each variable to 
+estimate variable importance}
 
 \item{save.output}{(\emph{optional, default} \code{TRUE}) \cr 
 A \code{logical} value defining whether all outputs should be saved on hard drive or not 
@@ -63,6 +64,10 @@ A \code{logical} value defining whether all outputs should be saved on hard driv
 \item{scale.models}{(\emph{optional, default} \code{FALSE}) \cr 
 A \code{logical} value defining whether all models predictions should be scaled with a 
 binomial GLM or not}
+
+\item{nb.cpu}{(\emph{optional, default} \code{1}) \cr 
+An \code{integer} value corresponding to the number of computing resources to be used to 
+parallelize the single models computation}
 }
 \value{
 A \code{list} containing for each model a \code{list} containing the following elements :

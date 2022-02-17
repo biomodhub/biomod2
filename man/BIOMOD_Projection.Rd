@@ -14,6 +14,7 @@ BIOMOD_Projection(
   metric.filter = NULL,
   compress = TRUE,
   build.clamping.mask = TRUE,
+  nb.cpu = 1,
   ...
 )
 }
@@ -62,6 +63,10 @@ compressed when saved on hard drive. Must be either \code{TRUE}, \code{FALSE}, \
 \item{build.clamping.mask}{(\emph{optional, default} \code{TRUE}) \cr 
 A \code{logical} value defining whether a clamping mask should be built and saved on hard 
 drive or not (see \href{BIOMOD_Projection.html#details}{Details}))}
+
+\item{nb.cpu}{(\emph{optional, default} \code{1}) \cr 
+An \code{integer} value corresponding to the number of computing resources to be used to 
+parallelize the single models computation}
 
 \item{\ldots}{(\emph{optional, see \href{BIOMOD_Projection.html#details}{Details})})}
 }

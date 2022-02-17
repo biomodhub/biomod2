@@ -14,6 +14,7 @@ BIOMOD_EnsembleForecasting(
   metric.binary = NULL,
   metric.filter = NULL,
   compress = TRUE,
+  nb.cpu = 1,
   ...
 )
 }
@@ -65,6 +66,10 @@ those of \code{modeling.output}) or \code{ROC}, \code{TSS}, \code{KAPPA}, \code{
 A \code{logical} or a \code{character} value defining whether and how objects should be 
 compressed when saved on hard drive. Must be either \code{TRUE}, \code{FALSE}, \code{xz} or 
 \code{gzip} (see \href{BIOMOD_EnsembleForecasting.html#details}{Details})}
+
+\item{nb.cpu}{(\emph{optional, default} \code{1}) \cr 
+An \code{integer} value corresponding to the number of computing resources to be used to 
+parallelize the single models computation}
 
 \item{\ldots}{(\emph{optional, see \href{BIOMOD_EnsembleForecasting.html#details}{Details}})}
 }

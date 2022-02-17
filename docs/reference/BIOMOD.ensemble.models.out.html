@@ -174,7 +174,7 @@ build the ensemble models, must be among <code>PA_dataset+repet</code>, <code>PA
 <span class="co"># Load species occurrences (6 species available)</span>
 <span class="va">myFile</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">'external/species/mammals_table.csv'</span>, package <span class="op">=</span> <span class="st">'biomod2'</span><span class="op">)</span>
 <span class="va">DataSpecies</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/utils/read.table.html" class="external-link">read.csv</a></span><span class="op">(</span><span class="va">myFile</span>, row.names <span class="op">=</span> <span class="fl">1</span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">DataSpecies</span><span class="op">)</span>
+<span class="fu"><a href="https://rdrr.io/pkg/raster/man/headtail.html" class="external-link">head</a></span><span class="op">(</span><span class="va">DataSpecies</span><span class="op">)</span>
 
 <span class="co"># Select the name of the studied species</span>
 <span class="va">myRespName</span> <span class="op">&lt;-</span> <span class="st">'GuloGulo'</span>

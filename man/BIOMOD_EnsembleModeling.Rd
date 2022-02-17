@@ -20,7 +20,8 @@ BIOMOD_EnsembleModeling(
   prob.ci.alpha = 0.05,
   committee.averaging = FALSE,
   prob.mean.weight = FALSE,
-  prob.mean.weight.decay = "proportional"
+  prob.mean.weight.decay = "proportional",
+  nb.cpu = 1
 )
 }
 \arguments{
@@ -95,6 +96,10 @@ A value defining the relative importance of the weights (if \code{prob.mean.weig
 A high value will strongly discriminate \emph{good} models from the \emph{bad} ones (see 
 \href{BIOMOD_EnsembleModeling.html#details}{Details}), while \code{proportional} will 
 attribute weights proportionally to the models evaluation scores}
+
+\item{nb.cpu}{(\emph{optional, default} \code{1}) \cr 
+An \code{integer} value corresponding to the number of computing resources to be used to 
+parallelize the single models computation}
 }
 \value{
 A \code{BIOMOD.ensemble.models.out} object containing models outputs, or links to saved 

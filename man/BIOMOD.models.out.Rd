@@ -25,7 +25,7 @@ Class returned by \code{\link{BIOMOD_Modeling}}, and used by
 
 \item{\code{has.evaluation.data}}{a \code{logical} value defining whether evaluation data is given}
 
-\item{\code{rescal.all.models}}{a \code{logical} value defining whether models have been rescaled or 
+\item{\code{scale.models}}{a \code{logical} value defining whether models have been rescaled or 
 not}
 
 \item{\code{models.evaluation}}{a \code{\link{BIOMOD.stored.array}} object containing models evaluation}

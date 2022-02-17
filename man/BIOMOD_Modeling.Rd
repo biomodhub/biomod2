@@ -19,7 +19,8 @@ BIOMOD_Modeling(
   metric.eval = c("KAPPA", "TSS", "ROC"),
   var.import = 0,
   save.output = TRUE,
-  scale.models = FALSE
+  scale.models = FALSE,
+  nb.cpu = 1
 )
 }
 \arguments{
@@ -76,6 +77,10 @@ A \code{logical} value defining whether all outputs should be saved on hard driv
 \item{scale.models}{(\emph{optional, default} \code{FALSE}) \cr 
 A \code{logical} value defining whether all models predictions should be scaled with a 
 binomial GLM or not}
+
+\item{nb.cpu}{(\emph{optional, default} \code{1}) \cr 
+An \code{integer} value corresponding to the number of computing resources to be used to 
+parallelize the single models computation}
 }
 \value{
 A \code{BIOMOD.models.out} object containing models outputs, or links to saved outputs. \cr

@@ -96,27 +96,28 @@ species distribution models (asked by the <code><a href="BIOMOD_Modeling.html">B
   <span class="va">modeling.id</span>,
   <span class="va">model</span>,
   <span class="va">bm.options</span>,
-  <span class="va">var.import</span>,
   <span class="va">metric.eval</span>,
+  <span class="va">var.import</span>,
   save.output <span class="op">=</span> <span class="cn">TRUE</span>,
-  scale.models <span class="op">=</span> <span class="cn">TRUE</span>
+  scale.models <span class="op">=</span> <span class="cn">TRUE</span>,
+  nb.cpu <span class="op">=</span> <span class="fl">1</span>
 <span class="op">)</span>
 
 <span class="fu">bm_RunModel</span><span class="op">(</span>
   <span class="va">model</span>,
   <span class="va">Data</span>,
+  modeling.id <span class="op">=</span> <span class="st">""</span>,
   <span class="va">bm.options</span>,
-  <span class="va">calibLines</span>,
+  <span class="va">calib.lines</span>,
   <span class="va">weights</span>,
   <span class="va">nam</span>,
-  var.import <span class="op">=</span> <span class="fl">0</span>,
-  metric.eval <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"ROC"</span>, <span class="st">"TSS"</span>, <span class="st">"KAPPA"</span><span class="op">)</span>,
-  evalData <span class="op">=</span> <span class="cn">NULL</span>,
-  save.output <span class="op">=</span> <span class="cn">FALSE</span>,
   xy <span class="op">=</span> <span class="cn">NULL</span>,
+  eval.data <span class="op">=</span> <span class="cn">NULL</span>,
   eval.xy <span class="op">=</span> <span class="cn">NULL</span>,
-  scale.models <span class="op">=</span> <span class="cn">TRUE</span>,
-  modeling.id <span class="op">=</span> <span class="st">""</span>
+  metric.eval <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"ROC"</span>, <span class="st">"TSS"</span>, <span class="st">"KAPPA"</span><span class="op">)</span>,
+  var.import <span class="op">=</span> <span class="fl">0</span>,
+  save.output <span class="op">=</span> <span class="cn">FALSE</span>,
+  scale.models <span class="op">=</span> <span class="cn">TRUE</span>
 <span class="op">)</span></code></pre></div>
     </div>
 
@@ -135,15 +136,15 @@ object returned by the <code><a href="BIOMOD_FormatingData.html">BIOMOD_Formatin
 <dt>bm.options</dt>
 <dd><p>a <code><a href="BIOMOD.models.options.html">BIOMOD.models.options</a></code> object returned by the
 <code><a href="BIOMOD_ModelingOptions.html">BIOMOD_ModelingOptions</a></code> function</p></dd>
-<dt>var.import</dt>
-<dd><p>(<em>optional, default</em> <code>NULL</code>) <br> 
-An <code>integer</code> corresponding to the number of permutations to be done for each variable to 
-estimate variable importance</p></dd>
 <dt>metric.eval</dt>
 <dd><p>a <code>vector</code> containing evaluation metric names to be used, must 
 be among <code>ROC</code>, <code>TSS</code>, <code>KAPPA</code>, <code>ACCURACY</code>, <code>BIAS</code>, <code>POD</code>, 
 <code>FAR</code>, <code>POFD</code>, <code>SR</code>, <code>CSI</code>, <code>ETS</code>, <code>HK</code>, <code>HSS</code>, <code>OR</code>, 
 <code>ORSS</code></p></dd>
+<dt>var.import</dt>
+<dd><p>(<em>optional, default</em> <code>NULL</code>) <br> 
+An <code>integer</code> corresponding to the number of permutations to be done for each variable to 
+estimate variable importance</p></dd>
 <dt>save.output</dt>
 <dd><p>(<em>optional, default</em> <code>TRUE</code>) <br> 
 A <code>logical</code> value defining whether all outputs should be saved on hard drive or not 
@@ -152,6 +153,10 @@ A <code>logical</code> value defining whether all outputs should be saved on har
 <dd><p>(<em>optional, default</em> <code>FALSE</code>) <br> 
 A <code>logical</code> value defining whether all models predictions should be scaled with a 
 binomial GLM or not</p></dd>
+<dt>nb.cpu</dt>
+<dd><p>(<em>optional, default</em> <code>1</code>) <br> 
+An <code>integer</code> value corresponding to the number of computing resources to be used to 
+parallelize the single models computation</p></dd>
 </dl></div>
     <div id="value">
     <h2>Value</h2>
