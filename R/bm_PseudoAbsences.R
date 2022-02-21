@@ -676,7 +676,7 @@ setMethod('bm_PseudoAbsences_disk', signature(expl.var = "RasterStack"),
               mask.in <- reclassify(dist.mask, c(-Inf, dist.min, NA, dist.min, dist.max, -1, dist.max, Inf, NA))
               
               # 2. selecting randomly pseudo absences
-              return(bm_PseudoAbsences_random(resp.var, expl.var = mask.in, nb.absences, nb.rep))
+              return(bm_PseudoAbsences_random(resp.var, expl.var = stack(mask.in), nb.absences, nb.rep))
             }
           })
 
