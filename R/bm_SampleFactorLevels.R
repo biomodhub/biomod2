@@ -124,14 +124,14 @@ bm_SampleFactorLevels.raster <- function(expl.var, mask.out = NULL, mask.in = NU
       selected.cells <- NULL
       
       ## get the factor levels on the full dataset
-      fact.level <- fact.level.original <- unlist(levels(subset(expl.var, f)))
+      fact.level <- fact.level.original <- unlist(levels(subset(expl.var, f))[[1]][,1, drop = FALSE])
       cat("\n\t> fact.level for",  names(expl.var)[f], ":\t", paste(fact.level, names(fact.level), sep = ":", collapse = "\t"))
       
       ## mask containing points that have already been sampled ------------------------------------
       if (!is.null(mask.out))
       {
         ## check the factor levels that have already been sampled
-        fact.levels.sampled <- unlist(levels(as.factor(mask(subset(expl.var, f), mask.out))))
+        fact.levels.sampled <- unlist(levels(as.factor(mask(subset(expl.var, f), mask.out)))[[1]][,1, drop = FALSE])
         ## update levels names (lost during mask conversion)
         attr(fact.levels.sampled, "names") <- attr(fact.level.original, "names")[fact.levels.sampled]
         cat("\n\t - according to mask.out levels", fact.levels.sampled, "have already been sampled")
@@ -151,7 +151,7 @@ bm_SampleFactorLevels.raster <- function(expl.var, mask.out = NULL, mask.in = NU
             {
               ## update the masked version of the factorial raster
               x.f.masked <- as.factor(mask(subset(expl.var, f), mask.in[[mask.in.id]]))
-              x.f.levels <- unlist(levels(x.f.masked))
+              x.f.levels <- unlist(levels(x.f.masked)[[1]][,1, drop = FALSE])
               ## update levels names (lost during mask conversion)
               attr(x.f.levels, "names") <- attr(fact.level.original, "names")[x.f.levels]              
               ## get the list of levels that could be sampled in this mask
