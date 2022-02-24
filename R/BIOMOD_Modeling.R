@@ -563,6 +563,8 @@ BIOMOD_Modeling <- function(bm.format,
 ##'
 ##' @importFrom dplyr bind_cols tibble
 ##'
+##' @export
+##' 
 
 setGeneric(".BIOMOD_Modeling.prepare.data", def = function(bm.format, ...) { standardGeneric(".BIOMOD_Modeling.prepare.data") })
 

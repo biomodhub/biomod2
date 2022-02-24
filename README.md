@@ -1,4 +1,6 @@
 [![Build Status](https://travis-ci.org/biomodhub/biomod2.svg?branch=master)](https://travis-ci.org/biomodhub/biomod2)
+[![R build status](https://github.com/biomodhub/biomod2/workflows/R-CMD-check/badge.svg)](https://github.com/biomodhub/biomod2/actions)
+
 
 <style>
 .zoom p {
