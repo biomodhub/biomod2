@@ -8,6 +8,7 @@ navbar:
   structure:
     left:
     - home
+    - videos
     - examples
     - reference
     right:
@@ -17,6 +18,10 @@ navbar:
     home:
       icon: fa-home fa-lg
       href: index.html
+    videos:
+      text: Videos
+      icon: fas fa-video
+      href: articles/vignette_videos.html
     examples:
       text: Examples
       icon: fas fa-stethoscope

@@ -1,0 +1,35 @@
+---
+title: "Videos"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Videos}
+  %\VignetteEngine{knitr::knitr}
+  %\VignetteEncoding{UTF-8}
+---
+
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.13/css/all.css" integrity="sha384-DNOHZ68U8hZfKXOrtjWvjxusGo9WQnrNx2sqG0tfsghAvtVlRW3tvkXWZh58N9jp" crossorigin="anonymous">
+
+
+*This course forms part of the **Ecological Niche Modeling 2020 course**, a jointly-taught, open-access course designed to provide a broad introduction to the use of niche modeling and distribution modeling tools in the broader field of distributional ecology.* - A. Townsend Peterson
+
+
+#### Introduction to `biomod2` package
+
+<iframe width="560" height="315" src="https://www.youtube.com/embed/-IAdf8Vh6uY" title="Introduction to biomod2 package" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+
+#### Modeling single species
+
+<iframe width="560" height="315" src="https://www.youtube.com/embed/QrwqhJgRbnY" title="Modelling single species" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+
+
+#### Modeling multiple species
+
+<iframe width="560" height="315" src="https://www.youtube.com/embed/E2I5PSdwrG8" title="Modelling multiple species" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+
+#### `biomod2` specificities (pseudo-absences, variability)
+
+<iframe width="560" height="315" src="https://www.youtube.com/embed/hEjhdURRy3o" title="biomod2 specifics" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+
+#### Interface (package `ShinyBiomod`)
+
+<iframe width="560" height="315" src="https://www.youtube.com/embed/nhWPYeLhxoA" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
