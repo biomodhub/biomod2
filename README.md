@@ -1,11 +1,28 @@
-
 [![Build Status](https://travis-ci.org/biomodhub/biomod2.svg?branch=master)](https://travis-ci.org/biomodhub/biomod2)
 
-<br/>
+<style>
+.zoom p {
+width:600px;
+margin-left: auto;
+margin-right: auto;
+}
+.zoom p:hover {
+width:1200px;
+position: relative;
+z-index: 10;
+}
+</style>
 
-**Functions for species distribution modeling, calibration and evaluation, ensemble of models.**
 
-<br/><br/>
+
+<div style="text-align:center;">
+**------------------------------------------------------------** <br/>
+**Species distribution modeling, <br/>
+calibration and evaluation, <br/>
+ensemble modeling** <br/>
+**------------------------------------------------------------**
+</div>
+
 
 ### <i class="fas fa-tools"></i> Installation
 
@@ -55,8 +72,14 @@ Sorry for the inconvenience, and please **feel free to indicate if you notice so
   - better documentation, better formation, better help provided
   - new improvements to come (update of single models, implementation of abundance models, etc)
 
+<br/><br/>
 
 
+
+
+<div class="zoom">
+<p><img src="articles/pictures/SCHEMA_BIOMOD2_WORKFLOW_functions.png" alt="Main workflow"></img></p>
+</div>
 
 
 
