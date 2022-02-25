@@ -180,6 +180,8 @@
 ##' @importFrom dismo kfold
 ##' @importFrom PresenceAbsence optimal.thresholds presence.absence.accuracy
 ##' @importFrom ENMeval ENMevaluate
+##' @importFrom stats aggregate as.formula binomial complete.cases cor formula glm 
+##' median na.exclude na.omit qt quantile sd
 ##' 
 ##' 
 ##' @export

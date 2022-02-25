@@ -63,6 +63,9 @@
 ##'                interaction.level = 0)
 ##' 
 ##' 
+##' @importFrom utils combn head read.csv setTxtProgressBar tail txtProgressBar write.table
+##' 
+##' 
 ##' @export
 ##' 
 ##'

@@ -34,7 +34,7 @@ setGeneric("get_scaling_model", def = function(object) { standardGeneric("get_sc
 
 
 ##' @name predict.bm
-##' @aliases predict
+## @aliases predict
 ##' @aliases .predict.ANN_biomod2_model.RasterStack
 ##' @aliases .predict.ANN_biomod2_model.data.frame
 ##' @aliases .predict.CTA_biomod2_model.RasterStack

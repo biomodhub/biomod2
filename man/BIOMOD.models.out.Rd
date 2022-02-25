@@ -3,7 +3,6 @@
 \docType{class}
 \name{BIOMOD.models.out}
 \alias{BIOMOD.models.out}
-\alias{BIOMOD.stored.models.out}
 \title{\code{BIOMOD_Modeling()} output object class}
 \description{
 Class returned by \code{\link{BIOMOD_Modeling}}, and used by 

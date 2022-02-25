@@ -1,6 +1,6 @@
 
 ##' @name predict.em
-##' @aliases predict
+## @aliases predict
 ##' @aliases .predict.EMmean_biomod2_model.RasterStack
 ##' @aliases .predict.EMmean_biomod2_model.data.frame
 ##' @aliases .predict.EMmedian_biomod2_model.RasterStack

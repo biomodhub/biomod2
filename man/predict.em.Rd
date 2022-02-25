@@ -2,7 +2,6 @@
 % Please edit documentation in R/biomod2_classes_5.R
 \name{predict.em}
 \alias{predict.em}
-\alias{predict}
 \alias{.predict.EMmean_biomod2_model.RasterStack}
 \alias{.predict.EMmean_biomod2_model.data.frame}
 \alias{.predict.EMmedian_biomod2_model.RasterStack}

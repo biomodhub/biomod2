@@ -190,7 +190,7 @@ Below is the detailed list of all modifiable parameters for each available model
 }
 
 \section{SRE }{
- (\code{\link[biomod2]{sre}})
+ (\code{\link{bm_SRE}})
 \itemize{
   \item{\code{quant = 0.025}}{ : a \code{numeric} corresponding to the quantile of 
   '\emph{extreme environmental variable}' removed to select species envelops}
@@ -372,8 +372,6 @@ myBiomodOptions
 # myForm <- 'Sp277 ~ bio3 + log(bio10) + poly(bio16, 2) + bio19 + bio3:bio19'
 # myBiomodOptions <- BIOMOD_ModelingOptions(GLM = list(myFormula = formula(myForm)))
 # myBiomodOptions
-
-
 
 
 }

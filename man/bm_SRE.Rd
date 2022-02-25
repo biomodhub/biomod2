@@ -93,7 +93,8 @@ sre.090 <- bm_SRE(resp.var = myResp.v,
 
 ## Visualize results
 res <- stack(myResp.v, sre.100, sre.095, sre.090)
-names(res) <- c("Original distribution", "Full data calibration", "Over 95 percent", "Over 90 percent")
+names(res) <- c("Original distribution", "Full data calibration"
+                , "Over 95 percent", "Over 90 percent")
 plot(res, zlim = c(0, 1))
 
 

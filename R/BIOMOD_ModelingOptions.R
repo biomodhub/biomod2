@@ -172,7 +172,7 @@
 ##'   iterations}
 ##' }
 ##'
-##' @section SRE : (\code{\link[biomod2]{sre}})
+##' @section SRE : (\code{\link{bm_SRE}})
 ##' \itemize{
 ##'   \item{\code{quant = 0.025}}{ : a \code{numeric} corresponding to the quantile of 
 ##'   '\emph{extreme environmental variable}' removed to select species envelops}
@@ -357,6 +357,7 @@
 ##'
 ## @importFrom gam gam.control
 ## @importFrom mgcv gam.control
+##' @importFrom methods as new validObject
 ##' 
 ##' 
 ##' @export

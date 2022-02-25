@@ -2,7 +2,6 @@
 % Please edit documentation in R/biomod2_classes_4.R
 \name{predict.bm}
 \alias{predict.bm}
-\alias{predict}
 \alias{.predict.ANN_biomod2_model.RasterStack}
 \alias{.predict.ANN_biomod2_model.data.frame}
 \alias{.predict.CTA_biomod2_model.RasterStack}

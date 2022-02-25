@@ -132,7 +132,7 @@ setGeneric("get_variables_importance", function(obj, ...) { standardGeneric("get
 
 ##' @name BIOMOD.models.out
 ##' @aliases BIOMOD.models.out
-##' @aliases BIOMOD.stored.models.out
+## @aliases BIOMOD.stored.models.out
 ##' @author Damien Georges
 ##' 
 ##' @title \code{BIOMOD_Modeling()} output object class
@@ -572,6 +572,8 @@ setMethod("get_variables_importance", "BIOMOD.models.out",
 ##' 
 ##' @importFrom raster subset
 ##' @importFrom rasterVis levelplot
+##' @importFrom grDevices colorRampPalette colors dev.new gray rainbow
+##' @importFrom graphics layout legend par points polygon text
 ##' 
 ##' @export
 ##' 

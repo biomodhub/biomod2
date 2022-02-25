@@ -93,7 +93,7 @@ created in the current working directory :
   \item a \emph{hidden} folder, named \code{.BIOMOD_DATA}, and containing outputs related 
   files (original dataset, calibration lines, pseudo-absences selected, predictions, 
   variables importance, evaluation values...), that can be retrieved with 
-  \code{\href{getters.out.html}{get_[...]}} or \code{\link{load}} functions, and used by other 
+  \href{getters.out.html}{\code{get_[...]}} or \code{\link{load}} functions, and used by other 
   \pkg{biomod2} functions, like \code{\link{BIOMOD_Projection}} or 
   \code{\link{BIOMOD_EnsembleModeling}}
 }
