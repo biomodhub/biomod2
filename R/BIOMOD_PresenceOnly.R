@@ -179,12 +179,12 @@ BIOMOD_PresenceOnly <- function(bm.mod = NULL,
                                              proj.name = paste(bm.mod@modeling.id, "cv_EF_eval", sep = "_"), 
                                              new.env = bg.env,
                                              build.clamping.mask = FALSE)
-      myModelPred <- as.data.frame(myBiomodProj.eval@proj@val)
+      myModelPred <- as.data.frame(myBiomodProj.eval@proj.out@val)
       colnames(myModelPred) <- paste(
         bm.mod@sp.name,
-        rep(dimnames(myBiomodProj.eval@proj@val)[[4]], prod(dim(myBiomodProj.eval@proj@val)[2:3])),
-        rep(dimnames(myBiomodProj.eval@proj@val)[[3]], each = dim(myBiomodProj.eval@proj@val)[2]),
-        rep(dimnames(myBiomodProj.eval@proj@val)[[2]], dim(myBiomodProj.eval@proj@val)[3])
+        rep(dimnames(myBiomodProj.eval@proj.out@val)[[4]], prod(dim(myBiomodProj.eval@proj.out@val)[2:3])),
+        rep(dimnames(myBiomodProj.eval@proj.out@val)[[3]], each = dim(myBiomodProj.eval@proj.out@val)[2]),
+        rep(dimnames(myBiomodProj.eval@proj.out@val)[[2]], dim(myBiomodProj.eval@proj.out@val)[3])
         , sep = "_")
     }
     
@@ -218,7 +218,7 @@ BIOMOD_PresenceOnly <- function(bm.mod = NULL,
       myBiomodProjFF <- BIOMOD_EnsembleForecasting(bm.em = bm.em,
                                                    bm.proj = myBiomodProj.eval,
                                                    proj.name = paste(bm.mod@modeling.id, "cv_EF_bg", sep = "_"))
-      myBiomodProjFF <- as.data.frame(myBiomodProjFF@proj@val)     
+      myBiomodProjFF <- as.data.frame(myBiomodProjFF@proj.out@val)     
     }
     if (!is.null(bm.mod)) { myModelPred <- cbind(myModelPred, myBiomodProjFF) }
     

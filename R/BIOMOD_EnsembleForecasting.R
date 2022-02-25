@@ -234,13 +234,13 @@ BIOMOD_EnsembleForecasting <- function(bm.em,
   proj_out@models.out@link = bm.em@link
   
   proj_is_raster <- FALSE
-  if (inherits(new.env, 'Raster') || (length(bm.proj) && inherits(bm.proj@proj, 'BIOMOD.stored.raster.stack'))) {
+  if (inherits(new.env, 'Raster') || (length(bm.proj) && inherits(bm.proj@proj.out, 'BIOMOD.stored.raster.stack'))) {
     proj_is_raster <- TRUE
   }
   if (proj_is_raster) {
-    proj_out@proj <- new('BIOMOD.stored.raster.stack')
+    proj_out@proj.out <- new('BIOMOD.stored.raster.stack')
   } else{
-    proj_out@proj <- new('BIOMOD.stored.array')
+    proj_out@proj.out <- new('BIOMOD.stored.array')
     do.stack = TRUE
   }
   
@@ -340,11 +340,11 @@ BIOMOD_EnsembleForecasting <- function(bm.em,
     }
     saved.files <- c(saved.files, file_name_tmp)
   } 
-  proj_out@proj@link <- saved.files #bm.em@em.computed
+  proj_out@proj.out@link <- saved.files #bm.em@em.computed
   
   if (!is.null(ef.out)) {
-    proj_out@proj@val <- ef.out
-    proj_out@proj@inMemory <- TRUE
+    proj_out@proj.out@val <- ef.out
+    proj_out@proj.out@inMemory <- TRUE
   }
   
   
@@ -365,8 +365,8 @@ BIOMOD_EnsembleForecasting <- function(bm.em,
     for (eval.meth in metric.binary) {
       cat("\n\t> Building", eval.meth, "binaries")
       if (!do.stack) {
-        for (i in 1:length(proj_out@proj@link)) {
-          file.tmp <- proj_out@proj@link[i]
+        for (i in 1:length(proj_out@proj.out@link)) {
+          file.tmp <- proj_out@proj.out@link[i]
           writeRaster(x = bm_BinaryTransformation(raster(file.tmp, RAT = FALSE), thresholds[i]),
                       filename = sub(output.format,
                                      paste0("_", eval.meth, "bin", output.format),
@@ -393,8 +393,8 @@ BIOMOD_EnsembleForecasting <- function(bm.em,
     for (eval.meth in metric.filter) {
       cat("\n\t> Building", eval.meth, "filtered")
       if (!do.stack) {
-        for (i in 1:length(proj_out@proj@link)) {
-          file.tmp <- proj_out@proj@link[i]
+        for (i in 1:length(proj_out@proj.out@link)) {
+          file.tmp <- proj_out@proj.out@link[i]
           writeRaster(x = bm_BinaryTransformation(raster(file.tmp, RAT = FALSE), thresholds[i], do.filtering = TRUE),
                       filename = sub(output.format,
                                      paste0("_", eval.meth, "filt", output.format),
@@ -527,7 +527,7 @@ BIOMOD_EnsembleForecasting <- function(bm.em,
     do.stack <- TRUE # if no info at all set it TRUE
     # if not explicitly defined apply same rules than bm.proj ones
     if (!is.null(bm.proj) &&
-        all(grepl("individual_projections", bm.proj@proj@link))) {
+        all(grepl("individual_projections", bm.proj@proj.out@link))) {
       do.stack <- FALSE
     }
   }
@@ -538,7 +538,7 @@ BIOMOD_EnsembleForecasting <- function(bm.em,
     keep.in.memory <- TRUE # if no info at all set it TRUE
     # if not explicitly defined apply same rules than bm.proj ones
     if (!is.null(bm.proj)) {
-      keep.in.memory <- bm.proj@proj@inMemory
+      keep.in.memory <- bm.proj@proj.out@inMemory
     }
   }
   

@@ -880,7 +880,7 @@ BIOMOD_EnsembleModeling <- function(bm.mod,
                                            build.clamping.mask = FALSE,
                                            do.stack = TRUE,
                                            nb.cpu = nb.cpu
-      )@proj@val
+      )@proj.out@val
       
       # transform array into data.frame
       out$predictions <- as.data.frame(out$predictions)

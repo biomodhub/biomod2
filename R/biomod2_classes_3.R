@@ -42,7 +42,7 @@
 ##'   \item{\code{get_projected_models}}{a \code{vector} from the \code{models.projected} slot of a 
 ##'   \code{\link{BIOMOD.projection.out}} object}
 ##'   
-##'   \item{\code{get_predictions}}{a \code{\link{BIOMOD.stored.data}} object from the \code{proj} slot 
+##'   \item{\code{get_predictions}}{a \code{\link{BIOMOD.stored.data}} object from the \code{proj.out} slot 
 ##'   of a \code{\link{BIOMOD.models.out}}, \code{\link{BIOMOD.projection.out}} or 
 ##'   \code{\link{BIOMOD.ensemble.models.out}} object}
 ##'   
@@ -503,8 +503,8 @@ setMethod("get_variables_importance", "BIOMOD.models.out",
 ##' @slot models.projected a \code{vector} containing names of projected models
 ##' @slot models.out a \code{\link{BIOMOD.stored.data}} object
 ##' @slot type a \code{character} corresponding to the class of the \code{val} slot of the 
-##' \code{proj} slot
-##' @slot proj a \code{\link{BIOMOD.stored.data}} object
+##' \code{proj.out} slot
+##' @slot proj.out a \code{\link{BIOMOD.stored.data}} object
 ##' 
 ##' 
 ##' @seealso \code{\link{BIOMOD_Projection}}, \code{\link{BIOMOD_EnsembleForecasting}}
@@ -587,7 +587,7 @@ setClass("BIOMOD.projection.out",
                         models.projected = 'character',
                         models.out = 'BIOMOD.stored.data',
                         type = 'character',
-                        proj = 'BIOMOD.stored.data'),
+                        proj.out = 'BIOMOD.stored.data'),
          prototype(modeling.id = '',
                    proj.name = '',
                    sp.name = '',
@@ -609,7 +609,7 @@ setMethod('plot', signature(x = 'BIOMOD.projection.out', y = "missing"),
             }
             if (!length(models_selected)) { stop("invalid str.grep arg") }
             
-            if(inherits(x@proj, "BIOMOD.stored.raster.stack")){
+            if(inherits(x@proj.out, "BIOMOD.stored.raster.stack")){
               requireNamespace("rasterVis")
               
               my.at <- seq(0, 1000, by = 100) ## breaks of color key
@@ -637,7 +637,7 @@ setMethod('plot', signature(x = 'BIOMOD.projection.out', y = "missing"),
                   cat("\n Plotting function failed.. You should try to do it by yourself!")
                 }
               }
-            } else if (inherits(x@proj, "BIOMOD.stored.array")) {
+            } else if (inherits(x@proj.out, "BIOMOD.stored.array")) {
               if (ncol(x@coord) != 2) {
                 cat("\n ! Impossible to plot projections because xy coordinates are not available !")
               } else {
@@ -679,14 +679,14 @@ setMethod("get_projected_models", "BIOMOD.projection.out", function(obj){ return
 
 setMethod('free', signature('BIOMOD.projection.out'),
           function(obj) {
-            if (inherits(obj@proj, "BIOMOD.stored.array")) {
-              obj@proj@val = array()
-            } else if (inherits(obj@proj, "BIOMOD.stored.raster.stack")) {
-              obj@proj@val = stack()
+            if (inherits(obj@proj.out, "BIOMOD.stored.array")) {
+              obj@proj.out@val = array()
+            } else if (inherits(obj@proj.out, "BIOMOD.stored.raster.stack")) {
+              obj@proj.out@val = stack()
             } else {
-              obj@proj@val = NULL
+              obj@proj.out@val = NULL
             }
-            obj@proj@inMemory = FALSE
+            obj@proj.out@inMemory = FALSE
             return(obj)
           })
 
@@ -713,7 +713,7 @@ setMethod("get_predictions", "BIOMOD.projection.out",
             
             if (length(models_selected))
             {
-              proj <- load_stored_object(obj@proj)
+              proj <- load_stored_object(obj@proj.out)
               names(proj) <- obj@models.projected
               if (inherits(proj, 'Raster')) {
                 proj <- subset(proj, models_selected, drop = FALSE)

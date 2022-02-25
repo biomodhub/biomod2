@@ -207,9 +207,9 @@ BIOMOD_Projection <- function(bm.mod,
                   modeling.id = bm.mod@modeling.id)
   proj_out@models.out@link = bm.mod@link
   if (inherits(new.env, 'Raster')) {
-    proj_out@proj <- new('BIOMOD.stored.raster.stack')
+    proj_out@proj.out <- new('BIOMOD.stored.raster.stack')
   } else {
-    proj_out@proj <- new('BIOMOD.stored.array')
+    proj_out@proj.out <- new('BIOMOD.stored.array')
   }
   
   ## 2. Create simulation directories -------------------------------------------------------------
@@ -288,8 +288,8 @@ BIOMOD_Projection <- function(bm.mod,
       proj <- .DF_to_ARRAY(proj)
     }
     if (keep.in.memory) {
-      proj_out@proj@val <- proj
-      proj_out@proj@inMemory <- TRUE
+      proj_out@proj.out@val <- proj
+      proj_out@proj.out@inMemory <- TRUE
     }
   }
 
@@ -305,8 +305,8 @@ BIOMOD_Projection <- function(bm.mod,
   } else {
     saved.files = unlist(proj)
   }
-  proj_out@type <- class(proj_out@proj@val)
-  proj_out@proj@link <- saved.files
+  proj_out@type <- class(proj_out@proj.out@val)
+  proj_out@proj.out@link <- saved.files
   
   
   ## 5. Compute binary and/or filtered transformation ---------------------------------------------
@@ -342,8 +342,8 @@ BIOMOD_Projection <- function(bm.mod,
     for (eval.meth in metric.binary) {
       cat("\n\t> Building", eval.meth, "binaries")
       if (!do.stack) {
-        for (i in 1:length(proj_out@proj@link)) {
-          file.tmp <- proj_out@proj@link[i]
+        for (i in 1:length(proj_out@proj.out@link)) {
+          file.tmp <- proj_out@proj.out@link[i]
           thres.tmp <- asub(thresholds, eval.meth[drop = FALSE], 1, drop = FALSE)[, i]
           writeRaster(x = bm_BinaryTransformation(raster(file.tmp, RAT = FALSE), thres.tmp),
                       filename = sub(output.format,
@@ -376,8 +376,8 @@ BIOMOD_Projection <- function(bm.mod,
     for (eval.meth in metric.filter) {
       cat("\n\t> Building", eval.meth, "filtered")
       if (!do.stack) {
-        for (i in 1:length(proj_out@proj@link)) {
-          file.tmp <- proj_out@proj@link[i]
+        for (i in 1:length(proj_out@proj.out@link)) {
+          file.tmp <- proj_out@proj.out@link[i]
           thres.tmp <- asub(thresholds, eval.meth[drop = FALSE], 1, drop = FALSE)[, i]
           writeRaster(x = bm_BinaryTransformation(raster(file.tmp, RAT = FALSE), thres.tmp, do.filtering = TRUE),
                       filename = sub(output.format,

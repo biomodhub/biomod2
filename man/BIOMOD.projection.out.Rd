@@ -30,9 +30,9 @@ not}
 \item{\code{models.out}}{a \code{\link{BIOMOD.stored.data}} object}
 
 \item{\code{type}}{a \code{character} corresponding to the class of the \code{val} slot of the 
-\code{proj} slot}
+\code{proj.out} slot}
 
-\item{\code{proj}}{a \code{\link{BIOMOD.stored.data}} object}
+\item{\code{proj.out}}{a \code{\link{BIOMOD.stored.data}} object}
 }}
 
 \examples{

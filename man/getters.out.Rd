@@ -88,7 +88,7 @@
   \item{\code{get_projected_models}}{a \code{vector} from the \code{models.projected} slot of a 
   \code{\link{BIOMOD.projection.out}} object}
   
-  \item{\code{get_predictions}}{a \code{\link{BIOMOD.stored.data}} object from the \code{proj} slot 
+  \item{\code{get_predictions}}{a \code{\link{BIOMOD.stored.data}} object from the \code{proj.out} slot 
   of a \code{\link{BIOMOD.models.out}}, \code{\link{BIOMOD.projection.out}} or 
   \code{\link{BIOMOD.ensemble.models.out}} object}
   
