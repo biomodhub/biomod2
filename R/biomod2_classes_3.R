@@ -55,7 +55,7 @@
 ##'   \describe{
 ##'     \item{\code{NULL}}{a \code{\link{BIOMOD.stored.formated.data}} (or 
 ##'     \code{\link{BIOMOD.stored.models.out}}) object from the \code{formated.input.data} (or 
-##'     \code{models.out.obj}) slot of a \code{\link{BIOMOD.models.out}} (or 
+##'     \code{models.out}) slot of a \code{\link{BIOMOD.models.out}} (or 
 ##'     \code{\link{BIOMOD.ensemble.models.out}}) object}
 ##'     
 ##'     \item{\code{expl.var.names}}{a \code{vector} from the \code{expl.var.names} slot of a 
@@ -150,6 +150,11 @@ setGeneric("get_variables_importance", function(obj, ...) { standardGeneric("get
 ##' @slot has.evaluation.data a \code{logical} value defining whether evaluation data is given
 ##' @slot scale.models a \code{logical} value defining whether models have been rescaled or 
 ##' not
+##' @slot formated.input.data a \code{\link{BIOMOD.stored.formated.data}} object containing 
+##' informations from \code{\link{BIOMOD_FormatingData}} object
+##' @slot calib.lines a \code{\link{BIOMOD.stored.array}} object containing calibration lines
+##' @slot models.options a \code{\link{BIOMOD.stored.models.options}} object containing 
+##' informations from \code{\link{BIOMOD_ModelingOptions}} object
 ##' @slot models.evaluation a \code{\link{BIOMOD.stored.array}} object containing models evaluation
 ##' @slot variables.importance a \code{\link{BIOMOD.stored.array}} object containing variables 
 ##' importance
@@ -157,11 +162,6 @@ setGeneric("get_variables_importance", function(obj, ...) { standardGeneric("get
 ##' predictions
 ##' @slot models.prediction.eval a \code{\link{BIOMOD.stored.array}} object containing models 
 ##' predictions for evaluation data
-##' @slot formated.input.data a \code{\link{BIOMOD.stored.formated.data}} object containing 
-##' informations from \code{\link{BIOMOD_FormatingData}} object
-##' @slot calib.lines a \code{\link{BIOMOD.stored.array}} object containing calibration lines
-##' @slot models.options a \code{\link{BIOMOD.stored.models.options}} object containing 
-##' informations from \code{\link{BIOMOD_ModelingOptions}} object
 ##' @slot link a \code{character} containing the file name of the saved object
 ##' @slot val a \code{\link{BIOMOD.models.out}} object
 ##' 
@@ -492,19 +492,19 @@ setMethod("get_variables_importance", "BIOMOD.models.out",
 ##' \code{\link{BIOMOD_EnsembleForecasting}}
 ##' 
 ##' 
-##' @slot proj.names a \code{character} corresponding to the projection name
+##' @slot modeling.id a \code{character} corresponding to the name (ID) of the simulation set
+##' @slot proj.name a \code{character} corresponding to the projection name
 ##' @slot sp.name a \code{character} corresponding to the species name
 ##' @slot expl.var.names a \code{vector} containing names of explanatory variables
+##' @slot coord a 2-columns \code{matrix} or \code{data.frame} containing the corresponding 
+##' \code{X} and \code{Y} coordinates used to project the species distribution model(s)
+##' @slot scale.models a \code{logical} value defining whether models have been rescaled or 
+##' not
 ##' @slot models.projected a \code{vector} containing names of projected models
-##' @slot models.scaled a \code{vector} containing names of scaled models
-##' @slot modeling.object a \code{\link{BIOMOD.stored.data}} object
-##' @slot modeling.object.id a \code{character} corresponding to the name (ID) of the simulation 
-##' set 
+##' @slot models.out a \code{\link{BIOMOD.stored.data}} object
 ##' @slot type a \code{character} corresponding to the class of the \code{val} slot of the 
 ##' \code{proj} slot
 ##' @slot proj a \code{\link{BIOMOD.stored.data}} object
-##' @slot xy.coord a 2-columns \code{matrix} or \code{data.frame} containing the corresponding 
-##' \code{X} and \code{Y} coordinates used to project the species distribution model(s)
 ##' 
 ##' 
 ##' @seealso \code{\link{BIOMOD_Projection}}, \code{\link{BIOMOD_EnsembleForecasting}}
@@ -578,24 +578,24 @@ setMethod("get_variables_importance", "BIOMOD.models.out",
 
 # 5.1 Class Definition ----------------------------------------------------------------------------
 setClass("BIOMOD.projection.out",
-         representation(proj.names = 'character',
+         representation(modeling.id = 'character',
+                        proj.name = 'character',
                         sp.name = 'character',
                         expl.var.names = 'character',
+                        coord = 'matrix',
+                        scale.models = 'logical',
                         models.projected = 'character',
-                        models.scaled = 'logical',
-                        modeling.object = 'BIOMOD.stored.data',
-                        modeling.object.id = 'character',
+                        models.out = 'BIOMOD.stored.data',
                         type = 'character',
-                        proj = 'BIOMOD.stored.data',
-                        xy.coord = 'matrix'),
-         prototype(proj.names = '',
-                   sp.name='',
-                   expl.var.names='',
-                   models.projected='',
-                   models.scaled=TRUE,
-                   modeling.object.id='',
-                   type='',
-                   xy.coord = matrix()),
+                        proj = 'BIOMOD.stored.data'),
+         prototype(modeling.id = '',
+                   proj.name = '',
+                   sp.name = '',
+                   expl.var.names = '',
+                   coord = matrix(),
+                   scale.models = TRUE,
+                   models.projected = '',
+                   type = ''),
          validity = function(object){ return(TRUE) })
 
 
@@ -622,7 +622,7 @@ setMethod('plot', signature(x = 'BIOMOD.projection.out', y = "missing"),
                                         at = my.at,
                                         margin = TRUE,
                                         col.regions = my.col,
-                                        main = paste(x@sp.name, x@proj.names, "projections"),
+                                        main = paste(x@sp.name, x@proj.name, "projections"),
                                         colorkey = list(labels = list(labels = my.lab, at = my.labs.at))
               ))
               if (!inherits(try_plot, "try-error")) { ## produce plot
@@ -638,11 +638,11 @@ setMethod('plot', signature(x = 'BIOMOD.projection.out', y = "missing"),
                 }
               }
             } else if (inherits(x@proj, "BIOMOD.stored.array")) {
-              if (ncol(x@xy.coord) != 2) {
+              if (ncol(x@coord) != 2) {
                 cat("\n ! Impossible to plot projections because xy coordinates are not available !")
               } else {
                 .multiple.plot(Data = get_predictions(x, full.name = models_selected, as.data.frame = TRUE)
-                               , coor = x@xy.coord)
+                               , coor = x@coord)
               }
             } else {
               cat("\n !  Biomod Projection plotting issue !", fill = .Options$width)
@@ -653,12 +653,12 @@ setMethod('plot', signature(x = 'BIOMOD.projection.out', y = "missing"),
 setMethod('show', signature('BIOMOD.projection.out'),
           function(object){
             .bm_cat("BIOMOD.projection.out")
-            cat("\nProjection directory :", paste0(object@sp.name, "/", object@proj.names), fill = .Options$width)
+            cat("\nProjection directory :", paste0(object@sp.name, "/", object@proj.name), fill = .Options$width)
             cat("\n")
             cat("\nsp.name :", object@sp.name, fill = .Options$width)
             cat("\nexpl.var.names :", object@expl.var.names, fill = .Options$width)
             cat("\n")
-            cat("\nmodeling id :", object@modeling.object.id , "(", object@modeling.object@link , ")", fill = .Options$width)
+            cat("\nmodeling id :", object@modeling.id , "(", object@models.out@link , ")", fill = .Options$width)
             cat("\nmodels projected :", toString(object@models.projected), fill = .Options$width)
             .bm_cat()
           })
@@ -767,12 +767,8 @@ setMethod("get_predictions", "BIOMOD.projection.out",
 ##' 
 ##' @slot sp.name a \code{character} corresponding to the species name
 ##' @slot expl.var.names a \code{vector} containing names of explanatory variables
-##' @slot models.out.obj a \code{\link{BIOMOD.stored.models.out}} object containing 
+##' @slot models.out a \code{\link{BIOMOD.stored.models.out}} object containing 
 ##' informations from \code{\link{BIOMOD_Modeling}} object
-##' @slot eval.metric a \code{vector} containing names of evaluation metrics
-##' @slot eval.metric.quality.threshold a \code{vector} of \code{numeric} values 
-##' corresponding to the minimum scores (one for each \code{eval.metric}) below which single 
-##' models has been excluded from the ensemble model building
 ##' @slot em.computed a \code{vector} containing names of ensemble models
 ##' @slot em.by a \code{character} corresponding to the way kept models have been combined to 
 ##' build the ensemble models, must be among \code{PA_dataset+repet}, \code{PA_dataset+algo}, 
@@ -862,9 +858,7 @@ setMethod("get_predictions", "BIOMOD.projection.out",
 setClass("BIOMOD.ensemble.models.out",
          representation(sp.name = 'character',
                         expl.var.names = 'character',
-                        models.out.obj = 'BIOMOD.stored.models.out',
-                        eval.metric = 'character',
-                        eval.metric.quality.threshold = 'numeric',
+                        models.out = 'BIOMOD.stored.models.out',
                         em.computed = 'character',
                         em.by = 'character',
                         em.models = 'ANY',
@@ -872,9 +866,7 @@ setClass("BIOMOD.ensemble.models.out",
                         link = 'character'),
          prototype(sp.name = '',
                    expl.var.names = '',
-                   models.out.obj = new('BIOMOD.stored.models.out'),
-                   eval.metric = '',
-                   eval.metric.quality.threshold = 0,
+                   models.out = new('BIOMOD.stored.models.out'),
                    em.models = NULL,
                    em.computed = character(),
                    modeling.id = '.',
@@ -903,10 +895,10 @@ setMethod('show', signature('BIOMOD.ensemble.models.out'),
 setMethod("get_formal_data", "BIOMOD.ensemble.models.out",
           function(obj, subinfo = NULL) {
             if (is.null(subinfo)) {
-              if (obj@models.out.obj@inMemory) {
-                return(obj@models.out.obj@val)
-              } else if (obj@models.out.obj@link != '') {
-                data <- get(load(obj@models.out.obj@link))
+              if (obj@models.out@inMemory) {
+                return(obj@models.out@val)
+              } else if (obj@models.out@link != '') {
+                data <- get(load(obj@models.out@link))
                 return(data)
               } else { return(NA) }
             } else {

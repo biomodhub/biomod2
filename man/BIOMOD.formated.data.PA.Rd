@@ -83,10 +83,11 @@ evaluation data}
 \item{\code{eval.data.env.var}}{(\emph{optional, default} \code{NULL}) \cr 
 A \code{data.frame} containing explanatory variables for evaluation data}
 
-\item{\code{PA.strategy}}{a \code{character} corresponding to the species name}
+\item{\code{PA.strategy}}{a \code{character} corresponding to the pseudo-absence selection strategy}
 
-\item{\code{PA}}{a 2-columns \code{data.frame} containing the corresponding \code{X} and \code{Y} 
-coordinates}
+\item{\code{PA.table}}{a \code{data.frame} containing the corresponding table of selected 
+pseudo-absences (indicated by \code{TRUE} or \code{FALSE}) from the \code{pa.tab} list 
+element returned by the \code{\link{bm_PseudoAbsences}} function}
 }}
 
 \examples{
@@ -129,9 +130,9 @@ plot(myBiomodData)
 
 }
 \seealso{
-\code{\link{BIOMOD_FormatingData}}, \code{\link{BIOMOD_Tuning}}, 
-\code{\link{BIOMOD_CrossValidation}}, \code{\link{BIOMOD_Modeling}}, 
-\code{\link{bm_RunModelsLoop}}
+\code{\link{BIOMOD_FormatingData}}, \code{\link{bm_PseudoAbsences}}, 
+\code{\link{BIOMOD_Tuning}}, \code{\link{BIOMOD_CrossValidation}}, 
+\code{\link{BIOMOD_Modeling}}, \code{\link{bm_RunModelsLoop}}
 
 Other Toolbox objects: 
 \code{\link{BIOMOD.ensemble.models.out}},

@@ -60,7 +60,7 @@
 ##' \code{\link[mda]{fda}}, \code{\link[mda]{mars}}, \code{\link[maxnet]{maxnet}}, 
 ##' \code{\link[randomForest]{randomForest}}, 
 ##' \code{\link{BIOMOD_ModelingOptions}}, \code{\link{BIOMOD_Modeling}}, 
-##' \code{\link{bm_MakeFormula}}, \code{\link{bm_SampleFactorLevels}}, \code{\link{bm_Rescaler}}, 
+##' \code{\link{bm_MakeFormula}}, \code{\link{bm_SampleFactorLevels}}, 
 ##' \code{\link{bm_FindOptimStat}}, \code{\link{bm_VariablesImportance}}
 ##' @family Secundary functions
 ##' 

@@ -198,14 +198,14 @@ BIOMOD_Projection <- function(bm.mod,
   
   ## 1. Create output object ----------------------------------------------------------------------
   proj_out <- new('BIOMOD.projection.out',
-                  proj.names = proj.name,
+                  proj.name = proj.name,
                   sp.name =  bm.mod@sp.name,
                   expl.var.names = bm.mod@expl.var.names,
                   models.projected = models.chosen,
-                  models.scaled = bm.mod@scale.models,
-                  xy.coord = new.env.xy,
-                  modeling.object.id = bm.mod@modeling.id)
-  proj_out@modeling.object@link = bm.mod@link
+                  scale.models = bm.mod@scale.models,
+                  coord = new.env.xy,
+                  modeling.id = bm.mod@modeling.id)
+  proj_out@models.out@link = bm.mod@link
   if (inherits(new.env, 'Raster')) {
     proj_out@proj <- new('BIOMOD.stored.raster.stack')
   } else {

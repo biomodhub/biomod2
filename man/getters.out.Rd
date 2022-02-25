@@ -101,7 +101,7 @@
   \describe{
     \item{\code{NULL}}{a \code{\link{BIOMOD.stored.formated.data}} (or 
     \code{\link{BIOMOD.stored.models.out}}) object from the \code{formated.input.data} (or 
-    \code{models.out.obj}) slot of a \code{\link{BIOMOD.models.out}} (or 
+    \code{models.out}) slot of a \code{\link{BIOMOD.models.out}} (or 
     \code{\link{BIOMOD.ensemble.models.out}}) object}
     
     \item{\code{expl.var.names}}{a \code{vector} from the \code{expl.var.names} slot of a 

@@ -225,13 +225,13 @@ BIOMOD_EnsembleForecasting <- function(bm.em,
   
   ## 1. Create output object ----------------------------------------------------------------------
   proj_out <- new('BIOMOD.projection.out',
-                  proj.names = proj.name,
+                  proj.name = proj.name,
                   sp.name =  bm.em@sp.name,
                   expl.var.names = bm.em@expl.var.names,
                   models.projected = models.chosen,
-                  xy.coord = new.env.xy,
-                  modeling.object.id = bm.em@modeling.id)
-  proj_out@modeling.object@link = bm.em@link
+                  coord = new.env.xy,
+                  modeling.id = bm.em@modeling.id)
+  proj_out@models.out@link = bm.em@link
   
   proj_is_raster <- FALSE
   if (inherits(new.env, 'Raster') || (length(bm.proj) && inherits(bm.proj@proj, 'BIOMOD.stored.raster.stack'))) {
@@ -261,7 +261,7 @@ BIOMOD_EnsembleForecasting <- function(bm.em,
   } else {
     # make prediction according to given environment
     tmp_dir <- paste0('Tmp', format(Sys.time(), "%s"))
-    formal_pred <- BIOMOD_Projection(bm.mod = load_stored_object(bm.em@models.out.obj),
+    formal_pred <- BIOMOD_Projection(bm.mod = load_stored_object(bm.em@models.out),
                                      new.env = new.env,
                                      proj.name = tmp_dir,
                                      new.env.xy = NULL,
@@ -483,7 +483,7 @@ BIOMOD_EnsembleForecasting <- function(bm.em,
   if (!length(proj.name) && !length(bm.proj)) {
     stop("You have to give a valid 'proj.name' if you don't work with bm.proj")
   } else if (!length(proj.name)) {
-    proj.name <- bm.proj@proj.names
+    proj.name <- bm.proj@proj.name
   }
   
   ## 5. Check metric.binary & metric.filter -----------------------------------
@@ -546,7 +546,7 @@ BIOMOD_EnsembleForecasting <- function(bm.em,
   new.env.xy <- args$new.env.xy
   if (is.null(new.env.xy)) {
     if (!is.null(bm.proj)) {
-      new.env.xy <- bm.proj@xy.coord
+      new.env.xy <- bm.proj@coord
     } else {
       new.env.xy <- matrix()
     }

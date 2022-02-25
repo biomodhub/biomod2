@@ -639,14 +639,14 @@ setMethod('.BIOMOD_Modeling.prepare.data', signature('BIOMOD.formated.data.PA'),
           {
             list.out <- list()
             formal_weights <- weights
-            for (pa in 1:ncol(bm.format@PA))
+            for (pa in 1:ncol(bm.format@PA.table))
             {
               weights <- formal_weights
-              name <- paste0(bm.format@sp.name, "_", colnames(bm.format@PA)[pa])
-              xy <- bm.format@coord[bm.format@PA[, pa], ]
-              resp <- bm.format@data.species[bm.format@PA[, pa]] # response variable (with pseudo absences selected)
+              name <- paste0(bm.format@sp.name, "_", colnames(bm.format@PA.table)[pa])
+              xy <- bm.format@coord[bm.format@PA.table[, pa], ]
+              resp <- bm.format@data.species[bm.format@PA.table[, pa]] # response variable (with pseudo absences selected)
               resp[is.na(resp)] <- 0
-              dataBM <- data.frame(cbind(resp, bm.format@data.env.var[bm.format@PA[, pa], , drop = FALSE]))
+              dataBM <- data.frame(cbind(resp, bm.format@data.env.var[bm.format@PA.table[, pa], , drop = FALSE]))
               colnames(dataBM)[1] <- bm.format@sp.name
               
               ## Calib/Valid lines
@@ -658,25 +658,25 @@ setMethod('.BIOMOD_Modeling.prepare.data', signature('BIOMOD.formated.data.PA'),
                   calib.lines <- asub(data.split.table, pa, 3, drop = TRUE)
                 }
                 colnames(calib.lines) <- paste0('_RUN', 1:ncol(calib.lines))
-                calib.lines[which(!bm.format@PA[, pa]), ] <- NA
+                calib.lines[which(!bm.format@PA.table[, pa]), ] <- NA
               } else {
                 if (nb.rep == 0) { # take all available data
                   calib.lines <- matrix(NA, nrow = length(bm.format@data.species), ncol = 1)
-                  calib.lines[bm.format@PA[, pa], 1] <- TRUE
+                  calib.lines[bm.format@PA.table[, pa], 1] <- TRUE
                   colnames(calib.lines) <- '_Full'
                 } else {
                   calib.lines <- matrix(NA, nrow = length(bm.format@data.species), ncol = nb.rep)
                   sampled.mat <- .sample_mat(
-                    data.sp = bm.format@data.species[bm.format@PA[, pa]],
+                    data.sp = bm.format@data.species[bm.format@PA.table[, pa]],
                     data.split = data.split.perc,
                     nb.rep = nb.rep,
-                    data.env = bm.format@data.env.var[bm.format@PA[, pa], , drop = FALSE]
+                    data.env = bm.format@data.env.var[bm.format@PA.table[, pa], , drop = FALSE]
                   )
-                  calib.lines[bm.format@PA[, pa], ] <- sampled.mat
+                  calib.lines[bm.format@PA.table[, pa], ] <- sampled.mat
                   colnames(calib.lines) <- colnames(sampled.mat)
                   if (do.full.models) {
                     calib.lines <- cbind(calib.lines, rep(NA, length(bm.format@data.species)))
-                    calib.lines[bm.format@PA[, pa], nb.rep + 1] <- TRUE
+                    calib.lines[bm.format@PA.table[, pa], nb.rep + 1] <- TRUE
                     colnames(calib.lines)[nb.rep + 1] <- '_Full'
                   }
                 }
@@ -702,9 +702,9 @@ setMethod('.BIOMOD_Modeling.prepare.data', signature('BIOMOD.formated.data.PA'),
                 if (is.null(prevalence)) { prevalence <- 0.5 }
                 cat("\n\t\t\t! Weights where automatically defined for", name, "to rise a", prevalence, "prevalence !")
                 weights <- rep(NA, length(bm.format@data.species))
-                weights[bm.format@PA[, pa]] <- .automatic_weights_creation(as.numeric(dataBM[, 1]) , prev = prevalence)
+                weights[bm.format@PA.table[, pa]] <- .automatic_weights_creation(as.numeric(dataBM[, 1]) , prev = prevalence)
               } else { # remove useless weights
-                weights[!bm.format@PA[, pa]] <- NA
+                weights[!bm.format@PA.table[, pa]] <- NA
               }
               
               list.out[[name]] <- list(name = name,

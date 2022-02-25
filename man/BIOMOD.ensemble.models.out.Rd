@@ -16,14 +16,8 @@ Class returned by \code{\link{BIOMOD_EnsembleModeling}}, and used by
 
 \item{\code{expl.var.names}}{a \code{vector} containing names of explanatory variables}
 
-\item{\code{models.out.obj}}{a \code{\link{BIOMOD.stored.models.out}} object containing 
+\item{\code{models.out}}{a \code{\link{BIOMOD.stored.models.out}} object containing 
 informations from \code{\link{BIOMOD_Modeling}} object}
-
-\item{\code{eval.metric}}{a \code{vector} containing names of evaluation metrics}
-
-\item{\code{eval.metric.quality.threshold}}{a \code{vector} of \code{numeric} values 
-corresponding to the minimum scores (one for each \code{eval.metric}) below which single 
-models has been excluded from the ensemble model building}
 
 \item{\code{em.computed}}{a \code{vector} containing names of ensemble models}
 

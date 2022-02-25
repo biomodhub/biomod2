@@ -409,14 +409,15 @@ setMethod('show', signature('BIOMOD.formated.data'),
 ##' evaluation data
 ##' @slot eval.data.env.var (\emph{optional, default} \code{NULL}) \cr 
 ##' A \code{data.frame} containing explanatory variables for evaluation data
-##' @slot PA.strategy a \code{character} corresponding to the species name
-##' @slot PA a 2-columns \code{data.frame} containing the corresponding \code{X} and \code{Y} 
-##' coordinates
+##' @slot PA.strategy a \code{character} corresponding to the pseudo-absence selection strategy
+##' @slot PA.table a \code{data.frame} containing the corresponding table of selected 
+##' pseudo-absences (indicated by \code{TRUE} or \code{FALSE}) from the \code{pa.tab} list 
+##' element returned by the \code{\link{bm_PseudoAbsences}} function
 ##' 
 ##' 
-##' @seealso \code{\link{BIOMOD_FormatingData}}, \code{\link{BIOMOD_Tuning}}, 
-##' \code{\link{BIOMOD_CrossValidation}}, \code{\link{BIOMOD_Modeling}}, 
-##' \code{\link{bm_RunModelsLoop}}
+##' @seealso \code{\link{BIOMOD_FormatingData}}, \code{\link{bm_PseudoAbsences}}, 
+##' \code{\link{BIOMOD_Tuning}}, \code{\link{BIOMOD_CrossValidation}}, 
+##' \code{\link{BIOMOD_Modeling}}, \code{\link{bm_RunModelsLoop}}
 ##' @family Toolbox objects
 ##' 
 ##' 
@@ -467,7 +468,7 @@ setMethod('show', signature('BIOMOD.formated.data'),
 # 2.1 Class Definition ----------------------------------------------------------------------------
 setClass("BIOMOD.formated.data.PA",
          contains = "BIOMOD.formated.data",
-         representation(PA.strategy = 'character', PA = 'data.frame'),
+         representation(PA.strategy = 'character', PA.table = 'data.frame'),
          validity = function(object) { return(TRUE) })
 
 
@@ -635,8 +636,8 @@ setMethod('BIOMOD.formated.data.PA', signature(sp = 'numeric', env = 'RasterStac
                 eval.coord = BFD@eval.coord,
                 eval.data.species = BFD@eval.data.species,
                 eval.data.env.var = BFD@eval.data.env.var,
-                PA = as.data.frame(pa.data.tmp$pa.tab),
-                PA.strategy = PA.strategy)
+                PA.strategy = PA.strategy,
+                PA.table = as.data.frame(pa.data.tmp$pa.tab))
     
     rm(list='BFD')
   } else
@@ -710,7 +711,7 @@ setMethod('plot', signature(x = 'BIOMOD.formated.data.PA', y = "missing"),
               if (is.null(col) | length(col) < 3) { col = c('green', 'red', 'orange', 'grey') }
               
               ## PLOT -----------------------------------------------------------------------------
-              par(mfrow = c(.clever_cut(ncol(x@PA) + 1)))
+              par(mfrow = c(.clever_cut(ncol(x@PA.table) + 1)))
               
               # all points (~mask)
               plot(
@@ -737,7 +738,7 @@ setMethod('plot', signature(x = 'BIOMOD.formated.data.PA', y = "missing"),
                 pch = 18
               )
               # PA data
-              for(i in 1:ncol(x@PA))
+              for(i in 1:ncol(x@PA.table))
               {
                 # all points (~mask)
                 plot(
@@ -751,22 +752,22 @@ setMethod('plot', signature(x = 'BIOMOD.formated.data.PA', y = "missing"),
                 )
                 # presences
                 points(
-                  x = x@coord[(x@data.species == 1) & x@PA[, i], 1],
-                  y = x@coord[(x@data.species == 1) & x@PA[, i], 2],
+                  x = x@coord[(x@data.species == 1) & x@PA.table[, i], 1],
+                  y = x@coord[(x@data.species == 1) & x@PA.table[, i], 2],
                   col = col[1],
                   pch = 18
                 )
                 # true absences
                 points(
-                  x = x@coord[(x@data.species == 0) & x@PA[, i], 1],
-                  y = x@coord[(x@data.species == 0) & x@PA[, i], 2],
+                  x = x@coord[(x@data.species == 0) & x@PA.table[, i], 1],
+                  y = x@coord[(x@data.species == 0) & x@PA.table[, i], 2],
                   col = col[2],
                   pch = 18
                 )
                 # PA
                 points(
-                  x = x@coord[is.na(x@data.species) & x@PA[, i], 1],
-                  y = x@coord[is.na(x@data.species) & x@PA[, i], 2],
+                  x = x@coord[is.na(x@data.species) & x@PA.table[, i], 1],
+                  y = x@coord[is.na(x@data.species) & x@PA.table[, i], 2],
                   col = col[3],
                   pch = 18
                 )
@@ -819,11 +820,11 @@ setMethod('show', signature('BIOMOD.formated.data.PA'),
             
             cat(
               "\n\n",
-              ncol(object@PA),
+              ncol(object@PA.table),
               'Pseudo Absences dataset available (',
-              colnames(object@PA),
+              colnames(object@PA.table),
               ") with ",
-              sum(object@PA[, 1], na.rm = T) - sum(object@data.species, na.rm = TRUE),
+              sum(object@PA.table[, 1], na.rm = T) - sum(object@data.species, na.rm = TRUE),
               'absences in each (true abs + pseudo abs)',
               fill = .Options$width
             )

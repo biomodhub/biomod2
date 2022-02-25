@@ -28,6 +28,14 @@ Class returned by \code{\link{BIOMOD_Modeling}}, and used by
 \item{\code{scale.models}}{a \code{logical} value defining whether models have been rescaled or 
 not}
 
+\item{\code{formated.input.data}}{a \code{\link{BIOMOD.stored.formated.data}} object containing 
+informations from \code{\link{BIOMOD_FormatingData}} object}
+
+\item{\code{calib.lines}}{a \code{\link{BIOMOD.stored.array}} object containing calibration lines}
+
+\item{\code{models.options}}{a \code{\link{BIOMOD.stored.models.options}} object containing 
+informations from \code{\link{BIOMOD_ModelingOptions}} object}
+
 \item{\code{models.evaluation}}{a \code{\link{BIOMOD.stored.array}} object containing models evaluation}
 
 \item{\code{variables.importance}}{a \code{\link{BIOMOD.stored.array}} object containing variables 
@@ -38,14 +46,6 @@ predictions}
 
 \item{\code{models.prediction.eval}}{a \code{\link{BIOMOD.stored.array}} object containing models 
 predictions for evaluation data}
-
-\item{\code{formated.input.data}}{a \code{\link{BIOMOD.stored.formated.data}} object containing 
-informations from \code{\link{BIOMOD_FormatingData}} object}
-
-\item{\code{calib.lines}}{a \code{\link{BIOMOD.stored.array}} object containing calibration lines}
-
-\item{\code{models.options}}{a \code{\link{BIOMOD.stored.models.options}} object containing 
-informations from \code{\link{BIOMOD_ModelingOptions}} object}
 
 \item{\code{link}}{a \code{character} containing the file name of the saved object}
 

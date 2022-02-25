@@ -379,9 +379,9 @@ BIOMOD_EnsembleModeling <- function(bm.mod,
             expl.var.names = bm.mod@expl.var.names,
             em.by = em.by,
             modeling.id = bm.mod@modeling.id)
-  EM@models.out.obj@link <- file.path(bm.mod@sp.name,
-                                      paste0(bm.mod@sp.name, ".",
-                                             bm.mod@modeling.id, ".models.out"))
+  EM@models.out@link <- file.path(bm.mod@sp.name,
+                                  paste0(bm.mod@sp.name, ".",
+                                         bm.mod@modeling.id, ".models.out"))
   
   ## 2. Do Ensemble modeling ----------------------------------------------------------------------
   
@@ -404,7 +404,7 @@ BIOMOD_EnsembleModeling <- function(bm.mod,
     if (em.by %in% c("PA_dataset", 'PA_dataset+algo', 'PA_dataset+repet') &&
         unlist(strsplit(assemb, "_"))[3] != 'AllData') {
       if (inherits(get_formal_data(bm.mod), "BIOMOD.formated.data.PA")) {
-        kept_cells <- get_formal_data(bm.mod)@PA[, unlist(strsplit(assemb, "_"))[3]]
+        kept_cells <- get_formal_data(bm.mod)@PA.table[, unlist(strsplit(assemb, "_"))[3]]
       } else {
         kept_cells <- rep(TRUE, length(obs))
       }

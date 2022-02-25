@@ -11,28 +11,28 @@ Class returned by \code{\link{BIOMOD_Projection}}, and used by
 \section{Slots}{
 
 \describe{
-\item{\code{proj.names}}{a \code{character} corresponding to the projection name}
+\item{\code{modeling.id}}{a \code{character} corresponding to the name (ID) of the simulation set}
+
+\item{\code{proj.name}}{a \code{character} corresponding to the projection name}
 
 \item{\code{sp.name}}{a \code{character} corresponding to the species name}
 
 \item{\code{expl.var.names}}{a \code{vector} containing names of explanatory variables}
 
+\item{\code{coord}}{a 2-columns \code{matrix} or \code{data.frame} containing the corresponding 
+\code{X} and \code{Y} coordinates used to project the species distribution model(s)}
+
+\item{\code{scale.models}}{a \code{logical} value defining whether models have been rescaled or 
+not}
+
 \item{\code{models.projected}}{a \code{vector} containing names of projected models}
 
-\item{\code{models.scaled}}{a \code{vector} containing names of scaled models}
-
-\item{\code{modeling.object}}{a \code{\link{BIOMOD.stored.data}} object}
-
-\item{\code{modeling.object.id}}{a \code{character} corresponding to the name (ID) of the simulation 
-set}
+\item{\code{models.out}}{a \code{\link{BIOMOD.stored.data}} object}
 
 \item{\code{type}}{a \code{character} corresponding to the class of the \code{val} slot of the 
 \code{proj} slot}
 
 \item{\code{proj}}{a \code{\link{BIOMOD.stored.data}} object}
-
-\item{\code{xy.coord}}{a 2-columns \code{matrix} or \code{data.frame} containing the corresponding 
-\code{X} and \code{Y} coordinates used to project the species distribution model(s)}
 }}
 
 \examples{
