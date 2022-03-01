@@ -152,9 +152,9 @@ setMethod('bm_BinaryTransformation', signature('RasterLayer'),
           {
             if(!is.na(threshold)){
               if (do.filtering) {
-                return(reclassify(data, c(-Inf, threshold, 0)))
+                return(reclassify(data, c(-Inf, threshold, 0), right = FALSE))
               } else {
-                return(reclassify(data,c(-Inf, threshold, 0, threshold, +Inf, 1)))
+                return(reclassify(data, c(-Inf, threshold, 0, threshold, +Inf, 1), right = FALSE))
               }
             } else{ ## return a empty map (NA everywhere)
               return(reclassify(data, c(-Inf, Inf, NA)))
@@ -197,7 +197,7 @@ setMethod('bm_BinaryTransformation', signature('RasterBrick'),
 ###################################################################################################
 
 .convert_bin.matrix = function(data, threshold, do.filtering = FALSE) {
-  ind.0 = t(t(data)<threshold)
+  ind.0 = t(t(data) < threshold)
   data[ind.0] <- 0
   if (!do.filtering) { data[!ind.0] <- 1 }
   if (ncol(data) == 1) { return(data[, 1]) } else { return(data) }
