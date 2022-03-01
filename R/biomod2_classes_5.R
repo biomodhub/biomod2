@@ -1,14 +1,104 @@
-# =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=- #
-# BIOMOD models definition(to make it easier to access plot, predict, ...)
-# Damien Georges, Maya Guéguen
-# 20/11/2012, update 22/10/2021
-# =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=- #
 
+##' @name predict.em
+## @aliases predict
+##' @aliases .predict.EMmean_biomod2_model.RasterStack
+##' @aliases .predict.EMmean_biomod2_model.data.frame
+##' @aliases .predict.EMmedian_biomod2_model.RasterStack
+##' @aliases .predict.EMmedian_biomod2_model.data.frame
+##' @aliases .predict.EMcv_biomod2_model.RasterStack
+##' @aliases .predict.EMcv_biomod2_model.data.frame
+##' @aliases .predict.EMci_biomod2_model.RasterStack
+##' @aliases .predict.EMci_biomod2_model.data.frame
+##' @aliases .predict.EMca_biomod2_model.RasterStack
+##' @aliases .predict.EMca_biomod2_model.data.frame
+##' @aliases .predict.EMwmean_biomod2_model.RasterStack
+##' @aliases .predict.EMwmean_biomod2_model.data.frame
+##' @author Damien Georges
+##' 
+##' @title Functions to get predictions from \code{\link{biomod2_ensemble_model}} objects
+##' 
+##' @description This function allows the user to predict single models from 
+##' \code{\link{biomod2_ensemble_model}} on (new) explanatory variables.
+##' 
+##' 
+##' @param obj a \code{\link{biomod2_ensemble_model}} object
+##' 
+##' 
+##' @seealso \code{\link{biomod2_ensemble_model}}
+##' @family Toolbox functions
+##' 
+##' 
+##' @importFrom raster calc reclassify
+##' 
+NULL
 
+#setGeneric("predict", def = function(object, ...) { standardGeneric("predict") })
 
 ###################################################################################################
 ## 9. biomod2_ensemble_model
 ###################################################################################################
+
+##' @name biomod2_ensemble_model
+##' @aliases biomod2_ensemble_model
+##' @aliases EMmean_biomod2_model
+##' @aliases EMmedian_biomod2_model
+##' @aliases EMcv_biomod2_model
+##' @aliases EMci_biomod2_model
+##' @aliases EMca_biomod2_model
+##' @aliases EMwmean_biomod2_model
+##' @author Damien Georges
+##' 
+##' @title Ensemble model output object class (when running \code{BIOMOD_EnsembleModeling()})
+##' 
+##' @description Class created by \code{\link{BIOMOD_EnsembleModeling}}
+##' 
+##' 
+##' @slot model_name a \code{character} corresponding to the model name
+##' @slot model_class a \code{character} corresponding to the model class
+##' @slot model_options a \code{list} containing the model options
+##' @slot model the corresponding model object
+##' @slot scaling_model the corresponding scaled model object
+##' @slot resp_name a \code{character} corresponding to the species name
+##' @slot expl_var_names a \code{vector} containing names of explanatory variables
+##' @slot expl_var_type a \code{vector} containing classes of explanatory variables
+##' @slot expl_var_range a \code{list} containing ranges of explanatory variables
+##' @slot model_evaluation a \code{matrix} containing the model evaluations
+##' @slot model_variables_importance a \code{matrix} containing the model variables importance
+##' 
+##' @details 
+##' 
+##' \code{biomod2_model} is the basic object for \pkg{biomod2} ensemble species distribution models. 
+##' \cr All listed classes below are derived from \code{biomod2_model}, and have a 
+##' \code{model_class} slot specific value :
+##' 
+##' \itemize{
+##'   \item{\code{biomod2_ensemble_model} : }{\code{model_class} is \code{EM}}
+##'   \item{\code{EMmean_biomod2_model} : }{\code{model_class} is \code{EMmean}}
+##'   \item{\code{EMmedian_biomod2_model} : }{\code{model_class} is \code{EMmedian}}
+##'   \item{\code{EMcv_biomod2_model} : }{\code{model_class} is \code{EMcv}}
+##'   \item{\code{EMci_biomod2_model} : }{\code{model_class} is \code{EMci}}
+##'   \item{\code{EMca_biomod2_model} : }{\code{model_class} is \code{EMca}}
+##'   \item{\code{EMwmean_biomod2_model} : }{\code{model_class} is \code{EMwmean}}
+##' }
+##' 
+##' 
+##' @seealso \code{\link{biomod2_model}}, \code{\link{BIOMOD_EnsembleModeling}}
+##' @family Toolbox objects
+##' 
+##' 
+##' @examples
+##' 
+##' showClass("biomod2_ensemble_model")
+##' showClass("EMmean_biomod2_model")
+##' showClass("EMmedian_biomod2_model")
+##' showClass("EMcv_biomod2_model")
+##' showClass("EMci_biomod2_model")
+##' showClass("EMca_biomod2_model")
+##' showClass("EMwmean_biomod2_model")
+##' 
+##' 
+##' @export
+##' 
 
 # 9.1 Class Definition ----------------------------------------------------------------------------
 setClass('biomod2_ensemble_model',
@@ -28,6 +118,11 @@ setClass('EMmean_biomod2_model',
          prototype = list(model_class = 'EMmean'),
          validity = function(object) { return(TRUE) })
 
+##' 
+##' @rdname predict.em
+##' @export
+##' 
+
 setMethod('predict', signature(object = 'EMmean_biomod2_model'),
           function(object, newdata = NULL, formal_predictions = NULL, ...)
           {
@@ -37,7 +132,7 @@ setMethod('predict', signature(object = 'EMmean_biomod2_model'),
 .predict.EMmean_biomod2_model.RasterStack <- function(object, newdata = NULL, formal_predictions = NULL, ...)
 {
   if (is.null(formal_predictions)) {
-    formal_predictions = .template_predictEM.formal_predictions(object, newdata, formal_predictions...)
+    formal_predictions = .template_predictEM.formal_predictions(object, newdata, formal_predictions, ...)
   }
   
   args <- list(...)
@@ -57,25 +152,31 @@ setMethod('predict', signature(object = 'EMmean_biomod2_model'),
   return(out)
 }
 
-.predict.EMmean_biomod2_model.data.frame <- function(object, newdata=NULL, formal_predictions=NULL, ... ){
+.predict.EMmean_biomod2_model.data.frame <- function(object, newdata = NULL, formal_predictions = NULL, ... )
+{
   args <- list(...)
 
   on_0_1000 <- args$on_0_1000
   if (is.null(on_0_1000)) on_0_1000 <- FALSE
 
-  #formal_predictions <- args$formal_predictions
-
   if(is.null(formal_predictions)){
     # make prediction of all models required
     formal_predictions <- sapply(object@model,
-                                   function(mod, resp_name, modeling.id){
+                                   function(mod.name, resp_name, modeling.id){
                                      ## check if model is loaded on memory
-                                     if(is.character(mod)) mod <- get(load(file.path(resp_name, "models", modeling.id, mod)))
-                                     return(predict(mod, newdata=newdata, on_0_1000=on_0_1000))
+                                     if (is.character(mod.name)) {
+                                       mod <- get(load(file.path(resp_name, "models", modeling.id, mod.name)))
+                                     }
+                                     temp_workdir = NULL
+                                     if (length(grep("MAXENT.Phillips$", mod.name)) == 1) {
+                                       temp_workdir = mod@model_output_dir
+                                     }
+                                     return(predict(mod, newdata = newdata, on_0_1000 = on_0_1000
+                                                    , temp_workdir = temp_workdir))
                                    } , resp_name = object@resp_name, modeling.id = object@modeling.id)
   }
 
-  out <- rowMeans(formal_predictions, na.rm=T)
+  out <- rowMeans(formal_predictions, na.rm = TRUE)
 
   if (on_0_1000){
     out <- round(out)
@@ -96,6 +197,11 @@ setClass('EMmedian_biomod2_model',
          prototype = list(model_class = 'EMmedian'),
          validity = function(object) { return(TRUE) })
 
+##' 
+##' @rdname predict.em
+##' @export
+##' 
+
 setMethod('predict', signature(object = 'EMmedian_biomod2_model'),
           function(object, newdata = NULL, formal_predictions = NULL, ...)
           {
@@ -105,7 +211,7 @@ setMethod('predict', signature(object = 'EMmedian_biomod2_model'),
 .predict.EMmedian_biomod2_model.RasterStack <- function(object, newdata = NULL, formal_predictions = NULL, ...)
 {
   if (is.null(formal_predictions)) {
-    formal_predictions = .template_predictEM.formal_predictions(object, newdata, formal_predictions...)
+    formal_predictions = .template_predictEM.formal_predictions(object, newdata, formal_predictions, ...)
   }
   
   args <- list(...)
@@ -128,7 +234,7 @@ setMethod('predict', signature(object = 'EMmedian_biomod2_model'),
 .predict.EMmedian_biomod2_model.data.frame <- function(object, newdata = NULL, formal_predictions = NULL, ...)
 {
   if (is.null(formal_predictions)) {
-    formal_predictions = .template_predictEM.formal_predictions(object, newdata, formal_predictions...)
+    formal_predictions = .template_predictEM.formal_predictions(object, newdata, formal_predictions, ...)
   }
   
   args <- list(...)
@@ -148,8 +254,13 @@ setMethod('predict', signature(object = 'EMmedian_biomod2_model'),
 setClass('EMcv_biomod2_model',
          representation(),
          contains = 'biomod2_ensemble_model',
-         prototype = list(model_class = 'EMmedian'),
+         prototype = list(model_class = 'EMcv'),
          validity = function(object) { return(TRUE) })
+
+##' 
+##' @rdname predict.em
+##' @export
+##' 
 
 setMethod('predict', signature(object = 'EMcv_biomod2_model'),
           function(object, newdata = NULL, formal_predictions = NULL, ...)
@@ -160,7 +271,7 @@ setMethod('predict', signature(object = 'EMcv_biomod2_model'),
 .predict.EMcv_biomod2_model.RasterStack <- function(object, newdata = NULL, formal_predictions = NULL, ...)
 {
   if (is.null(formal_predictions)) {
-    formal_predictions = .template_predictEM.formal_predictions(object, newdata, formal_predictions...)
+    formal_predictions = .template_predictEM.formal_predictions(object, newdata, formal_predictions, ...)
   }
   
   args <- list(...)
@@ -180,11 +291,11 @@ setMethod('predict', signature(object = 'EMcv_biomod2_model'),
 .predict.EMcv_biomod2_model.data.frame <- function(object, newdata = NULL, formal_predictions = NULL, ...)
 {
   if (is.null(formal_predictions)) {
-    formal_predictions = .template_predictEM.formal_predictions(object, newdata, formal_predictions...)
+    formal_predictions = .template_predictEM.formal_predictions(object, newdata, formal_predictions, ...)
   }
   
   if (ncol(formal_predictions) > 1) {
-    out <- apply(formal_predictions, 1, cv, na.rm = T, aszero = T)
+    out <- apply(formal_predictions, 1, cv, na.rm = TRUE, aszero = TRUE)
     return(out)
   } else {
     warning(paste0("\n Model EMcv was not computed because only one single model was kept in ensemble modeling ("
@@ -208,6 +319,11 @@ setClass('EMci_biomod2_model',
            } else { return(TRUE) }
          })
 
+##' 
+##' @rdname predict.em
+##' @export
+##' 
+
 setMethod('predict', signature(object = 'EMci_biomod2_model'),
           function(object, newdata = NULL, formal_predictions = NULL, ...)
           {
@@ -217,7 +333,7 @@ setMethod('predict', signature(object = 'EMci_biomod2_model'),
 .predict.EMci_biomod2_model.RasterStack <- function(object, newdata = NULL, formal_predictions = NULL, ...)
 {
   if (is.null(formal_predictions)) {
-    formal_predictions = .template_predictEM.formal_predictions(object, newdata, formal_predictions...)
+    formal_predictions = .template_predictEM.formal_predictions(object, newdata, formal_predictions, ...)
   }
   args <- list(...)
   on_0_1000 <- args$on_0_1000
@@ -244,7 +360,7 @@ setMethod('predict', signature(object = 'EMci_biomod2_model'),
 .predict.EMci_biomod2_model.data.frame <- function(object, newdata = NULL, formal_predictions = NULL, ...)
 {
   if (is.null(formal_predictions)) {
-    formal_predictions = .template_predictEM.formal_predictions(object, newdata, formal_predictions...)
+    formal_predictions = .template_predictEM.formal_predictions(object, newdata, formal_predictions, ...)
   }
   
   args <- list(...)
@@ -278,10 +394,15 @@ setMethod('predict', signature(object = 'EMci_biomod2_model'),
 ###################################################################################################
 
 setClass('EMca_biomod2_model',
-         representation(tresholds = 'numeric'),
+         representation(thresholds = 'numeric'),
          contains = 'biomod2_ensemble_model',
          prototype = list(model_class = 'EMca'),
          validity = function(object) { return(TRUE) })
+
+##' 
+##' @rdname predict.em
+##' @export
+##' 
 
 setMethod('predict', signature(object = 'EMca_biomod2_model'),
           function(object, newdata = NULL, formal_predictions = NULL, ...)
@@ -292,7 +413,7 @@ setMethod('predict', signature(object = 'EMca_biomod2_model'),
 .predict.EMca_biomod2_model.RasterStack <- function(object, newdata = NULL, formal_predictions = NULL, ...)
 {
   if (is.null(formal_predictions)) {
-    formal_predictions = .template_predictEM.formal_predictions(object, newdata, formal_predictions...)
+    formal_predictions = .template_predictEM.formal_predictions(object, newdata, formal_predictions, ...)
   }
   
   args <- list(...)
@@ -302,9 +423,9 @@ setMethod('predict', signature(object = 'EMca_biomod2_model'),
   if (is.null(filename)) { filename <- "" }
   if (is.null(on_0_1000)) { on_0_1000 <- FALSE }
   
-  if (on_0_1000) { thresh <- object@tresholds } else { thresh <- object@tresholds / 1000 }
+  if (on_0_1000) { thresh <- object@thresholds } else { thresh <- object@thresholds / 1000 }
   
-  out <- calc(BinaryTransformation(formal_predictions, thresh), function(x)
+  out <- calc(bm_BinaryTransformation(formal_predictions, thresh), function(x)
   {
     m <- mean(x)
     if (on_0_1000) { m <- round(m * 1000) }
@@ -314,20 +435,19 @@ setMethod('predict', signature(object = 'EMca_biomod2_model'),
   return(out)
 }
 
-
-.predict.EMmca_biomod2_model.data.frame <- function(object, newdata = NULL, formal_predictions = NULL, ...)
+.predict.EMca_biomod2_model.data.frame <- function(object, newdata = NULL, formal_predictions = NULL, ...)
 {
   if (is.null(formal_predictions)) {
-    formal_predictions = .template_predictEM.formal_predictions(object, newdata, formal_predictions...)
+    formal_predictions = .template_predictEM.formal_predictions(object, newdata, formal_predictions, ...)
   }
   
   args <- list(...)
   on_0_1000 <- args$on_0_1000
   if (is.null(on_0_1000)) { on_0_1000 <- FALSE }
   
-  if (on_0_1000) { thresh <- object@tresholds } else { thresh <- object@tresholds / 1000 }
+  if (on_0_1000) { thresh <- object@thresholds } else { thresh <- object@thresholds / 1000 }
   
-  out <- apply(as.data.frame(BinaryTransformation(formal_predictions, thresh)), 1, mean, na.rm = T)
+  out <- rowMeans(as.data.frame(bm_BinaryTransformation(formal_predictions, thresh)), na.rm = TRUE)
   if (on_0_1000) { out <- round(out * 1000) }
   return(out)
 }
@@ -343,6 +463,11 @@ setClass('EMwmean_biomod2_model',
          prototype = list(model_class = 'EMwmean'),
          validity = function(object) { return(TRUE) })
 
+##' 
+##' @rdname predict.em
+##' @export
+##' 
+
 setMethod('predict', signature(object = 'EMwmean_biomod2_model'),
           function(object, newdata = NULL, formal_predictions = NULL, ...)
           {
@@ -352,7 +477,7 @@ setMethod('predict', signature(object = 'EMwmean_biomod2_model'),
 .predict.EMwmean_biomod2_model.RasterStack <- function(object, newdata = NULL, formal_predictions = NULL, ...)
 {
   if (is.null(formal_predictions)) {
-    formal_predictions = .template_predictEM.formal_predictions(object, newdata, formal_predictions...)
+    formal_predictions = .template_predictEM.formal_predictions(object, newdata, formal_predictions, ...)
   }
   
   args <- list(...)
@@ -375,7 +500,7 @@ setMethod('predict', signature(object = 'EMwmean_biomod2_model'),
 .predict.EMwmean_biomod2_model.data.frame <- function(object, newdata = NULL, formal_predictions = NULL, ...)
 {
   if (is.null(formal_predictions)) {
-    formal_predictions = .template_predictEM.formal_predictions(object, newdata, formal_predictions...)
+    formal_predictions = .template_predictEM.formal_predictions(object, newdata, formal_predictions, ...)
   }
   
   args <- list(...)

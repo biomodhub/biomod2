@@ -1,0 +1,178 @@
+###################################################################################################
+##' @name bm_PlotEvalBoxplot
+##' @author Damien Georges, Maya Gueguen
+##' 
+##' @title Plot boxplot of evaluation scores
+##' 
+##' @description This function represents boxplot of evaluation scores of species distribution 
+##' models, from \code{\link{BIOMOD.models.out}} or \code{\link{BIOMOD.ensemble.models.out}} 
+##' objects that can be obtained from \code{\link{BIOMOD_Modeling}} or 
+##' \code{\link{BIOMOD_EnsembleModeling}} functions. Scores are represented according to 2 
+##' grouping methods (see \href{bm_PlotEvalBoxplot.html#details}{Details}).
+##' 
+##' 
+##' @param bm.out a \code{\link{BIOMOD.models.out}} or \code{\link{BIOMOD.ensemble.models.out}} 
+##' object that can be obtained with the \code{\link{BIOMOD_Modeling}} or 
+##' \code{\link{BIOMOD_EnsembleModeling}} functions
+##' @param group.by a 2-length \code{vector} containing the way kept models will be represented,
+##' must be among \code{model}, \code{algo}, \code{run}, \code{dataset}
+##' @param do.plot (\emph{optional, default} \code{TRUE}) \cr 
+##' A \code{logical} value defining whether the plot is to be rendered or not
+##' @param \ldots some additional arguments (see \href{bm_PlotEvalMean.html#details}{Details})
+##' 
+##' 
+##' @return  
+##' 
+##' A \code{ggplot} object representing boxplot of evaluation scores.
+##' 
+##' 
+##' @details
+##' 
+##' \code{...} can take the following values :
+##' 
+##' \itemize{
+##'   \item{\code{main}}{ : a \code{character} corresponding to the graphic title}
+##'   \item{\code{scales}}{ : a \code{character} corresponding to the \code{scales} argument of 
+##'   the \code{\link[ggplot2]{facet_wrap}} function, must be either \code{fixed}, \code{free_x}, 
+##'   \code{free_y} or \code{free}}
+##' }
+##' 
+##' 
+##' @keywords evaluation, ggplot, boxplot
+##' 
+##' 
+##' @seealso \code{\link{BIOMOD.models.out}}, \code{\link{BIOMOD.ensemble.models.out}}, 
+##' \code{\link{BIOMOD_Modeling}}, \code{\link{BIOMOD_EnsembleModeling}}, 
+##' \code{\link{get_evaluations}}
+##' @family Secundary functions
+##' @family Plot functions
+##' 
+##' 
+##' @examples
+##' 
+##' # Load species occurrences (6 species available)
+##' myFile <- system.file('external/species/mammals_table.csv', package = 'biomod2')
+##' DataSpecies <- read.csv(myFile, row.names = 1)
+##' head(DataSpecies)
+##' 
+##' # Select the name of the studied species
+##' myRespName <- 'GuloGulo'
+##' 
+##' # Get corresponding presence/absence data
+##' myResp <- as.numeric(DataSpecies[, myRespName])
+##' 
+##' # Get corresponding XY coordinates
+##' myRespXY <- DataSpecies[, c('X_WGS84', 'Y_WGS84')]
+##' 
+##' # Load environmental variables extracted from BIOCLIM (bio_3, bio_4, bio_7, bio_11 & bio_12)
+##' myFiles <- paste0('external/bioclim/current/bio', c(3, 4, 7, 11, 12), '.grd')
+##' myExpl <- raster::stack(system.file(myFiles, package = 'biomod2'))
+##' 
+##' 
+##' # ---------------------------------------------------------------
+##' # Format Data with true absences
+##' myBiomodData <- BIOMOD_FormatingData(resp.var = myResp,
+##'                                      expl.var = myExpl,
+##'                                      resp.xy = myRespXY,
+##'                                      resp.name = myRespName)
+##' 
+##' # Create default modeling options
+##' myBiomodOptions <- BIOMOD_ModelingOptions()
+##' 
+##' # Model single models
+##' myBiomodModelOut <- BIOMOD_Modeling(bm.format = myBiomodData,
+##'                                     modeling.id = 'AllModels',
+##'                                     bm.options = myBiomodOptions,
+##'                                     nb.rep = 2,
+##'                                     data.split.perc = 80,
+##'                                     metric.eval = c('TSS','ROC'),
+##'                                     var.import = 3,
+##'                                     do.full.models = FALSE)
+##' 
+##' 
+##' # ---------------------------------------------------------------
+##' # Get evaluation scores
+##' get_evaluations(myBiomodModelOut)
+##' 
+##' # Represent evaluation scores
+##' bm_PlotEvalBoxplot(bm.out = myBiomodModelOut, group.by = c('algo', 'run'))
+##' 
+##' 
+##' @importFrom ggplot2 ggplot aes_string geom_boxplot facet_wrap xlab 
+##' theme element_blank element_rect element_text labs
+##' 
+##' @export
+##' 
+##' 
+###################################################################################################
+
+
+bm_PlotEvalBoxplot <- function(bm.out, group.by = c('algo', 'run'), do.plot = TRUE, ...)
+{
+  ## 0. Check arguments ---------------------------------------------------------------------------
+  args <- .bm_PlotEvalBoxplot.check.args(bm.out, group.by, ...)
+  for (argi in names(args)) { assign(x = argi, value = args[[argi]]) }
+  rm(args)
+  
+  
+  for (i in 1:length(group.by)) {
+    tmp = strsplit(group.by[i], '')[[1]]
+    group.by[i] <- paste0(toupper(tmp[1]), paste0(tmp[2:length(tmp)], collapse = ''))
+  }
+  
+  ## 1. Get data for graphic ----------------------------------------------------------------------
+  ## Get evaluation values
+  scores <- get_evaluations(bm.out, as.data.frame = TRUE)
+  
+  ## Choose which dataset (calibration or validation) should be used
+  eval.data <- ifelse(all(is.na(scores$Evaluating.data)), "Testing.data", "Evaluating.data")
+  
+  ## Prepare data table for graphic
+  ggdat = scores
+  
+  ## 2. PLOT graphic ------------------------------------------------------------------------------
+  gg <- ggplot(ggdat, aes_string(x = group.by[1], y = eval.data, fill = group.by[2])) +
+    geom_boxplot() + ## add boxplot
+    facet_wrap("Eval.metric", scales = scales) +
+    xlab("") +
+    theme(legend.title = element_blank()
+          , legend.key = element_rect(fill = "white")
+          , axis.text.x = element_text(angle = 45, hjust = 1))
+  
+  if (length(main)) { ## add title
+    gg <- gg + labs(title = main)
+  }
+  
+  if (do.plot){ print(gg) }
+  invisible(gg)
+}
+
+
+###################################################################################################
+
+.bm_PlotEvalBoxplot.check.args <- function(bm.out, group.by = 'Algo', ...)
+{
+  args <- list(...)
+  
+  ## 1. Check bm.out argument -------------------------------------------------
+  .fun_testIfInherits(TRUE, "bm.out", bm.out, c("BIOMOD.models.out", "BIOMOD.ensemble.models.out"))
+  
+  ## 3. Check group.by argument -----------------------------------------------
+  if (length(group.by) != 2) { stop("2 group values needed") }
+  for (i in 1:length(group.by)) {
+    .fun_testIfIn(TRUE, paste0("group.by[", i, "]"), group.by[i], c('model', 'algo', 'run', 'dataset'))
+  }
+  
+  ## 4. Check extra args argument ---------------------------------------------
+  .fun_testIfIn(TRUE, "names(args)", names(args), c('main', 'scales'))
+  if ("scales" %in% names(args)) {
+    .fun_testIfIn(TRUE, "args$scales", args$scales, c('fixed', 'free_x', 'free_y', 'free'))
+  } else {
+    args$scales = "fixed"
+  }
+  
+  
+  return(list(main = args$main,
+              scales = args$scales))
+} 
+

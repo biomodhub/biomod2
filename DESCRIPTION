@@ -1,14 +1,24 @@
 Package: biomod2
 Type: Package
 Title: Ensemble Platform for Species Distribution Modeling
-Version: 3.5.3
-Date: 2021-11-02
-Author: Wilfried Thuiller [aut, cre],
-    Damien Georges [aut, cre],
-    Maya Gueguen [aut],
+Version: 4.0
+Date: 2022-03-01
+Authors@R: c(person("Wilfried", "Thuiller", role = c("aut")
+                    , email = "wilfried.thuiller@univ-grenoble-alpes.fr"),
+             person("Damien", "Georges", role = c("aut")),
+             person("Maya", "Gueguen", role = c("aut", "cre")
+                    , email = "maya.gueguen@univ-grenoble-alpes.fr"),
+             person("Robin", "Engler", role = "aut"),
+             person("Frank", "Breiner", role = "aut"
+                    , email = "frank.breiner@wsl.ch"),
+             person("Bruno", "Lafourcade", role = "aut"))
+Author: Wilfried Thuiller [aut],
+    Damien Georges [aut],
+    Maya Gueguen [aut, cre],
     Robin Engler [aut],
-    Frank Breiner [aut]
-Maintainer: Damien Georges <damien.georges2@gmail.com>, Maya Gueguen <maya.gueguen@univ-grenoble-alpes.fr>
+    Frank Breiner [aut],
+    Bruno Lafourcade [aut]
+Maintainer: Maya Gueguen <maya.gueguen@univ-grenoble-alpes.fr>
 Contact: Wilfried Thuiller <wilfried.thuiller@univ-grenoble-alpes.fr>, Damien Georges
     <damien.georges2@gmail.com>, Maya Gueguen <maya.gueguen@univ-grenoble-alpes.fr>
 BugReports: https://github.com/biomodhub/biomod2/issues
@@ -22,47 +32,48 @@ Depends:
 Imports:
     stats,
     utils,
-    lattice,
+    methods,
     sp,
     raster,
-    parallel,
     reshape,
-    ggplot2,
+    reshape2,
     abind,
-    rasterVis,
-    pROC (>= 1.15.0),
+    foreach,
+    ggplot2,
+    patchwork,
     nnet,
     gbm (>= 2.1.3),
     mda,
     randomForest,
+    maxnet,
+    caret,
     rpart,
     MASS,
-    methods,
+    pROC (>= 1.15.0),
     PresenceAbsence,
     dismo,
-    caret,
     ENMeval,
-    doParallel,
-    foreach,
     earth,
-    dplyr,
-    tidyr,
-    checkmate,
-    maxnet, 
-    purrr,
-    rlang
+    dplyr
 Suggests:
-    ade4,
-    foreign,
     Hmisc,
-    mgcv,
     gam,
-    testthat,
-    ecospat
+    mgcv,
+    car,
+    ecospat,
+    doParallel,
+    rasterVis,
+    testthat
 License: GPL-3
-RoxygenNote: 7.1.1
+RoxygenNote: 7.1.2
 Collate: 
-    'BIOMOD_ConvertOldRun.R'
+    'biomod2-package.R'
+    'biomod2_classes_1.R'
+    'biomod2_classes_2.R'
+    'biomod2_classes_3.R'
+    'biomod2_classes_4.R'
+    'biomod2_classes_5.R'
+    'biomod2_internal.R'
     'BIOMOD_CrossValidation.R'
     'BIOMOD_EnsembleForecasting.R'
     'BIOMOD_EnsembleModeling.R'
@@ -73,39 +84,21 @@ Collate:
     'BIOMOD_PresenceOnly.R'
     'BIOMOD_Projection.R'
     'BIOMOD_RangeSize.R'
-    'BIOMOD_tuning.R'
-    'BinaryTransformation.R'
-    'Biomod.Models_RE.R'
-    'CVnnet.R'
-    'CleverCut.R'
-    'CustomIndexMaker.R'
-    'Evaluate.models.R'
-    'FilteringTransformation.R'
-    'Prepare.Maxent.WorkDir.R'
-    'ProbDensFunc.R'
-    'Projection.R'
-    'Rescaler4.R'
-    'SampleMat2.R'
-    'biomod2_classes_1.R'
-    'biomod2_classes_2.R'
-    'biomod2_classes_3.R'
-    'biomod2_classes_4.R'
-    'biomod2_classes_5.R'
-    'biomod2_internal.R'
-    'deprecated_functions.R'
-    'functionkeep.R'
-    'level.plot.R'
-    'makeFormula.R'
-    'models_scores_graph.R'
-    'multiple.plot.r'
-    'pseudo.abs.R'
-    'response.plot.R'
-    'sample.factor.levels.R'
-    'scope.R'
-    'scopeExpSyst.R'
-    'sre.R'
-    'testnull.R'
-    'transform.outputs.R'
-    'update_objects.R'
-    'variables_importance.R'
+    'BIOMOD_Tuning.R'
+    'DEPRECATED.R'
+    'bm_BinaryTransformation.R'
+    'bm_CVnnet.R'
+    'bm_FindOptimStat.R'
+    'bm_MakeFormula.R'
+    'bm_PlotEvalBoxplot.R'
+    'bm_PlotEvalMean.R'
+    'bm_PlotRangeSize.R'
+    'bm_PlotResponseCurves.R'
+    'bm_PlotVarImpBoxplot.R'
+    'bm_PseudoAbsences.R'
+    'bm_RunModelsLoop.R'
+    'bm_SRE.R'
+    'bm_SampleBinaryVector.R'
+    'bm_SampleFactorLevels.R'
+    'bm_VariablesImportance.R'
     'zzz.R'

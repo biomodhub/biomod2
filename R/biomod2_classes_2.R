@@ -1,19 +1,72 @@
-# =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=- #
-# BIOMOD objects definition
-# Damien Georges, Maya Guéguen
-# 09/02/2012, update 18/10/2021
-# =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=- #
 
-requireNamespace("raster", quietly=TRUE)
-requireNamespace(".0
-# =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=- #
-# This file defines the BIOMOD objects and all their methods
-# =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=- #
-
-# We choose here to create monospecific objects to make all procedures and parallelising easier
-requireNamespacrasterVis", quietly=TRUE)
-
-
+##' @name BIOMOD.stored.data
+##' @aliases BIOMOD.stored.data
+##' @aliases BIOMOD.stored.array
+##' @aliases BIOMOD.stored.data.frame
+##' @aliases BIOMOD.stored.raster.stack
+##' @aliases BIOMOD.stored.files
+##' @aliases BIOMOD.stored.formated.data
+##' @aliases BIOMOD.stored.models.options
+##' @aliases BIOMOD.stored.models.out
+##' @author Damien Georges
+##' 
+##' @title \code{BIOMOD_EnsembleModeling()} output object class
+##' 
+##' @description Classes used by \code{\link{BIOMOD_Modeling}} and 
+##' \code{\link{BIOMOD_EnsembleModeling}} to build their output object (see 
+##' \code{\link{BIOMOD.models.out}} objects)
+##' 
+##' 
+##' @slot inMemory a \code{logical} defining whether the \code{val} slot has been loaded in 
+##' memory or not
+##' @slot link a \code{character} containing the file name of the saved \code{val} slot
+##' @slot val an object of type depending on the \code{BIOMOD.stored.[...]} class (see 
+##' \href{BIOMOD.stored.data.html#details}{Details})
+##' 
+##' @details 
+##' 
+##' \code{BIOMOD.stored.data} is the basic object containing the slots \code{inMemory} and 
+##' \code{link}. \cr All listed classes below are derived from \code{BIOMOD.stored.data}, and 
+##' contain a \code{val} slot of specific type :
+##' 
+##' \itemize{
+##'   \item{\code{BIOMOD.stored.array} : }{\code{val} is an \code{array}}
+##'   \item{\code{BIOMOD.stored.data.frame} : }{\code{val} is a \code{data.frame}}
+##'   \item{\code{BIOMOD.stored.raster.stack} : }{\code{val} is a 
+##'   \code{\link[raster:stack]{RasterStack}}}
+##'   \item{\code{BIOMOD.stored.files} : }{\code{val} is a \code{character}}
+##'   \item{\code{BIOMOD.stored.formated.data} : }{\code{val} is a 
+##'   \code{\link{BIOMOD.formated.data}} object}
+##'   \item{\code{BIOMOD.stored.models.options} : }{\code{val} is a 
+##'   \code{\link{BIOMOD.models.options}} object}
+##'   \item{\code{BIOMOD.stored.models.out} : }{\code{val} is a 
+##'   \code{\link{BIOMOD.models.out}} object}
+##' }
+##' 
+##' 
+##' @seealso \code{\link{BIOMOD.formated.data}}, \code{\link{BIOMOD.models.options}},
+##' \code{\link{BIOMOD.models.out}}, 
+##' \code{\link{BIOMOD_Modeling}}, \code{\link{BIOMOD_EnsembleModeling}}, 
+##' \code{\link{BIOMOD_Projection}}, \code{\link{BIOMOD_EnsembleForecasting}}
+##' @family Toolbox objects
+##' 
+##' 
+##' @examples 
+##' 
+##' showClass("BIOMOD.stored.data")
+##' showClass("BIOMOD.stored.array") 
+##' showClass("BIOMOD.stored.data.frame") 
+##' showClass("BIOMOD.stored.raster.stack") 
+##' showClass("BIOMOD.stored.files") 
+##' showClass("BIOMOD.stored.formated.data") 
+##' showClass("BIOMOD.stored.models.options") 
+##' showClass("BIOMOD.stored.models.out") 
+##' 
+##' 
+##' @importFrom raster stack
+##' 
+##' @export
+##' 
 
 ###################################################################################################
 ## BIOMOD.stored[...] objects
@@ -56,7 +109,7 @@ setClass("BIOMOD.stored.formated.data",
 
 setClass("BIOMOD.stored.models.options",
          contains = "BIOMOD.stored.data",
-         representation(val = 'BIOMOD.Model.Options'),
+         representation(val = 'BIOMOD.models.options'),
          prototype(val = NULL),
          validity = function(object){ return(TRUE) })
 
@@ -71,6 +124,22 @@ setClass("BIOMOD.stored.models.options",
 ## LOAD BIOMOD.stored[...] objects
 ###################################################################################################
 
+##' @name load_stored_object
+##' @author Damien Georges
+##' 
+##' @title Functions to load \code{\link{BIOMOD.stored.data}} objects
+##' 
+##' @description This functions allow the user to load \code{\link{BIOMOD.stored.data}} objects 
+##' into memory.
+##' 
+##' @param obj a \code{\link{BIOMOD.stored.data}} object
+##' 
+##' @seealso \code{\link{BIOMOD.stored.data}}
+##' @family Toolbox functions
+##' 
+##' @export
+##' 
+
 setGeneric("load_stored_object", function(obj, ...) { standardGeneric("load_stored_object") })
 
 setMethod("load_stored_object", "BIOMOD.stored.data",
@@ -83,7 +152,7 @@ setMethod("load_stored_object", "BIOMOD.stored.data",
               if (length(obj@link) == 1 & all(grepl(".RData", obj@link))) {
                 return(get(load(obj@link)))
               } else if (all(grepl(".grd", obj@link) | grepl(".img", obj@link))) {
-                out <- raster::stack(x = obj@link, RAT = FALSE)
+                out <- stack(x = obj@link, RAT = FALSE)
                 ## rename layer in case of individual projections
                 if (all(grepl("individual_projections", obj@link))) {
                   # remove directories arch and extention

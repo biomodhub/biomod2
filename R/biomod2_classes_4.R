@@ -1,14 +1,165 @@
-# =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=- #
-# BIOMOD models definition(to make it easier to access plot, predict, ...)
-# Damien Georges, Maya Guéguen
-# 20/11/2012, update 22/10/2021
-# =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=- #
 
+##' @name getters.bm
+##' @aliases get_formal_model
+##' @aliases get_scaling_model
+##' @author Damien Georges
+##' 
+##' @title Functions to extract informations from \code{\link{biomod2_model}} objects
+##' 
+##' @description These functions allow the user to easily retrieve single models (formal or scaled) 
+##' from \code{\link{biomod2_model}} objects from the modeling step.
+##' 
+##' 
+##' @param obj a \code{\link{biomod2_model}} object
+##' 
+##' 
+##' @return 
+##' 
+##' \describe{
+##'   \item{\code{get_formal_model}}{an object from the \code{model} slot of a 
+##'   \code{\link{biomod2_model}} object}
+##'   \item{\code{get_scaling_model}}{an object from the \code{scaling_model} slot of a 
+##'   \code{\link{biomod2_model}} object}
+##' }
+##' 
+##' 
+##' @seealso \code{\link{biomod2_model}}
+##' @family Toolbox functions
+##' 
+NULL
+
+setGeneric("get_formal_model", def = function(object) { standardGeneric("get_formal_model") })
+
+setGeneric("get_scaling_model", def = function(object) { standardGeneric("get_scaling_model") })
+
+
+##' @name predict.bm
+## @aliases predict
+##' @aliases .predict.ANN_biomod2_model.RasterStack
+##' @aliases .predict.ANN_biomod2_model.data.frame
+##' @aliases .predict.CTA_biomod2_model.RasterStack
+##' @aliases .predict.CTA_biomod2_model.data.frame
+##' @aliases .predict.FDA_biomod2_model.RasterStack
+##' @aliases .predict.FDA_biomod2_model.data.frame
+##' @aliases .predict.GAM_biomod2_model.RasterStack
+##' @aliases .predict.GAM_biomod2_model.data.frame
+##' @aliases .predict.GBM_biomod2_model.RasterStack
+##' @aliases .predict.GBM_biomod2_model.data.frame
+##' @aliases .predict.GLM_biomod2_model.RasterStack
+##' @aliases .predict.GLM_biomod2_model.data.frame
+##' @aliases .predict.MARS_biomod2_model.RasterStack
+##' @aliases .predict.MARS_biomod2_model.data.frame
+##' @aliases .predict.MAXENT.Phillips_biomod2_model.data.frame
+##' @aliases .predict.MAXENT.Phillips.2_biomod2_model.RasterStack
+##' @aliases .predict.MAXENT.Phillips.2_biomod2_model.data.frame
+##' @aliases .predict.RF_biomod2_model.RasterStack
+##' @aliases .predict.RF_biomod2_model.data.frame
+##' @aliases .predict.SRE_biomod2_model.RasterStack
+##' @aliases .predict.SRE_biomod2_model.data.frame
+##' @author Damien Georges
+##' 
+##' @title Functions to get predictions from \code{\link{biomod2_model}} objects
+##' 
+##' @description This function allows the user to predict single models from 
+##' \code{\link{biomod2_model}} on (new) explanatory variables.
+##' 
+##' 
+##' @param obj a \code{\link{biomod2_model}} object
+##' 
+##' 
+##' @seealso \code{\link{biomod2_model}}
+##' @family Toolbox functions
+##' 
+##' 
+##' @importFrom raster raster as.matrix is.factor subset calc writeRaster readAll
+##' predict reclassify rasterToPoints cellFromXY
+##' @importFrom sp read.asciigrid
+##' @importFrom gbm predict.gbm
+##' 
+NULL
+
+#setGeneric("predict", def = function(object, ...) { standardGeneric("predict") })
 
 
 ###################################################################################################
 ## 7. biomod2_model
 ###################################################################################################
+
+##' @name biomod2_model
+##' @aliases ANN_biomod2_model
+##' @aliases CTA_biomod2_model
+##' @aliases FDA_biomod2_model
+##' @aliases GAM_biomod2_model
+##' @aliases GBM_biomod2_model
+##' @aliases GLM_biomod2_model
+##' @aliases MARS_biomod2_model
+##' @aliases MAXENT.Phillips_biomod2_model
+##' @aliases MAXENT.Phillips.2_biomod2_model
+##' @aliases RF_biomod2_model
+##' @aliases SRE_biomod2_model
+##' @author Damien Georges
+##' 
+##' @title Single model output object class (when running \code{BIOMOD_Modeling()})
+##' 
+##' @description Class created by \code{\link{BIOMOD_Modeling}} and \code{\link{bm_RunModel}}
+##' 
+##' 
+##' @slot model_name a \code{character} corresponding to the model name
+##' @slot model_class a \code{character} corresponding to the model class
+##' @slot model_options a \code{list} containing the model options
+##' @slot model the corresponding model object
+##' @slot scaling_model the corresponding scaled model object
+##' @slot resp_name a \code{character} corresponding to the species name
+##' @slot expl_var_names a \code{vector} containing names of explanatory variables
+##' @slot expl_var_type a \code{vector} containing classes of explanatory variables
+##' @slot expl_var_range a \code{list} containing ranges of explanatory variables
+##' @slot model_evaluation a \code{matrix} containing the model evaluations
+##' @slot model_variables_importance a \code{matrix} containing the model variables importance
+##' 
+##' @details 
+##' 
+##' \code{biomod2_model} is the basic object for \pkg{biomod2} single species distribution models. 
+##' \cr All listed classes below are derived from \code{biomod2_model}, and have a 
+##' \code{model_class} slot specific value :
+##' 
+##' \itemize{
+##'   \item{\code{ANN_biomod2_model} : }{\code{model_class} is \code{ANN}}
+##'   \item{\code{CTA_biomod2_model} : }{\code{model_class} is \code{CTA}}
+##'   \item{\code{FDA_biomod2_model} : }{\code{model_class} is \code{FDA}}
+##'   \item{\code{GBM_biomod2_model} : }{\code{model_class} is \code{GBM}}
+##'   \item{\code{GLM_biomod2_model} : }{\code{model_class} is \code{GLM}}
+##'   \item{\code{MARS_biomod2_model} : }{\code{model_class} is \code{MARS}}
+##'   \item{\code{MAXENT.Phillips_biomod2_model} : }{\code{model_class} is \code{MAXENT.Phillips}}
+##'   \item{\code{MAXENT.Phillips.2_biomod2_model} : }{\code{model_class} is 
+##'   \code{MAXENT.Phillips.2}}
+##'   \item{\code{RF_biomod2_model} : }{\code{model_class} is \code{RF}}
+##'   \item{\code{SRE_biomod2_model} : }{\code{model_class} is \code{SRE}}
+##' }
+##' 
+##' 
+##' @seealso \code{\link{BIOMOD_Modeling}}, \code{\link{bm_RunModel}}
+##' @family Toolbox objects
+##' 
+##' 
+##' @examples
+##' 
+##' showClass("biomod2_model")
+##' showClass("ANN_biomod2_model")
+##' showClass("CTA_biomod2_model")
+##' showClass("FDA_biomod2_model")
+##' showClass("GAM_biomod2_model")
+##' showClass("GBM_biomod2_model")
+##' showClass("GLM_biomod2_model")
+##' showClass("MARS_biomod2_model")
+##' showClass("MAXENT.Phillips_biomod2_model")
+##' showClass("MAXENT.Phillips.2_biomod2_model")
+##' showClass("RF_biomod2_model")
+##' showClass("SRE_biomod2_model")
+##' 
+##'
+##' 
+##' @export
+##' 
 
 # 7.1 Class Definition ----------------------------------------------------------------------------
 setClass('biomod2_model',
@@ -39,11 +190,18 @@ setClass('biomod2_model',
          })
 
 # 7.2 Getters -------------------------------------------------------------------------------------
-setGeneric("get_formal_model", def = function(object) { standardGeneric("get_formal_model") })
+
+##' 
+##' @rdname getters.bm
+##' @export
+##' 
 
 setMethod('get_formal_model', signature('biomod2_model'), function(object) { return(object@model) })
 
-setGeneric("get_scaling_model", def = function(object) { standardGeneric("get_scaling_model") })
+##' 
+##' @rdname getters.bm
+##' @export
+##' 
 
 setMethod('get_scaling_model', signature('biomod2_model'), function(object) { return(object@scaling_model) })
 
@@ -52,11 +210,11 @@ setMethod('get_scaling_model', signature('biomod2_model'), function(object) { re
 setMethod('show', signature('biomod2_model'),
           function(object)
           {
-            .bmCat("'biomod2_model'")
+            .bm_cat("biomod2_model")
             cat("\n\t model name :", object@model_name, fill = .Options$width)
             cat("\n\t model class :", object@model_class, fill = .Options$width)
             cat("\n\t This model", ifelse(length(object@scaling_model), "has", "doesn't have"), "its own scaler", fill = .Options$width)
-
+            
             cat("\n")
             cat("\n\t response modelled:", object@resp_name, fill = .Options$width)
             cat("\n\n\t explanatory variables used:", fill = .Options$width)
@@ -64,13 +222,13 @@ setMethod('show', signature('biomod2_model'),
             for (i in 1:length(object@expl_var_names)) {
               cat("\n\t", object@expl_var_names[i],"\t", object@expl_var_type[i], "\t", object@expl_var_range[[i]], fill = .Options$width)
             }
-
+            
             cat("\n")
             cat("\n\t NOTE : ")
             cat("\n\t\t You can access 'formal' model with get_formal_model function")
             cat(ifelse(length(object@scaling_model), "\n\t\t You can access scaling model with get_scaling_model function\n", "\n"))
-
-            .bmCat()
+            
+            .bm_cat()
           })
 
 
@@ -84,6 +242,11 @@ setClass('ANN_biomod2_model',
          contains = 'biomod2_model',
          prototype = list(model_class = 'ANN'),
          validity = function(object) { if(!inherits(object@model, "nnet")) { return(FALSE) } else { return(TRUE) }})
+
+##' 
+##' @rdname predict.bm
+##' @export
+##' 
 
 setMethod('predict', signature(object = 'ANN_biomod2_model'),
           function(object, newdata, ...)
@@ -114,6 +277,11 @@ setClass('CTA_biomod2_model',
            if (!inherits(object@model, "rpart")) { return(FALSE) } else { return(TRUE) }
          })
 
+##' 
+##' @rdname predict.bm
+##' @export
+##' 
+
 setMethod('predict', signature(object = 'CTA_biomod2_model'),
           function(object, newdata, ...)
           {
@@ -142,6 +310,11 @@ setClass('FDA_biomod2_model',
          validity = function(object) { ## check model class
            if (!inherits(object@model, "fda")) { return(FALSE) } else { return(TRUE) }
          })
+
+##' 
+##' @rdname predict.bm
+##' @export
+##' 
 
 setMethod('predict', signature(object = 'FDA_biomod2_model'),
           function(object, newdata, ...)
@@ -178,19 +351,20 @@ setClass('GAM_biomod2_model',
            }
          })
 
+##' 
+##' @rdname predict.bm
+##' @export
+##' 
+
 setMethod('predict', signature(object = 'GAM_biomod2_model'),
           function(object, newdata, ...)
           {
-            args <- list(...)
-            do_check <- args$do_check
-            if (is.null(do_check)) { do_check <- TRUE }
-
             if (object@model_subclass %in% c("GAM_mgcv", "BAM_mgcv")) {
               # cat("\n*** unloading gam package / loading mgcv package")
               if (isNamespaceLoaded("gam")) { unloadNamespace("gam") }
               if (!isNamespaceLoaded("mgcv")) { requireNamespace("mgcv", quietly = TRUE) }
             }
-
+            
             if (object@model_subclass == "GAM_gam") {
               # cat("\n*** unloading mgcv package / loading gam package")
               if (isNamespaceLoaded("mgcv")) {
@@ -201,26 +375,17 @@ setMethod('predict', signature(object = 'GAM_biomod2_model'),
               if (!isNamespaceLoaded("gam")) { requireNamespace("gam", quietly = TRUE) }
             }
             
-            ## data checking
-            if (do_check) { newdata <- check_data_range(model = object, new_data = newdata) }
-            
-            if (inherits(newdata, 'Raster')) {
-              return(.predict.GAM_biomod2_model.RasterStack(object, newdata, ...))
-            } else if (inherits(newdata, 'data.frame') | inherits(newdata, 'matrix')) {
-              return(.predict.GAM_biomod2_model.data.frame(object, newdata, ...))
-            } else {
-              stop("invalid newdata input")
-            }
+            return(.template_predict(mod = "GAM", object, newdata, ...))
           })
 
 .predict.GAM_biomod2_model.RasterStack <- function(object, newdata, ...)
 {
-  return(.template_predict.RasterStack(seedval = NULL, predcommand = ".testnull(object = get_formal_model(object), Prev = 0.5 , dat = newdata)", object, newdata, ...))
+  return(.template_predict.RasterStack(seedval = NULL, predcommand = ".run_pred(object = get_formal_model(object), Prev = 0.5 , dat = newdata)", object, newdata, ...))
 }
 
 .predict.GAM_biomod2_model.data.frame <- function(object, newdata, ...)
 {
-  return(.template_predict.data.frame(seedval = 555, predcommand = "as.numeric(.testnull(object = get_formal_model(object), Prev = 0.5 , dat = as.data.frame(newdata[not_na_rows, , drop = FALSE])))", object, newdata, ...))
+  return(.template_predict.data.frame(seedval = 555, predcommand = "as.numeric(.run_pred(object = get_formal_model(object), Prev = 0.5 , dat = as.data.frame(newdata[not_na_rows, , drop = FALSE])))", object, newdata, ...))
 } 
 
 
@@ -236,6 +401,11 @@ setClass('GBM_biomod2_model',
            if (!inherits(object@model, "gbm")) { return(FALSE) } else { return(TRUE) }
          })
 
+##' 
+##' @rdname predict.bm
+##' @export
+##' 
+
 setMethod('predict', signature(object = 'GBM_biomod2_model'),
           function(object, newdata, ...)
           {
@@ -244,7 +414,7 @@ setMethod('predict', signature(object = 'GBM_biomod2_model'),
 
 .predict.GBM_biomod2_model.RasterStack <- function(object, newdata, ...)
 {
-  return(.template_predict.RasterStack(seedval = NULL, predcommand = "predict(newdata, model = get_formal_model(object), fun = gbm::predict.gbm, n.trees = object@n.trees_optim, type = 'response')", object, newdata, ...))
+  return(.template_predict.RasterStack(seedval = NULL, predcommand = "predict(newdata, model = get_formal_model(object), fun = predict.gbm, n.trees = object@n.trees_optim, type = 'response')", object, newdata, ...))
 }
 
 .predict.GBM_biomod2_model.data.frame <- function(object, newdata, ...)
@@ -265,6 +435,11 @@ setClass('GLM_biomod2_model',
            if (!inherits(object@model, "glm")) { return(FALSE) } else { return(TRUE) }
          })
 
+##' 
+##' @rdname predict.bm
+##' @export
+##' 
+
 setMethod('predict', signature(object = 'GLM_biomod2_model'),
           function(object, newdata, ...)
           {
@@ -273,12 +448,12 @@ setMethod('predict', signature(object = 'GLM_biomod2_model'),
 
 .predict.GLM_biomod2_model.RasterStack <- function(object, newdata, ...)
 {
-  return(.template_predict.RasterStack(seedval = NULL, predcommand = ".testnull(object = get_formal_model(object), Prev = 0.5 , dat = newdata)", object, newdata, ...))
+  return(.template_predict.RasterStack(seedval = NULL, predcommand = ".run_pred(object = get_formal_model(object), Prev = 0.5 , dat = newdata)", object, newdata, ...))
 }
 
 .predict.GLM_biomod2_model.data.frame <- function(object, newdata, ...)
 {
-  return(.template_predict.data.frame(seedval = NULL, predcommand = "as.numeric(.testnull(object = get_formal_model(object), Prev = 0.5 , dat = as.data.frame(newdata[not_na_rows, , drop = FALSE])))", object, newdata, ...))
+  return(.template_predict.data.frame(seedval = NULL, predcommand = "as.numeric(.run_pred(object = get_formal_model(object), Prev = 0.5 , dat = as.data.frame(newdata[not_na_rows, , drop = FALSE])))", object, newdata, ...))
 }
 
 
@@ -294,6 +469,11 @@ setClass('MARS_biomod2_model',
            if (!inherits(object@model, c('earth', 'MARS', 'mars'))) { return(FALSE) } else { return(TRUE) }
          })
 
+##' 
+##' @rdname predict.bm
+##' @export
+##' 
+
 setMethod('predict', signature(object = 'MARS_biomod2_model'),
           function(object, newdata, ...)
           {
@@ -303,15 +483,14 @@ setMethod('predict', signature(object = 'MARS_biomod2_model'),
 .predict.MARS_biomod2_model.RasterStack <- function(object, newdata, ...)
 {
   args <- list(...)
-  filename <- args$filename
+  namefile <- args$namefile
   overwrite <- args$overwrite
   on_0_1000 <- args$on_0_1000
   
   if (is.null(overwrite)) { overwrite <- TRUE }
   if (is.null(on_0_1000)) { on_0_1000 <- FALSE }
   
-  ##' @note we have to handle separatly rasterstack depending on the presence or not
-  ##' of factorial variable.
+  ## handle separately rasterstack depending on the presence or not of factorial variable
   fact.var <- is.factor(newdata)
   if (any(fact.var))
   {
@@ -334,20 +513,20 @@ setMethod('predict', signature(object = 'MARS_biomod2_model'),
   
   if (length(get_scaling_model(object))) {
     names(proj) <- "pred"
-    proj <- .testnull(object = get_scaling_model(object), Prev = 0.5 , dat = proj)
+    proj <- .run_pred(object = get_scaling_model(object), Prev = 0.5 , dat = proj)
   }
   
   if (on_0_1000) { proj <- round(proj * 1000)}
   
   # save raster on hard drive ?
-  if (!is.null(filename)) {
+  if (!is.null(namefile)) {
     cat("\n\t\tWriting projection on hard drive...")
     if (on_0_1000) { ## projections are stored as positive integer
-      writeRaster(proj, filename = filename, overwrite = overwrite, datatype = "INT2S", NAflag = -9999)
+      writeRaster(proj, filename = namefile, overwrite = overwrite, datatype = "INT2S", NAflag = -9999)
     } else { ## keep default data format for saved raster
-      writeRaster(proj, filename = filename, overwrite = overwrite)
+      writeRaster(proj, filename = namefile, overwrite = overwrite)
     }
-    proj <- raster(filename, RAT = FALSE)
+    proj <- raster(namefile, RAT = FALSE)
   }
   return(proj)
 }
@@ -368,158 +547,103 @@ setClass('MAXENT.Phillips_biomod2_model',
          prototype = list(model_class = 'MAXENT.Phillips'),
          validity = function(object) { return(TRUE) })
 
+##' 
+##' @rdname predict.bm
+##' @export
+##' 
+
 setMethod('predict', signature(object = 'MAXENT.Phillips_biomod2_model'),
           function(object, newdata, ...)
           {
             return(.template_predict(mod = "MAXENT.Phillips", object, newdata, ...))
           })
 
-.predict.MAXENT.Phillips_biomod2_model.RasterStack <- function(object, newdata, silent = TRUE,  ...)
-{
-  args <- list(...)
-  filename <- args$filename
-  overwrite <- args$overwrite
-  on_0_1000 <- args$on_0_1000
-  rm_tmp_files <- args$rm_tmp_files
-  temp_workdir <- args$temp_workdir
-  split.proj <- args$split.proj
-
-  # if (is.null(temp_workdir)) temp_workdir <- paste("maxentWDtmp", format(Sys.time(), "%s"), sep="")
-  if (is.null(rm_tmp_files)) { rm_tmp_files <- TRUE }
-  if (is.null(overwrite)) { overwrite <- TRUE }
-  if (is.null(on_0_1000)) { on_0_1000 <- FALSE }
-  if (is.null(split.proj)) { split.proj <- 1 }
-
-  MWD <- .Prepare.Maxent.Proj.WorkDir(Data = newdata, species.name = object@resp_name,
-                                      silent = TRUE, split.proj = split.proj )
-
-  # checking maxent.jar is present
-  path_to_maxent.jar <- file.path(object@model_options$path_to_maxent.jar, "maxent.jar")
-  if (!file.exists(path_to_maxent.jar)) {
-    path_to_maxent.jar <-  file.path(getwd(), "maxent.jar")
-  }
-  
-  if (!silent) { cat("\n\t\tRunning Maxent...") }
-  for (spl in 1:split.proj) {
-    maxent.command <- paste0("java ", ifelse(is.null(object@model_options$memory_allocated), "", paste0("-mx", object@model_options$memory_allocated, "m")),
-                            " -cp ", "\"", path_to_maxent.jar, "\"",
-                            " density.Project ",
-                            "\"", list.files(path = object@model_output_dir, pattern = ".lambdas$", full.names = TRUE), "\" ",
-                            "\"", MWD$m_workdir[[spl]], "\" ",
-                            "\"", file.path(MWD$m_workdir[[spl]], "projMaxent.asc"), "\" ",
-                            " doclamp=false visible=false autorun nowarnings notooltips")
-    system(command = maxent.command, wait = TRUE, intern = TRUE)
-  }
-  
-  if(!silent) { cat("\n\t\tReading Maxent outputs...") }
-
-  ## get the list of projections part by part
-  # check crs is not NA
-  if (!is.na(projection(newdata))) {
-    proj.list <- lapply(file.path(unlist(MWD$m_workdir), "projMaxent.asc"), raster, RAT = FALSE, crs = projection(newdata))
-  } else {
-    proj.list <- lapply(file.path(unlist(MWD$m_workdir), "projMaxent.asc"), raster, RAT = FALSE)
-  }
-  ## merge all parts in a single raster
-  if (length(proj.list) > 1) {
-    proj <- do.call(raster::merge, proj.list)
-  } else {
-    proj <- proj.list[[1]]
-  }
-
-  if (on_0_1000) { proj <- round(proj * 1000) }
-
-  # save raster on hard drive ?
-  if (!is.null(filename)) {
-    cat("\n\t\tWriting projection on hard drive...")
-    if (on_0_1000) { ## projections are stored as positive integer
-      writeRaster(proj, filename = filename, overwrite = overwrite, datatype = "INT2S", NAflag = -9999)
-    } else { ## keep default data format for saved raster
-      writeRaster(proj, filename = filename, overwrite = overwrite)
-    }
-    proj <- raster(filename, RAT = FALSE)
-  } else if (!inMemory(proj)) {
-    proj <- readAll(proj) # to prevent from tmp files removing
-  }
-
-  if (!is.null(rm_tmp_files) && rm_tmp_files) {
-    .Delete.Maxent.WorkDir(MWD, silent = silent)
-  }
-  return(proj)
-}
-
-.predict.MAXENT.Phillips_biomod2_model.data.frame <- function(object, newdata, silent = TRUE, ...)
+.predict.MAXENT.Phillips_biomod2_model.data.frame <- function(object, newdata, ...)
 {
   args <- list(...)
   on_0_1000 <- args$on_0_1000
   temp_workdir <- args$temp_workdir
-  rm_tmp_files <- args$rm_tmp_files
-  xy <- args$xy
-
+  do_raster <- args$do_raster
+  newraster <- args$newraster
+  
   if (is.null(on_0_1000)) { on_0_1000 <- FALSE }
-  if (is.null(rm_tmp_files)) { rm_tmp_files <- TRUE }
-
-  ## no xy needed for models projections
-  xy <- NULL
-
+  if (is.null(do_raster)) { do_raster <- FALSE }
+  
   ## check if na occurs in newdata cause they are not well supported
-  not_na_rows <- apply(newdata, 1, function(x){sum(is.na(x))==0})
-
-  MWD <- .Prepare.Maxent.Proj.WorkDir(Data = as.data.frame(newdata[not_na_rows, , drop = FALSE])
-                                      , xy = xy , species.name = object@resp_name, silent = T)
-
+  not_na_rows <- apply(newdata, 1, function(x){ sum(is.na(x)) == 0 })
+  newdata = as.data.frame(newdata[not_na_rows, , drop = FALSE])
+  
+  ## Prediction data
+  Pred_swd <- read.csv(file.path(temp_workdir, "Predictions/Pred_swd.csv"))
+  if (nrow(Pred_swd) != nrow(newdata)) {
+    tmp = newdata[, 1:3]
+    colnames(tmp) = c("predict", "x", "y")
+    Pred_swd = cbind(tmp, newdata)
+  } else {
+    Pred_swd <- cbind(Pred_swd[, 1:3], newdata)
+  }
+  # m_predictFile <- file.path(temp_workdir, "Predictions/Pred_swdBis.csv")
+  m_predictFile <- file.path(temp_workdir, "Predictions", paste0("Pred_swdBis_", sample(1:100000, 1), ".csv"))
+  while (file.exists(m_predictFile)) {
+    m_predictFile <- file.path(temp_workdir, "Predictions", paste0("Pred_swdBis_", sample(1:100000, 1), ".csv"))
+  }
+  write.table(Pred_swd, file = m_predictFile, quote = FALSE, row.names = FALSE, col.names = TRUE, sep = ",")
+  
   # checking maxent.jar is present
   path_to_maxent.jar <- file.path(object@model_options$path_to_maxent.jar, "maxent.jar")
   if (!file.exists(path_to_maxent.jar)) {
     path_to_maxent.jar <-  file.path(getwd(), "maxent.jar")
   }
-
-  if (!silent) cat("\n\t\tRunning Maxent...")
+  
+  # cat("\n\t\tRunning Maxent...")
   maxent.command <- paste0("java ", ifelse(is.null(object@model_options$memory_allocated), "", paste0("-mx", object@model_options$memory_allocated, "m")),
                            " -cp ", "\"", path_to_maxent.jar, "\"",
                            " density.Project ",
                            "\"", list.files(path = object@model_output_dir, pattern = ".lambdas$", full.names = TRUE), "\" ",
-                           "\"", file.path(MWD$m_workdir, "Pred_swd.csv"), "\" ",
-                           "\"", file.path(MWD$m_workdir, "projMaxent.asc") , "\" ",
+                           "\"", m_predictFile, "\" ",
+                           "\"", file.path(temp_workdir, "projMaxent.asc") , "\" ",
                            "doclamp=false visible=false autorun nowarnings notooltips")
   system(command = maxent.command, wait = TRUE, intern = TRUE)
-
-  if (!silent) { cat("\n\t\tReading Maxent outputs...") }
-  proj <- as.numeric(read.asciigrid(file.path(MWD$m_workdir, "projMaxent.asc"))@data[, 1])
-
-  ## add original NA from formal dataset
-  if (sum(!not_na_rows) > 0) {
-    tmp <- rep(NA, length(not_na_rows))
-    tmp[not_na_rows] <- proj
-    proj <- tmp
-    rm('tmp')
+  
+  # cat("\n\t\tReading Maxent outputs...")
+  proj <- as.numeric(read.asciigrid(file.path(temp_workdir, "projMaxent.asc"))@data[, 1])
+  
+  if (do_raster) {
+    newraster[which(newraster[] == 1)] = proj
+    proj <- newraster
+    
+    if (!inMemory(proj)) {
+      proj <- readAll(proj) # to prevent from tmp files removing
+    }
+  } else {
+    ## add original NA from formal dataset
+    if (sum(!not_na_rows) > 0) {
+      tmp <- rep(NA, length(not_na_rows))
+      tmp[not_na_rows] <- proj
+      proj <- tmp
+      rm('tmp')
+    }
   }
-
-  if (!is.null(rm_tmp_files) && rm_tmp_files) {
-    .Delete.Maxent.WorkDir(MWD, silent = silent)
-  }
+  
   if (on_0_1000) { proj <- round(proj * 1000) }
   return(proj)
 }
-
-##' @note Here is define a conversion of the MAXENT models until the biomod 2.xx
-##'   This model class was equivqlent to the current 'MAXENT.Phillips_biomod2_model'
-
-setClass('MAXENT_biomod2_model',
-         contains = 'MAXENT.Phillips_biomod2_model',
-         prototype = list(model_class = 'MAXENT'),
-         validity = function(object) { return(TRUE) })
 
 
 ###################################################################################################
 ## 8.9 MAXENT.Phillips.2_biomod2_model
 ###################################################################################################
 
-setClass( 'MAXENT.Phillips.2_biomod2_model',
-          representation(),
-          contains = 'biomod2_model',
-          prototype = list(model_class = 'MAXENT.Phillips.2'),
-          validity = function(object) { checkmate::test_class(object@model, 'maxnet') })
+setClass('MAXENT.Phillips.2_biomod2_model',
+         representation(),
+         contains = 'biomod2_model',
+         prototype = list(model_class = 'MAXENT.Phillips.2'),
+         validity = function(object) { if(!inherits(object@model, "maxnet")) { return(FALSE) } else { return(TRUE) }})
+
+##' 
+##' @rdname predict.bm
+##' @export
+##' 
 
 setMethod('predict', signature(object = 'MAXENT.Phillips.2_biomod2_model'),
           function(object, newdata, ...)
@@ -529,10 +653,10 @@ setMethod('predict', signature(object = 'MAXENT.Phillips.2_biomod2_model'),
 
 .predict.MAXENT.Phillips.2_biomod2_model.RasterStack <- function(object, newdata, ...)
 {
-  newdata.df <- newdata %>% raster::as.matrix()
+  newdata.df <- newdata %>% as.matrix()
   
   args <- list(...)
-  filename <- args$filename
+  namefile <- args$namefile
   overwrite <- args$overwrite
   on_0_1000 <- args$on_0_1000
   
@@ -543,7 +667,7 @@ setMethod('predict', signature(object = 'MAXENT.Phillips.2_biomod2_model'),
   
   if (length(get_scaling_model(object))) {
     proj.to.scale <- data.frame(pred = proj)
-    proj <- .testnull(object = get_scaling_model(object), Prev = 0.5 , dat = proj.to.scale)
+    proj <- .run_pred(object = get_scaling_model(object), Prev = 0.5 , dat = proj.to.scale)
   }
   
   if (on_0_1000) { proj <- round(proj * 1000) }
@@ -554,14 +678,14 @@ setMethod('predict', signature(object = 'MAXENT.Phillips.2_biomod2_model'),
   proj <- proj.ras
   
   # save raster on hard drive ?
-  if (!is.null(filename)) {
+  if (!is.null(namefile)) {
     cat("\n\t\tWriting projection on hard drive...")
     if (on_0_1000) { ## projections are stored as positive integer
-      writeRaster(proj, filename = filename, overwrite = overwrite, datatype = "INT2S", NAflag = -9999)
+      writeRaster(proj, filename = namefile, overwrite = overwrite, datatype = "INT2S", NAflag = -9999)
     } else { ## keep default data format for saved raster
-      writeRaster(proj, filename = filename, overwrite = overwrite)
+      writeRaster(proj, filename = namefile, overwrite = overwrite)
     }
-    proj <- raster(filename, RAT = FALSE)
+    proj <- raster(namefile, RAT = FALSE)
   }
   
   return(proj)
@@ -594,7 +718,7 @@ setMethod('predict', signature(object = 'MAXENT.Phillips.2_biomod2_model'),
 # .predict.MAXENT.Tsuruoka_biomod2_model.RasterStack <- function(object, newdata, ...)*
 # {
 #   args <- list(...)
-#   filename <- args$filename
+#   namefile <- args$namefile
 #   overwrite <- args$overwrite
 #   on_0_1000 <- args$on_0_1000
 # 
@@ -613,20 +737,20 @@ setMethod('predict', signature(object = 'MAXENT.Phillips.2_biomod2_model'),
 # 
 #   if (length(get_scaling_model(object))) {
 #     names(proj) <- "pred"
-#     proj <- .testnull(object = get_scaling_model(object), Prev = 0.5 , dat = proj)
+#     proj <- .run_pred(object = get_scaling_model(object), Prev = 0.5 , dat = proj)
 #   }
 # 
 #   if (on_0_1000) { proj <- round(proj * 1000) }
 # 
 #   # save raster on hard drive ?
-#   if (!is.null(filename)) {
+#   if (!is.null(namefile)) {
 #     cat("\n\t\tWriting projection on hard drive...")
 #     if (on_0_1000) { ## projections are stored as positive integer
-#       writeRaster(proj, filename = filename, overwrite = overwrite, datatype = "INT2S", NAflag = -9999)
+#       writeRaster(proj, filename = namefile, overwrite = overwrite, datatype = "INT2S", NAflag = -9999)
 #     } else { ## keep default data format for saved raster
-#       writeRaster(proj, filename = filename, overwrite = overwrite)
+#       writeRaster(proj, filename = namefile, overwrite = overwrite)
 #     }
-#     proj <- raster(filename, RAT = FALSE)
+#     proj <- raster(namefile, RAT = FALSE)
 #   }
 #   return(proj)
 # }
@@ -648,6 +772,11 @@ setClass('RF_biomod2_model',
          validity = function(object) { # check model class
            if (!inherits(object@model, "randomForest")) { return(FALSE)} else { return(TRUE) }
          })
+
+##' 
+##' @rdname predict.bm
+##' @export
+##' 
 
 setMethod('predict', signature(object = 'RF_biomod2_model'),
           function(object, newdata, ...)
@@ -676,6 +805,11 @@ setClass('SRE_biomod2_model',
          prototype = list(model_class = 'SRE'),
          validity = function(object){ return(TRUE) })
 
+##' 
+##' @rdname predict.bm
+##' @export
+##' 
+
 setMethod('predict', signature(object = 'SRE_biomod2_model'),
           function(object, newdata, ...)
           {
@@ -684,7 +818,7 @@ setMethod('predict', signature(object = 'SRE_biomod2_model'),
 
 .predict.SRE_biomod2_model.RasterStack <- function(object, newdata, ...)
 {
-  return(.template_predict.RasterStack(seedval = NULL, predcommand = ".sre.projection(NewData = newdata, ExtremCond = object@extremal_conditions)", object, newdata, ...))
+  return(.template_predict.RasterStack(seedval = NULL, predcommand = ".sre_projection(new.env = newdata, extrem.cond = object@extremal_conditions)", object, newdata, ...))
 }
 
 .predict.SRE_biomod2_model.data.frame <- function(object, newdata, ...)
@@ -692,7 +826,7 @@ setMethod('predict', signature(object = 'SRE_biomod2_model'),
   args <- list(...)
   on_0_1000 <- args$on_0_1000
   if (is.null(on_0_1000)) { on_0_1000 <- FALSE }
-  proj <- .sre.projection(NewData = newdata, ExtremCond = object@extremal_conditions)
+  proj <- .sre_projection(new.env = newdata, extrem.cond = object@extremal_conditions)
   if (on_0_1000) { proj <- round(proj * 1000) }
   return(proj)
 }

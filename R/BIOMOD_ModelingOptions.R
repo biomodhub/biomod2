@@ -1,12 +1,13 @@
-##' ###############################################################################################
+###################################################################################################
 ##' @name BIOMOD_ModelingOptions
 ##' @aliases BIOMOD_ModelingOptions
-##' @aliases Print_Default_ModelingOptions
+##' @aliases bm_DefaultModelingOptions
 ##' @author Damien Georges, Wilfried Thuiller
 ##' 
 ##' @title Configure the modeling options for each selected model
 ##'
 ##' @description Parametrize and/or tune \pkg{biomod2}'s single models options.
+##'
 ##'
 ##' @usage BIOMOD_ModelingOptions(GLM = NULL,
 ##'                               GBM = NULL,
@@ -30,28 +31,30 @@
 ##' @param RF a \code{list} containing RF options
 ##' @param MAXENT.Phillips a \code{list} containing MAXENT.Phillips options
 ##'
-##' @value 
+##'
+##' @return 
 ##' 
-##' A \code{BIOMOD.Model.Options} object that can be used to build species distribution model(s) 
-##' with the \code{\link[biomod2]{BIOMOD_Modeling}} function.
+##' A \code{\link{BIOMOD.models.options}} object that can be used to build species distribution 
+##' model(s) with the \code{\link{BIOMOD_Modeling}} function.
 ##' 
 ##' 
 ##' @details
 ##' 
 ##' This function allows advanced user to change some default parameters of \pkg{biomod2} inner 
-##' models. 10 single models are available within the package, and their options can be set 
+##' models. \cr 10 single models are available within the package, and their options can be set 
 ##' with this function through \code{list} objects.
 ##' 
-##' The \code{\link{Print_Default_ModelingOptions}} function prints all default parameter values 
-##' for all available models. This output can be copied and pasted to be used as is (with wanted 
-##' changes) as function arguments (see Examples).
+##' The \code{\link{bm_DefaultModelingOptions}} function prints all default parameter values for 
+##' all available models. \cr This output can be copied and pasted to be used as is (with wanted 
+##' changes) as function arguments (see \href{BIOMOD_ModelingOptions.html#examples}{Examples}).
 ##' 
 ##' Below is the detailed list of all modifiable parameters for each available model.
 ##'
-##' @section \bold{GLM (\code{\link[stats]{glm}})}
+##' @section GLM : (\code{\link[stats]{glm}})
 ##' \itemize{
-##'   \item{\code{myFormula}}{ : a typical \code{formula} object (see Examples). \cr If not 
-##'   \code{NULL}, \code{type} and \code{interaction.level} parameters are switched off. \cr 
+##'   \item{\code{myFormula}}{ : a typical \code{formula} object (see 
+##'   \href{BIOMOD_ModelingOptions.html#examples}{Examples}). \cr If not \code{NULL}, \code{type} 
+##'   and \code{interaction.level} parameters are switched off. \cr 
 ##'   You can choose to either :
 ##'   \itemize{
 ##'     \item{generate automatically the GLM formula with the following parameters :
@@ -79,9 +82,9 @@
 ##'   \code{\link{glm.control}})}
 ##' }
 ##'
-##' @section \bold{GBM (default \code{\link[gbm]{gbm}})}
+##' @section GBM : (default \code{\link[gbm]{gbm}})
 ##' 
-##' Please refer to \code{\link[gbm]{gbm}} help file for more details.
+##' \emph{Please refer to \code{\link[gbm]{gbm}} help file for more details.}
 ##' \itemize{
 ##'   \item{\code{distribution = 'bernoulli'}}
 ##'   \item{\code{n.trees = 2500}}
@@ -97,13 +100,14 @@
 ##'   \item{\code{n.cores = 1}}
 ##' }
 ##'
-##' @section \bold{GAM (\code{\link[gam]{gam}} or \code{\link[mgcv]{gam}})}
+##' @section GAM : (\code{\link[gam]{gam}} or \code{\link[mgcv]{gam}})
 ##' \itemize{
 ##'   \item{\code{algo = 'GAM_gam'}}{ : a \code{character} defining the chosen GAM function, must 
 ##'   be \code{GAM_gam} (see \code{\link[gam]{gam}}), \code{GAM_mgcv} (see \code{\link[mgcv]{gam}}) 
 ##'   or \code{BAM_mgcv} (see \code{\link[mgcv]{bam}})}
-##'   \item{\code{myFormula}}{ : a typical \code{formula} object (see Examples). \cr If not 
-##'   \code{NULL}, \code{type} and \code{interaction.level} parameters are switched off. \cr 
+##'   \item{\code{myFormula}}{ : a typical \code{formula} object (see 
+##'   \href{BIOMOD_ModelingOptions.html#examples}{Examples}). \cr If not \code{NULL}, \code{type} 
+##'   and \code{interaction.level} parameters are switched off. \cr 
 ##'   You can choose to either :
 ##'   \itemize{
 ##'     \item{generate automatically the GAM formula with the following parameters :
@@ -126,7 +130,7 @@
 ##'   default !})}
 ##'   \item{\code{control}}{ : a \code{list} of parameters to control the fitting process (passed to 
 ##'   \code{\link[mgcv]{gam.control}} or \code{\link[gam]{gam.control}})}
-##'   \item{some options specific to \code{GAM_mgcv} (ignored if \code{algo = 'GAM_gam'})}{
+##'   \item{some options specific to \code{GAM_mgcv} (\emph{ignored if \code{algo = 'GAM_gam'}})}{
 ##'   \itemize{
 ##'     \item{\code{method = 'GCV.Cp'})}
 ##'     \item{\code{optimizer = c('outer','newton')}}
@@ -137,18 +141,18 @@
 ##'   }
 ##' }
 ##'
-##' @section \bold{CTA (\code{\link[rpart]{rpart}})}
+##' @section CTA : (\code{\link[rpart]{rpart}})
 ##' 
-##' Please refer to \code{\link[rpart]{rpart}} help file for more details.
+##' \emph{Please refer to \code{\link[rpart]{rpart}} help file for more details.}
 ##' \itemize{
 ##'   \item{\code{method = 'class'}}
-##'   \item{\code{parms = 'default'}{ : if \code{'default'}, default \pkg{rpart} 
+##'   \item{\code{parms = 'default'}}{ : if \code{'default'}, default \pkg{rpart} 
 ##'   \code{parms} value are kept}
 ##'   \item{\code{cost = NULL}}
 ##'   \item{\code{control}}{ : see \code{\link[rpart]{rpart.control}}}
 ##' }
 ##'
-##' @section \bold{ANN (\code{\link[nnet]{nnet}})}
+##' @section ANN : (\code{\link[nnet]{nnet}})
 ##' \itemize{
 ##'   \item{\code{NbCV = 5}}{ : an \code{integer} corresponding to the number of cross-validation 
 ##'   repetitions to find best size and decay parameters}
@@ -163,32 +167,33 @@
 ##'   It is also possible to give a \code{vector} of decay values to be tested, and the one giving 
 ##'   the best model AUC will be kept.}
 ##'   \item{\code{rang = 0.1}}{ : a \code{numeric} corresponding to the initial random weights on 
-##'   [-rang, rang]}
+##'   \code{[-rang, rang]}}
 ##'   \item{\code{maxit = 200}}{ : an \code{integer} corresponding to the maximum number of 
 ##'   iterations}
 ##' }
 ##'
-##' @section \bold{SRE (\code{\link[biomod2]{sre}})}
+##' @section SRE : (\code{\link{bm_SRE}})
 ##' \itemize{
-##'   \item{\code{quant = 0.025}}{ : a \code{numeric} corresponding to the quantile of 'extreme 
-##'   environmental variable' removed to select species envelops}
+##'   \item{\code{quant = 0.025}}{ : a \code{numeric} corresponding to the quantile of 
+##'   '\emph{extreme environmental variable}' removed to select species envelops}
 ##' }
 ##'
-##' @section \bold{FDA (\code{\link[mda]{fda}})}
+##' @section FDA : (\code{\link[mda]{fda}})
 ##' 
-##' Please refer to \code{\link[mda]{fda}} help file for more details.
+##' \emph{Please refer to \code{\link[mda]{fda}} help file for more details.}
 ##' \itemize{
 ##'   \item{\code{method = 'mars'}}
 ##'   \item{\code{add_args = NULL}}{ : a \code{list} of additional parameters to \code{method} and 
-##'   given to the \ldots options of \code{\link[mda]{fda}} function}
+##'   given to the \code{...} options of \code{\link[mda]{fda}} function}
 ##' }
 ##'
-##' @section \bold{MARS (\code{\link[earth]{earth}})}
+##' @section MARS : (\code{\link[earth]{earth}})
 ##' 
-##' Please refer to \code{\link[earth]{earth}} help file for more details.
+##' \emph{Please refer to \code{\link[earth]{earth}} help file for more details.}
 ##' \itemize{
-##'   \item{\code{myFormula}}{ : a typical \code{formula} object (see Examples). \cr If not 
-##'   \code{NULL}, \code{type} and \code{interaction.level} parameters are switched off. \cr 
+##'   \item{\code{myFormula}}{ : a typical \code{formula} object (see 
+##'   \href{BIOMOD_ModelingOptions.html#examples}{Examples}). \cr If not \code{NULL}, \code{type} 
+##'   and \code{interaction.level} parameters are switched off. \cr 
 ##'   You can choose to either :
 ##'   \itemize{
 ##'     \item{generate automatically the MARS formula with the following parameters :
@@ -204,68 +209,75 @@
 ##'   }
 ##'   }
 ##'   \item{\code{nk = NULL}}{ : an \code{integer} corresponding to the maximum number of model 
-##'   terms. If \code{NULL} default MARS function value is used : 
-##'   \code{max(21, 2 * nb_expl_var + 1)}}
+##'   terms. \cr 
+##'   If \code{NULL} default MARS function value is used : \code{max(21, 2 * nb_expl_var + 1)}}
 ##'   \item{\code{penalty = 2}}
 ##'   \item{\code{thresh = 0.001}}
 ##'   \item{\code{nprune = NULL}}
 ##'   \item{\code{pmethod = 'backward'}}
 ##' }
 ##'
-##' @section \bold{RF (\code{\link[randomForest]{randomForest}})}
+##' @section RF : (\code{\link[randomForest]{randomForest}})
 ##' \itemize{
 ##'   \item{\code{do.classif = TRUE}}{ : if \code{TRUE} \emph{random.forest classification} will 
 ##'   be computed, otherwise \emph{random.forest regression} will be done}
 ##'   \item{\code{ntree = 500}}
 ##'   \item{\code{mtry = 'default'}}
+##'   \item{\code{sampsize = NULL}}
 ##'   \item{\code{nodesize = 5}}
 ##'   \item{\code{maxnodes = NULL}}
 ##' }
 ##'
-##' @section \bold{\href{https://biodiversityinformatics.amnh.org/open_source/maxent/}{MAXENT.Phillips}}
+##' @section MAXENT.Phillips : (\url{https://biodiversityinformatics.amnh.org/open_source/maxent})
 ##' \itemize{
-##'   \item{\code{path_to_maxent.jar = getwd()}}{ : a \code{character} corresponding to \pkg{maxent.jar} 
-##'   file link}
-##'   \item{\code{memory_allocated = 512}}{ : an \code{integer} corresponding to the amount of memory 
-##'   (in Mo) reserved for \code{java} to run \code{MAXENT.Phillips}, must be \code{64}, \code{128}, 
-##'   \code{256}, \code{512}, \code{1024}... or \code{NULL} to use default \code{java} memory 
-##'   limitation parameter}
-##'   \item{\code{background_data_dir}}{ : a \code{character} corresponding to directory path where 
-##'   explanatory variables are stored as \code{ASCII} files (raster format). \cr
-##'   If specified \code{MAXENT.Phillips} will generate its own background data from explanatory 
+##'   \item{\code{path_to_maxent.jar = getwd()}}{ : a \code{character} corresponding to 
+##'   \pkg{maxent.jar} file link}
+##'   \item{\code{memory_allocated = 512}}{ : an \code{integer} corresponding to the amount of 
+##'   memory (in Mo) reserved for \code{java} to run \code{MAXENT.Phillips}, must be \code{64}, 
+##'   \code{128}, \code{256}, \code{512}, \code{1024}... or \code{NULL} to use default \code{java} 
+##'   memory limitation parameter}
+##'   \item{\code{background_data_dir}}{ : a \code{character} corresponding to directory path 
+##'   where explanatory variables are stored as \code{ASCII} files (raster format). If specified, 
+##'   \code{MAXENT.Phillips} will generate its own background data from explanatory 
 ##'   variables rasters (as usually done in \code{MAXENT} studies). Otherwise \pkg{biomod2} 
 ##'   pseudo-absences will be used (see \code{\link{BIOMOD_FormatingData}})}
 ##'   \item{\code{maximumbackground}}{ : an \code{integer} corresponding to the maximum number of 
 ##'   background data to sample if the \code{background_data_dir} parameter has been set}
-##'   \item{\code{maximumiterations = 200}}{ : an \code{integer} corresponding to the maximum number of 
-##'   iterations to do}
-##'   \item{\code{visible = FALSE}}{ : a \code{logical} to make the \code{MAXENT} user interface available}
+##'   \item{\code{maximumiterations = 200}}{ : an \code{integer} corresponding to the maximum 
+##'   number of iterations to do}
+##'   \item{\code{visible = FALSE}}{ : a \code{logical} to make the \code{MAXENT} user interface 
+##'   available}
 ##'   \item{\code{linear = TRUE}}{ : a \code{logical} to allow linear features to be used}
 ##'   \item{\code{quadratic = TRUE}}{ : a \code{logical} to allow quadratic features to be used}
 ##'   \item{\code{product = TRUE}}{ : a \code{logical} to allow product features to be used}
 ##'   \item{\code{threshold = TRUE}}{ : a \code{logical} to allow threshold features to be used}
 ##'   \item{\code{hinge = TRUE}}{ : a \code{logical} to allow hinge features to be used}
-##'   \item{\code{lq2lqptthreshold = 80}}{ : an \code{integer} corresponding to the number of samples 
-##'   at which product and threshold features start being used}
-##'   \item{\code{l2lqthreshold = 10}}{ : an \code{integer} corresponding to the number of samples at 
-##'   which quadratic features start being used}
-##'   \item{\code{hingethreshold = 15}}{ : an \code{integer} corresponding to the number of samples at 
-##'   which hinge features start being used}
+##'   \item{\code{lq2lqptthreshold = 80}}{ : an \code{integer} corresponding to the number of 
+##'   samples at which product and threshold features start being used}
+##'   \item{\code{l2lqthreshold = 10}}{ : an \code{integer} corresponding to the number of samples 
+##'   at which quadratic features start being used}
+##'   \item{\code{hingethreshold = 15}}{ : an \code{integer} corresponding to the number of 
+##'   samples at which hinge features start being used}
 ##'   \item{\code{beta_threshold = -1.0}}{ : a \code{numeric} corresponding to the regularization 
-##'   parameter to be applied to all threshold features (\emph{negative value enables automatic setting})}
-##'   \item{\code{beta_categorical = -1.0}}{ : a \code{numeric} corresponding to the regularization 
-##'   parameter to be applied to all categorical features (\emph{negative value enables automatic setting})}
-##'   \item{\code{beta_lqp = -1.0}}{ : a \code{numeric} corresponding to the regularization parameter 
-##'   to be applied to all linear, quadratic and product features (\emph{negative value enables automatic setting})}
-##'   \item{\code{beta_hinge = -1.0}}{ : a \code{numeric} corresponding to the regularization parameter 
-##'   to be applied to all hinge features (\emph{negative value enables automatic setting})}
-##'   \item{\code{betamultiplier = 1}}{ : a \code{numeric} to multiply all automatic regularization 
-##'   parameters (\emph{higher number gives a more spread-out distribution})}
-##'   \item{\code{defaultprevalence = 0.5}}{ : a \code{numeric} corresponding to the default prevalence 
-##'   of the species (\emph{probability of presence at ordinary occurrence points})}
+##'   parameter to be applied to all threshold features 
+##'   (\emph{negative value enables automatic setting})}
+##'   \item{\code{beta_categorical = -1.0}}{ : a \code{numeric} corresponding to the 
+##'   regularization parameter to be applied to all categorical features 
+##'   (\emph{negative value enables automatic setting})}
+##'   \item{\code{beta_lqp = -1.0}}{ : a \code{numeric} corresponding to the regularization 
+##'   parameter to be applied to all linear, quadratic and product features 
+##'   (\emph{negative value enables automatic setting})}
+##'   \item{\code{beta_hinge = -1.0}}{ : a \code{numeric} corresponding to the regularization 
+##'   parameter to be applied to all hinge features 
+##'   (\emph{negative value enables automatic setting})}
+##'   \item{\code{betamultiplier = 1}}{ : a \code{numeric} to multiply all automatic 
+##'   regularization parameters \cr 
+##'   (\emph{higher number gives a more spread-out distribution})}
+##'   \item{\code{defaultprevalence = 0.5}}{ : a \code{numeric} corresponding to the default 
+##'   prevalence of the species \cr (\emph{probability of presence at ordinary occurrence points})}
 ##' }
 ##'
-##' % @section \bold{MAXENT.Tsuruoka (\code{\link[maxent]{maxent}})}
+##' % @section \bold{MAXENT.Tsuruoka (\code{\link[maxent]{maxent}})} :
 ##' % \itemize{
 ##' %   \item{\code{l1_regularizer = 0.0}}{ : a \code{numeric} turning on L1 regularization and setting 
 ##' %   the regularization parameter (\emph{a value of \code{0} will disable L1 regularization})}
@@ -281,56 +293,93 @@
 ##'
 ##'
 ##' @keywords models, options
-##'
+##' 
+##' 
+##' @seealso \code{\link{BIOMOD_Tuning}}, \code{\link{BIOMOD_Modeling}}
+##' @family Main functions
+##' 
+##' 
 ##' @examples
 ##' 
-##' ## default BIOMOD.model.option object
+##' # Load species occurrences (6 species available)
+##' myFile <- system.file('external/species/mammals_table.csv', package = 'biomod2')
+##' DataSpecies <- read.csv(myFile, row.names = 1)
+##' head(DataSpecies)
+##' 
+##' # Select the name of the studied species
+##' myRespName <- 'GuloGulo'
+##' 
+##' # Get corresponding presence/absence data
+##' myResp <- as.numeric(DataSpecies[, myRespName])
+##' 
+##' # Get corresponding XY coordinates
+##' myRespXY <- DataSpecies[, c('X_WGS84', 'Y_WGS84')]
+##' 
+##' # Load environmental variables extracted from BIOCLIM (bio_3, bio_4, bio_7, bio_11 & bio_12)
+##' myFiles <- paste0('external/bioclim/current/bio', c(3, 4, 7, 11, 12), '.grd')
+##' myExpl <- raster::stack(system.file(myFiles, package = 'biomod2'))
+##' 
+##' 
+##' # ---------------------------------------------------------------
+##' # Format Data with true absences
+##' myBiomodData <- BIOMOD_FormatingData(resp.var = myResp,
+##'                                      expl.var = myExpl,
+##'                                      resp.xy = myRespXY,
+##'                                      resp.name = myRespName)
+##' 
+##' 
+##' # ---------------------------------------------------------------
+##' # Print default modeling options
+##' bm_DefaultModelingOptions()
+##' 
+##' # Create default modeling options
 ##' myBiomodOptions <- BIOMOD_ModelingOptions()
-##'
-##' ## print the object
 ##' myBiomodOptions
+##' 
+##' # # Part (or totality) of the print can be copied and customized
+##' # # Below is an example to compute quadratic GLM and select best model with 'BIC' criterium
+##' # myBiomodOptions <- BIOMOD_ModelingOptions(
+##' #   GLM = list(type = 'quadratic',
+##' #              interaction.level = 0,
+##' #              myFormula = NULL,
+##' #              test = 'BIC',
+##' #              family = 'binomial',
+##' #              control = glm.control(epsilon = 1e-08,
+##' #                                    maxit = 1000,
+##' #                                    trace = FALSE)))
+##' # myBiomodOptions
+##' # 
+##' # # It is also possible to give a specific GLM formula
+##' # myForm <- 'Sp277 ~ bio3 + log(bio10) + poly(bio16, 2) + bio19 + bio3:bio19'
+##' # myBiomodOptions <- BIOMOD_ModelingOptions(GLM = list(myFormula = formula(myForm)))
+##' # myBiomodOptions
 ##'
-##' ## you can copy a part of the print, change it and custom your options
-##' ## here we want to compute quadratic GLM and select best model with 'BIC' criterium
-##' myBiomodOptions <- BIOMOD_ModelingOptions(
-##'   GLM = list(type = 'quadratic',
-##'              interaction.level = 0,
-##'              myFormula = NULL,
-##'              test = 'BIC',
-##'              family = 'binomial',
-##'              control = glm.control(epsilon = 1e-08,
-##'                                    maxit = 1000,
-##'                                    trace = FALSE)))
 ##'
-##' ## check changes were done
-##' myBiomodOptions
+## @importFrom gam gam.control
+## @importFrom mgcv gam.control
+##' @importFrom methods as new validObject
+##' 
+##' 
+##' @export
 ##'
-##' ##' you can prefer to establish your own GLM formula
-##' myBiomodOptions <- BIOMOD_ModelingOptions(
-##'   GLM = list(myFormula = formula("Sp277 ~ bio3 +
-##'                 log(bio10) + poly(bio16,2) + bio19 + bio3:bio19")))
 ##'
-##' ## check changes were done
-##' myBiomodOptions
-##'
-##' ##' you also can directly print default parameters and then follow the same processus
-##' Print_Default_ModelingOptions()
-##'
-##' ###############################################################################################
+###################################################################################################
 
-'BIOMOD_ModelingOptions' <- function(GLM = NULL,
-                                     GBM = NULL,
-                                     GAM = NULL,
-                                     CTA = NULL,
-                                     ANN = NULL,
-                                     SRE = NULL,
-                                     FDA = NULL,
-                                     MARS = NULL,
-                                     RF = NULL,
-                                     MAXENT.Phillips = NULL)
+BIOMOD_ModelingOptions <- function(GLM = NULL,
+                                   GBM = NULL,
+                                   GAM = NULL,
+                                   CTA = NULL,
+                                   ANN = NULL,
+                                   SRE = NULL,
+                                   FDA = NULL,
+                                   MARS = NULL,
+                                   RF = NULL,
+                                   MAXENT.Phillips = NULL)
 {
-  ## 1. create a defaut BIOMOD.Model.Options object ---------------------------
-  opt <- new('BIOMOD.Model.Options')
+  # .bm_cat("Build Modeling Options")
+  
+  ## 1. create a defaut BIOMOD.models.options object --------------------------
+  opt <- new('BIOMOD.models.options')
   
   ## 2. modify it if necessary ------------------------------------------------
   fam_GLM = fam_GAM = c('binomial', 'gaussian', 'Gamma', 'inverse.gaussian'
@@ -414,12 +463,17 @@
       if (opt@GAM$algo == 'GAM_gam') {
         requireNamespace('gam', quietly = TRUE)
         opt@GAM$control <- gam::gam.control()
-      } else{ opt@GAM$control <- mgcv::gam.control() }
+      } else {
+        requireNamespace('mgcv', quietly = TRUE)
+        opt@GAM$control <- mgcv::gam.control()
+      }
     } else {
       user.control.list <- GAM$control
       if (opt@GAM$algo == 'GAM_gam') {
+        requireNamespace('gam', quietly = TRUE)
         default.control.list <- gam::gam.control()
       } else {
+        requireNamespace('mgcv', quietly = TRUE)
         default.control.list <- mgcv::gam.control()
       }
       control.list <- lapply(names(default.control.list), function(x) {
@@ -493,6 +547,7 @@
     if (!is.null(RF$type)) { opt@RF$type <- RF$type }
     if (!is.null(RF$ntree)) { opt@RF$ntree <- RF$ntree }
     if (!is.null(RF$mtry)) { opt@RF$mtry <- RF$mtry }
+    if (!is.null(RF$sampsize)) { opt@RF$sampsize <- RF$sampsize }
     if (!is.null(RF$nodesize)) { opt@RF$nodesize <- RF$nodesize }
     if (!is.null(RF$maxnodes)) { opt@RF$maxnodes <- RF$maxnodes }
   }
@@ -540,14 +595,20 @@
     cat("\n\n!!! NULL object returned because of invalid parameters given !!!")
     return(NULL)
   }
+  # .bm_cat("Done")
   return(opt)
 }
 
 ###################################################################################################
 
-Print_Default_ModelingOptions <- function()
+##'
+##' @rdname BIOMOD_ModelingOptions
+##' @export
+##'
+
+bm_DefaultModelingOptions <- function()
 {
-  cat('\n Defaut modeling options. copy, change what you want paste it as arg to BIOMOD_ModelingOptions\n\n')
+  cat('\n Defaut modeling options. Copy, change what you want, and paste it as arg to BIOMOD_ModelingOptions().\n\n')
   opt_tmp <- BIOMOD_ModelingOptions()
   print(opt_tmp)
 }
