@@ -100,13 +100,14 @@ bm_VariablesImportance <- function(bm.model,
   i.iter = 0
   # if (nb.cpu > 1) {
   #   if (.getOS() != "windows") {
-  #     registerDoParallel(cores = nb.cpu)
+  #     if (!isNamespaceLoaded("doParallel")) { requireNamespace("doParallel") }
+  #     doParallel::registerDoParallel(cores = nb.cpu)
   #   } else {
   #     warning("Parallelisation with `foreach` is not available for Windows. Sorry.")
   #   }
   # }
   out = foreach (r = 1:nb.rep, .combine = "rbind") %:%
-    foreach (v = variables, .combine = "rbind") %dopar%
+    foreach (v = variables, .combine = "rbind") %do%
     {
       data_rand <- .randomise_data(expl.var, v, method)
       shuffled.pred <- predict(bm.model, data_rand, temp_workdir = temp_workdir)

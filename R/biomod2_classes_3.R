@@ -103,7 +103,6 @@
 ##' 
 ##' 
 ##' @importFrom reshape melt.array
-##' @importFrom reshape2 melt
 ##' @importFrom foreach foreach %do%
 ##' @importFrom abind abind
 ##' 
@@ -571,7 +570,7 @@ setMethod("get_variables_importance", "BIOMOD.models.out",
 ##' 
 ##' 
 ##' @importFrom raster subset
-##' @importFrom rasterVis levelplot
+## @importFrom rasterVis levelplot
 ##' @importFrom grDevices colorRampPalette colors dev.new gray rainbow
 ##' @importFrom graphics layout legend par points polygon text
 ##' 
@@ -620,12 +619,12 @@ setMethod('plot', signature(x = 'BIOMOD.projection.out', y = "missing"),
               my.col <- colorRampPalette(c("grey90", "yellow4", "green4"))(100) ## colors
               
               ## try to use levelplot function
-              try_plot <- try(levelplot(get_predictions(x, full.name = models_selected),
-                                        at = my.at,
-                                        margin = TRUE,
-                                        col.regions = my.col,
-                                        main = paste(x@sp.name, x@proj.name, "projections"),
-                                        colorkey = list(labels = list(labels = my.lab, at = my.labs.at))
+              try_plot <- try(rasterVis::levelplot(get_predictions(x, full.name = models_selected),
+                                                   at = my.at,
+                                                   margin = TRUE,
+                                                   col.regions = my.col,
+                                                   main = paste(x@sp.name, x@proj.name, "projections"),
+                                                   colorkey = list(labels = list(labels = my.lab, at = my.labs.at))
               ))
               if (!inherits(try_plot, "try-error")) { ## produce plot
                 print(try_plot)

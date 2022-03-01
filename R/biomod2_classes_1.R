@@ -280,7 +280,7 @@ setMethod('plot', signature(x = 'BIOMOD.formated.data', y = "missing"),
               }
               
               ## PLOT -----------------------------------------------------------------------------
-              levelplot(
+              rasterVis::levelplot(
                 x@data.mask,
                 at = my.at,
                 cuts = my.cuts,
@@ -460,7 +460,7 @@ setMethod('show', signature('BIOMOD.formated.data'),
 ##' 
 ##' 
 ##' @importFrom raster stack nlayers addLayer is.factor subset
-##' @importFrom rasterVis levelplot
+## @importFrom rasterVis levelplot
 ##' 
 ##' @export
 ##' 
@@ -687,7 +687,7 @@ setMethod('plot', signature(x = 'BIOMOD.formated.data.PA', y = "missing"),
               }
               
               ## PLOT -----------------------------------------------------------------------------
-              levelplot(
+              rasterVis::levelplot(
                 x@data.mask,
                 at = my.at,
                 cuts = my.cuts,

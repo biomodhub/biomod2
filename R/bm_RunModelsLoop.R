@@ -67,7 +67,7 @@
 ##' 
 ##' 
 ##' @importFrom foreach foreach %dopar%
-##' @importFrom doParallel registerDoParallel
+## @importFrom doParallel registerDoParallel
 ##' @importFrom rpart rpart prune
 ## @importFrom caret 
 ## @importFrom car 
@@ -108,7 +108,8 @@ bm_RunModelsLoop <- function(bm.format,
     
     if (nb.cpu > 1) {
       if (.getOS() != "windows") {
-        registerDoParallel(cores = nb.cpu)
+        if (!isNamespaceLoaded("doParallel")) { requireNamespace("doParallel") }
+        doParallel::registerDoParallel(cores = nb.cpu)
       } else {
         warning("Parallelisation with `foreach` is not available for Windows. Sorry.")
       }

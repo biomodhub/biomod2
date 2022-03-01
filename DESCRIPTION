@@ -35,12 +35,10 @@ Imports:
     methods,
     sp,
     raster,
-    rasterVis,
     reshape,
     reshape2,
     abind,
     foreach,
-    doParallel,
     ggplot2,
     patchwork,
     nnet,
@@ -63,6 +61,8 @@ Suggests:
     mgcv,
     car,
     ecospat,
+    doParallel,
+    rasterVis,
     testthat
 License: GPL-3
 RoxygenNote: 7.1.2
