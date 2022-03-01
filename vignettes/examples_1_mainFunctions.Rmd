@@ -214,6 +214,7 @@ get_variables_importance(myBiomodModelOut, as.data.frame = TRUE)
 
 # Represent evaluation scores & variables importance
 bm_PlotEvalMean(bm.out = myBiomodModelOut)
+bm_PlotEvalBoxplot(bm.out = myBiomodModelOut, group.by = c('algo', 'algo'))
 bm_PlotEvalBoxplot(bm.out = myBiomodModelOut, group.by = c('algo', 'run'))
 bm_PlotVarImpBoxplot(bm.out = myBiomodModelOut, group.by = c('expl.var', 'algo', 'algo'))
 bm_PlotVarImpBoxplot(bm.out = myBiomodModelOut, group.by = c('expl.var', 'algo', 'dataset'))
