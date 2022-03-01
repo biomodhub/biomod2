@@ -16,7 +16,7 @@ vignette: >
 
 ### <i class="fas fa-chess-pawn"></i> 2022
 
-4.0 (2022-02-18)
+4.0 (2022-03-01)
 
   * MAJOR RELEASE
   * clean all functions, reorganize files, remove old / unused functions
