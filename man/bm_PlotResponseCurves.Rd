@@ -135,7 +135,6 @@ bm_PlotResponseCurves(bm.out = myBiomodModelOut,
                       do.bivariate = TRUE)
                                       
                                       
-
 }
 \references{
 \itemize{

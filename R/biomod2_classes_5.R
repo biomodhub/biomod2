@@ -21,14 +21,18 @@
 ##' \code{\link{biomod2_ensemble_model}} on (new) explanatory variables.
 ##' 
 ##' 
-##' @param obj a \code{\link{biomod2_ensemble_model}} object
+##' @param object a \code{\link{biomod2_ensemble_model}} object
+##' @param newdata a \code{data.frame} or \code{\link[raster:stack]{RasterStack}} object 
+##' containing data for new predictions
+##' @param formal_predictions a \code{matrix} containing formal predictions
+##' @param \ldots (\emph{optional)}) 
 ##' 
 ##' 
 ##' @seealso \code{\link{biomod2_ensemble_model}}
 ##' @family Toolbox functions
 ##' 
 ##' 
-##' @importFrom raster calc reclassify
+##' @importFrom raster calc reclassify cv
 ##' 
 NULL
 
@@ -131,16 +135,16 @@ setMethod('predict', signature(object = 'EMmean_biomod2_model'),
 
 .predict.EMmean_biomod2_model.RasterStack <- function(object, newdata = NULL, formal_predictions = NULL, ...)
 {
-  if (is.null(formal_predictions)) {
-    formal_predictions = .template_predictEM.formal_predictions(object, newdata, formal_predictions, ...)
-  }
-  
   args <- list(...)
   filename <- args$filename
   on_0_1000 <- args$on_0_1000
   
   if (is.null(filename)) { filename <- "" }
   if (is.null(on_0_1000)) { on_0_1000 <- FALSE }
+  
+  if (is.null(formal_predictions)) {
+    formal_predictions = .template_predictEM.formal_predictions(object, newdata, formal_predictions, on_0_1000 = on_0_1000, ...)
+  }
   
   out <- calc(formal_predictions, function(x)
   {
@@ -155,7 +159,6 @@ setMethod('predict', signature(object = 'EMmean_biomod2_model'),
 .predict.EMmean_biomod2_model.data.frame <- function(object, newdata = NULL, formal_predictions = NULL, ... )
 {
   args <- list(...)
-
   on_0_1000 <- args$on_0_1000
   if (is.null(on_0_1000)) on_0_1000 <- FALSE
 
@@ -210,16 +213,16 @@ setMethod('predict', signature(object = 'EMmedian_biomod2_model'),
 
 .predict.EMmedian_biomod2_model.RasterStack <- function(object, newdata = NULL, formal_predictions = NULL, ...)
 {
-  if (is.null(formal_predictions)) {
-    formal_predictions = .template_predictEM.formal_predictions(object, newdata, formal_predictions, ...)
-  }
-  
   args <- list(...)
   filename <- args$filename
   on_0_1000 <- args$on_0_1000
   
   if (is.null(filename)) { filename <- "" }
   if (is.null(on_0_1000)) { on_0_1000 <- FALSE }
+  
+  if (is.null(formal_predictions)) {
+    formal_predictions = .template_predictEM.formal_predictions(object, newdata, formal_predictions, on_0_1000 = on_0_1000, ...)
+  }
   
   out <- calc(formal_predictions, function(x)
   {
@@ -233,13 +236,13 @@ setMethod('predict', signature(object = 'EMmedian_biomod2_model'),
 
 .predict.EMmedian_biomod2_model.data.frame <- function(object, newdata = NULL, formal_predictions = NULL, ...)
 {
-  if (is.null(formal_predictions)) {
-    formal_predictions = .template_predictEM.formal_predictions(object, newdata, formal_predictions, ...)
-  }
-  
   args <- list(...)
   on_0_1000 <- args$on_0_1000
   if (is.null(on_0_1000)) { on_0_1000 <- FALSE }
+  
+  if (is.null(formal_predictions)) {
+    formal_predictions = .template_predictEM.formal_predictions(object, newdata, formal_predictions, on_0_1000 = on_0_1000, ...)
+  }
   
   out <- apply(formal_predictions, 1, median, na.rm = T)
   if (on_0_1000) { out <- round(out) }
@@ -332,12 +335,13 @@ setMethod('predict', signature(object = 'EMci_biomod2_model'),
 
 .predict.EMci_biomod2_model.RasterStack <- function(object, newdata = NULL, formal_predictions = NULL, ...)
 {
-  if (is.null(formal_predictions)) {
-    formal_predictions = .template_predictEM.formal_predictions(object, newdata, formal_predictions, ...)
-  }
   args <- list(...)
   on_0_1000 <- args$on_0_1000
   if (is.null(on_0_1000)) { on_0_1000 <- FALSE }
+  if (is.null(formal_predictions)) {
+    formal_predictions = .template_predictEM.formal_predictions(object, newdata, formal_predictions, on_0_1000 = on_0_1000, ...)
+  }
+  
   mean_prediction <- args$mean_prediction # mean of predictions should be given for time saving
   sd_prediction <- args$sd_prediction # mean of predictions should be given for time saving
   if (is.null(mean_prediction)) { mean_prediction <- calc(formal_predictions, mean) }
@@ -359,17 +363,17 @@ setMethod('predict', signature(object = 'EMci_biomod2_model'),
 
 .predict.EMci_biomod2_model.data.frame <- function(object, newdata = NULL, formal_predictions = NULL, ...)
 {
-  if (is.null(formal_predictions)) {
-    formal_predictions = .template_predictEM.formal_predictions(object, newdata, formal_predictions, ...)
-  }
-  
   args <- list(...)
   on_0_1000 <- args$on_0_1000
   if (is.null(on_0_1000)) { on_0_1000 <- FALSE }
+  if (is.null(formal_predictions)) {
+    formal_predictions = .template_predictEM.formal_predictions(object, newdata, formal_predictions, on_0_1000 = on_0_1000, ...)
+  }
+  
   mean_prediction <- args$mean_prediction # mean of predictions should be given for time saving
   sd_prediction <- args$sd_prediction # mean of predictions should be given for time saving
-  if (is.null(mean_prediction)) { mean_prediction <- round(rowMeans(formal_predictions, na.rm = T)) }
-  if (is.null(sd_prediction)) { sd_prediction <- apply(formal_predictions, 1, sd, na.rm =  T) }
+  if (is.null(mean_prediction)) { mean_prediction <- round(rowMeans(formal_predictions, na.rm = TRUE)) }
+  if (is.null(sd_prediction)) { sd_prediction <- apply(formal_predictions, 1, sd, na.rm = TRUE) }
   
   ci_prediction <- switch(object@side,
                           inferior = mean_prediction -  (sd_prediction * (qt((1-object@alpha/2), df = length(object@model) + 1 ) / sqrt(length(object@model))) ),
@@ -412,10 +416,6 @@ setMethod('predict', signature(object = 'EMca_biomod2_model'),
 
 .predict.EMca_biomod2_model.RasterStack <- function(object, newdata = NULL, formal_predictions = NULL, ...)
 {
-  if (is.null(formal_predictions)) {
-    formal_predictions = .template_predictEM.formal_predictions(object, newdata, formal_predictions, ...)
-  }
-  
   args <- list(...)
   filename <- args$filename
   on_0_1000 <- args$on_0_1000
@@ -423,6 +423,9 @@ setMethod('predict', signature(object = 'EMca_biomod2_model'),
   if (is.null(filename)) { filename <- "" }
   if (is.null(on_0_1000)) { on_0_1000 <- FALSE }
   
+  if (is.null(formal_predictions)) {
+    formal_predictions = .template_predictEM.formal_predictions(object, newdata, formal_predictions, on_0_1000 = on_0_1000, ...)
+  }
   if (on_0_1000) { thresh <- object@thresholds } else { thresh <- object@thresholds / 1000 }
   
   out <- calc(bm_BinaryTransformation(formal_predictions, thresh), function(x)
@@ -437,14 +440,13 @@ setMethod('predict', signature(object = 'EMca_biomod2_model'),
 
 .predict.EMca_biomod2_model.data.frame <- function(object, newdata = NULL, formal_predictions = NULL, ...)
 {
-  if (is.null(formal_predictions)) {
-    formal_predictions = .template_predictEM.formal_predictions(object, newdata, formal_predictions, ...)
-  }
-  
   args <- list(...)
   on_0_1000 <- args$on_0_1000
   if (is.null(on_0_1000)) { on_0_1000 <- FALSE }
   
+  if (is.null(formal_predictions)) {
+    formal_predictions = .template_predictEM.formal_predictions(object, newdata, formal_predictions, on_0_1000 = on_0_1000, ...)
+  }
   if (on_0_1000) { thresh <- object@thresholds } else { thresh <- object@thresholds / 1000 }
   
   out <- rowMeans(as.data.frame(bm_BinaryTransformation(formal_predictions, thresh)), na.rm = TRUE)
@@ -476,16 +478,16 @@ setMethod('predict', signature(object = 'EMwmean_biomod2_model'),
 
 .predict.EMwmean_biomod2_model.RasterStack <- function(object, newdata = NULL, formal_predictions = NULL, ...)
 {
-  if (is.null(formal_predictions)) {
-    formal_predictions = .template_predictEM.formal_predictions(object, newdata, formal_predictions, ...)
-  }
-  
   args <- list(...)
   filename <- args$filename
   on_0_1000 <- args$on_0_1000
   
   if (is.null(filename)) { filename <- "" }
   if (is.null(on_0_1000)) { on_0_1000 <- FALSE }
+  
+  if (is.null(formal_predictions)) {
+    formal_predictions = .template_predictEM.formal_predictions(object, newdata, formal_predictions, on_0_1000 = on_0_1000, ...)
+  }
   
   out <- calc(formal_predictions, function(x)
   {
@@ -499,13 +501,13 @@ setMethod('predict', signature(object = 'EMwmean_biomod2_model'),
 
 .predict.EMwmean_biomod2_model.data.frame <- function(object, newdata = NULL, formal_predictions = NULL, ...)
 {
-  if (is.null(formal_predictions)) {
-    formal_predictions = .template_predictEM.formal_predictions(object, newdata, formal_predictions, ...)
-  }
-  
   args <- list(...)
   on_0_1000 <- args$on_0_1000
   if (is.null(on_0_1000)) { on_0_1000 <- FALSE }
+  
+  if (is.null(formal_predictions)) {
+    formal_predictions = .template_predictEM.formal_predictions(object, newdata, formal_predictions, on_0_1000 = on_0_1000, ...)
+  }
   
   out <- as.vector(as.matrix(formal_predictions) %*% object@penalization_scores)
   if (on_0_1000) { out <- round(out) }

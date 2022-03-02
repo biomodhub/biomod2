@@ -9,7 +9,7 @@
 \alias{BIOMOD_RangeSize,RasterLayer,RasterLayer-method}
 \title{Analyze the range size differences between projections of species distribution models}
 \usage{
-BIOMOD_RangeSize(proj.current, proj.future, ...)
+BIOMOD_RangeSize(proj.current, proj.future)
 
 \S4method{BIOMOD_RangeSize}{data.frame,data.frame}(proj.current, proj.future)
 

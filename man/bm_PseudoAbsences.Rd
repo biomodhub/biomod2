@@ -104,6 +104,9 @@ If \code{strategy = 'user.defined'}, a \code{matrix} or \code{data.frame} with a
 \code{resp.var} values, as many columns as \code{nb.rep}, and containing \code{TRUE} or 
 \code{FALSE} values defining which points will be used to build the species distribution 
 model(s) for each repetition}
+
+\item{\ldots}{(\emph{optional, one or several of the following arguments depending on the selected 
+method)})}
 }
 \value{
 A \code{list} containing the following elements :

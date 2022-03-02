@@ -159,7 +159,7 @@
 
 
 setGeneric("BIOMOD_RangeSize",
-           def = function(proj.current, proj.future, ...) {
+           def = function(proj.current, proj.future) {
              standardGeneric("BIOMOD_RangeSize")
            })
 

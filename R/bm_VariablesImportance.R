@@ -20,7 +20,7 @@
 ## @param nb.cpu (\emph{optional, default} \code{1}) \cr 
 ## An \code{integer} value corresponding to the number of computing resources to be used to 
 ## parallelize the single models computation
-##' 
+##' @param \ldots (\emph{optional)}) 
 ##' 
 ##' @return  
 ##' 

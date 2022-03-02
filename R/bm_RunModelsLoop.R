@@ -37,6 +37,24 @@
 ##' parallelize the single models computation
 ##' 
 ##' 
+##' @param weights a \code{vector} of \code{numeric} values corresponding to observation weights 
+##' (one per observation)
+##' @param nam a \code{character} corresponding to the model to be run (name + run.id)
+##' @param Data a \code{data.frame} containing \code{data.species} and \code{data.env.var} slots 
+##' of \code{bm.format} parameter
+##' @param calib.lines a \code{data.frame} containing \code{data.split.table} slot of 
+##' \code{bm.format} parameter, or an extraction of \code{data.species} slot (for a specific PA 
+##' dataset extracted from \code{PA.table} slot)
+##' @param xy a \code{data.frame} containing \code{coord} slot of \code{bm.format} 
+##' parameter (for a specific PA dataset extracted from \code{PA.table} slot of \code{bm.format} 
+##' parameter)
+##' @param eval.data a \code{data.frame} containing \code{eval.data.species} and 
+##' \code{eval.data.env.var} slots of \code{bm.format} parameter
+##' @param eval.xy a \code{data.frame} containing \code{eval.coord} slot of \code{bm.format} 
+##' parameter
+##' 
+##' 
+##' 
 ##' @return  
 ##' 
 ##' A \code{list} containing for each model a \code{list} containing the following elements :
@@ -73,7 +91,7 @@
 ## @importFrom car 
 ## @importFrom gam gam step.Gam s
 ## @importFrom mgcv gam bam
-##' @importFrom gbm gbm
+##' @importFrom gbm gbm gbm.perf
 ##' @importFrom MASS stepAIC
 ##' @importFrom nnet nnet
 ##' @importFrom earth earth

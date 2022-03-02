@@ -13,7 +13,7 @@
 \S4method{get_scaling_model}{biomod2_model}(object)
 }
 \arguments{
-\item{obj}{a \code{\link{biomod2_model}} object}
+\item{object}{a \code{\link{biomod2_model}} object}
 }
 \value{
 \describe{

@@ -22,6 +22,7 @@
 ##' tested over the range of fitted values
 ##' @param threshold (\emph{optional, default} \code{NULL}) \cr 
 ##' A \code{numeric} corresponding to the threshold used to convert the given data
+##' @param misc a \code{matrix} corresponding to a contingency table
 ##'
 ##'
 ##' @return 

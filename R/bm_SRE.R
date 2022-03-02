@@ -110,7 +110,7 @@
 ##' plot(res, zlim = c(0, 1))
 ##' 
 ##' 
-##' @importFrom raster stack subset nlayers mask reclassify coordinates cellFromXY
+##' @importFrom raster stack subset nlayers mask reclassify coordinates cellFromXY Which
 ##' 
 ##' @export
 ##' 

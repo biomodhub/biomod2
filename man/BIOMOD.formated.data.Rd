@@ -60,6 +60,56 @@
 
 \S4method{show}{BIOMOD.formated.data}(object)
 }
+\arguments{
+\item{sp}{a \code{vector}, \code{\link[sp]{SpatialPoints}} (\emph{if presence-only}) or 
+\code{\link[sp]{SpatialPointsDataFrame}} object containing binary data (\code{0} : absence, 
+\code{1} : presence, \code{NA} : indeterminate) for a single species that will be used to 
+build the species distribution model(s)}
+
+\item{env}{a \code{matrix}, \code{data.frame}, \code{\link[sp]{SpatialPointsDataFrame}} 
+or \code{\link[raster:stack]{RasterStack}} object containing the explanatory variables 
+(in columns or layers) that will be used to build the species distribution model(s)}
+
+\item{xy}{(\emph{optional, default} \code{NULL}) \cr 
+If \code{resp.var} is a \code{vector}, a 2-columns \code{matrix} or \code{data.frame} 
+containing the corresponding \code{X} and \code{Y} coordinates that will be used to build the 
+species distribution model(s)}
+
+\item{sp.name}{a \code{character} corresponding to the species name}
+
+\item{eval.sp}{(\emph{optional, default} \code{NULL}) \cr 
+A \code{vector}, \code{\link[sp]{SpatialPoints}} (\emph{if presence-only}) or 
+\code{\link[sp]{SpatialPointsDataFrame}} object containing binary data (\code{0} : absence, 
+\code{1} : presence, \code{NA} : indeterminate) for a single species that will be used to 
+evaluate the species distribution model(s) with independent data}
+
+\item{eval.env}{(\emph{optional, default} \code{NULL}) \cr 
+A \code{matrix}, \code{data.frame}, \code{\link[sp]{SpatialPointsDataFrame}} or 
+\code{\link[raster:stack]{RasterStack}} object containing the explanatory variables (in 
+columns or layers) that will be used to evaluate the species distribution model(s) with 
+independent data}
+
+\item{eval.xy}{(\emph{optional, default} \code{NULL}) \cr 
+If \code{resp.var} is a \code{vector}, a 2-columns \code{matrix} or \code{data.frame} 
+containing the corresponding \code{X} and \code{Y} coordinates that will be used to evaluate 
+the species distribution model(s) with independent data}
+
+\item{na.rm}{(\emph{optional, default} \code{TRUE}) \cr 
+A \code{logical} value defining whether points having one or several missing values for 
+explanatory variables should be removed from the analysis or not}
+
+\item{data.mask}{a \code{\link[raster:stack]{RasterStack}} object containing the mask of the 
+studied area}
+
+\item{x}{a \code{\link{BIOMOD.formated.data.PA}} object}
+
+\item{coord}{a 2-columns \code{data.frame} containing \code{X} and \code{Y} coordinates for plot}
+
+\item{col}{a \code{vector} containing colors for plot (default : \code{c('green', 'red', 
+'orange', 'grey')})}
+
+\item{object}{a \code{\link{BIOMOD.formated.data.PA}} object}
+}
 \description{
 Class returned by \code{\link{BIOMOD_FormatingData}}, and used by 
 \code{\link{BIOMOD_Tuning}}, \code{\link{BIOMOD_CrossValidation}} and 

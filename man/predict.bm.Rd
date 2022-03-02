@@ -59,7 +59,12 @@
 \S4method{predict}{SRE_biomod2_model}(object, newdata, ...)
 }
 \arguments{
-\item{obj}{a \code{\link{biomod2_model}} object}
+\item{object}{a \code{\link{biomod2_model}} object}
+
+\item{newdata}{a \code{data.frame} or \code{\link[raster:stack]{RasterStack}} object 
+containing data for new predictions}
+
+\item{\ldots}{(\emph{optional)})}
 }
 \description{
 This function allows the user to predict single models from 

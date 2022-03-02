@@ -35,7 +35,14 @@
 \S4method{predict}{EMwmean_biomod2_model}(object, newdata = NULL, formal_predictions = NULL, ...)
 }
 \arguments{
-\item{obj}{a \code{\link{biomod2_ensemble_model}} object}
+\item{object}{a \code{\link{biomod2_ensemble_model}} object}
+
+\item{newdata}{a \code{data.frame} or \code{\link[raster:stack]{RasterStack}} object 
+containing data for new predictions}
+
+\item{formal_predictions}{a \code{matrix} containing formal predictions}
+
+\item{\ldots}{(\emph{optional)})}
 }
 \description{
 This function allows the user to predict single models from 

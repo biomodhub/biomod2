@@ -13,6 +13,48 @@
 ##' \code{\link{BIOMOD_Modeling}}
 ##' 
 ##' 
+##' @param sp.name a \code{character} corresponding to the species name
+##' 
+##' @param sp a \code{vector}, \code{\link[sp]{SpatialPoints}} (\emph{if presence-only}) or 
+##' \code{\link[sp]{SpatialPointsDataFrame}} object containing binary data (\code{0} : absence, 
+##' \code{1} : presence, \code{NA} : indeterminate) for a single species that will be used to 
+##' build the species distribution model(s)
+##' @param env a \code{matrix}, \code{data.frame}, \code{\link[sp]{SpatialPointsDataFrame}} 
+##' or \code{\link[raster:stack]{RasterStack}} object containing the explanatory variables 
+##' (in columns or layers) that will be used to build the species distribution model(s)
+##' @param xy (\emph{optional, default} \code{NULL}) \cr 
+##' If \code{resp.var} is a \code{vector}, a 2-columns \code{matrix} or \code{data.frame} 
+##' containing the corresponding \code{X} and \code{Y} coordinates that will be used to build the 
+##' species distribution model(s)
+##' @param eval.sp (\emph{optional, default} \code{NULL}) \cr 
+##' A \code{vector}, \code{\link[sp]{SpatialPoints}} (\emph{if presence-only}) or 
+##' \code{\link[sp]{SpatialPointsDataFrame}} object containing binary data (\code{0} : absence, 
+##' \code{1} : presence, \code{NA} : indeterminate) for a single species that will be used to 
+##' evaluate the species distribution model(s) with independent data
+##' @param eval.env (\emph{optional, default} \code{NULL}) \cr 
+##' A \code{matrix}, \code{data.frame}, \code{\link[sp]{SpatialPointsDataFrame}} or 
+##' \code{\link[raster:stack]{RasterStack}} object containing the explanatory variables (in 
+##' columns or layers) that will be used to evaluate the species distribution model(s) with 
+##' independent data
+##' @param eval.xy (\emph{optional, default} \code{NULL}) \cr 
+##' If \code{resp.var} is a \code{vector}, a 2-columns \code{matrix} or \code{data.frame} 
+##' containing the corresponding \code{X} and \code{Y} coordinates that will be used to evaluate 
+##' the species distribution model(s) with independent data
+##' 
+##' @param na.rm (\emph{optional, default} \code{TRUE}) \cr 
+##' A \code{logical} value defining whether points having one or several missing values for 
+##' explanatory variables should be removed from the analysis or not
+##' 
+##' @param data.mask a \code{\link[raster:stack]{RasterStack}} object containing the mask of the 
+##' studied area
+##' 
+##' @param coord a 2-columns \code{data.frame} containing \code{X} and \code{Y} coordinates for plot
+##' @param col a \code{vector} containing colors for plot (default : \code{c('green', 'red', 
+##' 'orange', 'grey')})
+##' @param x a \code{\link{BIOMOD.formated.data.PA}} object
+##' @param object a \code{\link{BIOMOD.formated.data.PA}} object
+##' 
+##' 
 ##' @slot sp.name a \code{character} corresponding to the species name
 ##' @slot coord a 2-columns \code{data.frame} containing the corresponding \code{X} and \code{Y} 
 ##' coordinates
@@ -73,7 +115,7 @@
 ##' plot(myBiomodData)
 ##' 
 ##' 
-##' @importFrom raster stack nlayers addLayer is.factor subset
+##' @importFrom raster stack nlayers addLayer is.factor subset extract cellStats cellFromXY
 ##' 
 ##' @export
 ##' 
@@ -391,6 +433,77 @@ setMethod('show', signature('BIOMOD.formated.data'),
 ##' \code{\link{BIOMOD_Tuning}}, \code{\link{BIOMOD_CrossValidation}} and 
 ##' \code{\link{BIOMOD_Modeling}}
 ##' 
+##' @param sp.name a \code{character} corresponding to the species name
+##' 
+##' @param sp a \code{vector}, \code{\link[sp]{SpatialPoints}} (\emph{if presence-only}) or 
+##' \code{\link[sp]{SpatialPointsDataFrame}} object containing binary data (\code{0} : absence, 
+##' \code{1} : presence, \code{NA} : indeterminate) for a single species that will be used to 
+##' build the species distribution model(s)
+##' @param env a \code{matrix}, \code{data.frame}, \code{\link[sp]{SpatialPointsDataFrame}} 
+##' or \code{\link[raster:stack]{RasterStack}} object containing the explanatory variables 
+##' (in columns or layers) that will be used to build the species distribution model(s)
+##' @param xy (\emph{optional, default} \code{NULL}) \cr 
+##' If \code{resp.var} is a \code{vector}, a 2-columns \code{matrix} or \code{data.frame} 
+##' containing the corresponding \code{X} and \code{Y} coordinates that will be used to build the 
+##' species distribution model(s)
+##' @param eval.sp (\emph{optional, default} \code{NULL}) \cr 
+##' A \code{vector}, \code{\link[sp]{SpatialPoints}} (\emph{if presence-only}) or 
+##' \code{\link[sp]{SpatialPointsDataFrame}} object containing binary data (\code{0} : absence, 
+##' \code{1} : presence, \code{NA} : indeterminate) for a single species that will be used to 
+##' evaluate the species distribution model(s) with independent data
+##' @param eval.env (\emph{optional, default} \code{NULL}) \cr 
+##' A \code{matrix}, \code{data.frame}, \code{\link[sp]{SpatialPointsDataFrame}} or 
+##' \code{\link[raster:stack]{RasterStack}} object containing the explanatory variables (in 
+##' columns or layers) that will be used to evaluate the species distribution model(s) with 
+##' independent data
+##' @param eval.xy (\emph{optional, default} \code{NULL}) \cr 
+##' If \code{resp.var} is a \code{vector}, a 2-columns \code{matrix} or \code{data.frame} 
+##' containing the corresponding \code{X} and \code{Y} coordinates that will be used to evaluate 
+##' the species distribution model(s) with independent data
+##' 
+##' @param na.rm (\emph{optional, default} \code{TRUE}) \cr 
+##' A \code{logical} value defining whether points having one or several missing values for 
+##' explanatory variables should be removed from the analysis or not
+##' @param na.rm (\emph{optional, default} \code{TRUE}) \cr 
+##' A \code{logical} value defining whether points having one or several missing values for 
+##' explanatory variables should be removed from the analysis or not
+##' 
+##' @param PA.nb.rep (\emph{optional, default} \code{0}) \cr 
+##' If pseudo-absence selection, an \code{integer} corresponding to the number of sets 
+##' (repetitions) of pseudo-absence points that will be drawn
+##' @param PA.strategy (\emph{optional, default} \code{NULL}) \cr 
+##' If pseudo-absence selection, a \code{character} defining the strategy that will be used to 
+##' select the pseudo-absence points. Must be \code{random}, \code{sre}, \code{disk} or 
+##' \code{user.defined} (see \href{BIOMOD_FormatingData.html#details}{Details})
+##' @param PA.nb.absences (\emph{optional, default} \code{0}) \cr 
+##' If pseudo-absence selection, and \code{PA.strategy = 'random'} or \code{PA.strategy = 'sre'} 
+##' or \code{PA.strategy = 'disk'}, an \code{integer} corresponding to the number of pseudo-absence 
+##' points that will be selected for each pseudo-absence repetition (true absences included)
+##' @param PA.sre.quant (\emph{optional, default} \code{0}) \cr 
+##' If pseudo-absence selection and \code{PA.strategy = 'sre'}, a \code{numeric} between \code{0} 
+##' and \code{0.5} defining the half-quantile used to make the \code{sre} pseudo-absence selection 
+##' (see \href{BIOMOD_FormatingData.html#details}{Details})
+##' @param PA.dist.min (\emph{optional, default} \code{0}) \cr 
+##' If pseudo-absence selection and \code{PA.strategy = 'disk'}, a \code{numeric} defining the 
+##' minimal distance to presence points used to make the \code{disk} pseudo-absence selection 
+##' (in meters, see \href{BIOMOD_FormatingData.html#details}{Details})
+##' @param PA.dist.max (\emph{optional, default} \code{0}) \cr 
+##' If pseudo-absence selection and \code{PA.strategy = 'disk'}, a \code{numeric} defining the 
+##' maximal distance to presence points used to make the \code{disk} pseudo-absence selection 
+##' (in meters, see \href{BIOMOD_FormatingData.html#details}{Details})
+##' @param PA.user.table (\emph{optional, default} \code{NULL}) \cr 
+##' If pseudo-absence selection and \code{PA.strategy = 'user.defined'}, a \code{matrix} or 
+##' \code{data.frame} with as many rows as \code{resp.var} values, as many columns as 
+##' \code{PA.nb.rep}, and containing \code{TRUE} or \code{FALSE} values defining which points 
+##' will be used to build the species distribution model(s) for each repetition (see 
+##' \href{BIOMOD_FormatingData.html#details}{Details})
+##' 
+##' @param coord a 2-columns \code{data.frame} containing \code{X} and \code{Y} coordinates for plot
+##' @param col a \code{vector} containing colors for plot (default : \code{c('green', 'red', 
+##' 'orange', 'grey')})
+##' @param x a \code{\link{BIOMOD.formated.data.PA}} object
+##' @param object a \code{\link{BIOMOD.formated.data.PA}} object
+##' 
 ##' 
 ##' @slot sp.name a \code{character} corresponding to the species name
 ##' @slot coord a 2-columns \code{data.frame} containing the corresponding \code{X} and \code{Y} 
@@ -459,7 +572,7 @@ setMethod('show', signature('BIOMOD.formated.data'),
 ##' plot(myBiomodData)
 ##' 
 ##' 
-##' @importFrom raster stack nlayers addLayer is.factor subset
+##' @importFrom raster stack nlayers addLayer is.factor subset cellFromXY cellStats
 ## @importFrom rasterVis levelplot
 ##' 
 ##' @export
@@ -483,14 +596,14 @@ setGeneric("BIOMOD.formated.data.PA", def = function(sp, env, ...) { standardGen
 setMethod('BIOMOD.formated.data.PA', signature(sp = 'numeric', env = 'data.frame'),
           function(sp, env, xy = NULL, sp.name = NULL
                    , eval.sp = NULL, eval.env = NULL, eval.xy = NULL
-                   , PA.NbRep = 1, PA.strategy = 'random', PA.nb.absences = NULL
+                   , PA.nb.rep = 1, PA.strategy = 'random', PA.nb.absences = NULL
                    , PA.dist.min = 0, PA.dist.max = NULL
                    , PA.sre.quant = 0.025, PA.user.table = NULL
                    , na.rm = TRUE)
           {
             .BIOMOD.formated.data.PA(sp, env, xy, sp.name
                                      , eval.sp, eval.env, eval.xy
-                                     , PA.NbRep, PA.strategy, PA.nb.absences
+                                     , PA.nb.rep, PA.strategy, PA.nb.absences
                                      , PA.dist.min, PA.dist.max
                                      , PA.sre.quant, PA.user.table
                                      , na.rm)
@@ -504,14 +617,14 @@ setMethod('BIOMOD.formated.data.PA', signature(sp = 'numeric', env = 'data.frame
 setMethod('BIOMOD.formated.data.PA', signature(sp = 'numeric', env = 'RasterStack'),
           function(sp, env, xy = NULL, sp.name = NULL
                    , eval.sp = NULL, eval.env = NULL, eval.xy = NULL
-                   , PA.NbRep = 1, PA.strategy = 'random', PA.nb.absences = NULL
+                   , PA.nb.rep = 1, PA.strategy = 'random', PA.nb.absences = NULL
                    , PA.dist.min = 0, PA.dist.max = NULL
                    , PA.sre.quant = 0.025, PA.user.table = NULL
                    , na.rm = TRUE)
           {
             .BIOMOD.formated.data.PA(sp, env, xy, sp.name
                                      , eval.sp, eval.env, eval.xy
-                                     , PA.NbRep, PA.strategy, PA.nb.absences
+                                     , PA.nb.rep, PA.strategy, PA.nb.absences
                                      , PA.dist.min, PA.dist.max
                                      , PA.sre.quant, PA.user.table
                                      , na.rm)
@@ -519,7 +632,7 @@ setMethod('BIOMOD.formated.data.PA', signature(sp = 'numeric', env = 'RasterStac
 
 .BIOMOD.formated.data.PA <-  function(sp, env, xy, sp.name
                                       , eval.sp = NULL, eval.env = NULL, eval.xy = NULL
-                                      , PA.NbRep = 1, PA.strategy = 'random', PA.nb.absences = NULL
+                                      , PA.nb.rep = 1, PA.strategy = 'random', PA.nb.absences = NULL
                                       , PA.dist.min = 0, PA.dist.max = NULL
                                       , PA.sre.quant = 0.025, PA.user.table = NULL
                                       , na.rm = TRUE)
@@ -551,7 +664,7 @@ setMethod('BIOMOD.formated.data.PA', signature(sp = 'numeric', env = 'RasterStac
   
   pa.data.tmp <- bm_PseudoAbsences(resp.var = sp,
                                    expl.var = env,
-                                   nb.rep = PA.NbRep,
+                                   nb.rep = PA.nb.rep,
                                    strategy = PA.strategy,
                                    nb.absences = PA.nb.absences,
                                    sre.quant = PA.sre.quant,

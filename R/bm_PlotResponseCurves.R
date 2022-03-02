@@ -139,6 +139,7 @@
 ##'                       do.bivariate = TRUE)
 ##'                                       
 ##'                                       
+##' @importFrom raster maxValue minValue nlayers
 ##' 
 ##' @importFrom foreach foreach %:%
 ##' @importFrom reshape2 melt

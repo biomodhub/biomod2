@@ -25,6 +25,8 @@ compute the variables importance}
 
 \item{nb.rep}{an \code{integer} corresponding to the number of permutations to be done for 
 each variable}
+
+\item{\ldots}{(\emph{optional)})}
 }
 \value{
 A \code{matrix} containing variables importance scores for each permutation run.

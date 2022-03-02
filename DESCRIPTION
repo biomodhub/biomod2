@@ -28,7 +28,7 @@ Description: Functions for species distribution modeling, calibration and evalua
   dataset and to combine them in ensemble models and ensemble projections. Some bench of other 
   evaluation and visualisation tools are also available within the package.
 Depends:
-    R (>= 4.1.1)
+    R (>= 4.1)
 Imports:
     stats,
     utils,
@@ -68,6 +68,7 @@ License: GPL-3
 RoxygenNote: 7.1.2
 Collate: 
     'biomod2-package.R'
+    'biomod2_globalVariables.R'
     'biomod2_classes_1.R'
     'biomod2_classes_2.R'
     'biomod2_classes_3.R'

@@ -4,7 +4,7 @@
 \alias{load_stored_object}
 \title{Functions to load \code{\link{BIOMOD.stored.data}} objects}
 \usage{
-load_stored_object(obj, ...)
+load_stored_object(obj)
 }
 \arguments{
 \item{obj}{a \code{\link{BIOMOD.stored.data}} object}

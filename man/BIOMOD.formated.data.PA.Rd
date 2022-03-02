@@ -17,7 +17,7 @@
   eval.sp = NULL,
   eval.env = NULL,
   eval.xy = NULL,
-  PA.NbRep = 1,
+  PA.nb.rep = 1,
   PA.strategy = "random",
   PA.nb.absences = NULL,
   PA.dist.min = 0,
@@ -35,7 +35,7 @@
   eval.sp = NULL,
   eval.env = NULL,
   eval.xy = NULL,
-  PA.NbRep = 1,
+  PA.nb.rep = 1,
   PA.strategy = "random",
   PA.nb.absences = NULL,
   PA.dist.min = 0,
@@ -48,6 +48,89 @@
 \S4method{plot}{BIOMOD.formated.data.PA,missing}(x, coord = NULL, col = NULL)
 
 \S4method{show}{BIOMOD.formated.data.PA}(object)
+}
+\arguments{
+\item{sp}{a \code{vector}, \code{\link[sp]{SpatialPoints}} (\emph{if presence-only}) or 
+\code{\link[sp]{SpatialPointsDataFrame}} object containing binary data (\code{0} : absence, 
+\code{1} : presence, \code{NA} : indeterminate) for a single species that will be used to 
+build the species distribution model(s)}
+
+\item{env}{a \code{matrix}, \code{data.frame}, \code{\link[sp]{SpatialPointsDataFrame}} 
+or \code{\link[raster:stack]{RasterStack}} object containing the explanatory variables 
+(in columns or layers) that will be used to build the species distribution model(s)}
+
+\item{xy}{(\emph{optional, default} \code{NULL}) \cr 
+If \code{resp.var} is a \code{vector}, a 2-columns \code{matrix} or \code{data.frame} 
+containing the corresponding \code{X} and \code{Y} coordinates that will be used to build the 
+species distribution model(s)}
+
+\item{sp.name}{a \code{character} corresponding to the species name}
+
+\item{eval.sp}{(\emph{optional, default} \code{NULL}) \cr 
+A \code{vector}, \code{\link[sp]{SpatialPoints}} (\emph{if presence-only}) or 
+\code{\link[sp]{SpatialPointsDataFrame}} object containing binary data (\code{0} : absence, 
+\code{1} : presence, \code{NA} : indeterminate) for a single species that will be used to 
+evaluate the species distribution model(s) with independent data}
+
+\item{eval.env}{(\emph{optional, default} \code{NULL}) \cr 
+A \code{matrix}, \code{data.frame}, \code{\link[sp]{SpatialPointsDataFrame}} or 
+\code{\link[raster:stack]{RasterStack}} object containing the explanatory variables (in 
+columns or layers) that will be used to evaluate the species distribution model(s) with 
+independent data}
+
+\item{eval.xy}{(\emph{optional, default} \code{NULL}) \cr 
+If \code{resp.var} is a \code{vector}, a 2-columns \code{matrix} or \code{data.frame} 
+containing the corresponding \code{X} and \code{Y} coordinates that will be used to evaluate 
+the species distribution model(s) with independent data}
+
+\item{PA.nb.rep}{(\emph{optional, default} \code{0}) \cr 
+If pseudo-absence selection, an \code{integer} corresponding to the number of sets 
+(repetitions) of pseudo-absence points that will be drawn}
+
+\item{PA.strategy}{(\emph{optional, default} \code{NULL}) \cr 
+If pseudo-absence selection, a \code{character} defining the strategy that will be used to 
+select the pseudo-absence points. Must be \code{random}, \code{sre}, \code{disk} or 
+\code{user.defined} (see \href{BIOMOD_FormatingData.html#details}{Details})}
+
+\item{PA.nb.absences}{(\emph{optional, default} \code{0}) \cr 
+If pseudo-absence selection, and \code{PA.strategy = 'random'} or \code{PA.strategy = 'sre'} 
+or \code{PA.strategy = 'disk'}, an \code{integer} corresponding to the number of pseudo-absence 
+points that will be selected for each pseudo-absence repetition (true absences included)}
+
+\item{PA.dist.min}{(\emph{optional, default} \code{0}) \cr 
+If pseudo-absence selection and \code{PA.strategy = 'disk'}, a \code{numeric} defining the 
+minimal distance to presence points used to make the \code{disk} pseudo-absence selection 
+(in meters, see \href{BIOMOD_FormatingData.html#details}{Details})}
+
+\item{PA.dist.max}{(\emph{optional, default} \code{0}) \cr 
+If pseudo-absence selection and \code{PA.strategy = 'disk'}, a \code{numeric} defining the 
+maximal distance to presence points used to make the \code{disk} pseudo-absence selection 
+(in meters, see \href{BIOMOD_FormatingData.html#details}{Details})}
+
+\item{PA.sre.quant}{(\emph{optional, default} \code{0}) \cr 
+If pseudo-absence selection and \code{PA.strategy = 'sre'}, a \code{numeric} between \code{0} 
+and \code{0.5} defining the half-quantile used to make the \code{sre} pseudo-absence selection 
+(see \href{BIOMOD_FormatingData.html#details}{Details})}
+
+\item{PA.user.table}{(\emph{optional, default} \code{NULL}) \cr 
+If pseudo-absence selection and \code{PA.strategy = 'user.defined'}, a \code{matrix} or 
+\code{data.frame} with as many rows as \code{resp.var} values, as many columns as 
+\code{PA.nb.rep}, and containing \code{TRUE} or \code{FALSE} values defining which points 
+will be used to build the species distribution model(s) for each repetition (see 
+\href{BIOMOD_FormatingData.html#details}{Details})}
+
+\item{na.rm}{(\emph{optional, default} \code{TRUE}) \cr 
+A \code{logical} value defining whether points having one or several missing values for 
+explanatory variables should be removed from the analysis or not}
+
+\item{x}{a \code{\link{BIOMOD.formated.data.PA}} object}
+
+\item{coord}{a 2-columns \code{data.frame} containing \code{X} and \code{Y} coordinates for plot}
+
+\item{col}{a \code{vector} containing colors for plot (default : \code{c('green', 'red', 
+'orange', 'grey')})}
+
+\item{object}{a \code{\link{BIOMOD.formated.data.PA}} object}
 }
 \description{
 Class returned by \code{\link{BIOMOD_FormatingData}}, and used by 

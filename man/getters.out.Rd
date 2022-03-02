@@ -77,6 +77,34 @@
 \arguments{
 \item{obj}{a \code{\link{BIOMOD.models.out}}, \code{\link{BIOMOD.projection.out}} or 
 \code{\link{BIOMOD.ensemble.models.out}} object}
+
+\item{as.data.frame}{a \code{logical} defining whether output should be returned as 
+\code{data.frame} or \code{array} object}
+
+\item{subinfo}{a \code{character} corresponding to the information to be extracted, must be 
+among \code{NULL}, \code{expl.var.names}, \code{resp.var}, \code{expl.var}, \code{MinMax}, 
+\code{eval.resp.var}, \code{eval.expl.var} (see \href{getters.out.html#details}{Details})}
+
+\item{evaluation}{a \code{logical} defining whether evaluation data should be used or not}
+
+\item{full.name}{a \code{vector} containing model names to be kept, must be either \code{all} 
+or a sub-selection of model names}
+
+\item{model}{a \code{character} corresponding to the model name, must be either \code{GLM}, 
+\code{GBM}, \code{GAM}, \code{CTA}, \code{ANN}, \code{SRE}, \code{FDA}, \code{MARS}, 
+\code{RF}, \code{MAXENT.Phillips}, \code{MAXENT.Phillips.2}}
+
+\item{run.eval}{a \code{vector} containing repetition set to be loaded, must be among 
+\code{RUN1}, \code{RUN2}, \code{...}, \code{Full}}
+
+\item{data.set}{a \code{vector} containing pseudo-absence set to be loaded, must be among 
+\code{PA1}, \code{PA2}, \code{...}}
+
+\item{selected.models}{a \code{vector} containing names of the needed models of a 
+\code{\link{BIOMOD.ensemble.models.out}} object}
+
+\item{\ldots}{(\emph{optional, one or several of the following arguments depending on the selected 
+function)})}
 }
 \value{
 \describe{

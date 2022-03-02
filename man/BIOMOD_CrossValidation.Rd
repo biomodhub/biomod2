@@ -132,7 +132,7 @@ myBiomodModelOut <- BIOMOD_Modeling(bm.format = myBiomodData,
                                     do.full.models = FALSE)
 
 # Get evaluation scores & variables importance
-myEval <- get_evaluations(myBiomodModelOut.CV, as.data.frame = TRUE)
+myEval <- get_evaluations(myBiomodModelOut, as.data.frame = TRUE)
 myEval$CV.strategy <- "Random"
 myEval$CV.strategy[grepl("13", myEval$Model.name)] <- "Full"
 myEval$CV.strategy[grepl("11|12", myEval$Model.name)] <- "Stratified"

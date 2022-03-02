@@ -69,6 +69,28 @@ binomial GLM or not}
 \item{nb.cpu}{(\emph{optional, default} \code{1}) \cr 
 An \code{integer} value corresponding to the number of computing resources to be used to 
 parallelize the single models computation}
+
+\item{Data}{a \code{data.frame} containing \code{data.species} and \code{data.env.var} slots 
+of \code{bm.format} parameter}
+
+\item{calib.lines}{a \code{data.frame} containing \code{data.split.table} slot of 
+\code{bm.format} parameter, or an extraction of \code{data.species} slot (for a specific PA 
+dataset extracted from \code{PA.table} slot)}
+
+\item{weights}{a \code{vector} of \code{numeric} values corresponding to observation weights 
+(one per observation)}
+
+\item{nam}{a \code{character} corresponding to the model to be run (name + run.id)}
+
+\item{xy}{a \code{data.frame} containing \code{coord} slot of \code{bm.format} 
+parameter (for a specific PA dataset extracted from \code{PA.table} slot of \code{bm.format} 
+parameter)}
+
+\item{eval.data}{a \code{data.frame} containing \code{eval.data.species} and 
+\code{eval.data.env.var} slots of \code{bm.format} parameter}
+
+\item{eval.xy}{a \code{data.frame} containing \code{eval.coord} slot of \code{bm.format} 
+parameter}
 }
 \value{
 A \code{list} containing for each model a \code{list} containing the following elements :

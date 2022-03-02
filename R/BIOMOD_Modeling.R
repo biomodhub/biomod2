@@ -561,8 +561,6 @@ BIOMOD_Modeling <- function(bm.format,
 ###################################################################################################
 
 ##'
-##' @importFrom dplyr bind_cols tibble
-##'
 ##' @export
 ##' 
 
@@ -575,7 +573,8 @@ setMethod('.BIOMOD_Modeling.prepare.data', signature('BIOMOD.formated.data'),
             list.out <- list()
             name <- paste0(bm.format@sp.name, '_AllData')
             xy <- bm.format@coord
-            dataBM <- bind_cols(tibble(!!bm.format@sp.name := bm.format@data.species), bm.format@data.env.var)
+            dataBM = cbind(bm.format@data.species, bm.format@data.env.var)
+            colnames(dataBM)[1] = bm.format@sp.name
             
             ## dealing with evaluation data
             if (bm.format@has.data.eval) {
@@ -596,9 +595,9 @@ setMethod('.BIOMOD_Modeling.prepare.data', signature('BIOMOD.formated.data'),
                 colnames(calib.lines) <- '_Full'
               } else {
                 calib.lines <- .sample_mat(data.sp = bm.format@data.species,
-                                          data.split = data.split.perc,
-                                          nb.rep = nb.rep,
-                                          data.env = bm.format@data.env.var)
+                                           data.split = data.split.perc,
+                                           nb.rep = nb.rep,
+                                           data.env = bm.format@data.env.var)
                 if (do.full.models) {
                   calib.lines <- cbind(calib.lines, rep(TRUE, length(bm.format@data.species)))
                   colnames(calib.lines)[nb.rep + 1] <- '_Full'

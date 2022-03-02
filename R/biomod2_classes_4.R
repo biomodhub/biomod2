@@ -10,7 +10,7 @@
 ##' from \code{\link{biomod2_model}} objects from the modeling step.
 ##' 
 ##' 
-##' @param obj a \code{\link{biomod2_model}} object
+##' @param object a \code{\link{biomod2_model}} object
 ##' 
 ##' 
 ##' @return 
@@ -64,7 +64,10 @@ setGeneric("get_scaling_model", def = function(object) { standardGeneric("get_sc
 ##' \code{\link{biomod2_model}} on (new) explanatory variables.
 ##' 
 ##' 
-##' @param obj a \code{\link{biomod2_model}} object
+##' @param object a \code{\link{biomod2_model}} object
+##' @param newdata a \code{data.frame} or \code{\link[raster:stack]{RasterStack}} object 
+##' containing data for new predictions
+##' @param \ldots (\emph{optional)}) 
 ##' 
 ##' 
 ##' @seealso \code{\link{biomod2_model}}
@@ -72,7 +75,7 @@ setGeneric("get_scaling_model", def = function(object) { standardGeneric("get_sc
 ##' 
 ##' 
 ##' @importFrom raster raster as.matrix is.factor subset calc writeRaster readAll
-##' predict reclassify rasterToPoints cellFromXY
+##' predict reclassify rasterToPoints cellFromXY inMemory
 ##' @importFrom sp read.asciigrid
 ##' @importFrom gbm predict.gbm
 ##' 

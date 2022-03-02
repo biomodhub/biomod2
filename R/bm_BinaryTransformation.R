@@ -84,12 +84,24 @@ setGeneric("bm_BinaryTransformation",
 setMethod('bm_BinaryTransformation', signature('data.frame'),
           function(data, threshold, do.filtering = FALSE)
           {
-            if (is.numeric(threshold) && !is.na(threshold)) {
-              data <- data.matrix(data)
-              return(.convert_bin.matrix(data, threshold, do.filtering))
-            } else { ## return NAs
-              return(matrix(NA, ncol = ncol(data), nrow = nrow(data)
-                            , dimnames = dimnames(data)))
+            if (length(threshold) > 1) {
+              if (length(threshold) != ncol(data)) {
+                stop("data and threshold dimensions mismatch")
+              } else {
+                if (do.filtering) {
+                  return(sweep(data, 2, threshold, .convert_bin.array.filt))
+                } else {
+                  return(sweep(data, 2, threshold, .convert_bin.array))
+                }
+              }
+            } else {
+              if (is.numeric(threshold) && !is.na(threshold)) {
+                data <- data.matrix(data)
+                return(.convert_bin.matrix(data, threshold, do.filtering))
+              } else { ## return NAs
+                return(matrix(NA, ncol = ncol(data), nrow = nrow(data)
+                              , dimnames = dimnames(data)))
+              }
             }
           })
 

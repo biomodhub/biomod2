@@ -33,6 +33,8 @@ tested over the range of fitted values}
 
 \item{threshold}{(\emph{optional, default} \code{NULL}) \cr 
 A \code{numeric} corresponding to the threshold used to convert the given data}
+
+\item{misc}{a \code{matrix} corresponding to a contingency table}
 }
 \value{
 A \code{1} row x \code{4} columns \code{matrix} containing :
