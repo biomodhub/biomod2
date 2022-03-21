@@ -359,7 +359,13 @@ myBiomodRangeSize$Compt.By.Models
 plot(myBiomodRangeSize$Diff.By.Pixel)
 
 # Represent main results 
-bm_PlotRangeSize(bm.range = myBiomodRangeSize)
+gg = bm_PlotRangeSize(bm.range = myBiomodRangeSize, 
+                      do.count = TRUE,
+                      do.perc = TRUE,
+                      do.maps = TRUE,
+                      do.mean = TRUE,
+                      do.plot = TRUE,
+                      row.names = c("Species", "Dataset", "Run", "Algo"))
 ```
 
 

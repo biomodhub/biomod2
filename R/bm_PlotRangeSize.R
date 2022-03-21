@@ -21,6 +21,9 @@
 ##' A \code{logical} value defining whether the mean maps plot is to be computed or not
 ##' @param do.plot (\emph{optional, default} \code{TRUE}) \cr 
 ##' A \code{logical} value defining whether the plots are to be rendered or not
+##' @param row.names (\emph{optional, default} \code{c('Species', 'Dataset', 'Run', 'Algo')}) \cr 
+##' A \code{vector} containing tags matching \code{bm.range$Compt.By.Models} rownames splitted by 
+##' '_' character
 ##' 
 ##' 
 ##' @return  
@@ -134,8 +137,10 @@
 ##' 
 ##' 
 ##' @importFrom reshape2 melt
+##' @importFrom foreach foreach %do%
+##' @importFrom raster which.max nlayers stack rasterToPoints reclassify
 ##' @importFrom patchwork plot_layout
-##' @importFrom ggplot2 ggplot aes_string geom_col geom_raster facet_wrap xlab ylab labs 
+##' @importFrom ggplot2 ggplot aes_string geom_col geom_tile facet_wrap xlab ylab labs 
 ##' theme element_blank element_rect scale_fill_manual
 ##' 
 ##' @export
@@ -144,7 +149,9 @@
 ###################################################################################################
 
 
-bm_PlotRangeSize <- function(bm.range, do.count = TRUE, do.perc = TRUE, do.maps = TRUE, do.mean = TRUE, do.plot = TRUE)
+bm_PlotRangeSize <- function(bm.range, do.count = TRUE, do.perc = TRUE
+                             , do.maps = TRUE, do.mean = TRUE, do.plot = TRUE
+                             , row.names = c('Species', 'Dataset', 'Run', 'Algo'))
 {
   ## 0. Check arguments ---------------------------------------------------------------------------
   if (!is.list(bm.range) ||
@@ -160,15 +167,19 @@ bm_PlotRangeSize <- function(bm.range, do.count = TRUE, do.perc = TRUE, do.maps 
     
     ## Get models information
     ggdat$full.name = rownames(ggdat)
-    ggdat$species = .extract_modelNamesInfo(ggdat$full.name, "species")
-    ggdat$data.set = .extract_modelNamesInfo(ggdat$full.name, "data.set")
-    ggdat$run.eval = .extract_modelNamesInfo(ggdat$full.name, "run.eval")
-    ggdat$models = .extract_modelNamesInfo(ggdat$full.name, "models")
+    {
+      tmp = strsplit(ggdat$full.name[1], "_")[[1]][1:length(row.names)]
+      names(tmp) = row.names
+      warning(paste0("Please check that rownames(bm.range$Compt.By.Models) match 'row.names' argument :\n"
+                     , paste0("\t", paste0(tmp, " : ", names(tmp)), collapse = "\n")))
+    }
+    
+    for (ii in 1:length(row.names)) {
+      ggdat[[row.names[ii]]] = sapply(ggdat$full.name, function(x) strsplit(x, "_")[[1]][ii])
+    }
     
     ## Rearrange data
-    ggdat = melt(ggdat, measure.vars = c("species", "data.set", "run.eval", "models"), variable.name = "group.level", value.name = "group.value")
-    ggdat$group.level = sapply(ggdat$group.level, function(x) 
-      switch(x, 'species' = 'Species', 'data.set' = 'Dataset', 'run.eval' = 'Run', 'models' = 'Algo'))
+    ggdat = melt(ggdat, measure.vars = row.names, variable.name = "group.level", value.name = "group.value")
     ggdat = melt(ggdat, measure.vars = c("Loss", "Stable0", "Stable1", "Gain"), variable.name = "count.level", value.name = "count.value")
     ggdat$PercLoss = ggdat$PercLoss * (-1)
     ggdat = melt(ggdat, measure.vars = c("PercLoss", "PercGain", "SpeciesRangeChange"), variable.name = "perc.level", value.name = "perc.value")
@@ -195,6 +206,7 @@ bm_PlotRangeSize <- function(bm.range, do.count = TRUE, do.perc = TRUE, do.maps 
     if (do.perc) {
       gg.perc = ggplot(ggdat, aes_string(x = "group.value", y = "perc.value", fill = "perc.level")) +
         geom_col(position = "dodge") +
+        # geom_boxplot() +
         facet_wrap("group.level", scales = "free_x") +
         scale_fill_manual("", values = c("PercLoss" = "#fc8d62"
                                          , "PercGain" = "#66c2a5"
@@ -212,71 +224,103 @@ bm_PlotRangeSize <- function(bm.range, do.count = TRUE, do.perc = TRUE, do.maps 
   if (do.maps || do.mean)
   {
     ggdat = bm.range$Diff.By.Pixel
-    ggdat = as.data.frame(rasterToPoints(ggdat))
-    
-    ## Get models information
-    ggdat = melt(ggdat, id.vars = c("x", "y"), variable.name = "full.name", value.name = "SRC")
-    ggdat$full.name = as.character(ggdat$full.name)
-    ggdat$species = .extract_modelNamesInfo(ggdat$full.name, "species")
-    ggdat$data.set = .extract_modelNamesInfo(ggdat$full.name, "data.set")
-    ggdat$run.eval = .extract_modelNamesInfo(ggdat$full.name, "run.eval")
-    ggdat$models = .extract_modelNamesInfo(ggdat$full.name, "models")
-    
-    ## Rearrange data
-    ggdat = melt(ggdat, measure.vars = c("species", "data.set", "run.eval", "models"), variable.name = "group.level", value.name = "group.value")
-    ggdat$group.level = sapply(ggdat$group.level, function(x) 
-      switch(x, 'species' = 'Species', 'data.set' = 'Dataset', 'run.eval' = 'Run', 'models' = 'Algo'))
     
     ## c. SRC maps per model --------------------------------------------------
     if (do.maps) {
-      gg.maps = ggplot(ggdat, aes_string(x = "x", y = "y", fill = "as.factor(SRC)")) +
-        geom_raster() +
-        facet_wrap("full.name") +
-        scale_fill_manual("", values = c("-2" = "#fc8d62"
-                                         , "-1" = "grey"
-                                         , "0" = "white"
-                                         , "1" = "#66c2a5")
-                          , labels = c("-2" = "Loss"
-                                       , "-1" = "Stable1"
-                                       , "0" = ""
-                                       , "1" = "Gain")) +
-        xlab("") +
-        ylab("") +
-        theme(legend.title = element_blank()
-              , legend.key = element_rect(fill = "white")
-              , legend.position = "top")
+      
+      gg.maps = 'plot(ggdat, col = c("-2" = "#fc8d62", "-1" = "grey", "0" = "white", "1" = "#66c2a5")
+           , legend.width = 2, legend.shrink = 0.7
+           , axis.args = list(at = c(-2, -1, 0, 1), labels = c("Loss", "Stable0", "Stable1", "Gain"), cex.axis = 1))'
+      
+      # ggdat = as.data.frame(rasterToPoints(ggdat))
+      # 
+      # ## Get models information
+      # ggdat = melt(ggdat, id.vars = c("x", "y"), variable.name = "full.name", value.name = "SRC")
+      # for (ii in 1:length(row.names)) { ggdat[[row.names[ii]]] = NA }
+      # for (jj in 1:nrow(corres)) {
+      #   ind = which(ggdat$full.name == corres$full.name[jj])
+      #   for (ii in 1:length(row.names)) {
+      #     ggdat[ind, row.names[ii]] = corres[jj, row.names[ii]]
+      #   }
+      # }
+      # 
+      # ## Rearrange data
+      # ggdat = melt(ggdat, measure.vars = row.names, variable.name = "group.level", value.name = "group.value")
+      # 
+      # ## Do plot
+      # gg.maps = ggplot(ggdat, aes_string(x = "x", y = "y", fill = "as.factor(SRC)")) +
+      #   geom_raster() +
+      #   facet_wrap("full.name") +
+      #   scale_fill_manual("", values = c("-2" = "#fc8d62"
+      #                                    , "-1" = "grey"
+      #                                    , "0" = "white"
+      #                                    , "1" = "#66c2a5")
+      #                     , labels = c("-2" = "Loss"
+      #                                  , "-1" = "Stable1"
+      #                                  , "0" = ""
+      #                                  , "1" = "Gain")) +
+      #   xlab("") +
+      #   ylab("") +
+      #   theme(legend.title = element_blank()
+      #         , legend.key = element_rect(fill = "white")
+      #         , legend.position = "top")
     } else { gg.maps = NULL }
     
     ## d. SRC mean maps per group.level ---------------------------------------
     if (do.mean) {
       
-      tab1 = tapply(X = ggdat$SRC
-                    , INDEX = list(paste0(ggdat$x, "_", ggdat$y)
-                                   , ggdat$group.level
-                                   , ggdat$group.value)
-                    , FUN = function(x) names(table(x))[which.max(table(x))])
-      tab1 = na.exclude(melt(tab1))
-      tab1$x = sapply(tab1$Var1, function(x) as.numeric(strsplit(as.character(x), "_")[[1]][1]))
-      tab1$y = sapply(tab1$Var1, function(x) as.numeric(strsplit(as.character(x), "_")[[1]][2]))
-      colnames(tab1) = c("x_y", "group.level", "group.value", "SRC", "x", "y")
+      corres = data.frame(full.name = names(ggdat))
+      for (ii in 1:length(row.names)) {
+        corres[[row.names[ii]]] = sapply(corres$full.name, function(x) strsplit(x, "_")[[1]][ii])
+      }
+      reclass_table = data.frame(is = c(1, 2, 3), becomes = c(1, -1, -2))
+      fun_mode = function(x) {
+        tmp = table(x)
+        return(names(tmp)[which.max(tmp)])
+      }
       
-      tab2 = tapply(X = ggdat$SRC
-                     , INDEX = list(paste0(ggdat$x, "_", ggdat$y)
-                                    , ggdat$group.level
-                                    , ggdat$group.value)
-                     , FUN = function(x) max(table(x)) / sum(table(x)))
-      tab2 = na.exclude(melt(tab2))
-      tab2$x = sapply(tab2$Var1, function(x) as.numeric(strsplit(as.character(x), "_")[[1]][1]))
-      tab2$y = sapply(tab2$Var1, function(x) as.numeric(strsplit(as.character(x), "_")[[1]][2]))
-      colnames(tab2) = c("x_y", "group.level", "group.value", "PERC", "x", "y")
+      list.cons = list.perc = list()
+      for (ii in row.names) {
+        for (jj in unique(corres[, ii])) {
+          ras = ggdat[[corres$full.name[which(corres[, ii] == jj)]]]
+          if (nlayers(ras) > 1) {
+            stk = foreach (vali = c(1, -1, -2), .combine = "stack") %do%
+              {
+                res = ras
+                res[] = ifelse(res[] == vali, 1, 0)
+                res = sum(res, na.rm = TRUE)
+                names(res) = paste0("VAL_", vali)
+                res[which(res[] == 0)] = NA
+                return(res)
+              }
+            ras1 = which.max(stk)
+            ras1 = reclassify(ras1, reclass_table)
+            ras2 = max(stk, na.rm = TRUE) / sum(stk, na.rm = TRUE)
+            list.cons[[paste0(ii, "_", jj)]] = ras1
+            list.perc[[paste0(ii, "_", jj)]] = ras2
+          }
+        }
+      }
+      stk.cons = stack(list.cons)
+      stk.perc = stack(list.perc)
       
-      tab2$PERC[which(tab2$PERC == 1 & tab1$SRC == 0)] = NA
+      tab1 = as.data.frame(rasterToPoints(stk.cons))
+      tab1 = melt(tab1, id.vars = c("x", "y"))
+      tab1$group.level = tab1$group.value = ""
+      for (ii in row.names) { tab1$group.level[grep(ii, tab1$variable)] = ii }
+      for (jj in unique(unlist(corres[, 2:ncol(corres)]))) { tab1$group.value[grep(jj, tab1$variable)] = jj }
+      tab1$value[which(is.na(tab1$value))] = 0
       
-
+      tab2 = as.data.frame(rasterToPoints(stk.perc))
+      tab2 = melt(tab2, id.vars = c("x", "y"))
+      tab2$group.level = tab2$group.value = ""
+      for (ii in row.names) { tab2$group.level[grep(ii, tab2$variable)] = ii }
+      for (jj in unique(unlist(corres[, 2:ncol(corres)]))) { tab2$group.value[grep(jj, tab2$variable)] = jj }
+      tab2$value[which(tab2$value == 1 & tab1$value == 0)] = NA
       
-      gg.ca1 = ggplot(tab1, aes_string(x = "x", y = "y", fill = "as.factor(SRC)")) +
-        geom_raster() +
-        facet_wrap("group.level") +
+      gg.ca1 = ggplot(tab1, aes_string(x = "x", y = "y", fill = "as.factor(value)")) +
+        geom_tile() +
+        facet_wrap("group.level ~ group.value") +
         scale_fill_manual("", values = c("-2" = "#fc8d62"
                                          , "-1" = "grey"
                                          , "0" = "white"
@@ -292,9 +336,9 @@ bm_PlotRangeSize <- function(bm.range, do.count = TRUE, do.perc = TRUE, do.maps 
               , legend.key = element_rect(fill = "white")
               , legend.position = "top")
       
-      gg.ca2 = ggplot(tab2, aes_string(x = "x", y = "y", fill = "PERC")) +
-        geom_raster() +
-        facet_wrap("group.level") +
+      gg.ca2 = ggplot(tab2, aes_string(x = "x", y = "y", fill = "value")) +
+        geom_tile() +
+        facet_wrap("group.level ~ group.value") +
         scale_fill_viridis_c(""
                              , direction = -1
                              , limits = c(0, 1)
@@ -309,6 +353,9 @@ bm_PlotRangeSize <- function(bm.range, do.count = TRUE, do.perc = TRUE, do.maps 
       
       gg.ca = gg.ca1 | gg.ca2
     } else { gg.ca = NULL }
+  } else {
+    gg.maps = NULL
+    gg.ca = NULL
   }
   
   
@@ -316,12 +363,13 @@ bm_PlotRangeSize <- function(bm.range, do.count = TRUE, do.perc = TRUE, do.maps 
   if (do.plot) { 
     print(gg.count)
     print(gg.perc)
-    print(gg.maps)
+    eval(parse(text = gg.maps))
+    plot.new()
     print(gg.ca)
   }
   return(list(count = invisible(gg.count)
               , perc = invisible(gg.perc)
-              , maps = invisible(gg.maps)
+              # , maps = invisible(gg.maps)
               , ca = invisible(gg.ca)))
 }
 

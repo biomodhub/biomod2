@@ -364,6 +364,7 @@ setMethod('BIOMOD_RangeSize',
 {
   # dimensions checking
   if (sum(!(dim(proj.current) == dim(proj.future)) > 0)) {
-    stop("proj.current & proj.future dimensions mismatched!")
+    stop(paste0("'proj.current' and 'proj.future' do not have the same dimensions "
+                , "('proj.current' must have either 1 projection or the same number of projections as 'proj.future')"))
   }
 }

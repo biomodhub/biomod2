@@ -110,7 +110,8 @@
 ##' plot(res, zlim = c(0, 1))
 ##' 
 ##' 
-##' @importFrom raster stack subset nlayers mask reclassify coordinates cellFromXY Which
+##' @importFrom raster stack subset nlayers mask reclassify coordinates cellFromXY Which 
+## quantile
 ##' 
 ##' @export
 ##' 
@@ -151,9 +152,9 @@ bm_SRE <- function(resp.var = NULL,
       occ.pts <- subset(resp.var, j, drop = TRUE)
       x.ooc.pts <- Which(occ.pts != 1, cells = TRUE, na.rm = TRUE)
       occ.pts[x.ooc.pts] <- rep(NA, length(x.ooc.pts))
-      extrem.cond <- quantile(mask(expl.var, occ.pts),
-                              probs = c(0 + quant, 1 - quant),
-                              na.rm = TRUE)
+      extrem.cond <- raster::quantile(mask(expl.var, occ.pts),
+                                      probs = c(0 + quant, 1 - quant),
+                                      na.rm = TRUE)
       if (!do.extrem) {
         lout[[j]] <- .sre_projection(new.env, extrem.cond)
       }
@@ -172,9 +173,9 @@ bm_SRE <- function(resp.var = NULL,
           maskTmp <- subset(expl.var, 1, drop = TRUE)
           maskTmp[] <- NA
           maskTmp[cellFromXY(maskTmp, coordinates(resp.var)[occ.pts, ])] <- 1
-          extrem.cond <- quantile(mask(expl.var, maskTmp),
-                                  probs = c(0 + quant, 1 - quant),
-                                  na.rm = TRUE)
+          extrem.cond <- raster::quantile(mask(expl.var, maskTmp),
+                                          probs = c(0 + quant, 1 - quant),
+                                          na.rm = TRUE)
         } else {
           if (inherits(expl.var, 'SpatialPoints')) {
             ## May be good to check corespondances of resp.var and expl.var variables

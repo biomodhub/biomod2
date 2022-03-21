@@ -10,7 +10,8 @@ bm_PlotRangeSize(
   do.perc = TRUE,
   do.maps = TRUE,
   do.mean = TRUE,
-  do.plot = TRUE
+  do.plot = TRUE,
+  row.names = c("Species", "Dataset", "Run", "Algo")
 )
 }
 \arguments{
@@ -30,6 +31,10 @@ A \code{logical} value defining whether the mean maps plot is to be computed or 
 
 \item{do.plot}{(\emph{optional, default} \code{TRUE}) \cr 
 A \code{logical} value defining whether the plots are to be rendered or not}
+
+\item{row.names}{(\emph{optional, default} \code{c('Species', 'Dataset', 'Run', 'Algo')}) \cr 
+A \code{vector} containing tags matching \code{bm.range$Compt.By.Models} rownames splitted by 
+'_' character}
 }
 \value{
 A \code{list} containing \code{ggplot} objects representing species range change.
