@@ -136,6 +136,7 @@
 ##' 
 ## @importFrom ecospat ecospat.boyce ecospat.mpa
 ##' @importFrom PresenceAbsence presence.absence.accuracy
+##' @importFrom data.table rbindlist
 ##' 
 ##' @export
 ##' 
@@ -152,8 +153,6 @@ BIOMOD_PresenceOnly <- function(bm.mod = NULL,
   .bm_cat("Do Presence-Only Evaluation")
   if (!isNamespaceLoaded("ecospat")) { requireNamespace("ecospat") }
   
-  myModelEval <- myBiomodProjFF <- NULL
-  
   ## MODELING OUTPUT ------------------------------------------------------------------------------
   if (!is.null(bm.mod)) {
     ## Get calibration lines and observations
@@ -165,12 +164,8 @@ BIOMOD_PresenceOnly <- function(bm.mod = NULL,
     
     ## Get evaluation scores
     myModelEval <- get_evaluations(bm.mod, as.data.frame = TRUE)
-    myModelEval[, 1] <- as.character(myModelEval[, 1])
-    for (i in 1:nrow(myModelEval)) {
-      myModelEval[i, 1] <- paste(c(bm.mod@sp.name
-                                   , strsplit(as.character(myModelEval[i, 1]), split = "_")[[1]][3:1])
-                                 , collapse = "_")
-    }
+    myModelEval$Model.name <- sapply(myModelEval$Model.name, function(x) 
+      paste(c(bm.mod@sp.name, strsplit(as.character(x), split = "_")[[1]][3:1]), collapse = "_"))
     
     ## Get predictions on observations
     myModelPred <- get_predictions(bm.mod, as.data.frame = TRUE)
@@ -190,26 +185,33 @@ BIOMOD_PresenceOnly <- function(bm.mod = NULL,
     }
     
     ## Get predictions on evaluation data
-    if (bm.mod@has.evaluation.data == T) {
+    if (bm.mod@has.evaluation.data == TRUE) {
       myModelPred.eval  <- as.data.frame(get(load(paste0(bm.mod@"sp.name", "/.BIOMOD_DATA/"
                                                          , bm.mod@modeling.id
                                                          , "/models.prediction.eval"))))
-      for (i in 1:ncol(myModelPred.eval)) {
-        colnames(myModelPred.eval)[i] <- paste(c(bm.mod@sp.name
-                                                 , strsplit(colnames(myModelPred.eval)[i], split="[.]")[[1]][3:1])
-                                               , collapse="_")
-      }       
+      
+      colnames(myModelPred.eval) <- sapply(colnames(myModelPred.eval), function(x) 
+        paste(c(bm.mod@sp.name, strsplit(as.character(x), split = "[.]")[[1]][3:1]), collapse = "_"))
     }
+  } else {
+    myModelEval = myModelPred = myModelPred.eval = NULL
   }
   
   ## ENSEMBLE MODELING OUTPUT ---------------------------------------------------------------------
   if (!is.null(bm.em)) {
-    if (bm.em@em.by != 'PA_dataset+repet') { stop("em.by of 'BIOMOD.EnsembleModeling' must be 'PA_dataset+repet'") }
     
     ## Get evaluation scores
     myModelEvalEF <- get_evaluations(bm.em, as.data.frame = TRUE)
-    myModelEvalEF[, 1] <- paste(bm.mod@sp.name, as.character(myModelEvalEF[, 1]), sep = "_")
-    if (!is.null(bm.mod)) { myModelEval <- rbind(myModelEval, myModelEvalEF) }
+    myModelEvalEF$Model.name <- paste(bm.mod@sp.name, as.character(myModelEvalEF$Model.name), sep = "_")
+    if (!is.null(bm.mod)) {
+      myModelEval <- rbindlist(list(myModelEval, myModelEvalEF), fill = TRUE)
+    }
+    myModelEval = as.data.frame(myModelEval)
+    for (cc in c("Model.name", "Algo", "Run", "Dataset", "Model")) {
+      if (cc %in% colnames(myModelEval)) {
+        myModelEval[, cc] = as.character(myModelEval[, cc])
+      }
+    }
     
     ## Get predictions on observations
     myBiomodProjFF <- get_predictions(bm.em, as.data.frame = TRUE)  
@@ -224,17 +226,18 @@ BIOMOD_PresenceOnly <- function(bm.mod = NULL,
     if (!is.null(bm.mod)) { myModelPred <- cbind(myModelPred, myBiomodProjFF) }
     
     ## Get predictions on evaluation data
-    if (bm.mod@has.evaluation.data == T) {
+    if (bm.mod@has.evaluation.data == TRUE) {
       myBiomodProjFF.eval <- get_predictions(bm.em, as.data.frame = TRUE, evaluation = TRUE)
       myModelPred.eval <- cbind(myModelPred.eval, myBiomodProjFF.eval)      
     }  
   }
   
   ## CALCULATE BOYCE & MPA VALUES -----------------------------------------------------------------
-  mpa.eval <- boyce.eval <- myModelEval[!duplicated(myModelEval[, 1]), ]
-  boyce.eval$Eval.metric <- "boyce"
-  mpa.eval$Eval.metric <- "mpa"
-  boyce.eval[, 3:7] <- mpa.eval[, 3:7] <- NA
+  mpa.eval <- boyce.eval <- myModelEval[!duplicated(myModelEval$Model.name), ]
+  boyce.eval$Eval.metric <- "BOYCE"
+  boyce.eval[, c("Testing.data", "Cutoff", "Sensitivity", "Specificity")] <- NA
+  mpa.eval$Eval.metric <- "MPA"
+  mpa.eval[, c("Testing.data", "Cutoff", "Sensitivity", "Specificity")] <- NA
   
   for (i in 1:nrow(boyce.eval))
   {
@@ -246,10 +249,14 @@ BIOMOD_PresenceOnly <- function(bm.mod = NULL,
     run <- tmp[c(grep("RUN", tmp), grep("Full", tmp))]
     
     ## Get evaluation lines
-    if (inherits(calib.lines, "matrix")) {
-      ind.eval = which(calib.lines[, paste0("_", run)] == FALSE)
+    if (length(run) == 0) {
+      ind.eval = NULL
     } else {
-      ind.eval = which(calib.lines == FALSE)
+      if (inherits(calib.lines, "matrix")) {
+        ind.eval = which(calib.lines[, paste0("_", run)] == FALSE)
+      } else {
+        ind.eval = which(calib.lines == FALSE)
+      }
     }
     
     ## Get vectors of selected observations and predictions
@@ -274,11 +281,11 @@ BIOMOD_PresenceOnly <- function(bm.mod = NULL,
     }
     
     ind.notNA = which(!is.na(Pred))
-    ind.b = which(boyce.eval[,1]==Model.name)
-    ind.m = which(mpa.eval[,1]==Model.name)
+    ind.b = which(boyce.eval[, 1] == Model.name)
+    ind.m = which(mpa.eval[, 1] == Model.name)
     
     ## Compute Boyce and MPA values -------------------------------------------
-    if (length(Pred) > 0) {
+    if (length(Pred) > 0 && length(ind.notNA) > 0) {
       ## Prepare table to compute evaluation scores
       DATA <- cbind(1:length(Pred), Test, Pred / 1000)
       DATA[is.na(DATA[, 2]), 2] <- 0
@@ -286,26 +293,26 @@ BIOMOD_PresenceOnly <- function(bm.mod = NULL,
       
       ## Boyce index
       boy <- ecospat::ecospat.boyce(fit = Pred[ind.notNA], obs = Pred.obs, PEplot = FALSE)
-      boyce.eval[ind.b, 3] <- boy$cor
-      if (sum(boy$F.ratio < 1, na.rm = T) > 0) {
-        boyce.eval[ind.b, 5] <- round(boy$HS[max(which(boy$F.ratio < 1))], 0)
-        if (!is.na(boyce.eval[ind.b, 5] / 1000)) {
-          EVAL <- presence.absence.accuracy(DATA, threshold = boyce.eval[ind.b, 5] / 1000)
-          boyce.eval[ind.b, 6] <- EVAL$sensitivity
-          boyce.eval[ind.b, 7] <- EVAL$specificity
+      boyce.eval$Testing.data[ind.b] <- boy$cor
+      if (sum(boy$F.ratio < 1, na.rm = TRUE) > 0) {
+        boyce.eval$Cutoff[ind.b] <- round(boy$HS[max(which(boy$F.ratio < 1))], 0)
+        if (!is.na(boyce.eval$Cutoff[ind.b] / 1000)) {
+          EVAL <- presence.absence.accuracy(DATA, threshold = boyce.eval$Cutoff[ind.b] / 1000)
+          boyce.eval$Sensitivity[ind.b] <- EVAL$sensitivity
+          boyce.eval$Specificity[ind.b] <- EVAL$specificity
         } else {
-          boyce.eval[ind.b, 6:7] < - NA
+          boyce.eval[ind.b, c("Sensitivity", "Specificity")] < - NA
         }
       } else {
-        boyce.eval[ind.b, 7] <- boyce.eval[ind.b, 6] <- boyce.eval[ind.b, 5] <- NA 	
+        boyce.eval[ind.b, c("Cutoff", "Sensitivity", "Specificity")] <- NA 	
       }
       
       ## MPA index
       mpa <- ecospat::ecospat.mpa(Pred.obs, perc = perc)
-      mpa.eval[ind.m, 5] <- mpa
+      mpa.eval$Cutoff[ind.m] <- mpa
       EVAL <- presence.absence.accuracy(DATA, threshold = mpa / 1000)
-      mpa.eval[ind.m, 6] <- EVAL$sensitivity
-      mpa.eval[ind.m, 7] <- EVAL$specificity  
+      mpa.eval$Sensitivity[ind.m] <- EVAL$sensitivity
+      mpa.eval$Specificity[ind.m] <- EVAL$specificity  
     }
     
     ## Compute Boyce and MPA values for evaluation data -----------------------
@@ -318,23 +325,13 @@ BIOMOD_PresenceOnly <- function(bm.mod = NULL,
       mpa.eval[ind.m,"Evaluating.data"] <- ecospat::ecospat.mpa(Pred.eval[myResp.eval == 1 & ind.1], perc = perc)
     }
   }
-  myModelEval[, 6:7] <- round(myModelEval[, 6:7], 1)
-  boyce.eval[, 6:7] <- round(boyce.eval[, 6:7] * 100, 1)
-  mpa.eval[, 6:7] <- round(mpa.eval[, 6:7] * 100, 1)
+  myModelEval[, c("Sensitivity", "Specificity")] <- round(myModelEval[, c("Sensitivity", "Specificity")], 1)
+  boyce.eval[, c("Sensitivity", "Specificity")] <- round(boyce.eval[, c("Sensitivity", "Specificity")] * 100, 1)
+  mpa.eval[, c("Sensitivity", "Specificity")] <- round(mpa.eval[, c("Sensitivity", "Specificity")] * 100, 1)
   
   ## SAVE OUTPUTS ---------------------------------------------------------------------------------
-  if (!is.null(bm.em)) {
-    if (bm.mod@has.evaluation.data == TRUE) {
-      output <- list(eval = rbind(myModelEval, boyce.eval,mpa.eval)
-                     , myBiomodProjFF = myBiomodProjFF
-                     , myBiomodProjEF.eval = myBiomodProjFF.eval) 
-    } else {
-      output <- list(eval = rbind(myModelEval, boyce.eval, mpa.eval)
-                     , myBiomodProjFF = myBiomodProjFF)
-    }
-  } else {
-    output <- list(eval = rbind(myModelEval, boyce.eval, mpa.eval))      
-  }
+  output <- rbind(myModelEval, boyce.eval, mpa.eval)
+  
   if (save.output) {
     if (!is.null(bm.mod)) { sp <- bm.mod@sp.name }
     if (!is.null(bm.em)) { sp <- bm.em@sp.name }
