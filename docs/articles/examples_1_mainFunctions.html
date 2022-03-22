@@ -401,13 +401,13 @@
 <code class="sourceCode R"><span class="co"># Evaluate models with Boyce index and MPA</span>
 <span class="va">myBiomodPO</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/BIOMOD_PresenceOnly.html">BIOMOD_PresenceOnly</a></span><span class="op">(</span>bm.mod <span class="op">=</span> <span class="va">myBiomodModelOut</span>,
                                   bm.em <span class="op">=</span> <span class="va">myBiomodEM</span><span class="op">)</span>
-<span class="va">myBiomodPO</span><span class="op">$</span><span class="va">eval</span>
+<span class="va">myBiomodPO</span>
 
 <span class="co"># Evaluate models with Boyce index and MPA (using background data)</span>
 <span class="va">myBiomodPO</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/BIOMOD_PresenceOnly.html">BIOMOD_PresenceOnly</a></span><span class="op">(</span>bm.mod <span class="op">=</span> <span class="va">myBiomodModelOut</span>,
                                   bm.em <span class="op">=</span> <span class="va">myBiomodEM</span>, 
                                   bg.env <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/raster/man/getValues.html" class="external-link">getValues</a></span><span class="op">(</span><span class="va">myExpl</span><span class="op">)</span><span class="op">)</span>
-<span class="va">myBiomodPO</span><span class="op">$</span><span class="va">eval</span></code></pre></div>
+<span class="va">myBiomodPO</span></code></pre></div>
 </div>
 </div>
 <div class="section level3">

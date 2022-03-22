@@ -286,13 +286,13 @@ bm_PlotResponseCurves(bm.out = myBiomodEM,
 # Evaluate models with Boyce index and MPA
 myBiomodPO <- BIOMOD_PresenceOnly(bm.mod = myBiomodModelOut,
                                   bm.em = myBiomodEM)
-myBiomodPO$eval
+myBiomodPO
 
 # Evaluate models with Boyce index and MPA (using background data)
 myBiomodPO <- BIOMOD_PresenceOnly(bm.mod = myBiomodModelOut,
                                   bm.em = myBiomodEM, 
                                   bg.env = getValues(myExpl))
-myBiomodPO$eval
+myBiomodPO
 ```
 
 ### <i class="fas fa-globe-europe"></i> Project models
