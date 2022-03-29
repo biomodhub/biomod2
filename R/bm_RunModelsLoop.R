@@ -281,7 +281,7 @@ bm_RunModel <- function(model, Data, modeling.id = '', bm.options, calib.lines, 
         model.sp <- try(mgcv::gam(gam.formula,
                                   data = Data[calib.lines, , drop = FALSE],
                                   family = bm.options@GAM$family,
-                                  weights = weights,
+                                  weights = weights[calib.lines],
                                   control = bm.options@GAM$control))
         
       } else if (bm.options@GAM$algo == 'BAM_mgcv') { ## big data.frame gam version
@@ -289,7 +289,7 @@ bm_RunModel <- function(model, Data, modeling.id = '', bm.options, calib.lines, 
         model.sp <- try(mgcv::bam(gam.formula,
                                   data = Data[calib.lines, , drop = FALSE],
                                   family = bm.options@GAM$family,
-                                  weights = weights,
+                                  weights = weights[calib.lines],
                                   control = bm.options@GAM$control))
       }
     }

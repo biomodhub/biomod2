@@ -104,7 +104,7 @@
 
 # Functions to get variables ranges
 # used bm_RunModelsLoop, BIOMOD_EnsembleModeling
-get_var_type <- function(data) { return(sapply(data, class)) }
+get_var_type <- function(data) { return(sapply(data, function(x) class(x)[1])) }
 
 get_var_range <- function(data)
 {
