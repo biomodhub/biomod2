@@ -5,7 +5,7 @@ library(rlang)
 devtools::load_all(".")
 
 # test with binary respone variable?
-binaryResp <- FALSE
+binaryResp <- TRUE
 
 # species occurrences
 species.dat <-
@@ -29,7 +29,6 @@ if (!binaryResp) {
 
 # the XY coordinates of species data
 resp.xy <- species.dat %>% select_at(c('X_WGS84', 'Y_WGS84'))
-
 
 # Environmental variables extracted from BIOCLIM (bio_3, bio_4, bio_7, bio_11 & bio_12)
 expl.name <- paste0('bio', c(3, 4, 7, 11, 12), '.grd')
@@ -107,7 +106,7 @@ if (!binaryResp) {
   models.eval.meth <- "R2"
 }
 
-eval.metric.quality.threshold <- 0.3
+eval.metric.quality.threshold <- rep(0.3, length(models.eval.meth))
 
 bm.ensemb <- BIOMOD_EnsembleModeling(bm.mod, em.by = "all",
                                      eval.metric = models.eval.meth,
