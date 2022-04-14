@@ -224,6 +224,9 @@ bm_PseudoAbsences <- function(resp.var, expl.var, nb.rep = 1, strategy = 'random
 .add_pa_rownames <- function(xy)
 {
   rn <- row.names(xy)
+  # if (length(rn) == 0) {
+  #   rn = rep("", nrow(xy))
+  # }
   missing_rn <- which(rn == "")
   if (length(missing_rn)) {
     rn[missing_rn] <- paste0("pa", 1:length(missing_rn))
@@ -439,7 +442,9 @@ setMethod('bm_PseudoAbsences_random', signature(expl.var = "RasterStack"),
                 }
                 
                 # putting presences, true absences and pseudo absences together
-                xy <- rbind(coordinates(resp.var), xyFromCell(mask.env, selected.cells))
+                xy = coordinates(resp.var)
+                rownames(xy) = paste0("pres", 1:nrow(xy))
+                xy <- rbind(xy, xyFromCell(mask.env, selected.cells))
                 xy <- .add_pa_rownames(xy)
                 resp.var <- as.numeric(unlist(c(as.vector(resp.var@data), rep(NA, length(selected.cells))), use.names = FALSE))
                 expl.var <- extract(expl.var, xy)
@@ -676,10 +681,13 @@ setMethod('bm_PseudoAbsences_disk', signature(expl.var = "RasterStack"),
               dist.mask <- mask(dist.mask, subset(expl.var, 1, drop = TRUE))
               
               if (is.null(dist.max)) { dist.max <- Inf }
-              mask.in <- reclassify(dist.mask, c(-Inf, dist.min, NA, dist.min, dist.max, -1, dist.max, Inf, NA))
+              mask.in <- reclassify(dist.mask, c(-Inf, dist.min, NA, dist.min, dist.max, 1, dist.max, Inf, NA))
+              mask.in[cellFromXY(mask.in, pres.xy)] <- 1
+              mask.in = stack(expl.var * mask.in)
+              names(mask.in) = names(expl.var)
               
               # 2. selecting randomly pseudo absences
-              return(bm_PseudoAbsences_random(resp.var, expl.var = stack(mask.in), nb.absences, nb.rep))
+              return(bm_PseudoAbsences_random(resp.var, expl.var = mask.in, nb.absences, nb.rep))
             }
           })
 
