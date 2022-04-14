@@ -762,11 +762,11 @@ setMethod('.BIOMOD_Modeling.prepare.data', signature('BIOMOD.formated.data.PA'),
     fact.cell.samp <- NULL
     if (!is.null(data.env)) {
       fact.cell.samp <- bm_SampleFactorLevels(expl.var = data.env)
-      mat.out[fact.cell.samp, i] <- TRUE
+      mat.out[fact.cell.samp, i] <- TRUE ## in fact.cell.samp
     }
-    mat.out[sample(setdiff(pres, fact.cell.samp),
+    mat.out[sample(setdiff(pres, fact.cell.samp), ## in pres, not in fact.cell.samp
                    max(nbPresEval - length(fact.cell.samp), 0)), i] <- TRUE
-    mat.out[sample(setdiff(abs, fact.cell.samp),
+    mat.out[sample(setdiff(abs, fact.cell.samp), ## in abs, not in fact.cell.samp
                    max(nbAbsEval - length(fact.cell.samp), 0)), i] <- TRUE
   }
   return(mat.out)
