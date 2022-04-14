@@ -648,11 +648,13 @@ bm_RunModel <- function(model, Data, modeling.id = '', bm.options, calib.lines, 
     cat("\n Getting predictions...")
     g.pred <- try(round(as.numeric(read.csv(MWD$m_outputFile)[, 3]) * 1000))
     
-    cat("\n Getting predictor contributions...")
-    variables.importance <- bm_VariablesImportance(bm.model = model.bm
-                                                   , expl.var = Data[, expl_var_names, drop = FALSE]
-                                                   , nb.rep = var.import
-                                                   , temp_workdir = MWD$m_outdir)
+    if (var.import > 0) {
+      cat("\n Getting predictor contributions...")
+      variables.importance <- bm_VariablesImportance(bm.model = model.bm
+                                                     , expl.var = Data[, expl_var_names, drop = FALSE]
+                                                     , nb.rep = var.import
+                                                     , temp_workdir = MWD$m_outdir)
+    }
   } else if(model == "MAXENT.Phillips.2")
   {
     ## 2.11 MAXENT.Phillips.2 model -------------------------------------------
