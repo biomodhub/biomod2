@@ -1,7 +1,7 @@
 ###################################################################################################
 ##' @name BIOMOD_FormatingData
 ##' @author Damien Georges, Wilfried Thuiller
-##' 
+##'
 ##' @title Format input data, and select pseudo-absences if wanted, for usage in \pkg{biomod2}
 ##' 
 ##' @description This function gathers together all input data needed (\emph{xy, 
@@ -16,8 +16,8 @@
 ##' \code{\link[sp]{SpatialPointsDataFrame}} object containing binary data (\code{0} : absence, 
 ##' \code{1} : presence, \code{NA} : indeterminate) for a single species that will be used to 
 ##' build the species distribution model(s)
-##' @param expl.var a \code{matrix}, \code{data.frame}, \code{\link[sp]{SpatialPointsDataFrame}} 
-##' or \code{\link[raster:stack]{RasterStack}} object containing the explanatory variables 
+##' @param expl.var a \code{matrix}, \code{data.frame}, \code{\link[sp]{SpatialPointsDataFrame}}
+##' or \code{\link[raster:stack]{RasterStack}} object containing the explanatory variables
 ##' (in columns or layers) that will be used to build the species distribution model(s)
 ##' @param resp.xy (\emph{optional, default} \code{NULL}) \cr 
 ##' If \code{resp.var} is a \code{vector}, a 2-columns \code{matrix} or \code{data.frame} 
@@ -29,10 +29,10 @@
 ##' \code{\link[sp]{SpatialPointsDataFrame}} object containing binary data (\code{0} : absence, 
 ##' \code{1} : presence, \code{NA} : indeterminate) for a single species that will be used to 
 ##' evaluate the species distribution model(s) with independent data
-##' @param eval.expl.var (\emph{optional, default} \code{NULL}) \cr 
-##' A \code{matrix}, \code{data.frame}, \code{\link[sp]{SpatialPointsDataFrame}} or 
-##' \code{\link[raster:stack]{RasterStack}} object containing the explanatory variables (in 
-##' columns or layers) that will be used to evaluate the species distribution model(s) with 
+##' @param eval.expl.var (\emph{optional, default} \code{NULL}) \cr
+##' A \code{matrix}, \code{data.frame}, \code{\link[sp]{SpatialPointsDataFrame}} or
+##' \code{\link[raster:stack]{RasterStack}} object containing the explanatory variables (in
+##' columns or layers) that will be used to evaluate the species distribution model(s) with
 ##' independent data
 ##' @param eval.resp.xy (\emph{optional, default} \code{NULL}) \cr 
 ##' If \code{resp.var} is a \code{vector}, a 2-columns \code{matrix} or \code{data.frame} 
@@ -108,8 +108,8 @@
 ##'   \item{if both presence and absence data are available, and there is enough absences :
 ##'   set \code{PA.nb.rep = 0} and no pseudo-absence will be selected.
 ##'   }
-##'   \item{if no absence data (or not enough) is available, several pseudo-absence repetitions  
-##'   are recommended (to estimate the effect of pseudo-absence selection), as well as high 
+##'   \item{if no absence data (or not enough) is available, several pseudo-absence repetitions
+##'   are recommended (to estimate the effect of pseudo-absence selection), as well as high
 ##'   number of pseudo-absence points. \cr
 ##'   \emph{Be sure not to select more pseudo-absence points than maximum number of pixels in 
 ##'   the studied area ! \cr \cr \cr \cr}
@@ -134,7 +134,7 @@
 ##'   select pseudo-absences among them.
 ##'   }
 ##'   \item{Explanatory variables}{
-##'   Factorial variables are allowed, but might lead to some pseudo-absence strategy or models 
+##'   Factorial variables are allowed, but might lead to some pseudo-absence strategy or models
 ##'   omissions (e.g. \code{sre}).
 ##'   }
 ##'   \item{Evaluation data}{
@@ -156,11 +156,11 @@
 ##'     \item{random}{all points of initial background are pseudo-absence candidates. 
 ##'     \code{PA.nb.absences} are drawn randomly, for each \code{PA.nb.rep} requested.
 ##'     }
-##'     \item{sre}{pseudo-absences have to be selected in conditions (combination of explanatory 
-##'     variables) that differ in a defined proportion (\code{PA.sre.quant}) from those of 
-##'     presence points. A \emph{Surface Range Envelop} model is first run over the species of 
+##'     \item{sre}{pseudo-absences have to be selected in conditions (combination of explanatory
+##'     variables) that differ in a defined proportion (\code{PA.sre.quant}) from those of
+##'     presence points. A \emph{Surface Range Envelop} model is first run over the species of
 ##'     interest, and pseudo-absences are selected outside this envelop. \cr
-##'     \emph{This case is appropriate when all the species climatic niche has been sampled, 
+##'     \emph{This case is appropriate when all the species climatic niche has been sampled,
 ##'     otherwise it may lead to over-optimistic model evaluations and predictions !}
 ##'     }
 ##'     \item{disk}{pseudo-absences are selected within circles around presence points defined by 
@@ -174,8 +174,8 @@
 ##'   }
 ##'   }
 ##' }
-##' 
-##' 
+##'
+##'
 ##' @keywords dataset, format, evaluation, pseudo-absence
 ##' 
 ##' 
@@ -290,7 +290,8 @@ BIOMOD_FormatingData <- function(resp.name,
                                  PA.dist.max = NULL,
                                  PA.sre.quant = 0.025,
                                  PA.user.table = NULL,
-                                 na.rm = TRUE)
+                                   na.rm = TRUE,
+                                   binaryResp = TRUE)
 {
   .bm_cat(paste0(resp.name, " Data Formating"))
   
@@ -299,6 +300,7 @@ BIOMOD_FormatingData <- function(resp.name,
                                            resp.var,
                                            expl.var,
                                            resp.xy,
+                                           binaryResp,
                                            eval.resp.var,
                                            eval.expl.var,
                                            eval.resp.xy,
@@ -322,7 +324,8 @@ BIOMOD_FormatingData <- function(resp.name,
                                 eval.sp = eval.resp.var,
                                 eval.env = eval.expl.var,
                                 eval.xy = eval.resp.xy,
-                                na.rm = na.rm)
+                                na.rm=na.rm,
+                                binaryResp = binaryResp)
   } else { # automatic Pseudo Absences selection
     out <- BIOMOD.formated.data.PA(sp = resp.var,
                                    xy = resp.xy,
@@ -338,7 +341,8 @@ BIOMOD_FormatingData <- function(resp.name,
                                    PA.dist.max = PA.dist.max,
                                    PA.sre.quant = PA.sre.quant,
                                    PA.user.table = PA.user.table,
-                                   na.rm = na.rm)
+                                   na.rm = na.rm,
+                                   binaryResp = binaryResp)
   }
   .bm_cat("Done")
   return(out)
@@ -351,6 +355,7 @@ BIOMOD_FormatingData <- function(resp.name,
                                              resp.var,
                                              expl.var,
                                              resp.xy,
+                                             binaryResp = TRUE,
                                              eval.resp.var,
                                              eval.expl.var,
                                              eval.resp.xy,
@@ -374,7 +379,7 @@ BIOMOD_FormatingData <- function(resp.name,
                        'SpatialPointsDataFrame', 'SpatialPoints')
   
   ## 1. Checking resp.var -----------------------------------------------------
-  
+
   if (!inherits(resp.var, available.types)) { ## resp.var
     stop(paste0("Response variable must be one of ", toString(available.types)))
   }
@@ -432,11 +437,17 @@ BIOMOD_FormatingData <- function(resp.name,
     }
     resp.xy <- as.data.frame(resp.xy)
   }
-  
-  ## converting response var into binary
-  resp.var[which(resp.var > 0)] <- 1
-  resp.var[which(resp.var <= 0)] <- 0
-  
+
+  ### convert response var into binary
+  if (binaryResp) {
+    if (length(setdiff(resp.var, c(0, 1, NA)))) {
+      cat("\n      ! Response variable is not binary, but binaryResp == TRUE... Is it really what you want?")
+      cat("\n      ! Values > 0 will be converted to 1s")
+    }
+    resp.var[which(resp.var > 0)] <- 1
+    resp.var[which(resp.var <= 0)] <- 0
+  }
+
   #### At this point :
   ####  - resp.var is a numeric
   ####  - resp.xy is NULL or a data.frame
@@ -447,7 +458,7 @@ BIOMOD_FormatingData <- function(resp.name,
   if (is.data.frame(expl.var) && nrow(expl.var) != length(resp.var)) {
     stop("If explanatory variable is not a raster then dimensions of response variable and explanatory variable must match!")
   }
-  
+
   ## PA strategy
   if (is.null(PA.user.table) & PA.nb.rep < 1) {
     cat("\n> No pseudo absences selection !")
@@ -523,11 +534,11 @@ BIOMOD_FormatingData <- function(resp.name,
     if (is.matrix(eval.expl.var) | is.numeric(eval.expl.var)) {
       eval.expl.var <- as.data.frame(eval.expl.var)
     }
-    
+
     if (inherits(eval.expl.var, 'Raster')) {
       eval.expl.var <- stack(eval.expl.var)
     }
-    
+
     if (inherits(eval.expl.var, 'SpatialPoints')) {
       eval.expl.var <- as.data.frame(eval.expl.var@data)
     }
@@ -557,11 +568,12 @@ BIOMOD_FormatingData <- function(resp.name,
     }
     
     ## converting response var into binary
-    eval.resp.var[which(eval.resp.var > 0)] <- 1
-    eval.resp.var[which(eval.resp.var <= 0)] <- 0
-    
+    if (binaryResp) {
+      eval.resp.var[which(eval.resp.var > 0)] <- 1
+      eval.resp.var[which(eval.resp.var <= 0)] <- 0
+    }
     ## check there are both presences and absences in evaluation dataset
-    if (sum(eval.resp.var == 1) < 1 | sum(eval.resp.var == 0) < 1) {
+    if (sum(eval.resp.var > 0) < 1 | sum(eval.resp.var == 0) < 1){
       stop("Evaluation response data must have both presences and absences")
     }
   } else {
@@ -570,11 +582,11 @@ BIOMOD_FormatingData <- function(resp.name,
   }
   
   ### PA arguments are not checked here because it will be done later... (may be will do it here later)
-  
   return(list(resp.var = resp.var,
               expl.var = expl.var,
               resp.xy = resp.xy,
               resp.name = resp.name,
+               binaryResp = binaryResp,
               eval.resp.var = eval.resp.var,
               eval.expl.var = eval.expl.var,
               eval.resp.xy = eval.resp.xy,

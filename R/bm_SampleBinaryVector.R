@@ -1,10 +1,10 @@
 ###################################################################################################
 ##' @name bm_SampleBinaryVector
 ##' @author Damien Georges
-##' 
+##'
 ##' @title Sample binary vector
-##' 
-##' @description This internal \pkg{biomod2} function allows the user to sample a binary vector 
+##'
+##' @description This internal \pkg{biomod2} function allows the user to sample a binary vector
 ##' keeping the same proportion of \code{0} and \code{1} as the initial vector.
 ##' 
 ##' 
@@ -22,7 +22,7 @@
 ##' A \code{list} containing to elements is returned :
 ##' \describe{
 ##'   \item{calibration}{IDs of elements selected for calibration}
-##'   \item{evaluation}{IDs of elements selected for evaluation (complementary to the calibration 
+##'   \item{evaluation}{IDs of elements selected for evaluation (complementary to the calibration
 ##'   set)}
 ##' }
 ##'   
@@ -70,7 +70,7 @@ bm_SampleBinaryVector <- function(obs, ratio, as.logical = FALSE)
     calib <- c(pres, absc)
     eval <- (1:ntot)[-c(pres, absc)]
   }
-  
+
   return(list("calibration" = calib, "evaluation" = eval))
 }
 

@@ -299,7 +299,7 @@ setMethod('predict', signature(object = 'CTA_biomod2_model'),
 .predict.CTA_biomod2_model.data.frame <- function(object, newdata, ...)
 {
   return(.template_predict.data.frame(seedval = 123, predcommand = "as.numeric(predict(get_formal_model(object), as.data.frame(newdata[not_na_rows, , drop = FALSE]), type = 'prob')[, 2])", object, newdata, ...))
-}  
+}
 
 
 ###################################################################################################
@@ -333,7 +333,7 @@ setMethod('predict', signature(object = 'FDA_biomod2_model'),
 .predict.FDA_biomod2_model.data.frame <- function(object, newdata, ...)
 {
   return(.template_predict.data.frame(seedval = NULL, predcommand = "as.numeric(predict(get_formal_model(object), as.data.frame(newdata[not_na_rows, , drop = FALSE]), type = 'posterior')[, 2])", object, newdata, omit.na = TRUE, ...))
-}  
+}
 
 
 ###################################################################################################
@@ -341,7 +341,7 @@ setMethod('predict', signature(object = 'FDA_biomod2_model'),
 ###################################################################################################
 
 setClass('GAM_biomod2_model',
-         representation(model_subclass = 'character'), 
+         representation(model_subclass = 'character'),
          contains = 'biomod2_model',
          prototype = list(model_class = 'GAM', model_subclass = 'GAM_mgcv'),
          validity = function(object) { ## check model class
@@ -389,7 +389,7 @@ setMethod('predict', signature(object = 'GAM_biomod2_model'),
 .predict.GAM_biomod2_model.data.frame <- function(object, newdata, ...)
 {
   return(.template_predict.data.frame(seedval = 555, predcommand = "as.numeric(.run_pred(object = get_formal_model(object), Prev = 0.5 , dat = as.data.frame(newdata[not_na_rows, , drop = FALSE])))", object, newdata, ...))
-} 
+}
 
 
 ###################################################################################################
@@ -423,7 +423,7 @@ setMethod('predict', signature(object = 'GBM_biomod2_model'),
 .predict.GBM_biomod2_model.data.frame <- function(object, newdata, ...)
 {
   return(.template_predict.data.frame(seedval = NULL, predcommand = "as.numeric(predict(get_formal_model(object), as.data.frame(newdata[not_na_rows, , drop = FALSE]), n.trees = object@n.trees_optim, type = 'response'))", object, newdata, ...))
-}  
+}
 
 
 ###################################################################################################
@@ -489,7 +489,7 @@ setMethod('predict', signature(object = 'MARS_biomod2_model'),
   namefile <- args$namefile
   overwrite <- args$overwrite
   on_0_1000 <- args$on_0_1000
-  
+
   if (is.null(overwrite)) { overwrite <- TRUE }
   if (is.null(on_0_1000)) { on_0_1000 <- FALSE }
   
@@ -513,14 +513,14 @@ setMethod('predict', signature(object = 'MARS_biomod2_model'),
   } else {
     proj <- predict(newdata, model = get_formal_model(object), type = 'response')
   }
-  
+
   if (length(get_scaling_model(object))) {
     names(proj) <- "pred"
     proj <- .run_pred(object = get_scaling_model(object), Prev = 0.5 , dat = proj)
   }
-  
+
   if (on_0_1000) { proj <- round(proj * 1000)}
-  
+
   # save raster on hard drive ?
   if (!is.null(namefile)) {
     cat("\n\t\tWriting projection on hard drive...")
@@ -662,24 +662,24 @@ setMethod('predict', signature(object = 'MAXENT.Phillips.2_biomod2_model'),
   namefile <- args$namefile
   overwrite <- args$overwrite
   on_0_1000 <- args$on_0_1000
-  
+
   if (is.null(overwrite)) { overwrite <- TRUE }
   if (is.null(on_0_1000)) { on_0_1000 <- FALSE }
-  
+
   proj <- predict(object = get_formal_model(object), newdata = newdata.df, clamp = FALSE, type = 'logistic')[, 1]
-  
+
   if (length(get_scaling_model(object))) {
     proj.to.scale <- data.frame(pred = proj)
     proj <- .run_pred(object = get_scaling_model(object), Prev = 0.5 , dat = proj.to.scale)
   }
-  
+
   if (on_0_1000) { proj <- round(proj * 1000) }
-  
+
   ## convert back to raster file
   proj.ras <- raster(newdata)
   proj.ras[apply(newdata.df, 1, function(.x) { all(!is.na(.x)) })] <- proj
   proj <- proj.ras
-  
+
   # save raster on hard drive ?
   if (!is.null(namefile)) {
     cat("\n\t\tWriting projection on hard drive...")
@@ -690,7 +690,7 @@ setMethod('predict', signature(object = 'MAXENT.Phillips.2_biomod2_model'),
     }
     proj <- raster(namefile, RAT = FALSE)
   }
-  
+
   return(proj)
 }
 
@@ -711,23 +711,23 @@ setMethod('predict', signature(object = 'MAXENT.Phillips.2_biomod2_model'),
 #          validity = function(object) { ## check model class
 #            if( sum(!(c("maxent") %in% class(object@model))) > 0) { return(FALSE) } else { return(TRUE) }
 #          })
-# 
+#
 # setMethod('predict', signature(object = 'MAXENT.Tsuruoka_biomod2_model'),
 #           function(object, newdata, ...)
 #           {
 #             return(.template_predict(mod = "MAXENT.Tsuruoka", object, newdata, ...))
 #           })
-# 
+#
 # .predict.MAXENT.Tsuruoka_biomod2_model.RasterStack <- function(object, newdata, ...)*
 # {
 #   args <- list(...)
 #   namefile <- args$namefile
 #   overwrite <- args$overwrite
 #   on_0_1000 <- args$on_0_1000
-# 
+#
 #   if (is.null(overwrite)) { overwrite <- TRUE }
 #   if (is.null(on_0_1000)) { on_0_1000 <- FALSE }
-# 
+#
 #   proj <- calc(newdata, function(x) {
 #     proj.out <- rep(NA, nrow(x))
 #     x.no.na <- na.omit(x)
@@ -737,14 +737,14 @@ setMethod('predict', signature(object = 'MAXENT.Phillips.2_biomod2_model'),
 #     }
 #     return(proj.out)
 #     })
-# 
+#
 #   if (length(get_scaling_model(object))) {
 #     names(proj) <- "pred"
 #     proj <- .run_pred(object = get_scaling_model(object), Prev = 0.5 , dat = proj)
 #   }
-# 
+#
 #   if (on_0_1000) { proj <- round(proj * 1000) }
-# 
+#
 #   # save raster on hard drive ?
 #   if (!is.null(namefile)) {
 #     cat("\n\t\tWriting projection on hard drive...")
@@ -757,7 +757,7 @@ setMethod('predict', signature(object = 'MAXENT.Phillips.2_biomod2_model'),
 #   }
 #   return(proj)
 # }
-# 
+#
 # .predict.MAXENT.Tsuruoka_biomod2_model.data.frame <- function(object, newdata, ...)
 # {
 #   return(.template_predict.data.frame(seedval = NULL, predcommand = "as.numeric(predict(get_formal_model(object), as.data.frame(newdata[not_na_rows, , drop = FALSE]))[,'1'])", object, newdata, ...))
@@ -789,12 +789,24 @@ setMethod('predict', signature(object = 'RF_biomod2_model'),
 
 .predict.RF_biomod2_model.RasterStack <- function(object, newdata, ...)
 {
-  return(.template_predict.RasterStack(seedval = NULL, predcommand = "predict(newdata, model = get_formal_model(object), type = 'prob', index = 2)", object, newdata, ...))
+  if (get_formal_model(object)$type == "regression") {
+    predcommand <- "predict(newdata, model = get_formal_model(object))"
+  } else {
+    predcommand <- "predict(newdata, model = get_formal_model(object), type = 'prob', index = 2)"
+  }
+
+  return(.template_predict.RasterStack(seedval = NULL, predcommand = predcommand, object, newdata, ...))
 }
 
 .predict.RF_biomod2_model.data.frame <- function(object, newdata, ...)
 {
-  return(.template_predict.data.frame(seedval = NULL, predcommand = "as.numeric(predict(get_formal_model(object), as.data.frame(newdata[not_na_rows, , drop = FALSE]), type = 'prob')[, '1'])", object, newdata, ...))
+  if (get_formal_model(object)$type == "regression") {
+    predcommand <- "as.numeric(predict(get_formal_model(object), as.data.frame(newdata[not_na_rows, , drop = FALSE])))"
+  } else {
+    predcommand <- "as.numeric(predict(get_formal_model(object), as.data.frame(newdata[not_na_rows, , drop = FALSE]), type = 'prob')[, '1'])"
+  }
+
+  return(.template_predict.data.frame(seedval = NULL, predcommand = predcommand, object, newdata, ...))
 }
 
 

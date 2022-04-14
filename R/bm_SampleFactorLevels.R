@@ -4,10 +4,10 @@
 ##' @aliases bm_SampleFactorLevels.raster
 ##' @aliases bm_SampleFactorLevels.data.frame
 ##' @author Damien Georges
-##' 
-##' @title Tool to ensure the sampling of all levels of a factorial variable 
-##' 
-##' @description This internal \pkg{biomod2} function samples randomly an element of each level of 
+##'
+##' @title Tool to ensure the sampling of all levels of a factorial variable
+##'
+##' @description This internal \pkg{biomod2} function samples randomly an element of each level of
 ##' all the factorial variables contained in a \code{raster*} or \code{data.frame} object.
 ##' 
 ##' @param expl.var a \code{data.frame} or \code{\link[raster:stack]{RasterStack}} object 
@@ -26,9 +26,8 @@
 ##' A \code{numeric vector} containing point IDs (either cell number for \code{raster*} objects, 
 ##' or row number for \code{data.frame}), each refering to a single level of a single factorial 
 ##' variable.
-##' 
+##'
 ##' In case any factorial variable is found in the input object, \code{NULL} is returned.
-##' 
 ##'
 ##' @details 
 ##' 
@@ -122,7 +121,7 @@ bm_SampleFactorLevels.raster <- function(expl.var, mask.out = NULL, mask.in = NU
     {
       ## initialize the list of cells that are selected
       selected.cells <- NULL
-      
+
       ## get the factor levels on the full dataset
       fact.level <- fact.level.original <- unlist(levels(subset(expl.var, f))[[1]][,1, drop = FALSE])
       cat("\n\t> fact.level for",  names(expl.var)[f], ":\t", paste(fact.level, names(fact.level), sep = ":", collapse = "\t"))
@@ -138,7 +137,7 @@ bm_SampleFactorLevels.raster <- function(expl.var, mask.out = NULL, mask.in = NU
         ## update the list of factor levels to sample
         fact.level <- setdiff(fact.level, fact.levels.sampled)
       }
-      
+
       ## if there still is some levels to sample --------------------------------------------------
       if(length(fact.level))
       {
@@ -153,7 +152,7 @@ bm_SampleFactorLevels.raster <- function(expl.var, mask.out = NULL, mask.in = NU
               x.f.masked <- as.factor(mask(subset(expl.var, f), mask.in[[mask.in.id]]))
               x.f.levels <- unlist(levels(x.f.masked)[[1]][,1, drop = FALSE])
               ## update levels names (lost during mask conversion)
-              attr(x.f.levels, "names") <- attr(fact.level.original, "names")[x.f.levels]              
+              attr(x.f.levels, "names") <- attr(fact.level.original, "names")[x.f.levels]
               ## get the list of levels that could be sampled in this mask
               fact.levels.in.m.in <- intersect(fact.level, x.f.levels)
               if (length(fact.levels.in.m.in)) {
@@ -164,13 +163,13 @@ bm_SampleFactorLevels.raster <- function(expl.var, mask.out = NULL, mask.in = NU
                 ## update the list of factor levels to sample
                 fact.level <- setdiff(fact.level, fact.levels.in.m.in)
               }
-            } 
+            }
           } ## end loop over mask.in
         }
-        
+
         ## if there still is some levels to sample ------------------------------------------------
-        ## b. take a random value of them in the full dataset 
-        ## !! this should be tricky if mask.in arg is given because the value will be picked out of 
+        ## b. take a random value of them in the full dataset
+        ## !! this should be tricky if mask.in arg is given because the value will be picked out of
         ## mask.in but is necessary to ensure that models will run smoothly
         if (length(fact.level)){
           cat("\n\t - levels", fact.level, "will be sampled in the original raster")
@@ -197,7 +196,7 @@ bm_SampleFactorLevels.data.frame <- function(expl.var, mask.out = NULL, mask.in 
     {
       ## initialize the list of cells that are selected
       selected.cells <- NULL
-      
+
       ## get the factor levels on the full dataset
       fact.level <- fact.level.original <- levels(expl.var[, f])
       cat("\n\t> fact.level for",  colnames(expl.var)[f], ":\t", paste(1:length(fact.level), fact.level, sep = ":", collapse = "\t"))
@@ -213,7 +212,7 @@ bm_SampleFactorLevels.data.frame <- function(expl.var, mask.out = NULL, mask.in 
         ## update the list of factor levels to sample
         fact.level <- setdiff(fact.level, fact.levels.sampled)
       }
-      
+
       ## if there still is some levels to sample --------------------------------------------------
       if(length(fact.level))
       {
@@ -245,13 +244,13 @@ bm_SampleFactorLevels.data.frame <- function(expl.var, mask.out = NULL, mask.in 
                 ## update the list of factor levels to sample
                 fact.level <- setdiff(fact.level, fact.levels.in.m.in)
               }
-            } 
+            }
           } ## end loop over mask.in
         }
-        
+
         ## if there still is some levels to sample ------------------------------------------------
-        ## b. take a random value of them in the full dataset 
-        ## !! this should be tricky if mask.in arg is given because the value will be picked out of 
+        ## b. take a random value of them in the full dataset
+        ## !! this should be tricky if mask.in arg is given because the value will be picked out of
         ## mask.in but is necessary to ensure that models will run smoothly
         if (length(fact.level)){
           cat("\n\t - levels", fact.level, "will be sampled in the original data.frame")

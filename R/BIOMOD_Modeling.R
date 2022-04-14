@@ -510,7 +510,7 @@ BIOMOD_Modeling <- function(bm.format,
   ## 6. Check metric.eval arguments -------------------------------------------
   metric.eval <- unique(metric.eval)
   avail.eval.meth.list <- c('TSS', 'KAPPA', 'ACCURACY', 'BIAS', 'POD', 'FAR', 'POFD'
-                            , 'SR', 'CSI', 'ETS', 'HK', 'HSS', 'OR', 'ORSS', 'ROC')
+                            , 'SR', 'CSI', 'ETS', 'HK', 'HSS', 'OR', 'ORSS', 'ROC', 'R2', 'RMSE')
   .fun_testIfIn(TRUE, "metric.eval", metric.eval, avail.eval.meth.list)
   
   ## 7. Check prevalence arguments --------------------------------------------
@@ -805,7 +805,7 @@ setMethod('.BIOMOD_Modeling.prepare.data', signature('BIOMOD.formated.data.PA'),
   } else {
     dataset.names <- unlist(dim.names[1])
   }
-  
+
   ## 0.b get run.eval and model names -------------------------------------------------------------
   if (is.null(dim.names)) {
     run.eval.names <- sub('_', '', unlist(names(mod.out[[1]]))) # may be good here to test that all names are identics
@@ -814,9 +814,9 @@ setMethod('.BIOMOD_Modeling.prepare.data', signature('BIOMOD.formated.data.PA'),
     run.eval.names <- unlist(dim.names[2])
     mod.names <- unlist(dim.names[3])
   }
-  
+
   ## 1. CASE evaluation / prediction / prediction.eval / var.import -------------------------------
-  
+
   if (out %in% c("evaluation", "prediction", "prediction.eval", "var.import"))
   {
     nb_pa <- length(mod.out)
@@ -826,7 +826,7 @@ setMethod('.BIOMOD_Modeling.prepare.data', signature('BIOMOD.formated.data.PA'),
     name_slot = out
     if (out == "prediction") { name_slot = "pred" }
     if (out == "prediction.eval") { name_slot = "pred.eval" }
-    
+
     output <- NULL
     for (i in 1:nb_pa) {
       for (j in 1:nb_run) {
@@ -861,7 +861,7 @@ setMethod('.BIOMOD_Modeling.prepare.data', signature('BIOMOD.formated.data.PA'),
           kept.mod <- mod.names[-ef.mod]
         }
       }
-      
+
       nb.tmp <- length(as.numeric(output))
       dimnames.out = list(NULL, kept.mod, run.eval.names, dataset.names)
       if (out == "var.import") {
@@ -884,7 +884,7 @@ setMethod('.BIOMOD_Modeling.prepare.data', signature('BIOMOD.formated.data.PA'),
               return(matrix(NA, ncol = length(eval.col.names), nrow = length(eval.meth.names)
                             , dimnames = list(eval.meth.names, eval.col.names)))
             }
-          } else if (out == "prediction" || out == "prediction.eval" || 
+          } else if (out == "prediction" || out == "prediction.eval" ||
                      (out == "var.import" && d3 %in% kept.mod)) {
             if (is.null(mod.out[[d1]][[d2]][[d3]][[name_slot]])) {
               return(rep(NA, nb.tmp))
@@ -896,13 +896,13 @@ setMethod('.BIOMOD_Modeling.prepare.data', signature('BIOMOD.formated.data.PA'),
       })
     })
     data.out = unlist(output)
-    
+
     res.out <- array(data = data.out, dim = dim.out, dimnames = dimnames.out)
     return(res.out)
   }
-  
+
   ## 2. CASE calib.failure / models.run -----------------------------------------------------------
-  
+
   if (out %in% c("calib.failure", "models.run"))
   {
     name_slot = out
@@ -920,7 +920,7 @@ setMethod('.BIOMOD_Modeling.prepare.data', signature('BIOMOD.formated.data.PA'),
         })
       })
     })
-    
+
     res.out <- unlist(output)
     if (length(res.out)) { res.out <- na.omit(res.out) }
     if (length(res.out)) { res.out <- res.out[!is.null(res.out)] }
@@ -929,7 +929,7 @@ setMethod('.BIOMOD_Modeling.prepare.data', signature('BIOMOD.formated.data.PA'),
   }
   
   ## 3. CASE EF.prediction / EF.PCA.median / EF.evaluation ----------------------------------------
-  
+
   if (out %in% c("EF.prediction", "EF.PCA.median", "EF.evaluation"))
   {
     name_slot = ifelse(out == "EF.prediction", "EM"
@@ -969,7 +969,7 @@ setMethod('.BIOMOD_Modeling.prepare.data', signature('BIOMOD.formated.data.PA'),
       })
     })
     data.out = unlist(output)
-    
+
     res.out <- array(data = data.out, dim = dim.out, dimnames = dimnames.out)
     return(res.out)
   }

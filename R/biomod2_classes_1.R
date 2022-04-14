@@ -130,7 +130,8 @@ setClass("BIOMOD.formated.data",
                         has.data.eval = "logical",
                         eval.coord = "data.frame",
                         eval.data.species = "numeric",
-                        eval.data.env.var = "data.frame"),
+                        eval.data.env.var = "data.frame",
+                        binaryResp = "logical"),
          validity = function(object){ return(TRUE) })
 
 
@@ -145,7 +146,7 @@ setGeneric("BIOMOD.formated.data", def = function(sp, env, ...) { standardGeneri
 setMethod('BIOMOD.formated.data', signature(sp = 'numeric', env = 'data.frame'),
           function(sp, env, xy = NULL, sp.name = NULL
                    , eval.sp = NULL, eval.env = NULL, eval.xy = NULL
-                   , na.rm = TRUE, data.mask = NULL)
+                   , na.rm = TRUE, data.mask = NULL, binaryResp = TRUE)
           {
             if (is.null(data.mask)) { data.mask <- stack() }
             
@@ -157,14 +158,16 @@ setMethod('BIOMOD.formated.data', signature(sp = 'numeric', env = 'data.frame'),
                 data.env.var = env,
                 sp.name = sp.name,
                 data.mask = data.mask,
-                has.data.eval = FALSE
+                has.data.eval = FALSE,
+                binaryResp = binaryResp
               )
             } else { ## EVALUATION DATA -----------------------------------------------------------
               BFDeval <- BIOMOD.formated.data(
                 sp = eval.sp,
                 env = eval.env,
                 xy = eval.xy,
-                sp.name = sp.name
+                sp.name = sp.name,
+                binaryResp = binaryResp
               )
               
               if (nlayers(BFDeval@data.mask) > 0) {
@@ -174,7 +177,7 @@ setMethod('BIOMOD.formated.data', signature(sp = 'numeric', env = 'data.frame'),
                   names(data.mask) <- c("calibration", "validation")
                 }
               }
-              
+
               BFD <- new(
                 'BIOMOD.formated.data',
                 coord = xy,
@@ -185,12 +188,13 @@ setMethod('BIOMOD.formated.data', signature(sp = 'numeric', env = 'data.frame'),
                 has.data.eval = TRUE,
                 eval.coord = BFDeval@coord,
                 eval.data.species = BFDeval@data.species,
-                eval.data.env.var = BFDeval@data.env.var
+                eval.data.env.var = BFDeval@data.env.var,
+                binaryResp = binaryResp
               )
-              
+
               rm('BFDeval')
             }
-            
+
             ## REMOVE NA IF ANY -------------------------------------------------------------------
             if (na.rm) {
               rowToRm <- unique(unlist(lapply(BFD@data.env.var, function(x) { return(which(is.na(x))) })))
@@ -222,11 +226,11 @@ setMethod('BIOMOD.formated.data', signature(sp = 'numeric', env = 'data.frame'),
 setMethod('BIOMOD.formated.data', signature(sp = 'data.frame'),
           function(sp, env, xy = NULL, sp.name = NULL
                    , eval.sp = NULL, eval.env = NULL, eval.xy = NULL
-                   , na.rm = TRUE)
+                   , na.rm = TRUE, binaryResp = TRUE)
           {
             if (ncol(sp) > 1) { stop("Invalid response variable") }
             sp <- as.numeric(unlist(sp))
-            BFD <- BIOMOD.formated.data(sp, env, xy, sp.name, eval.sp, eval.env, eval.xy, na.rm = na.rm)
+            BFD <- BIOMOD.formated.data(sp, env, xy, sp.name, eval.sp, eval.env, eval.xy, na.rm = na.rm, binaryResp = binaryResp)
             return(BFD)
           }
 )
@@ -239,10 +243,10 @@ setMethod('BIOMOD.formated.data', signature(sp = 'data.frame'),
 setMethod('BIOMOD.formated.data', signature(sp = 'numeric', env = 'matrix'),
           function(sp, env, xy = NULL, sp.name = NULL
                    , eval.sp = NULL, eval.env = NULL, eval.xy = NULL
-                   , na.rm = TRUE)
+                   , na.rm = TRUE, binaryResp = TRUE)
           {
             env <- as.data.frame(env)
-            BFD <- BIOMOD.formated.data(sp, env, xy, sp.name, eval.sp, eval.env, eval.xy, na.rm = na.rm)
+            BFD <- BIOMOD.formated.data(sp, env, xy, sp.name, eval.sp, eval.env, eval.xy, na.rm = na.rm, binaryResp = binaryResp)
             return(BFD)
           }
 )
@@ -255,7 +259,7 @@ setMethod('BIOMOD.formated.data', signature(sp = 'numeric', env = 'matrix'),
 setMethod('BIOMOD.formated.data', signature(sp = 'numeric', env = 'RasterStack'),
           function(sp, env, xy = NULL, sp.name = NULL
                    , eval.sp = NULL, eval.env = NULL, eval.xy = NULL
-                   , na.rm = TRUE)
+                   , na.rm = TRUE, binaryResp = TRUE)
           {
             categorial_var <- names(env)[is.factor(env)]
             
@@ -268,16 +272,16 @@ setMethod('BIOMOD.formated.data', signature(sp = 'numeric', env = 'RasterStack')
                 }
               }
             }
-            
+
             if (is.null(xy)) { xy <- as.data.frame(coordinates(env)) }
-            
+
             ## Prepare mask of studied area
             data.mask = reclassify(subset(env, 1, drop = T), c(-Inf, Inf, -1))
-            data.mask[cellFromXY(data.mask, xy[which(sp == 1), ])] <- 1
+            data.mask[cellFromXY(data.mask, xy[which(sp > 0), ])] <- 1
             data.mask[cellFromXY(data.mask, xy[which(sp == 0), ])] <- 0
             data.mask <- stack(data.mask)
             names(data.mask) <- sp.name
-            
+
             ## Keep same env variable for eval than calib (+ check for factor)
             env <- as.data.frame(extract(env, xy, factors = T))
             if (length(categorial_var)) {
@@ -285,8 +289,8 @@ setMethod('BIOMOD.formated.data', signature(sp = 'numeric', env = 'RasterStack')
                 env[, cat_var] <- as.factor(env[, cat_var])
               }
             }
-            
-            BFD <- BIOMOD.formated.data(sp, env, xy, sp.name, eval.sp, eval.env, eval.xy, na.rm = na.rm, data.mask = data.mask)
+
+            BFD <- BIOMOD.formated.data(sp, env, xy, sp.name, eval.sp, eval.env, eval.xy, na.rm = na.rm, data.mask = data.mask, binaryResp = binaryResp)
             return(BFD)
           }
 )
@@ -305,7 +309,7 @@ setMethod('plot', signature(x = 'BIOMOD.formated.data', y = "missing"),
             if (nlayers(x@data.mask) > 0)
             {
               requireNamespace("rasterVis")
-              
+
               ## check if there is some undefined areas to prevent from strange plotting issues
               if (min(cellStats(x@data.mask, min)) == -1) { # there is undefined area
                 my.at <- seq(-1.5, 1.5, by = 1) ## breaks of color key
@@ -320,7 +324,7 @@ setMethod('plot', signature(x = 'BIOMOD.formated.data', y = "missing"),
                 my.col.regions = c("red4", "green4") ## colors
                 my.cuts <- 1 ## cuts
               }
-              
+
               ## PLOT -----------------------------------------------------------------------------
               rasterVis::levelplot(
                 x@data.mask,
@@ -331,7 +335,7 @@ setMethod('plot', signature(x = 'BIOMOD.formated.data', y = "missing"),
                 main = paste(x@sp.name, "datasets"),
                 colorkey = list(labels = list(labels = my.lab, at = my.labs.at))
               )
-              
+
             } else
             {
               # coordinates checking
@@ -342,11 +346,11 @@ setMethod('plot', signature(x = 'BIOMOD.formated.data', y = "missing"),
                   coord <- x@coord
                 }
               }
-              
+
               # colors checking
               if (is.null(col) | length(col) < 3) { col = c('green', 'red', 'grey') }
-              
-              
+
+
               ## PLOT -----------------------------------------------------------------------------
               ## all points (~ mask)
               plot(
@@ -359,19 +363,14 @@ setMethod('plot', signature(x = 'BIOMOD.formated.data', y = "missing"),
                 pch = 20
               )
               ## presences
-              points(
-                x = x@coord[which(x@data.species == 1), 1],
-                y = x@coord[which(x@data.species == 1), 2],
-                col = col[1],
-                pch = 18
-              )
-              ## true absences
-              points(
-                x = x@coord[which(x@data.species == 0), 1],
-                y = x@coord[which(x@data.species == 0), 2],
-                col = col[2],
-                pch = 18
-              )
+              points(x = x@coord[which(x@data.species > 0), 1],
+                     y = x@coord[which(x@data.species > 0), 2],
+                     col = col[1], pch = 18)
+              # true absences
+              points(x = x@coord[which(x@data.species == 0), 1],
+                     y = x@coord[which(x@data.species == 0), 2],
+                     col = col[2], pch = 18)
+
             }
           }
 )
@@ -387,7 +386,7 @@ setMethod('show', signature('BIOMOD.formated.data'),
             .bm_cat("BIOMOD.formated.data")
             cat("\nsp.name = ", object@sp.name, fill = .Options$width)
             cat("\n\t",
-                sum(object@data.species, na.rm = TRUE),
+              sum(object@data.species > 0, na.rm = TRUE),
                 'presences, ',
                 sum(object@data.species == 0, na.rm = TRUE),
                 'true absences and ',
@@ -399,11 +398,11 @@ setMethod('show', signature('BIOMOD.formated.data'),
                 'explanatory variables\n',
                 fill = .Options$width)
             print(summary(object@data.env.var))
-            
+
             if (object@has.data.eval) {
               cat("\n\nEvaluation data :", fill = .Options$width)
               cat("\n\t",
-                  sum(object@eval.data.species, na.rm = TRUE),
+                sum(object@eval.data.species > 0, na.rm = TRUE),
                   'presences, ',
                   sum(object@eval.data.species == 0, na.rm = TRUE),
                   'true absences and ',
@@ -420,7 +419,7 @@ setMethod('show', signature('BIOMOD.formated.data'),
 
 
 ###################################################################################################
-## 2. BIOMOD.formated.data.PA 
+## 2. BIOMOD.formated.data.PA
 ## this class inherits from BIOMOD.formated.data and have one more slot 'PA' giving PA selected
 ###################################################################################################
 
@@ -599,35 +598,35 @@ setMethod('BIOMOD.formated.data.PA', signature(sp = 'numeric', env = 'data.frame
                    , PA.nb.rep = 1, PA.strategy = 'random', PA.nb.absences = NULL
                    , PA.dist.min = 0, PA.dist.max = NULL
                    , PA.sre.quant = 0.025, PA.user.table = NULL
-                   , na.rm = TRUE)
+                                     , na.rm = TRUE, binaryResp = TRUE)
           {
             .BIOMOD.formated.data.PA(sp, env, xy, sp.name
                                      , eval.sp, eval.env, eval.xy
                                      , PA.nb.rep, PA.strategy, PA.nb.absences
                                      , PA.dist.min, PA.dist.max
                                      , PA.sre.quant, PA.user.table
-                                     , na.rm)
+                                     , na.rm, binaryResp)
           })
 
 ##' 
 ##' @rdname BIOMOD.formated.data.PA
 ##' @export
 ##' 
-
+                            
 setMethod('BIOMOD.formated.data.PA', signature(sp = 'numeric', env = 'RasterStack'),
           function(sp, env, xy = NULL, sp.name = NULL
                    , eval.sp = NULL, eval.env = NULL, eval.xy = NULL
                    , PA.nb.rep = 1, PA.strategy = 'random', PA.nb.absences = NULL
                    , PA.dist.min = 0, PA.dist.max = NULL
                    , PA.sre.quant = 0.025, PA.user.table = NULL
-                   , na.rm = TRUE)
+                   , na.rm = TRUE, binaryResp = TRUE)
           {
             .BIOMOD.formated.data.PA(sp, env, xy, sp.name
                                      , eval.sp, eval.env, eval.xy
                                      , PA.nb.rep, PA.strategy, PA.nb.absences
                                      , PA.dist.min, PA.dist.max
                                      , PA.sre.quant, PA.user.table
-                                     , na.rm)
+                                     , na.rm, binaryResp)
           })
 
 .BIOMOD.formated.data.PA <-  function(sp, env, xy, sp.name
@@ -635,7 +634,7 @@ setMethod('BIOMOD.formated.data.PA', signature(sp = 'numeric', env = 'RasterStac
                                       , PA.nb.rep = 1, PA.strategy = 'random', PA.nb.absences = NULL
                                       , PA.dist.min = 0, PA.dist.max = NULL
                                       , PA.sre.quant = 0.025, PA.user.table = NULL
-                                      , na.rm = TRUE)
+                                      , na.rm = TRUE, binaryResp = TRUE)
 {
   
   categorial_var <- NULL
@@ -652,7 +651,7 @@ setMethod('BIOMOD.formated.data.PA', signature(sp = 'numeric', env = 'RasterStac
       }
     } else { stop("No evaluation explanatory variable given") }
   }
-  
+
   # Convert sp in SpatialPointsDataFrame
   if (is.numeric(sp)) {
     if (is.null(xy)) {
@@ -680,7 +679,7 @@ setMethod('BIOMOD.formated.data.PA', signature(sp = 'numeric', env = 'RasterStac
         pa.data.tmp$env[, cat_var] <- as.factor(pa.data.tmp$env[, cat_var])
       }
     }
-    
+
     ## REMOVE NA IF ANY ---------------------------------------------------------------------------
     if (na.rm) {
       rowToRm <- unique(unlist(lapply(pa.data.tmp$env, function(x) { return(which(is.na(x))) })))
@@ -692,38 +691,41 @@ setMethod('BIOMOD.formated.data.PA', signature(sp = 'numeric', env = 'RasterStac
         pa.data.tmp$pa.tab <- pa.data.tmp$pa.tab[-rowToRm, , drop = FALSE]
       }
     }
-    
+
     BFD <- BIOMOD.formated.data(sp = pa.data.tmp$sp,
                                 env = pa.data.tmp$env,
                                 xy = as.data.frame(pa.data.tmp$xy),
-                                sp.name = sp.name, 
+                                sp.name = sp.name,
                                 eval.sp = eval.sp,
                                 eval.env = eval.env,
                                 eval.xy = eval.xy,
-                                na.rm = na.rm)
-    
+                                na.rm = na.rm,
+                                binaryResp = binaryResp)
+
     if(inherits(env,'Raster'))
     {
       ## create data.mask for ploting
       data.mask.tmp <- reclassify(subset(env, 1), c(-Inf, Inf, -1))
       data.mask <- stack(data.mask.tmp)
-      xy_pres <- pa.data.tmp$xy[which(pa.data.tmp$sp == 1), , drop = FALSE]
-      xy_abs <- pa.data.tmp$xy[which(pa.data.tmp$sp == 0), , drop = FALSE]
+
+        xy_pres <- pa.data.tmp$xy[which(pa.data.tmp$sp > 0), , drop = FALSE]
+        xy_abs <- pa.data.tmp$xy[which(pa.data.tmp$sp == 0), , drop = FALSE]
+
       if (nrow(xy_pres)) { data.mask[cellFromXY(data.mask.tmp, xy_pres)] <- 1 }
       if (nrow(xy_abs)) { data.mask[cellFromXY(data.mask.tmp, xy_abs)] <- 0 }
       names(data.mask) <- "input_data"
-      
+
       ## add eval data
       if(BFD@has.data.eval){ } ### TO DO
-      
+
       ## add pa data
       for(pa in 1:ncol(as.data.frame(pa.data.tmp$pa.tab)))
       {
         data.mask.tmp2 <- data.mask.tmp
-        
         ind.pa <- as.data.frame(pa.data.tmp$pa.tab)[, pa]
-        xy_pres <- pa.data.tmp$xy[which(pa.data.tmp$sp == 1 & ind.pa == TRUE), , drop = FALSE]
-        xy_abs <- pa.data.tmp$xy[which((pa.data.tmp$sp != 1 | is.na(pa.data.tmp$sp)) & ind.pa == TRUE), , drop = FALSE]
+        xy_pres <- pa.data.tmp$xy[which(pa.data.tmp$sp > 0 & ind.pa == TRUE), , drop = FALSE]
+        xy_abs <- pa.data.tmp$xy[which((pa.data.tmp$sp == 0 | is.na(pa.data.tmp$sp)) & ind.pa == TRUE), , drop = FALSE]
+        ## for backwards compatibility, but ideally the "else" code should work in both cases.
         if (nrow(xy_pres)) {
           id_pres <- cellFromXY(data.mask.tmp, xy_pres)
           data.mask.tmp2[id_pres] <- 1
@@ -732,13 +734,13 @@ setMethod('BIOMOD.formated.data.PA', signature(sp = 'numeric', env = 'RasterStac
           id_abs <- cellFromXY(data.mask.tmp, xy_abs)
           data.mask.tmp2[id_abs] <- 0
         }
-        
+
         data.mask <- addLayer(data.mask, data.mask.tmp2)
       }
       names(data.mask) <- c("input_data", colnames(as.data.frame(pa.data.tmp$pa.tab)))
-      
-    } else {  data.mask <- stack() }
-    
+
+    } else { data.mask <- stack() }
+
     BFDP <- new('BIOMOD.formated.data.PA',
                 sp.name = BFD@sp.name,
                 coord = BFD@coord,
@@ -750,8 +752,9 @@ setMethod('BIOMOD.formated.data.PA', signature(sp = 'numeric', env = 'RasterStac
                 eval.data.species = BFD@eval.data.species,
                 eval.data.env.var = BFD@eval.data.env.var,
                 PA.strategy = PA.strategy,
-                PA.table = as.data.frame(pa.data.tmp$pa.tab))
-    
+                PA.table = as.data.frame(pa.data.tmp$pa.tab),    
+                binaryResp = binaryResp)
+                
     rm(list='BFD')
   } else
   {
@@ -760,10 +763,11 @@ setMethod('BIOMOD.formated.data.PA', signature(sp = 'numeric', env = 'RasterStac
     BFDP <- BIOMOD.formated.data(sp = as.vector(sp@data),
                                  env = env,
                                  xy = xy,
-                                 sp.name = sp.name, 
+                                 sp.name = sp.name,
                                  eval.sp = eval.sp,
                                  eval.env = eval.env,
-                                 eval.xy = eval.xy)
+                                 eval.xy = eval.xy,
+                                 binaryResp = binaryResp)
   }
   rm(list = "pa.data.tmp" )
   return(BFDP)
@@ -783,7 +787,7 @@ setMethod('plot', signature(x = 'BIOMOD.formated.data.PA', y = "missing"),
             if (nlayers(x@data.mask) > 0)
             {
               requireNamespace("rasterVis")
-              
+
               ## check if there is some undefined areas to prevent from strange plotting issues
               if (min(cellStats(x@data.mask, min)) == -1) { # there is undefined area
                 my.at <- seq(-1.5, 1.5, by = 1) ## breaks of color key
@@ -798,7 +802,7 @@ setMethod('plot', signature(x = 'BIOMOD.formated.data.PA', y = "missing"),
                 my.col.regions = c("red4", "green4") ## colors
                 my.cuts <- 1 ## cuts
               }
-              
+
               ## PLOT -----------------------------------------------------------------------------
               rasterVis::levelplot(
                 x@data.mask,
@@ -819,10 +823,10 @@ setMethod('plot', signature(x = 'BIOMOD.formated.data.PA', y = "missing"),
                   coord <- x@coord
                 }
               }
-              
+
               # colors checking
               if (is.null(col) | length(col) < 3) { col = c('green', 'red', 'orange', 'grey') }
-              
+
               ## PLOT -----------------------------------------------------------------------------
               par(mfrow = c(.clever_cut(ncol(x@PA.table) + 1)))
               
@@ -837,19 +841,13 @@ setMethod('plot', signature(x = 'BIOMOD.formated.data.PA', y = "missing"),
                 pch = 20
               )
               # presences
-              points(
-                x = x@coord[which(x@data.species == 1), 1],
-                y = x@coord[which(x@data.species == 1), 2],
-                col = col[1],
-                pch = 18
-              )
+              points(x = x@coord[which(x@data.species > 0), 1],
+                     y = x@coord[which(x@data.species > 0), 2],
+                     col = col[1], pch = 18)
               # true absences
-              points(
-                x = x@coord[which(x@data.species == 0), 1],
-                y = x@coord[which(x@data.species == 0), 2],
-                col = col[2],
-                pch = 18
-              )
+              points(x = x@coord[which(x@data.species == 0), 1],
+                     y = x@coord[which(x@data.species == 0), 2],
+                     col = col[2], pch = 18)
               # PA data
               for(i in 1:ncol(x@PA.table))
               {
@@ -865,8 +863,8 @@ setMethod('plot', signature(x = 'BIOMOD.formated.data.PA', y = "missing"),
                 )
                 # presences
                 points(
-                  x = x@coord[(x@data.species == 1) & x@PA.table[, i], 1],
-                  y = x@coord[(x@data.species == 1) & x@PA.table[, i], 2],
+                  x = x@coord[(x@data.species > 0) & x@PA.table[, i], 1],
+                  y = x@coord[(x@data.species > 0) & x@PA.table[, i], 2],
                   col = col[1],
                   pch = 18
                 )
@@ -914,7 +912,7 @@ setMethod('show', signature('BIOMOD.formated.data.PA'),
                 'explanatory variables\n',
                 fill = .Options$width)
             print(summary(object@data.env.var))
-            
+
             if (object@has.data.eval) {
               cat("\n\nEvaluation data :", fill = .Options$width)
               cat(
@@ -930,7 +928,7 @@ setMethod('show', signature('BIOMOD.formated.data.PA'),
               cat("\n\n", fill = .Options$width)
               print(summary(object@eval.data.env.var))
             }
-            
+
             cat(
               "\n\n",
               ncol(object@PA.table),
@@ -1040,10 +1038,10 @@ setClass("BIOMOD.models.options",
                    CTA = list(method = 'class',
                               parms = 'default',
                               # control = rpart.control(xval = 5, minbucket = 5, minsplit = 5, cp = 0.001, maxdepth = 25),
-                              control = list(xval = 5, 
-                                             minbucket = 5, 
+                              control = list(xval = 5,
+                                             minbucket = 5,
                                              minsplit = 5,
-                                             cp = 0.001, 
+                                             cp = 0.001,
                                              maxdepth = 25),
                               cost = NULL),
                    ANN = list(NbCV = 5,
@@ -1095,7 +1093,7 @@ setClass("BIOMOD.models.options",
          validity = function(object)
          {
            test <- TRUE
-           
+
            ## GLM ##
            test <- .fun_testIfIn(test, "GLM$type", object@GLM$type, c('simple', 'quadratic', 'polynomial', 'user.defined'))
            test <- .fun_testIfPosInt(test, "GLM$interaction.level", object@GLM$interaction.level)
@@ -1104,7 +1102,7 @@ setClass("BIOMOD.models.options",
            fam <- 'none'
            if(!inherits(object@GLM$family, "family")){ cat("\nGLM$family must be a valid family object"); test <- FALSE }
            if(!is.list(object@GLM$control)){cat("\nGLM$control must be a list like that returned by glm.control"); test <- FALSE}
-           
+
            ## GBM ##
            test <- .fun_testIfIn(test, "GBM$distribution", object@GBM$distribution, c("bernoulli", "huberized", "multinomial", "adaboost"))
            # test <- .fun_testIfPosInt(test, "GBM$n.trees", object@GBM$n.trees)
@@ -1121,7 +1119,7 @@ setClass("BIOMOD.models.options",
            if(!is.logical(object@GBM$verbose)){ cat("\nGBM$verbose must be a logical"); test <- FALSE }
            # test <- .fun_testIfIn(test, "GBM$class.stratify.cv", object@GBM$class.stratify.cv, c('bernoulli', 'multinomial'))
            test <- .fun_testIfIn(test, "GBM$perf.method", object@GBM$perf.method, c('OOB', 'test', 'cv'))
-           
+
            ## GAM ##
            test <- .fun_testIfIn(test, "GAM$algo", object@GAM$algo, c('GAM_mgcv', 'GAM_gam', 'BAM_mgcv'))
            test <- .fun_testIfIn(test, "GAM$type", object@GAM$type, c('s_smoother', 's', 'lo', 'te'))
@@ -1139,7 +1137,7 @@ setClass("BIOMOD.models.options",
            if(!is.logical(object@GAM$select)){ cat("\nGAM$select must be a logical"); test <- FALSE }
            #            knots=NULL,
            #            paraPen=NULL
-           
+
            ## CTA ##
            test <- .fun_testIfIn(test, "CTA$method", object@CTA$method, c('anova', 'poisson', 'class', 'exp'))
            #parms = 'default',
@@ -1147,7 +1145,7 @@ setClass("BIOMOD.models.options",
            if(length(object@CTA$cost)){
              if(!is.numeric(object@CTA$cost)){cat("\nCTA$cost must be a non negative cost vector"); test <- FALSE}
            }
-           
+
            ## ANN ##
            test <- .fun_testIfPosInt(test, "ANN$NbCV", object@ANN$NbCV)
            if( ( is.null(object@ANN$size) | length(object@ANN$size)>1 ) & object@ANN$NbCV <= 0){ cat("\nANN$size has to be defined as a single integer if ANN$NbCV=0"); test <- FALSE } else{
@@ -1158,16 +1156,16 @@ setClass("BIOMOD.models.options",
            }
            test <- .fun_testIfPosNum(test, "ANN$rang", object@ANN$rang)
            test <- .fun_testIfPosInt(test, "ANN$maxit", object@ANN$maxit)
-           
+
            ## FDA ##
            test <- .fun_testIfIn(test, "FDA$method", object@FDA$method, c('polyreg', 'mars', 'bruto'))
            if(!is.null(object@FDA$add_args)){ if(!is.list(object@FDA$add_args)) {cat("\nFDA$add_args must be a list or NULL"); test <- FALSE } }
-           
+
            ## SRE ##
            if(!is.numeric(object@SRE$quant)){ cat("\nSRE$quant must be a numeric"); test <- FALSE } else{
              if(object@SRE$quant >= 0.5 | object@SRE$quant < 0){ cat("\nSRE$quant must between 0 and 0.5"); test <- FALSE }
            }
-           
+
            ## MARS ##
            test <- .fun_testIfIn(test, "MARS$type", object@MARS$type,  c('simple', 'quadratic', 'polynomial', 'user.defined'))
            test <- .fun_testIfPosInt(test, "MARS$interaction.level", object@MARS$interaction.level)
@@ -1181,7 +1179,7 @@ setClass("BIOMOD.models.options",
            if(!is.null(object@MARS$nprune)){ if(!is.numeric(object@MARS$nprune)){ cat("\nMARS$nprune must be a numeric or NULL"); test <- FALSE }}
            supported.pmethod <- c('backward', 'none', 'exhaustive', 'forward', 'seqrep', 'cv')
            if(!is.element(object@MARS$pmethod, supported.pmethod)){cat("\nMARS$pmethod must be a one of", supported.pmethod); test <- FALSE }
-           
+
            ## RF ##
            if(!is.logical(object@RF$do.classif)){ cat("\nRF$do.classif must be a logical"); test <- FALSE }
            test <- .fun_testIfPosInt(test, "RF$ntree", object@RF$ntree)
@@ -1189,7 +1187,7 @@ setClass("BIOMOD.models.options",
            if(!is.null(object@RF$sampsize)) { test <- .fun_testIfPosInt(test, "RF$sampsize", object@RF$sampsize) }
            test <- .fun_testIfPosInt(test, "RF$nodesize", object@RF$nodesize)
            if(length(object@RF$maxnodes)) { test <- .fun_testIfPosInt(test, "RF$maxnodes", object@RF$maxnodes) }
-           
+
            ## MAXENT.Phillips ##
            if(!is.character(object@MAXENT.Phillips$path_to_maxent.jar)){ cat("\nMAXENT.Phillips$path_to_maxent.jar must be a character"); test <- FALSE }
            if(!is.null(object@MAXENT.Phillips$memory_allocated)){
@@ -1217,7 +1215,7 @@ setClass("BIOMOD.models.options",
            if(!is.numeric(object@MAXENT.Phillips$beta_hinge)){ cat("\nMAXENT.Phillips$beta_hinge must be a numeric"); test <- FALSE }
            if(!is.numeric(object@MAXENT.Phillips$betamultiplier)){ cat("\nMAXENT.Phillips$betamultiplier must be a numeric"); test <- FALSE }
            if(!is.numeric(object@MAXENT.Phillips$defaultprevalence)){ cat("\nMAXENT.Phillips$defaultprevalence must be a numeric"); test <- FALSE }
-           
+
            ## MAXENT.Phillips.2 (MAXENT.Tsuruoka)
            ### TO BE DONE ===
            # 		       if(!is.numeric(object@MAXENT.Tsuruoka$l1_regularizer)){ cat("\nMAXENT.Tsuruoka$l1_regularizer must be a numeric"); test <- FALSE }
@@ -1225,7 +1223,7 @@ setClass("BIOMOD.models.options",
            # 		       if(!is.logical(object@MAXENT.Tsuruoka$use_sgd)){ cat("\nMAXENT.Tsuruoka$use_sgd must be a logical"); test <- FALSE }
            # 		       if(!is.numeric(object@MAXENT.Tsuruoka$set_heldout)){ cat("\nMAXENT.Tsuruoka$set_heldout must be a numeric"); test <- FALSE }
            # 		       if(!is.logical(object@MAXENT.Tsuruoka$verbose)){ cat("\nMAXENT.Tsuruoka$verbose must be a logical"); test <- FALSE }
-           
+
            return(test)
          }
 )
@@ -1235,7 +1233,7 @@ setMethod('show', signature('BIOMOD.models.options'),
           {
             .bm_cat("BIOMOD.models.options")
             cat("\n")
-            
+
             ## GLM options
             cat("\nGLM = list( type = '", object@GLM$type, "',", sep = "")
             cat("\n            interaction.level = ", object@GLM$interaction.level, ",", sep = "")
@@ -1262,7 +1260,7 @@ setMethod('show', signature('BIOMOD.models.options'),
             #             cat("\n            class.stratify.cv = '", object@GBM$class.stratify.cv, "',", sep="")
             cat("\n            perf.method = '", object@GBM$perf.method, "',", sep = "")
             cat("\n            n.cores = ", ifelse(length(object@GBM$n.cores), object@GBM$n.cores, 'NULL'), "),", sep = "")
-            
+
             ## GAM options
             cat("\n")
             cat("\nGAM = list( algo = '", object@GAM$algo, "',", sep = "")
@@ -1296,18 +1294,18 @@ setMethod('show', signature('BIOMOD.models.options'),
             cat("\n            decay = ", ifelse(length(object@ANN$decay) < 1, 'NULL', object@ANN$decay), ",", sep = "")
             cat("\n            rang = ", object@ANN$rang, ",", sep = "")
             cat("\n            maxit = ", object@ANN$maxit, "),", sep = "")
-            
+
             ## SRE options
             cat("\n")
             cat("\nSRE = list( quant = ", object@SRE$quant, "),", sep = "")
-            
+
             ## FDA options
             cat("\n")
             cat("\nFDA = list( method = '", object@FDA$method, "',", sep = "")
             cat("\n            add_args = ", ifelse(length(object@FDA$add_args) < 1, 'NULL'
                                                     , paste("list(", paste(.print_control(object@FDA$add_args), collapse = "")
                                                             , ")", sep = "")), "),", sep = "")
-            
+
             ## MARS options
             cat("\n")
             cat("\nMARS = list( type = '", object@MARS$type, "',", sep = "")
@@ -1321,7 +1319,7 @@ setMethod('show', signature('BIOMOD.models.options'),
             cat("\n             thresh = ", object@MARS$thresh, ",", sep = "")
             cat("\n             nprune = ", ifelse(length(object@MARS$nprune) < 1, 'NULL', object@MARS$nprune), ",", sep = "")
             cat("\n             pmethod = '", object@MARS$pmethod, "'),", sep = "")
-            
+
             ## RF options
             cat("\n")
             cat("\nRF = list( do.classif = ", object@RF$do.classif, ",", sep = "")
@@ -1330,7 +1328,7 @@ setMethod('show', signature('BIOMOD.models.options'),
             cat("\n           sampsize = ", ifelse(length(object@RF$sampsize) < 1, 'NULL', object@RF$sampsize), ",", sep = "")
             cat("\n           nodesize = ", object@RF$nodesize, ",", sep = "")
             cat("\n           maxnodes = ", ifelse(length(object@RF$maxnodes) < 1, 'NULL', object@RF$maxnodes),  "),", sep = "")
-            
+
             ## MAXENT.Phillips options
             cat("\n")
             cat("\nMAXENT.Phillips = list( path_to_maxent.jar = '", object@MAXENT.Phillips$path_to_maxent.jar, "', ", sep="")
@@ -1356,14 +1354,14 @@ setMethod('show', signature('BIOMOD.models.options'),
             cat("\n               beta_hinge = ", object@MAXENT.Phillips$beta_hinge, ",", sep = "")
             cat("\n               betamultiplier = ", object@MAXENT.Phillips$betamultiplier, ",", sep = "")
             cat("\n               defaultprevalence = ", object@MAXENT.Phillips$defaultprevalence, "),", sep = "")
-            
+
             ## MAXENT.Phillips.2 options
             cat("\n")
             cat("\n MAXENT.Phillips.2 = list( myFormula = ", .print_formula(object@MAXENT.Phillips.2$myFormula), ",", sep = "")
             cat("\n     regmult = ", object@MAXENT.Phillips.2$regmult, ",", sep = "")
             cat("\n     regfun = <function> )")
             cat("\n)")
-            
+
             # ## MAXENT.Tsuruoka
             # cat("\n")
             # cat("\nMAXENT.Tsuruoka = list( l1_regularizer = ", object@MAXENT.Tsuruoka$l1_regularizer, ",", sep="")

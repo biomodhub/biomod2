@@ -30,8 +30,8 @@
 ##' A \code{DataSplitTable} {matrix} with \code{k * nb.rep} (\emph{+ 1 if 
 ##' \code{do.full.models = TRUE}}) columns that can be given as parameter to the 
 ##' \code{\link{BIOMOD_Modeling}} function.
-##' 
-##' 
+##'
+##'
 ##' @details
 ##' 
 ##' \bold{Stratified cross-validation} may be used to test for model overfitting and to assess 
@@ -50,23 +50,23 @@
 ##' partitions (e.g. \emph{Fig. 1b in Muscarelly et al. 2014}). Pseudo-absences will however be 
 ##' unbalanced over the partitions especially if the presences are clumped on an edge of the 
 ##' study area.
-##' 
-##' If \code{balance = 'absences'}, absences (resp. pseudo-absences or background) are divided 
-##' (balanced) as equally as possible between the partitions (geographical balanced bins given 
-##' that absences are spread over the study area equally, approach similar to \emph{Fig. 1 in 
-##' Wenger et Olden 2012}). Presences will however be unbalanced over the partitions especially 
+##'
+##' If \code{balance = 'absences'}, absences (resp. pseudo-absences or background) are divided
+##' (balanced) as equally as possible between the partitions (geographical balanced bins given
+##' that absences are spread over the study area equally, approach similar to \emph{Fig. 1 in
+##' Wenger et Olden 2012}). Presences will however be unbalanced over the partitions especially
 ##' if the presences are clumped on an edge of the study area.
-##' 
-##' 
+##'
+##'
 ##' @references
-##' 
+##'
 ##' \itemize{
-##'   \item Muscarella, R., Galante, P.J., Soley-Guardia, M., Boria, R.A., Kass, J.M., Uriarte, M. 
-##'   & Anderson, R.P. (2014). ENMeval: An R package for conducting spatially independent 
-##'   evaluations and estimating optimal model complexity for Maxent ecological niche models. 
+##'   \item Muscarella, R., Galante, P.J., Soley-Guardia, M., Boria, R.A., Kass, J.M., Uriarte, M.
+##'   & Anderson, R.P. (2014). ENMeval: An R package for conducting spatially independent
+##'   evaluations and estimating optimal model complexity for Maxent ecological niche models.
 ##'   \emph{Methods in Ecology and Evolution}, \bold{5}, 1198-1205.
-##'   \item Wenger, S.J. & Olden, J.D. (2012). Assessing transferability of ecological models: an 
-##'   underappreciated aspect of statistical validation. \emph{Methods in Ecology and Evolution}, 
+##'   \item Wenger, S.J. & Olden, J.D. (2012). Assessing transferability of ecological models: an
+##'   underappreciated aspect of statistical validation. \emph{Methods in Ecology and Evolution},
 ##'   \bold{3}, 260-267.
 ##' }
 ##' 
@@ -167,7 +167,7 @@ BIOMOD_CrossValidation <- function(bm.format,
 {
   .bm_cat("Build Cross-Validation Table")
   DataSplitTable.y <- DataSplitTable.x <- DataSplitTable <- NULL
-  
+
   ## STRATIFIED (X, Y, BOTH) / BLOCK / ENVIRONMENTAL CROSS VALIDATION -----------------------------
   if (do.stratification)
   {
@@ -176,7 +176,7 @@ BIOMOD_CrossValidation <- function(bm.format,
     } else {
       balance <- (bm.format@data.species == 1)
     }
-    
+
     ## (X, Y, BOTH) STRATIFIED CROSS VALIDATION  -------------------------------
     if (method == "x" | method == "both") {
       DataSplitTable.x <- matrix(NA, nrow(bm.format@coord), k)
@@ -201,7 +201,7 @@ BIOMOD_CrossValidation <- function(bm.format,
     if (method == "both") { ## Merge X and Y tables
       DataSplitTable <- cbind(DataSplitTable.x, DataSplitTable.y)
     }
-    
+
     ## BLOCK STRATIFIED CROSS VALIDATION --------------------------------------
     if (method == "block") {
       DataSplitTable <- as.data.frame(matrix(NA, nrow(bm.format@coord), 4))
@@ -212,7 +212,7 @@ BIOMOD_CrossValidation <- function(bm.format,
         DataSplitTable[bm.format@data.species == 0, i] <- blocks[[2]] != i     
       }
     }
-    
+
     ## ENVIRONMENTAL STRATIFIED CROSS VALIDATION ------------------------------
     if (method != "block" & method != "x" & method != "y" & method != "both") {
       DataSplitTable2 <- as.data.frame(matrix(NA, nrow(bm.format@coord), k))
@@ -233,7 +233,7 @@ BIOMOD_CrossValidation <- function(bm.format,
       }
     }
   }
-  
+
   ## CLEAN FINAL TABLE ----------------------------------------------------------------------------
   colnames(DataSplitTable) <- paste0("RUN", 1:ncol(DataSplitTable))
   if (do.full.models == TRUE) {

@@ -1,7 +1,7 @@
 ###################################################################################################
 ##' @name bm_VariablesImportance
 ##' @author Damien Georges
-##' 
+##'
 ##' @title Variables' importance calculation
 ##' 
 ##' @description This internal \pkg{biomod2} function allows the user to compute a variable 
@@ -28,7 +28,7 @@
 ##' 
 ##' 
 ##' @details
-##' 
+##'
 ##' For each variable to be evaluated :
 ##' \enumerate{
 ##'   \item shuffle the original variable
@@ -36,15 +36,15 @@
 ##'   \item calculate Pearson's correlation between reference and shuffled predictions
 ##'   \item return score as \code{1 - cor}
 ##' }
-##' The highest the value, the less reference and shuffled predictions are correlated, and the 
-##' more influence the variable has on the model. A value of \code{0} assumes no influence of 
+##' The highest the value, the less reference and shuffled predictions are correlated, and the
+##' more influence the variable has on the model. A value of \code{0} assumes no influence of
 ##' the variable on the model.
-##' 
+##'
 ##' \emph{Note that this calculation does not account for variables' interactions.}
-##' 
+##'
 ##' The same principle is used in \code{\link[randomForest]{randomForest}}.
-##' 
-##' 
+##'
+##'
 ##' @keywords shuffle, random, importance, Pearson correlation
 ##' 
 ##' 
@@ -132,7 +132,7 @@ bm_VariablesImportance <- function(bm.model,
 .bm_VariablesImportance.check.args <- function(bm.model, expl.var, method, ...)
 {
   args <- list(...)
-  
+
   # test that input data is supported
   .fun_testIfInherits(TRUE, "bm.model", bm.model, c("biomod2_model", "nnet", "rpart", "fda", "gam"
                                                     , "glm", "lm", "gbm", "mars", "randomForest"))

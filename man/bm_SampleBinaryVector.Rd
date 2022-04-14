@@ -4,6 +4,7 @@
 \alias{bm_SampleBinaryVector}
 \title{Sample binary vector}
 \usage{
+<<<<<<< HEAD
 bm_SampleBinaryVector(obs, ratio, as.logical = FALSE)
 }
 \arguments{
@@ -16,16 +17,35 @@ of \code{obs} values to sample}
 A \code{logical} value defining whether a \code{vector} of \code{TRUE/FALSE} values should 
 be returned (if \code{as.logical = TRUE}) or a \code{vector} containing the indices of 
 \code{obs} elements to keep}
+=======
+bm_SampleBinaryVector(ref, ratio, as.logi = FALSE)
+}
+\arguments{
+\item{ref}{a \code{vector} containing binary values (either \code{0} or \code{1})}
+
+\item{ratio}{a \code{numeric} between \code{0} and \code{1} corresponding to the proportion
+of \code{ref} values to sample}
+
+\item{as.logi}{(\emph{optional, default} \code{FALSE}) \cr
+A \code{logical} value defining whether a \code{vector} of \code{TRUE/FALSE} values should
+be returned (if \code{as.logi = TRUE}) or a \code{vector} containing the indices of
+\code{ref} elements to keep}
+>>>>>>> devel
 }
 \value{
 A \code{list} containing to elements is returned :
 \describe{
   \item{calibration}{IDs of elements selected for calibration}
+<<<<<<< HEAD
   \item{evaluation}{IDs of elements selected for evaluation (complementary to the calibration 
+=======
+  \item{evaluation}{IDs of elements selected for evaluation (complementary to the calibration
+>>>>>>> devel
   set)}
 }
 }
 \description{
+<<<<<<< HEAD
 This internal \pkg{biomod2} function allows the user to sample a binary vector 
 keeping the same proportion of \code{0} and \code{1} as the initial vector.
 }
@@ -57,11 +77,33 @@ Other Secundary functions:
 \code{\link{bm_SRE}()},
 \code{\link{bm_SampleFactorLevels}()},
 \code{\link{bm_VariablesImportance}()}
+=======
+This internal \pkg{biomod2} function allows the user to sample a binary vector
+keeping the same proportion of \code{0} and \code{1} as the initial vector.
+}
+\details{
+###############################################################################################
+}
+\examples{
+
+## generate a binary vector
+a <- sample(c(0,1), 100, replace = TRUE)
+
+bm_SampleBinaryVector(ref = a, ratio = 0.7)
+
+###############################################################################################
+}
+\seealso{
+\code{\link[biomod2]{BIOMOD_FormatingData}}
+>>>>>>> devel
 }
 \author{
 Damien Georges
 }
+<<<<<<< HEAD
 \concept{Secundary functions}
+=======
+>>>>>>> devel
 \keyword{formula,}
 \keyword{models,}
 \keyword{options}

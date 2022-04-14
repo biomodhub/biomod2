@@ -161,7 +161,7 @@ BIOMOD_PresenceOnly <- function(bm.mod = NULL,
     calib.lines <- calib.lines[calib.notNA, ] ## keep only lines associated to sites (no pseudo-absences)
     myResp <- get(load(bm.mod@formated.input.data@link))@data.species
     myResp <- myResp[calib.notNA] ## keep only lines associated to sites (no pseudo-absences)
-    
+
     ## Get evaluation scores
     myModelEval <- get_evaluations(bm.mod, as.data.frame = TRUE)
     myModelEval$Model.name <- sapply(myModelEval$Model.name, function(x) 
@@ -183,7 +183,7 @@ BIOMOD_PresenceOnly <- function(bm.mod = NULL,
         rep(dimnames(myBiomodProj.eval@proj.out@val)[[2]], dim(myBiomodProj.eval@proj.out@val)[3])
         , sep = "_")
     }
-    
+
     ## Get predictions on evaluation data
     if (bm.mod@has.evaluation.data == TRUE) {
       myModelPred.eval  <- as.data.frame(get(load(paste0(bm.mod@"sp.name", "/.BIOMOD_DATA/"
@@ -196,7 +196,7 @@ BIOMOD_PresenceOnly <- function(bm.mod = NULL,
   } else {
     myModelEval = myModelPred = myModelPred.eval = NULL
   }
-  
+
   ## ENSEMBLE MODELING OUTPUT ---------------------------------------------------------------------
   if (!is.null(bm.em)) {
     
@@ -231,7 +231,7 @@ BIOMOD_PresenceOnly <- function(bm.mod = NULL,
       myModelPred.eval <- cbind(myModelPred.eval, myBiomodProjFF.eval)      
     }  
   }
-  
+
   ## CALCULATE BOYCE & MPA VALUES -----------------------------------------------------------------
   mpa.eval <- boyce.eval <- myModelEval[!duplicated(myModelEval$Model.name), ]
   boyce.eval$Eval.metric <- "BOYCE"
@@ -245,9 +245,9 @@ BIOMOD_PresenceOnly <- function(bm.mod = NULL,
     Model.name <- boyce.eval[i,1]
     tmp <- strsplit(as.character(Model.name), split = "_")[[1]]
     n <- length(tmp)
-    tec <- paste(tmp[3:n], collapse = "_") 
+    tec <- paste(tmp[3:n], collapse = "_")
     run <- tmp[c(grep("RUN", tmp), grep("Full", tmp))]
-    
+
     ## Get evaluation lines
     if (length(run) == 0) {
       ind.eval = NULL
@@ -258,7 +258,7 @@ BIOMOD_PresenceOnly <- function(bm.mod = NULL,
         ind.eval = which(calib.lines == FALSE)
       }
     }
-    
+
     ## Get vectors of selected observations and predictions
     if (is.null(bg.env)) {
       if (length(ind.eval) == 0) { ## No background, no evaluation : all obs and pred
@@ -279,7 +279,7 @@ BIOMOD_PresenceOnly <- function(bm.mod = NULL,
       Pred <- c(myModelPred.sites[ind.obs, Model.name], myModelPred[, Model.name])
       Pred.obs <- Pred[1:length(ind.obs)]
     }
-    
+
     ind.notNA = which(!is.na(Pred))
     ind.b = which(boyce.eval[, 1] == Model.name)
     ind.m = which(mpa.eval[, 1] == Model.name)
@@ -306,7 +306,7 @@ BIOMOD_PresenceOnly <- function(bm.mod = NULL,
       } else {
         boyce.eval[ind.b, c("Cutoff", "Sensitivity", "Specificity")] <- NA 	
       }
-      
+
       ## MPA index
       mpa <- ecospat::ecospat.mpa(Pred.obs, perc = perc)
       mpa.eval$Cutoff[ind.m] <- mpa
@@ -314,7 +314,7 @@ BIOMOD_PresenceOnly <- function(bm.mod = NULL,
       mpa.eval$Sensitivity[ind.m] <- EVAL$sensitivity
       mpa.eval$Specificity[ind.m] <- EVAL$specificity  
     }
-    
+
     ## Compute Boyce and MPA values for evaluation data -----------------------
     if (bm.mod@has.evaluation.data == TRUE) {
       myResp.eval <- get(load(bm.mod@formated.input.data@link))@eval.data.species

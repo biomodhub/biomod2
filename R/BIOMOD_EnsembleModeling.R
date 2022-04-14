@@ -391,7 +391,7 @@ BIOMOD_EnsembleModeling <- function(bm.mod,
   {
     cat("\n\n  >", assemb, "ensemble modeling")
     models.kept <- em.mod.assemb[[assemb]]
-    
+
     #### defined data that will be used for models performances calculation ####
     if (bm.mod@has.evaluation.data) {
       eval.obs <- get_formal_data(bm.mod, 'eval.resp.var')
@@ -478,14 +478,14 @@ BIOMOD_EnsembleModeling <- function(bm.mod,
               models.kept.scores.tmp <- models.kept.scores[-sre.id]
             }
           }
-          
+
           ## remove models if score is not defined
           models.kept.tmp <- models.kept.tmp[is.finite(models.kept.scores.tmp)]
           models.kept.scores.tmp <- models.kept.scores.tmp[is.finite(models.kept.scores.tmp)]
-          
+
           # weights are "decay" times decreased for each subsequent model in model quality order.
           models.kept.scores.tmp <- round(models.kept.scores.tmp, 3) # sometimes there can be a rounding issue in R, so here I make sure all values are rounded equally.
-          
+
           # dealing with numerical decay
           cat("\n\t\t", " original models scores = ", models.kept.scores.tmp)
           if (is.numeric(prob.mean.weight.decay)) {
@@ -507,7 +507,7 @@ BIOMOD_EnsembleModeling <- function(bm.mod,
           } else if (is.function(prob.mean.weight.decay)) { # dealing with function decay
             models.kept.scores.tmp <- sapply(models.kept.scores.tmp, prob.mean.weight.decay)
           }
-          
+
           ### Standardise model weights
           models.kept.scores.tmp <- round(models.kept.scores.tmp / sum(models.kept.scores.tmp, na.rm = TRUE)
                                           , digits = 3)
@@ -620,7 +620,7 @@ BIOMOD_EnsembleModeling <- function(bm.mod,
               rownames(cross.validation) <- c("Testing.data", "Evaluating.data", "Cutoff", "Sensitivity", "Specificity")
             }
           }
-          
+
           ## store results
           model.bm@model_evaluation <- t(round(cross.validation, digits = 3))
         }
@@ -633,7 +633,7 @@ BIOMOD_EnsembleModeling <- function(bm.mod,
                                                                         , expl.var = expl
                                                                         , nb.rep = var.import)
         }
-        
+
         #### Models saving #####
         assign(model_name, model.bm)
         save(list = model_name, file = file.path(bm.mod@sp.name, "models",
@@ -645,7 +645,7 @@ BIOMOD_EnsembleModeling <- function(bm.mod,
       }
     }
   }
-  
+
   ### fix models names ###
   names(EM@em.models) <- EM@em.computed
   model.name <- paste0(EM@sp.name, '.', EM@modeling.id, 'ensemble.models.out')
@@ -731,7 +731,7 @@ BIOMOD_EnsembleModeling <- function(bm.mod,
   ## 5. Check metric.eval -----------------------------------------------------
   metric.eval <- unique(metric.eval)
   avail.eval.meth.list <- c('TSS', 'KAPPA', 'ACCURACY', 'BIAS', 'POD', 'FAR', 'POFD'
-                            , 'SR', 'CSI', 'ETS', 'HK', 'HSS', 'OR', 'ORSS', 'ROC')
+                            , 'SR', 'CSI', 'ETS', 'HK', 'HSS', 'OR', 'ORSS', 'ROC', 'R2', 'RMSE')
   .fun_testIfIn(TRUE, "metric.eval", metric.eval, avail.eval.meth.list)
   
   ## 6. Check selected EM algo ------------------------------------------------
@@ -860,7 +860,7 @@ BIOMOD_EnsembleModeling <- function(bm.mod,
       out$models.kept[[eval.m]] <- models.kept
     }
   }
-  
+
   models.kept.union <- unique(unlist(out$models.kept))
   
   if (length(models.kept.union)) {

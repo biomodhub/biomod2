@@ -96,10 +96,14 @@ If \code{models.chosen = 'all'}, projections are done for all evaluation and pse
 runs if applicable. \cr These projections may be used later by the 
 \code{\link{BIOMOD_EnsembleForecasting}} function. \cr \cr
 
+<<<<<<< HEAD
 If \code{build.clamping.mask = TRUE}, a raster file will be saved within the projection 
 folder. This mask values will correspond to the number of variables in each pixel that are out 
 of their calibration / training range, identifying locations where predictions are uncertain. 
 \cr \cr
+=======
+The \sQuote{total.consensus} projection is basically the mean of all projections (for having only one output).
+>>>>>>> devel
 
 \code{...} can take the following values :
 \itemize{
@@ -114,6 +118,25 @@ of their calibration / training range, identifying locations where predictions a
   saving format on hard drive, must be either \code{.grd}, \code{.img} or \code{.RData} (the 
   default if \code{new.env} is given as \code{matrix} or \code{data.frame})}
 }
+<<<<<<< HEAD
+=======
+
+} % end of detail
+
+\value{
+Nothing returned but specific \sQuote{projection files} are saved on the hard drive projection folder. This files are either an \code{array} or a \code{RasterStack} depending the original projections data type.
+Load these created files to plot and work with them.
+
+}% end of value
+
+
+\author{
+Wilfried Thuiller, Damien Georges, Robin Engler
+}
+
+\seealso{
+\code{\link[biomod2]{BIOMOD_EnsembleModeling}}, \code{\link[biomod2]{BIOMOD_Projection}}
+>>>>>>> devel
 }
 \examples{
 
@@ -125,8 +148,13 @@ head(DataSpecies)
 # Select the name of the studied species
 myRespName <- 'GuloGulo'
 
+<<<<<<< HEAD
 # Get corresponding presence/absence data
 myResp <- as.numeric(DataSpecies[, myRespName])
+=======
+# the presence/absences data for our species
+myResp <- as.numeric(DataSpecies[,myRespName])
+>>>>>>> devel
 
 # Get corresponding XY coordinates
 myRespXY <- DataSpecies[, c('X_WGS84', 'Y_WGS84')]
@@ -135,6 +163,20 @@ myRespXY <- DataSpecies[, c('X_WGS84', 'Y_WGS84')]
 myFiles <- paste0('external/bioclim/current/bio', c(3, 4, 7, 11, 12), '.grd')
 myExpl <- raster::stack(system.file(myFiles, package = 'biomod2'))
 
+<<<<<<< HEAD
+=======
+# Environmental variables extracted from BIOCLIM (bio_3, bio_4, bio_7, bio_11 & bio_12)
+myExpl = raster::stack( system.file( "external/bioclim/current/bio3.grd",
+                     package="biomod2"),
+                system.file( "external/bioclim/current/bio4.grd",
+                             package="biomod2"),
+                system.file( "external/bioclim/current/bio7.grd",
+                             package="biomod2"),
+                system.file( "external/bioclim/current/bio11.grd",
+                             package="biomod2"),
+                system.file( "external/bioclim/current/bio12.grd",
+                             package="biomod2"))
+>>>>>>> devel
 
 # ---------------------------------------------------------------
 # Format Data with true absences
@@ -142,6 +184,58 @@ myBiomodData <- BIOMOD_FormatingData(resp.var = myResp,
                                      expl.var = myExpl,
                                      resp.xy = myRespXY,
                                      resp.name = myRespName)
+<<<<<<< HEAD
+=======
+
+# 2. Defining Models Options using default options.
+myBiomodOption <- BIOMOD_ModelingOptions()
+
+# 3. Running the models
+myBiomodModelOut <- BIOMOD_Modeling( myBiomodData,
+                                       models = c('RF'),
+                                       models.options = myBiomodOption,
+                                       NbRunEval=2,
+                                       DataSplit=60,
+                                       Yweights=NULL,
+                                       VarImport=0,
+                                       models.eval.meth = c('TSS'),
+                                       SaveObj = TRUE,
+                                       rescal.all.models = FALSE,
+                                       do.full.models = FALSE)
+
+# 4. Creating the ensemble models
+myBiomodEM <- BIOMOD_EnsembleModeling(
+                 modeling.output = myBiomodModelOut,
+                 chosen.models = grep('_RF', get_built_models(myBiomodModelOut),
+                                  value=TRUE),
+                 em.by = 'algo',
+                 eval.metric = c('TSS'),
+                 eval.metric.quality.threshold = c(0.7),
+                 prob.mean = TRUE,
+                 prob.cv = FALSE,
+                 prob.ci = FALSE,
+                 prob.ci.alpha = 0.05,
+                 prob.median = FALSE,
+                 committee.averaging = FALSE,
+                 prob.mean.weight = FALSE,
+                 prob.mean.weight.decay = 'proportional' )
+
+# 5. Individual models projections on current environmental conditions
+myBiomodProjection <- BIOMOD_Projection(
+                        modeling.output = myBiomodModelOut,
+                        new.env = myExpl,
+                        proj.name = 'current',
+                        selected.models = grep('_RF', get_built_models(
+                                                myBiomodModelOut), value=TRUE),
+                        compress = FALSE,
+                        build.clamping.mask = FALSE)
+
+
+# 4. Creating the ensemble projections
+BIOMOD_EnsembleForecasting( projection.output = myBiomodProjection,
+                            EM.output = myBiomodEM)
+}
+>>>>>>> devel
 
 # Create default modeling options
 myBiomodOptions <- BIOMOD_ModelingOptions()

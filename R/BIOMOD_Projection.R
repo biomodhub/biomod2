@@ -562,7 +562,7 @@ BIOMOD_Projection <- function(bm.mod,
     clamp.mask <- ref.mask <- subset(env, 1, drop = TRUE)
     clamp.mask[!is.na(clamp.mask[])] <- 0
     ref.mask[!is.na(clamp.mask[])] <- 1
-    
+
     for (e.v in names(MinMax)) {
       if (!is.null(MinMax[[e.v]]$min)) { # numeric variable
         clamp.mask <- clamp.mask + 
@@ -577,10 +577,10 @@ BIOMOD_Projection <- function(bm.mod,
   } else if (is.data.frame(env) | is.matrix(env) | is.numeric(env))
   { ## matrix and data.frame case ---------------------------------------------
     env <- as.data.frame(env)
-    
+
     # create an empty mask
     clamp.mask <- rep(0, nrow(env))
-    
+
     for (e.v in names(MinMax)) {
       if (!is.null(MinMax[[e.v]]$min)) { # numeric variable
         clamp.mask <- clamp.mask + 

@@ -5,14 +5,20 @@
 \title{Evaluate models with presence-only metrics}
 \usage{
 BIOMOD_PresenceOnly(
+<<<<<<< HEAD
   bm.mod = NULL,
   bm.em = NULL,
+=======
+  modeling.output = NULL,
+  EM.output = NULL,
+>>>>>>> devel
   bg.env = NULL,
   perc = 0.9,
   save.output = TRUE
 )
 }
 \arguments{
+<<<<<<< HEAD
 \item{bm.mod}{a \code{\link{BIOMOD.models.out}} object returned by the 
 \code{\link{BIOMOD_Modeling}} function}
 
@@ -75,11 +81,83 @@ myExpl <- raster::stack(system.file(myFiles, package = 'biomod2'))
 
 # ---------------------------------------------------------------
 # Format Data with true absences
+=======
+\item{modeling.output}{(\emph{optional, default} \code{NULL}) \cr
+A \code{BIOMOD.models.out} object that can be obtained from \code{\link{BIOMOD_Modeling}}
+function}
+
+\item{EM.output}{(\emph{optional, default} \code{NULL}) \cr
+A \code{BIOMOD.EnsembleModeling.out} object that can be obtained from
+\code{\link{BIOMOD_EnsembleModeling}} function}
+
+\item{bg.env}{(\emph{optional, default} \code{NULL}) \cr
+A \code{matrix} or \code{data.frame} object containing values of environmental variables
+extracted from the background (if presences are to be compared to background instead of
+absences or pseudo-absences selected for modeling)}
+
+\item{perc}{a \code{numeric} between \code{0} and \code{1} corresponding to the percentage of
+correctly classified presences for Minimal Predicted Area (see
+\code{\link[ecospat]{ecospat.mpa}})}
+
+\item{save.output}{(\emph{optional, default} \code{TRUE}) \cr
+A \code{logical} value defining whether the output is to be saved within the
+\code{.BIOMOD_DATA} folder or not}
+}
+\value{
+A \code{data.frame} containing evaluation scores both for the evaluation metrics used in the
+\code{\link{BIOMOD_Modeling}} function and additional Boyce index and Minimal Predicted Area.
+}
+\description{
+This function computes presence-only evaluation metrics (Boyce index and Minimal
+Predicted Area) for \code{BIOMOD.models.out} or \code{BIOMOD.EnsembleModeling.out} objects
+that can be obtained from \code{\link{BIOMOD_Modeling}} or
+\code{\link{BIOMOD_EnsembleModeling}} functions.
+}
+\details{
+###############################################################################################
+
+
+
+\code{em.by} parameter of \code{\link{BIOMOD_EnsembleModeling}} must have been set to
+\code{PA_dataset+repet} in order to have an ensemble for each RUN of the \code{NbRunEval}
+parameter of the \code{\link{BIOMOD_Modeling}} function for evaluation.
+
+The Boyce index returns \code{NA} values for \code{SRE} models because it can not be
+calculated with binary predictions. This is also the reason why some \code{NA} values might
+appear for \code{GLM} models if they do not converge.
+}
+\examples{
+
+# species occurrences
+DataSpecies <- read.csv(system.file("external/species/mammals_table.csv", package="biomod2"), row.names = 1)
+head(DataSpecies)
+
+# the name of studied species
+myRespName <- 'GuloGulo'
+
+# the presence/absences data for our species
+myResp <- as.numeric(DataSpecies[, myRespName])
+
+# the XY coordinates of species data
+myRespXY <- DataSpecies[, c("X_WGS84", "Y_WGS84")]
+
+
+# Environmental variables extracted from BIOCLIM (bio_3, bio_4, bio_7, bio_11 & bio_12)
+myFiles = paste0("external/bioclim/current/bio", c(3, 4, 7, 11, 12), ".grd")
+myExpl = raster::stack(system.file(myFiles[1], package = "biomod2"),
+                       system.file(myFiles[2], package = "biomod2"),
+                       system.file(myFiles[3], package = "biomod2"),
+                       system.file(myFiles[4], package = "biomod2"),
+                       system.file(myFiles[5], package = "biomod2"))
+
+# 1. Formatting Data
+>>>>>>> devel
 myBiomodData <- BIOMOD_FormatingData(resp.var = myResp,
                                      expl.var = myExpl,
                                      resp.xy = myRespXY,
                                      resp.name = myRespName)
 
+<<<<<<< HEAD
 # Create default modeling options
 myBiomodOptions <- BIOMOD_ModelingOptions()
 
@@ -107,10 +185,42 @@ myBiomodEM <- BIOMOD_EnsembleModeling(bm.mod = myBiomodModelOut,
                                       prob.ci = TRUE,
                                       prob.ci.alpha = 0.05,
                                       committee.averaging = TRUE,
+=======
+# 2. Defining Models Options using default options.
+myBiomodOption <- BIOMOD_ModelingOptions()
+
+# 3. Doing Modelisation
+myBiomodModelOut <- BIOMOD_Modeling(myBiomodData,
+                                    models = c('SRE', 'CTA', 'RF'),
+                                    models.options = myBiomodOption,
+                                    NbRunEval = 1,
+                                    DataSplit = 80,
+                                    Yweights = NULL,
+                                    VarImport = 3,
+                                    models.eval.meth = c('TSS','ROC'),
+                                    SaveObj = TRUE,
+                                    rescal.all.models = FALSE,
+                                    do.full.models = FALSE)
+
+# 4. Doing Ensemble Modelling
+myBiomodEM <- BIOMOD_EnsembleModeling(modeling.output = myBiomodModelOut,
+                                      chosen.models = 'all',
+                                      em.by = 'PA_dataset+repet',
+                                      eval.metric = c('TSS'),
+                                      eval.metric.quality.threshold = c(0.7),
+                                      models.eval.meth = c('TSS','ROC'),
+                                      prob.mean = TRUE,
+                                      prob.cv = FALSE,
+                                      prob.ci = FALSE,
+                                      prob.ci.alpha = 0.05,
+                                      prob.median = FALSE,
+                                      committee.averaging = FALSE,
+>>>>>>> devel
                                       prob.mean.weight = TRUE,
                                       prob.mean.weight.decay = 'proportional')
 
 
+<<<<<<< HEAD
 # ---------------------------------------------------------------
 # Evaluate models with Boyce index and MPA
 myBiomodPO <- BIOMOD_PresenceOnly(bm.mod = myBiomodModelOut,
@@ -132,10 +242,32 @@ myBiomodPO$eval
   \emph{Journal of Applied Ecology}, \bold{41(2)}, 263-274.
   \item Hirzel, A. H., Le Lay, G., Helfer, V., Randin, C., and Guisan, A. 2006. Evaluating 
   the ability of habitat suitability models to predict species presences. \emph{Ecological 
+=======
+# evaluate Biomod models with the Boyce index and MPA
+pres.only.eval <- BIOMOD_PresenceOnly(myBiomodModelOut, myBiomodEM)
+pres.only.eval$eval
+
+# evaluate Biomod models with the Boyce index and MPA using Background data
+bg.Values <- raster::getValues(myExpl)
+pres.only.eval <- BIOMOD_PresenceOnly(myBiomodModelOut, myBiomodEM, bg.env = bg.Values)
+pres.only.eval$eval
+
+
+###############################################################################################
+}
+\references{
+\itemize{
+  \item Engler, R., Guisan, A., and Rechsteiner L. 2004. An improved approach for predicting
+  the distribution of rare and endangered species from occurrence and pseudo-absence data.
+  \emph{Journal of Applied Ecology}, \bold{41(2)}, 263-274.
+  \item Hirzel, A. H., Le Lay, G., Helfer, V., Randin, C., and Guisan, A. 2006. Evaluating
+  the ability of habitat suitability models to predict species presences. \emph{Ecological
+>>>>>>> devel
   Modelling}, \bold{199(2)}, 142-152.
 }
 }
 \seealso{
+<<<<<<< HEAD
 \code{\link[ecospat]{ecospat.boyce}}, \code{\link[ecospat]{ecospat.mpa}}, 
 \code{\link{BIOMOD.models.out}}, \code{\link{BIOMOD_Modeling}}, 
 \code{\link{BIOMOD.ensemble.models.out}}, \code{\link{BIOMOD_EnsembleModeling}}
@@ -156,3 +288,11 @@ Other Main functions:
 Frank Breiner, Maya Gueguen
 }
 \concept{Main functions}
+=======
+\code{\link[ecospat]{ecospat.boyce}}, \code{\link[ecospat]{ecospat.mpa}},
+\code{\link[biomod2]{BIOMOD_Modeling}}, \code{\link[biomod2]{BIOMOD_EnsembleModeling}}
+}
+\author{
+Frank Breiner \email{frank.breiner@wsl.ch}, Maya Guéguen
+}
+>>>>>>> devel

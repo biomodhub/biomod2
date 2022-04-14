@@ -387,10 +387,10 @@ setMethod("get_predictions", "BIOMOD.models.out",
               warning("calibration data returned because no evaluation data available")
               evaluation = FALSE
             }
-            
+
             # select calibration or eval data
             if (evaluation) { pred <- obj@models.prediction.eval } else { pred <- obj@models.prediction }
-            
+
             if (!as.data.frame) {
               if (pred@inMemory) {
                 return(pred@val)
@@ -405,7 +405,7 @@ setMethod("get_predictions", "BIOMOD.models.out",
               } else if (pred@link != '') {
                 mod.pred <- as.data.frame(get(load(pred@link)))
               } else { return(NULL) }
-              
+
               names(mod.pred) <- unlist(lapply(strsplit(names(mod.pred), ".", fixed = TRUE), function(x)
               {
                 x.rev <- rev(x) ## we reverse the order of the splitted vector to have algo at the end
@@ -444,7 +444,7 @@ setMethod("get_evaluations", "BIOMOD.models.out",
             } else if(obj@models.evaluation@link != '') {
               out <- get(load(obj@models.evaluation@link))
             }
-            
+
             ## transform into data.frame object if needed
             if(as.data.frame)
             {
@@ -632,12 +632,12 @@ setMethod('plot', signature(x = 'BIOMOD.projection.out', y = "missing"),
             
             if(inherits(x@proj.out, "BIOMOD.stored.raster.stack")){
               requireNamespace("rasterVis")
-              
+
               my.at <- seq(0, 1000, by = 100) ## breaks of color key
               my.labs.at <- seq(0, 1000, by = 250) ## labels placed vertically centered
               my.lab <- seq(0, 1000, by = 250) ## labels
               my.col <- colorRampPalette(c("grey90", "yellow4", "green4"))(100) ## colors
-              
+
               ## try to use levelplot function
               try_plot <- try(rasterVis::levelplot(get_predictions(x, full.name = models_selected),
                                                    at = my.at,
@@ -731,7 +731,7 @@ setMethod("get_predictions", "BIOMOD.projection.out",
               grep_full <- paste0(grep_data.set, "_", grep_run.eval, "_", grep_model, "$")
               models_selected <- grep(pattern = grep_full, models_selected, value = T)
             }
-            
+
             if (length(models_selected))
             {
               proj <- load_stored_object(obj@proj.out)
@@ -745,7 +745,7 @@ setMethod("get_predictions", "BIOMOD.projection.out",
               } else { ## matrix (e.g. from ensemble models projections)
                 proj <- proj[, models_selected, drop = FALSE]
               }
-              
+
               if(as.data.frame)
               {
                 proj <- as.data.frame(proj)
@@ -1000,7 +1000,7 @@ setMethod("get_predictions", "BIOMOD.ensemble.models.out",
             ## note: ensemble models predicitons are stored within the directory
             ##  <sp.name>/.BIOMOD_DATA/<modeling.id>/ensemble.models/ensemble.models.projections/
             ##  This function is just a friendly way to load this data
-            
+
             ## get the path to projections files we want to load
             files.to.load <- file.path(obj@sp.name, ".BIOMOD_DATA", obj@modeling.id, "ensemble.models",
                                        "ensemble.models.predictions", paste0(obj@em.computed, ".predictions"))
@@ -1031,7 +1031,7 @@ setMethod("get_evaluations", "BIOMOD.ensemble.models.out",
             for (mod in models) {
               out[[mod]] <- obj@em.models[[mod]]@model_evaluation[, , drop = FALSE]
             }
-            
+
             ## transform into data.frame object if needed
             if(as.data.frame)
             {

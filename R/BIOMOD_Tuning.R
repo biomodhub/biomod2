@@ -229,10 +229,10 @@ BIOMOD_Tuning <- function(bm.format,
   
   ## MAXENT: http://cran.r-project.org/web/packages/ENMeval/ENMeval.pdf --> ENMevaluate()
   ## or:    http://cran.r-project.org/web/packages/maxent/maxent.pdf -->  tune.maxent()
-  
+
   ## 0. Check namespaces --------------------------------------------------------------------------
   mod.names = c('GLM', 'GBM', 'GAM', 'CTA', 'ANN', 'SRE', 'FDA', 'MARS', 'RF', 'MAXENT.Phillips')
-  
+
   if (sum(mod.names %in% models) > 0) {
     if (!isNamespaceLoaded("caret")) { requireNamespace("caret", quietly = TRUE) }
     if (!isNamespaceLoaded('dplyr')) { requireNamespace("dplyr", quietly = TRUE) }
@@ -246,8 +246,8 @@ BIOMOD_Tuning <- function(bm.format,
     if ("MAXENT.Phillips" %in% models && !isNamespaceLoaded('ENMeval')) { requireNamespace("ENMeval", quietly = TRUE) }
     # if ("MAXENT.Tsuruoka" %in% models && !isNamespaceLoaded('maxent')) { requireNamespace("maxent", quietly = TRUE) }
   }
-  
-  tune.SRE <- tune.GLM <- tune.MAXENT.Phillips <- tune.GAM <- tune.GBM <- 
+
+  tune.SRE <- tune.GLM <- tune.MAXENT.Phillips <- tune.GAM <- tune.GBM <-
     tune.CTA.rpart <- tune.CTA.rpart2 <- tune.RF <- tune.ANN <- tune.MARS <- tune.FDA <- NULL
   # tune.MAXENT.Tsuruoka <- NULL
   
@@ -281,7 +281,7 @@ BIOMOD_Tuning <- function(bm.format,
           }
         return(RES)
       }
-    
+
     t <- aggregate(tune.SRE, by = list(quant = tune.SRE$quant), mean)
     if (metric.eval == 'ROC') {
       bm.options@SRE$quant <- t[which.max(t$AUC), "quant"]
@@ -294,7 +294,7 @@ BIOMOD_Tuning <- function(bm.format,
   if(metric.eval == 'ROC' | metric.eval == 'TSS'){ resp <- as.factor(ifelse(resp == 1 & !is.na(resp), "Presence", "Absence")) }
   
   ## 1.2 GBM --------------------------------------------------------------------------------------
-  
+
   if ('GBM' %in% models)
   {  
     cat(paste("\n-=-=-=-=-=-=-=-=-=-=\n", "Start coarse tuning GBM\n"))
@@ -326,14 +326,14 @@ BIOMOD_Tuning <- function(bm.format,
       } else if(tune.GBM$bestTune$n.trees == 500) {
         n.trees <- seq(100, 1000, by = 50)
       }
-      
+
       tune.grid <- expand.grid(.interaction.depth = c(tune.GBM$bestTune$interaction.depth - 1
                                                       , tune.GBM$bestTune$interaction.depth
                                                       , tune.GBM$bestTune$interaction.depth + 1),
                                .n.trees = n.trees,
                                .shrinkage = c(tune.GBM$bestTune$shrinkage / 2,
                                               tune.GBM$bestTune$shrinkage,
-                                              tune.GBM$bestTune$shrinkage * 5), 
+                                              tune.GBM$bestTune$shrinkage * 5),
                                .n.minobsinnode = 10)
       tune.GBM <- NULL
       try(tune.GBM <- train(bm.format@data.env.var, 
@@ -344,7 +344,7 @@ BIOMOD_Tuning <- function(bm.format,
                             verbose = FALSE,
                             weights = weights))  
     }
-    
+
     if (!is.null(tune.GBM)) {
       if (metric.eval == 'TSS') {
         tmp = which.max(apply(tune.GBM$results[, c("Sens", "Spec")], 1, sum) - 1)
@@ -362,9 +362,9 @@ BIOMOD_Tuning <- function(bm.format,
     }
     cat(paste("Finished tuning GBM", "\n-=-=-=-=-=-=-=-=-=-=\n"))
   }
-  
+
   ## 1.3 RF ---------------------------------------------------------------------------------------
-  
+
   if ('RF' %in% models)
   {
     cat(paste("\n-=-=-=-=-=-=-=-=-=-=\n", "Start tuning RF\n"))
@@ -391,9 +391,9 @@ BIOMOD_Tuning <- function(bm.format,
     }
     cat(paste("Finished tuning RF", "\n-=-=-=-=-=-=-=-=-=-=\n"))
   }
-  
+
   ## 1.4 ANN --------------------------------------------------------------------------------------
-  
+
   if ('ANN' %in% models)
   {
     cat(paste("\n-=-=-=-=-=-=-=-=-=-=\n", "Start tuning ANN\n"))
@@ -403,7 +403,7 @@ BIOMOD_Tuning <- function(bm.format,
     # decay: optimised by cross validation on model AUC (NbCv cross validation; tested decay will be the following c(0.001, 0.01, 0.05, 0.1)).
     # could increase maxit from 200 to 500
     # a nice option would be to use model averaging for ann: avNNet in package(caret)
-    
+
     ## Create a specific candidate set of models to evaluate:
     tune.grid <- expand.grid(.decay = ANN.decay.tune,
                              .size = ANN.size.tune,
@@ -438,9 +438,9 @@ BIOMOD_Tuning <- function(bm.format,
     }
     cat(paste("Finished tuning ANN", "\n-=-=-=-=-=-=-=-=-=-=\n"))
   }
-  
+
   ## 1.5 GAM --------------------------------------------------------------------------------------
-  
+
   if ('GAM' %in% models)
   {
     cat(paste("\n-=-=-=-=-=-=-=-=-=-=\n", "Start tuning GAM\n"))
@@ -466,9 +466,9 @@ BIOMOD_Tuning <- function(bm.format,
     }
     cat(paste("Finished tuning GAM", "\n-=-=-=-=-=-=-=-=-=-=\n"))
   }
-  
+
   ## 1.6 MARS -------------------------------------------------------------------------------------
-  
+
   if ('MARS' %in% models)
   {
     cat(paste("\n-=-=-=-=-=-=-=-=-=-=\n", "Start tuning MARS\n"))
@@ -478,7 +478,7 @@ BIOMOD_Tuning <- function(bm.format,
     } else {
       nprune <- 2:min(bm.options@MARS$nk, 38)
     }
-    
+
     tune.grid <- expand.grid(.degree = 1:2, .nprune = nprune)
     try(tune.MARS <- train(bm.format@data.env.var, 
                            resp, 
@@ -510,9 +510,9 @@ BIOMOD_Tuning <- function(bm.format,
     }
     cat(paste("Finished tuning MARS", "\n-=-=-=-=-=-=-=-=-=-=\n"))
   }
-  
+
   ## 1.7 GLM --------------------------------------------------------------------------------------
-  
+
   if ('GLM' %in% models)
   {
     cat(paste("\n-=-=-=-=-=-=-=-=-=-=\n", "Start tuning GLM\n"))
@@ -547,7 +547,7 @@ BIOMOD_Tuning <- function(bm.format,
   }      
   
   ## 1.8 FDA --------------------------------------------------------------------------------------
-  
+
   if ('FDA' %in% models)
   {
     cat(paste("\n-=-=-=-=-=-=-=-=-=-=\n", "Start tuning FDA\n"))
@@ -576,9 +576,9 @@ BIOMOD_Tuning <- function(bm.format,
     }
     cat(paste("Finished tuning FDA", "\n-=-=-=-=-=-=-=-=-=-=\n"))
   }
-  
+
   ## 1.9 CTA --------------------------------------------------------------------------------------
-  
+
   if ('CTA' %in% models)
   {
     cat(paste("\n-=-=-=-=-=-=-=-=-=-=\n", "Start tuning CTA\n"))
@@ -613,7 +613,7 @@ BIOMOD_Tuning <- function(bm.format,
       cat("Tuning CTA cp failed!")
       tune.CTA.rpart <- "FAILED"
     }
-    
+
     if (!is.null(tune.CTA.rpart2)) {
       if (metric.eval == 'TSS') {
         tmp = which.max(apply(tune.CTA.rpart2$results[, c("Sens", "Spec")], 1, sum) - 1)
@@ -627,9 +627,9 @@ BIOMOD_Tuning <- function(bm.format,
     }
     cat(paste("Finished tuning CTA", "\n-=-=-=-=-=-=-=-=-=-=\n"))
   }
-  
+
   ## 1.10 MAXENT.Phillips -------------------------------------------------------------------------
-  
+
   if ('MAXENT.Phillips' %in% models)
   {
     cat(paste("\n-=-=-=-=-=-=-=-=-=-=\n", "Start tuning MAXENT.Phillips\n"))
@@ -666,13 +666,13 @@ BIOMOD_Tuning <- function(bm.format,
     }
     cat(paste("Finished tuning MAXENT.Phillips", "\n-=-=-=-=-=-=-=-=-=-=\n"))
   }
-  
-  
+
+
   # if ('MAXENT.Tsuruoka' %in% models) {
   #   cat("Start tuning MAXENT.Tsuruoka\n")
   #   try(tune.MAXENT.Tsuruoka <- as.data.frame(tune.maxent(bm.format@data.env.var,bm.format@data.species,nfold=ME.kfolds,showall=T)))
   #   cat(paste("Finished tuning MAXENT.Tsuruoka\n","\n-=-=-=-=-=-=-=-=-=-=\n"))
-  #   
+  #
   #   if(!is.null(tune.MAXENT.Tsuruoka)){
   #     bm.options@MAXENT.Tsuruoka$l1_regularizer <- tune.MAXENT.Tsuruoka$l1_regularizer[which.max(tune.MAXENT.Tsuruoka$accuracy)]
   #     bm.options@MAXENT.Tsuruoka$l2_regularizer <- tune.MAXENT.Tsuruoka$l2_regularizer[which.max(tune.MAXENT.Tsuruoka$accuracy)]
@@ -714,3 +714,7 @@ BIOMOD_Tuning <- function(bm.format,
   return(results)
 }
 
+#' @rdname BIOMOD_Tuning
+#' @aliases BIOMOD_Tuning
+#' @export
+BIOMOD_tuning <- BIOMOD_Tuning ## necessary for backwards compatibility with ecospat (it looks for `BIOMOD_tuning`)

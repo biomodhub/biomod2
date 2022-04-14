@@ -125,7 +125,7 @@ get_var_range <- function(data)
 check_data_range <- function(model, new_data)
 {
   ## TODO : remettre en marche cette fonction
-  
+
   #   # get calibration data caracteristics
   #   expl_var_names <- model@expl_var_names
   #   expl_var_type <- model@expl_var_type
@@ -209,8 +209,8 @@ check_data_range <- function(model, new_data)
 
 .run_pred <- function(object, Prev = 0.5 , dat)
 {
-  if (is.finite(object$deviance) && 
-      is.finite(object$null.deviance) && 
+  if (is.finite(object$deviance) &&
+      is.finite(object$null.deviance) &&
       object$deviance != object$null.deviance)
   {
     if (inherits(dat, 'Raster')) {
@@ -219,7 +219,7 @@ check_data_range <- function(model, new_data)
       pred <- predict(object, dat, type = "response")
     }
   }
-  
+
   if (!exists('pred')) {
     if (inherits(dat, 'Raster')) {
       pred <- subset(dat, 1, drop = TRUE)
@@ -236,7 +236,7 @@ check_data_range <- function(model, new_data)
       }
     }
   }
-  
+
   return(pred)
 }
 
@@ -276,19 +276,19 @@ check_data_range <- function(model, new_data)
   namefile <- args$namefile
   overwrite <- args$overwrite
   on_0_1000 <- args$on_0_1000
-  
+
   if (is.null(overwrite)) { overwrite <- TRUE }
   if (is.null(on_0_1000)) { on_0_1000 <- FALSE }
-  
+
   set.seed(seedval)
   eval(parse(text = paste0("proj <- ", predcommand)))
-  
+
   if (length(get_scaling_model(object))) {
     names(proj) <- "pred"
     proj <- .run_pred(object = get_scaling_model(object), Prev = 0.5 , dat = proj)
   }
   if (on_0_1000) { proj <- round(proj * 1000) }
-  
+
   # save raster on hard drive ?
   if (!is.null(namefile)) {
     cat("\n\t\tWriting projection on hard drive...")
@@ -307,20 +307,20 @@ check_data_range <- function(model, new_data)
   args <- list(...)
   on_0_1000 <- args$on_0_1000
   omit.na <- args$omit.na
-  
+
   if (is.null(on_0_1000)) { on_0_1000 <- FALSE }
   if (is.null(omit.na)) { omit.na <- FALSE }
-  
+
   ## check if na occurs in newdata cause they are not well supported
   if (omit.na) {
     not_na_rows <- apply(newdata, 1, function(x) { sum(is.na(x)) == 0 })
   } else {
     not_na_rows <- rep(T, nrow(newdata))
   }
-  
+
   set.seed(seedval)
   eval(parse(text = paste0("proj <- ", predcommand)))
-  
+
   ## add original NA from formal dataset
   if (sum(!not_na_rows) > 0) {
     tmp <- rep(NA, length(not_na_rows))
@@ -328,13 +328,13 @@ check_data_range <- function(model, new_data)
     proj <- tmp
     rm('tmp')
   }
-  
+
   if (length(get_scaling_model(object))) {
     proj <- data.frame(pred = proj)
     proj <- .run_pred(object = get_scaling_model(object), Prev = 0.5, dat = proj)
   }
   if (on_0_1000) { proj <- round(proj * 1000) }
-  
+
   return(proj)
 }
 
@@ -345,11 +345,11 @@ check_data_range <- function(model, new_data)
   do_check <- args$do_check
   if (is.null(do_check)) { do_check <- TRUE }
   if (do_check) { newdata <- check_data_range(model = object, new_data = newdata) }
-  
+
   if (inherits(newdata, 'Raster') | inherits(formal_predictions, 'Raster')) {
     eval(parse(text = paste0("res = .predict.", mod, "_biomod2_model.RasterStack(object, newdata, formal_predictions, ...)")))
     return(res)
-  } else if (inherits(newdata, 'data.frame') | inherits(newdata, 'matrix') | 
+  } else if (inherits(newdata, 'data.frame') | inherits(newdata, 'matrix') |
              inherits(formal_predictions, 'data.frame') | inherits(formal_predictions, 'matrix')) {
     eval(parse(text = paste0("res = .predict.", mod, "_biomod2_model.data.frame(object, newdata, formal_predictions, ...)")))
     return(res)
@@ -366,7 +366,7 @@ check_data_range <- function(model, new_data)
   
   if (is.null(namefile)) { namefile <- "" }
   if (is.null(on_0_1000)) { on_0_1000 <- FALSE }
-  
+
   if (is.null(formal_predictions)) {
     # make prediction of all models required
     formal_predictions <- sapply(object@model,
@@ -384,7 +384,7 @@ check_data_range <- function(model, new_data)
                                                   , temp_workdir = temp_workdir))
                                  }, resp_name = object@resp_name, modeling.id = object@modeling.id)
   }
-  
+
   return(formal_predictions)
 }
 

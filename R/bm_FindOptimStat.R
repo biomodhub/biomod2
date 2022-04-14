@@ -4,18 +4,19 @@
 ##' @aliases bm_CalculateStat
 ##' @aliases get_optim_value
 ##' @author Damien Georges
-##' 
+##'
 ##' @title Calculate the best score according to a given evaluation method
 ##'
 ##' @description This internal \pkg{biomod2} function allows the user to find the threshold to 
 ##' convert continuous values into binary ones leading to the best score for a given evaluation 
 ##' metric.
 ##'
+##' \code{ORSS}, 
 ##'
 ##' @param metric.eval a \code{character} corresponding to the evaluation metric to be used, must 
 ##' be either \code{ROC}, \code{TSS}, \code{KAPPA}, \code{ACCURACY}, \code{BIAS}, \code{POD}, 
 ##' \code{FAR}, \code{POFD}, \code{SR}, \code{CSI}, \code{ETS}, \code{HK}, \code{HSS}, \code{OR} 
-##' or \code{ORSS}
+##' \code{ORSS}, \code{R2} or \code{RMSE} (the last two only for continuous data)
 ##' @param obs a \code{vector} of observed values (binary, \code{0} or \code{1})
 ##' @param fit a \code{vector} of fitted values (continuous)
 ##' @param nb.thresh an \code{integer} corresponding to the number of thresholds to be 
@@ -30,7 +31,7 @@
 ##' A \code{1} row x \code{4} columns \code{matrix} containing :
 ##' \itemize{
 ##'   \item{\code{best.iter}}{ : the best score obtained for the chosen evaluation metric}
-##'   \item{\code{cutoff}}{ : the associated cut-off used to transform the continuous values into 
+##'   \item{\code{cutoff}}{ : the associated cut-off used to transform the continuous values into
 ##'   binary}
 ##'   \item{\code{sensibility}}{ : the sensibility obtained on fitted values with this threshold}
 ##'   \item{\code{specificity}}{ : the specificity obtained on fitted values with this threshold}
@@ -38,8 +39,8 @@
 ##' 
 ##'
 ##' @details
-##' 
-##' \emph{Please refer to \code{\link{BIOMOD_Modeling}} to get more information about these 
+##'
+##' \emph{Please refer to \code{\link{BIOMOD_Modeling}} to get more information about these
 ##' evaluation metrics.}
 ##' 
 ##' Note that if a value is given to \code{threshold}, no optimisation will be done., and 
@@ -47,7 +48,6 @@
 ##'
 ##'
 ##' @keywords models, options, evaluation
-##' 
 ##'
 ##' @seealso \code{\link{BIOMOD_Modeling}}, \code{\link{bm_RunModelsLoop}}, 
 ##' \code{\link{BIOMOD_EnsembleModeling}}
@@ -135,7 +135,7 @@ bm_FindOptimStat <- function(metric.eval = 'TSS',
     } else { # test only one value
       valToTest <- threshold
     }
-    
+
     ## 2. apply the bm_CalculateStat function ---------------------------------
     calcStat <- sapply(lapply(valToTest, function(x) {
       return(table(fit > x, obs))
@@ -195,6 +195,8 @@ get_optim_value <- function(metric.eval)
          , 'OR' = 1000000
          , 'ORSS' = 1
          , 'ROC' = 1
+         , 'R2' = 1
+         , 'RMSE' = 0
   )
 }
 
@@ -282,7 +284,7 @@ bm_CalculateStat <- function(misc, metric.eval = 'TSS')
                }
                , 'HK' = (hits / (hits + misses)) - (false_alarms / (false_alarms + correct_negatives))
                , 'HSS' = {
-                 expected_correct_rand <- (1 / total) * 
+                 expected_correct_rand <- (1 / total) *
                    (((hits + misses) * (hits + false_alarms)) + ((correct_negatives + misses) * (correct_negatives + false_alarms)))
                  return((hits + correct_negatives - expected_correct_rand) / (total - expected_correct_rand))
                }

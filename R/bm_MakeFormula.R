@@ -1,7 +1,7 @@
 ###################################################################################################
 ##' @name bm_MakeFormula
 ##' @author Damien Georges
-##' 
+##'
 ##' @title Standardized formula maker
 ##' 
 ##' @description This internal \pkg{biomod2} function allows the user to create easily a 
@@ -22,8 +22,8 @@
 ##' 
 ##' A \code{\link[stats]{formula}} class object that can be directly given to most of \R 
 ##' statistical models.
-##' 
-##' 
+##'
+##'
 ##' @details
 ##' 
 ##' It is advised to give only a subset of \code{expl.var} table to avoid useless memory consuming. 
@@ -33,8 +33,8 @@
 ##' \code{...} can take the following values :
 ##' 
 ##' \itemize{
-##'   \item{\code{k}}{ : an \code{integer} corresponding to the smoothing parameter value of 
-##'   \code{\link[mgcv]{s}} or \code{\link[gam]{s}} arguments (\emph{used only if 
+##'   \item{\code{k}}{ : an \code{integer} corresponding to the smoothing parameter value of
+##'   \code{\link[mgcv]{s}} or \code{\link[gam]{s}} arguments (\emph{used only if
 ##'   \code{type = 's_smoother'}})}
 ##' }
 ##' 
@@ -99,7 +99,7 @@ bm_MakeFormula <- function(resp.name,
   
   ## 2. Create the formula ------------------------------------------------------------------------
   junk <- c(1)
-  switch(EXPR = type
+  switch(type
          , "simple" = {
            junk <- paste(junk, paste(explVarNames, collapse = " + "), sep = " + ")
          }
@@ -139,7 +139,7 @@ bm_MakeFormula <- function(resp.name,
     }
   }
   if (length(junk.inter)) { junk <- paste0(junk, junk.inter) }
-  
+
   ## 4. Return the formula ------------------------------------------------------------------------
   return(as.formula(paste0(resp.name," ~ ", junk)))
 }

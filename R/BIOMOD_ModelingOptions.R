@@ -384,7 +384,7 @@ BIOMOD_ModelingOptions <- function(GLM = NULL,
   ## 2. modify it if necessary ------------------------------------------------
   fam_GLM = fam_GAM = c('binomial', 'gaussian', 'Gamma', 'inverse.gaussian'
                         , 'poisson', 'quasi', 'quasibinomial', 'quasipoisson')
-  
+
   ## 2.1 GLM ------------------------------------------------------------------
   if (!is.null(GLM)) {
     if (!is.null(GLM$type)) { opt@GLM$type <- GLM$type }
@@ -411,7 +411,7 @@ BIOMOD_ModelingOptions <- function(GLM = NULL,
     if (!is.null(GLM$mustart)) { opt@GLM$mustart <- GLM$mustart }
     if (!is.null(GLM$control)) { opt@GLM$control <- GLM$control }
   }
-  
+
   ## 2.2 GBM ------------------------------------------------------------------
   if (!is.null(GBM)){
     if (!is.null(GBM$distribution)) { opt@GBM$distribution <- GBM$distribution }
@@ -427,7 +427,7 @@ BIOMOD_ModelingOptions <- function(GLM = NULL,
     if (!is.null(GBM$perf.method)) { opt@GBM$perf.method <- GBM$perf.method }
     if (!is.null(GBM$n.cores)) { opt@GBM$n.cores <- GBM$n.cores } else { opt@GBM$n.cores <- NULL }
   }
-  
+
   ## 2.3 GAM ------------------------------------------------------------------
   if (!is.null(GAM)) {
     if (!is.null(GAM$algo)) { opt@GAM$algo <- GAM$algo }
@@ -458,7 +458,7 @@ BIOMOD_ModelingOptions <- function(GLM = NULL,
         opt@GAM$family <- binomial(link = 'logit')
       }
     }
-    
+
     if (is.null(GAM$control)) {
       if (opt@GAM$algo == 'GAM_gam') {
         requireNamespace('gam', quietly = TRUE)
@@ -486,7 +486,7 @@ BIOMOD_ModelingOptions <- function(GLM = NULL,
       names(control.list) <- names(default.control.list)
       opt@GAM$control <- control.list
     }
-    
+
     if (!is.null(GAM$method)) { opt@GAM$method <- GAM$method }
     if (!is.null(GAM$optimizer)) { opt@GAM$optimizer <- GAM$optimizer }
     if (!is.null(GAM$select)) { opt@GAM$select <- GAM$select }
@@ -501,7 +501,7 @@ BIOMOD_ModelingOptions <- function(GLM = NULL,
       opt@GAM$k <- -1
     }
   }
-  
+
   ## 2.4 CTA ------------------------------------------------------------------
   if (!is.null(CTA)) {
     if (!is.null(CTA$method)) { opt@CTA$method <- CTA$method }
@@ -509,7 +509,7 @@ BIOMOD_ModelingOptions <- function(GLM = NULL,
     if (!is.null(CTA$control)) { opt@CTA$control <- CTA$control }
     if (!is.null(CTA$cost)) { opt@CTA$cost <- CTA$cost }
   }
-  
+
   ## 2.5 ANN ------------------------------------------------------------------
   if (!is.null(ANN)) {
     if (!is.null(ANN$NbCV)) { opt@ANN$NbCV <- ANN$NbCV }
@@ -518,18 +518,18 @@ BIOMOD_ModelingOptions <- function(GLM = NULL,
     if (!is.null(ANN$rang)) { opt@ANN$rang <- ANN$rang }
     if (!is.null(ANN$maxit)) { opt@ANN$maxit <- ANN$maxit }
   }
-  
+
   ## 2.6 SRE ------------------------------------------------------------------
   if (!is.null(SRE)) {
     if (!is.null(SRE$quant)) { opt@SRE$quant <- SRE$quant }
   }
-  
+
   ## 2.7 FDA ------------------------------------------------------------------
   if (!is.null(FDA)) {
     if (!is.null(FDA$method)) { opt@FDA$method <- FDA$method }
     if (!is.null(FDA$add_args)) { opt@FDA$add_args <- FDA$add_args } ## additional args such as degree, nk
   }
-  
+
   ## 2.8 MARS -----------------------------------------------------------------
   if (!is.null(MARS)) {
     if (!is.null(MARS$type)) { opt@MARS$type <- MARS$type }
@@ -541,17 +541,18 @@ BIOMOD_ModelingOptions <- function(GLM = NULL,
     if (!is.null(MARS$nprune)) { opt@MARS$nprune <- MARS$nprune }
     if (!is.null(MARS$pmethod)) { opt@MARS$pmethod <- MARS$pmethod }
   }
-  
+
   ## 2.9 RF -------------------------------------------------------------------
   if (!is.null(RF)) {
     if (!is.null(RF$type)) { opt@RF$type <- RF$type }
+    if(!is.null(RF$do.classif )) { opt@RF$do.classif <- RF$do.classif }
     if (!is.null(RF$ntree)) { opt@RF$ntree <- RF$ntree }
     if (!is.null(RF$mtry)) { opt@RF$mtry <- RF$mtry }
     if (!is.null(RF$sampsize)) { opt@RF$sampsize <- RF$sampsize }
     if (!is.null(RF$nodesize)) { opt@RF$nodesize <- RF$nodesize }
     if (!is.null(RF$maxnodes)) { opt@RF$maxnodes <- RF$maxnodes }
   }
-  
+
   ## 2.10 MAXENT.Phillips -----------------------------------------------------
   if (!is.null(MAXENT.Phillips)) {
     if (!is.null(MAXENT.Phillips$path_to_maxent.jar)) {
@@ -579,7 +580,7 @@ BIOMOD_ModelingOptions <- function(GLM = NULL,
   } else {
     opt@MAXENT.Phillips$path_to_maxent.jar <- getwd()
   }
-  
+
   # if (!is.null(MAXENT.Tsuruoka)) {
   #   if (!is.null(MAXENT.Tsuruoka$l1_regularizer)) { opt@MAXENT.Tsuruoka$l1_regularizer <- MAXENT.Tsuruoka$l1_regularizer }
   #   if (!is.null(MAXENT.Tsuruoka$l2_regularizer)) { opt@MAXENT.Tsuruoka$l2_regularizer <- MAXENT.Tsuruoka$l2_regularizer }
@@ -587,10 +588,10 @@ BIOMOD_ModelingOptions <- function(GLM = NULL,
   #   if (!is.null(MAXENT.Tsuruoka$set_heldout)) { opt@MAXENT.Tsuruoka$set_heldout <- MAXENT.Tsuruoka$set_heldout }
   #   if (!is.null(MAXENT.Tsuruoka$verbose)) { opt@MAXENT.Tsuruoka$verbose <- MAXENT.Tsuruoka$verbose }
   # }
-  
+
   ## 3. test validity ---------------------------------------------------------
   test <- as.logical(validObject(object = opt, test = TRUE, complete = FALSE))
-  
+
   if (!test) {
     cat("\n\n!!! NULL object returned because of invalid parameters given !!!")
     return(NULL)
