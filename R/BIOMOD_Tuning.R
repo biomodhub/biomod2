@@ -1,23 +1,23 @@
 ###################################################################################################
 ##' @name BIOMOD_Tuning
 ##' @author Frank Breiner
-##' 
+##'
 ##' @title Tune models parameters
-##' 
+##'
 ##' @description Function to tune \pkg{biomod2} single models parameters
 ##'
 ##'
-##' @param bm.format a \code{\link{BIOMOD.formated.data}} or \code{\link{BIOMOD.formated.data.PA}} 
+##' @param bm.format a \code{\link{BIOMOD.formated.data}} or \code{\link{BIOMOD.formated.data.PA}}
 ##' object returned by the \code{\link{BIOMOD_FormatingData}} function
-##' @param bm.options a \code{\link{BIOMOD.models.options}} object returned by the  
+##' @param bm.options a \code{\link{BIOMOD.models.options}} object returned by the
 ##' \code{\link{BIOMOD_ModelingOptions}} function
-##' @param models a \code{vector} containing model names to be tuned, \cr 
-##' must be among \code{GLM}, \code{GBM}, \code{GAM}, \code{CTA}, \code{ANN}, \code{SRE}, 
+##' @param models a \code{vector} containing model names to be tuned, \cr
+##' must be among \code{GLM}, \code{GBM}, \code{GAM}, \code{CTA}, \code{ANN}, \code{SRE},
 ##' \code{FDA}, \code{MARS}, \code{RF}, \code{MAXENT.Phillips}
-##' @param metric.eval a \code{character} corresponding to the evaluation metric used to select 
-##' optimal models and tune parameters, must be either \code{ROC} or \code{TSS} 
+##' @param metric.eval a \code{character} corresponding to the evaluation metric used to select
+##' optimal models and tune parameters, must be either \code{ROC} or \code{TSS}
 ##' (\emph{maximizing Sensitivity and Specificity})
-##' @param ctrl.train global control parameters that can be obtained from the 
+##' @param ctrl.train global control parameters that can be obtained from the
 ##' \code{\link[caret]{trainControl}} function
 ##' @param ctrl.train.tuneLength (see \code{tuneLength} parameter in \code{\link[caret]{train}})
 ##' @param ctrl.ANN control parameters for \code{ANN}
@@ -28,139 +28,139 @@
 ##' @param ctrl.GLM control parameters for \code{GLM}
 ##' @param ctrl.MARS control parameters for \code{MARS}
 ##' @param ctrl.RF control parameters for \code{RF}
-##' @param ANN.method a \code{character} corresponding to the classification or regression model 
-##' to use for \code{ANN}, \cr 
+##' @param ANN.method a \code{character} corresponding to the classification or regression model
+##' to use for \code{ANN}, \cr
 ##' must be \code{avNNet} (see \url{http://topepo.github.io/caret/Neural_Network.html})
-##' @param ANN.size.tune a \code{vector} of size parameters (number of units in the hidden layer) 
+##' @param ANN.size.tune a \code{vector} of size parameters (number of units in the hidden layer)
 ##' for \code{ANN}
 ##' @param ANN.decay.tune a \code{vector} of weight decay parameters for \code{ANN}
-##' @param ANN.maxit an \code{integer} corresponding to the maximum number of iterations for 
+##' @param ANN.maxit an \code{integer} corresponding to the maximum number of iterations for
 ##' \code{ANN}
-##' @param ANN.MaxNWts an \code{integer} corresponding to the maximum allowable number of weights 
+##' @param ANN.MaxNWts an \code{integer} corresponding to the maximum allowable number of weights
 ##' for \code{ANN}
-##' @param GAM.method a \code{character} corresponding to the classification or regression model 
-##' to use for \code{GAM}, \cr 
+##' @param GAM.method a \code{character} corresponding to the classification or regression model
+##' to use for \code{GAM}, \cr
 ##' must be \code{gam} (see \url{http://topepo.github.io/caret/Generalized_Additive_Model.html})
-##' @param GLM.method a \code{character} corresponding to the classification or regression model 
-##' to use for \code{GLM}, \cr 
-##' must be \code{glmStepAIC} (see 
+##' @param GLM.method a \code{character} corresponding to the classification or regression model
+##' to use for \code{GLM}, \cr
+##' must be \code{glmStepAIC} (see
 ##' \url{http://topepo.github.io/caret/Generalized_Linear_Model.html})
-##' @param GLM.type a \code{vector} of \code{character} corresponding to modeling types for 
-##' \code{GLM}, \cr must be among \code{simple}, \code{quadratic}, \code{polynomial}, 
+##' @param GLM.type a \code{vector} of \code{character} corresponding to modeling types for
+##' \code{GLM}, \cr must be among \code{simple}, \code{quadratic}, \code{polynomial},
 ##' \code{s_smoother}
 ##' @param GLM.interaction a \code{vector} of interaction types, must be among \code{0}, \code{1}
-##' @param MARS.method a \code{character} corresponding to the classification or regression model 
-##' to use for \code{MARS}, \cr 
-##' must be \code{earth} (see 
+##' @param MARS.method a \code{character} corresponding to the classification or regression model
+##' to use for \code{MARS}, \cr
+##' must be \code{earth} (see
 ##' \url{http://topepo.github.io/caret/Multivariate_Adaptive_Regression_Splines.html})
-##' @param ME.metric a \code{character} corresponding to the evaluation metric used to select 
-##' optimal model and tune parameters for \code{MAXENT.Phillips}, must be either 
+##' @param ME.metric a \code{character} corresponding to the evaluation metric used to select
+##' optimal model and tune parameters for \code{MAXENT.Phillips}, must be either
 ##' \code{auc.val.avg}, \code{auc.diff.avg}, \code{or.mtp.avg}, \code{or.10p.avg} or \code{AICc}
-##' @param ME.cvmethod a \code{character} corresponding to the method used to partition data for 
+##' @param ME.cvmethod a \code{character} corresponding to the method used to partition data for
 ##' \code{MAXENT.Phillips}, \cr must be \code{randomkfold}
-##' @param ME.kfolds an \code{integer} corresponding to the number of bins for k-fold 
+##' @param ME.kfolds an \code{integer} corresponding to the number of bins for k-fold
 ##' cross-validation for \code{MAXENT.Phillips}
-##' @param ME.overlap (\emph{optional, default} \code{FALSE}) \cr 
-##' A \code{logical} value defining whether to calculate pairwise metric of niche overlap or not 
+##' @param ME.overlap (\emph{optional, default} \code{FALSE}) \cr
+##' A \code{logical} value defining whether to calculate pairwise metric of niche overlap or not
 ##' (see \code{\link[ENMeval]{calc.niche.overlap}})
-##' @param ME.clamp (\emph{optional, default} \code{TRUE}) \cr 
-##' A \code{logical} value defining whether \emph{Features are constrained to remain within the 
+##' @param ME.clamp (\emph{optional, default} \code{TRUE}) \cr
+##' A \code{logical} value defining whether \emph{Features are constrained to remain within the
 ##' range of values in the training data} (Elith et al. 2011) or not
-##' @param ME.n.bg an \code{integer} corresponding to the number of background points used to run 
+##' @param ME.n.bg an \code{integer} corresponding to the number of background points used to run
 ##' \code{MAXENT.Phillips}
 ##' @param ME.env a \code{RasterStack} object containing model predictor variables
-##' @param ME.parallel (\emph{optional, default} \code{TRUE}) \cr 
-##' A \code{logical} value defining whether to enable parallel computing for 
+##' @param ME.parallel (\emph{optional, default} \code{TRUE}) \cr
+##' A \code{logical} value defining whether to enable parallel computing for
 ##' \code{MAXENT.Phillips} or not
-##' @param ME.numCores an \code{integer} corresponding to the number of cores to be used to 
+##' @param ME.numCores an \code{integer} corresponding to the number of cores to be used to
 ##' train \code{MAXENT.Phillips}
-##' @param RF.method a \code{character} corresponding to the classification or regression model 
-##' to use for \code{RF}, \cr 
+##' @param RF.method a \code{character} corresponding to the classification or regression model
+##' to use for \code{RF}, \cr
 ##' must be \code{rf} (see \url{http://topepo.github.io/caret/Random_Forest.html})
 ##' @param weights a \code{vector} of \code{numeric} values corresponding to observation weights
-##' 
-##' 
-##' @return 
-##' 
-##' A \code{\link{BIOMOD.models.options}} object (see \code{\link{BIOMOD_ModelingOptions}}) with 
+##'
+##'
+##' @return
+##'
+##' A \code{\link{BIOMOD.models.options}} object (see \code{\link{BIOMOD_ModelingOptions}}) with
 ##' optimized parameters
-##' 
-##' 
-##' @details 
-##' 
+##'
+##'
+##' @details
+##'
 ##' \itemize{
 ##'   \item \code{ctrl.train} parameter is set by default to : \cr
 ##'   \code{caret::trainControl(method = 'cv', summaryFunction = caret::twoClassSummary,} \cr
 ##'   \code{classProbs = TRUE, returnData = FALSE)}.
 ##'   \item All control parameters for other models are set to \code{ctrl.train} if unspecified.
-##'   \item For more details on \code{MAXENT.Phillips} tuning, please refer to 
+##'   \item For more details on \code{MAXENT.Phillips} tuning, please refer to
 ##'   \code{\link[ENMeval]{ENMevaluate}}.
 ##'   \item For more details on other models tuning, please refer to \code{\link[caret]{train}}.
 ##' }
-##' 
-##' 
+##'
+##'
 ##' @references
-##' 
+##'
 ##' \itemize{
-##'   \item Kuhn, Max. 2008. Building predictive models in R using the caret package. 
+##'   \item Kuhn, Max. 2008. Building predictive models in R using the caret package.
 ##'   \emph{Journal of Statistical Software} \bold{28}, 1-26.
 ##'   \item Kuhn, Max, and Kjell Johnson. 2013. Applied predictive modeling. New York: Springer.
-##'   \item Muscarella, Robert, et al. 2014. ENMeval: An R package for conducting spatially 
-##'   independent evaluations and estimating optimal model complexity for Maxent ecological 
+##'   \item Muscarella, Robert, et al. 2014. ENMeval: An R package for conducting spatially
+##'   independent evaluations and estimating optimal model complexity for Maxent ecological
 ##'   niche models. \emph{Methods in Ecology and Evolution}, \bold{5}, 1198-1205.
 ##' }
-##' 
-##' 
-##' @seealso \code{\link[caret]{trainControl}}, \code{\link[caret]{train}}, 
-##' \code{\link[ENMeval]{calc.niche.overlap}}, \code{\link[ENMeval]{ENMevaluate}}, 
+##'
+##'
+##' @seealso \code{\link[caret]{trainControl}}, \code{\link[caret]{train}},
+##' \code{\link[ENMeval]{calc.niche.overlap}}, \code{\link[ENMeval]{ENMevaluate}},
 ##' \code{\link{BIOMOD_ModelingOptions}}, \code{\link{BIOMOD_Modeling}}
 ##' @family Main functions
-##' 
-##' 
+##'
+##'
 ##' @examples
-##' 
+##'
 ##' # Load species occurrences (6 species available)
 ##' myFile <- system.file('external/species/mammals_table.csv', package = 'biomod2')
 ##' DataSpecies <- read.csv(myFile, row.names = 1)
 ##' head(DataSpecies)
-##' 
+##'
 ##' # Select the name of the studied species
 ##' myRespName <- 'GuloGulo'
-##' 
+##'
 ##' # Get corresponding presence/absence data
 ##' myResp <- as.numeric(DataSpecies[, myRespName])
-##' 
+##'
 ##' # Get corresponding XY coordinates
 ##' myRespXY <- DataSpecies[, c('X_WGS84', 'Y_WGS84')]
-##' 
+##'
 ##' # Load environmental variables extracted from BIOCLIM (bio_3, bio_4, bio_7, bio_11 & bio_12)
 ##' myFiles <- paste0('external/bioclim/current/bio', c(3, 4, 7, 11, 12), '.grd')
 ##' myExpl <- raster::stack(system.file(myFiles, package = 'biomod2'))
-##' 
-##' 
+##'
+##'
 ##' # ---------------------------------------------------------------
 ##' # Format Data with true absences
 ##' myBiomodData <- BIOMOD_FormatingData(resp.var = myResp,
 ##'                                      expl.var = myExpl,
 ##'                                      resp.xy = myRespXY,
 ##'                                      resp.name = myRespName)
-##' 
-##' 
+##'
+##'
 ##' # ---------------------------------------------------------------
-##' ### Duration for turing all models sequential with default settings 
+##' ### Duration for turing all models sequential with default settings
 ##' ### on 3.4 GHz processor: approx. 45 min tuning all models in parallel
 ##' ### (on 8 cores) using foreach loops runs much faster: approx. 14 min
-##' 
+##'
 ##' # library(doParallel)
 ##' # cl <- makeCluster(8)
-##' # doParallel::registerDoParallel(cl) 
-##' 
+##' # doParallel::registerDoParallel(cl)
+##'
 ##' time.seq <- system.time(
 ##'   bm.tuning <- BIOMOD_Tuning(bm.format = myBiomodData, ME.env = myExpl, ME.n.bg = ncell(myExpl))
 ##' )
-##' 
+##'
 ##' # stopCluster(cl)
-##' 
+##'
 ##' plot(bm.tuning$tune.CTA.rpart)
 ##' plot(bm.tuning$tune.CTA.rpart2)
 ##' plot(bm.tuning$tune.RF)
@@ -169,23 +169,23 @@
 ##' plot(bm.tuning$tune.FDA)
 ##' plot(bm.tuning$tune.GBM)
 ##' plot(bm.tuning$tune.GAM)
-##' 
-##' 
+##'
+##'
 ##' # Get tuned modeling options
 ##' myBiomodOptions <- bm.tuning$models.options
-##' 
-##' 
+##'
+##'
 ##' @importFrom foreach foreach
 ##' @importFrom caret trainControl train twoClassSummary
 ##' @importFrom dismo kfold
 ##' @importFrom PresenceAbsence optimal.thresholds presence.absence.accuracy
 ##' @importFrom ENMeval ENMevaluate
-##' @importFrom stats aggregate as.formula binomial complete.cases cor formula glm 
+##' @importFrom stats aggregate as.formula binomial complete.cases cor formula glm
 ##' median na.exclude na.omit qt quantile sd
-##' 
-##' 
+##'
+##'
 ##' @export
-##' 
+##'
 ###################################################################################################
 
 
@@ -201,7 +201,7 @@ BIOMOD_Tuning <- function(bm.format,
                           ctrl.GAM = NULL,
                           ctrl.GBM = NULL,
                           ctrl.GLM = NULL,
-                          ctrl.MARS = NULL,                                  
+                          ctrl.MARS = NULL,
                           ctrl.RF = NULL,
                           ANN.method = 'avNNet',
                           ANN.decay.tune = c(0.001, 0.01, 0.05, 0.1),
@@ -211,7 +211,7 @@ BIOMOD_Tuning <- function(bm.format,
                           MARS.method = 'earth',
                           GAM.method = 'gam',
                           GLM.method = 'glmStepAIC',
-                          GLM.type = c('simple', 'quadratic', 'polynomial', 's_smoother'), 
+                          GLM.type = c('simple', 'quadratic', 'polynomial', 's_smoother'),
                           GLM.interaction = c(0, 1),
                           ME.cvmethod = 'randomkfold',
                           ME.overlap = FALSE,
@@ -226,7 +226,7 @@ BIOMOD_Tuning <- function(bm.format,
                           weights = NULL)
 {
   .bm_cat("Tune Modeling Options")
-  
+
   ## MAXENT: http://cran.r-project.org/web/packages/ENMeval/ENMeval.pdf --> ENMevaluate()
   ## or:    http://cran.r-project.org/web/packages/maxent/maxent.pdf -->  tune.maxent()
 
@@ -250,17 +250,17 @@ BIOMOD_Tuning <- function(bm.format,
   tune.SRE <- tune.GLM <- tune.MAXENT.Phillips <- tune.GAM <- tune.GBM <-
     tune.CTA.rpart <- tune.CTA.rpart2 <- tune.RF <- tune.ANN <- tune.MARS <- tune.FDA <- NULL
   # tune.MAXENT.Tsuruoka <- NULL
-  
+
   resp <- bm.format@data.species
   # if (is.null(weights)) { weights = rep(1, length(bm.format@data.species))}
-  
-  
+
+
   ## 1.1 SRE --------------------------------------------------------------------------------------
-  
+
   if ('SRE' %in% models)
   {
     cat(paste("\n-=-=-=-=-=-=-=-=-=-=\n", "Start tuning SRE\n"))
-    
+
     tune.SRE = foreach(rep = 1:ctrl.train$repeats, .combine = "rbind") %do%
       {
         fold <- kfold(resp, by = resp, k = ctrl.train$number)
@@ -274,7 +274,7 @@ BIOMOD_Tuning <- function(bm.format,
                                    new.env = bm.format@data.env.var[fold == i, ],
                                    quant = quant,
                                    do.extrem = FALSE))
-            
+
             RES = presence.absence.accuracy(DATA, threshold = as.vector(
               optimal.thresholds(DATA, opt.methods = 3)[2], mode = "numeric"))
             return(data.frame(RES, quant = quant))
@@ -290,34 +290,34 @@ BIOMOD_Tuning <- function(bm.format,
     }
     cat(paste("Finished tuning SRE", "\n-=-=-=-=-=-=-=-=-=-=\n"))
   }
-  
+
   if(metric.eval == 'ROC' | metric.eval == 'TSS'){ resp <- as.factor(ifelse(resp == 1 & !is.na(resp), "Presence", "Absence")) }
-  
+
   ## 1.2 GBM --------------------------------------------------------------------------------------
 
   if ('GBM' %in% models)
-  {  
+  {
     cat(paste("\n-=-=-=-=-=-=-=-=-=-=\n", "Start coarse tuning GBM\n"))
     if (is.null(ctrl.GBM)) { ctrl.GBM <- ctrl.train }
-    
+
     tune.grid <- expand.grid(.interaction.depth = seq(2, 8, by = 3),
                              .n.trees = c(500, 1000, 2500),
                              .shrinkage = c(0.001, 0.01, 0.1),
                              .n.minobsinnode = 10)
-    try(tune.GBM <- train(bm.format@data.env.var, 
+    try(tune.GBM <- train(bm.format@data.env.var,
                           resp,
                           method = "gbm",
                           tuneGrid = tune.grid,
                           trControl = ctrl.GBM,
                           verbose = FALSE,
                           weights = weights))
-    
+
     cat("Best optimization of coarse tuning:\n")
     cat(paste(tune.GBM$bestTune, collapse = ' / '), "\n")
-    
+
     if (!is.null(tune.GBM)) {
       cat(" Start fine tuning GBM\n")
-      
+
       if (tune.GBM$bestTune$n.trees == 2500) {
         cat("Best optimization with large trees! Tuning GBM will take a while.\n")
         n.trees <- seq(2500, 10000, by = 2500)
@@ -336,13 +336,13 @@ BIOMOD_Tuning <- function(bm.format,
                                               tune.GBM$bestTune$shrinkage * 5),
                                .n.minobsinnode = 10)
       tune.GBM <- NULL
-      try(tune.GBM <- train(bm.format@data.env.var, 
+      try(tune.GBM <- train(bm.format@data.env.var,
                             resp,
                             method = "gbm",
                             tuneGrid = tune.grid,
                             trControl = ctrl.GBM,
                             verbose = FALSE,
-                            weights = weights))  
+                            weights = weights))
     }
 
     if (!is.null(tune.GBM)) {
@@ -370,15 +370,15 @@ BIOMOD_Tuning <- function(bm.format,
     cat(paste("\n-=-=-=-=-=-=-=-=-=-=\n", "Start tuning RF\n"))
     if (is.null(ctrl.RF)) { ctrl.RF <- ctrl.train }
     tuneLength.rf <- min(ctrl.train.tuneLength, ncol(bm.format@data.env.var))
-    
-    try(tune.RF <- train(bm.format@data.env.var, 
+
+    try(tune.RF <- train(bm.format@data.env.var,
                          resp,
                          method = RF.method,
                          tuneLength = tuneLength.rf,
                          trControl = ctrl.RF,
                          metric = metric.eval,
                          weights = weights))
-    
+
     if (!is.null(tune.RF)) { ## give both mtry as bestTune
       if (metric.eval == 'TSS') {
         bm.options@RF$mtry <- tune.RF$results[which.max(apply(tune.RF$results[, c("Sens", "Spec")], 1, sum) - 1), "mtry"]
@@ -398,7 +398,7 @@ BIOMOD_Tuning <- function(bm.format,
   {
     cat(paste("\n-=-=-=-=-=-=-=-=-=-=\n", "Start tuning ANN\n"))
     if (is.null(ctrl.ANN)) { ctrl.ANN <- ctrl.train }
-    ## already tuning: 
+    ## already tuning:
     # size: optimised by cross validation based on model AUC (NbCv cross validation; tested size will be the following c(2,4,6, 8))
     # decay: optimised by cross validation on model AUC (NbCv cross validation; tested decay will be the following c(0.001, 0.01, 0.05, 0.1)).
     # could increase maxit from 200 to 500
@@ -408,8 +408,8 @@ BIOMOD_Tuning <- function(bm.format,
     tune.grid <- expand.grid(.decay = ANN.decay.tune,
                              .size = ANN.size.tune,
                              .bag = FALSE)
-    try(tune.ANN <- train(bm.format@data.env.var, 
-                          resp, 
+    try(tune.ANN <- train(bm.format@data.env.var,
+                          resp,
                           method = ANN.method,
                           tuneGrid = tune.grid,
                           trControl = ctrl.ANN,
@@ -445,9 +445,9 @@ BIOMOD_Tuning <- function(bm.format,
   {
     cat(paste("\n-=-=-=-=-=-=-=-=-=-=\n", "Start tuning GAM\n"))
     if (is.null(ctrl.GAM)) { ctrl.GAM <- ctrl.train }
-    
-    try(tune.GAM <- train(bm.format@data.env.var, 
-                          resp, 
+
+    try(tune.GAM <- train(bm.format@data.env.var,
+                          resp,
                           method = GAM.method,
                           trControl = ctrl.GAM,
                           weights = weights))
@@ -480,13 +480,13 @@ BIOMOD_Tuning <- function(bm.format,
     }
 
     tune.grid <- expand.grid(.degree = 1:2, .nprune = nprune)
-    try(tune.MARS <- train(bm.format@data.env.var, 
-                           resp, 
+    try(tune.MARS <- train(bm.format@data.env.var,
+                           resp,
                            method = MARS.method,
                            tuneGrid = tune.grid,
                            trControl = ctrl.MARS,
                            weights = weights))
-    
+
     if (!is.null(tune.MARS)) {
       if (metric.eval == 'TSS') {
         tmp = which.max(apply(tune.MARS$results[, c("Sens", "Spec")], 1, sum) - 1)
@@ -518,7 +518,7 @@ BIOMOD_Tuning <- function(bm.format,
     cat(paste("\n-=-=-=-=-=-=-=-=-=-=\n", "Start tuning GLM\n"))
     if (is.null(ctrl.GLM)) { ctrl.GLM <- ctrl.train }
     if ("s_smoother" %in% GLM.type) { requireNamespace("gam", quietly = TRUE) }
-    
+
     fm <- list()
     GLM.results = foreach (type = GLM.type, .combine = "rbind") %:%
       foreach (IA = GLM.interaction, .combine = "rbind") %do%
@@ -536,31 +536,31 @@ BIOMOD_Tuning <- function(bm.format,
         return(RES)
       }
     tune.GLM <- GLM.results
-    
+
     glm.best <- which.max(GLM.results$ROC)
     bm.options@GLM$interaction.level <- GLM.results[glm.best, "il"]
     bm.options@GLM$type <- as.character(GLM.results[glm.best, "type"])
     bm.options@GLM$myFormula <- formula(paste(bm.format@sp.name, "~", gsub("`", "", as.character(fm[[glm.best]])[3])))
-    bm.options@GLM$test <- "none" 
-    
+    bm.options@GLM$test <- "none"
+
     cat(paste("Finished tuning GLM", "\n-=-=-=-=-=-=-=-=-=-=\n"))
-  }      
-  
+  }
+
   ## 1.8 FDA --------------------------------------------------------------------------------------
 
   if ('FDA' %in% models)
   {
     cat(paste("\n-=-=-=-=-=-=-=-=-=-=\n", "Start tuning FDA\n"))
     if (is.null(ctrl.FDA)) { ctrl.FDA <- ctrl.train }
-    
+
     tune.grid <- expand.grid(.degree = 1:2, .nprune = 2:38)
-    try(tune.FDA <- train(bm.format@data.env.var, 
-                          factor(resp), 
+    try(tune.FDA <- train(bm.format@data.env.var,
+                          factor(resp),
                           method = "fda",
-                          tuneGrid = tune.grid,                  
+                          tuneGrid = tune.grid,
                           trControl = ctrl.FDA,
                           weights = weights))
-    
+
     if (!is.null(tune.FDA)) {
       if (metric.eval == 'TSS') {
         tmp = which.max(apply(tune.FDA$results[, c("Sens", "Spec")], 1, sum) - 1)
@@ -583,25 +583,25 @@ BIOMOD_Tuning <- function(bm.format,
   {
     cat(paste("\n-=-=-=-=-=-=-=-=-=-=\n", "Start tuning CTA\n"))
     if (is.null(ctrl.CTA)) { ctrl.CTA <- ctrl.train }
-    
-    cat("Tuning Complexity Parameter")    
-    try(tune.CTA.rpart <- train(bm.format@data.env.var, 
-                                resp, 
+
+    cat("Tuning Complexity Parameter")
+    try(tune.CTA.rpart <- train(bm.format@data.env.var,
+                                resp,
                                 method = "rpart",
                                 tuneLength = ctrl.train.tuneLength,
                                 trControl = ctrl.CTA,
                                 metric = metric.eval,
                                 weights = weights))
-    
+
     cat("Tuning Max Tree Depth")
-    try(tune.CTA.rpart2 <-  train(bm.format@data.env.var, 
+    try(tune.CTA.rpart2 <-  train(bm.format@data.env.var,
                                   resp,
                                   method = "rpart2",
                                   tuneLength = ctrl.train.tuneLength,
                                   trControl = ctrl.CTA,
                                   metric = metric.eval,
                                   weights = weights))
-    
+
     if (!is.null(tune.CTA.rpart)) {
       if (metric.eval == 'TSS') {
         tmp = which.max(apply(tune.CTA.rpart$results[, c("Sens", "Spec")], 1, sum) - 1)
@@ -634,16 +634,16 @@ BIOMOD_Tuning <- function(bm.format,
   {
     cat(paste("\n-=-=-=-=-=-=-=-=-=-=\n", "Start tuning MAXENT.Phillips\n"))
     if (ME.cvmethod != 'randomkfold') { ME.kfolds <- NA }
-    
+
     try(tune.MAXENT.Phillips <- .maxent_tuning(pres = bm.format@data.env.var[bm.format@data.species == 1 & !is.na(bm.format@data.species), ],
                                                bg = bm.format@data.env.var[bm.format@data.species == 0 | is.na(bm.format@data.species), ],
-                                               method = ME.cvmethod, 
+                                               method = ME.cvmethod,
                                                kfolds = ME.kfolds, #ME.env,
-                                               clamp = ME.clamp, 
-                                               parallel = ME.parallel, 
+                                               clamp = ME.clamp,
+                                               parallel = ME.parallel,
                                                numCores = ME.numCores,
                                                categoricals = NULL))
-    
+
     if (!is.null(tune.MAXENT.Phillips)) {
       if (!ME.metric %in% c("auc.val.avg", "auc.diff.avg", "or.mtp.avg", "or.10p.avg", "AICc")) {
         ME.metric <- "auc.val.avg"
@@ -679,13 +679,13 @@ BIOMOD_Tuning <- function(bm.format,
   #     bm.options@MAXENT.Tsuruoka$use_sgd <- ifelse(tune.MAXENT.Tsuruoka[which.max(tune.MAXENT.Tsuruoka$accuracy),]$use_sgd==0,F,T)
   #     bm.options@MAXENT.Tsuruoka$set_heldout <- tune.MAXENT.Tsuruoka$set_heldout[which.max(tune.MAXENT.Tsuruoka$accuracy)]
   #   } else { if('MAXENT.Tsuruoka' %in% models){cat("Tuning MAXENT.Tsuruoka failed!"); tune.MAXENT.Tsuruoka <- "FAILED"}}
-  # }  
-  
+  # }
+
   .bm_cat("Done")
   return(list(models.options = bm.options, tune.SRE = tune.SRE,  tune.CTA.rpart = tune.CTA.rpart, tune.CTA.rpart2 = tune.CTA.rpart2,
               tune.RF = tune.RF, tune.ANN = tune.ANN,  tune.MARS = tune.MARS, tune.FDA = tune.FDA, tune.GBM = tune.GBM,
               tune.GAM = tune.GAM, tune.GLM = tune.GLM, tune.MAXENT.Phillips = tune.MAXENT.Phillips))
-  # tune.MAXENT.Tsuruoka = tune.MAXENT.Tsuruoka, 
+  # tune.MAXENT.Tsuruoka = tune.MAXENT.Tsuruoka,
 }
 
 
@@ -713,8 +713,3 @@ BIOMOD_Tuning <- function(bm.format,
                          numCores = numCores)
   return(results)
 }
-
-#' @rdname BIOMOD_Tuning
-#' @aliases BIOMOD_Tuning
-#' @export
-BIOMOD_tuning <- BIOMOD_Tuning ## necessary for backwards compatibility with ecospat (it looks for `BIOMOD_tuning`)
