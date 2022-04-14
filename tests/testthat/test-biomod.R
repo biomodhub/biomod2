@@ -4,6 +4,9 @@ library(rlang)
 # library(biomod2)
 devtools::load_all(".")
 
+# test with binary respone variable?
+binaryResp <- TRUE
+
 # species occurrences
 species.dat <-
   read_csv(
@@ -17,6 +20,12 @@ resp.name <- 'GuloGulo'
 
 # the presence/absences data for our species
 resp.var <- species.dat %>% pull(resp.name)
+
+if (!binaryResp) {
+  resp.var[resp.var == 1] <- round(rnorm(sum(resp.var == 1), mean = 0.2, sd = 0.1), 2)
+  resp.var[resp.var > 1] <- 1
+  resp.var[resp.var < 0] <- 0
+}
 
 # the XY coordinates of species data
 resp.xy <- species.dat %>% select_at(c('X_WGS84', 'Y_WGS84'))
@@ -35,6 +44,7 @@ expl.var <-
 # 1. Formatting Data
 bm.formdat <-
   BIOMOD_FormatingData(
+    binaryResp = binaryResp,
     resp.var = resp.var,
     expl.var = expl.var,
     resp.xy = resp.xy,
@@ -45,16 +55,28 @@ bm.formdat <-
 bm.opt <- BIOMOD_ModelingOptions()
 
 # 3. Doing Modelisation
+if (binaryResp) {
+  bm.opt <- BIOMOD_ModelingOptions()
+  models <- c('SRE','RF', "CTA", 'MAXENT.Phillips.2')
+  metric.eval <- c('TSS','ROC')
+} else {
+  metric.eval <- c("R2", "RMSE")
+  models <- c("GLM", "RF", "MARS", "GAM")
+  bm.opt <- BIOMOD_ModelingOptions(RF = list(do.classif = FALSE),
+                                   GAM = list(k = 3),
+                                   MARS = list(glm = list(family = binomial), interaction.level = 1))
+}
+
 bm.mod <-
   BIOMOD_Modeling(
     bm.formdat,
     modeling.id = "test",
-    models = c('SRE','RF', 'MAXENT.Phillips.2'),
+    models = models,
     bm.options = bm.opt,
     nb.rep = 2,
     data.split.perc = 80,
     var.import = 0,
-    metric.eval = c('TSS','ROC'),
+    metric.eval = metric.eval,
     do.full.models = FALSE,
   )
 
@@ -62,18 +84,39 @@ bm.mod <-
 bm.mod
 
 # 4.1 Projection on current environmental conditions
-
+if (binaryResp) {
+  metric.binary <- 'TSS'
+} else {
+  metric.binary <- NULL
+}
 bm.proj <-
   BIOMOD_Projection(
     bm.mod = bm.mod,
     new.env = expl.var,
     proj.name = 'current',
     models.chosen = 'all',
-    metric.binary = 'TSS',
+    metric.binary = metric.binary,
     compress = FALSE,
     build.clamping.mask = FALSE
   )
 
+if (!binaryResp) {
+  metric.eval <- "R2"
+}
+
+
+metric.select.thresh <- rep(0.3, length(metric.eval))
+
+bm.ensemb <- BIOMOD_EnsembleModeling(bm.mod,
+                                     em.by = "all",
+                                     metric.select = metric.eval,
+                                     metric.select.thresh = metric.select.thresh,
+                                     metric.eval = metric.eval)
+
+
+bm.ensembProj <- BIOMOD_EnsembleForecasting(bm.em = bm.ensemb,
+                                            bm.proj = bm.proj)
+plot(bm.ensembProj)
 
 # bm.maxent.mod.list <-
 #   BIOMOD_LoadModels(bm.mod, models='MAXENT.Phillips.2')
