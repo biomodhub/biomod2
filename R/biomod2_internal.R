@@ -247,7 +247,7 @@ check_data_range <- function(model, new_data)
   do_check <- args$do_check
   if (is.null(do_check)) { do_check <- TRUE }
   if (do_check) { newdata <- check_data_range(model = object, new_data = newdata) }
-  
+
   ## Special case for MAXENT.Phillips
   do_raster = FALSE
   newraster = NULL
@@ -258,7 +258,7 @@ check_data_range <- function(model, new_data)
     newraster[cellFromXY(newraster, newdata[, 1:2])] = 1
     do_raster = TRUE
   }
-  
+
   if (inherits(newdata, 'Raster')) {
     eval(parse(text = paste0("res = .predict.", mod, "_biomod2_model.RasterStack(object, newdata, ...)")))
     return(res)
@@ -363,7 +363,7 @@ check_data_range <- function(model, new_data)
   args <- list(...)
   namefile <- args$namefile
   on_0_1000 <- args$on_0_1000
-  
+
   if (is.null(namefile)) { namefile <- "" }
   if (is.null(on_0_1000)) { on_0_1000 <- FALSE }
 
@@ -417,7 +417,7 @@ check_data_range <- function(model, new_data)
     step.list[[vname]] <- junk
     i <- i + 1
   }
-  
+
   return(step.list)
 }
 
@@ -428,7 +428,7 @@ check_data_range <- function(model, new_data)
   while (i <= dim(enviroTrain)[2])
   {
     vname <- names(enviroTrain)[i]
-    
+
     if (mod %in% c("NNET", "FDA", "GLMs", "CTA", "GBM")) {
       junk <- vname
     } else if (mod == "GLMq") {
@@ -447,7 +447,7 @@ check_data_range <- function(model, new_data)
     junk2 <- c(junk2, junk)
     i <- i + 1
   }
-  
+
   junk2 <- eval(parse(text = paste("~", paste(junk2, collapse = "+"))))
   return(junk2)
 }
@@ -461,28 +461,28 @@ check_data_range <- function(model, new_data)
   args <- list(...)
   prevalence <- args$prevalence
   weights <- args$weights
-  
+
   ## if no weights given, some are created to rise the define prevalence ------
   if (is.null(weights) && ! is.null(prevalence)) {
     nbPres <- sum(ref, na.rm = TRUE)
     nbAbs <- length(ref) - nbPres
     weights <- rep(1, length(ref))
-    
+
     if (nbAbs > nbPres) { # code absences as 1
       weights[which(ref > 0)] <- (prevalence * nbAbs) / (nbPres * (1 - prevalence))
     } else { # code presences as 1
       weights[which(ref == 0 | is.na(ref))] <- (nbPres * (1 - prevalence)) / (prevalence * nbAbs)
     }
     weights = round(weights[]) # to remove glm & gam warnings
-    
+
   } else if (is.null(weights)) { ## only 1 weights vector ---------------------
     weights <- rep(1, length(ref))
   }
-  
+
   ## define a glm to scale predictions from 0 to 1 ----------------------------
   scaling_model <- glm(ref ~ pred, data = data.frame(ref = as.numeric(ref), pred = as.numeric(dataToRescale))
                        , family = binomial(link = probit), x = TRUE, weights = weights)
-  
+
   return(scaling_model)
 }
 
@@ -496,13 +496,13 @@ check_data_range <- function(model, new_data)
   if (!is.character(info) | length(info) != 1 | !(info %in% c('species', 'data.set', 'models', 'run.eval'))) {
     stop("info must be 'species', 'data.set', 'models' or 'run.eval'")
   }
-  
+
   info.tmp <- as.data.frame(strsplit(model.names, "_"))
-  
+
   return(switch(info,
-                species = paste(unique(unlist(info.tmp[-c(nrow(info.tmp), nrow(info.tmp) - 1,  nrow(info.tmp) - 2), ])), collapse = "_"), 
-                data.set = paste(unique(unlist(info.tmp[(nrow(info.tmp) - 2), ]))), 
-                run.eval = paste(unique(unlist(info.tmp[(nrow(info.tmp) - 1), ]))), 
+                species = paste(unique(unlist(info.tmp[-c(nrow(info.tmp), nrow(info.tmp) - 1,  nrow(info.tmp) - 2), ])), collapse = "_"),
+                data.set = paste(unique(unlist(info.tmp[(nrow(info.tmp) - 2), ]))),
+                run.eval = paste(unique(unlist(info.tmp[(nrow(info.tmp) - 1), ]))),
                 models = paste(unique(unlist(info.tmp[(nrow(info.tmp)), ])))
   ))
 }
@@ -558,7 +558,7 @@ check_data_range <- function(model, new_data)
   if (!is.null(extra.args$multiple.plot)) {
     multiple.plot <- extra.args$multiple.plot
   }
-  
+
   .fun_testIfIn(TRUE, "color.gradient", color.gradient, c('grey', 'red', 'blue'))
   if (ncol(XY) != 2) { stop("\n wrong coordinates given in 'XY': there should be two columns \n") }
   if (nrow(XY) != length(data.in)) { stop("\n data and coordinates should be of the same length \n") }
@@ -566,7 +566,7 @@ check_data_range <- function(model, new_data)
     cat("\n not possible to render SRC plot -> more than four different values in data ")
     SRC <- FALSE
   }
-  
+
   if (SRC == TRUE) {
     color.system <- c("red", "lightgreen", "grey", "darkgreen")
     col_id <- data.in + 3
@@ -587,14 +587,14 @@ check_data_range <- function(model, new_data)
                                           , rev(rainbow(50, end = 0.08)[seq(1, 50, length.out = 15)]))
                                       , 'brown2')
     )
-    
+
     # define a vector to make correspondence between values and colors
     val_seq <- c(seq(level.range[1], level.range[2], length.out = 101), Inf)
     col_id <- sapply(data.in, function(x) { return(which(x <= val_seq)[1]) })
     title <- "Level plot"
   }
-  
-  
+
+
   ## PLOT points ------------------------------------------------------------------------
   plot(XY[, 2] ~ XY[, 1],
        col = color.system[col_id],
@@ -605,27 +605,27 @@ check_data_range <- function(model, new_data)
        xaxt = 'n',
        yaxt = 'n',
        main = title)
-  
-  if (!show.scale && !is.null(AddPresAbs)) { 
+
+  if (!show.scale && !is.null(AddPresAbs)) {
     ## Add presence/absence if requested by user:
     points(AddPresAbs[AddPresAbs[, 3] == 1, 1:2], col = "black", pch = pchPres, cex = cex2)
     points(AddPresAbs[AddPresAbs[, 3] == 0, 1:2], col = "black", pch = pchAbs, cex = cex2)
-    
+
   } else if (show.scale) {
     if (!multiple.plot) {
       layout(matrix(c(1, 2), nrow = 1), widths = c(5, 1), heights = c(1, 1))
     }
-    
+
     if (!is.null(AddPresAbs)) {
       ## Add presence/absence if requested by user:
       cex2 <- PresAbsSymbol[1]
       pchPres <- PresAbsSymbol[2]
       pchAbs <- PresAbsSymbol[3]
-      
-      points(AddPresAbs[AddPresAbs[, 3] == 1, 1:2], col = "black", pch = pchPres, cex = cex2)
+
+      points(AddPresAbs[AddPresAbs[, 3] > 0, 1:2], col = "black", pch = pchPres, cex = cex2)
       points(AddPresAbs[AddPresAbs[, 3] == 0, 1:2], col = "black", pch = pchAbs, cex = cex2)
     }
-    
+
     ## PLOT -----------------------------------------------------------------------------
     par(mar = c(0.1, 0.1, 0.1, 0.1))
     plot(x = c(-1, 1),
@@ -638,7 +638,7 @@ check_data_range <- function(model, new_data)
             y = c(-2, 2, 2, -2),
             col = "#f5fcba",
             border = NA)
-    
+
     if (SRC) {
       legend(0, 0.8, legend = list(' (1) new', ' (0) stable', '(-1) kept', '(-2) lost'), cex = 1, fill = rev(color.system), bty = 'n')
     } else {
@@ -650,7 +650,7 @@ check_data_range <- function(model, new_data)
       if (level.range[2] != max(data.in)) {
         lmax <- paste0(lmax, " or over")
       }
-      
+
       legend.txt = list(lmax, '', '', '', '',
                         round((3 * level.range[2] + level.range[1]) / 4, digits = 2),
                         '', '', '', '',
@@ -673,45 +673,45 @@ check_data_range <- function(model, new_data)
 {
   .fun_testIfIn(TRUE, "color.gradient", color.gradient, c('grey', 'red', 'blue'))
   if (nrow(coor) != nrow(Data)) { stop("\n data and coordinates should be of the same length \n") }
-  
+
   ## Take off NA data
   Data <- Data[, !is.na(Data[1, ])]
-  
+
   ## FUNCTION plotting color boxes
   pbox <- function(co) {
     plot(x = c(-1, 1), y = c(0, 1), xlim = c(0, 1), ylim = c(0, 1), type = "n", axes = FALSE)
     polygon(x = c(-2,-2, 2, 2), y = c(-2, 2, 2,-2), col = co, border = NA)
   }
-  
+
   ## Calculate the number of windows to open
   NbPlots <- ncol(Data)
   NbWindows <- ceiling(NbPlots / plots.per.window)
   if (NbWindows == 1) { plots.per.window <- NbPlots }
-  
+
   for (W in 1:NbWindows)
   {
-    dev.new() 
-    
+    dev.new()
+
     Wstart <- (W - 1) * plots.per.window + 1
     if (W * plots.per.window > NbPlots) { Wfinal <- NbPlots } else { Wfinal <- W * plots.per.window }
     DataW <- as.data.frame(Data[, Wstart:Wfinal])
     colnames(DataW) <- colnames(Data)[Wstart:Wfinal]
-    
+
     #determine the organisation of the plots on the window
     W.width <- ceiling(sqrt(plots.per.window))
     W.height <- ceiling(plots.per.window / W.width)
-    
+
     #create object for scaling the legend
     legendcex <- 0.64 + 1 / exp(W.height)
-    
+
     #matrix of indexes for ordering the layout
     mat <- c(1,2)
     for (i in 1:(W.width - 1)) { mat <- c(mat, mat[1:2] + 4 * i) }
     mat <- rbind(mat, mat + 2)
     for (i in 1:(W.height - 1)) { mat <- rbind(mat, mat[1:2, ] + W.width * 4 * i) }
-    
+
     layout(mat, widths = rep(c(1, 0.3), W.width), heights = rep(c(0.2, 1), W.height))
-    
+
     par(mar = c(0.1, 0.1, 0.1, 0.1))
     for (i in 1:(Wfinal - Wstart + 1)) {
       pbox("grey98")
@@ -720,7 +720,7 @@ check_data_range <- function(model, new_data)
       .level.plot(DataW[, i], XY = coor, color.gradient = color.gradient, cex = cex, title = ""
                   , AddPresAbs = AddPresAbs, PresAbsSymbol = PresAbsSymbol, multiple.plot = TRUE)
     }
-    
+
     #fill gaps by grey boxes
     if (W.width * W.height - plots.per.window != 0) {
       for (i in 1:((W.width * W.height - plots.per.window) * 4)) { pbox("grey98") }

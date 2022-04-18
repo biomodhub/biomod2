@@ -1,98 +1,98 @@
 ###################################################################################################
 ##' @name BIOMOD_PresenceOnly
 ##' @author Frank Breiner, Maya Gueguen
-##' 
+##'
 ##' @title Evaluate models with presence-only metrics
-##' 
-##' @description This function computes presence-only evaluation metrics (Boyce index and Minimal 
-##' Predicted Area) for \code{\link{BIOMOD.models.out}} or \code{\link{BIOMOD.ensemble.models.out}} 
-##' objects that can be obtained with the \code{\link{BIOMOD_Modeling}} or 
+##'
+##' @description This function computes presence-only evaluation metrics (Boyce index and Minimal
+##' Predicted Area) for \code{\link{BIOMOD.models.out}} or \code{\link{BIOMOD.ensemble.models.out}}
+##' objects that can be obtained with the \code{\link{BIOMOD_Modeling}} or
 ##' \code{\link{BIOMOD_EnsembleModeling}} functions.
-##' 
-##' 
-##' @param bm.mod a \code{\link{BIOMOD.models.out}} object returned by the 
+##'
+##'
+##' @param bm.mod a \code{\link{BIOMOD.models.out}} object returned by the
 ##' \code{\link{BIOMOD_Modeling}} function
-##' @param bm.em a \code{\link{BIOMOD.ensemble.models.out}} object returned by the 
+##' @param bm.em a \code{\link{BIOMOD.ensemble.models.out}} object returned by the
 ##' \code{\link{BIOMOD_EnsembleModeling}} function
-##' @param bg.env (\emph{optional, default} \code{NULL}) \cr 
-##' A \code{matrix} or \code{data.frame} object containing values of environmental variables 
-##' extracted from the background (\emph{if presences are to be compared to background instead of 
+##' @param bg.env (\emph{optional, default} \code{NULL}) \cr
+##' A \code{matrix} or \code{data.frame} object containing values of environmental variables
+##' extracted from the background (\emph{if presences are to be compared to background instead of
 ##' absences or pseudo-absences selected for modeling})
-##' @param perc a \code{numeric} between \code{0} and \code{1} corresponding to the percentage of 
-##' correctly classified presences for Minimal Predicted Area (see 
+##' @param perc a \code{numeric} between \code{0} and \code{1} corresponding to the percentage of
+##' correctly classified presences for Minimal Predicted Area (see
 ##' \code{\link[ecospat]{ecospat.mpa}})
-##' @param save.output (\emph{optional, default} \code{TRUE}) \cr 
-##' A \code{logical} value defining whether the output is to be saved within the 
+##' @param save.output (\emph{optional, default} \code{TRUE}) \cr
+##' A \code{logical} value defining whether the output is to be saved within the
 ##' \code{.BIOMOD_DATA} folder or not
-##' 
-##' 
-##' @return 
-##' 
-##' A \code{data.frame} containing evaluation scores both for the evaluation metrics used in the 
+##'
+##'
+##' @return
+##'
+##' A \code{data.frame} containing evaluation scores both for the evaluation metrics used in the
 ##' \code{\link{BIOMOD_Modeling}} function and additional Boyce index and Minimal Predicted Area.
-##' 
-##' 
+##'
+##'
 ##' @details
-##' 
-##' \code{em.by} parameter of \code{\link{BIOMOD_EnsembleModeling}} must have been set to 
-##' \code{PA_dataset+repet} in order to have an ensemble for each \emph{RUN} of the 
-##' \code{NbRunEval} parameter of the \code{\link{BIOMOD_Modeling}} function for evaluation. 
+##'
+##' \code{em.by} parameter of \code{\link{BIOMOD_EnsembleModeling}} must have been set to
+##' \code{PA_dataset+repet} in order to have an ensemble for each \emph{RUN} of the
+##' \code{NbRunEval} parameter of the \code{\link{BIOMOD_Modeling}} function for evaluation.
 ##' \cr \cr
-##' 
-##' The Boyce index returns \code{NA} values for \code{SRE} models because it can not be 
-##' calculated with binary predictions. \cr This is also the reason why some \code{NA} values 
+##'
+##' The Boyce index returns \code{NA} values for \code{SRE} models because it can not be
+##' calculated with binary predictions. \cr This is also the reason why some \code{NA} values
 ##' might appear for \code{GLM} models if they do not converge.
-##' 
-##' 
+##'
+##'
 ##' @references
-##' 
+##'
 ##' \itemize{
-##'   \item Engler, R., Guisan, A., and Rechsteiner L. 2004. An improved approach for predicting 
-##'   the distribution of rare and endangered species from occurrence and pseudo-absence data. 
+##'   \item Engler, R., Guisan, A., and Rechsteiner L. 2004. An improved approach for predicting
+##'   the distribution of rare and endangered species from occurrence and pseudo-absence data.
 ##'   \emph{Journal of Applied Ecology}, \bold{41(2)}, 263-274.
-##'   \item Hirzel, A. H., Le Lay, G., Helfer, V., Randin, C., and Guisan, A. 2006. Evaluating 
-##'   the ability of habitat suitability models to predict species presences. \emph{Ecological 
+##'   \item Hirzel, A. H., Le Lay, G., Helfer, V., Randin, C., and Guisan, A. 2006. Evaluating
+##'   the ability of habitat suitability models to predict species presences. \emph{Ecological
 ##'   Modelling}, \bold{199(2)}, 142-152.
 ##' }
-##' 
-##' 
-##' @seealso \code{\link[ecospat]{ecospat.boyce}}, \code{\link[ecospat]{ecospat.mpa}}, 
-##' \code{\link{BIOMOD.models.out}}, \code{\link{BIOMOD_Modeling}}, 
+##'
+##'
+##' @seealso \code{\link[ecospat]{ecospat.boyce}}, \code{\link[ecospat]{ecospat.mpa}},
+##' \code{\link{BIOMOD.models.out}}, \code{\link{BIOMOD_Modeling}},
 ##' \code{\link{BIOMOD.ensemble.models.out}}, \code{\link{BIOMOD_EnsembleModeling}}
 ##' @family Main functions
-##' 
-##' 
+##'
+##'
 ##' @examples
-##' 
+##'
 ##' # Load species occurrences (6 species available)
 ##' myFile <- system.file('external/species/mammals_table.csv', package = 'biomod2')
 ##' DataSpecies <- read.csv(myFile, row.names = 1)
 ##' head(DataSpecies)
-##' 
+##'
 ##' # Select the name of the studied species
 ##' myRespName <- 'GuloGulo'
-##' 
+##'
 ##' # Get corresponding presence/absence data
 ##' myResp <- as.numeric(DataSpecies[, myRespName])
-##' 
+##'
 ##' # Get corresponding XY coordinates
 ##' myRespXY <- DataSpecies[, c('X_WGS84', 'Y_WGS84')]
-##' 
+##'
 ##' # Load environmental variables extracted from BIOCLIM (bio_3, bio_4, bio_7, bio_11 & bio_12)
 ##' myFiles <- paste0('external/bioclim/current/bio', c(3, 4, 7, 11, 12), '.grd')
 ##' myExpl <- raster::stack(system.file(myFiles, package = 'biomod2'))
-##' 
-##' 
+##'
+##'
 ##' # ---------------------------------------------------------------
 ##' # Format Data with true absences
 ##' myBiomodData <- BIOMOD_FormatingData(resp.var = myResp,
 ##'                                      expl.var = myExpl,
 ##'                                      resp.xy = myRespXY,
 ##'                                      resp.name = myRespName)
-##' 
+##'
 ##' # Create default modeling options
 ##' myBiomodOptions <- BIOMOD_ModelingOptions()
-##' 
+##'
 ##' # Model single models
 ##' myBiomodModelOut <- BIOMOD_Modeling(bm.format = myBiomodData,
 ##'                                     modeling.id = 'AllModels',
@@ -102,7 +102,7 @@
 ##'                                     metric.eval = c('TSS','ROC'),
 ##'                                     var.import = 3,
 ##'                                     do.full.models = FALSE)
-##' 
+##'
 ##' # Model ensemble models
 ##' myBiomodEM <- BIOMOD_EnsembleModeling(bm.mod = myBiomodModelOut,
 ##'                                       models.chosen = 'all',
@@ -119,39 +119,39 @@
 ##'                                       committee.averaging = TRUE,
 ##'                                       prob.mean.weight = TRUE,
 ##'                                       prob.mean.weight.decay = 'proportional')
-##' 
-##' 
+##'
+##'
 ##' # ---------------------------------------------------------------
 ##' # Evaluate models with Boyce index and MPA
 ##' myBiomodPO <- BIOMOD_PresenceOnly(bm.mod = myBiomodModelOut,
 ##'                                   bm.em = myBiomodEM)
 ##' myBiomodPO$eval
-##' 
+##'
 ##' # Evaluate models with Boyce index and MPA (using background data)
 ##' myBiomodPO <- BIOMOD_PresenceOnly(bm.mod = myBiomodModelOut,
-##'                                   bm.em = myBiomodEM, 
+##'                                   bm.em = myBiomodEM,
 ##'                                   bg.env = getValues(myExpl))
 ##' myBiomodPO$eval
-##' 
-##' 
-## @importFrom ecospat ecospat.boyce ecospat.mpa
+##'
+##'
+##' @importFrom ecospat ecospat.boyce ecospat.mpa
 ##' @importFrom PresenceAbsence presence.absence.accuracy
-##' 
+##'
 ##' @export
-##' 
-##' 
+##'
+##'
 ###################################################################################################
 
 
-BIOMOD_PresenceOnly <- function(bm.mod = NULL, 
-                                bm.em = NULL, 
-                                bg.env = NULL, 
-                                perc = 0.9, 
+BIOMOD_PresenceOnly <- function(bm.mod = NULL,
+                                bm.em = NULL,
+                                bg.env = NULL,
+                                perc = 0.9,
                                 save.output = TRUE)
 {
   .bm_cat("Do Presence-Only Evaluation")
   if (!isNamespaceLoaded("ecospat")) { requireNamespace("ecospat") }
-  
+
   ## MODELING OUTPUT ------------------------------------------------------------------------------
   if (!is.null(bm.mod)) {
     ## Get calibration lines and observations
@@ -163,15 +163,15 @@ BIOMOD_PresenceOnly <- function(bm.mod = NULL,
 
     ## Get evaluation scores
     myModelEval <- get_evaluations(bm.mod, as.data.frame = TRUE)
-    myModelEval$Model.name <- sapply(myModelEval$Model.name, function(x) 
+    myModelEval$Model.name <- sapply(myModelEval$Model.name, function(x)
       paste(c(bm.mod@sp.name, strsplit(as.character(x), split = "_")[[1]][3:1]), collapse = "_"))
-    
+
     ## Get predictions on observations
     myModelPred <- get_predictions(bm.mod, as.data.frame = TRUE)
     if (!is.null(bg.env)) {
       myModelPred.sites <- as.data.frame(myModelPred)
       myBiomodProj.eval <- BIOMOD_Projection(bm.mod = bm.mod,
-                                             proj.name = paste(bm.mod@modeling.id, "cv_EF_eval", sep = "_"), 
+                                             proj.name = paste(bm.mod@modeling.id, "cv_EF_eval", sep = "_"),
                                              new.env = bg.env,
                                              build.clamping.mask = FALSE)
       myModelPred <- as.data.frame(myBiomodProj.eval@proj.out@val)
@@ -188,8 +188,8 @@ BIOMOD_PresenceOnly <- function(bm.mod = NULL,
       myModelPred.eval  <- as.data.frame(get(load(paste0(bm.mod@"sp.name", "/.BIOMOD_DATA/"
                                                          , bm.mod@modeling.id
                                                          , "/models.prediction.eval"))))
-      
-      colnames(myModelPred.eval) <- sapply(colnames(myModelPred.eval), function(x) 
+
+      colnames(myModelPred.eval) <- sapply(colnames(myModelPred.eval), function(x)
         paste(c(bm.mod@sp.name, strsplit(as.character(x), split = "[.]")[[1]][3:1]), collapse = "_"))
     }
   } else {
@@ -198,7 +198,7 @@ BIOMOD_PresenceOnly <- function(bm.mod = NULL,
 
   ## ENSEMBLE MODELING OUTPUT ---------------------------------------------------------------------
   if (!is.null(bm.em)) {
-    
+
     ## Get evaluation scores
     myModelEvalEF <- get_evaluations(bm.em, as.data.frame = TRUE)
     myModelEvalEF$Model.name <- paste(bm.mod@sp.name, as.character(myModelEvalEF$Model.name), sep = "_")
@@ -211,24 +211,24 @@ BIOMOD_PresenceOnly <- function(bm.mod = NULL,
         myModelEval[, cc] = as.character(myModelEval[, cc])
       }
     }
-    
+
     ## Get predictions on observations
-    myBiomodProjFF <- get_predictions(bm.em, as.data.frame = TRUE)  
+    myBiomodProjFF <- get_predictions(bm.em, as.data.frame = TRUE)
     if (!is.null(bg.env)) {
       myBiomodProjFF.sites <- as.data.frame(myBiomodProjFF)
       myModelPred.sites <- cbind(myModelPred.sites, myBiomodProjFF.sites)
       myBiomodProjFF <- BIOMOD_EnsembleForecasting(bm.em = bm.em,
                                                    bm.proj = myBiomodProj.eval,
                                                    proj.name = paste(bm.mod@modeling.id, "cv_EF_bg", sep = "_"))
-      myBiomodProjFF <- as.data.frame(myBiomodProjFF@proj.out@val)     
+      myBiomodProjFF <- as.data.frame(myBiomodProjFF@proj.out@val)
     }
     if (!is.null(bm.mod)) { myModelPred <- cbind(myModelPred, myBiomodProjFF) }
-    
+
     ## Get predictions on evaluation data
     if (bm.mod@has.evaluation.data == TRUE) {
       myBiomodProjFF.eval <- get_predictions(bm.em, as.data.frame = TRUE, evaluation = TRUE)
-      myModelPred.eval <- cbind(myModelPred.eval, myBiomodProjFF.eval)      
-    }  
+      myModelPred.eval <- cbind(myModelPred.eval, myBiomodProjFF.eval)
+    }
   }
 
   ## CALCULATE BOYCE & MPA VALUES -----------------------------------------------------------------
@@ -237,7 +237,7 @@ BIOMOD_PresenceOnly <- function(bm.mod = NULL,
   boyce.eval[, c("Testing.data", "Cutoff", "Sensitivity", "Specificity")] <- NA
   mpa.eval$Eval.metric <- "MPA"
   mpa.eval[, c("Testing.data", "Cutoff", "Sensitivity", "Specificity")] <- NA
-  
+
   for (i in 1:nrow(boyce.eval))
   {
     ## Get model informations
@@ -282,14 +282,14 @@ BIOMOD_PresenceOnly <- function(bm.mod = NULL,
     ind.notNA = which(!is.na(Pred))
     ind.b = which(boyce.eval[, 1] == Model.name)
     ind.m = which(mpa.eval[, 1] == Model.name)
-    
+
     ## Compute Boyce and MPA values -------------------------------------------
     if (length(Pred) > 0 && length(ind.notNA) > 0) {
       ## Prepare table to compute evaluation scores
       DATA <- cbind(1:length(Pred), Test, Pred / 1000)
       DATA[is.na(DATA[, 2]), 2] <- 0
       DATA <- DATA[complete.cases(DATA), ]
-      
+
       ## Boyce index
       boy <- ecospat::ecospat.boyce(fit = Pred[ind.notNA], obs = Pred.obs, PEplot = FALSE)
       boyce.eval$Testing.data[ind.b] <- boy$cor
@@ -303,7 +303,7 @@ BIOMOD_PresenceOnly <- function(bm.mod = NULL,
           boyce.eval[ind.b, c("Sensitivity", "Specificity")] < - NA
         }
       } else {
-        boyce.eval[ind.b, c("Cutoff", "Sensitivity", "Specificity")] <- NA 	
+        boyce.eval[ind.b, c("Cutoff", "Sensitivity", "Specificity")] <- NA
       }
 
       ## MPA index
@@ -311,14 +311,14 @@ BIOMOD_PresenceOnly <- function(bm.mod = NULL,
       mpa.eval$Cutoff[ind.m] <- mpa
       EVAL <- presence.absence.accuracy(DATA, threshold = mpa / 1000)
       mpa.eval$Sensitivity[ind.m] <- EVAL$sensitivity
-      mpa.eval$Specificity[ind.m] <- EVAL$specificity  
+      mpa.eval$Specificity[ind.m] <- EVAL$specificity
     }
 
     ## Compute Boyce and MPA values for evaluation data -----------------------
     if (bm.mod@has.evaluation.data == TRUE) {
       myResp.eval <- get(load(bm.mod@formated.input.data@link))@eval.data.species
       Pred.eval <- myModelPred.eval[, Model.name]
-      
+
       boy <- ecospat::ecospat.boyce(fit = Pred.eval, obs = Pred.eval[myResp.eval == 1 & ind.1], PEplot = FALSE)
       boyce.eval[ind.b, "Evaluating.data"] <- boy$cor
       mpa.eval[ind.m,"Evaluating.data"] <- ecospat::ecospat.mpa(Pred.eval[myResp.eval == 1 & ind.1], perc = perc)
@@ -327,16 +327,16 @@ BIOMOD_PresenceOnly <- function(bm.mod = NULL,
   myModelEval[, c("Sensitivity", "Specificity")] <- round(myModelEval[, c("Sensitivity", "Specificity")], 1)
   boyce.eval[, c("Sensitivity", "Specificity")] <- round(boyce.eval[, c("Sensitivity", "Specificity")] * 100, 1)
   mpa.eval[, c("Sensitivity", "Specificity")] <- round(mpa.eval[, c("Sensitivity", "Specificity")] * 100, 1)
-  
+
   ## SAVE OUTPUTS ---------------------------------------------------------------------------------
   output <- rbind(myModelEval, boyce.eval, mpa.eval)
-  
+
   if (save.output) {
     if (!is.null(bm.mod)) { sp <- bm.mod@sp.name }
     if (!is.null(bm.em)) { sp <- bm.em@sp.name }
     save(output, file = paste0(sp, "/.BIOMOD_DATA/", bm.mod@modeling.id, "/presenceonly.evaluation_", sp))
   }
-  
+
   .bm_cat("Done")
   return(output)
 }
