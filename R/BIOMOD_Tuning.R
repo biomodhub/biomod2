@@ -690,7 +690,7 @@ BIOMOD_Tuning <- function(bm.format,
 
 
 ###################################################################################################
-#### Modified tuning function from the ENMeval package to tune MAXENT.Phillips (internal function for BIOMOD_tuning)
+#### Modified tuning function from the ENMeval package to tune MAXENT.Phillips (internal function for BIOMOD_Tuning)
 
 .maxent_tuning <- function(pres,
                            bg,
