@@ -1,146 +1,146 @@
 ###################################################################################################
 ##' @name BIOMOD_Projection
 ##' @author Wilfried Thuiller, Damien Georges
-##' 
+##'
 ##' @title Project a range of calibrated species distribution models onto new environment
-##' 
-##' @description This function allows to project a range of models built with the 
-##' \code{\link{BIOMOD_Modeling}} function onto new environmental data (\emph{which can 
+##'
+##' @description This function allows to project a range of models built with the
+##' \code{\link{BIOMOD_Modeling}} function onto new environmental data (\emph{which can
 ##' represent new areas, resolution or time scales for example}).
-##' 
-##' 
-##' @param bm.mod a \code{\link{BIOMOD.models.out}} object returned by the 
+##'
+##'
+##' @param bm.mod a \code{\link{BIOMOD.models.out}} object returned by the
 ##' \code{\link{BIOMOD_Modeling}} function
-##' @param proj.name a \code{character} corresponding to the name (ID) of the projection set 
+##' @param proj.name a \code{character} corresponding to the name (ID) of the projection set
 ##' (\emph{a new folder will be created within the simulation folder with this name})
-##' @param new.env a \code{matrix}, \code{data.frame} or \code{\link[raster:stack]{RasterStack}} 
-##' object containing the new explanatory variables (in columns or layers, with names matching the 
-##' variables names given to the \code{\link{BIOMOD_FormatingData}} function to build 
+##' @param new.env a \code{matrix}, \code{data.frame} or \code{\link[raster:stack]{RasterStack}}
+##' object containing the new explanatory variables (in columns or layers, with names matching the
+##' variables names given to the \code{\link{BIOMOD_FormatingData}} function to build
 ##' \code{bm.mod}) that will be used to project the species distribution model(s)
-##' @param new.env.xy (\emph{optional, default} \code{NULL}) \cr 
-##' If \code{new.env} is a \code{matrix} or a \code{data.frame}, a 2-columns \code{matrix} or 
-##' \code{data.frame} containing the corresponding \code{X} and \code{Y} coordinates that will be 
+##' @param new.env.xy (\emph{optional, default} \code{NULL}) \cr
+##' If \code{new.env} is a \code{matrix} or a \code{data.frame}, a 2-columns \code{matrix} or
+##' \code{data.frame} containing the corresponding \code{X} and \code{Y} coordinates that will be
 ##' used to project the species distribution model(s)
-##' @param models.chosen a \code{vector} containing model names to be kept, must be either 
-##' \code{all} or a sub-selection of model names that can be obtained with the 
+##' @param models.chosen a \code{vector} containing model names to be kept, must be either
+##' \code{all} or a sub-selection of model names that can be obtained with the
 ##' \code{\link{get_built_models}} function
-##' 
-##' @param metric.binary (\emph{optional, default} \code{NULL}) \cr 
-##' A \code{vector} containing evaluation metric names to be used to transform prediction values 
-##' into binary values based on models evaluation scores obtained with the 
-##' \code{\link{BIOMOD_Modeling}} function. Must be among \code{all} (same evaluation metrics than 
-##' those of \code{bm.mod}) or \code{ROC}, \code{TSS}, \code{KAPPA}, \code{ACCURACY}, 
-##' \code{BIAS}, \code{POD}, \code{FAR}, \code{POFD}, \code{SR}, \code{CSI}, \code{ETS}, 
+##'
+##' @param metric.binary (\emph{optional, default} \code{NULL}) \cr
+##' A \code{vector} containing evaluation metric names to be used to transform prediction values
+##' into binary values based on models evaluation scores obtained with the
+##' \code{\link{BIOMOD_Modeling}} function. Must be among \code{all} (same evaluation metrics than
+##' those of \code{bm.mod}) or \code{ROC}, \code{TSS}, \code{KAPPA}, \code{ACCURACY},
+##' \code{BIAS}, \code{POD}, \code{FAR}, \code{POFD}, \code{SR}, \code{CSI}, \code{ETS},
 ##' \code{HK}, \code{HSS}, \code{OR}, \code{ORSS}, \code{R2} (the last only for continuous data)
-##' @param metric.filter (\emph{optional, default} \code{NULL}) \cr 
-##' A \code{vector} containing evaluation metric names to be used to transform prediction values 
-##' into filtered values based on models evaluation scores obtained with the 
-##' \code{\link{BIOMOD_Modeling}} function. Must be among \code{all} (same evaluation metrics than 
-##' those of \code{bm.mod}) or \code{ROC}, \code{TSS}, \code{KAPPA}, \code{ACCURACY}, 
-##' \code{BIAS}, \code{POD}, \code{FAR}, \code{POFD}, \code{SR}, \code{CSI}, \code{ETS}, 
+##' @param metric.filter (\emph{optional, default} \code{NULL}) \cr
+##' A \code{vector} containing evaluation metric names to be used to transform prediction values
+##' into filtered values based on models evaluation scores obtained with the
+##' \code{\link{BIOMOD_Modeling}} function. Must be among \code{all} (same evaluation metrics than
+##' those of \code{bm.mod}) or \code{ROC}, \code{TSS}, \code{KAPPA}, \code{ACCURACY},
+##' \code{BIAS}, \code{POD}, \code{FAR}, \code{POFD}, \code{SR}, \code{CSI}, \code{ETS},
 ##' \code{HK}, \code{HSS}, \code{OR}, \code{ORSS}, \code{R2} (the last only for continuous data)
-##' 
-##' @param compress (\emph{optional, default} \code{TRUE}) \cr 
-##' A \code{logical} or a \code{character} value defining whether and how objects should be 
-##' compressed when saved on hard drive. Must be either \code{TRUE}, \code{FALSE}, \code{xz} or 
+##'
+##' @param compress (\emph{optional, default} \code{TRUE}) \cr
+##' A \code{logical} or a \code{character} value defining whether and how objects should be
+##' compressed when saved on hard drive. Must be either \code{TRUE}, \code{FALSE}, \code{xz} or
 ##' \code{gzip} (see \href{BIOMOD_Projection.html#details}{Details})
-##' @param build.clamping.mask (\emph{optional, default} \code{TRUE}) \cr 
-##' A \code{logical} value defining whether a clamping mask should be built and saved on hard 
+##' @param build.clamping.mask (\emph{optional, default} \code{TRUE}) \cr
+##' A \code{logical} value defining whether a clamping mask should be built and saved on hard
 ##' drive or not (see \href{BIOMOD_Projection.html#details}{Details}))
-##' 
-##' @param nb.cpu (\emph{optional, default} \code{1}) \cr 
-##' An \code{integer} value corresponding to the number of computing resources to be used to 
+##'
+##' @param nb.cpu (\emph{optional, default} \code{1}) \cr
+##' An \code{integer} value corresponding to the number of computing resources to be used to
 ##' parallelize the single models computation
-##' 
-##' @param \ldots (\emph{optional, see \href{BIOMOD_Projection.html#details}{Details})}) 
-##' 
-##' 
+##'
+##' @param \ldots (\emph{optional, see \href{BIOMOD_Projection.html#details}{Details})})
+##'
+##'
 ##' @return
-##' 
-##' A \code{BIOMOD.projection.out} object containing models projections, or links to saved 
-##' outputs. \cr Models projections are stored out of \R (for memory storage reasons) in 
+##'
+##' A \code{BIOMOD.projection.out} object containing models projections, or links to saved
+##' outputs. \cr Models projections are stored out of \R (for memory storage reasons) in
 ##' \code{proj.name} folder created in the current working directory :
 ##' \enumerate{
-##'   \item the output is a 4-dimensional array if \code{new.env} is a \code{matrix} or a 
+##'   \item the output is a 4-dimensional array if \code{new.env} is a \code{matrix} or a
 ##'   \code{data.frame}
-##'   \item it is a \code{\link[raster:stack]{RasterStack}} if \code{new.env} is a 
-##'   \code{\link[raster:stack]{RasterStack}} (or several \code{\link[raster:stack]{RasterLayer}} 
+##'   \item it is a \code{\link[raster:stack]{RasterStack}} if \code{new.env} is a
+##'   \code{\link[raster:stack]{RasterStack}} (or several \code{\link[raster:stack]{RasterLayer}}
 ##'   objects, if \code{new.env} is too large)
-##'   \item raw projections, as well as binary and filtered projections (if asked), are saved in 
+##'   \item raw projections, as well as binary and filtered projections (if asked), are saved in
 ##'   the \code{proj.name} folder
 ##' }
-##' 
-##' 
-##' @details 
-##' 
-##' If \code{models.chosen = 'all'}, projections are done for all evaluation and pseudo absences 
-##' runs if applicable. \cr These projections may be used later by the 
-##' \code{\link{BIOMOD_EnsembleForecasting}} function. \cr \cr 
-##' 
-##' If \code{build.clamping.mask = TRUE}, a raster file will be saved within the projection folder. 
-##' This mask values will correspond to the number of variables in each pixel that are out of their 
+##'
+##'
+##' @details
+##'
+##' If \code{models.chosen = 'all'}, projections are done for all evaluation and pseudo absences
+##' runs if applicable. \cr These projections may be used later by the
+##' \code{\link{BIOMOD_EnsembleForecasting}} function. \cr \cr
+##'
+##' If \code{build.clamping.mask = TRUE}, a raster file will be saved within the projection folder.
+##' This mask values will correspond to the number of variables in each pixel that are out of their
 ##' calibration / training range, identifying locations where predictions are uncertain. \cr \cr
-##' 
+##'
 ##' \code{...} can take the following values :
 ##' \itemize{
-##   \item{\code{clamping.level} : }{a \code{logical} value defining whether \code{clamping.mask} 
-##   cells with at least one variable out of its calibration range are to be removed from the 
+##   \item{\code{clamping.level} : }{a \code{logical} value defining whether \code{clamping.mask}
+##   cells with at least one variable out of its calibration range are to be removed from the
 ##   projections or not
-##'   \item{\code{omit.na} : }{a \code{logical} value defining whether all not fully referenced 
+##'   \item{\code{omit.na} : }{a \code{logical} value defining whether all not fully referenced
 ##'   environmental points will get \code{NA} as predictions or not}
-##'   \item{\code{on_0_1000} : }{a \code{logical} value defining whether \code{0 - 1} probabilities 
+##'   \item{\code{on_0_1000} : }{a \code{logical} value defining whether \code{0 - 1} probabilities
 ##'   are to be converted to \code{0 - 1000} scale to save memory on backup}
-##'   \item{\code{do.stack} : }{a \code{logical} value defining whether all projections are to be 
-##'   saved as one \code{\link[raster:stack]{RasterStack}} object or several 
-##'   \code{\link[raster:stack]{RasterLayer}} files (\emph{the default if projections are too heavy to 
+##'   \item{\code{do.stack} : }{a \code{logical} value defining whether all projections are to be
+##'   saved as one \code{\link[raster:stack]{RasterStack}} object or several
+##'   \code{\link[raster:stack]{RasterLayer}} files (\emph{the default if projections are too heavy to
 ##'   be all loaded at once in memory})}
-##'   \item{\code{keep.in.memory} : }{a \code{logical} value defining whether all projections are 
+##'   \item{\code{keep.in.memory} : }{a \code{logical} value defining whether all projections are
 ##'   to be kept loaded at once in memory, or only links pointing to hard drive are to be returned}
-##'   \item{\code{output.format} : }{a \code{character} value corresponding to the projections 
-##'   saving format on hard drive, must be either \code{.grd}, \code{.img} or \code{.RData} (the 
+##'   \item{\code{output.format} : }{a \code{character} value corresponding to the projections
+##'   saving format on hard drive, must be either \code{.grd}, \code{.img} or \code{.RData} (the
 ##'   default if \code{new.env} is given as \code{matrix} or \code{data.frame})}
 ##' }
-##' 
-##' 
+##'
+##'
 ##' @keywords models, projection
-##' 
-##' 
-##' @seealso \code{\link{BIOMOD_Modeling}}, \code{\link{BIOMOD_EnsembleModeling}}, 
+##'
+##'
+##' @seealso \code{\link{BIOMOD_Modeling}}, \code{\link{BIOMOD_EnsembleModeling}},
 ##' \code{\link{BIOMOD_RangeSize}}
 ##' @family Main functions
-##' 
-##'   
+##'
+##'
 ##' @examples
-##' 
+##'
 ##' # Load species occurrences (6 species available)
 ##' myFile <- system.file('external/species/mammals_table.csv', package = 'biomod2')
 ##' DataSpecies <- read.csv(myFile, row.names = 1)
 ##' head(DataSpecies)
-##' 
+##'
 ##' # Select the name of the studied species
 ##' myRespName <- 'GuloGulo'
-##' 
+##'
 ##' # Get corresponding presence/absence data
 ##' myResp <- as.numeric(DataSpecies[, myRespName])
-##' 
+##'
 ##' # Get corresponding XY coordinates
 ##' myRespXY <- DataSpecies[, c('X_WGS84', 'Y_WGS84')]
-##' 
+##'
 ##' # Load environmental variables extracted from BIOCLIM (bio_3, bio_4, bio_7, bio_11 & bio_12)
 ##' myFiles <- paste0('external/bioclim/current/bio', c(3, 4, 7, 11, 12), '.grd')
 ##' myExpl <- raster::stack(system.file(myFiles, package = 'biomod2'))
-##' 
-##' 
+##'
+##'
 ##' # ---------------------------------------------------------------
 ##' # Format Data with true absences
 ##' myBiomodData <- BIOMOD_FormatingData(resp.var = myResp,
 ##'                                      expl.var = myExpl,
 ##'                                      resp.xy = myRespXY,
 ##'                                      resp.name = myRespName)
-##' 
+##'
 ##' # Create default modeling options
 ##' myBiomodOptions <- BIOMOD_ModelingOptions()
-##' 
+##'
 ##' # Model single models
 ##' myBiomodModelOut <- BIOMOD_Modeling(bm.format = myBiomodData,
 ##'                                     modeling.id = 'AllModels',
@@ -150,8 +150,8 @@
 ##'                                     metric.eval = c('TSS','ROC'),
 ##'                                     var.import = 3,
 ##'                                     do.full.models = FALSE)
-##' 
-##' 
+##'
+##'
 ##' # ---------------------------------------------------------------
 ##' # Project single models
 ##' myBiomodProj <- BIOMOD_Projection(bm.mod = myBiomodModelOut,
@@ -163,16 +163,16 @@
 ##'                                   build.clamping.mask = TRUE)
 ##' myBiomodProj
 ##' plot(myBiomodProj)
-##' 
-##' 
+##'
+##'
 ##' @importFrom foreach foreach %dopar%
 ## @importFrom doParallel registerDoParallel
 ##' @importFrom raster stack subset nlayers writeRaster rasterOptions canProcessInMemory
 ##' @importFrom abind asub
-##' 
+##'
 ##' @export
-##' 
-##' 
+##'
+##'
 ###################################################################################################
 
 
@@ -189,13 +189,13 @@ BIOMOD_Projection <- function(bm.mod,
                               ...)
 {
   .bm_cat("Do Single Models Projection")
-  
+
   ## 0. Check arguments ---------------------------------------------------------------------------
   args <- .BIOMOD_Projection.check.args(bm.mod, proj.name, new.env, new.env.xy
                                         , models.chosen, metric.binary, metric.filter, compress, ...)
   for (argi in names(args)) { assign(x = argi, value = args[[argi]]) }
   rm(args)
-  
+
   ## 1. Create output object ----------------------------------------------------------------------
   proj_out <- new('BIOMOD.projection.out',
                   proj.name = proj.name,
@@ -211,7 +211,7 @@ BIOMOD_Projection <- function(bm.mod,
   } else {
     proj_out@proj.out <- new('BIOMOD.stored.array')
   }
-  
+
   ## 2. Create simulation directories -------------------------------------------------------------
   nameProj <- paste0("proj_", proj.name)
   nameProjSp <- paste0(nameProj, "_", bm.mod@sp.name)
@@ -221,14 +221,14 @@ BIOMOD_Projection <- function(bm.mod,
     dir.create(file.path(namePath, "individual_projections"),
                showWarnings = FALSE, recursive = TRUE, mode = "777")
   }
-  
+
   ## 3. Define the clamping mask ------------------------------------------------------------------
   if (build.clamping.mask) {
     cat("\n\t> Building clamping mask\n")
     nameMask <- paste0(nameProjSp, "_ClampingMask")
     MinMax <- get_formal_data(bm.mod, 'MinMax')
     assign(x = nameMask, value = .build_clamping_mask(new.env, MinMax))
-    
+
     if (output.format == '.RData') {
       save(list = nameMask,
            file = file.path(namePath, paste0(nameProj, "_ClampingMask", output.format)),
@@ -241,7 +241,7 @@ BIOMOD_Projection <- function(bm.mod,
                   overwrite = TRUE)
     }
   }
-  
+
   ## 4. MAKING PROJECTIONS ------------------------------------------------------------------------
   if (!do.stack) {
     proj <- sapply(models.chosen, function(mod.name)
@@ -252,7 +252,7 @@ BIOMOD_Projection <- function(bm.mod,
                                                                      , ".grd", output.format)))
       return(filename)
     })
-    
+
   } else {
     if (nb.cpu > 1) {
       if (.getOS() != "windows") {
@@ -268,7 +268,7 @@ BIOMOD_Projection <- function(bm.mod,
       filename <- file.path(namePath, "individual_projections"
                             , paste0(nameProj, "_", mod.name, ifelse(output.format == ".RData"
                                                                      , ".grd", output.format)))
-      
+
       BIOMOD_LoadModels(bm.out = bm.mod, full.name = mod.name, as = "mod")
       temp_workdir = NULL
       if (length(grep("MAXENT.Phillips$", mod.name)) == 1) {
@@ -296,7 +296,7 @@ BIOMOD_Projection <- function(bm.mod,
 
   ## save projections
   assign(x = nameProjSp, value = proj)
-  
+
   saved.files <- file.path(namePath, paste0(nameProjSp, output.format))
   if (output.format == '.RData') {
     save(list = nameProjSp, file = saved.files, compress = compress)
@@ -308,14 +308,14 @@ BIOMOD_Projection <- function(bm.mod,
   }
   proj_out@type <- class(proj_out@proj.out@val)
   proj_out@proj.out@link <- saved.files
-  
-  
+
+
   ## 5. Compute binary and/or filtered transformation ---------------------------------------------
   if (!is.null(metric.binary) | !is.null(metric.filter))
   {
     cat("\n")
     eval.meth <- unique(c(metric.binary, metric.filter))
-    
+
     ## Get all evaluation thresholds
     if (inherits(new.env, "Raster")) {
       thresholds <- matrix(0, nrow = length(eval.meth), ncol = length(models.chosen), dimnames = list(eval.meth, models.chosen))
@@ -338,7 +338,7 @@ BIOMOD_Projection <- function(bm.mod,
         }
       }
     }
-    
+
     ## Do binary transformation
     for (eval.meth in metric.binary) {
       cat("\n\t> Building", eval.meth, "binaries")
@@ -358,7 +358,7 @@ BIOMOD_Projection <- function(bm.mod,
         nameBin <- paste0(nameProjSp, "_", eval.meth, "bin")
         assign(x = nameBin, value = bm_BinaryTransformation(proj, asub(thresholds, eval.meth[drop = FALSE]
                                                                        , 1, drop = FALSE)))
-        
+
         if (output.format == '.RData') {
           save(list = nameBin,
                file = file.path(namePath, paste0(nameBin, output.format)),
@@ -372,7 +372,7 @@ BIOMOD_Projection <- function(bm.mod,
         }
       }
     }
-    
+
     ## Do filtered transformation
     for (eval.meth in metric.filter) {
       cat("\n\t> Building", eval.meth, "filtered")
@@ -392,7 +392,7 @@ BIOMOD_Projection <- function(bm.mod,
         nameFilt <- paste0(nameProjSp, "_", eval.meth, "filt")
         assign(x = nameFilt, value = bm_BinaryTransformation(proj, asub(thresholds, eval.meth[drop = FALSE]
                                                                         , 1, drop = FALSE), do.filtering = TRUE))
-        
+
         if (output.format == '.RData') {
           save(list = nameFilt,
                file = file.path(namePath, paste0(nameFilt, output.format)),
@@ -408,14 +408,14 @@ BIOMOD_Projection <- function(bm.mod,
     }
     cat("\n")
   }
-  
+
   ## 6. SAVE MODEL OBJECT ON HARD DRIVE -----------------------------------------------------------
   ## save a copy of output object without value to be lighter
   nameOut <- paste0(bm.mod@sp.name, ".", proj.name, ".projection.out")
   if (!keep.in.memory) { proj_out <- free(proj_out) }
   assign(nameOut, proj_out)
   save(list = nameOut, file = file.path(namePath, nameOut))
-  
+
   .bm_cat("Done")
   return(proj_out)
 }
@@ -426,17 +426,17 @@ BIOMOD_Projection <- function(bm.mod,
                                           models.chosen, metric.binary, metric.filter, compress, ...)
 {
   args <- list(...)
-  
+
   ## 1. Check bm.mod ----------------------------------------------------------
   .fun_testIfInherits(TRUE, "bm.mod", bm.mod, "BIOMOD.models.out")
-  
+
   ## 2. Check proj.name -------------------------------------------------------
   if (is.null(proj.name)) {
     stop("\nYou must define a name for Projection Outputs")
   } else {
     dir.create(paste0(bm.mod@sp.name, '/proj_', proj.name, '/'), showWarnings = FALSE)
   }
-  
+
   ## 3. Check new.env ---------------------------------------------------------
   .fun_testIfInherits(TRUE, "new.env", new.env, c('matrix', 'data.frame', 'RasterStack'))
   if (inherits(new.env, 'RasterStack')) {
@@ -444,7 +444,7 @@ BIOMOD_Projection <- function(bm.mod,
   } else {
     .fun_testIfIn(TRUE, "colnames(new.env)", colnames(new.env), bm.mod@expl.var.names)
   }
-  
+
   ## 4. Check new.env.xy ------------------------------------------------------
   if (!is.null(new.env.xy)  & !inherits(new.env, 'Raster')) {
     new.env.xy = data.matrix(new.env.xy)
@@ -454,7 +454,7 @@ BIOMOD_Projection <- function(bm.mod,
   } else {
     new.env.xy = matrix()
   }
-  
+
   ## 5. Check models.chosen ---------------------------------------------------
   if (models.chosen[1] == 'all') {
     models.chosen <- bm.mod@models.computed
@@ -464,7 +464,7 @@ BIOMOD_Projection <- function(bm.mod,
   if (length(models.chosen) < 1) {
     stop('No models selected')
   }
-  
+
   ## check that given models exist
   files.check <- paste0(bm.mod@sp.name, '/models/', bm.mod@modeling.id, "/", models.chosen)
   not.checked.files <- grep('MAXENT.Phillips|SRE', files.check)
@@ -478,7 +478,7 @@ BIOMOD_Projection <- function(bm.mod,
       stop("Impossible to find any models, might be a problem of working directory")
     }
   }
-  
+
   ## 6. Check metric.binary & metric.filter -----------------------------------
   if (!is.null(metric.binary) | !is.null(metric.filter)) {
     models.evaluation <- get_evaluations(bm.mod)
@@ -493,7 +493,7 @@ BIOMOD_Projection <- function(bm.mod,
                        " Binary Transformation were switched off because no corresponding evaluation method found"))
         metric.binary <- metric.binary[metric.binary %in% available.evaluation]
       }
-      
+
       if (!is.null(metric.filter) && metric.filter[1] == 'all') {
         metric.filter <- available.evaluation
       } else if (!is.null(metric.filter) && sum(!(metric.filter %in% available.evaluation)) > 0) {
@@ -503,12 +503,12 @@ BIOMOD_Projection <- function(bm.mod,
       }
     }
   }
-  
+
   ## 7. Check compress --------------------------------------------------------
   if (compress == 'xz') {
     compress <- ifelse(.Platform$OS.type == 'windows', 'gzip', 'xz')
   }
-  
+
   ## 8. Check do.stack --------------------------------------------------------
   do.stack <- ifelse(is.null(args$do.stack), TRUE, args$do.stack)
   if (!inherits(new.env, 'RasterStack')) {
@@ -518,7 +518,7 @@ BIOMOD_Projection <- function(bm.mod,
     test = canProcessInMemory(subset(new.env, 1), 2 * length(models.chosen) + nlayers(new.env))
     if (!test) { rasterOptions(todisk = TRUE) }
   }
-  
+
   ## 9. Check output.format ---------------------------------------------------
   output.format <- args$output.format # raster output format
   if (!is.null(output.format)) {
@@ -532,8 +532,8 @@ BIOMOD_Projection <- function(bm.mod,
   } else {
     output.format <- ifelse(!inherits(new.env, "Raster"), ".RData", ".grd")
   }
-  
-  
+
+
   return(list(proj.name = proj.name,
               new.env.xy = new.env.xy,
               models.chosen = models.chosen,
@@ -557,7 +557,7 @@ BIOMOD_Projection <- function(bm.mod,
   { ## raster case ------------------------------------------------------------
     env <- stack(env)
     env <- subset(env, names(MinMax))
-    
+
     ## create an empty mask
     clamp.mask <- ref.mask <- subset(env, 1, drop = TRUE)
     clamp.mask[!is.na(clamp.mask[])] <- 0
@@ -565,15 +565,15 @@ BIOMOD_Projection <- function(bm.mod,
 
     for (e.v in names(MinMax)) {
       if (!is.null(MinMax[[e.v]]$min)) { # numeric variable
-        clamp.mask <- clamp.mask + 
+        clamp.mask <- clamp.mask +
           bm_BinaryTransformation(subset(env, e.v, drop = TRUE), MinMax[[e.v]]$max) + ## pix with values outside of calib range
           (ref.mask - bm_BinaryTransformation(subset(env, e.v, drop = TRUE), MinMax[[e.v]]$min)) ## pix with no values (within env[[1]] area)
       } else if (!is.null(MinMax[[e.v]]$levels)) { # factorial variable
-        clamp.mask <- clamp.mask + 
+        clamp.mask <- clamp.mask +
           (subset(env, e.v, drop = TRUE) %in% MinMax[[e.v]]$levels) ## pix with values outside of calib range
       }
     }
-    
+
   } else if (is.data.frame(env) | is.matrix(env) | is.numeric(env))
   { ## matrix and data.frame case ---------------------------------------------
     env <- as.data.frame(env)
@@ -583,7 +583,7 @@ BIOMOD_Projection <- function(bm.mod,
 
     for (e.v in names(MinMax)) {
       if (!is.null(MinMax[[e.v]]$min)) { # numeric variable
-        clamp.mask <- clamp.mask + 
+        clamp.mask <- clamp.mask +
           bm_BinaryTransformation(env[, e.v], MinMax[[e.v]]$max) + ## pix with values outside of calib range
           (1 - bm_BinaryTransformation(env[, e.v], MinMax[[e.v]]$min)) ## pix with no values (within env[[1]] area)
       } else if (!is.null(MinMax[[e.v]]$levels)) { # factorial variable
