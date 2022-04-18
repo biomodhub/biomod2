@@ -293,7 +293,24 @@ bm_SRE <- function(resp.var = NULL,
   if (quant < 0 || quant >= 0.5) {
     stop("\n quantmust be a 0 to 0.5 numeric")
   }
-  
+
+  ## 4. Check resp.var argument -----------------------------------------------
+  nb.resp <- if (inherits(resp.var, 'Raster')) {
+    nlayers(resp.var)
+  } else {
+    ncol(resp.var)
+  }
+  for (j in 1:nb.resp) {
+    temp.resp.var <- if (inherits(resp.var, 'Raster')) {
+      subset(resp.var, j, drop = TRUE)
+    } else {
+      subset(resp.var, select = j, drop = TRUE)
+    }
+    if (length(setdiff(temp.resp.var, c(0, 1, NA)))) {
+      stop("'resp.var' must be a binary variable of presences/absences")
+    }
+  }
+
   return(list(resp.var = resp.var,
               expl.var = expl.var,
               new.env = new.env,
