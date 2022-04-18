@@ -267,12 +267,12 @@ BIOMOD_PresenceOnly <- function(bm.mod = NULL,
         Test <- myResp[ind.eval]
         Pred <- myModelPred[ind.eval, Model.name]
       }
-      Pred.obs <- Pred[which(Test == 1)]
+      Pred.obs <- Pred[which(Test > 0)]
     } else {
       if (length(ind.eval) == 0) { ## No evaluation : only obs and pred on presence points
-        ind.obs = which(myResp == 1)
+        ind.obs = which(myResp > 0)
       } else { ## Only obs and pred on presence points which are also eval lines
-        ind.obs = intersect(ind.eval, which(myResp == 1))
+        ind.obs = intersect(ind.eval, which(myResp > 0))
       }
       Test <- c(myResp[ind.obs], rep(0, nrow(bg.env)))
       Pred <- c(myModelPred.sites[ind.obs, Model.name], myModelPred[, Model.name])
@@ -319,9 +319,9 @@ BIOMOD_PresenceOnly <- function(bm.mod = NULL,
       myResp.eval <- get(load(bm.mod@formated.input.data@link))@eval.data.species
       Pred.eval <- myModelPred.eval[, Model.name]
 
-      boy <- ecospat::ecospat.boyce(fit = Pred.eval, obs = Pred.eval[myResp.eval == 1 & ind.1], PEplot = FALSE)
+      boy <- ecospat::ecospat.boyce(fit = Pred.eval, obs = Pred.eval[myResp.eval > 0 & ind.1 == TRUE], PEplot = FALSE)
       boyce.eval[ind.b, "Evaluating.data"] <- boy$cor
-      mpa.eval[ind.m,"Evaluating.data"] <- ecospat::ecospat.mpa(Pred.eval[myResp.eval == 1 & ind.1], perc = perc)
+      mpa.eval[ind.m,"Evaluating.data"] <- ecospat::ecospat.mpa(Pred.eval[myResp.eval > 0 & ind.1 == TRUE], perc = perc)
     }
   }
   myModelEval[, c("Sensitivity", "Specificity")] <- round(myModelEval[, c("Sensitivity", "Specificity")], 1)

@@ -745,10 +745,10 @@ setMethod('.BIOMOD_Modeling.prepare.data', signature('BIOMOD.formated.data.PA'),
 
 .sample_mat <- function(data.sp, data.split, nb.rep = 1, data.env = NULL)
 {
-  # data.sp is a 0, 1 vector
+  # data.sp may or may not be a binary vector
   # return a matrix with nb.rep columns of boolean (T: calib, F= eval)
 
-  pres <- which(data.sp == 1)
+  pres <- which(data.sp > 0)
   abs <- (1:length(data.sp))[-pres]
 
   nbPresEval <- round(length(pres) * data.split / 100)

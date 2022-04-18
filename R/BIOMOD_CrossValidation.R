@@ -172,9 +172,9 @@ BIOMOD_CrossValidation <- function(bm.format,
   if (do.stratification)
   {
     if (balance == "absences") {
-      balance <- (bm.format@data.species == 1 | bm.format@data.species == 0)
+      balance <- (bm.format@data.species > 0 | bm.format@data.species == 0)
     } else {
-      balance <- (bm.format@data.species == 1)
+      balance <- (bm.format@data.species > 0)
     }
 
     ## (X, Y, BOTH) STRATIFIED CROSS VALIDATION  -------------------------------

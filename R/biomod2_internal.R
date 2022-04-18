@@ -608,7 +608,7 @@ check_data_range <- function(model, new_data)
 
   if (!show.scale && !is.null(AddPresAbs)) {
     ## Add presence/absence if requested by user:
-    points(AddPresAbs[AddPresAbs[, 3] == 1, 1:2], col = "black", pch = pchPres, cex = cex2)
+    points(AddPresAbs[AddPresAbs[, 3] > 0, 1:2], col = "black", pch = pchPres, cex = cex2)
     points(AddPresAbs[AddPresAbs[, 3] == 0, 1:2], col = "black", pch = pchAbs, cex = cex2)
 
   } else if (show.scale) {
