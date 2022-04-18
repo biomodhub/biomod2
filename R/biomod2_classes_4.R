@@ -789,12 +789,22 @@ setMethod('predict', signature(object = 'RF_biomod2_model'),
 
 .predict.RF_biomod2_model.RasterStack <- function(object, newdata, ...)
 {
-  return(.template_predict.RasterStack(seedval = NULL, predcommand = "predict(newdata, model = get_formal_model(object), type = 'prob', index = 2)", object, newdata, ...))
+  if (get_formal_model(object)$type == "regression") {
+    predcommand <- "predict(newdata, model = get_formal_model(object))"
+  } else {
+    predcommand <- "predict(newdata, model = get_formal_model(object), type = 'prob', index = 2)"
+  }
+  return(.template_predict.RasterStack(seedval = NULL, predcommand = predcommand, object, newdata, ...))
 }
 
 .predict.RF_biomod2_model.data.frame <- function(object, newdata, ...)
 {
-  return(.template_predict.data.frame(seedval = NULL, predcommand = "as.numeric(predict(get_formal_model(object), as.data.frame(newdata[not_na_rows, , drop = FALSE]), type = 'prob')[, '1'])", object, newdata, ...))
+  if (get_formal_model(object)$type == "regression") {
+    predcommand <- "as.numeric(predict(get_formal_model(object), as.data.frame(newdata[not_na_rows, , drop = FALSE])))"
+  } else {
+    predcommand <- "as.numeric(predict(get_formal_model(object), as.data.frame(newdata[not_na_rows, , drop = FALSE]), type = 'prob')[, '1'])"
+  }
+  return(.template_predict.data.frame(seedval = NULL, predcommand = predcommand, object, newdata, ...))
 }
 
 
