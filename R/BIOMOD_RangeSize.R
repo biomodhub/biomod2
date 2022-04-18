@@ -277,6 +277,10 @@ setMethod('BIOMOD_RangeSize', signature(proj.current = 'RasterStack', proj.futur
               ## DiffByPixel
               Cur <- proj.current@layers[[i]]
               Fut <- proj.future@layers[[i]]
+              ## make sure non-binary projections are converted to binary
+              Cur[which(Cur[] > 0)] <- 1
+              Fut[which(Fut[] > 0)] <- 1
+
               Ras <- Fut - (Cur + Cur)
               sp.stack <- addLayer(sp.stack, Ras)
 
