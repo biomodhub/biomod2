@@ -5,12 +5,12 @@ library(rlang)
 devtools::load_all(".")
 
 # test with binary respone variable?
-binaryResp <- TRUE
+binaryResp <- FALSE
 
 # species occurrences
 species.dat <-
   read_csv(
-    system.file("external/species/mammals_table.csv", package="biomod2")
+    system.file("external/species/mammals_table.csv", package = "biomod2")
   )
 
 head(species.dat)
@@ -61,7 +61,13 @@ if (binaryResp) {
   metric.eval <- c('TSS','ROC')
 } else {
   metric.eval <- c("R2", "RMSE")
-  models <- c("GLM", "RF", "MARS", "GAM")
+  models <- c(
+    "GLM",
+    "RF",
+    "GBM",
+    "MARS",
+    "GAM"
+    )
   bm.opt <- BIOMOD_ModelingOptions(RF = list(do.classif = FALSE),
                                    GAM = list(k = 3),
                                    MARS = list(glm = list(family = binomial), interaction.level = 1))
@@ -125,3 +131,45 @@ plot(bm.ensembProj)
 #
 # bm.maxent.proj.1a <- predict(bm.maxent.mod.1, newdata = expl.var)
 
+## TEST ALL MODELS --------------------------------------------------
+# Load species occurrences (6 species available)
+myFile <- system.file('external/species/mammals_table.csv', package = 'biomod2')
+DataSpecies <- read.csv(myFile, row.names = 1)
+head(DataSpecies)
+
+# Select the name of the studied species
+myRespName <- 'GuloGulo'
+
+# Get corresponding presence/absence data
+myResp <- as.numeric(DataSpecies[, myRespName])
+
+# Get corresponding XY coordinates
+myRespXY <- DataSpecies[, c('X_WGS84', 'Y_WGS84')]
+
+# Load environmental variables extracted from BIOCLIM (bio_3, bio_4, bio_7, bio_11 & bio_12)
+myFiles <- paste0('external/bioclim/current/bio', c(3, 4, 7, 11, 12), '.grd')
+myExpl <- raster::stack(system.file(myFiles, package = 'biomod2'))
+
+
+# ---------------------------------------------------------------
+# Format Data with true absences
+myBiomodData <- BIOMOD_FormatingData(resp.var = myResp,
+                                     expl.var = myExpl,
+                                     resp.xy = myRespXY,
+                                     resp.name = myRespName)
+
+# Create default modeling options
+myBiomodOptions <- BIOMOD_ModelingOptions()
+
+
+# ---------------------------------------------------------------
+# Model single models
+myBiomodModelOut <- BIOMOD_Modeling(bm.format = myBiomodData,
+                                    modeling.id = 'AllModels',
+                                    bm.options = myBiomodOptions,
+                                    nb.rep = 2,
+                                    data.split.perc = 80,
+                                    metric.eval = c('TSS','ROC'),
+                                    var.import = 3,
+                                    do.full.models = FALSE)
+myBiomodModelOut
