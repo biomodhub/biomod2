@@ -67,7 +67,7 @@ if (binaryResp) {
     "GBM",
     "MARS",
     "GAM"
-    )
+  )
   bm.opt <- BIOMOD_ModelingOptions(RF = list(do.classif = FALSE),
                                    GAM = list(k = 3),
                                    MARS = list(glm = list(family = binomial), interaction.level = 1))
@@ -172,4 +172,29 @@ myBiomodModelOut <- BIOMOD_Modeling(bm.format = myBiomodData,
                                     metric.eval = c('TSS','ROC'),
                                     var.import = 3,
                                     do.full.models = FALSE)
-myBiomodModelOut
+
+myBiomodEM <- BIOMOD_EnsembleModeling(bm.mod = myBiomodModelOut,
+                                      models.chosen = 'all',
+                                      em.by = 'all',
+                                      metric.select = c('TSS'),
+                                      metric.select.thresh = c(0.7),
+                                      metric.eval = c('TSS', 'ROC'),
+                                      var.import = 3,
+                                      prob.mean = TRUE,
+                                      prob.median = TRUE,
+                                      prob.cv = TRUE,
+                                      prob.ci = TRUE,
+                                      prob.ci.alpha = 0.05,
+                                      committee.averaging = TRUE,
+                                      prob.mean.weight = TRUE,
+                                      prob.mean.weight.decay = 'proportional')
+# ---------------------------------------------------------------
+# Evaluate models with Boyce index and MPA
+myBiomodPO <- BIOMOD_PresenceOnly(bm.mod = myBiomodModelOut,
+                                  bm.em = myBiomodEM)
+myBiomodPO$Cutoff
+
+# Evaluate models with Boyce index and MPA (using background data)
+myBiomodPO <- BIOMOD_PresenceOnly(bm.mod = myBiomodModelOut,
+                                  bm.em = myBiomodEM,
+                                  bg.env = myExpl[])
