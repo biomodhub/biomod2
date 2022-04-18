@@ -18,7 +18,7 @@
 ##' @param metric.eval a \code{vector} containing evaluation metric names to be used, must 
 ##' be among \code{ROC}, \code{TSS}, \code{KAPPA}, \code{ACCURACY}, \code{BIAS}, \code{POD}, 
 ##' \code{FAR}, \code{POFD}, \code{SR}, \code{CSI}, \code{ETS}, \code{HK}, \code{HSS}, \code{OR}, 
-##' \code{ORSS}
+##' \code{ORSS}, \code{R2} or \code{RMSE} (the last two only for continuous data)
 ##' @param group.by a \code{character} corresponding to the way kept models will be combined to 
 ##' compute mean and sd evaluation scores, must be among \code{model}, \code{algo}, \code{run}, 
 ##' \code{dataset}

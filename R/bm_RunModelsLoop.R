@@ -22,7 +22,7 @@
 ##' @param metric.eval a \code{vector} containing evaluation metric names to be used, must
 ##' be among \code{ROC}, \code{TSS}, \code{KAPPA}, \code{ACCURACY}, \code{BIAS}, \code{POD},
 ##' \code{FAR}, \code{POFD}, \code{SR}, \code{CSI}, \code{ETS}, \code{HK}, \code{HSS}, \code{OR},
-##' \code{ORSS}
+##' \code{ORSS}, \code{R2} or \code{RMSE} (the last two only for continuous data)
 ##' @param var.import (\emph{optional, default} \code{NULL}) \cr
 ##' An \code{integer} corresponding to the number of permutations to be done for each variable to
 ##' estimate variable importance
@@ -952,7 +952,7 @@ bm_RunModel <- function(model, Data, modeling.id = '', bm.options, calib.lines, 
   ## 6. Check models.eval.meth arguments --------------------------------------
   metric.eval <- unique(metric.eval)
   avail.eval.meth.list <- c('TSS', 'KAPPA', 'ACCURACY', 'BIAS', 'POD', 'FAR', 'POFD'
-                            , 'SR', 'CSI', 'ETS', 'HK', 'HSS', 'OR', 'ORSS', 'ROC')
+                            , 'SR', 'CSI', 'ETS', 'HK', 'HSS', 'OR', 'ORSS', 'ROC', 'R2', 'RMSE')
   # .fun_testIfIn(TRUE, "metric.eval", metric.eval, avail.eval.meth.list)
   if (sum(!(metric.eval %in% avail.eval.meth.list)) > 0) {
     tmp = which(metric.eval %in% avail.eval.meth.list)

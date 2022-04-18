@@ -75,6 +75,7 @@
 ##'
 ##'
 ##' @importFrom pROC roc coords auc
+##' @importFrom caret defaultSummary
 ##'
 ##' @export
 ##'
@@ -105,7 +106,7 @@ bm_FindOptimStat <- function(metric.eval = 'TSS',
   }
 
 
-  if (metric.eval != 'ROC') { ## for all evaluation metrics other than ROC ------------------------
+  if (!metric.eval %in% c('ROC', 'R2', 'RMSE')) { ## for all evaluation metrics other than ROC ------------------------
     StatOptimum <- get_optim_value(metric.eval)
 
     ## 1. get threshold values to be tested -----------------------------------
@@ -152,15 +153,25 @@ bm_FindOptimStat <- function(metric.eval = 'TSS',
     specificity <- (true.neg * 100) / sum(misc[, '0'])
     sensitivity <- (true.pos * 100) / sum(misc[, '1'])
 
-  } else { ## specific procedure for ROC value ----------------------------------------------------
-    roc1 <- roc(obs, fit, percent = TRUE, direction = "<", levels = c(0, 1))
-    roc1.out <- coords(roc1, "best", ret = c("threshold", "sens", "spec"), transpose = TRUE)
-    ## if two optimal values are returned keep only the first one
-    if (!is.null(ncol(roc1.out))) { roc1.out <- roc1.out[, 1] }
-    best.stat <- as.numeric(auc(roc1)) / 100
-    cutoff <- as.numeric(roc1.out["threshold"])
-    sensitivity <- as.numeric(roc1.out["sensitivity"])
-    specificity <- as.numeric(roc1.out["specificity"])
+  } else {
+    if (metric.eval == 'ROC') { ## specific procedure for ROC value ----------------------------------------------------
+      roc1 <- roc(obs, fit, percent = TRUE, direction = "<", levels = c(0, 1))
+      roc1.out <- coords(roc1, "best", ret = c("threshold", "sens", "spec"), transpose = TRUE)
+      ## if two optimal values are returned keep only the first one
+      if (!is.null(ncol(roc1.out))) { roc1.out <- roc1.out[, 1] }
+      best.stat <- as.numeric(auc(roc1)) / 100
+      cutoff <- as.numeric(roc1.out["threshold"])
+      sensitivity <- as.numeric(roc1.out["sensitivity"])
+      specificity <- as.numeric(roc1.out["specificity"])
+    } else {
+      if (metric.eval %in% c('R2', 'RMSE')) {
+        metric.eval2 <- if (metric.eval == 'R2') "Rsquared" else "RMSE"
+        best.stat <- defaultSummary(data.frame(obs = obs, pred = fit))[[metric.eval2]]
+        cutoff <- NA
+        sensitivity <- NA
+        specificity <- NA
+      }
+    }
   }
 
   eval.out <- cbind(best.stat, cutoff, sensitivity, specificity)
