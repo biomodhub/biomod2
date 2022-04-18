@@ -136,7 +136,6 @@
 ##' 
 ## @importFrom ecospat ecospat.boyce ecospat.mpa
 ##' @importFrom PresenceAbsence presence.absence.accuracy
-##' @importFrom data.table rbindlist
 ##' 
 ##' @export
 ##' 
