@@ -9,41 +9,41 @@
 ##'
 ##' @description This internal \pkg{biomod2} function samples randomly an element of each level of
 ##' all the factorial variables contained in a \code{raster*} or \code{data.frame} object.
-##' 
-##' @param expl.var a \code{data.frame} or \code{\link[raster:stack]{RasterStack}} object 
+##'
+##' @param expl.var a \code{data.frame} or \code{\link[raster:stack]{RasterStack}} object
 ##' containing the explanatory variables (in columns or layers)
-##' @param mask.out a \code{data.frame} or \code{\link[raster:raster]{raster}} object containing 
-##' the area that has already been sampled (\emph{factor levels within this mask will not be 
+##' @param mask.out a \code{data.frame} or \code{\link[raster:raster]{raster}} object containing
+##' the area that has already been sampled (\emph{factor levels within this mask will not be
 ##' sampled})
-##' @param mask.in a \code{data.frame}, \code{\link[raster:raster]{raster}} or 
-##' \code{\link[raster:stack]{RasterStack}} object containing areas where factor levels are to be 
-##' sampled in priority. \emph{Note that if after having explored these masks, some factor levels 
+##' @param mask.in a \code{data.frame}, \code{\link[raster:raster]{raster}} or
+##' \code{\link[raster:stack]{RasterStack}} object containing areas where factor levels are to be
+##' sampled in priority. \emph{Note that if after having explored these masks, some factor levels
 ##' remain unsampled, they will be sampled in the reference input object \code{expl.var}.}
-##' 
-##' 
-##' @return  
-##' 
-##' A \code{numeric vector} containing point IDs (either cell number for \code{raster*} objects, 
-##' or row number for \code{data.frame}), each refering to a single level of a single factorial 
+##'
+##'
+##' @return
+##'
+##' A \code{numeric vector} containing point IDs (either cell number for \code{raster*} objects,
+##' or row number for \code{data.frame}), each refering to a single level of a single factorial
 ##' variable.
 ##'
 ##' In case any factorial variable is found in the input object, \code{NULL} is returned.
 ##'
-##' @details 
-##' 
-##' The \code{expl.var}, \code{mask.out} and \code{mask.in} parameters must be coherent in terms of 
+##' @details
+##'
+##' The \code{expl.var}, \code{mask.out} and \code{mask.in} parameters must be coherent in terms of
 ##' dimensions :
 ##' \itemize{
 ##'   \item same number of rows for \code{data.frame} objects
-##'   \item same resolution, projection system and number of cells for \code{raster*} objects 
+##'   \item same resolution, projection system and number of cells for \code{raster*} objects
 ##'   \cr \cr
 ##' }
-##' 
-##' If \code{mask.in} contains several masks (either it is a 
-##' \code{\link[raster:stack]{RasterStack}} object or a multi-columns \code{data.frame}), then 
-##' the order of masks / columns matters : they will be considered successively to sample missing 
+##'
+##' If \code{mask.in} contains several masks (either it is a
+##' \code{\link[raster:stack]{RasterStack}} object or a multi-columns \code{data.frame}), then
+##' the order of masks / columns matters : they will be considered successively to sample missing
 ##' factor levels. \cr \cr
-##' 
+##'
 ##' \itemize{
 ##'   \item \code{raster*} masks will be understood as :
 ##'   \itemize{
@@ -56,43 +56,43 @@
 ##'     \item \code{TRUE} : in mask
 ##'   }
 ##' }
-##' 
-##' 
-##' @seealso \code{\link{bm_PseudoAbsences}}, \code{\link{bm_RunModelsLoop}}, 
+##'
+##'
+##' @seealso \code{\link{bm_PseudoAbsences}}, \code{\link{bm_RunModelsLoop}},
 ##' \code{\link{BIOMOD_Modeling}}
 ##' @family Secundary functions
-##' 
-##'   
+##'
+##'
 ##' @examples
-##' 
+##'
 ##' library(raster)
-##' 
+##'
 ##' ## Create raster data
 ##' ras.1 <- ras.2 <- mask.out <- raster(nrows = 10, ncols = 10)
 ##' ras.1[] <- as.factor(rep(c(1, 2, 3, 4, 5), each = 20))
 ##' ras.2[] <- rnorm(100)
 ##' stk <- stack(ras.1, ras.2)
 ##' names(stk) <- c("varFact", "varNorm")
-##' 
+##'
 ##' ## define a mask for already sampled points
 ##' mask.out[1:40] <- 1
-##' 
+##'
 ##' ## define a list of masks where we want to sample in priority
 ##' mask.in <- list(ras.1, ras.1)
 ##' mask.in[[1]][1:80] <- NA ## only level 5 should be sampled in this mask
 ##' mask.in[[1]][21:80] <- NA ## only levels 1 and 5 should be sampled in this mask
-##' 
+##'
 ##' ## Sample all factor levels
 ##' samp1 <- bm_SampleFactorLevels(expl.var = stk, mask.out = mask.out)
 ##' samp2 <- bm_SampleFactorLevels(expl.var = stk, mask.in = mask.in)
 ##' samp3 <- bm_SampleFactorLevels(expl.var = stk, mask.out = mask.out, mask.in = mask.in)
-##' 
-##' 
+##'
+##'
 ##' @importFrom raster is.factor as.factor levels subset mask
-##' 
+##'
 ##' @export
-##' 
-##' 
+##'
+##'
 ###################################################################################################
 
 bm_SampleFactorLevels <- function(expl.var, mask.out = NULL, mask.in = NULL)
@@ -125,7 +125,7 @@ bm_SampleFactorLevels.raster <- function(expl.var, mask.out = NULL, mask.in = NU
       ## get the factor levels on the full dataset
       fact.level <- fact.level.original <- unlist(levels(subset(expl.var, f))[[1]][,1, drop = FALSE])
       cat("\n\t> fact.level for",  names(expl.var)[f], ":\t", paste(fact.level, names(fact.level), sep = ":", collapse = "\t"))
-      
+
       ## mask containing points that have already been sampled ------------------------------------
       if (!is.null(mask.out))
       {
@@ -200,7 +200,7 @@ bm_SampleFactorLevels.data.frame <- function(expl.var, mask.out = NULL, mask.in 
       ## get the factor levels on the full dataset
       fact.level <- fact.level.original <- levels(expl.var[, f])
       cat("\n\t> fact.level for",  colnames(expl.var)[f], ":\t", paste(1:length(fact.level), fact.level, sep = ":", collapse = "\t"))
-      
+
       ## mask containing points that have already been sampled ------------------------------------
       if (!is.null(mask.out))
       {
