@@ -60,7 +60,6 @@ Suggests:
     gam,
     mgcv,
     car,
-    ecospat,
     doParallel,
     rasterVis,
     testthat
