@@ -465,9 +465,6 @@ setMethod('show', signature('BIOMOD.formated.data'),
 ##' @param na.rm (\emph{optional, default} \code{TRUE}) \cr
 ##' A \code{logical} value defining whether points having one or several missing values for
 ##' explanatory variables should be removed from the analysis or not
-##' @param na.rm (\emph{optional, default} \code{TRUE}) \cr
-##' A \code{logical} value defining whether points having one or several missing values for
-##' explanatory variables should be removed from the analysis or not
 ##'
 ##' @param PA.nb.rep (\emph{optional, default} \code{0}) \cr
 ##' If pseudo-absence selection, an \code{integer} corresponding to the number of sets
