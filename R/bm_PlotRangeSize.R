@@ -140,6 +140,7 @@
 ##' @importFrom foreach foreach %do%
 ##' @importFrom raster which.max nlayers stack rasterToPoints reclassify
 ##' @importFrom patchwork plot_layout
+##' @importFrom ggpubr ggarrange
 ##' @importFrom ggplot2 ggplot aes_string geom_col geom_tile facet_wrap xlab ylab labs
 ##' theme element_blank element_rect scale_fill_manual
 ##'
@@ -230,8 +231,8 @@ bm_PlotRangeSize <- function(bm.range, do.count = TRUE, do.perc = TRUE
 
       gg.maps = 'plot(ggdat, col = c("-2" = "#fc8d62", "-1" = "grey", "0" = "white", "1" = "#66c2a5")
            , legend.width = 2, legend.shrink = 0.7
-           , axis.args = list(at = c(-2, -1, 0, 1), labels = c("Loss", "Stable0", "Stable1", "Gain"), cex.axis = 1))'
-
+           , axis.args = list(at = c(-2, -1, 0, 1), labels = c("Loss", "Stable1", "Stable0", "Gain"), cex.axis = 1))'
+      
       # ggdat = as.data.frame(rasterToPoints(ggdat))
       #
       # ## Get models information
@@ -268,7 +269,8 @@ bm_PlotRangeSize <- function(bm.range, do.count = TRUE, do.perc = TRUE
 
     ## d. SRC mean maps per group.level ---------------------------------------
     if (do.mean) {
-
+      requireNamespace("ggpubr")
+      
       corres = data.frame(full.name = names(ggdat))
       for (ii in 1:length(row.names)) {
         corres[[row.names[ii]]] = sapply(corres$full.name, function(x) strsplit(x, "_")[[1]][ii])
@@ -301,57 +303,63 @@ bm_PlotRangeSize <- function(bm.range, do.count = TRUE, do.perc = TRUE
           }
         }
       }
-      stk.cons = stack(list.cons)
-      stk.perc = stack(list.perc)
-
-      tab1 = as.data.frame(rasterToPoints(stk.cons))
-      tab1 = melt(tab1, id.vars = c("x", "y"))
-      tab1$group.level = tab1$group.value = ""
-      for (ii in row.names) { tab1$group.level[grep(ii, tab1$variable)] = ii }
-      for (jj in unique(unlist(corres[, 2:ncol(corres)]))) { tab1$group.value[grep(jj, tab1$variable)] = jj }
-      tab1$value[which(is.na(tab1$value))] = 0
-
-      tab2 = as.data.frame(rasterToPoints(stk.perc))
-      tab2 = melt(tab2, id.vars = c("x", "y"))
-      tab2$group.level = tab2$group.value = ""
-      for (ii in row.names) { tab2$group.level[grep(ii, tab2$variable)] = ii }
-      for (jj in unique(unlist(corres[, 2:ncol(corres)]))) { tab2$group.value[grep(jj, tab2$variable)] = jj }
-      tab2$value[which(tab2$value == 1 & tab1$value == 0)] = NA
-
-      gg.ca1 = ggplot(tab1, aes_string(x = "x", y = "y", fill = "as.factor(value)")) +
-        geom_tile() +
-        facet_wrap("group.level ~ group.value") +
-        scale_fill_manual("", values = c("-2" = "#fc8d62"
-                                         , "-1" = "grey"
-                                         , "0" = "white"
-                                         , "1" = "#66c2a5")
-                          , labels = c("-2" = "Loss"
-                                       , "-1" = "Stable1"
-                                       , "0" = ""
-                                       , "1" = "Gain")) +
-        xlab("") +
-        ylab("") +
-        labs(title = "Community averaging value across models") +
-        theme(legend.title = element_blank()
-              , legend.key = element_rect(fill = "white")
-              , legend.position = "top")
-
-      gg.ca2 = ggplot(tab2, aes_string(x = "x", y = "y", fill = "value")) +
-        geom_tile() +
-        facet_wrap("group.level ~ group.value") +
-        scale_fill_viridis_c(""
-                             , direction = -1
-                             , limits = c(0, 1)
-                             , na.value = "white"
-                             , breaks = seq(0, 1, 0.5)
-                             , labels = paste0(seq(0, 100, 50), "%")) +
-        xlab("") +
-        ylab("") +
-        labs(title = "Percentage of models' agreement") +
-        theme(legend.key = element_rect(fill = "white")
-              , legend.position = "top")
-
-      gg.ca = gg.ca1 | gg.ca2
+      if (length(list.cons) > 0 && length(list.perc) > 0)
+      {
+        stk.cons = stack(list.cons)
+        stk.perc = stack(list.perc)
+        
+        tab1 = as.data.frame(rasterToPoints(stk.cons))
+        tab1 = melt(tab1, id.vars = c("x", "y"))
+        tab1$group.level = tab1$group.value = ""
+        for (ii in row.names) { tab1$group.level[grep(ii, tab1$variable)] = ii }
+        for (jj in unique(unlist(corres[, 2:ncol(corres)]))) { tab1$group.value[grep(jj, tab1$variable)] = jj }
+        tab1$value[which(is.na(tab1$value))] = 0
+        
+        tab2 = as.data.frame(rasterToPoints(stk.perc))
+        tab2 = melt(tab2, id.vars = c("x", "y"))
+        tab2$group.level = tab2$group.value = ""
+        for (ii in row.names) { tab2$group.level[grep(ii, tab2$variable)] = ii }
+        for (jj in unique(unlist(corres[, 2:ncol(corres)]))) { tab2$group.value[grep(jj, tab2$variable)] = jj }
+        tab2$value[which(tab2$value == 1 & tab1$value == 0)] = NA
+        
+        gg.ca1 = ggplot(tab1, aes_string(x = "x", y = "y", fill = "as.factor(value)")) +
+          geom_tile() +
+          facet_wrap("group.level ~ group.value") +
+          scale_fill_manual("", values = c("-2" = "#fc8d62"
+                                           , "-1" = "grey"
+                                           , "0" = "white"
+                                           , "1" = "#66c2a5")
+                            , labels = c("-2" = "Loss"
+                                         , "-1" = "Stable1"
+                                         , "0" = ""
+                                         , "1" = "Gain")) +
+          xlab("") +
+          ylab("") +
+          labs(title = "Community averaging value across models") +
+          theme(legend.title = element_blank()
+                , legend.key = element_rect(fill = "white")
+                , legend.position = "top")
+        
+        gg.ca2 = ggplot(tab2, aes_string(x = "x", y = "y", fill = "value")) +
+          geom_tile() +
+          facet_wrap("group.level ~ group.value") +
+          scale_fill_viridis_c(""
+                               , direction = -1
+                               , limits = c(0, 1)
+                               , na.value = "white"
+                               , breaks = seq(0, 1, 0.5)
+                               , labels = paste0(seq(0, 100, 50), "%")) +
+          xlab("") +
+          ylab("") +
+          labs(title = "Percentage of models' agreement") +
+          theme(legend.key = element_rect(fill = "white")
+                , legend.position = "top")
+        
+        ggarrange(gg.ca1, gg.ca2, ncol = 2)
+      } else {
+        gg.ca = NULL
+        warning("'do.mean' is only available if several maps are provided")
+      }
     } else { gg.ca = NULL }
   } else {
     gg.maps = NULL

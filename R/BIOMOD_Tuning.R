@@ -176,7 +176,7 @@
 ##'
 ##'
 ##' @importFrom foreach foreach
-##' @importFrom caret trainControl train twoClassSummary
+## @importFrom caret trainControl train twoClassSummary
 ##' @importFrom dismo kfold
 ##' @importFrom PresenceAbsence optimal.thresholds presence.absence.accuracy
 ##' @importFrom ENMeval ENMevaluate

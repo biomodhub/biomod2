@@ -361,15 +361,19 @@ BIOMOD_Modeling <- function(bm.format,
   ## models evaluation, variables importance, models prediction, predictions evaluation
   if (save.output) {
     models.evaluation <- .transform_outputs_list(mod.out, out = 'evaluation')
-    models.out <- .Models.save.object("models.evaluation", models.evaluation, models.out)
-
-    models.out@models.evaluation@val <- models.evaluation
+    models.out = .Models.save.object("models.evaluation", models.evaluation, models.out)
+    
+    if (!is.null(models.evaluation)) {
+      models.out@models.evaluation@val <- models.evaluation
+    }
     rm(models.evaluation)
 
     if (var.import > 0) {
       variables.importance <- .transform_outputs_list(mod.out, out = 'var.import')
       models.out = .Models.save.object("variables.importance", variables.importance, models.out)
-      models.out@variables.importance@val <- variables.importance
+      if (!is.null(variables.importance)) {
+        models.out@variables.importance@val <- variables.importance
+      }
       rm(variables.importance)
     }
 
@@ -913,7 +917,7 @@ setMethod('.BIOMOD_Modeling.prepare.data', signature('BIOMOD.formated.data.PA'),
         lapply(names(mod.out[[d1]][[d2]]), function(d3) { # models
           res = mod.out[[d1]][[d2]][[d3]][[name_slot]]
           if (out == "calib.failure") {
-            return(as.numeric(res))
+            return(as.character(res))
           } else if (out == "models.run") {
             return(as.character(res))
           }

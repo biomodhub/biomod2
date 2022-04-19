@@ -346,7 +346,7 @@ setClass('GAM_biomod2_model',
          prototype = list(model_class = 'GAM', model_subclass = 'GAM_mgcv'),
          validity = function(object) { ## check model class
            if ((!(object@model_subclass %in% c('GAM_mgcv', 'GAM_gam', 'BAM_mgcv'))) ||
-               (object@model_subclass %in% c('GAM_mgcv', 'GAM_gam') && !inherits(object@model, c("gam"))) ||
+               (object@model_subclass %in% c('GAM_mgcv', 'GAM_gam') && !inherits(object@model, c("gam", "Gam"))) ||
                (object@model_subclass == 'BAM_mgcv' && !inherits(object@model, c("bam")))) {
              return(FALSE)
            } else {
