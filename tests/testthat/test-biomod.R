@@ -188,13 +188,48 @@ myBiomodEM <- BIOMOD_EnsembleModeling(bm.mod = myBiomodModelOut,
                                       committee.averaging = TRUE,
                                       prob.mean.weight = TRUE,
                                       prob.mean.weight.decay = 'proportional')
-# ---------------------------------------------------------------
-# Evaluate models with Boyce index and MPA
+## ---------------------------------------------------------------
+## Evaluate models with Boyce index and MPA
 myBiomodPO <- BIOMOD_PresenceOnly(bm.mod = myBiomodModelOut,
                                   bm.em = myBiomodEM)
 myBiomodPO$Cutoff
 
-# Evaluate models with Boyce index and MPA (using background data)
+## Evaluate models with Boyce index and MPA (using background data)
 myBiomodPO <- BIOMOD_PresenceOnly(bm.mod = myBiomodModelOut,
                                   bm.em = myBiomodEM,
                                   bg.env = myExpl[])
+
+## ----------------------------------------------------------------
+## Future projections
+
+## project current first
+myBiomodProj <- BIOMOD_Projection(bm.mod = myBiomodModelOut,
+                                  proj.name = 'Current',
+                                  new.env = myExpl,
+                                  models.chosen = 'all',
+                                  metric.binary = 'all',
+                                  metric.filter = 'all',
+                                  build.clamping.mask = TRUE)
+
+## ---------------------------------------------------------------
+## Load environmental variables extracted from BIOCLIM (bio_3, bio_4, bio_7, bio_11 & bio_12)
+myFiles = paste0('external/bioclim/future/bio', c(3, 4, 7, 11, 12), '.grd')
+myExplFuture = raster::stack(system.file(myFiles, package = 'biomod2'))
+
+## Project onto future conditions
+myBiomodProjectionFuture <- BIOMOD_Projection(bm.mod = myBiomodModelOut,
+                                              proj.name = 'Future',
+                                              new.env = myExplFuture,
+                                              models.chosen = 'all',
+                                              metric.binary = 'TSS',
+                                              build.clamping.mask = TRUE)
+
+## Load current and future binary projections
+proj.current <- raster::stack("GuloGulo/proj_Current/proj_Current_GuloGulo_TSSbin.grd")
+proj.future <- raster::stack("GuloGulo/proj_Future/proj_Future_GuloGulo_TSSbin.grd")
+
+## Compute differences
+myBiomodRangeSize <- BIOMOD_RangeSize(proj.current = proj.current, proj.future = proj.future)
+
+myBiomodRangeSize$Compt.By.Models
+plot(myBiomodRangeSize$Diff.By.Pixel)
