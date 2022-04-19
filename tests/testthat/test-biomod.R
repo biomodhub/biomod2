@@ -1,6 +1,7 @@
 library(readr)
 library(dplyr)
 library(rlang)
+library(raster)
 # library(biomod2)
 devtools::load_all(".")
 
@@ -35,11 +36,11 @@ expl.name <- paste0('bio', c(3, 4, 7, 11, 12), '.grd')
 expl.var <-
   purrr::map(
     expl.name,
-    ~ raster::raster(
+    ~ raster(
       system.file(file.path('external/bioclim/current', .x), package="biomod2"),
       rat = FALSE)
   ) %>%
-  raster::stack()
+  stack()
 
 # 1. Formatting Data
 bm.formdat <-
@@ -88,6 +89,16 @@ bm.mod <-
 
 ## print a summary of modeling stuff
 bm.mod
+
+bm.maxent.mod.list <-
+  BIOMOD_LoadModels(bm.mod, models = 'GLM')
+
+bm.maxent.mod.1 <- get(bm.maxent.mod.list[1])
+
+bm_VariablesImportance(bm.model = bm.maxent.mod.1,
+                       expl.var = as.data.frame(expl.var),
+                       method = "full_rand",
+                       nb.rep = 3)
 
 # 4.1 Projection on current environmental conditions
 if (binaryResp) {
@@ -148,7 +159,7 @@ myRespXY <- DataSpecies[, c('X_WGS84', 'Y_WGS84')]
 
 # Load environmental variables extracted from BIOCLIM (bio_3, bio_4, bio_7, bio_11 & bio_12)
 myFiles <- paste0('external/bioclim/current/bio', c(3, 4, 7, 11, 12), '.grd')
-myExpl <- raster::stack(system.file(myFiles, package = 'biomod2'))
+myExpl <- stack(system.file(myFiles, package = 'biomod2'))
 
 
 # ---------------------------------------------------------------
@@ -214,7 +225,7 @@ myBiomodProj <- BIOMOD_Projection(bm.mod = myBiomodModelOut,
 ## ---------------------------------------------------------------
 ## Load environmental variables extracted from BIOCLIM (bio_3, bio_4, bio_7, bio_11 & bio_12)
 myFiles = paste0('external/bioclim/future/bio', c(3, 4, 7, 11, 12), '.grd')
-myExplFuture = raster::stack(system.file(myFiles, package = 'biomod2'))
+myExplFuture = stack(system.file(myFiles, package = 'biomod2'))
 
 ## Project onto future conditions
 myBiomodProjectionFuture <- BIOMOD_Projection(bm.mod = myBiomodModelOut,
@@ -225,8 +236,8 @@ myBiomodProjectionFuture <- BIOMOD_Projection(bm.mod = myBiomodModelOut,
                                               build.clamping.mask = TRUE)
 
 ## Load current and future binary projections
-proj.current <- raster::stack("GuloGulo/proj_Current/proj_Current_GuloGulo_TSSbin.grd")
-proj.future <- raster::stack("GuloGulo/proj_Future/proj_Future_GuloGulo_TSSbin.grd")
+proj.current <- stack("GuloGulo/proj_Current/proj_Current_GuloGulo_TSSbin.grd")
+proj.future <- stack("GuloGulo/proj_Future/proj_Future_GuloGulo_TSSbin.grd")
 
 ## Compute differences
 myBiomodRangeSize <- BIOMOD_RangeSize(proj.current = proj.current, proj.future = proj.future)
