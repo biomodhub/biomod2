@@ -7,7 +7,6 @@
 \title{Calculate the best score according to a given evaluation method}
 \usage{
 bm_FindOptimStat(
-<<<<<<< HEAD
   metric.eval = "TSS",
   obs,
   fit,
@@ -20,19 +19,19 @@ get_optim_value(metric.eval)
 bm_CalculateStat(misc, metric.eval = "TSS")
 }
 \arguments{
-\item{metric.eval}{a \code{character} corresponding to the evaluation metric to be used, must 
-be either \code{ROC}, \code{TSS}, \code{KAPPA}, \code{ACCURACY}, \code{BIAS}, \code{POD}, 
-\code{FAR}, \code{POFD}, \code{SR}, \code{CSI}, \code{ETS}, \code{HK}, \code{HSS}, \code{OR} 
-or \code{ORSS}}
+\item{metric.eval}{a \code{character} corresponding to the evaluation metric to be used, must
+be either \code{ROC}, \code{TSS}, \code{KAPPA}, \code{ACCURACY}, \code{BIAS}, \code{POD},
+\code{FAR}, \code{POFD}, \code{SR}, \code{CSI}, \code{ETS}, \code{HK}, \code{HSS}, \code{OR}
+\code{ORSS}, \code{R2} or \code{RMSE} (the last two only for continuous data)}
 
 \item{obs}{a \code{vector} of observed values (binary, \code{0} or \code{1})}
 
 \item{fit}{a \code{vector} of fitted values (continuous)}
 
-\item{nb.thresh}{an \code{integer} corresponding to the number of thresholds to be 
+\item{nb.thresh}{an \code{integer} corresponding to the number of thresholds to be
 tested over the range of fitted values}
 
-\item{threshold}{(\emph{optional, default} \code{NULL}) \cr 
+\item{threshold}{(\emph{optional, default} \code{NULL}) \cr
 A \code{numeric} corresponding to the threshold used to convert the given data}
 
 \item{misc}{a \code{matrix} corresponding to a contingency table}
@@ -41,72 +40,26 @@ A \code{numeric} corresponding to the threshold used to convert the given data}
 A \code{1} row x \code{4} columns \code{matrix} containing :
 \itemize{
   \item{\code{best.iter}}{ : the best score obtained for the chosen evaluation metric}
-  \item{\code{cutoff}}{ : the associated cut-off used to transform the continuous values into 
-=======
-  Stat = "TSS",
-  Fit,
-  Obs,
-  Nb.thresh.test = 100,
-  Fixed.thresh = NULL
-)
-}
-\arguments{
-\item{Stat}{a \code{character} corresponding to the evaluation metric to be used, must be
-either \code{ROC}, \code{TSS}, \code{KAPPA}, \code{ACCURACY}, \code{BIAS}, \code{POD},
-\code{FAR}, \code{POFD}, \code{SR}, \code{CSI}, \code{ETS}, \code{HK}, \code{HSS}, \code{OR},
-\code{ORSS}, \code{R2} or \code{RMSE} (the last two only for continuous data)}
-
-\item{Fit}{a \code{vector} of fitted values (continuous)}
-
-\item{Obs}{a \code{vector} of observed values (binary, \code{0} or \code{1})}
-
-\item{Nb.thresh.test}{an \code{integer} corresponding to the number of thresholds to be
-tested over the range of fitted values}
-
-\item{Fixed.thresh}{(\emph{optional, default} \code{NULL}) \cr
-An \code{integer} corresponding to the only threshold value to be tested}
-}
-\value{
-A 1 row x 4 columns \code{matrix} containing :
-\itemize{
-  \item{\code{best.iter}}{ : the best score obtained for the chosen evaluation metric}
   \item{\code{cutoff}}{ : the associated cut-off used to transform the continuous values into
->>>>>>> devel
   binary}
   \item{\code{sensibility}}{ : the sensibility obtained on fitted values with this threshold}
   \item{\code{specificity}}{ : the specificity obtained on fitted values with this threshold}
 }
 }
 \description{
-<<<<<<< HEAD
-This internal \pkg{biomod2} function allows the user to find the threshold to 
-convert continuous values into binary ones leading to the best score for a given evaluation 
+This internal \pkg{biomod2} function allows the user to find the threshold to
+convert continuous values into binary ones leading to the best score for a given evaluation
 metric.
 }
 \details{
-\emph{Please refer to \code{\link{BIOMOD_Modeling}} to get more information about these 
-evaluation metrics.}
-
-Note that if a value is given to \code{threshold}, no optimisation will be done., and 
-=======
-This internal \pkg{biomod2} function allows the user to find the threshold to convert
-continuous values into binary ones leading to the best score for a given evaluation metric.
-}
-\details{
-###############################################################################################
-
-
-
 \emph{Please refer to \code{\link{BIOMOD_Modeling}} to get more information about these
 evaluation metrics.}
 
-Note that if a value is given to \code{Fixed.thresh}, no optimisation will be done., and
->>>>>>> devel
+Note that if a value is given to \code{threshold}, no optimisation will be done., and
 only the score for this threshold will be returned.
 }
 \examples{
 
-<<<<<<< HEAD
 ## Generate a binary vector
 vec.a <- sample(c(0, 1), 100, replace = TRUE)
 
@@ -128,7 +81,7 @@ bm_FindOptimStat(metric.eval = 'TSS', fit = vec.c, obs = vec.a, nb.thresh = 100)
 
 }
 \seealso{
-\code{\link{BIOMOD_Modeling}}, \code{\link{bm_RunModelsLoop}}, 
+\code{\link{BIOMOD_Modeling}}, \code{\link{bm_RunModelsLoop}},
 \code{\link{BIOMOD_EnsembleModeling}}
 
 Other Secundary functions: 
@@ -146,35 +99,11 @@ Other Secundary functions:
 \code{\link{bm_SampleBinaryVector}()},
 \code{\link{bm_SampleFactorLevels}()},
 \code{\link{bm_VariablesImportance}()}
-=======
-## generate a binary vector
-a <- sample(c(0, 1), 100, replace = TRUE)
-
-## random drawing
-b <- runif(100, min = 0, max = 1000)
-bm_FindOptimStat(Stat = 'TSS', Fit = b, Obs = a)
-
-## biased drawing
-BiasedDrawing <- function(x, m1 = 300, sd1 = 200, m2 = 700, sd2 = 200) {
-  return(ifelse(x < 0.5, rnorm(1, m1, sd1), rnorm(1, m2, sd2)))
-}
-c <- sapply(a, BiasedDrawing)
-bm_FindOptimStat(Stat = 'TSS', Fit = c, Obs = a, Nb.thresh.test = 100)
-
-
-###############################################################################################
-}
-\seealso{
-\code{\link{BIOMOD_Modeling}}, \code{\link{BIOMOD_EnsembleModeling}}
->>>>>>> devel
 }
 \author{
 Damien Georges
 }
-<<<<<<< HEAD
 \concept{Secundary functions}
-=======
->>>>>>> devel
 \keyword{evaluation}
 \keyword{models,}
 \keyword{options,}

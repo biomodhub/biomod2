@@ -15,59 +15,59 @@ BIOMOD_CrossValidation(
 )
 }
 \arguments{
-\item{bm.format}{a \code{\link{BIOMOD.formated.data}} or \code{\link{BIOMOD.formated.data.PA}} 
+\item{bm.format}{a \code{\link{BIOMOD.formated.data}} or \code{\link{BIOMOD.formated.data.PA}}
 object returned by the \code{\link{BIOMOD_FormatingData}} function}
 
 \item{k}{an \code{integer} corresponding to the number of bins/partitions for k-fold CV}
 
-\item{nb.rep}{an \code{integer} corresponding to the number of repetitions of k-fold CV 
+\item{nb.rep}{an \code{integer} corresponding to the number of repetitions of k-fold CV
 (\emph{set to \code{1} if \code{do.stratification = TRUE}})}
 
 \item{do.stratification}{a \code{logical} defining whether stratified CV should be run}
 
-\item{method}{a \code{character} corresponding to the CV stratification method (\emph{if 
-\code{do.stratification = TRUE}}), must be \code{x}, \code{y}, \code{both}, \code{block} 
+\item{method}{a \code{character} corresponding to the CV stratification method (\emph{if
+\code{do.stratification = TRUE}}), must be \code{x}, \code{y}, \code{both}, \code{block}
 or the name of a predictor for environmental stratified CV}
 
-\item{balance}{a \code{character} defining whether partitions should be balanced for 
+\item{balance}{a \code{character} defining whether partitions should be balanced for
 \code{presences} or \code{absences} (resp. pseudo-absences or background)}
 
 \item{do.full.models}{(\emph{optional, default} \code{TRUE}) \cr
-A \code{logical} value defining whether models should be also calibrated and validated over 
+A \code{logical} value defining whether models should be also calibrated and validated over
 the whole dataset or not}
 }
 \value{
-A \code{DataSplitTable} {matrix} with \code{k * nb.rep} (\emph{+ 1 if 
-\code{do.full.models = TRUE}}) columns that can be given as parameter to the 
+A \code{DataSplitTable} {matrix} with \code{k * nb.rep} (\emph{+ 1 if
+\code{do.full.models = TRUE}}) columns that can be given as parameter to the
 \code{\link{BIOMOD_Modeling}} function.
 }
 \description{
-This function creates a \code{DataSplitTable} that can be given as parameter to 
-the \code{\link{BIOMOD_Modeling}} function to evaluate models with repeated k-fold or 
+This function creates a \code{DataSplitTable} that can be given as parameter to
+the \code{\link{BIOMOD_Modeling}} function to evaluate models with repeated k-fold or
 stratified cross-validation (CV) instead of repeated split samples.
 }
 \details{
-\bold{Stratified cross-validation} may be used to test for model overfitting and to assess 
-transferability in geographic and environmental space : 
+\bold{Stratified cross-validation} may be used to test for model overfitting and to assess
+transferability in geographic and environmental space :
 \itemize{
-  \item \code{x} and \code{y} stratification was described in \emph{Wenger and Olden 2012} 
-  (see \href{BIOMOD_CrossValidation.html#References}{References}). While \code{y} 
-  stratification uses \code{k} partitions along the y-gradient, \code{x} stratification does 
+  \item \code{x} and \code{y} stratification was described in \emph{Wenger and Olden 2012}
+  (see \href{BIOMOD_CrossValidation.html#References}{References}). While \code{y}
+  stratification uses \code{k} partitions along the y-gradient, \code{x} stratification does
   the same for the x-gradient, and \code{both} combines them.
-  \item \code{block} stratification was described in \emph{Muscarella et al. 2014} (see 
-  \href{BIOMOD_CrossValidation.html#References}{References}). Four bins of equal size are 
+  \item \code{block} stratification was described in \emph{Muscarella et al. 2014} (see
+  \href{BIOMOD_CrossValidation.html#References}{References}). Four bins of equal size are
   partitioned (bottom-left, bottom-right, top-left and top-right).
 }
 
-If \code{balance = 'presences'}, presences are divided (balanced) equally over the 
-partitions (e.g. \emph{Fig. 1b in Muscarelly et al. 2014}). Pseudo-absences will however be 
-unbalanced over the partitions especially if the presences are clumped on an edge of the 
+If \code{balance = 'presences'}, presences are divided (balanced) equally over the
+partitions (e.g. \emph{Fig. 1b in Muscarelly et al. 2014}). Pseudo-absences will however be
+unbalanced over the partitions especially if the presences are clumped on an edge of the
 study area.
 
-If \code{balance = 'absences'}, absences (resp. pseudo-absences or background) are divided 
-(balanced) as equally as possible between the partitions (geographical balanced bins given 
-that absences are spread over the study area equally, approach similar to \emph{Fig. 1 in 
-Wenger et Olden 2012}). Presences will however be unbalanced over the partitions especially 
+If \code{balance = 'absences'}, absences (resp. pseudo-absences or background) are divided
+(balanced) as equally as possible between the partitions (geographical balanced bins given
+that absences are spread over the study area equally, approach similar to \emph{Fig. 1 in
+Wenger et Olden 2012}). Presences will however be unbalanced over the partitions especially
 if the presences are clumped on an edge of the study area.
 }
 \examples{
@@ -101,7 +101,7 @@ myBiomodData <- BIOMOD_FormatingData(resp.var = myResp,
 # Create default modeling options
 myBiomodOptions <- BIOMOD_ModelingOptions()
 
- 
+
 # ---------------------------------------------------------------
 # Create the different validation datasets
 myBiomodCV <- BIOMOD_CrossValidation(bm.format = myBiomodData)
@@ -145,17 +145,17 @@ boxplot(myEval$Testing.data ~ interaction(myEval$Algo, myEval$CV.strategy),
 }
 \references{
 \itemize{
-  \item Muscarella, R., Galante, P.J., Soley-Guardia, M., Boria, R.A., Kass, J.M., Uriarte, M. 
-  & Anderson, R.P. (2014). ENMeval: An R package for conducting spatially independent 
-  evaluations and estimating optimal model complexity for Maxent ecological niche models. 
+  \item Muscarella, R., Galante, P.J., Soley-Guardia, M., Boria, R.A., Kass, J.M., Uriarte, M.
+  & Anderson, R.P. (2014). ENMeval: An R package for conducting spatially independent
+  evaluations and estimating optimal model complexity for Maxent ecological niche models.
   \emph{Methods in Ecology and Evolution}, \bold{5}, 1198-1205.
-  \item Wenger, S.J. & Olden, J.D. (2012). Assessing transferability of ecological models: an 
-  underappreciated aspect of statistical validation. \emph{Methods in Ecology and Evolution}, 
+  \item Wenger, S.J. & Olden, J.D. (2012). Assessing transferability of ecological models: an
+  underappreciated aspect of statistical validation. \emph{Methods in Ecology and Evolution},
   \bold{3}, 260-267.
 }
 }
 \seealso{
-\code{\link[ENMeval]{get.block}}, \code{\link[dismo]{kfold}}, 
+\code{\link[ENMeval]{get.block}}, \code{\link[dismo]{kfold}},
 \code{\link{BIOMOD_FormatingData}}, \code{\link{BIOMOD_Modeling}}
 
 Other Main functions: 

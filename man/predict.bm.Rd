@@ -61,13 +61,13 @@
 \arguments{
 \item{object}{a \code{\link{biomod2_model}} object}
 
-\item{newdata}{a \code{data.frame} or \code{\link[raster:stack]{RasterStack}} object 
+\item{newdata}{a \code{data.frame} or \code{\link[raster:stack]{RasterStack}} object
 containing data for new predictions}
 
 \item{\ldots}{(\emph{optional)})}
 }
 \description{
-This function allows the user to predict single models from 
+This function allows the user to predict single models from
 \code{\link{biomod2_model}} on (new) explanatory variables.
 }
 \seealso{

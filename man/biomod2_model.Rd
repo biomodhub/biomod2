@@ -19,8 +19,8 @@
 Class created by \code{\link{BIOMOD_Modeling}} and \code{\link{bm_RunModel}}
 }
 \details{
-\code{biomod2_model} is the basic object for \pkg{biomod2} single species distribution models. 
-\cr All listed classes below are derived from \code{biomod2_model}, and have a 
+\code{biomod2_model} is the basic object for \pkg{biomod2} single species distribution models.
+\cr All listed classes below are derived from \code{biomod2_model}, and have a
 \code{model_class} slot specific value :
 
 \itemize{
@@ -31,7 +31,7 @@ Class created by \code{\link{BIOMOD_Modeling}} and \code{\link{bm_RunModel}}
   \item{\code{GLM_biomod2_model} : }{\code{model_class} is \code{GLM}}
   \item{\code{MARS_biomod2_model} : }{\code{model_class} is \code{MARS}}
   \item{\code{MAXENT.Phillips_biomod2_model} : }{\code{model_class} is \code{MAXENT.Phillips}}
-  \item{\code{MAXENT.Phillips.2_biomod2_model} : }{\code{model_class} is 
+  \item{\code{MAXENT.Phillips.2_biomod2_model} : }{\code{model_class} is
   \code{MAXENT.Phillips.2}}
   \item{\code{RF_biomod2_model} : }{\code{model_class} is \code{RF}}
   \item{\code{SRE_biomod2_model} : }{\code{model_class} is \code{SRE}}

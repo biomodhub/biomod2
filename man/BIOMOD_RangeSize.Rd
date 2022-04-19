@@ -22,39 +22,39 @@ BIOMOD_RangeSize(proj.current, proj.future)
 \S4method{BIOMOD_RangeSize}{RasterLayer,RasterLayer}(proj.current, proj.future)
 }
 \arguments{
-\item{proj.current}{an \code{array}, \code{data.frame}, \code{\link[raster:stack]{RasterLayer}} 
-or \code{\link[raster:stack]{RasterStack}} object containing the initial binary projection(s) 
+\item{proj.current}{an \code{array}, \code{data.frame}, \code{\link[raster:stack]{RasterLayer}}
+or \code{\link[raster:stack]{RasterStack}} object containing the initial binary projection(s)
 of the (ensemble) species distribution model(s)}
 
-\item{proj.future}{an \code{array}, \code{data.frame}, \code{\link[raster:stack]{RasterLayer}} 
-or \code{\link[raster:stack]{RasterStack}} object containing the final binary projection(s) 
+\item{proj.future}{an \code{array}, \code{data.frame}, \code{\link[raster:stack]{RasterLayer}}
+or \code{\link[raster:stack]{RasterStack}} object containing the final binary projection(s)
 of the (ensemble) species distribution model(s)}
 }
 \value{
 A \code{list} containing two objects :
 \describe{
-  \item{Compt.By.Species}{a \code{data.frame} containing the summary of range change for each 
+  \item{Compt.By.Species}{a \code{data.frame} containing the summary of range change for each
   comparison
   \itemize{
     \item{\code{Loss} : }{number of pixels predicted to be lost}
     \item{\code{Stable0} : }{number of pixels not currently occupied and not predicted to be}
-    \item{\code{Stable1} : }{number of pixels currently occupied and predicted to remain 
+    \item{\code{Stable1} : }{number of pixels currently occupied and predicted to remain
     occupied}
     \item{\code{Gain} : }{number of pixels predicted to be gained}
-    \item{\code{PercLoss} : }{percentage of pixels currently occupied and predicted to be lost 
+    \item{\code{PercLoss} : }{percentage of pixels currently occupied and predicted to be lost
     (\code{Loss / (Loss + Stable1)})}
-    \item{\code{PercGain} : }{percentage of pixels predicted to be gained compare to the 
+    \item{\code{PercGain} : }{percentage of pixels predicted to be gained compare to the
     number of pixels currently occupied (\code{Gain / (Loss + Stable1)})}
-    \item{\code{SpeciesRangeChange} : }{percentage of pixels predicted to change (loss or gain) 
+    \item{\code{SpeciesRangeChange} : }{percentage of pixels predicted to change (loss or gain)
     compare to the number of pixels currently occupied (\code{PercGain - PercLoss})}
     \item{\code{CurrentRangeSize} : }{number of pixels currently occupied}
-    \item{\code{FutureRangeSize0Disp} : }{number of pixels predicted to be occupied, assuming 
+    \item{\code{FutureRangeSize0Disp} : }{number of pixels predicted to be occupied, assuming
     no migration}
-    \item{\code{FutureRangeSize1Disp} : }{number of pixels predicted to be occupied, assuming 
+    \item{\code{FutureRangeSize1Disp} : }{number of pixels predicted to be occupied, assuming
     migration}
   }
   }
-  \item{Diff.By.Pixel}{an object in the same form than the input data (\code{proj.current} and 
+  \item{Diff.By.Pixel}{an object in the same form than the input data (\code{proj.current} and
   \code{proj.future}) and containing a value for each point/pixel of each comparison among :
   \itemize{
     \item \code{-2} : predicted to be lost
@@ -66,13 +66,13 @@ A \code{list} containing two objects :
 }
 }
 \description{
-This function allows to calculate the absolute number of locations (pixels) lost, 
-stable and gained, as well as the corresponding relative proportions, between two (or more) 
-binary projections of (ensemble) species distribution models (\emph{which can represent new 
+This function allows to calculate the absolute number of locations (pixels) lost,
+stable and gained, as well as the corresponding relative proportions, between two (or more)
+binary projections of (ensemble) species distribution models (\emph{which can represent new
 time scales or environmental scenarios for example}).
 }
 \details{
-Note that \bold{this function is only relevant to compare binary projections, made on the 
+Note that \bold{this function is only relevant to compare binary projections, made on the
 same area with the same resolution}.
 
 \code{Diff.By.Pixel} object is obtained by applying the simple following formula :
@@ -143,8 +143,8 @@ myBiomodProjectionFuture <- BIOMOD_Projection(bm.mod = myBiomodModelOut,
                                               build.clamping.mask = TRUE)
 
 # Load current and future binary projections
-proj.current <- stack("GuloGulo/proj_Current/proj_Current_GuloGulo_TSSbin.grd")
-proj.future <- stack("GuloGulo/proj_Future/proj_Future_GuloGulo_TSSbin.grd")
+proj.current <- raster::stack("GuloGulo/proj_Current/proj_Current_GuloGulo_TSSbin.grd")
+proj.future <- raster::stack("GuloGulo/proj_Future/proj_Future_GuloGulo_TSSbin.grd")
 
 # Compute differences
 myBiomodRangeSize <- BIOMOD_RangeSize(proj.current = proj.current, proj.future = proj.future)
@@ -152,13 +152,13 @@ myBiomodRangeSize <- BIOMOD_RangeSize(proj.current = proj.current, proj.future =
 myBiomodRangeSize$Compt.By.Models
 plot(myBiomodRangeSize$Diff.By.Pixel)
 
-# Represent main results 
+# Represent main results
 bm_PlotRangeSize(bm.range = myBiomodRangeSize)
 
 
 }
 \seealso{
-\code{\link{BIOMOD_Projection}}, \code{\link{BIOMOD_EnsembleForecasting}}, 
+\code{\link{BIOMOD_Projection}}, \code{\link{BIOMOD_EnsembleForecasting}},
 \code{\link{bm_PlotRangeSize}}
 
 Other Main functions: 

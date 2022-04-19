@@ -13,34 +13,34 @@ bm_PlotEvalMean(
 )
 }
 \arguments{
-\item{bm.out}{a \code{\link{BIOMOD.models.out}} or \code{\link{BIOMOD.ensemble.models.out}} 
-object that can be obtained with the \code{\link{BIOMOD_Modeling}} or 
+\item{bm.out}{a \code{\link{BIOMOD.models.out}} or \code{\link{BIOMOD.ensemble.models.out}}
+object that can be obtained with the \code{\link{BIOMOD_Modeling}} or
 \code{\link{BIOMOD_EnsembleModeling}} functions}
 
-\item{metric.eval}{a \code{vector} containing evaluation metric names to be used, must 
-be among \code{ROC}, \code{TSS}, \code{KAPPA}, \code{ACCURACY}, \code{BIAS}, \code{POD}, 
-\code{FAR}, \code{POFD}, \code{SR}, \code{CSI}, \code{ETS}, \code{HK}, \code{HSS}, \code{OR}, 
-\code{ORSS}}
+\item{metric.eval}{a \code{vector} containing evaluation metric names to be used, must
+be among \code{ROC}, \code{TSS}, \code{KAPPA}, \code{ACCURACY}, \code{BIAS}, \code{POD},
+\code{FAR}, \code{POFD}, \code{SR}, \code{CSI}, \code{ETS}, \code{HK}, \code{HSS}, \code{OR},
+\code{ORSS}, \code{R2} or \code{RMSE} (the last two only for continuous data)}
 
-\item{group.by}{a \code{character} corresponding to the way kept models will be combined to 
-compute mean and sd evaluation scores, must be among \code{model}, \code{algo}, \code{run}, 
+\item{group.by}{a \code{character} corresponding to the way kept models will be combined to
+compute mean and sd evaluation scores, must be among \code{model}, \code{algo}, \code{run},
 \code{dataset}}
 
-\item{do.plot}{(\emph{optional, default} \code{TRUE}) \cr 
+\item{do.plot}{(\emph{optional, default} \code{TRUE}) \cr
 A \code{logical} value defining whether the plot is to be rendered or not}
 
 \item{\ldots}{some additional arguments (see \href{bm_PlotEvalMean.html#details}{Details})}
 }
 \value{
-A \code{ggplot} object representing mean and standard deviation of evaluation scores 
+A \code{ggplot} object representing mean and standard deviation of evaluation scores
 according to 2 different evaluation methods.
 }
 \description{
-This function represents mean evaluation scores (and their standard deviation) 
-of species distribution models, from \code{\link{BIOMOD.models.out}} or 
-\code{\link{BIOMOD.ensemble.models.out}} objects that can be obtained from 
-\code{\link{BIOMOD_Modeling}} or \code{\link{BIOMOD_EnsembleModeling}} functions. Scores are 
-represented according to 2 different evaluation methods, and models can be grouped 
+This function represents mean evaluation scores (and their standard deviation)
+of species distribution models, from \code{\link{BIOMOD.models.out}} or
+\code{\link{BIOMOD.ensemble.models.out}} objects that can be obtained from
+\code{\link{BIOMOD_Modeling}} or \code{\link{BIOMOD_EnsembleModeling}} functions. Scores are
+represented according to 2 different evaluation methods, and models can be grouped
 (see \href{bm_PlotEvalMean.html#details}{Details}).
 }
 \details{
@@ -105,8 +105,8 @@ bm_PlotEvalMean(bm.out = myBiomodModelOut)
 
 }
 \seealso{
-\code{\link{BIOMOD.models.out}}, \code{\link{BIOMOD.ensemble.models.out}}, 
-\code{\link{BIOMOD_Modeling}}, \code{\link{BIOMOD_EnsembleModeling}}, 
+\code{\link{BIOMOD.models.out}}, \code{\link{BIOMOD.ensemble.models.out}},
+\code{\link{BIOMOD_Modeling}}, \code{\link{BIOMOD_EnsembleModeling}},
 \code{\link{get_evaluations}}
 
 Other Secundary functions: 

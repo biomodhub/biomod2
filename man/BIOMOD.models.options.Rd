@@ -5,7 +5,7 @@
 \alias{BIOMOD.models.options}
 \title{\code{BIOMOD_ModelingOptions()} output object class}
 \description{
-Class returned by \code{\link{BIOMOD_ModelingOptions}}, and used by 
+Class returned by \code{\link{BIOMOD_ModelingOptions}}, and used by
 \code{\link{BIOMOD_Tuning}} and \code{\link{BIOMOD_Modeling}}
 }
 \section{Slots}{
@@ -48,7 +48,7 @@ myBiomodOptions
 
 }
 \seealso{
-\code{\link{BIOMOD_ModelingOptions}}, \code{\link{BIOMOD_Tuning}}, 
+\code{\link{BIOMOD_ModelingOptions}}, \code{\link{BIOMOD_Tuning}},
 \code{\link{BIOMOD_Modeling}}
 
 Other Toolbox objects: 

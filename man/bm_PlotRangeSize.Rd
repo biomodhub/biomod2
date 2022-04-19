@@ -17,45 +17,45 @@ bm_PlotRangeSize(
 \arguments{
 \item{bm.range}{an object returned by the \code{\link{BIOMOD_RangeSize}} function}
 
-\item{do.count}{(\emph{optional, default} \code{TRUE}) \cr 
+\item{do.count}{(\emph{optional, default} \code{TRUE}) \cr
 A \code{logical} value defining whether the count plot is to be computed or not}
 
-\item{do.perc}{(\emph{optional, default} \code{TRUE}) \cr 
+\item{do.perc}{(\emph{optional, default} \code{TRUE}) \cr
 A \code{logical} value defining whether the percentage plot is to be computed or not}
 
-\item{do.maps}{(\emph{optional, default} \code{TRUE}) \cr 
+\item{do.maps}{(\emph{optional, default} \code{TRUE}) \cr
 A \code{logical} value defining whether the maps plot is to be computed or not}
 
-\item{do.mean}{(\emph{optional, default} \code{TRUE}) \cr 
+\item{do.mean}{(\emph{optional, default} \code{TRUE}) \cr
 A \code{logical} value defining whether the mean maps plot is to be computed or not}
 
-\item{do.plot}{(\emph{optional, default} \code{TRUE}) \cr 
+\item{do.plot}{(\emph{optional, default} \code{TRUE}) \cr
 A \code{logical} value defining whether the plots are to be rendered or not}
 
-\item{row.names}{(\emph{optional, default} \code{c('Species', 'Dataset', 'Run', 'Algo')}) \cr 
-A \code{vector} containing tags matching \code{bm.range$Compt.By.Models} rownames splitted by 
+\item{row.names}{(\emph{optional, default} \code{c('Species', 'Dataset', 'Run', 'Algo')}) \cr
+A \code{vector} containing tags matching \code{bm.range$Compt.By.Models} rownames splitted by
 '_' character}
 }
 \value{
 A \code{list} containing \code{ggplot} objects representing species range change.
 }
 \description{
-This function represents species range change from object that can be obtained 
-from \code{\link{BIOMOD_RangeSize}} function. Several graphics can be obtained, representing 
-global counts or proportions of gains / losses, as well as spatial representations (see 
+This function represents species range change from object that can be obtained
+from \code{\link{BIOMOD_RangeSize}} function. Several graphics can be obtained, representing
+global counts or proportions of gains / losses, as well as spatial representations (see
 \href{bm_PlotRangeSize.html#details}{Details}).
 }
 \details{
 4 plots can be obtained with this function :
 \describe{
-  \item{Count barplot}{representing absolute number of locations (pixels) lost, stable and 
+  \item{Count barplot}{representing absolute number of locations (pixels) lost, stable and
   gained}
-  \item{Percentage barplot}{representing percentage of locations (pixels) lost, stable, and 
+  \item{Percentage barplot}{representing percentage of locations (pixels) lost, stable, and
   the corresponding Species Range Change (\code{PercGain - PercLoss})}
-  \item{SRC models maps}{representing spatially locations (pixels) lost, stable and 
+  \item{SRC models maps}{representing spatially locations (pixels) lost, stable and
   gained for each single distribution model}
-  \item{SRC community averaging maps}{representing spatially locations (pixels) lost, stable 
-  and gained, taking the majoritary value across single distribution models (and representing 
+  \item{SRC community averaging maps}{representing spatially locations (pixels) lost, stable
+  and gained, taking the majoritary value across single distribution models (and representing
   the percentage of models' agreement)}
 }
 \emph{Please see \code{\link{BIOMOD_RangeSize}} function for more details about the values.}
@@ -125,8 +125,8 @@ myBiomodProjectionFuture <- BIOMOD_Projection(bm.mod = myBiomodModelOut,
                                               build.clamping.mask = TRUE)
 
 # Load current and future binary projections
-CurrentProj <- stack("GuloGulo/proj_Current/proj_Current_GuloGulo_TSSbin.grd")
-FutureProj <- stack("GuloGulo/proj_Future/proj_Future_GuloGulo_TSSbin.grd")
+CurrentProj <- raster::stack("GuloGulo/proj_Current/proj_Current_GuloGulo_TSSbin.grd")
+FutureProj <- raster::stack("GuloGulo/proj_Future/proj_Future_GuloGulo_TSSbin.grd")
 
 # Compute differences
 myBiomodRangeSize <- BIOMOD_RangeSize(proj.current = CurrentProj, proj.future = FutureProj)
@@ -136,7 +136,7 @@ myBiomodRangeSize <- BIOMOD_RangeSize(proj.current = CurrentProj, proj.future = 
 myBiomodRangeSize$Compt.By.Models
 plot(myBiomodRangeSize$Diff.By.Pixel)
 
-# Represent main results 
+# Represent main results
 bm_PlotRangeSize(bm.range = myBiomodRangeSize)
 
 

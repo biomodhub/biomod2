@@ -24,7 +24,8 @@
   PA.dist.max = NULL,
   PA.sre.quant = 0.025,
   PA.user.table = NULL,
-  na.rm = TRUE
+  na.rm = TRUE,
+  binaryResp = TRUE
 )
 
 \S4method{BIOMOD.formated.data.PA}{numeric,RasterStack}(
@@ -42,7 +43,8 @@
   PA.dist.max = NULL,
   PA.sre.quant = 0.025,
   PA.user.table = NULL,
-  na.rm = TRUE
+  na.rm = TRUE,
+  binaryResp = TRUE
 )
 
 \S4method{plot}{BIOMOD.formated.data.PA,missing}(x, coord = NULL, col = NULL)
@@ -50,91 +52,94 @@
 \S4method{show}{BIOMOD.formated.data.PA}(object)
 }
 \arguments{
-\item{sp}{a \code{vector}, \code{\link[sp]{SpatialPoints}} (\emph{if presence-only}) or 
-\code{\link[sp]{SpatialPointsDataFrame}} object containing binary data (\code{0} : absence, 
-\code{1} : presence, \code{NA} : indeterminate) for a single species that will be used to 
+\item{sp}{a \code{vector}, \code{\link[sp]{SpatialPoints}} (\emph{if presence-only}) or
+\code{\link[sp]{SpatialPointsDataFrame}} object containing binary data (\code{0} : absence,
+\code{1} : presence, \code{NA} : indeterminate) for a single species that will be used to
 build the species distribution model(s)}
 
-\item{env}{a \code{matrix}, \code{data.frame}, \code{\link[sp]{SpatialPointsDataFrame}} 
-or \code{\link[raster:stack]{RasterStack}} object containing the explanatory variables 
+\item{env}{a \code{matrix}, \code{data.frame}, \code{\link[sp]{SpatialPointsDataFrame}}
+or \code{\link[raster:stack]{RasterStack}} object containing the explanatory variables
 (in columns or layers) that will be used to build the species distribution model(s)}
 
-\item{xy}{(\emph{optional, default} \code{NULL}) \cr 
-If \code{resp.var} is a \code{vector}, a 2-columns \code{matrix} or \code{data.frame} 
-containing the corresponding \code{X} and \code{Y} coordinates that will be used to build the 
+\item{xy}{(\emph{optional, default} \code{NULL}) \cr
+If \code{resp.var} is a \code{vector}, a 2-columns \code{matrix} or \code{data.frame}
+containing the corresponding \code{X} and \code{Y} coordinates that will be used to build the
 species distribution model(s)}
 
 \item{sp.name}{a \code{character} corresponding to the species name}
 
-\item{eval.sp}{(\emph{optional, default} \code{NULL}) \cr 
-A \code{vector}, \code{\link[sp]{SpatialPoints}} (\emph{if presence-only}) or 
-\code{\link[sp]{SpatialPointsDataFrame}} object containing binary data (\code{0} : absence, 
-\code{1} : presence, \code{NA} : indeterminate) for a single species that will be used to 
+\item{eval.sp}{(\emph{optional, default} \code{NULL}) \cr
+A \code{vector}, \code{\link[sp]{SpatialPoints}} (\emph{if presence-only}) or
+\code{\link[sp]{SpatialPointsDataFrame}} object containing binary data (\code{0} : absence,
+\code{1} : presence, \code{NA} : indeterminate) for a single species that will be used to
 evaluate the species distribution model(s) with independent data}
 
-\item{eval.env}{(\emph{optional, default} \code{NULL}) \cr 
-A \code{matrix}, \code{data.frame}, \code{\link[sp]{SpatialPointsDataFrame}} or 
-\code{\link[raster:stack]{RasterStack}} object containing the explanatory variables (in 
-columns or layers) that will be used to evaluate the species distribution model(s) with 
+\item{eval.env}{(\emph{optional, default} \code{NULL}) \cr
+A \code{matrix}, \code{data.frame}, \code{\link[sp]{SpatialPointsDataFrame}} or
+\code{\link[raster:stack]{RasterStack}} object containing the explanatory variables (in
+columns or layers) that will be used to evaluate the species distribution model(s) with
 independent data}
 
-\item{eval.xy}{(\emph{optional, default} \code{NULL}) \cr 
-If \code{resp.var} is a \code{vector}, a 2-columns \code{matrix} or \code{data.frame} 
-containing the corresponding \code{X} and \code{Y} coordinates that will be used to evaluate 
+\item{eval.xy}{(\emph{optional, default} \code{NULL}) \cr
+If \code{resp.var} is a \code{vector}, a 2-columns \code{matrix} or \code{data.frame}
+containing the corresponding \code{X} and \code{Y} coordinates that will be used to evaluate
 the species distribution model(s) with independent data}
 
-\item{PA.nb.rep}{(\emph{optional, default} \code{0}) \cr 
-If pseudo-absence selection, an \code{integer} corresponding to the number of sets 
+\item{PA.nb.rep}{(\emph{optional, default} \code{0}) \cr
+If pseudo-absence selection, an \code{integer} corresponding to the number of sets
 (repetitions) of pseudo-absence points that will be drawn}
 
-\item{PA.strategy}{(\emph{optional, default} \code{NULL}) \cr 
-If pseudo-absence selection, a \code{character} defining the strategy that will be used to 
-select the pseudo-absence points. Must be \code{random}, \code{sre}, \code{disk} or 
+\item{PA.strategy}{(\emph{optional, default} \code{NULL}) \cr
+If pseudo-absence selection, a \code{character} defining the strategy that will be used to
+select the pseudo-absence points. Must be \code{random}, \code{sre}, \code{disk} or
 \code{user.defined} (see \href{BIOMOD_FormatingData.html#details}{Details})}
 
-\item{PA.nb.absences}{(\emph{optional, default} \code{0}) \cr 
-If pseudo-absence selection, and \code{PA.strategy = 'random'} or \code{PA.strategy = 'sre'} 
-or \code{PA.strategy = 'disk'}, an \code{integer} corresponding to the number of pseudo-absence 
+\item{PA.nb.absences}{(\emph{optional, default} \code{0}) \cr
+If pseudo-absence selection, and \code{PA.strategy = 'random'} or \code{PA.strategy = 'sre'}
+or \code{PA.strategy = 'disk'}, an \code{integer} corresponding to the number of pseudo-absence
 points that will be selected for each pseudo-absence repetition (true absences included)}
 
-\item{PA.dist.min}{(\emph{optional, default} \code{0}) \cr 
-If pseudo-absence selection and \code{PA.strategy = 'disk'}, a \code{numeric} defining the 
-minimal distance to presence points used to make the \code{disk} pseudo-absence selection 
+\item{PA.dist.min}{(\emph{optional, default} \code{0}) \cr
+If pseudo-absence selection and \code{PA.strategy = 'disk'}, a \code{numeric} defining the
+minimal distance to presence points used to make the \code{disk} pseudo-absence selection
 (in meters, see \href{BIOMOD_FormatingData.html#details}{Details})}
 
-\item{PA.dist.max}{(\emph{optional, default} \code{0}) \cr 
-If pseudo-absence selection and \code{PA.strategy = 'disk'}, a \code{numeric} defining the 
-maximal distance to presence points used to make the \code{disk} pseudo-absence selection 
+\item{PA.dist.max}{(\emph{optional, default} \code{0}) \cr
+If pseudo-absence selection and \code{PA.strategy = 'disk'}, a \code{numeric} defining the
+maximal distance to presence points used to make the \code{disk} pseudo-absence selection
 (in meters, see \href{BIOMOD_FormatingData.html#details}{Details})}
 
-\item{PA.sre.quant}{(\emph{optional, default} \code{0}) \cr 
-If pseudo-absence selection and \code{PA.strategy = 'sre'}, a \code{numeric} between \code{0} 
-and \code{0.5} defining the half-quantile used to make the \code{sre} pseudo-absence selection 
+\item{PA.sre.quant}{(\emph{optional, default} \code{0}) \cr
+If pseudo-absence selection and \code{PA.strategy = 'sre'}, a \code{numeric} between \code{0}
+and \code{0.5} defining the half-quantile used to make the \code{sre} pseudo-absence selection
 (see \href{BIOMOD_FormatingData.html#details}{Details})}
 
-\item{PA.user.table}{(\emph{optional, default} \code{NULL}) \cr 
-If pseudo-absence selection and \code{PA.strategy = 'user.defined'}, a \code{matrix} or 
-\code{data.frame} with as many rows as \code{resp.var} values, as many columns as 
-\code{PA.nb.rep}, and containing \code{TRUE} or \code{FALSE} values defining which points 
-will be used to build the species distribution model(s) for each repetition (see 
+\item{PA.user.table}{(\emph{optional, default} \code{NULL}) \cr
+If pseudo-absence selection and \code{PA.strategy = 'user.defined'}, a \code{matrix} or
+\code{data.frame} with as many rows as \code{resp.var} values, as many columns as
+\code{PA.nb.rep}, and containing \code{TRUE} or \code{FALSE} values defining which points
+will be used to build the species distribution model(s) for each repetition (see
 \href{BIOMOD_FormatingData.html#details}{Details})}
 
-\item{na.rm}{(\emph{optional, default} \code{TRUE}) \cr 
-A \code{logical} value defining whether points having one or several missing values for 
+\item{na.rm}{(\emph{optional, default} \code{TRUE}) \cr
+A \code{logical} value defining whether points having one or several missing values for
 explanatory variables should be removed from the analysis or not}
+
+\item{binaryResp}{is the response variable binary? If so, all values > 0 will be converted
+to 1s and all values <= 0 will be converted to 0s. Defaults to TRUE}
 
 \item{x}{a \code{\link{BIOMOD.formated.data.PA}} object}
 
 \item{coord}{a 2-columns \code{data.frame} containing \code{X} and \code{Y} coordinates for plot}
 
-\item{col}{a \code{vector} containing colors for plot (default : \code{c('green', 'red', 
+\item{col}{a \code{vector} containing colors for plot (default : \code{c('green', 'red',
 'orange', 'grey')})}
 
 \item{object}{a \code{\link{BIOMOD.formated.data.PA}} object}
 }
 \description{
-Class returned by \code{\link{BIOMOD_FormatingData}}, and used by 
-\code{\link{BIOMOD_Tuning}}, \code{\link{BIOMOD_CrossValidation}} and 
+Class returned by \code{\link{BIOMOD_FormatingData}}, and used by
+\code{\link{BIOMOD_Tuning}}, \code{\link{BIOMOD_CrossValidation}} and
 \code{\link{BIOMOD_Modeling}}
 }
 \section{Slots}{
@@ -142,34 +147,34 @@ Class returned by \code{\link{BIOMOD_FormatingData}}, and used by
 \describe{
 \item{\code{sp.name}}{a \code{character} corresponding to the species name}
 
-\item{\code{coord}}{a 2-columns \code{data.frame} containing the corresponding \code{X} and \code{Y} 
+\item{\code{coord}}{a 2-columns \code{data.frame} containing the corresponding \code{X} and \code{Y}
 coordinates}
 
-\item{\code{data.species}}{a \code{vector} containing the species observations (\code{0}, \code{1} or 
+\item{\code{data.species}}{a \code{vector} containing the species observations (\code{0}, \code{1} or
 \code{NA})}
 
 \item{\code{data.env.var}}{a \code{data.frame} containing explanatory variables}
 
-\item{\code{data.mask}}{a \code{\link[raster:stack]{RasterStack}} object containing the mask of the 
+\item{\code{data.mask}}{a \code{\link[raster:stack]{RasterStack}} object containing the mask of the
 studied area}
 
 \item{\code{has.data.eval}}{a \code{logical} value defining whether evaluation data is given}
 
-\item{\code{eval.coord}}{(\emph{optional, default} \code{NULL}) \cr 
-A 2-columns \code{data.frame} containing the corresponding \code{X} and \code{Y} 
+\item{\code{eval.coord}}{(\emph{optional, default} \code{NULL}) \cr
+A 2-columns \code{data.frame} containing the corresponding \code{X} and \code{Y}
 coordinates for evaluation data}
 
-\item{\code{eval.data.species}}{(\emph{optional, default} \code{NULL}) \cr 
-A \code{vector} containing the species observations (\code{0}, \code{1} or \code{NA}) for 
+\item{\code{eval.data.species}}{(\emph{optional, default} \code{NULL}) \cr
+A \code{vector} containing the species observations (\code{0}, \code{1} or \code{NA}) for
 evaluation data}
 
-\item{\code{eval.data.env.var}}{(\emph{optional, default} \code{NULL}) \cr 
+\item{\code{eval.data.env.var}}{(\emph{optional, default} \code{NULL}) \cr
 A \code{data.frame} containing explanatory variables for evaluation data}
 
 \item{\code{PA.strategy}}{a \code{character} corresponding to the pseudo-absence selection strategy}
 
-\item{\code{PA.table}}{a \code{data.frame} containing the corresponding table of selected 
-pseudo-absences (indicated by \code{TRUE} or \code{FALSE}) from the \code{pa.tab} list 
+\item{\code{PA.table}}{a \code{data.frame} containing the corresponding table of selected
+pseudo-absences (indicated by \code{TRUE} or \code{FALSE}) from the \code{pa.tab} list
 element returned by the \code{\link{bm_PseudoAbsences}} function}
 }}
 
@@ -213,8 +218,8 @@ plot(myBiomodData)
 
 }
 \seealso{
-\code{\link{BIOMOD_FormatingData}}, \code{\link{bm_PseudoAbsences}}, 
-\code{\link{BIOMOD_Tuning}}, \code{\link{BIOMOD_CrossValidation}}, 
+\code{\link{BIOMOD_FormatingData}}, \code{\link{bm_PseudoAbsences}},
+\code{\link{BIOMOD_Tuning}}, \code{\link{BIOMOD_CrossValidation}},
 \code{\link{BIOMOD_Modeling}}, \code{\link{bm_RunModelsLoop}}
 
 Other Toolbox objects: 

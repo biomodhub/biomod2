@@ -36,60 +36,60 @@ bm_RunModel(
 )
 }
 \arguments{
-\item{bm.format}{a \code{\link{BIOMOD.formated.data}} or \code{\link{BIOMOD.formated.data.PA}} 
+\item{bm.format}{a \code{\link{BIOMOD.formated.data}} or \code{\link{BIOMOD.formated.data.PA}}
 object returned by the \code{\link{BIOMOD_FormatingData}} function}
 
-\item{modeling.id}{a \code{character} corresponding to the name (ID) of the simulation set 
+\item{modeling.id}{a \code{character} corresponding to the name (ID) of the simulation set
 (\emph{a random number by default})}
 
-\item{model}{a \code{character} corresponding to the model name to be computed, must be either 
-\code{GLM}, \code{GBM}, \code{GAM}, \code{CTA}, \code{ANN}, \code{SRE}, \code{FDA}, 
+\item{model}{a \code{character} corresponding to the model name to be computed, must be either
+\code{GLM}, \code{GBM}, \code{GAM}, \code{CTA}, \code{ANN}, \code{SRE}, \code{FDA},
 \code{MARS}, \code{RF}, \code{MAXENT.Phillips}, \code{MAXENT.Phillips.2}}
 
 \item{bm.options}{a \code{\link{BIOMOD.models.options}} object returned by the
 \code{\link{BIOMOD_ModelingOptions}} function}
 
-\item{metric.eval}{a \code{vector} containing evaluation metric names to be used, must 
-be among \code{ROC}, \code{TSS}, \code{KAPPA}, \code{ACCURACY}, \code{BIAS}, \code{POD}, 
-\code{FAR}, \code{POFD}, \code{SR}, \code{CSI}, \code{ETS}, \code{HK}, \code{HSS}, \code{OR}, 
-\code{ORSS}}
+\item{metric.eval}{a \code{vector} containing evaluation metric names to be used, must
+be among \code{ROC}, \code{TSS}, \code{KAPPA}, \code{ACCURACY}, \code{BIAS}, \code{POD},
+\code{FAR}, \code{POFD}, \code{SR}, \code{CSI}, \code{ETS}, \code{HK}, \code{HSS}, \code{OR},
+\code{ORSS}, \code{R2} or \code{RMSE} (the last two only for continuous data)}
 
-\item{var.import}{(\emph{optional, default} \code{NULL}) \cr 
-An \code{integer} corresponding to the number of permutations to be done for each variable to 
+\item{var.import}{(\emph{optional, default} \code{NULL}) \cr
+An \code{integer} corresponding to the number of permutations to be done for each variable to
 estimate variable importance}
 
-\item{save.output}{(\emph{optional, default} \code{TRUE}) \cr 
-A \code{logical} value defining whether all outputs should be saved on hard drive or not 
+\item{save.output}{(\emph{optional, default} \code{TRUE}) \cr
+A \code{logical} value defining whether all outputs should be saved on hard drive or not
 (\emph{! strongly recommended !})}
 
-\item{scale.models}{(\emph{optional, default} \code{FALSE}) \cr 
-A \code{logical} value defining whether all models predictions should be scaled with a 
+\item{scale.models}{(\emph{optional, default} \code{FALSE}) \cr
+A \code{logical} value defining whether all models predictions should be scaled with a
 binomial GLM or not}
 
-\item{nb.cpu}{(\emph{optional, default} \code{1}) \cr 
-An \code{integer} value corresponding to the number of computing resources to be used to 
+\item{nb.cpu}{(\emph{optional, default} \code{1}) \cr
+An \code{integer} value corresponding to the number of computing resources to be used to
 parallelize the single models computation}
 
-\item{Data}{a \code{data.frame} containing \code{data.species} and \code{data.env.var} slots 
+\item{Data}{a \code{data.frame} containing \code{data.species} and \code{data.env.var} slots
 of \code{bm.format} parameter}
 
-\item{calib.lines}{a \code{data.frame} containing \code{data.split.table} slot of 
-\code{bm.format} parameter, or an extraction of \code{data.species} slot (for a specific PA 
+\item{calib.lines}{a \code{data.frame} containing \code{data.split.table} slot of
+\code{bm.format} parameter, or an extraction of \code{data.species} slot (for a specific PA
 dataset extracted from \code{PA.table} slot)}
 
-\item{weights}{a \code{vector} of \code{numeric} values corresponding to observation weights 
+\item{weights}{a \code{vector} of \code{numeric} values corresponding to observation weights
 (one per observation)}
 
 \item{nam}{a \code{character} corresponding to the model to be run (name + run.id)}
 
-\item{xy}{a \code{data.frame} containing \code{coord} slot of \code{bm.format} 
-parameter (for a specific PA dataset extracted from \code{PA.table} slot of \code{bm.format} 
+\item{xy}{a \code{data.frame} containing \code{coord} slot of \code{bm.format}
+parameter (for a specific PA dataset extracted from \code{PA.table} slot of \code{bm.format}
 parameter)}
 
-\item{eval.data}{a \code{data.frame} containing \code{eval.data.species} and 
+\item{eval.data}{a \code{data.frame} containing \code{eval.data.species} and
 \code{eval.data.env.var} slots of \code{bm.format} parameter}
 
-\item{eval.xy}{a \code{data.frame} containing \code{eval.coord} slot of \code{bm.format} 
+\item{eval.xy}{a \code{data.frame} containing \code{eval.coord} slot of \code{bm.format}
 parameter}
 }
 \value{
@@ -99,23 +99,23 @@ A \code{list} containing for each model a \code{list} containing the following e
   \item{\code{calib.failure} : }{the name of incorrectly computed model}
   \item{\code{pred} : }{the prediction outputs for calibration data}
   \item{\code{pred.eval} : }{the prediction outputs for validation data}
-  \item{\code{evaluation} : }{the evaluation outputs returned by the 
+  \item{\code{evaluation} : }{the evaluation outputs returned by the
   \code{\link{bm_FindOptimStat}} function}
-  \item{\code{var.import} : }{the mean of variables importance returned by the 
+  \item{\code{var.import} : }{the mean of variables importance returned by the
   \code{\link{bm_VariablesImportance}} function}
 }
 }
 \description{
-This internal \pkg{biomod2} function allows the user to compute all single 
+This internal \pkg{biomod2} function allows the user to compute all single
 species distribution models (asked by the \code{\link{BIOMOD_Modeling}} function).
 }
 \seealso{
-\code{\link[rpart]{rpart}}, \code{\link[rpart]{prune}}, \code{\link[gbm]{gbm}}, 
-\code{\link[MASS]{stepAIC}}, \code{\link[nnet]{nnet}}, \code{\link[earth]{earth}}, 
-\code{\link[mda]{fda}}, \code{\link[mda]{mars}}, \code{\link[maxnet]{maxnet}}, 
-\code{\link[randomForest]{randomForest}}, 
-\code{\link{BIOMOD_ModelingOptions}}, \code{\link{BIOMOD_Modeling}}, 
-\code{\link{bm_MakeFormula}}, \code{\link{bm_SampleFactorLevels}}, 
+\code{\link[rpart]{rpart}}, \code{\link[rpart]{prune}}, \code{\link[gbm]{gbm}},
+\code{\link[MASS]{stepAIC}}, \code{\link[nnet]{nnet}}, \code{\link[earth]{earth}},
+\code{\link[mda]{fda}}, \code{\link[mda]{mars}}, \code{\link[maxnet]{maxnet}},
+\code{\link[randomForest]{randomForest}},
+\code{\link{BIOMOD_ModelingOptions}}, \code{\link{BIOMOD_Modeling}},
+\code{\link{bm_MakeFormula}}, \code{\link{bm_SampleFactorLevels}},
 \code{\link{bm_FindOptimStat}}, \code{\link{bm_VariablesImportance}}
 
 Other Secundary functions: 
