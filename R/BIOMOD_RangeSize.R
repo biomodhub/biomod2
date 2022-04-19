@@ -137,8 +137,8 @@
 ##'                                               build.clamping.mask = TRUE)
 ##'
 ##' # Load current and future binary projections
-##' proj.current <- stack("GuloGulo/proj_Current/proj_Current_GuloGulo_TSSbin.grd")
-##' proj.future <- stack("GuloGulo/proj_Future/proj_Future_GuloGulo_TSSbin.grd")
+##' proj.current <- raster::stack("GuloGulo/proj_Current/proj_Current_GuloGulo_TSSbin.grd")
+##' proj.future <- raster::stack("GuloGulo/proj_Future/proj_Future_GuloGulo_TSSbin.grd")
 ##'
 ##' # Compute differences
 ##' myBiomodRangeSize <- BIOMOD_RangeSize(proj.current = proj.current, proj.future = proj.future)
