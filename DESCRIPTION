@@ -40,13 +40,11 @@ Imports:
     abind,
     foreach,
     ggplot2,
-    patchwork,
     nnet,
     gbm (>= 2.1.3),
     mda,
     randomForest,
     maxnet,
-    caret,
     rpart,
     MASS,
     pROC (>= 1.15.0),
@@ -60,9 +58,11 @@ Suggests:
     gam,
     mgcv,
     car,
+    caret,
     ecospat,
     doParallel,
     rasterVis,
+    ggpubr,
     testthat
 License: GPL-3
 RoxygenNote: 7.1.2
