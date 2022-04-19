@@ -63,7 +63,8 @@ Suggests:
     car,
     doParallel,
     rasterVis,
-    testthat
+    testthat,
+    ecospat
 License: GPL-3
 RoxygenNote: 7.1.2
 Collate: 
