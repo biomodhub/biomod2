@@ -73,6 +73,8 @@
 ##' A \code{logical} value defining whether points having one or several missing values for
 ##' explanatory variables should be removed from the analysis or not
 ##'
+##' @param binaryResp is the response variable binary? If so, all values > 0 will be converted
+##' to 1s and all values <= 0 will be converted to 0s. Defaults to TRUE
 ##'
 ##' @return
 ##'

@@ -54,6 +54,8 @@
 ##' @param x a \code{\link{BIOMOD.formated.data.PA}} object
 ##' @param object a \code{\link{BIOMOD.formated.data.PA}} object
 ##'
+##' @param binaryResp is the response variable binary? If so, all values > 0 will be converted
+##' to 1s and all values <= 0 will be converted to 0s. Defaults to TRUE
 ##'
 ##' @slot sp.name a \code{character} corresponding to the species name
 ##' @slot coord a 2-columns \code{data.frame} containing the corresponding \code{X} and \code{Y}
@@ -496,6 +498,9 @@ setMethod('show', signature('BIOMOD.formated.data'),
 ##' \code{PA.nb.rep}, and containing \code{TRUE} or \code{FALSE} values defining which points
 ##' will be used to build the species distribution model(s) for each repetition (see
 ##' \href{BIOMOD_FormatingData.html#details}{Details})
+##'
+##' @param binaryResp is the response variable binary? If so, all values > 0 will be converted
+##' to 1s and all values <= 0 will be converted to 0s. Defaults to TRUE
 ##'
 ##' @param coord a 2-columns \code{data.frame} containing \code{X} and \code{Y} coordinates for plot
 ##' @param col a \code{vector} containing colors for plot (default : \code{c('green', 'red',
