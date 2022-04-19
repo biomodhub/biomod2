@@ -53,17 +53,18 @@ Imports:
     ENMeval,
     earth,
     dplyr,
-    data.table
+    data.table,
+    caret,
+    ggpubr,
+    patchwork
 Suggests:
     Hmisc,
     gam,
     mgcv,
     car,
-    caret,
     ecospat,
     doParallel,
     rasterVis,
-    ggpubr,
     testthat
 License: GPL-3
 RoxygenNote: 7.1.2
