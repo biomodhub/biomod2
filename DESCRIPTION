@@ -54,7 +54,8 @@ Imports:
     dismo,
     ENMeval,
     earth,
-    dplyr
+    dplyr,
+    data.table
 Suggests:
     Hmisc,
     gam,

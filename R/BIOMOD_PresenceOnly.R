@@ -133,8 +133,8 @@
 ##'                                   bg.env = getValues(myExpl))
 ##' myBiomodPO$eval
 ##'
-##'
 ##' @importFrom PresenceAbsence presence.absence.accuracy
+##' @importFrom data.table rbindlist
 ##'
 ##' @export
 ##'
