@@ -353,7 +353,7 @@ bm_PlotRangeSize <- function(bm.range, do.count = TRUE, do.perc = TRUE
           theme(legend.key = element_rect(fill = "white")
                 , legend.position = "top")
 
-        ggarrange(gg.ca1, gg.ca2, ncol = 2)
+        gg.ca <- ggarrange(gg.ca1, gg.ca2, ncol = 2)
       } else {
         gg.ca = NULL
         warning("'do.mean' is only available if several maps are provided")
