@@ -540,6 +540,7 @@ BIOMOD_ModelingOptions <- function(GLM = NULL,
     if (!is.null(MARS$thresh)) { opt@MARS$thresh <- MARS$thresh }
     if (!is.null(MARS$nprune)) { opt@MARS$nprune <- MARS$nprune }
     if (!is.null(MARS$pmethod)) { opt@MARS$pmethod <- MARS$pmethod }
+    if (!is.null(MARS$glm)) { opt@MARS$glm <- MARS$glm }
   }
 
   ## 2.9 RF -------------------------------------------------------------------

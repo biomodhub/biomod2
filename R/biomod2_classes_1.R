@@ -1057,6 +1057,8 @@ setClass("BIOMOD.models.options",
                                interaction.level = 0,
                                myFormula = NULL,
                                # degree = 1,
+                               glm = list(family = binomial(link = 'logit'),
+                                          control = glm.control(maxit = 50)),
                                nk = NULL,
                                penalty = 2,
                                thresh = 0.001,
@@ -1173,6 +1175,7 @@ setClass("BIOMOD.models.options",
            test <- .fun_testIfPosInt(test, "MARS$interaction.level", object@MARS$interaction.level)
            if(!is.null(object@MARS$myFormula)) if(!inherits(object@MARS$myFormula, "formula")){ cat("\nMARS$myFormula must be NULL or a formula object"); test <- FALSE }
            # test <- .fun_testIfPosInt(test, "MARS$degree", object@MARS$degree)
+           if(!inherits(object@MARS$glm$family, "family")){ cat("\nMARS$glm$family must be a valid family object"); test <- FALSE }
            if(!is.null(object@MARS$nk)){
              if(object@MARS$nk < 0 | object@MARS$nk%%1!=0){ cat("\nMARS$nk must be a positive integer or NULL if you want to use default parameter"); test <- FALSE }
            }
