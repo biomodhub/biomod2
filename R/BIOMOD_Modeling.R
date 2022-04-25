@@ -548,8 +548,8 @@ BIOMOD_Modeling <- function(bm.format,
            " non-binary data: 'CTA', 'ANN', 'SRE', 'FDA'.", immediate. = TRUE)
     }
     if (bm.options@GLM$family$family == "binomial") {
-      warning("binaryResp is FALSE, but GLM family is 'binomial'.",
-              " Is this intended?", immediate. = TRUE)
+      stop("binaryResp is FALSE, but GLM family is 'binomial'.",
+           " Please choose another family, or change binaryResp to TRUE", immediate. = TRUE)
     }
     if (isTRUE(bm.options@RF$do.classif)) {
       stop("binaryResp is FALSE, but RF is in classification mode.",
