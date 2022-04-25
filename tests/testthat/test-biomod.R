@@ -75,7 +75,8 @@ if (binaryResp) {
   bm.opt <- BIOMOD_ModelingOptions(
                                    GLM = list(family = Gamma(link = log)),
                                    RF = list(do.classif = FALSE),
-                                   MARS = list(glm = list(family = binomial), interaction.level = 1),
+                                   GBM = list(distribution = "gaussian"),
+                                   MARS = list(glm = list(family = Gamma(link = log)), interaction.level = 1),
                                    GAM = list(k = 3)
                                    )
 }
