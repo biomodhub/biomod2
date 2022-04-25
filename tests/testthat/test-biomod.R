@@ -28,7 +28,7 @@ if (isFALSE(binaryResp)) {
   resp.var[resp.var < 0] <- 0
 
   ## convert to something like abundance
-  # resp.var <- resp.var*10000
+  resp.var <- resp.var*10000
 }
 
 # the XY coordinates of species data
