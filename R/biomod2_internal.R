@@ -464,7 +464,7 @@ check_data_range <- function(model, new_data)
 
   ## if no weights given, some are created to rise the define prevalence ------
   if (is.null(weights) && ! is.null(prevalence)) {
-    nbPres <- sum(ref, na.rm = TRUE)
+    nbPres <- sum(ref > 0, na.rm = TRUE)
     nbAbs <- length(ref) - nbPres
     weights <- rep(1, length(ref))
 

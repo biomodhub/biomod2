@@ -901,7 +901,7 @@ setMethod('show', signature('BIOMOD.formated.data.PA'),
             cat("\nsp.name = ", object@sp.name, fill = .Options$width)
             cat(
               "\n\t",
-              sum(object@data.species, na.rm = TRUE),
+              sum(object@data.species > 0, na.rm = TRUE),
               'presences, ',
               sum(object@data.species == 0, na.rm = TRUE),
               'true absences and ',
@@ -919,7 +919,7 @@ setMethod('show', signature('BIOMOD.formated.data.PA'),
               cat("\n\nEvaluation data :", fill = .Options$width)
               cat(
                 "\n\t",
-                sum(object@eval.data.species, na.rm = TRUE),
+                sum(object@eval.data.species > 0, na.rm = TRUE),
                 'presences, ',
                 sum(object@eval.data.species == 0, na.rm = TRUE),
                 'true absences and ',
@@ -937,7 +937,7 @@ setMethod('show', signature('BIOMOD.formated.data.PA'),
               'Pseudo Absences dataset available (',
               colnames(object@PA.table),
               ") with ",
-              sum(object@PA.table[, 1], na.rm = T) - sum(object@data.species, na.rm = TRUE),
+              sum(object@PA.table[, 1] > 0, na.rm = T) - sum(object@data.species > 0, na.rm = TRUE),
               'absences in each (true abs + pseudo abs)',
               fill = .Options$width
             )

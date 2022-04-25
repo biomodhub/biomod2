@@ -205,10 +205,10 @@ BIOMOD_CrossValidation <- function(bm.format,
     ## BLOCK STRATIFIED CROSS VALIDATION --------------------------------------
     if (method == "block") {
       DataSplitTable <- as.data.frame(matrix(NA, nrow(bm.format@coord), 4))
-      blocks <- get.block(bm.format@coord[bm.format@data.species == 1, ]
+      blocks <- get.block(bm.format@coord[bm.format@data.species > 0, ]
                           , bm.format@coord[bm.format@data.species == 0, ])
       for (i in 1:4) {
-        DataSplitTable[bm.format@data.species == 1, i] <- blocks[[1]] != i
+        DataSplitTable[bm.format@data.species > 0, i] <- blocks[[1]] != i
         DataSplitTable[bm.format@data.species == 0, i] <- blocks[[2]] != i
       }
     }

@@ -729,9 +729,9 @@ setMethod('.BIOMOD_Modeling.prepare.data', signature('BIOMOD.formated.data.PA'),
 {
   if (is.null(subset)) { subset <- rep(TRUE, length(resp)) }
 
-  nbPres <- sum(resp[subset], na.rm = TRUE)
+  nbPres <- sum(resp[subset] > 0, na.rm = TRUE)
   # The number of true absences + pseudo absences to maintain true value of prevalence
-  nbAbsKept <- sum(subset, na.rm = TRUE) - sum(resp[subset], na.rm = TRUE)
+  nbAbsKept <- sum(subset, na.rm = TRUE) - nbPres
   weights <- rep(1, length(resp))
 
   if (nbAbsKept > nbPres) {

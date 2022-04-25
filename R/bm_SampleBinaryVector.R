@@ -56,10 +56,10 @@ bm_SampleBinaryVector <- function(obs, ratio, as.logical = FALSE)
   set.seed(as.double(Sys.time()) + as.numeric(format(Sys.time(), "%OS6")) * 1000000)
   
   ntot <- length(obs)
-  npres <- sum(obs)
+  npres <- sum(obs > 0, na.rm = TRUE)
   ncal <- ceiling(ntot * ratio)
   
-  pres <- sample(which(obs == 1), ceiling(npres * ratio))
+  pres <- sample(which(obs > 0), ceiling(npres * ratio))
   absc <- sample(which(obs == 0), ncal - length(pres))
   
   if (as.logical) {

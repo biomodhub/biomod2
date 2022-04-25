@@ -137,7 +137,7 @@ bm_SRE <- function(resp.var = NULL,
     nb.resp <- ncol(resp.var)
     resp.names <- colnames(resp.var)
     for (j in 1:nb.resp) {
-      occ.pts <- which(resp.var[, j] == 1)
+      occ.pts <- which(resp.var[, j] > 0)
       extrem.cond <- t(apply(as.data.frame(expl.var[occ.pts, ]), 2, quantile
                              , probs = c(0 + quant, 1 - quant), na.rm = TRUE))
       if (!do.extrem) {
@@ -150,7 +150,7 @@ bm_SRE <- function(resp.var = NULL,
     resp.names <- names(resp.var)
     for (j in 1:nb.resp) {
       occ.pts <- subset(resp.var, j, drop = TRUE)
-      x.ooc.pts <- Which(occ.pts != 1, cells = TRUE, na.rm = TRUE)
+      x.ooc.pts <- Which(occ.pts == 0, cells = TRUE, na.rm = TRUE)
       occ.pts[x.ooc.pts] <- rep(NA, length(x.ooc.pts))
       extrem.cond <- raster::quantile(mask(expl.var, occ.pts),
                                       probs = c(0 + quant, 1 - quant),
@@ -164,7 +164,7 @@ bm_SRE <- function(resp.var = NULL,
     nb.resp <- ncol(resp.var@data)
     resp.names <- colnames(resp.var@data)
     for (j in 1:nb.resp) {
-      occ.pts <- which(resp.var@data[, j] == 1)
+      occ.pts <- which(resp.var@data[, j] > 0)
       if (is.data.frame(expl.var) || is.matrix(expl.var)) {
         extrem.cond <- t(apply(as.data.frame(expl.var[occ.pts, ]), 2, quantile
                                , probs = c(0 + quant, 1 - quant), na.rm = TRUE))

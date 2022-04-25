@@ -314,7 +314,7 @@ setMethod('bm_PseudoAbsences_random', signature(expl.var = "SpatialPointsDataFra
               # 3. Select always the presences and the true absences
               pa.tab <- matrix(FALSE, ncol = nb.rep, nrow = nrow(resp.var))
               colnames(pa.tab) <- paste0("PA", 1:nb.rep)
-              pa.tab[c(which(resp.var@data == 1), which(resp.var@data == 0)),] <- TRUE
+              pa.tab[c(which(resp.var@data > 0), which(resp.var@data == 0)),] <- TRUE
               
               # 4. For each repetition, select among NA cells
               cand.cells <- which(is.na(resp.var@data))
@@ -365,7 +365,7 @@ setMethod('bm_PseudoAbsences_random', signature(expl.var = "RasterStack"),
               # 3. Select always the presences and the true absences
               pa.tab <- matrix(FALSE, ncol = nb.rep, nrow = nrow(resp.var))
               colnames(pa.tab) <- paste0("PA", 1:nb.rep)
-              pa.tab[c(which(resp.var@data == 1), which(resp.var@data == 0)),] <- TRUE
+              pa.tab[c(which(resp.var@data > 0), which(resp.var@data == 0)),] <- TRUE
               
               # 4. For each repetition, select among NA cells
               cand.cells <- which(is.na(resp.var@data))
@@ -499,7 +499,7 @@ setMethod('bm_PseudoAbsences_sre', signature(expl.var = "SpatialPointsDataFrame"
             # 3. Select always the presences and the true absences
             pa.tab <- matrix(FALSE, ncol = nb.rep, nrow = nrow(resp.var))
             colnames(pa.tab) <- paste0("PA", 1:nb.rep)
-            pa.tab[c(which(resp.var@data == 1), which(resp.var@data == 0)),] <- TRUE
+            pa.tab[c(which(resp.var@data > 0), which(resp.var@data == 0)),] <- TRUE
             
             # 4. For each repetition, select among NA cells
             cand.cells <- which(!mask.in$mask.in)
@@ -624,7 +624,7 @@ setMethod('bm_PseudoAbsences_disk', signature(expl.var = "SpatialPointsDataFrame
             
             # 1. determining area which can be selected
             coor <- coordinates(resp.var)
-            pres <- which(resp.var@data[, 1] == 1)
+            pres <- which(resp.var@data[, 1] > 0)
             true.abs <- which(resp.var@data[, 1] == 0)
             tmp.abs <- which(is.na(resp.var@data[, 1]))
             outside <- rep(0, length(abs))
@@ -674,7 +674,7 @@ setMethod('bm_PseudoAbsences_disk', signature(expl.var = "RasterStack"),
               dist.mask <- subset(expl.var, 1, drop = TRUE)
               dist.mask[] <- NA
               
-              pres.xy <- coordinates(resp.var[which(resp.var@data[, 1] == 1), ])
+              pres.xy <- coordinates(resp.var[which(resp.var@data[, 1] > 0), ])
               dist.mask[cellFromXY(dist.mask, pres.xy)] <- 1
               
               dist.mask <- distance(dist.mask)

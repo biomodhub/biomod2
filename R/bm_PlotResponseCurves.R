@@ -175,12 +175,12 @@ bm_PlotResponseCurves <- function(bm.out
   for (i in 1:ncol(new.env)) {
     if (is.numeric(new.env[, i])) {
       ref_table[, i] <- switch(fixed.var,
-                               mean = mean(new.env[data_species == 1, i]),
-                               median = median(new.env[data_species == 1, i]),
-                               min = min(new.env[data_species == 1, i]),
-                               max = max(new.env[data_species == 1, i]))
+                               mean = mean(new.env[data_species > 0, i]),
+                               median = median(new.env[data_species > 0, i]),
+                               min = min(new.env[data_species > 0, i]),
+                               max = max(new.env[data_species > 0, i]))
     } else { # return everytime the majoritary class
-      sum_level <- summary(new.env[data_species == 1, i], na.rm = TRUE)
+      sum_level <- summary(new.env[data_species > 0, i], na.rm = TRUE)
       ref_table[, i] <- names(sum_level)[which.max(sum_level)]
     }
   }

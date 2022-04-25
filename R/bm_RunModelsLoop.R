@@ -946,7 +946,7 @@ bm_RunModel <- function(model, Data, modeling.id = '', bm.options, calib.lines, 
 
   ## 5. Check Prev argument ---------------------------------------------------
   if (model == "GLM" | model == "GAM") {
-    Prev <- sum(Data[, 1], na.rm = TRUE) / length(Data[, 1])
+    Prev <- sum(Data[, 1] > 0, na.rm = TRUE) / length(Data[, 1])
   }
 
   ## 6. Check models.eval.meth arguments --------------------------------------
@@ -1003,7 +1003,7 @@ bm_RunModel <- function(model, Data, modeling.id = '', bm.options, calib.lines, 
   dir.create(m_predictDir, showWarnings = FALSE, recursive = TRUE, mode = '777')
 
   ## Presence Data --------------------------------------------------------------------------------
-  presLines <- which((Data[, 1] == 1) & calib.lines)
+  presLines <- which((Data[, 1] > 0) & calib.lines)
   absLines <- which((Data[, 1] == 0) & calib.lines)
   Sp_swd <- cbind(rep(RunName, length(presLines))
                   , xy[presLines, ]
