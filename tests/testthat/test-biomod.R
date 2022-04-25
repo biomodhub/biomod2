@@ -120,7 +120,8 @@ bm.proj <-
     models.chosen = 'all',
     metric.binary = metric.binary,
     compress = FALSE,
-    build.clamping.mask = FALSE
+    build.clamping.mask = FALSE,
+    on_0_1000 = FALSE
   )
 
 if (!binaryResp) {
@@ -138,7 +139,8 @@ bm.ensemb <- BIOMOD_EnsembleModeling(bm.mod,
                                      metric.eval = metric.eval)
 
 bm.ensembProj <- BIOMOD_EnsembleForecasting(bm.em = bm.ensemb,
-                                            bm.proj = bm.proj)
+                                            bm.proj = bm.proj,
+                                            on_0_1000 = FALSE)
 plot(bm.ensembProj)
 
 # bm.maxent.mod.list <-
