@@ -79,7 +79,7 @@ if (binaryResp) {
                                    # GBM = list(distribution = "gaussian"),
                                    GBM = list(distribution = "poisson"),  ## also works
                                    # MARS = list(glm = list(family = Gamma(link = log)), interaction.level = 1),
-                                   MARS = list(glm = list(family = poisson), interaction.level = 1),
+                                   MARS = list(glm = list(family = poisson()), interaction.level = 1),
                                    GAM = list(k = 3, family = poisson())
                                    )
 }
@@ -100,12 +100,12 @@ bm.mod <-
 ## print a summary of modeling stuff
 bm.mod
 
-bm.maxent.mod.list <-
-  BIOMOD_LoadModels(bm.mod, models = 'RF')
+bm.mod.list <-
+  BIOMOD_LoadModels(bm.mod, models = 'MARS')
 
-bm.maxent.mod.1 <- get(bm.maxent.mod.list[1])
+bm.mod.1 <- get(bm.mod.list[1])
 
-bm_VariablesImportance(bm.model = bm.maxent.mod.1,
+bm_VariablesImportance(bm.model = bm.mod.1,
                        expl.var = as.data.frame(expl.var),
                        method = "full_rand",
                        nb.rep = 3)
