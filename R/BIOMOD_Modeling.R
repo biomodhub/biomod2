@@ -528,6 +528,40 @@ BIOMOD_Modeling <- function(bm.format,
     prevalence = 0.5
   }
 
+  ## 8. Checks for binary/non-binary data and compatible models ---------------
+  if (isTRUE(bm.format@binaryResp)) {
+    if (bm.options@GLM$family$family != "binomial") {
+      warning("binaryResp is TRUE, but GLM family is not 'binomial'.",
+              " Is this intended?", immediate. = TRUE)
+    }
+    if (isFALSE(bm.options@RF$do.classif)) {
+      warning("binaryResp is TRUE, but RF is in regression mode ('do.classif' is FALSE).",
+              " Is this intended?", immediate. = TRUE)
+    }
+    if (isFALSE(bm.options@GBM$distribution %in% c("bernoulli", "huberized", "multinomial", "adaboost"))) {
+      warning("binaryResp is TRUE, but GBM distribution is not one of:",
+              " 'bernoulli', 'huberized', 'multinomial', 'adaboost'. Is this intended?", immediate. = TRUE)
+    }
+  } else{
+    if (models %in% c("CTA", "ANN", "SRE", "FDA")) {
+      stop("binaryResp is FALE, but the following model types do not support",
+           " non-binary data: 'CTA', 'ANN', 'SRE', 'FDA'.", immediate. = TRUE)
+    }
+    if (bm.options@GLM$family$family == "binomial") {
+      warning("binaryResp is FALSE, but GLM family is 'binomial'.",
+              " Is this intended?", immediate. = TRUE)
+    }
+    if (isTRUE(bm.options@RF$do.classif)) {
+      stop("binaryResp is FALSE, but RF is in classification mode.",
+           " Please set 'do.classif' to FALSE, or binaryResp to TRUE", immediate. = TRUE)
+    }
+    if (isTRUE(bm.options@GBM$distribution %in% c("bernoulli", "huberized", "multinomial", "adaboost"))) {
+      stop("binaryResp is FALSE, but GBM distribution is one of 'bernoulli', 'huberized',",
+           " 'multinomial', 'adaboost', which are meant for binary data.",
+           " Change distribution to 'gaussian' or 'poisson', or binaryResp to TRUE", immediate. = TRUE)
+    }
+  }
+
   ##### TO BE CHANGE BUT PREVENT FROM BUGS LATER :  Force object saving parameter
   if (!save.output) {
     cat("\n\t save.output param was automatically set to TRUE to prevent bugs.")
