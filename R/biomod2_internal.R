@@ -545,6 +545,19 @@ check_data_range <- function(model, new_data)
   return(out)
 }
 
+.print_control_etc <- function(ctrletc) {
+  notFamily <- which(names(ctrletc) != "family")
+  notFamily <- lapply(ctrletc[notFamily], .print_control)
+  out <- sapply(names(notFamily), function(x) {
+    if (length(notFamily[[x]]) > 1) {
+      paste0(x, " = c(", paste(notFamily[[x]], collapse = ""), ")")
+    } else {
+      paste0(x, notFamily[[x]])
+    }
+  })
+  return(out)
+}
+
 
 ## PLOT MULTIPLE and LEVEL plots ------------------------------------------------------------------
 ## used in biomod2_classes_3.R file

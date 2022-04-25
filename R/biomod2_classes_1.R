@@ -1323,7 +1323,9 @@ setMethod('show', signature('BIOMOD.models.options'),
             cat("\n             penalty = ", object@MARS$penalty, ",", sep = "")
             cat("\n             thresh = ", object@MARS$thresh, ",", sep = "")
             cat("\n             nprune = ", ifelse(length(object@MARS$nprune) < 1, 'NULL', object@MARS$nprune), ",", sep = "")
-            cat("\n             pmethod = '", object@MARS$pmethod, "'),", sep = "")
+            cat("\n             pmethod = '", object@MARS$pmethod, "',", sep = "")
+            cat("\n             glm = list( family = ", object@MARS$glm$family$family, "(link = '", object@MARS$glm$family$link, "'), ",
+                paste(.print_control_etc(object@MARS$glm), collapse = ", "), ") ),", sep = "", fill = .Options$width)
 
             ## RF options
             cat("\n")
