@@ -633,9 +633,23 @@ setMethod('plot', signature(x = 'BIOMOD.projection.out', y = "missing"),
             if(inherits(x@proj.out, "BIOMOD.stored.raster.stack")){
               requireNamespace("rasterVis")
 
-              my.at <- seq(0, 1000, by = 100) ## breaks of color key
-              my.labs.at <- seq(0, 1000, by = 250) ## labels placed vertically centered
-              my.lab <- seq(0, 1000, by = 250) ## labels
+              rangeVals <- range(get_predictions(x, full.name = models_selected)[], na.rm = TRUE)
+              if (max(rangeVals) > 1000) {
+                ## breaks of color key
+                my.at <- seq(0, round(max(rangeVals) + 5, -1), length.out = 10)   ## round to upper tenth
+                my.at <- round(my.at)
+
+                ## labels placed vertically centered
+                my.labs.at <- seq(0, round(max(rangeVals) + 5, -1), length.out = 4)
+                my.labs.at <- round(my.labs.at)
+
+                my.lab <- my.labs.at
+              } else {
+                my.at <- seq(0, 1000, by = 100) ## breaks of color key
+                my.labs.at <- seq(0, 1000, by = 250) ## labels placed vertically centered
+                my.lab <- seq(0, 1000, by = 250) ## labels
+              }
+
               my.col <- colorRampPalette(c("grey90", "yellow4", "green4"))(100) ## colors
 
               ## try to use levelplot function
