@@ -551,6 +551,12 @@ BIOMOD_Modeling <- function(bm.format,
       stop("binaryResp is FALSE, but GLM family is 'binomial'.",
            " Please choose another family, or change binaryResp to TRUE", immediate. = TRUE)
     }
+
+    if (bm.options@GAM$family$family == "binomial") {
+      stop("binaryResp is FALSE, but GAM family is 'binomial'.",
+           " Please choose another family, or change binaryResp to TRUE", immediate. = TRUE)
+    }
+
     if (isTRUE(bm.options@RF$do.classif)) {
       stop("binaryResp is FALSE, but RF is in classification mode.",
            " Please set 'do.classif' to FALSE, or binaryResp to TRUE", immediate. = TRUE)
