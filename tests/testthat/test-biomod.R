@@ -28,7 +28,7 @@ if (isFALSE(binaryResp)) {
   resp.var[resp.var < 0] <- 0
 
   ## convert to something like abundance
-  resp.var <- resp.var*10000
+  resp.var <- round(resp.var*10000)  ## for GBM poisson these need to be integers
 }
 
 # the XY coordinates of species data
@@ -73,11 +73,14 @@ if (binaryResp) {
     "GAM"
   )
   bm.opt <- BIOMOD_ModelingOptions(
-                                   GLM = list(family = Gamma(link = log)),
+                                   # GLM = list(family = Gamma(link = log)),
+                                   GLM = list(family = poisson()),
                                    RF = list(do.classif = FALSE),
-                                   GBM = list(distribution = "gaussian"),
-                                   MARS = list(glm = list(family = Gamma(link = log)), interaction.level = 1),
-                                   GAM = list(k = 3)
+                                   # GBM = list(distribution = "gaussian"),
+                                   GBM = list(distribution = "poisson"),  ## also works
+                                   # MARS = list(glm = list(family = Gamma(link = log)), interaction.level = 1),
+                                   MARS = list(glm = list(family = poisson), interaction.level = 1),
+                                   GAM = list(k = 3, family = poisson())
                                    )
 }
 set.seed(123)
