@@ -362,7 +362,7 @@ BIOMOD_Modeling <- function(bm.format,
   if (save.output) {
     models.evaluation <- .transform_outputs_list(mod.out, out = 'evaluation')
     models.out = .Models.save.object("models.evaluation", models.evaluation, models.out)
-    
+
     if (!is.null(models.evaluation)) {
       models.out@models.evaluation@val <- models.evaluation
     }
