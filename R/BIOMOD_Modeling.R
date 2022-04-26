@@ -530,15 +530,15 @@ BIOMOD_Modeling <- function(bm.format,
 
   ## 8. Checks for binary/non-binary data and compatible models ---------------
   if (isTRUE(bm.format@binaryResp)) {
-    if (bm.options@GLM$family$family != "binomial") {
+    if ('GLM' %in% models & bm.options@GLM$family$family != "binomial") {
       warning("binaryResp is TRUE, but GLM family is not 'binomial'.",
               " Is this intended?", immediate. = TRUE)
     }
-    if (isFALSE(bm.options@RF$do.classif)) {
+    if ('RF' %in% models &isFALSE(bm.options@RF$do.classif)) {
       warning("binaryResp is TRUE, but RF is in regression mode ('do.classif' is FALSE).",
               " Is this intended?", immediate. = TRUE)
     }
-    if (isFALSE(bm.options@GBM$distribution %in% c("bernoulli", "huberized", "multinomial", "adaboost"))) {
+    if ('GBM' %in% models &isFALSE(bm.options@GBM$distribution %in% c("bernoulli", "huberized", "multinomial", "adaboost"))) {
       warning("binaryResp is TRUE, but GBM distribution is not one of:",
               " 'bernoulli', 'huberized', 'multinomial', 'adaboost'. Is this intended?", immediate. = TRUE)
     }
@@ -547,21 +547,21 @@ BIOMOD_Modeling <- function(bm.format,
       stop("binaryResp is FALE, but the following model types do not support",
            " non-binary data: 'CTA', 'ANN', 'SRE', 'FDA'.", immediate. = TRUE)
     }
-    if (bm.options@GLM$family$family == "binomial") {
+    if ('GLM' %in% models &bm.options@GLM$family$family == "binomial") {
       stop("binaryResp is FALSE, but GLM family is 'binomial'.",
            " Please choose another family, or change binaryResp to TRUE", immediate. = TRUE)
     }
 
-    if (bm.options@GAM$family$family == "binomial") {
+    if ('GAM' %in% models & bm.options@GAM$family$family == "binomial") {
       stop("binaryResp is FALSE, but GAM family is 'binomial'.",
            " Please choose another family, or change binaryResp to TRUE", immediate. = TRUE)
     }
 
-    if (isTRUE(bm.options@RF$do.classif)) {
+    if ('RF' %in% models &isTRUE(bm.options@RF$do.classif)) {
       stop("binaryResp is FALSE, but RF is in classification mode.",
            " Please set 'do.classif' to FALSE, or binaryResp to TRUE", immediate. = TRUE)
     }
-    if (isTRUE(bm.options@GBM$distribution %in% c("bernoulli", "huberized", "multinomial", "adaboost"))) {
+    if ('GBM' %in% models &isTRUE(bm.options@GBM$distribution %in% c("bernoulli", "huberized", "multinomial", "adaboost"))) {
       stop("binaryResp is FALSE, but GBM distribution is one of 'bernoulli', 'huberized',",
            " 'multinomial', 'adaboost', which are meant for binary data.",
            " Change distribution to 'gaussian' or 'poisson', or binaryResp to TRUE", immediate. = TRUE)
