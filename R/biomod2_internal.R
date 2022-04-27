@@ -546,15 +546,20 @@ check_data_range <- function(model, new_data)
 }
 
 .print_control_etc <- function(ctrletc) {
-  notFamily <- which(names(ctrletc) != "family")
-  notFamily <- lapply(ctrletc[notFamily], .print_control)
-  out <- sapply(names(notFamily), function(x) {
-    if (length(notFamily[[x]]) > 1) {
-      paste0(x, " = c(", paste(notFamily[[x]], collapse = ""), ")")
-    } else {
-      paste0(x, notFamily[[x]])
-    }
-  })
+  if (all(is.null(names(ctrletc)), length(ctrletc),
+          is(ctrletc, "character"))) {
+    out <- paste0("'", ctrletc, "'")
+  } else {
+    notFamily <- which(names(ctrletc) != "family")
+    notFamily <- lapply(ctrletc[notFamily], .print_control)
+    out <- sapply(names(notFamily), function(x) {
+      if (length(notFamily[[x]]) > 1) {
+        paste0(x, " = c(", paste(notFamily[[x]], collapse = ""), ")")
+      } else {
+        paste0(x, notFamily[[x]])
+      }
+    })
+  }
   return(out)
 }
 

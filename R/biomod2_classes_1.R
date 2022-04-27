@@ -1260,7 +1260,7 @@ setMethod('show', signature('BIOMOD.models.options'),
 
             ## GBM options
             cat("\n")
-            cat("\nGBM = list( distribution = '", object@GBM$distribution, "',", sep = "")
+            cat("\nGBM = list( distribution = c(", paste(.print_control_etc(bm.opt@GBM$distribution), collapse = ", "), ")),", sep = "")
             cat("\n            n.trees = ", object@GBM$n.trees, ",", sep = "")
             cat("\n            interaction.depth = ", object@GBM$interaction.depth, ",", sep = "")
             cat("\n            n.minobsinnode = ", object@GBM$n.minobsinnode, ",", sep = "")
@@ -1320,6 +1320,10 @@ setMethod('show', signature('BIOMOD.models.options'),
                                                             , ")", sep = "")), "),", sep = "")
 
             ## MARS options
+            MARSglmArgs <- if (length(.print_control_etc(object@MARS$glm))) {
+              paste(", ", paste(.print_control_etc(object@MARS$glm), collapse = ", "), ")")
+            } else NULL
+
             cat("\n")
             cat("\nMARS = list( type = '", object@MARS$type, "',", sep = "")
             cat("\n             interaction.level = ", object@MARS$interaction.level, ",", sep = "")
@@ -1332,8 +1336,8 @@ setMethod('show', signature('BIOMOD.models.options'),
             cat("\n             thresh = ", object@MARS$thresh, ",", sep = "")
             cat("\n             nprune = ", ifelse(length(object@MARS$nprune) < 1, 'NULL', object@MARS$nprune), ",", sep = "")
             cat("\n             pmethod = '", object@MARS$pmethod, "',", sep = "")
-            cat("\n             glm = list( family = ", object@MARS$glm$family$family, "(link = '", object@MARS$glm$family$link, "'), ",
-                paste(.print_control_etc(object@MARS$glm), collapse = ", "), ") ),", sep = "", fill = .Options$width)
+            cat("\n             glm = list( family = ", object@MARS$glm$family$family, "(link = '", object@MARS$glm$family$link, "') ",
+                MARSglmArgs, "),", sep = "", fill = .Options$width)
 
             ## RF options
             cat("\n")
