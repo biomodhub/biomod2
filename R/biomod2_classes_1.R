@@ -1108,7 +1108,15 @@ setClass("BIOMOD.models.options",
            if(!is.list(object@GLM$control)){cat("\nGLM$control must be a list like that returned by glm.control"); test <- FALSE}
 
            ## GBM ##
-           test <- .fun_testIfIn(test, "GBM$distribution", object@GBM$distribution, c("bernoulli", "huberized", "multinomial", "adaboost", "gaussian", "poisson"))
+           if (is(object@GBM$distribution, "list")) {
+             if ("name" %in% names(object@GBM$distribution)) {
+               test <- .fun_testIfIn(test, "GBM$distribution$name", object@GBM$distribution$name, c("tdist", "quantile", "pairwise"))
+             } else {
+               stop("GBM$distribution is an incorrectly specified list. See ?gbm::gbm")
+             }
+           } else {
+             test <- .fun_testIfIn(test, "GBM$distribution", object@GBM$distribution, c("bernoulli", "huberized", "multinomial", "adaboost", "gaussian", "poisson"))
+           }
            # test <- .fun_testIfPosInt(test, "GBM$n.trees", object@GBM$n.trees)
            if(!is.numeric(object@GBM$n.trees)){ cat("\nGBM$n.trees must be a integer"); test <- FALSE } else{
              if(object@GBM$n.trees < 0 | floor(object@GBM$n.trees) != object@GBM$n.trees){ cat("\nGBM$n.trees must be a positive integer"); test <- FALSE }
