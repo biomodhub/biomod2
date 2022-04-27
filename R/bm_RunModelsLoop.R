@@ -35,6 +35,8 @@
 ##' @param nb.cpu (\emph{optional, default} \code{1}) \cr 
 ##' An \code{integer} value corresponding to the number of computing resources to be used to 
 ##' parallelize the single models computation
+##' @param seed.val (\emph{optional, default} \code{NULL}) \cr 
+##' An \code{integer} value corresponding to the new seed value to be set
 ##' 
 ##' 
 ##' @param weights a \code{vector} of \code{numeric} values corresponding to observation weights 
@@ -52,7 +54,6 @@
 ##' \code{eval.data.env.var} slots of \code{bm.format} parameter
 ##' @param eval.xy a \code{data.frame} containing \code{eval.coord} slot of \code{bm.format} 
 ##' parameter
-##' 
 ##' 
 ##' 
 ##' @return  
@@ -114,7 +115,8 @@ bm_RunModelsLoop <- function(bm.format,
                              var.import,
                              save.output = TRUE,
                              scale.models = TRUE,
-                             nb.cpu = 1)
+                             nb.cpu = 1,
+                             seed.val = NULL)
 {
   cat("\n\n-=-=-=- Run : ", bm.format$name, '\n')
   res.sp.run <- list()
@@ -147,7 +149,8 @@ bm_RunModelsLoop <- function(bm.format,
                     metric.eval = metric.eval,
                     var.import = var.import,
                     save.output = TRUE, ## save.output
-                    scale.models = scale.models)
+                    scale.models = scale.models,
+                    seed.val = NULL)
       }
     names(res.sp.run[[run.id]]) <- model
   }
@@ -166,10 +169,10 @@ bm_RunModelsLoop <- function(bm.format,
 bm_RunModel <- function(model, Data, modeling.id = '', bm.options, calib.lines, weights, nam,
                         xy = NULL, eval.data = NULL, eval.xy = NULL, 
                         metric.eval = c('ROC','TSS','KAPPA'), var.import = 0,
-                        save.output = FALSE, scale.models = TRUE, nb.cpu = 1)
+                        save.output = FALSE, scale.models = TRUE, nb.cpu = 1, seed.val = NULL)
 {
   ## 0. Check arguments ---------------------------------------------------------------------------
-  args <- .bm_RunModel.check.args(model, Data, bm.options, calib.lines, weights, eval.data, metric.eval, scale.models)
+  args <- .bm_RunModel.check.args(model, Data, bm.options, calib.lines, weights, eval.data, metric.eval, scale.models, seed.val)
   for (argi in names(args)) { assign(x = argi, value = args[[argi]]) }
   rm(args)
   
@@ -705,7 +708,7 @@ bm_RunModel <- function(model, Data, modeling.id = '', bm.options, calib.lines, 
   
   ## 3. CREATE PREDICTIONS ------------------------------------------------------------------------
   if (model != "MAXENT.Phillips") {
-    g.pred <- try(predict(model.bm, Data[, expl_var_names, drop = FALSE], on_0_1000 = TRUE))
+    g.pred <- try(predict(model.bm, Data[, expl_var_names, drop = FALSE], on_0_1000 = TRUE, seedval = seed.val))
   }
   
   ## scale or not predictions -------------------------------------------------
@@ -713,7 +716,7 @@ bm_RunModel <- function(model, Data, modeling.id = '', bm.options, calib.lines, 
     cat("\n\tModel scaling...")
     model.bm@scaling_model <- try(.scaling_model(g.pred / 1000, Data[, 1, drop = TRUE], weights = weights))
     ## with weights
-    g.pred <- try(predict(model.bm, Data[, expl_var_names, drop = FALSE], on_0_1000 = TRUE))
+    g.pred <- try(predict(model.bm, Data[, expl_var_names, drop = FALSE], on_0_1000 = TRUE, seedval = seed.val))
   }
   
   ## check predictions existence and stop execution if not ok -----------------
@@ -741,7 +744,7 @@ bm_RunModel <- function(model, Data, modeling.id = '', bm.options, calib.lines, 
   
   ## make prediction on evaluation data ---------------------------------------
   if (!is.null(eval.data)) {
-    g.pred.eval <- try(predict(model.bm, eval.data[, expl_var_names, drop = FALSE], on_0_1000 = TRUE))
+    g.pred.eval <- try(predict(model.bm, eval.data[, expl_var_names, drop = FALSE], on_0_1000 = TRUE, seedval = seed.val))
   }
   
   ## SAVE predictions ---------------------------------------------------------
@@ -830,7 +833,7 @@ bm_RunModel <- function(model, Data, modeling.id = '', bm.options, calib.lines, 
 ###################################################################################################
 
 .bm_RunModel.check.args <- function(model, Data, bm.options, calib.lines, weights, eval.data
-                                    , metric.eval, scale.models, criteria = NULL, Prev = NULL)
+                                    , metric.eval, scale.models, criteria = NULL, Prev = NULL, seed.val = NULL)
 {
   ## 0. Do some cleaning over Data argument -----------------------------------
   resp_name <- colnames(Data)[1] ## species name
@@ -907,6 +910,7 @@ bm_RunModel <- function(model, Data, modeling.id = '', bm.options, calib.lines, 
   } else if (model == "GAM") {
     cat("\nModel=GAM")
     cat("\n\t", bm.options@GAM$algo, "algorithm chosen")
+    set.seed(555) # to be able to refind our trees MAY BE BAD
   } else if (model == "CTA") {
     cat("\nModel=Classification tree \n")
     cat("\t", bm.options@CTA$control$xval, "Fold Cross-Validation")
@@ -944,6 +948,9 @@ bm_RunModel <- function(model, Data, modeling.id = '', bm.options, calib.lines, 
   # else if (model == 'MAXENT.Tsuruoka') {
   #   cat('\nModel=MAXENT.Tsuruoka')
   # }
+  if (!is.null(seedval)) {
+    set.seed(seedval)
+  }
   
   ## 5. Check Prev argument ---------------------------------------------------
   if (model == "GLM" | model == "GAM") {

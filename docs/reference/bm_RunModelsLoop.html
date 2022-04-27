@@ -107,7 +107,8 @@ species distribution models (asked by the <code><a href="BIOMOD_Modeling.html">B
   <span class="va">var.import</span>,
   save.output <span class="op">=</span> <span class="cn">TRUE</span>,
   scale.models <span class="op">=</span> <span class="cn">TRUE</span>,
-  nb.cpu <span class="op">=</span> <span class="fl">1</span>
+  nb.cpu <span class="op">=</span> <span class="fl">1</span>,
+  seed.val <span class="op">=</span> <span class="cn">NULL</span>
 <span class="op">)</span>
 
 <span class="fu">bm_RunModel</span><span class="op">(</span>
@@ -125,7 +126,8 @@ species distribution models (asked by the <code><a href="BIOMOD_Modeling.html">B
   var.import <span class="op">=</span> <span class="fl">0</span>,
   save.output <span class="op">=</span> <span class="cn">FALSE</span>,
   scale.models <span class="op">=</span> <span class="cn">TRUE</span>,
-  nb.cpu <span class="op">=</span> <span class="fl">1</span>
+  nb.cpu <span class="op">=</span> <span class="fl">1</span>,
+  seed.val <span class="op">=</span> <span class="cn">NULL</span>
 <span class="op">)</span></code></pre></div>
     </div>
 
@@ -165,6 +167,31 @@ binomial GLM or not</p></dd>
 <dd><p>(<em>optional, default</em> <code>1</code>) <br> 
 An <code>integer</code> value corresponding to the number of computing resources to be used to 
 parallelize the single models computation</p></dd>
+<dt>seed.val</dt>
+<dd><p>(<em>optional, default</em> <code>NULL</code>) <br> 
+An <code>integer</code> value corresponding to the new seed value to be set</p></dd>
+<dt>Data</dt>
+<dd><p>a <code>data.frame</code> containing <code>data.species</code> and <code>data.env.var</code> slots 
+of <code>bm.format</code> parameter</p></dd>
+<dt>calib.lines</dt>
+<dd><p>a <code>data.frame</code> containing <code>data.split.table</code> slot of 
+<code>bm.format</code> parameter, or an extraction of <code>data.species</code> slot (for a specific PA 
+dataset extracted from <code>PA.table</code> slot)</p></dd>
+<dt>weights</dt>
+<dd><p>a <code>vector</code> of <code>numeric</code> values corresponding to observation weights 
+(one per observation)</p></dd>
+<dt>nam</dt>
+<dd><p>a <code>character</code> corresponding to the model to be run (name + run.id)</p></dd>
+<dt>xy</dt>
+<dd><p>a <code>data.frame</code> containing <code>coord</code> slot of <code>bm.format</code> 
+parameter (for a specific PA dataset extracted from <code>PA.table</code> slot of <code>bm.format</code> 
+parameter)</p></dd>
+<dt>eval.data</dt>
+<dd><p>a <code>data.frame</code> containing <code>eval.data.species</code> and 
+<code>eval.data.env.var</code> slots of <code>bm.format</code> parameter</p></dd>
+<dt>eval.xy</dt>
+<dd><p>a <code>data.frame</code> containing <code>eval.coord</code> slot of <code>bm.format</code> 
+parameter</p></dd>
 </dl></div>
     <div id="value">
     <h2>Value</h2>
@@ -219,7 +246,7 @@ parallelize the single models computation</p></dd>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.2.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.1.</p>
 </div>
 
       </footer></div>

@@ -11,7 +11,8 @@ bm_CVnnet(
   decay = c(0.001, 0.01, 0.05, 0.1),
   maxit = 200,
   nbCV = 5,
-  weights = NULL
+  weights = NULL,
+  seedval = 555
 )
 }
 \arguments{
@@ -29,6 +30,8 @@ bm_CVnnet(
 
 \item{weights}{a \code{vector} of \code{numeric} values corresponding to weights over 
 calibration lines}
+
+\item{seedval}{an \code{integer} value corresponding to the new seed value to be set}
 }
 \value{
 A \code{data.frame} containing the following elements :

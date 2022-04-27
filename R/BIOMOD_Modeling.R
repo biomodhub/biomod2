@@ -53,6 +53,8 @@
 ##' @param nb.cpu (\emph{optional, default} \code{1}) \cr 
 ##' An \code{integer} value corresponding to the number of computing resources to be used to 
 ##' parallelize the single models computation
+##' @param seed.val (\emph{optional, default} \code{NULL}) \cr 
+##' An \code{integer} value corresponding to the new seed value to be set
 ##' 
 ##' 
 ##' @return
@@ -279,14 +281,15 @@ BIOMOD_Modeling <- function(bm.format,
                             var.import = 0,
                             save.output = TRUE,
                             scale.models = FALSE,
-                            nb.cpu = 1)
+                            nb.cpu = 1,
+                            seed.val = NULL)
 {
   .bm_cat("Build Single Models")
   
   ## 0. Check arguments ---------------------------------------------------------------------------
   args <- .BIOMOD_Modeling.check.args(bm.format, models, bm.options, nb.rep, data.split.perc, data.split.table
                                       , do.full.models, weights, prevalence, metric.eval, var.import
-                                      , save.output, scale.models, nb.cpu)
+                                      , save.output, scale.models, nb.cpu, seed.val)
   for (argi in names(args)) { assign(x = argi, value = args[[argi]]) }
   rm(args)
   
@@ -351,7 +354,8 @@ BIOMOD_Modeling <- function(bm.format,
                     metric.eval = metric.eval,
                     save.output = save.output,
                     scale.models = scale.models,
-                    nb.cpu = nb.cpu)
+                    nb.cpu = nb.cpu,
+                    seed.val = seed.val)
   
   ## 3.3 Rearrange and save outputs -------------------------------------------
   models.out@models.computed <- .transform_outputs_list(mod.out, out = 'models.run')
@@ -413,7 +417,7 @@ BIOMOD_Modeling <- function(bm.format,
 
 .BIOMOD_Modeling.check.args <- function(bm.format, models, bm.options, nb.rep, data.split.perc, data.split.table
                                         , do.full.models, weights, prevalence, metric.eval, var.import
-                                        , save.output, scale.models, nb.cpu)
+                                        , save.output, scale.models, nb.cpu, seed.val)
 {
   ## 0. Check bm.format and models arguments ----------------------------------
   cat('\n\nChecking Models arguments...\n')
@@ -532,6 +536,10 @@ BIOMOD_Modeling <- function(bm.format,
   if (!save.output) {
     cat("\n\t save.output param was automatically set to TRUE to prevent bugs.")
     save.output <- TRUE
+  }
+  
+  if (!is.null(seed.val)) {
+    set.seed(seed.val)
   }
   
   return(list(models = models,

@@ -259,7 +259,7 @@ setMethod('predict', signature(object = 'ANN_biomod2_model'),
 
 .predict.ANN_biomod2_model.RasterStack <- function(object, newdata, ...)
 {
-  return(.template_predict.RasterStack(seedval = NULL, predcommand = "predict(newdata, get_formal_model(object), type = 'raw')", object, newdata, ...))
+  return(.template_predict.RasterStack(seedval = 555, predcommand = "predict(newdata, get_formal_model(object), type = 'raw')", object, newdata, ...))
 }
 
 .predict.ANN_biomod2_model.data.frame <- function(object, newdata, ...)
@@ -383,7 +383,7 @@ setMethod('predict', signature(object = 'GAM_biomod2_model'),
 
 .predict.GAM_biomod2_model.RasterStack <- function(object, newdata, ...)
 {
-  return(.template_predict.RasterStack(seedval = NULL, predcommand = ".run_pred(object = get_formal_model(object), Prev = 0.5 , dat = newdata)", object, newdata, ...))
+  return(.template_predict.RasterStack(seedval = 555, predcommand = ".run_pred(object = get_formal_model(object), Prev = 0.5 , dat = newdata)", object, newdata, ...))
 }
 
 .predict.GAM_biomod2_model.data.frame <- function(object, newdata, ...)
@@ -417,12 +417,12 @@ setMethod('predict', signature(object = 'GBM_biomod2_model'),
 
 .predict.GBM_biomod2_model.RasterStack <- function(object, newdata, ...)
 {
-  return(.template_predict.RasterStack(seedval = NULL, predcommand = "predict(newdata, model = get_formal_model(object), fun = predict.gbm, n.trees = object@n.trees_optim, type = 'response')", object, newdata, ...))
+  return(.template_predict.RasterStack(seedval = 456, predcommand = "predict(newdata, model = get_formal_model(object), fun = predict.gbm, n.trees = object@n.trees_optim, type = 'response')", object, newdata, ...))
 }
 
 .predict.GBM_biomod2_model.data.frame <- function(object, newdata, ...)
 {
-  return(.template_predict.data.frame(seedval = NULL, predcommand = "as.numeric(predict(get_formal_model(object), as.data.frame(newdata[not_na_rows, , drop = FALSE]), n.trees = object@n.trees_optim, type = 'response'))", object, newdata, ...))
+  return(.template_predict.data.frame(seedval = 456, predcommand = "as.numeric(predict(get_formal_model(object), as.data.frame(newdata[not_na_rows, , drop = FALSE]), n.trees = object@n.trees_optim, type = 'response'))", object, newdata, ...))
 }  
 
 
@@ -789,12 +789,12 @@ setMethod('predict', signature(object = 'RF_biomod2_model'),
 
 .predict.RF_biomod2_model.RasterStack <- function(object, newdata, ...)
 {
-  return(.template_predict.RasterStack(seedval = NULL, predcommand = "predict(newdata, model = get_formal_model(object), type = 'prob', index = 2)", object, newdata, ...))
+  return(.template_predict.RasterStack(seedval = 71, predcommand = "predict(newdata, model = get_formal_model(object), type = 'prob', index = 2)", object, newdata, ...))
 }
 
 .predict.RF_biomod2_model.data.frame <- function(object, newdata, ...)
 {
-  return(.template_predict.data.frame(seedval = NULL, predcommand = "as.numeric(predict(get_formal_model(object), as.data.frame(newdata[not_na_rows, , drop = FALSE]), type = 'prob')[, '1'])", object, newdata, ...))
+  return(.template_predict.data.frame(seedval = 71, predcommand = "as.numeric(predict(get_formal_model(object), as.data.frame(newdata[not_na_rows, , drop = FALSE]), type = 'prob')[, '1'])", object, newdata, ...))
 }
 
 
