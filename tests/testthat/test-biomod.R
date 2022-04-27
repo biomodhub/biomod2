@@ -77,7 +77,9 @@ if (binaryResp) {
                                    GLM = list(family = poisson()),
                                    RF = list(do.classif = FALSE),
                                    # GBM = list(distribution = "gaussian"),
-                                   GBM = list(distribution = "poisson"),  ## also works
+                                   # GBM = list(distribution = "poisson"),  ## also works
+                                   GBM = list(distribution = list(name = "quantile", alpha = "0.75"),
+                                              n.trees = 500),  ## also works when providing TRULY EQUAL WEIGHTS
                                    # MARS = list(glm = list(family = Gamma(link = log)), interaction.level = 1),
                                    MARS = list(glm = list(family = poisson()), interaction.level = 1),
                                    GAM = list(k = 3, family = poisson())
@@ -93,6 +95,7 @@ bm.mod <-
     nb.rep = 2,
     data.split.perc = 80,
     var.import = 0,
+    weights = if (isTRUE(bm.opt@GBM$distribution$name == "quantile")) rep(1, length(resp.var)) else NULL, ## for GBM "quantile"
     metric.eval = metric.eval,
     do.full.models = FALSE,
   )
