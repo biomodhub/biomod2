@@ -543,8 +543,8 @@ BIOMOD_Modeling <- function(bm.format,
               " 'bernoulli', 'huberized', 'multinomial', 'adaboost'. Is this intended?", immediate. = TRUE)
     }
   } else{
-    if (models %in% c("CTA", "ANN", "SRE", "FDA")) {
-      stop("binaryResp is FALE, but the following model types do not support",
+    if (any(models %in% c("CTA", "ANN", "SRE", "FDA"))) {
+      stop("binaryResp is FALSE, but the following model types do not support",
            " non-binary data: 'CTA', 'ANN', 'SRE', 'FDA'.", immediate. = TRUE)
     }
     if ('GLM' %in% models &bm.options@GLM$family$family == "binomial") {
