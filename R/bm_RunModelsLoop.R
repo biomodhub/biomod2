@@ -906,19 +906,19 @@ bm_RunModel <- function(model, Data, modeling.id = '', bm.options, calib.lines, 
   } else if (model == "GBM") {
     cat("\nModel=Generalised Boosting Regression \n")
     cat("\t", bm.options@GBM$n.trees, "maximum different trees and ", bm.options@GBM$cv.folds, " Fold Cross-Validation")
-    set.seed(456) # to be able to refind our trees MAY BE BAD
+    seedval = 456 # to be able to refind our trees MAY BE BAD
   } else if (model == "GAM") {
     cat("\nModel=GAM")
     cat("\n\t", bm.options@GAM$algo, "algorithm chosen")
-    set.seed(555) # to be able to refind our trees MAY BE BAD
+    seedval = 321 # to be able to refind our trees MAY BE BAD
   } else if (model == "CTA") {
     cat("\nModel=Classification tree \n")
     cat("\t", bm.options@CTA$control$xval, "Fold Cross-Validation")
-    set.seed(123) # to be able to refind our trees MAY BE BAD
+    seedval = 123 # to be able to refind our trees MAY BE BAD
   } else if (model == "ANN") {
     cat("\nModel=Artificial Neural Network \n")
     cat("\t", bm.options@ANN$NbCV, "Fold Cross Validation + 3 Repetitions")
-    set.seed(555) # to be able to refind our trees MAY BE BAD
+    seedval = 555 # to be able to refind our trees MAY BE BAD
   } else if (model == "SRE") {
     cat("\nModel=Surface Range Envelop")
   } else if (model == "FDA"){
@@ -939,7 +939,7 @@ bm_RunModel <- function(model, Data, modeling.id = '', bm.options, calib.lines, 
     cat("\n")
   } else if (model == "RF") {
     cat("\nModel=Breiman and Cutler's random forests for classification and regression")
-    set.seed(71)
+    seedval = 71
   } else if (model == 'MAXENT.Phillips') {
     cat('\nModel=MAXENT.Phillips')
   } else if (model == 'MAXENT.Phillips.2') {
@@ -948,8 +948,8 @@ bm_RunModel <- function(model, Data, modeling.id = '', bm.options, calib.lines, 
   # else if (model == 'MAXENT.Tsuruoka') {
   #   cat('\nModel=MAXENT.Tsuruoka')
   # }
-  if (!is.null(seedval)) {
-    set.seed(seedval)
+  if (!is.null(seed.val)) {
+    seedval = seed.val
   }
   
   ## 5. Check Prev argument ---------------------------------------------------
@@ -978,7 +978,8 @@ bm_RunModel <- function(model, Data, modeling.id = '', bm.options, calib.lines, 
               eval.data = eval.data,
               scale.models = scale.models,
               resp_name = resp_name,
-              expl_var_names = expl_var_names))
+              expl_var_names = expl_var_names,
+              seed.val = seedval))
 }
 
 

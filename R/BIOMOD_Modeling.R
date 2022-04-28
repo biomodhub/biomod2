@@ -552,7 +552,8 @@ BIOMOD_Modeling <- function(bm.format,
               prevalence = prevalence,
               do.full.models = do.full.models,
               save.output = save.output,
-              data.split.table = data.split.table))
+              data.split.table = data.split.table,
+              seed.val = seed.val))
 }
 
 

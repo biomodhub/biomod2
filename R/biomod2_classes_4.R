@@ -259,12 +259,12 @@ setMethod('predict', signature(object = 'ANN_biomod2_model'),
 
 .predict.ANN_biomod2_model.RasterStack <- function(object, newdata, ...)
 {
-  return(.template_predict.RasterStack(seedval = 555, predcommand = "predict(newdata, get_formal_model(object), type = 'raw')", object, newdata, ...))
+  return(.template_predict.RasterStack(predcommand = "predict(newdata, get_formal_model(object), type = 'raw')", object, newdata, ...))
 }
 
 .predict.ANN_biomod2_model.data.frame <- function(object, newdata, ...)
 {
-  return(.template_predict.data.frame(seedval = 555, predcommand = "as.numeric(predict(get_formal_model(object), newdata[not_na_rows, , drop = F], type = 'raw'))", object, newdata, ...))
+  return(.template_predict.data.frame(predcommand = "as.numeric(predict(get_formal_model(object), newdata[not_na_rows, , drop = F], type = 'raw'))", object, newdata, ...))
 }
 
 
@@ -293,12 +293,12 @@ setMethod('predict', signature(object = 'CTA_biomod2_model'),
 
 .predict.CTA_biomod2_model.RasterStack <- function(object, newdata, ...)
 {
-  return(.template_predict.RasterStack(seedval = 123, predcommand = "predict(newdata, model = get_formal_model(object), type = 'prob', index = 2)", object, newdata, ...))
+  return(.template_predict.RasterStack(predcommand = "predict(newdata, model = get_formal_model(object), type = 'prob', index = 2)", object, newdata, ...))
 }
 
 .predict.CTA_biomod2_model.data.frame <- function(object, newdata, ...)
 {
-  return(.template_predict.data.frame(seedval = 123, predcommand = "as.numeric(predict(get_formal_model(object), as.data.frame(newdata[not_na_rows, , drop = FALSE]), type = 'prob')[, 2])", object, newdata, ...))
+  return(.template_predict.data.frame(predcommand = "as.numeric(predict(get_formal_model(object), as.data.frame(newdata[not_na_rows, , drop = FALSE]), type = 'prob')[, 2])", object, newdata, ...))
 }  
 
 
@@ -327,12 +327,12 @@ setMethod('predict', signature(object = 'FDA_biomod2_model'),
 
 .predict.FDA_biomod2_model.RasterStack <- function(object, newdata, ...)
 {
-  return(.template_predict.RasterStack(seedval = NULL, predcommand = "predict(newdata, model = get_formal_model(object), type = 'posterior', index = 2)", object, newdata, ...))
+  return(.template_predict.RasterStack(predcommand = "predict(newdata, model = get_formal_model(object), type = 'posterior', index = 2)", object, newdata, ...))
 }
 
 .predict.FDA_biomod2_model.data.frame <- function(object, newdata, ...)
 {
-  return(.template_predict.data.frame(seedval = NULL, predcommand = "as.numeric(predict(get_formal_model(object), as.data.frame(newdata[not_na_rows, , drop = FALSE]), type = 'posterior')[, 2])", object, newdata, omit.na = TRUE, ...))
+  return(.template_predict.data.frame(predcommand = "as.numeric(predict(get_formal_model(object), as.data.frame(newdata[not_na_rows, , drop = FALSE]), type = 'posterior')[, 2])", object, newdata, omit.na = TRUE, ...))
 }  
 
 
@@ -383,12 +383,12 @@ setMethod('predict', signature(object = 'GAM_biomod2_model'),
 
 .predict.GAM_biomod2_model.RasterStack <- function(object, newdata, ...)
 {
-  return(.template_predict.RasterStack(seedval = 555, predcommand = ".run_pred(object = get_formal_model(object), Prev = 0.5 , dat = newdata)", object, newdata, ...))
+  return(.template_predict.RasterStack(predcommand = ".run_pred(object = get_formal_model(object), Prev = 0.5 , dat = newdata)", object, newdata, ...))
 }
 
 .predict.GAM_biomod2_model.data.frame <- function(object, newdata, ...)
 {
-  return(.template_predict.data.frame(seedval = 555, predcommand = "as.numeric(.run_pred(object = get_formal_model(object), Prev = 0.5 , dat = as.data.frame(newdata[not_na_rows, , drop = FALSE])))", object, newdata, ...))
+  return(.template_predict.data.frame(predcommand = "as.numeric(.run_pred(object = get_formal_model(object), Prev = 0.5 , dat = as.data.frame(newdata[not_na_rows, , drop = FALSE])))", object, newdata, ...))
 } 
 
 
@@ -417,12 +417,12 @@ setMethod('predict', signature(object = 'GBM_biomod2_model'),
 
 .predict.GBM_biomod2_model.RasterStack <- function(object, newdata, ...)
 {
-  return(.template_predict.RasterStack(seedval = 456, predcommand = "predict(newdata, model = get_formal_model(object), fun = predict.gbm, n.trees = object@n.trees_optim, type = 'response')", object, newdata, ...))
+  return(.template_predict.RasterStack(predcommand = "predict(newdata, model = get_formal_model(object), fun = predict.gbm, n.trees = object@n.trees_optim, type = 'response')", object, newdata, ...))
 }
 
 .predict.GBM_biomod2_model.data.frame <- function(object, newdata, ...)
 {
-  return(.template_predict.data.frame(seedval = 456, predcommand = "as.numeric(predict(get_formal_model(object), as.data.frame(newdata[not_na_rows, , drop = FALSE]), n.trees = object@n.trees_optim, type = 'response'))", object, newdata, ...))
+  return(.template_predict.data.frame(predcommand = "as.numeric(predict(get_formal_model(object), as.data.frame(newdata[not_na_rows, , drop = FALSE]), n.trees = object@n.trees_optim, type = 'response'))", object, newdata, ...))
 }  
 
 
@@ -451,12 +451,12 @@ setMethod('predict', signature(object = 'GLM_biomod2_model'),
 
 .predict.GLM_biomod2_model.RasterStack <- function(object, newdata, ...)
 {
-  return(.template_predict.RasterStack(seedval = NULL, predcommand = ".run_pred(object = get_formal_model(object), Prev = 0.5 , dat = newdata)", object, newdata, ...))
+  return(.template_predict.RasterStack(predcommand = ".run_pred(object = get_formal_model(object), Prev = 0.5 , dat = newdata)", object, newdata, ...))
 }
 
 .predict.GLM_biomod2_model.data.frame <- function(object, newdata, ...)
 {
-  return(.template_predict.data.frame(seedval = NULL, predcommand = "as.numeric(.run_pred(object = get_formal_model(object), Prev = 0.5 , dat = as.data.frame(newdata[not_na_rows, , drop = FALSE])))", object, newdata, ...))
+  return(.template_predict.data.frame(predcommand = "as.numeric(.run_pred(object = get_formal_model(object), Prev = 0.5 , dat = as.data.frame(newdata[not_na_rows, , drop = FALSE])))", object, newdata, ...))
 }
 
 
@@ -489,12 +489,14 @@ setMethod('predict', signature(object = 'MARS_biomod2_model'),
   namefile <- args$namefile
   overwrite <- args$overwrite
   on_0_1000 <- args$on_0_1000
+  seedval <- args$seedval
   
   if (is.null(overwrite)) { overwrite <- TRUE }
   if (is.null(on_0_1000)) { on_0_1000 <- FALSE }
   
   ## handle separately rasterstack depending on the presence or not of factorial variable
   fact.var <- is.factor(newdata)
+  set.seed(seedval)
   if (any(fact.var))
   {
     ## get factor levels
@@ -536,7 +538,7 @@ setMethod('predict', signature(object = 'MARS_biomod2_model'),
 
 .predict.MARS_biomod2_model.data.frame <- function(object, newdata, ...)
 {
-  return(.template_predict.data.frame(seedval = NULL, predcommand = "as.numeric(predict(get_formal_model(object), as.data.frame(newdata[not_na_rows, , drop = FALSE]), type = 'response'))", object, newdata, ...))
+  return(.template_predict.data.frame(predcommand = "as.numeric(predict(get_formal_model(object), as.data.frame(newdata[not_na_rows, , drop = FALSE]), type = 'response'))", object, newdata, ...))
 }
 
 
@@ -662,10 +664,12 @@ setMethod('predict', signature(object = 'MAXENT.Phillips.2_biomod2_model'),
   namefile <- args$namefile
   overwrite <- args$overwrite
   on_0_1000 <- args$on_0_1000
+  seedval <- args$seedval
   
   if (is.null(overwrite)) { overwrite <- TRUE }
   if (is.null(on_0_1000)) { on_0_1000 <- FALSE }
   
+  set.seed(seedval)
   proj <- predict(object = get_formal_model(object), newdata = newdata.df, clamp = FALSE, type = 'logistic')[, 1]
   
   if (length(get_scaling_model(object))) {
@@ -696,7 +700,7 @@ setMethod('predict', signature(object = 'MAXENT.Phillips.2_biomod2_model'),
 
 .predict.MAXENT.Phillips.2_biomod2_model.data.frame <- function(object, newdata, ...)
 {
-  return(.template_predict.data.frame(seedval = NULL, predcommand = "as.numeric(predict(get_formal_model(object), as.data.frame(newdata[not_na_rows, , drop = FALSE]), type = 'logistic')[, 1])", object, newdata, ...))
+  return(.template_predict.data.frame(predcommand = "as.numeric(predict(get_formal_model(object), as.data.frame(newdata[not_na_rows, , drop = FALSE]), type = 'logistic')[, 1])", object, newdata, ...))
 }
 
 
@@ -789,12 +793,12 @@ setMethod('predict', signature(object = 'RF_biomod2_model'),
 
 .predict.RF_biomod2_model.RasterStack <- function(object, newdata, ...)
 {
-  return(.template_predict.RasterStack(seedval = 71, predcommand = "predict(newdata, model = get_formal_model(object), type = 'prob', index = 2)", object, newdata, ...))
+  return(.template_predict.RasterStack(predcommand = "predict(newdata, model = get_formal_model(object), type = 'prob', index = 2)", object, newdata, ...))
 }
 
 .predict.RF_biomod2_model.data.frame <- function(object, newdata, ...)
 {
-  return(.template_predict.data.frame(seedval = 71, predcommand = "as.numeric(predict(get_formal_model(object), as.data.frame(newdata[not_na_rows, , drop = FALSE]), type = 'prob')[, '1'])", object, newdata, ...))
+  return(.template_predict.data.frame(predcommand = "as.numeric(predict(get_formal_model(object), as.data.frame(newdata[not_na_rows, , drop = FALSE]), type = 'prob')[, '1'])", object, newdata, ...))
 }
 
 
@@ -821,14 +825,17 @@ setMethod('predict', signature(object = 'SRE_biomod2_model'),
 
 .predict.SRE_biomod2_model.RasterStack <- function(object, newdata, ...)
 {
-  return(.template_predict.RasterStack(seedval = NULL, predcommand = ".sre_projection(new.env = newdata, extrem.cond = object@extremal_conditions)", object, newdata, ...))
+  return(.template_predict.RasterStack(predcommand = ".sre_projection(new.env = newdata, extrem.cond = object@extremal_conditions)", object, newdata, ...))
 }
 
 .predict.SRE_biomod2_model.data.frame <- function(object, newdata, ...)
 {
   args <- list(...)
   on_0_1000 <- args$on_0_1000
+  seedval <- args$seedval
   if (is.null(on_0_1000)) { on_0_1000 <- FALSE }
+  
+  set.seed(seedval)
   proj <- .sre_projection(new.env = newdata, extrem.cond = object@extremal_conditions)
   if (on_0_1000) { proj <- round(proj * 1000) }
   return(proj)
