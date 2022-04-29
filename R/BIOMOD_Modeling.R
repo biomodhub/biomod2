@@ -287,7 +287,8 @@ BIOMOD_Modeling <- function(bm.format,
   .bm_cat("Build Single Models")
   
   ## 0. Check arguments ---------------------------------------------------------------------------
-  args <- .BIOMOD_Modeling.check.args(bm.format, models, bm.options, nb.rep, data.split.perc, data.split.table
+  args <- .BIOMOD_Modeling.check.args(bm.format, modeling.id, models, bm.options, nb.rep
+                                      , data.split.perc, data.split.table
                                       , do.full.models, weights, prevalence, metric.eval, var.import
                                       , save.output, scale.models, nb.cpu, seed.val)
   for (argi in names(args)) { assign(x = argi, value = args[[argi]]) }
@@ -415,12 +416,15 @@ BIOMOD_Modeling <- function(bm.format,
 
 ###################################################################################################
 
-.BIOMOD_Modeling.check.args <- function(bm.format, models, bm.options, nb.rep, data.split.perc, data.split.table
+.BIOMOD_Modeling.check.args <- function(bm.format, modeling.id, models, bm.options, nb.rep
+                                        , data.split.perc, data.split.table
                                         , do.full.models, weights, prevalence, metric.eval, var.import
                                         , save.output, scale.models, nb.cpu, seed.val)
 {
   ## 0. Check bm.format and models arguments ----------------------------------
   cat('\n\nChecking Models arguments...\n')
+  
+  if (!is.character(modeling.id) || length(modeling.id) > 1) { stop("modeling.id must be a 'character' of length 1") }
   
   .fun_testIfInherits(TRUE, "bm.format", bm.format, c("BIOMOD.formated.data", "BIOMOD.formated.data.PA"))
   if (!is.character(models)) { stop("models must be a 'character' vector") }
