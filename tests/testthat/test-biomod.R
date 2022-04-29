@@ -23,6 +23,7 @@ resp.name <- 'GuloGulo'
 resp.var <- species.dat %>% pull(resp.name)
 
 if (isFALSE(binaryResp)) {
+  set.seed(123)
   resp.var[resp.var == 1] <- round(rnorm(sum(resp.var == 1), mean = 0.2, sd = 0.1), 2)
   resp.var[resp.var > 1] <- 1
   resp.var[resp.var < 0] <- 0
@@ -66,15 +67,15 @@ if (binaryResp) {
 } else {
   metric.eval <- c("R2", "RMSE")
   models <- c(
-    "GLM",
-    "RF",
-    "GBM",
-    "MARS",
-    "GAM"
+    "GLM"#,
+    # "RF",
+    # "GBM"#,
+    # "MARS",
+    # "GAM"
   )
   bm.opt <- BIOMOD_ModelingOptions(
-                                   # GLM = list(family = Gamma(link = log)),
-                                   GLM = list(family = poisson()),
+                                   GLM = list(family = gaussian(link = identity)),
+                                   # GLM = list(family = poisson()),
                                    RF = list(do.classif = FALSE),
                                    # GBM = list(distribution = "gaussian"),
                                    # GBM = list(distribution = "poisson"),  ## also works
@@ -104,7 +105,7 @@ bm.mod <-
 bm.mod
 
 bm.mod.list <-
-  BIOMOD_LoadModels(bm.mod, models = 'MARS')
+  BIOMOD_LoadModels(bm.mod, models = 'GLM')
 
 bm.mod.1 <- get(bm.mod.list[1])
 
