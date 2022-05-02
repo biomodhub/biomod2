@@ -656,7 +656,8 @@ bm_RunModel <- function(model, Data, modeling.id = '', bm.options, calib.lines, 
       variables.importance <- bm_VariablesImportance(bm.model = model.bm
                                                      , expl.var = Data[, expl_var_names, drop = FALSE]
                                                      , nb.rep = var.import
-                                                     , temp_workdir = MWD$m_outdir)
+                                                     , temp_workdir = MWD$m_outdir
+                                                     , seed.val = seed.val)
     }
   } else if(model == "MAXENT.Phillips.2")
   {
@@ -809,7 +810,8 @@ bm_RunModel <- function(model, Data, modeling.id = '', bm.options, calib.lines, 
     if (model != "MAXENT.Phillips") {
       variables.importance <- bm_VariablesImportance(bm.model = model.bm
                                                      , expl.var = Data[, expl_var_names, drop = FALSE]
-                                                     , nb.rep = var.import)
+                                                     , nb.rep = var.import
+                                                     , seed.val = seed.val)
     }
     model.bm@model_variables_importance <- variables.importance
     
@@ -879,6 +881,7 @@ bm_RunModel <- function(model, Data, modeling.id = '', bm.options, calib.lines, 
   
   
   ## 4. Check bm.options argument ---------------------------------------------
+  seedval = NULL
   if (model == "GLM") {
     cat('\nModel=GLM')
     if (!is.null(bm.options@GLM$myFormula)) {

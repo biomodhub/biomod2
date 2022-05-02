@@ -91,7 +91,7 @@ bm_VariablesImportance <- function(bm.model,
   rm(args)
   
   ## Test if prediction is computable
-  ref <- try(predict(bm.model, expl.var, temp_workdir = temp_workdir))
+  ref <- try(predict(bm.model, newdata = expl.var, temp_workdir = temp_workdir, seedval = seed.val))
   if (inherits(ref, "try-error")) { stop("Unable to make model prediction") }
   
   ## Make randomisation
@@ -110,7 +110,7 @@ bm_VariablesImportance <- function(bm.model,
     foreach (v = variables, .combine = "rbind") %do%
     {
       data_rand <- .randomise_data(expl.var, v, method)
-      shuffled.pred <- predict(bm.model, data_rand, temp_workdir = temp_workdir)
+      shuffled.pred <- predict(bm.model, data_rand, temp_workdir = temp_workdir, seedval = seed.val)
       out_vr <- 1 - max(round(
         cor(x = ref, y = shuffled.pred, use = "pairwise.complete.obs", method = "pearson")
         , digits = 6), 0, na.rm = TRUE)
@@ -144,11 +144,13 @@ bm_VariablesImportance <- function(bm.model,
   # get variables names
   if (is.null(args$variables)) { args$variables <- colnames(expl.var) }
   
+  
   return(list(bm.model = bm.model
               , expl.var = expl.var
               , method = method
               , variables = args$variables
-              , temp_workdir = args$temp_workdir))
+              , temp_workdir = args$temp_workdir
+              , seed.val = args$seed.val))
 }
 
 

@@ -339,7 +339,8 @@ BIOMOD_EnsembleModeling <- function(bm.mod,
                                     committee.averaging = FALSE,
                                     prob.mean.weight = FALSE,
                                     prob.mean.weight.decay = 'proportional',
-                                    nb.cpu = 1)
+                                    nb.cpu = 1,
+                                    seed.val = NULL)
 {
   .bm_cat("Build Ensemble Models")
   
@@ -551,9 +552,11 @@ BIOMOD_EnsembleModeling <- function(bm.mod,
         dir.create(dirname(pred.bm.outfile), showWarnings = FALSE, recursive = TRUE)
         
         ## store models prediction on the hard drive
-        pred.bm <- predict(model.bm, expl
+        pred.bm <- predict(model.bm
+                           , newdata = expl
                            , formal_predictions = needed_predictions$predictions[, model.bm@model, drop = FALSE]
-                           , on_0_1000 = TRUE)
+                           , on_0_1000 = TRUE
+                           , seedval = seed.val)
         assign(pred.bm.name, pred.bm)
         save(list = pred.bm.name, file = pred.bm.outfile, compress = TRUE)
         rm(list = pred.bm.name)
@@ -561,7 +564,7 @@ BIOMOD_EnsembleModeling <- function(bm.mod,
         ## do the same for evaluation data
         if (exists('eval.obs') & exists('eval.expl')) {
           pred.bm.name <- paste0(model_name, ".predictionsEval")
-          eval_pred.bm <- predict(model.bm, eval.expl)
+          eval_pred.bm <- predict(model.bm, newdata = eval.expl, seedval = seed.val)
           assign(pred.bm.name, eval_pred.bm)
           save(list = pred.bm.name, file = pred.bm.outfile, compress = TRUE)
           rm(list = pred.bm.name)
@@ -631,7 +634,8 @@ BIOMOD_EnsembleModeling <- function(bm.mod,
           cat("\n\t\t\tEvaluating Predictor Contributions...", "\n")
           model.bm@model_variables_importance <- bm_VariablesImportance(bm.model = model.bm
                                                                         , expl.var = expl
-                                                                        , nb.rep = var.import)
+                                                                        , nb.rep = var.import
+                                                                        , seed.val = seed.val)
         }
         
         #### Models saving #####
