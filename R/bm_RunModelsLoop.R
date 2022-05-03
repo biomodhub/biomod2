@@ -192,6 +192,7 @@ bm_RunModel <- function(model, Data, modeling.id = '', bm.options, calib.lines, 
                   var.import = NULL)
   
   ## 2. CREATE MODELS -----------------------------------------------------------------------------
+  set.seed(seed.val)
   
   if (model == "CTA") {
     ## 2.1 CTA model ----------------------------------------------------------
@@ -498,7 +499,8 @@ bm_RunModel <- function(model, Data, modeling.id = '', bm.options, calib.lines, 
                            decay = decay,
                            maxit = bm.options@ANN$maxit,
                            nbCV = bm.options@ANN$NbCV,
-                           weights = weights[calib.lines])
+                           weights = weights[calib.lines],
+                           seedval = seed.val)
       
       ## get the optimised parameters values
       decay <- CV_nnet[1, 2]

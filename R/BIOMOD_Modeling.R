@@ -330,7 +330,8 @@ BIOMOD_Modeling <- function(bm.format,
                                                 weights, 
                                                 prevalence, 
                                                 do.full.models, 
-                                                data.split.table)
+                                                data.split.table,
+                                                seed.val)
   rm(bm.format)
   
   calib.lines <- mod.prep.dat[[1]]$calib.lines
@@ -585,7 +586,7 @@ setGeneric(".BIOMOD_Modeling.prepare.data", def = function(bm.format, ...) { sta
 
 setMethod('.BIOMOD_Modeling.prepare.data', signature('BIOMOD.formated.data'),
           function(bm.format, nb.rep, data.split.perc, weights = NULL, prevalence = NULL
-                   , do.full.models = TRUE, data.split.table = NULL)
+                   , do.full.models = TRUE, data.split.table = NULL, seed.val = NULL)
           {
             list.out <- list()
             name <- paste0(bm.format@sp.name, '_AllData')
@@ -614,7 +615,8 @@ setMethod('.BIOMOD_Modeling.prepare.data', signature('BIOMOD.formated.data'),
                 calib.lines <- .sample_mat(data.sp = bm.format@data.species,
                                            data.split = data.split.perc,
                                            nb.rep = nb.rep,
-                                           data.env = bm.format@data.env.var)
+                                           data.env = bm.format@data.env.var,
+                                           seed.val = seed.val)
                 if (do.full.models) {
                   calib.lines <- cbind(calib.lines, rep(TRUE, length(bm.format@data.species)))
                   colnames(calib.lines)[nb.rep + 1] <- '_Full'
@@ -651,7 +653,7 @@ setMethod('.BIOMOD_Modeling.prepare.data', signature('BIOMOD.formated.data'),
 
 setMethod('.BIOMOD_Modeling.prepare.data', signature('BIOMOD.formated.data.PA'),
           function(bm.format, nb.rep, data.split.perc, weights = NULL, prevalence = NULL
-                   , do.full.models = TRUE, data.split.table = NULL)
+                   , do.full.models = TRUE, data.split.table = NULL, seed.val = NULL)
           {
             list.out <- list()
             formal_weights <- weights
@@ -686,7 +688,8 @@ setMethod('.BIOMOD_Modeling.prepare.data', signature('BIOMOD.formated.data.PA'),
                     data.sp = bm.format@data.species[bm.format@PA.table[, pa]],
                     data.split = data.split.perc,
                     nb.rep = nb.rep,
-                    data.env = bm.format@data.env.var[bm.format@PA.table[, pa], , drop = FALSE]
+                    data.env = bm.format@data.env.var[bm.format@PA.table[, pa], , drop = FALSE],
+                    seed.val = seed.val
                   )
                   calib.lines[bm.format@PA.table[, pa], ] <- sampled.mat
                   colnames(calib.lines) <- colnames(sampled.mat)
@@ -760,7 +763,7 @@ setMethod('.BIOMOD_Modeling.prepare.data', signature('BIOMOD.formated.data.PA'),
   return(weights)
 }
 
-.sample_mat <- function(data.sp, data.split, nb.rep = 1, data.env = NULL)
+.sample_mat <- function(data.sp, data.split, nb.rep = 1, data.env = NULL, seed.val = NULL)
 {
   # data.sp is a 0, 1 vector
   # return a matrix with nb.rep columns of boolean (T: calib, F= eval)
@@ -774,6 +777,7 @@ setMethod('.BIOMOD_Modeling.prepare.data', signature('BIOMOD.formated.data.PA'),
   mat.out <- matrix(FALSE, nrow = length(data.sp), ncol = nb.rep)
   colnames(mat.out) <- paste0('_RUN', 1:nb.rep)
   
+  set.seed(seed.val)
   for (i in 1:ncol(mat.out)) {
     ## force to sample at least one level of each factorial variable for calibration
     fact.cell.samp <- NULL
