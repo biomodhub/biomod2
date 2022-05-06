@@ -226,7 +226,7 @@ bm_PlotResponseCurves <- function(bm.out
             if (length(grep("MAXENT.Phillips$", mod.name)) == 1) {
               temp_workdir = mod@model_output_dir
             }
-            proj.tmp <- predict(mod, new.env.r.tmp, on_0_1000 = on_0_1000, do_check = FALSE, temp_workdir = temp_workdir)
+            proj.tmp <- predict(mod, newdata = new.env.r.tmp, on_0_1000 = on_0_1000, do_check = FALSE, temp_workdir = temp_workdir, seedval = NULL)
             
             res = data.frame(pts.tmp, proj.tmp)
             colnames(res) = c(vari, mod.name)
@@ -278,7 +278,7 @@ bm_PlotResponseCurves <- function(bm.out
               temp_workdir = mod@model_output_dir
             }
             
-            proj.tmp <- predict(mod, new.env.r.tmp, on_0_1000 = on_0_1000, do_check = FALSE, temp_workdir = temp_workdir)
+            proj.tmp <- predict(mod, new.env.r.tmp, on_0_1000 = on_0_1000, do_check = FALSE, temp_workdir = temp_workdir, seedval = NULL)
             
             res = data.frame(pts.tmp1, pts.tmp2, proj.tmp)
             colnames(res) = c(vari1, vari2, mod.name)
