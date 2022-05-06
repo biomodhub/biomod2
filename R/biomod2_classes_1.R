@@ -1260,7 +1260,7 @@ setMethod('show', signature('BIOMOD.models.options'),
 
             ## GBM options
             cat("\n")
-            cat("\nGBM = list( distribution = c(", paste(.print_control_etc(bm.opt@GBM$distribution), collapse = ", "), ")),", sep = "")
+            cat("\nGBM = list( distribution = c(", paste(.print_control_etc(object@GBM$distribution), collapse = ", "), ")),", sep = "")
             cat("\n            n.trees = ", object@GBM$n.trees, ",", sep = "")
             cat("\n            interaction.depth = ", object@GBM$interaction.depth, ",", sep = "")
             cat("\n            n.minobsinnode = ", object@GBM$n.minobsinnode, ",", sep = "")
