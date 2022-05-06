@@ -1,0 +1,212 @@
+---
+title: "Secundary functions"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Secundary functions}
+  %\VignetteEngine{knitr::knitr}
+  %\VignetteEncoding{UTF-8}
+---
+
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.13/css/all.css" integrity="sha384-DNOHZ68U8hZfKXOrtjWvjxusGo9WQnrNx2sqG0tfsghAvtVlRW3tvkXWZh58N9jp" crossorigin="anonymous">
+
+
+
+## <i class="fas fa-code"></i> Small code examples
+
+Here are presented, in small and unlinked examples, secundary functions (starting with `bm_[...]`) of `biomod2`. Most of these functions are internally called by some main functions (starting with `BIOMOD_[...]`) of `biomod2`, but can be easily used as such.
+
+### <i class="fas fa-truck-loading"></i> Prepare data
+
+#### Vector data
+
+```R
+## Generate a binary vector -------------------------------------------------------------
+vec.a <- sample(c(0, 1), 100, replace = TRUE)
+
+## Generate a 0-1000 vector (random drawing) --------------------------------------------
+vec.b <- runif(100, min = 0, max = 1000)
+
+## Generate a 0-1000 vector (biased drawing) --------------------------------------------
+BiasedDrawing <- function(x, m1 = 300, sd1 = 200, m2 = 700, sd2 = 200) {
+  return(ifelse(x < 0.5, rnorm(1, m1, sd1), rnorm(1, m2, sd2)))
+}
+vec.c <- sapply(vec.a, BiasedDrawing)
+vec.c[which(vec.c < 0)] <- 0
+vec.c[which(vec.c > 1000)] <- 1000
+
+## Generate a 0-1000 vector (normal distribution) ---------------------------------------
+vec.d <- rnorm(100, 500, 100)
+```
+
+<!-- png("vignettes/pictures/examples_2_plot1.png", width = 800, height = 300) -->
+<!-- pdf("vignettes/pictures/examples_2_plot1.pdf", width = 8, height = 5) -->
+<!-- par(mfrow = c(1, 4)) -->
+<!-- barplot(table(vec.a), main = "vec.a") -->
+<!-- hist(vec.b, main = "vec.b", xlab = "", xlim = c(0, 1000)) -->
+<!-- hist(vec.c, main = "vec.c", xlab = "", xlim = c(0, 1000)) -->
+<!-- hist(vec.d, main = "vec.d", xlab = "", xlim = c(0, 1000)) -->
+<!-- dev.off() -->
+
+<div style="text-align:center;">
+<p><img src="pictures/examples_2_plot1.png" alt="EXAMPLE 2 vector data" style="width:600px;"></p>
+</div>
+
+
+
+#### Observations & explanatory variables
+
+```R
+library(biomod2)
+library(raster)
+```
+
+```R
+## Create simple simulated data ---------------------------------------------------------
+myResp.s <- sample(c(0, 1), 20, replace = TRUE)
+myExpl.s <- data.frame(var1 = sample(c(0, 1), 100, replace = TRUE),
+                       var2 = rnorm(100),
+                       var3 = 1:100)
+                       
+## Create raster data -------------------------------------------------------------------
+ras.1 <- ras.2 <- mask.out <- raster(nrows = 10, ncols = 10)
+ras.1[] <- as.factor(rep(c(1, 2, 3, 4, 5), each = 20))
+ras.2[] <- rnorm(100)
+stk <- stack(ras.1, ras.2)
+names(stk) <- c("varFact", "varNorm")
+
+## define a mask for already sampled points
+mask.out[1:40] <- 1
+
+## define a list of masks where we want to sample in priority
+mask.in <- list(ras.1, ras.1)
+mask.in[[1]][1:80] <- NA ## only level 5 should be sampled in this mask
+mask.in[[1]][21:80] <- NA ## only levels 1 and 5 should be sampled in this mask
+
+## Load real data -----------------------------------------------------------------------
+myFile <- system.file('external/species/mammals_table.csv', package = 'biomod2')
+DataSpecies <- read.csv(myFile, row.names = 1)
+myResp.r <- as.numeric(DataSpecies[, 'GuloGulo'])
+
+myFiles <- paste0('external/bioclim/current/bio', c(3, 4, 7, 11, 12), '.grd')
+myExpl.r <- raster::stack(system.file(myFiles, package = 'biomod2'))
+
+myRespXY <- DataSpecies[which(myResp.r == 1), c('X_WGS84', 'Y_WGS84')]
+myResp.v <- reclassify(subset(myExpl.r, 1, drop = TRUE), c(-Inf, Inf, 0))
+myResp.v[cellFromXY(myResp.v, myRespXY)] <- 1
+```
+
+<!-- library(foreach) -->
+<!-- library(ggplot2) -->
+<!-- library(patchwork) -->
+<!-- pp.list = foreach(ras = list(stk$varFact, stk$varNorm, myExpl.r$bio3, myExpl.r$bio4 -->
+<!--                              , myExpl.r$bio7, myExpl.r$bio11, myExpl.r$bio12)) %do% -->
+<!--   { -->
+<!--     df = as.data.frame(rasterToPoints(ras)) -->
+<!--     pp = ggplot(df, aes_string(x = "x", y = "y", fill = colnames(df)[3])) + -->
+<!--       geom_raster() + -->
+<!--       coord_equal() + -->
+<!--       labs(x = "", y = "") + -->
+<!--       scale_fill_viridis_c() -->
+<!--     return(pp) -->
+<!--   } -->
+<!-- pp1 = pp.list[[1]] / pp.list[[2]] -->
+<!-- pp2 = pp.list[[3]] + pp.list[[4]] + pp.list[[5]] +  -->
+<!--   pp.list[[6]] + pp.list[[7]] + plot_layout(ncol = 2) -->
+<!-- pdf("vignettes/pictures/examples_2_plot2.pdf", width = 10, height = 8) -->
+<!-- (pp1 | pp2) + plot_layout(ncol = 2, width = c(1, 2)) -->
+<!-- dev.off() -->
+
+<div style="text-align:center;">
+<img src="pictures/examples_2_plot2.png" alt="EXAMPLE 2 explanatory variables" style="width:700px;">
+</div>
+
+
+
+### <i class="fas fa-cog"></i> Secundary functions : vector data
+
+#### Generate calibration / evaluatation datasets
+
+```R
+bm_SampleBinaryVector(ref = vec.a, ratio = 0.7)
+```
+
+<!-- #### Rescale values between 0-1 with a binomial GLM -->
+
+<!-- ```R -->
+<!-- vec.b_rescaled <- bm_Rescaler(dataToRescale = vec.b, -->
+<!--                               name = "TEST", -->
+<!--                               doModel = TRUE, -->
+<!--                               ref = vec.a) -->
+<!-- plot(vec.b, vec.b_rescaled) -->
+<!-- abline(a = 0, b = 0.001, lty = 2) -->
+<!-- ``` -->
+
+#### Find optimal threshold for a specific evaluation metric
+
+```R
+bm_FindOptimStat(metric.eval = 'TSS', obs = vec.a, fit = vec.b)
+bm_FindOptimStat(metric.eval = 'TSS', obs = vec.a, fit = vec.c, nb.thresh = 100)
+```
+
+#### From continuous to binary / filtered vector
+
+```R
+vec.d_bin <- bm_BinaryTransformation(data = vec.d, threshold = 500)
+vec.d_filt <- bm_BinaryTransformation(data = vec.d, threshold = 500, do.filtering = TRUE)
+cbind(vec.d, vec.d_bin, vec.d_filt)
+```
+
+
+
+### <i class="fas fa-cogs"></i> Secundary functions : explanatory variables
+
+#### Generate automatic formula
+
+```R
+bm_MakeFormula(resp.name = 'myResp.s',
+               expl.var = head(myExpl.s),
+               type = 'quadratic',
+               interaction.level = 0)
+```
+
+#### Sample all factor levels
+
+```R
+samp1 <- bm_SampleFactorLevels(expl.var = stk, mask.out = mask.out)
+samp2 <- bm_SampleFactorLevels(expl.var = stk, mask.in = mask.in)
+samp3 <- bm_SampleFactorLevels(expl.var = stk, mask.out = mask.out, mask.in = mask.in)
+```
+
+#### Compute Species Range Envelop model
+
+```R
+# Compute SRE for several quantile values
+sre.100 <- bm_SRE(resp.var = myResp.v,
+                  expl.var = myExpl.r,
+                  new.env = myExpl.r,
+                  quant = 0)
+sre.095 <- bm_SRE(resp.var = myResp.v,
+                  expl.var = myExpl.r,
+                  new.env = myExpl.r,
+                  quant = 0.025)
+sre.090 <- bm_SRE(resp.var = myResp.v,
+                  expl.var = myExpl.r,
+                  new.env = myExpl.r,
+                  quant = 0.05)
+  
+# Visualize results
+res <- stack(myResp.v, sre.100, sre.095, sre.090)
+names(res) <- c("Original distribution", "Full data calibration", "Over 95 percent", "Over 90 percent")
+plot(res, zlim = c(0, 1))
+```
+
+#### Compute variables importance
+
+```R
+mod <- glm(var1 ~ var2 + var3, data = myExpl.s)
+bm_VariablesImportance(bm.model = mod, 
+                       expl.var = myExpl.s[, c('var2', 'var3')],
+                       method = "full_rand",
+                       nb.rep = 3)
+```
+

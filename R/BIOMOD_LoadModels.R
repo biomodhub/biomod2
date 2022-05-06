@@ -1,158 +1,237 @@
-BIOMOD_LoadModels <- function(bm.out, ... ){
+###################################################################################################
+##' @name BIOMOD_LoadModels
+##' @author Damien Georges
+##' 
+##' @title Load species distribution models built with \pkg{biomod2}
+##' 
+##' @description This function loads individual models built with \code{\link{BIOMOD_Modeling}} 
+##' or \code{\link{BIOMOD_EnsembleModeling}} functions.
+##' 
+##' 
+##' @param bm.out a \code{\link{BIOMOD.models.out}} or \code{\link{BIOMOD.ensemble.models.out}} 
+##' object that can be obtained with the \code{\link{BIOMOD_Modeling}} or 
+##' \code{\link{BIOMOD_EnsembleModeling}} functions
+##' 
+##' @param \ldots (\emph{optional, see \href{BIOMOD_LoadModels.html#details}{Details})}) 
+##' 
+##' 
+##' @return 
+##' 
+##' A \code{vector} containing the names of the loaded models.
+##' 
+##' 
+##' @details
+##' 
+##' This function might be of particular use to load models and make response plot analyses. \cr \cr
+##' 
+##' Running the function providing only \code{bm.out} argument will load all models built by the 
+##' \code{\link{BIOMOD_Modeling}} or \code{\link{BIOMOD_EnsembleModeling}} function. But a 
+##' subselection of models can be done using the following additional arguments :
+##' \itemize{
+##'   \item{\code{models} : }{a \code{vector} containing model names to be loaded, must be among 
+##'   \code{GLM}, \code{GBM}, \code{GAM}, \code{CTA}, \code{ANN}, \code{SRE}, \code{FDA}, 
+##'   \code{MARS}, \code{RF}, \code{MAXENT.Phillips}, \code{MAXENT.Phillips.2}}
+##'   \item{\code{run.eval} : }{a \code{vector} containing repetition set to be loaded, must be 
+##'   among \code{RUN1}, \code{RUN2}, \code{...}, \code{Full}}
+##'   \item{\code{data.set} : }{a \code{vector} containing pseudo-absence set to be loaded, must 
+##'   be among \code{PA1}, \code{PA2}, \code{...} \cr \cr}
+##'   \item{\code{path} : }{a \code{character} corresponding to the location of the species folder 
+##'   (if different from the current working directory) \cr \cr}
+##'   \item{\code{full.name} : }{a \code{vector} containing model names to be kept, must be either 
+##'   \code{all} or a sub-selection of model names \cr \cr}
+##'   \item{\code{as} : }{a \code{character} to contain the loaded models}
+##' }
+##' 
+##' 
+##' @seealso \code{\link{BIOMOD_Modeling}}, \code{\link{BIOMOD_EnsembleModeling}}
+##' @family Main functions
+##' 
+##' 
+##' @examples
+##' 
+##' # Load species occurrences (6 species available)
+##' myFile <- system.file('external/species/mammals_table.csv', package = 'biomod2')
+##' DataSpecies <- read.csv(myFile, row.names = 1)
+##' head(DataSpecies)
+##' 
+##' # Select the name of the studied species
+##' myRespName <- 'GuloGulo'
+##' 
+##' # Get corresponding presence/absence data
+##' myResp <- as.numeric(DataSpecies[, myRespName])
+##' 
+##' # Get corresponding XY coordinates
+##' myRespXY <- DataSpecies[, c('X_WGS84', 'Y_WGS84')]
+##' 
+##' # Load environmental variables extracted from BIOCLIM (bio_3, bio_4, bio_7, bio_11 & bio_12)
+##' myFiles <- paste0('external/bioclim/current/bio', c(3, 4, 7, 11, 12), '.grd')
+##' myExpl <- raster::stack(system.file(myFiles, package = 'biomod2'))
+##' 
+##' 
+##' # ---------------------------------------------------------------
+##' # Format Data with true absences
+##' myBiomodData <- BIOMOD_FormatingData(resp.var = myResp,
+##'                                      expl.var = myExpl,
+##'                                      resp.xy = myRespXY,
+##'                                      resp.name = myRespName)
+##' 
+##' # Create default modeling options
+##' myBiomodOptions <- BIOMOD_ModelingOptions()
+##' 
+##' # Model single models
+##' myBiomodModelOut <- BIOMOD_Modeling(bm.format = myBiomodData,
+##'                                     modeling.id = 'AllModels',
+##'                                     bm.options = myBiomodOptions,
+##'                                     nb.rep = 2,
+##'                                     data.split.perc = 80,
+##'                                     metric.eval = c('TSS','ROC'),
+##'                                     var.import = 3,
+##'                                     do.full.models = FALSE)
+##' 
+##' 
+##' # ---------------------------------------------------------------
+##' # Loading some models built
+##' myLoadedModels <- BIOMOD_LoadModels(bm.out = myBiomodModelOut, models = 'RF')
+##' myLoadedModels
+##' 
+##' 
+##' @export
+##' 
+##' 
+###################################################################################################
 
-  ####
-  # ... can be models, run.eval, data.set to make a models subselection
-  add.args <- list(...)
-  args <- .BIOMOD_LoadModels.check.args(bm.out, add.args)
-  add.args <- args$add.args
+
+BIOMOD_LoadModels <- function(bm.out, ... )
+{
+  # .bm_cat("Load Models")
+
+  ## 0. Check arguments ---------------------------------------------------------------------------
+  args <- .BIOMOD_LoadModels.check.args(bm.out, ...)
+  for (argi in names(args)) { assign(x = argi, value = args[[argi]]) }
   rm(args)
-
+  
+  ## Get names of models to load
   models.to.load <- get_built_models(bm.out)
-
   envir <- parent.frame()
-
-
-  if(!is.null(add.args$full.name)){
-    models.to.load <- add.args$full.name
-  } else{ ## make a subselection
-    if(!is.null(add.args$models)){
+  
+  ## Create list or a sub-list of models to load ----------------------------------------
+  if (!is.null(full.name)) {
+    models.to.load <- full.name
+  } else { ## make a subselection
+    
+    ## subselection on models
+    if (!is.null(models)) {
       model.to.load.tmp <- c()
-      for(mod in add.args$models){
-        if(sum(grepl(mod,  models.to.load)) > 0){
-          model.to.load.tmp <- c(model.to.load.tmp, grep(mod, models.to.load, value=TRUE))
+      for (mod in models) {
+        if (sum(grepl(mod, models.to.load)) > 0) {
+          model.to.load.tmp <- c(model.to.load.tmp, grep(mod, models.to.load, value = TRUE))
+        }
+      }
+      models.to.load <- model.to.load.tmp
+    }
+    
+    ## subselection on run.Eval
+    if (!is.null(run.eval)) {
+      model.to.load.tmp <- c()
+      for (re in run.eval) {
+        if (sum(grepl(re, models.to.load)) > 0) {
+          model.to.load.tmp <- c(model.to.load.tmp, grep(re, models.to.load, value = TRUE))
         }
       }
       models.to.load <-  model.to.load.tmp
     }
-
-    if(!is.null(add.args$run.eval)){
+    
+    ## subselection on data.set
+    if (!is.null(data.set)) {
       model.to.load.tmp <- c()
-      for(re in add.args$run.eval){
-        if(sum(grepl(re,  models.to.load)) > 0){
-          model.to.load.tmp <- c(model.to.load.tmp, grep(re, models.to.load, value=TRUE))
+      for (ds in data.set) {
+        if (sum(grepl(ds,  models.to.load)) > 0) {
+          model.to.load.tmp <- c(model.to.load.tmp, grep(ds, models.to.load, value = TRUE))
         }
       }
       models.to.load <-  model.to.load.tmp
     }
-
-    if(!is.null(add.args$data.set)){
-      model.to.load.tmp <- c()
-      for(ds in add.args$data.set){
-        if(sum(grepl(ds,  models.to.load)) > 0){
-          model.to.load.tmp <- c(model.to.load.tmp, grep(ds, models.to.load, value=TRUE))
-        }
-      }
-      models.to.load <-  model.to.load.tmp
-    }
-
   }
-
-  if(length(models.to.load) == 0){
+  
+  if (length(models.to.load) == 0) {
     cat("\n   ! No models computed matched, No models loaded !")
     return(NULL)
   }
-
-  if(!is.null(add.args$as) & length(models.to.load)==1){
-    assign(x=add.args$as,
-           value=get(load(file=file.path(bm.out@sp.name, "models", bm.out@modeling.id, models.to.load))),
-           envir=envir)
+  
+  ## LOAD the selected models -----------------------------------------------------------
+  nameFile = file.path(bm.out@sp.name, "models", bm.out@modeling.id)
+  # .bm_cat("Done")
+  if (!is.null(as) && length(models.to.load) == 1) {
+    assign(x = as,
+           value = get(load(file = file.path(nameFile, models.to.load))),
+           envir = envir)
     invisible(TRUE)
   } else {
-    for(mtl in models.to.load){
-      load(file=file.path(bm.out@sp.name, "models", bm.out@modeling.id, mtl),envir=envir)
+    for (mtl in models.to.load) {
+      load(file = file.path(bm.out@sp.name, "models", bm.out@modeling.id, mtl), envir = envir)
     }
-
     return(models.to.load)
   }
-
-
 }
 
-.BIOMOD_LoadModels.check.args <- function(bm.out, add.args){
-  if(! (inherits(bm.out, 'BIOMOD.models.out') | inherits(bm.out, 'BIOMOD.EnsembleModeling.out'))){
-    stop("bm.out arg must be a BIOMOD.models.out or a BIOMOD.EnsembleModeling.out object")
-  }
 
+###################################################################################################
+
+.BIOMOD_LoadModels.check.args <- function(bm.out, ...)
+{
+  args <- list(...)
+  
+  ## 1. Check bm.out ----------------------------------------------------------
+  .fun_testIfInherits(TRUE, "bm.out", bm.out, c("BIOMOD.models.out", "BIOMOD.ensemble.models.out"))
+  
+  ## 2. Check args ------------------------------------------------------------
   available.args <- c("models", "run.eval", "data.set", "path", "as", "full.name")
-  given.args <- names(add.args)
-
-  ## is all additional args are known ?
-  if(sum(given.args %in% available.args) != length(given.args)){
-    cat("\n   !", toString( given.args[which(!(given.args %in% available.args))] ), "arguments are unknown. Please refer to function help file to see available ones.", fill=.Options$width)
-    ## remove unknown args
-    for(ga in given.args[which(!(given.args %in% available.args))]){
-      add.args[[ga]] <- NULL
-    }
+  .fun_testIfIn(TRUE, "names(args)", names(args), available.args)
+  avail_models <- get_built_models(bm.out) ## get all available model names
+  
+  ## 2.1 Check add.args : models ----------------------------------------------
+  models <- args$models
+  if (!is.null(models)) {
+    infos = .extract_modelNamesInfo(model.names = avail_models, info = 'models')
+    .fun_testIfIn(TRUE, "models", models, infos)
+    models = paste0("_", models)
   }
-
-  ## get all available model names
-  avail_models <- get_built_models(bm.out)
-
-  ## check additional args values
-  ### models names
-  if(!is.null(add.args$models)){
-    if(sum(add.args$models %in% .extractModelNamesInfo(model.names=avail_models, info='models') ) != length(add.args$models) ){
-      stop(paste("models argument must be one of ", toString(.extractModelNamesInfo(model.names=avail_models, info='models')), sep="") )
-    } else{
-      add.args$models = paste("_", add.args$models, sep="")
-    }
+  
+  ## 2.2 Check add.args : run.eval --------------------------------------------
+  run.eval <- args$run.eval
+  if (!is.null(run.eval)) {
+    infos = .extract_modelNamesInfo(model.names = avail_models, info = 'run.eval')
+    .fun_testIfIn(TRUE, "run.eval", run.eval, infos)
+    run.eval = paste0("_", run.eval)
   }
-
-  ### run.eval names
-  if(!is.null(add.args$run.eval)){
-    if(sum(add.args$run.eval %in% .extractModelNamesInfo(model.names=avail_models, info='run.eval') != length(add.args$run.eval)) ){
-      stop(paste("run.eval argument must be one of ", toString(.extractModelNamesInfo(model.names=avail_models), info='run.eval'), sep="") )
-    } else{
-      add.args$run.eval = paste("_", add.args$run.eval, "_", sep="")
-    }
+  
+  ## 2.3 Check add.args : data.set --------------------------------------------
+  data.set <- args$data.set
+  if (!is.null(data.set)) {
+    infos = .extract_modelNamesInfo(model.names = avail_models, info = 'data.set')
+    .fun_testIfIn(TRUE, "data.set", data.set, infos)
+    data.set = paste0("_", data.set, "_")
   }
-
-  ### data.set names
-  if(!is.null(add.args$data.set)){
-    if(sum(add.args$data.set %in% .extractModelNamesInfo(model.names=avail_models, info='data.set') != length(add.args$data.set)) ){
-      stop(paste("data.set argument must be one of ", toString(.extractModelNamesInfo(model.names=avail_models), info='data.set'), sep="") )
-    } else{
-      add.args$data.set = paste("_", add.args$data.set, "_", sep="")
-    }
+  
+  ## 2.4 Check path : data.set ------------------------------------------------
+  path <- args$path
+  if (!is.null(path) && !(bm.out@sp.name %in% list.dirs(path = path))) {
+    stop("invalid path given")
+  } else {
+    path = "."
   }
-
-  ### path to sim
-  if(!is.null(add.args$path)){
-    if(!(bm.out@sp.name %in% list.dirs(path = add.args$path))){
-      stop("invalid path given")
-    }
-  } else{
-    add.args$path = "."
+  
+  ## 2.5 Check path : full.name ------------------------------------------------
+  full.name <- args$full.name
+  if (!is.null(full.name)) {
+    .fun_testIfIn(TRUE, "full.name", full.name, avail_models)
   }
-
-  ### full.name
-  if(!is.null(add.args$full.name)){
-    if(sum(!(add.args$full.name %in% avail_models)) > 0){
-      stop("full.name arg must be one of : ", toString(avail_models))
-    }
-  }
-
-
-  return(list(add.args = add.args))
-
+  
+  return(list(models = models,
+              run.eval = run.eval,
+              data.set = data.set, 
+              path = path, 
+              as = args$as, 
+              full.name = full.name))
 }
 
-# -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-= #
-
-'.extractModelNamesInfo' <- function(model.names, info = 'species'){
-  if(!is.character(model.names)){
-    stop("model.names must be a character vector")
-  }
-  if(!is.character(info) | length(info) != 1 | !(info %in% c('species', 'data.set', 'models', 'run.eval')) ){
-    stop("info must be 'species', 'data.set', 'models' or 'run.eval'")
-  }
-
-  info.tmp <- as.data.frame(strsplit(model.names, "_"))
-
-  return( switch(info,
-                 species = paste(unique(unlist(info.tmp[-c(nrow(info.tmp), nrow(info.tmp)-1, nrow(info.tmp)-2),])), collapse="_"),
-                 data.set = paste(unique(unlist(info.tmp[(nrow(info.tmp)-2),]))),
-                 run.eval = paste(unique(unlist(info.tmp[(nrow(info.tmp)-1),]))),
-                 models = paste(unique(unlist(info.tmp[(nrow(info.tmp)),]))) ) )
-
-}
