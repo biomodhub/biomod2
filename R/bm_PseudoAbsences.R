@@ -257,7 +257,7 @@ setMethod('bm_PseudoAbsences_user.defined', signature(expl.var = "SpatialPointsD
           function(resp.var, expl.var, user.table) {
             cat("\n   > User defined pseudo absences selection")
             return(list(xy = coordinates(resp.var),
-                        sp = as.vector(resp.var@data),
+                        sp = as.numeric(unlist(resp.var@data, use.names = FALSE)),
                         env = as.data.frame(expl.var@data),
                         pa.tab = user.table))
           })
@@ -332,7 +332,7 @@ setMethod('bm_PseudoAbsences_random', signature(expl.var = "SpatialPointsDataFra
               }
               
               return(list(xy = coordinates(resp.var),
-                          sp = as.vector(resp.var@data),
+                          sp = as.numeric(unlist(resp.var@data, use.names = FALSE)),
                           env = as.data.frame(expl.var@data),
                           pa.tab = pa.tab))
             } else {
@@ -515,7 +515,7 @@ setMethod('bm_PseudoAbsences_sre', signature(expl.var = "SpatialPointsDataFrame"
             }
             
             return(list(xy = coordinates(resp.var),
-                        sp = as.vector(resp.var@data),
+                        sp = as.numeric(unlist(resp.var@data, use.names = FALSE)),
                         env = as.data.frame(expl.var@data),
                         pa.tab = pa.tab))
           })

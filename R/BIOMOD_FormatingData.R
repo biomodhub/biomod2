@@ -369,7 +369,7 @@ BIOMOD_FormatingData <- function(resp.name,
     cat('\n Response variable name was converted into', resp.name)
   }
   
-  available.types <- c('numeric', 'data.frame', 'matrix',
+  available.types <- c('integer', 'numeric', 'data.frame', 'matrix',
                        'RasterLayer', 'RasterStack',
                        'SpatialPointsDataFrame', 'SpatialPoints')
   
