@@ -150,7 +150,7 @@ bm_RunModelsLoop <- function(bm.format,
                     var.import = var.import,
                     save.output = TRUE, ## save.output
                     scale.models = scale.models,
-                    seed.val = NULL)
+                    seed.val = seed.val)
       }
     names(res.sp.run[[run.id]]) <- model
   }
@@ -710,8 +710,14 @@ bm_RunModel <- function(model, Data, modeling.id = '', bm.options, calib.lines, 
   
   
   ## 3. CREATE PREDICTIONS ------------------------------------------------------------------------
+  temp_workdir = NULL
+  if (model == "MAXENT.Phillips") {
+    temp_workdir = model.bm@model_output_dir
+  }
+  
   if (model != "MAXENT.Phillips") {
-    g.pred <- try(predict(model.bm, Data[, expl_var_names, drop = FALSE], on_0_1000 = TRUE, seedval = seed.val))
+    g.pred <- try(predict(model.bm, Data[, expl_var_names, drop = FALSE], on_0_1000 = TRUE
+                          , seedval = seed.val, temp_workdir = temp_workdir))
   }
   
   ## scale or not predictions -------------------------------------------------
@@ -719,7 +725,8 @@ bm_RunModel <- function(model, Data, modeling.id = '', bm.options, calib.lines, 
     cat("\n\tModel scaling...")
     model.bm@scaling_model <- try(.scaling_model(g.pred / 1000, Data[, 1, drop = TRUE], weights = weights))
     ## with weights
-    g.pred <- try(predict(model.bm, Data[, expl_var_names, drop = FALSE], on_0_1000 = TRUE, seedval = seed.val))
+    g.pred <- try(predict(model.bm, Data[, expl_var_names, drop = FALSE], on_0_1000 = TRUE
+                          , seedval = seed.val, temp_workdir = temp_workdir))
   }
   
   ## check predictions existence and stop execution if not ok -----------------
@@ -747,7 +754,8 @@ bm_RunModel <- function(model, Data, modeling.id = '', bm.options, calib.lines, 
   
   ## make prediction on evaluation data ---------------------------------------
   if (!is.null(eval.data)) {
-    g.pred.eval <- try(predict(model.bm, eval.data[, expl_var_names, drop = FALSE], on_0_1000 = TRUE, seedval = seed.val))
+    g.pred.eval <- try(predict(model.bm, eval.data[, expl_var_names, drop = FALSE], on_0_1000 = TRUE
+                               , seedval = seed.val, temp_workdir = temp_workdir))
   }
   
   ## SAVE predictions ---------------------------------------------------------
