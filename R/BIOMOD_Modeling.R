@@ -547,6 +547,10 @@ BIOMOD_Modeling <- function(bm.format,
     set.seed(seed.val)
   }
   
+  if (is.null(var.import)) {
+    var.import = 0
+  }
+  
   return(list(models = models,
               bm.options = bm.options,
               nb.rep = nb.rep,
