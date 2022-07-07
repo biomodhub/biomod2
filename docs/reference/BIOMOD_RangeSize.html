@@ -102,7 +102,7 @@ time scales or environmental scenarios for example</em>).</p>
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">BIOMOD_RangeSize</span><span class="op">(</span><span class="va">proj.current</span>, <span class="va">proj.future</span>, <span class="va">...</span><span class="op">)</span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">BIOMOD_RangeSize</span><span class="op">(</span><span class="va">proj.current</span>, <span class="va">proj.future</span><span class="op">)</span>
 
 <span class="co"># S4 method for data.frame,data.frame</span>
 <span class="fu">BIOMOD_RangeSize</span><span class="op">(</span><span class="va">proj.current</span>, <span class="va">proj.future</span><span class="op">)</span>
@@ -197,7 +197,7 @@ $$proj.future - 2 * proj.current$$</p>
 <span class="co"># Load species occurrences (6 species available)</span>
 <span class="va">myFile</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">'external/species/mammals_table.csv'</span>, package <span class="op">=</span> <span class="st">'biomod2'</span><span class="op">)</span>
 <span class="va">DataSpecies</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/utils/read.table.html" class="external-link">read.csv</a></span><span class="op">(</span><span class="va">myFile</span>, row.names <span class="op">=</span> <span class="fl">1</span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/pkg/raster/man/headtail.html" class="external-link">head</a></span><span class="op">(</span><span class="va">DataSpecies</span><span class="op">)</span>
+<span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">DataSpecies</span><span class="op">)</span>
 
 <span class="co"># Select the name of the studied species</span>
 <span class="va">myRespName</span> <span class="op">&lt;-</span> <span class="st">'GuloGulo'</span>
@@ -257,14 +257,14 @@ $$proj.future - 2 * proj.current$$</p>
                                               build.clamping.mask <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>
 
 <span class="co"># Load current and future binary projections</span>
-<span class="va">proj.current</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/raster/man/stack.html" class="external-link">stack</a></span><span class="op">(</span><span class="st">"GuloGulo/proj_Current/proj_Current_GuloGulo_TSSbin.grd"</span><span class="op">)</span>
-<span class="va">proj.future</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/raster/man/stack.html" class="external-link">stack</a></span><span class="op">(</span><span class="st">"GuloGulo/proj_Future/proj_Future_GuloGulo_TSSbin.grd"</span><span class="op">)</span>
+<span class="va">proj.current</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/utils/stack.html" class="external-link">stack</a></span><span class="op">(</span><span class="st">"GuloGulo/proj_Current/proj_Current_GuloGulo_TSSbin.grd"</span><span class="op">)</span>
+<span class="va">proj.future</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/utils/stack.html" class="external-link">stack</a></span><span class="op">(</span><span class="st">"GuloGulo/proj_Future/proj_Future_GuloGulo_TSSbin.grd"</span><span class="op">)</span>
 
 <span class="co"># Compute differences</span>
 <span class="va">myBiomodRangeSize</span> <span class="op">&lt;-</span> <span class="fu">BIOMOD_RangeSize</span><span class="op">(</span>proj.current <span class="op">=</span> <span class="va">proj.current</span>, proj.future <span class="op">=</span> <span class="va">proj.future</span><span class="op">)</span>
 
 <span class="va">myBiomodRangeSize</span><span class="op">$</span><span class="va">Compt.By.Models</span>
-<span class="fu"><a href="https://rdrr.io/pkg/raster/man/plot.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">myBiomodRangeSize</span><span class="op">$</span><span class="va">Diff.By.Pixel</span><span class="op">)</span>
+<span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">myBiomodRangeSize</span><span class="op">$</span><span class="va">Diff.By.Pixel</span><span class="op">)</span>
 
 <span class="co"># Represent main results </span>
 <span class="fu"><a href="bm_PlotRangeSize.html">bm_PlotRangeSize</a></span><span class="op">(</span>bm.range <span class="op">=</span> <span class="va">myBiomodRangeSize</span><span class="op">)</span>

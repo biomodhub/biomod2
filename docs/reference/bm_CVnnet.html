@@ -107,7 +107,8 @@ for neural networks in ANN model (see <code><a href="https://rdrr.io/pkg/nnet/ma
   decay <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.001</span>, <span class="fl">0.01</span>, <span class="fl">0.05</span>, <span class="fl">0.1</span><span class="op">)</span>,
   maxit <span class="op">=</span> <span class="fl">200</span>,
   nbCV <span class="op">=</span> <span class="fl">5</span>,
-  weights <span class="op">=</span> <span class="cn">NULL</span>
+  weights <span class="op">=</span> <span class="cn">NULL</span>,
+  seedval <span class="op">=</span> <span class="fl">555</span>
 <span class="op">)</span></code></pre></div>
     </div>
 
@@ -128,6 +129,8 @@ for neural networks in ANN model (see <code><a href="https://rdrr.io/pkg/nnet/ma
 <dt>weights</dt>
 <dd><p>a <code>vector</code> of <code>numeric</code> values corresponding to weights over 
 calibration lines</p></dd>
+<dt>seedval</dt>
+<dd><p>an <code>integer</code> value corresponding to the new seed value to be set</p></dd>
 </dl></div>
     <div id="value">
     <h2>Value</h2>

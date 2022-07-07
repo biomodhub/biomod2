@@ -14,7 +14,8 @@ bm_RunModelsLoop(
   var.import,
   save.output = TRUE,
   scale.models = TRUE,
-  nb.cpu = 1
+  nb.cpu = 1,
+  seed.val = NULL
 )
 
 bm_RunModel(
@@ -32,7 +33,8 @@ bm_RunModel(
   var.import = 0,
   save.output = FALSE,
   scale.models = TRUE,
-  nb.cpu = 1
+  nb.cpu = 1,
+  seed.val = NULL
 )
 }
 \arguments{
@@ -69,6 +71,9 @@ binomial GLM or not}
 \item{nb.cpu}{(\emph{optional, default} \code{1}) \cr 
 An \code{integer} value corresponding to the number of computing resources to be used to 
 parallelize the single models computation}
+
+\item{seed.val}{(\emph{optional, default} \code{NULL}) \cr 
+An \code{integer} value corresponding to the new seed value to be set}
 
 \item{Data}{a \code{data.frame} containing \code{data.species} and \code{data.env.var} slots 
 of \code{bm.format} parameter}

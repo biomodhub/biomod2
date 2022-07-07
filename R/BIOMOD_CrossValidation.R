@@ -167,14 +167,17 @@ BIOMOD_CrossValidation <- function(bm.format,
 {
   .bm_cat("Build Cross-Validation Table")
   DataSplitTable.y <- DataSplitTable.x <- DataSplitTable <- NULL
+  ind.NA = which(is.na(bm.format@data.species))
+  tmp = bm.format@data.species
+  tmp[ind.NA] = 2
   
   ## STRATIFIED (X, Y, BOTH) / BLOCK / ENVIRONMENTAL CROSS VALIDATION -----------------------------
   if (do.stratification)
   {
     if (balance == "absences") {
-      balance <- (bm.format@data.species == 1 | bm.format@data.species == 0)
+      balance <- (tmp == 1 | tmp == 0)
     } else {
-      balance <- (bm.format@data.species == 1)
+      balance <- (tmp == 1)
     }
     
     ## (X, Y, BOTH) STRATIFIED CROSS VALIDATION  -------------------------------
@@ -205,11 +208,11 @@ BIOMOD_CrossValidation <- function(bm.format,
     ## BLOCK STRATIFIED CROSS VALIDATION --------------------------------------
     if (method == "block") {
       DataSplitTable <- as.data.frame(matrix(NA, nrow(bm.format@coord), 4))
-      blocks <- get.block(bm.format@coord[bm.format@data.species == 1, ]
-                          , bm.format@coord[bm.format@data.species == 0, ])
+      blocks <- get.block(bm.format@coord[tmp == 1, ]
+                          , bm.format@coord[tmp == 0, ])
       for (i in 1:4) {
-        DataSplitTable[bm.format@data.species == 1, i] <- blocks[[1]] != i
-        DataSplitTable[bm.format@data.species == 0, i] <- blocks[[2]] != i     
+        DataSplitTable[tmp == 1, i] <- blocks[[1]] != i
+        DataSplitTable[tmp == 0, i] <- blocks[[2]] != i     
       }
     }
     
@@ -227,7 +230,7 @@ BIOMOD_CrossValidation <- function(bm.format,
   } else {
     ## K-FOLD CROSS VALIDATION --------------------------------------------------------------------
     for (rep in 1:nb.rep) {
-      fold <- kfold(bm.format@data.species, by = bm.format@data.species, k = k)
+      fold <- kfold(tmp, by = tmp, k = k)
       for (i in 1:k) {
         DataSplitTable <- cbind(DataSplitTable, fold != i)
       }

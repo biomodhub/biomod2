@@ -17,6 +17,7 @@
 ##' @param nbCV (see parameter ANN$nbCV in \code{\link{BIOMOD_ModelingOptions}})
 ##' @param weights a \code{vector} of \code{numeric} values corresponding to weights over 
 ##' calibration lines
+##' @param seedval an \code{integer} value corresponding to the new seed value to be set
 ##' 
 ##' 
 ##' @return  
@@ -52,7 +53,8 @@ bm_CVnnet = function(Input,
                      decay = c(0.001, 0.01, 0.05, 0.1),
                      maxit = 200,
                      nbCV = 5,
-                     weights = NULL)
+                     weights = NULL,
+                     seedval = 555)
 {
   ## Prepare output table
   Eval = data.frame(matrix(0, ncol = 3, nrow = 16, dimnames = list(NULL, c("Size", "Decay", "AUC"))))
@@ -61,8 +63,8 @@ bm_CVnnet = function(Input,
   
   
   for (i in 1:nbCV) {
-    set.seed(555)
-    Samp = bm_SampleBinaryVector(obs = Target, ratio = 0.5)
+    set.seed(seedval)
+    Samp = bm_SampleBinaryVector(obs = Target, ratio = 0.5, seedval = seedval)
     
     weights.tmp = ifelse(is.null(weights), rep(1, length(Target)), weights)
     

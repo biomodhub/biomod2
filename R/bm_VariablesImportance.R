@@ -91,7 +91,7 @@ bm_VariablesImportance <- function(bm.model,
   rm(args)
   
   ## Test if prediction is computable
-  ref <- try(predict(bm.model, expl.var, temp_workdir = temp_workdir))
+  ref <- try(predict(bm.model, newdata = expl.var, temp_workdir = temp_workdir, seedval = seed.val))
   if (inherits(ref, "try-error")) { stop("Unable to make model prediction") }
   
   ## Make randomisation
@@ -109,8 +109,8 @@ bm_VariablesImportance <- function(bm.model,
   out = foreach (r = 1:nb.rep, .combine = "rbind") %:%
     foreach (v = variables, .combine = "rbind") %do%
     {
-      data_rand <- .randomise_data(expl.var, v, method)
-      shuffled.pred <- predict(bm.model, data_rand, temp_workdir = temp_workdir)
+      data_rand <- .randomise_data(expl.var, v, method) #, seedval = seed.val)
+      shuffled.pred <- predict(bm.model, data_rand, temp_workdir = temp_workdir, seedval = seed.val)
       out_vr <- 1 - max(round(
         cor(x = ref, y = shuffled.pred, use = "pairwise.complete.obs", method = "pearson")
         , digits = 6), 0, na.rm = TRUE)
@@ -144,24 +144,26 @@ bm_VariablesImportance <- function(bm.model,
   # get variables names
   if (is.null(args$variables)) { args$variables <- colnames(expl.var) }
   
+  
   return(list(bm.model = bm.model
               , expl.var = expl.var
               , method = method
               , variables = args$variables
-              , temp_workdir = args$temp_workdir))
+              , temp_workdir = args$temp_workdir
+              , seed.val = args$seed.val))
 }
 
 
 ###################################################################################################
 
-.randomise_data <- function(expl.var, variable, method)
+.randomise_data <- function(expl.var, variable, method, seedval = NULL)
 {
   if (method == 'full_rand') {
-    return(.full_shuffling(expl.var, variable))
+    return(.full_shuffling(expl.var, variable, seedval))
   }
 }
 
-.full_shuffling <- function(x, id = NULL)
+.full_shuffling <- function(x, id = NULL, seedval = NULL)
 {
   if (!(is.vector(x) | is.matrix(x) | is.data.frame(x))) {
     stop("x must be a 1 or 2 dimension odject")
@@ -169,7 +171,9 @@ bm_VariablesImportance <- function(bm.model,
   
   ## Set a new random seed to ensure that sampling is random
   ## (issue when CTA is involved and seed needs to be set to a fix number)
-  set.seed(as.double(Sys.time()) + as.numeric(format(Sys.time(), "%OS6")) * 1000000)
+  if (is.null(seedval)) {
+    set.seed(as.double(Sys.time()) + as.numeric(format(Sys.time(), "%OS6")) * 1000000)
+  }
   
   out <- NULL
   if (is.null(id)) {

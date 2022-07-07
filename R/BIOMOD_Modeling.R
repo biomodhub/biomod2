@@ -53,6 +53,8 @@
 ##' @param nb.cpu (\emph{optional, default} \code{1}) \cr 
 ##' An \code{integer} value corresponding to the number of computing resources to be used to 
 ##' parallelize the single models computation
+##' @param seed.val (\emph{optional, default} \code{NULL}) \cr 
+##' An \code{integer} value corresponding to the new seed value to be set
 ##' 
 ##' 
 ##' @return
@@ -279,14 +281,16 @@ BIOMOD_Modeling <- function(bm.format,
                             var.import = 0,
                             save.output = TRUE,
                             scale.models = FALSE,
-                            nb.cpu = 1)
+                            nb.cpu = 1,
+                            seed.val = NULL)
 {
   .bm_cat("Build Single Models")
   
   ## 0. Check arguments ---------------------------------------------------------------------------
-  args <- .BIOMOD_Modeling.check.args(bm.format, models, bm.options, nb.rep, data.split.perc, data.split.table
+  args <- .BIOMOD_Modeling.check.args(bm.format, modeling.id, models, bm.options, nb.rep
+                                      , data.split.perc, data.split.table
                                       , do.full.models, weights, prevalence, metric.eval, var.import
-                                      , save.output, scale.models, nb.cpu)
+                                      , save.output, scale.models, nb.cpu, seed.val)
   for (argi in names(args)) { assign(x = argi, value = args[[argi]]) }
   rm(args)
   
@@ -326,7 +330,8 @@ BIOMOD_Modeling <- function(bm.format,
                                                 weights, 
                                                 prevalence, 
                                                 do.full.models, 
-                                                data.split.table)
+                                                data.split.table,
+                                                seed.val)
   rm(bm.format)
   
   calib.lines <- mod.prep.dat[[1]]$calib.lines
@@ -351,7 +356,8 @@ BIOMOD_Modeling <- function(bm.format,
                     metric.eval = metric.eval,
                     save.output = save.output,
                     scale.models = scale.models,
-                    nb.cpu = nb.cpu)
+                    nb.cpu = nb.cpu,
+                    seed.val = seed.val)
   
   ## 3.3 Rearrange and save outputs -------------------------------------------
   models.out@models.computed <- .transform_outputs_list(mod.out, out = 'models.run')
@@ -411,12 +417,15 @@ BIOMOD_Modeling <- function(bm.format,
 
 ###################################################################################################
 
-.BIOMOD_Modeling.check.args <- function(bm.format, models, bm.options, nb.rep, data.split.perc, data.split.table
+.BIOMOD_Modeling.check.args <- function(bm.format, modeling.id, models, bm.options, nb.rep
+                                        , data.split.perc, data.split.table
                                         , do.full.models, weights, prevalence, metric.eval, var.import
-                                        , save.output, scale.models, nb.cpu)
+                                        , save.output, scale.models, nb.cpu, seed.val)
 {
   ## 0. Check bm.format and models arguments ----------------------------------
   cat('\n\nChecking Models arguments...\n')
+  
+  if (!is.character(modeling.id) || length(modeling.id) > 1) { stop("modeling.id must be a 'character' of length 1") }
   
   .fun_testIfInherits(TRUE, "bm.format", bm.format, c("BIOMOD.formated.data", "BIOMOD.formated.data.PA"))
   if (!is.character(models)) { stop("models must be a 'character' vector") }
@@ -534,6 +543,14 @@ BIOMOD_Modeling <- function(bm.format,
     save.output <- TRUE
   }
   
+  if (!is.null(seed.val)) {
+    set.seed(seed.val)
+  }
+  
+  if (is.null(var.import)) {
+    var.import = 0
+  }
+  
   return(list(models = models,
               bm.options = bm.options,
               nb.rep = nb.rep,
@@ -544,7 +561,8 @@ BIOMOD_Modeling <- function(bm.format,
               prevalence = prevalence,
               do.full.models = do.full.models,
               save.output = save.output,
-              data.split.table = data.split.table))
+              data.split.table = data.split.table,
+              seed.val = seed.val))
 }
 
 
@@ -572,7 +590,7 @@ setGeneric(".BIOMOD_Modeling.prepare.data", def = function(bm.format, ...) { sta
 
 setMethod('.BIOMOD_Modeling.prepare.data', signature('BIOMOD.formated.data'),
           function(bm.format, nb.rep, data.split.perc, weights = NULL, prevalence = NULL
-                   , do.full.models = TRUE, data.split.table = NULL)
+                   , do.full.models = TRUE, data.split.table = NULL, seed.val = NULL)
           {
             list.out <- list()
             name <- paste0(bm.format@sp.name, '_AllData')
@@ -601,7 +619,8 @@ setMethod('.BIOMOD_Modeling.prepare.data', signature('BIOMOD.formated.data'),
                 calib.lines <- .sample_mat(data.sp = bm.format@data.species,
                                            data.split = data.split.perc,
                                            nb.rep = nb.rep,
-                                           data.env = bm.format@data.env.var)
+                                           data.env = bm.format@data.env.var,
+                                           seed.val = seed.val)
                 if (do.full.models) {
                   calib.lines <- cbind(calib.lines, rep(TRUE, length(bm.format@data.species)))
                   colnames(calib.lines)[nb.rep + 1] <- '_Full'
@@ -638,7 +657,7 @@ setMethod('.BIOMOD_Modeling.prepare.data', signature('BIOMOD.formated.data'),
 
 setMethod('.BIOMOD_Modeling.prepare.data', signature('BIOMOD.formated.data.PA'),
           function(bm.format, nb.rep, data.split.perc, weights = NULL, prevalence = NULL
-                   , do.full.models = TRUE, data.split.table = NULL)
+                   , do.full.models = TRUE, data.split.table = NULL, seed.val = NULL)
           {
             list.out <- list()
             formal_weights <- weights
@@ -673,7 +692,8 @@ setMethod('.BIOMOD_Modeling.prepare.data', signature('BIOMOD.formated.data.PA'),
                     data.sp = bm.format@data.species[bm.format@PA.table[, pa]],
                     data.split = data.split.perc,
                     nb.rep = nb.rep,
-                    data.env = bm.format@data.env.var[bm.format@PA.table[, pa], , drop = FALSE]
+                    data.env = bm.format@data.env.var[bm.format@PA.table[, pa], , drop = FALSE],
+                    seed.val = seed.val
                   )
                   calib.lines[bm.format@PA.table[, pa], ] <- sampled.mat
                   colnames(calib.lines) <- colnames(sampled.mat)
@@ -747,7 +767,7 @@ setMethod('.BIOMOD_Modeling.prepare.data', signature('BIOMOD.formated.data.PA'),
   return(weights)
 }
 
-.sample_mat <- function(data.sp, data.split, nb.rep = 1, data.env = NULL)
+.sample_mat <- function(data.sp, data.split, nb.rep = 1, data.env = NULL, seed.val = NULL)
 {
   # data.sp is a 0, 1 vector
   # return a matrix with nb.rep columns of boolean (T: calib, F= eval)
@@ -761,6 +781,7 @@ setMethod('.BIOMOD_Modeling.prepare.data', signature('BIOMOD.formated.data.PA'),
   mat.out <- matrix(FALSE, nrow = length(data.sp), ncol = nb.rep)
   colnames(mat.out) <- paste0('_RUN', 1:nb.rep)
   
+  set.seed(seed.val)
   for (i in 1:ncol(mat.out)) {
     ## force to sample at least one level of each factorial variable for calibration
     fact.cell.samp <- NULL

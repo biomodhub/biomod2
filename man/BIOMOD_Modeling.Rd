@@ -20,7 +20,8 @@ BIOMOD_Modeling(
   var.import = 0,
   save.output = TRUE,
   scale.models = FALSE,
-  nb.cpu = 1
+  nb.cpu = 1,
+  seed.val = NULL
 )
 }
 \arguments{
@@ -81,6 +82,9 @@ binomial GLM or not}
 \item{nb.cpu}{(\emph{optional, default} \code{1}) \cr 
 An \code{integer} value corresponding to the number of computing resources to be used to 
 parallelize the single models computation}
+
+\item{seed.val}{(\emph{optional, default} \code{NULL}) \cr 
+An \code{integer} value corresponding to the new seed value to be set}
 }
 \value{
 A \code{BIOMOD.models.out} object containing models outputs, or links to saved outputs. \cr

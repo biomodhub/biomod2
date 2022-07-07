@@ -257,7 +257,7 @@ setMethod('bm_PseudoAbsences_user.defined', signature(expl.var = "SpatialPointsD
           function(resp.var, expl.var, user.table) {
             cat("\n   > User defined pseudo absences selection")
             return(list(xy = coordinates(resp.var),
-                        sp = as.vector(resp.var@data),
+                        sp = as.numeric(unlist(resp.var@data, use.names = FALSE)),
                         env = as.data.frame(expl.var@data),
                         pa.tab = user.table))
           })
@@ -314,10 +314,10 @@ setMethod('bm_PseudoAbsences_random', signature(expl.var = "SpatialPointsDataFra
               # 3. Select always the presences and the true absences
               pa.tab <- matrix(FALSE, ncol = nb.rep, nrow = nrow(resp.var))
               colnames(pa.tab) <- paste0("PA", 1:nb.rep)
-              pa.tab[c(which(resp.var@data == 1), which(resp.var@data == 0)),] <- TRUE
+              pa.tab[c(which(resp.var@data[, 1] == 1), which(resp.var@data[, 1] == 0)),] <- TRUE
               
               # 4. For each repetition, select among NA cells
-              cand.cells <- which(is.na(resp.var@data))
+              cand.cells <- which(is.na(resp.var@data[, 1]))
               for (j in 1:ncol(pa.tab)) {
                 ## force to get at least one value of each factorial variable
                 fact.level.cells <- bm_SampleFactorLevels(expl.var = as.data.frame(expl.var),
@@ -332,7 +332,7 @@ setMethod('bm_PseudoAbsences_random', signature(expl.var = "SpatialPointsDataFra
               }
               
               return(list(xy = coordinates(resp.var),
-                          sp = as.vector(resp.var@data),
+                          sp = as.numeric(unlist(resp.var@data, use.names = FALSE)),
                           env = as.data.frame(expl.var@data),
                           pa.tab = pa.tab))
             } else {
@@ -365,10 +365,10 @@ setMethod('bm_PseudoAbsences_random', signature(expl.var = "RasterStack"),
               # 3. Select always the presences and the true absences
               pa.tab <- matrix(FALSE, ncol = nb.rep, nrow = nrow(resp.var))
               colnames(pa.tab) <- paste0("PA", 1:nb.rep)
-              pa.tab[c(which(resp.var@data == 1), which(resp.var@data == 0)),] <- TRUE
+              pa.tab[c(which(resp.var@data[, 1] == 1), which(resp.var@data[, 1] == 0)),] <- TRUE
               
               # 4. For each repetition, select among NA cells
-              cand.cells <- which(is.na(resp.var@data))
+              cand.cells <- which(is.na(resp.var@data[, 1]))
               for (j in 1:ncol(pa.tab)) {
                 pa.tab[sample(x = cand.cells, size = nb.absences, replace = FALSE), j] <- TRUE
               }
@@ -446,7 +446,7 @@ setMethod('bm_PseudoAbsences_random', signature(expl.var = "RasterStack"),
                 rownames(xy) = paste0("pres", 1:nrow(xy))
                 xy <- rbind(xy, xyFromCell(mask.env, selected.cells))
                 xy <- .add_pa_rownames(xy)
-                resp.var <- as.numeric(unlist(c(as.vector(resp.var@data), rep(NA, length(selected.cells))), use.names = FALSE))
+                resp.var <- as.numeric(unlist(c(resp.var@data[, 1], rep(NA, length(selected.cells))), use.names = FALSE))
                 expl.var <- extract(expl.var, xy)
                 pa.tab <- rbind(matrix(TRUE, nrow = (nrow(xy) - length(selected.cells)),
                                        ncol = ncol(pa.tab)), pa.tab)
@@ -499,7 +499,7 @@ setMethod('bm_PseudoAbsences_sre', signature(expl.var = "SpatialPointsDataFrame"
             # 3. Select always the presences and the true absences
             pa.tab <- matrix(FALSE, ncol = nb.rep, nrow = nrow(resp.var))
             colnames(pa.tab) <- paste0("PA", 1:nb.rep)
-            pa.tab[c(which(resp.var@data == 1), which(resp.var@data == 0)),] <- TRUE
+            pa.tab[c(which(resp.var@data[, 1] == 1), which(resp.var@data[, 1] == 0)),] <- TRUE
             
             # 4. For each repetition, select among NA cells
             cand.cells <- which(!mask.in$mask.in)
@@ -515,7 +515,7 @@ setMethod('bm_PseudoAbsences_sre', signature(expl.var = "SpatialPointsDataFrame"
             }
             
             return(list(xy = coordinates(resp.var),
-                        sp = as.vector(resp.var@data),
+                        sp = as.numeric(unlist(resp.var@data, use.names = FALSE)),
                         env = as.data.frame(expl.var@data),
                         pa.tab = pa.tab))
           })
@@ -585,10 +585,10 @@ setMethod('bm_PseudoAbsences_sre', signature(expl.var = "RasterStack"),
             }
             
             # putting presences, true absences and pseudo absences together
-            xy <- rbind(coordinates(resp.var)[which(!is.na(as.vector(resp.var@data))), ],
+            xy <- rbind(coordinates(resp.var)[which(!is.na(resp.var@data[, 1])), ],
                         xyFromCell(mask.in, selected.cells))
             xy <- .add_pa_rownames(xy)
-            resp.var <- as.numeric(unlist(c(na.omit(as.vector(resp.var@data)), rep(NA, length(selected.cells))), use.names = FALSE))
+            resp.var <- as.numeric(unlist(c(na.omit(resp.var@data[, 1]), rep(NA, length(selected.cells))), use.names = FALSE))
             expl.var <- extract(expl.var, xy)
             pa.tab <- rbind(matrix(TRUE, nrow = (nrow(xy) - length(selected.cells)),
                                    ncol = ncol(pa.tab)), pa.tab)

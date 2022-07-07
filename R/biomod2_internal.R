@@ -207,7 +207,7 @@ check_data_range <- function(model, new_data)
   return(new_data)
 }
 
-.run_pred <- function(object, Prev = 0.5 , dat)
+.run_pred <- function(object, Prev = 0.5, dat)
 {
   if (is.finite(object$deviance) && 
       is.finite(object$null.deviance) && 
@@ -363,6 +363,7 @@ check_data_range <- function(model, new_data)
   args <- list(...)
   namefile <- args$namefile
   on_0_1000 <- args$on_0_1000
+  seedval <- args$seedval
   
   if (is.null(namefile)) { namefile <- "" }
   if (is.null(on_0_1000)) { on_0_1000 <- FALSE }
@@ -381,7 +382,7 @@ check_data_range <- function(model, new_data)
                                      temp_workdir = mod@model_output_dir
                                    }
                                    return(predict(mod, newdata = newdata, on_0_1000 = on_0_1000
-                                                  , temp_workdir = temp_workdir))
+                                                  , temp_workdir = temp_workdir, seedval = seedval))
                                  }, resp_name = object@resp_name, modeling.id = object@modeling.id)
   }
   

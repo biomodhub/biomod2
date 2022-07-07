@@ -160,6 +160,7 @@ setMethod('predict', signature(object = 'EMmean_biomod2_model'),
 {
   args <- list(...)
   on_0_1000 <- args$on_0_1000
+  seedval <- args$seedval
   if (is.null(on_0_1000)) on_0_1000 <- FALSE
 
   if(is.null(formal_predictions)){
@@ -175,7 +176,7 @@ setMethod('predict', signature(object = 'EMmean_biomod2_model'),
                                        temp_workdir = mod@model_output_dir
                                      }
                                      return(predict(mod, newdata = newdata, on_0_1000 = on_0_1000
-                                                    , temp_workdir = temp_workdir))
+                                                    , temp_workdir = temp_workdir, seedval = seedval))
                                    } , resp_name = object@resp_name, modeling.id = object@modeling.id)
   }
 
@@ -186,7 +187,6 @@ setMethod('predict', signature(object = 'EMmean_biomod2_model'),
   }
 
   return(out)
-
 }
 
 

@@ -51,6 +51,8 @@
 ##' @param nb.cpu (\emph{optional, default} \code{1}) \cr 
 ##' An \code{integer} value corresponding to the number of computing resources to be used to 
 ##' parallelize the single models computation
+##' @param seed.val (\emph{optional, default} \code{NULL}) \cr 
+##' An \code{integer} value corresponding to the new seed value to be set
 ##' 
 ##' @param \ldots (\emph{optional, see \href{BIOMOD_Projection.html#details}{Details})}) 
 ##' 
@@ -186,13 +188,14 @@ BIOMOD_Projection <- function(bm.mod,
                               compress = TRUE,
                               build.clamping.mask = TRUE,
                               nb.cpu = 1,
+                              seed.val = NULL,
                               ...)
 {
   .bm_cat("Do Single Models Projection")
   
   ## 0. Check arguments ---------------------------------------------------------------------------
   args <- .BIOMOD_Projection.check.args(bm.mod, proj.name, new.env, new.env.xy
-                                        , models.chosen, metric.binary, metric.filter, compress, ...)
+                                        , models.chosen, metric.binary, metric.filter, compress, seed.val, ...)
   for (argi in names(args)) { assign(x = argi, value = args[[argi]]) }
   rm(args)
   
@@ -268,7 +271,6 @@ BIOMOD_Projection <- function(bm.mod,
       filename <- file.path(namePath, "individual_projections"
                             , paste0(nameProj, "_", mod.name, ifelse(output.format == ".RData"
                                                                      , ".grd", output.format)))
-      
       BIOMOD_LoadModels(bm.out = bm.mod, full.name = mod.name, as = "mod")
       temp_workdir = NULL
       if (length(grep("MAXENT.Phillips$", mod.name)) == 1) {
@@ -276,7 +278,7 @@ BIOMOD_Projection <- function(bm.mod,
       }
       pred.tmp <- predict(mod, new.env, on_0_1000 = on_0_1000, filename = filename
                           , omit.na = omit.na, split.proj = 1
-                          , temp_workdir = temp_workdir)
+                          , temp_workdir = temp_workdir, seedval = seed.val)
       return(pred.tmp)
     }
     ## Putting predictions into the right format
@@ -423,7 +425,7 @@ BIOMOD_Projection <- function(bm.mod,
 ###################################################################################################
 
 .BIOMOD_Projection.check.args <- function(bm.mod, proj.name, new.env, new.env.xy,
-                                          models.chosen, metric.binary, metric.filter, compress, ...)
+                                          models.chosen, metric.binary, metric.filter, compress, seed.val, ...)
 {
   args <- list(...)
   
@@ -545,7 +547,8 @@ BIOMOD_Projection <- function(bm.mod,
               omit.na = ifelse(is.null(args$omit.na), TRUE, args$omit.na),
               do.stack = do.stack,
               keep.in.memory = ifelse(is.null(args$keep.in.memory), TRUE, args$keep.in.memory),
-              on_0_1000 = ifelse(is.null(args$on_0_1000), TRUE, args$on_0_1000)))
+              on_0_1000 = ifelse(is.null(args$on_0_1000), TRUE, args$on_0_1000),
+              seed.val = seed.val))
 }
 
 

@@ -226,7 +226,7 @@ bm_PlotResponseCurves <- function(bm.out
             if (length(grep("MAXENT.Phillips$", mod.name)) == 1) {
               temp_workdir = mod@model_output_dir
             }
-            proj.tmp <- predict(mod, new.env.r.tmp, on_0_1000 = on_0_1000, do_check = FALSE, temp_workdir = temp_workdir)
+            proj.tmp <- predict(mod, newdata = new.env.r.tmp, on_0_1000 = on_0_1000, do_check = FALSE, temp_workdir = temp_workdir, seedval = NULL)
             
             res = data.frame(pts.tmp, proj.tmp)
             colnames(res) = c(vari, mod.name)
@@ -278,7 +278,7 @@ bm_PlotResponseCurves <- function(bm.out
               temp_workdir = mod@model_output_dir
             }
             
-            proj.tmp <- predict(mod, new.env.r.tmp, on_0_1000 = on_0_1000, do_check = FALSE, temp_workdir = temp_workdir)
+            proj.tmp <- predict(mod, newdata = new.env.r.tmp, on_0_1000 = on_0_1000, do_check = FALSE, temp_workdir = temp_workdir, seedval = NULL)
             
             res = data.frame(pts.tmp1, pts.tmp2, proj.tmp)
             colnames(res) = c(vari1, vari2, mod.name)
@@ -314,8 +314,8 @@ bm_PlotResponseCurves <- function(bm.out
     comb.names = sort(unique(ggdat$comb))
     list.ggdat = foreach(combi = comb.names) %do%
       {
-        vari1 = strsplit(combi, "_")[[1]][1]
-        vari2 = strsplit(combi, "_")[[1]][2]
+        vari1 = strsplit(combi, "[+]")[[1]][1]
+        vari2 = strsplit(combi, "[+]")[[1]][2]
         tmp = ggdat[which(ggdat$comb == combi), ]
         tmp1 = tmp[which(tmp$expl.name == vari1), c("id", "expl.val", "pred.name", "pred.val", "comb")]
         colnames(tmp1)[which(colnames(tmp1) == "expl.val")] = vari1
@@ -329,13 +329,13 @@ bm_PlotResponseCurves <- function(bm.out
     gg <- ggplot(ggdat, aes_string(fill = "pred.val"))
     for (ii in 1:length(list.ggdat)) {
       combi = names(list.ggdat)[ii]
-      vari1 = strsplit(combi, "_")[[1]][1]
-      vari2 = strsplit(combi, "_")[[1]][2]
+      vari1 = strsplit(combi, "[+]")[[1]][1]
+      vari2 = strsplit(combi, "[+]")[[1]][2]
       gg <- gg +
         geom_raster(data = list.ggdat[[ii]], aes_string(x = vari1, y = vari2))
     }
     gg <- gg +
-      facet_wrap("pred.name ~ sub('_', ' [ x - y ] ', comb)", scales = "free") +
+      facet_wrap("pred.name ~ sub('[+]', ' [ x - y ] ', comb)", scales = "free") +
       xlab("") +
       ylab("") +
       scale_fill_viridis_c("Probability") +
@@ -467,7 +467,7 @@ bm_PlotResponseCurves <- function(bm.out
     {
       dat_$id <- as.numeric(rownames(dat_))
       if (do.bivariate) {
-        dat_$comb <- paste0(colnames(dat_)[col.expl], collapse = "_")
+        dat_$comb <- paste0(colnames(dat_)[col.expl], collapse = "+")
       }
       id.col = which(colnames(dat_) == "id")
       id.vec = unlist(ifelse(do.bivariate, list(c("id", "comb")), "id"))

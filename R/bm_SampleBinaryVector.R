@@ -49,11 +49,13 @@
 ###################################################################################################
 
 
-bm_SampleBinaryVector <- function(obs, ratio, as.logical = FALSE)
+bm_SampleBinaryVector <- function(obs, ratio, as.logical = FALSE, seedval = NULL)
 {
   ## Set a new random seed to ensure that sampling is random
   ## (issue when CTA is involved and seed needs to be set to a fix number)
-  set.seed(as.double(Sys.time()) + as.numeric(format(Sys.time(), "%OS6")) * 1000000)
+  if (is.null(seedval)) {
+    set.seed(as.double(Sys.time()) + as.numeric(format(Sys.time(), "%OS6")) * 1000000)
+  }
   
   ntot <- length(obs)
   npres <- sum(obs)

@@ -15,6 +15,7 @@ BIOMOD_Projection(
   compress = TRUE,
   build.clamping.mask = TRUE,
   nb.cpu = 1,
+  seed.val = NULL,
   ...
 )
 }
@@ -67,6 +68,9 @@ drive or not (see \href{BIOMOD_Projection.html#details}{Details}))}
 \item{nb.cpu}{(\emph{optional, default} \code{1}) \cr 
 An \code{integer} value corresponding to the number of computing resources to be used to 
 parallelize the single models computation}
+
+\item{seed.val}{(\emph{optional, default} \code{NULL}) \cr 
+An \code{integer} value corresponding to the new seed value to be set}
 
 \item{\ldots}{(\emph{optional, see \href{BIOMOD_Projection.html#details}{Details})})}
 }

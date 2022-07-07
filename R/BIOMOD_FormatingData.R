@@ -369,7 +369,7 @@ BIOMOD_FormatingData <- function(resp.name,
     cat('\n Response variable name was converted into', resp.name)
   }
   
-  available.types <- c('numeric', 'data.frame', 'matrix',
+  available.types <- c('integer', 'numeric', 'data.frame', 'matrix',
                        'RasterLayer', 'RasterStack',
                        'SpatialPointsDataFrame', 'SpatialPoints')
   
@@ -403,6 +403,7 @@ BIOMOD_FormatingData <- function(resp.name,
   
   ## transforming into numeric if data.frame or matrix
   if (is.matrix(resp.var) | is.data.frame(resp.var)) {
+    resp.var = as.data.frame(resp.var)
     if (ncol(resp.var) > 1) {
       stop("You must give a monospecific response variable (1D object)")
     } else {
