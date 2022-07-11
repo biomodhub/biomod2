@@ -39,7 +39,7 @@ of evaluation metrics (see Details)."><!-- mathjax --><script src="https://cdnjs
   </a>
 </li>
 <li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     <span class="fas fa-stethoscope"></span>
      
     Examples
@@ -140,16 +140,16 @@ object returned by the <code><a href="BIOMOD_FormatingData.html">BIOMOD_Formatin
 <code><a href="BIOMOD_ModelingOptions.html">BIOMOD_ModelingOptions</a></code> function</p></dd>
 <dt>nb.rep</dt>
 <dd><p>an <code>integer</code> corresponding to the number of repetitions to be done for 
-calibration/validation splitting <br> (<em>if specified, <code>data.split.perc</code> and 
-<code>do.full.models</code> will be ignored</em>)</p></dd>
+calibration/validation splitting</p></dd>
 <dt>data.split.perc</dt>
-<dd><p>a <code>numeric</code> between <code>0</code> and <code>1</code> corresponding to the 
+<dd><p>a <code>numeric</code> between <code>0</code> and <code>100</code> corresponding to the 
 percentage of data used to calibrate the models (calibration/validation splitting)</p></dd>
 <dt>data.split.table</dt>
 <dd><p>(<em>optional, default</em> <code>NULL</code>) <br> 
 A <code>matrix</code> or <code>data.frame</code> defining for each repetition (in columns) which 
 observation lines should be used for models calibration (<code>TRUE</code>) and validation 
-(<code>FALSE</code>) (see <code><a href="BIOMOD_CrossValidation.html">BIOMOD_CrossValidation</a></code>)</p></dd>
+(<code>FALSE</code>) (see <code><a href="BIOMOD_CrossValidation.html">BIOMOD_CrossValidation</a></code>) <br> (<em>if specified, 
+<code>nb.rep</code>, <code>data.split.perc</code> and <code>do.full.models</code> will be ignored</em>)</p></dd>
 <dt>do.full.models</dt>
 <dd><p>(<em>optional, default</em> <code>TRUE</code>) <br> 
 A <code>logical</code> value defining whether models calibrated and evaluated over the whole 
@@ -413,7 +413,7 @@ code<a href="https://rdrr.io/pkg/nnet/man/nnet.html" class="external-link">nnet<
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.2.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.3.</p>
 </div>
 
       </footer></div>

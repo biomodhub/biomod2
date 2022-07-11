@@ -4,7 +4,7 @@
 \alias{bm_SampleBinaryVector}
 \title{Sample binary vector}
 \usage{
-bm_SampleBinaryVector(obs, ratio, as.logical = FALSE)
+bm_SampleBinaryVector(obs, ratio, as.logical = FALSE, seedval = NULL)
 }
 \arguments{
 \item{obs}{a \code{vector} containing binary values (either \code{0} or \code{1})}

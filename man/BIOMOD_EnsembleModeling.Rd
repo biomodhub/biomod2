@@ -21,7 +21,8 @@ BIOMOD_EnsembleModeling(
   committee.averaging = FALSE,
   prob.mean.weight = FALSE,
   prob.mean.weight.decay = "proportional",
-  nb.cpu = 1
+  nb.cpu = 1,
+  seed.val = NULL
 )
 }
 \arguments{

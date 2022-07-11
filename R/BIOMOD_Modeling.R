@@ -20,14 +20,14 @@
 ##' @param bm.options a \code{\link{BIOMOD.models.options}} object returned by the  
 ##' \code{\link{BIOMOD_ModelingOptions}} function
 ##' @param nb.rep an \code{integer} corresponding to the number of repetitions to be done for 
-##' calibration/validation splitting \cr (\emph{if specified, \code{data.split.perc} and 
-##' \code{do.full.models} will be ignored})
-##' @param data.split.perc a \code{numeric} between \code{0} and \code{1} corresponding to the 
+##' calibration/validation splitting 
+##' @param data.split.perc a \code{numeric} between \code{0} and \code{100} corresponding to the 
 ##' percentage of data used to calibrate the models (calibration/validation splitting)
 ##' @param data.split.table (\emph{optional, default} \code{NULL}) \cr 
 ##' A \code{matrix} or \code{data.frame} defining for each repetition (in columns) which 
 ##' observation lines should be used for models calibration (\code{TRUE}) and validation 
-##' (\code{FALSE}) (see \code{\link{BIOMOD_CrossValidation}})
+##' (\code{FALSE}) (see \code{\link{BIOMOD_CrossValidation}}) \cr (\emph{if specified, 
+##' \code{nb.rep}, \code{data.split.perc} and \code{do.full.models} will be ignored})
 ##' @param do.full.models (\emph{optional, default} \code{TRUE}) \cr 
 ##' A \code{logical} value defining whether models calibrated and evaluated over the whole 
 ##' dataset should be computed or not
