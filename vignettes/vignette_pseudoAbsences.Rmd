@@ -10,4 +10,78 @@ vignette: >
 <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.13/css/all.css" integrity="sha384-DNOHZ68U8hZfKXOrtjWvjxusGo9WQnrNx2sqG0tfsghAvtVlRW3tvkXWZh58N9jp" crossorigin="anonymous">
 
 
-## <i class="fas fa-hard-hat"></i> <i class="fas fa-hammer"></i> Work in progress !
+
+### <i class="fas fa-address-card"></i> Definition
+
+`biomod2` requires either **presence / absence data**, or **presence-only data supplemented with pseudo-absences** that can be generated with the [`BIOMOD_FormatingData`](../reference/BIOMOD_FormatingData.html) function.
+
+*Pseudo-absences* (sometimes also referred as *background data*) are NOT to be considered as absences, and rather represent the available environment in the studied area. They will be used to compare observed used environment (represented by the presences) against what is available.
+
+**Note** that it is NOT recommended to mix both absence and pseudo-absences data.
+
+</br>
+
+### <i class="fas fa-cookie"></i> How to select them ? - Methods
+
+3 different methods are implemented within `biomod2` to select pseudo-absences (PA) :
+
+1. the **random** method : PA are randomly selected over the studied area (excluding presence points)
+2. the **disk** method : PA are randomly selected within circles around presence points defined by a minimum and a maximum distance values (defined in meters).
+3. the **SRE** method : a Surface Range Envelop model is used to randomly select PA outside this envelop, i.e. in conditions (combination of explanatory variables) that differ in a defined proportion from those of presence points.
+
+
+The selection of one or the other method will depend on a more important and underlying question : *how were obtained the dataset presence points ?*
+
+- Was there a sampling design ?
+- If yes, what was the objective of the study ? the scope ?
+- In any case, what were the potential sources of bias ?
+    + the question of interest
+    + the studied area, its extent and how this extent was defined (administrative, geographical limits ?)
+    + the observation method
+    + the number of observers, the consistency between them (formation, objective)
+    + etc
+
+
+The 3 methods proposed within `biomod2` do not depend on the same assumptions :
+
+|                              | random | disk | SRE |
+| ---------------------------- | ------ | ---- | --- |
+| Geographical assumption      | no     | yes  | no  |
+| Environmental assumption     | no     | no   | yes |
+| Realized niche fully sampled | no     | yes  | yes |
+
+The **random** method is the one with the least assumptions, and should be the default choice when no sufficient information is available about the species ecology and/or the sampling design. The **disk** and **SRE** methods assume that the realized niche of the species has been fully sampled, either geographically or environmentally speaking.
+
+<div style="text-align:center;">
+[See code examples, section **Prepare data & parameters / Pseudo-absences extraction**](examples_1_mainFunctions.html)
+</div>
+
+**Note** that it is also possible for the user to select by himself its own pseudo-absence points, and to give them to the [`BIOMOD_FormatingData`](../reference/BIOMOD_FormatingData.html) function.
+
+</br>
+
+### <i class="fas fa-vial"></i> How to select them ? - Barbet-Massin et al. 2012
+
+**Barbet-Massin, M.**, Jiguet, F., Albert, C.H. and Thuiller, W. (**2012**), *Selecting pseudo-absences for species distribution models: how, where and how many?*. **Methods in Ecology and Evolution**, 3: 327-338. https://doi.org/10.1111/j.2041-210X.2011.00172.x
+
+This paper tried to estimate the relative effect of method and number of PA on predictive accuracy of common modelling techniques, using :
+
+- 3 biased distributions
+- 4 sample sizes of presences
+- 5 sample sizes of PA
+- 4 methods to generate PA
+- 7 modelling methods
+
+Results were varying between modelling techniques :
+
+- GLM, GAM : large number of PA (10 000) with presences and absences weighted equally
+- MARS, MDA : averaging several runs with relatively fewer PA (100) with presences and absences weighted equally
+- CTA, BRT, RF : same amount of PA as available presences
+
+`biomod2` team advices :
+
+- random selection of PA when high specificity is valued over high sensitivity
+- number of PA = 3 times the number of presences
+- 10 repetitions
+
+

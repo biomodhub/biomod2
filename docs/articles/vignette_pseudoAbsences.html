@@ -33,7 +33,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">biomod2</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">4.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">4.1</span>
       </span>
     </div>
 
@@ -53,7 +53,7 @@
   </a>
 </li>
 <li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     <span class="fas fa-stethoscope"></span>
      
     Examples
@@ -123,18 +123,143 @@
     
     
 <p><link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.13/css/all.css" integrity="sha384-DNOHZ68U8hZfKXOrtjWvjxusGo9WQnrNx2sqG0tfsghAvtVlRW3tvkXWZh58N9jp" crossorigin="anonymous"></p>
-<div class="section level2">
-<h2 id="work-in-progress">
-<i class="fas fa-hard-hat"></i> <i class="fas fa-hammer"></i> Work in progress !<a class="anchor" aria-label="anchor" href="#work-in-progress"></a>
-</h2>
+<div class="section level3">
+<h3 id="definition">
+<i class="fas fa-address-card"></i> Definition<a class="anchor" aria-label="anchor" href="#definition"></a>
+</h3>
+<p><code>biomod2</code> requires either <strong>presence / absence
+data</strong>, or <strong>presence-only data supplemented with
+pseudo-absences</strong> that can be generated with the <a href="../reference/BIOMOD_FormatingData.html"><code>BIOMOD_FormatingData</code></a>
+function.</p>
+<p><em>Pseudo-absences</em> (sometimes also referred as <em>background
+data</em>) are NOT to be considered as absences, and rather represent
+the available environment in the studied area. They will be used to
+compare observed used environment (represented by the presences) against
+what is available.</p>
+<p><strong>Note</strong> that it is NOT recommended to mix both absence
+and pseudo-absences data.</p>
+<p></p>
+</div>
+<div class="section level3">
+<h3 id="how-to-select-them---methods">
+<i class="fas fa-cookie"></i> How to select them ? - Methods<a class="anchor" aria-label="anchor" href="#how-to-select-them---methods"></a>
+</h3>
+<p>3 different methods are implemented within <code>biomod2</code> to
+select pseudo-absences (PA) :</p>
+<ol style="list-style-type: decimal">
+<li>the <strong>random</strong> method : PA are randomly selected over
+the studied area (excluding presence points)</li>
+<li>the <strong>disk</strong> method : PA are randomly selected within
+circles around presence points defined by a minimum and a maximum
+distance values (defined in meters).</li>
+<li>the <strong>SRE</strong> method : a Surface Range Envelop model is
+used to randomly select PA outside this envelop, i.e. in conditions
+(combination of explanatory variables) that differ in a defined
+proportion from those of presence points.</li>
+</ol>
+<p>The selection of one or the other method will depend on a more
+important and underlying question : <em>how were obtained the dataset
+presence points ?</em></p>
+<ul>
+<li>Was there a sampling design ?</li>
+<li>If yes, what was the objective of the study ? the scope ?</li>
+<li>In any case, what were the potential sources of bias ?
+<ul>
+<li>the question of interest</li>
+<li>the studied area, its extent and how this extent was defined
+(administrative, geographical limits ?)</li>
+<li>the observation method</li>
+<li>the number of observers, the consistency between them (formation,
+objective)</li>
+<li>etc</li>
+</ul>
+</li>
+</ul>
+<p>The 3 methods proposed within <code>biomod2</code> do not depend on
+the same assumptions :</p>
+<table class="table">
+<thead><tr class="header">
+<th></th>
+<th>random</th>
+<th>disk</th>
+<th>SRE</th>
+</tr></thead>
+<tbody>
+<tr class="odd">
+<td>Geographical assumption</td>
+<td>no</td>
+<td>yes</td>
+<td>no</td>
+</tr>
+<tr class="even">
+<td>Environmental assumption</td>
+<td>no</td>
+<td>no</td>
+<td>yes</td>
+</tr>
+<tr class="odd">
+<td>Realized niche fully sampled</td>
+<td>no</td>
+<td>yes</td>
+<td>yes</td>
+</tr>
+</tbody>
+</table>
+<p>The <strong>random</strong> method is the one with the least
+assumptions, and should be the default choice when no sufficient
+information is available about the species ecology and/or the sampling
+design. The <strong>disk</strong> and <strong>SRE</strong> methods
+assume that the realized niche of the species has been fully sampled,
+either geographically or environmentally speaking.</p>
+<div style="text-align:center;">
+<p><a href="examples_1_mainFunctions.html">See code examples, section
+<strong>Prepare data &amp; parameters / Pseudo-absences
+extraction</strong></a></p>
+</div>
+<p><strong>Note</strong> that it is also possible for the user to select
+by himself its own pseudo-absence points, and to give them to the <a href="../reference/BIOMOD_FormatingData.html"><code>BIOMOD_FormatingData</code></a>
+function.</p>
+<p></p>
+</div>
+<div class="section level3">
+<h3 id="how-to-select-them---barbet-massin-et-al--2012">
+<i class="fas fa-vial"></i> How to select them ? - Barbet-Massin et
+al. 2012<a class="anchor" aria-label="anchor" href="#how-to-select-them---barbet-massin-et-al--2012"></a>
+</h3>
+<p><strong>Barbet-Massin, M.</strong>, Jiguet, F., Albert, C.H. and
+Thuiller, W. (<strong>2012</strong>), <em>Selecting pseudo-absences for
+species distribution models: how, where and how many?</em>.
+<strong>Methods in Ecology and Evolution</strong>, 3: 327-338. <a href="https://doi.org/10.1111/j.2041-210X.2011.00172.x" class="external-link uri">https://doi.org/10.1111/j.2041-210X.2011.00172.x</a></p>
+<p>This paper tried to estimate the relative effect of method and number
+of PA on predictive accuracy of common modelling techniques, using :</p>
+<ul>
+<li>3 biased distributions</li>
+<li>4 sample sizes of presences</li>
+<li>5 sample sizes of PA</li>
+<li>4 methods to generate PA</li>
+<li>7 modelling methods</li>
+</ul>
+<p>Results were varying between modelling techniques :</p>
+<ul>
+<li>GLM, GAM : large number of PA (10 000) with presences and absences
+weighted equally</li>
+<li>MARS, MDA : averaging several runs with relatively fewer PA (100)
+with presences and absences weighted equally</li>
+<li>CTA, BRT, RF : same amount of PA as available presences</li>
+</ul>
+<p><code>biomod2</code> team advices :</p>
+<ul>
+<li>random selection of PA when high specificity is valued over high
+sensitivity</li>
+<li>number of PA = 3 times the number of presences</li>
+<li>10 repetitions</li>
+</ul>
 </div>
   </div>
 
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
 
-        <nav id="toc" data-toggle="toc"><h2 data-toc-skip>Contents</h2>
-    </nav>
-</div>
+      </div>
 
 </div>
 
@@ -147,7 +272,7 @@
 
 <div class="pkgdown">
   <p></p>
-<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.2.</p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.3.</p>
 </div>
 
       </footer>
