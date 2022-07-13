@@ -54,6 +54,7 @@ might appear for \code{GLM} models if they do not converge.
 }
 \examples{
 
+\dontrun{
 # Load species occurrences (6 species available)
 myFile <- system.file('external/species/mammals_table.csv', package = 'biomod2')
 DataSpecies <- read.csv(myFile, row.names = 1)
@@ -122,6 +123,7 @@ myBiomodPO <- BIOMOD_PresenceOnly(bm.mod = myBiomodModelOut,
                                   bm.em = myBiomodEM, 
                                   bg.env = getValues(myExpl))
 myBiomodPO$eval
+}
 
 
 }

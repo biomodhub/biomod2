@@ -3,7 +3,14 @@
 \docType{class}
 \name{BIOMOD.models.options}
 \alias{BIOMOD.models.options}
+\alias{show,BIOMOD.models.options-method}
 \title{\code{BIOMOD_ModelingOptions()} output object class}
+\usage{
+\S4method{show}{BIOMOD.models.options}(object)
+}
+\arguments{
+\item{object}{a \code{\link{BIOMOD.models.options}} object}
+}
 \description{
 Class returned by \code{\link{BIOMOD_ModelingOptions}}, and used by 
 \code{\link{BIOMOD_Tuning}} and \code{\link{BIOMOD_Modeling}}

@@ -101,6 +101,9 @@ attribute weights proportionally to the models evaluation scores}
 \item{nb.cpu}{(\emph{optional, default} \code{1}) \cr 
 An \code{integer} value corresponding to the number of computing resources to be used to 
 parallelize the single models computation}
+
+\item{seed.val}{(\emph{optional, default} \code{NULL}) \cr 
+An \code{integer} value corresponding to the new seed value to be set}
 }
 \value{
 A \code{BIOMOD.ensemble.models.out} object containing models outputs, or links to saved 
@@ -277,25 +280,30 @@ myExpl <- raster::stack(system.file(myFiles, package = 'biomod2'))
 
 
 # ---------------------------------------------------------------
-# Format Data with true absences
-myBiomodData <- BIOMOD_FormatingData(resp.var = myResp,
-                                     expl.var = myExpl,
-                                     resp.xy = myRespXY,
-                                     resp.name = myRespName)
+file.out <- paste0(myRespName, "/", myRespName, ".AllModels.models.out")
+if (file.exists(file.out)) {
+  myBiomodModelOut <- get(load(file.out))
+} else {
 
-# Create default modeling options
-myBiomodOptions <- BIOMOD_ModelingOptions()
+  # Format Data with true absences
+  myBiomodData <- BIOMOD_FormatingData(resp.var = myResp,
+                                       expl.var = myExpl,
+                                       resp.xy = myRespXY,
+                                       resp.name = myRespName)
 
-# Model single models
-myBiomodModelOut <- BIOMOD_Modeling(bm.format = myBiomodData,
-                                    modeling.id = 'AllModels',
-                                    bm.options = myBiomodOptions,
-                                    nb.rep = 2,
-                                    data.split.perc = 80,
-                                    metric.eval = c('TSS','ROC'),
-                                    var.import = 3,
-                                    do.full.models = FALSE)
+  # Create default modeling options
+  myBiomodOptions <- BIOMOD_ModelingOptions()
 
+  # Model single models
+  myBiomodModelOut <- BIOMOD_Modeling(bm.format = myBiomodData,
+                                      modeling.id = 'AllModels',
+                                      bm.options = myBiomodOptions,
+                                      nb.rep = 2,
+                                      data.split.perc = 80,
+                                      metric.eval = c('TSS','ROC'),
+                                      var.import = 3,
+                                      do.full.models = FALSE)
+}
 
 # ---------------------------------------------------------------
 # Model ensemble models

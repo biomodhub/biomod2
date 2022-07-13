@@ -14,7 +14,14 @@
 \alias{MAXENT.Phillips.2_biomod2_model}
 \alias{RF_biomod2_model}
 \alias{SRE_biomod2_model}
+\alias{show,biomod2_model-method}
 \title{Single model output object class (when running \code{BIOMOD_Modeling()})}
+\usage{
+\S4method{show}{biomod2_model}(object)
+}
+\arguments{
+\item{object}{a \code{\link{biomod2_model}} object}
+}
 \description{
 Class created by \code{\link{BIOMOD_Modeling}} and \code{\link{bm_RunModel}}
 }

@@ -33,6 +33,8 @@ navbar:
         - text: "---------"
         - text: Pseudo-absences
           href: articles/vignette_pseudoAbsences.html
+        - text: Variability in results
+          href: articles/vignette_variability.html
         - text: Evaluation / variables importance
           href: articles/vignette_evalVarImp.html
     reference:

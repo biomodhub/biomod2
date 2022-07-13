@@ -16,6 +16,9 @@ of \code{obs} values to sample}
 A \code{logical} value defining whether a \code{vector} of \code{TRUE/FALSE} values should 
 be returned (if \code{as.logical = TRUE}) or a \code{vector} containing the indices of 
 \code{obs} elements to keep}
+
+\item{seedval}{(\emph{optional, default} \code{NULL}) \cr 
+An \code{integer} value corresponding to the new seed value to be set}
 }
 \value{
 A \code{list} containing to elements is returned :

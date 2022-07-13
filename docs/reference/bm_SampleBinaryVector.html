@@ -18,7 +18,7 @@ keeping the same proportion of 0 and 1 as the initial vector."><!-- mathjax --><
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">biomod2</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">4.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">4.1</span>
       </span>
     </div>
 
@@ -37,7 +37,7 @@ keeping the same proportion of 0 and 1 as the initial vector."><!-- mathjax --><
   </a>
 </li>
 <li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     <span class="fas fa-stethoscope"></span>
      
     Examples
@@ -98,7 +98,7 @@ keeping the same proportion of <code>0</code> and <code>1</code> as the initial 
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">bm_SampleBinaryVector</span><span class="op">(</span><span class="va">obs</span>, <span class="va">ratio</span>, as.logical <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">bm_SampleBinaryVector</span><span class="op">(</span><span class="va">obs</span>, <span class="va">ratio</span>, as.logical <span class="op">=</span> <span class="cn">FALSE</span>, seedval <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></code></pre></div>
     </div>
 
     <div id="arguments">
@@ -113,6 +113,9 @@ of <code>obs</code> values to sample</p></dd>
 A <code>logical</code> value defining whether a <code>vector</code> of <code>TRUE/FALSE</code> values should 
 be returned (if <code>as.logical = TRUE</code>) or a <code>vector</code> containing the indices of 
 <code>obs</code> elements to keep</p></dd>
+<dt>seedval</dt>
+<dd><p>(<em>optional, default</em> <code>NULL</code>) <br> 
+An <code>integer</code> value corresponding to the new seed value to be set</p></dd>
 </dl></div>
     <div id="value">
     <h2>Value</h2>
@@ -173,7 +176,7 @@ be returned (if <code>as.logical = TRUE</code>) or a <code>vector</code> contain
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.2.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.3.</p>
 </div>
 
       </footer></div>

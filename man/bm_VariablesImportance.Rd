@@ -9,6 +9,7 @@ bm_VariablesImportance(
   expl.var,
   method = "full_rand",
   nb.rep = 1,
+  seed.val = NULL,
   ...
 )
 }
@@ -25,6 +26,9 @@ compute the variables importance}
 
 \item{nb.rep}{an \code{integer} corresponding to the number of permutations to be done for 
 each variable}
+
+\item{seed.val}{(\emph{optional, default} \code{NULL}) \cr 
+An \code{integer} value corresponding to the new seed value to be set}
 
 \item{\ldots}{(\emph{optional)})}
 }
