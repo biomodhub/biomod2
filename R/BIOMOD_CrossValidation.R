@@ -148,8 +148,8 @@
 ##'         xlab = "", ylab = "ROC AUC", col = rep(c("brown", "cadetblue"), 3))
 ##' 
 ##' 
-##' @importFrom ENMeval get.block
-##' @importFrom dismo kfold
+## @importFrom ENMeval get.block
+## @importFrom dismo kfold
 ##' 
 ##' @export
 ##' 
@@ -207,9 +207,10 @@ BIOMOD_CrossValidation <- function(bm.format,
     
     ## BLOCK STRATIFIED CROSS VALIDATION --------------------------------------
     if (method == "block") {
+      if (!isNamespaceLoaded("ENMeval")) { requireNamespace("ENMeval", quietly = TRUE) }
       DataSplitTable <- as.data.frame(matrix(NA, nrow(bm.format@coord), 4))
-      blocks <- get.block(bm.format@coord[tmp == 1, ]
-                          , bm.format@coord[tmp == 0, ])
+      blocks <- ENMeval::get.block(bm.format@coord[tmp == 1, ]
+                                   , bm.format@coord[tmp == 0, ])
       for (i in 1:4) {
         DataSplitTable[tmp == 1, i] <- blocks[[1]] != i
         DataSplitTable[tmp == 0, i] <- blocks[[2]] != i     
@@ -229,8 +230,9 @@ BIOMOD_CrossValidation <- function(bm.format,
     }
   } else {
     ## K-FOLD CROSS VALIDATION --------------------------------------------------------------------
+    if (!isNamespaceLoaded("dismo")) { requireNamespace("dismo", quietly = TRUE) }
     for (rep in 1:nb.rep) {
-      fold <- kfold(tmp, by = tmp, k = k)
+      fold <- dismo::kfold(tmp, by = tmp, k = k)
       for (i in 1:k) {
         DataSplitTable <- cbind(DataSplitTable, fold != i)
       }

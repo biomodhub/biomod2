@@ -184,6 +184,8 @@ setGeneric("get_variables_importance", function(obj, ...) { standardGeneric("get
 ##' @slot link a \code{character} containing the file name of the saved object
 ##' @slot val a \code{\link{BIOMOD.models.out}} object
 ##' 
+##' @param object a \code{\link{BIOMOD.models.out}} object
+##' 
 ##' 
 ##' @seealso \code{\link{BIOMOD_Modeling}}, \code{\link{BIOMOD_LoadModels}}, 
 ##' \code{\link{BIOMOD_PresenceOnly}}, \code{\link{BIOMOD_Projection}}, 
@@ -288,6 +290,11 @@ setClass("BIOMOD.stored.models.out",
 
 
 # 4.3 Other functions -----------------------------------------------------------------------------
+##' 
+##' @rdname BIOMOD.models.out
+##' @export
+##' 
+
 setMethod('show', signature('BIOMOD.models.out'),
           function(object)
           {
@@ -525,6 +532,12 @@ setMethod("get_variables_importance", "BIOMOD.models.out",
 ##' \code{proj.out} slot
 ##' @slot proj.out a \code{\link{BIOMOD.stored.data}} object
 ##' 
+##' @param str.grep a \code{character} corresponding to the name (or part of the name(s)) of 
+##' models projected
+##' @param col a \code{vector} containing colors for plot (default : 
+##' \code{colorRampPalette(c("grey90", "yellow4", "green4"))(100)})
+##' @param x a \code{\link{BIOMOD.projection.out}} object
+##' @param object a \code{\link{BIOMOD.projection.out}} object
 ##' 
 ##' @seealso \code{\link{BIOMOD_Projection}}, \code{\link{BIOMOD_EnsembleForecasting}}
 ##' @family Toolbox objects
@@ -556,24 +569,30 @@ setMethod("get_variables_importance", "BIOMOD.models.out",
 ##' 
 ##' 
 ##' # ---------------------------------------------------------------
-##' # Format Data with true absences
-##' myBiomodData <- BIOMOD_FormatingData(resp.var = myResp,
-##'                                      expl.var = myExpl,
-##'                                      resp.xy = myRespXY,
-##'                                      resp.name = myRespName)
+##' file.out <- paste0(myRespName, "/", myRespName, ".AllModels.models.out")
+##' if (file.exists(file.out)) {
+##'   myBiomodModelOut <- get(load(file.out))
+##' } else {
 ##' 
-##' # Create default modeling options
-##' myBiomodOptions <- BIOMOD_ModelingOptions()
+##'   # Format Data with true absences
+##'   myBiomodData <- BIOMOD_FormatingData(resp.var = myResp,
+##'                                        expl.var = myExpl,
+##'                                        resp.xy = myRespXY,
+##'                                        resp.name = myRespName)
 ##' 
-##' # Model single models
-##' myBiomodModelOut <- BIOMOD_Modeling(bm.format = myBiomodData,
-##'                                     modeling.id = 'AllModels',
-##'                                     bm.options = myBiomodOptions,
-##'                                     nb.rep = 2,
-##'                                     data.split.perc = 80,
-##'                                     metric.eval = c('TSS','ROC'),
-##'                                     var.import = 3,
-##'                                     do.full.models = FALSE)
+##'   # Create default modeling options
+##'   myBiomodOptions <- BIOMOD_ModelingOptions()
+##' 
+##'   # Model single models
+##'   myBiomodModelOut <- BIOMOD_Modeling(bm.format = myBiomodData,
+##'                                       modeling.id = 'AllModels',
+##'                                       bm.options = myBiomodOptions,
+##'                                       nb.rep = 2,
+##'                                       data.split.perc = 80,
+##'                                       metric.eval = c('TSS','ROC'),
+##'                                       var.import = 3,
+##'                                       do.full.models = FALSE)
+##' }
 ##' 
 ##' 
 ##' # ---------------------------------------------------------------
@@ -621,6 +640,11 @@ setClass("BIOMOD.projection.out",
 
 
 # 5.3 Other functions -----------------------------------------------------------------------------
+##' 
+##' @rdname BIOMOD.projection.out
+##' @export
+##' 
+
 setMethod('plot', signature(x = 'BIOMOD.projection.out', y = "missing"),
           function(x, col = NULL, str.grep = NULL)
           {
@@ -670,6 +694,11 @@ setMethod('plot', signature(x = 'BIOMOD.projection.out', y = "missing"),
             }
           }
 )
+
+##' 
+##' @rdname BIOMOD.projection.out
+##' @export
+##' 
 
 setMethod('show', signature('BIOMOD.projection.out'),
           function(object){
@@ -798,6 +827,8 @@ setMethod("get_predictions", "BIOMOD.projection.out",
 ##' @slot modeling.id a \code{character} corresponding to the name (ID) of the simulation set
 ##' @slot link a \code{character} containing the file name of the saved object
 ##' 
+##' @param object a \code{\link{BIOMOD.ensemble.models.out}} object
+##' 
 ##' 
 ##' @seealso \code{\link{BIOMOD_EnsembleModeling}}, \code{\link{BIOMOD_LoadModels}}, 
 ##' \code{\link{BIOMOD_PresenceOnly}}, \code{\link{bm_VariablesImportance}}, 
@@ -832,24 +863,30 @@ setMethod("get_predictions", "BIOMOD.projection.out",
 ##' 
 ##' 
 ##' # ---------------------------------------------------------------
-##' # Format Data with true absences
-##' myBiomodData <- BIOMOD_FormatingData(resp.var = myResp,
-##'                                      expl.var = myExpl,
-##'                                      resp.xy = myRespXY,
-##'                                      resp.name = myRespName)
+##' file.out <- paste0(myRespName, "/", myRespName, ".AllModels.models.out")
+##' if (file.exists(file.out)) {
+##'   myBiomodModelOut <- get(load(file.out))
+##' } else {
 ##' 
-##' # Create default modeling options
-##' myBiomodOptions <- BIOMOD_ModelingOptions()
+##'   # Format Data with true absences
+##'   myBiomodData <- BIOMOD_FormatingData(resp.var = myResp,
+##'                                        expl.var = myExpl,
+##'                                        resp.xy = myRespXY,
+##'                                        resp.name = myRespName)
 ##' 
-##' # Model single models
-##' myBiomodModelOut <- BIOMOD_Modeling(bm.format = myBiomodData,
-##'                                     modeling.id = 'AllModels',
-##'                                     bm.options = myBiomodOptions,
-##'                                     nb.rep = 2,
-##'                                     data.split.perc = 80,
-##'                                     metric.eval = c('TSS','ROC'),
-##'                                     var.import = 3,
-##'                                     do.full.models = FALSE)
+##'   # Create default modeling options
+##'   myBiomodOptions <- BIOMOD_ModelingOptions()
+##' 
+##'   # Model single models
+##'   myBiomodModelOut <- BIOMOD_Modeling(bm.format = myBiomodData,
+##'                                       modeling.id = 'AllModels',
+##'                                       bm.options = myBiomodOptions,
+##'                                       nb.rep = 2,
+##'                                       data.split.perc = 80,
+##'                                       metric.eval = c('TSS','ROC'),
+##'                                       var.import = 3,
+##'                                       do.full.models = FALSE)
+##' }
 ##' 
 ##' 
 ##' # ---------------------------------------------------------------
@@ -896,6 +933,11 @@ setClass("BIOMOD.ensemble.models.out",
 
 
 # 6.3 Other functions -----------------------------------------------------------------------------
+##' 
+##' @rdname BIOMOD.ensemble.models.out
+##' @export
+##' 
+
 setMethod('show', signature('BIOMOD.ensemble.models.out'),
           function(object){
             .bm_cat("BIOMOD.ensemble.models.out")

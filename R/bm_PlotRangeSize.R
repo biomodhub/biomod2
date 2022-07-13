@@ -78,33 +78,45 @@
 ##' 
 ##' 
 ##' # ---------------------------------------------------------------
-##' # Format Data with true absences
-##' myBiomodData <- BIOMOD_FormatingData(resp.var = myResp,
-##'                                      expl.var = myExpl,
-##'                                      resp.xy = myRespXY,
-##'                                      resp.name = myRespName)
+##' file.out <- paste0(myRespName, "/", myRespName, ".AllModels.models.out")
+##' if (file.exists(file.out)) {
+##'   myBiomodModelOut <- get(load(file.out))
+##' } else {
 ##' 
-##' # Create default modeling options
-##' myBiomodOptions <- BIOMOD_ModelingOptions()
+##'   # Format Data with true absences
+##'   myBiomodData <- BIOMOD_FormatingData(resp.var = myResp,
+##'                                        expl.var = myExpl,
+##'                                        resp.xy = myRespXY,
+##'                                        resp.name = myRespName)
 ##' 
-##' # Model single models
-##' myBiomodModelOut <- BIOMOD_Modeling(bm.format = myBiomodData,
-##'                                     modeling.id = 'AllModels',
-##'                                     bm.options = myBiomodOptions,
-##'                                     nb.rep = 2,
-##'                                     data.split.perc = 80,
-##'                                     metric.eval = c('TSS','ROC'),
-##'                                     var.import = 3,
-##'                                     do.full.models = FALSE)
+##'   # Create default modeling options
+##'   myBiomodOptions <- BIOMOD_ModelingOptions()
 ##' 
-##' # Project single models
-##' myBiomodProj <- BIOMOD_Projection(bm.mod = myBiomodModelOut,
-##'                                   proj.name = 'Current',
-##'                                   new.env = myExpl,
-##'                                   models.chosen = 'all',
-##'                                   metric.binary = 'all',
-##'                                   metric.filter = 'all',
-##'                                   build.clamping.mask = TRUE)
+##'   # Model single models
+##'   myBiomodModelOut <- BIOMOD_Modeling(bm.format = myBiomodData,
+##'                                       modeling.id = 'AllModels',
+##'                                       bm.options = myBiomodOptions,
+##'                                       nb.rep = 2,
+##'                                       data.split.perc = 80,
+##'                                       metric.eval = c('TSS','ROC'),
+##'                                       var.import = 3,
+##'                                       do.full.models = FALSE)
+##' }
+##' 
+##' file.proj <- paste0(myRespName, "/proj_Current/", myRespName, ".Current.projection.out")
+##' if (file.exists(file.proj)) {
+##'   myBiomodProj <- get(load(file.proj))
+##' } else {
+##' 
+##'   # Project single models
+##'   myBiomodProj <- BIOMOD_Projection(bm.mod = myBiomodModelOut,
+##'                                     proj.name = 'Current',
+##'                                     new.env = myExpl,
+##'                                     models.chosen = 'all',
+##'                                     metric.binary = 'all',
+##'                                     metric.filter = 'all',
+##'                                     build.clamping.mask = TRUE)
+##' }
 ##' 
 ##' 
 ##' # ---------------------------------------------------------------
@@ -121,8 +133,8 @@
 ##'                                               build.clamping.mask = TRUE)
 ##' 
 ##' # Load current and future binary projections
-##' CurrentProj <- stack("GuloGulo/proj_Current/proj_Current_GuloGulo_TSSbin.grd")
-##' FutureProj <- stack("GuloGulo/proj_Future/proj_Future_GuloGulo_TSSbin.grd")
+##' CurrentProj <- raster::stack("GuloGulo/proj_Current/proj_Current_GuloGulo_TSSbin.grd")
+##' FutureProj <- raster::stack("GuloGulo/proj_Future/proj_Future_GuloGulo_TSSbin.grd")
 ##' 
 ##' # Compute differences
 ##' myBiomodRangeSize <- BIOMOD_RangeSize(proj.current = CurrentProj, proj.future = FutureProj)
@@ -136,6 +148,7 @@
 ##' bm_PlotRangeSize(bm.range = myBiomodRangeSize)
 ##' 
 ##' 
+##' @importFrom graphics plot.new
 ##' @importFrom reshape2 melt
 ##' @importFrom foreach foreach %do%
 ##' @importFrom raster which.max nlayers stack rasterToPoints reclassify
@@ -355,7 +368,7 @@ bm_PlotRangeSize <- function(bm.range, do.count = TRUE, do.perc = TRUE
           theme(legend.key = element_rect(fill = "white")
                 , legend.position = "top")
         
-        ggarrange(gg.ca1, gg.ca2, ncol = 2)
+        gg.ca = ggpubr::ggarrange(gg.ca1, gg.ca2, ncol = 2)
       } else {
         gg.ca = NULL
         warning("'do.mean' is only available if several maps are provided")

@@ -142,6 +142,11 @@ setClass("BIOMOD.stored.models.options",
 
 setGeneric("load_stored_object", function(obj) { standardGeneric("load_stored_object") })
 
+##' 
+##' @rdname load_stored_object
+##' @export
+##' 
+
 setMethod("load_stored_object", "BIOMOD.stored.data",
           function(obj)
           {

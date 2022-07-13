@@ -39,15 +39,18 @@ utils::globalVariables(names = c("modi"))
 utils::globalVariables(names = c("temp_workdir", "variables", "v", "r"))
 
 
+## bm_PlotEvalMean
+utils::globalVariables(names = c("xlim", "ylim", "main"))
+
 ## bm_PlotEvalBoxplot
 utils::globalVariables(names = c("scales", "main"))
 
-## bm_PlotEvalMean
-utils::globalVariables(names = c("xlim", "ylim", "main"))
+## bm_PlotVarImpBoxplot
+utils::globalVariables(names = c("main"))
 
 ## bm_PlotResponseCurves
 utils::globalVariables(names = c("data_species", "models", "vari", "nb.pts", "model"
                                  , "use.formal.names", "on_0_1000", "main"))
 
-## bm_PlotVarImpBoxplot
-utils::globalVariables(names = c("main"))
+## bm_PlotRangeSize
+utils::globalVariables(names = c("vali"))

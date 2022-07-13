@@ -64,6 +64,7 @@
 ##' 
 ##' @examples
 ##' 
+##' \dontrun{
 ##' # Load species occurrences (6 species available)
 ##' myFile <- system.file('external/species/mammals_table.csv', package = 'biomod2')
 ##' DataSpecies <- read.csv(myFile, row.names = 1)
@@ -132,6 +133,7 @@
 ##'                                   bm.em = myBiomodEM, 
 ##'                                   bg.env = getValues(myExpl))
 ##' myBiomodPO$eval
+##' }
 ##' 
 ##' 
 ## @importFrom ecospat ecospat.boyce ecospat.mpa
