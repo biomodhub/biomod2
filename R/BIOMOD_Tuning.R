@@ -151,6 +151,7 @@
 ##' ### on 3.4 GHz processor: approx. 45 min tuning all models in parallel
 ##' ### (on 8 cores) using foreach loops runs much faster: approx. 14 min
 ##' 
+##' \dontrun{
 ##' # library(doParallel)
 ##' # cl <- makeCluster(8)
 ##' # doParallel::registerDoParallel(cl) 
@@ -170,16 +171,16 @@
 ##' plot(bm.tuning$tune.GBM)
 ##' plot(bm.tuning$tune.GAM)
 ##' 
-##' 
 ##' # Get tuned modeling options
 ##' myBiomodOptions <- bm.tuning$models.options
+##' }
 ##' 
 ##' 
 ##' @importFrom foreach foreach
 ## @importFrom caret trainControl train twoClassSummary
-##' @importFrom dismo kfold
+## @importFrom dismo kfold
 ##' @importFrom PresenceAbsence optimal.thresholds presence.absence.accuracy
-##' @importFrom ENMeval ENMevaluate
+## @importFrom ENMeval ENMevaluate
 ##' @importFrom stats aggregate as.formula binomial complete.cases cor formula glm 
 ##' median na.exclude na.omit qt quantile sd
 ##' 
@@ -237,14 +238,15 @@ BIOMOD_Tuning <- function(bm.format,
     if (!isNamespaceLoaded("caret")) { requireNamespace("caret", quietly = TRUE) }
     if (!isNamespaceLoaded('dplyr')) { requireNamespace("dplyr", quietly = TRUE) }
     if (is.null(ctrl.train)) {
-      ctrl.train <- trainControl(method = "cv",
-                                 repeats = 3,
-                                 summaryFunction = twoClassSummary,
-                                 classProbs = TRUE,
-                                 returnData = FALSE)
+      ctrl.train <- caret::trainControl(method = "cv",
+                                        repeats = 3,
+                                        summaryFunction = caret::twoClassSummary,
+                                        classProbs = TRUE,
+                                        returnData = FALSE)
     }
     if ("MAXENT.Phillips" %in% models && !isNamespaceLoaded('ENMeval')) { requireNamespace("ENMeval", quietly = TRUE) }
     # if ("MAXENT.Tsuruoka" %in% models && !isNamespaceLoaded('maxent')) { requireNamespace("maxent", quietly = TRUE) }
+    if ("SRE" %in% models && !isNamespaceLoaded('dismo')) { requireNamespace("dismo", quietly = TRUE) }
   }
   
   tune.SRE <- tune.GLM <- tune.MAXENT.Phillips <- tune.GAM <- tune.GBM <- 
@@ -263,7 +265,7 @@ BIOMOD_Tuning <- function(bm.format,
     
     tune.SRE = foreach(rep = 1:ctrl.train$repeats, .combine = "rbind") %do%
       {
-        fold <- kfold(resp, by = resp, k = ctrl.train$number)
+        fold <- dismo::kfold(resp, by = resp, k = ctrl.train$number)
         RES = foreach (quant = c(0, 0.0125, 0.025, 0.05, 0.1), .combine = "rbind") %:%
           foreach (i = 1:ctrl.train$number, .combine = "rbind") %do%
           {
@@ -304,13 +306,13 @@ BIOMOD_Tuning <- function(bm.format,
                              .n.trees = c(500, 1000, 2500),
                              .shrinkage = c(0.001, 0.01, 0.1),
                              .n.minobsinnode = 10)
-    try(tune.GBM <- train(bm.format@data.env.var, 
-                          resp,
-                          method = "gbm",
-                          tuneGrid = tune.grid,
-                          trControl = ctrl.GBM,
-                          verbose = FALSE,
-                          weights = weights))
+    try(tune.GBM <- caret::train(bm.format@data.env.var, 
+                                 resp,
+                                 method = "gbm",
+                                 tuneGrid = tune.grid,
+                                 trControl = ctrl.GBM,
+                                 verbose = FALSE,
+                                 weights = weights))
     
     cat("Best optimization of coarse tuning:\n")
     cat(paste(tune.GBM$bestTune, collapse = ' / '), "\n")
@@ -336,13 +338,13 @@ BIOMOD_Tuning <- function(bm.format,
                                               tune.GBM$bestTune$shrinkage * 5), 
                                .n.minobsinnode = 10)
       tune.GBM <- NULL
-      try(tune.GBM <- train(bm.format@data.env.var, 
-                            resp,
-                            method = "gbm",
-                            tuneGrid = tune.grid,
-                            trControl = ctrl.GBM,
-                            verbose = FALSE,
-                            weights = weights))  
+      try(tune.GBM <- caret::train(bm.format@data.env.var, 
+                                   resp,
+                                   method = "gbm",
+                                   tuneGrid = tune.grid,
+                                   trControl = ctrl.GBM,
+                                   verbose = FALSE,
+                                   weights = weights))  
     }
     
     if (!is.null(tune.GBM)) {
@@ -371,13 +373,13 @@ BIOMOD_Tuning <- function(bm.format,
     if (is.null(ctrl.RF)) { ctrl.RF <- ctrl.train }
     tuneLength.rf <- min(ctrl.train.tuneLength, ncol(bm.format@data.env.var))
     
-    try(tune.RF <- train(bm.format@data.env.var, 
-                         resp,
-                         method = RF.method,
-                         tuneLength = tuneLength.rf,
-                         trControl = ctrl.RF,
-                         metric = metric.eval,
-                         weights = weights))
+    try(tune.RF <- caret::train(bm.format@data.env.var, 
+                                resp,
+                                method = RF.method,
+                                tuneLength = tuneLength.rf,
+                                trControl = ctrl.RF,
+                                metric = metric.eval,
+                                weights = weights))
     
     if (!is.null(tune.RF)) { ## give both mtry as bestTune
       if (metric.eval == 'TSS') {
@@ -408,19 +410,19 @@ BIOMOD_Tuning <- function(bm.format,
     tune.grid <- expand.grid(.decay = ANN.decay.tune,
                              .size = ANN.size.tune,
                              .bag = FALSE)
-    try(tune.ANN <- train(bm.format@data.env.var, 
-                          resp, 
-                          method = ANN.method,
-                          tuneGrid = tune.grid,
-                          trControl = ctrl.ANN,
-                          ## Automatically standardize data prior to modeling and prediction
-                          preProc = c("center", "scale"),
-                          linout = TRUE,
-                          trace = FALSE,
-                          MaxNWts.ANN = ANN.MaxNWts,
-                          maxit = ANN.maxit,
-                          metric = metric.eval,
-                          weights = weights))
+    try(tune.ANN <- caret::train(bm.format@data.env.var, 
+                                 resp, 
+                                 method = ANN.method,
+                                 tuneGrid = tune.grid,
+                                 trControl = ctrl.ANN,
+                                 ## Automatically standardize data prior to modeling and prediction
+                                 preProc = c("center", "scale"),
+                                 linout = TRUE,
+                                 trace = FALSE,
+                                 MaxNWts.ANN = ANN.MaxNWts,
+                                 maxit = ANN.maxit,
+                                 metric = metric.eval,
+                                 weights = weights))
     if (!is.null(tune.ANN)) {
       if (metric.eval == 'TSS') {
         tmp = which.max(apply(tune.ANN$results[, c("Sens", "Spec")], 1, sum) - 1)
@@ -446,11 +448,11 @@ BIOMOD_Tuning <- function(bm.format,
     cat(paste("\n-=-=-=-=-=-=-=-=-=-=\n", "Start tuning GAM\n"))
     if (is.null(ctrl.GAM)) { ctrl.GAM <- ctrl.train }
     
-    try(tune.GAM <- train(bm.format@data.env.var, 
-                          resp, 
-                          method = GAM.method,
-                          trControl = ctrl.GAM,
-                          weights = weights))
+    try(tune.GAM <- caret::train(bm.format@data.env.var, 
+                                 resp, 
+                                 method = GAM.method,
+                                 trControl = ctrl.GAM,
+                                 weights = weights))
     if (!is.null(tune.GAM)) {
       if (metric.eval == 'TSS') {
         tmp = which.max(apply(tune.GAM$results[, c("Sens", "Spec")], 1, sum) - 1)
@@ -480,12 +482,12 @@ BIOMOD_Tuning <- function(bm.format,
     }
     
     tune.grid <- expand.grid(.degree = 1:2, .nprune = nprune)
-    try(tune.MARS <- train(bm.format@data.env.var, 
-                           resp, 
-                           method = MARS.method,
-                           tuneGrid = tune.grid,
-                           trControl = ctrl.MARS,
-                           weights = weights))
+    try(tune.MARS <- caret::train(bm.format@data.env.var, 
+                                  resp, 
+                                  method = MARS.method,
+                                  tuneGrid = tune.grid,
+                                  trControl = ctrl.MARS,
+                                  weights = weights))
     
     if (!is.null(tune.MARS)) {
       if (metric.eval == 'TSS') {
@@ -523,13 +525,13 @@ BIOMOD_Tuning <- function(bm.format,
     GLM.results = foreach (type = GLM.type, .combine = "rbind") %:%
       foreach (IA = GLM.interaction, .combine = "rbind") %do%
       {
-        try(tune.GLM <- train(bm_MakeFormula(resp.name = "resp",
-                                             expl.var = bm.format@data.env.var,
-                                             type = type,
-                                             interaction.level = IA),
-                              data = cbind(bm.format@data.env.var, resp = resp),
-                              method = GLM.method,
-                              trControl = ctrl.GLM))
+        try(tune.GLM <- caret::train(bm_MakeFormula(resp.name = "resp",
+                                                    expl.var = bm.format@data.env.var,
+                                                    type = type,
+                                                    interaction.level = IA),
+                                     data = cbind(bm.format@data.env.var, resp = resp),
+                                     method = GLM.method,
+                                     trControl = ctrl.GLM))
         # weights = weights))
         try(fm[[length(fm) + 1]] <- formula(tune.GLM$finalModel))
         try(RES <- cbind(tune.GLM$results, il = IA, type = type))
@@ -554,12 +556,12 @@ BIOMOD_Tuning <- function(bm.format,
     if (is.null(ctrl.FDA)) { ctrl.FDA <- ctrl.train }
     
     tune.grid <- expand.grid(.degree = 1:2, .nprune = 2:38)
-    try(tune.FDA <- train(bm.format@data.env.var, 
-                          factor(resp), 
-                          method = "fda",
-                          tuneGrid = tune.grid,                  
-                          trControl = ctrl.FDA,
-                          weights = weights))
+    try(tune.FDA <- caret::train(bm.format@data.env.var, 
+                                 factor(resp), 
+                                 method = "fda",
+                                 tuneGrid = tune.grid,                  
+                                 trControl = ctrl.FDA,
+                                 weights = weights))
     
     if (!is.null(tune.FDA)) {
       if (metric.eval == 'TSS') {
@@ -585,22 +587,22 @@ BIOMOD_Tuning <- function(bm.format,
     if (is.null(ctrl.CTA)) { ctrl.CTA <- ctrl.train }
     
     cat("Tuning Complexity Parameter")    
-    try(tune.CTA.rpart <- train(bm.format@data.env.var, 
-                                resp, 
-                                method = "rpart",
-                                tuneLength = ctrl.train.tuneLength,
-                                trControl = ctrl.CTA,
-                                metric = metric.eval,
-                                weights = weights))
+    try(tune.CTA.rpart <- caret::train(bm.format@data.env.var, 
+                                       resp, 
+                                       method = "rpart",
+                                       tuneLength = ctrl.train.tuneLength,
+                                       trControl = ctrl.CTA,
+                                       metric = metric.eval,
+                                       weights = weights))
     
     cat("Tuning Max Tree Depth")
-    try(tune.CTA.rpart2 <-  train(bm.format@data.env.var, 
-                                  resp,
-                                  method = "rpart2",
-                                  tuneLength = ctrl.train.tuneLength,
-                                  trControl = ctrl.CTA,
-                                  metric = metric.eval,
-                                  weights = weights))
+    try(tune.CTA.rpart2 <-  caret::train(bm.format@data.env.var, 
+                                         resp,
+                                         method = "rpart2",
+                                         tuneLength = ctrl.train.tuneLength,
+                                         trControl = ctrl.CTA,
+                                         metric = metric.eval,
+                                         weights = weights))
     
     if (!is.null(tune.CTA.rpart)) {
       if (metric.eval == 'TSS') {
@@ -702,15 +704,15 @@ BIOMOD_Tuning <- function(bm.format,
                            categoricals,
                            tune.args = list(rm = seq(0.5, 1, 0.5), fc = c("L")))
 {
-  results <- ENMevaluate(occs = pres,
-                         bg = bg,
-                         tune.args = tune.args,
-                         partitions = method,
-                         algorithm = "maxent.jar",
-                         partition.settings = list(kfolds = kfolds),
-                         doClamp = clamp,
-                         parallel = parallel,
-                         numCores = numCores)
+  results <- ENMeval::ENMevaluate(occs = pres,
+                                  bg = bg,
+                                  tune.args = tune.args,
+                                  partitions = method,
+                                  algorithm = "maxent.jar",
+                                  partition.settings = list(kfolds = kfolds),
+                                  doClamp = clamp,
+                                  parallel = parallel,
+                                  numCores = numCores)
   return(results)
 }
 

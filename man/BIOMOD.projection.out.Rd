@@ -3,7 +3,25 @@
 \docType{class}
 \name{BIOMOD.projection.out}
 \alias{BIOMOD.projection.out}
+\alias{plot,BIOMOD.projection.out,missing-method}
+\alias{show,BIOMOD.projection.out-method}
 \title{\code{BIOMOD_Projection()} output object class}
+\usage{
+\S4method{plot}{BIOMOD.projection.out,missing}(x, col = NULL, str.grep = NULL)
+
+\S4method{show}{BIOMOD.projection.out}(object)
+}
+\arguments{
+\item{x}{a \code{\link{BIOMOD.projection.out}} object}
+
+\item{col}{a \code{vector} containing colors for plot (default : 
+\code{colorRampPalette(c("grey90", "yellow4", "green4"))(100)})}
+
+\item{str.grep}{a \code{character} corresponding to the name (or part of the name(s)) of 
+models projected}
+
+\item{object}{a \code{\link{BIOMOD.projection.out}} object}
+}
 \description{
 Class returned by \code{\link{BIOMOD_Projection}}, and used by 
 \code{\link{BIOMOD_EnsembleForecasting}}
@@ -61,24 +79,30 @@ myExpl <- raster::stack(system.file(myFiles, package = 'biomod2'))
 
 
 # ---------------------------------------------------------------
-# Format Data with true absences
-myBiomodData <- BIOMOD_FormatingData(resp.var = myResp,
-                                     expl.var = myExpl,
-                                     resp.xy = myRespXY,
-                                     resp.name = myRespName)
+file.out <- paste0(myRespName, "/", myRespName, ".AllModels.models.out")
+if (file.exists(file.out)) {
+  myBiomodModelOut <- get(load(file.out))
+} else {
 
-# Create default modeling options
-myBiomodOptions <- BIOMOD_ModelingOptions()
+  # Format Data with true absences
+  myBiomodData <- BIOMOD_FormatingData(resp.var = myResp,
+                                       expl.var = myExpl,
+                                       resp.xy = myRespXY,
+                                       resp.name = myRespName)
 
-# Model single models
-myBiomodModelOut <- BIOMOD_Modeling(bm.format = myBiomodData,
-                                    modeling.id = 'AllModels',
-                                    bm.options = myBiomodOptions,
-                                    nb.rep = 2,
-                                    data.split.perc = 80,
-                                    metric.eval = c('TSS','ROC'),
-                                    var.import = 3,
-                                    do.full.models = FALSE)
+  # Create default modeling options
+  myBiomodOptions <- BIOMOD_ModelingOptions()
+
+  # Model single models
+  myBiomodModelOut <- BIOMOD_Modeling(bm.format = myBiomodData,
+                                      modeling.id = 'AllModels',
+                                      bm.options = myBiomodOptions,
+                                      nb.rep = 2,
+                                      data.split.perc = 80,
+                                      metric.eval = c('TSS','ROC'),
+                                      var.import = 3,
+                                      do.full.models = FALSE)
+}
 
 
 # ---------------------------------------------------------------

@@ -5,39 +5,42 @@
 \alias{bm_DefaultModelingOptions}
 \title{Configure the modeling options for each selected model}
 \usage{
-BIOMOD_ModelingOptions(GLM = NULL,
-                              GBM = NULL,
-                              GAM = NULL,
-                              CTA = NULL,
-                              ANN = NULL,
-                              SRE = NULL,
-                              FDA = NULL,
-                              MARS = NULL,
-                              RF = NULL,
-                              MAXENT.Phillips = NULL)
+BIOMOD_ModelingOptions(
+  GLM = NULL,
+  GBM = NULL,
+  GAM = NULL,
+  CTA = NULL,
+  ANN = NULL,
+  SRE = NULL,
+  FDA = NULL,
+  MARS = NULL,
+  RF = NULL,
+  MAXENT.Phillips = NULL
+)
 
 bm_DefaultModelingOptions()
 }
 \arguments{
-\item{GLM}{a \code{list} containing GLM options}
+\item{GLM}{(\emph{optional, default} \code{NULL}) \cr A \code{list} containing GLM options}
 
-\item{GBM}{a \code{list} containing GBM options}
+\item{GBM}{(\emph{optional, default} \code{NULL}) \cr A \code{list} containing GBM options}
 
-\item{GAM}{a \code{list} containing GAM options}
+\item{GAM}{(\emph{optional, default} \code{NULL}) \cr A \code{list} containing GAM options}
 
-\item{CTA}{a \code{list} containing CTA options}
+\item{CTA}{(\emph{optional, default} \code{NULL}) \cr A \code{list} containing CTA options}
 
-\item{ANN}{a \code{list} containing ANN options}
+\item{ANN}{(\emph{optional, default} \code{NULL}) \cr A \code{list} containing ANN options}
 
-\item{SRE}{a \code{list} containing SRE options}
+\item{SRE}{(\emph{optional, default} \code{NULL}) \cr A \code{list} containing SRE options}
 
-\item{FDA}{a \code{list} containing FDA options}
+\item{FDA}{(\emph{optional, default} \code{NULL}) \cr A \code{list} containing FDA options}
 
-\item{MARS}{a \code{list} containing MARS options}
+\item{MARS}{(\emph{optional, default} \code{NULL}) \cr A \code{list} containing MARS options}
 
-\item{RF}{a \code{list} containing RF options}
+\item{RF}{(\emph{optional, default} \code{NULL}) \cr A \code{list} containing RF options}
 
-\item{MAXENT.Phillips}{a \code{list} containing MAXENT.Phillips options}
+\item{MAXENT.Phillips}{(\emph{optional, default} \code{NULL}) \cr A \code{list} 
+containing MAXENT.Phillips options}
 }
 \value{
 A \code{\link{BIOMOD.models.options}} object that can be used to build species distribution 

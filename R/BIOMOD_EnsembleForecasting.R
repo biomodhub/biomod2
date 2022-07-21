@@ -129,50 +129,70 @@
 ##' 
 ##' 
 ##' # ---------------------------------------------------------------
-##' # Format Data with true absences
-##' myBiomodData <- BIOMOD_FormatingData(resp.var = myResp,
-##'                                      expl.var = myExpl,
-##'                                      resp.xy = myRespXY,
-##'                                      resp.name = myRespName)
+##' file.out <- paste0(myRespName, "/", myRespName, ".AllModels.models.out")
+##' if (file.exists(file.out)) {
+##'   myBiomodModelOut <- get(load(file.out))
+##' } else {
 ##' 
-##' # Create default modeling options
-##' myBiomodOptions <- BIOMOD_ModelingOptions()
+##'   # Format Data with true absences
+##'   myBiomodData <- BIOMOD_FormatingData(resp.var = myResp,
+##'                                        expl.var = myExpl,
+##'                                        resp.xy = myRespXY,
+##'                                        resp.name = myRespName)
 ##' 
-##' # Model single models
-##' myBiomodModelOut <- BIOMOD_Modeling(bm.format = myBiomodData,
-##'                                     modeling.id = 'AllModels',
-##'                                     bm.options = myBiomodOptions,
-##'                                     nb.rep = 2,
-##'                                     data.split.perc = 80,
-##'                                     metric.eval = c('TSS','ROC'),
-##'                                     var.import = 3,
-##'                                     do.full.models = FALSE)
+##'   # Create default modeling options
+##'   myBiomodOptions <- BIOMOD_ModelingOptions()
 ##' 
-##' # Project single models
-##' myBiomodProj <- BIOMOD_Projection(bm.mod = myBiomodModelOut,
-##'                                   proj.name = 'Current',
-##'                                   new.env = myExpl,
-##'                                   models.chosen = 'all',
-##'                                   metric.binary = 'all',
-##'                                   metric.filter = 'all',
-##'                                   build.clamping.mask = TRUE)
-##' 
-##' # Model ensemble models
-##' myBiomodEM <- BIOMOD_EnsembleModeling(bm.mod = myBiomodModelOut,
-##'                                       models.chosen = 'all',
-##'                                       em.by = 'all',
-##'                                       metric.select = c('TSS'),
-##'                                       metric.select.thresh = c(0.7),
-##'                                       metric.eval = c('TSS', 'ROC'),
+##'   # Model single models
+##'   myBiomodModelOut <- BIOMOD_Modeling(bm.format = myBiomodData,
+##'                                       modeling.id = 'AllModels',
+##'                                       bm.options = myBiomodOptions,
+##'                                       nb.rep = 2,
+##'                                       data.split.perc = 80,
+##'                                       metric.eval = c('TSS','ROC'),
 ##'                                       var.import = 3,
-##'                                       prob.mean = TRUE,
-##'                                       prob.median = TRUE,
-##'                                       prob.cv = TRUE,
-##'                                       prob.ci = TRUE,
-##'                                       prob.ci.alpha = 0.05,
-##'                                       committee.averaging = TRUE,
-##'                                       prob.mean.weight = TRUE,
-##'                                       prob.mean.weight.decay = 'proportional')
+##'                                       do.full.models = FALSE)
+##' }
+##' 
+##' 
+##' file.proj <- paste0(myRespName, "/proj_Current/", myRespName, ".Current.projection.out")
+##' if (file.exists(file.proj)) {
+##'   myBiomodProj <- get(load(file.proj))
+##' } else {
+##' 
+##'   # Project single models
+##'   myBiomodProj <- BIOMOD_Projection(bm.mod = myBiomodModelOut,
+##'                                     proj.name = 'Current',
+##'                                     new.env = myExpl,
+##'                                     models.chosen = 'all',
+##'                                     metric.binary = 'all',
+##'                                     metric.filter = 'all',
+##'                                     build.clamping.mask = TRUE)
+##' }
+##' 
+##' 
+##' file.EM <- paste0(myRespName, "/", myRespName, ".AllModelsensemble.models.out")
+##' if (file.exists(file.EM)) {
+##'   myBiomodEM <- get(load(file.EM))
+##' } else {
+##' 
+##'   # Model ensemble models
+##'   myBiomodEM <- BIOMOD_EnsembleModeling(bm.mod = myBiomodModelOut,
+##'                                         models.chosen = 'all',
+##'                                         em.by = 'all',
+##'                                         metric.select = c('TSS'),
+##'                                         metric.select.thresh = c(0.7),
+##'                                         metric.eval = c('TSS', 'ROC'),
+##'                                         var.import = 3,
+##'                                         prob.mean = TRUE,
+##'                                         prob.median = TRUE,
+##'                                         prob.cv = TRUE,
+##'                                         prob.ci = TRUE,
+##'                                         prob.ci.alpha = 0.05,
+##'                                         committee.averaging = TRUE,
+##'                                         prob.mean.weight = TRUE,
+##'                                         prob.mean.weight.decay = 'proportional')
+##' }
 ##' 
 ##' 
 ##' # ---------------------------------------------------------------

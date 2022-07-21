@@ -40,7 +40,7 @@ install.packages("biomod2", dependencies = TRUE)
 
 <br/>
 
-- **Development version** (4.0) from [biomodhub](https://github.com/biomodhub/biomod2) :
+- **Development version** (4.1) from [biomodhub](https://github.com/biomodhub/biomod2) :
 
 ```R
 library(devtools)
@@ -52,7 +52,7 @@ devtools::install_github("biomodhub/biomod2", dependencies = TRUE)
 
 ### <i class="fas fa-envelope-open-text"></i> Breaking news
 
-**! `biomod2 4.0` is now available !**
+**! `biomod2 4.1` is now available !**
 
 `/!\` Package fresh start... meaning some changes in function names and parameters. We apologize for the trouble `>{o.o}<` <br/>
 Sorry for the inconvenience, and please **feel free to indicate if you notice some strange new behaviors** !

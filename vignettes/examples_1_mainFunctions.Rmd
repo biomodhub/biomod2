@@ -205,6 +205,7 @@ myBiomodModelOut <- BIOMOD_Modeling(bm.format = myBiomodData,
                                     var.import = 3,
                                     metric.eval = c('TSS','ROC'),
                                     do.full.models = FALSE)
+                                    # seed.val = 123)
                                     # nb.cpu = 8)
 myBiomodModelOut
 

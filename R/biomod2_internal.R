@@ -550,7 +550,8 @@ check_data_range <- function(model, new_data)
 ## PLOT MULTIPLE and LEVEL plots ------------------------------------------------------------------
 ## used in biomod2_classes_3.R file
 
-.level.plot <- function(data.in, XY, color.gradient = 'red', level.range = c(min(data.in), max(data.in))
+.level.plot <- function(data.in, XY, color.gradient = 'red'
+                        , level.range = c(min(data.in, na.rm = TRUE), max(data.in, na.rm = TRUE))
                         , show.scale = TRUE, SRC = FALSE
                         , AddPresAbs = NULL, cex = 1, PresAbsSymbol = c(cex * 0.8, 16, 4), ...)
 {
@@ -644,11 +645,11 @@ check_data_range <- function(model, new_data)
       legend(0, 0.8, legend = list(' (1) new', ' (0) stable', '(-1) kept', '(-2) lost'), cex = 1, fill = rev(color.system), bty = 'n')
     } else {
       lmin = round(level.range[1], digits = 2)
-      if (level.range[1] != min(data.in)) {
+      if (level.range[1] != min(data.in, na.rm = TRUE)) {
         lmin <- paste0(lmin, " or lower")
       }
       lmax = round(level.range[2], digits = 2)
-      if (level.range[2] != max(data.in)) {
+      if (level.range[2] != max(data.in, na.rm = TRUE)) {
         lmax <- paste0(lmax, " or over")
       }
       

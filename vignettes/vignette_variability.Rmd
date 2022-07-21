@@ -1,0 +1,55 @@
+---
+title: "Variability in results"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Variability in results}
+  %\VignetteEngine{knitr::knitr}
+  %\VignetteEncoding{UTF-8}
+---
+
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.13/css/all.css" integrity="sha384-DNOHZ68U8hZfKXOrtjWvjxusGo9WQnrNx2sqG0tfsghAvtVlRW3tvkXWZh58N9jp" crossorigin="anonymous">
+
+
+
+### <i class="fas fa-address-card"></i> Definition
+
+When modelling species distribution, there is most of the time an **uncertainty** of what is actually modelled :
+
+- the *fundamental niche* is most of the time unknown
+- and there might be an uncertainty in the *realized niche*, except in the case of an exhaustive sampling.
+
+What can be evaluated is how much the modelisation results are **consistent** with what is known and observed, and how much **variability** is present in the results in function of modelling choices.
+
+</br>
+
+
+### <i class="fas fa-chart-bar"></i> Variability - within the evaluation / importance of variables
+
+Single and ensemble models can be evaluated by several available evaluation metrics, and the importance of variables can be calculated through several repetitions (see `metric.eval` and `var.import` parameters in [`BIOMOD_Modeling`](../reference/BIOMOD_Modeling.html) and [`BIOMOD_EnsembleModeling`](../reference/BIOMOD_EnsembleModeling.html)).
+
+Variability in evaluation and importance values can come from the parametrisation of different elements of the modelling :
+
+- **observed dataset**, 
+    + through the number of repetitions of calibration / validation splitting, 
+    + *illustrating the robustness of the computed model based on the data*
+- **pseudo-absence dataset**, 
+    + through the number of repetitions of PA sampling, 
+    + *to check the choice of the pseudo-absence strategy* 
+- **modelling technique**, 
+    + through the models selected, among 10 models available, 
+    + *to spot the most adapted modelling methods*
+
+</br>
+
+### <i class="fas fa-map"></i> Variability - within the predictions
+
+Making projections, either for single or ensemble models, can produce two additional sources of variability in results that can be explored through two parameters :
+
+- **For single models**, `build.clamping.mask` in [`BIOMOD_Projection` function](../reference/BIOMOD_Projection.html) : 
+    + it produces a map of the studied area with, in each pixel, the number of variables whose value is outside the range of values used to calibrate the models.
+    + *It identifies potential extrapolation areas.*
+
+- **For ensemble models**, `prob.cv` in [`BIOMOD_EnsembleForecasting` function](../reference/BIOMOD_EnsembleForecasting.html) : 
+    + it calculates the coefficient of variation between models' projection, 
+    + *identifying areas of disagreement in predictions*.
+

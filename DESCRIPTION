@@ -1,8 +1,8 @@
 Package: biomod2
 Type: Package
 Title: Ensemble Platform for Species Distribution Modeling
-Version: 4.0
-Date: 2022-03-01
+Version: 4.1
+Date: 2022-07-12
 Authors@R: c(person("Wilfried", "Thuiller", role = c("aut")
                     , email = "wilfried.thuiller@univ-grenoble-alpes.fr"),
              person("Damien", "Georges", role = c("aut")),
@@ -38,6 +38,7 @@ Imports:
     reshape,
     reshape2,
     abind,
+    data.table,
     foreach,
     ggplot2,
     nnet,
@@ -49,8 +50,6 @@ Imports:
     MASS,
     pROC (>= 1.15.0),
     PresenceAbsence,
-    dismo,
-    ENMeval,
     earth,
     dplyr
 Suggests:
@@ -59,13 +58,18 @@ Suggests:
     mgcv,
     car,
     caret,
+    dismo,
+    ENMeval,
     ecospat,
     doParallel,
     rasterVis,
     ggpubr,
-    testthat
+    testthat,
+    knitr
 License: GPL-3
-RoxygenNote: 7.1.2
+RoxygenNote: 7.2.0
+Encoding: UTF-8
+VignetteBuilder: knitr
 Collate: 
     'biomod2-package.R'
     'biomod2_globalVariables.R'

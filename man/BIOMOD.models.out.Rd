@@ -3,7 +3,14 @@
 \docType{class}
 \name{BIOMOD.models.out}
 \alias{BIOMOD.models.out}
+\alias{show,BIOMOD.models.out-method}
 \title{\code{BIOMOD_Modeling()} output object class}
+\usage{
+\S4method{show}{BIOMOD.models.out}(object)
+}
+\arguments{
+\item{object}{a \code{\link{BIOMOD.models.out}} object}
+}
 \description{
 Class returned by \code{\link{BIOMOD_Modeling}}, and used by 
 \code{\link{BIOMOD_LoadModels}}, \code{\link{BIOMOD_PresenceOnly}}, 

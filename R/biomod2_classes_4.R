@@ -119,6 +119,8 @@ NULL
 ##' @slot model_evaluation a \code{matrix} containing the model evaluations
 ##' @slot model_variables_importance a \code{matrix} containing the model variables importance
 ##' 
+##' @param object a \code{\link{biomod2_model}} object
+##' 
 ##' @details 
 ##' 
 ##' \code{biomod2_model} is the basic object for \pkg{biomod2} single species distribution models. 
@@ -210,6 +212,11 @@ setMethod('get_scaling_model', signature('biomod2_model'), function(object) { re
 
 
 # 7.3 Other Functions -----------------------------------------------------------------------------
+##' 
+##' @rdname biomod2_model
+##' @export
+##' 
+
 setMethod('show', signature('biomod2_model'),
           function(object)
           {

@@ -972,6 +972,8 @@ setMethod('show', signature('BIOMOD.formated.data.PA'),
 ##' @slot MAXENT.Phillips a \code{list} containing MAXENT.Phillips options
 ##' @slot MAXENT.Phillips.2 a \code{list} containing MAXENT.Phillips options
 ##' 
+##' @param object a \code{\link{BIOMOD.models.options}} object
+##' 
 ##' 
 ##' @seealso \code{\link{BIOMOD_ModelingOptions}}, \code{\link{BIOMOD_Tuning}}, 
 ##' \code{\link{BIOMOD_Modeling}}
@@ -1229,6 +1231,11 @@ setClass("BIOMOD.models.options",
            return(test)
          }
 )
+
+##'
+##' @rdname BIOMOD.models.options
+##' @export
+##'
 
 setMethod('show', signature('BIOMOD.models.options'),
           function(object)

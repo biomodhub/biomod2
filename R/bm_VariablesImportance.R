@@ -20,6 +20,8 @@
 ## @param nb.cpu (\emph{optional, default} \code{1}) \cr 
 ## An \code{integer} value corresponding to the number of computing resources to be used to 
 ## parallelize the single models computation
+##' @param seed.val (\emph{optional, default} \code{NULL}) \cr 
+##' An \code{integer} value corresponding to the new seed value to be set
 ##' @param \ldots (\emph{optional)}) 
 ##' 
 ##' @return  
@@ -84,6 +86,7 @@ bm_VariablesImportance <- function(bm.model,
                                    method = "full_rand", 
                                    nb.rep = 1,
                                    # nb.cpu = 1,
+                                   seed.val = NULL,
                                    ...)
 {
   args <- .bm_VariablesImportance.check.args(bm.model = bm.model, expl.var = expl.var, method = method, ...)

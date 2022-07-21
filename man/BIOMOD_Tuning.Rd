@@ -202,6 +202,7 @@ myBiomodData <- BIOMOD_FormatingData(resp.var = myResp,
 ### on 3.4 GHz processor: approx. 45 min tuning all models in parallel
 ### (on 8 cores) using foreach loops runs much faster: approx. 14 min
 
+\dontrun{
 # library(doParallel)
 # cl <- makeCluster(8)
 # doParallel::registerDoParallel(cl) 
@@ -221,9 +222,9 @@ plot(bm.tuning$tune.FDA)
 plot(bm.tuning$tune.GBM)
 plot(bm.tuning$tune.GAM)
 
-
 # Get tuned modeling options
 myBiomodOptions <- bm.tuning$models.options
+}
 
 
 }

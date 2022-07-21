@@ -9,27 +9,17 @@
 ##' @description Parametrize and/or tune \pkg{biomod2}'s single models options.
 ##'
 ##'
-##' @usage BIOMOD_ModelingOptions(GLM = NULL,
-##'                               GBM = NULL,
-##'                               GAM = NULL,
-##'                               CTA = NULL,
-##'                               ANN = NULL,
-##'                               SRE = NULL,
-##'                               FDA = NULL,
-##'                               MARS = NULL,
-##'                               RF = NULL,
-##'                               MAXENT.Phillips = NULL)
-##'
-##' @param GLM a \code{list} containing GLM options
-##' @param GBM a \code{list} containing GBM options
-##' @param GAM a \code{list} containing GAM options
-##' @param CTA a \code{list} containing CTA options
-##' @param ANN a \code{list} containing ANN options
-##' @param SRE a \code{list} containing SRE options
-##' @param FDA a \code{list} containing FDA options
-##' @param MARS a \code{list} containing MARS options
-##' @param RF a \code{list} containing RF options
-##' @param MAXENT.Phillips a \code{list} containing MAXENT.Phillips options
+##' @param GLM (\emph{optional, default} \code{NULL}) \cr A \code{list} containing GLM options
+##' @param GBM (\emph{optional, default} \code{NULL}) \cr A \code{list} containing GBM options
+##' @param GAM (\emph{optional, default} \code{NULL}) \cr A \code{list} containing GAM options
+##' @param CTA (\emph{optional, default} \code{NULL}) \cr A \code{list} containing CTA options
+##' @param ANN (\emph{optional, default} \code{NULL}) \cr A \code{list} containing ANN options
+##' @param SRE (\emph{optional, default} \code{NULL}) \cr A \code{list} containing SRE options
+##' @param FDA (\emph{optional, default} \code{NULL}) \cr A \code{list} containing FDA options
+##' @param MARS (\emph{optional, default} \code{NULL}) \cr A \code{list} containing MARS options
+##' @param RF (\emph{optional, default} \code{NULL}) \cr A \code{list} containing RF options
+##' @param MAXENT.Phillips (\emph{optional, default} \code{NULL}) \cr A \code{list} 
+##' containing MAXENT.Phillips options
 ##'
 ##'
 ##' @return 
