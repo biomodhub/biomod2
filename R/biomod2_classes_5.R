@@ -151,7 +151,8 @@ setMethod('predict', signature(object = 'EMmean_biomod2_model'),
     m <- mean(x)
     if (on_0_1000) { m <- round(m) }
     return(m)
-  }, filename = filename, overwrite = TRUE)
+  })
+  writeRaster(out, filename = filename, overwrite = TRUE)
   
   return(out)
 }
@@ -229,7 +230,8 @@ setMethod('predict', signature(object = 'EMmedian_biomod2_model'),
     m <- median(x)
     if (on_0_1000) { m <- round(m) }
     return(m)
-  }, filename = filename, overwrite = TRUE)
+  })
+  writeRaster(out, filename = filename, overwrite = TRUE)
   
   return(out)
 }
@@ -282,7 +284,8 @@ setMethod('predict', signature(object = 'EMcv_biomod2_model'),
   if (is.null(filename)) { filename <- "" }
   
   if (nlayers(formal_predictions) > 1) {
-    out <- calc(formal_predictions, cv, filename = filename, overwrite = TRUE, na.rm = TRUE, aszero = TRUE)
+    out <- calc(formal_predictions, cv, na.rm = TRUE, aszero = TRUE)
+    writeRaster(out, filename = filename, overwrite = TRUE)
     return(out)
   } else {
     warning(paste0("\n Model EMcv was not computed because only one single model was kept in ensemble modeling ("
@@ -433,7 +436,8 @@ setMethod('predict', signature(object = 'EMca_biomod2_model'),
     m <- mean(x)
     if (on_0_1000) { m <- round(m * 1000) }
     return(m)
-  }, filename = filename, overwrite = TRUE)
+  })
+  writeRaster(out, filename = filename, overwrite = TRUE)
   
   return(out)
 }
@@ -494,8 +498,9 @@ setMethod('predict', signature(object = 'EMwmean_biomod2_model'),
     wm <- sum(x * object@penalization_scores)
     if (on_0_1000) { wm <- round(wm) }
     return(wm)
-  }, filename = filename, overwrite = TRUE)
-  
+  })
+  writeRaster(out, filename = filename, overwrite = TRUE)
+
   return(out)
 }
 
