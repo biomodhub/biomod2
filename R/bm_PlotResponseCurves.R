@@ -37,7 +37,8 @@
 ##' 
 ##' @return  
 ##' 
-##' A \code{ggplot} object representing response curves.
+##' A \code{list} containing a \code{data.frame} with variables and predicted values and the 
+##' corresponding \code{ggplot} object representing response curves.
 ##' 
 ##' 
 ##' @details
@@ -355,7 +356,7 @@ bm_PlotResponseCurves <- function(bm.out
   }
   
   if (do.plot){ print(gg) }
-  invisible(gg)
+  return(list(tab = ggdat, plot = invisible(gg)))
 }
 
 

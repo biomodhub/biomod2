@@ -28,7 +28,8 @@
 ##' 
 ##' @return  
 ##' 
-##' A \code{list} containing \code{ggplot} objects representing species range change.
+##' A \code{list} containing one or several \code{data.frame} and the corresponding 
+##' \code{ggplot} object representing species range change.
 ##' 
 ##' 
 ##' @details
@@ -85,7 +86,7 @@
 ##' 
 ##'   # Format Data with true absences
 ##'   myBiomodData <- BIOMOD_FormatingData(resp.var = myResp,
-##'                                        expl.var = myExpl,
+##'                                        expl.var = myExpl, 
 ##'                                        resp.xy = myRespXY,
 ##'                                        resp.name = myRespName)
 ##' 
@@ -173,6 +174,7 @@ bm_PlotRangeSize <- function(bm.range, do.count = TRUE, do.perc = TRUE
       (is.list(bm.range) && length(bm.range) == 2 && sum(names(bm.range) == c("Compt.By.Models", "Diff.By.Pixel")) != 2)) {
     stop("'bm.range' must be an object obtained by the BIOMOD_RangeSize function")
   }
+  out = list()
   
   ## 1. Create PLOTS for Compt.By.Models ----------------------------------------------------------
   if (do.count || do.perc)
@@ -231,6 +233,9 @@ bm_PlotRangeSize <- function(bm.range, do.count = TRUE, do.perc = TRUE
               , legend.key = element_rect(fill = "white")
               , legend.position = "top")
     } else { gg.perc = NULL }
+    out$tab.count = ggdat
+    out$plot.count = invisible(gg.count)
+    out$plot.perc = invisible(gg.perc)
   }
   
   
@@ -278,6 +283,10 @@ bm_PlotRangeSize <- function(bm.range, do.count = TRUE, do.perc = TRUE
       #   theme(legend.title = element_blank()
       #         , legend.key = element_rect(fill = "white")
       #         , legend.position = "top")
+      
+      out$tab.maps = ggdat
+      out$plot.maps = invisible(gg.maps)
+      
     } else { gg.maps = NULL }
     
     ## d. SRC mean maps per group.level ---------------------------------------
@@ -369,6 +378,9 @@ bm_PlotRangeSize <- function(bm.range, do.count = TRUE, do.perc = TRUE
                 , legend.position = "top")
         
         gg.ca = ggpubr::ggarrange(gg.ca1, gg.ca2, ncol = 2)
+        out$tab.ca1 = tab1
+        out$tab.ca2 = tab2
+        out$plot.ca = invisible(gg.ca)
       } else {
         gg.ca = NULL
         warning("'do.mean' is only available if several maps are provided")
@@ -388,9 +400,7 @@ bm_PlotRangeSize <- function(bm.range, do.count = TRUE, do.perc = TRUE
     plot.new()
     print(gg.ca)
   }
-  return(list(count = invisible(gg.count)
-              , perc = invisible(gg.perc)
-              # , maps = invisible(gg.maps)
-              , ca = invisible(gg.ca)))
+
+  return(out)
 }
 

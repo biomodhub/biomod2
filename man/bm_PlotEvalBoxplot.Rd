@@ -20,7 +20,8 @@ A \code{logical} value defining whether the plot is to be rendered or not}
 \item{\ldots}{some additional arguments (see \href{bm_PlotEvalMean.html#details}{Details})}
 }
 \value{
-A \code{ggplot} object representing boxplot of evaluation scores.
+A \code{list} containing a \code{data.frame} with evaluation scores and the corresponding 
+\code{ggplot} object representing them in boxplot.
 }
 \description{
 This function represents boxplot of evaluation scores of species distribution 

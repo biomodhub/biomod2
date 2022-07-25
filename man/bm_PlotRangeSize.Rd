@@ -37,7 +37,8 @@ A \code{vector} containing tags matching \code{bm.range$Compt.By.Models} rowname
 '_' character}
 }
 \value{
-A \code{list} containing \code{ggplot} objects representing species range change.
+A \code{list} containing one or several \code{data.frame} and the corresponding 
+\code{ggplot} object representing species range change.
 }
 \description{
 This function represents species range change from object that can be obtained 
@@ -89,7 +90,7 @@ if (file.exists(file.out)) {
 
   # Format Data with true absences
   myBiomodData <- BIOMOD_FormatingData(resp.var = myResp,
-                                       expl.var = myExpl,
+                                       expl.var = myExpl, 
                                        resp.xy = myRespXY,
                                        resp.name = myRespName)
 

@@ -23,7 +23,9 @@
 ##' 
 ##' @return  
 ##' 
-##' A \code{ggplot} object representing boxplot of variables importance.
+##' 
+##' A \code{list} containing a \code{data.frame} with variables importance and the corresponding 
+##' \code{ggplot} object representing them in boxplot.
 ##' 
 ##' 
 ##' @details
@@ -148,7 +150,7 @@ bm_PlotVarImpBoxplot <- function(bm.out, group.by = c('run', 'expl.var', 'algo')
   }
   
   if (do.plot){ print(gg) }
-  invisible(gg)
+  return(list(tab = ggdat, plot = invisible(gg)))
 }
 
 

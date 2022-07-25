@@ -32,8 +32,9 @@ A \code{logical} value defining whether the plot is to be rendered or not}
 \item{\ldots}{some additional arguments (see \href{bm_PlotEvalMean.html#details}{Details})}
 }
 \value{
-A \code{ggplot} object representing mean and standard deviation of evaluation scores 
-according to 2 different evaluation methods.
+A \code{list} containing a \code{data.frame} with mean and standard deviation of evaluation 
+scores and the corresponding \code{ggplot} object representing them according to 2 different 
+evaluation methods.
 }
 \description{
 This function represents mean evaluation scores (and their standard deviation) 

@@ -23,7 +23,8 @@
 ##' 
 ##' @return  
 ##' 
-##' A \code{ggplot} object representing boxplot of evaluation scores.
+##' A \code{list} containing a \code{data.frame} with evaluation scores and the corresponding 
+##' \code{ggplot} object representing them in boxplot.
 ##' 
 ##' 
 ##' @details
@@ -150,7 +151,7 @@ bm_PlotEvalBoxplot <- function(bm.out, group.by = c('algo', 'run'), do.plot = TR
   }
   
   if (do.plot){ print(gg) }
-  invisible(gg)
+  return(list(tab = ggdat, plot = invisible(gg)))
 }
 
 

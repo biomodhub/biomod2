@@ -47,7 +47,8 @@ A \code{logical} value defining whether the plot is to be rendered or not}
 \href{bm_PlotResponseCurves.html#details}{Details})}
 }
 \value{
-A \code{ggplot} object representing response curves.
+A \code{list} containing a \code{data.frame} with variables and predicted values and the 
+corresponding \code{ggplot} object representing response curves.
 }
 \description{
 This function represents response curves of species distribution models, from 

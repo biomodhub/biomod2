@@ -29,8 +29,9 @@
 ##' 
 ##' @return  
 ##' 
-##' A \code{ggplot} object representing mean and standard deviation of evaluation scores 
-##' according to 2 different evaluation methods.
+##' A \code{list} containing a \code{data.frame} with mean and standard deviation of evaluation 
+##' scores and the corresponding \code{ggplot} object representing them according to 2 different 
+##' evaluation methods.
 ##' 
 ##' 
 ##' @details
@@ -175,7 +176,7 @@ bm_PlotEvalMean <- function(bm.out, metric.eval = NULL, group.by = 'algo', do.pl
   }
   
   if (do.plot){ print(gg) }
-  invisible(gg)
+  return(list(tab = ggdat, plot = invisible(gg)))
 }
 
 
