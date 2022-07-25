@@ -384,7 +384,7 @@ setMethod('predict', signature(object = 'EMci_biomod2_model'),
   
   # reclassify prediction to prevent from out of bounds prediction
   if (on_0_1000) {
-    ci_prediction <- round(ci_prediction)
+    ci_prediction <- round(ci_prediction * 1000)
     ci_prediction[ci_prediction > 1000] <- 1000
     ci_prediction[ci_prediction < 0] <- 0
   } else {
