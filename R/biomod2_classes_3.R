@@ -793,7 +793,7 @@ setMethod("get_predictions", "BIOMOD.projection.out",
                     return(model.id)
                   }))
                 }
-                proj <- proj[, models_selected] # reorder the data.frame
+                proj <- proj[, models_selected, drop = FALSE] # reorder the data.frame
               }
             } else { proj <- NULL }
             return(proj)
