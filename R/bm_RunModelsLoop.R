@@ -651,8 +651,7 @@ bm_RunModel <- function(model, Data, modeling.id = '', bm.options, calib.lines, 
     
     # for MAXENT.Phillips predicitons are calculated in the same time than models building to save time.
     cat("\n Getting predictions...")
-    g.pred <- try(as.numeric(read.csv(MWD$m_outputFile)[, 3]))
-    if (on_0_1000) { g.pred <- try(round(g.pred * 1000)) }
+    g.pred <- try(round(as.numeric(read.csv(MWD$m_outputFile)[, 3]) * 1000))
     
     if (var.import > 0) {
       cat("\n Getting predictor contributions...")
@@ -717,7 +716,7 @@ bm_RunModel <- function(model, Data, modeling.id = '', bm.options, calib.lines, 
   }
   
   if (model != "MAXENT.Phillips") {
-    g.pred <- try(predict(model.bm, Data[, expl_var_names, drop = FALSE], on_0_1000 = on_0_1000
+    g.pred <- try(predict(model.bm, Data[, expl_var_names, drop = FALSE], on_0_1000 = TRUE
                           , seedval = seed.val, temp_workdir = temp_workdir))
   }
   
@@ -726,7 +725,7 @@ bm_RunModel <- function(model, Data, modeling.id = '', bm.options, calib.lines, 
     cat("\n\tModel scaling...")
     model.bm@scaling_model <- try(.scaling_model(g.pred / 1000, Data[, 1, drop = TRUE], weights = weights))
     ## with weights
-    g.pred <- try(predict(model.bm, Data[, expl_var_names, drop = FALSE], on_0_1000 = on_0_1000
+    g.pred <- try(predict(model.bm, Data[, expl_var_names, drop = FALSE], on_0_1000 = TRUE
                           , seedval = seed.val, temp_workdir = temp_workdir))
   }
   
@@ -755,7 +754,7 @@ bm_RunModel <- function(model, Data, modeling.id = '', bm.options, calib.lines, 
   
   ## make prediction on evaluation data ---------------------------------------
   if (!is.null(eval.data)) {
-    g.pred.eval <- try(predict(model.bm, eval.data[, expl_var_names, drop = FALSE], on_0_1000 = on_0_1000
+    g.pred.eval <- try(predict(model.bm, eval.data[, expl_var_names, drop = FALSE], on_0_1000 = TRUE
                                , seedval = seed.val, temp_workdir = temp_workdir))
   }
   
