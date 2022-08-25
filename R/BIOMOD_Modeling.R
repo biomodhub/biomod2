@@ -55,6 +55,8 @@
 ##' parallelize the single models computation
 ##' @param seed.val (\emph{optional, default} \code{NULL}) \cr 
 ##' An \code{integer} value corresponding to the new seed value to be set
+##' @param do.progress (\emph{optional, default} \code{TRUE}) \cr 
+##' A \code{logical} value defining whether the progress bar is to be rendered or not
 ##' 
 ##' 
 ##' @return
@@ -282,7 +284,8 @@ BIOMOD_Modeling <- function(bm.format,
                             save.output = TRUE,
                             scale.models = FALSE,
                             nb.cpu = 1,
-                            seed.val = NULL)
+                            seed.val = NULL,
+                            do.progress = TRUE)
 {
   .bm_cat("Build Single Models")
   
@@ -290,7 +293,7 @@ BIOMOD_Modeling <- function(bm.format,
   args <- .BIOMOD_Modeling.check.args(bm.format, modeling.id, models, bm.options, nb.rep
                                       , data.split.perc, data.split.table
                                       , do.full.models, weights, prevalence, metric.eval, var.import
-                                      , save.output, scale.models, nb.cpu, seed.val)
+                                      , save.output, scale.models, nb.cpu, seed.val, do.progress)
   for (argi in names(args)) { assign(x = argi, value = args[[argi]]) }
   rm(args)
   
@@ -357,7 +360,8 @@ BIOMOD_Modeling <- function(bm.format,
                     save.output = save.output,
                     scale.models = scale.models,
                     nb.cpu = nb.cpu,
-                    seed.val = seed.val)
+                    seed.val = seed.val,
+                    do.progress = do.progress)
   
   ## 3.3 Rearrange and save outputs -------------------------------------------
   models.out@models.computed <- .transform_outputs_list(mod.out, out = 'models.run')
@@ -420,7 +424,7 @@ BIOMOD_Modeling <- function(bm.format,
 .BIOMOD_Modeling.check.args <- function(bm.format, modeling.id, models, bm.options, nb.rep
                                         , data.split.perc, data.split.table
                                         , do.full.models, weights, prevalence, metric.eval, var.import
-                                        , save.output, scale.models, nb.cpu, seed.val)
+                                        , save.output, scale.models, nb.cpu, seed.val, do.progress)
 {
   ## 0. Check bm.format and models arguments ----------------------------------
   cat('\n\nChecking Models arguments...\n')
@@ -562,7 +566,8 @@ BIOMOD_Modeling <- function(bm.format,
               do.full.models = do.full.models,
               save.output = save.output,
               data.split.table = data.split.table,
-              seed.val = seed.val))
+              seed.val = seed.val,
+              do.progress = do.progress))
 }
 
 

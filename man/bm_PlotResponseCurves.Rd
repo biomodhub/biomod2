@@ -12,6 +12,7 @@ bm_PlotResponseCurves(
   fixed.var = "mean",
   do.bivariate = FALSE,
   do.plot = TRUE,
+  do.progress = TRUE,
   ...
 )
 }
@@ -42,6 +43,9 @@ dimensions (meaning 2 explanatory variables at a time) or not (meaning only 1)}
 
 \item{do.plot}{(\emph{optional, default} \code{TRUE}) \cr 
 A \code{logical} value defining whether the plot is to be rendered or not}
+
+\item{do.progress}{(\emph{optional, default} \code{TRUE}) \cr 
+A \code{logical} value defining whether the progress bar is to be rendered or not}
 
 \item{\ldots}{some additional arguments (see 
 \href{bm_PlotResponseCurves.html#details}{Details})}

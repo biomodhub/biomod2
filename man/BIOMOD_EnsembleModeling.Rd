@@ -22,7 +22,8 @@ BIOMOD_EnsembleModeling(
   prob.mean.weight = FALSE,
   prob.mean.weight.decay = "proportional",
   nb.cpu = 1,
-  seed.val = NULL
+  seed.val = NULL,
+  do.progress = TRUE
 )
 }
 \arguments{
@@ -104,6 +105,9 @@ parallelize the single models computation}
 
 \item{seed.val}{(\emph{optional, default} \code{NULL}) \cr 
 An \code{integer} value corresponding to the new seed value to be set}
+
+\item{do.progress}{(\emph{optional, default} \code{TRUE}) \cr 
+A \code{logical} value defining whether the progress bar is to be rendered or not}
 }
 \value{
 A \code{BIOMOD.ensemble.models.out} object containing models outputs, or links to saved 

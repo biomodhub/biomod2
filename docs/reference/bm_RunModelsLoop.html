@@ -108,7 +108,8 @@ species distribution models (asked by the <code><a href="BIOMOD_Modeling.html">B
   save.output <span class="op">=</span> <span class="cn">TRUE</span>,
   scale.models <span class="op">=</span> <span class="cn">TRUE</span>,
   nb.cpu <span class="op">=</span> <span class="fl">1</span>,
-  seed.val <span class="op">=</span> <span class="cn">NULL</span>
+  seed.val <span class="op">=</span> <span class="cn">NULL</span>,
+  do.progress <span class="op">=</span> <span class="cn">TRUE</span>
 <span class="op">)</span>
 
 <span class="fu">bm_RunModel</span><span class="op">(</span>
@@ -127,7 +128,8 @@ species distribution models (asked by the <code><a href="BIOMOD_Modeling.html">B
   save.output <span class="op">=</span> <span class="cn">FALSE</span>,
   scale.models <span class="op">=</span> <span class="cn">TRUE</span>,
   nb.cpu <span class="op">=</span> <span class="fl">1</span>,
-  seed.val <span class="op">=</span> <span class="cn">NULL</span>
+  seed.val <span class="op">=</span> <span class="cn">NULL</span>,
+  do.progress <span class="op">=</span> <span class="cn">TRUE</span>
 <span class="op">)</span></code></pre></div>
     </div>
 
@@ -170,6 +172,9 @@ parallelize the single models computation</p></dd>
 <dt>seed.val</dt>
 <dd><p>(<em>optional, default</em> <code>NULL</code>) <br> 
 An <code>integer</code> value corresponding to the new seed value to be set</p></dd>
+<dt>do.progress</dt>
+<dd><p>(<em>optional, default</em> <code>TRUE</code>) <br> 
+A <code>logical</code> value defining whether the progress bar is to be rendered or not</p></dd>
 <dt>Data</dt>
 <dd><p>a <code>data.frame</code> containing <code>data.species</code> and <code>data.env.var</code> slots 
 of <code>bm.format</code> parameter</p></dd>

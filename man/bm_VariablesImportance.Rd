@@ -10,6 +10,7 @@ bm_VariablesImportance(
   method = "full_rand",
   nb.rep = 1,
   seed.val = NULL,
+  do.progress = TRUE,
   ...
 )
 }
@@ -29,6 +30,9 @@ each variable}
 
 \item{seed.val}{(\emph{optional, default} \code{NULL}) \cr 
 An \code{integer} value corresponding to the new seed value to be set}
+
+\item{do.progress}{(\emph{optional, default} \code{TRUE}) \cr 
+A \code{logical} value defining whether the progress bar is to be rendered or not}
 
 \item{\ldots}{(\emph{optional)})}
 }

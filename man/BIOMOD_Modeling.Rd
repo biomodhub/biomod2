@@ -21,7 +21,8 @@ BIOMOD_Modeling(
   save.output = TRUE,
   scale.models = FALSE,
   nb.cpu = 1,
-  seed.val = NULL
+  seed.val = NULL,
+  do.progress = TRUE
 )
 }
 \arguments{
@@ -85,6 +86,9 @@ parallelize the single models computation}
 
 \item{seed.val}{(\emph{optional, default} \code{NULL}) \cr 
 An \code{integer} value corresponding to the new seed value to be set}
+
+\item{do.progress}{(\emph{optional, default} \code{TRUE}) \cr 
+A \code{logical} value defining whether the progress bar is to be rendered or not}
 }
 \value{
 A \code{BIOMOD.models.out} object containing models outputs, or links to saved outputs. \cr

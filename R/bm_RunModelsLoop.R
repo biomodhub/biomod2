@@ -37,6 +37,8 @@
 ##' parallelize the single models computation
 ##' @param seed.val (\emph{optional, default} \code{NULL}) \cr 
 ##' An \code{integer} value corresponding to the new seed value to be set
+##' @param do.progress (\emph{optional, default} \code{TRUE}) \cr 
+##' A \code{logical} value defining whether the progress bar is to be rendered or not
 ##' 
 ##' 
 ##' @param weights a \code{vector} of \code{numeric} values corresponding to observation weights 
@@ -116,7 +118,8 @@ bm_RunModelsLoop <- function(bm.format,
                              save.output = TRUE,
                              scale.models = TRUE,
                              nb.cpu = 1,
-                             seed.val = NULL)
+                             seed.val = NULL,
+                             do.progress = TRUE)
 {
   cat("\n\n-=-=-=- Run : ", bm.format$name, '\n')
   res.sp.run <- list()
@@ -150,7 +153,8 @@ bm_RunModelsLoop <- function(bm.format,
                     var.import = var.import,
                     save.output = TRUE, ## save.output
                     scale.models = scale.models,
-                    seed.val = seed.val)
+                    seed.val = seed.val,
+                    do.progress = TRUE)
       }
     names(res.sp.run[[run.id]]) <- model
   }
@@ -169,10 +173,12 @@ bm_RunModelsLoop <- function(bm.format,
 bm_RunModel <- function(model, Data, modeling.id = '', bm.options, calib.lines, weights, nam,
                         xy = NULL, eval.data = NULL, eval.xy = NULL, 
                         metric.eval = c('ROC','TSS','KAPPA'), var.import = 0,
-                        save.output = FALSE, scale.models = TRUE, nb.cpu = 1, seed.val = NULL)
+                        save.output = FALSE, scale.models = TRUE, nb.cpu = 1, seed.val = NULL,
+                        do.progress = TRUE)
 {
   ## 0. Check arguments ---------------------------------------------------------------------------
-  args <- .bm_RunModel.check.args(model, Data, bm.options, calib.lines, weights, eval.data, metric.eval, scale.models, seed.val)
+  args <- .bm_RunModel.check.args(model, Data, bm.options, calib.lines, weights, eval.data
+                                  , metric.eval, scale.models, seed.val, do.progress)
   for (argi in names(args)) { assign(x = argi, value = args[[argi]]) }
   rm(args)
   
@@ -659,7 +665,8 @@ bm_RunModel <- function(model, Data, modeling.id = '', bm.options, calib.lines, 
                                                      , expl.var = Data[, expl_var_names, drop = FALSE]
                                                      , nb.rep = var.import
                                                      , temp_workdir = MWD$m_outdir
-                                                     , seed.val = seed.val)
+                                                     , seed.val = seed.val
+                                                     , do.progress = do.progress)
     }
   } else if(model == "MAXENT.Phillips.2")
   {
@@ -821,7 +828,8 @@ bm_RunModel <- function(model, Data, modeling.id = '', bm.options, calib.lines, 
       variables.importance <- bm_VariablesImportance(bm.model = model.bm
                                                      , expl.var = Data[, expl_var_names, drop = FALSE]
                                                      , nb.rep = var.import
-                                                     , seed.val = seed.val)
+                                                     , seed.val = seed.val
+                                                     , do.progress = do.progress)
     }
     model.bm@model_variables_importance <- variables.importance
     
@@ -845,7 +853,8 @@ bm_RunModel <- function(model, Data, modeling.id = '', bm.options, calib.lines, 
 ###################################################################################################
 
 .bm_RunModel.check.args <- function(model, Data, bm.options, calib.lines, weights, eval.data
-                                    , metric.eval, scale.models, criteria = NULL, Prev = NULL, seed.val = NULL)
+                                    , metric.eval, scale.models, criteria = NULL, Prev = NULL
+                                    , seed.val = NULL, do.progress = TRUE)
 {
   ## 0. Do some cleaning over Data argument -----------------------------------
   resp_name <- colnames(Data)[1] ## species name
@@ -992,7 +1001,8 @@ bm_RunModel <- function(model, Data, modeling.id = '', bm.options, calib.lines, 
               scale.models = scale.models,
               resp_name = resp_name,
               expl_var_names = expl_var_names,
-              seed.val = seedval))
+              seed.val = seedval,
+              do.progress = do.progress))
 }
 
 

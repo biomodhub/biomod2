@@ -72,6 +72,8 @@
 ##' parallelize the single models computation
 ##' @param seed.val (\emph{optional, default} \code{NULL}) \cr 
 ##' An \code{integer} value corresponding to the new seed value to be set
+##' @param do.progress (\emph{optional, default} \code{TRUE}) \cr 
+##' A \code{logical} value defining whether the progress bar is to be rendered or not
 ##' 
 ##' 
 ##' @return
@@ -347,7 +349,8 @@ BIOMOD_EnsembleModeling <- function(bm.mod,
                                     prob.mean.weight = FALSE,
                                     prob.mean.weight.decay = 'proportional',
                                     nb.cpu = 1,
-                                    seed.val = NULL)
+                                    seed.val = NULL,
+                                    do.progress = TRUE)
 {
   .bm_cat("Build Ensemble Models")
   
@@ -642,7 +645,8 @@ BIOMOD_EnsembleModeling <- function(bm.mod,
           model.bm@model_variables_importance <- bm_VariablesImportance(bm.model = model.bm
                                                                         , expl.var = expl
                                                                         , nb.rep = var.import
-                                                                        , seed.val = seed.val)
+                                                                        , seed.val = seed.val
+                                                                        , do.progress = do.progress)
         }
         
         #### Models saving #####

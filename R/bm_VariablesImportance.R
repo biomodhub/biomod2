@@ -22,6 +22,8 @@
 ## parallelize the single models computation
 ##' @param seed.val (\emph{optional, default} \code{NULL}) \cr 
 ##' An \code{integer} value corresponding to the new seed value to be set
+##' @param do.progress (\emph{optional, default} \code{TRUE}) \cr 
+##' A \code{logical} value defining whether the progress bar is to be rendered or not
 ##' @param \ldots (\emph{optional)}) 
 ##' 
 ##' @return  
@@ -87,6 +89,7 @@ bm_VariablesImportance <- function(bm.model,
                                    nb.rep = 1,
                                    # nb.cpu = 1,
                                    seed.val = NULL,
+                                   do.progress = TRUE,
                                    ...)
 {
   args <- .bm_VariablesImportance.check.args(bm.model = bm.model, expl.var = expl.var, method = method, ...)
@@ -99,8 +102,10 @@ bm_VariablesImportance <- function(bm.model,
   
   ## Make randomisation
   cat('\n')
-  PROGRESS = txtProgressBar(min = 0, max = nb.rep * length(variables), style = 3)
-  i.iter = 0
+  if (do.progress) {
+    PROGRESS = txtProgressBar(min = 0, max = nb.rep * length(variables), style = 3)
+    i.iter = 0
+  }
   # if (nb.cpu > 1) {
   #   if (.getOS() != "windows") {
   #     if (!isNamespaceLoaded("doParallel")) { requireNamespace("doParallel") }
@@ -117,13 +122,15 @@ bm_VariablesImportance <- function(bm.model,
       out_vr <- 1 - max(round(
         cor(x = ref, y = shuffled.pred, use = "pairwise.complete.obs", method = "pearson")
         , digits = 6), 0, na.rm = TRUE)
-      i.iter = i.iter + 1
-      setTxtProgressBar(pb = PROGRESS, value = i.iter)
+      if (do.progress) {
+        i.iter = i.iter + 1
+        setTxtProgressBar(pb = PROGRESS, value = i.iter)
+      }
       return(data.frame(v = v, r = r, out = out_vr))
     }
   out = tapply(X = out$out, INDEX = list(out$v, out$r), FUN = mean)
   colnames(out) = paste0('rand', colnames(out))
-  close(PROGRESS)
+  if (do.progress) { close(PROGRESS) }
   
   return(out)
 }

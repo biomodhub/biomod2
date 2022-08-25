@@ -15,7 +15,8 @@ bm_RunModelsLoop(
   save.output = TRUE,
   scale.models = TRUE,
   nb.cpu = 1,
-  seed.val = NULL
+  seed.val = NULL,
+  do.progress = TRUE
 )
 
 bm_RunModel(
@@ -34,7 +35,8 @@ bm_RunModel(
   save.output = FALSE,
   scale.models = TRUE,
   nb.cpu = 1,
-  seed.val = NULL
+  seed.val = NULL,
+  do.progress = TRUE
 )
 }
 \arguments{
@@ -74,6 +76,9 @@ parallelize the single models computation}
 
 \item{seed.val}{(\emph{optional, default} \code{NULL}) \cr 
 An \code{integer} value corresponding to the new seed value to be set}
+
+\item{do.progress}{(\emph{optional, default} \code{TRUE}) \cr 
+A \code{logical} value defining whether the progress bar is to be rendered or not}
 
 \item{Data}{a \code{data.frame} containing \code{data.species} and \code{data.env.var} slots 
 of \code{bm.format} parameter}

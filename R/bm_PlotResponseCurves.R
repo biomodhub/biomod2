@@ -31,6 +31,8 @@
 ##' \code{mean}, \code{median}, \code{min}, \code{max}
 ##' @param do.plot (\emph{optional, default} \code{TRUE}) \cr 
 ##' A \code{logical} value defining whether the plot is to be rendered or not
+##' @param do.progress (\emph{optional, default} \code{TRUE}) \cr 
+##' A \code{logical} value defining whether the progress bar is to be rendered or not
 ##' @param \ldots some additional arguments (see 
 ##' \href{bm_PlotResponseCurves.html#details}{Details})
 ##' 
@@ -166,6 +168,7 @@ bm_PlotResponseCurves <- function(bm.out
                                   , fixed.var = 'mean'
                                   , do.bivariate = FALSE
                                   , do.plot = TRUE
+                                  , do.progress = TRUE
                                   , ...)
 {
   ## 0. Check arguments ---------------------------------------------------------------------------
@@ -199,8 +202,10 @@ bm_PlotResponseCurves <- function(bm.out
   {
     ## NON-BIVARIATE CASE -------------------------------------------------------------------------
     
-    PROGRESS = txtProgressBar(min = 0, max = length(show.variables) * length(models), style = 3)
-    i.iter = 0
+    if (do.progress) {
+      PROGRESS = txtProgressBar(min = 0, max = length(show.variables) * length(models), style = 3)
+      i.iter = 0
+    }
     
     list.out = foreach(vari = show.variables) %do%
       {
@@ -238,20 +243,24 @@ bm_PlotResponseCurves <- function(bm.out
             res = data.frame(pts.tmp, proj.tmp)
             colnames(res) = c(vari, mod.name)
             
-            i.iter <- i.iter + 1
-            setTxtProgressBar(pb = PROGRESS, value = i.iter)
+            if (do.progress) {
+              i.iter <- i.iter + 1
+              setTxtProgressBar(pb = PROGRESS, value = i.iter)
+            }
             return(res)
           }
         tab.out = tab.out[, c(vari, models)]
         return(tab.out)
       }
-    close(PROGRESS)
+    if (do.progress) { close(PROGRESS) }
     
   } else {
     ## BIVARIATE CASE -----------------------------------------------------------------------------
     
-    PROGRESS = txtProgressBar(min = 0, max = ncol(combn(show.variables, 2)) * length(models), style = 3)
-    i.iter = 0
+    if (do.progress) {
+      PROGRESS = txtProgressBar(min = 0, max = ncol(combn(show.variables, 2)) * length(models), style = 3)
+      i.iter = 0
+    }
     
     list.out = foreach(vari1 = show.variables[-length(show.variables)], .combine = "c") %:%
       foreach(vari2 = show.variables[-(1:which(show.variables == vari1))]) %do%
@@ -290,14 +299,16 @@ bm_PlotResponseCurves <- function(bm.out
             res = data.frame(pts.tmp1, pts.tmp2, proj.tmp)
             colnames(res) = c(vari1, vari2, mod.name)
             
-            i.iter <- i.iter + 1
-            setTxtProgressBar(pb = PROGRESS, value = i.iter)
+            if (do.progress) {
+              i.iter <- i.iter + 1
+              setTxtProgressBar(pb = PROGRESS, value = i.iter)
+            }
             return(res)
           }
         tab.out = tab.out[, c(vari1, vari2, models)]
         return(tab.out)
       }
-    close(PROGRESS)
+    if (do.progress) { close(PROGRESS) }
   }
   
   # transform list.out into ggplot friendly shape
@@ -435,7 +446,7 @@ bm_PlotResponseCurves <- function(bm.out
   if (do.bivariate == TRUE) {
     fact_var <- sapply(new.env[, show.variables, drop = FALSE], is.factor)
     if (sum(fact_var) > 0) {
-      cat("\n\tFactorial variables have been automatically removed!")
+      warning("Factorial variables have been automatically removed!")
       show.variables <- show.variables[!fact_var]
     }
   }
@@ -479,6 +490,7 @@ bm_PlotResponseCurves <- function(bm.out
       id.col = which(colnames(dat_) == "id")
       id.vec = unlist(ifelse(do.bivariate, list(c("id", "comb")), "id"))
       expl.dat_ = melt(dat_[, c(col.expl, id.col)], id.vars = "id", variable.name = "expl.name", value.name = "expl.val")
+      expl.dat_$expl.val = as.numeric(expl.dat_$expl.val) ## should not work with factorial variable other than number
       pred.dat_ = melt(dat_[, -col.expl], id.vars = id.vec, variable.name = "pred.name", value.name = "pred.val")
       out.dat_ = merge(expl.dat_, pred.dat_, by = "id")
       return(out.dat_)
