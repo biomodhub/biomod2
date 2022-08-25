@@ -151,7 +151,7 @@ bm_SampleFactorLevels.raster <- function(expl.var, mask.out = NULL, mask.in = NU
             {
               ## update the masked version of the factorial raster
               x.f.masked <- as.factor(mask(subset(expl.var, f), mask.in[[mask.in.id]]))
-              x.f.levels <- unlist(levels(x.f.masked)[[1]][,1, drop = FALSE])
+              x.f.levels <- unlist(levels(x.f.masked)[[1]][, 1, drop = FALSE])
               ## update levels names (lost during mask conversion)
               attr(x.f.levels, "names") <- attr(fact.level.original, "names")[x.f.levels]              
               ## get the list of levels that could be sampled in this mask
@@ -159,7 +159,10 @@ bm_SampleFactorLevels.raster <- function(expl.var, mask.out = NULL, mask.in = NU
               if (length(fact.levels.in.m.in)) {
                 cat("\n\t - levels", fact.levels.in.m.in, "will be sampled in mask.out", mask.in.id)
                 selected.cells <- c(selected.cells, sapply(fact.levels.in.m.in, function(fl){
-                  sample(which(x.f.masked[] == fl), 1)
+                  ind = which(x.f.masked[] == fl)
+                  if (length(ind) > 0) {
+                    return(sample(ind, 1))
+                  }
                 }))
                 ## update the list of factor levels to sample
                 fact.level <- setdiff(fact.level, fact.levels.in.m.in)
@@ -175,7 +178,10 @@ bm_SampleFactorLevels.raster <- function(expl.var, mask.out = NULL, mask.in = NU
         if (length(fact.level)){
           cat("\n\t - levels", fact.level, "will be sampled in the original raster")
           selected.cells <- c(selected.cells, sapply(fact.level, function(fl) {
-            sample(which(subset(expl.var, f)[] == fl), 1)
+            ind = which(subset(expl.var, f)[] == fl)
+            if (length(ind) > 0) {
+              return(sample(ind, 1))
+            }
           }))
         }
       }
@@ -237,7 +243,7 @@ bm_SampleFactorLevels.data.frame <- function(expl.var, mask.out = NULL, mask.in 
                   selected.cell <- NULL
                   if (length(candidate.cells) == 1) { ## single candidate cell
                     selected.cell <- candidate.cells
-                  } else { ## multi candidate cells
+                  } else if (length(candidate.cells) > 1) { ## multi candidate cells
                     selected.cell <- sample(candidate.cells, 1)
                   }
                   return(selected.cell)
@@ -260,7 +266,7 @@ bm_SampleFactorLevels.data.frame <- function(expl.var, mask.out = NULL, mask.in 
             selected.cell <- NULL
             if (length(candidate.cells) <= 1) { ## single candidate cell
               selected.cell <- candidate.cells
-            } else { ## multi candidate cells
+            } else if (length(candidate.cells) > 1) { ## multi candidate cells
               selected.cell <- sample(candidate.cells, 1)
             }
             return(selected.cell)

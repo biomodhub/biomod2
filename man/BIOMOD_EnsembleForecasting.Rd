@@ -179,7 +179,7 @@ if (file.exists(file.proj)) {
 }
 
 
-file.EM <- paste0(myRespName, "/", myRespName, ".AllModelsensemble.models.out")
+file.EM <- paste0(myRespName, "/", myRespName, ".AllModels.ensemble.models.out")
 if (file.exists(file.EM)) {
   myBiomodEM <- get(load(file.EM))
 } else {

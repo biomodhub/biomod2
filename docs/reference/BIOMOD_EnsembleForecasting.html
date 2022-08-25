@@ -290,7 +290,7 @@ of their calibration / training range, identifying locations where predictions a
 <span class="op">}</span>
 
 
-<span class="va">file.EM</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="va">myRespName</span>, <span class="st">"/"</span>, <span class="va">myRespName</span>, <span class="st">".AllModelsensemble.models.out"</span><span class="op">)</span>
+<span class="va">file.EM</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="va">myRespName</span>, <span class="st">"/"</span>, <span class="va">myRespName</span>, <span class="st">".AllModels.ensemble.models.out"</span><span class="op">)</span>
 <span class="kw">if</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/files.html" class="external-link">file.exists</a></span><span class="op">(</span><span class="va">file.EM</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span>
   <span class="va">myBiomodEM</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/get.html" class="external-link">get</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/load.html" class="external-link">load</a></span><span class="op">(</span><span class="va">file.EM</span><span class="op">)</span><span class="op">)</span>
 <span class="op">}</span> <span class="kw">else</span> <span class="op">{</span>
