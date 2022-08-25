@@ -52,9 +52,13 @@ The Boyce index returns \code{NA} values for \code{SRE} models because it can no
 calculated with binary predictions. \cr This is also the reason why some \code{NA} values 
 might appear for \code{GLM} models if they do not converge.
 }
+\note{
+In order to break dependency loop between packages \pkg{biomod2} and \pkg{ecospat}, 
+code of \code{\link[ecospat]{ecospat.boyce}} and \code{\link[ecospat]{ecospat.mpa}} 
+functions have been copied within this file from version 3.2.2 (august 2022).
+}
 \examples{
 
-\dontrun{
 # Load species occurrences (6 species available)
 myFile <- system.file('external/species/mammals_table.csv', package = 'biomod2')
 DataSpecies <- read.csv(myFile, row.names = 1)
@@ -75,55 +79,67 @@ myExpl <- raster::stack(system.file(myFiles, package = 'biomod2'))
 
 
 # ---------------------------------------------------------------
-# Format Data with true absences
-myBiomodData <- BIOMOD_FormatingData(resp.var = myResp,
-                                     expl.var = myExpl,
-                                     resp.xy = myRespXY,
-                                     resp.name = myRespName)
+file.out <- paste0(myRespName, "/", myRespName, ".AllModels.models.out")
+if (file.exists(file.out)) {
+  myBiomodModelOut <- get(load(file.out))
+} else {
 
-# Create default modeling options
-myBiomodOptions <- BIOMOD_ModelingOptions()
+  # Format Data with true absences
+  myBiomodData <- BIOMOD_FormatingData(resp.var = myResp,
+                                       expl.var = myExpl,
+                                       resp.xy = myRespXY,
+                                       resp.name = myRespName)
 
-# Model single models
-myBiomodModelOut <- BIOMOD_Modeling(bm.format = myBiomodData,
-                                    modeling.id = 'AllModels',
-                                    bm.options = myBiomodOptions,
-                                    nb.rep = 2,
-                                    data.split.perc = 80,
-                                    metric.eval = c('TSS','ROC'),
-                                    var.import = 3,
-                                    do.full.models = FALSE)
+  # Create default modeling options
+  myBiomodOptions <- BIOMOD_ModelingOptions()
 
-# Model ensemble models
-myBiomodEM <- BIOMOD_EnsembleModeling(bm.mod = myBiomodModelOut,
-                                      models.chosen = 'all',
-                                      em.by = 'all',
-                                      metric.select = c('TSS'),
-                                      metric.select.thresh = c(0.7),
-                                      metric.eval = c('TSS', 'ROC'),
+  # Model single models
+  myBiomodModelOut <- BIOMOD_Modeling(bm.format = myBiomodData,
+                                      modeling.id = 'AllModels',
+                                      bm.options = myBiomodOptions,
+                                      nb.rep = 2,
+                                      data.split.perc = 80,
+                                      metric.eval = c('TSS','ROC'),
                                       var.import = 3,
-                                      prob.mean = TRUE,
-                                      prob.median = TRUE,
-                                      prob.cv = TRUE,
-                                      prob.ci = TRUE,
-                                      prob.ci.alpha = 0.05,
-                                      committee.averaging = TRUE,
-                                      prob.mean.weight = TRUE,
-                                      prob.mean.weight.decay = 'proportional')
+                                      do.full.models = FALSE)
+}
+
+
+file.EM <- paste0(myRespName, "/", myRespName, ".AllModels.ensemble.models.out")
+if (file.exists(file.EM)) {
+  myBiomodEM <- get(load(file.EM))
+} else {
+
+  # Model ensemble models
+  myBiomodEM <- BIOMOD_EnsembleModeling(bm.mod = myBiomodModelOut,
+                                        models.chosen = 'all',
+                                        em.by = 'all',
+                                        metric.select = c('TSS'),
+                                        metric.select.thresh = c(0.7),
+                                        metric.eval = c('TSS', 'ROC'),
+                                        var.import = 3,
+                                        prob.mean = TRUE,
+                                        prob.median = TRUE,
+                                        prob.cv = TRUE,
+                                        prob.ci = TRUE,
+                                        prob.ci.alpha = 0.05,
+                                        committee.averaging = TRUE,
+                                        prob.mean.weight = TRUE,
+                                        prob.mean.weight.decay = 'proportional')
+}
 
 
 # ---------------------------------------------------------------
 # Evaluate models with Boyce index and MPA
 myBiomodPO <- BIOMOD_PresenceOnly(bm.mod = myBiomodModelOut,
                                   bm.em = myBiomodEM)
-myBiomodPO$eval
+myBiomodPO
 
 # Evaluate models with Boyce index and MPA (using background data)
 myBiomodPO <- BIOMOD_PresenceOnly(bm.mod = myBiomodModelOut,
                                   bm.em = myBiomodEM, 
                                   bg.env = getValues(myExpl))
-myBiomodPO$eval
-}
+myBiomodPO
 
 
 }

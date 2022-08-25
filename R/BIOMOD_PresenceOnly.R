@@ -44,6 +44,11 @@
 ##' might appear for \code{GLM} models if they do not converge.
 ##' 
 ##' 
+##' @note In order to break dependency loop between packages \pkg{biomod2} and \pkg{ecospat}, 
+##' code of \code{\link[ecospat]{ecospat.boyce}} and \code{\link[ecospat]{ecospat.mpa}} 
+##' functions have been copied within this file from version 3.2.2 (august 2022).
+##' 
+##' 
 ##' @references
 ##' 
 ##' \itemize{
@@ -64,7 +69,6 @@
 ##' 
 ##' @examples
 ##' 
-##' \dontrun{
 ##' # Load species occurrences (6 species available)
 ##' myFile <- system.file('external/species/mammals_table.csv', package = 'biomod2')
 ##' DataSpecies <- read.csv(myFile, row.names = 1)
@@ -85,55 +89,67 @@
 ##' 
 ##' 
 ##' # ---------------------------------------------------------------
-##' # Format Data with true absences
-##' myBiomodData <- BIOMOD_FormatingData(resp.var = myResp,
-##'                                      expl.var = myExpl,
-##'                                      resp.xy = myRespXY,
-##'                                      resp.name = myRespName)
+##' file.out <- paste0(myRespName, "/", myRespName, ".AllModels.models.out")
+##' if (file.exists(file.out)) {
+##'   myBiomodModelOut <- get(load(file.out))
+##' } else {
 ##' 
-##' # Create default modeling options
-##' myBiomodOptions <- BIOMOD_ModelingOptions()
+##'   # Format Data with true absences
+##'   myBiomodData <- BIOMOD_FormatingData(resp.var = myResp,
+##'                                        expl.var = myExpl,
+##'                                        resp.xy = myRespXY,
+##'                                        resp.name = myRespName)
 ##' 
-##' # Model single models
-##' myBiomodModelOut <- BIOMOD_Modeling(bm.format = myBiomodData,
-##'                                     modeling.id = 'AllModels',
-##'                                     bm.options = myBiomodOptions,
-##'                                     nb.rep = 2,
-##'                                     data.split.perc = 80,
-##'                                     metric.eval = c('TSS','ROC'),
-##'                                     var.import = 3,
-##'                                     do.full.models = FALSE)
+##'   # Create default modeling options
+##'   myBiomodOptions <- BIOMOD_ModelingOptions()
 ##' 
-##' # Model ensemble models
-##' myBiomodEM <- BIOMOD_EnsembleModeling(bm.mod = myBiomodModelOut,
-##'                                       models.chosen = 'all',
-##'                                       em.by = 'all',
-##'                                       metric.select = c('TSS'),
-##'                                       metric.select.thresh = c(0.7),
-##'                                       metric.eval = c('TSS', 'ROC'),
+##'   # Model single models
+##'   myBiomodModelOut <- BIOMOD_Modeling(bm.format = myBiomodData,
+##'                                       modeling.id = 'AllModels',
+##'                                       bm.options = myBiomodOptions,
+##'                                       nb.rep = 2,
+##'                                       data.split.perc = 80,
+##'                                       metric.eval = c('TSS','ROC'),
 ##'                                       var.import = 3,
-##'                                       prob.mean = TRUE,
-##'                                       prob.median = TRUE,
-##'                                       prob.cv = TRUE,
-##'                                       prob.ci = TRUE,
-##'                                       prob.ci.alpha = 0.05,
-##'                                       committee.averaging = TRUE,
-##'                                       prob.mean.weight = TRUE,
-##'                                       prob.mean.weight.decay = 'proportional')
+##'                                       do.full.models = FALSE)
+##' }
+##' 
+##' 
+##' file.EM <- paste0(myRespName, "/", myRespName, ".AllModels.ensemble.models.out")
+##' if (file.exists(file.EM)) {
+##'   myBiomodEM <- get(load(file.EM))
+##' } else {
+##' 
+##'   # Model ensemble models
+##'   myBiomodEM <- BIOMOD_EnsembleModeling(bm.mod = myBiomodModelOut,
+##'                                         models.chosen = 'all',
+##'                                         em.by = 'all',
+##'                                         metric.select = c('TSS'),
+##'                                         metric.select.thresh = c(0.7),
+##'                                         metric.eval = c('TSS', 'ROC'),
+##'                                         var.import = 3,
+##'                                         prob.mean = TRUE,
+##'                                         prob.median = TRUE,
+##'                                         prob.cv = TRUE,
+##'                                         prob.ci = TRUE,
+##'                                         prob.ci.alpha = 0.05,
+##'                                         committee.averaging = TRUE,
+##'                                         prob.mean.weight = TRUE,
+##'                                         prob.mean.weight.decay = 'proportional')
+##' }
 ##' 
 ##' 
 ##' # ---------------------------------------------------------------
 ##' # Evaluate models with Boyce index and MPA
 ##' myBiomodPO <- BIOMOD_PresenceOnly(bm.mod = myBiomodModelOut,
 ##'                                   bm.em = myBiomodEM)
-##' myBiomodPO$eval
+##' myBiomodPO
 ##' 
 ##' # Evaluate models with Boyce index and MPA (using background data)
 ##' myBiomodPO <- BIOMOD_PresenceOnly(bm.mod = myBiomodModelOut,
 ##'                                   bm.em = myBiomodEM, 
 ##'                                   bg.env = getValues(myExpl))
-##' myBiomodPO$eval
-##' }
+##' myBiomodPO
 ##' 
 ##' 
 ## @importFrom ecospat ecospat.boyce ecospat.mpa
@@ -153,7 +169,7 @@ BIOMOD_PresenceOnly <- function(bm.mod = NULL,
                                 save.output = TRUE)
 {
   .bm_cat("Do Presence-Only Evaluation")
-  if (!isNamespaceLoaded("ecospat")) { requireNamespace("ecospat") }
+  # if (!isNamespaceLoaded("ecospat")) { requireNamespace("ecospat") }
   
   ## MODELING OUTPUT ------------------------------------------------------------------------------
   if (!is.null(bm.mod)) {
@@ -294,7 +310,7 @@ BIOMOD_PresenceOnly <- function(bm.mod = NULL,
       DATA <- DATA[complete.cases(DATA), ]
       
       ## Boyce index
-      boy <- ecospat::ecospat.boyce(fit = Pred[ind.notNA], obs = Pred.obs, PEplot = FALSE)
+      boy <- ecospat.boyce(fit = Pred[ind.notNA], obs = Pred.obs, PEplot = FALSE)
       boyce.eval$Testing.data[ind.b] <- boy$cor
       if (sum(boy$F.ratio < 1, na.rm = TRUE) > 0) {
         boyce.eval$Cutoff[ind.b] <- round(boy$HS[max(which(boy$F.ratio < 1))], 0)
@@ -310,7 +326,7 @@ BIOMOD_PresenceOnly <- function(bm.mod = NULL,
       }
       
       ## MPA index
-      mpa <- ecospat::ecospat.mpa(Pred.obs, perc = perc)
+      mpa <- ecospat.mpa(Pred.obs, perc = perc)
       mpa.eval$Cutoff[ind.m] <- mpa
       EVAL <- presence.absence.accuracy(DATA, threshold = mpa / 1000)
       mpa.eval$Sensitivity[ind.m] <- EVAL$sensitivity
@@ -322,9 +338,9 @@ BIOMOD_PresenceOnly <- function(bm.mod = NULL,
       myResp.eval <- get(load(bm.mod@formated.input.data@link))@eval.data.species
       Pred.eval <- myModelPred.eval[, Model.name]
       
-      boy <- ecospat::ecospat.boyce(fit = Pred.eval, obs = Pred.eval[myResp.eval == 1 & ind.1], PEplot = FALSE)
+      boy <- ecospat.boyce(fit = Pred.eval, obs = Pred.eval[myResp.eval == 1 & ind.1], PEplot = FALSE)
       boyce.eval[ind.b, "Evaluating.data"] <- boy$cor
-      mpa.eval[ind.m,"Evaluating.data"] <- ecospat::ecospat.mpa(Pred.eval[myResp.eval == 1 & ind.1], perc = perc)
+      mpa.eval[ind.m,"Evaluating.data"] <- ecospat.mpa(Pred.eval[myResp.eval == 1 & ind.1], perc = perc)
     }
   }
   myModelEval[, c("Sensitivity", "Specificity")] <- round(myModelEval[, c("Sensitivity", "Specificity")], 1)
@@ -343,3 +359,129 @@ BIOMOD_PresenceOnly <- function(bm.mod = NULL,
   .bm_cat("Done")
   return(output)
 }
+
+
+###################################################################################################
+## FROM ECOSPAT PACKAGE VERSION 3.2.2 (august 2022)
+
+#### Calculating Boyce index as in Hirzel et al. 2006
+# fit: A vector or Raster-Layer containing the predicted suitability values 
+# obs: A vector containing the predicted suitability values or xy-coordinates 
+# (if fit is a Raster-Layer) of the validation points (presence records)
+# nclass : number of classes or vector with classes threshold. If nclass=0, Boyce index is 
+# calculated with a moving window (see next parameters)
+# windows.w : width of the moving window (by default 1/10 of the suitability range)
+# res : resolution of the moving window (by default 100 focals)
+# PEplot : if True, plot the predicted to expected ratio along the suitability class
+# rm.duplicate : if TRUE, the correlation exclude successive duplicated values
+# method : correlation method used to compute the boyce index
+
+
+ecospat.boyce <- function(fit, obs, nclass = 0, window.w = "default", res = 100, 
+                          PEplot = TRUE, rm.duplicate = TRUE, method = 'spearman')
+{
+  
+  #### internal function calculating predicted-to-expected ratio for each class-interval
+  boycei <- function(interval, obs, fit) {
+    pi <- sum(as.numeric(obs >= interval[1] & obs <= interval[2])) / length(obs)
+    ei <- sum(as.numeric(fit >= interval[1] & fit <= interval[2])) / length(fit)
+    return(round(pi/ei,10))
+  }
+  
+  if (inherits(fit,"RasterLayer")) {
+    if (is.data.frame(obs) || is.matrix(obs)) {
+      obs <- extract(fit, obs)
+    }
+    fit <- getValues(fit)
+    fit <- fit[!is.na(fit)]
+  }
+  
+  mini <- min(fit,obs)
+  maxi <- max(fit,obs)
+  
+  if(length(nclass)==1){
+    if (nclass == 0) { #moving window
+      if (window.w == "default") {window.w <- (max(fit) - min(fit))/10}
+      vec.mov <- seq(from = mini, to = maxi - window.w, by = (maxi - mini - window.w)/res)
+      vec.mov[res + 1] <- vec.mov[res + 1] + 1  #Trick to avoid error with closed interval in R
+      interval <- cbind(vec.mov, vec.mov + window.w)
+    } else{ #window based on nb of class
+      vec.mov <- seq(from = mini, to = maxi, by = (maxi - mini)/nclass)
+      interval <- cbind(vec.mov, c(vec.mov[-1], maxi))
+    }
+  } else{ #user defined window
+    vec.mov <- c(mini, sort(nclass[!nclass>maxi|nclass<mini]))
+    interval <- cbind(vec.mov, c(vec.mov[-1], maxi))
+  }
+  
+  f <- apply(interval, 1, boycei, obs, fit)
+  to.keep <- which(f != "NaN")  # index to keep no NaN data
+  f <- f[to.keep]
+  if (length(f) < 2) {
+    b <- NA  #at least two points are necessary to draw a correlation
+  } else {
+    r<-1:length(f)
+    if(rm.duplicate == TRUE){
+      r <- c(1:length(f))[f != c( f[-1],TRUE)]  #index to remove successive duplicates
+    }
+    b <- cor(f[r], vec.mov[to.keep][r], method = method)  # calculation of the correlation (i.e. Boyce index) after removing successive duplicated values
+  }
+  HS <- apply(interval, 1, sum)/2  # mean habitat suitability in the moving window
+  if(length(nclass)==1 & nclass == 0) {
+    HS[length(HS)] <- HS[length(HS)] - 1  #Correction of the 'trick' to deal with closed interval
+  }
+  HS <- HS[to.keep]  #exclude the NaN
+  if (PEplot == TRUE) {
+    plot(HS, f, xlab = "Habitat suitability", ylab = "Predicted/Expected ratio", col = "grey", cex = 0.75)
+    points(HS[r], f[r], pch = 19, cex = 0.75)
+  }
+  return(list(F.ratio = f, cor = round(b, 3), HS = HS))
+}
+
+
+###################################################################################################
+## FROM ECOSPAT PACKAGE VERSION 3.2.2 (august 2022)
+
+## This function calculates the Minimal Predicted Area.
+
+## FUNCTION'S ARGUMENTS
+## Pred:      numeric or RasterLayer .predicted suitabilities from a SDM prediction
+## Sp.occ.xy: xy-coordinates of the species (if Pred is a RasterLayer)
+## perc:      Percentage of Sp.occ.xy that should be encompassed by the binary map.
+
+## Details:
+
+## Value
+# Returns the Minimal Predicted Area
+
+## Author(s)
+# Frank Breiner
+
+## References
+# Engler, R., A. Guisan, and L. Rechsteiner. 2004. An improved approach for predicting the 
+# distribution of rare and endangered species from occurrence and pseudo-absence data. 
+# Journal of Applied Ecology 41:263-274.
+
+
+ecospat.mpa <- function(Pred, Sp.occ.xy = NULL, perc = 0.9)
+{
+  perc <- 1 - perc
+  if (!is.null(Sp.occ.xy)) {
+    Pred <- extract(Pred, Sp.occ.xy)
+  }
+  round(quantile(Pred, probs = perc,na.rm = TRUE), 3)
+}
+
+### EXAMPLE
+
+# obs <- (ecospat.testData$glm_Saxifraga_oppositifolia
+# [which(ecospat.testData$Saxifraga_oppositifolia==1)]) ecospat.mpa(obs) ecospat.mpa(obs,perc=1) ##
+# 100% of the presences encompassed
+
+
+## Example script for using Ensemble Small Models ESMs according to Lomba et al. 2010 Written by
+## Frank Breiner Swiss Federal Research Institute WSL, July 2014.
+
+## References: Lomba, A., Pellissier, L., Randin, C.F., Vicente, J., Moreira, F., Honrado, J. &
+## Guisan, A. (2010). Overcoming the rare species modeling paradox: A novel hierarchical framework
+## applied to an Iberian endemic plant. Biological Conservation, 143, 2647-2657.

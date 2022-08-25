@@ -60,7 +60,6 @@ Suggests:
     caret,
     dismo,
     ENMeval,
-    ecospat,
     doParallel,
     rasterVis,
     ggpubr,
