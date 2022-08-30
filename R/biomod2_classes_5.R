@@ -62,6 +62,7 @@ NULL
 ##' @slot model_options a \code{list} containing the model options
 ##' @slot model the corresponding model object
 ##' @slot scaling_model the corresponding scaled model object
+##' @slot dir_name a \code{character} corresponding to the modeling folder
 ##' @slot resp_name a \code{character} corresponding to the species name
 ##' @slot expl_var_names a \code{vector} containing names of explanatory variables
 ##' @slot expl_var_type a \code{vector} containing classes of explanatory variables
@@ -167,10 +168,10 @@ setMethod('predict', signature(object = 'EMmean_biomod2_model'),
   if(is.null(formal_predictions)){
     # make prediction of all models required
     formal_predictions <- sapply(object@model,
-                                   function(mod.name, resp_name, modeling.id){
+                                   function(mod.name, dir_name, resp_name, modeling.id){
                                      ## check if model is loaded on memory
                                      if (is.character(mod.name)) {
-                                       mod <- get(load(file.path(resp_name, "models", modeling.id, mod.name)))
+                                       mod <- get(load(file.path(dir_name, resp_name, "models", modeling.id, mod.name)))
                                      }
                                      temp_workdir = NULL
                                      if (length(grep("MAXENT.Phillips$", mod.name)) == 1) {
@@ -178,7 +179,7 @@ setMethod('predict', signature(object = 'EMmean_biomod2_model'),
                                      }
                                      return(predict(mod, newdata = newdata, on_0_1000 = on_0_1000
                                                     , temp_workdir = temp_workdir, seedval = seedval))
-                                   } , resp_name = object@resp_name, modeling.id = object@modeling.id)
+                                   } , dir_name = object@dir_name, resp_name = object@resp_name, modeling.id = object@modeling.id)
   }
 
   out <- rowMeans(formal_predictions, na.rm = TRUE)

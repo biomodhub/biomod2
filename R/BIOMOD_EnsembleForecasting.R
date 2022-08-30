@@ -246,6 +246,7 @@ BIOMOD_EnsembleForecasting <- function(bm.em,
   ## 1. Create output object ----------------------------------------------------------------------
   proj_out <- new('BIOMOD.projection.out',
                   proj.name = proj.name,
+                  dir.name =  bm.em@dir.name,
                   sp.name =  bm.em@sp.name,
                   expl.var.names = bm.em@expl.var.names,
                   models.projected = models.chosen,
@@ -267,8 +268,9 @@ BIOMOD_EnsembleForecasting <- function(bm.em,
   ## 2. Create simulation directories -------------------------------------------------------------
   nameProj <- paste0("proj_", proj.name)
   nameProjSp <- paste0(nameProj, "_", bm.em@sp.name, "_ensemble")
-  namePath <- file.path(bm.em@sp.name, nameProj)
-  indiv_proj_dir <- .BIOMOD_EnsembleForecasting.prepare.workdir(sp.name = bm.em@sp.name
+  namePath <- file.path(bm.em@dir.name, bm.em@sp.name, nameProj)
+  indiv_proj_dir <- .BIOMOD_EnsembleForecasting.prepare.workdir(dir.name = bm.em@dir.name
+                                                                , sp.name = bm.em@sp.name
                                                                 , proj.folder = nameProj)
   
   
@@ -296,7 +298,8 @@ BIOMOD_EnsembleForecasting <- function(bm.em,
                                    full.name = needed_predictions,
                                    as.data.frame = ifelse(inherits(new.env, 'Raster'), FALSE, TRUE))
     # remove tmp directory
-    unlink(file.path(bm.em@sp.name, paste0("proj_", tmp_dir)), recursive = TRUE, force = TRUE)
+    unlink(file.path(bm.em@dir.name, bm.em@sp.name, paste0("proj_", tmp_dir))
+           , recursive = TRUE, force = TRUE)
   }
   
   ## 4. MAKING PROJECTIONS ------------------------------------------------------------------------
@@ -453,11 +456,11 @@ BIOMOD_EnsembleForecasting <- function(bm.em,
 
 ###################################################################################################
 
-.BIOMOD_EnsembleForecasting.prepare.workdir <- function(sp.name, proj.folder)
+.BIOMOD_EnsembleForecasting.prepare.workdir <- function(dir.name, sp.name, proj.folder)
 {
   cat("\nCreating suitable Workdir...\n")
-  dir.create(file.path(sp.name, proj.folder), showWarnings = FALSE, recursive = TRUE, mode = "777")
-  indiv_proj_dir <- file.path(sp.name, proj.folder, "individual_projections")
+  dir.create(file.path(dir.name, sp.name, proj.folder), showWarnings = FALSE, recursive = TRUE, mode = "777")
+  indiv_proj_dir <- file.path(dir.name, sp.name, proj.folder, "individual_projections")
   dir.create(indiv_proj_dir, showWarnings = FALSE, recursive = TRUE, mode = "777")
   return(indiv_proj_dir)
 }

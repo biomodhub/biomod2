@@ -386,11 +386,12 @@ BIOMOD_EnsembleModeling <- function(bm.mod,
   
   ## 1. Create output object ----------------------------------------------------------------------
   EM <- new('BIOMOD.ensemble.models.out',
+            dir.name = bm.mod@dir.name,
             sp.name = bm.mod@sp.name,
             expl.var.names = bm.mod@expl.var.names,
             em.by = em.by,
             modeling.id = bm.mod@modeling.id)
-  EM@models.out@link <- file.path(bm.mod@sp.name,
+  EM@models.out@link <- file.path(bm.mod@dir.name, bm.mod@sp.name,
                                   paste0(bm.mod@sp.name, ".",
                                          bm.mod@modeling.id, ".models.out"))
   
@@ -534,6 +535,7 @@ BIOMOD_EnsembleModeling <- function(bm.mod,
                         model_name = model_name,
                         model_class = algo.3,
                         model_options = em.options,
+                        dir_name = bm.mod@dir.name,
                         resp_name = bm.mod@sp.name,
                         expl_var_names = bm.mod@expl.var.names,
                         expl_var_type = expl_var_type,
@@ -556,9 +558,10 @@ BIOMOD_EnsembleModeling <- function(bm.mod,
         
         ## create the suitable directory architecture
         pred.bm.name <- paste0(model_name, ".predictions")
-        pred.bm.outfile <- file.path(model.bm@resp_name, ".BIOMOD_DATA", model.bm@modeling.id,
-                                     "ensemble.models", "ensemble.models.predictions",
-                                     pred.bm.name)
+        pred.bm.outfile <- file.path(model.bm@dir_name, model.bm@resp_name
+                                     , ".BIOMOD_DATA", model.bm@modeling.id
+                                     , "ensemble.models", "ensemble.models.predictions"
+                                     , pred.bm.name)
         dir.create(dirname(pred.bm.outfile), showWarnings = FALSE, recursive = TRUE)
         
         ## store models prediction on the hard drive
@@ -651,7 +654,7 @@ BIOMOD_EnsembleModeling <- function(bm.mod,
         
         #### Models saving #####
         assign(model_name, model.bm)
-        save(list = model_name, file = file.path(bm.mod@sp.name, "models",
+        save(list = model_name, file = file.path(bm.mod@dir.name, bm.mod@sp.name, "models",
                                                  bm.mod@modeling.id, model_name))
         
         #### Add to sumary objects ####
@@ -665,7 +668,7 @@ BIOMOD_EnsembleModeling <- function(bm.mod,
   names(EM@em.models) <- EM@em.computed
   model.name <- paste0(EM@sp.name, '.', EM@modeling.id, '.ensemble.models.out')
   assign(x = model.name, value = EM)
-  save(list = model.name, file = file.path(EM@sp.name, model.name))
+  save(list = model.name, file = file.path(EM@dir.name, EM@sp.name, model.name))
   
   .bm_cat("Done")
   return(EM)
@@ -914,7 +917,7 @@ BIOMOD_EnsembleModeling <- function(bm.mod,
       }))
       # keep only wanted columns
       out$predictions <- out$predictions[, models.kept.union, drop = FALSE]
-      unlink(file.path(bm.mod@sp.name, paste0("proj_", temp_name))
+      unlink(file.path(bm.mod@dir.name, bm.mod@sp.name, paste0("proj_", temp_name))
              , recursive = TRUE, force = TRUE)
       cat("\n")
     }

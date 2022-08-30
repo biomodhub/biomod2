@@ -146,6 +146,7 @@ bm_RunModelsLoop <- function(bm.format,
                     calib.lines = na.omit(bm.format$calib.lines[, i, ]), ## transform 3D calib.lines obj into a 1D vector
                     weights = na.omit(bm.format$weights),
                     nam = run.name,
+                    dir.name = bm.format$dir.name,
                     xy = bm.format$xy,
                     eval.data = bm.format$eval.data,
                     eval.xy = bm.format$eval.xy,
@@ -171,7 +172,7 @@ bm_RunModelsLoop <- function(bm.format,
 ##' 
 
 bm_RunModel <- function(model, Data, modeling.id = '', bm.options, calib.lines, weights, nam,
-                        xy = NULL, eval.data = NULL, eval.xy = NULL, 
+                        dir.name = '.', xy = NULL, eval.data = NULL, eval.xy = NULL, 
                         metric.eval = c('ROC','TSS','KAPPA'), var.import = 0,
                         save.output = FALSE, scale.models = TRUE, nb.cpu = 1, seed.val = NULL,
                         do.progress = TRUE)
@@ -182,8 +183,8 @@ bm_RunModel <- function(model, Data, modeling.id = '', bm.options, calib.lines, 
   for (argi in names(args)) { assign(x = argi, value = args[[argi]]) }
   rm(args)
   
-  
   ## get model name and names of categorical variables
+  dir_name = dir.name
   model_name <- paste0(nam, '_', model)
   categorial_var <- unlist(sapply(expl_var_names, function(x) {
     if (is.factor(Data[, x])) { return(x) } else { return(NULL) }
@@ -238,6 +239,7 @@ bm_RunModel <- function(model, Data, modeling.id = '', bm.options, calib.lines, 
                       model_name = model_name,
                       model_class = 'CTA',
                       model_options = bm.options@CTA,
+                      dir_name = dir_name,
                       resp_name = resp_name,
                       expl_var_names = expl_var_names,
                       expl_var_type = get_var_type(Data[calib.lines, expl_var_names, drop = FALSE]),
@@ -311,6 +313,7 @@ bm_RunModel <- function(model, Data, modeling.id = '', bm.options, calib.lines, 
                       model_class = 'GAM',
                       model_subclass = bm.options@GAM$algo,
                       model_options = bm.options@GAM,
+                      dir_name = dir_name,
                       resp_name = resp_name,
                       expl_var_names = expl_var_names,
                       expl_var_type = get_var_type(Data[calib.lines, expl_var_names, drop = FALSE]),
@@ -349,6 +352,7 @@ bm_RunModel <- function(model, Data, modeling.id = '', bm.options, calib.lines, 
                       model_class = 'GBM',
                       n.trees_optim = best.iter,
                       model_options = bm.options@GBM,
+                      dir_name = dir_name,
                       resp_name = resp_name,
                       expl_var_names = expl_var_names,
                       expl_var_type = get_var_type(Data[calib.lines, expl_var_names, drop = FALSE]), 
@@ -413,6 +417,7 @@ bm_RunModel <- function(model, Data, modeling.id = '', bm.options, calib.lines, 
                       model_name = model_name,
                       model_class = 'GLM',
                       model_options = bm.options@GLM,
+                      dir_name = dir_name,
                       resp_name = resp_name,
                       expl_var_names = expl_var_names,
                       expl_var_type = get_var_type(Data[calib.lines, expl_var_names, drop = FALSE]),
@@ -457,6 +462,7 @@ bm_RunModel <- function(model, Data, modeling.id = '', bm.options, calib.lines, 
                       model_name = model_name,
                       model_class = 'MARS',
                       model_options = bm.options@MARS,
+                      dir_name = dir_name,
                       resp_name = resp_name,
                       expl_var_names = expl_var_names,
                       expl_var_type = get_var_type(Data[calib.lines, expl_var_names, drop = FALSE]), 
@@ -481,6 +487,7 @@ bm_RunModel <- function(model, Data, modeling.id = '', bm.options, calib.lines, 
                       model_name = model_name,
                       model_class = 'FDA',
                       model_options = bm.options@FDA,
+                      dir_name = dir_name,
                       resp_name = resp_name,
                       expl_var_names = expl_var_names,
                       expl_var_type = get_var_type(Data[calib.lines, expl_var_names, drop = FALSE]),
@@ -531,6 +538,7 @@ bm_RunModel <- function(model, Data, modeling.id = '', bm.options, calib.lines, 
                       model_name = model_name,
                       model_class = 'ANN',
                       model_options = bm.options@ANN,
+                      dir_name = dir_name,
                       resp_name = resp_name,
                       expl_var_names = expl_var_names,
                       expl_var_type = get_var_type(Data[calib.lines, expl_var_names, drop = FALSE]), 
@@ -576,6 +584,7 @@ bm_RunModel <- function(model, Data, modeling.id = '', bm.options, calib.lines, 
                       model_name = model_name,
                       model_class = 'RF',
                       model_options = bm.options@RF,
+                      dir_name = dir_name,
                       resp_name = resp_name,
                       expl_var_names = expl_var_names,
                       expl_var_type = get_var_type(Data[calib.lines, expl_var_names, drop = FALSE]), 
@@ -597,6 +606,7 @@ bm_RunModel <- function(model, Data, modeling.id = '', bm.options, calib.lines, 
                       model_name = model_name,
                       model_class = 'SRE',
                       model_options = bm.options@SRE,
+                      dir_name = dir_name,
                       resp_name = resp_name,
                       expl_var_names = expl_var_names,
                       expl_var_type = get_var_type(Data[calib.lines, expl_var_names, drop = FALSE]), 
@@ -607,7 +617,7 @@ bm_RunModel <- function(model, Data, modeling.id = '', bm.options, calib.lines, 
     
     cat('\n\t> MAXENT.Phillips modeling...')
     MWD <- .maxent.prepare.workdir(Data, xy, calib.lines, RunName = nam,
-                                   eval.data, eval.xy, species.name = resp_name,
+                                   eval.data, eval.xy, dir.name = dir_name, species.name = resp_name,
                                    modeling.id = modeling.id,
                                    background_data_dir = bm.options@MAXENT.Phillips$background_data_dir)
     
@@ -650,6 +660,7 @@ bm_RunModel <- function(model, Data, modeling.id = '', bm.options, calib.lines, 
                     model_name = model_name,
                     model_class = 'MAXENT.Phillips',
                     model_options = bm.options@MAXENT.Phillips,
+                    dir_name = dir_name,
                     resp_name = resp_name,
                     expl_var_names = expl_var_names,
                     expl_var_type = get_var_type(Data[calib.lines, expl_var_names, drop = FALSE]), 
@@ -684,6 +695,7 @@ bm_RunModel <- function(model, Data, modeling.id = '', bm.options, calib.lines, 
                       model_name = model_name,
                       model_class = 'MAXENT.Phillips.2',
                       model_options = bm.options@MAXENT.Phillips.2,
+                      dir_name = dir_name,
                       resp_name = resp_name,
                       expl_var_names = expl_var_names,
                       expl_var_type = get_var_type(Data[calib.lines, expl_var_names, drop = FALSE]), 
@@ -843,7 +855,7 @@ bm_RunModel <- function(model, Data, modeling.id = '', bm.options, calib.lines, 
   ## 6. SAVE MODEL OBJECT ON HARD DRIVE -----------------------------------------------------------
   nameModel = paste(nam, model, sep = "_") 
   assign(x = nameModel, value = model.bm)
-  save(list = nameModel, file = file.path(resp_name, "models", modeling.id, nameModel), compress = TRUE)
+  save(list = nameModel, file = file.path(dir_name, resp_name, "models", modeling.id, nameModel), compress = TRUE)
   
   
   return(ListOut)
@@ -1008,7 +1020,7 @@ bm_RunModel <- function(model, Data, modeling.id = '', bm.options, calib.lines, 
 
 .maxent.prepare.workdir <- function(Data, xy, calib.lines = NULL, RunName = NULL,
                                     eval.data = NULL, evalxy =  NULL,
-                                    species.name = NULL, modeling.id = '',
+                                    dir.name = '.', species.name = NULL, modeling.id = '',
                                     background_data_dir = 'default')
 {
   cat('\n\t\tCreating Maxent Temp Proj Data...')
@@ -1023,7 +1035,7 @@ bm_RunModel <- function(model, Data, modeling.id = '', bm.options, calib.lines, 
   if (is.null(calib.lines)) { calib.lines <- rep(TRUE, nrow(Data)) }
   
   ## define all paths to files needed by MAXENT.Phillips
-  nameFolder = file.path(species.name, 'models', modeling.id)
+  nameFolder = file.path(dir.name, species.name, 'models', modeling.id)
   m_outdir <- file.path(nameFolder, paste0(RunName, '_MAXENT.Phillips_outputs'))
   m_predictDir <- file.path(m_outdir, "Predictions")
   MWD$m_outdir <- m_outdir

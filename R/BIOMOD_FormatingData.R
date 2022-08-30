@@ -10,6 +10,8 @@
 ##' with different strategies (see \href{BIOMOD_FormatingData.html#details}{Details}).
 ##' 
 ##' 
+##' @param dir.name (\emph{optional, default} \code{.}) \cr
+##' A \code{character} corresponding to the modeling folder
 ##' @param resp.name a \code{character} corresponding to the species name
 ##' 
 ##' @param resp.var a \code{vector}, \code{\link[sp]{SpatialPoints}} (\emph{if presence-only}) or 
@@ -279,6 +281,7 @@
 BIOMOD_FormatingData <- function(resp.name,
                                  resp.var,
                                  expl.var,
+                                 dir.name = '.',
                                  resp.xy = NULL,
                                  eval.resp.var = NULL,
                                  eval.expl.var = NULL,
@@ -298,6 +301,7 @@ BIOMOD_FormatingData <- function(resp.name,
   args <- .BIOMOD_FormatingData.check.args(resp.name,
                                            resp.var,
                                            expl.var,
+                                           dir.name,
                                            resp.xy,
                                            eval.resp.var,
                                            eval.expl.var,
@@ -318,6 +322,7 @@ BIOMOD_FormatingData <- function(resp.name,
     out <- BIOMOD.formated.data(sp = resp.var,
                                 xy = resp.xy,
                                 env = expl.var,
+                                dir.name = dir.name,
                                 sp.name = resp.name,
                                 eval.sp = eval.resp.var,
                                 eval.env = eval.expl.var,
@@ -327,6 +332,7 @@ BIOMOD_FormatingData <- function(resp.name,
     out <- BIOMOD.formated.data.PA(sp = resp.var,
                                    xy = resp.xy,
                                    env = expl.var,
+                                   dir.name = dir.name,
                                    sp.name = resp.name,
                                    eval.sp = eval.resp.var,
                                    eval.env = eval.expl.var,
@@ -350,6 +356,7 @@ BIOMOD_FormatingData <- function(resp.name,
 .BIOMOD_FormatingData.check.args <- function(resp.name,
                                              resp.var,
                                              expl.var,
+                                             dir.name,
                                              resp.xy,
                                              eval.resp.var,
                                              eval.expl.var,
@@ -363,10 +370,17 @@ BIOMOD_FormatingData <- function(resp.name,
                                              PA.user.table)
 {
   ## 0. Checking names (resp.name available ?) --------------------------------
+  if (grepl('/', resp.name)) {
+    stop(paste0("Response variable name must be a character, and not a file path."
+                , "\n Please refer to dir.name parameter to set a modeling folder."))
+  }
   if (grepl('_', resp.name) | grepl(' ', resp.name)) {
     resp.name <- paste(unlist(strsplit(resp.name, '_')), collapse = '.')
     resp.name <- paste(unlist(strsplit(resp.name, ' ')), collapse = '.')
-    cat('\n Response variable name was converted into', resp.name)
+    cat('\n      ! Response variable name was converted into', resp.name)
+  }
+  if (!dir.exists(dir.name)) {
+    stop(paste0("Modeling folder '", dir.name, "' does not exist"))
   }
   
   available.types <- c('integer', 'numeric', 'data.frame', 'matrix',
@@ -426,7 +440,7 @@ BIOMOD_FormatingData <- function(resp.name,
   ## checking xy coordinates validity
   if(!is.null(resp.xy)){
     if(ncol(resp.xy)!=2){
-      stop("if given, resp.xy must be a 2 column matrix or data.frame")
+      stop("If given, resp.xy must be a 2 column matrix or data.frame")
     }
     if(nrow(resp.xy) != length(resp.var)){
       stop("Response variable and its coordinates don't match")
@@ -576,6 +590,7 @@ BIOMOD_FormatingData <- function(resp.name,
               expl.var = expl.var,
               resp.xy = resp.xy,
               resp.name = resp.name,
+              dir.name = dir.name,
               eval.resp.var = eval.resp.var,
               eval.expl.var = eval.expl.var,
               eval.resp.xy = eval.resp.xy,

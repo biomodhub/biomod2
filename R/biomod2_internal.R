@@ -371,11 +371,11 @@ check_data_range <- function(model, new_data)
   if (is.null(formal_predictions)) {
     # make prediction of all models required
     formal_predictions <- sapply(object@model,
-                                 function(mod.name, resp_name, modeling.id)
+                                 function(mod.name, dir_name, resp_name, modeling.id)
                                  {
                                    ## check if model is loaded on memory
                                    if (is.character(mod.name)) {
-                                     mod <- get(load(file.path(resp_name, "models", modeling.id, mod.name)))
+                                     mod <- get(load(file.path(dir_name, resp_name, "models", modeling.id, mod.name)))
                                    }
                                    temp_workdir = NULL
                                    if (length(grep("MAXENT.Phillips$", mod.name)) == 1) {
@@ -383,7 +383,7 @@ check_data_range <- function(model, new_data)
                                    }
                                    return(predict(mod, newdata = newdata, on_0_1000 = on_0_1000
                                                   , temp_workdir = temp_workdir, seedval = seedval))
-                                 }, resp_name = object@resp_name, modeling.id = object@modeling.id)
+                                 }, dir_name = object@dir_name, resp_name = object@resp_name, modeling.id = object@modeling.id)
   }
   
   return(formal_predictions)

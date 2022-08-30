@@ -13,6 +13,7 @@
 ##' \code{\link{BIOMOD_Modeling}}
 ##' 
 ##' 
+##' @param dir.name a \code{character} corresponding to the modeling folder
 ##' @param sp.name a \code{character} corresponding to the species name
 ##' 
 ##' @param sp a \code{vector}, \code{\link[sp]{SpatialPoints}} (\emph{if presence-only}) or 
@@ -55,6 +56,7 @@
 ##' @param object a \code{\link{BIOMOD.formated.data.PA}} object
 ##' 
 ##' 
+##' @slot dir.name a \code{character} corresponding to the modeling folder
 ##' @slot sp.name a \code{character} corresponding to the species name
 ##' @slot coord a 2-columns \code{data.frame} containing the corresponding \code{X} and \code{Y} 
 ##' coordinates
@@ -122,7 +124,8 @@
 
 # 1.1 Class Definition ----------------------------------------------------------------------------
 setClass("BIOMOD.formated.data",
-         representation(sp.name = 'character',
+         representation(dir.name = 'character',
+                        sp.name = 'character',
                         coord = "data.frame",
                         data.species = "numeric",
                         data.env.var = "data.frame",
@@ -143,7 +146,7 @@ setGeneric("BIOMOD.formated.data", def = function(sp, env, ...) { standardGeneri
 ##' 
 
 setMethod('BIOMOD.formated.data', signature(sp = 'numeric', env = 'data.frame'),
-          function(sp, env, xy = NULL, sp.name = NULL
+          function(sp, env, xy = NULL, dir.name = '.', sp.name = NULL
                    , eval.sp = NULL, eval.env = NULL, eval.xy = NULL
                    , na.rm = TRUE, data.mask = NULL)
           {
@@ -155,6 +158,7 @@ setMethod('BIOMOD.formated.data', signature(sp = 'numeric', env = 'data.frame'),
                 coord = xy,
                 data.species = sp,
                 data.env.var = env,
+                dir.name = dir.name,
                 sp.name = sp.name,
                 data.mask = data.mask,
                 has.data.eval = FALSE
@@ -164,6 +168,7 @@ setMethod('BIOMOD.formated.data', signature(sp = 'numeric', env = 'data.frame'),
                 sp = eval.sp,
                 env = eval.env,
                 xy = eval.xy,
+                dir.name = dir.name,
                 sp.name = sp.name
               )
               
@@ -180,6 +185,7 @@ setMethod('BIOMOD.formated.data', signature(sp = 'numeric', env = 'data.frame'),
                 coord = xy,
                 data.species = sp,
                 data.env.var = env,
+                dir.name = dir.name,
                 sp.name = sp.name,
                 data.mask = data.mask,
                 has.data.eval = TRUE,
@@ -220,13 +226,13 @@ setMethod('BIOMOD.formated.data', signature(sp = 'numeric', env = 'data.frame'),
 ##' 
 
 setMethod('BIOMOD.formated.data', signature(sp = 'data.frame'),
-          function(sp, env, xy = NULL, sp.name = NULL
+          function(sp, env, xy = NULL, dir.name = '.', sp.name = NULL
                    , eval.sp = NULL, eval.env = NULL, eval.xy = NULL
                    , na.rm = TRUE)
           {
             if (ncol(sp) > 1) { stop("Invalid response variable") }
             sp <- as.numeric(unlist(sp))
-            BFD <- BIOMOD.formated.data(sp, env, xy, sp.name, eval.sp, eval.env, eval.xy, na.rm = na.rm)
+            BFD <- BIOMOD.formated.data(sp, env, xy, dir.name, sp.name, eval.sp, eval.env, eval.xy, na.rm = na.rm)
             return(BFD)
           }
 )
@@ -237,12 +243,12 @@ setMethod('BIOMOD.formated.data', signature(sp = 'data.frame'),
 ##' 
 
 setMethod('BIOMOD.formated.data', signature(sp = 'numeric', env = 'matrix'),
-          function(sp, env, xy = NULL, sp.name = NULL
+          function(sp, env, xy = NULL, dir.name = '.', sp.name = NULL
                    , eval.sp = NULL, eval.env = NULL, eval.xy = NULL
                    , na.rm = TRUE)
           {
             env <- as.data.frame(env)
-            BFD <- BIOMOD.formated.data(sp, env, xy, sp.name, eval.sp, eval.env, eval.xy, na.rm = na.rm)
+            BFD <- BIOMOD.formated.data(sp, env, xy, dir.name, sp.name, eval.sp, eval.env, eval.xy, na.rm = na.rm)
             return(BFD)
           }
 )
@@ -253,7 +259,7 @@ setMethod('BIOMOD.formated.data', signature(sp = 'numeric', env = 'matrix'),
 ##' 
 
 setMethod('BIOMOD.formated.data', signature(sp = 'numeric', env = 'RasterStack'),
-          function(sp, env, xy = NULL, sp.name = NULL
+          function(sp, env, xy = NULL, dir.name = '.', sp.name = NULL
                    , eval.sp = NULL, eval.env = NULL, eval.xy = NULL
                    , na.rm = TRUE)
           {
@@ -286,7 +292,7 @@ setMethod('BIOMOD.formated.data', signature(sp = 'numeric', env = 'RasterStack')
               }
             }
             
-            BFD <- BIOMOD.formated.data(sp, env, xy, sp.name, eval.sp, eval.env, eval.xy, na.rm = na.rm, data.mask = data.mask)
+            BFD <- BIOMOD.formated.data(sp, env, xy, dir.name, sp.name, eval.sp, eval.env, eval.xy, na.rm = na.rm, data.mask = data.mask)
             return(BFD)
           }
 )
@@ -385,6 +391,7 @@ setMethod('show', signature('BIOMOD.formated.data'),
           function(object)
           {
             .bm_cat("BIOMOD.formated.data")
+            cat("\ndir.name = ", object@dir.name, fill = .Options$width)
             cat("\nsp.name = ", object@sp.name, fill = .Options$width)
             cat("\n\t",
                 sum(object@data.species, na.rm = TRUE),
@@ -433,6 +440,7 @@ setMethod('show', signature('BIOMOD.formated.data'),
 ##' \code{\link{BIOMOD_Tuning}}, \code{\link{BIOMOD_CrossValidation}} and 
 ##' \code{\link{BIOMOD_Modeling}}
 ##' 
+##' @param dir.name a \code{character} corresponding to the modeling folder
 ##' @param sp.name a \code{character} corresponding to the species name
 ##' 
 ##' @param sp a \code{vector}, \code{\link[sp]{SpatialPoints}} (\emph{if presence-only}) or 
@@ -505,6 +513,7 @@ setMethod('show', signature('BIOMOD.formated.data'),
 ##' @param object a \code{\link{BIOMOD.formated.data.PA}} object
 ##' 
 ##' 
+##' @slot dir.name a \code{character} corresponding to the modeling folder
 ##' @slot sp.name a \code{character} corresponding to the species name
 ##' @slot coord a 2-columns \code{data.frame} containing the corresponding \code{X} and \code{Y} 
 ##' coordinates
@@ -594,14 +603,14 @@ setGeneric("BIOMOD.formated.data.PA", def = function(sp, env, ...) { standardGen
 ##' 
 
 setMethod('BIOMOD.formated.data.PA', signature(sp = 'numeric', env = 'data.frame'),
-          function(sp, env, xy = NULL, sp.name = NULL
+          function(sp, env, xy = NULL, dir.name = '.', sp.name = NULL
                    , eval.sp = NULL, eval.env = NULL, eval.xy = NULL
                    , PA.nb.rep = 1, PA.strategy = 'random', PA.nb.absences = NULL
                    , PA.dist.min = 0, PA.dist.max = NULL
                    , PA.sre.quant = 0.025, PA.user.table = NULL
                    , na.rm = TRUE)
           {
-            .BIOMOD.formated.data.PA(sp, env, xy, sp.name
+            .BIOMOD.formated.data.PA(sp, env, xy, dir.name, sp.name
                                      , eval.sp, eval.env, eval.xy
                                      , PA.nb.rep, PA.strategy, PA.nb.absences
                                      , PA.dist.min, PA.dist.max
@@ -615,14 +624,14 @@ setMethod('BIOMOD.formated.data.PA', signature(sp = 'numeric', env = 'data.frame
 ##' 
 
 setMethod('BIOMOD.formated.data.PA', signature(sp = 'numeric', env = 'RasterStack'),
-          function(sp, env, xy = NULL, sp.name = NULL
+          function(sp, env, xy = NULL, dir.name = '.', sp.name = NULL
                    , eval.sp = NULL, eval.env = NULL, eval.xy = NULL
                    , PA.nb.rep = 1, PA.strategy = 'random', PA.nb.absences = NULL
                    , PA.dist.min = 0, PA.dist.max = NULL
                    , PA.sre.quant = 0.025, PA.user.table = NULL
                    , na.rm = TRUE)
           {
-            .BIOMOD.formated.data.PA(sp, env, xy, sp.name
+            .BIOMOD.formated.data.PA(sp, env, xy, dir.name, sp.name
                                      , eval.sp, eval.env, eval.xy
                                      , PA.nb.rep, PA.strategy, PA.nb.absences
                                      , PA.dist.min, PA.dist.max
@@ -630,7 +639,7 @@ setMethod('BIOMOD.formated.data.PA', signature(sp = 'numeric', env = 'RasterStac
                                      , na.rm)
           })
 
-.BIOMOD.formated.data.PA <-  function(sp, env, xy, sp.name
+.BIOMOD.formated.data.PA <-  function(sp, env, xy, dir.name, sp.name
                                       , eval.sp = NULL, eval.env = NULL, eval.xy = NULL
                                       , PA.nb.rep = 1, PA.strategy = 'random', PA.nb.absences = NULL
                                       , PA.dist.min = 0, PA.dist.max = NULL
@@ -696,6 +705,7 @@ setMethod('BIOMOD.formated.data.PA', signature(sp = 'numeric', env = 'RasterStac
     BFD <- BIOMOD.formated.data(sp = pa.data.tmp$sp,
                                 env = pa.data.tmp$env,
                                 xy = as.data.frame(pa.data.tmp$xy),
+                                dir.name = dir.name,
                                 sp.name = sp.name, 
                                 eval.sp = eval.sp,
                                 eval.env = eval.env,
@@ -740,6 +750,7 @@ setMethod('BIOMOD.formated.data.PA', signature(sp = 'numeric', env = 'RasterStac
     } else {  data.mask <- stack() }
     
     BFDP <- new('BIOMOD.formated.data.PA',
+                dir.name = BFD@dir.name,
                 sp.name = BFD@sp.name,
                 coord = BFD@coord,
                 data.env.var = BFD@data.env.var,
@@ -760,6 +771,7 @@ setMethod('BIOMOD.formated.data.PA', signature(sp = 'numeric', env = 'RasterStac
     BFDP <- BIOMOD.formated.data(sp = as.vector(sp@data),
                                  env = env,
                                  xy = xy,
+                                 dir.name = dir.name,
                                  sp.name = sp.name, 
                                  eval.sp = eval.sp,
                                  eval.env = eval.env,
@@ -898,6 +910,7 @@ setMethod('show', signature('BIOMOD.formated.data.PA'),
           function(object)
           {
             .bm_cat("BIOMOD.formated.data.PA")
+            cat("\ndir.name = ", object@dir.name, fill = .Options$width)
             cat("\nsp.name = ", object@sp.name, fill = .Options$width)
             cat(
               "\n\t",

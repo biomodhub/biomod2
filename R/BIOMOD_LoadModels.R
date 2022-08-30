@@ -165,7 +165,7 @@ BIOMOD_LoadModels <- function(bm.out, ... )
   }
   
   ## LOAD the selected models -----------------------------------------------------------
-  nameFile = file.path(bm.out@sp.name, "models", bm.out@modeling.id)
+  nameFile = file.path(bm.out@dir.name, bm.out@sp.name, "models", bm.out@modeling.id)
   # .bm_cat("Done")
   if (!is.null(as) && length(models.to.load) == 1) {
     assign(x = as,
@@ -174,7 +174,7 @@ BIOMOD_LoadModels <- function(bm.out, ... )
     invisible(TRUE)
   } else {
     for (mtl in models.to.load) {
-      load(file = file.path(bm.out@sp.name, "models", bm.out@modeling.id, mtl), envir = envir)
+      load(file = file.path(bm.out@dir.name, bm.out@sp.name, "models", bm.out@modeling.id, mtl), envir = envir)
     }
     return(models.to.load)
   }
@@ -221,7 +221,7 @@ BIOMOD_LoadModels <- function(bm.out, ... )
   
   ## 2.4 Check path : data.set ------------------------------------------------
   path <- args$path
-  if (!is.null(path) && !(bm.out@sp.name %in% list.dirs(path = path))) {
+  if (!is.null(path) && !(file.path(bm.out@dir.name, bm.out@sp.name) %in% list.dirs(path = path))) {
     stop("invalid path given")
   } else {
     path = "."

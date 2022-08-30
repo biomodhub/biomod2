@@ -162,6 +162,7 @@ setGeneric("get_variables_importance", function(obj, ...) { standardGeneric("get
 ##' 
 ##' 
 ##' @slot modeling.id a \code{character} corresponding to the name (ID) of the simulation set 
+##' @slot dir.name a \code{character} corresponding to the modeling folder
 ##' @slot sp.name a \code{character} corresponding to the species name
 ##' @slot expl.var.names a \code{vector} containing names of explanatory variables
 ##' @slot models.computed a \code{vector} containing names of computed models
@@ -251,6 +252,7 @@ setGeneric("get_variables_importance", function(obj, ...) { standardGeneric("get
 # 4.1 Class Definition ----------------------------------------------------------------------------
 setClass("BIOMOD.models.out",
          representation(modeling.id = 'character',
+                        dir.name = 'character',
                         sp.name = 'character',
                         expl.var.names = 'character',
                         models.computed = 'character',
@@ -266,6 +268,7 @@ setClass("BIOMOD.models.out",
                         models.prediction.eval = 'BIOMOD.stored.array',
                         link = 'character'),
          prototype(modeling.id = as.character(format(Sys.time(), "%s")),
+                   dir.name = '.',
                    sp.name = '',
                    expl.var.names = '',
                    models.computed = '',
@@ -299,8 +302,9 @@ setMethod('show', signature('BIOMOD.models.out'),
           function(object)
           {
             .bm_cat("BIOMOD.models.out")
-            cat("\nModeling id :", object@modeling.id, fill = .Options$width)
+            cat("\nModeling folder :", object@dir.name, fill = .Options$width)
             cat("\nSpecies modeled :", object@sp.name, fill = .Options$width)
+            cat("\nModeling id :", object@modeling.id, fill = .Options$width)
             cat("\nConsidered variables :", object@expl.var.names, fill = .Options$width)
             cat("\n\nComputed Models : ", object@models.computed, fill = .Options$width)
             cat("\n\nFailed Models : ", object@models.failed, fill = .Options$width)
@@ -520,6 +524,7 @@ setMethod("get_variables_importance", "BIOMOD.models.out",
 ##' 
 ##' @slot modeling.id a \code{character} corresponding to the name (ID) of the simulation set
 ##' @slot proj.name a \code{character} corresponding to the projection name
+##' @slot dir.name a \code{character} corresponding to the modeling folder
 ##' @slot sp.name a \code{character} corresponding to the species name
 ##' @slot expl.var.names a \code{vector} containing names of explanatory variables
 ##' @slot coord a 2-columns \code{matrix} or \code{data.frame} containing the corresponding 
@@ -620,6 +625,7 @@ setMethod("get_variables_importance", "BIOMOD.models.out",
 setClass("BIOMOD.projection.out",
          representation(modeling.id = 'character',
                         proj.name = 'character',
+                        dir.name = 'character',
                         sp.name = 'character',
                         expl.var.names = 'character',
                         coord = 'matrix',
@@ -630,6 +636,7 @@ setClass("BIOMOD.projection.out",
                         proj.out = 'BIOMOD.stored.data'),
          prototype(modeling.id = '',
                    proj.name = '',
+                   dir.name = '.',
                    sp.name = '',
                    expl.var.names = '',
                    coord = matrix(),
@@ -706,13 +713,13 @@ setMethod('plot', signature(x = 'BIOMOD.projection.out', y = "missing"),
 setMethod('show', signature('BIOMOD.projection.out'),
           function(object){
             .bm_cat("BIOMOD.projection.out")
-            cat("\nProjection directory :", paste0(object@sp.name, "/", object@proj.name), fill = .Options$width)
+            cat("\nProjection directory :", paste0(object@dir.name, "/", object@sp.name, "/", object@proj.name), fill = .Options$width)
             cat("\n")
             cat("\nsp.name :", object@sp.name, fill = .Options$width)
             cat("\nexpl.var.names :", object@expl.var.names, fill = .Options$width)
             cat("\n")
-            cat("\nmodeling id :", object@modeling.id , "(", object@models.out@link , ")", fill = .Options$width)
-            cat("\nmodels projected :", toString(object@models.projected), fill = .Options$width)
+            cat("\nmodeling.id :", object@modeling.id , "(", object@models.out@link , ")", fill = .Options$width)
+            cat("\nmodels.projected :", toString(object@models.projected), fill = .Options$width)
             .bm_cat()
           })
 
@@ -818,6 +825,7 @@ setMethod("get_predictions", "BIOMOD.projection.out",
 ##' \code{\link{BIOMOD_EnsembleForecasting}}
 ##' 
 ##' 
+##' @slot dir.name a \code{character} corresponding to the modeling folder
 ##' @slot sp.name a \code{character} corresponding to the species name
 ##' @slot expl.var.names a \code{vector} containing names of explanatory variables
 ##' @slot models.out a \code{\link{BIOMOD.stored.models.out}} object containing 
@@ -917,7 +925,8 @@ setMethod("get_predictions", "BIOMOD.projection.out",
 
 # 6.1 Class Definition ----------------------------------------------------------------------------
 setClass("BIOMOD.ensemble.models.out",
-         representation(sp.name = 'character',
+         representation(dir.name = 'character',
+                        sp.name = 'character',
                         expl.var.names = 'character',
                         models.out = 'BIOMOD.stored.models.out',
                         em.computed = 'character',
@@ -925,7 +934,8 @@ setClass("BIOMOD.ensemble.models.out",
                         em.models = 'ANY',
                         modeling.id = 'character',
                         link = 'character'),
-         prototype(sp.name = '',
+         prototype(dir.name = '.',
+                   sp.name = '',
                    expl.var.names = '',
                    models.out = new('BIOMOD.stored.models.out'),
                    em.models = NULL,
@@ -1043,11 +1053,11 @@ setMethod("get_predictions", "BIOMOD.ensemble.models.out",
           function(obj, ...)
           {
             ## note: ensemble models predicitons are stored within the directory
-            ##  <sp.name>/.BIOMOD_DATA/<modeling.id>/ensemble.models/ensemble.models.projections/
+            ##  <dir.name>/<sp.name>/.BIOMOD_DATA/<modeling.id>/ensemble.models/ensemble.models.projections/
             ##  This function is just a friendly way to load this data
             
             ## get the path to projections files we want to load
-            files.to.load <- file.path(obj@sp.name, ".BIOMOD_DATA", obj@modeling.id, "ensemble.models",
+            files.to.load <- file.path(obj@dir.name, obj@sp.name, ".BIOMOD_DATA", obj@modeling.id, "ensemble.models",
                                        "ensemble.models.predictions", paste0(obj@em.computed, ".predictions"))
             ## load and merge projection files within a data.frame
             bm.pred <- do.call(cbind, lapply(files.to.load, function(ftl) get(load(ftl))))

@@ -112,6 +112,7 @@ NULL
 ##' @slot model_options a \code{list} containing the model options
 ##' @slot model the corresponding model object
 ##' @slot scaling_model the corresponding scaled model object
+##' @slot dir_name a \code{character} corresponding to the modeling folder
 ##' @slot resp_name a \code{character} corresponding to the species name
 ##' @slot expl_var_names a \code{vector} containing names of explanatory variables
 ##' @slot expl_var_type a \code{vector} containing classes of explanatory variables
@@ -173,6 +174,7 @@ setClass('biomod2_model',
                         model_options = 'list',
                         model = 'ANY',
                         scaling_model = 'ANY',
+                        dir_name = 'character',
                         resp_name = 'character',
                         expl_var_names = 'character',
                         expl_var_type = 'character',
@@ -184,6 +186,7 @@ setClass('biomod2_model',
                           model_options = list(),
                           model = list(),
                           scaling_model = list(),
+                          dir_name = '.',
                           resp_name = 'mySpecies',
                           expl_var_names = 'myRespVar',
                           expl_var_type = 'unknown',
@@ -226,6 +229,7 @@ setMethod('show', signature('biomod2_model'),
             cat("\n\t This model", ifelse(length(object@scaling_model), "has", "doesn't have"), "its own scaler", fill = .Options$width)
             
             cat("\n")
+            cat("\n\t modeling folder:", object@dir_name, fill = .Options$width)
             cat("\n\t response modelled:", object@resp_name, fill = .Options$width)
             cat("\n\n\t explanatory variables used:", fill = .Options$width)
             cat("\n\t", "name", "\t", "type", "\t", "range", fill = .Options$width)

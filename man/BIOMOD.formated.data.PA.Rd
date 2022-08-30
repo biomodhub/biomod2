@@ -13,6 +13,7 @@
   sp,
   env,
   xy = NULL,
+  dir.name = ".",
   sp.name = NULL,
   eval.sp = NULL,
   eval.env = NULL,
@@ -31,6 +32,7 @@
   sp,
   env,
   xy = NULL,
+  dir.name = ".",
   sp.name = NULL,
   eval.sp = NULL,
   eval.env = NULL,
@@ -63,6 +65,8 @@ or \code{\link[raster:stack]{RasterStack}} object containing the explanatory var
 If \code{resp.var} is a \code{vector}, a 2-columns \code{matrix} or \code{data.frame} 
 containing the corresponding \code{X} and \code{Y} coordinates that will be used to build the 
 species distribution model(s)}
+
+\item{dir.name}{a \code{character} corresponding to the modeling folder}
 
 \item{sp.name}{a \code{character} corresponding to the species name}
 
@@ -140,6 +144,8 @@ Class returned by \code{\link{BIOMOD_FormatingData}}, and used by
 \section{Slots}{
 
 \describe{
+\item{\code{dir.name}}{a \code{character} corresponding to the modeling folder}
+
 \item{\code{sp.name}}{a \code{character} corresponding to the species name}
 
 \item{\code{coord}}{a 2-columns \code{data.frame} containing the corresponding \code{X} and \code{Y} 

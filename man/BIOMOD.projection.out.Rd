@@ -33,6 +33,8 @@ Class returned by \code{\link{BIOMOD_Projection}}, and used by
 
 \item{\code{proj.name}}{a \code{character} corresponding to the projection name}
 
+\item{\code{dir.name}}{a \code{character} corresponding to the modeling folder}
+
 \item{\code{sp.name}}{a \code{character} corresponding to the species name}
 
 \item{\code{expl.var.names}}{a \code{vector} containing names of explanatory variables}

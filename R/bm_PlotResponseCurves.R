@@ -400,7 +400,7 @@ bm_PlotResponseCurves <- function(bm.out
   models <- models.chosen
   
   ## check that given models exist
-  files.check <- paste0(bm.out@sp.name, '/models/', bm.out@modeling.id, "/", models.chosen)
+  files.check <- file.path(bm.out@dir.name, bm.out@sp.name, 'models', bm.out@modeling.id, models.chosen)
   not.checked.files <- grep('MAXENT.Phillips|SRE', files.check)
   if (length(not.checked.files) > 0) {
     files.check <- files.check[-not.checked.files]

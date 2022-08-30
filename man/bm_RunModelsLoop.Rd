@@ -27,6 +27,7 @@ bm_RunModel(
   calib.lines,
   weights,
   nam,
+  dir.name = ".",
   xy = NULL,
   eval.data = NULL,
   eval.xy = NULL,

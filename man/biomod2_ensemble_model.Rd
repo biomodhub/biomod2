@@ -41,6 +41,8 @@ Class created by \code{\link{BIOMOD_EnsembleModeling}}
 
 \item{\code{scaling_model}}{the corresponding scaled model object}
 
+\item{\code{dir_name}}{a \code{character} corresponding to the modeling folder}
+
 \item{\code{resp_name}}{a \code{character} corresponding to the species name}
 
 \item{\code{expl_var_names}}{a \code{vector} containing names of explanatory variables}

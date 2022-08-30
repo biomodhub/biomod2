@@ -8,6 +8,7 @@ BIOMOD_FormatingData(
   resp.name,
   resp.var,
   expl.var,
+  dir.name = ".",
   resp.xy = NULL,
   eval.resp.var = NULL,
   eval.expl.var = NULL,
@@ -33,6 +34,9 @@ build the species distribution model(s)}
 \item{expl.var}{a \code{matrix}, \code{data.frame}, \code{\link[sp]{SpatialPointsDataFrame}} 
 or \code{\link[raster:stack]{RasterStack}} object containing the explanatory variables 
 (in columns or layers) that will be used to build the species distribution model(s)}
+
+\item{dir.name}{(\emph{optional, default} \code{.}) \cr
+A \code{character} corresponding to the modeling folder}
 
 \item{resp.xy}{(\emph{optional, default} \code{NULL}) \cr 
 If \code{resp.var} is a \code{vector}, a 2-columns \code{matrix} or \code{data.frame} 

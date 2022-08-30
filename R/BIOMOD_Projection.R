@@ -208,6 +208,7 @@ BIOMOD_Projection <- function(bm.mod,
   ## 1. Create output object ----------------------------------------------------------------------
   proj_out <- new('BIOMOD.projection.out',
                   proj.name = proj.name,
+                  dir.name = bm.mod@dir.name,
                   sp.name =  bm.mod@sp.name,
                   expl.var.names = bm.mod@expl.var.names,
                   models.projected = models.chosen,
@@ -224,7 +225,7 @@ BIOMOD_Projection <- function(bm.mod,
   ## 2. Create simulation directories -------------------------------------------------------------
   nameProj <- paste0("proj_", proj.name)
   nameProjSp <- paste0(nameProj, "_", bm.mod@sp.name)
-  namePath <- file.path(bm.mod@sp.name, nameProj)
+  namePath <- file.path(bm.mod@dir.name, bm.mod@sp.name, nameProj)
   dir.create(namePath, showWarnings = FALSE, recursive = TRUE, mode = "777")
   if (!do.stack) {
     dir.create(file.path(namePath, "individual_projections"),

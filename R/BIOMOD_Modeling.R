@@ -299,6 +299,7 @@ BIOMOD_Modeling <- function(bm.format,
   
   ## 1. Create output object ----------------------------------------------------------------------
   models.out <- new('BIOMOD.models.out',
+                    dir.name = bm.format@dir.name,
                     sp.name = bm.format@sp.name,
                     modeling.id = modeling.id,
                     expl.var.names = colnames(bm.format@data.env.var),
@@ -308,10 +309,10 @@ BIOMOD_Modeling <- function(bm.format,
   ## 2. Create simulation directories -------------------------------------------------------------
   ## Various objects will be stored (models, predictions, projections)
   ## Projections directories are created in Projection() function
-  .BIOMOD_Modeling.prepare.workdir(bm.format@sp.name, models.out@modeling.id)
+  .BIOMOD_Modeling.prepare.workdir(bm.format@dir.name, bm.format@sp.name, models.out@modeling.id)
   
   ## 3. Prepare internal function to save elements ------------------------------------------------
-  name.BIOMOD_DATA = file.path(models.out@sp.name, ".BIOMOD_DATA", models.out@modeling.id)
+  name.BIOMOD_DATA = file.path(models.out@dir.name, models.out@sp.name, ".BIOMOD_DATA", models.out@modeling.id)
   .Models.save.object <- function(objName, objValue, mod.out)
   {
     save(objValue, file = file.path(name.BIOMOD_DATA, objName), compress = TRUE)
@@ -399,7 +400,7 @@ BIOMOD_Modeling <- function(bm.format,
   
   ## 6. SAVE MODEL OBJECT ON HARD DRIVE -----------------------------------------------------------
   name.OUT = paste0(models.out@sp.name, '.', models.out@modeling.id, '.models.out')
-  models.out@link <- file.path(models.out@sp.name, name.OUT)
+  models.out@link <- file.path(models.out@dir.name, models.out@sp.name, name.OUT)
   assign(x = name.OUT, value = models.out)
   save(list = name.OUT, file = models.out@link)
   
@@ -410,12 +411,12 @@ BIOMOD_Modeling <- function(bm.format,
 
 ###################################################################################################
 
-.BIOMOD_Modeling.prepare.workdir <- function(sp.name, modeling.id)
+.BIOMOD_Modeling.prepare.workdir <- function(dir.name, sp.name, modeling.id)
 {
   cat("\nCreating suitable Workdir...\n")
-  dir.create(sp.name, showWarnings = FALSE, recursive = TRUE)
-  dir.create(file.path(sp.name, ".BIOMOD_DATA", modeling.id), showWarnings = FALSE, recursive = TRUE)
-  dir.create(file.path(sp.name, "models", modeling.id), showWarnings = FALSE, recursive = TRUE)
+  dir.create(file.path(dir.name, sp.name), showWarnings = FALSE, recursive = TRUE)
+  dir.create(file.path(dir.name, sp.name, ".BIOMOD_DATA", modeling.id), showWarnings = FALSE, recursive = TRUE)
+  dir.create(file.path(dir.name, sp.name, "models", modeling.id), showWarnings = FALSE, recursive = TRUE)
 }
 
 
@@ -650,6 +651,7 @@ setMethod('.BIOMOD_Modeling.prepare.data', signature('BIOMOD.formated.data'),
             }
             
             list.out[[name]] <- list(name = name,
+                                     dir.name = bm.format@dir.name,
                                      xy = xy,
                                      dataBM = dataBM, 
                                      calib.lines = calib.lines,
@@ -736,6 +738,7 @@ setMethod('.BIOMOD_Modeling.prepare.data', signature('BIOMOD.formated.data.PA'),
               }
               
               list.out[[name]] <- list(name = name,
+                                       dir.name = bm.format@dir.name,
                                        xy = xy, 
                                        dataBM = dataBM,
                                        calib.lines = calib.lines,
