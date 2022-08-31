@@ -311,7 +311,7 @@ BIOMOD_Projection <- function(bm.mod,
     save(list = nameProjSp, file = saved.files, compress = compress)
   } else if(do.stack) {
     writeRaster(x = get(nameProjSp), filename = saved.files,
-                overwrite = TRUE, datatype = "INT2S", NAflag = -9999)
+                overwrite = TRUE, datatype = ifelse(on_0_1000, "INT2S", "FLT4S"), NAflag = -9999)
   } else {
     saved.files = unlist(proj)
   }
