@@ -142,7 +142,10 @@ myBiomodOptions
 ```
 
 ```R
-### Duration for turing all models sequential with default settings 
+### Model parameters can also be automatically tuned for your specific 
+### dataset with an optimization algorithm. The tuning can however 
+### be quite long. Duration for tuning all models sequentially 
+### with default optimization settings :
 ### on 1 x 2.5 GHz processor: approx. 45 min tuning all models 
 ### on 8 x 2.5 GHz processor: approx. 15 min tuning all models 
 # 
