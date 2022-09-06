@@ -226,7 +226,7 @@ setMethod('show', signature('biomod2_model'),
             .bm_cat("biomod2_model")
             cat("\n\t model name :", object@model_name, fill = .Options$width)
             cat("\n\t model class :", object@model_class, fill = .Options$width)
-            cat("\n\t This model", ifelse(length(object@scaling_model), "has", "doesn't have"), "its own scaler", fill = .Options$width)
+            cat("\n\t This model", ifelse(length(object@scaling_model), "has", "doesn't have"), "its own scale", fill = .Options$width)
             
             cat("\n")
             cat("\n\t modeling folder:", object@dir_name, fill = .Options$width)
@@ -275,7 +275,7 @@ setMethod('predict', signature(object = 'ANN_biomod2_model'),
 
 .predict.ANN_biomod2_model.data.frame <- function(object, newdata, ...)
 {
-  return(.template_predict.data.frame(predcommand = "as.numeric(predict(get_formal_model(object), newdata[not_na_rows, , drop = F], type = 'raw'))", object, newdata, ...))
+  return(.template_predict.data.frame(predcommand = "as.numeric(predict(get_formal_model(object), newdata[not_na_rows, , drop = FALSE], type = 'raw'))", object, newdata, ...))
 }
 
 

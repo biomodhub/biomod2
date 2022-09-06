@@ -247,7 +247,7 @@ setMethod('predict', signature(object = 'EMmedian_biomod2_model'),
     formal_predictions = .template_predictEM.formal_predictions(object, newdata, formal_predictions, on_0_1000 = on_0_1000, ...)
   }
   
-  out <- apply(formal_predictions, 1, median, na.rm = T)
+  out <- apply(formal_predictions, 1, median, na.rm = TRUE)
   if (on_0_1000) { out <- round(out) }
   return(out)
 }

@@ -740,13 +740,13 @@ setMethod("get_projected_models", "BIOMOD.projection.out", function(obj){ return
 setMethod('free', signature('BIOMOD.projection.out'),
           function(obj) {
             if (inherits(obj@proj.out, "BIOMOD.stored.array")) {
-              obj@proj.out@val = array()
+              obj@proj.out@val  <- array()
             } else if (inherits(obj@proj.out, "BIOMOD.stored.raster.stack")) {
-              obj@proj.out@val = stack()
+              obj@proj.out@val <- stack()
             } else {
-              obj@proj.out@val = NULL
+              obj@proj.out@val <- NULL
             }
-            obj@proj.out@inMemory = FALSE
+            obj@proj.out@inMemory <- FALSE
             return(obj)
           })
 
@@ -762,13 +762,13 @@ setMethod("get_predictions", "BIOMOD.projection.out",
             if(length(full.name)){
               models_selected <- intersect(full.name, models_selected)
             } else if(length(model) | length(run.eval) | length(data.set)){
-              # models subselection according to model, run.eval and sata.set parameters
+              # models subselection according to model, run.eval and data.set parameters
               grep_model = grep_run.eval = grep_data.set = "*"
               if(length(model)) { grep_model <- paste0("(", paste(model, collapse = "|"), ")") }
               if (length(run.eval)) { grep_run.eval <- paste0("(", paste(run.eval, collapse = "|"), ")") }
               if (length(data.set)) { grep_data.set <- paste0("(", paste(data.set, collapse = "|"), ")") }
               grep_full <- paste0(grep_data.set, "_", grep_run.eval, "_", grep_model, "$")
-              models_selected <- grep(pattern = grep_full, models_selected, value = T)
+              models_selected <- grep(pattern = grep_full, models_selected, value = TRUE)
             }
             
             if (length(models_selected))

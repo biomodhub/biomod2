@@ -722,8 +722,8 @@ bm_RunModel <- function(model, Data, modeling.id = '', bm.options, calib.lines, 
   #                     model_options = bm.options@MAXENT.Tsuruoka,
   #                     resp_name = resp_name,
   #                     expl_var_names = expl_var_names,
-  #                     expl_var_type = get_var_type(Data[calib.lines,expl_var_names,drop=F]),
-  #                     expl_var_range = get_var_range(Data[calib.lines,expl_var_names,drop=F]))
+  #                     expl_var_type = get_var_type(Data[calib.lines,expl_var_names,drop = FALSE]),
+  #                     expl_var_range = get_var_range(Data[calib.lines,expl_var_names,drop = FALSE]))
   #   }
   # }
   

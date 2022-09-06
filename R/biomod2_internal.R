@@ -110,7 +110,7 @@ get_var_range <- function(data)
 {
   get_range <- function(x) {
     if (is.numeric(x)) {
-      return(c(min = min(x, na.rm = T), max = max(x, na.rm = T)))
+      return(c(min = min(x, na.rm = TRUE), max = max(x, na.rm = TRUE)))
     } else if (is.factor(x)) {
       return(levels(x))
     }
@@ -176,7 +176,7 @@ check_data_range <- function(model, new_data)
   #       stop("calibration and projections variables names mismatch")
   #     }
   #     # reorder the stack
-  #     new_data <- new_data[,expl_var_names, drop=F]
+  #     new_data <- new_data[,expl_var_names, drop = FALSE]
   #     # check var types compatibility (factors)
   #     expl_var_fact <- (expl_var_type=='factor')
   #     nd_expl_var_fact <- sapply(new_data,is.factor)

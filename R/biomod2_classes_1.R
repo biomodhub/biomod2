@@ -278,14 +278,14 @@ setMethod('BIOMOD.formated.data', signature(sp = 'numeric', env = 'RasterStack')
             if (is.null(xy)) { xy <- as.data.frame(coordinates(env)) }
             
             ## Prepare mask of studied area
-            data.mask = reclassify(subset(env, 1, drop = T), c(-Inf, Inf, -1))
+            data.mask = reclassify(subset(env, 1, drop = TRUE), c(-Inf, Inf, -1))
             data.mask[cellFromXY(data.mask, xy[which(sp == 1), ])] <- 1
             data.mask[cellFromXY(data.mask, xy[which(sp == 0), ])] <- 0
             data.mask <- stack(data.mask)
             names(data.mask) <- sp.name
             
             ## Keep same env variable for eval than calib (+ check for factor)
-            env <- as.data.frame(extract(env, xy, factors = T))
+            env <- as.data.frame(extract(env, xy, factors = TRUE))
             if (length(categorial_var)) {
               for (cat_var in categorial_var) {
                 env[, cat_var] <- as.factor(env[, cat_var])
@@ -950,7 +950,7 @@ setMethod('show', signature('BIOMOD.formated.data.PA'),
               'Pseudo Absences dataset available (',
               colnames(object@PA.table),
               ") with ",
-              sum(object@PA.table[, 1], na.rm = T) - sum(object@data.species, na.rm = TRUE),
+              sum(object@PA.table[, 1], na.rm = TRUE) - sum(object@data.species, na.rm = TRUE),
               'absences in each (true abs + pseudo abs)',
               fill = .Options$width
             )
