@@ -299,7 +299,14 @@ setClass('CTA_biomod2_model',
 setMethod('predict', signature(object = 'CTA_biomod2_model'),
           function(object, newdata, ...)
           {
-            return(.template_predict(mod = "CTA", object, newdata, ...))
+            if (inherits(newdata,'Raster') & 
+                any(object@expl_var_type == "factor")) {
+              # CTA with factors cannot be predicted on raster 
+              stop("\n\t! CTA raster prediction not possible with categorical variables !")
+              
+            } else {
+              return(.template_predict(mod = "CTA", object, newdata, ...))
+            }
           })
 
 .predict.CTA_biomod2_model.RasterStack <- function(object, newdata, ...)
