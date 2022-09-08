@@ -263,13 +263,13 @@ setMethod('BIOMOD.formated.data', signature(sp = 'numeric', env = 'RasterStack')
                    , eval.sp = NULL, eval.env = NULL, eval.xy = NULL
                    , na.rm = TRUE)
           {
-            categorial_var <- names(env)[is.factor(env)]
+            categorical_var <- names(env)[is.factor(env)]
             
             ## Keep same env variable for eval than calib (+ check for factor)
             if (!is.null(eval.sp) && is.null(eval.env)) {
               eval.env <- as.data.frame(extract(env, eval.xy))
-              if (length(categorial_var)) {
-                for (cat_var in categorial_var) {
+              if (length(categorical_var)) {
+                for (cat_var in categorical_var) {
                   eval.env[, cat_var] <- as.factor(eval.env[, cat_var])
                 }
               }
@@ -286,8 +286,8 @@ setMethod('BIOMOD.formated.data', signature(sp = 'numeric', env = 'RasterStack')
             
             ## Keep same env variable for eval than calib (+ check for factor)
             env <- as.data.frame(extract(env, xy, factors = TRUE))
-            if (length(categorial_var)) {
-              for (cat_var in categorial_var) {
+            if (length(categorical_var)) {
+              for (cat_var in categorical_var) {
                 env[, cat_var] <- as.factor(env[, cat_var])
               }
             }
@@ -647,15 +647,15 @@ setMethod('BIOMOD.formated.data.PA', signature(sp = 'numeric', env = 'RasterStac
                                       , na.rm = TRUE)
 {
   
-  categorial_var <- NULL
-  if (inherits(env, 'Raster')) { categorial_var <- names(env)[is.factor(env)] }
+  categorical_var <- NULL
+  if (inherits(env, 'Raster')) { categorical_var <- names(env)[is.factor(env)] }
   
   ## Keep same env variable for eval than calib (+ check for factor)
   if (!is.null(eval.sp) && is.null(eval.env)) {
     if (inherits(env, 'Raster')) {
       eval.env <- as.data.frame(extract(env, eval.xy))
-      if (length(categorial_var)) {
-        for (cat_var in categorial_var) {
+      if (length(categorical_var)) {
+        for (cat_var in categorical_var) {
           eval.env[, cat_var] <- as.factor(eval.env[, cat_var])
         }
       }
@@ -684,8 +684,8 @@ setMethod('BIOMOD.formated.data.PA', signature(sp = 'numeric', env = 'RasterStac
   if (!is.null(pa.data.tmp))
   {
     ## Keep same env variable for eval than calib (+ check for factor)
-    if (length(categorial_var)) {
-      for (cat_var in categorial_var) {
+    if (length(categorical_var)) {
+      for (cat_var in categorical_var) {
         pa.data.tmp$env[, cat_var] <- as.factor(pa.data.tmp$env[, cat_var])
       }
     }

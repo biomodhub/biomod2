@@ -186,7 +186,7 @@ bm_RunModel <- function(model, Data, modeling.id = '', bm.options, calib.lines, 
   ## get model name and names of categorical variables
   dir_name = dir.name
   model_name <- paste0(nam, '_', model)
-  categorial_var <- unlist(sapply(expl_var_names, function(x) {
+  categorical_var <- unlist(sapply(expl_var_names, function(x) {
     if (is.factor(Data[, x])) { return(x) } else { return(NULL) }
   }))
   
@@ -631,8 +631,8 @@ bm_RunModel <- function(model, Data, modeling.id = '', bm.options, calib.lines, 
                          "\" projectionlayers=\"", gsub(", ", ",", toString(MWD$m_predictFile)),
                          "\" outputdirectory=\"", MWD$m_outdir,
                          "\" outputformat=logistic ", 
-                         ifelse(length(categorial_var),
-                                paste0(" togglelayertype=", categorial_var, collapse = " "),
+                         ifelse(length(categorical_var),
+                                paste0(" togglelayertype=", categorical_var, collapse = " "),
                                 ""),
                          " redoifexists",
                          " visible=", bm.options@MAXENT.Phillips$visible,

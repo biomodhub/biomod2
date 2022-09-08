@@ -435,7 +435,7 @@ BIOMOD_Modeling <- function(bm.format,
   .fun_testIfInherits(TRUE, "bm.format", bm.format, c("BIOMOD.formated.data", "BIOMOD.formated.data.PA"))
   if (!is.character(models)) { stop("models must be a 'character' vector") }
   models <- unique(models)
-  models.swich.off <- NULL
+  models.switch.off <- NULL
   
   ## check if model is supported
   avail.models.list <- c('GLM', 'GBM', 'GAM', 'CTA', 'ANN', 'SRE', 'FDA', 'MARS'
@@ -444,24 +444,24 @@ BIOMOD_Modeling <- function(bm.format,
   
   
   ## 1. Remove models not supporting categorical variables --------------------
-  categorial_var <- unlist(sapply(colnames(bm.format@data.env.var), function(x) {
+  categorical_var <- unlist(sapply(colnames(bm.format@data.env.var), function(x) {
     if (is.factor(bm.format@data.env.var[, x])) { return(x) } else { return(NULL) }
   }))
-  if (length(categorial_var))
+  if (length(categorical_var))
   {
     models.fact.unsuprort <- c("SRE", "MAXENT.Tsuruoka")
-    models.swich.off <- c(models.swich.off, intersect(models, models.fact.unsuprort))
-    if (length(models.swich.off)) {
-      models <- setdiff(models, models.swich.off)
-      cat(paste0("\n\t! ", paste(models.swich.off, collapse = ",")," were switched off because of categorical variables !"))
+    models.switch.off <- c(models.switch.off, intersect(models, models.fact.unsuprort))
+    if (length(models.switch.off)) {
+      models <- setdiff(models, models.switch.off)
+      cat(paste0("\n\t! ", paste(models.switch.off, collapse = ",")," were switched off because of categorical variables !"))
     }
   }
   
   ## 2.1 Disable MAXENT.Tsuruoka ----------------------------------------------
   ## because of package maintaining issue (request from B Ripley 03-2019)
   if ('MAXENT.Tsuruoka' %in% models) {
-    models.swich.off <- unique(c(models.swich.off, "MAXENT.Tsuruoka"))
-    models <- setdiff(models, models.swich.off)
+    models.switch.off <- unique(c(models.switch.off, "MAXENT.Tsuruoka"))
+    models <- setdiff(models, models.switch.off)
     warning('MAXENT.Tsuruoka has been disabled because of package maintaining issue (request from cran team 03-2019)')
   }
   
