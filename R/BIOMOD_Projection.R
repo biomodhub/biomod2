@@ -488,6 +488,29 @@ BIOMOD_Projection <- function(bm.mod,
     }
   }
   
+  ## Switch off CTA raster prediction when using categorical variables
+  # due to problem with predict.rpart and predict.Raster, rpart model 
+  # cannot be predicted on raster.
+  
+  algo.chosen <- unlist(lapply(strsplit(models.chosen, "_", fixed = TRUE), function(x)
+  {
+    algo.id <- paste0(rev(x[4:length(x)]), collapse = ".")
+    return(algo.id)
+  }))
+  
+  if (inherits(new.env,'Raster') & 
+      any(is.factor(new.env)) &
+      "CTA" %in% algo.chosen) {
+    # CTA with factors cannot be predicted on raster 
+    cat("\n\t! CTA raster prediction switched of due to categorical variables !")
+    # remove corresponding CTA models
+    models.chosen <- models.chosen[-which(algo.chosen == "CTA")]
+    # check that there is at least one model left
+    if (length(models.chosen) < 1) {
+      stop('No models left to project')
+    }
+  }
+  
   ## 6. Check metric.binary & metric.filter -----------------------------------
   if (!is.null(metric.binary) | !is.null(metric.filter)) {
     models.evaluation <- get_evaluations(bm.mod)
