@@ -475,7 +475,9 @@ BIOMOD_Projection <- function(bm.mod,
   }
   
   ## check that given models exist
-  files.check <- paste0(bm.mod@sp.name, '/models/', bm.mod@modeling.id, "/", models.chosen)
+  files.check <- paste0(bm.mod@dir.name, "/", bm.mod@sp.name, "/models/",
+                        bm.mod@modeling.id, "/", models.chosen)
+  
   not.checked.files <- grep('MAXENT.Phillips|SRE', files.check)
   if (length(not.checked.files) > 0) {
     files.check <- files.check[-not.checked.files]
