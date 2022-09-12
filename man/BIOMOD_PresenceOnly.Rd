@@ -138,7 +138,7 @@ myBiomodPO
 # Evaluate models with Boyce index and MPA (using background data)
 myBiomodPO <- BIOMOD_PresenceOnly(bm.mod = myBiomodModelOut,
                                   bm.em = myBiomodEM, 
-                                  bg.env = getValues(myExpl))
+                                  bg.env = raster::getValues(myExpl))
 myBiomodPO
 
 

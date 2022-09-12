@@ -148,13 +148,14 @@
 ##' # Evaluate models with Boyce index and MPA (using background data)
 ##' myBiomodPO <- BIOMOD_PresenceOnly(bm.mod = myBiomodModelOut,
 ##'                                   bm.em = myBiomodEM, 
-##'                                   bg.env = getValues(myExpl))
+##'                                   bg.env = raster::getValues(myExpl))
 ##' myBiomodPO
 ##' 
 ##' 
 ## @importFrom ecospat ecospat.boyce ecospat.mpa
 ##' @importFrom PresenceAbsence presence.absence.accuracy
 ##' @importFrom data.table rbindlist
+##' @importFrom raster extract getValues
 ##' 
 ##' @export
 ##' 

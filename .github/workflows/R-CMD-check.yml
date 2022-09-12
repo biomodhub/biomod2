@@ -58,6 +58,15 @@ jobs:
           path: ${{ env.R_LIBS_USER }}
           key: ${{ runner.os }}-${{ matrix.config.r }}-1-${{ hashFiles('.github/depends.Rds') }}
           restore-keys: ${{ runner.os }}-${{ matrix.config.r }}-1-
+          
+      - name: Install system dependencies on Linux
+        if: runner.os == 'Linux'
+        run: |
+          sudo apt install libgdal-dev libproj-dev libgeos-dev libudunits2-dev libgfortran5
+          while read -r cmd
+          do
+            eval sudo $cmd
+          done < <(Rscript -e 'writeLines(remotes::system_requirements("ubuntu", "18.04"))')
 
       - name: Install dependencies
         run: |

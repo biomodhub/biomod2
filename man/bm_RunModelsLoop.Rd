@@ -93,6 +93,9 @@ dataset extracted from \code{PA.table} slot)}
 
 \item{nam}{a \code{character} corresponding to the model to be run (name + run.id)}
 
+\item{dir.name}{(\emph{optional, default} \code{.}) \cr
+A \code{character} corresponding to the modeling folder}
+
 \item{xy}{a \code{data.frame} containing \code{coord} slot of \code{bm.format} 
 parameter (for a specific PA dataset extracted from \code{PA.table} slot of \code{bm.format} 
 parameter)}

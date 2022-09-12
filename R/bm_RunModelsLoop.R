@@ -41,6 +41,8 @@
 ##' A \code{logical} value defining whether the progress bar is to be rendered or not
 ##' 
 ##' 
+##' @param dir.name (\emph{optional, default} \code{.}) \cr
+##' A \code{character} corresponding to the modeling folder
 ##' @param weights a \code{vector} of \code{numeric} values corresponding to observation weights 
 ##' (one per observation)
 ##' @param nam a \code{character} corresponding to the model to be run (name + run.id)
