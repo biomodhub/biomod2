@@ -427,7 +427,7 @@ BIOMOD_EnsembleModeling <- function(bm.mod,
     
     
     #### get needed models predictions ############################################################
-    ## if no prediction selected => swith to next model
+    ## if no prediction selected => switch to next model
     needed_predictions <- .get_needed_predictions(bm.mod, em.by, models.kept
                                                   , metric.select, metric.select.thresh
                                                   , metric.select.user, metric.select.table
@@ -443,28 +443,28 @@ BIOMOD_EnsembleModeling <- function(bm.mod,
       ## LOOP over em.algo ##
       for (algo in em.algo)
       {
-        algo.1 = algo.2 = algo.3 = NULL
+        algo.1 <- algo.2 <- algo.3 <- NULL
         models.kept.tmp = models.kept
         if (algo == 'prob.mean') {
-          algo.1 = "Mean of probabilities"
-          algo.2 = algo.3 = "EMmean"
+          algo.1 <- "Mean of probabilities"
+          algo.2 <- algo.3 <- "EMmean"
         } else if (algo == 'prob.cv') {
-          algo.1 = "Coef of variation of probabilities"
-          algo.2 = algo.3 = "EMcv"
+          algo.1 <- "Coef of variation of probabilities"
+          algo.2 <- algo.3 <- "EMcv"
         } else if (algo == 'prob.median') {
-          algo.1 = "Median of probabilities"
-          algo.2 = algo.3 = "EMmedian"
+          algo.1 <- "Median of probabilities"
+          algo.2 <- algo.3 <- "EMmedian"
         } else if (algo == 'prob.ci.inf') {
-          algo.1 = "Confidence Interval"
-          algo.2 = "EMciInf"
-          algo.3 = "EMci"
+          algo.1 <- "Confidence Interval"
+          algo.2 <- "EMciInf"
+          algo.3 <- "EMci"
         } else if (algo == 'prob.ci.sup') {
-          algo.1 = "Confidence Interval"
-          algo.2 = "EMciSup"
-          algo.3 = "EMci"
+          algo.1 <- "Confidence Interval"
+          algo.2 <- "EMciSup"
+          algo.3 <- "EMci"
         } else if (algo == 'committee.averaging') {
-          algo.1 = "Committee averaging"
-          algo.2 = algo.3 = "EMca"
+          algo.1 <- "Committee averaging"
+          algo.2 <- algo.3 <- "EMca"
           
           ## remove models if some thresholds are undefined
           models.kept.thresh <- unlist(lapply(models.kept.tmp, function(x){
