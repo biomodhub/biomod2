@@ -782,6 +782,9 @@ BIOMOD_EnsembleModeling <- function(bm.mod,
   }
   
   ## 7. Check em.by -----------------------------------------------------------
+  if(length(em.by) != 1){
+    stop("\nem.by should be of length 1")
+  }
   .fun_testIfIn(TRUE, "em.by", em.by, c('PA_dataset', 'algo', 'all', 'PA_dataset+repet', 'PA_dataset+algo'))
   
   
