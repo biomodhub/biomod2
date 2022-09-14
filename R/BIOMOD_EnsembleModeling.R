@@ -696,7 +696,7 @@ BIOMOD_EnsembleModeling <- function(bm.mod,
   .fun_testIfInherits(TRUE, "bm.mod", bm.mod, "BIOMOD.models.out")
   
   ## 2. Check models.chosen ---------------------------------------------------
-  if (!length(models.chosen) | (length(models.chosen) == 1 && models.chosen[1] == 'all')) {
+  if ( is.null(models.chosen) | (length(models.chosen) == 1 && models.chosen[1] == 'all')) {
     cat("\n   ! all models available will be included in ensemble.modeling")
     models.chosen <- bm.mod@models.computed
   } else {
@@ -817,7 +817,9 @@ BIOMOD_EnsembleModeling <- function(bm.mod,
     }
   } else if (em.by == 'algo') {
     for (algo in .extract_modelNamesInfo(models.chosen, info = 'models')) {
-      assembl.list[[paste0(algo, "_mergedRun_mergedData")]] <- models.chosen[grep(paste0("_", algo), models.chosen)]
+      # grep use a regexp to match end of model name with algo name
+      assembl.list[[paste0(algo, "_mergedRun_mergedData")]] <- 
+        models.chosen[grep(paste0("*\\_", algo,"$"), models.chosen)]
     }
   } else if (em.by == 'all') {
     assembl.list[["mergedAlgo_mergedRun_mergedData"]] <- models.chosen
@@ -834,8 +836,9 @@ BIOMOD_EnsembleModeling <- function(bm.mod,
   } else if (em.by == 'PA_dataset+algo') {
     for (dat in .extract_modelNamesInfo(models.chosen, info = 'data.set')) {
       for (algo in .extract_modelNamesInfo(models.chosen, info = 'models')) {
+        # grep use a regexp to match end of model name with algo name
         mod.tmp <- intersect(x = grep(paste0("_", dat, "_"), models.chosen)
-                             , y = grep(paste0("_", algo), models.chosen))
+                             , y = grep(paste0("*\\_", algo,"$"), models.chosen))
         if (length(mod.tmp)) {
           assembl.list[[paste0(algo, "_mergedRun_", dat)]] <- models.chosen[mod.tmp]
         }
