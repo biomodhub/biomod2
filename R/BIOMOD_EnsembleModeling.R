@@ -427,12 +427,12 @@ BIOMOD_EnsembleModeling <- function(bm.mod,
     
     
     #### get needed models predictions ############################################################
-    ## if no prediction selected => switch to next model
     needed_predictions <- .get_needed_predictions(bm.mod, em.by, models.kept
                                                   , metric.select, metric.select.thresh
                                                   , metric.select.user, metric.select.table
                                                   , nb.cpu)
-    if (!length(needed_predictions)) next
+    ## if no prediction selected => switch to next model
+    if (length(needed_predictions) == 0) next
     
     ## LOOP over evaluation metrics ##
     for (eval.m in metric.select)
@@ -880,8 +880,8 @@ BIOMOD_EnsembleModeling <- function(bm.mod,
   }
   
   models.kept.union <- unique(unlist(out$models.kept))
-  
-  if (length(models.kept.union)) {
+
+  if (length(models.kept.union) > 0) {
     ## load prediction on each PA dataset
     if (em.by %in% c("PA_dataset", 'PA_dataset+algo', 'PA_dataset+repet')) {
       out$predictions <- as.data.frame(get_predictions(bm.mod, as.data.frame = TRUE)[, models.kept.union, drop = FALSE])
