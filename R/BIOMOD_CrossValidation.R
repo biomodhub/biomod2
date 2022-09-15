@@ -163,8 +163,7 @@ BIOMOD_CrossValidation <- function(bm.format,
                                    do.stratification = FALSE,
                                    method = "both",
                                    balance = "presences",
-                                   do.full.models = TRUE)
-{
+                                   do.full.models = TRUE) {
   .bm_cat("Build Cross-Validation Table")
   DataSplitTable.y <- DataSplitTable.x <- DataSplitTable <- NULL
   ind.NA = which(is.na(bm.format@data.species))
@@ -172,8 +171,7 @@ BIOMOD_CrossValidation <- function(bm.format,
   tmp[ind.NA] = 2
   
   ## STRATIFIED (X, Y, BOTH) / BLOCK / ENVIRONMENTAL CROSS VALIDATION -----------------------------
-  if (do.stratification)
-  {
+  if (do.stratification) {
     if (balance == "absences") {
       balance <- (tmp == 1 | tmp == 0)
     } else {
@@ -241,8 +239,9 @@ BIOMOD_CrossValidation <- function(bm.format,
   
   ## CLEAN FINAL TABLE ----------------------------------------------------------------------------
   colnames(DataSplitTable) <- paste0("RUN", 1:ncol(DataSplitTable))
-  if (do.full.models == TRUE) {
-    DataSplitTable <- cbind(DataSplitTable, T)
+
+  if (isTRUE(do.full.models)) {
+    DataSplitTable <- cbind(DataSplitTable, TRUE)
     colnames(DataSplitTable)[ncol(DataSplitTable)] <- "Full"
   }
   
