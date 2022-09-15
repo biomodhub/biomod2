@@ -172,11 +172,17 @@ setMethod('BIOMOD.formated.data', signature(sp = 'numeric', env = 'data.frame'),
                 sp.name = sp.name
               )
               
-              if (nlayers(BFDeval@data.mask) > 0) {
-                data.mask.tmp <- try(addLayer(data.mask, BFDeval@data.mask))
-                if (!inherits(data.mask.tmp, "try-error")) {
-                  data.mask <- data.mask.tmp
-                  names(data.mask) <- c("calibration", "validation")
+              if (nlayers(BFDeval@data.mask) == 1) {
+                if (nlayers(data.mask) == 1) {
+                  data.mask.tmp <- try(addLayer(data.mask, BFDeval@data.mask))
+                  if (!inherits(data.mask.tmp, "try-error")) {
+                    data.mask <- data.mask.tmp
+                    names(data.mask) <- c("calibration", "validation")
+                  }
+                } else if (nlayers(data.mask) == 0) {
+                  # in this case the data.mask from calibration is added later
+                  data.mask <- BFDeval@data.mask
+                  names(data.mask) <- c("validation")
                 }
               }
               
@@ -681,8 +687,7 @@ setMethod('BIOMOD.formated.data.PA', signature(sp = 'numeric', env = 'RasterStac
                                    dist.max = PA.dist.max,
                                    user.table = PA.user.table)
   
-  if (!is.null(pa.data.tmp))
-  {
+  if (!is.null(pa.data.tmp)) {
     ## Keep same env variable for eval than calib (+ check for factor)
     if (length(categorical_var)) {
       for (cat_var in categorical_var) {
@@ -712,8 +717,7 @@ setMethod('BIOMOD.formated.data.PA', signature(sp = 'numeric', env = 'RasterStac
                                 eval.xy = eval.xy,
                                 na.rm = na.rm)
     
-    if(inherits(env,'Raster'))
-    {
+    if(inherits(env,'Raster')) {
       ## create data.mask for ploting
       data.mask.tmp <- reclassify(subset(env, 1), c(-Inf, Inf, -1))
       data.mask <- stack(data.mask.tmp)
@@ -724,11 +728,19 @@ setMethod('BIOMOD.formated.data.PA', signature(sp = 'numeric', env = 'RasterStac
       names(data.mask) <- "input_data"
       
       ## add eval data
-      if(BFD@has.data.eval){ } ### TO DO
+      if (BFD@has.data.eval) {
+        if (nlayers(BFD@data.mask) == 1 && names(BFD@data.mask) == "validation") {
+          data.mask.eval.tmp <- try(addLayer(data.mask, BFD@data.mask))
+          if (!inherits(data.mask.eval.tmp, "try-error")) {
+            data.mask <- data.mask.eval.tmp
+            names(data.mask) <- c("input_data", "validation")
+          }
+        }
+      } 
       
       ## add pa data
-      for(pa in 1:ncol(as.data.frame(pa.data.tmp$pa.tab)))
-      {
+      data.mask.names.tmp <- names(data.mask)
+      for(pa in 1:ncol(as.data.frame(pa.data.tmp$pa.tab))) {
         data.mask.tmp2 <- data.mask.tmp
         
         ind.pa <- as.data.frame(pa.data.tmp$pa.tab)[, pa]
@@ -742,10 +754,11 @@ setMethod('BIOMOD.formated.data.PA', signature(sp = 'numeric', env = 'RasterStac
           id_abs <- cellFromXY(data.mask.tmp, xy_abs)
           data.mask.tmp2[id_abs] <- 0
         }
-        
         data.mask <- addLayer(data.mask, data.mask.tmp2)
       }
-      names(data.mask) <- c("input_data", colnames(as.data.frame(pa.data.tmp$pa.tab)))
+
+      names(data.mask) <- c(data.mask.names.tmp,
+                            colnames(as.data.frame(pa.data.tmp$pa.tab)))
       
     } else {  data.mask <- stack() }
     
