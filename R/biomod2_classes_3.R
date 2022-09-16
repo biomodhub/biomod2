@@ -391,8 +391,7 @@ setMethod("get_formal_data", "BIOMOD.models.out",
 ##' 
 
 setMethod("get_predictions", "BIOMOD.models.out",
-          function(obj, as.data.frame = FALSE, evaluation = FALSE)
-          {
+          function(obj, as.data.frame = FALSE, evaluation = FALSE) {
             # check evaluation data availability
             if (evaluation & (!obj@has.evaluation.data)) {
               warning("calibration data returned because no evaluation data available")
@@ -421,18 +420,19 @@ setMethod("get_predictions", "BIOMOD.models.out",
                 mod.pred <- as.data.frame(get(load(pred@link)))
               } else { return(NULL) }
               
-              names(mod.pred) <- unlist(lapply(strsplit(names(mod.pred), ".", fixed = TRUE), function(x)
-              {
-                x.rev <- rev(x) ## we reverse the order of the splitted vector to have algo at the end
-                data.set.id <- x.rev[1]
-                cross.valid.id <- x.rev[2]
-                algo.id <- paste0(rev(x.rev[3:length(x.rev)]), collapse = ".")
-                model.id <- paste(obj@sp.name,
-                                  data.set.id,
-                                  cross.valid.id,
-                                  algo.id, sep = "_")
-                return(model.id)
-              }))
+              names(mod.pred) <- unlist(
+                lapply(strsplit(names(mod.pred), ".", fixed = TRUE),
+                       function(x) {
+                         x.rev <- rev(x) ## we reverse the order of the splitted vector to have algo at the end
+                         data.set.id <- x.rev[1]
+                         cross.valid.id <- x.rev[2]
+                         algo.id <- paste0(rev(x.rev[3:length(x.rev)]), collapse = ".")
+                         model.id <- paste(obj@sp.name,
+                                           data.set.id,
+                                           cross.valid.id,
+                                           algo.id, sep = "_")
+                         return(model.id)
+                       }))
               return(mod.pred)
             }
           }
@@ -1094,14 +1094,19 @@ setMethod("get_kept_models", "BIOMOD.ensemble.models.out",
 ##' 
 
 setMethod("get_predictions", "BIOMOD.ensemble.models.out",
-          function(obj, ...) {
+          function(obj, evaluation = FALSE, ...) {
             ## note: ensemble models predictions are stored within the directory
             ##  <dir.name>/<sp.name>/.BIOMOD_DATA/<modeling.id>/ensemble.models/ensemble.models.projections/
             ##  This function is just a friendly way to load this data
             
             ## get the path to projections files we want to load
-            files.to.load <- file.path(obj@dir.name, obj@sp.name, ".BIOMOD_DATA", obj@modeling.id, "ensemble.models",
-                                       "ensemble.models.predictions", paste0(obj@em.computed, ".predictions"))
+            files.to.load <- file.path(obj@dir.name, obj@sp.name, 
+                                       ".BIOMOD_DATA", obj@modeling.id, 
+                                       "ensemble.models", "ensemble.models.predictions", 
+                                       paste0(obj@em.computed, ".predictions"))
+            if (evaluation) {
+              files.to.load <- paste0(files.to.load, "Eval")
+            }
             ## load and merge projection files within a data.frame
             bm.pred <- do.call(cbind, lapply(files.to.load, function(ftl) get(load(ftl))))
             colnames(bm.pred) <- obj@em.computed
