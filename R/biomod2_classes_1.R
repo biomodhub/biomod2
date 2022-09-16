@@ -1,7 +1,7 @@
 
-###################################################################################################
-## 1. BIOMOD.formated.data
-###################################################################################################
+## --------------------------------------------------------------------------- #
+## 1. BIOMOD.formated.data ---------------------------------------------------
+## --------------------------------------------------------------------------- #
 
 ##' @name BIOMOD.formated.data
 ##' @author Damien Georges
@@ -86,7 +86,7 @@
 ##' 
 ##' showClass("BIOMOD.formated.data")
 ##' 
-##' ## ------------------------------------------------------------------------
+##' ## ----------------------------------------------------------------------- #
 ##' 
 ##' # Load species occurrences (6 species available)
 ##' myFile <- system.file('external/species/mammals_table.csv', package = 'biomod2')
@@ -107,7 +107,7 @@
 ##' myExpl <- raster::stack(system.file(myFiles, package = 'biomod2'))
 ##' 
 ##' 
-##' # ---------------------------------------------------------------
+##' ## ----------------------------------------------------------------------- #
 ##' # Format Data with true absences
 ##' myBiomodData <- BIOMOD_FormatingData(resp.var = myResp,
 ##'                                      expl.var = myExpl,
@@ -137,9 +137,10 @@ setClass("BIOMOD.formated.data",
          validity = function(object){ return(TRUE) })
 
 
-# 1.2 Constructors --------------------------------------------------------------------------------
+# 1.2 Constructors -------------------------------------------------------------
 setGeneric("BIOMOD.formated.data", def = function(sp, env, ...) { standardGeneric("BIOMOD.formated.data") })
 
+## BIOMOD.formated.data(sp = numeric, env = data.frame) -----------------------------------
 ##' 
 ##' @rdname BIOMOD.formated.data
 ##' @export
@@ -152,7 +153,7 @@ setMethod('BIOMOD.formated.data', signature(sp = 'numeric', env = 'data.frame'),
           {
             if (is.null(data.mask)) { data.mask <- stack() }
             
-            if (is.null(eval.sp)) { ## NO EVALUATION DATA -----------------------------------------
+            if (is.null(eval.sp)) { ## NO EVALUATION DATA
               BFD <- new(
                 'BIOMOD.formated.data',
                 coord = xy,
@@ -163,7 +164,7 @@ setMethod('BIOMOD.formated.data', signature(sp = 'numeric', env = 'data.frame'),
                 data.mask = data.mask,
                 has.data.eval = FALSE
               )
-            } else { ## EVALUATION DATA -----------------------------------------------------------
+            } else { ## EVALUATION DATA
               BFDeval <- BIOMOD.formated.data(
                 sp = eval.sp,
                 env = eval.env,
@@ -203,7 +204,7 @@ setMethod('BIOMOD.formated.data', signature(sp = 'numeric', env = 'data.frame'),
               rm('BFDeval')
             }
             
-            ## REMOVE NA IF ANY -------------------------------------------------------------------
+            ## REMOVE NA IF ANY
             if (na.rm) {
               rowToRm <- unique(unlist(lapply(BFD@data.env.var, function(x) { return(which(is.na(x))) })))
               if (length(rowToRm)) {
@@ -226,6 +227,7 @@ setMethod('BIOMOD.formated.data', signature(sp = 'numeric', env = 'data.frame'),
           }
 )
 
+## BIOMOD.formated.data(sp = data.frame) -----------------------------------
 ##' 
 ##' @rdname BIOMOD.formated.data
 ##' @export
@@ -243,6 +245,7 @@ setMethod('BIOMOD.formated.data', signature(sp = 'data.frame'),
           }
 )
 
+## BIOMOD.formated.data(sp = numeric, env = matrix) ----------------------------
 ##' 
 ##' @rdname BIOMOD.formated.data
 ##' @export
@@ -259,6 +262,7 @@ setMethod('BIOMOD.formated.data', signature(sp = 'numeric', env = 'matrix'),
           }
 )
 
+## BIOMOD.formated.data(sp = numeric, env = RasterStack) -----------------------
 ##' 
 ##' @rdname BIOMOD.formated.data
 ##' @export
@@ -306,6 +310,7 @@ setMethod('BIOMOD.formated.data', signature(sp = 'numeric', env = 'RasterStack')
 
 # 1.3 Other Functions -----------------------------------------------------------------------------
 
+### plot.BIOMOD.formated.data  --------------------------------------------------
 ##' 
 ##' @rdname BIOMOD.formated.data
 ##' @export
@@ -333,7 +338,7 @@ setMethod('plot', signature(x = 'BIOMOD.formated.data', y = "missing"),
                 my.cuts <- 1 ## cuts
               }
               
-              ## PLOT -----------------------------------------------------------------------------
+              ## PLOT
               rasterVis::levelplot(
                 x@data.mask,
                 at = my.at,
@@ -359,7 +364,7 @@ setMethod('plot', signature(x = 'BIOMOD.formated.data', y = "missing"),
               if (is.null(col) | length(col) < 3) { col = c('green', 'red', 'grey') }
               
               
-              ## PLOT -----------------------------------------------------------------------------
+              ## PLOT
               ## all points (~ mask)
               plot(
                 x = x@coord[, 1],
@@ -388,6 +393,7 @@ setMethod('plot', signature(x = 'BIOMOD.formated.data', y = "missing"),
           }
 )
 
+### show.BIOMOD.formated.data  --------------------------------------------------
 ##' 
 ##' @rdname BIOMOD.formated.data
 ##' @export
@@ -432,10 +438,11 @@ setMethod('show', signature('BIOMOD.formated.data'),
 
 
 
-###################################################################################################
-## 2. BIOMOD.formated.data.PA 
-## this class inherits from BIOMOD.formated.data and have one more slot 'PA' giving PA selected
-###################################################################################################
+## --------------------------------------------------------------------------- #
+## 2. BIOMOD.formated.data.PA ------------------------------------------------
+## this class inherits from BIOMOD.formated.data and have one more slot 'PA', 
+## giving PA selected
+## --------------------------------------------------------------------------- #
 
 ##' @name BIOMOD.formated.data.PA
 ##' @author Damien Georges
@@ -553,7 +560,7 @@ setMethod('show', signature('BIOMOD.formated.data'),
 ##' 
 ##' showClass("BIOMOD.formated.data.PA")
 ##' 
-##' ## ------------------------------------------------------------------------
+##' ## ----------------------------------------------------------------------- #
 ##' 
 ##' # Load species occurrences (6 species available)
 ##' myFile <- system.file('external/species/mammals_table.csv', package = 'biomod2')
@@ -574,7 +581,7 @@ setMethod('show', signature('BIOMOD.formated.data'),
 ##' myExpl <- raster::stack(system.file(myFiles, package = 'biomod2'))
 ##' 
 ##' 
-##' # ---------------------------------------------------------------
+##' ## ----------------------------------------------------------------------- #
 ##' # Format Data with pseudo-absences : random method
 ##' myBiomodData <- BIOMOD_FormatingData(resp.var = myResp,
 ##'                                      expl.var = myExpl,
@@ -600,9 +607,13 @@ setClass("BIOMOD.formated.data.PA",
          validity = function(object) { return(TRUE) })
 
 
-# 2.2 Constructors --------------------------------------------------------------------------------
-setGeneric("BIOMOD.formated.data.PA", def = function(sp, env, ...) { standardGeneric("BIOMOD.formated.data.PA") })
+# 2.2 Constructors -------------------------------------------------------------
+setGeneric("BIOMOD.formated.data.PA", 
+           def = function(sp, env, ...) { 
+             standardGeneric("BIOMOD.formated.data.PA") 
+           })
 
+### BIOMOD.formated.data.PA(sp = numeric, env = data.frame) --------------------
 ##' 
 ##' @rdname BIOMOD.formated.data.PA
 ##' @export
@@ -614,8 +625,7 @@ setMethod('BIOMOD.formated.data.PA', signature(sp = 'numeric', env = 'data.frame
                    , PA.nb.rep = 1, PA.strategy = 'random', PA.nb.absences = NULL
                    , PA.dist.min = 0, PA.dist.max = NULL
                    , PA.sre.quant = 0.025, PA.user.table = NULL
-                   , na.rm = TRUE)
-          {
+                   , na.rm = TRUE) {
             .BIOMOD.formated.data.PA(sp, env, xy, dir.name, sp.name
                                      , eval.sp, eval.env, eval.xy
                                      , PA.nb.rep, PA.strategy, PA.nb.absences
@@ -624,6 +634,7 @@ setMethod('BIOMOD.formated.data.PA', signature(sp = 'numeric', env = 'data.frame
                                      , na.rm)
           })
 
+### BIOMOD.formated.data.PA(sp = numeric, env = RasterStack) -------------------
 ##' 
 ##' @rdname BIOMOD.formated.data.PA
 ##' @export
@@ -635,8 +646,7 @@ setMethod('BIOMOD.formated.data.PA', signature(sp = 'numeric', env = 'RasterStac
                    , PA.nb.rep = 1, PA.strategy = 'random', PA.nb.absences = NULL
                    , PA.dist.min = 0, PA.dist.max = NULL
                    , PA.sre.quant = 0.025, PA.user.table = NULL
-                   , na.rm = TRUE)
-          {
+                   , na.rm = TRUE) {
             .BIOMOD.formated.data.PA(sp, env, xy, dir.name, sp.name
                                      , eval.sp, eval.env, eval.xy
                                      , PA.nb.rep, PA.strategy, PA.nb.absences
@@ -645,6 +655,7 @@ setMethod('BIOMOD.formated.data.PA', signature(sp = 'numeric', env = 'RasterStac
                                      , na.rm)
           })
 
+### .BIOMOD.formated.data.PA ---------------------------------------------------
 .BIOMOD.formated.data.PA <-  function(sp, env, xy, dir.name, sp.name
                                       , eval.sp = NULL, eval.env = NULL, eval.xy = NULL
                                       , PA.nb.rep = 1, PA.strategy = 'random', PA.nb.absences = NULL
@@ -695,7 +706,7 @@ setMethod('BIOMOD.formated.data.PA', signature(sp = 'numeric', env = 'RasterStac
       }
     }
     
-    ## REMOVE NA IF ANY ---------------------------------------------------------------------------
+    ## REMOVE NA IF ANY
     if (na.rm) {
       rowToRm <- unique(unlist(lapply(pa.data.tmp$env, function(x) { return(which(is.na(x))) })))
       if (length(rowToRm)) {
@@ -717,7 +728,7 @@ setMethod('BIOMOD.formated.data.PA', signature(sp = 'numeric', env = 'RasterStac
                                 eval.xy = eval.xy,
                                 na.rm = na.rm)
     
-    if(inherits(env,'Raster')) {
+    if (inherits(env,'Raster')) {
       ## create data.mask for ploting
       data.mask.tmp <- reclassify(subset(env, 1), c(-Inf, Inf, -1))
       data.mask <- stack(data.mask.tmp)
@@ -740,7 +751,7 @@ setMethod('BIOMOD.formated.data.PA', signature(sp = 'numeric', env = 'RasterStac
       
       ## add pa data
       data.mask.names.tmp <- names(data.mask)
-      for(pa in 1:ncol(as.data.frame(pa.data.tmp$pa.tab))) {
+      for (pa in 1:ncol(as.data.frame(pa.data.tmp$pa.tab))) {
         data.mask.tmp2 <- data.mask.tmp
         
         ind.pa <- as.data.frame(pa.data.tmp$pa.tab)[, pa]
@@ -756,7 +767,7 @@ setMethod('BIOMOD.formated.data.PA', signature(sp = 'numeric', env = 'RasterStac
         }
         data.mask <- addLayer(data.mask, data.mask.tmp2)
       }
-
+      
       names(data.mask) <- c(data.mask.names.tmp,
                             colnames(as.data.frame(pa.data.tmp$pa.tab)))
       
@@ -776,9 +787,8 @@ setMethod('BIOMOD.formated.data.PA', signature(sp = 'numeric', env = 'RasterStac
                 PA.strategy = PA.strategy,
                 PA.table = as.data.frame(pa.data.tmp$pa.tab))
     
-    rm(list='BFD')
-  } else
-  {
+    rm(list = 'BFD')
+  } else {
     cat("\n   ! PA selection not done", fill = .Options$width)
     
     BFDP <- BIOMOD.formated.data(sp = as.vector(sp@data),
@@ -795,8 +805,9 @@ setMethod('BIOMOD.formated.data.PA', signature(sp = 'numeric', env = 'RasterStac
 }
 
 
-# 2.3 other functions -----------------------------------------------------------------------------
+# 2.3 other functions ----------------------------------------------------------
 
+### plot.BIOMOD.formated.data.PA -----------------------------------------------
 ##' 
 ##' @rdname BIOMOD.formated.data.PA
 ##' @export
@@ -876,7 +887,7 @@ setMethod('plot', signature(x = 'BIOMOD.formated.data.PA', y = "missing"),
                 pch = 18
               )
               # PA data
-              for(i in 1:ncol(x@PA.table))
+              for (i in 1:ncol(x@PA.table))
               {
                 # all points (~mask)
                 plot(
@@ -914,6 +925,7 @@ setMethod('plot', signature(x = 'BIOMOD.formated.data.PA', y = "missing"),
           }
 )
 
+### show.BIOMOD.formated.data.PA -----------------------------------------------
 ##' 
 ##' @rdname BIOMOD.formated.data.PA
 ##' @export
@@ -973,9 +985,9 @@ setMethod('show', signature('BIOMOD.formated.data.PA'),
 
 
 
-###################################################################################################
-## 3. BIOMOD.models.options
-###################################################################################################
+## --------------------------------------------------------------------------- #
+## 3. BIOMOD.models.options --------------------------------------------------
+## --------------------------------------------------------------------------- #
 
 ##' @name BIOMOD.models.options
 ##' @author Damien Georges
@@ -1010,7 +1022,7 @@ setMethod('show', signature('BIOMOD.formated.data.PA'),
 ##' 
 ##' showClass("BIOMOD.models.options")
 ##' 
-##' ## ------------------------------------------------------------------------
+##' ## ----------------------------------------------------------------------- #
 ##' ## default BIOMOD.models.options object
 ##' myBiomodOptions <- BIOMOD_ModelingOptions()
 ##'
@@ -1095,7 +1107,7 @@ setClass("BIOMOD.models.options",
                              mtry = 'default',
                              sampsize = NULL,
                              nodesize = 5,
-                             maxnodes= NULL),
+                             maxnodes = NULL),
                    MAXENT.Phillips = list(path_to_maxent.jar = getwd(),
                                           memory_allocated = 512,
                                           background_data_dir = 'default',
@@ -1120,18 +1132,17 @@ setClass("BIOMOD.models.options",
                                             regmult = 1,
                                             regfun = maxnet::maxnet.default.regularization)
          ),
-         validity = function(object)
-         {
+         validity = function(object) {
            test <- TRUE
            
            ## GLM ##
            test <- .fun_testIfIn(test, "GLM$type", object@GLM$type, c('simple', 'quadratic', 'polynomial', 'user.defined'))
            test <- .fun_testIfPosInt(test, "GLM$interaction.level", object@GLM$interaction.level)
-           if(!is.null(object@GLM$myFormula)) if(!inherits(object@GLM$myFormula, "formula")){ cat("\nGLM$myFormula must be NULL or a formula object"); test <- FALSE }
+           if (!is.null(object@GLM$myFormula)) if (!inherits(object@GLM$myFormula, "formula")) { cat("\nGLM$myFormula must be NULL or a formula object"); test <- FALSE }
            test <- .fun_testIfIn(test, "GLM$test", object@GLM$test, c('AIC', 'BIC', 'none'))
            fam <- 'none'
-           if(!inherits(object@GLM$family, "family")){ cat("\nGLM$family must be a valid family object"); test <- FALSE }
-           if(!is.list(object@GLM$control)){cat("\nGLM$control must be a list like that returned by glm.control"); test <- FALSE}
+           if (!inherits(object@GLM$family, "family")) { cat("\nGLM$family must be a valid family object"); test <- FALSE }
+           if (!is.list(object@GLM$control)) {cat("\nGLM$control must be a list like that returned by glm.control"); test <- FALSE}
            
            ## GBM ##
            test <- .fun_testIfIn(test, "GBM$distribution", object@GBM$distribution, c("bernoulli", "huberized", "multinomial", "adaboost"))
@@ -1258,6 +1269,7 @@ setClass("BIOMOD.models.options",
          }
 )
 
+### show.BIOMOD.models.options -------------------------------------------------
 ##'
 ##' @rdname BIOMOD.models.options
 ##' @export
@@ -1307,7 +1319,7 @@ setMethod('show', signature('BIOMOD.models.options'),
                                                                                                      object@GAM$myFormula[3])), ",", sep = "")
             cat("\n            family = ", object@GAM$family$family, "(link = '", object@GAM$family$link, "'),", sep = "")
             if (object@GAM$algo == 'GAM_mgcv') {
-              cat("\n            method = '", object@GAM$method, "', ", sep="")
+              cat("\n            method = '", object@GAM$method, "', ", sep = "")
               cat("\n            optimizer = c('", paste(object@GAM$optimizer, collapse = "','"), "'),", sep = "")
               cat("\n            select = ", object@GAM$select, ",", sep = "")
               cat("\n            knots = ",  ifelse(length(object@GLM$knots) < 1, 'NULL', "'user.defined'"), ",", sep = "")
