@@ -1,4 +1,4 @@
-###################################################################################################
+## BIOMOD_EnsembleModeling documentation ---------------------------------------
 ##' @name BIOMOD_EnsembleModeling
 ##' @author Wilfried Thuiller, Damien Georges, Robin Engler
 ##' 
@@ -258,7 +258,7 @@
 ##' myExpl <- raster::stack(system.file(myFiles, package = 'biomod2'))
 ##' 
 ##' 
-##' # ---------------------------------------------------------------
+##' ## ----------------------------------------------------------------------- #
 ##' file.out <- paste0(myRespName, "/", myRespName, ".AllModels.models.out")
 ##' if (file.exists(file.out)) {
 ##'   myBiomodModelOut <- get(load(file.out))
@@ -284,7 +284,7 @@
 ##'                                       do.full.models = FALSE)
 ##' }
 ##' 
-##' # ---------------------------------------------------------------
+##' ## ----------------------------------------------------------------------- #
 ##' # Model ensemble models
 ##' myBiomodEM <- BIOMOD_EnsembleModeling(bm.mod = myBiomodModelOut,
 ##'                                       models.chosen = 'all',
@@ -330,7 +330,7 @@
 ##' @export
 ##' 
 ##' 
-###################################################################################################
+## BIOMOD_EnsembleModeling function ------------------------------------------- 
 
 BIOMOD_EnsembleModeling <- function(bm.mod,
                                     models.chosen = 'all',
@@ -350,11 +350,10 @@ BIOMOD_EnsembleModeling <- function(bm.mod,
                                     prob.mean.weight.decay = 'proportional',
                                     nb.cpu = 1,
                                     seed.val = NULL,
-                                    do.progress = TRUE)
-{
+                                    do.progress = TRUE) {
   .bm_cat("Build Ensemble Models")
   
-  ## 0. Check arguments ---------------------------------------------------------------------------
+  ## 0. Check arguments --------------------------------------------------------
   args <- .BIOMOD_EnsembleModeling.check.args(bm.mod,
                                               models.chosen,
                                               metric.select,
@@ -374,7 +373,7 @@ BIOMOD_EnsembleModeling <- function(bm.mod,
   rm(args)
   
   
-  ## Get selected options
+  ## Get selected options 
   em.avail <- c('prob.mean', 'prob.cv', 'prob.ci.inf', 'prob.ci.sup',
                 'prob.median', 'committee.averaging', 'prob.mean.weight')
   em.algo <- em.avail[c(prob.mean, prob.cv,  prob.ci,  prob.ci,
@@ -384,7 +383,7 @@ BIOMOD_EnsembleModeling <- function(bm.mod,
   expl_var_range = get_var_range(get_formal_data(bm.mod, 'expl.var'))
   
   
-  ## 1. Create output object ----------------------------------------------------------------------
+  ## 1. Create output object ---------------------------------------------------
   EM <- new('BIOMOD.ensemble.models.out',
             dir.name = bm.mod@dir.name,
             sp.name = bm.mod@sp.name,
@@ -395,7 +394,7 @@ BIOMOD_EnsembleModeling <- function(bm.mod,
                                   paste0(bm.mod@sp.name, ".",
                                          bm.mod@modeling.id, ".models.out"))
   
-  ## 2. Do Ensemble modeling ----------------------------------------------------------------------
+  ## 2. Do Ensemble modeling ---------------------------------------------------
   
   ## make a list of models names that will be combined together according to em.by argument
   em.mod.assemb <- .get_models_assembling(models.chosen, em.by)
@@ -404,13 +403,13 @@ BIOMOD_EnsembleModeling <- function(bm.mod,
     cat("\n\n  >", assemb, "ensemble modeling")
     models.kept <- em.mod.assemb[[assemb]]
     
-    #### defined data that will be used for models performances calculation ####
+    #### defined data that will be used for models performances calculation 
     if (bm.mod@has.evaluation.data) {
       eval.obs <- get_formal_data(bm.mod, 'eval.resp.var')
       eval.expl <- get_formal_data(bm.mod, 'eval.expl.var')
     }
     
-    ## subselection of observations according to dataset used to produce ensemble models
+    ### subselection of observations according to dataset used to produce ensemble models ---------
     obs <-  get_formal_data(bm.mod, 'resp.var')
     expl <- get_formal_data(bm.mod, 'expl.var')
     if (em.by %in% c("PA_dataset", 'PA_dataset+algo', 'PA_dataset+repet') &&
@@ -426,7 +425,7 @@ BIOMOD_EnsembleModeling <- function(bm.mod,
     obs[is.na(obs)] <- 0
     
     
-    #### get needed models predictions ############################################################
+    ## get needed models predictions ----------------------------------------
     needed_predictions <- .get_needed_predictions(bm.mod, em.by, models.kept
                                                   , metric.select, metric.select.thresh
                                                   , metric.select.user, metric.select.table
@@ -434,12 +433,12 @@ BIOMOD_EnsembleModeling <- function(bm.mod,
     ## if no prediction selected => switch to next model
     if (length(needed_predictions) == 0) next
     
-    ## LOOP over evaluation metrics ##
+    ## LOOP over evaluation metrics ------------------------------------------
     for (eval.m in metric.select) {
       models.kept <- needed_predictions$models.kept[[eval.m]]
       models.kept.scores <- needed_predictions$models.kept.scores[[eval.m]]
       
-      ## LOOP over em.algo ##
+      ## LOOP over em.algo ---------------------------------------------------
       for (algo in em.algo) {
         algo.1 <- algo.2 <- algo.3 <- NULL
         models.kept.tmp = models.kept
@@ -525,7 +524,7 @@ BIOMOD_EnsembleModeling <- function(bm.mod,
         }
         
         
-        #### Models building ##################################################
+        # Models building --------------------------------------------------
         cat("\n   >", algo.1, "...")
         model_name <- paste0(bm.mod@sp.name, "_", algo.2, "By", eval.m, "_", assemb)
         model.bm <- new(paste0(algo.3, "_biomod2_model"),
@@ -552,7 +551,7 @@ BIOMOD_EnsembleModeling <- function(bm.mod,
           model.bm@penalization_scores <- models.kept.scores.tmp
         }
         
-        #### Models Predictions ###############################################
+        # Models Predictions --------------------------------------------------
         
         ## create the suitable directory architecture
         pred.bm.name <- paste0(model_name, ".predictions")
@@ -582,15 +581,17 @@ BIOMOD_EnsembleModeling <- function(bm.mod,
           rm(list = pred.bm.name)
         }
         
-        #### Models Evaluation ################################################
+        # Models Evaluation ----------------------------------------------------
         
         if (length(metric.eval)) {
           cat("\n\t\t\tEvaluating Model stuff...")
           
           if (algo == 'prob.cv') { ## switch off evaluation process
-            cross.validation <- matrix(NA, 4, length(metric.eval),
-                                       dimnames = list(c("Testing.data", "Cutoff", "Sensitivity", "Specificity"),
-                                                       metric.eval))
+            cross.validation <-
+              matrix(NA, 4, length(metric.eval),
+                     dimnames = list(c("Testing.data", "Cutoff",
+                                       "Sensitivity", "Specificity"),
+                                     metric.eval))
           } else {
             if (em.by == "PA_dataset+repet") {
               ## select the same evaluation data than formal models
@@ -640,7 +641,7 @@ BIOMOD_EnsembleModeling <- function(bm.mod,
           model.bm@model_evaluation <- t(round(cross.validation, digits = 3))
         }
         
-        #### Models Variable Importance #######################################
+        # Models Variable Importance -------------------------------------------
         
         if (var.import > 0) {
           cat("\n\t\t\tEvaluating Predictor Contributions...", "\n")
@@ -651,19 +652,19 @@ BIOMOD_EnsembleModeling <- function(bm.mod,
                                                                         , do.progress = do.progress)
         }
         
-        #### Models saving #####
+        # Models saving --------------------------------------------------------
         assign(model_name, model.bm)
         save(list = model_name, file = file.path(bm.mod@dir.name, bm.mod@sp.name, "models",
                                                  bm.mod@modeling.id, model_name))
         
-        #### Add to sumary objects ####
+        # Add to sumary objects ------------------------------------------------
         EM@em.models <- c(EM@em.models, model.bm)
         EM@em.computed <- c(EM@em.computed, model_name)
       }
     }
   }
   
-  ### fix models names ###
+  #### fix models names ---------------------------------------------------------
   names(EM@em.models) <- EM@em.computed
   model.name <- paste0(EM@sp.name, '.', EM@modeling.id, '.ensemble.models.out')
   assign(x = model.name, value = EM)
@@ -673,7 +674,8 @@ BIOMOD_EnsembleModeling <- function(bm.mod,
   return(EM)
 }
 
-###################################################################################################
+
+# Argument check function  -----------------------------------------------------
 
 .BIOMOD_EnsembleModeling.check.args <- function(bm.mod,
                                                 models.chosen,
@@ -805,7 +807,9 @@ BIOMOD_EnsembleModeling <- function(bm.mod,
               em.by = em.by))
 }
 
-###################################################################################################
+
+# .get_models_assembling --------------------------------------------------
+
 
 .get_models_assembling <- function(models.chosen, em.by)
 {
@@ -848,7 +852,8 @@ BIOMOD_EnsembleModeling <- function(bm.mod,
 }
 
 
-###################################################################################################
+
+# .get_needed_predictions -------------------------------------------------
 
 .get_needed_predictions <- function(bm.mod, em.by, models.kept, metric.select
                                     , metric.select.thresh, metric.select.user
@@ -885,7 +890,7 @@ BIOMOD_EnsembleModeling <- function(bm.mod,
   }
   
   models.kept.union <- unique(unlist(out$models.kept))
-
+  
   if (length(models.kept.union) > 0) {
     ## load prediction on each PA dataset
     if (em.by %in% c("PA_dataset", 'PA_dataset+algo', 'PA_dataset+repet')) {
