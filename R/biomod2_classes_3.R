@@ -400,7 +400,11 @@ setMethod("get_predictions", "BIOMOD.models.out",
             }
             
             # select calibration or eval data
-            if (evaluation) { pred <- obj@models.prediction.eval } else { pred <- obj@models.prediction }
+            if (evaluation) { 
+              pred <- obj@models.prediction.eval 
+            } else { 
+              pred <- obj@models.prediction 
+            }
             
             if (!as.data.frame) {
               if (pred@inMemory) {
@@ -1062,9 +1066,8 @@ setMethod("get_kept_models", "BIOMOD.ensemble.models.out",
 ##' 
 
 setMethod("get_predictions", "BIOMOD.ensemble.models.out",
-          function(obj, ...)
-          {
-            ## note: ensemble models predicitons are stored within the directory
+          function(obj, ...) {
+            ## note: ensemble models predictions are stored within the directory
             ##  <dir.name>/<sp.name>/.BIOMOD_DATA/<modeling.id>/ensemble.models/ensemble.models.projections/
             ##  This function is just a friendly way to load this data
             
