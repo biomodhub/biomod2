@@ -1,9 +1,9 @@
 
-###################################################################################################
-## 0. Generic Functions definition 
+## -------------------------------------------------------------------------- #
+## 0. Generic Functions definition ------------------------------------------
+## -------------------------------------------------------------------------- #
 ## Used for different classes 
 ##    A = BIOMOD.models.out, B = BIOMOD.projection.out, C = BIOMOD.ensemble.models.out
-###################################################################################################
 
 ##' @name getters.out
 ##' @aliases get_options
@@ -144,10 +144,9 @@ setGeneric("get_built_models", function(obj, ...) { standardGeneric("get_built_m
 setGeneric("get_evaluations", function(obj, ...) { standardGeneric("get_evaluations") }) ## AC
 setGeneric("get_variables_importance", function(obj, ...) { standardGeneric("get_variables_importance") }) ## AC
 
-
-###################################################################################################
-## 4. BIOMOD.models.out
-###################################################################################################
+## -------------------------------------------------------------------------- #
+## 4. BIOMOD.models.out -----------------------------------------------------
+## -------------------------------------------------------------------------- #
 
 ##' @name BIOMOD.models.out
 ##' @aliases BIOMOD.models.out
@@ -201,7 +200,7 @@ setGeneric("get_variables_importance", function(obj, ...) { standardGeneric("get
 ##' showClass("BIOMOD.models.out")
 ##' showClass("BIOMOD.stored.models.out")
 ##' 
-##' ## ------------------------------------------------------------------------
+##' ## ----------------------------------------------------------------------- #
 ##' 
 ##' # Load species occurrences (6 species available)
 ##' myFile <- system.file('external/species/mammals_table.csv', package = 'biomod2')
@@ -222,7 +221,7 @@ setGeneric("get_variables_importance", function(obj, ...) { standardGeneric("get
 ##' myExpl <- raster::stack(system.file(myFiles, package = 'biomod2'))
 ##' 
 ##' 
-##' # ---------------------------------------------------------------
+##' ## ----------------------------------------------------------------------- #
 ##' # Format Data with true absences
 ##' myBiomodData <- BIOMOD_FormatingData(resp.var = myResp,
 ##'                                      expl.var = myExpl,
@@ -233,7 +232,7 @@ setGeneric("get_variables_importance", function(obj, ...) { standardGeneric("get
 ##' myBiomodOptions <- BIOMOD_ModelingOptions()
 ##' 
 ##' 
-##' # ---------------------------------------------------------------
+##' ## ----------------------------------------------------------------------- #
 ##' # Model single models
 ##' myBiomodModelOut <- BIOMOD_Modeling(bm.format = myBiomodData,
 ##'                                     modeling.id = 'AllModels',
@@ -292,15 +291,15 @@ setClass("BIOMOD.stored.models.out",
          validity = function(object){ return(TRUE) } )
 
 
-# 4.3 Other functions -----------------------------------------------------------------------------
+# 4.3 Other functions ------------------------------------------------------
+## show.BIOMOD.models.out ---------------------------------------------------
 ##' 
 ##' @rdname BIOMOD.models.out
 ##' @export
 ##' 
 
 setMethod('show', signature('BIOMOD.models.out'),
-          function(object)
-          {
+          function(object) {
             .bm_cat("BIOMOD.models.out")
             cat("\nModeling folder :", object@dir.name, fill = .Options$width)
             cat("\nSpecies modeled :", object@sp.name, fill = .Options$width)
@@ -312,8 +311,7 @@ setMethod('show', signature('BIOMOD.models.out'),
           }
 )
 
-## ------------------------------------------------------------------------------------------------
-
+## get_options.BIOMOD.models.out ---------------------------------------------------
 ##' 
 ##' @rdname getters.out
 ##' @export
@@ -329,6 +327,7 @@ setMethod("get_options", "BIOMOD.models.out",
           }
 )
 
+## get_calib_lines.BIOMOD.models.out ---------------------------------------------------
 ##' 
 ##' @rdname getters.out
 ##' @export
@@ -341,6 +340,7 @@ setMethod("get_calib_lines", "BIOMOD.models.out",
           }
 )
 
+## get_formal_data.BIOMOD.models.out ---------------------------------------------------
 ##' 
 ##' @rdname getters.out
 ##' @export
@@ -383,8 +383,8 @@ setMethod("get_formal_data", "BIOMOD.models.out",
 )
 
 
-## ------------------------------------------------------------------------------------------------
 
+## get_predictions.BIOMOD.models.out ---------------------------------------------------
 ##' 
 ##' @rdname getters.out
 ##' @export
@@ -438,31 +438,30 @@ setMethod("get_predictions", "BIOMOD.models.out",
           }
 )
 
-##' 
+## get_built_models.BIOMOD.models.out ---------------------------------------------------
 ##' @rdname getters.out
 ##' @export
 ##' 
 
 setMethod("get_built_models", "BIOMOD.models.out", function(obj, ...) { return(obj@models.computed) })
 
+## get_evaluations.BIOMOD.models.out ---------------------------------------------------
 ##' 
 ##' @rdname getters.out
 ##' @export
 ##' 
 
 setMethod("get_evaluations", "BIOMOD.models.out",
-          function(obj, as.data.frame = FALSE, ...)
-          {
+          function(obj, as.data.frame = FALSE, ...) {
             out <- NULL
             if (obj@models.evaluation@inMemory) {
               out <- obj@models.evaluation@val
-            } else if(obj@models.evaluation@link != '') {
+            } else if (obj@models.evaluation@link != '') {
               out <- get(load(obj@models.evaluation@link))
             }
             
             ## transform into data.frame object if needed
-            if(as.data.frame)
-            {
+            if (as.data.frame) {
               tmp = melt(out, varnames = c("Eval.metric", "tmp", "Algo", "Run", "Dataset"))
               tmp$Model.name = paste0(tmp$Algo, "_", tmp$Run, "_", tmp$Dataset)
               tmp.split = split(tmp, tmp$tmp)
@@ -475,14 +474,13 @@ setMethod("get_evaluations", "BIOMOD.models.out",
           }
 )
 
-##' 
+## get_variables_importance.BIOMOD.models.out ---------------------------------------------------
 ##' @rdname getters.out
 ##' @export
 ##' 
 
 setMethod("get_variables_importance", "BIOMOD.models.out",
-          function(obj, as.data.frame = FALSE, ...)
-          {
+          function(obj, as.data.frame = FALSE, ...) {
             out <- NULL
             # if (obj@variables.importance@inMemory) {
             #   out <- obj@variables.importance@val
@@ -496,14 +494,30 @@ setMethod("get_variables_importance", "BIOMOD.models.out",
             }
             dimnames(out)[[3]] <- get_built_models(obj)
             
-            if(!is.null(out) && as.data.frame == TRUE)
-            {
-              tmp = melt(out, varnames = c("Expl.var", "Rand", "L1"))
-              tmp$Model.name = sapply(as.character(tmp$L1), function(x) { paste(strsplit(x, "_")[[1]][-1], collapse = "_") })
-              tmp$Algo = sapply(tmp$Model.name, function(x) { strsplit(x, "_")[[1]][3] })
-              tmp$Run = sapply(tmp$Model.name, function(x) { strsplit(x, "_")[[1]][2] })
-              tmp$Dataset = sapply(tmp$Model.name, function(x) { strsplit(x, "_")[[1]][1] })
-              out = tmp[, c("Model.name", "Algo", "Run", "Dataset", "Expl.var", "Rand", "value")]
+            if (!is.null(out) && as.data.frame == TRUE) {
+              tmp <- melt(out, varnames = c("Expl.var", "Rand", "L1"))
+              tmp$Model.name <-
+                sapply(as.character(tmp$L1),
+                       function(x) { 
+                         paste(strsplit(x, "_")[[1]][-1], collapse = "_") 
+                       })
+              tmp$Algo <- 
+                sapply(tmp$Model.name, 
+                       function(x) { 
+                         strsplit(x, "_")[[1]][3] 
+                       })
+              tmp$Run <-
+                sapply(tmp$Model.name, 
+                       function(x) {
+                         strsplit(x, "_")[[1]][2] 
+                       })
+              tmp$Dataset <-
+                sapply(tmp$Model.name, 
+                       function(x) {
+                         strsplit(x, "_")[[1]][1]
+                       })
+              out <- tmp[, c("Model.name", "Algo", "Run",
+                             "Dataset", "Expl.var", "Rand", "value")]
               colnames(out)[7] = "Var.imp"
             }
             
@@ -513,9 +527,9 @@ setMethod("get_variables_importance", "BIOMOD.models.out",
 
 
 
-###################################################################################################
-## 5. BIOMOD.projection.out
-###################################################################################################
+## --------------------------------------------------------------------------- #
+## 5. BIOMOD.projection.out --------------------------------------------------
+## --------------------------------------------------------------------------- #
 
 ##' @name BIOMOD.projection.out
 ##' @author Damien Georges
@@ -556,7 +570,7 @@ setMethod("get_variables_importance", "BIOMOD.models.out",
 ##' 
 ##' showClass("BIOMOD.projection.out")
 ##' 
-##' ## ------------------------------------------------------------------------
+##' ## ----------------------------------------------------------------------- #
 ##' 
 ##' # Load species occurrences (6 species available)
 ##' myFile <- system.file('external/species/mammals_table.csv', package = 'biomod2')
@@ -577,7 +591,7 @@ setMethod("get_variables_importance", "BIOMOD.models.out",
 ##' myExpl <- raster::stack(system.file(myFiles, package = 'biomod2'))
 ##' 
 ##' 
-##' # ---------------------------------------------------------------
+##' ## ----------------------------------------------------------------------- #
 ##' file.out <- paste0(myRespName, "/", myRespName, ".AllModels.models.out")
 ##' if (file.exists(file.out)) {
 ##'   myBiomodModelOut <- get(load(file.out))
@@ -604,7 +618,7 @@ setMethod("get_variables_importance", "BIOMOD.models.out",
 ##' }
 ##' 
 ##' 
-##' # ---------------------------------------------------------------
+##' ## ----------------------------------------------------------------------- #
 ##' # Project single models
 ##' myBiomodProj <- BIOMOD_Projection(bm.mod = myBiomodModelOut,
 ##'                                   proj.name = 'Current',
@@ -625,7 +639,8 @@ setMethod("get_variables_importance", "BIOMOD.models.out",
 ##' @export
 ##' 
 
-# 5.1 Class Definition ----------------------------------------------------------------------------
+# 5.1 Class Definition  -----------------------------------
+
 setClass("BIOMOD.projection.out",
          representation(modeling.id = 'character',
                         proj.name = 'character',
@@ -650,7 +665,8 @@ setClass("BIOMOD.projection.out",
          validity = function(object){ return(TRUE) })
 
 
-# 5.3 Other functions -----------------------------------------------------------------------------
+# 5.3 Other functions ---------------------------------------------------------
+## plot.BIOMOD.projection.out -------------------------------------------------
 ##' 
 ##' @rdname BIOMOD.projection.out
 ##' @export
@@ -668,7 +684,7 @@ setMethod(
       stop("invalid str.grep arg")
     }
     
-    if(inherits(x@proj.out, "BIOMOD.stored.raster.stack")){
+    if (inherits(x@proj.out, "BIOMOD.stored.raster.stack")) {
       requireNamespace("rasterVis")
       maxi <- 
         try(
@@ -721,6 +737,7 @@ setMethod(
   }
 )
 
+## show.BIOMOD.projection.out -------------------------------------------------
 ##' 
 ##' @rdname BIOMOD.projection.out
 ##' @export
@@ -739,8 +756,7 @@ setMethod('show', signature('BIOMOD.projection.out'),
             .bm_cat()
           })
 
-## ------------------------------------------------------------------------------------------------
-
+## get_projected_models.BIOMOD.projection.out ----------------------------------
 ##' 
 ##' @rdname getters.out
 ##' @export
@@ -748,6 +764,7 @@ setMethod('show', signature('BIOMOD.projection.out'),
 
 setMethod("get_projected_models", "BIOMOD.projection.out", function(obj){ return(obj@models.projected) })
 
+## free.BIOMOD.projection.out --------------------------------------------------
 ##' 
 ##' @rdname getters.out
 ##' @export
@@ -766,29 +783,35 @@ setMethod('free', signature('BIOMOD.projection.out'),
             return(obj)
           })
 
+## get_predictions.BIOMOD.projection.out ---------------------------------------
 ##' 
 ##' @rdname getters.out
 ##' @export
 ##' 
 
 setMethod("get_predictions", "BIOMOD.projection.out",
-          function(obj, as.data.frame = FALSE, full.name = NULL, model = NULL, run.eval = NULL, data.set = NULL)
-          {
+          function(obj, as.data.frame = FALSE, full.name = NULL, 
+                   model = NULL, run.eval = NULL, data.set = NULL) {
             models_selected <- get_projected_models(obj)
-            if(length(full.name)){
+            if (length(full.name)) {
               models_selected <- intersect(full.name, models_selected)
-            } else if(length(model) | length(run.eval) | length(data.set)){
+            } else if (length(model) | length(run.eval) | length(data.set)) {
               # models subselection according to model, run.eval and data.set parameters
               grep_model = grep_run.eval = grep_data.set = "*"
-              if(length(model)) { grep_model <- paste0("(", paste(model, collapse = "|"), ")") }
-              if (length(run.eval)) { grep_run.eval <- paste0("(", paste(run.eval, collapse = "|"), ")") }
-              if (length(data.set)) { grep_data.set <- paste0("(", paste(data.set, collapse = "|"), ")") }
+              if (length(model)) { 
+                grep_model <- paste0("(", paste(model, collapse = "|"), ")")
+              }
+              if (length(run.eval)) { 
+                grep_run.eval <- paste0("(", paste(run.eval, collapse = "|"), ")") 
+              }
+              if (length(data.set)) { 
+                grep_data.set <- paste0("(", paste(data.set, collapse = "|"), ")") 
+              }
               grep_full <- paste0(grep_data.set, "_", grep_run.eval, "_", grep_model, "$")
               models_selected <- grep(pattern = grep_full, models_selected, value = TRUE)
             }
             
-            if (length(models_selected))
-            {
+            if (length(models_selected)) {
               proj <- load_stored_object(obj@proj.out)
               names(proj) <- obj@models.projected
               if (inherits(proj, 'Raster')) {
@@ -801,35 +824,38 @@ setMethod("get_predictions", "BIOMOD.projection.out",
                 proj <- proj[, models_selected, drop = FALSE]
               }
               
-              if(as.data.frame)
-              {
+              if (as.data.frame) {
                 proj <- as.data.frame(proj)
                 ## set correct names
-                if (obj@type == 'array' & sum(!(names(proj) %in% models_selected)) > 0) { ## from array & not valid names
-                  names(proj) <- unlist(lapply(strsplit(names(proj), ".", fixed = TRUE), function(x)
-                  {
-                    x.rev <- rev(x) ## we reverse the order of the splitted vector to have algo a t the end
-                    data.set.id <- x.rev[1]
-                    cross.valid.id <- x.rev[2]
-                    algo.id <- paste0(rev(x.rev[3:length(x.rev)]), collapse = ".")
-                    model.id <- paste(obj@sp.name,
-                                      data.set.id,
-                                      cross.valid.id,
-                                      algo.id, sep = "_")
-                    return(model.id)
-                  }))
+                if (obj@type == 'array' &
+                    sum(!(names(proj) %in% models_selected)) > 0) { ## from array & not valid names
+                  names(proj) <- unlist(
+                    lapply(strsplit(names(proj), ".", fixed = TRUE), 
+                           function(x){
+                             x.rev <- rev(x) ## we reverse the order of the splitted vector to have algo a t the end
+                             data.set.id <- x.rev[1]
+                             cross.valid.id <- x.rev[2]
+                             algo.id <- paste0(rev(x.rev[3:length(x.rev)]), collapse = ".")
+                             model.id <- paste(obj@sp.name,
+                                               data.set.id,
+                                               cross.valid.id,
+                                               algo.id, sep = "_")
+                             return(model.id)
+                           }))
                 }
                 proj <- proj[, models_selected, drop = FALSE] # reorder the data.frame
               }
-            } else { proj <- NULL }
+            } else { 
+              proj <- NULL 
+            }
             return(proj)
           }
 )
 
 
-###################################################################################################
-## 6. BIOMOD.ensemble.models.out
-###################################################################################################
+## --------------------------------------------------------------------------- #
+## 6. BIOMOD.ensemble.models.out ---------------------------------------------
+## --------------------------------------------------------------------------- #
 
 ##' @name BIOMOD.ensemble.models.out
 ##' @author Damien Georges
@@ -868,7 +894,7 @@ setMethod("get_predictions", "BIOMOD.projection.out",
 ##' 
 ##' showClass("BIOMOD.ensemble.models.out")
 ##' 
-##' ## ------------------------------------------------------------------------
+##' ## ----------------------------------------------------------------------- #
 ##' 
 ##' # Load species occurrences (6 species available)
 ##' myFile <- system.file('external/species/mammals_table.csv', package = 'biomod2')
@@ -889,7 +915,7 @@ setMethod("get_predictions", "BIOMOD.projection.out",
 ##' myExpl <- raster::stack(system.file(myFiles, package = 'biomod2'))
 ##' 
 ##' 
-##' # ---------------------------------------------------------------
+##' ## ----------------------------------------------------------------------- #
 ##' file.out <- paste0(myRespName, "/", myRespName, ".AllModels.models.out")
 ##' if (file.exists(file.out)) {
 ##'   myBiomodModelOut <- get(load(file.out))
@@ -916,7 +942,7 @@ setMethod("get_predictions", "BIOMOD.projection.out",
 ##' }
 ##' 
 ##' 
-##' # ---------------------------------------------------------------
+##' ## ----------------------------------------------------------------------- #
 ##' # Model ensemble models
 ##' myBiomodEM <- BIOMOD_EnsembleModeling(bm.mod = myBiomodModelOut,
 ##'                                       models.chosen = 'all',
@@ -939,7 +965,8 @@ setMethod("get_predictions", "BIOMOD.projection.out",
 ##' @export
 ##' 
 
-# 6.1 Class Definition ----------------------------------------------------------------------------
+# 6.1 Class Definition ---------------------------------------------------------
+
 setClass("BIOMOD.ensemble.models.out",
          representation(dir.name = 'character',
                         sp.name = 'character',
@@ -961,7 +988,8 @@ setClass("BIOMOD.ensemble.models.out",
          validity = function(object){ return(TRUE) })
 
 
-# 6.3 Other functions -----------------------------------------------------------------------------
+# 6.3 Other functions ----------------------------------------------------------
+## show.BIOMOD.ensemble.models.out ---------------------------------------------
 ##' 
 ##' @rdname BIOMOD.ensemble.models.out
 ##' @export
@@ -977,8 +1005,7 @@ setMethod('show', signature('BIOMOD.ensemble.models.out'),
             .bm_cat()
           })
 
-## ------------------------------------------------------------------------------------------------
-
+## get_formal_data.BIOMOD.ensemble.models.out ----------------------------------
 ##' 
 ##' @rdname getters.out
 ##' @export
@@ -1023,6 +1050,7 @@ setMethod("get_formal_data", "BIOMOD.ensemble.models.out",
           }
 )
 
+## get_needed_models.BIOMOD.ensemble.models.out --------------------------------
 ##' 
 ##' @rdname getters.out
 ##' @export
@@ -1042,6 +1070,7 @@ setMethod("get_needed_models", "BIOMOD.ensemble.models.out",
           })
 
 
+## get_kept_models.BIOMOD.ensemble.models.out ----------------------------------
 ##' 
 ##' @rdname getters.out
 ##' @export
@@ -1058,8 +1087,7 @@ setMethod("get_kept_models", "BIOMOD.ensemble.models.out",
             }
           })
 
-## ------------------------------------------------------------------------------------------------
-
+## get_predictions.BIOMOD.ensemble.models.out ----------------------------------
 ##' 
 ##' @rdname getters.out
 ##' @export
@@ -1080,21 +1108,25 @@ setMethod("get_predictions", "BIOMOD.ensemble.models.out",
             return(bm.pred)
           })
 
+## get_built_models.BIOMOD.ensemble.models.out ---------------------------------
 ##' 
 ##' @rdname getters.out
 ##' @export
 ##' 
 
-setMethod("get_built_models", "BIOMOD.ensemble.models.out", function(obj, ...){ return(obj@em.computed) })
+setMethod("get_built_models", "BIOMOD.ensemble.models.out", 
+          function(obj, ...){ 
+            return(obj@em.computed) 
+          })
 
+## get_evaluations.BIOMOD.ensemble.models.out ----------------------------------
 ##' 
 ##' @rdname getters.out
 ##' @export
 ##' 
 
 setMethod("get_evaluations", "BIOMOD.ensemble.models.out",
-          function(obj, as.data.frame = FALSE, ...)
-          {
+          function(obj, as.data.frame = FALSE, ...) {
             ## extract evaluation scores as a list
             out <- list()
             models <- obj@em.computed ## list of computed models
@@ -1103,8 +1135,7 @@ setMethod("get_evaluations", "BIOMOD.ensemble.models.out",
             }
             
             ## transform into data.frame object if needed
-            if(as.data.frame)
-            {
+            if(as.data.frame) {
               tmp = melt(out, varnames = c("Eval.metric", "tmp"))
               tmp$Model.name = sapply(tmp$L1, function(x) { paste(strsplit(x, "_")[[1]][-1], collapse = "_") })
               tmp$Model = sapply(tmp$Model.name, function(x) { strsplit(x, "_")[[1]][1] })
@@ -1121,14 +1152,14 @@ setMethod("get_evaluations", "BIOMOD.ensemble.models.out",
           }
 )
 
+## get_variables_importance.BIOMOD.ensemble.models.out -------------------------
 ##' 
 ##' @rdname getters.out
 ##' @export
 ##' 
 
 setMethod("get_variables_importance", "BIOMOD.ensemble.models.out",
-          function(obj, as.data.frame = FALSE, ...)
-          {
+          function(obj, as.data.frame = FALSE, ...) {
             out <- NULL
             for (mod in get_built_models(obj)) {
               out_tmp <- obj@em.models[[mod]]@model_variables_importance
@@ -1136,15 +1167,36 @@ setMethod("get_variables_importance", "BIOMOD.ensemble.models.out",
             }
             dimnames(out)[[3]] <- get_built_models(obj)
             
-            if(!is.null(out) && as.data.frame == TRUE)
-            {
-              tmp = melt(out, varnames = c("Expl.var", "Rand", "L1"))
-              tmp$Model.name = sapply(as.character(tmp$L1), function(x) { paste(strsplit(x, "_")[[1]][-1], collapse = "_") })
-              tmp$Model = sapply(tmp$Model.name, function(x) { strsplit(x, "_")[[1]][1] })
-              tmp$Algo = sapply(tmp$Model.name, function(x) { strsplit(x, "_")[[1]][2] })
-              tmp$Run = sapply(tmp$Model.name, function(x) { strsplit(x, "_")[[1]][3] })
-              tmp$Dataset = sapply(tmp$Model.name, function(x) { strsplit(x, "_")[[1]][4] })
-              out = tmp[, c("Model.name", "Model", "Algo", "Run", "Dataset", "Expl.var", "Rand", "value")]
+            if(!is.null(out) && as.data.frame == TRUE) {
+              tmp <- melt(out, varnames = c("Expl.var", "Rand", "L1"))
+              tmp$Model.name <- 
+                sapply(as.character(tmp$L1), 
+                       function(x) {
+                         paste(strsplit(x, "_")[[1]][-1], collapse = "_") 
+                       })
+              tmp$Model <-  
+                sapply(tmp$Model.name, 
+                       function(x) { 
+                         strsplit(x, "_")[[1]][1]
+                       })
+              tmp$Algo <-  
+                sapply(tmp$Model.name,
+                       function(x) { 
+                         strsplit(x, "_")[[1]][2] 
+                       })
+              tmp$Run <- 
+                sapply(tmp$Model.name,
+                       function(x) { 
+                         strsplit(x, "_")[[1]][3] 
+                       })
+              tmp$Dataset <- 
+                sapply(tmp$Model.name, 
+                       function(x) { 
+                         strsplit(x, "_")[[1]][4] 
+                       })
+              out <- tmp[, c("Model.name", "Model", "Algo",
+                             "Run", "Dataset", "Expl.var",
+                             "Rand", "value")]
               colnames(out)[8] = "Var.imp"
             }
             
