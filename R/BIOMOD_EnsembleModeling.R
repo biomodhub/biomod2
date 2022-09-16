@@ -435,14 +435,12 @@ BIOMOD_EnsembleModeling <- function(bm.mod,
     if (length(needed_predictions) == 0) next
     
     ## LOOP over evaluation metrics ##
-    for (eval.m in metric.select)
-    {
+    for (eval.m in metric.select) {
       models.kept <- needed_predictions$models.kept[[eval.m]]
       models.kept.scores <- needed_predictions$models.kept.scores[[eval.m]]
       
       ## LOOP over em.algo ##
-      for (algo in em.algo)
-      {
+      for (algo in em.algo) {
         algo.1 <- algo.2 <- algo.3 <- NULL
         models.kept.tmp = models.kept
         if (algo == 'prob.mean') {
@@ -576,10 +574,11 @@ BIOMOD_EnsembleModeling <- function(bm.mod,
         
         ## do the same for evaluation data
         if (exists('eval.obs') & exists('eval.expl')) {
+          pred.bm.eval.outfile <- paste0(pred.bm.outfile,"Eval")
           pred.bm.name <- paste0(model_name, ".predictionsEval")
           eval_pred.bm <- predict(model.bm, newdata = eval.expl, seedval = seed.val)
           assign(pred.bm.name, eval_pred.bm)
-          save(list = pred.bm.name, file = pred.bm.outfile, compress = TRUE)
+          save(list = pred.bm.name, file = pred.bm.eval.outfile, compress = TRUE)
           rm(list = pred.bm.name)
         }
         
@@ -899,7 +898,7 @@ BIOMOD_EnsembleModeling <- function(bm.mod,
                                            new.env = get_formal_data(bm.mod)@data.env.var,
                                            proj.name = temp_name,
                                            xy.new.env = get_formal_data(bm.mod)@coord,
-                                           selected.models = models.kept.union,
+                                           models.chosen = models.kept.union,
                                            compress = TRUE,
                                            build.clamping.mask = FALSE,
                                            do.stack = TRUE,
