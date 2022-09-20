@@ -332,7 +332,6 @@ setMethod('predict2', signature(object = 'biomod2_model', newdata = "data.frame"
             set.seed(seedval)
             # eval(parse(text = paste0("proj <- ", predcommand)))
             proj <- predfun(object, newdata, not_na_rows)
-
             ## add original NA from formal dataset
             if (sum(!not_na_rows) > 0) {
               tmp <- rep(NA, length(not_na_rows))
@@ -416,7 +415,7 @@ setClass('CTA_biomod2_model',
 setMethod('predict2', signature(object = 'CTA_biomod2_model', newdata = "RasterStack"),
           function(object, newdata, ...) {
             use_calc <- FALSE
-            
+
             fact.var <- is.factor(newdata)
             if (any(fact.var)) {
               use_calc <- TRUE
@@ -479,6 +478,7 @@ setMethod('predict2', signature(object = 'FDA_biomod2_model', newdata = "RasterS
             }
             # redirect to predict2.biomod2_model.RasterStack
             callNextMethod(object, newdata, predfun = predfun, ...)
+
           }
 )
 
@@ -525,14 +525,12 @@ setMethod('predict2', signature(object = 'GAM_biomod2_model', newdata = "RasterS
             }
             # redirect to predict2.biomod2_model.RasterStack
             callNextMethod(object, newdata, predfun = predfun, ...)
-
           }
 )
 
 setMethod('predict2', signature(object = 'GAM_biomod2_model', newdata = "data.frame"),
           function(object, newdata, ...) {
             .load_gam_namespace(object@model_subclass)
-
             predfun <- function(object, newdata, not_na_rows){
               as.numeric(.run_pred(object = get_formal_model(object), Prev = 0.5 , dat = as.data.frame(newdata[not_na_rows, , drop = FALSE])))
             }
@@ -605,7 +603,6 @@ setClass('GLM_biomod2_model',
 
 setMethod('predict2', signature(object = 'GLM_biomod2_model', newdata = "RasterStack"),
           function(object, newdata, ...) {
-
             predfun <- function(object, newdata){
               .run_pred(object = get_formal_model(object), Prev = 0.5 , dat = newdata)   
             }
@@ -676,6 +673,17 @@ setMethod('predict2', signature(object = 'MARS_biomod2_model', newdata = "Raster
           }
 )
 
+setMethod('predict2', signature(object = 'MARS_biomod2_model', newdata = "data.frame"),
+          function(object, newdata, ...) {
+            
+            predfun <- function(object, newdata, not_na_rows){
+              as.numeric(predict(get_formal_model(object), as.data.frame(newdata[not_na_rows, , drop = FALSE]), type = 'response'))
+            }
+            
+            # redirect to predict2.biomod2_model.data.frame
+            callNextMethod(object, newdata, predfun = predfun, ...)
+          }
+)
 
 setMethod('predict2', signature(object = 'MARS_biomod2_model', newdata = "data.frame"),
           function(object, newdata, ...) {
@@ -954,11 +962,9 @@ setClass('RF_biomod2_model',
 
 setMethod('predict2', signature(object = 'RF_biomod2_model', newdata = "RasterStack"),
           function(object, newdata, ...) {
-
             predfun <- function(object, newdata){
               predict(newdata, model = get_formal_model(object), type = 'prob', index = 2)            
             }
-            
             # redirect to predict2.biomod2_model.RasterStack
             callNextMethod(object, newdata, predfun = predfun, ...)
 
@@ -967,7 +973,6 @@ setMethod('predict2', signature(object = 'RF_biomod2_model', newdata = "RasterSt
 
 setMethod('predict2', signature(object = 'RF_biomod2_model', newdata = "data.frame"),
           function(object, newdata, ...) {
-
             predfun <- function(object, newdata, not_na_rows){
               as.numeric(predict(get_formal_model(object), as.data.frame(newdata[not_na_rows, , drop = FALSE]), type = 'prob')[, '1'])        
             }
@@ -1000,7 +1005,7 @@ setMethod('predict2', signature(object = 'SRE_biomod2_model', newdata = "RasterS
             predfun <- function(object, newdata){
               .sre_projection(new.env = newdata, extrem.cond = object@extremal_conditions)
             }
-            
+
             # redirect to predict2.biomod2_model.RasterStack
             callNextMethod(object, newdata, predfun = predfun, ...)
           }
