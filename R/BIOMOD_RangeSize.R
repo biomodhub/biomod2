@@ -116,7 +116,8 @@
 ##'                                       data.split.perc = 80,
 ##'                                       metric.eval = c('TSS','ROC'),
 ##'                                       var.import = 3,
-##'                                       do.full.models = FALSE)
+##'                                       do.full.models = FALSE,
+##'                                       seed.val = 42)
 ##' }
 ##' 
 ##' file.proj <- paste0(myRespName, "/proj_Current/", myRespName, ".Current.projection.out")

@@ -151,7 +151,8 @@
 ##'                                       data.split.perc = 80,
 ##'                                       metric.eval = c('TSS','ROC'),
 ##'                                       var.import = 3,
-##'                                       do.full.models = FALSE)
+##'                                       do.full.models = FALSE,
+##'                                       seed.val = 42)
 ##' }
 ##' 
 ##' 
@@ -191,7 +192,8 @@
 ##'                                         prob.ci.alpha = 0.05,
 ##'                                         committee.averaging = TRUE,
 ##'                                         prob.mean.weight = TRUE,
-##'                                         prob.mean.weight.decay = 'proportional')
+##'                                         prob.mean.weight.decay = 'proportional',
+##'                                         seed.val = 42)
 ##' }
 ##' 
 ##' 

@@ -241,7 +241,8 @@ setGeneric("get_variables_importance", function(obj, ...) { standardGeneric("get
 ##'                                     data.split.perc = 80,
 ##'                                     metric.eval = c('TSS','ROC'),
 ##'                                     var.import = 3,
-##'                                     do.full.models = FALSE)
+##'                                     do.full.models = FALSE,
+##'                                     seed.val = 42)
 ##' myBiomodModelOut
 ##' 
 ##' 
@@ -614,7 +615,8 @@ setMethod("get_variables_importance", "BIOMOD.models.out",
 ##'                                       data.split.perc = 80,
 ##'                                       metric.eval = c('TSS','ROC'),
 ##'                                       var.import = 3,
-##'                                       do.full.models = FALSE)
+##'                                       do.full.models = FALSE,
+##'                                       seed.val = 42)
 ##' }
 ##' 
 ##' 
@@ -938,7 +940,8 @@ setMethod("get_predictions", "BIOMOD.projection.out",
 ##'                                       data.split.perc = 80,
 ##'                                       metric.eval = c('TSS','ROC'),
 ##'                                       var.import = 3,
-##'                                       do.full.models = FALSE)
+##'                                       do.full.models = FALSE,
+##'                                       seed.val = 42)
 ##' }
 ##' 
 ##' 
@@ -958,7 +961,8 @@ setMethod("get_predictions", "BIOMOD.projection.out",
 ##'                                       prob.ci.alpha = 0.05,
 ##'                                       committee.averaging = TRUE,
 ##'                                       prob.mean.weight = TRUE,
-##'                                       prob.mean.weight.decay = 'proportional')
+##'                                       prob.mean.weight.decay = 'proportional',
+##'                                       seed.val = 42)
 ##' myBiomodEM
 ##' 
 ##' 

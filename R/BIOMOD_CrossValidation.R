@@ -135,7 +135,8 @@
 ##'                                     data.split.table = myBiomodCV,
 ##'                                     metric.eval = c('TSS','ROC'),
 ##'                                     var.import = 3,
-##'                                     do.full.models = FALSE)
+##'                                     do.full.models = FALSE,
+##'                                     seed.val = 42)
 ##' 
 ##' # Get evaluation scores & variables importance
 ##' myEval <- get_evaluations(myBiomodModelOut, as.data.frame = TRUE)
