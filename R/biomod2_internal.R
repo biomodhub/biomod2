@@ -729,3 +729,36 @@ check_data_range <- function(model, new_data)
     }
   } #W loop
 }
+
+
+
+## GAM library loading --------------------------------------------------------
+## used in biomod2_classes_4.R file for GAM predict template
+##' @name .load_gam_namespace
+##' 
+##' @title Load library for GAM models
+##' 
+##' @description This function loads library for either GAM and BAM from mgcv
+##'   package or for GAM from gam package.
+##' 
+##' 
+##' @param model_subclass the subclass of GAM model
+
+.load_gam_namespace <- function(model_subclass = c("GAM_mgcv","BAM_mgcv", "GAM_gam")){
+  if (model_subclass %in% c("GAM_mgcv", "BAM_mgcv")) {
+    # cat("\n*** unloading gam package / loading mgcv package")
+    if (isNamespaceLoaded("gam")) { unloadNamespace("gam") }
+    if (!isNamespaceLoaded("mgcv")) { requireNamespace("mgcv", quietly = TRUE) }
+  }
+  
+  if (model_subclass == "GAM_gam") {
+    # cat("\n*** unloading mgcv package / loading gam package")
+    if (isNamespaceLoaded("mgcv")) {
+      if (isNamespaceLoaded("caret")) { unloadNamespace("caret")} ## need to unload caret before car
+      if (isNamespaceLoaded("car")) { unloadNamespace("car") } ## need to unload car before mgcv
+      unloadNamespace("mgcv")
+    }
+    if (!isNamespaceLoaded("gam")) { requireNamespace("gam", quietly = TRUE) }
+  }
+  invisible(NULL)
+}
