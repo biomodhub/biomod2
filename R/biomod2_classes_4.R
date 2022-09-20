@@ -1,4 +1,4 @@
-
+# getters.bm doc ----------------------------------------------------------
 ##' @name getters.bm
 ##' @aliases get_formal_model
 ##' @aliases get_scaling_model
@@ -84,9 +84,9 @@ NULL
 #setGeneric("predict", def = function(object, ...) { standardGeneric("predict") })
 
 
-###################################################################################################
-## 7. biomod2_model
-###################################################################################################
+#----------------------------------------------------------------------------- #
+# 7. biomod2_model -----------------------------------------------------------
+#----------------------------------------------------------------------------- #
 
 ##' @name biomod2_model
 ##' @aliases biomod2_model-class
@@ -197,7 +197,12 @@ setClass('biomod2_model',
                           model_evaluation = matrix(),
                           model_variables_importance = matrix()),
          validity = function(object) { # check that scaler is a glm if it is defined
-           if(length(object@scaling_model) > 0 && !inherits(object@scaling_model, c("glm", "lm"))) { return(FALSE) } else { return(TRUE) }
+           if (length(object@scaling_model) > 0 && 
+               !inherits(object@scaling_model, c("glm", "lm"))) {
+             return(FALSE)
+           } else { 
+             return(TRUE) 
+           }
          })
 
 # 7.2 Getters -------------------------------------------------------------------------------------
@@ -207,14 +212,16 @@ setClass('biomod2_model',
 ##' @export
 ##' 
 
-setMethod('get_formal_model', signature('biomod2_model'), function(object) { return(object@model) })
+setMethod('get_formal_model', signature('biomod2_model'), 
+          function(object) { return(object@model) })
 
 ##' 
 ##' @rdname getters.bm
 ##' @export
 ##' 
 
-setMethod('get_scaling_model', signature('biomod2_model'), function(object) { return(object@scaling_model) })
+setMethod('get_scaling_model', signature('biomod2_model'), 
+          function(object) { return(object@scaling_model) })
 
 
 # 7.3 Other Functions -----------------------------------------------------------------------------
@@ -225,8 +232,7 @@ setMethod('get_scaling_model', signature('biomod2_model'), function(object) { re
 ##' 
 
 setMethod('show', signature('biomod2_model'),
-          function(object)
-          {
+          function(object) {
             .bm_cat("biomod2_model")
             cat("\n\t model name :", object@model_name, fill = .Options$width)
             cat("\n\t model class :", object@model_class, fill = .Options$width)
@@ -250,42 +256,139 @@ setMethod('show', signature('biomod2_model'),
           })
 
 
+## 7.4 biomod2_model predict method ----------------------------------------
 
-###################################################################################################
-## 8.1 ANN_biomod2_model
-###################################################################################################
+# this method just dispatch onto method predict2 so that it may handle 
+# a second argument dispatch (newdata = data.frame or RasterStack)
+
+setMethod('predict', signature(object = 'biomod2_model'),
+          function(object, newdata, ...) {
+            predict2(object, newdata, ...)
+          }
+)
+
+## 7.5 biomod2_model predict2 method ----------------------------------------
+
+### generic method definition -----------------------------------------------
+
+setGeneric("predict2", function(object, newdata, ...) { standardGeneric("predict2") }) 
+
+### biomod2_model + Raster  -------------------------------------------------
+setMethod('predict2', signature(object = 'biomod2_model', newdata = "RasterStack"),
+          function(object, newdata, predcommand, seedval = NULL, ...) {
+            args <- list(...)
+            namefile <- args$namefile
+            overwrite <- args$overwrite
+            on_0_1000 <- args$on_0_1000
+            
+            if (is.null(overwrite)) { overwrite <- TRUE }
+            if (is.null(on_0_1000)) { on_0_1000 <- FALSE }
+            
+            set.seed(seedval)
+            eval(parse(text = paste0("proj <- ", predcommand)))
+            
+            if (length(get_scaling_model(object))) {
+              names(proj) <- "pred"
+              proj <- .run_pred(object = get_scaling_model(object), Prev = 0.5 , dat = proj)
+            }
+            if (on_0_1000) { proj <- round(proj * 1000) }
+            
+            # save raster on hard drive ?
+            if (!is.null(namefile)) {
+              cat("\n\t\tWriting projection on hard drive...")
+              if (on_0_1000) { ## projections are stored as positive integer
+                writeRaster(proj, filename = namefile, overwrite = overwrite, datatype = "INT2S", NAflag = -9999)
+              } else { ## keep default data format for saved raster
+                writeRaster(proj, filename = namefile, overwrite = overwrite)
+              }
+              proj <- raster(namefile, RAT = FALSE)
+            }
+            return(proj)
+          }
+)
+
+### biomod2_model + data.frame ---------------------------------------------
+
+setMethod('predict2', signature(object = 'biomod2_model', newdata = "data.frame"),
+          function(object, newdata, predcommand, seedval = NULL, ...) {
+            args <- list(...)
+            on_0_1000 <- args$on_0_1000
+            omit.na <- args$omit.na
+            
+            if (is.null(on_0_1000)) { on_0_1000 <- FALSE }
+            if (is.null(omit.na)) { omit.na <- FALSE }
+            
+            ## check if na occurs in newdata cause they are not well supported
+            if (omit.na) {
+              not_na_rows <- apply(newdata, 1, function(x) { sum(is.na(x)) == 0 })
+            } else {
+              not_na_rows <- rep(T, nrow(newdata))
+            }
+            
+            set.seed(seedval)
+            eval(parse(text = paste0("proj <- ", predcommand)))
+            
+            ## add original NA from formal dataset
+            if (sum(!not_na_rows) > 0) {
+              tmp <- rep(NA, length(not_na_rows))
+              tmp[not_na_rows] <- proj
+              proj <- tmp
+              rm('tmp')
+            }
+            
+            if (length(get_scaling_model(object))) {
+              proj <- data.frame(pred = proj)
+              proj <- .run_pred(object = get_scaling_model(object), Prev = 0.5, dat = proj)
+            }
+            if (on_0_1000) { proj <- round(proj * 1000) }
+            
+            return(proj)
+          }
+)
+
+#----------------------------------------------------------------------------- #
+# 8 biomod2_model subclass ---------------------------------------------------
+#----------------------------------------------------------------------------- #
+
+#----------------------------------------------------------------------------- #
+## 8.1 ANN_biomod2_model -----------------------------------------------------
+#----------------------------------------------------------------------------- #
 
 setClass('ANN_biomod2_model',
          representation(),
          contains = 'biomod2_model',
          prototype = list(model_class = 'ANN'),
-         validity = function(object) { if(!inherits(object@model, "nnet")) { return(FALSE) } else { return(TRUE) }})
+         validity = function(object) { 
+           if (!inherits(object@model, "nnet")) {
+             return(FALSE) } 
+           else {
+             return(TRUE)
+           }})
 
 ##' 
 ##' @rdname predict.bm
 ##' @export
 ##' 
 
-setMethod('predict', signature(object = 'ANN_biomod2_model'),
-          function(object, newdata, ...)
-          {
-            return(.template_predict(mod = "ANN", object, newdata, ...))
-          })
+setMethod('predict2', signature(object = 'ANN_biomod2_model', newdata = "RasterStack"),
+          function(object, newdata, ...) {
+            predcommand <- "predict(newdata, get_formal_model(object), type = 'raw')"
+            # redirect to predict2.biomod2_model.RasterStack
+            callNextMethod(object, newdata, predcommand = predcommand, ...)
+          }
+)
 
-.predict.ANN_biomod2_model.RasterStack <- function(object, newdata, ...)
-{
-  return(.template_predict.RasterStack(predcommand = "predict(newdata, get_formal_model(object), type = 'raw')", object, newdata, ...))
-}
+setMethod('predict2', signature(object = 'ANN_biomod2_model', newdata = "data.frame"),
+          function(object, newdata, ...) {
+            predcommand <- "as.numeric(predict(get_formal_model(object), newdata[not_na_rows, , drop = FALSE], type = 'raw'))"
+            # redirect to predict2.biomod2_model.data.frame
+            callNextMethod(object, newdata, predcommand = predcommand, ...)
+          }
+)
 
-.predict.ANN_biomod2_model.data.frame <- function(object, newdata, ...)
-{
-  return(.template_predict.data.frame(predcommand = "as.numeric(predict(get_formal_model(object), newdata[not_na_rows, , drop = FALSE], type = 'raw'))", object, newdata, ...))
-}
-
-
-###################################################################################################
-## 8.2 CTA_biomod2_model
-###################################################################################################
+#----------------------------------------------------------------------------- #
+## 8.2 CTA_biomod2_model -----------------------------------------------------
+#----------------------------------------------------------------------------- #
 
 setClass('CTA_biomod2_model',
          representation(),
@@ -300,33 +403,32 @@ setClass('CTA_biomod2_model',
 ##' @export
 ##' 
 
-setMethod('predict', signature(object = 'CTA_biomod2_model'),
-          function(object, newdata, ...)
-          {
-            if (inherits(newdata,'Raster') & 
-                any(object@expl_var_type == "factor")) {
-              # CTA with factors cannot be predicted on raster 
+setMethod('predict2', signature(object = 'CTA_biomod2_model', newdata = "RasterStack"),
+          function(object, newdata, ...) {
+            if (any(object@expl_var_type == "factor")) {
+              # CTA with factors cannot yet be predicted on raster 
               stop("\n\t! CTA raster prediction not possible with categorical variables !")
-              
-            } else {
-              return(.template_predict(mod = "CTA", object, newdata, ...))
-            }
-          })
+            } 
+            predcommand <- "predict(newdata, model = get_formal_model(object), type = 'prob', index = 2)"
+            # redirect to predict2.biomod2_model.RasterStack
+            callNextMethod(object, newdata, predcommand = predcommand, ...)
+            
+          }
+)
 
-.predict.CTA_biomod2_model.RasterStack <- function(object, newdata, ...)
-{
-  return(.template_predict.RasterStack(predcommand = "predict(newdata, model = get_formal_model(object), type = 'prob', index = 2)", object, newdata, ...))
-}
-
-.predict.CTA_biomod2_model.data.frame <- function(object, newdata, ...)
-{
-  return(.template_predict.data.frame(predcommand = "as.numeric(predict(get_formal_model(object), as.data.frame(newdata[not_na_rows, , drop = FALSE]), type = 'prob')[, 2])", object, newdata, ...))
-}  
+setMethod('predict2', signature(object = 'CTA_biomod2_model', newdata = "data.frame"),
+          function(object, newdata, ...) {
+            predcommand <- "as.numeric(predict(get_formal_model(object), as.data.frame(newdata[not_na_rows, , drop = FALSE]), type = 'prob')[, 2])"
+            # redirect to predict2.biomod2_model.data.frame
+            callNextMethod(object, newdata, predcommand = predcommand, ...)
+          }
+)
 
 
-###################################################################################################
-## 8.3 FDA_biomod2_model
-###################################################################################################
+
+#----------------------------------------------------------------------------- #
+## 8.3 FDA_biomod2_model -----------------------------------------------------
+#----------------------------------------------------------------------------- #
 
 setClass('FDA_biomod2_model',
          representation(),
@@ -341,26 +443,26 @@ setClass('FDA_biomod2_model',
 ##' @export
 ##' 
 
-setMethod('predict', signature(object = 'FDA_biomod2_model'),
-          function(object, newdata, ...)
-          {
-            return(.template_predict(mod = "FDA", object, newdata, ...))
-          })
+setMethod('predict2', signature(object = 'FDA_biomod2_model', newdata = "RasterStack"),
+          function(object, newdata, ...) {
+            predcommand <- "predict(newdata, model = get_formal_model(object), type = 'posterior', index = 2)"
+            # redirect to predict2.biomod2_model.RasterStack
+            callNextMethod(object, newdata, predcommand = predcommand, ...)
+            
+          }
+)
 
-.predict.FDA_biomod2_model.RasterStack <- function(object, newdata, ...)
-{
-  return(.template_predict.RasterStack(predcommand = "predict(newdata, model = get_formal_model(object), type = 'posterior', index = 2)", object, newdata, ...))
-}
+setMethod('predict2', signature(object = 'FDA_biomod2_model', newdata = "data.frame"),
+          function(object, newdata, ...) {
+            predcommand <- "as.numeric(predict(get_formal_model(object), as.data.frame(newdata[not_na_rows, , drop = FALSE]), type = 'posterior')[, 2])"
+            # redirect to predict2.biomod2_model.data.frame
+            callNextMethod(object, newdata, predcommand = predcommand, omit.na = TRUE, ...)
+          }
+)
 
-.predict.FDA_biomod2_model.data.frame <- function(object, newdata, ...)
-{
-  return(.template_predict.data.frame(predcommand = "as.numeric(predict(get_formal_model(object), as.data.frame(newdata[not_na_rows, , drop = FALSE]), type = 'posterior')[, 2])", object, newdata, omit.na = TRUE, ...))
-}  
-
-
-###################################################################################################
-## 8.4 GAM_biomod2_model
-###################################################################################################
+#----------------------------------------------------------------------------- #
+## 8.4 GAM_biomod2_model -----------------------------------------------------
+#----------------------------------------------------------------------------- #
 
 setClass('GAM_biomod2_model',
          representation(model_subclass = 'character'), 
@@ -381,42 +483,30 @@ setClass('GAM_biomod2_model',
 ##' @export
 ##' 
 
-setMethod('predict', signature(object = 'GAM_biomod2_model'),
-          function(object, newdata, ...)
-          {
-            if (object@model_subclass %in% c("GAM_mgcv", "BAM_mgcv")) {
-              # cat("\n*** unloading gam package / loading mgcv package")
-              if (isNamespaceLoaded("gam")) { unloadNamespace("gam") }
-              if (!isNamespaceLoaded("mgcv")) { requireNamespace("mgcv", quietly = TRUE) }
-            }
+setMethod('predict2', signature(object = 'GAM_biomod2_model', newdata = "RasterStack"),
+          function(object, newdata, ...) {
+            .load_gam_namespace(object@model_subclass)
             
-            if (object@model_subclass == "GAM_gam") {
-              # cat("\n*** unloading mgcv package / loading gam package")
-              if (isNamespaceLoaded("mgcv")) {
-                if (isNamespaceLoaded("caret")) { unloadNamespace("caret")} ## need to unload caret before car
-                if (isNamespaceLoaded("car")) { unloadNamespace("car") } ## need to unload car before mgcv
-                unloadNamespace("mgcv")
-              }
-              if (!isNamespaceLoaded("gam")) { requireNamespace("gam", quietly = TRUE) }
-            }
+            predcommand <- ".run_pred(object = get_formal_model(object), Prev = 0.5 , dat = newdata)"
+            # redirect to predict2.biomod2_model.RasterStack
+            callNextMethod(object, newdata, predcommand = predcommand, ...)
             
-            return(.template_predict(mod = "GAM", object, newdata, ...))
-          })
+          }
+)
 
-.predict.GAM_biomod2_model.RasterStack <- function(object, newdata, ...)
-{
-  return(.template_predict.RasterStack(predcommand = ".run_pred(object = get_formal_model(object), Prev = 0.5 , dat = newdata)", object, newdata, ...))
-}
+setMethod('predict2', signature(object = 'GAM_biomod2_model', newdata = "data.frame"),
+          function(object, newdata, ...) {
+            .load_gam_namespace(object@model_subclass)
+            predcommand <- "as.numeric(.run_pred(object = get_formal_model(object), Prev = 0.5 , dat = as.data.frame(newdata[not_na_rows, , drop = FALSE])))"
+            # redirect to predict2.biomod2_model.data.frame
+            callNextMethod(object, newdata, predcommand = predcommand, ...)
+          }
+)
 
-.predict.GAM_biomod2_model.data.frame <- function(object, newdata, ...)
-{
-  return(.template_predict.data.frame(predcommand = "as.numeric(.run_pred(object = get_formal_model(object), Prev = 0.5 , dat = as.data.frame(newdata[not_na_rows, , drop = FALSE])))", object, newdata, ...))
-} 
 
-
-###################################################################################################
-## 8.5 GBM_biomod2_model
-###################################################################################################
+#----------------------------------------------------------------------------- #
+## 8.5 GBM_biomod2_model -----------------------------------------------------
+#----------------------------------------------------------------------------- #
 
 setClass('GBM_biomod2_model',
          representation(n.trees_optim = 'numeric'),
@@ -431,26 +521,27 @@ setClass('GBM_biomod2_model',
 ##' @export
 ##' 
 
-setMethod('predict', signature(object = 'GBM_biomod2_model'),
-          function(object, newdata, ...)
-          {
-            return(.template_predict(mod = "GBM", object, newdata, ...))
-          })
+setMethod('predict2', signature(object = 'GBM_biomod2_model', newdata = "RasterStack"),
+          function(object, newdata, ...) {
+            predcommand <- "predict(newdata, model = get_formal_model(object), fun = predict.gbm, n.trees = object@n.trees_optim, type = 'response')"
+            # redirect to predict2.biomod2_model.RasterStack
+            callNextMethod(object, newdata, predcommand = predcommand, ...)
+            
+          }
+)
 
-.predict.GBM_biomod2_model.RasterStack <- function(object, newdata, ...)
-{
-  return(.template_predict.RasterStack(predcommand = "predict(newdata, model = get_formal_model(object), fun = predict.gbm, n.trees = object@n.trees_optim, type = 'response')", object, newdata, ...))
-}
-
-.predict.GBM_biomod2_model.data.frame <- function(object, newdata, ...)
-{
-  return(.template_predict.data.frame(predcommand = "as.numeric(predict(get_formal_model(object), as.data.frame(newdata[not_na_rows, , drop = FALSE]), n.trees = object@n.trees_optim, type = 'response'))", object, newdata, ...))
-}  
+setMethod('predict2', signature(object = 'GBM_biomod2_model', newdata = "data.frame"),
+          function(object, newdata, ...) {
+            predcommand <- "as.numeric(predict(get_formal_model(object), as.data.frame(newdata[not_na_rows, , drop = FALSE]), n.trees = object@n.trees_optim, type = 'response'))"
+            # redirect to predict2.biomod2_model.data.frame
+            callNextMethod(object, newdata, predcommand = predcommand, ...)
+          }
+)
 
 
-###################################################################################################
-## 8.6 GLM_biomod2_model
-###################################################################################################
+#----------------------------------------------------------------------------- #
+## 8.6 GLM_biomod2_model -----------------------------------------------------
+#----------------------------------------------------------------------------- #
 
 setClass('GLM_biomod2_model',
          representation(),
@@ -465,26 +556,27 @@ setClass('GLM_biomod2_model',
 ##' @export
 ##' 
 
-setMethod('predict', signature(object = 'GLM_biomod2_model'),
-          function(object, newdata, ...)
-          {
-            return(.template_predict(mod = "GLM", object, newdata, ...))
-          })
 
-.predict.GLM_biomod2_model.RasterStack <- function(object, newdata, ...)
-{
-  return(.template_predict.RasterStack(predcommand = ".run_pred(object = get_formal_model(object), Prev = 0.5 , dat = newdata)", object, newdata, ...))
-}
+setMethod('predict2', signature(object = 'GLM_biomod2_model', newdata = "RasterStack"),
+          function(object, newdata, ...) {
+            predcommand <- ".run_pred(object = get_formal_model(object), Prev = 0.5 , dat = newdata)"
+            # redirect to predict2.biomod2_model.RasterStack
+            callNextMethod(object, newdata, predcommand = predcommand, ...)
+          }
+)
 
-.predict.GLM_biomod2_model.data.frame <- function(object, newdata, ...)
-{
-  return(.template_predict.data.frame(predcommand = "as.numeric(.run_pred(object = get_formal_model(object), Prev = 0.5 , dat = as.data.frame(newdata[not_na_rows, , drop = FALSE])))", object, newdata, ...))
-}
+setMethod('predict2', signature(object = 'GLM_biomod2_model', newdata = "data.frame"),
+          function(object, newdata, ...) {
+            predcommand <- "as.numeric(.run_pred(object = get_formal_model(object), Prev = 0.5 , dat = as.data.frame(newdata[not_na_rows, , drop = FALSE])))"
+            # redirect to predict2.biomod2_model.data.frame
+            callNextMethod(object, newdata, predcommand = predcommand, ...)
+          }
+)
 
 
-###################################################################################################
-## 8.7 MARS_biomod2_model
-###################################################################################################
+#----------------------------------------------------------------------------- #
+## 8.7 MARS_biomod2_model ----------------------------------------------------
+#----------------------------------------------------------------------------- #
 
 setClass('MARS_biomod2_model',
          representation(),
@@ -564,9 +656,9 @@ setMethod('predict', signature(object = 'MARS_biomod2_model'),
 }
 
 
-###################################################################################################
-## 8.8 MAXENT.Phillips_biomod2_model
-###################################################################################################
+#----------------------------------------------------------------------------- #
+## 8.8 MAXENT.Phillips_biomod2_model -----------------------------------------
+#----------------------------------------------------------------------------- #
 
 setClass('MAXENT.Phillips_biomod2_model',
          representation(model_output_dir = 'character'),
@@ -657,15 +749,21 @@ setMethod('predict', signature(object = 'MAXENT.Phillips_biomod2_model'),
 }
 
 
-###################################################################################################
-## 8.9 MAXENT.Phillips.2_biomod2_model
-###################################################################################################
+#----------------------------------------------------------------------------- #
+## 8.9 MAXENT.Phillips.2_biomod2_model ---------------------------------------
+#----------------------------------------------------------------------------- #
 
 setClass('MAXENT.Phillips.2_biomod2_model',
          representation(),
          contains = 'biomod2_model',
          prototype = list(model_class = 'MAXENT.Phillips.2'),
-         validity = function(object) { if(!inherits(object@model, "maxnet")) { return(FALSE) } else { return(TRUE) }})
+         validity = function(object) { 
+           if (!inherits(object@model, "maxnet")) {
+             return(FALSE)
+             } else { 
+               return(TRUE) 
+               }
+           })
 
 ##' 
 ##' @rdname predict.bm
@@ -726,9 +824,9 @@ setMethod('predict', signature(object = 'MAXENT.Phillips.2_biomod2_model'),
 }
 
 
-###################################################################################################
-## 8.9 MAXENT.Tsuruoka_biomod2_model
-###################################################################################################
+#----------------------------------------------------------------------------- #
+## 8.9 MAXENT.Tsuruoka_biomod2_model -----------------------------------------
+#----------------------------------------------------------------------------- #
 
 # setClass('MAXENT.Tsuruoka_biomod2_model',
 #          representation(),
@@ -790,9 +888,9 @@ setMethod('predict', signature(object = 'MAXENT.Phillips.2_biomod2_model'),
 # }
 
 
-###################################################################################################
-## 8.10 RF_biomod2_model
-###################################################################################################
+#----------------------------------------------------------------------------- #
+## 8.10 RF_biomod2_model -----------------------------------------------------
+#----------------------------------------------------------------------------- #
 
 setClass('RF_biomod2_model',
          representation(),
@@ -807,29 +905,31 @@ setClass('RF_biomod2_model',
 ##' @export
 ##' 
 
-setMethod('predict', signature(object = 'RF_biomod2_model'),
-          function(object, newdata, ...)
-          {
-            return(.template_predict(mod = "RF", object, newdata, ...))
-          })
 
-.predict.RF_biomod2_model.RasterStack <- function(object, newdata, ...)
-{
-  return(.template_predict.RasterStack(predcommand = "predict(newdata, model = get_formal_model(object), type = 'prob', index = 2)", object, newdata, ...))
-}
+setMethod('predict2', signature(object = 'RF_biomod2_model', newdata = "RasterStack"),
+          function(object, newdata, ...) {
+            predcommand <- "predict(newdata, model = get_formal_model(object), type = 'prob', index = 2)"
+            # redirect to predict2.biomod2_model.RasterStack
+            callNextMethod(object, newdata, predcommand = predcommand, ...)
+            
+          }
+)
 
-.predict.RF_biomod2_model.data.frame <- function(object, newdata, ...)
-{
-  return(.template_predict.data.frame(predcommand = "as.numeric(predict(get_formal_model(object), as.data.frame(newdata[not_na_rows, , drop = FALSE]), type = 'prob')[, '1'])", object, newdata, ...))
-}
+setMethod('predict2', signature(object = 'RF_biomod2_model', newdata = "data.frame"),
+          function(object, newdata, ...) {
+            predcommand <- "as.numeric(predict(get_formal_model(object), as.data.frame(newdata[not_na_rows, , drop = FALSE]), type = 'prob')[, '1'])"
+            # redirect to predict2.biomod2_model.data.frame
+            callNextMethod(object, newdata, predcommand = predcommand, ...)
+          }
+)
 
 
-###################################################################################################
-## 8.11 SRE_biomod2_model
-###################################################################################################
+#----------------------------------------------------------------------------- #
+## 8.11 SRE_biomod2_model ----------------------------------------------------
+#----------------------------------------------------------------------------- #
 
 setClass('SRE_biomod2_model',
-         representation(extremal_conditions='data.frame'),
+         representation(extremal_conditions = 'data.frame'),
          contains = 'biomod2_model',
          prototype = list(model_class = 'SRE'),
          validity = function(object){ return(TRUE) })
@@ -839,28 +939,27 @@ setClass('SRE_biomod2_model',
 ##' @export
 ##' 
 
-setMethod('predict', signature(object = 'SRE_biomod2_model'),
-          function(object, newdata, ...)
-          {
-            return(.template_predict(mod = "SRE", object, newdata, ...))
-          })
 
-.predict.SRE_biomod2_model.RasterStack <- function(object, newdata, ...)
-{
-  return(.template_predict.RasterStack(predcommand = ".sre_projection(new.env = newdata, extrem.cond = object@extremal_conditions)", object, newdata, ...))
-}
+setMethod('predict2', signature(object = 'SRE_biomod2_model', newdata = "RasterStack"),
+          function(object, newdata, ...) {
+            predcommand <- ".sre_projection(new.env = newdata, extrem.cond = object@extremal_conditions)"
+            # redirect to predict2.biomod2_model.RasterStack
+            callNextMethod(object, newdata, predcommand = predcommand, ...)
+          }
+)
 
-.predict.SRE_biomod2_model.data.frame <- function(object, newdata, ...)
-{
-  args <- list(...)
-  on_0_1000 <- args$on_0_1000
-  seedval <- args$seedval
-  if (is.null(on_0_1000)) { on_0_1000 <- FALSE }
-  
-  set.seed(seedval)
-  proj <- .sre_projection(new.env = newdata, extrem.cond = object@extremal_conditions)
-  if (on_0_1000) { proj <- round(proj * 1000) }
-  return(proj)
-}
+setMethod('predict2', signature(object = 'SRE_biomod2_model', newdata = "data.frame"),
+          function(object, newdata, ...) {
+            args <- list(...)
+            on_0_1000 <- args$on_0_1000
+            seedval <- args$seedval
+            if (is.null(on_0_1000)) { on_0_1000 <- FALSE }
+            
+            set.seed(seedval)
+            proj <- .sre_projection(new.env = newdata, extrem.cond = object@extremal_conditions)
+            if (on_0_1000) { proj <- round(proj * 1000) }
+            return(proj)
+          }
+)
 
 
