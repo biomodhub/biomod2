@@ -271,7 +271,7 @@ setGeneric("predict2", function(object, newdata, ...) { standardGeneric("predict
 
 ### biomod2_model + Raster  -------------------------------------------------
 setMethod('predict2', signature(object = 'biomod2_model', newdata = "RasterStack"),
-          function(object, newdata, predfun, seedval = NULL, ...) {
+          function(object, newdata, predfun, seedval = NULL, use_calc = FALSE, ...) {
             args <- list(...)
             namefile <- args$namefile
             overwrite <- args$overwrite
@@ -282,8 +282,11 @@ setMethod('predict2', signature(object = 'biomod2_model', newdata = "RasterStack
             
             set.seed(seedval)
             # eval(parse(text = paste0("proj <- ", predcommand)))
-            proj <- predfun(object, newdata)
-            
+            if (use_calc) {
+              proj <- calc(newdata, predfun)
+            } else {
+              proj <- predfun(object, newdata)
+            }
             if (length(get_scaling_model(object))) {
               names(proj) <- "pred"
               proj <- .run_pred(object = get_scaling_model(object), Prev = 0.5 , dat = proj)
@@ -632,24 +635,13 @@ setClass('MARS_biomod2_model',
 
 setMethod('predict2', signature(object = 'MARS_biomod2_model', newdata = "RasterStack"),
           function(object, newdata, ...) {
+            use_calc <- FALSE
             
-            args <- list(...)
-            namefile <- args$namefile
-            overwrite <- args$overwrite
-            on_0_1000 <- args$on_0_1000
-            seedval <- args$seedval
-            
-            if (is.null(overwrite)) { overwrite <- TRUE }
-            if (is.null(on_0_1000)) { on_0_1000 <- FALSE }
-            
-            ## handle separately rasterstack depending on the presence or not of factorial variable
             fact.var <- is.factor(newdata)
-            set.seed(seedval)
             if (any(fact.var)) {
-              ## get factor levels
+              use_calc <- TRUE
               fact.var.levels <- subset(levels(newdata), fact.var)
-              proj <- calc(newdata, function(x)
-              {
+              predfun <- function(x){
                 xx <- data.frame(x)
                 ## ensure that the data.frame has the right set of levels
                 for (i in which(fact.var)) {
@@ -658,29 +650,14 @@ setMethod('predict2', signature(object = 'MARS_biomod2_model', newdata = "Raster
                 ## do the projection
                 proj.out <- as.numeric(predict(get_formal_model(object), xx, type = 'response'))
                 return(proj.out)
-              })
-            } else {
-              proj <- predict(newdata, model = get_formal_model(object), type = 'response')
-            }
-            
-            if (length(get_scaling_model(object))) {
-              names(proj) <- "pred"
-              proj <- .run_pred(object = get_scaling_model(object), Prev = 0.5 , dat = proj)
-            }
-            
-            if (on_0_1000) { proj <- round(proj * 1000)}
-            
-            # save raster on hard drive ?
-            if (!is.null(namefile)) {
-              cat("\n\t\tWriting projection on hard drive...")
-              if (on_0_1000) { ## projections are stored as positive integer
-                writeRaster(proj, filename = namefile, overwrite = overwrite, datatype = "INT2S", NAflag = -9999)
-              } else { ## keep default data format for saved raster
-                writeRaster(proj, filename = namefile, overwrite = overwrite)
               }
-              proj <- raster(namefile, RAT = FALSE)
+            } else {
+              predfun <- function(object, newdata){
+                predict(newdata, model = get_formal_model(object), type = 'response')
+              }
             }
-            return(proj)
+            # redirect to predict2.biomod2_model.RasterStack
+            callNextMethod(object, newdata, predfun = predfun, use_calc = use_calc, ...)
           }
 )
 
@@ -712,82 +689,94 @@ setClass('MAXENT.Phillips_biomod2_model',
 ##' @export
 ##' 
 
-setMethod('predict', signature(object = 'MAXENT.Phillips_biomod2_model'),
-          function(object, newdata, ...)
-          {
-            return(.template_predict(mod = "MAXENT.Phillips", object, newdata, ...))
-          })
+# setMethod('predict', signature(object = 'MAXENT.Phillips_biomod2_model'),
+#           function(object, newdata, ...)
+#           {
+#             return(.template_predict(mod = "MAXENT.Phillips", object, newdata, ...))
+#           })
 
-.predict.MAXENT.Phillips_biomod2_model.data.frame <- function(object, newdata, ...)
-{
-  args <- list(...)
-  on_0_1000 <- args$on_0_1000
-  temp_workdir <- args$temp_workdir
-  do_raster <- args$do_raster
-  newraster <- args$newraster
-  
-  if (is.null(on_0_1000)) { on_0_1000 <- FALSE }
-  if (is.null(do_raster)) { do_raster <- FALSE }
-  
-  ## check if na occurs in newdata cause they are not well supported
-  not_na_rows <- apply(newdata, 1, function(x){ sum(is.na(x)) == 0 })
-  newdata = as.data.frame(newdata[not_na_rows, , drop = FALSE])
-  
-  ## Prediction data
-  Pred_swd <- read.csv(file.path(temp_workdir, "Predictions/Pred_swd.csv"))
-  if (nrow(Pred_swd) != nrow(newdata)) {
-    tmp = newdata[, 1:3]
-    colnames(tmp) = c("predict", "x", "y")
-    Pred_swd = cbind(tmp, newdata)
-  } else {
-    Pred_swd <- cbind(Pred_swd[, 1:3], newdata)
-  }
-  # m_predictFile <- file.path(temp_workdir, "Predictions/Pred_swdBis.csv")
-  m_predictFile <- file.path(temp_workdir, "Predictions", paste0("Pred_swdBis_", sample(1:100000, 1), ".csv"))
-  while (file.exists(m_predictFile)) {
-    m_predictFile <- file.path(temp_workdir, "Predictions", paste0("Pred_swdBis_", sample(1:100000, 1), ".csv"))
-  }
-  write.table(Pred_swd, file = m_predictFile, quote = FALSE, row.names = FALSE, col.names = TRUE, sep = ",")
-  
-  # checking maxent.jar is present
-  path_to_maxent.jar <- file.path(object@model_options$path_to_maxent.jar, "maxent.jar")
-  if (!file.exists(path_to_maxent.jar)) {
-    path_to_maxent.jar <-  file.path(getwd(), "maxent.jar")
-  }
-  
-  # cat("\n\t\tRunning Maxent...")
-  maxent.command <- paste0("java ", ifelse(is.null(object@model_options$memory_allocated), "", paste0("-mx", object@model_options$memory_allocated, "m")),
-                           " -cp ", "\"", path_to_maxent.jar, "\"",
-                           " density.Project ",
-                           "\"", list.files(path = object@model_output_dir, pattern = ".lambdas$", full.names = TRUE), "\" ",
-                           "\"", m_predictFile, "\" ",
-                           "\"", file.path(temp_workdir, "projMaxent.asc") , "\" ",
-                           "doclamp=false visible=false autorun nowarnings notooltips")
-  system(command = maxent.command, wait = TRUE, intern = TRUE)
-  
-  # cat("\n\t\tReading Maxent outputs...")
-  proj <- as.numeric(read.asciigrid(file.path(temp_workdir, "projMaxent.asc"))@data[, 1])
-  
-  if (do_raster) {
-    newraster[which(newraster[] == 1)] = proj
-    proj <- newraster
-    
-    if (!inMemory(proj)) {
-      proj <- readAll(proj) # to prevent from tmp files removing
-    }
-  } else {
-    ## add original NA from formal dataset
-    if (sum(!not_na_rows) > 0) {
-      tmp <- rep(NA, length(not_na_rows))
-      tmp[not_na_rows] <- proj
-      proj <- tmp
-      rm('tmp')
-    }
-  }
-  
-  if (on_0_1000) { proj <- round(proj * 1000) }
-  return(proj)
-}
+setMethod('predict2', signature(object = 'MAXENT.Phillips_biomod2_model', newdata = "RasterStack"),
+          function(object, newdata, ...) {
+            
+            newraster = newdata[[1]]
+            newraster[] = NA
+            newdata = na.exclude(rasterToPoints(newdata))
+            newraster[cellFromXY(newraster, newdata[, 1:2])] = 1
+            # redirect to the data.frame method, but asking to save a raster
+            # with template newraster
+            predict2(object, newdata,
+                     do_raster = TRUE, newraster = newraster...)
+          }
+)
+
+
+setMethod('predict2', signature(object = 'MAXENT.Phillips_biomod2_model', newdata = "data.frame"),
+          function(object, newdata, do_raster = FALSE, newraster = NULL, ...) {
+            
+            args <- list(...)
+            on_0_1000 <- args$on_0_1000
+            temp_workdir <- args$temp_workdir
+
+            if (is.null(on_0_1000)) { on_0_1000 <- FALSE }
+
+            ## check if na occurs in newdata cause they are not well supported
+            not_na_rows <- apply(newdata, 1, function(x){ sum(is.na(x)) == 0 })
+            newdata = as.data.frame(newdata[not_na_rows, , drop = FALSE])
+            
+            ## Prediction data
+            Pred_swd <- read.csv(file.path(temp_workdir, "Predictions/Pred_swd.csv"))
+            if (nrow(Pred_swd) != nrow(newdata)) {
+              tmp = newdata[, 1:3]
+              colnames(tmp) = c("predict", "x", "y")
+              Pred_swd = cbind(tmp, newdata)
+            } else {
+              Pred_swd <- cbind(Pred_swd[, 1:3], newdata)
+            }
+            # m_predictFile <- file.path(temp_workdir, "Predictions/Pred_swdBis.csv")
+            m_predictFile <- file.path(temp_workdir, "Predictions", paste0("Pred_swdBis_", sample(1:100000, 1), ".csv"))
+            while (file.exists(m_predictFile)) {
+              m_predictFile <- file.path(temp_workdir, "Predictions", paste0("Pred_swdBis_", sample(1:100000, 1), ".csv"))
+            }
+            write.table(Pred_swd, file = m_predictFile, quote = FALSE, row.names = FALSE, col.names = TRUE, sep = ",")
+            
+            # checking maxent.jar is present
+            path_to_maxent.jar <- file.path(object@model_options$path_to_maxent.jar, "maxent.jar")
+            if (!file.exists(path_to_maxent.jar)) {
+              path_to_maxent.jar <-  file.path(getwd(), "maxent.jar")
+            }
+            
+            # cat("\n\t\tRunning Maxent...")
+            maxent.command <- paste0("java ", ifelse(is.null(object@model_options$memory_allocated), "", paste0("-mx", object@model_options$memory_allocated, "m")),
+                                     " -cp ", "\"", path_to_maxent.jar, "\"",
+                                     " density.Project ",
+                                     "\"", list.files(path = object@model_output_dir, pattern = ".lambdas$", full.names = TRUE), "\" ",
+                                     "\"", m_predictFile, "\" ",
+                                     "\"", file.path(temp_workdir, "projMaxent.asc") , "\" ",
+                                     "doclamp=false visible=false autorun nowarnings notooltips")
+            system(command = maxent.command, wait = TRUE, intern = TRUE)
+            
+            # cat("\n\t\tReading Maxent outputs...")
+            proj <- as.numeric(read.asciigrid(file.path(temp_workdir, "projMaxent.asc"))@data[, 1])
+            
+            if (do_raster) {
+              newraster[which(newraster[] == 1)] = proj
+              proj <- newraster
+              if (!inMemory(proj)) {
+                proj <- readAll(proj) # to prevent from tmp files removing
+              }
+            } else {
+              ## add original NA from formal dataset
+              if (sum(!not_na_rows) > 0) {
+                tmp <- rep(NA, length(not_na_rows))
+                tmp[not_na_rows] <- proj
+                proj <- tmp
+                rm('tmp')
+              }
+            }
+            if (on_0_1000) { proj <- round(proj * 1000) }
+            return(proj)
+          }
+)
 
 
 #----------------------------------------------------------------------------- #
@@ -811,58 +800,64 @@ setClass('MAXENT.Phillips.2_biomod2_model',
 ##' @export
 ##' 
 
-setMethod('predict', signature(object = 'MAXENT.Phillips.2_biomod2_model'),
-          function(object, newdata, ...)
-          {
-            return(.template_predict(mod = "MAXENT.Phillips.2", object, newdata, ...))
-          })
 
-.predict.MAXENT.Phillips.2_biomod2_model.RasterStack <- function(object, newdata, ...)
-{
-  newdata.df <- newdata %>% as.matrix()
-  
-  args <- list(...)
-  namefile <- args$namefile
-  overwrite <- args$overwrite
-  on_0_1000 <- args$on_0_1000
-  seedval <- args$seedval
-  
-  if (is.null(overwrite)) { overwrite <- TRUE }
-  if (is.null(on_0_1000)) { on_0_1000 <- FALSE }
-  
-  set.seed(seedval)
-  proj <- predict(object = get_formal_model(object), newdata = newdata.df, clamp = FALSE, type = 'logistic')[, 1]
-  
-  if (length(get_scaling_model(object))) {
-    proj.to.scale <- data.frame(pred = proj)
-    proj <- .run_pred(object = get_scaling_model(object), Prev = 0.5 , dat = proj.to.scale)
-  }
-  
-  if (on_0_1000) { proj <- round(proj * 1000) }
-  
-  ## convert back to raster file
-  proj.ras <- raster(newdata)
-  proj.ras[apply(newdata.df, 1, function(.x) { all(!is.na(.x)) })] <- proj
-  proj <- proj.ras
-  
-  # save raster on hard drive ?
-  if (!is.null(namefile)) {
-    cat("\n\t\tWriting projection on hard drive...")
-    if (on_0_1000) { ## projections are stored as positive integer
-      writeRaster(proj, filename = namefile, overwrite = overwrite, datatype = "INT2S", NAflag = -9999)
-    } else { ## keep default data format for saved raster
-      writeRaster(proj, filename = namefile, overwrite = overwrite)
-    }
-    proj <- raster(namefile, RAT = FALSE)
-  }
-  
-  return(proj)
-}
+setMethod('predict2', signature(object = 'MAXENT.Phillips.2_biomod2_model', newdata = "RasterStack"),
+          function(object, newdata, ...) {
+            
+            newdata.df <- newdata %>% as.matrix()
+            
+            args <- list(...)
+            namefile <- args$namefile
+            overwrite <- args$overwrite
+            on_0_1000 <- args$on_0_1000
+            seedval <- args$seedval
+            
+            if (is.null(overwrite)) { overwrite <- TRUE }
+            if (is.null(on_0_1000)) { on_0_1000 <- FALSE }
+            
+            set.seed(seedval)
+            proj <- predict(object = get_formal_model(object), newdata = newdata.df, clamp = FALSE, type = 'logistic')[, 1]
+            
+            if (length(get_scaling_model(object))) {
+              proj.to.scale <- data.frame(pred = proj)
+              proj <- .run_pred(object = get_scaling_model(object), Prev = 0.5 , dat = proj.to.scale)
+            }
+            
+            if (on_0_1000) { proj <- round(proj * 1000) }
+            
+            ## convert back to raster file
+            proj.ras <- raster(newdata)
+            proj.ras[apply(newdata.df, 1, function(.x) { all(!is.na(.x)) })] <- proj
+            proj <- proj.ras
+            
+            # save raster on hard drive ?
+            if (!is.null(namefile)) {
+              cat("\n\t\tWriting projection on hard drive...")
+              if (on_0_1000) { ## projections are stored as positive integer
+                writeRaster(proj, filename = namefile, overwrite = overwrite, datatype = "INT2S", NAflag = -9999)
+              } else { ## keep default data format for saved raster
+                writeRaster(proj, filename = namefile, overwrite = overwrite)
+              }
+              proj <- raster(namefile, RAT = FALSE)
+            }
+            
+            return(proj)
+            
+          }
+)
 
-.predict.MAXENT.Phillips.2_biomod2_model.data.frame <- function(object, newdata, ...)
-{
-  return(.template_predict.data.frame(predcommand = "as.numeric(predict(get_formal_model(object), as.data.frame(newdata[not_na_rows, , drop = FALSE]), type = 'logistic')[, 1])", object, newdata, ...))
-}
+
+setMethod('predict2', signature(object = 'MAXENT.Phillips.2_biomod2_model', newdata = "data.frame"),
+          function(object, newdata, ...) {
+            
+            predfun <- function(object, newdata, not_na_rows){
+              as.numeric(predict(get_formal_model(object), as.data.frame(newdata[not_na_rows, , drop = FALSE]), type = 'logistic')[, 1])
+            }
+            
+            # redirect to predict2.biomod2_model.data.frame
+            callNextMethod(object, newdata, predfun = predfun, ...)
+          }
+)
 
 
 #----------------------------------------------------------------------------- #
@@ -952,7 +947,7 @@ setMethod('predict2', signature(object = 'RF_biomod2_model', newdata = "RasterSt
             
             predfun <- function(object, newdata){
               predict(newdata, model = get_formal_model(object), type = 'prob', index = 2)            
-              }
+            }
             
             # redirect to predict2.biomod2_model.RasterStack
             callNextMethod(object, newdata, predfun = predfun, ...)
@@ -991,10 +986,10 @@ setClass('SRE_biomod2_model',
 
 setMethod('predict2', signature(object = 'SRE_biomod2_model', newdata = "RasterStack"),
           function(object, newdata, ...) {
-
+            
             predfun <- function(object, newdata){
               .sre_projection(new.env = newdata, extrem.cond = object@extremal_conditions)
-              }
+            }
             
             # redirect to predict2.biomod2_model.RasterStack
             callNextMethod(object, newdata, predfun = predfun, ...)
