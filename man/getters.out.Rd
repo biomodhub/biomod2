@@ -66,7 +66,7 @@
 
 \S4method{get_kept_models}{BIOMOD.ensemble.models.out}(obj, model, ...)
 
-\S4method{get_predictions}{BIOMOD.ensemble.models.out}(obj, ...)
+\S4method{get_predictions}{BIOMOD.ensemble.models.out}(obj, evaluation = FALSE, ...)
 
 \S4method{get_built_models}{BIOMOD.ensemble.models.out}(obj, ...)
 

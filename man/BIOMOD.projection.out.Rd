@@ -59,7 +59,7 @@ not}
 
 showClass("BIOMOD.projection.out")
 
-## ------------------------------------------------------------------------
+## ----------------------------------------------------------------------- #
 
 # Load species occurrences (6 species available)
 myFile <- system.file('external/species/mammals_table.csv', package = 'biomod2')
@@ -80,7 +80,7 @@ myFiles <- paste0('external/bioclim/current/bio', c(3, 4, 7, 11, 12), '.grd')
 myExpl <- raster::stack(system.file(myFiles, package = 'biomod2'))
 
 
-# ---------------------------------------------------------------
+## ----------------------------------------------------------------------- #
 file.out <- paste0(myRespName, "/", myRespName, ".AllModels.models.out")
 if (file.exists(file.out)) {
   myBiomodModelOut <- get(load(file.out))
@@ -103,11 +103,12 @@ if (file.exists(file.out)) {
                                       data.split.perc = 80,
                                       metric.eval = c('TSS','ROC'),
                                       var.import = 3,
-                                      do.full.models = FALSE)
+                                      do.full.models = FALSE,
+                                      seed.val = 42)
 }
 
 
-# ---------------------------------------------------------------
+## ----------------------------------------------------------------------- #
 # Project single models
 myBiomodProj <- BIOMOD_Projection(bm.mod = myBiomodModelOut,
                                   proj.name = 'Current',

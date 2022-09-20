@@ -45,7 +45,7 @@ Class returned by \code{\link{BIOMOD_ModelingOptions}}, and used by
 
 showClass("BIOMOD.models.options")
 
-## ------------------------------------------------------------------------
+## ----------------------------------------------------------------------- #
 ## default BIOMOD.models.options object
 myBiomodOptions <- BIOMOD_ModelingOptions()
 

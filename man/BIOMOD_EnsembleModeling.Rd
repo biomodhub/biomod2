@@ -283,7 +283,7 @@ myFiles <- paste0('external/bioclim/current/bio', c(3, 4, 7, 11, 12), '.grd')
 myExpl <- raster::stack(system.file(myFiles, package = 'biomod2'))
 
 
-# ---------------------------------------------------------------
+## ----------------------------------------------------------------------- #
 file.out <- paste0(myRespName, "/", myRespName, ".AllModels.models.out")
 if (file.exists(file.out)) {
   myBiomodModelOut <- get(load(file.out))
@@ -306,10 +306,11 @@ if (file.exists(file.out)) {
                                       data.split.perc = 80,
                                       metric.eval = c('TSS','ROC'),
                                       var.import = 3,
-                                      do.full.models = FALSE)
+                                      do.full.models = FALSE,
+                                      seed.val = 42)
 }
 
-# ---------------------------------------------------------------
+## ----------------------------------------------------------------------- #
 # Model ensemble models
 myBiomodEM <- BIOMOD_EnsembleModeling(bm.mod = myBiomodModelOut,
                                       models.chosen = 'all',
@@ -325,7 +326,8 @@ myBiomodEM <- BIOMOD_EnsembleModeling(bm.mod = myBiomodModelOut,
                                       prob.ci.alpha = 0.05,
                                       committee.averaging = TRUE,
                                       prob.mean.weight = TRUE,
-                                      prob.mean.weight.decay = 'proportional')
+                                      prob.mean.weight.decay = 'proportional',
+                                      seed.val = 42)
 myBiomodEM
 
 # Get evaluation scores & variables importance

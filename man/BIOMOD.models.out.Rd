@@ -65,7 +65,7 @@ predictions for evaluation data}
 showClass("BIOMOD.models.out")
 showClass("BIOMOD.stored.models.out")
 
-## ------------------------------------------------------------------------
+## ----------------------------------------------------------------------- #
 
 # Load species occurrences (6 species available)
 myFile <- system.file('external/species/mammals_table.csv', package = 'biomod2')
@@ -86,7 +86,7 @@ myFiles <- paste0('external/bioclim/current/bio', c(3, 4, 7, 11, 12), '.grd')
 myExpl <- raster::stack(system.file(myFiles, package = 'biomod2'))
 
 
-# ---------------------------------------------------------------
+## ----------------------------------------------------------------------- #
 # Format Data with true absences
 myBiomodData <- BIOMOD_FormatingData(resp.var = myResp,
                                      expl.var = myExpl,
@@ -97,7 +97,7 @@ myBiomodData <- BIOMOD_FormatingData(resp.var = myResp,
 myBiomodOptions <- BIOMOD_ModelingOptions()
 
 
-# ---------------------------------------------------------------
+## ----------------------------------------------------------------------- #
 # Model single models
 myBiomodModelOut <- BIOMOD_Modeling(bm.format = myBiomodData,
                                     modeling.id = 'AllModels',
@@ -106,7 +106,8 @@ myBiomodModelOut <- BIOMOD_Modeling(bm.format = myBiomodData,
                                     data.split.perc = 80,
                                     metric.eval = c('TSS','ROC'),
                                     var.import = 3,
-                                    do.full.models = FALSE)
+                                    do.full.models = FALSE,
+                                    seed.val = 42)
 myBiomodModelOut
 
 
