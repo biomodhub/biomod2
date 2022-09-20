@@ -685,18 +685,6 @@ setMethod('predict2', signature(object = 'MARS_biomod2_model', newdata = "data.f
           }
 )
 
-setMethod('predict2', signature(object = 'MARS_biomod2_model', newdata = "data.frame"),
-          function(object, newdata, ...) {
-            
-            predfun <- function(object, newdata, not_na_rows){
-              as.numeric(predict(get_formal_model(object), as.data.frame(newdata[not_na_rows, , drop = FALSE]), type = 'response'))
-            }
-            
-            # redirect to predict2.biomod2_model.data.frame
-            callNextMethod(object, newdata, predfun = predfun, ...)
-          }
-)
-
 #----------------------------------------------------------------------------- #
 ## 8.8 MAXENT.Phillips_biomod2_model -----------------------------------------
 #----------------------------------------------------------------------------- #
@@ -734,9 +722,9 @@ setMethod('predict2', signature(object = 'MAXENT.Phillips_biomod2_model', newdat
             args <- list(...)
             on_0_1000 <- args$on_0_1000
             temp_workdir <- args$temp_workdir
-            
+
             if (is.null(on_0_1000)) { on_0_1000 <- FALSE }
-            
+
             ## check if na occurs in newdata cause they are not well supported
             not_na_rows <- apply(newdata, 1, function(x){ sum(is.na(x)) == 0 })
             newdata = as.data.frame(newdata[not_na_rows, , drop = FALSE])
@@ -1001,11 +989,10 @@ setClass('SRE_biomod2_model',
 
 setMethod('predict2', signature(object = 'SRE_biomod2_model', newdata = "RasterStack"),
           function(object, newdata, ...) {
-
+            
             predfun <- function(object, newdata){
               .sre_projection(new.env = newdata, extrem.cond = object@extremal_conditions)
             }
-
             # redirect to predict2.biomod2_model.RasterStack
             callNextMethod(object, newdata, predfun = predfun, ...)
           }
