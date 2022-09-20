@@ -247,17 +247,14 @@ bm_RunModel <- function(model, Data, modeling.id = '', bm.options, calib.lines, 
                       expl_var_type = get_var_type(Data[calib.lines, expl_var_names, drop = FALSE]),
                       expl_var_range = get_var_range(Data[calib.lines, expl_var_names, drop = FALSE]))
     }
-  } else if (model == "GAM"){
+  } else if (model == "GAM") {
     ## 2.2 GAM model ----------------------------------------------------------
+   
+    # package loading
+    .load_gam_namespace(bm.options@GAM$algo)
     
     if (bm.options@GAM$algo == 'GAM_gam') { ## gam package
-      # package loading
-      if (isNamespaceLoaded("mgcv")) {
-        if (isNamespaceLoaded("caret")) { unloadNamespace("caret") } ## need to unload caret before car
-        if (isNamespaceLoaded("car")) { unloadNamespace("car") } ## need to unload car before mgcv
-        unloadNamespace("mgcv")
-      }
-      requireNamespace("gam", quietly = TRUE)
+
       
       # NOTE : To be able to take into account GAM options and weights we have to do a eval(parse(...))
       # it's due to GAM implementation (using of match.call() troubles)
@@ -272,10 +269,7 @@ bm_RunModel <- function(model, Data, modeling.id = '', bm.options, calib.lines, 
                                     trace = bm.options@GAM$control$trace,
                                     control = bm.options@GAM$control))
     } else { ## mgcv package
-      # package loading
-      if (isNamespaceLoaded("gam")) { unloadNamespace("gam") }
-      if (!isNamespaceLoaded("mgcv")) { requireNamespace("mgcv", quietly = TRUE) }
-      
+
       if (is.null(bm.options@GAM$myFormula)) {
         cat("\n\tAutomatic formula generation...")
         gam.formula <- bm_MakeFormula(resp.name = resp_name
