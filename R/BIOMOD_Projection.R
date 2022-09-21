@@ -309,7 +309,7 @@ BIOMOD_Projection <- function(bm.mod,
   saved.files <- file.path(namePath, paste0(nameProjSp, output.format))
   if (output.format == '.RData') {
     save(list = nameProjSp, file = saved.files, compress = compress)
-  } else if(do.stack) {
+  } else if (do.stack) {
     writeRaster(x = get(nameProjSp), filename = saved.files,
                 overwrite = TRUE, datatype = ifelse(on_0_1000, "INT2S", "FLT4S"), NAflag = -9999)
   } else {
@@ -487,29 +487,6 @@ BIOMOD_Projection <- function(bm.mod,
     stop(paste0("Projection files missing : ", toString(missing.files)))
     if (length(missing.files) == length(files.check)) {
       stop("Impossible to find any models, might be a problem of working directory")
-    }
-  }
-  
-  ## Switch off CTA raster prediction when using categorical variables
-  # due to problem with predict.rpart and predict.Raster, rpart model 
-  # cannot be predicted on raster.
-  
-  algo.chosen <- unlist(lapply(strsplit(models.chosen, "_", fixed = TRUE), function(x)
-  {
-    algo.id <- paste0(rev(x[4:length(x)]), collapse = ".")
-    return(algo.id)
-  }))
-  
-  if (inherits(new.env,'Raster') & 
-      any(is.factor(new.env)) &
-      "CTA" %in% algo.chosen) {
-    # CTA with factors cannot be predicted on raster 
-    cat("\n\t! CTA raster prediction switched of due to categorical variables !")
-    # remove corresponding CTA models
-    models.chosen <- models.chosen[-which(algo.chosen == "CTA")]
-    # check that there is at least one model left
-    if (length(models.chosen) < 1) {
-      stop('No models left to project')
     }
   }
   

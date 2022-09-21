@@ -411,17 +411,32 @@ setClass('CTA_biomod2_model',
 
 setMethod('predict2', signature(object = 'CTA_biomod2_model', newdata = "RasterStack"),
           function(object, newdata, ...) {
-            if (any(object@expl_var_type == "factor")) {
-              # CTA with factors cannot yet be predicted on raster 
-              stop("\n\t! CTA raster prediction not possible with categorical variables !")
-            } 
-            predfun <- function(object, newdata){
-              predict(newdata, model = get_formal_model(object), type = 'prob', index = 2) 
+            
+            
+            use_calc <- FALSE
+            
+            fact.var <- is.factor(newdata)
+            if (any(fact.var)) {
+              use_calc <- TRUE
+              fact.var.levels <- subset(levels(newdata), fact.var)
+              predfun <- function(x){
+                xx <- data.frame(x)
+                ## ensure that the data.frame has the right set of levels
+                for (i in which(fact.var)) {
+                  xx[[i]] <- factor(xx[[i]], levels = unlist(fact.var.levels[[i]]))
+                }
+                ## do the projection
+                proj.out <- as.numeric(predict(get_formal_model(object), xx, type = 'prob')[, 2])                
+                proj.out[apply(xx, 1, function(z) any(is.na(z)))] <- NA
+                return(proj.out)
+              }
+            } else {
+              predfun <- function(object, newdata){
+                predict(newdata, model = get_formal_model(object), type = 'prob', index = 2) 
+              }
             }
-            
             # redirect to predict2.biomod2_model.RasterStack
-            callNextMethod(object, newdata, predfun = predfun, ...)
-            
+            callNextMethod(object, newdata, predfun = predfun, use_calc = use_calc, ...)
           }
 )
 
@@ -717,9 +732,9 @@ setMethod('predict2', signature(object = 'MAXENT.Phillips_biomod2_model', newdat
             args <- list(...)
             on_0_1000 <- args$on_0_1000
             temp_workdir <- args$temp_workdir
-
+            
             if (is.null(on_0_1000)) { on_0_1000 <- FALSE }
-
+            
             ## check if na occurs in newdata cause they are not well supported
             not_na_rows <- apply(newdata, 1, function(x){ sum(is.na(x)) == 0 })
             newdata = as.data.frame(newdata[not_na_rows, , drop = FALSE])
