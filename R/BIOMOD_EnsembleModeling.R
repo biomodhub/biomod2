@@ -425,11 +425,14 @@ BIOMOD_EnsembleModeling <- function(bm.mod,
       } else {
         kept_cells <- rep(TRUE, length(obs))
       }
+    } else { # in case 'AllData'
+      kept_cells <- rep(TRUE, length(obs))
     }
+    
     obs <- obs[kept_cells]
     expl <- expl[kept_cells, , drop = FALSE]
     obs[is.na(obs)] <- 0
-
+    
     ## get needed models predictions ----------------------------------------
     needed_predictions <- .get_needed_predictions(bm.mod, em.by, models.kept
                                                   , metric.select, metric.select.thresh
@@ -917,55 +920,48 @@ BIOMOD_EnsembleModeling <- function(bm.mod,
       models.kept.PA <-   sapply(models.kept.union, function(x){
         .extract_modelNamesInfo(x, info = "data.set")
       })
-
-      list_prediction <- list()
-      for (thisPA in unique(models.kept.PA)) {
-        ## model kept for this PA dataset
-        thismodels <- names(models.kept.PA)[which(models.kept.PA == thisPA)]
-        ## retrieve predictions for this PA dataset
-        current_prediction <- as.data.frame(
-          get_predictions(bm.mod, as.data.frame = TRUE)[, thismodels, drop = FALSE]
-        )
-        ## index of data to predict and data already predicted
-        index_to_predict <- which(!PA.table[,thisPA] & kept_data)
-        index_current <- which(PA.table[,thisPA])
-        
-        # subsetting environment and coord
-        env_to_predict <- get_formal_data(bm.mod)@data.env.var[index_to_predict,]
-        coord_to_predict <- get_formal_data(bm.mod)@coord[index_to_predict,]
-        
-        # prediction on the other PA datasets
-        new_prediction <-
-          get_predictions(
-            BIOMOD_Projection(
-              bm.mod = bm.mod,
-              new.env = env_to_predict,
-              proj.name = temp_name,
-              xy.new.env = get_formal_data(bm.mod)@coord,
-              models.chosen = thismodels,
-              compress = TRUE,
-              build.clamping.mask = FALSE,
-              do.stack = TRUE,
-              nb.cpu = nb.cpu
-            ),
-            as.data.frame = TRUE
+      
+      out$predictions <- 
+        foreach(thisPA = unique(models.kept.PA), .combine = "cbind") %do% {
+          ## model kept for this PA dataset
+          thismodels <- names(models.kept.PA)[which(models.kept.PA == thisPA)]
+          ## retrieve predictions for this PA dataset
+          current_prediction <- as.data.frame(
+            get_predictions(bm.mod, as.data.frame = TRUE)[, thismodels, drop = FALSE]
           )
-        
-        ## combining old and new predictions
-        index_full <- c(index_current, index_to_predict)
-        
-        # dimnames(current_prediction)
-        # dimnames(new_prediction)
-        list_prediction[[thisPA]] <- 
-          rbind(current_prediction, new_prediction)[order(index_full),,
-                                                    drop = FALSE] 
-        # drop = FALSE to avoid coercion into vector for single column data.frame
-        
+          ## index of data to predict and data already predicted
+          index_to_predict <- which(!PA.table[,thisPA] & kept_data)
+          index_current <- which(PA.table[,thisPA])
           
-      }
-      # combine predictions for all datasets
-      out$predictions <- dplyr::bind_cols(list_prediction)
-      rm(list_prediction)
+          # subsetting environment and coord
+          env_to_predict <- get_formal_data(bm.mod)@data.env.var[index_to_predict,]
+          coord_to_predict <- get_formal_data(bm.mod)@coord[index_to_predict,]
+          
+          # prediction on the other PA datasets
+          new_prediction <-
+            get_predictions(
+              BIOMOD_Projection(
+                bm.mod = bm.mod,
+                new.env = env_to_predict,
+                proj.name = temp_name,
+                xy.new.env = coord_to_predict,
+                models.chosen = thismodels,
+                compress = TRUE,
+                build.clamping.mask = FALSE,
+                do.stack = TRUE,
+                nb.cpu = nb.cpu
+              ),
+              as.data.frame = TRUE
+            )
+          
+          ## combining old and new predictions
+          index_full <- c(index_current, index_to_predict)
+          
+          return(
+            rbind(current_prediction, new_prediction)[order(index_full), ,  drop = FALSE]
+          )
+          # drop = FALSE to avoid coercion into vector for single column data.frame
+        }
       
       # delete temporary directory
       unlink(file.path(bm.mod@dir.name, bm.mod@sp.name, paste0("proj_", temp_name))
