@@ -320,11 +320,8 @@ setMethod('show', signature('BIOMOD.models.out'),
 
 setMethod("get_options", "BIOMOD.models.out",
           function(obj) {
-            if (obj@models.options@inMemory) {
-              return(obj@models.options@val)
-            } else if (obj@models.options@link != '') {
-              return(get(load(obj@models.options@link)))
-            } else { return(NA) }
+            model_options <- load_stored_object(obj@models.options)
+            return(model_options)
           }
 )
 
@@ -350,12 +347,7 @@ setMethod("get_calib_lines", "BIOMOD.models.out",
 setMethod("get_formal_data", "BIOMOD.models.out",
           function(obj, subinfo = NULL) {
             if (is.null(subinfo)) {
-              if (obj@formated.input.data@inMemory) {
-                return(obj@formated.input.data@val)
-              } else if (obj@formated.input.data@link != '') {
-                data <- get(load(obj@formated.input.data@link))
-                return(data)
-              } else { return(NA) }
+              return(load_stored_object(obj@formated.input.data))
             } else if (subinfo == 'MinMax') {
               env = as.data.frame(get_formal_data(obj)@data.env.var)
               MinMax = foreach(i = 1:ncol(env)) %do% {
@@ -454,12 +446,7 @@ setMethod("get_built_models", "BIOMOD.models.out", function(obj, ...) { return(o
 
 setMethod("get_evaluations", "BIOMOD.models.out",
           function(obj, as.data.frame = FALSE, ...) {
-            out <- NULL
-            if (obj@models.evaluation@inMemory) {
-              out <- obj@models.evaluation@val
-            } else if (obj@models.evaluation@link != '') {
-              out <- get(load(obj@models.evaluation@link))
-            }
+            out <- load_stored_object(obj@models.evaluation)
             
             ## transform into data.frame object if needed
             if (as.data.frame) {
@@ -1018,38 +1005,10 @@ setMethod('show', signature('BIOMOD.ensemble.models.out'),
 setMethod("get_formal_data", "BIOMOD.ensemble.models.out",
           function(obj, subinfo = NULL) {
             if (is.null(subinfo)) {
-              if (obj@models.out@inMemory) {
-                return(obj@models.out@val)
-              } else if (obj@models.out@link != '') {
-                data <- get(load(obj@models.out@link))
-                return(data)
-              } else { return(NA) }
+              return(load_stored_object(obj@models.out))
             } else {
-              bm_form = get(load(get_formal_data(obj)@formated.input.data@link))
-              if (subinfo == 'MinMax') {
-                env = as.data.frame(bm_form@data.env.var)
-                MinMax = foreach(i = 1:ncol(env)) %do% {
-                  x = env[, i]
-                  if (is.numeric(x)) {
-                    return(list(min = min(x, na.rm = TRUE)
-                                , max = max(x, na.rm = TRUE)))
-                  } else if (is.factor(x)) {
-                    return(list(levels = levels(x)))
-                  }
-                }
-                names(MinMax) = colnames(env)
-                return(MinMax)
-              } else if (subinfo == 'expl.var') {
-                return(as.data.frame(bm_form@data.env.var))
-              } else if (subinfo == 'expl.var.names') {
-                return(obj@expl.var.names)
-              } else if (subinfo == 'resp.var') {
-                return(as.numeric(bm_form@data.species))
-              } else if (subinfo == 'eval.resp.var') {
-                return(as.numeric(bm_form@eval.data.species))
-              } else if (subinfo == 'eval.expl.var') {
-                return(as.data.frame(bm_form@eval.data.env.var))
-              } else { stop("Unknown subinfo tag")}
+              bm_form = get_formal_data(obj)
+              return(get_formal_data(bm_form, subinfo = subinfo))
             }
           }
 )

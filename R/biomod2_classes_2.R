@@ -170,7 +170,12 @@ setMethod("load_stored_object", "BIOMOD.stored.data",
                 return(out)
               }
             } else { # for all other stored objects
-              return(get(load(obj@link)))
+              if (obj@link != '') {
+                return(get(load(obj@link)))
+              } else {
+                warning("No link provided for this object")
+                return(NA)
+              }
             }
           }
 )

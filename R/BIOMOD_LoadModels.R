@@ -128,35 +128,17 @@ BIOMOD_LoadModels <- function(bm.out, ... )
     
     ## subselection on models
     if (!is.null(models)) {
-      model.to.load.tmp <- c()
-      for (mod in models) {
-        if (sum(grepl(mod, models.to.load)) > 0) {
-          model.to.load.tmp <- c(model.to.load.tmp, grep(mod, models.to.load, value = TRUE))
-        }
-      }
-      models.to.load <- model.to.load.tmp
+      models.to.load <- grep(paste0(models, collapse = "|"), models.to.load, value = TRUE)
     }
     
     ## subselection on run.Eval
     if (!is.null(run.eval)) {
-      model.to.load.tmp <- c()
-      for (re in run.eval) {
-        if (sum(grepl(re, models.to.load)) > 0) {
-          model.to.load.tmp <- c(model.to.load.tmp, grep(re, models.to.load, value = TRUE))
-        }
-      }
-      models.to.load <-  model.to.load.tmp
+      models.to.load <- grep(paste0(run.eval, collapse = "|"), models.to.load, value = TRUE)
     }
     
     ## subselection on data.set
     if (!is.null(data.set)) {
-      model.to.load.tmp <- c()
-      for (ds in data.set) {
-        if (sum(grepl(ds,  models.to.load)) > 0) {
-          model.to.load.tmp <- c(model.to.load.tmp, grep(ds, models.to.load, value = TRUE))
-        }
-      }
-      models.to.load <-  model.to.load.tmp
+      models.to.load <- grep(paste0(data.set, collapse = "|"), models.to.load, value = TRUE)
     }
   }
   
