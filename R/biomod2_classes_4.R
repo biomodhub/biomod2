@@ -415,7 +415,6 @@ setClass('CTA_biomod2_model',
 setMethod('predict2', signature(object = 'CTA_biomod2_model', newdata = "RasterStack"),
           function(object, newdata, ...) {
             use_calc <- FALSE
-
             fact.var <- is.factor(newdata)
             if (any(fact.var)) {
               use_calc <- TRUE
@@ -722,9 +721,9 @@ setMethod('predict2', signature(object = 'MAXENT.Phillips_biomod2_model', newdat
             args <- list(...)
             on_0_1000 <- args$on_0_1000
             temp_workdir <- args$temp_workdir
-
+            
             if (is.null(on_0_1000)) { on_0_1000 <- FALSE }
-
+            
             ## check if na occurs in newdata cause they are not well supported
             not_na_rows <- apply(newdata, 1, function(x){ sum(is.na(x)) == 0 })
             newdata = as.data.frame(newdata[not_na_rows, , drop = FALSE])
