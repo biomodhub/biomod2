@@ -863,7 +863,6 @@ BIOMOD_EnsembleModeling <- function(bm.mod,
 
 
 # .get_needed_predictions -------------------------------------------------
-#' @importFrom dplyr bind_cols
 
 .get_needed_predictions <- function(bm.mod, em.by,  models.kept, metric.select
                                     , metric.select.thresh, metric.select.user
@@ -903,7 +902,7 @@ BIOMOD_EnsembleModeling <- function(bm.mod,
   if (length(models.kept.union) > 0) {
     ## load prediction on each PA_dataset
     if (em.by %in% c("PA_dataset", 'PA_dataset+algo', 'PA_dataset+repet') || 
-        !is(get_formal_data(bm.mod), "BIOMOD.formated.data.PA")) {
+        !inherits(get_formal_data(bm.mod), "BIOMOD.formated.data.PA")) {
       out$predictions <- as.data.frame(
         get_predictions(bm.mod, as.data.frame = TRUE)[, models.kept.union, drop = FALSE]
       )
