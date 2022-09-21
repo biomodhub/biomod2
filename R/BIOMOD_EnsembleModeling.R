@@ -400,8 +400,7 @@ BIOMOD_EnsembleModeling <- function(bm.mod,
   
   ## make a list of models names that will be combined together according to em.by argument
   em.mod.assemb <- .get_models_assembling(models.chosen, em.by)
-  for (assemb in names(em.mod.assemb))
-  {
+  for (assemb in names(em.mod.assemb))  {
     cat("\n\n  >", assemb, "ensemble modeling")
     models.kept <- em.mod.assemb[[assemb]]
     
@@ -421,11 +420,20 @@ BIOMOD_EnsembleModeling <- function(bm.mod,
       } else {
         kept_cells <- rep(TRUE, length(obs))
       }
-      obs <- obs[kept_cells]
-      expl <- expl[kept_cells, , drop = FALSE]
+    } else if (em.by %in% c("algo","all")) { # no other option should be possible
+      if (inherits(get_formal_data(bm.mod), "BIOMOD.formated.data.PA")) {
+        # get the union of pseudo absences
+        kept_cells <- apply(get_formal_data(bm.mod)@PA.table, 1, any) 
+      } else {
+        kept_cells <- rep(TRUE, length(obs))
+      }
+    } else { # in case 'AllData'
+      kept_cells <- rep(TRUE, length(obs))
     }
-    obs[is.na(obs)] <- 0
     
+    obs <- obs[kept_cells]
+    expl <- expl[kept_cells, , drop = FALSE]
+    obs[is.na(obs)] <- 0
     
     ## get needed models predictions ----------------------------------------
     needed_predictions <- .get_needed_predictions(bm.mod, em.by, models.kept
@@ -549,7 +557,7 @@ BIOMOD_EnsembleModeling <- function(bm.mod,
           model.bm@side <- 'superior'
         } else if (algo == 'committee.averaging') {
           model.bm@thresholds <- models.kept.thresh.tmp
-        } else if(algo == 'prob.mean.weight'){
+        } else if (algo == 'prob.mean.weight') {
           model.bm@penalization_scores <- models.kept.scores.tmp
         }
         
@@ -562,7 +570,6 @@ BIOMOD_EnsembleModeling <- function(bm.mod,
                                      , "ensemble.models", "ensemble.models.predictions"
                                      , pred.bm.name)
         dir.create(dirname(pred.bm.outfile), showWarnings = FALSE, recursive = TRUE)
-        
         ## store models prediction on the hard drive
         pred.bm <- predict(model.bm
                            , newdata = expl
@@ -856,11 +863,11 @@ BIOMOD_EnsembleModeling <- function(bm.mod,
 
 
 # .get_needed_predictions -------------------------------------------------
+#' @importFrom dplyr bind_cols
 
-.get_needed_predictions <- function(bm.mod, em.by, models.kept, metric.select
+.get_needed_predictions <- function(bm.mod, em.by,  models.kept, metric.select
                                     , metric.select.thresh, metric.select.user
-                                    , metric.select.table, nb.cpu)
-{
+                                    , metric.select.table, nb.cpu) {
   out <- list(predictions = NULL, models.kept = NULL, models.kept.scores = NULL)
   for (eval.m in metric.select) {
     if (eval.m != 'none') {
@@ -894,41 +901,71 @@ BIOMOD_EnsembleModeling <- function(bm.mod,
   models.kept.union <- unique(unlist(out$models.kept))
   
   if (length(models.kept.union) > 0) {
-    ## load prediction on each PA dataset
-    if (em.by %in% c("PA_dataset", 'PA_dataset+algo', 'PA_dataset+repet')) {
-      out$predictions <- as.data.frame(get_predictions(bm.mod, as.data.frame = TRUE)[, models.kept.union, drop = FALSE])
+    ## load prediction on each PA_dataset
+    if (em.by %in% c("PA_dataset", 'PA_dataset+algo', 'PA_dataset+repet') || 
+        !is(get_formal_data(bm.mod), "BIOMOD.formated.data.PA")) {
+      out$predictions <- as.data.frame(
+        get_predictions(bm.mod, as.data.frame = TRUE)[, models.kept.union, drop = FALSE]
+      )
     } else {
-      ## redo prediction on full data.set
-      cat("\n   ! Models projections for whole zonation required...")
-      temp_name <- paste0('tmp_', sub(".", "", as.character(format(Sys.time(), "%OS6")), fixed = TRUE))
-      out$predictions <- BIOMOD_Projection(bm.mod = bm.mod,
-                                           new.env = get_formal_data(bm.mod)@data.env.var,
-                                           proj.name = temp_name,
-                                           xy.new.env = get_formal_data(bm.mod)@coord,
-                                           models.chosen = models.kept.union,
-                                           compress = TRUE,
-                                           build.clamping.mask = FALSE,
-                                           do.stack = TRUE,
-                                           nb.cpu = nb.cpu
-      )@proj.out@val
+      ## only for models with pseudo absence
+      ## some prediction should be added for the union of pseudo-absences
       
-      # transform array into data.frame
-      out$predictions <- as.data.frame(out$predictions)
-      names(out$predictions) <- unlist(lapply(strsplit(names(out$predictions), ".", fixed = TRUE), function(x)
-      {
-        x.rev <- rev(x) ## we reverse the order of the splitted vector to have algo a t the end
-        data.set.id <- x.rev[1]
-        cross.valid.id <- x.rev[2]
-        algo.id <- paste0(rev(x.rev[3:length(x.rev)]), collapse = ".")
-        model.id <- paste(bm.mod@sp.name,
-                          data.set.id,
-                          cross.valid.id,
-                          algo.id,
-                          sep = "_")
-        return(model.id)
-      }))
-      # keep only wanted columns
-      out$predictions <- out$predictions[, models.kept.union, drop = FALSE]
+      cat("\n   ! Additional projection required for ensemble models merging several pseudo-absence dataset...")
+      
+      # temp folders for additionnal predictions
+      temp_name <- paste0('tmp_', sub(".", "", as.character(format(Sys.time(), "%OS6")), fixed = TRUE))
+      PA.table <- get_formal_data(bm.mod)@PA.table
+      # data that are kept at least in one PA dataset
+      kept_data <- apply(PA.table, 1, any)
+      # tells which PA dataset is used by which model
+      models.kept.PA <-   sapply(models.kept.union, function(x){
+        .extract_modelNamesInfo(x, info = "data.set")
+      })
+      
+      out$predictions <- 
+        foreach(thisPA = unique(models.kept.PA), .combine = "cbind") %do% {
+          ## model kept for this PA dataset
+          thismodels <- names(models.kept.PA)[which(models.kept.PA == thisPA)]
+          ## retrieve predictions for this PA dataset
+          current_prediction <- as.data.frame(
+            get_predictions(bm.mod, as.data.frame = TRUE)[, thismodels, drop = FALSE]
+          )
+          ## index of data to predict and data already predicted
+          index_to_predict <- which(!PA.table[,thisPA] & kept_data)
+          index_current <- which(PA.table[,thisPA])
+          
+          # subsetting environment and coord
+          env_to_predict <- get_formal_data(bm.mod)@data.env.var[index_to_predict,]
+          coord_to_predict <- get_formal_data(bm.mod)@coord[index_to_predict,]
+          
+          # prediction on the other PA datasets
+          new_prediction <-
+            get_predictions(
+              BIOMOD_Projection(
+                bm.mod = bm.mod,
+                new.env = env_to_predict,
+                proj.name = temp_name,
+                xy.new.env = coord_to_predict,
+                models.chosen = thismodels,
+                compress = TRUE,
+                build.clamping.mask = FALSE,
+                do.stack = TRUE,
+                nb.cpu = nb.cpu
+              ),
+              as.data.frame = TRUE
+            )
+          
+          ## combining old and new predictions
+          index_full <- c(index_current, index_to_predict)
+          
+          return(
+            rbind(current_prediction, new_prediction)[order(index_full), ,  drop = FALSE]
+          )
+          # drop = FALSE to avoid coercion into vector for single column data.frame
+        }
+      
+      # delete temporary directory
       unlink(file.path(bm.mod@dir.name, bm.mod@sp.name, paste0("proj_", temp_name))
              , recursive = TRUE, force = TRUE)
       cat("\n")
