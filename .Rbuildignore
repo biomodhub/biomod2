@@ -7,3 +7,4 @@
 .gitignore
 ^.github$
 ^GuloGulo$
+maxent.jar
