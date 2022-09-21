@@ -706,10 +706,11 @@ setMethod('predict2', signature(object = 'MAXENT.Phillips_biomod2_model', newdat
             newraster[] = NA
             newdata = na.exclude(rasterToPoints(newdata))
             newraster[cellFromXY(newraster, newdata[, 1:2])] = 1
+            newdata <- as.data.frame(newdata)
             # redirect to the data.frame method, but asking to save a raster
             # with template newraster
             predict2(object, newdata,
-                     do_raster = TRUE, newraster = newraster...)
+                     do_raster = TRUE, newraster = newraster, ...)
           }
 )
 
