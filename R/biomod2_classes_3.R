@@ -293,7 +293,6 @@ setClass("BIOMOD.models.out",
 
 ##' @name BIOMOD.stored.models.out-class
 ##' @rdname BIOMOD.models.out
-##' @export
 
 setClass("BIOMOD.stored.models.out",
          contains = "BIOMOD.stored.data",

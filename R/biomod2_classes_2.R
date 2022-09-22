@@ -86,7 +86,6 @@ setClass("BIOMOD.stored.data",
 ##' @name BIOMOD.stored.array-class
 ##' @rdname BIOMOD.stored.data
 ##' 
-##' @export
 setClass("BIOMOD.stored.array",
          contains = "BIOMOD.stored.data",
          representation(val = 'array'),
