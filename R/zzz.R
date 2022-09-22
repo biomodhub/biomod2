@@ -5,6 +5,7 @@
 #' CRAN checks.
 #' @return
 #' nothing returned
+#' @keywords internal
 #' @export
 #'
 #' @examples
