@@ -704,12 +704,6 @@ setClass('MAXENT.Phillips_biomod2_model',
 ##' @export
 ##' 
 
-# setMethod('predict', signature(object = 'MAXENT.Phillips_biomod2_model'),
-#           function(object, newdata, ...)
-#           {
-#             return(.template_predict(mod = "MAXENT.Phillips", object, newdata, ...))
-#           })
-
 setMethod('predict2', signature(object = 'MAXENT.Phillips_biomod2_model', newdata = "RasterStack"),
           function(object, newdata, ...) {
             
