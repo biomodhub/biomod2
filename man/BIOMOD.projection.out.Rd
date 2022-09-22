@@ -3,6 +3,7 @@
 \docType{class}
 \name{BIOMOD.projection.out}
 \alias{BIOMOD.projection.out}
+\alias{BIOMOD.projection.out-class}
 \alias{plot,BIOMOD.projection.out,missing-method}
 \alias{show,BIOMOD.projection.out-method}
 \title{\code{BIOMOD_Projection()} output object class}

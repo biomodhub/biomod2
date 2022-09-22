@@ -3,6 +3,7 @@
 \docType{class}
 \name{BIOMOD.formated.data}
 \alias{BIOMOD.formated.data}
+\alias{BIOMOD.formated.data-class}
 \alias{BIOMOD.formated.data,numeric,data.frame-method}
 \alias{BIOMOD.formated.data,data.frame,ANY-method}
 \alias{BIOMOD.formated.data,numeric,matrix-method}
@@ -186,6 +187,7 @@ myBiomodData <- BIOMOD_FormatingData(resp.var = myResp,
                                      resp.name = myRespName)
 myBiomodData
 plot(myBiomodData)
+
 
 
 }

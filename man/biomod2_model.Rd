@@ -3,6 +3,7 @@
 \docType{class}
 \name{biomod2_model}
 \alias{biomod2_model}
+\alias{biomod2_model-class}
 \alias{ANN_biomod2_model}
 \alias{CTA_biomod2_model}
 \alias{FDA_biomod2_model}
@@ -86,8 +87,6 @@ showClass("MAXENT.Phillips_biomod2_model")
 showClass("MAXENT.Phillips.2_biomod2_model")
 showClass("RF_biomod2_model")
 showClass("SRE_biomod2_model")
-
-
 
 }
 \seealso{

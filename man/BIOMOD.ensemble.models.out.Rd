@@ -3,6 +3,7 @@
 \docType{class}
 \name{BIOMOD.ensemble.models.out}
 \alias{BIOMOD.ensemble.models.out}
+\alias{BIOMOD.ensemble.models.out-class}
 \alias{show,BIOMOD.ensemble.models.out-method}
 \title{\code{BIOMOD_EnsembleModeling()} output object class}
 \usage{

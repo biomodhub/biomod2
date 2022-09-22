@@ -3,6 +3,8 @@
 \docType{class}
 \name{BIOMOD.stored.data}
 \alias{BIOMOD.stored.data}
+\alias{BIOMOD.stored.data-class}
+\alias{BIOMOD.stored.array-class}
 \alias{BIOMOD.stored.array}
 \alias{BIOMOD.stored.data.frame}
 \alias{BIOMOD.stored.raster.stack}

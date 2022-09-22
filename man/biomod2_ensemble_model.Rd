@@ -3,6 +3,7 @@
 \docType{class}
 \name{biomod2_ensemble_model}
 \alias{biomod2_ensemble_model}
+\alias{biomod2_ensemble_model-class}
 \alias{EMmean_biomod2_model}
 \alias{EMmedian_biomod2_model}
 \alias{EMcv_biomod2_model}
@@ -31,6 +32,8 @@ Class created by \code{\link{BIOMOD_EnsembleModeling}}
 \section{Slots}{
 
 \describe{
+\item{\code{modeling.id}}{a \code{character} corresponding to the name (ID) of the simulation set}
+
 \item{\code{model_name}}{a \code{character} corresponding to the model name}
 
 \item{\code{model_class}}{a \code{character} corresponding to the model class}

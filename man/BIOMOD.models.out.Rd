@@ -3,6 +3,8 @@
 \docType{class}
 \name{BIOMOD.models.out}
 \alias{BIOMOD.models.out}
+\alias{BIOMOD.models.out-class}
+\alias{BIOMOD.stored.models.out-class}
 \alias{show,BIOMOD.models.out-method}
 \title{\code{BIOMOD_Modeling()} output object class}
 \usage{

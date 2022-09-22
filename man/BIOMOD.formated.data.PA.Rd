@@ -3,6 +3,7 @@
 \docType{class}
 \name{BIOMOD.formated.data.PA}
 \alias{BIOMOD.formated.data.PA}
+\alias{BIOMOD.formated.data.PA-class}
 \alias{BIOMOD.formated.data.PA,numeric,data.frame-method}
 \alias{BIOMOD.formated.data.PA,numeric,RasterStack-method}
 \alias{plot,BIOMOD.formated.data.PA,missing-method}

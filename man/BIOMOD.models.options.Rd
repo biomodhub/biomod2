@@ -3,6 +3,7 @@
 \docType{class}
 \name{BIOMOD.models.options}
 \alias{BIOMOD.models.options}
+\alias{BIOMOD.models.options-class}
 \alias{show,BIOMOD.models.options-method}
 \title{\code{BIOMOD_ModelingOptions()} output object class}
 \usage{
