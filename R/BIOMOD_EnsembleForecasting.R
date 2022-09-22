@@ -340,8 +340,13 @@ BIOMOD_EnsembleForecasting <- function(bm.em,
           }
           saved.files <- c(saved.files, file_name_tmp)
         }
-      } else {
-        ef.out <- cbind(ef.out, ef.tmp)
+      } else if (!is.null(ef.tmp)) {
+        # if (!is.null(ef.out) && length(ef.tmp) != nrow(ef.out)) {
+        #   proj_names = proj_names[-length(proj_names)]
+        #   warning(paste0("Predictions for ", em.comp, " do not match initial number of points (", length(ef.tmp), " instead of ", nrow(ef.out), ")"))
+        # } else {
+          ef.out <- cbind(ef.out, matrix(ef.tmp, ncol = 1))
+        # }
       }
     }
   }

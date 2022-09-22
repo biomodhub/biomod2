@@ -20,9 +20,10 @@ BIOMOD_PresenceOnly(
 \code{\link{BIOMOD_EnsembleModeling}} function}
 
 \item{bg.env}{(\emph{optional, default} \code{NULL}) \cr 
-A \code{matrix} or \code{data.frame} object containing values of environmental variables 
-extracted from the background (\emph{if presences are to be compared to background instead of 
-absences or pseudo-absences selected for modeling})}
+A \code{matrix}, \code{data.frame} or \code{\link[raster:stack]{RasterStack}} object 
+containing values of environmental variables extracted from the background (\emph{if 
+presences are to be compared to background instead of absences or pseudo-absences selected 
+for modeling})}
 
 \item{perc}{a \code{numeric} between \code{0} and \code{1} corresponding to the percentage of 
 correctly classified presences for Minimal Predicted Area (see 
@@ -140,7 +141,7 @@ myBiomodPO
 # Evaluate models with Boyce index and MPA (using background data)
 myBiomodPO <- BIOMOD_PresenceOnly(bm.mod = myBiomodModelOut,
                                   bm.em = myBiomodEM, 
-                                  bg.env = raster::getValues(myExpl))
+                                  bg.env = myExpl)
 myBiomodPO
 
 

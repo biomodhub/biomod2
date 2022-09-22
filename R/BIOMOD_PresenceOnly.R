@@ -15,9 +15,10 @@
 ##' @param bm.em a \code{\link{BIOMOD.ensemble.models.out}} object returned by the 
 ##' \code{\link{BIOMOD_EnsembleModeling}} function
 ##' @param bg.env (\emph{optional, default} \code{NULL}) \cr 
-##' A \code{matrix} or \code{data.frame} object containing values of environmental variables 
-##' extracted from the background (\emph{if presences are to be compared to background instead of 
-##' absences or pseudo-absences selected for modeling})
+##' A \code{matrix}, \code{data.frame} or \code{\link[raster:stack]{RasterStack}} object 
+##' containing values of environmental variables extracted from the background (\emph{if 
+##' presences are to be compared to background instead of absences or pseudo-absences selected 
+##' for modeling})
 ##' @param perc a \code{numeric} between \code{0} and \code{1} corresponding to the percentage of 
 ##' correctly classified presences for Minimal Predicted Area (see 
 ##' \code{ecospat.mpa()} in \pkg{ecospat})
@@ -158,7 +159,7 @@
 ##' # Evaluate models with Boyce index and MPA (using background data)
 ##' myBiomodPO <- BIOMOD_PresenceOnly(bm.mod = myBiomodModelOut,
 ##'                                   bm.em = myBiomodEM, 
-##'                                   bg.env = raster::getValues(myExpl))
+##'                                   bg.env = myExpl)
 ##' myBiomodPO
 ##' 
 ##' 
@@ -182,6 +183,11 @@ BIOMOD_PresenceOnly <- function(bm.mod = NULL,
   .bm_cat("Do Presence-Only Evaluation")
   # if (!isNamespaceLoaded("ecospat")) { requireNamespace("ecospat") }
   
+  ## 0. Check arguments ---------------------------------------------------------------------------
+  args <- .BIOMOD_PresenceOnly.check.args(bm.mod, bm.em, bg.env, perc, save.output)
+  for (argi in names(args)) { assign(x = argi, value = args[[argi]]) }
+  rm(args)
+  
   ## MODELING OUTPUT ------------------------------------------------------------------------------
   if (!is.null(bm.mod)) {
     ## Get calibration lines and observations
@@ -192,7 +198,7 @@ BIOMOD_PresenceOnly <- function(bm.mod = NULL,
     myResp <- myResp[calib.notNA] ## keep only lines associated to sites (no pseudo-absences)
     
     ## Get evaluation scores
-    myModelEval <- get_evaluations(bm.mod, as.data.frame = TRUE)
+    myModelEval <- na.omit(get_evaluations(bm.mod, as.data.frame = TRUE))
     myModelEval$Model.name <- sapply(myModelEval$Model.name, function(x) 
       paste(c(bm.mod@sp.name, strsplit(as.character(x), split = "_")[[1]][3:1]), collapse = "_"))
     
@@ -209,7 +215,7 @@ BIOMOD_PresenceOnly <- function(bm.mod = NULL,
     
     ## Get predictions on evaluation data
     if (bm.mod@has.evaluation.data == TRUE) {
-      # myModelPred.eval <- as.data.frame(get(load(paste0(bm.mod@"sp.name", "/.BIOMOD_DATA/"
+      # myModelPred.eval <- as.data.frame(get(load(paste0(bm.mod@", sp.name", "/.BIOMOD_DATA/"
       #                                                   , bm.mod@modeling.id
       #                                                   , "/models.prediction.eval"))))
       # colnames(myModelPred.eval) <- sapply(colnames(myModelPred.eval), function(x) 
@@ -224,10 +230,12 @@ BIOMOD_PresenceOnly <- function(bm.mod = NULL,
   if (!is.null(bm.em)) {
     
     ## Get evaluation scores
-    myModelEvalEF <- get_evaluations(bm.em, as.data.frame = TRUE)
-    myModelEvalEF$Model.name <- paste(bm.mod@sp.name, as.character(myModelEvalEF$Model.name), sep = "_")
+    myModelEvalEF <- na.omit(get_evaluations(bm.em, as.data.frame = TRUE))
+    myModelEvalEF$Model.name <- paste(bm.em@sp.name, as.character(myModelEvalEF$Model.name), sep = "_")
     if (!is.null(bm.mod)) {
       myModelEval <- rbindlist(list(myModelEval, myModelEvalEF), fill = TRUE)
+    } else {
+      myModelEval <- myModelEvalEF
     }
     myModelEval = as.data.frame(myModelEval)
     for (cc in c("Model.name", "Algo", "Run", "Dataset", "Model")) {
@@ -243,13 +251,17 @@ BIOMOD_PresenceOnly <- function(bm.mod = NULL,
       myModelPred.sites <- cbind(myModelPred.sites, myBiomodProjFF.sites)
       myBiomodProjFF <- BIOMOD_EnsembleForecasting(bm.em = bm.em,
                                                    bm.proj = myBiomodProj.eval,
-                                                   proj.name = paste(bm.mod@modeling.id, "cv_EF_bg", sep = "_"))
+                                                   proj.name = paste(bm.em@modeling.id, "cv_EF_bg", sep = "_"))
       myBiomodProjFF <- get_predictions(myBiomodProjFF, as.data.frame = TRUE)
     }
-    if (!is.null(bm.mod)) { myModelPred <- cbind(myModelPred, myBiomodProjFF) }
+    if (!is.null(bm.mod)) {
+      myModelPred <- cbind(myModelPred, myBiomodProjFF)
+    } else {
+      myModelPred <- myBiomodProjFF
+    }
     
     ## Get predictions on evaluation data
-    if (bm.mod@has.evaluation.data == TRUE) {
+    if (!is.null(bm.mod) && bm.mod@has.evaluation.data == TRUE) {
       myBiomodProjFF.eval <- get_predictions(bm.em, as.data.frame = TRUE, evaluation = TRUE)
       myModelPred.eval <- cbind(myModelPred.eval, myBiomodProjFF.eval)      
     }  
@@ -339,7 +351,7 @@ BIOMOD_PresenceOnly <- function(bm.mod = NULL,
     }
     
     ## Compute Boyce and MPA values for evaluation data -----------------------
-    if (bm.mod@has.evaluation.data == TRUE) {
+    if (!is.null(bm.mod) && bm.mod@has.evaluation.data == TRUE) {
       myResp.eval <- get_formal_data(bm.mod)@eval.data.species
       Pred.eval <- myModelPred.eval[, Model.name]
       
@@ -356,13 +368,64 @@ BIOMOD_PresenceOnly <- function(bm.mod = NULL,
   output <- rbind(myModelEval, boyce.eval, mpa.eval)
   
   if (save.output) {
-    if (!is.null(bm.mod)) { sp <- bm.mod@sp.name }
-    if (!is.null(bm.em)) { sp <- bm.em@sp.name }
-    save(output, file = paste0(sp, "/.BIOMOD_DATA/", bm.mod@modeling.id, "/presenceonly.evaluation_", sp))
+    if (!is.null(bm.mod)) {
+      sp <- bm.mod@sp.name
+      mod.id <- bm.mod@modeling.id
+    } else if (!is.null(bm.em)) {
+      sp <- bm.em@sp.name
+      mod.id <- bm.em@modeling.id
+    }
+    save(output, file = paste0(sp, "/.BIOMOD_DATA/", mod.id, "/presenceonly.evaluation_", sp))
   }
   
   .bm_cat("Done")
   return(output)
+}
+
+
+
+###################################################################################################
+
+.BIOMOD_PresenceOnly.check.args <- function(bm.mod, bm.em, bg.env, perc, save.output)
+{
+  ## 1. Check bm.mod ----------------------------------------------------------
+  if (!is.null(bm.mod)) {
+    .fun_testIfInherits(TRUE, "bm.mod", bm.mod, "BIOMOD.models.out")
+  }
+  
+  ## 2. Check bm.em -----------------------------------------------------------
+  if (!is.null(bm.em)) {
+    .fun_testIfInherits(TRUE, "bm.em", bm.em, "BIOMOD.ensemble.models.out")
+  }
+  
+  ## 2. Check bg.env -----------------------------------------------------------
+  if(is.matrix(bg.env) | is.numeric(bg.env)) {
+    bg.env <- as.data.frame(bg.env)
+  }
+  
+  if (inherits(bg.env, 'Raster')) {
+    bg.env <- as.data.frame(getValues(bg.env))
+  }
+  
+  if (inherits(bg.env, 'SpatialPoints')) {
+    bg.env <- as.data.frame(bg.env@data)
+  }
+  
+  ## remove NA from background data
+  if (sum(is.na(bg.env)) > 0) {
+    cat("\n      ! NAs have been automatically removed from bg.env data")
+    bg.env <- na.omit(bg.env)
+  }
+  
+  ## 4. Check perc -----------------------------------------------------------
+  .fun_testIf01(TRUE, "perc", perc)
+  
+  
+  return(list(bm.mod = bm.mod,
+              bm.em = bm.em,
+              bg.env = bg.env,
+              perc = perc,
+              save.output = save.output))
 }
 
 
