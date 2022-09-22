@@ -149,7 +149,9 @@ setGeneric("get_variables_importance", function(obj, ...) { standardGeneric("get
 ## -------------------------------------------------------------------------- #
 
 ##' @name BIOMOD.models.out
+##' @aliases BIOMOD.models.out-class
 ##' @aliases BIOMOD.models.out
+##' @aliases BIOMOD.stored.models.out-class
 ## @aliases BIOMOD.stored.models.out
 ##' @author Damien Georges
 ##' 
@@ -246,6 +248,10 @@ setGeneric("get_variables_importance", function(obj, ...) { standardGeneric("get
 ##' myBiomodModelOut
 ##' 
 ##' 
+NULL
+
+##' @name BIOMOD.models.out-class
+##' @rdname BIOMOD.models.out
 ##' @export
 ##' 
 
@@ -284,6 +290,10 @@ setClass("BIOMOD.models.out",
                    models.prediction.eval = new('BIOMOD.stored.array'),
                    link = ''),
          validity = function(object){ return(TRUE) } )
+
+##' @name BIOMOD.stored.models.out-class
+##' @rdname BIOMOD.models.out
+##' @export
 
 setClass("BIOMOD.stored.models.out",
          contains = "BIOMOD.stored.data",
@@ -520,6 +530,7 @@ setMethod("get_variables_importance", "BIOMOD.models.out",
 ## --------------------------------------------------------------------------- #
 
 ##' @name BIOMOD.projection.out
+##' @aliases BIOMOD.projection.out-class
 ##' @author Damien Georges
 ##' 
 ##' @title \code{BIOMOD_Projection()} output object class
@@ -625,6 +636,10 @@ setMethod("get_variables_importance", "BIOMOD.models.out",
 ##' @importFrom grDevices colorRampPalette colors dev.new gray rainbow
 ##' @importFrom graphics layout legend par points polygon text
 ##' 
+NULL
+
+##' @name BIOMOD.projection.out-class
+##' @rdname BIOMOD.projection.out
 ##' @export
 ##' 
 
@@ -847,6 +862,7 @@ setMethod("get_predictions", "BIOMOD.projection.out",
 ## --------------------------------------------------------------------------- #
 
 ##' @name BIOMOD.ensemble.models.out
+##' @aliases BIOMOD.ensemble.models.out-class
 ##' @author Damien Georges
 ##' 
 ##' @title \code{BIOMOD_EnsembleModeling()} output object class
@@ -953,6 +969,10 @@ setMethod("get_predictions", "BIOMOD.projection.out",
 ##' myBiomodEM
 ##' 
 ##' 
+NULL
+
+##' @name BIOMOD.ensemble.models.out-class
+##' @rdname BIOMOD.ensemble.models.out
 ##' @export
 ##' 
 

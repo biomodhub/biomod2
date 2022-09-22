@@ -43,6 +43,7 @@ NULL
 ###################################################################################################
 
 ##' @name biomod2_ensemble_model
+##' @aliases biomod2_ensemble_model-class
 ##' @aliases biomod2_ensemble_model
 ##' @aliases EMmean_biomod2_model
 ##' @aliases EMmedian_biomod2_model
@@ -57,6 +58,7 @@ NULL
 ##' @description Class created by \code{\link{BIOMOD_EnsembleModeling}}
 ##' 
 ##' 
+##' @slot modeling.id a \code{character} corresponding to the name (ID) of the simulation set 
 ##' @slot model_name a \code{character} corresponding to the model name
 ##' @slot model_class a \code{character} corresponding to the model class
 ##' @slot model_options a \code{list} containing the model options
@@ -102,6 +104,10 @@ NULL
 ##' showClass("EMwmean_biomod2_model")
 ##' 
 ##' 
+NULL
+
+##' @name biomod2_ensemble_model-class
+##' @rdname biomod2_ensemble_model
 ##' @export
 ##' 
 

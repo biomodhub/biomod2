@@ -89,6 +89,7 @@ NULL
 ###################################################################################################
 
 ##' @name biomod2_model
+##' @aliases biomod2_model-class
 ##' @aliases ANN_biomod2_model
 ##' @aliases CTA_biomod2_model
 ##' @aliases FDA_biomod2_model
@@ -162,8 +163,10 @@ NULL
 ##' showClass("RF_biomod2_model")
 ##' showClass("SRE_biomod2_model")
 ##' 
-##'
-##' 
+NULL
+
+##' @name biomod2_model-class
+##' @rdname biomod2_model
 ##' @export
 ##' 
 

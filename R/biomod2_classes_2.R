@@ -1,6 +1,8 @@
 
 ##' @name BIOMOD.stored.data
+##' @aliases BIOMOD.stored.data-class
 ##' @aliases BIOMOD.stored.data
+##' @aliases BIOMOD.stored.array-class
 ##' @aliases BIOMOD.stored.array
 ##' @aliases BIOMOD.stored.data.frame
 ##' @aliases BIOMOD.stored.raster.stack
@@ -63,20 +65,28 @@
 ##' showClass("BIOMOD.stored.models.out") 
 ##' 
 ##' 
+NULL
+
+##' @name BIOMOD.stored.data-class
+##' @rdname BIOMOD.stored.data
 ##' @importFrom raster stack
 ##' 
 ##' @export
 ##' 
 
-###################################################################################################
-## BIOMOD.stored[...] objects
-###################################################################################################
+## --------------------------------------------------------------------------- #
+## BIOMOD.stored[...] objects ------------------------------------------------
+## --------------------------------------------------------------------------- #
 
 setClass("BIOMOD.stored.data",
          representation(inMemory = 'logical', link = 'character'),
          prototype(inMemory = FALSE, link = ''),
          validity = function(object){ return(TRUE) })
 
+##' @name BIOMOD.stored.array-class
+##' @rdname BIOMOD.stored.data
+##' 
+##' @export
 setClass("BIOMOD.stored.array",
          contains = "BIOMOD.stored.data",
          representation(val = 'array'),

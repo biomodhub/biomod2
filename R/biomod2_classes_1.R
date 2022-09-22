@@ -4,6 +4,7 @@
 ## --------------------------------------------------------------------------- #
 
 ##' @name BIOMOD.formated.data
+##' @aliases BIOMOD.formated.data-class
 ##' @author Damien Georges
 ##' 
 ##' @title \code{BIOMOD_FormatingData()} output object class
@@ -117,8 +118,12 @@
 ##' plot(myBiomodData)
 ##' 
 ##' 
-##' @importFrom raster stack nlayers addLayer is.factor subset extract cellStats cellFromXY
 ##' 
+NULL
+
+##' @name BIOMOD.formated.data-class
+##' @rdname BIOMOD.formated.data
+##' @importFrom raster stack nlayers addLayer is.factor subset extract cellStats cellFromXY
 ##' @export
 ##' 
 
@@ -445,6 +450,7 @@ setMethod('show', signature('BIOMOD.formated.data'),
 ## --------------------------------------------------------------------------- #
 
 ##' @name BIOMOD.formated.data.PA
+##' @aliases BIOMOD.formated.data.PA-class
 ##' @author Damien Georges
 ##' 
 ##' @title \code{BIOMOD_FormatingData()} output object class (with pseudo-absences)
@@ -594,6 +600,10 @@ setMethod('show', signature('BIOMOD.formated.data'),
 ##' plot(myBiomodData)
 ##' 
 ##' 
+NULL
+
+##' @name BIOMOD.formated.data.PA-class
+##' @rdname BIOMOD.formated.data.PA
 ##' @importFrom raster stack nlayers addLayer is.factor subset cellFromXY cellStats
 ## @importFrom rasterVis levelplot
 ##' 
@@ -990,6 +1000,7 @@ setMethod('show', signature('BIOMOD.formated.data.PA'),
 ## --------------------------------------------------------------------------- #
 
 ##' @name BIOMOD.models.options
+##' @aliases BIOMOD.models.options-class
 ##' @author Damien Georges
 ##' 
 ##' @title \code{BIOMOD_ModelingOptions()} output object class
@@ -1030,6 +1041,10 @@ setMethod('show', signature('BIOMOD.formated.data.PA'),
 ##' myBiomodOptions
 ##'
 ##' 
+NULL
+
+##' @name BIOMOD.models.options-class
+##' @rdname BIOMOD.models.options
 ##' @export
 ##' 
 
