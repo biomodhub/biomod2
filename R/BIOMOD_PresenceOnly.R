@@ -20,7 +20,10 @@
 ##' absences or pseudo-absences selected for modeling})
 ##' @param perc a \code{numeric} between \code{0} and \code{1} corresponding to the percentage of 
 ##' correctly classified presences for Minimal Predicted Area (see 
-##' \code{\link[ecospat]{ecospat.mpa}})
+##' \code{ecospat.mpa()} in \pkg{ecospat})
+## \code{\link[ecospat]{ecospat.mpa}}) # generate R CMD Check error due 
+## to crossref missing ecospat package
+##' 
 ##' @param save.output (\emph{optional, default} \code{TRUE}) \cr 
 ##' A \code{logical} value defining whether the output is to be saved within the 
 ##' \code{.BIOMOD_DATA} folder or not
@@ -45,8 +48,12 @@
 ##' 
 ##' 
 ##' @note In order to break dependency loop between packages \pkg{biomod2} and \pkg{ecospat}, 
-##' code of \code{\link[ecospat]{ecospat.boyce}} and \code{\link[ecospat]{ecospat.mpa}} 
+##' code of \code{ecospat.boyce()} and \code{ecospat.mpa()} in \pkg{ecospat})
 ##' functions have been copied within this file from version 3.2.2 (august 2022).
+## \code{\link[ecospat]{ecospat.mpa}}) # generate R CMD Check error due 
+## to crossref missing ecospat package
+## code of \code{\link[ecospat]{ecospat.boyce}} and \code{\link[ecospat]{ecospat.mpa}} 
+## generate R CMD Check error due to crossref missing ecospat package 
 ##' 
 ##' 
 ##' @references
@@ -61,7 +68,8 @@
 ##' }
 ##' 
 ##' 
-##' @seealso \code{\link[ecospat]{ecospat.boyce}}, \code{\link[ecospat]{ecospat.mpa}}, 
+##' @seealso \code{ecospat.boyce()} and \code{ecospat.mpa()} in \pkg{ecospat}, 
+## @seealso \code{\link[ecospat]{ecospat.boyce}}, \code{\link[ecospat]{ecospat.mpa}}, 
 ##' \code{\link{BIOMOD.models.out}}, \code{\link{BIOMOD_Modeling}}, 
 ##' \code{\link{BIOMOD.ensemble.models.out}}, \code{\link{BIOMOD_EnsembleModeling}}
 ##' @family Main functions
