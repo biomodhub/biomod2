@@ -98,28 +98,37 @@ keeping the same proportion of <code>0</code> and <code>1</code> as the initial 
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">bm_SampleBinaryVector</span><span class="op">(</span><span class="va">obs</span>, <span class="va">ratio</span>, as.logical <span class="op">=</span> <span class="cn">FALSE</span>, seedval <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">bm_SampleBinaryVector</span><span class="op">(</span><span class="va">obs</span>, <span class="va">ratio</span>, as.logical <span class="op">=</span> <span class="cn">FALSE</span>, seedval <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
     <h2>Arguments</h2>
     <dl><dt>obs</dt>
 <dd><p>a <code>vector</code> containing binary values (either <code>0</code> or <code>1</code>)</p></dd>
+
+
 <dt>ratio</dt>
 <dd><p>a <code>numeric</code> between <code>0</code> and <code>1</code> corresponding to the proportion 
 of <code>obs</code> values to sample</p></dd>
+
+
 <dt>as.logical</dt>
 <dd><p>(<em>optional, default</em> <code>FALSE</code>) <br> 
 A <code>logical</code> value defining whether a <code>vector</code> of <code>TRUE/FALSE</code> values should 
 be returned (if <code>as.logical = TRUE</code>) or a <code>vector</code> containing the indices of 
 <code>obs</code> elements to keep</p></dd>
+
+
 <dt>seedval</dt>
 <dd><p>(<em>optional, default</em> <code>NULL</code>) <br> 
 An <code>integer</code> value corresponding to the new seed value to be set</p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>A <code>list</code> containing to elements is returned :</p><dl><dt>calibration</dt>
+    
+
+<p>A <code>list</code> containing to elements is returned :</p><dl><dt>calibration</dt>
 <dd><p>IDs of elements selected for calibration</p></dd>
 
   <dt>evaluation</dt>
@@ -154,15 +163,14 @@ An <code>integer</code> value corresponding to the new seed value to be set</p><
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code>
-<span class="co">## Generate a binary vector</span>
-<span class="va">vec.a</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/sample.html" class="external-link">sample</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">1</span><span class="op">)</span>, <span class="fl">100</span>, replace <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>
-
-<span class="co">## Generate calibration / evaluatation datasets</span>
-<span class="fu">bm_SampleBinaryVector</span><span class="op">(</span>obs <span class="op">=</span> <span class="va">vec.a</span>, ratio <span class="op">=</span> <span class="fl">0.7</span><span class="op">)</span>
-
-
-</code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span></span>
+<span><span class="co">## Generate a binary vector</span></span>
+<span><span class="va">vec.a</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/sample.html" class="external-link">sample</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">1</span><span class="op">)</span>, <span class="fl">100</span>, replace <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co">## Generate calibration / evaluatation datasets</span></span>
+<span><span class="fu">bm_SampleBinaryVector</span><span class="op">(</span>obs <span class="op">=</span> <span class="va">vec.a</span>, ratio <span class="op">=</span> <span class="fl">0.7</span><span class="op">)</span></span>
+<span></span>
+<span></span></code></pre></div>
     </div>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
@@ -176,7 +184,7 @@ An <code>integer</code> value corresponding to the new seed value to be set</p><
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.3.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
 </div>
 
       </footer></div>

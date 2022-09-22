@@ -18,3 +18,4 @@ CRAN checks.
 
 zzz_bm()
 }
+\keyword{internal}

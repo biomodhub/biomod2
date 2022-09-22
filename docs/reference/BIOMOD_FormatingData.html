@@ -102,93 +102,121 @@ with different strategies (see <a href="BIOMOD_FormatingData.html#details">Detai
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">BIOMOD_FormatingData</span><span class="op">(</span>
-  <span class="va">resp.name</span>,
-  <span class="va">resp.var</span>,
-  <span class="va">expl.var</span>,
-  dir.name <span class="op">=</span> <span class="st">"."</span>,
-  resp.xy <span class="op">=</span> <span class="cn">NULL</span>,
-  eval.resp.var <span class="op">=</span> <span class="cn">NULL</span>,
-  eval.expl.var <span class="op">=</span> <span class="cn">NULL</span>,
-  eval.resp.xy <span class="op">=</span> <span class="cn">NULL</span>,
-  PA.nb.rep <span class="op">=</span> <span class="fl">0</span>,
-  PA.nb.absences <span class="op">=</span> <span class="fl">1000</span>,
-  PA.strategy <span class="op">=</span> <span class="st">"random"</span>,
-  PA.dist.min <span class="op">=</span> <span class="fl">0</span>,
-  PA.dist.max <span class="op">=</span> <span class="cn">NULL</span>,
-  PA.sre.quant <span class="op">=</span> <span class="fl">0.025</span>,
-  PA.user.table <span class="op">=</span> <span class="cn">NULL</span>,
-  na.rm <span class="op">=</span> <span class="cn">TRUE</span>
-<span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">BIOMOD_FormatingData</span><span class="op">(</span></span>
+<span>  <span class="va">resp.name</span>,</span>
+<span>  <span class="va">resp.var</span>,</span>
+<span>  <span class="va">expl.var</span>,</span>
+<span>  dir.name <span class="op">=</span> <span class="st">"."</span>,</span>
+<span>  resp.xy <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  eval.resp.var <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  eval.expl.var <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  eval.resp.xy <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  PA.nb.rep <span class="op">=</span> <span class="fl">0</span>,</span>
+<span>  PA.nb.absences <span class="op">=</span> <span class="fl">1000</span>,</span>
+<span>  PA.strategy <span class="op">=</span> <span class="st">"random"</span>,</span>
+<span>  PA.dist.min <span class="op">=</span> <span class="fl">0</span>,</span>
+<span>  PA.dist.max <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  PA.sre.quant <span class="op">=</span> <span class="fl">0.025</span>,</span>
+<span>  PA.user.table <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  na.rm <span class="op">=</span> <span class="cn">TRUE</span></span>
+<span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
     <h2>Arguments</h2>
     <dl><dt>resp.name</dt>
 <dd><p>a <code>character</code> corresponding to the species name</p></dd>
+
+
 <dt>resp.var</dt>
 <dd><p>a <code>vector</code>, <code><a href="https://rdrr.io/pkg/sp/man/SpatialPoints.html" class="external-link">SpatialPoints</a></code> (<em>if presence-only</em>) or 
 <code><a href="https://rdrr.io/pkg/sp/man/SpatialPoints.html" class="external-link">SpatialPointsDataFrame</a></code> object containing binary data (<code>0</code> : absence, 
 <code>1</code> : presence, <code>NA</code> : indeterminate) for a single species that will be used to 
 build the species distribution model(s)</p></dd>
+
+
 <dt>expl.var</dt>
 <dd><p>a <code>matrix</code>, <code>data.frame</code>, <code><a href="https://rdrr.io/pkg/sp/man/SpatialPoints.html" class="external-link">SpatialPointsDataFrame</a></code> 
 or <code><a href="https://rdrr.io/pkg/raster/man/stack.html" class="external-link">RasterStack</a></code> object containing the explanatory variables 
 (in columns or layers) that will be used to build the species distribution model(s)</p></dd>
+
+
 <dt>dir.name</dt>
 <dd><p>(<em>optional, default</em> <code>.</code>) <br>
 A <code>character</code> corresponding to the modeling folder</p></dd>
+
+
 <dt>resp.xy</dt>
 <dd><p>(<em>optional, default</em> <code>NULL</code>) <br> 
 If <code>resp.var</code> is a <code>vector</code>, a 2-columns <code>matrix</code> or <code>data.frame</code> 
 containing the corresponding <code>X</code> and <code>Y</code> coordinates that will be used to build the 
 species distribution model(s)</p></dd>
+
+
 <dt>eval.resp.var</dt>
 <dd><p>(<em>optional, default</em> <code>NULL</code>) <br> 
 A <code>vector</code>, <code><a href="https://rdrr.io/pkg/sp/man/SpatialPoints.html" class="external-link">SpatialPoints</a></code> (<em>if presence-only</em>) or 
 <code><a href="https://rdrr.io/pkg/sp/man/SpatialPoints.html" class="external-link">SpatialPointsDataFrame</a></code> object containing binary data (<code>0</code> : absence, 
 <code>1</code> : presence, <code>NA</code> : indeterminate) for a single species that will be used to 
 evaluate the species distribution model(s) with independent data</p></dd>
+
+
 <dt>eval.expl.var</dt>
 <dd><p>(<em>optional, default</em> <code>NULL</code>) <br> 
 A <code>matrix</code>, <code>data.frame</code>, <code><a href="https://rdrr.io/pkg/sp/man/SpatialPoints.html" class="external-link">SpatialPointsDataFrame</a></code> or 
 <code><a href="https://rdrr.io/pkg/raster/man/stack.html" class="external-link">RasterStack</a></code> object containing the explanatory variables (in 
 columns or layers) that will be used to evaluate the species distribution model(s) with 
 independent data</p></dd>
+
+
 <dt>eval.resp.xy</dt>
 <dd><p>(<em>optional, default</em> <code>NULL</code>) <br> 
 If <code>resp.var</code> is a <code>vector</code>, a 2-columns <code>matrix</code> or <code>data.frame</code> 
 containing the corresponding <code>X</code> and <code>Y</code> coordinates that will be used to evaluate 
 the species distribution model(s) with independent data</p></dd>
+
+
 <dt>PA.nb.rep</dt>
 <dd><p>(<em>optional, default</em> <code>0</code>) <br> 
 If pseudo-absence selection, an <code>integer</code> corresponding to the number of sets 
 (repetitions) of pseudo-absence points that will be drawn</p></dd>
+
+
 <dt>PA.nb.absences</dt>
 <dd><p>(<em>optional, default</em> <code>0</code>) <br> 
 If pseudo-absence selection, and <code>PA.strategy = 'random'</code> or <code>PA.strategy = 'sre'</code> 
 or <code>PA.strategy = 'disk'</code>, an <code>integer</code> corresponding to the number of pseudo-absence 
 points that will be selected for each pseudo-absence repetition (true absences included)</p></dd>
+
+
 <dt>PA.strategy</dt>
 <dd><p>(<em>optional, default</em> <code>NULL</code>) <br> 
 If pseudo-absence selection, a <code>character</code> defining the strategy that will be used to 
 select the pseudo-absence points. Must be <code>random</code>, <code>sre</code>, <code>disk</code> or 
 <code>user.defined</code> (see <a href="BIOMOD_FormatingData.html#details">Details</a>)</p></dd>
+
+
 <dt>PA.dist.min</dt>
 <dd><p>(<em>optional, default</em> <code>0</code>) <br> 
 If pseudo-absence selection and <code>PA.strategy = 'disk'</code>, a <code>numeric</code> defining the 
 minimal distance to presence points used to make the <code>disk</code> pseudo-absence selection 
 (in meters, see <a href="BIOMOD_FormatingData.html#details">Details</a>)</p></dd>
+
+
 <dt>PA.dist.max</dt>
 <dd><p>(<em>optional, default</em> <code>0</code>) <br> 
 If pseudo-absence selection and <code>PA.strategy = 'disk'</code>, a <code>numeric</code> defining the 
 maximal distance to presence points used to make the <code>disk</code> pseudo-absence selection 
 (in meters, see <a href="BIOMOD_FormatingData.html#details">Details</a>)</p></dd>
+
+
 <dt>PA.sre.quant</dt>
 <dd><p>(<em>optional, default</em> <code>0</code>) <br> 
 If pseudo-absence selection and <code>PA.strategy = 'sre'</code>, a <code>numeric</code> between <code>0</code> 
 and <code>0.5</code> defining the half-quantile used to make the <code>sre</code> pseudo-absence selection 
 (see <a href="BIOMOD_FormatingData.html#details">Details</a>)</p></dd>
+
+
 <dt>PA.user.table</dt>
 <dd><p>(<em>optional, default</em> <code>NULL</code>) <br> 
 If pseudo-absence selection and <code>PA.strategy = 'user.defined'</code>, a <code>matrix</code> or 
@@ -196,15 +224,25 @@ If pseudo-absence selection and <code>PA.strategy = 'user.defined'</code>, a <co
 <code>PA.nb.rep</code>, and containing <code>TRUE</code> or <code>FALSE</code> values defining which points 
 will be used to build the species distribution model(s) for each repetition (see 
 <a href="BIOMOD_FormatingData.html#details">Details</a>)</p></dd>
+
+
 <dt>na.rm</dt>
 <dd><p>(<em>optional, default</em> <code>TRUE</code>) <br> 
 A <code>logical</code> value defining whether points having one or several missing values for 
 explanatory variables should be removed from the analysis or not</p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>A <code>BIOMOD.formated.data</code> object that can be used to build species distribution model(s) 
-with the <code><a href="BIOMOD_Modeling.html">BIOMOD_Modeling</a></code> function. <br><code>print</code> and <code>plot</code>functions are available to have a summary of the created object.</p>
+    
+
+<p>A <code>BIOMOD.formated.data</code> object that can be used to build species distribution model(s) 
+with the <code><a href="BIOMOD_Modeling.html">BIOMOD_Modeling</a></code> function. <br></p>
+<p></p>
+<p><code>print</code> and <code>plot</code></p>
+ 
+
+<p>functions are available to have a summary of the created object.</p>
     </div>
     <div id="details">
     <h2>Details</h2>
@@ -307,92 +345,91 @@ pseudo-absences if needed. <br><br></p>
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code>
-<span class="co"># Load species occurrences (6 species available)</span>
-<span class="va">myFile</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">'external/species/mammals_table.csv'</span>, package <span class="op">=</span> <span class="st">'biomod2'</span><span class="op">)</span>
-<span class="va">DataSpecies</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/utils/read.table.html" class="external-link">read.csv</a></span><span class="op">(</span><span class="va">myFile</span>, row.names <span class="op">=</span> <span class="fl">1</span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/pkg/raster/man/headtail.html" class="external-link">head</a></span><span class="op">(</span><span class="va">DataSpecies</span><span class="op">)</span>
-
-<span class="co"># Select the name of the studied species</span>
-<span class="va">myRespName</span> <span class="op">&lt;-</span> <span class="st">'GuloGulo'</span>
-
-<span class="co"># Get corresponding presence/absence data</span>
-<span class="va">myResp</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/numeric.html" class="external-link">as.numeric</a></span><span class="op">(</span><span class="va">DataSpecies</span><span class="op">[</span>, <span class="va">myRespName</span><span class="op">]</span><span class="op">)</span>
-
-<span class="co"># Get corresponding XY coordinates</span>
-<span class="va">myRespXY</span> <span class="op">&lt;-</span> <span class="va">DataSpecies</span><span class="op">[</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">'X_WGS84'</span>, <span class="st">'Y_WGS84'</span><span class="op">)</span><span class="op">]</span>
-
-<span class="co"># Load environmental variables extracted from BIOCLIM (bio_3, bio_4, bio_7, bio_11 &amp; bio_12)</span>
-<span class="va">myFiles</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">'external/bioclim/current/bio'</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">3</span>, <span class="fl">4</span>, <span class="fl">7</span>, <span class="fl">11</span>, <span class="fl">12</span><span class="op">)</span>, <span class="st">'.grd'</span><span class="op">)</span>
-<span class="va">myExpl</span> <span class="op">&lt;-</span> <span class="fu">raster</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/raster/man/stack.html" class="external-link">stack</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="va">myFiles</span>, package <span class="op">=</span> <span class="st">'biomod2'</span><span class="op">)</span><span class="op">)</span>
-
-
-<span class="co"># ---------------------------------------------------------------</span>
-<span class="co"># Format Data with true absences</span>
-<span class="va">myBiomodData</span> <span class="op">&lt;-</span> <span class="fu">BIOMOD_FormatingData</span><span class="op">(</span>resp.var <span class="op">=</span> <span class="va">myResp</span>,
-                                     expl.var <span class="op">=</span> <span class="va">myExpl</span>,
-                                     resp.xy <span class="op">=</span> <span class="va">myRespXY</span>,
-                                     resp.name <span class="op">=</span> <span class="va">myRespName</span><span class="op">)</span>
-<span class="va">myBiomodData</span>
-<span class="fu"><a href="https://rdrr.io/pkg/raster/man/plot.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">myBiomodData</span><span class="op">)</span>
-
-
-<span class="co"># ---------------------------------------------------------------</span>
-<span class="co"># # Transform true absences into potential pseudo-absences</span>
-<span class="co"># myResp.PA &lt;- ifelse(myResp == 1, 1, NA)</span>
-<span class="co"># </span>
-<span class="co"># # Format Data with pseudo-absences : random method</span>
-<span class="co"># myBiomodData.r &lt;- BIOMOD_FormatingData(resp.var = myResp.PA,</span>
-<span class="co">#                                        expl.var = myExpl,</span>
-<span class="co">#                                        resp.xy = myRespXY,</span>
-<span class="co">#                                        resp.name = myRespName,</span>
-<span class="co">#                                        PA.nb.rep = 4,</span>
-<span class="co">#                                        PA.nb.absences = 1000,</span>
-<span class="co">#                                        PA.strategy = 'random')</span>
-<span class="co"># </span>
-<span class="co"># # Format Data with pseudo-absences : disk method</span>
-<span class="co"># myBiomodData.d &lt;- BIOMOD_FormatingData(resp.var = myResp.PA,</span>
-<span class="co">#                                        expl.var = myExpl,</span>
-<span class="co">#                                        resp.xy = myRespXY,</span>
-<span class="co">#                                        resp.name = myRespName,</span>
-<span class="co">#                                        PA.nb.rep = 4,</span>
-<span class="co">#                                        PA.nb.absences = 500,</span>
-<span class="co">#                                        PA.strategy = 'disk',</span>
-<span class="co">#                                        PA.dist.min = 5,</span>
-<span class="co">#                                        PA.dist.max = 35)</span>
-<span class="co"># </span>
-<span class="co"># # Format Data with pseudo-absences : SRE method</span>
-<span class="co"># myBiomodData.s &lt;- BIOMOD_FormatingData(resp.var = myResp.PA,</span>
-<span class="co">#                                        expl.var = myExpl,</span>
-<span class="co">#                                        resp.xy = myRespXY,</span>
-<span class="co">#                                        resp.name = myRespName,</span>
-<span class="co">#                                        PA.nb.rep = 4,</span>
-<span class="co">#                                        PA.nb.absences = 1000,</span>
-<span class="co">#                                        PA.strategy = 'sre',</span>
-<span class="co">#                                        PA.sre.quant = 0.025)</span>
-<span class="co"># </span>
-<span class="co"># # Format Data with pseudo-absences : user.defined method</span>
-<span class="co"># myPAtable &lt;- data.frame(PA1 = ifelse(myResp == 1, TRUE, FALSE),</span>
-<span class="co">#                         PA2 = ifelse(myResp == 1, TRUE, FALSE))</span>
-<span class="co"># for (i in 1:ncol(myPAtable)) myPAtable[sample(which(myPAtable[, i] == FALSE), 500), i] = TRUE</span>
-<span class="co"># myBiomodData.u &lt;- BIOMOD_FormatingData(resp.var = myResp.PA,</span>
-<span class="co">#                                        expl.var = myExpl,</span>
-<span class="co">#                                        resp.xy = myRespXY,</span>
-<span class="co">#                                        resp.name = myRespName,</span>
-<span class="co">#                                        PA.strategy = 'user.defined',</span>
-<span class="co">#                                        PA.user.table = myPAtable)</span>
-<span class="co"># </span>
-<span class="co"># myBiomodData.r</span>
-<span class="co"># myBiomodData.d</span>
-<span class="co"># myBiomodData.s</span>
-<span class="co"># myBiomodData.u</span>
-<span class="co"># plot(myBiomodData.r)</span>
-<span class="co"># plot(myBiomodData.d)</span>
-<span class="co"># plot(myBiomodData.s)</span>
-<span class="co"># plot(myBiomodData.u)</span>
-
-
-</code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span></span>
+<span><span class="co"># Load species occurrences (6 species available)</span></span>
+<span><span class="va">myFile</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">'external/species/mammals_table.csv'</span>, package <span class="op">=</span> <span class="st">'biomod2'</span><span class="op">)</span></span>
+<span><span class="va">DataSpecies</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/utils/read.table.html" class="external-link">read.csv</a></span><span class="op">(</span><span class="va">myFile</span>, row.names <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">DataSpecies</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Select the name of the studied species</span></span>
+<span><span class="va">myRespName</span> <span class="op">&lt;-</span> <span class="st">'GuloGulo'</span></span>
+<span></span>
+<span><span class="co"># Get corresponding presence/absence data</span></span>
+<span><span class="va">myResp</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/numeric.html" class="external-link">as.numeric</a></span><span class="op">(</span><span class="va">DataSpecies</span><span class="op">[</span>, <span class="va">myRespName</span><span class="op">]</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Get corresponding XY coordinates</span></span>
+<span><span class="va">myRespXY</span> <span class="op">&lt;-</span> <span class="va">DataSpecies</span><span class="op">[</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">'X_WGS84'</span>, <span class="st">'Y_WGS84'</span><span class="op">)</span><span class="op">]</span></span>
+<span></span>
+<span><span class="co"># Load environmental variables extracted from BIOCLIM (bio_3, bio_4, bio_7, bio_11 &amp; bio_12)</span></span>
+<span><span class="va">myFiles</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">'external/bioclim/current/bio'</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">3</span>, <span class="fl">4</span>, <span class="fl">7</span>, <span class="fl">11</span>, <span class="fl">12</span><span class="op">)</span>, <span class="st">'.grd'</span><span class="op">)</span></span>
+<span><span class="va">myExpl</span> <span class="op">&lt;-</span> <span class="fu">raster</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/raster/man/stack.html" class="external-link">stack</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="va">myFiles</span>, package <span class="op">=</span> <span class="st">'biomod2'</span><span class="op">)</span><span class="op">)</span></span>
+<span></span>
+<span></span>
+<span><span class="co"># ---------------------------------------------------------------</span></span>
+<span><span class="co"># Format Data with true absences</span></span>
+<span><span class="va">myBiomodData</span> <span class="op">&lt;-</span> <span class="fu">BIOMOD_FormatingData</span><span class="op">(</span>resp.var <span class="op">=</span> <span class="va">myResp</span>,</span>
+<span>                                     expl.var <span class="op">=</span> <span class="va">myExpl</span>,</span>
+<span>                                     resp.xy <span class="op">=</span> <span class="va">myRespXY</span>,</span>
+<span>                                     resp.name <span class="op">=</span> <span class="va">myRespName</span><span class="op">)</span></span>
+<span><span class="va">myBiomodData</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/plot.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">myBiomodData</span><span class="op">)</span></span>
+<span></span>
+<span></span>
+<span><span class="co"># ---------------------------------------------------------------</span></span>
+<span><span class="co"># # Transform true absences into potential pseudo-absences</span></span>
+<span><span class="co"># myResp.PA &lt;- ifelse(myResp == 1, 1, NA)</span></span>
+<span><span class="co"># </span></span>
+<span><span class="co"># # Format Data with pseudo-absences : random method</span></span>
+<span><span class="co"># myBiomodData.r &lt;- BIOMOD_FormatingData(resp.var = myResp.PA,</span></span>
+<span><span class="co">#                                        expl.var = myExpl,</span></span>
+<span><span class="co">#                                        resp.xy = myRespXY,</span></span>
+<span><span class="co">#                                        resp.name = myRespName,</span></span>
+<span><span class="co">#                                        PA.nb.rep = 4,</span></span>
+<span><span class="co">#                                        PA.nb.absences = 1000,</span></span>
+<span><span class="co">#                                        PA.strategy = 'random')</span></span>
+<span><span class="co"># </span></span>
+<span><span class="co"># # Format Data with pseudo-absences : disk method</span></span>
+<span><span class="co"># myBiomodData.d &lt;- BIOMOD_FormatingData(resp.var = myResp.PA,</span></span>
+<span><span class="co">#                                        expl.var = myExpl,</span></span>
+<span><span class="co">#                                        resp.xy = myRespXY,</span></span>
+<span><span class="co">#                                        resp.name = myRespName,</span></span>
+<span><span class="co">#                                        PA.nb.rep = 4,</span></span>
+<span><span class="co">#                                        PA.nb.absences = 500,</span></span>
+<span><span class="co">#                                        PA.strategy = 'disk',</span></span>
+<span><span class="co">#                                        PA.dist.min = 5,</span></span>
+<span><span class="co">#                                        PA.dist.max = 35)</span></span>
+<span><span class="co"># </span></span>
+<span><span class="co"># # Format Data with pseudo-absences : SRE method</span></span>
+<span><span class="co"># myBiomodData.s &lt;- BIOMOD_FormatingData(resp.var = myResp.PA,</span></span>
+<span><span class="co">#                                        expl.var = myExpl,</span></span>
+<span><span class="co">#                                        resp.xy = myRespXY,</span></span>
+<span><span class="co">#                                        resp.name = myRespName,</span></span>
+<span><span class="co">#                                        PA.nb.rep = 4,</span></span>
+<span><span class="co">#                                        PA.nb.absences = 1000,</span></span>
+<span><span class="co">#                                        PA.strategy = 'sre',</span></span>
+<span><span class="co">#                                        PA.sre.quant = 0.025)</span></span>
+<span><span class="co"># </span></span>
+<span><span class="co"># # Format Data with pseudo-absences : user.defined method</span></span>
+<span><span class="co"># myPAtable &lt;- data.frame(PA1 = ifelse(myResp == 1, TRUE, FALSE),</span></span>
+<span><span class="co">#                         PA2 = ifelse(myResp == 1, TRUE, FALSE))</span></span>
+<span><span class="co"># for (i in 1:ncol(myPAtable)) myPAtable[sample(which(myPAtable[, i] == FALSE), 500), i] = TRUE</span></span>
+<span><span class="co"># myBiomodData.u &lt;- BIOMOD_FormatingData(resp.var = myResp.PA,</span></span>
+<span><span class="co">#                                        expl.var = myExpl,</span></span>
+<span><span class="co">#                                        resp.xy = myRespXY,</span></span>
+<span><span class="co">#                                        resp.name = myRespName,</span></span>
+<span><span class="co">#                                        PA.strategy = 'user.defined',</span></span>
+<span><span class="co">#                                        PA.user.table = myPAtable)</span></span>
+<span><span class="co"># </span></span>
+<span><span class="co"># myBiomodData.r</span></span>
+<span><span class="co"># myBiomodData.d</span></span>
+<span><span class="co"># myBiomodData.s</span></span>
+<span><span class="co"># myBiomodData.u</span></span>
+<span><span class="co"># plot(myBiomodData.r)</span></span>
+<span><span class="co"># plot(myBiomodData.d)</span></span>
+<span><span class="co"># plot(myBiomodData.s)</span></span>
+<span><span class="co"># plot(myBiomodData.u)</span></span>
+<span></span>
+<span></span></code></pre></div>
     </div>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
@@ -406,7 +443,7 @@ pseudo-absences if needed. <br><br></p>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.3.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
 </div>
 
       </footer></div>

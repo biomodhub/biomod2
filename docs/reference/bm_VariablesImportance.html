@@ -98,15 +98,15 @@ importance value for each variable involved in the given model.</p>
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">bm_VariablesImportance</span><span class="op">(</span>
-  <span class="va">bm.model</span>,
-  <span class="va">expl.var</span>,
-  method <span class="op">=</span> <span class="st">"full_rand"</span>,
-  nb.rep <span class="op">=</span> <span class="fl">1</span>,
-  seed.val <span class="op">=</span> <span class="cn">NULL</span>,
-  do.progress <span class="op">=</span> <span class="cn">TRUE</span>,
-  <span class="va">...</span>
-<span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">bm_VariablesImportance</span><span class="op">(</span></span>
+<span>  <span class="va">bm.model</span>,</span>
+<span>  <span class="va">expl.var</span>,</span>
+<span>  method <span class="op">=</span> <span class="st">"full_rand"</span>,</span>
+<span>  nb.rep <span class="op">=</span> <span class="fl">1</span>,</span>
+<span>  seed.val <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  do.progress <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  <span class="va">...</span></span>
+<span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
@@ -115,27 +115,42 @@ importance value for each variable involved in the given model.</p>
 <dd><p>a <code>biomod2_model</code> object (or <code>nnet</code>, <code>rpart</code>, <code>fda</code>, 
 <code>gam</code>, <code>glm</code>, <code>lm</code>, <code>gbm</code>, <code>mars</code>, <code>randomForest</code>) that can be 
 obtained with the <code><a href="getters.bm.html">get_formal_model</a></code> function</p></dd>
+
+
 <dt>expl.var</dt>
 <dd><p>a <code>data.frame</code> containing the explanatory variables that will be used to 
 compute the variables importance</p></dd>
+
+
 <dt>method</dt>
 <dd><p>a <code>character</code> corresponding to the randomisation method to be used, must be 
 <code>full_rand</code> (<em>only method available so far</em>)</p></dd>
+
+
 <dt>nb.rep</dt>
 <dd><p>an <code>integer</code> corresponding to the number of permutations to be done for 
 each variable</p></dd>
+
+
 <dt>seed.val</dt>
 <dd><p>(<em>optional, default</em> <code>NULL</code>) <br> 
 An <code>integer</code> value corresponding to the new seed value to be set</p></dd>
+
+
 <dt>do.progress</dt>
 <dd><p>(<em>optional, default</em> <code>TRUE</code>) <br> 
 A <code>logical</code> value defining whether the progress bar is to be rendered or not</p></dd>
+
+
 <dt>...</dt>
 <dd><p>(<em>optional)</em>)</p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>A <code>matrix</code> containing variables importance scores for each permutation run.</p>
+    
+
+<p>A <code>matrix</code> containing variables importance scores for each permutation run.</p>
     </div>
     <div id="details">
     <h2>Details</h2>
@@ -178,22 +193,21 @@ the variable on the model.</p>
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code>
-<span class="co">## Create simple simulated data</span>
-<span class="va">myResp.s</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/sample.html" class="external-link">sample</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">1</span><span class="op">)</span>, <span class="fl">20</span>, replace <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>
-<span class="va">myExpl.s</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span>var1 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sample.html" class="external-link">sample</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">1</span><span class="op">)</span>, <span class="fl">100</span>, replace <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>,
-                       var2 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="fl">100</span><span class="op">)</span>,
-                       var3 <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">100</span><span class="op">)</span>
-
-<span class="co">## Compute variables importance</span>
-<span class="va">mod</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/glm.html" class="external-link">glm</a></span><span class="op">(</span><span class="va">var1</span> <span class="op">~</span> <span class="va">var2</span> <span class="op">+</span> <span class="va">var3</span>, data <span class="op">=</span> <span class="va">myExpl.s</span><span class="op">)</span>
-<span class="fu">bm_VariablesImportance</span><span class="op">(</span>bm.model <span class="op">=</span> <span class="va">mod</span>, 
-                       expl.var <span class="op">=</span> <span class="va">myExpl.s</span><span class="op">[</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">'var2'</span>, <span class="st">'var3'</span><span class="op">)</span><span class="op">]</span>,
-                       method <span class="op">=</span> <span class="st">"full_rand"</span>,
-                       nb.rep <span class="op">=</span> <span class="fl">3</span><span class="op">)</span>
-
-
-</code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span></span>
+<span><span class="co">## Create simple simulated data</span></span>
+<span><span class="va">myResp.s</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/sample.html" class="external-link">sample</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">1</span><span class="op">)</span>, <span class="fl">20</span>, replace <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span><span class="va">myExpl.s</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span>var1 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sample.html" class="external-link">sample</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">1</span><span class="op">)</span>, <span class="fl">100</span>, replace <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>,</span>
+<span>                       var2 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="fl">100</span><span class="op">)</span>,</span>
+<span>                       var3 <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">100</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co">## Compute variables importance</span></span>
+<span><span class="va">mod</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/glm.html" class="external-link">glm</a></span><span class="op">(</span><span class="va">var1</span> <span class="op">~</span> <span class="va">var2</span> <span class="op">+</span> <span class="va">var3</span>, data <span class="op">=</span> <span class="va">myExpl.s</span><span class="op">)</span></span>
+<span><span class="fu">bm_VariablesImportance</span><span class="op">(</span>bm.model <span class="op">=</span> <span class="va">mod</span>, </span>
+<span>                       expl.var <span class="op">=</span> <span class="va">myExpl.s</span><span class="op">[</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">'var2'</span>, <span class="st">'var3'</span><span class="op">)</span><span class="op">]</span>,</span>
+<span>                       method <span class="op">=</span> <span class="st">"full_rand"</span>,</span>
+<span>                       nb.rep <span class="op">=</span> <span class="fl">3</span><span class="op">)</span></span>
+<span></span>
+<span></span></code></pre></div>
     </div>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
@@ -207,7 +221,7 @@ the variable on the model.</p>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.3.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
 </div>
 
       </footer></div>

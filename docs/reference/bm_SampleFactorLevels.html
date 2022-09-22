@@ -98,7 +98,7 @@ all the factorial variables contained in a <code>raster*</code> or <code>data.fr
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">bm_SampleFactorLevels</span><span class="op">(</span><span class="va">expl.var</span>, mask.out <span class="op">=</span> <span class="cn">NULL</span>, mask.in <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">bm_SampleFactorLevels</span><span class="op">(</span><span class="va">expl.var</span>, mask.out <span class="op">=</span> <span class="cn">NULL</span>, mask.in <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
@@ -106,22 +106,31 @@ all the factorial variables contained in a <code>raster*</code> or <code>data.fr
     <dl><dt>expl.var</dt>
 <dd><p>a <code>data.frame</code> or <code><a href="https://rdrr.io/pkg/raster/man/stack.html" class="external-link">RasterStack</a></code> object 
 containing the explanatory variables (in columns or layers)</p></dd>
+
+
 <dt>mask.out</dt>
 <dd><p>a <code>data.frame</code> or <code><a href="https://rdrr.io/pkg/raster/man/raster.html" class="external-link">raster</a></code> object containing 
 the area that has already been sampled (<em>factor levels within this mask will not be 
 sampled</em>)</p></dd>
+
+
 <dt>mask.in</dt>
 <dd><p>a <code>data.frame</code>, <code><a href="https://rdrr.io/pkg/raster/man/raster.html" class="external-link">raster</a></code> or 
 <code><a href="https://rdrr.io/pkg/raster/man/stack.html" class="external-link">RasterStack</a></code> object containing areas where factor levels are to be 
 sampled in priority. <em>Note that if after having explored these masks, some factor levels 
 remain unsampled, they will be sampled in the reference input object <code>expl.var</code>.</em></p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>A <code>numeric vector</code> containing point IDs (either cell number for <code>raster*</code> objects, 
+    
+
+<p>A <code>numeric vector</code> containing point IDs (either cell number for <code>raster*</code> objects, 
 or row number for <code>data.frame</code>), each refering to a single level of a single factorial 
-variable.
-In case any factorial variable is found in the input object, <code>NULL</code> is returned.</p>
+variable.</p>
+
+
+<p>In case any factorial variable is found in the input object, <code>NULL</code> is returned.</p>
     </div>
     <div id="details">
     <h2>Details</h2>
@@ -167,31 +176,30 @@ factor levels. <br><br></p>
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code>
-<span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://rspatial.org/raster" class="external-link">raster</a></span><span class="op">)</span>
-
-<span class="co">## Create raster data</span>
-<span class="va">ras.1</span> <span class="op">&lt;-</span> <span class="va">ras.2</span> <span class="op">&lt;-</span> <span class="va">mask.out</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/raster/man/raster.html" class="external-link">raster</a></span><span class="op">(</span>nrows <span class="op">=</span> <span class="fl">10</span>, ncols <span class="op">=</span> <span class="fl">10</span><span class="op">)</span>
-<span class="va">ras.1</span><span class="op">[</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/raster/man/factor.html" class="external-link">as.factor</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">2</span>, <span class="fl">3</span>, <span class="fl">4</span>, <span class="fl">5</span><span class="op">)</span>, each <span class="op">=</span> <span class="fl">20</span><span class="op">)</span><span class="op">)</span>
-<span class="va">ras.2</span><span class="op">[</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="fl">100</span><span class="op">)</span>
-<span class="va">stk</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/raster/man/stack.html" class="external-link">stack</a></span><span class="op">(</span><span class="va">ras.1</span>, <span class="va">ras.2</span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/pkg/raster/man/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">stk</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"varFact"</span>, <span class="st">"varNorm"</span><span class="op">)</span>
-
-<span class="co">## define a mask for already sampled points</span>
-<span class="va">mask.out</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">40</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="fl">1</span>
-
-<span class="co">## define a list of masks where we want to sample in priority</span>
-<span class="va">mask.in</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="va">ras.1</span>, <span class="va">ras.1</span><span class="op">)</span>
-<span class="va">mask.in</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">80</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="cn">NA</span> <span class="co">## only level 5 should be sampled in this mask</span>
-<span class="va">mask.in</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span><span class="op">[</span><span class="fl">21</span><span class="op">:</span><span class="fl">80</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="cn">NA</span> <span class="co">## only levels 1 and 5 should be sampled in this mask</span>
-
-<span class="co">## Sample all factor levels</span>
-<span class="va">samp1</span> <span class="op">&lt;-</span> <span class="fu">bm_SampleFactorLevels</span><span class="op">(</span>expl.var <span class="op">=</span> <span class="va">stk</span>, mask.out <span class="op">=</span> <span class="va">mask.out</span><span class="op">)</span>
-<span class="va">samp2</span> <span class="op">&lt;-</span> <span class="fu">bm_SampleFactorLevels</span><span class="op">(</span>expl.var <span class="op">=</span> <span class="va">stk</span>, mask.in <span class="op">=</span> <span class="va">mask.in</span><span class="op">)</span>
-<span class="va">samp3</span> <span class="op">&lt;-</span> <span class="fu">bm_SampleFactorLevels</span><span class="op">(</span>expl.var <span class="op">=</span> <span class="va">stk</span>, mask.out <span class="op">=</span> <span class="va">mask.out</span>, mask.in <span class="op">=</span> <span class="va">mask.in</span><span class="op">)</span>
-
-
-</code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://rspatial.org/raster" class="external-link">raster</a></span><span class="op">)</span></span>
+<span></span>
+<span><span class="co">## Create raster data</span></span>
+<span><span class="va">ras.1</span> <span class="op">&lt;-</span> <span class="va">ras.2</span> <span class="op">&lt;-</span> <span class="va">mask.out</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/raster/man/raster.html" class="external-link">raster</a></span><span class="op">(</span>nrows <span class="op">=</span> <span class="fl">10</span>, ncols <span class="op">=</span> <span class="fl">10</span><span class="op">)</span></span>
+<span><span class="va">ras.1</span><span class="op">[</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html" class="external-link">as.factor</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">2</span>, <span class="fl">3</span>, <span class="fl">4</span>, <span class="fl">5</span><span class="op">)</span>, each <span class="op">=</span> <span class="fl">20</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="va">ras.2</span><span class="op">[</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="fl">100</span><span class="op">)</span></span>
+<span><span class="va">stk</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/raster/man/stack.html" class="external-link">stack</a></span><span class="op">(</span><span class="va">ras.1</span>, <span class="va">ras.2</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">stk</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"varFact"</span>, <span class="st">"varNorm"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co">## define a mask for already sampled points</span></span>
+<span><span class="va">mask.out</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">40</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="fl">1</span></span>
+<span></span>
+<span><span class="co">## define a list of masks where we want to sample in priority</span></span>
+<span><span class="va">mask.in</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="va">ras.1</span>, <span class="va">ras.1</span><span class="op">)</span></span>
+<span><span class="va">mask.in</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">80</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="cn">NA</span> <span class="co">## only level 5 should be sampled in this mask</span></span>
+<span><span class="va">mask.in</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span><span class="op">[</span><span class="fl">21</span><span class="op">:</span><span class="fl">80</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="cn">NA</span> <span class="co">## only levels 1 and 5 should be sampled in this mask</span></span>
+<span></span>
+<span><span class="co">## Sample all factor levels</span></span>
+<span><span class="va">samp1</span> <span class="op">&lt;-</span> <span class="fu">bm_SampleFactorLevels</span><span class="op">(</span>expl.var <span class="op">=</span> <span class="va">stk</span>, mask.out <span class="op">=</span> <span class="va">mask.out</span><span class="op">)</span></span>
+<span><span class="va">samp2</span> <span class="op">&lt;-</span> <span class="fu">bm_SampleFactorLevels</span><span class="op">(</span>expl.var <span class="op">=</span> <span class="va">stk</span>, mask.in <span class="op">=</span> <span class="va">mask.in</span><span class="op">)</span></span>
+<span><span class="va">samp3</span> <span class="op">&lt;-</span> <span class="fu">bm_SampleFactorLevels</span><span class="op">(</span>expl.var <span class="op">=</span> <span class="va">stk</span>, mask.out <span class="op">=</span> <span class="va">mask.out</span>, mask.in <span class="op">=</span> <span class="va">mask.in</span><span class="op">)</span></span>
+<span></span>
+<span></span></code></pre></div>
     </div>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
@@ -205,7 +213,7 @@ factor levels. <br><br></p>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.3.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
 </div>
 
       </footer></div>

@@ -104,13 +104,13 @@ using the extreme percentiles (as recommended by Nix or Busby, see
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">bm_SRE</span><span class="op">(</span>
-  resp.var <span class="op">=</span> <span class="cn">NULL</span>,
-  expl.var <span class="op">=</span> <span class="cn">NULL</span>,
-  new.env <span class="op">=</span> <span class="cn">NULL</span>,
-  quant <span class="op">=</span> <span class="fl">0.025</span>,
-  do.extrem <span class="op">=</span> <span class="cn">FALSE</span>
-<span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">bm_SRE</span><span class="op">(</span></span>
+<span>  resp.var <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  expl.var <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  new.env <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  quant <span class="op">=</span> <span class="fl">0.025</span>,</span>
+<span>  do.extrem <span class="op">=</span> <span class="cn">FALSE</span></span>
+<span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
@@ -119,27 +119,41 @@ using the extreme percentiles (as recommended by Nix or Busby, see
 <dd><p>a <code>vector</code>, <code><a href="https://rdrr.io/pkg/sp/man/SpatialPoints.html" class="external-link">SpatialPoints</a></code> or 
 <code><a href="https://rdrr.io/pkg/sp/man/SpatialPoints.html" class="external-link">SpatialPointsDataFrame</a></code> object containing binary data (<code>0</code> : absence, 
 <code>1</code> : presence, <code>NA</code> : indeterminate) for a single species</p></dd>
+
+
 <dt>expl.var</dt>
 <dd><p>a <code>matrix</code>, <code>data.frame</code>, <code><a href="https://rdrr.io/pkg/sp/man/SpatialPoints.html" class="external-link">SpatialPointsDataFrame</a></code> 
 or <code><a href="https://rdrr.io/pkg/raster/man/stack.html" class="external-link">RasterStack</a></code> object containing the explanatory variables (in 
 columns or layers) that will be used to build the SRE model</p></dd>
+
+
 <dt>new.env</dt>
 <dd><p>a <code>matrix</code>, <code>data.frame</code>, <code><a href="https://rdrr.io/pkg/sp/man/SpatialPoints.html" class="external-link">SpatialPointsDataFrame</a></code> 
 or <code><a href="https://rdrr.io/pkg/raster/man/stack.html" class="external-link">RasterStack</a></code> object containing the explanatory variables (in 
 columns or layers) that will be used to predict the SRE model</p></dd>
+
+
 <dt>quant</dt>
 <dd><p>a <code>numeric</code> between <code>0</code> and <code>0.5</code> defining the half-quantile 
 corresponding to the most extreme value for each variable not to be taken into account for 
 determining the tolerance boundaries of the considered species (see 
 <a href="bm_SRE.html#details">Details</a>)</p></dd>
+
+
 <dt>do.extrem</dt>
 <dd><p>(<em>optional, default</em> <code>FALSE</code>) <br> 
 A <code>logical</code> value defining whether a <code>matrix</code> containing extreme conditions 
 supported should be returned or not</p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>A <code>vector</code> or a <code><a href="https://rdrr.io/pkg/raster/man/raster.html" class="external-link">raster</a></code> object, containing binary (<code>0</code>or <code>1</code>) values.</p>
+    
+
+<p>A <code>vector</code> or a <code><a href="https://rdrr.io/pkg/raster/man/raster.html" class="external-link">raster</a></code> object, containing binary (<code>0</code></p>
+ 
+
+<p>or <code>1</code>) values.</p>
     </div>
     <div id="details">
     <h2>Details</h2>
@@ -194,41 +208,40 @@ that a total of <code>10%</code> of the data will not be considered.</p>
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code>
-<span class="co">## Load real data</span>
-<span class="va">myFile</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">'external/species/mammals_table.csv'</span>, package <span class="op">=</span> <span class="st">'biomod2'</span><span class="op">)</span>
-<span class="va">DataSpecies</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/utils/read.table.html" class="external-link">read.csv</a></span><span class="op">(</span><span class="va">myFile</span>, row.names <span class="op">=</span> <span class="fl">1</span><span class="op">)</span>
-<span class="va">myResp.r</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/numeric.html" class="external-link">as.numeric</a></span><span class="op">(</span><span class="va">DataSpecies</span><span class="op">[</span>, <span class="st">'GuloGulo'</span><span class="op">]</span><span class="op">)</span>
-
-<span class="va">myFiles</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">'external/bioclim/current/bio'</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">3</span>, <span class="fl">4</span>, <span class="fl">7</span>, <span class="fl">11</span>, <span class="fl">12</span><span class="op">)</span>, <span class="st">'.grd'</span><span class="op">)</span>
-<span class="va">myExpl.r</span> <span class="op">&lt;-</span> <span class="fu">raster</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/raster/man/stack.html" class="external-link">stack</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="va">myFiles</span>, package <span class="op">=</span> <span class="st">'biomod2'</span><span class="op">)</span><span class="op">)</span>
-
-<span class="va">myRespXY</span> <span class="op">&lt;-</span> <span class="va">DataSpecies</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/which.html" class="external-link">which</a></span><span class="op">(</span><span class="va">myResp.r</span> <span class="op">==</span> <span class="fl">1</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">'X_WGS84'</span>, <span class="st">'Y_WGS84'</span><span class="op">)</span><span class="op">]</span>
-<span class="va">myResp.v</span> <span class="op">&lt;-</span> <span class="fu">raster</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/raster/man/reclassify.html" class="external-link">reclassify</a></span><span class="op">(</span><span class="fu">raster</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/raster/man/subset.html" class="external-link">subset</a></span><span class="op">(</span><span class="va">myExpl.r</span>, <span class="fl">1</span>, drop <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">-</span><span class="cn">Inf</span>, <span class="cn">Inf</span>, <span class="fl">0</span><span class="op">)</span><span class="op">)</span>
-<span class="va">myResp.v</span><span class="op">[</span><span class="fu">raster</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/raster/man/cellFrom.html" class="external-link">cellFromXY</a></span><span class="op">(</span><span class="va">myResp.v</span>, <span class="va">myRespXY</span><span class="op">)</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="fl">1</span>
-
-<span class="co">## Compute SRE for several quantile values</span>
-<span class="va">sre.100</span> <span class="op">&lt;-</span> <span class="fu">bm_SRE</span><span class="op">(</span>resp.var <span class="op">=</span> <span class="va">myResp.v</span>,
-                  expl.var <span class="op">=</span> <span class="va">myExpl.r</span>,
-                  new.env <span class="op">=</span> <span class="va">myExpl.r</span>,
-                  quant <span class="op">=</span> <span class="fl">0</span><span class="op">)</span>
-<span class="va">sre.095</span> <span class="op">&lt;-</span> <span class="fu">bm_SRE</span><span class="op">(</span>resp.var <span class="op">=</span> <span class="va">myResp.v</span>,
-                  expl.var <span class="op">=</span> <span class="va">myExpl.r</span>,
-                  new.env <span class="op">=</span> <span class="va">myExpl.r</span>,
-                  quant <span class="op">=</span> <span class="fl">0.025</span><span class="op">)</span>
-<span class="va">sre.090</span> <span class="op">&lt;-</span> <span class="fu">bm_SRE</span><span class="op">(</span>resp.var <span class="op">=</span> <span class="va">myResp.v</span>,
-                  expl.var <span class="op">=</span> <span class="va">myExpl.r</span>,
-                  new.env <span class="op">=</span> <span class="va">myExpl.r</span>,
-                  quant <span class="op">=</span> <span class="fl">0.05</span><span class="op">)</span>
-
-<span class="co">## Visualize results</span>
-<span class="va">res</span> <span class="op">&lt;-</span> <span class="fu">raster</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/raster/man/stack.html" class="external-link">stack</a></span><span class="op">(</span><span class="va">myResp.v</span>, <span class="va">sre.100</span>, <span class="va">sre.095</span>, <span class="va">sre.090</span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/pkg/raster/man/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">res</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Original distribution"</span>, <span class="st">"Full data calibration"</span>
-                , <span class="st">"Over 95 percent"</span>, <span class="st">"Over 90 percent"</span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/pkg/raster/man/plot.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">res</span>, zlim <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">1</span><span class="op">)</span><span class="op">)</span>
-
-
-</code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span></span>
+<span><span class="co">## Load real data</span></span>
+<span><span class="va">myFile</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">'external/species/mammals_table.csv'</span>, package <span class="op">=</span> <span class="st">'biomod2'</span><span class="op">)</span></span>
+<span><span class="va">DataSpecies</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/utils/read.table.html" class="external-link">read.csv</a></span><span class="op">(</span><span class="va">myFile</span>, row.names <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span>
+<span><span class="va">myResp.r</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/numeric.html" class="external-link">as.numeric</a></span><span class="op">(</span><span class="va">DataSpecies</span><span class="op">[</span>, <span class="st">'GuloGulo'</span><span class="op">]</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">myFiles</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">'external/bioclim/current/bio'</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">3</span>, <span class="fl">4</span>, <span class="fl">7</span>, <span class="fl">11</span>, <span class="fl">12</span><span class="op">)</span>, <span class="st">'.grd'</span><span class="op">)</span></span>
+<span><span class="va">myExpl.r</span> <span class="op">&lt;-</span> <span class="fu">raster</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/raster/man/stack.html" class="external-link">stack</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="va">myFiles</span>, package <span class="op">=</span> <span class="st">'biomod2'</span><span class="op">)</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">myRespXY</span> <span class="op">&lt;-</span> <span class="va">DataSpecies</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/which.html" class="external-link">which</a></span><span class="op">(</span><span class="va">myResp.r</span> <span class="op">==</span> <span class="fl">1</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">'X_WGS84'</span>, <span class="st">'Y_WGS84'</span><span class="op">)</span><span class="op">]</span></span>
+<span><span class="va">myResp.v</span> <span class="op">&lt;-</span> <span class="fu">raster</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/raster/man/reclassify.html" class="external-link">reclassify</a></span><span class="op">(</span><span class="fu">raster</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/r/base/subset.html" class="external-link">subset</a></span><span class="op">(</span><span class="va">myExpl.r</span>, <span class="fl">1</span>, drop <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">-</span><span class="cn">Inf</span>, <span class="cn">Inf</span>, <span class="fl">0</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="va">myResp.v</span><span class="op">[</span><span class="fu">raster</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/terra/man/xyCellFrom.html" class="external-link">cellFromXY</a></span><span class="op">(</span><span class="va">myResp.v</span>, <span class="va">myRespXY</span><span class="op">)</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="fl">1</span></span>
+<span></span>
+<span><span class="co">## Compute SRE for several quantile values</span></span>
+<span><span class="va">sre.100</span> <span class="op">&lt;-</span> <span class="fu">bm_SRE</span><span class="op">(</span>resp.var <span class="op">=</span> <span class="va">myResp.v</span>,</span>
+<span>                  expl.var <span class="op">=</span> <span class="va">myExpl.r</span>,</span>
+<span>                  new.env <span class="op">=</span> <span class="va">myExpl.r</span>,</span>
+<span>                  quant <span class="op">=</span> <span class="fl">0</span><span class="op">)</span></span>
+<span><span class="va">sre.095</span> <span class="op">&lt;-</span> <span class="fu">bm_SRE</span><span class="op">(</span>resp.var <span class="op">=</span> <span class="va">myResp.v</span>,</span>
+<span>                  expl.var <span class="op">=</span> <span class="va">myExpl.r</span>,</span>
+<span>                  new.env <span class="op">=</span> <span class="va">myExpl.r</span>,</span>
+<span>                  quant <span class="op">=</span> <span class="fl">0.025</span><span class="op">)</span></span>
+<span><span class="va">sre.090</span> <span class="op">&lt;-</span> <span class="fu">bm_SRE</span><span class="op">(</span>resp.var <span class="op">=</span> <span class="va">myResp.v</span>,</span>
+<span>                  expl.var <span class="op">=</span> <span class="va">myExpl.r</span>,</span>
+<span>                  new.env <span class="op">=</span> <span class="va">myExpl.r</span>,</span>
+<span>                  quant <span class="op">=</span> <span class="fl">0.05</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co">## Visualize results</span></span>
+<span><span class="va">res</span> <span class="op">&lt;-</span> <span class="fu">raster</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/raster/man/stack.html" class="external-link">stack</a></span><span class="op">(</span><span class="va">myResp.v</span>, <span class="va">sre.100</span>, <span class="va">sre.095</span>, <span class="va">sre.090</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">res</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Original distribution"</span>, <span class="st">"Full data calibration"</span></span>
+<span>                , <span class="st">"Over 95 percent"</span>, <span class="st">"Over 90 percent"</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/plot.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">res</span>, zlim <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">1</span><span class="op">)</span><span class="op">)</span></span>
+<span></span>
+<span></span></code></pre></div>
     </div>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
@@ -242,7 +255,7 @@ that a total of <code>10%</code> of the data will not be considered.</p>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.3.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
 </div>
 
       </footer></div>

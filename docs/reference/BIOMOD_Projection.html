@@ -100,20 +100,20 @@ represent new areas, resolution or time scales for example</em>).</p>
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">BIOMOD_Projection</span><span class="op">(</span>
-  <span class="va">bm.mod</span>,
-  <span class="va">proj.name</span>,
-  <span class="va">new.env</span>,
-  new.env.xy <span class="op">=</span> <span class="cn">NULL</span>,
-  models.chosen <span class="op">=</span> <span class="st">"all"</span>,
-  metric.binary <span class="op">=</span> <span class="cn">NULL</span>,
-  metric.filter <span class="op">=</span> <span class="cn">NULL</span>,
-  compress <span class="op">=</span> <span class="cn">TRUE</span>,
-  build.clamping.mask <span class="op">=</span> <span class="cn">TRUE</span>,
-  nb.cpu <span class="op">=</span> <span class="fl">1</span>,
-  seed.val <span class="op">=</span> <span class="cn">NULL</span>,
-  <span class="va">...</span>
-<span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">BIOMOD_Projection</span><span class="op">(</span></span>
+<span>  <span class="va">bm.mod</span>,</span>
+<span>  <span class="va">proj.name</span>,</span>
+<span>  <span class="va">new.env</span>,</span>
+<span>  new.env.xy <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  models.chosen <span class="op">=</span> <span class="st">"all"</span>,</span>
+<span>  metric.binary <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  metric.filter <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  compress <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  build.clamping.mask <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  nb.cpu <span class="op">=</span> <span class="fl">1</span>,</span>
+<span>  seed.val <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  <span class="va">...</span></span>
+<span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
@@ -121,23 +121,33 @@ represent new areas, resolution or time scales for example</em>).</p>
     <dl><dt>bm.mod</dt>
 <dd><p>a <code><a href="BIOMOD.models.out.html">BIOMOD.models.out</a></code> object returned by the 
 <code><a href="BIOMOD_Modeling.html">BIOMOD_Modeling</a></code> function</p></dd>
+
+
 <dt>proj.name</dt>
 <dd><p>a <code>character</code> corresponding to the name (ID) of the projection set 
 (<em>a new folder will be created within the simulation folder with this name</em>)</p></dd>
+
+
 <dt>new.env</dt>
 <dd><p>a <code>matrix</code>, <code>data.frame</code> or <code><a href="https://rdrr.io/pkg/raster/man/stack.html" class="external-link">RasterStack</a></code> 
 object containing the new explanatory variables (in columns or layers, with names matching the 
 variables names given to the <code><a href="BIOMOD_FormatingData.html">BIOMOD_FormatingData</a></code> function to build 
 <code>bm.mod</code>) that will be used to project the species distribution model(s)</p></dd>
+
+
 <dt>new.env.xy</dt>
 <dd><p>(<em>optional, default</em> <code>NULL</code>) <br> 
 If <code>new.env</code> is a <code>matrix</code> or a <code>data.frame</code>, a 2-columns <code>matrix</code> or 
 <code>data.frame</code> containing the corresponding <code>X</code> and <code>Y</code> coordinates that will be 
 used to project the species distribution model(s)</p></dd>
+
+
 <dt>models.chosen</dt>
 <dd><p>a <code>vector</code> containing model names to be kept, must be either 
 <code>all</code> or a sub-selection of model names that can be obtained with the 
 <code><a href="getters.out.html">get_built_models</a></code> function</p></dd>
+
+
 <dt>metric.binary</dt>
 <dd><p>(<em>optional, default</em> <code>NULL</code>) <br> 
 A <code>vector</code> containing evaluation metric names to be used to transform prediction values 
@@ -146,6 +156,8 @@ into binary values based on models evaluation scores obtained with the
 those of <code>bm.mod</code>) or <code>ROC</code>, <code>TSS</code>, <code>KAPPA</code>, <code>ACCURACY</code>, 
 <code>BIAS</code>, <code>POD</code>, <code>FAR</code>, <code>POFD</code>, <code>SR</code>, <code>CSI</code>, <code>ETS</code>, 
 <code>HK</code>, <code>HSS</code>, <code>OR</code>, <code>ORSS</code></p></dd>
+
+
 <dt>metric.filter</dt>
 <dd><p>(<em>optional, default</em> <code>NULL</code>) <br> 
 A <code>vector</code> containing evaluation metric names to be used to transform prediction values 
@@ -154,28 +166,41 @@ into filtered values based on models evaluation scores obtained with the
 those of <code>bm.mod</code>) or <code>ROC</code>, <code>TSS</code>, <code>KAPPA</code>, <code>ACCURACY</code>, 
 <code>BIAS</code>, <code>POD</code>, <code>FAR</code>, <code>POFD</code>, <code>SR</code>, <code>CSI</code>, <code>ETS</code>, 
 <code>HK</code>, <code>HSS</code>, <code>OR</code>, <code>ORSS</code></p></dd>
+
+
 <dt>compress</dt>
 <dd><p>(<em>optional, default</em> <code>TRUE</code>) <br> 
 A <code>logical</code> or a <code>character</code> value defining whether and how objects should be 
 compressed when saved on hard drive. Must be either <code>TRUE</code>, <code>FALSE</code>, <code>xz</code> or 
 <code>gzip</code> (see <a href="BIOMOD_Projection.html#details">Details</a>)</p></dd>
+
+
 <dt>build.clamping.mask</dt>
 <dd><p>(<em>optional, default</em> <code>TRUE</code>) <br> 
 A <code>logical</code> value defining whether a clamping mask should be built and saved on hard 
 drive or not (see <a href="BIOMOD_Projection.html#details">Details</a>))</p></dd>
+
+
 <dt>nb.cpu</dt>
 <dd><p>(<em>optional, default</em> <code>1</code>) <br> 
 An <code>integer</code> value corresponding to the number of computing resources to be used to 
 parallelize the single models computation</p></dd>
+
+
 <dt>seed.val</dt>
 <dd><p>(<em>optional, default</em> <code>NULL</code>) <br> 
 An <code>integer</code> value corresponding to the new seed value to be set</p></dd>
+
+
 <dt>...</dt>
 <dd><p>(<em>optional, see <a href="BIOMOD_Projection.html#details">Details</a>)</em>)</p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>A <code>BIOMOD.projection.out</code> object containing models projections, or links to saved 
+    
+
+<p>A <code>BIOMOD.projection.out</code> object containing models projections, or links to saved 
 outputs. <br> Models projections are stored out of <span style="R">R</span> (for memory storage reasons) in 
 <code>proj.name</code> folder created in the current working directory :</p><ol><li><p>the output is a 4-dimensional array if <code>new.env</code> is a <code>matrix</code> or a 
   <code>data.frame</code></p></li>
@@ -230,67 +255,67 @@ calibration / training range, identifying locations where predictions are uncert
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code>
-<span class="co"># Load species occurrences (6 species available)</span>
-<span class="va">myFile</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">'external/species/mammals_table.csv'</span>, package <span class="op">=</span> <span class="st">'biomod2'</span><span class="op">)</span>
-<span class="va">DataSpecies</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/utils/read.table.html" class="external-link">read.csv</a></span><span class="op">(</span><span class="va">myFile</span>, row.names <span class="op">=</span> <span class="fl">1</span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/pkg/raster/man/headtail.html" class="external-link">head</a></span><span class="op">(</span><span class="va">DataSpecies</span><span class="op">)</span>
-
-<span class="co"># Select the name of the studied species</span>
-<span class="va">myRespName</span> <span class="op">&lt;-</span> <span class="st">'GuloGulo'</span>
-
-<span class="co"># Get corresponding presence/absence data</span>
-<span class="va">myResp</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/numeric.html" class="external-link">as.numeric</a></span><span class="op">(</span><span class="va">DataSpecies</span><span class="op">[</span>, <span class="va">myRespName</span><span class="op">]</span><span class="op">)</span>
-
-<span class="co"># Get corresponding XY coordinates</span>
-<span class="va">myRespXY</span> <span class="op">&lt;-</span> <span class="va">DataSpecies</span><span class="op">[</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">'X_WGS84'</span>, <span class="st">'Y_WGS84'</span><span class="op">)</span><span class="op">]</span>
-
-<span class="co"># Load environmental variables extracted from BIOCLIM (bio_3, bio_4, bio_7, bio_11 &amp; bio_12)</span>
-<span class="va">myFiles</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">'external/bioclim/current/bio'</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">3</span>, <span class="fl">4</span>, <span class="fl">7</span>, <span class="fl">11</span>, <span class="fl">12</span><span class="op">)</span>, <span class="st">'.grd'</span><span class="op">)</span>
-<span class="va">myExpl</span> <span class="op">&lt;-</span> <span class="fu">raster</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/raster/man/stack.html" class="external-link">stack</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="va">myFiles</span>, package <span class="op">=</span> <span class="st">'biomod2'</span><span class="op">)</span><span class="op">)</span>
-
-
-<span class="co"># ---------------------------------------------------------------</span>
-<span class="va">file.out</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="va">myRespName</span>, <span class="st">"/"</span>, <span class="va">myRespName</span>, <span class="st">".AllModels.models.out"</span><span class="op">)</span>
-<span class="kw">if</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/files.html" class="external-link">file.exists</a></span><span class="op">(</span><span class="va">file.out</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span>
-  <span class="va">myBiomodModelOut</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/get.html" class="external-link">get</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/load.html" class="external-link">load</a></span><span class="op">(</span><span class="va">file.out</span><span class="op">)</span><span class="op">)</span>
-<span class="op">}</span> <span class="kw">else</span> <span class="op">{</span>
-
-  <span class="co"># Format Data with true absences</span>
-  <span class="va">myBiomodData</span> <span class="op">&lt;-</span> <span class="fu"><a href="BIOMOD_FormatingData.html">BIOMOD_FormatingData</a></span><span class="op">(</span>resp.var <span class="op">=</span> <span class="va">myResp</span>,
-                                       expl.var <span class="op">=</span> <span class="va">myExpl</span>,
-                                       resp.xy <span class="op">=</span> <span class="va">myRespXY</span>,
-                                       resp.name <span class="op">=</span> <span class="va">myRespName</span><span class="op">)</span>
-
-  <span class="co"># Create default modeling options</span>
-  <span class="va">myBiomodOptions</span> <span class="op">&lt;-</span> <span class="fu"><a href="BIOMOD_ModelingOptions.html">BIOMOD_ModelingOptions</a></span><span class="op">(</span><span class="op">)</span>
-
-  <span class="co"># Model single models</span>
-  <span class="va">myBiomodModelOut</span> <span class="op">&lt;-</span> <span class="fu"><a href="BIOMOD_Modeling.html">BIOMOD_Modeling</a></span><span class="op">(</span>bm.format <span class="op">=</span> <span class="va">myBiomodData</span>,
-                                      modeling.id <span class="op">=</span> <span class="st">'AllModels'</span>,
-                                      bm.options <span class="op">=</span> <span class="va">myBiomodOptions</span>,
-                                      nb.rep <span class="op">=</span> <span class="fl">2</span>,
-                                      data.split.perc <span class="op">=</span> <span class="fl">80</span>,
-                                      metric.eval <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">'TSS'</span>,<span class="st">'ROC'</span><span class="op">)</span>,
-                                      var.import <span class="op">=</span> <span class="fl">3</span>,
-                                      do.full.models <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span>
-<span class="op">}</span>
-
-
-<span class="co"># ---------------------------------------------------------------</span>
-<span class="co"># Project single models</span>
-<span class="va">myBiomodProj</span> <span class="op">&lt;-</span> <span class="fu">BIOMOD_Projection</span><span class="op">(</span>bm.mod <span class="op">=</span> <span class="va">myBiomodModelOut</span>,
-                                  proj.name <span class="op">=</span> <span class="st">'Current'</span>,
-                                  new.env <span class="op">=</span> <span class="va">myExpl</span>,
-                                  models.chosen <span class="op">=</span> <span class="st">'all'</span>,
-                                  metric.binary <span class="op">=</span> <span class="st">'all'</span>,
-                                  metric.filter <span class="op">=</span> <span class="st">'all'</span>,
-                                  build.clamping.mask <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>
-<span class="va">myBiomodProj</span>
-<span class="fu"><a href="https://rdrr.io/pkg/raster/man/plot.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">myBiomodProj</span><span class="op">)</span>
-
-
-</code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span></span>
+<span><span class="co"># Load species occurrences (6 species available)</span></span>
+<span><span class="va">myFile</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">'external/species/mammals_table.csv'</span>, package <span class="op">=</span> <span class="st">'biomod2'</span><span class="op">)</span></span>
+<span><span class="va">DataSpecies</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/utils/read.table.html" class="external-link">read.csv</a></span><span class="op">(</span><span class="va">myFile</span>, row.names <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">DataSpecies</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Select the name of the studied species</span></span>
+<span><span class="va">myRespName</span> <span class="op">&lt;-</span> <span class="st">'GuloGulo'</span></span>
+<span></span>
+<span><span class="co"># Get corresponding presence/absence data</span></span>
+<span><span class="va">myResp</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/numeric.html" class="external-link">as.numeric</a></span><span class="op">(</span><span class="va">DataSpecies</span><span class="op">[</span>, <span class="va">myRespName</span><span class="op">]</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Get corresponding XY coordinates</span></span>
+<span><span class="va">myRespXY</span> <span class="op">&lt;-</span> <span class="va">DataSpecies</span><span class="op">[</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">'X_WGS84'</span>, <span class="st">'Y_WGS84'</span><span class="op">)</span><span class="op">]</span></span>
+<span></span>
+<span><span class="co"># Load environmental variables extracted from BIOCLIM (bio_3, bio_4, bio_7, bio_11 &amp; bio_12)</span></span>
+<span><span class="va">myFiles</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">'external/bioclim/current/bio'</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">3</span>, <span class="fl">4</span>, <span class="fl">7</span>, <span class="fl">11</span>, <span class="fl">12</span><span class="op">)</span>, <span class="st">'.grd'</span><span class="op">)</span></span>
+<span><span class="va">myExpl</span> <span class="op">&lt;-</span> <span class="fu">raster</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/raster/man/stack.html" class="external-link">stack</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="va">myFiles</span>, package <span class="op">=</span> <span class="st">'biomod2'</span><span class="op">)</span><span class="op">)</span></span>
+<span></span>
+<span></span>
+<span><span class="co"># ---------------------------------------------------------------</span></span>
+<span><span class="va">file.out</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="va">myRespName</span>, <span class="st">"/"</span>, <span class="va">myRespName</span>, <span class="st">".AllModels.models.out"</span><span class="op">)</span></span>
+<span><span class="kw">if</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/files.html" class="external-link">file.exists</a></span><span class="op">(</span><span class="va">file.out</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span>
+<span>  <span class="va">myBiomodModelOut</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/get.html" class="external-link">get</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/load.html" class="external-link">load</a></span><span class="op">(</span><span class="va">file.out</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="op">}</span> <span class="kw">else</span> <span class="op">{</span></span>
+<span></span>
+<span>  <span class="co"># Format Data with true absences</span></span>
+<span>  <span class="va">myBiomodData</span> <span class="op">&lt;-</span> <span class="fu"><a href="BIOMOD_FormatingData.html">BIOMOD_FormatingData</a></span><span class="op">(</span>resp.var <span class="op">=</span> <span class="va">myResp</span>,</span>
+<span>                                       expl.var <span class="op">=</span> <span class="va">myExpl</span>,</span>
+<span>                                       resp.xy <span class="op">=</span> <span class="va">myRespXY</span>,</span>
+<span>                                       resp.name <span class="op">=</span> <span class="va">myRespName</span><span class="op">)</span></span>
+<span></span>
+<span>  <span class="co"># Create default modeling options</span></span>
+<span>  <span class="va">myBiomodOptions</span> <span class="op">&lt;-</span> <span class="fu"><a href="BIOMOD_ModelingOptions.html">BIOMOD_ModelingOptions</a></span><span class="op">(</span><span class="op">)</span></span>
+<span></span>
+<span>  <span class="co"># Model single models</span></span>
+<span>  <span class="va">myBiomodModelOut</span> <span class="op">&lt;-</span> <span class="fu"><a href="BIOMOD_Modeling.html">BIOMOD_Modeling</a></span><span class="op">(</span>bm.format <span class="op">=</span> <span class="va">myBiomodData</span>,</span>
+<span>                                      modeling.id <span class="op">=</span> <span class="st">'AllModels'</span>,</span>
+<span>                                      bm.options <span class="op">=</span> <span class="va">myBiomodOptions</span>,</span>
+<span>                                      nb.rep <span class="op">=</span> <span class="fl">2</span>,</span>
+<span>                                      data.split.perc <span class="op">=</span> <span class="fl">80</span>,</span>
+<span>                                      metric.eval <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">'TSS'</span>,<span class="st">'ROC'</span><span class="op">)</span>,</span>
+<span>                                      var.import <span class="op">=</span> <span class="fl">3</span>,</span>
+<span>                                      do.full.models <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>                                      seed.val <span class="op">=</span> <span class="fl">42</span><span class="op">)</span></span>
+<span><span class="op">}</span></span>
+<span></span>
+<span></span>
+<span><span class="co"># ---------------------------------------------------------------</span></span>
+<span><span class="co"># Project single models</span></span>
+<span><span class="va">myBiomodProj</span> <span class="op">&lt;-</span> <span class="fu">BIOMOD_Projection</span><span class="op">(</span>bm.mod <span class="op">=</span> <span class="va">myBiomodModelOut</span>,</span>
+<span>                                  proj.name <span class="op">=</span> <span class="st">'Current'</span>,</span>
+<span>                                  new.env <span class="op">=</span> <span class="va">myExpl</span>,</span>
+<span>                                  models.chosen <span class="op">=</span> <span class="st">'all'</span>,</span>
+<span>                                  metric.binary <span class="op">=</span> <span class="st">'all'</span>,</span>
+<span>                                  metric.filter <span class="op">=</span> <span class="st">'all'</span>,</span>
+<span>                                  build.clamping.mask <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span><span class="va">myBiomodProj</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/plot.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">myBiomodProj</span><span class="op">)</span></span>
+<span></span>
+<span></span></code></pre></div>
     </div>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
@@ -304,7 +329,7 @@ calibration / training range, identifying locations where predictions are uncert
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.3.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
 </div>
 
       </footer></div>

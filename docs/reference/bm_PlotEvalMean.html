@@ -106,13 +106,13 @@ represented according to 2 different evaluation methods, and models can be group
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">bm_PlotEvalMean</span><span class="op">(</span>
-  <span class="va">bm.out</span>,
-  metric.eval <span class="op">=</span> <span class="cn">NULL</span>,
-  group.by <span class="op">=</span> <span class="st">"algo"</span>,
-  do.plot <span class="op">=</span> <span class="cn">TRUE</span>,
-  <span class="va">...</span>
-<span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">bm_PlotEvalMean</span><span class="op">(</span></span>
+<span>  <span class="va">bm.out</span>,</span>
+<span>  metric.eval <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  group.by <span class="op">=</span> <span class="st">"algo"</span>,</span>
+<span>  do.plot <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  <span class="va">...</span></span>
+<span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
@@ -121,24 +121,35 @@ represented according to 2 different evaluation methods, and models can be group
 <dd><p>a <code><a href="BIOMOD.models.out.html">BIOMOD.models.out</a></code> or <code><a href="BIOMOD.ensemble.models.out.html">BIOMOD.ensemble.models.out</a></code> 
 object that can be obtained with the <code><a href="BIOMOD_Modeling.html">BIOMOD_Modeling</a></code> or 
 <code><a href="BIOMOD_EnsembleModeling.html">BIOMOD_EnsembleModeling</a></code> functions</p></dd>
+
+
 <dt>metric.eval</dt>
 <dd><p>a <code>vector</code> containing evaluation metric names to be used, must 
 be among <code>ROC</code>, <code>TSS</code>, <code>KAPPA</code>, <code>ACCURACY</code>, <code>BIAS</code>, <code>POD</code>, 
 <code>FAR</code>, <code>POFD</code>, <code>SR</code>, <code>CSI</code>, <code>ETS</code>, <code>HK</code>, <code>HSS</code>, <code>OR</code>, 
 <code>ORSS</code></p></dd>
+
+
 <dt>group.by</dt>
 <dd><p>a <code>character</code> corresponding to the way kept models will be combined to 
 compute mean and sd evaluation scores, must be among <code>model</code>, <code>algo</code>, <code>run</code>, 
 <code>dataset</code></p></dd>
+
+
 <dt>do.plot</dt>
 <dd><p>(<em>optional, default</em> <code>TRUE</code>) <br> 
 A <code>logical</code> value defining whether the plot is to be rendered or not</p></dd>
+
+
 <dt>...</dt>
 <dd><p>some additional arguments (see <a href="bm_PlotEvalMean.html#details">Details</a>)</p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>A <code>list</code> containing a <code>data.frame</code> with mean and standard deviation of evaluation 
+    
+
+<p>A <code>list</code> containing a <code>data.frame</code> with mean and standard deviation of evaluation 
 scores and the corresponding <code>ggplot</code> object representing them according to 2 different 
 evaluation methods.</p>
     </div>
@@ -183,62 +194,62 @@ evaluation methods.</p>
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code>
-<span class="co"># Load species occurrences (6 species available)</span>
-<span class="va">myFile</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">'external/species/mammals_table.csv'</span>, package <span class="op">=</span> <span class="st">'biomod2'</span><span class="op">)</span>
-<span class="va">DataSpecies</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/utils/read.table.html" class="external-link">read.csv</a></span><span class="op">(</span><span class="va">myFile</span>, row.names <span class="op">=</span> <span class="fl">1</span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/pkg/raster/man/headtail.html" class="external-link">head</a></span><span class="op">(</span><span class="va">DataSpecies</span><span class="op">)</span>
-
-<span class="co"># Select the name of the studied species</span>
-<span class="va">myRespName</span> <span class="op">&lt;-</span> <span class="st">'GuloGulo'</span>
-
-<span class="co"># Get corresponding presence/absence data</span>
-<span class="va">myResp</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/numeric.html" class="external-link">as.numeric</a></span><span class="op">(</span><span class="va">DataSpecies</span><span class="op">[</span>, <span class="va">myRespName</span><span class="op">]</span><span class="op">)</span>
-
-<span class="co"># Get corresponding XY coordinates</span>
-<span class="va">myRespXY</span> <span class="op">&lt;-</span> <span class="va">DataSpecies</span><span class="op">[</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">'X_WGS84'</span>, <span class="st">'Y_WGS84'</span><span class="op">)</span><span class="op">]</span>
-
-<span class="co"># Load environmental variables extracted from BIOCLIM (bio_3, bio_4, bio_7, bio_11 &amp; bio_12)</span>
-<span class="va">myFiles</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">'external/bioclim/current/bio'</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">3</span>, <span class="fl">4</span>, <span class="fl">7</span>, <span class="fl">11</span>, <span class="fl">12</span><span class="op">)</span>, <span class="st">'.grd'</span><span class="op">)</span>
-<span class="va">myExpl</span> <span class="op">&lt;-</span> <span class="fu">raster</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/raster/man/stack.html" class="external-link">stack</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="va">myFiles</span>, package <span class="op">=</span> <span class="st">'biomod2'</span><span class="op">)</span><span class="op">)</span>
-
-
-<span class="co"># ---------------------------------------------------------------</span>
-<span class="va">file.out</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="va">myRespName</span>, <span class="st">"/"</span>, <span class="va">myRespName</span>, <span class="st">".AllModels.models.out"</span><span class="op">)</span>
-<span class="kw">if</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/files.html" class="external-link">file.exists</a></span><span class="op">(</span><span class="va">file.out</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span>
-  <span class="va">myBiomodModelOut</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/get.html" class="external-link">get</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/load.html" class="external-link">load</a></span><span class="op">(</span><span class="va">file.out</span><span class="op">)</span><span class="op">)</span>
-<span class="op">}</span> <span class="kw">else</span> <span class="op">{</span>
-
-  <span class="co"># Format Data with true absences</span>
-  <span class="va">myBiomodData</span> <span class="op">&lt;-</span> <span class="fu"><a href="BIOMOD_FormatingData.html">BIOMOD_FormatingData</a></span><span class="op">(</span>resp.var <span class="op">=</span> <span class="va">myResp</span>,
-                                       expl.var <span class="op">=</span> <span class="va">myExpl</span>,
-                                       resp.xy <span class="op">=</span> <span class="va">myRespXY</span>,
-                                       resp.name <span class="op">=</span> <span class="va">myRespName</span><span class="op">)</span>
-
-  <span class="co"># Create default modeling options</span>
-  <span class="va">myBiomodOptions</span> <span class="op">&lt;-</span> <span class="fu"><a href="BIOMOD_ModelingOptions.html">BIOMOD_ModelingOptions</a></span><span class="op">(</span><span class="op">)</span>
-
-  <span class="co"># Model single models</span>
-  <span class="va">myBiomodModelOut</span> <span class="op">&lt;-</span> <span class="fu"><a href="BIOMOD_Modeling.html">BIOMOD_Modeling</a></span><span class="op">(</span>bm.format <span class="op">=</span> <span class="va">myBiomodData</span>,
-                                      modeling.id <span class="op">=</span> <span class="st">'AllModels'</span>,
-                                      bm.options <span class="op">=</span> <span class="va">myBiomodOptions</span>,
-                                      nb.rep <span class="op">=</span> <span class="fl">2</span>,
-                                      data.split.perc <span class="op">=</span> <span class="fl">80</span>,
-                                      metric.eval <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">'TSS'</span>,<span class="st">'ROC'</span><span class="op">)</span>,
-                                      var.import <span class="op">=</span> <span class="fl">3</span>,
-                                      do.full.models <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span>
-<span class="op">}</span>
-
-
-<span class="co"># ---------------------------------------------------------------</span>
-<span class="co"># Get evaluation scores</span>
-<span class="fu"><a href="getters.out.html">get_evaluations</a></span><span class="op">(</span><span class="va">myBiomodModelOut</span><span class="op">)</span>
-
-<span class="co"># Represent mean evaluation scores</span>
-<span class="fu">bm_PlotEvalMean</span><span class="op">(</span>bm.out <span class="op">=</span> <span class="va">myBiomodModelOut</span><span class="op">)</span>
-
-
-</code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span></span>
+<span><span class="co"># Load species occurrences (6 species available)</span></span>
+<span><span class="va">myFile</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">'external/species/mammals_table.csv'</span>, package <span class="op">=</span> <span class="st">'biomod2'</span><span class="op">)</span></span>
+<span><span class="va">DataSpecies</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/utils/read.table.html" class="external-link">read.csv</a></span><span class="op">(</span><span class="va">myFile</span>, row.names <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">DataSpecies</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Select the name of the studied species</span></span>
+<span><span class="va">myRespName</span> <span class="op">&lt;-</span> <span class="st">'GuloGulo'</span></span>
+<span></span>
+<span><span class="co"># Get corresponding presence/absence data</span></span>
+<span><span class="va">myResp</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/numeric.html" class="external-link">as.numeric</a></span><span class="op">(</span><span class="va">DataSpecies</span><span class="op">[</span>, <span class="va">myRespName</span><span class="op">]</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Get corresponding XY coordinates</span></span>
+<span><span class="va">myRespXY</span> <span class="op">&lt;-</span> <span class="va">DataSpecies</span><span class="op">[</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">'X_WGS84'</span>, <span class="st">'Y_WGS84'</span><span class="op">)</span><span class="op">]</span></span>
+<span></span>
+<span><span class="co"># Load environmental variables extracted from BIOCLIM (bio_3, bio_4, bio_7, bio_11 &amp; bio_12)</span></span>
+<span><span class="va">myFiles</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">'external/bioclim/current/bio'</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">3</span>, <span class="fl">4</span>, <span class="fl">7</span>, <span class="fl">11</span>, <span class="fl">12</span><span class="op">)</span>, <span class="st">'.grd'</span><span class="op">)</span></span>
+<span><span class="va">myExpl</span> <span class="op">&lt;-</span> <span class="fu">raster</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/raster/man/stack.html" class="external-link">stack</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="va">myFiles</span>, package <span class="op">=</span> <span class="st">'biomod2'</span><span class="op">)</span><span class="op">)</span></span>
+<span></span>
+<span></span>
+<span><span class="co"># ---------------------------------------------------------------</span></span>
+<span><span class="va">file.out</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="va">myRespName</span>, <span class="st">"/"</span>, <span class="va">myRespName</span>, <span class="st">".AllModels.models.out"</span><span class="op">)</span></span>
+<span><span class="kw">if</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/files.html" class="external-link">file.exists</a></span><span class="op">(</span><span class="va">file.out</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span>
+<span>  <span class="va">myBiomodModelOut</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/get.html" class="external-link">get</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/load.html" class="external-link">load</a></span><span class="op">(</span><span class="va">file.out</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="op">}</span> <span class="kw">else</span> <span class="op">{</span></span>
+<span></span>
+<span>  <span class="co"># Format Data with true absences</span></span>
+<span>  <span class="va">myBiomodData</span> <span class="op">&lt;-</span> <span class="fu"><a href="BIOMOD_FormatingData.html">BIOMOD_FormatingData</a></span><span class="op">(</span>resp.var <span class="op">=</span> <span class="va">myResp</span>,</span>
+<span>                                       expl.var <span class="op">=</span> <span class="va">myExpl</span>,</span>
+<span>                                       resp.xy <span class="op">=</span> <span class="va">myRespXY</span>,</span>
+<span>                                       resp.name <span class="op">=</span> <span class="va">myRespName</span><span class="op">)</span></span>
+<span></span>
+<span>  <span class="co"># Create default modeling options</span></span>
+<span>  <span class="va">myBiomodOptions</span> <span class="op">&lt;-</span> <span class="fu"><a href="BIOMOD_ModelingOptions.html">BIOMOD_ModelingOptions</a></span><span class="op">(</span><span class="op">)</span></span>
+<span></span>
+<span>  <span class="co"># Model single models</span></span>
+<span>  <span class="va">myBiomodModelOut</span> <span class="op">&lt;-</span> <span class="fu"><a href="BIOMOD_Modeling.html">BIOMOD_Modeling</a></span><span class="op">(</span>bm.format <span class="op">=</span> <span class="va">myBiomodData</span>,</span>
+<span>                                      modeling.id <span class="op">=</span> <span class="st">'AllModels'</span>,</span>
+<span>                                      bm.options <span class="op">=</span> <span class="va">myBiomodOptions</span>,</span>
+<span>                                      nb.rep <span class="op">=</span> <span class="fl">2</span>,</span>
+<span>                                      data.split.perc <span class="op">=</span> <span class="fl">80</span>,</span>
+<span>                                      metric.eval <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">'TSS'</span>,<span class="st">'ROC'</span><span class="op">)</span>,</span>
+<span>                                      var.import <span class="op">=</span> <span class="fl">3</span>,</span>
+<span>                                      do.full.models <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>                                      seed.val <span class="op">=</span> <span class="fl">42</span><span class="op">)</span></span>
+<span><span class="op">}</span></span>
+<span></span>
+<span></span>
+<span><span class="co"># ---------------------------------------------------------------</span></span>
+<span><span class="co"># Get evaluation scores</span></span>
+<span><span class="fu"><a href="getters.out.html">get_evaluations</a></span><span class="op">(</span><span class="va">myBiomodModelOut</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Represent mean evaluation scores</span></span>
+<span><span class="fu">bm_PlotEvalMean</span><span class="op">(</span>bm.out <span class="op">=</span> <span class="va">myBiomodModelOut</span><span class="op">)</span></span>
+<span></span>
+<span></span></code></pre></div>
     </div>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
@@ -252,7 +263,7 @@ evaluation methods.</p>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.3.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
 </div>
 
       </footer></div>
