@@ -216,17 +216,17 @@ setMethod('bm_BinaryTransformation', signature('RasterBrick'),
 }
 
 .convert_bin.array = function(x, y) {
-  if (!any(is.na(x))) {
+  # if (!any(is.na(x))) {
     return(x >= y)
-  } else {
-    return(rep(NA, length(x)))
-  }
+  # } else {
+  #   return(rep(NA, length(x)))
+  # }
 }
 
 .convert_bin.array.filt = function(x, y) {
-  if (!any(is.na(x))) {
+  # if (!any(is.na(x))) {
     return(ifelse(x >= y, x, 0))
-  } else {
-    return(rep(NA, length(x)))
-  }
+  # } else {
+  #   return(rep(NA, length(x)))
+  # }
 }
