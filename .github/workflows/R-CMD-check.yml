@@ -1,4 +1,3 @@
-
 name: R-CMD-check
 
 on:
@@ -34,7 +33,6 @@ jobs:
       # Runs vdiffr test only on the latest version of R
       VDIFFR_RUN_TESTS: ${{ matrix.config.vdiffr }}
       VDIFFR_LOG_PATH: "../vdiffr.Rout.fail"
-      USE_BSPM: "true"
 
     steps:
       - uses: actions/checkout@v2
@@ -52,25 +50,23 @@ jobs:
           saveRDS(remotes::dev_package_deps(dependencies = TRUE), ".github/depends.Rds", version = 2)
         shell: Rscript {0}
 
-      - name: Cache R packages
-        if: runner.os != 'Windows'
-        uses: actions/cache@v1
-        with:
-          path: ${{ env.R_LIBS_USER }}
-          key: ${{ runner.os }}-${{ matrix.config.r }}-1-${{ hashFiles('.github/depends.Rds') }}
-          restore-keys: ${{ runner.os }}-${{ matrix.config.r }}-1-
+      # - name: Cache R packages
+      #   if: runner.os != 'Windows'
+      #   uses: actions/cache@v1
+      #   with:
+      #     path: ${{ env.R_LIBS_USER }}
+      #     key: ${{ runner.os }}-${{ matrix.config.r }}-1-${{ hashFiles('.github/depends.Rds') }}
+      #     restore-keys: ${{ runner.os }}-${{ matrix.config.r }}-1-
           
-      - name: Install dependencies on Linux
+      - name: Install system dependencies on Linux
         if: runner.os == 'Linux'
         run: |
-          curl -OLs https://eddelbuettel.github.io/r-ci/run.sh
-          chmod 0755 run.sh
-          ./run.sh bootstrap
-          ./run.sh install_all
-      
-    
+          sudo apt install libgdal-dev libproj-dev libgeos-dev libudunits2-dev
+          while read -r cmd
+          do
+            eval sudo $cmd
+          done < <(Rscript -e 'writeLines(remotes::system_requirements("ubuntu", "18.04"))')
       - name: Install dependencies
-        if: runner.os != 'Linux'
         run: |
           install.packages("remotes")
           remotes::install_deps(dependencies = TRUE)
