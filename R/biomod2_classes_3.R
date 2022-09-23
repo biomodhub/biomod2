@@ -151,7 +151,6 @@ setGeneric("get_variables_importance", function(obj, ...) { standardGeneric("get
 ##' @name BIOMOD.models.out
 ##' @aliases BIOMOD.models.out-class
 ##' @aliases BIOMOD.models.out
-##' @aliases BIOMOD.stored.models.out-class
 ## @aliases BIOMOD.stored.models.out
 ##' @author Damien Georges
 ##' 
@@ -184,7 +183,6 @@ setGeneric("get_variables_importance", function(obj, ...) { standardGeneric("get
 ##' @slot models.prediction.eval a \code{\link{BIOMOD.stored.array}} object containing models 
 ##' predictions for evaluation data
 ##' @slot link a \code{character} containing the file name of the saved object
-##' @slot val a \code{\link{BIOMOD.models.out}} object
 ##' 
 ##' @param object a \code{\link{BIOMOD.models.out}} object
 ##' 
@@ -200,7 +198,6 @@ setGeneric("get_variables_importance", function(obj, ...) { standardGeneric("get
 ##' @examples
 ##' 
 ##' showClass("BIOMOD.models.out")
-##' showClass("BIOMOD.stored.models.out")
 ##' 
 ##' ## ----------------------------------------------------------------------- #
 ##' 
@@ -291,8 +288,11 @@ setClass("BIOMOD.models.out",
                    link = ''),
          validity = function(object){ return(TRUE) } )
 
+# BIOMOD.stored.models.out is defined here and not with outher BIOMOD.stored.data
+# as its definition require the definition of class BIOMOD.stored.data and files are
+# sourced in alphabetical order.
 ##' @name BIOMOD.stored.models.out-class
-##' @rdname BIOMOD.models.out
+##' @rdname BIOMOD.stored.data
 
 setClass("BIOMOD.stored.models.out",
          contains = "BIOMOD.stored.data",

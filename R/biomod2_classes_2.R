@@ -9,6 +9,7 @@
 ##' @aliases BIOMOD.stored.files
 ##' @aliases BIOMOD.stored.formated.data
 ##' @aliases BIOMOD.stored.models.options
+##' @aliases BIOMOD.stored.models.out-class
 ##' @aliases BIOMOD.stored.models.out
 ##' @author Damien Georges
 ##' 
