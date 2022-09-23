@@ -21,7 +21,7 @@ jobs:
           - {os: windows-latest, r: '4.1',   vdiffr: true,  xref: true}
           - {os: macOS-latest,   r: '4.1',   vdiffr: true,  xref: true}
           - {os: ubuntu-20.04,   r: '4.1',   vdiffr: true,  xref: true, rspm: "https://packagemanager.rstudio.com/cran/__linux__/focal/latest"}
-          - {os: ubuntu-18.04,   r: '4.1',   vdiffr: true,  xref: true, rspm: "https://packagemanager.rstudio.com/cran/__linux__/bionic/latest"}
+          # - {os: ubuntu-18.04,   r: '4.1',   vdiffr: true,  xref: true, rspm: "https://packagemanager.rstudio.com/cran/__linux__/bionic/latest"}
           # - {os: ubuntu-16.04,   r: '3.6',   vdiffr: true,  xref: true, rspm: "https://packagemanager.rstudio.com/cran/__linux__/xenial/latest"}
 
     env:
@@ -66,7 +66,7 @@ jobs:
           while read -r cmd
           do
             eval sudo $cmd
-          done < <(Rscript -e 'writeLines(remotes::system_requirements("ubuntu", "18.04"))')
+          done < <(Rscript -e 'writeLines(remotes::system_requirements("ubuntu", "20.04"))')
 
       - name: Install dependencies
         run: |
