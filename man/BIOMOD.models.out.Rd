@@ -4,7 +4,6 @@
 \name{BIOMOD.models.out}
 \alias{BIOMOD.models.out}
 \alias{BIOMOD.models.out-class}
-\alias{BIOMOD.stored.models.out-class}
 \alias{show,BIOMOD.models.out-method}
 \title{\code{BIOMOD_Modeling()} output object class}
 \usage{
@@ -58,14 +57,11 @@ predictions}
 predictions for evaluation data}
 
 \item{\code{link}}{a \code{character} containing the file name of the saved object}
-
-\item{\code{val}}{a \code{\link{BIOMOD.models.out}} object}
 }}
 
 \examples{
 
 showClass("BIOMOD.models.out")
-showClass("BIOMOD.stored.models.out")
 
 ## ----------------------------------------------------------------------- #
 
