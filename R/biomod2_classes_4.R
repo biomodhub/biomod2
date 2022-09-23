@@ -326,7 +326,7 @@ setMethod('predict2', signature(object = 'biomod2_model', newdata = "data.frame"
             if (omit.na) {
               not_na_rows <- apply(newdata, 1, function(x) { sum(is.na(x)) == 0 })
             } else {
-              not_na_rows <- rep(T, nrow(newdata))
+              not_na_rows <- rep(TRUE, nrow(newdata))
             }
             
             set.seed(seedval)
@@ -791,7 +791,6 @@ setMethod('predict2', signature(object = 'MAXENT.Phillips_biomod2_model', newdat
             return(proj)
           }
 )
-
 
 #----------------------------------------------------------------------------- #
 ## 8.9 MAXENT.Phillips.2_biomod2_model ---------------------------------------
