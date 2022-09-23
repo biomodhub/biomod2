@@ -96,13 +96,7 @@
   return(test)
 }
 
-
-
-
-## TEMPLATES TO PREDICT MODELS --------------------------------------------------------------------
-## used in biomod2_classes_4.R, biomod2_classes_5.R files
-
-# Functions to get variables ranges
+# Functions to get variables ranges ---------------------------------
 # used bm_RunModelsLoop, BIOMOD_EnsembleModeling
 get_var_type <- function(data) { return(sapply(data, function(x) class(x)[1])) }
 
@@ -240,7 +234,7 @@ check_data_range <- function(model, new_data)
   return(pred)
 }
 
-## FOR ENSEMBLE MODELS --------------------------------------------------------
+## Predict template for ensemble models --------------------------------------------------------
 .template_predictEM = function(mod, object, newdata, formal_predictions, ...)
 {
   args <- list(...)
