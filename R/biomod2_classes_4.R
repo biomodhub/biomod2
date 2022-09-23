@@ -220,6 +220,7 @@ setMethod('get_scaling_model', signature('biomod2_model'), function(object) { re
 # 7.3 Other Functions -----------------------------------------------------------------------------
 ##' 
 ##' @rdname biomod2_model
+##' @importMethodsFrom methods show
 ##' @export
 ##' 
 

@@ -401,6 +401,7 @@ setMethod('plot', signature(x = 'BIOMOD.formated.data', y = "missing"),
 ### show.BIOMOD.formated.data  --------------------------------------------------
 ##' 
 ##' @rdname BIOMOD.formated.data
+##' @importMethodsFrom methods show
 ##' @export
 ##' 
 
@@ -938,6 +939,7 @@ setMethod('plot', signature(x = 'BIOMOD.formated.data.PA', y = "missing"),
 ### show.BIOMOD.formated.data.PA -----------------------------------------------
 ##' 
 ##' @rdname BIOMOD.formated.data.PA
+##' @importMethodsFrom methods show
 ##' @export
 ##' 
 
@@ -1287,6 +1289,7 @@ setClass("BIOMOD.models.options",
 ### show.BIOMOD.models.options -------------------------------------------------
 ##'
 ##' @rdname BIOMOD.models.options
+##' @importMethodsFrom methods show
 ##' @export
 ##'
 

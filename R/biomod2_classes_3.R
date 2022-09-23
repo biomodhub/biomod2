@@ -305,6 +305,7 @@ setClass("BIOMOD.stored.models.out",
 ## show.BIOMOD.models.out ---------------------------------------------------
 ##' 
 ##' @rdname BIOMOD.models.out
+##' @importMethodsFrom methods show
 ##' @export
 ##' 
 
@@ -743,6 +744,7 @@ setMethod(
 ## show.BIOMOD.projection.out -------------------------------------------------
 ##' 
 ##' @rdname BIOMOD.projection.out
+##' @importMethodsFrom methods show
 ##' @export
 ##' 
 
@@ -1002,6 +1004,7 @@ setClass("BIOMOD.ensemble.models.out",
 ## show.BIOMOD.ensemble.models.out ---------------------------------------------
 ##' 
 ##' @rdname BIOMOD.ensemble.models.out
+##' @importMethodsFrom methods show
 ##' @export
 ##' 
 
