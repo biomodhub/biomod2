@@ -34,6 +34,7 @@ jobs:
       # Runs vdiffr test only on the latest version of R
       VDIFFR_RUN_TESTS: ${{ matrix.config.vdiffr }}
       VDIFFR_LOG_PATH: "../vdiffr.Rout.fail"
+      USE_BSPM: "true"
 
     steps:
       - uses: actions/checkout@v2
@@ -60,15 +61,24 @@ jobs:
           restore-keys: ${{ runner.os }}-${{ matrix.config.r }}-1-
           
       - name: Install system dependencies on Linux
-        if: runner.os == 'Linux'
+        if: runner.os == 'ubuntu-20.04'
+        run: |
+          curl -OLs https://eddelbuettel.github.io/r-ci/run.sh
+          chmod 0755 run.sh
+          ./run.sh bootstrap
+          ./run.sh install_all
+              
+      - name: Install system dependencies on Linux
+        if: runner.os == 'ubuntu-18.04'
         run: |
           sudo apt install libgdal-dev libproj-dev libgeos-dev libudunits2-dev netcdf-bin
           while read -r cmd
           do
-            eval sudo $cmd
+             eval sudo $cmd
           done < <(Rscript -e 'writeLines(remotes::system_requirements("ubuntu", "18.04"))')
 
       - name: Install dependencies
+        if: runner.os != 'ubuntu-20.04'
         run: |
           install.packages("remotes")
           remotes::install_deps(dependencies = TRUE)
