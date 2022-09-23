@@ -18,10 +18,10 @@ jobs:
       fail-fast: false
       matrix:
         config:
-          - {os: windows-latest, r: '4.1',   vdiffr: true,  xref: true}
-          - {os: macOS-latest,   r: '4.1',   vdiffr: true,  xref: true}
+          # - {os: windows-latest, r: '4.1',   vdiffr: true,  xref: true}
+          # - {os: macOS-latest,   r: '4.1',   vdiffr: true,  xref: true}
           - {os: ubuntu-20.04,   r: '4.1',   vdiffr: true,  xref: true, rspm: "https://packagemanager.rstudio.com/cran/__linux__/focal/latest"}
-          - {os: ubuntu-18.04,   r: '4.1',   vdiffr: true,  xref: true, rspm: "https://packagemanager.rstudio.com/cran/__linux__/bionic/latest"}
+          # - {os: ubuntu-18.04,   r: '4.1',   vdiffr: true,  xref: true, rspm: "https://packagemanager.rstudio.com/cran/__linux__/bionic/latest"}
           # - {os: ubuntu-16.04,   r: '3.6',   vdiffr: true,  xref: true, rspm: "https://packagemanager.rstudio.com/cran/__linux__/xenial/latest"}
 
     env:
@@ -60,25 +60,17 @@ jobs:
           key: ${{ runner.os }}-${{ matrix.config.r }}-1-${{ hashFiles('.github/depends.Rds') }}
           restore-keys: ${{ runner.os }}-${{ matrix.config.r }}-1-
           
-      - name: Install system dependencies on Linux
-        if: runner.os == 'ubuntu-20.04'
+      - name: Install dependencies on Linux
+        if: runner.os == 'Linux'
         run: |
           curl -OLs https://eddelbuettel.github.io/r-ci/run.sh
           chmod 0755 run.sh
           ./run.sh bootstrap
           ./run.sh install_all
-              
-      - name: Install system dependencies on Linux
-        if: runner.os == 'ubuntu-18.04'
-        run: |
-          sudo apt install libgdal-dev libproj-dev libgeos-dev libudunits2-dev netcdf-bin
-          while read -r cmd
-          do
-             eval sudo $cmd
-          done < <(Rscript -e 'writeLines(remotes::system_requirements("ubuntu", "18.04"))')
-
+      
+    
       - name: Install dependencies
-        if: runner.os != 'ubuntu-20.04'
+        if: runner.os != 'Linux'
         run: |
           install.packages("remotes")
           remotes::install_deps(dependencies = TRUE)
