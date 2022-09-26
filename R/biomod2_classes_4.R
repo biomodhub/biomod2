@@ -289,7 +289,9 @@ setMethod('predict2', signature(object = 'biomod2_model', newdata = "RasterStack
             set.seed(seedval)
             # eval(parse(text = paste0("proj <- ", predcommand)))
             if (use_calc) {
-              proj <- calc(newdata, predfun)
+              fact.var <- is.factor(newdata)
+              fact.var.levels <- subset(levels(newdata), fact.var)
+              proj <- calc(newdata, function(x) predfun(x, fact.var.levels) )
             } else {
               proj <- predfun(object, newdata)
             }
@@ -420,8 +422,7 @@ setMethod('predict2', signature(object = 'CTA_biomod2_model', newdata = "RasterS
             fact.var <- is.factor(newdata)
             if (any(fact.var)) {
               use_calc <- TRUE
-              fact.var.levels <- subset(levels(newdata), fact.var)
-              predfun <- function(x){
+              predfun <- function(x, fact.var.levels){
                 xx <- data.frame(x)
                 ## ensure that the data.frame has the right set of levels
                 for (i in which(fact.var)) {
@@ -653,8 +654,7 @@ setMethod('predict2', signature(object = 'MARS_biomod2_model', newdata = "Raster
             fact.var <- is.factor(newdata)
             if (any(fact.var)) {
               use_calc <- TRUE
-              fact.var.levels <- subset(levels(newdata), fact.var)
-              predfun <- function(x){
+              predfun <- function(x, fact.var.levels){
                 xx <- data.frame(x)
                 ## ensure that the data.frame has the right set of levels
                 for (i in which(fact.var)) {
