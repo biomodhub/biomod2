@@ -315,12 +315,14 @@ BIOMOD_EnsembleForecasting <- function(bm.em,
     BIOMOD_LoadModels(bm.out = bm.em, full.name = em.comp, as = 'model.tmp')
     if (inherits(formal_pred, 'Raster')) {
       ef.tmp <- predict(model.tmp,
-                        formal_predictions = subset(formal_pred, subset = model.tmp@model, drop = FALSE),
+                        newdata = subset(formal_pred, subset = model.tmp@model, drop = FALSE),
+                        data_as_formal_predictions = TRUE,
                         on_0_1000 = on_0_1000,
                         filename = ifelse(output.format == '.RData', '', file_name_tmp))
     } else {
       ef.tmp <- predict(model.tmp,
-                        formal_predictions = formal_pred[, model.tmp@model, drop = FALSE],
+                        newdata = formal_pred[, model.tmp@model, drop = FALSE],
+                        data_as_formal_predictions = TRUE,
                         on_0_1000 = on_0_1000)
     }
     
