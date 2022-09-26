@@ -260,6 +260,8 @@ setMethod('show', signature('biomod2_model'),
 
 # this method just dispatch onto method predict2 so that it may handle 
 # a second argument dispatch (newdata = data.frame or RasterStack)
+# the methods is used both for simple model (class biomod2_model) as well as
+# ensemble models (class biomod2_ensemble_model)
 
 setMethod('predict', signature(object = 'biomod2_model'),
           function(object, newdata, ...) {
@@ -270,7 +272,7 @@ setMethod('predict', signature(object = 'biomod2_model'),
 ## 7.5 biomod2_model predict2 method ----------------------------------------
 
 ### generic method definition -----------------------------------------------
-
+### method used both for biomod2_model and biomod2_ensemble_model
 setGeneric("predict2", function(object, newdata, ...) { standardGeneric("predict2") }) 
 
 ### biomod2_model + Raster  -------------------------------------------------

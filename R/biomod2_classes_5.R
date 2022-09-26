@@ -38,9 +38,9 @@ NULL
 
 #setGeneric("predict", def = function(object, ...) { standardGeneric("predict") })
 
-###################################################################################################
-## 9. biomod2_ensemble_model
-###################################################################################################
+# ---------------------------------------------------------------------------- #
+# 9. biomod2_ensemble_model --------------------------------------------------
+# ---------------------------------------------------------------------------- #
 
 ##' @name biomod2_ensemble_model
 ##' @aliases biomod2_ensemble_model-class
@@ -111,17 +111,32 @@ NULL
 ##' @export
 ##' 
 
-# 9.1 Class Definition ----------------------------------------------------------------------------
+## 9.1 Class Definition ---------------------------------------------------------
 setClass('biomod2_ensemble_model',
          representation(modeling.id = 'character'), ##maybe some additional args should be added here
          contains = 'biomod2_model',
          prototype = list(model_class = 'EM'),
          validity = function(object) { return(TRUE) })
 
+### biomod2_ensemble_model predict2 method
+### 
+### biomod2_ensemble_model + Raster  -------------------------------------------------
+setMethod('predict2', signature(object = 'biomod2_model', newdata = "RasterStack"),
+          function(object, newdata, predfun, seedval = NULL, use_calc = FALSE, ...) {
+          
+          })
 
-###################################################################################################
-## 10.1 EMmean_biomod2_model
-###################################################################################################
+### biomod2_ensemble_model + data.frame  -------------------------------------------------
+setMethod('predict2', signature(object = 'biomod2_model', newdata = "data.frame"),
+          function(object, newdata, predfun, seedval = NULL, use_calc = FALSE, ...) {
+          
+          })
+
+
+### -------------------------------------------------------------------------- #
+### 10.1 EMmean_biomod2_model ------------------------------------------------
+### -------------------------------------------------------------------------- #
+
 
 setClass('EMmean_biomod2_model',
          representation(),
@@ -198,9 +213,9 @@ setMethod('predict', signature(object = 'EMmean_biomod2_model'),
 }
 
 
-###################################################################################################
-## 10.2 EMmedian_biomod2_model
-###################################################################################################
+### -------------------------------------------------------------------------- #
+### 10.2 EMmedian_biomod2_model ----------------------------------------------
+### -------------------------------------------------------------------------- #
 
 setClass('EMmedian_biomod2_model',
          representation(),
@@ -213,11 +228,22 @@ setClass('EMmedian_biomod2_model',
 ##' @export
 ##' 
 
-setMethod('predict', signature(object = 'EMmedian_biomod2_model'),
-          function(object, newdata = NULL, formal_predictions = NULL, ...)
-          {
-            return(.template_predictEM(mod = "EMmedian", object, newdata, formal_predictions, ...))
-          })
+
+setMethod('predict2', signature(object = 'EMmedian_biomod2_model', newdata = "RasterStack"),
+          function(object, newdata, formal_predictions = NULL, ...) {
+            predfun <- function(object, newdata){
+              predict(newdata, get_formal_model(object), type = 'raw')
+            }
+            # redirect to predict2.biomod2_ensemble_model.RasterStack
+            callNextMethod(object, newdata, predfun = predfun, ...)
+          }
+)
+
+# setMethod('predict', signature(object = 'EMmedian_biomod2_model'),
+#           function(object, newdata = NULL, formal_predictions = NULL, ...)
+#           {
+#             return(.template_predictEM(mod = "EMmedian", object, newdata, formal_predictions, ...))
+#           })
 
 .predict.EMmedian_biomod2_model.RasterStack <- function(object, newdata = NULL, formal_predictions = NULL, ...)
 {
@@ -259,9 +285,9 @@ setMethod('predict', signature(object = 'EMmedian_biomod2_model'),
 }
 
 
-###################################################################################################
-## 10.3 EMcv_biomod2_model
-###################################################################################################
+### -------------------------------------------------------------------------- #
+### 10.3 EMcv_biomod2_model --------------------------------------------------
+### -------------------------------------------------------------------------- #
 
 setClass('EMcv_biomod2_model',
          representation(),
@@ -318,9 +344,9 @@ setMethod('predict', signature(object = 'EMcv_biomod2_model'),
 }
 
 
-###################################################################################################
-## 10.4 EMci_biomod2_model
-###################################################################################################
+### -------------------------------------------------------------------------- #
+### 10.4 EMci_biomod2_model --------------------------------------------------
+### -------------------------------------------------------------------------- #
 
 setClass('EMci_biomod2_model',
          representation(alpha = 'numeric', side = 'character'),
@@ -403,9 +429,9 @@ setMethod('predict', signature(object = 'EMci_biomod2_model'),
 }
 
 
-###################################################################################################
-## 10.5 EMca_biomod2_model
-###################################################################################################
+### -------------------------------------------------------------------------- #
+### 10.5 EMca_biomod2_model --------------------------------------------------
+### -------------------------------------------------------------------------- #
 
 setClass('EMca_biomod2_model',
          representation(thresholds = 'numeric'),
@@ -466,9 +492,9 @@ setMethod('predict', signature(object = 'EMca_biomod2_model'),
 }
 
 
-###################################################################################################
-## 10.6 EMwmean_biomod2_model
-###################################################################################################
+### -------------------------------------------------------------------------- #
+### 10.6 EMwmean_biomod2_model -----------------------------------------------
+### -------------------------------------------------------------------------- #
 
 setClass('EMwmean_biomod2_model',
          representation(penalization_scores='numeric'),
