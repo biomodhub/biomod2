@@ -407,7 +407,6 @@ setMethod('predict2', signature(object = 'EMci_biomod2_model', newdata = "data.f
                 sd_prediction <- apply(newdata, 1, sd, na.rm = TRUE)
               }
               
-              # browser()
               ci_prediction <- switch(side,
                                       inferior = mean_prediction -  (sd_prediction * (qt((1-object@alpha/2), df = length(object@model) + 1 ) / sqrt(length(object@model))) ),
                                       superior = mean_prediction +  (sd_prediction * (qt((1-object@alpha/2), df = length(object@model) + 1 ) / sqrt(length(object@model))) ))
