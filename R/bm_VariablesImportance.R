@@ -97,7 +97,12 @@ bm_VariablesImportance <- function(bm.model,
   rm(args)
   
   ## Test if prediction is computable
-  ref <- try(predict(bm.model, newdata = expl.var, temp_workdir = temp_workdir, seedval = seed.val))
+  ref <- try(
+    predict(bm.model,
+            newdata = expl.var,
+            temp_workdir = temp_workdir,
+            seedval = seed.val)
+    )
   if (inherits(ref, "try-error")) { stop("Unable to make model prediction") }
   
   ## Make randomisation
