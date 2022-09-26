@@ -234,37 +234,10 @@ check_data_range <- function(model, new_data)
   return(pred)
 }
 
-## Predict template for ensemble models --------------------------------------------------------
-.template_predictEM = function(mod, object, newdata, formal_predictions, ...)
-{
-  args <- list(...)
-  do_check <- args$do_check
-  if (is.null(do_check)) { do_check <- TRUE }
-  if (do_check) { newdata <- check_data_range(model = object, new_data = newdata) }
-  
-  if (inherits(newdata, 'Raster') | inherits(formal_predictions, 'Raster')) {
-    eval(parse(text = paste0("res = .predict.", mod, "_biomod2_model.RasterStack(object, newdata, formal_predictions, ...)")))
-    return(res)
-  } else if (inherits(newdata, 'data.frame') | inherits(newdata, 'matrix') | 
-             inherits(formal_predictions, 'data.frame') | inherits(formal_predictions, 'matrix')) {
-    eval(parse(text = paste0("res = .predict.", mod, "_biomod2_model.data.frame(object, newdata, formal_predictions, ...)")))
-    return(res)
-  } else {
-    stop("invalid newdata input")
-  }
-}
+## get formal prediction for EM models ------------------------------------
 
-.template_predictEM.formal_predictions = function(object, newdata, formal_predictions, ...)
+.template_predictEM.formal_predictions <- function(object, newdata, on_0_1000, seedval)
 {
-  args <- list(...)
-  namefile <- args$namefile
-  on_0_1000 <- args$on_0_1000
-  seedval <- args$seedval
-  
-  if (is.null(namefile)) { namefile <- "" }
-  if (is.null(on_0_1000)) { on_0_1000 <- FALSE }
-  
-  if (is.null(formal_predictions)) {
     # make prediction of all models required
     formal_predictions <- sapply(object@model,
                                  function(mod.name, dir_name, resp_name, modeling.id)
@@ -280,7 +253,7 @@ check_data_range <- function(model, new_data)
                                    return(predict(mod, newdata = newdata, on_0_1000 = on_0_1000
                                                   , temp_workdir = temp_workdir, seedval = seedval))
                                  }, dir_name = object@dir_name, resp_name = object@resp_name, modeling.id = object@modeling.id)
-  }
+  
   
   return(formal_predictions)
 }
