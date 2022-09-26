@@ -546,7 +546,7 @@ BIOMOD_EnsembleForecasting <- function(bm.em,
   ## 6. Check output.format ---------------------------------------------------
   output.format <- args$output.format
   if (is.null(output.format)) {
-    if (length(bm.proj)) {
+    if (length(bm.proj) > 0) {
       output.format = ifelse(bm.proj@type != 'RasterStack', ".RData", ".grd")
     } else {
       output.format = ifelse(!inherits(new.env, 'Raster'), ".RData", ".grd")
