@@ -126,7 +126,19 @@ setMethod('predict2', signature(object = 'biomod2_ensemble_model', newdata = "Ra
                    data_as_formal_predictions = FALSE, ...) {
             args <- list(...)
             filename <- args$filename
+            overwrite <- args$overwrite
             on_0_1000 <- args$on_0_1000
+            
+            if (is.null(filename)) { 
+              filename <- "" 
+            }
+            if (is.null(overwrite)) { 
+              overwrite <- TRUE 
+            }
+            if (is.null(on_0_1000)) { 
+              on_0_1000 <- FALSE
+            }
+
             # additional arg retrieved for EMci
             sd_prediction <- args$sd_prediction
             mean_prediction <- args$mean_prediction
@@ -136,12 +148,7 @@ setMethod('predict2', signature(object = 'biomod2_ensemble_model', newdata = "Ra
             # additional arg retrived for EMwmean
             penalization_scores <- args$penalization_scores
             
-            if (is.null(filename)) { 
-              filename <- "" 
-            }
-            if (is.null(on_0_1000)) { 
-              on_0_1000 <- FALSE
-            }
+   
             
             if (!data_as_formal_predictions) {
               newdata <- .template_predictEM.formal_predictions(object, newdata, on_0_1000 = on_0_1000, seedval = seedval)
@@ -155,7 +162,14 @@ setMethod('predict2', signature(object = 'biomod2_ensemble_model', newdata = "Ra
                            thresh = thresh, 
                            penalization_scores = penalization_scores)
             if (!is.null(out)) {
-              writeRaster(out, filename = filename, overwrite = TRUE)
+              cat("\n\t\tWriting projection on hard drive...")
+              if (on_0_1000 & !inherits(object, "EMcv_biomod2_model")) { ## projections are stored as positive integer
+                writeRaster(out, filename = filename, overwrite = overwrite, 
+                            datatype = "INT2S", NAflag = -9999)
+              } else { ## keep default data format for saved raster
+                writeRaster(out, filename = filename, overwrite = overwrite)
+              }
+              out <- raster(filename, RAT = FALSE)
             }
             return(out)
             
