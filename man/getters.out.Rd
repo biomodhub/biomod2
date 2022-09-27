@@ -182,7 +182,9 @@ Other Toolbox functions:
 \code{\link{getters.bm}},
 \code{\link{load_stored_object}()},
 \code{\link{predict.bm}},
-\code{\link{predict.em}}
+\code{\link{predict.em}},
+\code{\link{predict2.bm}},
+\code{\link{predict2.em}}
 }
 \author{
 Damien Georges

@@ -34,7 +34,7 @@ An \code{integer} value corresponding to the new seed value to be set}
 \item{do.progress}{(\emph{optional, default} \code{TRUE}) \cr 
 A \code{logical} value defining whether the progress bar is to be rendered or not}
 
-\item{\ldots}{(\emph{optional)})}
+\item{\ldots}{(\emph{optional})}
 }
 \value{
 A \code{matrix} containing variables importance scores for each permutation run.
