@@ -236,7 +236,7 @@ check_data_range <- function(model, new_data)
 
 ## get formal prediction for EM models ------------------------------------
 
-.template_predictEM.formal_predictions <- function(object, newdata, on_0_1000, seedval)
+.get_formal_predictions <- function(object, newdata, on_0_1000, seedval)
 {
     # make prediction of all models required
     formal_predictions <- sapply(object@model,

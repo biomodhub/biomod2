@@ -197,7 +197,7 @@ setMethod('predict2', signature(object = 'biomod2_ensemble_model', newdata = "Ra
             
             
             if (!data_as_formal_predictions) {
-              newdata <- .template_predictEM.formal_predictions(object, newdata, on_0_1000 = on_0_1000, seedval = seedval)
+              newdata <- .get_formal_predictions(object, newdata, on_0_1000 = on_0_1000, seedval = seedval)
             }
             
             out <- predfun(newdata, 
@@ -242,7 +242,7 @@ setMethod('predict2', signature(object = 'biomod2_ensemble_model', newdata = "da
             penalization_scores <- args$penalization_scores
             
             if (!data_as_formal_predictions) {
-              newdata = .template_predictEM.formal_predictions(object, newdata, on_0_1000 = on_0_1000, seedval = seedval)
+              newdata <- .get_formal_predictions(object, newdata, on_0_1000 = on_0_1000, seedval = seedval)
             }
             out <- predfun(newdata,
                            on_0_1000 = on_0_1000,
