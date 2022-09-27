@@ -26,7 +26,7 @@ Class returned by \code{\link{BIOMOD_EnsembleModeling}}, and used by
 
 \item{\code{expl.var.names}}{a \code{vector} containing names of explanatory variables}
 
-\item{\code{models.out}}{a \code{\link{BIOMOD.stored.models.out}} object containing 
+\item{\code{models.out}}{a \code{\link[biomod2:BIOMOD.stored.models.out-class]{BIOMOD.stored.models.out}} object containing 
 informations from \code{\link{BIOMOD_Modeling}} object}
 
 \item{\code{em.computed}}{a \code{vector} containing names of ensemble models}

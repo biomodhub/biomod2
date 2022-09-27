@@ -37,23 +37,23 @@ Class returned by \code{\link{BIOMOD_Modeling}}, and used by
 \item{\code{scale.models}}{a \code{logical} value defining whether models have been rescaled or 
 not}
 
-\item{\code{formated.input.data}}{a \code{\link{BIOMOD.stored.formated.data}} object containing 
+\item{\code{formated.input.data}}{a \code{\link[biomod2:BIOMOD.stored.formated.data-class]{BIOMOD.stored.formated.data}} object containing 
 informations from \code{\link{BIOMOD_FormatingData}} object}
 
-\item{\code{calib.lines}}{a \code{\link{BIOMOD.stored.array}} object containing calibration lines}
+\item{\code{calib.lines}}{a \code{\link[biomod2:BIOMOD.stored.array-class]{BIOMOD.stored.array}} object containing calibration lines}
 
-\item{\code{models.options}}{a \code{\link{BIOMOD.stored.models.options}} object containing 
+\item{\code{models.options}}{a \code{\link[biomod2:BIOMOD.stored.models.options-class]{BIOMOD.stored.models.options}} object containing 
 informations from \code{\link{BIOMOD_ModelingOptions}} object}
 
-\item{\code{models.evaluation}}{a \code{\link{BIOMOD.stored.array}} object containing models evaluation}
+\item{\code{models.evaluation}}{a \code{\link[biomod2:BIOMOD.stored.array-class]{BIOMOD.stored.array}} object containing models evaluation}
 
-\item{\code{variables.importance}}{a \code{\link{BIOMOD.stored.array}} object containing variables 
+\item{\code{variables.importance}}{a \code{\link[biomod2:BIOMOD.stored.array-class]{BIOMOD.stored.array}} object containing variables 
 importance}
 
-\item{\code{models.prediction}}{a \code{\link{BIOMOD.stored.array}} object containing models 
+\item{\code{models.prediction}}{a \code{\link[biomod2:BIOMOD.stored.array-class]{BIOMOD.stored.array}} object containing models 
 predictions}
 
-\item{\code{models.prediction.eval}}{a \code{\link{BIOMOD.stored.array}} object containing models 
+\item{\code{models.prediction.eval}}{a \code{\link[biomod2:BIOMOD.stored.array-class]{BIOMOD.stored.array}} object containing models 
 predictions for evaluation data}
 
 \item{\code{link}}{a \code{character} containing the file name of the saved object}

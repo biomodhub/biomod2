@@ -4,19 +4,20 @@
 \name{biomod2_ensemble_model}
 \alias{biomod2_ensemble_model}
 \alias{biomod2_ensemble_model-class}
-\alias{EMmean_biomod2_model}
-\alias{EMmedian_biomod2_model}
-\alias{EMcv_biomod2_model}
-\alias{EMci_biomod2_model}
-\alias{EMca_biomod2_model}
-\alias{EMwmean_biomod2_model}
 \alias{EMmean_biomod2_model-class}
 \alias{EMmedian_biomod2_model-class}
 \alias{EMcv_biomod2_model-class}
 \alias{EMci_biomod2_model-class}
 \alias{EMca_biomod2_model-class}
 \alias{EMwmean_biomod2_model-class}
+\alias{show,biomod2_ensemble_model-method}
 \title{Ensemble model output object class (when running \code{BIOMOD_EnsembleModeling()})}
+\usage{
+\S4method{show}{biomod2_ensemble_model}(object)
+}
+\arguments{
+\item{object}{a \code{\link{biomod2_ensemble_model}} object}
+}
 \description{
 Class created by \code{\link{BIOMOD_EnsembleModeling}}
 }

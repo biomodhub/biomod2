@@ -114,3 +114,4 @@ Other Toolbox functions:
 Remi Patin
 }
 \concept{Toolbox functions}
+\keyword{internal}

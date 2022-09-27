@@ -5,14 +5,12 @@
 \alias{BIOMOD.stored.data}
 \alias{BIOMOD.stored.data-class}
 \alias{BIOMOD.stored.array-class}
-\alias{BIOMOD.stored.array}
-\alias{BIOMOD.stored.data.frame}
-\alias{BIOMOD.stored.raster.stack}
-\alias{BIOMOD.stored.files}
-\alias{BIOMOD.stored.formated.data}
-\alias{BIOMOD.stored.models.options}
+\alias{BIOMOD.stored.data.frame-class}
+\alias{BIOMOD.stored.raster.stack-class}
+\alias{BIOMOD.stored.files-class}
+\alias{BIOMOD.stored.formated.data-class}
+\alias{BIOMOD.stored.models.options-class}
 \alias{BIOMOD.stored.models.out-class}
-\alias{BIOMOD.stored.models.out}
 \title{\code{BIOMOD_EnsembleModeling()} output object class}
 \description{
 Classes used by \code{\link{BIOMOD_Modeling}} and 
