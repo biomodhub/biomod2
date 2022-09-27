@@ -1,18 +1,5 @@
 
 ##' @name predict.em
-## @aliases predict
-##' @aliases .predict.EMmean_biomod2_model.RasterStack
-##' @aliases .predict.EMmean_biomod2_model.data.frame
-##' @aliases .predict.EMmedian_biomod2_model.RasterStack
-##' @aliases .predict.EMmedian_biomod2_model.data.frame
-##' @aliases .predict.EMcv_biomod2_model.RasterStack
-##' @aliases .predict.EMcv_biomod2_model.data.frame
-##' @aliases .predict.EMci_biomod2_model.RasterStack
-##' @aliases .predict.EMci_biomod2_model.data.frame
-##' @aliases .predict.EMca_biomod2_model.RasterStack
-##' @aliases .predict.EMca_biomod2_model.data.frame
-##' @aliases .predict.EMwmean_biomod2_model.RasterStack
-##' @aliases .predict.EMwmean_biomod2_model.data.frame
 ##' @author Damien Georges
 ##' 
 ##' @title Functions to get predictions from \code{\link{biomod2_ensemble_model}} objects
@@ -24,8 +11,7 @@
 ##' @param object a \code{\link{biomod2_ensemble_model}} object
 ##' @param newdata a \code{data.frame} or \code{\link[raster:stack]{RasterStack}} object 
 ##' containing data for new predictions
-##' @param formal_predictions a \code{matrix} containing formal predictions
-##' @param \ldots (\emph{optional)}) 
+##' @param \ldots (\emph{optional}) 
 ##' 
 ##' 
 ##' @seealso \code{\link{biomod2_ensemble_model}}
@@ -118,9 +104,51 @@ setClass('biomod2_ensemble_model',
          prototype = list(model_class = 'EM'),
          validity = function(object) { return(TRUE) })
 
-### biomod2_ensemble_model predict2 method
-### 
+### biomod2_ensemble_model predict2.em doc -------------------------------------
+
+##' @name predict2.em
+##' @aliases predict2.biomod2_ensemble_model.RasterStack
+##' @aliases predict2.biomod2_ensemble_model.data.frame
+##' @aliases predict2.EMmean_biomod2_model.RasterStack
+##' @aliases predict2.EMmean_biomod2_model.data.frame
+##' @aliases predict2.EMmedian_biomod2_model.RasterStack
+##' @aliases predict2.EMmedian_biomod2_model.data.frame
+##' @aliases predict2.EMcv_biomod2_model.RasterStack
+##' @aliases predict2.EMcv_biomod2_model.data.frame
+##' @aliases predict2.EMci_biomod2_model.RasterStack
+##' @aliases predict2.EMci_biomod2_model.data.frame
+##' @aliases predict2.EMca_biomod2_model.RasterStack
+##' @aliases predict2.EMca_biomod2_model.data.frame
+##' @aliases predict2.EMwmean_biomod2_model.RasterStack
+##' @aliases predict2.EMwmean_biomod2_model.data.frame
+##' @author Remi Patin
+##' 
+##' @title Functions to get predictions from \code{\link{biomod2_ensemble_model}} objects
+##' 
+##' @description This function allows the user to predict single models from 
+##' \code{\link{biomod2_ensemble_model}} on (new) explanatory variables.
+##' 
+##' 
+##' @param object a \code{\link{biomod2_ensemble_model}} object
+##' @param newdata a \code{data.frame} or \code{\link[raster:stack]{RasterStack}} object 
+##' containing data for new predictions
+##' @param data_as_formal_predictions (\emph{optional, default} \code{FALSE}). A
+##' \code{boolean} describing whether \code{newdata} is given as raw environmental 
+##' data (\code{FALSE}) or as formal predictions of the individual models 
+##' used to build the ensemble model (\code{TRUE}).
+##' @param \ldots (\emph{optional}) 
+##' @inheritParams predict2.bm
+##' 
+##' @seealso \code{\link{biomod2_ensemble_model}}
+##' @family Toolbox functions
+##' 
+##' 
+##' @importFrom raster calc reclassify cv
+##' 
+NULL
+
 ### biomod2_ensemble_model + Raster  -------------------------------------------------
+##' @rdname predict2.em
 setMethod('predict2', signature(object = 'biomod2_ensemble_model', newdata = "RasterStack"),
           function(object, newdata, predfun, seedval = NULL,
                    data_as_formal_predictions = FALSE, ...) {
@@ -176,6 +204,7 @@ setMethod('predict2', signature(object = 'biomod2_ensemble_model', newdata = "Ra
           })
 
 ### biomod2_ensemble_model + data.frame  -------------------------------------------------
+##' @rdname predict2.em
 setMethod('predict2', signature(object = 'biomod2_ensemble_model', newdata = "data.frame"),
           function(object, newdata, predfun, seedval = NULL, 
                    data_as_formal_predictions = FALSE, ...) {
@@ -212,6 +241,9 @@ setMethod('predict2', signature(object = 'biomod2_ensemble_model', newdata = "da
 ### -------------------------------------------------------------------------- #
 ### 10.1 EMmean_biomod2_model ------------------------------------------------
 ### -------------------------------------------------------------------------- #
+##' @name EMmean_biomod2_model-class
+##' @rdname biomod2_ensemble_model
+##' @export
 
 
 setClass('EMmean_biomod2_model',
@@ -221,8 +253,7 @@ setClass('EMmean_biomod2_model',
          validity = function(object) { return(TRUE) })
 
 ##' 
-##' @rdname predict.em
-##' @export
+##' @rdname predict2.em
 ##' 
 
 setMethod('predict2', signature(object = 'EMmean_biomod2_model', newdata = "RasterStack"),
@@ -241,6 +272,7 @@ setMethod('predict2', signature(object = 'EMmean_biomod2_model', newdata = "Rast
           }
 )
 
+##' @rdname predict2.em
 setMethod('predict2', signature(object = 'EMmean_biomod2_model', newdata = "data.frame"),
           function(object, newdata, ...) {
             predfun <- function(newdata, on_0_1000, ...){
@@ -259,6 +291,9 @@ setMethod('predict2', signature(object = 'EMmean_biomod2_model', newdata = "data
 ### -------------------------------------------------------------------------- #
 ### 10.2 EMmedian_biomod2_model ----------------------------------------------
 ### -------------------------------------------------------------------------- #
+##' @name EMmedian_biomod2_model-class
+##' @rdname biomod2_ensemble_model
+##' @export
 
 setClass('EMmedian_biomod2_model',
          representation(),
@@ -267,8 +302,7 @@ setClass('EMmedian_biomod2_model',
          validity = function(object) { return(TRUE) })
 
 ##' 
-##' @rdname predict.em
-##' @export
+##' @rdname predict2.em
 ##' 
 
 
@@ -288,6 +322,7 @@ setMethod('predict2', signature(object = 'EMmedian_biomod2_model', newdata = "Ra
           }
 )
 
+##' @rdname predict2.em
 setMethod('predict2', signature(object = 'EMmedian_biomod2_model', newdata = "data.frame"),
           function(object, newdata, ...) {
             predfun <- function(newdata, on_0_1000, ...){
@@ -305,6 +340,9 @@ setMethod('predict2', signature(object = 'EMmedian_biomod2_model', newdata = "da
 ### -------------------------------------------------------------------------- #
 ### 10.3 EMcv_biomod2_model --------------------------------------------------
 ### -------------------------------------------------------------------------- #
+##' @name EMcv_biomod2_model-class
+##' @rdname biomod2_ensemble_model
+##' @export
 
 setClass('EMcv_biomod2_model',
          representation(),
@@ -313,8 +351,7 @@ setClass('EMcv_biomod2_model',
          validity = function(object) { return(TRUE) })
 
 ##' 
-##' @rdname predict.em
-##' @export
+##' @rdname predict2.em
 ##' 
 
 setMethod('predict2', signature(object = 'EMcv_biomod2_model', newdata = "RasterStack"),
@@ -334,6 +371,7 @@ setMethod('predict2', signature(object = 'EMcv_biomod2_model', newdata = "Raster
           }
 )
 
+##' @rdname predict2.em
 setMethod('predict2', signature(object = 'EMcv_biomod2_model', newdata = "data.frame"),
           function(object, newdata, ...) {
             predfun <- function(newdata, ...){
@@ -354,6 +392,9 @@ setMethod('predict2', signature(object = 'EMcv_biomod2_model', newdata = "data.f
 ### -------------------------------------------------------------------------- #
 ### 10.4 EMci_biomod2_model --------------------------------------------------
 ### -------------------------------------------------------------------------- #
+##' @name EMci_biomod2_model-class
+##' @rdname biomod2_ensemble_model
+##' @export
 
 setClass('EMci_biomod2_model',
          representation(alpha = 'numeric', side = 'character'),
@@ -366,8 +407,7 @@ setClass('EMci_biomod2_model',
          })
 
 ##' 
-##' @rdname predict.em
-##' @export
+##' @rdname predict2.em
 ##' 
 
 
@@ -405,6 +445,7 @@ setMethod('predict2', signature(object = 'EMci_biomod2_model', newdata = "Raster
           }
 )
 
+##' @rdname predict2.em
 setMethod('predict2', signature(object = 'EMci_biomod2_model', newdata = "data.frame"),
           function(object, newdata, ...) {
             predfun <- function(newdata, ...){
@@ -445,6 +486,9 @@ setMethod('predict2', signature(object = 'EMci_biomod2_model', newdata = "data.f
 ### -------------------------------------------------------------------------- #
 ### 10.5 EMca_biomod2_model --------------------------------------------------
 ### -------------------------------------------------------------------------- #
+##' @name EMca_biomod2_model-class
+##' @rdname biomod2_ensemble_model
+##' @export
 
 setClass('EMca_biomod2_model',
          representation(thresholds = 'numeric'),
@@ -453,8 +497,7 @@ setClass('EMca_biomod2_model',
          validity = function(object) { return(TRUE) })
 
 ##' 
-##' @rdname predict.em
-##' @export
+##' @rdname predict2.em
 ##' 
 
 setMethod('predict2', signature(object = 'EMca_biomod2_model', newdata = "RasterStack"),
@@ -487,6 +530,7 @@ setMethod('predict2', signature(object = 'EMca_biomod2_model', newdata = "Raster
           }
 )
 
+##' @rdname predict2.em
 setMethod('predict2', signature(object = 'EMca_biomod2_model', newdata = "data.frame"),
           function(object, newdata, ...) {
             args <- list(...)
@@ -516,6 +560,9 @@ setMethod('predict2', signature(object = 'EMca_biomod2_model', newdata = "data.f
 ### -------------------------------------------------------------------------- #
 ### 10.6 EMwmean_biomod2_model -----------------------------------------------
 ### -------------------------------------------------------------------------- #
+##' @name EMwmean_biomod2_model-class
+##' @rdname biomod2_ensemble_model
+##' @export
 
 setClass('EMwmean_biomod2_model',
          representation(penalization_scores='numeric'),
@@ -524,8 +571,7 @@ setClass('EMwmean_biomod2_model',
          validity = function(object) { return(TRUE) })
 
 ##' 
-##' @rdname predict.em
-##' @export
+##' @rdname predict2.em
 ##' 
 
 setMethod('predict2', signature(object = 'EMwmean_biomod2_model', newdata = "RasterStack"),
@@ -548,6 +594,7 @@ setMethod('predict2', signature(object = 'EMwmean_biomod2_model', newdata = "Ras
           }
 )
 
+##' @rdname predict2.em
 setMethod('predict2', signature(object = 'EMwmean_biomod2_model', newdata = "data.frame"),
           function(object, newdata, ...) {
             predfun <- function(newdata, on_0_1000, penalization_scores, ...){

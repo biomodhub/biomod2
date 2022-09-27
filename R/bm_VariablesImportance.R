@@ -24,7 +24,7 @@
 ##' An \code{integer} value corresponding to the new seed value to be set
 ##' @param do.progress (\emph{optional, default} \code{TRUE}) \cr 
 ##' A \code{logical} value defining whether the progress bar is to be rendered or not
-##' @param \ldots (\emph{optional)}) 
+##' @param \ldots (\emph{optional}) 
 ##' 
 ##' @return  
 ##' 
