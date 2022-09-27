@@ -1,16 +1,13 @@
 
 ##' @name BIOMOD.stored.data
 ##' @aliases BIOMOD.stored.data-class
-##' @aliases BIOMOD.stored.data
 ##' @aliases BIOMOD.stored.array-class
-##' @aliases BIOMOD.stored.array
-##' @aliases BIOMOD.stored.data.frame
-##' @aliases BIOMOD.stored.raster.stack
-##' @aliases BIOMOD.stored.files
-##' @aliases BIOMOD.stored.formated.data
-##' @aliases BIOMOD.stored.models.options
+##' @aliases BIOMOD.stored.data.frame-class
+##' @aliases BIOMOD.stored.raster.stack-class
+##' @aliases BIOMOD.stored.files-class
+##' @aliases BIOMOD.stored.formated.data-class
+##' @aliases BIOMOD.stored.models.options-class
 ##' @aliases BIOMOD.stored.models.out-class
-##' @aliases BIOMOD.stored.models.out
 ##' @author Damien Georges
 ##' 
 ##' @title \code{BIOMOD_EnsembleModeling()} output object class
@@ -93,30 +90,45 @@ setClass("BIOMOD.stored.array",
          prototype(val = array()),
          validity = function(object){ return(TRUE) })
 
+##' @name BIOMOD.stored.data.frame-class
+##' @rdname BIOMOD.stored.data
+##' 
 setClass("BIOMOD.stored.data.frame",
          contains = "BIOMOD.stored.data",
          representation(val = 'data.frame'),
          prototype(val = data.frame()),
          validity = function(object){ return(TRUE) })
 
+##' @name BIOMOD.stored.raster.stack-class
+##' @rdname BIOMOD.stored.data
+##' 
 setClass("BIOMOD.stored.raster.stack",
          contains = "BIOMOD.stored.data",
          representation(val = 'RasterStack'),
          prototype(val = stack()),
          validity = function(object){ return(TRUE) })
 
+##' @name BIOMOD.stored.files-class
+##' @rdname BIOMOD.stored.data
+##' 
 setClass("BIOMOD.stored.files",
          contains = "BIOMOD.stored.data",
          representation(val = 'character'),
          prototype(val = NULL),
          validity = function(object){ return(TRUE) })
 
+##' @name BIOMOD.stored.formated.data-class
+##' @rdname BIOMOD.stored.data
+##' 
 setClass("BIOMOD.stored.formated.data",
          contains = "BIOMOD.stored.data",
          representation(val = 'BIOMOD.formated.data'),
          prototype(val = NULL),
          validity = function(object){ return(TRUE) })
 
+##' @name BIOMOD.stored.models.options-class
+##' @rdname BIOMOD.stored.data
+##' 
 setClass("BIOMOD.stored.models.options",
          contains = "BIOMOD.stored.data",
          representation(val = 'BIOMOD.models.options'),

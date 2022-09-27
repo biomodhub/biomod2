@@ -610,8 +610,8 @@ check_data_range <- function(model, new_data)
 ##' @description This function loads library for either GAM and BAM from mgcv
 ##'   package or for GAM from gam package.
 ##' 
-##' 
 ##' @param model_subclass the subclass of GAM model
+##' @keywords internal
 
 .load_gam_namespace <- function(model_subclass = c("GAM_mgcv","BAM_mgcv", "GAM_gam")){
   if (model_subclass %in% c("GAM_mgcv", "BAM_mgcv")) {

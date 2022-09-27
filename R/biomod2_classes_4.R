@@ -72,27 +72,16 @@ NULL
 
 ##' @name biomod2_model
 ##' @aliases biomod2_model-class
-##' @aliases ANN_biomod2_model
 ##' @aliases ANN_biomod2_model-class
-##' @aliases CTA_biomod2_model
 ##' @aliases CTA_biomod2_model-class
-##' @aliases FDA_biomod2_model
 ##' @aliases FDA_biomod2_model-class
-##' @aliases GAM_biomod2_model
 ##' @aliases GAM_biomod2_model-class
-##' @aliases GBM_biomod2_model
 ##' @aliases GBM_biomod2_model-class
-##' @aliases GLM_biomod2_model
 ##' @aliases GLM_biomod2_model-class
-##' @aliases MARS_biomod2_model
 ##' @aliases MARS_biomod2_model-class
-##' @aliases MAXENT.Phillips_biomod2_model
 ##' @aliases MAXENT.Phillips_biomod2_model-class
-##' @aliases MAXENT.Phillips.2_biomod2_model
 ##' @aliases MAXENT.Phillips.2_biomod2_model-class
-##' @aliases RF_biomod2_model
 ##' @aliases RF_biomod2_model-class
-##' @aliases SRE_biomod2_model
 ##' @aliases SRE_biomod2_model-class
 ##' @author Damien Georges
 ##' 
@@ -217,8 +206,7 @@ setMethod('get_scaling_model', signature('biomod2_model'),
           function(object) { return(object@scaling_model) })
 
 
-# 7.3 Other Functions -----------------------------------------------------------------------------
-##' 
+# 7.3 Show method  -------------------------------------------------------------
 ##' @rdname biomod2_model
 ##' @importMethodsFrom methods show
 ##' @export
@@ -340,7 +328,7 @@ setMethod('predict', signature(object = 'biomod2_model'),
 ##' @importFrom sp read.asciigrid
 ##' @importFrom gbm predict.gbm
 ##' @importFrom methods callNextMethod
-##' 
+##' @keywords internal
 
 setGeneric("predict2", function(object, newdata, ...) { standardGeneric("predict2") }) 
 

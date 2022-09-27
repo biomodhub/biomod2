@@ -30,13 +30,12 @@ NULL
 
 ##' @name biomod2_ensemble_model
 ##' @aliases biomod2_ensemble_model-class
-##' @aliases biomod2_ensemble_model
-##' @aliases EMmean_biomod2_model
-##' @aliases EMmedian_biomod2_model
-##' @aliases EMcv_biomod2_model
-##' @aliases EMci_biomod2_model
-##' @aliases EMca_biomod2_model
-##' @aliases EMwmean_biomod2_model
+##' @aliases EMmean_biomod2_model-class
+##' @aliases EMmedian_biomod2_model-class
+##' @aliases EMcv_biomod2_model-class
+##' @aliases EMci_biomod2_model-class
+##' @aliases EMca_biomod2_model-class
+##' @aliases EMwmean_biomod2_model-class
 ##' @author Damien Georges
 ##' 
 ##' @title Ensemble model output object class (when running \code{BIOMOD_EnsembleModeling()})
@@ -57,6 +56,8 @@ NULL
 ##' @slot expl_var_range a \code{list} containing ranges of explanatory variables
 ##' @slot model_evaluation a \code{matrix} containing the model evaluations
 ##' @slot model_variables_importance a \code{matrix} containing the model variables importance
+##' 
+##' @param object a \code{\link{biomod2_ensemble_model}} object
 ##' 
 ##' @details 
 ##' 
@@ -104,6 +105,22 @@ setClass('biomod2_ensemble_model',
          prototype = list(model_class = 'EM'),
          validity = function(object) { return(TRUE) })
 
+
+## 9.2 Show method -------------------------------------------------------------
+##' @rdname biomod2_ensemble_model
+##' @importMethodsFrom methods show
+##' @importFrom methods callNextMethod
+##' @export
+##' 
+
+setMethod('show', signature('biomod2_ensemble_model'),
+          function(object) {
+            callNextMethod(object)
+          })
+
+
+## 9.3 predict2 method -------------------------------------------------------------
+
 ### biomod2_ensemble_model predict2.em doc -------------------------------------
 
 ##' @name predict2.em
@@ -144,7 +161,8 @@ setClass('biomod2_ensemble_model',
 ##' 
 ##' 
 ##' @importFrom raster calc reclassify cv
-##' 
+##' @keywords internal
+
 NULL
 
 ### biomod2_ensemble_model + Raster  -------------------------------------------------
@@ -166,7 +184,7 @@ setMethod('predict2', signature(object = 'biomod2_ensemble_model', newdata = "Ra
             if (is.null(on_0_1000)) { 
               on_0_1000 <- FALSE
             }
-
+            
             # additional arg retrieved for EMci
             sd_prediction <- args$sd_prediction
             mean_prediction <- args$mean_prediction
@@ -176,7 +194,7 @@ setMethod('predict2', signature(object = 'biomod2_ensemble_model', newdata = "Ra
             # additional arg retrived for EMwmean
             penalization_scores <- args$penalization_scores
             
-   
+            
             
             if (!data_as_formal_predictions) {
               newdata <- .template_predictEM.formal_predictions(object, newdata, on_0_1000 = on_0_1000, seedval = seedval)
@@ -237,6 +255,9 @@ setMethod('predict2', signature(object = 'biomod2_ensemble_model', newdata = "da
             
           })
 
+# --------------------------------------------------------------------------- #
+# 10.1 biomod2_ensemble_model subclass ---------------------------------------
+# ---------------------------------------------------------------------------- #
 
 ### -------------------------------------------------------------------------- #
 ### 10.1 EMmean_biomod2_model ------------------------------------------------
