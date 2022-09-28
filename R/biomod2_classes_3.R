@@ -400,50 +400,67 @@ setMethod("get_formal_data", "BIOMOD.models.out",
 ##' 
 
 setMethod("get_predictions", "BIOMOD.models.out",
-          function(obj, as.data.frame = FALSE, evaluation = FALSE) {
-            # check evaluation data availability
-            if (evaluation & (!obj@has.evaluation.data)) {
-              warning("calibration data returned because no evaluation data available")
-              evaluation = FALSE
+          function(obj, as.data.frame = FALSE, evaluation = FALSE
+                   , full.name = NULL, model = NULL, run.eval = NULL, data.set = NULL)
+          {
+            # select models to be returned
+            models_selected <- get_built_models(obj)
+            if (length(full.name)) {
+              models_selected <- intersect(full.name, models_selected)
+            } else if (length(model) | length(run.eval) | length(data.set)) {
+              grep_model = grep(paste(model, collapse = "|"), models_selected)
+              grep_run.eval = grep(paste(run.eval, collapse = "|"), models_selected)
+              grep_data.set = grep(paste(data.set, collapse = "|"), models_selected)
+              models_selected = models_selected[Reduce(intersect, list(grep_model, grep_run.eval, grep_data.set))]
             }
             
-            # select calibration or eval data
-            if (evaluation) { 
-              pred <- obj@models.prediction.eval 
-            } else { 
-              pred <- obj@models.prediction 
-            }
-            
-            if (!as.data.frame) {
-              if (pred@inMemory) {
-                return(pred@val)
-              } else if (pred@link != '') {
-                return(get(load(pred@link)))
-              } else {
-                return(NULL)
-              }
-            } else {
-              if (pred@inMemory) {
-                mod.pred <- as.data.frame(pred@val)
-              } else if (pred@link != '') {
-                mod.pred <- as.data.frame(get(load(pred@link)))
-              } else { return(NULL) }
+            if (length(models_selected))
+            {
               
-              names(mod.pred) <- unlist(
-                lapply(strsplit(names(mod.pred), ".", fixed = TRUE),
-                       function(x) {
-                         x.rev <- rev(x) ## we reverse the order of the splitted vector to have algo at the end
-                         data.set.id <- x.rev[1]
-                         cross.valid.id <- x.rev[2]
-                         algo.id <- paste0(rev(x.rev[3:length(x.rev)]), collapse = ".")
-                         model.id <- paste(obj@sp.name,
-                                           data.set.id,
-                                           cross.valid.id,
-                                           algo.id, sep = "_")
-                         return(model.id)
-                       }))
-              return(mod.pred)
-            }
+              # check evaluation data availability
+              if (evaluation && (!obj@has.evaluation.data)) {
+                warning("!   Calibration data returned because no evaluation data available")
+                evaluation = FALSE
+              }
+              
+              # select calibration or eval data
+              if (evaluation) { 
+                out <- load_stored_object(obj@models.prediction.eval)
+              } else { 
+                out <- load_stored_object(obj@models.prediction)
+              }
+              names(out) <- get_built_models(obj)
+              
+              # subselection of models_selected
+              if (inherits(out, 'Raster')) {
+                out <- subset(out, models_selected, drop = FALSE)
+              } else if (length(dim(out)) == 4) { ## 4D arrays
+                out <- out[, .extract_modelNamesInfo(model.names = models_selected, info = 'models'),
+                           .extract_modelNamesInfo(model.names = models_selected, info = 'run.eval'),
+                           .extract_modelNamesInfo(model.names = models_selected, info = 'data.set'), drop = FALSE]
+              } else { ## matrix (e.g. from ensemble models projections)
+                out <- out[, models_selected, drop = FALSE]
+              }
+              
+              if (as.data.frame) {
+                out <- as.data.frame(out)
+                names(out) <- unlist(
+                  lapply(strsplit(names(out), ".", fixed = TRUE),
+                         function(x) {
+                           x.rev <- rev(x) ## we reverse the order of the splitted vector to have algo at the end
+                           data.set.id <- x.rev[1]
+                           cross.valid.id <- x.rev[2]
+                           algo.id <- paste0(rev(x.rev[3:length(x.rev)]), collapse = ".")
+                           model.id <- paste(obj@sp.name,
+                                             data.set.id,
+                                             cross.valid.id,
+                                             algo.id, sep = "_")
+                           return(model.id)
+                         }))
+              }
+            } else { out <- NULL }
+            
+            return(out)
           }
 )
 
@@ -464,8 +481,7 @@ setMethod("get_evaluations", "BIOMOD.models.out",
           function(obj, as.data.frame = FALSE, ...) {
             out <- load_stored_object(obj@models.evaluation)
             
-            ## transform into data.frame object if needed
-            if (as.data.frame) {
+            if (!is.null(out) && as.data.frame == TRUE) {
               tmp = melt(out, varnames = c("Eval.metric", "tmp", "Algo", "Run", "Dataset"))
               tmp$Model.name = paste0(tmp$Algo, "_", tmp$Run, "_", tmp$Dataset)
               tmp.split = split(tmp, tmp$tmp)
@@ -485,12 +501,8 @@ setMethod("get_evaluations", "BIOMOD.models.out",
 
 setMethod("get_variables_importance", "BIOMOD.models.out",
           function(obj, as.data.frame = FALSE, ...) {
+            # out <- load_stored_object(obj@variables.importance) ## /!\ rounded value over repetitions /!\
             out <- NULL
-            # if (obj@variables.importance@inMemory) {
-            #   out <- obj@variables.importance@val
-            # } else if(obj@variables.importance@link != '') {
-            #   out <- get(load(obj@variables.importance@link))
-            # }
             BIOMOD_LoadModels(bm.out = obj)
             for (mod in get_built_models(obj)) {
               out_tmp <- get(mod)@model_variables_importance
@@ -500,35 +512,18 @@ setMethod("get_variables_importance", "BIOMOD.models.out",
             
             if (!is.null(out) && as.data.frame == TRUE) {
               tmp <- melt(out, varnames = c("Expl.var", "Rand", "L1"))
-              tmp$Model.name <-
-                sapply(as.character(tmp$L1),
-                       function(x) { 
-                         paste(strsplit(x, "_")[[1]][-1], collapse = "_") 
-                       })
-              tmp$Algo <- 
-                sapply(tmp$Model.name, 
-                       function(x) { 
-                         strsplit(x, "_")[[1]][3] 
-                       })
-              tmp$Run <-
-                sapply(tmp$Model.name, 
-                       function(x) {
-                         strsplit(x, "_")[[1]][2] 
-                       })
-              tmp$Dataset <-
-                sapply(tmp$Model.name, 
-                       function(x) {
-                         strsplit(x, "_")[[1]][1]
-                       })
-              out <- tmp[, c("Model.name", "Algo", "Run",
-                             "Dataset", "Expl.var", "Rand", "value")]
+              tmp$Model.name = sapply(as.character(tmp$L1), function(x) { paste(strsplit(x, "_")[[1]][-1], collapse = "_") })
+              tmp$Algo = sapply(tmp$Model.name, function(x) { strsplit(x, "_")[[1]][3] })
+              tmp$Run = sapply(tmp$Model.name, function(x) { strsplit(x, "_")[[1]][2] })
+              tmp$Dataset = sapply(tmp$Model.name, function(x) { strsplit(x, "_")[[1]][1] })
+              out <- tmp[, c("Model.name", "Algo", "Run", "Dataset"
+                             , "Expl.var", "Rand", "value")]
               colnames(out)[7] = "Var.imp"
             }
             
             return(out)
           }
 )
-
 
 
 ## --------------------------------------------------------------------------- #
@@ -802,48 +797,42 @@ setMethod('free', signature('BIOMOD.projection.out'),
 
 setMethod("get_predictions", "BIOMOD.projection.out",
           function(obj, as.data.frame = FALSE, full.name = NULL, 
-                   model = NULL, run.eval = NULL, data.set = NULL) {
+                   model = NULL, run.eval = NULL, data.set = NULL)
+          {
+            # select models to be returned
             models_selected <- get_projected_models(obj)
             if (length(full.name)) {
               models_selected <- intersect(full.name, models_selected)
             } else if (length(model) | length(run.eval) | length(data.set)) {
-              # models subselection according to model, run.eval and data.set parameters
-              grep_model = grep_run.eval = grep_data.set = "*"
-              if (length(model)) { 
-                grep_model <- paste0("(", paste(model, collapse = "|"), ")")
-              }
-              if (length(run.eval)) { 
-                grep_run.eval <- paste0("(", paste(run.eval, collapse = "|"), ")") 
-              }
-              if (length(data.set)) { 
-                grep_data.set <- paste0("(", paste(data.set, collapse = "|"), ")") 
-              }
-              grep_full <- paste0(grep_data.set, "_", grep_run.eval, "_", grep_model, "$")
-              models_selected <- grep(pattern = grep_full, models_selected, value = TRUE)
+              grep_model = grep(paste(model, collapse = "|"), models_selected)
+              grep_run.eval = grep(paste(run.eval, collapse = "|"), models_selected)
+              grep_data.set = grep(paste(data.set, collapse = "|"), models_selected)
+              models_selected = models_selected[Reduce(intersect, list(grep_model, grep_run.eval, grep_data.set))]
             }
             
-            if (length(models_selected)) {
-              proj <- load_stored_object(obj@proj.out)
-              names(proj) <- obj@models.projected
-              if (inherits(proj, 'Raster')) {
-                proj <- subset(proj, models_selected, drop = FALSE)
-              } else if (length(dim(proj)) == 4) { ## 4D arrays
-                proj <- proj[, .extract_modelNamesInfo(model.names = models_selected, info = 'models'),
-                             .extract_modelNamesInfo(model.names = models_selected, info = 'run.eval'),
-                             .extract_modelNamesInfo(model.names = models_selected, info = 'data.set'), drop = FALSE]
+            if (length(models_selected))
+            {
+              out <- load_stored_object(obj@proj.out)
+              names(out) <- get_projected_models(obj)
+              
+              # subselection of models_selected
+              if (inherits(out, 'Raster')) {
+                out <- subset(out, models_selected, drop = FALSE)
+              } else if (length(dim(out)) == 4) { ## 4D arrays
+                out <- out[, .extract_modelNamesInfo(model.names = models_selected, info = 'models'),
+                           .extract_modelNamesInfo(model.names = models_selected, info = 'run.eval'),
+                           .extract_modelNamesInfo(model.names = models_selected, info = 'data.set'), drop = FALSE]
               } else { ## matrix (e.g. from ensemble models projections)
-                proj <- proj[, models_selected, drop = FALSE]
+                out <- out[, models_selected, drop = FALSE]
               }
               
               if (as.data.frame) {
-                proj <- as.data.frame(proj)
-                ## set correct names
-                if (obj@type == 'array' &
-                    sum(!(names(proj) %in% models_selected)) > 0) { ## from array & not valid names
-                  names(proj) <- unlist(
-                    lapply(strsplit(names(proj), ".", fixed = TRUE), 
-                           function(x){
-                             x.rev <- rev(x) ## we reverse the order of the splitted vector to have algo a t the end
+                out <- as.data.frame(out)
+                if (!grepl("merged|_EM|By", names(out)[1])) {
+                  names(out) <- unlist(
+                    lapply(strsplit(names(out), ".", fixed = TRUE),
+                           function(x) {
+                             x.rev <- rev(x) ## we reverse the order of the splitted vector to have algo at the end
                              data.set.id <- x.rev[1]
                              cross.valid.id <- x.rev[2]
                              algo.id <- paste0(rev(x.rev[3:length(x.rev)]), collapse = ".")
@@ -854,12 +843,10 @@ setMethod("get_predictions", "BIOMOD.projection.out",
                              return(model.id)
                            }))
                 }
-                proj <- proj[, models_selected, drop = FALSE] # reorder the data.frame
               }
-            } else { 
-              proj <- NULL 
-            }
-            return(proj)
+            } else { out <- NULL }
+            
+            return(out)
           }
 )
 
@@ -879,20 +866,28 @@ setMethod("get_predictions", "BIOMOD.projection.out",
 ##' \code{\link{BIOMOD_EnsembleForecasting}}
 ##' 
 ##' 
+##' @slot modeling.id a \code{character} corresponding to the name (ID) of the simulation set
 ##' @slot dir.name a \code{character} corresponding to the modeling folder
 ##' @slot sp.name a \code{character} corresponding to the species name
 ##' @slot expl.var.names a \code{vector} containing names of explanatory variables
 ##' @slot models.out a \code{\link[biomod2:BIOMOD.stored.models.out-class]{BIOMOD.stored.models.out}} object containing 
 ##' informations from \code{\link{BIOMOD_Modeling}} object
-##' @slot em.computed a \code{vector} containing names of ensemble models
 ##' @slot em.by a \code{character} corresponding to the way kept models have been combined to 
 ##' build the ensemble models, must be among \code{PA_dataset+repet}, \code{PA_dataset+algo}, 
 ##' \code{PA_dataset}, \code{algo}, \code{all}
+##' @slot em.computed a \code{vector} containing names of ensemble models
 ##' @slot em.models a \code{list} containing ensemble models
-##' @slot modeling.id a \code{character} corresponding to the name (ID) of the simulation set
+##' @slot models.evaluation a \code{\link{BIOMOD.stored.array}} object containing models evaluation
+##' @slot variables.importance a \code{\link{BIOMOD.stored.array}} object containing variables
+##' importance
+##' @slot models.prediction a \code{\link{BIOMOD.stored.array}} object containing models
+##' predictions
+##' @slot models.prediction.eval a \code{\link{BIOMOD.stored.array}} object containing models
+##' predictions for evaluation data
 ##' @slot link a \code{character} containing the file name of the saved object
 ##' 
 ##' @param object a \code{\link{BIOMOD.ensemble.models.out}} object
+##' 
 ##' 
 ##' 
 ##' @seealso \code{\link{BIOMOD_EnsembleModeling}}, \code{\link{BIOMOD_LoadModels}}, 
@@ -986,22 +981,31 @@ NULL
 # 6.1 Class Definition ---------------------------------------------------------
 
 setClass("BIOMOD.ensemble.models.out",
-         representation(dir.name = 'character',
+         representation(modeling.id = 'character',
+                        dir.name = 'character',
                         sp.name = 'character',
                         expl.var.names = 'character',
                         models.out = 'BIOMOD.stored.models.out',
-                        em.computed = 'character',
                         em.by = 'character',
+                        em.computed = 'character',
                         em.models = 'ANY',
-                        modeling.id = 'character',
+                        models.evaluation = 'BIOMOD.stored.array',
+                        variables.importance = 'BIOMOD.stored.array',
+                        models.prediction = 'BIOMOD.stored.array',
+                        models.prediction.eval = 'BIOMOD.stored.array',
                         link = 'character'),
-         prototype(dir.name = '.',
+         prototype(modeling.id = '.',
+                   dir.name = '.',
                    sp.name = '',
                    expl.var.names = '',
                    models.out = new('BIOMOD.stored.models.out'),
-                   em.models = NULL,
+                   em.by = character(),
                    em.computed = character(),
-                   modeling.id = '.',
+                   em.models = NULL,
+                   models.evaluation = new('BIOMOD.stored.array'),
+                   variables.importance = new('BIOMOD.stored.array'),
+                   models.prediction = new('BIOMOD.stored.array'),
+                   models.prediction.eval = new('BIOMOD.stored.array'),
                    link = ''),
          validity = function(object){ return(TRUE) })
 
@@ -1040,6 +1044,16 @@ setMethod("get_formal_data", "BIOMOD.ensemble.models.out",
             }
           }
 )
+
+
+## get_built_models.BIOMOD.ensemble.models.out ---------------------------------
+##'
+##' @rdname getters.out
+##' @export
+##' 
+
+setMethod("get_built_models", "BIOMOD.ensemble.models.out", function(obj, ...) { return(obj@em.computed) })
+
 
 ## get_needed_models.BIOMOD.ensemble.models.out --------------------------------
 ##' 
@@ -1085,24 +1099,47 @@ setMethod("get_kept_models", "BIOMOD.ensemble.models.out",
 ##' 
 
 setMethod("get_predictions", "BIOMOD.ensemble.models.out",
-          function(obj, evaluation = FALSE, ...) {
-            ## note: ensemble models predictions are stored within the directory
-            ##  <dir.name>/<sp.name>/.BIOMOD_DATA/<modeling.id>/ensemble.models/ensemble.models.projections/
-            ##  This function is just a friendly way to load this data
-            
-            ## get the path to projections files we want to load
-            files.to.load <- file.path(obj@dir.name, obj@sp.name, 
-                                       ".BIOMOD_DATA", obj@modeling.id, 
-                                       "ensemble.models", "ensemble.models.predictions", 
-                                       paste0(obj@em.computed, ".predictions"))
-            if (evaluation) {
-              files.to.load <- paste0(files.to.load, "Eval")
+          function(obj, as.data.frame = FALSE, evaluation = FALSE, full.name = NULL)
+                   # , model = NULL, run.eval = NULL, data.set = NULL)
+          {
+            # select models to be returned
+            models_selected <- get_built_models(obj)
+            if (length(full.name)) {
+              models_selected <- intersect(full.name, models_selected)
             }
-            ## load and merge projection files within a data.frame
-            bm.pred <- do.call(cbind, lapply(files.to.load, function(ftl) get(load(ftl))))
-            colnames(bm.pred) <- obj@em.computed
-            return(bm.pred)
-          })
+            
+            if (length(models_selected))
+            {
+              # check evaluation data availability
+              if (evaluation && (!get_formal_data(obj)@has.evaluation.data)) {
+                warning("!   Calibration data returned because no evaluation data available")
+                evaluation = FALSE
+              }
+              
+              # select calibration or eval data
+              if (evaluation) { 
+                out <- load_stored_object(obj@models.prediction.eval)
+              } else { 
+                out <- load_stored_object(obj@models.prediction)
+              }
+              names(out) <- get_built_models(obj)
+              
+              # subselection of models_selected
+              if (inherits(out, 'Raster')) {
+                out <- subset(out, models_selected, drop = FALSE)
+              } else { ## matrix (e.g. from ensemble models projections)
+                out <- out[, models_selected, drop = FALSE]
+              }
+              
+              if (as.data.frame) {
+                out <- as.data.frame(out)
+                names(out) <- models_selected
+              }
+            } else { out <- NULL }
+            
+            return(out)
+          }
+)
 
 ## get_built_models.BIOMOD.ensemble.models.out ---------------------------------
 ##' 
@@ -1123,17 +1160,11 @@ setMethod("get_built_models", "BIOMOD.ensemble.models.out",
 
 setMethod("get_evaluations", "BIOMOD.ensemble.models.out",
           function(obj, as.data.frame = FALSE, ...) {
-            ## extract evaluation scores as a list
-            out <- list()
-            models <- obj@em.computed ## list of computed models
-            for (mod in models) {
-              out[[mod]] <- obj@em.models[[mod]]@model_evaluation[, , drop = FALSE]
-            }
+            out <- load_stored_object(obj@models.evaluation)
             
-            ## transform into data.frame object if needed
-            if(as.data.frame) {
-              tmp = melt(out, varnames = c("Eval.metric", "tmp"))
-              tmp$Model.name = sapply(tmp$L1, function(x) { paste(strsplit(x, "_")[[1]][-1], collapse = "_") })
+            if (!is.null(out) && as.data.frame) {
+              tmp = melt(out, varnames = c("Eval.metric", "tmp", "L1"))
+              tmp$Model.name = sapply(as.character(tmp$L1), function(x) { paste(strsplit(x, "_")[[1]][-1], collapse = "_") })
               tmp$Model = sapply(tmp$Model.name, function(x) { strsplit(x, "_")[[1]][1] })
               tmp$Algo = sapply(tmp$Model.name, function(x) { strsplit(x, "_")[[1]][2] })
               tmp$Run = sapply(tmp$Model.name, function(x) { strsplit(x, "_")[[1]][3] })
@@ -1156,43 +1187,17 @@ setMethod("get_evaluations", "BIOMOD.ensemble.models.out",
 
 setMethod("get_variables_importance", "BIOMOD.ensemble.models.out",
           function(obj, as.data.frame = FALSE, ...) {
-            out <- NULL
-            for (mod in get_built_models(obj)) {
-              out_tmp <- obj@em.models[[mod]]@model_variables_importance
-              out <- abind(out, out_tmp, along = 3)
-            }
-            dimnames(out)[[3]] <- get_built_models(obj)
+            out <- load_stored_object(obj@variables.importance)
             
             if(!is.null(out) && as.data.frame == TRUE) {
               tmp <- melt(out, varnames = c("Expl.var", "Rand", "L1"))
-              tmp$Model.name <- 
-                sapply(as.character(tmp$L1), 
-                       function(x) {
-                         paste(strsplit(x, "_")[[1]][-1], collapse = "_") 
-                       })
-              tmp$Model <-  
-                sapply(tmp$Model.name, 
-                       function(x) { 
-                         strsplit(x, "_")[[1]][1]
-                       })
-              tmp$Algo <-  
-                sapply(tmp$Model.name,
-                       function(x) { 
-                         strsplit(x, "_")[[1]][2] 
-                       })
-              tmp$Run <- 
-                sapply(tmp$Model.name,
-                       function(x) { 
-                         strsplit(x, "_")[[1]][3] 
-                       })
-              tmp$Dataset <- 
-                sapply(tmp$Model.name, 
-                       function(x) { 
-                         strsplit(x, "_")[[1]][4] 
-                       })
-              out <- tmp[, c("Model.name", "Model", "Algo",
-                             "Run", "Dataset", "Expl.var",
-                             "Rand", "value")]
+              tmp$Model.name = sapply(as.character(tmp$L1), function(x) { paste(strsplit(x, "_")[[1]][-1], collapse = "_") })
+              tmp$Model = sapply(tmp$Model.name, function(x) { strsplit(x, "_")[[1]][1] })
+              tmp$Algo = sapply(tmp$Model.name, function(x) { strsplit(x, "_")[[1]][2] })
+              tmp$Run = sapply(tmp$Model.name, function(x) { strsplit(x, "_")[[1]][3] })
+              tmp$Dataset = sapply(tmp$Model.name, function(x) { strsplit(x, "_")[[1]][4] })
+              out <- tmp[, c("Model.name", "Model", "Algo", "Run", "Dataset"
+                             , "Expl.var", "Rand", "value")]
               colnames(out)[8] = "Var.imp"
             }
             

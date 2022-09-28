@@ -311,21 +311,14 @@ BIOMOD_Modeling <- function(bm.format,
   ## Various objects will be stored (models, predictions, projections)
   ## Projections directories are created in Projection() function
   .BIOMOD_Modeling.prepare.workdir(bm.format@dir.name, bm.format@sp.name, models.out@modeling.id)
-  
-  ## 3. Prepare internal function to save elements ------------------------------------------------
   name.BIOMOD_DATA = file.path(models.out@dir.name, models.out@sp.name, ".BIOMOD_DATA", models.out@modeling.id)
-  .Models.save.object <- function(objName, objValue, mod.out)
-  {
-    save(objValue, file = file.path(name.BIOMOD_DATA, objName), compress = TRUE)
-    eval(parse(text = paste0("mod.out@", objName, "@inMemory <- FALSE")))
-    eval(parse(text = paste0("mod.out@", objName, "@link <- file.path(name.BIOMOD_DATA, objName)")))
-    return(mod.out)
-  }
   
   ## 3.1 Save input data and models options -----------------------------------
   if (save.output) {
-    models.out = .Models.save.object("formated.input.data", bm.format, models.out)
-    models.out = .Models.save.object("models.options", bm.options, models.out)
+    models.out = .fill_BIOMOD.models.out("formated.input.data", bm.format, models.out
+                                         , inMemory = FALSE, nameFolder = name.BIOMOD_DATA)
+    models.out = .fill_BIOMOD.models.out("models.options", bm.options, models.out
+                                         , inMemory = FALSE, nameFolder = name.BIOMOD_DATA)
   }
   
   ## 3.2 Get and save calibration lines ---------------------------------------
@@ -345,7 +338,8 @@ BIOMOD_Modeling <- function(bm.format,
       calib.lines <- abind(calib.lines, mod.prep.dat[[pa]]$calib.lines, along = 3)
     }
   } 
-  models.out = .Models.save.object("calib.lines", calib.lines, models.out)
+  models.out = .fill_BIOMOD.models.out("calib.lines", calib.lines, models.out
+                                       , inMemory = FALSE, nameFolder = name.BIOMOD_DATA)
   rm(calib.lines)
   
   ## 4. Print modeling summary in console ---------------------------------------------------------
@@ -373,28 +367,25 @@ BIOMOD_Modeling <- function(bm.format,
   ## models evaluation, variables importance, models prediction, predictions evaluation
   if (save.output) {
     models.evaluation <- .transform_outputs_list(mod.out, out = 'evaluation')
-    models.out = .Models.save.object("models.evaluation", models.evaluation, models.out)
-    
-    if (!is.null(models.evaluation)) {
-      models.out@models.evaluation@val <- models.evaluation
-    }
+    models.out = .fill_BIOMOD.models.out("models.evaluation", models.evaluation, models.out
+                                         , inMemory = TRUE, nameFolder = name.BIOMOD_DATA)
     rm(models.evaluation)
     
     if (var.import > 0) {
       variables.importance <- .transform_outputs_list(mod.out, out = 'var.import')
-      models.out = .Models.save.object("variables.importance", variables.importance, models.out)
-      if (!is.null(variables.importance)) {
-        models.out@variables.importance@val <- variables.importance
-      }
+      models.out = .fill_BIOMOD.models.out("variables.importance", variables.importance, models.out
+                                           , inMemory = FALSE, nameFolder = name.BIOMOD_DATA)
       rm(variables.importance)
     }
     
     models.prediction <- .transform_outputs_list(mod.out, out = 'prediction')
-    models.out = .Models.save.object("models.prediction", models.prediction, models.out)
+    models.out = .fill_BIOMOD.models.out("models.prediction", models.prediction, models.out
+                                         , inMemory = FALSE, nameFolder = name.BIOMOD_DATA)
     rm(models.prediction)
     
     models.prediction.eval <- .transform_outputs_list(mod.out, out = 'prediction.eval')
-    models.out = .Models.save.object("models.prediction.eval", models.prediction.eval, models.out)
+    models.out = .fill_BIOMOD.models.out("models.prediction.eval", models.prediction.eval, models.out
+                                         , inMemory = FALSE, nameFolder = name.BIOMOD_DATA)
     rm(models.prediction.eval)
   }
   rm(mod.out)

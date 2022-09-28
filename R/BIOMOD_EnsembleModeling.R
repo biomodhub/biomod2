@@ -387,20 +387,24 @@ BIOMOD_EnsembleModeling <- function(bm.mod,
   
   ## 1. Create output object ---------------------------------------------------
   EM <- new('BIOMOD.ensemble.models.out',
+            modeling.id = bm.mod@modeling.id,
             dir.name = bm.mod@dir.name,
             sp.name = bm.mod@sp.name,
-            expl.var.names = bm.mod@expl.var.names,
-            em.by = em.by,
-            modeling.id = bm.mod@modeling.id)
-  EM@models.out@link <- file.path(bm.mod@dir.name, bm.mod@sp.name,
-                                  paste0(bm.mod@sp.name, ".",
-                                         bm.mod@modeling.id, ".models.out"))
+            expl.var.names = bm.mod@expl.var.names)
+  EM@models.out@link <- bm.mod@link
+  EM@em.by = em.by
+  
+  ## Various objects will be stored (models, predictions, evaluation)
+  name.BIOMOD_DATA = file.path(EM@dir.name, EM@sp.name, ".BIOMOD_DATA", EM@modeling.id, "ensemble.models")
+  
   
   ## 2. Do Ensemble modeling ---------------------------------------------------
-  
   ## make a list of models names that will be combined together according to em.by argument
   em.mod.assemb <- .get_models_assembling(models.chosen, em.by)
+  em.out <- list()
+  
   for (assemb in names(em.mod.assemb))  {
+    em.out[[assemb]] <- list()
     cat("\n\n  >", assemb, "ensemble modeling")
     models.kept <- em.mod.assemb[[assemb]]
     
@@ -445,11 +449,18 @@ BIOMOD_EnsembleModeling <- function(bm.mod,
     
     ## LOOP over evaluation metrics ------------------------------------------
     for (eval.m in metric.select) {
+      em.out[[assemb]][[eval.m]] <- list()
       models.kept <- needed_predictions$models.kept[[eval.m]]
       models.kept.scores <- needed_predictions$models.kept.scores[[eval.m]]
       
       ## LOOP over em.algo ---------------------------------------------------
       for (algo in em.algo) {
+        em.out[[assemb]][[eval.m]][[algo]] <- list(model = NULL,
+                                                   pred = NULL,
+                                                   pred.eval = NULL,
+                                                   evaluation = NULL,
+                                                   var.import = NULL)
+        
         algo.1 <- algo.2 <- algo.3 <- NULL
         models.kept.tmp = models.kept
         if (algo == 'prob.mean') {
@@ -548,6 +559,7 @@ BIOMOD_EnsembleModeling <- function(bm.mod,
                         expl_var_type = expl_var_type,
                         expl_var_range = expl_var_range,
                         modeling.id = bm.mod@modeling.id)
+        em.out[[assemb]][[eval.m]][[algo]]$model <- model_name
         
         if (algo == 'prob.ci.inf') {
           model.bm@alpha <- prob.ci.alpha
@@ -565,10 +577,7 @@ BIOMOD_EnsembleModeling <- function(bm.mod,
         
         ## create the suitable directory architecture
         pred.bm.name <- paste0(model_name, ".predictions")
-        pred.bm.outfile <- file.path(model.bm@dir_name, model.bm@resp_name
-                                     , ".BIOMOD_DATA", model.bm@modeling.id
-                                     , "ensemble.models", "ensemble.models.predictions"
-                                     , pred.bm.name)
+        pred.bm.outfile <- file.path(name.BIOMOD_DATA, "ensemble.models.predictions", pred.bm.name)
         dir.create(dirname(pred.bm.outfile), showWarnings = FALSE, recursive = TRUE)
         ## store models prediction on the hard drive
         pred.bm <- predict(model.bm
@@ -576,6 +585,7 @@ BIOMOD_EnsembleModeling <- function(bm.mod,
                            , data_as_formal_predictions = TRUE
                            , on_0_1000 = TRUE
                            , seedval = seed.val)
+        em.out[[assemb]][[eval.m]][[algo]]$prediction <- pred.bm
         assign(pred.bm.name, pred.bm)
         save(list = pred.bm.name, file = pred.bm.outfile, compress = TRUE)
         rm(list = pred.bm.name)
@@ -585,6 +595,7 @@ BIOMOD_EnsembleModeling <- function(bm.mod,
           pred.bm.eval.outfile <- paste0(pred.bm.outfile,"Eval")
           pred.bm.name <- paste0(model_name, ".predictionsEval")
           eval_pred.bm <- predict(model.bm, newdata = eval.expl, seedval = seed.val)
+          em.out[[assemb]][[eval.m]][[algo]]$prediction.eval <- eval_pred.bm
           assign(pred.bm.name, eval_pred.bm)
           save(list = pred.bm.name, file = pred.bm.eval.outfile, compress = TRUE)
           rm(list = pred.bm.name)
@@ -647,18 +658,20 @@ BIOMOD_EnsembleModeling <- function(bm.mod,
           }
           
           ## store results
+          em.out[[assemb]][[eval.m]][[algo]]$evaluation <- t(round(cross.validation, digits = 3))
           model.bm@model_evaluation <- t(round(cross.validation, digits = 3))
         }
         
         # Models Variable Importance -------------------------------------------
         if (var.import > 0) {
           cat("\n\t\t\tEvaluating Predictor Contributions...", "\n")
-          model.bm@model_variables_importance <- 
-            bm_VariablesImportance(bm.model = model.bm
-                                   , expl.var = expl
-                                   , nb.rep = var.import
-                                   , seed.val = seed.val
-                                   , do.progress = do.progress)
+          variables.importance <- bm_VariablesImportance(bm.model = model.bm
+                                                         , expl.var = expl
+                                                         , nb.rep = var.import
+                                                         , seed.val = seed.val
+                                                         , do.progress = do.progress)
+          em.out[[assemb]][[eval.m]][[algo]]$var.import <- variables.importance
+          model.bm@model_variables_importance <- variables.importance
         }
         
         # Models saving --------------------------------------------------------
@@ -667,11 +680,30 @@ BIOMOD_EnsembleModeling <- function(bm.mod,
                                                  bm.mod@modeling.id, model_name))
         
         # Add to sumary objects ------------------------------------------------
-        EM@em.models <- c(EM@em.models, model.bm)
         EM@em.computed <- c(EM@em.computed, model_name)
+        EM@em.models <- c(EM@em.models, model.bm)
       }
     }
   }
+  
+  ### SAVE EM outputs ---------------------------------------------------------
+  models.evaluation <- .transform_outputs_list.em(em.out, out = "evaluation")
+  EM = .fill_BIOMOD.models.out("models.evaluation", models.evaluation, EM
+                               , inMemory = TRUE, nameFolder = name.BIOMOD_DATA)
+  if (var.import > 0) {
+    variables.importance <- .transform_outputs_list.em(em.out, out = "var.import")
+    EM = .fill_BIOMOD.models.out("variables.importance", variables.importance, EM
+                                 , inMemory = TRUE, nameFolder = name.BIOMOD_DATA)
+  }
+  models.prediction <- .transform_outputs_list.em(em.out, out = "prediction")
+  EM = .fill_BIOMOD.models.out("models.prediction", models.prediction, EM
+                               , inMemory = TRUE, nameFolder = name.BIOMOD_DATA)
+  if (bm.mod@has.evaluation.data) {
+    models.prediction.eval <- .transform_outputs_list.em(em.out, out = "prediction.eval")
+    EM = .fill_BIOMOD.models.out("models.prediction.eval", models.prediction.eval, EM
+                                 , inMemory = TRUE, nameFolder = name.BIOMOD_DATA)
+  }
+  
   
   #### fix models names ---------------------------------------------------------
   names(EM@em.models) <- EM@em.computed
@@ -819,7 +851,6 @@ BIOMOD_EnsembleModeling <- function(bm.mod,
 
 # .get_models_assembling --------------------------------------------------
 
-
 .get_models_assembling <- function(models.chosen, em.by)
 {
   assembl.list = list()
@@ -859,7 +890,6 @@ BIOMOD_EnsembleModeling <- function(bm.mod,
   }
   return(assembl.list)
 }
-
 
 
 # .get_needed_predictions -------------------------------------------------
@@ -974,4 +1004,39 @@ BIOMOD_EnsembleModeling <- function(bm.mod,
     cat("\n   ! No models kept due to threshold filtering... Ensemble Modeling was skipped!")
     return(NULL)
   }
+}
+
+
+###################################################################################################
+
+### REORGANIZE ensemble models output
+.transform_outputs_list.em = function(em.out, out = 'evaluation')
+{
+  out_list = c('evaluation', 'prediction', 'prediction.eval', 'var.import')
+  .fun_testIfIn(TRUE, "out", out, out_list)
+  
+  ## 0. get model names -------------------------------------------------------
+  nb_by <- length(em.out)
+  nb_eval <- length(em.out[[1]])
+  nb_mod <- length(em.out[[1]][[1]])
+  comb = expand.grid(i.by = 1:nb_by, i.eval = 1:nb_eval, i.mod = 1:nb_mod)
+  names_models <- foreach (i = 1:nrow(comb), .combine = "c") %do% {
+    em.out[[comb$i.by[i]]][[comb$i.eval[i]]][[comb$i.mod[i]]]$model
+  }
+  
+  ## 1. CASE evaluation / prediction / prediction.eval / var.import -----------
+  if (out %in% c("evaluation", "var.import")) {
+    res.out <- foreach (i = 1:nrow(comb)) %do% {
+      em.out[[comb$i.by[i]]][[comb$i.eval[i]]][[comb$i.mod[i]]][[out]]
+    }
+    res.out <- abind(res.out, along = 3)
+    dimnames(res.out)[[3]] = names_models
+  } else {
+    res.out <- foreach (i = 1:nrow(comb), .combine = "cbind") %do% {
+      em.out[[comb$i.by[i]]][[comb$i.eval[i]]][[comb$i.mod[i]]][[out]]
+    }
+    colnames(res.out) = names_models
+  }
+  
+  return(res.out)
 }
