@@ -24,10 +24,10 @@
 \alias{free,BIOMOD.projection.out-method}
 \alias{get_predictions,BIOMOD.projection.out-method}
 \alias{get_formal_data,BIOMOD.ensemble.models.out-method}
+\alias{get_built_models,BIOMOD.ensemble.models.out-method}
 \alias{get_needed_models,BIOMOD.ensemble.models.out-method}
 \alias{get_kept_models,BIOMOD.ensemble.models.out-method}
 \alias{get_predictions,BIOMOD.ensemble.models.out-method}
-\alias{get_built_models,BIOMOD.ensemble.models.out-method}
 \alias{get_evaluations,BIOMOD.ensemble.models.out-method}
 \alias{get_variables_importance,BIOMOD.ensemble.models.out-method}
 \title{Functions to extract informations from \code{\link{BIOMOD.models.out}}, 
@@ -39,7 +39,15 @@
 
 \S4method{get_formal_data}{BIOMOD.models.out}(obj, subinfo = NULL)
 
-\S4method{get_predictions}{BIOMOD.models.out}(obj, as.data.frame = FALSE, evaluation = FALSE)
+\S4method{get_predictions}{BIOMOD.models.out}(
+  obj,
+  as.data.frame = FALSE,
+  evaluation = FALSE,
+  full.name = NULL,
+  model = NULL,
+  run.eval = NULL,
+  data.set = NULL
+)
 
 \S4method{get_built_models}{BIOMOD.models.out}(obj, ...)
 
@@ -62,11 +70,18 @@
 
 \S4method{get_formal_data}{BIOMOD.ensemble.models.out}(obj, subinfo = NULL)
 
+\S4method{get_built_models}{BIOMOD.ensemble.models.out}(obj, ...)
+
 \S4method{get_needed_models}{BIOMOD.ensemble.models.out}(obj, selected.models = "all", ...)
 
 \S4method{get_kept_models}{BIOMOD.ensemble.models.out}(obj, model, ...)
 
-\S4method{get_predictions}{BIOMOD.ensemble.models.out}(obj, evaluation = FALSE, ...)
+\S4method{get_predictions}{BIOMOD.ensemble.models.out}(
+  obj,
+  as.data.frame = FALSE,
+  evaluation = FALSE,
+  full.name = NULL
+)
 
 \S4method{get_built_models}{BIOMOD.ensemble.models.out}(obj, ...)
 

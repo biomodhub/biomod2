@@ -281,16 +281,20 @@ BIOMOD_PresenceOnly <- function(bm.mod = NULL,
     tmp <- strsplit(as.character(Model.name), split = "_")[[1]]
     n <- length(tmp)
     tec <- paste(tmp[3:n], collapse = "_") 
-    run <- tmp[c(grep("RUN", tmp), grep("Full", tmp))]
+    run <- tmp[c(grep("RUN", tmp), grep("Full", tmp), grep("mergedRun", tmp))]
     
     ## Get evaluation lines
     if (length(run) == 0) {
       ind.eval = NULL
     } else {
-      if (inherits(calib.lines, "matrix")) {
-        ind.eval = which(calib.lines[, paste0("_", run)] == FALSE)
+      if (run == "mergedRun") {
+        ind.eval = 1:nrow(calib.lines) 
       } else {
-        ind.eval = which(calib.lines == FALSE)
+        if (inherits(calib.lines, "matrix")) {
+          ind.eval = which(calib.lines[, paste0("_", run)] == FALSE)
+        } else {
+          ind.eval = which(calib.lines == FALSE)
+        }
       }
     }
     

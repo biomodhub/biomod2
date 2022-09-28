@@ -509,6 +509,19 @@ check_data_range <- function(model, new_data)
 }
 
 
+## FILL BIOMOD.models.out elements in bm.mod or bm.em objects -------------------------------------
+## used in BIOMOD_Modeling, BIOMOD_EnsembleModeling
+.fill_BIOMOD.models.out <- function(objName, objValue, mod.out, inMemory = FALSE, nameFolder = ".")
+{
+  save(objValue, file = file.path(nameFolder, objName), compress = TRUE)
+  if (inMemory) {
+    eval(parse(text = paste0("mod.out@", objName, "@val <- objValue")))
+  }
+  eval(parse(text = paste0("mod.out@", objName, "@inMemory <- ", inMemory)))
+  eval(parse(text = paste0("mod.out@", objName, "@link <- file.path(nameFolder, objName)")))
+  return(mod.out)
+}
+
 
 ## FUNCTIONS for 'plot' and 'show' objects --------------------------------------------------------
 ## used in biomod2_classes_1.R file
@@ -552,7 +565,7 @@ check_data_range <- function(model, new_data)
 
 .level.plot <- function(data.in, XY, color.gradient = 'red'
                         , level.range = c(min(data.in, na.rm = TRUE), max(data.in, na.rm = TRUE))
-                        , show.scale = TRUE, SRC = FALSE
+                        , show.scale = TRUE, SRC = FALSE, plot.title = NULL
                         , AddPresAbs = NULL, cex = 1, PresAbsSymbol = c(cex * 0.8, 16, 4), ...)
 {
   extra.args <- list(...)
@@ -572,7 +585,7 @@ check_data_range <- function(model, new_data)
   if (SRC == TRUE) {
     color.system <- c("red", "lightgreen", "grey", "darkgreen")
     col_id <- data.in + 3
-    title <- "SRC plot"
+    plot.title <- ifelse(is.null(plot.title), "SRC plot", plot.title)
   } else
   {
     color.system = switch(color.gradient
@@ -593,7 +606,7 @@ check_data_range <- function(model, new_data)
     # define a vector to make correspondence between values and colors
     val_seq <- c(seq(level.range[1], level.range[2], length.out = 101), Inf)
     col_id <- sapply(data.in, function(x) { return(which(x <= val_seq)[1]) })
-    title <- "Level plot"
+    plot.title <- ifelse(is.null(plot.title), "Level plot", plot.title)
   }
   
   
@@ -606,7 +619,7 @@ check_data_range <- function(model, new_data)
        ylab = '',
        xaxt = 'n',
        yaxt = 'n',
-       main = title)
+       main = plot.title)
   
   if (!show.scale && !is.null(AddPresAbs)) { 
     ## Add presence/absence if requested by user:
