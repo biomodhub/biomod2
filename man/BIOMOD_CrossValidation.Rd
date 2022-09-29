@@ -15,7 +15,7 @@ BIOMOD_CrossValidation(
 )
 }
 \arguments{
-\item{bm.format}{a \code{\link[biomod2:BIOMOD.formated.data-class]{BIOMOD.formated.data}} or \code{\link{BIOMOD.formated.data.PA}} 
+\item{bm.format}{a \code{\link{BIOMOD.formated.data-class}} or \code{\link{BIOMOD.formated.data.PA-class}} 
 object returned by the \code{\link{BIOMOD_FormatingData}} function}
 
 \item{k}{an \code{integer} corresponding to the number of bins/partitions for k-fold CV}

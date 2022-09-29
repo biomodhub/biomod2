@@ -20,35 +20,39 @@ Class returned by \code{\link{BIOMOD_EnsembleModeling}}, and used by
 \section{Slots}{
 
 \describe{
-\item{\code{modeling.id}}{a \code{character} corresponding to the name (ID) of the simulation set}
+\item{\code{modeling.id}}{a \code{character} corresponding to the name (ID) of the
+simulation set}
 
 \item{\code{dir.name}}{a \code{character} corresponding to the modeling folder}
 
 \item{\code{sp.name}}{a \code{character} corresponding to the species name}
 
-\item{\code{expl.var.names}}{a \code{vector} containing names of explanatory variables}
+\item{\code{expl.var.names}}{a \code{vector} containing names of explanatory
+variables}
 
-\item{\code{models.out}}{a \code{\link[biomod2:BIOMOD.stored.models.out-class]{BIOMOD.stored.models.out}} object containing 
-informations from \code{\link{BIOMOD_Modeling}} object}
+\item{\code{models.out}}{a \code{\link{BIOMOD.stored.models.out-class}} object
+containing informations from \code{\link{BIOMOD_Modeling}} object}
 
-\item{\code{em.by}}{a \code{character} corresponding to the way kept models have been combined to 
-build the ensemble models, must be among \code{PA_dataset+repet}, \code{PA_dataset+algo}, 
-\code{PA_dataset}, \code{algo}, \code{all}}
+\item{\code{em.by}}{a \code{character} corresponding to the way kept models have
+been combined to build the ensemble models, must be among
+\code{PA_dataset+repet}, \code{PA_dataset+algo}, \code{PA_dataset},
+\code{algo}, \code{all}}
 
 \item{\code{em.computed}}{a \code{vector} containing names of ensemble models}
 
 \item{\code{em.models}}{a \code{list} containing ensemble models}
 
-\item{\code{models.evaluation}}{a \code{\link{BIOMOD.stored.array}} object containing models evaluation}
+\item{\code{models.evaluation}}{a \code{\link{BIOMOD.stored.array-class}} object
+containing models evaluation}
 
-\item{\code{variables.importance}}{a \code{\link{BIOMOD.stored.array}} object containing variables
-importance}
+\item{\code{variables.importance}}{a \code{\link{BIOMOD.stored.array-class}} object
+containing variables importance}
 
-\item{\code{models.prediction}}{a \code{\link{BIOMOD.stored.array}} object containing models
-predictions}
+\item{\code{models.prediction}}{a \code{\link{BIOMOD.stored.array-class}} object
+containing models predictions}
 
-\item{\code{models.prediction.eval}}{a \code{\link{BIOMOD.stored.array}} object containing models
-predictions for evaluation data}
+\item{\code{models.prediction.eval}}{a \code{\link{BIOMOD.stored.array-class}}
+object containing models predictions for evaluation data}
 
 \item{\code{link}}{a \code{character} containing the file name of the saved object}
 }}
