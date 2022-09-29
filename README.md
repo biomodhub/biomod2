@@ -1,22 +1,16 @@
-[![Build Status](https://travis-ci.org/biomodhub/biomod2.svg?branch=master)](https://travis-ci.org/biomodhub/biomod2)
+[![Cran Version](https://www.r-pkg.org/badges/version/biomod2?color=yellow)](https://cran.r-project.org/package=biomod2)
+[![Github Version](https://img.shields.io/badge/devel%20version-4.1--2-blue.svg)](https://github.com/biomodhub/biomod2)
+[![Last Commit](https://img.shields.io/github/last-commit/biomodhub/biomod2.svg)](https://github.com/biomodhub/biomod2/commits/master)
 [![R build status](https://github.com/biomodhub/biomod2/workflows/R-CMD-check/badge.svg)](https://github.com/biomodhub/biomod2/actions)
 
-
-<style>
-.zoom p {
-width:600px;
-margin-left: auto;
-margin-right: auto;
-}
-.zoom p:hover {
-width:1200px;
-position: relative;
-z-index: 10;
-}
-</style>
-
-
-
+<!-- [![Download](http://cranlogs.r-pkg.org/badges/grand-total/biomod2?color=yellow)](https://cran.r-project.org/package=segclust2d) -->
+<!-- 
+badge for github version :
+badger::badge_github_version("biomodhub/biomod2", "blue") 
+-->
+<br/>
+<br/>
+<br/>
 <div style="text-align:center;">
 **------------------------------------------------------------** <br/>
 **Species distribution modeling, <br/>
@@ -80,6 +74,18 @@ Sorry for the inconvenience, and please **feel free to indicate if you notice so
 
 
 
+<style>
+.zoom p {
+width:600px;
+margin-left: auto;
+margin-right: auto;
+}
+.zoom p:hover {
+width:1200px;
+position: relative;
+z-index: 10;
+}
+</style>
 
 <div class="zoom">
 <p><img src="articles/pictures/SCHEMA_BIOMOD2_WORKFLOW_functions.png" alt="Main workflow"></img></p>
