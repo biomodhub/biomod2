@@ -9,7 +9,7 @@
 ##' stratified cross-validation (CV) instead of repeated split samples.
 ##' 
 ##' 
-##' @param bm.format a \code{\link[biomod2:BIOMOD.formated.data-class]{BIOMOD.formated.data}} or \code{\link{BIOMOD.formated.data.PA}} 
+##' @param bm.format a \code{\link{BIOMOD.formated.data-class}} or \code{\link{BIOMOD.formated.data.PA-class}} 
 ##' object returned by the \code{\link{BIOMOD_FormatingData}} function
 ##' @param k an \code{integer} corresponding to the number of bins/partitions for k-fold CV
 ##' @param nb.rep an \code{integer} corresponding to the number of repetitions of k-fold CV 
