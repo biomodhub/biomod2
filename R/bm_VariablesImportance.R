@@ -24,7 +24,7 @@
 ##' An \code{integer} value corresponding to the new seed value to be set
 ##' @param do.progress (\emph{optional, default} \code{TRUE}) \cr 
 ##' A \code{logical} value defining whether the progress bar is to be rendered or not
-##' @param \ldots (\emph{optional)}) 
+##' @param \ldots (\emph{optional}) 
 ##' 
 ##' @return  
 ##' 
@@ -97,7 +97,12 @@ bm_VariablesImportance <- function(bm.model,
   rm(args)
   
   ## Test if prediction is computable
-  ref <- try(predict(bm.model, newdata = expl.var, temp_workdir = temp_workdir, seedval = seed.val))
+  ref <- try(
+    predict(bm.model,
+            newdata = expl.var,
+            temp_workdir = temp_workdir,
+            seedval = seed.val)
+    )
   if (inherits(ref, "try-error")) { stop("Unable to make model prediction") }
   
   ## Make randomisation

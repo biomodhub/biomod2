@@ -20,41 +20,48 @@ Class returned by \code{\link{BIOMOD_Modeling}}, and used by
 \section{Slots}{
 
 \describe{
-\item{\code{modeling.id}}{a \code{character} corresponding to the name (ID) of the simulation set}
+\item{\code{modeling.id}}{a \code{character} corresponding to the name (ID) of the
+simulation set}
 
 \item{\code{dir.name}}{a \code{character} corresponding to the modeling folder}
 
 \item{\code{sp.name}}{a \code{character} corresponding to the species name}
 
-\item{\code{expl.var.names}}{a \code{vector} containing names of explanatory variables}
+\item{\code{expl.var.names}}{a \code{vector} containing names of explanatory
+variables}
 
 \item{\code{models.computed}}{a \code{vector} containing names of computed models}
 
 \item{\code{models.failed}}{a \code{vector} containing names of failed models}
 
-\item{\code{has.evaluation.data}}{a \code{logical} value defining whether evaluation data is given}
+\item{\code{has.evaluation.data}}{a \code{logical} value defining whether evaluation
+data is given}
 
-\item{\code{scale.models}}{a \code{logical} value defining whether models have been rescaled or 
-not}
+\item{\code{scale.models}}{a \code{logical} value defining whether models have been
+rescaled or not}
 
-\item{\code{formated.input.data}}{a \code{\link{BIOMOD.stored.formated.data}} object containing 
-informations from \code{\link{BIOMOD_FormatingData}} object}
+\item{\code{formated.input.data}}{a \code{\link{BIOMOD.stored.formated.data-class}}
+object containing informations from \code{\link{BIOMOD_FormatingData}}
+object}
 
-\item{\code{calib.lines}}{a \code{\link{BIOMOD.stored.array}} object containing calibration lines}
+\item{\code{calib.lines}}{a \code{\link{BIOMOD.stored.array-class}} object
+containing calibration lines}
 
-\item{\code{models.options}}{a \code{\link{BIOMOD.stored.models.options}} object containing 
-informations from \code{\link{BIOMOD_ModelingOptions}} object}
+\item{\code{models.options}}{a \code{\link{BIOMOD.stored.models.options-class}}
+object containing informations from \code{\link{BIOMOD_ModelingOptions}}
+object}
 
-\item{\code{models.evaluation}}{a \code{\link{BIOMOD.stored.array}} object containing models evaluation}
+\item{\code{models.evaluation}}{a \code{\link{BIOMOD.stored.array-class}} object
+containing models evaluation}
 
-\item{\code{variables.importance}}{a \code{\link{BIOMOD.stored.array}} object containing variables 
-importance}
+\item{\code{variables.importance}}{a \code{\link{BIOMOD.stored.array-class}} object
+containing variables importance}
 
-\item{\code{models.prediction}}{a \code{\link{BIOMOD.stored.array}} object containing models 
-predictions}
+\item{\code{models.prediction}}{a \code{\link{BIOMOD.stored.array-class}} object
+containing models predictions}
 
-\item{\code{models.prediction.eval}}{a \code{\link{BIOMOD.stored.array}} object containing models 
-predictions for evaluation data}
+\item{\code{models.prediction.eval}}{a \code{\link{BIOMOD.stored.array-class}}
+object containing models predictions for evaluation data}
 
 \item{\code{link}}{a \code{character} containing the file name of the saved object}
 }}

@@ -96,13 +96,7 @@
   return(test)
 }
 
-
-
-
-## TEMPLATES TO PREDICT MODELS --------------------------------------------------------------------
-## used in biomod2_classes_4.R, biomod2_classes_5.R files
-
-# Functions to get variables ranges
+# Functions to get variables ranges ---------------------------------
 # used bm_RunModelsLoop, BIOMOD_EnsembleModeling
 get_var_type <- function(data) { return(sapply(data, function(x) class(x)[1])) }
 
@@ -240,135 +234,10 @@ check_data_range <- function(model, new_data)
   return(pred)
 }
 
-## FOR SINGLE MODELS ----------------------------------------------------------
-.template_predict = function(mod, object, newdata, ...)
-{
-  args <- list(...)
-  do_check <- args$do_check
-  if (is.null(do_check)) { do_check <- TRUE }
-  if (do_check) { newdata <- check_data_range(model = object, new_data = newdata) }
-  
-  ## Special case for MAXENT.Phillips
-  do_raster = FALSE
-  newraster = NULL
-  if (mod == "MAXENT.Phillips" && inherits(newdata, 'Raster')) {
-    newraster = newdata[[1]]
-    newraster[] = NA
-    newdata = na.exclude(rasterToPoints(newdata))
-    newraster[cellFromXY(newraster, newdata[, 1:2])] = 1
-    do_raster = TRUE
-  }
-  
-  if (inherits(newdata, 'Raster')) {
-    eval(parse(text = paste0("res = .predict.", mod, "_biomod2_model.RasterStack(object, newdata, ...)")))
-    return(res)
-  } else if (inherits(newdata, 'data.frame') | inherits(newdata, 'matrix')) {
-    eval(parse(text = paste0("res = .predict.", mod, "_biomod2_model.data.frame(object, newdata, do_raster = do_raster, newraster = newraster, ...)")))
-    return(res)
-  } else {
-    stop("invalid newdata input")
-  }
-}
+## get formal prediction for EM models ------------------------------------
 
-.template_predict.RasterStack = function(seedval = NULL, predcommand, object, newdata, ...)
+.get_formal_predictions <- function(object, newdata, on_0_1000, seedval)
 {
-  args <- list(...)
-  namefile <- args$namefile
-  overwrite <- args$overwrite
-  on_0_1000 <- args$on_0_1000
-  
-  if (is.null(overwrite)) { overwrite <- TRUE }
-  if (is.null(on_0_1000)) { on_0_1000 <- FALSE }
-  
-  set.seed(seedval)
-  eval(parse(text = paste0("proj <- ", predcommand)))
-  
-  if (length(get_scaling_model(object))) {
-    names(proj) <- "pred"
-    proj <- .run_pred(object = get_scaling_model(object), Prev = 0.5 , dat = proj)
-  }
-  if (on_0_1000) { proj <- round(proj * 1000) }
-  
-  # save raster on hard drive ?
-  if (!is.null(namefile)) {
-    cat("\n\t\tWriting projection on hard drive...")
-    if (on_0_1000) { ## projections are stored as positive integer
-      writeRaster(proj, filename = namefile, overwrite = overwrite, datatype = "INT2S", NAflag = -9999)
-    } else { ## keep default data format for saved raster
-      writeRaster(proj, filename = namefile, overwrite = overwrite)
-    }
-    proj <- raster(namefile, RAT = FALSE)
-  }
-  return(proj)
-}
-
-.template_predict.data.frame <- function(seedval = NULL, predcommand, object, newdata, ...)
-{
-  args <- list(...)
-  on_0_1000 <- args$on_0_1000
-  omit.na <- args$omit.na
-  
-  if (is.null(on_0_1000)) { on_0_1000 <- FALSE }
-  if (is.null(omit.na)) { omit.na <- FALSE }
-  
-  ## check if na occurs in newdata cause they are not well supported
-  if (omit.na) {
-    not_na_rows <- apply(newdata, 1, function(x) { sum(is.na(x)) == 0 })
-  } else {
-    not_na_rows <- rep(T, nrow(newdata))
-  }
-  
-  set.seed(seedval)
-  eval(parse(text = paste0("proj <- ", predcommand)))
-  
-  ## add original NA from formal dataset
-  if (sum(!not_na_rows) > 0) {
-    tmp <- rep(NA, length(not_na_rows))
-    tmp[not_na_rows] <- proj
-    proj <- tmp
-    rm('tmp')
-  }
-  
-  if (length(get_scaling_model(object))) {
-    proj <- data.frame(pred = proj)
-    proj <- .run_pred(object = get_scaling_model(object), Prev = 0.5, dat = proj)
-  }
-  if (on_0_1000) { proj <- round(proj * 1000) }
-  
-  return(proj)
-}
-
-## FOR ENSEMBLE MODELS --------------------------------------------------------
-.template_predictEM = function(mod, object, newdata, formal_predictions, ...)
-{
-  args <- list(...)
-  do_check <- args$do_check
-  if (is.null(do_check)) { do_check <- TRUE }
-  if (do_check) { newdata <- check_data_range(model = object, new_data = newdata) }
-  
-  if (inherits(newdata, 'Raster') | inherits(formal_predictions, 'Raster')) {
-    eval(parse(text = paste0("res = .predict.", mod, "_biomod2_model.RasterStack(object, newdata, formal_predictions, ...)")))
-    return(res)
-  } else if (inherits(newdata, 'data.frame') | inherits(newdata, 'matrix') | 
-             inherits(formal_predictions, 'data.frame') | inherits(formal_predictions, 'matrix')) {
-    eval(parse(text = paste0("res = .predict.", mod, "_biomod2_model.data.frame(object, newdata, formal_predictions, ...)")))
-    return(res)
-  } else {
-    stop("invalid newdata input")
-  }
-}
-
-.template_predictEM.formal_predictions = function(object, newdata, formal_predictions, ...)
-{
-  args <- list(...)
-  namefile <- args$namefile
-  on_0_1000 <- args$on_0_1000
-  seedval <- args$seedval
-  
-  if (is.null(namefile)) { namefile <- "" }
-  if (is.null(on_0_1000)) { on_0_1000 <- FALSE }
-  
-  if (is.null(formal_predictions)) {
     # make prediction of all models required
     formal_predictions <- sapply(object@model,
                                  function(mod.name, dir_name, resp_name, modeling.id)
@@ -384,7 +253,7 @@ check_data_range <- function(model, new_data)
                                    return(predict(mod, newdata = newdata, on_0_1000 = on_0_1000
                                                   , temp_workdir = temp_workdir, seedval = seedval))
                                  }, dir_name = object@dir_name, resp_name = object@resp_name, modeling.id = object@modeling.id)
-  }
+  
   
   return(formal_predictions)
 }
@@ -741,4 +610,37 @@ check_data_range <- function(model, new_data)
       for (i in 1:((W.width * W.height - plots.per.window) * 4)) { pbox("grey98") }
     }
   } #W loop
+}
+
+
+
+## GAM library loading --------------------------------------------------------
+## used in biomod2_classes_4.R file for GAM predict template
+##' @name .load_gam_namespace
+##' 
+##' @title Load library for GAM models
+##' 
+##' @description This function loads library for either GAM and BAM from mgcv
+##'   package or for GAM from gam package.
+##' 
+##' @param model_subclass the subclass of GAM model
+##' @keywords internal
+
+.load_gam_namespace <- function(model_subclass = c("GAM_mgcv","BAM_mgcv", "GAM_gam")){
+  if (model_subclass %in% c("GAM_mgcv", "BAM_mgcv")) {
+    # cat("\n*** unloading gam package / loading mgcv package")
+    if (isNamespaceLoaded("gam")) { unloadNamespace("gam") }
+    if (!isNamespaceLoaded("mgcv")) { requireNamespace("mgcv", quietly = TRUE) }
+  }
+  
+  if (model_subclass == "GAM_gam") {
+    # cat("\n*** unloading mgcv package / loading gam package")
+    if (isNamespaceLoaded("mgcv")) {
+      if (isNamespaceLoaded("caret")) { unloadNamespace("caret")} ## need to unload caret before car
+      if (isNamespaceLoaded("car")) { unloadNamespace("car") } ## need to unload car before mgcv
+      unloadNamespace("mgcv")
+    }
+    if (!isNamespaceLoaded("gam")) { requireNamespace("gam", quietly = TRUE) }
+  }
+  invisible(NULL)
 }

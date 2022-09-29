@@ -19,7 +19,7 @@ BIOMOD_EnsembleForecasting"><!-- mathjax --><script src="https://cdnjs.cloudflar
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">biomod2</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">4.1-1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">4.1-2</span>
       </span>
     </div>
 
@@ -114,7 +114,12 @@ BIOMOD_EnsembleForecasting"><!-- mathjax --><script src="https://cdnjs.cloudflar
     <h2>Slots</h2>
     
 
-<dl><dt><code>dir.name</code></dt>
+<dl><dt><code>modeling.id</code></dt>
+<dd><p>a <code>character</code> corresponding to the name (ID) of the
+simulation set</p></dd>
+
+
+<dt><code>dir.name</code></dt>
 <dd><p>a <code>character</code> corresponding to the modeling folder</p></dd>
 
 
@@ -123,30 +128,48 @@ BIOMOD_EnsembleForecasting"><!-- mathjax --><script src="https://cdnjs.cloudflar
 
 
 <dt><code>expl.var.names</code></dt>
-<dd><p>a <code>vector</code> containing names of explanatory variables</p></dd>
+<dd><p>a <code>vector</code> containing names of explanatory
+variables</p></dd>
 
 
 <dt><code>models.out</code></dt>
-<dd><p>a <code><a href="BIOMOD.stored.data.html">BIOMOD.stored.models.out</a></code> object containing 
-informations from <code><a href="BIOMOD_Modeling.html">BIOMOD_Modeling</a></code> object</p></dd>
+<dd><p>a <code><a href="BIOMOD.stored.data.html">BIOMOD.stored.models.out-class</a></code> object
+containing informations from <code><a href="BIOMOD_Modeling.html">BIOMOD_Modeling</a></code> object</p></dd>
+
+
+<dt><code>em.by</code></dt>
+<dd><p>a <code>character</code> corresponding to the way kept models have
+been combined to build the ensemble models, must be among
+<code>PA_dataset+repet</code>, <code>PA_dataset+algo</code>, <code>PA_dataset</code>,
+<code>algo</code>, <code>all</code></p></dd>
 
 
 <dt><code>em.computed</code></dt>
 <dd><p>a <code>vector</code> containing names of ensemble models</p></dd>
 
 
-<dt><code>em.by</code></dt>
-<dd><p>a <code>character</code> corresponding to the way kept models have been combined to 
-build the ensemble models, must be among <code>PA_dataset+repet</code>, <code>PA_dataset+algo</code>, 
-<code>PA_dataset</code>, <code>algo</code>, <code>all</code></p></dd>
-
-
 <dt><code>em.models</code></dt>
 <dd><p>a <code>list</code> containing ensemble models</p></dd>
 
 
-<dt><code>modeling.id</code></dt>
-<dd><p>a <code>character</code> corresponding to the name (ID) of the simulation set</p></dd>
+<dt><code>models.evaluation</code></dt>
+<dd><p>a <code><a href="BIOMOD.stored.data.html">BIOMOD.stored.array-class</a></code> object
+containing models evaluation</p></dd>
+
+
+<dt><code>variables.importance</code></dt>
+<dd><p>a <code><a href="BIOMOD.stored.data.html">BIOMOD.stored.array-class</a></code> object
+containing variables importance</p></dd>
+
+
+<dt><code>models.prediction</code></dt>
+<dd><p>a <code><a href="BIOMOD.stored.data.html">BIOMOD.stored.array-class</a></code> object
+containing models predictions</p></dd>
+
+
+<dt><code>models.prediction.eval</code></dt>
+<dd><p>a <code><a href="BIOMOD.stored.data.html">BIOMOD.stored.array-class</a></code>
+object containing models predictions for evaluation data</p></dd>
 
 
 <dt><code>link</code></dt>

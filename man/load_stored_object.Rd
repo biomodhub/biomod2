@@ -23,7 +23,9 @@ Other Toolbox functions:
 \code{\link{getters.bm}},
 \code{\link{getters.out}},
 \code{\link{predict.bm}},
-\code{\link{predict.em}}
+\code{\link{predict.em}},
+\code{\link{predict2.bm}},
+\code{\link{predict2.em}}
 }
 \author{
 Damien Georges

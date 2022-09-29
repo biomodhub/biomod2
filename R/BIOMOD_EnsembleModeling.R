@@ -581,8 +581,8 @@ BIOMOD_EnsembleModeling <- function(bm.mod,
         dir.create(dirname(pred.bm.outfile), showWarnings = FALSE, recursive = TRUE)
         ## store models prediction on the hard drive
         pred.bm <- predict(model.bm
-                           , newdata = expl
-                           , formal_predictions = needed_predictions$predictions[, model.bm@model, drop = FALSE]
+                           , newdata = needed_predictions$predictions[, model.bm@model, drop = FALSE]
+                           , data_as_formal_predictions = TRUE
                            , on_0_1000 = TRUE
                            , seedval = seed.val)
         em.out[[assemb]][[eval.m]][[algo]]$prediction <- pred.bm
@@ -606,7 +606,7 @@ BIOMOD_EnsembleModeling <- function(bm.mod,
         if (length(metric.eval)) {
           cat("\n\t\t\tEvaluating Model stuff...")
           
-          if (algo == 'prob.cv') { ## switch off evaluation process
+          if (algo %in% c('prob.cv', 'prob.ci.inf','prob.ci.sup')) { ## switch off evaluation process
             cross.validation <-
               matrix(NA, 4, length(metric.eval),
                      dimnames = list(c("Testing.data", "Cutoff",
@@ -641,7 +641,7 @@ BIOMOD_EnsembleModeling <- function(bm.mod,
           }
           
           if (exists('eval_pred.bm')) {
-            if (algo == 'prob.cv') { ## switch off evaluation process
+            if (algo %in% c('prob.cv', 'prob.ci.inf','prob.ci.sup')) { ## switch off evaluation process
               cross.validation <- matrix(NA, 5, length(metric.eval),
                                          dimnames = list(c("Testing.data", "Evaluating.data", "Cutoff"
                                                            , "Sensitivity", "Specificity"),
@@ -663,7 +663,6 @@ BIOMOD_EnsembleModeling <- function(bm.mod,
         }
         
         # Models Variable Importance -------------------------------------------
-        
         if (var.import > 0) {
           cat("\n\t\t\tEvaluating Predictor Contributions...", "\n")
           variables.importance <- bm_VariablesImportance(bm.model = model.bm

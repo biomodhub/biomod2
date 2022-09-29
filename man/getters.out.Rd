@@ -123,65 +123,80 @@ function)})}
 }
 \value{
 \describe{
-  \item{\code{get_options}}{a \code{\link{BIOMOD.stored.models.options}} object from the 
-  \code{models.options} slot of a \code{\link{BIOMOD.models.out}} object}
-  \item{\code{get_calib_lines}}{a \code{\link{BIOMOD.stored.array}} object from the 
-  \code{calib.lines} slot of a \code{\link{BIOMOD.models.out}} object}
-  
-  \item{\code{get_projected_models}}{a \code{vector} from the \code{models.projected} slot of a 
-  \code{\link{BIOMOD.projection.out}} object}
-  
-  \item{\code{get_predictions}}{a \code{\link{BIOMOD.stored.data}} object from the \code{proj.out} slot 
-  of a \code{\link{BIOMOD.models.out}}, \code{\link{BIOMOD.projection.out}} or 
+  \item{\code{get_options}}{a
+  \code{\link{BIOMOD.stored.models.options-class}} object from the
+  \code{models.options} slot of a \code{\link{BIOMOD.models.out-class}}
+  object} \item{\code{get_calib_lines}}{a
+  \code{\link{BIOMOD.stored.array-class}} object from the \code{calib.lines}
+  slot of a \code{\link{BIOMOD.models.out}} object}
+
+  \item{\code{get_projected_models}}{a \code{vector} from the
+  \code{models.projected} slot of a \code{\link{BIOMOD.projection.out}}
+  object}
+
+  \item{\code{get_predictions}}{a \code{\link{BIOMOD.stored.data}} object
+  from the \code{proj.out} slot of a \code{\link{BIOMOD.models.out}},
+  \code{\link{BIOMOD.projection.out}} or
   \code{\link{BIOMOD.ensemble.models.out}} object}
-  
-  \item{\code{get_needed_models}}{a \code{vector} containing names of the needed models of a 
-  \code{\link{BIOMOD.ensemble.models.out}} object}
-  \item{\code{get_kept_models}}{a \code{vector} containing names of the kept models of a 
-  \code{\link{BIOMOD.ensemble.models.out}} object}
-  
+
+  \item{\code{get_needed_models}}{a \code{vector} containing names of the
+  needed models of a \code{\link{BIOMOD.ensemble.models.out}} object}
+  \item{\code{get_kept_models}}{a \code{vector} containing names of the kept
+  models of a \code{\link{BIOMOD.ensemble.models.out}} object}
+
   \item{\code{get_formal_data}}{depending on the \code{subinfo} parameter :
   \describe{
-    \item{\code{NULL}}{a \code{\link{BIOMOD.stored.formated.data}} (or 
-    \code{\link{BIOMOD.stored.models.out}}) object from the \code{formated.input.data} (or 
-    \code{models.out}) slot of a \code{\link{BIOMOD.models.out}} (or 
+    \item{\code{NULL}}{a \code{\link{BIOMOD.stored.formated.data-class}} (or
+    \code{\link{BIOMOD.stored.models.out-class}}) object from the
+    \code{formated.input.data} (or \code{models.out}) slot of a
+    \code{\link{BIOMOD.models.out}} (or
     \code{\link{BIOMOD.ensemble.models.out}}) object}
     
-    \item{\code{expl.var.names}}{a \code{vector} from the \code{expl.var.names} slot of a 
-    \code{\link{BIOMOD.models.out}} or \code{\link{BIOMOD.ensemble.models.out}} object}
-    \item{\code{resp.var}}{a \code{vector} from the \code{data.species} slot of the 
-    \code{formated.input.data} slot of a \code{\link{BIOMOD.models.out}} or 
+    \item{\code{expl.var.names}}{a \code{vector} from the
+    \code{expl.var.names} slot of a \code{\link{BIOMOD.models.out}} or
+    \code{\link{BIOMOD.ensemble.models.out}} object}
+    \item{\code{resp.var}}{a \code{vector} from the \code{data.species} slot
+    of the \code{formated.input.data} slot of a
+    \code{\link{BIOMOD.models.out}} or
     \code{\link{BIOMOD.ensemble.models.out}} object}
     
-    \item{\code{expl.var}}{a \code{data.frame} from the \code{data.env.var} slot of the 
-    \code{formated.input.data} slot of a \code{\link{BIOMOD.models.out}} or 
+    \item{\code{expl.var}}{a \code{data.frame} from the \code{data.env.var}
+    slot of the \code{formated.input.data} slot of a
+    \code{\link{BIOMOD.models.out}} or
     \code{\link{BIOMOD.ensemble.models.out}} object}
     
-    \item{\code{MinMax}}{a \code{list} of minimum and maximum values (or levels if factorial) of 
-    variable contained in the \code{data.env.var} slot of the 
-    \code{formated.input.data} slot of a \code{\link{BIOMOD.models.out}} or 
+    \item{\code{MinMax}}{a \code{list} of minimum and maximum values (or
+    levels if factorial) of variable contained in the \code{data.env.var}
+    slot of the \code{formated.input.data} slot of a
+    \code{\link{BIOMOD.models.out}} or
     \code{\link{BIOMOD.ensemble.models.out}} object}
     
-    \item{\code{eval.resp.var}}{a \code{vector} from the \code{eval.data.species} slot of the 
-    \code{formated.input.data} slot of a \code{\link{BIOMOD.models.out}} or 
+    \item{\code{eval.resp.var}}{a \code{vector} from the
+    \code{eval.data.species} slot of the \code{formated.input.data} slot of
+    a \code{\link{BIOMOD.models.out}} or
     \code{\link{BIOMOD.ensemble.models.out}} object}
     
-    \item{\code{eval.expl.var}}{a \code{data.frame} from the \code{eval.data.env.var} slot of the 
-    \code{formated.input.data} slot of a \code{\link{BIOMOD.models.out}} or 
+    \item{\code{eval.expl.var}}{a \code{data.frame} from the
+    \code{eval.data.env.var} slot of the \code{formated.input.data} slot of
+    a \code{\link{BIOMOD.models.out}} or
     \code{\link{BIOMOD.ensemble.models.out}} object}
   }
   }
-  \item{\code{get_built_models}}{a \code{vector} from the \code{models.computed} slot (or 
-  \code{em.computed}) of a \code{\link{BIOMOD.models.out}} (or 
+  \item{\code{get_built_models}}{a \code{vector} from the
+  \code{models.computed} slot (or \code{em.computed}) of a
+  \code{\link{BIOMOD.models.out}} (or
   \code{\link{BIOMOD.ensemble.models.out}}) object}
-  \item{\code{get_evaluations}}{a \code{\link{BIOMOD.stored.array}} (or \code{matrix}) from the 
-  \code{models.evaluation} slot (or \code{model_evaluation} of each model in 
-  \code{em.computed}) of a \code{\link{BIOMOD.models.out}} (or 
+  \item{\code{get_evaluations}}{a
+  \code{\link{BIOMOD.stored.array-class}} (or
+  \code{matrix}) from the \code{models.evaluation} slot (or
+  \code{model_evaluation} of each model in \code{em.computed}) of a
+  \code{\link{BIOMOD.models.out}} (or
   \code{\link{BIOMOD.ensemble.models.out}}) object}
-  \item{\code{get_variables_importance}}{a \code{\link{BIOMOD.stored.array}} from the 
-  \code{variables.importance} slot (or \code{model_variables_importance} of each model in 
-  \code{em.models}) of a \code{\link{BIOMOD.models.out}} (or 
-  \code{\link{BIOMOD.ensemble.models.out}}) object}
+  \item{\code{get_variables_importance}}{a
+  \code{\link{BIOMOD.stored.array-class}} from
+  the \code{variables.importance} slot (or \code{model_variables_importance}
+  of each model in \code{em.models}) of a \code{\link{BIOMOD.models.out}}
+  (or \code{\link{BIOMOD.ensemble.models.out}}) object}
 }
 }
 \description{
@@ -197,7 +212,9 @@ Other Toolbox functions:
 \code{\link{getters.bm}},
 \code{\link{load_stored_object}()},
 \code{\link{predict.bm}},
-\code{\link{predict.em}}
+\code{\link{predict.em}},
+\code{\link{predict2.bm}},
+\code{\link{predict2.em}}
 }
 \author{
 Damien Georges
