@@ -16,16 +16,49 @@ vignette: >
 
 ### <i class="fas fa-chess-pawn"></i> 2022
 
-4.1-1 (2022-08-30)
+#### 4.1-2 (2022-09-29)
+
+##### Major changes
+
+* `dir.name` can now be provided as project argument so that results may be saved in a custom folder.
+* predict with `CTA` algorithm and categorical variables on raster is now possible.
+* Changed evaluation for EM models merging PA datasets  (`em.by = "algo"` or `em.by = "all"`) so that evaluation uses the union of PA data sets instead of the whole environmental space supplied.
+
+##### Minor changes
+
+* Individual EM models projected as raster are now saved with `INT2S` data format when `on_0_1000` is set to `TRUE`.
+* Homogenize the use of load functions (*use* `get_[...]`*,* `load_stored_object` *and* `BIOMOD_LoadModels`*, instead of* `get(load(...))`) and the workflow within `get_[...]` functions (*use* `load_stored_object` *and similar arguments such as* `as.data.frame`*,* `full.name`*, ...*)
+* Adapting predict workflow to properly use S4 class
+* Homogenize `BIOMOD.ensemble.models.out` and `BIOMOD.models.out` objects
+  * Add slots in `BIOMOD.ensemble.models.out` object for evaluations, variables importance and predictions
+  * Moved `.Models.save.objects` in `BIOMOD_modeling` to `.fill_BIOMOD.models.out` in `biomod2_internal.R`
+  * Save slots within `BIOMOD.ensemble.models.out` and use `load_stored_object` to directly get them within `get_[...]` functions
+
+##### Bug Fix
+
+* Validation data can now be properly combined with Pseudo-Absence in `BIOMOD_FormatingData`, instead of throwing an error linked to `data.mask`.
+* Argument `on_0_1000` can now be passed without errors so that projection may either be on a range from 0 to 1 or from 0 to 1000. The latter option being more effective memory-wise.
+* Completed argument check for function `BIOMOD_EnsembleModeling` so that `em.by` can not be of `length > 1`
+* Corrected function `.get_models_assembling` so that it did not confound `MAXENT.Phillips2` with `MAXENT.Phillips` when grouping models by algorithm in `BIOMOD_EnsembleModeling`
+* get_prediction method for `BIOMOD.ensemble.models.out` now accepts an `evaluation` arg. Evaluation values, variables' importance and Calibration/Evaluation predictions for ensemble models are now properly saved by `BIOMOD_EnsembleModeling()`
+* evaluation metrics are no longer calculated for models `prob.ci.inf` et `prob.ci.sup`.
+* Package now properly pass R CMD check
+* `BIOMOD_PresenceOnly` now properly manage `NA`
+
+##### Miscellaneous
+
+* Using models with a single predictor requires updating `gbm` and `maxnet` packages to their development version at rpatin/maxnet and rpatin/gbm can be used. (see issue *<https://github.com/biomodhub/biomod2/issues/102>*)
+
+#### 4.1-1 (2022-08-30)
 
   * add `do.progress` parameter (to render or not progress bar) and `dir.name` parameter in `BIOMOD_FormatingData` and `biomod2` objects (**Mathieu B. request**)
   * fix `BIOMOD_PresenceOnly` function by removing `ecospat` dependency
 
-4.1 (2022-07-12)
+#### 4.1 (2022-07-12)
 
   * fix bugs following major release 4.0
 
-4.0 (2022-03-01)
+#### 4.0 (2022-03-01)
 
   * MAJOR RELEASE
   * clean all functions, reorganize files, remove old / unused functions
@@ -36,7 +69,7 @@ vignette: >
 
 ### <i class="fas fa-charging-station"></i> 2021
 
-3.5-3 (2021-11-02)
+#### 3.5-3 (2021-11-02)
 
   * clean BIOMOD classes definitions and functions (`biomod2_classes` files)
   * clean `BIOMOD_FormatingData` function
@@ -44,7 +77,7 @@ vignette: >
   * fix `BIOMOD_FormatingData` : test class condition only a first element (to deal with `matrix` / `array` objects)
   * fix `BIOMOD_EnsembleForecasting` for `EMcv` model when only one single model was kept
 
-3.5-2 (2021-10-18)
+#### 3.5-2 (2021-10-18)
 
   * fix `BIOMOD_PresenceOnly` function (previously `BIOMOD_presenceonly`)
   * fix `BIOMOD_CrossValidation` function (previously `BIOMOD_cv`)
@@ -53,26 +86,26 @@ vignette: >
 
 ### <i class="fas fa-battery-full"></i> 2018-2019
 
-3.3-20 (2019-03-05)
+#### 3.3-20 (2019-03-05)
 
   * Remove maxent Tsurukoa because not maintained anymore (required by CRAN team)
   
-3.3-18 (2018-07-04)
+#### 3.3-18 (2018-07-04)
 
   * fix the gbm multicore issue
 
-3.3-17 (2018-04-23)
+#### 3.3-17 (2018-04-23)
 
   * correct the single presence pseudo-absences generation bug (**Matthias G.**)
 
 
 ### <i class="fas fa-battery-three-quarters"></i> 2016
 
-3.3-6 (2016-01-14)
+#### 3.3-6 (2016-01-14)
 
   * add `get_predictions` function for ensemble models
 
-3.3-5 (2016-01-04)
+#### 3.3-5 (2016-01-04)
 
   * MARS models are now computed throw `earth` package (was `mda` in previous versions)
   * MARS now supports factorial explanatory variables
@@ -81,16 +114,16 @@ vignette: >
 
 ### <i class="fas fa-battery-half"></i> 2015
 
-3.3-4 (2015-11-04)
+#### 3.3-4 (2015-11-04)
 
   * update `BIOMOD_tuning` function (**Frank B.**)
 
-3.3-3 (2015-10-27)
+#### 3.3-3 (2015-10-27)
 
   * force sampling of each level of factorial variables
   * add `betamultiplier` parameter to tune MAXENT.Phillips (**Frank B. request**)
 
-3.3-00 (2015-10-05)
+#### 3.3-00 (2015-10-05)
 
   * MAJOR RELEASE
   * optimize the memory consumption of projections and ensemble projections procedure
@@ -98,7 +131,7 @@ vignette: >
   * classical version of `MAXENT` has been renamed `MAXENT.Phillips`
   * add a new version of MAXENT `MAXENT.Tsuruoka`
 
-3.2-00 (2015-07-28)
+#### 3.2-00 (2015-07-28)
 
   * add 3 new functions in `biomod2` (**Frank B. contribution**)
   * `BIOMOD_cv` to control models cross validation procedure
@@ -108,48 +141,48 @@ vignette: >
 
 ### <i class="fas fa-battery-quarter"></i> 2014
 
-3.1-59 (2014-10-23)
+#### 3.1-59 (2014-10-23)
 
   * add model evaluation scores plotting function
   * dependence to `ggplot2`
 
-3.1-53 (2014-08-06)
+#### 3.1-53 (2014-08-06)
 
   * new ensemble models names to be more coherent with formal models names
 
-3.1-44 (2014-05-20)
+#### 3.1-44 (2014-05-20)
 
   * possibility to use user defined function to influence the way models are weighted in weighted mean ensemble models (**thanks to Frank B.**)
 
-3.1-43 (2014-05-20)
+#### 3.1-43 (2014-05-20)
 
   * add of `as.data.frame` argument for `get_evaluations()` function to enable formal and ensemble models evaluation scores merging
 
-3.1-42 (2014-05-19)
+#### 3.1-42 (2014-05-19)
 
   * enable ensemble forecasting models selection (**thanks to Robin E.**) 
 
 
 ### <i class="fas fa-battery-empty"></i> 2013
 
-3.1-17 (2013-10-23)
+#### 3.1-17 (2013-10-23)
 
   * add parameter to control amount of memory reserved for `MAXENT` calculations (via java) (**thanks to Burke G.**)
   * optimization of memory consumption in models projections when `do.stack` argument is set to `FALSE`
   * binary and filtering projections output re-activated 
 
-3.1-1 (2013-09-04)
+#### 3.1-1 (2013-09-04)
 
   * limitation of package dependencies
   * fairely definition of package namespace
   * add functions to update `biomod2` objects from a version to the current one
 
-3.0.2 (2013-07-23)
+#### 3.0.2 (2013-07-23)
 
   * new functions to evaluate a-posteriori models quality
   * remove weights for models scaling and set it `FALSE` by default
 
-3.0.0 (2013-07-01)
+#### 3.0.0 (2013-07-01)
 
   * MAJOR RELEASES
   * ensemble models are now `biomod2` models objects (should be predicted, evaluated, and you can do variables importance) the same way than all formal `biomod2` models
@@ -160,39 +193,39 @@ vignette: >
   * new `variable_importance` function
   * ...
 
-2.1.37 (2013-06-12)
+#### 2.1.37 (2013-06-12)
 
   * change (temporally?) gam default package from `mgcv` to `gam` to deal with memory (cache) over-consuming (**thanks to Burke G.**)
   * update of `response.plot2` function (optimization + deal with factorial variables)
 
-2.1.32 (2013-05-30)
+#### 2.1.32 (2013-05-30)
 
   * weights for user defined pseudo-absences are now supported (**thanks to Rui F.**)
   * deal with unknown factors predictions (**thanks to Denis M.**)
 
-2.1.13 (2013-03-06)
+#### 2.1.13 (2013-03-06)
 
   * Add `ProbDensFunc()` function to package to produce nice plots that show inter-models variability
 
-2.1.12 (2013-03-04)
+#### 2.1.12 (2013-03-04)
 
   * add `rasterVis` dependency for nicer `biomod2` plots
   * `PA.dist.min` and `PA.dist.max` are now defined in meters when you work with unprojected rasters in disk pseudo absences selection
 
-2.1.9 (2013-02-28)
+#### 2.1.9 (2013-02-28)
 
   * possibility to indicate manually which data should be used for calibration (resp. for validation) of models within `BIOMOD_Modeling`
 
-2.1.9 (2013-02-27)
+#### 2.1.9 (2013-02-27)
 
   * one var modeling supported (**thanks Anne O.**)
   * new options for response curves plotting (`col`, `lty`, `data_species`...)
 
-2.1.8 (2013-02-25)
+#### 2.1.8 (2013-02-25)
 
   * response plot supports now formal models
 
-2.1.0 (2013-02-21)
+#### 2.1.0 (2013-02-21)
 
   * MAJOR RELEASE
   * CRAN SUBMISION
@@ -203,29 +236,29 @@ vignette: >
   * add `pROC` package dependency
   * add a modeling cleaner that remove modeling objects from both memory and hard drive: `RemoveProperly()`
 
-2.0.11 (2013-02-18)
+#### 2.0.11 (2013-02-18)
 
   * possibility to consider a user.defined pseudo absences selection (**thanks to Signe N.**)
   * possibility to switch off stepwise glm selection (***thanks Frank B.**)
 
-2.0.9 (2013-02-15)
+#### 2.0.9 (2013-02-15)
 
   * automatic save on hard drive of `BIOMOD_Projection` outputs
 
-2.0.8 (2013-02-14)
+#### 2.0.8 (2013-02-14)
 
   * `BIOMOD_LoadModels` supports multiple models input
   * deal with `NA` in evaluation table issue (***thanks Frank B.**)
 
-2.0.7 (2013-02-12)
+#### 2.0.7 (2013-02-12)
 
   * bug on weights corrected (**thanks to Lugi M.**)
 
-2.0.3 (2013-01-18)
+#### 2.0.3 (2013-01-18)
 
   * deal with `MAXENT` categorical variables and categorical raster input
 
-2.0.0 (2013-01-17)
+#### 2.0.0 (2013-01-17)
 
   * MAJOR RELEASE
   * CRAN SUBMISION
@@ -237,6 +270,6 @@ vignette: >
 
 ### <i class="fas fa-bahai"></i> Year 0
 
-1.x.x
+#### 1.x.x
 
   * development phase
