@@ -241,6 +241,10 @@ setGeneric("get_variables_importance", function(obj, ...) { standardGeneric("get
 ##' myFiles <- paste0('external/bioclim/current/bio', c(3, 4, 7, 11, 12), '.grd')
 ##' myExpl <- raster::stack(system.file(myFiles, package = 'biomod2'))
 ##' 
+##' \dontshow{
+##' myExtent <- raster::extent(-10,36,40,80)
+##' myExpl <- raster::stack(raster::crop(myExpl, myExtent))
+##' }
 ##' 
 ##' ## ----------------------------------------------------------------------- #
 ##' # Format Data with true absences
@@ -606,6 +610,10 @@ setMethod("get_variables_importance", "BIOMOD.models.out",
 ##' myFiles <- paste0('external/bioclim/current/bio', c(3, 4, 7, 11, 12), '.grd')
 ##' myExpl <- raster::stack(system.file(myFiles, package = 'biomod2'))
 ##' 
+##' \dontshow{
+##' myExtent <- raster::extent(-10,36,40,80)
+##' myExpl <- raster::stack(raster::crop(myExpl, myExtent))
+##' }
 ##' 
 ##' ## ----------------------------------------------------------------------- #
 ##' file.out <- paste0(myRespName, "/", myRespName, ".AllModels.models.out")
@@ -941,6 +949,10 @@ setMethod("get_predictions", "BIOMOD.projection.out",
 ##' myFiles <- paste0('external/bioclim/current/bio', c(3, 4, 7, 11, 12), '.grd')
 ##' myExpl <- raster::stack(system.file(myFiles, package = 'biomod2'))
 ##' 
+##' \dontshow{
+##' myExtent <- raster::extent(-10,36,40,80)
+##' myExpl <- raster::stack(raster::crop(myExpl, myExtent))
+##' }
 ##' 
 ##' ## ----------------------------------------------------------------------- #
 ##' file.out <- paste0(myRespName, "/", myRespName, ".AllModels.models.out")
