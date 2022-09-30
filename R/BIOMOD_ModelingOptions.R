@@ -36,14 +36,14 @@
 ##' 
 ##' The \code{\link{bm_DefaultModelingOptions}} function prints all default parameter values for 
 ##' all available models. \cr This output can be copied and pasted to be used as is (with wanted 
-##' changes) as function arguments (see \href{BIOMOD_ModelingOptions.html#examples}{Examples}).
+##' changes) as function arguments (see \href{https://biomodhub.github.io/biomod2/reference/BIOMOD_ModelingOptions.html#examples}{Examples}).
 ##' 
 ##' Below is the detailed list of all modifiable parameters for each available model.
 ##'
 ##' @section GLM : (\code{\link[stats]{glm}})
 ##' \itemize{
 ##'   \item{\code{myFormula}}{ : a typical \code{formula} object (see 
-##'   \href{BIOMOD_ModelingOptions.html#examples}{Examples}). \cr If not \code{NULL}, \code{type} 
+##'   \href{https://biomodhub.github.io/biomod2/reference/BIOMOD_ModelingOptions.html#examples}{Examples}). \cr If not \code{NULL}, \code{type} 
 ##'   and \code{interaction.level} parameters are switched off. \cr 
 ##'   You can choose to either :
 ##'   \itemize{
@@ -96,7 +96,7 @@
 ##'   be \code{GAM_gam} (see \code{\link[gam]{gam}}), \code{GAM_mgcv} (see \code{\link[mgcv]{gam}}) 
 ##'   or \code{BAM_mgcv} (see \code{\link[mgcv]{bam}})}
 ##'   \item{\code{myFormula}}{ : a typical \code{formula} object (see 
-##'   \href{BIOMOD_ModelingOptions.html#examples}{Examples}). \cr If not \code{NULL}, \code{type} 
+##'   \href{https://biomodhub.github.io/biomod2/reference/BIOMOD_ModelingOptions.html#examples}{Examples}). \cr If not \code{NULL}, \code{type} 
 ##'   and \code{interaction.level} parameters are switched off. \cr 
 ##'   You can choose to either :
 ##'   \itemize{
@@ -182,7 +182,7 @@
 ##' \emph{Please refer to \code{\link[earth]{earth}} help file for more details.}
 ##' \itemize{
 ##'   \item{\code{myFormula}}{ : a typical \code{formula} object (see 
-##'   \href{BIOMOD_ModelingOptions.html#examples}{Examples}). \cr If not \code{NULL}, \code{type} 
+##'   \href{https://biomodhub.github.io/biomod2/reference/BIOMOD_ModelingOptions.html#examples}{Examples}). \cr If not \code{NULL}, \code{type} 
 ##'   and \code{interaction.level} parameters are switched off. \cr 
 ##'   You can choose to either :
 ##'   \itemize{
@@ -218,7 +218,7 @@
 ##'   \item{\code{maxnodes = NULL}}
 ##' }
 ##'
-##' @section MAXENT.Phillips : (\url{https://biodiversityinformatics.amnh.org/open_source/maxent})
+##' @section MAXENT.Phillips : (\url{https://biodiversityinformatics.amnh.org/open_source/maxent/})
 ##' \itemize{
 ##'   \item{\code{path_to_maxent.jar = getwd()}}{ : a \code{character} corresponding to 
 ##'   \pkg{maxent.jar} file link}
@@ -282,7 +282,7 @@
 ##' % }
 ##'
 ##'
-##' @keywords models, options
+##' @keywords models options
 ##' 
 ##' 
 ##' @seealso \code{\link{BIOMOD_Tuning}}, \code{\link{BIOMOD_Modeling}}

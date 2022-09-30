@@ -8,9 +8,7 @@
 badge for github version :
 badger::badge_github_version("biomodhub/biomod2", "blue") 
 -->
-<br/>
-<br/>
-<br/>
+
 <div style="text-align:center;">
 **------------------------------------------------------------** <br/>
 **Species distribution modeling, <br/>

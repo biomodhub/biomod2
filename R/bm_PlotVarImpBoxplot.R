@@ -8,7 +8,7 @@
 ##' models, from \code{\link{BIOMOD.models.out}} or \code{\link{BIOMOD.ensemble.models.out}} 
 ##' objects that can be obtained from \code{\link{BIOMOD_Modeling}} or 
 ##' \code{\link{BIOMOD_EnsembleModeling}} functions. Scores are represented according to 3 
-##' grouping methods (see \href{bm_PlotVarImpBoxplot.html#details}{Details}).
+##' grouping methods (see Details).
 ##' 
 ##' 
 ##' @param bm.out a \code{\link{BIOMOD.models.out}} or \code{\link{BIOMOD.ensemble.models.out}} 
@@ -18,7 +18,7 @@
 ##' must be among \code{model}, \code{algo}, \code{run}, \code{dataset}, \code{expl.var}
 ##' @param do.plot (\emph{optional, default} \code{TRUE}) \cr 
 ##' A \code{logical} value defining whether the plot is to be rendered or not
-##' @param \ldots some additional arguments (see \href{bm_PlotVarImpBoxplot.html#details}{Details})
+##' @param \ldots some additional arguments (see Details)
 ##' 
 ##' 
 ##' @return  
@@ -37,7 +37,7 @@
 ##' }
 ##' 
 ##' 
-##' @keywords evaluation, ggplot, boxplot
+##' @keywords evaluation ggplot boxplot
 ##' 
 ##' 
 ##' @seealso \code{\link{BIOMOD.models.out}}, \code{\link{BIOMOD.ensemble.models.out}}, 
@@ -67,6 +67,10 @@
 ##' myFiles <- paste0('external/bioclim/current/bio', c(3, 4, 7, 11, 12), '.grd')
 ##' myExpl <- raster::stack(system.file(myFiles, package = 'biomod2'))
 ##' 
+##' \dontshow{
+##' myExtent <- raster::extent(-10,36,40,80)
+##' myExpl <- raster::stack(raster::crop(myExpl, myExtent))
+##' }
 ##' 
 ##' # ---------------------------------------------------------------
 ##' file.out <- paste0(myRespName, "/", myRespName, ".AllModels.models.out")

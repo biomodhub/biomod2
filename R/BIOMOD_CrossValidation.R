@@ -42,7 +42,7 @@
 ##'   stratification uses \code{k} partitions along the y-gradient, \code{x} stratification does 
 ##'   the same for the x-gradient, and \code{both} combines them.
 ##'   \item \code{block} stratification was described in \emph{Muscarella et al. 2014} (see 
-##'   \href{BIOMOD_CrossValidation.html#References}{References}). Four bins of equal size are 
+##'   \href{https://biomodhub.github.io/biomod2/reference/BIOMOD_CrossValidation.html#References}{References}). Four bins of equal size are 
 ##'   partitioned (bottom-left, bottom-right, top-left and top-right).
 ##' }
 ##' 

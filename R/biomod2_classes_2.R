@@ -20,8 +20,7 @@
 ##' @slot inMemory a \code{logical} defining whether the \code{val} slot has been loaded in 
 ##' memory or not
 ##' @slot link a \code{character} containing the file name of the saved \code{val} slot
-##' @slot val an object of type depending on the \code{BIOMOD.stored.[...]} class (see 
-##' \href{BIOMOD.stored.data.html#details}{Details})
+##' @slot val an object of type depending on the \code{BIOMOD.stored.[...]} class (see Details)
 ##' 
 ##' @details 
 ##' 

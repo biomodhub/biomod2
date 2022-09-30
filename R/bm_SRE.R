@@ -8,7 +8,7 @@
 ##' range envelop (SRE) (equivalent to 
 ##' \href{https://caws.org.nz/PPQ567/PPQ\%2006-1\%20pp008-9\%20Busby.pdf}{BIOCLIM}) 
 ##' using the extreme percentiles (as recommended by Nix or Busby, see 
-##' \href{bm_SRE.html#references}{References} and \href{bm_SRE.html#details}{Details}).
+##' \href{https://biomodhub.github.io/biomod2/reference/bm_SRE.html#references}{References} and Details).
 ##' 
 ##' 
 ##' @param resp.var a \code{vector}, \code{\link[sp]{SpatialPoints}} or 
@@ -22,8 +22,7 @@
 ##' columns or layers) that will be used to predict the SRE model
 ##' @param quant a \code{numeric} between \code{0} and \code{0.5} defining the half-quantile 
 ##' corresponding to the most extreme value for each variable not to be taken into account for 
-##' determining the tolerance boundaries of the considered species (see 
-##' \href{bm_SRE.html#details}{Details})
+##' determining the tolerance boundaries of the considered species (see Details)
 ##' @param do.extrem (\emph{optional, default} \code{FALSE}) \cr 
 ##' A \code{logical} value defining whether a \code{matrix} containing extreme conditions 
 ##' supported should be returned or not
@@ -66,7 +65,7 @@
 ##'   \emph{Plant protection quarterly} \bold{6} (1991): 8-9.
 ##' }
 ##' 
-##' @keywords models, surface range envelop, sre, quantile
+##' @keywords models "surface range envelop" sre quantile
 ##' 
 ##' 
 ##' @seealso \code{\link{bm_PseudoAbsences}}, \code{\link{BIOMOD_FormatingData}}, 

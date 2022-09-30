@@ -12,7 +12,7 @@
 ##' object that can be obtained with the \code{\link{BIOMOD_Modeling}} or 
 ##' \code{\link{BIOMOD_EnsembleModeling}} functions
 ##' 
-##' @param \ldots (\emph{optional, see \href{BIOMOD_LoadModels.html#details}{Details})}) 
+##' @param \ldots (\emph{optional, see Details)}) 
 ##' 
 ##' 
 ##' @return 

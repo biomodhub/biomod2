@@ -10,8 +10,7 @@
 ##' @title Select pseudo-absences
 ##' 
 ##' @description This internal \pkg{biomod2} function allows to select pseudo-absences according 
-##' to 4 different methods : \code{random}, \code{sre}, \code{disk} or \code{user.defined} (see 
-##' \href{bm_PseudoAbsences/html#details}{Details}).
+##' to 4 different methods : \code{random}, \code{sre}, \code{disk} or \code{user.defined} (see Details).
 ##' 
 ##' 
 ##' @param resp.var a \code{vector}, \code{\link[sp]{SpatialPoints}} or 
@@ -87,7 +86,7 @@
 ##' whether each point is to be considered as pseudo-absence or not for each dataset.
 ##' 
 ##'
-##' @keywords pseudo-absence, random, SRE, disk
+##' @keywords pseudo-absence random SRE disk
 ##' 
 ##' 
 ##' @seealso \code{\link{BIOMOD.formated.data.PA}}, \code{\link{BIOMOD_FormatingData}}

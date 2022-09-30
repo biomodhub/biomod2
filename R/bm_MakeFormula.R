@@ -15,7 +15,7 @@
 ##' \code{simple}, \code{quadratic}, \code{polynomial} or \code{s_smoother}
 ##' @param interaction.level an \code{integer} corresponding to the interaction level depth 
 ##' between explanatory variables
-##' @param \ldots some additional arguments (see \href{bm_MakeFormula.html#details}{Details})
+##' @param \ldots some additional arguments (see Details)
 ##' 
 ##' 
 ##' @return  
@@ -39,7 +39,7 @@
 ##' }
 ##' 
 ##' 
-##' @keywords models, formula, options
+##' @keywords models formula options
 ##' 
 ##' 
 ##' @seealso \code{\link[stats]{formula}}, \code{\link[mgcv]{s}}, \code{\link[gam]{s}}, 

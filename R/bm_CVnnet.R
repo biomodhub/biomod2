@@ -29,7 +29,7 @@
 ##'   \item{\code{AUC} : }{the corresponding Area Under Curve}
 ##' }
 ##' 
-##' @keywords neural networks, cross-validation
+##' @keywords "neural networks" cross-validation
 ##' 
 ##' 
 ##' @seealso \code{\link[nnet]{nnet}}, \code{\link[pROC]{auc}}, \code{\link[pROC]{roc}}, 

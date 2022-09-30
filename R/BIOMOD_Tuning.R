@@ -30,7 +30,7 @@
 ##' @param ctrl.RF control parameters for \code{RF}
 ##' @param ANN.method a \code{character} corresponding to the classification or regression model 
 ##' to use for \code{ANN}, \cr 
-##' must be \code{avNNet} (see \url{http://topepo.github.io/caret/Neural_Network.html})
+##' must be \code{avNNet} (see \url{http://topepo.github.io/caret/train-models-by-tag.html#Neural_Network})
 ##' @param ANN.size.tune a \code{vector} of size parameters (number of units in the hidden layer) 
 ##' for \code{ANN}
 ##' @param ANN.decay.tune a \code{vector} of weight decay parameters for \code{ANN}
@@ -40,11 +40,11 @@
 ##' for \code{ANN}
 ##' @param GAM.method a \code{character} corresponding to the classification or regression model 
 ##' to use for \code{GAM}, \cr 
-##' must be \code{gam} (see \url{http://topepo.github.io/caret/Generalized_Additive_Model.html})
+##' must be \code{gam} (see \url{http://topepo.github.io/caret/train-models-by-tag.html#generalized-additive-model})
 ##' @param GLM.method a \code{character} corresponding to the classification or regression model 
 ##' to use for \code{GLM}, \cr 
 ##' must be \code{glmStepAIC} (see 
-##' \url{http://topepo.github.io/caret/Generalized_Linear_Model.html})
+##' \url{http://topepo.github.io/caret/train-models-by-tag.html#Generalized_Linear_Model})
 ##' @param GLM.type a \code{vector} of \code{character} corresponding to modeling types for 
 ##' \code{GLM}, \cr must be among \code{simple}, \code{quadratic}, \code{polynomial}, 
 ##' \code{s_smoother}
@@ -52,7 +52,7 @@
 ##' @param MARS.method a \code{character} corresponding to the classification or regression model 
 ##' to use for \code{MARS}, \cr 
 ##' must be \code{earth} (see 
-##' \url{http://topepo.github.io/caret/Multivariate_Adaptive_Regression_Splines.html})
+##' \url{http://topepo.github.io/caret/train-models-by-tag.html#Multivariate_Adaptive_Regression_Splines})
 ##' @param ME.metric a \code{character} corresponding to the evaluation metric used to select 
 ##' optimal model and tune parameters for \code{MAXENT.Phillips}, must be either 
 ##' \code{auc.val.avg}, \code{auc.diff.avg}, \code{or.mtp.avg}, \code{or.10p.avg} or \code{AICc}
@@ -76,7 +76,7 @@
 ##' train \code{MAXENT.Phillips}
 ##' @param RF.method a \code{character} corresponding to the classification or regression model 
 ##' to use for \code{RF}, \cr 
-##' must be \code{rf} (see \url{http://topepo.github.io/caret/Random_Forest.html})
+##' must be \code{rf} (see \url{http://topepo.github.io/caret/train-models-by-tag.html#random-forest})
 ##' @param weights a \code{vector} of \code{numeric} values corresponding to observation weights
 ##' 
 ##' 

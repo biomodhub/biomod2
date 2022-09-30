@@ -64,7 +64,7 @@
 ##' \deqn{proj.future - 2 * proj.current}
 ##' 
 ##' 
-##' @keywords species range change, projections, gain, loss
+##' @keywords "species range change" projections gain loss
 ##' 
 ##' 
 ##' @seealso \code{\link{BIOMOD_Projection}}, \code{\link{BIOMOD_EnsembleForecasting}}, 

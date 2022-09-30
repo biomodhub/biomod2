@@ -7,7 +7,7 @@
 ##' @description This function allows to calibrate and evaluate a range of modeling techniques 
 ##' for a given species distribution. The dataset can be split up for independent calibration and 
 ##' validation, and the predictive power of the different models can be estimated using a range 
-##' of evaluation metrics (see \href{BIOMOD_Modeling.html#details}{Details}).
+##' of evaluation metrics (see Details).
 ##' 
 ##' 
 ##' @param bm.format a \code{\link{BIOMOD.formated.data}} or \code{\link{BIOMOD.formated.data.PA}} 
@@ -33,10 +33,10 @@
 ##' dataset should be computed or not
 ##' @param weights (\emph{optional, default} \code{NULL}) \cr 
 ##' A \code{vector} of \code{numeric} values corresponding to observation weights (one per 
-##' observation, see \href{BIOMOD_Modeling.html#details}{Details})
+##' observation, see Details)
 ##' @param prevalence (\emph{optional, default} \code{NULL}) \cr 
 ##' A \code{numeric} between \code{0} and \code{1} corresponding to the species prevalence to 
-##' build '\emph{weighted response weights}' (see \href{BIOMOD_Modeling.html#details}{Details})
+##' build '\emph{weighted response weights}' (see Details)
 ##' @param metric.eval a \code{vector} containing evaluation metric names to be used, must 
 ##' be among \code{ROC}, \code{TSS}, \code{KAPPA}, \code{ACCURACY}, \code{BIAS}, \code{POD}, 
 ##' \code{FAR}, \code{POFD}, \code{SR}, \code{CSI}, \code{ETS}, \code{HK}, \code{HSS}, \code{OR}, 
@@ -71,7 +71,7 @@
 ##'   \item a \emph{hidden} folder, named \code{.BIOMOD_DATA}, and containing outputs related 
 ##'   files (original dataset, calibration lines, pseudo-absences selected, predictions, 
 ##'   variables importance, evaluation values...), that can be retrieved with 
-##'   \href{getters.out.html}{\code{get_[...]}} or \code{\link{load}} functions, and used by other 
+##'   \href{https://biomodhub.github.io/biomod2/reference/getters.out.html}{\code{get_[...]}} or \code{\link{load}} functions, and used by other 
 ##'   \pkg{biomod2} functions, like \code{\link{BIOMOD_Projection}} or 
 ##'   \code{\link{BIOMOD_EnsembleModeling}}
 ##' }
@@ -100,7 +100,7 @@
 ##'     \item \code{MARS} : Multiple Adaptive Regression Splines (\code{\link[earth]{earth}})
 ##'     \item \code{RF} : Random Forest (\code{\link[randomForest]{randomForest}})
 ##'     \item \code{MAXENT.Phillips} : Maximum Entropy 
-##'     (\url{https://biodiversityinformatics.amnh.org/open_source/maxent})
+##'     (\url{https://biodiversityinformatics.amnh.org/open_source/maxent/})
 ##'     \item \code{MAXENT.Phillips.2} : Maximum Entropy (\code{\link[maxnet]{maxnet}})
 ##'   }}
 ##'   
@@ -153,7 +153,7 @@
 ##'   }
 ##'   Optimal value of each method can be obtained with the \code{\link{get_optim_value}} 
 ##'   function. Several evaluation metrics can be selected. \emph{Please refer to the 
-##'   \href{http://www.cawcr.gov.au/projects/verification/##'Methods_for_dichotomous_forecasts}{CAWRC website} 
+##'   \href{https://www.cawcr.gov.au/projects/verification/}{CAWRC website (section "Methods for dichotomous forecasts")} 
 ##'   to get detailed description of each metric.}
 ##'   }
 ##'   
@@ -179,7 +179,7 @@
 ##' }
 ##' 
 ##' 
-##' @keywords models, regression, nonlinear, multivariate, nonparametric, tree
+##' @keywords models regression nonlinear multivariate nonparametric tree
 ##' 
 ##' 
 ##' @seealso \code{\link[stats]{glm}}, \code{\link[gam]{gam}}, \code{\link[mgcv]{gam}}, 

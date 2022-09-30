@@ -8,7 +8,7 @@
 ##' models, from \code{\link{BIOMOD.models.out}} or \code{\link{BIOMOD.ensemble.models.out}} 
 ##' objects that can be obtained from \code{\link{BIOMOD_Modeling}} or 
 ##' \code{\link{BIOMOD_EnsembleModeling}} functions. Scores are represented according to 2 
-##' grouping methods (see \href{bm_PlotEvalBoxplot.html#details}{Details}).
+##' grouping methods (see Details).
 ##' 
 ##' 
 ##' @param bm.out a \code{\link{BIOMOD.models.out}} or \code{\link{BIOMOD.ensemble.models.out}} 
@@ -18,7 +18,7 @@
 ##' must be among \code{model}, \code{algo}, \code{run}, \code{dataset}
 ##' @param do.plot (\emph{optional, default} \code{TRUE}) \cr 
 ##' A \code{logical} value defining whether the plot is to be rendered or not
-##' @param \ldots some additional arguments (see \href{bm_PlotEvalMean.html#details}{Details})
+##' @param \ldots some additional arguments (see Details)
 ##' 
 ##' 
 ##' @return  
@@ -39,7 +39,7 @@
 ##' }
 ##' 
 ##' 
-##' @keywords evaluation, ggplot, boxplot
+##' @keywords evaluation ggplot boxplot
 ##' 
 ##' 
 ##' @seealso \code{\link{BIOMOD.models.out}}, \code{\link{BIOMOD.ensemble.models.out}}, 

@@ -8,7 +8,7 @@
 ##' \code{\link{BIOMOD_Modeling}} function in one (or several) ensemble model. Modeling 
 ##' uncertainty can be assessed as well as variables importance, ensemble predictions can be 
 ##' evaluated against original data, and created ensemble models can be projected over new 
-##' conditions (see \href{BIOMOD_EnsembleModeling.html#details}{Details}).
+##' conditions (see Details).
 ##' 
 ##' 
 ##' @param bm.mod a \code{\link{BIOMOD.models.out}} object returned by the 
@@ -64,8 +64,7 @@
 ##' probabilities across predictions or not
 ##' @param prob.mean.weight.decay (\emph{optional, default} \code{proportional}) \cr 
 ##' A value defining the relative importance of the weights (if \code{prob.mean.weight = TRUE}). 
-##' A high value will strongly discriminate \emph{good} models from the \emph{bad} ones (see 
-##' \href{BIOMOD_EnsembleModeling.html#details}{Details}), while \code{proportional} will 
+##' A high value will strongly discriminate \emph{good} models from the \emph{bad} ones (see Details), while \code{proportional} will 
 ##' attribute weights proportionally to the models evaluation scores
 ##' @param nb.cpu (\emph{optional, default} \code{1}) \cr 
 ##' An \code{integer} value corresponding to the number of computing resources to be used to 
@@ -87,7 +86,7 @@
 ##'   \item a \emph{hidden} folder, named \code{.BIOMOD_DATA}, and containing outputs related 
 ##'   files (original dataset, calibration lines, pseudo-absences selected, predictions, 
 ##'   variables importance, evaluation values...), that can be retrieved with 
-##'   \href{getters.out.html}{\code{get_[...]}} or \code{\link{load}} functions, and used by other 
+##'   \href{https://biomodhub.github.io/biomod2/reference/getters.out.html}{\code{get_[...]}} or \code{\link{load}} functions, and used by other 
 ##'   \pkg{biomod2} functions, like \code{\link{BIOMOD_EnsembleForecasting}}
 ##' }
 ##' 
@@ -226,7 +225,7 @@
 ##' }
 ##' 
 ##' 
-##' @keywords models, ensemble, weights
+##' @keywords models ensemble weights
 ##' 
 ##' 
 ##' @seealso \code{\link{BIOMOD_FormatingData}}, \code{\link{BIOMOD_ModelingOptions}}, 

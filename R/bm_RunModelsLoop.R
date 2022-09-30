@@ -75,7 +75,7 @@
 ##' }
 ##' 
 ##' 
-##' @keywords models, formula, options, CTA, GLM, GBM, GAM, RF, ANN, FDA, SRE, MARS, MAXENT
+##' @keywords models formula options CTA GLM GBM GAM RF ANN FDA SRE MARS MAXENT
 ##' 
 ##' 
 ##' @seealso \code{\link[rpart]{rpart}}, \code{\link[rpart]{prune}}, \code{\link[gbm]{gbm}}, 

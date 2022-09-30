@@ -43,10 +43,10 @@
 ##' @param compress (\emph{optional, default} \code{TRUE}) \cr 
 ##' A \code{logical} or a \code{character} value defining whether and how objects should be 
 ##' compressed when saved on hard drive. Must be either \code{TRUE}, \code{FALSE}, \code{xz} or 
-##' \code{gzip} (see \href{BIOMOD_Projection.html#details}{Details})
+##' \code{gzip} (see Details)
 ##' @param build.clamping.mask (\emph{optional, default} \code{TRUE}) \cr 
 ##' A \code{logical} value defining whether a clamping mask should be built and saved on hard 
-##' drive or not (see \href{BIOMOD_Projection.html#details}{Details}))
+##' drive or not (see Details)
 ##' 
 ##' @param nb.cpu (\emph{optional, default} \code{1}) \cr 
 ##' An \code{integer} value corresponding to the number of computing resources to be used to 
@@ -54,7 +54,7 @@
 ##' @param seed.val (\emph{optional, default} \code{NULL}) \cr 
 ##' An \code{integer} value corresponding to the new seed value to be set
 ##' 
-##' @param \ldots (\emph{optional, see \href{BIOMOD_Projection.html#details}{Details})}) 
+##' @param \ldots (\emph{optional, see Details)}) 
 ##' 
 ##' 
 ##' @return
@@ -104,7 +104,7 @@
 ##' }
 ##' 
 ##' 
-##' @keywords models, projection
+##' @keywords models projection
 ##' 
 ##' 
 ##' @seealso \code{\link{BIOMOD_Modeling}}, \code{\link{BIOMOD_EnsembleModeling}}, 

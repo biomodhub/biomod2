@@ -35,7 +35,7 @@
 ##' \code{data.frame} or \code{array} object
 ##' @param subinfo a \code{character} corresponding to the information to be extracted, must be 
 ##' among \code{NULL}, \code{expl.var.names}, \code{resp.var}, \code{expl.var}, \code{MinMax}, 
-##' \code{eval.resp.var}, \code{eval.expl.var} (see \href{getters.out.html#details}{Details})
+##' \code{eval.resp.var}, \code{eval.expl.var} (see Details)
 ##' @param evaluation a \code{logical} defining whether evaluation data should be used or not
 ##' @param full.name a \code{vector} containing model names to be kept, must be either \code{all} 
 ##' or a sub-selection of model names

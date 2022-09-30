@@ -46,7 +46,7 @@
 ##' only the score for this threshold will be returned.
 ##'
 ##'
-##' @keywords models, options, evaluation
+##' @keywords models options evaluation
 ##' 
 ##'
 ##' @seealso \code{\link{BIOMOD_Modeling}}, \code{\link{bm_RunModelsLoop}}, 

@@ -29,7 +29,7 @@
 ##' }
 ##'   
 ##'   
-##' @keywords models, formula, options
+##' @keywords models formula options
 ##' 
 ##' 
 ##' @seealso \code{\link{bm_CVnnet}}

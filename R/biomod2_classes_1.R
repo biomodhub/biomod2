@@ -502,7 +502,7 @@ setMethod('show', signature('BIOMOD.formated.data'),
 ##' @param PA.strategy (\emph{optional, default} \code{NULL}) \cr 
 ##' If pseudo-absence selection, a \code{character} defining the strategy that will be used to 
 ##' select the pseudo-absence points. Must be \code{random}, \code{sre}, \code{disk} or 
-##' \code{user.defined} (see \href{BIOMOD_FormatingData.html#details}{Details})
+##' \code{user.defined} (see Details)
 ##' @param PA.nb.absences (\emph{optional, default} \code{0}) \cr 
 ##' If pseudo-absence selection, and \code{PA.strategy = 'random'} or \code{PA.strategy = 'sre'} 
 ##' or \code{PA.strategy = 'disk'}, an \code{integer} corresponding to the number of pseudo-absence 
@@ -510,21 +510,20 @@ setMethod('show', signature('BIOMOD.formated.data'),
 ##' @param PA.sre.quant (\emph{optional, default} \code{0}) \cr 
 ##' If pseudo-absence selection and \code{PA.strategy = 'sre'}, a \code{numeric} between \code{0} 
 ##' and \code{0.5} defining the half-quantile used to make the \code{sre} pseudo-absence selection 
-##' (see \href{BIOMOD_FormatingData.html#details}{Details})
+##' (see Details)
 ##' @param PA.dist.min (\emph{optional, default} \code{0}) \cr 
 ##' If pseudo-absence selection and \code{PA.strategy = 'disk'}, a \code{numeric} defining the 
 ##' minimal distance to presence points used to make the \code{disk} pseudo-absence selection 
-##' (in meters, see \href{BIOMOD_FormatingData.html#details}{Details})
+##' (in meters, see Details)
 ##' @param PA.dist.max (\emph{optional, default} \code{0}) \cr 
 ##' If pseudo-absence selection and \code{PA.strategy = 'disk'}, a \code{numeric} defining the 
 ##' maximal distance to presence points used to make the \code{disk} pseudo-absence selection 
-##' (in meters, see \href{BIOMOD_FormatingData.html#details}{Details})
+##' (in meters, see Details)
 ##' @param PA.user.table (\emph{optional, default} \code{NULL}) \cr 
 ##' If pseudo-absence selection and \code{PA.strategy = 'user.defined'}, a \code{matrix} or 
 ##' \code{data.frame} with as many rows as \code{resp.var} values, as many columns as 
 ##' \code{PA.nb.rep}, and containing \code{TRUE} or \code{FALSE} values defining which points 
-##' will be used to build the species distribution model(s) for each repetition (see 
-##' \href{BIOMOD_FormatingData.html#details}{Details})
+##' will be used to build the species distribution model(s) for each repetition (see Details)
 ##' 
 ##' @param coord a 2-columns \code{data.frame} containing \code{X} and \code{Y} coordinates for plot
 ##' @param col a \code{vector} containing colors for plot (default : \code{c('green', 'red', 

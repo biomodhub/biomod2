@@ -6,8 +6,7 @@
 ##' 
 ##' @description This function represents species range change from object that can be obtained 
 ##' from \code{\link{BIOMOD_RangeSize}} function. Several graphics can be obtained, representing 
-##' global counts or proportions of gains / losses, as well as spatial representations (see 
-##' \href{bm_PlotRangeSize.html#details}{Details}).
+##' global counts or proportions of gains / losses, as well as spatial representations (see Details).
 ##' 
 ##' 
 ##' @param bm.range an object returned by the \code{\link{BIOMOD_RangeSize}} function
@@ -49,7 +48,7 @@
 ##' \emph{Please see \code{\link{BIOMOD_RangeSize}} function for more details about the values.}
 ##' 
 ##' 
-##' @keywords ggplot, species range change, projections, gain, loss
+##' @keywords ggplot "species range change" projections gain loss
 ##' 
 ##' 
 ##' @seealso \code{\link{BIOMOD_RangeSize}}
@@ -77,6 +76,10 @@
 ##' myFiles <- paste0('external/bioclim/current/bio', c(3, 4, 7, 11, 12), '.grd')
 ##' myExpl <- raster::stack(system.file(myFiles, package = 'biomod2'))
 ##' 
+##' \dontshow{
+##' myExtent <- raster::extent(-10,36,40,80)
+##' myExpl <- raster::stack(raster::crop(myExpl, myExtent))
+##' }
 ##' 
 ##' # ---------------------------------------------------------------
 ##' file.out <- paste0(myRespName, "/", myRespName, ".AllModels.models.out")
@@ -125,6 +128,10 @@
 ##' # Load environmental variables extracted from BIOCLIM (bio_3, bio_4, bio_7, bio_11 & bio_12)
 ##' myFiles = paste0('external/bioclim/future/bio', c(3, 4, 7, 11, 12), '.grd')
 ##' myExplFuture = raster::stack(system.file(myFiles, package = 'biomod2'))
+##' \dontshow{
+##' myExtent <- raster::extent(-10,36,40,80)
+##' myExplFuture <- stack(raster::crop(myExplFuture, myExtent))
+##' }
 ##' 
 ##' # Project onto future conditions
 ##' myBiomodProjectionFuture <- BIOMOD_Projection(bm.mod = myBiomodModelOut,

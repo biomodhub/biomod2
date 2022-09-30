@@ -49,7 +49,7 @@
 ##' The same principle is used in \code{\link[randomForest]{randomForest}}.
 ##' 
 ##' 
-##' @keywords shuffle, random, importance, Pearson correlation
+##' @keywords shuffle random importance "Pearson correlation"
 ##' 
 ##' 
 ##' @seealso \code{\link[randomForest]{randomForest}}, 

@@ -8,7 +8,7 @@
 ##' \code{\link{BIOMOD.models.out}} or \code{\link{BIOMOD.ensemble.models.out}} objects that can 
 ##' be obtained from \code{\link{BIOMOD_Modeling}} or \code{\link{BIOMOD_EnsembleModeling}} 
 ##' functions. Response curves can be represented in either 2 or 3 dimensions (meaning 1 or 2 
-##' explanatory variables at a time, see \href{bm_PlotResponseCurves.html#details}{Details}).
+##' explanatory variables at a time, see Details).
 ##' 
 ##'   
 ##' @param bm.out a \code{\link{BIOMOD.models.out}} or \code{\link{BIOMOD.ensemble.models.out}} 
@@ -33,8 +33,7 @@
 ##' A \code{logical} value defining whether the plot is to be rendered or not
 ##' @param do.progress (\emph{optional, default} \code{TRUE}) \cr 
 ##' A \code{logical} value defining whether the progress bar is to be rendered or not
-##' @param \ldots some additional arguments (see 
-##' \href{bm_PlotResponseCurves.html#details}{Details})
+##' @param \ldots some additional arguments (see Details)
 ##' 
 ##' 
 ##' @return  
@@ -77,7 +76,7 @@
 ##' }
 ##' 
 ##' 
-##' @keywords ggplot, response curve
+##' @keywords ggplot response curve
 ##' 
 ##' 
 ##' @seealso \code{\link{BIOMOD.models.out}}, \code{\link{BIOMOD.ensemble.models.out}}, 
@@ -106,6 +105,10 @@
 ##' myFiles <- paste0('external/bioclim/current/bio', c(3, 4, 7, 11, 12), '.grd')
 ##' myExpl <- raster::stack(system.file(myFiles, package = 'biomod2'))
 ##' 
+##' \dontshow{
+##' myExtent <- raster::extent(-10,36,40,80)
+##' myExpl <- raster::stack(raster::crop(myExpl, myExtent))
+##' }
 ##' 
 ##' # ---------------------------------------------------------------
 ##' file.out <- paste0(myRespName, "/", myRespName, ".AllModels.models.out")
