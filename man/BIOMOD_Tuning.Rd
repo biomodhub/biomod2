@@ -81,7 +81,7 @@ optimal models and tune parameters, must be either \code{ROC} or \code{TSS}
 
 \item{ANN.method}{a \code{character} corresponding to the classification or regression model 
 to use for \code{ANN}, \cr 
-must be \code{avNNet} (see \url{http://topepo.github.io/caret/Neural_Network.html})}
+must be \code{avNNet} (see \url{http://topepo.github.io/caret/train-models-by-tag.html#Neural_Network})}
 
 \item{ANN.decay.tune}{a \code{vector} of weight decay parameters for \code{ANN}}
 
@@ -97,16 +97,16 @@ for \code{ANN}}
 \item{MARS.method}{a \code{character} corresponding to the classification or regression model 
 to use for \code{MARS}, \cr 
 must be \code{earth} (see 
-\url{http://topepo.github.io/caret/Multivariate_Adaptive_Regression_Splines.html})}
+\url{http://topepo.github.io/caret/train-models-by-tag.html#Multivariate_Adaptive_Regression_Splines})}
 
 \item{GAM.method}{a \code{character} corresponding to the classification or regression model 
 to use for \code{GAM}, \cr 
-must be \code{gam} (see \url{http://topepo.github.io/caret/Generalized_Additive_Model.html})}
+must be \code{gam} (see \url{http://topepo.github.io/caret/train-models-by-tag.html#generalized-additive-model})}
 
 \item{GLM.method}{a \code{character} corresponding to the classification or regression model 
 to use for \code{GLM}, \cr 
 must be \code{glmStepAIC} (see 
-\url{http://topepo.github.io/caret/Generalized_Linear_Model.html})}
+\url{http://topepo.github.io/caret/train-models-by-tag.html#Generalized_Linear_Model})}
 
 \item{GLM.type}{a \code{vector} of \code{character} corresponding to modeling types for 
 \code{GLM}, \cr must be among \code{simple}, \code{quadratic}, \code{polynomial}, 
@@ -146,7 +146,7 @@ train \code{MAXENT.Phillips}}
 
 \item{RF.method}{a \code{character} corresponding to the classification or regression model 
 to use for \code{RF}, \cr 
-must be \code{rf} (see \url{http://topepo.github.io/caret/Random_Forest.html})}
+must be \code{rf} (see \url{http://topepo.github.io/caret/train-models-by-tag.html#random-forest})}
 
 \item{weights}{a \code{vector} of \code{numeric} values corresponding to observation weights}
 }
@@ -188,6 +188,10 @@ myRespXY <- DataSpecies[, c('X_WGS84', 'Y_WGS84')]
 myFiles <- paste0('external/bioclim/current/bio', c(3, 4, 7, 11, 12), '.grd')
 myExpl <- raster::stack(system.file(myFiles, package = 'biomod2'))
 
+\dontshow{
+myExtent <- raster::extent(-10,36,40,80)
+myExpl <- raster::stack(raster::crop(myExpl, myExtent))
+}
 
 # ---------------------------------------------------------------
 # Format Data with true absences

@@ -95,8 +95,7 @@ probabilities across predictions or not}
 
 \item{prob.mean.weight.decay}{(\emph{optional, default} \code{proportional}) \cr 
 A value defining the relative importance of the weights (if \code{prob.mean.weight = TRUE}). 
-A high value will strongly discriminate \emph{good} models from the \emph{bad} ones (see 
-\href{BIOMOD_EnsembleModeling.html#details}{Details}), while \code{proportional} will 
+A high value will strongly discriminate \emph{good} models from the \emph{bad} ones (see Details), while \code{proportional} will 
 attribute weights proportionally to the models evaluation scores}
 
 \item{nb.cpu}{(\emph{optional, default} \code{1}) \cr 
@@ -119,7 +118,7 @@ folders created in the current working directory :
   \item a \emph{hidden} folder, named \code{.BIOMOD_DATA}, and containing outputs related 
   files (original dataset, calibration lines, pseudo-absences selected, predictions, 
   variables importance, evaluation values...), that can be retrieved with 
-  \href{getters.out.html}{\code{get_[...]}} or \code{\link{load}} functions, and used by other 
+  \href{https://biomodhub.github.io/biomod2/reference/getters.out.html}{\code{get_[...]}} or \code{\link{load}} functions, and used by other 
   \pkg{biomod2} functions, like \code{\link{BIOMOD_EnsembleForecasting}}
 }
 }
@@ -128,7 +127,7 @@ This function allows to combine a range of models built with the
 \code{\link{BIOMOD_Modeling}} function in one (or several) ensemble model. Modeling 
 uncertainty can be assessed as well as variables importance, ensemble predictions can be 
 evaluated against original data, and created ensemble models can be projected over new 
-conditions (see \href{BIOMOD_EnsembleModeling.html#details}{Details}).
+conditions (see Details).
 }
 \details{
 \describe{
@@ -282,6 +281,10 @@ myRespXY <- DataSpecies[, c('X_WGS84', 'Y_WGS84')]
 myFiles <- paste0('external/bioclim/current/bio', c(3, 4, 7, 11, 12), '.grd')
 myExpl <- raster::stack(system.file(myFiles, package = 'biomod2'))
 
+\dontshow{
+myExtent <- raster::extent(-10,36,40,80)
+myExpl <- raster::stack(raster::crop(myExpl, myExtent))
+}
 
 ## ----------------------------------------------------------------------- #
 file.out <- paste0(myRespName, "/", myRespName, ".AllModels.models.out")
@@ -378,6 +381,6 @@ Other Main functions:
 Wilfried Thuiller, Damien Georges, Robin Engler
 }
 \concept{Main functions}
-\keyword{ensemble,}
-\keyword{models,}
+\keyword{ensemble}
+\keyword{models}
 \keyword{weights}

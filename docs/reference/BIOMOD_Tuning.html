@@ -141,184 +141,113 @@
     <dl><dt>bm.format</dt>
 <dd><p>a <code><a href="BIOMOD.formated.data.html">BIOMOD.formated.data</a></code> or <code><a href="BIOMOD.formated.data.PA.html">BIOMOD.formated.data.PA</a></code> 
 object returned by the <code><a href="BIOMOD_FormatingData.html">BIOMOD_FormatingData</a></code> function</p></dd>
-
-
 <dt>bm.options</dt>
 <dd><p>a <code><a href="BIOMOD.models.options.html">BIOMOD.models.options</a></code> object returned by the
 <code><a href="BIOMOD_ModelingOptions.html">BIOMOD_ModelingOptions</a></code> function</p></dd>
-
-
 <dt>models</dt>
 <dd><p>a <code>vector</code> containing model names to be tuned, <br> 
 must be among <code>GLM</code>, <code>GBM</code>, <code>GAM</code>, <code>CTA</code>, <code>ANN</code>, <code>SRE</code>, 
 <code>FDA</code>, <code>MARS</code>, <code>RF</code>, <code>MAXENT.Phillips</code></p></dd>
-
-
 <dt>metric.eval</dt>
 <dd><p>a <code>character</code> corresponding to the evaluation metric used to select 
 optimal models and tune parameters, must be either <code>ROC</code> or <code>TSS</code> 
 (<em>maximizing Sensitivity and Specificity</em>)</p></dd>
-
-
 <dt>ctrl.train</dt>
 <dd><p>global control parameters that can be obtained from the 
 <code><a href="https://rdrr.io/pkg/caret/man/trainControl.html" class="external-link">trainControl</a></code> function</p></dd>
-
-
 <dt>ctrl.train.tuneLength</dt>
 <dd><p>(see <code>tuneLength</code> parameter in <code><a href="https://rdrr.io/pkg/caret/man/train.html" class="external-link">train</a></code>)</p></dd>
-
-
 <dt>ctrl.ANN</dt>
 <dd><p>control parameters for <code>ANN</code></p></dd>
-
-
 <dt>ctrl.CTA</dt>
 <dd><p>control parameters for <code>CTA</code></p></dd>
-
-
 <dt>ctrl.FDA</dt>
 <dd><p>control parameters for <code>FDA</code></p></dd>
-
-
 <dt>ctrl.GAM</dt>
 <dd><p>control parameters for <code>GAM</code></p></dd>
-
-
 <dt>ctrl.GBM</dt>
 <dd><p>control parameters for <code>GBM</code></p></dd>
-
-
 <dt>ctrl.GLM</dt>
 <dd><p>control parameters for <code>GLM</code></p></dd>
-
-
 <dt>ctrl.MARS</dt>
 <dd><p>control parameters for <code>MARS</code></p></dd>
-
-
 <dt>ctrl.RF</dt>
 <dd><p>control parameters for <code>RF</code></p></dd>
-
-
 <dt>ANN.method</dt>
 <dd><p>a <code>character</code> corresponding to the classification or regression model 
 to use for <code>ANN</code>, <br> 
-must be <code>avNNet</code> (see <a href="http://topepo.github.io/caret/Neural_Network.html" class="external-link">http://topepo.github.io/caret/Neural_Network.html</a>)</p></dd>
-
-
+must be <code>avNNet</code> (see <a href="http://topepo.github.io/caret/train-models-by-tag.html#Neural_Network" class="external-link">http://topepo.github.io/caret/train-models-by-tag.html#Neural_Network</a>)</p></dd>
 <dt>ANN.decay.tune</dt>
 <dd><p>a <code>vector</code> of weight decay parameters for <code>ANN</code></p></dd>
-
-
 <dt>ANN.size.tune</dt>
 <dd><p>a <code>vector</code> of size parameters (number of units in the hidden layer) 
 for <code>ANN</code></p></dd>
-
-
 <dt>ANN.maxit</dt>
 <dd><p>an <code>integer</code> corresponding to the maximum number of iterations for 
 <code>ANN</code></p></dd>
-
-
 <dt>ANN.MaxNWts</dt>
 <dd><p>an <code>integer</code> corresponding to the maximum allowable number of weights 
 for <code>ANN</code></p></dd>
-
-
 <dt>MARS.method</dt>
 <dd><p>a <code>character</code> corresponding to the classification or regression model 
 to use for <code>MARS</code>, <br> 
 must be <code>earth</code> (see 
-<a href="http://topepo.github.io/caret/Multivariate_Adaptive_Regression_Splines.html" class="external-link">http://topepo.github.io/caret/Multivariate_Adaptive_Regression_Splines.html</a>)</p></dd>
-
-
+<a href="http://topepo.github.io/caret/train-models-by-tag.html#Multivariate_Adaptive_Regression_Splines" class="external-link">http://topepo.github.io/caret/train-models-by-tag.html#Multivariate_Adaptive_Regression_Splines</a>)</p></dd>
 <dt>GAM.method</dt>
 <dd><p>a <code>character</code> corresponding to the classification or regression model 
 to use for <code>GAM</code>, <br> 
-must be <code>gam</code> (see <a href="http://topepo.github.io/caret/Generalized_Additive_Model.html" class="external-link">http://topepo.github.io/caret/Generalized_Additive_Model.html</a>)</p></dd>
-
-
+must be <code>gam</code> (see <a href="http://topepo.github.io/caret/train-models-by-tag.html#generalized-additive-model" class="external-link">http://topepo.github.io/caret/train-models-by-tag.html#generalized-additive-model</a>)</p></dd>
 <dt>GLM.method</dt>
 <dd><p>a <code>character</code> corresponding to the classification or regression model 
 to use for <code>GLM</code>, <br> 
 must be <code>glmStepAIC</code> (see 
-<a href="http://topepo.github.io/caret/Generalized_Linear_Model.html" class="external-link">http://topepo.github.io/caret/Generalized_Linear_Model.html</a>)</p></dd>
-
-
+<a href="http://topepo.github.io/caret/train-models-by-tag.html#Generalized_Linear_Model" class="external-link">http://topepo.github.io/caret/train-models-by-tag.html#Generalized_Linear_Model</a>)</p></dd>
 <dt>GLM.type</dt>
 <dd><p>a <code>vector</code> of <code>character</code> corresponding to modeling types for 
 <code>GLM</code>, <br> must be among <code>simple</code>, <code>quadratic</code>, <code>polynomial</code>, 
 <code>s_smoother</code></p></dd>
-
-
 <dt>GLM.interaction</dt>
 <dd><p>a <code>vector</code> of interaction types, must be among <code>0</code>, <code>1</code></p></dd>
-
-
 <dt>ME.cvmethod</dt>
 <dd><p>a <code>character</code> corresponding to the method used to partition data for 
 <code>MAXENT.Phillips</code>, <br> must be <code>randomkfold</code></p></dd>
-
-
 <dt>ME.overlap</dt>
 <dd><p>(<em>optional, default</em> <code>FALSE</code>) <br> 
 A <code>logical</code> value defining whether to calculate pairwise metric of niche overlap or not 
 (see <code><a href="https://rdrr.io/pkg/ENMeval/man/calc.niche.overlap.html" class="external-link">calc.niche.overlap</a></code>)</p></dd>
-
-
 <dt>ME.kfolds</dt>
 <dd><p>an <code>integer</code> corresponding to the number of bins for k-fold 
 cross-validation for <code>MAXENT.Phillips</code></p></dd>
-
-
 <dt>ME.n.bg</dt>
 <dd><p>an <code>integer</code> corresponding to the number of background points used to run 
 <code>MAXENT.Phillips</code></p></dd>
-
-
 <dt>ME.env</dt>
 <dd><p>a <code>RasterStack</code> object containing model predictor variables</p></dd>
-
-
 <dt>ME.metric</dt>
 <dd><p>a <code>character</code> corresponding to the evaluation metric used to select 
 optimal model and tune parameters for <code>MAXENT.Phillips</code>, must be either 
 <code>auc.val.avg</code>, <code>auc.diff.avg</code>, <code>or.mtp.avg</code>, <code>or.10p.avg</code> or <code>AICc</code></p></dd>
-
-
 <dt>ME.clamp</dt>
 <dd><p>(<em>optional, default</em> <code>TRUE</code>) <br> 
 A <code>logical</code> value defining whether <em>Features are constrained to remain within the 
 range of values in the training data</em> (Elith et al. 2011) or not</p></dd>
-
-
 <dt>ME.parallel</dt>
 <dd><p>(<em>optional, default</em> <code>TRUE</code>) <br> 
 A <code>logical</code> value defining whether to enable parallel computing for 
 <code>MAXENT.Phillips</code> or not</p></dd>
-
-
 <dt>ME.numCores</dt>
 <dd><p>an <code>integer</code> corresponding to the number of cores to be used to 
 train <code>MAXENT.Phillips</code></p></dd>
-
-
 <dt>RF.method</dt>
 <dd><p>a <code>character</code> corresponding to the classification or regression model 
 to use for <code>RF</code>, <br> 
-must be <code>rf</code> (see <a href="http://topepo.github.io/caret/Random_Forest.html" class="external-link">http://topepo.github.io/caret/Random_Forest.html</a>)</p></dd>
-
-
+must be <code>rf</code> (see <a href="http://topepo.github.io/caret/train-models-by-tag.html#random-forest" class="external-link">http://topepo.github.io/caret/train-models-by-tag.html#random-forest</a>)</p></dd>
 <dt>weights</dt>
 <dd><p>a <code>vector</code> of <code>numeric</code> values corresponding to observation weights</p></dd>
-
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    
-
-<p>A <code><a href="BIOMOD.models.options.html">BIOMOD.models.options</a></code> object (see <code><a href="BIOMOD_ModelingOptions.html">BIOMOD_ModelingOptions</a></code>) with 
+    <p>A <code><a href="BIOMOD.models.options.html">BIOMOD.models.options</a></code> object (see <code><a href="BIOMOD_ModelingOptions.html">BIOMOD_ModelingOptions</a></code>) with 
 optimized parameters</p>
     </div>
     <div id="details">
@@ -435,7 +364,7 @@ optimized parameters</p>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.3.</p>
 </div>
 
       </footer></div>

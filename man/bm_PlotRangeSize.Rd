@@ -43,8 +43,7 @@ A \code{list} containing one or several \code{data.frame} and the corresponding
 \description{
 This function represents species range change from object that can be obtained 
 from \code{\link{BIOMOD_RangeSize}} function. Several graphics can be obtained, representing 
-global counts or proportions of gains / losses, as well as spatial representations (see 
-\href{bm_PlotRangeSize.html#details}{Details}).
+global counts or proportions of gains / losses, as well as spatial representations (see Details).
 }
 \details{
 4 plots can be obtained with this function :
@@ -81,6 +80,10 @@ myRespXY <- DataSpecies[, c('X_WGS84', 'Y_WGS84')]
 myFiles <- paste0('external/bioclim/current/bio', c(3, 4, 7, 11, 12), '.grd')
 myExpl <- raster::stack(system.file(myFiles, package = 'biomod2'))
 
+\dontshow{
+myExtent <- raster::extent(-10,36,40,80)
+myExpl <- raster::stack(raster::crop(myExpl, myExtent))
+}
 
 # ---------------------------------------------------------------
 file.out <- paste0(myRespName, "/", myRespName, ".AllModels.models.out")
@@ -129,6 +132,10 @@ if (file.exists(file.proj)) {
 # Load environmental variables extracted from BIOCLIM (bio_3, bio_4, bio_7, bio_11 & bio_12)
 myFiles = paste0('external/bioclim/future/bio', c(3, 4, 7, 11, 12), '.grd')
 myExplFuture = raster::stack(system.file(myFiles, package = 'biomod2'))
+\dontshow{
+myExtent <- raster::extent(-10,36,40,80)
+myExplFuture <- stack(raster::crop(myExplFuture, myExtent))
+}
 
 # Project onto future conditions
 myBiomodProjectionFuture <- BIOMOD_Projection(bm.mod = myBiomodModelOut,
@@ -185,10 +192,10 @@ Maya Gueguen
 }
 \concept{Plot functions}
 \concept{Secundary functions}
-\keyword{change,}
-\keyword{gain,}
-\keyword{ggplot,}
+\keyword{"species}
+\keyword{change"}
+\keyword{gain}
+\keyword{ggplot}
 \keyword{loss}
-\keyword{projections,}
+\keyword{projections}
 \keyword{range}
-\keyword{species}

@@ -24,7 +24,7 @@ will be used at the modeling step}
 \item{interaction.level}{an \code{integer} corresponding to the interaction level depth 
 between explanatory variables}
 
-\item{\ldots}{some additional arguments (see \href{bm_MakeFormula.html#details}{Details})}
+\item{\ldots}{some additional arguments (see Details)}
 }
 \value{
 A \code{\link[stats]{formula}} class object that can be directly given to most of \R 
@@ -88,6 +88,6 @@ Other Secundary functions:
 Damien Georges
 }
 \concept{Secundary functions}
-\keyword{formula,}
-\keyword{models,}
+\keyword{formula}
+\keyword{models}
 \keyword{options}

@@ -152,16 +152,16 @@ Other Secundary functions:
 Damien Georges
 }
 \concept{Secundary functions}
-\keyword{ANN,}
-\keyword{CTA,}
-\keyword{FDA,}
-\keyword{GAM,}
-\keyword{GBM,}
-\keyword{GLM,}
-\keyword{MARS,}
+\keyword{ANN}
+\keyword{CTA}
+\keyword{FDA}
+\keyword{GAM}
+\keyword{GBM}
+\keyword{GLM}
+\keyword{MARS}
 \keyword{MAXENT}
-\keyword{RF,}
-\keyword{SRE,}
-\keyword{formula,}
-\keyword{models,}
-\keyword{options,}
+\keyword{RF}
+\keyword{SRE}
+\keyword{formula}
+\keyword{models}
+\keyword{options}

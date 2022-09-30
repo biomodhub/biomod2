@@ -116,50 +116,29 @@
     <h2>Arguments</h2>
     <dl><dt>GLM</dt>
 <dd><p>(<em>optional, default</em> <code>NULL</code>) <br> A <code>list</code> containing GLM options</p></dd>
-
-
 <dt>GBM</dt>
 <dd><p>(<em>optional, default</em> <code>NULL</code>) <br> A <code>list</code> containing GBM options</p></dd>
-
-
 <dt>GAM</dt>
 <dd><p>(<em>optional, default</em> <code>NULL</code>) <br> A <code>list</code> containing GAM options</p></dd>
-
-
 <dt>CTA</dt>
 <dd><p>(<em>optional, default</em> <code>NULL</code>) <br> A <code>list</code> containing CTA options</p></dd>
-
-
 <dt>ANN</dt>
 <dd><p>(<em>optional, default</em> <code>NULL</code>) <br> A <code>list</code> containing ANN options</p></dd>
-
-
 <dt>SRE</dt>
 <dd><p>(<em>optional, default</em> <code>NULL</code>) <br> A <code>list</code> containing SRE options</p></dd>
-
-
 <dt>FDA</dt>
 <dd><p>(<em>optional, default</em> <code>NULL</code>) <br> A <code>list</code> containing FDA options</p></dd>
-
-
 <dt>MARS</dt>
 <dd><p>(<em>optional, default</em> <code>NULL</code>) <br> A <code>list</code> containing MARS options</p></dd>
-
-
 <dt>RF</dt>
 <dd><p>(<em>optional, default</em> <code>NULL</code>) <br> A <code>list</code> containing RF options</p></dd>
-
-
 <dt>MAXENT.Phillips</dt>
 <dd><p>(<em>optional, default</em> <code>NULL</code>) <br> A <code>list</code> 
 containing MAXENT.Phillips options</p></dd>
-
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    
-
-<p>A <code><a href="BIOMOD.models.options.html">BIOMOD.models.options</a></code> object that can be used to build species distribution 
+    <p>A <code><a href="BIOMOD.models.options.html">BIOMOD.models.options</a></code> object that can be used to build species distribution 
 model(s) with the <code><a href="BIOMOD_Modeling.html">BIOMOD_Modeling</a></code> function.</p>
     </div>
     <div id="details">
@@ -169,13 +148,13 @@ models. <br> 10 single models are available within the package, and their option
 with this function through <code>list</code> objects.</p>
 <p>The <code>bm_DefaultModelingOptions</code> function prints all default parameter values for 
 all available models. <br> This output can be copied and pasted to be used as is (with wanted 
-changes) as function arguments (see <a href="BIOMOD_ModelingOptions.html#examples">Examples</a>).</p>
+changes) as function arguments (see <a href="https://biomodhub.github.io/biomod2/reference/BIOMOD_ModelingOptions.html#examples" class="external-link">Examples</a>).</p>
 <p>Below is the detailed list of all modifiable parameters for each available model.</p>
     </div>
     <div id="glm-">
     <h2>GLM </h2>
     <p>(<code><a href="https://rdrr.io/r/stats/glm.html" class="external-link">glm</a></code>)</p><ul><li><p><code>myFormula</code> : a typical <code>formula</code> object (see 
-  <a href="BIOMOD_ModelingOptions.html#examples">Examples</a>). <br> If not <code>NULL</code>, <code>type</code> 
+  <a href="https://biomodhub.github.io/biomod2/reference/BIOMOD_ModelingOptions.html#examples" class="external-link">Examples</a>). <br> If not <code>NULL</code>, <code>type</code> 
   and <code>interaction.level</code> parameters are switched off. <br> 
   You can choose to either :
   </p><ul><li><p>generate automatically the GLM formula with the following parameters :
@@ -221,7 +200,7 @@ changes) as function arguments (see <a href="BIOMOD_ModelingOptions.html#example
   be <code>GAM_gam</code> (see <code><a href="https://rdrr.io/pkg/gam/man/gam.html" class="external-link">gam</a></code>), <code>GAM_mgcv</code> (see <code><a href="https://rdrr.io/pkg/mgcv/man/gam.html" class="external-link">gam</a></code>) 
   or <code>BAM_mgcv</code> (see <code><a href="https://rdrr.io/pkg/mgcv/man/bam.html" class="external-link">bam</a></code>)</p></li>
 <li><p><code>myFormula</code> : a typical <code>formula</code> object (see 
-  <a href="BIOMOD_ModelingOptions.html#examples">Examples</a>). <br> If not <code>NULL</code>, <code>type</code> 
+  <a href="https://biomodhub.github.io/biomod2/reference/BIOMOD_ModelingOptions.html#examples" class="external-link">Examples</a>). <br> If not <code>NULL</code>, <code>type</code> 
   and <code>interaction.level</code> parameters are switched off. <br> 
   You can choose to either :
   </p><ul><li><p>generate automatically the GAM formula with the following parameters :
@@ -293,7 +272,7 @@ changes) as function arguments (see <a href="BIOMOD_ModelingOptions.html#example
     <h2>MARS </h2>
     <p>(<code><a href="https://rdrr.io/pkg/earth/man/earth.html" class="external-link">earth</a></code>)</p>
 <p><em>Please refer to <code><a href="https://rdrr.io/pkg/earth/man/earth.html" class="external-link">earth</a></code> help file for more details.</em></p><ul><li><p><code>myFormula</code> : a typical <code>formula</code> object (see 
-  <a href="BIOMOD_ModelingOptions.html#examples">Examples</a>). <br> If not <code>NULL</code>, <code>type</code> 
+  <a href="https://biomodhub.github.io/biomod2/reference/BIOMOD_ModelingOptions.html#examples" class="external-link">Examples</a>). <br> If not <code>NULL</code>, <code>type</code> 
   and <code>interaction.level</code> parameters are switched off. <br> 
   You can choose to either :
   </p><ul><li><p>generate automatically the MARS formula with the following parameters :
@@ -325,7 +304,7 @@ changes) as function arguments (see <a href="BIOMOD_ModelingOptions.html#example
 </ul></div>
     <div id="maxent-phillips-">
     <h2>MAXENT.Phillips </h2>
-    <p>(<a href="https://biodiversityinformatics.amnh.org/open_source/maxent" class="external-link">https://biodiversityinformatics.amnh.org/open_source/maxent</a>)</p><ul><li><p><code>path_to_maxent.jar = getwd()</code> : a <code>character</code> corresponding to 
+    <p>(<a href="https://biodiversityinformatics.amnh.org/open_source/maxent/" class="external-link">https://biodiversityinformatics.amnh.org/open_source/maxent/</a>)</p><ul><li><p><code>path_to_maxent.jar = getwd()</code> : a <code>character</code> corresponding to 
   <span class="pkg">maxent.jar</span> file link</p></li>
 <li><p><code>memory_allocated = 512</code> : an <code>integer</code> corresponding to the amount of 
   memory (in Mo) reserved for <code>java</code> to run <code>MAXENT.Phillips</code>, must be <code>64</code>, 
@@ -474,7 +453,7 @@ changes) as function arguments (see <a href="BIOMOD_ModelingOptions.html#example
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.3.</p>
 </div>
 
       </footer></div>

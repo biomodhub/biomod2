@@ -154,124 +154,84 @@ BIOMOD_Modeling"><!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax/
 <code><a href="https://rdrr.io/pkg/sp/man/SpatialPoints.html" class="external-link">SpatialPointsDataFrame</a></code> object containing binary data (<code>0</code> : absence, 
 <code>1</code> : presence, <code>NA</code> : indeterminate) for a single species that will be used to 
 build the species distribution model(s)</p></dd>
-
-
 <dt>env</dt>
 <dd><p>a <code>matrix</code>, <code>data.frame</code>, <code><a href="https://rdrr.io/pkg/sp/man/SpatialPoints.html" class="external-link">SpatialPointsDataFrame</a></code> 
 or <code><a href="https://rdrr.io/pkg/raster/man/stack.html" class="external-link">RasterStack</a></code> object containing the explanatory variables 
 (in columns or layers) that will be used to build the species distribution model(s)</p></dd>
-
-
 <dt>xy</dt>
 <dd><p>(<em>optional, default</em> <code>NULL</code>) <br> 
 If <code>resp.var</code> is a <code>vector</code>, a 2-columns <code>matrix</code> or <code>data.frame</code> 
 containing the corresponding <code>X</code> and <code>Y</code> coordinates that will be used to build the 
 species distribution model(s)</p></dd>
-
-
 <dt>dir.name</dt>
 <dd><p>a <code>character</code> corresponding to the modeling folder</p></dd>
-
-
 <dt>sp.name</dt>
 <dd><p>a <code>character</code> corresponding to the species name</p></dd>
-
-
 <dt>eval.sp</dt>
 <dd><p>(<em>optional, default</em> <code>NULL</code>) <br> 
 A <code>vector</code>, <code><a href="https://rdrr.io/pkg/sp/man/SpatialPoints.html" class="external-link">SpatialPoints</a></code> (<em>if presence-only</em>) or 
 <code><a href="https://rdrr.io/pkg/sp/man/SpatialPoints.html" class="external-link">SpatialPointsDataFrame</a></code> object containing binary data (<code>0</code> : absence, 
 <code>1</code> : presence, <code>NA</code> : indeterminate) for a single species that will be used to 
 evaluate the species distribution model(s) with independent data</p></dd>
-
-
 <dt>eval.env</dt>
 <dd><p>(<em>optional, default</em> <code>NULL</code>) <br> 
 A <code>matrix</code>, <code>data.frame</code>, <code><a href="https://rdrr.io/pkg/sp/man/SpatialPoints.html" class="external-link">SpatialPointsDataFrame</a></code> or 
 <code><a href="https://rdrr.io/pkg/raster/man/stack.html" class="external-link">RasterStack</a></code> object containing the explanatory variables (in 
 columns or layers) that will be used to evaluate the species distribution model(s) with 
 independent data</p></dd>
-
-
 <dt>eval.xy</dt>
 <dd><p>(<em>optional, default</em> <code>NULL</code>) <br> 
 If <code>resp.var</code> is a <code>vector</code>, a 2-columns <code>matrix</code> or <code>data.frame</code> 
 containing the corresponding <code>X</code> and <code>Y</code> coordinates that will be used to evaluate 
 the species distribution model(s) with independent data</p></dd>
-
-
 <dt>PA.nb.rep</dt>
 <dd><p>(<em>optional, default</em> <code>0</code>) <br> 
 If pseudo-absence selection, an <code>integer</code> corresponding to the number of sets 
 (repetitions) of pseudo-absence points that will be drawn</p></dd>
-
-
 <dt>PA.strategy</dt>
 <dd><p>(<em>optional, default</em> <code>NULL</code>) <br> 
 If pseudo-absence selection, a <code>character</code> defining the strategy that will be used to 
 select the pseudo-absence points. Must be <code>random</code>, <code>sre</code>, <code>disk</code> or 
-<code>user.defined</code> (see <a href="BIOMOD_FormatingData.html#details">Details</a>)</p></dd>
-
-
+<code>user.defined</code> (see Details)</p></dd>
 <dt>PA.nb.absences</dt>
 <dd><p>(<em>optional, default</em> <code>0</code>) <br> 
 If pseudo-absence selection, and <code>PA.strategy = 'random'</code> or <code>PA.strategy = 'sre'</code> 
 or <code>PA.strategy = 'disk'</code>, an <code>integer</code> corresponding to the number of pseudo-absence 
 points that will be selected for each pseudo-absence repetition (true absences included)</p></dd>
-
-
 <dt>PA.dist.min</dt>
 <dd><p>(<em>optional, default</em> <code>0</code>) <br> 
 If pseudo-absence selection and <code>PA.strategy = 'disk'</code>, a <code>numeric</code> defining the 
 minimal distance to presence points used to make the <code>disk</code> pseudo-absence selection 
-(in meters, see <a href="BIOMOD_FormatingData.html#details">Details</a>)</p></dd>
-
-
+(in meters, see Details)</p></dd>
 <dt>PA.dist.max</dt>
 <dd><p>(<em>optional, default</em> <code>0</code>) <br> 
 If pseudo-absence selection and <code>PA.strategy = 'disk'</code>, a <code>numeric</code> defining the 
 maximal distance to presence points used to make the <code>disk</code> pseudo-absence selection 
-(in meters, see <a href="BIOMOD_FormatingData.html#details">Details</a>)</p></dd>
-
-
+(in meters, see Details)</p></dd>
 <dt>PA.sre.quant</dt>
 <dd><p>(<em>optional, default</em> <code>0</code>) <br> 
 If pseudo-absence selection and <code>PA.strategy = 'sre'</code>, a <code>numeric</code> between <code>0</code> 
 and <code>0.5</code> defining the half-quantile used to make the <code>sre</code> pseudo-absence selection 
-(see <a href="BIOMOD_FormatingData.html#details">Details</a>)</p></dd>
-
-
+(see Details)</p></dd>
 <dt>PA.user.table</dt>
 <dd><p>(<em>optional, default</em> <code>NULL</code>) <br> 
 If pseudo-absence selection and <code>PA.strategy = 'user.defined'</code>, a <code>matrix</code> or 
 <code>data.frame</code> with as many rows as <code>resp.var</code> values, as many columns as 
 <code>PA.nb.rep</code>, and containing <code>TRUE</code> or <code>FALSE</code> values defining which points 
-will be used to build the species distribution model(s) for each repetition (see 
-<a href="BIOMOD_FormatingData.html#details">Details</a>)</p></dd>
-
-
+will be used to build the species distribution model(s) for each repetition (see Details)</p></dd>
 <dt>na.rm</dt>
 <dd><p>(<em>optional, default</em> <code>TRUE</code>) <br> 
 A <code>logical</code> value defining whether points having one or several missing values for 
 explanatory variables should be removed from the analysis or not</p></dd>
-
-
 <dt>x</dt>
 <dd><p>a <code>BIOMOD.formated.data.PA</code> object</p></dd>
-
-
 <dt>coord</dt>
 <dd><p>a 2-columns <code>data.frame</code> containing <code>X</code> and <code>Y</code> coordinates for plot</p></dd>
-
-
 <dt>col</dt>
 <dd><p>a <code>vector</code> containing colors for plot (default : <code>c('green', 'red', 
 'orange', 'grey')</code>)</p></dd>
-
-
 <dt>object</dt>
 <dd><p>a <code>BIOMOD.formated.data.PA</code> object</p></dd>
-
 </dl></div>
     <div id="slots">
     <h2>Slots</h2>
@@ -408,7 +368,7 @@ element returned by the <code><a href="bm_PseudoAbsences.html">bm_PseudoAbsences
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.3.</p>
 </div>
 
       </footer></div>

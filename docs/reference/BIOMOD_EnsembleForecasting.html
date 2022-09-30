@@ -120,20 +120,14 @@ BIOMOD_EnsembleModeling function onto new environmental data
     <dl><dt>bm.em</dt>
 <dd><p>a <code><a href="BIOMOD.ensemble.models.out.html">BIOMOD.ensemble.models.out</a></code> object returned by the 
 <code><a href="BIOMOD_EnsembleModeling.html">BIOMOD_EnsembleModeling</a></code> function</p></dd>
-
-
 <dt>bm.proj</dt>
 <dd><p>a <code><a href="BIOMOD.projection.out.html">BIOMOD.projection.out</a></code> object returned by the 
 <code><a href="BIOMOD_Projection.html">BIOMOD_Projection</a></code> function</p></dd>
-
-
 <dt>proj.name</dt>
 <dd><p>(<em>optional, default</em> <code>NULL</code>) <br> 
 If <code>bm.proj = NULL</code>, a <code>character</code> corresponding to the name (ID) of the 
 projection set (<em>a new folder will be created within the simulation folder with this 
 name</em>)</p></dd>
-
-
 <dt>new.env</dt>
 <dd><p>(<em>optional, default</em> <code>NULL</code>) <br> 
 If <code>bm.proj = NULL</code>, a <code>matrix</code>, <code>data.frame</code> or 
@@ -141,21 +135,15 @@ If <code>bm.proj = NULL</code>, a <code>matrix</code>, <code>data.frame</code> o
 columns or layers, with names matching the variables names given to the 
 <code><a href="BIOMOD_FormatingData.html">BIOMOD_FormatingData</a></code> function to build <code>bm.em</code>) that will be used to 
 project the ensemble species distribution model(s)</p></dd>
-
-
 <dt>new.env.xy</dt>
 <dd><p>(<em>optional, default</em> <code>NULL</code>) <br> 
 If <code>new.env</code> is a <code>matrix</code> or a <code>data.frame</code>, a 2-columns <code>matrix</code> or 
 <code>data.frame</code> containing the corresponding <code>X</code> and <code>Y</code> coordinates that will 
 be used to project the ensemble species distribution model(s)</p></dd>
-
-
 <dt>models.chosen</dt>
 <dd><p>a <code>vector</code> containing model names to be kept, must be either 
 <code>all</code> or a sub-selection of model names that can be obtained with the 
 <code><a href="getters.out.html">get_built_models</a></code> function</p></dd>
-
-
 <dt>metric.binary</dt>
 <dd><p>(<em>optional, default</em> <code>NULL</code>) <br> 
 A <code>vector</code> containing evaluation metric names to be used to transform prediction values 
@@ -164,8 +152,6 @@ into binary values based on models evaluation scores obtained with the
 those of <code>modeling.output</code>) or <code>ROC</code>, <code>TSS</code>, <code>KAPPA</code>, <code>ACCURACY</code>, 
 <code>BIAS</code>, <code>POD</code>, <code>FAR</code>, <code>POFD</code>, <code>SR</code>, <code>CSI</code>, <code>ETS</code>, 
 <code>HK</code>, <code>HSS</code>, <code>OR</code>, <code>ORSS</code></p></dd>
-
-
 <dt>metric.filter</dt>
 <dd><p>(<em>optional, default</em> <code>NULL</code>) <br> 
 A <code>vector</code> containing evaluation metric names to be used to transform prediction values 
@@ -174,30 +160,21 @@ into filtered values based on models evaluation scores obtained with the
 those of <code>modeling.output</code>) or <code>ROC</code>, <code>TSS</code>, <code>KAPPA</code>, <code>ACCURACY</code>, 
 <code>BIAS</code>, <code>POD</code>, <code>FAR</code>, <code>POFD</code>, <code>SR</code>, <code>CSI</code>, <code>ETS</code>, 
 <code>HK</code>, <code>HSS</code>, <code>OR</code>, <code>ORSS</code></p></dd>
-
-
 <dt>compress</dt>
 <dd><p>(<em>optional, default</em> <code>TRUE</code>) <br> 
 A <code>logical</code> or a <code>character</code> value defining whether and how objects should be 
 compressed when saved on hard drive. Must be either <code>TRUE</code>, <code>FALSE</code>, <code>xz</code> or 
-<code>gzip</code> (see <a href="BIOMOD_EnsembleForecasting.html#details">Details</a>)</p></dd>
-
-
+<code>gzip</code> (see Details)</p></dd>
 <dt>nb.cpu</dt>
 <dd><p>(<em>optional, default</em> <code>1</code>) <br> 
 An <code>integer</code> value corresponding to the number of computing resources to be used to 
 parallelize the single models computation</p></dd>
-
-
 <dt>...</dt>
-<dd><p>(<em>optional, see <a href="BIOMOD_EnsembleForecasting.html#details">Details</a></em>)</p></dd>
-
+<dd><p>(<em>optional, see Details</em>)</p></dd>
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    
-
-<p>A <code>BIOMOD.projection.out</code> object containing models projections, or links to saved 
+    <p>A <code>BIOMOD.projection.out</code> object containing models projections, or links to saved 
 outputs. <br> Models projections are stored out of <span style="R">R</span> (for memory storage reasons) in 
 <code>proj.name</code> folder created in the current working directory :</p><ol><li><p>the output is a 4-dimensional array if <code>new.env</code> is a <code>matrix</code> or a 
   <code>data.frame</code></p></li>
@@ -371,7 +348,7 @@ of their calibration / training range, identifying locations where predictions a
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.3.</p>
 </div>
 
       </footer></div>

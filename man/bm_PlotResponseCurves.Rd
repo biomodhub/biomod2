@@ -47,8 +47,7 @@ A \code{logical} value defining whether the plot is to be rendered or not}
 \item{do.progress}{(\emph{optional, default} \code{TRUE}) \cr 
 A \code{logical} value defining whether the progress bar is to be rendered or not}
 
-\item{\ldots}{some additional arguments (see 
-\href{bm_PlotResponseCurves.html#details}{Details})}
+\item{\ldots}{some additional arguments (see Details)}
 }
 \value{
 A \code{list} containing a \code{data.frame} with variables and predicted values and the 
@@ -59,7 +58,7 @@ This function represents response curves of species distribution models, from
 \code{\link{BIOMOD.models.out}} or \code{\link{BIOMOD.ensemble.models.out}} objects that can 
 be obtained from \code{\link{BIOMOD_Modeling}} or \code{\link{BIOMOD_EnsembleModeling}} 
 functions. Response curves can be represented in either 2 or 3 dimensions (meaning 1 or 2 
-explanatory variables at a time, see \href{bm_PlotResponseCurves.html#details}{Details}).
+explanatory variables at a time, see Details).
 }
 \details{
 This function is an adaptation of the Evaluation Strip method proposed by Elith et al. (2005). 
@@ -104,6 +103,10 @@ myRespXY <- DataSpecies[, c('X_WGS84', 'Y_WGS84')]
 myFiles <- paste0('external/bioclim/current/bio', c(3, 4, 7, 11, 12), '.grd')
 myExpl <- raster::stack(system.file(myFiles, package = 'biomod2'))
 
+\dontshow{
+myExtent <- raster::extent(-10,36,40,80)
+myExpl <- raster::stack(raster::crop(myExpl, myExtent))
+}
 
 # ---------------------------------------------------------------
 file.out <- paste0(myRespName, "/", myRespName, ".AllModels.models.out")
@@ -187,5 +190,5 @@ Damien Georges, Maya Gueguen
 \concept{Plot functions}
 \concept{Secundary functions}
 \keyword{curve}
-\keyword{ggplot,}
+\keyword{ggplot}
 \keyword{response}

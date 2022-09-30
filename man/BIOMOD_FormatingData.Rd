@@ -72,29 +72,28 @@ points that will be selected for each pseudo-absence repetition (true absences i
 \item{PA.strategy}{(\emph{optional, default} \code{NULL}) \cr 
 If pseudo-absence selection, a \code{character} defining the strategy that will be used to 
 select the pseudo-absence points. Must be \code{random}, \code{sre}, \code{disk} or 
-\code{user.defined} (see \href{BIOMOD_FormatingData.html#details}{Details})}
+\code{user.defined} (see Details)}
 
 \item{PA.dist.min}{(\emph{optional, default} \code{0}) \cr 
 If pseudo-absence selection and \code{PA.strategy = 'disk'}, a \code{numeric} defining the 
 minimal distance to presence points used to make the \code{disk} pseudo-absence selection 
-(in meters, see \href{BIOMOD_FormatingData.html#details}{Details})}
+(in meters, see Details)}
 
 \item{PA.dist.max}{(\emph{optional, default} \code{0}) \cr 
 If pseudo-absence selection and \code{PA.strategy = 'disk'}, a \code{numeric} defining the 
 maximal distance to presence points used to make the \code{disk} pseudo-absence selection 
-(in meters, see \href{BIOMOD_FormatingData.html#details}{Details})}
+(in meters, see Details)}
 
 \item{PA.sre.quant}{(\emph{optional, default} \code{0}) \cr 
 If pseudo-absence selection and \code{PA.strategy = 'sre'}, a \code{numeric} between \code{0} 
 and \code{0.5} defining the half-quantile used to make the \code{sre} pseudo-absence selection 
-(see \href{BIOMOD_FormatingData.html#details}{Details})}
+(see Details)}
 
 \item{PA.user.table}{(\emph{optional, default} \code{NULL}) \cr 
 If pseudo-absence selection and \code{PA.strategy = 'user.defined'}, a \code{matrix} or 
 \code{data.frame} with as many rows as \code{resp.var} values, as many columns as 
 \code{PA.nb.rep}, and containing \code{TRUE} or \code{FALSE} values defining which points 
-will be used to build the species distribution model(s) for each repetition (see 
-\href{BIOMOD_FormatingData.html#details}{Details})}
+will be used to build the species distribution model(s) for each repetition (see Details)}
 
 \item{na.rm}{(\emph{optional, default} \code{TRUE}) \cr 
 A \code{logical} value defining whether points having one or several missing values for 
@@ -109,7 +108,7 @@ functions are available to have a summary of the created object.
 This function gathers together all input data needed (\emph{xy, 
 presences/absences, explanatory variables, and the same for evaluation data if available}) to 
 run \pkg{biomod2} models. It allows to select pseudo-absences if no absence data is available, 
-with different strategies (see \href{BIOMOD_FormatingData.html#details}{Details}).
+with different strategies (see Details).
 }
 \details{
 This function gathers and formats all input data needed to run \pkg{biomod2} models. It 
@@ -224,6 +223,10 @@ myRespXY <- DataSpecies[, c('X_WGS84', 'Y_WGS84')]
 myFiles <- paste0('external/bioclim/current/bio', c(3, 4, 7, 11, 12), '.grd')
 myExpl <- raster::stack(system.file(myFiles, package = 'biomod2'))
 
+\dontshow{
+myExtent <- raster::extent(-10,36,40,80)
+myExpl <- raster::stack(raster::crop(myExpl, myExtent))
+}
 
 # ---------------------------------------------------------------
 # Format Data with true absences
@@ -310,7 +313,7 @@ Other Main functions:
 Damien Georges, Wilfried Thuiller
 }
 \concept{Main functions}
-\keyword{dataset,}
-\keyword{evaluation,}
-\keyword{format,}
+\keyword{dataset}
+\keyword{evaluation}
+\keyword{format}
 \keyword{pseudo-absence}

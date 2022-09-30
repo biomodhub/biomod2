@@ -27,8 +27,7 @@ columns or layers) that will be used to predict the SRE model}
 
 \item{quant}{a \code{numeric} between \code{0} and \code{0.5} defining the half-quantile 
 corresponding to the most extreme value for each variable not to be taken into account for 
-determining the tolerance boundaries of the considered species (see 
-\href{bm_SRE.html#details}{Details})}
+determining the tolerance boundaries of the considered species (see Details)}
 
 \item{do.extrem}{(\emph{optional, default} \code{FALSE}) \cr 
 A \code{logical} value defining whether a \code{matrix} containing extreme conditions 
@@ -43,7 +42,7 @@ This internal \pkg{biomod2} function allows the user to run a rectilinear surfac
 range envelop (SRE) (equivalent to 
 \href{https://caws.org.nz/PPQ567/PPQ\%2006-1\%20pp008-9\%20Busby.pdf}{BIOCLIM}) 
 using the extreme percentiles (as recommended by Nix or Busby, see 
-\href{bm_SRE.html#references}{References} and \href{bm_SRE.html#details}{Details}).
+\href{https://biomodhub.github.io/biomod2/reference/bm_SRE.html#references}{References} and Details).
 }
 \details{
 \emph{Please refer to References to get more information about surface range envelop models.}
@@ -134,9 +133,9 @@ Other Secundary functions:
 Wilfried Thuiller, Bruno Lafourcade, Damien Georges
 }
 \concept{Secundary functions}
-\keyword{envelop,}
-\keyword{models,}
+\keyword{"surface}
+\keyword{envelop"}
+\keyword{models}
 \keyword{quantile}
 \keyword{range}
-\keyword{sre,}
-\keyword{surface}
+\keyword{sre}

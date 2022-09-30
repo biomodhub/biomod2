@@ -44,8 +44,7 @@ memory or not}
 
 \item{\code{link}}{a \code{character} containing the file name of the saved \code{val} slot}
 
-\item{\code{val}}{an object of type depending on the \code{BIOMOD.stored.[...]} class (see 
-\href{BIOMOD.stored.data.html#details}{Details})}
+\item{\code{val}}{an object of type depending on the \code{BIOMOD.stored.[...]} class (see Details)}
 }}
 
 \examples{

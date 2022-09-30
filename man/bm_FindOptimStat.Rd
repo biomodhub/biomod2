@@ -105,5 +105,5 @@ Damien Georges
 }
 \concept{Secundary functions}
 \keyword{evaluation}
-\keyword{models,}
-\keyword{options,}
+\keyword{models}
+\keyword{options}

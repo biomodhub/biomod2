@@ -120,8 +120,7 @@ A \code{list} containing the following elements :
 }
 \description{
 This internal \pkg{biomod2} function allows to select pseudo-absences according 
-to 4 different methods : \code{random}, \code{sre}, \code{disk} or \code{user.defined} (see 
-\href{bm_PseudoAbsences/html#details}{Details}).
+to 4 different methods : \code{random}, \code{sre}, \code{disk} or \code{user.defined} (see Details).
 }
 \details{
 \bold{Concerning random selection :}
@@ -171,7 +170,7 @@ Other Secundary functions:
 Wilfried Thuiller, Damien Georges
 }
 \concept{Secundary functions}
-\keyword{SRE,}
+\keyword{SRE}
 \keyword{disk}
-\keyword{pseudo-absence,}
-\keyword{random,}
+\keyword{pseudo-absence}
+\keyword{random}

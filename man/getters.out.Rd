@@ -98,7 +98,7 @@
 
 \item{subinfo}{a \code{character} corresponding to the information to be extracted, must be 
 among \code{NULL}, \code{expl.var.names}, \code{resp.var}, \code{expl.var}, \code{MinMax}, 
-\code{eval.resp.var}, \code{eval.expl.var} (see \href{getters.out.html#details}{Details})}
+\code{eval.resp.var}, \code{eval.expl.var} (see Details)}
 
 \item{evaluation}{a \code{logical} defining whether evaluation data should be used or not}
 

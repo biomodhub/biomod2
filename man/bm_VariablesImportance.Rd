@@ -102,8 +102,8 @@ Other Secundary functions:
 Damien Georges
 }
 \concept{Secundary functions}
-\keyword{Pearson}
-\keyword{correlation}
-\keyword{importance,}
-\keyword{random,}
-\keyword{shuffle,}
+\keyword{"Pearson}
+\keyword{correlation"}
+\keyword{importance}
+\keyword{random}
+\keyword{shuffle}

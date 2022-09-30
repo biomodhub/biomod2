@@ -55,7 +55,7 @@ transferability in geographic and environmental space :
   stratification uses \code{k} partitions along the y-gradient, \code{x} stratification does 
   the same for the x-gradient, and \code{both} combines them.
   \item \code{block} stratification was described in \emph{Muscarella et al. 2014} (see 
-  \href{BIOMOD_CrossValidation.html#References}{References}). Four bins of equal size are 
+  \href{https://biomodhub.github.io/biomod2/reference/BIOMOD_CrossValidation.html#References}{References}). Four bins of equal size are 
   partitioned (bottom-left, bottom-right, top-left and top-right).
 }
 
@@ -90,6 +90,10 @@ myRespXY <- DataSpecies[, c('X_WGS84', 'Y_WGS84')]
 myFiles <- paste0('external/bioclim/current/bio', c(3, 4, 7, 11, 12), '.grd')
 myExpl <- raster::stack(system.file(myFiles, package = 'biomod2'))
 
+\dontshow{
+myExtent <- raster::extent(-10,36,40,80)
+myExpl <- raster::stack(raster::crop(myExpl, myExtent))
+}
 
 # ---------------------------------------------------------------
 # Format Data with true absences

@@ -36,7 +36,7 @@ data to be converted}
 
 \item{do.filtering}{(\emph{optional, default} \code{FALSE}) \cr 
 A \code{logical} value defining whether filtered data should be returned, or binary one 
-(see \href{bm_BinaryTransformation.html#details}{Details})}
+(see Details)}
 }
 \value{
 An object of the same class than \code{data} and containing either binary (\code{0} or  
@@ -45,7 +45,7 @@ An object of the same class than \code{data} and containing either binary (\code
 \description{
 This internal \pkg{biomod2} function allows to convert probability (not necessary 
 between \code{0} and \code{1}) values into binary presence-absence (\code{0} or \code{1}) values 
-according to a predefined threshold (see \href{bm_BinaryTransformation.html#details}{Details}).
+according to a predefined threshold (see Details).
 }
 \details{
 If \code{data} is a \code{vector} or \code{\link[raster:raster]{raster}}, \code{threshold} 
@@ -100,7 +100,7 @@ Other Secundary functions:
 Wilfried Thuiller, Damien Georges
 }
 \concept{Secundary functions}
-\keyword{binary,}
-\keyword{convert,}
+\keyword{binary}
+\keyword{convert}
 \keyword{filter}
-\keyword{threshold,}
+\keyword{threshold}

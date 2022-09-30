@@ -59,11 +59,11 @@ those of \code{bm.mod}) or \code{ROC}, \code{TSS}, \code{KAPPA}, \code{ACCURACY}
 \item{compress}{(\emph{optional, default} \code{TRUE}) \cr 
 A \code{logical} or a \code{character} value defining whether and how objects should be 
 compressed when saved on hard drive. Must be either \code{TRUE}, \code{FALSE}, \code{xz} or 
-\code{gzip} (see \href{BIOMOD_Projection.html#details}{Details})}
+\code{gzip} (see Details)}
 
 \item{build.clamping.mask}{(\emph{optional, default} \code{TRUE}) \cr 
 A \code{logical} value defining whether a clamping mask should be built and saved on hard 
-drive or not (see \href{BIOMOD_Projection.html#details}{Details}))}
+drive or not (see Details)}
 
 \item{nb.cpu}{(\emph{optional, default} \code{1}) \cr 
 An \code{integer} value corresponding to the number of computing resources to be used to 
@@ -72,7 +72,7 @@ parallelize the single models computation}
 \item{seed.val}{(\emph{optional, default} \code{NULL}) \cr 
 An \code{integer} value corresponding to the new seed value to be set}
 
-\item{\ldots}{(\emph{optional, see \href{BIOMOD_Projection.html#details}{Details})})}
+\item{\ldots}{(\emph{optional, see Details)})}
 }
 \value{
 A \code{BIOMOD.projection.out} object containing models projections, or links to saved 
@@ -139,6 +139,10 @@ myRespXY <- DataSpecies[, c('X_WGS84', 'Y_WGS84')]
 myFiles <- paste0('external/bioclim/current/bio', c(3, 4, 7, 11, 12), '.grd')
 myExpl <- raster::stack(system.file(myFiles, package = 'biomod2'))
 
+\dontshow{
+myExtent <- raster::extent(-10,36,40,80)
+myExpl <- raster::stack(raster::crop(myExpl, myExtent))
+}
 
 # ---------------------------------------------------------------
 file.out <- paste0(myRespName, "/", myRespName, ".AllModels.models.out")
@@ -202,5 +206,5 @@ Other Main functions:
 Wilfried Thuiller, Damien Georges
 }
 \concept{Main functions}
-\keyword{models,}
+\keyword{models}
 \keyword{projection}

@@ -71,6 +71,6 @@ Other Secundary functions:
 Damien Georges
 }
 \concept{Secundary functions}
+\keyword{"neural}
 \keyword{cross-validation}
-\keyword{networks,}
-\keyword{neural}
+\keyword{networks"}

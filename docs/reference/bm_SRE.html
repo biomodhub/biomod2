@@ -100,7 +100,7 @@ References and Details)."><!-- mathjax --><script src="https://cdnjs.cloudflare.
 range envelop (SRE) (equivalent to 
 <a href="https://caws.org.nz/PPQ567/PPQ%2006-1%20pp008-9%20Busby.pdf" class="external-link">BIOCLIM</a>) 
 using the extreme percentiles (as recommended by Nix or Busby, see 
-<a href="bm_SRE.html#references">References</a> and <a href="bm_SRE.html#details">Details</a>).</p>
+<a href="https://biomodhub.github.io/biomod2/reference/bm_SRE.html#references" class="external-link">References</a> and Details).</p>
     </div>
 
     <div id="ref-usage">
@@ -119,41 +119,26 @@ using the extreme percentiles (as recommended by Nix or Busby, see
 <dd><p>a <code>vector</code>, <code><a href="https://rdrr.io/pkg/sp/man/SpatialPoints.html" class="external-link">SpatialPoints</a></code> or 
 <code><a href="https://rdrr.io/pkg/sp/man/SpatialPoints.html" class="external-link">SpatialPointsDataFrame</a></code> object containing binary data (<code>0</code> : absence, 
 <code>1</code> : presence, <code>NA</code> : indeterminate) for a single species</p></dd>
-
-
 <dt>expl.var</dt>
 <dd><p>a <code>matrix</code>, <code>data.frame</code>, <code><a href="https://rdrr.io/pkg/sp/man/SpatialPoints.html" class="external-link">SpatialPointsDataFrame</a></code> 
 or <code><a href="https://rdrr.io/pkg/raster/man/stack.html" class="external-link">RasterStack</a></code> object containing the explanatory variables (in 
 columns or layers) that will be used to build the SRE model</p></dd>
-
-
 <dt>new.env</dt>
 <dd><p>a <code>matrix</code>, <code>data.frame</code>, <code><a href="https://rdrr.io/pkg/sp/man/SpatialPoints.html" class="external-link">SpatialPointsDataFrame</a></code> 
 or <code><a href="https://rdrr.io/pkg/raster/man/stack.html" class="external-link">RasterStack</a></code> object containing the explanatory variables (in 
 columns or layers) that will be used to predict the SRE model</p></dd>
-
-
 <dt>quant</dt>
 <dd><p>a <code>numeric</code> between <code>0</code> and <code>0.5</code> defining the half-quantile 
 corresponding to the most extreme value for each variable not to be taken into account for 
-determining the tolerance boundaries of the considered species (see 
-<a href="bm_SRE.html#details">Details</a>)</p></dd>
-
-
+determining the tolerance boundaries of the considered species (see Details)</p></dd>
 <dt>do.extrem</dt>
 <dd><p>(<em>optional, default</em> <code>FALSE</code>) <br> 
 A <code>logical</code> value defining whether a <code>matrix</code> containing extreme conditions 
 supported should be returned or not</p></dd>
-
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    
-
-<p>A <code>vector</code> or a <code><a href="https://rdrr.io/pkg/raster/man/raster.html" class="external-link">raster</a></code> object, containing binary (<code>0</code></p>
- 
-
-<p>or <code>1</code>) values.</p>
+    <p>A <code>vector</code> or a <code><a href="https://rdrr.io/pkg/raster/man/raster.html" class="external-link">raster</a></code> object, containing binary (<code>0</code>or <code>1</code>) values.</p>
     </div>
     <div id="details">
     <h2>Details</h2>
@@ -255,7 +240,7 @@ that a total of <code>10%</code> of the data will not be considered.</p>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.3.</p>
 </div>
 
       </footer></div>

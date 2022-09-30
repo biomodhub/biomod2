@@ -65,6 +65,6 @@ Other Secundary functions:
 Damien Georges
 }
 \concept{Secundary functions}
-\keyword{formula,}
-\keyword{models,}
+\keyword{formula}
+\keyword{models}
 \keyword{options}

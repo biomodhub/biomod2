@@ -56,7 +56,7 @@ with this function through \code{list} objects.
 
 The \code{\link{bm_DefaultModelingOptions}} function prints all default parameter values for 
 all available models. \cr This output can be copied and pasted to be used as is (with wanted 
-changes) as function arguments (see \href{BIOMOD_ModelingOptions.html#examples}{Examples}).
+changes) as function arguments (see \href{https://biomodhub.github.io/biomod2/reference/BIOMOD_ModelingOptions.html#examples}{Examples}).
 
 Below is the detailed list of all modifiable parameters for each available model.
 }
@@ -64,7 +64,7 @@ Below is the detailed list of all modifiable parameters for each available model
  (\code{\link[stats]{glm}})
 \itemize{
   \item{\code{myFormula}}{ : a typical \code{formula} object (see 
-  \href{BIOMOD_ModelingOptions.html#examples}{Examples}). \cr If not \code{NULL}, \code{type} 
+  \href{https://biomodhub.github.io/biomod2/reference/BIOMOD_ModelingOptions.html#examples}{Examples}). \cr If not \code{NULL}, \code{type} 
   and \code{interaction.level} parameters are switched off. \cr 
   You can choose to either :
   \itemize{
@@ -121,7 +121,7 @@ Below is the detailed list of all modifiable parameters for each available model
   be \code{GAM_gam} (see \code{\link[gam]{gam}}), \code{GAM_mgcv} (see \code{\link[mgcv]{gam}}) 
   or \code{BAM_mgcv} (see \code{\link[mgcv]{bam}})}
   \item{\code{myFormula}}{ : a typical \code{formula} object (see 
-  \href{BIOMOD_ModelingOptions.html#examples}{Examples}). \cr If not \code{NULL}, \code{type} 
+  \href{https://biomodhub.github.io/biomod2/reference/BIOMOD_ModelingOptions.html#examples}{Examples}). \cr If not \code{NULL}, \code{type} 
   and \code{interaction.level} parameters are switched off. \cr 
   You can choose to either :
   \itemize{
@@ -217,7 +217,7 @@ Below is the detailed list of all modifiable parameters for each available model
 \emph{Please refer to \code{\link[earth]{earth}} help file for more details.}
 \itemize{
   \item{\code{myFormula}}{ : a typical \code{formula} object (see 
-  \href{BIOMOD_ModelingOptions.html#examples}{Examples}). \cr If not \code{NULL}, \code{type} 
+  \href{https://biomodhub.github.io/biomod2/reference/BIOMOD_ModelingOptions.html#examples}{Examples}). \cr If not \code{NULL}, \code{type} 
   and \code{interaction.level} parameters are switched off. \cr 
   You can choose to either :
   \itemize{
@@ -257,7 +257,7 @@ Below is the detailed list of all modifiable parameters for each available model
 }
 
 \section{MAXENT.Phillips }{
- (\url{https://biodiversityinformatics.amnh.org/open_source/maxent})
+ (\url{https://biodiversityinformatics.amnh.org/open_source/maxent/})
 \itemize{
   \item{\code{path_to_maxent.jar = getwd()}}{ : a \code{character} corresponding to 
   \pkg{maxent.jar} file link}
@@ -341,6 +341,10 @@ myRespXY <- DataSpecies[, c('X_WGS84', 'Y_WGS84')]
 myFiles <- paste0('external/bioclim/current/bio', c(3, 4, 7, 11, 12), '.grd')
 myExpl <- raster::stack(system.file(myFiles, package = 'biomod2'))
 
+\dontshow{
+myExtent <- raster::extent(-10,36,40,80)
+myExpl <- raster::stack(raster::crop(myExpl, myExtent))
+}
 
 # ---------------------------------------------------------------
 # Format Data with true absences
@@ -397,5 +401,5 @@ Other Main functions:
 Damien Georges, Wilfried Thuiller
 }
 \concept{Main functions}
-\keyword{models,}
+\keyword{models}
 \keyword{options}
