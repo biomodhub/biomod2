@@ -38,7 +38,7 @@
 ##' transferability in geographic and environmental space : 
 ##' \itemize{
 ##'   \item \code{x} and \code{y} stratification was described in \emph{Wenger and Olden 2012} 
-##'   (see \href{BIOMOD_CrossValidation.html#References}{References}). While \code{y} 
+##'   (see  \href{https://biomodhub.github.io/biomod2/reference/BIOMOD_CrossValidation.html#References}{References}). While \code{y} 
 ##'   stratification uses \code{k} partitions along the y-gradient, \code{x} stratification does 
 ##'   the same for the x-gradient, and \code{both} combines them.
 ##'   \item \code{block} stratification was described in \emph{Muscarella et al. 2014} (see 
@@ -97,7 +97,7 @@
 ##' myExpl <- raster::stack(system.file(myFiles, package = 'biomod2'))
 ##' 
 ##' \dontshow{
-##' myExtent <- raster::extent(-10,36,40,80)
+##' myExtent <- raster::extent(-5,31,40,70)
 ##' myExpl <- raster::stack(raster::crop(myExpl, myExtent))
 ##' }
 ##' 
