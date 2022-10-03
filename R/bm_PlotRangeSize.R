@@ -130,7 +130,7 @@
 ##' myExplFuture = raster::stack(system.file(myFiles, package = 'biomod2'))
 ##' \dontshow{
 ##' myExtent <- raster::extent(-10,36,40,80)
-##' myExplFuture <- stack(raster::crop(myExplFuture, myExtent))
+##' myExplFuture <- raster::stack(raster::crop(myExplFuture, myExtent))
 ##' }
 ##' 
 ##' # Project onto future conditions
