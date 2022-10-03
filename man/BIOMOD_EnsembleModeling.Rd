@@ -282,7 +282,7 @@ myFiles <- paste0('external/bioclim/current/bio', c(3, 4, 7, 11, 12), '.grd')
 myExpl <- raster::stack(system.file(myFiles, package = 'biomod2'))
 
 \dontshow{
-myExtent <- raster::extent(-10,36,40,80)
+myExtent <- raster::extent(-5,31,40,70)
 myExpl <- raster::stack(raster::crop(myExpl, myExtent))
 }
 
