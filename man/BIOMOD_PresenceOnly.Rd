@@ -78,7 +78,7 @@ data(bioclim_current)
 myExpl <- bioclim_current
 
 \dontshow{
-myExtent <- raster::extent(-5,31,40,70)
+myExtent <- raster::extent(0,30,45,70)
 myExpl <- raster::stack(raster::crop(myExpl, myExtent))
 }
 
@@ -100,6 +100,7 @@ if (file.exists(file.out)) {
   # Model single models
   myBiomodModelOut <- BIOMOD_Modeling(bm.format = myBiomodData,
                                       modeling.id = 'AllModels',
+                                      models = c('RF', 'GLM'),
                                       bm.options = myBiomodOptions,
                                       nb.rep = 2,
                                       data.split.perc = 80,
@@ -124,12 +125,12 @@ if (file.exists(file.EM)) {
                                         metric.eval = c('TSS', 'ROC'),
                                         var.import = 3,
                                         prob.mean = TRUE,
-                                        prob.median = TRUE,
-                                        prob.cv = TRUE,
-                                        prob.ci = TRUE,
+                                        prob.median = FALSE,
+                                        prob.cv = FALSE,
+                                        prob.ci = FALSE,
                                         prob.ci.alpha = 0.05,
                                         committee.averaging = TRUE,
-                                        prob.mean.weight = TRUE,
+                                        prob.mean.weight = FALSE,
                                         prob.mean.weight.decay = 'proportional',
                                         seed.val = 42)
 }

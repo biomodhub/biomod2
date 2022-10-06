@@ -281,7 +281,7 @@ data(bioclim_current)
 myExpl <- bioclim_current
 
 \dontshow{
-myExtent <- raster::extent(-5,31,40,70)
+myExtent <- raster::extent(0,30,45,70)
 myExpl <- raster::stack(raster::crop(myExpl, myExtent))
 }
 
@@ -303,6 +303,7 @@ if (file.exists(file.out)) {
   # Model single models
   myBiomodModelOut <- BIOMOD_Modeling(bm.format = myBiomodData,
                                       modeling.id = 'AllModels',
+                                      models = c('RF', 'GLM'),
                                       bm.options = myBiomodOptions,
                                       nb.rep = 2,
                                       data.split.perc = 80,
@@ -322,12 +323,12 @@ myBiomodEM <- BIOMOD_EnsembleModeling(bm.mod = myBiomodModelOut,
                                       metric.eval = c('TSS', 'ROC'),
                                       var.import = 3,
                                       prob.mean = TRUE,
-                                      prob.median = TRUE,
-                                      prob.cv = TRUE,
-                                      prob.ci = TRUE,
+                                      prob.median = FALSE,
+                                      prob.cv = FALSE,
+                                      prob.ci = FALSE,
                                       prob.ci.alpha = 0.05,
                                       committee.averaging = TRUE,
-                                      prob.mean.weight = TRUE,
+                                      prob.mean.weight = FALSE,
                                       prob.mean.weight.decay = 'proportional',
                                       seed.val = 42)
 myBiomodEM
@@ -345,13 +346,13 @@ bm_PlotVarImpBoxplot(bm.out = myBiomodEM, group.by = c('model', 'expl.var', 'dat
 
 # Represent response curves
 bm_PlotResponseCurves(bm.out = myBiomodEM, 
-                      models.chosen = get_built_models(myBiomodEM)[c(1, 6, 7)],
+                      models.chosen = get_built_models(myBiomodEM)[c(1, 2)],
                       fixed.var = 'median')
 bm_PlotResponseCurves(bm.out = myBiomodEM, 
-                      models.chosen = get_built_models(myBiomodEM)[c(1, 6, 7)],
+                      models.chosen = get_built_models(myBiomodEM)[c(1, 2)],
                       fixed.var = 'min')
 bm_PlotResponseCurves(bm.out = myBiomodEM, 
-                      models.chosen = get_built_models(myBiomodEM)[7],
+                      models.chosen = get_built_models(myBiomodEM)[2],
                       fixed.var = 'median',
                       do.bivariate = TRUE)
 
