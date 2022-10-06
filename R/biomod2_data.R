@@ -1,7 +1,8 @@
 #' Presence-Absence data to build test SDM
 #'
 #' A dataset covering all the continent with presence/absence data for 6 mammal
-#' species
+#' species. Presence/absence were derived from range maps downloaded at 
+#' \href{https://www.iucnredlist.org/}{IUCN}.
 #'
 #' @format A data frame with 2488 rows and 10 variables:
 #' \describe{
@@ -11,7 +12,7 @@
 #'   \item{GuloGulo}{Presence (1) or Absence (0) for wolverine}
 #'   \item{PantheraOnca}{Presence (1) or Absence (0) for jaguar}
 #'   \item{PteropusGiganteus}{Presence (1) or Absence (0) for indian flying fox}
-#'   \item{TenrecEcaudatus}{Presence (1) or Absence (0) for Tailless tenrec}
+#'   \item{TenrecEcaudatus}{Presence (1) or Absence (0) for tailless tenrec}
 #'   \item{VulpesVulpes}{Presence (1) or Absence (0) for red fox}
 #' }
 
@@ -43,16 +44,17 @@
 "bioclim_current"
 
 # myFiles <- paste0('../biomod2_old_inst_folder/external/bioclim/current/bio', c(3, 4, 7, 11, 12), '.grd')
-# bioclim_current <- raster::stack(myFiles)
+# bioclim_current <- 
+#   terra::rast(
+#     raster::stack(myFiles)
+#   )
 # usethis::use_data(bioclim_current, overwrite = TRUE)
 
 #' Bioclimatic variables for SDM based on future condition
 #'
 #' A RasterStack with 5 bioclimatic variables commonly used for SDM and
-#' describing future climate based on  CMIP6 downscaled projections. Additional
-#' information available at
-#' \href{https://www.worldclim.org/data/cmip6/cmip6climate.html}{worldclim}
-#'
+#' describing future climate based on old RCP scenarios at the horizon 2080.
+#' 
 #' @format A RasterStack with 5 layers:
 #' \describe{
 #'   \item{bio3}{Isothermality}
@@ -65,5 +67,8 @@
 "bioclim_future"
 
 # myFiles <- paste0('../biomod2_old_inst_folder/external/bioclim/future/bio', c(3, 4, 7, 11, 12), '.grd')
-# bioclim_future <- raster::stack(myFiles)
+# bioclim_future <- 
+#   terra::rast(
+#     raster::stack(myFiles)
+#   )
 # usethis::use_data(bioclim_future, overwrite = TRUE)
