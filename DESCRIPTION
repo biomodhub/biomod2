@@ -82,6 +82,7 @@ Collate:
     'biomod2_classes_4.R'
     'biomod2_classes_5.R'
     'biomod2_internal.R'
+    'biomod2_data.R'
     'BIOMOD_CrossValidation.R'
     'BIOMOD_EnsembleForecasting.R'
     'BIOMOD_EnsembleModeling.R'
@@ -110,3 +111,4 @@ Collate:
     'bm_SampleFactorLevels.R'
     'bm_VariablesImportance.R'
     'zzz.R'
+LazyData: true
