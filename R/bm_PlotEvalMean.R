@@ -77,7 +77,7 @@
 ##' myExpl <- raster::stack(system.file(myFiles, package = 'biomod2'))
 ##' 
 ##' \dontshow{
-##' myExtent <- raster::extent(-5,31,40,70)
+##' myExtent <- raster::extent(0,30,45,70)
 ##' myExpl <- raster::stack(raster::crop(myExpl, myExtent))
 ##' }
 ##' 
@@ -99,6 +99,7 @@
 ##'   # Model single models
 ##'   myBiomodModelOut <- BIOMOD_Modeling(bm.format = myBiomodData,
 ##'                                       modeling.id = 'AllModels',
+##'                                       models = c('RF', 'GLM'),
 ##'                                       bm.options = myBiomodOptions,
 ##'                                       nb.rep = 2,
 ##'                                       data.split.perc = 80,
