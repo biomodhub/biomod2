@@ -99,7 +99,7 @@ myFiles <- paste0('external/bioclim/current/bio', c(3, 4, 7, 11, 12), '.grd')
 myExpl <- raster::stack(system.file(myFiles, package = 'biomod2'))
 
 \dontshow{
-myExtent <- raster::extent(-5,31,40,70)
+myExtent <- raster::extent(0,30,45,70)
 myExpl <- raster::stack(raster::crop(myExpl, myExtent))
 }
 
@@ -121,6 +121,7 @@ if (file.exists(file.out)) {
   # Model single models
   myBiomodModelOut <- BIOMOD_Modeling(bm.format = myBiomodData,
                                       modeling.id = 'AllModels',
+                                      models = c('RF', 'GLM'),
                                       bm.options = myBiomodOptions,
                                       nb.rep = 2,
                                       data.split.perc = 80,
@@ -151,7 +152,7 @@ if (file.exists(file.proj)) {
 myFiles = paste0('external/bioclim/future/bio', c(3, 4, 7, 11, 12), '.grd')
 myExplFuture = raster::stack(system.file(myFiles, package = 'biomod2'))
 \dontshow{
-myExtent <- raster::extent(-5,31,40,70)
+myExtent <- raster::extent(0,30,45,70)
 myExplFuture <- raster::stack(raster::crop(myExplFuture, myExtent))
 }
 # Project onto future conditions
