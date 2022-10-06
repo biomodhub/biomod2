@@ -77,12 +77,11 @@
 ##' @examples
 ##' 
 ##' ## Load real data
-##' myFile <- system.file('external/species/mammals_table.csv', package = 'biomod2')
-##' DataSpecies <- read.csv(myFile, row.names = 1)
+##' data(DataSpecies)
 ##' myResp.r <- as.numeric(DataSpecies[, 'GuloGulo'])
 ##' 
-##' myFiles <- paste0('external/bioclim/current/bio', c(3, 4, 7, 11, 12), '.grd')
-##' myExpl.r <- raster::stack(system.file(myFiles, package = 'biomod2'))
+##' data(bioclim_current)
+##' myExpl.r <- bioclim_current
 ##' 
 ##' myRespXY <- DataSpecies[which(myResp.r == 1), c('X_WGS84', 'Y_WGS84')]
 ##' myResp.v <- raster::reclassify(raster::subset(myExpl.r, 1, drop = TRUE), c(-Inf, Inf, 0))
