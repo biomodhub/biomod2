@@ -44,11 +44,16 @@
 "bioclim_current"
 
 # myFiles <- paste0('../biomod2_old_inst_folder/external/bioclim/current/bio', c(3, 4, 7, 11, 12), '.grd')
-# bioclim_current <- 
-#   terra::rast(
-#     raster::stack(myFiles)
+# need to go through the use of raster because grd files are stored with 
+# FLT4S datatype which throws an error when directly loaded with terra::rast
+# for an unknown reason
+# bioclim_current <-
+#   wrap( 
+#     terra::rast(
+#       raster::stack(myFiles)
+#     )
 #   )
-# usethis::use_data(bioclim_current, overwrite = TRUE)
+# usethis::use_data(bioclim_current, overwrite = TRUE )
 
 #' Bioclimatic variables for SDM based on future condition
 #'
@@ -67,8 +72,13 @@
 "bioclim_future"
 
 # myFiles <- paste0('../biomod2_old_inst_folder/external/bioclim/future/bio', c(3, 4, 7, 11, 12), '.grd')
-# bioclim_future <- 
-#   terra::rast(
-#     raster::stack(myFiles)
+# need to go through the use of raster because grd files are stored with 
+# FLT4S datatype which throws an error when directly loaded with terra::rast
+# for an unknown reason
+# bioclim_future <-
+#   terra::wrap(
+#     terra::rast(
+#       raster::stack(myFiles) 
+#     )
 #   )
 # usethis::use_data(bioclim_future, overwrite = TRUE)
