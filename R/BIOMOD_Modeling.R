@@ -452,12 +452,7 @@ BIOMOD_Modeling <- function(bm.format,
       cat(paste0("\n\t! ", paste(models.switch.off, collapse = ",")," were switched off because of categorical variables !"))
     }
   }
-  ## 1.2 Warning for CTA raster prediction when using categorical variables --------------------
-  
-  if (length(categorical_var) > 0 & "CTA" %in% models) {
-    cat("\n\t! CTA raster prediction switched off because of categorical variables !")
-  }
-    
+ 
   
   ## 2.1 Disable MAXENT.Tsuruoka ----------------------------------------------
   ## because of package maintaining issue (request from B Ripley 03-2019)
