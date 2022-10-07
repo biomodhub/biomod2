@@ -610,76 +610,99 @@ bm_RunModel <- function(model, Data, modeling.id = '', bm.options, calib.lines, 
     }
   } else if (model == "MAXENT.Phillips") {
     ## 2.10 MAXENT.Phillips model ---------------------------------------------
-    
     cat('\n\t> MAXENT.Phillips modeling...')
-    MWD <- .maxent.prepare.workdir(Data, xy, calib.lines, RunName = nam,
-                                   eval.data, eval.xy, dir.name = dir_name, species.name = resp_name,
-                                   modeling.id = modeling.id,
-                                   background_data_dir = bm.options@MAXENT.Phillips$background_data_dir)
+    MWD <- 
+      .maxent.prepare.workdir(
+        Data, xy, calib.lines, RunName = nam,
+        eval.data, eval.xy, dir.name = dir_name,
+        species.name = resp_name,
+        modeling.id = modeling.id,
+        background_data_dir = bm.options@MAXENT.Phillips$background_data_dir
+      )
     
-    maxent.cmd <- paste0("java ",
-                         ifelse(is.null(bm.options@MAXENT.Phillips$memory_allocated),
-                                "",
-                                paste0("-mx", bm.options@MAXENT.Phillips$memory_allocated, "m")), 
-                         " -jar ", file.path(bm.options@MAXENT.Phillips$path_to_maxent.jar, "maxent.jar"),
-                         " environmentallayers=\"", MWD$m_backgroundFile, 
-                         "\" samplesfile=\"", MWD$m_speciesFile,
-                         "\" projectionlayers=\"", gsub(", ", ",", toString(MWD$m_predictFile)),
-                         "\" outputdirectory=\"", MWD$m_outdir,
-                         "\" outputformat=logistic ", 
-                         ifelse(length(categorical_var),
-                                paste0(" togglelayertype=", categorical_var, collapse = " "),
-                                ""),
-                         " redoifexists",
-                         " visible=", bm.options@MAXENT.Phillips$visible,
-                         " linear=", bm.options@MAXENT.Phillips$linear,
-                         " quadratic=", bm.options@MAXENT.Phillips$quadratic,
-                         " product=", bm.options@MAXENT.Phillips$product,
-                         " threshold=", bm.options@MAXENT.Phillips$threshold,
-                         " hinge=", bm.options@MAXENT.Phillips$hinge,
-                         " lq2lqptthreshold=", bm.options@MAXENT.Phillips$lq2lqptthreshold,
-                         " l2lqthreshold=", bm.options@MAXENT.Phillips$l2lqthreshold,
-                         " hingethreshold=", bm.options@MAXENT.Phillips$hingethreshold,
-                         " beta_threshold=", bm.options@MAXENT.Phillips$beta_threshold,
-                         " beta_categorical=", bm.options@MAXENT.Phillips$beta_categorical,
-                         " beta_lqp=", bm.options@MAXENT.Phillips$beta_lqp,
-                         " beta_hinge=", bm.options@MAXENT.Phillips$beta_hinge,
-                         " betamultiplier=", bm.options@MAXENT.Phillips$betamultiplier,
-                         " defaultprevalence=", bm.options@MAXENT.Phillips$defaultprevalence,
-                         " autorun nowarnings notooltips noaddsamplestobackground")
+    # file to log potential errors
+    maxent_stderr_file <- paste0(MWD$m_outdir, "/maxent.stderr")
     
-    system(command = maxent.cmd, wait = TRUE, intern = TRUE,
+    maxent.cmd <- 
+      paste0(
+        "java ",
+        ifelse(
+          is.null(bm.options@MAXENT.Phillips$memory_allocated),
+          "",
+          paste0("-mx", bm.options@MAXENT.Phillips$memory_allocated, "m")
+        ), 
+        " -jar ", 
+        file.path(bm.options@MAXENT.Phillips$path_to_maxent.jar, "maxent.jar"),
+        " environmentallayers=\"", MWD$m_backgroundFile, 
+        "\" samplesfile=\"", MWD$m_speciesFile,
+        "\" projectionlayers=\"", gsub(", ", ",", toString(MWD$m_predictFile)),
+        "\" outputdirectory=\"", MWD$m_outdir,
+        "\" outputformat=logistic ", 
+        ifelse(length(categorical_var),
+               paste0(" togglelayertype=", categorical_var, collapse = " "),
+               ""),
+        " redoifexists",
+        " visible=", bm.options@MAXENT.Phillips$visible,
+        " linear=", bm.options@MAXENT.Phillips$linear,
+        " quadratic=", bm.options@MAXENT.Phillips$quadratic,
+        " product=", bm.options@MAXENT.Phillips$product,
+        " threshold=", bm.options@MAXENT.Phillips$threshold,
+        " hinge=", bm.options@MAXENT.Phillips$hinge,
+        " lq2lqptthreshold=", bm.options@MAXENT.Phillips$lq2lqptthreshold,
+        " l2lqthreshold=", bm.options@MAXENT.Phillips$l2lqthreshold,
+        " hingethreshold=", bm.options@MAXENT.Phillips$hingethreshold,
+        " beta_threshold=", bm.options@MAXENT.Phillips$beta_threshold,
+        " beta_categorical=", bm.options@MAXENT.Phillips$beta_categorical,
+        " beta_lqp=", bm.options@MAXENT.Phillips$beta_lqp,
+        " beta_hinge=", bm.options@MAXENT.Phillips$beta_hinge,
+        " betamultiplier=", bm.options@MAXENT.Phillips$betamultiplier,
+        " defaultprevalence=", bm.options@MAXENT.Phillips$defaultprevalence,
+        " autorun nowarnings notooltips noaddsamplestobackground",
+        " 2> ", maxent_stderr_file
+      )
+    system(command = maxent.cmd, wait = TRUE, intern = FALSE,
            ignore.stdout = FALSE, ignore.stderr = FALSE)
     
-    model.bm <- new("MAXENT.Phillips_biomod2_model",
-                    model_output_dir = MWD$m_outdir,
-                    model_name = model_name,
-                    model_class = 'MAXENT.Phillips',
-                    model_options = bm.options@MAXENT.Phillips,
-                    dir_name = dir_name,
-                    resp_name = resp_name,
-                    expl_var_names = expl_var_names,
-                    expl_var_type = get_var_type(Data[calib.lines, expl_var_names, drop = FALSE]), 
-                    expl_var_range = get_var_range(Data[calib.lines, expl_var_names, drop = FALSE]))
+    maxent_exec_output <- readLines(maxent_stderr_file)
     
-    # for MAXENT.Phillips predicitons are calculated in the same time than models building to save time.
-    cat("\n Getting predictions...")
-    g.pred <- try(round(as.numeric(read.csv(MWD$m_outputFile)[, 3]) * 1000))
-    
-    if (var.import > 0) {
-      cat("\n Getting predictor contributions...")
-      variables.importance <- bm_VariablesImportance(bm.model = model.bm
-                                                     , expl.var = Data[, expl_var_names, drop = FALSE]
-                                                     , nb.rep = var.import
-                                                     , temp_workdir = MWD$m_outdir
-                                                     , seed.val = seed.val
-                                                     , do.progress = do.progress)
+    if(any(grepl(pattern = "Error", x = maxent_exec_output))) {
+      g.pred <- NA
+      class(g.pred) <- "try-error"
+      cat( 
+        paste0("\n*** Error in MAXENT.Phillips, more info available in ",
+               maxent_stderr_file)
+      )
+      
+    } else {
+      model.bm <- new("MAXENT.Phillips_biomod2_model",
+                      model_output_dir = MWD$m_outdir,
+                      model_name = model_name,
+                      model_class = 'MAXENT.Phillips',
+                      model_options = bm.options@MAXENT.Phillips,
+                      dir_name = dir_name,
+                      resp_name = resp_name,
+                      expl_var_names = expl_var_names,
+                      expl_var_type = get_var_type(Data[calib.lines, expl_var_names, drop = FALSE]), 
+                      expl_var_range = get_var_range(Data[calib.lines, expl_var_names, drop = FALSE]))
+      
+      # for MAXENT.Phillips predicitons are calculated in the same time than models building to save time.
+      cat("\n Getting predictions...")
+      g.pred <- try(round(as.numeric(read.csv(MWD$m_outputFile)[, 3]) * 1000))
+      
+      if (var.import > 0) {
+        cat("\n Getting predictor contributions...")
+        variables.importance <- bm_VariablesImportance(bm.model = model.bm
+                                                       , expl.var = Data[, expl_var_names, drop = FALSE]
+                                                       , nb.rep = var.import
+                                                       , temp_workdir = MWD$m_outdir
+                                                       , seed.val = seed.val
+                                                       , do.progress = do.progress)
+      }
     }
-  } else if(model == "MAXENT.Phillips.2")
-  {
+  } else if (model == "MAXENT.Phillips.2") {
     ## 2.11 MAXENT.Phillips.2 model -------------------------------------------
     
-    cat('\n\t> MAXENT.Phillips modeling...')
+    cat('\n\t> MAXENT.Phillips.2 modeling...')
     model.sp <- try(maxnet(p = Data %>% filter(calib.lines) %>% pull(resp_name), 
                            data = Data %>% filter(calib.lines) %>% select_at(expl_var_names)
                            # f = if(!is.null(bm.options@MAXENT.Phillips.2@))
@@ -699,34 +722,9 @@ bm_RunModel <- function(model, Data, modeling.id = '', bm.options, calib.lines, 
     }
   }
   
-  ## 2.12 MAXENT.Tsuruoka model -----------------------------------------------
-  # if(model == "MAXENT.Tsuruoka"){
-  #   model.sp <- try(stop('MAXENT.Tsuruoka is depreacated(because maxent package is not maintained anymore)'))
-  #   # model.sp <- try(maxent::maxent(feature_matrix = Data[calib.lines, expl_var_names, drop = FALSE],
-  #   #                                code_vector = as.factor(Data[calib.lines, 1]),
-  #   #                                l1_regularizer = bm.options@MAXENT.Tsuruoka$l1_regularizer,
-  #   #                                l2_regularizer = bm.options@MAXENT.Tsuruoka$l2_regularizer,
-  #   #                                use_sgd = bm.options@MAXENT.Tsuruoka$use_sgd,
-  #   #                                set_heldout = bm.options@MAXENT.Tsuruoka$set_heldout,
-  #   #                                verbose = bm.options@MAXENT.Tsuruoka$verbose))
-  # 
-  #   if( !inherits(model.sp,"try-error") ){
-  #     model.bm <- new("MAXENT.Tsuruoka_biomod2_model",
-  #                     model = model.sp,
-  #                     model_name = model_name,
-  #                     model_class = 'MAXENT.Tsuruoka',
-  #                     model_options = bm.options@MAXENT.Tsuruoka,
-  #                     resp_name = resp_name,
-  #                     expl_var_names = expl_var_names,
-  #                     expl_var_type = get_var_type(Data[calib.lines,expl_var_names,drop = FALSE]),
-  #                     expl_var_range = get_var_range(Data[calib.lines,expl_var_names,drop = FALSE]))
-  #   }
-  # }
-  
-  
   ## 3. CREATE PREDICTIONS ------------------------------------------------------------------------
   temp_workdir = NULL
-  if (model == "MAXENT.Phillips") {
+  if (model == "MAXENT.Phillips" & !inherits(g.pred, 'try-error')) {
     temp_workdir = model.bm@model_output_dir
   }
   
