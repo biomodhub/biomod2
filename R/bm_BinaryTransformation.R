@@ -62,8 +62,7 @@
 ##' cbind(vec.d, vec.d_bin, vec.d_filt)
 ##'
 ##' 
-##' @importFrom raster stack subset nlayers addLayer reclassify
-##' 
+##' @importFrom terra rast add nlyr classify
 ##' @export
 ##' 
 ##' 
@@ -154,59 +153,49 @@ setMethod('bm_BinaryTransformation', signature('array'),
             }
           })
 
-##'
-##' @rdname bm_BinaryTransformation
-##' @export
-##'
 
-setMethod('bm_BinaryTransformation', signature('RasterLayer'),
-          function(data, threshold, do.filtering = FALSE)
-          {
-            if(!is.na(threshold)){
-              if (do.filtering) {
-                return(reclassify(data, c(-Inf, threshold, 0), right = FALSE))
-              } else {
-                return(reclassify(data, c(-Inf, threshold, 0, threshold, +Inf, 1), right = FALSE))
-              }
-            } else{ ## return a empty map (NA everywhere)
-              return(reclassify(data, c(-Inf, Inf, NA)))
-            }
-          })
 
 ##'
 ##' @rdname bm_BinaryTransformation
 ##' @export
 ##'
 
-setMethod('bm_BinaryTransformation', signature('RasterStack'),
+setMethod('bm_BinaryTransformation', signature('SpatRaster'),
           function(data, threshold, do.filtering = FALSE)
           {
             if(length(threshold) == 1) {
-              threshold <- rep(threshold, nlayers(data))
+              threshold <- rep(threshold, nlyr(data))
             }
-            StkTmp <- stack()
-            for (i in 1:nlayers(data)) {
-              ras = bm_BinaryTransformation(subset(data, i, drop = TRUE), threshold[i], do.filtering)
-              StkTmp <- addLayer(StkTmp, ras)
+            StkTmp <- rast()
+            for (i in 1:nlyr(data)) {
+              ras <-  
+                .bm_BinaryTransformation_singleLayer_SpatRaster(subset(data, i),
+                                                                threshold[i],
+                                                                do.filtering)
+              add(StkTmp) <- ras
             }
             names(StkTmp) <- names(data)
             return(StkTmp)
           })
 
 ##'
-##' @rdname bm_BinaryTransformation
-##' @export
+##' @internal
 ##'
 
-setMethod('bm_BinaryTransformation', signature('RasterBrick'),
-          function(data, threshold, do.filtering = FALSE)
-          {
-            data <- stack(data, RAT = FALSE)
-            return(bm_BinaryTransformation(data, threshold, do.filtering))
-          })
+.bm_BinaryTransformation_singleLayer_SpatRaster <- 
+  function(data, threshold, do.filtering = FALSE) {
+    if(!is.na(threshold)){
+      if (do.filtering) {
+        return(classify(data, c(-Inf, threshold, 0), right = FALSE))
+      } else {
+        return(classify(data, c(-Inf, threshold, 0, threshold, +Inf, 1), right = FALSE))
+      }
+    } else{ ## return a empty map (NA everywhere)
+      return(classify(data, c(-Inf, Inf, NA)))
+    }
+  }
 
-
-###################################################################################################
+### .convert_bin.matrix --------------------------------------------------------
 
 .convert_bin.matrix = function(data, threshold, do.filtering = FALSE) {
   ind.0 = t(t(data) < threshold)
@@ -217,7 +206,7 @@ setMethod('bm_BinaryTransformation', signature('RasterBrick'),
 
 .convert_bin.array = function(x, y) {
   # if (!any(is.na(x))) {
-    return(x >= y)
+  return(x >= y)
   # } else {
   #   return(rep(NA, length(x)))
   # }
@@ -225,7 +214,7 @@ setMethod('bm_BinaryTransformation', signature('RasterBrick'),
 
 .convert_bin.array.filt = function(x, y) {
   # if (!any(is.na(x))) {
-    return(ifelse(x >= y, x, 0))
+  return(ifelse(x >= y, x, 0))
   # } else {
   #   return(rep(NA, length(x)))
   # }
