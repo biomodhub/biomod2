@@ -164,6 +164,7 @@
 ##' @importFrom raster which.max nlayers stack rasterToPoints reclassify
 ## @importFrom patchwork plot_layout
 ## @importFrom ggpubr ggarrange
+##' @importMethodsFrom raster plot
 ##' @importFrom ggplot2 ggplot aes_string geom_col geom_tile facet_wrap xlab ylab labs 
 ##' theme element_blank element_rect scale_fill_manual
 ##' 
