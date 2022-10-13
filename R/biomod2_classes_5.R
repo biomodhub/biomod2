@@ -378,7 +378,7 @@ setClass('EMcv_biomod2_model',
 setMethod('predict2', signature(object = 'EMcv_biomod2_model', newdata = "RasterStack"),
           function(object, newdata, ...) {
             predfun <- function(newdata, on_0_1000, ...){
-              if (nlayers(newdata) > 1) {
+              if (nlyr(newdata) > 1) {
                 out <- calc(newdata, cv, na.rm = TRUE, aszero = TRUE)
                 return(out)
               } else {

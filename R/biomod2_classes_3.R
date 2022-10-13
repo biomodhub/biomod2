@@ -841,8 +841,8 @@ setMethod("get_predictions", "BIOMOD.projection.out",
               names(out) <- get_projected_models(obj)
               
               # subselection of models_selected
-              if (inherits(out, 'Raster')) {
-                out <- subset(out, models_selected, drop = FALSE)
+              if (inherits(out, 'SpatRaster')) {
+                out <- subset(out, models_selected)
               } else if (length(dim(out)) == 4) { ## 4D arrays
                 out <- out[, .extract_modelNamesInfo(model.names = models_selected, info = 'models'),
                            .extract_modelNamesInfo(model.names = models_selected, info = 'run.eval'),

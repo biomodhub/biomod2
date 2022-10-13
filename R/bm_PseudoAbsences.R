@@ -381,7 +381,7 @@ setMethod('bm_PseudoAbsences_random', signature(expl.var = "RasterStack"),
               cat("\n   > Pseudo absences are selected in explanatory variables")
               
               # create a mask containing all not already sampled points (presences and absences)
-              mask.env <- mask.out <- subset(expl.var, 1, drop = TRUE)
+              mask.env <- mask.out <- subset(expl.var, 1)
               mask.env <- reclassify(mask.env, c(-Inf, Inf, -1)) ## the area we want to sample
               mask.out[] <- NA
               
@@ -670,14 +670,14 @@ setMethod('bm_PseudoAbsences_disk', signature(expl.var = "RasterStack"),
               cat("\n   > Pseudo absences are selected in explanatory variables")
               
               # create a mask
-              dist.mask <- subset(expl.var, 1, drop = TRUE)
+              dist.mask <- subset(expl.var, 1)
               dist.mask[] <- NA
               
               pres.xy <- coordinates(resp.var[which(resp.var@data[, 1] == 1), ])
               dist.mask[cellFromXY(dist.mask, pres.xy)] <- 1
               
               dist.mask <- distance(dist.mask)
-              dist.mask <- mask(dist.mask, subset(expl.var, 1, drop = TRUE))
+              dist.mask <- mask(dist.mask, subset(expl.var, 1))
               
               if (is.null(dist.max)) { dist.max <- Inf }
               mask.in <- reclassify(dist.mask, c(-Inf, dist.min, NA, dist.min, dist.max, 1, dist.max, Inf, NA))

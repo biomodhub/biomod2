@@ -431,7 +431,7 @@ bm_PlotResponseCurves <- function(bm.out
   ## 3. Check new.env argument ------------------------------------------------
   if (inherits(new.env, "Raster")) {
     cat("\n   > Extracting raster infos..")
-    DataTmp <- matrix(0, ncol = nlayers(new.env), nrow = nb.pts)
+    DataTmp <- matrix(0, ncol = nlyr(new.env), nrow = nb.pts)
     colnames(DataTmp) <- names(new.env)
     maxVal <- maxValue(new.env)
     minVal <- minValue(new.env)

@@ -315,7 +315,7 @@ bm_PlotRangeSize <- function(bm.range, do.count = TRUE, do.perc = TRUE
       for (ii in row.names) {
         for (jj in unique(corres[, ii])) {
           ras = ggdat[[corres$full.name[which(corres[, ii] == jj)]]]
-          if (nlayers(ras) > 1) {
+          if (nlyr(ras) > 1) {
             stk = foreach (vali = c(1, -1, -2), .combine = "stack") %do%
               {
                 res = ras
