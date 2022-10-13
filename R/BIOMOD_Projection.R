@@ -13,7 +13,7 @@
 ##' \code{\link{BIOMOD_Modeling}} function
 ##' @param proj.name a \code{character} corresponding to the name (ID) of the projection set 
 ##' (\emph{a new folder will be created within the simulation folder with this name})
-##' @param new.env a \code{matrix}, \code{data.frame} or \code{\link[raster:stack]{RasterStack}} 
+##' @param new.env a \code{matrix}, \code{data.frame} or \code{\link[terra:rast]{SpatRaster}} 
 ##' object containing the new explanatory variables (in columns or layers, with names matching the 
 ##' variables names given to the \code{\link{BIOMOD_FormatingData}} function to build 
 ##' \code{bm.mod}) that will be used to project the species distribution model(s)
@@ -65,8 +65,8 @@
 ##' \enumerate{
 ##'   \item the output is a 4-dimensional array if \code{new.env} is a \code{matrix} or a 
 ##'   \code{data.frame}
-##'   \item it is a \code{\link[raster:stack]{RasterStack}} if \code{new.env} is a 
-##'   \code{\link[raster:stack]{RasterStack}} (or several \code{\link[raster:stack]{RasterLayer}} 
+##'   \item it is a \code{\link[terra:rast]{SpatRaster}} if \code{new.env} is a 
+##'   \code{\link[terra:rast]{SpatRaster}} (or several \code{\link[raster:stack]{RasterLayer}} 
 ##'   objects, if \code{new.env} is too large)
 ##'   \item raw projections, as well as binary and filtered projections (if asked), are saved in 
 ##'   the \code{proj.name} folder
@@ -93,8 +93,8 @@
 ##'   \item{\code{on_0_1000} : }{a \code{logical} value defining whether \code{0 - 1} probabilities 
 ##'   are to be converted to \code{0 - 1000} scale to save memory on backup}
 ##'   \item{\code{do.stack} : }{a \code{logical} value defining whether all projections are to be 
-##'   saved as one \code{\link[raster:stack]{RasterStack}} object or several 
-##'   \code{\link[raster:stack]{RasterLayer}} files (\emph{the default if projections are too heavy to 
+##'   saved as one \code{\link[terra:rast]{SpatRaster}} object or several 
+##'   \code{\link[terra:rast]{SpatRaster}} files (\emph{the default if projections are too heavy to 
 ##'   be all loaded at once in memory})}
 ##'   \item{\code{keep.in.memory} : }{a \code{logical} value defining whether all projections are 
 ##'   to be kept loaded at once in memory, or only links pointing to hard drive are to be returned}
@@ -220,8 +220,8 @@ BIOMOD_Projection <- function(bm.mod,
                   coord = new.env.xy,
                   modeling.id = bm.mod@modeling.id)
   proj_out@models.out@link = bm.mod@link
-  if (inherits(new.env, 'Raster')) {
-    proj_out@proj.out <- new('BIOMOD.stored.raster.stack')
+  if (inherits(new.env, 'SpatRaster')) {
+    proj_out@proj.out <- new('BIOMOD.stored.SpatRaster')
   } else {
     proj_out@proj.out <- new('BIOMOD.stored.array')
   }
@@ -276,25 +276,26 @@ BIOMOD_Projection <- function(bm.mod,
         warning("Parallelisation with `foreach` is not available for Windows. Sorry.")
       }
     }
+
     proj <- foreach(mod.name = models.chosen) %dopar%
-    {
-      cat("\n\t> Projecting", mod.name, "...")
-      filename <- file.path(namePath, "individual_projections"
-                            , paste0(nameProj, "_", mod.name, ifelse(output.format == ".RData"
-                                                                     , ".grd", output.format)))
-      BIOMOD_LoadModels(bm.out = bm.mod, full.name = mod.name, as = "mod")
-      temp_workdir = NULL
-      if (length(grep("MAXENT.Phillips$", mod.name)) == 1) {
-        temp_workdir = mod@model_output_dir
+      {
+        cat("\n\t> Projecting", mod.name, "...")
+        filename <- file.path(namePath, "individual_projections"
+                              , paste0(nameProj, "_", mod.name, ifelse(output.format == ".RData"
+                                                                       , ".grd", output.format)))
+        BIOMOD_LoadModels(bm.out = bm.mod, full.name = mod.name, as = "mod")
+        temp_workdir = NULL
+        if (length(grep("MAXENT.Phillips$", mod.name)) == 1) {
+          temp_workdir = mod@model_output_dir
+        }
+        pred.tmp <- predict(mod, new.env, on_0_1000 = on_0_1000, filename = filename
+                            , omit.na = omit.na, split.proj = 1
+                            , temp_workdir = temp_workdir, seedval = seed.val)
+        return(pred.tmp)
       }
-      pred.tmp <- predict(mod, new.env, on_0_1000 = on_0_1000, filename = filename
-                          , omit.na = omit.na, split.proj = 1
-                          , temp_workdir = temp_workdir, seedval = seed.val)
-      return(pred.tmp)
-    }
     ## Putting predictions into the right format
-    if (inherits(new.env, "Raster")) {
-      proj <- stack(proj)
+    if (inherits(new.env, "SpatRaster")) {
+      proj <- rast(proj)
       names(proj) <- models.chosen
     } else {
       proj <- as.data.frame(proj)
@@ -329,7 +330,7 @@ BIOMOD_Projection <- function(bm.mod,
     eval.meth <- unique(c(metric.binary, metric.filter))
     
     ## Get all evaluation thresholds
-    if (inherits(new.env, "Raster")) {
+    if (inherits(new.env, "SpatRaster")) {
       thresholds <- matrix(0, nrow = length(eval.meth), ncol = length(models.chosen), dimnames = list(eval.meth, models.chosen))
       for (mod in models.chosen) {
         PA.run <- .extract_modelNamesInfo(model.names = mod, info = 'data.set')
@@ -450,15 +451,21 @@ BIOMOD_Projection <- function(bm.mod,
   }
   
   ## 3. Check new.env ---------------------------------------------------------
-  .fun_testIfInherits(TRUE, "new.env", new.env, c('matrix', 'data.frame', 'RasterStack'))
-  if (inherits(new.env, 'RasterStack')) {
+  .fun_testIfInherits(TRUE, "new.env", new.env, c('matrix', 'data.frame', 'SpatRaster','Raster'))
+  
+  if (inherits(new.env, 'Raster')) {
+    # conversion into SpatRaster
+    new.env <- rast(new.env)
+  }
+  
+  if (inherits(new.env, 'SpatRaster')) {
     .fun_testIfIn(TRUE, "names(new.env)", names(new.env), bm.mod@expl.var.names)
   } else {
     .fun_testIfIn(TRUE, "colnames(new.env)", colnames(new.env), bm.mod@expl.var.names)
   }
   
   ## 4. Check new.env.xy ------------------------------------------------------
-  if (!is.null(new.env.xy)  & !inherits(new.env, 'Raster')) {
+  if (!is.null(new.env.xy)  & !inherits(new.env, 'SpatRaster')) {
     new.env.xy = data.matrix(new.env.xy)
     if (ncol(new.env.xy) != 2 || nrow(new.env.xy) != nrow(new.env)) {
       stop("invalid xy coordinates argument given -- dimensions mismatch !")
@@ -525,12 +532,22 @@ BIOMOD_Projection <- function(bm.mod,
   
   ## 8. Check do.stack --------------------------------------------------------
   do.stack <- ifelse(is.null(args$do.stack), TRUE, args$do.stack)
-  if (!inherits(new.env, 'RasterStack')) {
+  if (!inherits(new.env, 'SpatRaster')) {
     if (!do.stack) { cat("\n\t\t! 'do.stack' arg is always set as TRUE for data.frame/matrix dataset") }
     do.stack <- TRUE
   } else if (do.stack) { # test if there is enough memory to work with RasterStack
-    test = canProcessInMemory(subset(new.env, 1), 2 * length(models.chosen) + nlayers(new.env))
-    if (!test) { rasterOptions(todisk = TRUE) }
+    ncopies = 2 * length(models.chosen) + nlyr(new.env)
+    test <- new.env@ptr$mem_needs(terra:::spatOptions(ncopies = ncopies))
+    if (test[1] > test[2]) {
+      terraOptions(todisk = TRUE) 
+    }
+    # following is more rigorous but we cannot suppress cat messages
+    # test <-
+    #   mem_info(
+    #     subset(new.env, 1), 
+    #     n = 2 * length(models.chosen) + nlyr(new.env)
+    #   )
+    # if (test["needed"] >= test["available"]) { terraOptions(todisk = TRUE) }
   }
   
   ## 9. Check output.format ---------------------------------------------------
@@ -540,7 +557,7 @@ BIOMOD_Projection <- function(bm.mod,
       stop(paste0("output.format argument should be one of '.img','.grd' or '.RData'\n"
                   , "Note : '.img','.grd' are only available if you give environmental condition as a rasterStack object"))
     }
-    if (output.format %in% c(".img", ".grd") && !inherits(new.env, "Raster")) {
+    if (output.format %in% c(".img", ".grd") && !inherits(new.env, "SpatRaster")) {
       warning("output.format was automatically set to '.RData' because environmental conditions are not given as a raster object")
     }
   } else {
