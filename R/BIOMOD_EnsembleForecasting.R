@@ -262,11 +262,11 @@ BIOMOD_EnsembleForecasting <- function(bm.em,
   proj_out@models.out@link = bm.em@link
   
   proj_is_raster <- FALSE
-  if (inherits(new.env, 'Raster') || (length(bm.proj) && inherits(bm.proj@proj.out, 'BIOMOD.stored.raster.stack'))) {
+  if (inherits(new.env, 'SpatRaster') || (length(bm.proj) && inherits(bm.proj@proj.out, 'BIOMOD.stored.SpatRaster'))) {
     proj_is_raster <- TRUE
   }
   if (proj_is_raster) {
-    proj_out@proj.out <- new('BIOMOD.stored.raster.stack')
+    proj_out@proj.out <- new('BIOMOD.stored.SpatRaster')
   } else{
     proj_out@proj.out <- new('BIOMOD.stored.array')
     do.stack = TRUE

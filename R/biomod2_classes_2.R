@@ -3,7 +3,7 @@
 ##' @aliases BIOMOD.stored.data-class
 ##' @aliases BIOMOD.stored.array-class
 ##' @aliases BIOMOD.stored.data.frame-class
-##' @aliases BIOMOD.stored.raster.stack-class
+##' @aliases BIOMOD.stored.SpatRaster-class
 ##' @aliases BIOMOD.stored.files-class
 ##' @aliases BIOMOD.stored.formated.data-class
 ##' @aliases BIOMOD.stored.models.options-class
@@ -31,7 +31,7 @@
 ##' \itemize{
 ##'   \item{\code{BIOMOD.stored.array} : }{\code{val} is an \code{array}}
 ##'   \item{\code{BIOMOD.stored.data.frame} : }{\code{val} is a \code{data.frame}}
-##'   \item{\code{BIOMOD.stored.raster.stack} : }{\code{val} is a 
+##'   \item{\code{BIOMOD.stored.SpatRaster} : }{\code{val} is a 
 ##'   \code{\link[raster:stack]{RasterStack}}}
 ##'   \item{\code{BIOMOD.stored.files} : }{\code{val} is a \code{character}}
 ##'   \item{\code{BIOMOD.stored.formated.data} : }{\code{val} is a 
@@ -55,7 +55,7 @@
 ##' showClass("BIOMOD.stored.data")
 ##' showClass("BIOMOD.stored.array") 
 ##' showClass("BIOMOD.stored.data.frame") 
-##' showClass("BIOMOD.stored.raster.stack") 
+##' showClass("BIOMOD.stored.SpatRaster") 
 ##' showClass("BIOMOD.stored.files") 
 ##' showClass("BIOMOD.stored.formated.data") 
 ##' showClass("BIOMOD.stored.models.options") 
@@ -75,11 +75,14 @@ NULL
 ## BIOMOD.stored[...] objects ------------------------------------------------
 ## --------------------------------------------------------------------------- #
 
+### BIOMOD.stored.data ------------------------------------------------
+
 setClass("BIOMOD.stored.data",
          representation(inMemory = 'logical', link = 'character'),
          prototype(inMemory = FALSE, link = ''),
          validity = function(object){ return(TRUE) })
 
+### BIOMOD.stored.array ------------------------------------------------
 ##' @name BIOMOD.stored.array-class
 ##' @rdname BIOMOD.stored.data
 ##' 
@@ -89,6 +92,7 @@ setClass("BIOMOD.stored.array",
          prototype(val = array()),
          validity = function(object){ return(TRUE) })
 
+### BIOMOD.stored.data.frame ------------------------------------------------
 ##' @name BIOMOD.stored.data.frame-class
 ##' @rdname BIOMOD.stored.data
 ##' 
@@ -98,15 +102,17 @@ setClass("BIOMOD.stored.data.frame",
          prototype(val = data.frame()),
          validity = function(object){ return(TRUE) })
 
-##' @name BIOMOD.stored.raster.stack-class
+### BIOMOD.stored.SpatRaster ------------------------------------------------
+##' @name BIOMOD.stored.SpatRaster-class
 ##' @rdname BIOMOD.stored.data
 ##' 
-setClass("BIOMOD.stored.raster.stack",
+setClass("BIOMOD.stored.SpatRaster",
          contains = "BIOMOD.stored.data",
-         representation(val = 'RasterStack'),
-         prototype(val = stack()),
+         representation(val = 'SpatRaster'),
+         prototype(val = rast()),
          validity = function(object){ return(TRUE) })
 
+### BIOMOD.stored.files ------------------------------------------------
 ##' @name BIOMOD.stored.files-class
 ##' @rdname BIOMOD.stored.data
 ##' 
@@ -116,6 +122,7 @@ setClass("BIOMOD.stored.files",
          prototype(val = NULL),
          validity = function(object){ return(TRUE) })
 
+### BIOMOD.stored.formated.data ------------------------------------------------
 ##' @name BIOMOD.stored.formated.data-class
 ##' @rdname BIOMOD.stored.data
 ##' 
@@ -125,6 +132,7 @@ setClass("BIOMOD.stored.formated.data",
          prototype(val = NULL),
          validity = function(object){ return(TRUE) })
 
+### BIOMOD.stored.models.options ------------------------------------------------
 ##' @name BIOMOD.stored.models.options-class
 ##' @rdname BIOMOD.stored.data
 ##' 
@@ -174,7 +182,7 @@ setMethod("load_stored_object", "BIOMOD.stored.data",
             if(obj@inMemory){ return(obj@val) }
             
             # different comportement with raster
-            if (inherits(obj, "BIOMOD.stored.raster.stack")) {
+            if (inherits(obj, "BIOMOD.stored.SpatRaster")) {
               if (length(obj@link) == 1 & all(grepl(".RData", obj@link))) {
                 return(get(load(obj@link)))
               } else if (all(grepl(".grd", obj@link) | grepl(".img", obj@link))) {

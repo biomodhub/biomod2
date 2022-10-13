@@ -713,16 +713,17 @@ setMethod(
       stop("invalid str.grep arg")
     }
     
-    if (inherits(x@proj.out, "BIOMOD.stored.raster.stack")) {
+    if (inherits(x@proj.out, "BIOMOD.stored.SpatRaster")) {
       requireNamespace("rasterVis")
       maxi <- 
         try(
-          cellStats(
+          global(
             get_predictions(x, full.name = models_selected), 
-            max
+            "max",
+            na.rm = TRUE
           )
         )
-      maxi <- max(maxi)
+      maxi <- max(maxi, na.rm = TRUE)
       maxi <- ifelse(maxi <= 1, 1, ifelse(maxi < 1000, 1000, maxi))
       my.at <- seq(0, maxi, by = 100 * maxi / 1000) ## breaks of color key
       my.labs.at <- seq(0, maxi, by = 250 * maxi / 1000) ## labels placed vertically centered
@@ -804,7 +805,7 @@ setMethod('free', signature('BIOMOD.projection.out'),
           function(obj) {
             if (inherits(obj@proj.out, "BIOMOD.stored.array")) {
               obj@proj.out@val  <- array()
-            } else if (inherits(obj@proj.out, "BIOMOD.stored.raster.stack")) {
+            } else if (inherits(obj@proj.out, "BIOMOD.stored.SpatRaster")) {
               obj@proj.out@val <- stack()
             } else {
               obj@proj.out@val <- NULL
