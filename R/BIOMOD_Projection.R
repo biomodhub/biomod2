@@ -581,28 +581,32 @@ BIOMOD_Projection <- function(bm.mod,
 }
 
 
-###################################################################################################
+### .build_clamping_mask -------------------------------------------------------
 
 .build_clamping_mask <- function(env, MinMax)
 {
-  if (inherits(env, 'Raster'))
-  { ## raster case ------------------------------------------------------------
-    env <- stack(env)
+  if (inherits(env, 'SpatRaster'))
+  { 
+    ## raster case ------------------------------------------------------------
     env <- subset(env, names(MinMax))
-    
     ## create an empty mask
-    clamp.mask <- ref.mask <- subset(env, 1, drop = TRUE)
-    clamp.mask[!is.na(clamp.mask[])] <- 0
-    ref.mask[!is.na(clamp.mask[])] <- 1
+    clamp.mask <- app(subset(env, 1), function(x) ifelse(is.na(x), NA, 0))
+    ref.mask <- app(subset(env, 1), function(x) ifelse(is.na(x), NA, 1))
     
-    for (e.v in names(MinMax)) {
+    for (e.v in names(env)) {
       if (!is.null(MinMax[[e.v]]$min)) { # numeric variable
         clamp.mask <- clamp.mask + 
-          bm_BinaryTransformation(subset(env, e.v, drop = TRUE), MinMax[[e.v]]$max) + ## pix with values outside of calib range
-          (ref.mask - bm_BinaryTransformation(subset(env, e.v, drop = TRUE), MinMax[[e.v]]$min)) ## pix with no values (within env[[1]] area)
+          bm_BinaryTransformation(subset(env, e.v), MinMax[[e.v]]$max) + ## pix with values outside of calib range
+          (ref.mask - bm_BinaryTransformation(subset(env, e.v), MinMax[[e.v]]$min)) ## pix with no values (within env[[1]] area)
       } else if (!is.null(MinMax[[e.v]]$levels)) { # factorial variable
-        clamp.mask <- clamp.mask + 
-          (subset(env, e.v, drop = TRUE) %in% MinMax[[e.v]]$levels) ## pix with values outside of calib range
+        clamp.mask <- 
+          clamp.mask + 
+          app(subset(env, e.v),
+              function(x) {
+                ifelse(as.character(x) %in% MinMax[[e.v]]$levels,
+                       1,
+                       0)
+              }) ## pix with values outside of calib range
       }
     }
     
