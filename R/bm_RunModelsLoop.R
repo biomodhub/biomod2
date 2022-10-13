@@ -615,7 +615,8 @@ bm_RunModel <- function(model, Data, modeling.id = '', bm.options, calib.lines, 
         eval.data, eval.xy, dir.name = dir_name,
         species.name = resp_name,
         modeling.id = modeling.id,
-        background_data_dir = bm.options@MAXENT.Phillips$background_data_dir
+        background_data_dir = bm.options@MAXENT.Phillips$background_data_dir,
+        categorical_var = categorical_var
       )
     
     # file to log potential errors
@@ -723,13 +724,14 @@ bm_RunModel <- function(model, Data, modeling.id = '', bm.options, calib.lines, 
   
   ## 3. CREATE PREDICTIONS ------------------------------------------------------------------------
   temp_workdir = NULL
-  if (model == "MAXENT.Phillips" & !inherits(g.pred, 'try-error')) {
-    temp_workdir = model.bm@model_output_dir
-  }
   
   if (model != "MAXENT.Phillips") {
     g.pred <- try(predict(model.bm, Data[, expl_var_names, drop = FALSE], on_0_1000 = TRUE
                           , seedval = seed.val, temp_workdir = temp_workdir))
+  }
+  
+  if (model == "MAXENT.Phillips" & !inherits(g.pred, 'try-error')) {
+    temp_workdir = model.bm@model_output_dir
   }
   
   ## scale or not predictions -------------------------------------------------
@@ -740,7 +742,7 @@ bm_RunModel <- function(model, Data, modeling.id = '', bm.options, calib.lines, 
     g.pred <- try(predict(model.bm, Data[, expl_var_names, drop = FALSE], on_0_1000 = TRUE
                           , seedval = seed.val, temp_workdir = temp_workdir))
   }
-  
+
   ## check predictions existence and stop execution if not ok -----------------
   test_pred_ok <- TRUE
   if (inherits(g.pred, "try-error")) { # model calibration or prediction failed
