@@ -19,8 +19,6 @@ bioclim_future
 }
 \description{
 A RasterStack with 5 bioclimatic variables commonly used for SDM and
-describing future climate based on  CMIP6 downscaled projections. Additional
-information available at
-\href{https://www.worldclim.org/data/cmip6/cmip6climate.html}{worldclim}
+describing future climate based on old RCP scenarios at the horizon 2080.
 }
 \keyword{datasets}

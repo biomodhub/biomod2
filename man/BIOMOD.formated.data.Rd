@@ -7,7 +7,7 @@
 \alias{BIOMOD.formated.data,numeric,data.frame-method}
 \alias{BIOMOD.formated.data,data.frame,ANY-method}
 \alias{BIOMOD.formated.data,numeric,matrix-method}
-\alias{BIOMOD.formated.data,numeric,RasterStack-method}
+\alias{BIOMOD.formated.data,numeric,SpatRaster-method}
 \alias{plot,BIOMOD.formated.data,missing-method}
 \alias{show,BIOMOD.formated.data-method}
 \title{\code{BIOMOD_FormatingData()} output object class}
@@ -49,7 +49,7 @@
   na.rm = TRUE
 )
 
-\S4method{BIOMOD.formated.data}{numeric,RasterStack}(
+\S4method{BIOMOD.formated.data}{numeric,SpatRaster}(
   sp,
   env,
   xy = NULL,

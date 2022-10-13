@@ -180,13 +180,14 @@
 ##' 
 ##' @importFrom foreach foreach %dopar%
 ## @importFrom doParallel registerDoParallel
-##' @importFrom raster stack subset nlayers writeRaster rasterOptions canProcessInMemory
+##' @importFrom raster canProcessInMemory
+##' @importFrom terra rast subset nlyr writeRaster terraOptions
 ##' @importFrom abind asub
 ##' 
 ##' @export
 ##' 
 ##' 
-###################################################################################################
+# BIOMOD_Projection -----------------------------------------------------------
 
 
 BIOMOD_Projection <- function(bm.mod,

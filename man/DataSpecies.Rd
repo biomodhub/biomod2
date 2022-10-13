@@ -13,7 +13,7 @@ A data frame with 2488 rows and 10 variables:
   \item{GuloGulo}{Presence (1) or Absence (0) for wolverine}
   \item{PantheraOnca}{Presence (1) or Absence (0) for jaguar}
   \item{PteropusGiganteus}{Presence (1) or Absence (0) for indian flying fox}
-  \item{TenrecEcaudatus}{Presence (1) or Absence (0) for Tailless tenrec}
+  \item{TenrecEcaudatus}{Presence (1) or Absence (0) for tailless tenrec}
   \item{VulpesVulpes}{Presence (1) or Absence (0) for red fox}
 }
 }
@@ -22,6 +22,7 @@ DataSpecies
 }
 \description{
 A dataset covering all the continent with presence/absence data for 6 mammal
-species
+species. Presence/absence were derived from range maps downloaded at 
+\href{https://www.iucnredlist.org/}{IUCN}.
 }
 \keyword{datasets}
