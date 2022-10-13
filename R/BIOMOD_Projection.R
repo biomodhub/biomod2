@@ -1,4 +1,4 @@
-###################################################################################################
+### -------------------------------------------------------------------------- #
 ##' @name BIOMOD_Projection
 ##' @author Wilfried Thuiller, Damien Georges
 ##' 
@@ -136,7 +136,7 @@
 ##' myExpl <- raster::stack(raster::crop(myExpl, myExtent))
 ##' }
 ##' 
-##' # ---------------------------------------------------------------
+##' # ---------------------------------------------------------------#
 ##' file.out <- paste0(myRespName, "/", myRespName, ".AllModels.models.out")
 ##' if (file.exists(file.out)) {
 ##'   myBiomodModelOut <- get(load(file.out))
@@ -165,7 +165,7 @@
 ##' }
 ##' 
 ##' 
-##' # ---------------------------------------------------------------
+##' # ---------------------------------------------------------------#
 ##' # Project single models
 ##' myBiomodProj <- BIOMOD_Projection(bm.mod = myBiomodModelOut,
 ##'                                   proj.name = 'Current',
@@ -200,8 +200,7 @@ BIOMOD_Projection <- function(bm.mod,
                               build.clamping.mask = TRUE,
                               nb.cpu = 1,
                               seed.val = NULL,
-                              ...)
-{
+                              ...) {
   .bm_cat("Do Single Models Projection")
   
   ## 0. Check arguments ---------------------------------------------------------------------------
@@ -307,10 +306,9 @@ BIOMOD_Projection <- function(bm.mod,
       proj_out@proj.out@inMemory <- TRUE
     }
   }
-
+  
   ## save projections
   assign(x = nameProjSp, value = proj)
-  
   saved.files <- file.path(namePath, paste0(nameProjSp, output.format))
   if (output.format == '.RData') {
     save(list = nameProjSp, file = saved.files, compress = compress)
@@ -434,7 +432,7 @@ BIOMOD_Projection <- function(bm.mod,
   return(proj_out)
 }
 
-###################################################################################################
+# .BIOMOD_Projection.check.args---------------------------------------------
 
 .BIOMOD_Projection.check.args <- function(bm.mod, proj.name, new.env, new.env.xy,
                                           models.chosen, metric.binary, metric.filter, compress, seed.val, ...)
@@ -607,12 +605,14 @@ BIOMOD_Projection <- function(bm.mod,
         clamp.mask <- clamp.mask + (env[, e.v] %in% MinMax[[e.v]]$levels)
       }
     }
-  } else { stop("Unsupported env arg") }
+  } else {
+    stop("Unsupported env arg") 
+  }
   return(clamp.mask)
 }
 
 
-###################################################################################################
+### .DF_to_ARRAY --------------------------------------------------------------
 
 .DF_to_ARRAY <- function(df)
 {
@@ -625,13 +625,13 @@ BIOMOD_Projection <- function(bm.mod,
       stop("You have to give a data.frame")
     }
   }
-
+  
   a <- sapply(strsplit(colnames(df), '_'), tail, n = 3)
   b <- lapply(1:3, function(id) return(unique(a[id, ])))
   array.dim.names <- c(list(character(0)), rev(b))
   array.dim <- c(nrow(df), sapply(array.dim.names[-1], length))
   array.out <- array(data = NA, dim = array.dim, dimnames = array.dim.names)
-
+  
   for (x in colnames(df)) {
     dimTmp <- rev(tail(unlist(strsplit(x, '_')), n = 3))
     array.out[, dimTmp[1], dimTmp[2], dimTmp[3]] <- df[, x]

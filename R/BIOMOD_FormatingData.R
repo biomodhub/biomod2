@@ -318,7 +318,6 @@ BIOMOD_FormatingData <- function(resp.name,
                                            PA.user.table)
   for (argi in names(args)) { assign(x = argi, value = args[[argi]]) }
   rm(args)
-  
   ## 2. build BIOMOD.formated.data object -------------------------------------
   out <- NULL
   if( PA.strategy == 'none') { # no Pseudo Absences

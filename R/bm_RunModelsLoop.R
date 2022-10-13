@@ -1,4 +1,4 @@
-###################################################################################################
+# bm_RunModelsLoop docs --------------------------------------------------------
 ##' @name bm_RunModelsLoop
 ##' @aliases bm_RunModelsLoop
 ##' @aliases bm_RunModel
@@ -108,7 +108,7 @@
 ##' @export
 ##' 
 ##'
-###################################################################################################
+# ---------------------------------------------------------------------------- #
 
 
 bm_RunModelsLoop <- function(bm.format,
@@ -121,8 +121,7 @@ bm_RunModelsLoop <- function(bm.format,
                              scale.models = TRUE,
                              nb.cpu = 1,
                              seed.val = NULL,
-                             do.progress = TRUE)
-{
+                             do.progress = TRUE) {
   cat("\n\n-=-=-=- Run : ", bm.format$name, '\n')
   res.sp.run <- list()
   
@@ -166,7 +165,7 @@ bm_RunModelsLoop <- function(bm.format,
 }
 
 
-###################################################################################################
+# ---------------------------------------------------------------------------- #
 
 ##' 
 ##' @rdname bm_RunModelsLoop
@@ -249,12 +248,12 @@ bm_RunModel <- function(model, Data, modeling.id = '', bm.options, calib.lines, 
     }
   } else if (model == "GAM") {
     ## 2.2 GAM model ----------------------------------------------------------
-   
+    
     # package loading
     .load_gam_namespace(bm.options@GAM$algo)
     
     if (bm.options@GAM$algo == 'GAM_gam') { ## gam package
-
+      
       
       # NOTE : To be able to take into account GAM options and weights we have to do a eval(parse(...))
       # it's due to GAM implementation (using of match.call() troubles)
@@ -269,7 +268,7 @@ bm_RunModel <- function(model, Data, modeling.id = '', bm.options, calib.lines, 
                                     trace = bm.options@GAM$control$trace,
                                     control = bm.options@GAM$control))
     } else { ## mgcv package
-
+      
       if (is.null(bm.options@GAM$myFormula)) {
         cat("\n\tAutomatic formula generation...")
         gam.formula <- bm_MakeFormula(resp.name = resp_name
@@ -660,6 +659,7 @@ bm_RunModel <- function(model, Data, modeling.id = '', bm.options, calib.lines, 
         " autorun nowarnings notooltips noaddsamplestobackground",
         " 2> ", maxent_stderr_file
       )
+    
     system(command = maxent.cmd, wait = TRUE, intern = FALSE,
            ignore.stdout = FALSE, ignore.stderr = FALSE)
     
@@ -1015,8 +1015,8 @@ bm_RunModel <- function(model, Data, modeling.id = '', bm.options, calib.lines, 
 .maxent.prepare.workdir <- function(Data, xy, calib.lines = NULL, RunName = NULL,
                                     eval.data = NULL, evalxy =  NULL,
                                     dir.name = '.', species.name = NULL, modeling.id = '',
-                                    background_data_dir = 'default')
-{
+                                    background_data_dir = 'default', 
+                                    categorical_var = NULL) {
   cat('\n\t\tCreating Maxent Temp Proj Data...')
   
   ## initialise output
@@ -1053,8 +1053,7 @@ bm_RunModel <- function(model, Data, modeling.id = '', bm.options, calib.lines, 
   MWD$m_speciesFile <- m_speciesFile
   
   ## Background Data (create background file only if needed) --------------------------------------
-  if (background_data_dir == 'default')
-  {
+  if (background_data_dir == 'default')  {
     # keep only 0 of calib lines
     Back_swd <- cbind(rep("background", length(absLines))
                       , xy[absLines, ]

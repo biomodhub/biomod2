@@ -1,4 +1,4 @@
-###################################################################################################
+# SRE Documentation -----------------------------------------------------------
 ##' @name bm_SRE
 ##' @author Wilfried Thuiller, Bruno Lafourcade, Damien Georges 
 ##' 
@@ -114,7 +114,7 @@
 ##' @export
 ##' 
 ##' 
-###################################################################################################
+###--------------------------------------------------------------------------###
 
 
 bm_SRE <- function(resp.var = NULL, 
@@ -123,12 +123,12 @@ bm_SRE <- function(resp.var = NULL,
                    quant = 0.025, 
                    do.extrem = FALSE)
 {
-  ## 0. Check arguments ---------------------------------------------------------------------------
+  ## 0. Check arguments ---------------------------------------------------------
   args <- .bm_SRE.check.args(resp.var, expl.var, new.env, quant)
   for (argi in names(args)) { assign(x = argi, value = args[[argi]]) }
   rm(args)
   
-  ## 1. Determine suitable conditions and make the projection -------------------------------------
+  ## 1. Determine suitable conditions and make the projection --------------
   lout <- list()
   if (is.data.frame(resp.var) | is.matrix(resp.var)) ## matrix or data.frame ------------
   {

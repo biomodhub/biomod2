@@ -1,4 +1,4 @@
-###################################################################################################
+# BIOMOD_Modeling docs ------------------------------------------------------- #
 ##' @name BIOMOD_Modeling
 ##' @author Wilfried Thuiller, Damien Georges, Robin Engler
 ##' 
@@ -218,7 +218,7 @@
 ##' myExpl <- raster::stack(raster::crop(myExpl, myExtent))
 ##' }
 ##' 
-##' # ---------------------------------------------------------------
+##' # ---------------------------------------------------------------------------- #
 ##' # Format Data with true absences
 ##' myBiomodData <- BIOMOD_FormatingData(resp.var = myResp,
 ##'                                      expl.var = myExpl,
@@ -229,7 +229,7 @@
 ##' myBiomodOptions <- BIOMOD_ModelingOptions()
 ##' 
 ##' 
-##' # ---------------------------------------------------------------
+##' # ---------------------------------------------------------------------------- #
 ##' # Model single models
 ##' myBiomodModelOut <- BIOMOD_Modeling(bm.format = myBiomodData,
 ##'                                     modeling.id = 'AllModels',
@@ -270,7 +270,7 @@
 ##' @export
 ##' 
 ##' 
-###################################################################################################
+# ---------------------------------------------------------------------------- #
 
 
 BIOMOD_Modeling <- function(bm.format,
@@ -366,7 +366,7 @@ BIOMOD_Modeling <- function(bm.format,
   ## 3.3 Rearrange and save outputs -------------------------------------------
   models.out@models.computed <- .transform_outputs_list(mod.out, out = 'models.run')
   models.out@models.failed <- .transform_outputs_list(mod.out, out = 'calib.failure')
-  
+
   ## 3.4 Rearrange and save models outputs : ----------------------------------
   ## models evaluation, variables importance, models prediction, predictions evaluation
   if (save.output) {
@@ -394,7 +394,7 @@ BIOMOD_Modeling <- function(bm.format,
   }
   rm(mod.out)
   
-  ## 6. SAVE MODEL OBJECT ON HARD DRIVE -----------------------------------------------------------
+  ## 6. SAVE MODEL OBJECT ON HARD DRIVE ----------------------------
   name.OUT = paste0(models.out@sp.name, '.', models.out@modeling.id, '.models.out')
   models.out@link <- file.path(models.out@dir.name, models.out@sp.name, name.OUT)
   assign(x = name.OUT, value = models.out)
@@ -405,7 +405,7 @@ BIOMOD_Modeling <- function(bm.format,
 }
 
 
-###################################################################################################
+# ---------------------------------------------------------------------------- #
 
 .BIOMOD_Modeling.prepare.workdir <- function(dir.name, sp.name, modeling.id)
 {
@@ -416,7 +416,7 @@ BIOMOD_Modeling <- function(bm.format,
 }
 
 
-###################################################################################################
+# ---------------------------------------------------------------------------- #
 
 .BIOMOD_Modeling.check.args <- function(bm.format, modeling.id, models, bm.options, nb.rep
                                         , data.split.perc, data.split.table
@@ -573,7 +573,7 @@ BIOMOD_Modeling <- function(bm.format,
 }
 
 
-###################################################################################################
+# ---------------------------------------------------------------------------- #
 
 .BIOMOD_Modeling.summary <- function(mod.prep.dat, models)
 {
@@ -587,7 +587,7 @@ BIOMOD_Modeling <- function(bm.format,
 }
 
 
-###################################################################################################
+# ---------------------------------------------------------------------------- #
 
 ## # #For ecospat package
 ## @export
@@ -752,7 +752,7 @@ setMethod('.BIOMOD_Modeling.prepare.data', signature('BIOMOD.formated.data.PA'),
 )
 
 
-###################################################################################################
+# ---------------------------------------------------------------------------- #
 
 .automatic_weights_creation <- function(resp, prev = 0.5, subset = NULL)
 {
@@ -807,7 +807,7 @@ setMethod('.BIOMOD_Modeling.prepare.data', signature('BIOMOD.formated.data.PA'),
 }
 
 
-## ###############################################################################################
+# ---------------------------------------------------------------------------- #
 ## 
 ## Reshape biomod2 objects
 ## 
@@ -821,7 +821,7 @@ setMethod('.BIOMOD_Modeling.prepare.data', signature('BIOMOD.formated.data.PA'),
 ## 
 ## @export
 ## 
-## ###############################################################################################
+# ---------------------------------------------------------------------------- #
 
 .transform_outputs_list = function(mod.out, out = 'evaluation', dim.names = NULL)
 {
@@ -829,7 +829,7 @@ setMethod('.BIOMOD_Modeling.prepare.data', signature('BIOMOD.formated.data.PA'),
                'models.run', 'EF.prediction', 'EF.PCA.median', 'EF.evaluation')
   .fun_testIfIn(TRUE, "out", out, out_list)
   
-  ## 0.a get dataset names ------------------------------------------------------------------------
+  ## 0.a get dataset names -----------------------------------------------------
   if (length(mod.out) == 1 && length(unlist(strsplit(unlist(names(mod.out)), '_'))) == 1) {
     dataset.names <- 'AllData'
   } else if (is.null(dim.names)) {
