@@ -275,6 +275,7 @@
 ##' 
 ##' @importFrom sp coordinates
 ##' @importFrom raster stack
+##' @importFrom terra rast
 ##' 
 ##' @export
 ##' 
@@ -386,7 +387,7 @@ BIOMOD_FormatingData <- function(resp.name,
   }
   
   available.types <- c('integer', 'numeric', 'data.frame', 'matrix',
-                       'RasterLayer', 'RasterStack',
+                       'RasterLayer', 'RasterStack', 'SpatRaster',
                        'SpatialPointsDataFrame', 'SpatialPoints')
   
   ## 1. Checking resp.var -----------------------------------------------------
@@ -433,6 +434,7 @@ BIOMOD_FormatingData <- function(resp.name,
   
   if (inherits(expl.var, 'Raster')) {
     expl.var <- stack(expl.var, RAT = FALSE)
+    expl.var <- rast(expl.var)
   }
   
   if (inherits(expl.var, 'SpatialPoints')) {
@@ -457,7 +459,7 @@ BIOMOD_FormatingData <- function(resp.name,
   #### At this point :
   ####  - resp.var is a numeric
   ####  - resp.xy is NULL or a data.frame
-  ####  - expl.var is a data.frame or a RasterStack
+  ####  - expl.var is a data.frame or a SpatRaster
   ####  - sp.name is a character
   
   ## checking resp and expl var compatibility
@@ -510,7 +512,7 @@ BIOMOD_FormatingData <- function(resp.name,
         stop(paste0("Explanatory variable must be one of ", toString(available.types)))
       }
     } else {
-      if (!(inherits(expl.var, 'Raster'))) {
+      if (!(inherits(expl.var, 'SpatRaster'))) {
         stop("If explanatory variable is not a raster and you want to consider evaluation response variable, you have to give evaluation explanatory variables")
       }
     }
@@ -543,6 +545,7 @@ BIOMOD_FormatingData <- function(resp.name,
     
     if (inherits(eval.expl.var, 'Raster')) {
       eval.expl.var <- stack(eval.expl.var)
+      eval.expl.var <- rast(eval.expl.var)
     }
     
     if (inherits(eval.expl.var, 'SpatialPoints')) {

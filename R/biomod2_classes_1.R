@@ -126,7 +126,8 @@ NULL
 
 ##' @name BIOMOD.formated.data-class
 ##' @rdname BIOMOD.formated.data
-##' @importFrom raster stack nlayers addLayer is.factor subset extract cellStats cellFromXY
+# ##' @importFrom raster stack nlayers addLayer is.factor subset extract cellStats cellFromXY
+##' @importFrom terra rast nlyr app is.factor subset extract cellFromXY
 ##' @export
 ##' 
 
@@ -137,7 +138,7 @@ setClass("BIOMOD.formated.data",
                         coord = "data.frame",
                         data.species = "numeric",
                         data.env.var = "data.frame",
-                        data.mask = "RasterStack",
+                        data.mask = "SpatRaster",
                         has.data.eval = "logical",
                         eval.coord = "data.frame",
                         eval.data.species = "numeric",
@@ -181,14 +182,14 @@ setMethod('BIOMOD.formated.data', signature(sp = 'numeric', env = 'data.frame'),
                 sp.name = sp.name
               )
               
-              if (nlayers(BFDeval@data.mask) == 1) {
-                if (nlayers(data.mask) == 1) {
-                  data.mask.tmp <- try(addLayer(data.mask, BFDeval@data.mask))
+              if (nlyr(BFDeval@data.mask) == 1) {
+                if (nlyr(data.mask) == 1) {
+                  data.mask.tmp <- try(add(data.mask, BFDeval@data.mask))
                   if (!inherits(data.mask.tmp, "try-error")) {
                     data.mask <- data.mask.tmp
                     names(data.mask) <- c("calibration", "validation")
                   }
-                } else if (nlayers(data.mask) == 0) {
+                } else if (nlyr(data.mask) == 0) {
                   # in this case the data.mask from calibration is added later
                   data.mask <- BFDeval@data.mask
                   names(data.mask) <- c("validation")
@@ -270,19 +271,18 @@ setMethod('BIOMOD.formated.data', signature(sp = 'numeric', env = 'matrix'),
           }
 )
 
-## BIOMOD.formated.data(sp = numeric, env = RasterStack) -----------------------
+## BIOMOD.formated.data(sp = numeric, env = SpatRaster) -----------------------
 ##' 
 ##' @rdname BIOMOD.formated.data
 ##' @export
 ##' 
 
-setMethod('BIOMOD.formated.data', signature(sp = 'numeric', env = 'RasterStack'),
+setMethod('BIOMOD.formated.data', signature(sp = 'numeric', env = 'SpatRaster'),
           function(sp, env, xy = NULL, dir.name = '.', sp.name = NULL
                    , eval.sp = NULL, eval.env = NULL, eval.xy = NULL
-                   , na.rm = TRUE)
-          {
+                   , na.rm = TRUE) {
             categorical_var <- names(env)[is.factor(env)]
-            
+
             ## Keep same env variable for eval than calib (+ check for factor)
             if (!is.null(eval.sp) && is.null(eval.env)) {
               eval.env <- as.data.frame(extract(env, eval.xy))
@@ -296,20 +296,12 @@ setMethod('BIOMOD.formated.data', signature(sp = 'numeric', env = 'RasterStack')
             if (is.null(xy)) { xy <- as.data.frame(coordinates(env)) }
             
             ## Prepare mask of studied area
-            data.mask = reclassify(subset(env, 1, drop = TRUE), c(-Inf, Inf, -1))
-            data.mask[cellFromXY(data.mask, xy[which(sp == 1), ])] <- 1
-            data.mask[cellFromXY(data.mask, xy[which(sp == 0), ])] <- 0
-            data.mask <- stack(data.mask)
+            data.mask <- terra::rasterize(as.matrix(xy), env[[1]], values = sp)
             names(data.mask) <- sp.name
-            
+
             ## Keep same env variable for eval than calib (+ check for factor)
-            env <- as.data.frame(extract(env, xy, factors = TRUE))
-            if (length(categorical_var)) {
-              for (cat_var in categorical_var) {
-                env[, cat_var] <- as.factor(env[, cat_var])
-              }
-            }
-            
+            env <- as.data.frame(extract(env, xy, factors = TRUE, ID = FALSE))
+
             BFD <- BIOMOD.formated.data(sp, env, xy, dir.name, sp.name, eval.sp, eval.env, eval.xy, na.rm = na.rm, data.mask = data.mask)
             return(BFD)
           }
@@ -327,18 +319,19 @@ setMethod('BIOMOD.formated.data', signature(sp = 'numeric', env = 'RasterStack')
 setMethod('plot', signature(x = 'BIOMOD.formated.data', y = "missing"),
           function(x, coord = NULL, col = NULL)
           {
-            if (nlayers(x@data.mask) > 0)
+            if (nlyr(x@data.mask) > 0)
             {
               requireNamespace("rasterVis")
-              
               ## check if there is some undefined areas to prevent from strange plotting issues
-              if (min(cellStats(x@data.mask, min)) == -1) { # there is undefined area
+              if (terra::minmax(x@data.mask)["min", 1] == -1) { 
+                # there is undefined area
                 my.at <- seq(-1.5, 1.5, by = 1) ## breaks of color key
                 my.labs.at <- seq(-1, 1, by = 1) ## labels placed vertically
                 my.lab <- c("undefined", "absences", "presences") ## labels
                 my.col.regions = c("lightgrey", "red4", "green4") ## colors
                 my.cuts <- 2 ## cuts
-              } else { # no undefined area.. remove it from plot
+              } else { 
+                # no undefined area.. remove it from plot
                 my.at <- seq(-0.5, 1.5, by = 1) ## breaks of color key
                 my.labs.at <- seq(0, 1, by = 1) ## labels placed vertically
                 my.lab <- c("absences", "presences") ## labels
@@ -357,8 +350,7 @@ setMethod('plot', signature(x = 'BIOMOD.formated.data', y = "missing"),
                 colorkey = list(labels = list(labels = my.lab, at = my.labs.at))
               )
               
-            } else
-            {
+            } else  {
               # coordinates checking
               if (is.null(coord)) {
                 if (sum(is.na(x@coord)) == dim(x@coord)[1] * dim(x@coord)[2]) {
@@ -756,10 +748,9 @@ setMethod('BIOMOD.formated.data.PA', signature(sp = 'numeric', env = 'RasterStac
       
       ## add eval data
       if (BFD@has.data.eval) {
-        if (nlayers(BFD@data.mask) == 1 && names(BFD@data.mask) == "validation") {
-          data.mask.eval.tmp <- try(addLayer(data.mask, BFD@data.mask))
-          if (!inherits(data.mask.eval.tmp, "try-error")) {
-            data.mask <- data.mask.eval.tmp
+        if (nlyr(BFD@data.mask) == 1 && names(BFD@data.mask) == "validation") {
+          try_add <- try(add(data.mask) <- BFD@data.mask)
+          if (!inherits(try_add, "try-error")) {
             names(data.mask) <- c("input_data", "validation")
           }
         }
@@ -832,7 +823,7 @@ setMethod('BIOMOD.formated.data.PA', signature(sp = 'numeric', env = 'RasterStac
 setMethod('plot', signature(x = 'BIOMOD.formated.data.PA', y = "missing"),
           function(x, coord = NULL, col = NULL)
           {
-            if (nlayers(x@data.mask) > 0)
+            if (nlyr(x@data.mask) > 0)
             {
               requireNamespace("rasterVis")
               
