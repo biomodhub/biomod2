@@ -321,7 +321,7 @@ bm_PlotResponseCurves <- function(bm.out
   
   ## 2. PLOT graphic ------------------------------------------------------------------------------
   if (!do.bivariate) {
-    new.env_m <- melt(new.env, variable.name = "expl.name", value.name = "expl.val")
+    new.env_m <- melt(new.env[, show.variables], variable.name = "expl.name", value.name = "expl.val")
     
     gg <- ggplot(ggdat, aes_string(x = "expl.val", y = "pred.val", color = "pred.name")) +
       geom_line() +
