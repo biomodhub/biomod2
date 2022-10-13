@@ -207,7 +207,7 @@ check_data_range <- function(model, new_data)
       is.finite(object$null.deviance) && 
       object$deviance != object$null.deviance)
   {
-    if (inherits(dat, 'Raster')) {
+    if (inherits(dat, 'SpatRaster')) {
       pred <- predict(object = dat, model = object, type = "response")
     } else {
       pred <- predict(object, dat, type = "response")
@@ -215,12 +215,12 @@ check_data_range <- function(model, new_data)
   }
   
   if (!exists('pred')) {
-    if (inherits(dat, 'Raster')) {
-      pred <- subset(dat, 1, drop = TRUE)
+    if (inherits(dat, 'SpatRaster')) {
+      pred <- subset(dat, 1)
       if (Prev < 0.5) {
-        pred <- reclassify(x = pred, rcl = c(-Inf, Inf, 0))
+        pred <- classify(x = pred, rcl = c(-Inf, Inf, 0))
       } else {
-        pred <- reclassify(x = pred, rcl = c(-Inf, Inf, 1))
+        pred <- classify(x = pred, rcl = c(-Inf, Inf, 1))
       }
     } else {
       if (Prev < 0.5) {
@@ -238,21 +238,21 @@ check_data_range <- function(model, new_data)
 
 .get_formal_predictions <- function(object, newdata, on_0_1000, seedval)
 {
-    # make prediction of all models required
-    formal_predictions <- sapply(object@model,
-                                 function(mod.name, dir_name, resp_name, modeling.id)
-                                 {
-                                   ## check if model is loaded on memory
-                                   if (is.character(mod.name)) {
-                                     mod <- get(load(file.path(dir_name, resp_name, "models", modeling.id, mod.name)))
-                                   }
-                                   temp_workdir = NULL
-                                   if (length(grep("MAXENT.Phillips$", mod.name)) == 1) {
-                                     temp_workdir = mod@model_output_dir
-                                   }
-                                   return(predict(mod, newdata = newdata, on_0_1000 = on_0_1000
-                                                  , temp_workdir = temp_workdir, seedval = seedval))
-                                 }, dir_name = object@dir_name, resp_name = object@resp_name, modeling.id = object@modeling.id)
+  # make prediction of all models required
+  formal_predictions <- sapply(object@model,
+                               function(mod.name, dir_name, resp_name, modeling.id)
+                               {
+                                 ## check if model is loaded on memory
+                                 if (is.character(mod.name)) {
+                                   mod <- get(load(file.path(dir_name, resp_name, "models", modeling.id, mod.name)))
+                                 }
+                                 temp_workdir = NULL
+                                 if (length(grep("MAXENT.Phillips$", mod.name)) == 1) {
+                                   temp_workdir = mod@model_output_dir
+                                 }
+                                 return(predict(mod, newdata = newdata, on_0_1000 = on_0_1000
+                                                , temp_workdir = temp_workdir, seedval = seedval))
+                               }, dir_name = object@dir_name, resp_name = object@resp_name, modeling.id = object@modeling.id)
   
   
   return(formal_predictions)
@@ -684,3 +684,4 @@ check_data_range <- function(model, new_data)
   }
   df
 }
+
