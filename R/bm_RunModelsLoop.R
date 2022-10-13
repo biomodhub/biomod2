@@ -187,9 +187,8 @@ bm_RunModel <- function(model, Data, modeling.id = '', bm.options, calib.lines, 
   ## get model name and names of categorical variables
   dir_name = dir.name
   model_name <- paste0(nam, '_', model)
-  categorical_var <- unlist(sapply(expl_var_names, function(x) {
-    if (is.factor(Data[, x])) { return(x) } else { return(NULL) }
-  }))
+  categorical_var <- .get_categorical_names(Data)
+  categorical_var <- categorical_var[categorical_var %in% expl_var_names]
   
   ## 1. Create output object ----------------------------------------------------------------------
   ListOut <- list(model = NULL,
@@ -1039,6 +1038,10 @@ bm_RunModel <- function(model, Data, modeling.id = '', bm.options, calib.lines, 
   ## directories creation
   dir.create(m_outdir, showWarnings = FALSE, recursive = TRUE, mode = '777')
   dir.create(m_predictDir, showWarnings = FALSE, recursive = TRUE, mode = '777')
+  
+  ## transform categorical variables into numeric to avoid factors being saved 
+  ## as characters, which are not readable by maxent
+  Data <- .categorical2numeric(Data, categorical_var)
   
   ## Presence Data --------------------------------------------------------------------------------
   presLines <- which((Data[, 1] == 1) & calib.lines)

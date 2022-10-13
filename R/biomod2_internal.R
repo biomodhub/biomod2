@@ -644,3 +644,43 @@ check_data_range <- function(model, new_data)
   }
   invisible(NULL)
 }
+
+## Get categorical variable names ---------------------------------------
+##' @name .get_categorical_names
+##' 
+##' @title Get categorical variable names
+##' 
+##' @description Internal function to get categorical variables name from a data.frame.
+##' 
+##' @param df data.frame to be checked
+##' @return a vector with the name of categorical variables
+##' @keywords internal
+
+.get_categorical_names <- function(df){
+  unlist(sapply(names(df), function(x) {
+    if (is.factor(df[, x])) { return(x) } else { return(NULL) }
+  }))
+}
+
+## Categorical to numeric ---------------------------------------
+##' @name .categorical2numeric
+##' 
+##' @title Transform categorical into numeric variables
+##' 
+##' @description Internal function transform categorical variables in a 
+##' data.frame into numeric variables. Mostly used with maxent which cannot 
+##' read character
+##' 
+##' @param df data.frame to be transformed
+##' @param categorical_var the names of categorical variables in df
+##' @return a data.frame without categorical variables
+##' @keywords internal
+
+.categorical2numeric <- function(df, categorical_var){
+  if(length(categorical_var) > 0){
+    for(this_var in categorical_var){
+      df[,this_var] <- as.numeric(df[,this_var])
+    }
+  }
+  df
+}

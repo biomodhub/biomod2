@@ -440,9 +440,8 @@ BIOMOD_Modeling <- function(bm.format,
   
   
   ## 1.1 Remove models not supporting categorical variables --------------------
-  categorical_var <- unlist(sapply(colnames(bm.format@data.env.var), function(x) {
-    if (is.factor(bm.format@data.env.var[, x])) { return(x) } else { return(NULL) }
-  }))
+  categorical_var <- .get_categorical_names(bm.format@data.env.var)
+    
   if (length(categorical_var) > 0) {
     models.fact.unsuprort <- c("SRE", "MAXENT.Tsuruoka")
     models.switch.off <- c(models.switch.off, intersect(models, models.fact.unsuprort))

@@ -827,7 +827,15 @@ setMethod('predict2', signature(object = 'MAXENT.Phillips_biomod2_model', newdat
             not_na_rows <- apply(newdata, 1, function(x){ sum(is.na(x)) == 0 })
             newdata = as.data.frame(newdata[not_na_rows, , drop = FALSE])
             
+            # get categorical variables and transform them into numeric
+            categorical_var <- .get_categorical_names(newdata)
+            newdata <- .categorical2numeric(newdata, categorical_var)
             ## Prediction data
+            ## when newdata have as many rows as calibration prediction
+            ## the function re-use the first three columns of Pred_swd (predict, 
+            ## x and y). Otherwise it uses column from newdata to generate the
+            ## given columns. Those columns are likely ignored by maxent so 
+            ## there is no need to provide meaningful values.
             Pred_swd <- read.csv(file.path(temp_workdir, "Predictions/Pred_swd.csv"))
             if (nrow(Pred_swd) != nrow(newdata)) {
               tmp = newdata[, 1:3]
@@ -836,7 +844,7 @@ setMethod('predict2', signature(object = 'MAXENT.Phillips_biomod2_model', newdat
             } else {
               Pred_swd <- cbind(Pred_swd[, 1:3], newdata)
             }
-            # m_predictFile <- file.path(temp_workdir, "Predictions/Pred_swdBis.csv")
+            
             m_predictFile <- file.path(temp_workdir, "Predictions", paste0("Pred_swdBis_", sample(1:100000, 1), ".csv"))
             while (file.exists(m_predictFile)) {
               m_predictFile <- file.path(temp_workdir, "Predictions", paste0("Pred_swdBis_", sample(1:100000, 1), ".csv"))
