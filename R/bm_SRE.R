@@ -84,7 +84,7 @@
 ##' myExpl.r <- bioclim_current
 ##' 
 ##' myRespXY <- DataSpecies[which(myResp.r == 1), c('X_WGS84', 'Y_WGS84')]
-##' myResp.v <- raster::reclassify(raster::subset(myExpl.r, 1, drop = TRUE), c(-Inf, Inf, 0))
+##' myResp.v <- terra::classify(raster::subset(myExpl.r, 1), c(-Inf, Inf, 0))
 ##' myResp.v[raster::cellFromXY(myResp.v, myRespXY)] <- 1
 ##' 
 ##' ## Compute SRE for several quantile values
@@ -144,10 +144,10 @@ bm_SRE <- function(resp.var = NULL,
     }
   } else if (inherits(resp.var, 'Raster')) ## raster ------------------------------------
   {
-    nb.resp <- nlayers(resp.var)
+    nb.resp <- nlyr(resp.var)
     resp.names <- names(resp.var)
     for (j in 1:nb.resp) {
-      occ.pts <- subset(resp.var, j, drop = TRUE)
+      occ.pts <- subset(resp.var, j)
       x.ooc.pts <- Which(occ.pts != 1, cells = TRUE, na.rm = TRUE)
       occ.pts[x.ooc.pts] <- rep(NA, length(x.ooc.pts))
       extrem.cond <- raster::quantile(mask(expl.var, occ.pts),
@@ -168,7 +168,7 @@ bm_SRE <- function(resp.var = NULL,
                                , probs = c(0 + quant, 1 - quant), na.rm = TRUE))
       } else {
         if (inherits(expl.var, 'Raster')) {
-          maskTmp <- subset(expl.var, 1, drop = TRUE)
+          maskTmp <- subset(expl.var, 1)
           maskTmp[] <- NA
           maskTmp[cellFromXY(maskTmp, coordinates(resp.var)[occ.pts, ])] <- 1
           extrem.cond <- raster::quantile(mask(expl.var, maskTmp),
@@ -200,10 +200,10 @@ bm_SRE <- function(resp.var = NULL,
     if (is.data.frame(new.env)) {
       lout <- simplify2array(lout)
       colnames(lout) <- resp.names
-    } else if (inherits(new.env, 'Raster')) {
+    } else if (inherits(new.env, 'SpatRaster')) {
       lout <- stack(lout)
-      if (nlayers(lout) == 1) {
-        lout <- subset(lout, 1, drop = TRUE)
+      if (nlyr(lout) == 1) {
+        lout <- subset(lout, 1)
       }
       names(lout) <- resp.names
     }
@@ -212,7 +212,7 @@ bm_SRE <- function(resp.var = NULL,
 }
 
 
-###################################################################################################
+## SRE Argument check ---------------------------------------------------------
 
 .bm_SRE.check.args <- function(resp.var = NULL, expl.var = NULL, new.env = NULL, quant = 0.025)
 {
@@ -247,7 +247,7 @@ bm_SRE <- function(resp.var = NULL,
     if (!inherits(expl.var, 'Raster')) {
       stop("\n resp.var and expl.var arguments must be of same type (both vector, both raster, etc)")
     }
-    nb.expl.vars <- nlayers(expl.var)
+    nb.expl.vars <- nlyr(expl.var)
     names.expl.vars <- names(expl.var)
   }
   
@@ -281,7 +281,7 @@ bm_SRE <- function(resp.var = NULL,
         stop("expl.var variables names differs in the 2 dataset given")
       }
       new.env <- subset(new.env, names.expl.vars)
-      if (nlayers(new.env) != nb.expl.vars) {
+      if (nlyr(new.env) != nb.expl.vars) {
         stop("Incompatible number of variables in new.env objects")
       }
     }
@@ -299,23 +299,22 @@ bm_SRE <- function(resp.var = NULL,
 }
 
 
-###################################################################################################
+# SRE Projection  ----------------------------------------------------------
 
-.sre_projection <- function(new.env, extrem.cond)
-{
+.sre_projection <- function(new.env, extrem.cond) {
   if (is.data.frame(new.env) || is.matrix(new.env)) {
     out <- rep(1, nrow(new.env))
     for (j in 1:ncol(new.env)) {
       out <- out * as.numeric(new.env[, j] >= extrem.cond[j, 1] &
                                 new.env[, j] <= extrem.cond[j, 2])
     }
-  } else if (inherits(new.env, "Raster")) {
-    out <- reclassify(subset(new.env, 1, drop = TRUE), c(-Inf, Inf, 1))
-    for (j in 1:nlayers(new.env)) {
-      out <- out * (subset(new.env, j, drop = TRUE) >= extrem.cond[j, 1]) * 
-        (subset(new.env, j, drop = TRUE) <= extrem.cond[j, 2])
+  } else if (inherits(new.env, "SpatRaster")) {
+    out <- classify(subset(new.env, 1), c(-Inf, Inf, 1))
+    for (j in 1:nlyr(new.env)) {
+      out <- out * (subset(new.env, j) >= extrem.cond[j, 1]) * 
+        (subset(new.env, j) <= extrem.cond[j, 2])
     }
-    out <- subset(out, 1, drop = TRUE)
+    out <- subset(out, 1)
   }
   return(out)
 }
