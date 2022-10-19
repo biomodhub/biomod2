@@ -160,7 +160,7 @@ setMethod('BIOMOD.formated.data', signature(sp = 'numeric', env = 'data.frame'),
                    , eval.sp = NULL, eval.env = NULL, eval.xy = NULL
                    , na.rm = TRUE, data.mask = NULL)
           {
-            if (is.null(data.mask)) { data.mask <- stack() }
+            if (is.null(data.mask)) { data.mask <- rast() }
             
             if (is.null(eval.sp)) { ## NO EVALUATION DATA
               BFD <- new(
@@ -184,7 +184,9 @@ setMethod('BIOMOD.formated.data', signature(sp = 'numeric', env = 'data.frame'),
               
               if (nlyr(BFDeval@data.mask) == 1) {
                 if (nlyr(data.mask) == 1) {
-                  data.mask.tmp <- try(add(data.mask, BFDeval@data.mask))
+                  data.mask.tmp <- try(
+                    add(data.mask) <- BFDeval@data.mask 
+                    )
                   if (!inherits(data.mask.tmp, "try-error")) {
                     data.mask <- data.mask.tmp
                     names(data.mask) <- c("calibration", "validation")
@@ -314,16 +316,18 @@ setMethod('BIOMOD.formated.data', signature(sp = 'numeric', env = 'SpatRaster'),
 ##' 
 ##' @rdname BIOMOD.formated.data
 ##' @export
+##' @importFrom terra minmax nlyr
 ##' 
 
 setMethod('plot', signature(x = 'BIOMOD.formated.data', y = "missing"),
           function(x, coord = NULL, col = NULL)
           {
+
             if (nlyr(x@data.mask) > 0)
             {
               requireNamespace("rasterVis")
               ## check if there is some undefined areas to prevent from strange plotting issues
-              if (terra::minmax(x@data.mask)["min", 1] == -1) { 
+              if (minmax(x@data.mask)["min", 1] == -1) { 
                 # there is undefined area
                 my.at <- seq(-1.5, 1.5, by = 1) ## breaks of color key
                 my.labs.at <- seq(-1, 1, by = 1) ## labels placed vertically
@@ -362,7 +366,6 @@ setMethod('plot', signature(x = 'BIOMOD.formated.data', y = "missing"),
               
               # colors checking
               if (is.null(col) | length(col) < 3) { col = c('green', 'red', 'grey') }
-              
               
               ## PLOT
               ## all points (~ mask)
@@ -673,7 +676,9 @@ setMethod('BIOMOD.formated.data.PA', signature(sp = 'numeric', env = 'RasterStac
 {
   
   categorical_var <- NULL
-  if (inherits(env, 'Raster')) { categorical_var <- names(env)[is.factor(env)] }
+  if (inherits(env, 'Raster')) {
+    categorical_var <- names(env)[is.factor(env)] 
+    }
   
   ## Keep same env variable for eval than calib (+ check for factor)
   if (!is.null(eval.sp) && is.null(eval.env)) {
@@ -739,7 +744,7 @@ setMethod('BIOMOD.formated.data.PA', signature(sp = 'numeric', env = 'RasterStac
     if (inherits(env,'Raster')) {
       ## create data.mask for ploting
       data.mask.tmp <- reclassify(subset(env, 1), c(-Inf, Inf, -1))
-      data.mask <- stack(data.mask.tmp)
+      data.mask <- rast(data.mask.tmp)
       xy_pres <- pa.data.tmp$xy[which(pa.data.tmp$sp == 1), , drop = FALSE]
       xy_abs <- pa.data.tmp$xy[which(pa.data.tmp$sp == 0), , drop = FALSE]
       if (nrow(xy_pres)) { data.mask[cellFromXY(data.mask.tmp, xy_pres)] <- 1 }
@@ -749,7 +754,9 @@ setMethod('BIOMOD.formated.data.PA', signature(sp = 'numeric', env = 'RasterStac
       ## add eval data
       if (BFD@has.data.eval) {
         if (nlyr(BFD@data.mask) == 1 && names(BFD@data.mask) == "validation") {
-          try_add <- try(add(data.mask) <- BFD@data.mask)
+          try_add <- try(
+            add(data.mask) <- BFD@data.mask
+            )
           if (!inherits(try_add, "try-error")) {
             names(data.mask) <- c("input_data", "validation")
           }
@@ -778,7 +785,7 @@ setMethod('BIOMOD.formated.data.PA', signature(sp = 'numeric', env = 'RasterStac
       names(data.mask) <- c(data.mask.names.tmp,
                             colnames(as.data.frame(pa.data.tmp$pa.tab)))
       
-    } else {  data.mask <- stack() }
+    } else {  data.mask <- rast() }
     
     BFDP <- new('BIOMOD.formated.data.PA',
                 dir.name = BFD@dir.name,

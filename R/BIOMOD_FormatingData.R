@@ -432,7 +432,7 @@ BIOMOD_FormatingData <- function(resp.name,
   }
   
   if (inherits(expl.var, 'Raster')) {
-    expl.var <- stack(expl.var, RAT = FALSE)
+    expl.var <- raster::stack(expl.var, RAT = FALSE)
     expl.var <- rast(expl.var)
   }
   
@@ -543,7 +543,7 @@ BIOMOD_FormatingData <- function(resp.name,
     }
     
     if (inherits(eval.expl.var, 'Raster')) {
-      eval.expl.var <- stack(eval.expl.var)
+      eval.expl.var <- raster::stack(eval.expl.var)
       eval.expl.var <- rast(eval.expl.var)
     }
     
