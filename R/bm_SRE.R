@@ -145,17 +145,15 @@ bm_SRE <- function(resp.var = NULL,
         lout[[j]] <- .sre_projection(new.env, extrem.cond)
       }
     }
-  } else if (inherits(resp.var, 'Raster')) ## raster ------------------------------------
+  } else if (inherits(resp.var, 'SpatRaster')) ## raster ------------------------------------
   {
     nb.resp <- nlyr(resp.var)
     resp.names <- names(resp.var)
     for (j in 1:nb.resp) {
-      occ.pts <- subset(resp.var, j)
-      x.ooc.pts <- Which(occ.pts != 1, cells = TRUE, na.rm = TRUE)
-      occ.pts[x.ooc.pts] <- rep(NA, length(x.ooc.pts))
-      extrem.cond <- raster::quantile(mask(expl.var, occ.pts),
-                                      probs = c(0 + quant, 1 - quant),
-                                      na.rm = TRUE)
+      extrem.cond <- global(mask(expl.var, subset(resp.var, j), maskvalues = c(0,NA)),
+                            fun = quantile,
+                            probs = c(0 + quant, 1 - quant),
+                            na.rm = TRUE)
       if (!do.extrem) {
         lout[[j]] <- .sre_projection(new.env, extrem.cond)
       }
@@ -170,13 +168,13 @@ bm_SRE <- function(resp.var = NULL,
         extrem.cond <- t(apply(as.data.frame(expl.var[occ.pts, ]), 2, quantile
                                , probs = c(0 + quant, 1 - quant), na.rm = TRUE))
       } else {
-        if (inherits(expl.var, 'Raster')) {
+        if (inherits(expl.var, 'SpatRaster')) {
           maskTmp <- subset(expl.var, 1)
           maskTmp[] <- NA
           maskTmp[cellFromXY(maskTmp, coordinates(resp.var)[occ.pts, ])] <- 1
-          extrem.cond <- raster::quantile(mask(expl.var, maskTmp),
-                                          probs = c(0 + quant, 1 - quant),
-                                          na.rm = TRUE)
+          extrem.cond <- terra::quantile(mask(expl.var, maskTmp),
+                                         probs = c(0 + quant, 1 - quant),
+                                         na.rm = TRUE)
         } else {
           if (inherits(expl.var, 'SpatialPoints')) {
             ## May be good to check corespondances of resp.var and expl.var variables
@@ -204,7 +202,7 @@ bm_SRE <- function(resp.var = NULL,
       lout <- simplify2array(lout)
       colnames(lout) <- resp.names
     } else if (inherits(new.env, 'SpatRaster')) {
-      lout <- stack(lout)
+      lout <- rast(lout)
       if (nlyr(lout) == 1) {
         lout <- subset(lout, 1)
       }
@@ -246,15 +244,22 @@ bm_SRE <- function(resp.var = NULL,
     names.expl.vars <- colnames(expl.var)
   }
   
+  # back-compatibility with raster package
   if (inherits(resp.var, 'Raster')) {
     if (!inherits(expl.var, 'Raster')) {
+      stop("\n resp.var and expl.var arguments must be of same type (both vector, both raster, etc)")
+    }
+    resp.var <- rast(resp.var)
+    expl.var <- rast(expl.var)
+  }
+  
+  if (inherits(resp.var, 'SpatRaster')) {
+    if (!inherits(expl.var, 'SpatRaster')) {
       stop("\n resp.var and expl.var arguments must be of same type (both vector, both raster, etc)")
     }
     nb.expl.vars <- nlyr(expl.var)
     names.expl.vars <- names(expl.var)
   }
-  
-  
   ## 1. Check expl.var argument -----------------------------------------------
   test_no_factorial_var <- TRUE
   if ((is.data.frame(expl.var) && any(unlist(lapply(expl.var, is.factor)))) ||
@@ -278,8 +283,8 @@ bm_SRE <- function(resp.var = NULL,
       if (ncol(new.env) != nb.expl.vars) {
         stop("Incompatible number of variables in new.env objects")
       }
-    } else if (!inherits(new.env, 'Raster')) {
-      new.env <- stack(new.env)
+    } else if (!inherits(new.env, 'SpatRaster')) {
+      new.env <- rast(new.env)
       if (sum(!(names.expl.vars %in% names(new.env))) > 0) {
         stop("expl.var variables names differs in the 2 dataset given")
       }
@@ -312,7 +317,8 @@ bm_SRE <- function(resp.var = NULL,
                                 new.env[, j] <= extrem.cond[j, 2])
     }
   } else if (inherits(new.env, "SpatRaster")) {
-    out <- classify(subset(new.env, 1), c(-Inf, Inf, 1))
+    out <- classify(subset(new.env, 1), 
+                    matrix(c(-Inf, Inf, 1), ncol = 3, byrow = TRUE))
     for (j in 1:nlyr(new.env)) {
       out <- out * (subset(new.env, j) >= extrem.cond[j, 1]) * 
         (subset(new.env, j) <= extrem.cond[j, 2])
