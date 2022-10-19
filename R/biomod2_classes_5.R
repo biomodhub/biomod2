@@ -9,7 +9,7 @@
 ##' 
 ##' 
 ##' @param object a \code{\link{biomod2_ensemble_model}} object
-##' @param newdata a \code{data.frame} or \code{\link[raster:stack]{RasterStack}} object 
+##' @param newdata a \code{data.frame} or \code{\link[terra:rast]{SpatRaster}} object 
 ##' containing data for new predictions
 ##' @param \ldots (\emph{optional}) 
 ##' 
@@ -19,6 +19,7 @@
 ##' 
 ##' 
 ##' @importFrom raster calc reclassify cv
+##' @importFrom terra app classify
 ##' 
 NULL
 
@@ -124,19 +125,19 @@ setMethod('show', signature('biomod2_ensemble_model'),
 ### biomod2_ensemble_model predict2.em doc -------------------------------------
 
 ##' @name predict2.em
-##' @aliases predict2.biomod2_ensemble_model.RasterStack
+##' @aliases predict2.biomod2_ensemble_model.SpatRaster
 ##' @aliases predict2.biomod2_ensemble_model.data.frame
-##' @aliases predict2.EMmean_biomod2_model.RasterStack
+##' @aliases predict2.EMmean_biomod2_model.SpatRaster
 ##' @aliases predict2.EMmean_biomod2_model.data.frame
-##' @aliases predict2.EMmedian_biomod2_model.RasterStack
+##' @aliases predict2.EMmedian_biomod2_model.SpatRaster
 ##' @aliases predict2.EMmedian_biomod2_model.data.frame
-##' @aliases predict2.EMcv_biomod2_model.RasterStack
+##' @aliases predict2.EMcv_biomod2_model.SpatRaster
 ##' @aliases predict2.EMcv_biomod2_model.data.frame
-##' @aliases predict2.EMci_biomod2_model.RasterStack
+##' @aliases predict2.EMci_biomod2_model.SpatRaster
 ##' @aliases predict2.EMci_biomod2_model.data.frame
-##' @aliases predict2.EMca_biomod2_model.RasterStack
+##' @aliases predict2.EMca_biomod2_model.SpatRaster
 ##' @aliases predict2.EMca_biomod2_model.data.frame
-##' @aliases predict2.EMwmean_biomod2_model.RasterStack
+##' @aliases predict2.EMwmean_biomod2_model.SpatRaster
 ##' @aliases predict2.EMwmean_biomod2_model.data.frame
 ##' @author Remi Patin
 ##' 
@@ -147,7 +148,7 @@ setMethod('show', signature('biomod2_ensemble_model'),
 ##' 
 ##' 
 ##' @param object a \code{\link{biomod2_ensemble_model}} object
-##' @param newdata a \code{data.frame} or \code{\link[raster:stack]{RasterStack}} object 
+##' @param newdata a \code{data.frame} or \code{\link[terra:rast]{SpatRaster}} object 
 ##' containing data for new predictions
 ##' @param data_as_formal_predictions (\emph{optional, default} \code{FALSE}). A
 ##' \code{boolean} describing whether \code{newdata} is given as raw environmental 

@@ -66,13 +66,14 @@
 ##'   
 ##' @examples
 ##' 
-##' library(raster)
+##' library(terra)
 ##' 
 ##' ## Create raster data
-##' ras.1 <- ras.2 <- mask.out <- raster(nrows = 10, ncols = 10)
+##' ras.1 <- ras.2 <- mask.out <- rast(nrows = 10, ncols = 10)
 ##' ras.1[] <- as.factor(rep(c(1, 2, 3, 4, 5), each = 20))
+##' ras.1 <- as.factor(ras.1)
 ##' ras.2[] <- rnorm(100)
-##' stk <- stack(ras.1, ras.2)
+##' stk <- c(ras.1, ras.2)
 ##' names(stk) <- c("varFact", "varNorm")
 ##' 
 ##' ## define a mask for already sampled points

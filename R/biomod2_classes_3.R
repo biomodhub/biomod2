@@ -238,11 +238,11 @@ setGeneric("get_variables_importance", function(obj, ...) { standardGeneric("get
 ##' 
 ##' # Load environmental variables extracted from BIOCLIM (bio_3, bio_4, bio_7, bio_11 & bio_12)
 ##' data(bioclim_current)
-##' myExpl <- bioclim_current
+##' myExpl <- terra::rast(bioclim_current)
 ##' 
 ##' \dontshow{
-##' myExtent <- raster::extent(0,30,45,70)
-##' myExpl <- raster::stack(raster::crop(myExpl, myExtent))
+##' myExtent <- terra::ext(0,30,45,70)
+##' myExpl <- terra::crop(myExpl, myExtent)
 ##' }
 ##' 
 ##' ## ----------------------------------------------------------------------- #
@@ -607,11 +607,11 @@ setMethod("get_variables_importance", "BIOMOD.models.out",
 ##' 
 ##' # Load environmental variables extracted from BIOCLIM (bio_3, bio_4, bio_7, bio_11 & bio_12)
 ##' data(bioclim_current)
-##' myExpl <- bioclim_current
+##' myExpl <- terra::rast(bioclim_current)
 ##' 
 ##' \dontshow{
-##' myExtent <- raster::extent(0,30,45,70)
-##' myExpl <- raster::stack(raster::crop(myExpl, myExtent))
+##' myExtent <- terra::ext(0,30,45,70)
+##' myExpl <- terra::crop(myExpl, myExtent)
 ##' }
 ##' 
 ##' ## ----------------------------------------------------------------------- #
@@ -699,6 +699,7 @@ setClass("BIOMOD.projection.out",
 ##' 
 ##' @rdname BIOMOD.projection.out
 ##' @export
+##' @importFrom terra global
 ##' 
 
 setMethod(
@@ -947,11 +948,11 @@ setMethod("get_predictions", "BIOMOD.projection.out",
 ##' 
 ##' # Load environmental variables extracted from BIOCLIM (bio_3, bio_4, bio_7, bio_11 & bio_12)
 ##' data(bioclim_current)
-##' myExpl <- bioclim_current
+##' myExpl <- terra::rast(bioclim_current)
 ##' 
 ##' \dontshow{
-##' myExtent <- raster::extent(0,30,45,70)
-##' myExpl <- raster::stack(raster::crop(myExpl, myExtent))
+##' myExtent <- terra::ext(0,30,45,70)
+##' myExpl <- terra::crop(myExpl, myExtent)
 ##' }
 ##' 
 ##' ## ----------------------------------------------------------------------- #

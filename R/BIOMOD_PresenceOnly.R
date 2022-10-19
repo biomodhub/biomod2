@@ -1,4 +1,4 @@
-###################################################################################################
+# BIOMOD_PresenceOnly Documentation --------------------------------------------
 ##' @name BIOMOD_PresenceOnly
 ##' @author Frank Breiner, Maya Gueguen
 ##' 
@@ -93,14 +93,14 @@
 ##' 
 ##' # Load environmental variables extracted from BIOCLIM (bio_3, bio_4, bio_7, bio_11 & bio_12)
 ##' data(bioclim_current)
-##' myExpl <- bioclim_current
+##' myExpl <- terra::rast(bioclim_current)
 ##' 
 ##' \dontshow{
-##' myExtent <- raster::extent(0,30,45,70)
-##' myExpl <- raster::stack(raster::crop(myExpl, myExtent))
+##' myExtent <- terra::ext(0,30,45,70)
+##' myExpl <- terra::crop(myExpl, myExtent)
 ##' }
 ##' 
-##' # ---------------------------------------------------------------
+##' # --------------------------------------------------------------- #
 ##' file.out <- paste0(myRespName, "/", myRespName, ".AllModels.models.out")
 ##' if (file.exists(file.out)) {
 ##'   myBiomodModelOut <- get(load(file.out))
@@ -154,7 +154,7 @@
 ##' }
 ##' 
 ##' 
-##' # ---------------------------------------------------------------
+##' # --------------------------------------------------------------- #
 ##' # Evaluate models with Boyce index and MPA
 ##' myBiomodPO <- BIOMOD_PresenceOnly(bm.mod = myBiomodModelOut,
 ##'                                   bm.em = myBiomodEM)
@@ -175,7 +175,7 @@
 ##' @export
 ##' 
 ##' 
-###################################################################################################
+## -------------------------------------------------------------------------- ##
 
 
 BIOMOD_PresenceOnly <- function(bm.mod = NULL, 
@@ -187,12 +187,12 @@ BIOMOD_PresenceOnly <- function(bm.mod = NULL,
   .bm_cat("Do Presence-Only Evaluation")
   # if (!isNamespaceLoaded("ecospat")) { requireNamespace("ecospat") }
   
-  ## 0. Check arguments ---------------------------------------------------------------------------
+  ## 0. Check arguments --------------------------------------------------------
   args <- .BIOMOD_PresenceOnly.check.args(bm.mod, bm.em, bg.env, perc, save.output)
   for (argi in names(args)) { assign(x = argi, value = args[[argi]]) }
   rm(args)
   
-  ## MODELING OUTPUT ------------------------------------------------------------------------------
+  ## MODELING OUTPUT ----------------------------------------------------------
   if (!is.null(bm.mod)) {
     ## Get calibration lines and observations
     calib.lines <- get_calib_lines(bm.mod)[, , 1]
@@ -230,7 +230,7 @@ BIOMOD_PresenceOnly <- function(bm.mod = NULL,
     myModelEval = myModelPred = myModelPred.eval = NULL
   }
   
-  ## ENSEMBLE MODELING OUTPUT ---------------------------------------------------------------------
+  ## ENSEMBLE MODELING OUTPUT -------------------------------------------------
   if (!is.null(bm.em)) {
     
     ## Get evaluation scores
@@ -271,7 +271,7 @@ BIOMOD_PresenceOnly <- function(bm.mod = NULL,
     }  
   }
   
-  ## CALCULATE BOYCE & MPA VALUES -----------------------------------------------------------------
+  ## CALCULATE BOYCE & MPA VALUES ---------------------------------------------
   mpa.eval <- boyce.eval <- myModelEval[!duplicated(myModelEval$Model.name), ]
   boyce.eval$Eval.metric <- "BOYCE"
   boyce.eval[, c("Testing.data", "Cutoff", "Sensitivity", "Specificity")] <- NA
@@ -392,7 +392,7 @@ BIOMOD_PresenceOnly <- function(bm.mod = NULL,
 
 
 
-###################################################################################################
+# Check Arguments -------------------------------------------------------------
 
 .BIOMOD_PresenceOnly.check.args <- function(bm.mod, bm.em, bg.env, perc, save.output)
 {

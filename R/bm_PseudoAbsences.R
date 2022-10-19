@@ -1,4 +1,4 @@
-###################################################################################################
+# bm_PseudoAbsences doc ---------------------------------------------------------
 ##' @name bm_PseudoAbsences
 ##' @aliases bm_PseudoAbsences
 ##' @aliases bm_PseudoAbsences_random
@@ -18,7 +18,7 @@
 ##' \code{1} : presence, \code{NA} : indeterminate) for a single species that will be used to 
 ##' find the pseudo-absences
 ##' @param expl.var a \code{matrix}, \code{data.frame}, \code{\link[sp]{SpatialPointsDataFrame}} 
-##' or \code{\link[raster:stack]{RasterStack}} object containing the explanatory variables (in 
+##' or \code{\link[terra:rast]{SpatRaster}} object containing the explanatory variables (in 
 ##' columns or layers) that will be used to find the pseudo-absences
 ##' @param \ldots (\emph{optional, one or several of the following arguments depending on the selected 
 ##' method)}) 
@@ -100,7 +100,7 @@
 ##' @export
 ##' 
 ##' 
-###################################################################################################
+## --------------------------------------------------------------------------- #
 
 
 bm_PseudoAbsences <- function(resp.var, expl.var, nb.rep = 1, strategy = 'random', dist.min = 0, dist.max = NULL
@@ -126,7 +126,7 @@ bm_PseudoAbsences <- function(resp.var, expl.var, nb.rep = 1, strategy = 'random
 }
 
 
-###################################################################################################
+# Argument Check --------------------------------------------------------------
 
 .bm_PseudoAbsences.check.args <- function(resp.var, expl.var, nb.rep, strategy, dist.min, dist.max, nb.absences, sre.quant)
 {
@@ -196,7 +196,7 @@ bm_PseudoAbsences <- function(resp.var, expl.var, nb.rep = 1, strategy = 'random
               sre.quant = sre.quant))
 }
 
-###################################################################################################
+# Additionnal tools ------------------------------------------------------------
 
 .get_nb_true_abs <- function(sp)
 {
@@ -235,7 +235,7 @@ bm_PseudoAbsences <- function(resp.var, expl.var, nb.rep = 1, strategy = 'random
 }
 
 
-###################################################################################################
+# bm_PseudoAbsences user-defined methods --------------------------------------
 
 ##'
 ##' @rdname bm_PseudoAbsences
@@ -247,6 +247,7 @@ setGeneric("bm_PseudoAbsences_user.defined",
              standardGeneric( "bm_PseudoAbsences_user.defined")
            })
 
+## bm_PseudoAbsences user-defined SPDF methods --------------------------------------
 ##'
 ##' @rdname bm_PseudoAbsences
 ##' @export
@@ -261,6 +262,7 @@ setMethod('bm_PseudoAbsences_user.defined', signature(expl.var = "SpatialPointsD
                         pa.tab = user.table))
           })
 
+## bm_PseudoAbsences user-defined RasterStack methods --------------------------------------
 ##'
 ##' @rdname bm_PseudoAbsences
 ##' @export
@@ -277,7 +279,8 @@ setMethod('bm_PseudoAbsences_user.defined', signature(expl.var = "RasterStack"),
           })
 
 
-###################################################################################################
+# bm_PseudoAbsences random methods --------------------------------------
+
 
 ##'
 ##' @rdname bm_PseudoAbsences
@@ -289,6 +292,7 @@ setGeneric("bm_PseudoAbsences_random",
              standardGeneric( "bm_PseudoAbsences_random")
            })
 
+## bm_PseudoAbsences random SPDF methods --------------------------------------
 ##'
 ##' @rdname bm_PseudoAbsences
 ##' @export
@@ -340,6 +344,7 @@ setMethod('bm_PseudoAbsences_random', signature(expl.var = "SpatialPointsDataFra
             }
           })
 
+## bm_PseudoAbsences random RasterStack methods --------------------------------------
 ##'
 ##' @rdname bm_PseudoAbsences
 ##' @export
@@ -459,7 +464,8 @@ setMethod('bm_PseudoAbsences_random', signature(expl.var = "RasterStack"),
           })
 
 
-###################################################################################################
+# bm_PseudoAbsences SRE methods --------------------------------------
+
 
 ##'
 ##' @rdname bm_PseudoAbsences
@@ -471,6 +477,7 @@ setGeneric("bm_PseudoAbsences_sre",
              standardGeneric("bm_PseudoAbsences_sre")
            })
 
+## bm_PseudoAbsences SRE SPDF methods --------------------------------------
 ##'
 ##' @rdname bm_PseudoAbsences
 ##' @export
@@ -519,6 +526,7 @@ setMethod('bm_PseudoAbsences_sre', signature(expl.var = "SpatialPointsDataFrame"
                         pa.tab = pa.tab))
           })
 
+## bm_PseudoAbsences SRE RasterStack methods --------------------------------------
 ##'
 ##' @rdname bm_PseudoAbsences
 ##' @export
@@ -599,7 +607,8 @@ setMethod('bm_PseudoAbsences_sre', signature(expl.var = "RasterStack"),
           })
 
 
-###################################################################################################
+# bm_PseudoAbsences disk methods --------------------------------------
+
 
 ##'
 ##' @rdname bm_PseudoAbsences
@@ -611,6 +620,7 @@ setGeneric("bm_PseudoAbsences_disk",
              standardGeneric("bm_PseudoAbsences_disk")
            })
 
+## bm_PseudoAbsences disk SPDF methods --------------------------------------
 ##'
 ##' @rdname bm_PseudoAbsences
 ##' @export
@@ -650,12 +660,13 @@ setMethod('bm_PseudoAbsences_disk', signature(expl.var = "SpatialPointsDataFrame
                                             nb.absences, nb.rep))
           })
 
+## bm_PseudoAbsences disk SpatRaster methods --------------------------------------
 ##'
 ##' @rdname bm_PseudoAbsences
 ##' @export
 ##'
 
-setMethod('bm_PseudoAbsences_disk', signature(expl.var = "RasterStack"),
+setMethod('bm_PseudoAbsences_disk', signature(expl.var = "SpatRaster"),
           function(resp.var, expl.var, dist.min, dist.max, nb.absences, nb.rep)
           {
             cat("\n   > Disk pseudo absences selection")

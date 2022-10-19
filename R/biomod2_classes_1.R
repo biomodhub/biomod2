@@ -104,11 +104,11 @@
 ##' 
 ##' # Load environmental variables extracted from BIOCLIM (bio_3, bio_4, bio_7, bio_11 & bio_12)
 ##' data(bioclim_current)
-##' myExpl <- bioclim_current
+##' myExpl <- terra::rast(bioclim_current)
 ##' 
 ##' \dontshow{
-##' myExtent <- raster::extent(0,30,45,70)
-##' myExpl <- raster::stack(raster::crop(myExpl, myExtent))
+##' myExtent <- terra::ext(0,30,45,70)
+##' myExpl <- terra::crop(myExpl, myExtent)
 ##' }
 ##' 
 ##' ## ----------------------------------------------------------------------- #
@@ -127,7 +127,7 @@ NULL
 ##' @name BIOMOD.formated.data-class
 ##' @rdname BIOMOD.formated.data
 # ##' @importFrom raster stack nlayers addLayer is.factor subset extract cellStats cellFromXY
-##' @importFrom terra rast nlyr app is.factor subset extract cellFromXY
+##' @importFrom terra rast nlyr app is.factor subset extract cellFromXY `add<-`
 ##' @export
 ##' 
 
@@ -578,11 +578,11 @@ setMethod('show', signature('BIOMOD.formated.data'),
 ##' 
 ##' # Load environmental variables extracted from BIOCLIM (bio_3, bio_4, bio_7, bio_11 & bio_12)
 ##' data(bioclim_current)
-##' myExpl <- bioclim_current
+##' myExpl <- terra::rast(bioclim_current)
 ##' 
 ##' \dontshow{
-##' myExtent <- raster::extent(0,30,45,70)
-##' myExpl <- raster::stack(raster::crop(myExpl, myExtent))
+##' myExtent <- terra::ext(0,30,45,70)
+##' myExpl <- terra::crop(myExpl, myExtent)
 ##' }
 ##' 
 ##' ## ----------------------------------------------------------------------- #

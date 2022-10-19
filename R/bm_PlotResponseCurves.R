@@ -1,4 +1,4 @@
-###################################################################################################
+# bm_PlotResponseCurves Documentation -----------------------------------------
 ##' @name bm_PlotResponseCurves
 ##' @author Damien Georges, Maya Gueguen
 ##' 
@@ -17,7 +17,7 @@
 ##' @param models.chosen a \code{vector} containing model names to be kept, must be either 
 ##' \code{all} or a sub-selection of model names that can be obtained with the 
 ##' \code{\link{get_built_models}} function
-##' @param new.env a \code{matrix}, \code{data.frame} or \code{\link[raster:stack]{RasterStack}} 
+##' @param new.env a \code{matrix}, \code{data.frame} or \code{\link[terra:rast]{SpatRaster}} 
 ##' object containing the new explanatory variables (in columns or layers, with names matching the 
 ##' variables names given to the \code{\link{BIOMOD_FormatingData}} function to build 
 ##' \code{bm.out}) that will be used to project the species distribution model(s)
@@ -102,14 +102,14 @@
 ##' 
 ##' # Load environmental variables extracted from BIOCLIM (bio_3, bio_4, bio_7, bio_11 & bio_12)
 ##' data(bioclim_current)
-##' myExpl <- bioclim_current
+##' myExpl <- terra::rast(bioclim_current)
 ##' 
 ##' \dontshow{
-##' myExtent <- raster::extent(0,30,45,70)
-##' myExpl <- raster::stack(raster::crop(myExpl, myExtent))
+##' myExtent <- terra::ext(0,30,45,70)
+##' myExpl <- terra::crop(myExpl, myExtent)
 ##' }
 ##' 
-##' # ---------------------------------------------------------------
+##' # ---------------------------------------------------------------#
 ##' file.out <- paste0(myRespName, "/", myRespName, ".AllModels.models.out")
 ##' if (file.exists(file.out)) {
 ##'   myBiomodModelOut <- get(load(file.out))
@@ -138,7 +138,7 @@
 ##' }
 ##' 
 ##' 
-##' # ---------------------------------------------------------------
+##' # ---------------------------------------------------------------#
 ##' # Represent response curves
 ##' bm_PlotResponseCurves(bm.out = myBiomodModelOut, 
 ##'                       models.chosen = get_built_models(myBiomodModelOut)[c(1:2)],
@@ -162,7 +162,7 @@
 ##' @export
 ##' 
 ##' 
-###################################################################################################
+## ------------------------------------------------------------------------- ##
 
 
 bm_PlotResponseCurves <- function(bm.out
@@ -375,7 +375,7 @@ bm_PlotResponseCurves <- function(bm.out
 }
 
 
-###################################################################################################
+# Argument check ---------------------------------------------------------------
 
 .bm_PlotResponseCurves.check.args <- function(bm.out, models.chosen, new.env, show.variables, do.bivariate, ...)
 {
@@ -479,7 +479,7 @@ bm_PlotResponseCurves <- function(bm.out
 }
 
 
-###################################################################################################
+# Tools -----------------------------------------------------------------------
 
 .as_ggdat <- function(list.dat, do.bivariate)
 {

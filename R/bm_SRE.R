@@ -73,19 +73,21 @@
 ##' \code{\link{bm_RunModelsLoop}}, \code{\link{BIOMOD_Modeling}},
 ##' @family Secundary functions
 ##' 
-##' 
+##' @importFrom terra rast
 ##' @examples
 ##' 
+##' library(terra)
 ##' ## Load real data
 ##' data(DataSpecies)
 ##' myResp.r <- as.numeric(DataSpecies[, 'GuloGulo'])
 ##' 
 ##' data(bioclim_current)
-##' myExpl.r <- bioclim_current
+##' myExpl.r <- rast(bioclim_current)
 ##' 
 ##' myRespXY <- DataSpecies[which(myResp.r == 1), c('X_WGS84', 'Y_WGS84')]
-##' myResp.v <- terra::classify(raster::subset(myExpl.r, 1), c(-Inf, Inf, 0))
-##' myResp.v[raster::cellFromXY(myResp.v, myRespXY)] <- 1
+##' myResp.v <- classify(subset(myExpl.r, 1), 
+##'                      matrix(c(-Inf, Inf, 0), ncol = 3, byrow = TRUE))
+##' myResp.v[cellFromXY(myResp.v, myRespXY)] <- 1
 ##' 
 ##' ## Compute SRE for several quantile values
 ##' sre.100 <- bm_SRE(resp.var = myResp.v,
@@ -102,13 +104,14 @@
 ##'                   quant = 0.05)
 ##' 
 ##' ## Visualize results
-##' res <- raster::stack(myResp.v, sre.100, sre.095, sre.090)
+##' res <- c(myResp.v, sre.100, sre.095, sre.090)
 ##' names(res) <- c("Original distribution", "Full data calibration"
 ##'                 , "Over 95 percent", "Over 90 percent")
-##' plot(res, zlim = c(0, 1))
+##' plot(res)
 ##' 
 ##' 
 ##' @importFrom raster stack subset nlayers mask reclassify coordinates cellFromXY Which 
+##' @importFrom terra rast
 ## quantile
 ##' 
 ##' @export

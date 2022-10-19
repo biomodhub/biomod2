@@ -66,7 +66,7 @@
 ##'   \item the output is a 4-dimensional array if \code{new.env} is a \code{matrix} or a 
 ##'   \code{data.frame}
 ##'   \item it is a \code{\link[terra:rast]{SpatRaster}} if \code{new.env} is a 
-##'   \code{\link[terra:rast]{SpatRaster}} (or several \code{\link[raster:stack]{RasterLayer}} 
+##'   \code{\link[terra:rast]{SpatRaster}} (or several \code{\link[terra:rast]{SpatRaster}} 
 ##'   objects, if \code{new.env} is too large)
 ##'   \item raw projections, as well as binary and filtered projections (if asked), are saved in 
 ##'   the \code{proj.name} folder
@@ -129,11 +129,11 @@
 ##' 
 ##' # Load environmental variables extracted from BIOCLIM (bio_3, bio_4, bio_7, bio_11 & bio_12)
 ##' data(bioclim_current)
-##' myExpl <- bioclim_current
+##' myExpl <- terra::rast(bioclim_current)
 ##' 
 ##' \dontshow{
-##' myExtent <- raster::extent(0,30,45,70)
-##' myExpl <- raster::stack(raster::crop(myExpl, myExtent))
+##' myExtent <- terra::ext(0,30,45,70)
+##' myExpl <- terra::crop(myExpl, myExtent)
 ##' }
 ##' 
 ##' # ---------------------------------------------------------------#
@@ -181,7 +181,7 @@
 ##' @importFrom foreach foreach %dopar%
 ## @importFrom doParallel registerDoParallel
 ##' @importFrom raster canProcessInMemory
-##' @importFrom terra rast subset nlyr writeRaster terraOptions
+##' @importFrom terra rast subset nlyr writeRaster terraOptions wrap
 ##' @importFrom abind asub
 ##' 
 ##' @export

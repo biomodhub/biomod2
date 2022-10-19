@@ -764,6 +764,7 @@ setClass('MAXENT.Phillips_biomod2_model',
 
 ##' 
 ##' @rdname predict2.bm
+##' @importFrom terra as.points crds 
 ##' 
 
 setMethod('predict2', signature(object = 'MAXENT.Phillips_biomod2_model', newdata = "SpatRaster"),
@@ -885,6 +886,7 @@ setClass('MAXENT.Phillips.2_biomod2_model',
 
 ##' 
 ##' @rdname predict2.bm
+##' @importFrom terra as.points rasterize crds 
 ##' 
 
 

@@ -1,4 +1,4 @@
-###################################################################################################
+# BIOMOD_EnsembleForecasting ---------------------------------------------------
 ##' @name BIOMOD_EnsembleForecasting
 ##' @author Wilfried Thuiller, Damien Georges, Robin Engler
 ##' 
@@ -19,7 +19,7 @@
 ##' name})
 ##' @param new.env (\emph{optional, default} \code{NULL}) \cr 
 ##' If \code{bm.proj = NULL}, a \code{matrix}, \code{data.frame} or 
-##' \code{\link[raster:stack]{RasterStack}} object containing the new explanatory variables (in 
+##' \code{\link[terra:rast]{SpatRaster}} object containing the new explanatory variables (in 
 ##' columns or layers, with names matching the variables names given to the 
 ##' \code{\link{BIOMOD_FormatingData}} function to build \code{bm.em}) that will be used to 
 ##' project the ensemble species distribution model(s)
@@ -88,7 +88,7 @@
 ##'   \item{\code{on_0_1000} : }{a \code{logical} value defining whether \code{0 - 1} 
 ##'   probabilities are to be converted to \code{0 - 1000} scale to save memory on backup}
 ##'   \item{\code{do.stack} : }{a \code{logical} value defining whether all projections are to be 
-##'   saved as one \code{RasterStack} object or several \code{RasterLayer} files (\emph{the 
+##'   saved as one \code{SpatRaster} object or several \code{SpatRaster} files (\emph{the 
 ##'   default if projections are too heavy to be all loaded at once in memory})}
 ##'   \item{\code{keep.in.memory} : }{a \code{logical} value defining whether all projections are 
 ##'   to be kept loaded at once in memory, or only links pointing to hard drive are to be returned}
@@ -124,15 +124,15 @@
 ##' 
 ##' # Load environmental variables extracted from BIOCLIM (bio_3, bio_4, bio_7, bio_11 & bio_12)
 ##' data(bioclim_current)
-##' myExpl <- bioclim_current
+##' myExpl <- terra::rast(bioclim_current)
 ##' 
 ##' \dontshow{
-##' myExtent <- raster::extent(0,30,45,70)
-##' myExpl <- raster::stack(raster::crop(myExpl, myExtent))
+##' myExtent <- terra::ext(0,30,45,70)
+##' myExpl <- terra::crop(myExpl, myExtent)
 ##' }
 ##' 
 ##'  
-##' # ---------------------------------------------------------------
+##' # --------------------------------------------------------------- #
 ##' file.out <- paste0(myRespName, "/", myRespName, ".AllModels.models.out")
 ##' if (file.exists(file.out)) {
 ##'   myBiomodModelOut <- get(load(file.out))
@@ -202,7 +202,7 @@
 ##' }
 ##' 
 ##' 
-##' # ---------------------------------------------------------------
+##' # --------------------------------------------------------------- #
 ##' # Project ensemble models (from single projections)
 ##' myBiomodEMProj <- BIOMOD_EnsembleForecasting(bm.em = myBiomodEM, 
 ##'                                              bm.proj = myBiomodProj,
@@ -226,7 +226,7 @@
 ##' @export
 ##' 
 ##' 
-###################################################################################################
+###--------------------------------------------------------------------------###
 
 
 BIOMOD_EnsembleForecasting <- function(bm.em,
@@ -455,7 +455,7 @@ BIOMOD_EnsembleForecasting <- function(bm.em,
     cat("\n")
   }
   
-  ## 6. SAVE MODEL OBJECT ON HARD DRIVE -----------------------------------------------------------
+  ## 6. SAVE MODEL OBJECT ON HARD DRIVE ----------------------------------------
   ## save a copy of output object without value to be lighter
   nameOut <- paste0(bm.em@sp.name, ".", proj.name, ".ensemble.projection.out")
   if (!keep.in.memory) { proj_out <- free(proj_out) }
@@ -468,7 +468,7 @@ BIOMOD_EnsembleForecasting <- function(bm.em,
 
 
 
-###################################################################################################
+## .BIOMOD_EnsembleForecasting.prepare.workdir ---------------------------------
 
 .BIOMOD_EnsembleForecasting.prepare.workdir <- function(dir.name, sp.name, proj.folder)
 {
@@ -479,7 +479,7 @@ BIOMOD_EnsembleForecasting <- function(bm.em,
   return(indiv_proj_dir)
 }
 
-###################################################################################################
+## Argument Check -------------------------------------------------------------
 
 .BIOMOD_EnsembleForecasting.check.args <- function(bm.em, bm.proj, proj.name, new.env,
                                                    models.chosen, metric.binary, metric.filter, ...)

@@ -72,13 +72,13 @@
 "bioclim_future"
 
 # myFiles <- paste0('../biomod2_old_inst_folder/external/bioclim/future/bio', c(3, 4, 7, 11, 12), '.grd')
-# need to go through the use of raster because grd files are stored with 
-# FLT4S datatype which throws an error when directly loaded with terra::rast
-# for an unknown reason
+# # need to go through the use of raster because grd files are stored with
+# # FLT4S datatype which throws an error when directly loaded with terra::rast
+# # for an unknown reason
 # bioclim_future <-
 #   terra::wrap(
 #     terra::rast(
-#       raster::stack(myFiles) 
+#       raster::stack(myFiles)
 #     )
 #   )
 # usethis::use_data(bioclim_future, overwrite = TRUE)
