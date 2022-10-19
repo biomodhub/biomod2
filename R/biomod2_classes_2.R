@@ -108,8 +108,8 @@ setClass("BIOMOD.stored.data.frame",
 ##' 
 setClass("BIOMOD.stored.SpatRaster",
          contains = "BIOMOD.stored.data",
-         representation(val = 'SpatRaster'),
-         prototype(val = rast()),
+         representation(val = 'PackedSpatRaster'),
+         prototype(val = suppressWarnings(wrap(rast()))),
          validity = function(object){ return(TRUE) })
 
 ### BIOMOD.stored.files ------------------------------------------------
@@ -180,31 +180,43 @@ setMethod("load_stored_object", "BIOMOD.stored.data",
           function(obj)
           {
             if(obj@inMemory){ return(obj@val) }
-            
+            # for all other stored objects
+            if (obj@link != '') {
+              return(get(load(obj@link)))
+            } else {
+              warning("No link provided for this object")
+              return(NA)
+            }
+          }
+)
+
+##' @rdname load_stored_object
+##' @export
+##' 
+
+setMethod("load_stored_object", "BIOMOD.stored.SpatRaster",
+          function(obj)
+          {
+            if(obj@inMemory){ 
+              return(rast(obj@val))
+            }
             # different comportement with raster
-            if (inherits(obj, "BIOMOD.stored.SpatRaster")) {
-              if (length(obj@link) == 1 & all(grepl(".RData", obj@link))) {
-                return(get(load(obj@link)))
-              } else if (all(grepl(".grd", obj@link) | grepl(".img", obj@link))) {
-                out <- stack(x = obj@link, RAT = FALSE)
-                ## rename layer in case of individual projections
-                if (all(grepl("individual_projections", obj@link))) {
-                  # remove directories arch and extention
-                  xx <- sub("[:.:].+$", "", sub("^.+individual_projections/", "", obj@link))
-                  # remove projection name
-                  to_rm <- unique(sub("[^_]+[:_:][^_]+[:_:][^_]+[:_:][^_]+$", "", xx))
-                  xx <- sub(to_rm, "", xx)
-                  names(out) <- xx
-                }
-                return(out)
+            if (length(obj@link) == 1 & all(grepl(".RData", obj@link))) {
+              return(
+                rast(get(load(obj@link)))
+              )
+            } else if (all(grepl(".grd", obj@link) | grepl(".img", obj@link))) {
+              out <- rast(x = obj@link)
+              ## rename layer in case of individual projections
+              if (all(grepl("individual_projections", obj@link))) {
+                # remove directories arch and extention
+                xx <- sub("[:.:].+$", "", sub("^.+individual_projections/", "", obj@link))
+                # remove projection name
+                to_rm <- unique(sub("[^_]+[:_:][^_]+[:_:][^_]+[:_:][^_]+$", "", xx))
+                xx <- sub(to_rm, "", xx)
+                names(out) <- xx
               }
-            } else { # for all other stored objects
-              if (obj@link != '') {
-                return(get(load(obj@link)))
-              } else {
-                warning("No link provided for this object")
-                return(NA)
-              }
+              return(out)
             }
           }
 )
