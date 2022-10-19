@@ -303,7 +303,7 @@ BIOMOD_EnsembleForecasting <- function(bm.em,
     # getting the results
     formal_pred <- get_predictions(formal_pred,
                                    full.name = needed_predictions,
-                                   as.data.frame = ifelse(inherits(new.env, 'Raster'), FALSE, TRUE))
+                                   as.data.frame = ifelse(inherits(new.env, 'SpatRaster'), FALSE, TRUE))
     # remove tmp directory
     unlink(file.path(bm.em@dir.name, bm.em@sp.name, paste0("proj_", tmp_dir))
            , recursive = TRUE, force = TRUE)
@@ -318,9 +318,9 @@ BIOMOD_EnsembleForecasting <- function(bm.em,
     
     model.tmp <- NULL
     BIOMOD_LoadModels(bm.out = bm.em, full.name = em.comp, as = 'model.tmp')
-    if (inherits(formal_pred, 'Raster')) {
+    if (inherits(formal_pred, 'SpatRaster')) {
       ef.tmp <- predict(model.tmp,
-                        newdata = subset(formal_pred, subset = model.tmp@model, drop = FALSE),
+                        newdata = subset(formal_pred, subset = model.tmp@model),
                         data_as_formal_predictions = TRUE,
                         on_0_1000 = on_0_1000,
                         filename = ifelse(output.format == '.RData', '', file_name_tmp))
@@ -333,12 +333,12 @@ BIOMOD_EnsembleForecasting <- function(bm.em,
     
     if (!is.null(ef.tmp)) {
       proj_names <- c(proj_names, em.comp)
-      if (inherits(ef.tmp, 'Raster')) {
+      if (inherits(ef.tmp, 'SpatRaster')) {
         if (do.stack) {
-          if (length(ef.out)) {
-            ef.out <- stack(ef.out, ef.tmp)
+          if (length(ef.out) > 0) {
+            add(ef.out) <- ef.tmp
           } else {
-            ef.out <- stack(ef.tmp)
+            ef.out <- ef.tmp
           }
         } else {
           file_name_tmp <- file.path(indiv_proj_dir, paste0(em.comp, output.format))
@@ -352,7 +352,7 @@ BIOMOD_EnsembleForecasting <- function(bm.em,
         #   proj_names = proj_names[-length(proj_names)]
         #   warning(paste0("Predictions for ", em.comp, " do not match initial number of points (", length(ef.tmp), " instead of ", nrow(ef.out), ")"))
         # } else {
-          ef.out <- cbind(ef.out, matrix(ef.tmp, ncol = 1))
+        ef.out <- cbind(ef.out, matrix(ef.tmp, ncol = 1))
         # }
       }
     }
@@ -362,8 +362,9 @@ BIOMOD_EnsembleForecasting <- function(bm.em,
   proj_out@models.projected <- proj_names
   
   if(do.stack) {
-    if (inherits(ef.out, "Raster")) {
+    if (inherits(ef.out, "SpatRaster")) {
       names(ef.out) <- proj_out@models.projected
+      ef.out <- wrap(ef.out)
     } else {
       colnames(ef.out) <- proj_out@models.projected
     }
@@ -371,14 +372,13 @@ BIOMOD_EnsembleForecasting <- function(bm.em,
     file_name_tmp <- file.path(namePath, paste0(nameProjSp, output.format))
     if (output.format == '.RData') {
       save(ef.out, file = file_name_tmp, compress = compress)
-    } else if (inherits(ef.out, "Raster")) {
+    } else if (inherits(ef.out, "PackedSpatRaster")) {
       ## TODO : define the raster dataformat (depends if em.cv has been computed)
-      writeRaster(ef.out, filename = file_name_tmp, overwrite = TRUE)
+      writeRaster(rast(ef.out), filename = file_name_tmp, overwrite = TRUE)
     }
     saved.files <- c(saved.files, file_name_tmp)
   } 
   proj_out@proj.out@link <- saved.files #bm.em@em.computed
-  
   if (!is.null(ef.out)) {
     proj_out@proj.out@val <- ef.out
     proj_out@proj.out@inMemory <- TRUE
@@ -404,7 +404,7 @@ BIOMOD_EnsembleForecasting <- function(bm.em,
       if (!do.stack) {
         for (i in 1:length(proj_out@proj.out@link)) {
           file.tmp <- proj_out@proj.out@link[i]
-          writeRaster(x = bm_BinaryTransformation(raster(file.tmp, RAT = FALSE), thresholds[i]),
+          writeRaster(x = bm_BinaryTransformation(rast(file.tmp), thresholds[i]),
                       filename = sub(output.format,
                                      paste0("_", eval.meth, "bin", output.format),
                                      file.tmp),
@@ -432,7 +432,7 @@ BIOMOD_EnsembleForecasting <- function(bm.em,
       if (!do.stack) {
         for (i in 1:length(proj_out@proj.out@link)) {
           file.tmp <- proj_out@proj.out@link[i]
-          writeRaster(x = bm_BinaryTransformation(raster(file.tmp, RAT = FALSE), thresholds[i], do.filtering = TRUE),
+          writeRaster(x = bm_BinaryTransformation(rast(file.tmp), thresholds[i], do.filtering = TRUE),
                       filename = sub(output.format,
                                      paste0("_", eval.meth, "filt", output.format),
                                      file.tmp),
@@ -552,9 +552,9 @@ BIOMOD_EnsembleForecasting <- function(bm.em,
   output.format <- args$output.format
   if (is.null(output.format)) {
     if (length(bm.proj) > 0) {
-      output.format = ifelse(bm.proj@type != 'RasterStack', ".RData", ".grd")
+      output.format = ifelse(bm.proj@type != 'PackedSpatRaster', ".RData", ".grd")
     } else {
-      output.format = ifelse(!inherits(new.env, 'Raster'), ".RData", ".grd")
+      output.format = ifelse(!inherits(new.env, 'SpatRaster'), ".RData", ".grd")
     }
   }
   

@@ -162,13 +162,14 @@ setMethod('show', signature('biomod2_ensemble_model'),
 ##' 
 ##' 
 ##' @importFrom raster calc reclassify cv
+##' @importFrom terra app classify
 ##' @keywords internal
 
 NULL
 
-### biomod2_ensemble_model + Raster  -------------------------------------------------
+### biomod2_ensemble_model + SpatRaster  -------------------------------------------------
 ##' @rdname predict2.em
-setMethod('predict2', signature(object = 'biomod2_ensemble_model', newdata = "RasterStack"),
+setMethod('predict2', signature(object = 'biomod2_ensemble_model', newdata = "SpatRaster"),
           function(object, newdata, predfun, seedval = NULL,
                    data_as_formal_predictions = FALSE, ...) {
             args <- list(...)
@@ -176,9 +177,6 @@ setMethod('predict2', signature(object = 'biomod2_ensemble_model', newdata = "Ra
             overwrite <- args$overwrite
             on_0_1000 <- args$on_0_1000
             
-            if (is.null(filename)) { 
-              filename <- "" 
-            }
             if (is.null(overwrite)) { 
               overwrite <- TRUE 
             }
@@ -208,7 +206,7 @@ setMethod('predict2', signature(object = 'biomod2_ensemble_model', newdata = "Ra
                            side = side,
                            thresh = thresh, 
                            penalization_scores = penalization_scores)
-            if (!is.null(out)) {
+            if (!is.null(out) & !is.null(filename)) {
               cat("\n\t\tWriting projection on hard drive...")
               if (on_0_1000 & !inherits(object, "EMcv_biomod2_model")) { ## projections are stored as positive integer
                 writeRaster(out, filename = filename, overwrite = overwrite, 
@@ -216,13 +214,13 @@ setMethod('predict2', signature(object = 'biomod2_ensemble_model', newdata = "Ra
               } else { ## keep default data format for saved raster
                 writeRaster(out, filename = filename, overwrite = overwrite)
               }
-              out <- raster(filename, RAT = FALSE)
+              out <- rast(filename)
             }
             return(out)
             
           })
 
-### biomod2_ensemble_model + data.frame  -------------------------------------------------
+### biomod2_ensemble_model + data.frame  -------------------------------------
 ##' @rdname predict2.em
 setMethod('predict2', signature(object = 'biomod2_ensemble_model', newdata = "data.frame"),
           function(object, newdata, predfun, seedval = NULL, 
@@ -278,10 +276,10 @@ setClass('EMmean_biomod2_model',
 ##' @rdname predict2.em
 ##' 
 
-setMethod('predict2', signature(object = 'EMmean_biomod2_model', newdata = "RasterStack"),
+setMethod('predict2', signature(object = 'EMmean_biomod2_model', newdata = "SpatRaster"),
           function(object, newdata, ...) {
             predfun <- function(newdata, on_0_1000, ...){
-              calc(newdata,function(x){
+              app(newdata,function(x){
                 m <- mean(x)
                 if (on_0_1000) { 
                   m <- round(m)
@@ -289,7 +287,7 @@ setMethod('predict2', signature(object = 'EMmean_biomod2_model', newdata = "Rast
                 return(m)
               })
             }
-            # redirect to predict2.biomod2_ensemble_model.RasterStack
+            # redirect to predict2.biomod2_ensemble_model.SpatRaster
             callNextMethod(object, newdata, predfun = predfun, ...)
           }
 )
@@ -304,7 +302,7 @@ setMethod('predict2', signature(object = 'EMmean_biomod2_model', newdata = "data
               }
               out
             }
-            # redirect to predict2.biomod2_ensemble_model.RasterStack
+            # redirect to predict2.biomod2_ensemble_model.SpatRaster
             callNextMethod(object, newdata, predfun = predfun, ...)
           }
 )
@@ -328,10 +326,10 @@ setClass('EMmedian_biomod2_model',
 ##' 
 
 
-setMethod('predict2', signature(object = 'EMmedian_biomod2_model', newdata = "RasterStack"),
+setMethod('predict2', signature(object = 'EMmedian_biomod2_model', newdata = "SpatRaster"),
           function(object, newdata, ...) {
             predfun <- function(newdata, on_0_1000, ...){
-              calc(newdata,function(x){
+              app(newdata,function(x){
                 m <- median(x)
                 if (on_0_1000) { 
                   m <- round(m)
@@ -339,7 +337,7 @@ setMethod('predict2', signature(object = 'EMmedian_biomod2_model', newdata = "Ra
                 return(m)
               })
             }
-            # redirect to predict2.biomod2_ensemble_model.RasterStack
+            # redirect to predict2.biomod2_ensemble_model.SpatRaster
             callNextMethod(object, newdata, predfun = predfun, ...)
           }
 )
@@ -354,7 +352,7 @@ setMethod('predict2', signature(object = 'EMmedian_biomod2_model', newdata = "da
               }
               out
             }
-            # redirect to predict2.biomod2_ensemble_model.RasterStack
+            # redirect to predict2.biomod2_ensemble_model.SpatRaster
             callNextMethod(object, newdata, predfun = predfun, ...)
           }
 )
@@ -376,11 +374,13 @@ setClass('EMcv_biomod2_model',
 ##' @rdname predict2.em
 ##' 
 
-setMethod('predict2', signature(object = 'EMcv_biomod2_model', newdata = "RasterStack"),
+setMethod('predict2', signature(object = 'EMcv_biomod2_model', newdata = "SpatRaster"),
           function(object, newdata, ...) {
             predfun <- function(newdata, on_0_1000, ...){
               if (nlyr(newdata) > 1) {
-                out <- calc(newdata, cv, na.rm = TRUE, aszero = TRUE)
+                out <- app(newdata, function(x){
+                  sd(x, na.rm = TRUE)/mean(x, na.rm = TRUE) * 100
+                })
                 return(out)
               } else {
                 warning(paste0("\n Model EMcv was not computed because only one single model was kept in ensemble modeling ("
@@ -388,7 +388,7 @@ setMethod('predict2', signature(object = 'EMcv_biomod2_model', newdata = "Raster
                 return(NULL)
               }
             }
-            # redirect to predict2.biomod2_ensemble_model.RasterStack
+            # redirect to predict2.biomod2_ensemble_model.SpatRaster
             callNextMethod(object, newdata, predfun = predfun, ...)
           }
 )
@@ -406,7 +406,7 @@ setMethod('predict2', signature(object = 'EMcv_biomod2_model', newdata = "data.f
                 return(NULL)
               }
             }
-            # redirect to predict2.biomod2_ensemble_model.RasterStack
+            # redirect to predict2.biomod2_ensemble_model.SpatRaster
             callNextMethod(object, newdata, predfun = predfun, ...)
           }
 )
@@ -425,7 +425,9 @@ setClass('EMci_biomod2_model',
          validity = function(object) {
            if (!(object@side %in% c('inferior','superior'))) {
              stop("side arg should be 'inferior' or 'superior")
-           } else { return(TRUE) }
+           } else { 
+             return(TRUE) 
+           }
          })
 
 ##' 
@@ -433,7 +435,7 @@ setClass('EMci_biomod2_model',
 ##' 
 
 
-setMethod('predict2', signature(object = 'EMci_biomod2_model', newdata = "RasterStack"),
+setMethod('predict2', signature(object = 'EMci_biomod2_model', newdata = "SpatRaster"),
           function(object, newdata, ...) {
             predfun <- function(newdata, on_0_1000, ...){
               args <- list(...)
@@ -442,12 +444,12 @@ setMethod('predict2', signature(object = 'EMci_biomod2_model', newdata = "Raster
               side <- args$side
               
               if (is.null(mean_prediction)) { 
-                mean_prediction <- calc(newdata, mean) 
+                mean_prediction <- app(newdata, mean) 
               }
               if (is.null(sd_prediction)) { 
-                sd_prediction <- calc(newdata, sd) 
+                sd_prediction <- app(newdata, sd) 
               }
-              
+
               ci_prediction <-  switch(
                 side,
                 inferior = mean_prediction -  (sd_prediction * (qt((1-object@alpha/2), df = length(object@model) + 1 ) / sqrt(length(object@model))) ),
@@ -455,14 +457,20 @@ setMethod('predict2', signature(object = 'EMci_biomod2_model', newdata = "Raster
               )
               
               if (on_0_1000) {
-                ci_prediction <- reclassify(round(ci_prediction), c(-Inf, 0, 0, 1000, Inf, 1000))
+                ci_prediction <- classify(round(ci_prediction),
+                                          matrix(c(-Inf, 0, 0,
+                                                   1000, Inf, 1000),
+                                                 nrow = 2, byrow = TRUE))
               } else {
-                ci_prediction <- reclassify(ci_prediction, c(-Inf, 0, 0, 1, Inf, 1))
+                ci_prediction <- classify(round(ci_prediction),
+                                          matrix(c(-Inf, 0, 0,
+                                                   1, Inf, 1),
+                                                 nrow = 2, byrow = TRUE))     
               }
               ci_prediction
             } 
             
-            # redirect to predict2.biomod2_ensemble_model.RasterStack
+            # redirect to predict2.biomod2_ensemble_model.SpatRaster
             callNextMethod(object, newdata, predfun = predfun, side = object@side, ...)
           }
 )
@@ -499,7 +507,7 @@ setMethod('predict2', signature(object = 'EMci_biomod2_model', newdata = "data.f
               }
               ci_prediction
             }
-            # redirect to predict2.biomod2_ensemble_model.RasterStack
+            # redirect to predict2.biomod2_ensemble_model.SpatRaster
             callNextMethod(object, newdata, predfun = predfun, side = object@side, ...)
           }
 )
@@ -522,7 +530,7 @@ setClass('EMca_biomod2_model',
 ##' @rdname predict2.em
 ##' 
 
-setMethod('predict2', signature(object = 'EMca_biomod2_model', newdata = "RasterStack"),
+setMethod('predict2', signature(object = 'EMca_biomod2_model', newdata = "SpatRaster"),
           function(object, newdata, ...) {
             args <- list(...)
             on_0_1000 <- args$on_0_1000
@@ -531,9 +539,7 @@ setMethod('predict2', signature(object = 'EMca_biomod2_model', newdata = "Raster
             }
             
             predfun <- function(newdata, on_0_1000, thresh, ...){
-              
-              out <- calc(bm_BinaryTransformation(newdata, thresh), function(x)
-              {
+              out <- app(bm_BinaryTransformation(newdata, thresh), function(x){
                 m <- mean(x)
                 if (on_0_1000) { 
                   m <- round(m * 1000)
@@ -547,7 +553,7 @@ setMethod('predict2', signature(object = 'EMca_biomod2_model', newdata = "Raster
               thresh <- object@thresholds / 1000 
             }
             
-            # redirect to predict2.biomod2_ensemble_model.RasterStack
+            # redirect to predict2.biomod2_ensemble_model.SpatRaster
             callNextMethod(object, newdata, predfun = predfun, thresh = thresh, ...)
           }
 )
@@ -573,7 +579,7 @@ setMethod('predict2', signature(object = 'EMca_biomod2_model', newdata = "data.f
               thresh <- object@thresholds / 1000
             }
             
-            # redirect to predict2.biomod2_ensemble_model.RasterStack
+            # redirect to predict2.biomod2_ensemble_model.SpatRaster
             callNextMethod(object, newdata, predfun = predfun, ...)
           }
 )
@@ -596,12 +602,11 @@ setClass('EMwmean_biomod2_model',
 ##' @rdname predict2.em
 ##' 
 
-setMethod('predict2', signature(object = 'EMwmean_biomod2_model', newdata = "RasterStack"),
+setMethod('predict2', signature(object = 'EMwmean_biomod2_model', newdata = "SpatRaster"),
           function(object, newdata, ...) {
             predfun <- function(newdata, on_0_1000, penalization_scores, ...){
               
-              out <- calc(newdata, function(x)
-              {
+              out <- app(newdata, function(x) {
                 wm <- sum(x * penalization_scores)
                 if (on_0_1000) { 
                   wm <- round(wm) 
@@ -610,7 +615,7 @@ setMethod('predict2', signature(object = 'EMwmean_biomod2_model', newdata = "Ras
               })
             }
             
-            # redirect to predict2.biomod2_ensemble_model.RasterStack
+            # redirect to predict2.biomod2_ensemble_model.SpatRaster
             callNextMethod(object, newdata, predfun = predfun,
                            penalization_scores = object@penalization_scores, ...)
           }
@@ -629,7 +634,7 @@ setMethod('predict2', signature(object = 'EMwmean_biomod2_model', newdata = "dat
               out
             }
             
-            # redirect to predict2.biomod2_ensemble_model.RasterStack
+            # redirect to predict2.biomod2_ensemble_model.SpatRaster
             callNextMethod(object, newdata, predfun = predfun, 
                            penalization_scores = object@penalization_scores,  ...)
           }
