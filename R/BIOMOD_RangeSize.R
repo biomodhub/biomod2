@@ -272,14 +272,14 @@ setMethod('BIOMOD_RangeSize', signature(proj.current = 'array', proj.future = 'a
           })
 
 
-###################################################################################################
+## BIOMOD_RangeSize SpatRaster-SpatRaster Method ----------------------
 
 ##'
 ##' @rdname BIOMOD_RangeSize
 ##' @export
 ##'
 
-setMethod('BIOMOD_RangeSize', signature(proj.current = 'RasterStack', proj.future = 'RasterStack'),
+setMethod('BIOMOD_RangeSize', signature(proj.current = 'SpatRaster', proj.future = 'SpatRaster'),
           function(proj.current, proj.future)
           {
             .bm_cat("Do Range Size Computation")
@@ -288,17 +288,17 @@ setMethod('BIOMOD_RangeSize', signature(proj.current = 'RasterStack', proj.futur
             names.res = c("Loss", "Stable0", "Stable1", "Gain"
                           , "PercLoss", "PercGain", "SpeciesRangeChange"
                           , "CurrentRangeSize", "FutureRangeSize.NoDisp", "FutureRangeSize.FullDisp")
-            CBS <- matrix(ncol = 10, nrow = length(proj.current@layers),
+            CBS <- matrix(ncol = 10, nrow = nlyr(proj.current),
                           dimnames = list(names(proj.current), names.res))
 
-            sp.stack <- stack()
-            for (i in 1:length(proj.current@layers)) {
+            sp.rast <- rast()
+            for (i in 1:nlyr(proj.current)) {
               
               ## DiffByPixel
-              Cur <- proj.current@layers[[i]]
-              Fut <- proj.future@layers[[i]]
+              Cur <- proj.current[[i]]
+              Fut <- proj.future[[i]]
               Ras <- Fut - (Cur + Cur)
-              sp.stack <- addLayer(sp.stack, Ras)
+              add(sp.rast) <- Ras
               
               ## ComptBySpecies
               CBS[i, 1] <- length(which(Ras[] == -2))
@@ -314,12 +314,13 @@ setMethod('BIOMOD_RangeSize', signature(proj.current = 'RasterStack', proj.futur
               CBS[i, 6] <- round(CBS[i, 4] / CBS[i, 8] * 100, digits = 3)
               CBS[i, 7] <- round(CBS[i, 10] / CBS[i, 8] * 100 - 100, digits = 3)
             }
-            names(sp.stack) <- rownames(CBS)
+            names(sp.rast) <- rownames(CBS)
             
             .bm_cat("Done")
-            return(list(Compt.By.Models = CBS, Diff.By.Pixel = sp.stack))
+            return(list(Compt.By.Models = CBS, Diff.By.Pixel = sp.rast))
           })
 
+## BIOMOD_RangeSize RasterLayer-RasterStack Method ----------------------
 ##'
 ##' @rdname BIOMOD_RangeSize
 ##' @export
@@ -378,12 +379,11 @@ setMethod('BIOMOD_RangeSize',
 
 
 
-###################################################################################################
+# Argument Check ---------------------------------------------------------------
 
-.BIOMOD_RangeSize.check.args <- function(proj.current, proj.future)
-{
+.BIOMOD_RangeSize.check.args <- function(proj.current, proj.future) {
   # dimensions checking
-  if (sum(!(dim(proj.current) == dim(proj.future)) > 0)) {
+  if (any(dim(proj.current) != dim(proj.future))) {
     stop(paste0("'proj.current' and 'proj.future' do not have the same dimensions "
                 , "('proj.current' must have either 1 projection or the same number of projections as 'proj.future')"))
   }
