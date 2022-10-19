@@ -38,6 +38,7 @@ Imports:
     utils,
     methods,
     sp,
+    terra,
     raster,
     reshape,
     reshape2,
