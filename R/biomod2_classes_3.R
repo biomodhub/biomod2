@@ -807,7 +807,7 @@ setMethod('free', signature('BIOMOD.projection.out'),
             if (inherits(obj@proj.out, "BIOMOD.stored.array")) {
               obj@proj.out@val  <- array()
             } else if (inherits(obj@proj.out, "BIOMOD.stored.SpatRaster")) {
-              obj@proj.out@val <- stack()
+              obj@proj.out@val <- rast()
             } else {
               obj@proj.out@val <- NULL
             }

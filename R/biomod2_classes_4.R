@@ -314,14 +314,16 @@ setMethod('predict', signature(object = 'biomod2_model'),
 ##' 
 ##' 
 ##' @importFrom raster rasterToPoints 
-##' @importFrom terra rast as.matrix is.factor subset calc writeRaster 
+##' @importFrom terra rast as.matrix is.factor subset writeRaster 
 ##' predict cellFromXY inMemory classify
 ##' @importFrom sp read.asciigrid
 ##' @importFrom gbm predict.gbm
 ##' @importFrom methods callNextMethod
 ##' @keywords internal
 
-setGeneric("predict2", function(object, newdata, ...) { standardGeneric("predict2") }) 
+setGeneric("predict2", function(object, newdata, ...) {
+  standardGeneric("predict2") 
+}) 
 
 ### biomod2_model + SpatRaster  -------------------------------------------------
 ##' @rdname predict2.bm
@@ -340,11 +342,14 @@ setMethod('predict2', signature(object = 'biomod2_model', newdata = "SpatRaster"
             
             if (length(get_scaling_model(object))) {
               names(proj) <- "pred"
-              proj <- .run_pred(object = get_scaling_model(object), Prev = 0.5 , dat = proj)
+              proj <- .run_pred(object = get_scaling_model(object), 
+                                Prev = 0.5 , 
+                                dat = proj)
             }
-            if (on_0_1000) { proj <- round(proj * 1000) }
+            if (on_0_1000) { 
+              proj <- round(proj * 1000) 
+            }
             
-            # browser()
             # save raster on hard drive ?
             if (!is.null(namefile)) {
               cat("\n\t\tWriting projection on hard drive...")
@@ -353,7 +358,7 @@ setMethod('predict2', signature(object = 'biomod2_model', newdata = "SpatRaster"
               } else { ## keep default data format for saved raster
                 writeRaster(proj, filename = namefile, overwrite = overwrite)
               }
-              proj <- raster(namefile, RAT = FALSE)
+              proj <- rast(namefile)
             }
             return(proj)
           }

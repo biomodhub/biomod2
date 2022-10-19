@@ -245,9 +245,17 @@ BIOMOD_Projection <- function(bm.mod,
     assign(x = nameMask, value = .build_clamping_mask(new.env, MinMax))
     
     if (output.format == '.RData') {
-      save(list = nameMask,
-           file = file.path(namePath, paste0(nameProj, "_ClampingMask", output.format)),
-           compress = compress)
+      if(inherits(new.env, "SpatRaster")){
+        save(list = wrap(nameMask),
+             file = file.path(namePath, 
+                              paste0(nameProj, "_ClampingMask", output.format)),
+             compress = compress)
+      } else {
+        save(list = nameMask,
+             file = file.path(namePath, 
+                              paste0(nameProj, "_ClampingMask", output.format)),
+             compress = compress)
+      }
     } else {
       writeRaster(x = get(nameMask),
                   filename = file.path(namePath, paste0(nameProj, "_ClampingMask", output.format)),
@@ -259,12 +267,12 @@ BIOMOD_Projection <- function(bm.mod,
   
   ## 4. MAKING PROJECTIONS ------------------------------------------------------------------------
   if (!do.stack) {
-    proj <- sapply(models.chosen, function(mod.name)
-    {
+    proj <- sapply(models.chosen, function(mod.name)  {
       cat("\n\t> Projecting", mod.name, "...")
       filename <- file.path(namePath, "individual_projections"
-                            , paste0(nameProj, "_", mod.name, ifelse(output.format == ".RData"
-                                                                     , ".grd", output.format)))
+                            , paste0(nameProj, "_", mod.name,
+                                     ifelse(output.format == ".RData"
+                                            , ".grd", output.format)))
       return(filename)
     })
     
@@ -277,7 +285,7 @@ BIOMOD_Projection <- function(bm.mod,
         warning("Parallelisation with `foreach` is not available for Windows. Sorry.")
       }
     }
-
+    
     proj <- foreach(mod.name = models.chosen) %dopar%
       {
         cat("\n\t> Projecting", mod.name, "...")
@@ -296,13 +304,15 @@ BIOMOD_Projection <- function(bm.mod,
       }
     ## Putting predictions into the right format
     if (inherits(new.env, "SpatRaster")) {
-      proj <- rast(proj)
+      proj <- rast(proj) # SpatRaster needs to be wrapped before saving
       names(proj) <- models.chosen
+      proj <- wrap(proj)
     } else {
       proj <- as.data.frame(proj)
       names(proj) <- models.chosen
       proj <- .DF_to_ARRAY(proj)
     }
+    
     if (keep.in.memory) {
       proj_out@proj.out@val <- proj
       proj_out@proj.out@inMemory <- TRUE
@@ -315,7 +325,7 @@ BIOMOD_Projection <- function(bm.mod,
   if (output.format == '.RData') {
     save(list = nameProjSp, file = saved.files, compress = compress)
   } else if (do.stack) {
-    writeRaster(x = get(nameProjSp), filename = saved.files,
+    writeRaster(x = rast(get(nameProjSp)), filename = saved.files,
                 overwrite = TRUE, datatype = ifelse(on_0_1000, "INT2S", "FLT4S"), NAflag = -9999)
   } else {
     saved.files = unlist(proj)
@@ -323,6 +333,10 @@ BIOMOD_Projection <- function(bm.mod,
   proj_out@type <- class(proj_out@proj.out@val)
   proj_out@proj.out@link <- saved.files
   
+  # now that proj have been saved, it can be unwrapped if it is a SpatRaster
+  if (inherits(new.env, "SpatRaster")) {
+    proj <- rast(proj) 
+  }
   
   ## 5. Compute binary and/or filtered transformation ---------------------------------------------
   if (!is.null(metric.binary) | !is.null(metric.filter))
@@ -360,7 +374,7 @@ BIOMOD_Projection <- function(bm.mod,
         for (i in 1:length(proj_out@proj.out@link)) {
           file.tmp <- proj_out@proj.out@link[i]
           thres.tmp <- asub(thresholds, eval.meth[drop = FALSE], 1, drop = FALSE)[, i]
-          writeRaster(x = bm_BinaryTransformation(raster(file.tmp, RAT = FALSE), thres.tmp),
+          writeRaster(x = bm_BinaryTransformation(rast(file.tmp), thres.tmp),
                       filename = sub(output.format,
                                      paste0("_", eval.meth, "bin", output.format),
                                      file.tmp),
@@ -370,10 +384,17 @@ BIOMOD_Projection <- function(bm.mod,
         }
       } else {
         nameBin <- paste0(nameProjSp, "_", eval.meth, "bin")
-        assign(x = nameBin, value = bm_BinaryTransformation(proj, asub(thresholds, eval.meth[drop = FALSE]
-                                                                       , 1, drop = FALSE)))
+        assign(x = nameBin,
+               value = bm_BinaryTransformation(proj, 
+                                               asub(thresholds, 
+                                                    eval.meth[drop = FALSE],
+                                                    1,
+                                                    drop = FALSE)))
         
         if (output.format == '.RData') {
+          if (inherits(new.env, "SpatRaster")) {
+            assign(x = nameBin, value = wrap(get(nameBin)))
+          } 
           save(list = nameBin,
                file = file.path(namePath, paste0(nameBin, output.format)),
                compress = compress)
@@ -394,7 +415,7 @@ BIOMOD_Projection <- function(bm.mod,
         for (i in 1:length(proj_out@proj.out@link)) {
           file.tmp <- proj_out@proj.out@link[i]
           thres.tmp <- asub(thresholds, eval.meth[drop = FALSE], 1, drop = FALSE)[, i]
-          writeRaster(x = bm_BinaryTransformation(raster(file.tmp, RAT = FALSE), thres.tmp, do.filtering = TRUE),
+          writeRaster(x = bm_BinaryTransformation(rast(file.tmp), thres.tmp, do.filtering = TRUE),
                       filename = sub(output.format,
                                      paste0("_", eval.meth, "filt", output.format),
                                      file.tmp),
@@ -404,10 +425,18 @@ BIOMOD_Projection <- function(bm.mod,
         }
       } else {
         nameFilt <- paste0(nameProjSp, "_", eval.meth, "filt")
-        assign(x = nameFilt, value = bm_BinaryTransformation(proj, asub(thresholds, eval.meth[drop = FALSE]
-                                                                        , 1, drop = FALSE), do.filtering = TRUE))
+        assign(x = nameFilt, 
+               value = bm_BinaryTransformation(proj,
+                                               asub(thresholds,
+                                                    eval.meth[drop = FALSE],
+                                                    1, 
+                                                    drop = FALSE), 
+                                               do.filtering = TRUE))
         
         if (output.format == '.RData') {
+          if (inherits(new.env, "SpatRaster")) {
+            assign(x = nameFilt, value = wrap(get(nameFilt)))
+          } 
           save(list = nameFilt,
                file = file.path(namePath, paste0(nameFilt, output.format)),
                compress = compress)
@@ -536,7 +565,8 @@ BIOMOD_Projection <- function(bm.mod,
   if (!inherits(new.env, 'SpatRaster')) {
     if (!do.stack) { cat("\n\t\t! 'do.stack' arg is always set as TRUE for data.frame/matrix dataset") }
     do.stack <- TRUE
-  } else if (do.stack) { # test if there is enough memory to work with RasterStack
+  } else if (do.stack) { 
+    # test if there is enough memory to work with multilayer SpatRaster
     ncopies = 2 * length(models.chosen) + nlyr(new.env)
     test <- new.env@ptr$mem_needs(terra:::spatOptions(ncopies = ncopies))
     if (test[1] > test[2]) {
@@ -556,13 +586,13 @@ BIOMOD_Projection <- function(bm.mod,
   if (!is.null(output.format)) {
     if (!output.format %in% c(".img", ".grd", ".RData")) {
       stop(paste0("output.format argument should be one of '.img','.grd' or '.RData'\n"
-                  , "Note : '.img','.grd' are only available if you give environmental condition as a rasterStack object"))
+                  , "Note : '.img','.grd' are only available if you give environmental condition as a SpatRaster object"))
     }
     if (output.format %in% c(".img", ".grd") && !inherits(new.env, "SpatRaster")) {
       warning("output.format was automatically set to '.RData' because environmental conditions are not given as a raster object")
     }
   } else {
-    output.format <- ifelse(!inherits(new.env, "Raster"), ".RData", ".grd")
+    output.format <- ifelse(!inherits(new.env, "SpatRaster"), ".RData", ".grd")
   }
   
   
