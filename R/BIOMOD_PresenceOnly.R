@@ -411,8 +411,8 @@ BIOMOD_PresenceOnly <- function(bm.mod = NULL,
     bg.env <- as.data.frame(bg.env)
   }
   
-  if (inherits(bg.env, 'Raster')) {
-    bg.env <- as.data.frame(getValues(bg.env))
+  if (inherits(bg.env, 'SpatRaster')) {
+    bg.env <- as.data.frame(bg.env)
   }
   
   if (inherits(bg.env, 'SpatialPoints')) {
