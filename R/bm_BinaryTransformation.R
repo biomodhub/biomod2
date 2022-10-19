@@ -173,27 +173,41 @@ setMethod('bm_BinaryTransformation', signature('SpatRaster'),
                 .bm_BinaryTransformation_singleLayer_SpatRaster(subset(data, i),
                                                                 threshold[i],
                                                                 do.filtering)
+              
+              if(!is.na(threshold[i])){
+                if (do.filtering) {
+                  ras <- classify(subset(data, i),
+                                  matrix(c(-Inf, threshold[i], 0),
+                                         ncol = 3, byrow = TRUE),
+                                  right = FALSE)
+                } else {
+                  ras <- classify(subset(data, i), 
+                                  matrix(c(-Inf, threshold[i], 0, 
+                                           threshold[i], +Inf, 1),
+                                         ncol = 3, byrow = TRUE),
+                                  right = FALSE)
+                }
+              } else{ ## return a empty map (NA everywhere)
+                ras <- classify(subset(data, i),
+                                matrix(c(-Inf, Inf, NA),
+                                       ncol = 3, byrow = TRUE))
+              }
               add(StkTmp) <- ras
             }
             names(StkTmp) <- names(data)
             return(StkTmp)
           })
 
-##'
-##' @internal
+#' @title Internal function for binary transformation.
+#' @description \code{.bm_BinaryTransformation_singleLayer_SpatRaster} 
+#' performs binary transformation on a single layer 
+#' \code{\link[raster:stack]{RasterLayer}} 
+#' @name .bm_BinaryTransformation_singleLayer_SpatRaster
+#' @keywords internal
 ##'
 
 .bm_BinaryTransformation_singleLayer_SpatRaster <- 
   function(data, threshold, do.filtering = FALSE) {
-    if(!is.na(threshold)){
-      if (do.filtering) {
-        return(classify(data, c(-Inf, threshold, 0), right = FALSE))
-      } else {
-        return(classify(data, c(-Inf, threshold, 0, threshold, +Inf, 1), right = FALSE))
-      }
-    } else{ ## return a empty map (NA everywhere)
-      return(classify(data, c(-Inf, Inf, NA)))
-    }
   }
 
 ### .convert_bin.matrix --------------------------------------------------------
