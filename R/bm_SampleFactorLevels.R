@@ -95,12 +95,12 @@
 ##' @export
 ##' 
 ##' 
-###################################################################################################
+### ------------------------------------------------------------------------ ###
 
 bm_SampleFactorLevels <- function(expl.var, mask.out = NULL, mask.in = NULL)
 {
-  if (inherits(expl.var, 'Raster')) {
-    fact.level.cells <- bm_SampleFactorLevels.raster(expl.var, mask.out = mask.out, mask.in = mask.in)
+  if (inherits(expl.var, 'SpatRaster')) {
+    fact.level.cells <- bm_SampleFactorLevels.SpatRaster(expl.var, mask.out = mask.out, mask.in = mask.in)
     return(fact.level.cells)
   } else if (inherits(expl.var, 'data.frame')) {
     fact.level.cells <- bm_SampleFactorLevels.data.frame(expl.var, mask.out = mask.out, mask.in = mask.in)
@@ -113,7 +113,7 @@ bm_SampleFactorLevels <- function(expl.var, mask.out = NULL, mask.in = NULL)
   }
 }
 
-bm_SampleFactorLevels.raster <- function(expl.var, mask.out = NULL, mask.in = NULL)
+bm_SampleFactorLevels.SpatRaster <- function(expl.var, mask.out = NULL, mask.in = NULL)
 {
   ## check if some factorial variables are in the input data
   fact.var <- which(is.factor(expl.var))
