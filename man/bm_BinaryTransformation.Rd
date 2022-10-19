@@ -6,9 +6,7 @@
 \alias{bm_BinaryTransformation,matrix-method}
 \alias{bm_BinaryTransformation,numeric-method}
 \alias{bm_BinaryTransformation,array-method}
-\alias{bm_BinaryTransformation,RasterLayer-method}
-\alias{bm_BinaryTransformation,RasterStack-method}
-\alias{bm_BinaryTransformation,RasterBrick-method}
+\alias{bm_BinaryTransformation,SpatRaster-method}
 \title{Convert probability values into binary values using a predefined threshold}
 \usage{
 bm_BinaryTransformation(data, threshold, do.filtering = FALSE)
@@ -21,11 +19,7 @@ bm_BinaryTransformation(data, threshold, do.filtering = FALSE)
 
 \S4method{bm_BinaryTransformation}{array}(data, threshold, do.filtering = FALSE)
 
-\S4method{bm_BinaryTransformation}{RasterLayer}(data, threshold, do.filtering = FALSE)
-
-\S4method{bm_BinaryTransformation}{RasterStack}(data, threshold, do.filtering = FALSE)
-
-\S4method{bm_BinaryTransformation}{RasterBrick}(data, threshold, do.filtering = FALSE)
+\S4method{bm_BinaryTransformation}{SpatRaster}(data, threshold, do.filtering = FALSE)
 }
 \arguments{
 \item{data}{a \code{vector}, a \code{matrix} or \code{data.frame}, a 

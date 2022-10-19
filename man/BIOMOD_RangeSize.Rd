@@ -4,7 +4,7 @@
 \alias{BIOMOD_RangeSize}
 \alias{BIOMOD_RangeSize,data.frame,data.frame-method}
 \alias{BIOMOD_RangeSize,array,array-method}
-\alias{BIOMOD_RangeSize,RasterStack,RasterStack-method}
+\alias{BIOMOD_RangeSize,SpatRaster,SpatRaster-method}
 \alias{BIOMOD_RangeSize,RasterLayer,RasterStack-method}
 \alias{BIOMOD_RangeSize,RasterLayer,RasterLayer-method}
 \title{Analyze the range size differences between projections of species distribution models}
@@ -15,7 +15,7 @@ BIOMOD_RangeSize(proj.current, proj.future)
 
 \S4method{BIOMOD_RangeSize}{array,array}(proj.current, proj.future)
 
-\S4method{BIOMOD_RangeSize}{RasterStack,RasterStack}(proj.current, proj.future)
+\S4method{BIOMOD_RangeSize}{SpatRaster,SpatRaster}(proj.current, proj.future)
 
 \S4method{BIOMOD_RangeSize}{RasterLayer,RasterStack}(proj.current, proj.future)
 
@@ -23,11 +23,11 @@ BIOMOD_RangeSize(proj.current, proj.future)
 }
 \arguments{
 \item{proj.current}{an \code{array}, \code{data.frame}, \code{\link[raster:stack]{RasterLayer}} 
-or \code{\link[raster:stack]{RasterStack}} object containing the initial binary projection(s) 
+or \code{\link[terra:rast]{SpatRaster}} object containing the initial binary projection(s) 
 of the (ensemble) species distribution model(s)}
 
 \item{proj.future}{an \code{array}, \code{data.frame}, \code{\link[raster:stack]{RasterLayer}} 
-or \code{\link[raster:stack]{RasterStack}} object containing the final binary projection(s) 
+or \code{\link[terra:rast]{SpatRaster}} object containing the final binary projection(s) 
 of the (ensemble) species distribution model(s)}
 }
 \value{
@@ -95,14 +95,14 @@ myRespXY <- DataSpecies[, c('X_WGS84', 'Y_WGS84')]
 
 # Load environmental variables extracted from BIOCLIM (bio_3, bio_4, bio_7, bio_11 & bio_12)
 data(bioclim_current)
-myExpl <- bioclim_current
+myExpl <- terra::rast(bioclim_current)
 
 \dontshow{
-myExtent <- raster::extent(0,30,45,70)
-myExpl <- raster::stack(raster::crop(myExpl, myExtent))
+myExtent <- terra::ext(0,30,45,70)
+myExpl <- terra::crop(myExpl, myExtent)
 }
 
-# ---------------------------------------------------------------
+# --------------------------------------------------------------- #
 file.out <- paste0(myRespName, "/", myRespName, ".AllModels.models.out")
 if (file.exists(file.out)) {
   myBiomodModelOut <- get(load(file.out))
@@ -146,13 +146,13 @@ if (file.exists(file.proj)) {
 }
 
 
-# ---------------------------------------------------------------
+# --------------------------------------------------------------- #
 # Load environmental variables extracted from BIOCLIM (bio_3, bio_4, bio_7, bio_11 & bio_12)
 data(bioclim_future)
-myExplFuture <- bioclim_future
+myExplFuture <- terra::rast(bioclim_future)
 \dontshow{
-myExtent <- raster::extent(0,30,45,70)
-myExplFuture <- raster::stack(raster::crop(myExplFuture, myExtent))
+myExtent <- terra::ext(0,30,45,70)
+myExplFuture <- terra::crop(myExplFuture, myExtent)
 }
 # Project onto future conditions
 myBiomodProjectionFuture <- BIOMOD_Projection(bm.mod = myBiomodModelOut,
@@ -163,8 +163,8 @@ myBiomodProjectionFuture <- BIOMOD_Projection(bm.mod = myBiomodModelOut,
                                               build.clamping.mask = TRUE)
 
 # Load current and future binary projections
-proj.current <- raster::stack("GuloGulo/proj_Current/proj_Current_GuloGulo_TSSbin.grd")
-proj.future <- raster::stack("GuloGulo/proj_Future/proj_Future_GuloGulo_TSSbin.grd")
+proj.current <- terra::rast("GuloGulo/proj_Current/proj_Current_GuloGulo_TSSbin.grd")
+proj.future <- terra::rast("GuloGulo/proj_Future/proj_Future_GuloGulo_TSSbin.grd")
 
 # Compute differences
 myBiomodRangeSize <- BIOMOD_RangeSize(proj.current = proj.current, proj.future = proj.future)

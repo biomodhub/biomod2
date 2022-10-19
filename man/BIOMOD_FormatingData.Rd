@@ -220,11 +220,11 @@ myRespXY <- DataSpecies[, c('X_WGS84', 'Y_WGS84')]
 
 # Load environmental variables extracted from BIOCLIM (bio_3, bio_4, bio_7, bio_11 & bio_12)
 data(bioclim_current)
-myExpl <- bioclim_current
+myExpl <- terra::rast(bioclim_current)
 
 \dontshow{
-myExtent <- raster::extent(0,30,45,70)
-myExpl <- raster::stack(raster::crop(myExpl, myExtent))
+myExtent <- terra::ext(0,30,45,70)
+myExpl <- terra::crop(myExpl, myExtent)
 }
 
 # ---------------------------------------------------------------

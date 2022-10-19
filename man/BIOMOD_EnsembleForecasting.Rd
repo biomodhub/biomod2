@@ -32,7 +32,7 @@ name})}
 
 \item{new.env}{(\emph{optional, default} \code{NULL}) \cr 
 If \code{bm.proj = NULL}, a \code{matrix}, \code{data.frame} or 
-\code{\link[raster:stack]{RasterStack}} object containing the new explanatory variables (in 
+\code{\link[terra:rast]{SpatRaster}} object containing the new explanatory variables (in 
 columns or layers, with names matching the variables names given to the 
 \code{\link{BIOMOD_FormatingData}} function to build \code{bm.em}) that will be used to 
 project the ensemble species distribution model(s)}
@@ -106,7 +106,7 @@ of their calibration / training range, identifying locations where predictions a
   \item{\code{on_0_1000} : }{a \code{logical} value defining whether \code{0 - 1} 
   probabilities are to be converted to \code{0 - 1000} scale to save memory on backup}
   \item{\code{do.stack} : }{a \code{logical} value defining whether all projections are to be 
-  saved as one \code{RasterStack} object or several \code{RasterLayer} files (\emph{the 
+  saved as one \code{SpatRaster} object or several \code{SpatRaster} files (\emph{the 
   default if projections are too heavy to be all loaded at once in memory})}
   \item{\code{keep.in.memory} : }{a \code{logical} value defining whether all projections are 
   to be kept loaded at once in memory, or only links pointing to hard drive are to be returned}
@@ -132,15 +132,15 @@ myRespXY <- DataSpecies[, c('X_WGS84', 'Y_WGS84')]
 
 # Load environmental variables extracted from BIOCLIM (bio_3, bio_4, bio_7, bio_11 & bio_12)
 data(bioclim_current)
-myExpl <- bioclim_current
+myExpl <- terra::rast(bioclim_current)
 
 \dontshow{
-myExtent <- raster::extent(0,30,45,70)
-myExpl <- raster::stack(raster::crop(myExpl, myExtent))
+myExtent <- terra::ext(0,30,45,70)
+myExpl <- terra::crop(myExpl, myExtent)
 }
 
  
-# ---------------------------------------------------------------
+# --------------------------------------------------------------- #
 file.out <- paste0(myRespName, "/", myRespName, ".AllModels.models.out")
 if (file.exists(file.out)) {
   myBiomodModelOut <- get(load(file.out))
@@ -210,7 +210,7 @@ if (file.exists(file.EM)) {
 }
 
 
-# ---------------------------------------------------------------
+# --------------------------------------------------------------- #
 # Project ensemble models (from single projections)
 myBiomodEMProj <- BIOMOD_EnsembleForecasting(bm.em = myBiomodEM, 
                                              bm.proj = myBiomodProj,

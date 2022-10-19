@@ -6,7 +6,7 @@
 \arguments{
 \item{object}{a \code{\link{biomod2_ensemble_model}} object}
 
-\item{newdata}{a \code{data.frame} or \code{\link[raster:stack]{RasterStack}} object 
+\item{newdata}{a \code{data.frame} or \code{\link[terra:rast]{SpatRaster}} object 
 containing data for new predictions}
 
 \item{\ldots}{(\emph{optional})}
