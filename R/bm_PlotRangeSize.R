@@ -256,10 +256,14 @@ bm_PlotRangeSize <- function(bm.range, do.count = TRUE, do.perc = TRUE
     ## c. SRC maps per model --------------------------------------------------
     if (do.maps) {
       
-      gg.maps = 'plot(ggdat, col = c("-2" = "#fc8d62", "-1" = "grey", "0" = "white", "1" = "#66c2a5")
-           , legend.width = 2, legend.shrink = 0.7
-           , axis.args = list(at = c(-2, -1, 0, 1), labels = c("Loss", "Stable1", "Stable0", "Gain"), cex.axis = 1))'
-      
+      # gg.maps = 'terra::plot(ggdat, col = c("-2" = "#fc8d62", "-1" = "grey", "0" = "white", "1" = "#66c2a5")
+      #      , legend.width = 2, legend.shrink = 0.7
+      #      , axis.args = list(at = c(-2, -1, 0, 1), labels = c("Loss", "Stable1", "Stable0", "Gain"), cex.axis = 1))'
+      gg.maps <- 'plot(ggdat,
+           col = data.frame(
+             value = c(-2, -1, 0, 1),
+             color = c("#fc8d62", "lightgoldenrod2", "grey", "#66c2a5")),
+           colNA = "white")'
       # ggdat = as.data.frame(rasterToPoints(ggdat))
       # 
       # ## Get models information
@@ -317,36 +321,37 @@ bm_PlotRangeSize <- function(bm.range, do.count = TRUE, do.perc = TRUE
         for (jj in unique(corres[, ii])) {
           ras = ggdat[[corres$full.name[which(corres[, ii] == jj)]]]
           if (nlyr(ras) > 1) {
-            stk = foreach (vali = c(1, -1, -2), .combine = "stack") %do%
-              {
-                res = ras
-                res[] = ifelse(res[] == vali, 1, 0)
-                res = sum(res, na.rm = TRUE)
-                names(res) = paste0("VAL_", vali)
-                res[which(res[] == 0)] = NA
-                return(res)
-              }
+            stk = foreach (vali = c(1, -1, -2), .combine = "c") %do% {
+              res = ras
+              res = classify(res, rcl = matrix(c(vali,1), ncol = 2), others = 0)
+              res = sum(res, na.rm = TRUE)
+              names(res) = paste0("VAL_", vali)
+              res = classify(res, rcl = matrix(c(0,NA), ncol = 2))
+              return(res)
+            }
             ras1 = which.max(stk)
-            ras1 = reclassify(ras1, reclass_table)
+            ras1 = classify(ras1, reclass_table)
             ras2 = max(stk, na.rm = TRUE) / sum(stk, na.rm = TRUE)
             list.cons[[paste0(ii, "_", jj)]] = ras1
             list.perc[[paste0(ii, "_", jj)]] = ras2
           }
         }
       }
-      if (length(list.cons) > 0 && length(list.perc) > 0)
-      {
-        stk.cons = stack(list.cons)
-        stk.perc = stack(list.perc)
-        
-        tab1 = as.data.frame(rasterToPoints(stk.cons))
+      if (length(list.cons) > 0 && length(list.perc) > 0) {
+        stk.cons = rast(list.cons)
+        stk.perc = rast(list.perc)
+        tab1 = as.data.frame(stk.cons, xy = TRUE)
         tab1 = melt(tab1, id.vars = c("x", "y"))
         tab1$group.level = tab1$group.value = ""
-        for (ii in row.names) { tab1$group.level[grep(ii, tab1$variable)] = ii }
-        for (jj in unique(unlist(corres[, 2:ncol(corres)]))) { tab1$group.value[grep(jj, tab1$variable)] = jj }
+        for (ii in row.names) {
+          tab1$group.level[grep(ii, tab1$variable)] = ii
+        }
+        for (jj in unique(unlist(corres[, 2:ncol(corres)]))) { 
+          tab1$group.value[grep(jj, tab1$variable)] = jj 
+        }
         tab1$value[which(is.na(tab1$value))] = 0
         
-        tab2 = as.data.frame(rasterToPoints(stk.perc))
+        tab2 = as.data.frame(stk.perc, xy = TRUE)
         tab2 = melt(tab2, id.vars = c("x", "y"))
         tab2$group.level = tab2$group.value = ""
         for (ii in row.names) { tab2$group.level[grep(ii, tab2$variable)] = ii }
@@ -399,17 +404,14 @@ bm_PlotRangeSize <- function(bm.range, do.count = TRUE, do.perc = TRUE
     gg.maps = NULL
     gg.ca = NULL
   }
-  
-  
   ## RETURN PLOTS
   if (do.plot) { 
     print(gg.count)
-    print(gg.perc)
-    eval(parse(text = gg.maps))
     plot.new()
+    print(gg.perc, newpage = FALSE)
+    eval(parse(text = gg.maps))
     print(gg.ca)
   }
-
   return(out)
 }
 
