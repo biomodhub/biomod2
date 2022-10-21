@@ -227,7 +227,7 @@ myExtent <- terra::ext(0,30,45,70)
 myExpl <- terra::crop(myExpl, myExtent)
 }
 
-# ---------------------------------------------------------------
+# ---------------------------------------------------------------#
 # Format Data with true absences
 myBiomodData <- BIOMOD_FormatingData(resp.var = myResp,
                                      expl.var = myExpl,
@@ -237,7 +237,7 @@ myBiomodData
 plot(myBiomodData)
 
 
-# ---------------------------------------------------------------
+# ---------------------------------------------------------------#
 # # Transform true absences into potential pseudo-absences
 # myResp.PA <- ifelse(myResp == 1, 1, NA)
 # 

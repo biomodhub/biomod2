@@ -23,7 +23,7 @@ bm_BinaryTransformation(data, threshold, do.filtering = FALSE)
 }
 \arguments{
 \item{data}{a \code{vector}, a \code{matrix} or \code{data.frame}, a 
-\code{\link[raster:raster]{raster}} or \code{\link[raster:stack]{RasterStack}} containing the 
+\code{\link[terra:rast]{SpatRaster}} containing the 
 data to be converted}
 
 \item{threshold}{a \code{numeric} corresponding to the threshold used to convert the given data}
@@ -45,7 +45,7 @@ according to a predefined threshold (see Details).
 If \code{data} is a \code{vector} or \code{\link[raster:raster]{raster}}, \code{threshold} 
 should be a single \code{numeric} value. \cr
 If \code{data} is a \code{matrix}, \code{data.frame} or 
-\code{\link[raster:stack]{RasterStack}}, \code{threshold} should be a \code{vector} containing 
+\code{\link[terra:rast]{SpatRaster}}, \code{threshold} should be a \code{vector} containing 
 as many values as the number of columns or layers contained in \code{data}. If only one 
 \code{numeric} value is given, the same threshold will be applied to all columns or layers. 
 \cr \cr
