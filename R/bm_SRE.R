@@ -163,12 +163,12 @@ bm_SRE <- function(resp.var = NULL,
         lout[[j]] <- .sre_projection(new.env, extrem.cond)
       }
     }
-  } else if (inherits(resp.var, 'SpatialPoints')) ## SpatialPoints ----------------------
-  {
-    nb.resp <- ncol(resp.var@data)
-    resp.names <- colnames(resp.var@data)
+  } else if (inherits(resp.var, 'SpatVector')) {
+    ### SpatVector ----------------------
+    nb.resp <- ncol(values(resp.var))
+    resp.names <- colnames(values(resp.var))
     for (j in 1:nb.resp) {
-      occ.pts <- which(resp.var@data[, j] == 1)
+      occ.pts <- which(values(resp.var)[, j] == 1)
       if (is.data.frame(expl.var) || is.matrix(expl.var)) {
         extrem.cond <- t(apply(as.data.frame(expl.var[occ.pts, ]), 2, quantile
                                , probs = c(0 + quant, 1 - quant), na.rm = TRUE))
@@ -176,10 +176,12 @@ bm_SRE <- function(resp.var = NULL,
         if (inherits(expl.var, 'SpatRaster')) {
           maskTmp <- subset(expl.var, 1)
           maskTmp[] <- NA
-          maskTmp[cellFromXY(maskTmp, coordinates(resp.var)[occ.pts, ])] <- 1
-          extrem.cond <- terra::quantile(mask(expl.var, maskTmp),
-                                         probs = c(0 + quant, 1 - quant),
-                                         na.rm = TRUE)
+          maskTmp[cellFromXY(maskTmp, crds(resp.var)[occ.pts, ])] <- 1
+          extrem.cond <- global(mask(expl.var, maskTmp),
+                                fun = quantile,
+                                probs = c(0 + quant, 1 - quant),
+                                na.rm = TRUE)
+          
         } else {
           if (inherits(expl.var, 'SpatialPoints')) {
             ## May be good to check corespondances of resp.var and expl.var variables
@@ -223,16 +225,13 @@ bm_SRE <- function(resp.var = NULL,
 .bm_SRE.check.args <- function(resp.var = NULL, expl.var = NULL, new.env = NULL, quant = 0.025)
 {
   ## 0. Check compatibility between resp.var and expl.var arguments -----------
-  if (is.vector(resp.var) || is.matrix(resp.var) || is.data.frame(resp.var))
-  {
+  if (is.vector(resp.var) || inherits(resp.var, c("matrix","data.frame"))) {
     resp.var <- as.data.frame(resp.var)
-    
-    if (!is.vector(expl.var) && !is.matrix(expl.var) && !is.data.frame(expl.var) && !inherits(expl.var, 'SpatialPoints'))
-    {
+    if (!is.vector(expl.var) && !inherits(expl.var, c("matrix","data.frame",'SpatVector')))  {
       stop("\n resp.var and expl.var arguments must be of same type (both vector, both matrix, etc)")
     } else {
-      if (inherits(expl.var, 'SpatialPoints')) {
-        expl.var <- as.data.frame(expl.var@data)
+      if (inherits(expl.var, 'SpatVector')) {
+        expl.var <- values(expl.var)
       }
       expl.var <- as.data.frame(expl.var)
       nb.expl.vars <- ncol(expl.var)
@@ -243,8 +242,8 @@ bm_SRE <- function(resp.var = NULL,
     }
   }
   
-  if (inherits(expl.var, 'SpatialPoints')) {
-    expl.var <- as.data.frame(expl.var@data)
+  if (inherits(expl.var, 'SpatVector')) {
+    expl.var <- values(expl.var)
     nb.expl.vars <- ncol(expl.var)
     names.expl.vars <- colnames(expl.var)
   }
@@ -265,14 +264,13 @@ bm_SRE <- function(resp.var = NULL,
     nb.expl.vars <- nlyr(expl.var)
     names.expl.vars <- names(expl.var)
   }
+
   ## 1. Check expl.var argument -----------------------------------------------
-  test_no_factorial_var <- TRUE
-  if ((is.data.frame(expl.var) && any(unlist(lapply(expl.var, is.factor)))) ||
-      (inherits(expl.var, 'Raster') && any(is.factor(expl.var)))) {
-    test_no_factorial_var <- FALSE
+  if ((inherits(expl.var, 'data.frame') && any(sapply(expl.var, is.factor))) ||
+      (inherits(expl.var, c('RasterStack','SpatRaster')) && any(is.factor(expl.var)))) {
+    stop("SRE algorithm does not handle factorial variables")
   }
-  if (!test_no_factorial_var) stop("SRE algorithm does not handle factorial variables")
-  
+
   
   ## 2. Check new.env argument ------------------------------------------------
   if (is.null(new.env)) { ## if no new.env, projection done on expl.var variables
@@ -281,7 +279,7 @@ bm_SRE <- function(resp.var = NULL,
     if (is.vector(new.env) || is.data.frame(new.env) || is.matrix(new.env))
     {
       new.env <- as.data.frame(new.env)
-      if (sum(!(names.expl.vars %in% colnames(new.env))) > 0) {
+      if (!all(names.expl.vars %in% colnames(new.env))) {
         stop("expl.var variables names differs in the 2 dataset given")
       }
       new.env <- new.env[,names.expl.vars]

@@ -184,9 +184,12 @@ setMethod('BIOMOD.formated.data', signature(sp = 'numeric', env = 'data.frame'),
               
               if (nlyr(BFDeval@data.mask) == 1) {
                 if (nlyr(data.mask) == 1) {
+                  # data.mask for eval is only available when eval.expl.var was
+                  # submitted as raster or SpatRaster
                   data.mask.tmp <- try(
-                    add(data.mask) <- BFDeval@data.mask 
-                    )
+                    c(data.mask,BFDeval@data.mask), 
+                    silent = TRUE
+                  )
                   if (!inherits(data.mask.tmp, "try-error")) {
                     data.mask <- data.mask.tmp
                     names(data.mask) <- c("calibration", "validation")
@@ -644,13 +647,13 @@ setMethod('BIOMOD.formated.data.PA', signature(sp = 'numeric', env = 'data.frame
                                      , na.rm)
           })
 
-### BIOMOD.formated.data.PA(sp = numeric, env = RasterStack) -------------------
+### BIOMOD.formated.data.PA(sp = numeric, env = SpatRaster) -------------------
 ##' 
 ##' @rdname BIOMOD.formated.data.PA
 ##' @export
 ##' 
 
-setMethod('BIOMOD.formated.data.PA', signature(sp = 'numeric', env = 'RasterStack'),
+setMethod('BIOMOD.formated.data.PA', signature(sp = 'numeric', env = 'SpatRaster'),
           function(sp, env, xy = NULL, dir.name = '.', sp.name = NULL
                    , eval.sp = NULL, eval.env = NULL, eval.xy = NULL
                    , PA.nb.rep = 1, PA.strategy = 'random', PA.nb.absences = NULL
@@ -675,29 +678,34 @@ setMethod('BIOMOD.formated.data.PA', signature(sp = 'numeric', env = 'RasterStac
 {
   
   categorical_var <- NULL
-  if (inherits(env, 'Raster')) {
+  if (inherits(env, 'SpatRaster')) {
     categorical_var <- names(env)[is.factor(env)] 
-    }
+  }
   
   ## Keep same env variable for eval than calib (+ check for factor)
   if (!is.null(eval.sp) && is.null(eval.env)) {
-    if (inherits(env, 'Raster')) {
+    if (inherits(env, 'SpatRaster')) {
       eval.env <- as.data.frame(extract(env, eval.xy))
-      if (length(categorical_var)) {
-        for (cat_var in categorical_var) {
-          eval.env[, cat_var] <- as.factor(eval.env[, cat_var])
-        }
-      }
-    } else { stop("No evaluation explanatory variable given") }
+      # probably obsolete line as terra properly extract factors ?
+      .categorical2numeric(eval.env, categorical_var)
+    } else { 
+      stop("No evaluation explanatory variable given") 
+    }
   }
   
-  # Convert sp in SpatialPointsDataFrame
+  
+  # Convert sp in SpatVector
   if (is.numeric(sp)) {
     if (is.null(xy)) {
-      sp <- SpatialPointsDataFrame(matrix(0, ncol = 2, nrow = length(sp)), data.frame(sp), match.ID = FALSE)
+      sp.df <- data.frame(x = 0,
+                          y = 0,
+                          resp = sp)
     } else {
-      sp <- SpatialPointsDataFrame(data.matrix(xy), data.frame(sp), match.ID = FALSE)
+      sp.df <- data.frame(x = xy[,1],
+                          y = xy[,2],
+                          resp = sp)
     }
+    sp <- vect(sp.df, geom = c("x","y"))
   }
   
   pa.data.tmp <- bm_PseudoAbsences(resp.var = sp,
@@ -803,8 +811,7 @@ setMethod('BIOMOD.formated.data.PA', signature(sp = 'numeric', env = 'RasterStac
     rm(list = 'BFD')
   } else {
     cat("\n   ! PA selection not done", fill = .Options$width)
-    
-    BFDP <- BIOMOD.formated.data(sp = as.vector(sp@data),
+    BFDP <- BIOMOD.formated.data(sp = as.vector(values(sp)[,1]),
                                  env = env,
                                  xy = xy,
                                  dir.name = dir.name,
@@ -832,9 +839,9 @@ setMethod('plot', signature(x = 'BIOMOD.formated.data.PA', y = "missing"),
             if (nlyr(x@data.mask) > 0)
             {
               requireNamespace("rasterVis")
-              
+
               ## check if there is some undefined areas to prevent from strange plotting issues
-              if (min(cellStats(x@data.mask, min)) == -1) { # there is undefined area
+              if (min(global(x@data.mask, min)) == -1) { # there is undefined area
                 my.at <- seq(-1.5, 1.5, by = 1) ## breaks of color key
                 my.labs.at <- seq(-1, 1, by = 1) ## labels placed vertically
                 my.lab <- c("undefined", "absences", "presences") ## labels
