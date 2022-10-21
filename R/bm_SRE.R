@@ -111,7 +111,7 @@
 ##' 
 ##' 
 ##' @importFrom raster stack subset nlayers mask reclassify coordinates cellFromXY Which 
-##' @importFrom terra rast
+##' @importFrom terra rast values vect quantile
 ## quantile
 ##' 
 ##' @export
@@ -119,22 +119,24 @@
 ##' 
 ###--------------------------------------------------------------------------###
 
+## Remi 20/10/2022
+## This function seems to have support for multispecies resp.var although
+## the rest of the package do not.
 
 bm_SRE <- function(resp.var = NULL, 
                    expl.var = NULL, 
                    new.env = NULL, 
                    quant = 0.025, 
-                   do.extrem = FALSE)
-{
+                   do.extrem = FALSE) {
   ## 0. Check arguments ---------------------------------------------------------
   args <- .bm_SRE.check.args(resp.var, expl.var, new.env, quant)
   for (argi in names(args)) { assign(x = argi, value = args[[argi]]) }
   rm(args)
-  
+  # browser()
   ## 1. Determine suitable conditions and make the projection --------------
   lout <- list()
-  if (is.data.frame(resp.var) | is.matrix(resp.var)) ## matrix or data.frame ------------
-  {
+  if (is.data.frame(resp.var) | is.matrix(resp.var)) {
+    ### matrix or data.frame ------------
     nb.resp <- ncol(resp.var)
     resp.names <- colnames(resp.var)
     for (j in 1:nb.resp) {
@@ -145,8 +147,11 @@ bm_SRE <- function(resp.var = NULL,
         lout[[j]] <- .sre_projection(new.env, extrem.cond)
       }
     }
-  } else if (inherits(resp.var, 'SpatRaster')) ## raster ------------------------------------
-  {
+  } else if (inherits(resp.var, 'SpatRaster')) {
+    ## Remi 20/10/2022
+    ## this section seems obsolete as resp.var support for Raster/SpatRaster
+    ## is currently deactivated.
+    ### raster ------------------------------------
     nb.resp <- nlyr(resp.var)
     resp.names <- names(resp.var)
     for (j in 1:nb.resp) {

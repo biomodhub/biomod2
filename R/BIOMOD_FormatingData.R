@@ -1,4 +1,4 @@
-###################################################################################################
+# BIOMOD_FormatingData Documentation ------------------------------------------
 ##' @name BIOMOD_FormatingData
 ##' @author Damien Georges, Wilfried Thuiller
 ##' 
@@ -208,7 +208,7 @@
 ##' myExpl <- terra::crop(myExpl, myExtent)
 ##' }
 ##' 
-##' # ---------------------------------------------------------------
+##' # ---------------------------------------------------------------#
 ##' # Format Data with true absences
 ##' myBiomodData <- BIOMOD_FormatingData(resp.var = myResp,
 ##'                                      expl.var = myExpl,
@@ -218,7 +218,7 @@
 ##' plot(myBiomodData)
 ##' 
 ##' 
-##' # ---------------------------------------------------------------
+##' # ---------------------------------------------------------------#
 ##' # # Transform true absences into potential pseudo-absences
 ##' # myResp.PA <- ifelse(myResp == 1, 1, NA)
 ##' # 
@@ -279,7 +279,7 @@
 ##' 
 ##' @export
 ##' 
-###################################################################################################
+##----------------------------------------------------------------------------##
 
 BIOMOD_FormatingData <- function(resp.name,
                                  resp.var,
@@ -353,7 +353,7 @@ BIOMOD_FormatingData <- function(resp.name,
 }
 
 
-###################################################################################################
+# Argument Check -------------------------------------------------------------
 
 .BIOMOD_FormatingData.check.args <- function(resp.name,
                                              resp.var,

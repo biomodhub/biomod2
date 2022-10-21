@@ -158,8 +158,8 @@ setGeneric("BIOMOD.formated.data", def = function(sp, env, ...) { standardGeneri
 setMethod('BIOMOD.formated.data', signature(sp = 'numeric', env = 'data.frame'),
           function(sp, env, xy = NULL, dir.name = '.', sp.name = NULL
                    , eval.sp = NULL, eval.env = NULL, eval.xy = NULL
-                   , na.rm = TRUE, data.mask = NULL)
-          {
+                   , na.rm = TRUE, data.mask = NULL)  {
+            
             if (is.null(data.mask)) { data.mask <- rast() }
             
             if (is.null(eval.sp)) { ## NO EVALUATION DATA
@@ -284,11 +284,11 @@ setMethod('BIOMOD.formated.data', signature(sp = 'numeric', env = 'SpatRaster'),
                    , eval.sp = NULL, eval.env = NULL, eval.xy = NULL
                    , na.rm = TRUE) {
             categorical_var <- names(env)[is.factor(env)]
-
+            
             ## Keep same env variable for eval than calib (+ check for factor)
             if (!is.null(eval.sp) && is.null(eval.env)) {
               eval.env <- as.data.frame(extract(env, eval.xy))
-              if (length(categorical_var)) {
+              if (length(categorical_var) > 0) {
                 for (cat_var in categorical_var) {
                   eval.env[, cat_var] <- as.factor(eval.env[, cat_var])
                 }
@@ -296,14 +296,13 @@ setMethod('BIOMOD.formated.data', signature(sp = 'numeric', env = 'SpatRaster'),
             }
             
             if (is.null(xy)) { xy <- as.data.frame(coordinates(env)) }
-            
             ## Prepare mask of studied area
             data.mask <- terra::rasterize(as.matrix(xy), env[[1]], values = sp)
             names(data.mask) <- sp.name
-
+            
             ## Keep same env variable for eval than calib (+ check for factor)
             env <- as.data.frame(extract(env, xy, factors = TRUE, ID = FALSE))
-
+            
             BFD <- BIOMOD.formated.data(sp, env, xy, dir.name, sp.name, eval.sp, eval.env, eval.xy, na.rm = na.rm, data.mask = data.mask)
             return(BFD)
           }
@@ -322,7 +321,7 @@ setMethod('BIOMOD.formated.data', signature(sp = 'numeric', env = 'SpatRaster'),
 setMethod('plot', signature(x = 'BIOMOD.formated.data', y = "missing"),
           function(x, coord = NULL, col = NULL)
           {
-
+            
             if (nlyr(x@data.mask) > 0)
             {
               requireNamespace("rasterVis")
@@ -713,7 +712,7 @@ setMethod('BIOMOD.formated.data.PA', signature(sp = 'numeric', env = 'RasterStac
   
   if (!is.null(pa.data.tmp)) {
     ## Keep same env variable for eval than calib (+ check for factor)
-    if (length(categorical_var)) {
+    if (length(categorical_var) > 0) {
       for (cat_var in categorical_var) {
         pa.data.tmp$env[, cat_var] <- as.factor(pa.data.tmp$env[, cat_var])
       }
@@ -756,7 +755,7 @@ setMethod('BIOMOD.formated.data.PA', signature(sp = 'numeric', env = 'RasterStac
         if (nlyr(BFD@data.mask) == 1 && names(BFD@data.mask) == "validation") {
           try_add <- try(
             add(data.mask) <- BFD@data.mask
-            )
+          )
           if (!inherits(try_add, "try-error")) {
             names(data.mask) <- c("input_data", "validation")
           }
