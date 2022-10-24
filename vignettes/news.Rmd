@@ -44,6 +44,7 @@ vignette: >
 * evaluation metrics are no longer calculated for models `prob.ci.inf` et `prob.ci.sup`.
 * Package now properly pass R CMD check
 * `BIOMOD_PresenceOnly` now properly manage `NA`
+* Corrected bm_PlotResponseCurves to only plot show.variables
 
 ##### Miscellaneous
 
