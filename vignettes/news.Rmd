@@ -27,28 +27,30 @@ vignette: >
 ##### Minor changes
 
 * Individual EM models projected as raster are now saved with `INT2S` data format when `on_0_1000` is set to `TRUE`.
-* Homogenize the use of load functions (*use* `get_[...]`*,* `load_stored_object` *and* `BIOMOD_LoadModels`*, instead of* `get(load(...))`) and the workflow within `get_[...]` functions (*use* `load_stored_object` *and similar arguments such as* `as.data.frame`*,* `full.name`*, ...*)
-* Adapting predict workflow to properly use S4 class
+* Homogenize the use of load functions (*use* `get_[...]`*,* `load_stored_object` *and* `BIOMOD_LoadModels`*, instead of* `get(load(...))`) and the workflow within `get_[...]` functions (*use* `load_stored_object` *and similar arguments such as* `as.data.frame`*,* `full.name`*, ...*).
+* Adapting predict workflow to properly use S4 class.
 * Homogenize `BIOMOD.ensemble.models.out` and `BIOMOD.models.out` objects
-  * Add slots in `BIOMOD.ensemble.models.out` object for evaluations, variables importance and predictions
-  * Moved `.Models.save.objects` in `BIOMOD_modeling` to `.fill_BIOMOD.models.out` in `biomod2_internal.R`
-  * Save slots within `BIOMOD.ensemble.models.out` and use `load_stored_object` to directly get them within `get_[...]` functions
+  * Add slots in `BIOMOD.ensemble.models.out` object for evaluations, variables importance and predictions.
+  * Moved `.Models.save.objects` in `BIOMOD_modeling` to `.fill_BIOMOD.models.out` in `biomod2_internal.R`.
+  * Save slots within `BIOMOD.ensemble.models.out` and use `load_stored_object` to directly get them within `get_[...]` functions.
 
 ##### Bug Fix
 
 * Validation data can now be properly combined with Pseudo-Absence in `BIOMOD_FormatingData`, instead of throwing an error linked to `data.mask`.
 * Argument `on_0_1000` can now be passed without errors so that projection may either be on a range from 0 to 1 or from 0 to 1000. The latter option being more effective memory-wise.
-* Completed argument check for function `BIOMOD_EnsembleModeling` so that `em.by` can not be of `length > 1`
-* Corrected function `.get_models_assembling` so that it did not confound `MAXENT.Phillips2` with `MAXENT.Phillips` when grouping models by algorithm in `BIOMOD_EnsembleModeling`
-* get_prediction method for `BIOMOD.ensemble.models.out` now accepts an `evaluation` arg. Evaluation values, variables' importance and Calibration/Evaluation predictions for ensemble models are now properly saved by `BIOMOD_EnsembleModeling()`
+* Completed argument check for function `BIOMOD_EnsembleModeling` so that `em.by` can not be of `length > 1`.
+* Corrected function `.get_models_assembling` so that it did not confound `MAXENT.Phillips2` with `MAXENT.Phillips` when grouping models by algorithm in `BIOMOD_EnsembleModeling`.
+* get_prediction method for `BIOMOD.ensemble.models.out` now accepts an `evaluation` arg. Evaluation values, variables' importance and Calibration/Evaluation predictions for ensemble models are now properly saved by `BIOMOD_EnsembleModeling()`.
 * evaluation metrics are no longer calculated for models `prob.ci.inf` et `prob.ci.sup`.
-* Package now properly pass R CMD check
-* `BIOMOD_PresenceOnly` now properly manage `NA`
-* Corrected bm_PlotResponseCurves to only plot show.variables
+* Package now properly pass R CMD check.
+* `BIOMOD_PresenceOnly` now properly manage `NA`.
+* Corrected bm_PlotResponseCurves to only plot show.variables.
+* `get_predictions.BIOMOD.projection.out` now properly works when asked for a subset of model.
+
 
 ##### Miscellaneous
 
-* Using models with a single predictor requires updating `gbm` and `maxnet` packages to their development version at rpatin/maxnet and rpatin/gbm can be used. (see issue *<https://github.com/biomodhub/biomod2/issues/102>*)
+* Using models with a single predictor requires updating `gbm` package to its development version at rpatin/gbm can be used. (see issue *<https://github.com/biomodhub/biomod2/issues/102>*)
 
 #### 4.1-1 (2022-08-30)
 
