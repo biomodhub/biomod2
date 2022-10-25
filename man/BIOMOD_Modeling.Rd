@@ -257,7 +257,7 @@ myBiomodModelOut <- BIOMOD_Modeling(bm.format = myBiomodData,
                                     nb.rep = 2,
                                     data.split.perc = 80,
                                     metric.eval = c('TSS','ROC'),
-                                    var.import = 3,
+                                    var.import = 2,
                                     do.full.models = FALSE,
                                     seed.val = 42)
 myBiomodModelOut
@@ -266,24 +266,26 @@ myBiomodModelOut
 get_evaluations(myBiomodModelOut)
 get_variables_importance(myBiomodModelOut, as.data.frame = TRUE)
 
-# Represent evaluation scores & variables importance
+# Represent evaluation scores 
 bm_PlotEvalMean(bm.out = myBiomodModelOut)
 bm_PlotEvalBoxplot(bm.out = myBiomodModelOut, group.by = c('algo', 'run'))
-bm_PlotVarImpBoxplot(bm.out = myBiomodModelOut, group.by = c('expl.var', 'algo', 'algo'))
-bm_PlotVarImpBoxplot(bm.out = myBiomodModelOut, group.by = c('expl.var', 'algo', 'dataset'))
-bm_PlotVarImpBoxplot(bm.out = myBiomodModelOut, group.by = c('algo', 'expl.var', 'dataset'))
 
-# Represent response curves
-bm_PlotResponseCurves(bm.out = myBiomodModelOut, 
-                      models.chosen = get_built_models(myBiomodModelOut)[c(1:2)],
-                      fixed.var = 'median')
-bm_PlotResponseCurves(bm.out = myBiomodModelOut, 
-                      models.chosen = get_built_models(myBiomodModelOut)[c(1:2)],
-                      fixed.var = 'min')
-bm_PlotResponseCurves(bm.out = myBiomodModelOut, 
-                      models.chosen = get_built_models(myBiomodModelOut)[3],
-                      fixed.var = 'median',
-                      do.bivariate = TRUE)
+# Represent variables importance 
+# bm_PlotVarImpBoxplot(bm.out = myBiomodModelOut, group.by = c('expl.var', 'algo', 'algo'))
+# bm_PlotVarImpBoxplot(bm.out = myBiomodModelOut, group.by = c('expl.var', 'algo', 'dataset'))
+# bm_PlotVarImpBoxplot(bm.out = myBiomodModelOut, group.by = c('algo', 'expl.var', 'dataset'))
+
+# Represent response curves 
+# bm_PlotResponseCurves(bm.out = myBiomodModelOut, 
+#                       models.chosen = get_built_models(myBiomodModelOut)[c(1:2)],
+#                       fixed.var = 'median')
+# bm_PlotResponseCurves(bm.out = myBiomodModelOut, 
+#                       models.chosen = get_built_models(myBiomodModelOut)[c(1:2)],
+#                       fixed.var = 'min')
+# bm_PlotResponseCurves(bm.out = myBiomodModelOut, 
+#                       models.chosen = get_built_models(myBiomodModelOut)[3],
+#                       fixed.var = 'median',
+#                       do.bivariate = TRUE)
 
 
 }
