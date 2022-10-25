@@ -443,24 +443,26 @@ model will be used to weight the models predictions.</em></p></dd>
 <span><span class="fu"><a href="getters.out.html">get_evaluations</a></span><span class="op">(</span><span class="va">myBiomodEM</span>, as.data.frame <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
 <span><span class="fu"><a href="getters.out.html">get_variables_importance</a></span><span class="op">(</span><span class="va">myBiomodEM</span>, as.data.frame <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
 <span></span>
-<span><span class="co"># Represent evaluation scores &amp; variables importance</span></span>
+<span><span class="co"># Represent evaluation scores</span></span>
 <span><span class="fu"><a href="bm_PlotEvalMean.html">bm_PlotEvalMean</a></span><span class="op">(</span>bm.out <span class="op">=</span> <span class="va">myBiomodEM</span>, group.by <span class="op">=</span> <span class="st">'model'</span><span class="op">)</span></span>
 <span><span class="fu"><a href="bm_PlotEvalBoxplot.html">bm_PlotEvalBoxplot</a></span><span class="op">(</span>bm.out <span class="op">=</span> <span class="va">myBiomodEM</span>, group.by <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">'model'</span>, <span class="st">'model'</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="fu"><a href="bm_PlotVarImpBoxplot.html">bm_PlotVarImpBoxplot</a></span><span class="op">(</span>bm.out <span class="op">=</span> <span class="va">myBiomodEM</span>, group.by <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">'expl.var'</span>, <span class="st">'model'</span>, <span class="st">'model'</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="fu"><a href="bm_PlotVarImpBoxplot.html">bm_PlotVarImpBoxplot</a></span><span class="op">(</span>bm.out <span class="op">=</span> <span class="va">myBiomodEM</span>, group.by <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">'expl.var'</span>, <span class="st">'model'</span>, <span class="st">'dataset'</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="fu"><a href="bm_PlotVarImpBoxplot.html">bm_PlotVarImpBoxplot</a></span><span class="op">(</span>bm.out <span class="op">=</span> <span class="va">myBiomodEM</span>, group.by <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">'model'</span>, <span class="st">'expl.var'</span>, <span class="st">'dataset'</span><span class="op">)</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Represent variables importance</span></span>
+<span><span class="co"># bm_PlotVarImpBoxplot(bm.out = myBiomodEM, group.by = c('expl.var', 'model', 'model'))</span></span>
+<span><span class="co"># bm_PlotVarImpBoxplot(bm.out = myBiomodEM, group.by = c('expl.var', 'model', 'dataset'))</span></span>
+<span><span class="co"># bm_PlotVarImpBoxplot(bm.out = myBiomodEM, group.by = c('model', 'expl.var', 'dataset'))</span></span>
 <span></span>
 <span><span class="co"># Represent response curves</span></span>
-<span><span class="fu"><a href="bm_PlotResponseCurves.html">bm_PlotResponseCurves</a></span><span class="op">(</span>bm.out <span class="op">=</span> <span class="va">myBiomodEM</span>, </span>
-<span>                      models.chosen <span class="op">=</span> <span class="fu"><a href="getters.out.html">get_built_models</a></span><span class="op">(</span><span class="va">myBiomodEM</span><span class="op">)</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">2</span><span class="op">)</span><span class="op">]</span>,</span>
-<span>                      fixed.var <span class="op">=</span> <span class="st">'median'</span><span class="op">)</span></span>
-<span><span class="fu"><a href="bm_PlotResponseCurves.html">bm_PlotResponseCurves</a></span><span class="op">(</span>bm.out <span class="op">=</span> <span class="va">myBiomodEM</span>, </span>
-<span>                      models.chosen <span class="op">=</span> <span class="fu"><a href="getters.out.html">get_built_models</a></span><span class="op">(</span><span class="va">myBiomodEM</span><span class="op">)</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">2</span><span class="op">)</span><span class="op">]</span>,</span>
-<span>                      fixed.var <span class="op">=</span> <span class="st">'min'</span><span class="op">)</span></span>
-<span><span class="fu"><a href="bm_PlotResponseCurves.html">bm_PlotResponseCurves</a></span><span class="op">(</span>bm.out <span class="op">=</span> <span class="va">myBiomodEM</span>, </span>
-<span>                      models.chosen <span class="op">=</span> <span class="fu"><a href="getters.out.html">get_built_models</a></span><span class="op">(</span><span class="va">myBiomodEM</span><span class="op">)</span><span class="op">[</span><span class="fl">2</span><span class="op">]</span>,</span>
-<span>                      fixed.var <span class="op">=</span> <span class="st">'median'</span>,</span>
-<span>                      do.bivariate <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span><span class="co"># bm_PlotResponseCurves(bm.out = myBiomodEM, </span></span>
+<span><span class="co">#                       models.chosen = get_built_models(myBiomodEM)[c(1, 2)],</span></span>
+<span><span class="co">#                       fixed.var = 'median')</span></span>
+<span><span class="co"># bm_PlotResponseCurves(bm.out = myBiomodEM, </span></span>
+<span><span class="co">#                       models.chosen = get_built_models(myBiomodEM)[c(1, 2)],</span></span>
+<span><span class="co">#                       fixed.var = 'min')</span></span>
+<span><span class="co"># bm_PlotResponseCurves(bm.out = myBiomodEM, </span></span>
+<span><span class="co">#                       models.chosen = get_built_models(myBiomodEM)[2],</span></span>
+<span><span class="co">#                       fixed.var = 'median',</span></span>
+<span><span class="co">#                       do.bivariate = TRUE)</span></span>
 <span></span>
 <span></span></code></pre></div>
     </div>

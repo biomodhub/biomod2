@@ -270,13 +270,14 @@ Note that this method does not account for interactions between variables. <br><
 <span><span class="fu">bm_PlotResponseCurves</span><span class="op">(</span>bm.out <span class="op">=</span> <span class="va">myBiomodModelOut</span>, </span>
 <span>                      models.chosen <span class="op">=</span> <span class="fu"><a href="getters.out.html">get_built_models</a></span><span class="op">(</span><span class="va">myBiomodModelOut</span><span class="op">)</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">2</span><span class="op">)</span><span class="op">]</span>,</span>
 <span>                      fixed.var <span class="op">=</span> <span class="st">'median'</span><span class="op">)</span></span>
-<span><span class="fu">bm_PlotResponseCurves</span><span class="op">(</span>bm.out <span class="op">=</span> <span class="va">myBiomodModelOut</span>, </span>
-<span>                      models.chosen <span class="op">=</span> <span class="fu"><a href="getters.out.html">get_built_models</a></span><span class="op">(</span><span class="va">myBiomodModelOut</span><span class="op">)</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">2</span><span class="op">)</span><span class="op">]</span>,</span>
-<span>                      fixed.var <span class="op">=</span> <span class="st">'min'</span><span class="op">)</span></span>
-<span><span class="fu">bm_PlotResponseCurves</span><span class="op">(</span>bm.out <span class="op">=</span> <span class="va">myBiomodModelOut</span>, </span>
-<span>                      models.chosen <span class="op">=</span> <span class="fu"><a href="getters.out.html">get_built_models</a></span><span class="op">(</span><span class="va">myBiomodModelOut</span><span class="op">)</span><span class="op">[</span><span class="fl">3</span><span class="op">]</span>,</span>
-<span>                      fixed.var <span class="op">=</span> <span class="st">'median'</span>,</span>
-<span>                      do.bivariate <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span><span class="co"># Other options</span></span>
+<span><span class="co"># bm_PlotResponseCurves(bm.out = myBiomodModelOut, </span></span>
+<span><span class="co">#                       models.chosen = get_built_models(myBiomodModelOut)[c(1:2)],</span></span>
+<span><span class="co">#                       fixed.var = 'min')</span></span>
+<span><span class="co"># bm_PlotResponseCurves(bm.out = myBiomodModelOut, </span></span>
+<span><span class="co">#                       models.chosen = get_built_models(myBiomodModelOut)[3],</span></span>
+<span><span class="co">#                       fixed.var = 'median',</span></span>
+<span><span class="co">#                       do.bivariate = TRUE)</span></span>
 <span>                                      </span>
 <span>                                      </span></code></pre></div>
     </div>
