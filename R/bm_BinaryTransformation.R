@@ -1,4 +1,4 @@
-###################################################################################################
+# bm_BinaryTransformation documentation ----------------------------------------
 ##' @name bm_BinaryTransformation
 ##' @author Wilfried Thuiller, Damien Georges
 ##' 
@@ -66,8 +66,7 @@
 ##' @export
 ##' 
 ##' 
-###################################################################################################
-
+## generic methods ----------------------------------------------------------
 
 setGeneric("bm_BinaryTransformation",
            function(data, threshold, do.filtering = FALSE)
@@ -75,7 +74,7 @@ setGeneric("bm_BinaryTransformation",
              standardGeneric("bm_BinaryTransformation")
            })
 
-##'
+## data.frame methods ----------------------------------------------------------
 ##' @rdname bm_BinaryTransformation
 ##' @export
 ##'
@@ -88,9 +87,13 @@ setMethod('bm_BinaryTransformation', signature('data.frame'),
                 stop("data and threshold dimensions mismatch")
               } else {
                 if (do.filtering) {
-                  return(sweep(data, 2, threshold, .convert_bin.array.filt))
+                  return(data.matrix(
+                    sweep(data, 2, threshold, .convert_bin.array.filt)
+                    ))
                 } else {
-                  return(sweep(data, 2, threshold, .convert_bin.array))
+                  return(
+                    sweep(data, 2, threshold, .convert_bin.array)
+                    )
                 }
               }
             } else {
@@ -98,13 +101,18 @@ setMethod('bm_BinaryTransformation', signature('data.frame'),
                 data <- data.matrix(data)
                 return(.convert_bin.matrix(data, threshold, do.filtering))
               } else { ## return NAs
+                if(ncol(data) > 1){
                 return(matrix(NA, ncol = ncol(data), nrow = nrow(data)
                               , dimnames = dimnames(data)))
+                } else {
+                  return(rep(NA, nrow(data)))
+                }
+                
               }
             }
           })
 
-##'
+## matrix methods ----------------------------------------------------------
 ##' @rdname bm_BinaryTransformation
 ##' @export
 ##'
@@ -116,7 +124,7 @@ setMethod('bm_BinaryTransformation', signature('matrix'),
             return(bm_BinaryTransformation(data, threshold, do.filtering))
           })
 
-##'
+## numeric methods ----------------------------------------------------------
 ##' @rdname bm_BinaryTransformation
 ##' @export
 ##'
@@ -128,7 +136,7 @@ setMethod('bm_BinaryTransformation', signature('numeric'),
             return(bm_BinaryTransformation(data, threshold, do.filtering))
           })
 
-##'
+## array methods ----------------------------------------------------------
 ##' @rdname bm_BinaryTransformation
 ##' @export
 ##'
@@ -155,7 +163,7 @@ setMethod('bm_BinaryTransformation', signature('array'),
 
 
 
-##'
+## SpatRaster methods ----------------------------------------------------------
 ##' @rdname bm_BinaryTransformation
 ##' @importFrom terra `add<-`
 ##' @export
@@ -169,11 +177,6 @@ setMethod('bm_BinaryTransformation', signature('SpatRaster'),
             }
             StkTmp <- rast()
             for (i in 1:nlyr(data)) {
-              ras <-  
-                .bm_BinaryTransformation_singleLayer_SpatRaster(subset(data, i),
-                                                                threshold[i],
-                                                                do.filtering)
-              
               if(!is.na(threshold[i])){
                 if (do.filtering) {
                   ras <- classify(subset(data, i),
@@ -187,7 +190,7 @@ setMethod('bm_BinaryTransformation', signature('SpatRaster'),
                                          ncol = 3, byrow = TRUE),
                                   right = FALSE)
                 }
-              } else{ ## return a empty map (NA everywhere)
+              } else { ## return a empty map (NA everywhere)
                 ras <- classify(subset(data, i),
                                 matrix(c(-Inf, Inf, NA),
                                        ncol = 3, byrow = TRUE))
@@ -198,39 +201,26 @@ setMethod('bm_BinaryTransformation', signature('SpatRaster'),
             return(StkTmp)
           })
 
-#' @title Internal function for binary transformation.
-#' @description \code{.bm_BinaryTransformation_singleLayer_SpatRaster} 
-#' performs binary transformation on a single layer 
-#' \code{\link[raster:stack]{RasterLayer}} 
-#' @name .bm_BinaryTransformation_singleLayer_SpatRaster
-#' @keywords internal
-##'
-
-.bm_BinaryTransformation_singleLayer_SpatRaster <- 
-  function(data, threshold, do.filtering = FALSE) {
-  }
-
 ### .convert_bin.matrix --------------------------------------------------------
 
 .convert_bin.matrix = function(data, threshold, do.filtering = FALSE) {
   ind.0 = t(t(data) < threshold)
   data[ind.0] <- 0
-  if (!do.filtering) { data[!ind.0] <- 1 }
-  if (ncol(data) == 1) { return(data[, 1]) } else { return(data) }
+  if (!do.filtering) { 
+    data[!ind.0] <- 1 
+  }
+  if (ncol(data) == 1) { 
+    return(data[, 1]) 
+  } else { 
+    return(data) 
+  }
 }
 
 .convert_bin.array = function(x, y) {
-  # if (!any(is.na(x))) {
-  return(x >= y)
-  # } else {
-  #   return(rep(NA, length(x)))
-  # }
+  return(ifelse(x >= y,1,0))
 }
 
 .convert_bin.array.filt = function(x, y) {
-  # if (!any(is.na(x))) {
-  return(ifelse(x >= y, x, 0))
-  # } else {
-  #   return(rep(NA, length(x)))
-  # }
+  x[x <= y] <- 0
+  return(x)
 }
