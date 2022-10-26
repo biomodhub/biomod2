@@ -593,6 +593,9 @@ setClass('EMwmean_biomod2_model',
 
 setMethod('predict2', signature(object = 'EMwmean_biomod2_model', newdata = "RasterStack"),
           function(object, newdata, ...) {
+            if(nlayers(newdata) < 1){
+              stop("Model EMwmean was not computed because no single model was kept in ensemble modeling")
+            }
             predfun <- function(newdata, on_0_1000, penalization_scores, ...){
               
               out <- calc(newdata, function(x)
@@ -614,6 +617,9 @@ setMethod('predict2', signature(object = 'EMwmean_biomod2_model', newdata = "Ras
 ##' @rdname predict2.em
 setMethod('predict2', signature(object = 'EMwmean_biomod2_model', newdata = "data.frame"),
           function(object, newdata, ...) {
+            if(ncol(newdata) < 1){
+              stop("Model EMwmean was not computed because no single model was kept in ensemble modeling")
+            }
             predfun <- function(newdata, on_0_1000, penalization_scores, ...){
               out <- as.vector(
                 as.matrix(newdata) %*% penalization_scores
