@@ -427,20 +427,44 @@ bm_PlotResponseCurves <- function(bm.out
   }
   
   ## 3. Check new.env argument ------------------------------------------------
-  if (inherits(new.env, "Raster")) {
+  available.types.resp <- c('integer', 'numeric', 'data.frame', 'matrix',
+                            'SpatialPointsDataFrame', 'SpatialPoints', 'SpatVector')
+  
+  ####  Check response type -----------------------------------------------
+  
+  .fun_testIfInherits(TRUE, "new.env", new.env, 
+                      c("SpatRaster","Raster","data.frame","matrix"))
+  
+  if(inherits(new.env, "matrix")){
+    if(any(sapply(get_formal_data(bm.out)@data.env.var, is.factor))){
+      stop("new.env cannot be given as matrix when original model have factor variables")
+    }
+    new.env <- as.data.frame(new.env)
+  }
+  
+  if (inherits(new.env, c("Raster","SpatRaster"))) {
     cat("\n   > Extracting raster infos..")
-    DataTmp <- matrix(0, ncol = nlyr(new.env), nrow = nb.pts)
-    colnames(DataTmp) <- names(new.env)
-    maxVal <- maxValue(new.env)
-    minVal <- minValue(new.env)
+    if (inherits(new.env, "SpatRaster")) {
+      DataTmp <- matrix(0, ncol = nlyr(new.env), nrow = nb.pts)
+      colnames(DataTmp) <- names(new.env)
+      maxVal <- global(new.env, max, na.rm = TRUE)$max
+      minVal <- global(new.env, min, na.rm = TRUE)$min
+    } else {
+      DataTmp <- matrix(0, ncol = nlayers(new.env), nrow = nb.pts)
+      colnames(DataTmp) <- names(new.env)
+      maxVal <- maxValue(new.env)
+      minVal <- minValue(new.env)
+    }
+    
     for (i in 1:ncol(DataTmp)) {
       DataTmp[, i] <- seq(minVal[i], maxVal[i], length.out = nb.pts)
     }
-    new.env <- DataTmp
+    new.env <- data.frame(DataTmp)
   }
-  
+
   ## 4. Check show.variables argument -----------------------------------------
-  if (length(show.variables) > ncol(new.env) || sum(!(show.variables %in% colnames(new.env)))) {
+  if (length(show.variables) > ncol(new.env) || 
+      any(! show.variables %in% colnames(new.env))) {
     stop("columns wanted in show.variables do not match the data \n")
   }
   
@@ -491,7 +515,11 @@ bm_PlotResponseCurves <- function(bm.out
       }
       id.col = which(colnames(dat_) == "id")
       id.vec = unlist(ifelse(do.bivariate, list(c("id", "comb")), "id"))
-      expl.dat_ = melt(dat_[, c(col.expl, id.col)], id.vars = "id", variable.name = "expl.name", value.name = "expl.val")
+      expl.dat_ = melt(dat_[, c(col.expl, id.col)], 
+                       id.vars = "id", 
+                       variable.name = "expl.name", 
+                       value.name = "expl.val",
+                       factorsAsStrings = FALSE)
       expl.dat_$expl.val = as.numeric(expl.dat_$expl.val) ## should not work with factorial variable other than number
       pred.dat_ = melt(dat_[, -col.expl], id.vars = id.vec, variable.name = "pred.name", value.name = "pred.val")
       out.dat_ = merge(expl.dat_, pred.dat_, by = "id")
