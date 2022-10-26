@@ -377,15 +377,13 @@ setClass('EMcv_biomod2_model',
 
 setMethod('predict2', signature(object = 'EMcv_biomod2_model', newdata = "RasterStack"),
           function(object, newdata, ...) {
+            if (nlayers(newdata) <= 1) {
+              stop(paste0("\n Model EMcv was not computed because only one single model or less was kept in ensemble modeling ("
+                          , colnames(newdata), ")"))
+            }
             predfun <- function(newdata, on_0_1000, ...){
-              if (nlayers(newdata) > 1) {
                 out <- calc(newdata, cv, na.rm = TRUE, aszero = TRUE)
                 return(out)
-              } else {
-                warning(paste0("\n Model EMcv was not computed because only one single model was kept in ensemble modeling ("
-                               , names(newdata), ")"))
-                return(NULL)
-              }
             }
             # redirect to predict2.biomod2_ensemble_model.RasterStack
             callNextMethod(object, newdata, predfun = predfun, ...)
@@ -395,15 +393,13 @@ setMethod('predict2', signature(object = 'EMcv_biomod2_model', newdata = "Raster
 ##' @rdname predict2.em
 setMethod('predict2', signature(object = 'EMcv_biomod2_model', newdata = "data.frame"),
           function(object, newdata, ...) {
+            if (ncol(newdata) <= 1) {
+              stop(paste0("\n Model EMcv was not computed because only one single model or less was kept in ensemble modeling ("
+                          , colnames(newdata), ")"))
+            }
             predfun <- function(newdata, ...){
-              if (ncol(newdata) > 1) {
                 out <- apply(newdata, 1, cv, na.rm = TRUE, aszero = TRUE)
                 return(out)
-              } else {
-                warning(paste0("\n Model EMcv was not computed because only one single model was kept in ensemble modeling ("
-                               , colnames(newdata), ")"))
-                return(NULL)
-              }
             }
             # redirect to predict2.biomod2_ensemble_model.RasterStack
             callNextMethod(object, newdata, predfun = predfun, ...)
