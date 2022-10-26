@@ -376,17 +376,14 @@ setClass('EMcv_biomod2_model',
 
 setMethod('predict2', signature(object = 'EMcv_biomod2_model', newdata = "SpatRaster"),
           function(object, newdata, ...) {
+            if (nlyr(newdata) <= 1) {
+              stop(paste0("\n Model EMcv was not computed because only one single model was kept in ensemble modeling (", names(newdata), ")"))
+            }
             predfun <- function(newdata, on_0_1000, ...){
-              if (nlyr(newdata) > 1) {
-                out <- app(newdata, function(x){
-                  sd(x, na.rm = TRUE)/mean(x, na.rm = TRUE) * 100
-                })
-                return(out)
-              } else {
-                warning(paste0("\n Model EMcv was not computed because only one single model was kept in ensemble modeling ("
-                               , names(newdata), ")"))
-                return(NULL)
-              }
+              out <- app(newdata, function(x){
+                sd(x, na.rm = TRUE)/mean(x, na.rm = TRUE) * 100
+              })
+              return(out)
             }
             # redirect to predict2.biomod2_ensemble_model.SpatRaster
             callNextMethod(object, newdata, predfun = predfun, ...)
@@ -396,16 +393,16 @@ setMethod('predict2', signature(object = 'EMcv_biomod2_model', newdata = "SpatRa
 ##' @rdname predict2.em
 setMethod('predict2', signature(object = 'EMcv_biomod2_model', newdata = "data.frame"),
           function(object, newdata, ...) {
-            predfun <- function(newdata, ...){
-              if (ncol(newdata) > 1) {
-                out <- apply(newdata, 1, cv, na.rm = TRUE, aszero = TRUE)
-                return(out)
-              } else {
-                warning(paste0("\n Model EMcv was not computed because only one single model was kept in ensemble modeling ("
-                               , colnames(newdata), ")"))
-                return(NULL)
-              }
+            
+            if (ncol(newdata) <= 1) {
+              stop(paste0("\n Model EMcv was not computed because only one single model was kept in ensemble modeling ("
+                          , colnames(newdata), ")"))
             }
+            
+            predfun <- function(newdata, ...){
+              out <- apply(newdata, 1, cv, na.rm = TRUE, aszero = TRUE)
+              return(out)
+            } 
             # redirect to predict2.biomod2_ensemble_model.SpatRaster
             callNextMethod(object, newdata, predfun = predfun, ...)
           }
@@ -449,7 +446,7 @@ setMethod('predict2', signature(object = 'EMci_biomod2_model', newdata = "SpatRa
               if (is.null(sd_prediction)) { 
                 sd_prediction <- app(newdata, sd) 
               }
-
+              
               ci_prediction <-  switch(
                 side,
                 inferior = mean_prediction -  (sd_prediction * (qt((1-object@alpha/2), df = length(object@model) + 1 ) / sqrt(length(object@model))) ),
@@ -604,6 +601,9 @@ setClass('EMwmean_biomod2_model',
 
 setMethod('predict2', signature(object = 'EMwmean_biomod2_model', newdata = "SpatRaster"),
           function(object, newdata, ...) {
+            if(ncol(newdata) < 1){
+              stop("Model EMwmean was not computed because no single model was kept in ensemble modeling")
+            }
             predfun <- function(newdata, on_0_1000, penalization_scores, ...){
               
               out <- app(newdata, function(x) {
@@ -624,6 +624,9 @@ setMethod('predict2', signature(object = 'EMwmean_biomod2_model', newdata = "Spa
 ##' @rdname predict2.em
 setMethod('predict2', signature(object = 'EMwmean_biomod2_model', newdata = "data.frame"),
           function(object, newdata, ...) {
+            if(ncol(newdata) < 1){
+              stop("Model EMwmean was not computed because no single model was kept in ensemble modeling")
+            }
             predfun <- function(newdata, on_0_1000, penalization_scores, ...){
               out <- as.vector(
                 as.matrix(newdata) %*% penalization_scores

@@ -905,6 +905,7 @@ setMethod("get_predictions", "BIOMOD.projection.out",
 ##'   \code{PA_dataset+repet}, \code{PA_dataset+algo}, \code{PA_dataset},
 ##'   \code{algo}, \code{all}
 ##' @slot em.computed a \code{vector} containing names of ensemble models
+##' @slot em.failed a \code{vector} containing names of failed ensemble models
 ##' @slot em.models a \code{list} containing ensemble models
 ##' @slot models.evaluation a \code{\link{BIOMOD.stored.array-class}} object
 ##'   containing models evaluation
@@ -1022,6 +1023,7 @@ setClass("BIOMOD.ensemble.models.out",
                         models.out = 'BIOMOD.stored.models.out',
                         em.by = 'character',
                         em.computed = 'character',
+                        em.failed = 'character',
                         em.models = 'ANY',
                         models.evaluation = 'BIOMOD.stored.array',
                         variables.importance = 'BIOMOD.stored.array',
@@ -1035,6 +1037,7 @@ setClass("BIOMOD.ensemble.models.out",
                    models.out = new('BIOMOD.stored.models.out'),
                    em.by = character(),
                    em.computed = character(),
+                   em.failed = character(),
                    em.models = NULL,
                    models.evaluation = new('BIOMOD.stored.array'),
                    variables.importance = new('BIOMOD.stored.array'),
@@ -1059,6 +1062,7 @@ setMethod('show', signature('BIOMOD.ensemble.models.out'),
             cat("\nexpl.var.names :", object@expl.var.names, fill = .Options$width)
             cat("\n")
             cat("\nmodels computed:", toString(object@em.computed), fill = .Options$width)
+            cat("\nmodels failed:", toString(object@em.failed), fill = .Options$width)
             .bm_cat()
           })
 
