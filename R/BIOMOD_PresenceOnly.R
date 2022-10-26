@@ -185,7 +185,7 @@ BIOMOD_PresenceOnly <- function(bm.mod = NULL,
                                 save.output = TRUE)
 {
   .bm_cat("Do Presence-Only Evaluation")
-  # if (!isNamespaceLoaded("ecospat")) { requireNamespace("ecospat") }
+  # if (!isNamespaceLoaded("ecospat")) { requireNamespace("ecospat", quietly = TRUE) }
   
   ## 0. Check arguments --------------------------------------------------------
   args <- .BIOMOD_PresenceOnly.check.args(bm.mod, bm.em, bg.env, perc, save.output)

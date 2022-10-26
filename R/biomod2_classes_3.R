@@ -715,7 +715,7 @@ setMethod(
     }
     
     if (inherits(x@proj.out, "BIOMOD.stored.SpatRaster")) {
-      requireNamespace("rasterVis")
+      requireNamespace("rasterVis", quietly = TRUE)
       maxi <- 
         try(
           global(

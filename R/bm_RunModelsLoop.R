@@ -132,7 +132,7 @@ bm_RunModelsLoop <- function(bm.format,
     
     if (nb.cpu > 1) {
       if (.getOS() != "windows") {
-        if (!isNamespaceLoaded("doParallel")) { requireNamespace("doParallel") }
+        if (!isNamespaceLoaded("doParallel")) { requireNamespace("doParallel", quietly = TRUE) }
         doParallel::registerDoParallel(cores = nb.cpu)
       } else {
         warning("Parallelisation with `foreach` is not available for Windows. Sorry.")

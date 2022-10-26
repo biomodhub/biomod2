@@ -838,7 +838,7 @@ setMethod('plot', signature(x = 'BIOMOD.formated.data.PA', y = "missing"),
           {
             if (nlyr(x@data.mask) > 0)
             {
-              requireNamespace("rasterVis")
+              requireNamespace("rasterVis", quietly = TRUE)
 
               ## check if there is some undefined areas to prevent from strange plotting issues
               if (min(global(x@data.mask, min)) == -1) { # there is undefined area
