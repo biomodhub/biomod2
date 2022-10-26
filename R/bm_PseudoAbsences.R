@@ -292,7 +292,7 @@ setMethod('bm_PseudoAbsences_user.defined', signature(expl.var = "SpatialPointsD
 setMethod('bm_PseudoAbsences_user.defined', signature(expl.var = "RasterStack"), 
           function(resp.var, expl.var, user.table) {
             cat("\n   > User defined pseudo absences selection")
-            expl.var <- as.data.frame(extract(expl.var, coordinates(resp.var)))
+            expl.var <- as.data.frame(extract(expl.var, resp.var, ID = FALSE))
             return(list(xy = coordinates(resp.var),
                         sp = as.numeric(unlist(values(resp.var), use.names = FALSE)), 
                         env = as.data.frame(expl.var),
@@ -399,7 +399,7 @@ setMethod('bm_PseudoAbsences_random', signature(expl.var = "SpatRaster"),
                 pa.tab[sample(x = cand.cells, size = nb.absences, replace = FALSE), j] <- TRUE
               }
               
-              expl.var <- extract(expl.var, resp.var)
+              expl.var <- extract(expl.var, resp.var, ID = FALSE)
               return(list(xy = crds(resp.var),
                           sp = as.numeric(unlist(values(resp.var), use.names = FALSE)), 
                           env = as.data.frame(expl.var),
@@ -619,7 +619,7 @@ setMethod('bm_PseudoAbsences_sre', signature(expl.var = "SpatRaster"),
             resp.var <- as.numeric(unlist(c(na.omit(values(resp.var)[, 1]),
                                             rep(NA, length(selected.cells))),
                                           use.names = FALSE))
-            expl.var <- extract(expl.var, xy)
+            expl.var <- extract(expl.var, xy, ID = FALSE)
             pa.tab <- rbind(matrix(TRUE, nrow = (nrow(xy) - length(selected.cells)),
                                    ncol = ncol(pa.tab)), pa.tab)
             
@@ -696,7 +696,7 @@ setMethod('bm_PseudoAbsences_disk', signature(expl.var = "SpatRaster"),
             # 1. Check if NA are present in resp.var observations or not to determine which dataset to use
             nb.cells <- .get_nb_available_pa_cells(resp.var)
             if (nb.cells > 0) { # PA will be taken into response variable
-              expl.var.tmp <- extract(expl.var, resp.var[,-1], bind = TRUE)
+              expl.var.tmp <- extract(expl.var, resp.var[,-1], bind = TRUE, ID = FALSE)
               return(
                 bm_PseudoAbsences_disk(resp.var, expl.var.tmp, 
                                        dist.min, dist.max,

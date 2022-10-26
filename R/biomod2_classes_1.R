@@ -288,10 +288,9 @@ setMethod('BIOMOD.formated.data', signature(sp = 'numeric', env = 'SpatRaster'),
                    , eval.sp = NULL, eval.env = NULL, eval.xy = NULL
                    , na.rm = TRUE) {
             categorical_var <- names(env)[is.factor(env)]
-            
             ## Keep same env variable for eval than calib (+ check for factor)
             if (!is.null(eval.sp) && is.null(eval.env)) {
-              eval.env <- as.data.frame(extract(env, eval.xy))
+              eval.env <- as.data.frame(extract(env, eval.xy, ID = FALSE))
               if (length(categorical_var) > 0) {
                 for (cat_var in categorical_var) {
                   eval.env[, cat_var] <- as.factor(eval.env[, cat_var])
@@ -299,7 +298,7 @@ setMethod('BIOMOD.formated.data', signature(sp = 'numeric', env = 'SpatRaster'),
               }
             }
             
-            if (is.null(xy)) { xy <- as.data.frame(coordinates(env)) }
+            if (is.null(xy)) {xy <- as.data.frame(crds(env)) }
             ## Prepare mask of studied area
             data.mask <- terra::rasterize(as.matrix(xy), env[[1]], values = sp)
             names(data.mask) <- sp.name
@@ -677,7 +676,6 @@ setMethod('BIOMOD.formated.data.PA', signature(sp = 'numeric', env = 'SpatRaster
                                       , PA.sre.quant = 0.025, PA.user.table = NULL
                                       , na.rm = TRUE)
 {
-  
   categorical_var <- NULL
   if (inherits(env, 'SpatRaster')) {
     categorical_var <- names(env)[is.factor(env)] 
@@ -686,7 +684,7 @@ setMethod('BIOMOD.formated.data.PA', signature(sp = 'numeric', env = 'SpatRaster
   ## Keep same env variable for eval than calib (+ check for factor)
   if (!is.null(eval.sp) && is.null(eval.env)) {
     if (inherits(env, 'SpatRaster')) {
-      eval.env <- as.data.frame(extract(env, eval.xy))
+      eval.env <- as.data.frame(extract(env, eval.xy, ID = FALSE))
       # probably obsolete line as terra properly extract factors ?
       .categorical2numeric(eval.env, categorical_var)
     } else { 
