@@ -835,8 +835,7 @@ setMethod("get_predictions", "BIOMOD.projection.out",
               grep_data.set = grep(paste(data.set, collapse = "|"), models_selected)
               models_selected = models_selected[Reduce(intersect, list(grep_model, grep_run.eval, grep_data.set))]
             }
-            
-            if (length(models_selected))
+            if (length(models_selected) > 0)
             {
               out <- load_stored_object(obj@proj.out)
               names(out) <- get_projected_models(obj)
@@ -845,9 +844,19 @@ setMethod("get_predictions", "BIOMOD.projection.out",
               if (inherits(out, 'SpatRaster')) {
                 out <- subset(out, models_selected)
               } else if (length(dim(out)) == 4) { ## 4D arrays
-                out <- out[, .extract_modelNamesInfo(model.names = models_selected, info = 'models'),
-                           .extract_modelNamesInfo(model.names = models_selected, info = 'run.eval'),
-                           .extract_modelNamesInfo(model.names = models_selected, info = 'data.set'), drop = FALSE]
+                list_models <- .extract_modelNamesInfo(model.names = models_selected,
+                                                       info = 'models')
+                list_run.eval <- .extract_modelNamesInfo(model.names = models_selected,
+                                                         info = 'run.eval')
+                list_data.set <- .extract_modelNamesInfo(model.names = models_selected, 
+                                                         info = 'data.set')
+                if( !as.data.frame &&
+                    length(list_models)*
+                    length(list_run.eval)*
+                    length(list_data.set) != length(models_selected)){
+                  stop("!! Array do not allow missing models in the subset. Please ask for prediction with as.data.frame = TRUE instead")
+                }
+                out <- out[ , list_models, list_run.eval, list_data.set, drop = FALSE]
               } else { ## matrix (e.g. from ensemble models projections)
                 out <- out[, models_selected, drop = FALSE]
               }
@@ -868,6 +877,7 @@ setMethod("get_predictions", "BIOMOD.projection.out",
                                                algo.id, sep = "_")
                              return(model.id)
                            }))
+                  out <- out[ , models_selected, drop = FALSE]
                 }
               }
             } else { out <- NULL }
