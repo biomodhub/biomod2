@@ -181,8 +181,7 @@ bm_PlotResponseCurves <- function(bm.out
   args <- .bm_PlotResponseCurves.check.args(bm.out, models.chosen, new.env, show.variables, do.bivariate, ...)
   for (argi in names(args)) { assign(x = argi, value = args[[argi]]) }
   rm(args)
-  
-  
+
   ## 1. Create output object ----------------------------------------------------------------------
   ref_table <- new.env[1, , drop = FALSE]
   rownames(ref_table) <- NULL
@@ -218,20 +217,20 @@ bm_PlotResponseCurves <- function(bm.out
         } else {
           pts.tmp <- seq(min(new.env[, vari], na.rm = TRUE), max(new.env[, vari], na.rm = TRUE), length.out = nb.pts)
         }
-        
-        ## Creating tmp data ------------------------------------------------------------
+        ## Creating tmp data --------------------------------------------------
         tmp = ref_table[, -which(colnames(ref_table) == vari), drop = FALSE]
         new.env.r.tmp <- eval(parse(text = paste0("cbind(", vari, "= pts.tmp, tmp)")))
         new.env.r.tmp <- new.env.r.tmp[, colnames(ref_table), drop = FALSE]
-        if (length(factor_id)) {
+        if (length(factor_id) > 0) {
           for (f in factor_id) {
-            new.env.r.tmp[, f] <- factor(as.character(new.env.r.tmp[, f]), levels = levels(new.env[, f]))
+            new.env.r.tmp[, f] <- factor(as.character(new.env.r.tmp[, f]),
+                                         levels = levels(new.env[, f]))
           }
         }
         
         ## Load models ------------------------------------------------------------------
         BIOMOD_LoadModels(bm.out = bm.out, full.name = models)
-        
+
         ## Getting predictions for each model -------------------------------------------
         tab.out = foreach(model = models, .combine = "cbind") %do% 
           {
@@ -314,14 +313,13 @@ bm_PlotResponseCurves <- function(bm.out
       }
     if (do.progress) { close(PROGRESS) }
   }
-  
   # transform list.out into ggplot friendly shape
   ggdat <- .as_ggdat(list.out, do.bivariate)
   
-  ## 2. PLOT graphic ------------------------------------------------------------------------------
+  ## 2. PLOT graphic --------------------------------------------------------------------
   if (!do.bivariate) {
     new.env_m <- melt(new.env, variable.name = "expl.name", value.name = "expl.val")
-    
+  
     gg <- ggplot(ggdat, aes_string(x = "expl.val", y = "pred.val", color = "pred.name")) +
       geom_line() +
       geom_rug(data = new.env_m, sides = 'b', inherit.aes = FALSE, aes_string(x = "expl.val")) +

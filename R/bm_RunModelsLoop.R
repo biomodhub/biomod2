@@ -172,18 +172,17 @@ bm_RunModelsLoop <- function(bm.format,
 ##' @export
 ##' 
 
-bm_RunModel <- function(model, Data, modeling.id = '', bm.options, calib.lines, weights, nam,
-                        dir.name = '.', xy = NULL, eval.data = NULL, eval.xy = NULL, 
-                        metric.eval = c('ROC','TSS','KAPPA'), var.import = 0,
-                        save.output = FALSE, scale.models = TRUE, nb.cpu = 1, seed.val = NULL,
-                        do.progress = TRUE)
+bm_RunModel <- function(model, Data, modeling.id = '', bm.options, calib.lines,
+                        weights, nam, dir.name = '.', xy = NULL, eval.data = NULL,
+                        eval.xy = NULL,  metric.eval = c('ROC','TSS','KAPPA'), 
+                        var.import = 0, save.output = FALSE, scale.models = TRUE,
+                        nb.cpu = 1, seed.val = NULL, do.progress = TRUE)
 {
   ## 0. Check arguments ---------------------------------------------------------------------------
   args <- .bm_RunModel.check.args(model, Data, bm.options, calib.lines, weights, eval.data
                                   , metric.eval, scale.models, seed.val, do.progress)
   for (argi in names(args)) { assign(x = argi, value = args[[argi]]) }
   rm(args)
-  
   ## get model name and names of categorical variables
   dir_name = dir.name
   model_name <- paste0(nam, '_', model)
@@ -202,7 +201,7 @@ bm_RunModel <- function(model, Data, modeling.id = '', bm.options, calib.lines, 
   set.seed(seed.val)
   
   if (model == "CTA") {
-    ## 2.1 CTA model ----------------------------------------------------------
+    ### 2.1 CTA model ----------------------------------------------------------
     cat('\n\t> CTA modeling...')
     
     # converting cost argument
@@ -246,7 +245,7 @@ bm_RunModel <- function(model, Data, modeling.id = '', bm.options, calib.lines, 
                       expl_var_range = get_var_range(Data[calib.lines, expl_var_names, drop = FALSE]))
     }
   } else if (model == "GAM") {
-    ## 2.2 GAM model ----------------------------------------------------------
+    ### 2.2 GAM model ----------------------------------------------------------
     
     # package loading
     .load_gam_namespace(bm.options@GAM$algo)
@@ -314,8 +313,7 @@ bm_RunModel <- function(model, Data, modeling.id = '', bm.options, calib.lines, 
                       expl_var_range = get_var_range(Data[calib.lines, expl_var_names, drop = FALSE]))
     }
   } else if (model == "GBM") {
-    ## 2.3 GBM model ----------------------------------------------------------
-    
+    ### 2.3 GBM model ----------------------------------------------------------
     cat('\n\t> GBM modeling...')
     model.sp <- try(gbm(formula = bm_MakeFormula(resp.name = colnames(Data)[1]
                                                  , expl.var = head(Data)[, expl_var_names, drop = FALSE]
@@ -353,7 +351,7 @@ bm_RunModel <- function(model, Data, modeling.id = '', bm.options, calib.lines, 
                       expl_var_range = get_var_range(Data[calib.lines, expl_var_names, drop = FALSE]))
     }
   } else if (model == "GLM"){
-    ## 2.4 GLM model ----------------------------------------------------------
+    ### 2.4 GLM model ----------------------------------------------------------
     
     cat('\n\t> GLM modeling...')
     if (is.null(bm.options@GLM$myFormula)) {
@@ -404,7 +402,7 @@ bm_RunModel <- function(model, Data, modeling.id = '', bm.options, calib.lines, 
     
     if (!inherits(model.sp, "try-error")) {
       cat("\n\tselected formula : ")
-      print(model.sp$formula, useSource = FALSE)
+      print(model.sp$formula, useSource = FALSE, showEnv = FALSE)
       
       model.bm <- new("GLM_biomod2_model",
                       model = model.sp,
@@ -418,7 +416,7 @@ bm_RunModel <- function(model, Data, modeling.id = '', bm.options, calib.lines, 
                       expl_var_range = get_var_range(Data[calib.lines, expl_var_names, drop = FALSE]))
     }
   } else if (model == "MARS"){
-    ## 2.5 MARS model ---------------------------------------------------------
+    ### 2.5 MARS model ---------------------------------------------------------
     
     cat('\n\t> MARS modeling...')
     if (is.null(bm.options@MARS$myFormula)) {
@@ -463,7 +461,7 @@ bm_RunModel <- function(model, Data, modeling.id = '', bm.options, calib.lines, 
                       expl_var_range = get_var_range(Data[calib.lines, expl_var_names, drop = FALSE]))
     }
   } else if (model == "FDA") {
-    ## 2.6 FDA model ----------------------------------------------------------
+    ### 2.6 FDA model ----------------------------------------------------------
     
     cat('\n\t> FDA modeling...')
     model.sp <- try(do.call(fda, c(list(formula = bm_MakeFormula(resp.name = colnames(Data)[1]
@@ -488,7 +486,7 @@ bm_RunModel <- function(model, Data, modeling.id = '', bm.options, calib.lines, 
                       expl_var_range = get_var_range(Data[calib.lines, expl_var_names, drop = FALSE]))
     }
   } else if (model == "ANN") {
-    ## 2.7 ANN model ----------------------------------------------------------
+    ### 2.7 ANN model ----------------------------------------------------------
     
     cat('\n\t> ANN modeling...')
     size = bm.options@ANN$size
@@ -539,7 +537,7 @@ bm_RunModel <- function(model, Data, modeling.id = '', bm.options, calib.lines, 
                       expl_var_range = get_var_range(Data[calib.lines, expl_var_names, drop = FALSE]))
     }
   } else if (model == "RF") {
-    ## 2.8 RF model -----------------------------------------------------------
+    ### 2.8 RF model -----------------------------------------------------------
     
     cat('\n\t> RF modeling...')
     if (bm.options@RF$do.classif) {
@@ -585,7 +583,7 @@ bm_RunModel <- function(model, Data, modeling.id = '', bm.options, calib.lines, 
                       expl_var_range = get_var_range(Data[calib.lines, expl_var_names, drop = FALSE]))
     }
   } else if (model == "SRE") {
-    ## 2.9 SRE model ----------------------------------------------------------
+    ### 2.9 SRE model ----------------------------------------------------------
     
     cat('\n\t> SRE modeling...')
     model.sp <- try(bm_SRE(resp.var = Data[calib.lines, 1],
@@ -607,7 +605,7 @@ bm_RunModel <- function(model, Data, modeling.id = '', bm.options, calib.lines, 
                       expl_var_range = get_var_range(Data[calib.lines, expl_var_names, drop = FALSE]))
     }
   } else if (model == "MAXENT.Phillips") {
-    ## 2.10 MAXENT.Phillips model ---------------------------------------------
+    ### 2.10 MAXENT.Phillips model ---------------------------------------------
     cat('\n\t> MAXENT.Phillips modeling...')
     MWD <- 
       .maxent.prepare.workdir(
@@ -700,7 +698,7 @@ bm_RunModel <- function(model, Data, modeling.id = '', bm.options, calib.lines, 
       }
     }
   } else if (model == "MAXENT.Phillips.2") {
-    ## 2.11 MAXENT.Phillips.2 model -------------------------------------------
+    ### 2.11 MAXENT.Phillips.2 model -------------------------------------------
     
     cat('\n\t> MAXENT.Phillips.2 modeling...')
     model.sp <- try(maxnet(p = Data %>% filter(calib.lines) %>% pull(resp_name), 
@@ -742,13 +740,13 @@ bm_RunModel <- function(model, Data, modeling.id = '', bm.options, calib.lines, 
     g.pred <- try(predict(model.bm, Data[, expl_var_names, drop = FALSE], on_0_1000 = TRUE
                           , seedval = seed.val, temp_workdir = temp_workdir))
   }
-
+  
   ## check predictions existence and stop execution if not ok -----------------
   test_pred_ok <- TRUE
   if (inherits(g.pred, "try-error")) { # model calibration or prediction failed
     test_pred_ok <- FALSE
     cat("\n*** inherits(g.pred,'try-error')")
-  } else if (sum(!is.na(g.pred)) <= 1) { # only NA predicted
+  } else if (all(is.na(g.pred))) { # only NA predicted
     test_pred_ok <- FALSE
     cat("\n*** only NA predicted")
   } else if (length(unique(na.omit(g.pred))) <= 1) { # single value predicted
@@ -768,8 +766,13 @@ bm_RunModel <- function(model, Data, modeling.id = '', bm.options, calib.lines, 
   
   ## make prediction on evaluation data ---------------------------------------
   if (!is.null(eval.data)) {
-    g.pred.eval <- try(predict(model.bm, eval.data[, expl_var_names, drop = FALSE], on_0_1000 = TRUE
-                               , seedval = seed.val, temp_workdir = temp_workdir))
+    g.pred.eval <- try(
+      predict(model.bm, 
+              eval.data[, expl_var_names, drop = FALSE], 
+              on_0_1000 = TRUE, 
+              seedval = seed.val, 
+              temp_workdir = temp_workdir)
+    )
   }
   
   ## SAVE predictions ---------------------------------------------------------
@@ -859,9 +862,10 @@ bm_RunModel <- function(model, Data, modeling.id = '', bm.options, calib.lines, 
 
 ###################################################################################################
 
-.bm_RunModel.check.args <- function(model, Data, bm.options, calib.lines, weights, eval.data
-                                    , metric.eval, scale.models, criteria = NULL, Prev = NULL
-                                    , seed.val = NULL, do.progress = TRUE)
+.bm_RunModel.check.args <- function(model, Data, bm.options, calib.lines, weights,
+                                    eval.data, metric.eval, scale.models,
+                                    criteria = NULL, Prev = NULL , seed.val = NULL,
+                                    do.progress = TRUE)
 {
   ## 0. Do some cleaning over Data argument -----------------------------------
   resp_name <- colnames(Data)[1] ## species name

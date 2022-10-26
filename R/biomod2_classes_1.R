@@ -182,8 +182,9 @@ setMethod('BIOMOD.formated.data', signature(sp = 'numeric', env = 'data.frame'),
                 sp.name = sp.name
               )
               
-              if (nlyr(BFDeval@data.mask) == 1) {
-                if (nlyr(data.mask) == 1) {
+              if (nlyr(BFDeval@data.mask) == 1 ) {
+                if (nlyr(data.mask) == 1 && 
+                    suppressWarnings(any(!is.na(values(data.mask))))) {
                   # data.mask for eval is only available when eval.expl.var was
                   # submitted as raster or SpatRaster
                   data.mask.tmp <- try(
@@ -327,7 +328,7 @@ setMethod('plot', signature(x = 'BIOMOD.formated.data', y = "missing"),
             
             if (nlyr(x@data.mask) > 0)
             {
-              requireNamespace("rasterVis")
+              requireNamespace("rasterVis", quietly = TRUE)
               ## check if there is some undefined areas to prevent from strange plotting issues
               if (minmax(x@data.mask)["min", 1] == -1) { 
                 # there is undefined area
