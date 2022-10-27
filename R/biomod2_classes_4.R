@@ -344,7 +344,6 @@ setMethod('predict2', signature(object = 'biomod2_model', newdata = "RasterStack
             
             if (is.null(overwrite)) { overwrite <- TRUE }
             if (is.null(on_0_1000)) { on_0_1000 <- FALSE }
-            
             set.seed(seedval)
             # eval(parse(text = paste0("proj <- ", predcommand)))
             if (use_calc) {
@@ -501,9 +500,9 @@ setMethod('predict2', signature(object = 'CTA_biomod2_model', newdata = "RasterS
                 proj.out <- as.numeric(predict(get_formal_model(object), xx, type = 'prob')[, 2])                
                 proj.out[apply(xx, 1, function(z) any(is.na(z)))] <- NA
                 return(proj.out)
-                # redirect to predict2.biomod2_model.RasterStack
-                callNextMethod(object, newdata, predfun = predfun_factors, use_calc = use_calc, ...)
               }
+              # redirect to predict2.biomod2_model.RasterStack
+              callNextMethod(object, newdata, predfun = predfun_factors, use_calc = use_calc, ...)
             } else {
               predfun_classic <- function(object, newdata){
                 predict(newdata, model = get_formal_model(object), type = 'prob', index = 2) 
