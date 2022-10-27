@@ -244,11 +244,13 @@ BIOMOD_EnsembleForecasting <- function(bm.em,
   .bm_cat("Do Ensemble Models Projection")
   
   ## 0. Check arguments ---------------------------------------------------------------------------
-  args <- .BIOMOD_EnsembleForecasting.check.args(bm.em, bm.proj, proj.name, new.env,
-                                                 models.chosen, metric.binary, metric.filter, ...)
+  args <- 
+    .BIOMOD_EnsembleForecasting.check.args(
+      bm.em, bm.proj, proj.name, new.env, new.env.xy,
+      models.chosen, metric.binary, metric.filter, ...)
+  
   for (argi in names(args)) { assign(x = argi, value = args[[argi]]) }
   rm(args)
-  
   
   ## 1. Create output object ----------------------------------------------------------------------
   proj_out <- new('BIOMOD.projection.out',
@@ -481,124 +483,152 @@ BIOMOD_EnsembleForecasting <- function(bm.em,
 
 ## Argument Check -------------------------------------------------------------
 
-.BIOMOD_EnsembleForecasting.check.args <- function(bm.em, bm.proj, proj.name, new.env,
-                                                   models.chosen, metric.binary, metric.filter, ...)
-{
-  args <- list(...)
-  
-  ## 1. Check bm.em -----------------------------------------------------------
-  .fun_testIfInherits(TRUE, "bm.em", bm.em, "BIOMOD.ensemble.models.out")
-  
-  ## 2. Check needed data and predictions -------------------------------------
-  if ((is.null(bm.proj) && is.null(new.env)) ||
-      (!is.null(bm.proj) & !is.null(new.env))) {
-    stop("You have to refer at one of 'bm.proj' or 'new.env' argument")
-  }
-  
-  if (!is.null(bm.proj)) {
-    .fun_testIfInherits(TRUE, "bm.proj", bm.proj, "BIOMOD.projection.out")
+.BIOMOD_EnsembleForecasting.check.args <- 
+  function(bm.em, bm.proj, proj.name, new.env, new.env.xy, 
+           models.chosen, metric.binary, metric.filter, ...)
+  {
+    args <- list(...)
     
-    ## check all needed predictions are available
-    needed_pred <- get_needed_models(bm.em, models.chosen = models.chosen)  
-    missing_pred <- needed_pred[!(needed_pred %in% bm.proj@models.projected)]
-    if (length(missing_pred)) {
-      stop("Some models predictions missing :", toString(missing_pred))
+    ## 1. Check bm.em -----------------------------------------------------------
+    .fun_testIfInherits(TRUE, "bm.em", bm.em, "BIOMOD.ensemble.models.out")
+    
+    ## 2. Check needed data and predictions -------------------------------------
+    if ((is.null(bm.proj) && is.null(new.env)) ||
+        (!is.null(bm.proj) & !is.null(new.env))) {
+      stop("You have to refer at one of 'bm.proj' or 'new.env' argument")
     }
-  }
-  
-  ## 3. Check models.chosen ---------------------------------------------------
-  if (models.chosen[1] == 'all') {
-    models.chosen <- get_built_models(bm.em)
-  } else {
-    models.chosen <- intersect(models.chosen, get_built_models(bm.em))
-  }
-  if (length(models.chosen) < 1) {
-    stop('No models selected')
-  }
-  
-  ## 4. Check proj.name -------------------------------------------------------
-  if (!length(proj.name) && !length(bm.proj)) {
-    stop("You have to give a valid 'proj.name' if you don't work with bm.proj")
-  } else if (!length(proj.name)) {
-    proj.name <- bm.proj@proj.name
-  }
-  
-  ## 5. Check metric.binary & metric.filter -----------------------------------
-  if (!is.null(metric.binary) | !is.null(metric.filter)) {
-    models.evaluation <- get_evaluations(bm.em)
-    if (is.null(models.evaluation)) {
-      warning("Binary and/or Filtered transformations of projection not ran because of models evaluation information missing")
-    } else {
-      available.evaluation <- unique(dimnames(models.evaluation[[1]])[[1]])
-      if (!is.null(metric.binary) && metric.binary[1] == 'all') {
-        metric.binary <- available.evaluation
-      } else if (!is.null(metric.binary) && sum(!(metric.binary %in% available.evaluation)) > 0) {
-        warning(paste0(toString(metric.binary[!(metric.binary %in% available.evaluation)]),
-                       " Binary Transformation were switched off because no corresponding evaluation method found"))
-        metric.binary <- metric.binary[metric.binary %in% available.evaluation]
+    
+    if (!is.null(bm.proj)) {
+      .fun_testIfInherits(TRUE, "bm.proj", bm.proj, "BIOMOD.projection.out")
+      
+      ## check all needed predictions are available
+      needed_pred <- get_needed_models(bm.em, models.chosen = models.chosen)  
+      missing_pred <- needed_pred[!(needed_pred %in% bm.proj@models.projected)]
+      if (length(missing_pred)) {
+        stop("Some models predictions missing :", toString(missing_pred))
+      }
+    }
+    
+    ## 3. Check new.env ---------------------------------------------------------
+    if (!is.null(new.env)) {
+      .fun_testIfInherits(TRUE, "new.env", new.env, c('matrix', 'data.frame', 'SpatRaster','Raster'))
+      
+      if(inherits(new.env, 'matrix')){
+        if (any(sapply(get_formal_data(bm.em,"expl.var"),
+                       is.factor))) {
+          stop("new.env cannot be given as matrix when model involves categorical variables")
+        }
+        new.env <- data.frame(new.env)
+      }
+      if (inherits(new.env, 'Raster')) {
+        # conversion into SpatRaster
+        if(any(is.factor(myExpl.cat.raster))){
+          new.env <- categorical_stack_to_terra(stack(new.env))
+        } else {
+          new.env <- rast(new.env)
+        }
       }
       
-      if (!is.null(metric.filter) && metric.filter[1] == 'all') {
-        metric.filter <- available.evaluation
-      } else if (!is.null(metric.filter) && sum(!(metric.filter %in% available.evaluation)) > 0) {
-        warning(paste0(toString(metric.filter[!(metric.filter %in% available.evaluation)]),
-                       " Filtered Transformation were switched off because no corresponding evaluation method found"))
-        metric.filter <- metric.filter[metric.filter %in% available.evaluation]
+      if (inherits(new.env, 'SpatRaster')) {
+        .fun_testIfIn(TRUE, "names(new.env)", names(new.env), bm.em@expl.var.names)
+      } else {
+        .fun_testIfIn(TRUE, "colnames(new.env)", colnames(new.env), bm.em@expl.var.names)
       }
     }
-  }
-  
-  ## 6. Check output.format ---------------------------------------------------
-  output.format <- args$output.format
-  if (is.null(output.format)) {
-    if (length(bm.proj) > 0) {
-      output.format = ifelse(bm.proj@type != 'PackedSpatRaster', ".RData", ".grd")
+    
+    ## 4. Check models.chosen ---------------------------------------------------
+    if (models.chosen[1] == 'all') {
+      models.chosen <- get_built_models(bm.em)
     } else {
-      output.format = ifelse(!inherits(new.env, 'SpatRaster'), ".RData", ".grd")
+      models.chosen <- intersect(models.chosen, get_built_models(bm.em))
     }
-  }
-  
-  ## 7. Check do.stack --------------------------------------------------------
-  do.stack <- args$do.stack
-  if (is.null(do.stack)) {
-    do.stack <- TRUE # if no info at all set it TRUE
-    # if not explicitly defined apply same rules than bm.proj ones
-    if (!is.null(bm.proj) &&
-        all(grepl("individual_projections", bm.proj@proj.out@link))) {
-      do.stack <- FALSE
+    if (length(models.chosen) < 1) {
+      stop('No models selected')
     }
-  }
-  
-  ## 8. Check keep.in.memory --------------------------------------------------
-  keep.in.memory <- args$keep.in.memory
-  if (is.null(keep.in.memory)) {
-    keep.in.memory <- TRUE # if no info at all set it TRUE
-    # if not explicitly defined apply same rules than bm.proj ones
-    if (!is.null(bm.proj)) {
-      keep.in.memory <- bm.proj@proj.out@inMemory
+    
+    ## 5. Check proj.name -------------------------------------------------------
+    if (!length(proj.name) && !length(bm.proj)) {
+      stop("You have to give a valid 'proj.name' if you don't work with bm.proj")
+    } else if (!length(proj.name)) {
+      proj.name <- bm.proj@proj.name
     }
-  }
-  
-  ## 9. Check new.env.xy ------------------------------------------------------
-  new.env.xy <- args$new.env.xy
-  if (is.null(new.env.xy)) {
-    if (!is.null(bm.proj)) {
-      new.env.xy <- bm.proj@coord
-    } else {
-      new.env.xy <- matrix()
+    
+    ## 6. Check metric.binary & metric.filter -----------------------------------
+    if (!is.null(metric.binary) | !is.null(metric.filter)) {
+      models.evaluation <- get_evaluations(bm.em)
+      if (is.null(models.evaluation)) {
+        warning("Binary and/or Filtered transformations of projection not ran because of models evaluation information missing")
+      } else {
+        available.evaluation <- unique(dimnames(models.evaluation[[1]])[[1]])
+        if (!is.null(metric.binary) && metric.binary[1] == 'all') {
+          metric.binary <- available.evaluation
+        } else if (!is.null(metric.binary) && sum(!(metric.binary %in% available.evaluation)) > 0) {
+          warning(paste0(toString(metric.binary[!(metric.binary %in% available.evaluation)]),
+                         " Binary Transformation were switched off because no corresponding evaluation method found"))
+          metric.binary <- metric.binary[metric.binary %in% available.evaluation]
+        }
+        
+        if (!is.null(metric.filter) && metric.filter[1] == 'all') {
+          metric.filter <- available.evaluation
+        } else if (!is.null(metric.filter) && sum(!(metric.filter %in% available.evaluation)) > 0) {
+          warning(paste0(toString(metric.filter[!(metric.filter %in% available.evaluation)]),
+                         " Filtered Transformation were switched off because no corresponding evaluation method found"))
+          metric.filter <- metric.filter[metric.filter %in% available.evaluation]
+        }
+      }
     }
+    
+    ## 7. Check output.format ---------------------------------------------------
+    output.format <- args$output.format
+    if (is.null(output.format)) {
+      if (length(bm.proj) > 0) {
+        output.format = ifelse(bm.proj@type != 'PackedSpatRaster', ".RData", ".grd")
+      } else {
+        output.format = ifelse(!inherits(new.env, 'SpatRaster'), ".RData", ".grd")
+      }
+    }
+    
+    ## 8. Check do.stack --------------------------------------------------------
+    do.stack <- args$do.stack
+    if (is.null(do.stack)) {
+      do.stack <- TRUE # if no info at all set it TRUE
+      # if not explicitly defined apply same rules than bm.proj ones
+      if (!is.null(bm.proj) &&
+          all(grepl("individual_projections", bm.proj@proj.out@link))) {
+        do.stack <- FALSE
+      }
+    }
+    
+    ## 9. Check keep.in.memory --------------------------------------------------
+    keep.in.memory <- args$keep.in.memory
+    if (is.null(keep.in.memory)) {
+      keep.in.memory <- TRUE # if no info at all set it TRUE
+      # if not explicitly defined apply same rules than bm.proj ones
+      if (!is.null(bm.proj)) {
+        keep.in.memory <- bm.proj@proj.out@inMemory
+      }
+    }
+    ## 10. Check new.env.xy ------------------------------------------------------
+
+    if (is.null(new.env.xy)) {
+      if (!is.null(bm.proj)) {
+        new.env.xy <- bm.proj@coord
+      } else {
+        new.env.xy <- matrix()
+      }
+    }
+    
+    return(list(bm.em = bm.em,
+                bm.proj = bm.proj,
+                new.env = new.env,
+                models.chosen = models.chosen,
+                proj.name = proj.name,
+                metric.binary = metric.binary,
+                metric.filter = metric.filter,
+                output.format = output.format,
+                compress = ifelse(is.null(args$compress), FALSE, args$compress),
+                on_0_1000 = ifelse(is.null(args$on_0_1000), TRUE, args$on_0_1000),
+                do.stack = do.stack,
+                keep.in.memory = keep.in.memory,
+                new.env.xy = new.env.xy))
   }
-  
-  return(list(bm.em = bm.em,
-              bm.proj = bm.proj,
-              models.chosen = models.chosen,
-              proj.name = proj.name,
-              metric.binary = metric.binary,
-              metric.filter = metric.filter,
-              output.format = output.format,
-              compress = ifelse(is.null(args$compress), FALSE, args$compress),
-              on_0_1000 = ifelse(is.null(args$on_0_1000), TRUE, args$on_0_1000),
-              do.stack = do.stack,
-              keep.in.memory = keep.in.memory,
-              new.env.xy = new.env.xy))
-}
