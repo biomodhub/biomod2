@@ -483,9 +483,19 @@ BIOMOD_Projection <- function(bm.mod,
   ## 3. Check new.env ---------------------------------------------------------
   .fun_testIfInherits(TRUE, "new.env", new.env, c('matrix', 'data.frame', 'SpatRaster','Raster'))
   
+  if(inherits(new.env, 'matrix')){
+    if (any(sapply(get_formal_data(bm.mod, "expl.var"), is.factor))) {
+      stop("new.env cannot be given as matrix when model involves categorical variables")
+    }
+    new.env <- data.frame(new.env)
+  }
   if (inherits(new.env, 'Raster')) {
     # conversion into SpatRaster
-    new.env <- rast(new.env)
+    if(any(is.factor(myExpl.cat.raster))){
+      new.env <- categorical_stack_to_terra(stack(new.env))
+    } else {
+      new.env <- rast(new.env)
+    }
   }
   
   if (inherits(new.env, 'SpatRaster')) {
@@ -597,6 +607,7 @@ BIOMOD_Projection <- function(bm.mod,
   
   
   return(list(proj.name = proj.name,
+              new.env = new.env,
               new.env.xy = new.env.xy,
               models.chosen = models.chosen,
               metric.binary = metric.binary,
