@@ -746,7 +746,7 @@ setMethod(
       if (!inherits(try_plot, "try-error")) { ## produce plot
         print(try_plot)
       } else { ## try classical plot
-        cat("\nrasterVis' levelplot() function failed. Try to call standard raster plotting function.",
+        cat("\nrasterVis' levelplot() function failed. Try to call standard terra plotting function.",
             "It can lead to unoptimal representations.",
             "You should try to do it by yourself extracting predicions (see : get_predictions() function).",
             fill = options()$width)

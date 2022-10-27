@@ -436,7 +436,7 @@ bm_PlotResponseCurves <- function(bm.out
                       c("SpatRaster","Raster","data.frame","matrix"))
   
   if(inherits(new.env, "matrix")){
-    if(any(sapply(get_formal_data(bm.out)@data.env.var, is.factor))){
+    if(any(sapply(get_formal_data(bm.out, "expl.var"), is.factor))){
       stop("new.env cannot be given as matrix when original model have factor variables")
     }
     new.env <- as.data.frame(new.env)
