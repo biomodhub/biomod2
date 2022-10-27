@@ -322,11 +322,9 @@ bm_PlotResponseCurves <- function(bm.out
   
   ## 2. PLOT graphic ------------------------------------------------------------------------------
   if (!do.bivariate) {
-    new.env_m <- melt(new.env[, show.variables], variable.name = "expl.name", value.name = "expl.val")
-    
     gg <- ggplot(ggdat, aes_string(x = "expl.val", y = "pred.val", color = "pred.name")) +
       geom_line() +
-      geom_rug(data = new.env_m, sides = 'b', inherit.aes = FALSE, aes_string(x = "expl.val")) +
+      geom_rug(sides = 'b') +
       facet_wrap("expl.name", scales = "free_x") +
       xlab("") +
       ylab("") +
