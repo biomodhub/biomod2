@@ -194,7 +194,6 @@ setMethod('predict2', signature(object = 'biomod2_ensemble_model', newdata = "Sp
             penalization_scores <- args$penalization_scores
             
             
-            
             if (!data_as_formal_predictions) {
               newdata <- .get_formal_predictions(object, newdata, on_0_1000 = on_0_1000, seedval = seedval)
             }
@@ -279,13 +278,19 @@ setClass('EMmean_biomod2_model',
 setMethod('predict2', signature(object = 'EMmean_biomod2_model', newdata = "SpatRaster"),
           function(object, newdata, ...) {
             predfun <- function(newdata, on_0_1000, ...){
-              app(newdata,function(x){
-                m <- mean(x)
-                if (on_0_1000) { 
-                  m <- round(m)
-                }
-                return(m)
-              })
+              if(nlyr(newdata) == 1){
+                return(newdata)
+              } else {
+                return(
+                  app(newdata,function(x){
+                    m <- mean(x)
+                    if (on_0_1000) { 
+                      m <- round(m)
+                    }
+                    return(m)
+                  })
+                )
+              }
             }
             # redirect to predict2.biomod2_ensemble_model.SpatRaster
             callNextMethod(object, newdata, predfun = predfun, ...)
@@ -329,13 +334,19 @@ setClass('EMmedian_biomod2_model',
 setMethod('predict2', signature(object = 'EMmedian_biomod2_model', newdata = "SpatRaster"),
           function(object, newdata, ...) {
             predfun <- function(newdata, on_0_1000, ...){
-              app(newdata,function(x){
-                m <- median(x)
-                if (on_0_1000) { 
-                  m <- round(m)
-                }
-                return(m)
-              })
+              if(nlyr(newdata) == 1){
+                return(newdata)
+              } else {
+                return(
+                  app(newdata,function(x){
+                    m <- median(x)
+                    if (on_0_1000) { 
+                      m <- round(m)
+                    }
+                    return(m)
+                  })
+                )
+              }
             }
             # redirect to predict2.biomod2_ensemble_model.SpatRaster
             callNextMethod(object, newdata, predfun = predfun, ...)
@@ -375,11 +386,11 @@ setClass('EMcv_biomod2_model',
 ##' 
 
 setMethod('predict2', signature(object = 'EMcv_biomod2_model', newdata = "SpatRaster"),
-          function(object, newdata, ...) {
-            if (nlyr(newdata) <= 1) {
-              stop(paste0("\n Model EMcv was not computed because only one single model was kept in ensemble modeling (", names(newdata), ")"))
-            }
+          function(object, newdata,  ...) {
             predfun <- function(newdata, on_0_1000, ...){
+              if (nlyr(newdata) <= 1) {
+                stop(paste0("\n Model EMcv was not computed because only one single model was kept in ensemble modeling (", names(newdata), ")"))
+              }
               out <- app(newdata, function(x){
                 sd(x, na.rm = TRUE)/mean(x, na.rm = TRUE) * 100
               })
@@ -393,13 +404,11 @@ setMethod('predict2', signature(object = 'EMcv_biomod2_model', newdata = "SpatRa
 ##' @rdname predict2.em
 setMethod('predict2', signature(object = 'EMcv_biomod2_model', newdata = "data.frame"),
           function(object, newdata, ...) {
-            
-            if (ncol(newdata) <= 1) {
-              stop(paste0("\n Model EMcv was not computed because only one single model was kept in ensemble modeling ("
-                          , colnames(newdata), ")"))
-            }
-            
             predfun <- function(newdata, ...){
+              if (ncol(newdata) <= 1) {
+                stop(paste0("\n Model EMcv was not computed because only one single model was kept in ensemble modeling ("
+                            , colnames(newdata), ")"))
+              }
               out <- apply(newdata, 1, cv, na.rm = TRUE, aszero = TRUE)
               return(out)
             } 
@@ -536,13 +545,20 @@ setMethod('predict2', signature(object = 'EMca_biomod2_model', newdata = "SpatRa
             }
             
             predfun <- function(newdata, on_0_1000, thresh, ...){
-              out <- app(bm_BinaryTransformation(newdata, thresh), function(x){
-                m <- mean(x)
-                if (on_0_1000) { 
-                  m <- round(m * 1000)
-                }
-                return(m)
-              })
+              if(nlyr(newdata) == 1){
+                return(bm_BinaryTransformation(newdata, thresh))
+              } else {
+                return(
+                  app(bm_BinaryTransformation(newdata, thresh),
+                      function(x){
+                        m <- mean(x)
+                        if (on_0_1000) { 
+                          m <- round(m * 1000)
+                        }
+                        return(m)
+                      })
+                )
+              }
             }
             if (on_0_1000) {
               thresh <- object@thresholds 
@@ -605,16 +621,20 @@ setMethod('predict2', signature(object = 'EMwmean_biomod2_model', newdata = "Spa
               stop("Model EMwmean was not computed because no single model was kept in ensemble modeling")
             }
             predfun <- function(newdata, on_0_1000, penalization_scores, ...){
-              
-              out <- app(newdata, function(x) {
-                wm <- sum(x * penalization_scores)
-                if (on_0_1000) { 
-                  wm <- round(wm) 
-                }
-                return(wm)
-              })
+              if(nlyr(newdata) == 1){
+                return(newdata)
+              } else {
+                return(
+                  app(newdata, function(x) {
+                    wm <- sum(x * penalization_scores)
+                    if (on_0_1000) { 
+                      wm <- round(wm) 
+                    }
+                    return(wm)
+                  })
+                )
+              }
             }
-            
             # redirect to predict2.biomod2_ensemble_model.SpatRaster
             callNextMethod(object, newdata, predfun = predfun,
                            penalization_scores = object@penalization_scores, ...)
