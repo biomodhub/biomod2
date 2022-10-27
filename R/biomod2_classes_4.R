@@ -812,7 +812,7 @@ setMethod('predict2', signature(object = 'MAXENT.Phillips_biomod2_model', newdat
             ## there is no need to provide meaningful values.
             Pred_swd <- read.csv(file.path(temp_workdir, "Predictions/Pred_swd.csv"))
             if (nrow(Pred_swd) != nrow(newdata)) {
-              tmp = newdata[, 1:3]
+              tmp = cbind(newdata[, 1], newdata[, 1], newdata[, 1])
               colnames(tmp) = c("predict", "x", "y")
               Pred_swd = cbind(tmp, newdata)
             } else {
