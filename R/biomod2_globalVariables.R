@@ -18,7 +18,9 @@ utils::globalVariables(names = c("do.stack", "output.format", "mod.name", "on_0_
                                  , "omit.na", "keep.in.memory"))
 
 ## BIOMOD_EnsembleModeling ------------
-utils::globalVariables(names = c("metric.select.user"))
+utils::globalVariables(names = c("metric.select.user",
+                                 "assemb",
+                                 "em.mod.assemb"))
 
 ## .get_needed_predictions ------------
 utils::globalVariables(names = c("thisPA"))
