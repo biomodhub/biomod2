@@ -522,7 +522,7 @@ BIOMOD_EnsembleForecasting <- function(bm.em,
       }
       if (inherits(new.env, 'Raster')) {
         # conversion into SpatRaster
-        if(any(is.factor(myExpl.cat.raster))){
+        if(any(is.factor(new.env))){
           new.env <- categorical_stack_to_terra(stack(new.env))
         } else {
           new.env <- rast(new.env)
