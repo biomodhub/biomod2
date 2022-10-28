@@ -3,7 +3,7 @@
 biomod2_model on (new) explanatory variables. predict2 
 was introduced to allow a signature with two arguments : object, 
 a type of biomod2_model and newdata, either a
-RasterStack or a data.frame."><!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js" integrity="sha256-nvJJv9wWKEm88qvoQl9ekL2J+k/RWIsaSScxxlsrv8k=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/config/TeX-AMS-MML_HTMLorMML.js" integrity="sha256-84DKXVJXs0/F8OTMzX4UR909+jtl4G7SPypPavF+GfA=" crossorigin="anonymous"></script><!--[if lt IE 9]>
+SpatRaster or a data.frame."><!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js" integrity="sha256-nvJJv9wWKEm88qvoQl9ekL2J+k/RWIsaSScxxlsrv8k=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/config/TeX-AMS-MML_HTMLorMML.js" integrity="sha256-84DKXVJXs0/F8OTMzX4UR909+jtl4G7SPypPavF+GfA=" crossorigin="anonymous"></script><!--[if lt IE 9]>
 <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
 <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
 <![endif]--></head><body data-spy="scroll" data-target="#toc">
@@ -100,79 +100,79 @@ RasterStack or a data.frame."><!-- mathjax --><script src="https://cdnjs.cloudfl
 <code><a href="biomod2_model.html">biomod2_model</a></code> on (new) explanatory variables. <code>predict2</code> 
 was introduced to allow a signature with two arguments : <code>object</code>, 
 a type of <code><a href="biomod2_model.html">biomod2_model</a></code> and <code>newdata</code>, either a
-<code><a href="https://rdrr.io/pkg/raster/man/stack.html" class="external-link">RasterStack</a></code> or a <code>data.frame</code>.</p>
+<code><a href="https://rdrr.io/pkg/terra/man/SpatRaster-class.html" class="external-link">SpatRaster</a></code> or a <code>data.frame</code>.</p>
     </div>
 
     <div id="ref-usage">
     <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">predict2</span><span class="op">(</span><span class="va">object</span>, <span class="va">newdata</span>, <span class="va">...</span><span class="op">)</span></span>
 <span></span>
-<span><span class="co"># S4 method for biomod2_model,RasterStack</span></span>
-<span><span class="fu">predict2</span><span class="op">(</span><span class="va">object</span>, <span class="va">newdata</span>, <span class="va">predfun</span>, seedval <span class="op">=</span> <span class="cn">NULL</span>, use_calc <span class="op">=</span> <span class="cn">FALSE</span>, <span class="va">...</span><span class="op">)</span></span>
+<span><span class="co"># S4 method for biomod2_model,SpatRaster</span></span>
+<span><span class="fu">predict2</span><span class="op">(</span><span class="va">object</span>, <span class="va">newdata</span>, <span class="va">predfun</span>, seedval <span class="op">=</span> <span class="cn">NULL</span>, <span class="va">...</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># S4 method for biomod2_model,data.frame</span></span>
 <span><span class="fu">predict2</span><span class="op">(</span><span class="va">object</span>, <span class="va">newdata</span>, <span class="va">predfun</span>, seedval <span class="op">=</span> <span class="cn">NULL</span>, <span class="va">...</span><span class="op">)</span></span>
 <span></span>
-<span><span class="co"># S4 method for ANN_biomod2_model,RasterStack</span></span>
+<span><span class="co"># S4 method for ANN_biomod2_model,SpatRaster</span></span>
 <span><span class="fu">predict2</span><span class="op">(</span><span class="va">object</span>, <span class="va">newdata</span>, <span class="va">...</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># S4 method for ANN_biomod2_model,data.frame</span></span>
 <span><span class="fu">predict2</span><span class="op">(</span><span class="va">object</span>, <span class="va">newdata</span>, <span class="va">...</span><span class="op">)</span></span>
 <span></span>
-<span><span class="co"># S4 method for CTA_biomod2_model,RasterStack</span></span>
+<span><span class="co"># S4 method for CTA_biomod2_model,SpatRaster</span></span>
 <span><span class="fu">predict2</span><span class="op">(</span><span class="va">object</span>, <span class="va">newdata</span>, <span class="va">...</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># S4 method for CTA_biomod2_model,data.frame</span></span>
 <span><span class="fu">predict2</span><span class="op">(</span><span class="va">object</span>, <span class="va">newdata</span>, <span class="va">...</span><span class="op">)</span></span>
 <span></span>
-<span><span class="co"># S4 method for FDA_biomod2_model,RasterStack</span></span>
+<span><span class="co"># S4 method for FDA_biomod2_model,SpatRaster</span></span>
 <span><span class="fu">predict2</span><span class="op">(</span><span class="va">object</span>, <span class="va">newdata</span>, <span class="va">...</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># S4 method for FDA_biomod2_model,data.frame</span></span>
 <span><span class="fu">predict2</span><span class="op">(</span><span class="va">object</span>, <span class="va">newdata</span>, <span class="va">...</span><span class="op">)</span></span>
 <span></span>
-<span><span class="co"># S4 method for GAM_biomod2_model,RasterStack</span></span>
+<span><span class="co"># S4 method for GAM_biomod2_model,SpatRaster</span></span>
 <span><span class="fu">predict2</span><span class="op">(</span><span class="va">object</span>, <span class="va">newdata</span>, <span class="va">...</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># S4 method for GAM_biomod2_model,data.frame</span></span>
 <span><span class="fu">predict2</span><span class="op">(</span><span class="va">object</span>, <span class="va">newdata</span>, <span class="va">...</span><span class="op">)</span></span>
 <span></span>
-<span><span class="co"># S4 method for GBM_biomod2_model,RasterStack</span></span>
+<span><span class="co"># S4 method for GBM_biomod2_model,SpatRaster</span></span>
 <span><span class="fu">predict2</span><span class="op">(</span><span class="va">object</span>, <span class="va">newdata</span>, <span class="va">...</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># S4 method for GBM_biomod2_model,data.frame</span></span>
 <span><span class="fu">predict2</span><span class="op">(</span><span class="va">object</span>, <span class="va">newdata</span>, <span class="va">...</span><span class="op">)</span></span>
 <span></span>
-<span><span class="co"># S4 method for GLM_biomod2_model,RasterStack</span></span>
+<span><span class="co"># S4 method for GLM_biomod2_model,SpatRaster</span></span>
 <span><span class="fu">predict2</span><span class="op">(</span><span class="va">object</span>, <span class="va">newdata</span>, <span class="va">...</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># S4 method for GLM_biomod2_model,data.frame</span></span>
 <span><span class="fu">predict2</span><span class="op">(</span><span class="va">object</span>, <span class="va">newdata</span>, <span class="va">...</span><span class="op">)</span></span>
 <span></span>
-<span><span class="co"># S4 method for MARS_biomod2_model,RasterStack</span></span>
+<span><span class="co"># S4 method for MARS_biomod2_model,SpatRaster</span></span>
 <span><span class="fu">predict2</span><span class="op">(</span><span class="va">object</span>, <span class="va">newdata</span>, <span class="va">...</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># S4 method for MARS_biomod2_model,data.frame</span></span>
 <span><span class="fu">predict2</span><span class="op">(</span><span class="va">object</span>, <span class="va">newdata</span>, <span class="va">...</span><span class="op">)</span></span>
 <span></span>
-<span><span class="co"># S4 method for MAXENT.Phillips_biomod2_model,RasterStack</span></span>
+<span><span class="co"># S4 method for MAXENT.Phillips_biomod2_model,SpatRaster</span></span>
 <span><span class="fu">predict2</span><span class="op">(</span><span class="va">object</span>, <span class="va">newdata</span>, <span class="va">...</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># S4 method for MAXENT.Phillips_biomod2_model,data.frame</span></span>
 <span><span class="fu">predict2</span><span class="op">(</span><span class="va">object</span>, <span class="va">newdata</span>, do_raster <span class="op">=</span> <span class="cn">FALSE</span>, newraster <span class="op">=</span> <span class="cn">NULL</span>, <span class="va">...</span><span class="op">)</span></span>
 <span></span>
-<span><span class="co"># S4 method for MAXENT.Phillips.2_biomod2_model,RasterStack</span></span>
+<span><span class="co"># S4 method for MAXENT.Phillips.2_biomod2_model,SpatRaster</span></span>
 <span><span class="fu">predict2</span><span class="op">(</span><span class="va">object</span>, <span class="va">newdata</span>, <span class="va">...</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># S4 method for MAXENT.Phillips.2_biomod2_model,data.frame</span></span>
 <span><span class="fu">predict2</span><span class="op">(</span><span class="va">object</span>, <span class="va">newdata</span>, <span class="va">...</span><span class="op">)</span></span>
 <span></span>
-<span><span class="co"># S4 method for RF_biomod2_model,RasterStack</span></span>
+<span><span class="co"># S4 method for RF_biomod2_model,SpatRaster</span></span>
 <span><span class="fu">predict2</span><span class="op">(</span><span class="va">object</span>, <span class="va">newdata</span>, <span class="va">...</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># S4 method for RF_biomod2_model,data.frame</span></span>
 <span><span class="fu">predict2</span><span class="op">(</span><span class="va">object</span>, <span class="va">newdata</span>, <span class="va">...</span><span class="op">)</span></span>
 <span></span>
-<span><span class="co"># S4 method for SRE_biomod2_model,RasterStack</span></span>
+<span><span class="co"># S4 method for SRE_biomod2_model,SpatRaster</span></span>
 <span><span class="fu">predict2</span><span class="op">(</span><span class="va">object</span>, <span class="va">newdata</span>, <span class="va">...</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># S4 method for SRE_biomod2_model,data.frame</span></span>
@@ -185,31 +185,26 @@ a type of <code><a href="biomod2_model.html">biomod2_model</a></code> and <code>
 <dd><p>a <code><a href="biomod2_model.html">biomod2_model</a></code> object</p></dd>
 <dt>newdata</dt>
 <dd><p>a <code>data.frame</code> or
-<code><a href="https://rdrr.io/pkg/raster/man/stack.html" class="external-link">RasterStack</a></code> object containing data for new
+<code><a href="https://rdrr.io/pkg/terra/man/SpatRaster-class.html" class="external-link">SpatRaster</a></code> object containing data for new
 predictions</p></dd>
 <dt>predfun</dt>
 <dd><p>a <code>function</code>, generated by the <code>predict2</code> method
   specific to each <code><a href="biomod2_model.html">biomod2_model</a></code> subclass and used within the
-  generic <code>predict2.biomod2_model.RasterStack</code> or
+  generic <code>predict2.biomod2_model.SpatRaster</code> or
 <code>predict2.biomod2_model.data.frame</code> to do the prediction</p></dd>
 <dt>seedval</dt>
 <dd><p>(<em>optional, default</em> <code>NULL</code>) <br> An <code>integer</code>
 value corresponding to the new seed value to be set</p></dd>
-<dt>use_calc</dt>
-<dd><p>(<em>optional, default</em> <code>FALSE</code>). A boolean used for
-the <code><a href="https://rdrr.io/pkg/raster/man/stack.html" class="external-link">RasterStack</a></code> methods, when
-<code><a href="https://rdrr.io/r/stats/predict.html" class="external-link">predict.RasterStack</a></code> 
-cannot be used and <code><a href="https://rdrr.io/pkg/raster/man/calc.html" class="external-link">calc</a></code> must be used instead.</p></dd>
 <dt>do_raster</dt>
 <dd><p>(<em>optional, default</em> <code>NULL</code>). A boolean used with
 <code>MAXENT.Phillips</code>, so that the
-<code><a href="https://rdrr.io/pkg/raster/man/stack.html" class="external-link">RasterStack</a></code> method can use the
+<code><a href="https://rdrr.io/pkg/terra/man/SpatRaster-class.html" class="external-link">SpatRaster</a></code> method can use the
 <code>data.frame</code> method.</p></dd>
 <dt>newraster</dt>
 <dd><p>(<em>optional, default</em> <code>NULL</code>). A
-<code><a href="https://rdrr.io/pkg/raster/man/raster.html" class="external-link">raster</a></code> used by the <code>MAXENT.Phillips</code>
+<code>[terra:SpatRaster]{SpatRaster}</code> used by the <code>MAXENT.Phillips</code>
 method so that the  <code>data.frame</code> method can transform its results
-back into <code><a href="https://rdrr.io/pkg/raster/man/stack.html" class="external-link">RasterStack</a></code> when <code>do_raster =
+back into <code><a href="https://rdrr.io/pkg/terra/man/SpatRaster-class.html" class="external-link">SpatRaster</a></code> when <code>do_raster =
 TRUE</code>.</p></dd>
 <dt>...</dt>
 <dd><p>(<em>optional)</em>)</p></dd>

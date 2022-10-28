@@ -114,13 +114,7 @@ according to a predefined threshold (see Details).</p>
 <span><span class="co"># S4 method for array</span></span>
 <span><span class="fu">bm_BinaryTransformation</span><span class="op">(</span><span class="va">data</span>, <span class="va">threshold</span>, do.filtering <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
 <span></span>
-<span><span class="co"># S4 method for RasterLayer</span></span>
-<span><span class="fu">bm_BinaryTransformation</span><span class="op">(</span><span class="va">data</span>, <span class="va">threshold</span>, do.filtering <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
-<span></span>
-<span><span class="co"># S4 method for RasterStack</span></span>
-<span><span class="fu">bm_BinaryTransformation</span><span class="op">(</span><span class="va">data</span>, <span class="va">threshold</span>, do.filtering <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
-<span></span>
-<span><span class="co"># S4 method for RasterBrick</span></span>
+<span><span class="co"># S4 method for SpatRaster</span></span>
 <span><span class="fu">bm_BinaryTransformation</span><span class="op">(</span><span class="va">data</span>, <span class="va">threshold</span>, do.filtering <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -128,7 +122,7 @@ according to a predefined threshold (see Details).</p>
     <h2>Arguments</h2>
     <dl><dt>data</dt>
 <dd><p>a <code>vector</code>, a <code>matrix</code> or <code>data.frame</code>, a 
-<code><a href="https://rdrr.io/pkg/raster/man/raster.html" class="external-link">raster</a></code> or <code><a href="https://rdrr.io/pkg/raster/man/stack.html" class="external-link">RasterStack</a></code> containing the 
+<code><a href="https://rdrr.io/pkg/terra/man/rast.html" class="external-link">SpatRaster</a></code> containing the 
 data to be converted</p></dd>
 <dt>threshold</dt>
 <dd><p>a <code>numeric</code> corresponding to the threshold used to convert the given data</p></dd>
@@ -147,7 +141,7 @@ A <code>logical</code> value defining whether filtered data should be returned, 
     <p>If <code>data</code> is a <code>vector</code> or <code><a href="https://rdrr.io/pkg/raster/man/raster.html" class="external-link">raster</a></code>, <code>threshold</code> 
 should be a single <code>numeric</code> value. <br>
 If <code>data</code> is a <code>matrix</code>, <code>data.frame</code> or 
-<code><a href="https://rdrr.io/pkg/raster/man/stack.html" class="external-link">RasterStack</a></code>, <code>threshold</code> should be a <code>vector</code> containing 
+<code><a href="https://rdrr.io/pkg/terra/man/rast.html" class="external-link">SpatRaster</a></code>, <code>threshold</code> should be a <code>vector</code> containing 
 as many values as the number of columns or layers contained in <code>data</code>. If only one 
 <code>numeric</code> value is given, the same threshold will be applied to all columns or layers. 
 <br><br></p>

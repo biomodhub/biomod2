@@ -40,6 +40,8 @@ been combined to build the ensemble models, must be among
 
 \item{\code{em.computed}}{a \code{vector} containing names of ensemble models}
 
+\item{\code{em.failed}}{a \code{vector} containing names of failed ensemble models}
+
 \item{\code{em.models}}{a \code{list} containing ensemble models}
 
 \item{\code{models.evaluation}}{a \code{\link{BIOMOD.stored.array-class}} object
