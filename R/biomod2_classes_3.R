@@ -834,8 +834,7 @@ setMethod("get_predictions", "BIOMOD.projection.out",
               grep_data.set = grep(paste(data.set, collapse = "|"), models_selected)
               models_selected = models_selected[Reduce(intersect, list(grep_model, grep_run.eval, grep_data.set))]
             }
-            if (length(models_selected) > 0)
-            {
+            if (length(models_selected) > 0)  {
               out <- load_stored_object(obj@proj.out)
               names(out) <- get_projected_models(obj)
               
@@ -862,10 +861,9 @@ setMethod("get_predictions", "BIOMOD.projection.out",
               }
               
               if (as.data.frame) {
-                
                 out <- as.data.frame(out)
                 if (!grepl("merged|_EM|By", names(out)[1]) &&
-                    !is_input_SpatRaster) {
+                    !is_input_SpatRaster) { # only for simple model with df
                   names(out) <- unlist(
                     lapply(strsplit(names(out), ".", fixed = TRUE),
                            function(x) {
@@ -882,7 +880,9 @@ setMethod("get_predictions", "BIOMOD.projection.out",
                   out <- out[ , models_selected, drop = FALSE]
                 }
               }
-            } else { out <- NULL }
+            } else { 
+              out <- NULL 
+              }
             
             return(out)
           }

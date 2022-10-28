@@ -580,7 +580,7 @@ setMethod('predict2', signature(object = 'EMca_biomod2_model', newdata = "data.f
               on_0_1000 <- FALSE 
             }
             predfun <- function(newdata, ...){
-              out <- rowMeans(as.data.frame(bm_BinaryTransformation(newdata, thresh)), na.rm = TRUE)
+              out <- rowMeans(bm_BinaryTransformation(newdata, thresh), na.rm = TRUE)
               if (on_0_1000) {
                 out <- round(out * 1000)
               }
