@@ -1093,6 +1093,7 @@ BIOMOD_EnsembleModeling <- function(bm.mod,
     res.out <- foreach (i = 1:nrow(comb), .combine = "cbind") %do% {
       em.out[[comb$i.by[i]]][[comb$i.eval[i]]][[comb$i.mod[i]]][[out]]
     }
+    res.out <- as.matrix(res.out)
     colnames(res.out) = names_models
   }
   
