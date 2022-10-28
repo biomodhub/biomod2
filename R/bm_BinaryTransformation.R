@@ -87,27 +87,28 @@ setMethod('bm_BinaryTransformation', signature('data.frame'),
                 stop("data and threshold dimensions mismatch")
               } else {
                 if (do.filtering) {
-                  return(data.matrix(
-                    sweep(data, 2, threshold, .convert_bin.array.filt)
-                    ))
-                } else {
                   return(
-                    sweep(data, 2, threshold, .convert_bin.array)
+                    sweep(data, 2, threshold, .convert_bin.array.filt)
                     )
+                } else {
+                  return(as.data.frame(
+                    sweep(data, 2, threshold, .convert_bin.array)
+                    ))
                 }
               }
             } else {
-              if (is.numeric(threshold) && !is.na(threshold)) {
+              if (is.numeric(threshold) && !is.na(threshold)) { #second condition unnecessary?
                 data <- data.matrix(data)
-                return(.convert_bin.matrix(data, threshold, do.filtering))
+                out <- as.data.frame(
+                  .convert_bin.matrix(data, threshold, do.filtering)
+                )
+                colnames(out) <- colnames(data)
+                return(out)
               } else { ## return NAs
-                if(ncol(data) > 1){
-                return(matrix(NA, ncol = ncol(data), nrow = nrow(data)
-                              , dimnames = dimnames(data)))
-                } else {
-                  return(rep(NA, nrow(data)))
-                }
-                
+                return(as.data.frame(
+                  matrix(NA, ncol = ncol(data), nrow = nrow(data)
+                              , dimnames = dimnames(data))
+                ))
               }
             }
           })
@@ -121,7 +122,9 @@ setMethod('bm_BinaryTransformation', signature('matrix'),
           function(data, threshold, do.filtering = FALSE)
           {
             data <- as.data.frame(data)
-            return(bm_BinaryTransformation(data, threshold, do.filtering))
+            return(data.matrix(
+              bm_BinaryTransformation(data, threshold, do.filtering)
+              ))
           })
 
 ## numeric methods ----------------------------------------------------------
@@ -133,7 +136,9 @@ setMethod('bm_BinaryTransformation', signature('numeric'),
           function(data, threshold, do.filtering = FALSE)
           {
             data <- as.data.frame(data)
-            return(bm_BinaryTransformation(data, threshold, do.filtering))
+            return(unlist(
+              bm_BinaryTransformation(data, threshold, do.filtering)
+              ))
           })
 
 ## array methods ----------------------------------------------------------
