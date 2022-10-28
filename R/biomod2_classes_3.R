@@ -823,8 +823,7 @@ setMethod('free', signature('BIOMOD.projection.out'),
 
 setMethod("get_predictions", "BIOMOD.projection.out",
           function(obj, as.data.frame = FALSE, full.name = NULL, 
-                   model = NULL, run.eval = NULL, data.set = NULL)
-          {
+                   model = NULL, run.eval = NULL, data.set = NULL) {
             # select models to be returned
             models_selected <- get_projected_models(obj)
             if (length(full.name)) {
@@ -840,8 +839,9 @@ setMethod("get_predictions", "BIOMOD.projection.out",
               out <- load_stored_object(obj@proj.out)
               names(out) <- get_projected_models(obj)
               
+              is_input_SpatRaster <- inherits(out, 'SpatRaster')
               # subselection of models_selected
-              if (inherits(out, 'SpatRaster')) {
+              if (is_input_SpatRaster) {
                 out <- subset(out, models_selected)
               } else if (length(dim(out)) == 4) { ## 4D arrays
                 list_models <- .extract_modelNamesInfo(model.names = models_selected,
@@ -862,8 +862,10 @@ setMethod("get_predictions", "BIOMOD.projection.out",
               }
               
               if (as.data.frame) {
+                
                 out <- as.data.frame(out)
-                if (!grepl("merged|_EM|By", names(out)[1])) {
+                if (!grepl("merged|_EM|By", names(out)[1]) &&
+                    !is_input_SpatRaster) {
                   names(out) <- unlist(
                     lapply(strsplit(names(out), ".", fixed = TRUE),
                            function(x) {
