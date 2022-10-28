@@ -442,26 +442,38 @@ bm_PlotResponseCurves <- function(bm.out
     new.env <- as.data.frame(new.env)
   }
   
-  if (inherits(new.env, c("Raster","SpatRaster"))) {
-    cat("\n   > Extracting raster infos..")
-    if (inherits(new.env, "SpatRaster")) {
-      DataTmp <- matrix(0, ncol = nlyr(new.env), nrow = nb.pts)
-      colnames(DataTmp) <- names(new.env)
-      maxVal <- global(new.env, max, na.rm = TRUE)$max
-      minVal <- global(new.env, min, na.rm = TRUE)$min
+  if (inherits(new.env, c("Raster"))) {
+    categorical_var <- which(is.factor(new.env))
+    if (length(categorical_var) >0) {
+      new.env = categorical_stack_to_terra(new.env)
     } else {
-      DataTmp <- matrix(0, ncol = nlayers(new.env), nrow = nb.pts)
-      colnames(DataTmp) <- names(new.env)
-      maxVal <- maxValue(new.env)
-      minVal <- minValue(new.env)
+      new.env <- rast(new.env)
     }
-    
+  }
+
+  if (inherits(new.env, c("SpatRaster"))) {
+    cat("\n   > Extracting raster infos..")
+    DataTmp <- matrix(0, ncol = nlyr(new.env), nrow = nb.pts)
+    colnames(DataTmp) <- names(new.env)
+    maxVal <- global(new.env, max, na.rm = TRUE)$max
+    minVal <- global(new.env, min, na.rm = TRUE)$min
+
+    DataTmp <- as.data.frame(DataTmp)
     for (i in 1:ncol(DataTmp)) {
       DataTmp[, i] <- seq(minVal[i], maxVal[i], length.out = nb.pts)
     }
+    
+    categorical_var <- which(is.factor(new.env))
+    if (length(categorical_var) >0) {
+      for(thisvar in categorical_var){
+        DataTmp[, thisvar] <- rep(factor(
+          levels(new.env[[categorical_var]])[[1]][,2]
+          ), length.out = nrow(DataTmp))
+      }
+    }
     new.env <- data.frame(DataTmp)
   }
-
+  
   ## 4. Check show.variables argument -----------------------------------------
   if (length(show.variables) > ncol(new.env) || 
       any(! show.variables %in% colnames(new.env))) {
