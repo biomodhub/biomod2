@@ -192,12 +192,22 @@ BIOMOD_PresenceOnly <- function(bm.mod = NULL,
   for (argi in names(args)) { assign(x = argi, value = args[[argi]]) }
   rm(args)
   
-  ## MODELING OUTPUT ----------------------------------------------------------
+  
+  
+  ## 1. Get calib.lines ------------------------------------------------------
+  
+  if (!is.null(bm.mod)) {
+    calib.lines <- get_calib_lines(bm.mod)[, , 1]
+  } else {
+    calib.lines <- get_calib_lines(get_formal_data(bm.em))[, , 1]
+  }
+  calib.notNA <- which(!is.na(calib.lines[, 1])) ## remove NA (pseudo-absences) from run1
+  calib.lines <- calib.lines[calib.notNA, ] ## keep only lines associated to sites (no pseudo-absences)
+  
+  
+  ## 2. Individual models ----------------------------------
   if (!is.null(bm.mod)) {
     ## Get calibration lines and observations
-    calib.lines <- get_calib_lines(bm.mod)[, , 1]
-    calib.notNA <- which(!is.na(calib.lines[, 1])) ## remove NA (pseudo-absences) from run1
-    calib.lines <- calib.lines[calib.notNA, ] ## keep only lines associated to sites (no pseudo-absences)
     myResp <- get_formal_data(bm.mod)@data.species
     myResp <- myResp[calib.notNA] ## keep only lines associated to sites (no pseudo-absences)
     
@@ -230,7 +240,8 @@ BIOMOD_PresenceOnly <- function(bm.mod = NULL,
     myModelEval = myModelPred = myModelPred.eval = NULL
   }
   
-  ## ENSEMBLE MODELING OUTPUT -------------------------------------------------
+  ## 2. Ensemble models ----------------------------------
+  
   if (!is.null(bm.em)) {
     
     ## Get evaluation scores
@@ -252,10 +263,27 @@ BIOMOD_PresenceOnly <- function(bm.mod = NULL,
     myBiomodProjFF <- get_predictions(bm.em, as.data.frame = TRUE)  
     if (!is.null(bg.env)) {
       myBiomodProjFF.sites <- as.data.frame(myBiomodProjFF)
-      myModelPred.sites <- cbind(myModelPred.sites, myBiomodProjFF.sites)
-      myBiomodProjFF <- BIOMOD_EnsembleForecasting(bm.em = bm.em,
-                                                   bm.proj = myBiomodProj.eval,
-                                                   proj.name = paste(bm.em@modeling.id, "cv_EF_bg", sep = "_"))
+      
+      if (exists("myModelPred.sites")) {
+        myModelPred.sites <- cbind(myModelPred.sites, myBiomodProjFF.sites)
+      } else {
+        myModelPred.sites <- myBiomodProjFF.sites
+      }
+      
+      if(exists("myBiomodProj.eval")){
+        myBiomodProjFF <-
+          BIOMOD_EnsembleForecasting(
+            bm.em = bm.em,
+            bm.proj = myBiomodProj.eval,
+            proj.name = paste(bm.em@modeling.id, "cv_EF_bg", sep = "_"))
+      } else {
+        myBiomodProjFF <-
+          BIOMOD_EnsembleForecasting(
+            bm.em = bm.em,
+            new.env = bg.env,
+            proj.name = paste(bm.em@modeling.id, "cv_EF_bg", sep = "_"))
+      }
+      
       myBiomodProjFF <- get_predictions(myBiomodProjFF, as.data.frame = TRUE)
     }
     if (!is.null(bm.mod)) {
@@ -286,7 +314,7 @@ BIOMOD_PresenceOnly <- function(bm.mod = NULL,
     n <- length(tmp)
     tec <- paste(tmp[3:n], collapse = "_") 
     run <- tmp[c(grep("RUN", tmp), grep("Full", tmp), grep("mergedRun", tmp))]
-    
+
     ## Get evaluation lines
     if (length(run) == 0) {
       ind.eval = NULL
@@ -363,9 +391,11 @@ BIOMOD_PresenceOnly <- function(bm.mod = NULL,
       myResp.eval <- get_formal_data(bm.mod)@eval.data.species
       Pred.eval <- myModelPred.eval[, Model.name]
       
-      boy <- ecospat.boyce(fit = Pred.eval, obs = Pred.eval[myResp.eval == 1 & ind.1], PEplot = FALSE)
+      boy <- ecospat.boyce(fit = Pred.eval,
+                           obs = Pred.eval[myResp.eval == 1],
+                           PEplot = FALSE)
       boyce.eval[ind.b, "Evaluating.data"] <- boy$cor
-      mpa.eval[ind.m,"Evaluating.data"] <- ecospat.mpa(Pred.eval[myResp.eval == 1 & ind.1], perc = perc)
+      mpa.eval[ind.m,"Evaluating.data"] <- ecospat.mpa(Pred.eval[myResp.eval == 1], perc = perc)
     }
   }
   myModelEval[, c("Sensitivity", "Specificity")] <- round(myModelEval[, c("Sensitivity", "Specificity")], 1)
@@ -396,33 +426,68 @@ BIOMOD_PresenceOnly <- function(bm.mod = NULL,
 
 .BIOMOD_PresenceOnly.check.args <- function(bm.mod, bm.em, bg.env, perc, save.output)
 {
+  
+  if(is.null(bm.mod) && is.null(bm.em)){
+    stop("At least one of 'bm.mod' or 'bm.em' have to be given.")
+  }
+  
   ## 1. Check bm.mod ----------------------------------------------------------
   if (!is.null(bm.mod)) {
     .fun_testIfInherits(TRUE, "bm.mod", bm.mod, "BIOMOD.models.out")
+    expl.var.names <- bm.mod@expl.var.names
   }
   
   ## 2. Check bm.em -----------------------------------------------------------
   if (!is.null(bm.em)) {
     .fun_testIfInherits(TRUE, "bm.em", bm.em, "BIOMOD.ensemble.models.out")
+    if(is.null(bm.mod)){
+      expl.var.names <- get_formal_data(bm.em)@expl.var.names
+    }
   }
   
   ## 2. Check bg.env -----------------------------------------------------------
-  if(is.matrix(bg.env) | is.numeric(bg.env)) {
-    bg.env <- as.data.frame(bg.env)
-  }
-  
-  if (inherits(bg.env, 'SpatRaster')) {
-    bg.env <- as.data.frame(bg.env)
-  }
-  
-  if (inherits(bg.env, 'SpatialPoints')) {
-    bg.env <- as.data.frame(bg.env@data)
-  }
-  
-  ## remove NA from background data
-  if (sum(is.na(bg.env)) > 0) {
-    cat("\n      ! NAs have been automatically removed from bg.env data")
-    bg.env <- na.omit(bg.env)
+  if(!is.null(bg.env)){
+    available.types.resp <- c('numeric', 'data.frame', 'matrix',
+                              'SpatialPointsDataFrame', 'SpatVector',
+                              'Raster','SpatRaster')
+    
+    .fun_testIfInherits(TRUE, "bg.env", bg.env, available.types.resp)
+    
+    if(is.matrix(bg.env)) {
+      bg.env <- as.data.frame(bg.env)
+    }
+    
+    if(is.numeric(bg.env)) {
+      bg.env <- as.data.frame(bg.env)
+      colnames(bg.env) <- expl.var.names[1]
+    }
+    
+    if (inherits(bg.env, 'Raster')) {
+      if(any(is.factor(bg.env))){
+        bg.env <- categorical_stack_to_terra(bg.env)
+      } else {
+        bg.env <- rast(bg.env)
+      }
+    }
+    
+    if (inherits(bg.env, 'SpatRaster')) {
+      bg.env <- as.data.frame(bg.env)
+    }
+    
+    if (inherits(bg.env, 'SpatialPoints')) {
+      bg.env <- as.data.frame(bg.env@data)
+    }
+    
+    if (inherits(bg.env, 'SpatVector')) {
+      bg.env <- as.data.frame(bg.env)
+    }
+    
+    ## remove NA from background data
+    if (sum(is.na(bg.env)) > 0) {
+      cat("\n      ! NAs have been automatically removed from bg.env data")
+      bg.env <- na.omit(bg.env)
+    }
+    
   }
   
   ## 4. Check perc -----------------------------------------------------------
