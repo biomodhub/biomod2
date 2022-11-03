@@ -132,7 +132,7 @@ bm_SRE <- function(resp.var = NULL,
   args <- .bm_SRE.check.args(resp.var, expl.var, new.env, quant)
   for (argi in names(args)) { assign(x = argi, value = args[[argi]]) }
   rm(args)
-  # browser()
+
   ## 1. Determine suitable conditions and make the projection --------------
   lout <- list()
   if (is.data.frame(resp.var) | is.matrix(resp.var)) {
