@@ -851,10 +851,11 @@ setMethod('predict2', signature(object = 'MAXENT.Phillips_biomod2_model', newdat
               # Remi 10/10/2022 
               # Not sure those lines are still necessary
               # readAll was moved from exported function in raster
-              # to an internal function in terra. A quick fix was to use :::
-              # although it is not best practice
+              # to an internal function in terra. A quick fix was to use the 
+              # internal code from terra:::readAll
               if (!inMemory(proj)) {
-                proj <- terra:::readAll(proj) # to prevent from tmp files removing
+                proj <- proj@ptr$readAll() # to prevent from tmp files removing
+                x <- message(proj, "readAll") # to have message if need be ?
               }
               
             } else {
