@@ -60,9 +60,18 @@
 ##' Note that \bold{this function is only relevant to compare binary projections, made on the 
 ##' same area with the same resolution}.
 ##' 
+##' \cr Comparison between \code{proj.current} and \code{proj.future} depends 
+##' on the number of projection in both objects:
+##'| \code{proj.current}   | \code{proj.future} | \bold{Comparison}  |
+##'| ------------------------- | ---------------------- | --------------------  |
+##'| \bold{1 projection} (\emph{e.g. data.frame with 1 column, SpatRaster with 1 layer}) | \bold{1 projection}  (\emph{e.g. data.frame with 1 column, SpatRaster with 1 layer})  | comparison of both projection  (\emph{e.g. current vs future conditions for the same model ; current vs current condition for two different models}) |
+##'| \bold{\code{n} projections}  (\emph{e.g. data.frame with n column, SpatRaster with n layer}) |  \bold{\code{n} projections}  (\emph{e.g. data.frame with n column, SpatRaster with n layer}) |  comparing projection \code{i} in \code{proj.current} to projection \code{i} in \code{proj.future}  (\emph{e.g. comparing current vs future condition for n models}) |
+##'| \bold{\code{1} projection}   (\emph{e.g. data.frame with 1 column, SpatRaster with 1 layer}) |  \bold{\code{n} projections}  (\emph{e.g. data.frame with n column, SpatRaster with n layer}) |  comparing projection in \code{proj.current} to each projection in \code{proj.future}  (\emph{e.g. comparing current vs n different future condition (e.g. climate change scenario) for 1 model}) |
+##' 
 ##' \code{Diff.By.Pixel} object is obtained by applying the simple following formula :
 ##' \deqn{proj.future - 2 * proj.current}
 ##' 
+##' @md
 ##' 
 ##' @keywords "species range change" projections gain loss
 ##' 
@@ -170,7 +179,7 @@
 ##' bm_PlotRangeSize(bm.range = myBiomodRangeSize)
 ##' 
 ##' 
-##' @importFrom raster stack addLayer
+##' @importFrom terra rast nlyr `add<-`
 ##' 
 ##' @export
 ##' 

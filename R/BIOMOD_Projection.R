@@ -13,10 +13,14 @@
 ##' \code{\link{BIOMOD_Modeling}} function
 ##' @param proj.name a \code{character} corresponding to the name (ID) of the projection set 
 ##' (\emph{a new folder will be created within the simulation folder with this name})
-##' @param new.env a \code{matrix}, \code{data.frame} or \code{\link[terra:rast]{SpatRaster}} 
-##' object containing the new explanatory variables (in columns or layers, with names matching the 
-##' variables names given to the \code{\link{BIOMOD_FormatingData}} function to build 
+##' @param new.env A \code{matrix}, \code{data.frame} or
+##'  \code{\link[terra:rast]{SpatRaster}} object containing the new 
+##' explanatory variables (in columns or layers, with names matching the
+##'  variables names given to the \code{\link{BIOMOD_FormatingData}} function to build 
 ##' \code{bm.mod}) that will be used to project the species distribution model(s)
+##' \cr \emph{Note that old format from \pkg{raster} are still supported such as 
+##' \code{RasterStack} objects. }
+##' 
 ##' @param new.env.xy (\emph{optional, default} \code{NULL}) \cr 
 ##' If \code{new.env} is a \code{matrix} or a \code{data.frame}, a 2-columns \code{matrix} or 
 ##' \code{data.frame} containing the corresponding \code{X} and \code{Y} coordinates that will be 
@@ -180,7 +184,6 @@
 ##' 
 ##' @importFrom foreach foreach %dopar%
 ## @importFrom doParallel registerDoParallel
-##' @importFrom raster canProcessInMemory
 ##' @importFrom terra rast subset nlyr writeRaster terraOptions wrap mem_info
 ##' @importFrom utils capture.output
 ##' @importFrom abind asub
@@ -301,11 +304,16 @@ BIOMOD_Projection <- function(bm.mod,
         pred.tmp <- predict(mod, new.env, on_0_1000 = on_0_1000, filename = filename
                             , omit.na = omit.na, split.proj = 1
                             , temp_workdir = temp_workdir, seedval = seed.val)
-        return(pred.tmp)
+        if(inherits(new.env, "SpatRaster")){
+         return(wrap(pred.tmp)) 
+        } else {
+          return(pred.tmp)
+        }
       }
+
     ## Putting predictions into the right format
     if (inherits(new.env, "SpatRaster")) {
-      proj <- rast(proj) # SpatRaster needs to be wrapped before saving
+      proj <- rast(lapply(proj, rast)) # SpatRaster needs to be wrapped before saving
       names(proj) <- models.chosen
       proj <- wrap(proj)
     } else {
@@ -493,7 +501,7 @@ BIOMOD_Projection <- function(bm.mod,
   if (inherits(new.env, 'Raster')) {
     # conversion into SpatRaster
     if(any(is.factor(new.env))){
-      new.env <- categorical_stack_to_terra(stack(new.env))
+      new.env <- categorical_stack_to_terra(raster::stack(new.env))
     } else {
       new.env <- rast(new.env)
     }

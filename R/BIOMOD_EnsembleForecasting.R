@@ -18,11 +18,14 @@
 ##' projection set (\emph{a new folder will be created within the simulation folder with this 
 ##' name})
 ##' @param new.env (\emph{optional, default} \code{NULL}) \cr 
-##' If \code{bm.proj = NULL}, a \code{matrix}, \code{data.frame} or 
-##' \code{\link[terra:rast]{SpatRaster}} object containing the new explanatory variables (in 
-##' columns or layers, with names matching the variables names given to the 
-##' \code{\link{BIOMOD_FormatingData}} function to build \code{bm.em}) that will be used to 
-##' project the ensemble species distribution model(s)
+##' If \code{bm.proj = NULL}, a \code{matrix}, \code{data.frame} or
+##'  \code{\link[terra:rast]{SpatRaster}} object containing the new 
+##' explanatory variables (in columns or layers, with names matching the
+##'  variables names given to the \code{\link{BIOMOD_FormatingData}} function to build 
+##' \code{bm.mod}) that will be used to project the species distribution model(s)
+##' \cr \emph{Note that old format from \pkg{raster} are still supported such as 
+##' \code{RasterStack} objects. }
+##' 
 ##' @param new.env.xy (\emph{optional, default} \code{NULL}) \cr 
 ##' If \code{new.env} is a \code{matrix} or a \code{data.frame}, a 2-columns \code{matrix} or 
 ##' \code{data.frame} containing the corresponding \code{X} and \code{Y} coordinates that will 
@@ -65,10 +68,11 @@
 ##' \enumerate{
 ##'   \item the output is a 4-dimensional array if \code{new.env} is a \code{matrix} or a 
 ##'   \code{data.frame}
-##'   \item it is a \code{rasterStack} if \code{new.env} is a \code{rasterStack} (or several 
-##'   \code{rasterLayer} objects, if \code{new.env} is too large)
-##'   \item raw projections, as well as binary and filtered projections (if asked), are saved in 
-##'   the \code{proj.name} folder
+##'   \item it is a \code{\link[terra:rast]{SpatRaster}} if \code{new.env} 
+##'   is a \code{\link[terra:rast]{SpatRaster}} (or several
+##'   \code{\link[terra:rast]{SpatRaster}} objects, if \code{new.env} is too large)
+##'   \item raw projections, as well as binary and filtered projections (if asked),
+##'    are saved in the \code{proj.name} folder
 ##' }
 ##' 
 ##' 
@@ -221,7 +225,6 @@
 ##' plot(myBiomodEMProj)
 ##' 
 ##' 
-##' @importFrom raster stack subset predict writeRaster
 ##' 
 ##' @export
 ##' 
@@ -522,8 +525,8 @@ BIOMOD_EnsembleForecasting <- function(bm.em,
       }
       if (inherits(new.env, 'Raster')) {
         # conversion into SpatRaster
-        if(any(is.factor(new.env))){
-          new.env <- categorical_stack_to_terra(stack(new.env))
+        if(any(raster::is.factor(new.env))){
+          new.env <- categorical_stack_to_terra(raster::stack(new.env))
         } else {
           new.env <- rast(new.env)
         }

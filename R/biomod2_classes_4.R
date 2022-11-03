@@ -313,10 +313,7 @@ setMethod('predict', signature(object = 'biomod2_model'),
 ##' @family Toolbox functions
 ##' 
 ##' 
-##' @importFrom raster rasterToPoints 
-##' @importFrom terra rast as.matrix is.factor subset writeRaster 
-##' predict cellFromXY inMemory classify
-##' @importFrom sp read.asciigrid
+##' @importFrom terra rast as.matrix is.factor subset writeRaster predict cellFromXY inMemory classify
 ##' @importFrom gbm predict.gbm
 ##' @importFrom methods callNextMethod
 ##' @keywords internal

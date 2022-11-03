@@ -93,9 +93,6 @@
 ##' @family Secundary functions
 ##'
 ##' 
-##' @importFrom raster extract coordinates subset reclassify mask cellFromXY xyFromCell distance 
-##' sampleRandom
-##' @importFrom sp SpatialPointsDataFrame coordinates
 ##' @importFrom terra rast vect freq spatSample values
 ##' 
 ##' @export
@@ -268,34 +265,34 @@ setGeneric("bm_PseudoAbsences_user.defined",
              standardGeneric( "bm_PseudoAbsences_user.defined")
            })
 
-## bm_PseudoAbsences user-defined SPDF methods --------------------------------------
+## bm_PseudoAbsences user-defined SpatVector methods --------------------------------------
 ##'
 ##' @rdname bm_PseudoAbsences
 ##' @export
 ##'
 
-setMethod('bm_PseudoAbsences_user.defined', signature(expl.var = "SpatialPointsDataFrame"),
+setMethod('bm_PseudoAbsences_user.defined', signature(expl.var = "SpatVector"),
           function(resp.var, expl.var, user.table) {
             cat("\n   > User defined pseudo absences selection")
-            return(list(xy = coordinates(resp.var),
+            return(list(xy = crds(resp.var),
                         sp = as.numeric(unlist(values(resp.var), use.names = FALSE)),
-                        env = as.data.frame(expl.var@data),
+                        env = as.data.frame(expl.var),
                         pa.tab = user.table))
           })
 
-## bm_PseudoAbsences user-defined RasterStack methods --------------------------------------
+## bm_PseudoAbsences user-defined SpatRaster methods --------------------------------------
 ##'
 ##' @rdname bm_PseudoAbsences
 ##' @export
 ##'
 
-setMethod('bm_PseudoAbsences_user.defined', signature(expl.var = "RasterStack"), 
+setMethod('bm_PseudoAbsences_user.defined', signature(expl.var = "SpatRaster"), 
           function(resp.var, expl.var, user.table) {
             cat("\n   > User defined pseudo absences selection")
-            expl.var <- as.data.frame(extract(expl.var, resp.var, ID = FALSE))
-            return(list(xy = coordinates(resp.var),
+            expl.var <- extract(expl.var, resp.var, ID = FALSE)
+            return(list(xy = crds(resp.var),
                         sp = as.numeric(unlist(values(resp.var), use.names = FALSE)), 
-                        env = as.data.frame(expl.var),
+                        env = expl.var,
                         pa.tab = user.table))
           })
 
@@ -370,6 +367,7 @@ setMethod('bm_PseudoAbsences_random', signature(expl.var = "SpatVector"),
 ##'
 ##' @rdname bm_PseudoAbsences
 ##' @export
+##' @importFrom terra xyFromCell
 ##'
 
 setMethod('bm_PseudoAbsences_random', signature(expl.var = "SpatRaster"),
@@ -619,7 +617,7 @@ setMethod('bm_PseudoAbsences_sre', signature(expl.var = "SpatRaster"),
             resp.var <- as.numeric(unlist(c(na.omit(values(resp.var)[, 1]),
                                             rep(NA, length(selected.cells))),
                                           use.names = FALSE))
-            expl.var <- extract(expl.var, xy, ID = FALSE)
+            expl.var <- extract(expl.var, xy)
             pa.tab <- rbind(matrix(TRUE, nrow = (nrow(xy) - length(selected.cells)),
                                    ncol = ncol(pa.tab)), pa.tab)
             
@@ -686,6 +684,7 @@ setMethod('bm_PseudoAbsences_disk', signature(expl.var = "SpatVector"),
 ##'
 ##' @rdname bm_PseudoAbsences
 ##' @export
+##' @importFrom terra rast distance subset mask crds cellFromXY
 ##'
 
 setMethod('bm_PseudoAbsences_disk', signature(expl.var = "SpatRaster"),

@@ -160,10 +160,7 @@
 ##' @importFrom graphics plot.new
 ##' @importFrom reshape2 melt
 ##' @importFrom foreach foreach %do%
-##' @importFrom raster which.max nlayers stack rasterToPoints reclassify
 ##' @importFrom terra which.max nlyr as.points classify plot
-## @importFrom patchwork plot_layout
-## @importFrom ggpubr ggarrange
 ##' @importFrom ggplot2 ggplot aes_string geom_col geom_tile facet_wrap xlab ylab labs 
 ##' theme element_blank element_rect scale_fill_manual
 ##' 

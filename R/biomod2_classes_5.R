@@ -18,7 +18,6 @@
 ##' @family Toolbox functions
 ##' 
 ##' 
-##' @importFrom raster calc reclassify cv
 ##' @importFrom terra app classify
 ##' 
 NULL
@@ -161,7 +160,6 @@ setMethod('show', signature('biomod2_ensemble_model'),
 ##' @family Toolbox functions
 ##' 
 ##' 
-##' @importFrom raster calc reclassify cv
 ##' @importFrom terra app classify
 ##' @keywords internal
 

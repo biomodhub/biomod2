@@ -10,16 +10,26 @@
 ##' using the extreme percentiles (as recommended by Nix or Busby, see 
 ##' \href{https://biomodhub.github.io/biomod2/reference/bm_SRE.html#references}{References} and Details).
 ##' 
-##' 
-##' @param resp.var a \code{vector}, \code{\link[sp]{SpatialPoints}} or 
-##' \code{\link[sp]{SpatialPointsDataFrame}} object containing binary data (\code{0} : absence, 
-##' \code{1} : presence, \code{NA} : indeterminate) for a single species
-##' @param expl.var a \code{matrix}, \code{data.frame}, \code{\link[sp]{SpatialPointsDataFrame}} 
-##' or \code{\link[raster:stack]{RasterStack}} object containing the explanatory variables (in 
+##' @param resp.var a \code{vector}, a \code{\link[terra:vect]{SpatVector}}
+##' without associated data (\emph{if presence-only}), 
+##' or a \code{\link[terra:vect]{SpatVector}} object containing binary data  
+##' (\code{0} : absence, \code{1} : presence, \code{NA} : indeterminate) 
+##' for a single species that will be used to build the species distribution model(s)
+##' \cr \emph{Note that old format from \pkg{sp} are still supported such as
+##'  \code{SpatialPoints}  (\emph{if presence-only}) or \code{SpatialPointsDataFrame}
+##'  object containing binary data.}
+##' @param expl.var a \code{matrix}, \code{data.frame}, \code{\link[terra:vect]{SpatVector}}
+##' or \code{\link[terra:rast]{SpatRaster}} object containing the explanatory variables (in 
 ##' columns or layers) that will be used to build the SRE model
-##' @param new.env a \code{matrix}, \code{data.frame}, \code{\link[sp]{SpatialPointsDataFrame}} 
-##' or \code{\link[raster:stack]{RasterStack}} object containing the explanatory variables (in 
+##' \cr \emph{Note that old format from \pkg{raster} and \pkg{sp} are still supported such as 
+##' \code{RasterStack} and \code{SpatialPointsDataFrame} objects. }
+##' 
+##' @param new.env a \code{matrix}, \code{data.frame}, \code{\link[terra:vect]{SpatVector}}
+##' or \code{\link[terra:rast]{SpatRaster}} object containing the explanatory variables (in 
 ##' columns or layers) that will be used to predict the SRE model
+##' \cr \emph{Note that old format from \pkg{raster} and \pkg{sp} are still supported such as 
+##' \code{RasterStack} and \code{SpatialPointsDataFrame} objects. }
+##' 
 ##' @param quant a \code{numeric} between \code{0} and \code{0.5} defining the half-quantile 
 ##' corresponding to the most extreme value for each variable not to be taken into account for 
 ##' determining the tolerance boundaries of the considered species (see Details)
@@ -30,7 +40,7 @@
 ##' 
 ##' @return 
 ##' 
-##' A \code{vector} or a \code{\link[raster:raster]{raster}} object, containing binary (\code{0} 
+##' A \code{vector} or a \code{\link[terra:rast]{SpatRaster}} object, containing binary (\code{0} 
 ##' or \code{1}) values.
 ##' 
 ##' 
@@ -110,7 +120,6 @@
 ##' plot(res)
 ##' 
 ##' 
-##' @importFrom raster stack subset nlayers mask reclassify coordinates cellFromXY Which 
 ##' @importFrom terra rast values vect quantile
 ## quantile
 ##' 
@@ -267,7 +276,7 @@ bm_SRE <- function(resp.var = NULL,
 
   ## 1. Check expl.var argument -----------------------------------------------
   if ((inherits(expl.var, 'data.frame') && any(sapply(expl.var, is.factor))) ||
-      (inherits(expl.var, c('RasterStack','SpatRaster')) && any(is.factor(expl.var)))) {
+      (inherits(expl.var, c('SpatRaster')) && any(is.factor(expl.var)))) {
     stop("SRE algorithm does not handle factorial variables")
   }
 

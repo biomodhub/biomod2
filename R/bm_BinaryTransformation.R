@@ -9,29 +9,27 @@
 ##' according to a predefined threshold (see Details).
 ##' 
 ##' 
-##' @param data a \code{vector}, a \code{matrix} or \code{data.frame}, a 
-##' \code{\link[terra:rast]{SpatRaster}} containing the 
-##' data to be converted
+##' @param data a \code{vector}, a \code{matrix}, \code{data.frame}, \code{array},
+##' or a \code{\link[terra:rast]{SpatRaster}} containing the data to be converted
 ##' @param threshold a \code{numeric} corresponding to the threshold used to convert the given data
 ##' @param do.filtering (\emph{optional, default} \code{FALSE}) \cr 
 ##' A \code{logical} value defining whether filtered data should be returned, or binary one 
 ##' (see Details)
 ##' 
-##' 
 ##' @return 
 ##' 
-##' An object of the same class than \code{data} and containing either binary (\code{0} or  
-##' \code{1}) values, or filtered values.
-##'
+##' An object of the same class than \code{data} and containing either
+##'  binary (\code{0} or \code{1}) values, or filtered values.
 ##'
 ##' @details
 ##' 
-##' If \code{data} is a \code{vector} or \code{\link[raster:raster]{raster}}, \code{threshold} 
-##' should be a single \code{numeric} value. \cr
+##' If \code{data} is a \code{vector}, \code{threshold} should be a single 
+##' \code{numeric} value. \cr
 ##' If \code{data} is a \code{matrix}, \code{data.frame} or 
-##' \code{\link[terra:rast]{SpatRaster}}, \code{threshold} should be a \code{vector} containing 
-##' as many values as the number of columns or layers contained in \code{data}. If only one 
-##' \code{numeric} value is given, the same threshold will be applied to all columns or layers. 
+##' \code{\link[terra:rast]{SpatRaster}}, \code{threshold} should be a
+##' \code{vector} containing as many values as the number of columns or 
+##' layers contained in \code{data}. If only one \code{numeric} value is given,
+##'  the same threshold will be applied to all columns or layers. 
 ##' \cr \cr
 ##' 
 ##' If \code{do.filtering = FALSE}, binary (\code{0} or \code{1}) values are returned. \cr 
@@ -43,9 +41,7 @@
 ##'   transformed in \code{1})
 ##' }
 ##' 
-##'
 ##' @keywords convert threshold binary filter
-##' 
 ##' 
 ##' @seealso \code{\link{BIOMOD_Projection}}, \code{\link{BIOMOD_EnsembleForecasting}}
 ##' @family Secundary functions

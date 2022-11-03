@@ -28,11 +28,11 @@
 
 #' Bioclimatic variables for SDM based on current condition
 #'
-#' A RasterStack with 5 bioclimatic variables commonly used for SDM and
-#' describing current climate. Additional information available at
-#' \href{https://www.worldclim.org/data/bioclim.html}{worldclim}
+#' A \code{\link[terra:rast]{SpatRaster}} with 5 bioclimatic variables commonly
+#' used for SDM and describing current climate. Additional information available
+#' at \href{https://www.worldclim.org/data/bioclim.html}{worldclim}
 #'
-#' @format A RasterStack with 5 layers:
+#' @format A \code{\link[terra:rast]{SpatRaster}} with 5 layers:
 #' \describe{
 #'   \item{bio3}{Isothermality}
 #'   \item{bio4}{Temperature Seasonality}
@@ -57,10 +57,11 @@
 
 #' Bioclimatic variables for SDM based on future condition
 #'
-#' A RasterStack with 5 bioclimatic variables commonly used for SDM and
-#' describing future climate based on old RCP scenarios at the horizon 2080.
+#' A \code{\link[terra:rast]{SpatRaster}} with 5 bioclimatic variables commonly
+#' used for SDM and describing future climate based on old RCP scenarios at the
+#' horizon 2080.
 #' 
-#' @format A RasterStack with 5 layers:
+#' @format A \code{\link[terra:rast]{SpatRaster}} with 5 layers:
 #' \describe{
 #'   \item{bio3}{Isothermality}
 #'   \item{bio4}{Temperature Seasonality}

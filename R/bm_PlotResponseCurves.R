@@ -17,10 +17,14 @@
 ##' @param models.chosen a \code{vector} containing model names to be kept, must be either 
 ##' \code{all} or a sub-selection of model names that can be obtained with the 
 ##' \code{\link{get_built_models}} function
-##' @param new.env a \code{matrix}, \code{data.frame} or \code{\link[terra:rast]{SpatRaster}} 
-##' object containing the new explanatory variables (in columns or layers, with names matching the 
-##' variables names given to the \code{\link{BIOMOD_FormatingData}} function to build 
-##' \code{bm.out}) that will be used to project the species distribution model(s)
+##' @param new.env a \code{matrix}, \code{data.frame} or 
+##' \code{\link[terra:rast]{SpatRaster}} object containing the new explanatory
+##'  variables (in columns or layers, with names matching the variables names
+##'  given to the \code{\link{BIOMOD_FormatingData}} function to build
+##'  \code{bm.out}) that will be used to project the species distribution model(s)
+##' \cr \emph{Note that old format from \pkg{raster} are still supported such as 
+##' \code{RasterStack} objects. }
+##' 
 ##' @param show.variables a \code{vector} containing the names of the explanatory variables 
 ##' present into \code{new.env} parameter and to be plotted
 ##' @param do.bivariate (\emph{optional, default} \code{FALSE}) \cr 
@@ -152,8 +156,6 @@
 ##'                       do.bivariate = TRUE)
 ##'                                       
 ##'                                       
-##' @importFrom raster maxValue minValue nlayers
-##' 
 ##' @importFrom foreach foreach %:%
 ##' @importFrom reshape2 melt
 ##' @importFrom ggplot2 ggplot aes_string geom_line geom_rug geom_raster facet_wrap xlab ylab labs 
@@ -427,11 +429,7 @@ bm_PlotResponseCurves <- function(bm.out
   }
   
   ## 3. Check new.env argument ------------------------------------------------
-  available.types.resp <- c('integer', 'numeric', 'data.frame', 'matrix',
-                            'SpatialPointsDataFrame', 'SpatialPoints', 'SpatVector')
-  
-  ####  Check response type -----------------------------------------------
-  
+
   .fun_testIfInherits(TRUE, "new.env", new.env, 
                       c("SpatRaster","Raster","data.frame","matrix"))
   

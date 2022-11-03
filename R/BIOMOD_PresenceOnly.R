@@ -15,10 +15,14 @@
 ##' @param bm.em a \code{\link{BIOMOD.ensemble.models.out}} object returned by the 
 ##' \code{\link{BIOMOD_EnsembleModeling}} function
 ##' @param bg.env (\emph{optional, default} \code{NULL}) \cr 
-##' A \code{matrix}, \code{data.frame} or \code{\link[raster:stack]{RasterStack}} object 
-##' containing values of environmental variables extracted from the background (\emph{if 
-##' presences are to be compared to background instead of absences or pseudo-absences selected 
-##' for modeling})
+##' A \code{matrix}, \code{data.frame}, \code{\link[terra:vect]{SpatVector}}
+##' or \code{\link[terra:rast]{SpatRaster}} object containing values of 
+##' environmental variables (in columns or layers) extracted from the background 
+##' (\emph{if presences are to be compared to background instead of absences or 
+##' pseudo-absences selected for modeling})
+##' \cr \emph{Note that old format from \pkg{raster} and \pkg{sp} are still supported such as 
+##' \code{RasterStack} and \code{SpatialPointsDataFrame} objects. }
+##' 
 ##' @param perc a \code{numeric} between \code{0} and \code{1} corresponding to the percentage of 
 ##' correctly classified presences for Minimal Predicted Area (see 
 ##' \code{ecospat.mpa()} in \pkg{ecospat})
@@ -170,7 +174,6 @@
 ## @importFrom ecospat ecospat.boyce ecospat.mpa
 ##' @importFrom PresenceAbsence presence.absence.accuracy
 ##' @importFrom data.table rbindlist
-##' @importFrom raster extract getValues
 ##' 
 ##' @export
 ##' 
@@ -529,13 +532,14 @@ ecospat.boyce <- function(fit, obs, nclass = 0, window.w = "default", res = 100,
     return(round(pi/ei,10))
   }
   
-  if (inherits(fit,"RasterLayer")) {
-    if (is.data.frame(obs) || is.matrix(obs)) {
-      obs <- extract(fit, obs)
-    }
-    fit <- getValues(fit)
-    fit <- fit[!is.na(fit)]
-  }
+  # here, ecospat.boyce should not receive RasterLayer
+  # if (inherits(fit,"RasterLayer")) {
+  #   if (is.data.frame(obs) || is.matrix(obs)) {
+  #     obs <- extract(fit, obs)
+  #   }
+  #   fit <- getValues(fit)
+  #   fit <- fit[!is.na(fit)]
+  # }
   
   mini <- min(fit,obs)
   maxi <- max(fit,obs)

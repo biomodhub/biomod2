@@ -656,8 +656,6 @@ setMethod("get_variables_importance", "BIOMOD.models.out",
 ##' plot(myBiomodProj)
 ##' 
 ##' 
-##' @importFrom raster subset
-## @importFrom rasterVis levelplot
 ##' @importFrom grDevices colorRampPalette colors dev.new gray rainbow
 ##' @importFrom graphics layout legend par points polygon text
 ##' 
