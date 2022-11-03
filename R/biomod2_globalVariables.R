@@ -31,9 +31,8 @@ utils::globalVariables(names = c("on_0_1000", "output.format", "keep.in.memory")
 ## BIOMOD_LoadModels ------------
 utils::globalVariables(names = c("full.name", "models", "run.eval", "data.set"))
 
-## BIOMOD_PresenceOnly ------------
-utils::globalVariables(names = c("ind.1"))
-
+## BIOMOD_RangeSize ------------
+utils::globalVariables(names = c("thiscol"))
 
 ## bm_RunModel ------------
 utils::globalVariables(names = c("expl_var_names", "resp_name", "criteria"))
