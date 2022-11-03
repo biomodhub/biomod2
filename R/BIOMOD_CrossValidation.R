@@ -209,7 +209,9 @@ BIOMOD_CrossValidation <- function(bm.format,
     
     ## BLOCK STRATIFIED CROSS VALIDATION --------------------------------------
     if (method == "block") {
-      if (!isNamespaceLoaded("ENMeval")) { requireNamespace("ENMeval", quietly = TRUE) }
+      if (!isNamespaceLoaded("ENMeval")) { 
+        if(!requireNamespace('ENMeval', quietly = TRUE)) stop("Package 'ENMeval' not found")
+        }
       DataSplitTable <- as.data.frame(matrix(NA, nrow(bm.format@coord), 4))
       blocks <- ENMeval::get.block(bm.format@coord[tmp == 1, ]
                                    , bm.format@coord[tmp == 0, ])
@@ -232,7 +234,9 @@ BIOMOD_CrossValidation <- function(bm.format,
     }
   } else {
     ## K-FOLD CROSS VALIDATION --------------------------------------------------------------------
-    if (!isNamespaceLoaded("dismo")) { requireNamespace("dismo", quietly = TRUE) }
+    if (!isNamespaceLoaded("dismo")) { 
+      if(!requireNamespace('dismo', quietly = TRUE)) stop("Package 'dismo' not found")
+    }
     for (rep in 1:nb.rep) {
       fold <- dismo::kfold(tmp, by = tmp, k = k)
       for (i in 1:k) {

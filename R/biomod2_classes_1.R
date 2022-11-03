@@ -342,7 +342,7 @@ setMethod('plot', signature(x = 'BIOMOD.formated.data', y = "missing"),
             
             if (nlyr(x@data.mask) > 0)
             {
-              requireNamespace("rasterVis", quietly = TRUE)
+              if(!requireNamespace('rasterVis', quietly = TRUE)) stop("Package 'rasterVis' not found")
               ## check if there is some undefined areas to prevent from strange plotting issues
               if (minmax(x@data.mask)["min", 1] == -1) { 
                 # there is undefined area
@@ -819,8 +819,8 @@ setMethod('plot', signature(x = 'BIOMOD.formated.data.PA', y = "missing"),
           {
             if (nlyr(x@data.mask) > 0)
             {
-              requireNamespace("rasterVis", quietly = TRUE)
-
+              if(!requireNamespace('rasterVis', quietly = TRUE)) stop("Package 'rasterVis' not found")
+              
               ## check if there is some undefined areas to prevent from strange plotting issues
               if (min(global(x@data.mask, min)) == -1) { # there is undefined area
                 my.at <- seq(-1.5, 1.5, by = 1) ## breaks of color key

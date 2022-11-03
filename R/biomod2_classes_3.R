@@ -713,7 +713,7 @@ setMethod(
     }
     
     if (inherits(x@proj.out, "BIOMOD.stored.SpatRaster")) {
-      requireNamespace("rasterVis", quietly = TRUE)
+      if(!requireNamespace('rasterVis', quietly = TRUE)) stop("Package 'rasterVis' not found")
       maxi <- 
         try(
           global(

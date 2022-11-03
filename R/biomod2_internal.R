@@ -632,7 +632,9 @@ check_data_range <- function(model, new_data)
   if (model_subclass %in% c("GAM_mgcv", "BAM_mgcv")) {
     # cat("\n*** unloading gam package / loading mgcv package")
     if (isNamespaceLoaded("gam")) { unloadNamespace("gam") }
-    if (!isNamespaceLoaded("mgcv")) { requireNamespace("mgcv", quietly = TRUE) }
+    if (!isNamespaceLoaded("mgcv")) { 
+      if(!requireNamespace('mgcv', quietly = TRUE)) stop("Package 'mgcv' not found")
+    }
   }
   
   if (model_subclass == "GAM_gam") {
@@ -642,7 +644,9 @@ check_data_range <- function(model, new_data)
       if (isNamespaceLoaded("car")) { unloadNamespace("car") } ## need to unload car before mgcv
       unloadNamespace("mgcv")
     }
-    if (!isNamespaceLoaded("gam")) { requireNamespace("gam", quietly = TRUE) }
+    if (!isNamespaceLoaded("gam")) { 
+      if(!requireNamespace('gam', quietly = TRUE)) stop("Package 'gam' not found")
+    }
   }
   invisible(NULL)
 }

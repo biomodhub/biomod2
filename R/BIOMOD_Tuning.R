@@ -238,8 +238,12 @@ BIOMOD_Tuning <- function(bm.format,
   mod.names = c('GLM', 'GBM', 'GAM', 'CTA', 'ANN', 'SRE', 'FDA', 'MARS', 'RF', 'MAXENT.Phillips')
   
   if (sum(mod.names %in% models) > 0) {
-    if (!isNamespaceLoaded("caret")) { requireNamespace("caret", quietly = TRUE) }
-    if (!isNamespaceLoaded('dplyr')) { requireNamespace("dplyr", quietly = TRUE) }
+    if (!isNamespaceLoaded("caret")) { 
+      if(!requireNamespace('caret', quietly = TRUE)) stop("Package 'caret' not found")
+    }
+    if (!isNamespaceLoaded('dplyr')) { 
+      if(!requireNamespace('dplyr', quietly = TRUE)) stop("Package 'dplyr' not found")
+    }
     if (is.null(ctrl.train)) {
       ctrl.train <- caret::trainControl(method = "cv",
                                         repeats = 3,
@@ -247,9 +251,13 @@ BIOMOD_Tuning <- function(bm.format,
                                         classProbs = TRUE,
                                         returnData = FALSE)
     }
-    if ("MAXENT.Phillips" %in% models && !isNamespaceLoaded('ENMeval')) { requireNamespace("ENMeval", quietly = TRUE) }
+    if ("MAXENT.Phillips" %in% models && !isNamespaceLoaded('ENMeval')) { 
+      if(!requireNamespace('ENMeval', quietly = TRUE)) stop("Package 'ENMeval' not found")
+    }
     # if ("MAXENT.Tsuruoka" %in% models && !isNamespaceLoaded('maxent')) { requireNamespace("maxent", quietly = TRUE) }
-    if ("SRE" %in% models && !isNamespaceLoaded('dismo')) { requireNamespace("dismo", quietly = TRUE) }
+    if ("SRE" %in% models && !isNamespaceLoaded('dismo')) { 
+      if(!requireNamespace('dismo', quietly = TRUE)) stop("Package 'dismo' not found")
+    }
   }
   
   tune.SRE <- tune.GLM <- tune.MAXENT.Phillips <- tune.GAM <- tune.GBM <- 
@@ -522,7 +530,9 @@ BIOMOD_Tuning <- function(bm.format,
   {
     cat(paste("\n-=-=-=-=-=-=-=-=-=-=\n", "Start tuning GLM\n"))
     if (is.null(ctrl.GLM)) { ctrl.GLM <- ctrl.train }
-    if ("s_smoother" %in% GLM.type) { requireNamespace("gam", quietly = TRUE) }
+    if ("s_smoother" %in% GLM.type) { 
+      if(!requireNamespace('gam', quietly = TRUE)) stop("Package 'gam' not found")
+      }
     
     fm <- list()
     GLM.results = foreach (type = GLM.type, .combine = "rbind") %:%
