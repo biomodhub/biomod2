@@ -53,10 +53,12 @@
 
 .fun_testIfIn <- function(test, objName, objValue, values)
 {
-  if (sum(objValue %in% values) < length(objValue)) {
-    stop(paste0("\n", paste0(objName, " must be '", paste0(values[1:(length(values) -1)], collapse = "', '")
-                             , ifelse(length(values) > 1, paste0("' or '", values[length(values)]))
-                             , "'")))
+  if (any(! objValue %in% values)) {
+    stop(paste0("\n", objName, " must be '", 
+                ifelse(length(values) > 1, 
+                       paste0(paste0(values[1:(length(values) -1)], collapse = "', '"),
+                              "' or '", values[length(values)])
+                             , paste0(values,"'"))))
     test <- FALSE
   }
   return(test)
