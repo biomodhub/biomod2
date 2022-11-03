@@ -181,7 +181,8 @@
 ##' @importFrom foreach foreach %dopar%
 ## @importFrom doParallel registerDoParallel
 ##' @importFrom raster canProcessInMemory
-##' @importFrom terra rast subset nlyr writeRaster terraOptions wrap
+##' @importFrom terra rast subset nlyr writeRaster terraOptions wrap mem_info
+##' @importFrom utils capture.output
 ##' @importFrom abind asub
 ##' 
 ##' @export
@@ -577,18 +578,22 @@ BIOMOD_Projection <- function(bm.mod,
     do.stack <- TRUE
   } else if (do.stack) { 
     # test if there is enough memory to work with multilayer SpatRaster
-    ncopies = 2 * length(models.chosen) + nlyr(new.env)
-    test <- new.env@ptr$mem_needs(terra:::spatOptions(ncopies = ncopies))
-    if (test[1] > test[2]) {
+    capture.output({
+      test <-
+        mem_info(
+          subset(new.env, 1),
+          n = 2 * length(models.chosen) + nlyr(new.env)
+        )
+    })
+    if (test["needed"] >= test["available"]) { 
       terraOptions(todisk = TRUE) 
     }
-    # following is more rigorous but we cannot suppress cat messages
-    # test <-
-    #   mem_info(
-    #     subset(new.env, 1), 
-    #     n = 2 * length(models.chosen) + nlyr(new.env)
-    #   )
-    # if (test["needed"] >= test["available"]) { terraOptions(todisk = TRUE) }
+    # option without capture.output but with :::
+    # ncopies = 2 * length(models.chosen) + nlyr(new.env)
+    # test <- new.env@ptr$mem_needs(terra:::spatOptions(ncopies = ncopies))
+    # if (test[1] > test[2]) {
+    #   terraOptions(todisk = TRUE) 
+    # }
   }
   
   ## 9. Check output.format ---------------------------------------------------
