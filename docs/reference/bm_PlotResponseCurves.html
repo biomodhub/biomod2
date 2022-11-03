@@ -21,7 +21,7 @@ explanatory variables at a time, see Details)."><!-- mathjax --><script src="htt
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">biomod2</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">4.1-2</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">4.2-0</span>
       </span>
     </div>
 
@@ -128,10 +128,13 @@ object that can be obtained with the <code><a href="BIOMOD_Modeling.html">BIOMOD
 <code>all</code> or a sub-selection of model names that can be obtained with the 
 <code><a href="getters.out.html">get_built_models</a></code> function</p></dd>
 <dt>new.env</dt>
-<dd><p>a <code>matrix</code>, <code>data.frame</code> or <code><a href="https://rdrr.io/pkg/terra/man/rast.html" class="external-link">SpatRaster</a></code> 
-object containing the new explanatory variables (in columns or layers, with names matching the 
-variables names given to the <code><a href="BIOMOD_FormatingData.html">BIOMOD_FormatingData</a></code> function to build 
-<code>bm.out</code>) that will be used to project the species distribution model(s)</p></dd>
+<dd><p>a <code>matrix</code>, <code>data.frame</code> or 
+<code><a href="https://rdrr.io/pkg/terra/man/rast.html" class="external-link">SpatRaster</a></code> object containing the new explanatory
+ variables (in columns or layers, with names matching the variables names
+ given to the <code><a href="BIOMOD_FormatingData.html">BIOMOD_FormatingData</a></code> function to build
+ <code>bm.out</code>) that will be used to project the species distribution model(s)
+<br><em>Note that old format from <span class="pkg">raster</span> are still supported such as 
+<code>RasterStack</code> objects. </em></p></dd>
 <dt>show.variables</dt>
 <dd><p>a <code>vector</code> containing the names of the explanatory variables 
 present into <code>new.env</code> parameter and to be plotted</p></dd>

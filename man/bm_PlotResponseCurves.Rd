@@ -25,10 +25,13 @@ object that can be obtained with the \code{\link{BIOMOD_Modeling}} or
 \code{all} or a sub-selection of model names that can be obtained with the 
 \code{\link{get_built_models}} function}
 
-\item{new.env}{a \code{matrix}, \code{data.frame} or \code{\link[terra:rast]{SpatRaster}} 
-object containing the new explanatory variables (in columns or layers, with names matching the 
-variables names given to the \code{\link{BIOMOD_FormatingData}} function to build 
-\code{bm.out}) that will be used to project the species distribution model(s)}
+\item{new.env}{a \code{matrix}, \code{data.frame} or 
+\code{\link[terra:rast]{SpatRaster}} object containing the new explanatory
+ variables (in columns or layers, with names matching the variables names
+ given to the \code{\link{BIOMOD_FormatingData}} function to build
+ \code{bm.out}) that will be used to project the species distribution model(s)
+\cr \emph{Note that old format from \pkg{raster} are still supported such as 
+\code{RasterStack} objects. }}
 
 \item{show.variables}{a \code{vector} containing the names of the explanatory variables 
 present into \code{new.env} parameter and to be plotted}

@@ -19,7 +19,7 @@ represent new areas, resolution or time scales for example)."><!-- mathjax --><s
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">biomod2</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">4.1-2</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">4.2-0</span>
       </span>
     </div>
 
@@ -125,10 +125,13 @@ represent new areas, resolution or time scales for example</em>).</p>
 <dd><p>a <code>character</code> corresponding to the name (ID) of the projection set 
 (<em>a new folder will be created within the simulation folder with this name</em>)</p></dd>
 <dt>new.env</dt>
-<dd><p>a <code>matrix</code>, <code>data.frame</code> or <code><a href="https://rdrr.io/pkg/terra/man/rast.html" class="external-link">SpatRaster</a></code> 
-object containing the new explanatory variables (in columns or layers, with names matching the 
-variables names given to the <code><a href="BIOMOD_FormatingData.html">BIOMOD_FormatingData</a></code> function to build 
-<code>bm.mod</code>) that will be used to project the species distribution model(s)</p></dd>
+<dd><p>A <code>matrix</code>, <code>data.frame</code> or
+ <code><a href="https://rdrr.io/pkg/terra/man/rast.html" class="external-link">SpatRaster</a></code> object containing the new 
+explanatory variables (in columns or layers, with names matching the
+ variables names given to the <code><a href="BIOMOD_FormatingData.html">BIOMOD_FormatingData</a></code> function to build 
+<code>bm.mod</code>) that will be used to project the species distribution model(s)
+<br><em>Note that old format from <span class="pkg">raster</span> are still supported such as 
+<code>RasterStack</code> objects. </em></p></dd>
 <dt>new.env.xy</dt>
 <dd><p>(<em>optional, default</em> <code>NULL</code>) <br> 
 If <code>new.env</code> is a <code>matrix</code> or a <code>data.frame</code>, a 2-columns <code>matrix</code> or 

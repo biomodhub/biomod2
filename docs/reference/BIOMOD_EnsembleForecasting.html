@@ -19,7 +19,7 @@ BIOMOD_EnsembleModeling function onto new environmental data
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">biomod2</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">4.1-2</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">4.2-0</span>
       </span>
     </div>
 
@@ -130,11 +130,13 @@ projection set (<em>a new folder will be created within the simulation folder wi
 name</em>)</p></dd>
 <dt>new.env</dt>
 <dd><p>(<em>optional, default</em> <code>NULL</code>) <br> 
-If <code>bm.proj = NULL</code>, a <code>matrix</code>, <code>data.frame</code> or 
-<code><a href="https://rdrr.io/pkg/terra/man/rast.html" class="external-link">SpatRaster</a></code> object containing the new explanatory variables (in 
-columns or layers, with names matching the variables names given to the 
-<code><a href="BIOMOD_FormatingData.html">BIOMOD_FormatingData</a></code> function to build <code>bm.em</code>) that will be used to 
-project the ensemble species distribution model(s)</p></dd>
+If <code>bm.proj = NULL</code>, a <code>matrix</code>, <code>data.frame</code> or
+ <code><a href="https://rdrr.io/pkg/terra/man/rast.html" class="external-link">SpatRaster</a></code> object containing the new 
+explanatory variables (in columns or layers, with names matching the
+ variables names given to the <code><a href="BIOMOD_FormatingData.html">BIOMOD_FormatingData</a></code> function to build 
+<code>bm.mod</code>) that will be used to project the species distribution model(s)
+<br><em>Note that old format from <span class="pkg">raster</span> are still supported such as 
+<code>RasterStack</code> objects. </em></p></dd>
 <dt>new.env.xy</dt>
 <dd><p>(<em>optional, default</em> <code>NULL</code>) <br> 
 If <code>new.env</code> is a <code>matrix</code> or a <code>data.frame</code>, a 2-columns <code>matrix</code> or 
@@ -178,10 +180,11 @@ parallelize the single models computation</p></dd>
 outputs. <br> Models projections are stored out of <span style="R">R</span> (for memory storage reasons) in 
 <code>proj.name</code> folder created in the current working directory :</p><ol><li><p>the output is a 4-dimensional array if <code>new.env</code> is a <code>matrix</code> or a 
   <code>data.frame</code></p></li>
-<li><p>it is a <code>rasterStack</code> if <code>new.env</code> is a <code>rasterStack</code> (or several 
-  <code>rasterLayer</code> objects, if <code>new.env</code> is too large)</p></li>
-<li><p>raw projections, as well as binary and filtered projections (if asked), are saved in 
-  the <code>proj.name</code> folder</p></li>
+<li><p>it is a <code><a href="https://rdrr.io/pkg/terra/man/rast.html" class="external-link">SpatRaster</a></code> if <code>new.env</code> 
+  is a <code><a href="https://rdrr.io/pkg/terra/man/rast.html" class="external-link">SpatRaster</a></code> (or several
+  <code><a href="https://rdrr.io/pkg/terra/man/rast.html" class="external-link">SpatRaster</a></code> objects, if <code>new.env</code> is too large)</p></li>
+<li><p>raw projections, as well as binary and filtered projections (if asked),
+   are saved in the <code>proj.name</code> folder</p></li>
 </ol></div>
     <div id="details">
     <h2>Details</h2>

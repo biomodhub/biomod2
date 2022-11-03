@@ -20,10 +20,13 @@ BIOMOD_PresenceOnly(
 \code{\link{BIOMOD_EnsembleModeling}} function}
 
 \item{bg.env}{(\emph{optional, default} \code{NULL}) \cr 
-A \code{matrix}, \code{data.frame} or \code{\link[raster:stack]{RasterStack}} object 
-containing values of environmental variables extracted from the background (\emph{if 
-presences are to be compared to background instead of absences or pseudo-absences selected 
-for modeling})}
+A \code{matrix}, \code{data.frame}, \code{\link[terra:vect]{SpatVector}}
+or \code{\link[terra:rast]{SpatRaster}} object containing values of 
+environmental variables (in columns or layers) extracted from the background 
+(\emph{if presences are to be compared to background instead of absences or 
+pseudo-absences selected for modeling})
+\cr \emph{Note that old format from \pkg{raster} and \pkg{sp} are still supported such as 
+\code{RasterStack} and \code{SpatialPointsDataFrame} objects. }}
 
 \item{perc}{a \code{numeric} between \code{0} and \code{1} corresponding to the percentage of 
 correctly classified presences for Minimal Predicted Area (see 

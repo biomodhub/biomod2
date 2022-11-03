@@ -66,14 +66,20 @@
 \S4method{show}{BIOMOD.formated.data}(object)
 }
 \arguments{
-\item{sp}{a \code{vector}, \code{\link[sp]{SpatialPoints}} (\emph{if presence-only}) or 
-\code{\link[sp]{SpatialPointsDataFrame}} object containing binary data (\code{0} : absence, 
-\code{1} : presence, \code{NA} : indeterminate) for a single species that will be used to 
-build the species distribution model(s)}
+\item{sp}{A \code{vector}, a \code{\link[terra:vect]{SpatVector}} without associated 
+data (\emph{if presence-only}), or a \code{\link[terra:vect]{SpatVector}}
+object containing binary data (\code{0} : absence,  \code{1} : presence,
+\code{NA} : indeterminate) for a single species that will be used to 
+build the species distribution model(s)
+\cr \emph{Note that old format from \pkg{sp} are still supported such as
+ \code{SpatialPoints}  (\emph{if presence-only}) or \code{SpatialPointsDataFrame}
+ object containing binary data.}}
 
-\item{env}{a \code{matrix}, \code{data.frame}, \code{\link[sp]{SpatialPointsDataFrame}} 
-or \code{\link[raster:stack]{RasterStack}} object containing the explanatory variables 
-(in columns or layers) that will be used to build the species distribution model(s)}
+\item{env}{a \code{matrix}, \code{data.frame}, \code{\link[terra:vect]{SpatVector}}
+or \code{\link[terra:rast]{SpatRaster}} object containing the explanatory variables 
+(in columns or layers) that will be used to build the species distribution model(s).
+\cr \emph{Note that old format from \pkg{raster} and \pkg{sp} are still supported such as 
+\code{RasterStack} and \code{SpatialPointsDataFrame} objects. }}
 
 \item{xy}{(\emph{optional, default} \code{NULL}) \cr 
 If \code{resp.var} is a \code{vector}, a 2-columns \code{matrix} or \code{data.frame} 
@@ -85,28 +91,36 @@ species distribution model(s)}
 \item{sp.name}{a \code{character} corresponding to the species name}
 
 \item{eval.sp}{(\emph{optional, default} \code{NULL}) \cr 
-A \code{vector}, \code{\link[sp]{SpatialPoints}} (\emph{if presence-only}) or 
-\code{\link[sp]{SpatialPointsDataFrame}} object containing binary data (\code{0} : absence, 
-\code{1} : presence, \code{NA} : indeterminate) for a single species that will be used to 
-evaluate the species distribution model(s) with independent data}
+A \code{vector}, a \code{\link[terra:vect]{SpatVector}} without associated 
+data (\emph{if presence-only}), or a \code{\link[terra:vect]{SpatVector}}
+ object containing binary data (\code{0} : absence, \code{1} : presence, 
+ \code{NA} : indeterminate) for a single species that will be used to
+  evaluate the species distribution model(s) with independent data
+\cr \emph{Note that old format from \pkg{sp} are still supported such as
+ \code{SpatialPoints}  (\emph{if presence-only}) or \code{SpatialPointsDataFrame}
+ object containing binary data.}}
 
 \item{eval.env}{(\emph{optional, default} \code{NULL}) \cr 
-A \code{matrix}, \code{data.frame}, \code{\link[sp]{SpatialPointsDataFrame}} or 
-\code{\link[raster:stack]{RasterStack}} object containing the explanatory variables (in 
-columns or layers) that will be used to evaluate the species distribution model(s) with 
-independent data}
+A \code{matrix}, \code{data.frame}, \code{\link[terra:vect]{SpatVector}} or
+  \code{\link[terra:rast]{SpatRaster}} object containing the explanatory
+  variables (in columns or layers) that will be used to evaluate the species
+  distribution model(s) with independent data
+\cr \emph{Note that old format from \pkg{raster} and \pkg{sp} are still
+supported such as \code{RasterStack} and \code{SpatialPointsDataFrame}
+objects. }}
 
 \item{eval.xy}{(\emph{optional, default} \code{NULL}) \cr 
-If \code{resp.var} is a \code{vector}, a 2-columns \code{matrix} or \code{data.frame} 
-containing the corresponding \code{X} and \code{Y} coordinates that will be used to evaluate 
-the species distribution model(s) with independent data}
+If \code{resp.var} is a \code{vector}, a 2-columns \code{matrix} or
+\code{data.frame} containing the corresponding \code{X} and \code{Y}
+coordinates that will be used to evaluate the species distribution model(s)
+with independent data}
 
 \item{na.rm}{(\emph{optional, default} \code{TRUE}) \cr 
-A \code{logical} value defining whether points having one or several missing values for 
-explanatory variables should be removed from the analysis or not}
+A \code{logical} value defining whether points having one or several missing
+values for explanatory variables should be removed from the analysis or not}
 
-\item{data.mask}{a \code{\link[raster:stack]{RasterStack}} object containing the mask of the 
-studied area}
+\item{data.mask}{a \code{\link[terra:rast]{SpatRaster}} object 
+containing the mask of the studied area}
 
 \item{x}{a \code{\link{BIOMOD.formated.data.PA}} object}
 
@@ -137,7 +151,7 @@ coordinates}
 
 \item{\code{data.env.var}}{a \code{data.frame} containing explanatory variables}
 
-\item{\code{data.mask}}{a \code{\link[raster:stack]{RasterStack}} object containing the mask of the 
+\item{\code{data.mask}}{a \code{\link[terra:rast]{SpatRaster}} object containing the mask of the 
 studied area}
 
 \item{\code{has.data.eval}}{a \code{logical} value defining whether evaluation data is given}

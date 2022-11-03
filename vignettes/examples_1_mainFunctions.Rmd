@@ -19,11 +19,10 @@ Here are presented, in a full and complete example, all main functions (starting
 
 ```R
 library(biomod2)
-library(raster)
+library(terra)
 
 # Load species occurrences (6 species available)
-myFile <- system.file('external/species/mammals_table.csv', package = 'biomod2')
-DataSpecies <- read.csv(myFile, row.names = 1)
+data("DataSpecies")
 head(DataSpecies)
 
 # Select the name of the studied species
@@ -36,8 +35,8 @@ myResp <- as.numeric(DataSpecies[, myRespName])
 myRespXY <- DataSpecies[, c('X_WGS84', 'Y_WGS84')]
 
 # Load environmental variables extracted from BIOCLIM (bio_3, bio_4, bio_7, bio_11 & bio_12)
-myFiles <- paste0('external/bioclim/current/bio', c(3, 4, 7, 11, 12), '.grd')
-myExpl <- raster::stack(system.file(myFiles, package = 'biomod2'))
+data("bioclim_current")
+myExpl <- rast(bioclim_current)
 ```
 
 
@@ -295,7 +294,7 @@ myBiomodPO
 # Evaluate models with Boyce index and MPA (using background data)
 myBiomodPO <- BIOMOD_PresenceOnly(bm.mod = myBiomodModelOut,
                                   bm.em = myBiomodEM, 
-                                  bg.env = getValues(myExpl))
+                                  bg.env = values(myExpl))
 myBiomodPO
 ```
 
@@ -341,8 +340,8 @@ plot(myBiomodEMProj)
 
 ```R
 # Load environmental variables extracted from BIOCLIM (bio_3, bio_4, bio_7, bio_11 & bio_12)
-myFiles = paste0('external/bioclim/future/bio', c(3, 4, 7, 11, 12), '.grd')
-myExplFuture = raster::stack(system.file(myFiles, package = 'biomod2'))
+data("bioclim_future")
+myExplFuture = rast(bioclim_future)
 
 # Project onto future conditions
 myBiomodProjectionFuture <- BIOMOD_Projection(bm.mod = myBiomodModelOut,
@@ -353,8 +352,8 @@ myBiomodProjectionFuture <- BIOMOD_Projection(bm.mod = myBiomodModelOut,
                                               build.clamping.mask = TRUE)
 
 # Load current and future binary projections
-CurrentProj <- stack("GuloGulo/proj_Current/proj_Current_GuloGulo_TSSbin.grd")
-FutureProj <- stack("GuloGulo/proj_Future/proj_Future_GuloGulo_TSSbin.grd")
+CurrentProj <- rast("GuloGulo/proj_Current/proj_Current_GuloGulo_TSSbin.grd")
+FutureProj <- rast("GuloGulo/proj_Future/proj_Future_GuloGulo_TSSbin.grd")
 
 # Compute differences
 myBiomodRangeSize <- BIOMOD_RangeSize(proj.current = CurrentProj, proj.future = FutureProj)

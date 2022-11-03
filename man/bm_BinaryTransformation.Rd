@@ -22,9 +22,8 @@ bm_BinaryTransformation(data, threshold, do.filtering = FALSE)
 \S4method{bm_BinaryTransformation}{SpatRaster}(data, threshold, do.filtering = FALSE)
 }
 \arguments{
-\item{data}{a \code{vector}, a \code{matrix} or \code{data.frame}, a 
-\code{\link[terra:rast]{SpatRaster}} containing the 
-data to be converted}
+\item{data}{a \code{vector}, a \code{matrix}, \code{data.frame}, \code{array},
+or a \code{\link[terra:rast]{SpatRaster}} containing the data to be converted}
 
 \item{threshold}{a \code{numeric} corresponding to the threshold used to convert the given data}
 
@@ -33,8 +32,8 @@ A \code{logical} value defining whether filtered data should be returned, or bin
 (see Details)}
 }
 \value{
-An object of the same class than \code{data} and containing either binary (\code{0} or  
-\code{1}) values, or filtered values.
+An object of the same class than \code{data} and containing either
+ binary (\code{0} or \code{1}) values, or filtered values.
 }
 \description{
 This internal \pkg{biomod2} function allows to convert probability (not necessary 
@@ -42,12 +41,13 @@ between \code{0} and \code{1}) values into binary presence-absence (\code{0} or 
 according to a predefined threshold (see Details).
 }
 \details{
-If \code{data} is a \code{vector} or \code{\link[raster:raster]{raster}}, \code{threshold} 
-should be a single \code{numeric} value. \cr
+If \code{data} is a \code{vector}, \code{threshold} should be a single 
+\code{numeric} value. \cr
 If \code{data} is a \code{matrix}, \code{data.frame} or 
-\code{\link[terra:rast]{SpatRaster}}, \code{threshold} should be a \code{vector} containing 
-as many values as the number of columns or layers contained in \code{data}. If only one 
-\code{numeric} value is given, the same threshold will be applied to all columns or layers. 
+\code{\link[terra:rast]{SpatRaster}}, \code{threshold} should be a
+\code{vector} containing as many values as the number of columns or 
+layers contained in \code{data}. If only one \code{numeric} value is given,
+ the same threshold will be applied to all columns or layers. 
 \cr \cr
 
 If \code{do.filtering = FALSE}, binary (\code{0} or \code{1}) values are returned. \cr 

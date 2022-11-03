@@ -19,7 +19,7 @@ according to a predefined threshold (see Details)."><!-- mathjax --><script src=
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">biomod2</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">4.1-2</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">4.2-0</span>
       </span>
     </div>
 
@@ -121,9 +121,8 @@ according to a predefined threshold (see Details).</p>
     <div id="arguments">
     <h2>Arguments</h2>
     <dl><dt>data</dt>
-<dd><p>a <code>vector</code>, a <code>matrix</code> or <code>data.frame</code>, a 
-<code><a href="https://rdrr.io/pkg/terra/man/rast.html" class="external-link">SpatRaster</a></code> containing the 
-data to be converted</p></dd>
+<dd><p>a <code>vector</code>, a <code>matrix</code>, <code>data.frame</code>, <code>array</code>,
+or a <code><a href="https://rdrr.io/pkg/terra/man/rast.html" class="external-link">SpatRaster</a></code> containing the data to be converted</p></dd>
 <dt>threshold</dt>
 <dd><p>a <code>numeric</code> corresponding to the threshold used to convert the given data</p></dd>
 <dt>do.filtering</dt>
@@ -133,17 +132,18 @@ A <code>logical</code> value defining whether filtered data should be returned, 
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>An object of the same class than <code>data</code> and containing either binary (<code>0</code> or  
-<code>1</code>) values, or filtered values.</p>
+    <p>An object of the same class than <code>data</code> and containing either
+ binary (<code>0</code> or <code>1</code>) values, or filtered values.</p>
     </div>
     <div id="details">
     <h2>Details</h2>
-    <p>If <code>data</code> is a <code>vector</code> or <code><a href="https://rdrr.io/pkg/raster/man/raster.html" class="external-link">raster</a></code>, <code>threshold</code> 
-should be a single <code>numeric</code> value. <br>
+    <p>If <code>data</code> is a <code>vector</code>, <code>threshold</code> should be a single 
+<code>numeric</code> value. <br>
 If <code>data</code> is a <code>matrix</code>, <code>data.frame</code> or 
-<code><a href="https://rdrr.io/pkg/terra/man/rast.html" class="external-link">SpatRaster</a></code>, <code>threshold</code> should be a <code>vector</code> containing 
-as many values as the number of columns or layers contained in <code>data</code>. If only one 
-<code>numeric</code> value is given, the same threshold will be applied to all columns or layers. 
+<code><a href="https://rdrr.io/pkg/terra/man/rast.html" class="external-link">SpatRaster</a></code>, <code>threshold</code> should be a
+<code>vector</code> containing as many values as the number of columns or 
+layers contained in <code>data</code>. If only one <code>numeric</code> value is given,
+ the same threshold will be applied to all columns or layers. 
 <br><br></p>
 <p>If <code>do.filtering = FALSE</code>, binary (<code>0</code> or <code>1</code>) values are returned. <br> 
 If <code>do.filtering = TRUE</code>, values will be <em>filtered</em> according to <code>threshold</code>, 

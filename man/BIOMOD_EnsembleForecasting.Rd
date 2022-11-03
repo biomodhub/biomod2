@@ -31,11 +31,13 @@ projection set (\emph{a new folder will be created within the simulation folder 
 name})}
 
 \item{new.env}{(\emph{optional, default} \code{NULL}) \cr 
-If \code{bm.proj = NULL}, a \code{matrix}, \code{data.frame} or 
-\code{\link[terra:rast]{SpatRaster}} object containing the new explanatory variables (in 
-columns or layers, with names matching the variables names given to the 
-\code{\link{BIOMOD_FormatingData}} function to build \code{bm.em}) that will be used to 
-project the ensemble species distribution model(s)}
+If \code{bm.proj = NULL}, a \code{matrix}, \code{data.frame} or
+ \code{\link[terra:rast]{SpatRaster}} object containing the new 
+explanatory variables (in columns or layers, with names matching the
+ variables names given to the \code{\link{BIOMOD_FormatingData}} function to build 
+\code{bm.mod}) that will be used to project the species distribution model(s)
+\cr \emph{Note that old format from \pkg{raster} are still supported such as 
+\code{RasterStack} objects. }}
 
 \item{new.env.xy}{(\emph{optional, default} \code{NULL}) \cr 
 If \code{new.env} is a \code{matrix} or a \code{data.frame}, a 2-columns \code{matrix} or 
@@ -80,10 +82,11 @@ outputs. \cr Models projections are stored out of \R (for memory storage reasons
 \enumerate{
   \item the output is a 4-dimensional array if \code{new.env} is a \code{matrix} or a 
   \code{data.frame}
-  \item it is a \code{rasterStack} if \code{new.env} is a \code{rasterStack} (or several 
-  \code{rasterLayer} objects, if \code{new.env} is too large)
-  \item raw projections, as well as binary and filtered projections (if asked), are saved in 
-  the \code{proj.name} folder
+  \item it is a \code{\link[terra:rast]{SpatRaster}} if \code{new.env} 
+  is a \code{\link[terra:rast]{SpatRaster}} (or several
+  \code{\link[terra:rast]{SpatRaster}} objects, if \code{new.env} is too large)
+  \item raw projections, as well as binary and filtered projections (if asked),
+   are saved in the \code{proj.name} folder
 }
 }
 \description{
@@ -227,6 +230,7 @@ myBiomodEMProj <- BIOMOD_EnsembleForecasting(bm.em = myBiomodEM,
                                              metric.filter = 'all')
 myBiomodEMProj
 plot(myBiomodEMProj)
+
 
 
 }

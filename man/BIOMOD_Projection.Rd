@@ -26,10 +26,13 @@ BIOMOD_Projection(
 \item{proj.name}{a \code{character} corresponding to the name (ID) of the projection set 
 (\emph{a new folder will be created within the simulation folder with this name})}
 
-\item{new.env}{a \code{matrix}, \code{data.frame} or \code{\link[terra:rast]{SpatRaster}} 
-object containing the new explanatory variables (in columns or layers, with names matching the 
-variables names given to the \code{\link{BIOMOD_FormatingData}} function to build 
-\code{bm.mod}) that will be used to project the species distribution model(s)}
+\item{new.env}{A \code{matrix}, \code{data.frame} or
+ \code{\link[terra:rast]{SpatRaster}} object containing the new 
+explanatory variables (in columns or layers, with names matching the
+ variables names given to the \code{\link{BIOMOD_FormatingData}} function to build 
+\code{bm.mod}) that will be used to project the species distribution model(s)
+\cr \emph{Note that old format from \pkg{raster} are still supported such as 
+\code{RasterStack} objects. }}
 
 \item{new.env.xy}{(\emph{optional, default} \code{NULL}) \cr 
 If \code{new.env} is a \code{matrix} or a \code{data.frame}, a 2-columns \code{matrix} or 

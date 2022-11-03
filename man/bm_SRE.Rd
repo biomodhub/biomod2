@@ -13,17 +13,26 @@ bm_SRE(
 )
 }
 \arguments{
-\item{resp.var}{a \code{vector}, \code{\link[sp]{SpatialPoints}} or 
-\code{\link[sp]{SpatialPointsDataFrame}} object containing binary data (\code{0} : absence, 
-\code{1} : presence, \code{NA} : indeterminate) for a single species}
+\item{resp.var}{a \code{vector}, a \code{\link[terra:vect]{SpatVector}}
+without associated data (\emph{if presence-only}), 
+or a \code{\link[terra:vect]{SpatVector}} object containing binary data  
+(\code{0} : absence, \code{1} : presence, \code{NA} : indeterminate) 
+for a single species that will be used to build the species distribution model(s)
+\cr \emph{Note that old format from \pkg{sp} are still supported such as
+ \code{SpatialPoints}  (\emph{if presence-only}) or \code{SpatialPointsDataFrame}
+ object containing binary data.}}
 
-\item{expl.var}{a \code{matrix}, \code{data.frame}, \code{\link[sp]{SpatialPointsDataFrame}} 
-or \code{\link[raster:stack]{RasterStack}} object containing the explanatory variables (in 
-columns or layers) that will be used to build the SRE model}
+\item{expl.var}{a \code{matrix}, \code{data.frame}, \code{\link[terra:vect]{SpatVector}}
+or \code{\link[terra:rast]{SpatRaster}} object containing the explanatory variables (in 
+columns or layers) that will be used to build the SRE model
+\cr \emph{Note that old format from \pkg{raster} and \pkg{sp} are still supported such as 
+\code{RasterStack} and \code{SpatialPointsDataFrame} objects. }}
 
-\item{new.env}{a \code{matrix}, \code{data.frame}, \code{\link[sp]{SpatialPointsDataFrame}} 
-or \code{\link[raster:stack]{RasterStack}} object containing the explanatory variables (in 
-columns or layers) that will be used to predict the SRE model}
+\item{new.env}{a \code{matrix}, \code{data.frame}, \code{\link[terra:vect]{SpatVector}}
+or \code{\link[terra:rast]{SpatRaster}} object containing the explanatory variables (in 
+columns or layers) that will be used to predict the SRE model
+\cr \emph{Note that old format from \pkg{raster} and \pkg{sp} are still supported such as 
+\code{RasterStack} and \code{SpatialPointsDataFrame} objects. }}
 
 \item{quant}{a \code{numeric} between \code{0} and \code{0.5} defining the half-quantile 
 corresponding to the most extreme value for each variable not to be taken into account for 
@@ -34,7 +43,7 @@ A \code{logical} value defining whether a \code{matrix} containing extreme condi
 supported should be returned or not}
 }
 \value{
-A \code{vector} or a \code{\link[raster:raster]{raster}} object, containing binary (\code{0} 
+A \code{vector} or a \code{\link[terra:rast]{SpatRaster}} object, containing binary (\code{0} 
 or \code{1}) values.
 }
 \description{

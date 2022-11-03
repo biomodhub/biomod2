@@ -5,7 +5,7 @@
 \alias{bioclim_future}
 \title{Bioclimatic variables for SDM based on future condition}
 \format{
-A RasterStack with 5 layers:
+A \code{\link[terra:rast]{SpatRaster}} with 5 layers:
 \describe{
   \item{bio3}{Isothermality}
   \item{bio4}{Temperature Seasonality}
@@ -18,7 +18,8 @@ A RasterStack with 5 layers:
 bioclim_future
 }
 \description{
-A RasterStack with 5 bioclimatic variables commonly used for SDM and
-describing future climate based on old RCP scenarios at the horizon 2080.
+A \code{\link[terra:rast]{SpatRaster}} with 5 bioclimatic variables commonly
+used for SDM and describing future climate based on old RCP scenarios at the
+horizon 2080.
 }
 \keyword{datasets}

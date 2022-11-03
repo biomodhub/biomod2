@@ -26,7 +26,7 @@ contain a \code{val} slot of specific type :
   \item{\code{BIOMOD.stored.array} : }{\code{val} is an \code{array}}
   \item{\code{BIOMOD.stored.data.frame} : }{\code{val} is a \code{data.frame}}
   \item{\code{BIOMOD.stored.SpatRaster} : }{\code{val} is a 
-  \code{\link[raster:stack]{RasterStack}}}
+  \code{\link[terra:PackedSpatRaster-class]{PackedSpatRaster}}}
   \item{\code{BIOMOD.stored.files} : }{\code{val} is a \code{character}}
   \item{\code{BIOMOD.stored.formated.data} : }{\code{val} is a 
   \code{\link{BIOMOD.formated.data}} object}

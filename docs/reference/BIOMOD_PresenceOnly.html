@@ -20,7 +20,7 @@ BIOMOD_EnsembleModeling functions."><!-- mathjax --><script src="https://cdnjs.c
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">biomod2</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">4.1-2</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">4.2-0</span>
       </span>
     </div>
 
@@ -121,10 +121,13 @@ objects that can be obtained with the <code><a href="BIOMOD_Modeling.html">BIOMO
 <code><a href="BIOMOD_EnsembleModeling.html">BIOMOD_EnsembleModeling</a></code> function</p></dd>
 <dt>bg.env</dt>
 <dd><p>(<em>optional, default</em> <code>NULL</code>) <br> 
-A <code>matrix</code>, <code>data.frame</code> or <code><a href="https://rdrr.io/pkg/raster/man/stack.html" class="external-link">RasterStack</a></code> object 
-containing values of environmental variables extracted from the background (<em>if 
-presences are to be compared to background instead of absences or pseudo-absences selected 
-for modeling</em>)</p></dd>
+A <code>matrix</code>, <code>data.frame</code>, <code><a href="https://rdrr.io/pkg/terra/man/vect.html" class="external-link">SpatVector</a></code>
+or <code><a href="https://rdrr.io/pkg/terra/man/rast.html" class="external-link">SpatRaster</a></code> object containing values of 
+environmental variables (in columns or layers) extracted from the background 
+(<em>if presences are to be compared to background instead of absences or 
+pseudo-absences selected for modeling</em>)
+<br><em>Note that old format from <span class="pkg">raster</span> and <span class="pkg">sp</span> are still supported such as 
+<code>RasterStack</code> and <code>SpatialPointsDataFrame</code> objects. </em></p></dd>
 <dt>perc</dt>
 <dd><p>a <code>numeric</code> between <code>0</code> and <code>1</code> corresponding to the percentage of 
 correctly classified presences for Minimal Predicted Area (see 
