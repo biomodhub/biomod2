@@ -642,8 +642,7 @@ BIOMOD_Projection <- function(bm.mod,
 
 .build_clamping_mask <- function(env, MinMax)
 {
-  if (inherits(env, 'SpatRaster'))
-  { 
+  if (inherits(env, 'SpatRaster')) { 
     ## raster case ------------------------------------------------------------
     env <- subset(env, names(MinMax))
     ## create an empty mask
@@ -667,8 +666,7 @@ BIOMOD_Projection <- function(bm.mod,
       }
     }
     
-  } else if (is.data.frame(env) | is.matrix(env) | is.numeric(env))
-  { ## matrix and data.frame case ---------------------------------------------
+  } else if (is.data.frame(env) | is.matrix(env) | is.numeric(env)) { ## matrix and data.frame case ---------------------------------------------
     env <- as.data.frame(env)
     
     # create an empty mask
