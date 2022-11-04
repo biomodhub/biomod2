@@ -16,11 +16,62 @@ vignette: >
 
 ### <i class="fas fa-chess-pawn"></i> 2022
 
+####  4.2-0 Terra Update
+
+##### Major Changes
+
+* Package now rely only on `terra` (`> 1.6.33`) and do not automatically import `raster` and `sp`.
+* Moved `raster` and `sp` package into `SUGGESTS` rather than `DEPENDS`.
+* `raster` and `sp` input data type are still supported.
+* Package dataset now are now documented and loaded with `data()` .
+
+##### Minor Changes
+
+* `bm_BinaryTransformation` now always returns `0`/`1` and never `TRUE`/`FALSE`
+* Added a check to `bm_PlotResponseCurves` for `new.env` possible data types.
+* `BIOMOD_Projection` and `BIOMOD_EnsembleForecasting` now properly support matrix as `new.env`
+* `get_prediction` on `biomod.projection.out` generated from `BIOMOD_Projection` based on `SpatRaster` with arg `as.data.frame = TRUE` are now possible.
+* `bm_BinaryTransformation` now return same type of object as its input
+* Improved communcation for `BIOMOD_RangeSize`, indicating how comparison are done depending on the number of models in current vs future.
+
+##### Bugfix
+
+* MAXENT.Phillips models can now properly fail
+* bugfix for `bm_BinaryTransformation` with `data.frame`/`matrix` and `do.filtering = TRUE`
+* Removed obsolete warning about CTA and categorical variables when using raster
+* `bm_PlotResponseCurves` now work with factors in univariate representation
+* `bm_PlotResponseCurves` properly handles `SpatRaster` and `Raster` as `new.env`
+* Bugfix for predictions with `MAXENT.Phillips` and a single environmental variable
+* Bugfix for `BIOMOD_EnsembleForecasting` so that it properly accounts for `new.env.xy` when projecting on `matrix` or `data.frame`.
+* `BIOMOD_EnsembleModeling` now works when called for a single ensemble model
+* Improved argument check for `BIOMOD_RangeSize`. Comparisons with non-binary values throw errors.
+* bugfix for `BIOMOD_RangeSize` and data.frame method
+* `BIOMOD_RangeSize` `data.frame` method now handles 1 current vs n future projection
+* bugfix for `BIOMOD_PresenceOnly` that can now work when evaluation data are provided
+* bugfix for `BIOMOD_PresenceOnly` that can now work when only the EM have been provided
+* expanded support for `BIOMOD_PresenceOnly` to `SpatRaster` and `SpatVector`.
+
+##### Internal Changes
+
+* New internal function `.categorical2numeric` to transform categorical variables into numeric within a `data.frame`.
+* New internal function `.get_categorical_names` to retrieve categorical variable names from a `data.frame`.
+* Split `load_stored_object` method into a method for `BIOMOD.stored.SpatRaster` and a method for all other `BIOMOD.stored.data`.
+* `BIOMOD.stored.SpatRaster` stores `PackedSpatraster` and not `SpatRaster`.
+* New internal function `.CompteurSp` based on old function CompteurSp that was defined within a function.
+
+
 #### 4.1-3
 
 ##### Bugfix
 
 * Ensemble models that fails (e.g. EMcv with only one models) will not crash the full ensemble run. Instead a warning is generally displayed at the beginning and the resulting object will list failed models.
+* Fixed CTA raster prediction for categorical variables.
+
+#### Internal Changes
+
+* New internal function .get_kept_models to generate list of models kept by ensemble modeling depending on metric.select.
+
+* Improved checks for BIOMOD_EnsembleModel to generate warnings when ensemble models are expected to be run with <= 1 models.
 
 #### 4.1-2 (2022-09-29 - Current CRAN Version)
 

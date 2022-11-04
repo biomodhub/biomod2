@@ -18,11 +18,7 @@ all the factorial variables contained in a raster* or data.frame object."><!-- m
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">biomod2</a>
-<<<<<<< HEAD
         <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">4.2-0</span>
-=======
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">4.1-3</span>
->>>>>>> master
       </span>
     </div>
 
@@ -108,16 +104,16 @@ all the factorial variables contained in a <code>raster*</code> or <code>data.fr
     <div id="arguments">
     <h2>Arguments</h2>
     <dl><dt>expl.var</dt>
-<dd><p>a <code>data.frame</code> or <code><a href="https://rdrr.io/pkg/raster/man/stack.html" class="external-link">RasterStack</a></code> object 
-containing the explanatory variables (in columns or layers)</p></dd>
+<dd><p>a <code>data.frame</code> or <code><a href="https://rdrr.io/pkg/terra/man/rast.html" class="external-link">SpatRaster</a></code>
+object containing the explanatory variables (in columns or layers)</p></dd>
 <dt>mask.out</dt>
-<dd><p>a <code>data.frame</code> or <code><a href="https://rdrr.io/pkg/raster/man/raster.html" class="external-link">raster</a></code> object containing 
-the area that has already been sampled (<em>factor levels within this mask will not be 
-sampled</em>)</p></dd>
+<dd><p>a <code>data.frame</code> or <code><a href="https://rdrr.io/pkg/terra/man/rast.html" class="external-link">SpatRaster</a></code>
+object containing the area that has already been sampled (<em>factor 
+levels within this mask will not be sampled</em>)</p></dd>
 <dt>mask.in</dt>
-<dd><p>a <code>data.frame</code>, <code><a href="https://rdrr.io/pkg/raster/man/raster.html" class="external-link">raster</a></code> or 
-<code><a href="https://rdrr.io/pkg/raster/man/stack.html" class="external-link">RasterStack</a></code> object containing areas where factor levels are to be 
-sampled in priority. <em>Note that if after having explored these masks, some factor levels 
+<dd><p>a <code>data.frame</code> or <code><a href="https://rdrr.io/pkg/terra/man/rast.html" class="external-link">SpatRaster</a></code>
+ object containing areas where factor levels are to be sampled in priority. 
+ <em>Note that if after having explored these masks, some factor levels 
 remain unsampled, they will be sampled in the reference input object <code>expl.var</code>.</em></p></dd>
 </dl></div>
     <div id="value">
