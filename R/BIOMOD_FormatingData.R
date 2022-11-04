@@ -293,7 +293,7 @@
 ##' # plot(myBiomodData.u)
 ##' 
 ##' 
-##' @importFrom terra rast
+##' @importFrom terra rast crds
 ##' 
 ##' @export
 ##' 

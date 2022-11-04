@@ -182,9 +182,9 @@
 ##' plot(myBiomodProj)
 ##' 
 ##' 
-##' @importFrom foreach foreach %dopar%
+##' @importFrom foreach foreach %dopar% 
 ## @importFrom doParallel registerDoParallel
-##' @importFrom terra rast subset nlyr writeRaster terraOptions wrap mem_info
+##' @importFrom terra rast subset nlyr writeRaster terraOptions wrap mem_info app
 ##' @importFrom utils capture.output
 ##' @importFrom abind asub
 ##' 
@@ -502,7 +502,7 @@ BIOMOD_Projection <- function(bm.mod,
   }
   if (inherits(new.env, 'Raster')) {
     # conversion into SpatRaster
-    if(any(is.factor(new.env))){
+    if(any(raster::is.factor(new.env))){
       new.env <- categorical_stack_to_terra(raster::stack(new.env))
     } else {
       new.env <- rast(new.env)

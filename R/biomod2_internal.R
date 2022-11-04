@@ -203,6 +203,7 @@ check_data_range <- function(model, new_data)
   return(new_data)
 }
 
+#' @importFrom terra rast classify subset
 .run_pred <- function(object, Prev = 0.5, dat)
 {
   if (is.finite(object$deviance) && 

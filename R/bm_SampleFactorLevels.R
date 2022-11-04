@@ -90,7 +90,7 @@
 ##' samp3 <- bm_SampleFactorLevels(expl.var = stk, mask.out = mask.out, mask.in = mask.in)
 ##' 
 ##' 
-##' @importFrom terra rast cats mask subset
+##' @importFrom terra rast cats mask subset is.factor values
 ##' @export
 ##' 
 ##' 

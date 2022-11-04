@@ -18,7 +18,7 @@
 ##' @family Toolbox functions
 ##' 
 ##' 
-##' @importFrom terra app classify
+##' @importFrom terra app classify nlyr
 ##' 
 NULL
 
@@ -160,7 +160,7 @@ setMethod('show', signature('biomod2_ensemble_model'),
 ##' @family Toolbox functions
 ##' 
 ##' 
-##' @importFrom terra app classify
+##' @importFrom terra rast app classify writeRaster
 ##' @keywords internal
 
 NULL

@@ -156,6 +156,7 @@
 ##'                       do.bivariate = TRUE)
 ##'                                       
 ##'                                       
+##' @importFrom terra rast cats global is.factor nlyr                                    
 ##' @importFrom foreach foreach %:%
 ##' @importFrom reshape2 melt
 ##' @importFrom ggplot2 ggplot aes_string geom_line geom_rug geom_raster facet_wrap xlab ylab labs 
@@ -441,8 +442,8 @@ bm_PlotResponseCurves <- function(bm.out
   }
   
   if (inherits(new.env, c("Raster"))) {
-    categorical_var <- which(is.factor(new.env))
-    if (length(categorical_var) >0) {
+    categorical_var <- which(raster::is.factor(new.env))
+    if (length(categorical_var) > 0) {
       new.env = categorical_stack_to_terra(new.env)
     } else {
       new.env <- rast(new.env)
@@ -462,10 +463,10 @@ bm_PlotResponseCurves <- function(bm.out
     }
     
     categorical_var <- which(is.factor(new.env))
-    if (length(categorical_var) >0) {
+    if (length(categorical_var) > 0) {
       for(thisvar in categorical_var){
         DataTmp[, thisvar] <- rep(factor(
-          levels(new.env[[categorical_var]])[[1]][,2]
+          cats(new.env[[categorical_var]])[[1]][,2]
           ), length.out = nrow(DataTmp))
       }
     }

@@ -1,4 +1,4 @@
-###################################################################################################
+# bm_PlotRangeSize documentation ------------------------------------------------
 ##' @name bm_PlotRangeSize
 ##' @author Maya Gueguen
 ##' 
@@ -80,7 +80,7 @@
 ##' myExpl <- terra::crop(myExpl, myExtent)
 ##' }
 ##' 
-##' # ---------------------------------------------------------------
+##' # ---------------------------------------------------------------#
 ##' file.out <- paste0(myRespName, "/", myRespName, ".AllModels.models.out")
 ##' if (file.exists(file.out)) {
 ##'   myBiomodModelOut <- get(load(file.out))
@@ -124,7 +124,7 @@
 ##' }
 ##' 
 ##' 
-##' # ---------------------------------------------------------------
+##' # ---------------------------------------------------------------#
 ##' # Load environmental variables extracted from BIOCLIM (bio_3, bio_4, bio_7, bio_11 & bio_12)
 ##' data(bioclim_future)
 ##' myExplFuture <- terra::rast(bioclim_future)
@@ -149,7 +149,7 @@
 ##' myBiomodRangeSize <- BIOMOD_RangeSize(proj.current = CurrentProj, proj.future = FutureProj)
 ##' 
 ##' 
-##' # ---------------------------------------------------------------
+##' # ---------------------------------------------------------------#
 ##' myBiomodRangeSize$Compt.By.Models
 ##' plot(myBiomodRangeSize$Diff.By.Pixel)
 ##' 
@@ -160,14 +160,14 @@
 ##' @importFrom graphics plot.new
 ##' @importFrom reshape2 melt
 ##' @importFrom foreach foreach %do%
-##' @importFrom terra which.max nlyr as.points classify plot
+##' @importFrom terra rast which.max nlyr  classify plot
 ##' @importFrom ggplot2 ggplot aes_string geom_col geom_tile facet_wrap xlab ylab labs 
 ##' theme element_blank element_rect scale_fill_manual
 ##' 
 ##' @export
 ##' 
 ##' 
-###################################################################################################
+#------------------------------------------------------------------------------#
 
 
 bm_PlotRangeSize <- function(bm.range, do.count = TRUE, do.perc = TRUE

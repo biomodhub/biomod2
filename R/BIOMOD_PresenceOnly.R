@@ -174,6 +174,7 @@
 ## @importFrom ecospat ecospat.boyce ecospat.mpa
 ##' @importFrom PresenceAbsence presence.absence.accuracy
 ##' @importFrom data.table rbindlist
+##' @importFrom terra rast extract
 ##' 
 ##' @export
 ##' 
@@ -466,7 +467,7 @@ BIOMOD_PresenceOnly <- function(bm.mod = NULL,
     }
     
     if (inherits(bg.env, 'Raster')) {
-      if(any(is.factor(bg.env))){
+      if(any(raster::is.factor(bg.env))){
         bg.env <- categorical_stack_to_terra(bg.env)
       } else {
         bg.env <- rast(bg.env)

@@ -333,7 +333,7 @@
 ##' 
 ##' 
 ##' @export
-##' 
+##' @importFrom terra rast  
 ##' 
 ## BIOMOD_EnsembleModeling function ------------------------------------------- 
 

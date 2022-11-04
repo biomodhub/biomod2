@@ -93,7 +93,7 @@
 ##' @family Secundary functions
 ##'
 ##' 
-##' @importFrom terra rast vect freq spatSample values
+##' @importFrom terra rast vect freq spatSample values extract
 ##' 
 ##' @export
 ##' 
@@ -363,11 +363,11 @@ setMethod('bm_PseudoAbsences_random', signature(expl.var = "SpatVector"),
             }
           })
 
-## bm_PseudoAbsences random RasterStack methods --------------------------------------
+## bm_PseudoAbsences random SpatRaster methods --------------------------------------
 ##'
 ##' @rdname bm_PseudoAbsences
 ##' @export
-##' @importFrom terra xyFromCell
+##' @importFrom terra rast xyFromCell cellFromXY classify crds extract subset
 ##'
 
 setMethod('bm_PseudoAbsences_random', signature(expl.var = "SpatRaster"),
@@ -684,7 +684,7 @@ setMethod('bm_PseudoAbsences_disk', signature(expl.var = "SpatVector"),
 ##'
 ##' @rdname bm_PseudoAbsences
 ##' @export
-##' @importFrom terra rast distance subset mask crds cellFromXY
+##' @importFrom terra rast distance subset mask crds cellFromXY extract
 ##'
 
 setMethod('bm_PseudoAbsences_disk', signature(expl.var = "SpatRaster"),

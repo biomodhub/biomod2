@@ -140,6 +140,7 @@
 ##' @importFrom reshape melt.array
 ##' @importFrom foreach foreach %do%
 ##' @importFrom abind abind
+##' @importFrom terra rast subset
 ##' 
 NULL
 
@@ -798,7 +799,7 @@ setMethod("get_projected_models", "BIOMOD.projection.out", function(obj){ return
 ##' 
 ##' @rdname getters.out
 ##' @export
-##' 
+##' @importFrom terra rast
 
 setMethod('free', signature('BIOMOD.projection.out'),
           function(obj) {

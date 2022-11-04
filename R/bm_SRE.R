@@ -83,7 +83,6 @@
 ##' \code{\link{bm_RunModelsLoop}}, \code{\link{BIOMOD_Modeling}},
 ##' @family Secundary functions
 ##' 
-##' @importFrom terra rast
 ##' @examples
 ##' 
 ##' library(terra)
@@ -120,8 +119,8 @@
 ##' plot(res)
 ##' 
 ##' 
-##' @importFrom terra rast values vect quantile
-## quantile
+##' @importFrom terra rast values vect quantile cellFromXY
+## quantile classify crds global is.factor mask nlyr subset
 ##' 
 ##' @export
 ##' 

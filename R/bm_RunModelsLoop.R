@@ -89,8 +89,8 @@
 ##' 
 ##' 
 ##' 
-##' @importFrom foreach foreach %dopar%
-## @importFrom doParallel registerDoParallel
+##' @importFrom foreach foreach %dopar% 
+## @importFrom doParallel registerDoParallel 
 ##' @importFrom rpart rpart prune
 ## @importFrom caret 
 ## @importFrom car 
@@ -122,6 +122,18 @@ bm_RunModelsLoop <- function(bm.format,
                              nb.cpu = 1,
                              seed.val = NULL,
                              do.progress = TRUE) {
+  
+  if (nb.cpu > 1) {
+    if (.getOS() != "windows") {
+      if (!isNamespaceLoaded("doParallel")) {
+        if(!requireNamespace('doParallel', quietly = TRUE)) stop("Package 'doParallel' not found")
+      }
+      doParallel::registerDoParallel(cores = nb.cpu)
+    } else {
+      warning("Parallelisation with `foreach` is not available for Windows. Sorry.")
+    }
+  }
+  
   cat("\n\n-=-=-=- Run : ", bm.format$name, '\n')
   res.sp.run <- list()
   
@@ -130,16 +142,7 @@ bm_RunModelsLoop <- function(bm.format,
     run.name = paste0(bm.format$name, run.id)
     cat('\n\n-=-=-=--=-=-=-', run.name, '\n')
     
-    if (nb.cpu > 1) {
-      if (.getOS() != "windows") {
-        if (!isNamespaceLoaded("doParallel")) {
-          if(!requireNamespace('doParallel', quietly = TRUE)) stop("Package 'doParallel' not found")
-        }
-        doParallel::registerDoParallel(cores = nb.cpu)
-      } else {
-        warning("Parallelisation with `foreach` is not available for Windows. Sorry.")
-      }
-    }
+
     res.sp.run[[run.id]] = foreach(modi = model) %dopar%
       {
         bm_RunModel(model = modi,
@@ -161,8 +164,9 @@ bm_RunModelsLoop <- function(bm.format,
                     do.progress = TRUE)
       }
     names(res.sp.run[[run.id]]) <- model
+    
   }
-  
+
   return(res.sp.run)
 }
 

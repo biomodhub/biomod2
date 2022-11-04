@@ -766,7 +766,7 @@ setClass('MAXENT.Phillips_biomod2_model',
 
 ##' 
 ##' @rdname predict2.bm
-##' @importFrom terra as.points crds 
+##' @importFrom terra rast as.points crds values
 ##' 
 
 setMethod('predict2', signature(object = 'MAXENT.Phillips_biomod2_model', newdata = "SpatRaster"),
@@ -839,7 +839,7 @@ setMethod('predict2', signature(object = 'MAXENT.Phillips_biomod2_model', newdat
             system(command = maxent.command, wait = TRUE, intern = TRUE)
             
             # cat("\n\t\tReading Maxent outputs...")
-            proj <- as.numeric(read.asciigrid(file.path(temp_workdir, "projMaxent.asc"))@data[, 1])
+            proj <- as.numeric(values(rast(file.path(temp_workdir, "projMaxent.asc")), mat = FALSE))
             
             if (do_raster) {
               newraster[which(newraster[] == 1)] = proj
@@ -889,7 +889,7 @@ setClass('MAXENT.Phillips.2_biomod2_model',
 
 ##' 
 ##' @rdname predict2.bm
-##' @importFrom terra as.points rasterize crds 
+##' @importFrom terra as.points rasterize crds cats subset
 ##' 
 
 
@@ -912,7 +912,7 @@ setMethod('predict2', signature(object = 'MAXENT.Phillips.2_biomod2_model', newd
             
             if(length(categorical_var) > 0){
               for(this_var in categorical_var){
-                this_levels <- levels(newdata[[categorical_var]])[[1]][,2]
+                this_levels <- cats(newdata[[categorical_var]])[[1]][,2]
                 newdata.df[,this_var] <- factor(newdata.df[,this_var], levels = this_levels)
               }
             }

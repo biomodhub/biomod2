@@ -179,7 +179,7 @@
 ##' bm_PlotRangeSize(bm.range = myBiomodRangeSize)
 ##' 
 ##' 
-##' @importFrom terra rast nlyr `add<-`
+##' @importFrom terra rast nlyr `add<-` values
 ##' 
 ##' @export
 ##' 

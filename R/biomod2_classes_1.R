@@ -142,7 +142,8 @@ NULL
 
 ##' @name BIOMOD.formated.data-class
 ##' @rdname BIOMOD.formated.data
-##' @importFrom terra rast nlyr app is.factor subset extract cellFromXY `add<-`
+##' @importFrom terra rast nlyr app is.factor subset extract cellFromXY `add<-` 
+##' classify rasterize values
 ##' @export
 ##' 
 
@@ -333,7 +334,7 @@ setMethod('BIOMOD.formated.data', signature(sp = 'numeric', env = 'SpatRaster'),
 ##' 
 ##' @rdname BIOMOD.formated.data
 ##' @export
-##' @importFrom terra minmax nlyr
+##' @importFrom terra rast minmax nlyr crds
 ##' 
 
 setMethod('plot', signature(x = 'BIOMOD.formated.data', y = "missing"),
@@ -591,6 +592,8 @@ NULL
 ##' @name BIOMOD.formated.data.PA-class
 ##' @rdname BIOMOD.formated.data.PA
 ##' 
+##' @importFrom terra rast nlyr app is.factor subset extract 
+##' cellFromXY `add<-` crds vect
 ##' @export
 ##' 
 

@@ -58,7 +58,7 @@
 ##' cbind(vec.d, vec.d_bin, vec.d_filt)
 ##'
 ##' 
-##' @importFrom terra rast nlyr classify
+##' @importFrom terra rast nlyr classify subset
 ##' @export
 ##' 
 ##' 

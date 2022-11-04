@@ -225,7 +225,7 @@
 ##' plot(myBiomodEMProj)
 ##' 
 ##' 
-##' 
+##' @importFrom terra rast `add<-` wrap writeRaster
 ##' @export
 ##' 
 ##' 
