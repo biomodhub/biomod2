@@ -318,7 +318,7 @@ BIOMOD_PresenceOnly <- function(bm.mod = NULL,
     n <- length(tmp)
     tec <- paste(tmp[3:n], collapse = "_") 
     run <- tmp[c(grep("RUN", tmp), grep("Full", tmp), grep("mergedRun", tmp))]
-
+    
     ## Get evaluation lines
     if (length(run) == 0) {
       ind.eval = NULL
@@ -399,7 +399,8 @@ BIOMOD_PresenceOnly <- function(bm.mod = NULL,
                            obs = Pred.eval[myResp.eval == 1],
                            PEplot = FALSE)
       boyce.eval[ind.b, "Evaluating.data"] <- boy$cor
-      mpa.eval[ind.m,"Evaluating.data"] <- ecospat.mpa(Pred.eval[myResp.eval == 1], perc = perc)
+      # mpa.eval[ind.m,"Evaluating.data"] <- ecospat.mpa(Pred.eval[myResp.eval == 1], perc = perc)
+      mpa.eval[ind.m,"Evaluating.data"] <- NA
     }
   }
   myModelEval[, c("Sensitivity", "Specificity")] <- round(myModelEval[, c("Sensitivity", "Specificity")], 1)
@@ -498,6 +499,13 @@ BIOMOD_PresenceOnly <- function(bm.mod = NULL,
   .fun_testIf01(TRUE, "perc", perc)
   
   
+  ## 5. Check MPA & Evaluation data ---------------------------------------------
+  if ((!is.null(bm.mod) && bm.mod@has.evaluation.data) ||
+      (is.null(bm.mod) && get_formal_data(bm.em)@has.evaluation.data)) {
+        cat("\n      ! Evaluation data will be ignored for MPA-related calculations")
+      }
+    
+  
   return(list(bm.mod = bm.mod,
               bm.em = bm.em,
               bg.env = bg.env,
@@ -589,7 +597,11 @@ ecospat.boyce <- function(fit, obs, nclass = 0, window.w = "default", res = 100,
 ## FROM ECOSPAT PACKAGE VERSION 3.2.2 (august 2022)
 
 ## This function calculates the Minimal Predicted Area.
-
+## 
+## R. Patin, Nov. 2022 : the function does not return minimal predicted area, but
+## rather the quantile of suitability corresponding to perc% of presence
+##  correctly predicted
+##  
 ## FUNCTION'S ARGUMENTS
 ## Pred:      numeric or RasterLayer .predicted suitabilities from a SDM prediction
 ## Sp.occ.xy: xy-coordinates of the species (if Pred is a RasterLayer)
