@@ -33,11 +33,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">biomod2</a>
-<<<<<<< HEAD
         <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">4.2-0</span>
-=======
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">4.1-3</span>
->>>>>>> master
       </span>
     </div>
 
@@ -136,23 +132,144 @@
 <i class="fas fa-chess-pawn"></i> 2022<a class="anchor" aria-label="anchor" href="#section"></a>
 </h3>
 <div class="section level4">
+<h4 id="terra-update">4.2-0 Terra Update<a class="anchor" aria-label="anchor" href="#terra-update"></a>
+</h4>
+<div class="section level5">
+<h5 id="major-changes">Major Changes<a class="anchor" aria-label="anchor" href="#major-changes"></a>
+</h5>
+<ul>
+<li>Package now rely only on <code>terra</code>
+(<code>&gt; 1.6.33</code>) and do not automatically import
+<code>raster</code> and <code>sp</code>.</li>
+<li>Moved <code>raster</code> and <code>sp</code> package into
+<code>SUGGESTS</code> rather than <code>DEPENDS</code>.</li>
+<li>
+<code>raster</code> and <code>sp</code> input data type are still
+supported.</li>
+<li>Package dataset now are now documented and loaded with
+<code><a href="https://rdrr.io/r/utils/data.html" class="external-link">data()</a></code> .</li>
+</ul>
+</div>
+<div class="section level5">
+<h5 id="minor-changes">Minor Changes<a class="anchor" aria-label="anchor" href="#minor-changes"></a>
+</h5>
+<ul>
+<li>
+<code>bm_BinaryTransformation</code> now always returns
+<code>0</code>/<code>1</code> and never
+<code>TRUE</code>/<code>FALSE</code>
+</li>
+<li>Added a check to <code>bm_PlotResponseCurves</code> for
+<code>new.env</code> possible data types.</li>
+<li>
+<code>BIOMOD_Projection</code> and
+<code>BIOMOD_EnsembleForecasting</code> now properly support matrix as
+<code>new.env</code>
+</li>
+<li>
+<code>get_prediction</code> on <code>biomod.projection.out</code>
+generated from <code>BIOMOD_Projection</code> based on
+<code>SpatRaster</code> with arg <code>as.data.frame = TRUE</code> are
+now possible.</li>
+<li>
+<code>bm_BinaryTransformation</code> now return same type of object
+as its input</li>
+<li>Improved communcation for <code>BIOMOD_RangeSize</code>, indicating
+how comparison are done depending on the number of models in current vs
+future.</li>
+</ul>
+</div>
+<div class="section level5">
+<h5 id="bugfix">Bugfix<a class="anchor" aria-label="anchor" href="#bugfix"></a>
+</h5>
+<ul>
+<li>MAXENT.Phillips models can now properly fail</li>
+<li>bugfix for <code>bm_BinaryTransformation</code> with
+<code>data.frame</code>/<code>matrix</code> and
+<code>do.filtering = TRUE</code>
+</li>
+<li>Removed obsolete warning about CTA and categorical variables when
+using raster</li>
+<li>
+<code>bm_PlotResponseCurves</code> now work with factors in
+univariate representation</li>
+<li>
+<code>bm_PlotResponseCurves</code> properly handles
+<code>SpatRaster</code> and <code>Raster</code> as
+<code>new.env</code>
+</li>
+<li>Bugfix for predictions with <code>MAXENT.Phillips</code> and a
+single environmental variable</li>
+<li>Bugfix for <code>BIOMOD_EnsembleForecasting</code> so that it
+properly accounts for <code>new.env.xy</code> when projecting on
+<code>matrix</code> or <code>data.frame</code>.</li>
+<li>
+<code>BIOMOD_EnsembleModeling</code> now works when called for a
+single ensemble model</li>
+<li>Improved argument check for <code>BIOMOD_RangeSize</code>.
+Comparisons with non-binary values throw errors.</li>
+<li>bugfix for <code>BIOMOD_RangeSize</code> and data.frame method</li>
+<li>
+<code>BIOMOD_RangeSize</code> <code>data.frame</code> method now
+handles 1 current vs n future projection</li>
+<li>bugfix for <code>BIOMOD_PresenceOnly</code> that can now work when
+evaluation data are provided</li>
+<li>bugfix for <code>BIOMOD_PresenceOnly</code> that can now work when
+only the EM have been provided</li>
+<li>expanded support for <code>BIOMOD_PresenceOnly</code> to
+<code>SpatRaster</code> and <code>SpatVector</code>.</li>
+</ul>
+</div>
+<div class="section level5">
+<h5 id="internal-changes">Internal Changes<a class="anchor" aria-label="anchor" href="#internal-changes"></a>
+</h5>
+<ul>
+<li>New internal function <code>.categorical2numeric</code> to transform
+categorical variables into numeric within a
+<code>data.frame</code>.</li>
+<li>New internal function <code>.get_categorical_names</code> to
+retrieve categorical variable names from a <code>data.frame</code>.</li>
+<li>Split <code>load_stored_object</code> method into a method for
+<code>BIOMOD.stored.SpatRaster</code> and a method for all other
+<code>BIOMOD.stored.data</code>.</li>
+<li>
+<code>BIOMOD.stored.SpatRaster</code> stores
+<code>PackedSpatraster</code> and not <code>SpatRaster</code>.</li>
+<li>New internal function <code>.CompteurSp</code> based on old function
+CompteurSp that was defined within a function.</li>
+</ul>
+</div>
+</div>
+<div class="section level4">
 <h4 id="section-1">4.1-3<a class="anchor" aria-label="anchor" href="#section-1"></a>
 </h4>
 <div class="section level5">
-<h5 id="bugfix">Bugfix<a class="anchor" aria-label="anchor" href="#bugfix"></a>
+<h5 id="bugfix-1">Bugfix<a class="anchor" aria-label="anchor" href="#bugfix-1"></a>
 </h5>
 <ul>
 <li>Ensemble models that fails (e.g. EMcv with only one models) will not
 crash the full ensemble run. Instead a warning is generally displayed at
 the beginning and the resulting object will list failed models.</li>
+<li>Fixed CTA raster prediction for categorical variables.</li>
 </ul>
 </div>
+</div>
+<div class="section level4">
+<h4 id="internal-changes-1">Internal Changes<a class="anchor" aria-label="anchor" href="#internal-changes-1"></a>
+</h4>
+<ul>
+<li><p>New internal function .get_kept_models to generate list of models
+kept by ensemble modeling depending on metric.select.</p></li>
+<li><p>Improved checks for BIOMOD_EnsembleModel to generate warnings
+when ensemble models are expected to be run with &lt;= 1
+models.</p></li>
+</ul>
 </div>
 <div class="section level4">
 <h4 id="current-cran-version">4.1-2 (2022-09-29 - Current CRAN Version)<a class="anchor" aria-label="anchor" href="#current-cran-version"></a>
 </h4>
 <div class="section level5">
-<h5 id="major-changes">Major changes<a class="anchor" aria-label="anchor" href="#major-changes"></a>
+<h5 id="major-changes-1">Major changes<a class="anchor" aria-label="anchor" href="#major-changes-1"></a>
 </h5>
 <ul>
 <li>
@@ -167,7 +284,7 @@ environmental space supplied.</li>
 </ul>
 </div>
 <div class="section level5">
-<h5 id="minor-changes">Minor changes<a class="anchor" aria-label="anchor" href="#minor-changes"></a>
+<h5 id="minor-changes-1">Minor changes<a class="anchor" aria-label="anchor" href="#minor-changes-1"></a>
 </h5>
 <ul>
 <li>Individual EM models projected as raster are now saved with
