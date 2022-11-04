@@ -120,6 +120,7 @@ of their calibration / training range, identifying locations where predictions a
 }
 \examples{
 
+library(terra)
 # Load species occurrences (6 species available)
 data(DataSpecies)
 head(DataSpecies)

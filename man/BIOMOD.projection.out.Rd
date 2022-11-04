@@ -61,6 +61,7 @@ not}
 showClass("BIOMOD.projection.out")
 
 ## ----------------------------------------------------------------------- #
+library(terra)
 
 # Load species occurrences (6 species available)
 data(DataSpecies)

@@ -117,6 +117,7 @@
 ##' 
 ##'   
 ##' @examples
+##' library(terra)
 ##' 
 ##' # Load species occurrences (6 species available)
 ##' data(DataSpecies)

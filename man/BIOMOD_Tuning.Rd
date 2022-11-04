@@ -170,6 +170,7 @@ Function to tune \pkg{biomod2} single models parameters
 }
 }
 \examples{
+library(terra)
 
 # Load species occurrences (6 species available)
 data(DataSpecies)

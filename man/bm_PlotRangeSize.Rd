@@ -61,6 +61,7 @@ global counts or proportions of gains / losses, as well as spatial representatio
 \emph{Please see \code{\link{BIOMOD_RangeSize}} function for more details about the values.}
 }
 \examples{
+library(terra)
 
 # Load species occurrences (6 species available)
 data(DataSpecies)

@@ -87,6 +87,7 @@ Note that this method does not account for interactions between variables. \cr \
 }
 }
 \examples{
+library(terra)
 
 # Load species occurrences (6 species available)
 data(DataSpecies)

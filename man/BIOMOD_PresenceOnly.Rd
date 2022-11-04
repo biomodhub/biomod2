@@ -62,6 +62,7 @@ code of \code{ecospat.boyce()} and \code{ecospat.mpa()} in \pkg{ecospat})
 functions have been copied within this file from version 3.2.2 (august 2022).
 }
 \examples{
+library(terra)
 
 # Load species occurrences (6 species available)
 data(DataSpecies)

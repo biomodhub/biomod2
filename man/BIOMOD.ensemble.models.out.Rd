@@ -66,6 +66,7 @@ object containing models predictions for evaluation data}
 showClass("BIOMOD.ensemble.models.out")
 
 ## ----------------------------------------------------------------------- #
+library(terra)
 
 # Load species occurrences (6 species available)
 data(DataSpecies)

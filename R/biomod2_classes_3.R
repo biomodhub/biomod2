@@ -223,6 +223,7 @@ setGeneric("get_variables_importance", function(obj, ...) { standardGeneric("get
 ##' showClass("BIOMOD.models.out")
 ##' 
 ##' ## ----------------------------------------------------------------------- #
+##' library(terra)
 ##' 
 ##' # Load species occurrences (6 species available)
 ##' data(DataSpecies)
@@ -592,6 +593,7 @@ setMethod("get_variables_importance", "BIOMOD.models.out",
 ##' showClass("BIOMOD.projection.out")
 ##' 
 ##' ## ----------------------------------------------------------------------- #
+##' library(terra)
 ##' 
 ##' # Load species occurrences (6 species available)
 ##' data(DataSpecies)
@@ -945,6 +947,7 @@ setMethod("get_predictions", "BIOMOD.projection.out",
 ##' showClass("BIOMOD.ensemble.models.out")
 ##' 
 ##' ## ----------------------------------------------------------------------- #
+##' library(terra)
 ##' 
 ##' # Load species occurrences (6 species available)
 ##' data(DataSpecies)

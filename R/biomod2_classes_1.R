@@ -104,6 +104,7 @@
 ##' showClass("BIOMOD.formated.data")
 ##' 
 ##' ## ----------------------------------------------------------------------- #
+##' library(terra)
 ##' 
 ##' # Load species occurrences (6 species available)
 ##' data(DataSpecies)
@@ -316,7 +317,7 @@ setMethod('BIOMOD.formated.data', signature(sp = 'numeric', env = 'SpatRaster'),
             
             if (is.null(xy)) {xy <- as.data.frame(crds(env)) }
             ## Prepare mask of studied area
-            data.mask <- terra::rasterize(as.matrix(xy), env[[1]], values = sp)
+            data.mask <- rasterize(as.matrix(xy), env[[1]], values = sp)
             names(data.mask) <- sp.name
             
             ## Keep same env variable for eval than calib (+ check for factor)
@@ -551,6 +552,7 @@ setMethod('show', signature('BIOMOD.formated.data'),
 ##' showClass("BIOMOD.formated.data.PA")
 ##' 
 ##' ## ----------------------------------------------------------------------- #
+##' library(terra)
 ##' 
 ##' # Load species occurrences (6 species available)
 ##' data(DataSpecies)

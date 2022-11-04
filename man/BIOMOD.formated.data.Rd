@@ -173,6 +173,7 @@ A \code{data.frame} containing explanatory variables for evaluation data}
 showClass("BIOMOD.formated.data")
 
 ## ----------------------------------------------------------------------- #
+library(terra)
 
 # Load species occurrences (6 species available)
 data(DataSpecies)

@@ -322,6 +322,7 @@ Below is the detailed list of all modifiable parameters for each available model
 }
 
 \examples{
+library(terra)
 
 # Load species occurrences (6 species available)
 data(DataSpecies)

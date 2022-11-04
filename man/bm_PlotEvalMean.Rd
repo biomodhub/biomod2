@@ -55,6 +55,7 @@ represented according to 2 different evaluation methods, and models can be group
 }
 }
 \examples{
+library(terra)
 
 # Load species occurrences (6 species available)
 data(DataSpecies)

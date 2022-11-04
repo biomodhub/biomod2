@@ -42,6 +42,7 @@ subselection of models can be done using the following additional arguments :
 }
 }
 \examples{
+library(terra)
 
 # Load species occurrences (6 species available)
 data(DataSpecies)

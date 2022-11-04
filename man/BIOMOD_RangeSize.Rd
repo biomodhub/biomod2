@@ -85,6 +85,7 @@ on the number of projection in both objects:\tabular{lll}{
 \deqn{proj.future - 2 * proj.current}
 }
 \examples{
+library(terra)
 
 # Load species occurrences (6 species available)
 data(DataSpecies)

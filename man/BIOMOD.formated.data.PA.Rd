@@ -198,6 +198,7 @@ element returned by the \code{\link{bm_PseudoAbsences}} function}
 showClass("BIOMOD.formated.data.PA")
 
 ## ----------------------------------------------------------------------- #
+library(terra)
 
 # Load species occurrences (6 species available)
 data(DataSpecies)

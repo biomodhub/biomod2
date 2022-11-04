@@ -220,6 +220,7 @@ and provides different methods to select pseudo-absences if needed. \cr \cr
 }
 }
 \examples{
+library(terra)
 
 # Load species occurrences (6 species available)
 data(DataSpecies)
