@@ -144,13 +144,14 @@ if (file.exists(file.out)) {
 bm_PlotResponseCurves(bm.out = myBiomodModelOut, 
                       models.chosen = get_built_models(myBiomodModelOut)[c(1:2)],
                       fixed.var = 'median')
-bm_PlotResponseCurves(bm.out = myBiomodModelOut, 
-                      models.chosen = get_built_models(myBiomodModelOut)[c(1:2)],
-                      fixed.var = 'min')
-bm_PlotResponseCurves(bm.out = myBiomodModelOut, 
-                      models.chosen = get_built_models(myBiomodModelOut)[3],
-                      fixed.var = 'median',
-                      do.bivariate = TRUE)
+# Other options
+# bm_PlotResponseCurves(bm.out = myBiomodModelOut, 
+#                       models.chosen = get_built_models(myBiomodModelOut)[c(1:2)],
+#                       fixed.var = 'min')
+# bm_PlotResponseCurves(bm.out = myBiomodModelOut, 
+#                       models.chosen = get_built_models(myBiomodModelOut)[3],
+#                       fixed.var = 'median',
+#                       do.bivariate = TRUE)
                                       
                                       
 }

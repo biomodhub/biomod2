@@ -33,7 +33,11 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">biomod2</a>
+<<<<<<< HEAD
         <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">4.2-0</span>
+=======
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">4.1-3</span>
+>>>>>>> master
       </span>
     </div>
 
@@ -132,7 +136,20 @@
 <i class="fas fa-chess-pawn"></i> 2022<a class="anchor" aria-label="anchor" href="#section"></a>
 </h3>
 <div class="section level4">
-<h4 id="section-1">4.1-2 (2022-09-29)<a class="anchor" aria-label="anchor" href="#section-1"></a>
+<h4 id="section-1">4.1-3<a class="anchor" aria-label="anchor" href="#section-1"></a>
+</h4>
+<div class="section level5">
+<h5 id="bugfix">Bugfix<a class="anchor" aria-label="anchor" href="#bugfix"></a>
+</h5>
+<ul>
+<li>Ensemble models that fails (e.g. EMcv with only one models) will not
+crash the full ensemble run. Instead a warning is generally displayed at
+the beginning and the resulting object will list failed models.</li>
+</ul>
+</div>
+</div>
+<div class="section level4">
+<h4 id="current-cran-version">4.1-2 (2022-09-29 - Current CRAN Version)<a class="anchor" aria-label="anchor" href="#current-cran-version"></a>
 </h4>
 <div class="section level5">
 <h5 id="major-changes">Major changes<a class="anchor" aria-label="anchor" href="#major-changes"></a>
@@ -163,20 +180,19 @@ environmental space supplied.</li>
 <code>get_[...]</code> functions (<em>use</em>
 <code>load_stored_object</code> <em>and similar arguments such as</em>
 <code>as.data.frame</code><em>,</em> <code>full.name</code><em>,
-…</em>)</li>
-<li>Adapting predict workflow to properly use S4 class</li>
+…</em>).</li>
+<li>Adapting predict workflow to properly use S4 class.</li>
 <li>Homogenize <code>BIOMOD.ensemble.models.out</code> and
 <code>BIOMOD.models.out</code> objects
 <ul>
 <li>Add slots in <code>BIOMOD.ensemble.models.out</code> object for
-evaluations, variables importance and predictions</li>
+evaluations, variables importance and predictions.</li>
 <li>Moved <code>.Models.save.objects</code> in
 <code>BIOMOD_modeling</code> to <code>.fill_BIOMOD.models.out</code> in
-<code>biomod2_internal.R</code>
-</li>
+<code>biomod2_internal.R</code>.</li>
 <li>Save slots within <code>BIOMOD.ensemble.models.out</code> and use
 <code>load_stored_object</code> to directly get them within
-<code>get_[...]</code> functions</li>
+<code>get_[...]</code> functions.</li>
 </ul>
 </li>
 </ul>
@@ -193,26 +209,26 @@ that projection may either be on a range from 0 to 1 or from 0 to 1000.
 The latter option being more effective memory-wise.</li>
 <li>Completed argument check for function
 <code>BIOMOD_EnsembleModeling</code> so that <code>em.by</code> can not
-be of <code>length &gt; 1</code>
-</li>
+be of <code>length &gt; 1</code>.</li>
 <li>Corrected function <code>.get_models_assembling</code> so that it
 did not confound <code>MAXENT.Phillips2</code> with
 <code>MAXENT.Phillips</code> when grouping models by algorithm in
-<code>BIOMOD_EnsembleModeling</code>
-</li>
+<code>BIOMOD_EnsembleModeling</code>.</li>
 <li>get_prediction method for <code>BIOMOD.ensemble.models.out</code>
 now accepts an <code>evaluation</code> arg. Evaluation values,
 variables’ importance and Calibration/Evaluation predictions for
 ensemble models are now properly saved by
-<code><a href="../reference/BIOMOD_EnsembleModeling.html">BIOMOD_EnsembleModeling()</a></code>
-</li>
+<code><a href="../reference/BIOMOD_EnsembleModeling.html">BIOMOD_EnsembleModeling()</a></code>.</li>
 <li>evaluation metrics are no longer calculated for models
 <code>prob.ci.inf</code> et <code>prob.ci.sup</code>.</li>
-<li>Package now properly pass R CMD check</li>
+<li>Package now properly pass R CMD check.</li>
 <li>
 <code>BIOMOD_PresenceOnly</code> now properly manage
-<code>NA</code>
-</li>
+<code>NA</code>.</li>
+<li>Corrected bm_PlotResponseCurves to only plot show.variables.</li>
+<li>
+<code>get_predictions.BIOMOD.projection.out</code> now properly
+works when asked for a subset of model.</li>
 </ul>
 </div>
 <div class="section level5">
@@ -220,8 +236,8 @@ ensemble models are now properly saved by
 </h5>
 <ul>
 <li>Using models with a single predictor requires updating
-<code>gbm</code> and <code>maxnet</code> packages to their development
-version at rpatin/maxnet and rpatin/gbm can be used. (see issue <em><a href="https://github.com/biomodhub/biomod2/issues/102" class="external-link uri">https://github.com/biomodhub/biomod2/issues/102</a></em>)</li>
+<code>gbm</code> package to its development version at rpatin/gbm can be
+used. (see issue <em><a href="https://github.com/biomodhub/biomod2/issues/102" class="external-link uri">https://github.com/biomodhub/biomod2/issues/102</a></em>)</li>
 </ul>
 </div>
 </div>

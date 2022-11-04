@@ -918,6 +918,7 @@ setMethod("get_predictions", "BIOMOD.projection.out",
 ##' @slot em.computed a \code{vector} containing names of ensemble models
 ##' @slot em.failed a \code{vector} containing names of failed ensemble models
 ##' @slot em.models a \code{list} containing ensemble models
+##' @slot em.failed a \code{list} containing ensemble models that failed
 ##' @slot models.evaluation a \code{\link{BIOMOD.stored.array-class}} object
 ##'   containing models evaluation
 ##' @slot variables.importance a \code{\link{BIOMOD.stored.array-class}} object
@@ -1076,7 +1077,6 @@ setMethod('show', signature('BIOMOD.ensemble.models.out'),
             cat("\nmodels failed:", toString(object@em.failed), fill = .Options$width)
             .bm_cat()
           })
-
 ## get_formal_data.BIOMOD.ensemble.models.out ----------------------------------
 ##' 
 ##' @rdname getters.out

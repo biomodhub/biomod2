@@ -44,6 +44,8 @@ been combined to build the ensemble models, must be among
 
 \item{\code{em.models}}{a \code{list} containing ensemble models}
 
+\item{\code{em.failed}}{a \code{list} containing ensemble models that failed}
+
 \item{\code{models.evaluation}}{a \code{\link{BIOMOD.stored.array-class}} object
 containing models evaluation}
 

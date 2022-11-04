@@ -312,24 +312,26 @@
 ##' get_evaluations(myBiomodEM, as.data.frame = TRUE)
 ##' get_variables_importance(myBiomodEM, as.data.frame = TRUE)
 ##' 
-##' # Represent evaluation scores & variables importance
+##' # Represent evaluation scores
 ##' bm_PlotEvalMean(bm.out = myBiomodEM, group.by = 'model')
 ##' bm_PlotEvalBoxplot(bm.out = myBiomodEM, group.by = c('model', 'model'))
-##' bm_PlotVarImpBoxplot(bm.out = myBiomodEM, group.by = c('expl.var', 'model', 'model'))
-##' bm_PlotVarImpBoxplot(bm.out = myBiomodEM, group.by = c('expl.var', 'model', 'dataset'))
-##' bm_PlotVarImpBoxplot(bm.out = myBiomodEM, group.by = c('model', 'expl.var', 'dataset'))
+##' 
+##' # Represent variables importance
+##' # bm_PlotVarImpBoxplot(bm.out = myBiomodEM, group.by = c('expl.var', 'model', 'model'))
+##' # bm_PlotVarImpBoxplot(bm.out = myBiomodEM, group.by = c('expl.var', 'model', 'dataset'))
+##' # bm_PlotVarImpBoxplot(bm.out = myBiomodEM, group.by = c('model', 'expl.var', 'dataset'))
 ##' 
 ##' # Represent response curves
-##' bm_PlotResponseCurves(bm.out = myBiomodEM, 
-##'                       models.chosen = get_built_models(myBiomodEM)[c(1, 2)],
-##'                       fixed.var = 'median')
-##' bm_PlotResponseCurves(bm.out = myBiomodEM, 
-##'                       models.chosen = get_built_models(myBiomodEM)[c(1, 2)],
-##'                       fixed.var = 'min')
-##' bm_PlotResponseCurves(bm.out = myBiomodEM, 
-##'                       models.chosen = get_built_models(myBiomodEM)[2],
-##'                       fixed.var = 'median',
-##'                       do.bivariate = TRUE)
+##' # bm_PlotResponseCurves(bm.out = myBiomodEM, 
+##' #                       models.chosen = get_built_models(myBiomodEM)[c(1, 2)],
+##' #                       fixed.var = 'median')
+##' # bm_PlotResponseCurves(bm.out = myBiomodEM, 
+##' #                       models.chosen = get_built_models(myBiomodEM)[c(1, 2)],
+##' #                       fixed.var = 'min')
+##' # bm_PlotResponseCurves(bm.out = myBiomodEM, 
+##' #                       models.chosen = get_built_models(myBiomodEM)[2],
+##' #                       fixed.var = 'median',
+##' #                       do.bivariate = TRUE)
 ##' 
 ##' 
 ##' @export
@@ -446,6 +448,7 @@ BIOMOD_EnsembleModeling <- function(bm.mod,
                                                   , metric.select, metric.select.thresh
                                                   , metric.select.user, metric.select.table
                                                   , nb.cpu)
+    
     ## if no prediction selected => switch to next model
     if (length(needed_predictions) == 0) next
     

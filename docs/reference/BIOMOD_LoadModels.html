@@ -18,7 +18,11 @@ or BIOMOD_EnsembleModeling functions."><!-- mathjax --><script src="https://cdnj
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">biomod2</a>
+<<<<<<< HEAD
         <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">4.2-0</span>
+=======
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">4.1-3</span>
+>>>>>>> master
       </span>
     </div>
 
@@ -173,8 +177,13 @@ subselection of models can be done using the following additional arguments :</p
 <span><span class="va">myExpl</span> <span class="op">&lt;-</span> <span class="fu">terra</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/terra/man/rast.html" class="external-link">rast</a></span><span class="op">(</span><span class="va">bioclim_current</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># \dontshow{</span></span>
+<<<<<<< HEAD
 <span><span class="va">myExtent</span> <span class="op">&lt;-</span> <span class="fu">terra</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/terra/man/ext.html" class="external-link">ext</a></span><span class="op">(</span><span class="fl">0</span>,<span class="fl">30</span>,<span class="fl">45</span>,<span class="fl">70</span><span class="op">)</span></span>
 <span><span class="va">myExpl</span> <span class="op">&lt;-</span> <span class="fu">terra</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/terra/man/crop.html" class="external-link">crop</a></span><span class="op">(</span><span class="va">myExpl</span>, <span class="va">myExtent</span><span class="op">)</span></span>
+=======
+<span><span class="va">myExtent</span> <span class="op">&lt;-</span> <span class="fu">raster</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/raster/man/extent.html" class="external-link">extent</a></span><span class="op">(</span><span class="fl">0</span>,<span class="fl">30</span>,<span class="fl">45</span>,<span class="fl">70</span><span class="op">)</span></span>
+<span><span class="va">myExpl</span> <span class="op">&lt;-</span> <span class="fu">raster</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/raster/man/stack.html" class="external-link">stack</a></span><span class="op">(</span><span class="fu">raster</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/terra/man/crop.html" class="external-link">crop</a></span><span class="op">(</span><span class="va">myExpl</span>, <span class="va">myExtent</span><span class="op">)</span><span class="op">)</span></span>
+>>>>>>> master
 <span><span class="co"># }</span></span>
 <span></span>
 <span><span class="co"># ---------------------------------------------------------------</span></span>
