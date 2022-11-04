@@ -232,7 +232,6 @@ myBiomodEMProj
 plot(myBiomodEMProj)
 
 
-
 }
 \seealso{
 \code{\link{BIOMOD_FormatingData}}, \code{\link{BIOMOD_ModelingOptions}}, 

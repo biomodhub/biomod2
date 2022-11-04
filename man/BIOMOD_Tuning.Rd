@@ -127,7 +127,8 @@ cross-validation for \code{MAXENT.Phillips}}
 \item{ME.n.bg}{an \code{integer} corresponding to the number of background points used to run 
 \code{MAXENT.Phillips}}
 
-\item{ME.env}{a \code{RasterStack} object containing model predictor variables}
+\item{ME.env}{a \code{\link[terra:rast]{SpatRaster}} object 
+containing model predictor variables}
 
 \item{ME.metric}{a \code{character} corresponding to the evaluation metric used to select 
 optimal model and tune parameters for \code{MAXENT.Phillips}, must be either 
@@ -192,7 +193,7 @@ myExtent <- terra::ext(0,30,45,70)
 myExpl <- terra::crop(myExpl, myExtent)
 }
 
-# ---------------------------------------------------------------
+# --------------------------------------------------------------- #
 # Format Data with true absences
 myBiomodData <- BIOMOD_FormatingData(resp.var = myResp,
                                      expl.var = myExpl,
@@ -200,7 +201,7 @@ myBiomodData <- BIOMOD_FormatingData(resp.var = myResp,
                                      resp.name = myRespName)
 
 
-# ---------------------------------------------------------------
+# --------------------------------------------------------------- #
 ### Duration for turing all models sequential with default settings 
 ### on 3.4 GHz processor: approx. 45 min tuning all models in parallel
 ### (on 8 cores) using foreach loops runs much faster: approx. 14 min

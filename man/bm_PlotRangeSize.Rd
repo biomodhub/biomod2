@@ -84,7 +84,7 @@ myExtent <- terra::ext(0,30,45,70)
 myExpl <- terra::crop(myExpl, myExtent)
 }
 
-# ---------------------------------------------------------------
+# ---------------------------------------------------------------#
 file.out <- paste0(myRespName, "/", myRespName, ".AllModels.models.out")
 if (file.exists(file.out)) {
   myBiomodModelOut <- get(load(file.out))
@@ -128,7 +128,7 @@ if (file.exists(file.proj)) {
 }
 
 
-# ---------------------------------------------------------------
+# ---------------------------------------------------------------#
 # Load environmental variables extracted from BIOCLIM (bio_3, bio_4, bio_7, bio_11 & bio_12)
 data(bioclim_future)
 myExplFuture <- terra::rast(bioclim_future)
@@ -153,7 +153,7 @@ FutureProj <- terra::rast("GuloGulo/proj_Future/proj_Future_GuloGulo_TSSbin.grd"
 myBiomodRangeSize <- BIOMOD_RangeSize(proj.current = CurrentProj, proj.future = FutureProj)
 
 
-# ---------------------------------------------------------------
+# ---------------------------------------------------------------#
 myBiomodRangeSize$Compt.By.Models
 plot(myBiomodRangeSize$Diff.By.Pixel)
 
