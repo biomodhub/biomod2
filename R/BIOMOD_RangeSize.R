@@ -190,7 +190,13 @@
 
 setGeneric("BIOMOD_RangeSize",
            def = function(proj.current, proj.future) {
-             standardGeneric("BIOMOD_RangeSize")
+             if(inherits(proj.current, "Raster") && inherits(proj.future, "Raster")){
+               return(
+                 BIOMOD_RangeSize(rast(proj.current), rast(proj.future))
+               )
+             } else {
+               stop("'proj.current' and 'proj.future' must have the same class among 'data.frame', 'SpatRaster' and 'array'" )
+             }
            })
 
 
@@ -333,18 +339,6 @@ setMethod('BIOMOD_RangeSize', signature(proj.current = 'SpatRaster', proj.future
             return(list(Compt.By.Models = CBS, Diff.By.Pixel = sp.rast))
           })
 
-
-## BIOMOD_RangeSize Raster-Raster Method ----------------------
-##'
-##' @rdname BIOMOD_RangeSize
-##' @export
-##'
-
-setMethod('BIOMOD_RangeSize',
-          signature(proj.current = 'Raster', proj.future = 'Raster'),
-          function(proj.current, proj.future) {
-            BIOMOD_RangeSize(proj.current = rast(proj.current), proj.future = rast(proj.future))
-          })
 
 # Argument Check ---------------------------------------------------------------
 
