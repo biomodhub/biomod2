@@ -364,9 +364,9 @@ BIOMOD_PresenceOnly <- function(bm.mod = NULL,
       myResp.eval <- get_formal_data(bm.mod)@eval.data.species
       Pred.eval <- myModelPred.eval[, Model.name]
       
-      boy <- ecospat.boyce(fit = Pred.eval, obs = Pred.eval[myResp.eval == 1 & ind.1], PEplot = FALSE)
+      boy <- ecospat.boyce(fit = Pred.eval, obs = Pred.eval[myResp.eval == 1], PEplot = FALSE)
       boyce.eval[ind.b, "Evaluating.data"] <- boy$cor
-      mpa.eval[ind.m,"Evaluating.data"] <- ecospat.mpa(Pred.eval[myResp.eval == 1 & ind.1], perc = perc)
+      mpa.eval[ind.m,"Evaluating.data"] <- ecospat.mpa(Pred.eval[myResp.eval == 1], perc = perc)
     }
   }
   myModelEval[, c("Sensitivity", "Specificity")] <- round(myModelEval[, c("Sensitivity", "Specificity")], 1)
