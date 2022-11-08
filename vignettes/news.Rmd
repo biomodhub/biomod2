@@ -74,6 +74,8 @@ vignette: >
 
 * Improved checks for BIOMOD_EnsembleModel to generate warnings when ensemble models are expected to be run with <= 1 models.
 
+* repaired support for cross-validation table given as data.frame instead of matrix.
+
 #### 4.1-2 (2022-09-29 - Current CRAN Version)
 
 ##### Major changes
