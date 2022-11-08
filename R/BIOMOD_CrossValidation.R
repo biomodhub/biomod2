@@ -169,6 +169,18 @@ BIOMOD_CrossValidation <- function(bm.format,
                                    method = "both",
                                    balance = "presences",
                                    do.full.models = TRUE) {
+  
+  args <- .BIOMOD_CrossValidation.check.args(bm.format,
+                                             k = k,
+                                             nb.rep = nb.rep,
+                                             do.stratification = do.stratification,
+                                             method = method,
+                                             balance = balance,
+                                             do.full.models = do.full.models)
+  
+  for (argi in names(args)) { assign(x = argi, value = args[[argi]]) }
+  rm(args)
+  
   .bm_cat("Build Cross-Validation Table")
   DataSplitTable.y <- DataSplitTable.x <- DataSplitTable <- NULL
   ind.NA = which(is.na(bm.format@data.species))
@@ -212,7 +224,7 @@ BIOMOD_CrossValidation <- function(bm.format,
     if (method == "block") {
       if (!isNamespaceLoaded("ENMeval")) { 
         if(!requireNamespace('ENMeval', quietly = TRUE)) stop("Package 'ENMeval' not found")
-        }
+      }
       DataSplitTable <- as.data.frame(matrix(NA, nrow(bm.format@coord), 4))
       blocks <- ENMeval::get.block(bm.format@coord[tmp == 1, ]
                                    , bm.format@coord[tmp == 0, ])
@@ -248,7 +260,7 @@ BIOMOD_CrossValidation <- function(bm.format,
   
   ## CLEAN FINAL TABLE ----------------------------------------------------------------------------
   colnames(DataSplitTable) <- paste0("RUN", 1:ncol(DataSplitTable))
-
+  
   if (isTRUE(do.full.models)) {
     DataSplitTable <- cbind(DataSplitTable, TRUE)
     colnames(DataSplitTable)[ncol(DataSplitTable)] <- "Full"
@@ -256,4 +268,57 @@ BIOMOD_CrossValidation <- function(bm.format,
   
   .bm_cat("Done")
   return(DataSplitTable)
+}
+
+
+
+# Argument check ----------------------------------------------------------
+
+.BIOMOD_CrossValidation.check.args <- function(bm.format,
+                                               k,
+                                               nb.rep,
+                                               do.stratification,
+                                               method,
+                                               balance,
+                                               do.full.models) {
+  cat('\n\nChecking Cross-Validation arguments...\n')
+
+  ## 0. Check bm.format ----------------------------------
+  .fun_testIfInherits(TRUE, "bm.format", bm.format, "BIOMOD.formated.data")
+  
+  ## 1. Check k ----------------------------------
+  if(k < 2 | k %% 1 != 0) {
+    stop("k must be an integer >= 2")
+  }
+  ## 2. Check nb.rep ----------------------------------
+  if(nb.rep < 1 | nb.rep %% 1 != 0) {
+    stop("nb.rep must be an integer >= 1")
+  }
+  ## 3. Check do.stratification ----------------------------------
+  
+  if(!is.logical(do.stratification)){
+    stop("do.stratification must be TRUE or FALSE")
+  }
+  
+  ## 4. Check method ----------------------------------
+  method.options <- c("x","y","both","block")
+  .fun_testIfIn(TRUE, "method", method, method.options)
+  
+  ## 5. Check balance ----------------------------------
+  balance.options <- c("presences","absences")
+  .fun_testIfIn(TRUE, "balance", balance, balance.options)
+  
+  ## 6. Check do.full.models ----------------------------------
+  
+  if(!is.logical(do.full.models)){
+    stop("do.full.models must be TRUE or FALSE")
+  }
+  
+  return(list(bm.format = bm.format,
+              k = k,
+              nb.rep = nb.rep,
+              do.stratification = do.stratification,
+              method = method,
+              balance = balance,
+              do.full.models = do.full.models))
 }
