@@ -33,6 +33,7 @@ vignette: >
 * `get_prediction` on `biomod.projection.out` generated from `BIOMOD_Projection` based on `SpatRaster` with arg `as.data.frame = TRUE` are now possible.
 * `bm_BinaryTransformation` now return same type of object as its input
 * Improved communcation for `BIOMOD_RangeSize`, indicating how comparison are done depending on the number of models in current vs future.
+* added argument check for BIOMOD_CrossValidation
 
 ##### Bugfix
 
