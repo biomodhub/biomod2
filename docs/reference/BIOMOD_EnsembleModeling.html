@@ -132,14 +132,20 @@ conditions (see Details).</p>
     <dl><dt>bm.mod</dt>
 <dd><p>a <code><a href="BIOMOD.models.out.html">BIOMOD.models.out</a></code> object returned by the 
 <code><a href="BIOMOD_Modeling.html">BIOMOD_Modeling</a></code> function</p></dd>
+
+
 <dt>models.chosen</dt>
 <dd><p>a <code>vector</code> containing model names to be kept, must be either 
 <code>all</code> or a sub-selection of model names that can be obtained with the 
 <code><a href="getters.out.html">get_built_models</a></code> function</p></dd>
+
+
 <dt>em.by</dt>
 <dd><p>a <code>character</code> corresponding to the way kept models will be combined to build 
 the ensemble models, must be among <code>PA_dataset+repet</code>, <code>PA_dataset+algo</code>, 
 <code>PA_dataset</code>, <code>algo</code>, <code>all</code></p></dd>
+
+
 <dt>metric.select</dt>
 <dd><p>a <code>vector</code> containing evaluation metric names to be used together with 
 <code>metric.select.thresh</code> to exclude single models based on their evaluation scores 
@@ -148,72 +154,105 @@ the ensemble models, must be among <code>PA_dataset+repet</code>, <code>PA_datas
 (and defined through <code>metric.select.table</code>) or <code>ROC</code>, <code>TSS</code>, <code>KAPPA</code>, 
 <code>ACCURACY</code>, <code>BIAS</code>, <code>POD</code>, <code>FAR</code>, <code>POFD</code>, <code>SR</code>, <code>CSI</code>, 
 <code>ETS</code>, <code>HK</code>, <code>HSS</code>, <code>OR</code>, <code>ORSS</code></p></dd>
+
+
 <dt>metric.select.thresh</dt>
 <dd><p>(<em>optional, default</em> <code>NULL</code>) <br> 
 A <code>vector</code> of <code>numeric</code> values corresponding to the minimum scores (one for each 
 <code>metric.select</code>) below which single models will be excluded from the ensemble model 
 building</p></dd>
+
+
 <dt>metric.select.table</dt>
 <dd><p>(<em>optional, default</em> <code>NULL</code>) <br> 
 If <code>metric.select = 'user.defined'</code>, a <code>data.frame</code> containing evaluation scores 
 calculated for each single models and that will be compared to <code>metric.select.thresh</code> 
 values to exclude some of them from the ensemble model building, with <code>metric.select</code> 
 rownames, and <code>models.chosen</code> colnames</p></dd>
+
+
 <dt>metric.eval</dt>
 <dd><p>a <code>vector</code> containing evaluation metric names to be used, must 
 be among <code>ROC</code>, <code>TSS</code>, <code>KAPPA</code>, <code>ACCURACY</code>, <code>BIAS</code>, <code>POD</code>, 
 <code>FAR</code>, <code>POFD</code>, <code>SR</code>, <code>CSI</code>, <code>ETS</code>, <code>HK</code>, <code>HSS</code>, <code>OR</code>, 
 <code>ORSS</code></p></dd>
+
+
 <dt>var.import</dt>
 <dd><p>(<em>optional, default</em> <code>NULL</code>) <br> 
 An <code>integer</code> corresponding to the number of permutations to be done for each variable to 
 estimate variable importance</p></dd>
+
+
 <dt>prob.mean</dt>
 <dd><p>(<em>optional, default</em> <code>TRUE</code>) <br> 
 A <code>logical</code> value defining whether to compute the mean probabilities 
 across predictions or not</p></dd>
+
+
 <dt>prob.median</dt>
 <dd><p>(<em>optional, default</em> <code>FALSE</code>) <br> 
 A <code>logical</code> value defining whether to compute the median probabilities  
 across predictions or not</p></dd>
+
+
 <dt>prob.cv</dt>
 <dd><p>(<em>optional, default</em> <code>FALSE</code>) <br> 
 A <code>logical</code> value defining whether to compute the coefficient of 
 variation across predictions or not</p></dd>
+
+
 <dt>prob.ci</dt>
 <dd><p>(<em>optional, default</em> <code>FALSE</code>) <br> 
 A <code>logical</code> value defining whether to compute te confidence interval 
 around the <code>prob.mean</code> ensemble model or not</p></dd>
+
+
 <dt>prob.ci.alpha</dt>
 <dd><p>(<em>optional, default</em> <code>0.05</code>) <br> 
 A <code>numeric</code> value corresponding to the significance level to estimate confidence interval</p></dd>
+
+
 <dt>committee.averaging</dt>
 <dd><p>(<em>optional, default</em> <code>FALSE</code>) <br> 
 A <code>logical</code> value defining whether to compute the committee 
 averaging across predictions or not</p></dd>
+
+
 <dt>prob.mean.weight</dt>
 <dd><p>(<em>optional, default</em> <code>FALSE</code>) <br> 
 A <code>logical</code> value defining whether to compute the weighted sum of 
 probabilities across predictions or not</p></dd>
+
+
 <dt>prob.mean.weight.decay</dt>
 <dd><p>(<em>optional, default</em> <code>proportional</code>) <br> 
 A value defining the relative importance of the weights (if <code>prob.mean.weight = TRUE</code>). 
 A high value will strongly discriminate <em>good</em> models from the <em>bad</em> ones (see Details), while <code>proportional</code> will 
 attribute weights proportionally to the models evaluation scores</p></dd>
+
+
 <dt>nb.cpu</dt>
 <dd><p>(<em>optional, default</em> <code>1</code>) <br> 
 An <code>integer</code> value corresponding to the number of computing resources to be used to 
 parallelize the single models computation</p></dd>
+
+
 <dt>seed.val</dt>
 <dd><p>(<em>optional, default</em> <code>NULL</code>) <br> 
 An <code>integer</code> value corresponding to the new seed value to be set</p></dd>
+
+
 <dt>do.progress</dt>
 <dd><p>(<em>optional, default</em> <code>TRUE</code>) <br> 
 A <code>logical</code> value defining whether the progress bar is to be rendered or not</p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>A <code>BIOMOD.ensemble.models.out</code> object containing models outputs, or links to saved 
+    
+
+<p>A <code>BIOMOD.ensemble.models.out</code> object containing models outputs, or links to saved 
 outputs. <br> Models outputs are stored out of <span style="R">R</span> (for memory storage reasons) in 2 different 
 folders created in the current working directory :</p><ol><li><p>a <em>models</em> folder, named after the <code>resp.name</code> argument of 
   <code><a href="BIOMOD_FormatingData.html">BIOMOD_FormatingData</a></code>, and containing all ensemble models</p></li>
@@ -478,7 +517,7 @@ model will be used to weight the models predictions.</em></p></dd>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.3.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
 </div>
 
       </footer></div>

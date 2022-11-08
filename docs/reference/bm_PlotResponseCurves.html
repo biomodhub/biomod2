@@ -123,38 +123,57 @@ explanatory variables at a time, see Details).</p>
 <dd><p>a <code><a href="BIOMOD.models.out.html">BIOMOD.models.out</a></code> or <code><a href="BIOMOD.ensemble.models.out.html">BIOMOD.ensemble.models.out</a></code> 
 object that can be obtained with the <code><a href="BIOMOD_Modeling.html">BIOMOD_Modeling</a></code> or 
 <code><a href="BIOMOD_EnsembleModeling.html">BIOMOD_EnsembleModeling</a></code> functions</p></dd>
+
+
 <dt>models.chosen</dt>
 <dd><p>a <code>vector</code> containing model names to be kept, must be either 
 <code>all</code> or a sub-selection of model names that can be obtained with the 
 <code><a href="getters.out.html">get_built_models</a></code> function</p></dd>
+
+
 <dt>new.env</dt>
 <dd><p>a <code>matrix</code>, <code>data.frame</code> or <code><a href="https://rdrr.io/pkg/raster/man/stack.html" class="external-link">RasterStack</a></code> 
 object containing the new explanatory variables (in columns or layers, with names matching the 
 variables names given to the <code><a href="BIOMOD_FormatingData.html">BIOMOD_FormatingData</a></code> function to build 
 <code>bm.out</code>) that will be used to project the species distribution model(s)</p></dd>
+
+
 <dt>show.variables</dt>
 <dd><p>a <code>vector</code> containing the names of the explanatory variables 
 present into <code>new.env</code> parameter and to be plotted</p></dd>
+
+
 <dt>fixed.var</dt>
 <dd><p>a <code>character</code> corresponding to the statistic to be used to fix as 
 constant the remaining variables other than the one used to predict response, must be either 
 <code>mean</code>, <code>median</code>, <code>min</code>, <code>max</code></p></dd>
+
+
 <dt>do.bivariate</dt>
 <dd><p>(<em>optional, default</em> <code>FALSE</code>) <br> 
 A <code>logical</code> value defining whether the response curves are to be represented in 3 
 dimensions (meaning 2 explanatory variables at a time) or not (meaning only 1)</p></dd>
+
+
 <dt>do.plot</dt>
 <dd><p>(<em>optional, default</em> <code>TRUE</code>) <br> 
 A <code>logical</code> value defining whether the plot is to be rendered or not</p></dd>
+
+
 <dt>do.progress</dt>
 <dd><p>(<em>optional, default</em> <code>TRUE</code>) <br> 
 A <code>logical</code> value defining whether the progress bar is to be rendered or not</p></dd>
+
+
 <dt>...</dt>
 <dd><p>some additional arguments (see Details)</p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>A <code>list</code> containing a <code>data.frame</code> with variables and predicted values and the 
+    
+
+<p>A <code>list</code> containing a <code>data.frame</code> with variables and predicted values and the 
 corresponding <code>ggplot</code> object representing response curves.</p>
     </div>
     <div id="details">
@@ -293,7 +312,7 @@ Note that this method does not account for interactions between variables. <br><
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.3.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
 </div>
 
       </footer></div>

@@ -141,8 +141,20 @@
 <li>Ensemble models that fails (e.g. EMcv with only one models) will not
 crash the full ensemble run. Instead a warning is generally displayed at
 the beginning and the resulting object will list failed models.</li>
+<li>Fixed CTA raster prediction for categorical variables.</li>
 </ul>
 </div>
+</div>
+<div class="section level4">
+<h4 id="internal-changes">Internal Changes<a class="anchor" aria-label="anchor" href="#internal-changes"></a>
+</h4>
+<ul>
+<li><p>New internal function .get_kept_models to generate list of models
+kept by ensemble modeling depending on metric.select.</p></li>
+<li><p>Improved checks for BIOMOD_EnsembleModel to generate warnings
+when ensemble models are expected to be run with &lt;= 1
+models.</p></li>
+</ul>
 </div>
 <div class="section level4">
 <h4 id="current-cran-version">4.1-2 (2022-09-29 - Current CRAN Version)<a class="anchor" aria-label="anchor" href="#current-cran-version"></a>
@@ -689,7 +701,7 @@ coherence between functions)</li>
 
 <div class="pkgdown">
   <p></p>
-<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.3.</p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
 </div>
 
       </footer>
