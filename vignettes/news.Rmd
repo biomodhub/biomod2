@@ -21,6 +21,13 @@ vignette: >
 ##### Bugfix
 
 * Ensemble models that fails (e.g. EMcv with only one models) will not crash the full ensemble run. Instead a warning is generally displayed at the beginning and the resulting object will list failed models.
+* Fixed CTA raster prediction for categorical variables.
+
+#### Internal Changes
+
+* New internal function .get_kept_models to generate list of models kept by ensemble modeling depending on metric.select.
+
+* Improved checks for BIOMOD_EnsembleModel to generate warnings when ensemble models are expected to be run with <= 1 models.
 
 #### 4.1-2 (2022-09-29 - Current CRAN Version)
 
