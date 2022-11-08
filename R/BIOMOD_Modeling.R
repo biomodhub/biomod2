@@ -494,25 +494,35 @@ BIOMOD_Modeling <- function(bm.format,
   ## 4. Check nb.rep and data.split.table arguments ---------------------------
   if (!is.null(data.split.table)) {
     cat("\n! User defined data-split table was given -> nb.rep, data.split.perc and do.full.models argument will be ignored")
-    if (!(length(dim(data.split.table) %in% c(2, 3)))) { stop("data.split.table must be a matrix or a 3D array") }
-    if (dim(data.split.table)[1] != length(bm.format@data.species)) { stop("data.split.table must have as many rows (dim1) than your species as data") }
+    
+    if (inherits(data.split.table,'data.frame')) {
+      data.split.table <- as.matrix(data.split.table)
+    }
+    
+    if (!(length(dim(data.split.table) %in% c(2, 3)))) {
+      stop("data.split.table must be a matrix, a data.frame or a 3D array") 
+    }
+    
+    if (dim(data.split.table)[1] != length(bm.format@data.species)) { 
+      stop("data.split.table must have as many rows (dim1) than your species as data")
+    }
     nb.rep <- dim(data.split.table)[2]
     data.split.perc <- 50
     do.full.models <- FALSE
-  }
-  
-  .fun_testIfPosInt(TRUE, "nb.rep", nb.rep)
-  if (data.split.perc < 0 || data.split.perc > 100) {
-    stop("data.split.perc argument must be a 0-100 'numeric'")
-  } else if (data.split.perc < 50) {
-    warning("You chose to allocate more data to evaluation than to calibration of your model
+  } else { # no user defined cross-validation
+    .fun_testIfPosInt(TRUE, "nb.rep", nb.rep)
+    if (data.split.perc < 0 || data.split.perc > 100) {
+      stop("data.split.perc argument must be a 0-100 'numeric'")
+    } else if (data.split.perc < 50) {
+      warning("You chose to allocate more data to evaluation than to calibration of your model
             (data.split.perc<50)\nMake sure you really wanted to do that. \n", immediate. = TRUE)
-  } else if (data.split.perc == 100) {
-    nb.rep <- 0
-    warning(paste0("The models will be evaluated on the calibration data only "
-                   , "(nb.rep=0 and no independent data) \n\t "
-                   , "It could lead to over-optimistic predictive performances.\n")
-            , immediate. = TRUE)
+    } else if (data.split.perc == 100) {
+      nb.rep <- 0
+      warning(paste0("The models will be evaluated on the calibration data only "
+                     , "(nb.rep=0 and no independent data) \n\t "
+                     , "It could lead to over-optimistic predictive performances.\n")
+              , immediate. = TRUE)
+    }
   }
   
   ## 5. Check weights arguments -----------------------------------------------
@@ -634,8 +644,7 @@ setMethod('.BIOMOD_Modeling.prepare.data', signature('BIOMOD.formated.data'),
             ## force calib.lines object to be 3D array
             if (length(dim(calib.lines)) < 3) {
               dn_tmp <- dimnames(calib.lines) ## keep track of dimnames
-              calib.lines <- array(data = as.matrix(calib.lines), 
-                                   dim = c(dim(calib.lines), 1))
+              dim(calib.lines) <- c(dim(calib.lines), 1)
               dimnames(calib.lines) <- list(dn_tmp[[1]], dn_tmp[[2]], "_AllData")
             }
             
@@ -714,8 +723,7 @@ setMethod('.BIOMOD_Modeling.prepare.data', signature('BIOMOD.formated.data.PA'),
               ## force calib.lines object to be 3D array
               if (length(dim(calib.lines)) < 3) {
                 dn_tmp <- dimnames(calib.lines) ## keep track of dimnames
-                calib.lines <- array(data = as.matrix(calib.lines), 
-                                     dim = c(dim(calib.lines), 1))
+                dim(calib.lines) <- c(dim(calib.lines), 1)
                 dimnames(calib.lines) <- list(dn_tmp[[1]], dn_tmp[[2]], paste0("_PA", pa))
               }
               
