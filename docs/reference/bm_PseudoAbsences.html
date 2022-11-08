@@ -164,46 +164,67 @@ to 4 different methods : <code>random</code>, <code>sre</code>, <code>disk</code
 <code><a href="https://rdrr.io/pkg/sp/man/SpatialPoints.html" class="external-link">SpatialPointsDataFrame</a></code> object containing binary data (<code>0</code> : absence, 
 <code>1</code> : presence, <code>NA</code> : indeterminate) for a single species that will be used to 
 find the pseudo-absences</p></dd>
+
+
 <dt>expl.var</dt>
 <dd><p>a <code>matrix</code>, <code>data.frame</code>, <code><a href="https://rdrr.io/pkg/sp/man/SpatialPoints.html" class="external-link">SpatialPointsDataFrame</a></code> 
 or <code><a href="https://rdrr.io/pkg/terra/man/rast.html" class="external-link">SpatRaster</a></code> object containing the explanatory variables (in 
 columns or layers) that will be used to find the pseudo-absences</p></dd>
+
+
 <dt>nb.rep</dt>
 <dd><p>an <code>integer</code> corresponding to the number of sets (repetitions) of 
 pseudo-absence points that will be drawn</p></dd>
+
+
 <dt>strategy</dt>
 <dd><p>a <code>character</code> corresponding to the pseudo-absence selection strategy, 
 must be among <code>random</code>, <code>sre</code>, <code>disk</code> or <code>user.defined</code></p></dd>
+
+
 <dt>dist.min</dt>
 <dd><p>(<em>optional, default</em> <code>0</code>) <br>
 If <code>strategy = 'disk'</code>, a <code>numeric</code> defining the minimal distance to presence points 
 used to make the <code>disk</code> pseudo-absence selection (in meters)</p></dd>
+
+
 <dt>dist.max</dt>
 <dd><p>(<em>optional, default</em> <code>NULL</code>) <br>
 If <code>strategy = 'disk'</code>, a <code>numeric</code> defining the maximal distance to presence points 
 used to make the <code>disk</code> pseudo-absence selection (in meters)</p></dd>
+
+
 <dt>nb.absences</dt>
 <dd><p>(<em>optional, default</em> <code>NULL</code>) <br>
 If <code>strategy = 'random'</code> or <code>strategy = 'sre'</code> or <code>strategy = 'disk'</code>, an 
 <code>integer</code> corresponding to the number of pseudo-absence points that will be selected for 
 each pseudo-absence repetition (true absences included)</p></dd>
+
+
 <dt>sre.quant</dt>
 <dd><p>(<em>optional, default</em> <code>0</code>) <br>
 If <code>strategy = 'sre'</code>, a <code>numeric</code> between <code>0</code> and <code>0.5</code> defining the 
 half-quantile used to make the <code>sre</code> pseudo-absence selection (see <code><a href="bm_SRE.html">bm_SRE</a></code>)</p></dd>
+
+
 <dt>user.table</dt>
 <dd><p>(<em>optional, default</em> <code>NULL</code>) <br>
 If <code>strategy = 'user.defined'</code>, a <code>matrix</code> or <code>data.frame</code> with as many rows as 
 <code>resp.var</code> values, as many columns as <code>nb.rep</code>, and containing <code>TRUE</code> or 
 <code>FALSE</code> values defining which points will be used to build the species distribution 
 model(s) for each repetition</p></dd>
+
+
 <dt>...</dt>
 <dd><p>(<em>optional, one or several of the following arguments depending on the selected 
 method)</em>)</p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>A <code>list</code> containing the following elements :</p><ul><li><p><code>xy</code> : the coordinates of the species observations</p></li>
+    
+
+<p>A <code>list</code> containing the following elements :</p><ul><li><p><code>xy</code> : the coordinates of the species observations</p></li>
 <li><p><code>sp</code> : the values of the species observations (<code>0</code>, <code>1</code> or <code>NA</code>)</p></li>
 <li><p><code>env</code> : the explanatory variables</p></li>
 <li><p><code>pa.tab</code> : the corresponding table of selected pseudo-absences (indicated by 
@@ -264,7 +285,7 @@ whether each point is to be considered as pseudo-absence or not for each dataset
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.3.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
 </div>
 
       </footer></div>

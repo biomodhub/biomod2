@@ -120,22 +120,35 @@ metric.</p>
 be either <code>ROC</code>, <code>TSS</code>, <code>KAPPA</code>, <code>ACCURACY</code>, <code>BIAS</code>, <code>POD</code>, 
 <code>FAR</code>, <code>POFD</code>, <code>SR</code>, <code>CSI</code>, <code>ETS</code>, <code>HK</code>, <code>HSS</code>, <code>OR</code> 
 or <code>ORSS</code></p></dd>
+
+
 <dt>obs</dt>
 <dd><p>a <code>vector</code> of observed values (binary, <code>0</code> or <code>1</code>)</p></dd>
+
+
 <dt>fit</dt>
 <dd><p>a <code>vector</code> of fitted values (continuous)</p></dd>
+
+
 <dt>nb.thresh</dt>
 <dd><p>an <code>integer</code> corresponding to the number of thresholds to be 
 tested over the range of fitted values</p></dd>
+
+
 <dt>threshold</dt>
 <dd><p>(<em>optional, default</em> <code>NULL</code>) <br> 
 A <code>numeric</code> corresponding to the threshold used to convert the given data</p></dd>
+
+
 <dt>misc</dt>
 <dd><p>a <code>matrix</code> corresponding to a contingency table</p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>A <code>1</code> row x <code>4</code> columns <code>matrix</code> containing :</p><ul><li><p><code>best.iter</code> : the best score obtained for the chosen evaluation metric</p></li>
+    
+
+<p>A <code>1</code> row x <code>4</code> columns <code>matrix</code> containing :</p><ul><li><p><code>best.iter</code> : the best score obtained for the chosen evaluation metric</p></li>
 <li><p><code>cutoff</code> : the associated cut-off used to transform the continuous values into 
   binary</p></li>
 <li><p><code>sensibility</code> : the sensibility obtained on fitted values with this threshold</p></li>
@@ -208,7 +221,7 @@ only the score for this threshold will be returned.</p>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.3.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
 </div>
 
       </footer></div>

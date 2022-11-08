@@ -121,9 +121,13 @@ represent new areas, resolution or time scales for example</em>).</p>
     <dl><dt>bm.mod</dt>
 <dd><p>a <code><a href="BIOMOD.models.out.html">BIOMOD.models.out</a></code> object returned by the 
 <code><a href="BIOMOD_Modeling.html">BIOMOD_Modeling</a></code> function</p></dd>
+
+
 <dt>proj.name</dt>
 <dd><p>a <code>character</code> corresponding to the name (ID) of the projection set 
 (<em>a new folder will be created within the simulation folder with this name</em>)</p></dd>
+
+
 <dt>new.env</dt>
 <dd><p>A <code>matrix</code>, <code>data.frame</code> or
  <code><a href="https://rdrr.io/pkg/terra/man/rast.html" class="external-link">SpatRaster</a></code> object containing the new 
@@ -132,15 +136,21 @@ explanatory variables (in columns or layers, with names matching the
 <code>bm.mod</code>) that will be used to project the species distribution model(s)
 <br><em>Note that old format from <span class="pkg">raster</span> are still supported such as 
 <code>RasterStack</code> objects. </em></p></dd>
+
+
 <dt>new.env.xy</dt>
 <dd><p>(<em>optional, default</em> <code>NULL</code>) <br> 
 If <code>new.env</code> is a <code>matrix</code> or a <code>data.frame</code>, a 2-columns <code>matrix</code> or 
 <code>data.frame</code> containing the corresponding <code>X</code> and <code>Y</code> coordinates that will be 
 used to project the species distribution model(s)</p></dd>
+
+
 <dt>models.chosen</dt>
 <dd><p>a <code>vector</code> containing model names to be kept, must be either 
 <code>all</code> or a sub-selection of model names that can be obtained with the 
 <code><a href="getters.out.html">get_built_models</a></code> function</p></dd>
+
+
 <dt>metric.binary</dt>
 <dd><p>(<em>optional, default</em> <code>NULL</code>) <br> 
 A <code>vector</code> containing evaluation metric names to be used to transform prediction values 
@@ -149,6 +159,8 @@ into binary values based on models evaluation scores obtained with the
 those of <code>bm.mod</code>) or <code>ROC</code>, <code>TSS</code>, <code>KAPPA</code>, <code>ACCURACY</code>, 
 <code>BIAS</code>, <code>POD</code>, <code>FAR</code>, <code>POFD</code>, <code>SR</code>, <code>CSI</code>, <code>ETS</code>, 
 <code>HK</code>, <code>HSS</code>, <code>OR</code>, <code>ORSS</code></p></dd>
+
+
 <dt>metric.filter</dt>
 <dd><p>(<em>optional, default</em> <code>NULL</code>) <br> 
 A <code>vector</code> containing evaluation metric names to be used to transform prediction values 
@@ -157,28 +169,41 @@ into filtered values based on models evaluation scores obtained with the
 those of <code>bm.mod</code>) or <code>ROC</code>, <code>TSS</code>, <code>KAPPA</code>, <code>ACCURACY</code>, 
 <code>BIAS</code>, <code>POD</code>, <code>FAR</code>, <code>POFD</code>, <code>SR</code>, <code>CSI</code>, <code>ETS</code>, 
 <code>HK</code>, <code>HSS</code>, <code>OR</code>, <code>ORSS</code></p></dd>
+
+
 <dt>compress</dt>
 <dd><p>(<em>optional, default</em> <code>TRUE</code>) <br> 
 A <code>logical</code> or a <code>character</code> value defining whether and how objects should be 
 compressed when saved on hard drive. Must be either <code>TRUE</code>, <code>FALSE</code>, <code>xz</code> or 
 <code>gzip</code> (see Details)</p></dd>
+
+
 <dt>build.clamping.mask</dt>
 <dd><p>(<em>optional, default</em> <code>TRUE</code>) <br> 
 A <code>logical</code> value defining whether a clamping mask should be built and saved on hard 
 drive or not (see Details)</p></dd>
+
+
 <dt>nb.cpu</dt>
 <dd><p>(<em>optional, default</em> <code>1</code>) <br> 
 An <code>integer</code> value corresponding to the number of computing resources to be used to 
 parallelize the single models computation</p></dd>
+
+
 <dt>seed.val</dt>
 <dd><p>(<em>optional, default</em> <code>NULL</code>) <br> 
 An <code>integer</code> value corresponding to the new seed value to be set</p></dd>
+
+
 <dt>...</dt>
 <dd><p>(<em>optional, see Details)</em>)</p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>A <code>BIOMOD.projection.out</code> object containing models projections, or links to saved 
+    
+
+<p>A <code>BIOMOD.projection.out</code> object containing models projections, or links to saved 
 outputs. <br> Models projections are stored out of <span style="R">R</span> (for memory storage reasons) in 
 <code>proj.name</code> folder created in the current working directory :</p><ol><li><p>the output is a 4-dimensional array if <code>new.env</code> is a <code>matrix</code> or a 
   <code>data.frame</code></p></li>
@@ -312,7 +337,7 @@ calibration / training range, identifying locations where predictions are uncert
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.3.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
 </div>
 
       </footer></div>

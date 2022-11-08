@@ -171,21 +171,31 @@ build the species distribution model(s)
 <br><em>Note that old format from <span class="pkg">sp</span> are still supported such as
  <code>SpatialPoints</code>  (<em>if presence-only</em>) or <code>SpatialPointsDataFrame</code>
  object containing binary data.</em></p></dd>
+
+
 <dt>env</dt>
 <dd><p>a <code>matrix</code>, <code>data.frame</code>, <code><a href="https://rdrr.io/pkg/terra/man/vect.html" class="external-link">SpatVector</a></code>
 or <code><a href="https://rdrr.io/pkg/terra/man/rast.html" class="external-link">SpatRaster</a></code> object containing the explanatory variables 
 (in columns or layers) that will be used to build the species distribution model(s).
 <br><em>Note that old format from <span class="pkg">raster</span> and <span class="pkg">sp</span> are still supported such as 
 <code>RasterStack</code> and <code>SpatialPointsDataFrame</code> objects. </em></p></dd>
+
+
 <dt>xy</dt>
 <dd><p>(<em>optional, default</em> <code>NULL</code>) <br> 
 If <code>resp.var</code> is a <code>vector</code>, a 2-columns <code>matrix</code> or <code>data.frame</code> 
 containing the corresponding <code>X</code> and <code>Y</code> coordinates that will be used to build the 
 species distribution model(s)</p></dd>
+
+
 <dt>dir.name</dt>
 <dd><p>a <code>character</code> corresponding to the modeling folder</p></dd>
+
+
 <dt>sp.name</dt>
 <dd><p>a <code>character</code> corresponding to the species name</p></dd>
+
+
 <dt>eval.sp</dt>
 <dd><p>(<em>optional, default</em> <code>NULL</code>) <br> 
 A <code>vector</code>, a <code><a href="https://rdrr.io/pkg/terra/man/vect.html" class="external-link">SpatVector</a></code> without associated 
@@ -196,6 +206,8 @@ data (<em>if presence-only</em>), or a <code><a href="https://rdrr.io/pkg/terra/
 <br><em>Note that old format from <span class="pkg">sp</span> are still supported such as
  <code>SpatialPoints</code>  (<em>if presence-only</em>) or <code>SpatialPointsDataFrame</code>
  object containing binary data.</em></p></dd>
+
+
 <dt>eval.env</dt>
 <dd><p>(<em>optional, default</em> <code>NULL</code>) <br> 
 A <code>matrix</code>, <code>data.frame</code>, <code><a href="https://rdrr.io/pkg/terra/man/vect.html" class="external-link">SpatVector</a></code> or
@@ -205,28 +217,43 @@ A <code>matrix</code>, <code>data.frame</code>, <code><a href="https://rdrr.io/p
 <br><em>Note that old format from <span class="pkg">raster</span> and <span class="pkg">sp</span> are still
 supported such as <code>RasterStack</code> and <code>SpatialPointsDataFrame</code>
 objects. </em></p></dd>
+
+
 <dt>eval.xy</dt>
 <dd><p>(<em>optional, default</em> <code>NULL</code>) <br> 
 If <code>resp.var</code> is a <code>vector</code>, a 2-columns <code>matrix</code> or
 <code>data.frame</code> containing the corresponding <code>X</code> and <code>Y</code>
 coordinates that will be used to evaluate the species distribution model(s)
 with independent data</p></dd>
+
+
 <dt>na.rm</dt>
 <dd><p>(<em>optional, default</em> <code>TRUE</code>) <br> 
 A <code>logical</code> value defining whether points having one or several missing
 values for explanatory variables should be removed from the analysis or not</p></dd>
+
+
 <dt>data.mask</dt>
 <dd><p>a <code><a href="https://rdrr.io/pkg/terra/man/rast.html" class="external-link">SpatRaster</a></code> object 
 containing the mask of the studied area</p></dd>
+
+
 <dt>x</dt>
 <dd><p>a <code><a href="BIOMOD.formated.data.PA.html">BIOMOD.formated.data.PA</a></code> object</p></dd>
+
+
 <dt>coord</dt>
 <dd><p>a 2-columns <code>data.frame</code> containing <code>X</code> and <code>Y</code> coordinates for plot</p></dd>
+
+
 <dt>col</dt>
 <dd><p>a <code>vector</code> containing colors for plot (default : <code>c('green', 'red', 
 'orange', 'grey')</code>)</p></dd>
+
+
 <dt>object</dt>
 <dd><p>a <code><a href="BIOMOD.formated.data.PA.html">BIOMOD.formated.data.PA</a></code> object</p></dd>
+
 </dl></div>
     <div id="slots">
     <h2>Slots</h2>
@@ -355,7 +382,7 @@ A <code>data.frame</code> containing explanatory variables for evaluation data</
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.3.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
 </div>
 
       </footer></div>

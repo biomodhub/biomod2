@@ -124,30 +124,44 @@ for a single species that will be used to build the species distribution model(s
 <br><em>Note that old format from <span class="pkg">sp</span> are still supported such as
  <code>SpatialPoints</code>  (<em>if presence-only</em>) or <code>SpatialPointsDataFrame</code>
  object containing binary data.</em></p></dd>
+
+
 <dt>expl.var</dt>
 <dd><p>a <code>matrix</code>, <code>data.frame</code>, <code><a href="https://rdrr.io/pkg/terra/man/vect.html" class="external-link">SpatVector</a></code>
 or <code><a href="https://rdrr.io/pkg/terra/man/rast.html" class="external-link">SpatRaster</a></code> object containing the explanatory variables (in 
 columns or layers) that will be used to build the SRE model
 <br><em>Note that old format from <span class="pkg">raster</span> and <span class="pkg">sp</span> are still supported such as 
 <code>RasterStack</code> and <code>SpatialPointsDataFrame</code> objects. </em></p></dd>
+
+
 <dt>new.env</dt>
 <dd><p>a <code>matrix</code>, <code>data.frame</code>, <code><a href="https://rdrr.io/pkg/terra/man/vect.html" class="external-link">SpatVector</a></code>
 or <code><a href="https://rdrr.io/pkg/terra/man/rast.html" class="external-link">SpatRaster</a></code> object containing the explanatory variables (in 
 columns or layers) that will be used to predict the SRE model
 <br><em>Note that old format from <span class="pkg">raster</span> and <span class="pkg">sp</span> are still supported such as 
 <code>RasterStack</code> and <code>SpatialPointsDataFrame</code> objects. </em></p></dd>
+
+
 <dt>quant</dt>
 <dd><p>a <code>numeric</code> between <code>0</code> and <code>0.5</code> defining the half-quantile 
 corresponding to the most extreme value for each variable not to be taken into account for 
 determining the tolerance boundaries of the considered species (see Details)</p></dd>
+
+
 <dt>do.extrem</dt>
 <dd><p>(<em>optional, default</em> <code>FALSE</code>) <br> 
 A <code>logical</code> value defining whether a <code>matrix</code> containing extreme conditions 
 supported should be returned or not</p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>A <code>vector</code> or a <code><a href="https://rdrr.io/pkg/terra/man/rast.html" class="external-link">SpatRaster</a></code> object, containing binary (<code>0</code>or <code>1</code>) values.</p>
+    
+
+<p>A <code>vector</code> or a <code><a href="https://rdrr.io/pkg/terra/man/rast.html" class="external-link">SpatRaster</a></code> object, containing binary (<code>0</code></p>
+ 
+
+<p>or <code>1</code>) values.</p>
     </div>
     <div id="details">
     <h2>Details</h2>
@@ -250,7 +264,7 @@ that a total of <code>10%</code> of the data will not be considered.</p>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.3.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
 </div>
 
       </footer></div>

@@ -116,28 +116,45 @@ stratified cross-validation (CV) instead of repeated split samples.</p>
     <dl><dt>bm.format</dt>
 <dd><p>a <code><a href="BIOMOD.formated.data.html">BIOMOD.formated.data-class</a></code> or <code><a href="BIOMOD.formated.data.PA.html">BIOMOD.formated.data.PA-class</a></code> 
 object returned by the <code><a href="BIOMOD_FormatingData.html">BIOMOD_FormatingData</a></code> function</p></dd>
+
+
 <dt>k</dt>
 <dd><p>an <code>integer</code> corresponding to the number of bins/partitions for k-fold CV</p></dd>
+
+
 <dt>nb.rep</dt>
 <dd><p>an <code>integer</code> corresponding to the number of repetitions of k-fold CV 
 (<em>set to <code>1</code> if <code>do.stratification = TRUE</code></em>)</p></dd>
+
+
 <dt>do.stratification</dt>
 <dd><p>a <code>logical</code> defining whether stratified CV should be run</p></dd>
+
+
 <dt>method</dt>
 <dd><p>a <code>character</code> corresponding to the CV stratification method (<em>if 
 <code>do.stratification = TRUE</code></em>), must be <code>x</code>, <code>y</code>, <code>both</code>, <code>block</code> 
 or the name of a predictor for environmental stratified CV</p></dd>
+
+
 <dt>balance</dt>
 <dd><p>a <code>character</code> defining whether partitions should be balanced for 
 <code>presences</code> or <code>absences</code> (resp. pseudo-absences or background)</p></dd>
+
+
 <dt>do.full.models</dt>
 <dd><p>(<em>optional, default</em> <code>TRUE</code>) <br>
 A <code>logical</code> value defining whether models should be also calibrated and validated over 
 the whole dataset or not</p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>A <code>DataSplitTable</code>matrix with <code>k * nb.rep</code> (<em>+ 1 if 
+    
+
+<p>A <code>DataSplitTable</code></p>
+<p></p>
+<p>matrix with <code>k * nb.rep</code> (<em>+ 1 if 
 <code>do.full.models = TRUE</code></em>) columns that can be given as parameter to the 
 <code><a href="BIOMOD_Modeling.html">BIOMOD_Modeling</a></code> function.</p>
     </div>
@@ -285,7 +302,7 @@ if the presences are clumped on an edge of the study area.</p>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.3.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
 </div>
 
       </footer></div>

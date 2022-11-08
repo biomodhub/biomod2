@@ -116,9 +116,13 @@ objects that can be obtained with the <code><a href="BIOMOD_Modeling.html">BIOMO
     <dl><dt>bm.mod</dt>
 <dd><p>a <code><a href="BIOMOD.models.out.html">BIOMOD.models.out</a></code> object returned by the 
 <code><a href="BIOMOD_Modeling.html">BIOMOD_Modeling</a></code> function</p></dd>
+
+
 <dt>bm.em</dt>
 <dd><p>a <code><a href="BIOMOD.ensemble.models.out.html">BIOMOD.ensemble.models.out</a></code> object returned by the 
 <code><a href="BIOMOD_EnsembleModeling.html">BIOMOD_EnsembleModeling</a></code> function</p></dd>
+
+
 <dt>bg.env</dt>
 <dd><p>(<em>optional, default</em> <code>NULL</code>) <br> 
 A <code>matrix</code>, <code>data.frame</code>, <code><a href="https://rdrr.io/pkg/terra/man/vect.html" class="external-link">SpatVector</a></code>
@@ -128,18 +132,25 @@ environmental variables (in columns or layers) extracted from the background
 pseudo-absences selected for modeling</em>)
 <br><em>Note that old format from <span class="pkg">raster</span> and <span class="pkg">sp</span> are still supported such as 
 <code>RasterStack</code> and <code>SpatialPointsDataFrame</code> objects. </em></p></dd>
+
+
 <dt>perc</dt>
 <dd><p>a <code>numeric</code> between <code>0</code> and <code>1</code> corresponding to the percentage of 
 correctly classified presences for Minimal Predicted Area (see 
 <code>ecospat.mpa()</code> in <span class="pkg">ecospat</span>)</p></dd>
+
+
 <dt>save.output</dt>
 <dd><p>(<em>optional, default</em> <code>TRUE</code>) <br> 
 A <code>logical</code> value defining whether the output is to be saved within the 
 <code>.BIOMOD_DATA</code> folder or not</p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>A <code>data.frame</code> containing evaluation scores both for the evaluation metrics used in the 
+    
+
+<p>A <code>data.frame</code> containing evaluation scores both for the evaluation metrics used in the 
 <code><a href="BIOMOD_Modeling.html">BIOMOD_Modeling</a></code> function and additional Boyce index and Minimal Predicted Area.</p>
     </div>
     <div id="details">
@@ -296,7 +307,7 @@ functions have been copied within this file from version 3.2.2 (august 2022).</p
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.3.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
 </div>
 
       </footer></div>

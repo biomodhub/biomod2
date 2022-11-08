@@ -139,72 +139,111 @@ species distribution models (asked by the <code><a href="BIOMOD_Modeling.html">B
     <dl><dt>bm.format</dt>
 <dd><p>a <code><a href="BIOMOD.formated.data.html">BIOMOD.formated.data</a></code> or <code><a href="BIOMOD.formated.data.PA.html">BIOMOD.formated.data.PA</a></code> 
 object returned by the <code><a href="BIOMOD_FormatingData.html">BIOMOD_FormatingData</a></code> function</p></dd>
+
+
 <dt>modeling.id</dt>
 <dd><p>a <code>character</code> corresponding to the name (ID) of the simulation set 
 (<em>a random number by default</em>)</p></dd>
+
+
 <dt>model</dt>
 <dd><p>a <code>character</code> corresponding to the model name to be computed, must be either 
 <code>GLM</code>, <code>GBM</code>, <code>GAM</code>, <code>CTA</code>, <code>ANN</code>, <code>SRE</code>, <code>FDA</code>, 
 <code>MARS</code>, <code>RF</code>, <code>MAXENT.Phillips</code>, <code>MAXENT.Phillips.2</code></p></dd>
+
+
 <dt>bm.options</dt>
 <dd><p>a <code><a href="BIOMOD.models.options.html">BIOMOD.models.options</a></code> object returned by the
 <code><a href="BIOMOD_ModelingOptions.html">BIOMOD_ModelingOptions</a></code> function</p></dd>
+
+
 <dt>metric.eval</dt>
 <dd><p>a <code>vector</code> containing evaluation metric names to be used, must 
 be among <code>ROC</code>, <code>TSS</code>, <code>KAPPA</code>, <code>ACCURACY</code>, <code>BIAS</code>, <code>POD</code>, 
 <code>FAR</code>, <code>POFD</code>, <code>SR</code>, <code>CSI</code>, <code>ETS</code>, <code>HK</code>, <code>HSS</code>, <code>OR</code>, 
 <code>ORSS</code></p></dd>
+
+
 <dt>var.import</dt>
 <dd><p>(<em>optional, default</em> <code>NULL</code>) <br> 
 An <code>integer</code> corresponding to the number of permutations to be done for each variable to 
 estimate variable importance</p></dd>
+
+
 <dt>save.output</dt>
 <dd><p>(<em>optional, default</em> <code>TRUE</code>) <br> 
 A <code>logical</code> value defining whether all outputs should be saved on hard drive or not 
 (<em>! strongly recommended !</em>)</p></dd>
+
+
 <dt>scale.models</dt>
 <dd><p>(<em>optional, default</em> <code>FALSE</code>) <br> 
 A <code>logical</code> value defining whether all models predictions should be scaled with a 
 binomial GLM or not</p></dd>
+
+
 <dt>nb.cpu</dt>
 <dd><p>(<em>optional, default</em> <code>1</code>) <br> 
 An <code>integer</code> value corresponding to the number of computing resources to be used to 
 parallelize the single models computation</p></dd>
+
+
 <dt>seed.val</dt>
 <dd><p>(<em>optional, default</em> <code>NULL</code>) <br> 
 An <code>integer</code> value corresponding to the new seed value to be set</p></dd>
+
+
 <dt>do.progress</dt>
 <dd><p>(<em>optional, default</em> <code>TRUE</code>) <br> 
 A <code>logical</code> value defining whether the progress bar is to be rendered or not</p></dd>
+
+
 <dt>Data</dt>
 <dd><p>a <code>data.frame</code> containing <code>data.species</code> and <code>data.env.var</code> slots 
 of <code>bm.format</code> parameter</p></dd>
+
+
 <dt>calib.lines</dt>
 <dd><p>a <code>data.frame</code> containing <code>data.split.table</code> slot of 
 <code>bm.format</code> parameter, or an extraction of <code>data.species</code> slot (for a specific PA 
 dataset extracted from <code>PA.table</code> slot)</p></dd>
+
+
 <dt>weights</dt>
 <dd><p>a <code>vector</code> of <code>numeric</code> values corresponding to observation weights 
 (one per observation)</p></dd>
+
+
 <dt>nam</dt>
 <dd><p>a <code>character</code> corresponding to the model to be run (name + run.id)</p></dd>
+
+
 <dt>dir.name</dt>
 <dd><p>(<em>optional, default</em> <code>.</code>) <br>
 A <code>character</code> corresponding to the modeling folder</p></dd>
+
+
 <dt>xy</dt>
 <dd><p>a <code>data.frame</code> containing <code>coord</code> slot of <code>bm.format</code> 
 parameter (for a specific PA dataset extracted from <code>PA.table</code> slot of <code>bm.format</code> 
 parameter)</p></dd>
+
+
 <dt>eval.data</dt>
 <dd><p>a <code>data.frame</code> containing <code>eval.data.species</code> and 
 <code>eval.data.env.var</code> slots of <code>bm.format</code> parameter</p></dd>
+
+
 <dt>eval.xy</dt>
 <dd><p>a <code>data.frame</code> containing <code>eval.coord</code> slot of <code>bm.format</code> 
 parameter</p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>A <code>list</code> containing for each model a <code>list</code> containing the following elements :</p><ul><li><p><code>model</code> : the name of correctly computed model</p></li>
+    
+
+<p>A <code>list</code> containing for each model a <code>list</code> containing the following elements :</p><ul><li><p><code>model</code> : the name of correctly computed model</p></li>
 <li><p><code>calib.failure</code> : the name of incorrectly computed model</p></li>
 <li><p><code>pred</code> : the prediction outputs for calibration data</p></li>
 <li><p><code>pred.eval</code> : the prediction outputs for validation data</p></li>
@@ -255,7 +294,7 @@ parameter</p></dd>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.3.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
 </div>
 
       </footer></div>

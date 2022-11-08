@@ -129,71 +129,109 @@ of evaluation metrics (see Details).</p>
     <dl><dt>bm.format</dt>
 <dd><p>a <code><a href="BIOMOD.formated.data.html">BIOMOD.formated.data</a></code> or <code><a href="BIOMOD.formated.data.PA.html">BIOMOD.formated.data.PA</a></code> 
 object returned by the <code><a href="BIOMOD_FormatingData.html">BIOMOD_FormatingData</a></code> function</p></dd>
+
+
 <dt>modeling.id</dt>
 <dd><p>a <code>character</code> corresponding to the name (ID) of the simulation set 
 (<em>a random number by default</em>)</p></dd>
+
+
 <dt>models</dt>
 <dd><p>a <code>vector</code> containing model names to be computed, must be among <code>GLM</code>, 
 <code>GBM</code>, <code>GAM</code>, <code>CTA</code>, <code>ANN</code>, <code>SRE</code>, <code>FDA</code>, <code>MARS</code>, 
 <code>RF</code>, <code>MAXENT.Phillips</code>, <code>MAXENT.Phillips.2</code></p></dd>
+
+
 <dt>bm.options</dt>
 <dd><p>a <code><a href="BIOMOD.models.options.html">BIOMOD.models.options</a></code> object returned by the
 <code><a href="BIOMOD_ModelingOptions.html">BIOMOD_ModelingOptions</a></code> function</p></dd>
+
+
 <dt>nb.rep</dt>
 <dd><p>an <code>integer</code> corresponding to the number of repetitions to be done for 
 calibration/validation splitting</p></dd>
+
+
 <dt>data.split.perc</dt>
 <dd><p>a <code>numeric</code> between <code>0</code> and <code>100</code> corresponding to the 
 percentage of data used to calibrate the models (calibration/validation splitting)</p></dd>
+
+
 <dt>data.split.table</dt>
 <dd><p>(<em>optional, default</em> <code>NULL</code>) <br> 
 A <code>matrix</code> or <code>data.frame</code> defining for each repetition (in columns) which 
 observation lines should be used for models calibration (<code>TRUE</code>) and validation 
 (<code>FALSE</code>) (see <code><a href="BIOMOD_CrossValidation.html">BIOMOD_CrossValidation</a></code>) <br> (<em>if specified, 
 <code>nb.rep</code>, <code>data.split.perc</code> and <code>do.full.models</code> will be ignored</em>)</p></dd>
+
+
 <dt>do.full.models</dt>
 <dd><p>(<em>optional, default</em> <code>TRUE</code>) <br> 
 A <code>logical</code> value defining whether models calibrated and evaluated over the whole 
 dataset should be computed or not</p></dd>
+
+
 <dt>weights</dt>
 <dd><p>(<em>optional, default</em> <code>NULL</code>) <br> 
 A <code>vector</code> of <code>numeric</code> values corresponding to observation weights (one per 
 observation, see Details)</p></dd>
+
+
 <dt>prevalence</dt>
 <dd><p>(<em>optional, default</em> <code>NULL</code>) <br> 
 A <code>numeric</code> between <code>0</code> and <code>1</code> corresponding to the species prevalence to 
 build '<em>weighted response weights</em>' (see Details)</p></dd>
+
+
 <dt>metric.eval</dt>
 <dd><p>a <code>vector</code> containing evaluation metric names to be used, must 
 be among <code>ROC</code>, <code>TSS</code>, <code>KAPPA</code>, <code>ACCURACY</code>, <code>BIAS</code>, <code>POD</code>, 
 <code>FAR</code>, <code>POFD</code>, <code>SR</code>, <code>CSI</code>, <code>ETS</code>, <code>HK</code>, <code>HSS</code>, <code>OR</code>, 
 <code>ORSS</code></p></dd>
+
+
 <dt>var.import</dt>
 <dd><p>(<em>optional, default</em> <code>NULL</code>) <br> 
 An <code>integer</code> corresponding to the number of permutations to be done for each variable to 
 estimate variable importance</p></dd>
+
+
 <dt>save.output</dt>
 <dd><p>(<em>optional, default</em> <code>TRUE</code>) <br> 
 A <code>logical</code> value defining whether all outputs should be saved on hard drive or not 
 (<em>! strongly recommended !</em>)</p></dd>
+
+
 <dt>scale.models</dt>
 <dd><p>(<em>optional, default</em> <code>FALSE</code>) <br> 
 A <code>logical</code> value defining whether all models predictions should be scaled with a 
 binomial GLM or not</p></dd>
+
+
 <dt>nb.cpu</dt>
 <dd><p>(<em>optional, default</em> <code>1</code>) <br> 
 An <code>integer</code> value corresponding to the number of computing resources to be used to 
 parallelize the single models computation</p></dd>
+
+
 <dt>seed.val</dt>
 <dd><p>(<em>optional, default</em> <code>NULL</code>) <br> 
 An <code>integer</code> value corresponding to the new seed value to be set</p></dd>
+
+
 <dt>do.progress</dt>
 <dd><p>(<em>optional, default</em> <code>TRUE</code>) <br> 
 A <code>logical</code> value defining whether the progress bar is to be rendered or not</p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>A <code>BIOMOD.models.out</code> object containing models outputs, or links to saved outputs. <br>Models outputs are stored out of <span style="R">R</span> (for memory storage reasons) in 2 different folders 
+    
+
+<p>A <code>BIOMOD.models.out</code> object containing models outputs, or links to saved outputs. <br></p>
+
+
+<p>Models outputs are stored out of <span style="R">R</span> (for memory storage reasons) in 2 different folders 
 created in the current working directory :</p><ol><li><p>a <em>models</em> folder, named after the <code>resp.name</code> argument of 
   <code><a href="BIOMOD_FormatingData.html">BIOMOD_FormatingData</a></code>, and containing all calibrated models for each 
   repetition and pseudo-absence run</p></li>
@@ -424,7 +462,7 @@ code<a href="https://rdrr.io/pkg/nnet/man/nnet.html" class="external-link">nnet<
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.3.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
 </div>
 
       </footer></div>

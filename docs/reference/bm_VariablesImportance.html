@@ -115,27 +115,42 @@ importance value for each variable involved in the given model.</p>
 <dd><p>a <code>biomod2_model</code> object (or <code>nnet</code>, <code>rpart</code>, <code>fda</code>, 
 <code>gam</code>, <code>glm</code>, <code>lm</code>, <code>gbm</code>, <code>mars</code>, <code>randomForest</code>) that can be 
 obtained with the <code><a href="getters.bm.html">get_formal_model</a></code> function</p></dd>
+
+
 <dt>expl.var</dt>
 <dd><p>a <code>data.frame</code> containing the explanatory variables that will be used to 
 compute the variables importance</p></dd>
+
+
 <dt>method</dt>
 <dd><p>a <code>character</code> corresponding to the randomisation method to be used, must be 
 <code>full_rand</code> (<em>only method available so far</em>)</p></dd>
+
+
 <dt>nb.rep</dt>
 <dd><p>an <code>integer</code> corresponding to the number of permutations to be done for 
 each variable</p></dd>
+
+
 <dt>seed.val</dt>
 <dd><p>(<em>optional, default</em> <code>NULL</code>) <br> 
 An <code>integer</code> value corresponding to the new seed value to be set</p></dd>
+
+
 <dt>do.progress</dt>
 <dd><p>(<em>optional, default</em> <code>TRUE</code>) <br> 
 A <code>logical</code> value defining whether the progress bar is to be rendered or not</p></dd>
+
+
 <dt>...</dt>
 <dd><p>(<em>optional</em>)</p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>A <code>matrix</code> containing variables importance scores for each permutation run.</p>
+    
+
+<p>A <code>matrix</code> containing variables importance scores for each permutation run.</p>
     </div>
     <div id="details">
     <h2>Details</h2>
@@ -206,7 +221,7 @@ the variable on the model.</p>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.3.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
 </div>
 
       </footer></div>
