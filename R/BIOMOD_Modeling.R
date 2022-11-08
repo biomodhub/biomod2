@@ -635,7 +635,8 @@ setMethod('.BIOMOD_Modeling.prepare.data', signature('BIOMOD.formated.data'),
             ## force calib.lines object to be 3D array
             if (length(dim(calib.lines)) < 3) {
               dn_tmp <- dimnames(calib.lines) ## keep track of dimnames
-              dim(calib.lines) <- c(dim(calib.lines), 1)
+              calib.lines <- array(data = as.matrix(calib.lines), 
+                                   dim = c(dim(calib.lines), 1))
               dimnames(calib.lines) <- list(dn_tmp[[1]], dn_tmp[[2]], "_AllData")
             }
             
@@ -714,7 +715,8 @@ setMethod('.BIOMOD_Modeling.prepare.data', signature('BIOMOD.formated.data.PA'),
               ## force calib.lines object to be 3D array
               if (length(dim(calib.lines)) < 3) {
                 dn_tmp <- dimnames(calib.lines) ## keep track of dimnames
-                dim(calib.lines) <- c(dim(calib.lines), 1)
+                calib.lines <- array(data = as.matrix(calib.lines), 
+                                     dim = c(dim(calib.lines), 1))
                 dimnames(calib.lines) <- list(dn_tmp[[1]], dn_tmp[[2]], paste0("_PA", pa))
               }
               
