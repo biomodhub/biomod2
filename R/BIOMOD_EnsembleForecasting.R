@@ -353,7 +353,7 @@ BIOMOD_EnsembleForecasting <- function(bm.em,
         #   proj_names = proj_names[-length(proj_names)]
         #   warning(paste0("Predictions for ", em.comp, " do not match initial number of points (", length(ef.tmp), " instead of ", nrow(ef.out), ")"))
         # } else {
-          ef.out <- cbind(ef.out, matrix(ef.tmp, ncol = 1))
+        ef.out <- cbind(ef.out, matrix(ef.tmp, ncol = 1))
         # }
       }
     }
@@ -394,7 +394,7 @@ BIOMOD_EnsembleForecasting <- function(bm.em,
     
     ## Get all evaluation thresholds
     thresholds <- sapply(models.chosen, function(x) {
-      get_evaluations(bm.em)[[x]][eval.meth, "Cutoff"]
+      get_evaluations(bm.em)[,,x][eval.meth, "Cutoff"]
     })
     if (!on_0_1000) { thresholds <- thresholds / 1000 }
     
@@ -530,12 +530,15 @@ BIOMOD_EnsembleForecasting <- function(bm.em,
     if (is.null(models.evaluation)) {
       warning("Binary and/or Filtered transformations of projection not ran because of models evaluation information missing")
     } else {
-      available.evaluation <- unique(dimnames(models.evaluation[[1]])[[1]])
+      available.evaluation <- unique(rownames(models.evaluation[,,1]))
       if (!is.null(metric.binary) && metric.binary[1] == 'all') {
         metric.binary <- available.evaluation
-      } else if (!is.null(metric.binary) && sum(!(metric.binary %in% available.evaluation)) > 0) {
-        warning(paste0(toString(metric.binary[!(metric.binary %in% available.evaluation)]),
-                       " Binary Transformation were switched off because no corresponding evaluation method found"))
+      } else if (!is.null(metric.binary) &&
+                 !any(metric.binary %in% available.evaluation)) {
+        warning(
+          paste0(toString(metric.binary[!(metric.binary %in% available.evaluation)]),
+                 " Binary Transformation were switched off because no corresponding evaluation method found")
+        )
         metric.binary <- metric.binary[metric.binary %in% available.evaluation]
       }
       
