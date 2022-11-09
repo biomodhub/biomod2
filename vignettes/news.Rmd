@@ -52,6 +52,7 @@ vignette: >
 * bugfix for `BIOMOD_PresenceOnly` that can now work when only the EM have been provided
 * expanded support for `BIOMOD_PresenceOnly` to `SpatRaster` and `SpatVector`.
 * `build_clamping_mask` now support categorical variables
+* fixed ensemble model EMcv based on a single environmental variable
 
 ##### Internal Changes
 
