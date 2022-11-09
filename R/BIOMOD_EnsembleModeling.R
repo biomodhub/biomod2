@@ -820,6 +820,9 @@ BIOMOD_EnsembleModeling <- function(bm.mod,
     stop("You must choose metric.select if you want to compute Committee Averaging or Probability Weighted Mean algorithms")
   }
   
+  if(all(! c(prob.mean, prob.median, prob.cv, prob.ci, committee.averaging, prob.mean.weight))){
+    stop("at least one of prob.mean, prob.cv, prob.ci, prob.median, committee.averaging and prob.mean.weight must be set to TRUE")
+  }
   ## 6.1 Check alpha for Confident interval
   if (prob.ci) {
     .fun_testIfPosNum(TRUE, "prob.ci.alpha", prob.ci.alpha)
