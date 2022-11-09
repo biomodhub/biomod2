@@ -399,7 +399,7 @@ BIOMOD_EnsembleForecasting <- function(bm.em,
     
     ## Get all evaluation thresholds
     thresholds <- sapply(models.chosen, function(x) {
-      get_evaluations(bm.em)[[x]][eval.meth, "Cutoff"]
+      get_evaluations(bm.em)[,,x][eval.meth, "Cutoff"]
     })
     if (!on_0_1000) { thresholds <- thresholds / 1000 }
     
@@ -501,7 +501,7 @@ BIOMOD_EnsembleForecasting <- function(bm.em,
         (!is.null(bm.proj) & !is.null(new.env))) {
       stop("You have to refer at one of 'bm.proj' or 'new.env' argument")
     }
-    
+
     if (!is.null(bm.proj)) {
       .fun_testIfInherits(TRUE, "bm.proj", bm.proj, "BIOMOD.projection.out")
       
@@ -563,7 +563,7 @@ BIOMOD_EnsembleForecasting <- function(bm.em,
       if (is.null(models.evaluation)) {
         warning("Binary and/or Filtered transformations of projection not ran because of models evaluation information missing")
       } else {
-        available.evaluation <- unique(dimnames(models.evaluation[[1]])[[1]])
+        available.evaluation <- unique(rownames(models.evaluation[,,1]))
         if (!is.null(metric.binary) && metric.binary[1] == 'all') {
           metric.binary <- available.evaluation
         } else if (!is.null(metric.binary) && sum(!(metric.binary %in% available.evaluation)) > 0) {
