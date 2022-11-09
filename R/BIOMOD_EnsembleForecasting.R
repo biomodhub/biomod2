@@ -418,6 +418,9 @@ BIOMOD_EnsembleForecasting <- function(bm.em,
         }
       } else {
         nameBin = paste0(nameProjSp, "_", eval.meth, "bin")
+        if (inherits(ef.out, "PackedSpatRaster")){
+          ef.out <- rast(ef.out)
+        }
         assign(x = nameBin, value = bm_BinaryTransformation(ef.out, thresholds))
         
         if (output.format == '.RData') {
@@ -427,7 +430,7 @@ BIOMOD_EnsembleForecasting <- function(bm.em,
         } else {
           writeRaster(x = get(nameBin),
                       filename = file.path(namePath, paste0(nameBin, output.format)),
-                      overwrite = TRUE,)
+                      overwrite = TRUE)
         }
       }
     }
