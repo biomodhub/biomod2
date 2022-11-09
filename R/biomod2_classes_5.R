@@ -402,10 +402,6 @@ setMethod('predict2', signature(object = 'EMcv_biomod2_model', newdata = "SpatRa
 ##' @rdname predict2.em
 setMethod('predict2', signature(object = 'EMcv_biomod2_model', newdata = "data.frame"),
           function(object, newdata, ...) {
-            if (ncol(newdata) <= 1) {
-              stop(paste0("\n Model EMcv was not computed because only one single model or less was kept in ensemble modeling ("
-                          , colnames(newdata), ")"))
-            }
             predfun <- function(newdata, ...){
               if (ncol(newdata) <= 1) {
                 stop(paste0("\n Model EMcv was not computed because only one single model was kept in ensemble modeling ("
