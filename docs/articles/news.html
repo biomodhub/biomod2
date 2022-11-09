@@ -142,6 +142,8 @@
 crash the full ensemble run. Instead a warning is generally displayed at
 the beginning and the resulting object will list failed models.</li>
 <li>Fixed CTA raster prediction for categorical variables.</li>
+<li>fixed binary transformation in
+<code>BIOMOD_EnsembleForecasting</code>.</li>
 </ul>
 </div>
 </div>
@@ -154,6 +156,8 @@ kept by ensemble modeling depending on metric.select.</p></li>
 <li><p>Improved checks for BIOMOD_EnsembleModel to generate warnings
 when ensemble models are expected to be run with &lt;= 1
 models.</p></li>
+<li><p>repaired support for cross-validation table given as data.frame
+instead of matrix.</p></li>
 </ul>
 </div>
 <div class="section level4">

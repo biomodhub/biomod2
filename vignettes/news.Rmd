@@ -22,6 +22,7 @@ vignette: >
 
 * Ensemble models that fails (e.g. EMcv with only one models) will not crash the full ensemble run. Instead a warning is generally displayed at the beginning and the resulting object will list failed models.
 * Fixed CTA raster prediction for categorical variables.
+* fixed binary transformation in `BIOMOD_EnsembleForecasting`.
 
 #### Internal Changes
 
