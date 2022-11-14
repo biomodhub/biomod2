@@ -61,7 +61,7 @@ vignette: >
 * Split `load_stored_object` method into a method for `BIOMOD.stored.SpatRaster` and a method for all other `BIOMOD.stored.data`.
 * `BIOMOD.stored.SpatRaster` stores `PackedSpatraster` and not `SpatRaster`.
 * New internal function `.CompteurSp` based on old function CompteurSp that was defined within a function.
-
+* Removed obsolete function `check_data_range()`.
 
 #### 4.1-3
 
