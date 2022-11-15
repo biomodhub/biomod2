@@ -398,15 +398,17 @@ BIOMOD_EnsembleForecasting <- function(bm.em,
     eval.meth <- unique(c(metric.binary, metric.filter))
     
     ## Get all evaluation thresholds
-    thresholds <- sapply(models.chosen, function(x) {
-      get_evaluations(bm.em)[,,x][eval.meth, "Cutoff"]
-    })
-    if (!on_0_1000) { thresholds <- thresholds / 1000 }
-    
+
     ## TODO : define the raster dataformat (depends if em.cv has been computed)
     ## Do binary transformation
     for (eval.meth in metric.binary) {
       cat("\n\t> Building", eval.meth, "binaries")
+     
+      thresholds <- sapply(models.chosen, function(x) {
+        get_evaluations(bm.em)[,,x][eval.meth, "Cutoff"]
+      })
+      if (!on_0_1000) { thresholds <- thresholds / 1000 }
+      
       if (!do.stack) {
         for (i in 1:length(proj_out@proj.out@link)) {
           file.tmp <- proj_out@proj.out@link[i]
@@ -421,7 +423,8 @@ BIOMOD_EnsembleForecasting <- function(bm.em,
         if (inherits(ef.out, "PackedSpatRaster")){
           ef.out <- rast(ef.out)
         }
-        assign(x = nameBin, value = bm_BinaryTransformation(ef.out, thresholds))
+        assign(x = nameBin, value = bm_BinaryTransformation(ef.out, 
+                                                            thresholds))
         
         if (output.format == '.RData') {
           save(list = nameBin,
@@ -438,6 +441,12 @@ BIOMOD_EnsembleForecasting <- function(bm.em,
     ## Do filtered transformation
     for (eval.meth in metric.filter) {
       cat("\n\t> Building", eval.meth, "filtered")
+      
+      thresholds <- sapply(models.chosen, function(x) {
+        get_evaluations(bm.em)[,,x][eval.meth, "Cutoff"]
+      })
+      if (!on_0_1000) { thresholds <- thresholds / 1000 }
+      
       if (!do.stack) {
         for (i in 1:length(proj_out@proj.out@link)) {
           file.tmp <- proj_out@proj.out@link[i]
