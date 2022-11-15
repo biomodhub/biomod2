@@ -42,9 +42,26 @@ devtools::install_github("biomodhub/biomod2", dependencies = TRUE)
 <br/><br/>
 
 
-### <i class="fas fa-envelope-open-text"></i> Breaking news
+### <i class="fas fa-envelope-open-text"></i> `biomod 4.2` - Terra Update
 
-**! `biomod2 4.1` is now available !**
+**! `biomod2 4.2` is now available !**
+
+#### <i class="fas fa-exchange-alt"></i> What is changed ?
+
+- `biomod2` now relies on the new [`terra`](https://github.com/rspatial/terra) package that aims at replacing `raster`and `sp`.
+- `biomod2`is still compatible with old format such as `RasterStack`and `SpatialPointsDataFrame`.
+- Note that the 4.2-0 version depends on `terra >= 1.6.33` which is not released on CRAN yet. If you need to sample pseudo-absences with `strategy = 'random'` or with `strategy = 'sre'` you will need to install the `github` version with:
+```R
+library(devtools)
+devtools::install_github("rspatial/terra")
+```
+In case you encounter trouble with this, feel free to let us know in the [bug report section](https://github.com/biomodhub/biomod2/issues) and you can always revert to the old version that was based on `raster` :
+```R
+library(devtools)
+devtools::install_github("biomodhub/biomod2", ref = "old_raster")
+```
+
+### <i class="fas fa-envelope-open-text"></i> `biomod 4.1` is now available
 
 `/!\` Package fresh start... meaning some changes in function names and parameters. We apologize for the trouble `>{o.o}<` <br/>
 Sorry for the inconvenience, and please **feel free to indicate if you notice some strange new behaviors** !

@@ -94,7 +94,8 @@
 ##'
 ##' 
 ##' @importFrom terra rast vect freq spatSample values extract
-##' 
+##' @importFrom utils packageVersion
+##'
 ##' @export
 ##' 
 ##' 
@@ -161,6 +162,14 @@ bm_PseudoAbsences <- function(resp.var, expl.var, nb.rep = 1, strategy = 'random
     # no coordinates or unknown strategy
     strategy <- "random"
     cat("\n   ! Random strategy was automatically selected (that can be due to points coordinates lack or unavailable strategy choosen)")
+  }
+  
+  if (strategy %in% c("random","sre") &&
+      package_version(packageVersion('terra')) < '1.6.33') {
+    # no coordinates or unknown strategy
+    cat("\n   ! Please install the development version of terra with",
+    "`devtools::install_github('rspatial/terra')` to use random or sre pseudo-absences")
+    stop("terra version >= 1.6.33 required")
   }
   
   ## 4. Check nb.absences argument --------------------------------------------
