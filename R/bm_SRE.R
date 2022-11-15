@@ -1,4 +1,4 @@
-###################################################################################################
+# SRE Documentation -----------------------------------------------------------
 ##' @name bm_SRE
 ##' @author Wilfried Thuiller, Bruno Lafourcade, Damien Georges 
 ##' 
@@ -10,16 +10,26 @@
 ##' using the extreme percentiles (as recommended by Nix or Busby, see 
 ##' \href{https://biomodhub.github.io/biomod2/reference/bm_SRE.html#references}{References} and Details).
 ##' 
-##' 
-##' @param resp.var a \code{vector}, \code{\link[sp]{SpatialPoints}} or 
-##' \code{\link[sp]{SpatialPointsDataFrame}} object containing binary data (\code{0} : absence, 
-##' \code{1} : presence, \code{NA} : indeterminate) for a single species
-##' @param expl.var a \code{matrix}, \code{data.frame}, \code{\link[sp]{SpatialPointsDataFrame}} 
-##' or \code{\link[raster:stack]{RasterStack}} object containing the explanatory variables (in 
+##' @param resp.var a \code{vector}, a \code{\link[terra:vect]{SpatVector}}
+##' without associated data (\emph{if presence-only}), 
+##' or a \code{\link[terra:vect]{SpatVector}} object containing binary data  
+##' (\code{0} : absence, \code{1} : presence, \code{NA} : indeterminate) 
+##' for a single species that will be used to build the species distribution model(s)
+##' \cr \emph{Note that old format from \pkg{sp} are still supported such as
+##'  \code{SpatialPoints}  (\emph{if presence-only}) or \code{SpatialPointsDataFrame}
+##'  object containing binary data.}
+##' @param expl.var a \code{matrix}, \code{data.frame}, \code{\link[terra:vect]{SpatVector}}
+##' or \code{\link[terra:rast]{SpatRaster}} object containing the explanatory variables (in 
 ##' columns or layers) that will be used to build the SRE model
-##' @param new.env a \code{matrix}, \code{data.frame}, \code{\link[sp]{SpatialPointsDataFrame}} 
-##' or \code{\link[raster:stack]{RasterStack}} object containing the explanatory variables (in 
+##' \cr \emph{Note that old format from \pkg{raster} and \pkg{sp} are still supported such as 
+##' \code{RasterStack} and \code{SpatialPointsDataFrame} objects. }
+##' 
+##' @param new.env a \code{matrix}, \code{data.frame}, \code{\link[terra:vect]{SpatVector}}
+##' or \code{\link[terra:rast]{SpatRaster}} object containing the explanatory variables (in 
 ##' columns or layers) that will be used to predict the SRE model
+##' \cr \emph{Note that old format from \pkg{raster} and \pkg{sp} are still supported such as 
+##' \code{RasterStack} and \code{SpatialPointsDataFrame} objects. }
+##' 
 ##' @param quant a \code{numeric} between \code{0} and \code{0.5} defining the half-quantile 
 ##' corresponding to the most extreme value for each variable not to be taken into account for 
 ##' determining the tolerance boundaries of the considered species (see Details)
@@ -30,7 +40,7 @@
 ##' 
 ##' @return 
 ##' 
-##' A \code{vector} or a \code{\link[raster:raster]{raster}} object, containing binary (\code{0} 
+##' A \code{vector} or a \code{\link[terra:rast]{SpatRaster}} object, containing binary (\code{0} 
 ##' or \code{1}) values.
 ##' 
 ##' 
@@ -73,20 +83,20 @@
 ##' \code{\link{bm_RunModelsLoop}}, \code{\link{BIOMOD_Modeling}},
 ##' @family Secundary functions
 ##' 
-##' 
 ##' @examples
 ##' 
+##' library(terra)
 ##' ## Load real data
-##' myFile <- system.file('external/species/mammals_table.csv', package = 'biomod2')
-##' DataSpecies <- read.csv(myFile, row.names = 1)
+##' data(DataSpecies)
 ##' myResp.r <- as.numeric(DataSpecies[, 'GuloGulo'])
 ##' 
-##' myFiles <- paste0('external/bioclim/current/bio', c(3, 4, 7, 11, 12), '.grd')
-##' myExpl.r <- raster::stack(system.file(myFiles, package = 'biomod2'))
+##' data(bioclim_current)
+##' myExpl.r <- rast(bioclim_current)
 ##' 
 ##' myRespXY <- DataSpecies[which(myResp.r == 1), c('X_WGS84', 'Y_WGS84')]
-##' myResp.v <- raster::reclassify(raster::subset(myExpl.r, 1, drop = TRUE), c(-Inf, Inf, 0))
-##' myResp.v[raster::cellFromXY(myResp.v, myRespXY)] <- 1
+##' myResp.v <- classify(subset(myExpl.r, 1), 
+##'                      matrix(c(-Inf, Inf, 0), ncol = 3, byrow = TRUE))
+##' myResp.v[cellFromXY(myResp.v, myRespXY)] <- 1
 ##' 
 ##' ## Compute SRE for several quantile values
 ##' sre.100 <- bm_SRE(resp.var = myResp.v,
@@ -103,36 +113,38 @@
 ##'                   quant = 0.05)
 ##' 
 ##' ## Visualize results
-##' res <- raster::stack(myResp.v, sre.100, sre.095, sre.090)
+##' res <- c(myResp.v, sre.100, sre.095, sre.090)
 ##' names(res) <- c("Original distribution", "Full data calibration"
 ##'                 , "Over 95 percent", "Over 90 percent")
-##' plot(res, zlim = c(0, 1))
+##' plot(res)
 ##' 
 ##' 
-##' @importFrom raster stack subset nlayers mask reclassify coordinates cellFromXY Which 
-## quantile
+##' @importFrom terra rast values vect quantile cellFromXY
+## quantile classify crds global is.factor mask nlyr subset
 ##' 
 ##' @export
 ##' 
 ##' 
-###################################################################################################
+###--------------------------------------------------------------------------###
 
+## Remi 20/10/2022
+## This function seems to have support for multispecies resp.var although
+## the rest of the package do not.
 
 bm_SRE <- function(resp.var = NULL, 
                    expl.var = NULL, 
                    new.env = NULL, 
                    quant = 0.025, 
-                   do.extrem = FALSE)
-{
-  ## 0. Check arguments ---------------------------------------------------------------------------
+                   do.extrem = FALSE) {
+  ## 0. Check arguments ---------------------------------------------------------
   args <- .bm_SRE.check.args(resp.var, expl.var, new.env, quant)
   for (argi in names(args)) { assign(x = argi, value = args[[argi]]) }
   rm(args)
-  
-  ## 1. Determine suitable conditions and make the projection -------------------------------------
+
+  ## 1. Determine suitable conditions and make the projection --------------
   lout <- list()
-  if (is.data.frame(resp.var) | is.matrix(resp.var)) ## matrix or data.frame ------------
-  {
+  if (is.data.frame(resp.var) | is.matrix(resp.var)) {
+    ### matrix or data.frame ------------
     nb.resp <- ncol(resp.var)
     resp.names <- colnames(resp.var)
     for (j in 1:nb.resp) {
@@ -143,38 +155,41 @@ bm_SRE <- function(resp.var = NULL,
         lout[[j]] <- .sre_projection(new.env, extrem.cond)
       }
     }
-  } else if (inherits(resp.var, 'Raster')) ## raster ------------------------------------
-  {
-    nb.resp <- nlayers(resp.var)
+  } else if (inherits(resp.var, 'SpatRaster')) {
+    ## Remi 20/10/2022
+    ## this section seems obsolete as resp.var support for Raster/SpatRaster
+    ## is currently deactivated.
+    ### raster ------------------------------------
+    nb.resp <- nlyr(resp.var)
     resp.names <- names(resp.var)
     for (j in 1:nb.resp) {
-      occ.pts <- subset(resp.var, j, drop = TRUE)
-      x.ooc.pts <- Which(occ.pts != 1, cells = TRUE, na.rm = TRUE)
-      occ.pts[x.ooc.pts] <- rep(NA, length(x.ooc.pts))
-      extrem.cond <- raster::quantile(mask(expl.var, occ.pts),
-                                      probs = c(0 + quant, 1 - quant),
-                                      na.rm = TRUE)
+      extrem.cond <- global(mask(expl.var, subset(resp.var, j), maskvalues = c(0,NA)),
+                            fun = quantile,
+                            probs = c(0 + quant, 1 - quant),
+                            na.rm = TRUE)
       if (!do.extrem) {
         lout[[j]] <- .sre_projection(new.env, extrem.cond)
       }
     }
-  } else if (inherits(resp.var, 'SpatialPoints')) ## SpatialPoints ----------------------
-  {
-    nb.resp <- ncol(resp.var@data)
-    resp.names <- colnames(resp.var@data)
+  } else if (inherits(resp.var, 'SpatVector')) {
+    ### SpatVector ----------------------
+    nb.resp <- ncol(values(resp.var))
+    resp.names <- colnames(values(resp.var))
     for (j in 1:nb.resp) {
-      occ.pts <- which(resp.var@data[, j] == 1)
+      occ.pts <- which(values(resp.var)[, j] == 1)
       if (is.data.frame(expl.var) || is.matrix(expl.var)) {
         extrem.cond <- t(apply(as.data.frame(expl.var[occ.pts, ]), 2, quantile
                                , probs = c(0 + quant, 1 - quant), na.rm = TRUE))
       } else {
-        if (inherits(expl.var, 'Raster')) {
-          maskTmp <- subset(expl.var, 1, drop = TRUE)
+        if (inherits(expl.var, 'SpatRaster')) {
+          maskTmp <- subset(expl.var, 1)
           maskTmp[] <- NA
-          maskTmp[cellFromXY(maskTmp, coordinates(resp.var)[occ.pts, ])] <- 1
-          extrem.cond <- raster::quantile(mask(expl.var, maskTmp),
-                                          probs = c(0 + quant, 1 - quant),
-                                          na.rm = TRUE)
+          maskTmp[cellFromXY(maskTmp, crds(resp.var)[occ.pts, ])] <- 1
+          extrem.cond <- global(mask(expl.var, maskTmp),
+                                fun = quantile,
+                                probs = c(0 + quant, 1 - quant),
+                                na.rm = TRUE)
+          
         } else {
           if (inherits(expl.var, 'SpatialPoints')) {
             ## May be good to check corespondances of resp.var and expl.var variables
@@ -201,10 +216,10 @@ bm_SRE <- function(resp.var = NULL,
     if (is.data.frame(new.env)) {
       lout <- simplify2array(lout)
       colnames(lout) <- resp.names
-    } else if (inherits(new.env, 'Raster')) {
-      lout <- stack(lout)
-      if (nlayers(lout) == 1) {
-        lout <- subset(lout, 1, drop = TRUE)
+    } else if (inherits(new.env, 'SpatRaster')) {
+      lout <- rast(lout)
+      if (nlyr(lout) == 1) {
+        lout <- subset(lout, 1)
       }
       names(lout) <- resp.names
     }
@@ -213,21 +228,18 @@ bm_SRE <- function(resp.var = NULL,
 }
 
 
-###################################################################################################
+## SRE Argument check ---------------------------------------------------------
 
 .bm_SRE.check.args <- function(resp.var = NULL, expl.var = NULL, new.env = NULL, quant = 0.025)
 {
   ## 0. Check compatibility between resp.var and expl.var arguments -----------
-  if (is.vector(resp.var) || is.matrix(resp.var) || is.data.frame(resp.var))
-  {
+  if (is.vector(resp.var) || inherits(resp.var, c("matrix","data.frame"))) {
     resp.var <- as.data.frame(resp.var)
-    
-    if (!is.vector(expl.var) && !is.matrix(expl.var) && !is.data.frame(expl.var) && !inherits(expl.var, 'SpatialPoints'))
-    {
+    if (!is.vector(expl.var) && !inherits(expl.var, c("matrix","data.frame",'SpatVector')))  {
       stop("\n resp.var and expl.var arguments must be of same type (both vector, both matrix, etc)")
     } else {
-      if (inherits(expl.var, 'SpatialPoints')) {
-        expl.var <- as.data.frame(expl.var@data)
+      if (inherits(expl.var, 'SpatVector')) {
+        expl.var <- values(expl.var)
       }
       expl.var <- as.data.frame(expl.var)
       nb.expl.vars <- ncol(expl.var)
@@ -238,29 +250,35 @@ bm_SRE <- function(resp.var = NULL,
     }
   }
   
-  if (inherits(expl.var, 'SpatialPoints')) {
-    expl.var <- as.data.frame(expl.var@data)
+  if (inherits(expl.var, 'SpatVector')) {
+    expl.var <- values(expl.var)
     nb.expl.vars <- ncol(expl.var)
     names.expl.vars <- colnames(expl.var)
   }
   
+  # back-compatibility with raster package
   if (inherits(resp.var, 'Raster')) {
     if (!inherits(expl.var, 'Raster')) {
       stop("\n resp.var and expl.var arguments must be of same type (both vector, both raster, etc)")
     }
-    nb.expl.vars <- nlayers(expl.var)
+    resp.var <- rast(resp.var)
+    expl.var <- rast(expl.var)
+  }
+  
+  if (inherits(resp.var, 'SpatRaster')) {
+    if (!inherits(expl.var, 'SpatRaster')) {
+      stop("\n resp.var and expl.var arguments must be of same type (both vector, both raster, etc)")
+    }
+    nb.expl.vars <- nlyr(expl.var)
     names.expl.vars <- names(expl.var)
   }
-  
-  
+
   ## 1. Check expl.var argument -----------------------------------------------
-  test_no_factorial_var <- TRUE
-  if ((is.data.frame(expl.var) && any(unlist(lapply(expl.var, is.factor)))) ||
-      (inherits(expl.var, 'Raster') && any(is.factor(expl.var)))) {
-    test_no_factorial_var <- FALSE
+  if ((inherits(expl.var, 'data.frame') && any(sapply(expl.var, is.factor))) ||
+      (inherits(expl.var, c('SpatRaster')) && any(is.factor(expl.var)))) {
+    stop("SRE algorithm does not handle factorial variables")
   }
-  if (!test_no_factorial_var) stop("SRE algorithm does not handle factorial variables")
-  
+
   
   ## 2. Check new.env argument ------------------------------------------------
   if (is.null(new.env)) { ## if no new.env, projection done on expl.var variables
@@ -269,20 +287,20 @@ bm_SRE <- function(resp.var = NULL,
     if (is.vector(new.env) || is.data.frame(new.env) || is.matrix(new.env))
     {
       new.env <- as.data.frame(new.env)
-      if (sum(!(names.expl.vars %in% colnames(new.env))) > 0) {
+      if (!all(names.expl.vars %in% colnames(new.env))) {
         stop("expl.var variables names differs in the 2 dataset given")
       }
       new.env <- new.env[,names.expl.vars]
       if (ncol(new.env) != nb.expl.vars) {
         stop("Incompatible number of variables in new.env objects")
       }
-    } else if (!inherits(new.env, 'Raster')) {
-      new.env <- stack(new.env)
+    } else if (!inherits(new.env, 'SpatRaster')) {
+      new.env <- rast(new.env)
       if (sum(!(names.expl.vars %in% names(new.env))) > 0) {
         stop("expl.var variables names differs in the 2 dataset given")
       }
       new.env <- subset(new.env, names.expl.vars)
-      if (nlayers(new.env) != nb.expl.vars) {
+      if (nlyr(new.env) != nb.expl.vars) {
         stop("Incompatible number of variables in new.env objects")
       }
     }
@@ -300,23 +318,23 @@ bm_SRE <- function(resp.var = NULL,
 }
 
 
-###################################################################################################
+# SRE Projection  ----------------------------------------------------------
 
-.sre_projection <- function(new.env, extrem.cond)
-{
+.sre_projection <- function(new.env, extrem.cond) {
   if (is.data.frame(new.env) || is.matrix(new.env)) {
     out <- rep(1, nrow(new.env))
     for (j in 1:ncol(new.env)) {
       out <- out * as.numeric(new.env[, j] >= extrem.cond[j, 1] &
                                 new.env[, j] <= extrem.cond[j, 2])
     }
-  } else if (inherits(new.env, "Raster")) {
-    out <- reclassify(subset(new.env, 1, drop = TRUE), c(-Inf, Inf, 1))
-    for (j in 1:nlayers(new.env)) {
-      out <- out * (subset(new.env, j, drop = TRUE) >= extrem.cond[j, 1]) * 
-        (subset(new.env, j, drop = TRUE) <= extrem.cond[j, 2])
+  } else if (inherits(new.env, "SpatRaster")) {
+    out <- classify(subset(new.env, 1), 
+                    matrix(c(-Inf, Inf, 1), ncol = 3, byrow = TRUE))
+    for (j in 1:nlyr(new.env)) {
+      out <- out * (subset(new.env, j) >= extrem.cond[j, 1]) * 
+        (subset(new.env, j) <= extrem.cond[j, 2])
     }
-    out <- subset(out, 1, drop = TRUE)
+    out <- subset(out, 1)
   }
   return(out)
 }

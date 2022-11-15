@@ -1,4 +1,4 @@
-###################################################################################################
+# bm_PlotRangeSize documentation ------------------------------------------------
 ##' @name bm_PlotRangeSize
 ##' @author Maya Gueguen
 ##' 
@@ -57,10 +57,10 @@
 ##' 
 ##' 
 ##' @examples
+##' library(terra)
 ##' 
 ##' # Load species occurrences (6 species available)
-##' myFile <- system.file('external/species/mammals_table.csv', package = 'biomod2')
-##' DataSpecies <- read.csv(myFile, row.names = 1)
+##' data(DataSpecies)
 ##' head(DataSpecies)
 ##' 
 ##' # Select the name of the studied species
@@ -73,15 +73,15 @@
 ##' myRespXY <- DataSpecies[, c('X_WGS84', 'Y_WGS84')]
 ##' 
 ##' # Load environmental variables extracted from BIOCLIM (bio_3, bio_4, bio_7, bio_11 & bio_12)
-##' myFiles <- paste0('external/bioclim/current/bio', c(3, 4, 7, 11, 12), '.grd')
-##' myExpl <- raster::stack(system.file(myFiles, package = 'biomod2'))
+##' data(bioclim_current)
+##' myExpl <- terra::rast(bioclim_current)
 ##' 
 ##' \dontshow{
-##' myExtent <- raster::extent(0,30,45,70)
-##' myExpl <- raster::stack(raster::crop(myExpl, myExtent))
+##' myExtent <- terra::ext(0,30,45,70)
+##' myExpl <- terra::crop(myExpl, myExtent)
 ##' }
 ##' 
-##' # ---------------------------------------------------------------
+##' # ---------------------------------------------------------------#
 ##' file.out <- paste0(myRespName, "/", myRespName, ".AllModels.models.out")
 ##' if (file.exists(file.out)) {
 ##'   myBiomodModelOut <- get(load(file.out))
@@ -125,13 +125,13 @@
 ##' }
 ##' 
 ##' 
-##' # ---------------------------------------------------------------
+##' # ---------------------------------------------------------------#
 ##' # Load environmental variables extracted from BIOCLIM (bio_3, bio_4, bio_7, bio_11 & bio_12)
-##' myFiles = paste0('external/bioclim/future/bio', c(3, 4, 7, 11, 12), '.grd')
-##' myExplFuture = raster::stack(system.file(myFiles, package = 'biomod2'))
+##' data(bioclim_future)
+##' myExplFuture <- terra::rast(bioclim_future)
 ##' \dontshow{
-##' myExtent <- raster::extent(0,30,45,70)
-##' myExplFuture <- raster::stack(raster::crop(myExplFuture, myExtent))
+##' myExtent <- terra::ext(0,30,45,70)
+##' myExplFuture <- terra::crop(myExplFuture, myExtent)
 ##' }
 ##' 
 ##' # Project onto future conditions
@@ -143,14 +143,14 @@
 ##'                                               build.clamping.mask = TRUE)
 ##' 
 ##' # Load current and future binary projections
-##' CurrentProj <- raster::stack("GuloGulo/proj_Current/proj_Current_GuloGulo_TSSbin.grd")
-##' FutureProj <- raster::stack("GuloGulo/proj_Future/proj_Future_GuloGulo_TSSbin.grd")
+##' CurrentProj <- terra::rast("GuloGulo/proj_Current/proj_Current_GuloGulo_TSSbin.grd")
+##' FutureProj <- terra::rast("GuloGulo/proj_Future/proj_Future_GuloGulo_TSSbin.grd")
 ##' 
 ##' # Compute differences
 ##' myBiomodRangeSize <- BIOMOD_RangeSize(proj.current = CurrentProj, proj.future = FutureProj)
 ##' 
 ##' 
-##' # ---------------------------------------------------------------
+##' # ---------------------------------------------------------------#
 ##' myBiomodRangeSize$Compt.By.Models
 ##' plot(myBiomodRangeSize$Diff.By.Pixel)
 ##' 
@@ -161,17 +161,14 @@
 ##' @importFrom graphics plot.new
 ##' @importFrom reshape2 melt
 ##' @importFrom foreach foreach %do%
-##' @importFrom raster which.max nlayers stack rasterToPoints reclassify
-## @importFrom patchwork plot_layout
-## @importFrom ggpubr ggarrange
-##' @importMethodsFrom raster plot
+##' @importFrom terra rast which.max nlyr  classify plot
 ##' @importFrom ggplot2 ggplot aes_string geom_col geom_tile facet_wrap xlab ylab labs 
 ##' theme element_blank element_rect scale_fill_manual
 ##' 
 ##' @export
 ##' 
 ##' 
-###################################################################################################
+#------------------------------------------------------------------------------#
 
 
 bm_PlotRangeSize <- function(bm.range, do.count = TRUE, do.perc = TRUE
@@ -257,10 +254,14 @@ bm_PlotRangeSize <- function(bm.range, do.count = TRUE, do.perc = TRUE
     ## c. SRC maps per model --------------------------------------------------
     if (do.maps) {
       
-      gg.maps = 'plot(ggdat, col = c("-2" = "#fc8d62", "-1" = "grey", "0" = "white", "1" = "#66c2a5")
-           , legend.width = 2, legend.shrink = 0.7
-           , axis.args = list(at = c(-2, -1, 0, 1), labels = c("Loss", "Stable1", "Stable0", "Gain"), cex.axis = 1))'
-      
+      # gg.maps = 'terra::plot(ggdat, col = c("-2" = "#fc8d62", "-1" = "grey", "0" = "white", "1" = "#66c2a5")
+      #      , legend.width = 2, legend.shrink = 0.7
+      #      , axis.args = list(at = c(-2, -1, 0, 1), labels = c("Loss", "Stable1", "Stable0", "Gain"), cex.axis = 1))'
+      gg.maps <- 'plot(ggdat,
+           col = data.frame(
+             value = c(-2, -1, 0, 1),
+             color = c("#fc8d62", "lightgoldenrod2", "grey", "#66c2a5")),
+           colNA = "white")'
       # ggdat = as.data.frame(rasterToPoints(ggdat))
       # 
       # ## Get models information
@@ -301,7 +302,7 @@ bm_PlotRangeSize <- function(bm.range, do.count = TRUE, do.perc = TRUE
     
     ## d. SRC mean maps per group.level ---------------------------------------
     if (do.mean) {
-      requireNamespace("ggpubr")
+      if(!requireNamespace('ggpubr', quietly = TRUE)) stop("Package 'ggpubr' not found")
       
       corres = data.frame(full.name = names(ggdat))
       for (ii in 1:length(row.names)) {
@@ -317,37 +318,38 @@ bm_PlotRangeSize <- function(bm.range, do.count = TRUE, do.perc = TRUE
       for (ii in row.names) {
         for (jj in unique(corres[, ii])) {
           ras = ggdat[[corres$full.name[which(corres[, ii] == jj)]]]
-          if (nlayers(ras) > 1) {
-            stk = foreach (vali = c(1, -1, -2), .combine = "stack") %do%
-              {
-                res = ras
-                res[] = ifelse(res[] == vali, 1, 0)
-                res = sum(res, na.rm = TRUE)
-                names(res) = paste0("VAL_", vali)
-                res[which(res[] == 0)] = NA
-                return(res)
-              }
+          if (nlyr(ras) > 1) {
+            stk = foreach (vali = c(1, -1, -2), .combine = "c") %do% {
+              res = ras
+              res = classify(res, rcl = matrix(c(vali,1), ncol = 2), others = 0)
+              res = sum(res, na.rm = TRUE)
+              names(res) = paste0("VAL_", vali)
+              res = classify(res, rcl = matrix(c(0,NA), ncol = 2))
+              return(res)
+            }
             ras1 = which.max(stk)
-            ras1 = reclassify(ras1, reclass_table)
+            ras1 = classify(ras1, reclass_table)
             ras2 = max(stk, na.rm = TRUE) / sum(stk, na.rm = TRUE)
             list.cons[[paste0(ii, "_", jj)]] = ras1
             list.perc[[paste0(ii, "_", jj)]] = ras2
           }
         }
       }
-      if (length(list.cons) > 0 && length(list.perc) > 0)
-      {
-        stk.cons = stack(list.cons)
-        stk.perc = stack(list.perc)
-        
-        tab1 = as.data.frame(rasterToPoints(stk.cons))
+      if (length(list.cons) > 0 && length(list.perc) > 0) {
+        stk.cons = rast(list.cons)
+        stk.perc = rast(list.perc)
+        tab1 = as.data.frame(stk.cons, xy = TRUE)
         tab1 = melt(tab1, id.vars = c("x", "y"))
         tab1$group.level = tab1$group.value = ""
-        for (ii in row.names) { tab1$group.level[grep(ii, tab1$variable)] = ii }
-        for (jj in unique(unlist(corres[, 2:ncol(corres)]))) { tab1$group.value[grep(jj, tab1$variable)] = jj }
+        for (ii in row.names) {
+          tab1$group.level[grep(ii, tab1$variable)] = ii
+        }
+        for (jj in unique(unlist(corres[, 2:ncol(corres)]))) { 
+          tab1$group.value[grep(jj, tab1$variable)] = jj 
+        }
         tab1$value[which(is.na(tab1$value))] = 0
         
-        tab2 = as.data.frame(rasterToPoints(stk.perc))
+        tab2 = as.data.frame(stk.perc, xy = TRUE)
         tab2 = melt(tab2, id.vars = c("x", "y"))
         tab2$group.level = tab2$group.value = ""
         for (ii in row.names) { tab2$group.level[grep(ii, tab2$variable)] = ii }
@@ -400,17 +402,14 @@ bm_PlotRangeSize <- function(bm.range, do.count = TRUE, do.perc = TRUE
     gg.maps = NULL
     gg.ca = NULL
   }
-  
-  
   ## RETURN PLOTS
   if (do.plot) { 
     print(gg.count)
-    print(gg.perc)
-    eval(parse(text = gg.maps))
     plot.new()
+    print(gg.perc, newpage = FALSE)
+    eval(parse(text = gg.maps))
     print(gg.ca)
   }
-
   return(out)
 }
 

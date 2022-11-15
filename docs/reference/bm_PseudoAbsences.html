@@ -18,7 +18,7 @@ to 4 different methods : random, sre, disk or user.defined (see Details)."><!-- 
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">biomod2</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">4.1-3</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">4.2-0</span>
       </span>
     </div>
 
@@ -112,31 +112,31 @@ to 4 different methods : <code>random</code>, <code>sre</code>, <code>disk</code
 <span></span>
 <span><span class="fu">bm_PseudoAbsences_user.defined</span><span class="op">(</span><span class="va">resp.var</span>, <span class="va">expl.var</span>, <span class="va">...</span><span class="op">)</span></span>
 <span></span>
-<span><span class="co"># S4 method for ANY,SpatialPointsDataFrame</span></span>
+<span><span class="co"># S4 method for ANY,SpatVector</span></span>
 <span><span class="fu">bm_PseudoAbsences_user.defined</span><span class="op">(</span><span class="va">resp.var</span>, <span class="va">expl.var</span>, <span class="va">user.table</span><span class="op">)</span></span>
 <span></span>
-<span><span class="co"># S4 method for ANY,RasterStack</span></span>
+<span><span class="co"># S4 method for ANY,SpatRaster</span></span>
 <span><span class="fu">bm_PseudoAbsences_user.defined</span><span class="op">(</span><span class="va">resp.var</span>, <span class="va">expl.var</span>, <span class="va">user.table</span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu">bm_PseudoAbsences_random</span><span class="op">(</span><span class="va">resp.var</span>, <span class="va">expl.var</span>, <span class="va">...</span><span class="op">)</span></span>
 <span></span>
-<span><span class="co"># S4 method for ANY,SpatialPointsDataFrame</span></span>
+<span><span class="co"># S4 method for ANY,SpatVector</span></span>
 <span><span class="fu">bm_PseudoAbsences_random</span><span class="op">(</span><span class="va">resp.var</span>, <span class="va">expl.var</span>, <span class="va">nb.absences</span>, <span class="va">nb.rep</span><span class="op">)</span></span>
 <span></span>
-<span><span class="co"># S4 method for ANY,RasterStack</span></span>
+<span><span class="co"># S4 method for ANY,SpatRaster</span></span>
 <span><span class="fu">bm_PseudoAbsences_random</span><span class="op">(</span><span class="va">resp.var</span>, <span class="va">expl.var</span>, <span class="va">nb.absences</span>, <span class="va">nb.rep</span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu">bm_PseudoAbsences_sre</span><span class="op">(</span><span class="va">resp.var</span>, <span class="va">expl.var</span>, <span class="va">...</span><span class="op">)</span></span>
 <span></span>
-<span><span class="co"># S4 method for ANY,SpatialPointsDataFrame</span></span>
+<span><span class="co"># S4 method for ANY,SpatVector</span></span>
 <span><span class="fu">bm_PseudoAbsences_sre</span><span class="op">(</span><span class="va">resp.var</span>, <span class="va">expl.var</span>, <span class="va">sre.quant</span>, <span class="va">nb.absences</span>, <span class="va">nb.rep</span><span class="op">)</span></span>
 <span></span>
-<span><span class="co"># S4 method for ANY,RasterStack</span></span>
+<span><span class="co"># S4 method for ANY,SpatRaster</span></span>
 <span><span class="fu">bm_PseudoAbsences_sre</span><span class="op">(</span><span class="va">resp.var</span>, <span class="va">expl.var</span>, <span class="va">sre.quant</span>, <span class="va">nb.absences</span>, <span class="va">nb.rep</span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu">bm_PseudoAbsences_disk</span><span class="op">(</span><span class="va">resp.var</span>, <span class="va">expl.var</span>, <span class="va">...</span><span class="op">)</span></span>
 <span></span>
-<span><span class="co"># S4 method for ANY,SpatialPointsDataFrame</span></span>
+<span><span class="co"># S4 method for ANY,SpatVector</span></span>
 <span><span class="fu">bm_PseudoAbsences_disk</span><span class="op">(</span></span>
 <span>  <span class="va">resp.var</span>,</span>
 <span>  <span class="va">expl.var</span>,</span>
@@ -146,7 +146,7 @@ to 4 different methods : <code>random</code>, <code>sre</code>, <code>disk</code
 <span>  <span class="va">nb.rep</span></span>
 <span><span class="op">)</span></span>
 <span></span>
-<span><span class="co"># S4 method for ANY,RasterStack</span></span>
+<span><span class="co"># S4 method for ANY,SpatRaster</span></span>
 <span><span class="fu">bm_PseudoAbsences_disk</span><span class="op">(</span></span>
 <span>  <span class="va">resp.var</span>,</span>
 <span>  <span class="va">expl.var</span>,</span>
@@ -168,7 +168,7 @@ find the pseudo-absences</p></dd>
 
 <dt>expl.var</dt>
 <dd><p>a <code>matrix</code>, <code>data.frame</code>, <code><a href="https://rdrr.io/pkg/sp/man/SpatialPoints.html" class="external-link">SpatialPointsDataFrame</a></code> 
-or <code><a href="https://rdrr.io/pkg/raster/man/stack.html" class="external-link">RasterStack</a></code> object containing the explanatory variables (in 
+or <code><a href="https://rdrr.io/pkg/terra/man/rast.html" class="external-link">SpatRaster</a></code> object containing the explanatory variables (in 
 columns or layers) that will be used to find the pseudo-absences</p></dd>
 
 

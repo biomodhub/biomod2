@@ -20,10 +20,13 @@ BIOMOD_PresenceOnly(
 \code{\link{BIOMOD_EnsembleModeling}} function}
 
 \item{bg.env}{(\emph{optional, default} \code{NULL}) \cr 
-A \code{matrix}, \code{data.frame} or \code{\link[raster:stack]{RasterStack}} object 
-containing values of environmental variables extracted from the background (\emph{if 
-presences are to be compared to background instead of absences or pseudo-absences selected 
-for modeling})}
+A \code{matrix}, \code{data.frame}, \code{\link[terra:vect]{SpatVector}}
+or \code{\link[terra:rast]{SpatRaster}} object containing values of 
+environmental variables (in columns or layers) extracted from the background 
+(\emph{if presences are to be compared to background instead of absences or 
+pseudo-absences selected for modeling})
+\cr \emph{Note that old format from \pkg{raster} and \pkg{sp} are still supported such as 
+\code{RasterStack} and \code{SpatialPointsDataFrame} objects. }}
 
 \item{perc}{a \code{numeric} between \code{0} and \code{1} corresponding to the percentage of 
 correctly classified presences for Minimal Predicted Area (see 
@@ -59,10 +62,10 @@ code of \code{ecospat.boyce()} and \code{ecospat.mpa()} in \pkg{ecospat})
 functions have been copied within this file from version 3.2.2 (august 2022).
 }
 \examples{
+library(terra)
 
 # Load species occurrences (6 species available)
-myFile <- system.file('external/species/mammals_table.csv', package = 'biomod2')
-DataSpecies <- read.csv(myFile, row.names = 1)
+data(DataSpecies)
 head(DataSpecies)
 
 # Select the name of the studied species
@@ -75,15 +78,15 @@ myResp <- as.numeric(DataSpecies[, myRespName])
 myRespXY <- DataSpecies[, c('X_WGS84', 'Y_WGS84')]
 
 # Load environmental variables extracted from BIOCLIM (bio_3, bio_4, bio_7, bio_11 & bio_12)
-myFiles <- paste0('external/bioclim/current/bio', c(3, 4, 7, 11, 12), '.grd')
-myExpl <- raster::stack(system.file(myFiles, package = 'biomod2'))
+data(bioclim_current)
+myExpl <- terra::rast(bioclim_current)
 
 \dontshow{
-myExtent <- raster::extent(0,30,45,70)
-myExpl <- raster::stack(raster::crop(myExpl, myExtent))
+myExtent <- terra::ext(0,30,45,70)
+myExpl <- terra::crop(myExpl, myExtent)
 }
 
-# ---------------------------------------------------------------
+# --------------------------------------------------------------- #
 file.out <- paste0(myRespName, "/", myRespName, ".AllModels.models.out")
 if (file.exists(file.out)) {
   myBiomodModelOut <- get(load(file.out))
@@ -137,7 +140,7 @@ if (file.exists(file.EM)) {
 }
 
 
-# ---------------------------------------------------------------
+# --------------------------------------------------------------- #
 # Evaluate models with Boyce index and MPA
 myBiomodPO <- BIOMOD_PresenceOnly(bm.mod = myBiomodModelOut,
                                   bm.em = myBiomodEM)

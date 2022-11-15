@@ -18,9 +18,9 @@ utils::globalVariables(names = c("do.stack", "output.format", "mod.name", "on_0_
                                  , "omit.na", "keep.in.memory"))
 
 ## BIOMOD_EnsembleModeling ------------
-utils::globalVariables(names = c("metric.select.user"))
-utils::globalVariables(names = c("assemb"))
-utils::globalVariables(names = c("em.mod.assemb"))
+utils::globalVariables(names = c("metric.select.user",
+                                 "assemb",
+                                 "em.mod.assemb"))
 
 ## .get_needed_predictions ------------
 utils::globalVariables(names = c("thisPA"))
@@ -31,9 +31,8 @@ utils::globalVariables(names = c("on_0_1000", "output.format", "keep.in.memory")
 ## BIOMOD_LoadModels ------------
 utils::globalVariables(names = c("full.name", "models", "run.eval", "data.set"))
 
-## BIOMOD_PresenceOnly ------------
-utils::globalVariables(names = c("ind.1"))
-
+## BIOMOD_RangeSize ------------
+utils::globalVariables(names = c("thiscol"))
 
 ## bm_RunModel ------------
 utils::globalVariables(names = c("expl_var_names", "resp_name", "criteria"))

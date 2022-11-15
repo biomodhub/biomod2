@@ -290,10 +290,10 @@
 ##' 
 ##' 
 ##' @examples
+##' library(terra)
 ##' 
 ##' # Load species occurrences (6 species available)
-##' myFile <- system.file('external/species/mammals_table.csv', package = 'biomod2')
-##' DataSpecies <- read.csv(myFile, row.names = 1)
+##' data(DataSpecies)
 ##' head(DataSpecies)
 ##' 
 ##' # Select the name of the studied species
@@ -306,12 +306,12 @@
 ##' myRespXY <- DataSpecies[, c('X_WGS84', 'Y_WGS84')]
 ##' 
 ##' # Load environmental variables extracted from BIOCLIM (bio_3, bio_4, bio_7, bio_11 & bio_12)
-##' myFiles <- paste0('external/bioclim/current/bio', c(3, 4, 7, 11, 12), '.grd')
-##' myExpl <- raster::stack(system.file(myFiles, package = 'biomod2'))
+##' data(bioclim_current)
+##' myExpl <- terra::rast(bioclim_current)
 ##' 
 ##' \dontshow{
-##' myExtent <- raster::extent(0,30,45,70)
-##' myExpl <- raster::stack(raster::crop(myExpl, myExtent))
+##' myExtent <- terra::ext(0,30,45,70)
+##' myExpl <- terra::crop(myExpl, myExtent)
 ##' }
 ##' 
 ##' # ---------------------------------------------------------------
@@ -455,19 +455,19 @@ BIOMOD_ModelingOptions <- function(GLM = NULL,
     
     if (is.null(GAM$control)) {
       if (opt@GAM$algo == 'GAM_gam') {
-        requireNamespace('gam', quietly = TRUE)
+        if(!requireNamespace('gam', quietly = TRUE)) stop("Package 'gam' not found")
         opt@GAM$control <- gam::gam.control()
       } else {
-        requireNamespace('mgcv', quietly = TRUE)
+        if(!requireNamespace('mgcv', quietly = TRUE)) stop("Package 'mgcv' not found")
         opt@GAM$control <- mgcv::gam.control()
       }
     } else {
       user.control.list <- GAM$control
       if (opt@GAM$algo == 'GAM_gam') {
-        requireNamespace('gam', quietly = TRUE)
+        if(!requireNamespace('gam', quietly = TRUE)) stop("Package 'gam' not found")
         default.control.list <- gam::gam.control()
       } else {
-        requireNamespace('mgcv', quietly = TRUE)
+        if(!requireNamespace('mgcv', quietly = TRUE)) stop("Package 'mgcv' not found")
         default.control.list <- mgcv::gam.control()
       }
       control.list <- lapply(names(default.control.list), function(x) {

@@ -140,6 +140,7 @@
 ##' @importFrom reshape melt.array
 ##' @importFrom foreach foreach %do%
 ##' @importFrom abind abind
+##' @importFrom terra rast subset
 ##' 
 NULL
 
@@ -222,10 +223,10 @@ setGeneric("get_variables_importance", function(obj, ...) { standardGeneric("get
 ##' showClass("BIOMOD.models.out")
 ##' 
 ##' ## ----------------------------------------------------------------------- #
+##' library(terra)
 ##' 
 ##' # Load species occurrences (6 species available)
-##' myFile <- system.file('external/species/mammals_table.csv', package = 'biomod2')
-##' DataSpecies <- read.csv(myFile, row.names = 1)
+##' data(DataSpecies)
 ##' head(DataSpecies)
 ##' 
 ##' # Select the name of the studied species
@@ -238,12 +239,12 @@ setGeneric("get_variables_importance", function(obj, ...) { standardGeneric("get
 ##' myRespXY <- DataSpecies[, c('X_WGS84', 'Y_WGS84')]
 ##' 
 ##' # Load environmental variables extracted from BIOCLIM (bio_3, bio_4, bio_7, bio_11 & bio_12)
-##' myFiles <- paste0('external/bioclim/current/bio', c(3, 4, 7, 11, 12), '.grd')
-##' myExpl <- raster::stack(system.file(myFiles, package = 'biomod2'))
+##' data(bioclim_current)
+##' myExpl <- terra::rast(bioclim_current)
 ##' 
 ##' \dontshow{
-##' myExtent <- raster::extent(0,30,45,70)
-##' myExpl <- raster::stack(raster::crop(myExpl, myExtent))
+##' myExtent <- terra::ext(0,30,45,70)
+##' myExpl <- terra::crop(myExpl, myExtent)
 ##' }
 ##' 
 ##' ## ----------------------------------------------------------------------- #
@@ -592,10 +593,10 @@ setMethod("get_variables_importance", "BIOMOD.models.out",
 ##' showClass("BIOMOD.projection.out")
 ##' 
 ##' ## ----------------------------------------------------------------------- #
+##' library(terra)
 ##' 
 ##' # Load species occurrences (6 species available)
-##' myFile <- system.file('external/species/mammals_table.csv', package = 'biomod2')
-##' DataSpecies <- read.csv(myFile, row.names = 1)
+##' data(DataSpecies)
 ##' head(DataSpecies)
 ##' 
 ##' # Select the name of the studied species
@@ -608,12 +609,12 @@ setMethod("get_variables_importance", "BIOMOD.models.out",
 ##' myRespXY <- DataSpecies[, c('X_WGS84', 'Y_WGS84')]
 ##' 
 ##' # Load environmental variables extracted from BIOCLIM (bio_3, bio_4, bio_7, bio_11 & bio_12)
-##' myFiles <- paste0('external/bioclim/current/bio', c(3, 4, 7, 11, 12), '.grd')
-##' myExpl <- raster::stack(system.file(myFiles, package = 'biomod2'))
+##' data(bioclim_current)
+##' myExpl <- terra::rast(bioclim_current)
 ##' 
 ##' \dontshow{
-##' myExtent <- raster::extent(0,30,45,70)
-##' myExpl <- raster::stack(raster::crop(myExpl, myExtent))
+##' myExtent <- terra::ext(0,30,45,70)
+##' myExpl <- terra::crop(myExpl, myExtent)
 ##' }
 ##' 
 ##' ## ----------------------------------------------------------------------- #
@@ -658,8 +659,6 @@ setMethod("get_variables_importance", "BIOMOD.models.out",
 ##' plot(myBiomodProj)
 ##' 
 ##' 
-##' @importFrom raster subset
-## @importFrom rasterVis levelplot
 ##' @importFrom grDevices colorRampPalette colors dev.new gray rainbow
 ##' @importFrom graphics layout legend par points polygon text
 ##' 
@@ -701,6 +700,7 @@ setClass("BIOMOD.projection.out",
 ##' 
 ##' @rdname BIOMOD.projection.out
 ##' @export
+##' @importFrom terra global
 ##' 
 
 setMethod(
@@ -715,16 +715,17 @@ setMethod(
       stop("invalid str.grep arg")
     }
     
-    if (inherits(x@proj.out, "BIOMOD.stored.raster.stack")) {
-      requireNamespace("rasterVis")
+    if (inherits(x@proj.out, "BIOMOD.stored.SpatRaster")) {
+      if(!requireNamespace('rasterVis', quietly = TRUE)) stop("Package 'rasterVis' not found")
       maxi <- 
         try(
-          cellStats(
+          global(
             get_predictions(x, full.name = models_selected), 
-            max
+            "max",
+            na.rm = TRUE
           )
         )
-      maxi <- max(maxi)
+      maxi <- max(maxi, na.rm = TRUE)
       maxi <- ifelse(maxi <= 1, 1, ifelse(maxi < 1000, 1000, maxi))
       my.at <- seq(0, maxi, by = 100 * maxi / 1000) ## breaks of color key
       my.labs.at <- seq(0, maxi, by = 250 * maxi / 1000) ## labels placed vertically centered
@@ -746,7 +747,7 @@ setMethod(
       if (!inherits(try_plot, "try-error")) { ## produce plot
         print(try_plot)
       } else { ## try classical plot
-        cat("\nrasterVis' levelplot() function failed. Try to call standard raster plotting function.",
+        cat("\nrasterVis' levelplot() function failed. Try to call standard terra plotting function.",
             "It can lead to unoptimal representations.",
             "You should try to do it by yourself extracting predicions (see : get_predictions() function).",
             fill = options()$width)
@@ -800,14 +801,14 @@ setMethod("get_projected_models", "BIOMOD.projection.out", function(obj){ return
 ##' 
 ##' @rdname getters.out
 ##' @export
-##' 
+##' @importFrom terra rast
 
 setMethod('free', signature('BIOMOD.projection.out'),
           function(obj) {
             if (inherits(obj@proj.out, "BIOMOD.stored.array")) {
               obj@proj.out@val  <- array()
-            } else if (inherits(obj@proj.out, "BIOMOD.stored.raster.stack")) {
-              obj@proj.out@val <- stack()
+            } else if (inherits(obj@proj.out, "BIOMOD.stored.SpatRaster")) {
+              obj@proj.out@val <- rast()
             } else {
               obj@proj.out@val <- NULL
             }
@@ -823,8 +824,7 @@ setMethod('free', signature('BIOMOD.projection.out'),
 
 setMethod("get_predictions", "BIOMOD.projection.out",
           function(obj, as.data.frame = FALSE, full.name = NULL, 
-                   model = NULL, run.eval = NULL, data.set = NULL)
-          {
+                   model = NULL, run.eval = NULL, data.set = NULL) {
             # select models to be returned
             models_selected <- get_projected_models(obj)
             if (length(full.name)) {
@@ -835,14 +835,14 @@ setMethod("get_predictions", "BIOMOD.projection.out",
               grep_data.set = grep(paste(data.set, collapse = "|"), models_selected)
               models_selected = models_selected[Reduce(intersect, list(grep_model, grep_run.eval, grep_data.set))]
             }
-            if (length(models_selected) > 0)
-            {
+            if (length(models_selected) > 0)  {
               out <- load_stored_object(obj@proj.out)
               names(out) <- get_projected_models(obj)
               
+              is_input_SpatRaster <- inherits(out, 'SpatRaster')
               # subselection of models_selected
-              if (inherits(out, 'Raster')) {
-                out <- subset(out, models_selected, drop = FALSE)
+              if (is_input_SpatRaster) {
+                out <- subset(out, models_selected)
               } else if (length(dim(out)) == 4) { ## 4D arrays
                 list_models <- .extract_modelNamesInfo(model.names = models_selected,
                                                        info = 'models')
@@ -863,7 +863,8 @@ setMethod("get_predictions", "BIOMOD.projection.out",
               
               if (as.data.frame) {
                 out <- as.data.frame(out)
-                if (!grepl("merged|_EM|By", names(out)[1])) {
+                if (!grepl("merged|_EM|By", names(out)[1]) &&
+                    !is_input_SpatRaster) { # only for simple model with df
                   names(out) <- unlist(
                     lapply(strsplit(names(out), ".", fixed = TRUE),
                            function(x) {
@@ -880,7 +881,9 @@ setMethod("get_predictions", "BIOMOD.projection.out",
                   out <- out[ , models_selected, drop = FALSE]
                 }
               }
-            } else { out <- NULL }
+            } else { 
+              out <- NULL 
+              }
             
             return(out)
           }
@@ -915,6 +918,7 @@ setMethod("get_predictions", "BIOMOD.projection.out",
 ##'   \code{PA_dataset+repet}, \code{PA_dataset+algo}, \code{PA_dataset},
 ##'   \code{algo}, \code{all}
 ##' @slot em.computed a \code{vector} containing names of ensemble models
+##' @slot em.failed a \code{vector} containing names of failed ensemble models
 ##' @slot em.models a \code{list} containing ensemble models
 ##' @slot em.failed a \code{list} containing ensemble models that failed
 ##' @slot models.evaluation a \code{\link{BIOMOD.stored.array-class}} object
@@ -943,10 +947,10 @@ setMethod("get_predictions", "BIOMOD.projection.out",
 ##' showClass("BIOMOD.ensemble.models.out")
 ##' 
 ##' ## ----------------------------------------------------------------------- #
+##' library(terra)
 ##' 
 ##' # Load species occurrences (6 species available)
-##' myFile <- system.file('external/species/mammals_table.csv', package = 'biomod2')
-##' DataSpecies <- read.csv(myFile, row.names = 1)
+##' data(DataSpecies)
 ##' head(DataSpecies)
 ##' 
 ##' # Select the name of the studied species
@@ -959,12 +963,12 @@ setMethod("get_predictions", "BIOMOD.projection.out",
 ##' myRespXY <- DataSpecies[, c('X_WGS84', 'Y_WGS84')]
 ##' 
 ##' # Load environmental variables extracted from BIOCLIM (bio_3, bio_4, bio_7, bio_11 & bio_12)
-##' myFiles <- paste0('external/bioclim/current/bio', c(3, 4, 7, 11, 12), '.grd')
-##' myExpl <- raster::stack(system.file(myFiles, package = 'biomod2'))
+##' data(bioclim_current)
+##' myExpl <- terra::rast(bioclim_current)
 ##' 
 ##' \dontshow{
-##' myExtent <- raster::extent(0,30,45,70)
-##' myExpl <- raster::stack(raster::crop(myExpl, myExtent))
+##' myExtent <- terra::ext(0,30,45,70)
+##' myExpl <- terra::crop(myExpl, myExtent)
 ##' }
 ##' 
 ##' ## ----------------------------------------------------------------------- #

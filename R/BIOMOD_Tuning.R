@@ -1,4 +1,4 @@
-###################################################################################################
+# BIOMOD_Tuning Documentation -------------------------------------------------
 ##' @name BIOMOD_Tuning
 ##' @author Frank Breiner
 ##' 
@@ -68,7 +68,8 @@
 ##' range of values in the training data} (Elith et al. 2011) or not
 ##' @param ME.n.bg an \code{integer} corresponding to the number of background points used to run 
 ##' \code{MAXENT.Phillips}
-##' @param ME.env a \code{RasterStack} object containing model predictor variables
+##' @param ME.env a \code{\link[terra:rast]{SpatRaster}} object 
+##' containing model predictor variables
 ##' @param ME.parallel (\emph{optional, default} \code{TRUE}) \cr 
 ##' A \code{logical} value defining whether to enable parallel computing for 
 ##' \code{MAXENT.Phillips} or not
@@ -118,10 +119,10 @@
 ##' 
 ##' 
 ##' @examples
+##' library(terra)
 ##' 
 ##' # Load species occurrences (6 species available)
-##' myFile <- system.file('external/species/mammals_table.csv', package = 'biomod2')
-##' DataSpecies <- read.csv(myFile, row.names = 1)
+##' data(DataSpecies)
 ##' head(DataSpecies)
 ##' 
 ##' # Select the name of the studied species
@@ -134,15 +135,15 @@
 ##' myRespXY <- DataSpecies[, c('X_WGS84', 'Y_WGS84')]
 ##' 
 ##' # Load environmental variables extracted from BIOCLIM (bio_3, bio_4, bio_7, bio_11 & bio_12)
-##' myFiles <- paste0('external/bioclim/current/bio', c(3, 4, 7, 11, 12), '.grd')
-##' myExpl <- raster::stack(system.file(myFiles, package = 'biomod2'))
+##' data(bioclim_current)
+##' myExpl <- terra::rast(bioclim_current)
 ##' 
 ##' \dontshow{
-##' myExtent <- raster::extent(0,30,45,70)
-##' myExpl <- raster::stack(raster::crop(myExpl, myExtent))
+##' myExtent <- terra::ext(0,30,45,70)
+##' myExpl <- terra::crop(myExpl, myExtent)
 ##' }
 ##' 
-##' # ---------------------------------------------------------------
+##' # --------------------------------------------------------------- #
 ##' # Format Data with true absences
 ##' myBiomodData <- BIOMOD_FormatingData(resp.var = myResp,
 ##'                                      expl.var = myExpl,
@@ -150,7 +151,7 @@
 ##'                                      resp.name = myRespName)
 ##' 
 ##' 
-##' # ---------------------------------------------------------------
+##' # --------------------------------------------------------------- #
 ##' ### Duration for turing all models sequential with default settings 
 ##' ### on 3.4 GHz processor: approx. 45 min tuning all models in parallel
 ##' ### (on 8 cores) using foreach loops runs much faster: approx. 14 min
@@ -191,7 +192,7 @@
 ##' 
 ##' @export
 ##' 
-###################################################################################################
+#------------------------------------------------------------------------------#
 
 
 BIOMOD_Tuning <- function(bm.format,
@@ -235,12 +236,17 @@ BIOMOD_Tuning <- function(bm.format,
   ## MAXENT: http://cran.r-project.org/web/packages/ENMeval/ENMeval.pdf --> ENMevaluate()
   ## or:    http://cran.r-project.org/web/packages/maxent/maxent.pdf -->  tune.maxent()
   
-  ## 0. Check namespaces --------------------------------------------------------------------------
+  ## 0. Check namespaces ------------------------------------------------------
+  
   mod.names = c('GLM', 'GBM', 'GAM', 'CTA', 'ANN', 'SRE', 'FDA', 'MARS', 'RF', 'MAXENT.Phillips')
   
   if (sum(mod.names %in% models) > 0) {
-    if (!isNamespaceLoaded("caret")) { requireNamespace("caret", quietly = TRUE) }
-    if (!isNamespaceLoaded('dplyr')) { requireNamespace("dplyr", quietly = TRUE) }
+    if (!isNamespaceLoaded("caret")) { 
+      if(!requireNamespace('caret', quietly = TRUE)) stop("Package 'caret' not found")
+    }
+    if (!isNamespaceLoaded('dplyr')) { 
+      if(!requireNamespace('dplyr', quietly = TRUE)) stop("Package 'dplyr' not found")
+    }
     if (is.null(ctrl.train)) {
       ctrl.train <- caret::trainControl(method = "cv",
                                         repeats = 3,
@@ -248,9 +254,13 @@ BIOMOD_Tuning <- function(bm.format,
                                         classProbs = TRUE,
                                         returnData = FALSE)
     }
-    if ("MAXENT.Phillips" %in% models && !isNamespaceLoaded('ENMeval')) { requireNamespace("ENMeval", quietly = TRUE) }
+    if ("MAXENT.Phillips" %in% models && !isNamespaceLoaded('ENMeval')) { 
+      if(!requireNamespace('ENMeval', quietly = TRUE)) stop("Package 'ENMeval' not found")
+    }
     # if ("MAXENT.Tsuruoka" %in% models && !isNamespaceLoaded('maxent')) { requireNamespace("maxent", quietly = TRUE) }
-    if ("SRE" %in% models && !isNamespaceLoaded('dismo')) { requireNamespace("dismo", quietly = TRUE) }
+    if ("SRE" %in% models && !isNamespaceLoaded('dismo')) { 
+      if(!requireNamespace('dismo', quietly = TRUE)) stop("Package 'dismo' not found")
+    }
   }
   
   tune.SRE <- tune.GLM <- tune.MAXENT.Phillips <- tune.GAM <- tune.GBM <- 
@@ -261,7 +271,7 @@ BIOMOD_Tuning <- function(bm.format,
   # if (is.null(weights)) { weights = rep(1, length(bm.format@data.species))}
   
   
-  ## 1.1 SRE --------------------------------------------------------------------------------------
+  ## 1.1 SRE ------------------------------------------------------------------
   
   if ('SRE' %in% models)
   {
@@ -299,7 +309,7 @@ BIOMOD_Tuning <- function(bm.format,
   
   if(metric.eval == 'ROC' | metric.eval == 'TSS'){ resp <- as.factor(ifelse(resp == 1 & !is.na(resp), "Presence", "Absence")) }
   
-  ## 1.2 GBM --------------------------------------------------------------------------------------
+  ## 1.2 GBM ------------------------------------------------------------------
   
   if ('GBM' %in% models)
   {  
@@ -369,7 +379,7 @@ BIOMOD_Tuning <- function(bm.format,
     cat(paste("Finished tuning GBM", "\n-=-=-=-=-=-=-=-=-=-=\n"))
   }
   
-  ## 1.3 RF ---------------------------------------------------------------------------------------
+  ## 1.3 RF -------------------------------------------------------------------
   
   if ('RF' %in% models)
   {
@@ -398,7 +408,7 @@ BIOMOD_Tuning <- function(bm.format,
     cat(paste("Finished tuning RF", "\n-=-=-=-=-=-=-=-=-=-=\n"))
   }
   
-  ## 1.4 ANN --------------------------------------------------------------------------------------
+  ## 1.4 ANN -------------------------------------------------------------------
   
   if ('ANN' %in% models)
   {
@@ -445,7 +455,7 @@ BIOMOD_Tuning <- function(bm.format,
     cat(paste("Finished tuning ANN", "\n-=-=-=-=-=-=-=-=-=-=\n"))
   }
   
-  ## 1.5 GAM --------------------------------------------------------------------------------------
+  ## 1.5 GAM ------------------------------------------------------------------
   
   if ('GAM' %in% models)
   {
@@ -473,7 +483,7 @@ BIOMOD_Tuning <- function(bm.format,
     cat(paste("Finished tuning GAM", "\n-=-=-=-=-=-=-=-=-=-=\n"))
   }
   
-  ## 1.6 MARS -------------------------------------------------------------------------------------
+  ## 1.6 MARS ----------------------------------------------------------------
   
   if ('MARS' %in% models)
   {
@@ -517,13 +527,15 @@ BIOMOD_Tuning <- function(bm.format,
     cat(paste("Finished tuning MARS", "\n-=-=-=-=-=-=-=-=-=-=\n"))
   }
   
-  ## 1.7 GLM --------------------------------------------------------------------------------------
+  ## 1.7 GLM ----------------------------------------------------------------
   
   if ('GLM' %in% models)
   {
     cat(paste("\n-=-=-=-=-=-=-=-=-=-=\n", "Start tuning GLM\n"))
     if (is.null(ctrl.GLM)) { ctrl.GLM <- ctrl.train }
-    if ("s_smoother" %in% GLM.type) { requireNamespace("gam", quietly = TRUE) }
+    if ("s_smoother" %in% GLM.type) { 
+      if(!requireNamespace('gam', quietly = TRUE)) stop("Package 'gam' not found")
+      }
     
     fm <- list()
     GLM.results = foreach (type = GLM.type, .combine = "rbind") %:%
@@ -552,7 +564,7 @@ BIOMOD_Tuning <- function(bm.format,
     cat(paste("Finished tuning GLM", "\n-=-=-=-=-=-=-=-=-=-=\n"))
   }      
   
-  ## 1.8 FDA --------------------------------------------------------------------------------------
+  ## 1.8 FDA -----------------------------------------------------------------
   
   if ('FDA' %in% models)
   {
@@ -583,7 +595,7 @@ BIOMOD_Tuning <- function(bm.format,
     cat(paste("Finished tuning FDA", "\n-=-=-=-=-=-=-=-=-=-=\n"))
   }
   
-  ## 1.9 CTA --------------------------------------------------------------------------------------
+  ## 1.9 CTA ------------------------------------------------------------------
   
   if ('CTA' %in% models)
   {
@@ -634,7 +646,7 @@ BIOMOD_Tuning <- function(bm.format,
     cat(paste("Finished tuning CTA", "\n-=-=-=-=-=-=-=-=-=-=\n"))
   }
   
-  ## 1.10 MAXENT.Phillips -------------------------------------------------------------------------
+  ## 1.10 MAXENT.Phillips ------------------------------------------------------
   
   if ('MAXENT.Phillips' %in% models)
   {
@@ -695,7 +707,7 @@ BIOMOD_Tuning <- function(bm.format,
 }
 
 
-###################################################################################################
+## Maxent Tuning ---------------------------------------------------------------
 #### Modified tuning function from the ENMeval package to tune MAXENT.Phillips (internal function for BIOMOD_tuning)
 
 .maxent_tuning <- function(pres,

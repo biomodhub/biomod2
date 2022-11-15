@@ -1,4 +1,4 @@
-###################################################################################################
+# BIOMOD_Modeling docs ------------------------------------------------------- #
 ##' @name BIOMOD_Modeling
 ##' @author Wilfried Thuiller, Damien Georges, Robin Engler
 ##' 
@@ -195,10 +195,10 @@
 ##' 
 ##'   
 ##' @examples
+##' library(terra)
 ##' 
 ##' # Load species occurrences (6 species available)
-##' myFile <- system.file('external/species/mammals_table.csv', package = 'biomod2')
-##' DataSpecies <- read.csv(myFile, row.names = 1)
+##' data(DataSpecies)
 ##' head(DataSpecies)
 ##' 
 ##' # Select the name of the studied species
@@ -211,15 +211,15 @@
 ##' myRespXY <- DataSpecies[, c('X_WGS84', 'Y_WGS84')]
 ##' 
 ##' # Load environmental variables extracted from BIOCLIM (bio_3, bio_4, bio_7, bio_11 & bio_12)
-##' myFiles <- paste0('external/bioclim/current/bio', c(3, 4, 7, 11, 12), '.grd')
-##' myExpl <- raster::stack(system.file(myFiles, package = 'biomod2'))
+##' data(bioclim_current)
+##' myExpl <- terra::rast(bioclim_current)
 ##' 
 ##' \dontshow{
-##' myExtent <- raster::extent(0,30,45,70)
-##' myExpl <- raster::stack(raster::crop(myExpl, myExtent))
+##' myExtent <- terra::ext(0,30,45,70)
+##' myExpl <- terra::crop(myExpl, myExtent)
 ##' }
 ##' 
-##' # ---------------------------------------------------------------
+##' # ---------------------------------------------------------------------------- #
 ##' # Format Data with true absences
 ##' myBiomodData <- BIOMOD_FormatingData(resp.var = myResp,
 ##'                                      expl.var = myExpl,
@@ -230,7 +230,7 @@
 ##' myBiomodOptions <- BIOMOD_ModelingOptions()
 ##' 
 ##' 
-##' # ---------------------------------------------------------------
+##' # ---------------------------------------------------------------------------- #
 ##' # Model single models
 ##' myBiomodModelOut <- BIOMOD_Modeling(bm.format = myBiomodData,
 ##'                                     modeling.id = 'AllModels',
@@ -273,7 +273,7 @@
 ##' @export
 ##' 
 ##' 
-###################################################################################################
+# ---------------------------------------------------------------------------- #
 
 
 BIOMOD_Modeling <- function(bm.format,
@@ -369,7 +369,7 @@ BIOMOD_Modeling <- function(bm.format,
   ## 3.3 Rearrange and save outputs -------------------------------------------
   models.out@models.computed <- .transform_outputs_list(mod.out, out = 'models.run')
   models.out@models.failed <- .transform_outputs_list(mod.out, out = 'calib.failure')
-  
+
   ## 3.4 Rearrange and save models outputs : ----------------------------------
   ## models evaluation, variables importance, models prediction, predictions evaluation
   if (save.output) {
@@ -397,7 +397,7 @@ BIOMOD_Modeling <- function(bm.format,
   }
   rm(mod.out)
   
-  ## 6. SAVE MODEL OBJECT ON HARD DRIVE -----------------------------------------------------------
+  ## 6. SAVE MODEL OBJECT ON HARD DRIVE ----------------------------
   name.OUT = paste0(models.out@sp.name, '.', models.out@modeling.id, '.models.out')
   models.out@link <- file.path(models.out@dir.name, models.out@sp.name, name.OUT)
   assign(x = name.OUT, value = models.out)
@@ -408,7 +408,7 @@ BIOMOD_Modeling <- function(bm.format,
 }
 
 
-###################################################################################################
+# ---------------------------------------------------------------------------- #
 
 .BIOMOD_Modeling.prepare.workdir <- function(dir.name, sp.name, modeling.id)
 {
@@ -419,7 +419,7 @@ BIOMOD_Modeling <- function(bm.format,
 }
 
 
-###################################################################################################
+# ---------------------------------------------------------------------------- #
 
 .BIOMOD_Modeling.check.args <- function(bm.format, modeling.id, models, bm.options, nb.rep
                                         , data.split.perc, data.split.table
@@ -443,9 +443,8 @@ BIOMOD_Modeling <- function(bm.format,
   
   
   ## 1.1 Remove models not supporting categorical variables --------------------
-  categorical_var <- unlist(sapply(colnames(bm.format@data.env.var), function(x) {
-    if (is.factor(bm.format@data.env.var[, x])) { return(x) } else { return(NULL) }
-  }))
+  categorical_var <- .get_categorical_names(bm.format@data.env.var)
+    
   if (length(categorical_var) > 0) {
     models.fact.unsuprort <- c("SRE", "MAXENT.Tsuruoka")
     models.switch.off <- c(models.switch.off, intersect(models, models.fact.unsuprort))
@@ -495,25 +494,35 @@ BIOMOD_Modeling <- function(bm.format,
   ## 4. Check nb.rep and data.split.table arguments ---------------------------
   if (!is.null(data.split.table)) {
     cat("\n! User defined data-split table was given -> nb.rep, data.split.perc and do.full.models argument will be ignored")
-    if (!(length(dim(data.split.table) %in% c(2, 3)))) { stop("data.split.table must be a matrix or a 3D array") }
-    if (dim(data.split.table)[1] != length(bm.format@data.species)) { stop("data.split.table must have as many rows (dim1) than your species as data") }
+    
+    if (inherits(data.split.table,'data.frame')) {
+      data.split.table <- as.matrix(data.split.table)
+    }
+    
+    if (!(length(dim(data.split.table) %in% c(2, 3)))) {
+      stop("data.split.table must be a matrix, a data.frame or a 3D array") 
+    }
+    
+    if (dim(data.split.table)[1] != length(bm.format@data.species)) { 
+      stop("data.split.table must have as many rows (dim1) than your species as data")
+    }
     nb.rep <- dim(data.split.table)[2]
     data.split.perc <- 50
     do.full.models <- FALSE
-  }
-  
-  .fun_testIfPosInt(TRUE, "nb.rep", nb.rep)
-  if (data.split.perc < 0 || data.split.perc > 100) {
-    stop("data.split.perc argument must be a 0-100 'numeric'")
-  } else if (data.split.perc < 50) {
-    warning("You chose to allocate more data to evaluation than to calibration of your model
+  } else { # no user defined cross-validation
+    .fun_testIfPosInt(TRUE, "nb.rep", nb.rep)
+    if (data.split.perc < 0 || data.split.perc > 100) {
+      stop("data.split.perc argument must be a 0-100 'numeric'")
+    } else if (data.split.perc < 50) {
+      warning("You chose to allocate more data to evaluation than to calibration of your model
             (data.split.perc<50)\nMake sure you really wanted to do that. \n", immediate. = TRUE)
-  } else if (data.split.perc == 100) {
-    nb.rep <- 0
-    warning(paste0("The models will be evaluated on the calibration data only "
-                   , "(nb.rep=0 and no independent data) \n\t "
-                   , "It could lead to over-optimistic predictive performances.\n")
-            , immediate. = TRUE)
+    } else if (data.split.perc == 100) {
+      nb.rep <- 0
+      warning(paste0("The models will be evaluated on the calibration data only "
+                     , "(nb.rep=0 and no independent data) \n\t "
+                     , "It could lead to over-optimistic predictive performances.\n")
+              , immediate. = TRUE)
+    }
   }
   
   ## 5. Check weights arguments -----------------------------------------------
@@ -571,7 +580,7 @@ BIOMOD_Modeling <- function(bm.format,
 }
 
 
-###################################################################################################
+# ---------------------------------------------------------------------------- #
 
 .BIOMOD_Modeling.summary <- function(mod.prep.dat, models)
 {
@@ -585,7 +594,7 @@ BIOMOD_Modeling <- function(bm.format,
 }
 
 
-###################################################################################################
+# ---------------------------------------------------------------------------- #
 
 ## # #For ecospat package
 ## @export
@@ -635,8 +644,7 @@ setMethod('.BIOMOD_Modeling.prepare.data', signature('BIOMOD.formated.data'),
             ## force calib.lines object to be 3D array
             if (length(dim(calib.lines)) < 3) {
               dn_tmp <- dimnames(calib.lines) ## keep track of dimnames
-              calib.lines <- array(data = as.matrix(calib.lines), 
-                                   dim = c(dim(calib.lines), 1))
+              dim(calib.lines) <- c(dim(calib.lines), 1)
               dimnames(calib.lines) <- list(dn_tmp[[1]], dn_tmp[[2]], "_AllData")
             }
             
@@ -715,8 +723,7 @@ setMethod('.BIOMOD_Modeling.prepare.data', signature('BIOMOD.formated.data.PA'),
               ## force calib.lines object to be 3D array
               if (length(dim(calib.lines)) < 3) {
                 dn_tmp <- dimnames(calib.lines) ## keep track of dimnames
-                calib.lines <- array(data = as.matrix(calib.lines), 
-                                     dim = c(dim(calib.lines), 1))
+                dim(calib.lines) <- c(dim(calib.lines), 1)
                 dimnames(calib.lines) <- list(dn_tmp[[1]], dn_tmp[[2]], paste0("_PA", pa))
               }
               
@@ -752,7 +759,7 @@ setMethod('.BIOMOD_Modeling.prepare.data', signature('BIOMOD.formated.data.PA'),
 )
 
 
-###################################################################################################
+# ---------------------------------------------------------------------------- #
 
 .automatic_weights_creation <- function(resp, prev = 0.5, subset = NULL)
 {
@@ -807,7 +814,7 @@ setMethod('.BIOMOD_Modeling.prepare.data', signature('BIOMOD.formated.data.PA'),
 }
 
 
-## ###############################################################################################
+# ---------------------------------------------------------------------------- #
 ## 
 ## Reshape biomod2 objects
 ## 
@@ -821,7 +828,7 @@ setMethod('.BIOMOD_Modeling.prepare.data', signature('BIOMOD.formated.data.PA'),
 ## 
 ## @export
 ## 
-## ###############################################################################################
+# ---------------------------------------------------------------------------- #
 
 .transform_outputs_list = function(mod.out, out = 'evaluation', dim.names = NULL)
 {
@@ -829,7 +836,7 @@ setMethod('.BIOMOD_Modeling.prepare.data', signature('BIOMOD.formated.data.PA'),
                'models.run', 'EF.prediction', 'EF.PCA.median', 'EF.evaluation')
   .fun_testIfIn(TRUE, "out", out, out_list)
   
-  ## 0.a get dataset names ------------------------------------------------------------------------
+  ## 0.a get dataset names -----------------------------------------------------
   if (length(mod.out) == 1 && length(unlist(strsplit(unlist(names(mod.out)), '_'))) == 1) {
     dataset.names <- 'AllData'
   } else if (is.null(dim.names)) {

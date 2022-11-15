@@ -6,7 +6,7 @@
 \alias{BIOMOD.stored.data-class}
 \alias{BIOMOD.stored.array-class}
 \alias{BIOMOD.stored.data.frame-class}
-\alias{BIOMOD.stored.raster.stack-class}
+\alias{BIOMOD.stored.SpatRaster-class}
 \alias{BIOMOD.stored.files-class}
 \alias{BIOMOD.stored.formated.data-class}
 \alias{BIOMOD.stored.models.options-class}
@@ -25,8 +25,8 @@ contain a \code{val} slot of specific type :
 \itemize{
   \item{\code{BIOMOD.stored.array} : }{\code{val} is an \code{array}}
   \item{\code{BIOMOD.stored.data.frame} : }{\code{val} is a \code{data.frame}}
-  \item{\code{BIOMOD.stored.raster.stack} : }{\code{val} is a 
-  \code{\link[raster:stack]{RasterStack}}}
+  \item{\code{BIOMOD.stored.SpatRaster} : }{\code{val} is a 
+  \code{\link[terra:PackedSpatRaster-class]{PackedSpatRaster}}}
   \item{\code{BIOMOD.stored.files} : }{\code{val} is a \code{character}}
   \item{\code{BIOMOD.stored.formated.data} : }{\code{val} is a 
   \code{\link{BIOMOD.formated.data}} object}
@@ -52,7 +52,7 @@ memory or not}
 showClass("BIOMOD.stored.data")
 showClass("BIOMOD.stored.array") 
 showClass("BIOMOD.stored.data.frame") 
-showClass("BIOMOD.stored.raster.stack") 
+showClass("BIOMOD.stored.SpatRaster") 
 showClass("BIOMOD.stored.files") 
 showClass("BIOMOD.stored.formated.data") 
 showClass("BIOMOD.stored.models.options") 

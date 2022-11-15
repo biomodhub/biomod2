@@ -25,10 +25,13 @@ object that can be obtained with the \code{\link{BIOMOD_Modeling}} or
 \code{all} or a sub-selection of model names that can be obtained with the 
 \code{\link{get_built_models}} function}
 
-\item{new.env}{a \code{matrix}, \code{data.frame} or \code{\link[raster:stack]{RasterStack}} 
-object containing the new explanatory variables (in columns or layers, with names matching the 
-variables names given to the \code{\link{BIOMOD_FormatingData}} function to build 
-\code{bm.out}) that will be used to project the species distribution model(s)}
+\item{new.env}{a \code{matrix}, \code{data.frame} or 
+\code{\link[terra:rast]{SpatRaster}} object containing the new explanatory
+ variables (in columns or layers, with names matching the variables names
+ given to the \code{\link{BIOMOD_FormatingData}} function to build
+ \code{bm.out}) that will be used to project the species distribution model(s)
+\cr \emph{Note that old format from \pkg{raster} are still supported such as 
+\code{RasterStack} objects. }}
 
 \item{show.variables}{a \code{vector} containing the names of the explanatory variables 
 present into \code{new.env} parameter and to be plotted}
@@ -84,10 +87,10 @@ Note that this method does not account for interactions between variables. \cr \
 }
 }
 \examples{
+library(terra)
 
 # Load species occurrences (6 species available)
-myFile <- system.file('external/species/mammals_table.csv', package = 'biomod2')
-DataSpecies <- read.csv(myFile, row.names = 1)
+data(DataSpecies)
 head(DataSpecies)
 
 # Select the name of the studied species
@@ -100,15 +103,15 @@ myResp <- as.numeric(DataSpecies[, myRespName])
 myRespXY <- DataSpecies[, c('X_WGS84', 'Y_WGS84')]
 
 # Load environmental variables extracted from BIOCLIM (bio_3, bio_4, bio_7, bio_11 & bio_12)
-myFiles <- paste0('external/bioclim/current/bio', c(3, 4, 7, 11, 12), '.grd')
-myExpl <- raster::stack(system.file(myFiles, package = 'biomod2'))
+data(bioclim_current)
+myExpl <- terra::rast(bioclim_current)
 
 \dontshow{
-myExtent <- raster::extent(0,30,45,70)
-myExpl <- raster::stack(raster::crop(myExpl, myExtent))
+myExtent <- terra::ext(0,30,45,70)
+myExpl <- terra::crop(myExpl, myExtent)
 }
 
-# ---------------------------------------------------------------
+# ---------------------------------------------------------------#
 file.out <- paste0(myRespName, "/", myRespName, ".AllModels.models.out")
 if (file.exists(file.out)) {
   myBiomodModelOut <- get(load(file.out))
@@ -137,7 +140,7 @@ if (file.exists(file.out)) {
 }
 
 
-# ---------------------------------------------------------------
+# ---------------------------------------------------------------#
 # Represent response curves
 bm_PlotResponseCurves(bm.out = myBiomodModelOut, 
                       models.chosen = get_built_models(myBiomodModelOut)[c(1:2)],

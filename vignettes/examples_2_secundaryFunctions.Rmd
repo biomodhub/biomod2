@@ -57,7 +57,7 @@ vec.d <- rnorm(100, 500, 100)
 
 ```R
 library(biomod2)
-library(raster)
+library(terra)
 ```
 
 ```R
@@ -68,10 +68,10 @@ myExpl.s <- data.frame(var1 = sample(c(0, 1), 100, replace = TRUE),
                        var3 = 1:100)
                        
 ## Create raster data -------------------------------------------------------------------
-ras.1 <- ras.2 <- mask.out <- raster(nrows = 10, ncols = 10)
+ras.1 <- ras.2 <- mask.out <- rast(nrows = 10, ncols = 10)
 ras.1[] <- as.factor(rep(c(1, 2, 3, 4, 5), each = 20))
 ras.2[] <- rnorm(100)
-stk <- stack(ras.1, ras.2)
+stk <- c(ras.1, ras.2)
 names(stk) <- c("varFact", "varNorm")
 
 ## define a mask for already sampled points
@@ -82,13 +82,12 @@ mask.in <- list(ras.1, ras.1)
 mask.in[[1]][1:80] <- NA ## only level 5 should be sampled in this mask
 mask.in[[1]][21:80] <- NA ## only levels 1 and 5 should be sampled in this mask
 
-## Load real data -----------------------------------------------------------------------
-myFile <- system.file('external/species/mammals_table.csv', package = 'biomod2')
-DataSpecies <- read.csv(myFile, row.names = 1)
+## Load real data ---------------------------------------------------------
+data("DataSpecies")
 myResp.r <- as.numeric(DataSpecies[, 'GuloGulo'])
 
-myFiles <- paste0('external/bioclim/current/bio', c(3, 4, 7, 11, 12), '.grd')
-myExpl.r <- raster::stack(system.file(myFiles, package = 'biomod2'))
+data("bioclim_current")
+myExpl.r <- rast(bioclim_current)
 
 myRespXY <- DataSpecies[which(myResp.r == 1), c('X_WGS84', 'Y_WGS84')]
 myResp.v <- reclassify(subset(myExpl.r, 1, drop = TRUE), c(-Inf, Inf, 0))
@@ -195,7 +194,7 @@ sre.090 <- bm_SRE(resp.var = myResp.v,
                   quant = 0.05)
   
 # Visualize results
-res <- stack(myResp.v, sre.100, sre.095, sre.090)
+res <- c(myResp.v, sre.100, sre.095, sre.090)
 names(res) <- c("Original distribution", "Full data calibration", "Over 95 percent", "Over 90 percent")
 plot(res, zlim = c(0, 1))
 ```

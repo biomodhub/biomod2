@@ -1,4 +1,4 @@
-###################################################################################################
+# BIOMOD_PresenceOnly Documentation --------------------------------------------
 ##' @name BIOMOD_PresenceOnly
 ##' @author Frank Breiner, Maya Gueguen
 ##' 
@@ -15,10 +15,14 @@
 ##' @param bm.em a \code{\link{BIOMOD.ensemble.models.out}} object returned by the 
 ##' \code{\link{BIOMOD_EnsembleModeling}} function
 ##' @param bg.env (\emph{optional, default} \code{NULL}) \cr 
-##' A \code{matrix}, \code{data.frame} or \code{\link[raster:stack]{RasterStack}} object 
-##' containing values of environmental variables extracted from the background (\emph{if 
-##' presences are to be compared to background instead of absences or pseudo-absences selected 
-##' for modeling})
+##' A \code{matrix}, \code{data.frame}, \code{\link[terra:vect]{SpatVector}}
+##' or \code{\link[terra:rast]{SpatRaster}} object containing values of 
+##' environmental variables (in columns or layers) extracted from the background 
+##' (\emph{if presences are to be compared to background instead of absences or 
+##' pseudo-absences selected for modeling})
+##' \cr \emph{Note that old format from \pkg{raster} and \pkg{sp} are still supported such as 
+##' \code{RasterStack} and \code{SpatialPointsDataFrame} objects. }
+##' 
 ##' @param perc a \code{numeric} between \code{0} and \code{1} corresponding to the percentage of 
 ##' correctly classified presences for Minimal Predicted Area (see 
 ##' \code{ecospat.mpa()} in \pkg{ecospat})
@@ -77,10 +81,10 @@
 ##' 
 ##' 
 ##' @examples
+##' library(terra)
 ##' 
 ##' # Load species occurrences (6 species available)
-##' myFile <- system.file('external/species/mammals_table.csv', package = 'biomod2')
-##' DataSpecies <- read.csv(myFile, row.names = 1)
+##' data(DataSpecies)
 ##' head(DataSpecies)
 ##' 
 ##' # Select the name of the studied species
@@ -93,15 +97,15 @@
 ##' myRespXY <- DataSpecies[, c('X_WGS84', 'Y_WGS84')]
 ##' 
 ##' # Load environmental variables extracted from BIOCLIM (bio_3, bio_4, bio_7, bio_11 & bio_12)
-##' myFiles <- paste0('external/bioclim/current/bio', c(3, 4, 7, 11, 12), '.grd')
-##' myExpl <- raster::stack(system.file(myFiles, package = 'biomod2'))
+##' data(bioclim_current)
+##' myExpl <- terra::rast(bioclim_current)
 ##' 
 ##' \dontshow{
-##' myExtent <- raster::extent(0,30,45,70)
-##' myExpl <- raster::stack(raster::crop(myExpl, myExtent))
+##' myExtent <- terra::ext(0,30,45,70)
+##' myExpl <- terra::crop(myExpl, myExtent)
 ##' }
 ##' 
-##' # ---------------------------------------------------------------
+##' # --------------------------------------------------------------- #
 ##' file.out <- paste0(myRespName, "/", myRespName, ".AllModels.models.out")
 ##' if (file.exists(file.out)) {
 ##'   myBiomodModelOut <- get(load(file.out))
@@ -155,7 +159,7 @@
 ##' }
 ##' 
 ##' 
-##' # ---------------------------------------------------------------
+##' # --------------------------------------------------------------- #
 ##' # Evaluate models with Boyce index and MPA
 ##' myBiomodPO <- BIOMOD_PresenceOnly(bm.mod = myBiomodModelOut,
 ##'                                   bm.em = myBiomodEM)
@@ -171,12 +175,12 @@
 ## @importFrom ecospat ecospat.boyce ecospat.mpa
 ##' @importFrom PresenceAbsence presence.absence.accuracy
 ##' @importFrom data.table rbindlist
-##' @importFrom raster extract getValues
+##' @importFrom terra rast extract
 ##' 
 ##' @export
 ##' 
 ##' 
-###################################################################################################
+## -------------------------------------------------------------------------- ##
 
 
 BIOMOD_PresenceOnly <- function(bm.mod = NULL, 
@@ -186,19 +190,29 @@ BIOMOD_PresenceOnly <- function(bm.mod = NULL,
                                 save.output = TRUE)
 {
   .bm_cat("Do Presence-Only Evaluation")
-  # if (!isNamespaceLoaded("ecospat")) { requireNamespace("ecospat") }
+  # if (!isNamespaceLoaded("ecospat")) { requireNamespace("ecospat", quietly = TRUE) }
   
-  ## 0. Check arguments ---------------------------------------------------------------------------
+  ## 0. Check arguments --------------------------------------------------------
   args <- .BIOMOD_PresenceOnly.check.args(bm.mod, bm.em, bg.env, perc, save.output)
   for (argi in names(args)) { assign(x = argi, value = args[[argi]]) }
   rm(args)
   
-  ## MODELING OUTPUT ------------------------------------------------------------------------------
+  
+  
+  ## 1. Get calib.lines ------------------------------------------------------
+  
+  if (!is.null(bm.mod)) {
+    calib.lines <- get_calib_lines(bm.mod)[, , 1]
+  } else {
+    calib.lines <- get_calib_lines(get_formal_data(bm.em))[, , 1]
+  }
+  calib.notNA <- which(!is.na(calib.lines[, 1])) ## remove NA (pseudo-absences) from run1
+  calib.lines <- calib.lines[calib.notNA, ] ## keep only lines associated to sites (no pseudo-absences)
+  
+  
+  ## 2. Individual models ----------------------------------
   if (!is.null(bm.mod)) {
     ## Get calibration lines and observations
-    calib.lines <- get_calib_lines(bm.mod)[, , 1]
-    calib.notNA <- which(!is.na(calib.lines[, 1])) ## remove NA (pseudo-absences) from run1
-    calib.lines <- calib.lines[calib.notNA, ] ## keep only lines associated to sites (no pseudo-absences)
     myResp <- get_formal_data(bm.mod)@data.species
     myResp <- myResp[calib.notNA] ## keep only lines associated to sites (no pseudo-absences)
     
@@ -231,7 +245,8 @@ BIOMOD_PresenceOnly <- function(bm.mod = NULL,
     myModelEval = myModelPred = myModelPred.eval = NULL
   }
   
-  ## ENSEMBLE MODELING OUTPUT ---------------------------------------------------------------------
+  ## 2. Ensemble models ----------------------------------
+  
   if (!is.null(bm.em)) {
     
     ## Get evaluation scores
@@ -253,10 +268,27 @@ BIOMOD_PresenceOnly <- function(bm.mod = NULL,
     myBiomodProjFF <- get_predictions(bm.em, as.data.frame = TRUE)  
     if (!is.null(bg.env)) {
       myBiomodProjFF.sites <- as.data.frame(myBiomodProjFF)
-      myModelPred.sites <- cbind(myModelPred.sites, myBiomodProjFF.sites)
-      myBiomodProjFF <- BIOMOD_EnsembleForecasting(bm.em = bm.em,
-                                                   bm.proj = myBiomodProj.eval,
-                                                   proj.name = paste(bm.em@modeling.id, "cv_EF_bg", sep = "_"))
+      
+      if (exists("myModelPred.sites")) {
+        myModelPred.sites <- cbind(myModelPred.sites, myBiomodProjFF.sites)
+      } else {
+        myModelPred.sites <- myBiomodProjFF.sites
+      }
+      
+      if(exists("myBiomodProj.eval")){
+        myBiomodProjFF <-
+          BIOMOD_EnsembleForecasting(
+            bm.em = bm.em,
+            bm.proj = myBiomodProj.eval,
+            proj.name = paste(bm.em@modeling.id, "cv_EF_bg", sep = "_"))
+      } else {
+        myBiomodProjFF <-
+          BIOMOD_EnsembleForecasting(
+            bm.em = bm.em,
+            new.env = bg.env,
+            proj.name = paste(bm.em@modeling.id, "cv_EF_bg", sep = "_"))
+      }
+      
       myBiomodProjFF <- get_predictions(myBiomodProjFF, as.data.frame = TRUE)
     }
     if (!is.null(bm.mod)) {
@@ -272,7 +304,7 @@ BIOMOD_PresenceOnly <- function(bm.mod = NULL,
     }  
   }
   
-  ## CALCULATE BOYCE & MPA VALUES -----------------------------------------------------------------
+  ## CALCULATE BOYCE & MPA VALUES ---------------------------------------------
   mpa.eval <- boyce.eval <- myModelEval[!duplicated(myModelEval$Model.name), ]
   boyce.eval$Eval.metric <- "BOYCE"
   boyce.eval[, c("Testing.data", "Cutoff", "Sensitivity", "Specificity")] <- NA
@@ -364,9 +396,12 @@ BIOMOD_PresenceOnly <- function(bm.mod = NULL,
       myResp.eval <- get_formal_data(bm.mod)@eval.data.species
       Pred.eval <- myModelPred.eval[, Model.name]
       
-      boy <- ecospat.boyce(fit = Pred.eval, obs = Pred.eval[myResp.eval == 1], PEplot = FALSE)
+      boy <- ecospat.boyce(fit = Pred.eval,
+                           obs = Pred.eval[myResp.eval == 1],
+                           PEplot = FALSE)
       boyce.eval[ind.b, "Evaluating.data"] <- boy$cor
-      mpa.eval[ind.m,"Evaluating.data"] <- ecospat.mpa(Pred.eval[myResp.eval == 1], perc = perc)
+      # mpa.eval[ind.m,"Evaluating.data"] <- ecospat.mpa(Pred.eval[myResp.eval == 1], perc = perc)
+      mpa.eval[ind.m,"Evaluating.data"] <- NA
     }
   }
   myModelEval[, c("Sensitivity", "Specificity")] <- round(myModelEval[, c("Sensitivity", "Specificity")], 1)
@@ -393,42 +428,84 @@ BIOMOD_PresenceOnly <- function(bm.mod = NULL,
 
 
 
-###################################################################################################
+# Check Arguments -------------------------------------------------------------
 
 .BIOMOD_PresenceOnly.check.args <- function(bm.mod, bm.em, bg.env, perc, save.output)
 {
+  
+  if(is.null(bm.mod) && is.null(bm.em)){
+    stop("At least one of 'bm.mod' or 'bm.em' have to be given.")
+  }
+  
   ## 1. Check bm.mod ----------------------------------------------------------
   if (!is.null(bm.mod)) {
     .fun_testIfInherits(TRUE, "bm.mod", bm.mod, "BIOMOD.models.out")
+    expl.var.names <- bm.mod@expl.var.names
   }
   
   ## 2. Check bm.em -----------------------------------------------------------
   if (!is.null(bm.em)) {
     .fun_testIfInherits(TRUE, "bm.em", bm.em, "BIOMOD.ensemble.models.out")
+    if(is.null(bm.mod)){
+      expl.var.names <- get_formal_data(bm.em)@expl.var.names
+    }
   }
   
   ## 2. Check bg.env -----------------------------------------------------------
-  if(is.matrix(bg.env) | is.numeric(bg.env)) {
-    bg.env <- as.data.frame(bg.env)
-  }
-  
-  if (inherits(bg.env, 'Raster')) {
-    bg.env <- as.data.frame(getValues(bg.env))
-  }
-  
-  if (inherits(bg.env, 'SpatialPoints')) {
-    bg.env <- as.data.frame(bg.env@data)
-  }
-  
-  ## remove NA from background data
-  if (sum(is.na(bg.env)) > 0) {
-    cat("\n      ! NAs have been automatically removed from bg.env data")
-    bg.env <- na.omit(bg.env)
+  if(!is.null(bg.env)){
+    available.types.resp <- c('numeric', 'data.frame', 'matrix',
+                              'SpatialPointsDataFrame', 'SpatVector',
+                              'Raster','SpatRaster')
+    
+    .fun_testIfInherits(TRUE, "bg.env", bg.env, available.types.resp)
+    
+    if(is.matrix(bg.env)) {
+      bg.env <- as.data.frame(bg.env)
+    }
+    
+    if(is.numeric(bg.env)) {
+      bg.env <- as.data.frame(bg.env)
+      colnames(bg.env) <- expl.var.names[1]
+    }
+    
+    if (inherits(bg.env, 'Raster')) {
+      if(any(raster::is.factor(bg.env))){
+        bg.env <- categorical_stack_to_terra(bg.env)
+      } else {
+        bg.env <- rast(bg.env)
+      }
+    }
+    
+    if (inherits(bg.env, 'SpatRaster')) {
+      bg.env <- as.data.frame(bg.env)
+    }
+    
+    if (inherits(bg.env, 'SpatialPoints')) {
+      bg.env <- as.data.frame(bg.env@data)
+    }
+    
+    if (inherits(bg.env, 'SpatVector')) {
+      bg.env <- as.data.frame(bg.env)
+    }
+    
+    ## remove NA from background data
+    if (sum(is.na(bg.env)) > 0) {
+      cat("\n      ! NAs have been automatically removed from bg.env data")
+      bg.env <- na.omit(bg.env)
+    }
+    
   }
   
   ## 4. Check perc -----------------------------------------------------------
   .fun_testIf01(TRUE, "perc", perc)
   
+  
+  ## 5. Check MPA & Evaluation data ---------------------------------------------
+  if ((!is.null(bm.mod) && bm.mod@has.evaluation.data) ||
+      (is.null(bm.mod) && get_formal_data(bm.em)@has.evaluation.data)) {
+        cat("\n      ! Evaluation data will be ignored for MPA-related calculations")
+      }
+    
   
   return(list(bm.mod = bm.mod,
               bm.em = bm.em,
@@ -465,13 +542,14 @@ ecospat.boyce <- function(fit, obs, nclass = 0, window.w = "default", res = 100,
     return(round(pi/ei,10))
   }
   
-  if (inherits(fit,"RasterLayer")) {
-    if (is.data.frame(obs) || is.matrix(obs)) {
-      obs <- extract(fit, obs)
-    }
-    fit <- getValues(fit)
-    fit <- fit[!is.na(fit)]
-  }
+  # here, ecospat.boyce should not receive RasterLayer
+  # if (inherits(fit,"RasterLayer")) {
+  #   if (is.data.frame(obs) || is.matrix(obs)) {
+  #     obs <- extract(fit, obs)
+  #   }
+  #   fit <- getValues(fit)
+  #   fit <- fit[!is.na(fit)]
+  # }
   
   mini <- min(fit,obs)
   maxi <- max(fit,obs)
@@ -520,7 +598,11 @@ ecospat.boyce <- function(fit, obs, nclass = 0, window.w = "default", res = 100,
 ## FROM ECOSPAT PACKAGE VERSION 3.2.2 (august 2022)
 
 ## This function calculates the Minimal Predicted Area.
-
+## 
+## R. Patin, Nov. 2022 : the function does not return minimal predicted area, but
+## rather the quantile of suitability corresponding to perc% of presence
+##  correctly predicted
+##  
 ## FUNCTION'S ARGUMENTS
 ## Pred:      numeric or RasterLayer .predicted suitabilities from a SDM prediction
 ## Sp.occ.xy: xy-coordinates of the species (if Pred is a RasterLayer)

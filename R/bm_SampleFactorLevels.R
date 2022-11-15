@@ -10,14 +10,14 @@
 ##' @description This internal \pkg{biomod2} function samples randomly an element of each level of 
 ##' all the factorial variables contained in a \code{raster*} or \code{data.frame} object.
 ##' 
-##' @param expl.var a \code{data.frame} or \code{\link[raster:stack]{RasterStack}} object 
-##' containing the explanatory variables (in columns or layers)
-##' @param mask.out a \code{data.frame} or \code{\link[raster:raster]{raster}} object containing 
-##' the area that has already been sampled (\emph{factor levels within this mask will not be 
-##' sampled})
-##' @param mask.in a \code{data.frame}, \code{\link[raster:raster]{raster}} or 
-##' \code{\link[raster:stack]{RasterStack}} object containing areas where factor levels are to be 
-##' sampled in priority. \emph{Note that if after having explored these masks, some factor levels 
+##' @param expl.var a \code{data.frame} or \code{\link[terra:rast]{SpatRaster}}
+##' object containing the explanatory variables (in columns or layers)
+##' @param mask.out a \code{data.frame} or \code{\link[terra:rast]{SpatRaster}}
+##'  object containing the area that has already been sampled (\emph{factor 
+##'  levels within this mask will not be sampled})
+##' @param mask.in a \code{data.frame} or \code{\link[terra:rast]{SpatRaster}}
+##'  object containing areas where factor levels are to be sampled in priority. 
+##'  \emph{Note that if after having explored these masks, some factor levels 
 ##' remain unsampled, they will be sampled in the reference input object \code{expl.var}.}
 ##' 
 ##' 
@@ -66,13 +66,14 @@
 ##'   
 ##' @examples
 ##' 
-##' library(raster)
+##' library(terra)
 ##' 
 ##' ## Create raster data
-##' ras.1 <- ras.2 <- mask.out <- raster(nrows = 10, ncols = 10)
+##' ras.1 <- ras.2 <- mask.out <- rast(nrows = 10, ncols = 10)
 ##' ras.1[] <- as.factor(rep(c(1, 2, 3, 4, 5), each = 20))
+##' ras.1 <- as.factor(ras.1)
 ##' ras.2[] <- rnorm(100)
-##' stk <- stack(ras.1, ras.2)
+##' stk <- c(ras.1, ras.2)
 ##' names(stk) <- c("varFact", "varNorm")
 ##' 
 ##' ## define a mask for already sampled points
@@ -89,17 +90,16 @@
 ##' samp3 <- bm_SampleFactorLevels(expl.var = stk, mask.out = mask.out, mask.in = mask.in)
 ##' 
 ##' 
-##' @importFrom raster is.factor as.factor levels subset mask
-##' 
+##' @importFrom terra rast cats mask subset is.factor values
 ##' @export
 ##' 
 ##' 
-###################################################################################################
+### ------------------------------------------------------------------------ ###
 
 bm_SampleFactorLevels <- function(expl.var, mask.out = NULL, mask.in = NULL)
 {
-  if (inherits(expl.var, 'Raster')) {
-    fact.level.cells <- bm_SampleFactorLevels.raster(expl.var, mask.out = mask.out, mask.in = mask.in)
+  if (inherits(expl.var, 'SpatRaster')) {
+    fact.level.cells <- bm_SampleFactorLevels.SpatRaster(expl.var, mask.out = mask.out, mask.in = mask.in)
     return(fact.level.cells)
   } else if (inherits(expl.var, 'data.frame')) {
     fact.level.cells <- bm_SampleFactorLevels.data.frame(expl.var, mask.out = mask.out, mask.in = mask.in)
@@ -112,7 +112,7 @@ bm_SampleFactorLevels <- function(expl.var, mask.out = NULL, mask.in = NULL)
   }
 }
 
-bm_SampleFactorLevels.raster <- function(expl.var, mask.out = NULL, mask.in = NULL)
+bm_SampleFactorLevels.SpatRaster <- function(expl.var, mask.out = NULL, mask.in = NULL)
 {
   ## check if some factorial variables are in the input data
   fact.var <- which(is.factor(expl.var))
@@ -124,39 +124,41 @@ bm_SampleFactorLevels.raster <- function(expl.var, mask.out = NULL, mask.in = NU
       selected.cells <- NULL
       
       ## get the factor levels on the full dataset
-      fact.level <- fact.level.original <- unlist(levels(subset(expl.var, f))[[1]][,1, drop = FALSE])
-      cat("\n\t> fact.level for",  names(expl.var)[f], ":\t", paste(fact.level, names(fact.level), sep = ":", collapse = "\t"))
+      fact.level.names <- cats(subset(expl.var, f))[[1]][,2]
+      fact.level <- fact.level.original <- seq_along(fact.level.names)
+      cat("\n\t> fact.level for",  names(expl.var)[f], ":\t", paste(fact.level, fact.level.names, sep = ":", collapse = "\t"))
       
       ## mask containing points that have already been sampled ------------------------------------
       if (!is.null(mask.out))
       {
         ## check the factor levels that have already been sampled
-        fact.levels.sampled <- unlist(levels(as.factor(mask(subset(expl.var, f), mask.out)))[[1]][,1, drop = FALSE])
+        fact.levels.sampled <- 
+          unique(na.omit(
+            values(mask(subset(expl.var, f), mask.out))
+            ))
         ## update levels names (lost during mask conversion)
-        attr(fact.levels.sampled, "names") <- attr(fact.level.original, "names")[fact.levels.sampled]
         cat("\n\t - according to mask.out levels", fact.levels.sampled, "have already been sampled")
         ## update the list of factor levels to sample
         fact.level <- setdiff(fact.level, fact.levels.sampled)
       }
       
       ## if there still is some levels to sample --------------------------------------------------
-      if(length(fact.level))
-      {
-        ## a. try first to sample factors in the given masks -------------------
-        if (!is.null(mask.in))
-        { ## list of mask we want to sample in (order matter!)
-          for (mask.in.id in 1:length(mask.in))
-          {
-            if (length(fact.level)) ## if there still is some levels to sample
-            {
+      if(length(fact.level) > 0) {
+        ## a. try first to sample factors in the given masks ------
+        ## ! R. Patin 03/11/2022 not sure this is working !
+        ## list of mask we want to sample in (order matter!)
+        if (!is.null(mask.in)) {
+          for (mask.in.id in 1:length(mask.in)) {
+            ## if there still is some levels to sample       
+            if (length(fact.level) > 0 ) {
               ## update the masked version of the factorial raster
-              x.f.masked <- as.factor(mask(subset(expl.var, f), mask.in[[mask.in.id]]))
-              x.f.levels <- unlist(levels(x.f.masked)[[1]][, 1, drop = FALSE])
-              ## update levels names (lost during mask conversion)
-              attr(x.f.levels, "names") <- attr(fact.level.original, "names")[x.f.levels]              
+
+              x.f.masked <- mask(subset(expl.var, f), mask.in[[mask.in.id]])
+              x.f.levels <- unique(na.omit(values(x.f.masked)))
+
               ## get the list of levels that could be sampled in this mask
               fact.levels.in.m.in <- intersect(fact.level, x.f.levels)
-              if (length(fact.levels.in.m.in)) {
+              if (length(fact.levels.in.m.in) > 0) {
                 cat("\n\t - levels", fact.levels.in.m.in, "will be sampled in mask.out", mask.in.id)
                 selected.cells <- c(selected.cells, sapply(fact.levels.in.m.in, function(fl){
                   ind = which(x.f.masked[] == fl)
@@ -175,7 +177,7 @@ bm_SampleFactorLevels.raster <- function(expl.var, mask.out = NULL, mask.in = NU
         ## b. take a random value of them in the full dataset 
         ## !! this should be tricky if mask.in arg is given because the value will be picked out of 
         ## mask.in but is necessary to ensure that models will run smoothly
-        if (length(fact.level)){
+        if (length(fact.level) > 0){
           cat("\n\t - levels", fact.level, "will be sampled in the original raster")
           selected.cells <- c(selected.cells, sapply(fact.level, function(fl) {
             ind = which(subset(expl.var, f)[] == fl)

@@ -9,16 +9,16 @@
 bm_SampleFactorLevels(expl.var, mask.out = NULL, mask.in = NULL)
 }
 \arguments{
-\item{expl.var}{a \code{data.frame} or \code{\link[raster:stack]{RasterStack}} object 
-containing the explanatory variables (in columns or layers)}
+\item{expl.var}{a \code{data.frame} or \code{\link[terra:rast]{SpatRaster}}
+object containing the explanatory variables (in columns or layers)}
 
-\item{mask.out}{a \code{data.frame} or \code{\link[raster:raster]{raster}} object containing 
-the area that has already been sampled (\emph{factor levels within this mask will not be 
-sampled})}
+\item{mask.out}{a \code{data.frame} or \code{\link[terra:rast]{SpatRaster}}
+object containing the area that has already been sampled (\emph{factor 
+levels within this mask will not be sampled})}
 
-\item{mask.in}{a \code{data.frame}, \code{\link[raster:raster]{raster}} or 
-\code{\link[raster:stack]{RasterStack}} object containing areas where factor levels are to be 
-sampled in priority. \emph{Note that if after having explored these masks, some factor levels 
+\item{mask.in}{a \code{data.frame} or \code{\link[terra:rast]{SpatRaster}}
+ object containing areas where factor levels are to be sampled in priority. 
+ \emph{Note that if after having explored these masks, some factor levels 
 remain unsampled, they will be sampled in the reference input object \code{expl.var}.}}
 }
 \value{
@@ -61,13 +61,14 @@ factor levels. \cr \cr
 }
 \examples{
 
-library(raster)
+library(terra)
 
 ## Create raster data
-ras.1 <- ras.2 <- mask.out <- raster(nrows = 10, ncols = 10)
+ras.1 <- ras.2 <- mask.out <- rast(nrows = 10, ncols = 10)
 ras.1[] <- as.factor(rep(c(1, 2, 3, 4, 5), each = 20))
+ras.1 <- as.factor(ras.1)
 ras.2[] <- rnorm(100)
-stk <- stack(ras.1, ras.2)
+stk <- c(ras.1, ras.2)
 names(stk) <- c("varFact", "varNorm")
 
 ## define a mask for already sampled points

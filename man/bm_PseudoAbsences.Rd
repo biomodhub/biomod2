@@ -6,14 +6,14 @@
 \alias{bm_PseudoAbsences_sre}
 \alias{bm_PseudoAbsences_disk}
 \alias{bm_PseudoAbsences_user.defined}
-\alias{bm_PseudoAbsences_user.defined,ANY,SpatialPointsDataFrame-method}
-\alias{bm_PseudoAbsences_user.defined,ANY,RasterStack-method}
-\alias{bm_PseudoAbsences_random,ANY,SpatialPointsDataFrame-method}
-\alias{bm_PseudoAbsences_random,ANY,RasterStack-method}
-\alias{bm_PseudoAbsences_sre,ANY,SpatialPointsDataFrame-method}
-\alias{bm_PseudoAbsences_sre,ANY,RasterStack-method}
-\alias{bm_PseudoAbsences_disk,ANY,SpatialPointsDataFrame-method}
-\alias{bm_PseudoAbsences_disk,ANY,RasterStack-method}
+\alias{bm_PseudoAbsences_user.defined,ANY,SpatVector-method}
+\alias{bm_PseudoAbsences_user.defined,ANY,SpatRaster-method}
+\alias{bm_PseudoAbsences_random,ANY,SpatVector-method}
+\alias{bm_PseudoAbsences_random,ANY,SpatRaster-method}
+\alias{bm_PseudoAbsences_sre,ANY,SpatVector-method}
+\alias{bm_PseudoAbsences_sre,ANY,SpatRaster-method}
+\alias{bm_PseudoAbsences_disk,ANY,SpatVector-method}
+\alias{bm_PseudoAbsences_disk,ANY,SpatRaster-method}
 \title{Select pseudo-absences}
 \usage{
 bm_PseudoAbsences(
@@ -30,25 +30,25 @@ bm_PseudoAbsences(
 
 bm_PseudoAbsences_user.defined(resp.var, expl.var, ...)
 
-\S4method{bm_PseudoAbsences_user.defined}{ANY,SpatialPointsDataFrame}(resp.var, expl.var, user.table)
+\S4method{bm_PseudoAbsences_user.defined}{ANY,SpatVector}(resp.var, expl.var, user.table)
 
-\S4method{bm_PseudoAbsences_user.defined}{ANY,RasterStack}(resp.var, expl.var, user.table)
+\S4method{bm_PseudoAbsences_user.defined}{ANY,SpatRaster}(resp.var, expl.var, user.table)
 
 bm_PseudoAbsences_random(resp.var, expl.var, ...)
 
-\S4method{bm_PseudoAbsences_random}{ANY,SpatialPointsDataFrame}(resp.var, expl.var, nb.absences, nb.rep)
+\S4method{bm_PseudoAbsences_random}{ANY,SpatVector}(resp.var, expl.var, nb.absences, nb.rep)
 
-\S4method{bm_PseudoAbsences_random}{ANY,RasterStack}(resp.var, expl.var, nb.absences, nb.rep)
+\S4method{bm_PseudoAbsences_random}{ANY,SpatRaster}(resp.var, expl.var, nb.absences, nb.rep)
 
 bm_PseudoAbsences_sre(resp.var, expl.var, ...)
 
-\S4method{bm_PseudoAbsences_sre}{ANY,SpatialPointsDataFrame}(resp.var, expl.var, sre.quant, nb.absences, nb.rep)
+\S4method{bm_PseudoAbsences_sre}{ANY,SpatVector}(resp.var, expl.var, sre.quant, nb.absences, nb.rep)
 
-\S4method{bm_PseudoAbsences_sre}{ANY,RasterStack}(resp.var, expl.var, sre.quant, nb.absences, nb.rep)
+\S4method{bm_PseudoAbsences_sre}{ANY,SpatRaster}(resp.var, expl.var, sre.quant, nb.absences, nb.rep)
 
 bm_PseudoAbsences_disk(resp.var, expl.var, ...)
 
-\S4method{bm_PseudoAbsences_disk}{ANY,SpatialPointsDataFrame}(
+\S4method{bm_PseudoAbsences_disk}{ANY,SpatVector}(
   resp.var,
   expl.var,
   dist.min,
@@ -57,7 +57,7 @@ bm_PseudoAbsences_disk(resp.var, expl.var, ...)
   nb.rep
 )
 
-\S4method{bm_PseudoAbsences_disk}{ANY,RasterStack}(
+\S4method{bm_PseudoAbsences_disk}{ANY,SpatRaster}(
   resp.var,
   expl.var,
   dist.min,
@@ -73,7 +73,7 @@ bm_PseudoAbsences_disk(resp.var, expl.var, ...)
 find the pseudo-absences}
 
 \item{expl.var}{a \code{matrix}, \code{data.frame}, \code{\link[sp]{SpatialPointsDataFrame}} 
-or \code{\link[raster:stack]{RasterStack}} object containing the explanatory variables (in 
+or \code{\link[terra:rast]{SpatRaster}} object containing the explanatory variables (in 
 columns or layers) that will be used to find the pseudo-absences}
 
 \item{nb.rep}{an \code{integer} corresponding to the number of sets (repetitions) of 

@@ -1,4 +1,4 @@
-# bm_PlotResponseCurves documentation ---------------------------------------------------
+# bm_PlotResponseCurves Documentation -----------------------------------------
 ##' @name bm_PlotResponseCurves
 ##' @author Damien Georges, Maya Gueguen
 ##' 
@@ -17,10 +17,14 @@
 ##' @param models.chosen a \code{vector} containing model names to be kept, must be either 
 ##' \code{all} or a sub-selection of model names that can be obtained with the 
 ##' \code{\link{get_built_models}} function
-##' @param new.env a \code{matrix}, \code{data.frame} or \code{\link[raster:stack]{RasterStack}} 
-##' object containing the new explanatory variables (in columns or layers, with names matching the 
-##' variables names given to the \code{\link{BIOMOD_FormatingData}} function to build 
-##' \code{bm.out}) that will be used to project the species distribution model(s)
+##' @param new.env a \code{matrix}, \code{data.frame} or 
+##' \code{\link[terra:rast]{SpatRaster}} object containing the new explanatory
+##'  variables (in columns or layers, with names matching the variables names
+##'  given to the \code{\link{BIOMOD_FormatingData}} function to build
+##'  \code{bm.out}) that will be used to project the species distribution model(s)
+##' \cr \emph{Note that old format from \pkg{raster} are still supported such as 
+##' \code{RasterStack} objects. }
+##' 
 ##' @param show.variables a \code{vector} containing the names of the explanatory variables 
 ##' present into \code{new.env} parameter and to be plotted
 ##' @param do.bivariate (\emph{optional, default} \code{FALSE}) \cr 
@@ -86,10 +90,10 @@
 ##' 
 ##' 
 ##' @examples
+##' library(terra)
 ##' 
 ##' # Load species occurrences (6 species available)
-##' myFile <- system.file('external/species/mammals_table.csv', package = 'biomod2')
-##' DataSpecies <- read.csv(myFile, row.names = 1)
+##' data(DataSpecies)
 ##' head(DataSpecies)
 ##' 
 ##' # Select the name of the studied species
@@ -102,15 +106,15 @@
 ##' myRespXY <- DataSpecies[, c('X_WGS84', 'Y_WGS84')]
 ##' 
 ##' # Load environmental variables extracted from BIOCLIM (bio_3, bio_4, bio_7, bio_11 & bio_12)
-##' myFiles <- paste0('external/bioclim/current/bio', c(3, 4, 7, 11, 12), '.grd')
-##' myExpl <- raster::stack(system.file(myFiles, package = 'biomod2'))
+##' data(bioclim_current)
+##' myExpl <- terra::rast(bioclim_current)
 ##' 
 ##' \dontshow{
-##' myExtent <- raster::extent(0,30,45,70)
-##' myExpl <- raster::stack(raster::crop(myExpl, myExtent))
+##' myExtent <- terra::ext(0,30,45,70)
+##' myExpl <- terra::crop(myExpl, myExtent)
 ##' }
 ##' 
-##' # ---------------------------------------------------------------
+##' # ---------------------------------------------------------------#
 ##' file.out <- paste0(myRespName, "/", myRespName, ".AllModels.models.out")
 ##' if (file.exists(file.out)) {
 ##'   myBiomodModelOut <- get(load(file.out))
@@ -139,7 +143,7 @@
 ##' }
 ##' 
 ##' 
-##' # ---------------------------------------------------------------
+##' # ---------------------------------------------------------------#
 ##' # Represent response curves
 ##' bm_PlotResponseCurves(bm.out = myBiomodModelOut, 
 ##'                       models.chosen = get_built_models(myBiomodModelOut)[c(1:2)],
@@ -154,8 +158,7 @@
 ##' #                       do.bivariate = TRUE)
 ##'                                       
 ##'                                       
-##' @importFrom raster maxValue minValue nlayers
-##' 
+##' @importFrom terra rast cats global is.factor nlyr                                    
 ##' @importFrom foreach foreach %:%
 ##' @importFrom reshape2 melt
 ##' @importFrom ggplot2 ggplot aes_string geom_line geom_rug geom_raster facet_wrap xlab ylab labs 
@@ -164,7 +167,7 @@
 ##' @export
 ##' 
 ##' 
-###--------------------------------------------------------------------------###
+## ------------------------------------------------------------------------- ##
 
 
 bm_PlotResponseCurves <- function(bm.out
@@ -183,8 +186,7 @@ bm_PlotResponseCurves <- function(bm.out
   args <- .bm_PlotResponseCurves.check.args(bm.out, models.chosen, new.env, show.variables, do.bivariate, ...)
   for (argi in names(args)) { assign(x = argi, value = args[[argi]]) }
   rm(args)
-  
-  
+
   ## 1. Create output object ----------------------------------------------------------------------
   ref_table <- new.env[1, , drop = FALSE]
   rownames(ref_table) <- NULL
@@ -220,20 +222,20 @@ bm_PlotResponseCurves <- function(bm.out
         } else {
           pts.tmp <- seq(min(new.env[, vari], na.rm = TRUE), max(new.env[, vari], na.rm = TRUE), length.out = nb.pts)
         }
-        
-        ## Creating tmp data ------------------------------------------------------------
+        ## Creating tmp data --------------------------------------------------
         tmp = ref_table[, -which(colnames(ref_table) == vari), drop = FALSE]
         new.env.r.tmp <- eval(parse(text = paste0("cbind(", vari, "= pts.tmp, tmp)")))
         new.env.r.tmp <- new.env.r.tmp[, colnames(ref_table), drop = FALSE]
-        if (length(factor_id)) {
+        if (length(factor_id) > 0) {
           for (f in factor_id) {
-            new.env.r.tmp[, f] <- factor(as.character(new.env.r.tmp[, f]), levels = levels(new.env[, f]))
+            new.env.r.tmp[, f] <- factor(as.character(new.env.r.tmp[, f]),
+                                         levels = levels(new.env[, f]))
           }
         }
         
         ## Load models ------------------------------------------------------------------
         BIOMOD_LoadModels(bm.out = bm.out, full.name = models)
-        
+
         ## Getting predictions for each model -------------------------------------------
         tab.out = foreach(model = models, .combine = "cbind") %do% 
           {
@@ -316,14 +318,12 @@ bm_PlotResponseCurves <- function(bm.out
       }
     if (do.progress) { close(PROGRESS) }
   }
-  
   # transform list.out into ggplot friendly shape
   ggdat <- .as_ggdat(list.out, do.bivariate)
   
-  ## 2. PLOT graphic ------------------------------------------------------------------------------
+  ## 2. PLOT graphic --------------------------------------------------------------------
   if (!do.bivariate) {
     new.env_m <- melt(new.env[, show.variables], variable.name = "expl.name", value.name = "expl.val")
-    
     gg <- ggplot(ggdat, aes_string(x = "expl.val", y = "pred.val", color = "pred.name")) +
       geom_line() +
       geom_rug(data = new.env_m, sides = 'b', inherit.aes = FALSE, aes_string(x = "expl.val")) +
@@ -377,7 +377,7 @@ bm_PlotResponseCurves <- function(bm.out
 }
 
 
-###################################################################################################
+# Argument check ---------------------------------------------------------------
 
 .bm_PlotResponseCurves.check.args <- function(bm.out, models.chosen, new.env, show.variables, do.bivariate, ...)
 {
@@ -431,20 +431,52 @@ bm_PlotResponseCurves <- function(bm.out
   }
   
   ## 3. Check new.env argument ------------------------------------------------
-  if (inherits(new.env, "Raster")) {
+
+  .fun_testIfInherits(TRUE, "new.env", new.env, 
+                      c("SpatRaster","Raster","data.frame","matrix"))
+  
+  if(inherits(new.env, "matrix")){
+    if(any(sapply(get_formal_data(bm.out, "expl.var"), is.factor))){
+      stop("new.env cannot be given as matrix when original model have factor variables")
+    }
+    new.env <- as.data.frame(new.env)
+  }
+  
+  if (inherits(new.env, c("Raster"))) {
+    categorical_var <- which(raster::is.factor(new.env))
+    if (length(categorical_var) > 0) {
+      new.env = categorical_stack_to_terra(new.env)
+    } else {
+      new.env <- rast(new.env)
+    }
+  }
+
+  if (inherits(new.env, c("SpatRaster"))) {
     cat("\n   > Extracting raster infos..")
-    DataTmp <- matrix(0, ncol = nlayers(new.env), nrow = nb.pts)
+    DataTmp <- matrix(0, ncol = nlyr(new.env), nrow = nb.pts)
     colnames(DataTmp) <- names(new.env)
-    maxVal <- maxValue(new.env)
-    minVal <- minValue(new.env)
+    maxVal <- global(new.env, max, na.rm = TRUE)$max
+    minVal <- global(new.env, min, na.rm = TRUE)$min
+
+    DataTmp <- as.data.frame(DataTmp)
     for (i in 1:ncol(DataTmp)) {
       DataTmp[, i] <- seq(minVal[i], maxVal[i], length.out = nb.pts)
     }
-    new.env <- DataTmp
+    
+    categorical_var <- which(is.factor(new.env))
+    if (length(categorical_var) > 0) {
+      for(thisvar in categorical_var){
+        DataTmp[, thisvar] <- rep(factor(
+          cats(new.env[[categorical_var]])[[1]][,2]
+          ), length.out = nrow(DataTmp))
+      }
+    }
+    new.env <- data.frame(DataTmp)
   }
   
   ## 4. Check show.variables argument -----------------------------------------
-  if (length(show.variables) > ncol(new.env) || sum(!(show.variables %in% colnames(new.env)))) {
+  if (length(show.variables) > ncol(new.env) || 
+      any(! show.variables %in% colnames(new.env))) {
     stop("columns wanted in show.variables do not match the data \n")
   }
   
@@ -481,7 +513,7 @@ bm_PlotResponseCurves <- function(bm.out
 }
 
 
-###################################################################################################
+# Tools -----------------------------------------------------------------------
 
 .as_ggdat <- function(list.dat, do.bivariate)
 {
@@ -495,7 +527,11 @@ bm_PlotResponseCurves <- function(bm.out
       }
       id.col = which(colnames(dat_) == "id")
       id.vec = unlist(ifelse(do.bivariate, list(c("id", "comb")), "id"))
-      expl.dat_ = melt(dat_[, c(col.expl, id.col)], id.vars = "id", variable.name = "expl.name", value.name = "expl.val")
+      expl.dat_ = melt(dat_[, c(col.expl, id.col)], 
+                       id.vars = "id", 
+                       variable.name = "expl.name", 
+                       value.name = "expl.val",
+                       factorsAsStrings = FALSE)
       expl.dat_$expl.val = as.numeric(expl.dat_$expl.val) ## should not work with factorial variable other than number
       pred.dat_ = melt(dat_[, -col.expl], id.vars = id.vec, variable.name = "pred.name", value.name = "pred.val")
       out.dat_ = merge(expl.dat_, pred.dat_, by = "id")

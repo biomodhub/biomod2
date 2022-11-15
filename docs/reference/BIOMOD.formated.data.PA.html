@@ -19,7 +19,7 @@ BIOMOD_Modeling"><!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax/
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">biomod2</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">4.1-3</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">4.2-0</span>
       </span>
     </div>
 
@@ -120,7 +120,7 @@ BIOMOD_Modeling"><!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax/
 <span>  na.rm <span class="op">=</span> <span class="cn">TRUE</span></span>
 <span><span class="op">)</span></span>
 <span></span>
-<span><span class="co"># S4 method for numeric,RasterStack</span></span>
+<span><span class="co"># S4 method for numeric,SpatRaster</span></span>
 <span><span class="fu">BIOMOD.formated.data.PA</span><span class="op">(</span></span>
 <span>  <span class="va">sp</span>,</span>
 <span>  <span class="va">env</span>,</span>
@@ -141,7 +141,7 @@ BIOMOD_Modeling"><!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax/
 <span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># S4 method for BIOMOD.formated.data.PA,missing</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">x</span>, coord <span class="op">=</span> <span class="cn">NULL</span>, col <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/pkg/terra/man/plot.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">x</span>, coord <span class="op">=</span> <span class="cn">NULL</span>, col <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># S4 method for BIOMOD.formated.data.PA</span></span>
 <span><span class="fu">show</span><span class="op">(</span><span class="va">object</span><span class="op">)</span></span></code></pre></div>
@@ -150,16 +150,22 @@ BIOMOD_Modeling"><!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax/
     <div id="arguments">
     <h2>Arguments</h2>
     <dl><dt>sp</dt>
-<dd><p>a <code>vector</code>, <code><a href="https://rdrr.io/pkg/sp/man/SpatialPoints.html" class="external-link">SpatialPoints</a></code> (<em>if presence-only</em>) or 
-<code><a href="https://rdrr.io/pkg/sp/man/SpatialPoints.html" class="external-link">SpatialPointsDataFrame</a></code> object containing binary data (<code>0</code> : absence, 
-<code>1</code> : presence, <code>NA</code> : indeterminate) for a single species that will be used to 
-build the species distribution model(s)</p></dd>
+<dd><p>A <code>vector</code>, a <code><a href="https://rdrr.io/pkg/terra/man/vect.html" class="external-link">SpatVector</a></code> without associated 
+data (<em>if presence-only</em>), or a <code><a href="https://rdrr.io/pkg/terra/man/vect.html" class="external-link">SpatVector</a></code>
+object containing binary data (<code>0</code> : absence,  <code>1</code> : presence,
+<code>NA</code> : indeterminate) for a single species that will be used to 
+build the species distribution model(s)
+<br><em>Note that old format from <span class="pkg">sp</span> are still supported such as
+ <code>SpatialPoints</code>  (<em>if presence-only</em>) or <code>SpatialPointsDataFrame</code>
+ object containing binary data.</em></p></dd>
 
 
 <dt>env</dt>
-<dd><p>a <code>matrix</code>, <code>data.frame</code>, <code><a href="https://rdrr.io/pkg/sp/man/SpatialPoints.html" class="external-link">SpatialPointsDataFrame</a></code> 
-or <code><a href="https://rdrr.io/pkg/raster/man/stack.html" class="external-link">RasterStack</a></code> object containing the explanatory variables 
-(in columns or layers) that will be used to build the species distribution model(s)</p></dd>
+<dd><p>a <code>matrix</code>, <code>data.frame</code>, <code><a href="https://rdrr.io/pkg/terra/man/vect.html" class="external-link">SpatVector</a></code>
+or <code><a href="https://rdrr.io/pkg/terra/man/rast.html" class="external-link">SpatRaster</a></code> object containing the explanatory variables 
+(in columns or layers) that will be used to build the species distribution model(s).
+<br><em>Note that old format from <span class="pkg">raster</span> and <span class="pkg">sp</span> are still supported such as 
+<code>RasterStack</code> and <code>SpatialPointsDataFrame</code> objects. </em></p></dd>
 
 
 <dt>xy</dt>
@@ -179,25 +185,33 @@ species distribution model(s)</p></dd>
 
 <dt>eval.sp</dt>
 <dd><p>(<em>optional, default</em> <code>NULL</code>) <br> 
-A <code>vector</code>, <code><a href="https://rdrr.io/pkg/sp/man/SpatialPoints.html" class="external-link">SpatialPoints</a></code> (<em>if presence-only</em>) or 
-<code><a href="https://rdrr.io/pkg/sp/man/SpatialPoints.html" class="external-link">SpatialPointsDataFrame</a></code> object containing binary data (<code>0</code> : absence, 
-<code>1</code> : presence, <code>NA</code> : indeterminate) for a single species that will be used to 
-evaluate the species distribution model(s) with independent data</p></dd>
+A <code>vector</code>, a <code><a href="https://rdrr.io/pkg/terra/man/vect.html" class="external-link">SpatVector</a></code> without associated 
+data (<em>if presence-only</em>), or a <code><a href="https://rdrr.io/pkg/terra/man/vect.html" class="external-link">SpatVector</a></code>
+ object containing binary data (<code>0</code> : absence, <code>1</code> : presence, 
+ <code>NA</code> : indeterminate) for a single species that will be used to
+  evaluate the species distribution model(s) with independent data
+<br><em>Note that old format from <span class="pkg">sp</span> are still supported such as
+ <code>SpatialPoints</code>  (<em>if presence-only</em>) or <code>SpatialPointsDataFrame</code>
+ object containing binary data.</em></p></dd>
 
 
 <dt>eval.env</dt>
 <dd><p>(<em>optional, default</em> <code>NULL</code>) <br> 
-A <code>matrix</code>, <code>data.frame</code>, <code><a href="https://rdrr.io/pkg/sp/man/SpatialPoints.html" class="external-link">SpatialPointsDataFrame</a></code> or 
-<code><a href="https://rdrr.io/pkg/raster/man/stack.html" class="external-link">RasterStack</a></code> object containing the explanatory variables (in 
-columns or layers) that will be used to evaluate the species distribution model(s) with 
-independent data</p></dd>
+A <code>matrix</code>, <code>data.frame</code>, <code><a href="https://rdrr.io/pkg/terra/man/vect.html" class="external-link">SpatVector</a></code> or
+  <code><a href="https://rdrr.io/pkg/terra/man/rast.html" class="external-link">SpatRaster</a></code> object containing the explanatory
+  variables (in columns or layers) that will be used to evaluate the species
+  distribution model(s) with independent data
+<br><em>Note that old format from <span class="pkg">raster</span> and <span class="pkg">sp</span> are still
+supported such as <code>RasterStack</code> and <code>SpatialPointsDataFrame</code>
+objects. </em></p></dd>
 
 
 <dt>eval.xy</dt>
 <dd><p>(<em>optional, default</em> <code>NULL</code>) <br> 
-If <code>resp.var</code> is a <code>vector</code>, a 2-columns <code>matrix</code> or <code>data.frame</code> 
-containing the corresponding <code>X</code> and <code>Y</code> coordinates that will be used to evaluate 
-the species distribution model(s) with independent data</p></dd>
+If <code>resp.var</code> is a <code>vector</code>, a 2-columns <code>matrix</code> or
+<code>data.frame</code> containing the corresponding <code>X</code> and <code>Y</code>
+coordinates that will be used to evaluate the species distribution model(s)
+with independent data</p></dd>
 
 
 <dt>PA.nb.rep</dt>
@@ -251,8 +265,8 @@ will be used to build the species distribution model(s) for each repetition (see
 
 <dt>na.rm</dt>
 <dd><p>(<em>optional, default</em> <code>TRUE</code>) <br> 
-A <code>logical</code> value defining whether points having one or several missing values for 
-explanatory variables should be removed from the analysis or not</p></dd>
+A <code>logical</code> value defining whether points having one or several missing
+values for explanatory variables should be removed from the analysis or not</p></dd>
 
 
 <dt>x</dt>
@@ -299,8 +313,8 @@ coordinates</p></dd>
 
 
 <dt><code>data.mask</code></dt>
-<dd><p>a <code><a href="https://rdrr.io/pkg/raster/man/stack.html" class="external-link">RasterStack</a></code> object containing the mask of the 
-studied area</p></dd>
+<dd><p>a <code><a href="https://rdrr.io/pkg/terra/man/rast.html" class="external-link">SpatRaster</a></code> object containing 
+the mask of the studied area</p></dd>
 
 
 <dt><code>has.data.eval</code></dt>
@@ -361,11 +375,11 @@ element returned by the <code><a href="bm_PseudoAbsences.html">bm_PseudoAbsences
 <span><span class="fu">showClass</span><span class="op">(</span><span class="st">"BIOMOD.formated.data.PA"</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co">## ----------------------------------------------------------------------- #</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://rspatial.org/terra/" class="external-link">terra</a></span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Load species occurrences (6 species available)</span></span>
-<span><span class="va">myFile</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">'external/species/mammals_table.csv'</span>, package <span class="op">=</span> <span class="st">'biomod2'</span><span class="op">)</span></span>
-<span><span class="va">DataSpecies</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/utils/read.table.html" class="external-link">read.csv</a></span><span class="op">(</span><span class="va">myFile</span>, row.names <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">DataSpecies</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="va">DataSpecies</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/pkg/terra/man/headtail.html" class="external-link">head</a></span><span class="op">(</span><span class="va">DataSpecies</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Select the name of the studied species</span></span>
 <span><span class="va">myRespName</span> <span class="op">&lt;-</span> <span class="st">'GuloGulo'</span></span>
@@ -377,12 +391,12 @@ element returned by the <code><a href="bm_PseudoAbsences.html">bm_PseudoAbsences
 <span><span class="va">myRespXY</span> <span class="op">&lt;-</span> <span class="va">DataSpecies</span><span class="op">[</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">'X_WGS84'</span>, <span class="st">'Y_WGS84'</span><span class="op">)</span><span class="op">]</span></span>
 <span></span>
 <span><span class="co"># Load environmental variables extracted from BIOCLIM (bio_3, bio_4, bio_7, bio_11 &amp; bio_12)</span></span>
-<span><span class="va">myFiles</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">'external/bioclim/current/bio'</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">3</span>, <span class="fl">4</span>, <span class="fl">7</span>, <span class="fl">11</span>, <span class="fl">12</span><span class="op">)</span>, <span class="st">'.grd'</span><span class="op">)</span></span>
-<span><span class="va">myExpl</span> <span class="op">&lt;-</span> <span class="fu">raster</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/raster/man/stack.html" class="external-link">stack</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="va">myFiles</span>, package <span class="op">=</span> <span class="st">'biomod2'</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="va">bioclim_current</span><span class="op">)</span></span>
+<span><span class="va">myExpl</span> <span class="op">&lt;-</span> <span class="fu">terra</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/terra/man/rast.html" class="external-link">rast</a></span><span class="op">(</span><span class="va">bioclim_current</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># \dontshow{</span></span>
-<span><span class="va">myExtent</span> <span class="op">&lt;-</span> <span class="fu">raster</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/raster/man/extent.html" class="external-link">extent</a></span><span class="op">(</span><span class="fl">0</span>,<span class="fl">30</span>,<span class="fl">45</span>,<span class="fl">70</span><span class="op">)</span></span>
-<span><span class="va">myExpl</span> <span class="op">&lt;-</span> <span class="fu">raster</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/raster/man/stack.html" class="external-link">stack</a></span><span class="op">(</span><span class="fu">raster</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/terra/man/crop.html" class="external-link">crop</a></span><span class="op">(</span><span class="va">myExpl</span>, <span class="va">myExtent</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="va">myExtent</span> <span class="op">&lt;-</span> <span class="fu">terra</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/terra/man/ext.html" class="external-link">ext</a></span><span class="op">(</span><span class="fl">0</span>,<span class="fl">30</span>,<span class="fl">45</span>,<span class="fl">70</span><span class="op">)</span></span>
+<span><span class="va">myExpl</span> <span class="op">&lt;-</span> <span class="fu">terra</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/terra/man/crop.html" class="external-link">crop</a></span><span class="op">(</span><span class="va">myExpl</span>, <span class="va">myExtent</span><span class="op">)</span></span>
 <span><span class="co"># }</span></span>
 <span></span>
 <span><span class="co">## ----------------------------------------------------------------------- #</span></span>
@@ -395,7 +409,7 @@ element returned by the <code><a href="bm_PseudoAbsences.html">bm_PseudoAbsences
 <span>                                     PA.strategy <span class="op">=</span> <span class="st">'random'</span>,</span>
 <span>                                     PA.nb.absences <span class="op">=</span> <span class="fl">1000</span><span class="op">)</span></span>
 <span><span class="va">myBiomodData</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">myBiomodData</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/pkg/terra/man/plot.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">myBiomodData</span><span class="op">)</span></span>
 <span></span>
 <span></span></code></pre></div>
     </div>

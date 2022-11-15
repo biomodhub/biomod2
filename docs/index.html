@@ -37,7 +37,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="index.html">biomod2</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">4.1-3</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">4.2-0</span>
       </span>
     </div>
 
@@ -140,7 +140,7 @@ badger::badge_github_version("biomodhub/biomod2", "blue")
 <p><br></p>
 <ul>
 <li>
-<strong>Development version</strong> (4.1-3) from <a href="https://github.com/biomodhub/biomod2" class="external-link">biomodhub</a> :</li>
+<strong>Development version</strong> (4.2-0) from <a href="https://github.com/biomodhub/biomod2" class="external-link">biomodhub</a> :</li>
 </ul>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://devtools.r-lib.org/" class="external-link">devtools</a></span><span class="op">)</span></span>
@@ -148,14 +148,38 @@ badger::badge_github_version("biomodhub/biomod2", "blue")
 <p><br><br></p>
 </div>
 <div class="section level3">
-<h3 id="id_-breaking-news">
-<i class="fas fa-envelope-open-text"></i> Breaking news<a class="anchor" aria-label="anchor" href="#id_-breaking-news"></a>
+<h3 id="id_-biomod-42---terra-update">
+<i class="fas fa-envelope-open-text"></i> <code>biomod 4.2</code> - Terra Update<a class="anchor" aria-label="anchor" href="#id_-biomod-42---terra-update"></a>
 </h3>
-<p><strong>! <code>biomod2 4.1</code> is now available !</strong></p>
-<p><code>/!\</code> Package fresh start… meaning some changes in function names and parameters. We apologize for the trouble <code>&gt;{o.o}&lt;</code> <br> Sorry for the inconvenience, and please <strong>feel free to indicate if you notice some strange new behaviors</strong> !</p>
+<p><strong>! <code>biomod2 4.2</code> is now available !</strong></p>
 <div class="section level4">
 <h4 id="id_-what-is-changed-">
 <i class="fas fa-exchange-alt"></i> What is changed ?<a class="anchor" aria-label="anchor" href="#id_-what-is-changed-"></a>
+</h4>
+<ul>
+<li>
+<code>biomod2</code> now relies on the new <a href="https://github.com/rspatial/terra" class="external-link"><code>terra</code></a> package that aims at replacing <code>raster</code>and <code>sp</code>.</li>
+<li>
+<code>biomod2</code>is still compatible with old format such as <code>RasterStack</code>and <code>SpatialPointsDataFrame</code>.</li>
+<li>Note that the 4.2-0 version depends on <code>terra &gt;= 1.6.33</code> which is not released on CRAN yet. If you need to sample pseudo-absences with <code>strategy = 'random'</code> or with <code>strategy = 'sre'</code> you will need to install the <code>github</code> version with:</li>
+</ul>
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://devtools.r-lib.org/" class="external-link">devtools</a></span><span class="op">)</span></span>
+<span><span class="fu">devtools</span><span class="fu">::</span><span class="fu"><a href="https://remotes.r-lib.org/reference/install_github.html" class="external-link">install_github</a></span><span class="op">(</span><span class="st">"rspatial/terra"</span><span class="op">)</span></span></code></pre></div>
+<p>In case you encounter trouble with this, feel free to let us know in the <a href="https://github.com/biomodhub/biomod2/issues" class="external-link">bug report section</a> and you can always revert to the old version that was based on <code>raster</code> :</p>
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://devtools.r-lib.org/" class="external-link">devtools</a></span><span class="op">)</span></span>
+<span><span class="fu">devtools</span><span class="fu">::</span><span class="fu"><a href="https://remotes.r-lib.org/reference/install_github.html" class="external-link">install_github</a></span><span class="op">(</span><span class="st">"biomodhub/biomod2"</span>, ref <span class="op">=</span> <span class="st">"old_raster"</span><span class="op">)</span></span></code></pre></div>
+</div>
+</div>
+<div class="section level3">
+<h3 id="id_-biomod-41-is-now-available">
+<i class="fas fa-envelope-open-text"></i> <code>biomod 4.1</code> is now available<a class="anchor" aria-label="anchor" href="#id_-biomod-41-is-now-available"></a>
+</h3>
+<p><code>/!\</code> Package fresh start… meaning some changes in function names and parameters. We apologize for the trouble <code>&gt;{o.o}&lt;</code> <br> Sorry for the inconvenience, and please <strong>feel free to indicate if you notice some strange new behaviors</strong> !</p>
+<div class="section level4">
+<h4 id="id_-what-is-changed--1">
+<i class="fas fa-exchange-alt"></i> What is changed ?<a class="anchor" aria-label="anchor" href="#id_-what-is-changed--1"></a>
 </h4>
 <ul>
 <li>all code functions have been cleaned, and old / unused functions have been removed</li>
@@ -253,7 +277,7 @@ z-index: 10;
 <h2 data-toc-skip>Dev status</h2>
 <ul class="list-unstyled">
 <li><a href="https://cran.r-project.org/package=biomod2" class="external-link"><img src="https://www.r-pkg.org/badges/version/biomod2?color=yellow" alt="Cran Version"></a></li>
-<li><a href="https://github.com/biomodhub/biomod2" class="external-link"><img src="https://img.shields.io/badge/devel%20version-4.1--3-blue.svg" alt="Github Version"></a></li>
+<li><a href="https://github.com/biomodhub/biomod2" class="external-link"><img src="https://img.shields.io/badge/devel%20version-4.2--0-blue.svg" alt="Github Version"></a></li>
 <li><a href="https://github.com/biomodhub/biomod2/commits/master" class="external-link"><img src="https://img.shields.io/github/last-commit/biomodhub/biomod2.svg" alt="Last Commit"></a></li>
 <li><a href="https://github.com/biomodhub/biomod2/actions" class="external-link"><img src="https://github.com/biomodhub/biomod2/workflows/R-CMD-check/badge.svg" alt="R build status"></a></li>
 </ul>

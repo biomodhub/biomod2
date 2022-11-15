@@ -99,5 +99,13 @@ reference:
       - "getters.out"
       - "predict.bm"
       - "predict.em"
+  - title: Data
+  - subtitle: Species data
+    contents:
+      - "DataSpecies"
+  - subtitle: Environmental data
+    contents:
+      - "bioclim_current"
+      - "bioclim_future"
 
 

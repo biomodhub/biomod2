@@ -17,38 +17,54 @@
 ##' @param dir.name a \code{character} corresponding to the modeling folder
 ##' @param sp.name a \code{character} corresponding to the species name
 ##' 
-##' @param sp a \code{vector}, \code{\link[sp]{SpatialPoints}} (\emph{if presence-only}) or 
-##' \code{\link[sp]{SpatialPointsDataFrame}} object containing binary data (\code{0} : absence, 
-##' \code{1} : presence, \code{NA} : indeterminate) for a single species that will be used to 
+##' @param sp A \code{vector}, a \code{\link[terra:vect]{SpatVector}} without associated 
+##' data (\emph{if presence-only}), or a \code{\link[terra:vect]{SpatVector}}
+##' object containing binary data (\code{0} : absence,  \code{1} : presence,
+##' \code{NA} : indeterminate) for a single species that will be used to 
 ##' build the species distribution model(s)
-##' @param env a \code{matrix}, \code{data.frame}, \code{\link[sp]{SpatialPointsDataFrame}} 
-##' or \code{\link[raster:stack]{RasterStack}} object containing the explanatory variables 
-##' (in columns or layers) that will be used to build the species distribution model(s)
+##' \cr \emph{Note that old format from \pkg{sp} are still supported such as
+##'  \code{SpatialPoints}  (\emph{if presence-only}) or \code{SpatialPointsDataFrame}
+##'  object containing binary data.}
+##' @param env a \code{matrix}, \code{data.frame}, \code{\link[terra:vect]{SpatVector}}
+##' or \code{\link[terra:rast]{SpatRaster}} object containing the explanatory variables 
+##' (in columns or layers) that will be used to build the species distribution model(s).
+##' \cr \emph{Note that old format from \pkg{raster} and \pkg{sp} are still supported such as 
+##' \code{RasterStack} and \code{SpatialPointsDataFrame} objects. }
+##' 
 ##' @param xy (\emph{optional, default} \code{NULL}) \cr 
 ##' If \code{resp.var} is a \code{vector}, a 2-columns \code{matrix} or \code{data.frame} 
 ##' containing the corresponding \code{X} and \code{Y} coordinates that will be used to build the 
 ##' species distribution model(s)
 ##' @param eval.sp (\emph{optional, default} \code{NULL}) \cr 
-##' A \code{vector}, \code{\link[sp]{SpatialPoints}} (\emph{if presence-only}) or 
-##' \code{\link[sp]{SpatialPointsDataFrame}} object containing binary data (\code{0} : absence, 
-##' \code{1} : presence, \code{NA} : indeterminate) for a single species that will be used to 
-##' evaluate the species distribution model(s) with independent data
+##' A \code{vector}, a \code{\link[terra:vect]{SpatVector}} without associated 
+##' data (\emph{if presence-only}), or a \code{\link[terra:vect]{SpatVector}}
+##'  object containing binary data (\code{0} : absence, \code{1} : presence, 
+##'  \code{NA} : indeterminate) for a single species that will be used to
+##'   evaluate the species distribution model(s) with independent data
+##' \cr \emph{Note that old format from \pkg{sp} are still supported such as
+##'  \code{SpatialPoints}  (\emph{if presence-only}) or \code{SpatialPointsDataFrame}
+##'  object containing binary data.}
 ##' @param eval.env (\emph{optional, default} \code{NULL}) \cr 
-##' A \code{matrix}, \code{data.frame}, \code{\link[sp]{SpatialPointsDataFrame}} or 
-##' \code{\link[raster:stack]{RasterStack}} object containing the explanatory variables (in 
-##' columns or layers) that will be used to evaluate the species distribution model(s) with 
-##' independent data
+##' A \code{matrix}, \code{data.frame}, \code{\link[terra:vect]{SpatVector}} or
+##'   \code{\link[terra:rast]{SpatRaster}} object containing the explanatory
+##'   variables (in columns or layers) that will be used to evaluate the species
+##'   distribution model(s) with independent data
+##' \cr \emph{Note that old format from \pkg{raster} and \pkg{sp} are still
+##' supported such as \code{RasterStack} and \code{SpatialPointsDataFrame}
+##' objects. }
+##' 
 ##' @param eval.xy (\emph{optional, default} \code{NULL}) \cr 
-##' If \code{resp.var} is a \code{vector}, a 2-columns \code{matrix} or \code{data.frame} 
-##' containing the corresponding \code{X} and \code{Y} coordinates that will be used to evaluate 
-##' the species distribution model(s) with independent data
+##' If \code{resp.var} is a \code{vector}, a 2-columns \code{matrix} or
+##' \code{data.frame} containing the corresponding \code{X} and \code{Y}
+##' coordinates that will be used to evaluate the species distribution model(s)
+##' with independent data
 ##' 
 ##' @param na.rm (\emph{optional, default} \code{TRUE}) \cr 
-##' A \code{logical} value defining whether points having one or several missing values for 
-##' explanatory variables should be removed from the analysis or not
+##' A \code{logical} value defining whether points having one or several missing
+##' values for explanatory variables should be removed from the analysis or not
 ##' 
-##' @param data.mask a \code{\link[raster:stack]{RasterStack}} object containing the mask of the 
-##' studied area
+##' @param data.mask a \code{\link[terra:rast]{SpatRaster}} object 
+##' containing the mask of the studied area
 ##' 
 ##' @param coord a 2-columns \code{data.frame} containing \code{X} and \code{Y} coordinates for plot
 ##' @param col a \code{vector} containing colors for plot (default : \code{c('green', 'red', 
@@ -64,7 +80,7 @@
 ##' @slot data.species a \code{vector} containing the species observations (\code{0}, \code{1} or 
 ##' \code{NA})
 ##' @slot data.env.var a \code{data.frame} containing explanatory variables
-##' @slot data.mask a \code{\link[raster:stack]{RasterStack}} object containing the mask of the 
+##' @slot data.mask a \code{\link[terra:rast]{SpatRaster}} object containing the mask of the 
 ##' studied area
 ##' @slot has.data.eval a \code{logical} value defining whether evaluation data is given
 ##' @slot eval.coord (\emph{optional, default} \code{NULL}) \cr 
@@ -88,10 +104,10 @@
 ##' showClass("BIOMOD.formated.data")
 ##' 
 ##' ## ----------------------------------------------------------------------- #
+##' library(terra)
 ##' 
 ##' # Load species occurrences (6 species available)
-##' myFile <- system.file('external/species/mammals_table.csv', package = 'biomod2')
-##' DataSpecies <- read.csv(myFile, row.names = 1)
+##' data(DataSpecies)
 ##' head(DataSpecies)
 ##' 
 ##' # Select the name of the studied species
@@ -104,12 +120,12 @@
 ##' myRespXY <- DataSpecies[, c('X_WGS84', 'Y_WGS84')]
 ##' 
 ##' # Load environmental variables extracted from BIOCLIM (bio_3, bio_4, bio_7, bio_11 & bio_12)
-##' myFiles <- paste0('external/bioclim/current/bio', c(3, 4, 7, 11, 12), '.grd')
-##' myExpl <- raster::stack(system.file(myFiles, package = 'biomod2'))
+##' data(bioclim_current)
+##' myExpl <- terra::rast(bioclim_current)
 ##' 
 ##' \dontshow{
-##' myExtent <- raster::extent(0,30,45,70)
-##' myExpl <- raster::stack(raster::crop(myExpl, myExtent))
+##' myExtent <- terra::ext(0,30,45,70)
+##' myExpl <- terra::crop(myExpl, myExtent)
 ##' }
 ##' 
 ##' ## ----------------------------------------------------------------------- #
@@ -127,7 +143,8 @@ NULL
 
 ##' @name BIOMOD.formated.data-class
 ##' @rdname BIOMOD.formated.data
-##' @importFrom raster stack nlayers addLayer is.factor subset extract cellStats cellFromXY
+##' @importFrom terra rast nlyr app is.factor subset extract cellFromXY `add<-` 
+##' classify rasterize values
 ##' @export
 ##' 
 
@@ -138,7 +155,7 @@ setClass("BIOMOD.formated.data",
                         coord = "data.frame",
                         data.species = "numeric",
                         data.env.var = "data.frame",
-                        data.mask = "RasterStack",
+                        data.mask = "SpatRaster",
                         has.data.eval = "logical",
                         eval.coord = "data.frame",
                         eval.data.species = "numeric",
@@ -158,9 +175,9 @@ setGeneric("BIOMOD.formated.data", def = function(sp, env, ...) { standardGeneri
 setMethod('BIOMOD.formated.data', signature(sp = 'numeric', env = 'data.frame'),
           function(sp, env, xy = NULL, dir.name = '.', sp.name = NULL
                    , eval.sp = NULL, eval.env = NULL, eval.xy = NULL
-                   , na.rm = TRUE, data.mask = NULL)
-          {
-            if (is.null(data.mask)) { data.mask <- stack() }
+                   , na.rm = TRUE, data.mask = NULL)  {
+            
+            if (is.null(data.mask)) { data.mask <- rast() }
             
             if (is.null(eval.sp)) { ## NO EVALUATION DATA
               BFD <- new(
@@ -182,14 +199,20 @@ setMethod('BIOMOD.formated.data', signature(sp = 'numeric', env = 'data.frame'),
                 sp.name = sp.name
               )
               
-              if (nlayers(BFDeval@data.mask) == 1) {
-                if (nlayers(data.mask) == 1) {
-                  data.mask.tmp <- try(addLayer(data.mask, BFDeval@data.mask))
+              if (nlyr(BFDeval@data.mask) == 1 ) {
+                if (nlyr(data.mask) == 1 && 
+                    suppressWarnings(any(!is.na(values(data.mask))))) {
+                  # data.mask for eval is only available when eval.expl.var was
+                  # submitted as raster or SpatRaster
+                  data.mask.tmp <- try(
+                    c(data.mask,BFDeval@data.mask), 
+                    silent = TRUE
+                  )
                   if (!inherits(data.mask.tmp, "try-error")) {
                     data.mask <- data.mask.tmp
                     names(data.mask) <- c("calibration", "validation")
                   }
-                } else if (nlayers(data.mask) == 0) {
+                } else if (nlyr(data.mask) == 0) {
                   # in this case the data.mask from calibration is added later
                   data.mask <- BFDeval@data.mask
                   names(data.mask) <- c("validation")
@@ -271,45 +294,34 @@ setMethod('BIOMOD.formated.data', signature(sp = 'numeric', env = 'matrix'),
           }
 )
 
-## BIOMOD.formated.data(sp = numeric, env = RasterStack) -----------------------
+## BIOMOD.formated.data(sp = numeric, env = SpatRaster) -----------------------
 ##' 
 ##' @rdname BIOMOD.formated.data
 ##' @export
 ##' 
 
-setMethod('BIOMOD.formated.data', signature(sp = 'numeric', env = 'RasterStack'),
+setMethod('BIOMOD.formated.data', signature(sp = 'numeric', env = 'SpatRaster'),
           function(sp, env, xy = NULL, dir.name = '.', sp.name = NULL
                    , eval.sp = NULL, eval.env = NULL, eval.xy = NULL
-                   , na.rm = TRUE)
-          {
+                   , na.rm = TRUE) {
             categorical_var <- names(env)[is.factor(env)]
-            
             ## Keep same env variable for eval than calib (+ check for factor)
             if (!is.null(eval.sp) && is.null(eval.env)) {
-              eval.env <- as.data.frame(extract(env, eval.xy))
-              if (length(categorical_var)) {
+              eval.env <- as.data.frame(extract(env, eval.xy, ID = FALSE))
+              if (length(categorical_var) > 0) {
                 for (cat_var in categorical_var) {
                   eval.env[, cat_var] <- as.factor(eval.env[, cat_var])
                 }
               }
             }
             
-            if (is.null(xy)) { xy <- as.data.frame(coordinates(env)) }
-            
+            if (is.null(xy)) {xy <- as.data.frame(crds(env)) }
             ## Prepare mask of studied area
-            data.mask = reclassify(subset(env, 1, drop = TRUE), c(-Inf, Inf, -1))
-            data.mask[cellFromXY(data.mask, xy[which(sp == 1), ])] <- 1
-            data.mask[cellFromXY(data.mask, xy[which(sp == 0), ])] <- 0
-            data.mask <- stack(data.mask)
+            data.mask <- rasterize(as.matrix(xy), env[[1]], values = sp)
             names(data.mask) <- sp.name
             
             ## Keep same env variable for eval than calib (+ check for factor)
-            env <- as.data.frame(extract(env, xy, factors = TRUE))
-            if (length(categorical_var)) {
-              for (cat_var in categorical_var) {
-                env[, cat_var] <- as.factor(env[, cat_var])
-              }
-            }
+            env <- as.data.frame(extract(env, xy, factors = TRUE, ID = FALSE))
             
             BFD <- BIOMOD.formated.data(sp, env, xy, dir.name, sp.name, eval.sp, eval.env, eval.xy, na.rm = na.rm, data.mask = data.mask)
             return(BFD)
@@ -323,23 +335,26 @@ setMethod('BIOMOD.formated.data', signature(sp = 'numeric', env = 'RasterStack')
 ##' 
 ##' @rdname BIOMOD.formated.data
 ##' @export
+##' @importFrom terra rast minmax nlyr crds
 ##' 
 
 setMethod('plot', signature(x = 'BIOMOD.formated.data', y = "missing"),
           function(x, coord = NULL, col = NULL)
           {
-            if (nlayers(x@data.mask) > 0)
+            
+            if (nlyr(x@data.mask) > 0)
             {
-              requireNamespace("rasterVis")
-              
+              if(!requireNamespace('rasterVis', quietly = TRUE)) stop("Package 'rasterVis' not found")
               ## check if there is some undefined areas to prevent from strange plotting issues
-              if (min(cellStats(x@data.mask, min)) == -1) { # there is undefined area
+              if (minmax(x@data.mask)["min", 1] == -1) { 
+                # there is undefined area
                 my.at <- seq(-1.5, 1.5, by = 1) ## breaks of color key
                 my.labs.at <- seq(-1, 1, by = 1) ## labels placed vertically
                 my.lab <- c("undefined", "absences", "presences") ## labels
                 my.col.regions = c("lightgrey", "red4", "green4") ## colors
                 my.cuts <- 2 ## cuts
-              } else { # no undefined area.. remove it from plot
+              } else { 
+                # no undefined area.. remove it from plot
                 my.at <- seq(-0.5, 1.5, by = 1) ## breaks of color key
                 my.labs.at <- seq(0, 1, by = 1) ## labels placed vertically
                 my.lab <- c("absences", "presences") ## labels
@@ -358,8 +373,7 @@ setMethod('plot', signature(x = 'BIOMOD.formated.data', y = "missing"),
                 colorkey = list(labels = list(labels = my.lab, at = my.labs.at))
               )
               
-            } else
-            {
+            } else  {
               # coordinates checking
               if (is.null(coord)) {
                 if (sum(is.na(x@coord)) == dim(x@coord)[1] * dim(x@coord)[2]) {
@@ -371,7 +385,6 @@ setMethod('plot', signature(x = 'BIOMOD.formated.data', y = "missing"),
               
               # colors checking
               if (is.null(col) | length(col) < 3) { col = c('green', 'red', 'grey') }
-              
               
               ## PLOT
               ## all points (~ mask)
@@ -464,41 +477,9 @@ setMethod('show', signature('BIOMOD.formated.data'),
 ##' \code{\link{BIOMOD_Tuning}}, \code{\link{BIOMOD_CrossValidation}} and 
 ##' \code{\link{BIOMOD_Modeling}}
 ##' 
+##' @inheritParams BIOMOD.formated.data
 ##' @param dir.name a \code{character} corresponding to the modeling folder
 ##' @param sp.name a \code{character} corresponding to the species name
-##' 
-##' @param sp a \code{vector}, \code{\link[sp]{SpatialPoints}} (\emph{if presence-only}) or 
-##' \code{\link[sp]{SpatialPointsDataFrame}} object containing binary data (\code{0} : absence, 
-##' \code{1} : presence, \code{NA} : indeterminate) for a single species that will be used to 
-##' build the species distribution model(s)
-##' @param env a \code{matrix}, \code{data.frame}, \code{\link[sp]{SpatialPointsDataFrame}} 
-##' or \code{\link[raster:stack]{RasterStack}} object containing the explanatory variables 
-##' (in columns or layers) that will be used to build the species distribution model(s)
-##' @param xy (\emph{optional, default} \code{NULL}) \cr 
-##' If \code{resp.var} is a \code{vector}, a 2-columns \code{matrix} or \code{data.frame} 
-##' containing the corresponding \code{X} and \code{Y} coordinates that will be used to build the 
-##' species distribution model(s)
-##' @param eval.sp (\emph{optional, default} \code{NULL}) \cr 
-##' A \code{vector}, \code{\link[sp]{SpatialPoints}} (\emph{if presence-only}) or 
-##' \code{\link[sp]{SpatialPointsDataFrame}} object containing binary data (\code{0} : absence, 
-##' \code{1} : presence, \code{NA} : indeterminate) for a single species that will be used to 
-##' evaluate the species distribution model(s) with independent data
-##' @param eval.env (\emph{optional, default} \code{NULL}) \cr 
-##' A \code{matrix}, \code{data.frame}, \code{\link[sp]{SpatialPointsDataFrame}} or 
-##' \code{\link[raster:stack]{RasterStack}} object containing the explanatory variables (in 
-##' columns or layers) that will be used to evaluate the species distribution model(s) with 
-##' independent data
-##' @param eval.xy (\emph{optional, default} \code{NULL}) \cr 
-##' If \code{resp.var} is a \code{vector}, a 2-columns \code{matrix} or \code{data.frame} 
-##' containing the corresponding \code{X} and \code{Y} coordinates that will be used to evaluate 
-##' the species distribution model(s) with independent data
-##' 
-##' @param na.rm (\emph{optional, default} \code{TRUE}) \cr 
-##' A \code{logical} value defining whether points having one or several missing values for 
-##' explanatory variables should be removed from the analysis or not
-##' @param na.rm (\emph{optional, default} \code{TRUE}) \cr 
-##' A \code{logical} value defining whether points having one or several missing values for 
-##' explanatory variables should be removed from the analysis or not
 ##' 
 ##' @param PA.nb.rep (\emph{optional, default} \code{0}) \cr 
 ##' If pseudo-absence selection, an \code{integer} corresponding to the number of sets 
@@ -543,8 +524,8 @@ setMethod('show', signature('BIOMOD.formated.data'),
 ##' @slot data.species a \code{vector} containing the species observations (\code{0}, \code{1} or 
 ##' \code{NA})
 ##' @slot data.env.var a \code{data.frame} containing explanatory variables
-##' @slot data.mask a \code{\link[raster:stack]{RasterStack}} object containing the mask of the 
-##' studied area
+##' @slot data.mask a \code{\link[terra:rast]{SpatRaster}} object containing 
+##' the mask of the studied area
 ##' @slot has.data.eval a \code{logical} value defining whether evaluation data is given
 ##' @slot eval.coord (\emph{optional, default} \code{NULL}) \cr 
 ##' A 2-columns \code{data.frame} containing the corresponding \code{X} and \code{Y} 
@@ -571,10 +552,10 @@ setMethod('show', signature('BIOMOD.formated.data'),
 ##' showClass("BIOMOD.formated.data.PA")
 ##' 
 ##' ## ----------------------------------------------------------------------- #
+##' library(terra)
 ##' 
 ##' # Load species occurrences (6 species available)
-##' myFile <- system.file('external/species/mammals_table.csv', package = 'biomod2')
-##' DataSpecies <- read.csv(myFile, row.names = 1)
+##' data(DataSpecies)
 ##' head(DataSpecies)
 ##' 
 ##' # Select the name of the studied species
@@ -587,12 +568,12 @@ setMethod('show', signature('BIOMOD.formated.data'),
 ##' myRespXY <- DataSpecies[, c('X_WGS84', 'Y_WGS84')]
 ##' 
 ##' # Load environmental variables extracted from BIOCLIM (bio_3, bio_4, bio_7, bio_11 & bio_12)
-##' myFiles <- paste0('external/bioclim/current/bio', c(3, 4, 7, 11, 12), '.grd')
-##' myExpl <- raster::stack(system.file(myFiles, package = 'biomod2'))
+##' data(bioclim_current)
+##' myExpl <- terra::rast(bioclim_current)
 ##' 
 ##' \dontshow{
-##' myExtent <- raster::extent(0,30,45,70)
-##' myExpl <- raster::stack(raster::crop(myExpl, myExtent))
+##' myExtent <- terra::ext(0,30,45,70)
+##' myExpl <- terra::crop(myExpl, myExtent)
 ##' }
 ##' 
 ##' ## ----------------------------------------------------------------------- #
@@ -612,9 +593,9 @@ NULL
 
 ##' @name BIOMOD.formated.data.PA-class
 ##' @rdname BIOMOD.formated.data.PA
-##' @importFrom raster stack nlayers addLayer is.factor subset cellFromXY cellStats
-## @importFrom rasterVis levelplot
 ##' 
+##' @importFrom terra rast nlyr app is.factor subset extract 
+##' cellFromXY `add<-` crds vect
 ##' @export
 ##' 
 
@@ -652,13 +633,13 @@ setMethod('BIOMOD.formated.data.PA', signature(sp = 'numeric', env = 'data.frame
                                      , na.rm)
           })
 
-### BIOMOD.formated.data.PA(sp = numeric, env = RasterStack) -------------------
+### BIOMOD.formated.data.PA(sp = numeric, env = SpatRaster) -------------------
 ##' 
 ##' @rdname BIOMOD.formated.data.PA
 ##' @export
 ##' 
 
-setMethod('BIOMOD.formated.data.PA', signature(sp = 'numeric', env = 'RasterStack'),
+setMethod('BIOMOD.formated.data.PA', signature(sp = 'numeric', env = 'SpatRaster'),
           function(sp, env, xy = NULL, dir.name = '.', sp.name = NULL
                    , eval.sp = NULL, eval.env = NULL, eval.xy = NULL
                    , PA.nb.rep = 1, PA.strategy = 'random', PA.nb.absences = NULL
@@ -681,29 +662,35 @@ setMethod('BIOMOD.formated.data.PA', signature(sp = 'numeric', env = 'RasterStac
                                       , PA.sre.quant = 0.025, PA.user.table = NULL
                                       , na.rm = TRUE)
 {
-  
   categorical_var <- NULL
-  if (inherits(env, 'Raster')) { categorical_var <- names(env)[is.factor(env)] }
+  if (inherits(env, 'SpatRaster')) {
+    categorical_var <- names(env)[is.factor(env)] 
+  }
   
   ## Keep same env variable for eval than calib (+ check for factor)
   if (!is.null(eval.sp) && is.null(eval.env)) {
-    if (inherits(env, 'Raster')) {
-      eval.env <- as.data.frame(extract(env, eval.xy))
-      if (length(categorical_var)) {
-        for (cat_var in categorical_var) {
-          eval.env[, cat_var] <- as.factor(eval.env[, cat_var])
-        }
-      }
-    } else { stop("No evaluation explanatory variable given") }
+    if (inherits(env, 'SpatRaster')) {
+      eval.env <- as.data.frame(extract(env, eval.xy, ID = FALSE))
+      # probably obsolete line as terra properly extract factors ?
+      .categorical2numeric(eval.env, categorical_var)
+    } else { 
+      stop("No evaluation explanatory variable given") 
+    }
   }
   
-  # Convert sp in SpatialPointsDataFrame
+  
+  # Convert sp in SpatVector
   if (is.numeric(sp)) {
     if (is.null(xy)) {
-      sp <- SpatialPointsDataFrame(matrix(0, ncol = 2, nrow = length(sp)), data.frame(sp), match.ID = FALSE)
+      sp.df <- data.frame(x = 0,
+                          y = 0,
+                          resp = sp)
     } else {
-      sp <- SpatialPointsDataFrame(data.matrix(xy), data.frame(sp), match.ID = FALSE)
+      sp.df <- data.frame(x = xy[,1],
+                          y = xy[,2],
+                          resp = sp)
     }
+    sp <- vect(sp.df, geom = c("x","y"))
   }
   
   pa.data.tmp <- bm_PseudoAbsences(resp.var = sp,
@@ -718,7 +705,7 @@ setMethod('BIOMOD.formated.data.PA', signature(sp = 'numeric', env = 'RasterStac
   
   if (!is.null(pa.data.tmp)) {
     ## Keep same env variable for eval than calib (+ check for factor)
-    if (length(categorical_var)) {
+    if (length(categorical_var) > 0) {
       for (cat_var in categorical_var) {
         pa.data.tmp$env[, cat_var] <- as.factor(pa.data.tmp$env[, cat_var])
       }
@@ -746,10 +733,11 @@ setMethod('BIOMOD.formated.data.PA', signature(sp = 'numeric', env = 'RasterStac
                                 eval.xy = eval.xy,
                                 na.rm = na.rm)
     
-    if (inherits(env,'Raster')) {
+    if (inherits(env,'SpatRaster')) {
       ## create data.mask for ploting
-      data.mask.tmp <- reclassify(subset(env, 1), c(-Inf, Inf, -1))
-      data.mask <- stack(data.mask.tmp)
+      data.mask.tmp <- classify(subset(env, 1), 
+                                matrix(c(-Inf, Inf, -1), ncol = 3))
+      data.mask <- rast(data.mask.tmp)
       xy_pres <- pa.data.tmp$xy[which(pa.data.tmp$sp == 1), , drop = FALSE]
       xy_abs <- pa.data.tmp$xy[which(pa.data.tmp$sp == 0), , drop = FALSE]
       if (nrow(xy_pres)) { data.mask[cellFromXY(data.mask.tmp, xy_pres)] <- 1 }
@@ -758,10 +746,11 @@ setMethod('BIOMOD.formated.data.PA', signature(sp = 'numeric', env = 'RasterStac
       
       ## add eval data
       if (BFD@has.data.eval) {
-        if (nlayers(BFD@data.mask) == 1 && names(BFD@data.mask) == "validation") {
-          data.mask.eval.tmp <- try(addLayer(data.mask, BFD@data.mask))
-          if (!inherits(data.mask.eval.tmp, "try-error")) {
-            data.mask <- data.mask.eval.tmp
+        if (nlyr(BFD@data.mask) == 1 && names(BFD@data.mask) == "validation") {
+          try_add <- try(
+            add(data.mask) <- BFD@data.mask
+          )
+          if (!inherits(try_add, "try-error")) {
             names(data.mask) <- c("input_data", "validation")
           }
         }
@@ -783,13 +772,13 @@ setMethod('BIOMOD.formated.data.PA', signature(sp = 'numeric', env = 'RasterStac
           id_abs <- cellFromXY(data.mask.tmp, xy_abs)
           data.mask.tmp2[id_abs] <- 0
         }
-        data.mask <- addLayer(data.mask, data.mask.tmp2)
+        add(data.mask) <- data.mask.tmp2
       }
       
       names(data.mask) <- c(data.mask.names.tmp,
                             colnames(as.data.frame(pa.data.tmp$pa.tab)))
       
-    } else {  data.mask <- stack() }
+    } else {  data.mask <- rast() }
     
     BFDP <- new('BIOMOD.formated.data.PA',
                 dir.name = BFD@dir.name,
@@ -808,8 +797,7 @@ setMethod('BIOMOD.formated.data.PA', signature(sp = 'numeric', env = 'RasterStac
     rm(list = 'BFD')
   } else {
     cat("\n   ! PA selection not done", fill = .Options$width)
-    
-    BFDP <- BIOMOD.formated.data(sp = as.vector(sp@data),
+    BFDP <- BIOMOD.formated.data(sp = as.vector(values(sp)[,1]),
                                  env = env,
                                  xy = xy,
                                  dir.name = dir.name,
@@ -834,12 +822,12 @@ setMethod('BIOMOD.formated.data.PA', signature(sp = 'numeric', env = 'RasterStac
 setMethod('plot', signature(x = 'BIOMOD.formated.data.PA', y = "missing"),
           function(x, coord = NULL, col = NULL)
           {
-            if (nlayers(x@data.mask) > 0)
+            if (nlyr(x@data.mask) > 0)
             {
-              requireNamespace("rasterVis")
+              if(!requireNamespace('rasterVis', quietly = TRUE)) stop("Package 'rasterVis' not found")
               
               ## check if there is some undefined areas to prevent from strange plotting issues
-              if (min(cellStats(x@data.mask, min)) == -1) { # there is undefined area
+              if (min(global(x@data.mask, min)) == -1) { # there is undefined area
                 my.at <- seq(-1.5, 1.5, by = 1) ## breaks of color key
                 my.labs.at <- seq(-1, 1, by = 1) ## labels placed vertically
                 my.lab <- c("undefined", "absences", "presences") ## labels

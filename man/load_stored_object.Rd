@@ -3,11 +3,14 @@
 \name{load_stored_object}
 \alias{load_stored_object}
 \alias{load_stored_object,BIOMOD.stored.data-method}
+\alias{load_stored_object,BIOMOD.stored.SpatRaster-method}
 \title{Functions to load \code{\link{BIOMOD.stored.data}} objects}
 \usage{
 load_stored_object(obj)
 
 \S4method{load_stored_object}{BIOMOD.stored.data}(obj)
+
+\S4method{load_stored_object}{BIOMOD.stored.SpatRaster}(obj)
 }
 \arguments{
 \item{obj}{a \code{\link{BIOMOD.stored.data}} object}

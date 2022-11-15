@@ -61,10 +61,10 @@ global counts or proportions of gains / losses, as well as spatial representatio
 \emph{Please see \code{\link{BIOMOD_RangeSize}} function for more details about the values.}
 }
 \examples{
+library(terra)
 
 # Load species occurrences (6 species available)
-myFile <- system.file('external/species/mammals_table.csv', package = 'biomod2')
-DataSpecies <- read.csv(myFile, row.names = 1)
+data(DataSpecies)
 head(DataSpecies)
 
 # Select the name of the studied species
@@ -77,15 +77,15 @@ myResp <- as.numeric(DataSpecies[, myRespName])
 myRespXY <- DataSpecies[, c('X_WGS84', 'Y_WGS84')]
 
 # Load environmental variables extracted from BIOCLIM (bio_3, bio_4, bio_7, bio_11 & bio_12)
-myFiles <- paste0('external/bioclim/current/bio', c(3, 4, 7, 11, 12), '.grd')
-myExpl <- raster::stack(system.file(myFiles, package = 'biomod2'))
+data(bioclim_current)
+myExpl <- terra::rast(bioclim_current)
 
 \dontshow{
-myExtent <- raster::extent(0,30,45,70)
-myExpl <- raster::stack(raster::crop(myExpl, myExtent))
+myExtent <- terra::ext(0,30,45,70)
+myExpl <- terra::crop(myExpl, myExtent)
 }
 
-# ---------------------------------------------------------------
+# ---------------------------------------------------------------#
 file.out <- paste0(myRespName, "/", myRespName, ".AllModels.models.out")
 if (file.exists(file.out)) {
   myBiomodModelOut <- get(load(file.out))
@@ -129,13 +129,13 @@ if (file.exists(file.proj)) {
 }
 
 
-# ---------------------------------------------------------------
+# ---------------------------------------------------------------#
 # Load environmental variables extracted from BIOCLIM (bio_3, bio_4, bio_7, bio_11 & bio_12)
-myFiles = paste0('external/bioclim/future/bio', c(3, 4, 7, 11, 12), '.grd')
-myExplFuture = raster::stack(system.file(myFiles, package = 'biomod2'))
+data(bioclim_future)
+myExplFuture <- terra::rast(bioclim_future)
 \dontshow{
-myExtent <- raster::extent(0,30,45,70)
-myExplFuture <- raster::stack(raster::crop(myExplFuture, myExtent))
+myExtent <- terra::ext(0,30,45,70)
+myExplFuture <- terra::crop(myExplFuture, myExtent)
 }
 
 # Project onto future conditions
@@ -147,14 +147,14 @@ myBiomodProjectionFuture <- BIOMOD_Projection(bm.mod = myBiomodModelOut,
                                               build.clamping.mask = TRUE)
 
 # Load current and future binary projections
-CurrentProj <- raster::stack("GuloGulo/proj_Current/proj_Current_GuloGulo_TSSbin.grd")
-FutureProj <- raster::stack("GuloGulo/proj_Future/proj_Future_GuloGulo_TSSbin.grd")
+CurrentProj <- terra::rast("GuloGulo/proj_Current/proj_Current_GuloGulo_TSSbin.grd")
+FutureProj <- terra::rast("GuloGulo/proj_Future/proj_Future_GuloGulo_TSSbin.grd")
 
 # Compute differences
 myBiomodRangeSize <- BIOMOD_RangeSize(proj.current = CurrentProj, proj.future = FutureProj)
 
 
-# ---------------------------------------------------------------
+# ---------------------------------------------------------------#
 myBiomodRangeSize$Compt.By.Models
 plot(myBiomodRangeSize$Diff.By.Pixel)
 

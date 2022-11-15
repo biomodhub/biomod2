@@ -53,10 +53,12 @@
 
 .fun_testIfIn <- function(test, objName, objValue, values)
 {
-  if (sum(objValue %in% values) < length(objValue)) {
-    stop(paste0("\n", paste0(objName, " must be '", paste0(values[1:(length(values) -1)], collapse = "', '")
-                             , ifelse(length(values) > 1, paste0("' or '", values[length(values)]))
-                             , "'")))
+  if (any(! objValue %in% values)) {
+    stop(paste0("\n", objName, " must be '", 
+                ifelse(length(values) > 1, 
+                       paste0(paste0(values[1:(length(values) -1)], collapse = "', '"),
+                              "' or '", values[length(values)])
+                             , paste0(values,"'"))))
     test <- FALSE
   }
   return(test)
@@ -114,100 +116,14 @@ get_var_range <- function(data)
   return(xx)
 }
 
-# Function to check new data range compatibility with calibrating data
-# used in biomod2_classes_4.R file, .template_[...] functions
-check_data_range <- function(model, new_data)
-{
-  ## TODO : remettre en marche cette fonction
-  
-  #   # get calibration data caracteristics
-  #   expl_var_names <- model@expl_var_names
-  #   expl_var_type <- model@expl_var_type
-  #   expl_var_range <- model@expl_var_range
-  #
-  #   if(inherits(new_data, "Raster")){ ## raster data case =-=-=-=-=-=-=- #
-  #     # check var names compatibility
-  #     nd_expl_var_names <- names(new_data)
-  #     if(sum(!(expl_var_names %in% nd_expl_var_names) ) > 0 ){
-  #       stop("calibration and projections variables names mismatch")
-  #     }
-  #     # reorder the stack
-  #     new_data <- raster::subset(new_data,expl_var_names)
-  #     # check var types compatibility (factors)
-  #     expl_var_fact <- (expl_var_type=='factor')
-  #     nd_expl_var_fact <- is.factor(new_data)
-  #     if(sum(! (expl_var_fact==nd_expl_var_fact))>0){
-  #       stop("calibration and projections variables class mismatch")
-  #     }
-  #     # check var range compatibility
-  #     ### remove all new factors
-  #     if(sum(expl_var_fact)>0){ ## there are factorial variables
-  #       for(fact_var_id in which(expl_var_fact)){
-  #         ## check if new factors occurs
-  #         nd_levels <- levels(raster::subset(new_data,fact_var_id))[[1]]
-  #         nd_levels <- as.character(nd_levels[,ncol(nd_levels)])
-  #         names(nd_levels) <- levels(raster::subset(new_data,fact_var_id))[[1]]$ID
-  #         cd_levels <- as.character(unlist(expl_var_range[[fact_var_id]]))
-  #
-  #         ## detect new levels
-  #         new_levels <- nd_levels[!(nd_levels %in% cd_levels)]
-  #
-  #         if(length(new_levels)){
-  #           for(n_l in new_levels){
-  #             # remove points where out of range factors have been detected
-  #             new_data[subset(new_data,fact_var_id)[]==as.numeric(names(nd_levels)[which(nd_levels==n_l)])] <- NA
-  #           }
-  #           warning(paste(nd_expl_var_names[fact_var_id]," new levels have been removed from dataset (",toString(new_levels),")",sep=""))
-  #         }
-  #       }
-  #     }
-  #     ## convert data to be sure to get RasterStack output
-  # #     new_data <- stack(new_data)
-  #   } else{ ## table data case -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=- #
-  #     # check var names compatibility
-  #     nd_expl_var_names <- colnames(new_data)
-  #     if(sum(!(expl_var_names %in% nd_expl_var_names) ) > 0 ){
-  #       stop("calibration and projections variables names mismatch")
-  #     }
-  #     # reorder the stack
-  #     new_data <- new_data[,expl_var_names, drop = FALSE]
-  #     # check var types compatibility (factors)
-  #     expl_var_fact <- (expl_var_type=='factor')
-  #     nd_expl_var_fact <- sapply(new_data,is.factor)
-  #
-  #     if(sum(! (expl_var_fact==nd_expl_var_fact))>0){
-  #       stop("calibration and projections variables class mismatch")
-  #     }
-  #     # check var range compatibility
-  #     ### remove all new factors
-  #     if(sum(expl_var_fact)>0){ ## there are factorial variables
-  #       for(fact_var_id in which(expl_var_fact)){
-  #         ## check if new factors occurs
-  #         nd_levels <- levels(new_data[,fact_var_id])
-  #         cd_levels <- as.character(unlist(expl_var_range[[fact_var_id]]))
-  #
-  #         ## detect new levels
-  #         new_levels <- nd_levels[!(nd_levels %in% cd_levels)]
-  #
-  #         if(length(new_levels)){
-  #           # remove points where out of range factors have been detected
-  # #           new_data <- new_data[- which(new_data[,fact_var_id] %in% new_levels),]
-  #           new_data[which(new_data[,fact_var_id] %in% new_levels),] <- NA
-  #           warning(paste(nd_expl_var_names[fact_var_id]," new levels have been removed from dataset (",toString(new_levels),")",sep=""))
-  #         }
-  #       }
-  #     }
-  #   }
-  return(new_data)
-}
-
+#' @importFrom terra rast classify subset
 .run_pred <- function(object, Prev = 0.5, dat)
 {
   if (is.finite(object$deviance) && 
       is.finite(object$null.deviance) && 
       object$deviance != object$null.deviance)
   {
-    if (inherits(dat, 'Raster')) {
+    if (inherits(dat, 'SpatRaster')) {
       pred <- predict(object = dat, model = object, type = "response")
     } else {
       pred <- predict(object, dat, type = "response")
@@ -215,12 +131,12 @@ check_data_range <- function(model, new_data)
   }
   
   if (!exists('pred')) {
-    if (inherits(dat, 'Raster')) {
-      pred <- subset(dat, 1, drop = TRUE)
+    if (inherits(dat, 'SpatRaster')) {
+      pred <- subset(dat, 1)
       if (Prev < 0.5) {
-        pred <- reclassify(x = pred, rcl = c(-Inf, Inf, 0))
+        pred <- classify(x = pred, rcl = c(-Inf, Inf, 0))
       } else {
-        pred <- reclassify(x = pred, rcl = c(-Inf, Inf, 1))
+        pred <- classify(x = pred, rcl = c(-Inf, Inf, 1))
       }
     } else {
       if (Prev < 0.5) {
@@ -238,21 +154,21 @@ check_data_range <- function(model, new_data)
 
 .get_formal_predictions <- function(object, newdata, on_0_1000, seedval)
 {
-    # make prediction of all models required
-    formal_predictions <- sapply(object@model,
-                                 function(mod.name, dir_name, resp_name, modeling.id)
-                                 {
-                                   ## check if model is loaded on memory
-                                   if (is.character(mod.name)) {
-                                     mod <- get(load(file.path(dir_name, resp_name, "models", modeling.id, mod.name)))
-                                   }
-                                   temp_workdir = NULL
-                                   if (length(grep("MAXENT.Phillips$", mod.name)) == 1) {
-                                     temp_workdir = mod@model_output_dir
-                                   }
-                                   return(predict(mod, newdata = newdata, on_0_1000 = on_0_1000
-                                                  , temp_workdir = temp_workdir, seedval = seedval))
-                                 }, dir_name = object@dir_name, resp_name = object@resp_name, modeling.id = object@modeling.id)
+  # make prediction of all models required
+  formal_predictions <- sapply(object@model,
+                               function(mod.name, dir_name, resp_name, modeling.id)
+                               {
+                                 ## check if model is loaded on memory
+                                 if (is.character(mod.name)) {
+                                   mod <- get(load(file.path(dir_name, resp_name, "models", modeling.id, mod.name)))
+                                 }
+                                 temp_workdir = NULL
+                                 if (length(grep("MAXENT.Phillips$", mod.name)) == 1) {
+                                   temp_workdir = mod@model_output_dir
+                                 }
+                                 return(predict(mod, newdata = newdata, on_0_1000 = on_0_1000
+                                                , temp_workdir = temp_workdir, seedval = seedval))
+                               }, dir_name = object@dir_name, resp_name = object@resp_name, modeling.id = object@modeling.id)
   
   
   return(formal_predictions)
@@ -630,7 +546,9 @@ check_data_range <- function(model, new_data)
   if (model_subclass %in% c("GAM_mgcv", "BAM_mgcv")) {
     # cat("\n*** unloading gam package / loading mgcv package")
     if (isNamespaceLoaded("gam")) { unloadNamespace("gam") }
-    if (!isNamespaceLoaded("mgcv")) { requireNamespace("mgcv", quietly = TRUE) }
+    if (!isNamespaceLoaded("mgcv")) { 
+      if(!requireNamespace('mgcv', quietly = TRUE)) stop("Package 'mgcv' not found")
+    }
   }
   
   if (model_subclass == "GAM_gam") {
@@ -640,7 +558,50 @@ check_data_range <- function(model, new_data)
       if (isNamespaceLoaded("car")) { unloadNamespace("car") } ## need to unload car before mgcv
       unloadNamespace("mgcv")
     }
-    if (!isNamespaceLoaded("gam")) { requireNamespace("gam", quietly = TRUE) }
+    if (!isNamespaceLoaded("gam")) { 
+      if(!requireNamespace('gam', quietly = TRUE)) stop("Package 'gam' not found")
+    }
   }
   invisible(NULL)
 }
+
+## Get categorical variable names ---------------------------------------
+##' @name .get_categorical_names
+##' 
+##' @title Get categorical variable names
+##' 
+##' @description Internal function to get categorical variables name from a data.frame.
+##' 
+##' @param df data.frame to be checked
+##' @return a vector with the name of categorical variables
+##' @keywords internal
+
+.get_categorical_names <- function(df){
+  unlist(sapply(names(df), function(x) {
+    if (is.factor(df[, x])) { return(x) } else { return(NULL) }
+  }))
+}
+
+## Categorical to numeric ---------------------------------------
+##' @name .categorical2numeric
+##' 
+##' @title Transform categorical into numeric variables
+##' 
+##' @description Internal function transform categorical variables in a 
+##' data.frame into numeric variables. Mostly used with maxent which cannot 
+##' read character
+##' 
+##' @param df data.frame to be transformed
+##' @param categorical_var the names of categorical variables in df
+##' @return a data.frame without categorical variables
+##' @keywords internal
+
+.categorical2numeric <- function(df, categorical_var){
+  if(length(categorical_var) > 0){
+    for(this_var in categorical_var){
+      df[,this_var] <- as.numeric(df[,this_var])
+    }
+  }
+  df
+}
+
