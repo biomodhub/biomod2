@@ -848,7 +848,13 @@ BIOMOD_EnsembleModeling <- function(bm.mod,
   }
   .fun_testIfIn(TRUE, "em.by", em.by, c('PA_dataset', 'algo', 'all', 'PA_dataset+repet', 'PA_dataset+algo'))
   
-  
+  # check that repetition are note merged with full models
+  if(any(grepl(pattern = "RUN",  x = models.chosen)) &&
+     any(grepl(pattern = "Full", x = models.chosen)) &&
+     em.by != 'PA_dataset+repet') {
+    cat("\n!!! Removed models using the Full dataset as ensemble models cannot merge repetition dataset (RUN1, RUN2, ...) with Full dataset unless em.by = 'PA_dataset+repet'.")
+    models.chosen <- models.chosen[!grepl(pattern = "Full", x = models.chosen)]
+  }
   ## 8. Check that ensemble model have > 1 model to run -------------
   ## make a list of models names that will be combined together according to em.by argument
   em.mod.assemb <- .get_models_assembling(models.chosen, em.by)
