@@ -365,11 +365,16 @@ BIOMOD_Modeling <- function(bm.format,
                     nb.cpu = nb.cpu,
                     seed.val = seed.val,
                     do.progress = do.progress)
-  
+
   ## 3.3 Rearrange and save outputs -------------------------------------------
   models.out@models.computed <- .transform_outputs_list(mod.out, out = 'models.run')
   models.out@models.failed <- .transform_outputs_list(mod.out, out = 'calib.failure')
-
+  
+  if(length(models.out@models.computed) == 1 && models.out@models.computed == "none"){
+    cat("\n! All models failed")
+    return(models.out)
+  }
+  
   ## 3.4 Rearrange and save models outputs : ----------------------------------
   ## models evaluation, variables importance, models prediction, predictions evaluation
   if (save.output) {

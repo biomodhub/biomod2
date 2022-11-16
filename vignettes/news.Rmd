@@ -16,6 +16,16 @@ vignette: >
 
 ### <i class="fas fa-chess-pawn"></i> 2022
 
+#### 4.2-2 Improvement patch
+
+##### Major Changes
+
+##### Minor Changes
+
+* Added an appropriate message when all models fail for `BIOMOD_Modeling` and `BIOMOD_EnsembleModeling`.
+
+##### Bugfix
+
 ####  4.2-0 Terra Update
 
 ##### Major Changes

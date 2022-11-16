@@ -702,6 +702,15 @@ BIOMOD_EnsembleModeling <- function(bm.mod,
     }
   }
   
+
+  ### check at least one model was computed -----------------------------------
+
+  if(length(EM@em.computed) == 0){
+    EM@em.computed <- "none"
+    cat("\n! All models failed")
+    return(EM)
+  }
+  
   ### SAVE EM outputs ---------------------------------------------------------
   models.evaluation <- .transform_outputs_list.em(em.out, out = "evaluation")
   EM = .fill_BIOMOD.models.out("models.evaluation", models.evaluation, EM
