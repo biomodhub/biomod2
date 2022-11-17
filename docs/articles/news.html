@@ -132,10 +132,36 @@
 <i class="fas fa-chess-pawn"></i> 2022<a class="anchor" aria-label="anchor" href="#section"></a>
 </h3>
 <div class="section level4">
-<h4 id="terra-update">4.2-0 Terra Update<a class="anchor" aria-label="anchor" href="#terra-update"></a>
+<h4 id="improvement-patch">4.2-2 Improvement patch<a class="anchor" aria-label="anchor" href="#improvement-patch"></a>
 </h4>
 <div class="section level5">
 <h5 id="major-changes">Major Changes<a class="anchor" aria-label="anchor" href="#major-changes"></a>
+</h5>
+</div>
+<div class="section level5">
+<h5 id="minor-changes">Minor Changes<a class="anchor" aria-label="anchor" href="#minor-changes"></a>
+</h5>
+<ul>
+<li>
+<code>BIOMOD_EnsembleModeling</code> now have an argument
+<code>em.algo</code> to select the ensemble algorithm to be computed.
+Separate arguments are now deprecated (prob.mean, prob.median, prob.cv,
+prob.ci, committee.averaging, prob.mean.weight)</li>
+<li>Added an appropriate message when all models fail for
+<code>BIOMOD_Modeling</code> and
+<code>BIOMOD_EnsembleModeling</code>.</li>
+</ul>
+</div>
+<div class="section level5">
+<h5 id="bugfix">Bugfix<a class="anchor" aria-label="anchor" href="#bugfix"></a>
+</h5>
+</div>
+</div>
+<div class="section level4">
+<h4 id="terra-update">4.2-0 Terra Update<a class="anchor" aria-label="anchor" href="#terra-update"></a>
+</h4>
+<div class="section level5">
+<h5 id="major-changes-1">Major Changes<a class="anchor" aria-label="anchor" href="#major-changes-1"></a>
 </h5>
 <ul>
 <li>Package now rely only on <code>terra</code>
@@ -151,7 +177,7 @@ supported.</li>
 </ul>
 </div>
 <div class="section level5">
-<h5 id="minor-changes">Minor Changes<a class="anchor" aria-label="anchor" href="#minor-changes"></a>
+<h5 id="minor-changes-1">Minor Changes<a class="anchor" aria-label="anchor" href="#minor-changes-1"></a>
 </h5>
 <ul>
 <li>
@@ -181,7 +207,7 @@ future.</li>
 </ul>
 </div>
 <div class="section level5">
-<h5 id="bugfix">Bugfix<a class="anchor" aria-label="anchor" href="#bugfix"></a>
+<h5 id="bugfix-1">Bugfix<a class="anchor" aria-label="anchor" href="#bugfix-1"></a>
 </h5>
 <ul>
 <li>MAXENT.Phillips models can now properly fail</li>
@@ -251,7 +277,7 @@ CompteurSp that was defined within a function.</li>
 <h4 id="section-1">4.1-3<a class="anchor" aria-label="anchor" href="#section-1"></a>
 </h4>
 <div class="section level5">
-<h5 id="bugfix-1">Bugfix<a class="anchor" aria-label="anchor" href="#bugfix-1"></a>
+<h5 id="bugfix-2">Bugfix<a class="anchor" aria-label="anchor" href="#bugfix-2"></a>
 </h5>
 <ul>
 <li>Ensemble models that fails (e.g. EMcv with only one models) will not
@@ -280,7 +306,7 @@ instead of matrix.</p></li>
 <h4 id="current-cran-version">4.1-2 (2022-09-29 - Current CRAN Version)<a class="anchor" aria-label="anchor" href="#current-cran-version"></a>
 </h4>
 <div class="section level5">
-<h5 id="major-changes-1">Major changes<a class="anchor" aria-label="anchor" href="#major-changes-1"></a>
+<h5 id="major-changes-2">Major changes<a class="anchor" aria-label="anchor" href="#major-changes-2"></a>
 </h5>
 <ul>
 <li>
@@ -295,7 +321,7 @@ environmental space supplied.</li>
 </ul>
 </div>
 <div class="section level5">
-<h5 id="minor-changes-1">Minor changes<a class="anchor" aria-label="anchor" href="#minor-changes-1"></a>
+<h5 id="minor-changes-2">Minor changes<a class="anchor" aria-label="anchor" href="#minor-changes-2"></a>
 </h5>
 <ul>
 <li>Individual EM models projected as raster are now saved with

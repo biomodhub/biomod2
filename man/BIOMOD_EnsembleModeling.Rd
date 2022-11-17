@@ -8,22 +8,23 @@ BIOMOD_EnsembleModeling(
   bm.mod,
   models.chosen = "all",
   em.by = "PA_dataset+repet",
+  em.algo = c("prob.mean"),
   metric.select = "all",
   metric.select.thresh = NULL,
   metric.select.table = NULL,
   metric.eval = c("KAPPA", "TSS", "ROC"),
   var.import = 0,
-  prob.mean = TRUE,
-  prob.median = FALSE,
-  prob.cv = FALSE,
-  prob.ci = FALSE,
   prob.ci.alpha = 0.05,
-  committee.averaging = FALSE,
-  prob.mean.weight = FALSE,
   prob.mean.weight.decay = "proportional",
   nb.cpu = 1,
   seed.val = NULL,
-  do.progress = TRUE
+  do.progress = TRUE,
+  prob.mean = NULL,
+  prob.median = NULL,
+  prob.cv = NULL,
+  prob.ci = NULL,
+  committee.averaging = NULL,
+  prob.mean.weight = NULL
 )
 }
 \arguments{
@@ -35,8 +36,13 @@ BIOMOD_EnsembleModeling(
 \code{\link{get_built_models}} function}
 
 \item{em.by}{a \code{character} corresponding to the way kept models will be combined to build 
-the ensemble models, must be among \code{PA_dataset+repet}, \code{PA_dataset+algo}, 
-\code{PA_dataset}, \code{algo}, \code{all}}
+the ensemble models, must be among \code{PA_dataset+repet}, \code{PA_dataset+algo},}
+
+\item{em.algo}{(\emph{optional, default} \code{c('prob.mean')}) a \code{vector}
+corresponding to the ensemble models that should  be computed. 
+May contain up to six values among \code{'prob.mean'}, \code{'prob.median'}, 
+\code{'prob.cv'}, \code{'prob.ci'}, \code{'committee.averaging'}, 
+\code{'prob.mean.weight'}.}
 
 \item{metric.select}{a \code{vector} containing evaluation metric names to be used together with 
 \code{metric.select.thresh} to exclude single models based on their evaluation scores 
@@ -66,32 +72,8 @@ be among \code{ROC}, \code{TSS}, \code{KAPPA}, \code{ACCURACY}, \code{BIAS}, \co
 An \code{integer} corresponding to the number of permutations to be done for each variable to 
 estimate variable importance}
 
-\item{prob.mean}{(\emph{optional, default} \code{TRUE}) \cr 
-A \code{logical} value defining whether to compute the mean probabilities 
-across predictions or not}
-
-\item{prob.median}{(\emph{optional, default} \code{FALSE}) \cr 
-A \code{logical} value defining whether to compute the median probabilities  
-across predictions or not}
-
-\item{prob.cv}{(\emph{optional, default} \code{FALSE}) \cr 
-A \code{logical} value defining whether to compute the coefficient of 
-variation across predictions or not}
-
-\item{prob.ci}{(\emph{optional, default} \code{FALSE}) \cr 
-A \code{logical} value defining whether to compute te confidence interval 
-around the \code{prob.mean} ensemble model or not}
-
 \item{prob.ci.alpha}{(\emph{optional, default} \code{0.05}) \cr 
 A \code{numeric} value corresponding to the significance level to estimate confidence interval}
-
-\item{committee.averaging}{(\emph{optional, default} \code{FALSE}) \cr 
-A \code{logical} value defining whether to compute the committee 
-averaging across predictions or not}
-
-\item{prob.mean.weight}{(\emph{optional, default} \code{FALSE}) \cr 
-A \code{logical} value defining whether to compute the weighted sum of 
-probabilities across predictions or not}
 
 \item{prob.mean.weight.decay}{(\emph{optional, default} \code{proportional}) \cr 
 A value defining the relative importance of the weights (if \code{prob.mean.weight = TRUE}). 
@@ -107,6 +89,28 @@ An \code{integer} value corresponding to the new seed value to be set}
 
 \item{do.progress}{(\emph{optional, default} \code{TRUE}) \cr 
 A \code{logical} value defining whether the progress bar is to be rendered or not}
+
+\item{prob.mean}{(\emph{optional, default} \code{TRUE}) \cr A \code{logical}
+value defining whether to compute the mean probabilities across
+predictions or not}
+
+\item{prob.median}{(\emph{obsolete}) \cr A \code{logical} value defining
+whether to compute the median probabilities across predictions or not}
+
+\item{prob.cv}{(\emph{obsolete}) \cr A \code{logical} value defining whether
+to compute the coefficient of variation across predictions or not}
+
+\item{prob.ci}{(\emph{obsolete}) \cr A \code{logical} value defining whether
+to compute te confidence interval around the \code{prob.mean} ensemble
+model or not}
+
+\item{committee.averaging}{(\emph{obsolete}) \cr A \code{logical} value
+defining whether to compute the committee averaging across predictions or
+not}
+
+\item{prob.mean.weight}{(\emph{obsolete}) \cr A \code{logical} value
+defining whether to compute the weighted sum of probabilities across
+predictions or not}
 }
 \value{
 A \code{BIOMOD.ensemble.models.out} object containing models outputs, or links to saved 

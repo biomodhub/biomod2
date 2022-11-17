@@ -108,22 +108,23 @@ conditions (see Details).</p>
 <span>  <span class="va">bm.mod</span>,</span>
 <span>  models.chosen <span class="op">=</span> <span class="st">"all"</span>,</span>
 <span>  em.by <span class="op">=</span> <span class="st">"PA_dataset+repet"</span>,</span>
+<span>  em.algo <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"prob.mean"</span><span class="op">)</span>,</span>
 <span>  metric.select <span class="op">=</span> <span class="st">"all"</span>,</span>
 <span>  metric.select.thresh <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  metric.select.table <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  metric.eval <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"KAPPA"</span>, <span class="st">"TSS"</span>, <span class="st">"ROC"</span><span class="op">)</span>,</span>
 <span>  var.import <span class="op">=</span> <span class="fl">0</span>,</span>
-<span>  prob.mean <span class="op">=</span> <span class="cn">TRUE</span>,</span>
-<span>  prob.median <span class="op">=</span> <span class="cn">FALSE</span>,</span>
-<span>  prob.cv <span class="op">=</span> <span class="cn">FALSE</span>,</span>
-<span>  prob.ci <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  prob.ci.alpha <span class="op">=</span> <span class="fl">0.05</span>,</span>
-<span>  committee.averaging <span class="op">=</span> <span class="cn">FALSE</span>,</span>
-<span>  prob.mean.weight <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  prob.mean.weight.decay <span class="op">=</span> <span class="st">"proportional"</span>,</span>
 <span>  nb.cpu <span class="op">=</span> <span class="fl">1</span>,</span>
 <span>  seed.val <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  do.progress <span class="op">=</span> <span class="cn">TRUE</span></span>
+<span>  do.progress <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  prob.mean <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  prob.median <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  prob.cv <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  prob.ci <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  committee.averaging <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  prob.mean.weight <span class="op">=</span> <span class="cn">NULL</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -142,8 +143,15 @@ conditions (see Details).</p>
 
 <dt>em.by</dt>
 <dd><p>a <code>character</code> corresponding to the way kept models will be combined to build 
-the ensemble models, must be among <code>PA_dataset+repet</code>, <code>PA_dataset+algo</code>, 
-<code>PA_dataset</code>, <code>algo</code>, <code>all</code></p></dd>
+the ensemble models, must be among <code>PA_dataset+repet</code>, <code>PA_dataset+algo</code>,</p></dd>
+
+
+<dt>em.algo</dt>
+<dd><p>(<em>optional, default</em> <code>c('prob.mean')</code>) a <code>vector</code>
+corresponding to the ensemble models that should  be computed. 
+May contain up to six values among <code>'prob.mean'</code>, <code>'prob.median'</code>, 
+<code>'prob.cv'</code>, <code>'prob.ci'</code>, <code>'committee.averaging'</code>, 
+<code>'prob.mean.weight'</code>.</p></dd>
 
 
 <dt>metric.select</dt>
@@ -184,45 +192,9 @@ An <code>integer</code> corresponding to the number of permutations to be done f
 estimate variable importance</p></dd>
 
 
-<dt>prob.mean</dt>
-<dd><p>(<em>optional, default</em> <code>TRUE</code>) <br> 
-A <code>logical</code> value defining whether to compute the mean probabilities 
-across predictions or not</p></dd>
-
-
-<dt>prob.median</dt>
-<dd><p>(<em>optional, default</em> <code>FALSE</code>) <br> 
-A <code>logical</code> value defining whether to compute the median probabilities  
-across predictions or not</p></dd>
-
-
-<dt>prob.cv</dt>
-<dd><p>(<em>optional, default</em> <code>FALSE</code>) <br> 
-A <code>logical</code> value defining whether to compute the coefficient of 
-variation across predictions or not</p></dd>
-
-
-<dt>prob.ci</dt>
-<dd><p>(<em>optional, default</em> <code>FALSE</code>) <br> 
-A <code>logical</code> value defining whether to compute te confidence interval 
-around the <code>prob.mean</code> ensemble model or not</p></dd>
-
-
 <dt>prob.ci.alpha</dt>
 <dd><p>(<em>optional, default</em> <code>0.05</code>) <br> 
 A <code>numeric</code> value corresponding to the significance level to estimate confidence interval</p></dd>
-
-
-<dt>committee.averaging</dt>
-<dd><p>(<em>optional, default</em> <code>FALSE</code>) <br> 
-A <code>logical</code> value defining whether to compute the committee 
-averaging across predictions or not</p></dd>
-
-
-<dt>prob.mean.weight</dt>
-<dd><p>(<em>optional, default</em> <code>FALSE</code>) <br> 
-A <code>logical</code> value defining whether to compute the weighted sum of 
-probabilities across predictions or not</p></dd>
 
 
 <dt>prob.mean.weight.decay</dt>
@@ -246,6 +218,40 @@ An <code>integer</code> value corresponding to the new seed value to be set</p><
 <dt>do.progress</dt>
 <dd><p>(<em>optional, default</em> <code>TRUE</code>) <br> 
 A <code>logical</code> value defining whether the progress bar is to be rendered or not</p></dd>
+
+
+<dt>prob.mean</dt>
+<dd><p>(<em>optional, default</em> <code>TRUE</code>) <br> A <code>logical</code>
+value defining whether to compute the mean probabilities across
+predictions or not</p></dd>
+
+
+<dt>prob.median</dt>
+<dd><p>(<em>obsolete</em>) <br> A <code>logical</code> value defining
+whether to compute the median probabilities across predictions or not</p></dd>
+
+
+<dt>prob.cv</dt>
+<dd><p>(<em>obsolete</em>) <br> A <code>logical</code> value defining whether
+to compute the coefficient of variation across predictions or not</p></dd>
+
+
+<dt>prob.ci</dt>
+<dd><p>(<em>obsolete</em>) <br> A <code>logical</code> value defining whether
+to compute te confidence interval around the <code>prob.mean</code> ensemble
+model or not</p></dd>
+
+
+<dt>committee.averaging</dt>
+<dd><p>(<em>obsolete</em>) <br> A <code>logical</code> value
+defining whether to compute the committee averaging across predictions or
+not</p></dd>
+
+
+<dt>prob.mean.weight</dt>
+<dd><p>(<em>obsolete</em>) <br> A <code>logical</code> value
+defining whether to compute the weighted sum of probabilities across
+predictions or not</p></dd>
 
 </dl></div>
     <div id="value">
