@@ -18,7 +18,11 @@
 ##' \code{\link{get_built_models}} function
 ##' @param em.by a \code{character} corresponding to the way kept models will be combined to build 
 ##' the ensemble models, must be among \code{PA_dataset+repet}, \code{PA_dataset+algo}, 
-##' \code{PA_dataset}, \code{algo}, \code{all}
+##' @param em.algo (\emph{optional, default} \code{c('prob.mean')}) a \code{vector}
+##'  corresponding to the ensemble models that should  be computed. 
+##'  May contain up to six values among \code{'prob.mean'}, \code{'prob.median'}, 
+##'  \code{'prob.cv'}, \code{'prob.ci'}, \code{'committee.averaging'}, 
+##'  \code{'prob.mean.weight'}.
 ##' @param metric.select a \code{vector} containing evaluation metric names to be used together with 
 ##' \code{metric.select.thresh} to exclude single models based on their evaluation scores 
 ##' (for ensemble methods like probability weighted mean or committee averaging). Must be among  
@@ -42,30 +46,28 @@
 ##' @param var.import (\emph{optional, default} \code{NULL}) \cr 
 ##' An \code{integer} corresponding to the number of permutations to be done for each variable to 
 ##' estimate variable importance
-##' @param prob.mean (\emph{optional, default} \code{TRUE}) \cr 
-##' A \code{logical} value defining whether to compute the mean probabilities 
-##' across predictions or not
-##' @param prob.median (\emph{optional, default} \code{FALSE}) \cr 
-##' A \code{logical} value defining whether to compute the median probabilities  
-##' across predictions or not
-##' @param prob.cv (\emph{optional, default} \code{FALSE}) \cr 
-##' A \code{logical} value defining whether to compute the coefficient of 
-##' variation across predictions or not
-##' @param prob.ci (\emph{optional, default} \code{FALSE}) \cr 
-##' A \code{logical} value defining whether to compute te confidence interval 
-##' around the \code{prob.mean} ensemble model or not
 ##' @param prob.ci.alpha (\emph{optional, default} \code{0.05}) \cr 
 ##' A \code{numeric} value corresponding to the significance level to estimate confidence interval
-##' @param committee.averaging (\emph{optional, default} \code{FALSE}) \cr 
-##' A \code{logical} value defining whether to compute the committee 
-##' averaging across predictions or not
-##' @param prob.mean.weight (\emph{optional, default} \code{FALSE}) \cr 
-##' A \code{logical} value defining whether to compute the weighted sum of 
-##' probabilities across predictions or not
 ##' @param prob.mean.weight.decay (\emph{optional, default} \code{proportional}) \cr 
 ##' A value defining the relative importance of the weights (if \code{prob.mean.weight = TRUE}). 
 ##' A high value will strongly discriminate \emph{good} models from the \emph{bad} ones (see Details), while \code{proportional} will 
 ##' attribute weights proportionally to the models evaluation scores
+##' @param prob.mean (\emph{optional, default} \code{TRUE}) \cr A \code{logical}
+##'   value defining whether to compute the mean probabilities across
+##'   predictions or not
+##' @param prob.median (\emph{obsolete}) \cr A \code{logical} value defining
+##'   whether to compute the median probabilities across predictions or not
+##' @param prob.cv (\emph{obsolete}) \cr A \code{logical} value defining whether
+##'   to compute the coefficient of variation across predictions or not
+##' @param prob.ci (\emph{obsolete}) \cr A \code{logical} value defining whether
+##'   to compute te confidence interval around the \code{prob.mean} ensemble
+##'   model or not
+##' @param committee.averaging (\emph{obsolete}) \cr A \code{logical} value
+##'   defining whether to compute the committee averaging across predictions or
+##'   not
+##' @param prob.mean.weight (\emph{obsolete}) \cr A \code{logical} value
+##'   defining whether to compute the weighted sum of probabilities across
+##'   predictions or not
 ##' @param nb.cpu (\emph{optional, default} \code{1}) \cr 
 ##' An \code{integer} value corresponding to the number of computing resources to be used to 
 ##' parallelize the single models computation

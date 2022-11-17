@@ -22,6 +22,9 @@ vignette: >
 
 ##### Minor Changes
 
+* `BIOMOD_EnsembleModeling` now have an argument `em.algo` to select the ensemble 
+algorithm to be computed. Separate arguments are now deprecated (prob.mean, 
+prob.median, prob.cv, prob.ci, committee.averaging, prob.mean.weight)
 * Added an appropriate message when all models fail for `BIOMOD_Modeling` and `BIOMOD_EnsembleModeling`.
 
 ##### Bugfix
