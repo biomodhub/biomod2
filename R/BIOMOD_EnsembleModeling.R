@@ -343,49 +343,46 @@
 BIOMOD_EnsembleModeling <- function(bm.mod,
                                     models.chosen = 'all',
                                     em.by = 'PA_dataset+repet',
+                                    em.algo,
                                     metric.select = 'all',
                                     metric.select.thresh = NULL,
                                     metric.select.table = NULL,
                                     metric.eval = c('KAPPA', 'TSS', 'ROC'),
                                     var.import = 0,
-                                    prob.mean = TRUE,
-                                    prob.median = FALSE,
-                                    prob.cv = FALSE,
-                                    prob.ci = FALSE,
                                     prob.ci.alpha = 0.05,
-                                    committee.averaging = FALSE,
-                                    prob.mean.weight = FALSE,
                                     prob.mean.weight.decay = 'proportional',
                                     nb.cpu = 1,
                                     seed.val = NULL,
-                                    do.progress = TRUE) {
+                                    do.progress = TRUE,
+                                    prob.mean, # deprecated
+                                    prob.median, # deprecated
+                                    prob.cv, # deprecated
+                                    prob.ci, # deprecated  
+                                    committee.averaging, # deprecated
+                                    prob.mean.weight) { # deprecated
   .bm_cat("Build Ensemble Models")
   
   ## 0. Check arguments --------------------------------------------------------
-  args <- .BIOMOD_EnsembleModeling.check.args(bm.mod,
-                                              models.chosen,
-                                              metric.select,
-                                              metric.select.thresh,
-                                              metric.select.table,
-                                              metric.eval,
-                                              prob.mean,
-                                              prob.cv,
-                                              prob.ci,
-                                              prob.ci.alpha,
-                                              prob.median,
-                                              committee.averaging,
-                                              prob.mean.weight,
-                                              prob.mean.weight.decay,
-                                              em.by)
+  args <- .BIOMOD_EnsembleModeling.check.args(bm.mod = bm.mod,
+                                              models.chosen = models.chosen,
+                                              em.by = em.by,
+                                              metric.select = metric.select,
+                                              metric.select.thresh = metric.select.thresh,
+                                              metric.select.table = metric.select.table,
+                                              metric.eval = metric.eval,
+                                              prob.ci.alpha = prob.ci.alpha,
+                                              prob.mean.weight.decay = prob.mean.weight.decay,
+                                              prob.mean = prob.mean,
+                                              prob.cv = prob.cv,
+                                              prob.ci = prob.ci,
+                                              prob.median = prob.median,
+                                              committee.averaging = committee.averaging,
+                                              prob.mean.weight = prob.mean.weight)
   for (argi in names(args)) { assign(x = argi, value = args[[argi]]) }
   rm(args)
   
   
   ## Get selected options 
-  em.avail <- c('prob.mean', 'prob.cv', 'prob.ci.inf', 'prob.ci.sup',
-                'prob.median', 'committee.averaging', 'prob.mean.weight')
-  em.algo <- em.avail[c(prob.mean, prob.cv,  prob.ci,  prob.ci,
-                        prob.median, committee.averaging, prob.mean.weight)]
   em.options <- list(em.by = em.by)
   expl_var_type = get_var_type(get_formal_data(bm.mod, 'expl.var'))
   expl_var_range = get_var_range(get_formal_data(bm.mod, 'expl.var'))
@@ -702,9 +699,9 @@ BIOMOD_EnsembleModeling <- function(bm.mod,
     }
   }
   
-
+  
   ### check at least one model was computed -----------------------------------
-
+  
   if(length(EM@em.computed) == 0){
     EM@em.computed <- "none"
     cat("\n! All models failed")
@@ -745,20 +742,20 @@ BIOMOD_EnsembleModeling <- function(bm.mod,
 
 .BIOMOD_EnsembleModeling.check.args <- function(bm.mod,
                                                 models.chosen,
+                                                em.by,
+                                                em.algo,
                                                 metric.select,
                                                 metric.select.thresh,
                                                 metric.select.table,
                                                 metric.eval,
-                                                prob.mean,
-                                                prob.cv,
-                                                prob.ci,
                                                 prob.ci.alpha,
-                                                prob.median,
-                                                committee.averaging,
-                                                prob.mean.weight,
                                                 prob.mean.weight.decay,
-                                                em.by)
-{
+                                                prob.mean, # deprecated
+                                                prob.cv, # deprecated
+                                                prob.ci, # deprecated
+                                                prob.median, # deprecated
+                                                committee.averaging, # deprecated
+                                                prob.mean.weight) { # deprecated
   ## 1. Check bm.mod ----------------------------------------------------------
   .fun_testIfInherits(TRUE, "bm.mod", bm.mod, "BIOMOD.models.out")
   
@@ -770,7 +767,54 @@ BIOMOD_EnsembleModeling <- function(bm.mod,
     .fun_testIfIn(TRUE, "models.chosen", models.chosen, bm.mod@models.computed)
   }
   
-  ## 3. Check metric.select ---------------------------------------------------
+  # 3. check argument em.algo ----------------------------------------------
+  em.avail.check <- c('prob.mean', 'prob.cv', 'prob.ci',
+                      'prob.median', 'committee.averaging', 'prob.mean.weight')
+  em.avail <- c('prob.mean', 'prob.cv', 'prob.ci.inf', 'prob.ci.sup',
+                'prob.median', 'committee.averaging', 'prob.mean.weight')
+  
+  if (missing(em.algo)) {
+    if (all(c(missing(prob.mean), missing(prob.cv),
+              missing(prob.ci), missing(prob.median),
+              missing(committee.averaging), missing(prob.mean.weight)))) {
+      em.algo <- 'prob.mean'
+      cat("\n! setting em.algo to its default value c('prob.mean')")
+    } else {
+      if (missing(prob.mean)) prob.mean <- FALSE
+      if (missing(prob.cv)) prob.cv <- FALSE
+      if (missing(prob.ci)) prob.ci <- FALSE
+      if (missing(prob.median)) prob.median <- FALSE
+      if (missing(committee.averaging)) committee.averaging <- FALSE
+      if (missing(prob.mean.weight)) prob.mean.weight <- FALSE
+      
+      if (!is.logical(prob.mean) | !is.logical(prob.median) |
+          !is.logical(prob.cv) | !is.logical(prob.ci) | 
+          !is.logical(committee.averaging) | !is.logical(prob.mean.weight)) {
+        stop("prob.mean, prob.cv, prob.ci, prob.median, committee.averaging and prob.mean.weight arguments must be logical")
+      }
+      
+      em.algo <- em.avail[c(prob.mean, prob.cv,  prob.ci,  prob.ci,
+                            prob.median, committee.averaging, prob.mean.weight)]
+      
+      em.algo.user <- em.avail.check[c(prob.mean, prob.cv, 
+                                       prob.ci, prob.median,
+                                       committee.averaging, prob.mean.weight)]
+      # warning for obsolete arguments
+      cat(paste0("\n   ! arguments ", paste0(em.avail.check[-6], collapse = ", "),
+          " and ",em.avail.check[6], " are obsolete. Please use `em.algo = c('",paste0(em.algo.user, collapse = "', '"),"')` instead."))
+    }
+  } else {
+    .fun_testIfIn(TRUE, "em.algo", em.algo, em.avail.check)
+    em.algo <- unique(em.algo)
+    testCI <- grepl(pattern = "prob.ci", x = em.algo)
+    if(any(testCI)){
+      em.algo <- em.algo[-which(testCI)]
+      em.algo <- c(em.algo, 'prob.ci.inf', 'prob.ci.sup')
+    }
+  }
+  
+  
+  ## 4. Check metric.select ---------------------------------------------------
   if (!is.null(metric.select)) {
     if (!is.character(metric.select)) {
       stop("metric.select must be a character vector or NULL")
@@ -793,7 +837,7 @@ BIOMOD_EnsembleModeling <- function(bm.mod,
     }
   }
   
-  ## 4. Check metric.select.thresh --------------------------------------------
+  ## 5. Check metric.select.thresh --------------------------------------------
   if (!is.null(metric.select)) {
     if (!is.null(metric.select.thresh)) {
       if (!is.numeric(metric.select.thresh)) {
@@ -813,35 +857,29 @@ BIOMOD_EnsembleModeling <- function(bm.mod,
     metric.select <- 'none'
   }
   
-  ## 5. Check metric.eval -----------------------------------------------------
+  ## 6. Check metric.eval -----------------------------------------------------
   metric.eval <- unique(metric.eval)
   avail.eval.meth.list <- c('TSS', 'KAPPA', 'ACCURACY', 'BIAS', 'POD', 'FAR', 'POFD'
                             , 'SR', 'CSI', 'ETS', 'HK', 'HSS', 'OR', 'ORSS', 'ROC')
   .fun_testIfIn(TRUE, "metric.eval", metric.eval, avail.eval.meth.list)
   
-  ## 6. Check selected EM algo ------------------------------------------------
-  if (!is.logical(prob.mean) | !is.logical(prob.median) |
-      !is.logical(prob.cv) | !is.logical(prob.ci) | 
-      !is.logical(committee.averaging) | !is.logical(prob.mean.weight)) {
-    stop("prob.mean, prob.cv, prob.ci, prob.median, committee.averaging and prob.mean.weight arguments must be logical")
-  }
-  if (is.null(metric.select) && (committee.averaging | prob.mean.weight)) {
+  ## 7. Check selected EM algo ------------------------------------------------
+
+  if (is.null(metric.select) && 
+      any(c("committee.averaging", "prob.mean.weight") %in% em.algo)) {
     stop("You must choose metric.select if you want to compute Committee Averaging or Probability Weighted Mean algorithms")
   }
-  
-  if(all(! c(prob.mean, prob.median, prob.cv, prob.ci, committee.averaging, prob.mean.weight))){
-    stop("at least one of prob.mean, prob.cv, prob.ci, prob.median, committee.averaging and prob.mean.weight must be set to TRUE")
-  }
-  ## 6.1 Check alpha for Confident interval
-  if (prob.ci) {
+
+  ## 7.1 Check alpha for Confident interval
+  if ("prob.ci" %in% em.algo) {
     .fun_testIfPosNum(TRUE, "prob.ci.alpha", prob.ci.alpha)
     if (prob.ci.alpha <= 0 | prob.ci.alpha >= 0.5) {
       stop("prob.ci.alpha must be a numeric between 0 and 0.5")
     }
   }
   
-  ## 6.2 Check decay for wmean
-  if (prob.mean.weight) {
+  ## 7.2 Check decay for wmean
+  if ("prob.mean.weight" %in% em.algo) {
     if ((!is.numeric(prob.mean.weight.decay) &&
          !is.character(prob.mean.weight.decay) &&
          !is.function(prob.mean.weight.decay)) ||
@@ -851,14 +889,14 @@ BIOMOD_EnsembleModeling <- function(bm.mod,
     }
   }
   
-  ## 7. Check em.by -----------------------------------------------------------
+  ## 8. Check em.by -----------------------------------------------------------
   if(length(em.by) != 1){
     stop("\nem.by should be of length 1")
   }
   .fun_testIfIn(TRUE, "em.by", em.by, c('PA_dataset', 'algo', 'all', 'PA_dataset+repet', 'PA_dataset+algo'))
   
   
-  ## 8. Check that ensemble model have > 1 model to run -------------
+  ## 9. Check that ensemble model have > 1 model to run -------------
   ## make a list of models names that will be combined together according to em.by argument
   em.mod.assemb <- .get_models_assembling(models.chosen, em.by)
   ### Check that all EM have > 1 model selected ----------------------------
@@ -894,21 +932,19 @@ BIOMOD_EnsembleModeling <- function(bm.mod,
     }
   }
   
+  
+  
+  
   ## Return Args ------------------------------------------------
   return(list(bm.mod = bm.mod,
               models.chosen = models.chosen,
+              em.algo = em.algo,
               metric.select = metric.select,
               metric.select.thresh = metric.select.thresh,
               metric.select.user = metric.select.user,
               metric.select.table = metric.select.table,
               metric.eval = metric.eval,
-              prob.mean = prob.mean,
-              prob.cv = prob.cv,
-              prob.ci = prob.ci,
               prob.ci.alpha = prob.ci.alpha,
-              prob.median = prob.median,
-              committee.averaging = committee.averaging,
-              prob.mean.weight = prob.mean.weight,
               prob.mean.weight.decay = prob.mean.weight.decay,
               em.by = em.by,
               em.mod.assemb = em.mod.assemb))
