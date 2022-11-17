@@ -689,7 +689,7 @@ bm_RunModel <- function(model, Data, modeling.id = '', bm.options, calib.lines,
                       expl_var_type = get_var_type(Data[calib.lines, expl_var_names, drop = FALSE]), 
                       expl_var_range = get_var_range(Data[calib.lines, expl_var_names, drop = FALSE]))
       
-      # for MAXENT.Phillips predicitons are calculated in the same time than models building to save time.
+      # for MAXENT.Phillips predictions are calculated in the same time than models building to save time.
       cat("\n Getting predictions...")
       g.pred <- try(round(as.numeric(read.csv(MWD$m_outputFile)[, 3]) * 1000))
       

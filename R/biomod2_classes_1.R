@@ -304,15 +304,10 @@ setMethod('BIOMOD.formated.data', signature(sp = 'numeric', env = 'SpatRaster'),
           function(sp, env, xy = NULL, dir.name = '.', sp.name = NULL
                    , eval.sp = NULL, eval.env = NULL, eval.xy = NULL
                    , na.rm = TRUE) {
-            categorical_var <- names(env)[is.factor(env)]
+
             ## Keep same env variable for eval than calib (+ check for factor)
             if (!is.null(eval.sp) && is.null(eval.env)) {
               eval.env <- as.data.frame(extract(env, eval.xy, ID = FALSE))
-              if (length(categorical_var) > 0) {
-                for (cat_var in categorical_var) {
-                  eval.env[, cat_var] <- as.factor(eval.env[, cat_var])
-                }
-              }
             }
             
             if (is.null(xy)) {xy <- as.data.frame(crds(env)) }
@@ -323,7 +318,9 @@ setMethod('BIOMOD.formated.data', signature(sp = 'numeric', env = 'SpatRaster'),
             ## Keep same env variable for eval than calib (+ check for factor)
             env <- as.data.frame(extract(env, xy, factors = TRUE, ID = FALSE))
             
-            BFD <- BIOMOD.formated.data(sp, env, xy, dir.name, sp.name, eval.sp, eval.env, eval.xy, na.rm = na.rm, data.mask = data.mask)
+            BFD <- BIOMOD.formated.data(sp, env, xy, dir.name, sp.name, 
+                                        eval.sp, eval.env, eval.xy,
+                                        na.rm = na.rm, data.mask = data.mask)
             return(BFD)
           }
 )
@@ -671,8 +668,6 @@ setMethod('BIOMOD.formated.data.PA', signature(sp = 'numeric', env = 'SpatRaster
   if (!is.null(eval.sp) && is.null(eval.env)) {
     if (inherits(env, 'SpatRaster')) {
       eval.env <- as.data.frame(extract(env, eval.xy, ID = FALSE))
-      # probably obsolete line as terra properly extract factors ?
-      .categorical2numeric(eval.env, categorical_var)
     } else { 
       stop("No evaluation explanatory variable given") 
     }
