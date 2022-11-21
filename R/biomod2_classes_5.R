@@ -100,7 +100,7 @@ NULL
 
 ## 9.1 Class Definition ---------------------------------------------------------
 setClass('biomod2_ensemble_model',
-         representation(modeling.id = 'character'), ##maybe some additional args should be added here
+         representation(modeling.id = 'character'), ## maybe some additional args should be added here
          contains = 'biomod2_model',
          prototype = list(model_class = 'EM'),
          validity = function(object) { return(TRUE) })

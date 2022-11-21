@@ -289,7 +289,7 @@ BIOMOD_EnsembleForecasting <- function(bm.em,
   
   ## 3. Get needed projections --------------------------------------------------------------------
   needed_predictions <- get_needed_models(bm.em, models.chosen = models.chosen)
-  if (length(bm.proj)) {
+  if (!is.null(bm.proj)) {
     formal_pred <- get_predictions(bm.proj,
                                    full.name = needed_predictions,
                                    as.data.frame = ifelse(bm.proj@type == 'array', TRUE, FALSE))

@@ -491,7 +491,9 @@ setMethod("get_predictions", "BIOMOD.models.out",
 ##' @export
 ##' 
 
-setMethod("get_built_models", "BIOMOD.models.out", function(obj, ...) { return(obj@models.computed) })
+setMethod("get_built_models", "BIOMOD.models.out", function(obj, ...) { 
+  return(obj@models.computed)
+})
 
 ## get_evaluations.BIOMOD.models.out ---------------------------------------------------
 ##' 
@@ -795,7 +797,9 @@ setMethod('show', signature('BIOMOD.projection.out'),
 ##' @export
 ##' 
 
-setMethod("get_projected_models", "BIOMOD.projection.out", function(obj){ return(obj@models.projected) })
+setMethod("get_projected_models", "BIOMOD.projection.out", function(obj){
+  return(obj@models.projected) 
+})
 
 ## free.BIOMOD.projection.out --------------------------------------------------
 ##' 
@@ -883,7 +887,7 @@ setMethod("get_predictions", "BIOMOD.projection.out",
               }
             } else { 
               out <- NULL 
-              }
+            }
             
             return(out)
           }
@@ -1152,7 +1156,7 @@ setMethod("get_kept_models", "BIOMOD.ensemble.models.out",
 
 setMethod("get_predictions", "BIOMOD.ensemble.models.out",
           function(obj, as.data.frame = FALSE, evaluation = FALSE, full.name = NULL)
-                   # , model = NULL, run.eval = NULL, data.set = NULL)
+            # , model = NULL, run.eval = NULL, data.set = NULL)
           {
             # select models to be returned
             models_selected <- get_built_models(obj)
