@@ -325,51 +325,76 @@ changes) as function arguments (see <a href="https://biomodhub.github.io/biomod2
 </ul></div>
     <div id="maxent-phillips-">
     <h2>MAXENT.Phillips </h2>
-    <p>(<a href="https://biodiversityinformatics.amnh.org/open_source/maxent/" class="external-link">https://biodiversityinformatics.amnh.org/open_source/maxent/</a>)</p><ul><li><p><code>path_to_maxent.jar = getwd()</code> : a <code>character</code> corresponding to 
-  <span class="pkg">maxent.jar</span> file link</p></li>
-<li><p><code>memory_allocated = 512</code> : an <code>integer</code> corresponding to the amount of 
-  memory (in Mo) reserved for <code>java</code> to run <code>MAXENT.Phillips</code>, must be <code>64</code>, 
-  <code>128</code>, <code>256</code>, <code>512</code>, <code>1024</code>... or <code>NULL</code> to use default <code>java</code> 
+    <p>(<a href="https://biodiversityinformatics.amnh.org/open_source/maxent/" class="external-link">https://biodiversityinformatics.amnh.org/open_source/maxent/</a>)</p><ul><li><p><code>path_to_maxent.jar = getwd()</code> : a <code>character</code>
+  corresponding to <span class="pkg">maxent.jar</span> file link</p></li>
+<li><p><code>memory_allocated = 512</code> : an <code>integer</code> corresponding to
+  the amount of memory (in Mo) reserved for <code>java</code> to run
+  <code>MAXENT.Phillips</code>, must be <code>64</code>, <code>128</code>, <code>256</code>,
+  <code>512</code>, <code>1024</code>... or <code>NULL</code> to use default <code>java</code>
   memory limitation parameter</p></li>
-<li><p><code>background_data_dir</code> : a <code>character</code> corresponding to directory path 
-  where explanatory variables are stored as <code>ASCII</code> files (raster format). If specified, 
-  <code>MAXENT.Phillips</code> will generate its own background data from explanatory 
-  variables rasters (as usually done in <code>MAXENT</code> studies). Otherwise <span class="pkg">biomod2</span> 
-  pseudo-absences will be used (see <code><a href="BIOMOD_FormatingData.html">BIOMOD_FormatingData</a></code>)</p></li>
-<li><p><code>maximumbackground</code> : an <code>integer</code> corresponding to the maximum number of 
-  background data to sample if the <code>background_data_dir</code> parameter has been set</p></li>
-<li><p><code>maximumiterations = 200</code> : an <code>integer</code> corresponding to the maximum 
-  number of iterations to do</p></li>
-<li><p><code>visible = FALSE</code> : a <code>logical</code> to make the <code>MAXENT</code> user interface 
-  available</p></li>
-<li><p><code>linear = TRUE</code> : a <code>logical</code> to allow linear features to be used</p></li>
-<li><p><code>quadratic = TRUE</code> : a <code>logical</code> to allow quadratic features to be used</p></li>
-<li><p><code>product = TRUE</code> : a <code>logical</code> to allow product features to be used</p></li>
-<li><p><code>threshold = TRUE</code> : a <code>logical</code> to allow threshold features to be used</p></li>
-<li><p><code>hinge = TRUE</code> : a <code>logical</code> to allow hinge features to be used</p></li>
-<li><p><code>lq2lqptthreshold = 80</code> : an <code>integer</code> corresponding to the number of 
-  samples at which product and threshold features start being used</p></li>
-<li><p><code>l2lqthreshold = 10</code> : an <code>integer</code> corresponding to the number of samples 
-  at which quadratic features start being used</p></li>
-<li><p><code>hingethreshold = 15</code> : an <code>integer</code> corresponding to the number of 
-  samples at which hinge features start being used</p></li>
-<li><p><code>beta_threshold = -1.0</code> : a <code>numeric</code> corresponding to the regularization 
-  parameter to be applied to all threshold features 
+<li><p><code>initial_heap_size = NULL</code> : a <code>character</code> initial heap
+  space (shared memory space) allocated to java. Argument transmitted to
+  <code>-Xms</code> when calling java. Used in <code><a href="BIOMOD_Projection.html">BIOMOD_Projection</a></code> but
+  not in <code><a href="BIOMOD_Modeling.html">BIOMOD_Modeling</a></code>. Values can be <code>1024K</code>,
+  <code>4096M</code>, <code>10G</code> ... or <code>NULL</code> to use default <code>java</code>
+  parameter</p></li>
+<li><p><code>max_heap_size = NULL</code> : a <code>character</code> initial heap
+  space (shared memory space) allocated to java. Argument transmitted to
+  <code>-Xmx</code> when calling java. Used in <code><a href="BIOMOD_Projection.html">BIOMOD_Projection</a></code> but
+  not in <code><a href="BIOMOD_Modeling.html">BIOMOD_Modeling</a></code>. Must be larger than
+  <code>initial_heap_size</code>. Values can be <code>1024K</code>, <code>4096M</code>,
+  <code>10G</code> ... or <code>NULL</code> to use default <code>java</code> parameter</p></li>
+<li><p><code>background_data_dir</code> : a <code>character</code> corresponding to
+  directory path where explanatory variables are stored as <code>ASCII</code>
+  files (raster format). If specified, <code>MAXENT.Phillips</code> will generate
+  its own background data from explanatory variables rasters (as usually
+  done in <code>MAXENT</code> studies). Otherwise <span class="pkg">biomod2</span> pseudo-absences
+  will be used (see <code><a href="BIOMOD_FormatingData.html">BIOMOD_FormatingData</a></code>)</p></li>
+<li><p><code>maximumbackground</code> : an <code>integer</code> corresponding to the
+  maximum number of background data to sample if the
+  <code>background_data_dir</code> parameter has been set</p></li>
+<li><p><code>maximumiterations = 200</code> : an <code>integer</code> corresponding
+  to the maximum number of iterations to do</p></li>
+<li><p><code>visible = FALSE</code> : a <code>logical</code> to make the
+  <code>MAXENT</code> user interface available</p></li>
+<li><p><code>linear = TRUE</code> : a <code>logical</code> to allow linear features
+  to be used</p></li>
+<li><p><code>quadratic = TRUE</code> : a <code>logical</code> to allow
+  quadratic features to be used</p></li>
+<li><p><code>product = TRUE</code> : a <code>logical</code> to allow product features
+  to be used</p></li>
+<li><p><code>threshold = TRUE</code> : a <code>logical</code> to allow threshold
+  features to be used</p></li>
+<li><p><code>hinge = TRUE</code> : a <code>logical</code> to allow hinge features to
+  be used</p></li>
+<li><p><code>lq2lqptthreshold = 80</code> : an <code>integer</code>
+  corresponding to the number of samples at which product and threshold
+  features start being used</p></li>
+<li><p><code>l2lqthreshold = 10</code> : an
+  <code>integer</code> corresponding to the number of samples at which quadratic
+  features start being used</p></li>
+<li><p><code>hingethreshold = 15</code> : an
+  <code>integer</code> corresponding to the number of samples at which hinge
+  features start being used</p></li>
+<li><p><code>beta_threshold = -1.0</code> : a
+  <code>numeric</code> corresponding to the regularization parameter to be applied
+  to all threshold features (<em>negative value enables automatic
+  setting</em>)</p></li>
+<li><p><code>beta_categorical = -1.0</code> : a <code>numeric</code>
+  corresponding to the regularization parameter to be applied to all
+  categorical features (<em>negative value enables automatic setting</em>)</p></li>
+<li><p><code>beta_lqp = -1.0</code> : a <code>numeric</code> corresponding to the
+  regularization parameter to be applied to all linear, quadratic and
+  product features (<em>negative value enables automatic setting</em>)</p></li>
+<li><p><code>beta_hinge = -1.0</code> : a <code>numeric</code> corresponding to the
+  regularization parameter to be applied to all hinge features
   (<em>negative value enables automatic setting</em>)</p></li>
-<li><p><code>beta_categorical = -1.0</code> : a <code>numeric</code> corresponding to the 
-  regularization parameter to be applied to all categorical features 
-  (<em>negative value enables automatic setting</em>)</p></li>
-<li><p><code>beta_lqp = -1.0</code> : a <code>numeric</code> corresponding to the regularization 
-  parameter to be applied to all linear, quadratic and product features 
-  (<em>negative value enables automatic setting</em>)</p></li>
-<li><p><code>beta_hinge = -1.0</code> : a <code>numeric</code> corresponding to the regularization 
-  parameter to be applied to all hinge features 
-  (<em>negative value enables automatic setting</em>)</p></li>
-<li><p><code>betamultiplier = 1</code> : a <code>numeric</code> to multiply all automatic 
-  regularization parameters <br> 
-  (<em>higher number gives a more spread-out distribution</em>)</p></li>
-<li><p><code>defaultprevalence = 0.5</code> : a <code>numeric</code> corresponding to the default 
-  prevalence of the species <br> (<em>probability of presence at ordinary occurrence points</em>)</p></li>
+<li><p><code>betamultiplier = 1</code> : a <code>numeric</code> to multiply all
+  automatic regularization parameters <br> (<em>higher number gives a more
+  spread-out distribution</em>)</p></li>
+<li><p><code>defaultprevalence = 0.5</code> : a
+  <code>numeric</code> corresponding to the default prevalence of the species <br>
+  (<em>probability of presence at ordinary occurrence points</em>)</p></li>
 </ul><p><!-- % @section \bold{MAXENT.Tsuruoka (\code{\link[maxent]{maxent}})} : -->
 <!-- % \itemize{ -->
 <!-- %   \item{\code{l1_regularizer = 0.0}}{ : a \code{numeric} turning on L1 regularization and setting  -->
@@ -430,7 +455,7 @@ changes) as function arguments (see <a href="https://biomodhub.github.io/biomod2
 <span><span class="va">myExpl</span> <span class="op">&lt;-</span> <span class="fu">terra</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/terra/man/crop.html" class="external-link">crop</a></span><span class="op">(</span><span class="va">myExpl</span>, <span class="va">myExtent</span><span class="op">)</span></span>
 <span><span class="co"># }</span></span>
 <span></span>
-<span><span class="co"># ---------------------------------------------------------------</span></span>
+<span><span class="co"># ---------------------------------------------------------------#</span></span>
 <span><span class="co"># Format Data with true absences</span></span>
 <span><span class="va">myBiomodData</span> <span class="op">&lt;-</span> <span class="fu"><a href="BIOMOD_FormatingData.html">BIOMOD_FormatingData</a></span><span class="op">(</span>resp.var <span class="op">=</span> <span class="va">myResp</span>,</span>
 <span>                                     expl.var <span class="op">=</span> <span class="va">myExpl</span>,</span>
@@ -438,7 +463,7 @@ changes) as function arguments (see <a href="https://biomodhub.github.io/biomod2
 <span>                                     resp.name <span class="op">=</span> <span class="va">myRespName</span><span class="op">)</span></span>
 <span></span>
 <span></span>
-<span><span class="co"># ---------------------------------------------------------------</span></span>
+<span><span class="co"># ---------------------------------------------------------------#</span></span>
 <span><span class="co"># Print default modeling options</span></span>
 <span><span class="fu">bm_DefaultModelingOptions</span><span class="op">(</span><span class="op">)</span></span>
 <span></span>
