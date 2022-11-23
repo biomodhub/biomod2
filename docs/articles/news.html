@@ -158,10 +158,47 @@ prob.ci, committee.averaging, prob.mean.weight)</li>
 </div>
 </div>
 <div class="section level4">
-<h4 id="terra-update">4.2-0 Terra Update<a class="anchor" aria-label="anchor" href="#terra-update"></a>
+<h4 id="bugfix-patch">4.2-1 Bugfix patch<a class="anchor" aria-label="anchor" href="#bugfix-patch"></a>
 </h4>
 <div class="section level5">
 <h5 id="major-changes-1">Major Changes<a class="anchor" aria-label="anchor" href="#major-changes-1"></a>
+</h5>
+<ul>
+<li>Package <code>sp</code> is back into <code>Imports</code> due to the
+need to use <code><a href="https://rdrr.io/pkg/sp/man/asciigrid.html" class="external-link">sp::read.asciigrid</a></code>
+</li>
+</ul>
+</div>
+<div class="section level5">
+<h5 id="minor-changes-1">Minor Changes<a class="anchor" aria-label="anchor" href="#minor-changes-1"></a>
+</h5>
+<ul>
+<li>Added <code>initial_heap_size</code> and <code>max_heap_size</code>
+in <code>MAXENT.Phillips</code> modeling options</li>
+</ul>
+</div>
+<div class="section level5">
+<h5 id="bugfix-1">Bugfix<a class="anchor" aria-label="anchor" href="#bugfix-1"></a>
+</h5>
+<ul>
+<li>Fixed <code>MAXENT.Phillips</code> predict method for large dataset
+(require <code><a href="https://rdrr.io/pkg/sp/man/asciigrid.html" class="external-link">sp::read.asciigrid</a></code>).</li>
+<li>fixed ensemble models using a single PA dataset with em.by = ‘all’
+or ‘algo’</li>
+<li>models using repetition dataset cannot be merged anymore with models
+using Full dataset in <code>BIOMOD_EnsembleModeling</code>
+</li>
+<li>Fixed error in <code>BIOMOD_EnsembleForecasting</code> when a single
+evaluation metric was available and binary/filtered transformation were
+asked for.</li>
+</ul>
+</div>
+</div>
+<div class="section level4">
+<h4 id="terra-update">4.2-0 Terra Update<a class="anchor" aria-label="anchor" href="#terra-update"></a>
+</h4>
+<div class="section level5">
+<h5 id="major-changes-2">Major Changes<a class="anchor" aria-label="anchor" href="#major-changes-2"></a>
 </h5>
 <ul>
 <li>Package now rely only on <code>terra</code>
@@ -177,7 +214,7 @@ supported.</li>
 </ul>
 </div>
 <div class="section level5">
-<h5 id="minor-changes-1">Minor Changes<a class="anchor" aria-label="anchor" href="#minor-changes-1"></a>
+<h5 id="minor-changes-2">Minor Changes<a class="anchor" aria-label="anchor" href="#minor-changes-2"></a>
 </h5>
 <ul>
 <li>
@@ -207,7 +244,7 @@ future.</li>
 </ul>
 </div>
 <div class="section level5">
-<h5 id="bugfix-1">Bugfix<a class="anchor" aria-label="anchor" href="#bugfix-1"></a>
+<h5 id="bugfix-2">Bugfix<a class="anchor" aria-label="anchor" href="#bugfix-2"></a>
 </h5>
 <ul>
 <li>MAXENT.Phillips models can now properly fail</li>
@@ -277,7 +314,7 @@ CompteurSp that was defined within a function.</li>
 <h4 id="section-1">4.1-3<a class="anchor" aria-label="anchor" href="#section-1"></a>
 </h4>
 <div class="section level5">
-<h5 id="bugfix-2">Bugfix<a class="anchor" aria-label="anchor" href="#bugfix-2"></a>
+<h5 id="bugfix-3">Bugfix<a class="anchor" aria-label="anchor" href="#bugfix-3"></a>
 </h5>
 <ul>
 <li>Ensemble models that fails (e.g. EMcv with only one models) will not
@@ -306,7 +343,7 @@ instead of matrix.</p></li>
 <h4 id="current-cran-version">4.1-2 (2022-09-29 - Current CRAN Version)<a class="anchor" aria-label="anchor" href="#current-cran-version"></a>
 </h4>
 <div class="section level5">
-<h5 id="major-changes-2">Major changes<a class="anchor" aria-label="anchor" href="#major-changes-2"></a>
+<h5 id="major-changes-3">Major changes<a class="anchor" aria-label="anchor" href="#major-changes-3"></a>
 </h5>
 <ul>
 <li>
@@ -321,7 +358,7 @@ environmental space supplied.</li>
 </ul>
 </div>
 <div class="section level5">
-<h5 id="minor-changes-2">Minor changes<a class="anchor" aria-label="anchor" href="#minor-changes-2"></a>
+<h5 id="minor-changes-3">Minor changes<a class="anchor" aria-label="anchor" href="#minor-changes-3"></a>
 </h5>
 <ul>
 <li>Individual EM models projected as raster are now saved with
