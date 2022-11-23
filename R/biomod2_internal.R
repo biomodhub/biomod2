@@ -605,3 +605,33 @@ get_var_range <- function(data)
   df
 }
 
+
+## Categorical to numeric ---------------------------------------
+##' @name .check_bytes_format
+##' 
+##' @title Check bytes formatting 
+##' 
+##' @description Internal function that check a character string to match a byte
+##' format for Java. e.g. 1024M, 1024m, 1024k or 1024K
+##' 
+##' @param x string to be transformed
+##' @return a boolean
+##' @keywords internal
+
+.check_bytes_format <- function(this_test, x, varname){
+  possible_suffix <- c("k","K","m","M","g","G")
+  this_suffix <- substr(x, nchar(x), nchar(x))
+  this_number <- substr(x, 1, nchar(x)-1)
+  if (! this_suffix %in% possible_suffix) {
+    this_test <- FALSE
+    cat(paste0("\nMAXENT.Phillips$",varname," last letter must be among ",
+               paste0(possible_suffix[-length(possible_suffix)], collapse = ", "),
+               "", " and ", possible_suffix[length(possible_suffix)],". Current value = '", this_suffix,"' was not usable."))
+  }
+  if (suppressWarnings(is.na(as.numeric(this_number)))) {
+    this_test <- FALSE
+    cat(paste0("\nMAXENT.Phillips$",varname," must be a number plus a single letter. Begginning of the given argument was '", this_number, "' and was not convertible into a number."))
+  }
+  return(this_test)
+}
+

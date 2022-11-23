@@ -178,7 +178,7 @@ bm_PlotRangeSize <- function(bm.range, do.count = TRUE, do.perc = TRUE
   ## 0. Check arguments ---------------------------------------------------------------------------
   if (!is.list(bm.range) ||
       (is.list(bm.range) && length(bm.range) != 2) ||
-      (is.list(bm.range) && length(bm.range) == 2 && sum(names(bm.range) == c("Compt.By.Models", "Diff.By.Pixel")) != 2)) {
+      (is.list(bm.range) && length(bm.range) == 2 && !all(c("Compt.By.Models", "Diff.By.Pixel") %in% names(bm.range)))) {
     stop("'bm.range' must be an object obtained by the BIOMOD_RangeSize function")
   }
   out = list()

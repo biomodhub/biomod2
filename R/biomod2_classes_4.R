@@ -775,7 +775,10 @@ setMethod('predict2', signature(object = 'MAXENT.Phillips_biomod2_model', newdat
             newraster[] <- NA
             newdata <- na.exclude(as.points(newdata))
             newraster[cellFromXY(newraster, crds(newdata))] <- 1
-            newdata <- as.data.frame(newdata, stringsAsFactors = TRUE)
+            newdata.crds <- crds(newdata)
+            newdata <- cbind(newdata.crds, 
+                             as.data.frame(newdata, 
+                                           stringsAsFactors = TRUE))
             # redirect to the data.frame method, but asking to save a raster
             # with template newraster
             predict2(object, newdata,
@@ -785,6 +788,8 @@ setMethod('predict2', signature(object = 'MAXENT.Phillips_biomod2_model', newdat
 
 
 ##' @rdname predict2.bm
+##' @importFrom sp read.asciigrid
+
 setMethod('predict2', signature(object = 'MAXENT.Phillips_biomod2_model', newdata = "data.frame"),
           function(object, newdata, do_raster = FALSE, newraster = NULL, ...) {
             
@@ -794,9 +799,13 @@ setMethod('predict2', signature(object = 'MAXENT.Phillips_biomod2_model', newdat
             
             if (is.null(on_0_1000)) { on_0_1000 <- FALSE }
             
-            ## check if na occurs in newdata cause they are not well supported
-            not_na_rows <- apply(newdata, 1, function(x){ sum(is.na(x)) == 0 })
-            newdata = as.data.frame(newdata[not_na_rows, , drop = FALSE])
+            if(!do_raster){ # otherwise na were already filtered
+              ## check if na occurs in newdata cause they are not well supported
+              not_na_rows <- apply(newdata, 1, function(x){ all(!is.na(x)) })
+              if(!all(not_na_rows)){
+                newdata  <-  newdata[not_na_rows, , drop = FALSE]
+              }
+            }
             
             # get categorical variables and transform them into numeric
             categorical_var <- .get_categorical_names(newdata)
@@ -809,7 +818,7 @@ setMethod('predict2', signature(object = 'MAXENT.Phillips_biomod2_model', newdat
             ## there is no need to provide meaningful values.
             Pred_swd <- read.csv(file.path(temp_workdir, "Predictions/Pred_swd.csv"))
             if (nrow(Pred_swd) != nrow(newdata)) {
-              tmp = cbind(newdata[, 1], newdata[, 1], newdata[, 1])
+              tmp = cbind("predict", newdata[, 1], newdata[, 2])
               colnames(tmp) = c("predict", "x", "y")
               Pred_swd = cbind(tmp, newdata)
             } else {
@@ -828,18 +837,34 @@ setMethod('predict2', signature(object = 'MAXENT.Phillips_biomod2_model', newdat
               path_to_maxent.jar <-  file.path(getwd(), "maxent.jar")
             }
             
+            # browser()
             # cat("\n\t\tRunning Maxent...")
-            maxent.command <- paste0("java ", ifelse(is.null(object@model_options$memory_allocated), "", paste0("-mx", object@model_options$memory_allocated, "m")),
-                                     " -cp ", "\"", path_to_maxent.jar, "\"",
-                                     " density.Project ",
-                                     "\"", list.files(path = object@model_output_dir, pattern = ".lambdas$", full.names = TRUE), "\" ",
-                                     "\"", m_predictFile, "\" ",
-                                     "\"", file.path(temp_workdir, "projMaxent.asc") , "\" ",
-                                     "doclamp=false visible=false autorun nowarnings notooltips")
+            maxent.command <- 
+              paste0("java ",
+                     ifelse(is.null(object@model_options$memory_allocated), "",
+                            paste0("-mx", object@model_options$memory_allocated, "m")),
+                     ifelse(is.null(object@model_options$initial_heap_size), "",
+                            paste0(" -Xms", object@model_options$initial_heap_size)),
+                     ifelse(is.null(object@model_options$max_heap_size), "",
+                            paste0(" -Xmx", object@model_options$max_heap_size)),
+                     " -cp ", "\"", path_to_maxent.jar, "\"",
+                     " density.Project ",
+                     "\"", list.files(path = object@model_output_dir, pattern = ".lambdas$", full.names = TRUE), "\" ",
+                     "\"", m_predictFile, "\" ",
+                     "\"", file.path(temp_workdir, "projMaxent.asc") , "\" ",
+                     "doclamp=false visible=false autorun nowarnings notooltips")
             system(command = maxent.command, wait = TRUE, intern = TRUE)
             
+            
+            # remove maxent data file 
+            file.remove(m_predictFile)
+            
+            
             # cat("\n\t\tReading Maxent outputs...")
-            proj <- as.numeric(values(rast(file.path(temp_workdir, "projMaxent.asc")), mat = FALSE))
+            # As of 23/11/2022 rast does not seem to work for large asciigrid. 
+            # So dependence to sp was added again.
+            # proj <- as.numeric(values(rast(file.path(temp_workdir, "projMaxent.asc")), mat = FALSE))
+            proj <- as.numeric(read.asciigrid(file.path(temp_workdir, "projMaxent.asc"))@data[, 1])
             
             if (do_raster) {
               newraster[which(newraster[] == 1)] = proj

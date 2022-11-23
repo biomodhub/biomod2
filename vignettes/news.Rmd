@@ -29,6 +29,21 @@ prob.median, prob.cv, prob.ci, committee.averaging, prob.mean.weight)
 
 ##### Bugfix
 
+#### 4.2-1 Bugfix patch
+
+##### Major Changes
+
+* Package `sp` is back into `Imports` due to the need to use `sp::read.asciigrid`
+
+##### Minor Changes
+
+* Added `initial_heap_size` and `max_heap_size` in `MAXENT.Phillips` modeling options
+
+##### Bugfix
+
+* Fixed `MAXENT.Phillips` predict method for large dataset (require `sp::read.asciigrid`). 
+
+
 ####  4.2-0 Terra Update
 
 ##### Major Changes
