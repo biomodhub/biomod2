@@ -1122,6 +1122,8 @@ setClass("BIOMOD.models.options",
                              maxnodes = NULL),
                    MAXENT.Phillips = list(path_to_maxent.jar = getwd(),
                                           memory_allocated = 512,
+                                          initial_heap_size = NULL,
+                                          max_heap_size = NULL,
                                           background_data_dir = 'default',
                                           maximumbackground = 'default',
                                           maximumiterations = 200,
@@ -1147,20 +1149,40 @@ setClass("BIOMOD.models.options",
          validity = function(object) {
            test <- TRUE
            
-           ## GLM ##
-           test <- .fun_testIfIn(test, "GLM$type", object@GLM$type, c('simple', 'quadratic', 'polynomial', 'user.defined'))
+           ## GLM ------------------------------------------------------------
+           test <- .fun_testIfIn(test, "GLM$type", object@GLM$type,
+                                 c("simple", "quadratic", "polynomial", "user.defined"))
            test <- .fun_testIfPosInt(test, "GLM$interaction.level", object@GLM$interaction.level)
-           if (!is.null(object@GLM$myFormula)) if (!inherits(object@GLM$myFormula, "formula")) { cat("\nGLM$myFormula must be NULL or a formula object"); test <- FALSE }
-           test <- .fun_testIfIn(test, "GLM$test", object@GLM$test, c('AIC', 'BIC', 'none'))
-           fam <- 'none'
-           if (!inherits(object@GLM$family, "family")) { cat("\nGLM$family must be a valid family object"); test <- FALSE }
-           if (!is.list(object@GLM$control)) {cat("\nGLM$control must be a list like that returned by glm.control"); test <- FALSE}
            
-           ## GBM ##
-           test <- .fun_testIfIn(test, "GBM$distribution", object@GBM$distribution, c("bernoulli", "huberized", "multinomial", "adaboost"))
+           if (!is.null(object@GLM$myFormula) && 
+               !inherits(object@GLM$myFormula, "formula")) {
+             cat("\nGLM$myFormula must be NULL or a formula object")
+             test <- FALSE
+           }
+           
+           test <- .fun_testIfIn(test, "GLM$test", object@GLM$test, c("AIC", "BIC", "none"))
+           fam <- "none"
+           if (!inherits(object@GLM$family, "family")) {
+             cat("\nGLM$family must be a valid family object")
+             test <- FALSE
+           }
+           if (!is.list(object@GLM$control)) {
+             cat("\nGLM$control must be a list like that returned by glm.control")
+             test <- FALSE
+           }
+           
+           ## GBM ------------------------------------------------------------
+           test <- .fun_testIfIn(test, "GBM$distribution", object@GBM$distribution, 
+                                 c("bernoulli", "huberized", "multinomial", "adaboost"))
            # test <- .fun_testIfPosInt(test, "GBM$n.trees", object@GBM$n.trees)
-           if(!is.numeric(object@GBM$n.trees)){ cat("\nGBM$n.trees must be a integer"); test <- FALSE } else{
-             if(object@GBM$n.trees < 0 | floor(object@GBM$n.trees) != object@GBM$n.trees){ cat("\nGBM$n.trees must be a positive integer"); test <- FALSE }
+           if (!is.numeric(object@GBM$n.trees)) {
+             cat("\nGBM$n.trees must be a integer")
+             test <- FALSE
+           } else {
+             if (object@GBM$n.trees < 0 | floor(object@GBM$n.trees) != object@GBM$n.trees) {
+               cat("\nGBM$n.trees must be a positive integer")
+               test <- FALSE
+             }
            }
            test <- .fun_testIfPosInt(test, "GBM$interaction.depth", object@GBM$interaction.depth)
            test <- .fun_testIfPosInt(test, "GBM$n.minobsinnode", object@GBM$n.minobsinnode)
@@ -1168,108 +1190,265 @@ setClass("BIOMOD.models.options",
            test <- .fun_testIf01(test, "GBM$bag.fraction", object@GBM$bag.fraction)
            test <- .fun_testIf01(test, "GBM$train.fraction", object@GBM$train.fraction)
            test <- .fun_testIfPosInt(test, "GBM$cv.folds", object@GBM$cv.folds)
-           if(!is.logical(object@GBM$keep.data)){ cat("\nGBM$keep.data must be a logical"); test <- FALSE }
-           if(!is.logical(object@GBM$verbose)){ cat("\nGBM$verbose must be a logical"); test <- FALSE }
+           if (!is.logical(object@GBM$keep.data)) {
+             cat("\nGBM$keep.data must be a logical")
+             test <- FALSE
+           }
+           if (!is.logical(object@GBM$verbose)) {
+             cat("\nGBM$verbose must be a logical")
+             test <- FALSE
+           }
            # test <- .fun_testIfIn(test, "GBM$class.stratify.cv", object@GBM$class.stratify.cv, c('bernoulli', 'multinomial'))
-           test <- .fun_testIfIn(test, "GBM$perf.method", object@GBM$perf.method, c('OOB', 'test', 'cv'))
+           test <- .fun_testIfIn(test, "GBM$perf.method", object@GBM$perf.method, 
+                                 c('OOB', 'test', 'cv'))
            
-           ## GAM ##
-           test <- .fun_testIfIn(test, "GAM$algo", object@GAM$algo, c('GAM_mgcv', 'GAM_gam', 'BAM_mgcv'))
-           test <- .fun_testIfIn(test, "GAM$type", object@GAM$type, c('s_smoother', 's', 'lo', 'te'))
-           if(! is.null(object@GAM$k)){
-             if(! is.numeric(object@GAM$k)  ){ cat("\nGAM$k must be a integer"); test <- FALSE } else{
-               if(object@GAM$k < -1 | object@GAM$k%%1!=0){ cat("\nGAM$k must be > -1"); test <- FALSE }
+           ## GAM ------------------------------------------------------------
+           test <- .fun_testIfIn(test, "GAM$algo", object@GAM$algo,
+                                 c('GAM_mgcv', 'GAM_gam', 'BAM_mgcv'))
+           test <- .fun_testIfIn(test, "GAM$type", object@GAM$type,
+                                 c('s_smoother', 's', 'lo', 'te'))
+           if (!is.null(object@GAM$k)) {
+             if (!is.numeric(object@GAM$k)) {
+               cat("\nGAM$k must be a integer")
+               test <- FALSE
+             } else {
+               if (object@GAM$k < -1 | object@GAM$k %% 1 != 0) {
+                 cat("\nGAM$k must be > -1")
+                 test <- FALSE
+               }
              }
            }
            test <- .fun_testIfPosInt(test, "GAM$interaction.level", object@GAM$interaction.level)
-           if(!is.null(object@GAM$myFormula)) if(!inherits(object@GAM$myFormula, "formula")){ cat("\nGAM$myFormula must be NULL or a formula object"); test <- FALSE }
-           if(!inherits(object@GAM$family, "family")){ cat("\nGAM$family must be a valid family object"); test <- FALSE }
-           if(!is.list(object@GAM$control)){cat("\nGAM$control must be a list like that returned by gam.control"); test <- FALSE}
-           test <- .fun_testIfIn(test, "GAM$method", object@GAM$method, c('GCV.Cp', 'GACV.Cp', 'REML', 'P-REML', 'ML', 'P-ML'))
-           if(sum(! object@GAM$optimizer %in% c('perf','outer', 'newton', 'bfgs', 'optim', 'nlm', 'nlm.fd')) > 0 ){cat("\nGAM$optimizer bad definition (see ?mgcv::gam)") ; test <- FALSE}
-           if(!is.logical(object@GAM$select)){ cat("\nGAM$select must be a logical"); test <- FALSE }
+           if (!is.null(object@GAM$myFormula) &&
+               (!inherits(object@GAM$myFormula, "formula"))) {
+             cat("\nGAM$myFormula must be NULL or a formula object")
+             test <- FALSE
+           }
+           
+           if (!inherits(object@GAM$family, "family")) {
+             cat("\nGAM$family must be a valid family object")
+             test <- FALSE
+           }
+           if (!is.list(object@GAM$control)) {
+             cat("\nGAM$control must be a list like that returned by gam.control")
+             test <- FALSE
+           }
+           test <- .fun_testIfIn(test, "GAM$method", object@GAM$method,
+                                 c("GCV.Cp", "GACV.Cp", "REML", "P-REML", "ML", "P-ML"))
+           if (any(!object@GAM$optimizer %in% 
+                   c("perf", "outer", "newton", "bfgs", "optim", "nlm", "nlm.fd"))) {
+             cat("\nGAM$optimizer bad definition (see ?mgcv::gam)")
+             test <- FALSE
+           }
+           if (!is.logical(object@GAM$select)) {
+             cat("\nGAM$select must be a logical")
+             test <- FALSE
+           }
            #            knots=NULL,
            #            paraPen=NULL
            
-           ## CTA ##
-           test <- .fun_testIfIn(test, "CTA$method", object@CTA$method, c('anova', 'poisson', 'class', 'exp'))
+           ## CTA ------------------------------------------------------------
+           test <- .fun_testIfIn(test, "CTA$method", object@CTA$method, c("anova", "poisson", "class", "exp"))
            #parms = 'default',
-           if(!is.list(object@CTA$control)){cat("\nCTA$control must be a list like that returned by rpart.control"); test <- FALSE}
-           if(length(object@CTA$cost)){
-             if(!is.numeric(object@CTA$cost)){cat("\nCTA$cost must be a non negative cost vector"); test <- FALSE}
+           if (!is.list(object@CTA$control)) {
+             cat("\nCTA$control must be a list like that returned by rpart.control")
+             test <- FALSE
+           }
+           if (length(object@CTA$cost) && (!is.numeric(object@CTA$cost))) {
+             cat("\nCTA$cost must be a non negative cost vector")
+             test <- FALSE
            }
            
-           ## ANN ##
+           
+           ## ANN ------------------------------------------------------------
            test <- .fun_testIfPosInt(test, "ANN$NbCV", object@ANN$NbCV)
-           if( ( is.null(object@ANN$size) | length(object@ANN$size)>1 ) & object@ANN$NbCV <= 0){ cat("\nANN$size has to be defined as a single integer if ANN$NbCV=0"); test <- FALSE } else{
-             if(!is.null(object@ANN$size)) if( !is.numeric(object@ANN$size) | !all( object@ANN$size > 0 ) | !all( object@ANN$size %% 1 == 0 ) ){ cat("\nANN$size must be NULL or a positive (vector of) integer"); test <- FALSE }
+           if ((is.null(object@ANN$size) || length(object@ANN$size) > 1) &&
+               object@ANN$NbCV <= 0) {
+             cat("\nANN$size has to be defined as a single integer if ANN$NbCV=0")
+             test <- FALSE
+           } else {
+             if (!is.null(object@ANN$size) &&
+                 (!is.numeric(object@ANN$size) || !all(object@ANN$size > 0) || !all(object@ANN$size %% 1 == 0))) {
+               cat("\nANN$size must be NULL or a positive (vector of) integer")
+               test <- FALSE
+             }
            }
-           if( ( is.null(object@ANN$decay) | length(object@ANN$decay)>1 ) & object@ANN$NbCV <= 0){ cat("\nANN$decay has to be defined as a single number if ANN$NbCV=0"); test <- FALSE } else{
-             if(!is.null(object@ANN$decay)) if( !is.numeric(object@ANN$decay) | !all( object@ANN$decay > 0 ) ){ cat("\nANN$decay must be NULL or a positive (vector of) number"); test <- FALSE }
+           
+           
+           if ((is.null(object@ANN$decay) | length(object@ANN$decay) > 1) &&
+               object@ANN$NbCV <= 0) {
+             cat("\nANN$decay has to be defined as a single number if ANN$NbCV=0")
+             test <- FALSE
+           } else if (!is.null(object@ANN$decay) &&
+                      (!is.numeric(object@ANN$decay) || !all(object@ANN$decay > 0))) {
+             cat("\nANN$decay must be NULL or a positive (vector of) number")
+             test <- FALSE
            }
+           
            test <- .fun_testIfPosNum(test, "ANN$rang", object@ANN$rang)
            test <- .fun_testIfPosInt(test, "ANN$maxit", object@ANN$maxit)
            
-           ## FDA ##
+           ## FDA ------------------------------------------------------------
            test <- .fun_testIfIn(test, "FDA$method", object@FDA$method, c('polyreg', 'mars', 'bruto'))
-           if(!is.null(object@FDA$add_args)){ if(!is.list(object@FDA$add_args)) {cat("\nFDA$add_args must be a list or NULL"); test <- FALSE } }
-           
-           ## SRE ##
-           if(!is.numeric(object@SRE$quant)){ cat("\nSRE$quant must be a numeric"); test <- FALSE } else{
-             if(object@SRE$quant >= 0.5 | object@SRE$quant < 0){ cat("\nSRE$quant must between 0 and 0.5"); test <- FALSE }
+           if (!is.null(object@FDA$add_args) &&
+               !is.list(object@FDA$add_args)) {
+             cat("\nFDA$add_args must be a list or NULL"); 
+             test <- FALSE
            }
            
-           ## MARS ##
-           test <- .fun_testIfIn(test, "MARS$type", object@MARS$type,  c('simple', 'quadratic', 'polynomial', 'user.defined'))
+           
+           ## SRE ------------------------------------------------------------
+           if (!is.numeric(object@SRE$quant)) {
+             cat("\nSRE$quant must be a numeric"); test <- FALSE
+           } else if(object@SRE$quant >= 0.5 | object@SRE$quant < 0){ 
+             cat("\nSRE$quant must between 0 and 0.5"); test <- FALSE 
+           }
+           
+           ## MARS ------------------------------------------------------------
+           test <- .fun_testIfIn(test, "MARS$type", object@MARS$type, c("simple", "quadratic", "polynomial", "user.defined"))
            test <- .fun_testIfPosInt(test, "MARS$interaction.level", object@MARS$interaction.level)
-           if(!is.null(object@MARS$myFormula)) if(!inherits(object@MARS$myFormula, "formula")){ cat("\nMARS$myFormula must be NULL or a formula object"); test <- FALSE }
-           # test <- .fun_testIfPosInt(test, "MARS$degree", object@MARS$degree)
-           if(!is.null(object@MARS$nk)){
-             if(object@MARS$nk < 0 | object@MARS$nk%%1!=0){ cat("\nMARS$nk must be a positive integer or NULL if you want to use default parameter"); test <- FALSE }
+           if (!is.null(object@MARS$myFormula) && !inherits(object@MARS$myFormula, "formula")) {
+             cat("\nMARS$myFormula must be NULL or a formula object")
+             test <- FALSE
            }
+           # test <- .fun_testIfPosInt(test, "MARS$degree", object@MARS$degree)
+           if (!is.null(object@MARS$nk) && 
+               (object@MARS$nk < 0 | object@MARS$nk%%1!=0)) {
+             cat("\nMARS$nk must be a positive integer or NULL if you want to use default parameter")
+             test <- FALSE 
+           }
+           
            test <- .fun_testIfPosInt(test, "MARS$penalty", object@MARS$penalty)
            test <- .fun_testIfPosNum(test, "MARS$thresh", object@MARS$thresh)
-           if(!is.null(object@MARS$nprune)){ if(!is.numeric(object@MARS$nprune)){ cat("\nMARS$nprune must be a numeric or NULL"); test <- FALSE }}
-           supported.pmethod <- c('backward', 'none', 'exhaustive', 'forward', 'seqrep', 'cv')
-           if(!is.element(object@MARS$pmethod, supported.pmethod)){cat("\nMARS$pmethod must be a one of", supported.pmethod); test <- FALSE }
-           
-           ## RF ##
-           if(!is.logical(object@RF$do.classif)){ cat("\nRF$do.classif must be a logical"); test <- FALSE }
-           test <- .fun_testIfPosInt(test, "RF$ntree", object@RF$ntree)
-           if (object@RF$mtry != 'default') { test <- .fun_testIfPosInt(test, "RF$mtry", object@RF$mtry) }
-           if(!is.null(object@RF$sampsize)) { test <- .fun_testIfPosInt(test, "RF$sampsize", object@RF$sampsize) }
-           test <- .fun_testIfPosInt(test, "RF$nodesize", object@RF$nodesize)
-           if(length(object@RF$maxnodes)) { test <- .fun_testIfPosInt(test, "RF$maxnodes", object@RF$maxnodes) }
-           
-           ## MAXENT.Phillips ##
-           if(!is.character(object@MAXENT.Phillips$path_to_maxent.jar)){ cat("\nMAXENT.Phillips$path_to_maxent.jar must be a character"); test <- FALSE }
-           if(!is.null(object@MAXENT.Phillips$memory_allocated)){
-             if(!is.numeric(object@MAXENT.Phillips$memory_allocated)){
-               cat("\nMAXENT.Phillips$memory_allocated must be a positive integer or NULL for unlimited memory allocation"); test <- FALSE }
+           if (!is.null(object@MARS$nprune) &&
+               !is.numeric(object@MARS$nprune)){
+             cat("\nMARS$nprune must be a numeric or NULL"); test <- FALSE 
            }
-           if(!is.character(object@MAXENT.Phillips$background_data_dir)){ cat("\nMAXENT.Phillips$background_data_dir must be 'default' (=> use the same pseudo absences than other models as background) or a path to the directory where your environmental layer are stored"); test <- FALSE }
-           tt <- is.character(object@MAXENT.Phillips$maximumbackground) | is.numeric(object@MAXENT.Phillips$maximumbackground)
-           if(is.character(object@MAXENT.Phillips$maximumbackground)) if(object@MAXENT.Phillips$maximumbackground != 'default') tt <- FALSE
-           if(!tt){ cat("\nMAXENT.Phillips$maximumbackground must be 'default' or numeric"); test <- FALSE }
-           test <- .fun_testIfPosInt(test, "MAXENT.Phillips$maximumiterations", object@MAXENT.Phillips$maximumiterations)
-           if(!is.logical(object@MAXENT.Phillips$visible)){ cat("\nMAXENT.Phillips$visible must be a logical"); test <- FALSE }
-           if(!is.logical(object@MAXENT.Phillips$linear)){ cat("\nMAXENT.Phillips$linear must be a logical"); test <- FALSE }
-           if(!is.logical(object@MAXENT.Phillips$quadratic)){ cat("\nMAXENT.Phillips$quadratic must be a logical"); test <- FALSE }
-           if(!is.logical(object@MAXENT.Phillips$product)){ cat("\nMAXENT.Phillips$product must be a logical"); test <- FALSE }
-           if(!is.logical(object@MAXENT.Phillips$threshold)){ cat("\nMAXENT.Phillips$threshold must be a logical"); test <- FALSE }
-           if(!is.logical(object@MAXENT.Phillips$hinge)){ cat("\nMAXENT.Phillips$hinge must be a logical"); test <- FALSE }
-           if(!is.numeric(object@MAXENT.Phillips$lq2lqptthreshold)){ cat("\nMAXENT.Phillips$lq2lqptthreshold must be a numeric"); test <- FALSE }
-           if(!is.numeric(object@MAXENT.Phillips$l2lqthreshold)){ cat("\nMAXENT.Phillips$l2lqthreshold must be a numeric"); test <- FALSE }
-           if(!is.numeric(object@MAXENT.Phillips$lq2lqptthreshold)){ cat("\nMAXENT.Phillips$lq2lqptthreshold must be a numeric"); test <- FALSE }
-           if(!is.numeric(object@MAXENT.Phillips$hingethreshold)){ cat("\nMAXENT.Phillips$hingethreshold must be a numeric"); test <- FALSE }
-           if(!is.numeric(object@MAXENT.Phillips$beta_threshold)){ cat("\nMAXENT.Phillips$beta_threshold must be a numeric"); test <- FALSE }
-           if(!is.numeric(object@MAXENT.Phillips$beta_categorical)){ cat("\nMAXENT.Phillips$beta_categorical must be a numeric"); test <- FALSE }
-           if(!is.numeric(object@MAXENT.Phillips$beta_lqp)){ cat("\nMAXENT.Phillips$beta_lqp must be a numeric"); test <- FALSE }
-           if(!is.numeric(object@MAXENT.Phillips$beta_hinge)){ cat("\nMAXENT.Phillips$beta_hinge must be a numeric"); test <- FALSE }
-           if(!is.numeric(object@MAXENT.Phillips$betamultiplier)){ cat("\nMAXENT.Phillips$betamultiplier must be a numeric"); test <- FALSE }
-           if(!is.numeric(object@MAXENT.Phillips$defaultprevalence)){ cat("\nMAXENT.Phillips$defaultprevalence must be a numeric"); test <- FALSE }
            
-           ## MAXENT.Phillips.2 (MAXENT.Tsuruoka)
+           supported.pmethod <- c('backward', 'none', 'exhaustive', 'forward', 'seqrep', 'cv')
+           if(!is.element(object@MARS$pmethod, supported.pmethod)){
+             cat("\nMARS$pmethod must be a one of", supported.pmethod);
+             test <- FALSE 
+           }
+           
+           ## RF ------------------------------------------------------------
+           if (!is.logical(object@RF$do.classif)) {
+             cat("\nRF$do.classif must be a logical")
+             test <- FALSE
+           }
+           test <- .fun_testIfPosInt(test, "RF$ntree", object@RF$ntree)
+           if (object@RF$mtry != "default") {
+             test <- .fun_testIfPosInt(test, "RF$mtry", object@RF$mtry)
+           }
+           if (!is.null(object@RF$sampsize)) {
+             test <- .fun_testIfPosInt(test, "RF$sampsize", object@RF$sampsize)
+           }
+           test <- .fun_testIfPosInt(test, "RF$nodesize", object@RF$nodesize)
+           if (length(object@RF$maxnodes)) {
+             test <- .fun_testIfPosInt(test, "RF$maxnodes", object@RF$maxnodes)
+           }
+           
+           ## MAXENT.Phillips ------------------------------------------------------------
+           if (!is.character(object@MAXENT.Phillips$path_to_maxent.jar)) {
+             cat("\nMAXENT.Phillips$path_to_maxent.jar must be a character")
+             test <- FALSE
+           }
+           if (!is.null(object@MAXENT.Phillips$memory_allocated)) {
+             if (!is.numeric(object@MAXENT.Phillips$memory_allocated)) {
+               cat("\nMAXENT.Phillips$memory_allocated must be a positive integer or NULL for unlimited memory allocation")
+               test <- FALSE
+             }
+           }
+           if (!is.character(object@MAXENT.Phillips$background_data_dir)) {
+             cat("\nMAXENT.Phillips$background_data_dir must be 'default' (=> use the same pseudo absences than other models as background) or a path to the directory where your environmental layer are stored")
+             test <- FALSE
+           }
+           tt <- is.character(object@MAXENT.Phillips$maximumbackground) | is.numeric(object@MAXENT.Phillips$maximumbackground)
+           if (is.character(object@MAXENT.Phillips$maximumbackground)) if (object@MAXENT.Phillips$maximumbackground != "default") tt <- FALSE
+           if (!tt) {
+             cat("\nMAXENT.Phillips$maximumbackground must be 'default' or numeric")
+             test <- FALSE
+           }
+           test <- .fun_testIfPosInt(test, "MAXENT.Phillips$maximumiterations", object@MAXENT.Phillips$maximumiterations)
+           if (!is.logical(object@MAXENT.Phillips$visible)) {
+             cat("\nMAXENT.Phillips$visible must be a logical")
+             test <- FALSE
+           }
+           if (!is.logical(object@MAXENT.Phillips$linear)) {
+             cat("\nMAXENT.Phillips$linear must be a logical")
+             test <- FALSE
+           }
+           if (!is.logical(object@MAXENT.Phillips$quadratic)) {
+             cat("\nMAXENT.Phillips$quadratic must be a logical")
+             test <- FALSE
+           }
+           if (!is.logical(object@MAXENT.Phillips$product)) {
+             cat("\nMAXENT.Phillips$product must be a logical")
+             test <- FALSE
+           }
+           if (!is.logical(object@MAXENT.Phillips$threshold)) {
+             cat("\nMAXENT.Phillips$threshold must be a logical")
+             test <- FALSE
+           }
+           if (!is.logical(object@MAXENT.Phillips$hinge)) {
+             cat("\nMAXENT.Phillips$hinge must be a logical")
+             test <- FALSE
+           }
+           if (!is.numeric(object@MAXENT.Phillips$lq2lqptthreshold)) {
+             cat("\nMAXENT.Phillips$lq2lqptthreshold must be a numeric")
+             test <- FALSE
+           }
+           if (!is.numeric(object@MAXENT.Phillips$l2lqthreshold)) {
+             cat("\nMAXENT.Phillips$l2lqthreshold must be a numeric")
+             test <- FALSE
+           }
+           if (!is.numeric(object@MAXENT.Phillips$lq2lqptthreshold)) {
+             cat("\nMAXENT.Phillips$lq2lqptthreshold must be a numeric")
+             test <- FALSE
+           }
+           if (!is.numeric(object@MAXENT.Phillips$hingethreshold)) {
+             cat("\nMAXENT.Phillips$hingethreshold must be a numeric")
+             test <- FALSE
+           }
+           if (!is.numeric(object@MAXENT.Phillips$beta_threshold)) {
+             cat("\nMAXENT.Phillips$beta_threshold must be a numeric")
+             test <- FALSE
+           }
+           if (!is.numeric(object@MAXENT.Phillips$beta_categorical)) {
+             cat("\nMAXENT.Phillips$beta_categorical must be a numeric")
+             test <- FALSE
+           }
+           if (!is.numeric(object@MAXENT.Phillips$beta_lqp)) {
+             cat("\nMAXENT.Phillips$beta_lqp must be a numeric")
+             test <- FALSE
+           }
+           if (!is.numeric(object@MAXENT.Phillips$beta_hinge)) {
+             cat("\nMAXENT.Phillips$beta_hinge must be a numeric")
+             test <- FALSE
+           }
+           if (!is.numeric(object@MAXENT.Phillips$betamultiplier)) {
+             cat("\nMAXENT.Phillips$betamultiplier must be a numeric")
+             test <- FALSE
+           }
+           if (!is.numeric(object@MAXENT.Phillips$defaultprevalence)) {
+             cat("\nMAXENT.Phillips$defaultprevalence must be a numeric")
+             test <- FALSE
+           }
+           
+           if(!is.null(object@MAXENT.Phillips$initial_heap_size)){
+             test <- .check_bytes_format(test,
+                                         object@MAXENT.Phillips$initial_heap_size,
+                                         "initial_heap_size")
+           }
+           if(!is.null(object@MAXENT.Phillips$max_heap_size)){
+             test <- .check_bytes_format(test,
+                                         object@MAXENT.Phillips$max_heap_size,
+                                         "max_heap_size")
+           }
+           ## MAXENT.Phillips.2
+           ## As of 2022/11/22 options check for MAXENT.Phillips.2 are missing 
+           
+           ## MAXENT.Phillips.2 (MAXENT.Tsuruoka) --> Obsolete
            ### TO BE DONE ===
            # 		       if(!is.numeric(object@MAXENT.Tsuruoka$l1_regularizer)){ cat("\nMAXENT.Tsuruoka$l1_regularizer must be a numeric"); test <- FALSE }
            # 		       if(!is.numeric(object@MAXENT.Tsuruoka$l2_regularizer)){ cat("\nMAXENT.Tsuruoka$l2_regularizer must be a numeric"); test <- FALSE }
@@ -1392,8 +1571,15 @@ setMethod('show', signature('BIOMOD.models.options'),
             ## MAXENT.Phillips options
             cat("\n")
             cat("\nMAXENT.Phillips = list( path_to_maxent.jar = '", object@MAXENT.Phillips$path_to_maxent.jar, "', ", sep="")
-            cat("\n               memory_allocated = ", ifelse(length(object@MAXENT.Phillips$memory_allocated) < 1, 'NULL'
+            cat("\n               memory_allocated = ", ifelse(is.null(object@MAXENT.Phillips$memory_allocated), 'NULL'
                                                                , object@MAXENT.Phillips$memory_allocated), ",", sep = "")
+            cat("\n               initial heap size = ", 
+                ifelse(is.null(object@MAXENT.Phillips$initial_heap_size), 
+                       'NULL'
+                       , object@MAXENT.Phillips$initial_heap_size), ",", sep = "")
+            cat("\n               maximum heap size = ", 
+                ifelse(is.null(object@MAXENT.Phillips$max_heap_size), 
+                       'NULL', object@MAXENT.Phillips$max_heap_size), ",", sep = "")
             cat("\n               background_data_dir = ", ifelse(is.character(object@MAXENT.Phillips$background_data_dir), "'", "")
                 , object@MAXENT.Phillips$background_data_dir, ifelse(is.character(object@MAXENT.Phillips$background_data_dir), "'", ""), ",", sep = "")
             cat("\n               maximumbackground = ", ifelse(is.character(object@MAXENT.Phillips$maximumbackground), "'", "")

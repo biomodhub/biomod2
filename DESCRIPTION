@@ -38,6 +38,7 @@ Imports:
     utils,
     methods,
     terra,
+    sp,
     reshape,
     reshape2,
     abind,

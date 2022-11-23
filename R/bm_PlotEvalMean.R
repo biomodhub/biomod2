@@ -144,7 +144,9 @@ bm_PlotEvalMean <- function(bm.out, metric.eval = NULL, group.by = 'algo', do.pl
   scores$Eval.metric <- as.character(scores$Eval.metric)
   
   ## Choose which dataset (calibration or validation) should be used
-  eval.data <- ifelse(all(is.na(scores$Evaluating.data)), "Testing.data", "Evaluating.data")
+  eval.data <- ifelse(all(is.na(scores$Evaluating.data)),
+                      "Testing.data",
+                      "Evaluating.data")
   
   ## Compute mean and sd evaluation scores
   models_mean = tapply(X = scores[, eval.data]

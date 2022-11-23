@@ -1,4 +1,4 @@
-###################################################################################################
+# BIOMOD_ModelingOptions documentation -----------------------------------------
 ##' @name BIOMOD_ModelingOptions
 ##' @aliases BIOMOD_ModelingOptions
 ##' @aliases bm_DefaultModelingOptions
@@ -220,51 +220,93 @@
 ##'
 ##' @section MAXENT.Phillips : (\url{https://biodiversityinformatics.amnh.org/open_source/maxent/})
 ##' \itemize{
-##'   \item{\code{path_to_maxent.jar = getwd()}}{ : a \code{character} corresponding to 
-##'   \pkg{maxent.jar} file link}
-##'   \item{\code{memory_allocated = 512}}{ : an \code{integer} corresponding to the amount of 
-##'   memory (in Mo) reserved for \code{java} to run \code{MAXENT.Phillips}, must be \code{64}, 
-##'   \code{128}, \code{256}, \code{512}, \code{1024}... or \code{NULL} to use default \code{java} 
+##'   \item{\code{path_to_maxent.jar = getwd()}}{ : a \code{character}
+##'   corresponding to \pkg{maxent.jar} file link} 
+##'   
+##'   \item{\code{memory_allocated = 512}}{ : an \code{integer} corresponding to
+##'   the amount of memory (in Mo) reserved for \code{java} to run
+##'   \code{MAXENT.Phillips}, must be \code{64}, \code{128}, \code{256},
+##'   \code{512}, \code{1024}... or \code{NULL} to use default \code{java}
 ##'   memory limitation parameter}
-##'   \item{\code{background_data_dir}}{ : a \code{character} corresponding to directory path 
-##'   where explanatory variables are stored as \code{ASCII} files (raster format). If specified, 
-##'   \code{MAXENT.Phillips} will generate its own background data from explanatory 
-##'   variables rasters (as usually done in \code{MAXENT} studies). Otherwise \pkg{biomod2} 
-##'   pseudo-absences will be used (see \code{\link{BIOMOD_FormatingData}})}
-##'   \item{\code{maximumbackground}}{ : an \code{integer} corresponding to the maximum number of 
-##'   background data to sample if the \code{background_data_dir} parameter has been set}
-##'   \item{\code{maximumiterations = 200}}{ : an \code{integer} corresponding to the maximum 
-##'   number of iterations to do}
-##'   \item{\code{visible = FALSE}}{ : a \code{logical} to make the \code{MAXENT} user interface 
-##'   available}
-##'   \item{\code{linear = TRUE}}{ : a \code{logical} to allow linear features to be used}
-##'   \item{\code{quadratic = TRUE}}{ : a \code{logical} to allow quadratic features to be used}
-##'   \item{\code{product = TRUE}}{ : a \code{logical} to allow product features to be used}
-##'   \item{\code{threshold = TRUE}}{ : a \code{logical} to allow threshold features to be used}
-##'   \item{\code{hinge = TRUE}}{ : a \code{logical} to allow hinge features to be used}
-##'   \item{\code{lq2lqptthreshold = 80}}{ : an \code{integer} corresponding to the number of 
-##'   samples at which product and threshold features start being used}
-##'   \item{\code{l2lqthreshold = 10}}{ : an \code{integer} corresponding to the number of samples 
-##'   at which quadratic features start being used}
-##'   \item{\code{hingethreshold = 15}}{ : an \code{integer} corresponding to the number of 
-##'   samples at which hinge features start being used}
-##'   \item{\code{beta_threshold = -1.0}}{ : a \code{numeric} corresponding to the regularization 
-##'   parameter to be applied to all threshold features 
+##'   
+##'   \item{\code{initial_heap_size = NULL}}{ : a \code{character} initial heap
+##'   space (shared memory space) allocated to java. Argument transmitted to
+##'   \code{-Xms} when calling java. Used in \code{\link{BIOMOD_Projection}} but
+##'   not in \code{\link{BIOMOD_Modeling}}. Values can be \code{1024K},
+##'   \code{4096M}, \code{10G} ... or \code{NULL} to use default \code{java}
+##'   parameter}
+##'   
+##'   \item{\code{max_heap_size = NULL}}{ : a \code{character} initial heap
+##'   space (shared memory space) allocated to java. Argument transmitted to
+##'   \code{-Xmx} when calling java. Used in \code{\link{BIOMOD_Projection}} but
+##'   not in \code{\link{BIOMOD_Modeling}}. Must be larger than
+##'   \code{initial_heap_size}. Values can be \code{1024K}, \code{4096M},
+##'   \code{10G} ... or \code{NULL} to use default \code{java} parameter}
+##'   
+##'   \item{\code{background_data_dir}}{ : a \code{character} corresponding to
+##'   directory path where explanatory variables are stored as \code{ASCII}
+##'   files (raster format). If specified, \code{MAXENT.Phillips} will generate
+##'   its own background data from explanatory variables rasters (as usually
+##'   done in \code{MAXENT} studies). Otherwise \pkg{biomod2} pseudo-absences
+##'   will be used (see \code{\link{BIOMOD_FormatingData}})}
+##'   
+##'   \item{\code{maximumbackground}}{ : an \code{integer} corresponding to the
+##'   maximum number of background data to sample if the
+##'   \code{background_data_dir} parameter has been set}
+##'   
+##'   \item{\code{maximumiterations = 200}}{ : an \code{integer} corresponding
+##'   to the maximum number of iterations to do} 
+##'   
+##'   \item{\code{visible = FALSE}}{ : a \code{logical} to make the
+##'   \code{MAXENT} user interface available}
+##'   
+##'   \item{\code{linear = TRUE}}{ : a \code{logical} to allow linear features
+##'   to be used} \item{\code{quadratic = TRUE}}{ : a \code{logical} to allow
+##'   quadratic features to be used} 
+##'   
+##'   \item{\code{product = TRUE}}{ : a \code{logical} to allow product features
+##'   to be used}
+##'   
+##'   \item{\code{threshold = TRUE}}{ : a \code{logical} to allow threshold
+##'   features to be used}
+##'   
+##'   \item{\code{hinge = TRUE}}{ : a \code{logical} to allow hinge features to
+##'   be used} \item{\code{lq2lqptthreshold = 80}}{ : an \code{integer}
+##'   corresponding to the number of samples at which product and threshold
+##'   features start being used} 
+##'   
+##'   \item{\code{l2lqthreshold = 10}}{ : an
+##'   \code{integer} corresponding to the number of samples at which quadratic
+##'   features start being used} 
+##'   
+##'   \item{\code{hingethreshold = 15}}{ : an
+##'   \code{integer} corresponding to the number of samples at which hinge
+##'   features start being used}
+##'   
+##'   \item{\code{beta_threshold = -1.0}}{ : a
+##'   \code{numeric} corresponding to the regularization parameter to be applied
+##'   to all threshold features (\emph{negative value enables automatic
+##'   setting})} 
+##'   
+##'   \item{\code{beta_categorical = -1.0}}{ : a \code{numeric}
+##'   corresponding to the regularization parameter to be applied to all
+##'   categorical features (\emph{negative value enables automatic setting})}
+##'   
+##'   \item{\code{beta_lqp = -1.0}}{ : a \code{numeric} corresponding to the
+##'   regularization parameter to be applied to all linear, quadratic and
+##'   product features (\emph{negative value enables automatic setting})}
+##'   
+##'   \item{\code{beta_hinge = -1.0}}{ : a \code{numeric} corresponding to the
+##'   regularization parameter to be applied to all hinge features
 ##'   (\emph{negative value enables automatic setting})}
-##'   \item{\code{beta_categorical = -1.0}}{ : a \code{numeric} corresponding to the 
-##'   regularization parameter to be applied to all categorical features 
-##'   (\emph{negative value enables automatic setting})}
-##'   \item{\code{beta_lqp = -1.0}}{ : a \code{numeric} corresponding to the regularization 
-##'   parameter to be applied to all linear, quadratic and product features 
-##'   (\emph{negative value enables automatic setting})}
-##'   \item{\code{beta_hinge = -1.0}}{ : a \code{numeric} corresponding to the regularization 
-##'   parameter to be applied to all hinge features 
-##'   (\emph{negative value enables automatic setting})}
-##'   \item{\code{betamultiplier = 1}}{ : a \code{numeric} to multiply all automatic 
-##'   regularization parameters \cr 
-##'   (\emph{higher number gives a more spread-out distribution})}
-##'   \item{\code{defaultprevalence = 0.5}}{ : a \code{numeric} corresponding to the default 
-##'   prevalence of the species \cr (\emph{probability of presence at ordinary occurrence points})}
+##'   
+##'   \item{\code{betamultiplier = 1}}{ : a \code{numeric} to multiply all
+##'   automatic regularization parameters \cr (\emph{higher number gives a more
+##'   spread-out distribution})} 
+##'   
+##'   \item{\code{defaultprevalence = 0.5}}{ : a
+##'   \code{numeric} corresponding to the default prevalence of the species \cr
+##'   (\emph{probability of presence at ordinary occurrence points})}
 ##' }
 ##'
 ##' % @section \bold{MAXENT.Tsuruoka (\code{\link[maxent]{maxent}})} :
@@ -314,7 +356,7 @@
 ##' myExpl <- terra::crop(myExpl, myExtent)
 ##' }
 ##' 
-##' # ---------------------------------------------------------------
+##' # ---------------------------------------------------------------#
 ##' # Format Data with true absences
 ##' myBiomodData <- BIOMOD_FormatingData(resp.var = myResp,
 ##'                                      expl.var = myExpl,
@@ -322,7 +364,7 @@
 ##'                                      resp.name = myRespName)
 ##' 
 ##' 
-##' # ---------------------------------------------------------------
+##' # ---------------------------------------------------------------#
 ##' # Print default modeling options
 ##' bm_DefaultModelingOptions()
 ##' 
@@ -357,7 +399,7 @@
 ##' @export
 ##'
 ##'
-###################################################################################################
+## -------------------------------------------------------------------------- ##
 
 BIOMOD_ModelingOptions <- function(GLM = NULL,
                                    GBM = NULL,
@@ -550,26 +592,72 @@ BIOMOD_ModelingOptions <- function(GLM = NULL,
   if (!is.null(MAXENT.Phillips)) {
     if (!is.null(MAXENT.Phillips$path_to_maxent.jar)) {
       opt@MAXENT.Phillips$path_to_maxent.jar <- normalizePath(sub("maxent.jar", "", MAXENT.Phillips$path_to_maxent.jar)) # ensure path format validity
-    } else { opt@MAXENT.Phillips$path_to_maxent.jar <- getwd() }
-    if (!is.null(MAXENT.Phillips$memory_allocated)) { opt@MAXENT.Phillips$memory_allocated <- MAXENT.Phillips$memory_allocated }
-    if (!is.null(MAXENT.Phillips$background_data_dir)) { opt@MAXENT.Phillips$background_data_dir <- MAXENT.Phillips$background_data_dir }
-    if (!is.null(MAXENT.Phillips$maximumbackground)) { opt@MAXENT.Phillips$maximumbackground <- MAXENT.Phillips$maximumbackground }
-    if (!is.null(MAXENT.Phillips$maximumiterations)) { opt@MAXENT.Phillips$maximumiterations <- MAXENT.Phillips$maximumiterations }
-    if (!is.null(MAXENT.Phillips$visible)) { opt@MAXENT.Phillips$visible <- MAXENT.Phillips$visible }
-    if (!is.null(MAXENT.Phillips$linear)) { opt@MAXENT.Phillips$linear <- MAXENT.Phillips$linear }
-    if (!is.null(MAXENT.Phillips$quadratic)) { opt@MAXENT.Phillips$quadratic <- MAXENT.Phillips$quadratic }
-    if (!is.null(MAXENT.Phillips$product)) { opt@MAXENT.Phillips$product <- MAXENT.Phillips$product }
-    if (!is.null(MAXENT.Phillips$threshold)) { opt@MAXENT.Phillips$threshold <- MAXENT.Phillips$threshold }
-    if (!is.null(MAXENT.Phillips$hinge)) { opt@MAXENT.Phillips$hinge <- MAXENT.Phillips$hinge }
-    if (!is.null(MAXENT.Phillips$lq2lqptthreshold)) { opt@MAXENT.Phillips$lq2lqptthreshold <- MAXENT.Phillips$lq2lqptthreshold }
-    if (!is.null(MAXENT.Phillips$l2lqthreshold)) { opt@MAXENT.Phillips$l2lqthreshold <- MAXENT.Phillips$l2lqthreshold }
-    if (!is.null(MAXENT.Phillips$hingethreshold)) { opt@MAXENT.Phillips$hingethreshold <- MAXENT.Phillips$hingethreshold }
-    if (!is.null(MAXENT.Phillips$beta_threshold)) { opt@MAXENT.Phillips$beta_threshold <- MAXENT.Phillips$beta_threshold }
-    if (!is.null(MAXENT.Phillips$beta_categorical)) { opt@MAXENT.Phillips$beta_categorical <- MAXENT.Phillips$beta_categorical }
-    if (!is.null(MAXENT.Phillips$beta_lqp)) { opt@MAXENT.Phillips$beta_lqp <- MAXENT.Phillips$beta_lqp }
-    if (!is.null(MAXENT.Phillips$beta_hinge)) { opt@MAXENT.Phillips$beta_hinge <- MAXENT.Phillips$beta_hinge }
-    if (!is.null(MAXENT.Phillips$betamultiplier)) { opt@MAXENT.Phillips$betamultiplier <- MAXENT.Phillips$betamultiplier }
-    if (!is.null(MAXENT.Phillips$defaultprevalence)) { opt@MAXENT.Phillips$defaultprevalence <- MAXENT.Phillips$defaultprevalence }
+    } else {
+      opt@MAXENT.Phillips$path_to_maxent.jar <- getwd()
+    }
+    if (!is.null(MAXENT.Phillips$memory_allocated)) {
+      opt@MAXENT.Phillips$memory_allocated <- MAXENT.Phillips$memory_allocated
+    }
+    if (!is.null(MAXENT.Phillips$initial_heap_size)) {
+      opt@MAXENT.Phillips$initial_heap_size <- MAXENT.Phillips$initial_heap_size
+    }
+    if (!is.null(MAXENT.Phillips$max_heap_size)) {
+      opt@MAXENT.Phillips$max_heap_size <- MAXENT.Phillips$max_heap_size
+    }
+    if (!is.null(MAXENT.Phillips$background_data_dir)) {
+      opt@MAXENT.Phillips$background_data_dir <- MAXENT.Phillips$background_data_dir
+    }
+    if (!is.null(MAXENT.Phillips$maximumbackground)) {
+      opt@MAXENT.Phillips$maximumbackground <- MAXENT.Phillips$maximumbackground
+    }
+    if (!is.null(MAXENT.Phillips$maximumiterations)) {
+      opt@MAXENT.Phillips$maximumiterations <- MAXENT.Phillips$maximumiterations
+    }
+    if (!is.null(MAXENT.Phillips$visible)) {
+      opt@MAXENT.Phillips$visible <- MAXENT.Phillips$visible
+    }
+    if (!is.null(MAXENT.Phillips$linear)) {
+      opt@MAXENT.Phillips$linear <- MAXENT.Phillips$linear
+    }
+    if (!is.null(MAXENT.Phillips$quadratic)) {
+      opt@MAXENT.Phillips$quadratic <- MAXENT.Phillips$quadratic
+    }
+    if (!is.null(MAXENT.Phillips$product)) {
+      opt@MAXENT.Phillips$product <- MAXENT.Phillips$product
+    }
+    if (!is.null(MAXENT.Phillips$threshold)) {
+      opt@MAXENT.Phillips$threshold <- MAXENT.Phillips$threshold
+    }
+    if (!is.null(MAXENT.Phillips$hinge)) {
+      opt@MAXENT.Phillips$hinge <- MAXENT.Phillips$hinge
+    }
+    if (!is.null(MAXENT.Phillips$lq2lqptthreshold)) {
+      opt@MAXENT.Phillips$lq2lqptthreshold <- MAXENT.Phillips$lq2lqptthreshold
+    }
+    if (!is.null(MAXENT.Phillips$l2lqthreshold)) {
+      opt@MAXENT.Phillips$l2lqthreshold <- MAXENT.Phillips$l2lqthreshold
+    }
+    if (!is.null(MAXENT.Phillips$hingethreshold)) {
+      opt@MAXENT.Phillips$hingethreshold <- MAXENT.Phillips$hingethreshold
+    }
+    if (!is.null(MAXENT.Phillips$beta_threshold)) {
+      opt@MAXENT.Phillips$beta_threshold <- MAXENT.Phillips$beta_threshold
+    }
+    if (!is.null(MAXENT.Phillips$beta_categorical)) {
+      opt@MAXENT.Phillips$beta_categorical <- MAXENT.Phillips$beta_categorical
+    }
+    if (!is.null(MAXENT.Phillips$beta_lqp)) {
+      opt@MAXENT.Phillips$beta_lqp <- MAXENT.Phillips$beta_lqp
+    }
+    if (!is.null(MAXENT.Phillips$beta_hinge)) {
+      opt@MAXENT.Phillips$beta_hinge <- MAXENT.Phillips$beta_hinge
+    }
+    if (!is.null(MAXENT.Phillips$betamultiplier)) {
+      opt@MAXENT.Phillips$betamultiplier <- MAXENT.Phillips$betamultiplier
+    }
+    if (!is.null(MAXENT.Phillips$defaultprevalence)) {
+      opt@MAXENT.Phillips$defaultprevalence <- MAXENT.Phillips$defaultprevalence
+    }
   } else {
     opt@MAXENT.Phillips$path_to_maxent.jar <- getwd()
   }
@@ -593,7 +681,6 @@ BIOMOD_ModelingOptions <- function(GLM = NULL,
   return(opt)
 }
 
-###################################################################################################
 
 ##'
 ##' @rdname BIOMOD_ModelingOptions
