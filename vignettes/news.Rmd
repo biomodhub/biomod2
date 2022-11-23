@@ -31,7 +31,7 @@ vignette: >
 * Fixed `MAXENT.Phillips` predict method for large dataset (require `sp::read.asciigrid`). 
 * fixed ensemble models using a single PA dataset with em.by = 'all' or 'algo'
 * models using repetition dataset cannot be merged anymore with models using Full dataset in `BIOMOD_EnsembleModeling`
-
+* Fixed error in `BIOMOD_EnsembleForecasting` when a single evaluation metric was available and binary/filtered transformation were asked for.
 
 ####  4.2-0 Terra Update
 
