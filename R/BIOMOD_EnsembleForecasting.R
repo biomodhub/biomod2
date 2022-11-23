@@ -403,9 +403,9 @@ BIOMOD_EnsembleForecasting <- function(bm.em,
     ## Do binary transformation
     for (eval.meth in metric.binary) {
       cat("\n\t> Building", eval.meth, "binaries")
-     
-      thresholds <- sapply(models.chosen, function(x) {
-        get_evaluations(bm.em)[,,x][eval.meth, "Cutoff"]
+
+     thresholds <- sapply(models.chosen, function(x) {
+        get_evaluations(bm.em)[eval.meth,"Cutoff", x]
       })
       if (!on_0_1000) { thresholds <- thresholds / 1000 }
       
@@ -443,7 +443,7 @@ BIOMOD_EnsembleForecasting <- function(bm.em,
       cat("\n\t> Building", eval.meth, "filtered")
       
       thresholds <- sapply(models.chosen, function(x) {
-        get_evaluations(bm.em)[,,x][eval.meth, "Cutoff"]
+        get_evaluations(bm.em)[eval.meth,"Cutoff", x]
       })
       if (!on_0_1000) { thresholds <- thresholds / 1000 }
       
@@ -568,17 +568,18 @@ BIOMOD_EnsembleForecasting <- function(bm.em,
     } else if (!length(proj.name)) {
       proj.name <- bm.proj@proj.name
     }
-    
+
     ## 6. Check metric.binary & metric.filter -----------------------------------
     if (!is.null(metric.binary) | !is.null(metric.filter)) {
-      models.evaluation <- get_evaluations(bm.em)
+      models.evaluation <- get_evaluations(bm.em, as.data.frame = TRUE)
       if (is.null(models.evaluation)) {
         warning("Binary and/or Filtered transformations of projection not ran because of models evaluation information missing")
       } else {
-        available.evaluation <- unique(rownames(models.evaluation[,,1]))
+        available.evaluation <- as.character(unique(models.evaluation$Eval.metric))
         if (!is.null(metric.binary) && metric.binary[1] == 'all') {
           metric.binary <- available.evaluation
-        } else if (!is.null(metric.binary) && sum(!(metric.binary %in% available.evaluation)) > 0) {
+        } else if (!is.null(metric.binary) && 
+                   any(! metric.binary %in% available.evaluation)) {
           warning(paste0(toString(metric.binary[!(metric.binary %in% available.evaluation)]),
                          " Binary Transformation were switched off because no corresponding evaluation method found"))
           metric.binary <- metric.binary[metric.binary %in% available.evaluation]
@@ -586,7 +587,8 @@ BIOMOD_EnsembleForecasting <- function(bm.em,
         
         if (!is.null(metric.filter) && metric.filter[1] == 'all') {
           metric.filter <- available.evaluation
-        } else if (!is.null(metric.filter) && sum(!(metric.filter %in% available.evaluation)) > 0) {
+        } else if (!is.null(metric.filter) &&
+                   any(!(metric.filter %in% available.evaluation))) {
           warning(paste0(toString(metric.filter[!(metric.filter %in% available.evaluation)]),
                          " Filtered Transformation were switched off because no corresponding evaluation method found"))
           metric.filter <- metric.filter[metric.filter %in% available.evaluation]
