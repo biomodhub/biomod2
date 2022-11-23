@@ -8,7 +8,7 @@ BIOMOD_EnsembleModeling(
   bm.mod,
   models.chosen = "all",
   em.by = "PA_dataset+repet",
-  em.algo = c("prob.mean"),
+  em.algo,
   metric.select = "all",
   metric.select.thresh = NULL,
   metric.select.table = NULL,
@@ -19,12 +19,12 @@ BIOMOD_EnsembleModeling(
   nb.cpu = 1,
   seed.val = NULL,
   do.progress = TRUE,
-  prob.mean = NULL,
-  prob.median = NULL,
-  prob.cv = NULL,
-  prob.ci = NULL,
-  committee.averaging = NULL,
-  prob.mean.weight = NULL
+  prob.mean,
+  prob.median,
+  prob.cv,
+  prob.ci,
+  committee.averaging,
+  prob.mean.weight
 )
 }
 \arguments{
