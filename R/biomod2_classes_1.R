@@ -827,7 +827,7 @@ setMethod('plot', signature(x = 'BIOMOD.formated.data.PA', y = "missing"),
               if(!requireNamespace('rasterVis', quietly = TRUE)) stop("Package 'rasterVis' not found")
               
               ## check if there is some undefined areas to prevent from strange plotting issues
-              if (min(global(x@data.mask, min)) == -1) { # there is undefined area
+              if (min(global(x@data.mask, min, na.rm = TRUE)) == -1) { # there is undefined area
                 my.at <- seq(-1.5, 1.5, by = 1) ## breaks of color key
                 my.labs.at <- seq(-1, 1, by = 1) ## labels placed vertically
                 my.lab <- c("undefined", "absences", "presences") ## labels
