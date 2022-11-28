@@ -803,12 +803,12 @@ bm_RunModel <- function(model, Data, modeling.id = '', bm.options, calib.lines,
       cat('\n\tNote : some NA occurs in predictions')
     }
     
-    cross.validation <- sapply(metric.eval, function(.x) {
-      bm_FindOptimStat(metric.eval = .x,
+    cross.validation <- foreach(xx = metric.eval, .combine = "rbind") %do% {
+      bm_FindOptimStat(metric.eval = xx,
                        obs = Data %>% filter(evalLines) %>% pull(1),
                        fit = g.pred[evalLines])
-    })
-    rownames(cross.validation) <- c("Testing.data", "Cutoff", "Sensitivity", "Specificity")
+    }
+    colnames(cross.validation)[which(colnames(cross.validation) == "Best.stat")] <- "Testing.data"
     
     if (exists('g.pred.eval')) {
       
@@ -822,19 +822,22 @@ bm_RunModel <- function(model, Data, modeling.id = '', bm.options, calib.lines,
         g.pred.eval.without.na <- g.pred.eval
       }
       
-      true.evaluation <- sapply(metric.eval, function(x) {
-        bm_FindOptimStat(metric.eval = x,
+      true.evaluation <- foreach(xx = metric.eval, .combine = "rbind") %do% {
+        bm_FindOptimStat(metric.eval = xx,
                          obs = eval.data[, 1],
                          fit = g.pred.eval.without.na,
-                         threshold = cross.validation["Cutoff", x])
-      })
-      
-      cross.validation <- rbind(cross.validation["Testing.data", ], true.evaluation)
-      rownames(cross.validation) <- c("Testing.data", "Evaluating.data", "Cutoff", "Sensitivity", "Specificity")
+                         threshold = cross.validation["Cutoff", xx])
+      }
+      cross.validation$Evaluating.data <- true.evaluation$Best.stat
+    } else {
+      cross.validation$Evaluating.data <- NA
     }
+    # cross.validation <- cross.validation[, c("Metric.eval", "Testing.data", "Evaluating.data", "Cutoff", "Sensitivity", "Specificity")]
     
     ## store results
-    cross.validation <- t(round(cross.validation, digits = 3))
+    for (col.i in 2:ncol(cross.validation)) {
+      cross.validation[, col.i] <- round(cross.validation[, col.i], digits = 3)
+    }
     ListOut$evaluation <- cross.validation
     model.bm@model_evaluation <- cross.validation
     rm(cross.validation)
@@ -854,7 +857,8 @@ bm_RunModel <- function(model, Data, modeling.id = '', bm.options, calib.lines,
     model.bm@model_variables_importance <- variables.importance
     
     ## only the mean of variables importance run is returned
-    ListOut$var.import <- round(rowMeans(variables.importance, na.rm = TRUE), digits = 3)
+    # ListOut$var.import <- round(rowMeans(variables.importance, na.rm = TRUE), digits = 3)
+    ListOut$var.import <- variables.importance
     rm(variables.importance)
     cat("\n")
   }

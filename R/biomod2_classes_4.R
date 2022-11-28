@@ -94,8 +94,8 @@ NULL
 ##' @slot expl_var_names a \code{vector} containing names of explanatory variables
 ##' @slot expl_var_type a \code{vector} containing classes of explanatory variables
 ##' @slot expl_var_range a \code{list} containing ranges of explanatory variables
-##' @slot model_evaluation a \code{matrix} containing the model evaluations
-##' @slot model_variables_importance a \code{matrix} containing the model variables importance
+##' @slot model_evaluation a \code{data.frame} containing the model evaluations
+##' @slot model_variables_importance a \code{data.frame} containing the model variables importance
 ##' 
 ##' @param object a \code{\link{biomod2_model}} object
 ##' 
@@ -158,8 +158,8 @@ setClass('biomod2_model',
                         expl_var_names = 'character',
                         expl_var_type = 'character',
                         expl_var_range = 'list',
-                        model_evaluation = 'matrix',
-                        model_variables_importance = 'matrix'),
+                        model_evaluation = 'data.frame',
+                        model_variables_importance = 'data.frame'),
          prototype = list(model_name = 'mySpecies_DataSet_RunName_myModelClass',
                           model_class = 'myModelClass',
                           model_options = list(),
@@ -170,8 +170,8 @@ setClass('biomod2_model',
                           expl_var_names = 'myRespVar',
                           expl_var_type = 'unknown',
                           expl_var_range = list(),
-                          model_evaluation = matrix(),
-                          model_variables_importance = matrix()),
+                          model_evaluation = data.frame(),
+                          model_variables_importance = data.frame()),
          validity = function(object) { # check that scaler is a glm if it is defined
            if (length(object@scaling_model) > 0 && 
                !inherits(object@scaling_model, c("glm", "lm"))) {

@@ -119,13 +119,13 @@
 ##'   \code{\link{BIOMOD.models.out}} (or
 ##'   \code{\link{BIOMOD.ensemble.models.out}}) object}
 ##'   \item{\code{get_evaluations}}{a
-##'   \code{\link{BIOMOD.stored.array-class}} (or
+##'   \code{\link{BIOMOD.stored.data.frame-class}} (or
 ##'   \code{matrix}) from the \code{models.evaluation} slot (or
 ##'   \code{model_evaluation} of each model in \code{em.computed}) of a
 ##'   \code{\link{BIOMOD.models.out}} (or
 ##'   \code{\link{BIOMOD.ensemble.models.out}}) object}
 ##'   \item{\code{get_variables_importance}}{a
-##'   \code{\link{BIOMOD.stored.array-class}} from
+##'   \code{\link{BIOMOD.stored.data.frame-class}} from
 ##'   the \code{variables.importance} slot (or \code{model_variables_importance}
 ##'   of each model in \code{em.models}) of a \code{\link{BIOMOD.models.out}}
 ##'   (or \code{\link{BIOMOD.ensemble.models.out}}) object}
@@ -197,9 +197,9 @@ setGeneric("get_variables_importance", function(obj, ...) { standardGeneric("get
 ##' @slot models.options a \code{\link{BIOMOD.stored.models.options-class}}
 ##'   object containing informations from \code{\link{BIOMOD_ModelingOptions}}
 ##'   object
-##' @slot models.evaluation a \code{\link{BIOMOD.stored.array-class}} object
+##' @slot models.evaluation a \code{\link{BIOMOD.stored.data.frame-class}} object
 ##'   containing models evaluation
-##' @slot variables.importance a \code{\link{BIOMOD.stored.array-class}} object
+##' @slot variables.importance a \code{\link{BIOMOD.stored.data.frame-class}} object
 ##'   containing variables importance
 ##' @slot models.prediction a \code{\link{BIOMOD.stored.array-class}} object
 ##'   containing models predictions
@@ -293,8 +293,8 @@ setClass("BIOMOD.models.out",
                         formated.input.data = 'BIOMOD.stored.formated.data',
                         calib.lines = 'BIOMOD.stored.array',
                         models.options = 'BIOMOD.stored.models.options',
-                        models.evaluation = 'BIOMOD.stored.array',
-                        variables.importance = 'BIOMOD.stored.array',
+                        models.evaluation = 'BIOMOD.stored.data.frame',
+                        variables.importance = 'BIOMOD.stored.data.frame',
                         models.prediction = 'BIOMOD.stored.array',
                         models.prediction.eval = 'BIOMOD.stored.array',
                         link = 'character'),
@@ -309,8 +309,8 @@ setClass("BIOMOD.models.out",
                    formated.input.data = new('BIOMOD.stored.formated.data'),
                    calib.lines = new('BIOMOD.stored.array'),
                    models.options = new('BIOMOD.stored.models.options'),
-                   models.evaluation = new('BIOMOD.stored.array'),
-                   variables.importance = new('BIOMOD.stored.array'),
+                   models.evaluation = new('BIOMOD.stored.data.frame'),
+                   variables.importance = new('BIOMOD.stored.data.frame'),
                    models.prediction = new('BIOMOD.stored.array'),
                    models.prediction.eval = new('BIOMOD.stored.array'),
                    link = ''),
@@ -925,9 +925,9 @@ setMethod("get_predictions", "BIOMOD.projection.out",
 ##' @slot em.failed a \code{vector} containing names of failed ensemble models
 ##' @slot em.models a \code{list} containing ensemble models
 ##' @slot em.failed a \code{list} containing ensemble models that failed
-##' @slot models.evaluation a \code{\link{BIOMOD.stored.array-class}} object
+##' @slot models.evaluation a \code{\link{BIOMOD.stored.data.frame-class}} object
 ##'   containing models evaluation
-##' @slot variables.importance a \code{\link{BIOMOD.stored.array-class}} object
+##' @slot variables.importance a \code{\link{BIOMOD.stored.data.frame-class}} object
 ##'   containing variables importance
 ##' @slot models.prediction a \code{\link{BIOMOD.stored.array-class}} object
 ##'   containing models predictions
@@ -1045,8 +1045,8 @@ setClass("BIOMOD.ensemble.models.out",
                         em.failed = 'character',
                         em.models = 'ANY',
                         models.evaluation = 'BIOMOD.stored.array',
-                        variables.importance = 'BIOMOD.stored.array',
-                        models.prediction = 'BIOMOD.stored.array',
+                        variables.importance = 'BIOMOD.stored.data.frame',
+                        models.prediction = 'BIOMOD.stored.data.frame',
                         models.prediction.eval = 'BIOMOD.stored.array',
                         link = 'character'),
          prototype(modeling.id = '.',
@@ -1058,8 +1058,8 @@ setClass("BIOMOD.ensemble.models.out",
                    em.computed = character(),
                    em.failed = character(),
                    em.models = NULL,
-                   models.evaluation = new('BIOMOD.stored.array'),
-                   variables.importance = new('BIOMOD.stored.array'),
+                   models.evaluation = new('BIOMOD.stored.data.frame'),
+                   variables.importance = new('BIOMOD.stored.data.frame'),
                    models.prediction = new('BIOMOD.stored.array'),
                    models.prediction.eval = new('BIOMOD.stored.array'),
                    link = ''),

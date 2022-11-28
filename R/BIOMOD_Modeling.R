@@ -873,78 +873,104 @@ setMethod('.BIOMOD_Modeling.prepare.data', signature('BIOMOD.formated.data.PA'),
     if (out == "prediction") { name_slot = "pred" }
     if (out == "prediction.eval") { name_slot = "pred.eval" }
     
-    output <- NULL
-    for (i in 1:nb_pa) {
-      for (j in 1:nb_run) {
-        for (k in 1:nb_mod) {
-          output <- mod.out[[i]][[j]][[k]][[name_slot]]
-          if (!is.null(output)) { break }
-        }
-        if (!is.null(output)) { break }
-      }
-      if (!is.null(output)) { break }
-    }
-    if (is.null(output)) { return(NULL) }
     
-    if (out == "evaluation") {
-      eval.meth.names <- rownames(as.data.frame(output))
-      eval.col.names <- colnames(as.data.frame(output))
-      dimnames.out = list(eval.meth.names,
-                          eval.col.names,
-                          mod.names,
-                          run.eval.names,
-                          dataset.names)
-      dim.out = c(length(eval.meth.names),
-                  length(eval.col.names),
-                  length(mod.names),
-                  length(run.eval.names),
-                  length(dataset.names))
-    } else if (out %in% c("prediction", "prediction.eval", "var.import")) {
-      kept.mod = mod.names
-      if (out == "var.import") {
-        ef.mod <- grep(pattern = "EF.", mod.names) # EF models
-        if (length(ef.mod) > 0) {
-          kept.mod <- mod.names[-ef.mod]
-        }
-      }
-      
-      nb.tmp <- length(as.numeric(output))
-      dimnames.out = list(NULL, kept.mod, run.eval.names, dataset.names)
-      if (out == "var.import") {
-        dimnames.out = list(names(mod.out[[1]][[1]][[1]][['var.import']]) # to change ?
-                            , kept.mod, run.eval.names, dataset.names)
-      }
-      dim.out = c(nb.tmp,
-                  length(kept.mod),
-                  length(run.eval.names),
-                  length(dataset.names))
-    }
-    
-    output <- lapply(names(mod.out), function(d1) { # data set
-      lapply(names(mod.out[[d1]]), function(d2) { # run eval
-        lapply(names(mod.out[[d1]][[d2]]), function(d3){ # models
-          if (out == "evaluation") {
-            if (is.null(mod.out[[d1]][[d2]][[d3]][['calib.failure']])) {
-              return(data.frame(mod.out[[d1]][[d2]][[d3]][['evaluation']]))
-            } else { 
-              return(matrix(NA, ncol = length(eval.col.names), nrow = length(eval.meth.names)
-                            , dimnames = list(eval.meth.names, eval.col.names)))
-            }
-          } else if (out == "prediction" || out == "prediction.eval" || 
-                     (out == "var.import" && d3 %in% kept.mod)) {
-            if (is.null(mod.out[[d1]][[d2]][[d3]][[name_slot]])) {
-              return(rep(NA, nb.tmp))
-            } else {
-              return(as.numeric(mod.out[[d1]][[d2]][[d3]][[name_slot]]))
-            }
+    output <- foreach(i = 1:nb_pa, .combine = "rbind") %:%
+      foreach(j = 1:nb_run, .combine = "rbind") %:% 
+      foreach(k = 1:nb_mod, .combine = "rbind") %do%
+      {
+        # calib.failure <- mod.out[[i]][[j]][[k]][["calib.failure"]] ## pour evaluation
+        res <- mod.out[[i]][[j]][[k]][[name_slot]]
+        # if (is.null(calib.failure) && !is.null(res)) { ## pour evaluation
+        if (!is.null(res)) {
+          res <- as.data.frame(res)
+          if (name_slot != "evaluation" && name_slot != "var.import") {
+            colnames(res) = name_slot
           }
-        })
-      })
-    })
-    data.out = unlist(output)
+          col_names <- colnames(res)
+          # if (name_slot %in% c("evaluation", "var.import")) {
+          #   rows <- switch(name_slot, 'evaluation' = 'metric', 'var.import' = 'variable')
+          #   res[[rows]] <- rownames(res)
+          # } else { rows = NULL }
+          res[["data.set"]] <- dataset.names[i]
+          res[["run.eval"]] <- run.eval.names[j]
+          res[["model"]] <- mod.names[k]
+          return(res[, c("data.set", "run.eval", "model", col_names)])
+        }
+      }
+    return(output)
     
-    res.out <- array(data = data.out, dim = dim.out, dimnames = dimnames.out)
-    return(res.out)
+    # output <- NULL
+    # for (i in 1:nb_pa) {
+    #   for (j in 1:nb_run) {
+    #     for (k in 1:nb_mod) {
+    #       output <- mod.out[[i]][[j]][[k]][[name_slot]]
+    #       if (!is.null(output)) { break }
+    #     }
+    #     if (!is.null(output)) { break }
+    #   }
+    #   if (!is.null(output)) { break }
+    # }
+    # if (is.null(output)) { return(NULL) }
+    
+    # if (out == "evaluation") {
+    #   eval.meth.names <- rownames(as.data.frame(output))
+    #   eval.col.names <- colnames(as.data.frame(output))
+    #   dimnames.out = list(eval.meth.names,
+    #                       eval.col.names,
+    #                       mod.names,
+    #                       run.eval.names,
+    #                       dataset.names)
+    #   dim.out = c(length(eval.meth.names),
+    #               length(eval.col.names),
+    #               length(mod.names),
+    #               length(run.eval.names),
+    #               length(dataset.names))
+    # } else if (out %in% c("prediction", "prediction.eval", "var.import")) {
+    #   kept.mod = mod.names
+    #   if (out == "var.import") {
+    #     ef.mod <- grep(pattern = "EF.", mod.names) # EF models
+    #     if (length(ef.mod) > 0) {
+    #       kept.mod <- mod.names[-ef.mod]
+    #     }
+    #   }
+    #   
+    #   nb.tmp <- length(as.numeric(output))
+    #   dimnames.out = list(NULL, kept.mod, run.eval.names, dataset.names)
+    #   if (out == "var.import") {
+    #     dimnames.out = list(names(mod.out[[1]][[1]][[1]][['var.import']]) # to change ?
+    #                         , kept.mod, run.eval.names, dataset.names)
+    #   }
+    #   dim.out = c(nb.tmp,
+    #               length(kept.mod),
+    #               length(run.eval.names),
+    #               length(dataset.names))
+    # }
+    # 
+    # output <- lapply(names(mod.out), function(d1) { # data set
+    #   lapply(names(mod.out[[d1]]), function(d2) { # run eval
+    #     lapply(names(mod.out[[d1]][[d2]]), function(d3){ # models
+    #       if (out == "evaluation") {
+    #         # if (is.null(mod.out[[d1]][[d2]][[d3]][['calib.failure']])) {
+    #         #   return(data.frame(mod.out[[d1]][[d2]][[d3]][['evaluation']]))
+    #         # } else { 
+    #         #   return(matrix(NA, ncol = length(eval.col.names), nrow = length(eval.meth.names)
+    #         #                 , dimnames = list(eval.meth.names, eval.col.names)))
+    #         # }
+    #       } else if (out == "prediction" || out == "prediction.eval" || 
+    #                  (out == "var.import" && d3 %in% kept.mod)) {
+    #         if (is.null(mod.out[[d1]][[d2]][[d3]][[name_slot]])) {
+    #           return(rep(NA, nb.tmp))
+    #         } else {
+    #           return(as.numeric(mod.out[[d1]][[d2]][[d3]][[name_slot]]))
+    #         }
+    #       }
+    #     })
+    #   })
+    # })
+    # data.out = unlist(output)
+    # 
+    # res.out <- array(data = data.out, dim = dim.out, dimnames = dimnames.out)
+    # return(res.out)
   }
   
   ## 2. CASE calib.failure / models.run -----------------------------------------------------------

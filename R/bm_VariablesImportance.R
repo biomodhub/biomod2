@@ -131,10 +131,8 @@ bm_VariablesImportance <- function(bm.model,
         i.iter = i.iter + 1
         setTxtProgressBar(pb = PROGRESS, value = i.iter)
       }
-      return(data.frame(v = v, r = r, out = out_vr))
+      return(data.frame(Expl.var = v, Rand = r, value = out_vr))
     }
-  out = tapply(X = out$out, INDEX = list(out$v, out$r), FUN = mean)
-  colnames(out) = paste0('rand', colnames(out))
   if (do.progress) { close(PROGRESS) }
   
   return(out)
