@@ -9,3 +9,4 @@
 ^GuloGulo$
 maxent.jar
 .tmp.pdf
+^\.github$

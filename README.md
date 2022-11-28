@@ -1,7 +1,7 @@
 [![Cran Version](https://www.r-pkg.org/badges/version/biomod2?color=yellow)](https://cran.r-project.org/package=biomod2)
 [![Github Version](https://img.shields.io/badge/devel%20version-4.2--1-blue.svg)](https://github.com/biomodhub/biomod2)
 [![Last Commit](https://img.shields.io/github/last-commit/biomodhub/biomod2.svg)](https://github.com/biomodhub/biomod2/commits/master)
-[![R build status](https://github.com/biomodhub/biomod2/workflows/R-CMD-check/badge.svg)](https://github.com/biomodhub/biomod2/actions)
+[![R-CMD-check](https://github.com/biomodhub/biomod2/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/biomodhub/biomod2/actions/workflows/R-CMD-check.yaml)
 
 <!-- [![Download](http://cranlogs.r-pkg.org/badges/grand-total/biomod2?color=yellow)](https://cran.r-project.org/package=segclust2d) -->
 <!-- 
