@@ -37,7 +37,7 @@ Imports:
     stats,
     utils,
     methods,
-    terra,
+    terra (>= 1.6-33),
     sp,
     reshape,
     reshape2,

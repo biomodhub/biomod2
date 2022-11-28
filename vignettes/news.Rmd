@@ -21,6 +21,7 @@ vignette: >
 ##### Major Changes
 
 * Package `sp` is back into `Imports` due to the need to use `sp::read.asciigrid`
+* Added control for `terra` version number (>= 1.6-33) as `terra` 1.6-41 was released on CRAN.
 
 ##### Minor Changes
 
