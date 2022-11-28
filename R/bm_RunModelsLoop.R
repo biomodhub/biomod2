@@ -142,7 +142,7 @@ bm_RunModelsLoop <- function(bm.format,
     run.name = paste0(bm.format$name, run.id)
     cat('\n\n-=-=-=--=-=-=-', run.name, '\n')
     
-
+    
     res.sp.run[[run.id]] = foreach(modi = model) %dopar%
       {
         bm_RunModel(model = modi,
@@ -166,7 +166,7 @@ bm_RunModelsLoop <- function(bm.format,
     names(res.sp.run[[run.id]]) <- model
     
   }
-
+  
   return(res.sp.run)
 }
 
@@ -625,51 +625,50 @@ bm_RunModel <- function(model, Data, modeling.id = '', bm.options, calib.lines,
     
     # file to log potential errors
     maxent_stderr_file <- paste0(MWD$m_outdir, "/maxent.stderr")
-    
-    maxent.cmd <- 
-      paste0(
-        "java ",
-        ifelse(
-          is.null(bm.options@MAXENT.Phillips$memory_allocated),
-          "",
-          paste0("-mx", bm.options@MAXENT.Phillips$memory_allocated, "m")
-        ), 
+
+    maxent.args <- 
+      c(
+        ifelse(is.null(bm.options@MAXENT.Phillips$memory_allocated),"",
+          paste0("-mx", bm.options@MAXENT.Phillips$memory_allocated, "m")), 
         ifelse(is.null(bm.options@MAXENT.Phillips$initial_heap_size), "",
                paste0(" -Xms", bm.options@MAXENT.Phillips$initial_heap_size)),
         ifelse(is.null(bm.options@MAXENT.Phillips$max_heap_size), "",
                paste0(" -Xmx", bm.options@MAXENT.Phillips$max_heap_size)),
-        " -jar ", 
-        file.path(bm.options@MAXENT.Phillips$path_to_maxent.jar, "maxent.jar"),
-        " environmentallayers=\"", MWD$m_backgroundFile, 
-        "\" samplesfile=\"", MWD$m_speciesFile,
-        "\" projectionlayers=\"", gsub(", ", ",", toString(MWD$m_predictFile)),
-        "\" outputdirectory=\"", MWD$m_outdir,
-        "\" outputformat=logistic ", 
+        paste0(" -jar ", 
+               file.path(bm.options@MAXENT.Phillips$path_to_maxent.jar, "maxent.jar")),
+        paste0(" environmentallayers=\"", MWD$m_backgroundFile, "\""), 
+        paste0(" samplesfile=\"", MWD$m_speciesFile, "\""),
+        paste0(" projectionlayers=\"", gsub(", ", ",", toString(MWD$m_predictFile)), "\""),
+        paste0(" outputdirectory=\"", MWD$m_outdir, "\""),
+        paste0(" outputformat=logistic "), 
         ifelse(length(categorical_var),
                paste0(" togglelayertype=", categorical_var, collapse = " "),
                ""),
         " redoifexists",
-        " visible=", bm.options@MAXENT.Phillips$visible,
-        " linear=", bm.options@MAXENT.Phillips$linear,
-        " quadratic=", bm.options@MAXENT.Phillips$quadratic,
-        " product=", bm.options@MAXENT.Phillips$product,
-        " threshold=", bm.options@MAXENT.Phillips$threshold,
-        " hinge=", bm.options@MAXENT.Phillips$hinge,
-        " lq2lqptthreshold=", bm.options@MAXENT.Phillips$lq2lqptthreshold,
-        " l2lqthreshold=", bm.options@MAXENT.Phillips$l2lqthreshold,
-        " hingethreshold=", bm.options@MAXENT.Phillips$hingethreshold,
-        " beta_threshold=", bm.options@MAXENT.Phillips$beta_threshold,
-        " beta_categorical=", bm.options@MAXENT.Phillips$beta_categorical,
-        " beta_lqp=", bm.options@MAXENT.Phillips$beta_lqp,
-        " beta_hinge=", bm.options@MAXENT.Phillips$beta_hinge,
-        " betamultiplier=", bm.options@MAXENT.Phillips$betamultiplier,
-        " defaultprevalence=", bm.options@MAXENT.Phillips$defaultprevalence,
-        " autorun nowarnings notooltips noaddsamplestobackground",
-        " 2> ", maxent_stderr_file
-      )
+        paste0(" visible=", bm.options@MAXENT.Phillips$visible),
+        paste0(" linear=", bm.options@MAXENT.Phillips$linear),
+        paste0(" quadratic=", bm.options@MAXENT.Phillips$quadratic),
+        paste0( " product=", bm.options@MAXENT.Phillips$product),
+        paste0(" threshold=", bm.options@MAXENT.Phillips$threshold),
+        paste0(" hinge=", bm.options@MAXENT.Phillips$hinge),
+        paste0(" lq2lqptthreshold=", bm.options@MAXENT.Phillips$lq2lqptthreshold),
+        paste0(" l2lqthreshold=", bm.options@MAXENT.Phillips$l2lqthreshold),
+        paste0(" hingethreshold=", bm.options@MAXENT.Phillips$hingethreshold),
+        paste0(" beta_threshold=", bm.options@MAXENT.Phillips$beta_threshold),
+        paste0(" beta_categorical=", bm.options@MAXENT.Phillips$beta_categorical),
+        paste0(" beta_lqp=", bm.options@MAXENT.Phillips$beta_lqp),
+        paste0(" beta_hinge=", bm.options@MAXENT.Phillips$beta_hinge),
+        paste0(" betamultiplier=", bm.options@MAXENT.Phillips$betamultiplier),
+        paste0(" defaultprevalence=", bm.options@MAXENT.Phillips$defaultprevalence),
+        " autorun ",
+        " nowarnings ", 
+        " notooltips ",
+        " noaddsamplestobackground"
+    )
     
-    system(command = maxent.cmd, wait = TRUE, intern = FALSE,
-           ignore.stdout = FALSE, ignore.stderr = FALSE)
+    system2(command = "java", args = maxent.args,
+            wait = TRUE,
+            stdout = "", stderr = maxent_stderr_file)
     
     maxent_exec_output <- readLines(maxent_stderr_file)
     
