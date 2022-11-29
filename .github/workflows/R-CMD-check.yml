@@ -52,7 +52,7 @@ jobs:
 
       - name: Cache R packages
         if: runner.os != 'Windows'
-        uses: actions/cache@v2
+        uses: actions/cache@v3
         with:
           path: ${{ env.R_LIBS_USER }}
           key: ${{ runner.os }}-${{ matrix.config.r }}-1-${{ hashFiles('.github/depends.Rds') }}
@@ -61,7 +61,7 @@ jobs:
       - name: Install system dependencies on Linux
         if: runner.os == 'Linux'
         run: |
-          sudo apt install libgdal-dev libproj-dev libgeos-dev libudunits2-dev
+          sudo apt install libgdal-dev libproj-dev libgeos-dev libudunits2-dev texlive-latex-base
           while read -r cmd
           do
             eval sudo $cmd
@@ -76,7 +76,7 @@ jobs:
 
       - name: Check
         run: |
-          rcmdcheck::rcmdcheck(args = "--no-manual --as-cran", error_on = "error", check_dir = "check")
+          rcmdcheck::rcmdcheck(args = c("--no-manual","--as-cran"), error_on = "error", check_dir = "check")
         shell: Rscript {0}
 
       - name: Upload check results
