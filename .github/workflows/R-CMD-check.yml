@@ -17,9 +17,9 @@ jobs:
       fail-fast: false
       matrix:
         config:
-          # - {os: windows-latest, r: 'release',   vdiffr: true,  xref: true}
-          # - {os: macOS-latest,   r: 'release',   vdiffr: true,  xref: true}
-          # - {os: ubuntu-latest,   r: 'devel',   vdiffr: true,  xref: true}
+          - {os: windows-latest, r: 'release',   vdiffr: true,  xref: true}
+          - {os: macOS-latest,   r: 'release',   vdiffr: true,  xref: true}
+          - {os: ubuntu-latest,   r: 'devel',   vdiffr: true,  xref: true}
           - {os: ubuntu-latest,   r: 'release',   vdiffr: true,  xref: true}
           # - {os: ubuntu-latest,   r: 'oldrel-1'}
 
