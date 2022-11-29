@@ -36,6 +36,10 @@ vignette: >
 * Bugfix for plot method for `BIOMOD.formated.data.PA` object.
 * Fixed `MAXENT.Phillips` for Windows.
 
+##### Internal
+
+* Updated github workflow : removed obsolete ubuntu 18.04 ; added test on r-devel ; added cache for R packages.
+
 ####  4.2-0 Terra Update
 
 ##### Major Changes
