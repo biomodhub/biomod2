@@ -158,7 +158,7 @@ a type of <code><a href="biomod2_model.html">biomod2_model</a></code> and <code>
 <span><span class="fu">predict2</span><span class="op">(</span><span class="va">object</span>, <span class="va">newdata</span>, <span class="va">...</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># S4 method for MAXENT.Phillips_biomod2_model,data.frame</span></span>
-<span><span class="fu">predict2</span><span class="op">(</span><span class="va">object</span>, <span class="va">newdata</span>, do_raster <span class="op">=</span> <span class="cn">FALSE</span>, newraster <span class="op">=</span> <span class="cn">NULL</span>, <span class="va">...</span><span class="op">)</span></span>
+<span><span class="fu">predict2</span><span class="op">(</span><span class="va">object</span>, <span class="va">newdata</span>, <span class="va">...</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># S4 method for MAXENT.Phillips.2_biomod2_model,SpatRaster</span></span>
 <span><span class="fu">predict2</span><span class="op">(</span><span class="va">object</span>, <span class="va">newdata</span>, <span class="va">...</span><span class="op">)</span></span>
@@ -201,21 +201,6 @@ predictions</p></dd>
 <dt>seedval</dt>
 <dd><p>(<em>optional, default</em> <code>NULL</code>) <br> An <code>integer</code>
 value corresponding to the new seed value to be set</p></dd>
-
-
-<dt>do_raster</dt>
-<dd><p>(<em>optional, default</em> <code>NULL</code>). A boolean used with
-<code>MAXENT.Phillips</code>, so that the
-<code><a href="https://rdrr.io/pkg/terra/man/SpatRaster-class.html" class="external-link">SpatRaster</a></code> method can use the
-<code>data.frame</code> method.</p></dd>
-
-
-<dt>newraster</dt>
-<dd><p>(<em>optional, default</em> <code>NULL</code>). A
-<code>[terra:SpatRaster]{SpatRaster}</code> used by the <code>MAXENT.Phillips</code>
-method so that the  <code>data.frame</code> method can transform its results
-back into <code><a href="https://rdrr.io/pkg/terra/man/SpatRaster-class.html" class="external-link">SpatRaster</a></code> when <code>do_raster =
-TRUE</code>.</p></dd>
 
 
 <dt>...</dt>

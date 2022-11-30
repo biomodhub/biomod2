@@ -153,6 +153,9 @@ disk.</li>
 <ul>
 <li>Added <code>initial_heap_size</code> and <code>max_heap_size</code>
 in <code>MAXENT.Phillips</code> modeling options</li>
+<li>Improved projection efficiency for raster with
+<code>MAXENT.Phillips</code>
+</li>
 </ul>
 </div>
 <div class="section level5">
@@ -182,6 +185,10 @@ object.</li>
 <ul>
 <li>Updated github workflow : removed obsolete ubuntu 18.04 ; added test
 on r-devel ; added cache for R packages.</li>
+<li>Updated <code>MAXENT.Phillips</code> <code>predict2</code> method
+for <code>SpatRaster</code> so that it saves environmental data as
+<code>.asc</code> and do not use the <code>data.frame</code>
+method.</li>
 </ul>
 </div>
 </div>

@@ -88,7 +88,7 @@ predict2(object, newdata, ...)
 
 \S4method{predict2}{MAXENT.Phillips_biomod2_model,SpatRaster}(object, newdata, ...)
 
-\S4method{predict2}{MAXENT.Phillips_biomod2_model,data.frame}(object, newdata, do_raster = FALSE, newraster = NULL, ...)
+\S4method{predict2}{MAXENT.Phillips_biomod2_model,data.frame}(object, newdata, ...)
 
 \S4method{predict2}{MAXENT.Phillips.2_biomod2_model,SpatRaster}(object, newdata, ...)
 
@@ -116,17 +116,6 @@ predictions}
 
 \item{seedval}{(\emph{optional, default} \code{NULL}) \cr An \code{integer}
 value corresponding to the new seed value to be set}
-
-\item{do_raster}{(\emph{optional, default} \code{NULL}). A boolean used with
-\code{MAXENT.Phillips}, so that the
-\code{\link[terra:SpatRaster]{SpatRaster}} method can use the
-\code{data.frame} method.}
-
-\item{newraster}{(\emph{optional, default} \code{NULL}). A
-\code{[terra:SpatRaster]{SpatRaster}} used by the \code{MAXENT.Phillips}
-method so that the  \code{data.frame} method can transform its results
-back into \code{\link[terra:SpatRaster]{SpatRaster}} when \code{do_raster =
-TRUE}.}
 
 \item{\ldots}{(\emph{optional)})}
 }

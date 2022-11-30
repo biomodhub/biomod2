@@ -27,6 +27,7 @@ vignette: >
 ##### Minor Changes
 
 * Added `initial_heap_size` and `max_heap_size` in `MAXENT.Phillips` modeling options
+* Improved projection efficiency for raster with `MAXENT.Phillips`
 
 ##### Bugfix
 
@@ -41,6 +42,7 @@ vignette: >
 ##### Internal
 
 * Updated github workflow : removed obsolete ubuntu 18.04 ; added test on r-devel ; added cache for R packages.
+* Updated `MAXENT.Phillips` `predict2` method for `SpatRaster` so that it saves environmental data as `.asc` and do not use the `data.frame` method.
 
 ####  4.2-0 Terra Update
 

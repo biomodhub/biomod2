@@ -297,15 +297,6 @@ setMethod('predict', signature(object = 'biomod2_model'),
 ##' \code{predict2.biomod2_model.data.frame} to do the prediction
 ##' @param seedval (\emph{optional, default} \code{NULL}) \cr An \code{integer}
 ##'   value corresponding to the new seed value to be set
-##' @param do_raster (\emph{optional, default} \code{NULL}). A boolean used with
-##'   \code{MAXENT.Phillips}, so that the
-##'   \code{\link[terra:SpatRaster]{SpatRaster}} method can use the
-##'   \code{data.frame} method.
-##' @param newraster (\emph{optional, default} \code{NULL}). A
-##'   \code{[terra:SpatRaster]{SpatRaster}} used by the \code{MAXENT.Phillips}
-##'   method so that the  \code{data.frame} method can transform its results
-##'   back into \code{\link[terra:SpatRaster]{SpatRaster}} when \code{do_raster =
-##'   TRUE}.
 ##' @param \ldots (\emph{optional)}) 
 ##' 
 ##' 
@@ -771,18 +762,72 @@ setClass('MAXENT.Phillips_biomod2_model',
 
 setMethod('predict2', signature(object = 'MAXENT.Phillips_biomod2_model', newdata = "SpatRaster"),
           function(object, newdata, ...) {
-            newraster <- newdata[[1]]
-            newraster[] <- NA
-            newdata <- na.exclude(as.points(newdata))
-            newraster[cellFromXY(newraster, crds(newdata))] <- 1
-            newdata.crds <- crds(newdata)
-            newdata <- cbind(newdata.crds, 
-                             as.data.frame(newdata, 
-                                           stringsAsFactors = TRUE))
-            # redirect to the data.frame method, but asking to save a raster
-            # with template newraster
-            predict2(object, newdata,
-                     do_raster = TRUE, newraster = newraster, ...)
+            args <- list(...)
+            on_0_1000 <- args$on_0_1000
+            temp_workdir <- args$temp_workdir
+            filename <- args$filename
+            
+            if (is.null(on_0_1000)) { on_0_1000 <- FALSE }
+            
+            # Proj Data
+            vec_data_filename <- foreach(thislayername = names(newdata), .combine = 'c') %do% {
+              current_data_filename <-
+                file.path(temp_workdir, paste0(thislayername,'.asc'))
+              writeRaster(subset(newdata,thislayername), 
+                          filename = current_data_filename,
+                          overwrite = TRUE,
+                          NAflag = -9999)
+              return(current_data_filename)
+            }
+            
+            # checking maxent.jar is present
+            path_to_maxent.jar <- file.path(object@model_options$path_to_maxent.jar, "maxent.jar")
+            if (!file.exists(path_to_maxent.jar)) {
+              path_to_maxent.jar <-  file.path(getwd(), "maxent.jar")
+            }
+            
+            
+            maxent.command <- 
+              paste0("java ",
+                     ifelse(is.null(object@model_options$memory_allocated), "",
+                            paste0("-mx", object@model_options$memory_allocated, "m")),
+                     ifelse(is.null(object@model_options$initial_heap_size), "",
+                            paste0(" -Xms", object@model_options$initial_heap_size)),
+                     ifelse(is.null(object@model_options$max_heap_size), "",
+                            paste0(" -Xmx", object@model_options$max_heap_size)),
+                     " -cp ", "\"", path_to_maxent.jar, "\"",
+                     " density.Project ",
+                     "\"", list.files(path = object@model_output_dir, pattern = ".lambdas$", full.names = TRUE), "\" ",
+                     "\"", temp_workdir, "\" ",
+                     "\"", file.path(temp_workdir, "projMaxent.asc"), "\" ",
+                     " doclamp=false visible=false autorun nowarnings notooltips")
+            system(command = maxent.command, wait = TRUE, intern = TRUE)
+            
+            file.remove(vec_data_filename)
+            
+            proj <- rast(read.asciigrid(file.path(temp_workdir, "projMaxent.asc")))
+            
+            # Remi 11/2022 Not sure the following lines are necessary
+            if (!inMemory(proj)) {
+              proj <- proj@ptr$readAll() # to prevent from tmp files removing
+              x <- message(proj, "readAll") # to have message if need be ?
+            }
+            
+            if (on_0_1000) { 
+              proj <- round(proj * 1000) 
+            }
+            
+            # save raster on hard drive ?
+            if (!is.null(filename)) {
+              cat("\n\t\tWriting projection on hard drive...")
+              if (on_0_1000) { ## projections are stored as positive integer
+                writeRaster(proj, filename = filename, overwrite = overwrite, datatype = "INT2S", NAflag = -9999)
+              } else { ## keep default data format for saved raster
+                writeRaster(proj, filename = filename, overwrite = overwrite)
+              }
+              proj <- rast(filename, RAT = FALSE)
+            }
+            proj
           }
 )
 
@@ -791,7 +836,7 @@ setMethod('predict2', signature(object = 'MAXENT.Phillips_biomod2_model', newdat
 ##' @importFrom sp read.asciigrid
 
 setMethod('predict2', signature(object = 'MAXENT.Phillips_biomod2_model', newdata = "data.frame"),
-          function(object, newdata, do_raster = FALSE, newraster = NULL, ...) {
+          function(object, newdata, ...) {
             
             args <- list(...)
             on_0_1000 <- args$on_0_1000
@@ -799,13 +844,12 @@ setMethod('predict2', signature(object = 'MAXENT.Phillips_biomod2_model', newdat
             
             if (is.null(on_0_1000)) { on_0_1000 <- FALSE }
             
-            if(!do_raster){ # otherwise na were already filtered
-              ## check if na occurs in newdata cause they are not well supported
-              not_na_rows <- apply(newdata, 1, function(x){ all(!is.na(x)) })
-              if(!all(not_na_rows)){
-                newdata  <-  newdata[not_na_rows, , drop = FALSE]
-              }
+            ## check if na occurs in newdata cause they are not well supported
+            not_na_rows <- apply(newdata, 1, function(x){ all(!is.na(x)) })
+            if(!all(not_na_rows)){
+              newdata  <-  newdata[not_na_rows, , drop = FALSE]
             }
+            
             
             # get categorical variables and transform them into numeric
             categorical_var <- .get_categorical_names(newdata)
@@ -856,7 +900,7 @@ setMethod('predict2', signature(object = 'MAXENT.Phillips_biomod2_model', newdat
             system(command = maxent.command, wait = TRUE, intern = TRUE)
             
             
-            # remove maxent data file 
+            # remove maxent data files
             file.remove(m_predictFile)
             
             
@@ -865,29 +909,12 @@ setMethod('predict2', signature(object = 'MAXENT.Phillips_biomod2_model', newdat
             # So dependence to sp was added again.
             # proj <- as.numeric(values(rast(file.path(temp_workdir, "projMaxent.asc")), mat = FALSE))
             proj <- as.numeric(read.asciigrid(file.path(temp_workdir, "projMaxent.asc"))@data[, 1])
-            
-            if (do_raster) {
-              newraster[which(newraster[] == 1)] = proj
-              proj <- newraster
-              
-              # Remi 10/10/2022 
-              # Not sure those lines are still necessary
-              # readAll was moved from exported function in raster
-              # to an internal function in terra. A quick fix was to use the 
-              # internal code from terra:::readAll
-              if (!inMemory(proj)) {
-                proj <- proj@ptr$readAll() # to prevent from tmp files removing
-                x <- message(proj, "readAll") # to have message if need be ?
-              }
-              
-            } else {
-              ## add original NA from formal dataset
-              if (sum(!not_na_rows) > 0) {
-                tmp <- rep(NA, length(not_na_rows))
-                tmp[not_na_rows] <- proj
-                proj <- tmp
-                rm('tmp')
-              }
+            ## add original NA from formal dataset
+            if (sum(!not_na_rows) > 0) {
+              tmp <- rep(NA, length(not_na_rows))
+              tmp[not_na_rows] <- proj
+              proj <- tmp
+              rm('tmp')
             }
             if (on_0_1000) { proj <- round(proj * 1000) }
             return(proj)
