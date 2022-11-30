@@ -271,50 +271,52 @@ BIOMOD_Projection <- function(bm.mod,
   }
   
   ## 4. MAKING PROJECTIONS ------------------------------------------------------------------------
-  if (!do.stack) {
-    proj <- sapply(models.chosen, function(mod.name)  {
+  
+  
+  if (nb.cpu > 1) {
+    if (.getOS() != "windows") {
+      if (!isNamespaceLoaded("doParallel")) { 
+        if(!requireNamespace('doParallel', quietly = TRUE)) stop("Package 'doParallel' not found")
+      }
+      doParallel::registerDoParallel(cores = nb.cpu)
+    } else {
+      warning("Parallelisation with `foreach` is not available for Windows. Sorry.")
+    }
+  }
+  
+  proj <- foreach(mod.name = models.chosen) %dopar%
+    {
       cat("\n\t> Projecting", mod.name, "...")
-      filename <- file.path(namePath, "individual_projections"
-                            , paste0(nameProj, "_", mod.name,
+      if(do.stack){
+        filename <- NULL
+      } else {
+        filename <- file.path(namePath, "individual_projections",
+                              paste0(nameProj, "_", mod.name, 
                                      ifelse(output.format == ".RData"
                                             , ".grd", output.format)))
-      return(filename)
-    })
-    
-  } else {
-    if (nb.cpu > 1) {
-      if (.getOS() != "windows") {
-        if (!isNamespaceLoaded("doParallel")) { 
-          if(!requireNamespace('doParallel', quietly = TRUE)) stop("Package 'doParallel' not found")
-          }
-        doParallel::registerDoParallel(cores = nb.cpu)
-      } else {
-        warning("Parallelisation with `foreach` is not available for Windows. Sorry.")
       }
-    }
-    
-    proj <- foreach(mod.name = models.chosen) %dopar%
-      {
-        cat("\n\t> Projecting", mod.name, "...")
-        filename <- file.path(namePath, "individual_projections"
-                              , paste0(nameProj, "_", mod.name, ifelse(output.format == ".RData"
-                                                                       , ".grd", output.format)))
-        BIOMOD_LoadModels(bm.out = bm.mod, full.name = mod.name, as = "mod")
-        temp_workdir = NULL
-        if (length(grep("MAXENT.Phillips$", mod.name)) == 1) {
-          temp_workdir = mod@model_output_dir
-        }
-        pred.tmp <- predict(mod, new.env, on_0_1000 = on_0_1000, filename = filename
-                            , omit.na = omit.na, split.proj = 1
-                            , temp_workdir = temp_workdir, seedval = seed.val)
+      
+      BIOMOD_LoadModels(bm.out = bm.mod, full.name = mod.name, as = "mod")
+      temp_workdir = NULL
+      if (length(grep("MAXENT.Phillips$", mod.name)) == 1) {
+        temp_workdir = mod@model_output_dir
+      }
+      pred.tmp <- predict(mod, new.env, on_0_1000 = on_0_1000, 
+                          filename = filename, omit.na = omit.na, 
+                          temp_workdir = temp_workdir, seedval = seed.val)
+      if(do.stack){
         if(inherits(new.env, "SpatRaster")){
-         return(wrap(pred.tmp)) 
+          return(wrap(pred.tmp)) 
         } else {
           return(pred.tmp)
         }
+      } else {
+        return(filename)
       }
-
-    ## Putting predictions into the right format
+    }
+  
+  ## Putting predictions into the right format
+  if(do.stack){
     if (inherits(new.env, "SpatRaster")) {
       proj <- rast(lapply(proj, rast)) # SpatRaster needs to be wrapped before saving
       names(proj) <- models.chosen
@@ -332,21 +334,24 @@ BIOMOD_Projection <- function(bm.mod,
   }
   
   ## save projections
-  assign(x = nameProjSp, value = proj)
-  saved.files <- file.path(namePath, paste0(nameProjSp, output.format))
-  if (output.format == '.RData') {
-    save(list = nameProjSp, file = saved.files, compress = compress)
-  } else if (do.stack) {
-    writeRaster(x = rast(get(nameProjSp)), filename = saved.files,
-                overwrite = TRUE, datatype = ifelse(on_0_1000, "INT2S", "FLT4S"), NAflag = -9999)
-  } else {
+  if (!do.stack){
     saved.files = unlist(proj)
+    proj_out@type <- class(new.env)
+  } else {
+    assign(x = nameProjSp, value = proj)
+    saved.files <- file.path(namePath, paste0(nameProjSp, output.format))
+    if (output.format == '.RData') {
+      save(list = nameProjSp, file = saved.files, compress = compress)
+    } else  {
+      writeRaster(x = rast(get(nameProjSp)), filename = saved.files,
+                  overwrite = TRUE, datatype = ifelse(on_0_1000, "INT2S", "FLT4S"), NAflag = -9999)
+    }
+    proj_out@type <- class(proj_out@proj.out@val)
   }
-  proj_out@type <- class(proj_out@proj.out@val)
   proj_out@proj.out@link <- saved.files
   
   # now that proj have been saved, it can be unwrapped if it is a SpatRaster
-  if (inherits(new.env, "SpatRaster")) {
+  if (inherits(new.env, "SpatRaster") && do.stack) {
     proj <- rast(proj) 
   }
   
@@ -582,10 +587,26 @@ BIOMOD_Projection <- function(bm.mod,
     compress <- ifelse(.Platform$OS.type == 'windows', 'gzip', 'xz')
   }
   
-  ## 8. Check do.stack --------------------------------------------------------
+  ## 8. Check output.format ---------------------------------------------------
+  output.format <- args$output.format # raster output format
+  if (!is.null(output.format)) {
+    if (!output.format %in% c(".img", ".grd", ".RData")) {
+      stop(paste0("output.format argument should be one of '.img','.grd' or '.RData'\n"
+                  , "Note : '.img','.grd' are only available if you give environmental condition as a SpatRaster object"))
+    }
+    if (output.format %in% c(".img", ".grd") && !inherits(new.env, "SpatRaster")) {
+      warning("output.format was automatically set to '.RData' because environmental conditions are not given as a raster object")
+    }
+  } else {
+    output.format <- ifelse(!inherits(new.env, "SpatRaster"), ".RData", ".grd")
+  }
+  
+  ## 9. Check do.stack --------------------------------------------------------
   do.stack <- ifelse(is.null(args$do.stack), TRUE, args$do.stack)
   if (!inherits(new.env, 'SpatRaster')) {
-    if (!do.stack) { cat("\n\t\t! 'do.stack' arg is always set as TRUE for data.frame/matrix dataset") }
+    if (!do.stack) { 
+      cat("\n\t\t! 'do.stack' arg is always set as TRUE for data.frame/matrix dataset") 
+    }
     do.stack <- TRUE
   } else if (do.stack) { 
     # test if there is enough memory to work with multilayer SpatRaster
@@ -605,21 +626,12 @@ BIOMOD_Projection <- function(bm.mod,
     # if (test[1] > test[2]) {
     #   terraOptions(todisk = TRUE) 
     # }
+  } else if (output.format == "RData"){
+    cat("\n\t\t! 'do.stack' arg is always set as TRUE for .RData output format") 
+    do.stack <- TRUE
   }
   
-  ## 9. Check output.format ---------------------------------------------------
-  output.format <- args$output.format # raster output format
-  if (!is.null(output.format)) {
-    if (!output.format %in% c(".img", ".grd", ".RData")) {
-      stop(paste0("output.format argument should be one of '.img','.grd' or '.RData'\n"
-                  , "Note : '.img','.grd' are only available if you give environmental condition as a SpatRaster object"))
-    }
-    if (output.format %in% c(".img", ".grd") && !inherits(new.env, "SpatRaster")) {
-      warning("output.format was automatically set to '.RData' because environmental conditions are not given as a raster object")
-    }
-  } else {
-    output.format <- ifelse(!inherits(new.env, "SpatRaster"), ".RData", ".grd")
-  }
+
   
   
   return(list(proj.name = proj.name,
