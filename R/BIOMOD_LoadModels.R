@@ -153,11 +153,11 @@ BIOMOD_LoadModels <- function(bm.out, ... )
   }
   
   ## LOAD the selected models -----------------------------------------------------------
-  nameFile = file.path(bm.out@dir.name, bm.out@sp.name, "models", bm.out@modeling.id)
+  filename = file.path(bm.out@dir.name, bm.out@sp.name, "models", bm.out@modeling.id)
   # .bm_cat("Done")
   if (!is.null(as) && length(models.to.load) == 1) {
     assign(x = as,
-           value = get(load(file = file.path(nameFile, models.to.load))),
+           value = get(load(file = file.path(filename, models.to.load))),
            envir = envir)
     invisible(TRUE)
   } else {
