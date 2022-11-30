@@ -22,6 +22,7 @@ vignette: >
 
 * Package `sp` is back into `Imports` due to the need to use `sp::read.asciigrid`
 * Added control for `terra` version number (>= 1.6-33) as `terra` 1.6-41 was released on CRAN.
+* With do.stack = TRUE, only stacked projection are now saved to the disk.
 
 ##### Minor Changes
 
@@ -35,6 +36,7 @@ vignette: >
 * Fixed error in `BIOMOD_EnsembleForecasting` when a single evaluation metric was available and binary/filtered transformation were asked for.
 * Bugfix for plot method for `BIOMOD.formated.data.PA` object.
 * Fixed `MAXENT.Phillips` for Windows.
+* Fixed using `do.stack = FALSE` with `BIOMOD_Projection`
 
 ##### Internal
 
