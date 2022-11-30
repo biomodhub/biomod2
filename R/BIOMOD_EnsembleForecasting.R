@@ -320,8 +320,11 @@ BIOMOD_EnsembleForecasting <- function(bm.em,
   saved.files <- proj_names <- vector()
   for (em.comp in bm.em@em.computed[which(bm.em@em.computed %in% models.chosen)]) {
     cat("\n\t> Projecting", em.comp, "...")
-    file_name_tmp <- file.path(indiv_proj_dir, paste0(em.comp,output.format))
-    
+    if(do.stack){
+      file_name_tmp <- NULL
+      } else {
+      file_name_tmp <- file.path(indiv_proj_dir, paste0(em.comp,output.format))
+    }
     model.tmp <- NULL
     BIOMOD_LoadModels(bm.out = bm.em, full.name = em.comp, as = 'model.tmp')
     if (inherits(formal_pred, 'SpatRaster')) {
@@ -329,7 +332,7 @@ BIOMOD_EnsembleForecasting <- function(bm.em,
                         newdata = subset(formal_pred, subset = model.tmp@model),
                         data_as_formal_predictions = TRUE,
                         on_0_1000 = on_0_1000,
-                        filename = ifelse(output.format == '.RData', '', file_name_tmp))
+                        filename = file_name_tmp)
     } else {
       ef.tmp <- predict(model.tmp,
                         newdata = formal_pred[, model.tmp@model, drop = FALSE],
