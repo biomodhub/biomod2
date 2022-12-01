@@ -370,9 +370,20 @@ setMethod("get_options", "BIOMOD.models.out",
 ##'
 
 setMethod("get_calib_lines", "BIOMOD.models.out",
-          function(obj, as.data.frame = FALSE, ...) {
-            calib_lines <- load_stored_object(obj@calib.lines)
-            return(calib_lines)
+          function(obj, as.data.frame = FALSE, data.set = NULL, run.eval = NULL) {
+            out <- load_stored_object(obj@calib.lines)
+            
+            if (!is.null(out) && as.data.frame == TRUE) {
+              tmp <- melt(out, varnames = c("Points", "run.eval", "data.set"))
+              tmp$data.set = sub("_", "", tmp$data.set)
+              tmp$run.eval = sub("_", "", tmp$run.eval)
+              out <- tmp[, c("Points", "data.set", "run.eval", "value")]
+              colnames(out)[4] = "calib.lines"
+              
+              keep_lines <- .filter_outputs.df(out, subset.list = list(data.set = data.set, run.eval = run.eval))
+              out <- out[keep_lines, ]
+            }
+            return(out)
           }
 )
 
@@ -422,66 +433,27 @@ setMethod("get_formal_data", "BIOMOD.models.out",
 ##' 
 
 setMethod("get_predictions", "BIOMOD.models.out",
-          function(obj, as.data.frame = FALSE, evaluation = FALSE
-                   , full.name = NULL, model = NULL, run.eval = NULL, data.set = NULL)
+          function(obj, evaluation = FALSE
+                   , full.name = NULL, Model = NULL, run.eval = NULL, data.set = NULL)
           {
-            # select models to be returned
-            models_selected <- get_built_models(obj)
-            if (length(full.name)) {
-              models_selected <- intersect(full.name, models_selected)
-            } else if (length(model) | length(run.eval) | length(data.set)) {
-              grep_model = grep(paste(model, collapse = "|"), models_selected)
-              grep_run.eval = grep(paste(run.eval, collapse = "|"), models_selected)
-              grep_data.set = grep(paste(data.set, collapse = "|"), models_selected)
-              models_selected = models_selected[Reduce(intersect, list(grep_model, grep_run.eval, grep_data.set))]
+            # check evaluation data availability
+            if (evaluation && (!obj@has.evaluation.data)) {
+              warning("!   Calibration data returned because no evaluation data available")
+              evaluation = FALSE
             }
             
-            if (length(models_selected))
-            {
-              
-              # check evaluation data availability
-              if (evaluation && (!obj@has.evaluation.data)) {
-                warning("!   Calibration data returned because no evaluation data available")
-                evaluation = FALSE
-              }
-              
-              # select calibration or eval data
-              if (evaluation) { 
-                out <- load_stored_object(obj@models.prediction.eval)
-              } else { 
-                out <- load_stored_object(obj@models.prediction)
-              }
-              names(out) <- get_built_models(obj)
-              
-              # subselection of models_selected
-              if (inherits(out, 'Raster')) {
-                out <- subset(out, models_selected, drop = FALSE)
-              } else if (length(dim(out)) == 4) { ## 4D arrays
-                out <- out[, .extract_modelNamesInfo(model.names = models_selected, info = 'models'),
-                           .extract_modelNamesInfo(model.names = models_selected, info = 'run.eval'),
-                           .extract_modelNamesInfo(model.names = models_selected, info = 'data.set'), drop = FALSE]
-              } else { ## matrix (e.g. from ensemble models projections)
-                out <- out[, models_selected, drop = FALSE]
-              }
-              
-              if (as.data.frame) {
-                out <- as.data.frame(out)
-                names(out) <- unlist(
-                  lapply(strsplit(names(out), ".", fixed = TRUE),
-                         function(x) {
-                           x.rev <- rev(x) ## we reverse the order of the splitted vector to have algo at the end
-                           data.set.id <- x.rev[1]
-                           cross.valid.id <- x.rev[2]
-                           algo.id <- paste0(rev(x.rev[3:length(x.rev)]), collapse = ".")
-                           model.id <- paste(obj@sp.name,
-                                             data.set.id,
-                                             cross.valid.id,
-                                             algo.id, sep = "_")
-                           return(model.id)
-                         }))
-              }
-            } else { out <- NULL }
+            # select calibration or eval data
+            if (evaluation) {
+              out <- load_stored_object(obj@models.prediction.eval)
+            } else { 
+              out <- load_stored_object(obj@models.prediction)
+            }
             
+            # subselection of models_selected
+            out$full.name <- paste(obj@sp.name, out$data.set, out$run.eval, out$Model, sep = "_")
+            keep_lines <- .filter_outputs.df(out, subset.list = list(full.name =  full.name, data.set = data.set
+                                                                     , run.eval = run.eval, Model = Model))
+            out <- out[keep_lines, ]
             return(out)
           }
 )
@@ -502,18 +474,13 @@ setMethod("get_built_models", "BIOMOD.models.out", function(obj, ...) {
 ##' 
 
 setMethod("get_evaluations", "BIOMOD.models.out",
-          function(obj, as.data.frame = FALSE, ...) {
+          function(obj, full.name = NULL, Model = NULL, run.eval = NULL, data.set = NULL, Metric.eval = NULL) {
             out <- load_stored_object(obj@models.evaluation)
-            
-            if (!is.null(out) && as.data.frame == TRUE) {
-              tmp = melt(out, varnames = c("Eval.metric", "tmp", "Algo", "Run", "Dataset"))
-              tmp$Model.name = paste0(tmp$Algo, "_", tmp$Run, "_", tmp$Dataset)
-              tmp.split = split(tmp, tmp$tmp)
-              tmp.split = lapply(tmp.split, function(x) x[, c("Model.name", "Algo", "Run", "Dataset", "Eval.metric", "value")])
-              for (i in 1:length(tmp.split)) { colnames(tmp.split[[i]])[6] = names(tmp.split)[i] }
-              out = Reduce(function(x, y) merge(x, y, by = c("Model.name", "Algo", "Run", "Dataset", "Eval.metric")), tmp.split)
-            }
-            
+            out$full.name <- paste(obj@sp.name, out$data.set, out$run.eval, out$Model, sep = "_")
+            keep_lines <- .filter_outputs.df(out, subset.list = list(full.name =  full.name, data.set = data.set
+                                                                     , run.eval = run.eval, Model = Model
+                                                                     , Metric.eval = Metric.eval))
+            out <- out[keep_lines, ]
             return(out)
           }
 )
@@ -524,27 +491,13 @@ setMethod("get_evaluations", "BIOMOD.models.out",
 ##' 
 
 setMethod("get_variables_importance", "BIOMOD.models.out",
-          function(obj, as.data.frame = FALSE, ...) {
-            # out <- load_stored_object(obj@variables.importance) ## /!\ rounded value over repetitions /!\
-            out <- NULL
-            BIOMOD_LoadModels(bm.out = obj)
-            for (mod in get_built_models(obj)) {
-              out_tmp <- get(mod)@model_variables_importance
-              out <- abind(out, out_tmp, along = 3)
-            }
-            dimnames(out)[[3]] <- get_built_models(obj)
-            
-            if (!is.null(out) && as.data.frame == TRUE) {
-              tmp <- melt(out, varnames = c("Expl.var", "Rand", "L1"))
-              tmp$Model.name = sapply(as.character(tmp$L1), function(x) { paste(strsplit(x, "_")[[1]][-1], collapse = "_") })
-              tmp$Algo = sapply(tmp$Model.name, function(x) { strsplit(x, "_")[[1]][3] })
-              tmp$Run = sapply(tmp$Model.name, function(x) { strsplit(x, "_")[[1]][2] })
-              tmp$Dataset = sapply(tmp$Model.name, function(x) { strsplit(x, "_")[[1]][1] })
-              out <- tmp[, c("Model.name", "Algo", "Run", "Dataset"
-                             , "Expl.var", "Rand", "value")]
-              colnames(out)[7] = "Var.imp"
-            }
-            
+          function(obj, full.name = NULL, Model = NULL, run.eval = NULL, data.set = NULL, Expl.var = NULL) {
+            out <- load_stored_object(obj@variables.importance)
+            out$full.name <- paste(obj@sp.name, out$data.set, out$run.eval, out$Model, sep = "_")
+            keep_lines <- .filter_outputs.df(out, subset.list = list(full.name =  full.name, data.set = data.set
+                                                                     , run.eval = run.eval, Model = Model
+                                                                     , Expl.var = Expl.var))
+            out <- out[keep_lines, ]
             return(out)
           }
 )

@@ -273,6 +273,29 @@ get_var_range <- function(data)
 }
 
 
+## EXTRACT models outputs according to specific infos ---------------------------------------------
+## used in biomod2_classes_3.R
+
+.filter_outputs.df <- function(out, subset.list)
+{
+  keep_subset <- foreach(sub.i = names(subset.list)) %do%
+    {
+      keep_lines <- 1:nrow(out)
+      if (!is.null(subset.list[[sub.i]])) {
+        .fun_testIfIn(TRUE, sub.i, subset.list[[sub.i]], unique(out[, sub.i]))
+        keep_lines <- which(out[, sub.i] %in% subset.list[[sub.i]])
+      }
+      return(keep_lines)
+    }
+  keep_lines <- Reduce(intersect, keep_subset)
+  if (length(keep_lines) == 0) {
+    warning(paste0("No information corresponding to the given filter(s) ("
+                   , paste0(names(subset.list), collapse = ', '), ")"))
+  }
+  return(keep_lines)
+}
+
+
 ## EXTRACT model names according to specific infos ------------------------------------------------
 ## used in biomod2_classes_3.R, BIOMOD_LoadModels, BIOMOD_Projection, BIOMOD_EnsembleModeling, bm_PlotRangeSize
 
