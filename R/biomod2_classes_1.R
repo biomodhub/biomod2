@@ -666,7 +666,7 @@ setMethod('BIOMOD.formated.data.PA', signature(sp = 'numeric', env = 'SpatRaster
   if (inherits(env, 'SpatRaster')) {
     categorical_var <- names(env)[is.factor(env)] 
   }
-  
+
   ## Keep same env variable for eval than calib (+ check for factor)
   if (!is.null(eval.sp) && is.null(eval.env)) {
     if (inherits(env, 'SpatRaster')) {
@@ -737,11 +737,15 @@ setMethod('BIOMOD.formated.data.PA', signature(sp = 'numeric', env = 'SpatRaster
       ## create data.mask for ploting
       data.mask.tmp <- classify(subset(env, 1), 
                                 matrix(c(-Inf, Inf, -1), ncol = 3))
-      data.mask <- rast(data.mask.tmp)
+      data.mask <- data.mask.tmp
       xy_pres <- pa.data.tmp$xy[which(pa.data.tmp$sp == 1), , drop = FALSE]
       xy_abs <- pa.data.tmp$xy[which(pa.data.tmp$sp == 0), , drop = FALSE]
-      if (nrow(xy_pres)) { data.mask[cellFromXY(data.mask.tmp, xy_pres)] <- 1 }
-      if (nrow(xy_abs)) { data.mask[cellFromXY(data.mask.tmp, xy_abs)] <- 0 }
+      if (nrow(xy_pres) > 0) { 
+        data.mask[cellFromXY(data.mask.tmp, xy_pres)] <- 1
+        }
+      if (nrow(xy_abs) > 0) {
+        data.mask[cellFromXY(data.mask.tmp, xy_abs)] <- 0 
+        }
       names(data.mask) <- "input_data"
       
       ## add eval data
@@ -755,7 +759,6 @@ setMethod('BIOMOD.formated.data.PA', signature(sp = 'numeric', env = 'SpatRaster
           }
         }
       } 
-      
       ## add pa data
       data.mask.names.tmp <- names(data.mask)
       for (pa in 1:ncol(as.data.frame(pa.data.tmp$pa.tab))) {
@@ -774,7 +777,6 @@ setMethod('BIOMOD.formated.data.PA', signature(sp = 'numeric', env = 'SpatRaster
         }
         add(data.mask) <- data.mask.tmp2
       }
-      
       names(data.mask) <- c(data.mask.names.tmp,
                             colnames(as.data.frame(pa.data.tmp$pa.tab)))
       
