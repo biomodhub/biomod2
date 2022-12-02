@@ -681,13 +681,13 @@ BIOMOD_FormatingData <- function(resp.name,
 
 .check_formating_expl.var <- function(expl.var, length.resp.var){
   
-  if(is.matrix(expl.var) | is.numeric(expl.var)) {
+  if (is.matrix(expl.var) | is.numeric(expl.var)) {
     expl.var <- as.data.frame(expl.var)
   }
   
   if (inherits(expl.var, 'Raster')) {
     expl.var <- raster::stack(expl.var, RAT = FALSE)
-    if(any(is.factor(expl.var))){
+    if (any(is.factor(expl.var))) {
       expl.var <- categorical_stack_to_terra(expl.var)
     } else {
       # as of 20/10/2022 the line below does not work if categorical variables
