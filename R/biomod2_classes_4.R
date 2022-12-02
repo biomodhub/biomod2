@@ -766,6 +766,7 @@ setMethod('predict2', signature(object = 'MAXENT.Phillips_biomod2_model', newdat
             on_0_1000 <- args$on_0_1000
             temp_workdir <- args$temp_workdir
             filename <- args$filename
+            overwrite <- args$overwrite
             
             if (is.null(on_0_1000)) { on_0_1000 <- FALSE }
             
