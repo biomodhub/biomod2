@@ -229,7 +229,7 @@ BIOMOD_Projection <- function(bm.mod,
   if (inherits(new.env, 'SpatRaster')) {
     proj_out@proj.out <- new('BIOMOD.stored.SpatRaster')
   } else {
-    proj_out@proj.out <- new('BIOMOD.stored.array')
+    proj_out@proj.out <- new('BIOMOD.stored.data.frame')
   }
   
   ## 2. Create simulation directories -------------------------------------------------------------
@@ -322,7 +322,6 @@ BIOMOD_Projection <- function(bm.mod,
     } else {
       proj <- as.data.frame(proj)
       names(proj) <- models.chosen
-      proj <- .DF_to_ARRAY(proj)
     }
     
     if (keep.in.memory) {
@@ -690,28 +689,27 @@ BIOMOD_Projection <- function(bm.mod,
 
 
 ### .DF_to_ARRAY --------------------------------------------------------------
-
-.DF_to_ARRAY <- function(df)
-{
-  if (!is.data.frame(df) & !is.matrix(df)) {
-    if (is.list(df)) {
-      df.names <- names(df)
-      df <- as.data.frame(df)
-      names(df) <- df.names
-    } else {
-      stop("You have to give a data.frame")
-    }
-  }
-  
-  a <- sapply(strsplit(colnames(df), '_'), tail, n = 3)
-  b <- lapply(1:3, function(id) return(unique(a[id, ])))
-  array.dim.names <- c(list(character(0)), rev(b))
-  array.dim <- c(nrow(df), sapply(array.dim.names[-1], length))
-  array.out <- array(data = NA, dim = array.dim, dimnames = array.dim.names)
-  
-  for (x in colnames(df)) {
-    dimTmp <- rev(tail(unlist(strsplit(x, '_')), n = 3))
-    array.out[, dimTmp[1], dimTmp[2], dimTmp[3]] <- df[, x]
-  }
-  return(array.out)
-}
+# .DF_to_ARRAY <- function(df)
+# {
+#   if (!is.data.frame(df) & !is.matrix(df)) {
+#     if (is.list(df)) {
+#       df.names <- names(df)
+#       df <- as.data.frame(df)
+#       names(df) <- df.names
+#     } else {
+#       stop("You have to give a data.frame")
+#     }
+#   }
+#   
+#   a <- sapply(strsplit(colnames(df), '_'), tail, n = 3)
+#   b <- lapply(1:3, function(id) return(unique(a[id, ])))
+#   array.dim.names <- c(list(character(0)), rev(b))
+#   array.dim <- c(nrow(df), sapply(array.dim.names[-1], length))
+#   array.out <- array(data = NA, dim = array.dim, dimnames = array.dim.names)
+#   
+#   for (x in colnames(df)) {
+#     dimTmp <- rev(tail(unlist(strsplit(x, '_')), n = 3))
+#     array.out[, dimTmp[1], dimTmp[2], dimTmp[3]] <- df[, x]
+#   }
+#   return(array.out)
+# }

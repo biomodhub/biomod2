@@ -274,7 +274,7 @@ BIOMOD_EnsembleForecasting <- function(bm.em,
   if (proj_is_raster) {
     proj_out@proj.out <- new('BIOMOD.stored.SpatRaster')
   } else{
-    proj_out@proj.out <- new('BIOMOD.stored.array')
+    proj_out@proj.out <- new('BIOMOD.stored.data.frame')
     do.stack = TRUE
   }
   

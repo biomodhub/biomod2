@@ -201,9 +201,9 @@ setGeneric("get_variables_importance", function(obj, ...) { standardGeneric("get
 ##'   containing models evaluation
 ##' @slot variables.importance a \code{\link{BIOMOD.stored.data.frame-class}} object
 ##'   containing variables importance
-##' @slot models.prediction a \code{\link{BIOMOD.stored.array-class}} object
+##' @slot models.prediction a \code{\link{BIOMOD.stored.data.frame-class}} object
 ##'   containing models predictions
-##' @slot models.prediction.eval a \code{\link{BIOMOD.stored.array-class}}
+##' @slot models.prediction.eval a \code{\link{BIOMOD.stored.data.frame-class}}
 ##'   object containing models predictions for evaluation data
 ##' @slot link a \code{character} containing the file name of the saved object
 ##'
@@ -295,8 +295,8 @@ setClass("BIOMOD.models.out",
                         models.options = 'BIOMOD.stored.models.options',
                         models.evaluation = 'BIOMOD.stored.data.frame',
                         variables.importance = 'BIOMOD.stored.data.frame',
-                        models.prediction = 'BIOMOD.stored.array',
-                        models.prediction.eval = 'BIOMOD.stored.array',
+                        models.prediction = 'BIOMOD.stored.data.frame',
+                        models.prediction.eval = 'BIOMOD.stored.data.frame',
                         link = 'character'),
          prototype(modeling.id = as.character(format(Sys.time(), "%s")),
                    dir.name = '.',
@@ -311,8 +311,8 @@ setClass("BIOMOD.models.out",
                    models.options = new('BIOMOD.stored.models.options'),
                    models.evaluation = new('BIOMOD.stored.data.frame'),
                    variables.importance = new('BIOMOD.stored.data.frame'),
-                   models.prediction = new('BIOMOD.stored.array'),
-                   models.prediction.eval = new('BIOMOD.stored.array'),
+                   models.prediction = new('BIOMOD.stored.data.frame'),
+                   models.prediction.eval = new('BIOMOD.stored.data.frame'),
                    link = ''),
          validity = function(object){ return(TRUE) } )
 
@@ -711,7 +711,7 @@ setMethod(
           cat("\n Plotting function failed.. You should try to do it by yourself!")
         }
       }
-    } else if (inherits(x@proj.out, "BIOMOD.stored.array")) {
+    } else if (inherits(x@proj.out, "BIOMOD.stored.data.frame")) {
       if (ncol(x@coord) != 2) {
         cat("\n ! Impossible to plot projections because xy coordinates are not available !")
       } else {
@@ -762,8 +762,8 @@ setMethod("get_projected_models", "BIOMOD.projection.out", function(obj){
 
 setMethod('free', signature('BIOMOD.projection.out'),
           function(obj) {
-            if (inherits(obj@proj.out, "BIOMOD.stored.array")) {
-              obj@proj.out@val  <- array()
+            if (inherits(obj@proj.out, "BIOMOD.stored.data.frame")) {
+              obj@proj.out@val  <- data.frame()
             } else if (inherits(obj@proj.out, "BIOMOD.stored.SpatRaster")) {
               obj@proj.out@val <- rast()
             } else {
@@ -792,7 +792,19 @@ setMethod("get_predictions", "BIOMOD.projection.out",
                                                                                        , run.eval = run.eval, Model = Model))
               out <- subset(out, keep_layers)
             } else {
-              out$full.name <- paste(obj@sp.name, out$data.set, out$run.eval, out$Model, sep = "_")
+              # if (!is.null(out) && as.data.frame == TRUE) {
+              out$Points <- 1:nrow(out) ## Correct ???
+              tmp <- melt(out, id.vars =  "Points")
+              colnames(tmp) <- c("Points", "full.name", "pred")
+              tmp$full.name <- as.character(tmp$full.name)
+              tmp$data.set = sapply(tmp$full.name, function(x) .extract_modelNamesInfo(model.names = x, info = 'data.set'))
+              tmp$run.eval = sapply(tmp$full.name, function(x) .extract_modelNamesInfo(model.names = x, info = 'run.eval'))
+              tmp$Model = sapply(tmp$full.name, function(x) .extract_modelNamesInfo(model.names = x, info = 'models'))
+              # tmp$data.set = .extract_modelNamesInfo(model.names = tmp$full.name, info = 'data.set')
+              # tmp$run.eval = .extract_modelNamesInfo(model.names = tmp$full.name, info = 'run.eval')
+              # tmp$Model = .extract_modelNamesInfo(model.names = tmp$full.name, info = 'models')
+              out <- tmp[, c("full.name", "data.set", "run.eval", "Model", "Points", "pred")]
+              
               keep_lines <- .filter_outputs.df(out, subset.list = list(full.name =  full.name, data.set = data.set
                                                                        , run.eval = run.eval, Model = Model))
               out <- out[keep_lines, ]
@@ -837,9 +849,9 @@ setMethod("get_predictions", "BIOMOD.projection.out",
 ##'   containing models evaluation
 ##' @slot variables.importance a \code{\link{BIOMOD.stored.data.frame-class}} object
 ##'   containing variables importance
-##' @slot models.prediction a \code{\link{BIOMOD.stored.array-class}} object
+##' @slot models.prediction a \code{\link{BIOMOD.stored.data.frame-class}} object
 ##'   containing models predictions
-##' @slot models.prediction.eval a \code{\link{BIOMOD.stored.array-class}}
+##' @slot models.prediction.eval a \code{\link{BIOMOD.stored.data.frame-class}}
 ##'   object containing models predictions for evaluation data
 ##' @slot link a \code{character} containing the file name of the saved object
 ##'   
@@ -954,8 +966,8 @@ setClass("BIOMOD.ensemble.models.out",
                         em.models = 'ANY',
                         models.evaluation = 'BIOMOD.stored.data.frame',
                         variables.importance = 'BIOMOD.stored.data.frame',
-                        models.prediction = 'BIOMOD.stored.array',
-                        models.prediction.eval = 'BIOMOD.stored.array',
+                        models.prediction = 'BIOMOD.stored.data.frame',
+                        models.prediction.eval = 'BIOMOD.stored.data.frame',
                         link = 'character'),
          prototype(modeling.id = '.',
                    dir.name = '.',
@@ -968,8 +980,8 @@ setClass("BIOMOD.ensemble.models.out",
                    em.models = NULL,
                    models.evaluation = new('BIOMOD.stored.data.frame'),
                    variables.importance = new('BIOMOD.stored.data.frame'),
-                   models.prediction = new('BIOMOD.stored.array'),
-                   models.prediction.eval = new('BIOMOD.stored.array'),
+                   models.prediction = new('BIOMOD.stored.data.frame'),
+                   models.prediction.eval = new('BIOMOD.stored.data.frame'),
                    link = ''),
          validity = function(object){ return(TRUE) })
 
