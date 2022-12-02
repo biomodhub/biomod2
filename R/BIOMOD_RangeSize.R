@@ -167,8 +167,8 @@
 ##'                                               build.clamping.mask = TRUE)
 ##' 
 ##' # Load current and future binary projections
-##' proj.current <- terra::rast("GuloGulo/proj_Current/proj_Current_GuloGulo_TSSbin.grd")
-##' proj.future <- terra::rast("GuloGulo/proj_Future/proj_Future_GuloGulo_TSSbin.grd")
+##' proj.current <- terra::rast("GuloGulo/proj_Current/proj_Current_GuloGulo_TSSbin.tif")
+##' proj.future <- terra::rast("GuloGulo/proj_Future/proj_Future_GuloGulo_TSSbin.tif")
 ##' 
 ##' # Compute differences
 ##' myBiomodRangeSize <- BIOMOD_RangeSize(proj.current = proj.current, proj.future = proj.future)

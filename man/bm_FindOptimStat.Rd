@@ -39,11 +39,12 @@ A \code{numeric} corresponding to the threshold used to convert the given data}
 \value{
 A \code{1} row x \code{4} columns \code{matrix} containing :
 \itemize{
-  \item{\code{best.iter}}{ : the best score obtained for the chosen evaluation metric}
-  \item{\code{cutoff}}{ : the associated cut-off used to transform the continuous values into 
+  \item{\code{Metric.eval}}{ : the chosen evaluation metric}
+  \item{\code{Best.stat}}{ : the best score obtained for the chosen evaluation metric}
+  \item{\code{Cutoff}}{ : the associated cut-off used to transform the continuous values into 
   binary}
-  \item{\code{sensibility}}{ : the sensibility obtained on fitted values with this threshold}
-  \item{\code{specificity}}{ : the specificity obtained on fitted values with this threshold}
+  \item{\code{Sensibility}}{ : the sensibility obtained on fitted values with this threshold}
+  \item{\code{Specificity}}{ : the specificity obtained on fitted values with this threshold}
 }
 }
 \description{

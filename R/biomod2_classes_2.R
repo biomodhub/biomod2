@@ -205,7 +205,9 @@ setMethod("load_stored_object", "BIOMOD.stored.SpatRaster",
               return(
                 rast(get(load(obj@link)))
               )
-            } else if (all(grepl(".grd", obj@link) | grepl(".img", obj@link))) {
+            } else if (all(grepl(".grd", obj@link) | 
+                           grepl(".img", obj@link) | 
+                           grepl(".tif", obj@link))) {
               out <- rast(x = obj@link)
               ## rename layer in case of individual projections
               if (all(grepl("individual_projections", obj@link))) {

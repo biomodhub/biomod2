@@ -35,25 +35,38 @@
 \usage{
 \S4method{get_options}{BIOMOD.models.out}(obj)
 
-\S4method{get_calib_lines}{BIOMOD.models.out}(obj, as.data.frame = FALSE, ...)
+\S4method{get_calib_lines}{BIOMOD.models.out}(obj, as.data.frame = FALSE, data.set = NULL, run.eval = NULL)
 
 \S4method{get_formal_data}{BIOMOD.models.out}(obj, subinfo = NULL)
 
 \S4method{get_predictions}{BIOMOD.models.out}(
   obj,
-  as.data.frame = FALSE,
   evaluation = FALSE,
   full.name = NULL,
-  model = NULL,
+  Model = NULL,
   run.eval = NULL,
   data.set = NULL
 )
 
 \S4method{get_built_models}{BIOMOD.models.out}(obj, ...)
 
-\S4method{get_evaluations}{BIOMOD.models.out}(obj, as.data.frame = FALSE, ...)
+\S4method{get_evaluations}{BIOMOD.models.out}(
+  obj,
+  full.name = NULL,
+  Model = NULL,
+  run.eval = NULL,
+  data.set = NULL,
+  Metric.eval = NULL
+)
 
-\S4method{get_variables_importance}{BIOMOD.models.out}(obj, as.data.frame = FALSE, ...)
+\S4method{get_variables_importance}{BIOMOD.models.out}(
+  obj,
+  full.name = NULL,
+  Model = NULL,
+  run.eval = NULL,
+  data.set = NULL,
+  Expl.var = NULL
+)
 
 \S4method{get_projected_models}{BIOMOD.projection.out}(obj)
 
@@ -96,6 +109,12 @@
 \item{as.data.frame}{a \code{logical} defining whether output should be returned as 
 \code{data.frame} or \code{array} object}
 
+\item{data.set}{a \code{vector} containing pseudo-absence set to be loaded, must be among 
+\code{PA1}, \code{PA2}, \code{...}}
+
+\item{run.eval}{a \code{vector} containing repetition set to be loaded, must be among 
+\code{RUN1}, \code{RUN2}, \code{...}, \code{Full}}
+
 \item{subinfo}{a \code{character} corresponding to the information to be extracted, must be 
 among \code{NULL}, \code{expl.var.names}, \code{resp.var}, \code{expl.var}, \code{MinMax}, 
 \code{eval.resp.var}, \code{eval.expl.var} (see Details)}
@@ -108,12 +127,6 @@ or a sub-selection of model names}
 \item{model}{a \code{character} corresponding to the model name, must be either \code{GLM}, 
 \code{GBM}, \code{GAM}, \code{CTA}, \code{ANN}, \code{SRE}, \code{FDA}, \code{MARS}, 
 \code{RF}, \code{MAXENT.Phillips}, \code{MAXENT.Phillips.2}}
-
-\item{run.eval}{a \code{vector} containing repetition set to be loaded, must be among 
-\code{RUN1}, \code{RUN2}, \code{...}, \code{Full}}
-
-\item{data.set}{a \code{vector} containing pseudo-absence set to be loaded, must be among 
-\code{PA1}, \code{PA2}, \code{...}}
 
 \item{selected.models}{a \code{vector} containing names of the needed models of a 
 \code{\link{BIOMOD.ensemble.models.out}} object}
@@ -187,13 +200,13 @@ function)})}
   \code{\link{BIOMOD.models.out}} (or
   \code{\link{BIOMOD.ensemble.models.out}}) object}
   \item{\code{get_evaluations}}{a
-  \code{\link{BIOMOD.stored.array-class}} (or
+  \code{\link{BIOMOD.stored.data.frame-class}} (or
   \code{matrix}) from the \code{models.evaluation} slot (or
   \code{model_evaluation} of each model in \code{em.computed}) of a
   \code{\link{BIOMOD.models.out}} (or
   \code{\link{BIOMOD.ensemble.models.out}}) object}
   \item{\code{get_variables_importance}}{a
-  \code{\link{BIOMOD.stored.array-class}} from
+  \code{\link{BIOMOD.stored.data.frame-class}} from
   the \code{variables.importance} slot (or \code{model_variables_importance}
   of each model in \code{em.models}) of a \code{\link{BIOMOD.models.out}}
   (or \code{\link{BIOMOD.ensemble.models.out}}) object}

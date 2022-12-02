@@ -118,7 +118,7 @@ calibration / training range, identifying locations where predictions are uncert
   \item{\code{keep.in.memory} : }{a \code{logical} value defining whether all projections are 
   to be kept loaded at once in memory, or only links pointing to hard drive are to be returned}
   \item{\code{output.format} : }{a \code{character} value corresponding to the projections 
-  saving format on hard drive, must be either \code{.grd}, \code{.img} or \code{.RData} (the 
+  saving format on hard drive, must be either \code{.grd}, \code{.img}, \code{.tif} or \code{.RData} (the 
   default if \code{new.env} is given as \code{matrix} or \code{data.frame})}
 }
 }

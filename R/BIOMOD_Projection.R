@@ -103,7 +103,7 @@
 ##'   \item{\code{keep.in.memory} : }{a \code{logical} value defining whether all projections are 
 ##'   to be kept loaded at once in memory, or only links pointing to hard drive are to be returned}
 ##'   \item{\code{output.format} : }{a \code{character} value corresponding to the projections 
-##'   saving format on hard drive, must be either \code{.grd}, \code{.img} or \code{.RData} (the 
+##'   saving format on hard drive, must be either \code{.grd}, \code{.img}, \code{.tif} or \code{.RData} (the 
 ##'   default if \code{new.env} is given as \code{matrix} or \code{data.frame})}
 ##' }
 ##' 
@@ -277,7 +277,7 @@ BIOMOD_Projection <- function(bm.mod,
       filename <- file.path(namePath, "individual_projections"
                             , paste0(nameProj, "_", mod.name,
                                      ifelse(output.format == ".RData"
-                                            , ".grd", output.format)))
+                                            , ".tif", output.format)))
       return(filename)
     })
     
@@ -298,7 +298,7 @@ BIOMOD_Projection <- function(bm.mod,
         cat("\n\t> Projecting", mod.name, "...")
         filename <- file.path(namePath, "individual_projections"
                               , paste0(nameProj, "_", mod.name, ifelse(output.format == ".RData"
-                                                                       , ".grd", output.format)))
+                                                                       , ".tif", output.format)))
         BIOMOD_LoadModels(bm.out = bm.mod, full.name = mod.name, as = "mod")
         temp_workdir = NULL
         if (length(grep("MAXENT.Phillips$", mod.name)) == 1) {
@@ -610,15 +610,15 @@ BIOMOD_Projection <- function(bm.mod,
   ## 9. Check output.format ---------------------------------------------------
   output.format <- args$output.format # raster output format
   if (!is.null(output.format)) {
-    if (!output.format %in% c(".img", ".grd", ".RData")) {
-      stop(paste0("output.format argument should be one of '.img','.grd' or '.RData'\n"
-                  , "Note : '.img','.grd' are only available if you give environmental condition as a SpatRaster object"))
+    if (!output.format %in% c(".img", ".grd", ".tif", ".RData")) {
+      stop(paste0("output.format argument should be one of '.img','.grd', '.tif' or '.RData'\n"
+                  , "Note : '.img','.grd', '.tif' are only available if you give environmental condition as a SpatRaster object"))
     }
-    if (output.format %in% c(".img", ".grd") && !inherits(new.env, "SpatRaster")) {
+    if (output.format %in% c(".img", ".grd", ".tif") && !inherits(new.env, "SpatRaster")) {
       warning("output.format was automatically set to '.RData' because environmental conditions are not given as a raster object")
     }
   } else {
-    output.format <- ifelse(!inherits(new.env, "SpatRaster"), ".RData", ".grd")
+    output.format <- ifelse(!inherits(new.env, "SpatRaster"), ".RData", ".tif")
   }
   
   

@@ -107,7 +107,7 @@ and formated data, models used or not, predictions, evaluations, variables impor
 <span><span class="fu">get_options</span><span class="op">(</span><span class="va">obj</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># S4 method for BIOMOD.models.out</span></span>
-<span><span class="fu">get_calib_lines</span><span class="op">(</span><span class="va">obj</span>, as.data.frame <span class="op">=</span> <span class="cn">FALSE</span>, <span class="va">...</span><span class="op">)</span></span>
+<span><span class="fu">get_calib_lines</span><span class="op">(</span><span class="va">obj</span>, as.data.frame <span class="op">=</span> <span class="cn">FALSE</span>, data.set <span class="op">=</span> <span class="cn">NULL</span>, run.eval <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># S4 method for BIOMOD.models.out</span></span>
 <span><span class="fu">get_formal_data</span><span class="op">(</span><span class="va">obj</span>, subinfo <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span>
@@ -115,10 +115,9 @@ and formated data, models used or not, predictions, evaluations, variables impor
 <span><span class="co"># S4 method for BIOMOD.models.out</span></span>
 <span><span class="fu">get_predictions</span><span class="op">(</span></span>
 <span>  <span class="va">obj</span>,</span>
-<span>  as.data.frame <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  evaluation <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  full.name <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  model <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  Model <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  run.eval <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  data.set <span class="op">=</span> <span class="cn">NULL</span></span>
 <span><span class="op">)</span></span>
@@ -127,10 +126,24 @@ and formated data, models used or not, predictions, evaluations, variables impor
 <span><span class="fu">get_built_models</span><span class="op">(</span><span class="va">obj</span>, <span class="va">...</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># S4 method for BIOMOD.models.out</span></span>
-<span><span class="fu">get_evaluations</span><span class="op">(</span><span class="va">obj</span>, as.data.frame <span class="op">=</span> <span class="cn">FALSE</span>, <span class="va">...</span><span class="op">)</span></span>
+<span><span class="fu">get_evaluations</span><span class="op">(</span></span>
+<span>  <span class="va">obj</span>,</span>
+<span>  full.name <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  Model <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  run.eval <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  data.set <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  Metric.eval <span class="op">=</span> <span class="cn">NULL</span></span>
+<span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># S4 method for BIOMOD.models.out</span></span>
-<span><span class="fu">get_variables_importance</span><span class="op">(</span><span class="va">obj</span>, as.data.frame <span class="op">=</span> <span class="cn">FALSE</span>, <span class="va">...</span><span class="op">)</span></span>
+<span><span class="fu">get_variables_importance</span><span class="op">(</span></span>
+<span>  <span class="va">obj</span>,</span>
+<span>  full.name <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  Model <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  run.eval <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  data.set <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  Expl.var <span class="op">=</span> <span class="cn">NULL</span></span>
+<span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># S4 method for BIOMOD.projection.out</span></span>
 <span><span class="fu">get_projected_models</span><span class="op">(</span><span class="va">obj</span><span class="op">)</span></span>
@@ -190,6 +203,16 @@ and formated data, models used or not, predictions, evaluations, variables impor
 <code>data.frame</code> or <code>array</code> object</p></dd>
 
 
+<dt>data.set</dt>
+<dd><p>a <code>vector</code> containing pseudo-absence set to be loaded, must be among 
+<code>PA1</code>, <code>PA2</code>, <code>...</code></p></dd>
+
+
+<dt>run.eval</dt>
+<dd><p>a <code>vector</code> containing repetition set to be loaded, must be among 
+<code>RUN1</code>, <code>RUN2</code>, <code>...</code>, <code>Full</code></p></dd>
+
+
 <dt>subinfo</dt>
 <dd><p>a <code>character</code> corresponding to the information to be extracted, must be 
 among <code>NULL</code>, <code>expl.var.names</code>, <code>resp.var</code>, <code>expl.var</code>, <code>MinMax</code>, 
@@ -209,16 +232,6 @@ or a sub-selection of model names</p></dd>
 <dd><p>a <code>character</code> corresponding to the model name, must be either <code>GLM</code>, 
 <code>GBM</code>, <code>GAM</code>, <code>CTA</code>, <code>ANN</code>, <code>SRE</code>, <code>FDA</code>, <code>MARS</code>, 
 <code>RF</code>, <code>MAXENT.Phillips</code>, <code>MAXENT.Phillips.2</code></p></dd>
-
-
-<dt>run.eval</dt>
-<dd><p>a <code>vector</code> containing repetition set to be loaded, must be among 
-<code>RUN1</code>, <code>RUN2</code>, <code>...</code>, <code>Full</code></p></dd>
-
-
-<dt>data.set</dt>
-<dd><p>a <code>vector</code> containing pseudo-absence set to be loaded, must be among 
-<code>PA1</code>, <code>PA2</code>, <code>...</code></p></dd>
 
 
 <dt>selected.models</dt>
@@ -328,7 +341,7 @@ function)</em>)</p></dd>
 
   <dt><code>get_evaluations</code></dt>
 <dd><p>a
-  <code><a href="BIOMOD.stored.data.html">BIOMOD.stored.array-class</a></code> (or
+  <code><a href="BIOMOD.stored.data.html">BIOMOD.stored.data.frame-class</a></code> (or
   <code>matrix</code>) from the <code>models.evaluation</code> slot (or
   <code>model_evaluation</code> of each model in <code>em.computed</code>) of a
   <code><a href="BIOMOD.models.out.html">BIOMOD.models.out</a></code> (or
@@ -336,7 +349,7 @@ function)</em>)</p></dd>
 
   <dt><code>get_variables_importance</code></dt>
 <dd><p>a
-  <code><a href="BIOMOD.stored.data.html">BIOMOD.stored.array-class</a></code> from
+  <code><a href="BIOMOD.stored.data.html">BIOMOD.stored.data.frame-class</a></code> from
   the <code>variables.importance</code> slot (or <code>model_variables_importance</code>
   of each model in <code>em.models</code>) of a <code><a href="BIOMOD.models.out.html">BIOMOD.models.out</a></code>
   (or <code><a href="BIOMOD.ensemble.models.out.html">BIOMOD.ensemble.models.out</a></code>) object</p></dd>

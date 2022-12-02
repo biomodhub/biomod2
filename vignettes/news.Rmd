@@ -20,6 +20,9 @@ vignette: >
 
 ##### Major Changes
 
+* '.tif' is available as an output format for raster projection
+* '.tif' is the new default output format for raster projection
+
 ##### Minor Changes
 
 * `BIOMOD_EnsembleModeling` now have an argument `em.algo` to select the ensemble 
@@ -28,6 +31,10 @@ prob.median, prob.cv, prob.ci, committee.averaging, prob.mean.weight)
 * Added an appropriate message when all models fail for `BIOMOD_Modeling` and `BIOMOD_EnsembleModeling`.
 
 ##### Bugfix
+
+##### Internal Changes
+
+* Array have disappeared from most internal functions
 
 #### 4.2-1 Bugfix patch
 

@@ -278,8 +278,8 @@ $$proj.future - 2 * proj.current$$</p>
 <span>                                              build.clamping.mask <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Load current and future binary projections</span></span>
-<span><span class="va">proj.current</span> <span class="op">&lt;-</span> <span class="fu">terra</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/terra/man/rast.html" class="external-link">rast</a></span><span class="op">(</span><span class="st">"GuloGulo/proj_Current/proj_Current_GuloGulo_TSSbin.grd"</span><span class="op">)</span></span>
-<span><span class="va">proj.future</span> <span class="op">&lt;-</span> <span class="fu">terra</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/terra/man/rast.html" class="external-link">rast</a></span><span class="op">(</span><span class="st">"GuloGulo/proj_Future/proj_Future_GuloGulo_TSSbin.grd"</span><span class="op">)</span></span>
+<span><span class="va">proj.current</span> <span class="op">&lt;-</span> <span class="fu">terra</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/terra/man/rast.html" class="external-link">rast</a></span><span class="op">(</span><span class="st">"GuloGulo/proj_Current/proj_Current_GuloGulo_TSSbin.tif"</span><span class="op">)</span></span>
+<span><span class="va">proj.future</span> <span class="op">&lt;-</span> <span class="fu">terra</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/terra/man/rast.html" class="external-link">rast</a></span><span class="op">(</span><span class="st">"GuloGulo/proj_Future/proj_Future_GuloGulo_TSSbin.tif"</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Compute differences</span></span>
 <span><span class="va">myBiomodRangeSize</span> <span class="op">&lt;-</span> <span class="fu">BIOMOD_RangeSize</span><span class="op">(</span>proj.current <span class="op">=</span> <span class="va">proj.current</span>, proj.future <span class="op">=</span> <span class="va">proj.future</span><span class="op">)</span></span>

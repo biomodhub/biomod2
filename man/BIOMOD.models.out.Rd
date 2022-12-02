@@ -51,10 +51,10 @@ containing calibration lines}
 object containing informations from \code{\link{BIOMOD_ModelingOptions}}
 object}
 
-\item{\code{models.evaluation}}{a \code{\link{BIOMOD.stored.array-class}} object
+\item{\code{models.evaluation}}{a \code{\link{BIOMOD.stored.data.frame-class}} object
 containing models evaluation}
 
-\item{\code{variables.importance}}{a \code{\link{BIOMOD.stored.array-class}} object
+\item{\code{variables.importance}}{a \code{\link{BIOMOD.stored.data.frame-class}} object
 containing variables importance}
 
 \item{\code{models.prediction}}{a \code{\link{BIOMOD.stored.array-class}} object
