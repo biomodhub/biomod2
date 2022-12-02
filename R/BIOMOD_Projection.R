@@ -363,7 +363,7 @@ BIOMOD_Projection <- function(bm.mod,
         PA.run <- .extract_modelNamesInfo(model.names = mod, info = 'data.set')
         eval.run <- .extract_modelNamesInfo(model.names = mod, info = 'run.eval')
         algo.run <- .extract_modelNamesInfo(model.names = mod, info = 'models')
-        thresholds[eval.meth, mod] <- get_evaluations(bm.mod)[eval.meth, "Cutoff", algo.run, eval.run, PA.run]
+        thresholds[eval.meth, mod] <- get_evaluations(bm.mod, data.set = PA.run, run.eval = eval.run, Model = algo.run, Metric.eval = eval.meth)[, "Cutoff"]
         if (!on_0_1000) { thresholds[eval.meth, mod]  <- thresholds[eval.meth, mod] / 1000 }
       }
     } else {
@@ -372,7 +372,7 @@ BIOMOD_Projection <- function(bm.mod,
         PA.run <- .extract_modelNamesInfo(model.names = mod, info = 'data.set')
         eval.run <- .extract_modelNamesInfo(model.names = mod, info = 'run.eval')
         algo.run <- .extract_modelNamesInfo(model.names = mod, info = 'models')
-        thresholds[eval.meth, algo.run, eval.run, PA.run] <- get_evaluations(bm.mod)[eval.meth, "Cutoff", algo.run, eval.run, PA.run]
+        thresholds[eval.meth, algo.run, eval.run, PA.run] <- get_evaluations(bm.mod, data.set = PA.run, run.eval = eval.run, Model = algo.run, Metric.eval = eval.meth)[, "Cutoff"]
         if (!on_0_1000) {
           thresholds[eval.meth, algo.run, eval.run, PA.run]  <- thresholds[eval.meth, algo.run, eval.run, PA.run] / 1000
         }
@@ -558,7 +558,7 @@ BIOMOD_Projection <- function(bm.mod,
     if (is.null(models.evaluation)) {
       warning("Binary and/or Filtered transformations of projection not ran because of models evaluation information missing")
     } else {
-      available.evaluation <- unique(dimnames(models.evaluation)[[1]])
+      available.evaluation <- unique(models.evaluation$Metric.eval)
       if (!is.null(metric.binary) && metric.binary[1] == 'all') {
         metric.binary <- available.evaluation
       } else if (!is.null(metric.binary) && sum(!(metric.binary %in% available.evaluation)) > 0) {

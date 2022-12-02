@@ -295,6 +295,31 @@ get_var_range <- function(data)
   return(keep_lines)
 }
 
+.filter_outputs.spatRaster <- function(out_names, subset.list)
+{
+  keep_layers <- out_names
+  if ("full.name" %in% names(subset.list) && !is.null(subset.list[["full.name"]])) {
+    .fun_testIfIn(TRUE, "full.name", subset.list[["full.name"]], out_names)
+    keep_layers <- intersect(subset.list[["full.name"]], out_names)
+  } else {
+    keep_subset <- foreach(sub.i = names(subset.list)) %do%
+      {
+        keep_tmp <- 1:length(out_names)
+        if (!is.null(subset.list[[sub.i]])) {
+          .fun_testIfIn(TRUE, sub.i, subset.list[[sub.i]], .extract_modelNamesInfo(out_names, info = ifelse(sub.i == "Model", "models", sub.i)))
+          keep_tmp <- grep(paste(subset.list[[sub.i]], collapse = "|"), out_names)
+        }
+        return(keep_tmp)
+      }
+    keep_layers <- Reduce(intersect, keep_subset)
+  }
+  if (length(keep_layers) == 0) {
+    warning(paste0("No information corresponding to the given filter(s) ("
+                   , paste0(names(subset.list), collapse = ', '), ")"))
+  }
+  return(keep_layers)
+}
+
 
 ## EXTRACT model names according to specific infos ------------------------------------------------
 ## used in biomod2_classes_3.R, BIOMOD_LoadModels, BIOMOD_Projection, BIOMOD_EnsembleModeling, bm_PlotRangeSize
