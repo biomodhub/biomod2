@@ -368,6 +368,7 @@ BIOMOD_EnsembleModeling <- function(bm.mod,
   args <- .BIOMOD_EnsembleModeling.check.args(bm.mod = bm.mod,
                                               models.chosen = models.chosen,
                                               em.by = em.by,
+                                              em.algo = em.algo,
                                               metric.select = metric.select,
                                               metric.select.thresh = metric.select.thresh,
                                               metric.select.table = metric.select.table,
@@ -404,11 +405,8 @@ BIOMOD_EnsembleModeling <- function(bm.mod,
   
   
   ## 2. Do Ensemble modeling ---------------------------------------------------
-  em.out <- list()
-  
-  ### loop over ensemble models ---------------------------------------------
-  for (assemb in names(em.mod.assemb))  {
-    em.out[[assemb]] <- list()
+  em.out <- foreach(assemb = names(em.mod.assemb)) %do%
+  {
     cat("\n\n  >", assemb, "ensemble modeling")
     models.kept <- em.mod.assemb[[assemb]]
     
@@ -453,18 +451,19 @@ BIOMOD_EnsembleModeling <- function(bm.mod,
     if (length(needed_predictions) == 0) next
     
     ## LOOP over evaluation metrics ------------------------------------------
-    for (eval.m in metric.select) {
-      em.out[[assemb]][[eval.m]] <- list()
+    em.out.eval <- foreach (eval.m = metric.select) %do%
+    {
       models.kept <- needed_predictions$models.kept[[eval.m]]
       models.kept.scores <- needed_predictions$models.kept.scores[[eval.m]]
       
       ## LOOP over em.algo ---------------------------------------------------
-      for (algo in em.algo) {
-        em.out[[assemb]][[eval.m]][[algo]] <- list(model = NULL,
-                                                   pred = NULL,
-                                                   pred.eval = NULL,
-                                                   evaluation = NULL,
-                                                   var.import = NULL)
+      em.out.algo <- foreach (algo = em.algo) %do%
+      {
+        out <- list(model = NULL,
+                    pred = NULL,
+                    pred.eval = NULL,
+                    evaluation = NULL,
+                    var.import = NULL)
         
         algo.1 <- algo.2 <- algo.3 <- NULL
         models.kept.tmp = models.kept
@@ -494,7 +493,7 @@ BIOMOD_EnsembleModeling <- function(bm.mod,
             mod <- tail(unlist(strsplit(x,"_")), 3)[3]
             run <- tail(unlist(strsplit(x,"_")), 3)[2]
             dat <- tail(unlist(strsplit(x,"_")), 3)[1]
-            return(get_evaluations(bm.mod)[eval.m, "Cutoff", mod, run, dat])
+            return(get_evaluations(bm.mod, Model = mod, run.eval = run, data.set = dat, Metric.eval = eval.m)[, "Cutoff"])
           }))
           names(models.kept.thresh) <- models.kept.tmp
           models.kept.tmp = models.kept.tmp[is.finite(models.kept.thresh)]
@@ -588,9 +587,13 @@ BIOMOD_EnsembleModeling <- function(bm.mod,
         pred.bm.name <- paste0(model_name, ".predictions")
         pred.bm.outfile <- file.path(name.BIOMOD_DATA, "ensemble.models.predictions", pred.bm.name)
         dir.create(dirname(pred.bm.outfile), showWarnings = FALSE, recursive = TRUE)
+        pred.newdata <- needed_predictions$predictions[which(needed_predictions$predictions$full.name %in% model.bm@model), c("full.name", "Points", "pred")]
+        pred.newdata <- tapply(X = pred.newdata$pred, INDEX = list(pred.newdata$Points, pred.newdata$full.name), FUN = mean)
+        pred.newdata <- as.data.frame(pred.newdata)
+        
         ## store models prediction on the hard drive
         pred.bm <- try(predict(model.bm
-                               , newdata = needed_predictions$predictions[, model.bm@model, drop = FALSE]
+                               , newdata = pred.newdata
                                , data_as_formal_predictions = TRUE
                                , on_0_1000 = TRUE
                                , seedval = seed.val))
@@ -598,8 +601,8 @@ BIOMOD_EnsembleModeling <- function(bm.mod,
         if (inherits(pred.bm, "try-error")) {
           EM@em.failed <- c(EM@em.failed, model_name)
         } else {
-          em.out[[assemb]][[eval.m]][[algo]]$model <- model_name
-          em.out[[assemb]][[eval.m]][[algo]]$prediction <- pred.bm
+          out$model <- model_name
+          out$pred <- pred.bm
           assign(pred.bm.name, pred.bm)
           save(list = pred.bm.name, file = pred.bm.outfile, compress = TRUE)
           rm(list = pred.bm.name)
@@ -610,7 +613,7 @@ BIOMOD_EnsembleModeling <- function(bm.mod,
             pred.bm.eval.outfile <- paste0(pred.bm.outfile,"Eval")
             pred.bm.name <- paste0(model_name, ".predictionsEval")
             eval_pred.bm <- predict(model.bm, newdata = eval.expl, seedval = seed.val)
-            em.out[[assemb]][[eval.m]][[algo]]$prediction.eval <- eval_pred.bm
+            out$pred.eval <- eval_pred.bm
             assign(pred.bm.name, eval_pred.bm)
             save(list = pred.bm.name, file = pred.bm.eval.outfile, compress = TRUE)
             rm(list = pred.bm.name)
@@ -620,13 +623,7 @@ BIOMOD_EnsembleModeling <- function(bm.mod,
           
           if (length(metric.eval) > 0 ) {
             cat("\n\t\t\tEvaluating Model stuff...")
-            if (algo %in% c('prob.cv', 'prob.ci.inf','prob.ci.sup')) { ## switch off evaluation process
-              cross.validation <-
-                matrix(NA, 4, length(metric.eval),
-                       dimnames = list(c("Testing.data", "Cutoff",
-                                         "Sensitivity", "Specificity"),
-                                       metric.eval))
-            } else {
+            if (!(algo %in% c('prob.cv', 'prob.ci.inf','prob.ci.sup'))) {
               if (em.by == "PA_dataset+repet") {
                 ## select the same evaluation data than formal models
                 ## get formal models calib/eval lines
@@ -647,34 +644,34 @@ BIOMOD_EnsembleModeling <- function(bm.mod,
                 eval_lines <- rep(TRUE, length(pred.bm))
               }
               
-              cross.validation <- sapply(metric.eval,
-                                         bm_FindOptimStat,
-                                         obs = obs[eval_lines],
-                                         fit = pred.bm[eval_lines])
-              rownames(cross.validation) <- c("Testing.data", "Cutoff", "Sensitivity", "Specificity")
-            }
-            
-            if (exists('eval_pred.bm')) {
-              if (algo %in% c('prob.cv', 'prob.ci.inf','prob.ci.sup')) { ## switch off evaluation process
-                cross.validation <- matrix(NA, 5, length(metric.eval),
-                                           dimnames = list(c("Testing.data", "Evaluating.data", "Cutoff"
-                                                             , "Sensitivity", "Specificity"),
-                                                           metric.eval))
-              } else {
-                true.evaluation <- sapply(metric.eval, function(x) {
-                  bm_FindOptimStat(obs = eval.obs,
-                                   fit = eval_pred.bm * 1000,
-                                   threshold = cross.validation["Cutoff", x])
-                })
-                cross.validation <- rbind(cross.validation["Testing.data", ], true.evaluation)
-                rownames(cross.validation) <- c("Testing.data", "Evaluating.data", "Cutoff", "Sensitivity", "Specificity")
+              cross.validation <- foreach(xx = metric.eval, .combine = "rbind") %do% {
+                bm_FindOptimStat(metric.eval = xx,
+                                 obs = obs[eval_lines],
+                                 fit = pred.bm[eval_lines])
               }
+              colnames(cross.validation)[which(colnames(cross.validation) == "Best.stat")] <- "Testing.data"
+              
+              if (exists('eval_pred.bm')) {
+                true.evaluation <- foreach(xx = metric.eval, .combine = "rbind") %do% {
+                  bm_FindOptimStat(metric.eval = xx,
+                                   obs = eval.obs,
+                                   fit = eval_pred.bm * 1000,
+                                   threshold = cross.validation["Cutoff", xx])
+                }
+                cross.validation$Evaluating.data <- true.evaluation$Best.stat
+              } else {
+                cross.validation$Evaluating.data <- NA
+              }
+              
+              ## store results
+              for (col.i in 2:ncol(cross.validation)) {
+                cross.validation[, col.i] <- round(cross.validation[, col.i], digits = 3)
+              }
+              out$evaluation <- cross.validation
+              model.bm@model_evaluation <- cross.validation
             }
-            ## store results
-            em.out[[assemb]][[eval.m]][[algo]]$evaluation <- t(round(cross.validation, digits = 3))
-            model.bm@model_evaluation <- t(round(cross.validation, digits = 3))
-            
           }
+          
           # Models Variable Importance -------------------------------------------
           if (var.import > 0 ) {
             cat("\n\t\t\tEvaluating Predictor Contributions...", "\n")
@@ -684,7 +681,7 @@ BIOMOD_EnsembleModeling <- function(bm.mod,
                                      , nb.rep = var.import
                                      , seed.val = seed.val
                                      , do.progress = do.progress)
-            em.out[[assemb]][[eval.m]][[algo]]$var.import <- variables.importance
+            out$var.import <- variables.importance
             model.bm@model_variables_importance <- variables.importance
             
           }
@@ -696,10 +693,17 @@ BIOMOD_EnsembleModeling <- function(bm.mod,
           # Add to sumary objects ------------------------------------------------
           EM@em.computed <- c(EM@em.computed, model_name)
           EM@em.models <- c(EM@em.models, model.bm)
-        } 
+          
+        }
+        return(out)
       }
+      names(em.out.algo) <- em.algo
+      return(em.out.algo)
     }
+    names(em.out.eval) <- metric.select
+    return(em.out.eval)
   }
+  names(em.out) <- names(em.mod.assemb)
   
   
   ### check at least one model was computed -----------------------------------
@@ -803,7 +807,7 @@ BIOMOD_EnsembleModeling <- function(bm.mod,
                                        committee.averaging, prob.mean.weight)]
       # warning for obsolete arguments
       cat(paste0("\n   ! arguments ", paste0(em.avail.check[-6], collapse = ", "),
-          " and ",em.avail.check[6], " are obsolete. Please use `em.algo = c('",paste0(em.algo.user, collapse = "', '"),"')` instead."))
+                 " and ",em.avail.check[6], " are obsolete. Please use `em.algo = c('",paste0(em.algo.user, collapse = "', '"),"')` instead."))
     }
   } else {
     .fun_testIfIn(TRUE, "em.algo", em.algo, em.avail.check)
@@ -833,9 +837,9 @@ BIOMOD_EnsembleModeling <- function(bm.mod,
       }
     } else {
       if ('all' %in% metric.select) {
-        metric.select <- dimnames(get_evaluations(bm.mod))[[1]]
+        metric.select <- unique(get_evaluations(bm.mod)$Metric.eval)
       }
-      .fun_testIfIn(TRUE, "metric.select", metric.select, dimnames(get_evaluations(bm.mod))[[1]])
+      .fun_testIfIn(TRUE, "metric.select", metric.select, unique(get_evaluations(bm.mod)$Metric.eval))
     }
   }
   
@@ -866,12 +870,12 @@ BIOMOD_EnsembleModeling <- function(bm.mod,
   .fun_testIfIn(TRUE, "metric.eval", metric.eval, avail.eval.meth.list)
   
   ## 7. Check selected EM algo ------------------------------------------------
-
+  
   if (is.null(metric.select) && 
       any(c("committee.averaging", "prob.mean.weight") %in% em.algo)) {
     stop("You must choose metric.select if you want to compute Committee Averaging or Probability Weighted Mean algorithms")
   }
-
+  
   ## 7.1 Check alpha for Confident interval
   if ("prob.ci" %in% em.algo) {
     .fun_testIfPosNum(TRUE, "prob.ci.alpha", prob.ci.alpha)
@@ -915,7 +919,7 @@ BIOMOD_EnsembleModeling <- function(bm.mod,
       metric.select, metric.select.thresh,
       metric.select.user, metric.select.table
     )$models.kept
-    data.frame(models.kept = sapply(out,length),
+    data.frame(models.kept = sapply(out, length),
                metric.select = names(out),
                assemb = assemb,
                row.names = NULL)
@@ -1021,9 +1025,7 @@ BIOMOD_EnsembleModeling <- function(bm.mod,
     if (em.by %in% c("PA_dataset", 'PA_dataset+algo', 'PA_dataset+repet') || 
         !inherits(get_formal_data(bm.mod), "BIOMOD.formated.data.PA") ||
         ncol(get_formal_data(bm.mod)@PA.table) == 1) {
-      out$predictions <- as.data.frame(
-        get_predictions(bm.mod, as.data.frame = TRUE)[, models.kept.union, drop = FALSE]
-      )
+      out$predictions <- get_predictions(bm.mod, full.name = models.kept.union)
     } else {
       ## only for models with pseudo absence
       ## some prediction should be added for the union of pseudo-absences
@@ -1040,17 +1042,17 @@ BIOMOD_EnsembleModeling <- function(bm.mod,
         .extract_modelNamesInfo(x, info = "data.set")
       })
       
-      out$predictions <- 
-        foreach(thisPA = unique(models.kept.PA), .combine = "cbind") %do% {
+      out$predictions <-
+        foreach(thisPA = unique(models.kept.PA), .combine = "rbind") %do% {
           ## model kept for this PA dataset
           thismodels <- names(models.kept.PA)[which(models.kept.PA == thisPA)]
-          ## retrieve predictions for this PA dataset
-          current_prediction <- as.data.frame(
-            get_predictions(bm.mod, as.data.frame = TRUE)[, thismodels, drop = FALSE]
-          )
           ## index of data to predict and data already predicted
-          index_to_predict <- which(!PA.table[,thisPA] & kept_data)
-          index_current <- which(PA.table[,thisPA])
+          index_to_predict <- which(!PA.table[, thisPA] & kept_data)
+          index_current <- which(PA.table[, thisPA])
+          
+          ## retrieve predictions for this PA dataset
+          current_prediction <- get_predictions(bm.mod, full.name = thismodels)
+          current_prediction$Points <- index_current
           
           # subsetting environment and coord
           env_to_predict <- get_formal_data(bm.mod)@data.env.var[index_to_predict,]
@@ -1069,17 +1071,16 @@ BIOMOD_EnsembleModeling <- function(bm.mod,
                 build.clamping.mask = FALSE,
                 do.stack = TRUE,
                 nb.cpu = nb.cpu
-              ),
-              as.data.frame = TRUE
-            )
+              ))
+          new_prediction$Points <- index_to_predict
           
           ## combining old and new predictions
           index_full <- c(index_current, index_to_predict)
           
-          return(
-            rbind(current_prediction, new_prediction)[order(index_full), ,  drop = FALSE]
-          )
-          # drop = FALSE to avoid coercion into vector for single column data.frame
+          res <- rbind(current_prediction, new_prediction)
+          res <- res[, c("full.name", "data.set", "run.eval", "Model", "Points", "pred")]
+          res <- res[order(res$full.name, res$Points), ]
+          return(res)
         }
       
       # delete temporary directory
@@ -1110,10 +1111,11 @@ BIOMOD_EnsembleModeling <- function(bm.mod,
           run <- tail(unlist(strsplit(x, "_")), 3)[2]
           dat <- tail(unlist(strsplit(x, "_")), 3)[1]
           # select evaluations scores obtained for Evaluation Data if exists or CV if not
+          out <- get_evaluations(bm.mod, Model = mod, run.eval = run, data.set = dat, Metric.eval = eval.m)
           if (bm.mod@has.evaluation.data) {
-            return(get_evaluations(bm.mod)[eval.m, "Evaluating.data", mod, run, dat])
+            return(out[, "Evaluating.data"])
           } else {
-            return(get_evaluations(bm.mod)[eval.m, "Testing.data", mod, run, dat])
+            return(out[, "Testing.data"])
           }
         }))
       }
@@ -1130,34 +1132,43 @@ BIOMOD_EnsembleModeling <- function(bm.mod,
   }
   out
 }
+
 ### REORGANIZE ensemble models output -----------------------------------------
 .transform_outputs_list.em = function(em.out, out = 'evaluation') {
-  out_list = c('evaluation', 'prediction', 'prediction.eval', 'var.import')
+  out_list = c('evaluation', 'var.import', 'prediction', 'prediction.eval')
   .fun_testIfIn(TRUE, "out", out, out_list)
   
   ## 0. get model names -------------------------------------------------------
   nb_by <- length(em.out)
   nb_eval <- length(em.out[[1]])
   nb_mod <- length(em.out[[1]][[1]])
+  
   comb = expand.grid(i.by = 1:nb_by, i.eval = 1:nb_eval, i.mod = 1:nb_mod)
   names_models <- foreach (i = 1:nrow(comb), .combine = "c") %do% {
     em.out[[comb$i.by[i]]][[comb$i.eval[i]]][[comb$i.mod[i]]]$model
   }
   
   ## 1. CASE evaluation / prediction / prediction.eval / var.import -----------
-  if (out %in% c("evaluation", "var.import")) {
-    res.out <- foreach (i = 1:nrow(comb)) %do% {
-      em.out[[comb$i.by[i]]][[comb$i.eval[i]]][[comb$i.mod[i]]][[out]]
-    }
-    res.out <- abind(res.out, along = 3)
-    dimnames(res.out)[[3]] = names_models
-  } else {
-    res.out <- foreach (i = 1:nrow(comb), .combine = "cbind") %do% {
-      em.out[[comb$i.by[i]]][[comb$i.eval[i]]][[comb$i.mod[i]]][[out]]
-    }
-    res.out <- as.matrix(res.out)
-    colnames(res.out) = names_models
-  }
+  name_slot = out
+  if (out == "prediction") { name_slot = "pred" }
+  if (out == "prediction.eval") { name_slot = "pred.eval" }
   
-  return(res.out)
+  # if (out %in% c("evaluation", "var.import")) {
+  output <- foreach (i = 1:nrow(comb), .combine = "rbind") %do%
+    {
+      res <- em.out[[comb$i.by[i]]][[comb$i.eval[i]]][[comb$i.mod[i]]][[name_slot]]
+      if (!is.null(res)) {
+        res <- as.data.frame(res)
+        if (name_slot %in% c("pred", "pred.eval")) {
+          colnames(res) = name_slot
+        }
+        col_names <- colnames(res)
+        res[["full.name"]] <- names_models[i]
+        res[["em.filter"]] <- names(em.out[[comb$i.by[i]]])[comb$i.eval[i]]
+        res[["em.algo"]] <- names(em.out[[comb$i.by[i]]][[comb$i.eval[i]]])[comb$i.mod[i]]
+        return(res[, c("full.name", "em.filter", "em.algo", col_names)])
+      }
+    }
+  
+  return(output)
 }
