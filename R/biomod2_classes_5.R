@@ -54,8 +54,8 @@ NULL
 ##' @slot expl_var_names a \code{vector} containing names of explanatory variables
 ##' @slot expl_var_type a \code{vector} containing classes of explanatory variables
 ##' @slot expl_var_range a \code{list} containing ranges of explanatory variables
-##' @slot model_evaluation a \code{matrix} containing the model evaluations
-##' @slot model_variables_importance a \code{matrix} containing the model variables importance
+##' @slot model_evaluation a \code{data.frame} containing the model evaluations
+##' @slot model_variables_importance a \code{data.frame} containing the model variables importance
 ##' 
 ##' @param object a \code{\link{biomod2_ensemble_model}} object
 ##' 

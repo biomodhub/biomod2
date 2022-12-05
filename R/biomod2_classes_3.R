@@ -1075,44 +1075,25 @@ setMethod("get_kept_models", "BIOMOD.ensemble.models.out",
 ##' 
 
 setMethod("get_predictions", "BIOMOD.ensemble.models.out",
-          function(obj, as.data.frame = FALSE, evaluation = FALSE, full.name = NULL)
-            # , model = NULL, run.eval = NULL, data.set = NULL)
+          function(obj, evaluation = FALSE, full.name = NULL, em.filter = NULL, em.algo = NULL)
           {
-            # select models to be returned
-            models_selected <- get_built_models(obj)
-            if (length(full.name)) {
-              models_selected <- intersect(full.name, models_selected)
+            # check evaluation data availability
+            if (evaluation && (!obj@has.evaluation.data)) {
+              warning("!   Calibration data returned because no evaluation data available")
+              evaluation = FALSE
             }
             
-            if (length(models_selected))
-            {
-              # check evaluation data availability
-              if (evaluation && (!get_formal_data(obj)@has.evaluation.data)) {
-                warning("!   Calibration data returned because no evaluation data available")
-                evaluation = FALSE
-              }
-              
-              # select calibration or eval data
-              if (evaluation) { 
-                out <- load_stored_object(obj@models.prediction.eval)
-              } else { 
-                out <- load_stored_object(obj@models.prediction)
-              }
-              names(out) <- get_built_models(obj)
-              
-              # subselection of models_selected
-              if (inherits(out, 'Raster')) {
-                out <- subset(out, models_selected, drop = FALSE)
-              } else { ## matrix (e.g. from ensemble models projections)
-                out <- out[, models_selected, drop = FALSE]
-              }
-              
-              if (as.data.frame) {
-                out <- as.data.frame(out)
-                names(out) <- models_selected
-              }
-            } else { out <- NULL }
+            # select calibration or eval data
+            if (evaluation) {
+              out <- load_stored_object(obj@models.prediction.eval)
+            } else { 
+              out <- load_stored_object(obj@models.prediction)
+            }
             
+            # subselection of models_selected
+            # out$full.name <- paste(obj@sp.name, out$data.set, out$run.eval, out$Model, sep = "_")
+            keep_lines <- .filter_outputs.df(out, subset.list = list(full.name =  full.name, em.filter = em.filter, em.algo = em.algo))
+            out <- out[keep_lines, ]
             return(out)
           }
 )
@@ -1135,22 +1116,11 @@ setMethod("get_built_models", "BIOMOD.ensemble.models.out",
 ##' 
 
 setMethod("get_evaluations", "BIOMOD.ensemble.models.out",
-          function(obj, as.data.frame = FALSE, ...) {
+          function(obj, full.name = NULL, em.filter = NULL, em.algo = NULL, Metric.eval = NULL) {
             out <- load_stored_object(obj@models.evaluation)
-            
-            if (!is.null(out) && as.data.frame) {
-              tmp = melt(out, varnames = c("Eval.metric", "tmp", "L1"))
-              tmp$Model.name = sapply(as.character(tmp$L1), function(x) { paste(strsplit(x, "_")[[1]][-1], collapse = "_") })
-              tmp$Model = sapply(tmp$Model.name, function(x) { strsplit(x, "_")[[1]][1] })
-              tmp$Algo = sapply(tmp$Model.name, function(x) { strsplit(x, "_")[[1]][2] })
-              tmp$Run = sapply(tmp$Model.name, function(x) { strsplit(x, "_")[[1]][3] })
-              tmp$Dataset = sapply(tmp$Model.name, function(x) { strsplit(x, "_")[[1]][4] })
-              tmp.split = split(tmp, tmp$tmp)
-              tmp.split = lapply(tmp.split, function(x) x[, c("Model.name", "Model", "Algo", "Run", "Dataset", "Eval.metric", "value")])
-              for (i in 1:length(tmp.split)) { colnames(tmp.split[[i]])[7] = names(tmp.split)[i] }
-              out = Reduce(function(x, y) merge(x, y, by = c("Model.name", "Model", "Algo", "Run", "Dataset", "Eval.metric")), tmp.split)
-            }
-            
+            keep_lines <- .filter_outputs.df(out, subset.list = list(full.name =  full.name, em.filter = em.filter
+                                                                     , em.algo = em.algo, Metric.eval = Metric.eval))
+            out <- out[keep_lines, ]
             return(out)
           }
 )
@@ -1162,22 +1132,12 @@ setMethod("get_evaluations", "BIOMOD.ensemble.models.out",
 ##' 
 
 setMethod("get_variables_importance", "BIOMOD.ensemble.models.out",
-          function(obj, as.data.frame = FALSE, ...) {
-            out <- load_stored_object(obj@variables.importance)
-            
-            if(!is.null(out) && as.data.frame == TRUE) {
-              tmp <- melt(out, varnames = c("Expl.var", "Rand", "L1"))
-              tmp$Model.name = sapply(as.character(tmp$L1), function(x) { paste(strsplit(x, "_")[[1]][-1], collapse = "_") })
-              tmp$Model = sapply(tmp$Model.name, function(x) { strsplit(x, "_")[[1]][1] })
-              tmp$Algo = sapply(tmp$Model.name, function(x) { strsplit(x, "_")[[1]][2] })
-              tmp$Run = sapply(tmp$Model.name, function(x) { strsplit(x, "_")[[1]][3] })
-              tmp$Dataset = sapply(tmp$Model.name, function(x) { strsplit(x, "_")[[1]][4] })
-              out <- tmp[, c("Model.name", "Model", "Algo", "Run", "Dataset"
-                             , "Expl.var", "Rand", "value")]
-              colnames(out)[8] = "Var.imp"
-            }
-            
-            return(out)
+            function(obj, full.name = NULL, em.filter = NULL, em.algo = NULL, Expl.var = NULL) {
+              out <- load_stored_object(obj@variables.importance)
+              keep_lines <- .filter_outputs.df(out, subset.list = list(full.name =  full.name, em.filter = em.filter
+                                                                       , em.algo = em.algo, Expl.var = Expl.var))
+              out <- out[keep_lines, ]
+              return(out)
           }
 )
 
