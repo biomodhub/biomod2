@@ -479,7 +479,9 @@ BIOMOD_EnsembleForecasting <- function(bm.em,
   ## 6. SAVE MODEL OBJECT ON HARD DRIVE ----------------------------------------
   ## save a copy of output object without value to be lighter
   nameOut <- paste0(bm.em@sp.name, ".", proj.name, ".ensemble.projection.out")
-  if (!keep.in.memory) { proj_out <- free(proj_out) }
+  if (!keep.in.memory) { 
+    proj_out <- free(proj_out) 
+    }
   assign(nameOut, proj_out)
   save(list = nameOut, file = file.path(namePath, nameOut))
   

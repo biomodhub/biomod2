@@ -39,6 +39,7 @@ vignette: >
 * Fixed `MAXENT.Phillips` for Windows.
 * Fixed using `do.stack = FALSE` with `BIOMOD_Projection`.
 * Fixed `EMcv` ensemble modeling for `data.frame` by removing dependency to `raster::cv`.
+* Fixed `free` method with `PackedSpatRaster`
 
 ##### Internal
 
