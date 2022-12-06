@@ -832,7 +832,6 @@ bm_RunModel <- function(model, Data, modeling.id = '', bm.options, calib.lines,
     } else {
       cross.validation$Evaluating.data <- NA
     }
-    # cross.validation <- cross.validation[, c("Metric.eval", "Testing.data", "Evaluating.data", "Cutoff", "Sensitivity", "Specificity")]
     
     ## store results
     for (col.i in 2:ncol(cross.validation)) {
@@ -854,11 +853,8 @@ bm_RunModel <- function(model, Data, modeling.id = '', bm.options, calib.lines,
                                                      , seed.val = seed.val
                                                      , do.progress = do.progress)
     }
-    model.bm@model_variables_importance <- variables.importance
-    
-    ## only the mean of variables importance run is returned
-    # ListOut$var.import <- round(rowMeans(variables.importance, na.rm = TRUE), digits = 3)
     ListOut$var.import <- variables.importance
+    model.bm@model_variables_importance <- variables.importance
     rm(variables.importance)
     cat("\n")
   }

@@ -362,7 +362,7 @@ BIOMOD_Projection <- function(bm.mod,
         PA.run <- .extract_modelNamesInfo(model.names = mod, info = 'data.set')
         eval.run <- .extract_modelNamesInfo(model.names = mod, info = 'run.eval')
         algo.run <- .extract_modelNamesInfo(model.names = mod, info = 'models')
-        thresholds[eval.meth, mod] <- get_evaluations(bm.mod, data.set = PA.run, run.eval = eval.run, Model = algo.run, Metric.eval = eval.meth)[, "Cutoff"]
+        thresholds[eval.meth, mod] <- get_evaluations(bm.mod, data.set = PA.run, run.eval = eval.run, algo = algo.run, Metric.eval = eval.meth)[, "Cutoff"]
         if (!on_0_1000) { thresholds[eval.meth, mod]  <- thresholds[eval.meth, mod] / 1000 }
       }
     } else {
@@ -371,7 +371,7 @@ BIOMOD_Projection <- function(bm.mod,
         PA.run <- .extract_modelNamesInfo(model.names = mod, info = 'data.set')
         eval.run <- .extract_modelNamesInfo(model.names = mod, info = 'run.eval')
         algo.run <- .extract_modelNamesInfo(model.names = mod, info = 'models')
-        thresholds[eval.meth, algo.run, eval.run, PA.run] <- get_evaluations(bm.mod, data.set = PA.run, run.eval = eval.run, Model = algo.run, Metric.eval = eval.meth)[, "Cutoff"]
+        thresholds[eval.meth, algo.run, eval.run, PA.run] <- get_evaluations(bm.mod, data.set = PA.run, run.eval = eval.run, algo = algo.run, Metric.eval = eval.meth)[, "Cutoff"]
         if (!on_0_1000) {
           thresholds[eval.meth, algo.run, eval.run, PA.run]  <- thresholds[eval.meth, algo.run, eval.run, PA.run] / 1000
         }

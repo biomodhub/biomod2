@@ -377,7 +377,7 @@ setMethod("get_calib_lines", "BIOMOD.models.out",
               tmp <- melt(out, varnames = c("Points", "run.eval", "data.set"))
               tmp$data.set = sub("_", "", tmp$data.set)
               tmp$run.eval = sub("_", "", tmp$run.eval)
-              out <- tmp[, c("Points", "data.set", "run.eval", "value")]
+              out <- tmp[, c("data.set", "run.eval", "Points", "value")]
               colnames(out)[4] = "calib.lines"
               
               keep_lines <- .filter_outputs.df(out, subset.list = list(data.set = data.set, run.eval = run.eval))
@@ -434,7 +434,7 @@ setMethod("get_formal_data", "BIOMOD.models.out",
 
 setMethod("get_predictions", "BIOMOD.models.out",
           function(obj, evaluation = FALSE
-                   , full.name = NULL, data.set = NULL, run.eval = NULL, Model = NULL)
+                   , full.name = NULL, data.set = NULL, run.eval = NULL, algo = NULL)
           {
             # check evaluation data availability
             if (evaluation && (!obj@has.evaluation.data)) {
@@ -450,9 +450,8 @@ setMethod("get_predictions", "BIOMOD.models.out",
             }
             
             # subselection of models_selected
-            out$full.name <- paste(obj@sp.name, out$data.set, out$run.eval, out$Model, sep = "_")
             keep_lines <- .filter_outputs.df(out, subset.list = list(full.name =  full.name, data.set = data.set
-                                                                     , run.eval = run.eval, Model = Model))
+                                                                     , run.eval = run.eval, algo = algo))
             out <- out[keep_lines, ]
             return(out)
           }
@@ -474,11 +473,10 @@ setMethod("get_built_models", "BIOMOD.models.out", function(obj, ...) {
 ##' 
 
 setMethod("get_evaluations", "BIOMOD.models.out",
-          function(obj, full.name = NULL, data.set = NULL, run.eval = NULL, Model = NULL, Metric.eval = NULL) {
+          function(obj, full.name = NULL, data.set = NULL, run.eval = NULL, algo = NULL, Metric.eval = NULL) {
             out <- load_stored_object(obj@models.evaluation)
-            out$full.name <- paste(obj@sp.name, out$data.set, out$run.eval, out$Model, sep = "_")
             keep_lines <- .filter_outputs.df(out, subset.list = list(full.name =  full.name, data.set = data.set
-                                                                     , run.eval = run.eval, Model = Model
+                                                                     , run.eval = run.eval, algo = algo
                                                                      , Metric.eval = Metric.eval))
             out <- out[keep_lines, ]
             return(out)
@@ -491,11 +489,10 @@ setMethod("get_evaluations", "BIOMOD.models.out",
 ##' 
 
 setMethod("get_variables_importance", "BIOMOD.models.out",
-          function(obj, full.name = NULL, data.set = NULL, run.eval = NULL, Model = NULL, Expl.var = NULL) {
+          function(obj, full.name = NULL, data.set = NULL, run.eval = NULL, algo = NULL, Expl.var = NULL) {
             out <- load_stored_object(obj@variables.importance)
-            out$full.name <- paste(obj@sp.name, out$data.set, out$run.eval, out$Model, sep = "_")
             keep_lines <- .filter_outputs.df(out, subset.list = list(full.name =  full.name, data.set = data.set
-                                                                     , run.eval = run.eval, Model = Model
+                                                                     , run.eval = run.eval, algo = algo
                                                                      , Expl.var = Expl.var))
             out <- out[keep_lines, ]
             return(out)
@@ -781,7 +778,7 @@ setMethod('free', signature('BIOMOD.projection.out'),
 
 setMethod("get_predictions", "BIOMOD.projection.out",
           function(obj, evaluation = FALSE
-                   , full.name = NULL, data.set = NULL, run.eval = NULL, Model = NULL)
+                   , full.name = NULL, data.set = NULL, run.eval = NULL, algo = NULL)
           {
             out <- load_stored_object(obj@proj.out)
             
@@ -789,7 +786,7 @@ setMethod("get_predictions", "BIOMOD.projection.out",
             if (inherits(out, 'SpatRaster')) {
               names(out) <- get_projected_models(obj)
               keep_layers <- .filter_outputs.spatRaster(names(out), subset.list = list(full.name =  full.name, data.set = data.set
-                                                                                       , run.eval = run.eval, Model = Model))
+                                                                                       , run.eval = run.eval, algo = algo))
               out <- subset(out, keep_layers)
             } else {
               # if (!is.null(out) && as.data.frame == TRUE) {
@@ -799,14 +796,14 @@ setMethod("get_predictions", "BIOMOD.projection.out",
               tmp$full.name <- as.character(tmp$full.name)
               tmp$data.set = sapply(tmp$full.name, function(x) .extract_modelNamesInfo(model.names = x, info = 'data.set'))
               tmp$run.eval = sapply(tmp$full.name, function(x) .extract_modelNamesInfo(model.names = x, info = 'run.eval'))
-              tmp$Model = sapply(tmp$full.name, function(x) .extract_modelNamesInfo(model.names = x, info = 'models'))
+              tmp$algo = sapply(tmp$full.name, function(x) .extract_modelNamesInfo(model.names = x, info = 'models'))
               # tmp$data.set = .extract_modelNamesInfo(model.names = tmp$full.name, info = 'data.set')
               # tmp$run.eval = .extract_modelNamesInfo(model.names = tmp$full.name, info = 'run.eval')
               # tmp$Model = .extract_modelNamesInfo(model.names = tmp$full.name, info = 'models')
-              out <- tmp[, c("full.name", "data.set", "run.eval", "Model", "Points", "pred")]
+              out <- tmp[, c("full.name", "data.set", "run.eval", "algo", "Points", "pred")]
               
               keep_lines <- .filter_outputs.df(out, subset.list = list(full.name =  full.name, data.set = data.set
-                                                                       , run.eval = run.eval, Model = Model))
+                                                                       , run.eval = run.eval, algo = algo))
               out <- out[keep_lines, ]
             }
             return(out)
