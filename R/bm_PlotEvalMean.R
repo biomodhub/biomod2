@@ -175,11 +175,11 @@ bm_PlotEvalMean <- function(bm.out, metric.eval = NULL, group.by = 'algo', do.pl
     theme(legend.title = element_blank()
           , legend.key = element_rect(fill = "white"))
   
-  if (length(ylim) | length(xlim)) { ## fix scale
+  if (length(ylim) > 0 | length(xlim) > 0) { ## fix scale
     gg <- gg + coord_cartesian(ylim = ylim, xlim = xlim)
   }
   
-  if (length(main)) { ## add title
+  if (length(main) > 0) { ## add title
     gg <- gg + labs(title = main)
   }
   

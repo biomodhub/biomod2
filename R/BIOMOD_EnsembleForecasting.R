@@ -289,7 +289,7 @@ BIOMOD_EnsembleForecasting <- function(bm.em,
   
   ## 3. Get needed projections --------------------------------------------------------------------
   needed_predictions <- get_needed_models(bm.em, models.chosen = models.chosen)
-  if (length(bm.proj)) {
+  if (length(bm.proj) > 0) {
     formal_pred <- get_predictions(bm.proj,
                                    full.name = needed_predictions,
                                    as.data.frame = ifelse(bm.proj@type == 'array', TRUE, FALSE))
@@ -525,7 +525,7 @@ BIOMOD_EnsembleForecasting <- function(bm.em,
       ## check all needed predictions are available
       needed_pred <- get_needed_models(bm.em, models.chosen = models.chosen)  
       missing_pred <- needed_pred[!(needed_pred %in% bm.proj@models.projected)]
-      if (length(missing_pred)) {
+      if (length(missing_pred) > 0) {
         stop("Some models predictions missing :", toString(missing_pred))
       }
     }

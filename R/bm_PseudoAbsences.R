@@ -246,7 +246,7 @@ bm_PseudoAbsences <- function(resp.var, expl.var, nb.rep = 1, strategy = 'random
   #   rn = rep("", nrow(xy))
   # }
   missing_rn <- which(rn == "")
-  if (length(missing_rn)) {
+  if (length(missing_rn) > 0) {
     rn[missing_rn] <- paste0("pa", 1:length(missing_rn))
   }
   rownames(xy) <- rn
@@ -345,7 +345,7 @@ setMethod('bm_PseudoAbsences_random', signature(expl.var = "SpatVector"),
                 ## force to get at least one value of each factorial variable
                 fact.level.cells <- bm_SampleFactorLevels(expl.var = as.data.frame(expl.var),
                                                           mask.out = pa.tab[, j, drop = FALSE])
-                if (length(fact.level.cells)) {
+                if (length(fact.level.cells) > 0) {
                   pa.tab[fact.level.cells, j] <- TRUE
                   cand.cells <- setdiff(cand.cells, fact.level.cells)
                 }
@@ -439,7 +439,7 @@ setMethod('bm_PseudoAbsences_random', signature(expl.var = "SpatRaster"),
                   
                   ## force to get at least one value of each factorial variable
                   fact.level.cells <- bm_SampleFactorLevels(expl.var = expl.var, mask.out = mask.out)
-                  if (length(fact.level.cells)) {
+                  if (length(fact.level.cells) > 0) {
                     SR <- c(SR, fact.level.cells)
                     mask.env.tmp[SR] <- NA ## update the mask by removing already selected cells
                   }
@@ -586,7 +586,7 @@ setMethod('bm_PseudoAbsences_sre', signature(expl.var = "SpatRaster"),
               
               ## force to get at least one value of each factorial variable
               fact.level.cells <- bm_SampleFactorLevels(expl.var = expl.var, mask.out = mask.out, mask.in = mask.in)
-              if (length(fact.level.cells)) {
+              if (length(fact.level.cells) > 0) {
                 SR <- c(SR, fact.level.cells)
                 mask.in.tmp[SR] <- NA ## update the mask by removing already selected cells
               }

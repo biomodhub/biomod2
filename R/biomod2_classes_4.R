@@ -328,7 +328,7 @@ setMethod('predict2', signature(object = 'biomod2_model', newdata = "SpatRaster"
             set.seed(seedval)
             proj <- predfun(object, newdata)
             
-            if (length(get_scaling_model(object))) {
+            if (length(get_scaling_model(object)) > 0) {
               names(proj) <- "pred"
               proj <- .run_pred(object = get_scaling_model(object), 
                                 Prev = 0.5 , 
@@ -383,7 +383,7 @@ setMethod('predict2', signature(object = 'biomod2_model', newdata = "data.frame"
               rm('tmp')
             }
             
-            if (length(get_scaling_model(object))) {
+            if (length(get_scaling_model(object)) > 0) {
               proj <- data.frame(pred = proj)
               proj <- .run_pred(object = get_scaling_model(object), Prev = 0.5, dat = proj)
             }
@@ -972,7 +972,7 @@ setMethod('predict2', signature(object = 'MAXENT.Phillips.2_biomod2_model', newd
             set.seed(seedval)
             proj <- predict(object = get_formal_model(object), newdata = newdata.df, clamp = FALSE, type = 'logistic')[, 1]
             
-            if (length(get_scaling_model(object))) {
+            if (length(get_scaling_model(object)) > 0) {
               proj.to.scale <- data.frame(pred = proj)
               proj <- .run_pred(object = get_scaling_model(object), Prev = 0.5 , dat = proj.to.scale)
             }

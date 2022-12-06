@@ -368,7 +368,7 @@ bm_PlotResponseCurves <- function(bm.out
             , axis.text.x = element_text(angle = 45, hjust = 1))
   }
   
-  if (length(main)) { ## add title
+  if (length(main) > 0) { ## add title
     gg <- gg + labs(title = main)
   }
   

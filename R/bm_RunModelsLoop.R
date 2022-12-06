@@ -797,7 +797,7 @@ bm_RunModel <- function(model, Data, modeling.id = '', bm.options, calib.lines,
     
     ## Check no NA in g.pred to avoid evaluation failures
     na_cell_id <- which(is.na(g.pred))
-    if (length(na_cell_id)) {
+    if (length(na_cell_id) > 0) {
       evalLines <- evalLines[!(evalLines %in% na_cell_id)]
       cat('\n\tNote : some NA occurs in predictions')
     }
@@ -813,7 +813,7 @@ bm_RunModel <- function(model, Data, modeling.id = '', bm.options, calib.lines,
       
       ## Check no NA in g.pred.eval to avoid evaluation failures
       na_cell_id <- which(is.na(g.pred.eval))
-      if (length(na_cell_id)) {
+      if (length(na_cell_id) > 0) {
         g.pred.eval.without.na <- g.pred.eval[-na_cell_id]
         eval.data <- eval.data[-na_cell_id, ]
         cat('\n\tNote : some NA occurs in evaluation predictions')

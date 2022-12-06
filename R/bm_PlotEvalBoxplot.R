@@ -152,7 +152,7 @@ bm_PlotEvalBoxplot <- function(bm.out, group.by = c('algo', 'run'), do.plot = TR
           , legend.key = element_rect(fill = "white")
           , axis.text.x = element_text(angle = 45, hjust = 1))
   
-  if (length(main)) { ## add title
+  if (length(main) > 0) { ## add title
     gg <- gg + labs(title = main)
   }
   

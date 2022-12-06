@@ -239,7 +239,7 @@ setMethod('BIOMOD.formated.data', signature(sp = 'numeric', env = 'data.frame'),
             ## REMOVE NA IF ANY
             if (na.rm) {
               rowToRm <- unique(unlist(lapply(BFD@data.env.var, function(x) { return(which(is.na(x))) })))
-              if (length(rowToRm)) {
+              if (length(rowToRm) > 0) {
                 cat("\n\t\t\t! Some NAs have been automatically removed from your data")
                 BFD@coord <- BFD@coord[-rowToRm, , drop = FALSE]
                 BFD@data.species <- BFD@data.species[-rowToRm]
@@ -247,7 +247,7 @@ setMethod('BIOMOD.formated.data', signature(sp = 'numeric', env = 'data.frame'),
               }
               if (BFD@has.data.eval) {
                 rowToRm <- unique(unlist(lapply(BFD@eval.data.env.var, function(x) { return(which(is.na(x))) })))
-                if (length(rowToRm)) {
+                if (length(rowToRm) > 0) {
                   cat("\n\t\t\t! Some NAs have been automatically removed from your evaluation data")
                   BFD@eval.coord <- BFD@eval.coord[-rowToRm, , drop = FALSE]
                   BFD@eval.data.species <- BFD@eval.data.species[-rowToRm]
@@ -714,7 +714,7 @@ setMethod('BIOMOD.formated.data.PA', signature(sp = 'numeric', env = 'SpatRaster
     ## REMOVE NA IF ANY
     if (na.rm) {
       rowToRm <- unique(unlist(lapply(pa.data.tmp$env, function(x) { return(which(is.na(x))) })))
-      if (length(rowToRm)) {
+      if (length(rowToRm) > 0) {
         cat("\n\t\t\t! Some NAs have been automatically removed from your data")
         pa.data.tmp$xy <- pa.data.tmp$xy[-rowToRm, , drop = FALSE]
         pa.data.tmp$sp <- pa.data.tmp$sp[-rowToRm, drop = FALSE]
@@ -767,11 +767,11 @@ setMethod('BIOMOD.formated.data.PA', signature(sp = 'numeric', env = 'SpatRaster
         ind.pa <- as.data.frame(pa.data.tmp$pa.tab)[, pa]
         xy_pres <- pa.data.tmp$xy[which(pa.data.tmp$sp == 1 & ind.pa == TRUE), , drop = FALSE]
         xy_abs <- pa.data.tmp$xy[which((pa.data.tmp$sp != 1 | is.na(pa.data.tmp$sp)) & ind.pa == TRUE), , drop = FALSE]
-        if (nrow(xy_pres)) {
+        if (nrow(xy_pres) > 0) {
           id_pres <- cellFromXY(data.mask.tmp, xy_pres)
           data.mask.tmp2[id_pres] <- 1
         }
-        if (nrow(xy_abs)) {
+        if (nrow(xy_abs) > 0) {
           id_abs <- cellFromXY(data.mask.tmp, xy_abs)
           data.mask.tmp2[id_abs] <- 0
         }
@@ -1256,7 +1256,7 @@ setClass("BIOMOD.models.options",
              cat("\nCTA$control must be a list like that returned by rpart.control")
              test <- FALSE
            }
-           if (length(object@CTA$cost) && (!is.numeric(object@CTA$cost))) {
+           if (length(object@CTA$cost) > 0 && (!is.numeric(object@CTA$cost))) {
              cat("\nCTA$cost must be a non negative cost vector")
              test <- FALSE
            }
@@ -1346,7 +1346,7 @@ setClass("BIOMOD.models.options",
              test <- .fun_testIfPosInt(test, "RF$sampsize", object@RF$sampsize)
            }
            test <- .fun_testIfPosInt(test, "RF$nodesize", object@RF$nodesize)
-           if (length(object@RF$maxnodes)) {
+           if (length(object@RF$maxnodes) > 0) {
              test <- .fun_testIfPosInt(test, "RF$maxnodes", object@RF$maxnodes)
            }
            

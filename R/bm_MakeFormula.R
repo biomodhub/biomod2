@@ -138,7 +138,7 @@ bm_MakeFormula <- function(resp.name,
       junk.inter <- paste(junk.inter, paste(apply(inter.tab, 2, paste, collapse = ":"), collapse = " + "), sep = " + ")
     }
   }
-  if (length(junk.inter)) { junk <- paste0(junk, junk.inter) }
+  if (length(junk.inter) > 0) { junk <- paste0(junk, junk.inter) }
   
   ## 4. Return the formula ------------------------------------------------------------------------
   return(as.formula(paste0(resp.name," ~ ", junk)))

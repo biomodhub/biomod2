@@ -427,16 +427,16 @@ setMethod("get_predictions", "BIOMOD.models.out",
           {
             # select models to be returned
             models_selected <- get_built_models(obj)
-            if (length(full.name)) {
+            if (length(full.name) > 0) {
               models_selected <- intersect(full.name, models_selected)
-            } else if (length(model) | length(run.eval) | length(data.set)) {
+            } else if (length(model) > 0 | length(run.eval) > 0 | length(data.set) > 0) {
               grep_model = grep(paste(model, collapse = "|"), models_selected)
               grep_run.eval = grep(paste(run.eval, collapse = "|"), models_selected)
               grep_data.set = grep(paste(data.set, collapse = "|"), models_selected)
               models_selected = models_selected[Reduce(intersect, list(grep_model, grep_run.eval, grep_data.set))]
             }
             
-            if (length(models_selected))
+            if (length(models_selected) > 0)
             {
               
               # check evaluation data availability
@@ -707,7 +707,7 @@ setMethod(
   'plot', signature(x = 'BIOMOD.projection.out', y = "missing"),
   function(x, col = NULL, str.grep = NULL){
     models_selected <- x@models.projected
-    if (length(str.grep)) { 
+    if (length(str.grep) > 0) { 
       models_selected <- grep(paste(str.grep, collapse = "|"),
                               models_selected, value = TRUE)
     }
@@ -827,9 +827,11 @@ setMethod("get_predictions", "BIOMOD.projection.out",
                    model = NULL, run.eval = NULL, data.set = NULL) {
             # select models to be returned
             models_selected <- get_projected_models(obj)
-            if (length(full.name)) {
+            if (length(full.name) > 0) {
               models_selected <- intersect(full.name, models_selected)
-            } else if (length(model) | length(run.eval) | length(data.set)) {
+            } else if (length(model) > 0 |
+                       length(run.eval) > 0 |
+                       length(data.set) > 0) {
               grep_model = grep(paste(model, collapse = "|"), models_selected)
               grep_run.eval = grep(paste(run.eval, collapse = "|"), models_selected)
               grep_data.set = grep(paste(data.set, collapse = "|"), models_selected)
@@ -1156,11 +1158,11 @@ setMethod("get_predictions", "BIOMOD.ensemble.models.out",
           {
             # select models to be returned
             models_selected <- get_built_models(obj)
-            if (length(full.name)) {
+            if (length(full.name) > 0) {
               models_selected <- intersect(full.name, models_selected)
             }
             
-            if (length(models_selected))
+            if (length(models_selected) > 0)
             {
               # check evaluation data availability
               if (evaluation && (!get_formal_data(obj)@has.evaluation.data)) {

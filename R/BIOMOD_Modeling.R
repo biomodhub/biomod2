@@ -963,9 +963,9 @@ setMethod('.BIOMOD_Modeling.prepare.data', signature('BIOMOD.formated.data.PA'),
     })
     
     res.out <- unlist(output)
-    if (length(res.out)) { res.out <- na.omit(res.out) }
-    if (length(res.out)) { res.out <- res.out[!is.null(res.out)] }
-    if (!length(res.out)) { res.out <- 'none' }
+    if (length(res.out) > 0) { res.out <- na.omit(res.out) }
+    if (length(res.out) > 0) { res.out <- res.out[!is.null(res.out)] }
+    if (length(res.out) == 0) { res.out <- 'none' }
     return(res.out)
   }
   
