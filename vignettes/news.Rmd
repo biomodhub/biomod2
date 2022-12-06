@@ -40,11 +40,13 @@ vignette: >
 * Fixed using `do.stack = FALSE` with `BIOMOD_Projection`.
 * Fixed `EMcv` ensemble modeling for `data.frame` by removing dependency to `raster::cv`.
 * Fixed `free` method with `PackedSpatRaster`
+* Fixed `BIOMOD_FormatingData` in case where no coordinates are given
 
 ##### Internal
 
 * Updated github workflow : removed obsolete ubuntu 18.04 ; added test on r-devel ; added cache for R packages.
 * Updated `MAXENT.Phillips` `predict2` method for `SpatRaster` so that it saves environmental data as `.asc` and do not use the `data.frame` method.
+* fixed some automatic boolean conversion
 
 ####  4.2-0 Terra Update
 
