@@ -681,7 +681,7 @@ setMethod('BIOMOD.formated.data.PA', signature(sp = 'numeric', env = 'SpatRaster
   
   # Convert sp in SpatVector
   if (is.numeric(sp)) {
-    if (is.null(xy)) {
+    if (nrow(xy) == 0) {
       sp.df <- data.frame(x = 0,
                           y = 0,
                           resp = sp)

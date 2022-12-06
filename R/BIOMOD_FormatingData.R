@@ -442,6 +442,8 @@ BIOMOD_FormatingData <- function(resp.name,
   if(!is.null(resp.xy)){
     resp.xy <- .check_formating_xy(resp.xy, 
                                    resp.length = length(resp.var))
+  } else {
+    resp.xy <- data.frame()
   }
   
   
