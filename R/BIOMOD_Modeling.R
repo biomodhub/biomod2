@@ -367,8 +367,8 @@ BIOMOD_Modeling <- function(bm.format,
                     do.progress = do.progress)
   
   ## 3.3 Rearrange and save outputs -------------------------------------------
-  models.out@models.computed <- .transform_outputs_list(mod.out, out = 'models.run')
-  models.out@models.failed <- .transform_outputs_list(mod.out, out = 'calib.failure')
+  models.out@models.computed <- .transform_outputs_list("mod", mod.out, out = "model")
+  models.out@models.failed <- .transform_outputs_list("mod", mod.out, out = "calib.failure")
   
   if(length(models.out@models.computed) == 1 && models.out@models.computed == "none"){
     cat("\n! All models failed")
@@ -378,24 +378,24 @@ BIOMOD_Modeling <- function(bm.format,
   ## 3.4 Rearrange and save models outputs : ----------------------------------
   ## models evaluation, variables importance, models prediction, predictions evaluation
   if (save.output) {
-    models.evaluation <- .transform_outputs_list(mod.out, out = 'evaluation')
+    models.evaluation <- .transform_outputs_list("mod", mod.out, out = "evaluation")
     models.out = .fill_BIOMOD.models.out("models.evaluation", models.evaluation, models.out
                                          , inMemory = TRUE, nameFolder = name.BIOMOD_DATA)
     rm(models.evaluation)
     
     if (var.import > 0) {
-      variables.importance <- .transform_outputs_list(mod.out, out = 'var.import')
+      variables.importance <- .transform_outputs_list("mod", mod.out, out = "var.import")
       models.out = .fill_BIOMOD.models.out("variables.importance", variables.importance, models.out
                                            , inMemory = FALSE, nameFolder = name.BIOMOD_DATA)
       rm(variables.importance)
     }
     
-    models.prediction <- .transform_outputs_list(mod.out, out = 'prediction')
+    models.prediction <- .transform_outputs_list("mod", mod.out, out = "pred")
     models.out = .fill_BIOMOD.models.out("models.prediction", models.prediction, models.out
                                          , inMemory = FALSE, nameFolder = name.BIOMOD_DATA)
     rm(models.prediction)
     
-    models.prediction.eval <- .transform_outputs_list(mod.out, out = 'prediction.eval')
+    models.prediction.eval <- .transform_outputs_list("mod", mod.out, out = "pred.eval")
     models.out = .fill_BIOMOD.models.out("models.prediction.eval", models.prediction.eval, models.out
                                          , inMemory = FALSE, nameFolder = name.BIOMOD_DATA)
     rm(models.prediction.eval)
@@ -818,91 +818,3 @@ setMethod('.BIOMOD_Modeling.prepare.data', signature('BIOMOD.formated.data.PA'),
   return(mat.out)
 }
 
-
-# ---------------------------------------------------------------------------- #
-## 
-## Reshape biomod2 objects
-## 
-## This is an internal function (developper only)
-##
-## @param mod.out the object to transform given as a list
-## @param out character, the type of input object
-## @param dim.names character, if not `NULL` the resshaped object will be stored on the hard drive
-##
-## @return list, the extracted statistics
-## 
-## @export
-## 
-# ---------------------------------------------------------------------------- #
-
-.transform_outputs_list = function(mod.out, out = 'evaluation', dim.names = NULL)
-{
-  out_list = c('evaluation', 'var.import', 'prediction', 'prediction.eval'
-               , 'calib.failure', 'models.run')
-  .fun_testIfIn(TRUE, "out", out, out_list)
-  
-  ## 0. GET dimension names -----------------------------------------------------------------------
-  nb_pa <- length(mod.out)
-  nb_run <- length(mod.out[[1]])
-  nb_mod <- length(mod.out[[1]][[1]])
-  
-  ## 0.a get dataset names
-  if (nb_pa == 1 && length(unlist(strsplit(unlist(names(mod.out)), '_'))) == 1) {
-    dataset.names <- 'AllData'
-  } else if (is.null(dim.names)) {
-    dataset.names <- unlist(sapply(unlist(names(mod.out)), function(name) {
-      return(tail(unlist(strsplit(name, '_')), 1))
-    }))
-  } else {
-    dataset.names <- unlist(dim.names[1])
-  }
-  
-  ## 0.b get run.eval and model names
-  if (is.null(dim.names)) {
-    run.eval.names <- sub('_', '', unlist(names(mod.out[[1]]))) # may be good here to test that all names are identics
-    mod.names <- unlist(names(mod.out[[1]][[1]]))
-  } else {
-    run.eval.names <- unlist(dim.names[2])
-    mod.names <- unlist(dim.names[3])
-  }
-  
-  #   kept.mod = mod.names
-  #   if (out == "var.import") {
-  #     ef.mod <- grep(pattern = "EF.", mod.names) # EF models
-  #     if (length(ef.mod) > 0) {
-  #       kept.mod <- mod.names[-ef.mod]
-  #     }
-  #   }
-  
-  ## 1. CASE evaluation / prediction / prediction.eval / var.import -------------------------------
-  ## 2. CASE calib.failure / models.run -----------------------------------------------------------
-  
-  name_slot = out
-  if (out == "prediction") { name_slot = "pred" }
-  if (out == "prediction.eval") { name_slot = "pred.eval" }
-  if (out == "models.run") { name_slot = "model" }
-  
-  output <- foreach(i = 1:nb_pa, .combine = "rbind") %:%
-    foreach(j = 1:nb_run, .combine = "rbind") %:% 
-    foreach(k = 1:nb_mod, .combine = "rbind") %do%
-    {
-      # calib.failure <- mod.out[[i]][[j]][[k]][["calib.failure"]] ## pour evaluation
-      res <- mod.out[[i]][[j]][[k]][[name_slot]]
-      # if (is.null(calib.failure) && !is.null(res)) { ## pour evaluation
-      if (!is.null(res)) {
-        res <- as.data.frame(res)
-        if (name_slot %in% c("pred", "pred.eval"," calib.failure", "model")) {
-          colnames(res) = name_slot
-        }
-        col_names <- colnames(res)
-        res[["data.set"]] <- dataset.names[i]
-        res[["run.eval"]] <- run.eval.names[j]
-        res[["Model"]] <- mod.names[k]
-        return(res[, c("data.set", "run.eval", "Model", col_names)])
-      }
-    }
-  if (name_slot %in% c("calib.failure", "model")) {
-    if (is.null(output)) { output <- 'none' } else { output <- as.character(output[[name_slot]]) }
-  }
-  return(output)
-}

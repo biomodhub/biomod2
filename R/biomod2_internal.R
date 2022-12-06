@@ -321,6 +321,60 @@ get_var_range <- function(data)
 }
 
 
+## TRANSFORM models outputs getting specific slot -------------------------------------------------
+## used in BIOMOD_Modeling.R, BIOMOD_EnsembleModeling.R
+
+.transform_outputs_list = function(obj.type, obj.out, out = 'evaluation')
+{
+  ## 0. CHECK object type ---------------------------------------------------------------
+  .fun_testIfIn(TRUE, "obj.type", obj.type, c("mod", "em"))
+  if (obj.type == "mod") {
+    # .fun_testIfInherits(TRUE, "obj.out", obj.out, "BIOMOD.models.out")
+    .fun_testIfIn(TRUE, "out", out, c("calib.failure", "model", "pred", "pred.eval", "evaluation", "var.import"))
+    dim_names <- c("data.set", "run.eval", "algo")
+  } else if (obj.type == "em") {
+    # .fun_testIfInherits(TRUE, "obj.out", obj.out, "BIOMOD.ensemble.models.out")
+    .fun_testIfIn(TRUE, "out", out, c("model", "pred", "pred.eval", "evaluation", "var.import"))
+    dim_names <- c("merged.by", "filtered.by", "algo")
+  }
+  
+  ## 1. GET dimension names -------------------------------------------------------------
+  ## BIOMOD.models.out            -> dataset / run / algo
+  ## BIOMOD.ensemble.models.out   -> mergedBy / filteredBy / algo
+  dim1 <- length(obj.out)
+  dim2 <- length(obj.out[[1]])
+  dim3 <- length(obj.out[[1]][[1]])
+  
+  ## 2. GET outputs ---------------------------------------------------------------------
+  output <- foreach(i.dim1 = 1:dim1, .combine = "rbind") %:%
+    foreach(i.dim2 = 1:dim2, .combine = "rbind") %:% 
+    foreach(i.dim3 = 1:dim3, .combine = "rbind") %do%
+    {
+      res <- obj.out[[i.dim1]][[i.dim2]][[i.dim3]][[out]]
+      if (!is.null(res)) {
+        res <- as.data.frame(res)
+        if (out %in% c("pred", "pred.eval"," calib.failure", "model")) {
+          colnames(res) = out
+        }
+        col_names <- colnames(res)
+        res[[dim_names[1]]] <- names(obj.out)[i.dim1]
+        res[[dim_names[2]]] <- names(obj.out[[i.dim1]])[i.dim2]
+        res[[dim_names[3]]] <- names(obj.out[[i.dim1]][[i.dim2]])[i.dim3]
+        res[["full.name"]] <- obj.out[[i.dim1]][[i.dim2]][[i.dim3]][["model"]]
+        if (obj.type == "mod") {
+          res[[dim_names[1]]] <- sub(".*_", "", res[[dim_names[1]]])
+          res[[dim_names[2]]] <- sub(".*_", "", res[[dim_names[2]]])
+        }
+        return(res[, c("full.name", dim_names, col_names)])
+      }
+    }
+  if (out %in% c("calib.failure", "model")) {
+    if (is.null(output)) { output <- 'none' } else { output <- as.character(output[[out]]) }
+  }
+  return(output)
+}
+
+
 ## EXTRACT model names according to specific infos ------------------------------------------------
 ## used in biomod2_classes_3.R, BIOMOD_LoadModels, BIOMOD_Projection, BIOMOD_EnsembleModeling, bm_PlotRangeSize
 

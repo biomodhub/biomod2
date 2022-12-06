@@ -459,7 +459,7 @@ BIOMOD_EnsembleModeling <- function(bm.mod,
       ## LOOP over em.algo ---------------------------------------------------
       em.out.algo <- foreach (algo = em.algo) %do%
       {
-        out <- list(model = NULL,
+        ListOut <- list(model = NULL,
                     pred = NULL,
                     pred.eval = NULL,
                     evaluation = NULL,
@@ -493,7 +493,7 @@ BIOMOD_EnsembleModeling <- function(bm.mod,
             mod <- tail(unlist(strsplit(x,"_")), 3)[3]
             run <- tail(unlist(strsplit(x,"_")), 3)[2]
             dat <- tail(unlist(strsplit(x,"_")), 3)[1]
-            return(get_evaluations(bm.mod, Model = mod, run.eval = run, data.set = dat, Metric.eval = eval.m)[, "Cutoff"])
+            return(get_evaluations(bm.mod, data.set = dat, run.eval = run, algo = mod, Metric.eval = eval.m)[, "Cutoff"])
           }))
           names(models.kept.thresh) <- models.kept.tmp
           models.kept.tmp = models.kept.tmp[is.finite(models.kept.thresh)]
@@ -601,8 +601,8 @@ BIOMOD_EnsembleModeling <- function(bm.mod,
         if (inherits(pred.bm, "try-error")) {
           EM@em.failed <- c(EM@em.failed, model_name)
         } else {
-          out$model <- model_name
-          out$pred <- pred.bm
+          ListOut$model <- model_name
+          ListOut$pred <- pred.bm
           assign(pred.bm.name, pred.bm)
           save(list = pred.bm.name, file = pred.bm.outfile, compress = TRUE)
           rm(list = pred.bm.name)
@@ -613,7 +613,7 @@ BIOMOD_EnsembleModeling <- function(bm.mod,
             pred.bm.eval.outfile <- paste0(pred.bm.outfile,"Eval")
             pred.bm.name <- paste0(model_name, ".predictionsEval")
             eval_pred.bm <- predict(model.bm, newdata = eval.expl, seedval = seed.val)
-            out$pred.eval <- eval_pred.bm
+            ListOut$pred.eval <- eval_pred.bm
             assign(pred.bm.name, eval_pred.bm)
             save(list = pred.bm.name, file = pred.bm.eval.outfile, compress = TRUE)
             rm(list = pred.bm.name)
@@ -667,7 +667,7 @@ BIOMOD_EnsembleModeling <- function(bm.mod,
               for (col.i in 2:ncol(cross.validation)) {
                 cross.validation[, col.i] <- round(cross.validation[, col.i], digits = 3)
               }
-              out$evaluation <- cross.validation
+              ListOut$evaluation <- cross.validation
               model.bm@model_evaluation <- cross.validation
             }
           }
@@ -681,7 +681,7 @@ BIOMOD_EnsembleModeling <- function(bm.mod,
                                      , nb.rep = var.import
                                      , seed.val = seed.val
                                      , do.progress = do.progress)
-            out$var.import <- variables.importance
+            ListOut$var.import <- variables.importance
             model.bm@model_variables_importance <- variables.importance
             
           }
@@ -695,7 +695,7 @@ BIOMOD_EnsembleModeling <- function(bm.mod,
           EM@em.models <- c(EM@em.models, model.bm)
           
         }
-        return(out)
+        return(ListOut)
       }
       names(em.out.algo) <- em.algo
       return(em.out.algo)
@@ -715,19 +715,19 @@ BIOMOD_EnsembleModeling <- function(bm.mod,
   }
   
   ### SAVE EM outputs ---------------------------------------------------------
-  models.evaluation <- .transform_outputs_list.em(em.out, out = "evaluation")
+  models.evaluation <- .transform_outputs_list("em", em.out, out = "evaluation")
   EM = .fill_BIOMOD.models.out("models.evaluation", models.evaluation, EM
                                , inMemory = TRUE, nameFolder = name.BIOMOD_DATA)
   if (var.import > 0) {
-    variables.importance <- .transform_outputs_list.em(em.out, out = "var.import")
+    variables.importance <- .transform_outputs_list("em", em.out, out = "var.import")
     EM = .fill_BIOMOD.models.out("variables.importance", variables.importance, EM
                                  , inMemory = TRUE, nameFolder = name.BIOMOD_DATA)
   }
-  models.prediction <- .transform_outputs_list.em(em.out, out = "prediction")
+  models.prediction <- .transform_outputs_list("em", em.out, out = "pred")
   EM = .fill_BIOMOD.models.out("models.prediction", models.prediction, EM
                                , inMemory = TRUE, nameFolder = name.BIOMOD_DATA)
   if (bm.mod@has.evaluation.data) {
-    models.prediction.eval <- .transform_outputs_list.em(em.out, out = "prediction.eval")
+    models.prediction.eval <- .transform_outputs_list("em", em.out, out = "pred.eval")
     EM = .fill_BIOMOD.models.out("models.prediction.eval", models.prediction.eval, EM
                                  , inMemory = TRUE, nameFolder = name.BIOMOD_DATA)
   }
@@ -1078,7 +1078,7 @@ BIOMOD_EnsembleModeling <- function(bm.mod,
           index_full <- c(index_current, index_to_predict)
           
           res <- rbind(current_prediction, new_prediction)
-          res <- res[, c("full.name", "data.set", "run.eval", "Model", "Points", "pred")]
+          res <- res[, c("full.name", "data.set", "run.eval", "algo", "Points", "pred")]
           res <- res[order(res$full.name, res$Points), ]
           return(res)
         }
@@ -1111,7 +1111,7 @@ BIOMOD_EnsembleModeling <- function(bm.mod,
           run <- tail(unlist(strsplit(x, "_")), 3)[2]
           dat <- tail(unlist(strsplit(x, "_")), 3)[1]
           # select evaluations scores obtained for Evaluation Data if exists or CV if not
-          out <- get_evaluations(bm.mod, Model = mod, run.eval = run, data.set = dat, Metric.eval = eval.m)
+          out <- get_evaluations(bm.mod, data.set = dat, run.eval = run, algo = mod, Metric.eval = eval.m)
           if (bm.mod@has.evaluation.data) {
             return(out[, "Evaluating.data"])
           } else {
@@ -1131,44 +1131,4 @@ BIOMOD_EnsembleModeling <- function(bm.mod,
     }
   }
   out
-}
-
-### REORGANIZE ensemble models output -----------------------------------------
-.transform_outputs_list.em = function(em.out, out = 'evaluation') {
-  out_list = c('evaluation', 'var.import', 'prediction', 'prediction.eval')
-  .fun_testIfIn(TRUE, "out", out, out_list)
-  
-  ## 0. get model names -------------------------------------------------------
-  nb_by <- length(em.out)
-  nb_eval <- length(em.out[[1]])
-  nb_mod <- length(em.out[[1]][[1]])
-  
-  comb = expand.grid(i.by = 1:nb_by, i.eval = 1:nb_eval, i.mod = 1:nb_mod)
-  names_models <- foreach (i = 1:nrow(comb), .combine = "c") %do% {
-    em.out[[comb$i.by[i]]][[comb$i.eval[i]]][[comb$i.mod[i]]]$model
-  }
-  
-  ## 1. CASE evaluation / prediction / prediction.eval / var.import -----------
-  name_slot = out
-  if (out == "prediction") { name_slot = "pred" }
-  if (out == "prediction.eval") { name_slot = "pred.eval" }
-  
-  # if (out %in% c("evaluation", "var.import")) {
-  output <- foreach (i = 1:nrow(comb), .combine = "rbind") %do%
-    {
-      res <- em.out[[comb$i.by[i]]][[comb$i.eval[i]]][[comb$i.mod[i]]][[name_slot]]
-      if (!is.null(res)) {
-        res <- as.data.frame(res)
-        if (name_slot %in% c("pred", "pred.eval")) {
-          colnames(res) = name_slot
-        }
-        col_names <- colnames(res)
-        res[["full.name"]] <- names_models[i]
-        res[["em.filter"]] <- names(em.out[[comb$i.by[i]]])[comb$i.eval[i]]
-        res[["em.algo"]] <- names(em.out[[comb$i.by[i]]][[comb$i.eval[i]]])[comb$i.mod[i]]
-        return(res[, c("full.name", "em.filter", "em.algo", col_names)])
-      }
-    }
-  
-  return(output)
 }
