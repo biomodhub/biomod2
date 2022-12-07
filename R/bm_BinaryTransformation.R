@@ -9,9 +9,10 @@
 ##' according to a predefined threshold (see Details).
 ##' 
 ##' 
-##' @param data a \code{vector}, a \code{matrix}, \code{data.frame}, \code{array},
-##' or a \code{\link[terra:rast]{SpatRaster}} containing the data to be converted
-##' @param threshold a \code{numeric} corresponding to the threshold used to convert the given data
+##' @param data a \code{vector}, a \code{matrix}, \code{data.frame}, or a 
+##' \code{\link[terra:rast]{SpatRaster}} containing the data to be converted
+##' @param threshold a \code{numeric} or a \code{vector} of \code{numeric} corresponding to 
+##' the threshold used to convert the given data
 ##' @param do.filtering (\emph{optional, default} \code{FALSE}) \cr 
 ##' A \code{logical} value defining whether filtered data should be returned, or binary one 
 ##' (see Details)
@@ -137,32 +138,6 @@ setMethod('bm_BinaryTransformation', signature('numeric'),
               ))
           })
 
-## array methods ----------------------------------------------------------
-##' @rdname bm_BinaryTransformation
-##' @export
-##'
-
-setMethod('bm_BinaryTransformation', signature('array'),
-          function(data, threshold, do.filtering = FALSE)
-          {
-            if (length(dim(data)) == length(dim(threshold))) {
-              if (sum(dim(data)[-1] != dim(threshold)[-1]) > 0) {
-                stop("data and threshold dimensions mismatch")
-              }
-            } else {
-              if (sum(dim(data)[-1] != dim(threshold)) > 0) {
-                stop("data and threshold dimensions mismatch")
-              }
-            }
-            
-            if (do.filtering) {
-              return(sweep(data, 2:length(dim(data)), threshold, .convert_bin.array.filt))
-            } else {
-              return(sweep(data, 2:length(dim(data)), threshold, .convert_bin.array))
-            }
-          })
-
-
 
 ## SpatRaster methods ----------------------------------------------------------
 ##' @rdname bm_BinaryTransformation
@@ -218,7 +193,7 @@ setMethod('bm_BinaryTransformation', signature('SpatRaster'),
 }
 
 .convert_bin.array = function(x, y) {
-  return(ifelse(x >= y,1,0))
+  return(ifelse(x >= y, 1, 0))
 }
 
 .convert_bin.array.filt = function(x, y) {
