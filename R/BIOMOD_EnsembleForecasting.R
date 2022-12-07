@@ -395,78 +395,85 @@ BIOMOD_EnsembleForecasting <- function(bm.em,
   if (length(metric.binary) | length(metric.filter))
   {
     cat("\n")
-    eval.meth <- unique(c(metric.binary, metric.filter))
     
-    ## Get all evaluation thresholds
-
-    ## TODO : define the raster dataformat (depends if em.cv has been computed)
-    ## Do binary transformation
-    for (eval.meth in metric.binary) {
-      cat("\n\t> Building", eval.meth, "binaries")
-
-     thresholds <- sapply(models.chosen, function(x) {
-        get_evaluations(bm.em)[eval.meth,"Cutoff", x]
-      })
-      if (!on_0_1000) { thresholds <- thresholds / 1000 }
+    thresholds <- get_evaluations(bm.em, full.name = models.chosen)
+    if (!on_0_1000) { thresholds[, "Cutoff"]  <- thresholds[, "Cutoff"] / 1000 }
+    
+    ## Do binary/filtering transformation
+    for (eval.meth in unique(c(metric.binary, metric.filter))) {
+      thres.tmp <- thresholds[which(thresholds$Metric.eval == eval.meth), ]
+      rownames(thres.tmp) <- thres.tmp$full.name
+      thres.tmp <- thres.tmp[models.chosen, "Cutoff"]
       
+      cat("\n\t> Building", eval.meth, "binaries / filtered")
       if (!do.stack) {
         for (i in 1:length(proj_out@proj.out@link)) {
           file.tmp <- proj_out@proj.out@link[i]
-          writeRaster(x = bm_BinaryTransformation(rast(file.tmp), thresholds[i]),
-                      filename = sub(output.format,
-                                     paste0("_", eval.meth, "bin", output.format),
-                                     file.tmp),
-                      overwrite = TRUE)
+          
+          if (eval.meth %in% metric.binary) {
+            writeRaster(x = bm_BinaryTransformation(rast(file.tmp), thres.tmp[i]),
+                        filename = sub(output.format,
+                                       paste0("_", eval.meth, "bin", output.format),
+                                       file.tmp),
+                        overwrite = TRUE,
+                        # datatype = "INT2S",
+                        NAflag = -9999)
+          }
+          
+          if (eval.meth %in% metric.filter) {
+            writeRaster(x = bm_BinaryTransformation(rast(file.tmp), thres.tmp[i], do.filtering = TRUE),
+                        filename = sub(output.format,
+                                       paste0("_", eval.meth, "filt", output.format),
+                                       file.tmp),
+                        overwrite = TRUE,
+                        # datatype = ifelse(on_0_1000, "INT2S", "FLT4S"),
+                        NAflag = -9999)
+          }
         }
       } else {
-        nameBin = paste0(nameProjSp, "_", eval.meth, "bin")
-        if (inherits(ef.out, "PackedSpatRaster")){
-          ef.out <- rast(ef.out)
+        if (eval.meth %in% metric.binary) {
+          nameBin <- paste0(nameProjSp, "_", eval.meth, "bin")
+          # assign(x = nameBin, value = bm_BinaryTransformation(proj, thres.tmp))
+          if (inherits(ef.out, "PackedSpatRaster")){
+            ef.out <- rast(ef.out)
+          }
+          assign(x = nameBin, value = bm_BinaryTransformation(ef.out, thres.tmp))
+          
+          if (output.format == '.RData') {
+            # if (inherits(new.env, "SpatRaster")) {
+            #   assign(x = nameBin, value = wrap(get(nameBin)))
+            # } 
+            save(list = nameBin,
+                 file = file.path(namePath, paste0(nameBin, output.format)),
+                 compress = compress)
+          } else {
+            writeRaster(x = get(nameBin),
+                        filename = file.path(namePath, paste0(nameBin, output.format)),
+                        overwrite = TRUE,
+                        # datatype = "INT2S",
+                        NAflag = -9999)
+          }
         }
-        assign(x = nameBin, value = bm_BinaryTransformation(ef.out, 
-                                                            thresholds))
         
-        if (output.format == '.RData') {
-          save(list = nameBin,
-               file = file.path(namePath, paste0(nameBin, output.format)),
-               compress = compress)
-        } else {
-          writeRaster(x = get(nameBin),
-                      filename = file.path(namePath, paste0(nameBin, output.format)),
-                      overwrite = TRUE)
-        }
-      }
-    }
-    
-    ## Do filtered transformation
-    for (eval.meth in metric.filter) {
-      cat("\n\t> Building", eval.meth, "filtered")
-      
-      thresholds <- sapply(models.chosen, function(x) {
-        get_evaluations(bm.em)[eval.meth,"Cutoff", x]
-      })
-      if (!on_0_1000) { thresholds <- thresholds / 1000 }
-      
-      if (!do.stack) {
-        for (i in 1:length(proj_out@proj.out@link)) {
-          file.tmp <- proj_out@proj.out@link[i]
-          writeRaster(x = bm_BinaryTransformation(rast(file.tmp), thresholds[i], do.filtering = TRUE),
-                      filename = sub(output.format,
-                                     paste0("_", eval.meth, "filt", output.format),
-                                     file.tmp),
-                      overwrite = TRUE)
-        }
-      } else {
-        nameFilt = paste0(nameProjSp, "_", eval.meth, "filt")
-        assign(x = nameFilt, value = bm_BinaryTransformation(ef.out, thresholds, do.filtering = TRUE))
-        if (output.format == '.RData') {
-          save(list = nameFilt,
-               file = file.path(namePath, paste0(nameFilt, output.format)),
-               compress = compress)
-        } else {
-          writeRaster(x = get(nameFilt),
-                      filename = file.path(namePath, paste0(nameFilt, output.format)),
-                      overwrite = TRUE)
+        if (eval.meth %in% metric.filter) {
+          nameFilt <- paste0(nameProjSp, "_", eval.meth, "filt")
+          # assign(x = nameFilt, value = bm_BinaryTransformation(proj, thres.tmp, do.filtering = TRUE))
+          assign(x = nameFilt, value = bm_BinaryTransformation(ef.out, thres.tmp, do.filtering = TRUE))
+          
+          if (output.format == '.RData') {
+            # if (inherits(new.env, "SpatRaster")) {
+            #   assign(x = nameFilt, value = wrap(get(nameFilt)))
+            # } 
+            save(list = nameFilt,
+                 file = file.path(namePath, paste0(nameFilt, output.format)),
+                 compress = compress)
+          } else {
+            writeRaster(x = get(nameFilt),
+                        filename = file.path(namePath, paste0(nameFilt, output.format)),
+                        overwrite = TRUE ,
+                        # datatype = ifelse(on_0_1000, "INT2S", "FLT4S"),
+                        NAflag = -9999)
+          }
         }
       }
     }
