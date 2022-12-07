@@ -460,10 +460,11 @@ BIOMOD_EnsembleModeling <- function(bm.mod,
       em.out.algo <- foreach (algo = em.algo) %do%
       {
         ListOut <- list(model = NULL,
-                    pred = NULL,
-                    pred.eval = NULL,
-                    evaluation = NULL,
-                    var.import = NULL)
+                        calib.failure = NULL,
+                        pred = NULL,
+                        pred.eval = NULL,
+                        evaluation = NULL,
+                        var.import = NULL)
         
         algo.1 <- algo.2 <- algo.3 <- NULL
         models.kept.tmp = models.kept
@@ -599,7 +600,10 @@ BIOMOD_EnsembleModeling <- function(bm.mod,
                                , seedval = seed.val))
         
         if (inherits(pred.bm, "try-error")) {
-          EM@em.failed <- c(EM@em.failed, model_name)
+          # keep the name of uncompleted modelisations
+          cat("\n   ! Note : ", model_name, "failed!\n")
+          ListOut$calib.failure = model_name
+          return(ListOut) ## end of function.
         } else {
           ListOut$model <- model_name
           ListOut$pred <- pred.bm
@@ -690,12 +694,8 @@ BIOMOD_EnsembleModeling <- function(bm.mod,
           assign(model_name, model.bm)
           save(list = model_name, file = file.path(bm.mod@dir.name, bm.mod@sp.name, "models",
                                                    bm.mod@modeling.id, model_name))
-          # Add to sumary objects ------------------------------------------------
-          EM@em.computed <- c(EM@em.computed, model_name)
-          EM@em.models <- c(EM@em.models, model.bm)
-          
+          return(ListOut)
         }
-        return(ListOut)
       }
       names(em.out.algo) <- em.algo
       return(em.out.algo)
@@ -707,9 +707,10 @@ BIOMOD_EnsembleModeling <- function(bm.mod,
   
   
   ### check at least one model was computed -----------------------------------
+  EM@em.computed <- .transform_outputs_list("em", em.out, out = "model")
+  EM@em.failed <- .transform_outputs_list("em", em.out, out = "calib.failure")
   
-  if(length(EM@em.computed) == 0){
-    EM@em.computed <- "none"
+  if(length(EM@em.computed) == 1 && EM@em.computed == "none"){
     cat("\n! All models failed")
     return(EM)
   }
@@ -732,12 +733,11 @@ BIOMOD_EnsembleModeling <- function(bm.mod,
                                  , inMemory = TRUE, nameFolder = name.BIOMOD_DATA)
   }
   
-  
   #### fix models names ---------------------------------------------------------
-  names(EM@em.models) <- EM@em.computed
-  model.name <- paste0(EM@sp.name, '.', EM@modeling.id, '.ensemble.models.out')
-  assign(x = model.name, value = EM)
-  save(list = model.name, file = file.path(EM@dir.name, EM@sp.name, model.name))
+  name.OUT <- paste0(EM@sp.name, '.', EM@modeling.id, '.ensemble.models.out')
+  EM@link <- file.path(EM@dir.name, EM@sp.name, name.OUT)
+  assign(x = name.OUT, value = EM)
+  save(list = name.OUT, file = EM@link)
   
   .bm_cat("Done")
   return(EM)

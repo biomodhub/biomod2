@@ -328,13 +328,11 @@ get_var_range <- function(data)
 {
   ## 0. CHECK object type ---------------------------------------------------------------
   .fun_testIfIn(TRUE, "obj.type", obj.type, c("mod", "em"))
+  .fun_testIfIn(TRUE, "out", out, c("model", "calib.failure", "pred", "pred.eval", "evaluation", "var.import"))
+  
   if (obj.type == "mod") {
-    # .fun_testIfInherits(TRUE, "obj.out", obj.out, "BIOMOD.models.out")
-    .fun_testIfIn(TRUE, "out", out, c("calib.failure", "model", "pred", "pred.eval", "evaluation", "var.import"))
     dim_names <- c("data.set", "run.eval", "algo")
   } else if (obj.type == "em") {
-    # .fun_testIfInherits(TRUE, "obj.out", obj.out, "BIOMOD.ensemble.models.out")
-    .fun_testIfIn(TRUE, "out", out, c("model", "pred", "pred.eval", "evaluation", "var.import"))
     dim_names <- c("merged.by", "filtered.by", "algo")
   }
   
@@ -368,7 +366,7 @@ get_var_range <- function(data)
         return(res[, c("full.name", dim_names, col_names)])
       }
     }
-  if (out %in% c("calib.failure", "model")) {
+  if (out %in% c("model", "calib.failure")) {
     if (is.null(output)) { output <- 'none' } else { output <- as.character(output[[out]]) }
   }
   return(output)
