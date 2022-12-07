@@ -419,7 +419,7 @@ setMethod('plot', signature(x = 'BIOMOD.formated.data', y = "missing"),
 ##' @export
 ##' 
 
-setMethod('show', signature('BIOMOD.formated.data'),
+setMethod('show', signature(x = 'BIOMOD.formated.data'),
           function(object)
           {
             .bm_cat("BIOMOD.formated.data")
@@ -451,6 +451,19 @@ setMethod('show', signature('BIOMOD.formated.data'),
                   fill = .Options$width)
               cat("\n\n", fill = .Options$width)
               print(summary(object@eval.data.env.var))
+            }
+            
+            if(inherits(object, "biomod.formated.data.PA")){
+              cat(
+                "\n\n",
+                ncol(object@PA.table),
+                'Pseudo Absences dataset available (',
+                colnames(object@PA.table),
+                ") with ",
+                sum(object@PA.table[, 1], na.rm = TRUE) - sum(object@data.species, na.rm = TRUE),
+                'absences in each (true abs + pseudo abs)',
+                fill = .Options$width
+              )
             }
             .bm_cat()
           }
@@ -925,67 +938,6 @@ setMethod('plot', signature(x = 'BIOMOD.formated.data.PA', y = "missing"),
             }
           }
 )
-
-### show.BIOMOD.formated.data.PA -----------------------------------------------
-##' 
-##' @rdname BIOMOD.formated.data.PA
-##' @importMethodsFrom methods show
-##' @export
-##' 
-
-setMethod('show', signature('BIOMOD.formated.data.PA'),
-          function(object)
-          {
-            .bm_cat("BIOMOD.formated.data.PA")
-            cat("\ndir.name = ", object@dir.name, fill = .Options$width)
-            cat("\nsp.name = ", object@sp.name, fill = .Options$width)
-            cat(
-              "\n\t",
-              sum(object@data.species, na.rm = TRUE),
-              'presences, ',
-              sum(object@data.species == 0, na.rm = TRUE),
-              'true absences and ',
-              sum(is.na(object@data.species), na.rm = TRUE),
-              'undefined points in dataset',
-              fill = .Options$width
-            )
-            cat("\n\n\t",
-                ncol(object@data.env.var),
-                'explanatory variables\n',
-                fill = .Options$width)
-            print(summary(object@data.env.var))
-            
-            if (object@has.data.eval) {
-              cat("\n\nEvaluation data :", fill = .Options$width)
-              cat(
-                "\n\t",
-                sum(object@eval.data.species, na.rm = TRUE),
-                'presences, ',
-                sum(object@eval.data.species == 0, na.rm = TRUE),
-                'true absences and ',
-                sum(is.na(object@eval.data.species), na.rm = TRUE),
-                'undefined points in dataset',
-                fill = .Options$width
-              )
-              cat("\n\n", fill = .Options$width)
-              print(summary(object@eval.data.env.var))
-            }
-            
-            cat(
-              "\n\n",
-              ncol(object@PA.table),
-              'Pseudo Absences dataset available (',
-              colnames(object@PA.table),
-              ") with ",
-              sum(object@PA.table[, 1], na.rm = TRUE) - sum(object@data.species, na.rm = TRUE),
-              'absences in each (true abs + pseudo abs)',
-              fill = .Options$width
-            )
-            .bm_cat()
-          }
-)
-
-
 
 ## --------------------------------------------------------------------------- #
 ## 3. BIOMOD.models.options --------------------------------------------------
