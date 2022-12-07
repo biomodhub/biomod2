@@ -419,7 +419,7 @@ setMethod('plot', signature(x = 'BIOMOD.formated.data', y = "missing"),
 ##' @export
 ##' 
 
-setMethod('show', signature(x = 'BIOMOD.formated.data'),
+setMethod('show', signature('BIOMOD.formated.data'),
           function(object)
           {
             .bm_cat("BIOMOD.formated.data")
