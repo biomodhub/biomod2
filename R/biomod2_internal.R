@@ -328,7 +328,7 @@ get_var_range <- function(data)
 {
   ## 0. CHECK object type ---------------------------------------------------------------
   .fun_testIfIn(TRUE, "obj.type", obj.type, c("mod", "em"))
-  .fun_testIfIn(TRUE, "out", out, c("model", "calib.failure", "pred", "pred.eval", "evaluation", "var.import"))
+  .fun_testIfIn(TRUE, "out", out, c("model", "calib.failure", "models.kept", "pred", "pred.eval", "evaluation", "var.import"))
   
   if (obj.type == "mod") {
     dim_names <- c("data.set", "run.eval", "algo")
@@ -351,7 +351,7 @@ get_var_range <- function(data)
       res <- obj.out[[i.dim1]][[i.dim2]][[i.dim3]][[out]]
       if (!is.null(res)) {
         res <- as.data.frame(res)
-        if (out %in% c("pred", "pred.eval", "calib.failure", "model")) {
+        if (out %in% c("model", "calib.failure", "models.kept", "pred", "pred.eval")) {
           colnames(res) <- out
           res[["Points"]] <- 1:nrow(res)
           res <- res[, c("Points", out)]
@@ -373,8 +373,8 @@ get_var_range <- function(data)
       }
     }
 
-  if (out %in% c("model", "calib.failure")) {
-    if (is.null(output)) { output <- 'none' } else { output <- as.character(output[[out]]) }
+  if (out %in% c("model", "calib.failure", "models.kept")) {
+    if (is.null(output)) { output <- 'none' } else { output <- unique(as.character(output[[out]])) }
   }
   return(output)
 }

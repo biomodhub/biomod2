@@ -461,6 +461,7 @@ BIOMOD_EnsembleModeling <- function(bm.mod,
       {
         ListOut <- list(model = NULL,
                         calib.failure = NULL,
+                        models.kept = models.kept,
                         pred = NULL,
                         pred.eval = NULL,
                         evaluation = NULL,
@@ -709,6 +710,7 @@ BIOMOD_EnsembleModeling <- function(bm.mod,
   ### check at least one model was computed -----------------------------------
   EM@em.computed <- .transform_outputs_list("em", em.out, out = "model")
   EM@em.failed <- .transform_outputs_list("em", em.out, out = "calib.failure")
+  EM@em.models_kept <- .transform_outputs_list("em", em.out, out = "models.kept")
   
   if(length(EM@em.computed) == 1 && EM@em.computed == "none"){
     cat("\n! All models failed")
@@ -926,12 +928,9 @@ BIOMOD_EnsembleModeling <- function(bm.mod,
   }
   
   for (thismetric in metric.select)  {
-    out.check.sub <-
-      out.check[which(out.check$metric.select == thismetric),]
-    assemb.1 <- 
-      out.check.sub[which(out.check.sub$models.kept == 1), "assemb"]
-    assemb.0 <- 
-      out.check.sub[which(out.check.sub$models.kept == 0), "assemb"]
+    out.check.sub <- out.check[which(out.check$metric.select == thismetric),]
+    assemb.1 <- out.check.sub[which(out.check.sub$models.kept == 1), "assemb"]
+    assemb.0 <- out.check.sub[which(out.check.sub$models.kept == 0), "assemb"]
     
     if(length(assemb.0) > 0 || length(assemb.1) > 0){
       cat("\n")

@@ -461,7 +461,7 @@ setMethod("get_predictions", "BIOMOD.models.out",
 ##' @export
 ##' 
 
-setMethod("get_built_models", "BIOMOD.models.out", function(obj, ...) { 
+setMethod("get_built_models", "BIOMOD.models.out", function(obj) { 
   return(obj@models.computed)
 })
 
@@ -835,8 +835,8 @@ setMethod("get_predictions", "BIOMOD.projection.out",
 ##'   \code{algo}, \code{all}
 ##' @slot em.computed a \code{vector} containing names of ensemble models
 ##' @slot em.failed a \code{vector} containing names of failed ensemble models
-##' @slot em.models a \code{list} containing ensemble models
-##' @slot em.failed a \code{list} containing ensemble models that failed
+##' @slot em.models_needed a \code{list} containing single models for each ensemble model
+##' @slot em.models_kept a \code{list} containing single models for each ensemble model
 ##' @slot models.evaluation a \code{\link{BIOMOD.stored.data.frame-class}} object
 ##'   containing models evaluation
 ##' @slot variables.importance a \code{\link{BIOMOD.stored.data.frame-class}} object
@@ -955,7 +955,7 @@ setClass("BIOMOD.ensemble.models.out",
                         em.by = 'character',
                         em.computed = 'character',
                         em.failed = 'character',
-                        em.models = 'ANY',
+                        em.models_kept = 'ANY',
                         models.evaluation = 'BIOMOD.stored.data.frame',
                         variables.importance = 'BIOMOD.stored.data.frame',
                         models.prediction = 'BIOMOD.stored.data.frame',
@@ -969,7 +969,7 @@ setClass("BIOMOD.ensemble.models.out",
                    em.by = character(),
                    em.computed = character(),
                    em.failed = character(),
-                   em.models = NULL,
+                   em.models_kept = NULL,
                    models.evaluation = new('BIOMOD.stored.data.frame'),
                    variables.importance = new('BIOMOD.stored.data.frame'),
                    models.prediction = new('BIOMOD.stored.data.frame'),
@@ -1020,7 +1020,7 @@ setMethod("get_formal_data", "BIOMOD.ensemble.models.out",
 ##' @export
 ##' 
 
-setMethod("get_built_models", "BIOMOD.ensemble.models.out", function(obj, ...) { return(obj@em.computed) })
+setMethod("get_built_models", "BIOMOD.ensemble.models.out", function(obj) { return(obj@em.computed) })
 
 
 ## get_needed_models.BIOMOD.ensemble.models.out --------------------------------
@@ -1049,16 +1049,8 @@ setMethod("get_needed_models", "BIOMOD.ensemble.models.out",
 ##' @export
 ##' 
 
-setMethod("get_kept_models", "BIOMOD.ensemble.models.out",
-          function(obj, model, ...) {
-            if (is.character(model) | is.numeric(model)) {
-              return(obj@em.models[[model]]@model)
-            } else {
-              kept_mod <- lapply(obj@em.models, function(x) { return(x@model) })
-              names(kept_mod) <- names(obj@em.models)
-              return(kept_mod)
-            }
-          })
+setMethod("get_kept_models", "BIOMOD.ensemble.models.out", function(obj) { return(obj@em.models_kept) })
+
 
 ## get_predictions.BIOMOD.ensemble.models.out ----------------------------------
 ##' 
