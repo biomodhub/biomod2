@@ -826,7 +826,7 @@ setMethod('predict2', signature(object = 'MAXENT.Phillips_biomod2_model', newdat
               } else { ## keep default data format for saved raster
                 writeRaster(proj, filename = filename, overwrite = overwrite)
               }
-              proj <- rast(filename, RAT = FALSE)
+              proj <- rast(filename)
             }
             proj
           }
@@ -992,7 +992,7 @@ setMethod('predict2', signature(object = 'MAXENT.Phillips.2_biomod2_model', newd
               } else { ## keep default data format for saved raster
                 writeRaster(proj, filename = filename, overwrite = overwrite)
               }
-              proj <- rast(filename, RAT = FALSE)
+              proj <- rast(filename)
             }
             
             return(proj)
