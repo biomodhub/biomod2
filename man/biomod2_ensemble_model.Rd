@@ -61,9 +61,9 @@ Class created by \code{\link{BIOMOD_EnsembleModeling}}
 
 \item{\code{expl_var_range}}{a \code{list} containing ranges of explanatory variables}
 
-\item{\code{model_evaluation}}{a \code{matrix} containing the model evaluations}
+\item{\code{model_evaluation}}{a \code{data.frame} containing the model evaluations}
 
-\item{\code{model_variables_importance}}{a \code{matrix} containing the model variables importance}
+\item{\code{model_variables_importance}}{a \code{data.frame} containing the model variables importance}
 }}
 
 \examples{

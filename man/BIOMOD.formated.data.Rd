@@ -10,6 +10,7 @@
 \alias{BIOMOD.formated.data,numeric,SpatRaster-method}
 \alias{plot,BIOMOD.formated.data,missing-method}
 \alias{show,BIOMOD.formated.data-method}
+\alias{summary,BIOMOD.formated.data-method}
 \title{\code{BIOMOD_FormatingData()} output object class}
 \usage{
 \S4method{BIOMOD.formated.data}{numeric,data.frame}(
@@ -61,9 +62,20 @@
   na.rm = TRUE
 )
 
-\S4method{plot}{BIOMOD.formated.data,missing}(x, coord = NULL, col = NULL)
+\S4method{plot}{BIOMOD.formated.data,missing}(
+  x,
+  calib.lines = NULL,
+  plot.type,
+  plot.output,
+  PA_dataset,
+  repet,
+  plot.eval,
+  do.plot = TRUE
+)
 
 \S4method{show}{BIOMOD.formated.data}(object)
+
+\S4method{summary}{BIOMOD.formated.data}(object, calib.lines = NULL)
 }
 \arguments{
 \item{sp}{A \code{vector}, a \code{\link[terra:vect]{SpatVector}} without associated 
@@ -124,12 +136,12 @@ containing the mask of the studied area}
 
 \item{x}{a \code{\link{BIOMOD.formated.data.PA}} object}
 
+\item{object}{a \code{\link{BIOMOD.formated.data.PA}} object}
+
 \item{coord}{a 2-columns \code{data.frame} containing \code{X} and \code{Y} coordinates for plot}
 
 \item{col}{a \code{vector} containing colors for plot (default : \code{c('green', 'red', 
 'orange', 'grey')})}
-
-\item{object}{a \code{\link{BIOMOD.formated.data.PA}} object}
 }
 \description{
 Class returned by \code{\link{BIOMOD_FormatingData}}, and used by 

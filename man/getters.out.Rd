@@ -43,9 +43,9 @@
   obj,
   evaluation = FALSE,
   full.name = NULL,
-  Model = NULL,
+  data.set = NULL,
   run.eval = NULL,
-  data.set = NULL
+  algo = NULL
 )
 
 \S4method{get_built_models}{BIOMOD.models.out}(obj, ...)
@@ -53,18 +53,18 @@
 \S4method{get_evaluations}{BIOMOD.models.out}(
   obj,
   full.name = NULL,
-  Model = NULL,
-  run.eval = NULL,
   data.set = NULL,
+  run.eval = NULL,
+  algo = NULL,
   Metric.eval = NULL
 )
 
 \S4method{get_variables_importance}{BIOMOD.models.out}(
   obj,
   full.name = NULL,
-  Model = NULL,
-  run.eval = NULL,
   data.set = NULL,
+  run.eval = NULL,
+  algo = NULL,
   Expl.var = NULL
 )
 
@@ -74,11 +74,10 @@
 
 \S4method{get_predictions}{BIOMOD.projection.out}(
   obj,
-  as.data.frame = FALSE,
   full.name = NULL,
-  model = NULL,
+  data.set = NULL,
   run.eval = NULL,
-  data.set = NULL
+  algo = NULL
 )
 
 \S4method{get_formal_data}{BIOMOD.ensemble.models.out}(obj, subinfo = NULL)
@@ -91,16 +90,30 @@
 
 \S4method{get_predictions}{BIOMOD.ensemble.models.out}(
   obj,
-  as.data.frame = FALSE,
   evaluation = FALSE,
-  full.name = NULL
+  full.name = NULL,
+  merged.by = NULL,
+  filtered.by = NULL,
+  algo = NULL
 )
 
 \S4method{get_built_models}{BIOMOD.ensemble.models.out}(obj, ...)
 
-\S4method{get_evaluations}{BIOMOD.ensemble.models.out}(obj, as.data.frame = FALSE, ...)
+\S4method{get_evaluations}{BIOMOD.ensemble.models.out}(
+  obj,
+  full.name = NULL,
+  em.filter = NULL,
+  em.algo = NULL,
+  Metric.eval = NULL
+)
 
-\S4method{get_variables_importance}{BIOMOD.ensemble.models.out}(obj, as.data.frame = FALSE, ...)
+\S4method{get_variables_importance}{BIOMOD.ensemble.models.out}(
+  obj,
+  full.name = NULL,
+  em.filter = NULL,
+  em.algo = NULL,
+  Expl.var = NULL
+)
 }
 \arguments{
 \item{obj}{a \code{\link{BIOMOD.models.out}}, \code{\link{BIOMOD.projection.out}} or 
@@ -124,12 +137,12 @@ among \code{NULL}, \code{expl.var.names}, \code{resp.var}, \code{expl.var}, \cod
 \item{full.name}{a \code{vector} containing model names to be kept, must be either \code{all} 
 or a sub-selection of model names}
 
+\item{selected.models}{a \code{vector} containing names of the needed models of a 
+\code{\link{BIOMOD.ensemble.models.out}} object}
+
 \item{model}{a \code{character} corresponding to the model name, must be either \code{GLM}, 
 \code{GBM}, \code{GAM}, \code{CTA}, \code{ANN}, \code{SRE}, \code{FDA}, \code{MARS}, 
 \code{RF}, \code{MAXENT.Phillips}, \code{MAXENT.Phillips.2}}
-
-\item{selected.models}{a \code{vector} containing names of the needed models of a 
-\code{\link{BIOMOD.ensemble.models.out}} object}
 
 \item{\ldots}{(\emph{optional, one or several of the following arguments depending on the selected 
 function)})}

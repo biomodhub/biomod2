@@ -154,10 +154,22 @@ BIOMOD_Modeling"><!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax/
 <span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># S4 method for BIOMOD.formated.data,missing</span></span>
-<span><span class="fu"><a href="https://rdrr.io/pkg/terra/man/plot.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">x</span>, coord <span class="op">=</span> <span class="cn">NULL</span>, col <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/pkg/terra/man/plot.html" class="external-link">plot</a></span><span class="op">(</span></span>
+<span>  <span class="va">x</span>,</span>
+<span>  calib.lines <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  <span class="va">plot.type</span>,</span>
+<span>  <span class="va">plot.output</span>,</span>
+<span>  <span class="va">PA_dataset</span>,</span>
+<span>  <span class="va">repet</span>,</span>
+<span>  <span class="va">plot.eval</span>,</span>
+<span>  do.plot <span class="op">=</span> <span class="cn">TRUE</span></span>
+<span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># S4 method for BIOMOD.formated.data</span></span>
-<span><span class="fu">show</span><span class="op">(</span><span class="va">object</span><span class="op">)</span></span></code></pre></div>
+<span><span class="fu">show</span><span class="op">(</span><span class="va">object</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># S4 method for BIOMOD.formated.data</span></span>
+<span><span class="fu"><a href="https://rdrr.io/pkg/terra/man/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">object</span>, calib.lines <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
@@ -242,6 +254,10 @@ containing the mask of the studied area</p></dd>
 <dd><p>a <code><a href="BIOMOD.formated.data.PA.html">BIOMOD.formated.data.PA</a></code> object</p></dd>
 
 
+<dt>object</dt>
+<dd><p>a <code><a href="BIOMOD.formated.data.PA.html">BIOMOD.formated.data.PA</a></code> object</p></dd>
+
+
 <dt>coord</dt>
 <dd><p>a 2-columns <code>data.frame</code> containing <code>X</code> and <code>Y</code> coordinates for plot</p></dd>
 
@@ -249,10 +265,6 @@ containing the mask of the studied area</p></dd>
 <dt>col</dt>
 <dd><p>a <code>vector</code> containing colors for plot (default : <code>c('green', 'red', 
 'orange', 'grey')</code>)</p></dd>
-
-
-<dt>object</dt>
-<dd><p>a <code><a href="BIOMOD.formated.data.PA.html">BIOMOD.formated.data.PA</a></code> object</p></dd>
 
 </dl></div>
     <div id="slots">

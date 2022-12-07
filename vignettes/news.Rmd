@@ -22,6 +22,7 @@ vignette: >
 
 * '.tif' is available as an output format for raster projection
 * '.tif' is the new default output format for raster projection
+* Improved `plot` and `summary` methods for `BIOMOD_FormatingData` output. These method now support the use of `calib.lines` to explore how the cross-validation dataset are structured.
 
 ##### Minor Changes
 

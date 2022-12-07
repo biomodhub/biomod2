@@ -117,9 +117,9 @@ and formated data, models used or not, predictions, evaluations, variables impor
 <span>  <span class="va">obj</span>,</span>
 <span>  evaluation <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  full.name <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  Model <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  data.set <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  run.eval <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  data.set <span class="op">=</span> <span class="cn">NULL</span></span>
+<span>  algo <span class="op">=</span> <span class="cn">NULL</span></span>
 <span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># S4 method for BIOMOD.models.out</span></span>
@@ -129,9 +129,9 @@ and formated data, models used or not, predictions, evaluations, variables impor
 <span><span class="fu">get_evaluations</span><span class="op">(</span></span>
 <span>  <span class="va">obj</span>,</span>
 <span>  full.name <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  Model <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  run.eval <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  data.set <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  run.eval <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  algo <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  Metric.eval <span class="op">=</span> <span class="cn">NULL</span></span>
 <span><span class="op">)</span></span>
 <span></span>
@@ -139,9 +139,9 @@ and formated data, models used or not, predictions, evaluations, variables impor
 <span><span class="fu">get_variables_importance</span><span class="op">(</span></span>
 <span>  <span class="va">obj</span>,</span>
 <span>  full.name <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  Model <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  run.eval <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  data.set <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  run.eval <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  algo <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  Expl.var <span class="op">=</span> <span class="cn">NULL</span></span>
 <span><span class="op">)</span></span>
 <span></span>
@@ -154,11 +154,10 @@ and formated data, models used or not, predictions, evaluations, variables impor
 <span><span class="co"># S4 method for BIOMOD.projection.out</span></span>
 <span><span class="fu">get_predictions</span><span class="op">(</span></span>
 <span>  <span class="va">obj</span>,</span>
-<span>  as.data.frame <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  full.name <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  model <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  data.set <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  run.eval <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  data.set <span class="op">=</span> <span class="cn">NULL</span></span>
+<span>  algo <span class="op">=</span> <span class="cn">NULL</span></span>
 <span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># S4 method for BIOMOD.ensemble.models.out</span></span>
@@ -176,19 +175,33 @@ and formated data, models used or not, predictions, evaluations, variables impor
 <span><span class="co"># S4 method for BIOMOD.ensemble.models.out</span></span>
 <span><span class="fu">get_predictions</span><span class="op">(</span></span>
 <span>  <span class="va">obj</span>,</span>
-<span>  as.data.frame <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  evaluation <span class="op">=</span> <span class="cn">FALSE</span>,</span>
-<span>  full.name <span class="op">=</span> <span class="cn">NULL</span></span>
+<span>  full.name <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  merged.by <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  filtered.by <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  algo <span class="op">=</span> <span class="cn">NULL</span></span>
 <span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># S4 method for BIOMOD.ensemble.models.out</span></span>
 <span><span class="fu">get_built_models</span><span class="op">(</span><span class="va">obj</span>, <span class="va">...</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># S4 method for BIOMOD.ensemble.models.out</span></span>
-<span><span class="fu">get_evaluations</span><span class="op">(</span><span class="va">obj</span>, as.data.frame <span class="op">=</span> <span class="cn">FALSE</span>, <span class="va">...</span><span class="op">)</span></span>
+<span><span class="fu">get_evaluations</span><span class="op">(</span></span>
+<span>  <span class="va">obj</span>,</span>
+<span>  full.name <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  em.filter <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  em.algo <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  Metric.eval <span class="op">=</span> <span class="cn">NULL</span></span>
+<span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># S4 method for BIOMOD.ensemble.models.out</span></span>
-<span><span class="fu">get_variables_importance</span><span class="op">(</span><span class="va">obj</span>, as.data.frame <span class="op">=</span> <span class="cn">FALSE</span>, <span class="va">...</span><span class="op">)</span></span></code></pre></div>
+<span><span class="fu">get_variables_importance</span><span class="op">(</span></span>
+<span>  <span class="va">obj</span>,</span>
+<span>  full.name <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  em.filter <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  em.algo <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  Expl.var <span class="op">=</span> <span class="cn">NULL</span></span>
+<span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
@@ -228,15 +241,15 @@ among <code>NULL</code>, <code>expl.var.names</code>, <code>resp.var</code>, <co
 or a sub-selection of model names</p></dd>
 
 
+<dt>selected.models</dt>
+<dd><p>a <code>vector</code> containing names of the needed models of a 
+<code><a href="BIOMOD.ensemble.models.out.html">BIOMOD.ensemble.models.out</a></code> object</p></dd>
+
+
 <dt>model</dt>
 <dd><p>a <code>character</code> corresponding to the model name, must be either <code>GLM</code>, 
 <code>GBM</code>, <code>GAM</code>, <code>CTA</code>, <code>ANN</code>, <code>SRE</code>, <code>FDA</code>, <code>MARS</code>, 
 <code>RF</code>, <code>MAXENT.Phillips</code>, <code>MAXENT.Phillips.2</code></p></dd>
-
-
-<dt>selected.models</dt>
-<dd><p>a <code>vector</code> containing names of the needed models of a 
-<code><a href="BIOMOD.ensemble.models.out.html">BIOMOD.ensemble.models.out</a></code> object</p></dd>
 
 
 <dt>...</dt>

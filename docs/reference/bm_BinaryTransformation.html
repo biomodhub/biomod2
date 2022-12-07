@@ -111,9 +111,6 @@ according to a predefined threshold (see Details).</p>
 <span><span class="co"># S4 method for numeric</span></span>
 <span><span class="fu">bm_BinaryTransformation</span><span class="op">(</span><span class="va">data</span>, <span class="va">threshold</span>, do.filtering <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
 <span></span>
-<span><span class="co"># S4 method for array</span></span>
-<span><span class="fu">bm_BinaryTransformation</span><span class="op">(</span><span class="va">data</span>, <span class="va">threshold</span>, do.filtering <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
-<span></span>
 <span><span class="co"># S4 method for SpatRaster</span></span>
 <span><span class="fu">bm_BinaryTransformation</span><span class="op">(</span><span class="va">data</span>, <span class="va">threshold</span>, do.filtering <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div>
     </div>
@@ -121,12 +118,13 @@ according to a predefined threshold (see Details).</p>
     <div id="arguments">
     <h2>Arguments</h2>
     <dl><dt>data</dt>
-<dd><p>a <code>vector</code>, a <code>matrix</code>, <code>data.frame</code>, <code>array</code>,
-or a <code><a href="https://rdrr.io/pkg/terra/man/rast.html" class="external-link">SpatRaster</a></code> containing the data to be converted</p></dd>
+<dd><p>a <code>vector</code>, a <code>matrix</code>, <code>data.frame</code>, or a 
+<code><a href="https://rdrr.io/pkg/terra/man/rast.html" class="external-link">SpatRaster</a></code> containing the data to be converted</p></dd>
 
 
 <dt>threshold</dt>
-<dd><p>a <code>numeric</code> corresponding to the threshold used to convert the given data</p></dd>
+<dd><p>a <code>numeric</code> or a <code>vector</code> of <code>numeric</code> corresponding to 
+the threshold used to convert the given data</p></dd>
 
 
 <dt>do.filtering</dt>

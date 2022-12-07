@@ -304,7 +304,7 @@ setMethod('BIOMOD.formated.data', signature(sp = 'numeric', env = 'SpatRaster'),
           function(sp, env, xy = NULL, dir.name = '.', sp.name = NULL
                    , eval.sp = NULL, eval.env = NULL, eval.xy = NULL
                    , na.rm = TRUE) {
-
+            
             ## Keep same env variable for eval than calib (+ check for factor)
             if (!is.null(eval.sp) && is.null(eval.env)) {
               eval.env <- as.data.frame(extract(env, eval.xy, ID = FALSE))
@@ -333,84 +333,474 @@ setMethod('BIOMOD.formated.data', signature(sp = 'numeric', env = 'SpatRaster'),
 ##' @rdname BIOMOD.formated.data
 ##' @export
 ##' @importFrom terra rast minmax nlyr crds
+##' @importFrom ggplot2 ggplot aes scale_color_manual scale_shape_manual scale_fill_manual guides xlim ylim ggtitle facet_wrap theme guide_legend after_stat
 ##' 
 
 setMethod('plot', signature(x = 'BIOMOD.formated.data', y = "missing"),
-          function(x, coord = NULL, col = NULL)
-          {
+          function(x,
+                   calib.lines = NULL,
+                   plot.type,
+                   plot.output, 
+                   PA_dataset,
+                   repet,
+                   plot.eval,
+                   do.plot = TRUE){
+            args <- .plot.BIOMOD.formated.data.check.args(x = x,
+                                                          calib.lines = calib.lines,
+                                                          plot.type = plot.type,
+                                                          plot.output = plot.output, 
+                                                          PA_dataset = PA_dataset,
+                                                          repet = repet,
+                                                          plot.eval = plot.eval,
+                                                          do.plot = do.plot)
             
-            if (nlyr(x@data.mask) > 0)
-            {
-              if(!requireNamespace('rasterVis', quietly = TRUE)) stop("Package 'rasterVis' not found")
-              ## check if there is some undefined areas to prevent from strange plotting issues
-              if (minmax(x@data.mask)["min", 1] == -1) { 
-                # there is undefined area
-                my.at <- seq(-1.5, 1.5, by = 1) ## breaks of color key
-                my.labs.at <- seq(-1, 1, by = 1) ## labels placed vertically
-                my.lab <- c("undefined", "absences", "presences") ## labels
-                my.col.regions = c("lightgrey", "red4", "green4") ## colors
-                my.cuts <- 2 ## cuts
-              } else { 
-                # no undefined area.. remove it from plot
-                my.at <- seq(-0.5, 1.5, by = 1) ## breaks of color key
-                my.labs.at <- seq(0, 1, by = 1) ## labels placed vertically
-                my.lab <- c("absences", "presences") ## labels
-                my.col.regions = c("red4", "green4") ## colors
-                my.cuts <- 1 ## cuts
-              }
+            for (argi in names(args)) { 
+              assign(x = argi, value = args[[argi]]) 
+            }
+            rm(args)
+            
+            
+            # 1 - extract SpatVector for all required data ----------------------
+            
+            ## 1.1 - Full Dataset -----------------------------------------------
+            filter_PA <- !is.na(x@data.species)
+            full.resp <- x@data.species[filter_PA]
+            full.resp <- ifelse(full.resp == 1,10,20)
+            full.xy <- x@coord[filter_PA,]
+            full.df <- data.frame(resp = full.resp,
+                                  x = full.xy[,1],
+                                  y = full.xy[,2])
+            
+            full.df.vect <- vect(full.df, geom = c("x","y"))
+            names(full.df.vect) <- "resp"
+            full.df.vect$dataset <- "Initial dataset"
+            
+            ## 1.2 - Eval Dataset -----------------------------------------------
+            
+            if(plot.eval){
+              eval.resp <- x@eval.data.species
+              eval.resp <- ifelse(eval.resp == 1,12,22)
+              eval.xy <- x@eval.coord
+              eval.df <- data.frame(resp = eval.resp,
+                                    x = eval.xy[,1],
+                                    y = eval.xy[,2])
               
-              ## PLOT
-              rasterVis::levelplot(
-                x@data.mask,
-                at = my.at,
-                cuts = my.cuts,
-                margin = TRUE,
-                col.regions = my.col.regions,
-                main = paste(x@sp.name, "datasets"),
-                colorkey = list(labels = list(labels = my.lab, at = my.labs.at))
-              )
-              
-            } else  {
-              # coordinates checking
-              if (is.null(coord)) {
-                if (sum(is.na(x@coord)) == dim(x@coord)[1] * dim(x@coord)[2]) {
-                  stop("coordinates are required to plot your data")
-                } else {
-                  coord <- x@coord
+              eval.df.vect <- vect(eval.df, geom = c("x","y"))
+              names(eval.df.vect) <- "resp"
+              eval.df.vect$dataset <- "Evaluation dataset"
+              full.df.vect <- rbind(full.df.vect, eval.df.vect)
+            }
+            
+            ## 1.3 - Pseudo Absences and CV dataset -----------------------------
+            if(!is.null(calib.lines) | inherits(x, "BIOMOD.formated.data.PA")){
+              PA_repet.vect <-
+                foreach(this_PA = PA_dataset, .combine = 'rbind') %:%
+                foreach(this_repet = repet, .combine = 'rbind') %do% { # to change if format is updated
+                  
+                  if( is.na(this_PA) ){ # repet only
+                    this_name <- this_repet
+                    this_calib <-
+                      calib.lines[ , this_repet]
+                    this_valid <- 
+                      ! calib.lines[ , this_repet]
+                  } else if (is.na(this_repet)){ # PA only
+                    this_name <- this_PA
+                    this_calib <-
+                      x@PA.table[ , this_PA]
+                  } else { # PA+repet
+                    this_name <- paste0(this_PA,"_",this_repet)
+                    this_calib <-
+                      calib.lines[ , this_repet] &
+                      x@PA.table[ , this_PA]
+                    this_valid <- 
+                      ! calib.lines[ , this_repet] &
+                      x@PA.table[ , this_PA]
+                  }
+                  
+                  calib.resp <- x@data.species[this_calib]
+                  calib.resp <- ifelse(is.na(calib.resp), 30, 
+                                       ifelse(calib.resp == 1, 10, 20))
+                  calib.xy <- x@coord[this_calib,]
+                  calib.df <- data.frame(resp = calib.resp,
+                                         x = calib.xy[, 1],
+                                         y = calib.xy[, 2])
+                  
+                  if (!is.na(this_repet)) { 
+                    valid.resp <- x@data.species[this_valid]
+                    valid.resp <- ifelse(is.na(valid.resp), 31, 
+                                         ifelse(valid.resp == 1, 11, 21))
+                    valid.xy <- x@coord[this_valid,]
+                    valid.df <- data.frame(resp = valid.resp,
+                                           x = valid.xy[, 1],
+                                           y = valid.xy[, 2])
+                    calib.df <- rbind(calib.df, valid.df)
+                  }
+                  
+                  thisdf.vect <- vect(calib.df, geom = c("x","y"))
+                  names(thisdf.vect) <- "resp"
+                  thisdf.vect$dataset <- this_name
+                  thisdf.vect
                 }
+              full.df.vect <- rbind(full.df.vect, PA_repet.vect)
+            }
+            
+            
+            # 2- define colors and breaks ------------------------------------
+            data_breaks <- c(9,10, 11, 12, # presence
+                             19,20, 21, 22, # absence
+                             29,30, 31,         # pseudo-absences
+                             1)              # background
+            data_labels <- c("9" = "**Presences**",
+                             "10" = "Presences (calibration)",
+                             "11" = "Presences (validation)",
+                             "12" = "Presences (evaluation)",
+                             "19" = "**True Absences**",
+                             "20" = "True Absences (calibration)",
+                             "21" = "True Absences (validation)",
+                             "22" = "True Absences (evaluation)",
+                             "29" = "**Pseudo-Absences**",
+                             "30" = "Pseudo-Absences (calibration)",
+                             "31" = "Pseudo-Absences (validation)",
+                             "1" = "Background")
+            data_labels_facet <- c("9" = "**Presences**",
+                                   "10" = "calibration",
+                                   "11" = "validation",
+                                   "12" = "evaluation",
+                                   "19" = "**True Absences**",
+                                   "20" = "calibration",
+                                   "21" = "validation",
+                                   "22" = "evaluation",
+                                   "29" = "**Pseudo-Absences**",
+                                   "30" = "calibration",
+                                   "31" = "validation",
+                                   "1" = NA) # background
+            
+            data_colors <- c("9" = NA,
+                             "10" = "#004488",
+                             "11" = "#6699CC",
+                             "12" = "#6699CC",
+                             "19" = NA,
+                             "20" = "#994455",
+                             "21" = "#EE99AA",
+                             "22" = "#EE99AA",
+                             "29" = NA,
+                             "30" = "#997700",
+                             "31" = "#EECC66",
+                             "1" = "grey70")
+            
+            shape_fit <- 16
+            shape_eval <- 17
+            data_shape <- c("9" = NA,
+                            "10" = shape_fit,
+                            "11" = shape_fit,
+                            "12" = shape_eval,
+                            "19" = NA,
+                            "20" = shape_fit,
+                            "21" = shape_fit,
+                            "22" = shape_eval,
+                            "29" = NA,
+                            "30" = shape_fit,
+                            "31" = shape_fit,
+                            "1" = NA)
+            data_alpha <- c("9" = 0,
+                            "10" = 1,
+                            "11" = 1,
+                            "12" = 1,
+                            "19" = 0,
+                            "20" = 1,
+                            "21" = 1,
+                            "22" = 1,
+                            "29" = 0,
+                            "30" = 1,
+                            "31" = 1,
+                            "1"  = 0)
+            data_background <- "#FFFFFF00"
+            
+            
+            # 3 - prepare plots -------------------------------------------------------
+            
+            if(has.mask){
+              this_mask <- classify(x@data.mask[[1]], matrix(c(-Inf,Inf,1), ncol = 3))
+            }
+            
+            
+            ## 3.1 Raster plot --------------------------------------------------------
+            
+            if(plot.type == "raster"){
+              rast.plot <- foreach(this_dataset = unique(full.df.vect$dataset), .combine = 'c') %do% {
+                this_rast  <-
+                  rasterize(subset(full.df.vect,
+                                   full.df.vect$dataset == this_dataset), 
+                            this_mask, field = "resp", background = 1)
+                names(this_rast) <- this_dataset
+                this_rast*this_mask
               }
               
-              # colors checking
-              if (is.null(col) | length(col) < 3) { col = c('green', 'red', 'grey') }
+              if(plot.output == "facet"){
+                g <- ggplot()+
+                  tidyterra::geom_spatraster(data = rast.plot,
+                                             aes(fill = factor(after_stat(value), data_breaks)))+
+                  facet_wrap(~lyr)+
+                  scale_fill_manual(
+                    NULL,
+                    breaks = data_breaks,
+                    values = data_colors,
+                    labels = data_labels_facet,
+                    na.value = data_background, 
+                    drop = FALSE)+
+                  guides(fill = guide_legend(
+                    override.aes = list(alpha = data_alpha),
+                    ncol = 3))+
+                  theme(legend.position = "top",
+                        legend.key = element_blank(),
+                        legend.background = element_rect(fill = "grey90"),
+                        legend.text = ggtext::element_markdown())
+                
+              } else {
+                g <- lapply(names(rast.plot), function(thisname){
+                  ggplot()+
+                    tidyterra::geom_spatraster(data = rast.plot[[thisname]],
+                                               aes(fill = factor(after_stat(value))))+
+                    scale_fill_manual(
+                      NULL,
+                      breaks = data_breaks,
+                      values = data_colors,
+                      labels = data_labels,
+                      na.value = data_background)+
+                    ggtitle(thisname)+
+                    guides(color = guide_legend(nrow = 2))+
+                    theme(legend.position = "top",
+                          legend.key = element_blank(),
+                          legend.background = element_rect(fill = "grey90"))
+                })
+              }
+              if(do.plot){
+                print(g)
+              }
+              return(list("data.vect"  = full.df.vect,
+                          "data.rast"  = rast.plot,
+                          "data.label" = data_labels,
+                          "data.plot"  = g))
+            } else {
+              ## 3.2 Points plot --------------------------------------------------------
               
-              ## PLOT
-              ## all points (~ mask)
-              plot(
-                x = x@coord[, 1],
-                y = x@coord[, 2],
-                col = col[3],
-                xlab = 'X',
-                ylab = 'Y',
-                main = x@sp.name,
-                pch = 20
-              )
-              ## presences
-              points(
-                x = x@coord[which(x@data.species == 1), 1],
-                y = x@coord[which(x@data.species == 1), 2],
-                col = col[1],
-                pch = 18
-              )
-              ## true absences
-              points(
-                x = x@coord[which(x@data.species == 0), 1],
-                y = x@coord[which(x@data.species == 0), 2],
-                col = col[2],
-                pch = 18
-              )
+              data.df <- as.data.frame(full.df.vect, geom = "XY")
+              if(plot.output == "facet"){
+                base_g <-  ggplot(data.df)
+                if(has.mask){
+                  base_g <- base_g +
+                    tidyterra::geom_spatraster(data = this_mask, aes(fill = factor(after_stat(value))))
+                }
+                
+                
+                g <- base_g +      
+                  geom_point(aes(x = x, y = y, 
+                                 color = factor(resp, levels = data_breaks[-12]),
+                                 shape = factor(resp, levels = data_breaks[-12])), 
+                             alpha = 1, size = 1.5)+
+                  facet_wrap(~dataset)+
+                  scale_color_manual(
+                    NULL,
+                    breaks = data_breaks,
+                    values = data_colors,
+                    labels = data_labels_facet,
+                    drop = FALSE)+
+                  scale_shape_manual(
+                    NULL,
+                    breaks = data_breaks,
+                    values = data_shape,
+                    labels = data_labels_facet,
+                    drop = FALSE)+
+                  scale_fill_manual(
+                    guide = "none",
+                    breaks = data_breaks,
+                    values = data_colors,
+                    labels = data_labels,
+                    na.value = data_background)+
+                  xlab(NULL)+ ylab(NULL)+
+                  guides(color = guide_legend(override.aes = list(size = 3),
+                                              ncol = 3))+
+                  theme(legend.position = "top",
+                        legend.key = element_blank(),
+                        legend.background = element_rect(fill = "grey90"),
+                        legend.text = ggtext::element_markdown())
+                
+              } else {
+                g <- lapply(unique(data.df$dataset), function(thisname){
+                  base_g <-  ggplot(subset(data.df,
+                                           data.df$dataset == thisname))
+                  if(has.mask){
+                    base_g <- base_g + 
+                      tidyterra::geom_spatraster(data = this_mask,
+                                                 aes(fill = factor(after_stat(value))))
+                  }
+                  base_g +      
+                    geom_point(aes(x = x, y = y, 
+                                   color = as.factor(resp),
+                                   shape = as.factor(resp)),
+                               alpha = 1, size = 1.5)+
+                    facet_wrap(~dataset)+
+                    scale_color_manual(
+                      NULL,
+                      breaks = data_breaks,
+                      values = data_colors,
+                      labels = data_labels)+
+                    scale_shape_manual(
+                      NULL,
+                      breaks = data_breaks,
+                      values = data_shape,
+                      labels = data_labels)+
+                    scale_fill_manual(
+                      guide = "none",
+                      breaks = data_breaks,
+                      values = data_colors,
+                      labels = data_labels,
+                      na.value = data_background)+
+                    xlab(NULL)+ ylab(NULL)+
+                    guides(color = guide_legend(override.aes = list(size = 3),
+                                                nrow = 2))+
+                    theme(legend.position = "top",
+                          legend.key = element_blank(),
+                          legend.background = element_rect(fill = "grey90"))
+                })
+                
+              }
+              if(do.plot){
+                print(g)
+              }
+              return(list("data.vect"  = full.df.vect,
+                          "data.label" = data_labels,
+                          "data.plot"  = g))
             }
           }
 )
+
+
+.plot.BIOMOD.formated.data.check.args <- function(x,
+                                                  calib.lines,
+                                                  plot.type,
+                                                  plot.output, 
+                                                  PA_dataset,
+                                                  repet,
+                                                  plot.eval,
+                                                  do.plot){
+  
+  
+  ## 1 - check x -----------------------------------------
+  .fun_testIfInherits(TRUE, "x", x, c("BIOMOD.formated.data", "BIOMOD.formated.data.PA"))
+  
+  ## 2 - check calib.lines & repet -----------------------------------------
+  
+  if (!is.null(calib.lines)) {
+    .fun_testIfInherits(TRUE, "calib.lines", calib.lines, c("matrix"))
+    
+    expected_CVnames <- paste0("RUN", seq_len(ncol(calib.lines)))
+    
+    if (any(colnames(calib.lines) != c(expected_CVnames))) {
+      stop("column names for `calib.lines` did not match ", deparse(expected_CVnames))  
+    }
+    
+    if (missing(repet)) repet <- 'all'
+    if ( ! ((length(repet) == 1 && repet == "all")
+            || all(repet %in% c(expected_CVnames)))  ) {
+      stop("`repet` must be 'all' or a combination among ", deparse(expected_CVnames))
+    }
+    if (length(repet) == 1 && repet == "all") {
+      repet <- expected_CVnames
+    }
+  } else {
+    repet <- NA
+  } 
+  
+  
+  ## 3 is a proper mask available ? -----------------------
+  has.mask <- !isTRUE((all.equal(x@data.mask, rast())))
+  if (has.mask) {  
+    if (!requireNamespace("tidyterra")) {
+      stop("Package `tidyterra` is missing. Please install it with `install.packages('tidyterra')`.")
+    }
+  } 
+  ## 4 - check plot.type  ----------------------
+  if (missing(plot.type)) {
+    plot.type <- "points"
+  } else {
+    .fun_testIfIn(TRUE, "plot.type", plot.type, c("raster","points"))
+    if ( !has.mask & plot.type == "raster") {
+      cat("\n ! no raster mask available, `plot.type` automatically set to 'points'\n")
+    }
+  }
+  
+  if(plot.type == "facet"){
+    if(!requireNamespace("ggtext")){
+      stop("Package `ggtext` is missing. Please install it with `install.packages('ggtext')`.")
+    }
+  }
+  
+  ## 5 - plot.output----------------------
+  if (missing(plot.output)) {
+    plot.output <- "facet"
+  } else {
+    .fun_testIfIn(TRUE, "plot.output", plot.output, c("facet","list"))
+  }
+  
+  ## 6 - do.plot ----------------------
+  # do.plot
+  stopifnot(is.logical(do.plot))
+  
+  ## 7 - check PA_dataset ----------------------
+  
+  if (inherits(x, "BIOMOD.formated.data.PA")) {
+    
+    if (missing(PA_dataset)) PA_dataset <- 'all'
+    
+    expected_PAnames <- colnames(x@PA.table)
+    
+    if ( ! ((length(PA_dataset) == 1 && PA_dataset == "all")
+            || all(PA_dataset %in% c(expected_PAnames)))  ) {
+      stop("`PA_dataset` must be 'all' or a combination among ", deparse(expected_PAnames))
+    }
+    if (length(PA_dataset) == 1 && PA_dataset == "all") {
+      PA_dataset <- expected_PAnames
+    }
+    
+  } else {
+    PA_dataset <- NA
+  }
+  
+  ## 8 - check plot.eval ----------------------
+  if (missing(plot.eval)) {
+    plot.eval <- x@has.data.eval
+  } else {
+    stopifnot(is.logical(plot.eval))
+    if(plot.eval & !x@has.data.eval){
+      plot.eval <- FALSE
+      cat('\n  ! Evaluation data are missing and its plot was deactivated')
+    }
+  }
+  
+  
+  
+  ##  9 - check that coordinates are available -------------------------------
+  
+  if(nrow(x@coord) == 0){
+    stop("coordinates are required to plot BIOMOD.formated.data objects")
+  }
+  
+  
+  
+  ## End - return arguments ----------------------------------------------------
+  
+  
+  return(list(x = x,
+              calib.lines = calib.lines,
+              plot.type = plot.type,
+              plot.output = plot.output, 
+              PA_dataset = PA_dataset,
+              repet = repet,
+              plot.eval = plot.eval,
+              do.plot = do.plot,
+              has.mask = has.mask))
+}
 
 ### show.BIOMOD.formated.data  --------------------------------------------------
 ##' 
@@ -469,6 +859,122 @@ setMethod('show', signature('BIOMOD.formated.data'),
           }
 )
 
+
+### summary.BIOMOD.formated.data  --------------------------------------------------
+##' 
+##' @rdname BIOMOD.formated.data
+##' @export
+##' 
+
+setMethod('summary', signature(object = 'BIOMOD.formated.data'),
+          function(object,
+                   calib.lines = NULL){
+            args <- .summary.BIOMOD.formated.data.check.args(object = object,
+                                                             calib.lines = calib.lines)
+            for (argi in names(args)) { 
+              assign(x = argi, value = args[[argi]]) 
+            }
+            rm(args)
+            
+            output <- data.frame("dataset" = "initial",
+                                 "subdataset" = "FULL",
+                                 "repet" = NA,
+                                 "PA_dataset" = NA,
+                                 "Presences" = sum(object@data.species, na.rm = TRUE),
+                                 "True_Absences" = sum(object@data.species == 0, na.rm = TRUE),
+                                 "Pseudo_Absences" = 0,
+                                 "Undefined" = sum(is.na(object@data.species), na.rm = TRUE))
+            
+            if (object@has.data.eval) {
+              output <- rbind(output,
+                              data.frame("dataset" = "evaluation",
+                                         "subdataset" = "FULL",
+                                         "repet" = NA,
+                                         "PA_dataset" = NA,
+                                         "Presences" = sum(object@eval.data.species, na.rm = TRUE),
+                                         "True_Absences" = sum(object@eval.data.species == 0, na.rm = TRUE),
+                                         "Pseudo_Absences" = 0,
+                                         "Undefined" = sum(is.na(object@eval.data.species), na.rm = TRUE)))
+            }
+            
+            PA_dataset <- NA
+            repet <- NA
+            if (inherits(object, "BIOMOD.formated.data.PA")) {
+              PA_dataset <- colnames(object@PA.table)
+            }
+            if (!is.null(calib.lines)) {
+              repet <- colnames(calib.lines)
+            }
+            
+            if (!is.null(calib.lines) || inherits(object, "BIOMOD.formated.data.PA")) {
+              output <- rbind(output,
+                              foreach(this_PA = PA_dataset, .combine = 'rbind') %:%
+                                foreach(this_repet = repet, .combine = 'rbind') %do% {
+                                  if ( is.na(this_PA) ) { # repet only
+                                    this_name <- this_repet
+                                    this_calib <-
+                                      calib.lines[ , this_repet]
+                                    this_valid <- 
+                                      ! calib.lines[ , this_repet]
+                                  } else if (is.na(this_repet)) { # PA only
+                                    this_name <- this_PA
+                                    this_calib <-
+                                      object@PA.table[ , this_PA]
+                                  } else { # PA+repet
+                                    this_name <- paste0(this_PA,"_",this_repet)
+                                    this_calib <-
+                                      calib.lines[ , this_repet] &
+                                      object@PA.table[ , this_PA]
+                                    this_valid <- 
+                                      ! calib.lines[ , this_repet] &
+                                      object@PA.table[ , this_PA]
+                                  }
+                                  
+                                  calib.resp <- object@data.species[this_calib]
+                                  tmp <- data.frame("dataset" = "calibration",
+                                                    "subdataset" = this_name,
+                                                    "repet" = this_repet,
+                                                    "PA_dataset" = this_PA,
+                                                    "Presences" = sum(calib.resp, na.rm = TRUE),
+                                                    "True_Absences" = sum(calib.resp == 0, na.rm = TRUE),
+                                                    "Pseudo_Absences" = length(which(is.na(calib.resp))),
+                                                    "Undefined" = NA)
+                                  
+                                  if (!is.na(this_repet)) { 
+                                    valid.resp <- object@data.species[this_valid]
+                                    tmp <- rbind(tmp,
+                                                 data.frame("dataset" = "validation",
+                                                            "subdataset" = this_name,
+                                                            "repet" = this_repet,
+                                                            "PA_dataset" = this_PA,
+                                                            "Presences" = sum(valid.resp, na.rm = TRUE),
+                                                            "True_Absences" = sum(valid.resp == 0, na.rm = TRUE),
+                                                            "Pseudo_Absences" = length(which(is.na(valid.resp))),
+                                                            "Undefined" = NA))
+                                    
+                                  }
+                                  return(tmp) # end foreach
+                                })
+            } 
+            output$Total_Absences <- output$True_Absences + output$Pseudo_Absences
+            output
+          }
+)
+
+.summary.BIOMOD.formated.data.check.args <- function(object,
+                                                     calib.lines){
+  if (!is.null(calib.lines)) {
+    .fun_testIfInherits(TRUE, "calib.lines", calib.lines, c("matrix"))
+    
+    expected_CVnames <- paste0("RUN", seq_len(ncol(calib.lines)))
+    
+    if (any(colnames(calib.lines) != c(expected_CVnames))) {
+      stop("column names for `calib.lines` did not match ", deparse(expected_CVnames))  
+    }
+  }
+  return(list(object = object,
+              calib.lines = calib.lines))
+}
 
 
 ## --------------------------------------------------------------------------- #
@@ -676,7 +1182,7 @@ setMethod('BIOMOD.formated.data.PA', signature(sp = 'numeric', env = 'SpatRaster
   if (inherits(env, 'SpatRaster')) {
     categorical_var <- names(env)[is.factor(env)] 
   }
-
+  
   ## Keep same env variable for eval than calib (+ check for factor)
   if (!is.null(eval.sp) && is.null(eval.env)) {
     if (inherits(env, 'SpatRaster')) {
@@ -750,10 +1256,10 @@ setMethod('BIOMOD.formated.data.PA', signature(sp = 'numeric', env = 'SpatRaster
       xy_abs <- pa.data.tmp$xy[which(pa.data.tmp$sp == 0), , drop = FALSE]
       if (nrow(xy_pres) > 0) { 
         data.mask[cellFromXY(data.mask.tmp, xy_pres)] <- 1
-        }
+      }
       if (nrow(xy_abs) > 0) {
         data.mask[cellFromXY(data.mask.tmp, xy_abs)] <- 0 
-        }
+      }
       names(data.mask) <- "input_data"
       
       ## add eval data
@@ -820,126 +1326,6 @@ setMethod('BIOMOD.formated.data.PA', signature(sp = 'numeric', env = 'SpatRaster
   return(BFDP)
 }
 
-
-# 2.3 other functions ----------------------------------------------------------
-
-### plot.BIOMOD.formated.data.PA -----------------------------------------------
-##' 
-##' @rdname BIOMOD.formated.data.PA
-##' @export
-##' 
-
-setMethod('plot', signature(x = 'BIOMOD.formated.data.PA', y = "missing"),
-          function(x, coord = NULL, col = NULL)
-          {
-            if (nlyr(x@data.mask) > 0)
-            {
-              if(!requireNamespace('rasterVis', quietly = TRUE)) stop("Package 'rasterVis' not found")
-              
-              ## check if there is some undefined areas to prevent from strange plotting issues
-              if (min(global(x@data.mask, min, na.rm = TRUE)) == -1) { # there is undefined area
-                my.at <- seq(-1.5, 1.5, by = 1) ## breaks of color key
-                my.labs.at <- seq(-1, 1, by = 1) ## labels placed vertically
-                my.lab <- c("undefined", "absences", "presences") ## labels
-                my.col.regions = c("lightgrey", "red4", "green4") ## colors
-                my.cuts <- 2 ## cuts
-              } else { # no undefined area.. remove it from plot
-                my.at <- seq(-0.5, 1.5, by = 1) ## breaks of color key
-                my.labs.at <- seq(0, 1, by = 1) ## labels placed vertically
-                my.lab <- c("absences", "presences") ## labels
-                my.col.regions = c("red4", "green4") ## colors
-                my.cuts <- 1 ## cuts
-              }
-              
-              ## PLOT -----------------------------------------------------------------------------
-              rasterVis::levelplot(
-                x@data.mask,
-                at = my.at,
-                cuts = my.cuts,
-                margin = T,
-                col.regions = my.col.regions,
-                main = paste(x@sp.name, "datasets"),
-                colorkey = list(labels = list(labels = my.lab, at = my.labs.at))
-              )
-            } else
-            {
-              # coordinates checking
-              if (is.null(coord)) {
-                if (sum(is.na(x@coord)) == dim(x@coord)[1] * dim(x@coord)[2]) {
-                  stop("coordinates are required to plot your data")
-                } else {
-                  coord <- x@coord
-                }
-              }
-              
-              # colors checking
-              if (is.null(col) | length(col) < 3) { col = c('green', 'red', 'orange', 'grey') }
-              
-              ## PLOT -----------------------------------------------------------------------------
-              par(mfrow = c(.clever_cut(ncol(x@PA.table) + 1)))
-              
-              # all points (~mask)
-              plot(
-                x = x@coord[, 1],
-                y = x@coord[, 2],
-                col = col[4],
-                xlab = 'X',
-                ylab = 'Y',
-                main = paste(x@sp.name, " original data", sep = ""),
-                pch = 20
-              )
-              # presences
-              points(
-                x = x@coord[which(x@data.species == 1), 1],
-                y = x@coord[which(x@data.species == 1), 2],
-                col = col[1],
-                pch = 18
-              )
-              # true absences
-              points(
-                x = x@coord[which(x@data.species == 0), 1],
-                y = x@coord[which(x@data.species == 0), 2],
-                col = col[2],
-                pch = 18
-              )
-              # PA data
-              for (i in 1:ncol(x@PA.table))
-              {
-                # all points (~mask)
-                plot(
-                  x = x@coord[, 1],
-                  y = x@coord[, 2],
-                  col = col[4],
-                  xlab = 'X',
-                  ylab = 'Y',
-                  main = paste0(x@sp.name, " Pseudo Absences ", i),
-                  pch = 20
-                )
-                # presences
-                points(
-                  x = x@coord[(x@data.species == 1) & x@PA.table[, i], 1],
-                  y = x@coord[(x@data.species == 1) & x@PA.table[, i], 2],
-                  col = col[1],
-                  pch = 18
-                )
-                # true absences
-                points(
-                  x = x@coord[(x@data.species == 0) & x@PA.table[, i], 1],
-                  y = x@coord[(x@data.species == 0) & x@PA.table[, i], 2],
-                  col = col[2],
-                  pch = 18
-                )
-                # PA
-                points(
-                  x = x@coord[is.na(x@data.species) & x@PA.table[, i], 1],
-                  y = x@coord[is.na(x@data.species) & x@PA.table[, i], 2],
-                  col = col[3],
-                  pch = 18
-                )
-              }
-            }
-          }
-)
 
 ## --------------------------------------------------------------------------- #
 ## 3. BIOMOD.models.options --------------------------------------------------

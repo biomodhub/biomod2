@@ -6,8 +6,6 @@
 \alias{BIOMOD.formated.data.PA-class}
 \alias{BIOMOD.formated.data.PA,numeric,data.frame-method}
 \alias{BIOMOD.formated.data.PA,numeric,SpatRaster-method}
-\alias{plot,BIOMOD.formated.data.PA,missing-method}
-\alias{show,BIOMOD.formated.data.PA-method}
 \title{\code{BIOMOD_FormatingData()} output object class (with pseudo-absences)}
 \usage{
 \S4method{BIOMOD.formated.data.PA}{numeric,data.frame}(
@@ -47,10 +45,6 @@
   PA.user.table = NULL,
   na.rm = TRUE
 )
-
-\S4method{plot}{BIOMOD.formated.data.PA,missing}(x, coord = NULL, col = NULL)
-
-\S4method{show}{BIOMOD.formated.data.PA}(object)
 }
 \arguments{
 \item{sp}{A \code{vector}, a \code{\link[terra:vect]{SpatVector}} without associated 
@@ -141,12 +135,12 @@ will be used to build the species distribution model(s) for each repetition (see
 A \code{logical} value defining whether points having one or several missing
 values for explanatory variables should be removed from the analysis or not}
 
-\item{x}{a \code{\link{BIOMOD.formated.data.PA}} object}
-
 \item{coord}{a 2-columns \code{data.frame} containing \code{X} and \code{Y} coordinates for plot}
 
 \item{col}{a \code{vector} containing colors for plot (default : \code{c('green', 'red', 
 'orange', 'grey')})}
+
+\item{x}{a \code{\link{BIOMOD.formated.data.PA}} object}
 
 \item{object}{a \code{\link{BIOMOD.formated.data.PA}} object}
 }
