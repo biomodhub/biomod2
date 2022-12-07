@@ -407,7 +407,11 @@ setMethod('predict2', signature(object = 'EMcv_biomod2_model', newdata = "data.f
                 stop(paste0("\n Model EMcv was not computed because only one single model was kept in ensemble modeling ("
                             , colnames(newdata), ")"))
               }
-              out <- apply(newdata, 1, cv, na.rm = TRUE, aszero = TRUE)
+              out <- apply(newdata, 1,
+                           function(x) {
+                             ifelse(length(x) == 1, 0, 
+                                    sd(x, na.rm = TRUE)/mean(x, na.rm = TRUE)*100)
+                           })
               return(out)
             } 
             # redirect to predict2.biomod2_ensemble_model.SpatRaster

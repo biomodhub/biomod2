@@ -817,4 +817,3 @@ setMethod('.BIOMOD_Modeling.prepare.data', signature('BIOMOD.formated.data.PA'),
   }
   return(mat.out)
 }
-

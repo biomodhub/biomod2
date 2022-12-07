@@ -178,6 +178,10 @@ prob.ci, committee.averaging, prob.mean.weight)</li>
 <li>Package <code>sp</code> is back into <code>Imports</code> due to the
 need to use <code><a href="https://rdrr.io/pkg/sp/man/asciigrid.html" class="external-link">sp::read.asciigrid</a></code>
 </li>
+<li>Added control for <code>terra</code> version number (&gt;= 1.6-33)
+as <code>terra</code> 1.6-41 was released on CRAN.</li>
+<li>With <code>do.stack = TRUE</code>, only stacked projection are now
+saved to the disk.</li>
 </ul>
 </div>
 <div class="section level5">
@@ -186,6 +190,8 @@ need to use <code><a href="https://rdrr.io/pkg/sp/man/asciigrid.html" class="ext
 <ul>
 <li>Added <code>initial_heap_size</code> and <code>max_heap_size</code>
 in <code>MAXENT.Phillips</code> modeling options</li>
+<li>Improved projection efficiency for raster with
+<code>MAXENT.Phillips</code>.</li>
 </ul>
 </div>
 <div class="section level5">
@@ -195,13 +201,38 @@ in <code>MAXENT.Phillips</code> modeling options</li>
 <li>Fixed <code>MAXENT.Phillips</code> predict method for large dataset
 (require <code><a href="https://rdrr.io/pkg/sp/man/asciigrid.html" class="external-link">sp::read.asciigrid</a></code>).</li>
 <li>fixed ensemble models using a single PA dataset with em.by = ‘all’
-or ‘algo’</li>
+or ‘algo’.</li>
 <li>models using repetition dataset cannot be merged anymore with models
-using Full dataset in <code>BIOMOD_EnsembleModeling</code>
-</li>
+using Full dataset in <code>BIOMOD_EnsembleModeling</code>.</li>
 <li>Fixed error in <code>BIOMOD_EnsembleForecasting</code> when a single
 evaluation metric was available and binary/filtered transformation were
 asked for.</li>
+<li>Bugfix for plot method for <code>BIOMOD.formated.data.PA</code>
+object.</li>
+<li>Fixed <code>MAXENT.Phillips</code> for Windows.</li>
+<li>Fixed using <code>do.stack = FALSE</code> with
+<code>BIOMOD_Projection</code>.</li>
+<li>Fixed <code>EMcv</code> ensemble modeling for
+<code>data.frame</code> by removing dependency to
+<code><a href="https://rdrr.io/pkg/raster/man/cv.html" class="external-link">raster::cv</a></code>.</li>
+<li>Fixed <code>free</code> method with
+<code>PackedSpatRaster</code>
+</li>
+<li>Fixed <code>BIOMOD_FormatingData</code> in case where no coordinates
+are given</li>
+</ul>
+</div>
+<div class="section level5">
+<h5 id="internal">Internal<a class="anchor" aria-label="anchor" href="#internal"></a>
+</h5>
+<ul>
+<li>Updated github workflow : removed obsolete ubuntu 18.04 ; added test
+on r-devel ; added cache for R packages.</li>
+<li>Updated <code>MAXENT.Phillips</code> <code>predict2</code> method
+for <code>SpatRaster</code> so that it saves environmental data as
+<code>.asc</code> and do not use the <code>data.frame</code>
+method.</li>
+<li>fixed some automatic boolean conversion</li>
 </ul>
 </div>
 </div>

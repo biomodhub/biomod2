@@ -2,6 +2,9 @@
 ## biomod2_internal ------------
 utils::globalVariables(names = c("res"))
 
+## biomod2_classes_4 ------------
+utils::globalVariables(names = c("thislayername"))
+
 ## biomod2_classes_5 ------------
 utils::globalVariables(names = c("cv"))
 

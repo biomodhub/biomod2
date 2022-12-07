@@ -37,7 +37,7 @@ Imports:
     stats,
     utils,
     methods,
-    terra,
+    terra (>= 1.6-33),
     sp,
     reshape,
     reshape2,
@@ -69,7 +69,8 @@ Suggests:
     rasterVis,
     ggpubr,
     testthat,
-    knitr
+    knitr,
+    markdown
 License: GPL-3
 RoxygenNote: 7.2.2
 Encoding: UTF-8

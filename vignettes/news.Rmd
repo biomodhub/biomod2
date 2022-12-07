@@ -41,17 +41,32 @@ prob.median, prob.cv, prob.ci, committee.averaging, prob.mean.weight)
 ##### Major Changes
 
 * Package `sp` is back into `Imports` due to the need to use `sp::read.asciigrid`
+* Added control for `terra` version number (>= 1.6-33) as `terra` 1.6-41 was released on CRAN.
+* With `do.stack = TRUE`, only stacked projection are now saved to the disk.
 
 ##### Minor Changes
 
 * Added `initial_heap_size` and `max_heap_size` in `MAXENT.Phillips` modeling options
+* Improved projection efficiency for raster with `MAXENT.Phillips`.
 
 ##### Bugfix
 
 * Fixed `MAXENT.Phillips` predict method for large dataset (require `sp::read.asciigrid`). 
-* fixed ensemble models using a single PA dataset with em.by = 'all' or 'algo'
-* models using repetition dataset cannot be merged anymore with models using Full dataset in `BIOMOD_EnsembleModeling`
+* fixed ensemble models using a single PA dataset with em.by = 'all' or 'algo'.
+* models using repetition dataset cannot be merged anymore with models using Full dataset in `BIOMOD_EnsembleModeling`.
 * Fixed error in `BIOMOD_EnsembleForecasting` when a single evaluation metric was available and binary/filtered transformation were asked for.
+* Bugfix for plot method for `BIOMOD.formated.data.PA` object.
+* Fixed `MAXENT.Phillips` for Windows.
+* Fixed using `do.stack = FALSE` with `BIOMOD_Projection`.
+* Fixed `EMcv` ensemble modeling for `data.frame` by removing dependency to `raster::cv`.
+* Fixed `free` method with `PackedSpatRaster`
+* Fixed `BIOMOD_FormatingData` in case where no coordinates are given
+
+##### Internal
+
+* Updated github workflow : removed obsolete ubuntu 18.04 ; added test on r-devel ; added cache for R packages.
+* Updated `MAXENT.Phillips` `predict2` method for `SpatRaster` so that it saves environmental data as `.asc` and do not use the `data.frame` method.
+* fixed some automatic boolean conversion
 
 ####  4.2-0 Terra Update
 

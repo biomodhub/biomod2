@@ -436,19 +436,64 @@ setMethod("get_predictions", "BIOMOD.models.out",
           function(obj, evaluation = FALSE
                    , full.name = NULL, data.set = NULL, run.eval = NULL, algo = NULL)
           {
-            # check evaluation data availability
-            if (evaluation && (!obj@has.evaluation.data)) {
-              warning("!   Calibration data returned because no evaluation data available")
-              evaluation = FALSE
+
+            # select models to be returned
+            models_selected <- get_built_models(obj)
+            if (length(full.name) > 0) {
+              models_selected <- intersect(full.name, models_selected)
+            } else if (length(model) > 0 | length(run.eval) > 0 | length(data.set) > 0) {
+              grep_model = grep(paste(model, collapse = "|"), models_selected)
+              grep_run.eval = grep(paste(run.eval, collapse = "|"), models_selected)
+              grep_data.set = grep(paste(data.set, collapse = "|"), models_selected)
+              models_selected = models_selected[Reduce(intersect, list(grep_model, grep_run.eval, grep_data.set))]
             }
             
-            # select calibration or eval data
-            if (evaluation) {
-              out <- load_stored_object(obj@models.prediction.eval)
-            } else { 
-              out <- load_stored_object(obj@models.prediction)
-            }
-            
+            if (length(models_selected) > 0)
+            {
+              
+              # check evaluation data availability
+              if (evaluation && (!obj@has.evaluation.data)) {
+                warning("!   Calibration data returned because no evaluation data available")
+                evaluation = FALSE
+              }
+              
+              # select calibration or eval data
+              if (evaluation) { 
+                out <- load_stored_object(obj@models.prediction.eval)
+              } else { 
+                out <- load_stored_object(obj@models.prediction)
+              }
+              names(out) <- get_built_models(obj)
+              
+              # subselection of models_selected
+              if (inherits(out, 'Raster')) {
+                out <- subset(out, models_selected, drop = FALSE)
+              } else if (length(dim(out)) == 4) { ## 4D arrays
+                out <- out[, .extract_modelNamesInfo(model.names = models_selected, info = 'models'),
+                           .extract_modelNamesInfo(model.names = models_selected, info = 'run.eval'),
+                           .extract_modelNamesInfo(model.names = models_selected, info = 'data.set'), drop = FALSE]
+              } else { ## matrix (e.g. from ensemble models projections)
+                out <- out[, models_selected, drop = FALSE]
+              }
+              
+              if (as.data.frame) {
+                out <- as.data.frame(out)
+                names(out) <- unlist(
+                  lapply(strsplit(names(out), ".", fixed = TRUE),
+                         function(x) {
+                           x.rev <- rev(x) ## we reverse the order of the splitted vector to have algo at the end
+                           data.set.id <- x.rev[1]
+                           cross.valid.id <- x.rev[2]
+                           algo.id <- paste0(rev(x.rev[3:length(x.rev)]), collapse = ".")
+                           model.id <- paste(obj@sp.name,
+                                             data.set.id,
+                                             cross.valid.id,
+                                             algo.id, sep = "_")
+                           return(model.id)
+                         }))
+              }
+            } else { out <- NULL }
+
             # subselection of models_selected
             keep_lines <- .filter_outputs.df(out, subset.list = list(full.name =  full.name, data.set = data.set
                                                                      , run.eval = run.eval, algo = algo))
@@ -659,7 +704,7 @@ setMethod(
   'plot', signature(x = 'BIOMOD.projection.out', y = "missing"),
   function(x, col = NULL, str.grep = NULL){
     models_selected <- x@models.projected
-    if (length(str.grep)) { 
+    if (length(str.grep) > 0) { 
       models_selected <- grep(paste(str.grep, collapse = "|"),
                               models_selected, value = TRUE)
     }
@@ -762,7 +807,7 @@ setMethod('free', signature('BIOMOD.projection.out'),
             if (inherits(obj@proj.out, "BIOMOD.stored.data.frame")) {
               obj@proj.out@val  <- data.frame()
             } else if (inherits(obj@proj.out, "BIOMOD.stored.SpatRaster")) {
-              obj@proj.out@val <- rast()
+              obj@proj.out@val <- wrap(rast(matrix()))
             } else {
               obj@proj.out@val <- NULL
             }
@@ -777,11 +822,69 @@ setMethod('free', signature('BIOMOD.projection.out'),
 ##' 
 
 setMethod("get_predictions", "BIOMOD.projection.out",
-          function(obj, evaluation = FALSE
-                   , full.name = NULL, data.set = NULL, run.eval = NULL, algo = NULL)
-          {
-            out <- load_stored_object(obj@proj.out)
-            
+          function(obj, as.data.frame = FALSE, full.name = NULL, 
+                   model = NULL, run.eval = NULL, data.set = NULL) {
+            # select models to be returned
+            models_selected <- get_projected_models(obj)
+            if (length(full.name) > 0) {
+              models_selected <- intersect(full.name, models_selected)
+            } else if (length(model) > 0 |
+                       length(run.eval) > 0 |
+                       length(data.set) > 0) {
+              grep_model = grep(paste(model, collapse = "|"), models_selected)
+              grep_run.eval = grep(paste(run.eval, collapse = "|"), models_selected)
+              grep_data.set = grep(paste(data.set, collapse = "|"), models_selected)
+              models_selected = models_selected[Reduce(intersect, list(grep_model, grep_run.eval, grep_data.set))]
+            }
+            if (length(models_selected) > 0)  {
+              out <- load_stored_object(obj@proj.out)
+              names(out) <- get_projected_models(obj)
+              
+              is_input_SpatRaster <- inherits(out, 'SpatRaster')
+              # subselection of models_selected
+              if (is_input_SpatRaster) {
+                out <- subset(out, models_selected)
+              } else if (length(dim(out)) == 4) { ## 4D arrays
+                list_models <- .extract_modelNamesInfo(model.names = models_selected,
+                                                       info = 'models')
+                list_run.eval <- .extract_modelNamesInfo(model.names = models_selected,
+                                                         info = 'run.eval')
+                list_data.set <- .extract_modelNamesInfo(model.names = models_selected, 
+                                                         info = 'data.set')
+                if( !as.data.frame &&
+                    length(list_models)*
+                    length(list_run.eval)*
+                    length(list_data.set) != length(models_selected)){
+                  stop("!! Array do not allow missing models in the subset. Please ask for prediction with as.data.frame = TRUE instead")
+                }
+                out <- out[ , list_models, list_run.eval, list_data.set, drop = FALSE]
+              } else { ## matrix (e.g. from ensemble models projections)
+                out <- out[, models_selected, drop = FALSE]
+              }
+              
+              if (as.data.frame) {
+                out <- as.data.frame(out)
+                if (!grepl("merged|_EM|By", names(out)[1]) &&
+                    !is_input_SpatRaster) { # only for simple model with df
+                  names(out) <- unlist(
+                    lapply(strsplit(names(out), ".", fixed = TRUE),
+                           function(x) {
+                             x.rev <- rev(x) ## we reverse the order of the splitted vector to have algo at the end
+                             data.set.id <- x.rev[1]
+                             cross.valid.id <- x.rev[2]
+                             algo.id <- paste0(rev(x.rev[3:length(x.rev)]), collapse = ".")
+                             model.id <- paste(obj@sp.name,
+                                               data.set.id,
+                                               cross.valid.id,
+                                               algo.id, sep = "_")
+                             return(model.id)
+                           }))
+                  out <- out[ , models_selected, drop = FALSE]
+                }
+              }
+            } else { 
+              out <- NULL 
+              }
             # subselection of models_selected
             if (inherits(out, 'SpatRaster')) {
               names(out) <- get_projected_models(obj)
@@ -1074,19 +1177,41 @@ setMethod("get_kept_models", "BIOMOD.ensemble.models.out",
 setMethod("get_predictions", "BIOMOD.ensemble.models.out",
           function(obj, evaluation = FALSE, full.name = NULL, em.filter = NULL, em.algo = NULL)
           {
-            # check evaluation data availability
-            if (evaluation && (!obj@has.evaluation.data)) {
-              warning("!   Calibration data returned because no evaluation data available")
-              evaluation = FALSE
+            # select models to be returned
+            models_selected <- get_built_models(obj)
+            if (length(full.name) > 0) {
+              models_selected <- intersect(full.name, models_selected)
             }
             
-            # select calibration or eval data
-            if (evaluation) {
-              out <- load_stored_object(obj@models.prediction.eval)
-            } else { 
-              out <- load_stored_object(obj@models.prediction)
-            }
-            
+            if (length(models_selected) > 0)
+            {
+              # check evaluation data availability
+              if (evaluation && (!get_formal_data(obj)@has.evaluation.data)) {
+                warning("!   Calibration data returned because no evaluation data available")
+                evaluation = FALSE
+              }
+              
+              # select calibration or eval data
+              if (evaluation) { 
+                out <- load_stored_object(obj@models.prediction.eval)
+              } else { 
+                out <- load_stored_object(obj@models.prediction)
+              }
+              names(out) <- get_built_models(obj)
+              
+              # subselection of models_selected
+              if (inherits(out, 'Raster')) {
+                out <- subset(out, models_selected, drop = FALSE)
+              } else { ## matrix (e.g. from ensemble models projections)
+                out <- out[, models_selected, drop = FALSE]
+              }
+              
+              if (as.data.frame) {
+                out <- as.data.frame(out)
+                names(out) <- models_selected
+              }
+            } else { out <- NULL }
+
             # subselection of models_selected
             # out$full.name <- paste(obj@sp.name, out$data.set, out$run.eval, out$Model, sep = "_")
             keep_lines <- .filter_outputs.df(out, subset.list = list(full.name =  full.name, em.filter = em.filter, em.algo = em.algo))

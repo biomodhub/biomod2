@@ -164,14 +164,6 @@ bm_PseudoAbsences <- function(resp.var, expl.var, nb.rep = 1, strategy = 'random
     cat("\n   ! Random strategy was automatically selected (that can be due to points coordinates lack or unavailable strategy choosen)")
   }
   
-  if (strategy %in% c("random","sre") &&
-      package_version(packageVersion('terra')) < '1.6.33') {
-    # no coordinates or unknown strategy
-    cat("\n   ! Please install the development version of terra with",
-    "`devtools::install_github('rspatial/terra')` to use random or sre pseudo-absences")
-    stop("terra version >= 1.6.33 required")
-  }
-  
   ## 4. Check nb.absences argument --------------------------------------------
   if (strategy != "user.defined") {
     if (is.null(nb.absences)) {
@@ -254,7 +246,7 @@ bm_PseudoAbsences <- function(resp.var, expl.var, nb.rep = 1, strategy = 'random
   #   rn = rep("", nrow(xy))
   # }
   missing_rn <- which(rn == "")
-  if (length(missing_rn)) {
+  if (length(missing_rn) > 0) {
     rn[missing_rn] <- paste0("pa", 1:length(missing_rn))
   }
   rownames(xy) <- rn
@@ -353,7 +345,7 @@ setMethod('bm_PseudoAbsences_random', signature(expl.var = "SpatVector"),
                 ## force to get at least one value of each factorial variable
                 fact.level.cells <- bm_SampleFactorLevels(expl.var = as.data.frame(expl.var),
                                                           mask.out = pa.tab[, j, drop = FALSE])
-                if (length(fact.level.cells)) {
+                if (length(fact.level.cells) > 0) {
                   pa.tab[fact.level.cells, j] <- TRUE
                   cand.cells <- setdiff(cand.cells, fact.level.cells)
                 }
@@ -447,7 +439,7 @@ setMethod('bm_PseudoAbsences_random', signature(expl.var = "SpatRaster"),
                   
                   ## force to get at least one value of each factorial variable
                   fact.level.cells <- bm_SampleFactorLevels(expl.var = expl.var, mask.out = mask.out)
-                  if (length(fact.level.cells)) {
+                  if (length(fact.level.cells) > 0) {
                     SR <- c(SR, fact.level.cells)
                     mask.env.tmp[SR] <- NA ## update the mask by removing already selected cells
                   }
@@ -594,7 +586,7 @@ setMethod('bm_PseudoAbsences_sre', signature(expl.var = "SpatRaster"),
               
               ## force to get at least one value of each factorial variable
               fact.level.cells <- bm_SampleFactorLevels(expl.var = expl.var, mask.out = mask.out, mask.in = mask.in)
-              if (length(fact.level.cells)) {
+              if (length(fact.level.cells) > 0) {
                 SR <- c(SR, fact.level.cells)
                 mask.in.tmp[SR] <- NA ## update the mask by removing already selected cells
               }
@@ -659,7 +651,6 @@ setGeneric("bm_PseudoAbsences_disk",
 setMethod('bm_PseudoAbsences_disk', signature(expl.var = "SpatVector"),
           function(resp.var, expl.var, dist.min, dist.max, nb.absences, nb.rep) {
             cat("\n   > Disk pseudo absences selection")
-            
             # 1. determining area which can be selected
             coor <- crds(resp.var)
             pres <- which(values(resp.var)[, 1] == 1)
@@ -732,9 +723,9 @@ setMethod('bm_PseudoAbsences_disk', signature(expl.var = "SpatRaster"),
                                                dist.max, Inf, NA),
                                          ncol = 3, byrow = TRUE))
               mask.in[cellFromXY(mask.in, pres.xy)] <- 1
-              mask.in = rast(expl.var * mask.in)
+              mask.in = expl.var * mask.in
               names(mask.in) = names(expl.var)
-              
+
               # 2. selecting randomly pseudo absences
               return(bm_PseudoAbsences_random(resp.var, expl.var = mask.in, nb.absences, nb.rep))
             }

@@ -10,7 +10,7 @@
   {
     RFver <- read.dcf(file = system.file("DESCRIPTION", package = pkgname), fields = "Version")
     mess <- paste(pkgname, RFver, "loaded.\n")
-    mess <- paste(mess, "/!\\ Since version 4.2 biomod2 relies on terra version >= 1.6.33. Make sure to update with `devtools::install_github('rspatial/terra')`. We apologize for the trouble >{o.o}<")
+    mess <- paste(mess, "/!\\ Since version 4.2 biomod2 relies on terra and may thus return SpatRaster that can easily be converted in RasterStack with `stack()`. We apologize for the trouble @('_')@")
     packageStartupMessage(mess)
   }
 }

@@ -239,7 +239,7 @@ setMethod('BIOMOD.formated.data', signature(sp = 'numeric', env = 'data.frame'),
             ## REMOVE NA IF ANY
             if (na.rm) {
               rowToRm <- unique(unlist(lapply(BFD@data.env.var, function(x) { return(which(is.na(x))) })))
-              if (length(rowToRm)) {
+              if (length(rowToRm) > 0) {
                 cat("\n\t\t\t! Some NAs have been automatically removed from your data")
                 BFD@coord <- BFD@coord[-rowToRm, , drop = FALSE]
                 BFD@data.species <- BFD@data.species[-rowToRm]
@@ -247,7 +247,7 @@ setMethod('BIOMOD.formated.data', signature(sp = 'numeric', env = 'data.frame'),
               }
               if (BFD@has.data.eval) {
                 rowToRm <- unique(unlist(lapply(BFD@eval.data.env.var, function(x) { return(which(is.na(x))) })))
-                if (length(rowToRm)) {
+                if (length(rowToRm) > 0) {
                   cat("\n\t\t\t! Some NAs have been automatically removed from your evaluation data")
                   BFD@eval.coord <- BFD@eval.coord[-rowToRm, , drop = FALSE]
                   BFD@eval.data.species <- BFD@eval.data.species[-rowToRm]
@@ -676,7 +676,7 @@ setMethod('BIOMOD.formated.data.PA', signature(sp = 'numeric', env = 'SpatRaster
   if (inherits(env, 'SpatRaster')) {
     categorical_var <- names(env)[is.factor(env)] 
   }
-  
+
   ## Keep same env variable for eval than calib (+ check for factor)
   if (!is.null(eval.sp) && is.null(eval.env)) {
     if (inherits(env, 'SpatRaster')) {
@@ -689,7 +689,7 @@ setMethod('BIOMOD.formated.data.PA', signature(sp = 'numeric', env = 'SpatRaster
   
   # Convert sp in SpatVector
   if (is.numeric(sp)) {
-    if (is.null(xy)) {
+    if (nrow(xy) == 0) {
       sp.df <- data.frame(x = 0,
                           y = 0,
                           resp = sp)
@@ -722,7 +722,7 @@ setMethod('BIOMOD.formated.data.PA', signature(sp = 'numeric', env = 'SpatRaster
     ## REMOVE NA IF ANY
     if (na.rm) {
       rowToRm <- unique(unlist(lapply(pa.data.tmp$env, function(x) { return(which(is.na(x))) })))
-      if (length(rowToRm)) {
+      if (length(rowToRm) > 0) {
         cat("\n\t\t\t! Some NAs have been automatically removed from your data")
         pa.data.tmp$xy <- pa.data.tmp$xy[-rowToRm, , drop = FALSE]
         pa.data.tmp$sp <- pa.data.tmp$sp[-rowToRm, drop = FALSE]
@@ -745,11 +745,15 @@ setMethod('BIOMOD.formated.data.PA', signature(sp = 'numeric', env = 'SpatRaster
       ## create data.mask for ploting
       data.mask.tmp <- classify(subset(env, 1), 
                                 matrix(c(-Inf, Inf, -1), ncol = 3))
-      data.mask <- rast(data.mask.tmp)
+      data.mask <- data.mask.tmp
       xy_pres <- pa.data.tmp$xy[which(pa.data.tmp$sp == 1), , drop = FALSE]
       xy_abs <- pa.data.tmp$xy[which(pa.data.tmp$sp == 0), , drop = FALSE]
-      if (nrow(xy_pres)) { data.mask[cellFromXY(data.mask.tmp, xy_pres)] <- 1 }
-      if (nrow(xy_abs)) { data.mask[cellFromXY(data.mask.tmp, xy_abs)] <- 0 }
+      if (nrow(xy_pres) > 0) { 
+        data.mask[cellFromXY(data.mask.tmp, xy_pres)] <- 1
+        }
+      if (nrow(xy_abs) > 0) {
+        data.mask[cellFromXY(data.mask.tmp, xy_abs)] <- 0 
+        }
       names(data.mask) <- "input_data"
       
       ## add eval data
@@ -763,7 +767,6 @@ setMethod('BIOMOD.formated.data.PA', signature(sp = 'numeric', env = 'SpatRaster
           }
         }
       } 
-      
       ## add pa data
       data.mask.names.tmp <- names(data.mask)
       for (pa in 1:ncol(as.data.frame(pa.data.tmp$pa.tab))) {
@@ -772,17 +775,16 @@ setMethod('BIOMOD.formated.data.PA', signature(sp = 'numeric', env = 'SpatRaster
         ind.pa <- as.data.frame(pa.data.tmp$pa.tab)[, pa]
         xy_pres <- pa.data.tmp$xy[which(pa.data.tmp$sp == 1 & ind.pa == TRUE), , drop = FALSE]
         xy_abs <- pa.data.tmp$xy[which((pa.data.tmp$sp != 1 | is.na(pa.data.tmp$sp)) & ind.pa == TRUE), , drop = FALSE]
-        if (nrow(xy_pres)) {
+        if (nrow(xy_pres) > 0) {
           id_pres <- cellFromXY(data.mask.tmp, xy_pres)
           data.mask.tmp2[id_pres] <- 1
         }
-        if (nrow(xy_abs)) {
+        if (nrow(xy_abs) > 0) {
           id_abs <- cellFromXY(data.mask.tmp, xy_abs)
           data.mask.tmp2[id_abs] <- 0
         }
         add(data.mask) <- data.mask.tmp2
       }
-      
       names(data.mask) <- c(data.mask.names.tmp,
                             colnames(as.data.frame(pa.data.tmp$pa.tab)))
       
@@ -835,7 +837,7 @@ setMethod('plot', signature(x = 'BIOMOD.formated.data.PA', y = "missing"),
               if(!requireNamespace('rasterVis', quietly = TRUE)) stop("Package 'rasterVis' not found")
               
               ## check if there is some undefined areas to prevent from strange plotting issues
-              if (min(global(x@data.mask, min)) == -1) { # there is undefined area
+              if (min(global(x@data.mask, min, na.rm = TRUE)) == -1) { # there is undefined area
                 my.at <- seq(-1.5, 1.5, by = 1) ## breaks of color key
                 my.labs.at <- seq(-1, 1, by = 1) ## labels placed vertically
                 my.lab <- c("undefined", "absences", "presences") ## labels
@@ -1201,7 +1203,7 @@ setClass("BIOMOD.models.options",
              cat("\nCTA$control must be a list like that returned by rpart.control")
              test <- FALSE
            }
-           if (length(object@CTA$cost) && (!is.numeric(object@CTA$cost))) {
+           if (length(object@CTA$cost) > 0 && (!is.numeric(object@CTA$cost))) {
              cat("\nCTA$cost must be a non negative cost vector")
              test <- FALSE
            }
@@ -1291,7 +1293,7 @@ setClass("BIOMOD.models.options",
              test <- .fun_testIfPosInt(test, "RF$sampsize", object@RF$sampsize)
            }
            test <- .fun_testIfPosInt(test, "RF$nodesize", object@RF$nodesize)
-           if (length(object@RF$maxnodes)) {
+           if (length(object@RF$maxnodes) > 0) {
              test <- .fun_testIfPosInt(test, "RF$maxnodes", object@RF$maxnodes)
            }
            
