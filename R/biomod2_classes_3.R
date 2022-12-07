@@ -1067,46 +1067,23 @@ setMethod("get_kept_models", "BIOMOD.ensemble.models.out",
 ##' 
 
 setMethod("get_predictions", "BIOMOD.ensemble.models.out",
-          function(obj, evaluation = FALSE, full.name = NULL, em.filter = NULL, em.algo = NULL)
+          function(obj, evaluation = FALSE, full.name = NULL, merged.by = NULL, filtered.by = NULL, algo = NULL)
           {
-            # select models to be returned
-            models_selected <- get_built_models(obj)
-            if (length(full.name) > 0) {
-              models_selected <- intersect(full.name, models_selected)
+            # check evaluation data availability
+            if (evaluation && (!get_formal_data(obj)@has.evaluation.data)) {
+              warning("!   Calibration data returned because no evaluation data available")
+              evaluation = FALSE
             }
             
-            if (length(models_selected) > 0)
-            {
-              # check evaluation data availability
-              if (evaluation && (!get_formal_data(obj)@has.evaluation.data)) {
-                warning("!   Calibration data returned because no evaluation data available")
-                evaluation = FALSE
-              }
-              
-              # select calibration or eval data
-              if (evaluation) { 
-                out <- load_stored_object(obj@models.prediction.eval)
-              } else { 
-                out <- load_stored_object(obj@models.prediction)
-              }
-              names(out) <- get_built_models(obj)
-              
-              # subselection of models_selected
-              if (inherits(out, 'Raster')) {
-                out <- subset(out, models_selected, drop = FALSE)
-              } else { ## matrix (e.g. from ensemble models projections)
-                out <- out[, models_selected, drop = FALSE]
-              }
-              
-              if (as.data.frame) {
-                out <- as.data.frame(out)
-                names(out) <- models_selected
-              }
-            } else { out <- NULL }
-
+            # select calibration or eval data
+            if (evaluation) { 
+              out <- load_stored_object(obj@models.prediction.eval)
+            } else { 
+              out <- load_stored_object(obj@models.prediction)
+            }
+            
             # subselection of models_selected
-            # out$full.name <- paste(obj@sp.name, out$data.set, out$run.eval, out$Model, sep = "_")
-            keep_lines <- .filter_outputs.df(out, subset.list = list(full.name =  full.name, em.filter = em.filter, em.algo = em.algo))
+            keep_lines <- .filter_outputs.df(out, subset.list = list(full.name =  full.name, merged.by = merged.by, filtered.by = filtered.by, algo = algo))
             out <- out[keep_lines, ]
             return(out)
           }

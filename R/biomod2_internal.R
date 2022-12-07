@@ -352,7 +352,9 @@ get_var_range <- function(data)
       if (!is.null(res)) {
         res <- as.data.frame(res)
         if (out %in% c("pred", "pred.eval", "calib.failure", "model")) {
-          colnames(res) = out
+          colnames(res) <- out
+          res[["Points"]] <- 1:nrow(res)
+          res <- res[, c("Points", out)]
         }
         col_names <- colnames(res)
         res[[dim_names[1]]] <- names(obj.out)[i.dim1]
