@@ -48,7 +48,7 @@
   algo = NULL
 )
 
-\S4method{get_built_models}{BIOMOD.models.out}(obj, ...)
+\S4method{get_built_models}{BIOMOD.models.out}(obj)
 
 \S4method{get_evaluations}{BIOMOD.models.out}(
   obj,
@@ -86,7 +86,7 @@
 
 \S4method{get_needed_models}{BIOMOD.ensemble.models.out}(obj, selected.models = "all", ...)
 
-\S4method{get_kept_models}{BIOMOD.ensemble.models.out}(obj, model, ...)
+\S4method{get_kept_models}{BIOMOD.ensemble.models.out}(obj)
 
 \S4method{get_predictions}{BIOMOD.ensemble.models.out}(
   obj,
@@ -140,12 +140,12 @@ or a sub-selection of model names}
 \item{selected.models}{a \code{vector} containing names of the needed models of a 
 \code{\link{BIOMOD.ensemble.models.out}} object}
 
+\item{\ldots}{(\emph{optional, one or several of the following arguments depending on the selected 
+function)})}
+
 \item{model}{a \code{character} corresponding to the model name, must be either \code{GLM}, 
 \code{GBM}, \code{GAM}, \code{CTA}, \code{ANN}, \code{SRE}, \code{FDA}, \code{MARS}, 
 \code{RF}, \code{MAXENT.Phillips}, \code{MAXENT.Phillips.2}}
-
-\item{\ldots}{(\emph{optional, one or several of the following arguments depending on the selected 
-function)})}
 }
 \value{
 \describe{

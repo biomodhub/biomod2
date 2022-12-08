@@ -136,7 +136,7 @@
 ##'                                      resp.name = myRespName)
 ##' myBiomodData
 ##' plot(myBiomodData)
-##' 
+##' summary(myBiomodData)
 ##' 
 ##' 
 NULL
@@ -328,13 +328,87 @@ setMethod('BIOMOD.formated.data', signature(sp = 'numeric', env = 'SpatRaster'),
 
 # 1.3 Other Functions -----------------------------------------------------------------------------
 
-### plot.BIOMOD.formated.data  --------------------------------------------------
+### plot.BIOMOD.formated.data (doc) --------------------------------------------------
 ##' 
-##' @rdname BIOMOD.formated.data
+##' @name plot 
+##' @docType methods
+##' @author Remi Patin
+##' 
+##' @title \code{plot} method for \code{\link{BIOMOD.formated.data}} object class
+##' 
+##' @description Plot the spatial distribution of presences, absences and 
+##' pseudo-absences among the different potential dataset (calibration, 
+##' validation and evaluation). Available only if coordinates were given to 
+##' \code{\link{BIOMOD_FormatingData}}.
+##' 
+##' 
+##' @param x a \code{\link{BIOMOD.formated.data}} or \code{\link{BIOMOD.formated.data.PA}}
+##' object. Coordinates must be available to be able to use \code{plot}.
+##' @param calib.lines (\emph{optional, default} \code{NULL}) the output of
+##'  \code{\link{get_calib_lines}} or \code{\link{BIOMOD_CrossValidation}}. 
+##'  Needed to explore the repartition of calibration and validation datasets.
+##' @param plot.type a \code{character}, either \code{'points'} (\emph{default}) 
+##' or \code{'raster'} (\emph{if environmental variables were given as a raster}). 
+##' With \code{plot.type = 'points'} occurrences will be represented as points
+##' (better when using fine-grained data). With \code{plot.type = 'raster'}
+##' occurrences will be represented as a raster (better when using coarse-grained
+##' data)
+##' @param plot.output a \code{character}, either \code{'facet'} (\emph{default}) 
+##' or \code{'list'}. \code{plot.output} determines whether plots are returned
+##' as a single facet with all plots or a \code{list} of individual plots
+##' (better when there are numerous graphics)
+##' @param PA_dataset a \code{vector} (\emph{default} \code{'all'}) containing 
+##' the subset of pseudo-absences dataset that needs to be represented. Available
+##' only when \code{x} is a \code{\link{BIOMOD.formated.data.PA}} object.
+##' @param repet a \code{vector} (\emph{default} \code{'all'}) containing 
+##' the subset of calibration dataset that needs to be represented. Available
+##' only when \code{calib.lines} was given as argument.
+##' @param plot.eval a boolean (\emph{default} \code{'TRUE'}) determining 
+##' whether evaluation data should be added to the plot.
+##' @param do.plot a boolean (\emph{default} \code{'TRUE'}) determining 
+##' whether plots should be displayed or not.
+##' @return a \code{list} with the data used to generate the plot and a
+##' \code{ggplot2} object 
+##' 
 ##' @export
 ##' @importFrom terra rast minmax nlyr crds
 ##' @importFrom ggplot2 ggplot aes scale_color_manual scale_shape_manual scale_fill_manual guides xlim ylim ggtitle facet_wrap theme guide_legend after_stat
 ##' 
+##' @examples
+##' 
+##' library(terra)
+##' 
+##' # Load species occurrences (6 species available)
+##' data(DataSpecies)
+##' head(DataSpecies)
+##' 
+##' # Select the name of the studied species
+##' myRespName <- 'GuloGulo'
+##' 
+##' # Get corresponding presence/absence data
+##' myResp <- as.numeric(DataSpecies[, myRespName])
+##' 
+##' # Get corresponding XY coordinates
+##' myRespXY <- DataSpecies[, c('X_WGS84', 'Y_WGS84')]
+##' 
+##' # Load environmental variables extracted from BIOCLIM (bio_3, bio_4, bio_7, bio_11 & bio_12)
+##' data(bioclim_current)
+##' myExpl <- terra::rast(bioclim_current)
+##' 
+##' \dontshow{
+##' myExtent <- terra::ext(0,30,45,70)
+##' myExpl <- terra::crop(myExpl, myExtent)
+##' }
+##' 
+##' ## ----------------------------------------------------------------------- #
+##' # Format Data with true absences
+##' myBiomodData <- BIOMOD_FormatingData(resp.var = myResp,
+##'                                      expl.var = myExpl,
+##'                                      resp.xy = myRespXY,
+##'                                      resp.name = myRespName)
+##' myBiomodData
+##' plot(myBiomodData)
+
 
 setMethod('plot', signature(x = 'BIOMOD.formated.data', y = "missing"),
           function(x,
@@ -730,18 +804,20 @@ setMethod('plot', signature(x = 'BIOMOD.formated.data', y = "missing"),
     }
   }
   
-  if(plot.type == "facet"){
-    if(!requireNamespace("ggtext")){
-      stop("Package `ggtext` is missing. Please install it with `install.packages('ggtext')`.")
-    }
-  }
-  
   ## 5 - plot.output----------------------
   if (missing(plot.output)) {
     plot.output <- "facet"
   } else {
     .fun_testIfIn(TRUE, "plot.output", plot.output, c("facet","list"))
   }
+  
+  if(plot.output == "facet"){
+    if(!requireNamespace("ggtext")){
+      stop("Package `ggtext` is missing. Please install it with `install.packages('ggtext')`.")
+    }
+  }
+  
+  
   
   ## 6 - do.plot ----------------------
   # do.plot
@@ -862,9 +938,59 @@ setMethod('show', signature('BIOMOD.formated.data'),
 
 ### summary.BIOMOD.formated.data  --------------------------------------------------
 ##' 
-##' @rdname BIOMOD.formated.data
+##' @name summary 
+##' @docType methods
+##' @author Remi Patin
+##' 
+##' @title \code{summary} method for \code{\link{BIOMOD.formated.data}} object class
+##' 
+##' @description Summarize the number of presences, absences and 
+##' pseudo-absences among the different potential dataset (calibration, 
+##' validation and evaluation).  
+##' 
+##' @param object a \code{\link{BIOMOD.formated.data}} or
+##' \code{\link{BIOMOD.formated.data.PA}} object.
+##' @param calib.lines (\emph{optional, default} \code{NULL}) the output of
+##'  \code{\link{get_calib_lines}} or \code{\link{BIOMOD_CrossValidation}}. 
+##'  Needed to explore the repartition of calibration and validation datasets.
+##' @return a \code{data.frame} 
+##' 
 ##' @export
 ##' 
+##' @examples
+##' 
+##' library(terra)
+##' 
+##' # Load species occurrences (6 species available)
+##' data(DataSpecies)
+##' head(DataSpecies)
+##' 
+##' # Select the name of the studied species
+##' myRespName <- 'GuloGulo'
+##' 
+##' # Get corresponding presence/absence data
+##' myResp <- as.numeric(DataSpecies[, myRespName])
+##' 
+##' # Get corresponding XY coordinates
+##' myRespXY <- DataSpecies[, c('X_WGS84', 'Y_WGS84')]
+##' 
+##' # Load environmental variables extracted from BIOCLIM (bio_3, bio_4, bio_7, bio_11 & bio_12)
+##' data(bioclim_current)
+##' myExpl <- terra::rast(bioclim_current)
+##' 
+##' \dontshow{
+##' myExtent <- terra::ext(0,30,45,70)
+##' myExpl <- terra::crop(myExpl, myExtent)
+##' }
+##' 
+##' ## ----------------------------------------------------------------------- #
+##' # Format Data with true absences
+##' myBiomodData <- BIOMOD_FormatingData(resp.var = myResp,
+##'                                      expl.var = myExpl,
+##'                                      resp.xy = myRespXY,
+##'                                      resp.name = myRespName)
+##' myBiomodData
+##' summary(myBiomodData)
 
 setMethod('summary', signature(object = 'BIOMOD.formated.data'),
           function(object,
