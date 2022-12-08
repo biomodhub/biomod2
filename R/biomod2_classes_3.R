@@ -12,7 +12,6 @@
 ##' @aliases get_projected_models
 ##' @aliases free
 ##' @aliases get_predictions
-##' @aliases get_needed_models
 ##' @aliases get_kept_models
 ##' @aliases get_built_models
 ##' @aliases get_evaluations
@@ -70,8 +69,6 @@
 ##'   \code{\link{BIOMOD.projection.out}} or
 ##'   \code{\link{BIOMOD.ensemble.models.out}} object}
 ##'
-##'   \item{\code{get_needed_models}}{a \code{vector} containing names of the
-##'   needed models of a \code{\link{BIOMOD.ensemble.models.out}} object}
 ##'   \item{\code{get_kept_models}}{a \code{vector} containing names of the kept
 ##'   models of a \code{\link{BIOMOD.ensemble.models.out}} object}
 ##'
@@ -152,7 +149,6 @@ setGeneric("free", function(obj, ...) { standardGeneric("free") }) ## B
 
 setGeneric("get_predictions", function(obj, ...) { standardGeneric("get_predictions") }) ## ABC
 
-setGeneric("get_needed_models", function(obj, ...) { standardGeneric("get_needed_models") }) ## C
 setGeneric("get_kept_models", function(obj, ...) { standardGeneric("get_kept_models") }) ## C
 
 setGeneric("get_formal_data", function(obj, ...) { standardGeneric("get_formal_data") }) ## AC
@@ -1013,26 +1009,6 @@ setMethod("get_formal_data", "BIOMOD.ensemble.models.out",
 setMethod("get_built_models", "BIOMOD.ensemble.models.out", function(obj) { return(obj@em.computed) })
 
 
-## get_needed_models.BIOMOD.ensemble.models.out --------------------------------
-##' 
-##' @rdname getters.out
-##' @export
-##' 
-
-setMethod("get_needed_models", "BIOMOD.ensemble.models.out",
-          function(obj, selected.models = 'all', ...) {
-            add.args <- list(...)
-            if (selected.models[[1]] == "all") {
-              selected.index <- c(1:length(obj@em.models))
-            } else {
-              selected.index <- which(names(obj@em.models) %in% selected.models)
-            }
-            needed_models <- lapply(obj@em.models[selected.index], function(x) { return(x@model) })
-            needed_models <- unique(unlist(needed_models))
-            return(needed_models)
-          })
-
-
 ## get_kept_models.BIOMOD.ensemble.models.out ----------------------------------
 ##' 
 ##' @rdname getters.out
@@ -1102,12 +1078,12 @@ setMethod("get_evaluations", "BIOMOD.ensemble.models.out",
 ##' 
 
 setMethod("get_variables_importance", "BIOMOD.ensemble.models.out",
-            function(obj, full.name = NULL, em.filter = NULL, em.algo = NULL, Expl.var = NULL) {
-              out <- load_stored_object(obj@variables.importance)
-              keep_lines <- .filter_outputs.df(out, subset.list = list(full.name =  full.name, em.filter = em.filter
-                                                                       , em.algo = em.algo, Expl.var = Expl.var))
-              out <- out[keep_lines, ]
-              return(out)
+          function(obj, full.name = NULL, em.filter = NULL, em.algo = NULL, Expl.var = NULL) {
+            out <- load_stored_object(obj@variables.importance)
+            keep_lines <- .filter_outputs.df(out, subset.list = list(full.name =  full.name, em.filter = em.filter
+                                                                     , em.algo = em.algo, Expl.var = Expl.var))
+            out <- out[keep_lines, ]
+            return(out)
           }
 )
 
