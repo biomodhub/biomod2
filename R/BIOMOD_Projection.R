@@ -226,7 +226,12 @@ BIOMOD_Projection <- function(bm.mod,
                   coord = new.env.xy,
                   modeling.id = bm.mod@modeling.id)
   proj_out@models.out@link = bm.mod@link
+  
+  proj_is_raster <- FALSE
   if (inherits(new.env, 'SpatRaster')) {
+    proj_is_raster <- TRUE
+  }
+  if (proj_is_raster) {
     proj_out@proj.out <- new('BIOMOD.stored.SpatRaster')
   } else {
     proj_out@proj.out <- new('BIOMOD.stored.data.frame')
@@ -250,7 +255,7 @@ BIOMOD_Projection <- function(bm.mod,
     assign(x = nameMask, value = .build_clamping_mask(new.env, MinMax))
     
     if (output.format == '.RData') {
-      if(inherits(new.env, "SpatRaster")){
+      if(proj_is_raster){
         save(list = wrap(nameMask),
              file = file.path(namePath, 
                               paste0(nameProj, "_ClampingMask", output.format)),
@@ -294,7 +299,6 @@ BIOMOD_Projection <- function(bm.mod,
                               paste0(nameProj, "_", mod.name, 
                                      ifelse(output.format == ".RData"
                                             , ".tif", output.format)))
-
       }
       
       BIOMOD_LoadModels(bm.out = bm.mod, full.name = mod.name, as = "mod")
@@ -307,7 +311,7 @@ BIOMOD_Projection <- function(bm.mod,
                           temp_workdir = temp_workdir, seedval = seed.val, 
                           overwrite = TRUE)
       if(do.stack){
-        if(inherits(new.env, "SpatRaster")){
+        if(proj_is_raster){
           return(wrap(pred.tmp)) 
         } else {
           return(pred.tmp)
@@ -319,13 +323,24 @@ BIOMOD_Projection <- function(bm.mod,
   
   ## Putting predictions into the right format
   if(do.stack){
-    if (inherits(new.env, "SpatRaster")) {
+    if (proj_is_raster) {
       proj <- rast(lapply(proj, rast)) # SpatRaster needs to be wrapped before saving
       names(proj) <- models.chosen
       proj <- wrap(proj)
+      proj.trans <- proj
     } else {
       proj <- as.data.frame(proj)
       names(proj) <- models.chosen
+      proj.trans <- proj
+      
+      proj$Points <- 1:nrow(proj)
+      tmp <- melt(proj, id.vars =  "Points")
+      colnames(tmp) <- c("Points", "full.name", "pred")
+      tmp$full.name <- as.character(tmp$full.name)
+      tmp$data.set = sapply(tmp$full.name, function(x) strsplit(x, "_")[[1]][2])
+      tmp$run.eval = sapply(tmp$full.name, function(x) strsplit(x, "_")[[1]][3])
+      tmp$algo = sapply(tmp$full.name, function(x) strsplit(x, "_")[[1]][4])
+      proj <- tmp[, c("full.name", "data.set", "run.eval", "algo", "Points", "pred")]
     }
     
     if (keep.in.memory) {
@@ -352,8 +367,8 @@ BIOMOD_Projection <- function(bm.mod,
   proj_out@proj.out@link <- saved.files
   
   # now that proj have been saved, it can be unwrapped if it is a SpatRaster
-  if (inherits(new.env, "SpatRaster") && do.stack) {
-    proj <- rast(proj) 
+  if (proj_is_raster && do.stack) {
+    proj.trans <- rast(proj.trans) 
   }
   
   ## 5. Compute binary and/or filtered transformation ---------------------------------------------
@@ -398,10 +413,10 @@ BIOMOD_Projection <- function(bm.mod,
       } else {
         if (eval.meth %in% metric.binary) {
           nameBin <- paste0(nameProjSp, "_", eval.meth, "bin")
-          assign(x = nameBin, value = bm_BinaryTransformation(proj, thres.tmp))
+          assign(x = nameBin, value = bm_BinaryTransformation(proj.trans, thres.tmp))
           
           if (output.format == '.RData') {
-            if (inherits(new.env, "SpatRaster")) {
+            if (proj_is_raster) {
               assign(x = nameBin, value = wrap(get(nameBin)))
             } 
             save(list = nameBin,
@@ -419,10 +434,10 @@ BIOMOD_Projection <- function(bm.mod,
         
         if (eval.meth %in% metric.filter) {
           nameFilt <- paste0(nameProjSp, "_", eval.meth, "filt")
-          assign(x = nameFilt, value = bm_BinaryTransformation(proj, thres.tmp, do.filtering = TRUE))
+          assign(x = nameFilt, value = bm_BinaryTransformation(proj.trans, thres.tmp, do.filtering = TRUE))
           
           if (output.format == '.RData') {
-            if (inherits(new.env, "SpatRaster")) {
+            if (proj_is_raster) {
               assign(x = nameFilt, value = wrap(get(nameFilt)))
             } 
             save(list = nameFilt,

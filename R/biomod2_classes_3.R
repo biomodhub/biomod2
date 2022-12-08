@@ -787,16 +787,6 @@ setMethod("get_predictions", "BIOMOD.projection.out",
                                                                                        , run.eval = run.eval, algo = algo))
               out <- subset(out, keep_layers)
             } else {
-              # if (!is.null(out) && as.data.frame == TRUE) {
-              out$Points <- 1:nrow(out) ## Correct ???
-              tmp <- melt(out, id.vars =  "Points")
-              colnames(tmp) <- c("Points", "full.name", "pred")
-              tmp$full.name <- as.character(tmp$full.name)
-              tmp$data.set = sapply(tmp$full.name, function(x) strsplit(x, "_")[[1]][2])
-              tmp$run.eval = sapply(tmp$full.name, function(x) strsplit(x, "_")[[1]][3])
-              tmp$algo = sapply(tmp$full.name, function(x) strsplit(x, "_")[[1]][4])
-              out <- tmp[, c("full.name", "data.set", "run.eval", "algo", "Points", "pred")]
-              
               keep_lines <- .filter_outputs.df(out, subset.list = list(full.name =  full.name, data.set = data.set
                                                                        , run.eval = run.eval, algo = algo))
               out <- out[keep_lines, ]
@@ -1087,10 +1077,7 @@ setMethod("get_predictions", "BIOMOD.ensemble.models.out",
 ##' @export
 ##' 
 
-setMethod("get_built_models", "BIOMOD.ensemble.models.out", 
-          function(obj, ...){ 
-            return(obj@em.computed) 
-          })
+setMethod("get_built_models", "BIOMOD.ensemble.models.out", function(obj){ return(obj@em.computed) })
 
 ## get_evaluations.BIOMOD.ensemble.models.out ----------------------------------
 ##' 

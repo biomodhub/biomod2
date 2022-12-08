@@ -270,7 +270,7 @@ BIOMOD_EnsembleForecasting <- function(bm.em,
   }
   if (proj_is_raster) {
     proj_out@proj.out <- new('BIOMOD.stored.SpatRaster')
-  } else{
+  } else {
     proj_out@proj.out <- new('BIOMOD.stored.data.frame')
     do.stack = TRUE
   }
@@ -286,9 +286,7 @@ BIOMOD_EnsembleForecasting <- function(bm.em,
   ## 3. Get needed projections --------------------------------------------------------------------
   models.needed <- get_kept_models(bm.em)
   if (!is.null(bm.proj)) {
-    formal_pred <- get_predictions(bm.proj,
-                                   full.name = models.needed,
-                                   as.data.frame = ifelse(bm.proj@type == 'array', TRUE, FALSE))
+    formal_pred <- get_predictions(bm.proj, full.name = models.needed)
   } else {
     # make prediction according to given environment
     tmp_dir <- paste0('Tmp', format(Sys.time(), "%s"))
@@ -302,17 +300,17 @@ BIOMOD_EnsembleForecasting <- function(bm.em,
                                      do.stack = TRUE,
                                      on_0_1000 = on_0_1000,
                                      nb.cpu = nb.cpu)
-    # getting the results
     formal_pred <- get_predictions(formal_pred, full.name = models.needed)
-    if (!inherits(new.env, "SpatRaster")) {
-      formal_pred <- tapply(X = formal_pred$pred, INDEX = list(formal_pred$Points, formal_pred$full.name), FUN = mean)
-      formal_pred <- as.data.frame(formal_pred[, models.needed])
-    }
-    
+
     # remove tmp directory
     unlink(file.path(bm.em@dir.name, bm.em@sp.name, paste0("proj_", tmp_dir))
            , recursive = TRUE, force = TRUE)
   }
+  if (!proj_is_raster) {
+    formal_pred <- tapply(X = formal_pred$pred, INDEX = list(formal_pred$Points, formal_pred$full.name), FUN = mean)
+    formal_pred <- as.data.frame(formal_pred[, models.needed])
+  }
+  
   
   ## 4. MAKING PROJECTIONS ------------------------------------------------------------------------
   proj.em <- foreach(em.name = models.chosen) %dopar%
@@ -336,7 +334,7 @@ BIOMOD_EnsembleForecasting <- function(bm.em,
                         , filename = filename)
       
       if(do.stack){
-        if(inherits(new.env, "SpatRaster")){
+        if(proj_is_raster){
           return(wrap(ef.tmp)) 
         } else {
           return(ef.tmp)
@@ -349,13 +347,27 @@ BIOMOD_EnsembleForecasting <- function(bm.em,
   
   ## Putting predictions into the right format
   if(do.stack){
-    if (inherits(new.env, "SpatRaster")) {
+    if (proj_is_raster) {
       proj.em <- rast(lapply(proj.em, rast)) # SpatRaster needs to be wrapped before saving
       names(proj.em) <- models.chosen
       proj.em <- wrap(proj.em)
+      proj.trans <- proj.em
     } else {
       proj.em <- as.data.frame(proj.em)
       names(proj.em) <- models.chosen
+      proj.trans <- proj.em
+      
+      proj.em$Points <- 1:nrow(proj.em)
+      tmp <- melt(proj.em, id.vars =  "Points")
+      colnames(tmp) <- c("Points", "full.name", "pred")
+      tmp$full.name <- as.character(tmp$full.name)
+      # tmp$merged.by = sapply(tmp$full.name, function(x) strsplit(x, "_")[[1]][3:5])
+      tmp$merged.by = sapply(tmp$full.name, function(x) sub(".*?_merged", "merged", x))
+      # tmp$filtered.by = sapply(tmp$full.name, function(x) strsplit(x, "_")[[1]][2])
+      tmp$filtered.by = sapply(tmp$full.name, function(x) sub(".*By", "", strsplit(x, "_")[[1]][2]))
+      # tmp$algo = sapply(tmp$full.name, function(x) strsplit(x, "_")[[1]][4])
+      # proj.em <- tmp[, c("full.name", "merged.by", "filtered.by", "algo", "Points", "pred")]
+      proj.em <- tmp[, c("full.name", "merged.by", "filtered.by", "Points", "pred")]
     }
     
     if (keep.in.memory) {
@@ -382,8 +394,8 @@ BIOMOD_EnsembleForecasting <- function(bm.em,
   proj_out@proj.out@link <- saved.files
   
   # now that proj have been saved, it can be unwrapped if it is a SpatRaster
-  if (inherits(new.env, "SpatRaster") && do.stack) {
-    proj.em <- rast(proj.em) 
+  if (proj_is_raster && do.stack) {
+    proj.trans <- rast(proj.trans) 
   }
   
   
@@ -430,10 +442,10 @@ BIOMOD_EnsembleForecasting <- function(bm.em,
         if (eval.meth %in% metric.binary) {
           nameBin <- paste0(nameProjSp, "_", eval.meth, "bin")
           # assign(x = nameBin, value = bm_BinaryTransformation(proj, thres.tmp))
-          if (inherits(proj.em, "PackedSpatRaster")){
-            proj.em <- rast(proj.em)
+          if (inherits(proj.em, "PackedSpatRaster")){ ## TO REMOVE ????
+            proj.trans <- rast(proj.trans)
           }
-          assign(x = nameBin, value = bm_BinaryTransformation(proj.em, thres.tmp))
+          assign(x = nameBin, value = bm_BinaryTransformation(proj.trans, thres.tmp))
           
           if (output.format == '.RData') {
             # if (inherits(new.env, "SpatRaster")) {
@@ -454,7 +466,7 @@ BIOMOD_EnsembleForecasting <- function(bm.em,
         if (eval.meth %in% metric.filter) {
           nameFilt <- paste0(nameProjSp, "_", eval.meth, "filt")
           # assign(x = nameFilt, value = bm_BinaryTransformation(proj, thres.tmp, do.filtering = TRUE))
-          assign(x = nameFilt, value = bm_BinaryTransformation(proj.em, thres.tmp, do.filtering = TRUE))
+          assign(x = nameFilt, value = bm_BinaryTransformation(proj.trans, thres.tmp, do.filtering = TRUE))
           
           if (output.format == '.RData') {
             # if (inherits(new.env, "SpatRaster")) {
