@@ -155,12 +155,21 @@ setClass("BIOMOD.formated.data",
                         coord = "data.frame",
                         data.species = "numeric",
                         data.env.var = "data.frame",
-                        data.mask = "SpatRaster",
+                        data.mask = "list",
                         has.data.eval = "logical",
                         eval.coord = "data.frame",
                         eval.data.species = "numeric",
                         eval.data.env.var = "data.frame"),
-         validity = function(object){ return(TRUE) })
+         validity = function(object){ 
+           check.data.mask <- suppressWarnings(
+             all(sapply(object@data.mask, function(x) inherits(x, "PackedSpatRaster")))
+           )
+           if(check.data.mask){
+             return(TRUE)
+           } else {
+             return(FALSE)
+           }
+         })
 
 
 # 1.2 Constructors -------------------------------------------------------------
@@ -175,9 +184,11 @@ setGeneric("BIOMOD.formated.data", def = function(sp, env, ...) { standardGeneri
 setMethod('BIOMOD.formated.data', signature(sp = 'numeric', env = 'data.frame'),
           function(sp, env, xy = NULL, dir.name = '.', sp.name = NULL
                    , eval.sp = NULL, eval.env = NULL, eval.xy = NULL
-                   , na.rm = TRUE, data.mask = NULL)  {
+                   , na.rm = TRUE, data.mask = NULL, shared.eval.env = FALSE)  {
             
-            if (is.null(data.mask)) { data.mask <- rast() }
+            if (is.null(data.mask)) { 
+              suppressWarnings(data.mask <- list("calibration" = wrap(rast())))
+            }
             
             if (is.null(eval.sp)) { ## NO EVALUATION DATA
               BFD <- new(
@@ -199,24 +210,10 @@ setMethod('BIOMOD.formated.data', signature(sp = 'numeric', env = 'data.frame'),
                 sp.name = sp.name
               )
               
-              if (nlyr(BFDeval@data.mask) == 1 ) {
-                if (nlyr(data.mask) == 1 && 
-                    suppressWarnings(any(!is.na(values(data.mask))))) {
-                  # data.mask for eval is only available when eval.expl.var was
-                  # submitted as raster or SpatRaster
-                  data.mask.tmp <- try(
-                    c(data.mask,BFDeval@data.mask), 
-                    silent = TRUE
-                  )
-                  if (!inherits(data.mask.tmp, "try-error")) {
-                    data.mask <- data.mask.tmp
-                    names(data.mask) <- c("calibration", "validation")
-                  }
-                } else if (nlyr(data.mask) == 0) {
-                  # in this case the data.mask from calibration is added later
-                  data.mask <- BFDeval@data.mask
-                  names(data.mask) <- c("validation")
-                }
+              if (rast.has.values(rast(BFDeval@data.mask[[1]]))) {
+                data.mask[["evaluation"]] <- BFDeval@data.mask[[1]]
+              } else if (shared.eval.env) {
+                data.mask[["evaluation"]] <- data.mask[["calibration"]]
               }
               
               BFD <- new(
@@ -303,24 +300,28 @@ setMethod('BIOMOD.formated.data', signature(sp = 'numeric', env = 'matrix'),
 setMethod('BIOMOD.formated.data', signature(sp = 'numeric', env = 'SpatRaster'),
           function(sp, env, xy = NULL, dir.name = '.', sp.name = NULL
                    , eval.sp = NULL, eval.env = NULL, eval.xy = NULL
-                   , na.rm = TRUE) {
+                   , na.rm = TRUE, shared.eval.env = FALSE) {
             
             ## Keep same env variable for eval than calib (+ check for factor)
             if (!is.null(eval.sp) && is.null(eval.env)) {
               eval.env <- as.data.frame(extract(env, eval.xy, ID = FALSE))
+              shared.eval.env <- TRUE
             }
             
-            if (is.null(xy)) {xy <- as.data.frame(crds(env)) }
+            if (is.null(xy)) {
+              xy <- as.data.frame(crds(env)) 
+            }
             ## Prepare mask of studied area
-            data.mask <- rasterize(as.matrix(xy), env[[1]], values = sp)
-            names(data.mask) <- sp.name
-            
+            data.mask <- prod(classify(env, matrix(c(-Inf,Inf,1), nrow = 1)))
+            names(data.mask) <- "Environmental Mask"
+            data.mask <- list("calibration" = wrap(data.mask))
             ## Keep same env variable for eval than calib (+ check for factor)
             env <- as.data.frame(extract(env, xy, factors = TRUE, ID = FALSE))
             
             BFD <- BIOMOD.formated.data(sp, env, xy, dir.name, sp.name, 
                                         eval.sp, eval.env, eval.xy,
-                                        na.rm = na.rm, data.mask = data.mask)
+                                        na.rm = na.rm, data.mask = data.mask,
+                                        shared.eval.env = shared.eval.env)
             return(BFD)
           }
 )
@@ -418,7 +419,8 @@ setMethod('plot', signature(x = 'BIOMOD.formated.data', y = "missing"),
                    PA_dataset,
                    repet,
                    plot.eval,
-                   do.plot = TRUE){
+                   do.plot = TRUE,
+                   scales){
             args <- .plot.BIOMOD.formated.data.check.args(x = x,
                                                           calib.lines = calib.lines,
                                                           plot.type = plot.type,
@@ -426,7 +428,8 @@ setMethod('plot', signature(x = 'BIOMOD.formated.data', y = "missing"),
                                                           PA_dataset = PA_dataset,
                                                           repet = repet,
                                                           plot.eval = plot.eval,
-                                                          do.plot = do.plot)
+                                                          do.plot = do.plot,
+                                                          scales = scales)
             
             for (argi in names(args)) { 
               assign(x = argi, value = args[[argi]]) 
@@ -592,20 +595,38 @@ setMethod('plot', signature(x = 'BIOMOD.formated.data', y = "missing"),
             
             
             # 3 - prepare plots -------------------------------------------------------
-            
+            this_mask_eval <- rast()
             if(has.mask){
-              this_mask <- classify(x@data.mask[[1]], matrix(c(-Inf,Inf,1), ncol = 3))
+              this_mask <- rast(x@data.mask[["calibration"]])
+              this_mask_eval <- this_mask
+            } else {
+              this_mask <- rast()
             }
-            
+            if(has.mask.eval){
+              this_mask_eval <- rast(x@data.mask[["evaluation"]])
+            }
+            if(has.mask | has.mask.eval){
+              plot_mask <- foreach(this_dataset = unique(full.df.vect$dataset), 
+                                   .combine = 'c') %do% {
+                                     if(this_dataset == "Evaluation dataset"){
+                                       return(this_mask_eval)
+                                     } else {
+                                       return(this_mask)
+                                     }
+                                   }
+              names(plot_mask) <- unique(full.df.vect$dataset)
+            }
             
             ## 3.1 Raster plot --------------------------------------------------------
             
             if(plot.type == "raster"){
+              
               rast.plot <- foreach(this_dataset = unique(full.df.vect$dataset), .combine = 'c') %do% {
                 this_rast  <-
                   rasterize(subset(full.df.vect,
                                    full.df.vect$dataset == this_dataset), 
-                            this_mask, field = "resp", background = 1)
+                            plot_mask[[this_dataset]],
+                            field = "resp", background = 1)
                 names(this_rast) <- this_dataset
                 this_rast*this_mask
               }
@@ -614,7 +635,7 @@ setMethod('plot', signature(x = 'BIOMOD.formated.data', y = "missing"),
                 g <- ggplot()+
                   tidyterra::geom_spatraster(data = rast.plot,
                                              aes(fill = factor(after_stat(value), data_breaks)))+
-                  facet_wrap(~lyr)+
+                  facet_wrap(~lyr, scales = scales)+
                   scale_fill_manual(
                     NULL,
                     breaks = data_breaks,
@@ -672,7 +693,7 @@ setMethod('plot', signature(x = 'BIOMOD.formated.data', y = "missing"),
                                  color = factor(resp, levels = data_breaks[-12]),
                                  shape = factor(resp, levels = data_breaks[-12])), 
                              alpha = 1, size = 1.5)+
-                  facet_wrap(~dataset)+
+                  facet_wrap(~dataset, scales = scales)+
                   scale_color_manual(
                     NULL,
                     breaks = data_breaks,
@@ -713,7 +734,6 @@ setMethod('plot', signature(x = 'BIOMOD.formated.data', y = "missing"),
                                    color = as.factor(resp),
                                    shape = as.factor(resp)),
                                alpha = 1, size = 1.5)+
-                    facet_wrap(~dataset)+
                     scale_color_manual(
                       NULL,
                       breaks = data_breaks,
@@ -757,7 +777,8 @@ setMethod('plot', signature(x = 'BIOMOD.formated.data', y = "missing"),
                                                   PA_dataset,
                                                   repet,
                                                   plot.eval,
-                                                  do.plot){
+                                                  do.plot,
+                                                  scales){
   
   
   ## 1 - check x -----------------------------------------
@@ -787,14 +808,28 @@ setMethod('plot', signature(x = 'BIOMOD.formated.data', y = "missing"),
   } 
   
   
-  ## 3 is a proper mask available ? -----------------------
-  has.mask <- suppressWarnings(any(!is.na(values(x@data.mask))))
-  if (has.mask) {  
+  ## 3 - check plot.eval ----------------------
+  if (missing(plot.eval)) {
+    plot.eval <- x@has.data.eval
+  } else {
+    stopifnot(is.logical(plot.eval))
+    if(plot.eval & !x@has.data.eval){
+      plot.eval <- FALSE
+      cat('\n  ! Evaluation data are missing and its plot was deactivated')
+    }
+  }
+  
+  ## 4 are proper mask available ? -----------------------
+  has.mask <- rast.has.values(rast(x@data.mask[["calibration"]]))
+  if(plot.eval){
+    has.mask.eval <- length(x@data.mask) > 1
+  }
+  if (has.mask | has.mask.eval) {  
     if (!requireNamespace("tidyterra")) {
       stop("Package `tidyterra` is missing. Please install it with `install.packages('tidyterra')`.")
     }
   } 
-  ## 4 - check plot.type  ----------------------
+  ## 5 - check plot.type  ----------------------
   if (missing(plot.type)) {
     plot.type <- "points"
   } else {
@@ -804,7 +839,7 @@ setMethod('plot', signature(x = 'BIOMOD.formated.data', y = "missing"),
     }
   }
   
-  ## 5 - plot.output----------------------
+  ## 6 - plot.output----------------------
   if (missing(plot.output)) {
     plot.output <- "facet"
   } else {
@@ -819,11 +854,11 @@ setMethod('plot', signature(x = 'BIOMOD.formated.data', y = "missing"),
   
   
   
-  ## 6 - do.plot ----------------------
+  ## 7 - do.plot ----------------------
   # do.plot
   stopifnot(is.logical(do.plot))
   
-  ## 7 - check PA_dataset ----------------------
+  ## 8 - check PA_dataset ----------------------
   
   if (inherits(x, "BIOMOD.formated.data.PA")) {
     
@@ -843,26 +878,24 @@ setMethod('plot', signature(x = 'BIOMOD.formated.data', y = "missing"),
     PA_dataset <- NA
   }
   
-  ## 8 - check plot.eval ----------------------
-  if (missing(plot.eval)) {
-    plot.eval <- x@has.data.eval
-  } else {
-    stopifnot(is.logical(plot.eval))
-    if(plot.eval & !x@has.data.eval){
-      plot.eval <- FALSE
-      cat('\n  ! Evaluation data are missing and its plot was deactivated')
-    }
-  }
-  
-  
-  
   ##  9 - check that coordinates are available -------------------------------
   
   if(nrow(x@coord) == 0){
     stop("coordinates are required to plot BIOMOD.formated.data objects")
   }
   
-  
+  ## 10 - check scales for facet_wrap -------------------------------
+  if(missing(scales)){
+    scales <- "fixed"
+    if(has.mask & has.mask.eval){
+      scales <- ifelse(ext(rast(x@data.mask[["calibration"]])) ==
+                         ext(rast(x@data.mask[["evaluation"]])),
+                       "fixed","free")
+    }
+  } else {
+    .fun_testIfIn(TRUE, "scales", scales,
+                  c("fixed","free","free_x","free_y"))
+  }
   
   ## End - return arguments ----------------------------------------------------
   
@@ -875,7 +908,9 @@ setMethod('plot', signature(x = 'BIOMOD.formated.data', y = "missing"),
               repet = repet,
               plot.eval = plot.eval,
               do.plot = do.plot,
-              has.mask = has.mask))
+              scales = scales,
+              has.mask = has.mask,
+              has.mask.eval = has.mask.eval))
 }
 
 ### show.BIOMOD.formated.data  --------------------------------------------------
@@ -1375,52 +1410,11 @@ setMethod('BIOMOD.formated.data.PA', signature(sp = 'numeric', env = 'SpatRaster
     
     if (inherits(env,'SpatRaster')) {
       ## create data.mask for ploting
-      data.mask.tmp <- classify(subset(env, 1), 
-                                matrix(c(-Inf, Inf, -1), ncol = 3))
-      data.mask <- data.mask.tmp
-      xy_pres <- pa.data.tmp$xy[which(pa.data.tmp$sp == 1), , drop = FALSE]
-      xy_abs <- pa.data.tmp$xy[which(pa.data.tmp$sp == 0), , drop = FALSE]
-      if (nrow(xy_pres) > 0) { 
-        data.mask[cellFromXY(data.mask.tmp, xy_pres)] <- 1
-      }
-      if (nrow(xy_abs) > 0) {
-        data.mask[cellFromXY(data.mask.tmp, xy_abs)] <- 0 
-      }
-      names(data.mask) <- "input_data"
-      
-      ## add eval data
-      if (BFD@has.data.eval) {
-        if (nlyr(BFD@data.mask) == 1 && names(BFD@data.mask) == "validation") {
-          try_add <- try(
-            add(data.mask) <- BFD@data.mask
-          )
-          if (!inherits(try_add, "try-error")) {
-            names(data.mask) <- c("input_data", "validation")
-          }
-        }
-      } 
-      ## add pa data
-      data.mask.names.tmp <- names(data.mask)
-      for (pa in 1:ncol(as.data.frame(pa.data.tmp$pa.tab))) {
-        data.mask.tmp2 <- data.mask.tmp
-        
-        ind.pa <- as.data.frame(pa.data.tmp$pa.tab)[, pa]
-        xy_pres <- pa.data.tmp$xy[which(pa.data.tmp$sp == 1 & ind.pa == TRUE), , drop = FALSE]
-        xy_abs <- pa.data.tmp$xy[which((pa.data.tmp$sp != 1 | is.na(pa.data.tmp$sp)) & ind.pa == TRUE), , drop = FALSE]
-        if (nrow(xy_pres) > 0) {
-          id_pres <- cellFromXY(data.mask.tmp, xy_pres)
-          data.mask.tmp2[id_pres] <- 1
-        }
-        if (nrow(xy_abs) > 0) {
-          id_abs <- cellFromXY(data.mask.tmp, xy_abs)
-          data.mask.tmp2[id_abs] <- 0
-        }
-        add(data.mask) <- data.mask.tmp2
-      }
-      names(data.mask) <- c(data.mask.names.tmp,
-                            colnames(as.data.frame(pa.data.tmp$pa.tab)))
-      
-    } else {  data.mask <- rast() }
+      data.mask <- prod(classify(env, matrix(c(-Inf, Inf, 1), ncol = 3)))
+      names(data.mask) <- "Environmental Mask"
+    } else {  
+      data.mask <- rast() 
+    }
     
     BFDP <- new('BIOMOD.formated.data.PA',
                 dir.name = BFD@dir.name,

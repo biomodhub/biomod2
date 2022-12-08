@@ -713,7 +713,7 @@ get_var_range <- function(data)
 }
 
 
-## Categorical to numeric ---------------------------------------
+## .check_bytes_format for MAXENT.Phillips options----------------------------
 ##' @name .check_bytes_format
 ##' 
 ##' @title Check bytes formatting 
@@ -742,3 +742,18 @@ get_var_range <- function(data)
   return(this_test)
 }
 
+## Tools for SpatRaster ----------------------------
+##' @name rast.has.values
+##' 
+##' @title Check whether SpatRaster is an empty \code{rast()} 
+##' 
+##' @description Check whether SpatRaster is an empty \code{rast()} 
+##' 
+##' @param x SpatRaster to be checked
+##' @return a boolean
+##' @keywords internal
+
+rast.has.values <- function(x){
+  stopifnot(inherits(x, 'SpatRaster'))
+  suppressWarnings(any(!is.na(values(x))))
+}
