@@ -120,7 +120,7 @@
 ###################################################################################################
 
 
-bm_PlotEvalBoxplot <- function(bm.out, group.by = c('algo', 'run'), do.plot = TRUE, ...)
+bm_PlotEvalBoxplot <- function(bm.out, group.by = c('algo', 'run.eval'), do.plot = TRUE, ...)
 {
   ## 0. Check arguments ---------------------------------------------------------------------------
   args <- .bm_PlotEvalBoxplot.check.args(bm.out, group.by, ...)
@@ -128,14 +128,9 @@ bm_PlotEvalBoxplot <- function(bm.out, group.by = c('algo', 'run'), do.plot = TR
   rm(args)
   
   
-  for (i in 1:length(group.by)) {
-    tmp = strsplit(group.by[i], '')[[1]]
-    group.by[i] <- paste0(toupper(tmp[1]), paste0(tmp[2:length(tmp)], collapse = ''))
-  }
-  
   ## 1. Get data for graphic ----------------------------------------------------------------------
   ## Get evaluation values
-  scores <- get_evaluations(bm.out, as.data.frame = TRUE)
+  scores <- get_evaluations(bm.out)
   
   ## Choose which dataset (calibration or validation) should be used
   eval.data <- ifelse(all(is.na(scores$Evaluating.data)), "Testing.data", "Evaluating.data")
@@ -146,7 +141,7 @@ bm_PlotEvalBoxplot <- function(bm.out, group.by = c('algo', 'run'), do.plot = TR
   ## 2. PLOT graphic ------------------------------------------------------------------------------
   gg <- ggplot(ggdat, aes_string(x = group.by[1], y = eval.data, fill = group.by[2])) +
     geom_boxplot() + ## add boxplot
-    facet_wrap("Eval.metric", scales = scales) +
+    facet_wrap("Metric.eval", scales = scales) +
     xlab("") +
     theme(legend.title = element_blank()
           , legend.key = element_rect(fill = "white")
@@ -173,7 +168,7 @@ bm_PlotEvalBoxplot <- function(bm.out, group.by = c('algo', 'run'), do.plot = TR
   ## 3. Check group.by argument -----------------------------------------------
   if (length(group.by) != 2) { stop("2 group values needed") }
   for (i in 1:length(group.by)) {
-    .fun_testIfIn(TRUE, paste0("group.by[", i, "]"), group.by[i], c('model', 'algo', 'run', 'dataset'))
+    .fun_testIfIn(TRUE, paste0("group.by[", i, "]"), group.by[i], c("full.name", "data.set", "run.eval", "algo"))
   }
   
   ## 4. Check extra args argument ---------------------------------------------

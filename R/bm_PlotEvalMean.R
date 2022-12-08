@@ -134,14 +134,10 @@ bm_PlotEvalMean <- function(bm.out, metric.eval = NULL, group.by = 'algo', do.pl
   for (argi in names(args)) { assign(x = argi, value = args[[argi]]) }
   rm(args)
   
-  
-  tmp = strsplit(group.by, '')[[1]]
-  group.by <- paste0(toupper(tmp[1]), paste0(tmp[2:length(tmp)], collapse = ''))
-  
   ## 1. Get data for graphic ----------------------------------------------------------------------
   ## Get evaluation values
-  scores <- get_evaluations(bm.out, as.data.frame = TRUE)
-  scores$Eval.metric <- as.character(scores$Eval.metric)
+  scores <- get_evaluations(bm.out)
+  scores$Metric.eval <- as.character(scores$Metric.eval)
   
   ## Choose which dataset (calibration or validation) should be used
   eval.data <- ifelse(all(is.na(scores$Evaluating.data)),
@@ -150,10 +146,10 @@ bm_PlotEvalMean <- function(bm.out, metric.eval = NULL, group.by = 'algo', do.pl
   
   ## Compute mean and sd evaluation scores
   models_mean = tapply(X = scores[, eval.data]
-                       , INDEX = list(scores$Eval.metric, scores[, group.by])
+                       , INDEX = list(scores$Metric.eval, scores[, group.by])
                        , FUN = mean, na.rm = TRUE)
   models_sd = tapply(X = scores[, eval.data]
-                     , INDEX = list(scores$Eval.metric, scores[, group.by])
+                     , INDEX = list(scores$Metric.eval, scores[, group.by])
                      , FUN = sd, na.rm = TRUE)
   
   ## Prepare data table for graphic
@@ -199,8 +195,8 @@ bm_PlotEvalMean <- function(bm.out, metric.eval = NULL, group.by = 'algo', do.pl
   
   ## 2. Check metric.eval argument --------------------------------------------
   if (is.null(metric.eval)) {
-    scores <- get_evaluations(bm.out, as.data.frame = TRUE)
-    metric.eval <- sort(unique(as.character(scores$Eval.metric)))[1:2]
+    scores <- get_evaluations(bm.out)
+    metric.eval <- sort(unique(as.character(scores$Metric.eval)))[1:2]
     warnings(toString(metric.eval), " evaluation metric.eval automatically selected")
   } else {
     metric.eval = sort(unique(as.character(metric.eval)))
@@ -213,13 +209,18 @@ bm_PlotEvalMean <- function(bm.out, metric.eval = NULL, group.by = 'algo', do.pl
   }
   
   ## 3. Check group.by argument -----------------------------------------------
-  .fun_testIfIn(TRUE, "group.by", group.by, c('model', 'algo', 'run', 'dataset'))
+  .fun_testIfIn(TRUE, "group.by", group.by, c("full.name", "data.set", "run.eval", "algo"))
+  if (length(group.by) > 1) {
+    group.by = group.by[1]
+    warning("`group.by` must contain only one value, only the first one will be kept")
+  }
   
   ## 4. Check extra args argument ---------------------------------------------
   .fun_testIfIn(TRUE, "names(args)", names(args), c('xlim', 'ylim', 'main'))
   
   
   return(list(metric.eval = metric.eval,
+              group.by = group.by,
               xlim = args$xlim,
               ylim = args$ylim,
               main = args$main))

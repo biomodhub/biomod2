@@ -707,8 +707,7 @@ setMethod(
       if (ncol(x@coord) != 2) {
         cat("\n ! Impossible to plot projections because xy coordinates are not available !")
       } else {
-        .multiple.plot(Data = get_predictions(x, full.name = models_selected, as.data.frame = TRUE)
-                       , coor = x@coord)
+        .multiple.plot(Data = get_predictions(x, full.name = models_selected), coor = x@coord)
       }
     } else {
       cat("\n !  Biomod Projection plotting issue !", fill = .Options$width)
