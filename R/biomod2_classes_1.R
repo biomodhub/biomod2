@@ -788,7 +788,7 @@ setMethod('plot', signature(x = 'BIOMOD.formated.data', y = "missing"),
   
   
   ## 3 is a proper mask available ? -----------------------
-  has.mask <- !isTRUE((all.equal(x@data.mask, rast())))
+  has.mask <- suppressWarnings(any(!is.na(values(x@data.mask))))
   if (has.mask) {  
     if (!requireNamespace("tidyterra")) {
       stop("Package `tidyterra` is missing. Please install it with `install.packages('tidyterra')`.")
