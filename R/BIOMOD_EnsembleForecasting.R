@@ -248,11 +248,8 @@ BIOMOD_EnsembleForecasting <- function(bm.em,
   .bm_cat("Do Ensemble Models Projection")
   
   ## 0. Check arguments ---------------------------------------------------------------------------
-  args <- 
-    .BIOMOD_EnsembleForecasting.check.args(
-      bm.em, bm.proj, proj.name, new.env, new.env.xy,
-      models.chosen, metric.binary, metric.filter, ...)
-  
+  args <- .BIOMOD_EnsembleForecasting.check.args(bm.em, bm.proj, proj.name, new.env, new.env.xy,
+                                                 models.chosen, metric.binary, metric.filter, ...)
   for (argi in names(args)) { assign(x = argi, value = args[[argi]]) }
   rm(args)
   
@@ -286,12 +283,11 @@ BIOMOD_EnsembleForecasting <- function(bm.em,
                                                                 , sp.name = bm.em@sp.name
                                                                 , proj.folder = nameProj)
   
-  
   ## 3. Get needed projections --------------------------------------------------------------------
-  needed_predictions <- get_needed_models(bm.em, models.chosen = models.chosen)
+  models.needed <- get_kept_models(bm.em)
   if (!is.null(bm.proj)) {
     formal_pred <- get_predictions(bm.proj,
-                                   full.name = needed_predictions,
+                                   full.name = models.needed,
                                    as.data.frame = ifelse(bm.proj@type == 'array', TRUE, FALSE))
   } else {
     # make prediction according to given environment
@@ -300,97 +296,94 @@ BIOMOD_EnsembleForecasting <- function(bm.em,
                                      new.env = new.env,
                                      proj.name = tmp_dir,
                                      new.env.xy = NULL,
-                                     models.chosen = needed_predictions,
+                                     models.chosen = models.needed,
                                      compress = TRUE,
                                      build.clamping.mask = FALSE,
                                      do.stack = TRUE,
                                      on_0_1000 = on_0_1000,
                                      nb.cpu = nb.cpu)
     # getting the results
-    formal_pred <- get_predictions(formal_pred,
-                                   full.name = needed_predictions,
-                                   as.data.frame = ifelse(inherits(new.env, 'SpatRaster'), FALSE, TRUE))
+    formal_pred <- get_predictions(formal_pred, full.name = models.needed)
+    if (!inherits(new.env, "SpatRaster")) {
+      formal_pred <- tapply(X = formal_pred$pred, INDEX = list(formal_pred$Points, formal_pred$full.name), FUN = mean)
+      formal_pred <- as.data.frame(formal_pred[, models.needed])
+    }
+    
     # remove tmp directory
     unlink(file.path(bm.em@dir.name, bm.em@sp.name, paste0("proj_", tmp_dir))
            , recursive = TRUE, force = TRUE)
   }
   
   ## 4. MAKING PROJECTIONS ------------------------------------------------------------------------
-  ef.out <- NULL
-  saved.files <- proj_names <- vector()
-  for (em.comp in bm.em@em.computed[which(bm.em@em.computed %in% models.chosen)]) {
-    cat("\n\t> Projecting", em.comp, "...")
-    if(do.stack){
-      file_name_tmp <- NULL
+  proj.em <- foreach(em.name = models.chosen) %dopar%
+    {
+      cat("\n\t> Projecting", em.name, "...")
+      if(do.stack){
+        filename <- NULL
       } else {
-      file_name_tmp <- file.path(indiv_proj_dir, paste0(em.comp,output.format))
+        # filename <- file.path(namePath, "individual_projections",
+        #                       paste0(nameProj, "_", mod.name, 
+        #                              ifelse(output.format == ".RData"
+        #                                     , ".tif", output.format)))
+        filename <- file.path(indiv_proj_dir, paste0(em.name, output.format))
+      }
+      
+      BIOMOD_LoadModels(bm.out = bm.em, full.name = em.name, as = "mod")
+      ef.tmp <- predict(mod
+                        , newdata = formal_pred
+                        , on_0_1000 = on_0_1000
+                        , data_as_formal_predictions = TRUE
+                        , filename = filename)
+      
+      if(do.stack){
+        if(inherits(new.env, "SpatRaster")){
+          return(wrap(ef.tmp)) 
+        } else {
+          return(ef.tmp)
+        }
+      } else {
+        return(filename)
+      }
     }
-    model.tmp <- NULL
-    BIOMOD_LoadModels(bm.out = bm.em, full.name = em.comp, as = 'model.tmp')
-    if (inherits(formal_pred, 'SpatRaster')) {
-      ef.tmp <- predict(model.tmp,
-                        newdata = subset(formal_pred, subset = model.tmp@model),
-                        data_as_formal_predictions = TRUE,
-                        on_0_1000 = on_0_1000,
-                        filename = file_name_tmp)
+  proj_out@models.projected <- models.chosen
+  
+  ## Putting predictions into the right format
+  if(do.stack){
+    if (inherits(new.env, "SpatRaster")) {
+      proj.em <- rast(lapply(proj.em, rast)) # SpatRaster needs to be wrapped before saving
+      names(proj.em) <- models.chosen
+      proj.em <- wrap(proj.em)
     } else {
-      ef.tmp <- predict(model.tmp,
-                        newdata = formal_pred[, model.tmp@model, drop = FALSE],
-                        data_as_formal_predictions = TRUE,
-                        on_0_1000 = on_0_1000)
+      proj.em <- as.data.frame(proj.em)
+      names(proj.em) <- models.chosen
     }
     
-    if (!is.null(ef.tmp)) {
-      proj_names <- c(proj_names, em.comp)
-      if (inherits(ef.tmp, 'SpatRaster')) {
-        if (do.stack) {
-          if (length(ef.out) > 0) {
-            add(ef.out) <- ef.tmp
-          } else {
-            ef.out <- ef.tmp
-          }
-        } else {
-          file_name_tmp <- file.path(indiv_proj_dir, paste0(em.comp, output.format))
-          if (output.format == '.RData') {
-            save(ef.tmp, file = file_name_tmp, compress = compress)
-          }
-          saved.files <- c(saved.files, file_name_tmp)
-        }
-      } else if (!is.null(ef.tmp)) {
-        # if (!is.null(ef.out) && length(ef.tmp) != nrow(ef.out)) {
-        #   proj_names = proj_names[-length(proj_names)]
-        #   warning(paste0("Predictions for ", em.comp, " do not match initial number of points (", length(ef.tmp), " instead of ", nrow(ef.out), ")"))
-        # } else {
-        ef.out <- cbind(ef.out, matrix(ef.tmp, ncol = 1))
-        # }
-      }
+    if (keep.in.memory) {
+      proj_out@proj.out@val <- proj.em
+      proj_out@proj.out@inMemory <- TRUE
     }
   }
   
-  # proj_out@models.projected <- bm.em@em.computed[which(bm.em@em.computed %in% models.chosen)]
-  proj_out@models.projected <- proj_names
-  
-  if(do.stack) {
-    if (inherits(ef.out, "SpatRaster")) {
-      names(ef.out) <- proj_out@models.projected
-      ef.out <- wrap(ef.out)
-    } else {
-      colnames(ef.out) <- proj_out@models.projected
-    }
-    # save object
-    file_name_tmp <- file.path(namePath, paste0(nameProjSp, output.format))
+  ## save projections
+  if (!do.stack){
+    saved.files = unlist(proj.em)
+    proj_out@type <- class(new.env)
+  } else {
+    assign(x = nameProjSp, value = proj.em)
+    saved.files <- file.path(namePath, paste0(nameProjSp, output.format))
     if (output.format == '.RData') {
-      save(ef.out, file = file_name_tmp, compress = compress)
-    } else if (inherits(ef.out, "PackedSpatRaster")) {
-      ## TODO : define the raster dataformat (depends if em.cv has been computed)
-      writeRaster(rast(ef.out), filename = file_name_tmp, overwrite = TRUE)
+      save(list = nameProjSp, file = saved.files, compress = compress)
+    } else {
+      writeRaster(x = rast(get(nameProjSp)), filename = saved.files,
+                  overwrite = TRUE, NAflag = -9999)#, datatype = ifelse(on_0_1000, "INT2S", "FLT4S")
     }
-    saved.files <- c(saved.files, file_name_tmp)
-  } 
-  proj_out@proj.out@link <- saved.files #bm.em@em.computed
-  if (!is.null(ef.out)) {
-    proj_out@proj.out@val <- ef.out
-    proj_out@proj.out@inMemory <- TRUE
+    proj_out@type <- class(proj_out@proj.out@val)
+  }
+  proj_out@proj.out@link <- saved.files
+  
+  # now that proj have been saved, it can be unwrapped if it is a SpatRaster
+  if (inherits(new.env, "SpatRaster") && do.stack) {
+    proj.em <- rast(proj.em) 
   }
   
   
@@ -437,10 +430,10 @@ BIOMOD_EnsembleForecasting <- function(bm.em,
         if (eval.meth %in% metric.binary) {
           nameBin <- paste0(nameProjSp, "_", eval.meth, "bin")
           # assign(x = nameBin, value = bm_BinaryTransformation(proj, thres.tmp))
-          if (inherits(ef.out, "PackedSpatRaster")){
-            ef.out <- rast(ef.out)
+          if (inherits(proj.em, "PackedSpatRaster")){
+            proj.em <- rast(proj.em)
           }
-          assign(x = nameBin, value = bm_BinaryTransformation(ef.out, thres.tmp))
+          assign(x = nameBin, value = bm_BinaryTransformation(proj.em, thres.tmp))
           
           if (output.format == '.RData') {
             # if (inherits(new.env, "SpatRaster")) {
@@ -461,7 +454,7 @@ BIOMOD_EnsembleForecasting <- function(bm.em,
         if (eval.meth %in% metric.filter) {
           nameFilt <- paste0(nameProjSp, "_", eval.meth, "filt")
           # assign(x = nameFilt, value = bm_BinaryTransformation(proj, thres.tmp, do.filtering = TRUE))
-          assign(x = nameFilt, value = bm_BinaryTransformation(ef.out, thres.tmp, do.filtering = TRUE))
+          assign(x = nameFilt, value = bm_BinaryTransformation(proj.em, thres.tmp, do.filtering = TRUE))
           
           if (output.format == '.RData') {
             # if (inherits(new.env, "SpatRaster")) {
@@ -511,9 +504,10 @@ BIOMOD_EnsembleForecasting <- function(bm.em,
 
 ## Argument Check -------------------------------------------------------------
 
-.BIOMOD_EnsembleForecasting.check.args <- 
-  function(bm.em, bm.proj, proj.name, new.env, new.env.xy, 
-           models.chosen, metric.binary, metric.filter, ...)
+.BIOMOD_EnsembleForecasting.check.args <- function(bm.em, bm.proj, proj.name
+                                                   , new.env, new.env.xy
+                                                   , models.chosen
+                                                   , metric.binary, metric.filter, ...)
   {
     args <- list(...)
     
@@ -530,7 +524,7 @@ BIOMOD_EnsembleForecasting <- function(bm.em,
       .fun_testIfInherits(TRUE, "bm.proj", bm.proj, "BIOMOD.projection.out")
       
       ## check all needed predictions are available
-      needed_pred <- get_needed_models(bm.em, models.chosen = models.chosen)  
+      needed_pred <- get_kept_models(bm.em)  
       missing_pred <- needed_pred[!(needed_pred %in% bm.proj@models.projected)]
       if (length(missing_pred) > 0) {
         stop("Some models predictions missing :", toString(missing_pred))
@@ -542,8 +536,7 @@ BIOMOD_EnsembleForecasting <- function(bm.em,
       .fun_testIfInherits(TRUE, "new.env", new.env, c('matrix', 'data.frame', 'SpatRaster','Raster'))
       
       if(inherits(new.env, 'matrix')){
-        if (any(sapply(get_formal_data(bm.em,"expl.var"),
-                       is.factor))) {
+        if (any(sapply(get_formal_data(bm.em,"expl.var"), is.factor))) {
           stop("new.env cannot be given as matrix when model involves categorical variables")
         }
         new.env <- data.frame(new.env)
@@ -583,7 +576,7 @@ BIOMOD_EnsembleForecasting <- function(bm.em,
 
     ## 6. Check metric.binary & metric.filter -----------------------------------
     if (!is.null(metric.binary) | !is.null(metric.filter)) {
-      models.evaluation <- get_evaluations(bm.em, as.data.frame = TRUE)
+      models.evaluation <- get_evaluations(bm.em)
       if (is.null(models.evaluation)) {
         warning("Binary and/or Filtered transformations of projection not ran because of models evaluation information missing")
       } else {
