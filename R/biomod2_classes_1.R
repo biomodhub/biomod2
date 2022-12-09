@@ -834,6 +834,8 @@ setMethod('plot', signature(x = 'BIOMOD.formated.data', y = "missing"),
   has.mask <- rast.has.values(rast(x@data.mask[["calibration"]]))
   if(plot.eval){
     has.mask.eval <- length(x@data.mask) > 1
+  } else {
+    has.mask.eval <- FALSE
   }
   if (has.mask | has.mask.eval) {  
     if (!requireNamespace("tidyterra")) {
