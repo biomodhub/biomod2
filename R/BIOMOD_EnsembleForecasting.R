@@ -592,7 +592,7 @@ BIOMOD_EnsembleForecasting <- function(bm.em,
       if (is.null(models.evaluation)) {
         warning("Binary and/or Filtered transformations of projection not ran because of models evaluation information missing")
       } else {
-        available.evaluation <- as.character(unique(models.evaluation$Eval.metric))
+        available.evaluation <- as.character(unique(models.evaluation$Metric.eval))
         if (!is.null(metric.binary) && metric.binary[1] == 'all') {
           metric.binary <- available.evaluation
         } else if (!is.null(metric.binary) && 

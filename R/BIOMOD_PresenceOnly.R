@@ -198,7 +198,6 @@ BIOMOD_PresenceOnly <- function(bm.mod = NULL,
   rm(args)
   
   
-  
   ## 1. Get calib.lines ------------------------------------------------------
   
   if (!is.null(bm.mod)) {
@@ -217,32 +216,25 @@ BIOMOD_PresenceOnly <- function(bm.mod = NULL,
     myResp <- myResp[calib.notNA] ## keep only lines associated to sites (no pseudo-absences)
     
     ## Get evaluation scores
-    myModelEval <- na.omit(get_evaluations(bm.mod, as.data.frame = TRUE))
-    myModelEval$Model.name <- sapply(myModelEval$Model.name, function(x) 
-      paste(c(bm.mod@sp.name, strsplit(as.character(x), split = "_")[[1]][3:1]), collapse = "_"))
+    myEvalMod <- get_evaluations(bm.mod)
     
     ## Get predictions on observations
-    myModelPred <- get_predictions(bm.mod, as.data.frame = TRUE)
+    myPredMod <- .get_list_predictions(bm.out = bm.mod, evaluation = FALSE)
     if (!is.null(bg.env)) {
-      myModelPred.sites <- as.data.frame(myModelPred)
+      myPredMod.sites <- myPredMod
       myBiomodProj.eval <- BIOMOD_Projection(bm.mod = bm.mod,
                                              proj.name = paste(bm.mod@modeling.id, "cv_EF_eval", sep = "_"), 
                                              new.env = bg.env,
                                              build.clamping.mask = FALSE)
-      myModelPred <- get_predictions(myBiomodProj.eval, as.data.frame = TRUE)
+      myPredMod <- .get_list_predictions(bm.out = myBiomodProj.eval, evaluation = FALSE)
     }
     
     ## Get predictions on evaluation data
     if (bm.mod@has.evaluation.data == TRUE) {
-      # myModelPred.eval <- as.data.frame(get(load(paste0(bm.mod@", sp.name", "/.BIOMOD_DATA/"
-      #                                                   , bm.mod@modeling.id
-      #                                                   , "/models.prediction.eval"))))
-      # colnames(myModelPred.eval) <- sapply(colnames(myModelPred.eval), function(x) 
-      #   paste(c(bm.mod@sp.name, strsplit(as.character(x), split = "[.]")[[1]][3:1]), collapse = "_"))
-      myModelPred.eval <- get_predictions(bm.mod, as.data.frame = TRUE, evaluation = TRUE)
+      myPredMod.eval <- .get_list_predictions(bm.out = bm.mod, evaluation = TRUE)
     }
   } else {
-    myModelEval = myModelPred = myModelPred.eval = NULL
+    myEvalMod = myPredMod = myPredMod.eval = NULL
   }
   
   ## 2. Ensemble models ----------------------------------
@@ -250,74 +242,68 @@ BIOMOD_PresenceOnly <- function(bm.mod = NULL,
   if (!is.null(bm.em)) {
     
     ## Get evaluation scores
-    myModelEvalEF <- na.omit(get_evaluations(bm.em, as.data.frame = TRUE))
-    myModelEvalEF$Model.name <- paste(bm.em@sp.name, as.character(myModelEvalEF$Model.name), sep = "_")
+    myEvalEM <- get_evaluations(bm.em)
     if (!is.null(bm.mod)) {
-      myModelEval <- rbindlist(list(myModelEval, myModelEvalEF), fill = TRUE)
+      myEvalMod <- rbindlist(list(myEvalMod, myEvalEM), fill = TRUE)
     } else {
-      myModelEval <- myModelEvalEF
+      myEvalMod <- myEvalEM
     }
-    myModelEval = as.data.frame(myModelEval)
-    for (cc in c("Model.name", "Algo", "Run", "Dataset", "Model")) {
-      if (cc %in% colnames(myModelEval)) {
-        myModelEval[, cc] = as.character(myModelEval[, cc])
+    myEvalMod = as.data.frame(myEvalMod)
+    for (cc in c("full.name", "data.set", "run.eval", "algo", "Metric.eval")) {
+      if (cc %in% colnames(myEvalMod)) {
+        myEvalMod[, cc] = as.character(myEvalMod[, cc])
       }
     }
     
     ## Get predictions on observations
-    myBiomodProjFF <- get_predictions(bm.em, as.data.frame = TRUE)  
+    myPredEM <- .get_list_predictions(bm.out = bm.em, evaluation = FALSE)
     if (!is.null(bg.env)) {
-      myBiomodProjFF.sites <- as.data.frame(myBiomodProjFF)
+      myPredEM.sites <- myPredEM
       
-      if (exists("myModelPred.sites")) {
-        myModelPred.sites <- cbind(myModelPred.sites, myBiomodProjFF.sites)
+      if (exists("myPredMod.sites")) {
+        myPredMod.sites <- c(myPredMod.sites, myPredEM.sites)
       } else {
-        myModelPred.sites <- myBiomodProjFF.sites
+        myPredMod.sites <- myPredEM.sites
       }
       
       if(exists("myBiomodProj.eval")){
-        myBiomodProjFF <-
-          BIOMOD_EnsembleForecasting(
-            bm.em = bm.em,
-            bm.proj = myBiomodProj.eval,
-            proj.name = paste(bm.em@modeling.id, "cv_EF_bg", sep = "_"))
+        myPredEM <- BIOMOD_EnsembleForecasting(
+          bm.em = bm.em,
+          bm.proj = myBiomodProj.eval,
+          proj.name = paste(bm.em@modeling.id, "cv_EF_bg", sep = "_"))
       } else {
-        myBiomodProjFF <-
-          BIOMOD_EnsembleForecasting(
+        myPredEM <- BIOMOD_EnsembleForecasting(
             bm.em = bm.em,
             new.env = bg.env,
             proj.name = paste(bm.em@modeling.id, "cv_EF_bg", sep = "_"))
       }
-      
-      myBiomodProjFF <- get_predictions(myBiomodProjFF, as.data.frame = TRUE)
+      myPredEM <- .get_list_predictions(bm.out = myPredEM, evaluation = FALSE)
     }
     if (!is.null(bm.mod)) {
-      myModelPred <- cbind(myModelPred, myBiomodProjFF)
+      myPredMod <- c(myPredMod, myPredEM)
     } else {
-      myModelPred <- myBiomodProjFF
+      myPredMod <- myPredEM
     }
     
     ## Get predictions on evaluation data
     if (!is.null(bm.mod) && bm.mod@has.evaluation.data == TRUE) {
-      myBiomodProjFF.eval <- get_predictions(bm.em, as.data.frame = TRUE, evaluation = TRUE)
-      myModelPred.eval <- cbind(myModelPred.eval, myBiomodProjFF.eval)      
+      myPredEM.eval <- .get_list_predictions(bm.out = bm.em, evaluation = TRUE)
+      myPredMod.eval <- c(myPredMod.eval, myPredEM.eval)
     }  
   }
   
   ## CALCULATE BOYCE & MPA VALUES ---------------------------------------------
-  mpa.eval <- boyce.eval <- myModelEval[!duplicated(myModelEval$Model.name), ]
-  boyce.eval$Eval.metric <- "BOYCE"
-  boyce.eval[, c("Testing.data", "Cutoff", "Sensitivity", "Specificity")] <- NA
-  mpa.eval$Eval.metric <- "MPA"
-  mpa.eval[, c("Testing.data", "Cutoff", "Sensitivity", "Specificity")] <- NA
+  mpa.eval <- boyce.eval <- myEvalMod[!duplicated(myEvalMod$full.name), ]
+  boyce.eval$Metric.eval <- "BOYCE"
+  boyce.eval[, c("Cutoff", "Sensitivity", "Specificity", "Testing.data")] <- NA
+  mpa.eval$Metric.eval <- "MPA"
+  mpa.eval[, c("Cutoff", "Sensitivity", "Specificity", "Testing.data")] <- NA
   
   for (i in 1:nrow(boyce.eval))
   {
     ## Get model informations
-    Model.name <- boyce.eval[i,1]
+    Model.name <- boyce.eval[i, 1]
     tmp <- strsplit(as.character(Model.name), split = "_")[[1]]
-    n <- length(tmp)
-    tec <- paste(tmp[3:n], collapse = "_") 
     run <- tmp[c(grep("RUN", tmp), grep("Full", tmp), grep("mergedRun", tmp))]
     
     ## Get evaluation lines
@@ -339,10 +325,10 @@ BIOMOD_PresenceOnly <- function(bm.mod = NULL,
     if (is.null(bg.env)) {
       if (length(ind.eval) == 0) { ## No background, no evaluation : all obs and pred
         Test <- myResp
-        Pred <- myModelPred[, Model.name]
+        Pred <- myPredMod[[Model.name]]
       } else { ## No background : only obs and pred on eval lines
         Test <- myResp[ind.eval]
-        Pred <- myModelPred[ind.eval, Model.name]
+        Pred <- myPredMod[[Model.name]][ind.eval]
       }
       Pred.obs <- Pred[which(Test == 1)]
     } else {
@@ -352,7 +338,7 @@ BIOMOD_PresenceOnly <- function(bm.mod = NULL,
         ind.obs = intersect(ind.eval, which(myResp == 1))
       }
       Test <- c(myResp[ind.obs], rep(0, nrow(bg.env)))
-      Pred <- c(myModelPred.sites[ind.obs, Model.name], myModelPred[, Model.name])
+      Pred <- c(myPredMod.sites[[Model.name]][ind.obs], myPredMod[[Model.name]])
       Pred.obs <- Pred[1:length(ind.obs)]
     }
     
@@ -394,7 +380,7 @@ BIOMOD_PresenceOnly <- function(bm.mod = NULL,
     ## Compute Boyce and MPA values for evaluation data -----------------------
     if (!is.null(bm.mod) && bm.mod@has.evaluation.data == TRUE) {
       myResp.eval <- get_formal_data(bm.mod)@eval.data.species
-      Pred.eval <- myModelPred.eval[, Model.name]
+      Pred.eval <- myPredMod.eval[, Model.name]
       
       boy <- ecospat.boyce(fit = Pred.eval,
                            obs = Pred.eval[myResp.eval == 1],
@@ -404,12 +390,12 @@ BIOMOD_PresenceOnly <- function(bm.mod = NULL,
       mpa.eval[ind.m,"Evaluating.data"] <- NA
     }
   }
-  myModelEval[, c("Sensitivity", "Specificity")] <- round(myModelEval[, c("Sensitivity", "Specificity")], 1)
+  myEvalMod[, c("Sensitivity", "Specificity")] <- round(myEvalMod[, c("Sensitivity", "Specificity")], 1)
   boyce.eval[, c("Sensitivity", "Specificity")] <- round(boyce.eval[, c("Sensitivity", "Specificity")] * 100, 1)
   mpa.eval[, c("Sensitivity", "Specificity")] <- round(mpa.eval[, c("Sensitivity", "Specificity")] * 100, 1)
   
   ## SAVE OUTPUTS ---------------------------------------------------------------------------------
-  output <- rbind(myModelEval, boyce.eval, mpa.eval)
+  output <- rbind(myEvalMod, boyce.eval, mpa.eval)
   
   if (save.output) {
     if (!is.null(bm.mod)) {
@@ -426,6 +412,16 @@ BIOMOD_PresenceOnly <- function(bm.mod = NULL,
   return(output)
 }
 
+
+.get_list_predictions <- function(bm.out, evaluation = FALSE)
+{
+  myPred <- get_predictions(bm.out, evaluation = evaluation)
+  myPred <- tapply(X = myPred$pred, INDEX = list(myPred$Points, myPred$full.name), FUN = mean)
+  # myPred <- as.data.frame(myPred)
+  myPred.list <- lapply(1:ncol(myPred), function(x) myPred[, x])
+  names(myPred.list) <- colnames(myPred)
+  return(myPred.list)
+}
 
 
 # Check Arguments -------------------------------------------------------------
