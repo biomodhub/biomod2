@@ -300,7 +300,7 @@ get_var_range <- function(data)
   keep_layers <- out_names
   if ("full.name" %in% names(subset.list) && !is.null(subset.list[["full.name"]])) {
     .fun_testIfIn(TRUE, "full.name", subset.list[["full.name"]], out_names)
-    keep_layers <- intersect(subset.list[["full.name"]], out_names)
+    keep_layers <- which(out_names %in% subset.list[["full.name"]])
   } else {
     keep_subset <- foreach(sub.i = names(subset.list)) %do%
       {

@@ -457,8 +457,22 @@ setMethod("get_predictions", "BIOMOD.models.out",
 ##' @export
 ##' 
 
-setMethod("get_built_models", "BIOMOD.models.out", function(obj) { 
-  return(obj@models.computed)
+setMethod("get_built_models", "BIOMOD.models.out", function(obj,
+                                                            full.name = NULL,
+                                                            data.set = NULL,
+                                                            run.eval = NULL,
+                                                            algo = NULL) { 
+  subset.list <- list()
+  subset.list[["full.name"]] <- full.name
+  subset.list[["data.set"]] <- data.set
+  subset.list[["run.eval"]] <- run.eval
+  subset.list[["algo"]] <- algo
+  if(length(subset.list) > 0){
+    keep_layers <- .filter_outputs.spatRaster(names(out), subset.list)
+    return(obj@models.computed[keep_layers])
+  } else {
+    return(obj@models.computed)
+  }
 })
 
 ## get_evaluations.BIOMOD.models.out ---------------------------------------------------
@@ -741,8 +755,28 @@ setMethod('show', signature('BIOMOD.projection.out'),
 ##' @export
 ##' 
 
-setMethod("get_projected_models", "BIOMOD.projection.out", function(obj){
-  return(obj@models.projected) 
+setMethod("get_projected_models", "BIOMOD.projection.out", function(obj,
+                                                                    full.name = NULL,
+                                                                    data.set = NULL,
+                                                                    run.eval = NULL,
+                                                                    algo = NULL){
+  out <- obj@models.projected
+  if (length(grep("EM|merged", names(out))) > 0) {
+    return(out)
+  } else {
+    subset.list <- list()
+    subset.list[["full.name"]] <- full.name
+    subset.list[["data.set"]] <- data.set
+    subset.list[["run.eval"]] <- run.eval
+    subset.list[["algo"]] <- algo
+  }
+  
+  if(length(subset.list) > 0){
+    keep_layers <- .filter_outputs.spatRaster(names(out), subset.list)
+    return(out[keep_layers])
+  } else {
+    return(out)
+  }
 })
 
 ## free.BIOMOD.projection.out --------------------------------------------------
