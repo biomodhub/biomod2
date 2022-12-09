@@ -777,7 +777,7 @@ rast.has.values <- function(x){
 
 check_duplicated_cells <- function(env, xy, sp, filter.raster){
   sp.cell <- duplicated(cellFromXY(env, xy))
-  if(any(duplicated(sp.cell))){
+  if(any(sp.cell)){
     if(filter.raster){
       sp <- sp[!sp.cell]
       xy <- xy[!sp.cell,]

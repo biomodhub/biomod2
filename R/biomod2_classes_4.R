@@ -863,13 +863,12 @@ setMethod('predict2', signature(object = 'MAXENT.Phillips_biomod2_model', newdat
             ## there is no need to provide meaningful values.
             Pred_swd <- read.csv(file.path(temp_workdir, "Predictions/Pred_swd.csv"))
             if (nrow(Pred_swd) != nrow(newdata)) {
-              tmp = cbind("predict", newdata[, 1], newdata[, 2])
+              tmp = cbind("predict", newdata[, 1], newdata[, 1])
               colnames(tmp) = c("predict", "x", "y")
               Pred_swd = cbind(tmp, newdata)
             } else {
               Pred_swd <- cbind(Pred_swd[, 1:3], newdata)
             }
-            
             m_predictFile <- file.path(temp_workdir, "Predictions", paste0("Pred_swdBis_", sample(1:100000, 1), ".csv"))
             while (file.exists(m_predictFile)) {
               m_predictFile <- file.path(temp_workdir, "Predictions", paste0("Pred_swdBis_", sample(1:100000, 1), ".csv"))
@@ -882,7 +881,6 @@ setMethod('predict2', signature(object = 'MAXENT.Phillips_biomod2_model', newdat
               path_to_maxent.jar <-  file.path(getwd(), "maxent.jar")
             }
             
-            # browser()
             # cat("\n\t\tRunning Maxent...")
             maxent.command <- 
               paste0("java ",
