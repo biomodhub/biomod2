@@ -118,7 +118,8 @@ with different strategies (see Details).</p>
 <span>  PA.dist.max <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  PA.sre.quant <span class="op">=</span> <span class="fl">0.025</span>,</span>
 <span>  PA.user.table <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  na.rm <span class="op">=</span> <span class="cn">TRUE</span></span>
+<span>  na.rm <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  filter.raster <span class="op">=</span> <span class="cn">FALSE</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -242,6 +243,13 @@ will be used to build the species distribution model(s) for each repetition (see
 <dd><p>(<em>optional, default</em> <code>TRUE</code>) <br> 
 A <code>logical</code> value defining whether points having one or several missing values for 
 explanatory variables should be removed from the analysis or not</p></dd>
+
+
+<dt>filter.raster</dt>
+<dd><p>(<em>optional, default</em> <code>FALSE</code>) <br> 
+A <code>logical</code> value used when <code>expl.var</code> is of raster type. 
+<code>filter.raster</code> activates filtering of <code>resp.var</code> when several 
+points occur in the same raster cell.</p></dd>
 
 </dl></div>
     <div id="value">

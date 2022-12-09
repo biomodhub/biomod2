@@ -144,6 +144,12 @@
 <code>BIOMOD_FormatingData</code> output. These method now support the
 use of <code>calib.lines</code> to explore how the cross-validation
 dataset are structured.</li>
+<li>
+<code>BIOMOD_FormatingData</code> now gives warning when several
+input data points are located in the same raster cells</li>
+<li>Added options <code>filter.raster</code> in
+<code>BIOMOD_FormatingData</code> to filter data points so that none are
+located in the same raster cells.</li>
 </ul>
 </div>
 <div class="section level5">
@@ -237,6 +243,10 @@ for <code>SpatRaster</code> so that it saves environmental data as
 <code>.asc</code> and do not use the <code>data.frame</code>
 method.</li>
 <li>fixed some automatic boolean conversion</li>
+<li>Cleaned up <code>BIOMOD.formated.data@data.mask</code> slot.
+<code>data.mask</code> can now be safely saved and re-opened ;
+<code>data.mask</code> can now store a different extent for evaluation
+dataset</li>
 </ul>
 </div>
 </div>

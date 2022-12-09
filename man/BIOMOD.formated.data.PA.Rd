@@ -24,7 +24,8 @@
   PA.dist.max = NULL,
   PA.sre.quant = 0.025,
   PA.user.table = NULL,
-  na.rm = TRUE
+  na.rm = TRUE,
+  filter.raster = FALSE
 )
 
 \S4method{BIOMOD.formated.data.PA}{numeric,SpatRaster}(
@@ -43,7 +44,8 @@
   PA.dist.max = NULL,
   PA.sre.quant = 0.025,
   PA.user.table = NULL,
-  na.rm = TRUE
+  na.rm = TRUE,
+  filter.raster = FALSE
 )
 }
 \arguments{

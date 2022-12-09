@@ -8,7 +8,6 @@
 \alias{get_projected_models}
 \alias{free}
 \alias{get_predictions}
-\alias{get_needed_models}
 \alias{get_kept_models}
 \alias{get_built_models}
 \alias{get_evaluations}
@@ -25,7 +24,6 @@
 \alias{get_predictions,BIOMOD.projection.out-method}
 \alias{get_formal_data,BIOMOD.ensemble.models.out-method}
 \alias{get_built_models,BIOMOD.ensemble.models.out-method}
-\alias{get_needed_models,BIOMOD.ensemble.models.out-method}
 \alias{get_kept_models,BIOMOD.ensemble.models.out-method}
 \alias{get_predictions,BIOMOD.ensemble.models.out-method}
 \alias{get_evaluations,BIOMOD.ensemble.models.out-method}
@@ -82,9 +80,7 @@
 
 \S4method{get_formal_data}{BIOMOD.ensemble.models.out}(obj, subinfo = NULL)
 
-\S4method{get_built_models}{BIOMOD.ensemble.models.out}(obj, ...)
-
-\S4method{get_needed_models}{BIOMOD.ensemble.models.out}(obj, selected.models = "all", ...)
+\S4method{get_built_models}{BIOMOD.ensemble.models.out}(obj)
 
 \S4method{get_kept_models}{BIOMOD.ensemble.models.out}(obj)
 
@@ -97,7 +93,7 @@
   algo = NULL
 )
 
-\S4method{get_built_models}{BIOMOD.ensemble.models.out}(obj, ...)
+\S4method{get_built_models}{BIOMOD.ensemble.models.out}(obj)
 
 \S4method{get_evaluations}{BIOMOD.ensemble.models.out}(
   obj,
@@ -137,15 +133,15 @@ among \code{NULL}, \code{expl.var.names}, \code{resp.var}, \code{expl.var}, \cod
 \item{full.name}{a \code{vector} containing model names to be kept, must be either \code{all} 
 or a sub-selection of model names}
 
-\item{selected.models}{a \code{vector} containing names of the needed models of a 
-\code{\link{BIOMOD.ensemble.models.out}} object}
-
 \item{\ldots}{(\emph{optional, one or several of the following arguments depending on the selected 
 function)})}
 
 \item{model}{a \code{character} corresponding to the model name, must be either \code{GLM}, 
 \code{GBM}, \code{GAM}, \code{CTA}, \code{ANN}, \code{SRE}, \code{FDA}, \code{MARS}, 
 \code{RF}, \code{MAXENT.Phillips}, \code{MAXENT.Phillips.2}}
+
+\item{selected.models}{a \code{vector} containing names of the needed models of a 
+\code{\link{BIOMOD.ensemble.models.out}} object}
 }
 \value{
 \describe{
@@ -165,8 +161,6 @@ function)})}
   \code{\link{BIOMOD.projection.out}} or
   \code{\link{BIOMOD.ensemble.models.out}} object}
 
-  \item{\code{get_needed_models}}{a \code{vector} containing names of the
-  needed models of a \code{\link{BIOMOD.ensemble.models.out}} object}
   \item{\code{get_kept_models}}{a \code{vector} containing names of the kept
   models of a \code{\link{BIOMOD.ensemble.models.out}} object}
 

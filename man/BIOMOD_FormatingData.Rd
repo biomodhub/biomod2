@@ -20,7 +20,8 @@ BIOMOD_FormatingData(
   PA.dist.max = NULL,
   PA.sre.quant = 0.025,
   PA.user.table = NULL,
-  na.rm = TRUE
+  na.rm = TRUE,
+  filter.raster = FALSE
 )
 }
 \arguments{
@@ -111,6 +112,11 @@ will be used to build the species distribution model(s) for each repetition (see
 \item{na.rm}{(\emph{optional, default} \code{TRUE}) \cr 
 A \code{logical} value defining whether points having one or several missing values for 
 explanatory variables should be removed from the analysis or not}
+
+\item{filter.raster}{(\emph{optional, default} \code{FALSE}) \cr 
+A \code{logical} value used when \code{expl.var} is of raster type. 
+\code{filter.raster} activates filtering of \code{resp.var} when several 
+points occur in the same raster cell.}
 }
 \value{
 A \code{BIOMOD.formated.data} object that can be used to build species distribution model(s) 

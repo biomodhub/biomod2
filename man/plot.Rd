@@ -13,7 +13,8 @@
   PA_dataset,
   repet,
   plot.eval,
-  do.plot = TRUE
+  do.plot = TRUE,
+  scales
 )
 }
 \arguments{

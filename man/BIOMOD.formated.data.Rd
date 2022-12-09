@@ -21,7 +21,9 @@
   eval.env = NULL,
   eval.xy = NULL,
   na.rm = TRUE,
-  data.mask = NULL
+  data.mask = NULL,
+  shared.eval.env = FALSE,
+  filter.raster = FALSE
 )
 
 \S4method{BIOMOD.formated.data}{data.frame,ANY}(
@@ -33,7 +35,8 @@
   eval.sp = NULL,
   eval.env = NULL,
   eval.xy = NULL,
-  na.rm = TRUE
+  na.rm = TRUE,
+  filter.raster = FALSE
 )
 
 \S4method{BIOMOD.formated.data}{numeric,matrix}(
@@ -45,7 +48,8 @@
   eval.sp = NULL,
   eval.env = NULL,
   eval.xy = NULL,
-  na.rm = TRUE
+  na.rm = TRUE,
+  filter.raster = FALSE
 )
 
 \S4method{BIOMOD.formated.data}{numeric,SpatRaster}(
@@ -57,7 +61,9 @@
   eval.sp = NULL,
   eval.env = NULL,
   eval.xy = NULL,
-  na.rm = TRUE
+  na.rm = TRUE,
+  shared.eval.env = FALSE,
+  filter.raster = FALSE
 )
 
 \S4method{show}{BIOMOD.formated.data}(object)
