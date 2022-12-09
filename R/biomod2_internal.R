@@ -306,7 +306,7 @@ get_var_range <- function(data)
       {
         keep_tmp <- 1:length(out_names)
         if (!is.null(subset.list[[sub.i]])) {
-          .fun_testIfIn(TRUE, sub.i, subset.list[[sub.i]], .extract_modelNamesInfo(out_names, info = ifelse(sub.i == "Model", "models", sub.i)))
+          .fun_testIfIn(TRUE, sub.i, subset.list[[sub.i]], .extract_modelNamesInfo(out_names, info = ifelse(sub.i == "algo", "models", sub.i)))
           keep_tmp <- grep(paste(subset.list[[sub.i]], collapse = "|"), out_names)
         }
         return(keep_tmp)
