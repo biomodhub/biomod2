@@ -303,7 +303,8 @@ BIOMOD_Projection <- function(bm.mod,
       }
       pred.tmp <- predict(mod, new.env, on_0_1000 = on_0_1000, 
                           filename = filename, omit.na = omit.na, 
-                          temp_workdir = temp_workdir, seedval = seed.val)
+                          temp_workdir = temp_workdir, seedval = seed.val,
+                          overwrite = TRUE)
       if(do.stack){
         if(inherits(new.env, "SpatRaster")){
           return(wrap(pred.tmp)) 
