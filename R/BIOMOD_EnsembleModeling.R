@@ -698,7 +698,11 @@ BIOMOD_EnsembleModeling <- function(bm.mod,
           return(ListOut)
         }
       }
-      names(em.out.algo) <- em.algo
+      ## Convert em.algo to match biomod2_ensemble_model@model_class values
+      em.classes <- c('EMmean', 'EMcv', 'EMci', 'EMmedian', 'EMca', 'EMwmean')
+      names(em.classes) <- c('prob.mean', 'prob.cv', 'prob.ci',
+                             'prob.median', 'committee.averaging', 'prob.mean.weight')
+      names(em.out.algo) <- em.classes[em.algo]
       return(em.out.algo)
     }
     names(em.out.eval) <- metric.select
@@ -820,7 +824,7 @@ BIOMOD_EnsembleModeling <- function(bm.mod,
       em.algo <- c(em.algo, 'prob.ci.inf', 'prob.ci.sup')
     }
   }
-  
+
   
   ## 4. Check metric.select ---------------------------------------------------
   if (!is.null(metric.select)) {
@@ -971,23 +975,22 @@ BIOMOD_EnsembleModeling <- function(bm.mod,
   assembl.list = list()
   if (em.by == 'PA_dataset') {
     for (dat in .extract_modelNamesInfo(models.chosen, info = 'data.set')) {
-      assembl.list[[paste0("mergedAlgo_mergedRun_", dat)]] <- models.chosen[grep(paste0("_", dat, "_"), models.chosen)]
+      assembl.list[[paste0(dat, "_mergedRun_mergedAlgo")]] <- models.chosen[grep(paste0("_", dat, "_"), models.chosen)]
     }
   } else if (em.by == 'algo') {
     for (algo in .extract_modelNamesInfo(models.chosen, info = 'models')) {
       # grep use a regexp to match end of model name with algo name
-      assembl.list[[paste0(algo, "_mergedRun_mergedData")]] <- 
-        models.chosen[grep(paste0("*\\_", algo,"$"), models.chosen)]
+      assembl.list[[paste0( "mergedData_mergedRun_", algo)]] <- models.chosen[grep(paste0("*\\_", algo,"$"), models.chosen)]
     }
   } else if (em.by == 'all') {
-    assembl.list[["mergedAlgo_mergedRun_mergedData"]] <- models.chosen
+    assembl.list[["mergedData_mergedRun_mergedAlgo"]] <- models.chosen
   } else if (em.by == 'PA_dataset+repet') {
     for (dat in .extract_modelNamesInfo(models.chosen, info = 'data.set')) {
       for (repet in .extract_modelNamesInfo(models.chosen, info = 'run.eval')) {
         mod.tmp <- intersect(x = grep(paste0("_", dat, "_"), models.chosen)
                              , y = grep(paste0("_", repet, "_"), models.chosen))
         if (length(mod.tmp) > 0) {
-          assembl.list[[paste0("mergedAlgo_", repet, "_", dat)]] <- models.chosen[mod.tmp]
+          assembl.list[[paste0(dat, "_", repet, "_mergedAlgo")]] <- models.chosen[mod.tmp]
         }
       }
     }
@@ -998,7 +1001,7 @@ BIOMOD_EnsembleModeling <- function(bm.mod,
         mod.tmp <- intersect(x = grep(paste0("_", dat, "_"), models.chosen)
                              , y = grep(paste0("*\\_", algo,"$"), models.chosen))
         if (length(mod.tmp) > 0) {
-          assembl.list[[paste0(algo, "_mergedRun_", dat)]] <- models.chosen[mod.tmp]
+          assembl.list[[paste0(dat, "_mergedRun_", algo)]] <- models.chosen[mod.tmp]
         }
       }
     }

@@ -361,13 +361,14 @@ BIOMOD_EnsembleForecasting <- function(bm.em,
       tmp <- melt(proj.em, id.vars =  "Points")
       colnames(tmp) <- c("Points", "full.name", "pred")
       tmp$full.name <- as.character(tmp$full.name)
-      # tmp$merged.by = sapply(tmp$full.name, function(x) strsplit(x, "_")[[1]][3:5])
-      tmp$merged.by = sapply(tmp$full.name, function(x) sub(".*?_merged", "merged", x))
-      # tmp$filtered.by = sapply(tmp$full.name, function(x) strsplit(x, "_")[[1]][2])
+      tmp.merged.by = sapply(tmp$full.name, function(x) sub(".*?_merged", "merged", x))
+      tmp$merged.by.data.set = sapply(tmp.merged.by, function(x) strsplit(x, "_")[[1]][1])
+      tmp$merged.by.run.eval = sapply(tmp.merged.by, function(x) strsplit(x, "_")[[1]][2])
+      tmp$merged.by.algo = sapply(tmp.merged.by, function(x) strsplit(x, "_")[[1]][3])
       tmp$filtered.by = sapply(tmp$full.name, function(x) sub(".*By", "", strsplit(x, "_")[[1]][2]))
-      # tmp$algo = sapply(tmp$full.name, function(x) strsplit(x, "_")[[1]][4])
-      # proj.em <- tmp[, c("full.name", "merged.by", "filtered.by", "algo", "Points", "pred")]
-      proj.em <- tmp[, c("full.name", "merged.by", "filtered.by", "Points", "pred")]
+      tmp$algo = sapply(tmp$full.name, function(x) sub("By.*", "", strsplit(x, "_")[[1]][2]))
+      proj.em <- tmp[, c("full.name", "merged.by.data.set", "merged.by.run.eval", "merged.by.algo"
+                         , "filtered.by", "algo", "Points", "pred")]
     }
     
     if (keep.in.memory) {

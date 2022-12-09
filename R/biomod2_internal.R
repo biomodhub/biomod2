@@ -334,6 +334,7 @@ get_var_range <- function(data)
     dim_names <- c("data.set", "run.eval", "algo")
   } else if (obj.type == "em") {
     dim_names <- c("merged.by", "filtered.by", "algo")
+    dim_names.bis <- c("merged.by.data.set", "merged.by.run.eval", "merged.by.algo")
   }
   
   ## 1. GET dimension names -------------------------------------------------------------
@@ -368,8 +369,15 @@ get_var_range <- function(data)
         if (obj.type == "mod") {
           res[[dim_names[1]]] <- sub(".*_", "", res[[dim_names[1]]])
           res[[dim_names[2]]] <- sub(".*_", "", res[[dim_names[2]]])
+          return(res[, c("full.name", dim_names, col_names)])
+        } else {
+          tmp <- names(obj.out)[i.dim1]
+          res[[dim_names.bis[1]]] <- strsplit(tmp, "_")[[1]][1]
+          res[[dim_names.bis[2]]] <- strsplit(tmp, "_")[[1]][2]
+          res[[dim_names.bis[3]]] <- strsplit(tmp, "_")[[1]][3]
+          res[[dim_names[1]]] <- NULL
+          return(res[, c("full.name", dim_names.bis, dim_names[-1], col_names)])
         }
-        return(res[, c("full.name", dim_names, col_names)])
       }
     }
 
