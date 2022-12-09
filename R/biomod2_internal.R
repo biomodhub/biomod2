@@ -757,3 +757,38 @@ rast.has.values <- function(x){
   stopifnot(inherits(x, 'SpatRaster'))
   suppressWarnings(any(!is.na(values(x))))
 }
+
+##' @name check_duplicated_cells
+##' 
+##' @title Check duplicated cells
+##' 
+##' @description Identify data that are contained in the same raster cells ; 
+##' print warnings if need be and filter those data if asked for.
+##' 
+##' 
+##' @param env a \code{SpatRaster} with environmental data
+##' @param xy a \code{data.frame} with coordinates
+##' @param sp a \code{vector} with species occurrence data
+##' @param filter.raster a \code{boolean} 
+##' @return a \code{list}
+##' @keywords internal
+##' 
+##' @importFrom terra cellFromXY
+
+check_duplicated_cells <- function(env, xy, sp, filter.raster){
+  sp.cell <- duplicated(cellFromXY(env, xy))
+  if(any(duplicated(sp.cell))){
+    if(filter.raster){
+      sp <- sp[!sp.cell]
+      xy <- xy[!sp.cell,]
+      cat("\n !!! Some data are located in the same raster cell. 
+          Only the first data in each cell will be kept as `filter.raster = TRUE`.")
+    } else {
+      cat("\n !!! Some data are located in the same raster cell. 
+          Please set `filter.raster = TRUE` if you want an automatic filtering.")
+    }
+  }
+  return(list("sp"  = sp, 
+              "xy"  = xy))
+  
+}

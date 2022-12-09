@@ -143,7 +143,7 @@ NULL
 
 ##' @name BIOMOD.formated.data-class
 ##' @rdname BIOMOD.formated.data
-##' @importFrom terra rast nlyr app is.factor subset extract cellFromXY `add<-` 
+##' @importFrom terra rast app is.factor subset extract cellFromXY `add<-` 
 ##' classify rasterize values
 ##' @export
 ##' 
@@ -184,7 +184,8 @@ setGeneric("BIOMOD.formated.data", def = function(sp, env, ...) { standardGeneri
 setMethod('BIOMOD.formated.data', signature(sp = 'numeric', env = 'data.frame'),
           function(sp, env, xy = NULL, dir.name = '.', sp.name = NULL
                    , eval.sp = NULL, eval.env = NULL, eval.xy = NULL
-                   , na.rm = TRUE, data.mask = NULL, shared.eval.env = FALSE)  {
+                   , na.rm = TRUE, data.mask = NULL, shared.eval.env = FALSE,
+                   filter.raster = FALSE)  {
             
             if (is.null(data.mask)) { 
               suppressWarnings(data.mask <- list("calibration" = wrap(rast())))
@@ -207,7 +208,8 @@ setMethod('BIOMOD.formated.data', signature(sp = 'numeric', env = 'data.frame'),
                 env = eval.env,
                 xy = eval.xy,
                 dir.name = dir.name,
-                sp.name = sp.name
+                sp.name = sp.name,
+                filter.raster = filter.raster
               )
               
               if (rast.has.values(rast(BFDeval@data.mask[[1]]))) {
@@ -237,7 +239,7 @@ setMethod('BIOMOD.formated.data', signature(sp = 'numeric', env = 'data.frame'),
             if (na.rm) {
               rowToRm <- unique(unlist(lapply(BFD@data.env.var, function(x) { return(which(is.na(x))) })))
               if (length(rowToRm) > 0) {
-                cat("\n\t\t\t! Some NAs have been automatically removed from your data")
+                cat("\n ! Some NAs have been automatically removed from your data")
                 BFD@coord <- BFD@coord[-rowToRm, , drop = FALSE]
                 BFD@data.species <- BFD@data.species[-rowToRm]
                 BFD@data.env.var <- BFD@data.env.var[-rowToRm, , drop = FALSE]
@@ -245,7 +247,7 @@ setMethod('BIOMOD.formated.data', signature(sp = 'numeric', env = 'data.frame'),
               if (BFD@has.data.eval) {
                 rowToRm <- unique(unlist(lapply(BFD@eval.data.env.var, function(x) { return(which(is.na(x))) })))
                 if (length(rowToRm) > 0) {
-                  cat("\n\t\t\t! Some NAs have been automatically removed from your evaluation data")
+                  cat("\n ! Some NAs have been automatically removed from your evaluation data")
                   BFD@eval.coord <- BFD@eval.coord[-rowToRm, , drop = FALSE]
                   BFD@eval.data.species <- BFD@eval.data.species[-rowToRm]
                   BFD@eval.data.env.var <- BFD@eval.data.env.var[-rowToRm, , drop = FALSE]
@@ -263,9 +265,9 @@ setMethod('BIOMOD.formated.data', signature(sp = 'numeric', env = 'data.frame'),
 ##' 
 
 setMethod('BIOMOD.formated.data', signature(sp = 'data.frame'),
-          function(sp, env, xy = NULL, dir.name = '.', sp.name = NULL
-                   , eval.sp = NULL, eval.env = NULL, eval.xy = NULL
-                   , na.rm = TRUE)
+          function(sp, env, xy = NULL, dir.name = '.', sp.name = NULL,
+                   eval.sp = NULL, eval.env = NULL, eval.xy = NULL,
+                   na.rm = TRUE, filter.raster = FALSE)
           {
             if (ncol(sp) > 1) { stop("Invalid response variable") }
             sp <- as.numeric(unlist(sp))
@@ -281,9 +283,9 @@ setMethod('BIOMOD.formated.data', signature(sp = 'data.frame'),
 ##' 
 
 setMethod('BIOMOD.formated.data', signature(sp = 'numeric', env = 'matrix'),
-          function(sp, env, xy = NULL, dir.name = '.', sp.name = NULL
-                   , eval.sp = NULL, eval.env = NULL, eval.xy = NULL
-                   , na.rm = TRUE)
+          function(sp, env, xy = NULL, dir.name = '.', sp.name = NULL,
+                   eval.sp = NULL, eval.env = NULL, eval.xy = NULL,
+                   na.rm = TRUE, filter.raster = FALSE)
           {
             env <- as.data.frame(env)
             BFD <- BIOMOD.formated.data(sp, env, xy, dir.name, sp.name, eval.sp, eval.env, eval.xy, na.rm = na.rm)
@@ -298,30 +300,40 @@ setMethod('BIOMOD.formated.data', signature(sp = 'numeric', env = 'matrix'),
 ##' 
 
 setMethod('BIOMOD.formated.data', signature(sp = 'numeric', env = 'SpatRaster'),
-          function(sp, env, xy = NULL, dir.name = '.', sp.name = NULL
-                   , eval.sp = NULL, eval.env = NULL, eval.xy = NULL
-                   , na.rm = TRUE, shared.eval.env = FALSE) {
+          function(sp, env, xy = NULL, dir.name = '.', sp.name = NULL,
+                   eval.sp = NULL, eval.env = NULL, eval.xy = NULL,
+                   na.rm = TRUE, shared.eval.env = FALSE,
+                   filter.raster = FALSE) {
             
             ## Keep same env variable for eval than calib (+ check for factor)
             if (!is.null(eval.sp) && is.null(eval.env)) {
+              output <- check_duplicated_cells(env, eval.xy, eval.sp, filter.raster)
+              eval.xy <- output$xy
+              eval.sp <- output$sp
+              rm(output)
+              
               eval.env <- as.data.frame(extract(env, eval.xy, ID = FALSE))
               shared.eval.env <- TRUE
             }
             
-            if (is.null(xy)) {
-              xy <- as.data.frame(crds(env)) 
-            }
             ## Prepare mask of studied area
             data.mask <- prod(classify(env, matrix(c(-Inf,Inf,1), nrow = 1)))
             names(data.mask) <- "Environmental Mask"
             data.mask <- list("calibration" = wrap(data.mask))
             ## Keep same env variable for eval than calib (+ check for factor)
+            
+            output <- check_duplicated_cells(env, xy, sp, filter.raster)
+            xy <- output$xy
+            sp <- output$sp
+            rm(output)
+            
             env <- as.data.frame(extract(env, xy, factors = TRUE, ID = FALSE))
             
             BFD <- BIOMOD.formated.data(sp, env, xy, dir.name, sp.name, 
                                         eval.sp, eval.env, eval.xy,
                                         na.rm = na.rm, data.mask = data.mask,
-                                        shared.eval.env = shared.eval.env)
+                                        shared.eval.env = shared.eval.env,
+                                        filter.raster = filter.raster)
             return(BFD)
           }
 )
@@ -372,7 +384,7 @@ setMethod('BIOMOD.formated.data', signature(sp = 'numeric', env = 'SpatRaster'),
 ##' \code{ggplot2} object 
 ##' 
 ##' @export
-##' @importFrom terra rast minmax nlyr crds
+##' @importFrom terra rast minmax crds ext
 ##' @importFrom ggplot2 ggplot aes scale_color_manual scale_shape_manual scale_fill_manual guides xlim ylim ggtitle facet_wrap theme guide_legend after_stat
 ##' 
 ##' @examples
@@ -616,7 +628,6 @@ setMethod('plot', signature(x = 'BIOMOD.formated.data', y = "missing"),
                                    }
               names(plot_mask) <- unique(full.df.vect$dataset)
             }
-            
             ## 3.1 Raster plot --------------------------------------------------------
             
             if(plot.type == "raster"){
@@ -1271,7 +1282,7 @@ NULL
 ##' @name BIOMOD.formated.data.PA-class
 ##' @rdname BIOMOD.formated.data.PA
 ##' 
-##' @importFrom terra rast nlyr app is.factor subset extract 
+##' @importFrom terra rast app is.factor subset extract 
 ##' cellFromXY `add<-` crds vect
 ##' @export
 ##' 
@@ -1301,13 +1312,14 @@ setMethod('BIOMOD.formated.data.PA', signature(sp = 'numeric', env = 'data.frame
                    , PA.nb.rep = 1, PA.strategy = 'random', PA.nb.absences = NULL
                    , PA.dist.min = 0, PA.dist.max = NULL
                    , PA.sre.quant = 0.025, PA.user.table = NULL
-                   , na.rm = TRUE) {
+                   , na.rm = TRUE, filter.raster = FALSE) {
             .BIOMOD.formated.data.PA(sp, env, xy, dir.name, sp.name
                                      , eval.sp, eval.env, eval.xy
                                      , PA.nb.rep, PA.strategy, PA.nb.absences
                                      , PA.dist.min, PA.dist.max
                                      , PA.sre.quant, PA.user.table
-                                     , na.rm)
+                                     , na.rm
+                                     , filter.raster = filter.raster)
           })
 
 ### BIOMOD.formated.data.PA(sp = numeric, env = SpatRaster) -------------------
@@ -1322,13 +1334,14 @@ setMethod('BIOMOD.formated.data.PA', signature(sp = 'numeric', env = 'SpatRaster
                    , PA.nb.rep = 1, PA.strategy = 'random', PA.nb.absences = NULL
                    , PA.dist.min = 0, PA.dist.max = NULL
                    , PA.sre.quant = 0.025, PA.user.table = NULL
-                   , na.rm = TRUE) {
+                   , na.rm = TRUE, filter.raster = FALSE) {
             .BIOMOD.formated.data.PA(sp, env, xy, dir.name, sp.name
                                      , eval.sp, eval.env, eval.xy
                                      , PA.nb.rep, PA.strategy, PA.nb.absences
                                      , PA.dist.min, PA.dist.max
                                      , PA.sre.quant, PA.user.table
-                                     , na.rm)
+                                     , na.rm
+                                     , filter.raster = filter.raster)
           })
 
 ### .BIOMOD.formated.data.PA ---------------------------------------------------
@@ -1337,23 +1350,24 @@ setMethod('BIOMOD.formated.data.PA', signature(sp = 'numeric', env = 'SpatRaster
                                       , PA.nb.rep = 1, PA.strategy = 'random', PA.nb.absences = NULL
                                       , PA.dist.min = 0, PA.dist.max = NULL
                                       , PA.sre.quant = 0.025, PA.user.table = NULL
-                                      , na.rm = TRUE)
+                                      , na.rm = TRUE, filter.raster = FALSE)
 {
+  
+
+  #### check for categorical vars and filter duplicated data points
+
   categorical_var <- NULL
   if (inherits(env, 'SpatRaster')) {
     categorical_var <- names(env)[is.factor(env)] 
+    
+    output <- check_duplicated_cells(env, xy, sp, filter.raster)
+    xy <- output$xy
+    sp <- output$sp
+    rm(output)
+    
   }
   
-  ## Keep same env variable for eval than calib (+ check for factor)
-  if (!is.null(eval.sp) && is.null(eval.env)) {
-    if (inherits(env, 'SpatRaster')) {
-      eval.env <- as.data.frame(extract(env, eval.xy, ID = FALSE))
-    } else { 
-      stop("No evaluation explanatory variable given") 
-    }
-  }
-  
-  
+
   # Convert sp in SpatVector
   if (is.numeric(sp)) {
     if (nrow(xy) == 0) {
@@ -1390,31 +1404,28 @@ setMethod('BIOMOD.formated.data.PA', signature(sp = 'numeric', env = 'SpatRaster
     if (na.rm) {
       rowToRm <- unique(unlist(lapply(pa.data.tmp$env, function(x) { return(which(is.na(x))) })))
       if (length(rowToRm) > 0) {
-        cat("\n\t\t\t! Some NAs have been automatically removed from your data")
+        cat("\n ! Some NAs have been automatically removed from your data")
         pa.data.tmp$xy <- pa.data.tmp$xy[-rowToRm, , drop = FALSE]
         pa.data.tmp$sp <- pa.data.tmp$sp[-rowToRm, drop = FALSE]
         pa.data.tmp$env <- pa.data.tmp$env[-rowToRm, , drop = FALSE]
         pa.data.tmp$pa.tab <- pa.data.tmp$pa.tab[-rowToRm, , drop = FALSE]
       }
     }
+
+    if(!inherits(env,"SpatRaster")){
+      env <- pa.data.tmp$env
+    }
     
     BFD <- BIOMOD.formated.data(sp = pa.data.tmp$sp,
-                                env = pa.data.tmp$env,
+                                env = env,
                                 xy = as.data.frame(pa.data.tmp$xy),
                                 dir.name = dir.name,
                                 sp.name = sp.name, 
                                 eval.sp = eval.sp,
                                 eval.env = eval.env,
                                 eval.xy = eval.xy,
-                                na.rm = na.rm)
-    
-    if (inherits(env,'SpatRaster')) {
-      ## create data.mask for ploting
-      data.mask <- prod(classify(env, matrix(c(-Inf, Inf, 1), ncol = 3)))
-      names(data.mask) <- "Environmental Mask"
-    } else {  
-      data.mask <- rast() 
-    }
+                                na.rm = na.rm,
+                                filter.raster = filter.raster)
     
     BFDP <- new('BIOMOD.formated.data.PA',
                 dir.name = BFD@dir.name,
@@ -1422,7 +1433,7 @@ setMethod('BIOMOD.formated.data.PA', signature(sp = 'numeric', env = 'SpatRaster
                 coord = BFD@coord,
                 data.env.var = BFD@data.env.var,
                 data.species = BFD@data.species,
-                data.mask = data.mask,
+                data.mask = BFD@data.mask,
                 has.data.eval = BFD@has.data.eval,
                 eval.coord = BFD@eval.coord,
                 eval.data.species = BFD@eval.data.species,
