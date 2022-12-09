@@ -771,19 +771,28 @@ setMethod('free', signature('BIOMOD.projection.out'),
 ##' 
 
 setMethod("get_predictions", "BIOMOD.projection.out",
-          function(obj, full.name = NULL, data.set = NULL, run.eval = NULL, algo = NULL)
+          function(obj, full.name = NULL, data.set = NULL, run.eval = NULL, algo = NULL
+                   , merged.by = NULL, filtered.by = NULL)
           {
             out <- load_stored_object(obj@proj.out)
             
             # subselection of models_selected
             if (inherits(out, 'SpatRaster')) {
               names(out) <- get_projected_models(obj)
-              keep_layers <- .filter_outputs.spatRaster(names(out), subset.list = list(full.name =  full.name, data.set = data.set
-                                                                                       , run.eval = run.eval, algo = algo))
+              if (length(grep("EM|merged", names(out))) > 0) {
+                keep_layers <- .filter_outputs.spatRaster(names(out), subset.list = list(full.name =  full.name, merged.by = merged.by, filtered.by = filtered.by))
+              } else {
+                keep_layers <- .filter_outputs.spatRaster(names(out), subset.list = list(full.name =  full.name, data.set = data.set
+                                                                                         , run.eval = run.eval, algo = algo))
+              }
               out <- subset(out, keep_layers)
             } else {
-              keep_lines <- .filter_outputs.df(out, subset.list = list(full.name =  full.name, data.set = data.set
-                                                                       , run.eval = run.eval, algo = algo))
+              if ("merged.by" %in% colnames(out)) {
+                keep_lines <- .filter_outputs.df(out, subset.list = list(full.name =  full.name, merged.by = merged.by, filtered.by = filtered.by))
+              } else {
+                keep_lines <- .filter_outputs.df(out, subset.list = list(full.name =  full.name, data.set = data.set
+                                                                         , run.eval = run.eval, algo = algo))
+              }
               out <- out[keep_lines, ]
             }
             return(out)
@@ -1040,7 +1049,7 @@ setMethod("get_predictions", "BIOMOD.ensemble.models.out",
             }
             
             # subselection of models_selected
-            keep_lines <- .filter_outputs.df(out, subset.list = list(full.name =  full.name, merged.by = merged.by, filtered.by = filtered.by, algo = algo))
+            keep_lines <- .filter_outputs.df(out, subset.list = list(full.name = full.name, merged.by = merged.by, filtered.by = filtered.by, algo = algo))
             out <- out[keep_lines, ]
             return(out)
           }
@@ -1061,10 +1070,11 @@ setMethod("get_built_models", "BIOMOD.ensemble.models.out", function(obj){ retur
 ##' 
 
 setMethod("get_evaluations", "BIOMOD.ensemble.models.out",
-          function(obj, full.name = NULL, em.filter = NULL, em.algo = NULL, Metric.eval = NULL) {
+          function(obj, full.name = NULL, merged.by = NULL, filtered.by = NULL, algo = NULL, Metric.eval = NULL)
+          {
             out <- load_stored_object(obj@models.evaluation)
-            keep_lines <- .filter_outputs.df(out, subset.list = list(full.name =  full.name, em.filter = em.filter
-                                                                     , em.algo = em.algo, Metric.eval = Metric.eval))
+            keep_lines <- .filter_outputs.df(out, subset.list = list(full.name = full.name, merged.by = merged.by, filtered.by = filtered.by
+                                                                     , algo = algo, Metric.eval = Metric.eval))
             out <- out[keep_lines, ]
             return(out)
           }
@@ -1077,10 +1087,11 @@ setMethod("get_evaluations", "BIOMOD.ensemble.models.out",
 ##' 
 
 setMethod("get_variables_importance", "BIOMOD.ensemble.models.out",
-          function(obj, full.name = NULL, em.filter = NULL, em.algo = NULL, Expl.var = NULL) {
+          function(obj, full.name = NULL, merged.by = NULL, filtered.by = NULL, algo = NULL, Expl.var = NULL)
+          {
             out <- load_stored_object(obj@variables.importance)
-            keep_lines <- .filter_outputs.df(out, subset.list = list(full.name =  full.name, em.filter = em.filter
-                                                                     , em.algo = em.algo, Expl.var = Expl.var))
+            keep_lines <- .filter_outputs.df(out, subset.list = list(full.name = full.name, merged.by = merged.by, filtered.by = filtered.by
+                                                                     , algo = algo, Expl.var = Expl.var))
             out <- out[keep_lines, ]
             return(out)
           }
