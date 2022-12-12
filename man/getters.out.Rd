@@ -77,7 +77,11 @@
   full.name = NULL,
   data.set = NULL,
   run.eval = NULL,
-  algo = NULL
+  algo = NULL,
+  merged.by.algo = NULL,
+  merged.by.run.eval = NULL,
+  merged.by.data.set = NULL,
+  filtered.by = NULL
 )
 
 \S4method{free}{BIOMOD.projection.out}(obj)
@@ -96,7 +100,15 @@
 
 \S4method{get_formal_data}{BIOMOD.ensemble.models.out}(obj, subinfo = NULL)
 
-\S4method{get_built_models}{BIOMOD.ensemble.models.out}(obj)
+\S4method{get_built_models}{BIOMOD.ensemble.models.out}(
+  obj,
+  full.name = NULL,
+  merged.by.algo = NULL,
+  merged.by.run.eval = NULL,
+  merged.by.data.set = NULL,
+  filtered.by = NULL,
+  algo = NULL
+)
 
 \S4method{get_kept_models}{BIOMOD.ensemble.models.out}(obj)
 
@@ -110,8 +122,6 @@
   filtered.by = NULL,
   algo = NULL
 )
-
-\S4method{get_built_models}{BIOMOD.ensemble.models.out}(obj)
 
 \S4method{get_evaluations}{BIOMOD.ensemble.models.out}(
   obj,

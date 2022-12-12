@@ -4,7 +4,18 @@
 \alias{BIOMOD_LoadModels}
 \title{Load species distribution models built with \pkg{biomod2}}
 \usage{
-BIOMOD_LoadModels(bm.out, ...)
+BIOMOD_LoadModels(
+  bm.out,
+  full.name = NULL,
+  data.set = NULL,
+  run.eval = NULL,
+  algo = NULL,
+  merged.by.algo = NULL,
+  merged.by.run.eval = NULL,
+  merged.by.data.set = NULL,
+  filtered.by = NULL,
+  ...
+)
 }
 \arguments{
 \item{bm.out}{a \code{\link{BIOMOD.models.out}} or \code{\link{BIOMOD.ensemble.models.out}} 

@@ -10,11 +10,10 @@
   calib.lines = NULL,
   plot.type,
   plot.output,
-  PA_dataset,
-  repet,
+  PA,
+  run,
   plot.eval,
-  do.plot = TRUE,
-  scales
+  do.plot = TRUE
 )
 }
 \arguments{
@@ -37,11 +36,11 @@ or \code{'list'}. \code{plot.output} determines whether plots are returned
 as a single facet with all plots or a \code{list} of individual plots
 (better when there are numerous graphics)}
 
-\item{PA_dataset}{a \code{vector} (\emph{default} \code{'all'}) containing 
+\item{PA}{a \code{vector} (\emph{default} \code{'all'}) containing 
 the subset of pseudo-absences dataset that needs to be represented. Available
 only when \code{x} is a \code{\link{BIOMOD.formated.data.PA}} object.}
 
-\item{repet}{a \code{vector} (\emph{default} \code{'all'}) containing 
+\item{run}{a \code{vector} (\emph{default} \code{'all'}) containing 
 the subset of calibration dataset that needs to be represented. Available
 only when \code{calib.lines} was given as argument.}
 

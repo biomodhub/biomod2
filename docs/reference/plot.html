@@ -108,11 +108,10 @@ validation and evaluation). Available only if coordinates were given to
 <span>  calib.lines <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  <span class="va">plot.type</span>,</span>
 <span>  <span class="va">plot.output</span>,</span>
-<span>  <span class="va">PA_dataset</span>,</span>
-<span>  <span class="va">repet</span>,</span>
+<span>  <span class="va">PA</span>,</span>
+<span>  <span class="va">run</span>,</span>
 <span>  <span class="va">plot.eval</span>,</span>
-<span>  do.plot <span class="op">=</span> <span class="cn">TRUE</span>,</span>
-<span>  <span class="va">scales</span></span>
+<span>  do.plot <span class="op">=</span> <span class="cn">TRUE</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -145,13 +144,13 @@ as a single facet with all plots or a <code>list</code> of individual plots
 (better when there are numerous graphics)</p></dd>
 
 
-<dt>PA_dataset</dt>
+<dt>PA</dt>
 <dd><p>a <code>vector</code> (<em>default</em> <code>'all'</code>) containing 
 the subset of pseudo-absences dataset that needs to be represented. Available
 only when <code>x</code> is a <code><a href="BIOMOD.formated.data.PA.html">BIOMOD.formated.data.PA</a></code> object.</p></dd>
 
 
-<dt>repet</dt>
+<dt>run</dt>
 <dd><p>a <code>vector</code> (<em>default</em> <code>'all'</code>) containing 
 the subset of calibration dataset that needs to be represented. Available
 only when <code>calib.lines</code> was given as argument.</p></dd>
