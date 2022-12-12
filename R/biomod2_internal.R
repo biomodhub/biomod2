@@ -58,7 +58,7 @@
                 ifelse(length(values) > 1, 
                        paste0(paste0(values[1:(length(values) -1)], collapse = "', '"),
                               "' or '", values[length(values)])
-                             , paste0(values,"'"))))
+                       , paste0(values,"'"))))
     test <- FALSE
   }
   return(test)
@@ -295,7 +295,7 @@ get_var_range <- function(data)
   return(keep_lines)
 }
 
-.filter_outputs.spatRaster <- function(out_names, subset.list)
+.filter_outputs.vec <- function(out_names, obj.type, subset.list)
 {
   keep_layers <- out_names
   if ("full.name" %in% names(subset.list) && !is.null(subset.list[["full.name"]])) {
@@ -306,7 +306,7 @@ get_var_range <- function(data)
       {
         keep_tmp <- 1:length(out_names)
         if (!is.null(subset.list[[sub.i]])) {
-          .fun_testIfIn(TRUE, sub.i, subset.list[[sub.i]], .extract_modelNamesInfo(out_names, info = ifelse(sub.i == "algo", "models", sub.i)))
+          .fun_testIfIn(TRUE, sub.i, subset.list[[sub.i]], .extract_modelNamesInfo(out_names, obj.type = obj.type, info = sub.i, as.unique = TRUE))
           keep_tmp <- grep(paste(subset.list[[sub.i]], collapse = "|"), out_names)
         }
         return(keep_tmp)
@@ -380,7 +380,7 @@ get_var_range <- function(data)
         }
       }
     }
-
+  
   if (out %in% c("model", "calib.failure", "models.kept")) {
     if (is.null(output)) { output <- 'none' } else { output <- unique(as.character(output[[out]])) }
   }
@@ -391,21 +391,42 @@ get_var_range <- function(data)
 ## EXTRACT model names according to specific infos ------------------------------------------------
 ## used in biomod2_classes_3.R, BIOMOD_LoadModels, BIOMOD_Projection, BIOMOD_EnsembleModeling, bm_PlotRangeSize
 
-.extract_modelNamesInfo <- function(model.names, info = 'species')
+.extract_modelNamesInfo <- function(model.names, obj.type, info, as.unique = TRUE)
 {
+  ## 0. CHECK parameters ----------------------------------------------------------------
   if (!is.character(model.names)) { stop("model.names must be a character vector") }
-  if (!is.character(info) | length(info) != 1 | !(info %in% c('species', 'data.set', 'models', 'run.eval'))) {
-    stop("info must be 'species', 'data.set', 'models' or 'run.eval'")
+  .fun_testIfIn(TRUE, "obj.type", obj.type, c("mod", "em"))
+  if (obj.type == "mod") {
+    .fun_testIfIn(TRUE, "info", info, c("species", "data.set", "run.eval", "algo"))
+  } else if (obj.type == "em") {
+    .fun_testIfIn(TRUE, "info", info, c("species", "merged.by.data.set", "merged.by.run.eval", "merged.by.algo", "filtered.by", "algo"))
   }
   
-  info.tmp <- as.data.frame(strsplit(model.names, "_"))
+  ## 1. SPLIT model.names ---------------------------------------------------------------
+  info.tmp <- strsplit(model.names, "_")
   
-  return(switch(info,
-                species = paste(unique(unlist(info.tmp[-c(nrow(info.tmp), nrow(info.tmp) - 1,  nrow(info.tmp) - 2), ])), collapse = "_"), 
-                data.set = paste(unique(unlist(info.tmp[(nrow(info.tmp) - 2), ]))), 
-                run.eval = paste(unique(unlist(info.tmp[(nrow(info.tmp) - 1), ]))), 
-                models = paste(unique(unlist(info.tmp[(nrow(info.tmp)), ])))
-  ))
+  if (obj.type == "mod") {
+    res <- switch(info
+                  , species = sapply(info.tmp, function(x) x[1])
+                  , data.set = sapply(info.tmp, function(x) x[2])
+                  , run.eval = sapply(info.tmp, function(x) x[3])
+                  , algo = sapply(info.tmp, function(x) x[4]))
+  } else if (obj.type == "em") {
+    res <- switch(info
+                  , species = sapply(info.tmp, function(x) x[1])
+                  , merged.by.data.set = sapply(info.tmp, function(x) x[3])
+                  , merged.by.run.eval = sapply(info.tmp, function(x) x[4])
+                  , merged.by.algo = sapply(info.tmp, function(x) x[5])
+                  , filtered.by = sapply(info.tmp, function(x) sub(".*By", "", x[2]))
+                  , algo = sapply(info.tmp, function(x) sub("By.*", "", x[2])))
+  }
+  
+  ## 2. RETURN either the full vector, or only the possible values ----------------------
+  if (as.unique == TRUE) {
+    return(unique(res))
+  } else {
+    return(res)
+  }
 }
 
 

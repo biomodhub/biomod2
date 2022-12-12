@@ -973,20 +973,19 @@ BIOMOD_EnsembleModeling <- function(bm.mod,
 .get_models_assembling <- function(models.chosen, em.by)
 {
   assembl.list = list()
-  if (em.by == 'PA_dataset') {
-    for (dat in .extract_modelNamesInfo(models.chosen, info = 'data.set')) {
+  if (em.by == 'all') {
+    assembl.list[["mergedData_mergedRun_mergedAlgo"]] <- models.chosen
+  } else if (em.by == 'PA_dataset') {
+    for (dat in .extract_modelNamesInfo(models.chosen, obj.type = "mod", info = "data.set", as.unique = TRUE)) {
       assembl.list[[paste0(dat, "_mergedRun_mergedAlgo")]] <- models.chosen[grep(paste0("_", dat, "_"), models.chosen)]
     }
   } else if (em.by == 'algo') {
-    for (algo in .extract_modelNamesInfo(models.chosen, info = 'models')) {
-      # grep use a regexp to match end of model name with algo name
+    for (algo in .extract_modelNamesInfo(models.chosen, obj.type = "mod", info = "algo", as.unique = TRUE)) {
       assembl.list[[paste0( "mergedData_mergedRun_", algo)]] <- models.chosen[grep(paste0("*\\_", algo,"$"), models.chosen)]
     }
-  } else if (em.by == 'all') {
-    assembl.list[["mergedData_mergedRun_mergedAlgo"]] <- models.chosen
   } else if (em.by == 'PA_dataset+repet') {
-    for (dat in .extract_modelNamesInfo(models.chosen, info = 'data.set')) {
-      for (repet in .extract_modelNamesInfo(models.chosen, info = 'run.eval')) {
+    for (dat in .extract_modelNamesInfo(models.chosen, obj.type = "mod", info = "data.set", as.unique = TRUE)) {
+      for (repet in .extract_modelNamesInfo(models.chosen, obj.type = "mod", info = "run.eval", as.unique = TRUE)) {
         mod.tmp <- intersect(x = grep(paste0("_", dat, "_"), models.chosen)
                              , y = grep(paste0("_", repet, "_"), models.chosen))
         if (length(mod.tmp) > 0) {
@@ -995,9 +994,8 @@ BIOMOD_EnsembleModeling <- function(bm.mod,
       }
     }
   } else if (em.by == 'PA_dataset+algo') {
-    for (dat in .extract_modelNamesInfo(models.chosen, info = 'data.set')) {
-      for (algo in .extract_modelNamesInfo(models.chosen, info = 'models')) {
-        # grep use a regexp to match end of model name with algo name
+    for (dat in .extract_modelNamesInfo(models.chosen, obj.type = "mod", info = "data.set", as.unique = TRUE)) {
+      for (algo in .extract_modelNamesInfo(models.chosen, obj.type = "mod", info = "algo", as.unique = TRUE)) {
         mod.tmp <- intersect(x = grep(paste0("_", dat, "_"), models.chosen)
                              , y = grep(paste0("*\\_", algo,"$"), models.chosen))
         if (length(mod.tmp) > 0) {
@@ -1040,9 +1038,8 @@ BIOMOD_EnsembleModeling <- function(bm.mod,
       # data that are kept at least in one PA dataset
       kept_data <- apply(PA.table, 1, any)
       # tells which PA dataset is used by which model
-      models.kept.PA <-   sapply(models.kept.union, function(x){
-        .extract_modelNamesInfo(x, info = "data.set")
-      })
+      models.kept.PA <- .extract_modelNamesInfo(models.kept.union, obj.type = "mod", info = "data.set", as.unique = FALSE)
+      names(models.kept.PA) <- models.kept.union
       
       out$predictions <-
         foreach(thisPA = unique(models.kept.PA), .combine = "rbind") %do% {
