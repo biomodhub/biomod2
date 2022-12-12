@@ -113,7 +113,9 @@
 ###################################################################################################
 
 
-BIOMOD_LoadModels <- function(bm.out, ... )
+BIOMOD_LoadModels <- function(bm.out, full.name = NULL, data.set = NULL, run.eval = NULL, algo = NULL
+                              , merged.by.algo = NULL, merged.by.run.eval = NULL
+                              , merged.by.data.set = NULL, filtered.by = NULL, ...)
 {
   # .bm_cat("Load Models")
 
@@ -123,29 +125,14 @@ BIOMOD_LoadModels <- function(bm.out, ... )
   rm(args)
   
   ## Get names of models to load
-  models.to.load <- get_built_models(bm.out)
-  envir <- parent.frame()
-  
-  ## Create list or a sub-list of models to load ----------------------------------------
-  if (!is.null(full.name)) {
-    models.to.load <- full.name
-  } else { ## make a subselection
-    
-    ## subselection on models
-    if (!is.null(models)) {
-      models.to.load <- grep(paste0(models, collapse = "|"), models.to.load, value = TRUE)
-    }
-    
-    ## subselection on run.Eval
-    if (!is.null(run.eval)) {
-      models.to.load <- grep(paste0(run.eval, collapse = "|"), models.to.load, value = TRUE)
-    }
-    
-    ## subselection on data.set
-    if (!is.null(data.set)) {
-      models.to.load <- grep(paste0(data.set, collapse = "|"), models.to.load, value = TRUE)
-    }
+  if (inherits(bm.out, "BIOMOD.models.out")) {
+    models.to.load <- get_built_models(bm.out, full.name = full.name, data.set = data.set, run.eval = run.eval, algo = algo)
+  } else if (inherits(bm.out, "BIOMOD.ensemble.models.out")) {
+    models.to.load <- get_built_models(bm.out, full.name = full.name, merged.by.algo = merged.by.algo
+                                       , merged.by.run.eval = merged.by.run.eval, merged.by.data.set = merged.by.data.set
+                                       , filtered.by = filtered.by, algo = algo)
   }
+  envir <- parent.frame()
   
   if (length(models.to.load) == 0) {
     cat("\n   ! No models computed matched, No models loaded !")
@@ -179,35 +166,11 @@ BIOMOD_LoadModels <- function(bm.out, ... )
   .fun_testIfInherits(TRUE, "bm.out", bm.out, c("BIOMOD.models.out", "BIOMOD.ensemble.models.out"))
   
   ## 2. Check args ------------------------------------------------------------
-  available.args <- c("models", "run.eval", "data.set", "path", "as", "full.name")
+  available.args <- c("path", "as")
   .fun_testIfIn(TRUE, "names(args)", names(args), available.args)
-  avail_models <- get_built_models(bm.out) ## get all available model names
   
-  ## 2.1 Check add.args : models ----------------------------------------------
-  models <- args$models
-  if (!is.null(models)) {
-    infos = .extract_modelNamesInfo(model.names = avail_models, info = 'models')
-    .fun_testIfIn(TRUE, "models", models, infos)
-    models = paste0("_", models)
-  }
-  
-  ## 2.2 Check add.args : run.eval --------------------------------------------
-  run.eval <- args$run.eval
-  if (!is.null(run.eval)) {
-    infos = .extract_modelNamesInfo(model.names = avail_models, info = 'run.eval')
-    .fun_testIfIn(TRUE, "run.eval", run.eval, infos)
-    run.eval = paste0("_", run.eval)
-  }
-  
-  ## 2.3 Check add.args : data.set --------------------------------------------
-  data.set <- args$data.set
-  if (!is.null(data.set)) {
-    infos = .extract_modelNamesInfo(model.names = avail_models, info = 'data.set')
-    .fun_testIfIn(TRUE, "data.set", data.set, infos)
-    data.set = paste0("_", data.set, "_")
-  }
-  
-  ## 2.4 Check path : data.set ------------------------------------------------
+  ## 2.4 Check path -----------------------------------------------------------
+  ## /!\ NOT USED /!\ 
   path <- args$path
   if (!is.null(path) && !(file.path(bm.out@dir.name, bm.out@sp.name) %in% list.dirs(path = path))) {
     stop("invalid path given")
@@ -215,17 +178,6 @@ BIOMOD_LoadModels <- function(bm.out, ... )
     path = "."
   }
   
-  ## 2.5 Check path : full.name ------------------------------------------------
-  full.name <- args$full.name
-  if (!is.null(full.name)) {
-    .fun_testIfIn(TRUE, "full.name", full.name, avail_models)
-  }
-  
-  return(list(models = models,
-              run.eval = run.eval,
-              data.set = data.set, 
-              path = path, 
-              as = args$as, 
-              full.name = full.name))
+  return(list(path = path, as = args$as))
 }
 

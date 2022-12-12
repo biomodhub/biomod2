@@ -457,23 +457,15 @@ setMethod("get_predictions", "BIOMOD.models.out",
 ##' @export
 ##' 
 
-setMethod("get_built_models", "BIOMOD.models.out", function(obj,
-                                                            full.name = NULL,
-                                                            data.set = NULL,
-                                                            run.eval = NULL,
-                                                            algo = NULL) { 
-  subset.list <- list()
-  subset.list[["full.name"]] <- full.name
-  subset.list[["data.set"]] <- data.set
-  subset.list[["run.eval"]] <- run.eval
-  subset.list[["algo"]] <- algo
-  if(length(subset.list) > 0){
-    keep_layers <- .filter_outputs.spatRaster(names(out), subset.list)
-    return(obj@models.computed[keep_layers])
-  } else {
-    return(obj@models.computed)
-  }
-})
+setMethod("get_built_models", "BIOMOD.models.out",
+          function(obj, full.name = NULL, data.set = NULL, run.eval = NULL, algo = NULL) { 
+            out <- obj@models.computed
+            keep_ind <- .filter_outputs.vec(out, obj.type = "mod", subset.list = list(full.name =  full.name, data.set = data.set
+                                                                                      , run.eval = run.eval, algo = algo))
+            out <- out[keep_ind]
+            return(out)
+          }
+)
 
 ## get_evaluations.BIOMOD.models.out ---------------------------------------------------
 ##' 
@@ -689,9 +681,9 @@ setMethod(
     }
     rm(args)
     
-
+    
     ### Plot SpatRaster ---------------------------------------------------------
-
+    
     if (inherits(proj,"SpatRaster")) {
       maxi <- ifelse(max(global(proj, "max", na.rm = TRUE)$max) > 1, 1000, 1) 
       if (std) {
@@ -847,29 +839,28 @@ setMethod('show', signature('BIOMOD.projection.out'),
 ##' @export
 ##' 
 
-setMethod("get_projected_models", "BIOMOD.projection.out", function(obj,
-                                                                    full.name = NULL,
-                                                                    data.set = NULL,
-                                                                    run.eval = NULL,
-                                                                    algo = NULL){
-  out <- obj@models.projected
-  if (length(grep("EM|merged", names(out))) > 0) {
-    return(out)
-  } else {
-    subset.list <- list()
-    subset.list[["full.name"]] <- full.name
-    subset.list[["data.set"]] <- data.set
-    subset.list[["run.eval"]] <- run.eval
-    subset.list[["algo"]] <- algo
-  }
-  
-  if(length(subset.list) > 0){
-    keep_layers <- .filter_outputs.spatRaster(names(out), subset.list)
-    return(out[keep_layers])
-  } else {
-    return(out)
-  }
-})
+setMethod("get_projected_models", "BIOMOD.projection.out",
+          function(obj, full.name = NULL, data.set = NULL, run.eval = NULL, algo = NULL
+                   , merged.by.algo = NULL, merged.by.run.eval = NULL
+                   , merged.by.data.set = NULL, filtered.by = NULL)
+          {
+            
+            out <- obj@models.projected
+            if (length(grep("EM|merged", out)) > 0) {
+              keep_ind <- .filter_outputs.vec(out, obj.type = "em", subset.list = list(full.name = full.name
+                                                                                       , merged.by.data.set = merged.by.data.set
+                                                                                       , merged.by.run.eval = merged.by.run.eval
+                                                                                       , merged.by.algo = merged.by.algo
+                                                                                       , filtered.by = filtered.by
+                                                                                       , algo = algo))
+            } else {
+              keep_ind <- .filter_outputs.vec(out, obj.type = "mod", subset.list = list(full.name =  full.name, data.set = data.set
+                                                                                        , run.eval = run.eval, algo = algo))
+            }
+            out <- out[keep_ind]
+            return(out)
+          }
+)
 
 ## free.BIOMOD.projection.out --------------------------------------------------
 ##' 
@@ -907,14 +898,14 @@ setMethod("get_predictions", "BIOMOD.projection.out",
             if (inherits(out, 'SpatRaster')) {
               names(out) <- get_projected_models(obj)
               if (length(grep("EM|merged", names(out))) > 0) {
-                keep_layers <- .filter_outputs.spatRaster(names(out), subset.list = list(full.name =  full.name
-                                                                                         , data.set = merged.by.data.set
-                                                                                         , run.eval = merged.by.run.eval
-                                                                                         , algo = merged.by.algo
-                                                                                         , filtered.by = filtered.by))
+                keep_layers <- .filter_outputs.vec(names(out), obj.type = "em", subset.list = list(full.name =  full.name
+                                                                                                   , data.set = merged.by.data.set
+                                                                                                   , run.eval = merged.by.run.eval
+                                                                                                   , algo = merged.by.algo
+                                                                                                   , filtered.by = filtered.by))
               } else {
-                keep_layers <- .filter_outputs.spatRaster(names(out), subset.list = list(full.name =  full.name, data.set = data.set
-                                                                                         , run.eval = run.eval, algo = algo))
+                keep_layers <- .filter_outputs.vec(names(out), obj.type = "mod", subset.list = list(full.name =  full.name, data.set = data.set
+                                                                                                    , run.eval = run.eval, algo = algo))
               }
               out <- subset(out, keep_layers)
             } else {
@@ -923,7 +914,8 @@ setMethod("get_predictions", "BIOMOD.projection.out",
                                                                          , merged.by.data.set = merged.by.data.set
                                                                          , merged.by.run.eval = merged.by.run.eval
                                                                          , merged.by.algo = merged.by.algo
-                                                                         , filtered.by = filtered.by))
+                                                                         , filtered.by = filtered.by
+                                                                         , algo = algo))
               } else {
                 keep_lines <- .filter_outputs.df(out, subset.list = list(full.name =  full.name, data.set = data.set
                                                                          , run.eval = run.eval, algo = algo))
@@ -1149,7 +1141,21 @@ setMethod("get_formal_data", "BIOMOD.ensemble.models.out",
 ##' @export
 ##' 
 
-setMethod("get_built_models", "BIOMOD.ensemble.models.out", function(obj) { return(obj@em.computed) })
+setMethod("get_built_models", "BIOMOD.ensemble.models.out",
+          function(obj, full.name = NULL, merged.by.algo = NULL, merged.by.run.eval = NULL
+                   , merged.by.data.set = NULL, filtered.by = NULL, algo = NULL)
+          {
+            out <- obj@em.computed
+            keep_ind <- .filter_outputs.vec(out, obj.type = "em", subset.list = list(full.name = full.name
+                                                                                     , merged.by.data.set = merged.by.data.set
+                                                                                     , merged.by.run.eval = merged.by.run.eval
+                                                                                     , merged.by.algo = merged.by.algo
+                                                                                     , filtered.by = filtered.by
+                                                                                     , algo = algo))
+            out <- out[keep_ind]
+            return(out)
+          }
+)
 
 
 ## get_kept_models.BIOMOD.ensemble.models.out ----------------------------------
@@ -1196,13 +1202,6 @@ setMethod("get_predictions", "BIOMOD.ensemble.models.out",
           }
 )
 
-## get_built_models.BIOMOD.ensemble.models.out ---------------------------------
-##' 
-##' @rdname getters.out
-##' @export
-##' 
-
-setMethod("get_built_models", "BIOMOD.ensemble.models.out", function(obj){ return(obj@em.computed) })
 
 ## get_evaluations.BIOMOD.ensemble.models.out ----------------------------------
 ##' 
