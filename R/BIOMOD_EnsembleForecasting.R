@@ -361,12 +361,11 @@ BIOMOD_EnsembleForecasting <- function(bm.em,
       tmp <- melt(proj.em, id.vars =  "Points")
       colnames(tmp) <- c("Points", "full.name", "pred")
       tmp$full.name <- as.character(tmp$full.name)
-      tmp.merged.by = sapply(tmp$full.name, function(x) sub(".*?_merged", "merged", x))
-      tmp$merged.by.data.set = sapply(tmp.merged.by, function(x) strsplit(x, "_")[[1]][1])
-      tmp$merged.by.run.eval = sapply(tmp.merged.by, function(x) strsplit(x, "_")[[1]][2])
-      tmp$merged.by.algo = sapply(tmp.merged.by, function(x) strsplit(x, "_")[[1]][3])
-      tmp$filtered.by = sapply(tmp$full.name, function(x) sub(".*By", "", strsplit(x, "_")[[1]][2]))
-      tmp$algo = sapply(tmp$full.name, function(x) sub("By.*", "", strsplit(x, "_")[[1]][2]))
+      tmp$merged.by.data.set <- .extract_modelNamesInfo(tmp$full.name, obj.type = "em", info = "merged.by.data.set", as.unique = FALSE)
+      tmp$merged.by.run.eval <- .extract_modelNamesInfo(tmp$full.name, obj.type = "em", info = "merged.by.run.eval", as.unique = FALSE)
+      tmp$merged.by.algo <- .extract_modelNamesInfo(tmp$full.name, obj.type = "em", info = "merged.by.algo", as.unique = FALSE)
+      tmp$filtered.by <- .extract_modelNamesInfo(tmp$full.name, obj.type = "em", info = "filtered.by", as.unique = FALSE)
+      tmp$algo <- .extract_modelNamesInfo(tmp$full.name, obj.type = "em", info = "algo", as.unique = FALSE)
       proj.em <- tmp[, c("full.name", "merged.by.data.set", "merged.by.run.eval", "merged.by.algo"
                          , "filtered.by", "algo", "Points", "pred")]
     }

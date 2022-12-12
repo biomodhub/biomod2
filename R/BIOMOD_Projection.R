@@ -337,9 +337,9 @@ BIOMOD_Projection <- function(bm.mod,
       tmp <- melt(proj, id.vars =  "Points")
       colnames(tmp) <- c("Points", "full.name", "pred")
       tmp$full.name <- as.character(tmp$full.name)
-      tmp$data.set = sapply(tmp$full.name, function(x) strsplit(x, "_")[[1]][2])
-      tmp$run.eval = sapply(tmp$full.name, function(x) strsplit(x, "_")[[1]][3])
-      tmp$algo = sapply(tmp$full.name, function(x) strsplit(x, "_")[[1]][4])
+      tmp$data.set <- .extract_modelNamesInfo(tmp$full.name, obj.type = "mod", info = "data.set", as.unique = FALSE)
+      tmp$run.eval <- .extract_modelNamesInfo(tmp$full.name, obj.type = "mod", info = "run.eval", as.unique = FALSE)
+      tmp$algo <- .extract_modelNamesInfo(tmp$full.name, obj.type = "mod", info = "algo", as.unique = FALSE)
       proj <- tmp[, c("full.name", "data.set", "run.eval", "algo", "Points", "pred")]
     }
     
