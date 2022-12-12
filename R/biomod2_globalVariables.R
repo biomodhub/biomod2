@@ -32,7 +32,7 @@ utils::globalVariables(names = c("thisPA"))
 utils::globalVariables(names = c("on_0_1000", "output.format", "keep.in.memory"))
 
 ## BIOMOD_LoadModels ------------
-utils::globalVariables(names = c("full.name", "models", "run.eval", "data.set"))
+utils::globalVariables(names = c("full.name", "models", "run", "PA"))
 
 ## BIOMOD_RangeSize ------------
 utils::globalVariables(names = c("thiscol"))

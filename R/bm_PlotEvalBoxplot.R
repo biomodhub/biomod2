@@ -120,10 +120,10 @@
 ###################################################################################################
 
 
-bm_PlotEvalBoxplot <- function(bm.out, group.by = c('algo', 'run.eval'), do.plot = TRUE, ...)
+bm_PlotEvalBoxplot <- function(bm.out, dataset = 'calibration', group.by = c('algo', 'run'), do.plot = TRUE, ...)
 {
   ## 0. Check arguments ---------------------------------------------------------------------------
-  args <- .bm_PlotEvalBoxplot.check.args(bm.out, group.by, ...)
+  args <- .bm_PlotEvalBoxplot.check.args(bm.out, dataset, group.by, ...)
   for (argi in names(args)) { assign(x = argi, value = args[[argi]]) }
   rm(args)
   
@@ -132,16 +132,13 @@ bm_PlotEvalBoxplot <- function(bm.out, group.by = c('algo', 'run.eval'), do.plot
   ## Get evaluation values
   scores <- get_evaluations(bm.out)
   
-  ## Choose which dataset (calibration or validation) should be used
-  eval.data <- ifelse(all(is.na(scores$Evaluating.data)), "Testing.data", "Evaluating.data")
-  
   ## Prepare data table for graphic
   ggdat = scores
   
   ## 2. PLOT graphic ------------------------------------------------------------------------------
-  gg <- ggplot(ggdat, aes_string(x = group.by[1], y = eval.data, fill = group.by[2])) +
+  gg <- ggplot(ggdat, aes_string(x = group.by[1], y = dataset, fill = group.by[2])) +
     geom_boxplot() + ## add boxplot
-    facet_wrap("Metric.eval", scales = scales) +
+    facet_wrap("metric.eval", scales = scales) +
     xlab("") +
     theme(legend.title = element_blank()
           , legend.key = element_rect(fill = "white")
@@ -158,17 +155,20 @@ bm_PlotEvalBoxplot <- function(bm.out, group.by = c('algo', 'run.eval'), do.plot
 
 ###################################################################################################
 
-.bm_PlotEvalBoxplot.check.args <- function(bm.out, group.by = 'Algo', ...)
+.bm_PlotEvalBoxplot.check.args <- function(bm.out, dataset, group.by, ...)
 {
   args <- list(...)
   
   ## 1. Check bm.out argument -------------------------------------------------
   .fun_testIfInherits(TRUE, "bm.out", bm.out, c("BIOMOD.models.out", "BIOMOD.ensemble.models.out"))
   
+  ## 2. Check dataset argument ------------------------------------------------
+  .fun_testIfIn(TRUE, "dataset", dataset, c("calibration", "validation", "evaluation"))
+  
   ## 3. Check group.by argument -----------------------------------------------
   if (length(group.by) != 2) { stop("2 group values needed") }
   for (i in 1:length(group.by)) {
-    .fun_testIfIn(TRUE, paste0("group.by[", i, "]"), group.by[i], c("full.name", "data.set", "run.eval", "algo"))
+    .fun_testIfIn(TRUE, paste0("group.by[", i, "]"), group.by[i], c("full.name", "PA", "run", "algo"))
   }
   
   ## 4. Check extra args argument ---------------------------------------------

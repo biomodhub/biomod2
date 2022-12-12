@@ -331,10 +331,10 @@ get_var_range <- function(data)
   .fun_testIfIn(TRUE, "out", out, c("model", "calib.failure", "models.kept", "pred", "pred.eval", "evaluation", "var.import"))
   
   if (obj.type == "mod") {
-    dim_names <- c("data.set", "run.eval", "algo")
+    dim_names <- c("PA", "run", "algo")
   } else if (obj.type == "em") {
     dim_names <- c("merged.by", "filtered.by", "algo")
-    dim_names.bis <- c("merged.by.data.set", "merged.by.run.eval", "merged.by.algo")
+    dim_names.bis <- c("merged.by.PA", "merged.by.run", "merged.by.algo")
   }
   
   ## 1. GET dimension names -------------------------------------------------------------
@@ -354,8 +354,8 @@ get_var_range <- function(data)
         res <- as.data.frame(res)
         if (out %in% c("model", "calib.failure", "models.kept", "pred", "pred.eval")) {
           colnames(res) <- out
-          res[["Points"]] <- 1:nrow(res)
-          res <- res[, c("Points", out)]
+          res[["points"]] <- 1:nrow(res)
+          res <- res[, c("points", out)]
         }
         col_names <- colnames(res)
         res[[dim_names[1]]] <- names(obj.out)[i.dim1]
@@ -397,9 +397,9 @@ get_var_range <- function(data)
   if (!is.character(model.names)) { stop("model.names must be a character vector") }
   .fun_testIfIn(TRUE, "obj.type", obj.type, c("mod", "em"))
   if (obj.type == "mod") {
-    .fun_testIfIn(TRUE, "info", info, c("species", "data.set", "run.eval", "algo"))
+    .fun_testIfIn(TRUE, "info", info, c("species", "PA", "run", "algo"))
   } else if (obj.type == "em") {
-    .fun_testIfIn(TRUE, "info", info, c("species", "merged.by.data.set", "merged.by.run.eval", "merged.by.algo", "filtered.by", "algo"))
+    .fun_testIfIn(TRUE, "info", info, c("species", "merged.by.PA", "merged.by.run", "merged.by.algo", "filtered.by", "algo"))
   }
   
   ## 1. SPLIT model.names ---------------------------------------------------------------
@@ -408,14 +408,14 @@ get_var_range <- function(data)
   if (obj.type == "mod") {
     res <- switch(info
                   , species = sapply(info.tmp, function(x) x[1])
-                  , data.set = sapply(info.tmp, function(x) x[2])
-                  , run.eval = sapply(info.tmp, function(x) x[3])
+                  , PA = sapply(info.tmp, function(x) x[2])
+                  , run = sapply(info.tmp, function(x) x[3])
                   , algo = sapply(info.tmp, function(x) x[4]))
   } else if (obj.type == "em") {
     res <- switch(info
                   , species = sapply(info.tmp, function(x) x[1])
-                  , merged.by.data.set = sapply(info.tmp, function(x) x[3])
-                  , merged.by.run.eval = sapply(info.tmp, function(x) x[4])
+                  , merged.by.PA = sapply(info.tmp, function(x) x[3])
+                  , merged.by.run = sapply(info.tmp, function(x) x[4])
                   , merged.by.algo = sapply(info.tmp, function(x) x[5])
                   , filtered.by = sapply(info.tmp, function(x) sub(".*By", "", x[2]))
                   , algo = sapply(info.tmp, function(x) sub("By.*", "", x[2])))

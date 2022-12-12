@@ -333,14 +333,14 @@ BIOMOD_Projection <- function(bm.mod,
       names(proj) <- models.chosen
       proj.trans <- proj
       
-      proj$Points <- 1:nrow(proj)
-      tmp <- melt(proj, id.vars =  "Points")
-      colnames(tmp) <- c("Points", "full.name", "pred")
+      proj$points <- 1:nrow(proj)
+      tmp <- melt(proj, id.vars =  "points")
+      colnames(tmp) <- c("points", "full.name", "pred")
       tmp$full.name <- as.character(tmp$full.name)
-      tmp$data.set <- .extract_modelNamesInfo(tmp$full.name, obj.type = "mod", info = "data.set", as.unique = FALSE)
-      tmp$run.eval <- .extract_modelNamesInfo(tmp$full.name, obj.type = "mod", info = "run.eval", as.unique = FALSE)
+      tmp$PA <- .extract_modelNamesInfo(tmp$full.name, obj.type = "mod", info = "PA", as.unique = FALSE)
+      tmp$run <- .extract_modelNamesInfo(tmp$full.name, obj.type = "mod", info = "run", as.unique = FALSE)
       tmp$algo <- .extract_modelNamesInfo(tmp$full.name, obj.type = "mod", info = "algo", as.unique = FALSE)
-      proj <- tmp[, c("full.name", "data.set", "run.eval", "algo", "Points", "pred")]
+      proj <- tmp[, c("full.name", "PA", "run", "algo", "points", "pred")]
     }
     
     if (keep.in.memory) {
@@ -377,13 +377,13 @@ BIOMOD_Projection <- function(bm.mod,
     cat("\n")
     
     thresholds <- get_evaluations(bm.mod, full.name = models.chosen)
-    if (!on_0_1000) { thresholds[, "Cutoff"]  <- thresholds[, "Cutoff"] / 1000 }
+    if (!on_0_1000) { thresholds[, "cutoff"]  <- thresholds[, "cutoff"] / 1000 }
     
     ## Do binary/filtering transformation
     for (eval.meth in unique(c(metric.binary, metric.filter))) {
-      thres.tmp <- thresholds[which(thresholds$Metric.eval == eval.meth), ]
+      thres.tmp <- thresholds[which(thresholds$metric.eval == eval.meth), ]
       rownames(thres.tmp) <- thres.tmp$full.name
-      thres.tmp <- thres.tmp[models.chosen, "Cutoff"]
+      thres.tmp <- thres.tmp[models.chosen, "cutoff"]
 
       cat("\n\t> Building", eval.meth, "binaries / filtered")
       if (!do.stack) {
@@ -550,7 +550,7 @@ BIOMOD_Projection <- function(bm.mod,
     if (is.null(models.evaluation)) {
       warning("Binary and/or Filtered transformations of projection not ran because of models evaluation information missing")
     } else {
-      available.evaluation <- unique(models.evaluation$Metric.eval)
+      available.evaluation <- unique(models.evaluation$metric.eval)
       if (!is.null(metric.binary) && metric.binary[1] == 'all') {
         metric.binary <- available.evaluation
       } else if (!is.null(metric.binary) && sum(!(metric.binary %in% available.evaluation)) > 0) {

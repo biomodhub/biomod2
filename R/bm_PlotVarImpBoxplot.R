@@ -120,7 +120,7 @@
 ###################################################################################################
 
 
-bm_PlotVarImpBoxplot <- function(bm.out, group.by = c('run.eval', 'Expl.var', 'algo'), do.plot = TRUE, ...)
+bm_PlotVarImpBoxplot <- function(bm.out, group.by = c('run', 'expl.var', 'algo'), do.plot = TRUE, ...)
 {
   ## 0. Check arguments ---------------------------------------------------------------------------
   args <- .bm_PlotVarImpBoxplot.check.args(bm.out, group.by, ...)
@@ -133,7 +133,7 @@ bm_PlotVarImpBoxplot <- function(bm.out, group.by = c('run.eval', 'Expl.var', 'a
   ggdat = get_variables_importance(bm.out)
   
   ## 2. PLOT graphic ------------------------------------------------------------------------------
-  gg <- ggplot(ggdat, aes_string(x = group.by[1], y = "value", fill = group.by[2])) +
+  gg <- ggplot(ggdat, aes_string(x = group.by[1], y = "var.imp", fill = group.by[2])) +
     geom_boxplot() + ## add boxplot
     facet_wrap(group.by[3], scales = "free_x") +
     scale_y_continuous(breaks = seq(0, 1, 0.1), labels = paste0(seq(0, 100, 10), "%")) + 
@@ -164,7 +164,7 @@ bm_PlotVarImpBoxplot <- function(bm.out, group.by = c('run.eval', 'Expl.var', 'a
   ## 3. Check group.by argument -----------------------------------------------
   if (length(group.by) != 3) { stop("3 group values needed") }
   for (i in 1:length(group.by)) {
-    .fun_testIfIn(TRUE, paste0("group.by[", i, "]"), group.by[i], c("full.name", "data.set", "run.eval", "algo", "Expl.var"))
+    .fun_testIfIn(TRUE, paste0("group.by[", i, "]"), group.by[i], c("full.name", "PA", "run", "algo", "expl.var"))
   }
   
   ## 4. Check extra args argument ---------------------------------------------

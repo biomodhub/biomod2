@@ -166,8 +166,6 @@ bm_FindOptimStat <- function(metric.eval = 'TSS',
   }
   
   eval.out <- data.frame(metric.eval, cutoff, sensitivity, specificity, best.stat)
-  colnames(eval.out) <- c("Metric.eval", "Cutoff", "Sensitivity", "Specificity", "Best.stat")
-  
   return(eval.out)
 }
 
