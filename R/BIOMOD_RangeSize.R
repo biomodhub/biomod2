@@ -249,6 +249,7 @@ setMethod('BIOMOD_RangeSize', signature(proj.current = 'data.frame', proj.future
 ##' @export
 ##'
 
+## TODO Maya : remove ?
 
 setMethod('BIOMOD_RangeSize', signature(proj.current = 'array', proj.future = 'array'),
           function(proj.current, proj.future)

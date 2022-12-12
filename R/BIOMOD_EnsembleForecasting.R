@@ -307,7 +307,7 @@ BIOMOD_EnsembleForecasting <- function(bm.em,
            , recursive = TRUE, force = TRUE)
   }
   if (!proj_is_raster) {
-    formal_pred <- tapply(X = formal_pred$pred, INDEX = list(formal_pred$Points, formal_pred$full.name), FUN = mean)
+    formal_pred <- tapply(X = formal_pred$pred, INDEX = list(formal_pred$points, formal_pred$full.name), FUN = mean)
     formal_pred <- as.data.frame(formal_pred[, models.needed])
   }
   
@@ -357,17 +357,17 @@ BIOMOD_EnsembleForecasting <- function(bm.em,
       names(proj.em) <- models.chosen
       proj.trans <- proj.em
       
-      proj.em$Points <- 1:nrow(proj.em)
-      tmp <- melt(proj.em, id.vars =  "Points")
-      colnames(tmp) <- c("Points", "full.name", "pred")
+      proj.em$points <- 1:nrow(proj.em)
+      tmp <- melt(proj.em, id.vars =  "points")
+      colnames(tmp) <- c("points", "full.name", "pred")
       tmp$full.name <- as.character(tmp$full.name)
-      tmp$merged.by.data.set <- .extract_modelNamesInfo(tmp$full.name, obj.type = "em", info = "merged.by.data.set", as.unique = FALSE)
-      tmp$merged.by.run.eval <- .extract_modelNamesInfo(tmp$full.name, obj.type = "em", info = "merged.by.run.eval", as.unique = FALSE)
+      tmp$merged.by.PA <- .extract_modelNamesInfo(tmp$full.name, obj.type = "em", info = "merged.by.PA", as.unique = FALSE)
+      tmp$merged.by.run <- .extract_modelNamesInfo(tmp$full.name, obj.type = "em", info = "merged.by.run", as.unique = FALSE)
       tmp$merged.by.algo <- .extract_modelNamesInfo(tmp$full.name, obj.type = "em", info = "merged.by.algo", as.unique = FALSE)
       tmp$filtered.by <- .extract_modelNamesInfo(tmp$full.name, obj.type = "em", info = "filtered.by", as.unique = FALSE)
       tmp$algo <- .extract_modelNamesInfo(tmp$full.name, obj.type = "em", info = "algo", as.unique = FALSE)
-      proj.em <- tmp[, c("full.name", "merged.by.data.set", "merged.by.run.eval", "merged.by.algo"
-                         , "filtered.by", "algo", "Points", "pred")]
+      proj.em <- tmp[, c("full.name", "merged.by.PA", "merged.by.run", "merged.by.algo"
+                         , "filtered.by", "algo", "points", "pred")]
     }
     
     if (keep.in.memory) {
@@ -405,13 +405,13 @@ BIOMOD_EnsembleForecasting <- function(bm.em,
     cat("\n")
     
     thresholds <- get_evaluations(bm.em, full.name = models.chosen)
-    if (!on_0_1000) { thresholds[, "Cutoff"]  <- thresholds[, "Cutoff"] / 1000 }
+    if (!on_0_1000) { thresholds[, "cutoff"]  <- thresholds[, "cutoff"] / 1000 }
     
     ## Do binary/filtering transformation
     for (eval.meth in unique(c(metric.binary, metric.filter))) {
-      thres.tmp <- thresholds[which(thresholds$Metric.eval == eval.meth), ]
+      thres.tmp <- thresholds[which(thresholds$metric.eval == eval.meth), ]
       rownames(thres.tmp) <- thres.tmp$full.name
-      thres.tmp <- thres.tmp[models.chosen, "Cutoff"]
+      thres.tmp <- thres.tmp[models.chosen, "cutoff"]
       
       cat("\n\t> Building", eval.meth, "binaries / filtered")
       if (!do.stack) {
@@ -592,7 +592,7 @@ BIOMOD_EnsembleForecasting <- function(bm.em,
       if (is.null(models.evaluation)) {
         warning("Binary and/or Filtered transformations of projection not ran because of models evaluation information missing")
       } else {
-        available.evaluation <- as.character(unique(models.evaluation$Metric.eval))
+        available.evaluation <- as.character(unique(models.evaluation$metric.eval))
         if (!is.null(metric.binary) && metric.binary[1] == 'all') {
           metric.binary <- available.evaluation
         } else if (!is.null(metric.binary) && 

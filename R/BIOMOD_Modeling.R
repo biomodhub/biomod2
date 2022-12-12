@@ -612,7 +612,7 @@ setMethod('.BIOMOD_Modeling.prepare.data', signature('BIOMOD.formated.data'),
                    , do.full.models = TRUE, data.split.table = NULL, seed.val = NULL)
           {
             list.out <- list()
-            name <- paste0(bm.format@sp.name, '_AllData')
+            name <- paste0(bm.format@sp.name, '_allData')
             xy <- bm.format@coord
             dataBM = cbind(bm.format@data.species, bm.format@data.env.var)
             colnames(dataBM)[1] = bm.format@sp.name
@@ -633,7 +633,7 @@ setMethod('.BIOMOD_Modeling.prepare.data', signature('BIOMOD.formated.data'),
             } else {
               if (nb.rep == 0) { # take all available data
                 calib.lines <- matrix(rep(TRUE, length(bm.format@data.species)), ncol = 1)
-                colnames(calib.lines) <- '_Full'
+                colnames(calib.lines) <- '_allRun'
               } else {
                 calib.lines <- .sample_mat(data.sp = bm.format@data.species,
                                            data.split = data.split.perc,
@@ -642,7 +642,7 @@ setMethod('.BIOMOD_Modeling.prepare.data', signature('BIOMOD.formated.data'),
                                            seed.val = seed.val)
                 if (do.full.models) {
                   calib.lines <- cbind(calib.lines, rep(TRUE, length(bm.format@data.species)))
-                  colnames(calib.lines)[nb.rep + 1] <- '_Full'
+                  colnames(calib.lines)[nb.rep + 1] <- '_allRun'
                 }
               }
             }
@@ -650,7 +650,7 @@ setMethod('.BIOMOD_Modeling.prepare.data', signature('BIOMOD.formated.data'),
             if (length(dim(calib.lines)) < 3) {
               dn_tmp <- dimnames(calib.lines) ## keep track of dimnames
               dim(calib.lines) <- c(dim(calib.lines), 1)
-              dimnames(calib.lines) <- list(dn_tmp[[1]], dn_tmp[[2]], "_AllData")
+              dimnames(calib.lines) <- list(dn_tmp[[1]], dn_tmp[[2]], "_allData")
             }
             
             if (is.null(weights)) { # 1 for all points
@@ -705,7 +705,7 @@ setMethod('.BIOMOD_Modeling.prepare.data', signature('BIOMOD.formated.data.PA'),
                 if (nb.rep == 0) { # take all available data
                   calib.lines <- matrix(NA, nrow = length(bm.format@data.species), ncol = 1)
                   calib.lines[bm.format@PA.table[, pa], 1] <- TRUE
-                  colnames(calib.lines) <- '_Full'
+                  colnames(calib.lines) <- '_allRun'
                 } else {
                   calib.lines <- matrix(NA, nrow = length(bm.format@data.species), ncol = nb.rep)
                   sampled.mat <- .sample_mat(
@@ -720,7 +720,7 @@ setMethod('.BIOMOD_Modeling.prepare.data', signature('BIOMOD.formated.data.PA'),
                   if (do.full.models) {
                     calib.lines <- cbind(calib.lines, rep(NA, length(bm.format@data.species)))
                     calib.lines[bm.format@PA.table[, pa], nb.rep + 1] <- TRUE
-                    colnames(calib.lines)[nb.rep + 1] <- '_Full'
+                    colnames(calib.lines)[nb.rep + 1] <- '_allRun'
                   }
                 }
               }

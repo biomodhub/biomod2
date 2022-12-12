@@ -141,7 +141,6 @@ bm_RunModelsLoop <- function(bm.format,
     run.name = paste0(bm.format$name, run.id)
     cat('\n\n-=-=-=--=-=-=-', run.name, '\n')
     
-    
     res.sp.run[[run.id]] = foreach(modi = model) %dopar%
       {
         bm_RunModel(model = modi,
@@ -798,20 +797,34 @@ bm_RunModel <- function(model, Data, modeling.id = '', bm.options, calib.lines,
       cat('\n\tNote : some NA occurs in predictions')
     }
     
-    cross.validation <- foreach(xx = metric.eval, .combine = "rbind") %do% {
-      bm_FindOptimStat(metric.eval = xx,
-                       obs = Data[!evalLines, 1],
-                       fit = g.pred[!evalLines])
+    if (length(which(evalLines == TRUE)) < length(g.pred)) {
+      ## CALIBRATION & VALIDATION LINES -------------------------------------------------
+      cross.validation <- foreach(xx = metric.eval, .combine = "rbind") %do% {
+        bm_FindOptimStat(metric.eval = xx,
+                         obs = Data[!evalLines, 1],
+                         fit = g.pred[!evalLines])
+      }
+      colnames(cross.validation)[which(colnames(cross.validation) == "best.stat")] <- "calibration"
+      
+      stat.validation <- foreach(xx = metric.eval, .combine = "rbind") %do% {
+        bm_FindOptimStat(metric.eval = xx,
+                         obs = Data[evalLines, 1],
+                         fit = g.pred[evalLines],
+                         threshold = cross.validation["cutoff", xx])
+      }
+      cross.validation$validation <- stat.validation$best.stat
+    } else {
+      ## NO VALIDATION LINES -----------------------------------------------------
+      cross.validation <- foreach(xx = metric.eval, .combine = "rbind") %do% {
+        bm_FindOptimStat(metric.eval = xx,
+                         obs = Data[evalLines, 1],
+                         fit = g.pred[evalLines])
+      }
+      colnames(cross.validation)[which(colnames(cross.validation) == "best.stat")] <- "calibration"
+      cross.validation$validation <- NA
     }
-    colnames(cross.validation)[which(colnames(cross.validation) == "Best.stat")] <- "Calibrating.data"
     
-    stat.validation <- foreach(xx = metric.eval, .combine = "rbind") %do% {
-      bm_FindOptimStat(metric.eval = xx,
-                       obs = Data[evalLines, 1],
-                       fit = g.pred[evalLines],
-                       threshold = cross.validation["Cutoff", xx])
-    }
-    cross.validation$Testing.data <- stat.validation$Best.stat
+
     
     if (exists('g.pred.eval')) {
       
@@ -829,11 +842,11 @@ bm_RunModel <- function(model, Data, modeling.id = '', bm.options, calib.lines,
         bm_FindOptimStat(metric.eval = xx,
                          obs = eval.data[, 1],
                          fit = g.pred.eval.without.na,
-                         threshold = cross.validation["Cutoff", xx])
+                         threshold = cross.validation["cutoff", xx])
       }
-      cross.validation$Evaluating.data <- stat.evaluation$Best.stat
+      cross.validation$evaluation <- stat.evaluation$best.stat
     } else {
-      cross.validation$Evaluating.data <- NA
+      cross.validation$evaluation <- NA
     }
     
     ## store results

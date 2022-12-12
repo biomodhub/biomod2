@@ -149,7 +149,7 @@
 ##' myEval$CV.strategy[grepl("11|12", myEval$Model.name)] <- "Stratified"
 ##' head(myEval)
 ##' 
-##' boxplot(myEval$Testing.data ~ interaction(myEval$Algo, myEval$CV.strategy),
+##' boxplot(myEval$validation ~ interaction(myEval$algo, myEval$CV.strategy),
 ##'         xlab = "", ylab = "ROC AUC", col = rep(c("brown", "cadetblue"), 3))
 ##' 
 ##' 
@@ -263,7 +263,7 @@ BIOMOD_CrossValidation <- function(bm.format,
   
   if (isTRUE(do.full.models)) {
     DataSplitTable <- cbind(DataSplitTable, TRUE)
-    colnames(DataSplitTable)[ncol(DataSplitTable)] <- "Full"
+    colnames(DataSplitTable)[ncol(DataSplitTable)] <- "allRun"
   }
   
   .bm_cat("Done")

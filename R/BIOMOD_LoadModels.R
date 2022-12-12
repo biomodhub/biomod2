@@ -31,9 +31,9 @@
 ##'   \item{\code{models} : }{a \code{vector} containing model names to be loaded, must be among 
 ##'   \code{GLM}, \code{GBM}, \code{GAM}, \code{CTA}, \code{ANN}, \code{SRE}, \code{FDA}, 
 ##'   \code{MARS}, \code{RF}, \code{MAXENT.Phillips}, \code{MAXENT.Phillips.2}}
-##'   \item{\code{run.eval} : }{a \code{vector} containing repetition set to be loaded, must be 
-##'   among \code{RUN1}, \code{RUN2}, \code{...}, \code{Full}}
-##'   \item{\code{data.set} : }{a \code{vector} containing pseudo-absence set to be loaded, must 
+##'   \item{\code{run} : }{a \code{vector} containing repetition set to be loaded, must be 
+##'   among \code{RUN1}, \code{RUN2}, \code{...}, \code{allRun}}
+##'   \item{\code{PA} : }{a \code{vector} containing pseudo-absence set to be loaded, must 
 ##'   be among \code{PA1}, \code{PA2}, \code{...} \cr \cr}
 ##'   \item{\code{path} : }{a \code{character} corresponding to the location of the species folder 
 ##'   (if different from the current working directory) \cr \cr}
@@ -113,9 +113,9 @@
 ###################################################################################################
 
 
-BIOMOD_LoadModels <- function(bm.out, full.name = NULL, data.set = NULL, run.eval = NULL, algo = NULL
-                              , merged.by.algo = NULL, merged.by.run.eval = NULL
-                              , merged.by.data.set = NULL, filtered.by = NULL, ...)
+BIOMOD_LoadModels <- function(bm.out, full.name = NULL, PA = NULL, run = NULL, algo = NULL
+                              , merged.by.algo = NULL, merged.by.run = NULL
+                              , merged.by.PA = NULL, filtered.by = NULL, ...)
 {
   # .bm_cat("Load Models")
 
@@ -126,10 +126,10 @@ BIOMOD_LoadModels <- function(bm.out, full.name = NULL, data.set = NULL, run.eva
   
   ## Get names of models to load
   if (inherits(bm.out, "BIOMOD.models.out")) {
-    models.to.load <- get_built_models(bm.out, full.name = full.name, data.set = data.set, run.eval = run.eval, algo = algo)
+    models.to.load <- get_built_models(bm.out, full.name = full.name, PA = PA, run = run, algo = algo)
   } else if (inherits(bm.out, "BIOMOD.ensemble.models.out")) {
     models.to.load <- get_built_models(bm.out, full.name = full.name, merged.by.algo = merged.by.algo
-                                       , merged.by.run.eval = merged.by.run.eval, merged.by.data.set = merged.by.data.set
+                                       , merged.by.run = merged.by.run, merged.by.PA = merged.by.PA
                                        , filtered.by = filtered.by, algo = algo)
   }
   envir <- parent.frame()

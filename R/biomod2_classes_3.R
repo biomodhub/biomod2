@@ -41,9 +41,9 @@
 ##' @param model a \code{character} corresponding to the model name, must be either \code{GLM}, 
 ##' \code{GBM}, \code{GAM}, \code{CTA}, \code{ANN}, \code{SRE}, \code{FDA}, \code{MARS}, 
 ##' \code{RF}, \code{MAXENT.Phillips}, \code{MAXENT.Phillips.2}
-##' @param run.eval a \code{vector} containing repetition set to be loaded, must be among 
-##' \code{RUN1}, \code{RUN2}, \code{...}, \code{Full}
-##' @param data.set a \code{vector} containing pseudo-absence set to be loaded, must be among 
+##' @param run a \code{vector} containing repetition set to be loaded, must be among 
+##' \code{RUN1}, \code{RUN2}, \code{...}, \code{allRun}
+##' @param PA a \code{vector} containing pseudo-absence set to be loaded, must be among 
 ##' \code{PA1}, \code{PA2}, \code{...}
 ##' @param selected.models a \code{vector} containing names of the needed models of a 
 ##' \code{\link{BIOMOD.ensemble.models.out}} object
@@ -366,17 +366,17 @@ setMethod("get_options", "BIOMOD.models.out",
 ##'
 
 setMethod("get_calib_lines", "BIOMOD.models.out",
-          function(obj, as.data.frame = FALSE, data.set = NULL, run.eval = NULL) {
+          function(obj, as.data.frame = FALSE, PA = NULL, run = NULL) {
             out <- load_stored_object(obj@calib.lines)
             
             if (!is.null(out) && as.data.frame == TRUE) {
-              tmp <- melt(out, varnames = c("Points", "run.eval", "data.set"))
-              tmp$data.set = sub("_", "", tmp$data.set)
-              tmp$run.eval = sub("_", "", tmp$run.eval)
-              out <- tmp[, c("data.set", "run.eval", "Points", "value")]
+              tmp <- melt(out, varnames = c("points", "run", "PA"))
+              tmp$PA = sub("_", "", tmp$PA)
+              tmp$run = sub("_", "", tmp$run)
+              out <- tmp[, c("PA", "run", "points", "value")]
               colnames(out)[4] = "calib.lines"
               
-              keep_lines <- .filter_outputs.df(out, subset.list = list(data.set = data.set, run.eval = run.eval))
+              keep_lines <- .filter_outputs.df(out, subset.list = list(PA = PA, run = run))
               out <- out[keep_lines, ]
             }
             return(out)
@@ -430,7 +430,7 @@ setMethod("get_formal_data", "BIOMOD.models.out",
 
 setMethod("get_predictions", "BIOMOD.models.out",
           function(obj, evaluation = FALSE
-                   , full.name = NULL, data.set = NULL, run.eval = NULL, algo = NULL)
+                   , full.name = NULL, PA = NULL, run = NULL, algo = NULL)
           {
             if (evaluation && (!obj@has.evaluation.data)) {
               warning("!   Calibration data returned because no evaluation data available")
@@ -445,8 +445,8 @@ setMethod("get_predictions", "BIOMOD.models.out",
             }
             
             # subselection of models_selected
-            keep_lines <- .filter_outputs.df(out, subset.list = list(full.name =  full.name, data.set = data.set
-                                                                     , run.eval = run.eval, algo = algo))
+            keep_lines <- .filter_outputs.df(out, subset.list = list(full.name =  full.name, PA = PA
+                                                                     , run = run, algo = algo))
             out <- out[keep_lines, ]
             return(out)
           }
@@ -458,10 +458,10 @@ setMethod("get_predictions", "BIOMOD.models.out",
 ##' 
 
 setMethod("get_built_models", "BIOMOD.models.out",
-          function(obj, full.name = NULL, data.set = NULL, run.eval = NULL, algo = NULL) { 
+          function(obj, full.name = NULL, PA = NULL, run = NULL, algo = NULL) { 
             out <- obj@models.computed
-            keep_ind <- .filter_outputs.vec(out, obj.type = "mod", subset.list = list(full.name =  full.name, data.set = data.set
-                                                                                      , run.eval = run.eval, algo = algo))
+            keep_ind <- .filter_outputs.vec(out, obj.type = "mod", subset.list = list(full.name =  full.name, PA = PA
+                                                                                      , run = run, algo = algo))
             out <- out[keep_ind]
             return(out)
           }
@@ -474,11 +474,11 @@ setMethod("get_built_models", "BIOMOD.models.out",
 ##' 
 
 setMethod("get_evaluations", "BIOMOD.models.out",
-          function(obj, full.name = NULL, data.set = NULL, run.eval = NULL, algo = NULL, Metric.eval = NULL) {
+          function(obj, full.name = NULL, PA = NULL, run = NULL, algo = NULL, metric.eval = NULL) {
             out <- load_stored_object(obj@models.evaluation)
-            keep_lines <- .filter_outputs.df(out, subset.list = list(full.name =  full.name, data.set = data.set
-                                                                     , run.eval = run.eval, algo = algo
-                                                                     , Metric.eval = Metric.eval))
+            keep_lines <- .filter_outputs.df(out, subset.list = list(full.name =  full.name, PA = PA
+                                                                     , run = run, algo = algo
+                                                                     , metric.eval = metric.eval))
             out <- out[keep_lines, ]
             return(out)
           }
@@ -490,11 +490,11 @@ setMethod("get_evaluations", "BIOMOD.models.out",
 ##' 
 
 setMethod("get_variables_importance", "BIOMOD.models.out",
-          function(obj, full.name = NULL, data.set = NULL, run.eval = NULL, algo = NULL, Expl.var = NULL) {
+          function(obj, full.name = NULL, PA = NULL, run = NULL, algo = NULL, expl.var = NULL) {
             out <- load_stored_object(obj@variables.importance)
-            keep_lines <- .filter_outputs.df(out, subset.list = list(full.name =  full.name, data.set = data.set
-                                                                     , run.eval = run.eval, algo = algo
-                                                                     , Expl.var = Expl.var))
+            keep_lines <- .filter_outputs.df(out, subset.list = list(full.name =  full.name, PA = PA
+                                                                     , run = run, algo = algo
+                                                                     , expl.var = expl.var))
             out <- out[keep_lines, ]
             return(out)
           }
@@ -713,7 +713,7 @@ setMethod(
       } else {
         limits <- NULL
       }
-      plot.df <- merge(proj, coord, by = c("Points"))
+      plot.df <- merge(proj, coord, by = c("points"))
       if(plot.output == "facet"){
         g <- ggplot(plot.df)+
           geom_point(aes(x = x, y = y, color = pred), size = size) +
@@ -779,7 +779,7 @@ setMethod(
   
   ## 6 - check coord if x is a data.frame -------------------------------
   if (inherits(proj, 'data.frame')) {
-    npred <- length(unique(proj$Points))
+    npred <- length(unique(proj$points))
     if(is.null(coord)){
       stop("missing argument `coord` to plot projection with a data.frame")
     } else if (!inherits(coord, c("data.frame","matrix"))) {
@@ -791,7 +791,7 @@ setMethod(
     } else {
       coord <- as.data.frame(coord)
       colnames(coord) <- c("x","y")
-      coord$Points <- seq_len(npred)
+      coord$points <- seq_len(npred)
     }
   }
   
@@ -840,22 +840,22 @@ setMethod('show', signature('BIOMOD.projection.out'),
 ##' 
 
 setMethod("get_projected_models", "BIOMOD.projection.out",
-          function(obj, full.name = NULL, data.set = NULL, run.eval = NULL, algo = NULL
-                   , merged.by.algo = NULL, merged.by.run.eval = NULL
-                   , merged.by.data.set = NULL, filtered.by = NULL)
+          function(obj, full.name = NULL, PA = NULL, run = NULL, algo = NULL
+                   , merged.by.algo = NULL, merged.by.run = NULL
+                   , merged.by.PA = NULL, filtered.by = NULL)
           {
             
             out <- obj@models.projected
             if (length(grep("EM|merged", out)) > 0) {
               keep_ind <- .filter_outputs.vec(out, obj.type = "em", subset.list = list(full.name = full.name
-                                                                                       , merged.by.data.set = merged.by.data.set
-                                                                                       , merged.by.run.eval = merged.by.run.eval
+                                                                                       , merged.by.PA = merged.by.PA
+                                                                                       , merged.by.run = merged.by.run
                                                                                        , merged.by.algo = merged.by.algo
                                                                                        , filtered.by = filtered.by
                                                                                        , algo = algo))
             } else {
-              keep_ind <- .filter_outputs.vec(out, obj.type = "mod", subset.list = list(full.name =  full.name, data.set = data.set
-                                                                                        , run.eval = run.eval, algo = algo))
+              keep_ind <- .filter_outputs.vec(out, obj.type = "mod", subset.list = list(full.name =  full.name, PA = PA
+                                                                                        , run = run, algo = algo))
             }
             out <- out[keep_ind]
             return(out)
@@ -888,9 +888,9 @@ setMethod('free', signature('BIOMOD.projection.out'),
 ##' 
 
 setMethod("get_predictions", "BIOMOD.projection.out",
-          function(obj, full.name = NULL, data.set = NULL, run.eval = NULL, algo = NULL
-                   , merged.by.algo = NULL, merged.by.run.eval = NULL
-                   , merged.by.data.set = NULL, filtered.by = NULL)
+          function(obj, full.name = NULL, PA = NULL, run = NULL, algo = NULL
+                   , merged.by.algo = NULL, merged.by.run = NULL
+                   , merged.by.PA = NULL, filtered.by = NULL)
           {
             out <- load_stored_object(obj@proj.out)
             
@@ -899,26 +899,26 @@ setMethod("get_predictions", "BIOMOD.projection.out",
               names(out) <- get_projected_models(obj)
               if (length(grep("EM|merged", names(out))) > 0) {
                 keep_layers <- .filter_outputs.vec(names(out), obj.type = "em", subset.list = list(full.name =  full.name
-                                                                                                   , data.set = merged.by.data.set
-                                                                                                   , run.eval = merged.by.run.eval
+                                                                                                   , PA = merged.by.PA
+                                                                                                   , run = merged.by.run
                                                                                                    , algo = merged.by.algo
                                                                                                    , filtered.by = filtered.by))
               } else {
-                keep_layers <- .filter_outputs.vec(names(out), obj.type = "mod", subset.list = list(full.name =  full.name, data.set = data.set
-                                                                                                    , run.eval = run.eval, algo = algo))
+                keep_layers <- .filter_outputs.vec(names(out), obj.type = "mod", subset.list = list(full.name =  full.name, PA = PA
+                                                                                                    , run = run, algo = algo))
               }
               out <- subset(out, keep_layers)
             } else {
               if (length(grep("EM|merged", colnames(out))) > 0) {
                 keep_lines <- .filter_outputs.df(out, subset.list = list(full.name =  full.name
-                                                                         , merged.by.data.set = merged.by.data.set
-                                                                         , merged.by.run.eval = merged.by.run.eval
+                                                                         , merged.by.PA = merged.by.PA
+                                                                         , merged.by.run = merged.by.run
                                                                          , merged.by.algo = merged.by.algo
                                                                          , filtered.by = filtered.by
                                                                          , algo = algo))
               } else {
-                keep_lines <- .filter_outputs.df(out, subset.list = list(full.name =  full.name, data.set = data.set
-                                                                         , run.eval = run.eval, algo = algo))
+                keep_lines <- .filter_outputs.df(out, subset.list = list(full.name =  full.name, PA = PA
+                                                                         , run = run, algo = algo))
               }
               out <- out[keep_lines, ]
             }
@@ -1142,13 +1142,13 @@ setMethod("get_formal_data", "BIOMOD.ensemble.models.out",
 ##' 
 
 setMethod("get_built_models", "BIOMOD.ensemble.models.out",
-          function(obj, full.name = NULL, merged.by.algo = NULL, merged.by.run.eval = NULL
-                   , merged.by.data.set = NULL, filtered.by = NULL, algo = NULL)
+          function(obj, full.name = NULL, merged.by.algo = NULL, merged.by.run = NULL
+                   , merged.by.PA = NULL, filtered.by = NULL, algo = NULL)
           {
             out <- obj@em.computed
             keep_ind <- .filter_outputs.vec(out, obj.type = "em", subset.list = list(full.name = full.name
-                                                                                     , merged.by.data.set = merged.by.data.set
-                                                                                     , merged.by.run.eval = merged.by.run.eval
+                                                                                     , merged.by.PA = merged.by.PA
+                                                                                     , merged.by.run = merged.by.run
                                                                                      , merged.by.algo = merged.by.algo
                                                                                      , filtered.by = filtered.by
                                                                                      , algo = algo))
@@ -1174,8 +1174,8 @@ setMethod("get_kept_models", "BIOMOD.ensemble.models.out", function(obj) { retur
 ##' 
 
 setMethod("get_predictions", "BIOMOD.ensemble.models.out",
-          function(obj, evaluation = FALSE, full.name = NULL, merged.by.algo = NULL, merged.by.run.eval = NULL
-                   , merged.by.data.set = NULL, filtered.by = NULL, algo = NULL)
+          function(obj, evaluation = FALSE, full.name = NULL, merged.by.algo = NULL, merged.by.run = NULL
+                   , merged.by.PA = NULL, filtered.by = NULL, algo = NULL)
           {
             # check evaluation data availability
             if (evaluation && (!get_formal_data(obj)@has.evaluation.data)) {
@@ -1193,8 +1193,8 @@ setMethod("get_predictions", "BIOMOD.ensemble.models.out",
             # subselection of models_selected
             keep_lines <- .filter_outputs.df(out, subset.list = list(full.name = full.name
                                                                      , merged.by.algo = merged.by.algo
-                                                                     , merged.by.run.eval = merged.by.run.eval
-                                                                     , merged.by.data.set = merged.by.data.set
+                                                                     , merged.by.run = merged.by.run
+                                                                     , merged.by.PA = merged.by.PA
                                                                      , filtered.by = filtered.by
                                                                      , algo = algo))
             out <- out[keep_lines, ]
@@ -1210,17 +1210,17 @@ setMethod("get_predictions", "BIOMOD.ensemble.models.out",
 ##' 
 
 setMethod("get_evaluations", "BIOMOD.ensemble.models.out",
-          function(obj, full.name = NULL, merged.by.algo = NULL, merged.by.run.eval = NULL
-                   , merged.by.data.set = NULL, filtered.by = NULL, algo = NULL, Metric.eval = NULL)
+          function(obj, full.name = NULL, merged.by.algo = NULL, merged.by.run = NULL
+                   , merged.by.PA = NULL, filtered.by = NULL, algo = NULL, metric.eval = NULL)
           {
             out <- load_stored_object(obj@models.evaluation)
             keep_lines <- .filter_outputs.df(out, subset.list = list(full.name = full.name
                                                                      , merged.by.algo = merged.by.algo
-                                                                     , merged.by.run.eval = merged.by.run.eval
-                                                                     , merged.by.data.set = merged.by.data.set
+                                                                     , merged.by.run = merged.by.run
+                                                                     , merged.by.PA = merged.by.PA
                                                                      , filtered.by = filtered.by
                                                                      , algo = algo
-                                                                     , Metric.eval = Metric.eval))
+                                                                     , metric.eval = metric.eval))
             out <- out[keep_lines, ]
             return(out)
           }
@@ -1233,17 +1233,17 @@ setMethod("get_evaluations", "BIOMOD.ensemble.models.out",
 ##' 
 
 setMethod("get_variables_importance", "BIOMOD.ensemble.models.out",
-          function(obj, full.name = NULL, merged.by.algo = NULL, merged.by.run.eval = NULL
-                   , merged.by.data.set = NULL, filtered.by = NULL, algo = NULL, Expl.var = NULL)
+          function(obj, full.name = NULL, merged.by.algo = NULL, merged.by.run = NULL
+                   , merged.by.PA = NULL, filtered.by = NULL, algo = NULL, expl.var = NULL)
           {
             out <- load_stored_object(obj@variables.importance)
             keep_lines <- .filter_outputs.df(out, subset.list = list(full.name = full.name
                                                                      , merged.by.algo = merged.by.algo
-                                                                     , merged.by.run.eval = merged.by.run.eval
-                                                                     , merged.by.data.set = merged.by.data.set
+                                                                     , merged.by.run = merged.by.run
+                                                                     , merged.by.PA = merged.by.PA
                                                                      , filtered.by = filtered.by
                                                                      , algo = algo
-                                                                     , Expl.var = Expl.var))
+                                                                     , expl.var = expl.var))
             out <- out[keep_lines, ]
             return(out)
           }

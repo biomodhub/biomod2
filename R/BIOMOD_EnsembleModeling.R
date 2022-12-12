@@ -419,7 +419,7 @@ BIOMOD_EnsembleModeling <- function(bm.mod,
     obs <-  get_formal_data(bm.mod, 'resp.var')
     expl <- get_formal_data(bm.mod, 'expl.var')
     if (em.by %in% c("PA_dataset", 'PA_dataset+algo', 'PA_dataset+repet') &&
-        unlist(strsplit(assemb, "_"))[3] != 'AllData') {
+        strsplit(assemb, "_")[[1]][1] != 'allData') {
       if (inherits(get_formal_data(bm.mod), "BIOMOD.formated.data.PA")) {
         kept_cells <- get_formal_data(bm.mod)@PA.table[, strsplit(assemb, "_")[[1]][1]]
       } else {
@@ -432,7 +432,7 @@ BIOMOD_EnsembleModeling <- function(bm.mod,
       } else {
         kept_cells <- rep(TRUE, length(obs))
       }
-    } else { # in case 'AllData'
+    } else { # in case 'allData'
       kept_cells <- rep(TRUE, length(obs))
     }
     
@@ -491,10 +491,10 @@ BIOMOD_EnsembleModeling <- function(bm.mod,
           
           ## remove models if some thresholds are undefined
           models.kept.thresh <- unlist(lapply(models.kept.tmp, function(x){
-            mod <- tail(unlist(strsplit(x,"_")), 3)[3]
-            run <- tail(unlist(strsplit(x,"_")), 3)[2]
-            dat <- tail(unlist(strsplit(x,"_")), 3)[1]
-            return(get_evaluations(bm.mod, data.set = dat, run.eval = run, algo = mod, Metric.eval = eval.m)[, "Cutoff"])
+            dat <- .extract_modelNamesInfo(x, obj.type = "mod", info = "PA")
+            run <- .extract_modelNamesInfo(x, obj.type = "mod", info = "run")
+            alg <- .extract_modelNamesInfo(x, obj.type = "mod", info = "algo")
+            return(get_evaluations(bm.mod, PA = dat, run = run, algo = alg, metric.eval = eval.m)[, "cutoff"])
           }))
           names(models.kept.thresh) <- models.kept.tmp
           models.kept.tmp = models.kept.tmp[is.finite(models.kept.thresh)]
@@ -588,8 +588,8 @@ BIOMOD_EnsembleModeling <- function(bm.mod,
         pred.bm.name <- paste0(model_name, ".predictions")
         pred.bm.outfile <- file.path(name.BIOMOD_DATA, "ensemble.models.predictions", pred.bm.name)
         dir.create(dirname(pred.bm.outfile), showWarnings = FALSE, recursive = TRUE)
-        pred.newdata <- needed_predictions$predictions[which(needed_predictions$predictions$full.name %in% model.bm@model), c("full.name", "Points", "pred")]
-        pred.newdata <- tapply(X = pred.newdata$pred, INDEX = list(pred.newdata$Points, pred.newdata$full.name), FUN = mean)
+        pred.newdata <- needed_predictions$predictions[which(needed_predictions$predictions$full.name %in% model.bm@model), c("full.name", "points", "pred")]
+        pred.newdata <- tapply(X = pred.newdata$pred, INDEX = list(pred.newdata$points, pred.newdata$full.name), FUN = mean)
         pred.newdata <- as.data.frame(pred.newdata)
         
         ## store models prediction on the hard drive
@@ -634,7 +634,7 @@ BIOMOD_EnsembleModeling <- function(bm.mod,
                 pa_dataset_id <- paste0("_", strsplit(assemb, "_")[[1]][1])
                 repet_id <- paste0("_", strsplit(assemb, "_")[[1]][2])
                 ## define and extract the subset of points model will be evaluated on
-                if (repet_id == "_Full") {
+                if (repet_id == "_allRun") {
                   eval_lines <- rep(TRUE, length(pred.bm))
                 } else {
                   ## trick to detect when it is a full model but with a non common name
@@ -655,15 +655,15 @@ BIOMOD_EnsembleModeling <- function(bm.mod,
                                    obs = obs[!eval_lines],
                                    fit = pred.bm[!eval_lines])
                 }
-                colnames(cross.validation)[which(colnames(cross.validation) == "Best.stat")] <- "Calibrating.data"
+                colnames(cross.validation)[which(colnames(cross.validation) == "best.stat")] <- "calibration"
                 
                 stat.validation <- foreach(xx = metric.eval, .combine = "rbind") %do% {
                   bm_FindOptimStat(metric.eval = xx,
                                    obs = obs[eval_lines],
                                    fit = pred.bm[eval_lines],
-                                   threshold = cross.validation["Cutoff", xx])
+                                   threshold = cross.validation["cutoff", xx])
                 }
-                cross.validation$Testing.data <- stat.validation$Best.stat
+                cross.validation$validation <- stat.validation$best.stat
               } else {
                 ## NO VALIDATION LINES -----------------------------------------------------
                 cross.validation <- foreach(xx = metric.eval, .combine = "rbind") %do% {
@@ -671,10 +671,8 @@ BIOMOD_EnsembleModeling <- function(bm.mod,
                                    obs = obs[eval_lines],
                                    fit = pred.bm[eval_lines])
                 }
-                colnames(cross.validation)[which(colnames(cross.validation) == "Best.stat")] <- "Testing.data"
-                col_names <- colnames(cross.validation)
-                cross.validation$Calibrating.data <- NA
-                cross.validation <- cross.validation[, c(col_names, "Calibrating.data")]
+                colnames(cross.validation)[which(colnames(cross.validation) == "best.stat")] <- "calibration"
+                cross.validation$validation <- NA
               }
               
               
@@ -683,11 +681,11 @@ BIOMOD_EnsembleModeling <- function(bm.mod,
                   bm_FindOptimStat(metric.eval = xx,
                                    obs = eval.obs,
                                    fit = eval_pred.bm * 1000,
-                                   threshold = cross.validation["Cutoff", xx])
+                                   threshold = cross.validation["cutoff", xx])
                 }
-                cross.validation$Evaluating.data <- stat.evaluation$Best.stat
+                cross.validation$evaluation <- stat.evaluation$best.stat
               } else {
-                cross.validation$Evaluating.data <- NA
+                cross.validation$evaluation <- NA
               }
               
               ## store results
@@ -865,9 +863,9 @@ BIOMOD_EnsembleModeling <- function(bm.mod,
       }
     } else {
       if ('all' %in% metric.select) {
-        metric.select <- unique(get_evaluations(bm.mod)$Metric.eval)
+        metric.select <- unique(get_evaluations(bm.mod)$metric.eval)
       }
-      .fun_testIfIn(TRUE, "metric.select", metric.select, unique(get_evaluations(bm.mod)$Metric.eval))
+      .fun_testIfIn(TRUE, "metric.select", metric.select, unique(get_evaluations(bm.mod)$metric.eval))
     }
   }
   
@@ -931,10 +929,10 @@ BIOMOD_EnsembleModeling <- function(bm.mod,
   
   # check that repetition are note merged with full models
   if(any(grepl(pattern = "RUN",  x = models.chosen)) &&
-     any(grepl(pattern = "Full", x = models.chosen)) &&
+     any(grepl(pattern = "allRun", x = models.chosen)) &&
      em.by != 'PA_dataset+repet') {
     cat("\n!!! Removed models using the Full dataset as ensemble models cannot merge repetition dataset (RUN1, RUN2, ...) with Full dataset unless em.by = 'PA_dataset+repet'.")
-    models.chosen <- models.chosen[!grepl(pattern = "Full", x = models.chosen)]
+    models.chosen <- models.chosen[!grepl(pattern = "allRun", x = models.chosen)]
   }
   
   ## 9. Check that ensemble model have > 1 model to run -------------
@@ -998,7 +996,7 @@ BIOMOD_EnsembleModeling <- function(bm.mod,
   if (em.by == 'all') {
     assembl.list[["mergedData_mergedRun_mergedAlgo"]] <- models.chosen
   } else if (em.by == 'PA_dataset') {
-    for (dat in .extract_modelNamesInfo(models.chosen, obj.type = "mod", info = "data.set", as.unique = TRUE)) {
+    for (dat in .extract_modelNamesInfo(models.chosen, obj.type = "mod", info = "PA", as.unique = TRUE)) {
       assembl.list[[paste0(dat, "_mergedRun_mergedAlgo")]] <- models.chosen[grep(paste0("_", dat, "_"), models.chosen)]
     }
   } else if (em.by == 'algo') {
@@ -1006,8 +1004,8 @@ BIOMOD_EnsembleModeling <- function(bm.mod,
       assembl.list[[paste0( "mergedData_mergedRun_", algo)]] <- models.chosen[grep(paste0("*\\_", algo,"$"), models.chosen)]
     }
   } else if (em.by == 'PA_dataset+repet') {
-    for (dat in .extract_modelNamesInfo(models.chosen, obj.type = "mod", info = "data.set", as.unique = TRUE)) {
-      for (repet in .extract_modelNamesInfo(models.chosen, obj.type = "mod", info = "run.eval", as.unique = TRUE)) {
+    for (dat in .extract_modelNamesInfo(models.chosen, obj.type = "mod", info = "PA", as.unique = TRUE)) {
+      for (repet in .extract_modelNamesInfo(models.chosen, obj.type = "mod", info = "run", as.unique = TRUE)) {
         mod.tmp <- intersect(x = grep(paste0("_", dat, "_"), models.chosen)
                              , y = grep(paste0("_", repet, "_"), models.chosen))
         if (length(mod.tmp) > 0) {
@@ -1016,7 +1014,7 @@ BIOMOD_EnsembleModeling <- function(bm.mod,
       }
     }
   } else if (em.by == 'PA_dataset+algo') {
-    for (dat in .extract_modelNamesInfo(models.chosen, obj.type = "mod", info = "data.set", as.unique = TRUE)) {
+    for (dat in .extract_modelNamesInfo(models.chosen, obj.type = "mod", info = "PA", as.unique = TRUE)) {
       for (algo in .extract_modelNamesInfo(models.chosen, obj.type = "mod", info = "algo", as.unique = TRUE)) {
         mod.tmp <- intersect(x = grep(paste0("_", dat, "_"), models.chosen)
                              , y = grep(paste0("*\\_", algo,"$"), models.chosen))
@@ -1060,7 +1058,7 @@ BIOMOD_EnsembleModeling <- function(bm.mod,
       # data that are kept at least in one PA dataset
       kept_data <- apply(PA.table, 1, any)
       # tells which PA dataset is used by which model
-      models.kept.PA <- .extract_modelNamesInfo(models.kept.union, obj.type = "mod", info = "data.set", as.unique = FALSE)
+      models.kept.PA <- .extract_modelNamesInfo(models.kept.union, obj.type = "mod", info = "PA", as.unique = FALSE)
       names(models.kept.PA) <- models.kept.union
       
       out$predictions <-
@@ -1073,7 +1071,7 @@ BIOMOD_EnsembleModeling <- function(bm.mod,
           
           ## retrieve predictions for this PA dataset
           current_prediction <- get_predictions(bm.mod, full.name = thismodels)
-          current_prediction$Points <- index_current
+          current_prediction$points <- index_current
           
           # subsetting environment and coord
           env_to_predict <- get_formal_data(bm.mod)@data.env.var[index_to_predict,]
@@ -1093,14 +1091,14 @@ BIOMOD_EnsembleModeling <- function(bm.mod,
                 do.stack = TRUE,
                 nb.cpu = nb.cpu
               ))
-          new_prediction$Points <- index_to_predict
+          new_prediction$points <- index_to_predict
           
           ## combining old and new predictions
           index_full <- c(index_current, index_to_predict)
           
           res <- rbind(current_prediction, new_prediction)
-          res <- res[, c("full.name", "data.set", "run.eval", "algo", "Points", "pred")]
-          res <- res[order(res$full.name, res$Points), ]
+          res <- res[, c("full.name", "PA", "run", "algo", "points", "pred")]
+          res <- res[order(res$full.name, res$points), ]
           return(res)
         }
       
@@ -1128,15 +1126,15 @@ BIOMOD_EnsembleModeling <- function(bm.mod,
         models.kept.scores <- metric.select.table[eval.m, models.kept]
       } else {
         models.kept.scores <- unlist(lapply(models.kept, function(x) {
-          mod <- tail(unlist(strsplit(x, "_")), 3)[3]
-          run <- tail(unlist(strsplit(x, "_")), 3)[2]
-          dat <- tail(unlist(strsplit(x, "_")), 3)[1]
+          dat <- .extract_modelNamesInfo(x, obj.type = "mod", info = "PA")
+          run <- .extract_modelNamesInfo(x, obj.type = "mod", info = "run")
+          alg <- .extract_modelNamesInfo(x, obj.type = "mod", info = "algo")
           # select evaluations scores obtained for Evaluation Data if exists or CV if not
-          out <- get_evaluations(bm.mod, data.set = dat, run.eval = run, algo = mod, Metric.eval = eval.m)
+          out <- get_evaluations(bm.mod, PA = dat, run = run, algo = alg, metric.eval = eval.m)
           if (bm.mod@has.evaluation.data) {
-            return(out[, "Evaluating.data"])
+            return(out[, "evaluation"])
           } else {
-            return(out[, "Testing.data"])
+            return(out[, "validation"])
           }
         }))
       }
