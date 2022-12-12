@@ -6,7 +6,7 @@
 \usage{
 bm_PlotVarImpBoxplot(
   bm.out,
-  group.by = c("run.eval", "Expl.var", "algo"),
+  group.by = c("run", "expl.var", "algo"),
   do.plot = TRUE,
   ...
 )

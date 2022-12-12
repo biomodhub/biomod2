@@ -7,12 +7,12 @@
 BIOMOD_LoadModels(
   bm.out,
   full.name = NULL,
-  data.set = NULL,
-  run.eval = NULL,
+  PA = NULL,
+  run = NULL,
   algo = NULL,
   merged.by.algo = NULL,
-  merged.by.run.eval = NULL,
-  merged.by.data.set = NULL,
+  merged.by.run = NULL,
+  merged.by.PA = NULL,
   filtered.by = NULL,
   ...
 )
@@ -41,9 +41,9 @@ subselection of models can be done using the following additional arguments :
   \item{\code{models} : }{a \code{vector} containing model names to be loaded, must be among 
   \code{GLM}, \code{GBM}, \code{GAM}, \code{CTA}, \code{ANN}, \code{SRE}, \code{FDA}, 
   \code{MARS}, \code{RF}, \code{MAXENT.Phillips}, \code{MAXENT.Phillips.2}}
-  \item{\code{run.eval} : }{a \code{vector} containing repetition set to be loaded, must be 
-  among \code{RUN1}, \code{RUN2}, \code{...}, \code{Full}}
-  \item{\code{data.set} : }{a \code{vector} containing pseudo-absence set to be loaded, must 
+  \item{\code{run} : }{a \code{vector} containing repetition set to be loaded, must be 
+  among \code{RUN1}, \code{RUN2}, \code{...}, \code{allRun}}
+  \item{\code{PA} : }{a \code{vector} containing pseudo-absence set to be loaded, must 
   be among \code{PA1}, \code{PA2}, \code{...} \cr \cr}
   \item{\code{path} : }{a \code{character} corresponding to the location of the species folder 
   (if different from the current working directory) \cr \cr}

@@ -33,7 +33,7 @@
 \usage{
 \S4method{get_options}{BIOMOD.models.out}(obj)
 
-\S4method{get_calib_lines}{BIOMOD.models.out}(obj, as.data.frame = FALSE, data.set = NULL, run.eval = NULL)
+\S4method{get_calib_lines}{BIOMOD.models.out}(obj, as.data.frame = FALSE, PA = NULL, run = NULL)
 
 \S4method{get_formal_data}{BIOMOD.models.out}(obj, subinfo = NULL)
 
@@ -41,46 +41,40 @@
   obj,
   evaluation = FALSE,
   full.name = NULL,
-  data.set = NULL,
-  run.eval = NULL,
+  PA = NULL,
+  run = NULL,
   algo = NULL
 )
 
-\S4method{get_built_models}{BIOMOD.models.out}(
-  obj,
-  full.name = NULL,
-  data.set = NULL,
-  run.eval = NULL,
-  algo = NULL
-)
+\S4method{get_built_models}{BIOMOD.models.out}(obj, full.name = NULL, PA = NULL, run = NULL, algo = NULL)
 
 \S4method{get_evaluations}{BIOMOD.models.out}(
   obj,
   full.name = NULL,
-  data.set = NULL,
-  run.eval = NULL,
+  PA = NULL,
+  run = NULL,
   algo = NULL,
-  Metric.eval = NULL
+  metric.eval = NULL
 )
 
 \S4method{get_variables_importance}{BIOMOD.models.out}(
   obj,
   full.name = NULL,
-  data.set = NULL,
-  run.eval = NULL,
+  PA = NULL,
+  run = NULL,
   algo = NULL,
-  Expl.var = NULL
+  expl.var = NULL
 )
 
 \S4method{get_projected_models}{BIOMOD.projection.out}(
   obj,
   full.name = NULL,
-  data.set = NULL,
-  run.eval = NULL,
+  PA = NULL,
+  run = NULL,
   algo = NULL,
   merged.by.algo = NULL,
-  merged.by.run.eval = NULL,
-  merged.by.data.set = NULL,
+  merged.by.run = NULL,
+  merged.by.PA = NULL,
   filtered.by = NULL
 )
 
@@ -89,12 +83,12 @@
 \S4method{get_predictions}{BIOMOD.projection.out}(
   obj,
   full.name = NULL,
-  data.set = NULL,
-  run.eval = NULL,
+  PA = NULL,
+  run = NULL,
   algo = NULL,
   merged.by.algo = NULL,
-  merged.by.run.eval = NULL,
-  merged.by.data.set = NULL,
+  merged.by.run = NULL,
+  merged.by.PA = NULL,
   filtered.by = NULL
 )
 
@@ -104,8 +98,8 @@
   obj,
   full.name = NULL,
   merged.by.algo = NULL,
-  merged.by.run.eval = NULL,
-  merged.by.data.set = NULL,
+  merged.by.run = NULL,
+  merged.by.PA = NULL,
   filtered.by = NULL,
   algo = NULL
 )
@@ -117,8 +111,8 @@
   evaluation = FALSE,
   full.name = NULL,
   merged.by.algo = NULL,
-  merged.by.run.eval = NULL,
-  merged.by.data.set = NULL,
+  merged.by.run = NULL,
+  merged.by.PA = NULL,
   filtered.by = NULL,
   algo = NULL
 )
@@ -127,22 +121,22 @@
   obj,
   full.name = NULL,
   merged.by.algo = NULL,
-  merged.by.run.eval = NULL,
-  merged.by.data.set = NULL,
+  merged.by.run = NULL,
+  merged.by.PA = NULL,
   filtered.by = NULL,
   algo = NULL,
-  Metric.eval = NULL
+  metric.eval = NULL
 )
 
 \S4method{get_variables_importance}{BIOMOD.ensemble.models.out}(
   obj,
   full.name = NULL,
   merged.by.algo = NULL,
-  merged.by.run.eval = NULL,
-  merged.by.data.set = NULL,
+  merged.by.run = NULL,
+  merged.by.PA = NULL,
   filtered.by = NULL,
   algo = NULL,
-  Expl.var = NULL
+  expl.var = NULL
 )
 }
 \arguments{
@@ -152,11 +146,11 @@
 \item{as.data.frame}{a \code{logical} defining whether output should be returned as 
 \code{data.frame} or \code{array} object}
 
-\item{data.set}{a \code{vector} containing pseudo-absence set to be loaded, must be among 
+\item{PA}{a \code{vector} containing pseudo-absence set to be loaded, must be among 
 \code{PA1}, \code{PA2}, \code{...}}
 
-\item{run.eval}{a \code{vector} containing repetition set to be loaded, must be among 
-\code{RUN1}, \code{RUN2}, \code{...}, \code{Full}}
+\item{run}{a \code{vector} containing repetition set to be loaded, must be among 
+\code{RUN1}, \code{RUN2}, \code{...}, \code{allRun}}
 
 \item{subinfo}{a \code{character} corresponding to the information to be extracted, must be 
 among \code{NULL}, \code{expl.var.names}, \code{resp.var}, \code{expl.var}, \code{MinMax}, 

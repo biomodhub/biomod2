@@ -4,9 +4,9 @@
 ##' 
 ##' @title Custom models cross-validation procedure
 ##' 
-##' @description This function creates a \code{DataSplitTable} that can be given as parameter to 
-##' the \code{\link{BIOMOD_Modeling}} function to evaluate models with repeated k-fold or 
-##' stratified cross-validation (CV) instead of repeated split samples.
+##' @description This function creates a \code{matrix} or \code{data.frame} that can be given to 
+##' \code{data.split.table} parameter of \code{\link{BIOMOD_Modeling}} function to evaluate 
+##' models with repeated k-fold or stratified cross-validation (CV) instead of repeated split samples.
 ##' 
 ##' 
 ##' @param bm.format a \code{\link{BIOMOD.formated.data-class}} or \code{\link{BIOMOD.formated.data.PA-class}} 
@@ -27,9 +27,9 @@
 ##' 
 ##' @return 
 ##' 
-##' A \code{DataSplitTable} {matrix} with \code{k * nb.rep} (\emph{+ 1 if 
-##' \code{do.full.models = TRUE}}) columns that can be given as parameter to the 
-##' \code{\link{BIOMOD_Modeling}} function.
+##' A \code{matrix} or \code{data.frame} with \code{k * nb.rep} (\emph{+ 1 if 
+##' \code{do.full.models = TRUE}}) columns that can be given to \code{data.split.table} 
+##' parameter of \code{\link{BIOMOD_Modeling}} function.
 ##' 
 ##' 
 ##' @details
@@ -143,15 +143,17 @@
 ##'                                     seed.val = 42)
 ##' 
 ##' # Get evaluation scores & variables importance
-##' myEval <- get_evaluations(myBiomodModelOut, as.data.frame = TRUE)
+##' myEval <- get_evaluations(myBiomodModelOut)
 ##' myEval$CV.strategy <- "Random"
-##' myEval$CV.strategy[grepl("13", myEval$Model.name)] <- "Full"
-##' myEval$CV.strategy[grepl("11|12", myEval$Model.name)] <- "Stratified"
+##' myEval$CV.strategy[grepl("13", myEval$full.name)] <- "Full"
+##' myEval$CV.strategy[grepl("11|12", myEval$full.name)] <- "Stratified"
 ##' head(myEval)
 ##' 
+##' boxplot(myEval$calibration ~ interaction(myEval$algo, myEval$CV.strategy),
+##'         xlab = "", ylab = "ROC AUC", col = rep(c("brown", "cadetblue"), 3))
 ##' boxplot(myEval$validation ~ interaction(myEval$algo, myEval$CV.strategy),
 ##'         xlab = "", ylab = "ROC AUC", col = rep(c("brown", "cadetblue"), 3))
-##' 
+##'          
 ##' 
 ## @importFrom ENMeval get.block
 ## @importFrom dismo kfold

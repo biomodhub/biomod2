@@ -7,6 +7,7 @@
 bm_PlotEvalMean(
   bm.out,
   metric.eval = NULL,
+  dataset = "calibration",
   group.by = "algo",
   do.plot = TRUE,
   ...

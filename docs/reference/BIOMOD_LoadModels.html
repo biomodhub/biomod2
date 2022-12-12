@@ -101,12 +101,12 @@ or <code><a href="BIOMOD_EnsembleModeling.html">BIOMOD_EnsembleModeling</a></cod
     <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">BIOMOD_LoadModels</span><span class="op">(</span></span>
 <span>  <span class="va">bm.out</span>,</span>
 <span>  full.name <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  data.set <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  run.eval <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  PA <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  run <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  algo <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  merged.by.algo <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  merged.by.run.eval <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  merged.by.data.set <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  merged.by.run <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  merged.by.PA <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  filtered.by <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  <span class="va">...</span></span>
 <span><span class="op">)</span></span></code></pre></div>
@@ -138,9 +138,9 @@ object that can be obtained with the <code><a href="BIOMOD_Modeling.html">BIOMOD
 subselection of models can be done using the following additional arguments :</p><ul><li><p><code>models</code> : a <code>vector</code> containing model names to be loaded, must be among 
   <code>GLM</code>, <code>GBM</code>, <code>GAM</code>, <code>CTA</code>, <code>ANN</code>, <code>SRE</code>, <code>FDA</code>, 
   <code>MARS</code>, <code>RF</code>, <code>MAXENT.Phillips</code>, <code>MAXENT.Phillips.2</code></p></li>
-<li><p><code>run.eval</code> : a <code>vector</code> containing repetition set to be loaded, must be 
-  among <code>RUN1</code>, <code>RUN2</code>, <code>...</code>, <code>Full</code></p></li>
-<li><p><code>data.set</code> : a <code>vector</code> containing pseudo-absence set to be loaded, must 
+<li><p><code>run</code> : a <code>vector</code> containing repetition set to be loaded, must be 
+  among <code>RUN1</code>, <code>RUN2</code>, <code>...</code>, <code>allRun</code></p></li>
+<li><p><code>PA</code> : a <code>vector</code> containing pseudo-absence set to be loaded, must 
   be among <code>PA1</code>, <code>PA2</code>, <code>...</code> <br><br></p></li>
 <li><p><code>path</code> : a <code>character</code> corresponding to the location of the species folder 
   (if different from the current working directory) <br><br></p></li>

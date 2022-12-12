@@ -143,7 +143,7 @@ for a single species that will be used to build the species distribution model(s
 <dt>expl.var</dt>
 <dd><p>a <code>matrix</code>, <code>data.frame</code>, <code><a href="https://rdrr.io/pkg/terra/man/vect.html" class="external-link">SpatVector</a></code>
 or <code><a href="https://rdrr.io/pkg/terra/man/rast.html" class="external-link">SpatRaster</a></code> object containing the explanatory variables 
-(in columns or layers) that will be used to build the species distribution model(s).
+(in columns or layers) that will be used to build the species distribution model(s)
 <br><em>Note that old format from <span class="pkg">raster</span> and <span class="pkg">sp</span> are still supported such as 
 <code>RasterStack</code> and <code>SpatialPointsDataFrame</code> objects. </em></p></dd>
 
@@ -247,9 +247,8 @@ explanatory variables should be removed from the analysis or not</p></dd>
 
 <dt>filter.raster</dt>
 <dd><p>(<em>optional, default</em> <code>FALSE</code>) <br> 
-A <code>logical</code> value used when <code>expl.var</code> is of raster type. 
-<code>filter.raster</code> activates filtering of <code>resp.var</code> when several 
-points occur in the same raster cell.</p></dd>
+If <code>expl.var</code> is of raster type, a <code>logical</code> value defining whether <code>resp.var</code> 
+is to be filtered when several points occur in the same raster cell</p></dd>
 
 </dl></div>
     <div id="value">
@@ -258,11 +257,9 @@ points occur in the same raster cell.</p></dd>
 
 <p>A <code>BIOMOD.formated.data</code> object that can be used to build species distribution model(s) 
 with the <code><a href="BIOMOD_Modeling.html">BIOMOD_Modeling</a></code> function. <br></p>
-<p></p>
-<p><code>print</code> and <code>plot</code></p>
- 
 
-<p>functions are available to have a summary of the created object.</p>
+
+<p><code>print</code> and <code>plot</code> functions are available to have a summary of the created object.</p>
     </div>
     <div id="details">
     <h2>Details</h2>
@@ -270,17 +267,16 @@ with the <code><a href="BIOMOD_Modeling.html">BIOMOD_Modeling</a></code> functio
 supports different kind of inputs (e.g. <code>matrix</code>,
 <code><a href="https://rdrr.io/pkg/terra/man/vect.html" class="external-link">SpatVector</a></code>, <code><a href="https://rdrr.io/pkg/terra/man/rast.html" class="external-link">SpatRaster</a></code>)
 and provides different methods to select pseudo-absences if needed. <br><br></p>
-<p><b>Concerning explanatory variables and XY coordinates :</b></p><ul><li><p>if  <code><a href="https://rdrr.io/pkg/terra/man/rast.html" class="external-link">SpatRaster</a></code>, <code>RasterLayer</code> or <code>RasterStack</code>
-  provided (for <code>expl.var</code> or <code>eval.expl.var</code>), <span class="pkg">biomod2</span> will extract the 
-  corresponding values from XY coordinates provided (<code>resp.xy</code> or <code>eval.resp.xy</code> 
-  respectively). <br><em>Be sure to give the XY coordinates in the same projection system 
-  than the raster objects !</em></p></li>
-<li><p>if <code><a href="https://rdrr.io/pkg/terra/man/vect.html" class="external-link">SpatVector</a></code>, <code>SpatialPointsDataFrame</code>
-   provided (for <code>resp.var</code> or <code>eval.resp.var</code>), the same rule applies
-   (<em>same projection system !</em>).</p></li>
-<li><p>if <code>data.frame</code> or <code>matrix</code> provided (for <code>expl.var</code> or
-   <code>eval.expl.var</code>), <span class="pkg">biomod2</span> will simply merge it (<code>cbind</code>) 
-   with <code>resp.var</code> without ^considering XY coordinates. <br><em>Be sure to give explanatory and response values in the same row order !</em></p></li>
+<p><b>Concerning explanatory variables and XY coordinates :</b></p><ul><li><p>if <code><a href="https://rdrr.io/pkg/terra/man/rast.html" class="external-link">SpatRaster</a></code>, <code>RasterLayer</code> or <code>RasterStack</code>
+  provided for <code>expl.var</code> or <code>eval.expl.var</code>, <br><span class="pkg">biomod2</span> will extract 
+  the corresponding values from XY coordinates provided :</p><ul><li><p>either through <code>resp.xy</code> or <code>eval.resp.xy</code> respectively</p></li>
+<li><p>or <code>resp.var</code> or <code>eval.resp.var</code>, if provided as 
+    <code><a href="https://rdrr.io/pkg/terra/man/vect.html" class="external-link">SpatVector</a></code> or <code>SpatialPointsDataFrame</code></p></li>
+</ul><p><em>Be sure to give the objects containing XY coordinates in the same projection 
+  system than the raster objects !</em></p></li>
+<li><p>if <code>data.frame</code> or <code>matrix</code> provided for <code>expl.var</code> or
+   <code>eval.expl.var</code>, <br><span class="pkg">biomod2</span> will simply merge it (<code>cbind</code>) 
+   with <code>resp.var</code> without considering XY coordinates. <br><em>Be sure to give explanatory and response values in the same row order !</em></p></li>
 </ul><p><b>Concerning pseudo-absence selection (see <code><a href="bm_PseudoAbsences.html">bm_PseudoAbsences</a></code>) :</b></p><ul><li><p>if both presence and absence data are available, and there is enough absences :
   set <code>PA.nb.rep = 0</code> and no pseudo-absence will be selected.</p></li>
 <li><p>if no absence data (or not enough) is available, several pseudo-absence repetitions  
@@ -308,10 +304,10 @@ and provides different methods to select pseudo-absences if needed. <br><br></p>
 
   <dt>Evaluation data</dt>
 <dd><p>Although <span class="pkg">biomod2</span> provides tools to automatically divide dataset into calibration and 
-  validation parts through the modeling process (see <code>NbRunEval</code> and <code>DataSplit</code> 
+  validation parts through the modeling process (see <code>nb.rep</code> and <code>data.split.perc</code> 
   parameters in <code><a href="BIOMOD_Modeling.html">BIOMOD_Modeling</a></code> function ; or <code><a href="BIOMOD_CrossValidation.html">BIOMOD_CrossValidation</a> 
   function</code>), it is also possible (and strongly advised) to directly provide two independent 
-  datasets, one for calibration and one for validation.</p></dd>
+  datasets, one for calibration/validation and one for evaluation</p></dd>
 
   <dt>Pseudo-absence selection</dt>
 <dd><p>If no true absences are available, pseudo-absences must be selected from the 
@@ -399,6 +395,7 @@ and provides different methods to select pseudo-absences if needed. <br><br></p>
 <span>                                     resp.xy <span class="op">=</span> <span class="va">myRespXY</span>,</span>
 <span>                                     resp.name <span class="op">=</span> <span class="va">myRespName</span><span class="op">)</span></span>
 <span><span class="va">myBiomodData</span></span>
+<span><span class="fu"><a href="summary.html">summary</a></span><span class="op">(</span><span class="va">myBiomodData</span><span class="op">)</span></span>
 <span><span class="fu"><a href="plot.html">plot</a></span><span class="op">(</span><span class="va">myBiomodData</span><span class="op">)</span></span>
 <span></span>
 <span></span>

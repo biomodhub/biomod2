@@ -6,7 +6,8 @@
 \usage{
 bm_PlotEvalBoxplot(
   bm.out,
-  group.by = c("algo", "run.eval"),
+  dataset = "calibration",
+  group.by = c("algo", "run"),
   do.plot = TRUE,
   ...
 )

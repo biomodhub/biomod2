@@ -38,7 +38,7 @@ for a single species that will be used to build the species distribution model(s
 
 \item{expl.var}{a \code{matrix}, \code{data.frame}, \code{\link[terra:vect]{SpatVector}}
 or \code{\link[terra:rast]{SpatRaster}} object containing the explanatory variables 
-(in columns or layers) that will be used to build the species distribution model(s).
+(in columns or layers) that will be used to build the species distribution model(s)
 \cr \emph{Note that old format from \pkg{raster} and \pkg{sp} are still supported such as 
 \code{RasterStack} and \code{SpatialPointsDataFrame} objects. }}
 
@@ -114,14 +114,13 @@ A \code{logical} value defining whether points having one or several missing val
 explanatory variables should be removed from the analysis or not}
 
 \item{filter.raster}{(\emph{optional, default} \code{FALSE}) \cr 
-A \code{logical} value used when \code{expl.var} is of raster type. 
-\code{filter.raster} activates filtering of \code{resp.var} when several 
-points occur in the same raster cell.}
+If \code{expl.var} is of raster type, a \code{logical} value defining whether \code{resp.var} 
+is to be filtered when several points occur in the same raster cell}
 }
 \value{
 A \code{BIOMOD.formated.data} object that can be used to build species distribution model(s) 
-with the \code{\link{BIOMOD_Modeling}} function. \cr \code{print} and \code{plot} 
-functions are available to have a summary of the created object.
+with the \code{\link{BIOMOD_Modeling}} function. \cr
+\code{print} and \code{plot} functions are available to have a summary of the created object.
 }
 \description{
 This function gathers together all input data needed (\emph{xy, 
@@ -137,17 +136,20 @@ and provides different methods to select pseudo-absences if needed. \cr \cr
 
 \bold{Concerning explanatory variables and XY coordinates :} 
 \itemize{
-  \item if  \code{\link[terra:rast]{SpatRaster}}, \code{RasterLayer} or \code{RasterStack}
-  provided (for \code{expl.var} or \code{eval.expl.var}), \pkg{biomod2} will extract the 
-  corresponding values from XY coordinates provided (\code{resp.xy} or \code{eval.resp.xy} 
-  respectively). \cr \emph{Be sure to give the XY coordinates in the same projection system 
-  than the raster objects !}
-  \item if \code{\link[terra:vect]{SpatVector}}, \code{SpatialPointsDataFrame}
-   provided (for \code{resp.var} or \code{eval.resp.var}), the same rule applies
-   (\emph{same projection system !}).
-  \item if \code{data.frame} or \code{matrix} provided (for \code{expl.var} or
-   \code{eval.expl.var}), \pkg{biomod2} will simply merge it (\code{cbind}) 
-   with \code{resp.var} without ^considering XY coordinates. \cr
+  \item if \code{\link[terra:rast]{SpatRaster}}, \code{RasterLayer} or \code{RasterStack}
+  provided for \code{expl.var} or \code{eval.expl.var}, \cr \pkg{biomod2} will extract 
+  the corresponding values from XY coordinates provided :
+  \itemize{
+    \item either through \code{resp.xy} or \code{eval.resp.xy} respectively
+    \item or \code{resp.var} or \code{eval.resp.var}, if provided as 
+    \code{\link[terra:vect]{SpatVector}} or \code{SpatialPointsDataFrame}
+  }
+  \emph{Be sure to give the objects containing XY coordinates in the same projection 
+  system than the raster objects !}
+   
+  \item if \code{data.frame} or \code{matrix} provided for \code{expl.var} or
+   \code{eval.expl.var}, \cr \pkg{biomod2} will simply merge it (\code{cbind}) 
+   with \code{resp.var} without considering XY coordinates. \cr
   \emph{Be sure to give explanatory and response values in the same row order !}
 }
 
@@ -189,10 +191,10 @@ and provides different methods to select pseudo-absences if needed. \cr \cr
   }
   \item{Evaluation data}{
   Although \pkg{biomod2} provides tools to automatically divide dataset into calibration and 
-  validation parts through the modeling process (see \code{NbRunEval} and \code{DataSplit} 
+  validation parts through the modeling process (see \code{nb.rep} and \code{data.split.perc} 
   parameters in \code{\link{BIOMOD_Modeling}} function ; or \code{\link{BIOMOD_CrossValidation} 
   function}), it is also possible (and strongly advised) to directly provide two independent 
-  datasets, one for calibration and one for validation.
+  datasets, one for calibration/validation and one for evaluation
   }
   \item{Pseudo-absence selection}{
   If no true absences are available, pseudo-absences must be selected from the 
@@ -257,6 +259,7 @@ myBiomodData <- BIOMOD_FormatingData(resp.var = myResp,
                                      resp.xy = myRespXY,
                                      resp.name = myRespName)
 myBiomodData
+summary(myBiomodData)
 plot(myBiomodData)
 
 
