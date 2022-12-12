@@ -101,7 +101,7 @@
 ##' @importFrom nnet nnet
 ##' @importFrom earth earth
 ##' @importFrom mda fda mars
-##' @importFrom dplyr mutate_at filter select_at %>% pull
+##' @importFrom dplyr mutate_at select_at %>%
 ##' @importFrom maxnet maxnet
 ##' @importFrom randomForest randomForest
 ##' 
@@ -136,7 +136,6 @@ bm_RunModelsLoop <- function(bm.format,
   
   cat("\n\n-=-=-=- Run : ", bm.format$name, '\n')
   res.sp.run <- list()
-  
   for (i in 1:ncol(bm.format$calib.lines)) { # loop on RunEval
     run.id = dimnames(bm.format$calib.lines)[[2]][i]
     run.name = paste0(bm.format$name, run.id)
@@ -710,10 +709,7 @@ bm_RunModel <- function(model, Data, modeling.id = '', bm.options, calib.lines,
     ### 2.11 MAXENT.Phillips.2 model -------------------------------------------
     
     cat('\n\t> MAXENT.Phillips.2 modeling...')
-    model.sp <- try(maxnet(p = Data %>% filter(calib.lines) %>% pull(resp_name), 
-                           data = Data %>% filter(calib.lines) %>% select_at(expl_var_names)
-                           # f = if(!is.null(bm.options@MAXENT.Phillips.2@))
-    ))
+    model.sp <- try(maxnet(p = Data[calib_lines, resp_name], data = Data[calib_lines, expl_var_names]))
     
     if (!inherits(model.sp, "try-error")) {
       model.bm <- new("MAXENT.Phillips.2_biomod2_model",
@@ -804,10 +800,18 @@ bm_RunModel <- function(model, Data, modeling.id = '', bm.options, calib.lines,
     
     cross.validation <- foreach(xx = metric.eval, .combine = "rbind") %do% {
       bm_FindOptimStat(metric.eval = xx,
-                       obs = Data %>% filter(evalLines) %>% pull(1),
-                       fit = g.pred[evalLines])
+                       obs = Data[!evalLines, 1],
+                       fit = g.pred[!evalLines])
     }
-    colnames(cross.validation)[which(colnames(cross.validation) == "Best.stat")] <- "Testing.data"
+    colnames(cross.validation)[which(colnames(cross.validation) == "Best.stat")] <- "Calibrating.data"
+    
+    stat.validation <- foreach(xx = metric.eval, .combine = "rbind") %do% {
+      bm_FindOptimStat(metric.eval = xx,
+                       obs = Data[evalLines, 1],
+                       fit = g.pred[evalLines],
+                       threshold = cross.validation["Cutoff", xx])
+    }
+    cross.validation$Testing.data <- stat.validation$Best.stat
     
     if (exists('g.pred.eval')) {
       
@@ -821,13 +825,13 @@ bm_RunModel <- function(model, Data, modeling.id = '', bm.options, calib.lines,
         g.pred.eval.without.na <- g.pred.eval
       }
       
-      true.evaluation <- foreach(xx = metric.eval, .combine = "rbind") %do% {
+      stat.evaluation <- foreach(xx = metric.eval, .combine = "rbind") %do% {
         bm_FindOptimStat(metric.eval = xx,
                          obs = eval.data[, 1],
                          fit = g.pred.eval.without.na,
                          threshold = cross.validation["Cutoff", xx])
       }
-      cross.validation$Evaluating.data <- true.evaluation$Best.stat
+      cross.validation$Evaluating.data <- stat.evaluation$Best.stat
     } else {
       cross.validation$Evaluating.data <- NA
     }

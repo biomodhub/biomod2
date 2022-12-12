@@ -403,7 +403,6 @@ BIOMOD_EnsembleModeling <- function(bm.mod,
   ## Various objects will be stored (models, predictions, evaluation)
   name.BIOMOD_DATA = file.path(EM@dir.name, EM@sp.name, ".BIOMOD_DATA", EM@modeling.id, "ensemble.models")
   
-  
   ## 2. Do Ensemble modeling ---------------------------------------------------
   em.out <- foreach(assemb = names(em.mod.assemb)) %do%
   {
@@ -422,7 +421,7 @@ BIOMOD_EnsembleModeling <- function(bm.mod,
     if (em.by %in% c("PA_dataset", 'PA_dataset+algo', 'PA_dataset+repet') &&
         unlist(strsplit(assemb, "_"))[3] != 'AllData') {
       if (inherits(get_formal_data(bm.mod), "BIOMOD.formated.data.PA")) {
-        kept_cells <- get_formal_data(bm.mod)@PA.table[, unlist(strsplit(assemb, "_"))[3]]
+        kept_cells <- get_formal_data(bm.mod)@PA.table[, strsplit(assemb, "_")[[1]][1]]
       } else {
         kept_cells <- rep(TRUE, length(obs))
       }
@@ -440,7 +439,7 @@ BIOMOD_EnsembleModeling <- function(bm.mod,
     obs <- obs[kept_cells]
     expl <- expl[kept_cells, , drop = FALSE]
     obs[is.na(obs)] <- 0
-    
+
     ## get needed models predictions ----------------------------------------
     needed_predictions <- .get_needed_predictions(bm.mod, em.by, models.kept
                                                   , metric.select, metric.select.thresh
@@ -631,17 +630,16 @@ BIOMOD_EnsembleModeling <- function(bm.mod,
             if (!(algo %in% c('prob.cv', 'prob.ci.inf','prob.ci.sup'))) {
               if (em.by == "PA_dataset+repet") {
                 ## select the same evaluation data than formal models
-                ## get formal models calib/eval lines
-                calib_lines <- get_calib_lines(bm.mod)
                 ## get info on wich dataset and which repet this ensemble model is based on
-                pa_dataset_id <- paste0("_", unlist(strsplit(assemb, "_"))[3])
-                repet_id <- paste0("_", unlist(strsplit(assemb, "_"))[2])
+                pa_dataset_id <- paste0("_", strsplit(assemb, "_")[[1]][1])
+                repet_id <- paste0("_", strsplit(assemb, "_")[[1]][2])
                 ## define and extract the subset of points model will be evaluated on
                 if (repet_id == "_Full") {
                   eval_lines <- rep(TRUE, length(pred.bm))
                 } else {
                   ## trick to detect when it is a full model but with a non common name
                   ## i.e. all lines used for calib => full model
+                  calib_lines <- get_calib_lines(bm.mod)
                   eval_lines <- !na.omit(calib_lines[, repet_id, pa_dataset_id])
                   if (all(!eval_lines)) { eval_lines <- !eval_lines }
                 }
@@ -649,21 +647,45 @@ BIOMOD_EnsembleModeling <- function(bm.mod,
                 eval_lines <- rep(TRUE, length(pred.bm))
               }
               
-              cross.validation <- foreach(xx = metric.eval, .combine = "rbind") %do% {
-                bm_FindOptimStat(metric.eval = xx,
-                                 obs = obs[eval_lines],
-                                 fit = pred.bm[eval_lines])
+              
+              if (length(which(eval_lines == TRUE)) < length(pred.bm)) {
+                ## CALIBRATION & VALIDATION LINES -------------------------------------------------
+                cross.validation <- foreach(xx = metric.eval, .combine = "rbind") %do% {
+                  bm_FindOptimStat(metric.eval = xx,
+                                   obs = obs[!eval_lines],
+                                   fit = pred.bm[!eval_lines])
+                }
+                colnames(cross.validation)[which(colnames(cross.validation) == "Best.stat")] <- "Calibrating.data"
+                
+                stat.validation <- foreach(xx = metric.eval, .combine = "rbind") %do% {
+                  bm_FindOptimStat(metric.eval = xx,
+                                   obs = obs[eval_lines],
+                                   fit = pred.bm[eval_lines],
+                                   threshold = cross.validation["Cutoff", xx])
+                }
+                cross.validation$Testing.data <- stat.validation$Best.stat
+              } else {
+                ## NO VALIDATION LINES -----------------------------------------------------
+                cross.validation <- foreach(xx = metric.eval, .combine = "rbind") %do% {
+                  bm_FindOptimStat(metric.eval = xx,
+                                   obs = obs[eval_lines],
+                                   fit = pred.bm[eval_lines])
+                }
+                colnames(cross.validation)[which(colnames(cross.validation) == "Best.stat")] <- "Testing.data"
+                col_names <- colnames(cross.validation)
+                cross.validation$Calibrating.data <- NA
+                cross.validation <- cross.validation[, c(col_names, "Calibrating.data")]
               }
-              colnames(cross.validation)[which(colnames(cross.validation) == "Best.stat")] <- "Testing.data"
+              
               
               if (exists('eval_pred.bm')) {
-                true.evaluation <- foreach(xx = metric.eval, .combine = "rbind") %do% {
+                stat.evaluation <- foreach(xx = metric.eval, .combine = "rbind") %do% {
                   bm_FindOptimStat(metric.eval = xx,
                                    obs = eval.obs,
                                    fit = eval_pred.bm * 1000,
                                    threshold = cross.validation["Cutoff", xx])
                 }
-                cross.validation$Evaluating.data <- true.evaluation$Best.stat
+                cross.validation$Evaluating.data <- stat.evaluation$Best.stat
               } else {
                 cross.validation$Evaluating.data <- NA
               }
