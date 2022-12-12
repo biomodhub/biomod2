@@ -666,68 +666,160 @@ setClass("BIOMOD.projection.out",
 
 setMethod(
   'plot', signature(x = 'BIOMOD.projection.out', y = "missing"),
-  function(x, col = NULL, str.grep = NULL){
-    models_selected <- x@models.projected
-    if (length(str.grep) > 0) { 
-      models_selected <- grep(paste(str.grep, collapse = "|"),
-                              models_selected, value = TRUE)
+  function(x,
+           coord = NULL,
+           plot.output, # list or facet
+           do.plot = TRUE,
+           std = TRUE,
+           scales,
+           size,
+           ...
+  ){
+    # extraction of projection happens in argument check
+    args <- .plot.BIOMOD.projection.out.check.args(x,
+                                                   coord = coord,
+                                                   plot.output = plot.output, # list or facet
+                                                   do.plot = do.plot,
+                                                   std = std,
+                                                   scales = scales,
+                                                   size = size,
+                                                   ...)
+    for (argi in names(args)) { 
+      assign(x = argi, value = args[[argi]]) 
     }
-    if (!length(models_selected)) { 
-      stop("invalid str.grep arg")
-    }
+    rm(args)
     
-    if (inherits(x@proj.out, "BIOMOD.stored.SpatRaster")) {
-      if(!requireNamespace('rasterVis', quietly = TRUE)) stop("Package 'rasterVis' not found")
-      maxi <- 
-        try(
-          global(
-            get_predictions(x, full.name = models_selected), 
-            "max",
-            na.rm = TRUE
-          )
-        )
-      maxi <- max(maxi, na.rm = TRUE)
-      maxi <- ifelse(maxi <= 1, 1, ifelse(maxi < 1000, 1000, maxi))
-      my.at <- seq(0, maxi, by = 100 * maxi / 1000) ## breaks of color key
-      my.labs.at <- seq(0, maxi, by = 250 * maxi / 1000) ## labels placed vertically centered
-      my.lab <- seq(0, maxi, by = 250 * maxi / 1000) ## labels
-      my.col <- colorRampPalette(c("grey90", "yellow4", "green4"))(100) ## colors
-      
-      ## try to use levelplot function
-      try_plot <- try(
-        rasterVis::levelplot(
-          get_predictions(x, full.name = models_selected),
-          at = my.at,
-          margin = TRUE,
-          col.regions = my.col,
-          main = paste(x@sp.name, x@proj.name, "projections"),
-          colorkey = list(labels = list(labels = my.lab, 
-                                        at = my.labs.at))
-        )
-      )
-      if (!inherits(try_plot, "try-error")) { ## produce plot
-        print(try_plot)
-      } else { ## try classical plot
-        cat("\nrasterVis' levelplot() function failed. Try to call standard terra plotting function.",
-            "It can lead to unoptimal representations.",
-            "You should try to do it by yourself extracting predicions (see : get_predictions() function).",
-            fill = options()$width)
-        try_plot <- try(plot(get_predictions(x, full.name = models_selected)))
-        if (inherits(try_plot,"try-error")) {
-          cat("\n Plotting function failed.. You should try to do it by yourself!")
-        }
-      }
-    } else if (inherits(x@proj.out, "BIOMOD.stored.data.frame")) {
-      if (ncol(x@coord) != 2) {
-        cat("\n ! Impossible to plot projections because xy coordinates are not available !")
+
+    ### Plot SpatRaster ---------------------------------------------------------
+
+    if (inherits(proj,"SpatRaster")) {
+      maxi <- ifelse(max(global(proj, "max", na.rm = TRUE)$max) > 1, 1000, 1) 
+      if (std) {
+        limits <-  c(0,maxi)
       } else {
-        .multiple.plot(Data = get_predictions(x, full.name = models_selected), coor = x@coord)
+        limits <- NULL
+      }
+      
+      if (plot.output == "facet") {
+        g <- ggplot() +
+          tidyterra::geom_spatraster(data = proj) +
+          scale_fill_viridis_c(NULL, limits = limits) +
+          facet_wrap(~lyr)
+      } else if (plot.output == "list") {
+        g <- lapply(names(proj), function(thislayer){
+          ggplot() +
+            tidyterra::geom_spatraster(data = subset(proj, thislayer)) +
+            scale_fill_viridis_c(NULL, limits = limits) +
+            ggtitle(thislayer)
+        })
       }
     } else {
-      cat("\n !  Biomod Projection plotting issue !", fill = .Options$width)
+      ### Plot data.frame  -----------------------------------------------------
+      maxi <- ifelse(max(proj$pred) > 1, 1000, 1) 
+      if (std) {
+        limits <-  c(0,maxi)
+      } else {
+        limits <- NULL
+      }
+      plot.df <- merge(proj, coord, by = c("Points"))
+      if(plot.output == "facet"){
+        g <- ggplot(plot.df)+
+          geom_point(aes(x = x, y = y, color = pred), size = size) +
+          scale_colour_viridis_c(NULL, limits = limits) +
+          facet_wrap(~full.name)
+      } else if (plot.output == "list"){
+        g <- lapply(unique(plot.df$full.name), function(thislayer){
+          ggplot(subset(plot.df, plot.df$full.name == thislayer)) +
+            geom_point(aes(x = x, y = y, color = pred), size = size) +
+            scale_colour_viridis_c(NULL, limits = limits) +
+            ggtitle(thislayer)
+        })
+      }
+      
     }
+    if (do.plot) {
+      show(g)
+    } 
+    return(g)
   }
 )
+
+### .plot.BIOMOD.projection.out.check.args ----------------------------------
+
+.plot.BIOMOD.projection.out.check.args <- function(x,
+                                                   coord,
+                                                   plot.output, # list or facet
+                                                   do.plot,
+                                                   std,
+                                                   scales,
+                                                   size,
+                                                   ...){
+  
+  proj <- get_predictions(x, ...)
+  
+  ## 1 - check for tidyterra ----------------------
+  if (inherits(proj, "SpatRaster")) {
+    if (!requireNamespace("tidyterra")) {
+      stop("Package `tidyterra` is missing. Please install it with `install.packages('tidyterra')`.")
+    }
+  }
+  
+  ## 2 - plot.output----------------------
+  if (missing(plot.output)) {
+    plot.output <- "facet"
+  } else {
+    .fun_testIfIn(TRUE, "plot.output", plot.output, c("facet","list"))
+  }
+  
+  ## 3 - do.plot ----------------------
+  stopifnot(is.logical(do.plot))
+  
+  ## 4 - std ----------------------
+  stopifnot(is.logical(std))
+  
+  ## 5 - check scales for facet_wrap -------------------------------
+  if(missing(scales)){
+    scales <- "fixed"
+  } else {
+    .fun_testIfIn(TRUE, "scales", scales,
+                  c("fixed","free","free_x","free_y"))
+  }
+  
+  ## 6 - check coord if x is a data.frame -------------------------------
+  if (inherits(proj, 'data.frame')) {
+    npred <- length(unique(proj$Points))
+    if(is.null(coord)){
+      stop("missing argument `coord` to plot projection with a data.frame")
+    } else if (!inherits(coord, c("data.frame","matrix"))) {
+      stop("`coord` must be a data.frame or a matrix.")
+    } else if (ncol(coord) != 2) {
+      stop("`coord` must have two columns.")
+    } else if (nrow(coord) != npred) {
+      stop("`coord` must have as many rows as the number of predictions (", npred, ").")
+    } else {
+      coord <- as.data.frame(coord)
+      colnames(coord) <- c("x","y")
+      coord$Points <- seq_len(npred)
+    }
+  }
+  
+  ## 7 - check size -------------------------------
+  if (inherits(proj, 'data.frame')) {
+    if(missing(size)){
+      size <- 0.75
+    } else {
+      .fun_testIfPosNum(TRUE, "size", size)
+    }
+  }
+  
+  return(list(proj = proj,
+              coord = coord,
+              plot.output = plot.output,
+              do.plot = do.plot,
+              std = std,
+              scales = scales, 
+              size = size))
+}
 
 ## show.BIOMOD.projection.out -------------------------------------------------
 ##' 

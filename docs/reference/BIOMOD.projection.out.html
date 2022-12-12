@@ -99,7 +99,16 @@ BIOMOD_EnsembleForecasting"><!-- mathjax --><script src="https://cdnjs.cloudflar
 
     <div id="ref-usage">
     <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="co"># S4 method for BIOMOD.projection.out,missing</span></span>
-<span><span class="fu"><a href="plot.html">plot</a></span><span class="op">(</span><span class="va">x</span>, col <span class="op">=</span> <span class="cn">NULL</span>, str.grep <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span>
+<span><span class="fu"><a href="plot.html">plot</a></span><span class="op">(</span></span>
+<span>  <span class="va">x</span>,</span>
+<span>  coord <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  <span class="va">plot.output</span>,</span>
+<span>  do.plot <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  std <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  <span class="va">scales</span>,</span>
+<span>  <span class="va">size</span>,</span>
+<span>  <span class="va">...</span></span>
+<span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># S4 method for BIOMOD.projection.out</span></span>
 <span><span class="fu">show</span><span class="op">(</span><span class="va">object</span><span class="op">)</span></span></code></pre></div>
@@ -111,9 +120,8 @@ BIOMOD_EnsembleForecasting"><!-- mathjax --><script src="https://cdnjs.cloudflar
 <dd><p>a <code>BIOMOD.projection.out</code> object</p></dd>
 
 
-<dt>col</dt>
-<dd><p>a <code>vector</code> containing colors for plot (default : 
-<code>colorRampPalette(c("grey90", "yellow4", "green4"))(100)</code>)</p></dd>
+<dt>object</dt>
+<dd><p>a <code>BIOMOD.projection.out</code> object</p></dd>
 
 
 <dt>str.grep</dt>
@@ -121,8 +129,9 @@ BIOMOD_EnsembleForecasting"><!-- mathjax --><script src="https://cdnjs.cloudflar
 models projected</p></dd>
 
 
-<dt>object</dt>
-<dd><p>a <code>BIOMOD.projection.out</code> object</p></dd>
+<dt>col</dt>
+<dd><p>a <code>vector</code> containing colors for plot (default : 
+<code>colorRampPalette(c("grey90", "yellow4", "green4"))(100)</code>)</p></dd>
 
 </dl></div>
     <div id="slots">

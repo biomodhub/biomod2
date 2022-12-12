@@ -8,20 +8,29 @@
 \alias{show,BIOMOD.projection.out-method}
 \title{\code{BIOMOD_Projection()} output object class}
 \usage{
-\S4method{plot}{BIOMOD.projection.out,missing}(x, col = NULL, str.grep = NULL)
+\S4method{plot}{BIOMOD.projection.out,missing}(
+  x,
+  coord = NULL,
+  plot.output,
+  do.plot = TRUE,
+  std = TRUE,
+  scales,
+  size,
+  ...
+)
 
 \S4method{show}{BIOMOD.projection.out}(object)
 }
 \arguments{
 \item{x}{a \code{\link{BIOMOD.projection.out}} object}
 
-\item{col}{a \code{vector} containing colors for plot (default : 
-\code{colorRampPalette(c("grey90", "yellow4", "green4"))(100)})}
+\item{object}{a \code{\link{BIOMOD.projection.out}} object}
 
 \item{str.grep}{a \code{character} corresponding to the name (or part of the name(s)) of 
 models projected}
 
-\item{object}{a \code{\link{BIOMOD.projection.out}} object}
+\item{col}{a \code{vector} containing colors for plot (default : 
+\code{colorRampPalette(c("grey90", "yellow4", "green4"))(100)})}
 }
 \description{
 Class returned by \code{\link{BIOMOD_Projection}}, and used by 

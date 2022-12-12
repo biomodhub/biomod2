@@ -46,7 +46,13 @@
   algo = NULL
 )
 
-\S4method{get_built_models}{BIOMOD.models.out}(obj)
+\S4method{get_built_models}{BIOMOD.models.out}(
+  obj,
+  full.name = NULL,
+  data.set = NULL,
+  run.eval = NULL,
+  algo = NULL
+)
 
 \S4method{get_evaluations}{BIOMOD.models.out}(
   obj,
@@ -66,7 +72,13 @@
   Expl.var = NULL
 )
 
-\S4method{get_projected_models}{BIOMOD.projection.out}(obj)
+\S4method{get_projected_models}{BIOMOD.projection.out}(
+  obj,
+  full.name = NULL,
+  data.set = NULL,
+  run.eval = NULL,
+  algo = NULL
+)
 
 \S4method{free}{BIOMOD.projection.out}(obj)
 
@@ -75,7 +87,11 @@
   full.name = NULL,
   data.set = NULL,
   run.eval = NULL,
-  algo = NULL
+  algo = NULL,
+  merged.by.algo = NULL,
+  merged.by.run.eval = NULL,
+  merged.by.data.set = NULL,
+  filtered.by = NULL
 )
 
 \S4method{get_formal_data}{BIOMOD.ensemble.models.out}(obj, subinfo = NULL)
@@ -88,7 +104,9 @@
   obj,
   evaluation = FALSE,
   full.name = NULL,
-  merged.by = NULL,
+  merged.by.algo = NULL,
+  merged.by.run.eval = NULL,
+  merged.by.data.set = NULL,
   filtered.by = NULL,
   algo = NULL
 )
@@ -98,16 +116,22 @@
 \S4method{get_evaluations}{BIOMOD.ensemble.models.out}(
   obj,
   full.name = NULL,
-  em.filter = NULL,
-  em.algo = NULL,
+  merged.by.algo = NULL,
+  merged.by.run.eval = NULL,
+  merged.by.data.set = NULL,
+  filtered.by = NULL,
+  algo = NULL,
   Metric.eval = NULL
 )
 
 \S4method{get_variables_importance}{BIOMOD.ensemble.models.out}(
   obj,
   full.name = NULL,
-  em.filter = NULL,
-  em.algo = NULL,
+  merged.by.algo = NULL,
+  merged.by.run.eval = NULL,
+  merged.by.data.set = NULL,
+  filtered.by = NULL,
+  algo = NULL,
   Expl.var = NULL
 )
 }

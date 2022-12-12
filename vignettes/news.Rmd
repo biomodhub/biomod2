@@ -25,6 +25,7 @@ vignette: >
 * Improved `plot` and `summary` methods for `BIOMOD_FormatingData` output. These method now support the use of `calib.lines` to explore how the cross-validation dataset are structured.
 * `BIOMOD_FormatingData` now gives warning when several input data points are located in the same raster cells
 * Added options `filter.raster` in `BIOMOD_FormatingData` to filter data points so that none are located in the same raster cells.
+* Updated `plot` methods for `BIOMOD.projection.out` objects so that it uses `ggplot2` for nicer plots.
 
 ##### Minor Changes
 
@@ -39,6 +40,8 @@ prob.median, prob.cv, prob.ci, committee.averaging, prob.mean.weight)
 ##### Internal Changes
 
 * Array have disappeared from most internal functions
+* Removed `rasterVis` from `Suggests`
+* Added `tidyterra` and `ggtext` to `Suggests`
 
 #### 4.2-1 Bugfix patch
 
