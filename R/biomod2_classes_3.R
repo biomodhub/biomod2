@@ -795,13 +795,13 @@ setMethod(
     }
   }
   
+  if(missing(size)){
+    size <- 0.75
+  } 
+    
   ## 7 - check size -------------------------------
   if (inherits(proj, 'data.frame')) {
-    if(missing(size)){
-      size <- 0.75
-    } else {
       .fun_testIfPosNum(TRUE, "size", size)
-    }
   }
   
   return(list(proj = proj,
