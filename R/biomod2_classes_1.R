@@ -370,10 +370,10 @@ setMethod('BIOMOD.formated.data', signature(sp = 'numeric', env = 'SpatRaster'),
 ##' or \code{'list'}. \code{plot.output} determines whether plots are returned
 ##' as a single facet with all plots or a \code{list} of individual plots
 ##' (better when there are numerous graphics)
-##' @param PA_dataset a \code{vector} (\emph{default} \code{'all'}) containing 
+##' @param PA a \code{vector} (\emph{default} \code{'all'}) containing 
 ##' the subset of pseudo-absences dataset that needs to be represented. Available
 ##' only when \code{x} is a \code{\link{BIOMOD.formated.data.PA}} object.
-##' @param repet a \code{vector} (\emph{default} \code{'all'}) containing 
+##' @param run a \code{vector} (\emph{default} \code{'all'}) containing 
 ##' the subset of calibration dataset that needs to be represented. Available
 ##' only when \code{calib.lines} was given as argument.
 ##' @param plot.eval a boolean (\emph{default} \code{'TRUE'}) determining 
@@ -428,20 +428,18 @@ setMethod('plot', signature(x = 'BIOMOD.formated.data', y = "missing"),
                    calib.lines = NULL,
                    plot.type,
                    plot.output, 
-                   PA_dataset,
-                   repet,
+                   PA,
+                   run,
                    plot.eval,
-                   do.plot = TRUE,
-                   scales){
+                   do.plot = TRUE){
             args <- .plot.BIOMOD.formated.data.check.args(x = x,
                                                           calib.lines = calib.lines,
                                                           plot.type = plot.type,
                                                           plot.output = plot.output, 
-                                                          PA_dataset = PA_dataset,
-                                                          repet = repet,
+                                                          PA = PA,
+                                                          run = run,
                                                           plot.eval = plot.eval,
-                                                          do.plot = do.plot,
-                                                          scales = scales)
+                                                          do.plot = do.plot)
             
             for (argi in names(args)) { 
               assign(x = argi, value = args[[argi]]) 
@@ -482,27 +480,27 @@ setMethod('plot', signature(x = 'BIOMOD.formated.data', y = "missing"),
             
             ## 1.3 - Pseudo Absences and CV dataset -----------------------------
             if(!is.null(calib.lines) | inherits(x, "BIOMOD.formated.data.PA")){
-              PA_repet.vect <-
-                foreach(this_PA = PA_dataset, .combine = 'rbind') %:%
-                foreach(this_repet = repet, .combine = 'rbind') %do% { # to change if format is updated
+              PA_run.vect <-
+                foreach(this_PA = PA, .combine = 'rbind') %:%
+                foreach(this_run = run, .combine = 'rbind') %do% { # to change if format is updated
                   
-                  if( is.na(this_PA) ){ # repet only
-                    this_name <- this_repet
+                  if( is.na(this_PA) ){ # run only
+                    this_name <- this_run
                     this_calib <-
-                      calib.lines[ , this_repet]
+                      calib.lines[ , this_run]
                     this_valid <- 
-                      ! calib.lines[ , this_repet]
-                  } else if (is.na(this_repet)){ # PA only
+                      ! calib.lines[ , this_run]
+                  } else if (is.na(this_run)){ # PA only
                     this_name <- this_PA
                     this_calib <-
                       x@PA.table[ , this_PA]
-                  } else { # PA+repet
-                    this_name <- paste0(this_PA,"_",this_repet)
+                  } else { # PA+run
+                    this_name <- paste0(this_PA,"_",this_run)
                     this_calib <-
-                      calib.lines[ , this_repet] &
+                      calib.lines[ , this_run] &
                       x@PA.table[ , this_PA]
                     this_valid <- 
-                      ! calib.lines[ , this_repet] &
+                      ! calib.lines[ , this_run] &
                       x@PA.table[ , this_PA]
                   }
                   
@@ -514,7 +512,7 @@ setMethod('plot', signature(x = 'BIOMOD.formated.data', y = "missing"),
                                          x = calib.xy[, 1],
                                          y = calib.xy[, 2])
                   
-                  if (!is.na(this_repet)) { 
+                  if (!is.na(this_run)) { 
                     valid.resp <- x@data.species[this_valid]
                     valid.resp <- ifelse(is.na(valid.resp), 31, 
                                          ifelse(valid.resp == 1, 11, 21))
@@ -530,7 +528,7 @@ setMethod('plot', signature(x = 'BIOMOD.formated.data', y = "missing"),
                   thisdf.vect$dataset <- this_name
                   thisdf.vect
                 }
-              full.df.vect <- rbind(full.df.vect, PA_repet.vect)
+              full.df.vect <- rbind(full.df.vect, PA_run.vect)
             }
             
             
@@ -646,7 +644,7 @@ setMethod('plot', signature(x = 'BIOMOD.formated.data', y = "missing"),
                 g <- ggplot()+
                   tidyterra::geom_spatraster(data = rast.plot,
                                              aes(fill = factor(after_stat(value), data_breaks)))+
-                  facet_wrap(~lyr, scales = scales)+
+                  facet_wrap(~lyr)+
                   scale_fill_manual(
                     NULL,
                     breaks = data_breaks,
@@ -704,7 +702,7 @@ setMethod('plot', signature(x = 'BIOMOD.formated.data', y = "missing"),
                                  color = factor(resp, levels = data_breaks[-12]),
                                  shape = factor(resp, levels = data_breaks[-12])), 
                              alpha = 1, size = 1.5)+
-                  facet_wrap(~dataset, scales = scales)+
+                  facet_wrap(~dataset)+
                   scale_color_manual(
                     NULL,
                     breaks = data_breaks,
@@ -766,7 +764,8 @@ setMethod('plot', signature(x = 'BIOMOD.formated.data', y = "missing"),
                                                 nrow = 2))+
                     theme(legend.position = "top",
                           legend.key = element_blank(),
-                          legend.background = element_rect(fill = "grey90"))
+                          legend.background = element_rect(fill = "grey90"))+
+                    ggtitle(thisname)
                 })
                 
               }
@@ -785,17 +784,16 @@ setMethod('plot', signature(x = 'BIOMOD.formated.data', y = "missing"),
                                                   calib.lines,
                                                   plot.type,
                                                   plot.output, 
-                                                  PA_dataset,
-                                                  repet,
+                                                  PA,
+                                                  run,
                                                   plot.eval,
-                                                  do.plot,
-                                                  scales){
+                                                  do.plot){
   
   
   ## 1 - check x -----------------------------------------
   .fun_testIfInherits(TRUE, "x", x, c("BIOMOD.formated.data", "BIOMOD.formated.data.PA"))
   
-  ## 2 - check calib.lines & repet -----------------------------------------
+  ## 2 - check calib.lines & run -----------------------------------------
   
   if (!is.null(calib.lines)) {
     .fun_testIfInherits(TRUE, "calib.lines", calib.lines, c("matrix"))
@@ -806,16 +804,16 @@ setMethod('plot', signature(x = 'BIOMOD.formated.data', y = "missing"),
       stop("column names for `calib.lines` did not match ", deparse(expected_CVnames))  
     }
     
-    if (missing(repet)) repet <- 'all'
-    if ( ! ((length(repet) == 1 && repet == "all")
-            || all(repet %in% c(expected_CVnames)))  ) {
-      stop("`repet` must be 'all' or a combination among ", deparse(expected_CVnames))
+    if (missing(run)) run <- 'all'
+    if ( ! ((length(run) == 1 && run == "all")
+            || all(run %in% c(expected_CVnames)))  ) {
+      stop("`run` must be 'all' or a combination among ", deparse(expected_CVnames))
     }
-    if (length(repet) == 1 && repet == "all") {
-      repet <- expected_CVnames
+    if (length(run) == 1 && run == "all") {
+      run <- expected_CVnames
     }
   } else {
-    repet <- NA
+    run <- NA
   } 
   
   
@@ -848,7 +846,8 @@ setMethod('plot', signature(x = 'BIOMOD.formated.data', y = "missing"),
   } else {
     .fun_testIfIn(TRUE, "plot.type", plot.type, c("raster","points"))
     if ( !has.mask & plot.type == "raster") {
-      cat("\n ! no raster mask available, `plot.type` automatically set to 'points'\n")
+      plot.type <- "points"
+      cat("\n ! no raster available, `plot.type` automatically set to 'points'\n")
     }
   }
   
@@ -871,24 +870,24 @@ setMethod('plot', signature(x = 'BIOMOD.formated.data', y = "missing"),
   # do.plot
   stopifnot(is.logical(do.plot))
   
-  ## 8 - check PA_dataset ----------------------
+  ## 8 - check PA ----------------------
   
   if (inherits(x, "BIOMOD.formated.data.PA")) {
     
-    if (missing(PA_dataset)) PA_dataset <- 'all'
+    if (missing(PA)) PA <- 'all'
     
     expected_PAnames <- colnames(x@PA.table)
     
-    if ( ! ((length(PA_dataset) == 1 && PA_dataset == "all")
-            || all(PA_dataset %in% c(expected_PAnames)))  ) {
-      stop("`PA_dataset` must be 'all' or a combination among ", deparse(expected_PAnames))
+    if ( ! ((length(PA) == 1 && PA == "all")
+            || all(PA %in% c(expected_PAnames)))  ) {
+      stop("`PA` must be 'all' or a combination among ", deparse(expected_PAnames))
     }
-    if (length(PA_dataset) == 1 && PA_dataset == "all") {
-      PA_dataset <- expected_PAnames
+    if (length(PA) == 1 && PA == "all") {
+      PA <- expected_PAnames
     }
     
   } else {
-    PA_dataset <- NA
+    PA <- NA
   }
   
   ##  9 - check that coordinates are available -------------------------------
@@ -897,19 +896,7 @@ setMethod('plot', signature(x = 'BIOMOD.formated.data', y = "missing"),
     stop("coordinates are required to plot BIOMOD.formated.data objects")
   }
   
-  ## 10 - check scales for facet_wrap -------------------------------
-  if(missing(scales)){
-    scales <- "fixed"
-    if(has.mask & has.mask.eval){
-      scales <- ifelse(ext(rast(x@data.mask[["calibration"]])) ==
-                         ext(rast(x@data.mask[["evaluation"]])),
-                       "fixed","free")
-    }
-  } else {
-    .fun_testIfIn(TRUE, "scales", scales,
-                  c("fixed","free","free_x","free_y"))
-  }
-  
+
   ## End - return arguments ----------------------------------------------------
   
   
@@ -917,11 +904,10 @@ setMethod('plot', signature(x = 'BIOMOD.formated.data', y = "missing"),
               calib.lines = calib.lines,
               plot.type = plot.type,
               plot.output = plot.output, 
-              PA_dataset = PA_dataset,
-              repet = repet,
+              PA = PA,
+              run = run,
               plot.eval = plot.eval,
               do.plot = do.plot,
-              scales = scales,
               has.mask = has.mask,
               has.mask.eval = has.mask.eval))
 }
@@ -1051,9 +1037,8 @@ setMethod('summary', signature(object = 'BIOMOD.formated.data'),
             rm(args)
             
             output <- data.frame("dataset" = "initial",
-                                 "subdataset" = "FULL",
-                                 "repet" = NA,
-                                 "PA_dataset" = NA,
+                                 "run" = NA,
+                                 "PA" = NA,
                                  "Presences" = sum(object@data.species, na.rm = TRUE),
                                  "True_Absences" = sum(object@data.species == 0, na.rm = TRUE),
                                  "Pseudo_Absences" = 0,
@@ -1062,65 +1047,62 @@ setMethod('summary', signature(object = 'BIOMOD.formated.data'),
             if (object@has.data.eval) {
               output <- rbind(output,
                               data.frame("dataset" = "evaluation",
-                                         "subdataset" = "FULL",
-                                         "repet" = NA,
-                                         "PA_dataset" = NA,
+                                         "run" = NA,
+                                         "PA" = NA,
                                          "Presences" = sum(object@eval.data.species, na.rm = TRUE),
                                          "True_Absences" = sum(object@eval.data.species == 0, na.rm = TRUE),
                                          "Pseudo_Absences" = 0,
                                          "Undefined" = sum(is.na(object@eval.data.species), na.rm = TRUE)))
             }
             
-            PA_dataset <- NA
-            repet <- NA
+            PA <- NA
+            run <- NA
             if (inherits(object, "BIOMOD.formated.data.PA")) {
-              PA_dataset <- colnames(object@PA.table)
+              PA <- colnames(object@PA.table)
             }
             if (!is.null(calib.lines)) {
-              repet <- colnames(calib.lines)
+              run <- colnames(calib.lines)
             }
             
             if (!is.null(calib.lines) || inherits(object, "BIOMOD.formated.data.PA")) {
               output <- rbind(output,
-                              foreach(this_PA = PA_dataset, .combine = 'rbind') %:%
-                                foreach(this_repet = repet, .combine = 'rbind') %do% {
-                                  if ( is.na(this_PA) ) { # repet only
-                                    this_name <- this_repet
+                              foreach(this_PA = PA, .combine = 'rbind') %:%
+                                foreach(this_run = run, .combine = 'rbind') %do% {
+                                  if ( is.na(this_PA) ) { # run only
+                                    this_name <- this_run
                                     this_calib <-
-                                      calib.lines[ , this_repet]
+                                      calib.lines[ , this_run]
                                     this_valid <- 
-                                      ! calib.lines[ , this_repet]
-                                  } else if (is.na(this_repet)) { # PA only
+                                      ! calib.lines[ , this_run]
+                                  } else if (is.na(this_run)) { # PA only
                                     this_name <- this_PA
                                     this_calib <-
                                       object@PA.table[ , this_PA]
-                                  } else { # PA+repet
-                                    this_name <- paste0(this_PA,"_",this_repet)
+                                  } else { # PA+run
+                                    this_name <- paste0(this_PA,"_",this_run)
                                     this_calib <-
-                                      calib.lines[ , this_repet] &
+                                      calib.lines[ , this_run] &
                                       object@PA.table[ , this_PA]
                                     this_valid <- 
-                                      ! calib.lines[ , this_repet] &
+                                      ! calib.lines[ , this_run] &
                                       object@PA.table[ , this_PA]
                                   }
                                   
                                   calib.resp <- object@data.species[this_calib]
                                   tmp <- data.frame("dataset" = "calibration",
-                                                    "subdataset" = this_name,
-                                                    "repet" = this_repet,
-                                                    "PA_dataset" = this_PA,
+                                                    "run" = this_run,
+                                                    "PA" = this_PA,
                                                     "Presences" = sum(calib.resp, na.rm = TRUE),
                                                     "True_Absences" = sum(calib.resp == 0, na.rm = TRUE),
                                                     "Pseudo_Absences" = length(which(is.na(calib.resp))),
                                                     "Undefined" = NA)
                                   
-                                  if (!is.na(this_repet)) { 
+                                  if (!is.na(this_run)) { 
                                     valid.resp <- object@data.species[this_valid]
                                     tmp <- rbind(tmp,
                                                  data.frame("dataset" = "validation",
-                                                            "subdataset" = this_name,
-                                                            "repet" = this_repet,
-                                                            "PA_dataset" = this_PA,
+                                                            "run" = this_run,
+                                                            "PA" = this_PA,
                                                             "Presences" = sum(valid.resp, na.rm = TRUE),
                                                             "True_Absences" = sum(valid.resp == 0, na.rm = TRUE),
                                                             "Pseudo_Absences" = length(which(is.na(valid.resp))),
