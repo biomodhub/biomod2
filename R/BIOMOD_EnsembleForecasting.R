@@ -356,18 +356,7 @@ BIOMOD_EnsembleForecasting <- function(bm.em,
       proj.em <- as.data.frame(proj.em)
       names(proj.em) <- models.chosen
       proj.trans <- proj.em
-      
-      proj.em$points <- 1:nrow(proj.em)
-      tmp <- melt(proj.em, id.vars =  "points")
-      colnames(tmp) <- c("points", "full.name", "pred")
-      tmp$full.name <- as.character(tmp$full.name)
-      tmp$merged.by.PA <- .extract_modelNamesInfo(tmp$full.name, obj.type = "em", info = "merged.by.PA", as.unique = FALSE)
-      tmp$merged.by.run <- .extract_modelNamesInfo(tmp$full.name, obj.type = "em", info = "merged.by.run", as.unique = FALSE)
-      tmp$merged.by.algo <- .extract_modelNamesInfo(tmp$full.name, obj.type = "em", info = "merged.by.algo", as.unique = FALSE)
-      tmp$filtered.by <- .extract_modelNamesInfo(tmp$full.name, obj.type = "em", info = "filtered.by", as.unique = FALSE)
-      tmp$algo <- .extract_modelNamesInfo(tmp$full.name, obj.type = "em", info = "algo", as.unique = FALSE)
-      proj.em <- tmp[, c("full.name", "merged.by.PA", "merged.by.run", "merged.by.algo"
-                         , "filtered.by", "algo", "points", "pred")]
+      proj.em <- .format_proj.df(proj.em, obj.type = "em")
     }
     
     if (keep.in.memory) {
@@ -377,9 +366,9 @@ BIOMOD_EnsembleForecasting <- function(bm.em,
   }
   
   ## save projections
+  proj_out@type <- class(new.env)
   if (!do.stack){
     saved.files = unlist(proj.em)
-    proj_out@type <- class(new.env)
   } else {
     assign(x = nameProjSp, value = proj.em)
     saved.files <- file.path(namePath, paste0(nameProjSp, output.format))
@@ -389,7 +378,6 @@ BIOMOD_EnsembleForecasting <- function(bm.em,
       writeRaster(x = rast(get(nameProjSp)), filename = saved.files,
                   overwrite = TRUE, NAflag = -9999)#, datatype = ifelse(on_0_1000, "INT2S", "FLT4S")
     }
-    proj_out@type <- class(proj_out@proj.out@val)
   }
   proj_out@proj.out@link <- saved.files
   
@@ -400,92 +388,129 @@ BIOMOD_EnsembleForecasting <- function(bm.em,
   
   
   ## 5. Compute binary and/or filtered transformation ---------------------------------------------
-  if (length(metric.binary) | length(metric.filter))
+  if (length(metric.binary) > 0 | length(metric.filter) > 0)
   {
     cat("\n")
+    saved.files.binary <- NULL
+    saved.files.filtered <- NULL
+    to.rm <- grepl("EMcv|EMci", models.chosen)
+    if(any(to.rm)){
+      cat("\n! Binary/Filtered transformation automatically deactivated for ensemble models with coefficient of variation or confidence intervals")
+      models.chosen <- models.chosen[!to.rm]
+    }
     
-    thresholds <- get_evaluations(bm.em, full.name = models.chosen)
-    if (!on_0_1000) { thresholds[, "cutoff"]  <- thresholds[, "cutoff"] / 1000 }
-    
-    ## Do binary/filtering transformation
-    for (eval.meth in unique(c(metric.binary, metric.filter))) {
-      thres.tmp <- thresholds[which(thresholds$metric.eval == eval.meth), ]
-      rownames(thres.tmp) <- thres.tmp$full.name
-      thres.tmp <- thres.tmp[models.chosen, "cutoff"]
+    if (length(models.chosen) > 0) {
+      thresholds <- get_evaluations(bm.em, full.name = models.chosen)
+      if (!on_0_1000) { thresholds[, "cutoff"]  <- thresholds[, "cutoff"] / 1000 }
       
-      cat("\n\t> Building", eval.meth, "binaries / filtered")
-      if (!do.stack) {
-        for (i in 1:length(proj_out@proj.out@link)) {
-          file.tmp <- proj_out@proj.out@link[i]
+      ## Do binary/filtering transformation
+      for (eval.meth in unique(c(metric.binary, metric.filter))) {
+        thres.tmp <- thresholds[which(thresholds$metric.eval == eval.meth), ]
+        rownames(thres.tmp) <- thres.tmp$full.name
+        thres.tmp <- thres.tmp[models.chosen, "cutoff"]
+        
+        cat("\n\t> Building", eval.meth, "binaries / filtered")
+        if (!do.stack) {
+          for (i in 1:length(proj_out@proj.out@link)) {
+            file.tmp <- proj_out@proj.out@link[i]
+            if (grepl(pattern = paste0(models.chosen, collapse = "|"),
+                      x = file.tmp)) {
+              if (eval.meth %in% metric.binary) {
+                file.tmp.binary <- sub(output.format,
+                                       paste0("_", eval.meth, "bin", output.format),
+                                       file.tmp)
+                saved.files.binary <- c(saved.files.binary, file.tmp.binary)
+                writeRaster(x = bm_BinaryTransformation(rast(file.tmp), thres.tmp[i]),
+                            filename = file.tmp.binary,
+                            overwrite = TRUE,
+                            # datatype = "INT2S",
+                            NAflag = -9999)
+              }
+              
+              if (eval.meth %in% metric.filter) {
+                file.tmp.filtered <- sub(output.format,
+                                         paste0("_", eval.meth, "filt", output.format),
+                                         file.tmp)
+                saved.files.filtered <- c(saved.files.filtered, file.tmp.filtered)
+                writeRaster(x = bm_BinaryTransformation(rast(file.tmp), thres.tmp[i], do.filtering = TRUE),
+                            filename = file.tmp.filtered,
+                            overwrite = TRUE,
+                            # datatype = ifelse(on_0_1000, "INT2S", "FLT4S"),
+                            NAflag = -9999)
+              }
+            }
+          }
+        } else {
+          
+          # subset to remove EMcv/EMci models
+          if(proj_is_raster){
+            proj.trans <- subset(proj.trans, models.chosen)
+          } else {
+            proj.trans <- proj.trans[,models.chosen]
+          }
           
           if (eval.meth %in% metric.binary) {
-            writeRaster(x = bm_BinaryTransformation(rast(file.tmp), thres.tmp[i]),
-                        filename = sub(output.format,
-                                       paste0("_", eval.meth, "bin", output.format),
-                                       file.tmp),
-                        overwrite = TRUE,
-                        # datatype = "INT2S",
-                        NAflag = -9999)
+            nameBin <- paste0(nameProjSp, "_", eval.meth, "bin")
+            
+            
+            assign(x = nameBin, value = bm_BinaryTransformation(proj.trans, thres.tmp))
+            
+            file.tmp.binary <- file.path(namePath, paste0(nameBin, output.format))
+            saved.files.binary <- c(saved.files.binary, file.tmp.binary)
+            if (output.format == '.RData') {
+              if (!proj_is_raster) {
+                assign(x = nameBin, value = .format_proj.df((get(nameBin)), obj.type = "em"))
+              }
+              save(list = nameBin,
+                   file = file.tmp.binary,
+                   compress = compress)
+            } else {
+              writeRaster(x = get(nameBin),
+                          filename = file.tmp.binary,
+                          overwrite = TRUE,
+                          # datatype = "INT2S",
+                          NAflag = -9999)
+            }
           }
           
           if (eval.meth %in% metric.filter) {
-            writeRaster(x = bm_BinaryTransformation(rast(file.tmp), thres.tmp[i], do.filtering = TRUE),
-                        filename = sub(output.format,
-                                       paste0("_", eval.meth, "filt", output.format),
-                                       file.tmp),
-                        overwrite = TRUE,
-                        # datatype = ifelse(on_0_1000, "INT2S", "FLT4S"),
-                        NAflag = -9999)
-          }
-        }
-      } else {
-        if (eval.meth %in% metric.binary) {
-          nameBin <- paste0(nameProjSp, "_", eval.meth, "bin")
-          # assign(x = nameBin, value = bm_BinaryTransformation(proj, thres.tmp))
-          if (inherits(proj.em, "PackedSpatRaster")){ ## TO REMOVE ????
-            proj.trans <- rast(proj.trans)
-          }
-          assign(x = nameBin, value = bm_BinaryTransformation(proj.trans, thres.tmp))
-          
-          if (output.format == '.RData') {
-            # if (inherits(new.env, "SpatRaster")) {
-            #   assign(x = nameBin, value = wrap(get(nameBin)))
-            # } 
-            save(list = nameBin,
-                 file = file.path(namePath, paste0(nameBin, output.format)),
-                 compress = compress)
-          } else {
-            writeRaster(x = get(nameBin),
-                        filename = file.path(namePath, paste0(nameBin, output.format)),
-                        overwrite = TRUE,
-                        # datatype = "INT2S",
-                        NAflag = -9999)
-          }
-        }
-        
-        if (eval.meth %in% metric.filter) {
-          nameFilt <- paste0(nameProjSp, "_", eval.meth, "filt")
-          # assign(x = nameFilt, value = bm_BinaryTransformation(proj, thres.tmp, do.filtering = TRUE))
-          assign(x = nameFilt, value = bm_BinaryTransformation(proj.trans, thres.tmp, do.filtering = TRUE))
-          
-          if (output.format == '.RData') {
-            # if (inherits(new.env, "SpatRaster")) {
-            #   assign(x = nameFilt, value = wrap(get(nameFilt)))
-            # } 
-            save(list = nameFilt,
-                 file = file.path(namePath, paste0(nameFilt, output.format)),
-                 compress = compress)
-          } else {
-            writeRaster(x = get(nameFilt),
-                        filename = file.path(namePath, paste0(nameFilt, output.format)),
-                        overwrite = TRUE ,
-                        # datatype = ifelse(on_0_1000, "INT2S", "FLT4S"),
-                        NAflag = -9999)
+            nameFilt <- paste0(nameProjSp, "_", eval.meth, "filt")
+            # assign(x = nameFilt, value = bm_BinaryTransformation(proj, thres.tmp, do.filtering = TRUE))
+            assign(x = nameFilt, value = bm_BinaryTransformation(proj.trans, thres.tmp, do.filtering = TRUE))
+            file.tmp.filtered <- file.path(namePath, paste0(nameFilt, output.format))
+            saved.files.filtered <- c(saved.files.filtered, file.tmp.filtered)
+            
+            if (output.format == '.RData') {
+              if (!proj_is_raster) {
+                assign(x = nameFilt, value = .format_proj.df((get(nameFilt)), obj.type = "em"))
+              }
+              save(list = nameFilt,
+                   file = file.tmp.filtered,
+                   compress = compress)
+            } else {
+              writeRaster(x = get(nameFilt),
+                          filename = file.tmp.filtered,
+                          overwrite = TRUE ,
+                          # datatype = ifelse(on_0_1000, "INT2S", "FLT4S"),
+                          NAflag = -9999)
+            }
           }
         }
       }
+      cat("\n")
+    } else {
+      metric.binary <- NULL
+      metric.filter <- NULL
+      cat("\n! no models left for binary/filtered transformation")
     }
-    cat("\n")
+  }
+  
+  ### save binary/filtered file link into proj_out ----------------------------
+  if (!is.null(metric.binary)) {
+    proj_out@proj.out@link <- c(proj_out@proj.out@link, saved.files.binary)
+  }
+  if (!is.null(metric.filter)) {
+    proj_out@proj.out@link <- c(proj_out@proj.out@link, saved.files.filtered)
   }
   
   ## 6. SAVE MODEL OBJECT ON HARD DRIVE ----------------------------------------
@@ -493,7 +518,7 @@ BIOMOD_EnsembleForecasting <- function(bm.em,
   nameOut <- paste0(bm.em@sp.name, ".", proj.name, ".ensemble.projection.out")
   if (!keep.in.memory) { 
     proj_out <- free(proj_out) 
-    }
+  }
   assign(nameOut, proj_out)
   save(list = nameOut, file = file.path(namePath, nameOut))
   
@@ -520,150 +545,150 @@ BIOMOD_EnsembleForecasting <- function(bm.em,
                                                    , new.env, new.env.xy
                                                    , models.chosen
                                                    , metric.binary, metric.filter, ...)
-  {
-    args <- list(...)
-    
-    ## 1. Check bm.em -----------------------------------------------------------
-    .fun_testIfInherits(TRUE, "bm.em", bm.em, "BIOMOD.ensemble.models.out")
-    
-    ## 2. Check needed data and predictions -------------------------------------
-    if ((is.null(bm.proj) && is.null(new.env)) ||
-        (!is.null(bm.proj) & !is.null(new.env))) {
-      stop("You have to refer at one of 'bm.proj' or 'new.env' argument")
-    }
-
-    if (!is.null(bm.proj)) {
-      .fun_testIfInherits(TRUE, "bm.proj", bm.proj, "BIOMOD.projection.out")
-      
-      ## check all needed predictions are available
-      needed_pred <- get_kept_models(bm.em)  
-      missing_pred <- needed_pred[!(needed_pred %in% bm.proj@models.projected)]
-      if (length(missing_pred) > 0) {
-        stop("Some models predictions missing :", toString(missing_pred))
-      }
-    }
-    
-    ## 3. Check new.env ---------------------------------------------------------
-    if (!is.null(new.env)) {
-      .fun_testIfInherits(TRUE, "new.env", new.env, c('matrix', 'data.frame', 'SpatRaster','Raster'))
-      
-      if(inherits(new.env, 'matrix')){
-        if (any(sapply(get_formal_data(bm.em,"expl.var"), is.factor))) {
-          stop("new.env cannot be given as matrix when model involves categorical variables")
-        }
-        new.env <- data.frame(new.env)
-      }
-      if (inherits(new.env, 'Raster')) {
-        # conversion into SpatRaster
-        if(any(raster::is.factor(new.env))){
-          new.env <- categorical_stack_to_terra(raster::stack(new.env))
-        } else {
-          new.env <- rast(new.env)
-        }
-      }
-      
-      if (inherits(new.env, 'SpatRaster')) {
-        .fun_testIfIn(TRUE, "names(new.env)", names(new.env), bm.em@expl.var.names)
-      } else {
-        .fun_testIfIn(TRUE, "colnames(new.env)", colnames(new.env), bm.em@expl.var.names)
-      }
-    }
-    
-    ## 4. Check models.chosen ---------------------------------------------------
-    if (models.chosen[1] == 'all') {
-      models.chosen <- get_built_models(bm.em)
-    } else {
-      models.chosen <- intersect(models.chosen, get_built_models(bm.em))
-    }
-    if (length(models.chosen) < 1) {
-      stop('No models selected')
-    }
-    
-    ## 5. Check proj.name -------------------------------------------------------
-    if (!length(proj.name) && !length(bm.proj)) {
-      stop("You have to give a valid 'proj.name' if you don't work with bm.proj")
-    } else if (!length(proj.name)) {
-      proj.name <- bm.proj@proj.name
-    }
-
-    ## 6. Check metric.binary & metric.filter -----------------------------------
-    if (!is.null(metric.binary) | !is.null(metric.filter)) {
-      models.evaluation <- get_evaluations(bm.em)
-      if (is.null(models.evaluation)) {
-        warning("Binary and/or Filtered transformations of projection not ran because of models evaluation information missing")
-      } else {
-        available.evaluation <- as.character(unique(models.evaluation$metric.eval))
-        if (!is.null(metric.binary) && metric.binary[1] == 'all') {
-          metric.binary <- available.evaluation
-        } else if (!is.null(metric.binary) && 
-                   any(! metric.binary %in% available.evaluation)) {
-          warning(paste0(toString(metric.binary[!(metric.binary %in% available.evaluation)]),
-                         " Binary Transformation were switched off because no corresponding evaluation method found"))
-          metric.binary <- metric.binary[metric.binary %in% available.evaluation]
-        }
-        
-        if (!is.null(metric.filter) && metric.filter[1] == 'all') {
-          metric.filter <- available.evaluation
-        } else if (!is.null(metric.filter) &&
-                   any(!(metric.filter %in% available.evaluation))) {
-          warning(paste0(toString(metric.filter[!(metric.filter %in% available.evaluation)]),
-                         " Filtered Transformation were switched off because no corresponding evaluation method found"))
-          metric.filter <- metric.filter[metric.filter %in% available.evaluation]
-        }
-      }
-    }
-    
-    ## 7. Check output.format ---------------------------------------------------
-    output.format <- args$output.format
-    if (is.null(output.format)) {
-      if (length(bm.proj) > 0) {
-        output.format = ifelse(bm.proj@type != 'PackedSpatRaster', ".RData", ".tif")
-      } else {
-        output.format = ifelse(!inherits(new.env, 'SpatRaster'), ".RData", ".tif")
-      }
-    }
-    
-    ## 8. Check do.stack --------------------------------------------------------
-    do.stack <- args$do.stack
-    if (is.null(do.stack)) {
-      do.stack <- TRUE # if no info at all set it TRUE
-      # if not explicitly defined apply same rules than bm.proj ones
-      if (!is.null(bm.proj) &&
-          all(grepl("individual_projections", bm.proj@proj.out@link))) {
-        do.stack <- FALSE
-      }
-    }
-    
-    ## 9. Check keep.in.memory --------------------------------------------------
-    keep.in.memory <- args$keep.in.memory
-    if (is.null(keep.in.memory)) {
-      keep.in.memory <- TRUE # if no info at all set it TRUE
-      # if not explicitly defined apply same rules than bm.proj ones
-      if (!is.null(bm.proj)) {
-        keep.in.memory <- bm.proj@proj.out@inMemory
-      }
-    }
-    ## 10. Check new.env.xy ------------------------------------------------------
-
-    if (is.null(new.env.xy)) {
-      if (!is.null(bm.proj)) {
-        new.env.xy <- bm.proj@coord
-      } else {
-        new.env.xy <- matrix()
-      }
-    }
-    
-    return(list(bm.em = bm.em,
-                bm.proj = bm.proj,
-                new.env = new.env,
-                models.chosen = models.chosen,
-                proj.name = proj.name,
-                metric.binary = metric.binary,
-                metric.filter = metric.filter,
-                output.format = output.format,
-                compress = ifelse(is.null(args$compress), FALSE, args$compress),
-                on_0_1000 = ifelse(is.null(args$on_0_1000), TRUE, args$on_0_1000),
-                do.stack = do.stack,
-                keep.in.memory = keep.in.memory,
-                new.env.xy = new.env.xy))
+{
+  args <- list(...)
+  
+  ## 1. Check bm.em -----------------------------------------------------------
+  .fun_testIfInherits(TRUE, "bm.em", bm.em, "BIOMOD.ensemble.models.out")
+  
+  ## 2. Check needed data and predictions -------------------------------------
+  if ((is.null(bm.proj) && is.null(new.env)) ||
+      (!is.null(bm.proj) & !is.null(new.env))) {
+    stop("You have to refer at one of 'bm.proj' or 'new.env' argument")
   }
+  
+  if (!is.null(bm.proj)) {
+    .fun_testIfInherits(TRUE, "bm.proj", bm.proj, "BIOMOD.projection.out")
+    
+    ## check all needed predictions are available
+    needed_pred <- get_kept_models(bm.em)  
+    missing_pred <- needed_pred[!(needed_pred %in% bm.proj@models.projected)]
+    if (length(missing_pred) > 0) {
+      stop("Some models predictions missing :", toString(missing_pred))
+    }
+  }
+  
+  ## 3. Check new.env ---------------------------------------------------------
+  if (!is.null(new.env)) {
+    .fun_testIfInherits(TRUE, "new.env", new.env, c('matrix', 'data.frame', 'SpatRaster','Raster'))
+    
+    if(inherits(new.env, 'matrix')){
+      if (any(sapply(get_formal_data(bm.em,"expl.var"), is.factor))) {
+        stop("new.env cannot be given as matrix when model involves categorical variables")
+      }
+      new.env <- data.frame(new.env)
+    }
+    if (inherits(new.env, 'Raster')) {
+      # conversion into SpatRaster
+      if(any(raster::is.factor(new.env))){
+        new.env <- categorical_stack_to_terra(raster::stack(new.env))
+      } else {
+        new.env <- rast(new.env)
+      }
+    }
+    
+    if (inherits(new.env, 'SpatRaster')) {
+      .fun_testIfIn(TRUE, "names(new.env)", names(new.env), bm.em@expl.var.names)
+    } else {
+      .fun_testIfIn(TRUE, "colnames(new.env)", colnames(new.env), bm.em@expl.var.names)
+    }
+  }
+  
+  ## 4. Check models.chosen ---------------------------------------------------
+  if (models.chosen[1] == 'all') {
+    models.chosen <- get_built_models(bm.em)
+  } else {
+    models.chosen <- intersect(models.chosen, get_built_models(bm.em))
+  }
+  if (length(models.chosen) < 1) {
+    stop('No models selected')
+  }
+  
+  ## 5. Check proj.name -------------------------------------------------------
+  if (!length(proj.name) && !length(bm.proj)) {
+    stop("You have to give a valid 'proj.name' if you don't work with bm.proj")
+  } else if (!length(proj.name)) {
+    proj.name <- bm.proj@proj.name
+  }
+  
+  ## 6. Check metric.binary & metric.filter -----------------------------------
+  if (!is.null(metric.binary) | !is.null(metric.filter)) {
+    models.evaluation <- get_evaluations(bm.em)
+    if (is.null(models.evaluation)) {
+      warning("Binary and/or Filtered transformations of projection not ran because of models evaluation information missing")
+    } else {
+      available.evaluation <- as.character(unique(models.evaluation$metric.eval))
+      if (!is.null(metric.binary) && metric.binary[1] == 'all') {
+        metric.binary <- available.evaluation
+      } else if (!is.null(metric.binary) && 
+                 any(! metric.binary %in% available.evaluation)) {
+        warning(paste0(toString(metric.binary[!(metric.binary %in% available.evaluation)]),
+                       " Binary Transformation were switched off because no corresponding evaluation method found"))
+        metric.binary <- metric.binary[metric.binary %in% available.evaluation]
+      }
+      
+      if (!is.null(metric.filter) && metric.filter[1] == 'all') {
+        metric.filter <- available.evaluation
+      } else if (!is.null(metric.filter) &&
+                 any(!(metric.filter %in% available.evaluation))) {
+        warning(paste0(toString(metric.filter[!(metric.filter %in% available.evaluation)]),
+                       " Filtered Transformation were switched off because no corresponding evaluation method found"))
+        metric.filter <- metric.filter[metric.filter %in% available.evaluation]
+      }
+    }
+  }
+  
+  ## 7. Check output.format ---------------------------------------------------
+  output.format <- args$output.format
+  if (is.null(output.format)) {
+    if (length(bm.proj) > 0) {
+      output.format = ifelse(bm.proj@type != 'SpatRaster', ".RData", ".tif")
+    } else {
+      output.format = ifelse(!inherits(new.env, 'SpatRaster'), ".RData", ".tif")
+    }
+  }
+  
+  ## 8. Check do.stack --------------------------------------------------------
+  do.stack <- args$do.stack
+  if (is.null(do.stack)) {
+    do.stack <- TRUE # if no info at all set it TRUE
+    # if not explicitly defined apply same rules than bm.proj ones
+    if (!is.null(bm.proj) &&
+        all(grepl("individual_projections", bm.proj@proj.out@link))) {
+      do.stack <- FALSE
+    }
+  }
+  
+  ## 9. Check keep.in.memory --------------------------------------------------
+  keep.in.memory <- args$keep.in.memory
+  if (is.null(keep.in.memory)) {
+    keep.in.memory <- TRUE # if no info at all set it TRUE
+    # if not explicitly defined apply same rules than bm.proj ones
+    if (!is.null(bm.proj)) {
+      keep.in.memory <- bm.proj@proj.out@inMemory
+    }
+  }
+  ## 10. Check new.env.xy ------------------------------------------------------
+  
+  if (is.null(new.env.xy)) {
+    if (!is.null(bm.proj)) {
+      new.env.xy <- bm.proj@coord
+    } else {
+      new.env.xy <- matrix()
+    }
+  }
+  
+  return(list(bm.em = bm.em,
+              bm.proj = bm.proj,
+              new.env = new.env,
+              models.chosen = models.chosen,
+              proj.name = proj.name,
+              metric.binary = metric.binary,
+              metric.filter = metric.filter,
+              output.format = output.format,
+              compress = ifelse(is.null(args$compress), FALSE, args$compress),
+              on_0_1000 = ifelse(is.null(args$on_0_1000), TRUE, args$on_0_1000),
+              do.stack = do.stack,
+              keep.in.memory = keep.in.memory,
+              new.env.xy = new.env.xy))
+}

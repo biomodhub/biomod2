@@ -98,6 +98,18 @@
   return(test)
 }
 
+
+.fun_testMetric <- function(test, objName, objValue, values){
+  if (!is.null(objValue)) {
+    test <- .fun_testIfInherits(test, objName, objValue, "character")
+    if(length(objValue) != 1){
+      stop(paste0("`",objName,"` must only have one element"))
+    }
+    test <- .fun_testIfIn(test, objName, objValue, values)
+  }
+  return(test)
+}
+
 # Functions to get variables ranges ---------------------------------
 # used bm_RunModelsLoop, BIOMOD_EnsembleModeling
 get_var_type <- function(data) { return(sapply(data, function(x) class(x)[1])) }
@@ -320,7 +332,32 @@ get_var_range <- function(data)
   return(keep_layers)
 }
 
+# Format projection output as data.frame with appropriate columns --------------
 
+.format_proj.df <- function(proj, obj.type = "mod"){
+  .fun_testIfInherits(TRUE, "proj", proj, "data.frame")
+  .fun_testIfIn(TRUE, "obj.type", obj.type, c("mod","em"))
+  proj$points <- 1:nrow(proj)
+  tmp <- melt(proj, id.vars =  "points")
+  colnames(tmp) <- c("points", "full.name", "pred")
+  tmp$full.name <- as.character(tmp$full.name)
+  if(obj.type == "mod"){
+    tmp$PA <- .extract_modelNamesInfo(tmp$full.name, obj.type = "mod", info = "PA", as.unique = FALSE)
+    tmp$run <- .extract_modelNamesInfo(tmp$full.name, obj.type = "mod", info = "run", as.unique = FALSE)
+    tmp$algo <- .extract_modelNamesInfo(tmp$full.name, obj.type = "mod", info = "algo", as.unique = FALSE)
+    proj <- tmp[, c("full.name", "PA", "run", "algo", "points", "pred")]
+  } else {
+    tmp$merged.by.PA <- .extract_modelNamesInfo(tmp$full.name, obj.type = "em", info = "merged.by.PA", as.unique = FALSE)
+    tmp$merged.by.run <- .extract_modelNamesInfo(tmp$full.name, obj.type = "em", info = "merged.by.run", as.unique = FALSE)
+    tmp$merged.by.algo <- .extract_modelNamesInfo(tmp$full.name, obj.type = "em", info = "merged.by.algo", as.unique = FALSE)
+    tmp$filtered.by <- .extract_modelNamesInfo(tmp$full.name, obj.type = "em", info = "filtered.by", as.unique = FALSE)
+    tmp$algo <- .extract_modelNamesInfo(tmp$full.name, obj.type = "em", info = "algo", as.unique = FALSE)
+    proj.em <- tmp[, c("full.name", "merged.by.PA", "merged.by.run", "merged.by.algo"
+                       , "filtered.by", "algo", "points", "pred")]
+    
+  }
+  proj
+}
 ## TRANSFORM models outputs getting specific slot -------------------------------------------------
 ## used in BIOMOD_Modeling.R, BIOMOD_EnsembleModeling.R
 
@@ -429,6 +466,69 @@ get_var_range <- function(data)
   }
 }
 
+
+## Extract info (out/binary/filtered + metric) from BIOMOD.projection.out  -------------------------------------
+
+.extract_projlinkInfo <- function(obj){
+  stopifnot(inherits(obj, 'BIOMOD.projection.out'))
+  out.names <- obj@proj.out@link
+  sp.name <- obj@sp.name
+  sub(pattern     = paste0(".*?_",sp.name), 
+      replacement = "",
+      x           = out.names)
+  out.binary <- grepl(pattern = "bin",
+                      x = out.names)
+  out.filt <- grepl(pattern = "filt",
+                    x = out.names)
+  out.type <- ifelse(out.binary,
+                     "bin",
+                     ifelse(out.filt,
+                            "filt", 
+                            "out"))
+  out.metric <- sapply(seq_len(length(out.names)), 
+                       function(i){
+                         if (out.type[i] == "out") {
+                           return("none")
+                         } else {
+                           begin.cut <-  gsub(".*_", "", out.names[i]) 
+                           return(  sub(paste0(out.type[i],".*"), "", begin.cut) )
+                         }
+                       })
+  data.frame("link"   = out.names,
+             "type"   = out.type,
+             "metric" = out.metric)
+}
+
+# Extract Selected Layers --------------------------------------------
+# return relevant layers indices from a BIOMOD.projection.out given metric.binary
+# or metric.select
+.extract_selected.layers <- function(obj, metric.binary, metric.filter){
+  
+  ## argument  check ----------------------------------------------------------
+  stopifnot(inherits(obj, "BIOMOD.projection.out"))
+  
+  if (!is.null(metric.binary) & !is.null(metric.filter)) {
+    stop("cannot return both binary and filtered projection, please provide either `metric.binary` or `metric.filter` but not both.")
+  }
+  
+  df.info <- .extract_projlinkInfo(obj)
+  
+  available.metrics.binary <- unique(df.info$metric[which(df.info$type == "bin")])
+  available.metrics.filter <- unique(df.info$metric[which(df.info$type == "filt")])
+  .fun_testMetric(TRUE, "metric.binary", metric.binary, available.metrics.binary)
+  .fun_testMetric(TRUE, "metric.filter", metric.filter, available.metrics.filter)
+  
+  
+  ## select layers  -----------------------------------------------------------
+  if (!is.null(metric.binary)) {
+    selected.layers <- which(df.info$type == "bin" & df.info$metric == metric.binary)  
+  } else if ( !is.null(metric.filter)) {
+    selected.layers <- which(df.info$type == "filt" & df.info$metric == metric.filter)  
+  } else {
+    selected.layers <- which(df.info$type == "out")  
+  }
+  selected.layers
+}
 
 ## FILL BIOMOD.models.out elements in bm.mod or bm.em objects -------------------------------------
 ## used in BIOMOD_Modeling, BIOMOD_EnsembleModeling

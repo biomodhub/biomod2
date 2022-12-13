@@ -332,15 +332,7 @@ BIOMOD_Projection <- function(bm.mod,
       proj <- as.data.frame(proj)
       names(proj) <- models.chosen
       proj.trans <- proj
-      
-      proj$points <- 1:nrow(proj)
-      tmp <- melt(proj, id.vars =  "points")
-      colnames(tmp) <- c("points", "full.name", "pred")
-      tmp$full.name <- as.character(tmp$full.name)
-      tmp$PA <- .extract_modelNamesInfo(tmp$full.name, obj.type = "mod", info = "PA", as.unique = FALSE)
-      tmp$run <- .extract_modelNamesInfo(tmp$full.name, obj.type = "mod", info = "run", as.unique = FALSE)
-      tmp$algo <- .extract_modelNamesInfo(tmp$full.name, obj.type = "mod", info = "algo", as.unique = FALSE)
-      proj <- tmp[, c("full.name", "PA", "run", "algo", "points", "pred")]
+      proj <- .format_proj.df(proj, obj.type = "mod")
     }
     
     if (keep.in.memory) {
@@ -350,9 +342,9 @@ BIOMOD_Projection <- function(bm.mod,
   }
   
   ## save projections
+  proj_out@type <- class(new.env)
   if (!do.stack){
     saved.files = unlist(proj)
-    proj_out@type <- class(new.env)
   } else {
     assign(x = nameProjSp, value = proj)
     saved.files <- file.path(namePath, paste0(nameProjSp, output.format))
@@ -362,7 +354,6 @@ BIOMOD_Projection <- function(bm.mod,
       writeRaster(x = rast(get(nameProjSp)), filename = saved.files,
                   overwrite = TRUE, datatype = ifelse(on_0_1000, "INT2S", "FLT4S"), NAflag = -9999)
     }
-    proj_out@type <- class(proj_out@proj.out@val)
   }
   proj_out@proj.out@link <- saved.files
   
@@ -372,10 +363,10 @@ BIOMOD_Projection <- function(bm.mod,
   }
   
   ## 5. Compute binary and/or filtered transformation ---------------------------------------------
-  if (!is.null(metric.binary) | !is.null(metric.filter))
-  {
+  if (!is.null(metric.binary) | !is.null(metric.filter)) {
     cat("\n")
-    
+    saved.files.binary <- NULL
+    saved.files.filtered <- NULL
     thresholds <- get_evaluations(bm.mod, full.name = models.chosen)
     if (!on_0_1000) { thresholds[, "cutoff"]  <- thresholds[, "cutoff"] / 1000 }
     
@@ -384,27 +375,32 @@ BIOMOD_Projection <- function(bm.mod,
       thres.tmp <- thresholds[which(thresholds$metric.eval == eval.meth), ]
       rownames(thres.tmp) <- thres.tmp$full.name
       thres.tmp <- thres.tmp[models.chosen, "cutoff"]
-
+      
       cat("\n\t> Building", eval.meth, "binaries / filtered")
       if (!do.stack) {
         for (i in 1:length(proj_out@proj.out@link)) {
           file.tmp <- proj_out@proj.out@link[i]
           
           if (eval.meth %in% metric.binary) {
+            file.tmp.binary <- sub(output.format,
+                                   paste0("_", eval.meth, "bin", output.format),
+                                   file.tmp)
+            saved.files.binary <- c(saved.files.binary, file.tmp.binary)
             writeRaster(x = bm_BinaryTransformation(rast(file.tmp), thres.tmp[i]),
-                        filename = sub(output.format,
-                                       paste0("_", eval.meth, "bin", output.format),
-                                       file.tmp),
+                        filename = file.tmp.binary,
                         overwrite = TRUE,
                         datatype = "INT2S",
                         NAflag = -9999)
           }
           
           if (eval.meth %in% metric.filter) {
-            writeRaster(x = bm_BinaryTransformation(rast(file.tmp), thres.tmp[i], do.filtering = TRUE),
-                        filename = sub(output.format,
-                                       paste0("_", eval.meth, "filt", output.format),
-                                       file.tmp),
+            file.tmp.filtered <- sub(output.format,
+                                     paste0("_", eval.meth, "filt", output.format),
+                                     file.tmp)
+            saved.files.filtered <- c(saved.files.filtered, file.tmp.filtered)
+            writeRaster(x = bm_BinaryTransformation(rast(file.tmp), thres.tmp[i],
+                                                    do.filtering = TRUE),
+                        filename = file.tmp.filtered,
                         overwrite = TRUE,
                         datatype = ifelse(on_0_1000, "INT2S", "FLT4S"),
                         NAflag = -9999)
@@ -415,16 +411,21 @@ BIOMOD_Projection <- function(bm.mod,
           nameBin <- paste0(nameProjSp, "_", eval.meth, "bin")
           assign(x = nameBin, value = bm_BinaryTransformation(proj.trans, thres.tmp))
           
+          file.tmp.binary <- file.path(namePath, paste0(nameBin, output.format))
+          saved.files.binary <- c(saved.files.binary, file.tmp.binary)
+          
           if (output.format == '.RData') {
             if (proj_is_raster) {
               assign(x = nameBin, value = wrap(get(nameBin)))
-            } 
+            }  else {
+              assign(x = nameBin, value = .format_proj.df((get(nameBin)), obj.type = "mod"))
+            }
             save(list = nameBin,
-                 file = file.path(namePath, paste0(nameBin, output.format)),
+                 file = file.tmp.binary,
                  compress = compress)
           } else {
             writeRaster(x = get(nameBin),
-                        filename = file.path(namePath, paste0(nameBin, output.format)),
+                        filename = file.tmp.binary,
                         overwrite = TRUE,
                         datatype = "INT2S",
                         NAflag = -9999)
@@ -434,24 +435,39 @@ BIOMOD_Projection <- function(bm.mod,
         
         if (eval.meth %in% metric.filter) {
           nameFilt <- paste0(nameProjSp, "_", eval.meth, "filt")
-          assign(x = nameFilt, value = bm_BinaryTransformation(proj.trans, thres.tmp, do.filtering = TRUE))
+          assign(x = nameFilt,
+                 value = bm_BinaryTransformation(proj.trans, thres.tmp, 
+                                                 do.filtering = TRUE))
+          file.tmp.filtered <- file.path(namePath, paste0(nameFilt, output.format))
+          saved.files.filtered <- c(saved.files.filtered, file.tmp.filtered)
           
           if (output.format == '.RData') {
             if (proj_is_raster) {
               assign(x = nameFilt, value = wrap(get(nameFilt)))
-            } 
+            } else {
+              assign(x = nameFilt, value = .format_proj.df((get(nameFilt)), obj.type = "mod"))
+            }
             save(list = nameFilt,
                  file = file.path(namePath, paste0(nameFilt, output.format)),
                  compress = compress)
           } else {
             writeRaster(x = get(nameFilt),
-                        filename = file.path(namePath, paste0(nameFilt, output.format)),
+                        filename = file.tmp.filtered,
                         overwrite = TRUE ,
                         datatype = ifelse(on_0_1000, "INT2S", "FLT4S"),
                         NAflag = -9999)
           }
         }
       }
+    }
+    
+    
+    ### save binary/filtered file link into proj_out ----------------------------
+    if (!is.null(metric.binary)) {
+      proj_out@proj.out@link <- c(proj_out@proj.out@link, saved.files.binary)
+    }
+    if (!is.null(metric.filter)) {
+      proj_out@proj.out@link <- c(proj_out@proj.out@link, saved.files.filtered)
     }
     cat("\n")
   }
@@ -517,7 +533,6 @@ BIOMOD_Projection <- function(bm.mod,
   } else {
     new.env.xy = matrix()
   }
-  
   ## 5. Check models.chosen ---------------------------------------------------
   if (models.chosen[1] == 'all') {
     models.chosen <- bm.mod@models.computed
@@ -617,7 +632,7 @@ BIOMOD_Projection <- function(bm.mod,
     cat("\n\t\t! 'do.stack' arg is always set as TRUE for .RData output format") 
     do.stack <- TRUE
   }
-
+  
   
   
   return(list(proj.name = proj.name,

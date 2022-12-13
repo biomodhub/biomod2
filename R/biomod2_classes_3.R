@@ -798,10 +798,10 @@ setMethod(
   if(missing(size)){
     size <- 0.75
   } 
-    
+  
   ## 7 - check size -------------------------------
   if (inherits(proj, 'data.frame')) {
-      .fun_testIfPosNum(TRUE, "size", size)
+    .fun_testIfPosNum(TRUE, "size", size)
   }
   
   return(list(proj = proj,
@@ -830,6 +830,15 @@ setMethod('show', signature('BIOMOD.projection.out'),
             cat("\n")
             cat("\nmodeling.id :", object@modeling.id , "(", object@models.out@link , ")", fill = .Options$width)
             cat("\nmodels.projected :", toString(object@models.projected), fill = .Options$width)
+            df.info <- .extract_projlinkInfo(object)
+            if(any(df.info$type == "bin")){
+              available.metric <- unique(subset(df.info, df.info$type == "bin")$metric)
+              cat("\navailable binary projection :", toString(available.metric), fill = .Options$width)
+            }
+            if(any(df.info$type == "filt")){
+              available.metric <- unique(subset(df.info, df.info$type == "filt")$metric)
+              cat("\navailable filtered projection :", toString(available.metric), fill = .Options$width)
+            }
             .bm_cat()
           })
 
@@ -882,30 +891,39 @@ setMethod('free', signature('BIOMOD.projection.out'),
           })
 
 ## get_predictions.BIOMOD.projection.out ---------------------------------------
+# (the method is used for EM as well)
 ##' 
 ##' @rdname getters.out
 ##' @export
 ##' 
 
 setMethod("get_predictions", "BIOMOD.projection.out",
-          function(obj, full.name = NULL, PA = NULL, run = NULL, algo = NULL
+          function(obj, metric.filter = NULL, metric.binary = NULL
+                   , full.name = NULL, PA = NULL, run = NULL, algo = NULL
                    , merged.by.algo = NULL, merged.by.run = NULL
-                   , merged.by.PA = NULL, filtered.by = NULL)
-          {
-            out <- load_stored_object(obj@proj.out)
+                   , merged.by.PA = NULL, filtered.by = NULL) {
+            
+            # extract layers from obj@proj.out@link concerned by metric.filter 
+            # or metric.binary
+            selected.layers <- .extract_selected.layers(obj, 
+                                                        metric.binary = metric.binary,
+                                                        metric.filter = metric.filter)
+            out <- load_stored_object(obj@proj.out, layer = selected.layers)
             
             # subselection of models_selected
-            if (inherits(out, 'SpatRaster')) {
-              names(out) <- get_projected_models(obj)
+            if (obj@type == "SpatRaster") {
               if (length(grep("EM|merged", names(out))) > 0) {
-                keep_layers <- .filter_outputs.vec(names(out), obj.type = "em", subset.list = list(full.name =  full.name
-                                                                                                   , PA = merged.by.PA
-                                                                                                   , run = merged.by.run
-                                                                                                   , algo = merged.by.algo
-                                                                                                   , filtered.by = filtered.by))
+                keep_layers <- .filter_outputs.vec(names(out), obj.type = "em", 
+                                                   subset.list = list(full.name =  full.name
+                                                                      , merged.by.PA = merged.by.PA
+                                                                      , merged.by.run = merged.by.run
+                                                                      , merged.by.algo = merged.by.algo
+                                                                      , filtered.by = filtered.by
+                                                                      , algo = algo))
               } else {
-                keep_layers <- .filter_outputs.vec(names(out), obj.type = "mod", subset.list = list(full.name =  full.name, PA = PA
-                                                                                                    , run = run, algo = algo))
+                keep_layers <- .filter_outputs.vec(names(out), obj.type = "mod",
+                                                   subset.list = list(full.name =  full.name, PA = PA
+                                                                      , run = run, algo = algo))
               }
               out <- subset(out, keep_layers)
             } else {
