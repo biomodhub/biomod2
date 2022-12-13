@@ -1,4 +1,4 @@
-## BIOMOD_EnsembleModeling documentation ---------------------------------------
+###################################################################################################
 ##' @name BIOMOD_EnsembleModeling
 ##' @author Wilfried Thuiller, Damien Georges, Robin Engler
 ##' 
@@ -18,11 +18,9 @@
 ##' \code{\link{get_built_models}} function
 ##' @param em.by a \code{character} corresponding to the way kept models will be combined to build 
 ##' the ensemble models, must be among \code{PA_dataset+repet}, \code{PA_dataset+algo}, 
-##' @param em.algo (\emph{optional, default} \code{c('prob.mean')}) a \code{vector}
-##'  corresponding to the ensemble models that should  be computed. 
-##'  May contain up to six values among \code{'prob.mean'}, \code{'prob.median'}, 
-##'  \code{'prob.cv'}, \code{'prob.ci'}, \code{'committee.averaging'}, 
-##'  \code{'prob.mean.weight'}.
+##' @param em.algo a \code{vector} corresponding to the ensemble models that will be computed, 
+##' must be among \code{'prob.mean'}, \code{'prob.median'}, \code{'prob.cv'}, \code{'prob.ci'}, 
+##' \code{'committee.averaging'}, \code{'prob.mean.weight'}
 ##' @param metric.select a \code{vector} containing evaluation metric names to be used together with 
 ##' \code{metric.select.thresh} to exclude single models based on their evaluation scores 
 ##' (for ensemble methods like probability weighted mean or committee averaging). Must be among  
@@ -52,22 +50,7 @@
 ##' A value defining the relative importance of the weights (if \code{prob.mean.weight = TRUE}). 
 ##' A high value will strongly discriminate \emph{good} models from the \emph{bad} ones (see Details), while \code{proportional} will 
 ##' attribute weights proportionally to the models evaluation scores
-##' @param prob.mean (\emph{optional, default} \code{TRUE}) \cr A \code{logical}
-##'   value defining whether to compute the mean probabilities across
-##'   predictions or not
-##' @param prob.median (\emph{obsolete}) \cr A \code{logical} value defining
-##'   whether to compute the median probabilities across predictions or not
-##' @param prob.cv (\emph{obsolete}) \cr A \code{logical} value defining whether
-##'   to compute the coefficient of variation across predictions or not
-##' @param prob.ci (\emph{obsolete}) \cr A \code{logical} value defining whether
-##'   to compute te confidence interval around the \code{prob.mean} ensemble
-##'   model or not
-##' @param committee.averaging (\emph{obsolete}) \cr A \code{logical} value
-##'   defining whether to compute the committee averaging across predictions or
-##'   not
-##' @param prob.mean.weight (\emph{obsolete}) \cr A \code{logical} value
-##'   defining whether to compute the weighted sum of probabilities across
-##'   predictions or not
+##' 
 ##' @param nb.cpu (\emph{optional, default} \code{1}) \cr 
 ##' An \code{integer} value corresponding to the number of computing resources to be used to 
 ##' parallelize the single models computation
@@ -75,6 +58,20 @@
 ##' An \code{integer} value corresponding to the new seed value to be set
 ##' @param do.progress (\emph{optional, default} \code{TRUE}) \cr 
 ##' A \code{logical} value defining whether the progress bar is to be rendered or not
+##' 
+##' 
+##' @param prob.mean (\emph{optional, default} \code{TRUE}) \cr A \code{logical} value defining 
+##' whether to compute the mean probabilities across predictions or not
+##' @param prob.median (\emph{obsolete}) \cr A \code{logical} value defining whether to compute 
+##' the median probabilities across predictions or not
+##' @param prob.cv (\emph{obsolete}) \cr A \code{logical} value defining whether to compute the 
+##' coefficient of variation across predictions or not
+##' @param prob.ci (\emph{obsolete}) \cr A \code{logical} value defining whether to compute the 
+##' confidence interval around the \code{prob.mean} ensemble model or not
+##' @param committee.averaging (\emph{obsolete}) \cr A \code{logical} value defining whether to 
+##' compute the committee averaging across predictions or not
+##' @param prob.mean.weight (\emph{obsolete}) \cr A \code{logical} value defining whether to 
+##' compute the weighted sum of probabilities across predictions or not
 ##' 
 ##' 
 ##' @return
@@ -133,7 +130,6 @@
 ##'       \code{metric.select.thresh}
 ##'       \item perform the binary transformation needed if \code{committee.averaging = TRUE}
 ##'       \item weight models if \code{prob.mean.weight = TRUE}
-##'       \item test and/or evaluate the ensemble models built
 ##'     }
 ##'     }
 ##'     \item{\bold{\code{metric.select.thresh}} : }{as many values as evaluation metrics 
@@ -148,11 +144,13 @@
 ##'     parameter. The values contained in the \code{data.frame} will be compared to those defined 
 ##'     in \code{metric.select.thresh} to remove \emph{low quality} single models from 
 ##'     the ensemble model building.}
+##'     \item{\bold{\code{metric.eval}} : }{the selected metrics will be used to validate/evaluate 
+##'     the ensemble models built}
 ##'   }
 ##'   }
 ##' 
 ##'   \item{Ensemble-models algorithms}{The set of models to be calibrated on the data. \cr 
-##'   10 modeling techniques are currently available :
+##'   6 modeling techniques are currently available :
 ##'   \itemize{
 ##'     \item{\bold{\code{prob.mean}} : }{Mean of probabilities over the selected models}
 ##'     
@@ -296,52 +294,47 @@
 ##' myBiomodEM <- BIOMOD_EnsembleModeling(bm.mod = myBiomodModelOut,
 ##'                                       models.chosen = 'all',
 ##'                                       em.by = 'all',
+##'                                       em.algo = c('prob.mean', 'committee.averaging'),
 ##'                                       metric.select = c('TSS'),
 ##'                                       metric.select.thresh = c(0.7),
 ##'                                       metric.eval = c('TSS', 'ROC'),
 ##'                                       var.import = 3,
-##'                                       prob.mean = TRUE,
-##'                                       prob.median = FALSE,
-##'                                       prob.cv = FALSE,
-##'                                       prob.ci = FALSE,
-##'                                       prob.ci.alpha = 0.05,
-##'                                       committee.averaging = TRUE,
-##'                                       prob.mean.weight = FALSE,
-##'                                       prob.mean.weight.decay = 'proportional',
 ##'                                       seed.val = 42)
 ##' myBiomodEM
 ##' 
 ##' # Get evaluation scores & variables importance
-##' get_evaluations(myBiomodEM, as.data.frame = TRUE)
-##' get_variables_importance(myBiomodEM, as.data.frame = TRUE)
+##' get_evaluations(myBiomodEM)
+##' get_variables_importance(myBiomodEM)
 ##' 
 ##' # Represent evaluation scores
-##' bm_PlotEvalMean(bm.out = myBiomodEM, group.by = 'model')
-##' bm_PlotEvalBoxplot(bm.out = myBiomodEM, group.by = c('model', 'model'))
+##' bm_PlotEvalMean(bm.out = myBiomodEM, dataset = 'calibration')
+##' bm_PlotEvalBoxplot(bm.out = myBiomodEM, group.by = c('algo', 'algo'))
 ##' 
-##' # Represent variables importance
-##' # bm_PlotVarImpBoxplot(bm.out = myBiomodEM, group.by = c('expl.var', 'model', 'model'))
-##' # bm_PlotVarImpBoxplot(bm.out = myBiomodEM, group.by = c('expl.var', 'model', 'dataset'))
-##' # bm_PlotVarImpBoxplot(bm.out = myBiomodEM, group.by = c('model', 'expl.var', 'dataset'))
+##' # # Represent variables importance
+##' # bm_PlotVarImpBoxplot(bm.out = myBiomodEM, group.by = c('expl.var', 'algo', 'algo'))
+##' # bm_PlotVarImpBoxplot(bm.out = myBiomodEM, group.by = c('expl.var', 'algo', 'merged.by.PA'))
+##' # bm_PlotVarImpBoxplot(bm.out = myBiomodEM, group.by = c('algo', 'expl.var', 'merged.by.PA'))
 ##' 
-##' # Represent response curves
+##' # # Represent response curves
 ##' # bm_PlotResponseCurves(bm.out = myBiomodEM, 
-##' #                       models.chosen = get_built_models(myBiomodEM)[c(1, 2)],
+##' #                       models.chosen = get_built_models(myBiomodEM),
 ##' #                       fixed.var = 'median')
 ##' # bm_PlotResponseCurves(bm.out = myBiomodEM, 
-##' #                       models.chosen = get_built_models(myBiomodEM)[c(1, 2)],
+##' #                       models.chosen = get_built_models(myBiomodEM),
 ##' #                       fixed.var = 'min')
 ##' # bm_PlotResponseCurves(bm.out = myBiomodEM, 
-##' #                       models.chosen = get_built_models(myBiomodEM)[2],
+##' #                       models.chosen = get_built_models(myBiomodEM, algo = 'EMmean'),
 ##' #                       fixed.var = 'median',
 ##' #                       do.bivariate = TRUE)
 ##' 
 ##' 
-##' @export
 ##' @importFrom terra rast  
 ##' 
-## BIOMOD_EnsembleModeling function ------------------------------------------- 
-
+##' 
+##' @export
+##' 
+##' 
+###################################################################################################
 BIOMOD_EnsembleModeling <- function(bm.mod,
                                     models.chosen = 'all',
                                     em.by = 'PA_dataset+repet',

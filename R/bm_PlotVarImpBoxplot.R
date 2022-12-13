@@ -163,13 +163,18 @@ bm_PlotVarImpBoxplot <- function(bm.out, group.by = c('run', 'expl.var', 'algo')
   
   ## 3. Check group.by argument -----------------------------------------------
   if (length(group.by) != 3) { stop("3 group values needed") }
-  for (i in 1:length(group.by)) {
-    .fun_testIfIn(TRUE, paste0("group.by[", i, "]"), group.by[i], c("full.name", "PA", "run", "algo", "expl.var"))
-  }
+  if (inherits(bm.out, "BIOMOD.models.out")) {
+    for (i in 1:length(group.by)) {
+      .fun_testIfIn(TRUE, paste0("group.by[", i, "]"), group.by[i], c("full.name", "PA", "run", "algo", "expl.var"))
+    }
+  } else if (inherits(bm.out, "BIOMOD.ensemble.models.out")) {
+    for (i in 1:length(group.by)) {
+      .fun_testIfIn(TRUE, paste0("group.by[", i, "]"), group.by[i], c("full.name", "merged.by.PA", "merged.by.run", "algo", "expl.var"))
+    }
+  } 
   
   ## 4. Check extra args argument ---------------------------------------------
   .fun_testIfIn(TRUE, "names(args)", names(args), c('main'))
-  
   
   return(list(main = args$main))
 } 

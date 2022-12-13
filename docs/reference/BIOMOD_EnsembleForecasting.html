@@ -181,7 +181,7 @@ those of <code>modeling.output</code>) or <code>ROC</code>, <code>TSS</code>, <c
 <dt>compress</dt>
 <dd><p>(<em>optional, default</em> <code>TRUE</code>) <br> 
 A <code>logical</code> or a <code>character</code> value defining whether and how objects should be 
-compressed when saved on hard drive. Must be either <code>TRUE</code>, <code>FALSE</code>, <code>xz</code> or 
+compressed when saved on hard drive, must be either <code>TRUE</code>, <code>FALSE</code>, <code>xz</code> or 
 <code>gzip</code> (see Details)</p></dd>
 
 
@@ -201,7 +201,7 @@ parallelize the single models computation</p></dd>
 
 <p>A <code>BIOMOD.projection.out</code> object containing models projections, or links to saved 
 outputs. <br> Models projections are stored out of <span style="R">R</span> (for memory storage reasons) in 
-<code>proj.name</code> folder created in the current working directory :</p><ol><li><p>the output is a 4-dimensional array if <code>new.env</code> is a <code>matrix</code> or a 
+<code>proj.name</code> folder created in the current working directory :</p><ol><li><p>the output is a <code>data.frame</code> if <code>new.env</code> is a <code>matrix</code> or a 
   <code>data.frame</code></p></li>
 <li><p>it is a <code><a href="https://rdrr.io/pkg/terra/man/rast.html" class="external-link">SpatRaster</a></code> if <code>new.env</code> 
   is a <code><a href="https://rdrr.io/pkg/terra/man/rast.html" class="external-link">SpatRaster</a></code> (or several
@@ -211,12 +211,12 @@ outputs. <br> Models projections are stored out of <span style="R">R</span> (for
 </ol></div>
     <div id="details">
     <h2>Details</h2>
-    <p>If <code>models.chosen = 'all'</code>, projections are done for all evaluation and pseudo absences 
+    <p>If <code>models.chosen = 'all'</code>, projections are done for all calibration and pseudo absences 
 runs if applicable. <br> These projections may be used later by the 
 <code>BIOMOD_EnsembleForecasting</code> function. <br><br></p>
 <p>If <code>build.clamping.mask = TRUE</code>, a raster file will be saved within the projection 
 folder. This mask values will correspond to the number of variables in each pixel that are out 
-of their calibration / training range, identifying locations where predictions are uncertain. 
+of their calibration / validation range, identifying locations where predictions are uncertain. 
 <br><br></p>
 <p><code>...</code> can take the following values :</p><ul><li><p><code>on_0_1000</code> : a <code>logical</code> value defining whether <code>0 - 1</code> 
   probabilities are to be converted to <code>0 - 1000</code> scale to save memory on backup</p></li>
@@ -332,18 +332,11 @@ of their calibration / training range, identifying locations where predictions a
 <span>  <span class="va">myBiomodEM</span> <span class="op">&lt;-</span> <span class="fu"><a href="BIOMOD_EnsembleModeling.html">BIOMOD_EnsembleModeling</a></span><span class="op">(</span>bm.mod <span class="op">=</span> <span class="va">myBiomodModelOut</span>,</span>
 <span>                                        models.chosen <span class="op">=</span> <span class="st">'all'</span>,</span>
 <span>                                        em.by <span class="op">=</span> <span class="st">'all'</span>,</span>
+<span>                                        em.algo <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">'prob.mean'</span>, <span class="st">'committee.averaging'</span><span class="op">)</span>,</span>
 <span>                                        metric.select <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">'TSS'</span><span class="op">)</span>,</span>
 <span>                                        metric.select.thresh <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.7</span><span class="op">)</span>,</span>
 <span>                                        metric.eval <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">'TSS'</span>, <span class="st">'ROC'</span><span class="op">)</span>,</span>
 <span>                                        var.import <span class="op">=</span> <span class="fl">3</span>,</span>
-<span>                                        prob.mean <span class="op">=</span> <span class="cn">TRUE</span>,</span>
-<span>                                        prob.median <span class="op">=</span> <span class="cn">FALSE</span>,</span>
-<span>                                        prob.cv <span class="op">=</span> <span class="cn">FALSE</span>,</span>
-<span>                                        prob.ci <span class="op">=</span> <span class="cn">FALSE</span>,</span>
-<span>                                        prob.ci.alpha <span class="op">=</span> <span class="fl">0.05</span>,</span>
-<span>                                        committee.averaging <span class="op">=</span> <span class="cn">TRUE</span>,</span>
-<span>                                        prob.mean.weight <span class="op">=</span> <span class="cn">FALSE</span>,</span>
-<span>                                        prob.mean.weight.decay <span class="op">=</span> <span class="st">'proportional'</span>,</span>
 <span>                                        seed.val <span class="op">=</span> <span class="fl">42</span><span class="op">)</span></span>
 <span><span class="op">}</span></span>
 <span></span>
