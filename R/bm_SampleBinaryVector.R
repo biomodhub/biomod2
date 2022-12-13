@@ -24,7 +24,7 @@
 ##' A \code{list} containing to elements is returned :
 ##' \describe{
 ##'   \item{calibration}{IDs of elements selected for calibration}
-##'   \item{evaluation}{IDs of elements selected for evaluation (complementary to the calibration 
+##'   \item{validation}{IDs of elements selected for validation (complementary to the calibration 
 ##'   set)}
 ##' }
 ##'   
@@ -41,7 +41,7 @@
 ##' ## Generate a binary vector
 ##' vec.a <- sample(c(0, 1), 100, replace = TRUE)
 ##' 
-##' ## Generate calibration / evaluatation datasets
+##' ## Generate calibration / validation datasets
 ##' bm_SampleBinaryVector(obs = vec.a, ratio = 0.7)
 ##' 
 ##' 
@@ -69,12 +69,12 @@ bm_SampleBinaryVector <- function(obs, ratio, as.logical = FALSE, seedval = NULL
   if (as.logical) {
     calib <- rep(FALSE, ntot)
     calib[c(pres, absc)] <- TRUE
-    eval <- !calib
+    valid <- !calib
   } else {
     calib <- c(pres, absc)
-    eval <- (1:ntot)[-c(pres, absc)]
+    valid <- (1:ntot)[-c(pres, absc)]
   }
   
-  return(list("calibration" = calib, "evaluation" = eval))
+  return(list("calibration" = calib, "validation" = valid))
 }
 

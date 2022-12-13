@@ -320,7 +320,7 @@ BIOMOD_EnsembleForecasting <- function(bm.em,
         filename <- file.path(indiv_proj_dir, paste0(em.name, output.format))
       }
       
-      BIOMOD_LoadModels(bm.out = bm.em, full.name = em.name, as = "mod")
+      mod <- get(BIOMOD_LoadModels(bm.out = bm.em, full.name = em.name))
       ef.tmp <- predict(mod
                         , newdata = formal_pred
                         , on_0_1000 = on_0_1000

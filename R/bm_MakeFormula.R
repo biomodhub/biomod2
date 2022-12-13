@@ -15,28 +15,21 @@
 ##' \code{simple}, \code{quadratic}, \code{polynomial} or \code{s_smoother}
 ##' @param interaction.level an \code{integer} corresponding to the interaction level depth 
 ##' between explanatory variables
-##' @param \ldots some additional arguments (see Details)
-##' 
+##' @param k (\emph{optional, default} \code{NULL}) \cr 
+##' An \code{integer} corresponding to the smoothing parameter value of \code{\link[mgcv]{s}} 
+##' or \code{\link[gam]{s}} arguments (\emph{used only if \code{type = 's_smoother'}})
 ##' 
 ##' @return  
 ##' 
-##' A \code{\link[stats]{formula}} class object that can be directly given to most of \R 
-##' statistical models.
+##' A \code{\link[stats]{formula}} class object that can be directly given to most of 
+##' \R statistical models.
 ##' 
 ##' 
 ##' @details
 ##' 
 ##' It is advised to give only a subset of \code{expl.var} table to avoid useless memory consuming. 
 ##' \cr If some explanatory variables are factorial, \code{expl.var} must be a \code{data.frame} 
-##' whose corresponding columns are defined as \code{factor}. \cr \cr
-##' 
-##' \code{...} can take the following values :
-##' 
-##' \itemize{
-##'   \item{\code{k}}{ : an \code{integer} corresponding to the smoothing parameter value of 
-##'   \code{\link[mgcv]{s}} or \code{\link[gam]{s}} arguments (\emph{used only if 
-##'   \code{type = 's_smoother'}})}
-##' }
+##' whose corresponding columns are defined as \code{factor}.
 ##' 
 ##' 
 ##' @keywords models formula options
@@ -71,16 +64,13 @@
 ##'
 ###################################################################################################
 
-
 bm_MakeFormula <- function(resp.name, 
                            expl.var, 
                            type = 'simple', 
                            interaction.level = 0, 
-                           ...)
+                           k = NULL)
 {
   ## 1. Check parameters --------------------------------------------------------------------------
-  sup_args <- list(...)
-  
   if (!is.character(resp.name) || length(resp.name)!=1) {
     stop("resp.name must be a unique response variable name")
   }
@@ -120,10 +110,10 @@ bm_MakeFormula <- function(resp.name,
          , "s_smoother" = {
            for (v in 1:ncol(expl.var)) {
              if (is.numeric(expl.var[, v])) {
-               if (is.null(sup_args$k)) {
+               if (is.null(k)) {
                  junk <- paste(junk, paste0("gam::s(", explVarNames[v], ")"), sep = " + ")
                } else {
-                 junk <- paste(junk, paste0("gam::s(", explVarNames[v], ",k=", sup_args$k, ")"), sep = " + ")
+                 junk <- paste(junk, paste0("gam::s(", explVarNames[v], ",k=", k, ")"), sep = " + ")
                }
              } else { junk <- paste(junk, explVarNames[v], sep = " + ") }
            }

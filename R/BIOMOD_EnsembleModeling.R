@@ -335,6 +335,7 @@
 ##' 
 ##' 
 ###################################################################################################
+
 BIOMOD_EnsembleModeling <- function(bm.mod,
                                     models.chosen = 'all',
                                     em.by = 'PA_dataset+repet',

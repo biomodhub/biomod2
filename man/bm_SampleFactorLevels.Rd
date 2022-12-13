@@ -17,8 +17,8 @@ object containing the area that has already been sampled (\emph{factor
 levels within this mask will not be sampled})}
 
 \item{mask.in}{a \code{data.frame} or \code{\link[terra:rast]{SpatRaster}}
- object containing areas where factor levels are to be sampled in priority. 
- \emph{Note that if after having explored these masks, some factor levels 
+object containing areas where factor levels are to be sampled in priority. 
+\emph{Note that if after having explored these masks, some factor levels 
 remain unsampled, they will be sampled in the reference input object \code{expl.var}.}}
 }
 \value{

@@ -13,11 +13,11 @@
 ##' @param expl.var a \code{data.frame} or \code{\link[terra:rast]{SpatRaster}}
 ##' object containing the explanatory variables (in columns or layers)
 ##' @param mask.out a \code{data.frame} or \code{\link[terra:rast]{SpatRaster}}
-##'  object containing the area that has already been sampled (\emph{factor 
-##'  levels within this mask will not be sampled})
+##' object containing the area that has already been sampled (\emph{factor 
+##' levels within this mask will not be sampled})
 ##' @param mask.in a \code{data.frame} or \code{\link[terra:rast]{SpatRaster}}
-##'  object containing areas where factor levels are to be sampled in priority. 
-##'  \emph{Note that if after having explored these masks, some factor levels 
+##' object containing areas where factor levels are to be sampled in priority. 
+##' \emph{Note that if after having explored these masks, some factor levels 
 ##' remain unsampled, they will be sampled in the reference input object \code{expl.var}.}
 ##' 
 ##' 
@@ -94,7 +94,7 @@
 ##' @export
 ##' 
 ##' 
-### ------------------------------------------------------------------------ ###
+###################################################################################################
 
 bm_SampleFactorLevels <- function(expl.var, mask.out = NULL, mask.in = NULL)
 {

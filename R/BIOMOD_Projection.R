@@ -300,7 +300,7 @@ BIOMOD_Projection <- function(bm.mod,
                                             , ".tif", output.format)))
       }
       
-      BIOMOD_LoadModels(bm.out = bm.mod, full.name = mod.name, as = "mod")
+      mod <- get(BIOMOD_LoadModels(bm.out = bm.mod, full.name = mod.name))
       temp_workdir = NULL
       if (length(grep("MAXENT.Phillips$", mod.name)) == 1) {
         temp_workdir = mod@model_output_dir
