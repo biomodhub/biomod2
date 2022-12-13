@@ -9,7 +9,7 @@ bm_MakeFormula(
   expl.var,
   type = "simple",
   interaction.level = 0,
-  ...
+  k = NULL
 )
 }
 \arguments{
@@ -24,11 +24,13 @@ will be used at the modeling step}
 \item{interaction.level}{an \code{integer} corresponding to the interaction level depth 
 between explanatory variables}
 
-\item{\ldots}{some additional arguments (see Details)}
+\item{k}{(\emph{optional, default} \code{NULL}) \cr 
+An \code{integer} corresponding to the smoothing parameter value of \code{\link[mgcv]{s}} 
+or \code{\link[gam]{s}} arguments (\emph{used only if \code{type = 's_smoother'}})}
 }
 \value{
-A \code{\link[stats]{formula}} class object that can be directly given to most of \R 
-statistical models.
+A \code{\link[stats]{formula}} class object that can be directly given to most of 
+\R statistical models.
 }
 \description{
 This internal \pkg{biomod2} function allows the user to create easily a 
@@ -37,15 +39,7 @@ standardized formula that can be used later by statistical models.
 \details{
 It is advised to give only a subset of \code{expl.var} table to avoid useless memory consuming. 
 \cr If some explanatory variables are factorial, \code{expl.var} must be a \code{data.frame} 
-whose corresponding columns are defined as \code{factor}. \cr \cr
-
-\code{...} can take the following values :
-
-\itemize{
-  \item{\code{k}}{ : an \code{integer} corresponding to the smoothing parameter value of 
-  \code{\link[mgcv]{s}} or \code{\link[gam]{s}} arguments (\emph{used only if 
-  \code{type = 's_smoother'}})}
-}
+whose corresponding columns are defined as \code{factor}.
 }
 \examples{
 

@@ -104,11 +104,10 @@ or <code><a href="BIOMOD_EnsembleModeling.html">BIOMOD_EnsembleModeling</a></cod
 <span>  PA <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  run <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  algo <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  merged.by.algo <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  merged.by.run <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  merged.by.PA <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  filtered.by <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  <span class="va">...</span></span>
+<span>  merged.by.run <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  merged.by.algo <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  filtered.by <span class="op">=</span> <span class="cn">NULL</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -120,8 +119,57 @@ object that can be obtained with the <code><a href="BIOMOD_Modeling.html">BIOMOD
 <code><a href="BIOMOD_EnsembleModeling.html">BIOMOD_EnsembleModeling</a></code> functions</p></dd>
 
 
-<dt>...</dt>
-<dd><p>(<em>optional, see Details)</em>)</p></dd>
+<dt>full.name</dt>
+<dd><p>(<em>optional, default</em> <code>NULL</code>) <br> 
+A <code>vector</code> containing model names to be kept, must be either <code>all</code> or a 
+sub-selection of model names that can be obtained with the <code><a href="getters.out.html">get_built_models</a></code> 
+function</p></dd>
+
+
+<dt>PA</dt>
+<dd><p>(<em>optional, default</em> <code>NULL</code>) <br> 
+A <code>vector</code> containing pseudo-absence set to be loaded, must be among <code>PA1</code>, 
+<code>PA2</code>, <code>...</code>, <code>allData</code></p></dd>
+
+
+<dt>run</dt>
+<dd><p>(<em>optional, default</em> <code>NULL</code>) <br> 
+A <code>vector</code> containing repetition set to be loaded, must be among <code>RUN1</code>, 
+<code>RUN2</code>, <code>...</code>, <code>allRun</code></p></dd>
+
+
+<dt>algo</dt>
+<dd><p>(<em>optional, default</em> <code>NULL</code>) <br> 
+A <code>character</code> containing algorithm to be loaded, must be either <code>GLM</code>, 
+<code>GBM</code>, <code>GAM</code>, <code>CTA</code>, <code>ANN</code>, <code>SRE</code>, <code>FDA</code>, <code>MARS</code>, 
+<code>RF</code>, <code>MAXENT.Phillips</code>, <code>MAXENT.Phillips.2</code></p></dd>
+
+
+<dt>merged.by.PA</dt>
+<dd><p>(<em>optional, default</em> <code>NULL</code>) <br> 
+A <code>vector</code> containing merged pseudo-absence set to be loaded, must be among <code>PA1</code>, 
+<code>PA2</code>, <code>...</code>, <code>mergedData</code></p></dd>
+
+
+<dt>merged.by.run</dt>
+<dd><p>(<em>optional, default</em> <code>NULL</code>) <br> 
+A <code>vector</code> containing merged repetition set to be loaded, must be among <code>RUN1</code>, 
+<code>RUN2</code>, <code>...</code>, <code>mergedRun</code></p></dd>
+
+
+<dt>merged.by.algo</dt>
+<dd><p>(<em>optional, default</em> <code>NULL</code>) <br> 
+A <code>character</code> containing merged algorithm to be loaded, must be among <code>GLM</code>, 
+<code>GBM</code>, <code>GAM</code>, <code>CTA</code>, <code>ANN</code>, <code>SRE</code>, <code>FDA</code>, <code>MARS</code>, 
+<code>RF</code>, <code>MAXENT.Phillips</code>, <code>MAXENT.Phillips.2</code>, <code>mergedAlgo</code></p></dd>
+
+
+<dt>filtered.by</dt>
+<dd><p>(<em>optional, default</em> <code>NULL</code>) <br> 
+A <code>vector</code> containing evaluation metric selected to filter single models to build the 
+ensemble models, must be among <code>ROC</code>, <code>TSS</code>, <code>KAPPA</code>, <code>ACCURACY</code>, 
+<code>BIAS</code>, <code>POD</code>, <code>FAR</code>, <code>POFD</code>, <code>SR</code>, <code>CSI</code>, <code>ETS</code>, 
+<code>HK</code>, <code>HSS</code>, <code>OR</code>, <code>ORSS</code></p></dd>
 
 </dl></div>
     <div id="value">
@@ -134,20 +182,11 @@ object that can be obtained with the <code><a href="BIOMOD_Modeling.html">BIOMOD
     <h2>Details</h2>
     <p>This function might be of particular use to load models and make response plot analyses. <br><br></p>
 <p>Running the function providing only <code>bm.out</code> argument will load all models built by the 
-<code><a href="BIOMOD_Modeling.html">BIOMOD_Modeling</a></code> or <code><a href="BIOMOD_EnsembleModeling.html">BIOMOD_EnsembleModeling</a></code> function. But a 
-subselection of models can be done using the following additional arguments :</p><ul><li><p><code>models</code> : a <code>vector</code> containing model names to be loaded, must be among 
-  <code>GLM</code>, <code>GBM</code>, <code>GAM</code>, <code>CTA</code>, <code>ANN</code>, <code>SRE</code>, <code>FDA</code>, 
-  <code>MARS</code>, <code>RF</code>, <code>MAXENT.Phillips</code>, <code>MAXENT.Phillips.2</code></p></li>
-<li><p><code>run</code> : a <code>vector</code> containing repetition set to be loaded, must be 
-  among <code>RUN1</code>, <code>RUN2</code>, <code>...</code>, <code>allRun</code></p></li>
-<li><p><code>PA</code> : a <code>vector</code> containing pseudo-absence set to be loaded, must 
-  be among <code>PA1</code>, <code>PA2</code>, <code>...</code> <br><br></p></li>
-<li><p><code>path</code> : a <code>character</code> corresponding to the location of the species folder 
-  (if different from the current working directory) <br><br></p></li>
-<li><p><code>full.name</code> : a <code>vector</code> containing model names to be kept, must be either 
-  <code>all</code> or a sub-selection of model names <br><br></p></li>
-<li><p><code>as</code> : a <code>character</code> to contain the loaded models</p></li>
-</ul></div>
+<code><a href="BIOMOD_Modeling.html">BIOMOD_Modeling</a></code> or <code><a href="BIOMOD_EnsembleModeling.html">BIOMOD_EnsembleModeling</a></code> function, but a 
+subselection of models can be done using the additional arguments (<code>full.name</code>, <code>PA</code>, 
+<code>run</code>, <code>algo</code>, <code>merged.by.PA</code>, <code>merged.by.run</code>, <code>merged.by.algo</code>, 
+<code>filtered.by</code>).</p>
+    </div>
     <div id="see-also">
     <h2>See also</h2>
     <div class="dont-index"><p><code><a href="BIOMOD_Modeling.html">BIOMOD_Modeling</a></code>, <code><a href="BIOMOD_EnsembleModeling.html">BIOMOD_EnsembleModeling</a></code></p>
@@ -225,8 +264,7 @@ subselection of models can be done using the following additional arguments :</p
 <span></span>
 <span><span class="co"># ---------------------------------------------------------------</span></span>
 <span><span class="co"># Loading some models built</span></span>
-<span><span class="va">myLoadedModels</span> <span class="op">&lt;-</span> <span class="fu">BIOMOD_LoadModels</span><span class="op">(</span>bm.out <span class="op">=</span> <span class="va">myBiomodModelOut</span>, models <span class="op">=</span> <span class="st">'RF'</span><span class="op">)</span></span>
-<span><span class="va">myLoadedModels</span></span>
+<span><span class="fu">BIOMOD_LoadModels</span><span class="op">(</span>bm.out <span class="op">=</span> <span class="va">myBiomodModelOut</span>, algo <span class="op">=</span> <span class="st">'RF'</span><span class="op">)</span></span>
 <span></span>
 <span></span></code></pre></div>
     </div>

@@ -84,8 +84,8 @@ bm_CVnnet = function(Input,
                                               decay = x[2],
                                               maxit = maxit,
                                               trace = FALSE)
-                                    AUC = roc(Target[Samp$evaluation],
-                                              as.numeric(predict(nn, Input[Samp$evaluation, , drop = FALSE])),
+                                    AUC = roc(Target[Samp$validation],
+                                              as.numeric(predict(nn, Input[Samp$validation, , drop = FALSE])),
                                               levels = c(0, 1),
                                               direction = '<')
                                     AUC <- as.numeric(auc(AUC))

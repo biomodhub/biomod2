@@ -1,4 +1,4 @@
-# BIOMOD_EnsembleForecasting ---------------------------------------------------
+###################################################################################################
 ##' @name BIOMOD_EnsembleForecasting
 ##' @author Wilfried Thuiller, Damien Georges, Robin Engler
 ##' 
@@ -51,7 +51,7 @@
 ##' 
 ##' @param compress (\emph{optional, default} \code{TRUE}) \cr 
 ##' A \code{logical} or a \code{character} value defining whether and how objects should be 
-##' compressed when saved on hard drive. Must be either \code{TRUE}, \code{FALSE}, \code{xz} or 
+##' compressed when saved on hard drive, must be either \code{TRUE}, \code{FALSE}, \code{xz} or 
 ##' \code{gzip} (see Details)
 ##' @param nb.cpu (\emph{optional, default} \code{1}) \cr 
 ##' An \code{integer} value corresponding to the number of computing resources to be used to 
@@ -66,7 +66,7 @@
 ##' outputs. \cr Models projections are stored out of \R (for memory storage reasons) in 
 ##' \code{proj.name} folder created in the current working directory :
 ##' \enumerate{
-##'   \item the output is a 4-dimensional array if \code{new.env} is a \code{matrix} or a 
+##'   \item the output is a \code{data.frame} if \code{new.env} is a \code{matrix} or a 
 ##'   \code{data.frame}
 ##'   \item it is a \code{\link[terra:rast]{SpatRaster}} if \code{new.env} 
 ##'   is a \code{\link[terra:rast]{SpatRaster}} (or several
@@ -78,13 +78,13 @@
 ##' 
 ##' @details 
 ##' 
-##' If \code{models.chosen = 'all'}, projections are done for all evaluation and pseudo absences 
+##' If \code{models.chosen = 'all'}, projections are done for all calibration and pseudo absences 
 ##' runs if applicable. \cr These projections may be used later by the 
 ##' \code{\link{BIOMOD_EnsembleForecasting}} function. \cr \cr
 ##' 
 ##' If \code{build.clamping.mask = TRUE}, a raster file will be saved within the projection 
 ##' folder. This mask values will correspond to the number of variables in each pixel that are out 
-##' of their calibration / training range, identifying locations where predictions are uncertain. 
+##' of their calibration / validation range, identifying locations where predictions are uncertain. 
 ##' \cr \cr
 ##' 
 ##' \code{...} can take the following values :
@@ -191,18 +191,11 @@
 ##'   myBiomodEM <- BIOMOD_EnsembleModeling(bm.mod = myBiomodModelOut,
 ##'                                         models.chosen = 'all',
 ##'                                         em.by = 'all',
+##'                                         em.algo = c('prob.mean', 'committee.averaging'),
 ##'                                         metric.select = c('TSS'),
 ##'                                         metric.select.thresh = c(0.7),
 ##'                                         metric.eval = c('TSS', 'ROC'),
 ##'                                         var.import = 3,
-##'                                         prob.mean = TRUE,
-##'                                         prob.median = FALSE,
-##'                                         prob.cv = FALSE,
-##'                                         prob.ci = FALSE,
-##'                                         prob.ci.alpha = 0.05,
-##'                                         committee.averaging = TRUE,
-##'                                         prob.mean.weight = FALSE,
-##'                                         prob.mean.weight.decay = 'proportional',
 ##'                                         seed.val = 42)
 ##' }
 ##' 
@@ -227,11 +220,12 @@
 ##' 
 ##' 
 ##' @importFrom terra rast `add<-` wrap writeRaster
+##' 
+##' 
 ##' @export
 ##' 
 ##' 
-###--------------------------------------------------------------------------###
-
+###################################################################################################
 
 BIOMOD_EnsembleForecasting <- function(bm.em,
                                        bm.proj = NULL,
@@ -326,7 +320,7 @@ BIOMOD_EnsembleForecasting <- function(bm.em,
         filename <- file.path(indiv_proj_dir, paste0(em.name, output.format))
       }
       
-      BIOMOD_LoadModels(bm.out = bm.em, full.name = em.name, as = "mod")
+      mod <- get(BIOMOD_LoadModels(bm.out = bm.em, full.name = em.name))
       ef.tmp <- predict(mod
                         , newdata = formal_pred
                         , on_0_1000 = on_0_1000

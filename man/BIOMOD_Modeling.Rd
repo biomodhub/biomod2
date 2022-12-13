@@ -277,14 +277,16 @@ bm_PlotEvalBoxplot(bm.out = myBiomodModelOut, group.by = c('algo', 'run'))
 # bm_PlotVarImpBoxplot(bm.out = myBiomodModelOut, group.by = c('algo', 'expl.var', 'dataset'))
 
 # # Represent response curves 
+# mods <- get_built_models(myBiomodModelOut, run = 'RUN1')
 # bm_PlotResponseCurves(bm.out = myBiomodModelOut, 
-#                       models.chosen = get_built_models(myBiomodModelOut, run = 'RUN1'),
+#                       models.chosen = mods,
 #                       fixed.var = 'median')
 # bm_PlotResponseCurves(bm.out = myBiomodModelOut, 
-#                       models.chosen = get_built_models(myBiomodModelOut, run = 'RUN1'),
+#                       models.chosen = mods,
 #                       fixed.var = 'min')
+# mods <- get_built_models(myBiomodModelOut, full.name = 'GuloGulo_allData_RUN2_RF')
 # bm_PlotResponseCurves(bm.out = myBiomodModelOut, 
-#                       models.chosen = get_built_models(myBiomodModelOut, full.name = 'GuloGulo_allData_RUN2_RF'),
+#                       models.chosen = mods,
 #                       fixed.var = 'median',
 #                       do.bivariate = TRUE)
 

@@ -147,11 +147,9 @@ the ensemble models, must be among <code>PA_dataset+repet</code>, <code>PA_datas
 
 
 <dt>em.algo</dt>
-<dd><p>(<em>optional, default</em> <code>c('prob.mean')</code>) a <code>vector</code>
-corresponding to the ensemble models that should  be computed. 
-May contain up to six values among <code>'prob.mean'</code>, <code>'prob.median'</code>, 
-<code>'prob.cv'</code>, <code>'prob.ci'</code>, <code>'committee.averaging'</code>, 
-<code>'prob.mean.weight'</code>.</p></dd>
+<dd><p>a <code>vector</code> corresponding to the ensemble models that will be computed, 
+must be among <code>'prob.mean'</code>, <code>'prob.median'</code>, <code>'prob.cv'</code>, <code>'prob.ci'</code>, 
+<code>'committee.averaging'</code>, <code>'prob.mean.weight'</code></p></dd>
 
 
 <dt>metric.select</dt>
@@ -221,37 +219,33 @@ A <code>logical</code> value defining whether the progress bar is to be rendered
 
 
 <dt>prob.mean</dt>
-<dd><p>(<em>optional, default</em> <code>TRUE</code>) <br> A <code>logical</code>
-value defining whether to compute the mean probabilities across
-predictions or not</p></dd>
+<dd><p>(<em>optional, default</em> <code>TRUE</code>) <br> A <code>logical</code> value defining 
+whether to compute the mean probabilities across predictions or not</p></dd>
 
 
 <dt>prob.median</dt>
-<dd><p>(<em>obsolete</em>) <br> A <code>logical</code> value defining
-whether to compute the median probabilities across predictions or not</p></dd>
+<dd><p>(<em>obsolete</em>) <br> A <code>logical</code> value defining whether to compute 
+the median probabilities across predictions or not</p></dd>
 
 
 <dt>prob.cv</dt>
-<dd><p>(<em>obsolete</em>) <br> A <code>logical</code> value defining whether
-to compute the coefficient of variation across predictions or not</p></dd>
+<dd><p>(<em>obsolete</em>) <br> A <code>logical</code> value defining whether to compute the 
+coefficient of variation across predictions or not</p></dd>
 
 
 <dt>prob.ci</dt>
-<dd><p>(<em>obsolete</em>) <br> A <code>logical</code> value defining whether
-to compute te confidence interval around the <code>prob.mean</code> ensemble
-model or not</p></dd>
+<dd><p>(<em>obsolete</em>) <br> A <code>logical</code> value defining whether to compute the 
+confidence interval around the <code>prob.mean</code> ensemble model or not</p></dd>
 
 
 <dt>committee.averaging</dt>
-<dd><p>(<em>obsolete</em>) <br> A <code>logical</code> value
-defining whether to compute the committee averaging across predictions or
-not</p></dd>
+<dd><p>(<em>obsolete</em>) <br> A <code>logical</code> value defining whether to 
+compute the committee averaging across predictions or not</p></dd>
 
 
 <dt>prob.mean.weight</dt>
-<dd><p>(<em>obsolete</em>) <br> A <code>logical</code> value
-defining whether to compute the weighted sum of probabilities across
-predictions or not</p></dd>
+<dd><p>(<em>obsolete</em>) <br> A <code>logical</code> value defining whether to 
+compute the weighted sum of probabilities across predictions or not</p></dd>
 
 </dl></div>
     <div id="value">
@@ -306,7 +300,6 @@ folders created in the current working directory :</p><ol><li><p>a <em>models</e
       <code>metric.select.thresh</code></p></li>
 <li><p>perform the binary transformation needed if <code>committee.averaging = TRUE</code></p></li>
 <li><p>weight models if <code>prob.mean.weight = TRUE</code></p></li>
-<li><p>test and/or evaluate the ensemble models built</p></li>
 </ol></li>
 <li><p><b><code>metric.select.thresh</code></b> : as many values as evaluation metrics 
     selected with the <code>metric.select</code> parameter, and defining the corresponding quality 
@@ -320,12 +313,14 @@ folders created in the current working directory :</p><ol><li><p>a <em>models</e
     parameter. The values contained in the <code>data.frame</code> will be compared to those defined 
     in <code>metric.select.thresh</code> to remove <em>low quality</em> single models from 
     the ensemble model building.</p></li>
+<li><p><b><code>metric.eval</code></b> : the selected metrics will be used to validate/evaluate 
+    the ensemble models built</p></li>
 </ul><p></p></dd>
 
 
   <dt>Ensemble-models algorithms</dt>
 <dd><p>The set of models to be calibrated on the data. <br> 
-  10 modeling techniques are currently available :</p><ul><li><p><b><code>prob.mean</code></b> : Mean of probabilities over the selected models</p></li>
+  6 modeling techniques are currently available :</p><ul><li><p><b><code>prob.mean</code></b> : Mean of probabilities over the selected models</p></li>
 <li><p><b><code>prob.median</code></b> : Median of probabilities over the selected models <br> 
     The median is less sensitive to outliers than the mean, however it requires more 
     computation time and memory as it loads all predictions (on the contrary to the mean or 
@@ -469,43 +464,36 @@ model will be used to weight the models predictions.</em></p></dd>
 <span><span class="va">myBiomodEM</span> <span class="op">&lt;-</span> <span class="fu">BIOMOD_EnsembleModeling</span><span class="op">(</span>bm.mod <span class="op">=</span> <span class="va">myBiomodModelOut</span>,</span>
 <span>                                      models.chosen <span class="op">=</span> <span class="st">'all'</span>,</span>
 <span>                                      em.by <span class="op">=</span> <span class="st">'all'</span>,</span>
+<span>                                      em.algo <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">'prob.mean'</span>, <span class="st">'committee.averaging'</span><span class="op">)</span>,</span>
 <span>                                      metric.select <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">'TSS'</span><span class="op">)</span>,</span>
 <span>                                      metric.select.thresh <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.7</span><span class="op">)</span>,</span>
 <span>                                      metric.eval <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">'TSS'</span>, <span class="st">'ROC'</span><span class="op">)</span>,</span>
 <span>                                      var.import <span class="op">=</span> <span class="fl">3</span>,</span>
-<span>                                      prob.mean <span class="op">=</span> <span class="cn">TRUE</span>,</span>
-<span>                                      prob.median <span class="op">=</span> <span class="cn">FALSE</span>,</span>
-<span>                                      prob.cv <span class="op">=</span> <span class="cn">FALSE</span>,</span>
-<span>                                      prob.ci <span class="op">=</span> <span class="cn">FALSE</span>,</span>
-<span>                                      prob.ci.alpha <span class="op">=</span> <span class="fl">0.05</span>,</span>
-<span>                                      committee.averaging <span class="op">=</span> <span class="cn">TRUE</span>,</span>
-<span>                                      prob.mean.weight <span class="op">=</span> <span class="cn">FALSE</span>,</span>
-<span>                                      prob.mean.weight.decay <span class="op">=</span> <span class="st">'proportional'</span>,</span>
 <span>                                      seed.val <span class="op">=</span> <span class="fl">42</span><span class="op">)</span></span>
 <span><span class="va">myBiomodEM</span></span>
 <span></span>
 <span><span class="co"># Get evaluation scores &amp; variables importance</span></span>
-<span><span class="fu"><a href="getters.out.html">get_evaluations</a></span><span class="op">(</span><span class="va">myBiomodEM</span>, as.data.frame <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
-<span><span class="fu"><a href="getters.out.html">get_variables_importance</a></span><span class="op">(</span><span class="va">myBiomodEM</span>, as.data.frame <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span><span class="fu"><a href="getters.out.html">get_evaluations</a></span><span class="op">(</span><span class="va">myBiomodEM</span><span class="op">)</span></span>
+<span><span class="fu"><a href="getters.out.html">get_variables_importance</a></span><span class="op">(</span><span class="va">myBiomodEM</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Represent evaluation scores</span></span>
-<span><span class="fu"><a href="bm_PlotEvalMean.html">bm_PlotEvalMean</a></span><span class="op">(</span>bm.out <span class="op">=</span> <span class="va">myBiomodEM</span>, group.by <span class="op">=</span> <span class="st">'model'</span><span class="op">)</span></span>
-<span><span class="fu"><a href="bm_PlotEvalBoxplot.html">bm_PlotEvalBoxplot</a></span><span class="op">(</span>bm.out <span class="op">=</span> <span class="va">myBiomodEM</span>, group.by <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">'model'</span>, <span class="st">'model'</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="fu"><a href="bm_PlotEvalMean.html">bm_PlotEvalMean</a></span><span class="op">(</span>bm.out <span class="op">=</span> <span class="va">myBiomodEM</span>, dataset <span class="op">=</span> <span class="st">'calibration'</span><span class="op">)</span></span>
+<span><span class="fu"><a href="bm_PlotEvalBoxplot.html">bm_PlotEvalBoxplot</a></span><span class="op">(</span>bm.out <span class="op">=</span> <span class="va">myBiomodEM</span>, group.by <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">'algo'</span>, <span class="st">'algo'</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
-<span><span class="co"># Represent variables importance</span></span>
-<span><span class="co"># bm_PlotVarImpBoxplot(bm.out = myBiomodEM, group.by = c('expl.var', 'model', 'model'))</span></span>
-<span><span class="co"># bm_PlotVarImpBoxplot(bm.out = myBiomodEM, group.by = c('expl.var', 'model', 'dataset'))</span></span>
-<span><span class="co"># bm_PlotVarImpBoxplot(bm.out = myBiomodEM, group.by = c('model', 'expl.var', 'dataset'))</span></span>
+<span><span class="co"># # Represent variables importance</span></span>
+<span><span class="co"># bm_PlotVarImpBoxplot(bm.out = myBiomodEM, group.by = c('expl.var', 'algo', 'algo'))</span></span>
+<span><span class="co"># bm_PlotVarImpBoxplot(bm.out = myBiomodEM, group.by = c('expl.var', 'algo', 'merged.by.PA'))</span></span>
+<span><span class="co"># bm_PlotVarImpBoxplot(bm.out = myBiomodEM, group.by = c('algo', 'expl.var', 'merged.by.PA'))</span></span>
 <span></span>
-<span><span class="co"># Represent response curves</span></span>
+<span><span class="co"># # Represent response curves</span></span>
 <span><span class="co"># bm_PlotResponseCurves(bm.out = myBiomodEM, </span></span>
-<span><span class="co">#                       models.chosen = get_built_models(myBiomodEM)[c(1, 2)],</span></span>
+<span><span class="co">#                       models.chosen = get_built_models(myBiomodEM),</span></span>
 <span><span class="co">#                       fixed.var = 'median')</span></span>
 <span><span class="co"># bm_PlotResponseCurves(bm.out = myBiomodEM, </span></span>
-<span><span class="co">#                       models.chosen = get_built_models(myBiomodEM)[c(1, 2)],</span></span>
+<span><span class="co">#                       models.chosen = get_built_models(myBiomodEM),</span></span>
 <span><span class="co">#                       fixed.var = 'min')</span></span>
 <span><span class="co"># bm_PlotResponseCurves(bm.out = myBiomodEM, </span></span>
-<span><span class="co">#                       models.chosen = get_built_models(myBiomodEM)[2],</span></span>
+<span><span class="co">#                       models.chosen = get_built_models(myBiomodEM, algo = 'EMmean'),</span></span>
 <span><span class="co">#                       fixed.var = 'median',</span></span>
 <span><span class="co">#                       do.bivariate = TRUE)</span></span>
 <span></span>

@@ -10,11 +10,10 @@ BIOMOD_LoadModels(
   PA = NULL,
   run = NULL,
   algo = NULL,
-  merged.by.algo = NULL,
-  merged.by.run = NULL,
   merged.by.PA = NULL,
-  filtered.by = NULL,
-  ...
+  merged.by.run = NULL,
+  merged.by.algo = NULL,
+  filtered.by = NULL
 )
 }
 \arguments{
@@ -22,7 +21,42 @@ BIOMOD_LoadModels(
 object that can be obtained with the \code{\link{BIOMOD_Modeling}} or 
 \code{\link{BIOMOD_EnsembleModeling}} functions}
 
-\item{\ldots}{(\emph{optional, see Details)})}
+\item{full.name}{(\emph{optional, default} \code{NULL}) \cr 
+A \code{vector} containing model names to be kept, must be either \code{all} or a 
+sub-selection of model names that can be obtained with the \code{\link{get_built_models}} 
+function}
+
+\item{PA}{(\emph{optional, default} \code{NULL}) \cr 
+A \code{vector} containing pseudo-absence set to be loaded, must be among \code{PA1}, 
+\code{PA2}, \code{...}, \code{allData}}
+
+\item{run}{(\emph{optional, default} \code{NULL}) \cr 
+A \code{vector} containing repetition set to be loaded, must be among \code{RUN1}, 
+\code{RUN2}, \code{...}, \code{allRun}}
+
+\item{algo}{(\emph{optional, default} \code{NULL}) \cr 
+A \code{character} containing algorithm to be loaded, must be either \code{GLM}, 
+\code{GBM}, \code{GAM}, \code{CTA}, \code{ANN}, \code{SRE}, \code{FDA}, \code{MARS}, 
+\code{RF}, \code{MAXENT.Phillips}, \code{MAXENT.Phillips.2}}
+
+\item{merged.by.PA}{(\emph{optional, default} \code{NULL}) \cr 
+A \code{vector} containing merged pseudo-absence set to be loaded, must be among \code{PA1}, 
+\code{PA2}, \code{...}, \code{mergedData}}
+
+\item{merged.by.run}{(\emph{optional, default} \code{NULL}) \cr 
+A \code{vector} containing merged repetition set to be loaded, must be among \code{RUN1}, 
+\code{RUN2}, \code{...}, \code{mergedRun}}
+
+\item{merged.by.algo}{(\emph{optional, default} \code{NULL}) \cr 
+A \code{character} containing merged algorithm to be loaded, must be among \code{GLM}, 
+\code{GBM}, \code{GAM}, \code{CTA}, \code{ANN}, \code{SRE}, \code{FDA}, \code{MARS}, 
+\code{RF}, \code{MAXENT.Phillips}, \code{MAXENT.Phillips.2}, \code{mergedAlgo}}
+
+\item{filtered.by}{(\emph{optional, default} \code{NULL}) \cr 
+A \code{vector} containing evaluation metric selected to filter single models to build the 
+ensemble models, must be among \code{ROC}, \code{TSS}, \code{KAPPA}, \code{ACCURACY}, 
+\code{BIAS}, \code{POD}, \code{FAR}, \code{POFD}, \code{SR}, \code{CSI}, \code{ETS}, 
+\code{HK}, \code{HSS}, \code{OR}, \code{ORSS}}
 }
 \value{
 A \code{vector} containing the names of the loaded models.
@@ -35,22 +69,10 @@ or \code{\link{BIOMOD_EnsembleModeling}} functions.
 This function might be of particular use to load models and make response plot analyses. \cr \cr
 
 Running the function providing only \code{bm.out} argument will load all models built by the 
-\code{\link{BIOMOD_Modeling}} or \code{\link{BIOMOD_EnsembleModeling}} function. But a 
-subselection of models can be done using the following additional arguments :
-\itemize{
-  \item{\code{models} : }{a \code{vector} containing model names to be loaded, must be among 
-  \code{GLM}, \code{GBM}, \code{GAM}, \code{CTA}, \code{ANN}, \code{SRE}, \code{FDA}, 
-  \code{MARS}, \code{RF}, \code{MAXENT.Phillips}, \code{MAXENT.Phillips.2}}
-  \item{\code{run} : }{a \code{vector} containing repetition set to be loaded, must be 
-  among \code{RUN1}, \code{RUN2}, \code{...}, \code{allRun}}
-  \item{\code{PA} : }{a \code{vector} containing pseudo-absence set to be loaded, must 
-  be among \code{PA1}, \code{PA2}, \code{...} \cr \cr}
-  \item{\code{path} : }{a \code{character} corresponding to the location of the species folder 
-  (if different from the current working directory) \cr \cr}
-  \item{\code{full.name} : }{a \code{vector} containing model names to be kept, must be either 
-  \code{all} or a sub-selection of model names \cr \cr}
-  \item{\code{as} : }{a \code{character} to contain the loaded models}
-}
+\code{\link{BIOMOD_Modeling}} or \code{\link{BIOMOD_EnsembleModeling}} function, but a 
+subselection of models can be done using the additional arguments (\code{full.name}, \code{PA}, 
+\code{run}, \code{algo}, \code{merged.by.PA}, \code{merged.by.run}, \code{merged.by.algo}, 
+\code{filtered.by}).
 }
 \examples{
 library(terra)
@@ -108,8 +130,7 @@ if (file.exists(file.out)) {
 
 # ---------------------------------------------------------------
 # Loading some models built
-myLoadedModels <- BIOMOD_LoadModels(bm.out = myBiomodModelOut, models = 'RF')
-myLoadedModels
+BIOMOD_LoadModels(bm.out = myBiomodModelOut, algo = 'RF')
 
 
 }

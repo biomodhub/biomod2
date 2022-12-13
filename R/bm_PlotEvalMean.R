@@ -206,7 +206,11 @@ bm_PlotEvalMean <- function(bm.out, metric.eval = NULL, dataset = 'calibration',
   .fun_testIfIn(TRUE, "dataset", dataset, c("calibration", "validation", "evaluation"))
   
   ## 3. Check group.by argument -----------------------------------------------
-  .fun_testIfIn(TRUE, "group.by", group.by, c("full.name", "PA", "run", "algo"))
+  if (inherits(bm.out, "BIOMOD.models.out")) {
+    .fun_testIfIn(TRUE, "group.by", group.by, c("full.name", "PA", "run", "algo"))
+  } else if (inherits(bm.out, "BIOMOD.ensemble.models.out")) {
+    .fun_testIfIn(TRUE, "group.by", group.by, c("full.name", "merged.by.PA", "merged.by.run", "algo"))
+  } 
   if (length(group.by) > 1) {
     group.by = group.by[1]
     warning("`group.by` must contain only one value, only the first one will be kept")

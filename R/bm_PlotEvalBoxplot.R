@@ -167,9 +167,15 @@ bm_PlotEvalBoxplot <- function(bm.out, dataset = 'calibration', group.by = c('al
   
   ## 3. Check group.by argument -----------------------------------------------
   if (length(group.by) != 2) { stop("2 group values needed") }
-  for (i in 1:length(group.by)) {
-    .fun_testIfIn(TRUE, paste0("group.by[", i, "]"), group.by[i], c("full.name", "PA", "run", "algo"))
-  }
+  if (inherits(bm.out, "BIOMOD.models.out")) {
+    for (i in 1:length(group.by)) {
+      .fun_testIfIn(TRUE, paste0("group.by[", i, "]"), group.by[i], c("full.name", "PA", "run", "algo"))
+    }
+  } else if (inherits(bm.out, "BIOMOD.ensemble.models.out")) {
+    for (i in 1:length(group.by)) {
+      .fun_testIfIn(TRUE, paste0("group.by[", i, "]"), group.by[i], c("full.name", "merged.by.PA", "merged.by.run", "algo"))
+    }
+  } 
   
   ## 4. Check extra args argument ---------------------------------------------
   .fun_testIfIn(TRUE, "names(args)", names(args), c('main', 'scales'))

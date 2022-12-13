@@ -205,7 +205,7 @@ An <code>integer</code> value corresponding to the new seed value to be set</p><
 
 <p>A <code>BIOMOD.projection.out</code> object containing models projections, or links to saved 
 outputs. <br> Models projections are stored out of <span style="R">R</span> (for memory storage reasons) in 
-<code>proj.name</code> folder created in the current working directory :</p><ol><li><p>the output is a 4-dimensional array if <code>new.env</code> is a <code>matrix</code> or a 
+<code>proj.name</code> folder created in the current working directory :</p><ol><li><p>the output is a <code>data.frame</code> if <code>new.env</code> is a <code>matrix</code> or a 
   <code>data.frame</code></p></li>
 <li><p>it is a <code><a href="https://rdrr.io/pkg/terra/man/rast.html" class="external-link">SpatRaster</a></code> if <code>new.env</code> is a 
   <code><a href="https://rdrr.io/pkg/terra/man/rast.html" class="external-link">SpatRaster</a></code> (or several <code><a href="https://rdrr.io/pkg/terra/man/rast.html" class="external-link">SpatRaster</a></code> 
@@ -215,12 +215,12 @@ outputs. <br> Models projections are stored out of <span style="R">R</span> (for
 </ol></div>
     <div id="details">
     <h2>Details</h2>
-    <p>If <code>models.chosen = 'all'</code>, projections are done for all evaluation and pseudo absences 
+    <p>If <code>models.chosen = 'all'</code>, projections are done for all calibration and pseudo absences 
 runs if applicable. <br> These projections may be used later by the 
 <code><a href="BIOMOD_EnsembleForecasting.html">BIOMOD_EnsembleForecasting</a></code> function. <br><br></p>
 <p>If <code>build.clamping.mask = TRUE</code>, a raster file will be saved within the projection folder. 
 This mask values will correspond to the number of variables in each pixel that are out of their 
-calibration / training range, identifying locations where predictions are uncertain. <br><br></p>
+calibration / validation range, identifying locations where predictions are uncertain. <br><br></p>
 <p><code>...</code> can take the following values :</p><ul><li><p><code>omit.na</code> : a <code>logical</code> value defining whether all not fully referenced 
   environmental points will get <code>NA</code> as predictions or not</p></li>
 <li><p><code>on_0_1000</code> : a <code>logical</code> value defining whether <code>0 - 1</code> probabilities 
