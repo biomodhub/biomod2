@@ -514,11 +514,16 @@ setMethod("get_built_models", "BIOMOD.models.out",
 setMethod("get_evaluations", "BIOMOD.models.out",
           function(obj, full.name = NULL, PA = NULL, run = NULL, algo = NULL, metric.eval = NULL) {
             out <- load_stored_object(obj@models.evaluation)
-            keep_lines <- .filter_outputs.df(out, subset.list = list(full.name =  full.name, PA = PA
-                                                                     , run = run, algo = algo
-                                                                     , metric.eval = metric.eval))
-            out <- out[keep_lines, ]
-            return(out)
+            if(nrow(out) == 0){
+              cat("\n! models have no evaluations\n")
+              return(invisible(NULL))
+            } else {
+              keep_lines <- .filter_outputs.df(out, subset.list = list(full.name =  full.name, PA = PA
+                                                                       , run = run, algo = algo
+                                                                       , metric.eval = metric.eval))
+              out <- out[keep_lines, ]
+              return(out)
+            }
           }
 )
 
@@ -1008,7 +1013,7 @@ setMethod("get_predictions", "BIOMOD.projection.out",
 ##'   containing informations from \code{\link{BIOMOD_Modeling}} object
 ##' @slot em.by a \code{character} corresponding to the way kept models have
 ##'   been combined to build the ensemble models, must be among
-##'   \code{PA_dataset+repet}, \code{PA_dataset+algo}, \code{PA_dataset},
+##'   \code{PA+run}, \code{PA+algo}, \code{PA},
 ##'   \code{algo}, \code{all}
 ##' @slot em.computed a \code{vector} containing names of ensemble models
 ##' @slot em.failed a \code{vector} containing names of failed ensemble models
@@ -1263,15 +1268,20 @@ setMethod("get_evaluations", "BIOMOD.ensemble.models.out",
                    , merged.by.PA = NULL, filtered.by = NULL, algo = NULL, metric.eval = NULL)
           {
             out <- load_stored_object(obj@models.evaluation)
-            keep_lines <- .filter_outputs.df(out, subset.list = list(full.name = full.name
-                                                                     , merged.by.algo = merged.by.algo
-                                                                     , merged.by.run = merged.by.run
-                                                                     , merged.by.PA = merged.by.PA
-                                                                     , filtered.by = filtered.by
-                                                                     , algo = algo
-                                                                     , metric.eval = metric.eval))
-            out <- out[keep_lines, ]
-            return(out)
+            if(nrow(out) == 0){
+              cat("\n! models have no evaluations\n")
+              return(invisible(NULL))
+            } else {
+              keep_lines <- .filter_outputs.df(out, subset.list = list(full.name = full.name
+                                                                       , merged.by.algo = merged.by.algo
+                                                                       , merged.by.run = merged.by.run
+                                                                       , merged.by.PA = merged.by.PA
+                                                                       , filtered.by = filtered.by
+                                                                       , algo = algo
+                                                                       , metric.eval = metric.eval))
+              out <- out[keep_lines, ]
+              return(out)
+            }
           }
 )
 

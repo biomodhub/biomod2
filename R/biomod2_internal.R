@@ -534,6 +534,12 @@ get_var_range <- function(data)
 ## used in BIOMOD_Modeling, BIOMOD_EnsembleModeling
 .fill_BIOMOD.models.out <- function(objName, objValue, mod.out, inMemory = FALSE, nameFolder = ".")
 {
+  
+  # backup case uses existing @val slot
+  if(is.null(objValue)){
+    eval(parse(text = paste0("objValue <- mod.out@", objName, "@val")))
+  }
+ 
   save(objValue, file = file.path(nameFolder, objName), compress = TRUE)
   if (inMemory) {
     eval(parse(text = paste0("mod.out@", objName, "@val <- objValue")))

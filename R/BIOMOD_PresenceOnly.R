@@ -43,7 +43,7 @@
 ##' @details
 ##' 
 ##' \code{em.by} parameter of \code{\link{BIOMOD_EnsembleModeling}} must have been set to 
-##' \code{PA_dataset+repet} in order to have an ensemble for each \emph{RUN} of the 
+##' \code{PA+run} in order to have an ensemble for each \emph{RUN} of the 
 ##' \code{NbRunEval} parameter of the \code{\link{BIOMOD_Modeling}} function for evaluation. 
 ##' \cr \cr
 ##' 
