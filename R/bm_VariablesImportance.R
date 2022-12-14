@@ -102,7 +102,6 @@ bm_VariablesImportance <- function(bm.model,
   args <- .bm_VariablesImportance.check.args(bm.model, expl.var, variables, method, nb.rep, seed.val, do.progress, ...)
   for (argi in names(args)) { assign(x = argi, value = args[[argi]]) }
   rm(args)
-  
   ## Test if prediction is computable
   ref <- try(
     predict(bm.model,
@@ -149,7 +148,7 @@ bm_VariablesImportance <- function(bm.model,
 ###################################################################################################
 
 
-.bm_VariablesImportance.check.args <- function(bm.model, expl.var, variables, method, nb.rep, seed.val, do.progress, ...)
+.bm_VariablesImportance.check.args <- function(bm.model, expl.var, variables, method, nb.rep, seed.val, do.progress, temp_workdir, ...)
 {
   # test that input data is supported
   .fun_testIfInherits(TRUE, "bm.model", bm.model, c("biomod2_model", "nnet", "rpart", "fda", "gam"
@@ -161,13 +160,14 @@ bm_VariablesImportance <- function(bm.model,
   # get variables names
   if (is.null(variables)) { variables <- colnames(expl.var) }
   
+  if(missing(temp_workdir)){ temp_workdir <- NULL }
   
   return(list(bm.model = bm.model
               , expl.var = expl.var
               , method = method
               , variables = variables
               , seed.val = seed.val
-              , temp_workdir = args$temp_workdir))
+              , temp_workdir = temp_workdir))
 }
 
 
