@@ -23,12 +23,13 @@ vignette: >
 * '.tif' is available as an output format for raster projection
 * '.tif' is the new default output format for raster projection
 * Improved `plot` and `summary` methods for `BIOMOD_FormatingData` output. These method now support the use of `calib.lines` to explore how the cross-validation dataset are structured.
-* `BIOMOD_FormatingData` now gives warning when several input data points are located in the same raster cells
-* Added options `filter.raster` in `BIOMOD_FormatingData` to filter data points so that none are located in the same raster cells.
 * Updated `plot` methods for `BIOMOD.projection.out` objects so that it uses `ggplot2` for nicer plots.
+* Binary and Filtered transformation are now properly stored in `BIOMOD.projection.out` objects. They can be loaded from the disk with `get_predictions` or represented through `BIOMOD.projection.out` plot method.
 
 ##### Minor Changes
 
+* `BIOMOD_FormatingData` now gives warning when several input data points are located in the same raster cells
+* Added options `filter.raster` in `BIOMOD_FormatingData` to filter data points so that none are located in the same raster cells.
 * `BIOMOD_EnsembleModeling` now have an argument `em.algo` to select the ensemble 
 algorithm to be computed. Separate arguments are now deprecated (prob.mean, 
 prob.median, prob.cv, prob.ci, committee.averaging, prob.mean.weight)
@@ -36,6 +37,8 @@ prob.median, prob.cv, prob.ci, committee.averaging, prob.mean.weight)
 
 
 ##### Bugfix
+
+* Fixed `MAXENT.Phillips.2` and single variable models.
 
 ##### Internal Changes
 
