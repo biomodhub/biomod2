@@ -161,6 +161,8 @@ setClass("BIOMOD.stored.models.options",
 ##' into memory.
 ##' 
 ##' @param obj a \code{\link{BIOMOD.stored.data}} object
+##' @param layer an \code{integer} corresponding to the layer ID to be extracted when multilayer 
+##' object considered
 ##' 
 ##' @seealso \code{\link{BIOMOD.stored.data}}
 ##' @family Toolbox functions

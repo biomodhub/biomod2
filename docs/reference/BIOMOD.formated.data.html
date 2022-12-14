@@ -203,20 +203,20 @@ species distribution model(s)</p></dd>
 <dd><p>(<em>optional, default</em> <code>NULL</code>) <br> 
 A <code>vector</code>, a <code><a href="https://rdrr.io/pkg/terra/man/vect.html" class="external-link">SpatVector</a></code> without associated 
 data (<em>if presence-only</em>), or a <code><a href="https://rdrr.io/pkg/terra/man/vect.html" class="external-link">SpatVector</a></code>
- object containing binary data (<code>0</code> : absence, <code>1</code> : presence, 
- <code>NA</code> : indeterminate) for a single species that will be used to
-  evaluate the species distribution model(s) with independent data
+object containing binary data (<code>0</code> : absence, <code>1</code> : presence, 
+<code>NA</code> : indeterminate) for a single species that will be used to
+evaluate the species distribution model(s) with independent data
 <br><em>Note that old format from <span class="pkg">sp</span> are still supported such as
- <code>SpatialPoints</code>  (<em>if presence-only</em>) or <code>SpatialPointsDataFrame</code>
- object containing binary data.</em></p></dd>
+<code>SpatialPoints</code>  (<em>if presence-only</em>) or <code>SpatialPointsDataFrame</code>
+object containing binary data.</em></p></dd>
 
 
 <dt>eval.env</dt>
 <dd><p>(<em>optional, default</em> <code>NULL</code>) <br> 
 A <code>matrix</code>, <code>data.frame</code>, <code><a href="https://rdrr.io/pkg/terra/man/vect.html" class="external-link">SpatVector</a></code> or
-  <code><a href="https://rdrr.io/pkg/terra/man/rast.html" class="external-link">SpatRaster</a></code> object containing the explanatory
-  variables (in columns or layers) that will be used to evaluate the species
-  distribution model(s) with independent data
+<code><a href="https://rdrr.io/pkg/terra/man/rast.html" class="external-link">SpatRaster</a></code> object containing the explanatory
+variables (in columns or layers) that will be used to evaluate the species
+distribution model(s) with independent data
 <br><em>Note that old format from <span class="pkg">raster</span> and <span class="pkg">sp</span> are still
 supported such as <code>RasterStack</code> and <code>SpatialPointsDataFrame</code>
 objects. </em></p></dd>
@@ -237,8 +237,21 @@ values for explanatory variables should be removed from the analysis or not</p><
 
 
 <dt>data.mask</dt>
-<dd><p>a <code><a href="https://rdrr.io/pkg/terra/man/rast.html" class="external-link">SpatRaster</a></code> object 
-containing the mask of the studied area</p></dd>
+<dd><p>(<em>optional, default</em> <code>NULL</code>) <br> 
+A <code><a href="https://rdrr.io/pkg/terra/man/rast.html" class="external-link">SpatRaster</a></code> object containing the mask of the studied area</p></dd>
+
+
+<dt>shared.eval.env</dt>
+<dd><p>(<em>optional, default</em> <code>FALSE</code>) <br> 
+A <code>logical</code> value defining whether the explanatory variables used for the 
+evaluation dataset are the same than the ones for calibration (if <code>eval.env</code> not 
+provided for example) or not</p></dd>
+
+
+<dt>filter.raster</dt>
+<dd><p>(<em>optional, default</em> <code>FALSE</code>) <br> 
+If <code>env</code> is of raster type, a <code>logical</code> value defining whether <code>sp</code> 
+is to be filtered when several points occur in the same raster cell</p></dd>
 
 
 <dt>object</dt>
@@ -250,7 +263,7 @@ containing the mask of the studied area</p></dd>
 
 
 <dt>col</dt>
-<dd><p>a <code>vector</code> containing colors for plot (default : <code>c('green', 'red', 
+<dd><p>a <code>vector</code> containing colors for plot (<em>default</em> <code>c('green', 'red', 
 'orange', 'grey')</code>)</p></dd>
 
 

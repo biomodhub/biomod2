@@ -183,20 +183,20 @@ species distribution model(s)</p></dd>
 <dd><p>(<em>optional, default</em> <code>NULL</code>) <br> 
 A <code>vector</code>, a <code><a href="https://rdrr.io/pkg/terra/man/vect.html" class="external-link">SpatVector</a></code> without associated 
 data (<em>if presence-only</em>), or a <code><a href="https://rdrr.io/pkg/terra/man/vect.html" class="external-link">SpatVector</a></code>
- object containing binary data (<code>0</code> : absence, <code>1</code> : presence, 
- <code>NA</code> : indeterminate) for a single species that will be used to
-  evaluate the species distribution model(s) with independent data
+object containing binary data (<code>0</code> : absence, <code>1</code> : presence, 
+<code>NA</code> : indeterminate) for a single species that will be used to
+evaluate the species distribution model(s) with independent data
 <br><em>Note that old format from <span class="pkg">sp</span> are still supported such as
- <code>SpatialPoints</code>  (<em>if presence-only</em>) or <code>SpatialPointsDataFrame</code>
- object containing binary data.</em></p></dd>
+<code>SpatialPoints</code>  (<em>if presence-only</em>) or <code>SpatialPointsDataFrame</code>
+object containing binary data.</em></p></dd>
 
 
 <dt>eval.env</dt>
 <dd><p>(<em>optional, default</em> <code>NULL</code>) <br> 
 A <code>matrix</code>, <code>data.frame</code>, <code><a href="https://rdrr.io/pkg/terra/man/vect.html" class="external-link">SpatVector</a></code> or
-  <code><a href="https://rdrr.io/pkg/terra/man/rast.html" class="external-link">SpatRaster</a></code> object containing the explanatory
-  variables (in columns or layers) that will be used to evaluate the species
-  distribution model(s) with independent data
+<code><a href="https://rdrr.io/pkg/terra/man/rast.html" class="external-link">SpatRaster</a></code> object containing the explanatory
+variables (in columns or layers) that will be used to evaluate the species
+distribution model(s) with independent data
 <br><em>Note that old format from <span class="pkg">raster</span> and <span class="pkg">sp</span> are still
 supported such as <code>RasterStack</code> and <code>SpatialPointsDataFrame</code>
 objects. </em></p></dd>
@@ -263,6 +263,12 @@ will be used to build the species distribution model(s) for each repetition (see
 <dd><p>(<em>optional, default</em> <code>TRUE</code>) <br> 
 A <code>logical</code> value defining whether points having one or several missing
 values for explanatory variables should be removed from the analysis or not</p></dd>
+
+
+<dt>filter.raster</dt>
+<dd><p>(<em>optional, default</em> <code>FALSE</code>) <br> 
+If <code>env</code> is of raster type, a <code>logical</code> value defining whether <code>sp</code> 
+is to be filtered when several points occur in the same raster cell</p></dd>
 
 
 <dt>coord</dt>

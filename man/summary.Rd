@@ -8,12 +8,13 @@
 \S4method{summary}{BIOMOD.formated.data}(object, calib.lines = NULL)
 }
 \arguments{
-\item{object}{a \code{\link{BIOMOD.formated.data}} or
-\code{\link{BIOMOD.formated.data.PA}} object.}
+\item{object}{a \code{\link{BIOMOD.formated.data}} or \code{\link{BIOMOD.formated.data.PA}} 
+object returned by the \code{\link{BIOMOD_FormatingData}} function}
 
-\item{calib.lines}{(\emph{optional, default} \code{NULL}) the output of
-\code{\link{get_calib_lines}} or \code{\link{BIOMOD_CrossValidation}}. 
-Needed to explore the repartition of calibration and validation datasets.}
+\item{calib.lines}{(\emph{optional, default} \code{NULL}) \cr
+an \code{array} object returned by \code{\link{get_calib_lines}} or 
+\code{\link{BIOMOD_CrossValidation}} functions, to explore the distribution of calibration 
+and validation datasets}
 }
 \value{
 a \code{data.frame}
@@ -57,6 +58,8 @@ myBiomodData <- BIOMOD_FormatingData(resp.var = myResp,
                                      resp.name = myRespName)
 myBiomodData
 summary(myBiomodData)
+
+
 }
 \author{
 Remi Patin

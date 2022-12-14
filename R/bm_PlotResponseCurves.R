@@ -1,4 +1,4 @@
-# bm_PlotResponseCurves Documentation -----------------------------------------
+###################################################################################################
 ##' @name bm_PlotResponseCurves
 ##' @author Damien Georges, Maya Gueguen
 ##' 
@@ -145,17 +145,20 @@
 ##' 
 ##' # ---------------------------------------------------------------#
 ##' # Represent response curves
+##' mods <- get_built_models(myBiomodModelOut, run = 'RUN1')
 ##' bm_PlotResponseCurves(bm.out = myBiomodModelOut, 
-##'                       models.chosen = get_built_models(myBiomodModelOut)[c(1:2)],
+##'                       models.chosen = mods,
 ##'                       fixed.var = 'median')
-##' # Other options
-##' # bm_PlotResponseCurves(bm.out = myBiomodModelOut, 
-##' #                       models.chosen = get_built_models(myBiomodModelOut)[c(1:2)],
-##' #                       fixed.var = 'min')
-##' # bm_PlotResponseCurves(bm.out = myBiomodModelOut, 
-##' #                       models.chosen = get_built_models(myBiomodModelOut)[3],
-##' #                       fixed.var = 'median',
-##' #                       do.bivariate = TRUE)
+##' bm_PlotResponseCurves(bm.out = myBiomodModelOut, 
+##'                       models.chosen = mods,
+##'                       fixed.var = 'min')
+##' 
+##' # Bivariate case (one model)
+##' mods <- get_built_models(myBiomodModelOut, full.name = 'GuloGulo_allData_RUN2_RF')
+##' bm_PlotResponseCurves(bm.out = myBiomodModelOut, 
+##'                       models.chosen = mods,
+##'                       fixed.var = 'median',
+##'                       do.bivariate = TRUE)
 ##'                                       
 ##'                                       
 ##' @importFrom terra rast cats global is.factor nlyr                                    
@@ -167,8 +170,7 @@
 ##' @export
 ##' 
 ##' 
-## ------------------------------------------------------------------------- ##
-
+###################################################################################################
 
 bm_PlotResponseCurves <- function(bm.out
                                   , models.chosen = 'all'

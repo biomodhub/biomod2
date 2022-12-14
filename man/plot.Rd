@@ -20,9 +20,10 @@
 \item{x}{a \code{\link{BIOMOD.formated.data}} or \code{\link{BIOMOD.formated.data.PA}}
 object. Coordinates must be available to be able to use \code{plot}.}
 
-\item{calib.lines}{(\emph{optional, default} \code{NULL}) the output of
-\code{\link{get_calib_lines}} or \code{\link{BIOMOD_CrossValidation}}. 
-Needed to explore the repartition of calibration and validation datasets.}
+\item{calib.lines}{(\emph{optional, default} \code{NULL}) \cr
+an \code{array} object returned by \code{\link{get_calib_lines}} or 
+\code{\link{BIOMOD_CrossValidation}} functions, to explore the distribution of calibration 
+and validation datasets}
 
 \item{plot.type}{a \code{character}, either \code{'points'} (\emph{default}) 
 or \code{'raster'} (\emph{if environmental variables were given as a raster}). 
@@ -36,19 +37,19 @@ or \code{'list'}. \code{plot.output} determines whether plots are returned
 as a single facet with all plots or a \code{list} of individual plots
 (better when there are numerous graphics)}
 
-\item{PA}{a \code{vector} (\emph{default} \code{'all'}) containing 
-the subset of pseudo-absences dataset that needs to be represented. Available
-only when \code{x} is a \code{\link{BIOMOD.formated.data.PA}} object.}
+\item{PA}{(\emph{optional, default} \code{'all'}) \cr 
+If \code{x} is a \code{\link{BIOMOD.formated.data.PA}} object, a \code{vector} 
+containing pseudo-absence set to be represented}
 
-\item{run}{a \code{vector} (\emph{default} \code{'all'}) containing 
-the subset of calibration dataset that needs to be represented. Available
-only when \code{calib.lines} was given as argument.}
+\item{run}{(\emph{optional, default} \code{'all'}) \cr 
+If \code{calib.lines} provided, a \code{vector} containing repetition set to 
+be represented}
 
-\item{plot.eval}{a boolean (\emph{default} \code{'TRUE'}) determining 
-whether evaluation data should be added to the plot.}
+\item{plot.eval}{(\emph{optional, default} \code{TRUE}) \cr 
+A \code{logical} defining whether evaluation data should be added to the plot or not}
 
-\item{do.plot}{a boolean (\emph{default} \code{'TRUE'}) determining 
-whether plots should be displayed or not.}
+\item{do.plot}{(\emph{optional, default} \code{TRUE}) \cr 
+A \code{logical} defining whether the plot is to be rendered or not}
 }
 \value{
 a \code{list} with the data used to generate the plot and a
@@ -94,6 +95,8 @@ myBiomodData <- BIOMOD_FormatingData(resp.var = myResp,
                                      resp.name = myRespName)
 myBiomodData
 plot(myBiomodData)
+
+
 }
 \author{
 Remi Patin

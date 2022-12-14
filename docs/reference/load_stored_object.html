@@ -98,19 +98,24 @@ into memory.</p>
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">load_stored_object</span><span class="op">(</span><span class="va">obj</span><span class="op">)</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">load_stored_object</span><span class="op">(</span><span class="va">obj</span>, <span class="va">...</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># S4 method for BIOMOD.stored.data</span></span>
-<span><span class="fu">load_stored_object</span><span class="op">(</span><span class="va">obj</span><span class="op">)</span></span>
+<span><span class="fu">load_stored_object</span><span class="op">(</span><span class="va">obj</span>, layer <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># S4 method for BIOMOD.stored.SpatRaster</span></span>
-<span><span class="fu">load_stored_object</span><span class="op">(</span><span class="va">obj</span><span class="op">)</span></span></code></pre></div>
+<span><span class="fu">load_stored_object</span><span class="op">(</span><span class="va">obj</span>, layer <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
     <h2>Arguments</h2>
     <dl><dt>obj</dt>
 <dd><p>a <code><a href="BIOMOD.stored.data.html">BIOMOD.stored.data</a></code> object</p></dd>
+
+
+<dt>layer</dt>
+<dd><p>an <code>integer</code> corresponding to the layer ID to be extracted when multilayer 
+object considered</p></dd>
 
 </dl></div>
     <div id="see-also">

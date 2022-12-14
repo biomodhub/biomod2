@@ -38,21 +38,20 @@
 ##' @param eval.sp (\emph{optional, default} \code{NULL}) \cr 
 ##' A \code{vector}, a \code{\link[terra:vect]{SpatVector}} without associated 
 ##' data (\emph{if presence-only}), or a \code{\link[terra:vect]{SpatVector}}
-##'  object containing binary data (\code{0} : absence, \code{1} : presence, 
-##'  \code{NA} : indeterminate) for a single species that will be used to
-##'   evaluate the species distribution model(s) with independent data
+##' object containing binary data (\code{0} : absence, \code{1} : presence, 
+##' \code{NA} : indeterminate) for a single species that will be used to
+##' evaluate the species distribution model(s) with independent data
 ##' \cr \emph{Note that old format from \pkg{sp} are still supported such as
-##'  \code{SpatialPoints}  (\emph{if presence-only}) or \code{SpatialPointsDataFrame}
-##'  object containing binary data.}
+##' \code{SpatialPoints}  (\emph{if presence-only}) or \code{SpatialPointsDataFrame}
+##' object containing binary data.}
 ##' @param eval.env (\emph{optional, default} \code{NULL}) \cr 
 ##' A \code{matrix}, \code{data.frame}, \code{\link[terra:vect]{SpatVector}} or
-##'   \code{\link[terra:rast]{SpatRaster}} object containing the explanatory
-##'   variables (in columns or layers) that will be used to evaluate the species
-##'   distribution model(s) with independent data
+##' \code{\link[terra:rast]{SpatRaster}} object containing the explanatory
+##' variables (in columns or layers) that will be used to evaluate the species
+##' distribution model(s) with independent data
 ##' \cr \emph{Note that old format from \pkg{raster} and \pkg{sp} are still
 ##' supported such as \code{RasterStack} and \code{SpatialPointsDataFrame}
 ##' objects. }
-##' 
 ##' @param eval.xy (\emph{optional, default} \code{NULL}) \cr 
 ##' If \code{resp.var} is a \code{vector}, a 2-columns \code{matrix} or
 ##' \code{data.frame} containing the corresponding \code{X} and \code{Y}
@@ -62,12 +61,19 @@
 ##' @param na.rm (\emph{optional, default} \code{TRUE}) \cr 
 ##' A \code{logical} value defining whether points having one or several missing
 ##' values for explanatory variables should be removed from the analysis or not
+##' @param data.mask (\emph{optional, default} \code{NULL}) \cr 
+##' A \code{\link[terra:rast]{SpatRaster}} object containing the mask of the studied area
+##' @param shared.eval.env (\emph{optional, default} \code{FALSE}) \cr 
+##' A \code{logical} value defining whether the explanatory variables used for the 
+##' evaluation dataset are the same than the ones for calibration (if \code{eval.env} not 
+##' provided for example) or not
+##' @param filter.raster (\emph{optional, default} \code{FALSE}) \cr 
+##' If \code{env} is of raster type, a \code{logical} value defining whether \code{sp} 
+##' is to be filtered when several points occur in the same raster cell
 ##' 
-##' @param data.mask a \code{\link[terra:rast]{SpatRaster}} object 
-##' containing the mask of the studied area
 ##' 
 ##' @param coord a 2-columns \code{data.frame} containing \code{X} and \code{Y} coordinates for plot
-##' @param col a \code{vector} containing colors for plot (default : \code{c('green', 'red', 
+##' @param col a \code{vector} containing colors for plot (\emph{default} \code{c('green', 'red', 
 ##' 'orange', 'grey')})
 ##' @param x a \code{\link{BIOMOD.formated.data.PA}} object
 ##' @param object a \code{\link{BIOMOD.formated.data.PA}} object
@@ -184,8 +190,9 @@ setGeneric("BIOMOD.formated.data", def = function(sp, env, ...) { standardGeneri
 setMethod('BIOMOD.formated.data', signature(sp = 'numeric', env = 'data.frame'),
           function(sp, env, xy = NULL, dir.name = '.', sp.name = NULL
                    , eval.sp = NULL, eval.env = NULL, eval.xy = NULL
-                   , na.rm = TRUE, data.mask = NULL, shared.eval.env = FALSE,
-                   filter.raster = FALSE)  {
+                   , na.rm = TRUE, data.mask = NULL, shared.eval.env = FALSE
+                   , filter.raster = FALSE) 
+          {
             
             if (is.null(data.mask)) { 
               suppressWarnings(data.mask <- list("calibration" = wrap(rast())))
@@ -303,7 +310,8 @@ setMethod('BIOMOD.formated.data', signature(sp = 'numeric', env = 'SpatRaster'),
           function(sp, env, xy = NULL, dir.name = '.', sp.name = NULL,
                    eval.sp = NULL, eval.env = NULL, eval.xy = NULL,
                    na.rm = TRUE, shared.eval.env = FALSE,
-                   filter.raster = FALSE) {
+                   filter.raster = FALSE)
+          {
             
             ## Keep same env variable for eval than calib (+ check for factor)
             if (!is.null(eval.sp) && is.null(eval.env)) {
@@ -357,9 +365,10 @@ setMethod('BIOMOD.formated.data', signature(sp = 'numeric', env = 'SpatRaster'),
 ##' 
 ##' @param x a \code{\link{BIOMOD.formated.data}} or \code{\link{BIOMOD.formated.data.PA}}
 ##' object. Coordinates must be available to be able to use \code{plot}.
-##' @param calib.lines (\emph{optional, default} \code{NULL}) the output of
-##'  \code{\link{get_calib_lines}} or \code{\link{BIOMOD_CrossValidation}}. 
-##'  Needed to explore the repartition of calibration and validation datasets.
+##' @param calib.lines (\emph{optional, default} \code{NULL}) \cr
+##' an \code{array} object returned by \code{\link{get_calib_lines}} or 
+##' \code{\link{BIOMOD_CrossValidation}} functions, to explore the distribution of calibration 
+##' and validation datasets
 ##' @param plot.type a \code{character}, either \code{'points'} (\emph{default}) 
 ##' or \code{'raster'} (\emph{if environmental variables were given as a raster}). 
 ##' With \code{plot.type = 'points'} occurrences will be represented as points
@@ -370,22 +379,26 @@ setMethod('BIOMOD.formated.data', signature(sp = 'numeric', env = 'SpatRaster'),
 ##' or \code{'list'}. \code{plot.output} determines whether plots are returned
 ##' as a single facet with all plots or a \code{list} of individual plots
 ##' (better when there are numerous graphics)
-##' @param PA a \code{vector} (\emph{default} \code{'all'}) containing 
-##' the subset of pseudo-absences dataset that needs to be represented. Available
-##' only when \code{x} is a \code{\link{BIOMOD.formated.data.PA}} object.
-##' @param run a \code{vector} (\emph{default} \code{'all'}) containing 
-##' the subset of calibration dataset that needs to be represented. Available
-##' only when \code{calib.lines} was given as argument.
-##' @param plot.eval a boolean (\emph{default} \code{'TRUE'}) determining 
-##' whether evaluation data should be added to the plot.
-##' @param do.plot a boolean (\emph{default} \code{'TRUE'}) determining 
-##' whether plots should be displayed or not.
+##' @param PA (\emph{optional, default} \code{'all'}) \cr 
+##' If \code{x} is a \code{\link{BIOMOD.formated.data.PA}} object, a \code{vector} 
+##' containing pseudo-absence set to be represented 
+##' @param run (\emph{optional, default} \code{'all'}) \cr 
+##' If \code{calib.lines} provided, a \code{vector} containing repetition set to 
+##' be represented 
+##' @param plot.eval (\emph{optional, default} \code{TRUE}) \cr 
+##' A \code{logical} defining whether evaluation data should be added to the plot or not
+##' @param do.plot (\emph{optional, default} \code{TRUE}) \cr 
+##' A \code{logical} defining whether the plot is to be rendered or not
+##' 
+##' 
 ##' @return a \code{list} with the data used to generate the plot and a
 ##' \code{ggplot2} object 
 ##' 
-##' @export
 ##' @importFrom terra rast minmax crds ext
 ##' @importFrom ggplot2 ggplot aes scale_color_manual scale_shape_manual scale_fill_manual guides xlim ylim ggtitle facet_wrap theme guide_legend after_stat
+##' 
+##' @export
+##' 
 ##' 
 ##' @examples
 ##' 
@@ -421,6 +434,8 @@ setMethod('BIOMOD.formated.data', signature(sp = 'numeric', env = 'SpatRaster'),
 ##'                                      resp.name = myRespName)
 ##' myBiomodData
 ##' plot(myBiomodData)
+##' 
+##' 
 
 
 setMethod('plot', signature(x = 'BIOMOD.formated.data', y = "missing"),
@@ -486,22 +501,15 @@ setMethod('plot', signature(x = 'BIOMOD.formated.data', y = "missing"),
                   
                   if( is.na(this_PA) ){ # run only
                     this_name <- this_run
-                    this_calib <-
-                      calib.lines[ , this_run]
-                    this_valid <- 
-                      ! calib.lines[ , this_run]
+                    this_calib <- calib.lines[ , this_run]
+                    this_valid <- ! calib.lines[ , this_run]
                   } else if (is.na(this_run)){ # PA only
                     this_name <- this_PA
-                    this_calib <-
-                      x@PA.table[ , this_PA]
+                    this_calib <- x@PA.table[ , this_PA]
                   } else { # PA+run
                     this_name <- paste0(this_PA,"_",this_run)
-                    this_calib <-
-                      calib.lines[ , this_run] &
-                      x@PA.table[ , this_PA]
-                    this_valid <- 
-                      ! calib.lines[ , this_run] &
-                      x@PA.table[ , this_PA]
+                    this_calib <- calib.lines[ , this_run] & x@PA.table[ , this_PA]
+                    this_valid <- ! calib.lines[ , this_run] & x@PA.table[ , this_PA]
                   }
                   
                   calib.resp <- x@data.species[this_calib]
@@ -982,11 +990,14 @@ setMethod('show', signature('BIOMOD.formated.data'),
 ##' pseudo-absences among the different potential dataset (calibration, 
 ##' validation and evaluation).  
 ##' 
-##' @param object a \code{\link{BIOMOD.formated.data}} or
-##' \code{\link{BIOMOD.formated.data.PA}} object.
-##' @param calib.lines (\emph{optional, default} \code{NULL}) the output of
-##'  \code{\link{get_calib_lines}} or \code{\link{BIOMOD_CrossValidation}}. 
-##'  Needed to explore the repartition of calibration and validation datasets.
+##' @param object a \code{\link{BIOMOD.formated.data}} or \code{\link{BIOMOD.formated.data.PA}} 
+##' object returned by the \code{\link{BIOMOD_FormatingData}} function
+##' @param calib.lines (\emph{optional, default} \code{NULL}) \cr
+##' an \code{array} object returned by \code{\link{get_calib_lines}} or 
+##' \code{\link{BIOMOD_CrossValidation}} functions, to explore the distribution of calibration 
+##' and validation datasets
+##' 
+##' 
 ##' @return a \code{data.frame} 
 ##' 
 ##' @export
@@ -1025,15 +1036,14 @@ setMethod('show', signature('BIOMOD.formated.data'),
 ##'                                      resp.name = myRespName)
 ##' myBiomodData
 ##' summary(myBiomodData)
+##' 
+##' 
 
 setMethod('summary', signature(object = 'BIOMOD.formated.data'),
-          function(object,
-                   calib.lines = NULL){
-            args <- .summary.BIOMOD.formated.data.check.args(object = object,
-                                                             calib.lines = calib.lines)
-            for (argi in names(args)) { 
-              assign(x = argi, value = args[[argi]]) 
-            }
+          function(object, calib.lines = NULL)
+          {
+            args <- .summary.BIOMOD.formated.data.check.args(object = object, calib.lines = calib.lines)
+            for (argi in names(args)) { assign(x = argi, value = args[[argi]]) }
             rm(args)
             
             output <- data.frame("dataset" = "initial",
@@ -1070,22 +1080,16 @@ setMethod('summary', signature(object = 'BIOMOD.formated.data'),
                                 foreach(this_run = run, .combine = 'rbind') %do% {
                                   if ( is.na(this_PA) ) { # run only
                                     this_name <- this_run
-                                    this_calib <-
-                                      calib.lines[ , this_run]
-                                    this_valid <- 
-                                      ! calib.lines[ , this_run]
+                                    this_calib <- calib.lines[ , this_run]
+                                    this_valid <- ! calib.lines[ , this_run]
                                   } else if (is.na(this_run)) { # PA only
                                     this_name <- this_PA
                                     this_calib <-
                                       object@PA.table[ , this_PA]
                                   } else { # PA+run
                                     this_name <- paste0(this_PA,"_",this_run)
-                                    this_calib <-
-                                      calib.lines[ , this_run] &
-                                      object@PA.table[ , this_PA]
-                                    this_valid <- 
-                                      ! calib.lines[ , this_run] &
-                                      object@PA.table[ , this_PA]
+                                    this_calib <- calib.lines[ , this_run] & object@PA.table[ , this_PA]
+                                    this_valid <- ! calib.lines[ , this_run] & object@PA.table[ , this_PA]
                                   }
                                   
                                   calib.resp <- object@data.species[this_calib]
@@ -1181,6 +1185,14 @@ setMethod('summary', signature(object = 'BIOMOD.formated.data'),
 ##' \code{data.frame} with as many rows as \code{resp.var} values, as many columns as 
 ##' \code{PA.nb.rep}, and containing \code{TRUE} or \code{FALSE} values defining which points 
 ##' will be used to build the species distribution model(s) for each repetition (see Details)
+##' 
+##' @param na.rm (\emph{optional, default} \code{TRUE}) \cr 
+##' A \code{logical} value defining whether points having one or several missing
+##' values for explanatory variables should be removed from the analysis or not
+##' @param filter.raster (\emph{optional, default} \code{FALSE}) \cr 
+##' If \code{env} is of raster type, a \code{logical} value defining whether \code{sp} 
+##' is to be filtered when several points occur in the same raster cell
+##' 
 ##' 
 ##' @param coord a 2-columns \code{data.frame} containing \code{X} and \code{Y} coordinates for plot
 ##' @param col a \code{vector} containing colors for plot (default : \code{c('green', 'red', 

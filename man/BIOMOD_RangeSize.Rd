@@ -3,7 +3,6 @@
 \name{BIOMOD_RangeSize}
 \alias{BIOMOD_RangeSize}
 \alias{BIOMOD_RangeSize,data.frame,data.frame-method}
-\alias{BIOMOD_RangeSize,array,array-method}
 \alias{BIOMOD_RangeSize,SpatRaster,SpatRaster-method}
 \title{Analyze the range size differences between projections of species distribution models}
 \usage{
@@ -11,16 +10,14 @@ BIOMOD_RangeSize(proj.current, proj.future)
 
 \S4method{BIOMOD_RangeSize}{data.frame,data.frame}(proj.current, proj.future)
 
-\S4method{BIOMOD_RangeSize}{array,array}(proj.current, proj.future)
-
 \S4method{BIOMOD_RangeSize}{SpatRaster,SpatRaster}(proj.current, proj.future)
 }
 \arguments{
-\item{proj.current}{an \code{array}, \code{data.frame}, \code{\link[raster:stack]{RasterLayer}}
+\item{proj.current}{a \code{data.frame}, \code{\link[raster:stack]{RasterLayer}}
 or \code{\link[terra:rast]{SpatRaster}} object containing the initial binary projection(s)
 of the (ensemble) species distribution model(s)}
 
-\item{proj.future}{an \code{array}, \code{data.frame}, \code{\link[raster:stack]{RasterLayer}}
+\item{proj.future}{a \code{data.frame}, \code{\link[raster:stack]{RasterLayer}}
 or \code{\link[terra:rast]{SpatRaster}} object containing the final binary projection(s)
 of the (ensemble) species distribution model(s)}
 }

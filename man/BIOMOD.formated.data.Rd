@@ -96,18 +96,18 @@ species distribution model(s)}
 \item{eval.sp}{(\emph{optional, default} \code{NULL}) \cr 
 A \code{vector}, a \code{\link[terra:vect]{SpatVector}} without associated 
 data (\emph{if presence-only}), or a \code{\link[terra:vect]{SpatVector}}
- object containing binary data (\code{0} : absence, \code{1} : presence, 
- \code{NA} : indeterminate) for a single species that will be used to
-  evaluate the species distribution model(s) with independent data
+object containing binary data (\code{0} : absence, \code{1} : presence, 
+\code{NA} : indeterminate) for a single species that will be used to
+evaluate the species distribution model(s) with independent data
 \cr \emph{Note that old format from \pkg{sp} are still supported such as
- \code{SpatialPoints}  (\emph{if presence-only}) or \code{SpatialPointsDataFrame}
- object containing binary data.}}
+\code{SpatialPoints}  (\emph{if presence-only}) or \code{SpatialPointsDataFrame}
+object containing binary data.}}
 
 \item{eval.env}{(\emph{optional, default} \code{NULL}) \cr 
 A \code{matrix}, \code{data.frame}, \code{\link[terra:vect]{SpatVector}} or
-  \code{\link[terra:rast]{SpatRaster}} object containing the explanatory
-  variables (in columns or layers) that will be used to evaluate the species
-  distribution model(s) with independent data
+\code{\link[terra:rast]{SpatRaster}} object containing the explanatory
+variables (in columns or layers) that will be used to evaluate the species
+distribution model(s) with independent data
 \cr \emph{Note that old format from \pkg{raster} and \pkg{sp} are still
 supported such as \code{RasterStack} and \code{SpatialPointsDataFrame}
 objects. }}
@@ -122,14 +122,23 @@ with independent data}
 A \code{logical} value defining whether points having one or several missing
 values for explanatory variables should be removed from the analysis or not}
 
-\item{data.mask}{a \code{\link[terra:rast]{SpatRaster}} object 
-containing the mask of the studied area}
+\item{data.mask}{(\emph{optional, default} \code{NULL}) \cr 
+A \code{\link[terra:rast]{SpatRaster}} object containing the mask of the studied area}
+
+\item{shared.eval.env}{(\emph{optional, default} \code{FALSE}) \cr 
+A \code{logical} value defining whether the explanatory variables used for the 
+evaluation dataset are the same than the ones for calibration (if \code{eval.env} not 
+provided for example) or not}
+
+\item{filter.raster}{(\emph{optional, default} \code{FALSE}) \cr 
+If \code{env} is of raster type, a \code{logical} value defining whether \code{sp} 
+is to be filtered when several points occur in the same raster cell}
 
 \item{object}{a \code{\link{BIOMOD.formated.data.PA}} object}
 
 \item{coord}{a 2-columns \code{data.frame} containing \code{X} and \code{Y} coordinates for plot}
 
-\item{col}{a \code{vector} containing colors for plot (default : \code{c('green', 'red', 
+\item{col}{a \code{vector} containing colors for plot (\emph{default} \code{c('green', 'red', 
 'orange', 'grey')})}
 
 \item{x}{a \code{\link{BIOMOD.formated.data.PA}} object}

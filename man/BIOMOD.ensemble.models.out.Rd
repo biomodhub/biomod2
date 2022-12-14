@@ -124,18 +124,11 @@ if (file.exists(file.out)) {
 myBiomodEM <- BIOMOD_EnsembleModeling(bm.mod = myBiomodModelOut,
                                       models.chosen = 'all',
                                       em.by = 'all',
+                                      em.algo = c('prob.mean', 'committee.averaging'),
                                       metric.select = c('TSS'),
                                       metric.select.thresh = c(0.7),
                                       metric.eval = c('TSS', 'ROC'),
                                       var.import = 3,
-                                      prob.mean = TRUE,
-                                      prob.median = FALSE,
-                                      prob.cv = FALSE,
-                                      prob.ci = FALSE,
-                                      prob.ci.alpha = 0.05,
-                                      committee.averaging = TRUE,
-                                      prob.mean.weight = FALSE,
-                                      prob.mean.weight.decay = 'proportional',
                                       seed.val = 42)
 myBiomodEM
 

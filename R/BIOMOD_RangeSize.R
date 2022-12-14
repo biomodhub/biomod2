@@ -10,10 +10,10 @@
 ##' time scales or environmental scenarios for example}).
 ##' 
 ##' 
-##' @param proj.current an \code{array}, \code{data.frame}, \code{\link[raster:stack]{RasterLayer}} 
+##' @param proj.current a \code{data.frame}, \code{\link[raster:stack]{RasterLayer}} 
 ##' or \code{\link[terra:rast]{SpatRaster}} object containing the initial binary projection(s) 
 ##' of the (ensemble) species distribution model(s)
-##' @param proj.future an \code{array}, \code{data.frame}, \code{\link[raster:stack]{RasterLayer}} 
+##' @param proj.future a \code{data.frame}, \code{\link[raster:stack]{RasterLayer}} 
 ##' or \code{\link[terra:rast]{SpatRaster}} object containing the final binary projection(s) 
 ##' of the (ensemble) species distribution model(s)
 ##' 
@@ -241,47 +241,6 @@ setMethod('BIOMOD_RangeSize', signature(proj.current = 'data.frame', proj.future
             Output <- list(Compt.By.Models = Compt.By.Models, Diff.By.Pixel = Diff.By.Pixel)
             .bm_cat("Done")
             invisible(Output)
-          })
-
-## BIOMOD_RangeSize array-array Method ----------------------
-##'
-##' @rdname BIOMOD_RangeSize
-##' @export
-##'
-
-## TODO Maya : remove ?
-
-setMethod('BIOMOD_RangeSize', signature(proj.current = 'array', proj.future = 'array'),
-          function(proj.current, proj.future)
-          {
-            
-            ## Transform Current array into data.frame
-            proj.current <- as.data.frame(proj.current)
-            names(proj.current) <- unlist(lapply(strsplit(names(proj.current), ".", fixed = TRUE), function(x)
-            { return(paste(x[3], x[2], x[1], sep = "_")) }))
-            names(proj.current) <- unlist(lapply(strsplit(names(proj.current), ".", fixed = TRUE), function(x)
-            {
-              x.rev <- rev(x) ## reverse the order of splitted vector to have algo at the end
-              data.set.id <- x.rev[1]
-              cross.valid.id <- x.rev[2]
-              algo.id <- paste0(rev(x.rev[3:length(x.rev)]), collapse = ".")
-              model.id <- paste(data.set.id, cross.valid.id, algo.id, sep = "_")
-              return(model.id)
-            }))
-
-            ## Transform Future array into data.frame
-            proj.future <- as.data.frame(proj.future)
-            names(proj.future) <- unlist(lapply(strsplit(names(proj.future), ".", fixed = TRUE), function(x)
-            {
-              x.rev <- rev(x) ## reverse the order of splitted vector to have algo at the end
-              data.set.id <- x.rev[1]
-              cross.valid.id <- x.rev[2]
-              algo.id <- paste0(rev(x.rev[3:length(x.rev)]), collapse = ".")
-              model.id <- paste(data.set.id, cross.valid.id, algo.id, sep = "_")
-              return(model.id)
-            }))
-            
-            return(BIOMOD_RangeSize(proj.current, proj.future))
           })
 
 

@@ -123,9 +123,10 @@ object. Coordinates must be available to be able to use <code>plot</code>.</p></
 
 
 <dt>calib.lines</dt>
-<dd><p>(<em>optional, default</em> <code>NULL</code>) the output of
-<code><a href="getters.out.html">get_calib_lines</a></code> or <code><a href="BIOMOD_CrossValidation.html">BIOMOD_CrossValidation</a></code>. 
-Needed to explore the repartition of calibration and validation datasets.</p></dd>
+<dd><p>(<em>optional, default</em> <code>NULL</code>) <br>
+an <code>array</code> object returned by <code><a href="getters.out.html">get_calib_lines</a></code> or 
+<code><a href="BIOMOD_CrossValidation.html">BIOMOD_CrossValidation</a></code> functions, to explore the distribution of calibration 
+and validation datasets</p></dd>
 
 
 <dt>plot.type</dt>
@@ -145,25 +146,25 @@ as a single facet with all plots or a <code>list</code> of individual plots
 
 
 <dt>PA</dt>
-<dd><p>a <code>vector</code> (<em>default</em> <code>'all'</code>) containing 
-the subset of pseudo-absences dataset that needs to be represented. Available
-only when <code>x</code> is a <code><a href="BIOMOD.formated.data.PA.html">BIOMOD.formated.data.PA</a></code> object.</p></dd>
+<dd><p>(<em>optional, default</em> <code>'all'</code>) <br> 
+If <code>x</code> is a <code><a href="BIOMOD.formated.data.PA.html">BIOMOD.formated.data.PA</a></code> object, a <code>vector</code> 
+containing pseudo-absence set to be represented</p></dd>
 
 
 <dt>run</dt>
-<dd><p>a <code>vector</code> (<em>default</em> <code>'all'</code>) containing 
-the subset of calibration dataset that needs to be represented. Available
-only when <code>calib.lines</code> was given as argument.</p></dd>
+<dd><p>(<em>optional, default</em> <code>'all'</code>) <br> 
+If <code>calib.lines</code> provided, a <code>vector</code> containing repetition set to 
+be represented</p></dd>
 
 
 <dt>plot.eval</dt>
-<dd><p>a boolean (<em>default</em> <code>'TRUE'</code>) determining 
-whether evaluation data should be added to the plot.</p></dd>
+<dd><p>(<em>optional, default</em> <code>TRUE</code>) <br> 
+A <code>logical</code> defining whether evaluation data should be added to the plot or not</p></dd>
 
 
 <dt>do.plot</dt>
-<dd><p>a boolean (<em>default</em> <code>'TRUE'</code>) determining 
-whether plots should be displayed or not.</p></dd>
+<dd><p>(<em>optional, default</em> <code>TRUE</code>) <br> 
+A <code>logical</code> defining whether the plot is to be rendered or not</p></dd>
 
 </dl></div>
     <div id="value">
@@ -212,7 +213,9 @@ whether plots should be displayed or not.</p></dd>
 <span>                                     resp.xy <span class="op">=</span> <span class="va">myRespXY</span>,</span>
 <span>                                     resp.name <span class="op">=</span> <span class="va">myRespName</span><span class="op">)</span></span>
 <span><span class="va">myBiomodData</span></span>
-<span><span class="fu">plot</span><span class="op">(</span><span class="va">myBiomodData</span><span class="op">)</span></span></code></pre></div>
+<span><span class="fu">plot</span><span class="op">(</span><span class="va">myBiomodData</span><span class="op">)</span></span>
+<span></span>
+<span></span></code></pre></div>
     </div>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">

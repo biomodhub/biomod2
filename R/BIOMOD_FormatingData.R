@@ -44,7 +44,6 @@
 ##' \cr \emph{Note that old format from \pkg{sp} are still supported such as
 ##'  \code{SpatialPoints}  (\emph{if presence-only}) or \code{SpatialPointsDataFrame}
 ##'  object containing binary data.}
-##'  
 ##' @param eval.expl.var (\emph{optional, default} \code{NULL}) \cr 
 ##' A \code{matrix}, \code{data.frame}, \code{\link[terra:vect]{SpatVector}}
 ##' or \code{\link[terra:rast]{SpatRaster}} object containing the explanatory variables (in 
@@ -52,7 +51,6 @@
 ##' independent data.
 ##' \cr \emph{Note that old format from \pkg{raster} and \pkg{sp} are still supported such as 
 ##' \code{RasterStack} and \code{SpatialPointsDataFrame} objects. }
-
 ##' @param eval.resp.xy (\emph{optional, default} \code{NULL}) \cr 
 ##' If \code{resp.var} is a \code{vector}, a 2-columns \code{matrix} or \code{data.frame} 
 ##' containing the corresponding \code{X} and \code{Y} coordinates that will be used to evaluate 
@@ -90,7 +88,6 @@
 ##' @param na.rm (\emph{optional, default} \code{TRUE}) \cr 
 ##' A \code{logical} value defining whether points having one or several missing values for 
 ##' explanatory variables should be removed from the analysis or not
-##'
 ##' @param filter.raster (\emph{optional, default} \code{FALSE}) \cr 
 ##' If \code{expl.var} is of raster type, a \code{logical} value defining whether \code{resp.var} 
 ##' is to be filtered when several points occur in the same raster cell

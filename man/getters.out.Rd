@@ -82,6 +82,8 @@
 
 \S4method{get_predictions}{BIOMOD.projection.out}(
   obj,
+  metric.binary = NULL,
+  metric.filter = NULL,
   full.name = NULL,
   PA = NULL,
   run = NULL,
@@ -146,11 +148,13 @@
 \item{as.data.frame}{a \code{logical} defining whether output should be returned as 
 \code{data.frame} or \code{array} object}
 
-\item{PA}{a \code{vector} containing pseudo-absence set to be loaded, must be among 
-\code{PA1}, \code{PA2}, \code{...}}
+\item{PA}{(\emph{optional, default} \code{NULL}) \cr 
+A \code{vector} containing pseudo-absence set to be loaded, must be among \code{PA1}, 
+\code{PA2}, \code{...}, \code{allData}}
 
-\item{run}{a \code{vector} containing repetition set to be loaded, must be among 
-\code{RUN1}, \code{RUN2}, \code{...}, \code{allRun}}
+\item{run}{(\emph{optional, default} \code{NULL}) \cr 
+A \code{vector} containing repetition set to be loaded, must be among \code{RUN1}, 
+\code{RUN2}, \code{...}, \code{allRun}}
 
 \item{subinfo}{a \code{character} corresponding to the information to be extracted, must be 
 among \code{NULL}, \code{expl.var.names}, \code{resp.var}, \code{expl.var}, \code{MinMax}, 
@@ -158,18 +162,57 @@ among \code{NULL}, \code{expl.var.names}, \code{resp.var}, \code{expl.var}, \cod
 
 \item{evaluation}{a \code{logical} defining whether evaluation data should be used or not}
 
-\item{full.name}{a \code{vector} containing model names to be kept, must be either \code{all} 
-or a sub-selection of model names}
+\item{full.name}{(\emph{optional, default} \code{NULL}) \cr 
+A \code{vector} containing model names to be kept, must be either \code{all} or a 
+sub-selection of model names that can be obtained with the \code{\link{get_built_models}} 
+function}
 
-\item{\ldots}{(\emph{optional, one or several of the following arguments depending on the selected 
-function)})}
-
-\item{model}{a \code{character} corresponding to the model name, must be either \code{GLM}, 
+\item{algo}{(\emph{optional, default} \code{NULL}) \cr 
+A \code{character} containing algorithm to be loaded, must be either \code{GLM}, 
 \code{GBM}, \code{GAM}, \code{CTA}, \code{ANN}, \code{SRE}, \code{FDA}, \code{MARS}, 
 \code{RF}, \code{MAXENT.Phillips}, \code{MAXENT.Phillips.2}}
 
-\item{selected.models}{a \code{vector} containing names of the needed models of a 
-\code{\link{BIOMOD.ensemble.models.out}} object}
+\item{metric.eval}{(\emph{optional, default} \code{NULL}) \cr 
+A \code{vector} containing evaluation metric to be kept, must be among \code{ROC}, 
+\code{TSS}, \code{KAPPA}, \code{ACCURACY}, \code{BIAS}, \code{POD}, \code{FAR}, 
+\code{POFD}, \code{SR}, \code{CSI}, \code{ETS}, \code{HK}, \code{HSS}, \code{OR}, \code{ORSS}}
+
+\item{expl.var}{(\emph{optional, default} \code{NULL}) \cr 
+A \code{vector} containing explanatory variables to be kept, that can be obtained with the 
+\code{\link{get_formal_data(obj, subinfo = 'expl.var.names')}} function}
+
+\item{merged.by.algo}{(\emph{optional, default} \code{NULL}) \cr 
+A \code{character} containing merged algorithm to be loaded, must be among \code{GLM}, 
+\code{GBM}, \code{GAM}, \code{CTA}, \code{ANN}, \code{SRE}, \code{FDA}, \code{MARS}, 
+\code{RF}, \code{MAXENT.Phillips}, \code{MAXENT.Phillips.2}, \code{mergedAlgo}}
+
+\item{merged.by.run}{(\emph{optional, default} \code{NULL}) \cr 
+A \code{vector} containing merged repetition set to be loaded, must be among \code{RUN1}, 
+\code{RUN2}, \code{...}, \code{mergedRun}}
+
+\item{merged.by.PA}{(\emph{optional, default} \code{NULL}) \cr 
+A \code{vector} containing merged pseudo-absence set to be loaded, must be among \code{PA1}, 
+\code{PA2}, \code{...}, \code{mergedData}}
+
+\item{filtered.by}{(\emph{optional, default} \code{NULL}) \cr 
+A \code{vector} containing evaluation metric selected to filter single models to build the 
+ensemble models, must be among \code{ROC}, \code{TSS}, \code{KAPPA}, \code{ACCURACY}, 
+\code{BIAS}, \code{POD}, \code{FAR}, \code{POFD}, \code{SR}, \code{CSI}, \code{ETS}, 
+\code{HK}, \code{HSS}, \code{OR}, \code{ORSS}}
+
+\item{metric.binary}{(\emph{optional, default} \code{NULL}) \cr 
+A \code{vector} containing evaluation metric selected to transform predictions into binary 
+values, must be among \code{ROC}, \code{TSS}, \code{KAPPA}, \code{ACCURACY}, \code{BIAS}, 
+\code{POD}, \code{FAR}, \code{POFD}, \code{SR}, \code{CSI}, \code{ETS}, \code{HK}, 
+\code{HSS}, \code{OR}, \code{ORSS}}
+
+\item{metric.filter}{(\emph{optional, default} \code{NULL}) \cr 
+A \code{vector} containing evaluation metric to filter predictions, must be among \code{ROC}, 
+\code{TSS}, \code{KAPPA}, \code{ACCURACY}, \code{BIAS}, \code{POD}, \code{FAR}, 
+\code{POFD}, \code{SR}, \code{CSI}, \code{ETS}, \code{HK}, \code{HSS}, \code{OR}, \code{ORSS}}
+
+\item{\ldots}{(\emph{optional, one or several of the following arguments depending on the selected 
+function)})}
 }
 \value{
 \describe{
