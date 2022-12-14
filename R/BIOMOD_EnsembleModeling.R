@@ -402,7 +402,6 @@ BIOMOD_EnsembleModeling <- function(bm.mod,
   {
     cat("\n\n  >", assemb, "ensemble modeling")
     models.kept <- em.mod.assemb[[assemb]]
-    
     #### defined data that will be used for models performances calculation 
     if (bm.mod@has.evaluation.data) {
       eval.obs <- get_formal_data(bm.mod, 'eval.resp.var')
@@ -440,18 +439,19 @@ BIOMOD_EnsembleModeling <- function(bm.mod,
                                                   , metric.select.user, metric.select.table
                                                   , nb.cpu)
     
-    ## if no prediction selected => switch to next model
-    if (length(needed_predictions) == 0) next
+    ## Tools to convert em.algo to match biomod2_ensemble_model@model_class values
+    em.classes <- c('EMmean', 'EMcv', 'EMci', 'EMmedian', 'EMca', 'EMwmean')
+    names(em.classes) <- c('prob.mean', 'prob.cv', 'prob.ci',
+                           'prob.median', 'committee.averaging', 'prob.mean.weight')
+    
     
     ## LOOP over evaluation metrics ------------------------------------------
-    em.out.eval <- foreach (eval.m = metric.select) %do%
-    {
+    em.out.eval <- foreach(eval.m = metric.select) %do%  {
       models.kept <- needed_predictions$models.kept[[eval.m]]
       models.kept.scores <- needed_predictions$models.kept.scores[[eval.m]]
       
       ## LOOP over em.algo ---------------------------------------------------
-      em.out.algo <- foreach (algo = em.algo) %do%
-      {
+      em.out.algo <- foreach (algo = em.algo) %do%  {
         ListOut <- list(model = NULL,
                         calib.failure = NULL,
                         models.kept = models.kept,
@@ -460,8 +460,16 @@ BIOMOD_EnsembleModeling <- function(bm.mod,
                         evaluation = NULL,
                         var.import = NULL)
         
+        model_name <- paste0(bm.mod@sp.name, "_", em.classes[algo], "By", eval.m, "_", assemb)
+        if (is.null(models.kept)) {
+          # keep the name of uncompleted modelisations
+          cat("\n   ! Note : ", model_name, "failed!\n")
+          ListOut$calib.failure = model_name
+          return(ListOut) ## end of function.
+        }
+        
         algo.1 <- algo.2 <- algo.3 <- NULL
-        models.kept.tmp = models.kept
+        models.kept.tmp  <- models.kept
         if (algo == 'prob.mean') {
           algo.1 <- "Mean of probabilities"
           algo.2 <- algo.3 <- "EMmean"
@@ -551,7 +559,6 @@ BIOMOD_EnsembleModeling <- function(bm.mod,
         
         # Models building --------------------------------------------------
         cat("\n   >", algo.1, "...")
-        model_name <- paste0(bm.mod@sp.name, "_", algo.2, "By", eval.m, "_", assemb)
         model.bm <- new(paste0(algo.3, "_biomod2_model"),
                         model = models.kept.tmp,
                         model_name = model_name,
@@ -712,10 +719,7 @@ BIOMOD_EnsembleModeling <- function(bm.mod,
           return(ListOut)
         }
       }
-      ## Convert em.algo to match biomod2_ensemble_model@model_class values
-      em.classes <- c('EMmean', 'EMcv', 'EMci', 'EMmedian', 'EMca', 'EMwmean')
-      names(em.classes) <- c('prob.mean', 'prob.cv', 'prob.ci',
-                             'prob.median', 'committee.averaging', 'prob.mean.weight')
+      ## convert em.algo to match biomod2_ensemble_model@model_class values
       names(em.out.algo) <- em.classes[em.algo]
       return(em.out.algo)
     }
@@ -1103,7 +1107,7 @@ BIOMOD_EnsembleModeling <- function(bm.mod,
     }
     return(out)
   } else {
-    cat("\n   ! No models kept due to threshold filtering... Ensemble Modeling was skipped!")
+    cat("\n   ! No models kept due to threshold filtering... Ensemble Modeling will fail!")
     return(NULL)
   }
 }
