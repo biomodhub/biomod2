@@ -709,7 +709,7 @@ bm_RunModel <- function(model, Data, modeling.id = '', bm.options, calib.lines,
     ### 2.11 MAXENT.Phillips.2 model -------------------------------------------
     
     cat('\n\t> MAXENT.Phillips.2 modeling...')
-    model.sp <- try(maxnet(p = Data[calib.lines, resp_name], data = Data[calib.lines, expl_var_names]))
+    model.sp <- try(maxnet(p = Data[calib.lines, resp_name], data = Data[calib.lines, expl_var_names, drop = FALSE]))
     
     if (!inherits(model.sp, "try-error")) {
       model.bm <- new("MAXENT.Phillips.2_biomod2_model",
