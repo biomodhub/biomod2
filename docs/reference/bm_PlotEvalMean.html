@@ -131,10 +131,18 @@ be among <code>ROC</code>, <code>TSS</code>, <code>KAPPA</code>, <code>ACCURACY<
 <code>ORSS</code></p></dd>
 
 
+<dt>dataset</dt>
+<dd><p>a <code>character</code> corresponding to the dataset upon which evaluation metrics 
+have been calculated and that is to be represented, must be among <code>calibration</code>, 
+<code>validation</code>, <code>evaluation</code></p></dd>
+
+
 <dt>group.by</dt>
 <dd><p>a <code>character</code> corresponding to the way kept models will be combined to 
-compute mean and sd evaluation scores, must be among <code>model</code>, <code>algo</code>, <code>run</code>, 
-<code>dataset</code></p></dd>
+compute mean and sd evaluation scores, must be among <code>full.name</code>, <code>PA</code>, <code>run</code>, 
+<code>algo</code> (if <code>bm.out</code> is a <code><a href="BIOMOD.models.out.html">BIOMOD.models.out</a></code> object), or 
+<code>full.name</code>, <code>merged.by.PA</code>, <code>merged.by.run</code>, <code>merged.by.algo</code> 
+(if <code>bm.out</code> is a <code><a href="BIOMOD.ensemble.models.out.html">BIOMOD.ensemble.models.out</a></code> object)</p></dd>
 
 
 <dt>do.plot</dt>

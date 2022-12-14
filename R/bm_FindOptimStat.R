@@ -27,14 +27,14 @@
 ##'
 ##' @return 
 ##' 
-##' A \code{1} row x \code{4} columns \code{matrix} containing :
+##' A \code{1} row x \code{5} columns \code{data.frame} containing :
 ##' \itemize{
-##'   \item{\code{Metric.eval}}{ : the chosen evaluation metric}
-##'   \item{\code{Best.stat}}{ : the best score obtained for the chosen evaluation metric}
-##'   \item{\code{Cutoff}}{ : the associated cut-off used to transform the continuous values into 
+##'   \item{\code{metric.eval}}{ : the chosen evaluation metric}
+##'   \item{\code{cutoff}}{ : the associated cut-off used to transform the continuous values into 
 ##'   binary}
-##'   \item{\code{Sensibility}}{ : the sensibility obtained on fitted values with this threshold}
-##'   \item{\code{Specificity}}{ : the specificity obtained on fitted values with this threshold}
+##'   \item{\code{sensitivity}}{ : the sensibility obtained on fitted values with this threshold}
+##'   \item{\code{specificity}}{ : the specificity obtained on fitted values with this threshold}
+##'   \item{\code{best.stat}}{ : the best score obtained for the chosen evaluation metric}
 ##' }
 ##' 
 ##'
@@ -74,6 +74,7 @@
 ##' ## Find optimal threshold for a specific evaluation metric
 ##' bm_FindOptimStat(metric.eval = 'TSS', fit = vec.b, obs = vec.a)
 ##' bm_FindOptimStat(metric.eval = 'TSS', fit = vec.c, obs = vec.a, nb.thresh = 100)
+##' bm_FindOptimStat(metric.eval = 'TSS', fit = vec.c, obs = vec.a, threshold = 280)
 ##'
 ##' 
 ##' @importFrom pROC roc coords auc

@@ -13,6 +13,8 @@
 ##' obtained with the \code{\link{get_formal_model}} function 
 ##' @param expl.var a \code{data.frame} containing the explanatory variables that will be used to 
 ##' compute the variables importance
+##' @param variables (\emph{optional, default} \code{NULL}) \cr 
+##' A \code{vector} containing the names of the explanatory variables that will be considered
 ##' @param method a \code{character} corresponding to the randomisation method to be used, must be 
 ##' \code{full_rand} (\emph{only method available so far})
 ##' @param nb.rep an \code{integer} corresponding to the number of permutations to be done for 
@@ -24,12 +26,16 @@
 ##' An \code{integer} value corresponding to the new seed value to be set
 ##' @param do.progress (\emph{optional, default} \code{TRUE}) \cr 
 ##' A \code{logical} value defining whether the progress bar is to be rendered or not
-##' @param \ldots (\emph{optional}) 
 ##' 
 ##' @return  
 ##' 
-##' A \code{matrix} containing variables importance scores for each permutation run.
-##' 
+##' A \code{3} columns \code{data.frame} containing variable's importance scores for each 
+##' permutation run :
+##' \itemize{
+##'   \item{\code{expl.var}}{ : the considered explanatory variable (the one permuted)}
+##'   \item{\code{rand}}{ : the ID of the permutation run}
+##'   \item{\code{var.imp}}{ : the variable's importance score}
+##' }
 ##' 
 ##' @details
 ##' 
@@ -84,7 +90,8 @@
 ###################################################################################################
 
 bm_VariablesImportance <- function(bm.model, 
-                                   expl.var, 
+                                   expl.var,
+                                   variables = NULL,
                                    method = "full_rand", 
                                    nb.rep = 1,
                                    # nb.cpu = 1,
@@ -92,7 +99,7 @@ bm_VariablesImportance <- function(bm.model,
                                    do.progress = TRUE,
                                    ...)
 {
-  args <- .bm_VariablesImportance.check.args(bm.model = bm.model, expl.var = expl.var, method = method, ...)
+  args <- .bm_VariablesImportance.check.args(bm.model, expl.var, variables, method, nb.rep, seed.val, do.progress, ...)
   for (argi in names(args)) { assign(x = argi, value = args[[argi]]) }
   rm(args)
   
@@ -142,28 +149,25 @@ bm_VariablesImportance <- function(bm.model,
 ###################################################################################################
 
 
-.bm_VariablesImportance.check.args <- function(bm.model, expl.var, method, ...)
+.bm_VariablesImportance.check.args <- function(bm.model, expl.var, variables, method, nb.rep, seed.val, do.progress, ...)
 {
-  args <- list(...)
-  
   # test that input data is supported
   .fun_testIfInherits(TRUE, "bm.model", bm.model, c("biomod2_model", "nnet", "rpart", "fda", "gam"
                                                     , "glm", "lm", "gbm", "mars", "randomForest"))
   
   # test method is supported
-  supported_methods <- c("full_rand")
-  if (!(method %in% supported_methods)) { stop("Unknown method") }
+  .fun_testIfIn(TRUE, "method", method, c('full_rand'))
   
   # get variables names
-  if (is.null(args$variables)) { args$variables <- colnames(expl.var) }
+  if (is.null(variables)) { variables <- colnames(expl.var) }
   
   
   return(list(bm.model = bm.model
               , expl.var = expl.var
               , method = method
-              , variables = args$variables
-              , temp_workdir = args$temp_workdir
-              , seed.val = args$seed.val))
+              , variables = variables
+              , seed.val = seed.val
+              , temp_workdir = args$temp_workdir))
 }
 
 

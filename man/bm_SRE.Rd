@@ -43,15 +43,14 @@ A \code{logical} value defining whether a \code{matrix} containing extreme condi
 supported should be returned or not}
 }
 \value{
-A \code{vector} or a \code{\link[terra:rast]{SpatRaster}} object, containing binary (\code{0} 
-or \code{1}) values.
+A \code{vector} or a \code{\link[terra:rast]{SpatRaster}} object, containing binary 
+(\code{0} or \code{1}) values.
 }
 \description{
 This internal \pkg{biomod2} function allows the user to run a rectilinear surface 
 range envelop (SRE) (equivalent to 
 \href{https://caws.org.nz/PPQ567/PPQ\%2006-1\%20pp008-9\%20Busby.pdf}{BIOCLIM}) 
-using the extreme percentiles (as recommended by Nix or Busby, see 
-\href{https://biomodhub.github.io/biomod2/reference/bm_SRE.html#references}{References} and Details).
+using the extreme percentiles (as recommended by Nix or Busby, see References and Details).
 }
 \details{
 \emph{Please refer to References to get more information about surface range envelop models.}

@@ -148,12 +148,12 @@ A <code>numeric</code> corresponding to the threshold used to convert the given 
     <h2>Value</h2>
     
 
-<p>A <code>1</code> row x <code>4</code> columns <code>matrix</code> containing :</p><ul><li><p><code>Metric.eval</code> : the chosen evaluation metric</p></li>
-<li><p><code>Best.stat</code> : the best score obtained for the chosen evaluation metric</p></li>
-<li><p><code>Cutoff</code> : the associated cut-off used to transform the continuous values into 
+<p>A <code>1</code> row x <code>5</code> columns <code>data.frame</code> containing :</p><ul><li><p><code>metric.eval</code> : the chosen evaluation metric</p></li>
+<li><p><code>cutoff</code> : the associated cut-off used to transform the continuous values into 
   binary</p></li>
-<li><p><code>Sensibility</code> : the sensibility obtained on fitted values with this threshold</p></li>
-<li><p><code>Specificity</code> : the specificity obtained on fitted values with this threshold</p></li>
+<li><p><code>sensitivity</code> : the sensibility obtained on fitted values with this threshold</p></li>
+<li><p><code>specificity</code> : the specificity obtained on fitted values with this threshold</p></li>
+<li><p><code>best.stat</code> : the best score obtained for the chosen evaluation metric</p></li>
 </ul></div>
     <div id="details">
     <h2>Details</h2>
@@ -207,6 +207,7 @@ only the score for this threshold will be returned.</p>
 <span><span class="co">## Find optimal threshold for a specific evaluation metric</span></span>
 <span><span class="fu">bm_FindOptimStat</span><span class="op">(</span>metric.eval <span class="op">=</span> <span class="st">'TSS'</span>, fit <span class="op">=</span> <span class="va">vec.b</span>, obs <span class="op">=</span> <span class="va">vec.a</span><span class="op">)</span></span>
 <span><span class="fu">bm_FindOptimStat</span><span class="op">(</span>metric.eval <span class="op">=</span> <span class="st">'TSS'</span>, fit <span class="op">=</span> <span class="va">vec.c</span>, obs <span class="op">=</span> <span class="va">vec.a</span>, nb.thresh <span class="op">=</span> <span class="fl">100</span><span class="op">)</span></span>
+<span><span class="fu">bm_FindOptimStat</span><span class="op">(</span>metric.eval <span class="op">=</span> <span class="st">'TSS'</span>, fit <span class="op">=</span> <span class="va">vec.c</span>, obs <span class="op">=</span> <span class="va">vec.a</span>, threshold <span class="op">=</span> <span class="fl">280</span><span class="op">)</span></span>
 <span></span>
 <span></span></code></pre></div>
     </div>

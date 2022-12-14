@@ -17,8 +17,15 @@ bm_PlotEvalBoxplot(
 object that can be obtained with the \code{\link{BIOMOD_Modeling}} or 
 \code{\link{BIOMOD_EnsembleModeling}} functions}
 
+\item{dataset}{a \code{character} corresponding to the dataset upon which evaluation metrics 
+have been calculated and that is to be represented, must be among \code{calibration}, 
+\code{validation}, \code{evaluation}}
+
 \item{group.by}{a 2-length \code{vector} containing the way kept models will be represented,
-must be among \code{model}, \code{algo}, \code{run}, \code{dataset}}
+must be among \code{full.name}, \code{PA}, \code{run}, \code{algo} (if \code{bm.out} is a 
+\code{\link{BIOMOD.models.out}} object), or \code{full.name}, \code{merged.by.PA}, 
+\code{merged.by.run}, \code{merged.by.algo} (if \code{bm.out} is a 
+\code{\link{BIOMOD.ensemble.models.out}} object)}
 
 \item{do.plot}{(\emph{optional, default} \code{TRUE}) \cr 
 A \code{logical} value defining whether the plot is to be rendered or not}

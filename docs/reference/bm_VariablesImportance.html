@@ -101,6 +101,7 @@ importance value for each variable involved in the given model.</p>
     <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">bm_VariablesImportance</span><span class="op">(</span></span>
 <span>  <span class="va">bm.model</span>,</span>
 <span>  <span class="va">expl.var</span>,</span>
+<span>  variables <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  method <span class="op">=</span> <span class="st">"full_rand"</span>,</span>
 <span>  nb.rep <span class="op">=</span> <span class="fl">1</span>,</span>
 <span>  seed.val <span class="op">=</span> <span class="cn">NULL</span>,</span>
@@ -122,6 +123,11 @@ obtained with the <code><a href="getters.bm.html">get_formal_model</a></code> fu
 compute the variables importance</p></dd>
 
 
+<dt>variables</dt>
+<dd><p>(<em>optional, default</em> <code>NULL</code>) <br> 
+A <code>vector</code> containing the names of the explanatory variables that will be considered</p></dd>
+
+
 <dt>method</dt>
 <dd><p>a <code>character</code> corresponding to the randomisation method to be used, must be 
 <code>full_rand</code> (<em>only method available so far</em>)</p></dd>
@@ -141,17 +147,16 @@ An <code>integer</code> value corresponding to the new seed value to be set</p><
 <dd><p>(<em>optional, default</em> <code>TRUE</code>) <br> 
 A <code>logical</code> value defining whether the progress bar is to be rendered or not</p></dd>
 
-
-<dt>...</dt>
-<dd><p>(<em>optional</em>)</p></dd>
-
 </dl></div>
     <div id="value">
     <h2>Value</h2>
     
 
-<p>A <code>matrix</code> containing variables importance scores for each permutation run.</p>
-    </div>
+<p>A <code>3</code> columns <code>data.frame</code> containing variable's importance scores for each 
+permutation run :</p><ul><li><p><code>expl.var</code> : the considered explanatory variable (the one permuted)</p></li>
+<li><p><code>rand</code> : the ID of the permutation run</p></li>
+<li><p><code>var.imp</code> : the variable's importance score</p></li>
+</ul></div>
     <div id="details">
     <h2>Details</h2>
     <p>For each variable to be evaluated :</p><ol><li><p>shuffle the original variable</p></li>

@@ -1,4 +1,4 @@
-# bm_RunModelsLoop docs --------------------------------------------------------
+###################################################################################################
 ##' @name bm_RunModelsLoop
 ##' @aliases bm_RunModelsLoop
 ##' @aliases bm_RunModel
@@ -67,7 +67,7 @@
 ##'   \item{\code{model} : }{the name of correctly computed model}
 ##'   \item{\code{calib.failure} : }{the name of incorrectly computed model}
 ##'   \item{\code{pred} : }{the prediction outputs for calibration data}
-##'   \item{\code{pred.eval} : }{the prediction outputs for validation data}
+##'   \item{\code{pred.eval} : }{the prediction outputs for evaluation data}
 ##'   \item{\code{evaluation} : }{the evaluation outputs returned by the 
 ##'   \code{\link{bm_FindOptimStat}} function}
 ##'   \item{\code{var.import} : }{the mean of variables importance returned by the 
@@ -108,7 +108,7 @@
 ##' @export
 ##' 
 ##'
-# ---------------------------------------------------------------------------- #
+###################################################################################################
 
 
 bm_RunModelsLoop <- function(bm.format,
@@ -121,7 +121,8 @@ bm_RunModelsLoop <- function(bm.format,
                              scale.models = TRUE,
                              nb.cpu = 1,
                              seed.val = NULL,
-                             do.progress = TRUE) {
+                             do.progress = TRUE)
+{
   
   if (nb.cpu > 1) {
     if (.getOS() != "windows") {

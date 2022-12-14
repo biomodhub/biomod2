@@ -20,13 +20,13 @@ bm_CVnnet(
 
 \item{Target}{calibration dataset with observed presence / absence}
 
-\item{size}{(see parameter ANN$size in \code{\link{BIOMOD_ModelingOptions}})}
+\item{size}{(see parameter \code{ANN$size} in \code{\link{BIOMOD_ModelingOptions}})}
 
-\item{decay}{(see parameter ANN$decay in \code{\link{BIOMOD_ModelingOptions}})}
+\item{decay}{(see parameter \code{ANN$decay} in \code{\link{BIOMOD_ModelingOptions}})}
 
-\item{maxit}{(see parameter ANN$maxit in \code{\link{BIOMOD_ModelingOptions}})}
+\item{maxit}{(see parameter \code{ANN$maxit} in \code{\link{BIOMOD_ModelingOptions}})}
 
-\item{nbCV}{(see parameter ANN$nbCV in \code{\link{BIOMOD_ModelingOptions}})}
+\item{nbCV}{(see parameter \code{ANN$nbCV} in \code{\link{BIOMOD_ModelingOptions}})}
 
 \item{weights}{a \code{vector} of \code{numeric} values corresponding to weights over 
 calibration lines}

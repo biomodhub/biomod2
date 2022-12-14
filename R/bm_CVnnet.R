@@ -11,10 +11,10 @@
 ##' 
 ##' @param Input complete dataset with explanatory variables
 ##' @param Target calibration dataset with observed presence / absence
-##' @param size (see parameter ANN$size in \code{\link{BIOMOD_ModelingOptions}})
-##' @param decay (see parameter ANN$decay in \code{\link{BIOMOD_ModelingOptions}})
-##' @param maxit (see parameter ANN$maxit in \code{\link{BIOMOD_ModelingOptions}})
-##' @param nbCV (see parameter ANN$nbCV in \code{\link{BIOMOD_ModelingOptions}})
+##' @param size (see parameter \code{ANN$size} in \code{\link{BIOMOD_ModelingOptions}})
+##' @param decay (see parameter \code{ANN$decay} in \code{\link{BIOMOD_ModelingOptions}})
+##' @param maxit (see parameter \code{ANN$maxit} in \code{\link{BIOMOD_ModelingOptions}})
+##' @param nbCV (see parameter \code{ANN$nbCV} in \code{\link{BIOMOD_ModelingOptions}})
 ##' @param weights a \code{vector} of \code{numeric} values corresponding to weights over 
 ##' calibration lines
 ##' @param seedval an \code{integer} value corresponding to the new seed value to be set
