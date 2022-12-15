@@ -657,6 +657,7 @@ setMethod("get_variables_importance", "BIOMOD.models.out",
 ##' 
 ##' @importFrom grDevices colorRampPalette colors dev.new gray rainbow
 ##' @importFrom graphics layout legend par points polygon text
+##' @importFrom ggplot2 scale_colour_viridis_c scale_fill_viridis_c
 ##' 
 NULL
 
@@ -823,8 +824,17 @@ setMethod(
   ## 6 - check coord if x is a data.frame -------------------------------
   if (inherits(proj, 'data.frame')) {
     npred <- length(unique(proj$points))
-    if(is.null(coord)){
-      stop("missing argument `coord` to plot projection with a data.frame")
+    
+    if (nrow(x@coord) > 0) {
+      if(!is.null(coord)){
+      cat("! ignoring argument `coord` as coordinates were already given to BIOMOD_Projection")
+      }
+      coord <- x@coord
+    }
+
+    if (nrow(x@coord) == 0 & is.null(coord)) {
+        stop("missing coordinates to plot with a data.frame. Either give argument `coord` to plot or argument `new.env.xy` to BIOMOD_Projection")
+      
     } else if (!inherits(coord, c("data.frame","matrix"))) {
       stop("`coord` must be a data.frame or a matrix.")
     } else if (ncol(coord) != 2) {

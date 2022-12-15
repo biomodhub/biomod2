@@ -162,7 +162,7 @@
 ##' @importFrom reshape2 melt
 ##' @importFrom foreach foreach %do%
 ##' @importFrom terra rast which.max nlyr  classify plot
-##' @importFrom ggplot2 ggplot aes_string geom_col geom_tile facet_wrap xlab ylab labs 
+##' @importFrom ggplot2 ggplot aes_string geom_col geom_tile facet_wrap xlab ylab labs scale_fill_viridis_c
 ##' theme element_blank element_rect scale_fill_manual
 ##' 
 ##' @export
