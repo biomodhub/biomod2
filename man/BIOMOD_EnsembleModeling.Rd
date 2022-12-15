@@ -7,15 +7,15 @@
 BIOMOD_EnsembleModeling(
   bm.mod,
   models.chosen = "all",
-  em.by = "PA_dataset+repet",
+  em.by = "PA+run",
   em.algo,
   metric.select = "all",
   metric.select.thresh = NULL,
   metric.select.table = NULL,
   metric.eval = c("KAPPA", "TSS", "ROC"),
   var.import = 0,
-  prob.ci.alpha = 0.05,
-  prob.mean.weight.decay = "proportional",
+  EMci.alpha = 0.05,
+  EMwmean.decay = "proportional",
   nb.cpu = 1,
   seed.val = NULL,
   do.progress = TRUE,
@@ -24,7 +24,9 @@ BIOMOD_EnsembleModeling(
   prob.cv,
   prob.ci,
   committee.averaging,
-  prob.mean.weight
+  prob.mean.weight,
+  prob.mean.weight.decay,
+  prob.ci.alpha
 )
 }
 \arguments{
@@ -36,7 +38,7 @@ BIOMOD_EnsembleModeling(
 \code{\link{get_built_models}} function}
 
 \item{em.by}{a \code{character} corresponding to the way kept models will be combined to build 
-the ensemble models, must be among \code{PA_dataset+repet}, \code{PA_dataset+algo},}
+the ensemble models, must be among \code{PA+run}, \code{PA+algo},}
 
 \item{em.algo}{a \code{vector} corresponding to the ensemble models that will be computed, 
 must be among \code{'prob.mean'}, \code{'prob.median'}, \code{'prob.cv'}, \code{'prob.ci'}, 
@@ -70,14 +72,6 @@ be among \code{ROC}, \code{TSS}, \code{KAPPA}, \code{ACCURACY}, \code{BIAS}, \co
 An \code{integer} corresponding to the number of permutations to be done for each variable to 
 estimate variable importance}
 
-\item{prob.ci.alpha}{(\emph{optional, default} \code{0.05}) \cr 
-A \code{numeric} value corresponding to the significance level to estimate confidence interval}
-
-\item{prob.mean.weight.decay}{(\emph{optional, default} \code{proportional}) \cr 
-A value defining the relative importance of the weights (if \code{prob.mean.weight = TRUE}). 
-A high value will strongly discriminate \emph{good} models from the \emph{bad} ones (see Details), while \code{proportional} will 
-attribute weights proportionally to the models evaluation scores}
-
 \item{nb.cpu}{(\emph{optional, default} \code{1}) \cr 
 An \code{integer} value corresponding to the number of computing resources to be used to 
 parallelize the single models computation}
@@ -105,6 +99,14 @@ compute the committee averaging across predictions or not}
 
 \item{prob.mean.weight}{(\emph{obsolete}) \cr A \code{logical} value defining whether to 
 compute the weighted sum of probabilities across predictions or not}
+
+\item{prob.mean.weight.decay}{(\emph{optional, default} \code{proportional}) \cr 
+A value defining the relative importance of the weights (if \code{prob.mean.weight = TRUE}). 
+A high value will strongly discriminate \emph{good} models from the \emph{bad} ones (see Details), while \code{proportional} will 
+attribute weights proportionally to the models evaluation scores}
+
+\item{prob.ci.alpha}{(\emph{optional, default} \code{0.05}) \cr 
+A \code{numeric} value corresponding to the significance level to estimate confidence interval}
 }
 \value{
 A \code{BIOMOD.ensemble.models.out} object containing models outputs, or links to saved 
@@ -139,11 +141,11 @@ conditions (see Details).
   \code{\link{BIOMOD_Modeling}} function can be combined in 5 different ways to obtain 
   ensemble models :
   \itemize{
-    \item{\code{PA_dataset+repet} : }{each combination of pseudo-absence and repetition 
+    \item{\code{PA+run} : }{each combination of pseudo-absence and repetition 
     datasets is done, \emph{merging} algorithms together}
-    \item{\code{PA_dataset+algo} : }{each combination of pseudo-absence and algorithm datasets 
+    \item{\code{PA+algo} : }{each combination of pseudo-absence and algorithm datasets 
     is done, \emph{merging} repetitions together}
-    \item{\code{PA_dataset} : }{pseudo-absence datasets are considered individually, 
+    \item{\code{PA} : }{pseudo-absence datasets are considered individually, 
     \emph{merging} algorithms and repetitions together}
     \item{\code{algo} : }{algorithm datasets are considered individually, \emph{merging} 
     pseudo-absence and repetitions together}

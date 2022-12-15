@@ -18,8 +18,8 @@
 ##' @param FDA (\emph{optional, default} \code{NULL}) \cr A \code{list} containing FDA options
 ##' @param MARS (\emph{optional, default} \code{NULL}) \cr A \code{list} containing MARS options
 ##' @param RF (\emph{optional, default} \code{NULL}) \cr A \code{list} containing RF options
-##' @param MAXENT.Phillips (\emph{optional, default} \code{NULL}) \cr A \code{list} 
-##' containing MAXENT.Phillips options
+##' @param MAXENT (\emph{optional, default} \code{NULL}) \cr A \code{list} 
+##' containing MAXENT options
 ##'
 ##'
 ##' @return 
@@ -218,14 +218,14 @@
 ##'   \item{\code{maxnodes = NULL}}
 ##' }
 ##'
-##' @section MAXENT.Phillips : (\url{https://biodiversityinformatics.amnh.org/open_source/maxent/})
+##' @section MAXENT : (\url{https://biodiversityinformatics.amnh.org/open_source/maxent/})
 ##' \itemize{
 ##'   \item{\code{path_to_maxent.jar = getwd()}}{ : a \code{character}
 ##'   corresponding to \pkg{maxent.jar} file link} 
 ##'   
 ##'   \item{\code{memory_allocated = 512}}{ : an \code{integer} corresponding to
 ##'   the amount of memory (in Mo) reserved for \code{java} to run
-##'   \code{MAXENT.Phillips}, must be \code{64}, \code{128}, \code{256},
+##'   \code{MAXENT}, must be \code{64}, \code{128}, \code{256},
 ##'   \code{512}, \code{1024}... or \code{NULL} to use default \code{java}
 ##'   memory limitation parameter}
 ##'   
@@ -245,7 +245,7 @@
 ##'   
 ##'   \item{\code{background_data_dir}}{ : a \code{character} corresponding to
 ##'   directory path where explanatory variables are stored as \code{ASCII}
-##'   files (raster format). If specified, \code{MAXENT.Phillips} will generate
+##'   files (raster format). If specified, \code{MAXENT} will generate
 ##'   its own background data from explanatory variables rasters (as usually
 ##'   done in \code{MAXENT} studies). Otherwise \pkg{biomod2} pseudo-absences
 ##'   will be used (see \code{\link{BIOMOD_FormatingData}})}
@@ -410,7 +410,7 @@ BIOMOD_ModelingOptions <- function(GLM = NULL,
                                    FDA = NULL,
                                    MARS = NULL,
                                    RF = NULL,
-                                   MAXENT.Phillips = NULL)
+                                   MAXENT = NULL)
 {
   # .bm_cat("Build Modeling Options")
   
@@ -588,78 +588,78 @@ BIOMOD_ModelingOptions <- function(GLM = NULL,
     if (!is.null(RF$maxnodes)) { opt@RF$maxnodes <- RF$maxnodes }
   }
   
-  ## 2.10 MAXENT.Phillips -----------------------------------------------------
-  if (!is.null(MAXENT.Phillips)) {
-    if (!is.null(MAXENT.Phillips$path_to_maxent.jar)) {
-      opt@MAXENT.Phillips$path_to_maxent.jar <- normalizePath(sub("maxent.jar", "", MAXENT.Phillips$path_to_maxent.jar)) # ensure path format validity
+  ## 2.10 MAXENT -----------------------------------------------------
+  if (!is.null(MAXENT)) {
+    if (!is.null(MAXENT$path_to_maxent.jar)) {
+      opt@MAXENT$path_to_maxent.jar <- normalizePath(sub("maxent.jar", "", MAXENT$path_to_maxent.jar)) # ensure path format validity
     } else {
-      opt@MAXENT.Phillips$path_to_maxent.jar <- getwd()
+      opt@MAXENT$path_to_maxent.jar <- getwd()
     }
-    if (!is.null(MAXENT.Phillips$memory_allocated)) {
-      opt@MAXENT.Phillips$memory_allocated <- MAXENT.Phillips$memory_allocated
+    if (!is.null(MAXENT$memory_allocated)) {
+      opt@MAXENT$memory_allocated <- MAXENT$memory_allocated
     }
-    if (!is.null(MAXENT.Phillips$initial_heap_size)) {
-      opt@MAXENT.Phillips$initial_heap_size <- MAXENT.Phillips$initial_heap_size
+    if (!is.null(MAXENT$initial_heap_size)) {
+      opt@MAXENT$initial_heap_size <- MAXENT$initial_heap_size
     }
-    if (!is.null(MAXENT.Phillips$max_heap_size)) {
-      opt@MAXENT.Phillips$max_heap_size <- MAXENT.Phillips$max_heap_size
+    if (!is.null(MAXENT$max_heap_size)) {
+      opt@MAXENT$max_heap_size <- MAXENT$max_heap_size
     }
-    if (!is.null(MAXENT.Phillips$background_data_dir)) {
-      opt@MAXENT.Phillips$background_data_dir <- MAXENT.Phillips$background_data_dir
+    if (!is.null(MAXENT$background_data_dir)) {
+      opt@MAXENT$background_data_dir <- MAXENT$background_data_dir
     }
-    if (!is.null(MAXENT.Phillips$maximumbackground)) {
-      opt@MAXENT.Phillips$maximumbackground <- MAXENT.Phillips$maximumbackground
+    if (!is.null(MAXENT$maximumbackground)) {
+      opt@MAXENT$maximumbackground <- MAXENT$maximumbackground
     }
-    if (!is.null(MAXENT.Phillips$maximumiterations)) {
-      opt@MAXENT.Phillips$maximumiterations <- MAXENT.Phillips$maximumiterations
+    if (!is.null(MAXENT$maximumiterations)) {
+      opt@MAXENT$maximumiterations <- MAXENT$maximumiterations
     }
-    if (!is.null(MAXENT.Phillips$visible)) {
-      opt@MAXENT.Phillips$visible <- MAXENT.Phillips$visible
+    if (!is.null(MAXENT$visible)) {
+      opt@MAXENT$visible <- MAXENT$visible
     }
-    if (!is.null(MAXENT.Phillips$linear)) {
-      opt@MAXENT.Phillips$linear <- MAXENT.Phillips$linear
+    if (!is.null(MAXENT$linear)) {
+      opt@MAXENT$linear <- MAXENT$linear
     }
-    if (!is.null(MAXENT.Phillips$quadratic)) {
-      opt@MAXENT.Phillips$quadratic <- MAXENT.Phillips$quadratic
+    if (!is.null(MAXENT$quadratic)) {
+      opt@MAXENT$quadratic <- MAXENT$quadratic
     }
-    if (!is.null(MAXENT.Phillips$product)) {
-      opt@MAXENT.Phillips$product <- MAXENT.Phillips$product
+    if (!is.null(MAXENT$product)) {
+      opt@MAXENT$product <- MAXENT$product
     }
-    if (!is.null(MAXENT.Phillips$threshold)) {
-      opt@MAXENT.Phillips$threshold <- MAXENT.Phillips$threshold
+    if (!is.null(MAXENT$threshold)) {
+      opt@MAXENT$threshold <- MAXENT$threshold
     }
-    if (!is.null(MAXENT.Phillips$hinge)) {
-      opt@MAXENT.Phillips$hinge <- MAXENT.Phillips$hinge
+    if (!is.null(MAXENT$hinge)) {
+      opt@MAXENT$hinge <- MAXENT$hinge
     }
-    if (!is.null(MAXENT.Phillips$lq2lqptthreshold)) {
-      opt@MAXENT.Phillips$lq2lqptthreshold <- MAXENT.Phillips$lq2lqptthreshold
+    if (!is.null(MAXENT$lq2lqptthreshold)) {
+      opt@MAXENT$lq2lqptthreshold <- MAXENT$lq2lqptthreshold
     }
-    if (!is.null(MAXENT.Phillips$l2lqthreshold)) {
-      opt@MAXENT.Phillips$l2lqthreshold <- MAXENT.Phillips$l2lqthreshold
+    if (!is.null(MAXENT$l2lqthreshold)) {
+      opt@MAXENT$l2lqthreshold <- MAXENT$l2lqthreshold
     }
-    if (!is.null(MAXENT.Phillips$hingethreshold)) {
-      opt@MAXENT.Phillips$hingethreshold <- MAXENT.Phillips$hingethreshold
+    if (!is.null(MAXENT$hingethreshold)) {
+      opt@MAXENT$hingethreshold <- MAXENT$hingethreshold
     }
-    if (!is.null(MAXENT.Phillips$beta_threshold)) {
-      opt@MAXENT.Phillips$beta_threshold <- MAXENT.Phillips$beta_threshold
+    if (!is.null(MAXENT$beta_threshold)) {
+      opt@MAXENT$beta_threshold <- MAXENT$beta_threshold
     }
-    if (!is.null(MAXENT.Phillips$beta_categorical)) {
-      opt@MAXENT.Phillips$beta_categorical <- MAXENT.Phillips$beta_categorical
+    if (!is.null(MAXENT$beta_categorical)) {
+      opt@MAXENT$beta_categorical <- MAXENT$beta_categorical
     }
-    if (!is.null(MAXENT.Phillips$beta_lqp)) {
-      opt@MAXENT.Phillips$beta_lqp <- MAXENT.Phillips$beta_lqp
+    if (!is.null(MAXENT$beta_lqp)) {
+      opt@MAXENT$beta_lqp <- MAXENT$beta_lqp
     }
-    if (!is.null(MAXENT.Phillips$beta_hinge)) {
-      opt@MAXENT.Phillips$beta_hinge <- MAXENT.Phillips$beta_hinge
+    if (!is.null(MAXENT$beta_hinge)) {
+      opt@MAXENT$beta_hinge <- MAXENT$beta_hinge
     }
-    if (!is.null(MAXENT.Phillips$betamultiplier)) {
-      opt@MAXENT.Phillips$betamultiplier <- MAXENT.Phillips$betamultiplier
+    if (!is.null(MAXENT$betamultiplier)) {
+      opt@MAXENT$betamultiplier <- MAXENT$betamultiplier
     }
-    if (!is.null(MAXENT.Phillips$defaultprevalence)) {
-      opt@MAXENT.Phillips$defaultprevalence <- MAXENT.Phillips$defaultprevalence
+    if (!is.null(MAXENT$defaultprevalence)) {
+      opt@MAXENT$defaultprevalence <- MAXENT$defaultprevalence
     }
   } else {
-    opt@MAXENT.Phillips$path_to_maxent.jar <- getwd()
+    opt@MAXENT$path_to_maxent.jar <- getwd()
   }
   
   # if (!is.null(MAXENT.Tsuruoka)) {

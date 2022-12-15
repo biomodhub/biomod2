@@ -16,7 +16,7 @@
 ##' (\emph{a random number by default})
 ##' @param models a \code{vector} containing model names to be computed, must be among \code{GLM}, 
 ##' \code{GBM}, \code{GAM}, \code{CTA}, \code{ANN}, \code{SRE}, \code{FDA}, \code{MARS}, 
-##' \code{RF}, \code{MAXENT.Phillips}, \code{MAXENT.Phillips.2}
+##' \code{RF}, \code{MAXENT}, \code{MAXNET}
 ##' @param bm.options a \code{\link{BIOMOD.models.options}} object returned by the  
 ##' \code{\link{BIOMOD_ModelingOptions}} function
 ##' @param nb.rep an \code{integer} corresponding to the number of repetitions to be done for 
@@ -99,9 +99,9 @@
 ##'     \item \code{FDA} : Flexible Discriminant Analysis (\code{\link[mda]{fda}})
 ##'     \item \code{MARS} : Multiple Adaptive Regression Splines (\code{\link[earth]{earth}})
 ##'     \item \code{RF} : Random Forest (\code{\link[randomForest]{randomForest}})
-##'     \item \code{MAXENT.Phillips} : Maximum Entropy 
+##'     \item \code{MAXENT} : Maximum Entropy 
 ##'     (\url{https://biodiversityinformatics.amnh.org/open_source/maxent/})
-##'     \item \code{MAXENT.Phillips.2} : Maximum Entropy (\code{\link[maxnet]{maxnet}})
+##'     \item \code{MAXNET} : Maximum Entropy (\code{\link[maxnet]{maxnet}})
 ##'   }}
 ##'   
 ##'   \item{nb.rep & data.split.perc}{
@@ -281,7 +281,7 @@
 BIOMOD_Modeling <- function(bm.format,
                             modeling.id = as.character(format(Sys.time(), "%s")),
                             models = c('GLM', 'GBM', 'GAM', 'CTA', 'ANN', 'SRE', 'FDA', 'MARS'
-                                       , 'RF', 'MAXENT.Phillips', 'MAXENT.Phillips.2'),
+                                       , 'RF', 'MAXENT', 'MAXNET'),
                             bm.options = NULL,
                             nb.rep = 1,
                             data.split.perc = 100,
@@ -445,7 +445,7 @@ BIOMOD_Modeling <- function(bm.format,
   
   ## check if model is supported
   avail.models.list <- c('GLM', 'GBM', 'GAM', 'CTA', 'ANN', 'SRE', 'FDA', 'MARS'
-                         , 'RF', 'MAXENT.Phillips', 'MAXENT.Phillips.2')
+                         , 'RF', 'MAXENT', 'MAXNET')
   .fun_testIfIn(TRUE, "models", models, avail.models.list)
   
   
@@ -478,12 +478,12 @@ BIOMOD_Modeling <- function(bm.format,
     bm.options <- BIOMOD_ModelingOptions()
   }
   
-  ## 2.2 Specific check for MAXENT.Phillips -----------------------------------
-  if ("MAXENT.Phillips" %in% models)
+  ## 2.2 Specific check for MAXENT -----------------------------------
+  if ("MAXENT" %in% models)
   {
-    if (!file.exists(file.path(bm.options@MAXENT.Phillips$path_to_maxent.jar, "maxent.jar"))) {
-      models = models[-which(models == 'MAXENT.Phillips')]
-      warning(paste0("MAXENT.Phillips has been disabled because the maxent.jar file is missing. "
+    if (!file.exists(file.path(bm.options@MAXENT$path_to_maxent.jar, "maxent.jar"))) {
+      models = models[-which(models == 'MAXENT')]
+      warning(paste0("MAXENT has been disabled because the maxent.jar file is missing. "
                      , "`maxent.jar` file must be downloaded (https://biodiversityinformatics.amnh.org/open_source/maxent/) "
                      , "and put in the working directory."), immediate. = TRUE)
       ## -- 
@@ -491,10 +491,10 @@ BIOMOD_Modeling <- function(bm.format,
       ## issues on some Windows users machine.
       ## --
       # } else if(!.check.java.installed()){
-      #   models = models[-which(models=='MAXENT.Phillips')]
+      #   models = models[-which(models=='MAXENT')]
     } else if (nrow(bm.format@coord) == 1) {
-      warning("MAXENT.Phillips has been disabled because no XY coordinates have been given", immediate. = TRUE)
-      models = models[-which(models == 'MAXENT.Phillips')]
+      warning("MAXENT has been disabled because no XY coordinates have been given", immediate. = TRUE)
+      models = models[-which(models == 'MAXENT')]
     }
   }
   
@@ -549,9 +549,9 @@ BIOMOD_Modeling <- function(bm.format,
   ## 7. Check prevalence arguments --------------------------------------------
   if (!is.null(prevalence)) {
     .fun_testIf01(TRUE, "prevalence", prevalence)
-    if ("MAXENT.Phillips" %in% models) {
-      cat("\n\t MAXENT.Phillips default prevalence option was updated to fit with modeling prevalence (i.e", prevalence, ")")
-      bm.options@MAXENT.Phillips$defaultprevalence = prevalence
+    if ("MAXENT" %in% models) {
+      cat("\n\t MAXENT default prevalence option was updated to fit with modeling prevalence (i.e", prevalence, ")")
+      bm.options@MAXENT$defaultprevalence = prevalence
     }
   } else {
     prevalence = 0.5

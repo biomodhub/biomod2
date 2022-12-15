@@ -15,7 +15,7 @@ BIOMOD_ModelingOptions(
   FDA = NULL,
   MARS = NULL,
   RF = NULL,
-  MAXENT.Phillips = NULL
+  MAXENT = NULL
 )
 
 bm_DefaultModelingOptions()
@@ -39,8 +39,8 @@ bm_DefaultModelingOptions()
 
 \item{RF}{(\emph{optional, default} \code{NULL}) \cr A \code{list} containing RF options}
 
-\item{MAXENT.Phillips}{(\emph{optional, default} \code{NULL}) \cr A \code{list} 
-containing MAXENT.Phillips options}
+\item{MAXENT}{(\emph{optional, default} \code{NULL}) \cr A \code{list} 
+containing MAXENT options}
 }
 \value{
 A \code{\link{BIOMOD.models.options}} object that can be used to build species distribution 
@@ -256,7 +256,7 @@ Below is the detailed list of all modifiable parameters for each available model
 }
 }
 
-\section{MAXENT.Phillips }{
+\section{MAXENT }{
  (\url{https://biodiversityinformatics.amnh.org/open_source/maxent/})
 \itemize{
   \item{\code{path_to_maxent.jar = getwd()}}{ : a \code{character}
@@ -264,7 +264,7 @@ Below is the detailed list of all modifiable parameters for each available model
   
   \item{\code{memory_allocated = 512}}{ : an \code{integer} corresponding to
   the amount of memory (in Mo) reserved for \code{java} to run
-  \code{MAXENT.Phillips}, must be \code{64}, \code{128}, \code{256},
+  \code{MAXENT}, must be \code{64}, \code{128}, \code{256},
   \code{512}, \code{1024}... or \code{NULL} to use default \code{java}
   memory limitation parameter}
   
@@ -284,7 +284,7 @@ Below is the detailed list of all modifiable parameters for each available model
   
   \item{\code{background_data_dir}}{ : a \code{character} corresponding to
   directory path where explanatory variables are stored as \code{ASCII}
-  files (raster format). If specified, \code{MAXENT.Phillips} will generate
+  files (raster format). If specified, \code{MAXENT} will generate
   its own background data from explanatory variables rasters (as usually
   done in \code{MAXENT} studies). Otherwise \pkg{biomod2} pseudo-absences
   will be used (see \code{\link{BIOMOD_FormatingData}})}

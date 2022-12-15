@@ -245,7 +245,7 @@ bm_PlotResponseCurves <- function(bm.out
             mod.name <- ifelse(use.formal.names, formal_names[which(is.element(models, model))], model)
             
             temp_workdir = NULL
-            if (length(grep("MAXENT.Phillips$", mod.name)) == 1) {
+            if (length(grep("MAXENT$", mod.name)) == 1) {
               temp_workdir = mod@model_output_dir
             }
             proj.tmp <- predict(mod, newdata = new.env.r.tmp, on_0_1000 = on_0_1000, do_check = FALSE, temp_workdir = temp_workdir, seedval = NULL)
@@ -300,7 +300,7 @@ bm_PlotResponseCurves <- function(bm.out
             mod.name <- ifelse(use.formal.names, formal_names[which(is.element(models, model))], model)
             
             temp_workdir = NULL
-            if (length(grep("MAXENT.Phillips$", mod.name)) == 1) {
+            if (length(grep("MAXENT$", mod.name)) == 1) {
               temp_workdir = mod@model_output_dir
             }
             
@@ -409,7 +409,7 @@ bm_PlotResponseCurves <- function(bm.out
   
   ## check that given models exist
   files.check <- file.path(bm.out@dir.name, bm.out@sp.name, 'models', bm.out@modeling.id, models.chosen)
-  not.checked.files <- grep('MAXENT.Phillips|SRE', files.check)
+  not.checked.files <- grep('MAXENT|SRE', files.check)
   if (length(not.checked.files) > 0) {
     files.check <- files.check[-not.checked.files]
   }

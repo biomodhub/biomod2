@@ -175,7 +175,7 @@ get_var_range <- function(data)
                                    mod <- get(load(file.path(dir_name, resp_name, "models", modeling.id, mod.name)))
                                  }
                                  temp_workdir = NULL
-                                 if (length(grep("MAXENT.Phillips$", mod.name)) == 1) {
+                                 if (length(grep("MAXENT$", mod.name)) == 1) {
                                    temp_workdir = mod@model_output_dir
                                  }
                                  return(predict(mod, newdata = newdata, on_0_1000 = on_0_1000
@@ -663,7 +663,7 @@ get_var_range <- function(data)
 }
 
 
-## .check_bytes_format for MAXENT.Phillips options----------------------------
+## .check_bytes_format for MAXENT options----------------------------
 ##' @name .check_bytes_format
 ##' 
 ##' @title Check bytes formatting 
@@ -681,13 +681,13 @@ get_var_range <- function(data)
   this_number <- substr(x, 1, nchar(x)-1)
   if (! this_suffix %in% possible_suffix) {
     this_test <- FALSE
-    cat(paste0("\nMAXENT.Phillips$",varname," last letter must be among ",
+    cat(paste0("\nMAXENT$",varname," last letter must be among ",
                paste0(possible_suffix[-length(possible_suffix)], collapse = ", "),
                "", " and ", possible_suffix[length(possible_suffix)],". Current value = '", this_suffix,"' was not usable."))
   }
   if (suppressWarnings(is.na(as.numeric(this_number)))) {
     this_test <- FALSE
-    cat(paste0("\nMAXENT.Phillips$",varname," must be a number plus a single letter. Begginning of the given argument was '", this_number, "' and was not convertible into a number."))
+    cat(paste0("\nMAXENT$",varname," must be a number plus a single letter. Begginning of the given argument was '", this_number, "' and was not convertible into a number."))
   }
   return(this_test)
 }

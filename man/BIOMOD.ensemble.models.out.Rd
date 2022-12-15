@@ -35,7 +35,7 @@ containing informations from \code{\link{BIOMOD_Modeling}} object}
 
 \item{\code{em.by}}{a \code{character} corresponding to the way kept models have
 been combined to build the ensemble models, must be among
-\code{PA_dataset+repet}, \code{PA_dataset+algo}, \code{PA_dataset},
+\code{PA+run}, \code{PA+algo}, \code{PA},
 \code{algo}, \code{all}}
 
 \item{\code{em.computed}}{a \code{vector} containing names of ensemble models}

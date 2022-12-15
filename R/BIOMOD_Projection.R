@@ -302,7 +302,7 @@ BIOMOD_Projection <- function(bm.mod,
       
       mod <- get(BIOMOD_LoadModels(bm.out = bm.mod, full.name = mod.name))
       temp_workdir = NULL
-      if (length(grep("MAXENT.Phillips$", mod.name)) == 1) {
+      if (length(grep("MAXENT$", mod.name)) == 1) {
         temp_workdir = mod@model_output_dir
       }
       pred.tmp <- predict(mod, new.env, on_0_1000 = on_0_1000, 
@@ -546,7 +546,7 @@ BIOMOD_Projection <- function(bm.mod,
   files.check <- paste0(bm.mod@dir.name, "/", bm.mod@sp.name, "/models/",
                         bm.mod@modeling.id, "/", models.chosen)
   
-  not.checked.files <- grep('MAXENT.Phillips|SRE', files.check)
+  not.checked.files <- grep('MAXENT|SRE', files.check)
   if (length(not.checked.files) > 0) {
     files.check <- files.check[-not.checked.files]
   }

@@ -28,6 +28,7 @@ vignette: >
 
 ##### Minor Changes
 
+* Simplified maxent model names:  'MAXENT.Phillips' -> 'MAXENT' ; 'MAXENT.Phillips.2' -> 'MAXNET'.
 * `BIOMOD_FormatingData` now gives warning when several input data points are located in the same raster cells
 * Added options `filter.raster` in `BIOMOD_FormatingData` to filter data points so that none are located in the same raster cells.
 * `BIOMOD_EnsembleModeling` now have an argument `em.algo` to select the ensemble algorithm to be computed. Separate arguments are now deprecated (prob.mean, prob.median, prob.cv, prob.ci, committee.averaging, prob.mean.weight). Building all possible ensemble models can now be done with `em.algo = c('EMmean','EMmedian','EMcv','EMci','EMca','EMwmean')`.

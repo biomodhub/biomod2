@@ -7,8 +7,8 @@
 BIOMOD_Modeling(
   bm.format,
   modeling.id = as.character(format(Sys.time(), "\%s")),
-  models = c("GLM", "GBM", "GAM", "CTA", "ANN", "SRE", "FDA", "MARS", "RF",
-    "MAXENT.Phillips", "MAXENT.Phillips.2"),
+  models = c("GLM", "GBM", "GAM", "CTA", "ANN", "SRE", "FDA", "MARS", "RF", "MAXENT",
+    "MAXNET"),
   bm.options = NULL,
   nb.rep = 1,
   data.split.perc = 100,
@@ -34,7 +34,7 @@ object returned by the \code{\link{BIOMOD_FormatingData}} function}
 
 \item{models}{a \code{vector} containing model names to be computed, must be among \code{GLM}, 
 \code{GBM}, \code{GAM}, \code{CTA}, \code{ANN}, \code{SRE}, \code{FDA}, \code{MARS}, 
-\code{RF}, \code{MAXENT.Phillips}, \code{MAXENT.Phillips.2}}
+\code{RF}, \code{MAXENT}, \code{MAXNET}}
 
 \item{bm.options}{a \code{\link{BIOMOD.models.options}} object returned by the
 \code{\link{BIOMOD_ModelingOptions}} function}
@@ -133,9 +133,9 @@ metrics (see Details).
     \item \code{FDA} : Flexible Discriminant Analysis (\code{\link[mda]{fda}})
     \item \code{MARS} : Multiple Adaptive Regression Splines (\code{\link[earth]{earth}})
     \item \code{RF} : Random Forest (\code{\link[randomForest]{randomForest}})
-    \item \code{MAXENT.Phillips} : Maximum Entropy 
+    \item \code{MAXENT} : Maximum Entropy 
     (\url{https://biodiversityinformatics.amnh.org/open_source/maxent/})
-    \item \code{MAXENT.Phillips.2} : Maximum Entropy (\code{\link[maxnet]{maxnet}})
+    \item \code{MAXNET} : Maximum Entropy (\code{\link[maxnet]{maxnet}})
   }}
   
   \item{nb.rep & data.split.perc}{

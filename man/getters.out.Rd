@@ -170,7 +170,7 @@ function}
 \item{algo}{(\emph{optional, default} \code{NULL}) \cr 
 A \code{character} containing algorithm to be loaded, must be either \code{GLM}, 
 \code{GBM}, \code{GAM}, \code{CTA}, \code{ANN}, \code{SRE}, \code{FDA}, \code{MARS}, 
-\code{RF}, \code{MAXENT.Phillips}, \code{MAXENT.Phillips.2}}
+\code{RF}, \code{MAXENT}, \code{MAXNET}}
 
 \item{metric.eval}{(\emph{optional, default} \code{NULL}) \cr 
 A \code{vector} containing evaluation metric to be kept, must be among \code{ROC}, 
@@ -184,7 +184,7 @@ A \code{vector} containing explanatory variables to be kept, that can be obtaine
 \item{merged.by.algo}{(\emph{optional, default} \code{NULL}) \cr 
 A \code{character} containing merged algorithm to be loaded, must be among \code{GLM}, 
 \code{GBM}, \code{GAM}, \code{CTA}, \code{ANN}, \code{SRE}, \code{FDA}, \code{MARS}, 
-\code{RF}, \code{MAXENT.Phillips}, \code{MAXENT.Phillips.2}, \code{mergedAlgo}}
+\code{RF}, \code{MAXENT}, \code{MAXNET}, \code{mergedAlgo}}
 
 \item{merged.by.run}{(\emph{optional, default} \code{NULL}) \cr 
 A \code{vector} containing merged repetition set to be loaded, must be among \code{RUN1}, 

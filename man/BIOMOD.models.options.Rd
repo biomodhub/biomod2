@@ -37,9 +37,9 @@ Class returned by \code{\link{BIOMOD_ModelingOptions}}, and used by
 
 \item{\code{RF}}{a \code{list} containing RF options}
 
-\item{\code{MAXENT.Phillips}}{a \code{list} containing MAXENT.Phillips options}
+\item{\code{MAXENT}}{a \code{list} containing MAXENT options}
 
-\item{\code{MAXENT.Phillips.2}}{a \code{list} containing MAXENT.Phillips options}
+\item{\code{MAXNET}}{a \code{list} containing MAXNET options}
 }}
 
 \examples{
