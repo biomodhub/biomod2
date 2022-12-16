@@ -107,15 +107,15 @@ conditions (see Details).</p>
     <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">BIOMOD_EnsembleModeling</span><span class="op">(</span></span>
 <span>  <span class="va">bm.mod</span>,</span>
 <span>  models.chosen <span class="op">=</span> <span class="st">"all"</span>,</span>
-<span>  em.by <span class="op">=</span> <span class="st">"PA_dataset+repet"</span>,</span>
+<span>  em.by <span class="op">=</span> <span class="st">"PA+run"</span>,</span>
 <span>  <span class="va">em.algo</span>,</span>
 <span>  metric.select <span class="op">=</span> <span class="st">"all"</span>,</span>
 <span>  metric.select.thresh <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  metric.select.table <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  metric.eval <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"KAPPA"</span>, <span class="st">"TSS"</span>, <span class="st">"ROC"</span><span class="op">)</span>,</span>
 <span>  var.import <span class="op">=</span> <span class="fl">0</span>,</span>
-<span>  prob.ci.alpha <span class="op">=</span> <span class="fl">0.05</span>,</span>
-<span>  prob.mean.weight.decay <span class="op">=</span> <span class="st">"proportional"</span>,</span>
+<span>  EMci.alpha <span class="op">=</span> <span class="fl">0.05</span>,</span>
+<span>  EMwmean.decay <span class="op">=</span> <span class="st">"proportional"</span>,</span>
 <span>  nb.cpu <span class="op">=</span> <span class="fl">1</span>,</span>
 <span>  seed.val <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  do.progress <span class="op">=</span> <span class="cn">TRUE</span>,</span>
@@ -124,7 +124,9 @@ conditions (see Details).</p>
 <span>  <span class="va">prob.cv</span>,</span>
 <span>  <span class="va">prob.ci</span>,</span>
 <span>  <span class="va">committee.averaging</span>,</span>
-<span>  <span class="va">prob.mean.weight</span></span>
+<span>  <span class="va">prob.mean.weight</span>,</span>
+<span>  <span class="va">prob.mean.weight.decay</span>,</span>
+<span>  <span class="va">prob.ci.alpha</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -143,7 +145,7 @@ conditions (see Details).</p>
 
 <dt>em.by</dt>
 <dd><p>a <code>character</code> corresponding to the way kept models will be combined to build 
-the ensemble models, must be among <code>PA_dataset+repet</code>, <code>PA_dataset+algo</code>,</p></dd>
+the ensemble models, must be among <code>PA+run</code>, <code>PA+algo</code>,</p></dd>
 
 
 <dt>em.algo</dt>
@@ -188,18 +190,6 @@ be among <code>ROC</code>, <code>TSS</code>, <code>KAPPA</code>, <code>ACCURACY<
 <dd><p>(<em>optional, default</em> <code>NULL</code>) <br> 
 An <code>integer</code> corresponding to the number of permutations to be done for each variable to 
 estimate variable importance</p></dd>
-
-
-<dt>prob.ci.alpha</dt>
-<dd><p>(<em>optional, default</em> <code>0.05</code>) <br> 
-A <code>numeric</code> value corresponding to the significance level to estimate confidence interval</p></dd>
-
-
-<dt>prob.mean.weight.decay</dt>
-<dd><p>(<em>optional, default</em> <code>proportional</code>) <br> 
-A value defining the relative importance of the weights (if <code>prob.mean.weight = TRUE</code>). 
-A high value will strongly discriminate <em>good</em> models from the <em>bad</em> ones (see Details), while <code>proportional</code> will 
-attribute weights proportionally to the models evaluation scores</p></dd>
 
 
 <dt>nb.cpu</dt>
@@ -247,6 +237,18 @@ compute the committee averaging across predictions or not</p></dd>
 <dd><p>(<em>obsolete</em>) <br> A <code>logical</code> value defining whether to 
 compute the weighted sum of probabilities across predictions or not</p></dd>
 
+
+<dt>prob.mean.weight.decay</dt>
+<dd><p>(<em>optional, default</em> <code>proportional</code>) <br> 
+A value defining the relative importance of the weights (if <code>prob.mean.weight = TRUE</code>). 
+A high value will strongly discriminate <em>good</em> models from the <em>bad</em> ones (see Details), while <code>proportional</code> will 
+attribute weights proportionally to the models evaluation scores</p></dd>
+
+
+<dt>prob.ci.alpha</dt>
+<dd><p>(<em>optional, default</em> <code>0.05</code>) <br> 
+A <code>numeric</code> value corresponding to the significance level to estimate confidence interval</p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
@@ -276,11 +278,11 @@ folders created in the current working directory :</p><ol><li><p>a <em>models</e
   <dt>Models assembly rules (<code>em.by</code>)</dt>
 <dd><p>Single models built with the 
   <code><a href="BIOMOD_Modeling.html">BIOMOD_Modeling</a></code> function can be combined in 5 different ways to obtain 
-  ensemble models :</p><ul><li><p><code>PA_dataset+repet</code> : each combination of pseudo-absence and repetition 
+  ensemble models :</p><ul><li><p><code>PA+run</code> : each combination of pseudo-absence and repetition 
     datasets is done, <em>merging</em> algorithms together</p></li>
-<li><p><code>PA_dataset+algo</code> : each combination of pseudo-absence and algorithm datasets 
+<li><p><code>PA+algo</code> : each combination of pseudo-absence and algorithm datasets 
     is done, <em>merging</em> repetitions together</p></li>
-<li><p><code>PA_dataset</code> : pseudo-absence datasets are considered individually, 
+<li><p><code>PA</code> : pseudo-absence datasets are considered individually, 
     <em>merging</em> algorithms and repetitions together</p></li>
 <li><p><code>algo</code> : algorithm datasets are considered individually, <em>merging</em> 
     pseudo-absence and repetitions together</p></li>

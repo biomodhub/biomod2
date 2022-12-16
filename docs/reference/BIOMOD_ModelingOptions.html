@@ -106,7 +106,7 @@
 <span>  FDA <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  MARS <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  RF <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  MAXENT.Phillips <span class="op">=</span> <span class="cn">NULL</span></span>
+<span>  MAXENT <span class="op">=</span> <span class="cn">NULL</span></span>
 <span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu">bm_DefaultModelingOptions</span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
@@ -150,9 +150,9 @@
 <dd><p>(<em>optional, default</em> <code>NULL</code>) <br> A <code>list</code> containing RF options</p></dd>
 
 
-<dt>MAXENT.Phillips</dt>
+<dt>MAXENT</dt>
 <dd><p>(<em>optional, default</em> <code>NULL</code>) <br> A <code>list</code> 
-containing MAXENT.Phillips options</p></dd>
+containing MAXENT options</p></dd>
 
 </dl></div>
     <div id="value">
@@ -323,13 +323,13 @@ changes) as function arguments (see <a href="https://biomodhub.github.io/biomod2
 <li><p><code>nodesize = 5</code></p></li>
 <li><p><code>maxnodes = NULL</code></p></li>
 </ul></div>
-    <div id="maxent-phillips-">
-    <h2>MAXENT.Phillips </h2>
+    <div id="maxent-">
+    <h2>MAXENT </h2>
     <p>(<a href="https://biodiversityinformatics.amnh.org/open_source/maxent/" class="external-link">https://biodiversityinformatics.amnh.org/open_source/maxent/</a>)</p><ul><li><p><code>path_to_maxent.jar = getwd()</code> : a <code>character</code>
   corresponding to <span class="pkg">maxent.jar</span> file link</p></li>
 <li><p><code>memory_allocated = 512</code> : an <code>integer</code> corresponding to
   the amount of memory (in Mo) reserved for <code>java</code> to run
-  <code>MAXENT.Phillips</code>, must be <code>64</code>, <code>128</code>, <code>256</code>,
+  <code>MAXENT</code>, must be <code>64</code>, <code>128</code>, <code>256</code>,
   <code>512</code>, <code>1024</code>... or <code>NULL</code> to use default <code>java</code>
   memory limitation parameter</p></li>
 <li><p><code>initial_heap_size = NULL</code> : a <code>character</code> initial heap
@@ -346,7 +346,7 @@ changes) as function arguments (see <a href="https://biomodhub.github.io/biomod2
   <code>10G</code> ... or <code>NULL</code> to use default <code>java</code> parameter</p></li>
 <li><p><code>background_data_dir</code> : a <code>character</code> corresponding to
   directory path where explanatory variables are stored as <code>ASCII</code>
-  files (raster format). If specified, <code>MAXENT.Phillips</code> will generate
+  files (raster format). If specified, <code>MAXENT</code> will generate
   its own background data from explanatory variables rasters (as usually
   done in <code>MAXENT</code> studies). Otherwise <span class="pkg">biomod2</span> pseudo-absences
   will be used (see <code><a href="BIOMOD_FormatingData.html">BIOMOD_FormatingData</a></code>)</p></li>

@@ -144,26 +144,38 @@
 <code>BIOMOD_FormatingData</code> output. These method now support the
 use of <code>calib.lines</code> to explore how the cross-validation
 dataset are structured.</li>
-<li>
-<code>BIOMOD_FormatingData</code> now gives warning when several
-input data points are located in the same raster cells</li>
-<li>Added options <code>filter.raster</code> in
-<code>BIOMOD_FormatingData</code> to filter data points so that none are
-located in the same raster cells.</li>
 <li>Updated <code>plot</code> methods for
 <code>BIOMOD.projection.out</code> objects so that it uses
 <code>ggplot2</code> for nicer plots.</li>
+<li>Binary and Filtered transformation are now properly stored in
+<code>BIOMOD.projection.out</code> objects. They can be loaded from the
+disk with <code>get_predictions</code> or represented through
+<code>BIOMOD.projection.out</code> plot method.</li>
 </ul>
 </div>
 <div class="section level5">
 <h5 id="minor-changes">Minor Changes<a class="anchor" aria-label="anchor" href="#minor-changes"></a>
 </h5>
 <ul>
+<li>Simplified maxent model names: ‘MAXENT.Phillips’ -&gt; ‘MAXENT’
+(based on maxent.jar); ‘MAXENT.Phillips.2’ -&gt; ‘MAXNET’ (based on
+maxnet package).</li>
+<li>
+<code>BIOMOD_FormatingData</code> now gives warning when several
+input data points are located in the same raster cells</li>
+<li>Added options <code>filter.raster</code> in
+<code>BIOMOD_FormatingData</code> to filter data points so that none are
+located in the same raster cells.</li>
 <li>
 <code>BIOMOD_EnsembleModeling</code> now have an argument
 <code>em.algo</code> to select the ensemble algorithm to be computed.
 Separate arguments are now deprecated (prob.mean, prob.median, prob.cv,
-prob.ci, committee.averaging, prob.mean.weight)</li>
+prob.ci, committee.averaging, prob.mean.weight). Building all possible
+ensemble models can now be done with
+<code>em.algo = c('EMmean','EMmedian','EMcv','EMci','EMca','EMwmean')</code>.</li>
+<li>Some possible values for <code>em.by</code> have slightly changed:
+‘PA_dataset’ -&gt; ‘PA’, ‘PA_dataset+repet’ -&gt; ‘PA+run’ and
+‘PA_dataset+algo’ -&gt; ‘PA+algo’</li>
 <li>Added an appropriate message when all models fail for
 <code>BIOMOD_Modeling</code> and
 <code>BIOMOD_EnsembleModeling</code>.</li>
@@ -172,6 +184,10 @@ prob.ci, committee.averaging, prob.mean.weight)</li>
 <div class="section level5">
 <h5 id="bugfix">Bugfix<a class="anchor" aria-label="anchor" href="#bugfix"></a>
 </h5>
+<ul>
+<li>Fixed <code>MAXENT.Phillips.2</code> and single variable
+models.</li>
+</ul>
 </div>
 <div class="section level5">
 <h5 id="internal-changes">Internal Changes<a class="anchor" aria-label="anchor" href="#internal-changes"></a>
@@ -183,6 +199,8 @@ prob.ci, committee.averaging, prob.mean.weight)</li>
 <li>Added <code>tidyterra</code> and <code>ggtext</code> to
 <code>Suggests</code>
 </li>
+<li>Added checks to <code>get_evaluation</code> when models have no
+evaluations.</li>
 </ul>
 </div>
 </div>
