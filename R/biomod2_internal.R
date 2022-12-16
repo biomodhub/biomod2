@@ -335,8 +335,10 @@ get_var_range <- function(data)
 # Format projection output as data.frame with appropriate columns --------------
 
 .format_proj.df <- function(proj, obj.type = "mod"){
+  # argument check
   .fun_testIfInherits(TRUE, "proj", proj, "data.frame")
   .fun_testIfIn(TRUE, "obj.type", obj.type, c("mod","em"))
+  # function content
   proj$points <- 1:nrow(proj)
   tmp <- melt(proj, id.vars =  "points")
   colnames(tmp) <- c("points", "full.name", "pred")
@@ -352,7 +354,7 @@ get_var_range <- function(data)
     tmp$merged.by.algo <- .extract_modelNamesInfo(tmp$full.name, obj.type = "em", info = "merged.by.algo", as.unique = FALSE)
     tmp$filtered.by <- .extract_modelNamesInfo(tmp$full.name, obj.type = "em", info = "filtered.by", as.unique = FALSE)
     tmp$algo <- .extract_modelNamesInfo(tmp$full.name, obj.type = "em", info = "algo", as.unique = FALSE)
-    proj.em <- tmp[, c("full.name", "merged.by.PA", "merged.by.run", "merged.by.algo"
+    proj <- tmp[, c("full.name", "merged.by.PA", "merged.by.run", "merged.by.algo"
                        , "filtered.by", "algo", "points", "pred")]
     
   }
@@ -373,7 +375,6 @@ get_var_range <- function(data)
     dim_names <- c("merged.by", "filtered.by", "algo")
     dim_names.bis <- c("merged.by.PA", "merged.by.run", "merged.by.algo")
   }
-  
   ## 1. GET dimension names -------------------------------------------------------------
   ## BIOMOD.models.out            -> dataset / run / algo
   ## BIOMOD.ensemble.models.out   -> mergedBy / filteredBy / algo
@@ -398,10 +399,11 @@ get_var_range <- function(data)
         res[[dim_names[1]]] <- names(obj.out)[i.dim1]
         res[[dim_names[2]]] <- names(obj.out[[i.dim1]])[i.dim2]
         res[[dim_names[3]]] <- names(obj.out[[i.dim1]][[i.dim2]])[i.dim3]
-        if(out == "calib.failure"){
+        tmp.full.name <- obj.out[[i.dim1]][[i.dim2]][[i.dim3]][["model"]]
+        if(out == "calib.failure" | is.null(tmp.full.name)){
           res[["full.name"]] <- NA
         } else {
-          res[["full.name"]] <- obj.out[[i.dim1]][[i.dim2]][[i.dim3]][["model"]]
+          res[["full.name"]] <- tmp.full.name
         }
         if (obj.type == "mod") {
           res[[dim_names[1]]] <- sub(".*_", "", res[[dim_names[1]]])
@@ -419,7 +421,11 @@ get_var_range <- function(data)
     }
   
   if (out %in% c("model", "calib.failure", "models.kept")) {
-    if (is.null(output)) { output <- 'none' } else { output <- unique(as.character(output[[out]])) }
+    if (is.null(output)) { 
+      output <- 'none'
+    } else { 
+        output <- unique(as.character(output[[out]]))
+        }
   }
   return(output)
 }

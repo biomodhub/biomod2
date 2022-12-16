@@ -288,10 +288,9 @@ BIOMOD_Projection <- function(bm.mod,
     }
   }
   
-  proj <- foreach(mod.name = models.chosen) %dopar%
-    {
+  proj <- foreach(mod.name = models.chosen) %dopar% {
       cat("\n\t> Projecting", mod.name, "...")
-      if(do.stack){
+      if (do.stack) {
         filename <- NULL
       } else {
         filename <- file.path(namePath, "individual_projections",
@@ -309,8 +308,8 @@ BIOMOD_Projection <- function(bm.mod,
                           filename = filename, omit.na = omit.na, 
                           temp_workdir = temp_workdir, seedval = seed.val, 
                           overwrite = TRUE)
-      if(do.stack){
-        if(proj_is_raster){
+      if (do.stack) {
+        if (proj_is_raster) {
           return(wrap(pred.tmp)) 
         } else {
           return(pred.tmp)
@@ -321,7 +320,7 @@ BIOMOD_Projection <- function(bm.mod,
     }
   
   ## Putting predictions into the right format
-  if(do.stack){
+  if (do.stack){
     if (proj_is_raster) {
       proj <- rast(lapply(proj, rast)) # SpatRaster needs to be wrapped before saving
       names(proj) <- models.chosen
@@ -525,12 +524,12 @@ BIOMOD_Projection <- function(bm.mod,
   
   ## 4. Check new.env.xy ------------------------------------------------------
   if (!is.null(new.env.xy)  & !inherits(new.env, 'SpatRaster')) {
-    new.env.xy = data.matrix(new.env.xy)
+    new.env.xy = as.data.frame(new.env.xy)
     if (ncol(new.env.xy) != 2 || nrow(new.env.xy) != nrow(new.env)) {
       stop("invalid xy coordinates argument given -- dimensions mismatch !")
     }
   } else {
-    new.env.xy = matrix()
+    new.env.xy = data.frame()
   }
   ## 5. Check models.chosen ---------------------------------------------------
   if (models.chosen[1] == 'all') {

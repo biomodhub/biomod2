@@ -340,7 +340,7 @@ BIOMOD_EnsembleForecasting <- function(bm.em,
   proj_out@models.projected <- models.chosen
   
   ## Putting predictions into the right format
-  if(do.stack){
+  if (do.stack) {
     if (proj_is_raster) {
       proj.em <- rast(lapply(proj.em, rast)) # SpatRaster needs to be wrapped before saving
       names(proj.em) <- models.chosen
@@ -668,8 +668,10 @@ BIOMOD_EnsembleForecasting <- function(bm.em,
     if (!is.null(bm.proj)) {
       new.env.xy <- bm.proj@coord
     } else {
-      new.env.xy <- matrix()
+      new.env.xy <- data.frame()
     }
+  } else {
+    new.env.xy <- as.data.frame(new.env.xy)
   }
   
   return(list(bm.em = bm.em,

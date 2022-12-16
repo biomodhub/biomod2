@@ -440,10 +440,29 @@ BIOMOD_Modeling <- function(bm.format,
   
   .fun_testIfInherits(TRUE, "bm.format", bm.format, c("BIOMOD.formated.data", "BIOMOD.formated.data.PA"))
   if (!is.character(models)) { stop("models must be a 'character' vector") }
+  
+  # Support for old names in models
+  # Deprecated MAXENT.Phillips/MAXENT.Phillips.2
+  if (any(models == "MAXENT.Phillips")) {
+    models[which(models == "MAXENT.Phillips")] <- "MAXENT"
+    cat(paste0("\n\t! 'MAXENT.Phillips' model name is deprecated, please use 'MAXENT' instead."))
+  }
+  if (any(models == "MAXENT.Phillips.2")) {
+    models[which(models == "MAXENT.Phillips.2")] <- "MAXNET"
+    cat(paste0("\n\t! 'MAXENT.Phillips.2' model name is deprecated, please use 'MAXNET' instead."))
+  }
+  ## Deprecated MAXENT.Tsuruoka 
+  ## because of package maintaining issue (request from B Ripley 03-2019)
+  if ('MAXENT.Tsuruoka' %in% models) {
+    models.switch.off <- unique(c(models.switch.off, "MAXENT.Tsuruoka"))
+    models <- setdiff(models, models.switch.off)
+    warning('MAXENT.Tsuruoka has been disabled because of package maintaining issue (request from cran team 03-2019)')
+  }
   models <- unique(models)
   models.switch.off <- NULL
   
   ## check if model is supported
+  
   avail.models.list <- c('GLM', 'GBM', 'GAM', 'CTA', 'ANN', 'SRE', 'FDA', 'MARS'
                          , 'RF', 'MAXENT', 'MAXNET')
   .fun_testIfIn(TRUE, "models", models, avail.models.list)
@@ -453,8 +472,8 @@ BIOMOD_Modeling <- function(bm.format,
   categorical_var <- .get_categorical_names(bm.format@data.env.var)
   
   if (length(categorical_var) > 0) {
-    models.fact.unsuprort <- c("SRE", "MAXENT.Tsuruoka")
-    models.switch.off <- c(models.switch.off, intersect(models, models.fact.unsuprort))
+    models.fact.unsupport <- c("SRE", "MAXENT.Tsuruoka")
+    models.switch.off <- c(models.switch.off, intersect(models, models.fact.unsupport))
     if (length(models.switch.off) > 0) {
       models <- setdiff(models, models.switch.off)
       cat(paste0("\n\t! ", paste(models.switch.off, collapse = ",")," were switched off because of categorical variables !"))
@@ -462,13 +481,7 @@ BIOMOD_Modeling <- function(bm.format,
   }
   
   
-  ## 2.1 Disable MAXENT.Tsuruoka ----------------------------------------------
-  ## because of package maintaining issue (request from B Ripley 03-2019)
-  if ('MAXENT.Tsuruoka' %in% models) {
-    models.switch.off <- unique(c(models.switch.off, "MAXENT.Tsuruoka"))
-    models <- setdiff(models, models.switch.off)
-    warning('MAXENT.Tsuruoka has been disabled because of package maintaining issue (request from cran team 03-2019)')
-  }
+
   
   ## 3. Check bm.options arguments --------------------------------------------
   if (!is.null(bm.options)) {

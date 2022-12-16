@@ -502,6 +502,7 @@ BIOMOD_EnsembleModeling <- function(bm.mod,
             ## remove models if score is not defined
             models.kept.tmp <- models.kept.tmp[is.finite(models.kept.scores.tmp)]
             models.kept.scores.tmp <- models.kept.scores.tmp[is.finite(models.kept.scores.tmp)]
+            names(models.kept.scores.tmp) <- models.kept.tmp
             
             # weights are "decay" times decreased for each subsequent model in model quality order.
             models.kept.scores.tmp <- round(models.kept.scores.tmp, 3) # sometimes there can be a rounding issue in R, so here I make sure all values are rounded equally.
@@ -548,7 +549,6 @@ BIOMOD_EnsembleModeling <- function(bm.mod,
                           expl_var_type = expl_var_type,
                           expl_var_range = expl_var_range,
                           modeling.id = bm.mod@modeling.id)
-          
           if (algo == 'EMciInf') {
             model.bm@alpha <- EMci.alpha
             model.bm@side <- 'inferior'
