@@ -91,7 +91,7 @@
   if (!is.numeric(objValue)) {
     cat(paste0("\n", objName, "must be a integer"))
     test <- FALSE
-  } else if (objValue < 0 | objValue %% 1 != 0) {
+  } else if (any(objValue < 0) || any(objValue %% 1 != 0)) {
     cat(paste0("\n", objName, "must be a positive integer"))
     test <- FALSE
   }
