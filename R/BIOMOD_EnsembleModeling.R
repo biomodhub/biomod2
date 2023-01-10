@@ -462,7 +462,7 @@ BIOMOD_EnsembleModeling <- function(bm.mod,
           algo.long <- em.algo.long[algo]
           algo.class <- em.algo.class[algo]
           model_name <- paste0(bm.mod@sp.name, "_", algo, "By", eval.m, "_", assemb)
-          if (is.null(models.kept)) {
+          if (length(models.kept) == 0) {
             # keep the name of uncompleted modelisations
             cat("\n   ! Note : ", model_name, "failed!\n")
             ListOut$calib.failure = model_name
@@ -495,6 +495,11 @@ BIOMOD_EnsembleModeling <- function(bm.mod,
                 if(length(models.kept.tmp) == 1){
                   cat("\n     !! due to SRE switched off, ensemble models for prob.mean.weight in ", assemb, "will be based on only one single model.")
                   cat("\n     !! Please make sure this is intended or review your selection metrics and threshold.")
+                } else if (length(models.kept.tmp) == 0){
+                  cat("\n     !! due to SRE switched off, ensemble models for prob.mean.weight in ", assemb, "have no model left.")
+                  cat("\n   ! Note : ", model_name, "failed!\n")
+                  ListOut$calib.failure = model_name
+                  return(ListOut) ## end of function.
                 }
               }
             }

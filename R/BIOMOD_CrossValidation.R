@@ -185,9 +185,9 @@ BIOMOD_CrossValidation <- function(bm.format,
   
   .bm_cat("Build Cross-Validation Table")
   DataSplitTable.y <- DataSplitTable.x <- DataSplitTable <- NULL
-  ind.NA = which(is.na(bm.format@data.species))
-  tmp = bm.format@data.species
-  tmp[ind.NA] = 2
+  ind.NA  <- which(is.na(bm.format@data.species))
+  tmp  <- bm.format@data.species
+  tmp[ind.NA] <- 0 # was 2 before
   
   ## STRATIFIED (X, Y, BOTH) / BLOCK / ENVIRONMENTAL CROSS VALIDATION -----------------------------
   if (do.stratification) {
@@ -234,6 +234,7 @@ BIOMOD_CrossValidation <- function(bm.format,
         DataSplitTable[tmp == 1, i] <- blocks[[1]] != i
         DataSplitTable[tmp == 0, i] <- blocks[[2]] != i     
       }
+      DataSplitTable <- as.matrix(DataSplitTable)
     }
     
     ## ENVIRONMENTAL STRATIFIED CROSS VALIDATION ------------------------------

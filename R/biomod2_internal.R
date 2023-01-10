@@ -388,7 +388,7 @@ get_var_range <- function(data)
     foreach(i.dim3 = 1:dim3, .combine = "rbind") %do%
     {
       res <- obj.out[[i.dim1]][[i.dim2]][[i.dim3]][[out]]
-      if (!is.null(res)) {
+      if (!is.null(res) && length(res) > 0) {
         res <- as.data.frame(res)
         if (out %in% c("model", "calib.failure", "models.kept", "pred", "pred.eval")) {
           colnames(res) <- out

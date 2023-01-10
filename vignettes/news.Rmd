@@ -38,6 +38,10 @@ vignette: >
 ##### Bugfix
 
 * Fixed `MAXENT.Phillips.2` and single variable models.
+* Fixed ensemble models when several filtering metrics were asked and some combination of ensemble/metrics had no models
+* Bugfix for projection for ensemble models to ensure that the proper set of models was selected
+* Bugfix for BIOMOD_CrossValidation for block-stratified sampling
+* Bugfix for BIOMOD_CrossValidation for pseudo-absences 
 
 ##### Internal Changes
 

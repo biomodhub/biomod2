@@ -195,7 +195,9 @@ setMethod('predict2', signature(object = 'biomod2_ensemble_model', newdata = "Sp
             penalization_scores <- args$penalization_scores
             
             
-            if (!data_as_formal_predictions) {
+            if (data_as_formal_predictions) { 
+              newdata <- subset(newdata, object@model)
+            } else {
               newdata <- .get_formal_predictions(object, newdata, on_0_1000 = on_0_1000, seedval = seedval)
             }
             
@@ -242,7 +244,9 @@ setMethod('predict2', signature(object = 'biomod2_ensemble_model', newdata = "da
             # additional arg retrived for EMwmean
             penalization_scores <- args$penalization_scores
             
-            if (!data_as_formal_predictions) {
+            if (data_as_formal_predictions) { 
+              newdata <- newdata[ , object@model, drop = FALSE]
+            } else  {
               newdata <- .get_formal_predictions(object, newdata, on_0_1000 = on_0_1000, seedval = seedval)
             }
             out <- predfun(newdata,
@@ -520,7 +524,7 @@ setMethod('predict2', signature(object = 'EMci_biomod2_model', newdata = "data.f
               }
               ci_prediction
             }
-            # redirect to predict2.biomod2_ensemble_model.SpatRaster
+            # redirect to predict2.biomod2_ensemble_model.data.frame
             callNextMethod(object, newdata, predfun = predfun, side = object@side, ...)
           }
 )
@@ -573,9 +577,7 @@ setMethod('predict2', signature(object = 'EMca_biomod2_model', newdata = "SpatRa
               thresh <- object@thresholds / 1000 
             }
             
-            if(data_as_formal_predictions){
-              subset(newdata, names(thresh))
-            }
+
             # redirect to predict2.biomod2_ensemble_model.SpatRaster
             callNextMethod(object, newdata, predfun = predfun, thresh = thresh,
                            data_as_formal_predictions = data_as_formal_predictions,
@@ -604,10 +606,7 @@ setMethod('predict2', signature(object = 'EMca_biomod2_model', newdata = "data.f
               thresh <- object@thresholds / 1000
             }
             
-            if(data_as_formal_predictions){
-              newdata[, names(thresh), drop = FALSE]
-            }
-            
+
             # redirect to predict2.biomod2_ensemble_model.data.frame
             callNextMethod(object, newdata, predfun = predfun,
                            data_as_formal_predictions = data_as_formal_predictions,
@@ -653,10 +652,7 @@ setMethod('predict2', signature(object = 'EMwmean_biomod2_model', newdata = "Spa
                 )
               }
             }
-            if(data_as_formal_predictions){
-              subset(newdata, 
-                     names(object@penalization_scores))
-            }
+
             # redirect to predict2.biomod2_ensemble_model.SpatRaster
             callNextMethod(object, newdata,
                            predfun = predfun,
@@ -682,11 +678,7 @@ setMethod('predict2', signature(object = 'EMwmean_biomod2_model', newdata = "dat
               out
             }
             
-            if (data_as_formal_predictions) {
-              newdata <- newdata[ , names(object@penalization_scores), 
-                                  drop = FALSE]
-            }
-            
+
             # redirect to predict2.biomod2_ensemble_model.SpatRaster
             callNextMethod(object, newdata,
                            predfun = predfun, 
