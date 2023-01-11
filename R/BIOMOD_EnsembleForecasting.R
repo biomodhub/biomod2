@@ -191,7 +191,7 @@
 ##'   myBiomodEM <- BIOMOD_EnsembleModeling(bm.mod = myBiomodModelOut,
 ##'                                         models.chosen = 'all',
 ##'                                         em.by = 'all',
-##'                                         em.algo = c('prob.mean', 'committee.averaging'),
+##'                                         em.algo = c('EMmean', 'EMca'),
 ##'                                         metric.select = c('TSS'),
 ##'                                         metric.select.thresh = c(0.7),
 ##'                                         metric.eval = c('TSS', 'ROC'),
