@@ -75,7 +75,7 @@
 ##' \code{POFD}, \code{SR}, \code{CSI}, \code{ETS}, \code{HK}, \code{HSS}, \code{OR}, \code{ORSS}
 ##' @param expl.var (\emph{optional, default} \code{NULL}) \cr 
 ##' A \code{vector} containing explanatory variables to be kept, that can be obtained with the 
-##' \code{\link{get_formal_data(obj, subinfo = 'expl.var.names')}} function
+##' \code{\link{get_formal_data}(obj, subinfo = 'expl.var.names')} function
 ##' 
 ##' @param metric.binary (\emph{optional, default} \code{NULL}) \cr 
 ##' A \code{vector} containing evaluation metric selected to transform predictions into binary 
@@ -573,13 +573,30 @@ setMethod("get_variables_importance", "BIOMOD.models.out",
 ##' \code{proj.out} slot
 ##' @slot proj.out a \code{\link{BIOMOD.stored.data}} object
 ##' 
-##' @param str.grep a \code{character} corresponding to the name (or part of the name(s)) of 
-##' models projected
-##' @param col a \code{vector} containing colors for plot (default : 
-##' \code{colorRampPalette(c("grey90", "yellow4", "green4"))(100)})
 ##' @param x a \code{\link{BIOMOD.projection.out}} object
 ##' @param object a \code{\link{BIOMOD.projection.out}} object
-##' 
+##' @param coord a 2-columns \code{data.frame} containing the corresponding \code{X} and \code{Y} 
+##' @param plot.output (\emph{optional, default} \code{facet}) a character
+##'   determining the type of output: with \code{plot.output = 'list'} the
+##'   function will return a list of plots (one plot per model) ; with 'facet' ;
+##'   with \code{plot.output = 'facet'} the function will return a single plot
+##'   with all asked projections as facet.
+##' @param do.plot (\emph{optional, default} \code{TRUE}) a boolean determining
+##'   whether the plot should be displayed or just returned.
+##' @param std (\emph{optional, default} \code{TRUE}) a boolean controlling the
+##'   limits of the color scales. With \code{std = TRUE} color scales are
+##'   displayed between 0 and 1 (or 1000). With \code{std = FALSE} color scales
+##'   are displayed between 0 and the maximum value observed.
+##' @param scales (\emph{optional, default} \code{fixed}) a character
+##'   determining whether x and y scales are shared among facet. Argument passed
+##'   to \code{\link[ggplot2:facet_wrap]{facet_wrap}}. Possible values: 'fixed', 'free_x',
+##'   'free_y', 'free'.
+##' @param size (\emph{optional, default} \code{0.75}) a numeric determing the
+##'   size of points on the plots and passed to
+##'   \code{\link[ggplot2:geom_point]{geom_point}}.
+##' @param ... additional parameters to be passed to \code{\link{get_predictions}} 
+##' to select the models that will be plotted
+##'           
 ##' @seealso \code{\link{BIOMOD_Projection}}, \code{\link{BIOMOD_EnsembleForecasting}}
 ##' @family Toolbox objects
 ##' 
@@ -705,10 +722,10 @@ setMethod(
   function(x,
            coord = NULL,
            plot.output, # list or facet
-           do.plot = TRUE,
-           std = TRUE,
-           scales,
-           size,
+           do.plot = TRUE, # whether plots are displayed or just returned
+           std = TRUE, # limits between 0 and 1000 or between 0 and max
+           scales, # transmitted to facet_wrap
+           size, # size of points transmitted to geom_point
            ...
   ){
     # extraction of projection happens in argument check
@@ -1027,7 +1044,7 @@ setMethod("get_predictions", "BIOMOD.projection.out",
 ##'   \code{algo}, \code{all}
 ##' @slot em.computed a \code{vector} containing names of ensemble models
 ##' @slot em.failed a \code{vector} containing names of failed ensemble models
-##' @slot em.models_needed a \code{list} containing single models for each ensemble model
+# ##' @slot em.models_needed a \code{list} containing single models for each ensemble model
 ##' @slot em.models_kept a \code{list} containing single models for each ensemble model
 ##' @slot models.evaluation a \code{\link{BIOMOD.stored.data.frame-class}} object
 ##'   containing models evaluation

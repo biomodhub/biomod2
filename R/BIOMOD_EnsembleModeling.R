@@ -44,9 +44,9 @@
 ##' @param var.import (\emph{optional, default} \code{NULL}) \cr 
 ##' An \code{integer} corresponding to the number of permutations to be done for each variable to 
 ##' estimate variable importance
-##' @param prob.ci.alpha (\emph{optional, default} \code{0.05}) \cr 
+##' @param EMci.alpha (\emph{optional, default} \code{0.05}) \cr 
 ##' A \code{numeric} value corresponding to the significance level to estimate confidence interval
-##' @param prob.mean.weight.decay (\emph{optional, default} \code{proportional}) \cr 
+##' @param EMwmean.decay (\emph{optional, default} \code{proportional}) \cr 
 ##' A value defining the relative importance of the weights (if \code{prob.mean.weight = TRUE}). 
 ##' A high value will strongly discriminate \emph{good} models from the \emph{bad} ones (see Details), while \code{proportional} will 
 ##' attribute weights proportionally to the models evaluation scores
@@ -60,20 +60,23 @@
 ##' A \code{logical} value defining whether the progress bar is to be rendered or not
 ##' 
 ##' 
-##' @param prob.mean (\emph{optional, default} \code{TRUE}) \cr A \code{logical} value defining 
+##' @param prob.mean (\emph{deprecated} \code{TRUE}) \cr A \code{logical} value defining 
 ##' whether to compute the mean probabilities across predictions or not
-##' @param prob.median (\emph{obsolete}) \cr A \code{logical} value defining whether to compute 
+##' @param prob.median (\emph{deprecated}) \cr A \code{logical} value defining whether to compute 
 ##' the median probabilities across predictions or not
-##' @param prob.cv (\emph{obsolete}) \cr A \code{logical} value defining whether to compute the 
+##' @param prob.cv (\emph{deprecated}) \cr A \code{logical} value defining whether to compute the 
 ##' coefficient of variation across predictions or not
-##' @param prob.ci (\emph{obsolete}) \cr A \code{logical} value defining whether to compute the 
+##' @param prob.ci (\emph{deprecated}) \cr A \code{logical} value defining whether to compute the 
 ##' confidence interval around the \code{prob.mean} ensemble model or not
-##' @param committee.averaging (\emph{obsolete}) \cr A \code{logical} value defining whether to 
+##' @param committee.averaging (\emph{deprecated}) \cr A \code{logical} value defining whether to 
 ##' compute the committee averaging across predictions or not
-##' @param prob.mean.weight (\emph{obsolete}) \cr A \code{logical} value defining whether to 
+##' @param prob.mean.weight (\emph{deprecated}) \cr A \code{logical} value defining whether to 
 ##' compute the weighted sum of probabilities across predictions or not
 ##' 
-##' 
+##' @param prob.ci.alpha (\emph{deprecated}) \cr old argument name for
+##'   \code{EMci.alpha}
+##' @param prob.mean.weight.decay (\emph{deprecated})  \cr old argument name for
+##'   \code{EMwmean.decay}
 ##' @return
 ##' 
 ##' A \code{BIOMOD.ensemble.models.out} object containing models outputs, or links to saved 

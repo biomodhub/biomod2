@@ -85,8 +85,8 @@ reference:
     contents:
       - "BIOMOD.formated.data"
       - "BIOMOD.formated.data.PA"
-      - "plot"
-      - "summary"
+      - "plot,BIOMOD.formated.data,missing-method"
+      - "summary,BIOMOD.formated.data-method"
       - "BIOMOD.models.options"
       - "BIOMOD.stored.data"
       - "biomod2_model"

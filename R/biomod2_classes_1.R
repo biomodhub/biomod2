@@ -71,12 +71,7 @@
 ##' If \code{env} is of raster type, a \code{logical} value defining whether \code{sp} 
 ##' is to be filtered when several points occur in the same raster cell
 ##' 
-##' 
-##' @param coord a 2-columns \code{data.frame} containing \code{X} and \code{Y} coordinates for plot
-##' @param col a \code{vector} containing colors for plot (\emph{default} \code{c('green', 'red', 
-##' 'orange', 'grey')})
-##' @param x a \code{\link{BIOMOD.formated.data.PA}} object
-##' @param object a \code{\link{BIOMOD.formated.data.PA}} object
+##' @param object a \code{\link{BIOMOD.formated.data}} object
 ##' 
 ##' 
 ##' @slot dir.name a \code{character} corresponding to the modeling folder
@@ -351,10 +346,9 @@ setMethod('BIOMOD.formated.data', signature(sp = 'numeric', env = 'SpatRaster'),
 
 ### plot.BIOMOD.formated.data (doc) --------------------------------------------------
 ##' 
-##' @name plot 
+##' @rdname plot
 ##' @docType methods
 ##' @author Remi Patin
-##' 
 ##' @title \code{plot} method for \code{\link{BIOMOD.formated.data}} object class
 ##' 
 ##' @description Plot the spatial distribution of presences, absences and 
@@ -980,7 +974,7 @@ setMethod('show', signature('BIOMOD.formated.data'),
 
 ### summary.BIOMOD.formated.data  --------------------------------------------------
 ##' 
-##' @name summary 
+##' @rdname summary
 ##' @docType methods
 ##' @author Remi Patin
 ##' 
@@ -1192,14 +1186,6 @@ setMethod('summary', signature(object = 'BIOMOD.formated.data'),
 ##' @param filter.raster (\emph{optional, default} \code{FALSE}) \cr 
 ##' If \code{env} is of raster type, a \code{logical} value defining whether \code{sp} 
 ##' is to be filtered when several points occur in the same raster cell
-##' 
-##' 
-##' @param coord a 2-columns \code{data.frame} containing \code{X} and \code{Y} coordinates for plot
-##' @param col a \code{vector} containing colors for plot (default : \code{c('green', 'red', 
-##' 'orange', 'grey')})
-##' @param x a \code{\link{BIOMOD.formated.data.PA}} object
-##' @param object a \code{\link{BIOMOD.formated.data.PA}} object
-##' 
 ##' 
 ##' @slot dir.name a \code{character} corresponding to the modeling folder
 ##' @slot sp.name a \code{character} corresponding to the species name
