@@ -479,7 +479,7 @@ setMethod('plot', signature(x = 'BIOMOD.formated.data', y = "missing"),
             
             ## 1.2 - Eval Dataset -----------------------------------------------
             
-            if(plot.eval){
+            if (plot.eval) {
               eval.resp <- x@eval.data.species
               eval.resp <- ifelse(eval.resp == 1,12,22)
               eval.xy <- x@eval.coord
@@ -494,7 +494,7 @@ setMethod('plot', signature(x = 'BIOMOD.formated.data', y = "missing"),
             }
             
             ## 1.3 - Pseudo Absences and CV dataset -----------------------------
-            if(!is.null(calib.lines) | inherits(x, "BIOMOD.formated.data.PA")){
+            if (!is.null(calib.lines) | inherits(x, "BIOMOD.formated.data.PA")) {
               PA_run.vect <-
                 foreach(this_PA = PA, .combine = 'rbind') %:%
                 foreach(this_run = run, .combine = 'rbind') %do% { # to change if format is updated
@@ -509,7 +509,7 @@ setMethod('plot', signature(x = 'BIOMOD.formated.data', y = "missing"),
                   } else { # PA+run
                     this_name <- paste0(this_PA,"_",this_run)
                     this_calib <- calib.lines[ , this_run] & x@PA.table[ , this_PA]
-                    this_valid <- ! calib.lines[ , this_run] & x@PA.table[ , this_PA]
+                    this_valid <- !calib.lines[ , this_run] & x@PA.table[ , this_PA]
                   }
                   
                   calib.resp <- x@data.species[this_calib]

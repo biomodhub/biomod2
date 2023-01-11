@@ -1,6 +1,20 @@
 
 ## biomod2_internal ------------
-utils::globalVariables(names = c("res"))
+utils::globalVariables(names = c("i.dim1",
+                                 "i.dim2",
+                                 "i.dim3",
+                                 "sub.i"))
+
+## biomod2_classes_1 ------------
+utils::globalVariables(names = c("this_PA",
+                                 "this_run",
+                                 "this_dataset",
+                                 "has.mask",
+                                 "has.mask.eval",
+                                 "y"))
+
+## biomod2_classes_3 ------------
+utils::globalVariables(names = c("i"))
 
 ## biomod2_classes_4 ------------
 utils::globalVariables(names = c("thislayername"))
@@ -17,33 +31,55 @@ utils::globalVariables(names = c("i"))
 utils::globalVariables(names = c("i", "quant", "type", "IA"))
 
 ## BIOMOD_Projection ------------
-utils::globalVariables(names = c("do.stack", "output.format", "mod.name", "on_0_1000"
-                                 , "omit.na", "keep.in.memory"))
+utils::globalVariables(names = c("do.stack",
+                                 "output.format",
+                                 "mod.name",
+                                 "on_0_1000",
+                                 "omit.na",
+                                 "keep.in.memory"))
+
+                                 
+
+## BIOMOD_Modeling ------------
+utils::globalVariables(names = c("resp",
+                                 "value"))
 
 ## BIOMOD_EnsembleModeling ------------
-utils::globalVariables(names = c("metric.select.user",
+utils::globalVariables(names = c("eval.m",
                                  "assemb",
-                                 "em.mod.assemb"))
+                                 "algo",
+                                 "xx",
+                                 "em.algo.long",
+                                 "em.algo.class",
+                                 "em.mod.assemb",
+                                 "metric.select.user"))
 
 ## .get_needed_predictions ------------
-utils::globalVariables(names = c("thisPA"))
+utils::globalVariables(names = c("this_PA"))
 
 ## BIOMOD_EnsembleForecasting ------------
-utils::globalVariables(names = c("on_0_1000", "output.format", "keep.in.memory"))
+utils::globalVariables(names = c("on_0_1000",
+                                 "output.format",
+                                 "keep.in.memory",
+                                 "em.name"))
 
 ## BIOMOD_LoadModels ------------
 utils::globalVariables(names = c("full.name", "models", "run", "PA"))
 
 ## BIOMOD_RangeSize ------------
-utils::globalVariables(names = c("thiscol"))
+utils::globalVariables(names = c("thiscol",
+                                 "pred",
+                                 "proj"))
 
 ## bm_RunModel ------------
 utils::globalVariables(names = c("expl_var_names", "resp_name", "criteria"))
 ## bm_RunModelsLoop ------------
-utils::globalVariables(names = c("modi"))
+utils::globalVariables(names = c("modi",
+                                 "xx"))
 
 ## bm_VariablesImportance ------------
 utils::globalVariables(names = c("temp_workdir", "variables", "v", "r"))
+
 
 
 ## bm_PlotEvalMean ------------
@@ -56,8 +92,18 @@ utils::globalVariables(names = c("scales", "main"))
 utils::globalVariables(names = c("main"))
 
 ## bm_PlotResponseCurves ------------
-utils::globalVariables(names = c("data_species", "models", "vari", "nb.pts", "model"
-                                 , "use.formal.names", "on_0_1000", "main"))
+utils::globalVariables(names = c("data_species",
+                                 "models",
+                                 "nb.pts",
+                                 "use.formal.names",
+                                 "on_0_1000",
+                                 "main", 
+                                 "vari",
+                                 "vari2", 
+                                 "model", 
+                                 "combi", 
+                                 "dat_"))
+
 
 ## bm_PlotRangeSize ------------
 utils::globalVariables(names = c("vali"))

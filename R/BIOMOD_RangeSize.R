@@ -400,6 +400,7 @@ setMethod('BIOMOD_RangeSize', signature(proj.current = 'SpatRaster', proj.future
 }
 
 # transform data.frame from long to wide for BIOMOD_RangeSize
+##' @importFrom stats reshape
 .transform_df <- function(df){
   df <- reshape(df[,c("full.name","points","pred")], idvar = "points", timevar = "full.name", direction = "wide")[,-1, drop = FALSE] 
   colnames(df) <- substring(colnames(df), 6)

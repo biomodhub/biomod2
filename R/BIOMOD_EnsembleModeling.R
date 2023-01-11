@@ -449,7 +449,7 @@ BIOMOD_EnsembleModeling <- function(bm.mod,
         models.kept.scores <- needed_predictions$models.kept.scores[[eval.m]]
         
         ### LOOP over em.algo ---------------------------------------------------
-        em.out.algo <- foreach (algo = em.algo) %do%  {
+        em.out.algo <- foreach(algo = em.algo) %do%  {
           ListOut <- list(model = NULL,
                           calib.failure = NULL,
                           models.kept = models.kept,
@@ -1084,12 +1084,12 @@ BIOMOD_EnsembleModeling <- function(bm.mod,
       names(models.kept.PA) <- models.kept.union
       
       out$predictions <-
-        foreach(thisPA = unique(models.kept.PA), .combine = "rbind") %do% {
+        foreach(this_PA = unique(models.kept.PA), .combine = "rbind") %do% {
           ## model kept for this PA dataset
-          thismodels <- names(models.kept.PA)[which(models.kept.PA == thisPA)]
+          thismodels <- names(models.kept.PA)[which(models.kept.PA == this_PA)]
           ## index of data to predict and data already predicted
-          index_to_predict <- which(!PA.table[, thisPA] & kept_data)
-          index_current <- which(PA.table[, thisPA])
+          index_to_predict <- which(!PA.table[, this_PA] & kept_data)
+          index_current <- which(PA.table[, this_PA])
           
           ## retrieve predictions for this PA dataset
           current_prediction <- get_predictions(bm.mod, full.name = thismodels)

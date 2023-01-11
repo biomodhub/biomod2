@@ -954,7 +954,7 @@ setMethod("get_predictions", "BIOMOD.projection.out",
           function(obj, metric.binary = NULL, metric.filter = NULL
                    , full.name = NULL, PA = NULL, run = NULL, algo = NULL
                    , merged.by.algo = NULL, merged.by.run = NULL
-                   , merged.by.PA = NULL, filtered.by = NULL) {
+                   , merged.by.PA = NULL, filtered.by = NULL, ...) {
             
             # extract layers from obj@proj.out@link concerned by metric.filter 
             # or metric.binary

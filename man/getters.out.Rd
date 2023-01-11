@@ -91,7 +91,8 @@
   merged.by.algo = NULL,
   merged.by.run = NULL,
   merged.by.PA = NULL,
-  filtered.by = NULL
+  filtered.by = NULL,
+  ...
 )
 
 \S4method{get_formal_data}{BIOMOD.ensemble.models.out}(obj, subinfo = NULL)

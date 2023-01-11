@@ -291,8 +291,7 @@ BIOMOD_PresenceOnly <- function(bm.mod = NULL,
   mpa.eval$metric.eval <- "MPA"
   mpa.eval[, c("cutoff", "sensitivity", "specificity", "validation")] <- NA
   
-  for (i in 1:nrow(boyce.eval))
-  {
+  for (i in 1:nrow(boyce.eval)) {
     ## Get model informations
     full.name <- boyce.eval[i, 1]
     tmp <- strsplit(as.character(full.name), split = "_")[[1]]
@@ -372,7 +371,7 @@ BIOMOD_PresenceOnly <- function(bm.mod = NULL,
     ## Compute Boyce and MPA values for evaluation data -----------------------
     if (!is.null(bm.mod) && bm.mod@has.evaluation.data == TRUE) {
       myResp.eval <- get_formal_data(bm.mod)@eval.data.species
-      Pred.eval <- myPredMod.eval[, full.name]
+      Pred.eval <- myPredMod.eval[[full.name]]
       
       boy <- ecospat.boyce(fit = Pred.eval,
                            obs = Pred.eval[myResp.eval == 1],
