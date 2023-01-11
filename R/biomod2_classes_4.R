@@ -776,7 +776,7 @@ setMethod('predict2', signature(object = 'MAXENT_biomod2_model', newdata = "Spat
                 file.path(temp_workdir, paste0(thislayername,'.asc'))
               writeRaster(subset(newdata,thislayername), 
                           filename = current_data_filename,
-                          overwrite = TRUE,
+                          overwrite = overwrite,
                           NAflag = -9999)
               return(current_data_filename)
             }

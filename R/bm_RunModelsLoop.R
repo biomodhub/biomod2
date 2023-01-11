@@ -564,7 +564,7 @@ bm_RunModel <- function(model, Data, modeling.id = '', bm.options, calib.lines,
                                  importance = FALSE,
                                  norm.votes = TRUE,
                                  strata = factor(c(0, 1)),
-                                 sampsize = ifelse(!is.null(bm.options@RF$sampsize), bm.options@RF$sampsize, nrow(Data[calib.lines, ])),
+                                 sampsize = unlist(ifelse(!is.null(bm.options@RF$sampsize), list(bm.options@RF$sampsize), nrow(Data[calib.lines, ]))),
                                  nodesize = bm.options@RF$nodesize,
                                  maxnodes = bm.options@RF$maxnodes))
     
