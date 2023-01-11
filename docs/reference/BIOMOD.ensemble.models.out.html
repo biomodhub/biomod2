@@ -152,10 +152,6 @@ been combined to build the ensemble models, must be among
 <dd><p>a <code>vector</code> containing names of failed ensemble models</p></dd>
 
 
-<dt><code>em.models_needed</code></dt>
-<dd><p>a <code>list</code> containing single models for each ensemble model</p></dd>
-
-
 <dt><code>em.models_kept</code></dt>
 <dd><p>a <code>list</code> containing single models for each ensemble model</p></dd>
 
@@ -270,7 +266,7 @@ object containing models predictions for evaluation data</p></dd>
 <span><span class="va">myBiomodEM</span> <span class="op">&lt;-</span> <span class="fu"><a href="BIOMOD_EnsembleModeling.html">BIOMOD_EnsembleModeling</a></span><span class="op">(</span>bm.mod <span class="op">=</span> <span class="va">myBiomodModelOut</span>,</span>
 <span>                                      models.chosen <span class="op">=</span> <span class="st">'all'</span>,</span>
 <span>                                      em.by <span class="op">=</span> <span class="st">'all'</span>,</span>
-<span>                                      em.algo <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">'prob.mean'</span>, <span class="st">'committee.averaging'</span><span class="op">)</span>,</span>
+<span>                                      em.algo <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">'EMmean'</span>, <span class="st">'EMca'</span><span class="op">)</span>,</span>
 <span>                                      metric.select <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">'TSS'</span><span class="op">)</span>,</span>
 <span>                                      metric.select.thresh <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.7</span><span class="op">)</span>,</span>
 <span>                                      metric.eval <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">'TSS'</span>, <span class="st">'ROC'</span><span class="op">)</span>,</span>

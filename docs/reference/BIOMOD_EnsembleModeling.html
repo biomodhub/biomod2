@@ -192,6 +192,18 @@ An <code>integer</code> corresponding to the number of permutations to be done f
 estimate variable importance</p></dd>
 
 
+<dt>EMci.alpha</dt>
+<dd><p>(<em>optional, default</em> <code>0.05</code>) <br> 
+A <code>numeric</code> value corresponding to the significance level to estimate confidence interval</p></dd>
+
+
+<dt>EMwmean.decay</dt>
+<dd><p>(<em>optional, default</em> <code>proportional</code>) <br> 
+A value defining the relative importance of the weights (if <code>prob.mean.weight = TRUE</code>). 
+A high value will strongly discriminate <em>good</em> models from the <em>bad</em> ones (see Details), while <code>proportional</code> will 
+attribute weights proportionally to the models evaluation scores</p></dd>
+
+
 <dt>nb.cpu</dt>
 <dd><p>(<em>optional, default</em> <code>1</code>) <br> 
 An <code>integer</code> value corresponding to the number of computing resources to be used to 
@@ -209,45 +221,43 @@ A <code>logical</code> value defining whether the progress bar is to be rendered
 
 
 <dt>prob.mean</dt>
-<dd><p>(<em>optional, default</em> <code>TRUE</code>) <br> A <code>logical</code> value defining 
+<dd><p>(<em>deprecated</em> <code>TRUE</code>) <br> A <code>logical</code> value defining 
 whether to compute the mean probabilities across predictions or not</p></dd>
 
 
 <dt>prob.median</dt>
-<dd><p>(<em>obsolete</em>) <br> A <code>logical</code> value defining whether to compute 
+<dd><p>(<em>deprecated</em>) <br> A <code>logical</code> value defining whether to compute 
 the median probabilities across predictions or not</p></dd>
 
 
 <dt>prob.cv</dt>
-<dd><p>(<em>obsolete</em>) <br> A <code>logical</code> value defining whether to compute the 
+<dd><p>(<em>deprecated</em>) <br> A <code>logical</code> value defining whether to compute the 
 coefficient of variation across predictions or not</p></dd>
 
 
 <dt>prob.ci</dt>
-<dd><p>(<em>obsolete</em>) <br> A <code>logical</code> value defining whether to compute the 
+<dd><p>(<em>deprecated</em>) <br> A <code>logical</code> value defining whether to compute the 
 confidence interval around the <code>prob.mean</code> ensemble model or not</p></dd>
 
 
 <dt>committee.averaging</dt>
-<dd><p>(<em>obsolete</em>) <br> A <code>logical</code> value defining whether to 
+<dd><p>(<em>deprecated</em>) <br> A <code>logical</code> value defining whether to 
 compute the committee averaging across predictions or not</p></dd>
 
 
 <dt>prob.mean.weight</dt>
-<dd><p>(<em>obsolete</em>) <br> A <code>logical</code> value defining whether to 
+<dd><p>(<em>deprecated</em>) <br> A <code>logical</code> value defining whether to 
 compute the weighted sum of probabilities across predictions or not</p></dd>
 
 
 <dt>prob.mean.weight.decay</dt>
-<dd><p>(<em>optional, default</em> <code>proportional</code>) <br> 
-A value defining the relative importance of the weights (if <code>prob.mean.weight = TRUE</code>). 
-A high value will strongly discriminate <em>good</em> models from the <em>bad</em> ones (see Details), while <code>proportional</code> will 
-attribute weights proportionally to the models evaluation scores</p></dd>
+<dd><p>(<em>deprecated</em>)  <br> old argument name for
+<code>EMwmean.decay</code></p></dd>
 
 
 <dt>prob.ci.alpha</dt>
-<dd><p>(<em>optional, default</em> <code>0.05</code>) <br> 
-A <code>numeric</code> value corresponding to the significance level to estimate confidence interval</p></dd>
+<dd><p>(<em>deprecated</em>) <br> old argument name for
+<code>EMci.alpha</code></p></dd>
 
 </dl></div>
     <div id="value">
@@ -466,7 +476,7 @@ model will be used to weight the models predictions.</em></p></dd>
 <span><span class="va">myBiomodEM</span> <span class="op">&lt;-</span> <span class="fu">BIOMOD_EnsembleModeling</span><span class="op">(</span>bm.mod <span class="op">=</span> <span class="va">myBiomodModelOut</span>,</span>
 <span>                                      models.chosen <span class="op">=</span> <span class="st">'all'</span>,</span>
 <span>                                      em.by <span class="op">=</span> <span class="st">'all'</span>,</span>
-<span>                                      em.algo <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">'prob.mean'</span>, <span class="st">'committee.averaging'</span><span class="op">)</span>,</span>
+<span>                                      em.algo <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">'EMmean'</span>, <span class="st">'EMca'</span><span class="op">)</span>,</span>
 <span>                                      metric.select <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">'TSS'</span><span class="op">)</span>,</span>
 <span>                                      metric.select.thresh <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.7</span><span class="op">)</span>,</span>
 <span>                                      metric.eval <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">'TSS'</span>, <span class="st">'ROC'</span><span class="op">)</span>,</span>

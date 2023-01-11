@@ -42,8 +42,6 @@ been combined to build the ensemble models, must be among
 
 \item{\code{em.failed}}{a \code{vector} containing names of failed ensemble models}
 
-\item{\code{em.models_needed}}{a \code{list} containing single models for each ensemble model}
-
 \item{\code{em.models_kept}}{a \code{list} containing single models for each ensemble model}
 
 \item{\code{models.evaluation}}{a \code{\link{BIOMOD.stored.data.frame-class}} object

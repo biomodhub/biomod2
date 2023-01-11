@@ -24,13 +24,35 @@
 \arguments{
 \item{x}{a \code{\link{BIOMOD.projection.out}} object}
 
+\item{coord}{a 2-columns \code{data.frame} containing the corresponding \code{X} and \code{Y}}
+
+\item{plot.output}{(\emph{optional, default} \code{facet}) a character
+determining the type of output: with \code{plot.output = 'list'} the
+function will return a list of plots (one plot per model) ; with 'facet' ;
+with \code{plot.output = 'facet'} the function will return a single plot
+with all asked projections as facet.}
+
+\item{do.plot}{(\emph{optional, default} \code{TRUE}) a boolean determining
+whether the plot should be displayed or just returned.}
+
+\item{std}{(\emph{optional, default} \code{TRUE}) a boolean controlling the
+limits of the color scales. With \code{std = TRUE} color scales are
+displayed between 0 and 1 (or 1000). With \code{std = FALSE} color scales
+are displayed between 0 and the maximum value observed.}
+
+\item{scales}{(\emph{optional, default} \code{fixed}) a character
+determining whether x and y scales are shared among facet. Argument passed
+to \code{\link[ggplot2:facet_wrap]{facet_wrap}}. Possible values: 'fixed', 'free_x',
+'free_y', 'free'.}
+
+\item{size}{(\emph{optional, default} \code{0.75}) a numeric determing the
+size of points on the plots and passed to
+\code{\link[ggplot2:geom_point]{geom_point}}.}
+
+\item{...}{additional parameters to be passed to \code{\link{get_predictions}} 
+to select the models that will be plotted}
+
 \item{object}{a \code{\link{BIOMOD.projection.out}} object}
-
-\item{str.grep}{a \code{character} corresponding to the name (or part of the name(s)) of 
-models projected}
-
-\item{col}{a \code{vector} containing colors for plot (default : 
-\code{colorRampPalette(c("grey90", "yellow4", "green4"))(100)})}
 }
 \description{
 Class returned by \code{\link{BIOMOD_Projection}}, and used by 

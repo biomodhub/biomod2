@@ -332,7 +332,7 @@ of their calibration / validation range, identifying locations where predictions
 <span>  <span class="va">myBiomodEM</span> <span class="op">&lt;-</span> <span class="fu"><a href="BIOMOD_EnsembleModeling.html">BIOMOD_EnsembleModeling</a></span><span class="op">(</span>bm.mod <span class="op">=</span> <span class="va">myBiomodModelOut</span>,</span>
 <span>                                        models.chosen <span class="op">=</span> <span class="st">'all'</span>,</span>
 <span>                                        em.by <span class="op">=</span> <span class="st">'all'</span>,</span>
-<span>                                        em.algo <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">'prob.mean'</span>, <span class="st">'committee.averaging'</span><span class="op">)</span>,</span>
+<span>                                        em.algo <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">'EMmean'</span>, <span class="st">'EMca'</span><span class="op">)</span>,</span>
 <span>                                        metric.select <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">'TSS'</span><span class="op">)</span>,</span>
 <span>                                        metric.select.thresh <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.7</span><span class="op">)</span>,</span>
 <span>                                        metric.eval <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">'TSS'</span>, <span class="st">'ROC'</span><span class="op">)</span>,</span>
@@ -357,7 +357,7 @@ of their calibration / validation range, identifying locations where predictions
 <span>                                             metric.binary <span class="op">=</span> <span class="st">'all'</span>,</span>
 <span>                                             metric.filter <span class="op">=</span> <span class="st">'all'</span><span class="op">)</span></span>
 <span><span class="va">myBiomodEMProj</span></span>
-<span><span class="fu"><a href="plot.html">plot</a></span><span class="op">(</span><span class="va">myBiomodEMProj</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/pkg/terra/man/plot.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">myBiomodEMProj</span><span class="op">)</span></span>
 <span></span>
 <span></span></code></pre></div>
     </div>

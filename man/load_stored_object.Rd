@@ -15,8 +15,10 @@ load_stored_object(obj, ...)
 \arguments{
 \item{obj}{a \code{\link{BIOMOD.stored.data}} object}
 
-\item{layer}{an \code{integer} corresponding to the layer ID to be extracted when multilayer 
-object considered}
+\item{...}{additional arguments}
+
+\item{layer}{an \code{integer} corresponding to the layer ID to be extracted
+when multilayer object considered}
 }
 \description{
 This functions allow the user to load \code{\link{BIOMOD.stored.data}} objects 

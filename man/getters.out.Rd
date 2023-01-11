@@ -180,7 +180,7 @@ A \code{vector} containing evaluation metric to be kept, must be among \code{ROC
 
 \item{expl.var}{(\emph{optional, default} \code{NULL}) \cr 
 A \code{vector} containing explanatory variables to be kept, that can be obtained with the 
-\code{\link{get_formal_data(obj, subinfo = 'expl.var.names')}} function}
+\code{\link{get_formal_data}(obj, subinfo = 'expl.var.names')} function}
 
 \item{merged.by.algo}{(\emph{optional, default} \code{NULL}) \cr 
 A \code{character} containing merged algorithm to be loaded, must be among \code{GLM}, 

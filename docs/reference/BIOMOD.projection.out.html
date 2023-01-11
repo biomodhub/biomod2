@@ -99,7 +99,7 @@ BIOMOD_EnsembleForecasting"><!-- mathjax --><script src="https://cdnjs.cloudflar
 
     <div id="ref-usage">
     <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="co"># S4 method for BIOMOD.projection.out,missing</span></span>
-<span><span class="fu"><a href="plot.html">plot</a></span><span class="op">(</span></span>
+<span><span class="fu"><a href="https://rdrr.io/pkg/terra/man/plot.html" class="external-link">plot</a></span><span class="op">(</span></span>
 <span>  <span class="va">x</span>,</span>
 <span>  coord <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  <span class="va">plot.output</span>,</span>
@@ -120,18 +120,50 @@ BIOMOD_EnsembleForecasting"><!-- mathjax --><script src="https://cdnjs.cloudflar
 <dd><p>a <code>BIOMOD.projection.out</code> object</p></dd>
 
 
+<dt>coord</dt>
+<dd><p>a 2-columns <code>data.frame</code> containing the corresponding <code>X</code> and <code>Y</code></p></dd>
+
+
+<dt>plot.output</dt>
+<dd><p>(<em>optional, default</em> <code>facet</code>) a character
+determining the type of output: with <code>plot.output = 'list'</code> the
+function will return a list of plots (one plot per model) ; with 'facet' ;
+with <code>plot.output = 'facet'</code> the function will return a single plot
+with all asked projections as facet.</p></dd>
+
+
+<dt>do.plot</dt>
+<dd><p>(<em>optional, default</em> <code>TRUE</code>) a boolean determining
+whether the plot should be displayed or just returned.</p></dd>
+
+
+<dt>std</dt>
+<dd><p>(<em>optional, default</em> <code>TRUE</code>) a boolean controlling the
+limits of the color scales. With <code>std = TRUE</code> color scales are
+displayed between 0 and 1 (or 1000). With <code>std = FALSE</code> color scales
+are displayed between 0 and the maximum value observed.</p></dd>
+
+
+<dt>scales</dt>
+<dd><p>(<em>optional, default</em> <code>fixed</code>) a character
+determining whether x and y scales are shared among facet. Argument passed
+to <code><a href="https://ggplot2.tidyverse.org/reference/facet_wrap.html" class="external-link">facet_wrap</a></code>. Possible values: 'fixed', 'free_x',
+'free_y', 'free'.</p></dd>
+
+
+<dt>size</dt>
+<dd><p>(<em>optional, default</em> <code>0.75</code>) a numeric determing the
+size of points on the plots and passed to
+<code><a href="https://ggplot2.tidyverse.org/reference/geom_point.html" class="external-link">geom_point</a></code>.</p></dd>
+
+
+<dt>...</dt>
+<dd><p>additional parameters to be passed to <code><a href="getters.out.html">get_predictions</a></code> 
+to select the models that will be plotted</p></dd>
+
+
 <dt>object</dt>
 <dd><p>a <code>BIOMOD.projection.out</code> object</p></dd>
-
-
-<dt>str.grep</dt>
-<dd><p>a <code>character</code> corresponding to the name (or part of the name(s)) of 
-models projected</p></dd>
-
-
-<dt>col</dt>
-<dd><p>a <code>vector</code> containing colors for plot (default : 
-<code>colorRampPalette(c("grey90", "yellow4", "green4"))(100)</code>)</p></dd>
 
 </dl></div>
     <div id="slots">
@@ -273,7 +305,7 @@ not</p></dd>
 <span>                                  metric.filter <span class="op">=</span> <span class="st">'all'</span>,</span>
 <span>                                  build.clamping.mask <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
 <span><span class="va">myBiomodProj</span></span>
-<span><span class="fu"><a href="plot.html">plot</a></span><span class="op">(</span><span class="va">myBiomodProj</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/pkg/terra/man/plot.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">myBiomodProj</span><span class="op">)</span></span>
 <span></span>
 <span></span></code></pre></div>
     </div>

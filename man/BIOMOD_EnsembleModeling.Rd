@@ -72,6 +72,14 @@ be among \code{ROC}, \code{TSS}, \code{KAPPA}, \code{ACCURACY}, \code{BIAS}, \co
 An \code{integer} corresponding to the number of permutations to be done for each variable to 
 estimate variable importance}
 
+\item{EMci.alpha}{(\emph{optional, default} \code{0.05}) \cr 
+A \code{numeric} value corresponding to the significance level to estimate confidence interval}
+
+\item{EMwmean.decay}{(\emph{optional, default} \code{proportional}) \cr 
+A value defining the relative importance of the weights (if \code{prob.mean.weight = TRUE}). 
+A high value will strongly discriminate \emph{good} models from the \emph{bad} ones (see Details), while \code{proportional} will 
+attribute weights proportionally to the models evaluation scores}
+
 \item{nb.cpu}{(\emph{optional, default} \code{1}) \cr 
 An \code{integer} value corresponding to the number of computing resources to be used to 
 parallelize the single models computation}
@@ -82,31 +90,29 @@ An \code{integer} value corresponding to the new seed value to be set}
 \item{do.progress}{(\emph{optional, default} \code{TRUE}) \cr 
 A \code{logical} value defining whether the progress bar is to be rendered or not}
 
-\item{prob.mean}{(\emph{optional, default} \code{TRUE}) \cr A \code{logical} value defining 
+\item{prob.mean}{(\emph{deprecated} \code{TRUE}) \cr A \code{logical} value defining 
 whether to compute the mean probabilities across predictions or not}
 
-\item{prob.median}{(\emph{obsolete}) \cr A \code{logical} value defining whether to compute 
+\item{prob.median}{(\emph{deprecated}) \cr A \code{logical} value defining whether to compute 
 the median probabilities across predictions or not}
 
-\item{prob.cv}{(\emph{obsolete}) \cr A \code{logical} value defining whether to compute the 
+\item{prob.cv}{(\emph{deprecated}) \cr A \code{logical} value defining whether to compute the 
 coefficient of variation across predictions or not}
 
-\item{prob.ci}{(\emph{obsolete}) \cr A \code{logical} value defining whether to compute the 
+\item{prob.ci}{(\emph{deprecated}) \cr A \code{logical} value defining whether to compute the 
 confidence interval around the \code{prob.mean} ensemble model or not}
 
-\item{committee.averaging}{(\emph{obsolete}) \cr A \code{logical} value defining whether to 
+\item{committee.averaging}{(\emph{deprecated}) \cr A \code{logical} value defining whether to 
 compute the committee averaging across predictions or not}
 
-\item{prob.mean.weight}{(\emph{obsolete}) \cr A \code{logical} value defining whether to 
+\item{prob.mean.weight}{(\emph{deprecated}) \cr A \code{logical} value defining whether to 
 compute the weighted sum of probabilities across predictions or not}
 
-\item{prob.mean.weight.decay}{(\emph{optional, default} \code{proportional}) \cr 
-A value defining the relative importance of the weights (if \code{prob.mean.weight = TRUE}). 
-A high value will strongly discriminate \emph{good} models from the \emph{bad} ones (see Details), while \code{proportional} will 
-attribute weights proportionally to the models evaluation scores}
+\item{prob.mean.weight.decay}{(\emph{deprecated})  \cr old argument name for
+\code{EMwmean.decay}}
 
-\item{prob.ci.alpha}{(\emph{optional, default} \code{0.05}) \cr 
-A \code{numeric} value corresponding to the significance level to estimate confidence interval}
+\item{prob.ci.alpha}{(\emph{deprecated}) \cr old argument name for
+\code{EMci.alpha}}
 }
 \value{
 A \code{BIOMOD.ensemble.models.out} object containing models outputs, or links to saved 

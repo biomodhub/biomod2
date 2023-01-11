@@ -37,6 +37,8 @@ An \code{integer} value corresponding to the new seed value to be set}
 
 \item{do.progress}{(\emph{optional, default} \code{TRUE}) \cr 
 A \code{logical} value defining whether the progress bar is to be rendered or not}
+
+\item{...}{additional arguments}
 }
 \value{
 A \code{3} columns \code{data.frame} containing variable's importance scores for each 
