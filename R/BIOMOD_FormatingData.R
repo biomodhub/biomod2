@@ -1,4 +1,4 @@
-# BIOMOD_FormatingData Documentation ------------------------------------------
+###################################################################################################
 ##' @name BIOMOD_FormatingData
 ##' @author Damien Georges, Wilfried Thuiller
 ##' 
@@ -20,12 +20,12 @@
 ##' (\code{0} : absence, \code{1} : presence, \code{NA} : indeterminate) 
 ##' for a single species that will be used to build the species distribution model(s)
 ##' \cr \emph{Note that old format from \pkg{sp} are still supported such as
-##'  \code{SpatialPoints}  (\emph{if presence-only}) or \code{SpatialPointsDataFrame}
+##'  \code{SpatialPoints}  (if presence-only) or \code{SpatialPointsDataFrame}
 ##'  object containing binary data.}
 ##' 
 ##' @param expl.var a \code{matrix}, \code{data.frame}, \code{\link[terra:vect]{SpatVector}}
 ##' or \code{\link[terra:rast]{SpatRaster}} object containing the explanatory variables 
-##' (in columns or layers) that will be used to build the species distribution model(s).
+##' (in columns or layers) that will be used to build the species distribution model(s)
 ##' \cr \emph{Note that old format from \pkg{raster} and \pkg{sp} are still supported such as 
 ##' \code{RasterStack} and \code{SpatialPointsDataFrame} objects. }
 ##' 
@@ -42,9 +42,8 @@
 ##'  for a single species that will be used to 
 ##' evaluate the species distribution model(s) with independent data
 ##' \cr \emph{Note that old format from \pkg{sp} are still supported such as
-##'  \code{SpatialPoints}  (\emph{if presence-only}) or \code{SpatialPointsDataFrame}
+##'  \code{SpatialPoints}  (if presence-only) or \code{SpatialPointsDataFrame}
 ##'  object containing binary data.}
-##'  
 ##' @param eval.expl.var (\emph{optional, default} \code{NULL}) \cr 
 ##' A \code{matrix}, \code{data.frame}, \code{\link[terra:vect]{SpatVector}}
 ##' or \code{\link[terra:rast]{SpatRaster}} object containing the explanatory variables (in 
@@ -52,7 +51,6 @@
 ##' independent data.
 ##' \cr \emph{Note that old format from \pkg{raster} and \pkg{sp} are still supported such as 
 ##' \code{RasterStack} and \code{SpatialPointsDataFrame} objects. }
-
 ##' @param eval.resp.xy (\emph{optional, default} \code{NULL}) \cr 
 ##' If \code{resp.var} is a \code{vector}, a 2-columns \code{matrix} or \code{data.frame} 
 ##' containing the corresponding \code{X} and \code{Y} coordinates that will be used to evaluate 
@@ -90,13 +88,16 @@
 ##' @param na.rm (\emph{optional, default} \code{TRUE}) \cr 
 ##' A \code{logical} value defining whether points having one or several missing values for 
 ##' explanatory variables should be removed from the analysis or not
+##' @param filter.raster (\emph{optional, default} \code{FALSE}) \cr 
+##' If \code{expl.var} is of raster type, a \code{logical} value defining whether \code{resp.var} 
+##' is to be filtered when several points occur in the same raster cell
 ##' 
 ##' 
 ##' @return 
 ##' 
 ##' A \code{BIOMOD.formated.data} object that can be used to build species distribution model(s) 
-##' with the \code{\link{BIOMOD_Modeling}} function. \cr \code{print} and \code{plot} 
-##' functions are available to have a summary of the created object.
+##' with the \code{\link{BIOMOD_Modeling}} function. \cr
+##' \code{print} and \code{plot} functions are available to have a summary of the created object.
 ##' 
 ##' 
 ##' @details  
@@ -108,17 +109,20 @@
 ##' 
 ##' \bold{Concerning explanatory variables and XY coordinates :} 
 ##' \itemize{
-##'   \item if  \code{\link[terra:rast]{SpatRaster}}, \code{RasterLayer} or \code{RasterStack}
-##'   provided (for \code{expl.var} or \code{eval.expl.var}), \pkg{biomod2} will extract the 
-##'   corresponding values from XY coordinates provided (\code{resp.xy} or \code{eval.resp.xy} 
-##'   respectively). \cr \emph{Be sure to give the XY coordinates in the same projection system 
-##'   than the raster objects !}
-##'   \item if \code{\link[terra:vect]{SpatVector}}, \code{SpatialPointsDataFrame}
-##'    provided (for \code{resp.var} or \code{eval.resp.var}), the same rule applies
-##'    (\emph{same projection system !}).
-##'   \item if \code{data.frame} or \code{matrix} provided (for \code{expl.var} or
-##'    \code{eval.expl.var}), \pkg{biomod2} will simply merge it (\code{cbind}) 
-##'    with \code{resp.var} without ^considering XY coordinates. \cr
+##'   \item if \code{\link[terra:rast]{SpatRaster}}, \code{RasterLayer} or \code{RasterStack}
+##'   provided for \code{expl.var} or \code{eval.expl.var}, \cr \pkg{biomod2} will extract 
+##'   the corresponding values from XY coordinates provided :
+##'   \itemize{
+##'     \item either through \code{resp.xy} or \code{eval.resp.xy} respectively
+##'     \item or \code{resp.var} or \code{eval.resp.var}, if provided as 
+##'     \code{\link[terra:vect]{SpatVector}} or \code{SpatialPointsDataFrame}
+##'   }
+##'   \emph{Be sure to give the objects containing XY coordinates in the same projection 
+##'   system than the raster objects !}
+##'    
+##'   \item if \code{data.frame} or \code{matrix} provided for \code{expl.var} or
+##'    \code{eval.expl.var}, \cr \pkg{biomod2} will simply merge it (\code{cbind}) 
+##'    with \code{resp.var} without considering XY coordinates. \cr
 ##'   \emph{Be sure to give explanatory and response values in the same row order !}
 ##' }
 ##' 
@@ -160,10 +164,10 @@
 ##'   }
 ##'   \item{Evaluation data}{
 ##'   Although \pkg{biomod2} provides tools to automatically divide dataset into calibration and 
-##'   validation parts through the modeling process (see \code{NbRunEval} and \code{DataSplit} 
+##'   validation parts through the modeling process (see \code{nb.rep} and \code{data.split.perc} 
 ##'   parameters in \code{\link{BIOMOD_Modeling}} function ; or \code{\link{BIOMOD_CrossValidation} 
 ##'   function}), it is also possible (and strongly advised) to directly provide two independent 
-##'   datasets, one for calibration and one for validation.
+##'   datasets, one for calibration/validation and one for evaluation
 ##'   }
 ##'   \item{Pseudo-absence selection}{
 ##'   If no true absences are available, pseudo-absences must be selected from the 
@@ -236,6 +240,7 @@
 ##'                                      resp.xy = myRespXY,
 ##'                                      resp.name = myRespName)
 ##' myBiomodData
+##' summary(myBiomodData)
 ##' plot(myBiomodData)
 ##' 
 ##' 
@@ -298,7 +303,8 @@
 ##' 
 ##' @export
 ##' 
-##----------------------------------------------------------------------------##
+##' 
+###################################################################################################
 
 BIOMOD_FormatingData <- function(resp.name,
                                  resp.var,
@@ -315,7 +321,8 @@ BIOMOD_FormatingData <- function(resp.name,
                                  PA.dist.max = NULL,
                                  PA.sre.quant = 0.025,
                                  PA.user.table = NULL,
-                                 na.rm = TRUE)
+                                 na.rm = TRUE,
+                                 filter.raster = FALSE)
 {
   .bm_cat(paste0(resp.name, " Data Formating"))
   
@@ -334,7 +341,8 @@ BIOMOD_FormatingData <- function(resp.name,
                                            PA.dist.min,
                                            PA.dist.max,
                                            PA.sre.quant,
-                                           PA.user.table)
+                                           PA.user.table,
+                                           filter.raster)
   for (argi in names(args)) { assign(x = argi, value = args[[argi]]) }
   rm(args)
   ## 2. build BIOMOD.formated.data object -------------------------------------
@@ -348,7 +356,8 @@ BIOMOD_FormatingData <- function(resp.name,
                                 eval.sp = eval.resp.var,
                                 eval.env = eval.expl.var,
                                 eval.xy = eval.resp.xy,
-                                na.rm = na.rm)
+                                na.rm = na.rm,
+                                filter.raster = filter.raster)
   } else { # automatic Pseudo Absences selection
     out <- BIOMOD.formated.data.PA(sp = resp.var,
                                    xy = resp.xy,
@@ -365,7 +374,8 @@ BIOMOD_FormatingData <- function(resp.name,
                                    PA.dist.max = PA.dist.max,
                                    PA.sre.quant = PA.sre.quant,
                                    PA.user.table = PA.user.table,
-                                   na.rm = na.rm)
+                                   na.rm = na.rm,
+                                   filter.raster = filter.raster)
   }
   .bm_cat("Done")
   return(out)
@@ -388,7 +398,8 @@ BIOMOD_FormatingData <- function(resp.name,
                                              PA.dist.min,
                                              PA.dist.max,
                                              PA.sre.quant,
-                                             PA.user.table)
+                                             PA.user.table,
+                                             filter.raster)
 {
   ## 0. Checking names (resp.name available ?) --------------------------------
   if (grepl('/', resp.name)) {
@@ -442,6 +453,8 @@ BIOMOD_FormatingData <- function(resp.name,
   if(!is.null(resp.xy)){
     resp.xy <- .check_formating_xy(resp.xy, 
                                    resp.length = length(resp.var))
+  } else if (inherits(expl.var, c('RasterLayer', 'RasterStack', 'SpatRaster'))) {
+    stop("`resp.xy` argument is missing. Please provide `resp.xy` when `expl.var` is a raster.")
   } else {
     resp.xy <- data.frame()
   }
@@ -575,6 +588,13 @@ BIOMOD_FormatingData <- function(resp.name,
   } else {
     cat("\n      ! No data has been set aside for modeling evaluation")
     eval.expl.var <- eval.resp.xy <- NULL
+  }
+  
+  
+  
+  ### 4 - argument filter.raster ---------------------------------------------------
+  if(inherits(expl.var, "SpatRaster")){
+    stopifnot(is.logical(filter.raster))
   }
   
   ### PA arguments are not checked here because it will be done later... (may be will do it here later)

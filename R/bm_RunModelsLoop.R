@@ -1,4 +1,4 @@
-# bm_RunModelsLoop docs --------------------------------------------------------
+###################################################################################################
 ##' @name bm_RunModelsLoop
 ##' @aliases bm_RunModelsLoop
 ##' @aliases bm_RunModel
@@ -16,7 +16,7 @@
 ##' (\emph{a random number by default})
 ##' @param model a \code{character} corresponding to the model name to be computed, must be either 
 ##' \code{GLM}, \code{GBM}, \code{GAM}, \code{CTA}, \code{ANN}, \code{SRE}, \code{FDA}, 
-##' \code{MARS}, \code{RF}, \code{MAXENT.Phillips}, \code{MAXENT.Phillips.2}
+##' \code{MARS}, \code{RF}, \code{MAXENT}, \code{MAXNET}
 ##' @param bm.options a \code{\link{BIOMOD.models.options}} object returned by the  
 ##' \code{\link{BIOMOD_ModelingOptions}} function
 ##' @param metric.eval a \code{vector} containing evaluation metric names to be used, must 
@@ -67,7 +67,7 @@
 ##'   \item{\code{model} : }{the name of correctly computed model}
 ##'   \item{\code{calib.failure} : }{the name of incorrectly computed model}
 ##'   \item{\code{pred} : }{the prediction outputs for calibration data}
-##'   \item{\code{pred.eval} : }{the prediction outputs for validation data}
+##'   \item{\code{pred.eval} : }{the prediction outputs for evaluation data}
 ##'   \item{\code{evaluation} : }{the evaluation outputs returned by the 
 ##'   \code{\link{bm_FindOptimStat}} function}
 ##'   \item{\code{var.import} : }{the mean of variables importance returned by the 
@@ -101,14 +101,14 @@
 ##' @importFrom nnet nnet
 ##' @importFrom earth earth
 ##' @importFrom mda fda mars
-##' @importFrom dplyr mutate_at filter select_at %>% pull
+##' @importFrom dplyr mutate_at select_at %>%
 ##' @importFrom maxnet maxnet
 ##' @importFrom randomForest randomForest
 ##' 
 ##' @export
 ##' 
 ##'
-# ---------------------------------------------------------------------------- #
+###################################################################################################
 
 
 bm_RunModelsLoop <- function(bm.format,
@@ -121,7 +121,8 @@ bm_RunModelsLoop <- function(bm.format,
                              scale.models = TRUE,
                              nb.cpu = 1,
                              seed.val = NULL,
-                             do.progress = TRUE) {
+                             do.progress = TRUE)
+{
   
   if (nb.cpu > 1) {
     if (.getOS() != "windows") {
@@ -136,12 +137,10 @@ bm_RunModelsLoop <- function(bm.format,
   
   cat("\n\n-=-=-=- Run : ", bm.format$name, '\n')
   res.sp.run <- list()
-  
   for (i in 1:ncol(bm.format$calib.lines)) { # loop on RunEval
     run.id = dimnames(bm.format$calib.lines)[[2]][i]
     run.name = paste0(bm.format$name, run.id)
     cat('\n\n-=-=-=--=-=-=-', run.name, '\n')
-    
     
     res.sp.run[[run.id]] = foreach(modi = model) %dopar%
       {
@@ -610,16 +609,16 @@ bm_RunModel <- function(model, Data, modeling.id = '', bm.options, calib.lines,
                       expl_var_type = get_var_type(Data[calib.lines, expl_var_names, drop = FALSE]), 
                       expl_var_range = get_var_range(Data[calib.lines, expl_var_names, drop = FALSE]))
     }
-  } else if (model == "MAXENT.Phillips") {
-    ### 2.10 MAXENT.Phillips model ---------------------------------------------
-    cat('\n\t> MAXENT.Phillips modeling...')
+  } else if (model == "MAXENT") {
+    ### 2.10 MAXENT model ---------------------------------------------
+    cat('\n\t> MAXENT modeling...')
     MWD <- 
       .maxent.prepare.workdir(
         Data, xy, calib.lines, RunName = nam,
         eval.data, eval.xy, dir.name = dir_name,
         species.name = resp_name,
         modeling.id = modeling.id,
-        background_data_dir = bm.options@MAXENT.Phillips$background_data_dir,
+        background_data_dir = bm.options@MAXENT$background_data_dir,
         categorical_var = categorical_var
       )
     
@@ -628,14 +627,14 @@ bm_RunModel <- function(model, Data, modeling.id = '', bm.options, calib.lines,
 
     maxent.args <- 
       c(
-        ifelse(is.null(bm.options@MAXENT.Phillips$memory_allocated),"",
-          paste0("-mx", bm.options@MAXENT.Phillips$memory_allocated, "m")), 
-        ifelse(is.null(bm.options@MAXENT.Phillips$initial_heap_size), "",
-               paste0(" -Xms", bm.options@MAXENT.Phillips$initial_heap_size)),
-        ifelse(is.null(bm.options@MAXENT.Phillips$max_heap_size), "",
-               paste0(" -Xmx", bm.options@MAXENT.Phillips$max_heap_size)),
+        ifelse(is.null(bm.options@MAXENT$memory_allocated),"",
+          paste0("-mx", bm.options@MAXENT$memory_allocated, "m")), 
+        ifelse(is.null(bm.options@MAXENT$initial_heap_size), "",
+               paste0(" -Xms", bm.options@MAXENT$initial_heap_size)),
+        ifelse(is.null(bm.options@MAXENT$max_heap_size), "",
+               paste0(" -Xmx", bm.options@MAXENT$max_heap_size)),
         paste0(" -jar ", 
-               file.path(bm.options@MAXENT.Phillips$path_to_maxent.jar, "maxent.jar")),
+               file.path(bm.options@MAXENT$path_to_maxent.jar, "maxent.jar")),
         paste0(" environmentallayers=\"", MWD$m_backgroundFile, "\""), 
         paste0(" samplesfile=\"", MWD$m_speciesFile, "\""),
         paste0(" projectionlayers=\"", gsub(", ", ",", toString(MWD$m_predictFile)), "\""),
@@ -645,21 +644,21 @@ bm_RunModel <- function(model, Data, modeling.id = '', bm.options, calib.lines,
                paste0(" togglelayertype=", categorical_var, collapse = " "),
                ""),
         " redoifexists",
-        paste0(" visible=", bm.options@MAXENT.Phillips$visible),
-        paste0(" linear=", bm.options@MAXENT.Phillips$linear),
-        paste0(" quadratic=", bm.options@MAXENT.Phillips$quadratic),
-        paste0( " product=", bm.options@MAXENT.Phillips$product),
-        paste0(" threshold=", bm.options@MAXENT.Phillips$threshold),
-        paste0(" hinge=", bm.options@MAXENT.Phillips$hinge),
-        paste0(" lq2lqptthreshold=", bm.options@MAXENT.Phillips$lq2lqptthreshold),
-        paste0(" l2lqthreshold=", bm.options@MAXENT.Phillips$l2lqthreshold),
-        paste0(" hingethreshold=", bm.options@MAXENT.Phillips$hingethreshold),
-        paste0(" beta_threshold=", bm.options@MAXENT.Phillips$beta_threshold),
-        paste0(" beta_categorical=", bm.options@MAXENT.Phillips$beta_categorical),
-        paste0(" beta_lqp=", bm.options@MAXENT.Phillips$beta_lqp),
-        paste0(" beta_hinge=", bm.options@MAXENT.Phillips$beta_hinge),
-        paste0(" betamultiplier=", bm.options@MAXENT.Phillips$betamultiplier),
-        paste0(" defaultprevalence=", bm.options@MAXENT.Phillips$defaultprevalence),
+        paste0(" visible=", bm.options@MAXENT$visible),
+        paste0(" linear=", bm.options@MAXENT$linear),
+        paste0(" quadratic=", bm.options@MAXENT$quadratic),
+        paste0( " product=", bm.options@MAXENT$product),
+        paste0(" threshold=", bm.options@MAXENT$threshold),
+        paste0(" hinge=", bm.options@MAXENT$hinge),
+        paste0(" lq2lqptthreshold=", bm.options@MAXENT$lq2lqptthreshold),
+        paste0(" l2lqthreshold=", bm.options@MAXENT$l2lqthreshold),
+        paste0(" hingethreshold=", bm.options@MAXENT$hingethreshold),
+        paste0(" beta_threshold=", bm.options@MAXENT$beta_threshold),
+        paste0(" beta_categorical=", bm.options@MAXENT$beta_categorical),
+        paste0(" beta_lqp=", bm.options@MAXENT$beta_lqp),
+        paste0(" beta_hinge=", bm.options@MAXENT$beta_hinge),
+        paste0(" betamultiplier=", bm.options@MAXENT$betamultiplier),
+        paste0(" defaultprevalence=", bm.options@MAXENT$defaultprevalence),
         " autorun ",
         " nowarnings ", 
         " notooltips ",
@@ -676,23 +675,23 @@ bm_RunModel <- function(model, Data, modeling.id = '', bm.options, calib.lines,
       g.pred <- NA
       class(g.pred) <- "try-error"
       cat( 
-        paste0("\n*** Error in MAXENT.Phillips, more info available in ",
+        paste0("\n*** Error in MAXENT, more info available in ",
                maxent_stderr_file)
       )
       
     } else {
-      model.bm <- new("MAXENT.Phillips_biomod2_model",
+      model.bm <- new("MAXENT_biomod2_model",
                       model_output_dir = MWD$m_outdir,
                       model_name = model_name,
-                      model_class = 'MAXENT.Phillips',
-                      model_options = bm.options@MAXENT.Phillips,
+                      model_class = 'MAXENT',
+                      model_options = bm.options@MAXENT,
                       dir_name = dir_name,
                       resp_name = resp_name,
                       expl_var_names = expl_var_names,
                       expl_var_type = get_var_type(Data[calib.lines, expl_var_names, drop = FALSE]), 
                       expl_var_range = get_var_range(Data[calib.lines, expl_var_names, drop = FALSE]))
       
-      # for MAXENT.Phillips predicitons are calculated in the same time than models building to save time.
+      # for MAXENT predictions are calculated in the same time than models building to save time.
       cat("\n Getting predictions...")
       g.pred <- try(round(as.numeric(read.csv(MWD$m_outputFile)[, 3]) * 1000))
       
@@ -706,21 +705,18 @@ bm_RunModel <- function(model, Data, modeling.id = '', bm.options, calib.lines,
                                                        , do.progress = do.progress)
       }
     }
-  } else if (model == "MAXENT.Phillips.2") {
-    ### 2.11 MAXENT.Phillips.2 model -------------------------------------------
+  } else if (model == "MAXNET") {
+    ### 2.11 MAXNET model -------------------------------------------
     
-    cat('\n\t> MAXENT.Phillips.2 modeling...')
-    model.sp <- try(maxnet(p = Data %>% filter(calib.lines) %>% pull(resp_name), 
-                           data = Data %>% filter(calib.lines) %>% select_at(expl_var_names)
-                           # f = if(!is.null(bm.options@MAXENT.Phillips.2@))
-    ))
+    cat('\n\t> MAXNET modeling...')
+    model.sp <- try(maxnet(p = Data[calib.lines, resp_name], data = Data[calib.lines, expl_var_names, drop = FALSE]))
     
     if (!inherits(model.sp, "try-error")) {
-      model.bm <- new("MAXENT.Phillips.2_biomod2_model",
+      model.bm <- new("MAXNET_biomod2_model",
                       model = model.sp,
                       model_name = model_name,
-                      model_class = 'MAXENT.Phillips.2',
-                      model_options = bm.options@MAXENT.Phillips.2,
+                      model_class = 'MAXNET',
+                      model_options = bm.options@MAXNET,
                       dir_name = dir_name,
                       resp_name = resp_name,
                       expl_var_names = expl_var_names,
@@ -732,12 +728,12 @@ bm_RunModel <- function(model, Data, modeling.id = '', bm.options, calib.lines,
   ## 3. CREATE PREDICTIONS ------------------------------------------------------------------------
   temp_workdir = NULL
   
-  if (model != "MAXENT.Phillips") {
+  if (model != "MAXENT") {
     g.pred <- try(predict(model.bm, Data[, expl_var_names, drop = FALSE], on_0_1000 = TRUE
                           , seedval = seed.val, temp_workdir = temp_workdir))
   }
   
-  if (model == "MAXENT.Phillips" & !inherits(g.pred, 'try-error')) {
+  if (model == "MAXENT" & !inherits(g.pred, 'try-error')) {
     temp_workdir = model.bm@model_output_dir
   }
   
@@ -802,12 +798,34 @@ bm_RunModel <- function(model, Data, modeling.id = '', bm.options, calib.lines,
       cat('\n\tNote : some NA occurs in predictions')
     }
     
-    cross.validation <- sapply(metric.eval, function(.x) {
-      bm_FindOptimStat(metric.eval = .x,
-                       obs = Data %>% filter(evalLines) %>% pull(1),
-                       fit = g.pred[evalLines])
-    })
-    rownames(cross.validation) <- c("Testing.data", "Cutoff", "Sensitivity", "Specificity")
+    if (length(which(evalLines == TRUE)) < length(g.pred)) {
+      ## CALIBRATION & VALIDATION LINES -------------------------------------------------
+      cross.validation <- foreach(xx = metric.eval, .combine = "rbind") %do% {
+        bm_FindOptimStat(metric.eval = xx,
+                         obs = Data[!evalLines, 1],
+                         fit = g.pred[!evalLines])
+      }
+      colnames(cross.validation)[which(colnames(cross.validation) == "best.stat")] <- "calibration"
+      
+      stat.validation <- foreach(xx = metric.eval, .combine = "rbind") %do% {
+        bm_FindOptimStat(metric.eval = xx,
+                         obs = Data[evalLines, 1],
+                         fit = g.pred[evalLines],
+                         threshold = cross.validation["cutoff", xx])
+      }
+      cross.validation$validation <- stat.validation$best.stat
+    } else {
+      ## NO VALIDATION LINES -----------------------------------------------------
+      cross.validation <- foreach(xx = metric.eval, .combine = "rbind") %do% {
+        bm_FindOptimStat(metric.eval = xx,
+                         obs = Data[evalLines, 1],
+                         fit = g.pred[evalLines])
+      }
+      colnames(cross.validation)[which(colnames(cross.validation) == "best.stat")] <- "calibration"
+      cross.validation$validation <- NA
+    }
+    
+
     
     if (exists('g.pred.eval')) {
       
@@ -821,19 +839,21 @@ bm_RunModel <- function(model, Data, modeling.id = '', bm.options, calib.lines,
         g.pred.eval.without.na <- g.pred.eval
       }
       
-      true.evaluation <- sapply(metric.eval, function(x) {
-        bm_FindOptimStat(metric.eval = x,
+      stat.evaluation <- foreach(xx = metric.eval, .combine = "rbind") %do% {
+        bm_FindOptimStat(metric.eval = xx,
                          obs = eval.data[, 1],
                          fit = g.pred.eval.without.na,
-                         threshold = cross.validation["Cutoff", x])
-      })
-      
-      cross.validation <- rbind(cross.validation["Testing.data", ], true.evaluation)
-      rownames(cross.validation) <- c("Testing.data", "Evaluating.data", "Cutoff", "Sensitivity", "Specificity")
+                         threshold = cross.validation["cutoff", xx])
+      }
+      cross.validation$evaluation <- stat.evaluation$best.stat
+    } else {
+      cross.validation$evaluation <- NA
     }
     
     ## store results
-    cross.validation <- t(round(cross.validation, digits = 3))
+    for (col.i in 2:ncol(cross.validation)) {
+      cross.validation[, col.i] <- round(cross.validation[, col.i], digits = 3)
+    }
     ListOut$evaluation <- cross.validation
     model.bm@model_evaluation <- cross.validation
     rm(cross.validation)
@@ -843,17 +863,15 @@ bm_RunModel <- function(model, Data, modeling.id = '', bm.options, calib.lines,
   ## 5. COMPUTE VARIABLES IMPORTANCE --------------------------------------------------------------
   if (var.import > 0) {
     cat("\n\tEvaluating Predictor Contributions...")
-    if (model != "MAXENT.Phillips") {
+    if (model != "MAXENT") {
       variables.importance <- bm_VariablesImportance(bm.model = model.bm
                                                      , expl.var = Data[, expl_var_names, drop = FALSE]
                                                      , nb.rep = var.import
                                                      , seed.val = seed.val
                                                      , do.progress = do.progress)
     }
+    ListOut$var.import <- variables.importance
     model.bm@model_variables_importance <- variables.importance
-    
-    ## only the mean of variables importance run is returned
-    ListOut$var.import <- round(rowMeans(variables.importance, na.rm = TRUE), digits = 3)
     rm(variables.importance)
     cat("\n")
   }
@@ -982,10 +1000,10 @@ bm_RunModel <- function(model, Data, modeling.id = '', bm.options, calib.lines,
   } else if (model == "RF") {
     cat("\nModel=Breiman and Cutler's random forests for classification and regression")
     seedval = 71
-  } else if (model == 'MAXENT.Phillips') {
-    cat('\nModel=MAXENT.Phillips')
-  } else if (model == 'MAXENT.Phillips.2') {
-    cat('\nModel=MAXENT.Phillips (maxnet)')
+  } else if (model == 'MAXENT') {
+    cat('\nModel=MAXENT')
+  } else if (model == 'MAXNET') {
+    cat('\nModel=MAXNET')
   }
   # else if (model == 'MAXENT.Tsuruoka') {
   #   cat('\nModel=MAXENT.Tsuruoka')
@@ -1042,9 +1060,9 @@ bm_RunModel <- function(model, Data, modeling.id = '', bm.options, calib.lines,
   if (is.null(species.name)) { species.name <- colnames(Data)[1] }
   if (is.null(calib.lines)) { calib.lines <- rep(TRUE, nrow(Data)) }
   
-  ## define all paths to files needed by MAXENT.Phillips
+  ## define all paths to files needed by MAXENT
   nameFolder = file.path(dir.name, species.name, 'models', modeling.id)
-  m_outdir <- file.path(nameFolder, paste0(RunName, '_MAXENT.Phillips_outputs'))
+  m_outdir <- file.path(nameFolder, paste0(RunName, '_MAXENT_outputs'))
   m_predictDir <- file.path(m_outdir, "Predictions")
   MWD$m_outdir <- m_outdir
   MWD$m_outputFile <- file.path(m_outdir, paste0(RunName, '_Pred_swd.csv'))

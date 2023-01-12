@@ -1,13 +1,13 @@
-# BIOMOD_Modeling docs ------------------------------------------------------- #
+###################################################################################################
 ##' @name BIOMOD_Modeling
 ##' @author Wilfried Thuiller, Damien Georges, Robin Engler
 ##' 
 ##' @title Run a range of species distribution models
 ##' 
 ##' @description This function allows to calibrate and evaluate a range of modeling techniques 
-##' for a given species distribution. The dataset can be split up for independent calibration and 
-##' validation, and the predictive power of the different models can be estimated using a range 
-##' of evaluation metrics (see Details).
+##' for a given species distribution. The dataset can be split up in calibration/validation parts,
+##' and the predictive power of the different models can be estimated using a range of evaluation 
+##' metrics (see Details).
 ##' 
 ##' 
 ##' @param bm.format a \code{\link{BIOMOD.formated.data}} or \code{\link{BIOMOD.formated.data.PA}} 
@@ -16,7 +16,7 @@
 ##' (\emph{a random number by default})
 ##' @param models a \code{vector} containing model names to be computed, must be among \code{GLM}, 
 ##' \code{GBM}, \code{GAM}, \code{CTA}, \code{ANN}, \code{SRE}, \code{FDA}, \code{MARS}, 
-##' \code{RF}, \code{MAXENT.Phillips}, \code{MAXENT.Phillips.2}
+##' \code{RF}, \code{MAXENT}, \code{MAXNET}
 ##' @param bm.options a \code{\link{BIOMOD.models.options}} object returned by the  
 ##' \code{\link{BIOMOD_ModelingOptions}} function
 ##' @param nb.rep an \code{integer} corresponding to the number of repetitions to be done for 
@@ -99,22 +99,22 @@
 ##'     \item \code{FDA} : Flexible Discriminant Analysis (\code{\link[mda]{fda}})
 ##'     \item \code{MARS} : Multiple Adaptive Regression Splines (\code{\link[earth]{earth}})
 ##'     \item \code{RF} : Random Forest (\code{\link[randomForest]{randomForest}})
-##'     \item \code{MAXENT.Phillips} : Maximum Entropy 
+##'     \item \code{MAXENT} : Maximum Entropy 
 ##'     (\url{https://biodiversityinformatics.amnh.org/open_source/maxent/})
-##'     \item \code{MAXENT.Phillips.2} : Maximum Entropy (\code{\link[maxnet]{maxnet}})
+##'     \item \code{MAXNET} : Maximum Entropy (\code{\link[maxnet]{maxnet}})
 ##'   }}
 ##'   
 ##'   \item{nb.rep & data.split.perc}{
 ##'   \itemize{
-##'     \item Most simple method in machine learning to calibrate and evaluate a model is to 
+##'     \item Most simple method in machine learning to calibrate and validate a model is to 
 ##'     split the original dataset in two, one to calibrate the model and the other one to 
-##'     evaluate it. The \code{data.split.perc} argument defines the percentage of data that will be 
-##'     randomly selected and used for the calibration part, the remaining data constituting the 
-##'     evaluation part. This process is repeated \code{nb.rep} times, to be sure not to 
+##'     validate it. The \code{data.split.perc} argument defines the percentage of data that will be 
+##'     randomly selected and used for the \bold{calibration} part, the remaining data constituting the 
+##'     \bold{validation} part. This process is repeated \code{nb.rep} times, to be sure not to 
 ##'     include bias both in the modeling and evaluation parts.
 ##'     \item Other validation methods are also available to the user :
 ##'     \itemize{
-##'       \item evaluation dataset can be directly given to the 
+##'       \item \bold{evaluation} dataset can be directly given to the 
 ##'       \code{\link{BIOMOD_FormatingData}} function
 ##'       \item \code{data.split.table} argument can be used and obtained from the 
 ##'       \code{\link{BIOMOD_CrossValidation}} function
@@ -246,26 +246,29 @@
 ##' 
 ##' # Get evaluation scores & variables importance
 ##' get_evaluations(myBiomodModelOut)
-##' get_variables_importance(myBiomodModelOut, as.data.frame = TRUE)
+##' get_variables_importance(myBiomodModelOut)
 ##' 
 ##' # Represent evaluation scores 
-##' bm_PlotEvalMean(bm.out = myBiomodModelOut)
+##' bm_PlotEvalMean(bm.out = myBiomodModelOut, dataset = 'calibration')
+##' bm_PlotEvalMean(bm.out = myBiomodModelOut, dataset = 'validation')
 ##' bm_PlotEvalBoxplot(bm.out = myBiomodModelOut, group.by = c('algo', 'run'))
 ##' 
-##' # Represent variables importance 
+##' # # Represent variables importance 
 ##' # bm_PlotVarImpBoxplot(bm.out = myBiomodModelOut, group.by = c('expl.var', 'algo', 'algo'))
 ##' # bm_PlotVarImpBoxplot(bm.out = myBiomodModelOut, group.by = c('expl.var', 'algo', 'dataset'))
 ##' # bm_PlotVarImpBoxplot(bm.out = myBiomodModelOut, group.by = c('algo', 'expl.var', 'dataset'))
 ##' 
-##' # Represent response curves 
+##' # # Represent response curves 
+##' # mods <- get_built_models(myBiomodModelOut, run = 'RUN1')
 ##' # bm_PlotResponseCurves(bm.out = myBiomodModelOut, 
-##' #                       models.chosen = get_built_models(myBiomodModelOut)[c(1:2)],
+##' #                       models.chosen = mods,
 ##' #                       fixed.var = 'median')
 ##' # bm_PlotResponseCurves(bm.out = myBiomodModelOut, 
-##' #                       models.chosen = get_built_models(myBiomodModelOut)[c(1:2)],
+##' #                       models.chosen = mods,
 ##' #                       fixed.var = 'min')
+##' # mods <- get_built_models(myBiomodModelOut, full.name = 'GuloGulo_allData_RUN2_RF')
 ##' # bm_PlotResponseCurves(bm.out = myBiomodModelOut, 
-##' #                       models.chosen = get_built_models(myBiomodModelOut)[3],
+##' #                       models.chosen = mods,
 ##' #                       fixed.var = 'median',
 ##' #                       do.bivariate = TRUE)
 ##' 
@@ -273,13 +276,12 @@
 ##' @export
 ##' 
 ##' 
-# ---------------------------------------------------------------------------- #
-
+###################################################################################################
 
 BIOMOD_Modeling <- function(bm.format,
                             modeling.id = as.character(format(Sys.time(), "%s")),
                             models = c('GLM', 'GBM', 'GAM', 'CTA', 'ANN', 'SRE', 'FDA', 'MARS'
-                                       , 'RF', 'MAXENT.Phillips', 'MAXENT.Phillips.2'),
+                                       , 'RF', 'MAXENT', 'MAXNET'),
                             bm.options = NULL,
                             nb.rep = 1,
                             data.split.perc = 100,
@@ -367,30 +369,35 @@ BIOMOD_Modeling <- function(bm.format,
                     do.progress = do.progress)
   
   ## 3.3 Rearrange and save outputs -------------------------------------------
-  models.out@models.computed <- .transform_outputs_list(mod.out, out = 'models.run')
-  models.out@models.failed <- .transform_outputs_list(mod.out, out = 'calib.failure')
-
+  models.out@models.computed <- .transform_outputs_list("mod", mod.out, out = "model")
+  models.out@models.failed <- .transform_outputs_list("mod", mod.out, out = "calib.failure")
+  
+  if(length(models.out@models.computed) == 1 && models.out@models.computed == "none"){
+    cat("\n! All models failed")
+    return(models.out)
+  }
+  
   ## 3.4 Rearrange and save models outputs : ----------------------------------
   ## models evaluation, variables importance, models prediction, predictions evaluation
   if (save.output) {
-    models.evaluation <- .transform_outputs_list(mod.out, out = 'evaluation')
+    models.evaluation <- .transform_outputs_list("mod", mod.out, out = "evaluation")
     models.out = .fill_BIOMOD.models.out("models.evaluation", models.evaluation, models.out
                                          , inMemory = TRUE, nameFolder = name.BIOMOD_DATA)
     rm(models.evaluation)
     
     if (var.import > 0) {
-      variables.importance <- .transform_outputs_list(mod.out, out = 'var.import')
+      variables.importance <- .transform_outputs_list("mod", mod.out, out = "var.import")
       models.out = .fill_BIOMOD.models.out("variables.importance", variables.importance, models.out
                                            , inMemory = FALSE, nameFolder = name.BIOMOD_DATA)
       rm(variables.importance)
     }
     
-    models.prediction <- .transform_outputs_list(mod.out, out = 'prediction')
+    models.prediction <- .transform_outputs_list("mod", mod.out, out = "pred")
     models.out = .fill_BIOMOD.models.out("models.prediction", models.prediction, models.out
                                          , inMemory = FALSE, nameFolder = name.BIOMOD_DATA)
     rm(models.prediction)
     
-    models.prediction.eval <- .transform_outputs_list(mod.out, out = 'prediction.eval')
+    models.prediction.eval <- .transform_outputs_list("mod", mod.out, out = "pred.eval")
     models.out = .fill_BIOMOD.models.out("models.prediction.eval", models.prediction.eval, models.out
                                          , inMemory = FALSE, nameFolder = name.BIOMOD_DATA)
     rm(models.prediction.eval)
@@ -433,35 +440,48 @@ BIOMOD_Modeling <- function(bm.format,
   
   .fun_testIfInherits(TRUE, "bm.format", bm.format, c("BIOMOD.formated.data", "BIOMOD.formated.data.PA"))
   if (!is.character(models)) { stop("models must be a 'character' vector") }
-  models <- unique(models)
-  models.switch.off <- NULL
   
-  ## check if model is supported
-  avail.models.list <- c('GLM', 'GBM', 'GAM', 'CTA', 'ANN', 'SRE', 'FDA', 'MARS'
-                         , 'RF', 'MAXENT.Phillips', 'MAXENT.Phillips.2')
-  .fun_testIfIn(TRUE, "models", models, avail.models.list)
-  
-  
-  ## 1.1 Remove models not supporting categorical variables --------------------
-  categorical_var <- .get_categorical_names(bm.format@data.env.var)
-    
-  if (length(categorical_var) > 0) {
-    models.fact.unsuprort <- c("SRE", "MAXENT.Tsuruoka")
-    models.switch.off <- c(models.switch.off, intersect(models, models.fact.unsuprort))
-    if (length(models.switch.off) > 0) {
-      models <- setdiff(models, models.switch.off)
-      cat(paste0("\n\t! ", paste(models.switch.off, collapse = ",")," were switched off because of categorical variables !"))
-    }
+  # Support for old names in models
+  # Deprecated MAXENT.Phillips/MAXENT.Phillips.2
+  if (any(models == "MAXENT.Phillips")) {
+    models[which(models == "MAXENT.Phillips")] <- "MAXENT"
+    cat(paste0("\n\t! 'MAXENT.Phillips' model name is deprecated, please use 'MAXENT' instead."))
   }
- 
-  
-  ## 2.1 Disable MAXENT.Tsuruoka ----------------------------------------------
+  if (any(models == "MAXENT.Phillips.2")) {
+    models[which(models == "MAXENT.Phillips.2")] <- "MAXNET"
+    cat(paste0("\n\t! 'MAXENT.Phillips.2' model name is deprecated, please use 'MAXNET' instead."))
+  }
+  ## Deprecated MAXENT.Tsuruoka 
   ## because of package maintaining issue (request from B Ripley 03-2019)
   if ('MAXENT.Tsuruoka' %in% models) {
     models.switch.off <- unique(c(models.switch.off, "MAXENT.Tsuruoka"))
     models <- setdiff(models, models.switch.off)
     warning('MAXENT.Tsuruoka has been disabled because of package maintaining issue (request from cran team 03-2019)')
   }
+  models <- unique(models)
+  models.switch.off <- NULL
+  
+  ## check if model is supported
+  
+  avail.models.list <- c('GLM', 'GBM', 'GAM', 'CTA', 'ANN', 'SRE', 'FDA', 'MARS'
+                         , 'RF', 'MAXENT', 'MAXNET')
+  .fun_testIfIn(TRUE, "models", models, avail.models.list)
+  
+  
+  ## 1.1 Remove models not supporting categorical variables --------------------
+  categorical_var <- .get_categorical_names(bm.format@data.env.var)
+  
+  if (length(categorical_var) > 0) {
+    models.fact.unsupport <- c("SRE", "MAXENT.Tsuruoka")
+    models.switch.off <- c(models.switch.off, intersect(models, models.fact.unsupport))
+    if (length(models.switch.off) > 0) {
+      models <- setdiff(models, models.switch.off)
+      cat(paste0("\n\t! ", paste(models.switch.off, collapse = ",")," were switched off because of categorical variables !"))
+    }
+  }
+  
+  
+
   
   ## 3. Check bm.options arguments --------------------------------------------
   if (!is.null(bm.options)) {
@@ -471,12 +491,12 @@ BIOMOD_Modeling <- function(bm.format,
     bm.options <- BIOMOD_ModelingOptions()
   }
   
-  ## 2.2 Specific check for MAXENT.Phillips -----------------------------------
-  if ("MAXENT.Phillips" %in% models)
+  ## 2.2 Specific check for MAXENT -----------------------------------
+  if ("MAXENT" %in% models)
   {
-    if (!file.exists(file.path(bm.options@MAXENT.Phillips$path_to_maxent.jar, "maxent.jar"))) {
-      models = models[-which(models == 'MAXENT.Phillips')]
-      warning(paste0("MAXENT.Phillips has been disabled because the maxent.jar file is missing. "
+    if (!file.exists(file.path(bm.options@MAXENT$path_to_maxent.jar, "maxent.jar"))) {
+      models = models[-which(models == 'MAXENT')]
+      warning(paste0("MAXENT has been disabled because the maxent.jar file is missing. "
                      , "`maxent.jar` file must be downloaded (https://biodiversityinformatics.amnh.org/open_source/maxent/) "
                      , "and put in the working directory."), immediate. = TRUE)
       ## -- 
@@ -484,10 +504,10 @@ BIOMOD_Modeling <- function(bm.format,
       ## issues on some Windows users machine.
       ## --
       # } else if(!.check.java.installed()){
-      #   models = models[-which(models=='MAXENT.Phillips')]
+      #   models = models[-which(models=='MAXENT')]
     } else if (nrow(bm.format@coord) == 1) {
-      warning("MAXENT.Phillips has been disabled because no XY coordinates have been given", immediate. = TRUE)
-      models = models[-which(models == 'MAXENT.Phillips')]
+      warning("MAXENT has been disabled because no XY coordinates have been given", immediate. = TRUE)
+      models = models[-which(models == 'MAXENT')]
     }
   }
   
@@ -542,9 +562,9 @@ BIOMOD_Modeling <- function(bm.format,
   ## 7. Check prevalence arguments --------------------------------------------
   if (!is.null(prevalence)) {
     .fun_testIf01(TRUE, "prevalence", prevalence)
-    if ("MAXENT.Phillips" %in% models) {
-      cat("\n\t MAXENT.Phillips default prevalence option was updated to fit with modeling prevalence (i.e", prevalence, ")")
-      bm.options@MAXENT.Phillips$defaultprevalence = prevalence
+    if ("MAXENT" %in% models) {
+      cat("\n\t MAXENT default prevalence option was updated to fit with modeling prevalence (i.e", prevalence, ")")
+      bm.options@MAXENT$defaultprevalence = prevalence
     }
   } else {
     prevalence = 0.5
@@ -607,7 +627,7 @@ setMethod('.BIOMOD_Modeling.prepare.data', signature('BIOMOD.formated.data'),
                    , do.full.models = TRUE, data.split.table = NULL, seed.val = NULL)
           {
             list.out <- list()
-            name <- paste0(bm.format@sp.name, '_AllData')
+            name <- paste0(bm.format@sp.name, '_allData')
             xy <- bm.format@coord
             dataBM = cbind(bm.format@data.species, bm.format@data.env.var)
             colnames(dataBM)[1] = bm.format@sp.name
@@ -628,7 +648,7 @@ setMethod('.BIOMOD_Modeling.prepare.data', signature('BIOMOD.formated.data'),
             } else {
               if (nb.rep == 0) { # take all available data
                 calib.lines <- matrix(rep(TRUE, length(bm.format@data.species)), ncol = 1)
-                colnames(calib.lines) <- '_Full'
+                colnames(calib.lines) <- '_allRun'
               } else {
                 calib.lines <- .sample_mat(data.sp = bm.format@data.species,
                                            data.split = data.split.perc,
@@ -637,7 +657,7 @@ setMethod('.BIOMOD_Modeling.prepare.data', signature('BIOMOD.formated.data'),
                                            seed.val = seed.val)
                 if (do.full.models) {
                   calib.lines <- cbind(calib.lines, rep(TRUE, length(bm.format@data.species)))
-                  colnames(calib.lines)[nb.rep + 1] <- '_Full'
+                  colnames(calib.lines)[nb.rep + 1] <- '_allRun'
                 }
               }
             }
@@ -645,7 +665,7 @@ setMethod('.BIOMOD_Modeling.prepare.data', signature('BIOMOD.formated.data'),
             if (length(dim(calib.lines)) < 3) {
               dn_tmp <- dimnames(calib.lines) ## keep track of dimnames
               dim(calib.lines) <- c(dim(calib.lines), 1)
-              dimnames(calib.lines) <- list(dn_tmp[[1]], dn_tmp[[2]], "_AllData")
+              dimnames(calib.lines) <- list(dn_tmp[[1]], dn_tmp[[2]], "_allData")
             }
             
             if (is.null(weights)) { # 1 for all points
@@ -700,7 +720,7 @@ setMethod('.BIOMOD_Modeling.prepare.data', signature('BIOMOD.formated.data.PA'),
                 if (nb.rep == 0) { # take all available data
                   calib.lines <- matrix(NA, nrow = length(bm.format@data.species), ncol = 1)
                   calib.lines[bm.format@PA.table[, pa], 1] <- TRUE
-                  colnames(calib.lines) <- '_Full'
+                  colnames(calib.lines) <- '_allRun'
                 } else {
                   calib.lines <- matrix(NA, nrow = length(bm.format@data.species), ncol = nb.rep)
                   sampled.mat <- .sample_mat(
@@ -715,7 +735,7 @@ setMethod('.BIOMOD_Modeling.prepare.data', signature('BIOMOD.formated.data.PA'),
                   if (do.full.models) {
                     calib.lines <- cbind(calib.lines, rep(NA, length(bm.format@data.species)))
                     calib.lines[bm.format@PA.table[, pa], nb.rep + 1] <- TRUE
-                    colnames(calib.lines)[nb.rep + 1] <- '_Full'
+                    colnames(calib.lines)[nb.rep + 1] <- '_allRun'
                   }
                 }
               }
@@ -811,207 +831,4 @@ setMethod('.BIOMOD_Modeling.prepare.data', signature('BIOMOD.formated.data.PA'),
                    max(nbAbsEval - length(fact.cell.samp), 0)), i] <- TRUE
   }
   return(mat.out)
-}
-
-
-# ---------------------------------------------------------------------------- #
-## 
-## Reshape biomod2 objects
-## 
-## This is an internal function (developper only)
-##
-## @param mod.out the object to transform given as a list
-## @param out character, the type of input object
-## @param dim.names character, if not `NULL` the resshaped object will be stored on the hard drive
-##
-## @return list, the extracted statistics
-## 
-## @export
-## 
-# ---------------------------------------------------------------------------- #
-
-.transform_outputs_list = function(mod.out, out = 'evaluation', dim.names = NULL)
-{
-  out_list = c('evaluation', 'prediction', 'prediction.eval', 'var.import', 'calib.failure',
-               'models.run', 'EF.prediction', 'EF.PCA.median', 'EF.evaluation')
-  .fun_testIfIn(TRUE, "out", out, out_list)
-  
-  ## 0.a get dataset names -----------------------------------------------------
-  if (length(mod.out) == 1 && length(unlist(strsplit(unlist(names(mod.out)), '_'))) == 1) {
-    dataset.names <- 'AllData'
-  } else if (is.null(dim.names)) {
-    dataset.names <- unlist(sapply(unlist(names(mod.out)), function(name) {
-      return(tail(unlist(strsplit(name, '_')), 1))
-    }))
-  } else {
-    dataset.names <- unlist(dim.names[1])
-  }
-  
-  ## 0.b get run.eval and model names -------------------------------------------------------------
-  if (is.null(dim.names)) {
-    run.eval.names <- sub('_', '', unlist(names(mod.out[[1]]))) # may be good here to test that all names are identics
-    mod.names <- unlist(names(mod.out[[1]][[1]]))
-  } else {
-    run.eval.names <- unlist(dim.names[2])
-    mod.names <- unlist(dim.names[3])
-  }
-  
-  ## 1. CASE evaluation / prediction / prediction.eval / var.import -------------------------------
-  
-  if (out %in% c("evaluation", "prediction", "prediction.eval", "var.import"))
-  {
-    nb_pa <- length(mod.out)
-    nb_run <- length(mod.out[[1]])
-    nb_mod <- length(mod.out[[1]][[1]])
-    
-    name_slot = out
-    if (out == "prediction") { name_slot = "pred" }
-    if (out == "prediction.eval") { name_slot = "pred.eval" }
-    
-    output <- NULL
-    for (i in 1:nb_pa) {
-      for (j in 1:nb_run) {
-        for (k in 1:nb_mod) {
-          output <- mod.out[[i]][[j]][[k]][[name_slot]]
-          if (!is.null(output)) { break }
-        }
-        if (!is.null(output)) { break }
-      }
-      if (!is.null(output)) { break }
-    }
-    if (is.null(output)) { return(NULL) }
-    
-    if (out == "evaluation") {
-      eval.meth.names <- rownames(as.data.frame(output))
-      eval.col.names <- colnames(as.data.frame(output))
-      dimnames.out = list(eval.meth.names,
-                          eval.col.names,
-                          mod.names,
-                          run.eval.names,
-                          dataset.names)
-      dim.out = c(length(eval.meth.names),
-                  length(eval.col.names),
-                  length(mod.names),
-                  length(run.eval.names),
-                  length(dataset.names))
-    } else if (out %in% c("prediction", "prediction.eval", "var.import")) {
-      kept.mod = mod.names
-      if (out == "var.import") {
-        ef.mod <- grep(pattern = "EF.", mod.names) # EF models
-        if (length(ef.mod) > 0) {
-          kept.mod <- mod.names[-ef.mod]
-        }
-      }
-      
-      nb.tmp <- length(as.numeric(output))
-      dimnames.out = list(NULL, kept.mod, run.eval.names, dataset.names)
-      if (out == "var.import") {
-        dimnames.out = list(names(mod.out[[1]][[1]][[1]][['var.import']]) # to change ?
-                            , kept.mod, run.eval.names, dataset.names)
-      }
-      dim.out = c(nb.tmp,
-                  length(kept.mod),
-                  length(run.eval.names),
-                  length(dataset.names))
-    }
-    
-    output <- lapply(names(mod.out), function(d1) { # data set
-      lapply(names(mod.out[[d1]]), function(d2) { # run eval
-        lapply(names(mod.out[[d1]][[d2]]), function(d3){ # models
-          if (out == "evaluation") {
-            if (is.null(mod.out[[d1]][[d2]][[d3]][['calib.failure']])) {
-              return(data.frame(mod.out[[d1]][[d2]][[d3]][['evaluation']]))
-            } else { 
-              return(matrix(NA, ncol = length(eval.col.names), nrow = length(eval.meth.names)
-                            , dimnames = list(eval.meth.names, eval.col.names)))
-            }
-          } else if (out == "prediction" || out == "prediction.eval" || 
-                     (out == "var.import" && d3 %in% kept.mod)) {
-            if (is.null(mod.out[[d1]][[d2]][[d3]][[name_slot]])) {
-              return(rep(NA, nb.tmp))
-            } else {
-              return(as.numeric(mod.out[[d1]][[d2]][[d3]][[name_slot]]))
-            }
-          }
-        })
-      })
-    })
-    data.out = unlist(output)
-    
-    res.out <- array(data = data.out, dim = dim.out, dimnames = dimnames.out)
-    return(res.out)
-  }
-  
-  ## 2. CASE calib.failure / models.run -----------------------------------------------------------
-  
-  if (out %in% c("calib.failure", "models.run"))
-  {
-    name_slot = out
-    if (out == "models.run") { name_slot = "model" }
-    
-    output <- lapply(names(mod.out),function(d1) { # data set
-      lapply(names(mod.out[[d1]]), function(d2) { # run eval
-        lapply(names(mod.out[[d1]][[d2]]), function(d3) { # models
-          res = mod.out[[d1]][[d2]][[d3]][[name_slot]]
-          if (out == "calib.failure") {
-            return(as.character(res))
-          } else if (out == "models.run") {
-            return(as.character(res))
-          }
-        })
-      })
-    })
-    
-    res.out <- unlist(output)
-    if (length(res.out) > 0) { res.out <- na.omit(res.out) }
-    if (length(res.out) > 0) { res.out <- res.out[!is.null(res.out)] }
-    if (length(res.out) == 0) { res.out <- 'none' }
-    return(res.out)
-  }
-  
-  ## 3. CASE EF.prediction / EF.PCA.median / EF.evaluation ----------------------------------------
-  
-  if (out %in% c("EF.prediction", "EF.PCA.median", "EF.evaluation"))
-  {
-    name_slot = ifelse(out == "EF.prediction", "EM"
-                       , ifelse(out == "EF.PCA.median", "PCA.median", "EM.eval"))
-    
-    if (is.null(mod.out[[1]][[1]][[1]][[name_slot]])) { return(NULL) }
-    
-    nb.tmp = 1
-    dimnames.out = list(NULL, mod.names, run.eval.names, dataset.names)
-    if (out == "EF.prediction") {
-      nb.tmp <- length(as.numeric(unlist(mod.out[[1]][[1]][[1]][[name_slot]])))
-    } else if (out == "EF.evaluation") {
-      eval.meth.names <- rownames(as.data.frame(mod.out[[1]][[1]][[1]][[name_slot]]))
-      eval.col.names <- colnames(as.data.frame(mod.out[[1]][[1]][[1]][[name_slot]]))
-      nb.tmp = c(length(eval.meth.names), length(eval.col.names))
-      dimnames.out = list(eval.meth.names, eval.col.names
-                          , mod.names, run.eval.names, dataset.names)
-    }
-    dim.out = c(nb.tmp,
-                length(mod.out[[1]][[1]]),
-                length(mod.out[[1]]),
-                length(mod.out))
-    
-    
-    output <- lapply(1:length(mod.out),function(d1) { # data set
-      lapply(1:length(mod.out[[d1]]), function(d2) { # run eval
-        lapply(1:length(mod.out[[d1]][[d2]]), function(d3) { # models
-          res = mod.out[[d1]][[d2]][[d3]][[name_slot]]
-          if (out == "EF.prediction") {
-            return(as.numeric(res))
-          } else if (out == "EF.PCA.median") {
-            return(as.character(res))
-          } else if (out == "EF.evaluation") {
-            return(data.frame(res))
-          }
-        })
-      })
-    })
-    data.out = unlist(output)
-    
-    res.out <- array(data = data.out, dim = dim.out, dimnames = dimnames.out)
-    return(res.out)
-  }
 }

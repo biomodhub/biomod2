@@ -7,8 +7,8 @@
 BIOMOD_Modeling(
   bm.format,
   modeling.id = as.character(format(Sys.time(), "\%s")),
-  models = c("GLM", "GBM", "GAM", "CTA", "ANN", "SRE", "FDA", "MARS", "RF",
-    "MAXENT.Phillips", "MAXENT.Phillips.2"),
+  models = c("GLM", "GBM", "GAM", "CTA", "ANN", "SRE", "FDA", "MARS", "RF", "MAXENT",
+    "MAXNET"),
   bm.options = NULL,
   nb.rep = 1,
   data.split.perc = 100,
@@ -34,7 +34,7 @@ object returned by the \code{\link{BIOMOD_FormatingData}} function}
 
 \item{models}{a \code{vector} containing model names to be computed, must be among \code{GLM}, 
 \code{GBM}, \code{GAM}, \code{CTA}, \code{ANN}, \code{SRE}, \code{FDA}, \code{MARS}, 
-\code{RF}, \code{MAXENT.Phillips}, \code{MAXENT.Phillips.2}}
+\code{RF}, \code{MAXENT}, \code{MAXNET}}
 
 \item{bm.options}{a \code{\link{BIOMOD.models.options}} object returned by the
 \code{\link{BIOMOD_ModelingOptions}} function}
@@ -108,9 +108,9 @@ created in the current working directory :
 }
 \description{
 This function allows to calibrate and evaluate a range of modeling techniques 
-for a given species distribution. The dataset can be split up for independent calibration and 
-validation, and the predictive power of the different models can be estimated using a range 
-of evaluation metrics (see Details).
+for a given species distribution. The dataset can be split up in calibration/validation parts,
+and the predictive power of the different models can be estimated using a range of evaluation 
+metrics (see Details).
 }
 \details{
 \describe{
@@ -133,22 +133,22 @@ of evaluation metrics (see Details).
     \item \code{FDA} : Flexible Discriminant Analysis (\code{\link[mda]{fda}})
     \item \code{MARS} : Multiple Adaptive Regression Splines (\code{\link[earth]{earth}})
     \item \code{RF} : Random Forest (\code{\link[randomForest]{randomForest}})
-    \item \code{MAXENT.Phillips} : Maximum Entropy 
+    \item \code{MAXENT} : Maximum Entropy 
     (\url{https://biodiversityinformatics.amnh.org/open_source/maxent/})
-    \item \code{MAXENT.Phillips.2} : Maximum Entropy (\code{\link[maxnet]{maxnet}})
+    \item \code{MAXNET} : Maximum Entropy (\code{\link[maxnet]{maxnet}})
   }}
   
   \item{nb.rep & data.split.perc}{
   \itemize{
-    \item Most simple method in machine learning to calibrate and evaluate a model is to 
+    \item Most simple method in machine learning to calibrate and validate a model is to 
     split the original dataset in two, one to calibrate the model and the other one to 
-    evaluate it. The \code{data.split.perc} argument defines the percentage of data that will be 
-    randomly selected and used for the calibration part, the remaining data constituting the 
-    evaluation part. This process is repeated \code{nb.rep} times, to be sure not to 
+    validate it. The \code{data.split.perc} argument defines the percentage of data that will be 
+    randomly selected and used for the \bold{calibration} part, the remaining data constituting the 
+    \bold{validation} part. This process is repeated \code{nb.rep} times, to be sure not to 
     include bias both in the modeling and evaluation parts.
     \item Other validation methods are also available to the user :
     \itemize{
-      \item evaluation dataset can be directly given to the 
+      \item \bold{evaluation} dataset can be directly given to the 
       \code{\link{BIOMOD_FormatingData}} function
       \item \code{data.split.table} argument can be used and obtained from the 
       \code{\link{BIOMOD_CrossValidation}} function
@@ -264,26 +264,29 @@ myBiomodModelOut
 
 # Get evaluation scores & variables importance
 get_evaluations(myBiomodModelOut)
-get_variables_importance(myBiomodModelOut, as.data.frame = TRUE)
+get_variables_importance(myBiomodModelOut)
 
 # Represent evaluation scores 
-bm_PlotEvalMean(bm.out = myBiomodModelOut)
+bm_PlotEvalMean(bm.out = myBiomodModelOut, dataset = 'calibration')
+bm_PlotEvalMean(bm.out = myBiomodModelOut, dataset = 'validation')
 bm_PlotEvalBoxplot(bm.out = myBiomodModelOut, group.by = c('algo', 'run'))
 
-# Represent variables importance 
+# # Represent variables importance 
 # bm_PlotVarImpBoxplot(bm.out = myBiomodModelOut, group.by = c('expl.var', 'algo', 'algo'))
 # bm_PlotVarImpBoxplot(bm.out = myBiomodModelOut, group.by = c('expl.var', 'algo', 'dataset'))
 # bm_PlotVarImpBoxplot(bm.out = myBiomodModelOut, group.by = c('algo', 'expl.var', 'dataset'))
 
-# Represent response curves 
+# # Represent response curves 
+# mods <- get_built_models(myBiomodModelOut, run = 'RUN1')
 # bm_PlotResponseCurves(bm.out = myBiomodModelOut, 
-#                       models.chosen = get_built_models(myBiomodModelOut)[c(1:2)],
+#                       models.chosen = mods,
 #                       fixed.var = 'median')
 # bm_PlotResponseCurves(bm.out = myBiomodModelOut, 
-#                       models.chosen = get_built_models(myBiomodModelOut)[c(1:2)],
+#                       models.chosen = mods,
 #                       fixed.var = 'min')
+# mods <- get_built_models(myBiomodModelOut, full.name = 'GuloGulo_allData_RUN2_RF')
 # bm_PlotResponseCurves(bm.out = myBiomodModelOut, 
-#                       models.chosen = get_built_models(myBiomodModelOut)[3],
+#                       models.chosen = mods,
 #                       fixed.var = 'median',
 #                       do.bivariate = TRUE)
 

@@ -58,7 +58,7 @@
                 ifelse(length(values) > 1, 
                        paste0(paste0(values[1:(length(values) -1)], collapse = "', '"),
                               "' or '", values[length(values)])
-                             , paste0(values,"'"))))
+                       , paste0(values,"'"))))
     test <- FALSE
   }
   return(test)
@@ -94,6 +94,18 @@
   } else if (any(objValue < 0) || any(objValue %% 1 != 0)) {
     cat(paste0("\n", objName, "must be a positive integer"))
     test <- FALSE
+  }
+  return(test)
+}
+
+
+.fun_testMetric <- function(test, objName, objValue, values){
+  if (!is.null(objValue)) {
+    test <- .fun_testIfInherits(test, objName, objValue, "character")
+    if(length(objValue) != 1){
+      stop(paste0("`",objName,"` must only have one element"))
+    }
+    test <- .fun_testIfIn(test, objName, objValue, values)
   }
   return(test)
 }
@@ -163,7 +175,7 @@ get_var_range <- function(data)
                                    mod <- get(load(file.path(dir_name, resp_name, "models", modeling.id, mod.name)))
                                  }
                                  temp_workdir = NULL
-                                 if (length(grep("MAXENT.Phillips$", mod.name)) == 1) {
+                                 if (length(grep("MAXENT$", mod.name)) == 1) {
                                    temp_workdir = mod@model_output_dir
                                  }
                                  return(predict(mod, newdata = newdata, on_0_1000 = on_0_1000
@@ -273,31 +285,267 @@ get_var_range <- function(data)
 }
 
 
+## EXTRACT models outputs according to specific infos ---------------------------------------------
+## used in biomod2_classes_3.R
+
+.filter_outputs.df <- function(out, subset.list)
+{
+  keep_subset <- foreach(sub.i = names(subset.list)) %do%
+    {
+      keep_lines <- 1:nrow(out)
+      if (!is.null(subset.list[[sub.i]])) {
+        .fun_testIfIn(TRUE, sub.i, subset.list[[sub.i]], unique(out[, sub.i]))
+        keep_lines <- which(out[, sub.i] %in% subset.list[[sub.i]])
+      }
+      return(keep_lines)
+    }
+  keep_lines <- Reduce(intersect, keep_subset)
+  if (length(keep_lines) == 0) {
+    warning(paste0("No information corresponding to the given filter(s) ("
+                   , paste0(names(subset.list), collapse = ', '), ")"))
+  }
+  return(keep_lines)
+}
+
+.filter_outputs.vec <- function(out_names, obj.type, subset.list)
+{
+  keep_layers <- out_names
+  if ("full.name" %in% names(subset.list) && !is.null(subset.list[["full.name"]])) {
+    .fun_testIfIn(TRUE, "full.name", subset.list[["full.name"]], out_names)
+    keep_layers <- which(out_names %in% subset.list[["full.name"]])
+  } else {
+    keep_subset <- foreach(sub.i = names(subset.list)) %do%
+      {
+        keep_tmp <- 1:length(out_names)
+        if (!is.null(subset.list[[sub.i]])) {
+          .fun_testIfIn(TRUE, sub.i, subset.list[[sub.i]], .extract_modelNamesInfo(out_names, obj.type = obj.type, info = sub.i, as.unique = TRUE))
+          keep_tmp <- grep(paste(subset.list[[sub.i]], collapse = "|"), out_names)
+        }
+        return(keep_tmp)
+      }
+    keep_layers <- Reduce(intersect, keep_subset)
+  }
+  if (length(keep_layers) == 0) {
+    warning(paste0("No information corresponding to the given filter(s) ("
+                   , paste0(names(subset.list), collapse = ', '), ")"))
+  }
+  return(keep_layers)
+}
+
+# Format projection output as data.frame with appropriate columns --------------
+
+.format_proj.df <- function(proj, obj.type = "mod"){
+  # argument check
+  .fun_testIfInherits(TRUE, "proj", proj, "data.frame")
+  .fun_testIfIn(TRUE, "obj.type", obj.type, c("mod","em"))
+  # function content
+  proj$points <- 1:nrow(proj)
+  tmp <- melt(proj, id.vars =  "points")
+  colnames(tmp) <- c("points", "full.name", "pred")
+  tmp$full.name <- as.character(tmp$full.name)
+  if(obj.type == "mod"){
+    tmp$PA <- .extract_modelNamesInfo(tmp$full.name, obj.type = "mod", info = "PA", as.unique = FALSE)
+    tmp$run <- .extract_modelNamesInfo(tmp$full.name, obj.type = "mod", info = "run", as.unique = FALSE)
+    tmp$algo <- .extract_modelNamesInfo(tmp$full.name, obj.type = "mod", info = "algo", as.unique = FALSE)
+    proj <- tmp[, c("full.name", "PA", "run", "algo", "points", "pred")]
+  } else {
+    tmp$merged.by.PA <- .extract_modelNamesInfo(tmp$full.name, obj.type = "em", info = "merged.by.PA", as.unique = FALSE)
+    tmp$merged.by.run <- .extract_modelNamesInfo(tmp$full.name, obj.type = "em", info = "merged.by.run", as.unique = FALSE)
+    tmp$merged.by.algo <- .extract_modelNamesInfo(tmp$full.name, obj.type = "em", info = "merged.by.algo", as.unique = FALSE)
+    tmp$filtered.by <- .extract_modelNamesInfo(tmp$full.name, obj.type = "em", info = "filtered.by", as.unique = FALSE)
+    tmp$algo <- .extract_modelNamesInfo(tmp$full.name, obj.type = "em", info = "algo", as.unique = FALSE)
+    proj <- tmp[, c("full.name", "merged.by.PA", "merged.by.run", "merged.by.algo"
+                       , "filtered.by", "algo", "points", "pred")]
+    
+  }
+  proj
+}
+## TRANSFORM models outputs getting specific slot -------------------------------------------------
+## used in BIOMOD_Modeling.R, BIOMOD_EnsembleModeling.R
+
+.transform_outputs_list = function(obj.type, obj.out, out = 'evaluation')
+{
+  ## 0. CHECK object type ---------------------------------------------------------------
+  .fun_testIfIn(TRUE, "obj.type", obj.type, c("mod", "em"))
+  .fun_testIfIn(TRUE, "out", out, c("model", "calib.failure", "models.kept", "pred", "pred.eval", "evaluation", "var.import"))
+  
+  if (obj.type == "mod") {
+    dim_names <- c("PA", "run", "algo")
+  } else if (obj.type == "em") {
+    dim_names <- c("merged.by", "filtered.by", "algo")
+    dim_names.bis <- c("merged.by.PA", "merged.by.run", "merged.by.algo")
+  }
+  ## 1. GET dimension names -------------------------------------------------------------
+  ## BIOMOD.models.out            -> dataset / run / algo
+  ## BIOMOD.ensemble.models.out   -> mergedBy / filteredBy / algo
+  dim1 <- length(obj.out)
+  dim2 <- length(obj.out[[1]])
+  dim3 <- length(obj.out[[1]][[1]])
+  
+  ## 2. GET outputs ---------------------------------------------------------------------
+  output <- foreach(i.dim1 = 1:dim1, .combine = "rbind") %:%
+    foreach(i.dim2 = 1:dim2, .combine = "rbind") %:% 
+    foreach(i.dim3 = 1:dim3, .combine = "rbind") %do%
+    {
+      res <- obj.out[[i.dim1]][[i.dim2]][[i.dim3]][[out]]
+      if (!is.null(res) && length(res) > 0) {
+        res <- as.data.frame(res)
+        if (out %in% c("model", "calib.failure", "models.kept", "pred", "pred.eval")) {
+          colnames(res) <- out
+          res[["points"]] <- 1:nrow(res)
+          res <- res[, c("points", out)]
+        }
+        col_names <- colnames(res)
+        res[[dim_names[1]]] <- names(obj.out)[i.dim1]
+        res[[dim_names[2]]] <- names(obj.out[[i.dim1]])[i.dim2]
+        res[[dim_names[3]]] <- names(obj.out[[i.dim1]][[i.dim2]])[i.dim3]
+        tmp.full.name <- obj.out[[i.dim1]][[i.dim2]][[i.dim3]][["model"]]
+        if(out == "calib.failure" | is.null(tmp.full.name)){
+          res[["full.name"]] <- NA
+        } else {
+          res[["full.name"]] <- tmp.full.name
+        }
+        if (obj.type == "mod") {
+          res[[dim_names[1]]] <- sub(".*_", "", res[[dim_names[1]]])
+          res[[dim_names[2]]] <- sub(".*_", "", res[[dim_names[2]]])
+          return(res[, c("full.name", dim_names, col_names)])
+        } else {
+          tmp <- names(obj.out)[i.dim1]
+          res[[dim_names.bis[1]]] <- strsplit(tmp, "_")[[1]][1]
+          res[[dim_names.bis[2]]] <- strsplit(tmp, "_")[[1]][2]
+          res[[dim_names.bis[3]]] <- strsplit(tmp, "_")[[1]][3]
+          res[[dim_names[1]]] <- NULL
+          return(res[, c("full.name", dim_names.bis, dim_names[-1], col_names)])
+        }
+      }
+    }
+  
+  if (out %in% c("model", "calib.failure", "models.kept")) {
+    if (is.null(output)) { 
+      output <- 'none'
+    } else { 
+        output <- unique(as.character(output[[out]]))
+        }
+  }
+  return(output)
+}
+
+
 ## EXTRACT model names according to specific infos ------------------------------------------------
 ## used in biomod2_classes_3.R, BIOMOD_LoadModels, BIOMOD_Projection, BIOMOD_EnsembleModeling, bm_PlotRangeSize
 
-.extract_modelNamesInfo <- function(model.names, info = 'species')
+.extract_modelNamesInfo <- function(model.names, obj.type, info, as.unique = TRUE)
 {
+  ## 0. CHECK parameters ----------------------------------------------------------------
   if (!is.character(model.names)) { stop("model.names must be a character vector") }
-  if (!is.character(info) | length(info) != 1 | !(info %in% c('species', 'data.set', 'models', 'run.eval'))) {
-    stop("info must be 'species', 'data.set', 'models' or 'run.eval'")
+  .fun_testIfIn(TRUE, "obj.type", obj.type, c("mod", "em"))
+  if (obj.type == "mod") {
+    .fun_testIfIn(TRUE, "info", info, c("species", "PA", "run", "algo"))
+  } else if (obj.type == "em") {
+    .fun_testIfIn(TRUE, "info", info, c("species", "merged.by.PA", "merged.by.run", "merged.by.algo", "filtered.by", "algo"))
   }
   
-  info.tmp <- as.data.frame(strsplit(model.names, "_"))
+  ## 1. SPLIT model.names ---------------------------------------------------------------
+  info.tmp <- strsplit(model.names, "_")
   
-  return(switch(info,
-                species = paste(unique(unlist(info.tmp[-c(nrow(info.tmp), nrow(info.tmp) - 1,  nrow(info.tmp) - 2), ])), collapse = "_"), 
-                data.set = paste(unique(unlist(info.tmp[(nrow(info.tmp) - 2), ]))), 
-                run.eval = paste(unique(unlist(info.tmp[(nrow(info.tmp) - 1), ]))), 
-                models = paste(unique(unlist(info.tmp[(nrow(info.tmp)), ])))
-  ))
+  if (obj.type == "mod") {
+    res <- switch(info
+                  , species = sapply(info.tmp, function(x) x[1])
+                  , PA = sapply(info.tmp, function(x) x[2])
+                  , run = sapply(info.tmp, function(x) x[3])
+                  , algo = sapply(info.tmp, function(x) x[4]))
+  } else if (obj.type == "em") {
+    res <- switch(info
+                  , species = sapply(info.tmp, function(x) x[1])
+                  , merged.by.PA = sapply(info.tmp, function(x) x[3])
+                  , merged.by.run = sapply(info.tmp, function(x) x[4])
+                  , merged.by.algo = sapply(info.tmp, function(x) x[5])
+                  , filtered.by = sapply(info.tmp, function(x) sub(".*By", "", x[2]))
+                  , algo = sapply(info.tmp, function(x) sub("By.*", "", x[2])))
+  }
+  
+  ## 2. RETURN either the full vector, or only the possible values ----------------------
+  if (as.unique == TRUE) {
+    return(unique(res))
+  } else {
+    return(res)
+  }
 }
 
+
+## Extract info (out/binary/filtered + metric) from BIOMOD.projection.out  -------------------------------------
+
+.extract_projlinkInfo <- function(obj){
+  stopifnot(inherits(obj, 'BIOMOD.projection.out'))
+  out.names <- obj@proj.out@link
+  sp.name <- obj@sp.name
+  sub(pattern     = paste0(".*?_",sp.name), 
+      replacement = "",
+      x           = out.names)
+  out.binary <- grepl(pattern = "bin",
+                      x = out.names)
+  out.filt <- grepl(pattern = "filt",
+                    x = out.names)
+  out.type <- ifelse(out.binary,
+                     "bin",
+                     ifelse(out.filt,
+                            "filt", 
+                            "out"))
+  out.metric <- sapply(seq_len(length(out.names)), 
+                       function(i){
+                         if (out.type[i] == "out") {
+                           return("none")
+                         } else {
+                           begin.cut <-  gsub(".*_", "", out.names[i]) 
+                           return(  sub(paste0(out.type[i],".*"), "", begin.cut) )
+                         }
+                       })
+  data.frame("link"   = out.names,
+             "type"   = out.type,
+             "metric" = out.metric)
+}
+
+# Extract Selected Layers --------------------------------------------
+# return relevant layers indices from a BIOMOD.projection.out given metric.binary
+# or metric.select
+.extract_selected.layers <- function(obj, metric.binary, metric.filter){
+  
+  ## argument  check ----------------------------------------------------------
+  stopifnot(inherits(obj, "BIOMOD.projection.out"))
+  
+  if (!is.null(metric.binary) & !is.null(metric.filter)) {
+    stop("cannot return both binary and filtered projection, please provide either `metric.binary` or `metric.filter` but not both.")
+  }
+  
+  df.info <- .extract_projlinkInfo(obj)
+  
+  available.metrics.binary <- unique(df.info$metric[which(df.info$type == "bin")])
+  available.metrics.filter <- unique(df.info$metric[which(df.info$type == "filt")])
+  .fun_testMetric(TRUE, "metric.binary", metric.binary, available.metrics.binary)
+  .fun_testMetric(TRUE, "metric.filter", metric.filter, available.metrics.filter)
+  
+  
+  ## select layers  -----------------------------------------------------------
+  if (!is.null(metric.binary)) {
+    selected.layers <- which(df.info$type == "bin" & df.info$metric == metric.binary)  
+  } else if ( !is.null(metric.filter)) {
+    selected.layers <- which(df.info$type == "filt" & df.info$metric == metric.filter)  
+  } else {
+    selected.layers <- which(df.info$type == "out")  
+  }
+  selected.layers
+}
 
 ## FILL BIOMOD.models.out elements in bm.mod or bm.em objects -------------------------------------
 ## used in BIOMOD_Modeling, BIOMOD_EnsembleModeling
 .fill_BIOMOD.models.out <- function(objName, objValue, mod.out, inMemory = FALSE, nameFolder = ".")
 {
+  
+  # backup case uses existing @val slot
+  if(is.null(objValue)){
+    eval(parse(text = paste0("objValue <- mod.out@", objName, "@val")))
+  }
+ 
   save(objValue, file = file.path(nameFolder, objName), compress = TRUE)
   if (inMemory) {
     eval(parse(text = paste0("mod.out@", objName, "@val <- objValue")))
@@ -343,191 +591,6 @@ get_var_range <- function(data)
   }
   return(out)
 }
-
-
-## PLOT MULTIPLE and LEVEL plots ------------------------------------------------------------------
-## used in biomod2_classes_3.R file
-
-.level.plot <- function(data.in, XY, color.gradient = 'red'
-                        , level.range = c(min(data.in, na.rm = TRUE), max(data.in, na.rm = TRUE))
-                        , show.scale = TRUE, SRC = FALSE, plot.title = NULL
-                        , AddPresAbs = NULL, cex = 1, PresAbsSymbol = c(cex * 0.8, 16, 4), ...)
-{
-  extra.args <- list(...)
-  multiple.plot <- FALSE
-  if (!is.null(extra.args$multiple.plot)) {
-    multiple.plot <- extra.args$multiple.plot
-  }
-  
-  .fun_testIfIn(TRUE, "color.gradient", color.gradient, c('grey', 'red', 'blue'))
-  if (ncol(XY) != 2) { stop("\n wrong coordinates given in 'XY': there should be two columns \n") }
-  if (nrow(XY) != length(data.in)) { stop("\n data and coordinates should be of the same length \n") }
-  if (SRC == TRUE && length(unique(data.in)) > 4) {
-    cat("\n not possible to render SRC plot -> more than four different values in data ")
-    SRC <- FALSE
-  }
-  
-  if (SRC == TRUE) {
-    color.system <- c("red", "lightgreen", "grey", "darkgreen")
-    col_id <- data.in + 3
-    plot.title <- ifelse(is.null(plot.title), "SRC plot", plot.title)
-  } else
-  {
-    color.system = switch(color.gradient
-                          , 'grey' = gray(seq(0.95, 0, length.out = 102))
-                          , 'blue' = c('grey88'
-                                       , rainbow(45, start = 0.5, end = 0.65)
-                                       , rainbow(10, start = 0.65, end = 0.7)
-                                       , rainbow(45, start = 0.7, end = 0.85)
-                                       , 'red')
-                          , 'red' = c('grey88'
-                                      , c(rep(c(colors()[c(417, 417, 515)]), each = 5)
-                                          , rev(rainbow(55, start = 0.13, end = 0.23))
-                                          , rev(rainbow(50, start = 0.08, end = 0.13)[seq(1, 50, length.out = 15)])
-                                          , rev(rainbow(50, end = 0.08)[seq(1, 50, length.out = 15)]))
-                                      , 'brown2')
-    )
-    
-    # define a vector to make correspondence between values and colors
-    val_seq <- c(seq(level.range[1], level.range[2], length.out = 101), Inf)
-    col_id <- sapply(data.in, function(x) { return(which(x <= val_seq)[1]) })
-    plot.title <- ifelse(is.null(plot.title), "Level plot", plot.title)
-  }
-  
-  
-  ## PLOT points ------------------------------------------------------------------------
-  plot(XY[, 2] ~ XY[, 1],
-       col = color.system[col_id],
-       cex = cex,
-       pch = 19,
-       xlab = '',
-       ylab = '',
-       xaxt = 'n',
-       yaxt = 'n',
-       main = plot.title)
-  
-  if (!show.scale && !is.null(AddPresAbs)) { 
-    ## Add presence/absence if requested by user:
-    points(AddPresAbs[AddPresAbs[, 3] == 1, 1:2], col = "black", pch = pchPres, cex = cex2)
-    points(AddPresAbs[AddPresAbs[, 3] == 0, 1:2], col = "black", pch = pchAbs, cex = cex2)
-    
-  } else if (show.scale) {
-    if (!multiple.plot) {
-      layout(matrix(c(1, 2), nrow = 1), widths = c(5, 1), heights = c(1, 1))
-    }
-    
-    if (!is.null(AddPresAbs)) {
-      ## Add presence/absence if requested by user:
-      cex2 <- PresAbsSymbol[1]
-      pchPres <- PresAbsSymbol[2]
-      pchAbs <- PresAbsSymbol[3]
-      
-      points(AddPresAbs[AddPresAbs[, 3] == 1, 1:2], col = "black", pch = pchPres, cex = cex2)
-      points(AddPresAbs[AddPresAbs[, 3] == 0, 1:2], col = "black", pch = pchAbs, cex = cex2)
-    }
-    
-    ## PLOT -----------------------------------------------------------------------------
-    par(mar = c(0.1, 0.1, 0.1, 0.1))
-    plot(x = c(-1, 1),
-         y = c(0, 1),
-         xlim = c(0, 1),
-         ylim = c(0, 1),
-         type = "n",
-         axes = FALSE)
-    polygon(x = c(-2, -2, 2, 2),
-            y = c(-2, 2, 2, -2),
-            col = "#f5fcba",
-            border = NA)
-    
-    if (SRC) {
-      legend(0, 0.8, legend = list(' (1) new', ' (0) stable', '(-1) kept', '(-2) lost'), cex = 1, fill = rev(color.system), bty = 'n')
-    } else {
-      lmin = round(level.range[1], digits = 2)
-      if (level.range[1] != min(data.in, na.rm = TRUE)) {
-        lmin <- paste0(lmin, " or lower")
-      }
-      lmax = round(level.range[2], digits = 2)
-      if (level.range[2] != max(data.in, na.rm = TRUE)) {
-        lmax <- paste0(lmax, " or over")
-      }
-      
-      legend.txt = list(lmax, '', '', '', '',
-                        round((3 * level.range[2] + level.range[1]) / 4, digits = 2),
-                        '', '', '', '',
-                        round(sum(level.range) / 2, digits = 2),
-                        '', '', '', '',
-                        round((level.range[2] + 3 * level.range[1]) / 4, digits = 2),
-                        '', '', '', '',
-                        lmin)
-      yy = ifelse(multiple.plot, 1.05, 0.92)
-      cexx = ifelse(multiple.plot, cex, 1)
-      legend(0.2, yy, legend = legend.txt, cex = cexx, bty = 'n'
-             , fill = rev(color.system[c(1, seq(2, 101, length.out = 19), 102)]))
-    }
-  }
-}
-
-.multiple.plot <- function(Data, coor
-                           , color.gradient = 'red', plots.per.window = 9, cex = 1
-                           , AddPresAbs = NULL, PresAbsSymbol = c(cex * 0.8, 16, 4))
-{
-  .fun_testIfIn(TRUE, "color.gradient", color.gradient, c('grey', 'red', 'blue'))
-  if (nrow(coor) != nrow(Data)) { stop("\n data and coordinates should be of the same length \n") }
-  
-  ## Take off NA data
-  Data <- Data[, !is.na(Data[1, ])]
-  
-  ## FUNCTION plotting color boxes
-  pbox <- function(co) {
-    plot(x = c(-1, 1), y = c(0, 1), xlim = c(0, 1), ylim = c(0, 1), type = "n", axes = FALSE)
-    polygon(x = c(-2,-2, 2, 2), y = c(-2, 2, 2,-2), col = co, border = NA)
-  }
-  
-  ## Calculate the number of windows to open
-  NbPlots <- ncol(Data)
-  NbWindows <- ceiling(NbPlots / plots.per.window)
-  if (NbWindows == 1) { plots.per.window <- NbPlots }
-  
-  for (W in 1:NbWindows)
-  {
-    dev.new() 
-    
-    Wstart <- (W - 1) * plots.per.window + 1
-    if (W * plots.per.window > NbPlots) { Wfinal <- NbPlots } else { Wfinal <- W * plots.per.window }
-    DataW <- as.data.frame(Data[, Wstart:Wfinal])
-    colnames(DataW) <- colnames(Data)[Wstart:Wfinal]
-    
-    #determine the organisation of the plots on the window
-    W.width <- ceiling(sqrt(plots.per.window))
-    W.height <- ceiling(plots.per.window / W.width)
-    
-    #create object for scaling the legend
-    legendcex <- 0.64 + 1 / exp(W.height)
-    
-    #matrix of indexes for ordering the layout
-    mat <- c(1,2)
-    for (i in 1:(W.width - 1)) { mat <- c(mat, mat[1:2] + 4 * i) }
-    mat <- rbind(mat, mat + 2)
-    for (i in 1:(W.height - 1)) { mat <- rbind(mat, mat[1:2, ] + W.width * 4 * i) }
-    
-    layout(mat, widths = rep(c(1, 0.3), W.width), heights = rep(c(0.2, 1), W.height))
-    
-    par(mar = c(0.1, 0.1, 0.1, 0.1))
-    for (i in 1:(Wfinal - Wstart + 1)) {
-      pbox("grey98")
-      text(x = 0.5, y = 0.8, pos = 1, cex = 1.6, labels = colnames(DataW)[i], col = "#4c57eb")
-      pbox("grey98")
-      .level.plot(DataW[, i], XY = coor, color.gradient = color.gradient, cex = cex, title = ""
-                  , AddPresAbs = AddPresAbs, PresAbsSymbol = PresAbsSymbol, multiple.plot = TRUE)
-    }
-    
-    #fill gaps by grey boxes
-    if (W.width * W.height - plots.per.window != 0) {
-      for (i in 1:((W.width * W.height - plots.per.window) * 4)) { pbox("grey98") }
-    }
-  } #W loop
-}
-
 
 
 ## GAM library loading --------------------------------------------------------
@@ -606,7 +669,7 @@ get_var_range <- function(data)
 }
 
 
-## Categorical to numeric ---------------------------------------
+## .check_bytes_format for MAXENT options----------------------------
 ##' @name .check_bytes_format
 ##' 
 ##' @title Check bytes formatting 
@@ -624,14 +687,64 @@ get_var_range <- function(data)
   this_number <- substr(x, 1, nchar(x)-1)
   if (! this_suffix %in% possible_suffix) {
     this_test <- FALSE
-    cat(paste0("\nMAXENT.Phillips$",varname," last letter must be among ",
+    cat(paste0("\nMAXENT$",varname," last letter must be among ",
                paste0(possible_suffix[-length(possible_suffix)], collapse = ", "),
                "", " and ", possible_suffix[length(possible_suffix)],". Current value = '", this_suffix,"' was not usable."))
   }
   if (suppressWarnings(is.na(as.numeric(this_number)))) {
     this_test <- FALSE
-    cat(paste0("\nMAXENT.Phillips$",varname," must be a number plus a single letter. Begginning of the given argument was '", this_number, "' and was not convertible into a number."))
+    cat(paste0("\nMAXENT$",varname," must be a number plus a single letter. Begginning of the given argument was '", this_number, "' and was not convertible into a number."))
   }
   return(this_test)
 }
 
+## Tools for SpatRaster ----------------------------
+##' @name rast.has.values
+##' 
+##' @title Check whether SpatRaster is an empty \code{rast()} 
+##' 
+##' @description Check whether SpatRaster is an empty \code{rast()} 
+##' 
+##' @param x SpatRaster to be checked
+##' @return a boolean
+##' @keywords internal
+
+rast.has.values <- function(x){
+  stopifnot(inherits(x, 'SpatRaster'))
+  suppressWarnings(any(!is.na(values(x))))
+}
+
+##' @name check_duplicated_cells
+##' 
+##' @title Check duplicated cells
+##' 
+##' @description Identify data that are contained in the same raster cells ; 
+##' print warnings if need be and filter those data if asked for.
+##' 
+##' 
+##' @param env a \code{SpatRaster} with environmental data
+##' @param xy a \code{data.frame} with coordinates
+##' @param sp a \code{vector} with species occurrence data
+##' @param filter.raster a \code{boolean} 
+##' @return a \code{list}
+##' @keywords internal
+##' 
+##' @importFrom terra cellFromXY
+
+check_duplicated_cells <- function(env, xy, sp, filter.raster){
+  sp.cell <- duplicated(cellFromXY(env, xy))
+  if(any(sp.cell)){
+    if(filter.raster){
+      sp <- sp[!sp.cell]
+      xy <- xy[!sp.cell,]
+      cat("\n !!! Some data are located in the same raster cell. 
+          Only the first data in each cell will be kept as `filter.raster = TRUE`.")
+    } else {
+      cat("\n !!! Some data are located in the same raster cell. 
+          Please set `filter.raster = TRUE` if you want an automatic filtering.")
+    }
+  }
+  return(list("sp"  = sp, 
+              "xy"  = xy))
+  
+}

@@ -33,7 +33,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">biomod2</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">4.2-1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">4.2-2</span>
       </span>
     </div>
 
@@ -132,10 +132,89 @@
 <i class="fas fa-chess-pawn"></i> 2022<a class="anchor" aria-label="anchor" href="#section"></a>
 </h3>
 <div class="section level4">
-<h4 id="bugfix-patch">4.2-1 Bugfix patch<a class="anchor" aria-label="anchor" href="#bugfix-patch"></a>
+<h4 id="improvement-patch">4.2-2 Improvement patch<a class="anchor" aria-label="anchor" href="#improvement-patch"></a>
 </h4>
 <div class="section level5">
 <h5 id="major-changes">Major Changes<a class="anchor" aria-label="anchor" href="#major-changes"></a>
+</h5>
+<ul>
+<li>‘.tif’ is available as an output format for raster projection</li>
+<li>‘.tif’ is the new default output format for raster projection</li>
+<li>Improved <code>plot</code> and <code>summary</code> methods for
+<code>BIOMOD_FormatingData</code> output. These method now support the
+use of <code>calib.lines</code> to explore how the cross-validation
+dataset are structured.</li>
+<li>Updated <code>plot</code> methods for
+<code>BIOMOD.projection.out</code> objects so that it uses
+<code>ggplot2</code> for nicer plots.</li>
+<li>Binary and Filtered transformation are now properly stored in
+<code>BIOMOD.projection.out</code> objects. They can be loaded from the
+disk with <code>get_predictions</code> or represented through
+<code>BIOMOD.projection.out</code> plot method.</li>
+</ul>
+</div>
+<div class="section level5">
+<h5 id="minor-changes">Minor Changes<a class="anchor" aria-label="anchor" href="#minor-changes"></a>
+</h5>
+<ul>
+<li>Simplified maxent model names: ‘MAXENT.Phillips’ -&gt; ‘MAXENT’
+(based on maxent.jar); ‘MAXENT.Phillips.2’ -&gt; ‘MAXNET’ (based on
+maxnet package).</li>
+<li>
+<code>BIOMOD_FormatingData</code> now gives warning when several
+input data points are located in the same raster cells</li>
+<li>Added options <code>filter.raster</code> in
+<code>BIOMOD_FormatingData</code> to filter data points so that none are
+located in the same raster cells.</li>
+<li>
+<code>BIOMOD_EnsembleModeling</code> now have an argument
+<code>em.algo</code> to select the ensemble algorithm to be computed.
+Separate arguments are now deprecated (prob.mean, prob.median, prob.cv,
+prob.ci, committee.averaging, prob.mean.weight). Building all possible
+ensemble models can now be done with
+<code>em.algo = c('EMmean','EMmedian','EMcv','EMci','EMca','EMwmean')</code>.</li>
+<li>Some possible values for <code>em.by</code> have slightly changed:
+‘PA_dataset’ -&gt; ‘PA’, ‘PA_dataset+repet’ -&gt; ‘PA+run’ and
+‘PA_dataset+algo’ -&gt; ‘PA+algo’</li>
+<li>Added an appropriate message when all models fail for
+<code>BIOMOD_Modeling</code> and
+<code>BIOMOD_EnsembleModeling</code>.</li>
+</ul>
+</div>
+<div class="section level5">
+<h5 id="bugfix">Bugfix<a class="anchor" aria-label="anchor" href="#bugfix"></a>
+</h5>
+<ul>
+<li>Fixed <code>MAXENT.Phillips.2</code> and single variable
+models.</li>
+<li>Fixed ensemble models when several filtering metrics were asked and
+some combination of ensemble/metrics had no models</li>
+<li>Bugfix for projection for ensemble models to ensure that the proper
+set of models was selected</li>
+<li>Bugfix for BIOMOD_CrossValidation for block-stratified sampling</li>
+<li>Bugfix for BIOMOD_CrossValidation for pseudo-absences</li>
+</ul>
+</div>
+<div class="section level5">
+<h5 id="internal-changes">Internal Changes<a class="anchor" aria-label="anchor" href="#internal-changes"></a>
+</h5>
+<ul>
+<li>Array have disappeared from most internal functions</li>
+<li>Removed <code>rasterVis</code> from <code>Suggests</code>
+</li>
+<li>Added <code>tidyterra</code> and <code>ggtext</code> to
+<code>Suggests</code>
+</li>
+<li>Added checks to <code>get_evaluation</code> when models have no
+evaluations.</li>
+</ul>
+</div>
+</div>
+<div class="section level4">
+<h4 id="bugfix-patch">4.2-1 Bugfix patch<a class="anchor" aria-label="anchor" href="#bugfix-patch"></a>
+</h4>
+<div class="section level5">
+<h5 id="major-changes-1">Major Changes<a class="anchor" aria-label="anchor" href="#major-changes-1"></a>
 </h5>
 <ul>
 <li>Package <code>sp</code> is back into <code>Imports</code> due to the
@@ -148,7 +227,7 @@ saved to the disk.</li>
 </ul>
 </div>
 <div class="section level5">
-<h5 id="minor-changes">Minor Changes<a class="anchor" aria-label="anchor" href="#minor-changes"></a>
+<h5 id="minor-changes-1">Minor Changes<a class="anchor" aria-label="anchor" href="#minor-changes-1"></a>
 </h5>
 <ul>
 <li>Added <code>initial_heap_size</code> and <code>max_heap_size</code>
@@ -158,7 +237,7 @@ in <code>MAXENT.Phillips</code> modeling options</li>
 </ul>
 </div>
 <div class="section level5">
-<h5 id="bugfix">Bugfix<a class="anchor" aria-label="anchor" href="#bugfix"></a>
+<h5 id="bugfix-1">Bugfix<a class="anchor" aria-label="anchor" href="#bugfix-1"></a>
 </h5>
 <ul>
 <li>Fixed <code>MAXENT.Phillips</code> predict method for large dataset
@@ -196,6 +275,10 @@ for <code>SpatRaster</code> so that it saves environmental data as
 <code>.asc</code> and do not use the <code>data.frame</code>
 method.</li>
 <li>fixed some automatic boolean conversion</li>
+<li>Cleaned up <code>BIOMOD.formated.data@data.mask</code> slot.
+<code>data.mask</code> can now be safely saved and re-opened ;
+<code>data.mask</code> can now store a different extent for evaluation
+dataset</li>
 </ul>
 </div>
 </div>
@@ -203,7 +286,7 @@ method.</li>
 <h4 id="terra-update">4.2-0 Terra Update<a class="anchor" aria-label="anchor" href="#terra-update"></a>
 </h4>
 <div class="section level5">
-<h5 id="major-changes-1">Major Changes<a class="anchor" aria-label="anchor" href="#major-changes-1"></a>
+<h5 id="major-changes-2">Major Changes<a class="anchor" aria-label="anchor" href="#major-changes-2"></a>
 </h5>
 <ul>
 <li>Package now rely only on <code>terra</code>
@@ -219,7 +302,7 @@ supported.</li>
 </ul>
 </div>
 <div class="section level5">
-<h5 id="minor-changes-1">Minor Changes<a class="anchor" aria-label="anchor" href="#minor-changes-1"></a>
+<h5 id="minor-changes-2">Minor Changes<a class="anchor" aria-label="anchor" href="#minor-changes-2"></a>
 </h5>
 <ul>
 <li>
@@ -249,7 +332,7 @@ future.</li>
 </ul>
 </div>
 <div class="section level5">
-<h5 id="bugfix-1">Bugfix<a class="anchor" aria-label="anchor" href="#bugfix-1"></a>
+<h5 id="bugfix-2">Bugfix<a class="anchor" aria-label="anchor" href="#bugfix-2"></a>
 </h5>
 <ul>
 <li>MAXENT.Phillips models can now properly fail</li>
@@ -295,7 +378,7 @@ variable</li>
 </ul>
 </div>
 <div class="section level5">
-<h5 id="internal-changes">Internal Changes<a class="anchor" aria-label="anchor" href="#internal-changes"></a>
+<h5 id="internal-changes-1">Internal Changes<a class="anchor" aria-label="anchor" href="#internal-changes-1"></a>
 </h5>
 <ul>
 <li>New internal function <code>.categorical2numeric</code> to transform
@@ -319,7 +402,7 @@ CompteurSp that was defined within a function.</li>
 <h4 id="section-1">4.1-3<a class="anchor" aria-label="anchor" href="#section-1"></a>
 </h4>
 <div class="section level5">
-<h5 id="bugfix-2">Bugfix<a class="anchor" aria-label="anchor" href="#bugfix-2"></a>
+<h5 id="bugfix-3">Bugfix<a class="anchor" aria-label="anchor" href="#bugfix-3"></a>
 </h5>
 <ul>
 <li>Ensemble models that fails (e.g. EMcv with only one models) will not
@@ -332,7 +415,7 @@ the beginning and the resulting object will list failed models.</li>
 </div>
 </div>
 <div class="section level4">
-<h4 id="internal-changes-1">Internal Changes<a class="anchor" aria-label="anchor" href="#internal-changes-1"></a>
+<h4 id="internal-changes-2">Internal Changes<a class="anchor" aria-label="anchor" href="#internal-changes-2"></a>
 </h4>
 <ul>
 <li><p>New internal function .get_kept_models to generate list of models
@@ -348,7 +431,7 @@ instead of matrix.</p></li>
 <h4 id="current-cran-version">4.1-2 (2022-09-29 - Current CRAN Version)<a class="anchor" aria-label="anchor" href="#current-cran-version"></a>
 </h4>
 <div class="section level5">
-<h5 id="major-changes-2">Major changes<a class="anchor" aria-label="anchor" href="#major-changes-2"></a>
+<h5 id="major-changes-3">Major changes<a class="anchor" aria-label="anchor" href="#major-changes-3"></a>
 </h5>
 <ul>
 <li>
@@ -363,7 +446,7 @@ environmental space supplied.</li>
 </ul>
 </div>
 <div class="section level5">
-<h5 id="minor-changes-2">Minor changes<a class="anchor" aria-label="anchor" href="#minor-changes-2"></a>
+<h5 id="minor-changes-3">Minor changes<a class="anchor" aria-label="anchor" href="#minor-changes-3"></a>
 </h5>
 <ul>
 <li>Individual EM models projected as raster are now saved with

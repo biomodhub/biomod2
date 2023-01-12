@@ -37,13 +37,14 @@ A \code{numeric} corresponding to the threshold used to convert the given data}
 \item{misc}{a \code{matrix} corresponding to a contingency table}
 }
 \value{
-A \code{1} row x \code{4} columns \code{matrix} containing :
+A \code{1} row x \code{5} columns \code{data.frame} containing :
 \itemize{
-  \item{\code{best.iter}}{ : the best score obtained for the chosen evaluation metric}
+  \item{\code{metric.eval}}{ : the chosen evaluation metric}
   \item{\code{cutoff}}{ : the associated cut-off used to transform the continuous values into 
   binary}
-  \item{\code{sensibility}}{ : the sensibility obtained on fitted values with this threshold}
+  \item{\code{sensitivity}}{ : the sensibility obtained on fitted values with this threshold}
   \item{\code{specificity}}{ : the specificity obtained on fitted values with this threshold}
+  \item{\code{best.stat}}{ : the best score obtained for the chosen evaluation metric}
 }
 }
 \description{
@@ -77,6 +78,7 @@ vec.c[which(vec.c > 1000)] <- 1000
 ## Find optimal threshold for a specific evaluation metric
 bm_FindOptimStat(metric.eval = 'TSS', fit = vec.b, obs = vec.a)
 bm_FindOptimStat(metric.eval = 'TSS', fit = vec.c, obs = vec.a, nb.thresh = 100)
+bm_FindOptimStat(metric.eval = 'TSS', fit = vec.c, obs = vec.a, threshold = 280)
 
 
 }

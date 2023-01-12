@@ -54,8 +54,8 @@ NULL
 ##' @slot expl_var_names a \code{vector} containing names of explanatory variables
 ##' @slot expl_var_type a \code{vector} containing classes of explanatory variables
 ##' @slot expl_var_range a \code{list} containing ranges of explanatory variables
-##' @slot model_evaluation a \code{matrix} containing the model evaluations
-##' @slot model_variables_importance a \code{matrix} containing the model variables importance
+##' @slot model_evaluation a \code{data.frame} containing the model evaluations
+##' @slot model_variables_importance a \code{data.frame} containing the model variables importance
 ##' 
 ##' @param object a \code{\link{biomod2_ensemble_model}} object
 ##' 
@@ -100,7 +100,7 @@ NULL
 
 ## 9.1 Class Definition ---------------------------------------------------------
 setClass('biomod2_ensemble_model',
-         representation(modeling.id = 'character'), ##maybe some additional args should be added here
+         representation(modeling.id = 'character'), ## maybe some additional args should be added here
          contains = 'biomod2_model',
          prototype = list(model_class = 'EM'),
          validity = function(object) { return(TRUE) })
@@ -168,9 +168,12 @@ NULL
 ### biomod2_ensemble_model + SpatRaster  -------------------------------------------------
 ##' @rdname predict2.em
 setMethod('predict2', signature(object = 'biomod2_ensemble_model', newdata = "SpatRaster"),
-          function(object, newdata, predfun, seedval = NULL,
-                   data_as_formal_predictions = FALSE, ...) {
+          function(object, newdata, predfun, seedval = NULL, ...) {
             args <- list(...)
+            data_as_formal_predictions <- args$data_as_formal_predictions
+            if (is.null(data_as_formal_predictions)) {
+              data_as_formal_predictions <- FALSE 
+            }
             filename <- args$filename
             overwrite <- args$overwrite
             on_0_1000 <- args$on_0_1000
@@ -192,7 +195,9 @@ setMethod('predict2', signature(object = 'biomod2_ensemble_model', newdata = "Sp
             penalization_scores <- args$penalization_scores
             
             
-            if (!data_as_formal_predictions) {
+            if (data_as_formal_predictions) { 
+              newdata <- subset(newdata, object@model)
+            } else {
               newdata <- .get_formal_predictions(object, newdata, on_0_1000 = on_0_1000, seedval = seedval)
             }
             
@@ -220,10 +225,12 @@ setMethod('predict2', signature(object = 'biomod2_ensemble_model', newdata = "Sp
 ### biomod2_ensemble_model + data.frame  -------------------------------------
 ##' @rdname predict2.em
 setMethod('predict2', signature(object = 'biomod2_ensemble_model', newdata = "data.frame"),
-          function(object, newdata, predfun, seedval = NULL, 
-                   data_as_formal_predictions = FALSE, ...) {
-            
+          function(object, newdata, predfun, seedval = NULL,  ...) {
             args <- list(...)
+            data_as_formal_predictions <- args$data_as_formal_predictions
+            if (is.null(data_as_formal_predictions)) {
+              data_as_formal_predictions <- FALSE 
+            }
             on_0_1000 <- args$on_0_1000
             if (is.null(on_0_1000)) {
               on_0_1000 <- FALSE 
@@ -237,7 +244,9 @@ setMethod('predict2', signature(object = 'biomod2_ensemble_model', newdata = "da
             # additional arg retrived for EMwmean
             penalization_scores <- args$penalization_scores
             
-            if (!data_as_formal_predictions) {
+            if (data_as_formal_predictions) { 
+              newdata <- newdata[ , object@model, drop = FALSE]
+            } else  {
               newdata <- .get_formal_predictions(object, newdata, on_0_1000 = on_0_1000, seedval = seedval)
             }
             out <- predfun(newdata,
@@ -515,7 +524,7 @@ setMethod('predict2', signature(object = 'EMci_biomod2_model', newdata = "data.f
               }
               ci_prediction
             }
-            # redirect to predict2.biomod2_ensemble_model.SpatRaster
+            # redirect to predict2.biomod2_ensemble_model.data.frame
             callNextMethod(object, newdata, predfun = predfun, side = object@side, ...)
           }
 )
@@ -539,7 +548,7 @@ setClass('EMca_biomod2_model',
 ##' 
 
 setMethod('predict2', signature(object = 'EMca_biomod2_model', newdata = "SpatRaster"),
-          function(object, newdata, ...) {
+          function(object, newdata, data_as_formal_predictions = FALSE, ...) {
             args <- list(...)
             on_0_1000 <- args$on_0_1000
             if (is.null(on_0_1000)) { 
@@ -568,14 +577,17 @@ setMethod('predict2', signature(object = 'EMca_biomod2_model', newdata = "SpatRa
               thresh <- object@thresholds / 1000 
             }
             
+
             # redirect to predict2.biomod2_ensemble_model.SpatRaster
-            callNextMethod(object, newdata, predfun = predfun, thresh = thresh, ...)
+            callNextMethod(object, newdata, predfun = predfun, thresh = thresh,
+                           data_as_formal_predictions = data_as_formal_predictions,
+                           ...)
           }
 )
 
 ##' @rdname predict2.em
 setMethod('predict2', signature(object = 'EMca_biomod2_model', newdata = "data.frame"),
-          function(object, newdata, ...) {
+          function(object, newdata, data_as_formal_predictions = FALSE, ...) {
             args <- list(...)
             on_0_1000 <- args$on_0_1000
             if (is.null(on_0_1000)) { 
@@ -594,8 +606,11 @@ setMethod('predict2', signature(object = 'EMca_biomod2_model', newdata = "data.f
               thresh <- object@thresholds / 1000
             }
             
-            # redirect to predict2.biomod2_ensemble_model.SpatRaster
-            callNextMethod(object, newdata, predfun = predfun, ...)
+
+            # redirect to predict2.biomod2_ensemble_model.data.frame
+            callNextMethod(object, newdata, predfun = predfun,
+                           data_as_formal_predictions = data_as_formal_predictions,
+                           ...)
           }
 )
 
@@ -618,7 +633,7 @@ setClass('EMwmean_biomod2_model',
 ##' 
 
 setMethod('predict2', signature(object = 'EMwmean_biomod2_model', newdata = "SpatRaster"),
-          function(object, newdata, ...) {
+          function(object, newdata, data_as_formal_predictions = FALSE, ...) {
             if(ncol(newdata) < 1){
               stop("Model EMwmean was not computed because no single model was kept in ensemble modeling")
             }
@@ -637,16 +652,20 @@ setMethod('predict2', signature(object = 'EMwmean_biomod2_model', newdata = "Spa
                 )
               }
             }
+
             # redirect to predict2.biomod2_ensemble_model.SpatRaster
-            callNextMethod(object, newdata, predfun = predfun,
+            callNextMethod(object, newdata,
+                           predfun = predfun,
+                           data_as_formal_predictions = data_as_formal_predictions,
                            penalization_scores = object@penalization_scores, ...)
           }
 )
 
 ##' @rdname predict2.em
 setMethod('predict2', signature(object = 'EMwmean_biomod2_model', newdata = "data.frame"),
-          function(object, newdata, ...) {
-            if(ncol(newdata) < 1){
+          function(object, newdata, data_as_formal_predictions = FALSE, ...) {
+            
+            if (ncol(newdata) < 1) {
               stop("Model EMwmean was not computed because no single model was kept in ensemble modeling")
             }
             predfun <- function(newdata, on_0_1000, penalization_scores, ...){
@@ -659,9 +678,13 @@ setMethod('predict2', signature(object = 'EMwmean_biomod2_model', newdata = "dat
               out
             }
             
+
             # redirect to predict2.biomod2_ensemble_model.SpatRaster
-            callNextMethod(object, newdata, predfun = predfun, 
-                           penalization_scores = object@penalization_scores,  ...)
+            callNextMethod(object, newdata,
+                           predfun = predfun, 
+                           penalization_scores = object@penalization_scores,
+                           data_as_formal_predictions = data_as_formal_predictions,
+                           ...)
           }
 )
 

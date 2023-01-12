@@ -7,6 +7,7 @@
 bm_VariablesImportance(
   bm.model,
   expl.var,
+  variables = NULL,
   method = "full_rand",
   nb.rep = 1,
   seed.val = NULL,
@@ -22,6 +23,9 @@ obtained with the \code{\link{get_formal_model}} function}
 \item{expl.var}{a \code{data.frame} containing the explanatory variables that will be used to 
 compute the variables importance}
 
+\item{variables}{(\emph{optional, default} \code{NULL}) \cr 
+A \code{vector} containing the names of the explanatory variables that will be considered}
+
 \item{method}{a \code{character} corresponding to the randomisation method to be used, must be 
 \code{full_rand} (\emph{only method available so far})}
 
@@ -34,10 +38,16 @@ An \code{integer} value corresponding to the new seed value to be set}
 \item{do.progress}{(\emph{optional, default} \code{TRUE}) \cr 
 A \code{logical} value defining whether the progress bar is to be rendered or not}
 
-\item{\ldots}{(\emph{optional})}
+\item{...}{additional arguments}
 }
 \value{
-A \code{matrix} containing variables importance scores for each permutation run.
+A \code{3} columns \code{data.frame} containing variable's importance scores for each 
+permutation run :
+\itemize{
+  \item{\code{expl.var}}{ : the considered explanatory variable (the one permuted)}
+  \item{\code{rand}}{ : the ID of the permutation run}
+  \item{\code{var.imp}}{ : the variable's importance score}
+}
 }
 \description{
 This internal \pkg{biomod2} function allows the user to compute a variable 

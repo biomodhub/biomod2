@@ -161,6 +161,9 @@ setClass("BIOMOD.stored.models.options",
 ##' into memory.
 ##' 
 ##' @param obj a \code{\link{BIOMOD.stored.data}} object
+##' @param layer an \code{integer} corresponding to the layer ID to be extracted
+##'   when multilayer object considered
+##' @param ... additional arguments
 ##' 
 ##' @seealso \code{\link{BIOMOD.stored.data}}
 ##' @family Toolbox functions
@@ -168,7 +171,7 @@ setClass("BIOMOD.stored.models.options",
 ##' @export
 ##' 
 
-setGeneric("load_stored_object", function(obj) { standardGeneric("load_stored_object") })
+setGeneric("load_stored_object", function(obj, ...) { standardGeneric("load_stored_object") })
 
 ##' 
 ##' @rdname load_stored_object
@@ -176,12 +179,19 @@ setGeneric("load_stored_object", function(obj) { standardGeneric("load_stored_ob
 ##' 
 
 setMethod("load_stored_object", "BIOMOD.stored.data",
-          function(obj)
+          function(obj, layer = 1)
           {
-            if(obj@inMemory){ return(obj@val) }
+            
+            if(length(layer) > 1){
+              stop("No support for multilayer object in `load_stored_object` method for `BIOMOD.stored.data`")
+            }
+            
+            if(obj@inMemory & layer == 1){
+              return(obj@val) 
+            }
             # for all other stored objects
-            if (obj@link != '') {
-              return(get(load(obj@link)))
+          if (obj@link[layer] != '') {
+              return(get(load(obj@link[layer])))
             } else {
               warning("No link provided for this object")
               return(NA)
@@ -195,22 +205,33 @@ setMethod("load_stored_object", "BIOMOD.stored.data",
 ##' 
 
 setMethod("load_stored_object", "BIOMOD.stored.SpatRaster",
-          function(obj)
+          function(obj, layer = 1)
           {
-            if(obj@inMemory){ 
+            # load inMemory only if standard output (i.e. first layer is included)
+            if (obj@inMemory & (1 %in% layer)) { 
               return(rast(obj@val))
             }
-            # different comportement with raster
-            if (length(obj@link) == 1 & all(grepl(".RData", obj@link))) {
+            current_link <- obj@link[layer]
+            # different behavior with raster
+            if (length(current_link) == 1 && all(grepl(".RData", current_link))) {
               return(
-                rast(get(load(obj@link)))
+                rast(get(load(current_link)))
               )
-            } else if (all(grepl(".grd", obj@link) | grepl(".img", obj@link))) {
-              out <- rast(x = obj@link)
+            } else if (all(grepl(".grd", obj@link) | 
+                           grepl(".img", obj@link) | 
+                           grepl(".tif", obj@link))) {
+              out <- rast(x = current_link)
               ## rename layer in case of individual projections
-              if (all(grepl("individual_projections", obj@link))) {
-                # remove directories arch and extention
-                xx <- sub("[:.:].+$", "", sub("^.+individual_projections/", "", obj@link))
+              if (all(grepl("individual_projections", current_link))) {
+                # remove directories arch and extension
+                if (any(grepl("bin", current_link)) | 
+                    any(grepl("filt", current_link)) ) {
+                  xx <- sub("_[^_]+$", "", current_link)
+                  xx <- sub("^.+individual_projections/", "", xx)
+                } else {
+                  xx <- sub("[:.:].+$", "",
+                            sub("^.+individual_projections/", "", current_link))
+                }
                 # remove projection name
                 to_rm <- unique(sub("[^_]+[:_:][^_]+[:_:][^_]+[:_:][^_]+$", "", xx))
                 xx <- sub(to_rm, "", xx)

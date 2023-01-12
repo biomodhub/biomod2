@@ -21,7 +21,7 @@ grouping methods (see Details)."><!-- mathjax --><script src="https://cdnjs.clou
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">biomod2</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">4.2-1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">4.2-2</span>
       </span>
     </div>
 
@@ -122,7 +122,10 @@ object that can be obtained with the <code><a href="BIOMOD_Modeling.html">BIOMOD
 
 <dt>group.by</dt>
 <dd><p>a 3-length <code>vector</code> containing the way kept models will be represented,
-must be among <code>model</code>, <code>algo</code>, <code>run</code>, <code>dataset</code>, <code>expl.var</code></p></dd>
+must be among <code>full.name</code>, <code>PA</code>, <code>run</code>, <code>algo</code>, <code>expl.var</code> (if 
+<code>bm.out</code> is a <code><a href="BIOMOD.models.out.html">BIOMOD.models.out</a></code> object), or <code>full.name</code>, 
+<code>merged.by.PA</code>, <code>merged.by.run</code>, <code>merged.by.algo</code>, <code>expl.var</code> 
+(if <code>bm.out</code> is a <code><a href="BIOMOD.ensemble.models.out.html">BIOMOD.ensemble.models.out</a></code> object)</p></dd>
 
 
 <dt>do.plot</dt>
@@ -234,12 +237,12 @@ A <code>logical</code> value defining whether the plot is to be rendered or not<
 <span></span>
 <span><span class="co"># ---------------------------------------------------------------</span></span>
 <span><span class="co"># Get variables importance</span></span>
-<span><span class="fu"><a href="getters.out.html">get_variables_importance</a></span><span class="op">(</span><span class="va">myBiomodModelOut</span>, as.data.frame <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span><span class="fu"><a href="getters.out.html">get_variables_importance</a></span><span class="op">(</span><span class="va">myBiomodModelOut</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Represent variables importance</span></span>
 <span><span class="fu">bm_PlotVarImpBoxplot</span><span class="op">(</span>bm.out <span class="op">=</span> <span class="va">myBiomodModelOut</span>, group.by <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">'expl.var'</span>, <span class="st">'algo'</span>, <span class="st">'algo'</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="fu">bm_PlotVarImpBoxplot</span><span class="op">(</span>bm.out <span class="op">=</span> <span class="va">myBiomodModelOut</span>, group.by <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">'expl.var'</span>, <span class="st">'algo'</span>, <span class="st">'dataset'</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="fu">bm_PlotVarImpBoxplot</span><span class="op">(</span>bm.out <span class="op">=</span> <span class="va">myBiomodModelOut</span>, group.by <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">'algo'</span>, <span class="st">'expl.var'</span>, <span class="st">'dataset'</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="fu">bm_PlotVarImpBoxplot</span><span class="op">(</span>bm.out <span class="op">=</span> <span class="va">myBiomodModelOut</span>, group.by <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">'expl.var'</span>, <span class="st">'algo'</span>, <span class="st">'PA'</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="fu">bm_PlotVarImpBoxplot</span><span class="op">(</span>bm.out <span class="op">=</span> <span class="va">myBiomodModelOut</span>, group.by <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">'algo'</span>, <span class="st">'expl.var'</span>, <span class="st">'PA'</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
 <span></span></code></pre></div>
     </div>

@@ -17,7 +17,10 @@ object that can be obtained with the \code{\link{BIOMOD_Modeling}} or
 \code{\link{BIOMOD_EnsembleModeling}} functions}
 
 \item{group.by}{a 3-length \code{vector} containing the way kept models will be represented,
-must be among \code{model}, \code{algo}, \code{run}, \code{dataset}, \code{expl.var}}
+must be among \code{full.name}, \code{PA}, \code{run}, \code{algo}, \code{expl.var} (if 
+\code{bm.out} is a \code{\link{BIOMOD.models.out}} object), or \code{full.name}, 
+\code{merged.by.PA}, \code{merged.by.run}, \code{merged.by.algo}, \code{expl.var} 
+(if \code{bm.out} is a \code{\link{BIOMOD.ensemble.models.out}} object)}
 
 \item{do.plot}{(\emph{optional, default} \code{TRUE}) \cr 
 A \code{logical} value defining whether the plot is to be rendered or not}
@@ -98,12 +101,12 @@ if (file.exists(file.out)) {
 
 # ---------------------------------------------------------------
 # Get variables importance
-get_variables_importance(myBiomodModelOut, as.data.frame = TRUE)
+get_variables_importance(myBiomodModelOut)
 
 # Represent variables importance
 bm_PlotVarImpBoxplot(bm.out = myBiomodModelOut, group.by = c('expl.var', 'algo', 'algo'))
-bm_PlotVarImpBoxplot(bm.out = myBiomodModelOut, group.by = c('expl.var', 'algo', 'dataset'))
-bm_PlotVarImpBoxplot(bm.out = myBiomodModelOut, group.by = c('algo', 'expl.var', 'dataset'))
+bm_PlotVarImpBoxplot(bm.out = myBiomodModelOut, group.by = c('expl.var', 'algo', 'PA'))
+bm_PlotVarImpBoxplot(bm.out = myBiomodModelOut, group.by = c('algo', 'expl.var', 'PA'))
 
 
 }

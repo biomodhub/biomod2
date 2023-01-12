@@ -5,7 +5,6 @@
 \alias{bm_BinaryTransformation,data.frame-method}
 \alias{bm_BinaryTransformation,matrix-method}
 \alias{bm_BinaryTransformation,numeric-method}
-\alias{bm_BinaryTransformation,array-method}
 \alias{bm_BinaryTransformation,SpatRaster-method}
 \title{Convert probability values into binary values using a predefined threshold}
 \usage{
@@ -17,15 +16,14 @@ bm_BinaryTransformation(data, threshold, do.filtering = FALSE)
 
 \S4method{bm_BinaryTransformation}{numeric}(data, threshold, do.filtering = FALSE)
 
-\S4method{bm_BinaryTransformation}{array}(data, threshold, do.filtering = FALSE)
-
 \S4method{bm_BinaryTransformation}{SpatRaster}(data, threshold, do.filtering = FALSE)
 }
 \arguments{
-\item{data}{a \code{vector}, a \code{matrix}, \code{data.frame}, \code{array},
-or a \code{\link[terra:rast]{SpatRaster}} containing the data to be converted}
+\item{data}{a \code{vector}, a \code{matrix}, \code{data.frame}, or a 
+\code{\link[terra:rast]{SpatRaster}} containing the data to be converted}
 
-\item{threshold}{a \code{numeric} corresponding to the threshold used to convert the given data}
+\item{threshold}{a \code{numeric} or a \code{vector} of \code{numeric} corresponding to 
+the threshold used to convert the given data}
 
 \item{do.filtering}{(\emph{optional, default} \code{FALSE}) \cr 
 A \code{logical} value defining whether filtered data should be returned, or binary one 

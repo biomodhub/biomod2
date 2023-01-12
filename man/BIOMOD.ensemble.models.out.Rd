@@ -35,27 +35,25 @@ containing informations from \code{\link{BIOMOD_Modeling}} object}
 
 \item{\code{em.by}}{a \code{character} corresponding to the way kept models have
 been combined to build the ensemble models, must be among
-\code{PA_dataset+repet}, \code{PA_dataset+algo}, \code{PA_dataset},
+\code{PA+run}, \code{PA+algo}, \code{PA},
 \code{algo}, \code{all}}
 
 \item{\code{em.computed}}{a \code{vector} containing names of ensemble models}
 
 \item{\code{em.failed}}{a \code{vector} containing names of failed ensemble models}
 
-\item{\code{em.models}}{a \code{list} containing ensemble models}
+\item{\code{em.models_kept}}{a \code{list} containing single models for each ensemble model}
 
-\item{\code{em.failed}}{a \code{list} containing ensemble models that failed}
-
-\item{\code{models.evaluation}}{a \code{\link{BIOMOD.stored.array-class}} object
+\item{\code{models.evaluation}}{a \code{\link{BIOMOD.stored.data.frame-class}} object
 containing models evaluation}
 
-\item{\code{variables.importance}}{a \code{\link{BIOMOD.stored.array-class}} object
+\item{\code{variables.importance}}{a \code{\link{BIOMOD.stored.data.frame-class}} object
 containing variables importance}
 
-\item{\code{models.prediction}}{a \code{\link{BIOMOD.stored.array-class}} object
+\item{\code{models.prediction}}{a \code{\link{BIOMOD.stored.data.frame-class}} object
 containing models predictions}
 
-\item{\code{models.prediction.eval}}{a \code{\link{BIOMOD.stored.array-class}}
+\item{\code{models.prediction.eval}}{a \code{\link{BIOMOD.stored.data.frame-class}}
 object containing models predictions for evaluation data}
 
 \item{\code{link}}{a \code{character} containing the file name of the saved object}
@@ -124,18 +122,11 @@ if (file.exists(file.out)) {
 myBiomodEM <- BIOMOD_EnsembleModeling(bm.mod = myBiomodModelOut,
                                       models.chosen = 'all',
                                       em.by = 'all',
+                                      em.algo = c('EMmean', 'EMca'),
                                       metric.select = c('TSS'),
                                       metric.select.thresh = c(0.7),
                                       metric.eval = c('TSS', 'ROC'),
                                       var.import = 3,
-                                      prob.mean = TRUE,
-                                      prob.median = FALSE,
-                                      prob.cv = FALSE,
-                                      prob.ci = FALSE,
-                                      prob.ci.alpha = 0.05,
-                                      committee.averaging = TRUE,
-                                      prob.mean.weight = FALSE,
-                                      prob.mean.weight.decay = 'proportional',
                                       seed.val = 42)
 myBiomodEM
 

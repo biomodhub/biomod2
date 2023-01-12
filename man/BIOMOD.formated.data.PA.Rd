@@ -6,8 +6,6 @@
 \alias{BIOMOD.formated.data.PA-class}
 \alias{BIOMOD.formated.data.PA,numeric,data.frame-method}
 \alias{BIOMOD.formated.data.PA,numeric,SpatRaster-method}
-\alias{plot,BIOMOD.formated.data.PA,missing-method}
-\alias{show,BIOMOD.formated.data.PA-method}
 \title{\code{BIOMOD_FormatingData()} output object class (with pseudo-absences)}
 \usage{
 \S4method{BIOMOD.formated.data.PA}{numeric,data.frame}(
@@ -26,7 +24,8 @@
   PA.dist.max = NULL,
   PA.sre.quant = 0.025,
   PA.user.table = NULL,
-  na.rm = TRUE
+  na.rm = TRUE,
+  filter.raster = FALSE
 )
 
 \S4method{BIOMOD.formated.data.PA}{numeric,SpatRaster}(
@@ -45,12 +44,9 @@
   PA.dist.max = NULL,
   PA.sre.quant = 0.025,
   PA.user.table = NULL,
-  na.rm = TRUE
+  na.rm = TRUE,
+  filter.raster = FALSE
 )
-
-\S4method{plot}{BIOMOD.formated.data.PA,missing}(x, coord = NULL, col = NULL)
-
-\S4method{show}{BIOMOD.formated.data.PA}(object)
 }
 \arguments{
 \item{sp}{A \code{vector}, a \code{\link[terra:vect]{SpatVector}} without associated 
@@ -59,7 +55,7 @@ object containing binary data (\code{0} : absence,  \code{1} : presence,
 \code{NA} : indeterminate) for a single species that will be used to 
 build the species distribution model(s)
 \cr \emph{Note that old format from \pkg{sp} are still supported such as
- \code{SpatialPoints}  (\emph{if presence-only}) or \code{SpatialPointsDataFrame}
+ \code{SpatialPoints}  (if presence-only) or \code{SpatialPointsDataFrame}
  object containing binary data.}}
 
 \item{env}{a \code{matrix}, \code{data.frame}, \code{\link[terra:vect]{SpatVector}}
@@ -80,18 +76,18 @@ species distribution model(s)}
 \item{eval.sp}{(\emph{optional, default} \code{NULL}) \cr 
 A \code{vector}, a \code{\link[terra:vect]{SpatVector}} without associated 
 data (\emph{if presence-only}), or a \code{\link[terra:vect]{SpatVector}}
- object containing binary data (\code{0} : absence, \code{1} : presence, 
- \code{NA} : indeterminate) for a single species that will be used to
-  evaluate the species distribution model(s) with independent data
+object containing binary data (\code{0} : absence, \code{1} : presence, 
+\code{NA} : indeterminate) for a single species that will be used to
+evaluate the species distribution model(s) with independent data
 \cr \emph{Note that old format from \pkg{sp} are still supported such as
- \code{SpatialPoints}  (\emph{if presence-only}) or \code{SpatialPointsDataFrame}
- object containing binary data.}}
+\code{SpatialPoints}  (if presence-only) or \code{SpatialPointsDataFrame}
+object containing binary data.}}
 
 \item{eval.env}{(\emph{optional, default} \code{NULL}) \cr 
 A \code{matrix}, \code{data.frame}, \code{\link[terra:vect]{SpatVector}} or
-  \code{\link[terra:rast]{SpatRaster}} object containing the explanatory
-  variables (in columns or layers) that will be used to evaluate the species
-  distribution model(s) with independent data
+\code{\link[terra:rast]{SpatRaster}} object containing the explanatory
+variables (in columns or layers) that will be used to evaluate the species
+distribution model(s) with independent data
 \cr \emph{Note that old format from \pkg{raster} and \pkg{sp} are still
 supported such as \code{RasterStack} and \code{SpatialPointsDataFrame}
 objects. }}
@@ -141,14 +137,9 @@ will be used to build the species distribution model(s) for each repetition (see
 A \code{logical} value defining whether points having one or several missing
 values for explanatory variables should be removed from the analysis or not}
 
-\item{x}{a \code{\link{BIOMOD.formated.data.PA}} object}
-
-\item{coord}{a 2-columns \code{data.frame} containing \code{X} and \code{Y} coordinates for plot}
-
-\item{col}{a \code{vector} containing colors for plot (default : \code{c('green', 'red', 
-'orange', 'grey')})}
-
-\item{object}{a \code{\link{BIOMOD.formated.data.PA}} object}
+\item{filter.raster}{(\emph{optional, default} \code{FALSE}) \cr 
+If \code{env} is of raster type, a \code{logical} value defining whether \code{sp} 
+is to be filtered when several points occur in the same raster cell}
 }
 \description{
 Class returned by \code{\link{BIOMOD_FormatingData}}, and used by 

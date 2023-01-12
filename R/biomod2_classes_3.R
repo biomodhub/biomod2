@@ -12,7 +12,6 @@
 ##' @aliases get_projected_models
 ##' @aliases free
 ##' @aliases get_predictions
-##' @aliases get_needed_models
 ##' @aliases get_kept_models
 ##' @aliases get_built_models
 ##' @aliases get_evaluations
@@ -37,18 +36,56 @@
 ##' among \code{NULL}, \code{expl.var.names}, \code{resp.var}, \code{expl.var}, \code{MinMax}, 
 ##' \code{eval.resp.var}, \code{eval.expl.var} (see Details)
 ##' @param evaluation a \code{logical} defining whether evaluation data should be used or not
-##' @param full.name a \code{vector} containing model names to be kept, must be either \code{all} 
-##' or a sub-selection of model names
-##' @param model a \code{character} corresponding to the model name, must be either \code{GLM}, 
-##' \code{GBM}, \code{GAM}, \code{CTA}, \code{ANN}, \code{SRE}, \code{FDA}, \code{MARS}, 
-##' \code{RF}, \code{MAXENT.Phillips}, \code{MAXENT.Phillips.2}
-##' @param run.eval a \code{vector} containing repetition set to be loaded, must be among 
-##' \code{RUN1}, \code{RUN2}, \code{...}, \code{Full}
-##' @param data.set a \code{vector} containing pseudo-absence set to be loaded, must be among 
-##' \code{PA1}, \code{PA2}, \code{...}
-##' @param selected.models a \code{vector} containing names of the needed models of a 
-##' \code{\link{BIOMOD.ensemble.models.out}} object
 ##' 
+##' @param full.name (\emph{optional, default} \code{NULL}) \cr 
+##' A \code{vector} containing model names to be kept, must be either \code{all} or a 
+##' sub-selection of model names that can be obtained with the \code{\link{get_built_models}} 
+##' function
+##' 
+##' @param PA (\emph{optional, default} \code{NULL}) \cr 
+##' A \code{vector} containing pseudo-absence set to be loaded, must be among \code{PA1}, 
+##' \code{PA2}, \code{...}, \code{allData}
+##' @param run (\emph{optional, default} \code{NULL}) \cr 
+##' A \code{vector} containing repetition set to be loaded, must be among \code{RUN1}, 
+##' \code{RUN2}, \code{...}, \code{allRun}
+##' @param algo (\emph{optional, default} \code{NULL}) \cr 
+##' A \code{character} containing algorithm to be loaded, must be either \code{GLM}, 
+##' \code{GBM}, \code{GAM}, \code{CTA}, \code{ANN}, \code{SRE}, \code{FDA}, \code{MARS}, 
+##' \code{RF}, \code{MAXENT}, \code{MAXNET}
+##' 
+##' @param merged.by.PA (\emph{optional, default} \code{NULL}) \cr 
+##' A \code{vector} containing merged pseudo-absence set to be loaded, must be among \code{PA1}, 
+##' \code{PA2}, \code{...}, \code{mergedData}
+##' @param merged.by.run (\emph{optional, default} \code{NULL}) \cr 
+##' A \code{vector} containing merged repetition set to be loaded, must be among \code{RUN1}, 
+##' \code{RUN2}, \code{...}, \code{mergedRun}
+##' @param merged.by.algo (\emph{optional, default} \code{NULL}) \cr 
+##' A \code{character} containing merged algorithm to be loaded, must be among \code{GLM}, 
+##' \code{GBM}, \code{GAM}, \code{CTA}, \code{ANN}, \code{SRE}, \code{FDA}, \code{MARS}, 
+##' \code{RF}, \code{MAXENT}, \code{MAXNET}, \code{mergedAlgo}
+##' @param filtered.by (\emph{optional, default} \code{NULL}) \cr 
+##' A \code{vector} containing evaluation metric selected to filter single models to build the 
+##' ensemble models, must be among \code{ROC}, \code{TSS}, \code{KAPPA}, \code{ACCURACY}, 
+##' \code{BIAS}, \code{POD}, \code{FAR}, \code{POFD}, \code{SR}, \code{CSI}, \code{ETS}, 
+##' \code{HK}, \code{HSS}, \code{OR}, \code{ORSS}
+##' 
+##' @param metric.eval (\emph{optional, default} \code{NULL}) \cr 
+##' A \code{vector} containing evaluation metric to be kept, must be among \code{ROC}, 
+##' \code{TSS}, \code{KAPPA}, \code{ACCURACY}, \code{BIAS}, \code{POD}, \code{FAR}, 
+##' \code{POFD}, \code{SR}, \code{CSI}, \code{ETS}, \code{HK}, \code{HSS}, \code{OR}, \code{ORSS}
+##' @param expl.var (\emph{optional, default} \code{NULL}) \cr 
+##' A \code{vector} containing explanatory variables to be kept, that can be obtained with the 
+##' \code{\link{get_formal_data}(obj, subinfo = 'expl.var.names')} function
+##' 
+##' @param metric.binary (\emph{optional, default} \code{NULL}) \cr 
+##' A \code{vector} containing evaluation metric selected to transform predictions into binary 
+##' values, must be among \code{ROC}, \code{TSS}, \code{KAPPA}, \code{ACCURACY}, \code{BIAS}, 
+##' \code{POD}, \code{FAR}, \code{POFD}, \code{SR}, \code{CSI}, \code{ETS}, \code{HK}, 
+##' \code{HSS}, \code{OR}, \code{ORSS}
+##' @param metric.filter (\emph{optional, default} \code{NULL}) \cr 
+##' A \code{vector} containing evaluation metric to filter predictions, must be among \code{ROC}, 
+##' \code{TSS}, \code{KAPPA}, \code{ACCURACY}, \code{BIAS}, \code{POD}, \code{FAR}, 
+##' \code{POFD}, \code{SR}, \code{CSI}, \code{ETS}, \code{HK}, \code{HSS}, \code{OR}, \code{ORSS}
 ##' 
 ##' 
 ##' @return 
@@ -70,8 +107,6 @@
 ##'   \code{\link{BIOMOD.projection.out}} or
 ##'   \code{\link{BIOMOD.ensemble.models.out}} object}
 ##'
-##'   \item{\code{get_needed_models}}{a \code{vector} containing names of the
-##'   needed models of a \code{\link{BIOMOD.ensemble.models.out}} object}
 ##'   \item{\code{get_kept_models}}{a \code{vector} containing names of the kept
 ##'   models of a \code{\link{BIOMOD.ensemble.models.out}} object}
 ##'
@@ -119,13 +154,13 @@
 ##'   \code{\link{BIOMOD.models.out}} (or
 ##'   \code{\link{BIOMOD.ensemble.models.out}}) object}
 ##'   \item{\code{get_evaluations}}{a
-##'   \code{\link{BIOMOD.stored.array-class}} (or
+##'   \code{\link{BIOMOD.stored.data.frame-class}} (or
 ##'   \code{matrix}) from the \code{models.evaluation} slot (or
 ##'   \code{model_evaluation} of each model in \code{em.computed}) of a
 ##'   \code{\link{BIOMOD.models.out}} (or
 ##'   \code{\link{BIOMOD.ensemble.models.out}}) object}
 ##'   \item{\code{get_variables_importance}}{a
-##'   \code{\link{BIOMOD.stored.array-class}} from
+##'   \code{\link{BIOMOD.stored.data.frame-class}} from
 ##'   the \code{variables.importance} slot (or \code{model_variables_importance}
 ##'   of each model in \code{em.models}) of a \code{\link{BIOMOD.models.out}}
 ##'   (or \code{\link{BIOMOD.ensemble.models.out}}) object}
@@ -152,7 +187,6 @@ setGeneric("free", function(obj, ...) { standardGeneric("free") }) ## B
 
 setGeneric("get_predictions", function(obj, ...) { standardGeneric("get_predictions") }) ## ABC
 
-setGeneric("get_needed_models", function(obj, ...) { standardGeneric("get_needed_models") }) ## C
 setGeneric("get_kept_models", function(obj, ...) { standardGeneric("get_kept_models") }) ## C
 
 setGeneric("get_formal_data", function(obj, ...) { standardGeneric("get_formal_data") }) ## AC
@@ -197,13 +231,13 @@ setGeneric("get_variables_importance", function(obj, ...) { standardGeneric("get
 ##' @slot models.options a \code{\link{BIOMOD.stored.models.options-class}}
 ##'   object containing informations from \code{\link{BIOMOD_ModelingOptions}}
 ##'   object
-##' @slot models.evaluation a \code{\link{BIOMOD.stored.array-class}} object
+##' @slot models.evaluation a \code{\link{BIOMOD.stored.data.frame-class}} object
 ##'   containing models evaluation
-##' @slot variables.importance a \code{\link{BIOMOD.stored.array-class}} object
+##' @slot variables.importance a \code{\link{BIOMOD.stored.data.frame-class}} object
 ##'   containing variables importance
-##' @slot models.prediction a \code{\link{BIOMOD.stored.array-class}} object
+##' @slot models.prediction a \code{\link{BIOMOD.stored.data.frame-class}} object
 ##'   containing models predictions
-##' @slot models.prediction.eval a \code{\link{BIOMOD.stored.array-class}}
+##' @slot models.prediction.eval a \code{\link{BIOMOD.stored.data.frame-class}}
 ##'   object containing models predictions for evaluation data
 ##' @slot link a \code{character} containing the file name of the saved object
 ##'
@@ -293,10 +327,10 @@ setClass("BIOMOD.models.out",
                         formated.input.data = 'BIOMOD.stored.formated.data',
                         calib.lines = 'BIOMOD.stored.array',
                         models.options = 'BIOMOD.stored.models.options',
-                        models.evaluation = 'BIOMOD.stored.array',
-                        variables.importance = 'BIOMOD.stored.array',
-                        models.prediction = 'BIOMOD.stored.array',
-                        models.prediction.eval = 'BIOMOD.stored.array',
+                        models.evaluation = 'BIOMOD.stored.data.frame',
+                        variables.importance = 'BIOMOD.stored.data.frame',
+                        models.prediction = 'BIOMOD.stored.data.frame',
+                        models.prediction.eval = 'BIOMOD.stored.data.frame',
                         link = 'character'),
          prototype(modeling.id = as.character(format(Sys.time(), "%s")),
                    dir.name = '.',
@@ -309,10 +343,10 @@ setClass("BIOMOD.models.out",
                    formated.input.data = new('BIOMOD.stored.formated.data'),
                    calib.lines = new('BIOMOD.stored.array'),
                    models.options = new('BIOMOD.stored.models.options'),
-                   models.evaluation = new('BIOMOD.stored.array'),
-                   variables.importance = new('BIOMOD.stored.array'),
-                   models.prediction = new('BIOMOD.stored.array'),
-                   models.prediction.eval = new('BIOMOD.stored.array'),
+                   models.evaluation = new('BIOMOD.stored.data.frame'),
+                   variables.importance = new('BIOMOD.stored.data.frame'),
+                   models.prediction = new('BIOMOD.stored.data.frame'),
+                   models.prediction.eval = new('BIOMOD.stored.data.frame'),
                    link = ''),
          validity = function(object){ return(TRUE) } )
 
@@ -370,9 +404,20 @@ setMethod("get_options", "BIOMOD.models.out",
 ##'
 
 setMethod("get_calib_lines", "BIOMOD.models.out",
-          function(obj, as.data.frame = FALSE, ...) {
-            calib_lines <- load_stored_object(obj@calib.lines)
-            return(calib_lines)
+          function(obj, as.data.frame = FALSE, PA = NULL, run = NULL) {
+            out <- load_stored_object(obj@calib.lines)
+            
+            if (!is.null(out) && as.data.frame == TRUE) {
+              tmp <- melt(out, varnames = c("points", "run", "PA"))
+              tmp$PA = sub("_", "", tmp$PA)
+              tmp$run = sub("_", "", tmp$run)
+              out <- tmp[, c("PA", "run", "points", "value")]
+              colnames(out)[4] = "calib.lines"
+              
+              keep_lines <- .filter_outputs.df(out, subset.list = list(PA = PA, run = run))
+              out <- out[keep_lines, ]
+            }
+            return(out)
           }
 )
 
@@ -422,66 +467,25 @@ setMethod("get_formal_data", "BIOMOD.models.out",
 ##' 
 
 setMethod("get_predictions", "BIOMOD.models.out",
-          function(obj, as.data.frame = FALSE, evaluation = FALSE
-                   , full.name = NULL, model = NULL, run.eval = NULL, data.set = NULL)
+          function(obj, evaluation = FALSE
+                   , full.name = NULL, PA = NULL, run = NULL, algo = NULL)
           {
-            # select models to be returned
-            models_selected <- get_built_models(obj)
-            if (length(full.name) > 0) {
-              models_selected <- intersect(full.name, models_selected)
-            } else if (length(model) > 0 | length(run.eval) > 0 | length(data.set) > 0) {
-              grep_model = grep(paste(model, collapse = "|"), models_selected)
-              grep_run.eval = grep(paste(run.eval, collapse = "|"), models_selected)
-              grep_data.set = grep(paste(data.set, collapse = "|"), models_selected)
-              models_selected = models_selected[Reduce(intersect, list(grep_model, grep_run.eval, grep_data.set))]
+            if (evaluation && (!obj@has.evaluation.data)) {
+              warning("!   Calibration data returned because no evaluation data available")
+              evaluation = FALSE
             }
             
-            if (length(models_selected) > 0)
-            {
-              
-              # check evaluation data availability
-              if (evaluation && (!obj@has.evaluation.data)) {
-                warning("!   Calibration data returned because no evaluation data available")
-                evaluation = FALSE
-              }
-              
-              # select calibration or eval data
-              if (evaluation) { 
-                out <- load_stored_object(obj@models.prediction.eval)
-              } else { 
-                out <- load_stored_object(obj@models.prediction)
-              }
-              names(out) <- get_built_models(obj)
-              
-              # subselection of models_selected
-              if (inherits(out, 'Raster')) {
-                out <- subset(out, models_selected, drop = FALSE)
-              } else if (length(dim(out)) == 4) { ## 4D arrays
-                out <- out[, .extract_modelNamesInfo(model.names = models_selected, info = 'models'),
-                           .extract_modelNamesInfo(model.names = models_selected, info = 'run.eval'),
-                           .extract_modelNamesInfo(model.names = models_selected, info = 'data.set'), drop = FALSE]
-              } else { ## matrix (e.g. from ensemble models projections)
-                out <- out[, models_selected, drop = FALSE]
-              }
-              
-              if (as.data.frame) {
-                out <- as.data.frame(out)
-                names(out) <- unlist(
-                  lapply(strsplit(names(out), ".", fixed = TRUE),
-                         function(x) {
-                           x.rev <- rev(x) ## we reverse the order of the splitted vector to have algo at the end
-                           data.set.id <- x.rev[1]
-                           cross.valid.id <- x.rev[2]
-                           algo.id <- paste0(rev(x.rev[3:length(x.rev)]), collapse = ".")
-                           model.id <- paste(obj@sp.name,
-                                             data.set.id,
-                                             cross.valid.id,
-                                             algo.id, sep = "_")
-                           return(model.id)
-                         }))
-              }
-            } else { out <- NULL }
+            # select calibration or eval data
+            if (evaluation) {
+              out <- load_stored_object(obj@models.prediction.eval)
+            } else { 
+              out <- load_stored_object(obj@models.prediction)
+            }
             
+            # subselection of models_selected
+            keep_lines <- .filter_outputs.df(out, subset.list = list(full.name =  full.name, PA = PA
+                                                                     , run = run, algo = algo))
+            out <- out[keep_lines, ]
             return(out)
           }
 )
@@ -491,7 +495,15 @@ setMethod("get_predictions", "BIOMOD.models.out",
 ##' @export
 ##' 
 
-setMethod("get_built_models", "BIOMOD.models.out", function(obj, ...) { return(obj@models.computed) })
+setMethod("get_built_models", "BIOMOD.models.out",
+          function(obj, full.name = NULL, PA = NULL, run = NULL, algo = NULL) { 
+            out <- obj@models.computed
+            keep_ind <- .filter_outputs.vec(out, obj.type = "mod", subset.list = list(full.name =  full.name, PA = PA
+                                                                                      , run = run, algo = algo))
+            out <- out[keep_ind]
+            return(out)
+          }
+)
 
 ## get_evaluations.BIOMOD.models.out ---------------------------------------------------
 ##' 
@@ -500,19 +512,18 @@ setMethod("get_built_models", "BIOMOD.models.out", function(obj, ...) { return(o
 ##' 
 
 setMethod("get_evaluations", "BIOMOD.models.out",
-          function(obj, as.data.frame = FALSE, ...) {
+          function(obj, full.name = NULL, PA = NULL, run = NULL, algo = NULL, metric.eval = NULL) {
             out <- load_stored_object(obj@models.evaluation)
-            
-            if (!is.null(out) && as.data.frame == TRUE) {
-              tmp = melt(out, varnames = c("Eval.metric", "tmp", "Algo", "Run", "Dataset"))
-              tmp$Model.name = paste0(tmp$Algo, "_", tmp$Run, "_", tmp$Dataset)
-              tmp.split = split(tmp, tmp$tmp)
-              tmp.split = lapply(tmp.split, function(x) x[, c("Model.name", "Algo", "Run", "Dataset", "Eval.metric", "value")])
-              for (i in 1:length(tmp.split)) { colnames(tmp.split[[i]])[6] = names(tmp.split)[i] }
-              out = Reduce(function(x, y) merge(x, y, by = c("Model.name", "Algo", "Run", "Dataset", "Eval.metric")), tmp.split)
+            if(nrow(out) == 0){
+              cat("\n! models have no evaluations\n")
+              return(invisible(NULL))
+            } else {
+              keep_lines <- .filter_outputs.df(out, subset.list = list(full.name =  full.name, PA = PA
+                                                                       , run = run, algo = algo
+                                                                       , metric.eval = metric.eval))
+              out <- out[keep_lines, ]
+              return(out)
             }
-            
-            return(out)
           }
 )
 
@@ -522,27 +533,12 @@ setMethod("get_evaluations", "BIOMOD.models.out",
 ##' 
 
 setMethod("get_variables_importance", "BIOMOD.models.out",
-          function(obj, as.data.frame = FALSE, ...) {
-            # out <- load_stored_object(obj@variables.importance) ## /!\ rounded value over repetitions /!\
-            out <- NULL
-            BIOMOD_LoadModels(bm.out = obj)
-            for (mod in get_built_models(obj)) {
-              out_tmp <- get(mod)@model_variables_importance
-              out <- abind(out, out_tmp, along = 3)
-            }
-            dimnames(out)[[3]] <- get_built_models(obj)
-            
-            if (!is.null(out) && as.data.frame == TRUE) {
-              tmp <- melt(out, varnames = c("Expl.var", "Rand", "L1"))
-              tmp$Model.name = sapply(as.character(tmp$L1), function(x) { paste(strsplit(x, "_")[[1]][-1], collapse = "_") })
-              tmp$Algo = sapply(tmp$Model.name, function(x) { strsplit(x, "_")[[1]][3] })
-              tmp$Run = sapply(tmp$Model.name, function(x) { strsplit(x, "_")[[1]][2] })
-              tmp$Dataset = sapply(tmp$Model.name, function(x) { strsplit(x, "_")[[1]][1] })
-              out <- tmp[, c("Model.name", "Algo", "Run", "Dataset"
-                             , "Expl.var", "Rand", "value")]
-              colnames(out)[7] = "Var.imp"
-            }
-            
+          function(obj, full.name = NULL, PA = NULL, run = NULL, algo = NULL, expl.var = NULL) {
+            out <- load_stored_object(obj@variables.importance)
+            keep_lines <- .filter_outputs.df(out, subset.list = list(full.name =  full.name, PA = PA
+                                                                     , run = run, algo = algo
+                                                                     , expl.var = expl.var))
+            out <- out[keep_lines, ]
             return(out)
           }
 )
@@ -577,13 +573,30 @@ setMethod("get_variables_importance", "BIOMOD.models.out",
 ##' \code{proj.out} slot
 ##' @slot proj.out a \code{\link{BIOMOD.stored.data}} object
 ##' 
-##' @param str.grep a \code{character} corresponding to the name (or part of the name(s)) of 
-##' models projected
-##' @param col a \code{vector} containing colors for plot (default : 
-##' \code{colorRampPalette(c("grey90", "yellow4", "green4"))(100)})
 ##' @param x a \code{\link{BIOMOD.projection.out}} object
 ##' @param object a \code{\link{BIOMOD.projection.out}} object
-##' 
+##' @param coord a 2-columns \code{data.frame} containing the corresponding \code{X} and \code{Y} 
+##' @param plot.output (\emph{optional, default} \code{facet}) a character
+##'   determining the type of output: with \code{plot.output = 'list'} the
+##'   function will return a list of plots (one plot per model) ; with 'facet' ;
+##'   with \code{plot.output = 'facet'} the function will return a single plot
+##'   with all asked projections as facet.
+##' @param do.plot (\emph{optional, default} \code{TRUE}) a boolean determining
+##'   whether the plot should be displayed or just returned.
+##' @param std (\emph{optional, default} \code{TRUE}) a boolean controlling the
+##'   limits of the color scales. With \code{std = TRUE} color scales are
+##'   displayed between 0 and 1 (or 1000). With \code{std = FALSE} color scales
+##'   are displayed between 0 and the maximum value observed.
+##' @param scales (\emph{optional, default} \code{fixed}) a character
+##'   determining whether x and y scales are shared among facet. Argument passed
+##'   to \code{\link[ggplot2:facet_wrap]{facet_wrap}}. Possible values: 'fixed', 'free_x',
+##'   'free_y', 'free'.
+##' @param size (\emph{optional, default} \code{0.75}) a numeric determing the
+##'   size of points on the plots and passed to
+##'   \code{\link[ggplot2:geom_point]{geom_point}}.
+##' @param ... additional parameters to be passed to \code{\link{get_predictions}} 
+##' to select the models that will be plotted
+##'           
 ##' @seealso \code{\link{BIOMOD_Projection}}, \code{\link{BIOMOD_EnsembleForecasting}}
 ##' @family Toolbox objects
 ##' 
@@ -661,6 +674,7 @@ setMethod("get_variables_importance", "BIOMOD.models.out",
 ##' 
 ##' @importFrom grDevices colorRampPalette colors dev.new gray rainbow
 ##' @importFrom graphics layout legend par points polygon text
+##' @importFrom ggplot2 scale_colour_viridis_c scale_fill_viridis_c
 ##' 
 NULL
 
@@ -677,7 +691,7 @@ setClass("BIOMOD.projection.out",
                         dir.name = 'character',
                         sp.name = 'character',
                         expl.var.names = 'character',
-                        coord = 'matrix',
+                        coord = 'data.frame',
                         scale.models = 'logical',
                         models.projected = 'character',
                         models.out = 'BIOMOD.stored.data',
@@ -688,7 +702,7 @@ setClass("BIOMOD.projection.out",
                    dir.name = '.',
                    sp.name = '',
                    expl.var.names = '',
-                   coord = matrix(),
+                   coord = data.frame(),
                    scale.models = TRUE,
                    models.projected = '',
                    type = ''),
@@ -705,69 +719,169 @@ setClass("BIOMOD.projection.out",
 
 setMethod(
   'plot', signature(x = 'BIOMOD.projection.out', y = "missing"),
-  function(x, col = NULL, str.grep = NULL){
-    models_selected <- x@models.projected
-    if (length(str.grep) > 0) { 
-      models_selected <- grep(paste(str.grep, collapse = "|"),
-                              models_selected, value = TRUE)
+  function(x,
+           coord = NULL,
+           plot.output, # list or facet
+           do.plot = TRUE, # whether plots are displayed or just returned
+           std = TRUE, # limits between 0 and 1000 or between 0 and max
+           scales, # transmitted to facet_wrap
+           size, # size of points transmitted to geom_point
+           ...
+  ){
+    # extraction of projection happens in argument check
+    args <- .plot.BIOMOD.projection.out.check.args(x,
+                                                   coord = coord,
+                                                   plot.output = plot.output, # list or facet
+                                                   do.plot = do.plot,
+                                                   std = std,
+                                                   scales = scales,
+                                                   size = size,
+                                                   ...)
+    for (argi in names(args)) { 
+      assign(x = argi, value = args[[argi]]) 
     }
-    if (!length(models_selected)) { 
-      stop("invalid str.grep arg")
-    }
+    rm(args)
     
-    if (inherits(x@proj.out, "BIOMOD.stored.SpatRaster")) {
-      if(!requireNamespace('rasterVis', quietly = TRUE)) stop("Package 'rasterVis' not found")
-      maxi <- 
-        try(
-          global(
-            get_predictions(x, full.name = models_selected), 
-            "max",
-            na.rm = TRUE
-          )
-        )
-      maxi <- max(maxi, na.rm = TRUE)
-      maxi <- ifelse(maxi <= 1, 1, ifelse(maxi < 1000, 1000, maxi))
-      my.at <- seq(0, maxi, by = 100 * maxi / 1000) ## breaks of color key
-      my.labs.at <- seq(0, maxi, by = 250 * maxi / 1000) ## labels placed vertically centered
-      my.lab <- seq(0, maxi, by = 250 * maxi / 1000) ## labels
-      my.col <- colorRampPalette(c("grey90", "yellow4", "green4"))(100) ## colors
-      
-      ## try to use levelplot function
-      try_plot <- try(
-        rasterVis::levelplot(
-          get_predictions(x, full.name = models_selected),
-          at = my.at,
-          margin = TRUE,
-          col.regions = my.col,
-          main = paste(x@sp.name, x@proj.name, "projections"),
-          colorkey = list(labels = list(labels = my.lab, 
-                                        at = my.labs.at))
-        )
-      )
-      if (!inherits(try_plot, "try-error")) { ## produce plot
-        print(try_plot)
-      } else { ## try classical plot
-        cat("\nrasterVis' levelplot() function failed. Try to call standard terra plotting function.",
-            "It can lead to unoptimal representations.",
-            "You should try to do it by yourself extracting predicions (see : get_predictions() function).",
-            fill = options()$width)
-        try_plot <- try(plot(get_predictions(x, full.name = models_selected)))
-        if (inherits(try_plot,"try-error")) {
-          cat("\n Plotting function failed.. You should try to do it by yourself!")
-        }
-      }
-    } else if (inherits(x@proj.out, "BIOMOD.stored.array")) {
-      if (ncol(x@coord) != 2) {
-        cat("\n ! Impossible to plot projections because xy coordinates are not available !")
+    
+    ### Plot SpatRaster ---------------------------------------------------------
+    
+    if (inherits(proj,"SpatRaster")) {
+      maxi <- ifelse(max(global(proj, "max", na.rm = TRUE)$max) > 1, 1000, 1) 
+      if (std) {
+        limits <-  c(0,maxi)
       } else {
-        .multiple.plot(Data = get_predictions(x, full.name = models_selected, as.data.frame = TRUE)
-                       , coor = x@coord)
+        limits <- NULL
+      }
+      
+      if (plot.output == "facet") {
+        g <- ggplot() +
+          tidyterra::geom_spatraster(data = proj) +
+          scale_fill_viridis_c(NULL, limits = limits) +
+          facet_wrap(~lyr)
+      } else if (plot.output == "list") {
+        g <- lapply(names(proj), function(thislayer){
+          ggplot() +
+            tidyterra::geom_spatraster(data = subset(proj, thislayer)) +
+            scale_fill_viridis_c(NULL, limits = limits) +
+            ggtitle(thislayer)
+        })
       }
     } else {
-      cat("\n !  Biomod Projection plotting issue !", fill = .Options$width)
+      ### Plot data.frame  -----------------------------------------------------
+      maxi <- ifelse(max(proj$pred) > 1, 1000, 1) 
+      if (std) {
+        limits <-  c(0,maxi)
+      } else {
+        limits <- NULL
+      }
+      plot.df <- merge(proj, coord, by = c("points"))
+      if(plot.output == "facet"){
+        g <- ggplot(plot.df)+
+          geom_point(aes(x = x, y = y, color = pred), size = size) +
+          scale_colour_viridis_c(NULL, limits = limits) +
+          facet_wrap(~full.name)
+      } else if (plot.output == "list"){
+        g <- lapply(unique(plot.df$full.name), function(thislayer){
+          ggplot(subset(plot.df, plot.df$full.name == thislayer)) +
+            geom_point(aes(x = x, y = y, color = pred), size = size) +
+            scale_colour_viridis_c(NULL, limits = limits) +
+            ggtitle(thislayer)
+        })
+      }
+      
     }
+    if (do.plot) {
+      show(g)
+    } 
+    return(g)
   }
 )
+
+### .plot.BIOMOD.projection.out.check.args ----------------------------------
+
+.plot.BIOMOD.projection.out.check.args <- function(x,
+                                                   coord,
+                                                   plot.output, # list or facet
+                                                   do.plot,
+                                                   std,
+                                                   scales,
+                                                   size,
+                                                   ...){
+  
+  proj <- get_predictions(x, ...)
+  
+  ## 1 - check for tidyterra ----------------------
+  if (inherits(proj, "SpatRaster")) {
+    if (!requireNamespace("tidyterra")) {
+      stop("Package `tidyterra` is missing. Please install it with `install.packages('tidyterra')`.")
+    }
+  }
+  
+  ## 2 - plot.output----------------------
+  if (missing(plot.output)) {
+    plot.output <- "facet"
+  } else {
+    .fun_testIfIn(TRUE, "plot.output", plot.output, c("facet","list"))
+  }
+  
+  ## 3 - do.plot ----------------------
+  stopifnot(is.logical(do.plot))
+  
+  ## 4 - std ----------------------
+  stopifnot(is.logical(std))
+  
+  ## 5 - check scales for facet_wrap -------------------------------
+  if(missing(scales)){
+    scales <- "fixed"
+  } else {
+    .fun_testIfIn(TRUE, "scales", scales,
+                  c("fixed","free","free_x","free_y"))
+  }
+  
+  ## 6 - check coord if x is a data.frame -------------------------------
+  if (inherits(proj, 'data.frame')) {
+    npred <- length(unique(proj$points))
+    
+    if (nrow(x@coord) > 0) {
+      if(!is.null(coord)){
+      cat("! ignoring argument `coord` as coordinates were already given to BIOMOD_Projection")
+      }
+      coord <- x@coord
+    }
+
+    if (nrow(x@coord) == 0 & is.null(coord)) {
+        stop("missing coordinates to plot with a data.frame. Either give argument `coord` to plot or argument `new.env.xy` to BIOMOD_Projection")
+      
+    } else if (!inherits(coord, c("data.frame","matrix"))) {
+      stop("`coord` must be a data.frame or a matrix.")
+    } else if (ncol(coord) != 2) {
+      stop("`coord` must have two columns.")
+    } else if (nrow(coord) != npred) {
+      stop("`coord` must have as many rows as the number of predictions (", npred, ").")
+    } else {
+      coord <- as.data.frame(coord)
+      colnames(coord) <- c("x","y")
+      coord$points <- seq_len(npred)
+    }
+  }
+  
+  if(missing(size)){
+    size <- 0.75
+  } 
+  
+  ## 7 - check size -------------------------------
+  if (inherits(proj, 'data.frame')) {
+    .fun_testIfPosNum(TRUE, "size", size)
+  }
+  
+  return(list(proj = proj,
+              coord = coord,
+              plot.output = plot.output,
+              do.plot = do.plot,
+              std = std,
+              scales = scales, 
+              size = size))
+}
 
 ## show.BIOMOD.projection.out -------------------------------------------------
 ##' 
@@ -786,6 +900,15 @@ setMethod('show', signature('BIOMOD.projection.out'),
             cat("\n")
             cat("\nmodeling.id :", object@modeling.id , "(", object@models.out@link , ")", fill = .Options$width)
             cat("\nmodels.projected :", toString(object@models.projected), fill = .Options$width)
+            df.info <- .extract_projlinkInfo(object)
+            if(any(df.info$type == "bin")){
+              available.metric <- unique(subset(df.info, df.info$type == "bin")$metric)
+              cat("\navailable binary projection :", toString(available.metric), fill = .Options$width)
+            }
+            if(any(df.info$type == "filt")){
+              available.metric <- unique(subset(df.info, df.info$type == "filt")$metric)
+              cat("\navailable filtered projection :", toString(available.metric), fill = .Options$width)
+            }
             .bm_cat()
           })
 
@@ -795,7 +918,28 @@ setMethod('show', signature('BIOMOD.projection.out'),
 ##' @export
 ##' 
 
-setMethod("get_projected_models", "BIOMOD.projection.out", function(obj){ return(obj@models.projected) })
+setMethod("get_projected_models", "BIOMOD.projection.out",
+          function(obj, full.name = NULL, PA = NULL, run = NULL, algo = NULL
+                   , merged.by.algo = NULL, merged.by.run = NULL
+                   , merged.by.PA = NULL, filtered.by = NULL)
+          {
+            
+            out <- obj@models.projected
+            if (length(grep("EM|merged", out)) > 0) {
+              keep_ind <- .filter_outputs.vec(out, obj.type = "em", subset.list = list(full.name = full.name
+                                                                                       , merged.by.PA = merged.by.PA
+                                                                                       , merged.by.run = merged.by.run
+                                                                                       , merged.by.algo = merged.by.algo
+                                                                                       , filtered.by = filtered.by
+                                                                                       , algo = algo))
+            } else {
+              keep_ind <- .filter_outputs.vec(out, obj.type = "mod", subset.list = list(full.name =  full.name, PA = PA
+                                                                                        , run = run, algo = algo))
+            }
+            out <- out[keep_ind]
+            return(out)
+          }
+)
 
 ## free.BIOMOD.projection.out --------------------------------------------------
 ##' 
@@ -805,8 +949,8 @@ setMethod("get_projected_models", "BIOMOD.projection.out", function(obj){ return
 
 setMethod('free', signature('BIOMOD.projection.out'),
           function(obj) {
-            if (inherits(obj@proj.out, "BIOMOD.stored.array")) {
-              obj@proj.out@val  <- array()
+            if (inherits(obj@proj.out, "BIOMOD.stored.data.frame")) {
+              obj@proj.out@val  <- data.frame()
             } else if (inherits(obj@proj.out, "BIOMOD.stored.SpatRaster")) {
               obj@proj.out@val <- wrap(rast(matrix()))
             } else {
@@ -817,76 +961,55 @@ setMethod('free', signature('BIOMOD.projection.out'),
           })
 
 ## get_predictions.BIOMOD.projection.out ---------------------------------------
+# (the method is used for EM as well)
 ##' 
 ##' @rdname getters.out
 ##' @export
 ##' 
 
 setMethod("get_predictions", "BIOMOD.projection.out",
-          function(obj, as.data.frame = FALSE, full.name = NULL, 
-                   model = NULL, run.eval = NULL, data.set = NULL) {
-            # select models to be returned
-            models_selected <- get_projected_models(obj)
-            if (length(full.name) > 0) {
-              models_selected <- intersect(full.name, models_selected)
-            } else if (length(model) > 0 |
-                       length(run.eval) > 0 |
-                       length(data.set) > 0) {
-              grep_model = grep(paste(model, collapse = "|"), models_selected)
-              grep_run.eval = grep(paste(run.eval, collapse = "|"), models_selected)
-              grep_data.set = grep(paste(data.set, collapse = "|"), models_selected)
-              models_selected = models_selected[Reduce(intersect, list(grep_model, grep_run.eval, grep_data.set))]
-            }
-            if (length(models_selected) > 0)  {
-              out <- load_stored_object(obj@proj.out)
-              names(out) <- get_projected_models(obj)
-              
-              is_input_SpatRaster <- inherits(out, 'SpatRaster')
-              # subselection of models_selected
-              if (is_input_SpatRaster) {
-                out <- subset(out, models_selected)
-              } else if (length(dim(out)) == 4) { ## 4D arrays
-                list_models <- .extract_modelNamesInfo(model.names = models_selected,
-                                                       info = 'models')
-                list_run.eval <- .extract_modelNamesInfo(model.names = models_selected,
-                                                         info = 'run.eval')
-                list_data.set <- .extract_modelNamesInfo(model.names = models_selected, 
-                                                         info = 'data.set')
-                if( !as.data.frame &&
-                    length(list_models)*
-                    length(list_run.eval)*
-                    length(list_data.set) != length(models_selected)){
-                  stop("!! Array do not allow missing models in the subset. Please ask for prediction with as.data.frame = TRUE instead")
-                }
-                out <- out[ , list_models, list_run.eval, list_data.set, drop = FALSE]
-              } else { ## matrix (e.g. from ensemble models projections)
-                out <- out[, models_selected, drop = FALSE]
-              }
-              
-              if (as.data.frame) {
-                out <- as.data.frame(out)
-                if (!grepl("merged|_EM|By", names(out)[1]) &&
-                    !is_input_SpatRaster) { # only for simple model with df
-                  names(out) <- unlist(
-                    lapply(strsplit(names(out), ".", fixed = TRUE),
-                           function(x) {
-                             x.rev <- rev(x) ## we reverse the order of the splitted vector to have algo at the end
-                             data.set.id <- x.rev[1]
-                             cross.valid.id <- x.rev[2]
-                             algo.id <- paste0(rev(x.rev[3:length(x.rev)]), collapse = ".")
-                             model.id <- paste(obj@sp.name,
-                                               data.set.id,
-                                               cross.valid.id,
-                                               algo.id, sep = "_")
-                             return(model.id)
-                           }))
-                  out <- out[ , models_selected, drop = FALSE]
-                }
-              }
-            } else { 
-              out <- NULL 
-              }
+          function(obj, metric.binary = NULL, metric.filter = NULL
+                   , full.name = NULL, PA = NULL, run = NULL, algo = NULL
+                   , merged.by.algo = NULL, merged.by.run = NULL
+                   , merged.by.PA = NULL, filtered.by = NULL, ...) {
             
+            # extract layers from obj@proj.out@link concerned by metric.filter 
+            # or metric.binary
+            selected.layers <- .extract_selected.layers(obj, 
+                                                        metric.binary = metric.binary,
+                                                        metric.filter = metric.filter)
+            out <- load_stored_object(obj@proj.out, layer = selected.layers)
+            
+            # subselection of models_selected
+            if (obj@type == "SpatRaster") {
+              if (length(grep("EM|merged", names(out))) > 0) {
+                keep_layers <- .filter_outputs.vec(names(out), obj.type = "em", 
+                                                   subset.list = list(full.name =  full.name
+                                                                      , merged.by.PA = merged.by.PA
+                                                                      , merged.by.run = merged.by.run
+                                                                      , merged.by.algo = merged.by.algo
+                                                                      , filtered.by = filtered.by
+                                                                      , algo = algo))
+              } else {
+                keep_layers <- .filter_outputs.vec(names(out), obj.type = "mod",
+                                                   subset.list = list(full.name =  full.name, PA = PA
+                                                                      , run = run, algo = algo))
+              }
+              out <- subset(out, keep_layers)
+            } else {
+              if (length(grep("EM|merged", colnames(out))) > 0) {
+                keep_lines <- .filter_outputs.df(out, subset.list = list(full.name =  full.name
+                                                                         , merged.by.PA = merged.by.PA
+                                                                         , merged.by.run = merged.by.run
+                                                                         , merged.by.algo = merged.by.algo
+                                                                         , filtered.by = filtered.by
+                                                                         , algo = algo))
+              } else {
+                keep_lines <- .filter_outputs.df(out, subset.list = list(full.name =  full.name, PA = PA
+                                                                         , run = run, algo = algo))
+              }
+              out <- out[keep_lines, ]
+            }
             return(out)
           }
 )
@@ -917,19 +1040,19 @@ setMethod("get_predictions", "BIOMOD.projection.out",
 ##'   containing informations from \code{\link{BIOMOD_Modeling}} object
 ##' @slot em.by a \code{character} corresponding to the way kept models have
 ##'   been combined to build the ensemble models, must be among
-##'   \code{PA_dataset+repet}, \code{PA_dataset+algo}, \code{PA_dataset},
+##'   \code{PA+run}, \code{PA+algo}, \code{PA},
 ##'   \code{algo}, \code{all}
 ##' @slot em.computed a \code{vector} containing names of ensemble models
 ##' @slot em.failed a \code{vector} containing names of failed ensemble models
-##' @slot em.models a \code{list} containing ensemble models
-##' @slot em.failed a \code{list} containing ensemble models that failed
-##' @slot models.evaluation a \code{\link{BIOMOD.stored.array-class}} object
+# ##' @slot em.models_needed a \code{list} containing single models for each ensemble model
+##' @slot em.models_kept a \code{list} containing single models for each ensemble model
+##' @slot models.evaluation a \code{\link{BIOMOD.stored.data.frame-class}} object
 ##'   containing models evaluation
-##' @slot variables.importance a \code{\link{BIOMOD.stored.array-class}} object
+##' @slot variables.importance a \code{\link{BIOMOD.stored.data.frame-class}} object
 ##'   containing variables importance
-##' @slot models.prediction a \code{\link{BIOMOD.stored.array-class}} object
+##' @slot models.prediction a \code{\link{BIOMOD.stored.data.frame-class}} object
 ##'   containing models predictions
-##' @slot models.prediction.eval a \code{\link{BIOMOD.stored.array-class}}
+##' @slot models.prediction.eval a \code{\link{BIOMOD.stored.data.frame-class}}
 ##'   object containing models predictions for evaluation data
 ##' @slot link a \code{character} containing the file name of the saved object
 ##'   
@@ -1007,18 +1130,11 @@ setMethod("get_predictions", "BIOMOD.projection.out",
 ##' myBiomodEM <- BIOMOD_EnsembleModeling(bm.mod = myBiomodModelOut,
 ##'                                       models.chosen = 'all',
 ##'                                       em.by = 'all',
+##'                                       em.algo = c('EMmean', 'EMca'),
 ##'                                       metric.select = c('TSS'),
 ##'                                       metric.select.thresh = c(0.7),
 ##'                                       metric.eval = c('TSS', 'ROC'),
 ##'                                       var.import = 3,
-##'                                       prob.mean = TRUE,
-##'                                       prob.median = FALSE,
-##'                                       prob.cv = FALSE,
-##'                                       prob.ci = FALSE,
-##'                                       prob.ci.alpha = 0.05,
-##'                                       committee.averaging = TRUE,
-##'                                       prob.mean.weight = FALSE,
-##'                                       prob.mean.weight.decay = 'proportional',
 ##'                                       seed.val = 42)
 ##' myBiomodEM
 ##' 
@@ -1041,11 +1157,11 @@ setClass("BIOMOD.ensemble.models.out",
                         em.by = 'character',
                         em.computed = 'character',
                         em.failed = 'character',
-                        em.models = 'ANY',
-                        models.evaluation = 'BIOMOD.stored.array',
-                        variables.importance = 'BIOMOD.stored.array',
-                        models.prediction = 'BIOMOD.stored.array',
-                        models.prediction.eval = 'BIOMOD.stored.array',
+                        em.models_kept = 'ANY',
+                        models.evaluation = 'BIOMOD.stored.data.frame',
+                        variables.importance = 'BIOMOD.stored.data.frame',
+                        models.prediction = 'BIOMOD.stored.data.frame',
+                        models.prediction.eval = 'BIOMOD.stored.data.frame',
                         link = 'character'),
          prototype(modeling.id = '.',
                    dir.name = '.',
@@ -1055,11 +1171,11 @@ setClass("BIOMOD.ensemble.models.out",
                    em.by = character(),
                    em.computed = character(),
                    em.failed = character(),
-                   em.models = NULL,
-                   models.evaluation = new('BIOMOD.stored.array'),
-                   variables.importance = new('BIOMOD.stored.array'),
-                   models.prediction = new('BIOMOD.stored.array'),
-                   models.prediction.eval = new('BIOMOD.stored.array'),
+                   em.models_kept = NULL,
+                   models.evaluation = new('BIOMOD.stored.data.frame'),
+                   variables.importance = new('BIOMOD.stored.data.frame'),
+                   models.prediction = new('BIOMOD.stored.data.frame'),
+                   models.prediction.eval = new('BIOMOD.stored.data.frame'),
                    link = ''),
          validity = function(object){ return(TRUE) })
 
@@ -1106,27 +1222,21 @@ setMethod("get_formal_data", "BIOMOD.ensemble.models.out",
 ##' @export
 ##' 
 
-setMethod("get_built_models", "BIOMOD.ensemble.models.out", function(obj, ...) { return(obj@em.computed) })
-
-
-## get_needed_models.BIOMOD.ensemble.models.out --------------------------------
-##' 
-##' @rdname getters.out
-##' @export
-##' 
-
-setMethod("get_needed_models", "BIOMOD.ensemble.models.out",
-          function(obj, selected.models = 'all', ...) {
-            add.args <- list(...)
-            if (selected.models[[1]] == "all") {
-              selected.index <- c(1:length(obj@em.models))
-            } else {
-              selected.index <- which(names(obj@em.models) %in% selected.models)
-            }
-            needed_models <- lapply(obj@em.models[selected.index], function(x) { return(x@model) })
-            needed_models <- unique(unlist(needed_models))
-            return(needed_models)
-          })
+setMethod("get_built_models", "BIOMOD.ensemble.models.out",
+          function(obj, full.name = NULL, merged.by.algo = NULL, merged.by.run = NULL
+                   , merged.by.PA = NULL, filtered.by = NULL, algo = NULL)
+          {
+            out <- obj@em.computed
+            keep_ind <- .filter_outputs.vec(out, obj.type = "em", subset.list = list(full.name = full.name
+                                                                                     , merged.by.PA = merged.by.PA
+                                                                                     , merged.by.run = merged.by.run
+                                                                                     , merged.by.algo = merged.by.algo
+                                                                                     , filtered.by = filtered.by
+                                                                                     , algo = algo))
+            out <- out[keep_ind]
+            return(out)
+          }
+)
 
 
 ## get_kept_models.BIOMOD.ensemble.models.out ----------------------------------
@@ -1135,16 +1245,8 @@ setMethod("get_needed_models", "BIOMOD.ensemble.models.out",
 ##' @export
 ##' 
 
-setMethod("get_kept_models", "BIOMOD.ensemble.models.out",
-          function(obj, model, ...) {
-            if (is.character(model) | is.numeric(model)) {
-              return(obj@em.models[[model]]@model)
-            } else {
-              kept_mod <- lapply(obj@em.models, function(x) { return(x@model) })
-              names(kept_mod) <- names(obj@em.models)
-              return(kept_mod)
-            }
-          })
+setMethod("get_kept_models", "BIOMOD.ensemble.models.out", function(obj) { return(obj@em.models_kept) })
+
 
 ## get_predictions.BIOMOD.ensemble.models.out ----------------------------------
 ##' 
@@ -1153,58 +1255,34 @@ setMethod("get_kept_models", "BIOMOD.ensemble.models.out",
 ##' 
 
 setMethod("get_predictions", "BIOMOD.ensemble.models.out",
-          function(obj, as.data.frame = FALSE, evaluation = FALSE, full.name = NULL)
-                   # , model = NULL, run.eval = NULL, data.set = NULL)
+          function(obj, evaluation = FALSE, full.name = NULL, merged.by.algo = NULL, merged.by.run = NULL
+                   , merged.by.PA = NULL, filtered.by = NULL, algo = NULL)
           {
-            # select models to be returned
-            models_selected <- get_built_models(obj)
-            if (length(full.name) > 0) {
-              models_selected <- intersect(full.name, models_selected)
+            # check evaluation data availability
+            if (evaluation && (!get_formal_data(obj)@has.evaluation.data)) {
+              warning("!   Calibration data returned because no evaluation data available")
+              evaluation = FALSE
             }
             
-            if (length(models_selected) > 0)
-            {
-              # check evaluation data availability
-              if (evaluation && (!get_formal_data(obj)@has.evaluation.data)) {
-                warning("!   Calibration data returned because no evaluation data available")
-                evaluation = FALSE
-              }
-              
-              # select calibration or eval data
-              if (evaluation) { 
-                out <- load_stored_object(obj@models.prediction.eval)
-              } else { 
-                out <- load_stored_object(obj@models.prediction)
-              }
-              names(out) <- get_built_models(obj)
-              
-              # subselection of models_selected
-              if (inherits(out, 'Raster')) {
-                out <- subset(out, models_selected, drop = FALSE)
-              } else { ## matrix (e.g. from ensemble models projections)
-                out <- out[, models_selected, drop = FALSE]
-              }
-              
-              if (as.data.frame) {
-                out <- as.data.frame(out)
-                names(out) <- models_selected
-              }
-            } else { out <- NULL }
+            # select calibration or eval data
+            if (evaluation) { 
+              out <- load_stored_object(obj@models.prediction.eval)
+            } else { 
+              out <- load_stored_object(obj@models.prediction)
+            }
             
+            # subselection of models_selected
+            keep_lines <- .filter_outputs.df(out, subset.list = list(full.name = full.name
+                                                                     , merged.by.algo = merged.by.algo
+                                                                     , merged.by.run = merged.by.run
+                                                                     , merged.by.PA = merged.by.PA
+                                                                     , filtered.by = filtered.by
+                                                                     , algo = algo))
+            out <- out[keep_lines, ]
             return(out)
           }
 )
 
-## get_built_models.BIOMOD.ensemble.models.out ---------------------------------
-##' 
-##' @rdname getters.out
-##' @export
-##' 
-
-setMethod("get_built_models", "BIOMOD.ensemble.models.out", 
-          function(obj, ...){ 
-            return(obj@em.computed) 
-          })
 
 ## get_evaluations.BIOMOD.ensemble.models.out ----------------------------------
 ##' 
@@ -1213,23 +1291,24 @@ setMethod("get_built_models", "BIOMOD.ensemble.models.out",
 ##' 
 
 setMethod("get_evaluations", "BIOMOD.ensemble.models.out",
-          function(obj, as.data.frame = FALSE, ...) {
+          function(obj, full.name = NULL, merged.by.algo = NULL, merged.by.run = NULL
+                   , merged.by.PA = NULL, filtered.by = NULL, algo = NULL, metric.eval = NULL)
+          {
             out <- load_stored_object(obj@models.evaluation)
-            
-            if (!is.null(out) && as.data.frame) {
-              tmp = melt(out, varnames = c("Eval.metric", "tmp", "L1"))
-              tmp$Model.name = sapply(as.character(tmp$L1), function(x) { paste(strsplit(x, "_")[[1]][-1], collapse = "_") })
-              tmp$Model = sapply(tmp$Model.name, function(x) { strsplit(x, "_")[[1]][1] })
-              tmp$Algo = sapply(tmp$Model.name, function(x) { strsplit(x, "_")[[1]][2] })
-              tmp$Run = sapply(tmp$Model.name, function(x) { strsplit(x, "_")[[1]][3] })
-              tmp$Dataset = sapply(tmp$Model.name, function(x) { strsplit(x, "_")[[1]][4] })
-              tmp.split = split(tmp, tmp$tmp)
-              tmp.split = lapply(tmp.split, function(x) x[, c("Model.name", "Model", "Algo", "Run", "Dataset", "Eval.metric", "value")])
-              for (i in 1:length(tmp.split)) { colnames(tmp.split[[i]])[7] = names(tmp.split)[i] }
-              out = Reduce(function(x, y) merge(x, y, by = c("Model.name", "Model", "Algo", "Run", "Dataset", "Eval.metric")), tmp.split)
+            if(nrow(out) == 0){
+              cat("\n! models have no evaluations\n")
+              return(invisible(NULL))
+            } else {
+              keep_lines <- .filter_outputs.df(out, subset.list = list(full.name = full.name
+                                                                       , merged.by.algo = merged.by.algo
+                                                                       , merged.by.run = merged.by.run
+                                                                       , merged.by.PA = merged.by.PA
+                                                                       , filtered.by = filtered.by
+                                                                       , algo = algo
+                                                                       , metric.eval = metric.eval))
+              out <- out[keep_lines, ]
+              return(out)
             }
-            
-            return(out)
           }
 )
 
@@ -1240,21 +1319,18 @@ setMethod("get_evaluations", "BIOMOD.ensemble.models.out",
 ##' 
 
 setMethod("get_variables_importance", "BIOMOD.ensemble.models.out",
-          function(obj, as.data.frame = FALSE, ...) {
+          function(obj, full.name = NULL, merged.by.algo = NULL, merged.by.run = NULL
+                   , merged.by.PA = NULL, filtered.by = NULL, algo = NULL, expl.var = NULL)
+          {
             out <- load_stored_object(obj@variables.importance)
-            
-            if(!is.null(out) && as.data.frame == TRUE) {
-              tmp <- melt(out, varnames = c("Expl.var", "Rand", "L1"))
-              tmp$Model.name = sapply(as.character(tmp$L1), function(x) { paste(strsplit(x, "_")[[1]][-1], collapse = "_") })
-              tmp$Model = sapply(tmp$Model.name, function(x) { strsplit(x, "_")[[1]][1] })
-              tmp$Algo = sapply(tmp$Model.name, function(x) { strsplit(x, "_")[[1]][2] })
-              tmp$Run = sapply(tmp$Model.name, function(x) { strsplit(x, "_")[[1]][3] })
-              tmp$Dataset = sapply(tmp$Model.name, function(x) { strsplit(x, "_")[[1]][4] })
-              out <- tmp[, c("Model.name", "Model", "Algo", "Run", "Dataset"
-                             , "Expl.var", "Rand", "value")]
-              colnames(out)[8] = "Var.imp"
-            }
-            
+            keep_lines <- .filter_outputs.df(out, subset.list = list(full.name = full.name
+                                                                     , merged.by.algo = merged.by.algo
+                                                                     , merged.by.run = merged.by.run
+                                                                     , merged.by.PA = merged.by.PA
+                                                                     , filtered.by = filtered.by
+                                                                     , algo = algo
+                                                                     , expl.var = expl.var))
+            out <- out[keep_lines, ]
             return(out)
           }
 )

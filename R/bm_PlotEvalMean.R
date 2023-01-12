@@ -19,9 +19,14 @@
 ##' be among \code{ROC}, \code{TSS}, \code{KAPPA}, \code{ACCURACY}, \code{BIAS}, \code{POD}, 
 ##' \code{FAR}, \code{POFD}, \code{SR}, \code{CSI}, \code{ETS}, \code{HK}, \code{HSS}, \code{OR}, 
 ##' \code{ORSS}
+##' @param dataset a \code{character} corresponding to the dataset upon which evaluation metrics 
+##' have been calculated and that is to be represented, must be among \code{calibration}, 
+##' \code{validation}, \code{evaluation}
 ##' @param group.by a \code{character} corresponding to the way kept models will be combined to 
-##' compute mean and sd evaluation scores, must be among \code{model}, \code{algo}, \code{run}, 
-##' \code{dataset}
+##' compute mean and sd evaluation scores, must be among \code{full.name}, \code{PA}, \code{run}, 
+##' \code{algo} (if \code{bm.out} is a \code{\link{BIOMOD.models.out}} object), or 
+##' \code{full.name}, \code{merged.by.PA}, \code{merged.by.run}, \code{merged.by.algo} 
+##' (if \code{bm.out} is a \code{\link{BIOMOD.ensemble.models.out}} object)
 ##' @param do.plot (\emph{optional, default} \code{TRUE}) \cr 
 ##' A \code{logical} value defining whether the plot is to be rendered or not
 ##' @param \ldots some additional arguments (see Details)
@@ -127,33 +132,23 @@
 ###################################################################################################
 
 
-bm_PlotEvalMean <- function(bm.out, metric.eval = NULL, group.by = 'algo', do.plot = TRUE, ...)
+bm_PlotEvalMean <- function(bm.out, metric.eval = NULL, dataset = 'calibration', group.by = 'algo', do.plot = TRUE, ...)
 {
   ## 0. Check arguments ---------------------------------------------------------------------------
-  args <- .bm_PlotEvalMean.check.args(bm.out, metric.eval, group.by, ...)
+  args <- .bm_PlotEvalMean.check.args(bm.out, metric.eval, dataset, group.by, ...)
   for (argi in names(args)) { assign(x = argi, value = args[[argi]]) }
   rm(args)
   
-  
-  tmp = strsplit(group.by, '')[[1]]
-  group.by <- paste0(toupper(tmp[1]), paste0(tmp[2:length(tmp)], collapse = ''))
-  
   ## 1. Get data for graphic ----------------------------------------------------------------------
   ## Get evaluation values
-  scores <- get_evaluations(bm.out, as.data.frame = TRUE)
-  scores$Eval.metric <- as.character(scores$Eval.metric)
-  
-  ## Choose which dataset (calibration or validation) should be used
-  eval.data <- ifelse(all(is.na(scores$Evaluating.data)),
-                      "Testing.data",
-                      "Evaluating.data")
+  scores <- get_evaluations(bm.out)
   
   ## Compute mean and sd evaluation scores
-  models_mean = tapply(X = scores[, eval.data]
-                       , INDEX = list(scores$Eval.metric, scores[, group.by])
+  models_mean = tapply(X = scores[, dataset]
+                       , INDEX = list(scores$metric.eval, scores[, group.by])
                        , FUN = mean, na.rm = TRUE)
-  models_sd = tapply(X = scores[, eval.data]
-                     , INDEX = list(scores$Eval.metric, scores[, group.by])
+  models_sd = tapply(X = scores[, dataset]
+                     , INDEX = list(scores$metric.eval, scores[, group.by])
                      , FUN = sd, na.rm = TRUE)
   
   ## Prepare data table for graphic
@@ -190,7 +185,7 @@ bm_PlotEvalMean <- function(bm.out, metric.eval = NULL, group.by = 'algo', do.pl
 
 ###################################################################################################
 
-.bm_PlotEvalMean.check.args <- function(bm.out, metric.eval = NULL, group.by = 'Algo', ...)
+.bm_PlotEvalMean.check.args <- function(bm.out, metric.eval = NULL, dataset, group.by, ...)
 {
   args <- list(...)
   
@@ -199,8 +194,8 @@ bm_PlotEvalMean <- function(bm.out, metric.eval = NULL, group.by = 'algo', do.pl
   
   ## 2. Check metric.eval argument --------------------------------------------
   if (is.null(metric.eval)) {
-    scores <- get_evaluations(bm.out, as.data.frame = TRUE)
-    metric.eval <- sort(unique(as.character(scores$Eval.metric)))[1:2]
+    scores <- get_evaluations(bm.out)
+    metric.eval <- sort(unique(as.character(scores$metric.eval)))[1:2]
     warnings(toString(metric.eval), " evaluation metric.eval automatically selected")
   } else {
     metric.eval = sort(unique(as.character(metric.eval)))
@@ -212,14 +207,26 @@ bm_PlotEvalMean <- function(bm.out, metric.eval = NULL, group.by = 'algo', do.pl
     }
   }
   
+  ## 2. Check dataset argument ------------------------------------------------
+  .fun_testIfIn(TRUE, "dataset", dataset, c("calibration", "validation", "evaluation"))
+  
   ## 3. Check group.by argument -----------------------------------------------
-  .fun_testIfIn(TRUE, "group.by", group.by, c('model', 'algo', 'run', 'dataset'))
+  if (inherits(bm.out, "BIOMOD.models.out")) {
+    .fun_testIfIn(TRUE, "group.by", group.by, c("full.name", "PA", "run", "algo"))
+  } else if (inherits(bm.out, "BIOMOD.ensemble.models.out")) {
+    .fun_testIfIn(TRUE, "group.by", group.by, c("full.name", "merged.by.PA", "merged.by.run", "algo"))
+  } 
+  if (length(group.by) > 1) {
+    group.by = group.by[1]
+    warning("`group.by` must contain only one value, only the first one will be kept")
+  }
   
   ## 4. Check extra args argument ---------------------------------------------
   .fun_testIfIn(TRUE, "names(args)", names(args), c('xlim', 'ylim', 'main'))
   
   
   return(list(metric.eval = metric.eval,
+              group.by = group.by,
               xlim = args$xlim,
               ylim = args$ylim,
               main = args$main))

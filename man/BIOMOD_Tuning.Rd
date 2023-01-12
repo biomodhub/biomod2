@@ -7,8 +7,7 @@
 BIOMOD_Tuning(
   bm.format,
   bm.options = BIOMOD_ModelingOptions(),
-  models = c("GLM", "GBM", "GAM", "CTA", "ANN", "SRE", "FDA", "MARS", "RF",
-    "MAXENT.Phillips"),
+  models = c("GLM", "GBM", "GAM", "CTA", "ANN", "SRE", "FDA", "MARS", "RF", "MAXENT"),
   metric.eval = "ROC",
   ctrl.train = NULL,
   ctrl.train.tuneLength = 30,
@@ -52,7 +51,7 @@ object returned by the \code{\link{BIOMOD_FormatingData}} function}
 
 \item{models}{a \code{vector} containing model names to be tuned, \cr 
 must be among \code{GLM}, \code{GBM}, \code{GAM}, \code{CTA}, \code{ANN}, \code{SRE}, 
-\code{FDA}, \code{MARS}, \code{RF}, \code{MAXENT.Phillips}}
+\code{FDA}, \code{MARS}, \code{RF}, \code{MAXENT}}
 
 \item{metric.eval}{a \code{character} corresponding to the evaluation metric used to select 
 optimal models and tune parameters, must be either \code{ROC} or \code{TSS} 
@@ -115,23 +114,23 @@ must be \code{glmStepAIC} (see
 \item{GLM.interaction}{a \code{vector} of interaction types, must be among \code{0}, \code{1}}
 
 \item{ME.cvmethod}{a \code{character} corresponding to the method used to partition data for 
-\code{MAXENT.Phillips}, \cr must be \code{randomkfold}}
+\code{MAXENT}, \cr must be \code{randomkfold}}
 
 \item{ME.overlap}{(\emph{optional, default} \code{FALSE}) \cr 
 A \code{logical} value defining whether to calculate pairwise metric of niche overlap or not 
 (see \code{\link[ENMeval]{calc.niche.overlap}})}
 
 \item{ME.kfolds}{an \code{integer} corresponding to the number of bins for k-fold 
-cross-validation for \code{MAXENT.Phillips}}
+cross-validation for \code{MAXENT}}
 
 \item{ME.n.bg}{an \code{integer} corresponding to the number of background points used to run 
-\code{MAXENT.Phillips}}
+\code{MAXENT}}
 
 \item{ME.env}{a \code{\link[terra:rast]{SpatRaster}} object 
 containing model predictor variables}
 
 \item{ME.metric}{a \code{character} corresponding to the evaluation metric used to select 
-optimal model and tune parameters for \code{MAXENT.Phillips}, must be either 
+optimal model and tune parameters for \code{MAXENT}, must be either 
 \code{auc.val.avg}, \code{auc.diff.avg}, \code{or.mtp.avg}, \code{or.10p.avg} or \code{AICc}}
 
 \item{ME.clamp}{(\emph{optional, default} \code{TRUE}) \cr 
@@ -140,10 +139,10 @@ range of values in the training data} (Elith et al. 2011) or not}
 
 \item{ME.parallel}{(\emph{optional, default} \code{TRUE}) \cr 
 A \code{logical} value defining whether to enable parallel computing for 
-\code{MAXENT.Phillips} or not}
+\code{MAXENT} or not}
 
 \item{ME.numCores}{an \code{integer} corresponding to the number of cores to be used to 
-train \code{MAXENT.Phillips}}
+train \code{MAXENT}}
 
 \item{RF.method}{a \code{character} corresponding to the classification or regression model 
 to use for \code{RF}, \cr 
@@ -164,7 +163,7 @@ Function to tune \pkg{biomod2} single models parameters
   \code{caret::trainControl(method = 'cv', summaryFunction = caret::twoClassSummary,} \cr
   \code{classProbs = TRUE, returnData = FALSE)}.
   \item All control parameters for other models are set to \code{ctrl.train} if unspecified.
-  \item For more details on \code{MAXENT.Phillips} tuning, please refer to 
+  \item For more details on \code{MAXENT} tuning, please refer to 
   \code{\link[ENMeval]{ENMevaluate}}.
   \item For more details on other models tuning, please refer to \code{\link[caret]{train}}.
 }

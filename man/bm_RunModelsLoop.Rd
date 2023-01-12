@@ -49,7 +49,7 @@ object returned by the \code{\link{BIOMOD_FormatingData}} function}
 
 \item{model}{a \code{character} corresponding to the model name to be computed, must be either 
 \code{GLM}, \code{GBM}, \code{GAM}, \code{CTA}, \code{ANN}, \code{SRE}, \code{FDA}, 
-\code{MARS}, \code{RF}, \code{MAXENT.Phillips}, \code{MAXENT.Phillips.2}}
+\code{MARS}, \code{RF}, \code{MAXENT}, \code{MAXNET}}
 
 \item{bm.options}{a \code{\link{BIOMOD.models.options}} object returned by the
 \code{\link{BIOMOD_ModelingOptions}} function}
@@ -112,7 +112,7 @@ A \code{list} containing for each model a \code{list} containing the following e
   \item{\code{model} : }{the name of correctly computed model}
   \item{\code{calib.failure} : }{the name of incorrectly computed model}
   \item{\code{pred} : }{the prediction outputs for calibration data}
-  \item{\code{pred.eval} : }{the prediction outputs for validation data}
+  \item{\code{pred.eval} : }{the prediction outputs for evaluation data}
   \item{\code{evaluation} : }{the evaluation outputs returned by the 
   \code{\link{bm_FindOptimStat}} function}
   \item{\code{var.import} : }{the mean of variables importance returned by the 

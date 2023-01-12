@@ -19,7 +19,7 @@ BIOMOD_Modeling"><!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax/
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">biomod2</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">4.2-1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">4.2-2</span>
       </span>
     </div>
 
@@ -117,7 +117,8 @@ BIOMOD_Modeling"><!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax/
 <span>  PA.dist.max <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  PA.sre.quant <span class="op">=</span> <span class="fl">0.025</span>,</span>
 <span>  PA.user.table <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  na.rm <span class="op">=</span> <span class="cn">TRUE</span></span>
+<span>  na.rm <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  filter.raster <span class="op">=</span> <span class="cn">FALSE</span></span>
 <span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># S4 method for numeric,SpatRaster</span></span>
@@ -137,14 +138,9 @@ BIOMOD_Modeling"><!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax/
 <span>  PA.dist.max <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  PA.sre.quant <span class="op">=</span> <span class="fl">0.025</span>,</span>
 <span>  PA.user.table <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  na.rm <span class="op">=</span> <span class="cn">TRUE</span></span>
-<span><span class="op">)</span></span>
-<span></span>
-<span><span class="co"># S4 method for BIOMOD.formated.data.PA,missing</span></span>
-<span><span class="fu"><a href="https://rdrr.io/pkg/terra/man/plot.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">x</span>, coord <span class="op">=</span> <span class="cn">NULL</span>, col <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span>
-<span></span>
-<span><span class="co"># S4 method for BIOMOD.formated.data.PA</span></span>
-<span><span class="fu">show</span><span class="op">(</span><span class="va">object</span><span class="op">)</span></span></code></pre></div>
+<span>  na.rm <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  filter.raster <span class="op">=</span> <span class="cn">FALSE</span></span>
+<span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
@@ -156,7 +152,7 @@ object containing binary data (<code>0</code> : absence,  <code>1</code> : prese
 <code>NA</code> : indeterminate) for a single species that will be used to 
 build the species distribution model(s)
 <br><em>Note that old format from <span class="pkg">sp</span> are still supported such as
- <code>SpatialPoints</code>  (<em>if presence-only</em>) or <code>SpatialPointsDataFrame</code>
+ <code>SpatialPoints</code>  (if presence-only) or <code>SpatialPointsDataFrame</code>
  object containing binary data.</em></p></dd>
 
 
@@ -187,20 +183,20 @@ species distribution model(s)</p></dd>
 <dd><p>(<em>optional, default</em> <code>NULL</code>) <br> 
 A <code>vector</code>, a <code><a href="https://rdrr.io/pkg/terra/man/vect.html" class="external-link">SpatVector</a></code> without associated 
 data (<em>if presence-only</em>), or a <code><a href="https://rdrr.io/pkg/terra/man/vect.html" class="external-link">SpatVector</a></code>
- object containing binary data (<code>0</code> : absence, <code>1</code> : presence, 
- <code>NA</code> : indeterminate) for a single species that will be used to
-  evaluate the species distribution model(s) with independent data
+object containing binary data (<code>0</code> : absence, <code>1</code> : presence, 
+<code>NA</code> : indeterminate) for a single species that will be used to
+evaluate the species distribution model(s) with independent data
 <br><em>Note that old format from <span class="pkg">sp</span> are still supported such as
- <code>SpatialPoints</code>  (<em>if presence-only</em>) or <code>SpatialPointsDataFrame</code>
- object containing binary data.</em></p></dd>
+<code>SpatialPoints</code>  (if presence-only) or <code>SpatialPointsDataFrame</code>
+object containing binary data.</em></p></dd>
 
 
 <dt>eval.env</dt>
 <dd><p>(<em>optional, default</em> <code>NULL</code>) <br> 
 A <code>matrix</code>, <code>data.frame</code>, <code><a href="https://rdrr.io/pkg/terra/man/vect.html" class="external-link">SpatVector</a></code> or
-  <code><a href="https://rdrr.io/pkg/terra/man/rast.html" class="external-link">SpatRaster</a></code> object containing the explanatory
-  variables (in columns or layers) that will be used to evaluate the species
-  distribution model(s) with independent data
+<code><a href="https://rdrr.io/pkg/terra/man/rast.html" class="external-link">SpatRaster</a></code> object containing the explanatory
+variables (in columns or layers) that will be used to evaluate the species
+distribution model(s) with independent data
 <br><em>Note that old format from <span class="pkg">raster</span> and <span class="pkg">sp</span> are still
 supported such as <code>RasterStack</code> and <code>SpatialPointsDataFrame</code>
 objects. </em></p></dd>
@@ -269,21 +265,10 @@ A <code>logical</code> value defining whether points having one or several missi
 values for explanatory variables should be removed from the analysis or not</p></dd>
 
 
-<dt>x</dt>
-<dd><p>a <code>BIOMOD.formated.data.PA</code> object</p></dd>
-
-
-<dt>coord</dt>
-<dd><p>a 2-columns <code>data.frame</code> containing <code>X</code> and <code>Y</code> coordinates for plot</p></dd>
-
-
-<dt>col</dt>
-<dd><p>a <code>vector</code> containing colors for plot (default : <code>c('green', 'red', 
-'orange', 'grey')</code>)</p></dd>
-
-
-<dt>object</dt>
-<dd><p>a <code>BIOMOD.formated.data.PA</code> object</p></dd>
+<dt>filter.raster</dt>
+<dd><p>(<em>optional, default</em> <code>FALSE</code>) <br> 
+If <code>env</code> is of raster type, a <code>logical</code> value defining whether <code>sp</code> 
+is to be filtered when several points occur in the same raster cell</p></dd>
 
 </dl></div>
     <div id="slots">

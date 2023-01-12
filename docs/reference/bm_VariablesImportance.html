@@ -18,7 +18,7 @@ importance value for each variable involved in the given model."><!-- mathjax --
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">biomod2</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">4.2-1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">4.2-2</span>
       </span>
     </div>
 
@@ -101,6 +101,7 @@ importance value for each variable involved in the given model.</p>
     <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">bm_VariablesImportance</span><span class="op">(</span></span>
 <span>  <span class="va">bm.model</span>,</span>
 <span>  <span class="va">expl.var</span>,</span>
+<span>  variables <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  method <span class="op">=</span> <span class="st">"full_rand"</span>,</span>
 <span>  nb.rep <span class="op">=</span> <span class="fl">1</span>,</span>
 <span>  seed.val <span class="op">=</span> <span class="cn">NULL</span>,</span>
@@ -120,6 +121,11 @@ obtained with the <code><a href="getters.bm.html">get_formal_model</a></code> fu
 <dt>expl.var</dt>
 <dd><p>a <code>data.frame</code> containing the explanatory variables that will be used to 
 compute the variables importance</p></dd>
+
+
+<dt>variables</dt>
+<dd><p>(<em>optional, default</em> <code>NULL</code>) <br> 
+A <code>vector</code> containing the names of the explanatory variables that will be considered</p></dd>
 
 
 <dt>method</dt>
@@ -143,15 +149,18 @@ A <code>logical</code> value defining whether the progress bar is to be rendered
 
 
 <dt>...</dt>
-<dd><p>(<em>optional</em>)</p></dd>
+<dd><p>additional arguments</p></dd>
 
 </dl></div>
     <div id="value">
     <h2>Value</h2>
     
 
-<p>A <code>matrix</code> containing variables importance scores for each permutation run.</p>
-    </div>
+<p>A <code>3</code> columns <code>data.frame</code> containing variable's importance scores for each 
+permutation run :</p><ul><li><p><code>expl.var</code> : the considered explanatory variable (the one permuted)</p></li>
+<li><p><code>rand</code> : the ID of the permutation run</p></li>
+<li><p><code>var.imp</code> : the variable's importance score</p></li>
+</ul></div>
     <div id="details">
     <h2>Details</h2>
     <p>For each variable to be evaluated :</p><ol><li><p>shuffle the original variable</p></li>

@@ -11,8 +11,8 @@
 \alias{GBM_biomod2_model-class}
 \alias{GLM_biomod2_model-class}
 \alias{MARS_biomod2_model-class}
-\alias{MAXENT.Phillips_biomod2_model-class}
-\alias{MAXENT.Phillips.2_biomod2_model-class}
+\alias{MAXENT_biomod2_model-class}
+\alias{MAXNET_biomod2_model-class}
 \alias{RF_biomod2_model-class}
 \alias{SRE_biomod2_model-class}
 \alias{show,biomod2_model-method}
@@ -38,9 +38,9 @@ Class created by \code{\link{BIOMOD_Modeling}} and \code{\link{bm_RunModel}}
   \item{\code{GBM_biomod2_model} : }{\code{model_class} is \code{GBM}}
   \item{\code{GLM_biomod2_model} : }{\code{model_class} is \code{GLM}}
   \item{\code{MARS_biomod2_model} : }{\code{model_class} is \code{MARS}}
-  \item{\code{MAXENT.Phillips_biomod2_model} : }{\code{model_class} is \code{MAXENT.Phillips}}
-  \item{\code{MAXENT.Phillips.2_biomod2_model} : }{\code{model_class} is 
-  \code{MAXENT.Phillips.2}}
+  \item{\code{MAXENT_biomod2_model} : }{\code{model_class} is \code{MAXENT}}
+  \item{\code{MAXNET_biomod2_model} : }{\code{model_class} is 
+  \code{MAXNET}}
   \item{\code{RF_biomod2_model} : }{\code{model_class} is \code{RF}}
   \item{\code{SRE_biomod2_model} : }{\code{model_class} is \code{SRE}}
 }
@@ -68,9 +68,9 @@ Class created by \code{\link{BIOMOD_Modeling}} and \code{\link{bm_RunModel}}
 
 \item{\code{expl_var_range}}{a \code{list} containing ranges of explanatory variables}
 
-\item{\code{model_evaluation}}{a \code{matrix} containing the model evaluations}
+\item{\code{model_evaluation}}{a \code{data.frame} containing the model evaluations}
 
-\item{\code{model_variables_importance}}{a \code{matrix} containing the model variables importance}
+\item{\code{model_variables_importance}}{a \code{data.frame} containing the model variables importance}
 }}
 
 \examples{
@@ -83,8 +83,8 @@ showClass("GAM_biomod2_model")
 showClass("GBM_biomod2_model")
 showClass("GLM_biomod2_model")
 showClass("MARS_biomod2_model")
-showClass("MAXENT.Phillips_biomod2_model")
-showClass("MAXENT.Phillips.2_biomod2_model")
+showClass("MAXENT_biomod2_model")
+showClass("MAXNET_biomod2_model")
 showClass("RF_biomod2_model")
 showClass("SRE_biomod2_model")
 

@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">biomod2</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">4.2-1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">4.2-2</span>
       </span>
     </div>
 
@@ -99,8 +99,7 @@
     <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">BIOMOD_Tuning</span><span class="op">(</span></span>
 <span>  <span class="va">bm.format</span>,</span>
 <span>  bm.options <span class="op">=</span> <span class="fu"><a href="BIOMOD_ModelingOptions.html">BIOMOD_ModelingOptions</a></span><span class="op">(</span><span class="op">)</span>,</span>
-<span>  models <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"GLM"</span>, <span class="st">"GBM"</span>, <span class="st">"GAM"</span>, <span class="st">"CTA"</span>, <span class="st">"ANN"</span>, <span class="st">"SRE"</span>, <span class="st">"FDA"</span>, <span class="st">"MARS"</span>, <span class="st">"RF"</span>,</span>
-<span>    <span class="st">"MAXENT.Phillips"</span><span class="op">)</span>,</span>
+<span>  models <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"GLM"</span>, <span class="st">"GBM"</span>, <span class="st">"GAM"</span>, <span class="st">"CTA"</span>, <span class="st">"ANN"</span>, <span class="st">"SRE"</span>, <span class="st">"FDA"</span>, <span class="st">"MARS"</span>, <span class="st">"RF"</span>, <span class="st">"MAXENT"</span><span class="op">)</span>,</span>
 <span>  metric.eval <span class="op">=</span> <span class="st">"ROC"</span>,</span>
 <span>  ctrl.train <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  ctrl.train.tuneLength <span class="op">=</span> <span class="fl">30</span>,</span>
@@ -151,7 +150,7 @@ object returned by the <code><a href="BIOMOD_FormatingData.html">BIOMOD_Formatin
 <dt>models</dt>
 <dd><p>a <code>vector</code> containing model names to be tuned, <br> 
 must be among <code>GLM</code>, <code>GBM</code>, <code>GAM</code>, <code>CTA</code>, <code>ANN</code>, <code>SRE</code>, 
-<code>FDA</code>, <code>MARS</code>, <code>RF</code>, <code>MAXENT.Phillips</code></p></dd>
+<code>FDA</code>, <code>MARS</code>, <code>RF</code>, <code>MAXENT</code></p></dd>
 
 
 <dt>metric.eval</dt>
@@ -258,7 +257,7 @@ must be <code>glmStepAIC</code> (see
 
 <dt>ME.cvmethod</dt>
 <dd><p>a <code>character</code> corresponding to the method used to partition data for 
-<code>MAXENT.Phillips</code>, <br> must be <code>randomkfold</code></p></dd>
+<code>MAXENT</code>, <br> must be <code>randomkfold</code></p></dd>
 
 
 <dt>ME.overlap</dt>
@@ -269,12 +268,12 @@ A <code>logical</code> value defining whether to calculate pairwise metric of ni
 
 <dt>ME.kfolds</dt>
 <dd><p>an <code>integer</code> corresponding to the number of bins for k-fold 
-cross-validation for <code>MAXENT.Phillips</code></p></dd>
+cross-validation for <code>MAXENT</code></p></dd>
 
 
 <dt>ME.n.bg</dt>
 <dd><p>an <code>integer</code> corresponding to the number of background points used to run 
-<code>MAXENT.Phillips</code></p></dd>
+<code>MAXENT</code></p></dd>
 
 
 <dt>ME.env</dt>
@@ -284,7 +283,7 @@ containing model predictor variables</p></dd>
 
 <dt>ME.metric</dt>
 <dd><p>a <code>character</code> corresponding to the evaluation metric used to select 
-optimal model and tune parameters for <code>MAXENT.Phillips</code>, must be either 
+optimal model and tune parameters for <code>MAXENT</code>, must be either 
 <code>auc.val.avg</code>, <code>auc.diff.avg</code>, <code>or.mtp.avg</code>, <code>or.10p.avg</code> or <code>AICc</code></p></dd>
 
 
@@ -297,12 +296,12 @@ range of values in the training data</em> (Elith et al. 2011) or not</p></dd>
 <dt>ME.parallel</dt>
 <dd><p>(<em>optional, default</em> <code>TRUE</code>) <br> 
 A <code>logical</code> value defining whether to enable parallel computing for 
-<code>MAXENT.Phillips</code> or not</p></dd>
+<code>MAXENT</code> or not</p></dd>
 
 
 <dt>ME.numCores</dt>
 <dd><p>an <code>integer</code> corresponding to the number of cores to be used to 
-train <code>MAXENT.Phillips</code></p></dd>
+train <code>MAXENT</code></p></dd>
 
 
 <dt>RF.method</dt>
@@ -327,7 +326,7 @@ optimized parameters</p>
     
 <ul><li><p><code>ctrl.train</code> parameter is set by default to : <br><code>caret::trainControl(method = 'cv', summaryFunction = caret::twoClassSummary,</code> <br><code>classProbs = TRUE, returnData = FALSE)</code>.</p></li>
 <li><p>All control parameters for other models are set to <code>ctrl.train</code> if unspecified.</p></li>
-<li><p>For more details on <code>MAXENT.Phillips</code> tuning, please refer to 
+<li><p>For more details on <code>MAXENT</code> tuning, please refer to 
   <code><a href="https://rdrr.io/pkg/ENMeval/man/ENMevaluate.html" class="external-link">ENMevaluate</a></code>.</p></li>
 <li><p>For more details on other models tuning, please refer to <code><a href="https://rdrr.io/pkg/caret/man/train.html" class="external-link">train</a></code>.</p></li>
 </ul></div>

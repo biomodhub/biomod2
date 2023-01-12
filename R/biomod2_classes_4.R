@@ -73,8 +73,8 @@ NULL
 ##' @aliases GBM_biomod2_model-class
 ##' @aliases GLM_biomod2_model-class
 ##' @aliases MARS_biomod2_model-class
-##' @aliases MAXENT.Phillips_biomod2_model-class
-##' @aliases MAXENT.Phillips.2_biomod2_model-class
+##' @aliases MAXENT_biomod2_model-class
+##' @aliases MAXNET_biomod2_model-class
 ##' @aliases RF_biomod2_model-class
 ##' @aliases SRE_biomod2_model-class
 ##' @author Damien Georges
@@ -94,8 +94,8 @@ NULL
 ##' @slot expl_var_names a \code{vector} containing names of explanatory variables
 ##' @slot expl_var_type a \code{vector} containing classes of explanatory variables
 ##' @slot expl_var_range a \code{list} containing ranges of explanatory variables
-##' @slot model_evaluation a \code{matrix} containing the model evaluations
-##' @slot model_variables_importance a \code{matrix} containing the model variables importance
+##' @slot model_evaluation a \code{data.frame} containing the model evaluations
+##' @slot model_variables_importance a \code{data.frame} containing the model variables importance
 ##' 
 ##' @param object a \code{\link{biomod2_model}} object
 ##' 
@@ -112,9 +112,9 @@ NULL
 ##'   \item{\code{GBM_biomod2_model} : }{\code{model_class} is \code{GBM}}
 ##'   \item{\code{GLM_biomod2_model} : }{\code{model_class} is \code{GLM}}
 ##'   \item{\code{MARS_biomod2_model} : }{\code{model_class} is \code{MARS}}
-##'   \item{\code{MAXENT.Phillips_biomod2_model} : }{\code{model_class} is \code{MAXENT.Phillips}}
-##'   \item{\code{MAXENT.Phillips.2_biomod2_model} : }{\code{model_class} is 
-##'   \code{MAXENT.Phillips.2}}
+##'   \item{\code{MAXENT_biomod2_model} : }{\code{model_class} is \code{MAXENT}}
+##'   \item{\code{MAXNET_biomod2_model} : }{\code{model_class} is 
+##'   \code{MAXNET}}
 ##'   \item{\code{RF_biomod2_model} : }{\code{model_class} is \code{RF}}
 ##'   \item{\code{SRE_biomod2_model} : }{\code{model_class} is \code{SRE}}
 ##' }
@@ -134,8 +134,8 @@ NULL
 ##' showClass("GBM_biomod2_model")
 ##' showClass("GLM_biomod2_model")
 ##' showClass("MARS_biomod2_model")
-##' showClass("MAXENT.Phillips_biomod2_model")
-##' showClass("MAXENT.Phillips.2_biomod2_model")
+##' showClass("MAXENT_biomod2_model")
+##' showClass("MAXNET_biomod2_model")
 ##' showClass("RF_biomod2_model")
 ##' showClass("SRE_biomod2_model")
 ##' 
@@ -158,8 +158,8 @@ setClass('biomod2_model',
                         expl_var_names = 'character',
                         expl_var_type = 'character',
                         expl_var_range = 'list',
-                        model_evaluation = 'matrix',
-                        model_variables_importance = 'matrix'),
+                        model_evaluation = 'data.frame',
+                        model_variables_importance = 'data.frame'),
          prototype = list(model_name = 'mySpecies_DataSet_RunName_myModelClass',
                           model_class = 'myModelClass',
                           model_options = list(),
@@ -170,8 +170,8 @@ setClass('biomod2_model',
                           expl_var_names = 'myRespVar',
                           expl_var_type = 'unknown',
                           expl_var_range = list(),
-                          model_evaluation = matrix(),
-                          model_variables_importance = matrix()),
+                          model_evaluation = data.frame(),
+                          model_variables_importance = data.frame()),
          validity = function(object) { # check that scaler is a glm if it is defined
            if (length(object@scaling_model) > 0 && 
                !inherits(object@scaling_model, c("glm", "lm"))) {
@@ -269,9 +269,9 @@ setMethod('predict', signature(object = 'biomod2_model'),
 ##' @aliases predict2.GLM_biomod2_model.data.frame
 ##' @aliases predict2.MARS_biomod2_model.SpatRaster
 ##' @aliases predict2.MARS_biomod2_model.data.frame
-##' @aliases predict2.MAXENT.Phillips_biomod2_model.data.frame
-##' @aliases predict2.MAXENT.Phillips.2_biomod2_model.SpatRaster
-##' @aliases predict2.MAXENT.Phillips.2_biomod2_model.data.frame
+##' @aliases predict2.MAXENT_biomod2_model.data.frame
+##' @aliases predict2.MAXNET_biomod2_model.SpatRaster
+##' @aliases predict2.MAXNET_biomod2_model.data.frame
 ##' @aliases predict2.RF_biomod2_model.SpatRaster
 ##' @aliases predict2.RF_biomod2_model.data.frame
 ##' @aliases predict2.SRE_biomod2_model.SpatRaster
@@ -743,16 +743,16 @@ setMethod('predict2', signature(object = 'MARS_biomod2_model', newdata = "data.f
 )
 
 #----------------------------------------------------------------------------- #
-## 8.8 MAXENT.Phillips_biomod2_model -----------------------------------------
+## 8.8 MAXENT_biomod2_model -----------------------------------------
 #----------------------------------------------------------------------------- #
-##' @name MAXENT.Phillips_biomod2_model-class
+##' @name MAXENT_biomod2_model-class
 ##' @rdname biomod2_model
 ##' @export
 
-setClass('MAXENT.Phillips_biomod2_model',
+setClass('MAXENT_biomod2_model',
          representation(model_output_dir = 'character'),
          contains = 'biomod2_model',
-         prototype = list(model_class = 'MAXENT.Phillips'),
+         prototype = list(model_class = 'MAXENT'),
          validity = function(object) { return(TRUE) })
 
 ##' 
@@ -760,7 +760,7 @@ setClass('MAXENT.Phillips_biomod2_model',
 ##' @importFrom terra rast as.points crds values
 ##' 
 
-setMethod('predict2', signature(object = 'MAXENT.Phillips_biomod2_model', newdata = "SpatRaster"),
+setMethod('predict2', signature(object = 'MAXENT_biomod2_model', newdata = "SpatRaster"),
           function(object, newdata, ...) {
             args <- list(...)
             on_0_1000 <- args$on_0_1000
@@ -836,7 +836,7 @@ setMethod('predict2', signature(object = 'MAXENT.Phillips_biomod2_model', newdat
 ##' @rdname predict2.bm
 ##' @importFrom sp read.asciigrid
 
-setMethod('predict2', signature(object = 'MAXENT.Phillips_biomod2_model', newdata = "data.frame"),
+setMethod('predict2', signature(object = 'MAXENT_biomod2_model', newdata = "data.frame"),
           function(object, newdata, ...) {
             
             args <- list(...)
@@ -863,13 +863,12 @@ setMethod('predict2', signature(object = 'MAXENT.Phillips_biomod2_model', newdat
             ## there is no need to provide meaningful values.
             Pred_swd <- read.csv(file.path(temp_workdir, "Predictions/Pred_swd.csv"))
             if (nrow(Pred_swd) != nrow(newdata)) {
-              tmp = cbind("predict", newdata[, 1], newdata[, 2])
+              tmp = cbind("predict", newdata[, 1], newdata[, 1])
               colnames(tmp) = c("predict", "x", "y")
               Pred_swd = cbind(tmp, newdata)
             } else {
               Pred_swd <- cbind(Pred_swd[, 1:3], newdata)
             }
-            
             m_predictFile <- file.path(temp_workdir, "Predictions", paste0("Pred_swdBis_", sample(1:100000, 1), ".csv"))
             while (file.exists(m_predictFile)) {
               m_predictFile <- file.path(temp_workdir, "Predictions", paste0("Pred_swdBis_", sample(1:100000, 1), ".csv"))
@@ -882,7 +881,6 @@ setMethod('predict2', signature(object = 'MAXENT.Phillips_biomod2_model', newdat
               path_to_maxent.jar <-  file.path(getwd(), "maxent.jar")
             }
             
-            # browser()
             # cat("\n\t\tRunning Maxent...")
             maxent.command <- 
               paste0("java ",
@@ -923,15 +921,15 @@ setMethod('predict2', signature(object = 'MAXENT.Phillips_biomod2_model', newdat
 )
 
 #----------------------------------------------------------------------------- #
-## 8.9 MAXENT.Phillips.2_biomod2_model ---------------------------------------
+## 8.9 MAXNET_biomod2_model ---------------------------------------
 #----------------------------------------------------------------------------- #
-##' @name MAXENT.Phillips.2_biomod2_model-class
+##' @name MAXNET_biomod2_model-class
 ##' @rdname biomod2_model
 ##' @export
-setClass('MAXENT.Phillips.2_biomod2_model',
+setClass('MAXNET_biomod2_model',
          representation(),
          contains = 'biomod2_model',
-         prototype = list(model_class = 'MAXENT.Phillips.2'),
+         prototype = list(model_class = 'MAXNET'),
          validity = function(object) { 
            if (!inherits(object@model, "maxnet")) {
              return(FALSE)
@@ -946,7 +944,7 @@ setClass('MAXENT.Phillips.2_biomod2_model',
 ##' 
 
 
-setMethod('predict2', signature(object = 'MAXENT.Phillips.2_biomod2_model', newdata = "SpatRaster"),
+setMethod('predict2', signature(object = 'MAXNET_biomod2_model', newdata = "SpatRaster"),
           function(object, newdata, ...) {
             args <- list(...)
             filename <- args$filename
@@ -1002,7 +1000,7 @@ setMethod('predict2', signature(object = 'MAXENT.Phillips.2_biomod2_model', newd
 
 
 ##' @rdname predict2.bm
-setMethod('predict2', signature(object = 'MAXENT.Phillips.2_biomod2_model', newdata = "data.frame"),
+setMethod('predict2', signature(object = 'MAXNET_biomod2_model', newdata = "data.frame"),
           function(object, newdata, ...) {
             
             predfun <- function(object, newdata, not_na_rows){

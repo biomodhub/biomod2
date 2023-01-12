@@ -3,7 +3,6 @@
 \name{BIOMOD_RangeSize}
 \alias{BIOMOD_RangeSize}
 \alias{BIOMOD_RangeSize,data.frame,data.frame-method}
-\alias{BIOMOD_RangeSize,array,array-method}
 \alias{BIOMOD_RangeSize,SpatRaster,SpatRaster-method}
 \title{Analyze the range size differences between projections of species distribution models}
 \usage{
@@ -11,16 +10,14 @@ BIOMOD_RangeSize(proj.current, proj.future)
 
 \S4method{BIOMOD_RangeSize}{data.frame,data.frame}(proj.current, proj.future)
 
-\S4method{BIOMOD_RangeSize}{array,array}(proj.current, proj.future)
-
 \S4method{BIOMOD_RangeSize}{SpatRaster,SpatRaster}(proj.current, proj.future)
 }
 \arguments{
-\item{proj.current}{an \code{array}, \code{data.frame}, \code{\link[raster:stack]{RasterLayer}}
+\item{proj.current}{a \code{data.frame}, \code{\link[raster:stack]{RasterLayer}}
 or \code{\link[terra:rast]{SpatRaster}} object containing the initial binary projection(s)
 of the (ensemble) species distribution model(s)}
 
-\item{proj.future}{an \code{array}, \code{data.frame}, \code{\link[raster:stack]{RasterLayer}}
+\item{proj.future}{a \code{data.frame}, \code{\link[raster:stack]{RasterLayer}}
 or \code{\link[terra:rast]{SpatRaster}} object containing the final binary projection(s)
 of the (ensemble) species distribution model(s)}
 }
@@ -67,9 +64,9 @@ time scales or environmental scenarios for example}).
 }
 \details{
 Note that \bold{this function is only relevant to compare binary projections, made on the
-same area with the same resolution}.
+same area with the same resolution}. \cr
 
-\cr Comparison between \code{proj.current} and \code{proj.future} depends
+Comparison between \code{proj.current} and \code{proj.future} depends
 on the number of projection in both objects:\tabular{lll}{
    \code{proj.current} \tab \code{proj.future} \tab \bold{Comparison} \cr
    \bold{1 projection} (\emph{e.g. data.frame with 1 column, SpatRaster with 1 layer}) \tab \bold{1 projection}  (\emph{e.g. data.frame with 1 column, SpatRaster with 1 layer}) \tab comparison of both projection  (\emph{e.g. current vs future conditions for the same model ; current vs current condition for two different models}) \cr
@@ -134,20 +131,14 @@ if (file.exists(file.out)) {
                                       seed.val = 42)
 }
 
-file.proj <- paste0(myRespName, "/proj_Current/", myRespName, ".Current.projection.out")
-if (file.exists(file.proj)) {
-  myBiomodProj <- get(load(file.proj))
-} else {
-
+models.proj <- get_built_models(myBiomodModelOut, algo = "RF")
   # Project single models
   myBiomodProj <- BIOMOD_Projection(bm.mod = myBiomodModelOut,
-                                    proj.name = 'Current',
+                                    proj.name = 'CurrentRangeSize',
                                     new.env = myExpl,
-                                    models.chosen = 'all',
+                                    models.chosen = models.proj,
                                     metric.binary = 'all',
-                                    metric.filter = 'all',
                                     build.clamping.mask = TRUE)
-}
 
 
 # --------------------------------------------------------------- #
@@ -160,18 +151,17 @@ myExplFuture <- terra::crop(myExplFuture, myExtent)
 }
 # Project onto future conditions
 myBiomodProjectionFuture <- BIOMOD_Projection(bm.mod = myBiomodModelOut,
-                                              proj.name = 'Future',
+                                              proj.name = 'FutureRangeSize',
                                               new.env = myExplFuture,
-                                              models.chosen = 'all',
-                                              metric.binary = 'TSS',
-                                              build.clamping.mask = TRUE)
+                                              models.chosen = models.proj,
+                                              metric.binary = 'TSS')
 
 # Load current and future binary projections
-proj.current <- terra::rast("GuloGulo/proj_Current/proj_Current_GuloGulo_TSSbin.grd")
-proj.future <- terra::rast("GuloGulo/proj_Future/proj_Future_GuloGulo_TSSbin.grd")
+CurrentProj <- get_predictions(myBiomodProj, metric.binary = "TSS")
+FutureProj <- get_predictions(myBiomodProjectionFuture, metric.binary = "TSS")
 
 # Compute differences
-myBiomodRangeSize <- BIOMOD_RangeSize(proj.current = proj.current, proj.future = proj.future)
+myBiomodRangeSize <- BIOMOD_RangeSize(proj.current = CurrentProj, proj.future = FutureProj)
 
 myBiomodRangeSize$Compt.By.Models
 plot(myBiomodRangeSize$Diff.By.Pixel)

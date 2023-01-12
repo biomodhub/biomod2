@@ -1,4 +1,4 @@
-# bm_PlotResponseCurves Documentation -----------------------------------------
+###################################################################################################
 ##' @name bm_PlotResponseCurves
 ##' @author Damien Georges, Maya Gueguen
 ##' 
@@ -145,17 +145,24 @@
 ##' 
 ##' # ---------------------------------------------------------------#
 ##' # Represent response curves
+##' mods <- get_built_models(myBiomodModelOut, run = 'RUN1')
 ##' bm_PlotResponseCurves(bm.out = myBiomodModelOut, 
-##'                       models.chosen = get_built_models(myBiomodModelOut)[c(1:2)],
+##'                       models.chosen = mods,
 ##'                       fixed.var = 'median')
-##' # Other options
+##' ## fixed.var can also be set to 'min', 'max' or 'mean'
 ##' # bm_PlotResponseCurves(bm.out = myBiomodModelOut, 
-##' #                       models.chosen = get_built_models(myBiomodModelOut)[c(1:2)],
+##' #                       models.chosen = mods,
 ##' #                       fixed.var = 'min')
-##' # bm_PlotResponseCurves(bm.out = myBiomodModelOut, 
-##' #                       models.chosen = get_built_models(myBiomodModelOut)[3],
-##' #                       fixed.var = 'median',
-##' #                       do.bivariate = TRUE)
+##' 
+##' # Bivariate case (one model)
+##' # variables can be selected with argument 'show.variables'
+##' # models can be selected with argument 'models.chosen'
+##' mods <- get_built_models(myBiomodModelOut, full.name = 'GuloGulo_allData_RUN2_RF')
+##' bm_PlotResponseCurves(bm.out = myBiomodModelOut, 
+##'                       show.variables = c("bio4","bio12","bio11"),
+##'                       models.chosen = mods,
+##'                       fixed.var = 'median',
+##'                       do.bivariate = TRUE)
 ##'                                       
 ##'                                       
 ##' @importFrom terra rast cats global is.factor nlyr                                    
@@ -167,8 +174,7 @@
 ##' @export
 ##' 
 ##' 
-## ------------------------------------------------------------------------- ##
-
+###################################################################################################
 
 bm_PlotResponseCurves <- function(bm.out
                                   , models.chosen = 'all'
@@ -243,7 +249,7 @@ bm_PlotResponseCurves <- function(bm.out
             mod.name <- ifelse(use.formal.names, formal_names[which(is.element(models, model))], model)
             
             temp_workdir = NULL
-            if (length(grep("MAXENT.Phillips$", mod.name)) == 1) {
+            if (length(grep("MAXENT$", mod.name)) == 1) {
               temp_workdir = mod@model_output_dir
             }
             proj.tmp <- predict(mod, newdata = new.env.r.tmp, on_0_1000 = on_0_1000, do_check = FALSE, temp_workdir = temp_workdir, seedval = NULL)
@@ -298,7 +304,7 @@ bm_PlotResponseCurves <- function(bm.out
             mod.name <- ifelse(use.formal.names, formal_names[which(is.element(models, model))], model)
             
             temp_workdir = NULL
-            if (length(grep("MAXENT.Phillips$", mod.name)) == 1) {
+            if (length(grep("MAXENT$", mod.name)) == 1) {
               temp_workdir = mod@model_output_dir
             }
             
@@ -407,7 +413,7 @@ bm_PlotResponseCurves <- function(bm.out
   
   ## check that given models exist
   files.check <- file.path(bm.out@dir.name, bm.out@sp.name, 'models', bm.out@modeling.id, models.chosen)
-  not.checked.files <- grep('MAXENT.Phillips|SRE', files.check)
+  not.checked.files <- grep('MAXENT|SRE', files.check)
   if (length(not.checked.files) > 0) {
     files.check <- files.check[-not.checked.files]
   }

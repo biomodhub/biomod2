@@ -19,7 +19,7 @@ BIOMOD_EnsembleForecasting"><!-- mathjax --><script src="https://cdnjs.cloudflar
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">biomod2</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">4.2-1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">4.2-2</span>
       </span>
     </div>
 
@@ -140,7 +140,7 @@ containing informations from <code><a href="BIOMOD_Modeling.html">BIOMOD_Modelin
 <dt><code>em.by</code></dt>
 <dd><p>a <code>character</code> corresponding to the way kept models have
 been combined to build the ensemble models, must be among
-<code>PA_dataset+repet</code>, <code>PA_dataset+algo</code>, <code>PA_dataset</code>,
+<code>PA+run</code>, <code>PA+algo</code>, <code>PA</code>,
 <code>algo</code>, <code>all</code></p></dd>
 
 
@@ -152,31 +152,27 @@ been combined to build the ensemble models, must be among
 <dd><p>a <code>vector</code> containing names of failed ensemble models</p></dd>
 
 
-<dt><code>em.models</code></dt>
-<dd><p>a <code>list</code> containing ensemble models</p></dd>
-
-
-<dt><code>em.failed</code></dt>
-<dd><p>a <code>list</code> containing ensemble models that failed</p></dd>
+<dt><code>em.models_kept</code></dt>
+<dd><p>a <code>list</code> containing single models for each ensemble model</p></dd>
 
 
 <dt><code>models.evaluation</code></dt>
-<dd><p>a <code><a href="BIOMOD.stored.data.html">BIOMOD.stored.array-class</a></code> object
+<dd><p>a <code><a href="BIOMOD.stored.data.html">BIOMOD.stored.data.frame-class</a></code> object
 containing models evaluation</p></dd>
 
 
 <dt><code>variables.importance</code></dt>
-<dd><p>a <code><a href="BIOMOD.stored.data.html">BIOMOD.stored.array-class</a></code> object
+<dd><p>a <code><a href="BIOMOD.stored.data.html">BIOMOD.stored.data.frame-class</a></code> object
 containing variables importance</p></dd>
 
 
 <dt><code>models.prediction</code></dt>
-<dd><p>a <code><a href="BIOMOD.stored.data.html">BIOMOD.stored.array-class</a></code> object
+<dd><p>a <code><a href="BIOMOD.stored.data.html">BIOMOD.stored.data.frame-class</a></code> object
 containing models predictions</p></dd>
 
 
 <dt><code>models.prediction.eval</code></dt>
-<dd><p>a <code><a href="BIOMOD.stored.data.html">BIOMOD.stored.array-class</a></code>
+<dd><p>a <code><a href="BIOMOD.stored.data.html">BIOMOD.stored.data.frame-class</a></code>
 object containing models predictions for evaluation data</p></dd>
 
 
@@ -270,18 +266,11 @@ object containing models predictions for evaluation data</p></dd>
 <span><span class="va">myBiomodEM</span> <span class="op">&lt;-</span> <span class="fu"><a href="BIOMOD_EnsembleModeling.html">BIOMOD_EnsembleModeling</a></span><span class="op">(</span>bm.mod <span class="op">=</span> <span class="va">myBiomodModelOut</span>,</span>
 <span>                                      models.chosen <span class="op">=</span> <span class="st">'all'</span>,</span>
 <span>                                      em.by <span class="op">=</span> <span class="st">'all'</span>,</span>
+<span>                                      em.algo <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">'EMmean'</span>, <span class="st">'EMca'</span><span class="op">)</span>,</span>
 <span>                                      metric.select <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">'TSS'</span><span class="op">)</span>,</span>
 <span>                                      metric.select.thresh <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.7</span><span class="op">)</span>,</span>
 <span>                                      metric.eval <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">'TSS'</span>, <span class="st">'ROC'</span><span class="op">)</span>,</span>
 <span>                                      var.import <span class="op">=</span> <span class="fl">3</span>,</span>
-<span>                                      prob.mean <span class="op">=</span> <span class="cn">TRUE</span>,</span>
-<span>                                      prob.median <span class="op">=</span> <span class="cn">FALSE</span>,</span>
-<span>                                      prob.cv <span class="op">=</span> <span class="cn">FALSE</span>,</span>
-<span>                                      prob.ci <span class="op">=</span> <span class="cn">FALSE</span>,</span>
-<span>                                      prob.ci.alpha <span class="op">=</span> <span class="fl">0.05</span>,</span>
-<span>                                      committee.averaging <span class="op">=</span> <span class="cn">TRUE</span>,</span>
-<span>                                      prob.mean.weight <span class="op">=</span> <span class="cn">FALSE</span>,</span>
-<span>                                      prob.mean.weight.decay <span class="op">=</span> <span class="st">'proportional'</span>,</span>
 <span>                                      seed.val <span class="op">=</span> <span class="fl">42</span><span class="op">)</span></span>
 <span><span class="va">myBiomodEM</span></span>
 <span></span>

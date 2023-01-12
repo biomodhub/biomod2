@@ -12,7 +12,37 @@
 ##' object that can be obtained with the \code{\link{BIOMOD_Modeling}} or 
 ##' \code{\link{BIOMOD_EnsembleModeling}} functions
 ##' 
-##' @param \ldots (\emph{optional, see Details)}) 
+##' @param full.name (\emph{optional, default} \code{NULL}) \cr 
+##' A \code{vector} containing model names to be kept, must be either \code{all} or a 
+##' sub-selection of model names that can be obtained with the \code{\link{get_built_models}} 
+##' function
+##'
+##' @param PA (\emph{optional, default} \code{NULL}) \cr 
+##' A \code{vector} containing pseudo-absence set to be loaded, must be among \code{PA1}, 
+##' \code{PA2}, \code{...}, \code{allData}
+##' @param run (\emph{optional, default} \code{NULL}) \cr 
+##' A \code{vector} containing repetition set to be loaded, must be among \code{RUN1}, 
+##' \code{RUN2}, \code{...}, \code{allRun}
+##' @param algo (\emph{optional, default} \code{NULL}) \cr 
+##' A \code{character} containing algorithm to be loaded, must be either \code{GLM}, 
+##' \code{GBM}, \code{GAM}, \code{CTA}, \code{ANN}, \code{SRE}, \code{FDA}, \code{MARS}, 
+##' \code{RF}, \code{MAXENT}, \code{MAXNET}
+##' 
+##' @param merged.by.PA (\emph{optional, default} \code{NULL}) \cr 
+##' A \code{vector} containing merged pseudo-absence set to be loaded, must be among \code{PA1}, 
+##' \code{PA2}, \code{...}, \code{mergedData}
+##' @param merged.by.run (\emph{optional, default} \code{NULL}) \cr 
+##' A \code{vector} containing merged repetition set to be loaded, must be among \code{RUN1}, 
+##' \code{RUN2}, \code{...}, \code{mergedRun}
+##' @param merged.by.algo (\emph{optional, default} \code{NULL}) \cr 
+##' A \code{character} containing merged algorithm to be loaded, must be among \code{GLM}, 
+##' \code{GBM}, \code{GAM}, \code{CTA}, \code{ANN}, \code{SRE}, \code{FDA}, \code{MARS}, 
+##' \code{RF}, \code{MAXENT}, \code{MAXNET}, \code{mergedAlgo}
+##' @param filtered.by (\emph{optional, default} \code{NULL}) \cr 
+##' A \code{vector} containing evaluation metric selected to filter single models to build the 
+##' ensemble models, must be among \code{ROC}, \code{TSS}, \code{KAPPA}, \code{ACCURACY}, 
+##' \code{BIAS}, \code{POD}, \code{FAR}, \code{POFD}, \code{SR}, \code{CSI}, \code{ETS}, 
+##' \code{HK}, \code{HSS}, \code{OR}, \code{ORSS}
 ##' 
 ##' 
 ##' @return 
@@ -25,22 +55,10 @@
 ##' This function might be of particular use to load models and make response plot analyses. \cr \cr
 ##' 
 ##' Running the function providing only \code{bm.out} argument will load all models built by the 
-##' \code{\link{BIOMOD_Modeling}} or \code{\link{BIOMOD_EnsembleModeling}} function. But a 
-##' subselection of models can be done using the following additional arguments :
-##' \itemize{
-##'   \item{\code{models} : }{a \code{vector} containing model names to be loaded, must be among 
-##'   \code{GLM}, \code{GBM}, \code{GAM}, \code{CTA}, \code{ANN}, \code{SRE}, \code{FDA}, 
-##'   \code{MARS}, \code{RF}, \code{MAXENT.Phillips}, \code{MAXENT.Phillips.2}}
-##'   \item{\code{run.eval} : }{a \code{vector} containing repetition set to be loaded, must be 
-##'   among \code{RUN1}, \code{RUN2}, \code{...}, \code{Full}}
-##'   \item{\code{data.set} : }{a \code{vector} containing pseudo-absence set to be loaded, must 
-##'   be among \code{PA1}, \code{PA2}, \code{...} \cr \cr}
-##'   \item{\code{path} : }{a \code{character} corresponding to the location of the species folder 
-##'   (if different from the current working directory) \cr \cr}
-##'   \item{\code{full.name} : }{a \code{vector} containing model names to be kept, must be either 
-##'   \code{all} or a sub-selection of model names \cr \cr}
-##'   \item{\code{as} : }{a \code{character} to contain the loaded models}
-##' }
+##' \code{\link{BIOMOD_Modeling}} or \code{\link{BIOMOD_EnsembleModeling}} function, but a 
+##' subselection of models can be done using the additional arguments (\code{full.name}, \code{PA}, 
+##' \code{run}, \code{algo}, \code{merged.by.PA}, \code{merged.by.run}, \code{merged.by.algo}, 
+##' \code{filtered.by}).
 ##' 
 ##' 
 ##' @seealso \code{\link{BIOMOD_Modeling}}, \code{\link{BIOMOD_EnsembleModeling}}
@@ -103,8 +121,7 @@
 ##' 
 ##' # ---------------------------------------------------------------
 ##' # Loading some models built
-##' myLoadedModels <- BIOMOD_LoadModels(bm.out = myBiomodModelOut, models = 'RF')
-##' myLoadedModels
+##' BIOMOD_LoadModels(bm.out = myBiomodModelOut, algo = 'RF')
 ##' 
 ##' 
 ##' @export
@@ -113,39 +130,26 @@
 ###################################################################################################
 
 
-BIOMOD_LoadModels <- function(bm.out, ... )
+BIOMOD_LoadModels <- function(bm.out, full.name = NULL, PA = NULL, run = NULL, algo = NULL
+                              , merged.by.PA = NULL, merged.by.run = NULL
+                              , merged.by.algo = NULL, filtered.by = NULL)
 {
   # .bm_cat("Load Models")
 
   ## 0. Check arguments ---------------------------------------------------------------------------
-  args <- .BIOMOD_LoadModels.check.args(bm.out, ...)
+  args <- .BIOMOD_LoadModels.check.args(bm.out)
   for (argi in names(args)) { assign(x = argi, value = args[[argi]]) }
   rm(args)
   
   ## Get names of models to load
-  models.to.load <- get_built_models(bm.out)
-  envir <- parent.frame()
-  
-  ## Create list or a sub-list of models to load ----------------------------------------
-  if (!is.null(full.name)) {
-    models.to.load <- full.name
-  } else { ## make a subselection
-    
-    ## subselection on models
-    if (!is.null(models)) {
-      models.to.load <- grep(paste0(models, collapse = "|"), models.to.load, value = TRUE)
-    }
-    
-    ## subselection on run.Eval
-    if (!is.null(run.eval)) {
-      models.to.load <- grep(paste0(run.eval, collapse = "|"), models.to.load, value = TRUE)
-    }
-    
-    ## subselection on data.set
-    if (!is.null(data.set)) {
-      models.to.load <- grep(paste0(data.set, collapse = "|"), models.to.load, value = TRUE)
-    }
+  if (inherits(bm.out, "BIOMOD.models.out")) {
+    models.to.load <- get_built_models(bm.out, full.name = full.name, PA = PA, run = run, algo = algo)
+  } else if (inherits(bm.out, "BIOMOD.ensemble.models.out")) {
+    models.to.load <- get_built_models(bm.out, full.name = full.name, merged.by.PA = merged.by.PA
+                                       , merged.by.run = merged.by.run, merged.by.algo = merged.by.algo
+                                       , filtered.by = filtered.by, algo = algo)
   }
+  envir <- parent.frame()
   
   if (length(models.to.load) == 0) {
     cat("\n   ! No models computed matched, No models loaded !")
@@ -155,77 +159,18 @@ BIOMOD_LoadModels <- function(bm.out, ... )
   ## LOAD the selected models -----------------------------------------------------------
   filename = file.path(bm.out@dir.name, bm.out@sp.name, "models", bm.out@modeling.id)
   # .bm_cat("Done")
-  if (!is.null(as) && length(models.to.load) == 1) {
-    assign(x = as,
-           value = get(load(file = file.path(filename, models.to.load))),
-           envir = envir)
-    invisible(TRUE)
-  } else {
-    for (mtl in models.to.load) {
-      load(file = file.path(bm.out@dir.name, bm.out@sp.name, "models", bm.out@modeling.id, mtl), envir = envir)
-    }
-    return(models.to.load)
+  for (mtl in models.to.load) {
+    load(file = file.path(bm.out@dir.name, bm.out@sp.name, "models", bm.out@modeling.id, mtl), envir = envir)
   }
+  return(models.to.load)
 }
 
 
 ###################################################################################################
 
-.BIOMOD_LoadModels.check.args <- function(bm.out, ...)
+.BIOMOD_LoadModels.check.args <- function(bm.out)
 {
-  args <- list(...)
-  
   ## 1. Check bm.out ----------------------------------------------------------
   .fun_testIfInherits(TRUE, "bm.out", bm.out, c("BIOMOD.models.out", "BIOMOD.ensemble.models.out"))
-  
-  ## 2. Check args ------------------------------------------------------------
-  available.args <- c("models", "run.eval", "data.set", "path", "as", "full.name")
-  .fun_testIfIn(TRUE, "names(args)", names(args), available.args)
-  avail_models <- get_built_models(bm.out) ## get all available model names
-  
-  ## 2.1 Check add.args : models ----------------------------------------------
-  models <- args$models
-  if (!is.null(models)) {
-    infos = .extract_modelNamesInfo(model.names = avail_models, info = 'models')
-    .fun_testIfIn(TRUE, "models", models, infos)
-    models = paste0("_", models)
-  }
-  
-  ## 2.2 Check add.args : run.eval --------------------------------------------
-  run.eval <- args$run.eval
-  if (!is.null(run.eval)) {
-    infos = .extract_modelNamesInfo(model.names = avail_models, info = 'run.eval')
-    .fun_testIfIn(TRUE, "run.eval", run.eval, infos)
-    run.eval = paste0("_", run.eval)
-  }
-  
-  ## 2.3 Check add.args : data.set --------------------------------------------
-  data.set <- args$data.set
-  if (!is.null(data.set)) {
-    infos = .extract_modelNamesInfo(model.names = avail_models, info = 'data.set')
-    .fun_testIfIn(TRUE, "data.set", data.set, infos)
-    data.set = paste0("_", data.set, "_")
-  }
-  
-  ## 2.4 Check path : data.set ------------------------------------------------
-  path <- args$path
-  if (!is.null(path) && !(file.path(bm.out@dir.name, bm.out@sp.name) %in% list.dirs(path = path))) {
-    stop("invalid path given")
-  } else {
-    path = "."
-  }
-  
-  ## 2.5 Check path : full.name ------------------------------------------------
-  full.name <- args$full.name
-  if (!is.null(full.name)) {
-    .fun_testIfIn(TRUE, "full.name", full.name, avail_models)
-  }
-  
-  return(list(models = models,
-              run.eval = run.eval,
-              data.set = data.set, 
-              path = path, 
-              as = args$as, 
-              full.name = full.name))
 }
 

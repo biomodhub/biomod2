@@ -82,7 +82,7 @@ A \code{BIOMOD.projection.out} object containing models projections, or links to
 outputs. \cr Models projections are stored out of \R (for memory storage reasons) in 
 \code{proj.name} folder created in the current working directory :
 \enumerate{
-  \item the output is a 4-dimensional array if \code{new.env} is a \code{matrix} or a 
+  \item the output is a \code{data.frame} if \code{new.env} is a \code{matrix} or a 
   \code{data.frame}
   \item it is a \code{\link[terra:rast]{SpatRaster}} if \code{new.env} is a 
   \code{\link[terra:rast]{SpatRaster}} (or several \code{\link[terra:rast]{SpatRaster}} 
@@ -97,13 +97,13 @@ This function allows to project a range of models built with the
 represent new areas, resolution or time scales for example}).
 }
 \details{
-If \code{models.chosen = 'all'}, projections are done for all evaluation and pseudo absences 
+If \code{models.chosen = 'all'}, projections are done for all calibration and pseudo absences 
 runs if applicable. \cr These projections may be used later by the 
 \code{\link{BIOMOD_EnsembleForecasting}} function. \cr \cr 
 
 If \code{build.clamping.mask = TRUE}, a raster file will be saved within the projection folder. 
 This mask values will correspond to the number of variables in each pixel that are out of their 
-calibration / training range, identifying locations where predictions are uncertain. \cr \cr
+calibration / validation range, identifying locations where predictions are uncertain. \cr \cr
 
 \code{...} can take the following values :
 \itemize{
@@ -118,7 +118,7 @@ calibration / training range, identifying locations where predictions are uncert
   \item{\code{keep.in.memory} : }{a \code{logical} value defining whether all projections are 
   to be kept loaded at once in memory, or only links pointing to hard drive are to be returned}
   \item{\code{output.format} : }{a \code{character} value corresponding to the projections 
-  saving format on hard drive, must be either \code{.grd}, \code{.img} or \code{.RData} (the 
+  saving format on hard drive, must be either \code{.grd}, \code{.img}, \code{.tif} or \code{.RData} (the 
   default if \code{new.env} is given as \code{matrix} or \code{data.frame})}
 }
 }
@@ -178,13 +178,15 @@ if (file.exists(file.out)) {
 
 # ---------------------------------------------------------------#
 # Project single models
+file.proj <- paste0(myRespName, "/proj_Current/", myRespName, ".Current.projection.out")
+if (file.exists(file.proj)) {
+  myBiomodProj <- get(load(file.proj))
+} else {
 myBiomodProj <- BIOMOD_Projection(bm.mod = myBiomodModelOut,
                                   proj.name = 'Current',
                                   new.env = myExpl,
-                                  models.chosen = 'all',
-                                  metric.binary = 'all',
-                                  metric.filter = 'all',
-                                  build.clamping.mask = TRUE)
+                                  models.chosen = 'all')
+}
 myBiomodProj
 plot(myBiomodProj)
 

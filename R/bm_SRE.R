@@ -1,4 +1,4 @@
-# SRE Documentation -----------------------------------------------------------
+###################################################################################################
 ##' @name bm_SRE
 ##' @author Wilfried Thuiller, Bruno Lafourcade, Damien Georges 
 ##' 
@@ -7,8 +7,7 @@
 ##' @description This internal \pkg{biomod2} function allows the user to run a rectilinear surface 
 ##' range envelop (SRE) (equivalent to 
 ##' \href{https://caws.org.nz/PPQ567/PPQ\%2006-1\%20pp008-9\%20Busby.pdf}{BIOCLIM}) 
-##' using the extreme percentiles (as recommended by Nix or Busby, see 
-##' \href{https://biomodhub.github.io/biomod2/reference/bm_SRE.html#references}{References} and Details).
+##' using the extreme percentiles (as recommended by Nix or Busby, see References and Details).
 ##' 
 ##' @param resp.var a \code{vector}, a \code{\link[terra:vect]{SpatVector}}
 ##' without associated data (\emph{if presence-only}), 
@@ -16,7 +15,7 @@
 ##' (\code{0} : absence, \code{1} : presence, \code{NA} : indeterminate) 
 ##' for a single species that will be used to build the species distribution model(s)
 ##' \cr \emph{Note that old format from \pkg{sp} are still supported such as
-##'  \code{SpatialPoints}  (\emph{if presence-only}) or \code{SpatialPointsDataFrame}
+##'  \code{SpatialPoints}  (if presence-only) or \code{SpatialPointsDataFrame}
 ##'  object containing binary data.}
 ##' @param expl.var a \code{matrix}, \code{data.frame}, \code{\link[terra:vect]{SpatVector}}
 ##' or \code{\link[terra:rast]{SpatRaster}} object containing the explanatory variables (in 
@@ -40,8 +39,8 @@
 ##' 
 ##' @return 
 ##' 
-##' A \code{vector} or a \code{\link[terra:rast]{SpatRaster}} object, containing binary (\code{0} 
-##' or \code{1}) values.
+##' A \code{vector} or a \code{\link[terra:rast]{SpatRaster}} object, containing binary 
+##' (\code{0} or \code{1}) values.
 ##' 
 ##' 
 ##' @details 
@@ -125,7 +124,7 @@
 ##' @export
 ##' 
 ##' 
-###--------------------------------------------------------------------------###
+###################################################################################################
 
 ## Remi 20/10/2022
 ## This function seems to have support for multispecies resp.var although

@@ -19,7 +19,7 @@ represent new areas, resolution or time scales for example)."><!-- mathjax --><s
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">biomod2</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">4.2-1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">4.2-2</span>
       </span>
     </div>
 
@@ -205,7 +205,7 @@ An <code>integer</code> value corresponding to the new seed value to be set</p><
 
 <p>A <code>BIOMOD.projection.out</code> object containing models projections, or links to saved 
 outputs. <br> Models projections are stored out of <span style="R">R</span> (for memory storage reasons) in 
-<code>proj.name</code> folder created in the current working directory :</p><ol><li><p>the output is a 4-dimensional array if <code>new.env</code> is a <code>matrix</code> or a 
+<code>proj.name</code> folder created in the current working directory :</p><ol><li><p>the output is a <code>data.frame</code> if <code>new.env</code> is a <code>matrix</code> or a 
   <code>data.frame</code></p></li>
 <li><p>it is a <code><a href="https://rdrr.io/pkg/terra/man/rast.html" class="external-link">SpatRaster</a></code> if <code>new.env</code> is a 
   <code><a href="https://rdrr.io/pkg/terra/man/rast.html" class="external-link">SpatRaster</a></code> (or several <code><a href="https://rdrr.io/pkg/terra/man/rast.html" class="external-link">SpatRaster</a></code> 
@@ -215,12 +215,12 @@ outputs. <br> Models projections are stored out of <span style="R">R</span> (for
 </ol></div>
     <div id="details">
     <h2>Details</h2>
-    <p>If <code>models.chosen = 'all'</code>, projections are done for all evaluation and pseudo absences 
+    <p>If <code>models.chosen = 'all'</code>, projections are done for all calibration and pseudo absences 
 runs if applicable. <br> These projections may be used later by the 
 <code><a href="BIOMOD_EnsembleForecasting.html">BIOMOD_EnsembleForecasting</a></code> function. <br><br></p>
 <p>If <code>build.clamping.mask = TRUE</code>, a raster file will be saved within the projection folder. 
 This mask values will correspond to the number of variables in each pixel that are out of their 
-calibration / training range, identifying locations where predictions are uncertain. <br><br></p>
+calibration / validation range, identifying locations where predictions are uncertain. <br><br></p>
 <p><code>...</code> can take the following values :</p><ul><li><p><code>omit.na</code> : a <code>logical</code> value defining whether all not fully referenced 
   environmental points will get <code>NA</code> as predictions or not</p></li>
 <li><p><code>on_0_1000</code> : a <code>logical</code> value defining whether <code>0 - 1</code> probabilities 
@@ -232,7 +232,7 @@ calibration / training range, identifying locations where predictions are uncert
 <li><p><code>keep.in.memory</code> : a <code>logical</code> value defining whether all projections are 
   to be kept loaded at once in memory, or only links pointing to hard drive are to be returned</p></li>
 <li><p><code>output.format</code> : a <code>character</code> value corresponding to the projections 
-  saving format on hard drive, must be either <code>.grd</code>, <code>.img</code> or <code>.RData</code> (the 
+  saving format on hard drive, must be either <code>.grd</code>, <code>.img</code>, <code>.tif</code> or <code>.RData</code> (the 
   default if <code>new.env</code> is given as <code>matrix</code> or <code>data.frame</code>)</p></li>
 </ul></div>
     <div id="see-also">
@@ -313,13 +313,15 @@ calibration / training range, identifying locations where predictions are uncert
 <span></span>
 <span><span class="co"># ---------------------------------------------------------------#</span></span>
 <span><span class="co"># Project single models</span></span>
+<span><span class="va">file.proj</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="va">myRespName</span>, <span class="st">"/proj_Current/"</span>, <span class="va">myRespName</span>, <span class="st">".Current.projection.out"</span><span class="op">)</span></span>
+<span><span class="kw">if</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/files.html" class="external-link">file.exists</a></span><span class="op">(</span><span class="va">file.proj</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span>
+<span>  <span class="va">myBiomodProj</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/get.html" class="external-link">get</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/load.html" class="external-link">load</a></span><span class="op">(</span><span class="va">file.proj</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="op">}</span> <span class="kw">else</span> <span class="op">{</span></span>
 <span><span class="va">myBiomodProj</span> <span class="op">&lt;-</span> <span class="fu">BIOMOD_Projection</span><span class="op">(</span>bm.mod <span class="op">=</span> <span class="va">myBiomodModelOut</span>,</span>
 <span>                                  proj.name <span class="op">=</span> <span class="st">'Current'</span>,</span>
 <span>                                  new.env <span class="op">=</span> <span class="va">myExpl</span>,</span>
-<span>                                  models.chosen <span class="op">=</span> <span class="st">'all'</span>,</span>
-<span>                                  metric.binary <span class="op">=</span> <span class="st">'all'</span>,</span>
-<span>                                  metric.filter <span class="op">=</span> <span class="st">'all'</span>,</span>
-<span>                                  build.clamping.mask <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span>                                  models.chosen <span class="op">=</span> <span class="st">'all'</span><span class="op">)</span></span>
+<span><span class="op">}</span></span>
 <span><span class="va">myBiomodProj</span></span>
 <span><span class="fu"><a href="https://rdrr.io/pkg/terra/man/plot.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">myBiomodProj</span><span class="op">)</span></span>
 <span></span>

@@ -48,7 +48,7 @@ objects that can be obtained with the \code{\link{BIOMOD_Modeling}} or
 }
 \details{
 \code{em.by} parameter of \code{\link{BIOMOD_EnsembleModeling}} must have been set to 
-\code{PA_dataset+repet} in order to have an ensemble for each \emph{RUN} of the 
+\code{PA+run} in order to have an ensemble for each \emph{RUN} of the 
 \code{NbRunEval} parameter of the \code{\link{BIOMOD_Modeling}} function for evaluation. 
 \cr \cr
 
@@ -124,18 +124,11 @@ if (file.exists(file.EM)) {
   myBiomodEM <- BIOMOD_EnsembleModeling(bm.mod = myBiomodModelOut,
                                         models.chosen = 'all',
                                         em.by = 'all',
+                                        em.algo = c('EMmean', 'EMca'),
                                         metric.select = c('TSS'),
                                         metric.select.thresh = c(0.7),
                                         metric.eval = c('TSS', 'ROC'),
                                         var.import = 3,
-                                        prob.mean = TRUE,
-                                        prob.median = FALSE,
-                                        prob.cv = FALSE,
-                                        prob.ci = FALSE,
-                                        prob.ci.alpha = 0.05,
-                                        committee.averaging = TRUE,
-                                        prob.mean.weight = FALSE,
-                                        prob.mean.weight.decay = 'proportional',
                                         seed.val = 42)
 }
 

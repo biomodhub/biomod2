@@ -24,7 +24,7 @@ An \code{integer} value corresponding to the new seed value to be set}
 A \code{list} containing to elements is returned :
 \describe{
   \item{calibration}{IDs of elements selected for calibration}
-  \item{evaluation}{IDs of elements selected for evaluation (complementary to the calibration 
+  \item{validation}{IDs of elements selected for validation (complementary to the calibration 
   set)}
 }
 }
@@ -37,7 +37,7 @@ keeping the same proportion of \code{0} and \code{1} as the initial vector.
 ## Generate a binary vector
 vec.a <- sample(c(0, 1), 100, replace = TRUE)
 
-## Generate calibration / evaluatation datasets
+## Generate calibration / validation datasets
 bm_SampleBinaryVector(obs = vec.a, ratio = 0.7)
 
 

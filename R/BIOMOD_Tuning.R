@@ -13,7 +13,7 @@
 ##' \code{\link{BIOMOD_ModelingOptions}} function
 ##' @param models a \code{vector} containing model names to be tuned, \cr 
 ##' must be among \code{GLM}, \code{GBM}, \code{GAM}, \code{CTA}, \code{ANN}, \code{SRE}, 
-##' \code{FDA}, \code{MARS}, \code{RF}, \code{MAXENT.Phillips}
+##' \code{FDA}, \code{MARS}, \code{RF}, \code{MAXENT}
 ##' @param metric.eval a \code{character} corresponding to the evaluation metric used to select 
 ##' optimal models and tune parameters, must be either \code{ROC} or \code{TSS} 
 ##' (\emph{maximizing Sensitivity and Specificity})
@@ -54,12 +54,12 @@
 ##' must be \code{earth} (see 
 ##' \url{http://topepo.github.io/caret/train-models-by-tag.html#Multivariate_Adaptive_Regression_Splines})
 ##' @param ME.metric a \code{character} corresponding to the evaluation metric used to select 
-##' optimal model and tune parameters for \code{MAXENT.Phillips}, must be either 
+##' optimal model and tune parameters for \code{MAXENT}, must be either 
 ##' \code{auc.val.avg}, \code{auc.diff.avg}, \code{or.mtp.avg}, \code{or.10p.avg} or \code{AICc}
 ##' @param ME.cvmethod a \code{character} corresponding to the method used to partition data for 
-##' \code{MAXENT.Phillips}, \cr must be \code{randomkfold}
+##' \code{MAXENT}, \cr must be \code{randomkfold}
 ##' @param ME.kfolds an \code{integer} corresponding to the number of bins for k-fold 
-##' cross-validation for \code{MAXENT.Phillips}
+##' cross-validation for \code{MAXENT}
 ##' @param ME.overlap (\emph{optional, default} \code{FALSE}) \cr 
 ##' A \code{logical} value defining whether to calculate pairwise metric of niche overlap or not 
 ##' (see \code{\link[ENMeval]{calc.niche.overlap}})
@@ -67,14 +67,14 @@
 ##' A \code{logical} value defining whether \emph{Features are constrained to remain within the 
 ##' range of values in the training data} (Elith et al. 2011) or not
 ##' @param ME.n.bg an \code{integer} corresponding to the number of background points used to run 
-##' \code{MAXENT.Phillips}
+##' \code{MAXENT}
 ##' @param ME.env a \code{\link[terra:rast]{SpatRaster}} object 
 ##' containing model predictor variables
 ##' @param ME.parallel (\emph{optional, default} \code{TRUE}) \cr 
 ##' A \code{logical} value defining whether to enable parallel computing for 
-##' \code{MAXENT.Phillips} or not
+##' \code{MAXENT} or not
 ##' @param ME.numCores an \code{integer} corresponding to the number of cores to be used to 
-##' train \code{MAXENT.Phillips}
+##' train \code{MAXENT}
 ##' @param RF.method a \code{character} corresponding to the classification or regression model 
 ##' to use for \code{RF}, \cr 
 ##' must be \code{rf} (see \url{http://topepo.github.io/caret/train-models-by-tag.html#random-forest})
@@ -94,7 +94,7 @@
 ##'   \code{caret::trainControl(method = 'cv', summaryFunction = caret::twoClassSummary,} \cr
 ##'   \code{classProbs = TRUE, returnData = FALSE)}.
 ##'   \item All control parameters for other models are set to \code{ctrl.train} if unspecified.
-##'   \item For more details on \code{MAXENT.Phillips} tuning, please refer to 
+##'   \item For more details on \code{MAXENT} tuning, please refer to 
 ##'   \code{\link[ENMeval]{ENMevaluate}}.
 ##'   \item For more details on other models tuning, please refer to \code{\link[caret]{train}}.
 ##' }
@@ -197,7 +197,7 @@
 
 BIOMOD_Tuning <- function(bm.format,
                           bm.options = BIOMOD_ModelingOptions(),
-                          models = c('GLM', 'GBM', 'GAM', 'CTA', 'ANN', 'SRE', 'FDA', 'MARS', 'RF', 'MAXENT.Phillips'),
+                          models = c('GLM', 'GBM', 'GAM', 'CTA', 'ANN', 'SRE', 'FDA', 'MARS', 'RF', 'MAXENT'),
                           metric.eval = 'ROC',
                           ctrl.train = NULL,
                           ctrl.train.tuneLength = 30,
@@ -238,7 +238,7 @@ BIOMOD_Tuning <- function(bm.format,
   
   ## 0. Check namespaces ------------------------------------------------------
   
-  mod.names = c('GLM', 'GBM', 'GAM', 'CTA', 'ANN', 'SRE', 'FDA', 'MARS', 'RF', 'MAXENT.Phillips')
+  mod.names = c('GLM', 'GBM', 'GAM', 'CTA', 'ANN', 'SRE', 'FDA', 'MARS', 'RF', 'MAXENT')
   
   if (sum(mod.names %in% models) > 0) {
     if (!isNamespaceLoaded("caret")) { 
@@ -254,7 +254,7 @@ BIOMOD_Tuning <- function(bm.format,
                                         classProbs = TRUE,
                                         returnData = FALSE)
     }
-    if ("MAXENT.Phillips" %in% models && !isNamespaceLoaded('ENMeval')) { 
+    if ("MAXENT" %in% models && !isNamespaceLoaded('ENMeval')) { 
       if(!requireNamespace('ENMeval', quietly = TRUE)) stop("Package 'ENMeval' not found")
     }
     # if ("MAXENT.Tsuruoka" %in% models && !isNamespaceLoaded('maxent')) { requireNamespace("maxent", quietly = TRUE) }
@@ -263,7 +263,7 @@ BIOMOD_Tuning <- function(bm.format,
     }
   }
   
-  tune.SRE <- tune.GLM <- tune.MAXENT.Phillips <- tune.GAM <- tune.GBM <- 
+  tune.SRE <- tune.GLM <- tune.MAXENT <- tune.GAM <- tune.GBM <- 
     tune.CTA.rpart <- tune.CTA.rpart2 <- tune.RF <- tune.ANN <- tune.MARS <- tune.FDA <- NULL
   # tune.MAXENT.Tsuruoka <- NULL
   
@@ -646,14 +646,14 @@ BIOMOD_Tuning <- function(bm.format,
     cat(paste("Finished tuning CTA", "\n-=-=-=-=-=-=-=-=-=-=\n"))
   }
   
-  ## 1.10 MAXENT.Phillips ------------------------------------------------------
+  ## 1.10 MAXENT ------------------------------------------------------
   
-  if ('MAXENT.Phillips' %in% models)
+  if ('MAXENT' %in% models)
   {
-    cat(paste("\n-=-=-=-=-=-=-=-=-=-=\n", "Start tuning MAXENT.Phillips\n"))
+    cat(paste("\n-=-=-=-=-=-=-=-=-=-=\n", "Start tuning MAXENT\n"))
     if (ME.cvmethod != 'randomkfold') { ME.kfolds <- NA }
     
-    try(tune.MAXENT.Phillips <- .maxent_tuning(pres = bm.format@data.env.var[bm.format@data.species == 1 & !is.na(bm.format@data.species), ],
+    try(tune.MAXENT <- .maxent_tuning(pres = bm.format@data.env.var[bm.format@data.species == 1 & !is.na(bm.format@data.species), ],
                                                bg = bm.format@data.env.var[bm.format@data.species == 0 | is.na(bm.format@data.species), ],
                                                method = ME.cvmethod, 
                                                kfolds = ME.kfolds, #ME.env,
@@ -662,27 +662,27 @@ BIOMOD_Tuning <- function(bm.format,
                                                numCores = ME.numCores,
                                                categoricals = NULL))
     
-    if (!is.null(tune.MAXENT.Phillips)) {
+    if (!is.null(tune.MAXENT)) {
       if (!ME.metric %in% c("auc.val.avg", "auc.diff.avg", "or.mtp.avg", "or.10p.avg", "AICc")) {
         ME.metric <- "auc.val.avg"
         cat("Invalid ME.metric argument! ME.metric was set to auc.val.avg")
       }
       if (ME.metric == 'auc.val.avg') {
-        tmp = which.max(tune.MAXENT.Phillips@results[, ME.metric])
+        tmp = which.max(tune.MAXENT@results[, ME.metric])
       } else {
-        tmp = which.min(tune.MAXENT.Phillips@results[, ME.metric])
+        tmp = which.min(tune.MAXENT@results[, ME.metric])
       }
-      bm.options@MAXENT.Phillips$linear <- grepl("L", tune.MAXENT.Phillips@results[tmp, "fc"])
-      bm.options@MAXENT.Phillips$quadratic <- grepl("Q", tune.MAXENT.Phillips@results[tmp, "fc"])
-      bm.options@MAXENT.Phillips$hinge <- grepl("H", tune.MAXENT.Phillips@results[tmp, "fc"])
-      bm.options@MAXENT.Phillips$product <- grepl("P", tune.MAXENT.Phillips@results[tmp, "fc"])
-      bm.options@MAXENT.Phillips$threshold <- grepl("T", tune.MAXENT.Phillips@results[tmp, "fc"])
-      bm.options@MAXENT.Phillips$betamultiplier <- tune.MAXENT.Phillips@results[tmp, "rm"]
+      bm.options@MAXENT$linear <- grepl("L", tune.MAXENT@results[tmp, "fc"])
+      bm.options@MAXENT$quadratic <- grepl("Q", tune.MAXENT@results[tmp, "fc"])
+      bm.options@MAXENT$hinge <- grepl("H", tune.MAXENT@results[tmp, "fc"])
+      bm.options@MAXENT$product <- grepl("P", tune.MAXENT@results[tmp, "fc"])
+      bm.options@MAXENT$threshold <- grepl("T", tune.MAXENT@results[tmp, "fc"])
+      bm.options@MAXENT$betamultiplier <- tune.MAXENT@results[tmp, "rm"]
     } else {
-      cat("Tuning MAXENT.Phillips failed!")
-      tune.MAXENT.Phillips <- "FAILED"
+      cat("Tuning MAXENT failed!")
+      tune.MAXENT <- "FAILED"
     }
-    cat(paste("Finished tuning MAXENT.Phillips", "\n-=-=-=-=-=-=-=-=-=-=\n"))
+    cat(paste("Finished tuning MAXENT", "\n-=-=-=-=-=-=-=-=-=-=\n"))
   }
   
   
@@ -702,13 +702,13 @@ BIOMOD_Tuning <- function(bm.format,
   .bm_cat("Done")
   return(list(models.options = bm.options, tune.SRE = tune.SRE,  tune.CTA.rpart = tune.CTA.rpart, tune.CTA.rpart2 = tune.CTA.rpart2,
               tune.RF = tune.RF, tune.ANN = tune.ANN,  tune.MARS = tune.MARS, tune.FDA = tune.FDA, tune.GBM = tune.GBM,
-              tune.GAM = tune.GAM, tune.GLM = tune.GLM, tune.MAXENT.Phillips = tune.MAXENT.Phillips))
+              tune.GAM = tune.GAM, tune.GLM = tune.GLM, tune.MAXENT = tune.MAXENT))
   # tune.MAXENT.Tsuruoka = tune.MAXENT.Tsuruoka, 
 }
 
 
 ## Maxent Tuning ---------------------------------------------------------------
-#### Modified tuning function from the ENMeval package to tune MAXENT.Phillips (internal function for BIOMOD_tuning)
+#### Modified tuning function from the ENMeval package to tune MAXENT (internal function for BIOMOD_tuning)
 
 .maxent_tuning <- function(pres,
                            bg,

@@ -109,20 +109,14 @@
 ##'                                       seed.val = 42)
 ##' }
 ##' 
-##' file.proj <- paste0(myRespName, "/proj_Current/", myRespName, ".Current.projection.out")
-##' if (file.exists(file.proj)) {
-##'   myBiomodProj <- get(load(file.proj))
-##' } else {
-##' 
+##' models.proj <- get_built_models(myBiomodModelOut, algo = "RF")
 ##'   # Project single models
 ##'   myBiomodProj <- BIOMOD_Projection(bm.mod = myBiomodModelOut,
-##'                                     proj.name = 'Current',
+##'                                     proj.name = 'CurrentRangeSize',
 ##'                                     new.env = myExpl,
-##'                                     models.chosen = 'all',
-##'                                     metric.binary = 'all',
-##'                                     metric.filter = 'all',
-##'                                     build.clamping.mask = TRUE)
-##' }
+##'                                     models.chosen = models.proj,
+##'                                     metric.binary = 'all')
+##' 
 ##' 
 ##' 
 ##' # ---------------------------------------------------------------#
@@ -136,15 +130,14 @@
 ##' 
 ##' # Project onto future conditions
 ##' myBiomodProjectionFuture <- BIOMOD_Projection(bm.mod = myBiomodModelOut,
-##'                                               proj.name = 'Future',
+##'                                               proj.name = 'FutureRangeSize',
 ##'                                               new.env = myExplFuture,
-##'                                               models.chosen = 'all',
-##'                                               metric.binary = 'TSS',
-##'                                               build.clamping.mask = TRUE)
+##'                                               models.chosen = models.proj,
+##'                                               metric.binary = 'TSS')
 ##' 
 ##' # Load current and future binary projections
-##' CurrentProj <- terra::rast("GuloGulo/proj_Current/proj_Current_GuloGulo_TSSbin.grd")
-##' FutureProj <- terra::rast("GuloGulo/proj_Future/proj_Future_GuloGulo_TSSbin.grd")
+##' CurrentProj <- get_predictions(myBiomodProj, metric.binary = "TSS")
+##' FutureProj <- get_predictions(myBiomodProjectionFuture, metric.binary = "TSS")
 ##' 
 ##' # Compute differences
 ##' myBiomodRangeSize <- BIOMOD_RangeSize(proj.current = CurrentProj, proj.future = FutureProj)
@@ -162,7 +155,7 @@
 ##' @importFrom reshape2 melt
 ##' @importFrom foreach foreach %do%
 ##' @importFrom terra rast which.max nlyr  classify plot
-##' @importFrom ggplot2 ggplot aes_string geom_col geom_tile facet_wrap xlab ylab labs 
+##' @importFrom ggplot2 ggplot aes_string geom_col geom_tile facet_wrap xlab ylab labs scale_fill_viridis_c
 ##' theme element_blank element_rect scale_fill_manual
 ##' 
 ##' @export

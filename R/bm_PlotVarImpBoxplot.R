@@ -15,7 +15,10 @@
 ##' object that can be obtained with the \code{\link{BIOMOD_Modeling}} or 
 ##' \code{\link{BIOMOD_EnsembleModeling}} functions
 ##' @param group.by a 3-length \code{vector} containing the way kept models will be represented,
-##' must be among \code{model}, \code{algo}, \code{run}, \code{dataset}, \code{expl.var}
+##' must be among \code{full.name}, \code{PA}, \code{run}, \code{algo}, \code{expl.var} (if 
+##' \code{bm.out} is a \code{\link{BIOMOD.models.out}} object), or \code{full.name}, 
+##' \code{merged.by.PA}, \code{merged.by.run}, \code{merged.by.algo}, \code{expl.var} 
+##' (if \code{bm.out} is a \code{\link{BIOMOD.ensemble.models.out}} object)
 ##' @param do.plot (\emph{optional, default} \code{TRUE}) \cr 
 ##' A \code{logical} value defining whether the plot is to be rendered or not
 ##' @param \ldots some additional arguments (see Details)
@@ -103,12 +106,12 @@
 ##' 
 ##' # ---------------------------------------------------------------
 ##' # Get variables importance
-##' get_variables_importance(myBiomodModelOut, as.data.frame = TRUE)
+##' get_variables_importance(myBiomodModelOut)
 ##' 
 ##' # Represent variables importance
 ##' bm_PlotVarImpBoxplot(bm.out = myBiomodModelOut, group.by = c('expl.var', 'algo', 'algo'))
-##' bm_PlotVarImpBoxplot(bm.out = myBiomodModelOut, group.by = c('expl.var', 'algo', 'dataset'))
-##' bm_PlotVarImpBoxplot(bm.out = myBiomodModelOut, group.by = c('algo', 'expl.var', 'dataset'))
+##' bm_PlotVarImpBoxplot(bm.out = myBiomodModelOut, group.by = c('expl.var', 'algo', 'PA'))
+##' bm_PlotVarImpBoxplot(bm.out = myBiomodModelOut, group.by = c('algo', 'expl.var', 'PA'))
 ##' 
 ##' 
 ##' @importFrom ggplot2 ggplot aes_string geom_boxplot facet_wrap xlab ylab labs 
@@ -128,20 +131,12 @@ bm_PlotVarImpBoxplot <- function(bm.out, group.by = c('run', 'expl.var', 'algo')
   rm(args)
   
   
-  for (i in 1:length(group.by)) {
-    tmp = strsplit(group.by[i], '')[[1]]
-    group.by[i] <- paste0(toupper(tmp[1]), paste0(tmp[2:length(tmp)], collapse = ''))
-  }
-  
   ## 1. Get data for graphic ----------------------------------------------------------------------
-  ## Get variables importance values
-  scores <- get_variables_importance(bm.out, as.data.frame = TRUE)
-  
-  ## Prepare data table for graphic
-  ggdat = scores
+  ## Get variables importance values & Prepare data table for graphic
+  ggdat = get_variables_importance(bm.out)
   
   ## 2. PLOT graphic ------------------------------------------------------------------------------
-  gg <- ggplot(ggdat, aes_string(x = group.by[1], y = "Var.imp", fill = group.by[2])) +
+  gg <- ggplot(ggdat, aes_string(x = group.by[1], y = "var.imp", fill = group.by[2])) +
     geom_boxplot() + ## add boxplot
     facet_wrap(group.by[3], scales = "free_x") +
     scale_y_continuous(breaks = seq(0, 1, 0.1), labels = paste0(seq(0, 100, 10), "%")) + 
@@ -162,7 +157,7 @@ bm_PlotVarImpBoxplot <- function(bm.out, group.by = c('run', 'expl.var', 'algo')
 
 ###################################################################################################
 
-.bm_PlotVarImpBoxplot.check.args <- function(bm.out, group.by = 'Algo', ...)
+.bm_PlotVarImpBoxplot.check.args <- function(bm.out, group.by, ...)
 {
   args <- list(...)
   
@@ -171,13 +166,18 @@ bm_PlotVarImpBoxplot <- function(bm.out, group.by = c('run', 'expl.var', 'algo')
   
   ## 3. Check group.by argument -----------------------------------------------
   if (length(group.by) != 3) { stop("3 group values needed") }
-  for (i in 1:length(group.by)) {
-    .fun_testIfIn(TRUE, paste0("group.by[", i, "]"), group.by[i], c('model', 'algo', 'run', 'dataset', 'expl.var'))
-  }
+  if (inherits(bm.out, "BIOMOD.models.out")) {
+    for (i in 1:length(group.by)) {
+      .fun_testIfIn(TRUE, paste0("group.by[", i, "]"), group.by[i], c("full.name", "PA", "run", "algo", "expl.var"))
+    }
+  } else if (inherits(bm.out, "BIOMOD.ensemble.models.out")) {
+    for (i in 1:length(group.by)) {
+      .fun_testIfIn(TRUE, paste0("group.by[", i, "]"), group.by[i], c("full.name", "merged.by.PA", "merged.by.run", "algo", "expl.var"))
+    }
+  } 
   
   ## 4. Check extra args argument ---------------------------------------------
   .fun_testIfIn(TRUE, "names(args)", names(args), c('main'))
-  
   
   return(list(main = args$main))
 } 

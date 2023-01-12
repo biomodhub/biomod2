@@ -10,10 +10,10 @@
 ##' time scales or environmental scenarios for example}).
 ##' 
 ##' 
-##' @param proj.current an \code{array}, \code{data.frame}, \code{\link[raster:stack]{RasterLayer}} 
+##' @param proj.current a \code{data.frame}, \code{\link[raster:stack]{RasterLayer}} 
 ##' or \code{\link[terra:rast]{SpatRaster}} object containing the initial binary projection(s) 
 ##' of the (ensemble) species distribution model(s)
-##' @param proj.future an \code{array}, \code{data.frame}, \code{\link[raster:stack]{RasterLayer}} 
+##' @param proj.future a \code{data.frame}, \code{\link[raster:stack]{RasterLayer}} 
 ##' or \code{\link[terra:rast]{SpatRaster}} object containing the final binary projection(s) 
 ##' of the (ensemble) species distribution model(s)
 ##' 
@@ -58,9 +58,9 @@
 ##' @details 
 ##' 
 ##' Note that \bold{this function is only relevant to compare binary projections, made on the 
-##' same area with the same resolution}.
+##' same area with the same resolution}. \cr
 ##' 
-##' \cr Comparison between \code{proj.current} and \code{proj.future} depends 
+##' Comparison between \code{proj.current} and \code{proj.future} depends 
 ##' on the number of projection in both objects:
 ##'| \code{proj.current}   | \code{proj.future} | \bold{Comparison}  |
 ##'| ------------------------- | ---------------------- | --------------------  |
@@ -134,20 +134,14 @@
 ##'                                       seed.val = 42)
 ##' }
 ##' 
-##' file.proj <- paste0(myRespName, "/proj_Current/", myRespName, ".Current.projection.out")
-##' if (file.exists(file.proj)) {
-##'   myBiomodProj <- get(load(file.proj))
-##' } else {
-##' 
+##' models.proj <- get_built_models(myBiomodModelOut, algo = "RF")
 ##'   # Project single models
 ##'   myBiomodProj <- BIOMOD_Projection(bm.mod = myBiomodModelOut,
-##'                                     proj.name = 'Current',
+##'                                     proj.name = 'CurrentRangeSize',
 ##'                                     new.env = myExpl,
-##'                                     models.chosen = 'all',
+##'                                     models.chosen = models.proj,
 ##'                                     metric.binary = 'all',
-##'                                     metric.filter = 'all',
 ##'                                     build.clamping.mask = TRUE)
-##' }
 ##' 
 ##' 
 ##' # --------------------------------------------------------------- #
@@ -160,18 +154,17 @@
 ##' }
 ##' # Project onto future conditions
 ##' myBiomodProjectionFuture <- BIOMOD_Projection(bm.mod = myBiomodModelOut,
-##'                                               proj.name = 'Future',
+##'                                               proj.name = 'FutureRangeSize',
 ##'                                               new.env = myExplFuture,
-##'                                               models.chosen = 'all',
-##'                                               metric.binary = 'TSS',
-##'                                               build.clamping.mask = TRUE)
+##'                                               models.chosen = models.proj,
+##'                                               metric.binary = 'TSS')
 ##' 
 ##' # Load current and future binary projections
-##' proj.current <- terra::rast("GuloGulo/proj_Current/proj_Current_GuloGulo_TSSbin.grd")
-##' proj.future <- terra::rast("GuloGulo/proj_Future/proj_Future_GuloGulo_TSSbin.grd")
+##' CurrentProj <- get_predictions(myBiomodProj, metric.binary = "TSS")
+##' FutureProj <- get_predictions(myBiomodProjectionFuture, metric.binary = "TSS")
 ##' 
 ##' # Compute differences
-##' myBiomodRangeSize <- BIOMOD_RangeSize(proj.current = proj.current, proj.future = proj.future)
+##' myBiomodRangeSize <- BIOMOD_RangeSize(proj.current = CurrentProj, proj.future = FutureProj)
 ##' 
 ##' myBiomodRangeSize$Compt.By.Models
 ##' plot(myBiomodRangeSize$Diff.By.Pixel)
@@ -190,7 +183,7 @@
 
 setGeneric("BIOMOD_RangeSize",
            def = function(proj.current, proj.future) {
-             if(inherits(proj.current, "Raster") && inherits(proj.future, "Raster")){
+             if (inherits(proj.current, "Raster") && inherits(proj.future, "Raster")) {
                return(
                  BIOMOD_RangeSize(rast(proj.current), rast(proj.future))
                )
@@ -212,7 +205,9 @@ setMethod('BIOMOD_RangeSize', signature(proj.current = 'data.frame', proj.future
           {
             .bm_cat("Do Range Size Computation")
             args <- .BIOMOD_RangeSize.check.args(proj.current, proj.future)
-
+            for (argi in names(args)) { assign(x = argi, value = args[[argi]]) }
+            rm(args)
+            
             if (ncol(proj.future) == ncol(proj.current)) {
               Diff.By.Pixel <- as.data.frame(proj.future - 2 * proj.current)
               this_rownames <- colnames(proj.current)
@@ -243,46 +238,6 @@ setMethod('BIOMOD_RangeSize', signature(proj.current = 'data.frame', proj.future
             invisible(Output)
           })
 
-## BIOMOD_RangeSize array-array Method ----------------------
-##'
-##' @rdname BIOMOD_RangeSize
-##' @export
-##'
-
-
-setMethod('BIOMOD_RangeSize', signature(proj.current = 'array', proj.future = 'array'),
-          function(proj.current, proj.future)
-          {
-            
-            ## Transform Current array into data.frame
-            proj.current <- as.data.frame(proj.current)
-            names(proj.current) <- unlist(lapply(strsplit(names(proj.current), ".", fixed = TRUE), function(x)
-            { return(paste(x[3], x[2], x[1], sep = "_")) }))
-            names(proj.current) <- unlist(lapply(strsplit(names(proj.current), ".", fixed = TRUE), function(x)
-            {
-              x.rev <- rev(x) ## reverse the order of splitted vector to have algo at the end
-              data.set.id <- x.rev[1]
-              cross.valid.id <- x.rev[2]
-              algo.id <- paste0(rev(x.rev[3:length(x.rev)]), collapse = ".")
-              model.id <- paste(data.set.id, cross.valid.id, algo.id, sep = "_")
-              return(model.id)
-            }))
-
-            ## Transform Future array into data.frame
-            proj.future <- as.data.frame(proj.future)
-            names(proj.future) <- unlist(lapply(strsplit(names(proj.future), ".", fixed = TRUE), function(x)
-            {
-              x.rev <- rev(x) ## reverse the order of splitted vector to have algo at the end
-              data.set.id <- x.rev[1]
-              cross.valid.id <- x.rev[2]
-              algo.id <- paste0(rev(x.rev[3:length(x.rev)]), collapse = ".")
-              model.id <- paste(data.set.id, cross.valid.id, algo.id, sep = "_")
-              return(model.id)
-            }))
-            
-            return(BIOMOD_RangeSize(proj.current, proj.future))
-          })
-
 
 ## BIOMOD_RangeSize SpatRaster-SpatRaster Method ----------------------
 
@@ -296,6 +251,8 @@ setMethod('BIOMOD_RangeSize', signature(proj.current = 'SpatRaster', proj.future
           {
             .bm_cat("Do Range Size Computation")
             args <- .BIOMOD_RangeSize.check.args(proj.current, proj.future)
+            for (argi in names(args)) { assign(x = argi, value = args[[argi]]) }
+            rm(args)
             
             names.res = c("Loss", "Stable0", "Stable1", "Gain"
                           , "PercLoss", "PercGain", "SpeciesRangeChange"
@@ -344,8 +301,19 @@ setMethod('BIOMOD_RangeSize', signature(proj.current = 'SpatRaster', proj.future
 
 .BIOMOD_RangeSize.check.args <- function(proj.current, proj.future) {
   
+  ## Transformation of data.frame so that each column is a model
+  if (inherits(proj.current, "data.frame")) {
+     if (all(c("full.name","points","pred") %in% colnames(proj.current)) &&
+         all(c("full.name","points","pred") %in% colnames(proj.future))) {
+       proj.current <- .transform_df(proj.current)
+       proj.future <- .transform_df(proj.future)
+     } else {
+       stop("'proj.current' and 'proj.future' must have all columns 'full.name' (model name), 'points' (index of prediction) and 'pred' (binary prediction).")
+     }
+  }
+  
   ## dimensions checking ------------------------
-  if(inherits(proj.current, "data.frame")){
+  if (inherits(proj.current, "data.frame")) {
     dim_current <- nrow(proj.current)
     dim_future <- nrow(proj.future)
   } else { # SpatRaster case
@@ -361,7 +329,7 @@ setMethod('BIOMOD_RangeSize', signature(proj.current = 'SpatRaster', proj.future
   
   
   ## checking number of models to be compared ----------------------------
-  if(inherits(proj.current, "data.frame")){
+  if (inherits(proj.current, "data.frame")) {
     n_current <- ncol(proj.current)
     n_future <- ncol(proj.future)
   } else { # SpatRaster case
@@ -370,7 +338,7 @@ setMethod('BIOMOD_RangeSize', signature(proj.current = 'SpatRaster', proj.future
   }
   
   if (n_current == 1) {
-    if(n_future == 1) {
+    if (n_future == 1) {
       cat("\n Comparing 'proj.current' and 'proj.future'. ")
     } else if (n_future > 1) {
       cat("\n Comparing 'proj.current' with the ", n_future, " projections in 'proj.future'. ")
@@ -378,7 +346,7 @@ setMethod('BIOMOD_RangeSize', signature(proj.current = 'SpatRaster', proj.future
       stop("'proj.future' require at least one layer or one column.")
     }
   } else if (n_current > 1) {
-    if(n_future == n_current) {
+    if (n_future == n_current) {
       cat("\n Each projection in 'proj.current' will be compared once with its corresponding projection in 'proj.future'. ")
     } else {
       stop("When proj.current' have more than 1 projection, 'proj.future' must have the same number of projection.")
@@ -389,7 +357,7 @@ setMethod('BIOMOD_RangeSize', signature(proj.current = 'SpatRaster', proj.future
   
   
   ## checking 0/1 ----------------------------
-  if(inherits(proj.current, "data.frame")){
+  if (inherits(proj.current, "data.frame")) {
     test_binary_current <- all(na.omit(unlist(proj.current)) %in% c(0,1))
     test_binary_future <- all(na.omit(unlist(proj.future)) %in% c(0,1))
   } else { # SpatRaster case
@@ -397,17 +365,18 @@ setMethod('BIOMOD_RangeSize', signature(proj.current = 'SpatRaster', proj.future
     test_binary_future <- all(na.omit(values(proj.future)) %in% c(0,1))
   }
   
-  if(!test_binary_current | !test_binary_future){
+  if (!test_binary_current | !test_binary_future) {
     stop("'proj.current' and 'proj.future' must have only values among 0, 1 or NA.")
   }
   
+  return(list("proj.current" = proj.current,
+              "proj.future" = proj.future))
 }
 
 
 # Additionnal tools -------------------------------------------------------
 
-.CompteurSp <- function(Data, Value)
-{
+.CompteurSp <- function(Data, Value) {
   if (is.data.frame(Data)) {
     N <- dim(Data)[2]
     Compt <- as.data.frame(matrix(0, ncol = 4, nrow = dim(Data)[2]))
@@ -421,4 +390,12 @@ setMethod('BIOMOD_RangeSize', signature(proj.current = 'SpatRaster', proj.future
     }
     return(Compt)
   }
+}
+
+# transform data.frame from long to wide for BIOMOD_RangeSize
+##' @importFrom stats reshape
+.transform_df <- function(df){
+  df <- reshape(df[,c("full.name","points","pred")], idvar = "points", timevar = "full.name", direction = "wide")[,-1, drop = FALSE] 
+  colnames(df) <- substring(colnames(df), 6)
+  df
 }

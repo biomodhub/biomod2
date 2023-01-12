@@ -18,7 +18,7 @@ keeping the same proportion of 0 and 1 as the initial vector."><!-- mathjax --><
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">biomod2</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">4.2-1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">4.2-2</span>
       </span>
     </div>
 
@@ -131,8 +131,8 @@ An <code>integer</code> value corresponding to the new seed value to be set</p><
 <p>A <code>list</code> containing to elements is returned :</p><dl><dt>calibration</dt>
 <dd><p>IDs of elements selected for calibration</p></dd>
 
-  <dt>evaluation</dt>
-<dd><p>IDs of elements selected for evaluation (complementary to the calibration 
+  <dt>validation</dt>
+<dd><p>IDs of elements selected for validation (complementary to the calibration 
   set)</p></dd>
 
 
@@ -167,7 +167,7 @@ An <code>integer</code> value corresponding to the new seed value to be set</p><
 <span><span class="co">## Generate a binary vector</span></span>
 <span><span class="va">vec.a</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/sample.html" class="external-link">sample</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">1</span><span class="op">)</span>, <span class="fl">100</span>, replace <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
 <span></span>
-<span><span class="co">## Generate calibration / evaluatation datasets</span></span>
+<span><span class="co">## Generate calibration / validation datasets</span></span>
 <span><span class="fu">bm_SampleBinaryVector</span><span class="op">(</span>obs <span class="op">=</span> <span class="va">vec.a</span>, ratio <span class="op">=</span> <span class="fl">0.7</span><span class="op">)</span></span>
 <span></span>
 <span></span></code></pre></div>

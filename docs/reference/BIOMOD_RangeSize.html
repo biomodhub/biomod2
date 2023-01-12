@@ -20,7 +20,7 @@ time scales or environmental scenarios for example)."><!-- mathjax --><script sr
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">biomod2</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">4.2-1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">4.2-2</span>
       </span>
     </div>
 
@@ -107,9 +107,6 @@ time scales or environmental scenarios for example</em>).</p>
 <span><span class="co"># S4 method for data.frame,data.frame</span></span>
 <span><span class="fu">BIOMOD_RangeSize</span><span class="op">(</span><span class="va">proj.current</span>, <span class="va">proj.future</span><span class="op">)</span></span>
 <span></span>
-<span><span class="co"># S4 method for array,array</span></span>
-<span><span class="fu">BIOMOD_RangeSize</span><span class="op">(</span><span class="va">proj.current</span>, <span class="va">proj.future</span><span class="op">)</span></span>
-<span></span>
 <span><span class="co"># S4 method for SpatRaster,SpatRaster</span></span>
 <span><span class="fu">BIOMOD_RangeSize</span><span class="op">(</span><span class="va">proj.current</span>, <span class="va">proj.future</span><span class="op">)</span></span></code></pre></div>
     </div>
@@ -117,13 +114,13 @@ time scales or environmental scenarios for example</em>).</p>
     <div id="arguments">
     <h2>Arguments</h2>
     <dl><dt>proj.current</dt>
-<dd><p>an <code>array</code>, <code>data.frame</code>, <code><a href="https://rdrr.io/pkg/raster/man/stack.html" class="external-link">RasterLayer</a></code>
+<dd><p>a <code>data.frame</code>, <code><a href="https://rdrr.io/pkg/raster/man/stack.html" class="external-link">RasterLayer</a></code>
 or <code><a href="https://rdrr.io/pkg/terra/man/rast.html" class="external-link">SpatRaster</a></code> object containing the initial binary projection(s)
 of the (ensemble) species distribution model(s)</p></dd>
 
 
 <dt>proj.future</dt>
-<dd><p>an <code>array</code>, <code>data.frame</code>, <code><a href="https://rdrr.io/pkg/raster/man/stack.html" class="external-link">RasterLayer</a></code>
+<dd><p>a <code>data.frame</code>, <code><a href="https://rdrr.io/pkg/raster/man/stack.html" class="external-link">RasterLayer</a></code>
 or <code><a href="https://rdrr.io/pkg/terra/man/rast.html" class="external-link">SpatRaster</a></code> object containing the final binary projection(s)
 of the (ensemble) species distribution model(s)</p></dd>
 
@@ -165,8 +162,8 @@ migration</p></li>
     <div id="details">
     <h2>Details</h2>
     <p>Note that <b>this function is only relevant to compare binary projections, made on the
-same area with the same resolution</b>.</p>
-<p><br> Comparison between <code>proj.current</code> and <code>proj.future</code> depends
+same area with the same resolution</b>. <br></p>
+<p>Comparison between <code>proj.current</code> and <code>proj.future</code> depends
 on the number of projection in both objects:</p><table class="table table"><tr><td><code>proj.current</code></td><td><code>proj.future</code></td><td><b>Comparison</b></td></tr><tr><td><b>1 projection</b> (<em>e.g. data.frame with 1 column, SpatRaster with 1 layer</em>)</td><td><b>1 projection</b>  (<em>e.g. data.frame with 1 column, SpatRaster with 1 layer</em>)</td><td>comparison of both projection  (<em>e.g. current vs future conditions for the same model ; current vs current condition for two different models</em>)</td></tr><tr><td><b><code>n</code> projections</b>  (<em>e.g. data.frame with n column, SpatRaster with n layer</em>)</td><td><b><code>n</code> projections</b>  (<em>e.g. data.frame with n column, SpatRaster with n layer</em>)</td><td>comparing projection <code>i</code> in <code>proj.current</code> to projection <code>i</code> in <code>proj.future</code>  (<em>e.g. comparing current vs future condition for n models</em>)</td></tr><tr><td><b><code>1</code> projection</b>   (<em>e.g. data.frame with 1 column, SpatRaster with 1 layer</em>)</td><td><b><code>n</code> projections</b>  (<em>e.g. data.frame with n column, SpatRaster with n layer</em>)</td><td>comparing projection in <code>proj.current</code> to each projection in <code>proj.future</code>  (<em>e.g. comparing current vs n different future condition (e.g. climate change scenario) for 1 model</em>)</td></tr></table><p><code>Diff.By.Pixel</code> object is obtained by applying the simple following formula :
 $$proj.future - 2 * proj.current$$</p>
     </div>
@@ -245,20 +242,14 @@ $$proj.future - 2 * proj.current$$</p>
 <span>                                      seed.val <span class="op">=</span> <span class="fl">42</span><span class="op">)</span></span>
 <span><span class="op">}</span></span>
 <span></span>
-<span><span class="va">file.proj</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="va">myRespName</span>, <span class="st">"/proj_Current/"</span>, <span class="va">myRespName</span>, <span class="st">".Current.projection.out"</span><span class="op">)</span></span>
-<span><span class="kw">if</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/files.html" class="external-link">file.exists</a></span><span class="op">(</span><span class="va">file.proj</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span>
-<span>  <span class="va">myBiomodProj</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/get.html" class="external-link">get</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/load.html" class="external-link">load</a></span><span class="op">(</span><span class="va">file.proj</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="op">}</span> <span class="kw">else</span> <span class="op">{</span></span>
-<span></span>
+<span><span class="va">models.proj</span> <span class="op">&lt;-</span> <span class="fu"><a href="getters.out.html">get_built_models</a></span><span class="op">(</span><span class="va">myBiomodModelOut</span>, algo <span class="op">=</span> <span class="st">"RF"</span><span class="op">)</span></span>
 <span>  <span class="co"># Project single models</span></span>
 <span>  <span class="va">myBiomodProj</span> <span class="op">&lt;-</span> <span class="fu"><a href="BIOMOD_Projection.html">BIOMOD_Projection</a></span><span class="op">(</span>bm.mod <span class="op">=</span> <span class="va">myBiomodModelOut</span>,</span>
-<span>                                    proj.name <span class="op">=</span> <span class="st">'Current'</span>,</span>
+<span>                                    proj.name <span class="op">=</span> <span class="st">'CurrentRangeSize'</span>,</span>
 <span>                                    new.env <span class="op">=</span> <span class="va">myExpl</span>,</span>
-<span>                                    models.chosen <span class="op">=</span> <span class="st">'all'</span>,</span>
+<span>                                    models.chosen <span class="op">=</span> <span class="va">models.proj</span>,</span>
 <span>                                    metric.binary <span class="op">=</span> <span class="st">'all'</span>,</span>
-<span>                                    metric.filter <span class="op">=</span> <span class="st">'all'</span>,</span>
 <span>                                    build.clamping.mask <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
-<span><span class="op">}</span></span>
 <span></span>
 <span></span>
 <span><span class="co"># --------------------------------------------------------------- #</span></span>
@@ -271,18 +262,17 @@ $$proj.future - 2 * proj.current$$</p>
 <span><span class="co"># }</span></span>
 <span><span class="co"># Project onto future conditions</span></span>
 <span><span class="va">myBiomodProjectionFuture</span> <span class="op">&lt;-</span> <span class="fu"><a href="BIOMOD_Projection.html">BIOMOD_Projection</a></span><span class="op">(</span>bm.mod <span class="op">=</span> <span class="va">myBiomodModelOut</span>,</span>
-<span>                                              proj.name <span class="op">=</span> <span class="st">'Future'</span>,</span>
+<span>                                              proj.name <span class="op">=</span> <span class="st">'FutureRangeSize'</span>,</span>
 <span>                                              new.env <span class="op">=</span> <span class="va">myExplFuture</span>,</span>
-<span>                                              models.chosen <span class="op">=</span> <span class="st">'all'</span>,</span>
-<span>                                              metric.binary <span class="op">=</span> <span class="st">'TSS'</span>,</span>
-<span>                                              build.clamping.mask <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span>                                              models.chosen <span class="op">=</span> <span class="va">models.proj</span>,</span>
+<span>                                              metric.binary <span class="op">=</span> <span class="st">'TSS'</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Load current and future binary projections</span></span>
-<span><span class="va">proj.current</span> <span class="op">&lt;-</span> <span class="fu">terra</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/terra/man/rast.html" class="external-link">rast</a></span><span class="op">(</span><span class="st">"GuloGulo/proj_Current/proj_Current_GuloGulo_TSSbin.grd"</span><span class="op">)</span></span>
-<span><span class="va">proj.future</span> <span class="op">&lt;-</span> <span class="fu">terra</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/terra/man/rast.html" class="external-link">rast</a></span><span class="op">(</span><span class="st">"GuloGulo/proj_Future/proj_Future_GuloGulo_TSSbin.grd"</span><span class="op">)</span></span>
+<span><span class="va">CurrentProj</span> <span class="op">&lt;-</span> <span class="fu"><a href="getters.out.html">get_predictions</a></span><span class="op">(</span><span class="va">myBiomodProj</span>, metric.binary <span class="op">=</span> <span class="st">"TSS"</span><span class="op">)</span></span>
+<span><span class="va">FutureProj</span> <span class="op">&lt;-</span> <span class="fu"><a href="getters.out.html">get_predictions</a></span><span class="op">(</span><span class="va">myBiomodProjectionFuture</span>, metric.binary <span class="op">=</span> <span class="st">"TSS"</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Compute differences</span></span>
-<span><span class="va">myBiomodRangeSize</span> <span class="op">&lt;-</span> <span class="fu">BIOMOD_RangeSize</span><span class="op">(</span>proj.current <span class="op">=</span> <span class="va">proj.current</span>, proj.future <span class="op">=</span> <span class="va">proj.future</span><span class="op">)</span></span>
+<span><span class="va">myBiomodRangeSize</span> <span class="op">&lt;-</span> <span class="fu">BIOMOD_RangeSize</span><span class="op">(</span>proj.current <span class="op">=</span> <span class="va">CurrentProj</span>, proj.future <span class="op">=</span> <span class="va">FutureProj</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">myBiomodRangeSize</span><span class="op">$</span><span class="va">Compt.By.Models</span></span>
 <span><span class="fu"><a href="https://rdrr.io/pkg/terra/man/plot.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">myBiomodRangeSize</span><span class="op">$</span><span class="va">Diff.By.Pixel</span><span class="op">)</span></span>

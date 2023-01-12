@@ -8,7 +8,6 @@
 \alias{get_projected_models}
 \alias{free}
 \alias{get_predictions}
-\alias{get_needed_models}
 \alias{get_kept_models}
 \alias{get_built_models}
 \alias{get_evaluations}
@@ -25,7 +24,6 @@
 \alias{get_predictions,BIOMOD.projection.out-method}
 \alias{get_formal_data,BIOMOD.ensemble.models.out-method}
 \alias{get_built_models,BIOMOD.ensemble.models.out-method}
-\alias{get_needed_models,BIOMOD.ensemble.models.out-method}
 \alias{get_kept_models,BIOMOD.ensemble.models.out-method}
 \alias{get_predictions,BIOMOD.ensemble.models.out-method}
 \alias{get_evaluations,BIOMOD.ensemble.models.out-method}
@@ -35,59 +33,114 @@
 \usage{
 \S4method{get_options}{BIOMOD.models.out}(obj)
 
-\S4method{get_calib_lines}{BIOMOD.models.out}(obj, as.data.frame = FALSE, ...)
+\S4method{get_calib_lines}{BIOMOD.models.out}(obj, as.data.frame = FALSE, PA = NULL, run = NULL)
 
 \S4method{get_formal_data}{BIOMOD.models.out}(obj, subinfo = NULL)
 
 \S4method{get_predictions}{BIOMOD.models.out}(
   obj,
-  as.data.frame = FALSE,
   evaluation = FALSE,
   full.name = NULL,
-  model = NULL,
-  run.eval = NULL,
-  data.set = NULL
+  PA = NULL,
+  run = NULL,
+  algo = NULL
 )
 
-\S4method{get_built_models}{BIOMOD.models.out}(obj, ...)
+\S4method{get_built_models}{BIOMOD.models.out}(obj, full.name = NULL, PA = NULL, run = NULL, algo = NULL)
 
-\S4method{get_evaluations}{BIOMOD.models.out}(obj, as.data.frame = FALSE, ...)
+\S4method{get_evaluations}{BIOMOD.models.out}(
+  obj,
+  full.name = NULL,
+  PA = NULL,
+  run = NULL,
+  algo = NULL,
+  metric.eval = NULL
+)
 
-\S4method{get_variables_importance}{BIOMOD.models.out}(obj, as.data.frame = FALSE, ...)
+\S4method{get_variables_importance}{BIOMOD.models.out}(
+  obj,
+  full.name = NULL,
+  PA = NULL,
+  run = NULL,
+  algo = NULL,
+  expl.var = NULL
+)
 
-\S4method{get_projected_models}{BIOMOD.projection.out}(obj)
+\S4method{get_projected_models}{BIOMOD.projection.out}(
+  obj,
+  full.name = NULL,
+  PA = NULL,
+  run = NULL,
+  algo = NULL,
+  merged.by.algo = NULL,
+  merged.by.run = NULL,
+  merged.by.PA = NULL,
+  filtered.by = NULL
+)
 
 \S4method{free}{BIOMOD.projection.out}(obj)
 
 \S4method{get_predictions}{BIOMOD.projection.out}(
   obj,
-  as.data.frame = FALSE,
+  metric.binary = NULL,
+  metric.filter = NULL,
   full.name = NULL,
-  model = NULL,
-  run.eval = NULL,
-  data.set = NULL
+  PA = NULL,
+  run = NULL,
+  algo = NULL,
+  merged.by.algo = NULL,
+  merged.by.run = NULL,
+  merged.by.PA = NULL,
+  filtered.by = NULL,
+  ...
 )
 
 \S4method{get_formal_data}{BIOMOD.ensemble.models.out}(obj, subinfo = NULL)
 
-\S4method{get_built_models}{BIOMOD.ensemble.models.out}(obj, ...)
+\S4method{get_built_models}{BIOMOD.ensemble.models.out}(
+  obj,
+  full.name = NULL,
+  merged.by.algo = NULL,
+  merged.by.run = NULL,
+  merged.by.PA = NULL,
+  filtered.by = NULL,
+  algo = NULL
+)
 
-\S4method{get_needed_models}{BIOMOD.ensemble.models.out}(obj, selected.models = "all", ...)
-
-\S4method{get_kept_models}{BIOMOD.ensemble.models.out}(obj, model, ...)
+\S4method{get_kept_models}{BIOMOD.ensemble.models.out}(obj)
 
 \S4method{get_predictions}{BIOMOD.ensemble.models.out}(
   obj,
-  as.data.frame = FALSE,
   evaluation = FALSE,
-  full.name = NULL
+  full.name = NULL,
+  merged.by.algo = NULL,
+  merged.by.run = NULL,
+  merged.by.PA = NULL,
+  filtered.by = NULL,
+  algo = NULL
 )
 
-\S4method{get_built_models}{BIOMOD.ensemble.models.out}(obj, ...)
+\S4method{get_evaluations}{BIOMOD.ensemble.models.out}(
+  obj,
+  full.name = NULL,
+  merged.by.algo = NULL,
+  merged.by.run = NULL,
+  merged.by.PA = NULL,
+  filtered.by = NULL,
+  algo = NULL,
+  metric.eval = NULL
+)
 
-\S4method{get_evaluations}{BIOMOD.ensemble.models.out}(obj, as.data.frame = FALSE, ...)
-
-\S4method{get_variables_importance}{BIOMOD.ensemble.models.out}(obj, as.data.frame = FALSE, ...)
+\S4method{get_variables_importance}{BIOMOD.ensemble.models.out}(
+  obj,
+  full.name = NULL,
+  merged.by.algo = NULL,
+  merged.by.run = NULL,
+  merged.by.PA = NULL,
+  filtered.by = NULL,
+  algo = NULL,
+  expl.var = NULL
+)
 }
 \arguments{
 \item{obj}{a \code{\link{BIOMOD.models.out}}, \code{\link{BIOMOD.projection.out}} or 
@@ -96,27 +149,68 @@
 \item{as.data.frame}{a \code{logical} defining whether output should be returned as 
 \code{data.frame} or \code{array} object}
 
+\item{PA}{(\emph{optional, default} \code{NULL}) \cr 
+A \code{vector} containing pseudo-absence set to be loaded, must be among \code{PA1}, 
+\code{PA2}, \code{...}, \code{allData}}
+
+\item{run}{(\emph{optional, default} \code{NULL}) \cr 
+A \code{vector} containing repetition set to be loaded, must be among \code{RUN1}, 
+\code{RUN2}, \code{...}, \code{allRun}}
+
 \item{subinfo}{a \code{character} corresponding to the information to be extracted, must be 
 among \code{NULL}, \code{expl.var.names}, \code{resp.var}, \code{expl.var}, \code{MinMax}, 
 \code{eval.resp.var}, \code{eval.expl.var} (see Details)}
 
 \item{evaluation}{a \code{logical} defining whether evaluation data should be used or not}
 
-\item{full.name}{a \code{vector} containing model names to be kept, must be either \code{all} 
-or a sub-selection of model names}
+\item{full.name}{(\emph{optional, default} \code{NULL}) \cr 
+A \code{vector} containing model names to be kept, must be either \code{all} or a 
+sub-selection of model names that can be obtained with the \code{\link{get_built_models}} 
+function}
 
-\item{model}{a \code{character} corresponding to the model name, must be either \code{GLM}, 
+\item{algo}{(\emph{optional, default} \code{NULL}) \cr 
+A \code{character} containing algorithm to be loaded, must be either \code{GLM}, 
 \code{GBM}, \code{GAM}, \code{CTA}, \code{ANN}, \code{SRE}, \code{FDA}, \code{MARS}, 
-\code{RF}, \code{MAXENT.Phillips}, \code{MAXENT.Phillips.2}}
+\code{RF}, \code{MAXENT}, \code{MAXNET}}
 
-\item{run.eval}{a \code{vector} containing repetition set to be loaded, must be among 
-\code{RUN1}, \code{RUN2}, \code{...}, \code{Full}}
+\item{metric.eval}{(\emph{optional, default} \code{NULL}) \cr 
+A \code{vector} containing evaluation metric to be kept, must be among \code{ROC}, 
+\code{TSS}, \code{KAPPA}, \code{ACCURACY}, \code{BIAS}, \code{POD}, \code{FAR}, 
+\code{POFD}, \code{SR}, \code{CSI}, \code{ETS}, \code{HK}, \code{HSS}, \code{OR}, \code{ORSS}}
 
-\item{data.set}{a \code{vector} containing pseudo-absence set to be loaded, must be among 
-\code{PA1}, \code{PA2}, \code{...}}
+\item{expl.var}{(\emph{optional, default} \code{NULL}) \cr 
+A \code{vector} containing explanatory variables to be kept, that can be obtained with the 
+\code{\link{get_formal_data}(obj, subinfo = 'expl.var.names')} function}
 
-\item{selected.models}{a \code{vector} containing names of the needed models of a 
-\code{\link{BIOMOD.ensemble.models.out}} object}
+\item{merged.by.algo}{(\emph{optional, default} \code{NULL}) \cr 
+A \code{character} containing merged algorithm to be loaded, must be among \code{GLM}, 
+\code{GBM}, \code{GAM}, \code{CTA}, \code{ANN}, \code{SRE}, \code{FDA}, \code{MARS}, 
+\code{RF}, \code{MAXENT}, \code{MAXNET}, \code{mergedAlgo}}
+
+\item{merged.by.run}{(\emph{optional, default} \code{NULL}) \cr 
+A \code{vector} containing merged repetition set to be loaded, must be among \code{RUN1}, 
+\code{RUN2}, \code{...}, \code{mergedRun}}
+
+\item{merged.by.PA}{(\emph{optional, default} \code{NULL}) \cr 
+A \code{vector} containing merged pseudo-absence set to be loaded, must be among \code{PA1}, 
+\code{PA2}, \code{...}, \code{mergedData}}
+
+\item{filtered.by}{(\emph{optional, default} \code{NULL}) \cr 
+A \code{vector} containing evaluation metric selected to filter single models to build the 
+ensemble models, must be among \code{ROC}, \code{TSS}, \code{KAPPA}, \code{ACCURACY}, 
+\code{BIAS}, \code{POD}, \code{FAR}, \code{POFD}, \code{SR}, \code{CSI}, \code{ETS}, 
+\code{HK}, \code{HSS}, \code{OR}, \code{ORSS}}
+
+\item{metric.binary}{(\emph{optional, default} \code{NULL}) \cr 
+A \code{vector} containing evaluation metric selected to transform predictions into binary 
+values, must be among \code{ROC}, \code{TSS}, \code{KAPPA}, \code{ACCURACY}, \code{BIAS}, 
+\code{POD}, \code{FAR}, \code{POFD}, \code{SR}, \code{CSI}, \code{ETS}, \code{HK}, 
+\code{HSS}, \code{OR}, \code{ORSS}}
+
+\item{metric.filter}{(\emph{optional, default} \code{NULL}) \cr 
+A \code{vector} containing evaluation metric to filter predictions, must be among \code{ROC}, 
+\code{TSS}, \code{KAPPA}, \code{ACCURACY}, \code{BIAS}, \code{POD}, \code{FAR}, 
+\code{POFD}, \code{SR}, \code{CSI}, \code{ETS}, \code{HK}, \code{HSS}, \code{OR}, \code{ORSS}}
 
 \item{\ldots}{(\emph{optional, one or several of the following arguments depending on the selected 
 function)})}
@@ -139,8 +233,6 @@ function)})}
   \code{\link{BIOMOD.projection.out}} or
   \code{\link{BIOMOD.ensemble.models.out}} object}
 
-  \item{\code{get_needed_models}}{a \code{vector} containing names of the
-  needed models of a \code{\link{BIOMOD.ensemble.models.out}} object}
   \item{\code{get_kept_models}}{a \code{vector} containing names of the kept
   models of a \code{\link{BIOMOD.ensemble.models.out}} object}
 
@@ -187,13 +279,13 @@ function)})}
   \code{\link{BIOMOD.models.out}} (or
   \code{\link{BIOMOD.ensemble.models.out}}) object}
   \item{\code{get_evaluations}}{a
-  \code{\link{BIOMOD.stored.array-class}} (or
+  \code{\link{BIOMOD.stored.data.frame-class}} (or
   \code{matrix}) from the \code{models.evaluation} slot (or
   \code{model_evaluation} of each model in \code{em.computed}) of a
   \code{\link{BIOMOD.models.out}} (or
   \code{\link{BIOMOD.ensemble.models.out}}) object}
   \item{\code{get_variables_importance}}{a
-  \code{\link{BIOMOD.stored.array-class}} from
+  \code{\link{BIOMOD.stored.data.frame-class}} from
   the \code{variables.importance} slot (or \code{model_variables_importance}
   of each model in \code{em.models}) of a \code{\link{BIOMOD.models.out}}
   (or \code{\link{BIOMOD.ensemble.models.out}}) object}

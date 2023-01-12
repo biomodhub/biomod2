@@ -20,7 +20,7 @@ BIOMOD_EnsembleModeling functions."><!-- mathjax --><script src="https://cdnjs.c
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">biomod2</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">4.2-1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">4.2-2</span>
       </span>
     </div>
 
@@ -156,7 +156,7 @@ A <code>logical</code> value defining whether the output is to be saved within t
     <div id="details">
     <h2>Details</h2>
     <p><code>em.by</code> parameter of <code><a href="BIOMOD_EnsembleModeling.html">BIOMOD_EnsembleModeling</a></code> must have been set to 
-<code>PA_dataset+repet</code> in order to have an ensemble for each <em>RUN</em> of the 
+<code>PA+run</code> in order to have an ensemble for each <em>RUN</em> of the 
 <code>NbRunEval</code> parameter of the <code><a href="BIOMOD_Modeling.html">BIOMOD_Modeling</a></code> function for evaluation. 
 <br><br></p>
 <p>The Boyce index returns <code>NA</code> values for <code>SRE</code> models because it can not be 
@@ -265,18 +265,11 @@ functions have been copied within this file from version 3.2.2 (august 2022).</p
 <span>  <span class="va">myBiomodEM</span> <span class="op">&lt;-</span> <span class="fu"><a href="BIOMOD_EnsembleModeling.html">BIOMOD_EnsembleModeling</a></span><span class="op">(</span>bm.mod <span class="op">=</span> <span class="va">myBiomodModelOut</span>,</span>
 <span>                                        models.chosen <span class="op">=</span> <span class="st">'all'</span>,</span>
 <span>                                        em.by <span class="op">=</span> <span class="st">'all'</span>,</span>
+<span>                                        em.algo <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">'EMmean'</span>, <span class="st">'EMca'</span><span class="op">)</span>,</span>
 <span>                                        metric.select <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">'TSS'</span><span class="op">)</span>,</span>
 <span>                                        metric.select.thresh <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.7</span><span class="op">)</span>,</span>
 <span>                                        metric.eval <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">'TSS'</span>, <span class="st">'ROC'</span><span class="op">)</span>,</span>
 <span>                                        var.import <span class="op">=</span> <span class="fl">3</span>,</span>
-<span>                                        prob.mean <span class="op">=</span> <span class="cn">TRUE</span>,</span>
-<span>                                        prob.median <span class="op">=</span> <span class="cn">FALSE</span>,</span>
-<span>                                        prob.cv <span class="op">=</span> <span class="cn">FALSE</span>,</span>
-<span>                                        prob.ci <span class="op">=</span> <span class="cn">FALSE</span>,</span>
-<span>                                        prob.ci.alpha <span class="op">=</span> <span class="fl">0.05</span>,</span>
-<span>                                        committee.averaging <span class="op">=</span> <span class="cn">TRUE</span>,</span>
-<span>                                        prob.mean.weight <span class="op">=</span> <span class="cn">FALSE</span>,</span>
-<span>                                        prob.mean.weight.decay <span class="op">=</span> <span class="st">'proportional'</span>,</span>
 <span>                                        seed.val <span class="op">=</span> <span class="fl">42</span><span class="op">)</span></span>
 <span><span class="op">}</span></span>
 <span></span>

@@ -18,7 +18,7 @@ species distribution models (asked by the BIOMOD_Modeling function)."><!-- mathj
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">biomod2</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">4.2-1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">4.2-2</span>
       </span>
     </div>
 
@@ -149,7 +149,7 @@ object returned by the <code><a href="BIOMOD_FormatingData.html">BIOMOD_Formatin
 <dt>model</dt>
 <dd><p>a <code>character</code> corresponding to the model name to be computed, must be either 
 <code>GLM</code>, <code>GBM</code>, <code>GAM</code>, <code>CTA</code>, <code>ANN</code>, <code>SRE</code>, <code>FDA</code>, 
-<code>MARS</code>, <code>RF</code>, <code>MAXENT.Phillips</code>, <code>MAXENT.Phillips.2</code></p></dd>
+<code>MARS</code>, <code>RF</code>, <code>MAXENT</code>, <code>MAXNET</code></p></dd>
 
 
 <dt>bm.options</dt>
@@ -246,7 +246,7 @@ parameter</p></dd>
 <p>A <code>list</code> containing for each model a <code>list</code> containing the following elements :</p><ul><li><p><code>model</code> : the name of correctly computed model</p></li>
 <li><p><code>calib.failure</code> : the name of incorrectly computed model</p></li>
 <li><p><code>pred</code> : the prediction outputs for calibration data</p></li>
-<li><p><code>pred.eval</code> : the prediction outputs for validation data</p></li>
+<li><p><code>pred.eval</code> : the prediction outputs for evaluation data</p></li>
 <li><p><code>evaluation</code> : the evaluation outputs returned by the 
   <code><a href="bm_FindOptimStat.html">bm_FindOptimStat</a></code> function</p></li>
 <li><p><code>var.import</code> : the mean of variables importance returned by the 

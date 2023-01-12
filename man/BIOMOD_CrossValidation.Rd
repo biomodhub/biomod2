@@ -37,14 +37,14 @@ A \code{logical} value defining whether models should be also calibrated and val
 the whole dataset or not}
 }
 \value{
-A \code{DataSplitTable} {matrix} with \code{k * nb.rep} (\emph{+ 1 if 
-\code{do.full.models = TRUE}}) columns that can be given as parameter to the 
-\code{\link{BIOMOD_Modeling}} function.
+A \code{matrix} or \code{data.frame} with \code{k * nb.rep} (\emph{+ 1 if 
+\code{do.full.models = TRUE}}) columns that can be given to \code{data.split.table} 
+parameter of \code{\link{BIOMOD_Modeling}} function.
 }
 \description{
-This function creates a \code{DataSplitTable} that can be given as parameter to 
-the \code{\link{BIOMOD_Modeling}} function to evaluate models with repeated k-fold or 
-stratified cross-validation (CV) instead of repeated split samples.
+This function creates a \code{matrix} or \code{data.frame} that can be given to 
+\code{data.split.table} parameter of \code{\link{BIOMOD_Modeling}} function to evaluate 
+models with repeated k-fold or stratified cross-validation (CV) instead of repeated split samples.
 }
 \details{
 \bold{Stratified cross-validation} may be used to test for model overfitting and to assess 
@@ -127,25 +127,27 @@ head(myBiomodCV)
 # Model single models
 myBiomodModelOut <- BIOMOD_Modeling(bm.format = myBiomodData,
                                     modeling.id = 'mod.CV',
-                                    models = c('RF', 'GLM'),
+                                    models = c('RF'),
                                     bm.options = myBiomodOptions,
                                     nb.rep = 2,
                                     data.split.table = myBiomodCV,
                                     metric.eval = c('TSS','ROC'),
-                                    var.import = 3,
+                                    var.import = 0,
                                     do.full.models = FALSE,
                                     seed.val = 42)
 
 # Get evaluation scores & variables importance
-myEval <- get_evaluations(myBiomodModelOut, as.data.frame = TRUE)
+myEval <- get_evaluations(myBiomodModelOut)
 myEval$CV.strategy <- "Random"
-myEval$CV.strategy[grepl("13", myEval$Model.name)] <- "Full"
-myEval$CV.strategy[grepl("11|12", myEval$Model.name)] <- "Stratified"
+myEval$CV.strategy[grepl("13", myEval$full.name)] <- "Full"
+myEval$CV.strategy[grepl("11|12", myEval$full.name)] <- "Stratified"
 head(myEval)
 
-boxplot(myEval$Testing.data ~ interaction(myEval$Algo, myEval$CV.strategy),
+boxplot(myEval$calibration ~ interaction(myEval$algo, myEval$CV.strategy),
         xlab = "", ylab = "ROC AUC", col = rep(c("brown", "cadetblue"), 3))
-
+boxplot(myEval$validation ~ interaction(myEval$algo, myEval$CV.strategy),
+        xlab = "", ylab = "ROC AUC", col = rep(c("brown", "cadetblue"), 3))
+         
 
 
 }
