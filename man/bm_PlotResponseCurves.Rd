@@ -152,8 +152,11 @@ bm_PlotResponseCurves(bm.out = myBiomodModelOut,
 #                       fixed.var = 'min')
 
 # Bivariate case (one model)
+# variables can be selected with argument 'show.variables'
+# models can be selected with argument 'models.chosen'
 mods <- get_built_models(myBiomodModelOut, full.name = 'GuloGulo_allData_RUN2_RF')
 bm_PlotResponseCurves(bm.out = myBiomodModelOut, 
+                      show.variables = c("bio4","bio12","bio11"),
                       models.chosen = mods,
                       fixed.var = 'median',
                       do.bivariate = TRUE)

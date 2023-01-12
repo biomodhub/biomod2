@@ -109,20 +109,15 @@
 ##'                                       seed.val = 42)
 ##' }
 ##' 
-##' file.proj <- paste0(myRespName, "/proj_Current/", myRespName, ".Current.projection.out")
-##' if (file.exists(file.proj)) {
-##'   myBiomodProj <- get(load(file.proj))
-##' } else {
-##' 
+##' models.proj <- get_built_models(myBiomodModelOut, algo = "RF")
 ##'   # Project single models
 ##'   myBiomodProj <- BIOMOD_Projection(bm.mod = myBiomodModelOut,
 ##'                                     proj.name = 'Current',
 ##'                                     new.env = myExpl,
-##'                                     models.chosen = 'all',
+##'                                     models.chosen = models.proj,
 ##'                                     metric.binary = 'all',
-##'                                     metric.filter = 'all',
 ##'                                     build.clamping.mask = TRUE)
-##' }
+##' 
 ##' 
 ##' 
 ##' # ---------------------------------------------------------------#
@@ -138,13 +133,13 @@
 ##' myBiomodProjectionFuture <- BIOMOD_Projection(bm.mod = myBiomodModelOut,
 ##'                                               proj.name = 'Future',
 ##'                                               new.env = myExplFuture,
-##'                                               models.chosen = 'all',
+##'                                               models.chosen = models.proj,
 ##'                                               metric.binary = 'TSS',
 ##'                                               build.clamping.mask = TRUE)
 ##' 
 ##' # Load current and future binary projections
-##' CurrentProj <- terra::rast("GuloGulo/proj_Current/proj_Current_GuloGulo_TSSbin.tif")
-##' FutureProj <- terra::rast("GuloGulo/proj_Future/proj_Future_GuloGulo_TSSbin.tif")
+##' CurrentProj <- get_predictions(myBiomodProj, metric.binary = "TSS")
+##' FutureProj <- get_predictions(myBiomodProjectionFuture, metric.binary = "TSS")
 ##' 
 ##' # Compute differences
 ##' myBiomodRangeSize <- BIOMOD_RangeSize(proj.current = CurrentProj, proj.future = FutureProj)

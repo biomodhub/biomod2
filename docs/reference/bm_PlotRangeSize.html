@@ -260,20 +260,15 @@ A <code>vector</code> containing tags matching <code>bm.range$Compt.By.Models</c
 <span>                                      seed.val <span class="op">=</span> <span class="fl">42</span><span class="op">)</span></span>
 <span><span class="op">}</span></span>
 <span></span>
-<span><span class="va">file.proj</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="va">myRespName</span>, <span class="st">"/proj_Current/"</span>, <span class="va">myRespName</span>, <span class="st">".Current.projection.out"</span><span class="op">)</span></span>
-<span><span class="kw">if</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/files.html" class="external-link">file.exists</a></span><span class="op">(</span><span class="va">file.proj</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span>
-<span>  <span class="va">myBiomodProj</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/get.html" class="external-link">get</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/load.html" class="external-link">load</a></span><span class="op">(</span><span class="va">file.proj</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="op">}</span> <span class="kw">else</span> <span class="op">{</span></span>
-<span></span>
+<span><span class="va">models.proj</span> <span class="op">&lt;-</span> <span class="fu"><a href="getters.out.html">get_built_models</a></span><span class="op">(</span><span class="va">myBiomodModelOut</span>, algo <span class="op">=</span> <span class="st">"RF"</span><span class="op">)</span></span>
 <span>  <span class="co"># Project single models</span></span>
 <span>  <span class="va">myBiomodProj</span> <span class="op">&lt;-</span> <span class="fu"><a href="BIOMOD_Projection.html">BIOMOD_Projection</a></span><span class="op">(</span>bm.mod <span class="op">=</span> <span class="va">myBiomodModelOut</span>,</span>
 <span>                                    proj.name <span class="op">=</span> <span class="st">'Current'</span>,</span>
 <span>                                    new.env <span class="op">=</span> <span class="va">myExpl</span>,</span>
-<span>                                    models.chosen <span class="op">=</span> <span class="st">'all'</span>,</span>
+<span>                                    models.chosen <span class="op">=</span> <span class="va">models.proj</span>,</span>
 <span>                                    metric.binary <span class="op">=</span> <span class="st">'all'</span>,</span>
-<span>                                    metric.filter <span class="op">=</span> <span class="st">'all'</span>,</span>
 <span>                                    build.clamping.mask <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
-<span><span class="op">}</span></span>
+<span></span>
 <span></span>
 <span></span>
 <span><span class="co"># ---------------------------------------------------------------#</span></span>
@@ -289,13 +284,13 @@ A <code>vector</code> containing tags matching <code>bm.range$Compt.By.Models</c
 <span><span class="va">myBiomodProjectionFuture</span> <span class="op">&lt;-</span> <span class="fu"><a href="BIOMOD_Projection.html">BIOMOD_Projection</a></span><span class="op">(</span>bm.mod <span class="op">=</span> <span class="va">myBiomodModelOut</span>,</span>
 <span>                                              proj.name <span class="op">=</span> <span class="st">'Future'</span>,</span>
 <span>                                              new.env <span class="op">=</span> <span class="va">myExplFuture</span>,</span>
-<span>                                              models.chosen <span class="op">=</span> <span class="st">'all'</span>,</span>
+<span>                                              models.chosen <span class="op">=</span> <span class="va">models.proj</span>,</span>
 <span>                                              metric.binary <span class="op">=</span> <span class="st">'TSS'</span>,</span>
 <span>                                              build.clamping.mask <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Load current and future binary projections</span></span>
-<span><span class="va">CurrentProj</span> <span class="op">&lt;-</span> <span class="fu">terra</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/terra/man/rast.html" class="external-link">rast</a></span><span class="op">(</span><span class="st">"GuloGulo/proj_Current/proj_Current_GuloGulo_TSSbin.tif"</span><span class="op">)</span></span>
-<span><span class="va">FutureProj</span> <span class="op">&lt;-</span> <span class="fu">terra</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/terra/man/rast.html" class="external-link">rast</a></span><span class="op">(</span><span class="st">"GuloGulo/proj_Future/proj_Future_GuloGulo_TSSbin.tif"</span><span class="op">)</span></span>
+<span><span class="va">CurrentProj</span> <span class="op">&lt;-</span> <span class="fu"><a href="getters.out.html">get_predictions</a></span><span class="op">(</span><span class="va">myBiomodProj</span>, metric.binary <span class="op">=</span> <span class="st">"TSS"</span><span class="op">)</span></span>
+<span><span class="va">FutureProj</span> <span class="op">&lt;-</span> <span class="fu"><a href="getters.out.html">get_predictions</a></span><span class="op">(</span><span class="va">myBiomodProjectionFuture</span>, metric.binary <span class="op">=</span> <span class="st">"TSS"</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Compute differences</span></span>
 <span><span class="va">myBiomodRangeSize</span> <span class="op">&lt;-</span> <span class="fu"><a href="BIOMOD_RangeSize.html">BIOMOD_RangeSize</a></span><span class="op">(</span>proj.current <span class="op">=</span> <span class="va">CurrentProj</span>, proj.future <span class="op">=</span> <span class="va">FutureProj</span><span class="op">)</span></span>

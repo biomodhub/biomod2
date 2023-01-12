@@ -281,7 +281,7 @@ Note that this method does not account for interactions between variables. <br><
 <span>                                      nb.rep <span class="op">=</span> <span class="fl">2</span>,</span>
 <span>                                      data.split.perc <span class="op">=</span> <span class="fl">80</span>,</span>
 <span>                                      metric.eval <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">'TSS'</span>,<span class="st">'ROC'</span><span class="op">)</span>,</span>
-<span>                                      var.import <span class="op">=</span> <span class="fl">0</span>,</span>
+<span>                                      var.import <span class="op">=</span> <span class="fl">3</span>,</span>
 <span>                                      do.full.models <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>                                      seed.val <span class="op">=</span> <span class="fl">42</span><span class="op">)</span></span>
 <span><span class="op">}</span></span>
@@ -293,13 +293,17 @@ Note that this method does not account for interactions between variables. <br><
 <span><span class="fu">bm_PlotResponseCurves</span><span class="op">(</span>bm.out <span class="op">=</span> <span class="va">myBiomodModelOut</span>, </span>
 <span>                      models.chosen <span class="op">=</span> <span class="va">mods</span>,</span>
 <span>                      fixed.var <span class="op">=</span> <span class="st">'median'</span><span class="op">)</span></span>
-<span><span class="fu">bm_PlotResponseCurves</span><span class="op">(</span>bm.out <span class="op">=</span> <span class="va">myBiomodModelOut</span>, </span>
-<span>                      models.chosen <span class="op">=</span> <span class="va">mods</span>,</span>
-<span>                      fixed.var <span class="op">=</span> <span class="st">'min'</span><span class="op">)</span></span>
+<span><span class="co">## fixed.var can also be set to 'min', 'max' or 'mean'</span></span>
+<span><span class="co"># bm_PlotResponseCurves(bm.out = myBiomodModelOut, </span></span>
+<span><span class="co">#                       models.chosen = mods,</span></span>
+<span><span class="co">#                       fixed.var = 'min')</span></span>
 <span></span>
 <span><span class="co"># Bivariate case (one model)</span></span>
+<span><span class="co"># variables can be selected with argument 'show.variables'</span></span>
+<span><span class="co"># models can be selected with argument 'models.chosen'</span></span>
 <span><span class="va">mods</span> <span class="op">&lt;-</span> <span class="fu"><a href="getters.out.html">get_built_models</a></span><span class="op">(</span><span class="va">myBiomodModelOut</span>, full.name <span class="op">=</span> <span class="st">'GuloGulo_allData_RUN2_RF'</span><span class="op">)</span></span>
 <span><span class="fu">bm_PlotResponseCurves</span><span class="op">(</span>bm.out <span class="op">=</span> <span class="va">myBiomodModelOut</span>, </span>
+<span>                      show.variables <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"bio4"</span>,<span class="st">"bio12"</span>,<span class="st">"bio11"</span><span class="op">)</span>,</span>
 <span>                      models.chosen <span class="op">=</span> <span class="va">mods</span>,</span>
 <span>                      fixed.var <span class="op">=</span> <span class="st">'median'</span>,</span>
 <span>                      do.bivariate <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
