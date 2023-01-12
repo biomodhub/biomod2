@@ -134,20 +134,14 @@
 ##'                                       seed.val = 42)
 ##' }
 ##' 
-##' file.proj <- paste0(myRespName, "/proj_Current/", myRespName, ".Current.projection.out")
-##' if (file.exists(file.proj)) {
-##'   myBiomodProj <- get(load(file.proj))
-##' } else {
-##' 
+##' models.proj <- get_built_models(myBiomodModelOut, algo = "RF")
 ##'   # Project single models
 ##'   myBiomodProj <- BIOMOD_Projection(bm.mod = myBiomodModelOut,
-##'                                     proj.name = 'Current',
+##'                                     proj.name = 'CurrentRangeSize',
 ##'                                     new.env = myExpl,
-##'                                     models.chosen = 'all',
+##'                                     models.chosen = models.proj,
 ##'                                     metric.binary = 'all',
-##'                                     metric.filter = 'all',
 ##'                                     build.clamping.mask = TRUE)
-##' }
 ##' 
 ##' 
 ##' # --------------------------------------------------------------- #
@@ -160,18 +154,17 @@
 ##' }
 ##' # Project onto future conditions
 ##' myBiomodProjectionFuture <- BIOMOD_Projection(bm.mod = myBiomodModelOut,
-##'                                               proj.name = 'Future',
+##'                                               proj.name = 'FutureRangeSize',
 ##'                                               new.env = myExplFuture,
-##'                                               models.chosen = 'all',
-##'                                               metric.binary = 'TSS',
-##'                                               build.clamping.mask = TRUE)
+##'                                               models.chosen = models.proj,
+##'                                               metric.binary = 'TSS')
 ##' 
 ##' # Load current and future binary projections
-##' proj.current <- terra::rast("GuloGulo/proj_Current/proj_Current_GuloGulo_TSSbin.tif")
-##' proj.future <- terra::rast("GuloGulo/proj_Future/proj_Future_GuloGulo_TSSbin.tif")
+##' CurrentProj <- get_predictions(myBiomodProj, metric.binary = "TSS")
+##' FutureProj <- get_predictions(myBiomodProjectionFuture, metric.binary = "TSS")
 ##' 
 ##' # Compute differences
-##' myBiomodRangeSize <- BIOMOD_RangeSize(proj.current = proj.current, proj.future = proj.future)
+##' myBiomodRangeSize <- BIOMOD_RangeSize(proj.current = CurrentProj, proj.future = FutureProj)
 ##' 
 ##' myBiomodRangeSize$Compt.By.Models
 ##' plot(myBiomodRangeSize$Diff.By.Pixel)

@@ -313,13 +313,15 @@ calibration / validation range, identifying locations where predictions are unce
 <span></span>
 <span><span class="co"># ---------------------------------------------------------------#</span></span>
 <span><span class="co"># Project single models</span></span>
+<span><span class="va">file.proj</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="va">myRespName</span>, <span class="st">"/proj_Current/"</span>, <span class="va">myRespName</span>, <span class="st">".Current.projection.out"</span><span class="op">)</span></span>
+<span><span class="kw">if</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/files.html" class="external-link">file.exists</a></span><span class="op">(</span><span class="va">file.proj</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span>
+<span>  <span class="va">myBiomodProj</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/get.html" class="external-link">get</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/load.html" class="external-link">load</a></span><span class="op">(</span><span class="va">file.proj</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="op">}</span> <span class="kw">else</span> <span class="op">{</span></span>
 <span><span class="va">myBiomodProj</span> <span class="op">&lt;-</span> <span class="fu">BIOMOD_Projection</span><span class="op">(</span>bm.mod <span class="op">=</span> <span class="va">myBiomodModelOut</span>,</span>
 <span>                                  proj.name <span class="op">=</span> <span class="st">'Current'</span>,</span>
 <span>                                  new.env <span class="op">=</span> <span class="va">myExpl</span>,</span>
-<span>                                  models.chosen <span class="op">=</span> <span class="st">'all'</span>,</span>
-<span>                                  metric.binary <span class="op">=</span> <span class="st">'all'</span>,</span>
-<span>                                  metric.filter <span class="op">=</span> <span class="st">'all'</span>,</span>
-<span>                                  build.clamping.mask <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span>                                  models.chosen <span class="op">=</span> <span class="st">'all'</span><span class="op">)</span></span>
+<span><span class="op">}</span></span>
 <span><span class="va">myBiomodProj</span></span>
 <span><span class="fu"><a href="https://rdrr.io/pkg/terra/man/plot.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">myBiomodProj</span><span class="op">)</span></span>
 <span></span>

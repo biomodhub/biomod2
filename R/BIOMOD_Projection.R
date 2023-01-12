@@ -172,13 +172,15 @@
 ##' 
 ##' # ---------------------------------------------------------------#
 ##' # Project single models
+##' file.proj <- paste0(myRespName, "/proj_Current/", myRespName, ".Current.projection.out")
+##' if (file.exists(file.proj)) {
+##'   myBiomodProj <- get(load(file.proj))
+##' } else {
 ##' myBiomodProj <- BIOMOD_Projection(bm.mod = myBiomodModelOut,
 ##'                                   proj.name = 'Current',
 ##'                                   new.env = myExpl,
-##'                                   models.chosen = 'all',
-##'                                   metric.binary = 'all',
-##'                                   metric.filter = 'all',
-##'                                   build.clamping.mask = TRUE)
+##'                                   models.chosen = 'all')
+##' }
 ##' myBiomodProj
 ##' plot(myBiomodProj)
 ##' 

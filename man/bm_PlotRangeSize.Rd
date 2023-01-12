@@ -116,11 +116,10 @@ if (file.exists(file.out)) {
 models.proj <- get_built_models(myBiomodModelOut, algo = "RF")
   # Project single models
   myBiomodProj <- BIOMOD_Projection(bm.mod = myBiomodModelOut,
-                                    proj.name = 'Current',
+                                    proj.name = 'CurrentRangeSize',
                                     new.env = myExpl,
                                     models.chosen = models.proj,
-                                    metric.binary = 'all',
-                                    build.clamping.mask = TRUE)
+                                    metric.binary = 'all')
 
 
 
@@ -135,11 +134,10 @@ myExplFuture <- terra::crop(myExplFuture, myExtent)
 
 # Project onto future conditions
 myBiomodProjectionFuture <- BIOMOD_Projection(bm.mod = myBiomodModelOut,
-                                              proj.name = 'Future',
+                                              proj.name = 'FutureRangeSize',
                                               new.env = myExplFuture,
                                               models.chosen = models.proj,
-                                              metric.binary = 'TSS',
-                                              build.clamping.mask = TRUE)
+                                              metric.binary = 'TSS')
 
 # Load current and future binary projections
 CurrentProj <- get_predictions(myBiomodProj, metric.binary = "TSS")

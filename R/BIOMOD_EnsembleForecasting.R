@@ -176,8 +176,6 @@
 ##'                                     proj.name = 'Current',
 ##'                                     new.env = myExpl,
 ##'                                     models.chosen = 'all',
-##'                                     metric.binary = 'all',
-##'                                     metric.filter = 'all',
 ##'                                     build.clamping.mask = TRUE)
 ##' }
 ##' 
