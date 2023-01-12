@@ -64,9 +64,9 @@ time scales or environmental scenarios for example}).
 }
 \details{
 Note that \bold{this function is only relevant to compare binary projections, made on the
-same area with the same resolution}.
+same area with the same resolution}. \cr
 
-\cr Comparison between \code{proj.current} and \code{proj.future} depends
+Comparison between \code{proj.current} and \code{proj.future} depends
 on the number of projection in both objects:\tabular{lll}{
    \code{proj.current} \tab \code{proj.future} \tab \bold{Comparison} \cr
    \bold{1 projection} (\emph{e.g. data.frame with 1 column, SpatRaster with 1 layer}) \tab \bold{1 projection}  (\emph{e.g. data.frame with 1 column, SpatRaster with 1 layer}) \tab comparison of both projection  (\emph{e.g. current vs future conditions for the same model ; current vs current condition for two different models}) \cr

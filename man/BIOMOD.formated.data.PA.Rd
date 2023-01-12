@@ -55,7 +55,7 @@ object containing binary data (\code{0} : absence,  \code{1} : presence,
 \code{NA} : indeterminate) for a single species that will be used to 
 build the species distribution model(s)
 \cr \emph{Note that old format from \pkg{sp} are still supported such as
- \code{SpatialPoints}  (\emph{if presence-only}) or \code{SpatialPointsDataFrame}
+ \code{SpatialPoints}  (if presence-only) or \code{SpatialPointsDataFrame}
  object containing binary data.}}
 
 \item{env}{a \code{matrix}, \code{data.frame}, \code{\link[terra:vect]{SpatVector}}
@@ -80,7 +80,7 @@ object containing binary data (\code{0} : absence, \code{1} : presence,
 \code{NA} : indeterminate) for a single species that will be used to
 evaluate the species distribution model(s) with independent data
 \cr \emph{Note that old format from \pkg{sp} are still supported such as
-\code{SpatialPoints}  (\emph{if presence-only}) or \code{SpatialPointsDataFrame}
+\code{SpatialPoints}  (if presence-only) or \code{SpatialPointsDataFrame}
 object containing binary data.}}
 
 \item{eval.env}{(\emph{optional, default} \code{NULL}) \cr 

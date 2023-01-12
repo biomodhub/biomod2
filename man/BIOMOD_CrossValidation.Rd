@@ -127,7 +127,7 @@ head(myBiomodCV)
 # Model single models
 myBiomodModelOut <- BIOMOD_Modeling(bm.format = myBiomodData,
                                     modeling.id = 'mod.CV',
-                                    models = c('RF', 'GLM'),
+                                    models = c('RF'),
                                     bm.options = myBiomodOptions,
                                     nb.rep = 2,
                                     data.split.table = myBiomodCV,

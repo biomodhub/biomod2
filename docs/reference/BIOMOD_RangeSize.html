@@ -162,8 +162,8 @@ migration</p></li>
     <div id="details">
     <h2>Details</h2>
     <p>Note that <b>this function is only relevant to compare binary projections, made on the
-same area with the same resolution</b>.</p>
-<p><br> Comparison between <code>proj.current</code> and <code>proj.future</code> depends
+same area with the same resolution</b>. <br></p>
+<p>Comparison between <code>proj.current</code> and <code>proj.future</code> depends
 on the number of projection in both objects:</p><table class="table table"><tr><td><code>proj.current</code></td><td><code>proj.future</code></td><td><b>Comparison</b></td></tr><tr><td><b>1 projection</b> (<em>e.g. data.frame with 1 column, SpatRaster with 1 layer</em>)</td><td><b>1 projection</b>  (<em>e.g. data.frame with 1 column, SpatRaster with 1 layer</em>)</td><td>comparison of both projection  (<em>e.g. current vs future conditions for the same model ; current vs current condition for two different models</em>)</td></tr><tr><td><b><code>n</code> projections</b>  (<em>e.g. data.frame with n column, SpatRaster with n layer</em>)</td><td><b><code>n</code> projections</b>  (<em>e.g. data.frame with n column, SpatRaster with n layer</em>)</td><td>comparing projection <code>i</code> in <code>proj.current</code> to projection <code>i</code> in <code>proj.future</code>  (<em>e.g. comparing current vs future condition for n models</em>)</td></tr><tr><td><b><code>1</code> projection</b>   (<em>e.g. data.frame with 1 column, SpatRaster with 1 layer</em>)</td><td><b><code>n</code> projections</b>  (<em>e.g. data.frame with n column, SpatRaster with n layer</em>)</td><td>comparing projection in <code>proj.current</code> to each projection in <code>proj.future</code>  (<em>e.g. comparing current vs n different future condition (e.g. climate change scenario) for 1 model</em>)</td></tr></table><p><code>Diff.By.Pixel</code> object is obtained by applying the simple following formula :
 $$proj.future - 2 * proj.current$$</p>
     </div>

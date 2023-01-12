@@ -58,9 +58,9 @@
 ##' @details 
 ##' 
 ##' Note that \bold{this function is only relevant to compare binary projections, made on the 
-##' same area with the same resolution}.
+##' same area with the same resolution}. \cr
 ##' 
-##' \cr Comparison between \code{proj.current} and \code{proj.future} depends 
+##' Comparison between \code{proj.current} and \code{proj.future} depends 
 ##' on the number of projection in both objects:
 ##'| \code{proj.current}   | \code{proj.future} | \bold{Comparison}  |
 ##'| ------------------------- | ---------------------- | --------------------  |

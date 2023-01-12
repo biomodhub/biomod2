@@ -137,7 +137,7 @@
 ##'                                       nb.rep = 2,
 ##'                                       data.split.perc = 80,
 ##'                                       metric.eval = c('TSS','ROC'),
-##'                                       var.import = 0,
+##'                                       var.import = 3,
 ##'                                       do.full.models = FALSE,
 ##'                                       seed.val = 42)
 ##' }
@@ -149,9 +149,10 @@
 ##' bm_PlotResponseCurves(bm.out = myBiomodModelOut, 
 ##'                       models.chosen = mods,
 ##'                       fixed.var = 'median')
-##' bm_PlotResponseCurves(bm.out = myBiomodModelOut, 
-##'                       models.chosen = mods,
-##'                       fixed.var = 'min')
+##' ## fixed.var can also be set to 'min', 'max' or 'mean'
+##' # bm_PlotResponseCurves(bm.out = myBiomodModelOut, 
+##' #                       models.chosen = mods,
+##' #                       fixed.var = 'min')
 ##' 
 ##' # Bivariate case (one model)
 ##' mods <- get_built_models(myBiomodModelOut, full.name = 'GuloGulo_allData_RUN2_RF')
