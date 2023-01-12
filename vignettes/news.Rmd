@@ -13,10 +13,9 @@ vignette: >
 
 ## <i class="fas fa-code"></i> Development updates
 
+### <i class="fas fa-feather"></i> 2023 
 
-### <i class="fas fa-chess-pawn"></i> 2022
-
-#### 4.2-2 Improvement patch
+#### 4.2-2 Improvement patch (2023-01-12)
 
 ##### Major Changes
 
@@ -49,6 +48,8 @@ vignette: >
 * Removed `rasterVis` from `Suggests`
 * Added `tidyterra` and `ggtext` to `Suggests`
 * Added checks to `get_evaluation` when models have no evaluations.
+
+### <i class="fas fa-chess-pawn"></i> 2022
 
 #### 4.2-1 Bugfix patch
 
