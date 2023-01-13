@@ -43,7 +43,8 @@
   full.name = NULL,
   PA = NULL,
   run = NULL,
-  algo = NULL
+  algo = NULL,
+  model.as.col = FALSE
 )
 
 \S4method{get_built_models}{BIOMOD.models.out}(obj, full.name = NULL, PA = NULL, run = NULL, algo = NULL)
@@ -92,6 +93,7 @@
   merged.by.run = NULL,
   merged.by.PA = NULL,
   filtered.by = NULL,
+  model.as.col = FALSE,
   ...
 )
 
@@ -117,7 +119,8 @@
   merged.by.run = NULL,
   merged.by.PA = NULL,
   filtered.by = NULL,
-  algo = NULL
+  algo = NULL,
+  model.as.col = FALSE
 )
 
 \S4method{get_evaluations}{BIOMOD.ensemble.models.out}(
@@ -172,6 +175,14 @@ function}
 A \code{character} containing algorithm to be loaded, must be either \code{GLM}, 
 \code{GBM}, \code{GAM}, \code{CTA}, \code{ANN}, \code{SRE}, \code{FDA}, \code{MARS}, 
 \code{RF}, \code{MAXENT}, \code{MAXNET}}
+
+\item{model.as.col}{(\emph{optional, default} \code{FALSE}) \cr
+A \code{boolean} given to \code{\link{get_predictions}}. If \code{TRUE} 
+prediction are returned as a wide \code{data.frame} with each column containing
+predictions for a single model and corresponding to the old output given by
+\pkg{biomod2} in version < 4.2-2. If \code{FALSE} predictions are returned 
+as a long \code{data.frame} with many additional informations readily 
+available.}
 
 \item{metric.eval}{(\emph{optional, default} \code{NULL}) \cr 
 A \code{vector} containing evaluation metric to be kept, must be among \code{ROC}, 

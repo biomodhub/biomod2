@@ -87,6 +87,14 @@
 ##' \code{TSS}, \code{KAPPA}, \code{ACCURACY}, \code{BIAS}, \code{POD}, \code{FAR}, 
 ##' \code{POFD}, \code{SR}, \code{CSI}, \code{ETS}, \code{HK}, \code{HSS}, \code{OR}, \code{ORSS}
 ##' 
+##' @param model.as.col (\emph{optional, default} \code{FALSE}) \cr
+##' A \code{boolean} given to \code{\link{get_predictions}}. If \code{TRUE} 
+##' prediction are returned as a wide \code{data.frame} with each column containing
+##' predictions for a single model and corresponding to the old output given by
+##' \pkg{biomod2} in version < 4.2-2. If \code{FALSE} predictions are returned 
+##' as a long \code{data.frame} with many additional informations readily 
+##' available.
+##' 
 ##' 
 ##' @return 
 ##' 
@@ -468,7 +476,8 @@ setMethod("get_formal_data", "BIOMOD.models.out",
 
 setMethod("get_predictions", "BIOMOD.models.out",
           function(obj, evaluation = FALSE
-                   , full.name = NULL, PA = NULL, run = NULL, algo = NULL)
+                   , full.name = NULL, PA = NULL, run = NULL, algo = NULL,
+                   model.as.col = FALSE)
           {
             if (evaluation && (!obj@has.evaluation.data)) {
               warning("!   Calibration data returned because no evaluation data available")
@@ -486,6 +495,9 @@ setMethod("get_predictions", "BIOMOD.models.out",
             keep_lines <- .filter_outputs.df(out, subset.list = list(full.name =  full.name, PA = PA
                                                                      , run = run, algo = algo))
             out <- out[keep_lines, ]
+            if (model.as.col) {
+              out <- .transform_model.as.col(out)
+            }
             return(out)
           }
 )
@@ -971,7 +983,8 @@ setMethod("get_predictions", "BIOMOD.projection.out",
           function(obj, metric.binary = NULL, metric.filter = NULL
                    , full.name = NULL, PA = NULL, run = NULL, algo = NULL
                    , merged.by.algo = NULL, merged.by.run = NULL
-                   , merged.by.PA = NULL, filtered.by = NULL, ...) {
+                   , merged.by.PA = NULL, filtered.by = NULL, 
+                   model.as.col = FALSE, ...) {
             
             # extract layers from obj@proj.out@link concerned by metric.filter 
             # or metric.binary
@@ -1009,7 +1022,11 @@ setMethod("get_predictions", "BIOMOD.projection.out",
                                                                          , run = run, algo = algo))
               }
               out <- out[keep_lines, ]
+              if (model.as.col) {
+                out <- .transform_model.as.col(out)
+              }
             }
+
             return(out)
           }
 )
@@ -1256,7 +1273,8 @@ setMethod("get_kept_models", "BIOMOD.ensemble.models.out", function(obj) { retur
 
 setMethod("get_predictions", "BIOMOD.ensemble.models.out",
           function(obj, evaluation = FALSE, full.name = NULL, merged.by.algo = NULL, merged.by.run = NULL
-                   , merged.by.PA = NULL, filtered.by = NULL, algo = NULL)
+                   , merged.by.PA = NULL, filtered.by = NULL, algo = NULL,
+                   model.as.col = FALSE)
           {
             # check evaluation data availability
             if (evaluation && (!get_formal_data(obj)@has.evaluation.data)) {
@@ -1279,6 +1297,9 @@ setMethod("get_predictions", "BIOMOD.ensemble.models.out",
                                                                      , filtered.by = filtered.by
                                                                      , algo = algo))
             out <- out[keep_lines, ]
+            if (model.as.col) {
+              out <- .transform_model.as.col(out)
+            }
             return(out)
           }
 )

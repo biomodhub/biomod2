@@ -360,7 +360,7 @@ get_var_range <- function(data)
   }
   proj
 }
-## TRANSFORM models outputs getting specific slot -------------------------------------------------
+## TRANSFORM models outputs getting specific slot --------------------
 ## used in BIOMOD_Modeling.R, BIOMOD_EnsembleModeling.R
 
 .transform_outputs_list = function(obj.type, obj.out, out = 'evaluation')
@@ -430,6 +430,33 @@ get_var_range <- function(data)
   return(output)
 }
 
+## transform predictions data.frame from long to wide with models as columns ----------------
+## used in BIOMOD_RangeSize.R
+##' @name .transform_model.as.col
+##' @author Remi Patin
+##' 
+##' @title Transform predictions data.frame from long to wide with models as columns
+##' 
+##' @description This function is used internally in \code{\link{get_predictions}}
+##' to ensure back-compatibility with former output of \code{\link{get_predictions}}
+##' (i.e. for \pkg{biomod2} version < 4.2-2). It transform a long \code{data.frame}
+##' into a wide \code{data.frame} with each column corresponding to a single model.
+##' 
+##' \emph{Note that the function is intended for internal use but have been 
+##' made available for compatibility with \pkg{ecospat}} 
+##'
+##' @param df a long \code{data.frame}, generally a standard output of 
+##' \code{\link{get_predictions}}
+##' 
+##' @return a wide \code{data.frame}
+##' @importFrom stats reshape
+##' @export
+##' @keywords internal
+.transform_model.as.col <- function(df){
+  df <- reshape(df[,c("full.name","points","pred")], idvar = "points", timevar = "full.name", direction = "wide")[,-1, drop = FALSE] 
+  colnames(df) <- substring(colnames(df), 6)
+  df
+}
 
 ## EXTRACT model names according to specific infos ------------------------------------------------
 ## used in biomod2_classes_3.R, BIOMOD_LoadModels, BIOMOD_Projection, BIOMOD_EnsembleModeling, bm_PlotRangeSize

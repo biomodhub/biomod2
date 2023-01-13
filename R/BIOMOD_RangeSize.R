@@ -160,9 +160,12 @@
 ##'                                               metric.binary = 'TSS')
 ##' 
 ##' # Load current and future binary projections
-##' CurrentProj <- get_predictions(myBiomodProj, metric.binary = "TSS")
-##' FutureProj <- get_predictions(myBiomodProjectionFuture, metric.binary = "TSS")
-##' 
+##' CurrentProj <- get_predictions(myBiomodProj,
+##'                                metric.binary = "TSS",
+##'                                model.as.col = TRUE)
+##' FutureProj <- get_predictions(myBiomodProjectionFuture,
+##'                                metric.binary = "TSS",
+##'                                model.as.col = TRUE)
 ##' # Compute differences
 ##' myBiomodRangeSize <- BIOMOD_RangeSize(proj.current = CurrentProj, proj.future = FutureProj)
 ##' 
@@ -301,17 +304,6 @@ setMethod('BIOMOD_RangeSize', signature(proj.current = 'SpatRaster', proj.future
 
 .BIOMOD_RangeSize.check.args <- function(proj.current, proj.future) {
   
-  ## Transformation of data.frame so that each column is a model
-  if (inherits(proj.current, "data.frame")) {
-     if (all(c("full.name","points","pred") %in% colnames(proj.current)) &&
-         all(c("full.name","points","pred") %in% colnames(proj.future))) {
-       proj.current <- .transform_df(proj.current)
-       proj.future <- .transform_df(proj.future)
-     } else {
-       stop("'proj.current' and 'proj.future' must have all columns 'full.name' (model name), 'points' (index of prediction) and 'pred' (binary prediction).")
-     }
-  }
-  
   ## dimensions checking ------------------------
   if (inherits(proj.current, "data.frame")) {
     dim_current <- nrow(proj.current)
@@ -392,10 +384,3 @@ setMethod('BIOMOD_RangeSize', signature(proj.current = 'SpatRaster', proj.future
   }
 }
 
-# transform data.frame from long to wide for BIOMOD_RangeSize
-##' @importFrom stats reshape
-.transform_df <- function(df){
-  df <- reshape(df[,c("full.name","points","pred")], idvar = "points", timevar = "full.name", direction = "wide")[,-1, drop = FALSE] 
-  colnames(df) <- substring(colnames(df), 6)
-  df
-}

@@ -157,9 +157,12 @@ myBiomodProjectionFuture <- BIOMOD_Projection(bm.mod = myBiomodModelOut,
                                               metric.binary = 'TSS')
 
 # Load current and future binary projections
-CurrentProj <- get_predictions(myBiomodProj, metric.binary = "TSS")
-FutureProj <- get_predictions(myBiomodProjectionFuture, metric.binary = "TSS")
-
+CurrentProj <- get_predictions(myBiomodProj,
+                               metric.binary = "TSS",
+                               model.as.col = TRUE)
+FutureProj <- get_predictions(myBiomodProjectionFuture,
+                               metric.binary = "TSS",
+                               model.as.col = TRUE)
 # Compute differences
 myBiomodRangeSize <- BIOMOD_RangeSize(proj.current = CurrentProj, proj.future = FutureProj)
 

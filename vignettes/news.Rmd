@@ -15,7 +15,7 @@ vignette: >
 
 ### <i class="fas fa-feather"></i> 2023 
 
-#### 4.2-2 Improvement patch (2023-01-12)
+#### 4.2-2 Improvement patch (2023-01-13)
 
 ##### Major Changes
 
@@ -24,10 +24,12 @@ vignette: >
 * Improved `plot` and `summary` methods for `BIOMOD_FormatingData` output. These method now support the use of `calib.lines` to explore how the cross-validation dataset are structured.
 * Updated `plot` methods for `BIOMOD.projection.out` objects so that it uses `ggplot2` for nicer plots.
 * Binary and Filtered transformation are now properly stored in `BIOMOD.projection.out` objects. They can be loaded from the disk with `get_predictions` or represented through `BIOMOD.projection.out` plot method.
+* `get_predictions` now return a proper `data.frame` (unless projection on spatial data) with many additional information available. Old behavior can be reproduced by using `get_predictions(x, model.as.col = TRUE)`.
+* `get_evaluations` now return a cleaner `data.frame` with more consistent information available.
 
 ##### Minor Changes
 
-* Simplified maxent model names:  'MAXENT.Phillips' -> 'MAXENT' (based on maxent.jar); 'MAXENT.Phillips.2' -> 'MAXNET' (based on maxnet package).
+* Simplified maxent model names:  'MAXENT.Phillips' -> 'MAXENT' (based on `maxent.jar`); 'MAXENT.Phillips.2' -> 'MAXNET' (based on `maxnet` package).
 * `BIOMOD_FormatingData` now gives warning when several input data points are located in the same raster cells
 * Added options `filter.raster` in `BIOMOD_FormatingData` to filter data points so that none are located in the same raster cells.
 * `BIOMOD_EnsembleModeling` now have an argument `em.algo` to select the ensemble algorithm to be computed. Separate arguments are now deprecated (prob.mean, prob.median, prob.cv, prob.ci, committee.averaging, prob.mean.weight). Building all possible ensemble models can now be done with `em.algo = c('EMmean','EMmedian','EMcv','EMci','EMca','EMwmean')`.

@@ -132,7 +132,7 @@
 <i class="fas fa-feather"></i> 2023<a class="anchor" aria-label="anchor" href="#section"></a>
 </h3>
 <div class="section level4">
-<h4 id="improvement-patch-2023-01-12">4.2-2 Improvement patch (2023-01-12)<a class="anchor" aria-label="anchor" href="#improvement-patch-2023-01-12"></a>
+<h4 id="improvement-patch-2023-01-13">4.2-2 Improvement patch (2023-01-13)<a class="anchor" aria-label="anchor" href="#improvement-patch-2023-01-13"></a>
 </h4>
 <div class="section level5">
 <h5 id="major-changes">Major Changes<a class="anchor" aria-label="anchor" href="#major-changes"></a>
@@ -151,6 +151,14 @@ dataset are structured.</li>
 <code>BIOMOD.projection.out</code> objects. They can be loaded from the
 disk with <code>get_predictions</code> or represented through
 <code>BIOMOD.projection.out</code> plot method.</li>
+<li>
+<code>get_predictions</code> now return a proper
+<code>data.frame</code> (unless projection on spatial data) with many
+additional information available. Old behavior can be reproduced by
+using <code>get_predictions(x, model.as.col = TRUE)</code>.</li>
+<li>
+<code>get_evaluations</code> now return a cleaner
+<code>data.frame</code> with more consistent information available.</li>
 </ul>
 </div>
 <div class="section level5">
@@ -158,8 +166,8 @@ disk with <code>get_predictions</code> or represented through
 </h5>
 <ul>
 <li>Simplified maxent model names: ‘MAXENT.Phillips’ -&gt; ‘MAXENT’
-(based on maxent.jar); ‘MAXENT.Phillips.2’ -&gt; ‘MAXNET’ (based on
-maxnet package).</li>
+(based on <code>maxent.jar</code>); ‘MAXENT.Phillips.2’ -&gt; ‘MAXNET’
+(based on <code>maxnet</code> package).</li>
 <li>
 <code>BIOMOD_FormatingData</code> now gives warning when several
 input data points are located in the same raster cells</li>

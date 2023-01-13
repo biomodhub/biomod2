@@ -119,7 +119,8 @@ and formated data, models used or not, predictions, evaluations, variables impor
 <span>  full.name <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  PA <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  run <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  algo <span class="op">=</span> <span class="cn">NULL</span></span>
+<span>  algo <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  model.as.col <span class="op">=</span> <span class="cn">FALSE</span></span>
 <span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># S4 method for BIOMOD.models.out</span></span>
@@ -174,6 +175,7 @@ and formated data, models used or not, predictions, evaluations, variables impor
 <span>  merged.by.run <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  merged.by.PA <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  filtered.by <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  model.as.col <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  <span class="va">...</span></span>
 <span><span class="op">)</span></span>
 <span></span>
@@ -203,7 +205,8 @@ and formated data, models used or not, predictions, evaluations, variables impor
 <span>  merged.by.run <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  merged.by.PA <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  filtered.by <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  algo <span class="op">=</span> <span class="cn">NULL</span></span>
+<span>  algo <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  model.as.col <span class="op">=</span> <span class="cn">FALSE</span></span>
 <span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># S4 method for BIOMOD.ensemble.models.out</span></span>
@@ -277,6 +280,16 @@ function</p></dd>
 A <code>character</code> containing algorithm to be loaded, must be either <code>GLM</code>, 
 <code>GBM</code>, <code>GAM</code>, <code>CTA</code>, <code>ANN</code>, <code>SRE</code>, <code>FDA</code>, <code>MARS</code>, 
 <code>RF</code>, <code>MAXENT</code>, <code>MAXNET</code></p></dd>
+
+
+<dt>model.as.col</dt>
+<dd><p>(<em>optional, default</em> <code>FALSE</code>) <br>
+A <code>boolean</code> given to <code>get_predictions</code>. If <code>TRUE</code> 
+prediction are returned as a wide <code>data.frame</code> with each column containing
+predictions for a single model and corresponding to the old output given by
+<span class="pkg">biomod2</span> in version &lt; 4.2-2. If <code>FALSE</code> predictions are returned 
+as a long <code>data.frame</code> with many additional informations readily 
+available.</p></dd>
 
 
 <dt>metric.eval</dt>
