@@ -24,7 +24,7 @@ https://biomodhub.github.io/biomod2/
 
 <br/>
 
-- **Stable version** (4.1-2) from [cran](https://CRAN.R-project.org/package=biomod2) :
+- **Stable version** [![v](https://www.r-pkg.org/badges/version/biomod2?color=yellow)](https://cran.r-project.org/package=biomod2) from [cran](https://CRAN.R-project.org/package=biomod2) :
 
 ```R
 install.packages("biomod2", dependencies = TRUE)
@@ -32,7 +32,7 @@ install.packages("biomod2", dependencies = TRUE)
 
 <br/>
 
-- **Development version** (4.2-2) from [biomodhub](https://github.com/biomodhub/biomod2) :
+- **Development version** [![v](https://img.shields.io/badge/devel%20version-4.2--2-blue.svg)](https://github.com/biomodhub/biomod2) from [biomodhub](https://github.com/biomodhub/biomod2) :
 
 ```R
 library(devtools)
