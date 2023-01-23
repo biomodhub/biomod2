@@ -187,7 +187,7 @@
 ##' 
 ##' @importFrom foreach foreach %dopar% 
 ## @importFrom doParallel registerDoParallel
-##' @importFrom terra rast subset nlyr writeRaster terraOptions wrap mem_info app
+##' @importFrom terra rast subset nlyr writeRaster terraOptions wrap unwrap mem_info app
 ##' @importFrom utils capture.output
 ##' @importFrom abind asub
 ##' 
@@ -309,7 +309,7 @@ BIOMOD_Projection <- function(bm.mod,
       pred.tmp <- predict(mod, new.env, on_0_1000 = on_0_1000, 
                           filename = filename, omit.na = omit.na, 
                           temp_workdir = temp_workdir, seedval = seed.val, 
-                          overwrite = TRUE)
+                          overwrite = TRUE, mod.name = mod.name)
       if (do.stack) {
         if (proj_is_raster) {
           return(wrap(pred.tmp)) 
@@ -320,11 +320,10 @@ BIOMOD_Projection <- function(bm.mod,
         return(filename)
       }
     }
-  
   ## Putting predictions into the right format
   if (do.stack){
     if (proj_is_raster) {
-      proj <- rast(lapply(proj, rast)) # SpatRaster needs to be wrapped before saving
+      proj <- rast(lapply(proj, unwrap)) # SpatRaster needs to be wrapped before saving
       names(proj) <- models.chosen
       proj <- wrap(proj)
       proj.trans <- proj

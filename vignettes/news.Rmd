@@ -20,6 +20,8 @@ vignette: >
 ##### Bugfix
 
 * Ensemble model can again be calculated over models without validation
+* Correct print for multiple values in RF$sampsize parameter in `BIOMOD_ModelingOptions`
+* Fixed `BIOMOD_Projection` for large (or numerous) raster for which `terraOption(todisk = TRUE)` is automatically activated.
 
 #### 4.2-2 Improvement patch (2023-01-13)
 
