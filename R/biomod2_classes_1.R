@@ -2012,7 +2012,7 @@ setMethod('show', signature('BIOMOD.models.options'),
             cat("\nRF = list( do.classif = ", object@RF$do.classif, ",", sep = "")
             cat("\n           ntree = ", object@RF$ntree, ",", sep = "")
             cat("\n           mtry = '", object@RF$mtry, "',", sep = "")
-            cat("\n           sampsize = ", ifelse(length(object@RF$sampsize) < 1, 'NULL', object@RF$sampsize), ",", sep = "")
+            cat("\n           sampsize = ", ifelse(length(object@RF$sampsize) < 1, 'NULL', paste0(object@RF$sampsize, collapse = " ")), ",", sep = "")
             cat("\n           nodesize = ", object@RF$nodesize, ",", sep = "")
             cat("\n           maxnodes = ", ifelse(length(object@RF$maxnodes) < 1, 'NULL', object@RF$maxnodes),  "),", sep = "")
             
