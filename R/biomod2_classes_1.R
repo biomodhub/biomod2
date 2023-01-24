@@ -1160,8 +1160,9 @@ setMethod('summary', signature(object = 'BIOMOD.formated.data'),
 ##' \code{user.defined} (see Details)
 ##' @param PA.nb.absences (\emph{optional, default} \code{0}) \cr 
 ##' If pseudo-absence selection, and \code{PA.strategy = 'random'} or \code{PA.strategy = 'sre'} 
-##' or \code{PA.strategy = 'disk'}, an \code{integer} corresponding to the number of pseudo-absence 
-##' points that will be selected for each pseudo-absence repetition (true absences included)
+##' or \code{PA.strategy = 'disk'}, an \code{integer} (or a \code{vector} of \code{integer} the 
+##' same size as \code{PA.nb.rep}) corresponding to the number of pseudo-absence points that 
+##' will be selected for each pseudo-absence repetition (true absences included)
 ##' @param PA.sre.quant (\emph{optional, default} \code{0}) \cr 
 ##' If pseudo-absence selection and \code{PA.strategy = 'sre'}, a \code{numeric} between \code{0} 
 ##' and \code{0.5} defining the half-quantile used to make the \code{sre} pseudo-absence selection 
@@ -1334,10 +1335,7 @@ setMethod('BIOMOD.formated.data.PA', signature(sp = 'numeric', env = 'SpatRaster
                                       , PA.sre.quant = 0.025, PA.user.table = NULL
                                       , na.rm = TRUE, filter.raster = FALSE)
 {
-  
-
-  #### check for categorical vars and filter duplicated data points
-
+  ### Check for categorical vars and filter duplicated data points
   categorical_var <- NULL
   if (inherits(env, 'SpatRaster')) {
     categorical_var <- names(env)[is.factor(env)] 
@@ -1348,9 +1346,8 @@ setMethod('BIOMOD.formated.data.PA', signature(sp = 'numeric', env = 'SpatRaster
     rm(output)
     
   }
-  
 
-  # Convert sp in SpatVector
+  ## Convert sp in SpatVector
   if (is.numeric(sp)) {
     if (nrow(xy) == 0) {
       sp.df <- data.frame(x = 0,
@@ -1364,6 +1361,7 @@ setMethod('BIOMOD.formated.data.PA', signature(sp = 'numeric', env = 'SpatRaster
     sp <- vect(sp.df, geom = c("x","y"))
   }
   
+  
   pa.data.tmp <- bm_PseudoAbsences(resp.var = sp,
                                    expl.var = env,
                                    nb.rep = PA.nb.rep,
@@ -1373,6 +1371,8 @@ setMethod('BIOMOD.formated.data.PA', signature(sp = 'numeric', env = 'SpatRaster
                                    dist.min = PA.dist.min,
                                    dist.max = PA.dist.max,
                                    user.table = PA.user.table)
+  print(str(pa.data.tmp))
+  print(table(pa.data.tmp$pa.tab[,1]))
   
   if (!is.null(pa.data.tmp)) {
     ## Keep same env variable for eval than calib (+ check for factor)
