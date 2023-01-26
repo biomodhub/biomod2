@@ -700,10 +700,10 @@ setMethod('.BIOMOD_Modeling.prepare.data', signature('BIOMOD.formated.data.PA'),
             {
               weights <- formal_weights
               name <- paste0(bm.format@sp.name, "_", colnames(bm.format@PA.table)[pa])
-              xy <- bm.format@coord[bm.format@PA.table[, pa], ]
-              resp <- bm.format@data.species[bm.format@PA.table[, pa]] # response variable (with pseudo absences selected)
+              xy <- bm.format@coord[which(bm.format@PA.table[, pa] == TRUE), ]
+              resp <- bm.format@data.species[which(bm.format@PA.table[, pa] == TRUE)] # response variable (with pseudo absences selected)
               resp[is.na(resp)] <- 0
-              dataBM <- data.frame(cbind(resp, bm.format@data.env.var[bm.format@PA.table[, pa], , drop = FALSE]))
+              dataBM <- data.frame(cbind(resp, bm.format@data.env.var[which(bm.format@PA.table[, pa] == TRUE), , drop = FALSE]))
               colnames(dataBM)[1] <- bm.format@sp.name
               
               ## Calib/Valid lines
@@ -715,26 +715,26 @@ setMethod('.BIOMOD_Modeling.prepare.data', signature('BIOMOD.formated.data.PA'),
                   calib.lines <- asub(data.split.table, pa, 3, drop = TRUE)
                 }
                 colnames(calib.lines) <- paste0('_RUN', 1:ncol(calib.lines))
-                calib.lines[which(!bm.format@PA.table[, pa]), ] <- NA
+                calib.lines[which(bm.format@PA.table[, pa] == FALSE | is.na(bm.format@PA.table[, pa])), ] <- NA
               } else {
                 if (nb.rep == 0) { # take all available data
                   calib.lines <- matrix(NA, nrow = length(bm.format@data.species), ncol = 1)
-                  calib.lines[bm.format@PA.table[, pa], 1] <- TRUE
+                  calib.lines[which(bm.format@PA.table[, pa] == TRUE), 1] <- TRUE
                   colnames(calib.lines) <- '_allRun'
                 } else {
                   calib.lines <- matrix(NA, nrow = length(bm.format@data.species), ncol = nb.rep)
                   sampled.mat <- .sample_mat(
-                    data.sp = bm.format@data.species[bm.format@PA.table[, pa]],
+                    data.sp = bm.format@data.species[which(bm.format@PA.table[, pa] == TRUE)],
                     data.split = data.split.perc,
                     nb.rep = nb.rep,
-                    data.env = bm.format@data.env.var[bm.format@PA.table[, pa], , drop = FALSE],
+                    data.env = bm.format@data.env.var[which(bm.format@PA.table[, pa] == TRUE), , drop = FALSE],
                     seed.val = seed.val
                   )
-                  calib.lines[bm.format@PA.table[, pa], ] <- sampled.mat
+                  calib.lines[which(bm.format@PA.table[, pa] == TRUE), ] <- sampled.mat
                   colnames(calib.lines) <- colnames(sampled.mat)
                   if (do.full.models) {
                     calib.lines <- cbind(calib.lines, rep(NA, length(bm.format@data.species)))
-                    calib.lines[bm.format@PA.table[, pa], nb.rep + 1] <- TRUE
+                    calib.lines[which(bm.format@PA.table[, pa] == TRUE), nb.rep + 1] <- TRUE
                     colnames(calib.lines)[nb.rep + 1] <- '_allRun'
                   }
                 }
@@ -759,10 +759,10 @@ setMethod('.BIOMOD_Modeling.prepare.data', signature('BIOMOD.formated.data.PA'),
               if (is.null(weights)) { # prevalence of 0.5... may be parametrize
                 if (is.null(prevalence)) { prevalence <- 0.5 }
                 cat("\n\t\t\t! Weights where automatically defined for", name, "to rise a", prevalence, "prevalence !")
-                weights <- rep(NA, length(bm.format@data.species))
-                weights[bm.format@PA.table[, pa]] <- .automatic_weights_creation(as.numeric(dataBM[, 1]) , prev = prevalence)
+                weights <- rep(NA, length(as.numeric(dataBM[, 1])))
+                weights[which(bm.format@PA.table[, pa] == TRUE)] <- .automatic_weights_creation(as.numeric(dataBM[, 1]), prev = prevalence)
               } else { # remove useless weights
-                weights[!bm.format@PA.table[, pa]] <- NA
+                weights[which(bm.format@PA.table[, pa] == FALSE | is.na(bm.format@PA.table[, pa]))] <- NA
               }
               
               list.out[[name]] <- list(name = name,
