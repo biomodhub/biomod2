@@ -1072,14 +1072,13 @@ setMethod('summary', signature(object = 'BIOMOD.formated.data'),
               output <- rbind(output,
                               foreach(this_PA = PA, .combine = 'rbind') %:%
                                 foreach(this_run = run, .combine = 'rbind') %do% {
-                                  if ( is.na(this_PA) ) { # run only
+                                  if (is.na(this_PA) ) { # run only
                                     this_name <- this_run
                                     this_calib <- calib.lines[ , this_run]
                                     this_valid <- ! calib.lines[ , this_run]
                                   } else if (is.na(this_run)) { # PA only
                                     this_name <- this_PA
-                                    this_calib <-
-                                      object@PA.table[ , this_PA]
+                                    this_calib <- object@PA.table[ , this_PA]
                                   } else { # PA+run
                                     this_name <- paste0(this_PA,"_",this_run)
                                     this_calib <- calib.lines[ , this_run] & object@PA.table[ , this_PA]
@@ -1092,7 +1091,7 @@ setMethod('summary', signature(object = 'BIOMOD.formated.data'),
                                                     "PA" = this_PA,
                                                     "Presences" = sum(calib.resp, na.rm = TRUE),
                                                     "True_Absences" = sum(calib.resp == 0, na.rm = TRUE),
-                                                    "Pseudo_Absences" = length(which(is.na(calib.resp))),
+                                                    "Pseudo_Absences" = sum(this_calib == TRUE, na.rm = TRUE) - sum(calib.resp, na.rm = TRUE),
                                                     "Undefined" = NA)
                                   
                                   if (!is.na(this_run)) { 
@@ -1103,7 +1102,7 @@ setMethod('summary', signature(object = 'BIOMOD.formated.data'),
                                                             "PA" = this_PA,
                                                             "Presences" = sum(valid.resp, na.rm = TRUE),
                                                             "True_Absences" = sum(valid.resp == 0, na.rm = TRUE),
-                                                            "Pseudo_Absences" = length(which(is.na(valid.resp))),
+                                                            "Pseudo_Absences" = sum(this_calib == TRUE, na.rm = TRUE) - sum(calib.resp, na.rm = TRUE),
                                                             "Undefined" = NA))
                                     
                                   }
@@ -1371,8 +1370,6 @@ setMethod('BIOMOD.formated.data.PA', signature(sp = 'numeric', env = 'SpatRaster
                                    dist.min = PA.dist.min,
                                    dist.max = PA.dist.max,
                                    user.table = PA.user.table)
-  print(str(pa.data.tmp))
-  print(table(pa.data.tmp$pa.tab[,1]))
   
   if (!is.null(pa.data.tmp)) {
     ## Keep same env variable for eval than calib (+ check for factor)

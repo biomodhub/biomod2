@@ -124,6 +124,8 @@ bm_PseudoAbsences <- function(resp.var, expl.var, nb.rep = 1, strategy = 'random
       out.list = foreach(i.abs = unique(nb.absences)) %do% 
         {
           i.rep = which(nb.absences == i.abs)
+          cat("\n > Set ", i.rep, " (", i.abs, " pseudo absences wanted)")
+          
           out <- switch(strategy,
                         user.defined = bm_PseudoAbsences_user.defined(resp.var, expl.var, user.table),
                         random = bm_PseudoAbsences_random(resp.var, expl.var, i.abs, length(i.rep)),
@@ -134,52 +136,70 @@ bm_PseudoAbsences <- function(resp.var, expl.var, nb.rep = 1, strategy = 'random
         }
       
       ## GET XY -----------------------------------------------------
+      
+      ## Get coordinates of presences
+      xy.pres = out.list[[1]][["xy"]][grep("pres", rownames(out.list[[1]][["xy"]])), ]
+      nb.pres = nrow(xy.pres)
+      
+      ## Get coordinates of pseudo-absences
       out.xy = foreach(i = 1:length(out.list)) %do%
         {
-          res = out.list[[i]][["xy"]]
-          res = cbind(res, 1:nrow(res))
+          res = out.list[[i]][["xy"]][-c(1:nb.pres), ]
+          res = cbind(res, (1:nrow(res)) + nb.pres)
           return(res)
         }
+      
+      ## Merge all coordinates of pseudo-absences (may be duplicates)
       out.xy = Reduce(function(x, y) merge(x, y, by = c("x", "y"), all = TRUE), out.xy)
+      
+      ## Get indexes of merged PA coordinates for each set
+      ## To be used to rebuild env and pa.tab 
       out.index = out.xy[, -which(colnames(out.xy) %in% c("x", "y"))]
       out.order = !is.na(out.index)
       out.order = t(apply(out.order, 1, cumsum))
-      ind.list = lapply(1:ncol(out.order), function(j) which(out.order[, j] == 1))
-      out.xy = out.xy[, c("x", "y")]
       
-      ## GET ENV ----------------------------------------------------
+      ## Keep presences + pseudo-absences coordinates
+      out.xy = out.xy[, c("x", "y")]
+      out.xy = rbind(xy.pres, out.xy)
+      
+      ## GET ENV & PA.TAB -------------------------------------------
+      
+      ## Initialize env matrix
       out.env = matrix(NA, nrow = nrow(out.xy), ncol = ncol(out.list[[1]][["env"]]))
       out.env = as.data.frame(out.env)
       colnames(out.env) = colnames(out.list[[1]][["env"]])
-      out.env[ind.list[[1]], ] = out.list[[1]][["env"]][out.index[ind.list[[1]], 1], ]
-      for (j in 2:ncol(out.order)) {
-        ind = setdiff(ind.list[[j]], ind.list[[j-1]])
-        if (length(ind) > 0) {
-          out.env[ind, ] = out.list[[j]][["env"]][out.index[ind, j], ]
-        }
-      }
+      out.env[1:nb.pres, ] = out.list[[1]][["env"]][1:nb.pres, ]
       
-      ## GET PA.TAB -------------------------------------------------
+      ## Initialize pa.tab matrix
       out.pa.tab = matrix(NA, nrow = nrow(out.xy), ncol = nb.rep)
       out.pa.tab = as.data.frame(out.pa.tab)
       colnames(out.pa.tab) = paste0("PA", 1:nb.rep)
+      out.pa.tab[1:nb.pres, ] = TRUE
+      
       ind.start = 1
       ind.end = ncol(out.list[[1]][["pa.tab"]])
-      out.pa.tab[ind.list[[1]], ind.start:ind.end] = out.list[[1]][["pa.tab"]][out.index[ind.list[[1]], 1], ]
+      
+      ## Fill first column
+      ind = which(out.order[, 1] == 1)
+      out.env[ind + nb.pres, ] = out.list[[1]][["env"]][out.index[ind, 1], ]
+      out.pa.tab[ind + nb.pres, ind.start:ind.end] = out.list[[1]][["pa.tab"]][out.index[ind, 1], ]
+      
+      ## Fill all other columns
       for (j in 2:ncol(out.order)) {
-        ind = setdiff(ind.list[[j]], ind.list[[j-1]])
+        ind = which(out.order[, j] != out.order[, j-1])
         if (length(ind) > 0) {
+          
+          ## For env
+          out.env[ind + nb.pres, ] = out.list[[j]][["env"]][out.index[ind, j], ]
+          
+          ## For pa.tab
           ind.start = ind.end + 1
           ind.end = ind.start + ncol(out.list[[j]][["pa.tab"]]) - 1
-          print(head(out.list[[j]][["pa.tab"]]))
-          print(table(out.list[[j]][["pa.tab"]]))
-          print(head(out.list[[j]][["pa.tab"]][out.index[ind, j], ]))
-          out.pa.tab[ind, ind.start:ind.end] = out.list[[j]][["pa.tab"]][out.index[ind, j], ]
+          out.pa.tab[ind + nb.pres, ind.start:ind.end] = out.list[[j]][["pa.tab"]][out.index[ind, j], ]
         }
       }
       
       ## GET everything ---------------------------------------------
-      nb.pres = length(which(out.list[[1]][["sp"]] == 1))
       out = list(xy = out.xy,
                  sp = c(rep(1, nb.pres), rep(NA, nrow(out.xy) - nb.pres)),
                  env = out.env,
