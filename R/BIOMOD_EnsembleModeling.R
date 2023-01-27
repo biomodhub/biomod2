@@ -1158,8 +1158,10 @@ BIOMOD_EnsembleModeling <- function(bm.mod,
           out <- get_evaluations(bm.mod, PA = dat, run = run, algo = alg, metric.eval = eval.m)
           if (bm.mod@has.evaluation.data) {
             return(out[, "evaluation"])
-          } else {
+          } else if (run != "allRun") {
             return(out[, "validation"])
+          } else {
+            return(out[, "calibration"])
           }
         }))
       }
