@@ -323,7 +323,8 @@ BIOMOD_EnsembleForecasting <- function(bm.em,
                         , newdata = formal_pred
                         , on_0_1000 = on_0_1000
                         , data_as_formal_predictions = TRUE
-                        , filename = filename)
+                        , filename = filename
+                        , mod.name = em.name)
       
       if(do.stack){
         if(proj_is_raster){
