@@ -129,14 +129,14 @@ get_var_range <- function(data)
 }
 
 #' @importFrom terra rast classify subset
-.run_pred <- function(object, Prev = 0.5, dat)
+.run_pred <- function(object, Prev = 0.5, dat, mod.name = NULL)
 {
   if (is.finite(object$deviance) && 
       is.finite(object$null.deviance) && 
       object$deviance != object$null.deviance)
   {
     if (inherits(dat, 'SpatRaster')) {
-      pred <- predict(object = dat, model = object, type = "response")
+      pred <- predict(object = dat, model = object, type = "response", wopt = list(names = mod.name))
     } else {
       pred <- predict(object, dat, type = "response")
     }

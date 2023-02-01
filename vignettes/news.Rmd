@@ -15,6 +15,15 @@ vignette: >
 
 ### <i class="fas fa-feather"></i> 2023 
 
+#### 4.2-3 Release 2023.2 (2023-01-18)
+
+##### Bugfix
+
+* Ensemble model can again be calculated over models without validation
+* Correct print for multiple values in RF$sampsize parameter in `BIOMOD_ModelingOptions`
+* Fixed `BIOMOD_Projection` for large (or numerous) raster for which `terraOption(todisk = TRUE)` is automatically activated.
+* Fixed Ensemble Models based on models without cross-validation ("AllRun")
+
 #### 4.2-2 Improvement patch (2023-01-13)
 
 ##### Major Changes

@@ -193,6 +193,7 @@ setMethod('predict2', signature(object = 'biomod2_ensemble_model', newdata = "Sp
             thresh <- args$thresh
             # additional arg retrived for EMwmean
             penalization_scores <- args$penalization_scores
+            mod.name <- args$mod.name
             
             
             if (data_as_formal_predictions) { 
@@ -207,7 +208,9 @@ setMethod('predict2', signature(object = 'biomod2_ensemble_model', newdata = "Sp
                            sd_prediction = sd_prediction, 
                            side = side,
                            thresh = thresh, 
-                           penalization_scores = penalization_scores)
+                           penalization_scores = penalization_scores,
+                           mod.name = mod.name)
+            
             if (!is.null(out) & !is.null(filename)) {
               cat("\n\t\tWriting projection on hard drive...")
               if (on_0_1000 & !inherits(object, "EMcv_biomod2_model")) { ## projections are stored as positive integer
@@ -284,7 +287,7 @@ setClass('EMmean_biomod2_model',
 
 setMethod('predict2', signature(object = 'EMmean_biomod2_model', newdata = "SpatRaster"),
           function(object, newdata, ...) {
-            predfun <- function(newdata, on_0_1000, ...){
+            predfun <- function(newdata, on_0_1000, mod.name, ...){
               if(nlyr(newdata) == 1){
                 return(newdata)
               } else {
@@ -295,7 +298,7 @@ setMethod('predict2', signature(object = 'EMmean_biomod2_model', newdata = "Spat
                       m <- round(m)
                     }
                     return(m)
-                  })
+                  }, wopt = list(names = mod.name))
                 )
               }
             }
@@ -340,7 +343,7 @@ setClass('EMmedian_biomod2_model',
 
 setMethod('predict2', signature(object = 'EMmedian_biomod2_model', newdata = "SpatRaster"),
           function(object, newdata, ...) {
-            predfun <- function(newdata, on_0_1000, ...){
+            predfun <- function(newdata, on_0_1000, mod.name, ...){
               if(nlyr(newdata) == 1){
                 return(newdata)
               } else {
@@ -351,7 +354,7 @@ setMethod('predict2', signature(object = 'EMmedian_biomod2_model', newdata = "Sp
                       m <- round(m)
                     }
                     return(m)
-                  })
+                  }, wopt = list(names = mod.name))
                 )
               }
             }
@@ -394,13 +397,13 @@ setClass('EMcv_biomod2_model',
 
 setMethod('predict2', signature(object = 'EMcv_biomod2_model', newdata = "SpatRaster"),
           function(object, newdata,  ...) {
-            predfun <- function(newdata, on_0_1000, ...){
+            predfun <- function(newdata, on_0_1000, mod.name, ...){
               if (nlyr(newdata) <= 1) {
                 stop(paste0("\n Model EMcv was not computed because only one single model was kept in ensemble modeling (", names(newdata), ")"))
               }
               out <- app(newdata, function(x){
                 sd(x, na.rm = TRUE)/mean(x, na.rm = TRUE) * 100
-              })
+              }, wopt = list(names = mod.name))
               return(out)
             }
             # redirect to predict2.biomod2_ensemble_model.SpatRaster
@@ -454,17 +457,17 @@ setClass('EMci_biomod2_model',
 
 setMethod('predict2', signature(object = 'EMci_biomod2_model', newdata = "SpatRaster"),
           function(object, newdata, ...) {
-            predfun <- function(newdata, on_0_1000, ...){
+            predfun <- function(newdata, on_0_1000, mod.name, ...){
               args <- list(...)
               mean_prediction <- args$mean_prediction
               sd_prediction <- args$sd_prediction
               side <- args$side
               
               if (is.null(mean_prediction)) { 
-                mean_prediction <- app(newdata, mean) 
+                mean_prediction <- app(newdata, mean, wopt = list(names = mod.name)) 
               }
               if (is.null(sd_prediction)) { 
-                sd_prediction <- app(newdata, sd) 
+                sd_prediction <- app(newdata, sd, wopt = list(names = mod.name)) 
               }
               
               ci_prediction <-  switch(
@@ -555,7 +558,7 @@ setMethod('predict2', signature(object = 'EMca_biomod2_model', newdata = "SpatRa
               on_0_1000 <- FALSE
             }
             
-            predfun <- function(newdata, on_0_1000, thresh, ...){
+            predfun <- function(newdata, on_0_1000, thresh, mod.name, ...){
               if(nlyr(newdata) == 1){
                 return(bm_BinaryTransformation(newdata, thresh))
               } else {
@@ -567,7 +570,7 @@ setMethod('predict2', signature(object = 'EMca_biomod2_model', newdata = "SpatRa
                           m <- round(m * 1000)
                         }
                         return(m)
-                      })
+                      }, wopt = list(names = mod.name))
                 )
               }
             }
@@ -637,7 +640,7 @@ setMethod('predict2', signature(object = 'EMwmean_biomod2_model', newdata = "Spa
             if(ncol(newdata) < 1){
               stop("Model EMwmean was not computed because no single model was kept in ensemble modeling")
             }
-            predfun <- function(newdata, on_0_1000, penalization_scores, ...){
+            predfun <- function(newdata, on_0_1000, penalization_scores, mod.name, ...){
               if(nlyr(newdata) == 1){
                 return(newdata)
               } else {
@@ -648,7 +651,7 @@ setMethod('predict2', signature(object = 'EMwmean_biomod2_model', newdata = "Spa
                       wm <- round(wm) 
                     }
                     return(wm)
-                  })
+                  }, wopt = list(names = mod.name))
                 )
               }
             }

@@ -838,19 +838,19 @@ BIOMOD_EnsembleModeling <- function(bm.mod,
                     'EMca' = 'Committee averaging', 
                     'EMwmean' = 'Probabilities weighting mean')
   em.algo.class <- c('EMmean' = 'EMmean', 
-                    'EMcv' = 'EMcv', 
-                    'EMciInf' = 'EMci',
-                    'EMciSup' = 'EMci', 
-                    'EMmedian' = 'EMmedian',
-                    'EMca' = 'EMca', 
-                    'EMwmean' = 'EMwmean')
+                     'EMcv' = 'EMcv', 
+                     'EMciInf' = 'EMci',
+                     'EMciSup' = 'EMci', 
+                     'EMmedian' = 'EMmedian',
+                     'EMca' = 'EMca', 
+                     'EMwmean' = 'EMwmean')
   
   ## 4. Check metric.select ---------------------------------------------------
+  metric.select.user = FALSE
   if (!is.null(metric.select)) {
     if (!is.character(metric.select)) {
       stop("metric.select must be a character vector or NULL")
     }
-    metric.select.user = FALSE
     if ('user.defined' %in% metric.select) {
       metric.select.user = TRUE
       if (!is.null(metric.select.table)) {
@@ -1158,8 +1158,10 @@ BIOMOD_EnsembleModeling <- function(bm.mod,
           out <- get_evaluations(bm.mod, PA = dat, run = run, algo = alg, metric.eval = eval.m)
           if (bm.mod@has.evaluation.data) {
             return(out[, "evaluation"])
-          } else {
+          } else if (run != "allRun") {
             return(out[, "validation"])
+          } else {
+            return(out[, "calibration"])
           }
         }))
       }
