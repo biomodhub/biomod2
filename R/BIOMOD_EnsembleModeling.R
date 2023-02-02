@@ -424,7 +424,7 @@ BIOMOD_EnsembleModeling <- function(bm.mod,
         } else {
           kept_cells <- rep(TRUE, length(obs))
         }
-      } else if (em.by %in% c("algo","all")) { # no other option should be possible
+      } else if (em.by %in% c("algo", "all")) { # no other option should be possible
         if (inherits(get_formal_data(bm.mod), "BIOMOD.formated.data.PA")) {
           # get the union of pseudo absences
           kept_cells <- apply(get_formal_data(bm.mod)@PA.table, 1, any) 
@@ -435,8 +435,8 @@ BIOMOD_EnsembleModeling <- function(bm.mod,
         kept_cells <- rep(TRUE, length(obs))
       }
       
-      obs <- obs[kept_cells]
-      expl <- expl[kept_cells, , drop = FALSE]
+      obs <- obs[which(kept_cells == TRUE)]
+      expl <- expl[which(kept_cells == TRUE), , drop = FALSE]
       obs[is.na(obs)] <- 0
       
       ## get needed models predictions ----------------------------------------
@@ -1091,8 +1091,8 @@ BIOMOD_EnsembleModeling <- function(bm.mod,
           ## model kept for this PA dataset
           thismodels <- names(models.kept.PA)[which(models.kept.PA == this_PA)]
           ## index of data to predict and data already predicted
-          index_to_predict <- which(!PA.table[, this_PA] & kept_data)
-          index_current <- which(PA.table[, this_PA])
+          index_to_predict <- intersect(which(PA.table[, this_PA] == FALSE), which(kept_data == TRUE))
+          index_current <- which(PA.table[, this_PA] == TRUE)
           
           ## retrieve predictions for this PA dataset
           current_prediction <- get_predictions(bm.mod, full.name = thismodels)

@@ -124,7 +124,7 @@ bm_PseudoAbsences <- function(resp.var, expl.var, nb.rep = 1, strategy = 'random
       out.list = foreach(i.abs = unique(nb.absences)) %do% 
         {
           i.rep = which(nb.absences == i.abs)
-          cat("\n > Set ", i.rep, " (", i.abs, " pseudo absences wanted)")
+          cat("\n > Set ", paste0(i.rep, collapse = ", "), " (", i.abs, " pseudo absences wanted)", sep = "")
           
           out <- switch(strategy,
                         user.defined = bm_PseudoAbsences_user.defined(resp.var, expl.var, user.table),
@@ -206,7 +206,7 @@ bm_PseudoAbsences <- function(resp.var, expl.var, nb.rep = 1, strategy = 'random
                  pa.tab = out.pa.tab)
     }
   }
-  
+  cat("\n")
   return(out)
 }
 
