@@ -10,8 +10,9 @@
 ##' species distribution models (asked by the \code{\link{BIOMOD_Modeling}} function).
 ##' 
 ##' 
-##' @param bm.format a \code{\link{BIOMOD.formated.data}} or \code{\link{BIOMOD.formated.data.PA}} 
-##' object returned by the \code{\link{BIOMOD_FormatingData}} function
+##' @param mod.prep.dat.pa a \code{list} returned by the \code{\link{.BIOMOD_Modeling.prepare.data}} 
+##' function and containing pre-processed data from \code{\link{BIOMOD.formated.data}} or 
+##' \code{\link{BIOMOD.formated.data.PA}} for each pseudo-absence dataset 
 ##' @param modeling.id a \code{character} corresponding to the name (ID) of the simulation set 
 ##' (\emph{a random number by default})
 ##' @param model a \code{character} corresponding to the model name to be computed, must be either 
@@ -47,16 +48,16 @@
 ##' (one per observation)
 ##' @param nam a \code{character} corresponding to the model to be run (name + run.id)
 ##' @param Data a \code{data.frame} containing \code{data.species} and \code{data.env.var} slots 
-##' of \code{bm.format} parameter
+##' of \code{mod.prep.dat.pa} parameter
 ##' @param calib.lines a \code{data.frame} containing \code{data.split.table} slot of 
-##' \code{bm.format} parameter, or an extraction of \code{data.species} slot (for a specific PA 
+##' \code{mod.prep.dat.pa} parameter, or an extraction of \code{data.species} slot (for a specific PA 
 ##' dataset extracted from \code{PA.table} slot)
-##' @param xy a \code{data.frame} containing \code{coord} slot of \code{bm.format} 
-##' parameter (for a specific PA dataset extracted from \code{PA.table} slot of \code{bm.format} 
+##' @param xy a \code{data.frame} containing \code{coord} slot of \code{mod.prep.dat.pa} 
+##' parameter (for a specific PA dataset extracted from \code{PA.table} slot of \code{mod.prep.dat.pa} 
 ##' parameter)
 ##' @param eval.data a \code{data.frame} containing \code{eval.data.species} and 
-##' \code{eval.data.env.var} slots of \code{bm.format} parameter
-##' @param eval.xy a \code{data.frame} containing \code{eval.coord} slot of \code{bm.format} 
+##' \code{eval.data.env.var} slots of \code{mod.prep.dat.pa} parameter
+##' @param eval.xy a \code{data.frame} containing \code{eval.coord} slot of \code{mod.prep.dat.pa} 
 ##' parameter
 ##' 
 ##' 
@@ -111,7 +112,7 @@
 ###################################################################################################
 
 
-bm_RunModelsLoop <- function(bm.format,
+bm_RunModelsLoop <- function(mod.prep.dat.pa,
                              modeling.id,
                              model,
                              bm.options,
@@ -135,26 +136,26 @@ bm_RunModelsLoop <- function(bm.format,
     }
   }
   
-  cat("\n\n-=-=-=- Run : ", bm.format$name, '\n')
+  cat("\n\n-=-=-=- Run : ", mod.prep.dat.pa$name, '\n')
   res.sp.run <- list()
-  for (i in 1:ncol(bm.format$calib.lines)) { # loop on RunEval
-    run.id = dimnames(bm.format$calib.lines)[[2]][i]
-    run.name = paste0(bm.format$name, run.id)
+  for (i in 1:ncol(mod.prep.dat.pa$calib.lines)) { # loop on RunEval
+    run.id = dimnames(mod.prep.dat.pa$calib.lines)[[2]][i]
+    run.name = paste0(mod.prep.dat.pa$name, run.id)
     cat('\n\n-=-=-=--=-=-=-', run.name, '\n')
     
     res.sp.run[[run.id]] = foreach(modi = model) %dopar%
       {
         bm_RunModel(model = modi,
-                    Data = bm.format$dataBM,
+                    Data = mod.prep.dat.pa$dataBM,
                     modeling.id = modeling.id,
                     bm.options = bm.options,
-                    calib.lines = na.omit(bm.format$calib.lines[, i, ]), ## transform 3D calib.lines obj into a 1D vector
-                    weights = na.omit(bm.format$weights),
+                    calib.lines.vec = na.omit(mod.prep.dat.pa$calib.lines[, i, ]), ## transform 3D calib.lines obj into a 1D vector
+                    weights = na.omit(mod.prep.dat.pa$weights),
                     nam = run.name,
-                    dir.name = bm.format$dir.name,
-                    xy = bm.format$xy,
-                    eval.data = bm.format$eval.data,
-                    eval.xy = bm.format$eval.xy,
+                    dir.name = mod.prep.dat.pa$dir.name,
+                    xy = mod.prep.dat.pa$xy,
+                    eval.data = mod.prep.dat.pa$eval.data,
+                    eval.xy = mod.prep.dat.pa$eval.xy,
                     metric.eval = metric.eval,
                     var.import = var.import,
                     save.output = TRUE, ## save.output
@@ -177,14 +178,14 @@ bm_RunModelsLoop <- function(bm.format,
 ##' @export
 ##' 
 
-bm_RunModel <- function(model, Data, modeling.id = '', bm.options, calib.lines,
+bm_RunModel <- function(model, Data, modeling.id = '', bm.options, calib.lines.vec,
                         weights, nam, dir.name = '.', xy = NULL, eval.data = NULL,
                         eval.xy = NULL,  metric.eval = c('ROC','TSS','KAPPA'), 
                         var.import = 0, save.output = FALSE, scale.models = TRUE,
                         nb.cpu = 1, seed.val = NULL, do.progress = TRUE)
 {
   ## 0. Check arguments ---------------------------------------------------------------------------
-  args <- .bm_RunModel.check.args(model, Data, bm.options, calib.lines, weights, eval.data
+  args <- .bm_RunModel.check.args(model, Data, bm.options, calib.lines.vec, weights, eval.data
                                   , metric.eval, scale.models, seed.val, do.progress)
   for (argi in names(args)) { assign(x = argi, value = args[[argi]]) }
   rm(args)
@@ -222,7 +223,7 @@ bm_RunModel <- function(model, Data, modeling.id = '', bm.options, calib.lines,
                      , expl.var = head(Data[, -c(1, ncol(Data)), drop = FALSE])
                      , type = 'simple'
                      , interaction.level = 0),
-      data = Data[calib.lines, ],
+      data = Data[calib.lines.vec, ],
       weights = weights,
       method = bm.options@CTA$method,
       parms = parms.tmp,
@@ -246,8 +247,8 @@ bm_RunModel <- function(model, Data, modeling.id = '', bm.options, calib.lines,
                       dir_name = dir_name,
                       resp_name = resp_name,
                       expl_var_names = expl_var_names,
-                      expl_var_type = get_var_type(Data[calib.lines, expl_var_names, drop = FALSE]),
-                      expl_var_range = get_var_range(Data[calib.lines, expl_var_names, drop = FALSE]))
+                      expl_var_type = get_var_type(Data[calib.lines.vec, expl_var_names, drop = FALSE]),
+                      expl_var_range = get_var_range(Data[calib.lines.vec, expl_var_names, drop = FALSE]))
     }
   } else if (model == "GAM") {
     ### 2.2 GAM model ----------------------------------------------------------
@@ -261,12 +262,12 @@ bm_RunModel <- function(model, Data, modeling.id = '', bm.options, calib.lines,
       # NOTE : To be able to take into account GAM options and weights we have to do a eval(parse(...))
       # it's due to GAM implementation (using of match.call() troubles)
       gamStart <- eval(parse(text = paste0("gam::gam(", colnames(Data)[1], "~1 ,"
-                                           , " data = Data[calib.lines,,drop=FALSE], family = ", bm.options@GAM$family$family
+                                           , " data = Data[calib.lines.vec,,drop=FALSE], family = ", bm.options@GAM$family$family
                                            , "(link = '", bm.options@GAM$family$link, "')"
-                                           , ", weights = weights[calib.lines])")))
+                                           , ", weights = weights[calib.lines.vec])")))
       model.sp <- try(gam::step.Gam(gamStart,
                                     .scope(Data[1:3, -c(1, ncol(Data))], "gam::s", bm.options@GAM$k),
-                                    data = Data[calib.lines, , drop = FALSE],
+                                    data = Data[calib.lines.vec, , drop = FALSE],
                                     direction = "both",
                                     trace = bm.options@GAM$control$trace,
                                     control = bm.options@GAM$control))
@@ -289,17 +290,17 @@ bm_RunModel <- function(model, Data, modeling.id = '', bm.options, calib.lines,
         cat('\n\t> GAM (mgcv) modeling...')
         
         model.sp <- try(mgcv::gam(gam.formula,
-                                  data = Data[calib.lines, , drop = FALSE],
+                                  data = Data[calib.lines.vec, , drop = FALSE],
                                   family = bm.options@GAM$family,
-                                  weights = weights[calib.lines],
+                                  weights = weights[calib.lines.vec],
                                   control = bm.options@GAM$control))
         
       } else if (bm.options@GAM$algo == 'BAM_mgcv') { ## big data.frame gam version
         cat('\n\t> BAM (mgcv) modeling...')
         model.sp <- try(mgcv::bam(gam.formula,
-                                  data = Data[calib.lines, , drop = FALSE],
+                                  data = Data[calib.lines.vec, , drop = FALSE],
                                   family = bm.options@GAM$family,
-                                  weights = weights[calib.lines],
+                                  weights = weights[calib.lines.vec],
                                   control = bm.options@GAM$control))
       }
     }
@@ -314,8 +315,8 @@ bm_RunModel <- function(model, Data, modeling.id = '', bm.options, calib.lines,
                       dir_name = dir_name,
                       resp_name = resp_name,
                       expl_var_names = expl_var_names,
-                      expl_var_type = get_var_type(Data[calib.lines, expl_var_names, drop = FALSE]),
-                      expl_var_range = get_var_range(Data[calib.lines, expl_var_names, drop = FALSE]))
+                      expl_var_type = get_var_type(Data[calib.lines.vec, expl_var_names, drop = FALSE]),
+                      expl_var_range = get_var_range(Data[calib.lines.vec, expl_var_names, drop = FALSE]))
     }
   } else if (model == "GBM") {
     ### 2.3 GBM model ----------------------------------------------------------
@@ -324,7 +325,7 @@ bm_RunModel <- function(model, Data, modeling.id = '', bm.options, calib.lines,
                                                  , expl.var = head(Data)[, expl_var_names, drop = FALSE]
                                                  , type = 'simple'
                                                  , interaction.level = 0),
-                        data = Data[calib.lines, , drop = FALSE],
+                        data = Data[calib.lines.vec, , drop = FALSE],
                         distribution = bm.options@GBM$distribution,
                         var.monotone = rep(0, length = ncol(Data) - 2), # -2 because of removing of sp and weights
                         weights = weights,
@@ -352,8 +353,8 @@ bm_RunModel <- function(model, Data, modeling.id = '', bm.options, calib.lines,
                       dir_name = dir_name,
                       resp_name = resp_name,
                       expl_var_names = expl_var_names,
-                      expl_var_type = get_var_type(Data[calib.lines, expl_var_names, drop = FALSE]), 
-                      expl_var_range = get_var_range(Data[calib.lines, expl_var_names, drop = FALSE]))
+                      expl_var_type = get_var_type(Data[calib.lines.vec, expl_var_names, drop = FALSE]), 
+                      expl_var_range = get_var_range(Data[calib.lines.vec, expl_var_names, drop = FALSE]))
     }
   } else if (model == "GLM"){
     ### 2.4 GLM model ----------------------------------------------------------
@@ -372,11 +373,11 @@ bm_RunModel <- function(model, Data, modeling.id = '', bm.options, calib.lines,
     if (bm.options@GLM$test != 'none') {
       ## make the model selection
       glmStart <- glm(eval(parse(text = paste0(colnames(Data)[1], "~1"))), 
-                      data = Data[calib.lines, , drop = FALSE], 
+                      data = Data[calib.lines.vec, , drop = FALSE], 
                       family = bm.options@GLM$family,
                       control = eval(bm.options@GLM$control),
-                      weights = weights[calib.lines],
-                      mustart = rep(bm.options@GLM$mustart, sum(calib.lines)), 
+                      weights = weights[calib.lines.vec],
+                      mustart = rep(bm.options@GLM$mustart, sum(calib.lines.vec)), 
                       model = TRUE)
       
       ## remove warnings
@@ -384,21 +385,21 @@ bm_RunModel <- function(model, Data, modeling.id = '', bm.options, calib.lines,
       options(warn = -1)
       model.sp <- try(stepAIC(glmStart,
                               glm.formula,
-                              data = Data[calib.lines, , drop = FALSE],
+                              data = Data[calib.lines.vec, , drop = FALSE],
                               direction = "both",
                               trace = FALSE,
                               k = criteria,
-                              weights = weights[calib.lines], 
+                              weights = weights[calib.lines.vec], 
                               steps = 10000,
-                              mustart = rep(bm.options@GLM$mustart, sum(calib.lines))))
+                              mustart = rep(bm.options@GLM$mustart, sum(calib.lines.vec))))
       ## reexec warnings
       options(warn)
       
     } else {
       ## keep the total model
       model.sp <- try(glm(glm.formula,
-                          data = cbind(Data[calib.lines, , drop = FALSE], 
-                                       matrix(weights[calib.lines], ncol = 1, dimnames = list(NULL, "weights"))), 
+                          data = cbind(Data[calib.lines.vec, , drop = FALSE], 
+                                       matrix(weights[calib.lines.vec], ncol = 1, dimnames = list(NULL, "weights"))), 
                           family = bm.options@GLM$family,
                           control = eval(bm.options@GLM$control),
                           weights = weights,
@@ -417,8 +418,8 @@ bm_RunModel <- function(model, Data, modeling.id = '', bm.options, calib.lines,
                       dir_name = dir_name,
                       resp_name = resp_name,
                       expl_var_names = expl_var_names,
-                      expl_var_type = get_var_type(Data[calib.lines, expl_var_names, drop = FALSE]),
-                      expl_var_range = get_var_range(Data[calib.lines, expl_var_names, drop = FALSE]))
+                      expl_var_type = get_var_type(Data[calib.lines.vec, expl_var_names, drop = FALSE]),
+                      expl_var_range = get_var_range(Data[calib.lines.vec, expl_var_names, drop = FALSE]))
     }
   } else if (model == "MARS"){
     ### 2.5 MARS model ---------------------------------------------------------
@@ -441,7 +442,7 @@ bm_RunModel <- function(model, Data, modeling.id = '', bm.options, calib.lines,
     }
     
     model.sp <- try(earth(formula = mars.formula,
-                          data = Data[calib.lines, , drop = FALSE], 
+                          data = Data[calib.lines.vec, , drop = FALSE], 
                           weights = weights,
                           glm = list(family = binomial),
                           ncross = 0,
@@ -462,8 +463,8 @@ bm_RunModel <- function(model, Data, modeling.id = '', bm.options, calib.lines,
                       dir_name = dir_name,
                       resp_name = resp_name,
                       expl_var_names = expl_var_names,
-                      expl_var_type = get_var_type(Data[calib.lines, expl_var_names, drop = FALSE]), 
-                      expl_var_range = get_var_range(Data[calib.lines, expl_var_names, drop = FALSE]))
+                      expl_var_type = get_var_type(Data[calib.lines.vec, expl_var_names, drop = FALSE]), 
+                      expl_var_range = get_var_range(Data[calib.lines.vec, expl_var_names, drop = FALSE]))
     }
   } else if (model == "FDA") {
     ### 2.6 FDA model ----------------------------------------------------------
@@ -473,9 +474,9 @@ bm_RunModel <- function(model, Data, modeling.id = '', bm.options, calib.lines,
                                                                  , expl.var = head(Data)[, expl_var_names, drop = FALSE]
                                                                  , type = 'simple'
                                                                  , interaction.level = 0),
-                                        data = Data[calib.lines, , drop = FALSE], 
+                                        data = Data[calib.lines.vec, , drop = FALSE], 
                                         method = eval(parse(text = call(bm.options@FDA$method))),
-                                        weights = weights[calib.lines]),
+                                        weights = weights[calib.lines.vec]),
                                    bm.options@FDA$add_args)))
     
     if (!inherits(model.sp, "try-error")) {
@@ -487,8 +488,8 @@ bm_RunModel <- function(model, Data, modeling.id = '', bm.options, calib.lines,
                       dir_name = dir_name,
                       resp_name = resp_name,
                       expl_var_names = expl_var_names,
-                      expl_var_type = get_var_type(Data[calib.lines, expl_var_names, drop = FALSE]),
-                      expl_var_range = get_var_range(Data[calib.lines, expl_var_names, drop = FALSE]))
+                      expl_var_type = get_var_type(Data[calib.lines.vec, expl_var_names, drop = FALSE]),
+                      expl_var_range = get_var_range(Data[calib.lines.vec, expl_var_names, drop = FALSE]))
     }
   } else if (model == "ANN") {
     ### 2.7 ANN model ----------------------------------------------------------
@@ -504,12 +505,12 @@ bm_RunModel <- function(model, Data, modeling.id = '', bm.options, calib.lines,
       
       ## do cross validation test to find the optimal values of size and decay parameters (prevent from overfitting)
       CV_nnet <- bm_CVnnet(Input = Data[, expl_var_names, drop = FALSE],
-                           Target = Data[calib.lines, 1], 
+                           Target = Data[calib.lines.vec, 1], 
                            size = size,
                            decay = decay,
                            maxit = bm.options@ANN$maxit,
                            nbCV = bm.options@ANN$NbCV,
-                           weights = weights[calib.lines],
+                           weights = weights[calib.lines.vec],
                            seedval = seed.val)
       
       ## get the optimised parameters values
@@ -521,7 +522,7 @@ bm_RunModel <- function(model, Data, modeling.id = '', bm.options, calib.lines,
                                                   , expl.var = head(Data[, expl_var_names, drop = FALSE])
                                                   , type = 'simple'
                                                   , interaction.level = 0),
-                         data = Data[calib.lines, , drop = FALSE], 
+                         data = Data[calib.lines.vec, , drop = FALSE], 
                          size = size,
                          rang = bm.options@ANN$rang,
                          decay = decay,
@@ -538,8 +539,8 @@ bm_RunModel <- function(model, Data, modeling.id = '', bm.options, calib.lines,
                       dir_name = dir_name,
                       resp_name = resp_name,
                       expl_var_names = expl_var_names,
-                      expl_var_type = get_var_type(Data[calib.lines, expl_var_names, drop = FALSE]), 
-                      expl_var_range = get_var_range(Data[calib.lines, expl_var_names, drop = FALSE]))
+                      expl_var_type = get_var_type(Data[calib.lines.vec, expl_var_names, drop = FALSE]), 
+                      expl_var_range = get_var_range(Data[calib.lines.vec, expl_var_names, drop = FALSE]))
     }
   } else if (model == "RF") {
     ### 2.8 RF model -----------------------------------------------------------
@@ -557,14 +558,14 @@ bm_RunModel <- function(model, Data, modeling.id = '', bm.options, calib.lines,
                                                           , expl.var = head(Data)
                                                           , type = 'simple'
                                                           , interaction.level = 0),
-                                 data = Data[calib.lines, ],
+                                 data = Data[calib.lines.vec, ],
                                  ntree = bm.options@RF$ntree,
                                  # weights = weights,
                                  # mtry = mtry.tmp, 
                                  importance = FALSE,
                                  norm.votes = TRUE,
                                  strata = factor(c(0, 1)),
-                                 sampsize = unlist(ifelse(!is.null(bm.options@RF$sampsize), list(bm.options@RF$sampsize), nrow(Data[calib.lines, ]))),
+                                 sampsize = unlist(ifelse(!is.null(bm.options@RF$sampsize), list(bm.options@RF$sampsize), nrow(Data[calib.lines.vec, ]))),
                                  nodesize = bm.options@RF$nodesize,
                                  maxnodes = bm.options@RF$maxnodes))
     
@@ -584,15 +585,15 @@ bm_RunModel <- function(model, Data, modeling.id = '', bm.options, calib.lines,
                       dir_name = dir_name,
                       resp_name = resp_name,
                       expl_var_names = expl_var_names,
-                      expl_var_type = get_var_type(Data[calib.lines, expl_var_names, drop = FALSE]), 
-                      expl_var_range = get_var_range(Data[calib.lines, expl_var_names, drop = FALSE]))
+                      expl_var_type = get_var_type(Data[calib.lines.vec, expl_var_names, drop = FALSE]), 
+                      expl_var_range = get_var_range(Data[calib.lines.vec, expl_var_names, drop = FALSE]))
     }
   } else if (model == "SRE") {
     ### 2.9 SRE model ----------------------------------------------------------
     
     cat('\n\t> SRE modeling...')
-    model.sp <- try(bm_SRE(resp.var = Data[calib.lines, 1],
-                           expl.var = Data[calib.lines, expl_var_names, drop = FALSE],
+    model.sp <- try(bm_SRE(resp.var = Data[calib.lines.vec, 1],
+                           expl.var = Data[calib.lines.vec, expl_var_names, drop = FALSE],
                            new.env = NULL,
                            quant = bm.options@SRE$quant,
                            do.extrem = TRUE))
@@ -606,15 +607,15 @@ bm_RunModel <- function(model, Data, modeling.id = '', bm.options, calib.lines,
                       dir_name = dir_name,
                       resp_name = resp_name,
                       expl_var_names = expl_var_names,
-                      expl_var_type = get_var_type(Data[calib.lines, expl_var_names, drop = FALSE]), 
-                      expl_var_range = get_var_range(Data[calib.lines, expl_var_names, drop = FALSE]))
+                      expl_var_type = get_var_type(Data[calib.lines.vec, expl_var_names, drop = FALSE]), 
+                      expl_var_range = get_var_range(Data[calib.lines.vec, expl_var_names, drop = FALSE]))
     }
   } else if (model == "MAXENT") {
     ### 2.10 MAXENT model ---------------------------------------------
     cat('\n\t> MAXENT modeling...')
     MWD <- 
       .maxent.prepare.workdir(
-        Data, xy, calib.lines, RunName = nam,
+        Data, xy, calib.lines.vec, RunName = nam,
         eval.data, eval.xy, dir.name = dir_name,
         species.name = resp_name,
         modeling.id = modeling.id,
@@ -688,8 +689,8 @@ bm_RunModel <- function(model, Data, modeling.id = '', bm.options, calib.lines,
                       dir_name = dir_name,
                       resp_name = resp_name,
                       expl_var_names = expl_var_names,
-                      expl_var_type = get_var_type(Data[calib.lines, expl_var_names, drop = FALSE]), 
-                      expl_var_range = get_var_range(Data[calib.lines, expl_var_names, drop = FALSE]))
+                      expl_var_type = get_var_type(Data[calib.lines.vec, expl_var_names, drop = FALSE]), 
+                      expl_var_range = get_var_range(Data[calib.lines.vec, expl_var_names, drop = FALSE]))
       
       # for MAXENT predictions are calculated in the same time than models building to save time.
       cat("\n Getting predictions...")
@@ -709,7 +710,7 @@ bm_RunModel <- function(model, Data, modeling.id = '', bm.options, calib.lines,
     ### 2.11 MAXNET model -------------------------------------------
     
     cat('\n\t> MAXNET modeling...')
-    model.sp <- try(maxnet(p = Data[calib.lines, resp_name], data = Data[calib.lines, expl_var_names, drop = FALSE]))
+    model.sp <- try(maxnet(p = Data[calib.lines.vec, resp_name], data = Data[calib.lines.vec, expl_var_names, drop = FALSE]))
     
     if (!inherits(model.sp, "try-error")) {
       model.bm <- new("MAXNET_biomod2_model",
@@ -720,8 +721,8 @@ bm_RunModel <- function(model, Data, modeling.id = '', bm.options, calib.lines,
                       dir_name = dir_name,
                       resp_name = resp_name,
                       expl_var_names = expl_var_names,
-                      expl_var_type = get_var_type(Data[calib.lines, expl_var_names, drop = FALSE]), 
-                      expl_var_range = get_var_range(Data[calib.lines, expl_var_names, drop = FALSE]))
+                      expl_var_type = get_var_type(Data[calib.lines.vec, expl_var_names, drop = FALSE]), 
+                      expl_var_range = get_var_range(Data[calib.lines.vec, expl_var_names, drop = FALSE]))
     }
   }
   
@@ -794,23 +795,23 @@ bm_RunModel <- function(model, Data, modeling.id = '', bm.options, calib.lines,
     ## Check no NA in g.pred to avoid evaluation failures
     na_cell_id <- which(is.na(g.pred))
     if (length(na_cell_id) > 0) {
-      evalLines <- evalLines[!(evalLines %in% na_cell_id)]
+      eval.lines.vec <- eval.lines.vec[!(eval.lines.vec %in% na_cell_id)]
       cat('\n\tNote : some NA occurs in predictions')
     }
     
-    if (length(which(evalLines == TRUE)) < length(g.pred)) {
+    if (length(which(eval.lines.vec == TRUE)) < length(g.pred)) {
       ## CALIBRATION & VALIDATION LINES -------------------------------------------------
       cross.validation <- foreach(xx = metric.eval, .combine = "rbind") %do% {
         bm_FindOptimStat(metric.eval = xx,
-                         obs = Data[!evalLines, 1],
-                         fit = g.pred[!evalLines])
+                         obs = Data[!eval.lines.vec, 1],
+                         fit = g.pred[!eval.lines.vec])
       }
       colnames(cross.validation)[which(colnames(cross.validation) == "best.stat")] <- "calibration"
       
       stat.validation <- foreach(xx = metric.eval, .combine = "rbind") %do% {
         bm_FindOptimStat(metric.eval = xx,
-                         obs = Data[evalLines, 1],
-                         fit = g.pred[evalLines],
+                         obs = Data[eval.lines.vec, 1],
+                         fit = g.pred[eval.lines.vec],
                          threshold = cross.validation["cutoff", xx])
       }
       cross.validation$validation <- stat.validation$best.stat
@@ -818,8 +819,8 @@ bm_RunModel <- function(model, Data, modeling.id = '', bm.options, calib.lines,
       ## NO VALIDATION LINES -----------------------------------------------------
       cross.validation <- foreach(xx = metric.eval, .combine = "rbind") %do% {
         bm_FindOptimStat(metric.eval = xx,
-                         obs = Data[evalLines, 1],
-                         fit = g.pred[evalLines])
+                         obs = Data[eval.lines.vec, 1],
+                         fit = g.pred[eval.lines.vec])
       }
       colnames(cross.validation)[which(colnames(cross.validation) == "best.stat")] <- "calibration"
       cross.validation$validation <- NA
@@ -889,7 +890,7 @@ bm_RunModel <- function(model, Data, modeling.id = '', bm.options, calib.lines,
 
 ###################################################################################################
 
-.bm_RunModel.check.args <- function(model, Data, bm.options, calib.lines, weights,
+.bm_RunModel.check.args <- function(model, Data, bm.options, calib.lines.vec, weights,
                                     eval.data, metric.eval, scale.models,
                                     criteria = NULL, Prev = NULL , seed.val = NULL,
                                     do.progress = TRUE)
@@ -901,21 +902,23 @@ bm_RunModel <- function(model, Data, modeling.id = '', bm.options, calib.lines,
   if (sum(is.na(Data[, 1]))) { Data[which(is.na(Data[, 1])), 1] < - 0 }
   
   ## 1. Check CalibLines argument ---------------------------------------------
-  if (sum(!calib.lines) > 0) ## if some lines for evaluation...
+  if (any(calib.lines.vec == FALSE)) ## if some lines for evaluation...
   {
-    evalLines <- !calib.lines
-    # ...test if there is absences AND presences in evaluation and calibration datasets
-    if (sum(Data[calib.lines, 1] == 0) == 0 ||
-        sum(Data[calib.lines, 1] == 0) == sum(calib.lines) ||
-        sum(Data[evalLines, 1] == 0) == 0 ||
-        sum(Data[evalLines, 1] == 0) == sum(evalLines)) {
+    eval.lines.vec <- !calib.lines.vec
+    # ...test if there is (pseudo)absences AND presences in evaluation and calibration datasets
+    if (
+      
+      sum(Data[calib.lines.vec, 1] == 0) == 0 ||
+        sum(Data[calib.lines.vec, 1] == 0) == sum(calib.lines.vec) ||
+        sum(Data[eval.lines.vec, 1] == 0) == 0 ||
+        sum(Data[eval.lines.vec, 1] == 0) == sum(eval.lines.vec)) {
       warning(paste0(colnames(Data)[1], " ", model,
                      " was switched off because of no both presences and absences data given"),
               immediate. = TRUE)
       return(NULL)
     }
   } else { ## evaluation = calibration dataset
-    evalLines <- calib.lines
+    eval.lines.vec <- calib.lines.vec
     # ...test if there is absences AND presences in whole dataset
     if (sum(Data[, 1] == 0) == 0 ||
         sum(Data[, 1] == 0) == nrow(Data)) {
@@ -1031,7 +1034,7 @@ bm_RunModel <- function(model, Data, modeling.id = '', bm.options, calib.lines,
   
   return(list(Data = Data,
               weights = weights,
-              evalLines = evalLines,
+              eval.lines.vec = eval.lines.vec,
               criteria = criteria,
               Prev = Prev, 
               metric.eval = metric.eval,
@@ -1044,8 +1047,8 @@ bm_RunModel <- function(model, Data, modeling.id = '', bm.options, calib.lines,
 }
 
 
-.maxent.prepare.workdir <- function(Data, xy, calib.lines = NULL, RunName = NULL,
-                                    eval.data = NULL, evalxy =  NULL,
+.maxent.prepare.workdir <- function(Data, xy, calib.lines.vec = NULL, RunName = NULL,
+                                    eval.data = NULL, eval.xy =  NULL,
                                     dir.name = '.', species.name = NULL, modeling.id = '',
                                     background_data_dir = 'default', 
                                     categorical_var = NULL) {
@@ -1058,7 +1061,7 @@ bm_RunModel <- function(model, Data, modeling.id = '', bm.options, calib.lines,
   ## default parameters setting
   if (is.null(RunName)) { RunName <- colnames(Data)[1] }
   if (is.null(species.name)) { species.name <- colnames(Data)[1] }
-  if (is.null(calib.lines)) { calib.lines <- rep(TRUE, nrow(Data)) }
+  if (is.null(calib.lines.vec)) { calib.lines.vec <- rep(TRUE, nrow(Data)) }
   
   ## define all paths to files needed by MAXENT
   nameFolder = file.path(dir.name, species.name, 'models', modeling.id)
@@ -1077,8 +1080,8 @@ bm_RunModel <- function(model, Data, modeling.id = '', bm.options, calib.lines,
   Data <- .categorical2numeric(Data, categorical_var)
   
   ## Presence Data --------------------------------------------------------------------------------
-  presLines <- which((Data[, 1] == 1) & calib.lines)
-  absLines <- which((Data[, 1] == 0) & calib.lines)
+  presLines <- which((Data[, 1] == 1) & calib.lines.vec)
+  absLines <- which((Data[, 1] == 0) & calib.lines.vec)
   Sp_swd <- cbind(rep(RunName, length(presLines))
                   , xy[presLines, ]
                   , Data[presLines, 2:ncol(Data), drop = FALSE])
@@ -1115,8 +1118,8 @@ bm_RunModel <- function(model, Data, modeling.id = '', bm.options, calib.lines,
   
   ## dealing with independent evaluation data -----------------------------------------------------
   if (!is.null(eval.data)) {
-    Pred_eval_swd <- cbind(rep("predictEval", nrow(evalxy))
-                           , evalxy
+    Pred_eval_swd <- cbind(rep("predictEval", nrow(eval.xy))
+                           , eval.xy
                            , eval.data[, 2:ncol(eval.data), drop = FALSE])
     colnames(Pred_eval_swd) <- c("predict", colnames(Back_swd)[-1])
     
