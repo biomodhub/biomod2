@@ -191,7 +191,6 @@ BIOMOD_PresenceOnly <- function(bm.mod = NULL,
   
   
   ## 1. Get calib.lines ------------------------------------------------------
-  
   if (!is.null(bm.mod)) {
     calib.lines <- get_calib_lines(bm.mod)[, , 1]
   } else {

@@ -866,16 +866,12 @@ setMethod('plot', signature(x = 'BIOMOD.formated.data', y = "missing"),
     }
   }
   
-  
-  
   ## 7 - do.plot ----------------------
   # do.plot
   stopifnot(is.logical(do.plot))
   
   ## 8 - check PA ----------------------
-  
   if (inherits(x, "BIOMOD.formated.data.PA")) {
-    
     if (missing(PA)) PA <- 'all'
     
     expected_PAnames <- colnames(x@PA.table)
@@ -893,15 +889,11 @@ setMethod('plot', signature(x = 'BIOMOD.formated.data', y = "missing"),
   }
   
   ##  9 - check that coordinates are available -------------------------------
-  
   if(nrow(x@coord) == 0){
     stop("coordinates are required to plot BIOMOD.formated.data objects")
   }
-  
 
   ## End - return arguments ----------------------------------------------------
-  
-  
   return(list(x = x,
               calib.lines = calib.lines,
               plot.type = plot.type,
