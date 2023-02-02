@@ -795,7 +795,7 @@ bm_RunModel <- function(model, Data, modeling.id = '', bm.options, calib.lines.v
     ## Check no NA in g.pred to avoid evaluation failures
     na_cell_id <- which(is.na(g.pred))
     if (length(na_cell_id) > 0) {
-      eval.lines.vec <- eval.lines.vec[!(eval.lines.vec %in% na_cell_id)]
+      eval.lines.vec <- eval.lines.vec[-na_cell_id]
       cat('\n\tNote : some NA occurs in predictions')
     }
     
@@ -803,15 +803,15 @@ bm_RunModel <- function(model, Data, modeling.id = '', bm.options, calib.lines.v
       ## CALIBRATION & VALIDATION LINES -------------------------------------------------
       cross.validation <- foreach(xx = metric.eval, .combine = "rbind") %do% {
         bm_FindOptimStat(metric.eval = xx,
-                         obs = Data[!eval.lines.vec, 1],
-                         fit = g.pred[!eval.lines.vec])
+                         obs = Data[which(eval.lines.vec == FALSE), 1],
+                         fit = g.pred[which(eval.lines.vec == FALSE)])
       }
       colnames(cross.validation)[which(colnames(cross.validation) == "best.stat")] <- "calibration"
       
       stat.validation <- foreach(xx = metric.eval, .combine = "rbind") %do% {
         bm_FindOptimStat(metric.eval = xx,
-                         obs = Data[eval.lines.vec, 1],
-                         fit = g.pred[eval.lines.vec],
+                         obs = Data[which(eval.lines.vec == TRUE), 1],
+                         fit = g.pred[which(eval.lines.vec == TRUE)],
                          threshold = cross.validation["cutoff", xx])
       }
       cross.validation$validation <- stat.validation$best.stat
@@ -819,8 +819,8 @@ bm_RunModel <- function(model, Data, modeling.id = '', bm.options, calib.lines.v
       ## NO VALIDATION LINES -----------------------------------------------------
       cross.validation <- foreach(xx = metric.eval, .combine = "rbind") %do% {
         bm_FindOptimStat(metric.eval = xx,
-                         obs = Data[eval.lines.vec, 1],
-                         fit = g.pred[eval.lines.vec])
+                         obs = Data[which(eval.lines.vec == TRUE), 1],
+                         fit = g.pred[which(eval.lines.vec == TRUE)])
       }
       colnames(cross.validation)[which(colnames(cross.validation) == "best.stat")] <- "calibration"
       cross.validation$validation <- NA
@@ -906,9 +906,7 @@ bm_RunModel <- function(model, Data, modeling.id = '', bm.options, calib.lines.v
   {
     eval.lines.vec <- !calib.lines.vec
     # ...test if there is (pseudo)absences AND presences in evaluation and calibration datasets
-    if (
-      
-      sum(Data[calib.lines.vec, 1] == 0) == 0 ||
+    if (sum(Data[calib.lines.vec, 1] == 0) == 0 ||
         sum(Data[calib.lines.vec, 1] == 0) == sum(calib.lines.vec) ||
         sum(Data[eval.lines.vec, 1] == 0) == 0 ||
         sum(Data[eval.lines.vec, 1] == 0) == sum(eval.lines.vec)) {
