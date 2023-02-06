@@ -24,6 +24,9 @@ vignette: >
 * Fixed `BIOMOD_Projection` for large (or numerous) raster for which `terraOption(todisk = TRUE)` is automatically activated.
 * Fixed Ensemble Models based on models without cross-validation ("AllRun")
 
+##### Miscellaneous
+* improved documentation for `get_evaluations()`
+
 #### 4.2-2 Improvement patch (2023-01-13)
 
 ##### Major Changes

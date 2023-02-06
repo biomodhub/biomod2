@@ -226,8 +226,9 @@ select the pseudo-absence points. Must be <code>random</code>, <code>sre</code>,
 <dt>PA.nb.absences</dt>
 <dd><p>(<em>optional, default</em> <code>0</code>) <br> 
 If pseudo-absence selection, and <code>PA.strategy = 'random'</code> or <code>PA.strategy = 'sre'</code> 
-or <code>PA.strategy = 'disk'</code>, an <code>integer</code> corresponding to the number of pseudo-absence 
-points that will be selected for each pseudo-absence repetition (true absences included)</p></dd>
+or <code>PA.strategy = 'disk'</code>, an <code>integer</code> (or a <code>vector</code> of <code>integer</code> the 
+same size as <code>PA.nb.rep</code>) corresponding to the number of pseudo-absence points that 
+will be selected for each pseudo-absence repetition (true absences included)</p></dd>
 
 
 <dt>PA.dist.min</dt>

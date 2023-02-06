@@ -109,8 +109,9 @@ select the pseudo-absence points. Must be \code{random}, \code{sre}, \code{disk}
 
 \item{PA.nb.absences}{(\emph{optional, default} \code{0}) \cr 
 If pseudo-absence selection, and \code{PA.strategy = 'random'} or \code{PA.strategy = 'sre'} 
-or \code{PA.strategy = 'disk'}, an \code{integer} corresponding to the number of pseudo-absence 
-points that will be selected for each pseudo-absence repetition (true absences included)}
+or \code{PA.strategy = 'disk'}, an \code{integer} (or a \code{vector} of \code{integer} the 
+same size as \code{PA.nb.rep}) corresponding to the number of pseudo-absence points that 
+will be selected for each pseudo-absence repetition (true absences included)}
 
 \item{PA.dist.min}{(\emph{optional, default} \code{0}) \cr 
 If pseudo-absence selection and \code{PA.strategy = 'disk'}, a \code{numeric} defining the 

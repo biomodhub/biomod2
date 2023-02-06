@@ -444,12 +444,13 @@ function)</em>)</p></dd>
   <code><a href="BIOMOD.ensemble.models.out.html">BIOMOD.ensemble.models.out</a></code>) object</p></dd>
 
   <dt><code>get_evaluations</code></dt>
-<dd><p>a
-  <code><a href="BIOMOD.stored.data.html">BIOMOD.stored.data.frame-class</a></code> (or
-  <code>matrix</code>) from the <code>models.evaluation</code> slot (or
-  <code>model_evaluation</code> of each model in <code>em.computed</code>) of a
-  <code><a href="BIOMOD.models.out.html">BIOMOD.models.out</a></code> (or
-  <code><a href="BIOMOD.ensemble.models.out.html">BIOMOD.ensemble.models.out</a></code>) object</p></dd>
+<dd><p>a data.frame from the <code>models.evaluation</code>
+   slot (or <code>model_evaluation</code> of each model in <code>em.computed</code>) of a
+  <code><a href="BIOMOD.models.out.html">BIOMOD.models.out</a></code> (or <code><a href="BIOMOD.ensemble.models.out.html">BIOMOD.ensemble.models.out</a></code>)
+   object. Contains evaluation metric for different models and dataset. 
+   Evaluation metric are calculated on the calibrating data (column calibration),
+   on the cross-validation data (column validation) or on the evaluation data
+   (column evaluation)</p></dd>
 
   <dt><code>get_variables_importance</code></dt>
 <dd><p>a

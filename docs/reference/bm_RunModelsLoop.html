@@ -99,7 +99,7 @@ species distribution models (asked by the <code><a href="BIOMOD_Modeling.html">B
 
     <div id="ref-usage">
     <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">bm_RunModelsLoop</span><span class="op">(</span></span>
-<span>  <span class="va">bm.format</span>,</span>
+<span>  <span class="va">mod.prep.dat.pa</span>,</span>
 <span>  <span class="va">modeling.id</span>,</span>
 <span>  <span class="va">model</span>,</span>
 <span>  <span class="va">bm.options</span>,</span>
@@ -117,7 +117,7 @@ species distribution models (asked by the <code><a href="BIOMOD_Modeling.html">B
 <span>  <span class="va">Data</span>,</span>
 <span>  modeling.id <span class="op">=</span> <span class="st">""</span>,</span>
 <span>  <span class="va">bm.options</span>,</span>
-<span>  <span class="va">calib.lines</span>,</span>
+<span>  <span class="va">calib.lines.vec</span>,</span>
 <span>  <span class="va">weights</span>,</span>
 <span>  <span class="va">nam</span>,</span>
 <span>  dir.name <span class="op">=</span> <span class="st">"."</span>,</span>
@@ -136,9 +136,10 @@ species distribution models (asked by the <code><a href="BIOMOD_Modeling.html">B
 
     <div id="arguments">
     <h2>Arguments</h2>
-    <dl><dt>bm.format</dt>
-<dd><p>a <code><a href="BIOMOD.formated.data.html">BIOMOD.formated.data</a></code> or <code><a href="BIOMOD.formated.data.PA.html">BIOMOD.formated.data.PA</a></code> 
-object returned by the <code><a href="BIOMOD_FormatingData.html">BIOMOD_FormatingData</a></code> function</p></dd>
+    <dl><dt>mod.prep.dat.pa</dt>
+<dd><p>a <code>list</code> returned by the <code>.BIOMOD_Modeling.prepare.data</code> 
+function and containing pre-processed data from <code><a href="BIOMOD.formated.data.html">BIOMOD.formated.data</a></code> or 
+<code><a href="BIOMOD.formated.data.PA.html">BIOMOD.formated.data.PA</a></code> for each pseudo-absence dataset</p></dd>
 
 
 <dt>modeling.id</dt>
@@ -200,13 +201,7 @@ A <code>logical</code> value defining whether the progress bar is to be rendered
 
 <dt>Data</dt>
 <dd><p>a <code>data.frame</code> containing <code>data.species</code> and <code>data.env.var</code> slots 
-of <code>bm.format</code> parameter</p></dd>
-
-
-<dt>calib.lines</dt>
-<dd><p>a <code>data.frame</code> containing <code>data.split.table</code> slot of 
-<code>bm.format</code> parameter, or an extraction of <code>data.species</code> slot (for a specific PA 
-dataset extracted from <code>PA.table</code> slot)</p></dd>
+of <code>mod.prep.dat.pa</code> parameter</p></dd>
 
 
 <dt>weights</dt>
@@ -224,19 +219,25 @@ A <code>character</code> corresponding to the modeling folder</p></dd>
 
 
 <dt>xy</dt>
-<dd><p>a <code>data.frame</code> containing <code>coord</code> slot of <code>bm.format</code> 
-parameter (for a specific PA dataset extracted from <code>PA.table</code> slot of <code>bm.format</code> 
+<dd><p>a <code>data.frame</code> containing <code>coord</code> slot of <code>mod.prep.dat.pa</code> 
+parameter (for a specific PA dataset extracted from <code>PA.table</code> slot of <code>mod.prep.dat.pa</code> 
 parameter)</p></dd>
 
 
 <dt>eval.data</dt>
 <dd><p>a <code>data.frame</code> containing <code>eval.data.species</code> and 
-<code>eval.data.env.var</code> slots of <code>bm.format</code> parameter</p></dd>
+<code>eval.data.env.var</code> slots of <code>mod.prep.dat.pa</code> parameter</p></dd>
 
 
 <dt>eval.xy</dt>
-<dd><p>a <code>data.frame</code> containing <code>eval.coord</code> slot of <code>bm.format</code> 
+<dd><p>a <code>data.frame</code> containing <code>eval.coord</code> slot of <code>mod.prep.dat.pa</code> 
 parameter</p></dd>
+
+
+<dt>calib.lines</dt>
+<dd><p>a <code>data.frame</code> containing <code>data.split.table</code> slot of 
+<code>mod.prep.dat.pa</code> parameter, or an extraction of <code>data.species</code> slot (for a specific PA 
+dataset extracted from <code>PA.table</code> slot)</p></dd>
 
 </dl></div>
     <div id="value">

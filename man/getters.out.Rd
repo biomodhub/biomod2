@@ -289,12 +289,13 @@ function)})}
   \code{models.computed} slot (or \code{em.computed}) of a
   \code{\link{BIOMOD.models.out}} (or
   \code{\link{BIOMOD.ensemble.models.out}}) object}
-  \item{\code{get_evaluations}}{a
-  \code{\link{BIOMOD.stored.data.frame-class}} (or
-  \code{matrix}) from the \code{models.evaluation} slot (or
-  \code{model_evaluation} of each model in \code{em.computed}) of a
-  \code{\link{BIOMOD.models.out}} (or
-  \code{\link{BIOMOD.ensemble.models.out}}) object}
+  \item{\code{get_evaluations}}{a data.frame from the \code{models.evaluation}
+   slot (or \code{model_evaluation} of each model in \code{em.computed}) of a
+  \code{\link{BIOMOD.models.out}} (or \code{\link{BIOMOD.ensemble.models.out}})
+   object. Contains evaluation metric for different models and dataset. 
+   Evaluation metric are calculated on the calibrating data (column calibration),
+   on the cross-validation data (column validation) or on the evaluation data
+   (column evaluation)}
   \item{\code{get_variables_importance}}{a
   \code{\link{BIOMOD.stored.data.frame-class}} from
   the \code{variables.importance} slot (or \code{model_variables_importance}

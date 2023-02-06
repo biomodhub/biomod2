@@ -6,7 +6,7 @@
 \title{Loop to compute all single species distribution models}
 \usage{
 bm_RunModelsLoop(
-  bm.format,
+  mod.prep.dat.pa,
   modeling.id,
   model,
   bm.options,
@@ -24,7 +24,7 @@ bm_RunModel(
   Data,
   modeling.id = "",
   bm.options,
-  calib.lines,
+  calib.lines.vec,
   weights,
   nam,
   dir.name = ".",
@@ -41,8 +41,9 @@ bm_RunModel(
 )
 }
 \arguments{
-\item{bm.format}{a \code{\link{BIOMOD.formated.data}} or \code{\link{BIOMOD.formated.data.PA}} 
-object returned by the \code{\link{BIOMOD_FormatingData}} function}
+\item{mod.prep.dat.pa}{a \code{list} returned by the \code{\link{.BIOMOD_Modeling.prepare.data}} 
+function and containing pre-processed data from \code{\link{BIOMOD.formated.data}} or 
+\code{\link{BIOMOD.formated.data.PA}} for each pseudo-absence dataset}
 
 \item{modeling.id}{a \code{character} corresponding to the name (ID) of the simulation set 
 (\emph{a random number by default})}
@@ -82,11 +83,7 @@ An \code{integer} value corresponding to the new seed value to be set}
 A \code{logical} value defining whether the progress bar is to be rendered or not}
 
 \item{Data}{a \code{data.frame} containing \code{data.species} and \code{data.env.var} slots 
-of \code{bm.format} parameter}
-
-\item{calib.lines}{a \code{data.frame} containing \code{data.split.table} slot of 
-\code{bm.format} parameter, or an extraction of \code{data.species} slot (for a specific PA 
-dataset extracted from \code{PA.table} slot)}
+of \code{mod.prep.dat.pa} parameter}
 
 \item{weights}{a \code{vector} of \code{numeric} values corresponding to observation weights 
 (one per observation)}
@@ -96,15 +93,19 @@ dataset extracted from \code{PA.table} slot)}
 \item{dir.name}{(\emph{optional, default} \code{.}) \cr
 A \code{character} corresponding to the modeling folder}
 
-\item{xy}{a \code{data.frame} containing \code{coord} slot of \code{bm.format} 
-parameter (for a specific PA dataset extracted from \code{PA.table} slot of \code{bm.format} 
+\item{xy}{a \code{data.frame} containing \code{coord} slot of \code{mod.prep.dat.pa} 
+parameter (for a specific PA dataset extracted from \code{PA.table} slot of \code{mod.prep.dat.pa} 
 parameter)}
 
 \item{eval.data}{a \code{data.frame} containing \code{eval.data.species} and 
-\code{eval.data.env.var} slots of \code{bm.format} parameter}
+\code{eval.data.env.var} slots of \code{mod.prep.dat.pa} parameter}
 
-\item{eval.xy}{a \code{data.frame} containing \code{eval.coord} slot of \code{bm.format} 
+\item{eval.xy}{a \code{data.frame} containing \code{eval.coord} slot of \code{mod.prep.dat.pa} 
 parameter}
+
+\item{calib.lines}{a \code{data.frame} containing \code{data.split.table} slot of 
+\code{mod.prep.dat.pa} parameter, or an extraction of \code{data.species} slot (for a specific PA 
+dataset extracted from \code{PA.table} slot)}
 }
 \value{
 A \code{list} containing for each model a \code{list} containing the following elements :
