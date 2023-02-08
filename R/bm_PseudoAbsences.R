@@ -138,14 +138,17 @@ bm_PseudoAbsences <- function(resp.var, expl.var, nb.rep = 1, strategy = 'random
       ## GET XY -----------------------------------------------------
       
       ## Get coordinates of presences
-      xy.pres = out.list[[1]][["xy"]][grep("pres", rownames(out.list[[1]][["xy"]])), ]
-      nb.pres = nrow(xy.pres)
+      ind.pres = which(out.list[[1]][["sp"]] == 1)
+      xy.pres = out.list[[1]][["xy"]][ind.pres, ]
+      nb.pres = length(ind.pres)
       
       ## Get coordinates of pseudo-absences
       out.xy = foreach(i = 1:length(out.list)) %do%
         {
-          res = out.list[[i]][["xy"]][-c(1:nb.pres), ]
-          res = cbind(res, (1:nrow(res)) + nb.pres)
+          ind.keep = 1:nrow(out.list[[i]][["xy"]])
+          ind.keep = ind.keep[-which(ind.keep %in% ind.pres)]
+          res = out.list[[i]][["xy"]][ind.keep, ]
+          res = cbind(res, ind.keep)
           return(res)
         }
       
@@ -161,6 +164,7 @@ bm_PseudoAbsences <- function(resp.var, expl.var, nb.rep = 1, strategy = 'random
       ## Keep presences + pseudo-absences coordinates
       out.xy = out.xy[, c("x", "y")]
       out.xy = rbind(xy.pres, out.xy)
+      out.sp = c(rep(1, nb.pres), rep(NA, nrow(out.xy) - nb.pres))
       
       ## GET ENV & PA.TAB -------------------------------------------
       
@@ -201,7 +205,7 @@ bm_PseudoAbsences <- function(resp.var, expl.var, nb.rep = 1, strategy = 'random
       
       ## GET everything ---------------------------------------------
       out = list(xy = out.xy,
-                 sp = c(rep(1, nb.pres), rep(NA, nrow(out.xy) - nb.pres)),
+                 sp = out.sp,
                  env = out.env,
                  pa.tab = out.pa.tab)
     }

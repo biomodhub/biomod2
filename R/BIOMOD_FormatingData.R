@@ -345,6 +345,7 @@ BIOMOD_FormatingData <- function(resp.name,
                                            filter.raster)
   for (argi in names(args)) { assign(x = argi, value = args[[argi]]) }
   rm(args)
+  
   ## 2. build BIOMOD.formated.data object -------------------------------------
   out <- NULL
   if( PA.strategy == 'none') { # no Pseudo Absences
@@ -424,13 +425,11 @@ BIOMOD_FormatingData <- function(resp.name,
   
   ## 1. Checking resp.var and expl.var -----------------------------------------
   
-  
   ### 1.1 Checking resp.var ----------------------------------------------------
   available.types.resp <- c('integer', 'numeric', 'data.frame', 'matrix',
                             'SpatialPointsDataFrame', 'SpatialPoints', 'SpatVector')
   
   ####  Check response type -----------------------------------------------
-  
   .fun_testIfInherits(TRUE, "resp.var", resp.var, available.types.resp)
   
   ####  SpatialPoints, SpatialPointsDataFrame and SpatVector -------------------
@@ -445,7 +444,7 @@ BIOMOD_FormatingData <- function(resp.name,
   }
   ####  data.frame and matrix --------------------------
   ## transforming into numeric
-  if (inherits(resp.var, c("matrix","data.frame"))) {
+  if (inherits(resp.var, c("matrix", "data.frame"))) {
     resp.var <- .check_formating_table(resp.var)
   }
   ####  checking xy coordinates validity --------------------------
@@ -461,12 +460,9 @@ BIOMOD_FormatingData <- function(resp.name,
   
   
   #### check presence/absence in resp.var -------------------------------------
-  
   resp.var <- .check_formating_resp.var(resp.var = resp.var, eval.data = FALSE)
   
-  
   ### 1.2 checking expl.var -------------------------------------------------------
-  
   available.types.expl <- c('integer', 'numeric', 'data.frame', 'matrix',
                             'RasterLayer', 'RasterStack', 'SpatRaster',
                             'SpatialPointsDataFrame', 'SpatVector')
@@ -664,8 +660,7 @@ BIOMOD_FormatingData <- function(resp.name,
 }
 
 .check_formating_resp.var <- function(resp.var, eval.data = FALSE){
-  
-  if (any(!resp.var %in% c(0,1,NA))) {
+  if (length(which(!(resp.var %in% c(0, 1, NA)))) > 0) {
     cat("\n      ! ", ifelse(eval.data, "Evaluation",""), "Response variable have non-binary values that will be converted into 0 (resp <=0) or 1 (resp > 0).")
     resp.var[which(resp.var > 0)] <- 1
     resp.var[which(resp.var <= 0)] <- 0

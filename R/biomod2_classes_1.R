@@ -307,7 +307,6 @@ setMethod('BIOMOD.formated.data', signature(sp = 'numeric', env = 'SpatRaster'),
                    na.rm = TRUE, shared.eval.env = FALSE,
                    filter.raster = FALSE)
           {
-            
             ## Keep same env variable for eval than calib (+ check for factor)
             if (!is.null(eval.sp) && is.null(eval.env)) {
               output <- check_duplicated_cells(env, eval.xy, eval.sp, filter.raster)
@@ -1077,7 +1076,7 @@ setMethod('summary', signature(object = 'BIOMOD.formated.data'),
                                     this_valid <- ! calib.lines[ , this_run] & object@PA.table[ , this_PA]
                                   }
                                   
-                                  calib.resp <- object@data.species[this_calib]
+                                  calib.resp <- object@data.species[which(this_calib == TRUE)]
                                   tmp <- data.frame("dataset" = "calibration",
                                                     "run" = this_run,
                                                     "PA" = this_PA,
@@ -1101,7 +1100,6 @@ setMethod('summary', signature(object = 'BIOMOD.formated.data'),
                                   return(tmp) # end foreach
                                 })
             } 
-            output$Total_Absences <- output$True_Absences + output$Pseudo_Absences
             output
           }
 )
@@ -1335,7 +1333,6 @@ setMethod('BIOMOD.formated.data.PA', signature(sp = 'numeric', env = 'SpatRaster
     xy <- output$xy
     sp <- output$sp
     rm(output)
-    
   }
 
   ## Convert sp in SpatVector
@@ -1349,9 +1346,8 @@ setMethod('BIOMOD.formated.data.PA', signature(sp = 'numeric', env = 'SpatRaster
                           y = xy[,2],
                           resp = sp)
     }
-    sp <- vect(sp.df, geom = c("x","y"))
+    sp <- vect(sp.df, geom = c("x", "y"))
   }
-  
   
   pa.data.tmp <- bm_PseudoAbsences(resp.var = sp,
                                    expl.var = env,
