@@ -444,7 +444,6 @@ BIOMOD_EnsembleModeling <- function(bm.mod,
                                                     , metric.select, metric.select.thresh
                                                     , metric.select.user, metric.select.table
                                                     , nb.cpu)
-      
 
       ## LOOP over evaluation metrics ------------------------------------------
       em.out.eval <- foreach(eval.m = metric.select) %do%  {
@@ -460,7 +459,6 @@ BIOMOD_EnsembleModeling <- function(bm.mod,
                           pred.eval = NULL,
                           evaluation = NULL,
                           var.import = NULL)
-          
           
           algo.long <- em.algo.long[algo]
           algo.class <- em.algo.class[algo]
@@ -794,8 +792,8 @@ BIOMOD_EnsembleModeling <- function(bm.mod,
     if (all(c(missing(prob.mean), missing(prob.cv),
               missing(prob.ci), missing(prob.median),
               missing(committee.averaging), missing(prob.mean.weight)))) {
-      em.algo <- 'prob.mean'
-      cat("\n! setting em.algo to its default value c('prob.mean')")
+      em.algo <- 'EMmean'
+      cat("\n! setting em.algo to its default value c('EMmean')")
     } else {
       if (missing(prob.mean)) prob.mean <- FALSE
       if (missing(prob.cv)) prob.cv <- FALSE
@@ -1064,7 +1062,6 @@ BIOMOD_EnsembleModeling <- function(bm.mod,
                           metric.select.user, metric.select.table)
   
   models.kept.union <- unique(unlist(out$models.kept))
-  
   if (length(models.kept.union) > 0) {
     ## load prediction on each PA
     if (em.by %in% c("PA", 'PA+algo', 'PA+run') || 

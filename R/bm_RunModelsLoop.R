@@ -15,7 +15,7 @@
 ##' \code{\link{BIOMOD.formated.data.PA}} for each pseudo-absence dataset 
 ##' @param modeling.id a \code{character} corresponding to the name (ID) of the simulation set 
 ##' (\emph{a random number by default})
-##' @param model a \code{character} corresponding to the model name to be computed, must be either 
+##' @param models a \code{character} corresponding to the model name to be computed, must be either 
 ##' \code{GLM}, \code{GBM}, \code{GAM}, \code{CTA}, \code{ANN}, \code{SRE}, \code{FDA}, 
 ##' \code{MARS}, \code{RF}, \code{MAXENT}, \code{MAXNET}
 ##' @param bm.options a \code{\link{BIOMOD.models.options}} object returned by the  
@@ -114,7 +114,8 @@
 
 bm_RunModelsLoop <- function(mod.prep.dat.pa,
                              modeling.id,
-                             model,
+                             models,
+                             models.pa,
                              bm.options,
                              metric.eval,
                              var.import,
@@ -143,7 +144,15 @@ bm_RunModelsLoop <- function(mod.prep.dat.pa,
     run.name = paste0(mod.prep.dat.pa$name, run.id)
     cat('\n\n-=-=-=--=-=-=-', run.name, '\n')
     
-    res.sp.run[[run.id]] = foreach(modi = model) %dopar%
+    models.subset = models
+    if (!is.null(models.pa)) {
+      ## optional : subset of models associated to the concerned PA dataset
+      pa.id = strsplit(mod.prep.dat.pa$name, "_")[[1]][2]
+      models.subset = sapply(models.pa, function(x) pa.id %in% x)
+      models.subset = names(models.pa)[which(models.subset == TRUE)]
+    }
+    
+    res.sp.run[[run.id]] = foreach(modi = models.subset) %dopar% # loop on models
       {
         bm_RunModel(model = modi,
                     Data = mod.prep.dat.pa$dataBM,
@@ -163,8 +172,7 @@ bm_RunModelsLoop <- function(mod.prep.dat.pa,
                     seed.val = seed.val,
                     do.progress = TRUE)
       }
-    names(res.sp.run[[run.id]]) <- model
-    
+    names(res.sp.run[[run.id]]) <- models.subset
   }
   
   return(res.sp.run)

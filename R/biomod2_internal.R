@@ -387,35 +387,39 @@ get_var_range <- function(data)
     foreach(i.dim2 = 1:dim2, .combine = "rbind") %:% 
     foreach(i.dim3 = 1:dim3, .combine = "rbind") %do%
     {
-      res <- obj.out[[i.dim1]][[i.dim2]][[i.dim3]][[out]]
-      if (!is.null(res) && length(res) > 0) {
-        res <- as.data.frame(res)
-        if (out %in% c("model", "calib.failure", "models.kept", "pred", "pred.eval")) {
-          colnames(res) <- out
-          res[["points"]] <- 1:nrow(res)
-          res <- res[, c("points", out)]
-        }
-        col_names <- colnames(res)
-        res[[dim_names[1]]] <- names(obj.out)[i.dim1]
-        res[[dim_names[2]]] <- names(obj.out[[i.dim1]])[i.dim2]
-        res[[dim_names[3]]] <- names(obj.out[[i.dim1]][[i.dim2]])[i.dim3]
-        tmp.full.name <- obj.out[[i.dim1]][[i.dim2]][[i.dim3]][["model"]]
-        if(out == "calib.failure" | is.null(tmp.full.name)){
-          res[["full.name"]] <- NA
-        } else {
-          res[["full.name"]] <- tmp.full.name
-        }
-        if (obj.type == "mod") {
-          res[[dim_names[1]]] <- sub(".*_", "", res[[dim_names[1]]])
-          res[[dim_names[2]]] <- sub(".*_", "", res[[dim_names[2]]])
-          return(res[, c("full.name", dim_names, col_names)])
-        } else {
-          tmp <- names(obj.out)[i.dim1]
-          res[[dim_names.bis[1]]] <- strsplit(tmp, "_")[[1]][1]
-          res[[dim_names.bis[2]]] <- strsplit(tmp, "_")[[1]][2]
-          res[[dim_names.bis[3]]] <- strsplit(tmp, "_")[[1]][3]
-          res[[dim_names[1]]] <- NULL
-          return(res[, c("full.name", dim_names.bis, dim_names[-1], col_names)])
+      if (length(obj.out) >= i.dim1 &&
+          length(obj.out[[i.dim1]]) >= i.dim2 &&
+          length(obj.out[[i.dim1]][[i.dim2]]) >= i.dim3) {
+        res <- obj.out[[i.dim1]][[i.dim2]][[i.dim3]][[out]]
+        if (!is.null(res) && length(res) > 0) {
+          res <- as.data.frame(res)
+          if (out %in% c("model", "calib.failure", "models.kept", "pred", "pred.eval")) {
+            colnames(res) <- out
+            res[["points"]] <- 1:nrow(res)
+            res <- res[, c("points", out)]
+          }
+          col_names <- colnames(res)
+          res[[dim_names[1]]] <- names(obj.out)[i.dim1]
+          res[[dim_names[2]]] <- names(obj.out[[i.dim1]])[i.dim2]
+          res[[dim_names[3]]] <- names(obj.out[[i.dim1]][[i.dim2]])[i.dim3]
+          tmp.full.name <- obj.out[[i.dim1]][[i.dim2]][[i.dim3]][["model"]]
+          if(out == "calib.failure" | is.null(tmp.full.name)){
+            res[["full.name"]] <- NA
+          } else {
+            res[["full.name"]] <- tmp.full.name
+          }
+          if (obj.type == "mod") {
+            res[[dim_names[1]]] <- sub(".*_", "", res[[dim_names[1]]])
+            res[[dim_names[2]]] <- sub(".*_", "", res[[dim_names[2]]])
+            return(res[, c("full.name", dim_names, col_names)])
+          } else {
+            tmp <- names(obj.out)[i.dim1]
+            res[[dim_names.bis[1]]] <- strsplit(tmp, "_")[[1]][1]
+            res[[dim_names.bis[2]]] <- strsplit(tmp, "_")[[1]][2]
+            res[[dim_names.bis[3]]] <- strsplit(tmp, "_")[[1]][3]
+            res[[dim_names[1]]] <- NULL
+            return(res[, c("full.name", dim_names.bis, dim_names[-1], col_names)])
+          }
         }
       }
     }
@@ -424,8 +428,8 @@ get_var_range <- function(data)
     if (is.null(output)) { 
       output <- 'none'
     } else { 
-        output <- unique(as.character(output[[out]]))
-        }
+      output <- unique(as.character(output[[out]]))
+    }
   }
   return(output)
 }

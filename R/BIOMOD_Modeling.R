@@ -282,6 +282,7 @@ BIOMOD_Modeling <- function(bm.format,
                             modeling.id = as.character(format(Sys.time(), "%s")),
                             models = c('GLM', 'GBM', 'GAM', 'CTA', 'ANN', 'SRE', 'FDA', 'MARS'
                                        , 'RF', 'MAXENT', 'MAXNET'),
+                            models.pa = NULL,
                             bm.options = NULL,
                             nb.rep = 1,
                             data.split.perc = 100,
@@ -300,7 +301,7 @@ BIOMOD_Modeling <- function(bm.format,
   .bm_cat("Build Single Models")
   
   ## 0. Check arguments ---------------------------------------------------------------------------
-  args <- .BIOMOD_Modeling.check.args(bm.format, modeling.id, models, bm.options, nb.rep
+  args <- .BIOMOD_Modeling.check.args(bm.format, modeling.id, models, models.pa, bm.options, nb.rep
                                       , data.split.perc, data.split.table
                                       , do.full.models, weights, prevalence, metric.eval, var.import
                                       , save.output, scale.models, nb.cpu, seed.val, do.progress)
@@ -358,7 +359,8 @@ BIOMOD_Modeling <- function(bm.format,
   mod.out <- lapply(mod.prep.dat,
                     FUN = bm_RunModelsLoop,
                     modeling.id = models.out@modeling.id,
-                    model = models,
+                    models = models,
+                    models.pa = models.pa,
                     bm.options = bm.options,
                     var.import = var.import,
                     metric.eval = metric.eval,
@@ -428,7 +430,7 @@ BIOMOD_Modeling <- function(bm.format,
 
 # ---------------------------------------------------------------------------- #
 
-.BIOMOD_Modeling.check.args <- function(bm.format, modeling.id, models, bm.options, nb.rep
+.BIOMOD_Modeling.check.args <- function(bm.format, modeling.id, models, models.pa, bm.options, nb.rep
                                         , data.split.perc, data.split.table
                                         , do.full.models, weights, prevalence, metric.eval, var.import
                                         , save.output, scale.models, nb.cpu, seed.val, do.progress)
@@ -462,7 +464,6 @@ BIOMOD_Modeling <- function(bm.format,
   models.switch.off <- NULL
   
   ## check if model is supported
-  
   avail.models.list <- c('GLM', 'GBM', 'GAM', 'CTA', 'ANN', 'SRE', 'FDA', 'MARS'
                          , 'RF', 'MAXENT', 'MAXNET')
   .fun_testIfIn(TRUE, "models", models, avail.models.list)
@@ -480,7 +481,20 @@ BIOMOD_Modeling <- function(bm.format,
     }
   }
   
-  
+  ## Check models.pa argument
+  if (!is.null(models.pa)) {
+    if (inherits(bm.format, "BIOMOD.formated.data.PA")) {
+      .fun_testIfInherits(TRUE, "models.pa", models.pa, "list")
+      .fun_testIfIn(TRUE, "names(models.pa)", names(models.pa), models)
+      if (length(models.pa) != length(models)) {
+        stop(paste0("models.pa must contain information for all selected models (", paste0(models, collapse = ", "), ")"))
+      }
+      .fun_testIfIn(TRUE, "unlist(models.pa)", unlist(models.pa), colnames(bm.format@PA.table))
+    } else {
+      warning("models.pa has been disabled because no PA datasets have been given", immediate. = TRUE)
+      models.pa = NULL
+    }
+  }
 
   
   ## 3. Check bm.options arguments --------------------------------------------
@@ -585,6 +599,7 @@ BIOMOD_Modeling <- function(bm.format,
   }
   
   return(list(models = models,
+              models.pa = models.pa,
               bm.options = bm.options,
               nb.rep = nb.rep,
               data.split.perc = data.split.perc,
