@@ -131,6 +131,17 @@ bm_PseudoAbsences <- function(resp.var, expl.var, nb.rep = 1, strategy = 'random
                         random = bm_PseudoAbsences_random(resp.var, expl.var, i.abs, length(i.rep)),
                         sre = bm_PseudoAbsences_sre(resp.var, expl.var, sre.quant, i.abs, length(i.rep)),
                         disk = bm_PseudoAbsences_disk(resp.var, expl.var, dist.min, dist.max, i.abs, length(i.rep)))
+          
+          ## CASE where all available cells have been selected :
+          ## give back only one dataset, even if several were asked
+          if (ncol(out$pa.tab) == 1 && length(i.rep) > 1) {
+            col1 <- out$pa.tab
+            for (j in 2:length(i.rep)) {
+              out$pa.tab <- cbind(out$pa.tab, col1)
+            }
+            # i.rep = i.rep[1] ## NOT working with summary and plot functions
+          }
+          
           colnames(out$pa.tab) = paste0("PA", i.rep)
           return(out)
         }
@@ -608,6 +619,8 @@ setMethod('bm_PseudoAbsences_sre', signature(expl.var = "SpatVector"),
             # 0. calculate SRE to determine available pixels
             mask.in <- bm_SRE(resp.var = resp.var, expl.var = expl.var, new.env = values(expl.var), quant = sre.quant)
             mask.in <- data.frame(mask.in = !as.logical(mask.in)) ## revert the mask to sample PA out of SRE
+            mask.in$mask.in[c(which(values(resp.var)[, 1] == 1)
+                              , which(values(resp.var)[, 1] == 0))] <- FALSE
             
             # 1. Check if NA are present in resp.var observations or not to determine which dataset to use
             nb.cells <- .get_nb_available_pa_cells(mask.in$mask.in, PA.flag = TRUE)
@@ -622,10 +635,11 @@ setMethod('bm_PseudoAbsences_sre', signature(expl.var = "SpatVector"),
             # 3. Select always the presences and the true absences
             pa.tab <- matrix(FALSE, ncol = nb.rep, nrow = nrow(resp.var))
             colnames(pa.tab) <- paste0("PA", 1:nb.rep)
-            pa.tab[c(which(values(resp.var)[, 1] == 1), which(values(resp.var)[, 1] == 0)),] <- TRUE
+            pa.tab[c(which(values(resp.var)[, 1] == 1),
+                     which(values(resp.var)[, 1] == 0)),] <- TRUE
             
             # 4. For each repetition, select among NA cells
-            cand.cells <- which(!mask.in$mask.in)
+            cand.cells <- which(mask.in$mask.in == TRUE)
             for (j in 1:ncol(pa.tab)) {
               ## force to get at least one value of each factorial variable
               fact.level.cells <- bm_SampleFactorLevels(expl.var = as.data.frame(expl.var),
@@ -657,6 +671,7 @@ setMethod('bm_PseudoAbsences_sre', signature(expl.var = "SpatRaster"),
             # 0. calculate SRE to determine available pixels
             mask.in <- bm_SRE(resp.var = resp.var, expl.var = expl.var, new.env = expl.var, quant = sre.quant)
             mask.in[mask.in[] > 0] <- NA ## remove points that are in SRE
+            mask.in[cellFromXY(mask.in, crds(resp.var)[which(!is.na(values(resp.var)[, 1])), ])] <- NA
             
             ## mask of already sampled points (presences/absences)
             mask.out <- subset(expl.var, 1)
@@ -763,9 +778,11 @@ setMethod('bm_PseudoAbsences_disk', signature(expl.var = "SpatVector"),
                                              (coor[tmp.abs, 2] - coor[pres[i], 2]) ^ 2) < dist.max )
               }
             }
+            
             if (is.null(dist.max)) { # no cells are too far
               outside <- outside + 1
             }
+            
             selected.abs <- tmp.abs[(inside == length(pres)) & (outside > 0)]
             
             # 2. adding presences and true absences and selecting randomly pseudo absences
