@@ -17,6 +17,9 @@
 ##' @param models a \code{vector} containing model names to be computed, must be among \code{GLM}, 
 ##' \code{GBM}, \code{GAM}, \code{CTA}, \code{ANN}, \code{SRE}, \code{FDA}, \code{MARS}, 
 ##' \code{RF}, \code{MAXENT}, \code{MAXNET}
+##' @param models.pa (\emph{optional, default} \code{NULL}) \cr 
+##' A \code{list} containing for each model a \code{vector} defining which pseudo-absence datasets 
+##' are to be used, must be among \code{colnames(bm.format@PA.table)}
 ##' @param bm.options a \code{\link{BIOMOD.models.options}} object returned by the  
 ##' \code{\link{BIOMOD_ModelingOptions}} function
 ##' @param nb.rep an \code{integer} corresponding to the number of repetitions to be done for 
@@ -353,7 +356,7 @@ BIOMOD_Modeling <- function(bm.format,
   rm(calib.lines)
   
   ## 4. Print modeling summary in console ---------------------------------------------------------
-  .BIOMOD_Modeling.summary(mod.prep.dat, models)
+  .BIOMOD_Modeling.summary(mod.prep.dat, models, models.pa)
   
   ## 5. Run models with loop over PA --------------------------------------------------------------
   mod.out <- lapply(mod.prep.dat,
@@ -485,11 +488,17 @@ BIOMOD_Modeling <- function(bm.format,
   if (!is.null(models.pa)) {
     if (inherits(bm.format, "BIOMOD.formated.data.PA")) {
       .fun_testIfInherits(TRUE, "models.pa", models.pa, "list")
+      .fun_testIfIn(TRUE, "unlist(models.pa)", unlist(models.pa), colnames(bm.format@PA.table))
       .fun_testIfIn(TRUE, "names(models.pa)", names(models.pa), models)
       if (length(models.pa) != length(models)) {
-        stop(paste0("models.pa must contain information for all selected models (", paste0(models, collapse = ", "), ")"))
+        mod.miss = models[-which(models %in% names(models.pa))]
+        list.miss = rep(list(colnames(bm.format@PA.table)), length(mod.miss))
+        names(list.miss) = mod.miss
+        models.pa = c(models.pa, list.miss)
+        warning(paste0(paste0(mod.miss, collapse = ", ")
+                       , " have been assigned to all PA datasets as no information was given")
+                , immediate. = TRUE)
       }
-      .fun_testIfIn(TRUE, "unlist(models.pa)", unlist(models.pa), colnames(bm.format@PA.table))
     } else {
       warning("models.pa has been disabled because no PA datasets have been given", immediate. = TRUE)
       models.pa = NULL
@@ -510,6 +519,9 @@ BIOMOD_Modeling <- function(bm.format,
   {
     if (!file.exists(file.path(bm.options@MAXENT$path_to_maxent.jar, "maxent.jar"))) {
       models = models[-which(models == 'MAXENT')]
+      if (!is.null(models.pa)) {
+        models.pa = models.pa[-which(names(models.pa) == 'MAXENT')]
+      }
       warning(paste0("MAXENT has been disabled because the maxent.jar file is missing. "
                      , "`maxent.jar` file must be downloaded (https://biodiversityinformatics.amnh.org/open_source/maxent/) "
                      , "and put in the working directory."), immediate. = TRUE)
@@ -520,8 +532,11 @@ BIOMOD_Modeling <- function(bm.format,
       # } else if(!.check.java.installed()){
       #   models = models[-which(models=='MAXENT')]
     } else if (nrow(bm.format@coord) == 1) {
-      warning("MAXENT has been disabled because no XY coordinates have been given", immediate. = TRUE)
       models = models[-which(models == 'MAXENT')]
+      if (!is.null(models.pa)) {
+        models.pa = models.pa[-which(names(models.pa) == 'MAXENT')]
+      }
+      warning("MAXENT has been disabled because no XY coordinates have been given", immediate. = TRUE)
     }
   }
   
@@ -617,14 +632,20 @@ BIOMOD_Modeling <- function(bm.format,
 
 # ---------------------------------------------------------------------------- #
 
-.BIOMOD_Modeling.summary <- function(mod.prep.dat, models)
+.BIOMOD_Modeling.summary <- function(mod.prep.dat, models, models.pa = NULL)
 {
   cat("\n\n")
   .bm_cat(paste(unlist(strsplit(mod.prep.dat[[1]]$name, '_'))[1], "Modeling Summary"))
   cat("\n", ncol(mod.prep.dat[[1]]$dataBM) - 1, " environmental variables (", colnames(mod.prep.dat[[1]]$dataBM)[-1], ")")
   cat("\nNumber of evaluation repetitions :", ncol(mod.prep.dat[[1]]$calib.lines))
   cat("\nModels selected :", models, "\n")
-  cat("\nTotal number of model runs:", ncol(mod.prep.dat[[1]]$calib.lines) * length(models) * length(mod.prep.dat), "\n")
+  if (is.null(models.pa)) {
+    nb.runs = ncol(mod.prep.dat[[1]]$calib.lines) * length(models) * length(mod.prep.dat)
+  } else {
+    nb.runs = length(unlist(models.pa))
+    nb.runs = ncol(mod.prep.dat[[1]]$calib.lines) * nb.runs
+  }
+  cat("\nTotal number of model runs:", nb.runs, "\n")
   .bm_cat()
 }
 

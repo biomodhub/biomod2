@@ -18,6 +18,9 @@
 ##' @param models a \code{character} corresponding to the model name to be computed, must be either 
 ##' \code{GLM}, \code{GBM}, \code{GAM}, \code{CTA}, \code{ANN}, \code{SRE}, \code{FDA}, 
 ##' \code{MARS}, \code{RF}, \code{MAXENT}, \code{MAXNET}
+##' @param models.pa (\emph{optional, default} \code{NULL}) \cr 
+##' A \code{list} containing for each model a \code{vector} defining which pseudo-absence datasets 
+##' are to be used, must be among \code{colnames(bm.format@PA.table)}
 ##' @param bm.options a \code{\link{BIOMOD.models.options}} object returned by the  
 ##' \code{\link{BIOMOD_ModelingOptions}} function
 ##' @param metric.eval a \code{vector} containing evaluation metric names to be used, must 
