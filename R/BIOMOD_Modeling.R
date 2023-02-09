@@ -107,6 +107,12 @@
 ##'     \item \code{MAXNET} : Maximum Entropy (\code{\link[maxnet]{maxnet}})
 ##'   }}
 ##'   
+##'   \item{models.pa}{Different models might respond differently to different numbers of 
+##'   pseudo-absences. It is possible to create sets of pseudo-absences with different numbers 
+##'   of points (see \code{\link{BIOMOD_FormatingData}}) and to assign only some of these 
+##'   datasets to each single model.
+##'   }
+##'   
 ##'   \item{nb.rep & data.split.perc}{
 ##'   \itemize{
 ##'     \item Most simple method in machine learning to calibrate and validate a model is to 

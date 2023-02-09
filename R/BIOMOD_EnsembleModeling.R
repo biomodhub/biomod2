@@ -1083,8 +1083,8 @@ BIOMOD_EnsembleModeling <- function(bm.mod,
       models.kept.PA <- .extract_modelNamesInfo(models.kept.union, obj.type = "mod", info = "PA", as.unique = FALSE)
       names(models.kept.PA) <- models.kept.union
       
-      out$predictions <-
-        foreach(this_PA = unique(models.kept.PA), .combine = "rbind") %do% {
+      out$predictions <- foreach(this_PA = unique(models.kept.PA), .combine = "rbind") %do%
+        {
           ## model kept for this PA dataset
           thismodels <- names(models.kept.PA)[which(models.kept.PA == this_PA)]
           ## index of data to predict and data already predicted
@@ -1095,30 +1095,33 @@ BIOMOD_EnsembleModeling <- function(bm.mod,
           current_prediction <- get_predictions(bm.mod, full.name = thismodels)
           current_prediction$points <- index_current
           
-          # subsetting environment and coord
-          env_to_predict <- get_formal_data(bm.mod)@data.env.var[index_to_predict,]
-          coord_to_predict <- get_formal_data(bm.mod)@coord[index_to_predict,]
+          if (length(index_to_predict) > 0) {
+            # subsetting environment and coord
+            env_to_predict <- get_formal_data(bm.mod)@data.env.var[index_to_predict,]
+            coord_to_predict <- get_formal_data(bm.mod)@coord[index_to_predict,]
+            
+            # prediction on the other PA datasets
+            new_prediction <-
+              get_predictions(
+                BIOMOD_Projection(
+                  bm.mod = bm.mod,
+                  new.env = env_to_predict,
+                  proj.name = temp_name,
+                  xy.new.env = coord_to_predict,
+                  models.chosen = thismodels,
+                  compress = TRUE,
+                  build.clamping.mask = FALSE,
+                  do.stack = TRUE,
+                  nb.cpu = nb.cpu
+                ))
+            new_prediction$points <- index_to_predict
+            
+            ## combining old and new predictions
+            res <- rbind(current_prediction, new_prediction)
+          } else {
+            res = current_prediction
+          }
           
-          # prediction on the other PA datasets
-          new_prediction <-
-            get_predictions(
-              BIOMOD_Projection(
-                bm.mod = bm.mod,
-                new.env = env_to_predict,
-                proj.name = temp_name,
-                xy.new.env = coord_to_predict,
-                models.chosen = thismodels,
-                compress = TRUE,
-                build.clamping.mask = FALSE,
-                do.stack = TRUE,
-                nb.cpu = nb.cpu
-              ))
-          new_prediction$points <- index_to_predict
-          
-          ## combining old and new predictions
-          index_full <- c(index_current, index_to_predict)
-          
-          res <- rbind(current_prediction, new_prediction)
           res <- res[, c("full.name", "PA", "run", "algo", "points", "pred")]
           res <- res[order(res$full.name, res$points), ]
           return(res)

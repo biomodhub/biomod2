@@ -111,6 +111,25 @@ plot(myBiomodData)
 # plot(myBiomodData.u)
 ```
 
+```R
+# # Select multiple sets of pseudo-absences
+#
+# # Transform true absences into potential pseudo-absences
+# myResp.PA <- ifelse(myResp == 1, 1, NA)
+# 
+# # Format Data with pseudo-absences : random method
+# myBiomodData.multi <- BIOMOD_FormatingData(resp.var = myResp.PA,
+#                                            expl.var = myExpl,
+#                                            resp.xy = myRespXY,
+#                                            resp.name = myRespName,
+#                                            PA.nb.rep = 4,
+#                                            PA.nb.absences = c(1000, 500, 500, 200),
+#                                            PA.strategy = 'random')
+# myBiomodData.multi
+# summary(myBiomodData.multi)
+# plot(myBiomodData.multi)
+```
+
 #### Parameterize modeling options
 
 ```R

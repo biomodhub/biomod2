@@ -66,7 +66,9 @@
 ##' @param PA.nb.absences (\emph{optional, default} \code{0}) \cr 
 ##' If pseudo-absence selection, and \code{PA.strategy = 'random'} or \code{PA.strategy = 'sre'} 
 ##' or \code{PA.strategy = 'disk'}, an \code{integer} corresponding to the number of pseudo-absence 
-##' points that will be selected for each pseudo-absence repetition (true absences included)
+##' points that will be selected for each pseudo-absence repetition (true absences included). \cr
+##' It can also be a \code{vector} of the same length as \code{PA.nb.rep} containing \code{integer} 
+##' values corresponding to the different numbers of pseudo-absences to be selected
 ##' @param PA.sre.quant (\emph{optional, default} \code{0}) \cr 
 ##' If pseudo-absence selection and \code{PA.strategy = 'sre'}, a \code{numeric} between \code{0} 
 ##' and \code{0.5} defining the half-quantile used to make the \code{sre} pseudo-absence selection 
@@ -131,12 +133,14 @@
 ##'   \item{if both presence and absence data are available, and there is enough absences :
 ##'   set \code{PA.nb.rep = 0} and no pseudo-absence will be selected.
 ##'   }
-##'   \item{if no absence data (or not enough) is available, several pseudo-absence repetitions  
+##'   \item{if no absence data is available, several pseudo-absence repetitions  
 ##'   are recommended (to estimate the effect of pseudo-absence selection), as well as high 
 ##'   number of pseudo-absence points. \cr
 ##'   \emph{Be sure not to select more pseudo-absence points than maximum number of pixels in 
 ##'   the studied area ! \cr \cr \cr \cr}
 ##'   }
+##'   \item{it is possible now to create several pseudo-absence repetitions with different 
+##'   number of points, but with the same sampling strategy}
 ##' }
 ##' 
 ##' \describe{
@@ -297,6 +301,25 @@
 ##' # plot(myBiomodData.d)
 ##' # plot(myBiomodData.s)
 ##' # plot(myBiomodData.u)
+##' 
+##' 
+##' # ---------------------------------------------------------------#
+##' # # Select multiple sets of pseudo-absences
+##' #
+##' # # Transform true absences into potential pseudo-absences
+##' # myResp.PA <- ifelse(myResp == 1, 1, NA)
+##' # 
+##' # # Format Data with pseudo-absences : random method
+##' # myBiomodData.multi <- BIOMOD_FormatingData(resp.var = myResp.PA,
+##' #                                            expl.var = myExpl,
+##' #                                            resp.xy = myRespXY,
+##' #                                            resp.name = myRespName,
+##' #                                            PA.nb.rep = 4,
+##' #                                            PA.nb.absences = c(1000, 500, 500, 200),
+##' #                                            PA.strategy = 'random')
+##' # myBiomodData.multi
+##' # summary(myBiomodData.multi)
+##' # plot(myBiomodData.multi)
 ##' 
 ##' 
 ##' @importFrom terra rast crds
