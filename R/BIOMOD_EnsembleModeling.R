@@ -17,7 +17,8 @@
 ##' \code{all} or a sub-selection of model names that can be obtained with the 
 ##' \code{\link{get_built_models}} function
 ##' @param em.by a \code{character} corresponding to the way kept models will be combined to build 
-##' the ensemble models, must be among \code{PA+run}, \code{PA+algo}, 
+##' the ensemble models, must be among \code{all}, \code{algo}, \code{PA}, \code{PA+algo}, 
+##' \code{PA+run}
 ##' @param em.algo a \code{vector} corresponding to the ensemble models that will be computed, 
 ##' must be among \code{'prob.mean'}, \code{'prob.median'}, \code{'prob.cv'}, \code{'prob.ci'}, 
 ##' \code{'committee.averaging'}, \code{'prob.mean.weight'}
@@ -48,8 +49,9 @@
 ##' A \code{numeric} value corresponding to the significance level to estimate confidence interval
 ##' @param EMwmean.decay (\emph{optional, default} \code{proportional}) \cr 
 ##' A value defining the relative importance of the weights (if \code{prob.mean.weight = TRUE}). 
-##' A high value will strongly discriminate \emph{good} models from the \emph{bad} ones (see Details), while \code{proportional} will 
-##' attribute weights proportionally to the models evaluation scores
+##' A high value will strongly discriminate \emph{good} models from the \emph{bad} ones (see 
+##' Details), while \code{proportional} will attribute weights proportionally to the models 
+##' evaluation scores
 ##' 
 ##' @param nb.cpu (\emph{optional, default} \code{1}) \cr 
 ##' An \code{integer} value corresponding to the number of computing resources to be used to 
@@ -119,7 +121,13 @@
 ##'   Hence, depending on the chosen method, the number of ensemble models built will vary. \cr
 ##'   \emph{Be aware that if no evaluation data was given to the 
 ##'   \code{\link{BIOMOD_FormatingData}} function, some ensemble model evaluations may be biased 
-##'   due to difference in data used for single model evaluations.}}
+##'   due to difference in data used for single model evaluations.}
+##'   \bold{Be aware that all of these combinations are allowed, but some may not make sense 
+##'   depending mainly on how pseudo-absence datasets have been built and whether all of them 
+##'   have been used for all single models or not (see \code{PA.nb.absences} and \code{models.pa} 
+##'   parameters in \code{\link{BIOMOD_FormatingData}} and \code{\link{BIOMOD_Modeling}} functions 
+##'   respectively).}
+##'   }
 ##' 
 ##'   \item{Evaluation metrics}{
 ##'   \itemize{
