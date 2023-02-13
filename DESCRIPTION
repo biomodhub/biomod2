@@ -73,7 +73,7 @@ Suggests:
     tidyterra,
     ggtext
 License: GPL-3
-RoxygenNote: 7.2.2
+RoxygenNote: 7.2.3
 Encoding: UTF-8
 VignetteBuilder: knitr
 Collate: 

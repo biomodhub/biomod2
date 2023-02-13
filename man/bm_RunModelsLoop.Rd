@@ -8,7 +8,8 @@
 bm_RunModelsLoop(
   mod.prep.dat.pa,
   modeling.id,
-  model,
+  models,
+  models.pa,
   bm.options,
   metric.eval,
   var.import,
@@ -48,9 +49,13 @@ function and containing pre-processed data from \code{\link{BIOMOD.formated.data
 \item{modeling.id}{a \code{character} corresponding to the name (ID) of the simulation set 
 (\emph{a random number by default})}
 
-\item{model}{a \code{character} corresponding to the model name to be computed, must be either 
+\item{models}{a \code{character} corresponding to the model name to be computed, must be either 
 \code{GLM}, \code{GBM}, \code{GAM}, \code{CTA}, \code{ANN}, \code{SRE}, \code{FDA}, 
 \code{MARS}, \code{RF}, \code{MAXENT}, \code{MAXNET}}
+
+\item{models.pa}{(\emph{optional, default} \code{NULL}) \cr 
+A \code{list} containing for each model a \code{vector} defining which pseudo-absence datasets 
+are to be used, must be among \code{colnames(bm.format@PA.table)}}
 
 \item{bm.options}{a \code{\link{BIOMOD.models.options}} object returned by the
 \code{\link{BIOMOD_ModelingOptions}} function}

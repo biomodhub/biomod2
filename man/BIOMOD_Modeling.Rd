@@ -9,6 +9,7 @@ BIOMOD_Modeling(
   modeling.id = as.character(format(Sys.time(), "\%s")),
   models = c("GLM", "GBM", "GAM", "CTA", "ANN", "SRE", "FDA", "MARS", "RF", "MAXENT",
     "MAXNET"),
+  models.pa = NULL,
   bm.options = NULL,
   nb.rep = 1,
   data.split.perc = 100,
@@ -35,6 +36,10 @@ object returned by the \code{\link{BIOMOD_FormatingData}} function}
 \item{models}{a \code{vector} containing model names to be computed, must be among \code{GLM}, 
 \code{GBM}, \code{GAM}, \code{CTA}, \code{ANN}, \code{SRE}, \code{FDA}, \code{MARS}, 
 \code{RF}, \code{MAXENT}, \code{MAXNET}}
+
+\item{models.pa}{(\emph{optional, default} \code{NULL}) \cr 
+A \code{list} containing for each model a \code{vector} defining which pseudo-absence datasets 
+are to be used, must be among \code{colnames(bm.format@PA.table)}}
 
 \item{bm.options}{a \code{\link{BIOMOD.models.options}} object returned by the
 \code{\link{BIOMOD_ModelingOptions}} function}
@@ -137,6 +142,12 @@ metrics (see Details).
     (\url{https://biodiversityinformatics.amnh.org/open_source/maxent/})
     \item \code{MAXNET} : Maximum Entropy (\code{\link[maxnet]{maxnet}})
   }}
+  
+  \item{models.pa}{Different models might respond differently to different numbers of 
+  pseudo-absences. It is possible to create sets of pseudo-absences with different numbers 
+  of points (see \code{\link{BIOMOD_FormatingData}}) and to assign only some of these 
+  datasets to each single model.
+  }
   
   \item{nb.rep & data.split.perc}{
   \itemize{

@@ -101,7 +101,8 @@ species distribution models (asked by the <code><a href="BIOMOD_Modeling.html">B
     <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">bm_RunModelsLoop</span><span class="op">(</span></span>
 <span>  <span class="va">mod.prep.dat.pa</span>,</span>
 <span>  <span class="va">modeling.id</span>,</span>
-<span>  <span class="va">model</span>,</span>
+<span>  <span class="va">models</span>,</span>
+<span>  <span class="va">models.pa</span>,</span>
 <span>  <span class="va">bm.options</span>,</span>
 <span>  <span class="va">metric.eval</span>,</span>
 <span>  <span class="va">var.import</span>,</span>
@@ -147,10 +148,16 @@ function and containing pre-processed data from <code><a href="BIOMOD.formated.d
 (<em>a random number by default</em>)</p></dd>
 
 
-<dt>model</dt>
+<dt>models</dt>
 <dd><p>a <code>character</code> corresponding to the model name to be computed, must be either 
 <code>GLM</code>, <code>GBM</code>, <code>GAM</code>, <code>CTA</code>, <code>ANN</code>, <code>SRE</code>, <code>FDA</code>, 
 <code>MARS</code>, <code>RF</code>, <code>MAXENT</code>, <code>MAXNET</code></p></dd>
+
+
+<dt>models.pa</dt>
+<dd><p>(<em>optional, default</em> <code>NULL</code>) <br> 
+A <code>list</code> containing for each model a <code>vector</code> defining which pseudo-absence datasets 
+are to be used, must be among <code>colnames(bm.format@PA.table)</code></p></dd>
 
 
 <dt>bm.options</dt>
@@ -295,7 +302,7 @@ dataset extracted from <code>PA.table</code> slot)</p></dd>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.7.</p>
 </div>
 
       </footer></div>
