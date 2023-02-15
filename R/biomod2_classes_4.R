@@ -424,7 +424,7 @@ setClass('ANN_biomod2_model',
 setMethod('predict2', signature(object = 'ANN_biomod2_model', newdata = "SpatRaster"),
           function(object, newdata, ...) {
             predfun <- function(object, newdata, mod.name){
-              predict(newdata, get_formal_model(object), type = 'raw', wopt = list(names = mod.name))
+              terra::predict(newdata, get_formal_model(object), type = 'raw', wopt = list(names = mod.name))
             }
             # redirect to predict2.biomod2_model.SpatRaster
             callNextMethod(object, newdata, predfun = predfun, ...)
@@ -466,7 +466,7 @@ setMethod('predict2', signature(object = 'CTA_biomod2_model', newdata = "SpatRas
           function(object, newdata, ...) {
             predfun <- function(object, newdata, mod.name){
               proj <- 
-                subset(predict(newdata,
+                subset(terra::predict(newdata,
                                model = get_formal_model(object), 
                                type = 'prob', na.rm = TRUE,
                                wopt = list(names = rep(mod.name,2))), 
@@ -517,7 +517,7 @@ setMethod('predict2', signature(object = 'FDA_biomod2_model', newdata = "SpatRas
               # new predict command used with terra
               proj <- 
                 subset(
-                  predict(newdata, 
+                  terra::predict(newdata, 
                           model = get_formal_model(object), 
                           type = 'posterior',
                           na.rm = TRUE,
@@ -623,7 +623,7 @@ setClass('GBM_biomod2_model',
 setMethod('predict2', signature(object = 'GBM_biomod2_model', newdata = "SpatRaster"),
           function(object, newdata, ...) {
             predfun <- function(object, newdata, mod.name){
-              proj <- predict(newdata,
+              proj <- terra::predict(newdata,
                               model = get_formal_model(object),
                               fun = predict.gbm,
                               n.trees = object@n.trees_optim, 
@@ -726,7 +726,7 @@ setClass('MARS_biomod2_model',
 setMethod('predict2', signature(object = 'MARS_biomod2_model', newdata = "SpatRaster"),
           function(object, newdata, ...) {
             predfun <- function(object, newdata, mod.name){
-              predict(newdata, model = get_formal_model(object),
+              terra::predict(newdata, model = get_formal_model(object),
                       type = 'response', wopt = list(names = mod.name))
             }
             # redirect to predict2.biomod2_model.SpatRaster
@@ -1114,7 +1114,7 @@ setMethod('predict2', signature(object = 'RF_biomod2_model', newdata = "SpatRast
           function(object, newdata, ...) {
             predfun <- function(object, newdata, mod.name){
               # new predict command used with terra
-              subset(predict(newdata, model = get_formal_model(object),
+              subset(terra::predict(newdata, model = get_formal_model(object),
                              type = 'prob',
                              wopt = list(names = rep(mod.name,2))), 
                      2)   

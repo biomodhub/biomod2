@@ -40,8 +40,8 @@
 
 ## TEST PARAMETERS --------------------------------------------------------------------------------
 
-.fun_testIfInherits <- function(test, objName, objValue, values)
-{
+  .fun_testIfInherits <- function(test, objName, objValue, values)
+  {
   if (!inherits(objValue, values)) {
     stop(paste0("\n", paste0(objName, " must be a '", paste0(values[1:(length(values) -1)], collapse = "', '")
                              , ifelse(length(values) > 1, paste0("' or '", values[length(values)]), "")
@@ -136,7 +136,7 @@ get_var_range <- function(data)
       object$deviance != object$null.deviance)
   {
     if (inherits(dat, 'SpatRaster')) {
-      pred <- predict(object = dat, model = object, type = "response", wopt = list(names = mod.name))
+      pred <- terra::predict(object = dat, model = object, type = "response", wopt = list(names = mod.name))
     } else {
       pred <- predict(object, dat, type = "response")
     }
