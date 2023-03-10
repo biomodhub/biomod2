@@ -173,6 +173,9 @@ bm_CrossValidation <- function(bm.format, strategy = 'random', nb.rep = 1, perc,
   for (argi in names(args)) { assign(x = argi, value = args[[argi]]) }
   rm(args)
   
+  # DataSplitTable.y <- DataSplitTable.x <- DataSplitTable <- NULL ##TOREMOVE
+  
+  
   ## 1. Create output object ----------------------------------------------------------------------
   if ((nb.rep == 0 || k == 0) & strategy != 'user.defined') {
     out <- NULL
@@ -241,6 +244,14 @@ bm_CrossValidation <- function(bm.format, strategy = 'random', nb.rep = 1, perc,
   ## 3. Check balance / strat argument ------------------------------
   if (strategy %in% c("block", "strat", "env")) {
     .fun_testIfIn(TRUE, "balance", balance, c("presences","absences"))
+    ind.NA  <- which(is.na(bm.format@data.species))
+    tmp  <- bm.format@data.species
+    tmp[ind.NA] <- 0 # was 2 before
+    if (balance == "absences") {
+      balance <- (tmp == 1 | tmp == 0)
+    } else {
+      balance <- (tmp == 1)
+    }
     
     if (strategy == "strat") {
       .fun_testIfIn(TRUE, "strat", strat, c("x", "y", "both"))
@@ -359,6 +370,16 @@ setGeneric("bm_CrossValidation_kfold",
 setMethod('bm_CrossValidation_kfold', signature(bm.format = "BIOMOD.formated.data"),
           function(bm.format, nb.rep, k) {
             cat("\n   > k-fold cross-validation selection")
+            
+            if (!isNamespaceLoaded("dismo")) { 
+              if(!requireNamespace('dismo', quietly = TRUE)) stop("Package 'dismo' not found")
+            }
+            for (rep in 1:nb.rep) {
+              fold <- dismo::kfold(tmp, by = tmp, k = k)
+              for (i in 1:k) {
+                DataSplitTable <- cbind(DataSplitTable, fold != i)
+              }
+            }
           })
 
 ## bm_CrossValidation kfold BIOMOD.formated.data.PA methods -----------------------------
@@ -394,6 +415,18 @@ setGeneric("bm_CrossValidation_block",
 setMethod('bm_CrossValidation_block', signature(bm.format = "BIOMOD.formated.data"),
           function(bm.format, balance) {
             cat("\n   > Block cross-validation selection")
+            
+            if (!isNamespaceLoaded("ENMeval")) { 
+              if(!requireNamespace('ENMeval', quietly = TRUE)) stop("Package 'ENMeval' not found")
+            }
+            DataSplitTable <- as.data.frame(matrix(NA, nrow(bm.format@coord), 4))
+            blocks <- ENMeval::get.block(bm.format@coord[tmp == 1, ]
+                                         , bm.format@coord[tmp == 0, ])
+            for (i in 1:4) {
+              DataSplitTable[tmp == 1, i] <- blocks[[1]] != i
+              DataSplitTable[tmp == 0, i] <- blocks[[2]] != i     
+            }
+            DataSplitTable <- as.matrix(DataSplitTable)
           })
 
 ## bm_CrossValidation block BIOMOD.formated.data.PA methods -----------------------------
@@ -429,6 +462,30 @@ setGeneric("bm_CrossValidation_strat",
 setMethod('bm_CrossValidation_strat', signature(bm.format = "BIOMOD.formated.data"),
           function(bm.format, balance, strat) {
             cat("\n   > Stratified cross-validation selection")
+            
+            if (method == "x" | method == "both") {
+              DataSplitTable.x <- matrix(NA, nrow(bm.format@coord), k)
+              bands <- quantile(bm.format@coord[balance, 1], probs = seq(0, 100, 100 / k) / 100)
+              bands[1] <- bands[1] - 1
+              bands[k + 1] <- bands[k + 1] + 1
+              for (i in 1:k) {
+                DataSplitTable.x[, i] <- (bm.format@coord[, 1] >= bands[i] & bm.format@coord[, 1] < bands[i + 1])
+              }
+              if (method == "x") { DataSplitTable <- DataSplitTable.x }
+            }
+            if (method == "y" | method == "both") {
+              DataSplitTable.y <- matrix(NA, nrow(bm.format@coord), k)
+              bands <- quantile(bm.format@coord[balance, 2], probs = seq(0, 100, 100 / k) / 100)
+              bands[1] <- bands[1] - 1
+              bands[k + 1] <- bands[k + 1] + 1
+              for (i in 1:k) {
+                DataSplitTable.y[, i] <- (bm.format@coord[, 2] >= bands[i] & bm.format@coord[, 2] < bands[i + 1])
+              }
+              if (method == "y") { DataSplitTable <- DataSplitTable.y }
+            }
+            if (method == "both") { ## Merge X and Y tables
+              DataSplitTable <- cbind(DataSplitTable.x, DataSplitTable.y)
+            }
           })
 
 ## bm_CrossValidation block BIOMOD.formated.data.PA methods -----------------------------
@@ -464,6 +521,15 @@ setGeneric("bm_CrossValidation_env",
 setMethod('bm_CrossValidation_env', signature(bm.format = "BIOMOD.formated.data"),
           function(bm.format, balance) {
             cat("\n   > Environmental cross-validation selection")
+            
+            DataSplitTable2 <- as.data.frame(matrix(NA, nrow(bm.format@coord), k))
+            bands <- quantile(bm.format@data.env.var[balance, method], probs = seq(0, 100, 100 / k) / 100)
+            bands[1] <- bands[1] - 1
+            bands[k + 1] <- bands[k + 1] + 1
+            for (i in 1:k) {
+              DataSplitTable2[, i] <- (bm.format@data.env.var[balance, method] <= bands[i] | 
+                                         bm.format@data.env.var[balance, method] > bands[i + 1])
+            }
           })
 
 ## bm_CrossValidation env BIOMOD.formated.data.PA methods -------------------------------
@@ -476,89 +542,3 @@ setMethod('bm_CrossValidation_env', signature(bm.format = "BIOMOD.formated.data.
           function(bm.format, balance) {
             cat("\n   > Environmental cross-validation selection")
           })
-
-
-
-
-
-{
-  
-  .bm_cat("Build Cross-Validation Table")
-  DataSplitTable.y <- DataSplitTable.x <- DataSplitTable <- NULL
-  ind.NA  <- which(is.na(bm.format@data.species))
-  tmp  <- bm.format@data.species
-  tmp[ind.NA] <- 0 # was 2 before
-  
-  ## STRATIFIED (X, Y, BOTH) / BLOCK / ENVIRONMENTAL CROSS VALIDATION -----------------------------
-  if (do.stratification) {
-    if (balance == "absences") {
-      balance <- (tmp == 1 | tmp == 0)
-    } else {
-      balance <- (tmp == 1)
-    }
-    
-    ## (X, Y, BOTH) STRATIFIED CROSS VALIDATION  -------------------------------
-    if (method == "x" | method == "both") {
-      DataSplitTable.x <- matrix(NA, nrow(bm.format@coord), k)
-      bands <- quantile(bm.format@coord[balance, 1], probs = seq(0, 100, 100 / k) / 100)
-      bands[1] <- bands[1] - 1
-      bands[k + 1] <- bands[k + 1] + 1
-      for (i in 1:k) {
-        DataSplitTable.x[, i] <- (bm.format@coord[, 1] >= bands[i] & bm.format@coord[, 1] < bands[i + 1])
-      }
-      if (method == "x") { DataSplitTable <- DataSplitTable.x }
-    }
-    if (method == "y" | method == "both") {
-      DataSplitTable.y <- matrix(NA, nrow(bm.format@coord), k)
-      bands <- quantile(bm.format@coord[balance, 2], probs = seq(0, 100, 100 / k) / 100)
-      bands[1] <- bands[1] - 1
-      bands[k + 1] <- bands[k + 1] + 1
-      for (i in 1:k) {
-        DataSplitTable.y[, i] <- (bm.format@coord[, 2] >= bands[i] & bm.format@coord[, 2] < bands[i + 1])
-      }
-      if (method == "y") { DataSplitTable <- DataSplitTable.y }
-    }
-    if (method == "both") { ## Merge X and Y tables
-      DataSplitTable <- cbind(DataSplitTable.x, DataSplitTable.y)
-    }
-    
-    ## BLOCK STRATIFIED CROSS VALIDATION --------------------------------------
-    if (method == "block") {
-      if (!isNamespaceLoaded("ENMeval")) { 
-        if(!requireNamespace('ENMeval', quietly = TRUE)) stop("Package 'ENMeval' not found")
-      }
-      DataSplitTable <- as.data.frame(matrix(NA, nrow(bm.format@coord), 4))
-      blocks <- ENMeval::get.block(bm.format@coord[tmp == 1, ]
-                                   , bm.format@coord[tmp == 0, ])
-      for (i in 1:4) {
-        DataSplitTable[tmp == 1, i] <- blocks[[1]] != i
-        DataSplitTable[tmp == 0, i] <- blocks[[2]] != i     
-      }
-      DataSplitTable <- as.matrix(DataSplitTable)
-    }
-    
-    ## ENVIRONMENTAL STRATIFIED CROSS VALIDATION ------------------------------
-    if (method != "block" & method != "x" & method != "y" & method != "both") {
-      DataSplitTable2 <- as.data.frame(matrix(NA, nrow(bm.format@coord), k))
-      bands <- quantile(bm.format@data.env.var[balance, method], probs = seq(0, 100, 100 / k) / 100)
-      bands[1] <- bands[1] - 1
-      bands[k + 1] <- bands[k + 1] + 1
-      for (i in 1:k) {
-        DataSplitTable2[, i] <- (bm.format@data.env.var[balance, method] <= bands[i] | 
-                                   bm.format@data.env.var[balance, method] > bands[i + 1])
-      }
-    }
-  } else {
-    ## K-FOLD CROSS VALIDATION --------------------------------------------------------------------
-    if (!isNamespaceLoaded("dismo")) { 
-      if(!requireNamespace('dismo', quietly = TRUE)) stop("Package 'dismo' not found")
-    }
-    for (rep in 1:nb.rep) {
-      fold <- dismo::kfold(tmp, by = tmp, k = k)
-      for (i in 1:k) {
-        DataSplitTable <- cbind(DataSplitTable, fold != i)
-      }
-    }
-  }
-  
-}
