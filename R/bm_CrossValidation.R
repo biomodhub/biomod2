@@ -165,7 +165,7 @@
 
             
 bm_CrossValidation <- function(bm.format, strategy = 'random', nb.rep = 1, perc, k, balance, strat
-                               , do.full.models = TRUE, seed.val = NULL, user.table = NULL)
+                               , do.full.models = TRUE, user.table = NULL)
 {
   ## 0. Check arguments ---------------------------------------------------------------------------
   args <- .bm_CrossValidation.check.args(bm.format, strategy, nb.rep, perc, k, balance, strat
@@ -174,24 +174,32 @@ bm_CrossValidation <- function(bm.format, strategy = 'random', nb.rep = 1, perc,
   rm(args)
   
   ## 1. Create output object ----------------------------------------------------------------------
-  if ((nb.rep == 0 || k == 0) & strategy != 'user.defined') { ##TODO
+  if ((nb.rep == 0 || k == 0) & strategy != 'user.defined') {
     out <- NULL
   } else {
-    out <- switch(strategy, ##TODO
-                  user.defined = bm_CrossValidation_user.defined(resp.var, expl.var, user.table),
-                  random = bm_CrossValidation_random(resp.var, expl.var, nb.absences, nb.rep),
-                  kfold = bm_CrossValidation_kfold(),
-                  block = bm_CrossValidation_block(),
-                  strat = bm_CrossValidation_strat(),
-                  env = bm_CrossValidation_env())
+    out <- switch(strategy,
+                  user.defined = bm_CrossValidation_user.defined(user.table),
+                  random = bm_CrossValidation_random(bm.format, nb.rep, perc),
+                  kfold = bm_CrossValidation_kfold(bm.format, nb.rep, k),
+                  block = bm_CrossValidation_block(bm.format, balance),
+                  strat = bm_CrossValidation_strat(bm.format, balance, strat),
+                  env = bm_CrossValidation_env(bm.format, balance))
   }
+  
+  ## 2. CLEAN FINAL TABLE ----------------------------------------------------------------------------
+  # colnames(DataSplitTable) <- paste0("RUN", 1:ncol(DataSplitTable))
+  # 
+  # if (isTRUE(do.full.models)) {
+  #   DataSplitTable <- cbind(DataSplitTable, TRUE)
+  #   colnames(DataSplitTable)[ncol(DataSplitTable)] <- "allRun"
+  # }
   
   cat("\n")
   return(out)
 }
 
   
-# Argument Check --------------------------------------------------------------
+# Argument Check ----------------------------------------------------------------------------------
 
 .bm_CrossValidation.check.args <- function(bm.format, strategy, nb.rep, perc, k, balance, strat
                                            , do.full.models, seed.val, user.table)
@@ -271,7 +279,7 @@ bm_CrossValidation <- function(bm.format, strategy = 'random', nb.rep = 1, perc,
 
 
 
-# bm_CrossValidation user-defined methods --------------------------------------
+# bm_CrossValidation user-defined methods ---------------------------------------------------------
 
 ##'
 ##' @rdname bm_CrossValidation
@@ -279,11 +287,11 @@ bm_CrossValidation <- function(bm.format, strategy = 'random', nb.rep = 1, perc,
 ##'
 
 setGeneric("bm_CrossValidation_user.defined",
-           def = function(user.table, ...) {
+           def = function(user.table) {
              standardGeneric( "bm_CrossValidation_user.defined")
            })
 
-## bm_CrossValidation user-defined data.frame methods --------------------------------------
+## bm_CrossValidation user-defined data.frame methods -----------------------------------
 ##'
 ##' @rdname bm_CrossValidation
 ##' @export
@@ -292,65 +300,188 @@ setGeneric("bm_CrossValidation_user.defined",
 setMethod('bm_CrossValidation_user.defined', signature(user.table = "data.frame"),
           function(user.table) {
             cat("\n   > User defined cross-validation selection")
-            # return(list(xy = crds(resp.var),
-            #             sp = as.numeric(unlist(values(resp.var), use.names = FALSE)),
-            #             env = as.data.frame(expl.var),
-            #             pa.tab = user.table))
+          })
+
+
+# bm_CrossValidation random methods ---------------------------------------------------------------
+
+##'
+##' @rdname bm_CrossValidation
+##' @export
+##'
+
+setGeneric("bm_CrossValidation_random",
+           def = function(bm.format, ...) {
+             standardGeneric( "bm_CrossValidation_random")
+           })
+
+## bm_CrossValidation random BIOMOD.formated.data methods -------------------------------
+##'
+##' @rdname bm_CrossValidation
+##' @export
+##'
+
+setMethod('bm_CrossValidation_random', signature(bm.format = "BIOMOD.formated.data"),
+          function(bm.format, nb.rep, perc) {
+            cat("\n   > Random cross-validation selection")
+          })
+
+## bm_CrossValidation random BIOMOD.formated.data.PA methods ----------------------------
+##'
+##' @rdname bm_CrossValidation
+##' @export
+##'
+
+setMethod('bm_CrossValidation_random', signature(bm.format = "BIOMOD.formated.data.PA"),
+          function(bm.format, nb.rep, perc) {
+            cat("\n   > Random cross-validation selection")
+          })
+
+
+# bm_CrossValidation kfold methods ----------------------------------------------------------------
+
+##'
+##' @rdname bm_CrossValidation
+##' @export
+##'
+
+setGeneric("bm_CrossValidation_kfold",
+           def = function(bm.format, ...) {
+             standardGeneric( "bm_CrossValidation_kfold")
+           })
+
+## bm_CrossValidation kfold BIOMOD.formated.data methods --------------------------------
+##'
+##' @rdname bm_CrossValidation
+##' @export
+##'
+
+setMethod('bm_CrossValidation_kfold', signature(bm.format = "BIOMOD.formated.data"),
+          function(bm.format, nb.rep, k) {
+            cat("\n   > k-fold cross-validation selection")
+          })
+
+## bm_CrossValidation kfold BIOMOD.formated.data.PA methods -----------------------------
+##'
+##' @rdname bm_CrossValidation
+##' @export
+##'
+
+setMethod('bm_CrossValidation_kfold', signature(bm.format = "BIOMOD.formated.data.PA"),
+          function(bm.format, nb.rep, k) {
+            cat("\n   > k-fold cross-validation selection")
+          })
+
+
+# bm_CrossValidation block methods ----------------------------------------------------------------
+
+##'
+##' @rdname bm_CrossValidation
+##' @export
+##'
+
+setGeneric("bm_CrossValidation_block",
+           def = function(bm.format, ...) {
+             standardGeneric( "bm_CrossValidation_block")
+           })
+
+## bm_CrossValidation block BIOMOD.formated.data methods --------------------------------
+##'
+##' @rdname bm_CrossValidation
+##' @export
+##'
+
+setMethod('bm_CrossValidation_block', signature(bm.format = "BIOMOD.formated.data"),
+          function(bm.format, balance) {
+            cat("\n   > Block cross-validation selection")
+          })
+
+## bm_CrossValidation block BIOMOD.formated.data.PA methods -----------------------------
+##'
+##' @rdname bm_CrossValidation
+##' @export
+##'
+
+setMethod('bm_CrossValidation_block', signature(bm.format = "BIOMOD.formated.data.PA"),
+          function(bm.format, balance) {
+            cat("\n   > Block cross-validation selection")
+          })
+
+
+# bm_CrossValidation strat methods ----------------------------------------------------------------
+
+##'
+##' @rdname bm_CrossValidation
+##' @export
+##'
+
+setGeneric("bm_CrossValidation_strat",
+           def = function(bm.format, ...) {
+             standardGeneric( "bm_CrossValidation_strat")
+           })
+
+## bm_CrossValidation strat BIOMOD.formated.data methods --------------------------------
+##'
+##' @rdname bm_CrossValidation
+##' @export
+##'
+
+setMethod('bm_CrossValidation_strat', signature(bm.format = "BIOMOD.formated.data"),
+          function(bm.format, balance, strat) {
+            cat("\n   > Stratified cross-validation selection")
+          })
+
+## bm_CrossValidation block BIOMOD.formated.data.PA methods -----------------------------
+##'
+##' @rdname bm_CrossValidation
+##' @export
+##'
+
+setMethod('bm_CrossValidation_strat', signature(bm.format = "BIOMOD.formated.data.PA"),
+          function(bm.format, balance, strat) {
+            cat("\n   > Stratified cross-validation selection")
+          })
+
+
+# bm_CrossValidation env methods ------------------------------------------------------------------
+
+##'
+##' @rdname bm_CrossValidation
+##' @export
+##'
+
+setGeneric("bm_CrossValidation_env",
+           def = function(bm.format, ...) {
+             standardGeneric( "bm_CrossValidation_env")
+           })
+
+## bm_CrossValidation env BIOMOD.formated.data methods ----------------------------------
+##'
+##' @rdname bm_CrossValidation
+##' @export
+##'
+
+setMethod('bm_CrossValidation_env', signature(bm.format = "BIOMOD.formated.data"),
+          function(bm.format, balance) {
+            cat("\n   > Environmental cross-validation selection")
+          })
+
+## bm_CrossValidation env BIOMOD.formated.data.PA methods -------------------------------
+##'
+##' @rdname bm_CrossValidation
+##' @export
+##'
+
+setMethod('bm_CrossValidation_env', signature(bm.format = "BIOMOD.formated.data.PA"),
+          function(bm.format, balance) {
+            cat("\n   > Environmental cross-validation selection")
           })
 
 
 
 
 
-setGeneric("bm_CrossValidation", def = function(bm.format, ...) { standardGeneric("bm_CrossValidation") })
-
-setMethod("bm_CrossValidation", signature("BIOMOD.formated.data"),
-          function(bm.format, nb.rep, data.split.perc
-                   , weights = NULL, prevalence = NULL
-                   , do.full.models = TRUE, data.split.table = NULL, seed.val = NULL)
-          {
-            
-          }
-)
-
-setMethod("bm_CrossValidation", signature("BIOMOD.formated.data.PA"),
-          function(bm.format, nb.rep, data.split.perc, weights = NULL, prevalence = NULL
-                   , do.full.models = TRUE, data.split.table = NULL, seed.val = NULL)
-          {
-            
-          }
-)
-
-## method / strategy ? : kfold / random / stratified / block / environment
-## nb.rep
-## k
-## perc
-## balance
-## strat
-
-
-
-
-
-
-# BIOMOD_CrossValidation <- function(bm.format,
-                                   k = 5,
-                                   # nb.rep = 5,
-                                   do.stratification = FALSE,
-                                   method = "both",
-                                   balance = "presences",
-                                   do.full.models = TRUE) {
-  
-  args <- .BIOMOD_CrossValidation.check.args(bm.format,
-                                             k = k,
-                                             nb.rep = nb.rep,
-                                             do.stratification = do.stratification,
-                                             method = method,
-                                             balance = balance,
-                                             do.full.models = do.full.models)
-  
-  for (argi in names(args)) { assign(x = argi, value = args[[argi]]) }
-  rm(args)
+{
   
   .bm_cat("Build Cross-Validation Table")
   DataSplitTable.y <- DataSplitTable.x <- DataSplitTable <- NULL
@@ -430,20 +561,4 @@ setMethod("bm_CrossValidation", signature("BIOMOD.formated.data.PA"),
     }
   }
   
-  ## CLEAN FINAL TABLE ----------------------------------------------------------------------------
-  colnames(DataSplitTable) <- paste0("RUN", 1:ncol(DataSplitTable))
-  
-  if (isTRUE(do.full.models)) {
-    DataSplitTable <- cbind(DataSplitTable, TRUE)
-    colnames(DataSplitTable)[ncol(DataSplitTable)] <- "allRun"
-  }
-  
-  .bm_cat("Done")
-  return(DataSplitTable)
 }
-
-
-
-# Argument check ----------------------------------------------------------
-
-.BIOMOD_CrossValidation.check.args <- 
