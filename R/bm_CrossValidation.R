@@ -163,10 +163,179 @@
 ##' 
 ###################################################################################################
 
+            
+bm_CrossValidation <- function(bm.format, strategy = 'random', nb.rep = 1, perc, k, balance, strat
+                               , do.full.models = TRUE, seed.val = NULL, user.table = NULL)
+{
+  ## 0. Check arguments ---------------------------------------------------------------------------
+  args <- .bm_CrossValidation.check.args(bm.format, strategy, nb.rep, perc, k, balance, strat
+                                         , do.full.models, seed.val, user.table)
+  for (argi in names(args)) { assign(x = argi, value = args[[argi]]) }
+  rm(args)
+  
+  ## 1. Create output object ----------------------------------------------------------------------
+  if ((nb.rep == 0 || k == 0) & strategy != 'user.defined') { ##TODO
+    out <- NULL
+  } else {
+    out <- switch(strategy, ##TODO
+                  user.defined = bm_CrossValidation_user.defined(resp.var, expl.var, user.table),
+                  random = bm_CrossValidation_random(resp.var, expl.var, nb.absences, nb.rep),
+                  kfold = bm_CrossValidation_kfold(),
+                  block = bm_CrossValidation_block(),
+                  strat = bm_CrossValidation_strat(),
+                  env = bm_CrossValidation_env())
+  }
+  
+  cat("\n")
+  return(out)
+}
 
-BIOMOD_CrossValidation <- function(bm.format,
+  
+# Argument Check --------------------------------------------------------------
+
+.bm_CrossValidation.check.args <- function(bm.format, strategy, nb.rep, perc, k, balance, strat
+                                           , do.full.models, seed.val, user.table)
+{
+  cat('\n\nChecking Cross-Validation arguments...\n')
+  
+  ## 0. Check bm.format argument ------------------------------------
+  .fun_testIfInherits(TRUE, "bm.format", bm.format, c("BIOMOD.formated.data", "BIOMOD.formated.data.PA"))
+  
+  ## 1. Check strategy argument -------------------------------------
+  .fun_testIfIn(TRUE, "strategy", strategy, c("random", "kfold", "block", "strat", "env", "user.defined"))
+  
+  ## 2. Check nb.rep / perc / k argument ----------------------------
+  if (strategy %in% c("random", "kfold")) {
+    .fun_testIfPosInt(TRUE, "nb.rep", nb.rep)
+    if (nb.rep < 1) { stop("nb.rep must be an integer >= 1") }
+    
+    if (strategy == "random") {
+      if (perc < 0 || perc > 100) {
+        stop("perc must be a value between 0 and 100")
+      } else if (perc < 50) {
+        warning("You chose to allocate more data to evaluation than to calibration of your model
+                (perc<50)\nMake sure you really wanted to do that. \n", immediate. = TRUE)
+      } else if (perc == 100) {
+        nb.rep <- 0
+        warning(paste0("The models will be evaluated on the calibration data only "
+                       , "(nb.rep=0 and no independent data) \n\t "
+                       , "It could lead to over-optimistic predictive performances.\n")
+                , immediate. = TRUE)
+      }
+    }
+    
+    if (strategy == "kfold") {
+      .fun_testIfPosInt(TRUE, "k", k)
+      if (k < 2) { stop("k must be an integer >= 2") }
+    }
+  }
+  
+  ## 3. Check balance / strat argument ------------------------------
+  if (strategy %in% c("block", "strat", "env")) {
+    .fun_testIfIn(TRUE, "balance", balance, c("presences","absences"))
+    
+    if (strategy == "strat") {
+      .fun_testIfIn(TRUE, "strat", strat, c("x", "y", "both"))
+    }
+  }
+  
+  ## 4. Check user.table argument -----------------------------------
+  if (strategy == "user.defined") {
+    if (is.null(user.table)) {
+      stop("user.table must be a matrix, a data.frame or a 3D array") 
+    } else {
+      if (!(length(dim(user.table) %in% c(2, 3)))) {
+        stop("user.table must be a matrix, a data.frame or a 3D array") 
+      }
+      if (inherits(user.table,'data.frame')) {
+        user.table <- as.matrix(user.table)
+      }
+      if (dim(user.table)[1] != length(bm.format@data.species)) { 
+        stop("user.table must have as many rows (dim1) than your species as data")
+      }
+      nb.rep <- dim(user.table)[2]
+    }
+  }
+
+  return(list(bm.format = bm.format,
+              strategy = strategy,
+              nb.rep = nb.rep,
+              perc = perc,
+              k = k,
+              balance = balance,
+              strat = strat,
+              do.full.models = do.full.models,
+              seed.val = seed.val,
+              user.table = user.table))
+}
+
+
+
+# bm_CrossValidation user-defined methods --------------------------------------
+
+##'
+##' @rdname bm_CrossValidation
+##' @export
+##'
+
+setGeneric("bm_CrossValidation_user.defined",
+           def = function(user.table, ...) {
+             standardGeneric( "bm_CrossValidation_user.defined")
+           })
+
+## bm_CrossValidation user-defined data.frame methods --------------------------------------
+##'
+##' @rdname bm_CrossValidation
+##' @export
+##'
+
+setMethod('bm_CrossValidation_user.defined', signature(user.table = "data.frame"),
+          function(user.table) {
+            cat("\n   > User defined cross-validation selection")
+            # return(list(xy = crds(resp.var),
+            #             sp = as.numeric(unlist(values(resp.var), use.names = FALSE)),
+            #             env = as.data.frame(expl.var),
+            #             pa.tab = user.table))
+          })
+
+
+
+
+
+setGeneric("bm_CrossValidation", def = function(bm.format, ...) { standardGeneric("bm_CrossValidation") })
+
+setMethod("bm_CrossValidation", signature("BIOMOD.formated.data"),
+          function(bm.format, nb.rep, data.split.perc
+                   , weights = NULL, prevalence = NULL
+                   , do.full.models = TRUE, data.split.table = NULL, seed.val = NULL)
+          {
+            
+          }
+)
+
+setMethod("bm_CrossValidation", signature("BIOMOD.formated.data.PA"),
+          function(bm.format, nb.rep, data.split.perc, weights = NULL, prevalence = NULL
+                   , do.full.models = TRUE, data.split.table = NULL, seed.val = NULL)
+          {
+            
+          }
+)
+
+## method / strategy ? : kfold / random / stratified / block / environment
+## nb.rep
+## k
+## perc
+## balance
+## strat
+
+
+
+
+
+
+# BIOMOD_CrossValidation <- function(bm.format,
                                    k = 5,
-                                   nb.rep = 5,
+                                   # nb.rep = 5,
                                    do.stratification = FALSE,
                                    method = "both",
                                    balance = "presences",
@@ -277,51 +446,4 @@ BIOMOD_CrossValidation <- function(bm.format,
 
 # Argument check ----------------------------------------------------------
 
-.BIOMOD_CrossValidation.check.args <- function(bm.format,
-                                               k,
-                                               nb.rep,
-                                               do.stratification,
-                                               method,
-                                               balance,
-                                               do.full.models) {
-  cat('\n\nChecking Cross-Validation arguments...\n')
-
-  ## 0. Check bm.format ----------------------------------
-  .fun_testIfInherits(TRUE, "bm.format", bm.format, "BIOMOD.formated.data")
-  
-  ## 1. Check k ----------------------------------
-  if(k < 2 | k %% 1 != 0) {
-    stop("k must be an integer >= 2")
-  }
-  ## 2. Check nb.rep ----------------------------------
-  if(nb.rep < 1 | nb.rep %% 1 != 0) {
-    stop("nb.rep must be an integer >= 1")
-  }
-  ## 3. Check do.stratification ----------------------------------
-  
-  if(!is.logical(do.stratification)){
-    stop("do.stratification must be TRUE or FALSE")
-  }
-  
-  ## 4. Check method ----------------------------------
-  method.options <- c("x","y","both","block")
-  .fun_testIfIn(TRUE, "method", method, method.options)
-  
-  ## 5. Check balance ----------------------------------
-  balance.options <- c("presences","absences")
-  .fun_testIfIn(TRUE, "balance", balance, balance.options)
-  
-  ## 6. Check do.full.models ----------------------------------
-  
-  if(!is.logical(do.full.models)){
-    stop("do.full.models must be TRUE or FALSE")
-  }
-  
-  return(list(bm.format = bm.format,
-              k = k,
-              nb.rep = nb.rep,
-              do.stratification = do.stratification,
-              method = method,
-              balance = balance,
-              do.full.models = do.full.models))
-}
+.BIOMOD_CrossValidation.check.args <- 
