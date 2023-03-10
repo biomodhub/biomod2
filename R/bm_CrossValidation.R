@@ -311,6 +311,20 @@ setGeneric("bm_CrossValidation_user.defined",
 setMethod('bm_CrossValidation_user.defined', signature(user.table = "data.frame"),
           function(user.table) {
             cat("\n   > User defined cross-validation selection")
+            
+            calib.lines <- user.table
+            colnames(calib.lines) <- paste('_RUN', 1:ncol(calib.lines), sep = '')
+            
+            # for (pa in 1:ncol(bm.format@PA.table))
+            # {
+            #     if (length(dim(data.split.table)) == 2) {
+            #       calib.lines <- data.split.table
+            #     } else {
+            #       calib.lines <- asub(data.split.table, pa, 3, drop = TRUE)
+            #     }
+            #     colnames(calib.lines) <- paste0('_RUN', 1:ncol(calib.lines))
+            #     calib.lines[which(bm.format@PA.table[, pa] == FALSE | is.na(bm.format@PA.table[, pa])), ] <- NA
+            # }
           })
 
 
@@ -335,6 +349,21 @@ setGeneric("bm_CrossValidation_random",
 setMethod('bm_CrossValidation_random', signature(bm.format = "BIOMOD.formated.data"),
           function(bm.format, nb.rep, perc) {
             cat("\n   > Random cross-validation selection")
+            
+            if (nb.rep == 0) { # take all available data
+              calib.lines <- matrix(rep(TRUE, length(bm.format@data.species)), ncol = 1)
+              colnames(calib.lines) <- '_allRun'
+            } else {
+              calib.lines <- .sample_mat(data.sp = bm.format@data.species,
+                                         data.split = data.split.perc,
+                                         nb.rep = nb.rep,
+                                         data.env = bm.format@data.env.var,
+                                         seed.val = seed.val)
+              if (do.full.models) {
+                calib.lines <- cbind(calib.lines, rep(TRUE, length(bm.format@data.species)))
+                colnames(calib.lines)[nb.rep + 1] <- '_allRun'
+              }
+            }
           })
 
 ## bm_CrossValidation random BIOMOD.formated.data.PA methods ----------------------------
@@ -346,6 +375,31 @@ setMethod('bm_CrossValidation_random', signature(bm.format = "BIOMOD.formated.da
 setMethod('bm_CrossValidation_random', signature(bm.format = "BIOMOD.formated.data.PA"),
           function(bm.format, nb.rep, perc) {
             cat("\n   > Random cross-validation selection")
+            
+            for (pa in 1:ncol(bm.format@PA.table))
+            {
+              if (nb.rep == 0) { # take all available data
+                calib.lines <- matrix(NA, nrow = length(bm.format@data.species), ncol = 1)
+                calib.lines[which(bm.format@PA.table[, pa] == TRUE), 1] <- TRUE
+                colnames(calib.lines) <- '_allRun'
+              } else {
+                calib.lines <- matrix(NA, nrow = length(bm.format@data.species), ncol = nb.rep)
+                sampled.mat <- .sample_mat(
+                  data.sp = bm.format@data.species[which(bm.format@PA.table[, pa] == TRUE)],
+                  data.split = data.split.perc,
+                  nb.rep = nb.rep,
+                  data.env = bm.format@data.env.var[which(bm.format@PA.table[, pa] == TRUE), , drop = FALSE],
+                  seed.val = seed.val
+                )
+                calib.lines[which(bm.format@PA.table[, pa] == TRUE), ] <- sampled.mat
+                colnames(calib.lines) <- colnames(sampled.mat)
+                if (do.full.models) {
+                  calib.lines <- cbind(calib.lines, rep(NA, length(bm.format@data.species)))
+                  calib.lines[which(bm.format@PA.table[, pa] == TRUE), nb.rep + 1] <- TRUE
+                  colnames(calib.lines)[nb.rep + 1] <- '_allRun'
+                }
+              }
+            }
           })
 
 

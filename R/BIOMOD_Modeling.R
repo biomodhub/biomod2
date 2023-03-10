@@ -650,26 +650,26 @@ setMethod('.BIOMOD_Modeling.prepare.data', signature('BIOMOD.formated.data'),
               eval.data <- eval.xy <- NULL
             }
             
-            ## Calib/Valid lines
-            if (!is.null(data.split.table)) {
-              calib.lines <- data.split.table
-              colnames(calib.lines) <- paste('_RUN', 1:ncol(calib.lines), sep = '')
-            } else {
-              if (nb.rep == 0) { # take all available data
-                calib.lines <- matrix(rep(TRUE, length(bm.format@data.species)), ncol = 1)
-                colnames(calib.lines) <- '_allRun'
-              } else {
-                calib.lines <- .sample_mat(data.sp = bm.format@data.species,
-                                           data.split = data.split.perc,
-                                           nb.rep = nb.rep,
-                                           data.env = bm.format@data.env.var,
-                                           seed.val = seed.val)
-                if (do.full.models) {
-                  calib.lines <- cbind(calib.lines, rep(TRUE, length(bm.format@data.species)))
-                  colnames(calib.lines)[nb.rep + 1] <- '_allRun'
-                }
-              }
-            }
+            # ## Calib/Valid lines
+            # if (!is.null(data.split.table)) {
+            #   calib.lines <- data.split.table
+            #   colnames(calib.lines) <- paste('_RUN', 1:ncol(calib.lines), sep = '')
+            # } else {
+            #   if (nb.rep == 0) { # take all available data
+            #     calib.lines <- matrix(rep(TRUE, length(bm.format@data.species)), ncol = 1)
+            #     colnames(calib.lines) <- '_allRun'
+            #   } else {
+            #     calib.lines <- .sample_mat(data.sp = bm.format@data.species,
+            #                                data.split = data.split.perc,
+            #                                nb.rep = nb.rep,
+            #                                data.env = bm.format@data.env.var,
+            #                                seed.val = seed.val)
+            #     if (do.full.models) {
+            #       calib.lines <- cbind(calib.lines, rep(TRUE, length(bm.format@data.species)))
+            #       colnames(calib.lines)[nb.rep + 1] <- '_allRun'
+            #     }
+            #   }
+            # }
             ## force calib.lines object to be 3D array
             if (length(dim(calib.lines)) < 3) {
               dn_tmp <- dimnames(calib.lines) ## keep track of dimnames
@@ -715,39 +715,39 @@ setMethod('.BIOMOD_Modeling.prepare.data', signature('BIOMOD.formated.data.PA'),
               dataBM <- data.frame(cbind(resp, bm.format@data.env.var[which(bm.format@PA.table[, pa] == TRUE), , drop = FALSE]))
               colnames(dataBM)[1] <- bm.format@sp.name
               
-              ## Calib/Valid lines
-              if (!is.null(data.split.table))
-              {
-                if (length(dim(data.split.table)) == 2) {
-                  calib.lines <- data.split.table
-                } else {
-                  calib.lines <- asub(data.split.table, pa, 3, drop = TRUE)
-                }
-                colnames(calib.lines) <- paste0('_RUN', 1:ncol(calib.lines))
-                calib.lines[which(bm.format@PA.table[, pa] == FALSE | is.na(bm.format@PA.table[, pa])), ] <- NA
-              } else {
-                if (nb.rep == 0) { # take all available data
-                  calib.lines <- matrix(NA, nrow = length(bm.format@data.species), ncol = 1)
-                  calib.lines[which(bm.format@PA.table[, pa] == TRUE), 1] <- TRUE
-                  colnames(calib.lines) <- '_allRun'
-                } else {
-                  calib.lines <- matrix(NA, nrow = length(bm.format@data.species), ncol = nb.rep)
-                  sampled.mat <- .sample_mat(
-                    data.sp = bm.format@data.species[which(bm.format@PA.table[, pa] == TRUE)],
-                    data.split = data.split.perc,
-                    nb.rep = nb.rep,
-                    data.env = bm.format@data.env.var[which(bm.format@PA.table[, pa] == TRUE), , drop = FALSE],
-                    seed.val = seed.val
-                  )
-                  calib.lines[which(bm.format@PA.table[, pa] == TRUE), ] <- sampled.mat
-                  colnames(calib.lines) <- colnames(sampled.mat)
-                  if (do.full.models) {
-                    calib.lines <- cbind(calib.lines, rep(NA, length(bm.format@data.species)))
-                    calib.lines[which(bm.format@PA.table[, pa] == TRUE), nb.rep + 1] <- TRUE
-                    colnames(calib.lines)[nb.rep + 1] <- '_allRun'
-                  }
-                }
-              }
+              # ## Calib/Valid lines
+              # if (!is.null(data.split.table))
+              # {
+              #   if (length(dim(data.split.table)) == 2) {
+              #     calib.lines <- data.split.table
+              #   } else {
+              #     calib.lines <- asub(data.split.table, pa, 3, drop = TRUE)
+              #   }
+              #   colnames(calib.lines) <- paste0('_RUN', 1:ncol(calib.lines))
+              #   calib.lines[which(bm.format@PA.table[, pa] == FALSE | is.na(bm.format@PA.table[, pa])), ] <- NA
+              # } else {
+              #   if (nb.rep == 0) { # take all available data
+              #     calib.lines <- matrix(NA, nrow = length(bm.format@data.species), ncol = 1)
+              #     calib.lines[which(bm.format@PA.table[, pa] == TRUE), 1] <- TRUE
+              #     colnames(calib.lines) <- '_allRun'
+              #   } else {
+              #     calib.lines <- matrix(NA, nrow = length(bm.format@data.species), ncol = nb.rep)
+              #     sampled.mat <- .sample_mat(
+              #       data.sp = bm.format@data.species[which(bm.format@PA.table[, pa] == TRUE)],
+              #       data.split = data.split.perc,
+              #       nb.rep = nb.rep,
+              #       data.env = bm.format@data.env.var[which(bm.format@PA.table[, pa] == TRUE), , drop = FALSE],
+              #       seed.val = seed.val
+              #     )
+              #     calib.lines[which(bm.format@PA.table[, pa] == TRUE), ] <- sampled.mat
+              #     colnames(calib.lines) <- colnames(sampled.mat)
+              #     if (do.full.models) {
+              #       calib.lines <- cbind(calib.lines, rep(NA, length(bm.format@data.species)))
+              #       calib.lines[which(bm.format@PA.table[, pa] == TRUE), nb.rep + 1] <- TRUE
+              #       colnames(calib.lines)[nb.rep + 1] <- '_allRun'
+              #     }
+              #   }
+              # }
               
               ## force calib.lines object to be 3D array
               if (length(dim(calib.lines)) < 3) {
