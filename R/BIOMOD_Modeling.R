@@ -341,24 +341,6 @@ BIOMOD_Modeling <- function(bm.format,
   }
   
   ## 3.2 Get and save calibration lines ---------------------------------------
-  ## weights
-  ## species / eval data
-  mod.prep.dat <- .BIOMOD_Modeling.prepare.data(bm.format, 
-                                                nb.rep, 
-                                                data.split.perc, 
-                                                weights, 
-                                                prevalence, 
-                                                do.full.models, 
-                                                data.split.table,
-                                                seed.val)
-  
-  
-  # calib.lines <- mod.prep.dat[[1]]$calib.lines
-  # if (length(mod.prep.dat) > 1) { ## stack calib lines matrix along array 3rd-dimension
-  #   for (pa in 2:length(mod.prep.dat)) {
-  #     calib.lines <- abind(calib.lines, mod.prep.dat[[pa]]$calib.lines, along = 3)
-  #   }
-  # }
   calib.lines <- bm_CrossValidation(bm.format = bm.format,
                                     strategy = CV.strategy,
                                     nb.rep = CV.nb.rep,
@@ -367,11 +349,63 @@ BIOMOD_Modeling <- function(bm.format,
                                     balance = CV.balance,
                                     strat = CV.strat,
                                     do.full.models = do.full.models)
-  rm(bm.format)
-  
   models.out = .fill_BIOMOD.models.out("calib.lines", calib.lines, models.out
                                        , inMemory = FALSE, nameFolder = name.BIOMOD_DATA)
-  rm(calib.lines)
+  
+  ## 3.3 Deal with weights ----------------------------------------------------
+  dataBM <- get_species_data(bm.format)
+  if (inherits(bm.format, "BIOMOD.formated.data.PA")) {
+    dataBM <- dataBM[which(dataBM[, paste0("PA", pa)] == TRUE), ]
+    dataBM[which(is.na(dataBM[, 1])), 1] <- 0
+  }
+  
+  ## weights --------------------------------------------------------
+  if (is.null(weights)) {
+    if (!is.null(prevalence)) {
+      cat("\n\t> Automatic weights creation to rise a", prevalence, "prevalence")
+      weights <- .automatic_weights_creation(as.numeric(dataBM[, 1]), prev = prevalence)
+      if (inherits(bm.format, "BIOMOD.formated.data.PA")) {
+        weights.pa <- foreach(pa = 1:ncol(bm.format@PA.table), .combine = "cbind") %do%
+          {
+            wei <- rep(NA, length(as.numeric(dataBM[, 1])))
+            wei[which(bm.format@PA.table[, pa] == TRUE)] <- weights
+            return(wei)
+          }
+        weights <- weights.pa
+      }
+    }
+    # else { ## NEVER OCCURRING NO ??
+    #   cat("\n\t> No weights : all observations will have the same weight")
+    #   weights <- rep(1, length(bm.format@data.species))
+    # }
+  } else {
+    if (inherits(bm.format, "BIOMOD.formated.data.PA")) {
+      weights.pa <- foreach(pa = 1:ncol(bm.format@PA.table), .combine = "cbind") %do%
+        {
+          wei <- weights
+          wei[which(bm.format@PA.table[, pa] == FALSE | is.na(bm.format@PA.table[, pa]))] <- NA
+          return(wei)
+        }
+      weights <- weights.pa
+    }
+  }
+  
+  # calib.lines <- mod.prep.dat[[1]]$calib.lines
+  # if (length(mod.prep.dat) > 1) { ## stack calib lines matrix along array 3rd-dimension
+  #   for (pa in 2:length(mod.prep.dat)) {
+  #     calib.lines <- abind(calib.lines, mod.prep.dat[[pa]]$calib.lines, along = 3)
+  #   }
+  # }
+  
+  ## 3. Gathering all in one list object given to bm_RunModelsLoop --
+  mod.prep.dat <- list(name = bm.format@sp.name,
+                       dir.name = bm.format@dir.name,
+                       # xy = xy,
+                       dataBM = dataBM,
+                       calib.lines = calib.lines,
+                       weights = weights,
+                       eval.data = get_eval_data(bm.format))
+                       # eval.xy = eval.xy)
   
   ## 4. Print modeling summary in console ---------------------------------------------------------
   .BIOMOD_Modeling.summary(mod.prep.dat, models, models.pa)
@@ -637,174 +671,20 @@ BIOMOD_Modeling <- function(bm.format,
 
 # ---------------------------------------------------------------------------- #
 
-## # #For ecospat package
-## @export
-## 
-
-setGeneric(".BIOMOD_Modeling.prepare.data", def = function(bm.format, ...) { standardGeneric(".BIOMOD_Modeling.prepare.data") })
-
-setMethod('.BIOMOD_Modeling.prepare.data', signature('BIOMOD.formated.data'),
-          function(bm.format, nb.rep, data.split.perc, weights = NULL, prevalence = NULL
-                   , do.full.models = TRUE, data.split.table = NULL, seed.val = NULL)
-          {
-            list.out <- list()
-            name <- paste0(bm.format@sp.name, '_allData')
-            dataBM <- get_species_data(bm.format)
-            # xy <- bm.format@coord
-            # dataBM = cbind(bm.format@data.species, bm.format@data.env.var)
-            # colnames(dataBM)[1] = bm.format@sp.name
-            
-            ## dealing with evaluation data
-            eval.data <- get_eval_data(bm.format)
-            # if (bm.format@has.data.eval) {
-            #   eval.data <- data.frame(cbind(bm.format@eval.data.species, bm.format@eval.data.env.var[, , drop = FALSE]))
-            #   colnames(eval.data)[1] <- bm.format@sp.name
-            #   eval.xy <- bm.format@eval.coord
-            # } else {
-            #   eval.data <- eval.xy <- NULL
-            # }
-            
-            # ## Calib/Valid lines
-            # if (!is.null(data.split.table)) {
-            #   calib.lines <- data.split.table
-            #   colnames(calib.lines) <- paste('_RUN', 1:ncol(calib.lines), sep = '')
-            # } else {
-            #   if (nb.rep == 0) { # take all available data
-            #     calib.lines <- matrix(rep(TRUE, length(bm.format@data.species)), ncol = 1)
-            #     colnames(calib.lines) <- '_allRun'
-            #   } else {
-            #     calib.lines <- .sample_mat(data.sp = bm.format@data.species,
-            #                                data.split = data.split.perc,
-            #                                nb.rep = nb.rep,
-            #                                data.env = bm.format@data.env.var,
-            #                                seed.val = seed.val)
-            #     if (do.full.models) {
-            #       calib.lines <- cbind(calib.lines, rep(TRUE, length(bm.format@data.species)))
-            #       colnames(calib.lines)[nb.rep + 1] <- '_allRun'
-            #     }
-            #   }
-            # }
-            ## force calib.lines object to be 3D array
-            if (length(dim(calib.lines)) < 3) {
-              dn_tmp <- dimnames(calib.lines) ## keep track of dimnames
-              dim(calib.lines) <- c(dim(calib.lines), 1)
-              dimnames(calib.lines) <- list(dn_tmp[[1]], dn_tmp[[2]], "_allData")
-            }
-            
-            if (is.null(weights)) { # 1 for all points
-              if (!is.null(prevalence)) {
-                cat("\n\t> Automatic weights creation to rise a", prevalence, "prevalence")
-                weights <- .automatic_weights_creation(bm.format@data.species , prev = prevalence)
-              } else {
-                cat("\n\t> No weights : all observations will have the same weight")
-                weights <- rep(1, length(bm.format@data.species))
-              }
-            }
-            
-            list.out[[name]] <- list(name = name,
-                                     dir.name = bm.format@dir.name,
-                                     xy = xy,
-                                     dataBM = dataBM, 
-                                     calib.lines = calib.lines,
-                                     weights = weights,
-                                     eval.data = eval.data,
-                                     eval.xy = eval.xy)
-            return(list.out)
-          }
-)
-
-setMethod('.BIOMOD_Modeling.prepare.data', signature('BIOMOD.formated.data.PA'),
-          function(bm.format, nb.rep, data.split.perc, weights = NULL, prevalence = NULL
-                   , do.full.models = TRUE, data.split.table = NULL, seed.val = NULL)
-          {
-            list.out <- list()
-            formal_weights <- weights
-            for (pa in 1:ncol(bm.format@PA.table))
-            {
-              weights <- formal_weights
-              name <- paste0(bm.format@sp.name, "_", colnames(bm.format@PA.table)[pa])
-              dataBM <- get_species_data(bm.format)
-              dataBM <- dataBM[which(dataBM[, paste0("PA", pa)] == TRUE), ]
-              dataBM[which(is.na(dataBM[, 1])), 1] <- 0
-              # xy <- bm.format@coord[which(bm.format@PA.table[, pa] == TRUE), ]
-              # resp <- bm.format@data.species[which(bm.format@PA.table[, pa] == TRUE)] # response variable (with pseudo absences selected)
-              # resp[is.na(resp)] <- 0
-              # dataBM <- data.frame(cbind(resp, bm.format@data.env.var[which(bm.format@PA.table[, pa] == TRUE), , drop = FALSE]))
-              # colnames(dataBM)[1] <- bm.format@sp.name
-              
-              # ## Calib/Valid lines
-              # if (!is.null(data.split.table))
-              # {
-              #   if (length(dim(data.split.table)) == 2) {
-              #     calib.lines <- data.split.table
-              #   } else {
-              #     calib.lines <- asub(data.split.table, pa, 3, drop = TRUE)
-              #   }
-              #   colnames(calib.lines) <- paste0('_RUN', 1:ncol(calib.lines))
-              #   calib.lines[which(bm.format@PA.table[, pa] == FALSE | is.na(bm.format@PA.table[, pa])), ] <- NA
-              # } else {
-              #   if (nb.rep == 0) { # take all available data
-              #     calib.lines <- matrix(NA, nrow = length(bm.format@data.species), ncol = 1)
-              #     calib.lines[which(bm.format@PA.table[, pa] == TRUE), 1] <- TRUE
-              #     colnames(calib.lines) <- '_allRun'
-              #   } else {
-              #     calib.lines <- matrix(NA, nrow = length(bm.format@data.species), ncol = nb.rep)
-              #     sampled.mat <- .sample_mat(
-              #       data.sp = bm.format@data.species[which(bm.format@PA.table[, pa] == TRUE)],
-              #       data.split = data.split.perc,
-              #       nb.rep = nb.rep,
-              #       data.env = bm.format@data.env.var[which(bm.format@PA.table[, pa] == TRUE), , drop = FALSE],
-              #       seed.val = seed.val
-              #     )
-              #     calib.lines[which(bm.format@PA.table[, pa] == TRUE), ] <- sampled.mat
-              #     colnames(calib.lines) <- colnames(sampled.mat)
-              #     if (do.full.models) {
-              #       calib.lines <- cbind(calib.lines, rep(NA, length(bm.format@data.species)))
-              #       calib.lines[which(bm.format@PA.table[, pa] == TRUE), nb.rep + 1] <- TRUE
-              #       colnames(calib.lines)[nb.rep + 1] <- '_allRun'
-              #     }
-              #   }
-              # }
-              
-              ## force calib.lines object to be 3D array
-              if (length(dim(calib.lines)) < 3) {
-                dn_tmp <- dimnames(calib.lines) ## keep track of dimnames
-                dim(calib.lines) <- c(dim(calib.lines), 1)
-                dimnames(calib.lines) <- list(dn_tmp[[1]], dn_tmp[[2]], paste0("_PA", pa))
-              }
-              
-              # dealing with evaluation data
-              eval.data <- get_eval_data(bm.format)
-              # if (bm.format@has.data.eval) {
-              #   eval.data <- data.frame(cbind(bm.format@eval.data.species, bm.format@eval.data.env.var))
-              #   colnames(eval.data)[1] <- bm.format@sp.name
-              #   eval.xy <- bm.format@eval.coord
-              # } else {
-              #   eval.data <- eval.xy <- NULL
-              # }
-              
-              if (is.null(weights)) { # prevalence of 0.5... may be parametrize
-                if (is.null(prevalence)) { prevalence <- 0.5 }
-                cat("\n\t\t\t! Weights where automatically defined for", name, "to rise a", prevalence, "prevalence !")
-                weights <- rep(NA, length(as.numeric(dataBM[, 1])))
-                weights[which(bm.format@PA.table[, pa] == TRUE)] <- .automatic_weights_creation(as.numeric(dataBM[, 1]), prev = prevalence)
-              } else { # remove useless weights
-                weights[which(bm.format@PA.table[, pa] == FALSE | is.na(bm.format@PA.table[, pa]))] <- NA
-              }
-              
-              list.out[[name]] <- list(name = name,
-                                       dir.name = bm.format@dir.name,
-                                       xy = xy, 
-                                       dataBM = dataBM,
-                                       calib.lines = calib.lines,
-                                       weights = weights,
-                                       eval.data = eval.data,
-                                       eval.xy = eval.xy)
-            }
-            return(list.out)
-          }
-)
-
+    
+    # ## force calib.lines object to be 3D array
+    # if (length(dim(calib.lines)) < 3) {
+    #   dn_tmp <- dimnames(calib.lines) ## keep track of dimnames
+    #   dim(calib.lines) <- c(dim(calib.lines), 1)
+    #   dimnames(calib.lines) <- list(dn_tmp[[1]], dn_tmp[[2]], "_allData")
+    # }
+    # ## PA
+    # if (length(dim(calib.lines)) < 3) {
+    #   dn_tmp <- dimnames(calib.lines) ## keep track of dimnames
+    #   dim(calib.lines) <- c(dim(calib.lines), 1)
+    #   dimnames(calib.lines) <- list(dn_tmp[[1]], dn_tmp[[2]], paste0("_PA", pa))
+    # }
+  
 
 # ---------------------------------------------------------------------------- #
 
