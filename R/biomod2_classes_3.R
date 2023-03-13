@@ -1037,7 +1037,7 @@ setMethod("get_predictions", "BIOMOD.projection.out",
             out <- load_stored_object(obj@proj.out, layer = selected.layers)
             
             # subselection of models_selected
-            if (obj@type == "SpatRaster") {
+            if (any(obj@type == "SpatRaster")) {
               if (length(grep("EM|merged", names(out))) > 0) {
                 keep_layers <- .filter_outputs.vec(names(out), obj.type = "em", 
                                                    subset.list = list(full.name =  full.name
