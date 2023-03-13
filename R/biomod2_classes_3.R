@@ -3,9 +3,12 @@
 ## 0. Generic Functions definition ------------------------------------------
 ## -------------------------------------------------------------------------- #
 ## Used for different classes 
+##    01 = BIOMOD.formated.data, 02 = BIOMOD.formated.data.PA
 ##    A = BIOMOD.models.out, B = BIOMOD.projection.out, C = BIOMOD.ensemble.models.out
 
 ##' @name getters.out
+##' @aliases get_species_data
+##' @aliases get_eval_data
 ##' @aliases get_options
 ##' @aliases get_calib_lines
 ##' @aliases get_formal_data
@@ -188,6 +191,9 @@
 ##' 
 NULL
 
+setGeneric("get_species_data", function(obj, ...) { standardGeneric("get_species_data") }) ## 012
+setGeneric("get_eval_data", function(obj, ...) { standardGeneric("get_eval_data") }) ## 012
+
 setGeneric("get_options", function(obj, ...) { standardGeneric("get_options") }) ## A
 setGeneric("get_calib_lines", function(obj, ...) { standardGeneric("get_calib_lines") }) ## A
 
@@ -202,6 +208,42 @@ setGeneric("get_formal_data", function(obj, ...) { standardGeneric("get_formal_d
 setGeneric("get_built_models", function(obj, ...) { standardGeneric("get_built_models") }) ## AC
 setGeneric("get_evaluations", function(obj, ...) { standardGeneric("get_evaluations") }) ## AC
 setGeneric("get_variables_importance", function(obj, ...) { standardGeneric("get_variables_importance") }) ## AC
+
+
+## -------------------------------------------------------------------------- #
+
+##' 
+##' @rdname BIOMOD.formated.data
+##' @export
+##' 
+
+setMethod('get_species_data', signature('BIOMOD.formated.data'), function(obj) {
+  tab.sp <- data.frame(obj@data.species)
+  colnames(tab.sp) <- obj@sp.name
+  tab.sp <- cbind(tab.sp, obj@coord)
+  tab.sp <- cbind(tab.sp, obj@data.env.var)
+  return(tab.sp)
+})
+
+setMethod('get_species_data', signature('BIOMOD.formated.data.PA'), function(obj) {
+  tab.sp <- data.frame(obj@data.species)
+  colnames(tab.sp) <- obj@sp.name
+  tab.sp <- cbind(tab.sp, obj@coord)
+  tab.sp <- cbind(tab.sp, obj@data.env.var)
+  tab.sp <- cbind(tab.sp, obj@PA.table)
+  return(tab.sp)
+})
+
+setMethod('get_eval_data', signature('BIOMOD.formated.data'), function(obj) {
+  if (obj@has.data.eval) {
+    tab.sp <- data.frame(obj@eval.data.species)
+    colnames(tab.sp) <- obj@sp.name
+    tab.sp <- cbind(tab.sp, obj@eval.coord)
+    tab.sp <- cbind(tab.sp, obj@eval.data.env.var)
+    return(tab.sp)
+  } else { return(NULL) }
+})
+
 
 ## -------------------------------------------------------------------------- #
 ## 4. BIOMOD.models.out -----------------------------------------------------
