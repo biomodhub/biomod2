@@ -341,6 +341,8 @@ BIOMOD_Modeling <- function(bm.format,
   }
   
   ## 3.2 Get and save calibration lines ---------------------------------------
+  ## weights
+  ## species / eval data
   mod.prep.dat <- .BIOMOD_Modeling.prepare.data(bm.format, 
                                                 nb.rep, 
                                                 data.split.perc, 
@@ -349,14 +351,24 @@ BIOMOD_Modeling <- function(bm.format,
                                                 do.full.models, 
                                                 data.split.table,
                                                 seed.val)
+  
+  
+  # calib.lines <- mod.prep.dat[[1]]$calib.lines
+  # if (length(mod.prep.dat) > 1) { ## stack calib lines matrix along array 3rd-dimension
+  #   for (pa in 2:length(mod.prep.dat)) {
+  #     calib.lines <- abind(calib.lines, mod.prep.dat[[pa]]$calib.lines, along = 3)
+  #   }
+  # }
+  calib.lines <- bm_CrossValidation(bm.format = bm.format,
+                                    strategy = CV.strategy,
+                                    nb.rep = CV.nb.rep,
+                                    perc = CV.perc,
+                                    k = CV.k,
+                                    balance = CV.balance,
+                                    strat = CV.strat,
+                                    do.full.models = do.full.models)
   rm(bm.format)
   
-  calib.lines <- mod.prep.dat[[1]]$calib.lines
-  if (length(mod.prep.dat) > 1) { ## stack calib lines matrix along array 3rd-dimension
-    for (pa in 2:length(mod.prep.dat)) {
-      calib.lines <- abind(calib.lines, mod.prep.dat[[pa]]$calib.lines, along = 3)
-    }
-  } 
   models.out = .fill_BIOMOD.models.out("calib.lines", calib.lines, models.out
                                        , inMemory = FALSE, nameFolder = name.BIOMOD_DATA)
   rm(calib.lines)
@@ -637,18 +649,20 @@ setMethod('.BIOMOD_Modeling.prepare.data', signature('BIOMOD.formated.data'),
           {
             list.out <- list()
             name <- paste0(bm.format@sp.name, '_allData')
-            xy <- bm.format@coord
-            dataBM = cbind(bm.format@data.species, bm.format@data.env.var)
-            colnames(dataBM)[1] = bm.format@sp.name
+            dataBM <- get_species_data(bm.format)
+            # xy <- bm.format@coord
+            # dataBM = cbind(bm.format@data.species, bm.format@data.env.var)
+            # colnames(dataBM)[1] = bm.format@sp.name
             
             ## dealing with evaluation data
-            if (bm.format@has.data.eval) {
-              eval.data <- data.frame(cbind(bm.format@eval.data.species, bm.format@eval.data.env.var[, , drop = FALSE]))
-              colnames(eval.data)[1] <- bm.format@sp.name
-              eval.xy <- bm.format@eval.coord
-            } else {
-              eval.data <- eval.xy <- NULL
-            }
+            eval.data <- get_eval_data(bm.format)
+            # if (bm.format@has.data.eval) {
+            #   eval.data <- data.frame(cbind(bm.format@eval.data.species, bm.format@eval.data.env.var[, , drop = FALSE]))
+            #   colnames(eval.data)[1] <- bm.format@sp.name
+            #   eval.xy <- bm.format@eval.coord
+            # } else {
+            #   eval.data <- eval.xy <- NULL
+            # }
             
             # ## Calib/Valid lines
             # if (!is.null(data.split.table)) {
@@ -709,11 +723,14 @@ setMethod('.BIOMOD_Modeling.prepare.data', signature('BIOMOD.formated.data.PA'),
             {
               weights <- formal_weights
               name <- paste0(bm.format@sp.name, "_", colnames(bm.format@PA.table)[pa])
-              xy <- bm.format@coord[which(bm.format@PA.table[, pa] == TRUE), ]
-              resp <- bm.format@data.species[which(bm.format@PA.table[, pa] == TRUE)] # response variable (with pseudo absences selected)
-              resp[is.na(resp)] <- 0
-              dataBM <- data.frame(cbind(resp, bm.format@data.env.var[which(bm.format@PA.table[, pa] == TRUE), , drop = FALSE]))
-              colnames(dataBM)[1] <- bm.format@sp.name
+              dataBM <- get_species_data(bm.format)
+              dataBM <- dataBM[which(dataBM[, paste0("PA", pa)] == TRUE), ]
+              dataBM[which(is.na(dataBM[, 1])), 1] <- 0
+              # xy <- bm.format@coord[which(bm.format@PA.table[, pa] == TRUE), ]
+              # resp <- bm.format@data.species[which(bm.format@PA.table[, pa] == TRUE)] # response variable (with pseudo absences selected)
+              # resp[is.na(resp)] <- 0
+              # dataBM <- data.frame(cbind(resp, bm.format@data.env.var[which(bm.format@PA.table[, pa] == TRUE), , drop = FALSE]))
+              # colnames(dataBM)[1] <- bm.format@sp.name
               
               # ## Calib/Valid lines
               # if (!is.null(data.split.table))
@@ -757,13 +774,14 @@ setMethod('.BIOMOD_Modeling.prepare.data', signature('BIOMOD.formated.data.PA'),
               }
               
               # dealing with evaluation data
-              if (bm.format@has.data.eval) {
-                eval.data <- data.frame(cbind(bm.format@eval.data.species, bm.format@eval.data.env.var))
-                colnames(eval.data)[1] <- bm.format@sp.name
-                eval.xy <- bm.format@eval.coord
-              } else {
-                eval.data <- eval.xy <- NULL
-              }
+              eval.data <- get_eval_data(bm.format)
+              # if (bm.format@has.data.eval) {
+              #   eval.data <- data.frame(cbind(bm.format@eval.data.species, bm.format@eval.data.env.var))
+              #   colnames(eval.data)[1] <- bm.format@sp.name
+              #   eval.xy <- bm.format@eval.coord
+              # } else {
+              #   eval.data <- eval.xy <- NULL
+              # }
               
               if (is.null(weights)) { # prevalence of 0.5... may be parametrize
                 if (is.null(prevalence)) { prevalence <- 0.5 }
@@ -812,32 +830,3 @@ setMethod('.BIOMOD_Modeling.prepare.data', signature('BIOMOD.formated.data.PA'),
   return(weights)
 }
 
-.sample_mat <- function(data.sp, data.split, nb.rep = 1, data.env = NULL, seed.val = NULL)
-{
-  # data.sp is a 0, 1 vector
-  # return a matrix with nb.rep columns of boolean (T: calib, F= eval)
-  
-  pres <- which(data.sp == 1)
-  abs <- (1:length(data.sp))[-pres]
-  
-  nbPresEval <- round(length(pres) * data.split / 100)
-  nbAbsEval <- round(length(abs) * data.split / 100)
-  
-  mat.out <- matrix(FALSE, nrow = length(data.sp), ncol = nb.rep)
-  colnames(mat.out) <- paste0('_RUN', 1:nb.rep)
-  
-  set.seed(seed.val)
-  for (i in 1:ncol(mat.out)) {
-    ## force to sample at least one level of each factorial variable for calibration
-    fact.cell.samp <- NULL
-    if (!is.null(data.env)) {
-      fact.cell.samp <- bm_SampleFactorLevels(expl.var = data.env)
-      mat.out[fact.cell.samp, i] <- TRUE ## in fact.cell.samp
-    }
-    mat.out[sample(setdiff(pres, fact.cell.samp), ## in pres, not in fact.cell.samp
-                   max(nbPresEval - length(fact.cell.samp), 0)), i] <- TRUE
-    mat.out[sample(setdiff(abs, fact.cell.samp), ## in abs, not in fact.cell.samp
-                   max(nbAbsEval - length(fact.cell.samp), 0)), i] <- TRUE
-  }
-  return(mat.out)
-}
