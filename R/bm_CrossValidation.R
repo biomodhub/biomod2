@@ -627,30 +627,34 @@ setGeneric("bm_CrossValidation_strat",
 setMethod('bm_CrossValidation_strat', signature(bm.format = "BIOMOD.formated.data"),
           function(bm.format, balance, strat, k) {
             cat("\n   > Stratified cross-validation selection")
-            
+            tmp.coord <- bm.format@coord
+              
             if (strat == "x" || strat == "both") {
-              bands <- quantile(bm.format@coord[balance, 1], probs = seq(0, 100, 100 / k) / 100)
+              bands <- quantile(tmp.coord[balance, 1], probs = seq(0, 100, 100 / k) / 100)
               bands[1] <- bands[1] - 1
               bands[k + 1] <- bands[k + 1] + 1
-              calib.x <- matrix(NA, nrow(bm.format@coord), k)
+              calib.x <- matrix(NA, nrow(tmp.coord), k)
               for (i in 1:k) {
-                calib.x[, i] <- (bm.format@coord[, 1] >= bands[i] & bm.format@coord[, 1] < bands[i + 1])
+                calib.x[, i] <- (tmp.coord[, 1] >= bands[i] & tmp.coord[, 1] < bands[i + 1])
               }
               if (strat == "x") { calib.lines <- calib.x }
             }
+            
             if (strat == "y" || strat == "both") {
-              bands <- quantile(bm.format@coord[balance, 2], probs = seq(0, 100, 100 / k) / 100)
+              bands <- quantile(tmp.coord[balance, 2], probs = seq(0, 100, 100 / k) / 100)
               bands[1] <- bands[1] - 1
               bands[k + 1] <- bands[k + 1] + 1
-              calib.y <- matrix(NA, nrow(bm.format@coord), k)
+              calib.y <- matrix(NA, nrow(tmp.coord), k)
               for (i in 1:k) {
-                calib.y[, i] <- (bm.format@coord[, 2] >= bands[i] & bm.format@coord[, 2] < bands[i + 1])
+                calib.y[, i] <- (tmp.coord[, 2] >= bands[i] & tmp.coord[, 2] < bands[i + 1])
               }
               if (strat == "y") { calib.lines <- calib.y }
             }
+            
             if (strat == "both") { ## Merge X and Y tables
               calib.lines <- cbind(calib.x, calib.y)
             }
+            
             colnames(calib.lines) <- paste('_RUN', 1:ncol(calib.lines), sep = '')
             return(calib.lines)
           })
@@ -664,6 +668,43 @@ setMethod('bm_CrossValidation_strat', signature(bm.format = "BIOMOD.formated.dat
 setMethod('bm_CrossValidation_strat', signature(bm.format = "BIOMOD.formated.data.PA"),
           function(bm.format, balance, strat, k) {
             cat("\n   > Stratified cross-validation selection")
+            tmp.coord <- bm.format@coord
+            
+            calib.lines <- foreach(pa = 1:ncol(bm.format@PA.table), .combine = "cbind") %do%
+              {
+                ind.PA <- which(bm.format@PA.table[, pa] == TRUE)
+                tmp.pa <- tmp.coord[ind.PA, ]
+                
+                if (strat == "x" || strat == "both") {
+                  bands <- quantile(tmp.pa[balance, 1], probs = seq(0, 100, 100 / k) / 100)
+                  bands[1] <- bands[1] - 1
+                  bands[k + 1] <- bands[k + 1] + 1
+                  calib.x <- matrix(NA, nrow(tmp.pa), k)
+                  for (i in 1:k) {
+                    calib.x[, i] <- (tmp.pa[, 1] >= bands[i] & tmp.pa[, 1] < bands[i + 1])
+                  }
+                  if (strat == "x") { calib.pa_rep <- calib.x }
+                }
+                if (strat == "y" || strat == "both") {
+                  bands <- quantile(tmp.pa[balance, 2], probs = seq(0, 100, 100 / k) / 100)
+                  bands[1] <- bands[1] - 1
+                  bands[k + 1] <- bands[k + 1] + 1
+                  calib.y <- matrix(NA, nrow(tmp.pa), k)
+                  for (i in 1:k) {
+                    calib.y[, i] <- (tmp.pa[, 2] >= bands[i] & tmp.pa[, 2] < bands[i + 1])
+                  }
+                  if (strat == "y") { calib.pa_rep <- calib.y }
+                }
+                if (strat == "both") { ## Merge X and Y tables
+                  calib.pa_rep <- cbind(calib.x, calib.y)
+                }
+                
+                calib.pa <- matrix(NA, nrow = nrow(tmp.coord), ncol = 4)
+                calib.pa[ind.PA, ] <- calib.pa_rep
+                return(calib.pa)
+              }
+            colnames(calib.lines) <- paste('_RUN', 1:ncol(calib.lines), sep = '')
+            return(calib.lines)
           })
 
 
@@ -690,13 +731,14 @@ setMethod('bm_CrossValidation_env', signature(bm.format = "BIOMOD.formated.data"
             cat("\n   > Environmental cross-validation selection")
             calib.lines <- foreach(env = colnames(bm.format@data.env.var), .combine = "cbind") %do%
               {
-                bands <- quantile(bm.format@data.env.var[balance, env], probs = seq(0, 100, 100 / k) / 100)
+                tmp.env <- bm.format@data.env.var[balance, env]
+                
+                bands <- quantile(tmp.env, probs = seq(0, 100, 100 / k) / 100)
                 bands[1] <- bands[1] - 1
                 bands[k + 1] <- bands[k + 1] + 1
-                calib.env <- matrix(NA, nrow(bm.format@coord), k)
+                calib.env <- matrix(NA, nrow = length(tmp.env), ncol = k)
                 for (i in 1:k) {
-                  calib.env[, i] <- (bm.format@data.env.var[balance, env] <= bands[i] | 
-                                       bm.format@data.env.var[balance, env] > bands[i + 1])
+                  calib.env[, i] <- (tmp.env <= bands[i] | tmp.env > bands[i + 1])
                 }
                 return(calib.env)
               }
@@ -713,4 +755,28 @@ setMethod('bm_CrossValidation_env', signature(bm.format = "BIOMOD.formated.data"
 setMethod('bm_CrossValidation_env', signature(bm.format = "BIOMOD.formated.data.PA"),
           function(bm.format, balance) {
             cat("\n   > Environmental cross-validation selection")
+            calib.lines <- foreach(pa = 1:ncol(bm.format@PA.table), .combine = "cbind") %do%
+              {
+                ind.PA <- which(bm.format@PA.table[, pa] == TRUE)
+                calib.env <- foreach(env = colnames(bm.format@data.env.var), .combine = "cbind") %do%
+                  {
+                    tmp.env <- bm.format@data.env.var[balance, env]
+                    tmp.pa <- tmp.env[ind.PA]
+                    
+                    bands <- quantile(tmp.pa, probs = seq(0, 100, 100 / k) / 100)
+                    bands[1] <- bands[1] - 1
+                    bands[k + 1] <- bands[k + 1] + 1
+                    calib.pa_env <- matrix(NA, nrow = length(tmp.pa), ncol = k)
+                    for (i in 1:k) {
+                      calib.pa_env[, i] <- (tmp.pa <= bands[i] | tmp.pa > bands[i + 1])
+                    }
+                    
+                    calib.pa <- matrix(NA, nrow = nrow(bm.format@data.env.var), ncol = k)
+                    calib.pa[ind.PA, ] <- calib.pa_env
+                    return(calib.pa)
+                  }
+                return(calib.env)
+              }
+            colnames(calib.lines) <- paste('_RUN', 1:ncol(calib.lines), sep = '')
+            return(calib.lines)
           })
