@@ -187,12 +187,21 @@ bm_CrossValidation <- function(bm.format, strategy = 'random', nb.rep = 1, perc,
   }
   
   ## 2. CLEAN FINAL TABLE ----------------------------------------------------------------------------
-  # colnames(DataSplitTable) <- paste0("RUN", 1:ncol(DataSplitTable))
-  # 
-  # if (isTRUE(do.full.models)) {
-  #   DataSplitTable <- cbind(DataSplitTable, TRUE)
-  #   colnames(DataSplitTable)[ncol(DataSplitTable)] <- "allRun"
-  # }
+  if (inherits(bm.format, "BIOMOD.formated.data")) {
+    colnames(out) <- paste0("_allData", colnames(out))
+  }
+  if (do.full.models) {
+    out <- cbind(out, TRUE)
+    colnames(out)[ncol(out)] <- "_allData_allRun"
+    if (inherits(bm.format, "BIOMOD.formated.data.PA")) {
+      for (pa in 1:ncol(bm.format@PA.table)) {
+        ind.PA <- which(bm.format@PA.table[, pa] == TRUE)
+        out <- cbind(out, NA)
+        out[ind.PA, ncol(out)] <- TRUE
+        colnames(out)[ncol(out)] <- paste0("_PA", pa, "_allRun")
+      }
+    }
+  }
   
   cat("\n")
   return(out)
@@ -340,7 +349,7 @@ setMethod('bm_CrossValidation_user.defined', signature(bm.format = "BIOMOD.forma
           function(bm.format, user.table) {
             cat("\n   > User defined cross-validation selection")
             calib.lines <- user.table
-            colnames(calib.lines) <- paste('_RUN', 1:ncol(calib.lines), sep = '')
+            colnames(calib.lines) <- paste0('_RUN', 1:ncol(calib.lines))
             return(calib.lines)
           })
 
@@ -357,9 +366,9 @@ setMethod('bm_CrossValidation_user.defined', signature(bm.format = "BIOMOD.forma
               {
                 calib.pa <- user.table
                 calib.pa[which(bm.format@PA.table[, pa] == FALSE | is.na(bm.format@PA.table[, pa])), ] <- NA
+                colnames(calib.pa) <- paste0('_PA', pa, '_RUN', 1:ncol(calib.pa))
                 return(calib.pa)
               }
-            colnames(calib.lines) <- paste('_RUN', 1:ncol(calib.lines), sep = '')
             return(calib.lines)
           })
 
@@ -394,10 +403,6 @@ setMethod('bm_CrossValidation_random', signature(bm.format = "BIOMOD.formated.da
                                          nb.rep = nb.rep,
                                          data.env = bm.format@data.env.var,
                                          seed.val = seed.val)
-              # if (do.full.models) {
-              #   calib.lines <- cbind(calib.lines, rep(TRUE, length(bm.format@data.species)))
-              #   colnames(calib.lines)[nb.rep + 1] <- '_allRun'
-              # }
             }
             return(calib.lines)
           })
@@ -427,16 +432,10 @@ setMethod('bm_CrossValidation_random', signature(bm.format = "BIOMOD.formated.da
                                              seed.val = seed.val)
                   calib.pa <- matrix(NA, nrow = length(bm.format@data.species), ncol = nb.rep)
                   calib.pa[ind.PA, ] <- sampled.mat
-                  # colnames(calib.lines) <- colnames(sampled.mat)
-                  # if (do.full.models) {
-                  #   calib.lines <- cbind(calib.lines, rep(NA, length(bm.format@data.species)))
-                  #   calib.lines[ind.PA, nb.rep + 1] <- TRUE
-                  #   colnames(calib.lines)[nb.rep + 1] <- '_allRun'
-                  # }
+                  colnames(calib.pa) <- paste0('_PA', pa, '_RUN', 1:ncol(calib.pa))
                 }
                 return(calib.pa)
               }
-            colnames(calib.lines) <- paste('_RUN', 1:ncol(calib.lines), sep = '')
             return(calib.lines)
           })
 
@@ -479,7 +478,7 @@ setMethod('bm_CrossValidation_kfold', signature(bm.format = "BIOMOD.formated.dat
                 }
                 return(calib.rep)
               }
-            colnames(calib.lines) <- paste('_RUN', 1:ncol(calib.lines), sep = '')
+            colnames(calib.lines) <- paste0('_RUN', 1:ncol(calib.lines))
             return(calib.lines)
           })
 
@@ -521,10 +520,10 @@ setMethod('bm_CrossValidation_kfold', signature(bm.format = "BIOMOD.formated.dat
                     }
                   calib.pa <- matrix(NA, nrow = length(bm.format@data.species), ncol = nb.rep * k)
                   calib.pa[ind.PA, ] <- calib.pa_rep
+                  colnames(calib.pa) <- paste0('_PA', pa, '_RUN', 1:ncol(calib.pa))
                 }
                 return(calib.pa)
               }
-            colnames(calib.lines) <- paste('_RUN', 1:ncol(calib.lines), sep = '')
             return(calib.lines)
           })
 
@@ -564,7 +563,7 @@ setMethod('bm_CrossValidation_block', signature(bm.format = "BIOMOD.formated.dat
               calib.lines[tmp == 1, i] <- blocks[[1]] != i
               calib.lines[tmp == 0, i] <- blocks[[2]] != i     
             }
-            colnames(calib.lines) <- paste('_RUN', 1:ncol(calib.lines), sep = '')
+            colnames(calib.lines) <- paste0('_RUN', 1:ncol(calib.lines))
             return(calib.lines)
           })
 
@@ -599,9 +598,9 @@ setMethod('bm_CrossValidation_block', signature(bm.format = "BIOMOD.formated.dat
                 
                 calib.pa <- matrix(NA, nrow = length(bm.format@data.species), ncol = 4)
                 calib.pa[ind.PA, ] <- calib.pa_rep
+                colnames(calib.pa) <- paste0('_PA', pa, '_RUN', 1:ncol(calib.pa))
                 return(calib.pa)
               }
-            colnames(calib.lines) <- paste('_RUN', 1:ncol(calib.lines), sep = '')
             return(calib.lines)
           })
 
@@ -655,7 +654,7 @@ setMethod('bm_CrossValidation_strat', signature(bm.format = "BIOMOD.formated.dat
               calib.lines <- cbind(calib.x, calib.y)
             }
             
-            colnames(calib.lines) <- paste('_RUN', 1:ncol(calib.lines), sep = '')
+            colnames(calib.lines) <- paste0('_RUN', 1:ncol(calib.lines))
             return(calib.lines)
           })
 
@@ -701,9 +700,9 @@ setMethod('bm_CrossValidation_strat', signature(bm.format = "BIOMOD.formated.dat
                 
                 calib.pa <- matrix(NA, nrow = nrow(tmp.coord), ncol = 4)
                 calib.pa[ind.PA, ] <- calib.pa_rep
+                colnames(calib.pa) <- paste0('_PA', pa, '_RUN', 1:ncol(calib.pa))
                 return(calib.pa)
               }
-            colnames(calib.lines) <- paste('_RUN', 1:ncol(calib.lines), sep = '')
             return(calib.lines)
           })
 
@@ -742,7 +741,7 @@ setMethod('bm_CrossValidation_env', signature(bm.format = "BIOMOD.formated.data"
                 }
                 return(calib.env)
               }
-            colnames(calib.lines) <- paste('_RUN', 1:ncol(calib.lines), sep = '')
+            colnames(calib.lines) <- paste0('_RUN', 1:ncol(calib.lines))
             return(calib.lines)
           })
 
@@ -773,10 +772,10 @@ setMethod('bm_CrossValidation_env', signature(bm.format = "BIOMOD.formated.data.
                     
                     calib.pa <- matrix(NA, nrow = nrow(bm.format@data.env.var), ncol = k)
                     calib.pa[ind.PA, ] <- calib.pa_env
+                    colnames(calib.pa) <- paste0('_PA', pa, '_RUN', 1:ncol(calib.pa))
                     return(calib.pa)
                   }
                 return(calib.env)
               }
-            colnames(calib.lines) <- paste('_RUN', 1:ncol(calib.lines), sep = '')
             return(calib.lines)
           })
