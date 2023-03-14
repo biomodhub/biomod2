@@ -357,20 +357,13 @@ BIOMOD_Modeling <- function(bm.format,
   models.out = .fill_BIOMOD.models.out("calib.lines", calib.lines, models.out
                                        , inMemory = FALSE, nameFolder = name.BIOMOD_DATA)
   
-
-  ## 3. Gathering all in one list object given to bm_RunModelsLoop --
-  mod.prep.dat <- list(name = bm.format@sp.name,
-                       dir.name = bm.format@dir.name,
-                       dataBM = get_species_data(bm.format),
-                       calib.lines = calib.lines,
-                       weights = weights,
-                       eval.data = get_eval_data(bm.format))
-
   ## 4. Print modeling summary in console ---------------------------------------------------------
-  # .BIOMOD_Modeling.summary(mod.prep.dat, models, models.pa)
+  .BIOMOD_Modeling.summary(bm.format, calib.lines, models, models.pa)
   
   ## 5. Run models with loop over PA --------------------------------------------------------------
-  mod.out <- bm_RunModelsLoop(mod.prep.dat.pa = mod.prep.dat,
+  mod.out <- bm_RunModelsLoop(bm.format = bm.format,
+                              weights = weights,
+                              calib.lines = calib.lines,
                               modeling.id = models.out@modeling.id,
                               models = models,
                               models.pa = models.pa,
@@ -383,7 +376,7 @@ BIOMOD_Modeling <- function(bm.format,
                               seed.val = seed.val,
                               do.progress = do.progress)
   
-  ## 3.3 Rearrange and save outputs -------------------------------------------
+  ## 6. Rearrange and save outputs -------------------------------------------
   models.out@models.computed <- .transform_outputs_list("mod", mod.out, out = "model")
   models.out@models.failed <- .transform_outputs_list("mod", mod.out, out = "calib.failure")
   
@@ -647,18 +640,19 @@ BIOMOD_Modeling <- function(bm.format,
 
 # ---------------------------------------------------------------------------- #
 
-.BIOMOD_Modeling.summary <- function(mod.prep.dat, models, models.pa = NULL)
+.BIOMOD_Modeling.summary <- function(bm.format, calib.lines, models, models.pa = NULL)
 {
   cat("\n\n")
-  .bm_cat(paste(unlist(strsplit(mod.prep.dat[[1]]$name, '_'))[1], "Modeling Summary"))
-  cat("\n", ncol(mod.prep.dat[[1]]$dataBM) - 1, " environmental variables (", colnames(mod.prep.dat[[1]]$dataBM)[-1], ")")
-  cat("\nNumber of evaluation repetitions :", ncol(mod.prep.dat[[1]]$calib.lines))
+  .bm_cat(paste(bm.format@sp.name, "Modeling Summary"))
+  cat("\n", ncol(bm.format@data.env.var), " environmental variables (", colnames(bm.format@data.env.var), ")")
+  cat("\nNumber of evaluation repetitions :", ncol(calib.lines))
   cat("\nModels selected :", models, "\n")
   if (is.null(models.pa)) {
-    nb.runs = ncol(mod.prep.dat[[1]]$calib.lines) * length(models) * length(mod.prep.dat)
+    # nb.runs = ncol(calib.lines) * length(models) * length(mod.prep.dat)
+    nb.runs = ncol(calib.lines) * length(models)
   } else {
     nb.runs = length(unlist(models.pa))
-    nb.runs = ncol(mod.prep.dat[[1]]$calib.lines) * nb.runs
+    nb.runs = ncol(calib.lines) * nb.runs
   }
   cat("\nTotal number of model runs:", nb.runs, "\n")
   .bm_cat()
