@@ -54,8 +54,8 @@
 .fun_testIfIn <- function(test, objName, objValue, values)
 {
   if (any(! objValue %in% values)) {
-    stop(paste0("\n", objName, " must be '", 
-                ifelse(length(values) > 1, 
+    stop(paste0("\n", objName, " must be '",
+                ifelse(length(values) > 1,
                        paste0(paste0(values[1:(length(values) -1)], collapse = "', '"),
                               "' or '", values[length(values)])
                        , paste0(values,"'"))))
@@ -131,8 +131,8 @@ get_var_range <- function(data)
 #' @importFrom terra rast classify subset
 .run_pred <- function(object, Prev = 0.5, dat, mod.name = NULL)
 {
-  if (is.finite(object$deviance) && 
-      is.finite(object$null.deviance) && 
+  if (is.finite(object$deviance) &&
+      is.finite(object$null.deviance) &&
       object$deviance != object$null.deviance)
   {
     if (inherits(dat, 'SpatRaster')) {
@@ -141,7 +141,7 @@ get_var_range <- function(data)
       pred <- predict(object, dat, type = "response")
     }
   }
-  
+
   if (!exists('pred')) {
     if (inherits(dat, 'SpatRaster')) {
       pred <- subset(dat, 1)
@@ -158,7 +158,7 @@ get_var_range <- function(data)
       }
     }
   }
-  
+
   return(pred)
 }
 
@@ -181,8 +181,8 @@ get_var_range <- function(data)
                                  return(predict(mod, newdata = newdata, on_0_1000 = on_0_1000
                                                 , temp_workdir = temp_workdir, seedval = seedval))
                                }, dir_name = object@dir_name, resp_name = object@resp_name, modeling.id = object@modeling.id)
-  
-  
+
+
   return(formal_predictions)
 }
 
@@ -215,7 +215,7 @@ get_var_range <- function(data)
     step.list[[vname]] <- junk
     i <- i + 1
   }
-  
+
   return(step.list)
 }
 
@@ -226,7 +226,7 @@ get_var_range <- function(data)
   while (i <= dim(enviroTrain)[2])
   {
     vname <- names(enviroTrain)[i]
-    
+
     if (mod %in% c("NNET", "FDA", "GLMs", "CTA", "GBM")) {
       junk <- vname
     } else if (mod == "GLMq") {
@@ -245,7 +245,7 @@ get_var_range <- function(data)
     junk2 <- c(junk2, junk)
     i <- i + 1
   }
-  
+
   junk2 <- eval(parse(text = paste("~", paste(junk2, collapse = "+"))))
   return(junk2)
 }
@@ -259,28 +259,28 @@ get_var_range <- function(data)
   args <- list(...)
   prevalence <- args$prevalence
   weights <- args$weights
-  
+
   ## if no weights given, some are created to rise the define prevalence ------
   if (is.null(weights) && ! is.null(prevalence)) {
     nbPres <- sum(ref, na.rm = TRUE)
     nbAbs <- length(ref) - nbPres
     weights <- rep(1, length(ref))
-    
+
     if (nbAbs > nbPres) { # code absences as 1
       weights[which(ref > 0)] <- (prevalence * nbAbs) / (nbPres * (1 - prevalence))
     } else { # code presences as 1
       weights[which(ref == 0 | is.na(ref))] <- (nbPres * (1 - prevalence)) / (prevalence * nbAbs)
     }
     weights = round(weights[]) # to remove glm & gam warnings
-    
+
   } else if (is.null(weights)) { ## only 1 weights vector ---------------------
     weights <- rep(1, length(ref))
   }
-  
+
   ## define a glm to scale predictions from 0 to 1 ----------------------------
   scaling_model <- glm(ref ~ pred, data = data.frame(ref = as.numeric(ref), pred = as.numeric(dataToRescale))
                        , family = binomial(link = probit), x = TRUE, weights = weights)
-  
+
   return(scaling_model)
 }
 
@@ -356,7 +356,7 @@ get_var_range <- function(data)
     tmp$algo <- .extract_modelNamesInfo(tmp$full.name, obj.type = "em", info = "algo", as.unique = FALSE)
     proj <- tmp[, c("full.name", "merged.by.PA", "merged.by.run", "merged.by.algo"
                        , "filtered.by", "algo", "points", "pred")]
-    
+
   }
   proj
 }
@@ -368,14 +368,14 @@ get_var_range <- function(data)
   ## 0. CHECK object type ---------------------------------------------------------------
   .fun_testIfIn(TRUE, "obj.type", obj.type, c("mod", "em"))
   .fun_testIfIn(TRUE, "out", out, c("model", "calib.failure", "models.kept", "pred", "pred.eval", "evaluation", "var.import"))
-  
+
   if (obj.type == "mod") {
     dim_names <- c("PA", "run", "algo")
   } else if (obj.type == "em") {
     dim_names <- c("merged.by", "filtered.by", "algo")
     dim_names.bis <- c("merged.by.PA", "merged.by.run", "merged.by.algo")
   }
-  
+
   if (obj.type == "mod") {
     output <- foreach(i.dim1 = 1:length(obj.out), .combine = "rbind") %do%
       {
@@ -402,17 +402,17 @@ get_var_range <- function(data)
         }
       }
   } else if (obj.type == "em") {
-    
+
     ## 1. GET dimension names -------------------------------------------------------------
     ## BIOMOD.models.out            -> dataset / run / algo
     ## BIOMOD.ensemble.models.out   -> mergedBy / filteredBy / algo
     dim1 <- length(obj.out)
     dim2 <- length(obj.out[[1]])
     dim3 <- length(obj.out[[1]][[1]])
-    
+
     ## 2. GET outputs ---------------------------------------------------------------------
     output <- foreach(i.dim1 = 1:dim1, .combine = "rbind") %:%
-      foreach(i.dim2 = 1:dim2, .combine = "rbind") %:% 
+      foreach(i.dim2 = 1:dim2, .combine = "rbind") %:%
       foreach(i.dim3 = 1:dim3, .combine = "rbind") %do%
       {
         if (length(obj.out) >= i.dim1 &&
@@ -446,11 +446,11 @@ get_var_range <- function(data)
         }
       }
   }
-  
+
   if (out %in% c("model", "calib.failure", "models.kept")) {
-    if (is.null(output)) { 
+    if (is.null(output)) {
       output <- 'none'
-    } else { 
+    } else {
       output <- unique(as.character(output[[out]]))
     }
   }
@@ -461,26 +461,26 @@ get_var_range <- function(data)
 ## used in BIOMOD_RangeSize.R
 ##' @name .transform_model.as.col
 ##' @author Remi Patin
-##' 
+##'
 ##' @title Transform predictions data.frame from long to wide with models as columns
-##' 
+##'
 ##' @description This function is used internally in \code{\link{get_predictions}}
 ##' to ensure back-compatibility with former output of \code{\link{get_predictions}}
 ##' (i.e. for \pkg{biomod2} version < 4.2-2). It transform a long \code{data.frame}
 ##' into a wide \code{data.frame} with each column corresponding to a single model.
-##' 
-##' \emph{Note that the function is intended for internal use but have been 
-##' made available for compatibility with \pkg{ecospat}} 
 ##'
-##' @param df a long \code{data.frame}, generally a standard output of 
+##' \emph{Note that the function is intended for internal use but have been
+##' made available for compatibility with \pkg{ecospat}}
+##'
+##' @param df a long \code{data.frame}, generally a standard output of
 ##' \code{\link{get_predictions}}
-##' 
+##'
 ##' @return a wide \code{data.frame}
 ##' @importFrom stats reshape
 ##' @export
 ##' @keywords internal
 .transform_model.as.col <- function(df){
-  df <- reshape(df[,c("full.name","points","pred")], idvar = "points", timevar = "full.name", direction = "wide")[,-1, drop = FALSE] 
+  df <- reshape(df[,c("full.name","points","pred")], idvar = "points", timevar = "full.name", direction = "wide")[,-1, drop = FALSE]
   colnames(df) <- substring(colnames(df), 6)
   df
 }
@@ -498,10 +498,10 @@ get_var_range <- function(data)
   } else if (obj.type == "em") {
     .fun_testIfIn(TRUE, "info", info, c("species", "merged.by.PA", "merged.by.run", "merged.by.algo", "filtered.by", "algo"))
   }
-  
+
   ## 1. SPLIT model.names ---------------------------------------------------------------
   info.tmp <- strsplit(model.names, "_")
-  
+
   if (obj.type == "mod") {
     res <- switch(info
                   , species = sapply(info.tmp, function(x) x[1])
@@ -517,7 +517,7 @@ get_var_range <- function(data)
                   , filtered.by = sapply(info.tmp, function(x) sub(".*By", "", x[2]))
                   , algo = sapply(info.tmp, function(x) sub("By.*", "", x[2])))
   }
-  
+
   ## 2. RETURN either the full vector, or only the possible values ----------------------
   if (as.unique == TRUE) {
     return(unique(res))
@@ -533,7 +533,7 @@ get_var_range <- function(data)
   stopifnot(inherits(obj, 'BIOMOD.projection.out'))
   out.names <- obj@proj.out@link
   sp.name <- obj@sp.name
-  sub(pattern     = paste0(".*?_",sp.name), 
+  sub(pattern     = paste0(".*?_",sp.name),
       replacement = "",
       x           = out.names)
   out.binary <- grepl(pattern = "bin",
@@ -543,14 +543,14 @@ get_var_range <- function(data)
   out.type <- ifelse(out.binary,
                      "bin",
                      ifelse(out.filt,
-                            "filt", 
+                            "filt",
                             "out"))
-  out.metric <- sapply(seq_len(length(out.names)), 
+  out.metric <- sapply(seq_len(length(out.names)),
                        function(i){
                          if (out.type[i] == "out") {
                            return("none")
                          } else {
-                           begin.cut <-  gsub(".*_", "", out.names[i]) 
+                           begin.cut <-  gsub(".*_", "", out.names[i])
                            return(  sub(paste0(out.type[i],".*"), "", begin.cut) )
                          }
                        })
@@ -563,29 +563,29 @@ get_var_range <- function(data)
 # return relevant layers indices from a BIOMOD.projection.out given metric.binary
 # or metric.select
 .extract_selected.layers <- function(obj, metric.binary, metric.filter){
-  
+
   ## argument  check ----------------------------------------------------------
   stopifnot(inherits(obj, "BIOMOD.projection.out"))
-  
+
   if (!is.null(metric.binary) & !is.null(metric.filter)) {
     stop("cannot return both binary and filtered projection, please provide either `metric.binary` or `metric.filter` but not both.")
   }
-  
+
   df.info <- .extract_projlinkInfo(obj)
-  
+
   available.metrics.binary <- unique(df.info$metric[which(df.info$type == "bin")])
   available.metrics.filter <- unique(df.info$metric[which(df.info$type == "filt")])
   .fun_testMetric(TRUE, "metric.binary", metric.binary, available.metrics.binary)
   .fun_testMetric(TRUE, "metric.filter", metric.filter, available.metrics.filter)
-  
-  
+
+
   ## select layers  -----------------------------------------------------------
   if (!is.null(metric.binary)) {
-    selected.layers <- which(df.info$type == "bin" & df.info$metric == metric.binary)  
+    selected.layers <- which(df.info$type == "bin" & df.info$metric == metric.binary)
   } else if ( !is.null(metric.filter)) {
-    selected.layers <- which(df.info$type == "filt" & df.info$metric == metric.filter)  
+    selected.layers <- which(df.info$type == "filt" & df.info$metric == metric.filter)
   } else {
-    selected.layers <- which(df.info$type == "out")  
+    selected.layers <- which(df.info$type == "out")
   }
   selected.layers
 }
@@ -594,12 +594,12 @@ get_var_range <- function(data)
 ## used in BIOMOD_Modeling, BIOMOD_EnsembleModeling
 .fill_BIOMOD.models.out <- function(objName, objValue, mod.out, inMemory = FALSE, nameFolder = ".")
 {
-  
+
   # backup case uses existing @val slot
   if(is.null(objValue)){
     eval(parse(text = paste0("objValue <- mod.out@", objName, "@val")))
   }
- 
+
   save(objValue, file = file.path(nameFolder, objName), compress = TRUE)
   if (inMemory) {
     eval(parse(text = paste0("mod.out@", objName, "@val <- objValue")))
@@ -650,12 +650,12 @@ get_var_range <- function(data)
 ## GAM library loading --------------------------------------------------------
 ## used in biomod2_classes_4.R file for GAM predict template
 ##' @name .load_gam_namespace
-##' 
+##'
 ##' @title Load library for GAM models
-##' 
+##'
 ##' @description This function loads library for either GAM and BAM from mgcv
 ##'   package or for GAM from gam package.
-##' 
+##'
 ##' @param model_subclass the subclass of GAM model
 ##' @keywords internal
 
@@ -663,11 +663,11 @@ get_var_range <- function(data)
   if (model_subclass %in% c("GAM_mgcv", "BAM_mgcv")) {
     # cat("\n*** unloading gam package / loading mgcv package")
     if (isNamespaceLoaded("gam")) { unloadNamespace("gam") }
-    if (!isNamespaceLoaded("mgcv")) { 
+    if (!isNamespaceLoaded("mgcv")) {
       if(!requireNamespace('mgcv', quietly = TRUE)) stop("Package 'mgcv' not found")
     }
   }
-  
+
   if (model_subclass == "GAM_gam") {
     # cat("\n*** unloading mgcv package / loading gam package")
     if (isNamespaceLoaded("mgcv")) {
@@ -675,7 +675,7 @@ get_var_range <- function(data)
       if (isNamespaceLoaded("car")) { unloadNamespace("car") } ## need to unload car before mgcv
       unloadNamespace("mgcv")
     }
-    if (!isNamespaceLoaded("gam")) { 
+    if (!isNamespaceLoaded("gam")) {
       if(!requireNamespace('gam', quietly = TRUE)) stop("Package 'gam' not found")
     }
   }
@@ -684,11 +684,11 @@ get_var_range <- function(data)
 
 ## Get categorical variable names ---------------------------------------
 ##' @name .get_categorical_names
-##' 
+##'
 ##' @title Get categorical variable names
-##' 
+##'
 ##' @description Internal function to get categorical variables name from a data.frame.
-##' 
+##'
 ##' @param df data.frame to be checked
 ##' @return a vector with the name of categorical variables
 ##' @keywords internal
@@ -701,13 +701,13 @@ get_var_range <- function(data)
 
 ## Categorical to numeric ---------------------------------------
 ##' @name .categorical2numeric
-##' 
+##'
 ##' @title Transform categorical into numeric variables
-##' 
-##' @description Internal function transform categorical variables in a 
-##' data.frame into numeric variables. Mostly used with maxent which cannot 
+##'
+##' @description Internal function transform categorical variables in a
+##' data.frame into numeric variables. Mostly used with maxent which cannot
 ##' read character
-##' 
+##'
 ##' @param df data.frame to be transformed
 ##' @param categorical_var the names of categorical variables in df
 ##' @return a data.frame without categorical variables
@@ -725,12 +725,12 @@ get_var_range <- function(data)
 
 ## .check_bytes_format for MAXENT options----------------------------
 ##' @name .check_bytes_format
-##' 
-##' @title Check bytes formatting 
-##' 
+##'
+##' @title Check bytes formatting
+##'
 ##' @description Internal function that check a character string to match a byte
 ##' format for Java. e.g. 1024M, 1024m, 1024k or 1024K
-##' 
+##'
 ##' @param x string to be transformed
 ##' @return a boolean
 ##' @keywords internal
@@ -754,11 +754,11 @@ get_var_range <- function(data)
 
 ## Tools for SpatRaster ----------------------------
 ##' @name rast.has.values
-##' 
-##' @title Check whether SpatRaster is an empty \code{rast()} 
-##' 
-##' @description Check whether SpatRaster is an empty \code{rast()} 
-##' 
+##'
+##' @title Check whether SpatRaster is an empty \code{rast()}
+##'
+##' @description Check whether SpatRaster is an empty \code{rast()}
+##'
 ##' @param x SpatRaster to be checked
 ##' @return a boolean
 ##' @keywords internal
@@ -769,20 +769,20 @@ rast.has.values <- function(x){
 }
 
 ##' @name check_duplicated_cells
-##' 
+##'
 ##' @title Check duplicated cells
-##' 
-##' @description Identify data that are contained in the same raster cells ; 
+##'
+##' @description Identify data that are contained in the same raster cells ;
 ##' print warnings if need be and filter those data if asked for.
-##' 
-##' 
+##'
+##'
 ##' @param env a \code{SpatRaster} with environmental data
 ##' @param xy a \code{data.frame} with coordinates
 ##' @param sp a \code{vector} with species occurrence data
-##' @param filter.raster a \code{boolean} 
+##' @param filter.raster a \code{boolean}
 ##' @return a \code{list}
 ##' @keywords internal
-##' 
+##'
 ##' @importFrom terra cellFromXY
 
 check_duplicated_cells <- function(env, xy, sp, filter.raster){
@@ -791,35 +791,35 @@ check_duplicated_cells <- function(env, xy, sp, filter.raster){
     if(filter.raster){
       sp <- sp[!sp.cell]
       xy <- xy[!sp.cell,]
-      cat("\n !!! Some data are located in the same raster cell. 
+      cat("\n !!! Some data are located in the same raster cell.
           Only the first data in each cell will be kept as `filter.raster = TRUE`.")
     } else {
-      cat("\n !!! Some data are located in the same raster cell. 
+      cat("\n !!! Some data are located in the same raster cell.
           Please set `filter.raster = TRUE` if you want an automatic filtering.")
     }
   }
-  return(list("sp"  = sp, 
+  return(list("sp"  = sp,
               "xy"  = xy))
-  
+
 }
 
 ## Get new.env class ----------------------------
 ##' @name .get_env_class
-##' 
+##'
 ##' @title Get class of environmental data provided
-##' 
+##'
 ##' @description Get class of environmental data provided
-##' 
+##'
 ##' @param new.env object to identify
 ##' @return a character
 ##' @keywords internal
 
 .get_env_class <- function(new.env){
   .fun_testIfInherits(TRUE, "new.env", new.env, c('data.frame', 'SpatRaster'))
-  if (inherits(new.env("data.frame"))) {
+  if (inherits(new.env, "data.frame")) {
     return("data.frame")
   }
-  if (inherits(new.env("SpatRaster"))) {
+  if (inherits(new.env, "SpatRaster")) {
     return("SpatRaster")
   }
   NULL
