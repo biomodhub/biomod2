@@ -321,7 +321,7 @@ BIOMOD_Projection <- function(bm.mod,
       }
     }
   ## Putting predictions into the right format
-  if (do.stack){
+  if (do.stack) {
     if (proj_is_raster) {
       proj <- rast(lapply(proj, unwrap)) # SpatRaster needs to be wrapped before saving
       names(proj) <- models.chosen
@@ -341,7 +341,7 @@ BIOMOD_Projection <- function(bm.mod,
   }
   
   ## save projections
-  proj_out@type <- class(new.env)
+  proj_out@type <- .get_env_class(new.env)
   if (!do.stack){
     saved.files = unlist(proj)
   } else {
@@ -502,15 +502,19 @@ BIOMOD_Projection <- function(bm.mod,
   ## 3. Check new.env ---------------------------------------------------------
   .fun_testIfInherits(TRUE, "new.env", new.env, c('matrix', 'data.frame', 'SpatRaster','Raster'))
   
-  if(inherits(new.env, 'matrix')){
+  if (inherits(new.env, 'matrix')) {
     if (any(sapply(get_formal_data(bm.mod, "expl.var"), is.factor))) {
       stop("new.env cannot be given as matrix when model involves categorical variables")
     }
     new.env <- data.frame(new.env)
+  } else if (inherits(new.env, 'data.frame')) {
+    # ensure that data.table are coerced into classic data.frame
+    new.env <- as.data.frame(new.env) 
   }
+
   if (inherits(new.env, 'Raster')) {
     # conversion into SpatRaster
-    if(any(raster::is.factor(new.env))){
+    if (any(raster::is.factor(new.env))) {
       new.env <- categorical_stack_to_terra(raster::stack(new.env))
     } else {
       new.env <- rast(new.env)
