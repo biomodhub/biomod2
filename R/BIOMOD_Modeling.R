@@ -658,24 +658,6 @@ BIOMOD_Modeling <- function(bm.format,
   .bm_cat()
 }
 
-
-# ---------------------------------------------------------------------------- #
-
-    
-    # ## force calib.lines object to be 3D array
-    # if (length(dim(calib.lines)) < 3) {
-    #   dn_tmp <- dimnames(calib.lines) ## keep track of dimnames
-    #   dim(calib.lines) <- c(dim(calib.lines), 1)
-    #   dimnames(calib.lines) <- list(dn_tmp[[1]], dn_tmp[[2]], "_allData")
-    # }
-    # ## PA
-    # if (length(dim(calib.lines)) < 3) {
-    #   dn_tmp <- dimnames(calib.lines) ## keep track of dimnames
-    #   dim(calib.lines) <- c(dim(calib.lines), 1)
-    #   dimnames(calib.lines) <- list(dn_tmp[[1]], dn_tmp[[2]], paste0("_PA", pa))
-    # }
-  
-
 # ---------------------------------------------------------------------------- #
 
 .automatic_weights_creation <- function(resp, prev = 0.5, subset = NULL)
