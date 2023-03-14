@@ -141,10 +141,59 @@ bm_RunModelsLoop <- function(bm.format,
     }
   }
   
+  # pa.list = sapply(colnames(calib.lines), function(x) strsplit(x, "_")[[1]][2])
+  # for (pa.id in unique(pa.list)) { # loop on PA ---------------------------------------------------
+  #   cat("\n\n-=-=-=- Run : ", paste0(bm.format@sp.name, "_", pa.id), '\n')
+  #   
+  #   models.subset = models
+  #   if (!is.null(models.pa)) {
+  #     ## optional : subset of models associated to the concerned PA dataset
+  #     models.subset = sapply(models.pa, function(x) pa.id %in% x)
+  #     models.subset = names(models.pa)[which(models.subset == TRUE)]
+  #   }
+  #   
+  #   data.sp <- get_species_data(bm.format)
+  #   if (pa.id %in% colnames(data.sp)) {
+  #     ## optional : subset of species data associated to the concerned PA dataset
+  #     data.sp <- data.sp[which(data.sp[, pa.id] == TRUE), ]
+  #     data.sp[which(is.na(data.sp[, bm.format@sp.name])), bm.format@sp.name] <- 0
+  #   }
+  #   
+  #   res.sp.run <- list()
+  #   for (i in which(pa.list == pa.id)) { # loop on RUN --------------------------------------------
+  #     
+  #     run.id = strsplit(colnames(calib.lines)[i], "_")[[1]][3]
+  #     run.name = paste0(bm.format@sp.name, "_", pa.id, "_", run.id)
+  #     
+  #     cat('\n\n-=-=-=--=-=-=-', run.name, '\n')
+  #     res.sp.run[[run.id]] = foreach(modi = models.subset) %dopar% # loop on models ---------------
+  #       {
+  #         bm_RunModel(model = modi,
+  #                     run.name = run.name,
+  #                     dir.name = bm.format@dir.name,
+  #                     modeling.id = modeling.id,
+  #                     bm.options = bm.options,
+  #                     Data = data.sp,
+  #                     calib.lines.vec = na.omit(calib.lines[, i]),
+  #                     weights.vec = na.omit(weights[, pa.id]),
+  #                     xy = data.sp[, c("x", "y")],
+  #                     eval.data = get_eval_data(bm.format),
+  #                     eval.xy = get_eval_data(bm.format)[, c("x", "y")],
+  #                     metric.eval = metric.eval,
+  #                     var.import = var.import,
+  #                     save.output = TRUE, ## save.output
+  #                     scale.models = scale.models,
+  #                     seed.val = seed.val,
+  #                     do.progress = TRUE)
+  #       } # end loop on models
+  #     names(res.sp.run[[run.id]]) <- models.subset
+  #   } # end loop on RUN
+  # } # end loop on PA
+  
+  ## PREPARE DATA ---------------------------------------------------------------------------------
+  list.data <- list()
   pa.list = sapply(colnames(calib.lines), function(x) strsplit(x, "_")[[1]][2])
-  for (pa.id in unique(pa.list)) { # loop on PA ---------------------------------------------------
-    cat("\n\n-=-=-=- Run : ", paste0(bm.format@sp.name, "_", pa.id), '\n')
-    
+  for (pa.id in unique(pa.list)) { # loop on PA -------------------------------
     models.subset = models
     if (!is.null(models.pa)) {
       ## optional : subset of models associated to the concerned PA dataset
@@ -156,41 +205,48 @@ bm_RunModelsLoop <- function(bm.format,
     if (pa.id %in% colnames(data.sp)) {
       ## optional : subset of species data associated to the concerned PA dataset
       data.sp <- data.sp[which(data.sp[, pa.id] == TRUE), ]
-      data.sp[which(is.na(data.sp[, bm.format@sp.name])), bm.format@sp.name] <- 0
     }
+    ## TO DO always ?? (PA / allData / allRun)
+    data.sp[which(is.na(data.sp[, bm.format@sp.name])), bm.format@sp.name] <- 0
     
-    res.sp.run <- list()
-    for (i in which(pa.list == pa.id)) { # loop on RUN --------------------------------------------
-      
+    for (i in which(pa.list == pa.id)) { # loop on RUN ------------------------
       run.id = strsplit(colnames(calib.lines)[i], "_")[[1]][3]
       run.name = paste0(bm.format@sp.name, "_", pa.id, "_", run.id)
       
-      cat('\n\n-=-=-=--=-=-=-', run.name, '\n')
-      res.sp.run[[run.id]] = foreach(modi = models.subset) %dopar% # loop on models ---------------
-        {
-          bm_RunModel(model = modi,
-                      run.name = run.name,
-                      dir.name = bm.format@dir.name,
-                      modeling.id = modeling.id,
-                      bm.options = bm.options,
-                      Data = data.sp,
-                      calib.lines.vec = na.omit(calib.lines[, i]),
-                      weights.vec = na.omit(weights[, pa.id]),
-                      xy = data.sp[, c("x", "y")],
-                      eval.data = get_eval_data(bm.format),
-                      eval.xy = get_eval_data(bm.format)[, c("x", "y")],
-                      metric.eval = metric.eval,
-                      var.import = var.import,
-                      save.output = TRUE, ## save.output
-                      scale.models = scale.models,
-                      seed.val = seed.val,
-                      do.progress = TRUE)
-        } # end loop on models
-      names(res.sp.run[[run.id]]) <- models.subset
-    } # end loop on RUN
-  } # end loop on PA
+      for (modi in models.subset) { # loop on models --------------------------
+        all.name = paste0(run.name, "_", modi)
+        list.data[[all.name]] <- list(modi = modi,
+                                      run.name = run.name,
+                                      data.sp = data.sp,
+                                      calib.lines.vec = na.omit(calib.lines[, i]),
+                                      weights.vec = na.omit(weights[, pa.id]),
+                                      xy = data.sp[, c("x", "y")])
+      }}}
   
-  return(res.sp.run)
+  ## RUN models -----------------------------------------------------------------------------------
+  out <- foreach(ii = 1:length(list.data)) %dopar%
+    {
+      cat('\n\n-=-=-=--=-=-=-', names(list.data)[ii], '\n')
+      bm_RunModel(model = list.data[[ii]]$modi,
+                  run.name = list.data[[ii]]$run.name,
+                  dir.name = bm.format@dir.name,
+                  modeling.id = modeling.id,
+                  bm.options = bm.options,
+                  Data = list.data[[ii]]$data.sp,
+                  calib.lines.vec = list.data[[ii]]$calib.lines.vec,
+                  weights.vec = list.data[[ii]]$weights.vec,
+                  xy = list.data[[ii]]$data.sp[, c("x", "y")],
+                  eval.data = get_eval_data(bm.format),
+                  eval.xy = get_eval_data(bm.format)[, c("x", "y")],
+                  metric.eval = metric.eval,
+                  var.import = var.import,
+                  save.output = TRUE, ## save.output
+                  scale.models = scale.models,
+                  seed.val = seed.val,
+                  do.progress = TRUE)
+    }
+  
+  return(out)
 }
 
 
