@@ -217,7 +217,7 @@ bm_RunModel <- function(model, run.name, dir.name = '.'
   
   ## get model name and names of categorical variables
   dir_name = dir.name
-  model_name <- paste0(nam, '_', model)
+  model_name <- paste0(run.name, '_', model)
   categorical_var <- .get_categorical_names(Data)
   categorical_var <- categorical_var[categorical_var %in% expl_var_names]
   
