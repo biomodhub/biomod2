@@ -641,7 +641,7 @@ bm_RunModel <- function(model, run.name, dir.name = '.'
     cat('\n\t> MAXENT modeling...')
     MWD <- 
       .maxent.prepare.workdir(
-        Data, xy, calib.lines.vec, RunName = nam,
+        Data, xy, calib.lines.vec, RunName = run.name,
         eval.data, eval.xy, dir.name = dir_name,
         species.name = resp_name,
         modeling.id = modeling.id,
@@ -905,7 +905,7 @@ bm_RunModel <- function(model, run.name, dir.name = '.'
   
   
   ## 6. SAVE MODEL OBJECT ON HARD DRIVE -----------------------------------------------------------
-  nameModel = paste(nam, model, sep = "_") 
+  nameModel = paste(run.name, model, sep = "_") 
   assign(x = nameModel, value = model.bm)
   save(list = nameModel, file = file.path(dir_name, resp_name, "models", modeling.id, nameModel), compress = TRUE)
   
