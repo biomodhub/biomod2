@@ -359,8 +359,8 @@ BIOMOD_EnsembleForecasting <- function(bm.em,
   }
   
   ## save projections
-  proj_out@type <- class(new.env)
-  if (!do.stack){
+  proj_out@type <- .get_env_class(new.env)
+  if (!do.stack) {
     saved.files = unlist(proj.em)
   } else {
     assign(x = nameProjSp, value = proj.em)
@@ -565,12 +565,16 @@ BIOMOD_EnsembleForecasting <- function(bm.em,
   if (!is.null(new.env)) {
     .fun_testIfInherits(TRUE, "new.env", new.env, c('matrix', 'data.frame', 'SpatRaster','Raster'))
     
-    if(inherits(new.env, 'matrix')){
+    if (inherits(new.env, 'matrix')) {
       if (any(sapply(get_formal_data(bm.em,"expl.var"), is.factor))) {
         stop("new.env cannot be given as matrix when model involves categorical variables")
       }
       new.env <- data.frame(new.env)
+    } else if (inherits(new.env, 'data.frame')) {
+      # ensure that data.table are coerced into classic data.frame
+      new.env <- as.data.frame(new.env) 
     }
+    
     if (inherits(new.env, 'Raster')) {
       # conversion into SpatRaster
       if(any(raster::is.factor(new.env))){
