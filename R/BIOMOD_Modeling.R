@@ -47,9 +47,6 @@
 ##' @param var.import (\emph{optional, default} \code{NULL}) \cr 
 ##' An \code{integer} corresponding to the number of permutations to be done for each variable to 
 ##' estimate variable importance
-##' @param save.output (\emph{optional, default} \code{TRUE}) \cr 
-##' A \code{logical} value defining whether all outputs should be saved on hard drive or not 
-##' (\emph{! strongly recommended !})
 ##' @param scale.models (\emph{optional, default} \code{FALSE}) \cr 
 ##' A \code{logical} value defining whether all models predictions should be scaled with a 
 ##' binomial GLM or not
@@ -164,12 +161,6 @@
 ##'   function. Several evaluation metrics can be selected. \emph{Please refer to the 
 ##'   \href{https://www.cawcr.gov.au/projects/verification/}{CAWRC website (section "Methods for dichotomous forecasts")} 
 ##'   to get detailed description of each metric.}
-##'   }
-##'   
-##'   \item{save.output}{\emph{If this argument is set to \code{FALSE}, it may prevent the evaluation 
-##'   of the ensemble models (see \code{\link{BIOMOD_EnsembleModeling}}) in further steps. Strong 
-##'   recommandation is to keep \code{save.output = TRUE}, even if it requires to have some free 
-##'   space onto the hard drive.}
 ##'   }
 ##'   
 ##'   \item{scale.models}{\bold{This parameter is quite experimental and it is recommended 
@@ -305,7 +296,6 @@ BIOMOD_Modeling <- function(bm.format,
                             prevalence = NULL,
                             metric.eval = c('KAPPA', 'TSS', 'ROC'),
                             var.import = 0,
-                            save.output = TRUE,
                             scale.models = FALSE,
                             nb.cpu = 1,
                             seed.val = NULL,
@@ -317,7 +307,7 @@ BIOMOD_Modeling <- function(bm.format,
   args <- .BIOMOD_Modeling.check.args(bm.format, modeling.id, models, models.pa, bm.options
                                       # , CV.strategy, CV.nb.rep, CV.perc, CV.k, CV.balance, CV.strat, CV.user.table
                                       , do.full.models, weights, prevalence, metric.eval, var.import
-                                      , save.output, scale.models, nb.cpu, seed.val, do.progress)
+                                      , scale.models, nb.cpu, seed.val, do.progress)
   for (argi in names(args)) { assign(x = argi, value = args[[argi]]) }
   rm(args)
   
@@ -337,12 +327,10 @@ BIOMOD_Modeling <- function(bm.format,
   name.BIOMOD_DATA = file.path(models.out@dir.name, models.out@sp.name, ".BIOMOD_DATA", models.out@modeling.id)
   
   ## 3.1 Save input data and models options -----------------------------------
-  if (save.output) {
-    models.out = .fill_BIOMOD.models.out("formated.input.data", bm.format, models.out
-                                         , inMemory = FALSE, nameFolder = name.BIOMOD_DATA)
-    models.out = .fill_BIOMOD.models.out("models.options", bm.options, models.out
-                                         , inMemory = FALSE, nameFolder = name.BIOMOD_DATA)
-  }
+  models.out = .fill_BIOMOD.models.out("formated.input.data", bm.format, models.out
+                                       , inMemory = FALSE, nameFolder = name.BIOMOD_DATA)
+  models.out = .fill_BIOMOD.models.out("models.options", bm.options, models.out
+                                       , inMemory = FALSE, nameFolder = name.BIOMOD_DATA)
   
   ## 3.2 Get and save calibration lines ---------------------------------------
   calib.lines <- bm_CrossValidation(bm.format = bm.format,
@@ -370,7 +358,6 @@ BIOMOD_Modeling <- function(bm.format,
                               bm.options = bm.options,
                               var.import = var.import,
                               metric.eval = metric.eval,
-                              save.output = save.output,
                               scale.models = scale.models,
                               nb.cpu = nb.cpu,
                               seed.val = seed.val,
@@ -387,29 +374,27 @@ BIOMOD_Modeling <- function(bm.format,
   
   ## 3.4 Rearrange and save models outputs : ----------------------------------
   ## models evaluation, variables importance, models prediction, predictions evaluation
-  if (save.output) {
-    models.evaluation <- .transform_outputs_list("mod", mod.out, out = "evaluation")
-    models.out = .fill_BIOMOD.models.out("models.evaluation", models.evaluation, models.out
-                                         , inMemory = TRUE, nameFolder = name.BIOMOD_DATA)
-    rm(models.evaluation)
-    
-    if (var.import > 0) {
-      variables.importance <- .transform_outputs_list("mod", mod.out, out = "var.import")
-      models.out = .fill_BIOMOD.models.out("variables.importance", variables.importance, models.out
-                                           , inMemory = FALSE, nameFolder = name.BIOMOD_DATA)
-      rm(variables.importance)
-    }
-    
-    models.prediction <- .transform_outputs_list("mod", mod.out, out = "pred")
-    models.out = .fill_BIOMOD.models.out("models.prediction", models.prediction, models.out
+  models.evaluation <- .transform_outputs_list("mod", mod.out, out = "evaluation")
+  models.out = .fill_BIOMOD.models.out("models.evaluation", models.evaluation, models.out
+                                       , inMemory = TRUE, nameFolder = name.BIOMOD_DATA)
+  rm(models.evaluation)
+  
+  if (var.import > 0) {
+    variables.importance <- .transform_outputs_list("mod", mod.out, out = "var.import")
+    models.out = .fill_BIOMOD.models.out("variables.importance", variables.importance, models.out
                                          , inMemory = FALSE, nameFolder = name.BIOMOD_DATA)
-    rm(models.prediction)
-    
-    models.prediction.eval <- .transform_outputs_list("mod", mod.out, out = "pred.eval")
-    models.out = .fill_BIOMOD.models.out("models.prediction.eval", models.prediction.eval, models.out
-                                         , inMemory = FALSE, nameFolder = name.BIOMOD_DATA)
-    rm(models.prediction.eval)
+    rm(variables.importance)
   }
+  
+  models.prediction <- .transform_outputs_list("mod", mod.out, out = "pred")
+  models.out = .fill_BIOMOD.models.out("models.prediction", models.prediction, models.out
+                                       , inMemory = FALSE, nameFolder = name.BIOMOD_DATA)
+  rm(models.prediction)
+  
+  models.prediction.eval <- .transform_outputs_list("mod", mod.out, out = "pred.eval")
+  models.out = .fill_BIOMOD.models.out("models.prediction.eval", models.prediction.eval, models.out
+                                       , inMemory = FALSE, nameFolder = name.BIOMOD_DATA)
+  rm(models.prediction.eval)
   rm(mod.out)
   
   ## 6. SAVE MODEL OBJECT ON HARD DRIVE ----------------------------
@@ -439,7 +424,7 @@ BIOMOD_Modeling <- function(bm.format,
 .BIOMOD_Modeling.check.args <- function(bm.format, modeling.id, models, models.pa, bm.options
                                         # , CV.strategy, CV.nb.rep, CV.perc, CV.k, CV.balance, CV.strat, CV.user.table
                                         , do.full.models, weights, prevalence, metric.eval, var.import
-                                        , save.output, scale.models, nb.cpu, seed.val, do.progress)
+                                        , scale.models, nb.cpu, seed.val, do.progress)
 {
   ## 0. Check bm.format and models arguments ----------------------------------
   cat('\n\nChecking Models arguments...\n')
@@ -611,12 +596,6 @@ BIOMOD_Modeling <- function(bm.format,
                             , 'SR', 'CSI', 'ETS', 'HK', 'HSS', 'OR', 'ORSS', 'ROC')
   .fun_testIfIn(TRUE, "metric.eval", metric.eval, avail.eval.meth.list)
   
-
-  ##### TO BE CHANGE BUT PREVENT FROM BUGS LATER :  Force object saving parameter
-  if (!save.output) {
-    cat("\n\t save.output param was automatically set to TRUE to prevent bugs.")
-    save.output <- TRUE
-  }
   
   if (!is.null(seed.val)) {
     set.seed(seed.val)
@@ -634,7 +613,6 @@ BIOMOD_Modeling <- function(bm.format,
               metric.eval = metric.eval,
               prevalence = prevalence,
               do.full.models = do.full.models,
-              save.output = save.output,
               seed.val = seed.val,
               do.progress = do.progress))
 }

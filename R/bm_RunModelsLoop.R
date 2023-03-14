@@ -30,9 +30,6 @@
 ##' @param var.import (\emph{optional, default} \code{NULL}) \cr 
 ##' An \code{integer} corresponding to the number of permutations to be done for each variable to 
 ##' estimate variable importance
-##' @param save.output (\emph{optional, default} \code{TRUE}) \cr 
-##' A \code{logical} value defining whether all outputs should be saved on hard drive or not 
-##' (\emph{! strongly recommended !})
 ##' @param scale.models (\emph{optional, default} \code{FALSE}) \cr 
 ##' A \code{logical} value defining whether all models predictions should be scaled with a 
 ##' binomial GLM or not
@@ -123,7 +120,6 @@ bm_RunModelsLoop <- function(bm.format,
                              bm.options,
                              metric.eval,
                              var.import,
-                             save.output = TRUE,
                              scale.models = TRUE,
                              nb.cpu = 1,
                              seed.val = NULL,
@@ -140,55 +136,6 @@ bm_RunModelsLoop <- function(bm.format,
       warning("Parallelisation with `foreach` is not available for Windows. Sorry.")
     }
   }
-  
-  # pa.list = sapply(colnames(calib.lines), function(x) strsplit(x, "_")[[1]][2])
-  # for (pa.id in unique(pa.list)) { # loop on PA ---------------------------------------------------
-  #   cat("\n\n-=-=-=- Run : ", paste0(bm.format@sp.name, "_", pa.id), '\n')
-  #   
-  #   models.subset = models
-  #   if (!is.null(models.pa)) {
-  #     ## optional : subset of models associated to the concerned PA dataset
-  #     models.subset = sapply(models.pa, function(x) pa.id %in% x)
-  #     models.subset = names(models.pa)[which(models.subset == TRUE)]
-  #   }
-  #   
-  #   data.sp <- get_species_data(bm.format)
-  #   if (pa.id %in% colnames(data.sp)) {
-  #     ## optional : subset of species data associated to the concerned PA dataset
-  #     data.sp <- data.sp[which(data.sp[, pa.id] == TRUE), ]
-  #     data.sp[which(is.na(data.sp[, bm.format@sp.name])), bm.format@sp.name] <- 0
-  #   }
-  #   
-  #   res.sp.run <- list()
-  #   for (i in which(pa.list == pa.id)) { # loop on RUN --------------------------------------------
-  #     
-  #     run.id = strsplit(colnames(calib.lines)[i], "_")[[1]][3]
-  #     run.name = paste0(bm.format@sp.name, "_", pa.id, "_", run.id)
-  #     
-  #     cat('\n\n-=-=-=--=-=-=-', run.name, '\n')
-  #     res.sp.run[[run.id]] = foreach(modi = models.subset) %dopar% # loop on models ---------------
-  #       {
-  #         bm_RunModel(model = modi,
-  #                     run.name = run.name,
-  #                     dir.name = bm.format@dir.name,
-  #                     modeling.id = modeling.id,
-  #                     bm.options = bm.options,
-  #                     Data = data.sp,
-  #                     calib.lines.vec = na.omit(calib.lines[, i]),
-  #                     weights.vec = na.omit(weights[, pa.id]),
-  #                     xy = data.sp[, c("x", "y")],
-  #                     eval.data = get_eval_data(bm.format),
-  #                     eval.xy = get_eval_data(bm.format)[, c("x", "y")],
-  #                     metric.eval = metric.eval,
-  #                     var.import = var.import,
-  #                     save.output = TRUE, ## save.output
-  #                     scale.models = scale.models,
-  #                     seed.val = seed.val,
-  #                     do.progress = TRUE)
-  #       } # end loop on models
-  #     names(res.sp.run[[run.id]]) <- models.subset
-  #   } # end loop on RUN
-  # } # end loop on PA
   
   ## PREPARE DATA ---------------------------------------------------------------------------------
   list.data <- list()
@@ -240,7 +187,6 @@ bm_RunModelsLoop <- function(bm.format,
                   eval.xy = get_eval_data(bm.format)[, c("x", "y")],
                   metric.eval = metric.eval,
                   var.import = var.import,
-                  save.output = TRUE, ## save.output
                   scale.models = scale.models,
                   seed.val = seed.val,
                   do.progress = TRUE)
@@ -262,8 +208,7 @@ bm_RunModel <- function(model, run.name, dir.name = '.'
                         , Data, calib.lines.vec, weights.vec
                         , xy = NULL, eval.data = NULL, eval.xy = NULL
                         , metric.eval = c('ROC','TSS','KAPPA'), var.import = 0
-                        , save.output = FALSE, scale.models = TRUE
-                        , nb.cpu = 1, seed.val = NULL, do.progress = TRUE)
+                        , scale.models = TRUE, nb.cpu = 1, seed.val = NULL, do.progress = TRUE)
 {
   ## 0. Check arguments ---------------------------------------------------------------------------
   args <- .bm_RunModel.check.args(model, bm.options, Data, calib.lines.vec, weights.vec
@@ -864,10 +809,8 @@ bm_RunModel <- function(model, run.name, dir.name = '.'
   }
   
   ## SAVE predictions ---------------------------------------------------------
-  if (save.output) {
-    ListOut$pred <- g.pred
-    if (exists("g.pred.eval")) { ListOut$pred.eval <- g.pred.eval }
-  }
+  ListOut$pred <- g.pred
+  if (exists("g.pred.eval")) { ListOut$pred.eval <- g.pred.eval }
   
   
   ## 4. EVALUATE MODEL ----------------------------------------------------------------------------
