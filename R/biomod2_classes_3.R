@@ -106,7 +106,7 @@
 ##'   \code{\link{BIOMOD.stored.models.options-class}} object from the
 ##'   \code{models.options} slot of a \code{\link{BIOMOD.models.out-class}}
 ##'   object} \item{\code{get_calib_lines}}{a
-##'   \code{\link{BIOMOD.stored.array-class}} object from the \code{calib.lines}
+##'   \code{\link{BIOMOD.stored.data.frame-class}} object from the \code{calib.lines}
 ##'   slot of a \code{\link{BIOMOD.models.out}} object}
 ##'
 ##'   \item{\code{get_projected_models}}{a \code{vector} from the
@@ -277,7 +277,7 @@ setMethod('get_eval_data', signature('BIOMOD.formated.data'), function(obj) {
 ##' @slot formated.input.data a \code{\link{BIOMOD.stored.formated.data-class}}
 ##'   object containing informations from \code{\link{BIOMOD_FormatingData}}
 ##'   object
-##' @slot calib.lines a \code{\link{BIOMOD.stored.array-class}} object
+##' @slot calib.lines a \code{\link{BIOMOD.stored.data.frame-class}} object
 ##'   containing calibration lines
 ##' @slot models.options a \code{\link{BIOMOD.stored.models.options-class}}
 ##'   object containing informations from \code{\link{BIOMOD_ModelingOptions}}
@@ -376,7 +376,7 @@ setClass("BIOMOD.models.out",
                         has.evaluation.data = 'logical',
                         scale.models = 'logical',
                         formated.input.data = 'BIOMOD.stored.formated.data',
-                        calib.lines = 'BIOMOD.stored.array',
+                        calib.lines = 'BIOMOD.stored.data.frame',
                         models.options = 'BIOMOD.stored.models.options',
                         models.evaluation = 'BIOMOD.stored.data.frame',
                         variables.importance = 'BIOMOD.stored.data.frame',
@@ -392,7 +392,7 @@ setClass("BIOMOD.models.out",
                    has.evaluation.data = FALSE,
                    scale.models = TRUE,
                    formated.input.data = new('BIOMOD.stored.formated.data'),
-                   calib.lines = new('BIOMOD.stored.array'),
+                   calib.lines = new('BIOMOD.stored.data.frame'),
                    models.options = new('BIOMOD.stored.models.options'),
                    models.evaluation = new('BIOMOD.stored.data.frame'),
                    variables.importance = new('BIOMOD.stored.data.frame'),
@@ -459,9 +459,9 @@ setMethod("get_calib_lines", "BIOMOD.models.out",
             out <- load_stored_object(obj@calib.lines)
             
             if (!is.null(out) && as.data.frame == TRUE) {
-              tmp <- melt(out, varnames = c("points", "run", "PA"))
-              tmp$PA = sub("_", "", tmp$PA)
-              tmp$run = sub("_", "", tmp$run)
+              tmp <- melt(out, varnames = c("points", "PA_run"))
+              tmp$PA = strsplit(sub("^_", "", tmp$PA_run), "_")[[1]][1]
+              tmp$run = strsplit(sub("^_", "", tmp$PA_run), "_")[[1]][2]
               out <- tmp[, c("PA", "run", "points", "value")]
               colnames(out)[4] = "calib.lines"
               

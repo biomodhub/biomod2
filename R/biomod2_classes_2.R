@@ -1,7 +1,6 @@
 
 ##' @name BIOMOD.stored.data
 ##' @aliases BIOMOD.stored.data-class
-##' @aliases BIOMOD.stored.array-class
 ##' @aliases BIOMOD.stored.data.frame-class
 ##' @aliases BIOMOD.stored.SpatRaster-class
 ##' @aliases BIOMOD.stored.files-class
@@ -29,7 +28,6 @@
 ##' contain a \code{val} slot of specific type :
 ##' 
 ##' \itemize{
-##'   \item{\code{BIOMOD.stored.array} : }{\code{val} is an \code{array}}
 ##'   \item{\code{BIOMOD.stored.data.frame} : }{\code{val} is a \code{data.frame}}
 ##'   \item{\code{BIOMOD.stored.SpatRaster} : }{\code{val} is a 
 ##'   \code{\link[terra:PackedSpatRaster-class]{PackedSpatRaster}}}
@@ -53,7 +51,6 @@
 ##' @examples 
 ##' 
 ##' showClass("BIOMOD.stored.data")
-##' showClass("BIOMOD.stored.array") 
 ##' showClass("BIOMOD.stored.data.frame") 
 ##' showClass("BIOMOD.stored.SpatRaster") 
 ##' showClass("BIOMOD.stored.files") 
@@ -79,16 +76,6 @@ NULL
 setClass("BIOMOD.stored.data",
          representation(inMemory = 'logical', link = 'character'),
          prototype(inMemory = FALSE, link = ''),
-         validity = function(object){ return(TRUE) })
-
-### BIOMOD.stored.array ------------------------------------------------
-##' @name BIOMOD.stored.array-class
-##' @rdname BIOMOD.stored.data
-##' 
-setClass("BIOMOD.stored.array",
-         contains = "BIOMOD.stored.data",
-         representation(val = 'array'),
-         prototype(val = array()),
          validity = function(object){ return(TRUE) })
 
 ### BIOMOD.stored.data.frame ------------------------------------------------
