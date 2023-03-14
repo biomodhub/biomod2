@@ -219,16 +219,16 @@ setGeneric("get_variables_importance", function(obj, ...) { standardGeneric("get
 
 setMethod('get_species_data', signature('BIOMOD.formated.data'), function(obj) {
   tab.sp <- data.frame(obj@data.species)
-  colnames(tab.sp) <- obj@sp.name
   tab.sp <- cbind(tab.sp, obj@coord)
+  colnames(tab.sp) <- c(obj@sp.name, "x", "y")
   tab.sp <- cbind(tab.sp, obj@data.env.var)
   return(tab.sp)
 })
 
 setMethod('get_species_data', signature('BIOMOD.formated.data.PA'), function(obj) {
   tab.sp <- data.frame(obj@data.species)
-  colnames(tab.sp) <- obj@sp.name
   tab.sp <- cbind(tab.sp, obj@coord)
+  colnames(tab.sp) <- c(obj@sp.name, "x", "y")
   tab.sp <- cbind(tab.sp, obj@data.env.var)
   tab.sp <- cbind(tab.sp, obj@PA.table)
   return(tab.sp)
@@ -237,8 +237,8 @@ setMethod('get_species_data', signature('BIOMOD.formated.data.PA'), function(obj
 setMethod('get_eval_data', signature('BIOMOD.formated.data'), function(obj) {
   if (obj@has.data.eval) {
     tab.sp <- data.frame(obj@eval.data.species)
-    colnames(tab.sp) <- obj@sp.name
     tab.sp <- cbind(tab.sp, obj@eval.coord)
+    colnames(tab.sp) <- c(obj@sp.name, "x", "y")
     tab.sp <- cbind(tab.sp, obj@eval.data.env.var)
     return(tab.sp)
   } else { return(NULL) }

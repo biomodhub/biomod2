@@ -164,13 +164,13 @@
 ###################################################################################################
 
 
-bm_CrossValidation <- function(bm.format, strategy = 'random', nb.rep = 1, perc = 100, k = 0
+bm_CrossValidation <- function(bm.format, strategy = 'random', nb.rep, perc, k
                                , balance = 'presences', strat = 'both'
-                               , do.full.models = TRUE, user.table = NULL)
+                               , user.table = NULL, do.full.models = FALSE)
 {
   ## 0. Check arguments ---------------------------------------------------------------------------
   args <- .bm_CrossValidation.check.args(bm.format, strategy, nb.rep, perc, k, balance, strat
-                                         , do.full.models, user.table)
+                                         , user.table, do.full.models)
   for (argi in names(args)) { assign(x = argi, value = args[[argi]]) }
   rm(args)
   
@@ -215,7 +215,7 @@ bm_CrossValidation <- function(bm.format, strategy = 'random', nb.rep = 1, perc 
 # Argument Check ----------------------------------------------------------------------------------
 
 .bm_CrossValidation.check.args <- function(bm.format, strategy, nb.rep, perc, k, balance, strat
-                                           , do.full.models, user.table)
+                                           , user.table, do.full.models)
 {
   cat('\n\nChecking Cross-Validation arguments...\n')
   
