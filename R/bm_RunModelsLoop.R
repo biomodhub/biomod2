@@ -140,43 +140,54 @@ bm_RunModelsLoop <- function(mod.prep.dat.pa,
     }
   }
   
-  cat("\n\n-=-=-=- Run : ", mod.prep.dat.pa$name, '\n')
-  res.sp.run <- list()
-  for (i in 1:ncol(mod.prep.dat.pa$calib.lines)) { # loop on RunEval
-    run.id = dimnames(mod.prep.dat.pa$calib.lines)[[2]][i]
-    run.name = paste0(mod.prep.dat.pa$name, run.id)
-    cat('\n\n-=-=-=--=-=-=-', run.name, '\n')
+  pa.list = sapply(colnames(mod.prep.dat.pa$calib.lines), function(x) strsplit(x, "_")[[1]][2])
+  for (pa.id in unique(pa.list)) { # loop on PA ---------------------------------------------------
+    cat("\n\n-=-=-=- Run : ", paste0(mod.prep.dat.pa$name, "_", pa.id), '\n')
     
     models.subset = models
     if (!is.null(models.pa)) {
       ## optional : subset of models associated to the concerned PA dataset
-      pa.id = strsplit(mod.prep.dat.pa$name, "_")[[1]][2]
       models.subset = sapply(models.pa, function(x) pa.id %in% x)
       models.subset = names(models.pa)[which(models.subset == TRUE)]
     }
     
-    res.sp.run[[run.id]] = foreach(modi = models.subset) %dopar% # loop on models
-      {
-        bm_RunModel(model = modi,
-                    Data = mod.prep.dat.pa$dataBM,
-                    modeling.id = modeling.id,
-                    bm.options = bm.options,
-                    calib.lines.vec = na.omit(mod.prep.dat.pa$calib.lines[, i, ]), ## transform 3D calib.lines obj into a 1D vector
-                    weights = na.omit(mod.prep.dat.pa$weights),
-                    nam = run.name,
-                    dir.name = mod.prep.dat.pa$dir.name,
-                    xy = mod.prep.dat.pa$xy,
-                    eval.data = mod.prep.dat.pa$eval.data,
-                    eval.xy = mod.prep.dat.pa$eval.xy,
-                    metric.eval = metric.eval,
-                    var.import = var.import,
-                    save.output = TRUE, ## save.output
-                    scale.models = scale.models,
-                    seed.val = seed.val,
-                    do.progress = TRUE)
-      }
-    names(res.sp.run[[run.id]]) <- models.subset
-  }
+    data_PA <- mod.prep.dat.pa$dataBM
+    if (pa.id %in% colnames(data_PA)) {
+      ## optional : subset of species data associated to the concerned PA dataset
+      data_PA <- data_PA[which(data_PA[, pa.id] == TRUE), ]
+      data_PA[which(is.na(data_PA[, mod.prep.dat.pa$name])), mod.prep.dat.pa$name] <- 0
+    }
+    
+    res.sp.run <- list()
+    for (i in which(pa.list == pa.id)) { # loop on RUN --------------------------------------------
+      
+      run.id = strsplit(colnames(mod.prep.dat.pa$calib.lines)[i], "_")[[1]][3]
+      run.name = paste0(mod.prep.dat.pa$name, "_", pa.id, "_", run.id)
+      
+      cat('\n\n-=-=-=--=-=-=-', run.name, '\n')
+      res.sp.run[[run.id]] = foreach(modi = models.subset) %dopar% # loop on models ---------------
+        {
+          bm_RunModel(model = modi,
+                      Data = data_PA,
+                      modeling.id = modeling.id,
+                      bm.options = bm.options,
+                      calib.lines.vec = na.omit(mod.prep.dat.pa$calib.lines[, i]),
+                      weights = na.omit(mod.prep.dat.pa$weights[, pa.id]),
+                      nam = run.name,
+                      dir.name = mod.prep.dat.pa$dir.name,
+                      xy = data_PA[, c("x", "y")],
+                      eval.data = mod.prep.dat.pa$eval.data, ## TOCHANGE
+                      eval.xy = mod.prep.dat.pa$eval.xy, ## TOCHANGE
+                      metric.eval = metric.eval,
+                      var.import = var.import,
+                      save.output = TRUE, ## save.output
+                      scale.models = scale.models,
+                      seed.val = seed.val,
+                      do.progress = TRUE)
+        } # end loop on models
+      names(res.sp.run[[run.id]]) <- models.subset
+    } # end loop on RUN
+  } # end loop on PA
   
   return(res.sp.run)
 }
