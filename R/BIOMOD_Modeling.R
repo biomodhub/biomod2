@@ -571,7 +571,8 @@ BIOMOD_Modeling <- function(bm.format,
             wei[ind.PA] <- weights
             return(wei)
           }
-        colnames(weights.pa) <- colnames(bm.format@PA.table)
+        weights.pa <- cbind(weights.pa, rep(1, nrow(weights.pa)))
+        colnames(weights.pa) <- c(colnames(bm.format@PA.table), "allData")
         weights <- weights.pa
       } else {
         weights <- .automatic_weights_creation(data.sp, prev = prevalence)
@@ -595,7 +596,8 @@ BIOMOD_Modeling <- function(bm.format,
           wei[which(bm.format@PA.table[, pa] == FALSE | is.na(bm.format@PA.table[, pa]))] <- NA
           return(wei)
         }
-      colnames(weights.pa) <- colnames(bm.format@PA.table)
+      weights.pa <- cbind(weights.pa, rep(1, nrow(weights.pa)))
+      colnames(weights.pa) <- c(colnames(bm.format@PA.table), "allData")
       weights <- weights.pa
     } else {
       weights <- matrix(weights, nrow = length(weights), ncol = 1)
