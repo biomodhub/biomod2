@@ -42,7 +42,6 @@ Imports:
     reshape,
     reshape2,
     abind,
-    data.table,
     foreach,
     ggplot2,
     nnet,

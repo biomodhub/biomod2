@@ -167,7 +167,6 @@
 ##' 
 ## @importFrom ecospat ecospat.boyce ecospat.mpa
 ##' @importFrom PresenceAbsence presence.absence.accuracy
-##' @importFrom data.table rbindlist
 ##' @importFrom terra rast extract
 ##' 
 ##' @export
@@ -235,7 +234,7 @@ BIOMOD_PresenceOnly <- function(bm.mod = NULL,
     ## Get evaluation scores
     myEvalEM <- get_evaluations(bm.em)
     if (!is.null(bm.mod)) {
-      myEvalMod <- rbindlist(list(myEvalMod, myEvalEM), fill = TRUE)
+      myEvalMod <- do.call(rbind, list(myEvalMod, myEvalEM), fill = TRUE)
     } else {
       myEvalMod <- myEvalEM
     }
