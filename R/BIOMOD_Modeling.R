@@ -289,13 +289,17 @@
 
 BIOMOD_Modeling <- function(bm.format,
                             modeling.id = as.character(format(Sys.time(), "%s")),
-                            models = c('GLM', 'GBM', 'GAM', 'CTA', 'ANN', 'SRE', 'FDA', 'MARS'
-                                       , 'RF', 'MAXENT', 'MAXNET'),
+                            models = c('GLM', 'GBM', 'GAM', 'CTA', 'ANN', 'SRE'
+                                       , 'FDA', 'MARS', 'RF', 'MAXENT', 'MAXNET'),
                             models.pa = NULL,
                             bm.options = NULL,
-                            nb.rep = 1,
-                            data.split.perc = 100,
-                            data.split.table = NULL,
+                            CV.strategy = 'random',
+                            CV.nb.rep = 1,
+                            CV.perc = 100,
+                            CV.k = 5,
+                            CV.balance = 'presences',
+                            CV.strat = 'both',
+                            CV.user.table = NULL,
                             do.full.models = TRUE,
                             weights = NULL,
                             prevalence = NULL,
@@ -310,8 +314,8 @@ BIOMOD_Modeling <- function(bm.format,
   .bm_cat("Build Single Models")
   
   ## 0. Check arguments ---------------------------------------------------------------------------
-  args <- .BIOMOD_Modeling.check.args(bm.format, modeling.id, models, models.pa, bm.options, nb.rep
-                                      , data.split.perc, data.split.table
+  args <- .BIOMOD_Modeling.check.args(bm.format, modeling.id, models, models.pa, bm.options
+                                      # , CV.strategy, CV.nb.rep, CV.perc, CV.k, CV.balance, CV.strat, CV.user.table
                                       , do.full.models, weights, prevalence, metric.eval, var.import
                                       , save.output, scale.models, nb.cpu, seed.val, do.progress)
   for (argi in names(args)) { assign(x = argi, value = args[[argi]]) }
@@ -348,7 +352,8 @@ BIOMOD_Modeling <- function(bm.format,
                                     k = CV.k,
                                     balance = CV.balance,
                                     strat = CV.strat,
-                                    do.full.models = do.full.models)
+                                    do.full.models = do.full.models,
+                                    user.table = CV.user.table)
   models.out = .fill_BIOMOD.models.out("calib.lines", calib.lines, models.out
                                        , inMemory = FALSE, nameFolder = name.BIOMOD_DATA)
   
@@ -400,30 +405,40 @@ BIOMOD_Modeling <- function(bm.format,
   ## 3. Gathering all in one list object given to bm_RunModelsLoop --
   mod.prep.dat <- list(name = bm.format@sp.name,
                        dir.name = bm.format@dir.name,
-                       # xy = xy,
                        dataBM = dataBM,
                        calib.lines = calib.lines,
                        weights = weights,
                        eval.data = get_eval_data(bm.format))
-                       # eval.xy = eval.xy)
   
   ## 4. Print modeling summary in console ---------------------------------------------------------
   .BIOMOD_Modeling.summary(mod.prep.dat, models, models.pa)
   
   ## 5. Run models with loop over PA --------------------------------------------------------------
-  mod.out <- lapply(mod.prep.dat,
-                    FUN = bm_RunModelsLoop,
-                    modeling.id = models.out@modeling.id,
-                    models = models,
-                    models.pa = models.pa,
-                    bm.options = bm.options,
-                    var.import = var.import,
-                    metric.eval = metric.eval,
-                    save.output = save.output,
-                    scale.models = scale.models,
-                    nb.cpu = nb.cpu,
-                    seed.val = seed.val,
-                    do.progress = do.progress)
+  # mod.out <- lapply(mod.prep.dat,
+  #                   FUN = bm_RunModelsLoop,
+  #                   modeling.id = models.out@modeling.id,
+  #                   models = models,
+  #                   models.pa = models.pa,
+  #                   bm.options = bm.options,
+  #                   var.import = var.import,
+  #                   metric.eval = metric.eval,
+  #                   save.output = save.output,
+  #                   scale.models = scale.models,
+  #                   nb.cpu = nb.cpu,
+  #                   seed.val = seed.val,
+  #                   do.progress = do.progress)
+  mod.out <- bm_RunModelsLoop(mod.prep.dat.pa = mod.prep.dat,
+                              modeling.id = models.out@modeling.id,
+                              models = models,
+                              models.pa = models.pa,
+                              bm.options = bm.options,
+                              var.import = var.import,
+                              metric.eval = metric.eval,
+                              save.output = save.output,
+                              scale.models = scale.models,
+                              nb.cpu = nb.cpu,
+                              seed.val = seed.val,
+                              do.progress = do.progress)
   
   ## 3.3 Rearrange and save outputs -------------------------------------------
   models.out@models.computed <- .transform_outputs_list("mod", mod.out, out = "model")
@@ -485,8 +500,8 @@ BIOMOD_Modeling <- function(bm.format,
 
 # ---------------------------------------------------------------------------- #
 
-.BIOMOD_Modeling.check.args <- function(bm.format, modeling.id, models, models.pa, bm.options, nb.rep
-                                        , data.split.perc, data.split.table
+.BIOMOD_Modeling.check.args <- function(bm.format, modeling.id, models, models.pa, bm.options
+                                        # , CV.strategy, CV.nb.rep, CV.perc, CV.k, CV.balance, CV.strat, CV.user.table
                                         , do.full.models, weights, prevalence, metric.eval, var.import
                                         , save.output, scale.models, nb.cpu, seed.val, do.progress)
 {
@@ -635,15 +650,12 @@ BIOMOD_Modeling <- function(bm.format,
   return(list(models = models,
               models.pa = models.pa,
               bm.options = bm.options,
-              nb.rep = nb.rep,
-              data.split.perc = data.split.perc,
               weights = weights,
               var.import = var.import,
               metric.eval = metric.eval,
               prevalence = prevalence,
               do.full.models = do.full.models,
               save.output = save.output,
-              data.split.table = data.split.table,
               seed.val = seed.val,
               do.progress = do.progress))
 }
