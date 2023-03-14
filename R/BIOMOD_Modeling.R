@@ -295,10 +295,10 @@ BIOMOD_Modeling <- function(bm.format,
                             bm.options = NULL,
                             CV.strategy = 'random',
                             CV.nb.rep = 1,
-                            CV.perc = 100,
-                            CV.k = 5,
-                            CV.balance = 'presences',
-                            CV.strat = 'both',
+                            CV.perc = NULL,
+                            CV.k = NULL,
+                            CV.balance = NULL,
+                            CV.strat = NULL,
                             CV.user.table = NULL,
                             do.full.models = TRUE,
                             weights = NULL,
@@ -352,81 +352,24 @@ BIOMOD_Modeling <- function(bm.format,
                                     k = CV.k,
                                     balance = CV.balance,
                                     strat = CV.strat,
-                                    do.full.models = do.full.models,
-                                    user.table = CV.user.table)
+                                    user.table = CV.user.table,
+                                    do.full.models = do.full.models)
   models.out = .fill_BIOMOD.models.out("calib.lines", calib.lines, models.out
                                        , inMemory = FALSE, nameFolder = name.BIOMOD_DATA)
   
-  ## 3.3 Deal with weights ----------------------------------------------------
-  dataBM <- get_species_data(bm.format)
-  if (inherits(bm.format, "BIOMOD.formated.data.PA")) {
-    dataBM <- dataBM[which(dataBM[, paste0("PA", pa)] == TRUE), ]
-    dataBM[which(is.na(dataBM[, 1])), 1] <- 0
-  }
-  
-  ## weights --------------------------------------------------------
-  if (is.null(weights)) {
-    if (!is.null(prevalence)) {
-      cat("\n\t> Automatic weights creation to rise a", prevalence, "prevalence")
-      weights <- .automatic_weights_creation(as.numeric(dataBM[, 1]), prev = prevalence)
-      if (inherits(bm.format, "BIOMOD.formated.data.PA")) {
-        weights.pa <- foreach(pa = 1:ncol(bm.format@PA.table), .combine = "cbind") %do%
-          {
-            wei <- rep(NA, length(as.numeric(dataBM[, 1])))
-            wei[which(bm.format@PA.table[, pa] == TRUE)] <- weights
-            return(wei)
-          }
-        weights <- weights.pa
-      }
-    }
-    # else { ## NEVER OCCURRING NO ??
-    #   cat("\n\t> No weights : all observations will have the same weight")
-    #   weights <- rep(1, length(bm.format@data.species))
-    # }
-  } else {
-    if (inherits(bm.format, "BIOMOD.formated.data.PA")) {
-      weights.pa <- foreach(pa = 1:ncol(bm.format@PA.table), .combine = "cbind") %do%
-        {
-          wei <- weights
-          wei[which(bm.format@PA.table[, pa] == FALSE | is.na(bm.format@PA.table[, pa]))] <- NA
-          return(wei)
-        }
-      weights <- weights.pa
-    }
-  }
-  
-  # calib.lines <- mod.prep.dat[[1]]$calib.lines
-  # if (length(mod.prep.dat) > 1) { ## stack calib lines matrix along array 3rd-dimension
-  #   for (pa in 2:length(mod.prep.dat)) {
-  #     calib.lines <- abind(calib.lines, mod.prep.dat[[pa]]$calib.lines, along = 3)
-  #   }
-  # }
-  
+
   ## 3. Gathering all in one list object given to bm_RunModelsLoop --
   mod.prep.dat <- list(name = bm.format@sp.name,
                        dir.name = bm.format@dir.name,
-                       dataBM = dataBM,
+                       dataBM = get_species_data(bm.format),
                        calib.lines = calib.lines,
                        weights = weights,
                        eval.data = get_eval_data(bm.format))
-  
+
   ## 4. Print modeling summary in console ---------------------------------------------------------
-  .BIOMOD_Modeling.summary(mod.prep.dat, models, models.pa)
+  # .BIOMOD_Modeling.summary(mod.prep.dat, models, models.pa)
   
   ## 5. Run models with loop over PA --------------------------------------------------------------
-  # mod.out <- lapply(mod.prep.dat,
-  #                   FUN = bm_RunModelsLoop,
-  #                   modeling.id = models.out@modeling.id,
-  #                   models = models,
-  #                   models.pa = models.pa,
-  #                   bm.options = bm.options,
-  #                   var.import = var.import,
-  #                   metric.eval = metric.eval,
-  #                   save.output = save.output,
-  #                   scale.models = scale.models,
-  #                   nb.cpu = nb.cpu,
-  #                   seed.val = seed.val,
-  #                   do.progress = do.progress)
   mod.out <- bm_RunModelsLoop(mod.prep.dat.pa = mod.prep.dat,
                               modeling.id = models.out@modeling.id,
                               models = models,
@@ -607,22 +550,7 @@ BIOMOD_Modeling <- function(bm.format,
     }
   }
   
-  
-  ## 5. Check weights arguments -----------------------------------------------
-  if (!is.null(weights)) {
-    if (!is.numeric(weights)) { stop("weights must be a numeric vector") }
-    if (length(weights) != length(bm.format@data.species)) {
-      stop("The number of 'Weight' does not match with the input calibration data. Simulation cannot proceed.")
-    }
-  }
-  
-  ## 6. Check metric.eval arguments -------------------------------------------
-  metric.eval <- unique(metric.eval)
-  avail.eval.meth.list <- c('TSS', 'KAPPA', 'ACCURACY', 'BIAS', 'POD', 'FAR', 'POFD'
-                            , 'SR', 'CSI', 'ETS', 'HK', 'HSS', 'OR', 'ORSS', 'ROC')
-  .fun_testIfIn(TRUE, "metric.eval", metric.eval, avail.eval.meth.list)
-  
-  ## 7. Check prevalence arguments --------------------------------------------
+  ## 5. Check prevalence arguments --------------------------------------------
   if (!is.null(prevalence)) {
     .fun_testIf01(TRUE, "prevalence", prevalence)
     if ("MAXENT" %in% models) {
@@ -633,6 +561,62 @@ BIOMOD_Modeling <- function(bm.format,
     prevalence = 0.5
   }
   
+  ## 6. Check weights arguments -----------------------------------------------
+  if (is.null(weights)) {
+    if (!is.null(prevalence)) {
+      cat("\n\t> Automatic weights creation to rise a", prevalence, "prevalence")
+      data.sp <- as.numeric(bm.format@data.species)
+      if (inherits(bm.format, "BIOMOD.formated.data.PA")) {
+        weights.pa <- foreach(pa = 1:ncol(bm.format@PA.table), .combine = "cbind") %do%
+          {
+            ind.PA <- which(bm.format@PA.table[, pa] == TRUE)
+            data.sp_pa <- data.sp[ind.PA]
+            data.sp_pa[which(is.na(data.sp_pa))] <- 0
+            weights <- .automatic_weights_creation(data.sp_pa, prev = prevalence)
+            
+            wei <- rep(NA, length(data.sp))
+            wei[ind.PA] <- weights
+            return(wei)
+          }
+        colnames(weights.pa) <- colnames(bm.format@PA.table)
+        weights <- weights.pa
+      } else {
+        weights <- .automatic_weights_creation(data.sp, prev = prevalence)
+        weights <- matrix(weights, nrow = length(weights), ncol = 1)
+        colnames(weights) <- "allData"
+      }
+    }
+    # else { ## NEVER OCCURRING NO ??
+    #   cat("\n\t> No weights : all observations will have the same weight")
+    #   weights <- rep(1, length(bm.format@data.species))
+    # }
+  } else {
+    if (!is.numeric(weights)) { stop("weights must be a numeric vector") }
+    if (length(weights) != length(bm.format@data.species)) {
+      stop("The number of 'Weight' does not match with the input calibration data. Simulation cannot proceed.")
+    }
+    if (inherits(bm.format, "BIOMOD.formated.data.PA")) {
+      weights.pa <- foreach(pa = 1:ncol(bm.format@PA.table), .combine = "cbind") %do%
+        {
+          wei <- weights
+          wei[which(bm.format@PA.table[, pa] == FALSE | is.na(bm.format@PA.table[, pa]))] <- NA
+          return(wei)
+        }
+      colnames(weights.pa) <- colnames(bm.format@PA.table)
+      weights <- weights.pa
+    } else {
+      weights <- matrix(weights, nrow = length(weights), ncol = 1)
+      colnames(weights) <- "allData"
+    }
+  }
+  
+  ## 7. Check metric.eval arguments -------------------------------------------
+  metric.eval <- unique(metric.eval)
+  avail.eval.meth.list <- c('TSS', 'KAPPA', 'ACCURACY', 'BIAS', 'POD', 'FAR', 'POFD'
+                            , 'SR', 'CSI', 'ETS', 'HK', 'HSS', 'OR', 'ORSS', 'ROC')
+  .fun_testIfIn(TRUE, "metric.eval", metric.eval, avail.eval.meth.list)
+  
+
   ##### TO BE CHANGE BUT PREVENT FROM BUGS LATER :  Force object saving parameter
   if (!save.output) {
     cat("\n\t save.output param was automatically set to TRUE to prevent bugs.")
