@@ -29,10 +29,6 @@
 ## \code{\link[ecospat]{ecospat.mpa}}) # generate R CMD Check error due 
 ## to crossref missing ecospat package
 ##' 
-##' @param save.output (\emph{optional, default} \code{TRUE}) \cr 
-##' A \code{logical} value defining whether the output is to be saved within the 
-##' \code{.BIOMOD_DATA} folder or not
-##' 
 ##' 
 ##' @return 
 ##' 
@@ -167,7 +163,6 @@
 ##' 
 ## @importFrom ecospat ecospat.boyce ecospat.mpa
 ##' @importFrom PresenceAbsence presence.absence.accuracy
-##' @importFrom data.table rbindlist
 ##' @importFrom terra rast extract
 ##' 
 ##' @export
@@ -178,14 +173,13 @@
 BIOMOD_PresenceOnly <- function(bm.mod = NULL, 
                                 bm.em = NULL, 
                                 bg.env = NULL, 
-                                perc = 0.9, 
-                                save.output = TRUE)
+                                perc = 0.9)
 {
   .bm_cat("Do Presence-Only Evaluation")
   # if (!isNamespaceLoaded("ecospat")) { requireNamespace("ecospat", quietly = TRUE) }
   
   ## 0. Check arguments --------------------------------------------------------
-  args <- .BIOMOD_PresenceOnly.check.args(bm.mod, bm.em, bg.env, perc, save.output)
+  args <- .BIOMOD_PresenceOnly.check.args(bm.mod, bm.em, bg.env, perc)
   for (argi in names(args)) { assign(x = argi, value = args[[argi]]) }
   rm(args)
   
@@ -235,7 +229,7 @@ BIOMOD_PresenceOnly <- function(bm.mod = NULL,
     ## Get evaluation scores
     myEvalEM <- get_evaluations(bm.em)
     if (!is.null(bm.mod)) {
-      myEvalMod <- rbindlist(list(myEvalMod, myEvalEM), fill = TRUE)
+      myEvalMod <- do.call(rbind, list(myEvalMod, myEvalEM), fill = TRUE)
     } else {
       myEvalMod <- myEvalEM
     }
@@ -387,16 +381,14 @@ BIOMOD_PresenceOnly <- function(bm.mod = NULL,
   ## SAVE OUTPUTS ---------------------------------------------------------------------------------
   output <- rbind(myEvalMod, boyce.eval, mpa.eval)
   
-  if (save.output) {
-    if (!is.null(bm.mod)) {
-      sp <- bm.mod@sp.name
-      mod.id <- bm.mod@modeling.id
-    } else if (!is.null(bm.em)) {
-      sp <- bm.em@sp.name
-      mod.id <- bm.em@modeling.id
-    }
-    save(output, file = paste0(sp, "/.BIOMOD_DATA/", mod.id, "/presenceonly.evaluation_", sp))
+  if (!is.null(bm.mod)) {
+    sp <- bm.mod@sp.name
+    mod.id <- bm.mod@modeling.id
+  } else if (!is.null(bm.em)) {
+    sp <- bm.em@sp.name
+    mod.id <- bm.em@modeling.id
   }
+  save(output, file = paste0(sp, "/.BIOMOD_DATA/", mod.id, "/presenceonly.evaluation_", sp))
   
   .bm_cat("Done")
   return(output)
@@ -416,7 +408,7 @@ BIOMOD_PresenceOnly <- function(bm.mod = NULL,
 
 # Check Arguments -------------------------------------------------------------
 
-.BIOMOD_PresenceOnly.check.args <- function(bm.mod, bm.em, bg.env, perc, save.output)
+.BIOMOD_PresenceOnly.check.args <- function(bm.mod, bm.em, bg.env, perc)
 {
   
   if(is.null(bm.mod) && is.null(bm.em)){
@@ -496,8 +488,7 @@ BIOMOD_PresenceOnly <- function(bm.mod = NULL,
   return(list(bm.mod = bm.mod,
               bm.em = bm.em,
               bg.env = bg.env,
-              perc = perc,
-              save.output = save.output))
+              perc = perc))
 }
 
 

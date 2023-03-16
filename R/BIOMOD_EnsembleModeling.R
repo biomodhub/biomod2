@@ -628,32 +628,32 @@ BIOMOD_EnsembleModeling <- function(bm.mod,
                   repet_id <- paste0("_", strsplit(assemb, "_")[[1]][2])
                   ## define and extract the subset of points model will be evaluated on
                   if (repet_id == "_allRun") {
-                    eval_lines <- rep(TRUE, length(pred.bm))
+                    eval.lines <- rep(TRUE, length(pred.bm))
                   } else {
                     ## trick to detect when it is a full model but with a non common name
                     ## i.e. all lines used for calib => full model
-                    calib_lines <- get_calib_lines(bm.mod)
-                    eval_lines <- !na.omit(calib_lines[, repet_id, pa_dataset_id])
-                    if (all(!eval_lines)) { eval_lines <- !eval_lines }
+                    calib.lines <- get_calib_lines(bm.mod)
+                    eval.lines <- !na.omit(calib.lines[, repet_id, pa_dataset_id])
+                    if (all(!eval.lines)) { eval.lines <- !eval.lines }
                   }
                 } else {
-                  eval_lines <- rep(TRUE, length(pred.bm))
+                  eval.lines <- rep(TRUE, length(pred.bm))
                 }
                 
                 
-                if (length(which(eval_lines == TRUE)) < length(pred.bm)) {
+                if (length(which(eval.lines == TRUE)) < length(pred.bm)) {
                   ## CALIBRATION & VALIDATION LINES -------------------------------------------------
                   cross.validation <- foreach(xx = metric.eval, .combine = "rbind") %do% {
                     bm_FindOptimStat(metric.eval = xx,
-                                     obs = obs[!eval_lines],
-                                     fit = pred.bm[!eval_lines])
+                                     obs = obs[!eval.lines],
+                                     fit = pred.bm[!eval.lines])
                   }
                   colnames(cross.validation)[which(colnames(cross.validation) == "best.stat")] <- "calibration"
                   
                   stat.validation <- foreach(xx = metric.eval, .combine = "rbind") %do% {
                     bm_FindOptimStat(metric.eval = xx,
-                                     obs = obs[eval_lines],
-                                     fit = pred.bm[eval_lines],
+                                     obs = obs[eval.lines],
+                                     fit = pred.bm[eval.lines],
                                      threshold = cross.validation["cutoff", xx])
                   }
                   cross.validation$validation <- stat.validation$best.stat
@@ -661,8 +661,8 @@ BIOMOD_EnsembleModeling <- function(bm.mod,
                   ## NO VALIDATION LINES -----------------------------------------------------
                   cross.validation <- foreach(xx = metric.eval, .combine = "rbind") %do% {
                     bm_FindOptimStat(metric.eval = xx,
-                                     obs = obs[eval_lines],
-                                     fit = pred.bm[eval_lines])
+                                     obs = obs[eval.lines],
+                                     fit = pred.bm[eval.lines])
                   }
                   colnames(cross.validation)[which(colnames(cross.validation) == "best.stat")] <- "calibration"
                   cross.validation$validation <- NA

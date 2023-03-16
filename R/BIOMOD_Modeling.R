@@ -47,9 +47,6 @@
 ##' @param var.import (\emph{optional, default} \code{NULL}) \cr 
 ##' An \code{integer} corresponding to the number of permutations to be done for each variable to 
 ##' estimate variable importance
-##' @param save.output (\emph{optional, default} \code{TRUE}) \cr 
-##' A \code{logical} value defining whether all outputs should be saved on hard drive or not 
-##' (\emph{! strongly recommended !})
 ##' @param scale.models (\emph{optional, default} \code{FALSE}) \cr 
 ##' A \code{logical} value defining whether all models predictions should be scaled with a 
 ##' binomial GLM or not
@@ -164,12 +161,6 @@
 ##'   function. Several evaluation metrics can be selected. \emph{Please refer to the 
 ##'   \href{https://www.cawcr.gov.au/projects/verification/}{CAWRC website (section "Methods for dichotomous forecasts")} 
 ##'   to get detailed description of each metric.}
-##'   }
-##'   
-##'   \item{save.output}{\emph{If this argument is set to \code{FALSE}, it may prevent the evaluation 
-##'   of the ensemble models (see \code{\link{BIOMOD_EnsembleModeling}}) in further steps. Strong 
-##'   recommandation is to keep \code{save.output = TRUE}, even if it requires to have some free 
-##'   space onto the hard drive.}
 ##'   }
 ##'   
 ##'   \item{scale.models}{\bold{This parameter is quite experimental and it is recommended 
@@ -289,19 +280,22 @@
 
 BIOMOD_Modeling <- function(bm.format,
                             modeling.id = as.character(format(Sys.time(), "%s")),
-                            models = c('GLM', 'GBM', 'GAM', 'CTA', 'ANN', 'SRE', 'FDA', 'MARS'
-                                       , 'RF', 'MAXENT', 'MAXNET'),
+                            models = c('GLM', 'GBM', 'GAM', 'CTA', 'ANN', 'SRE'
+                                       , 'FDA', 'MARS', 'RF', 'MAXENT', 'MAXNET'),
                             models.pa = NULL,
                             bm.options = NULL,
-                            nb.rep = 1,
-                            data.split.perc = 100,
-                            data.split.table = NULL,
+                            CV.strategy = 'random',
+                            CV.nb.rep = 1,
+                            CV.perc = NULL,
+                            CV.k = NULL,
+                            CV.balance = NULL,
+                            CV.strat = NULL,
+                            CV.user.table = NULL,
                             do.full.models = TRUE,
                             weights = NULL,
                             prevalence = NULL,
                             metric.eval = c('KAPPA', 'TSS', 'ROC'),
                             var.import = 0,
-                            save.output = TRUE,
                             scale.models = FALSE,
                             nb.cpu = 1,
                             seed.val = NULL,
@@ -310,10 +304,10 @@ BIOMOD_Modeling <- function(bm.format,
   .bm_cat("Build Single Models")
   
   ## 0. Check arguments ---------------------------------------------------------------------------
-  args <- .BIOMOD_Modeling.check.args(bm.format, modeling.id, models, models.pa, bm.options, nb.rep
-                                      , data.split.perc, data.split.table
+  args <- .BIOMOD_Modeling.check.args(bm.format, modeling.id, models, models.pa, bm.options
+                                      # , CV.strategy, CV.nb.rep, CV.perc, CV.k, CV.balance, CV.strat, CV.user.table
                                       , do.full.models, weights, prevalence, metric.eval, var.import
-                                      , save.output, scale.models, nb.cpu, seed.val, do.progress)
+                                      , scale.models, nb.cpu, seed.val, do.progress)
   for (argi in names(args)) { assign(x = argi, value = args[[argi]]) }
   rm(args)
   
@@ -333,12 +327,10 @@ BIOMOD_Modeling <- function(bm.format,
   name.BIOMOD_DATA = file.path(models.out@dir.name, models.out@sp.name, ".BIOMOD_DATA", models.out@modeling.id)
   
   ## 3.1 Save input data and models options -----------------------------------
-  if (save.output) {
-    models.out = .fill_BIOMOD.models.out("formated.input.data", bm.format, models.out
-                                         , inMemory = FALSE, nameFolder = name.BIOMOD_DATA)
-    models.out = .fill_BIOMOD.models.out("models.options", bm.options, models.out
-                                         , inMemory = FALSE, nameFolder = name.BIOMOD_DATA)
-  }
+  models.out = .fill_BIOMOD.models.out("formated.input.data", bm.format, models.out
+                                       , inMemory = FALSE, nameFolder = name.BIOMOD_DATA)
+  models.out = .fill_BIOMOD.models.out("models.options", bm.options, models.out
+                                       , inMemory = FALSE, nameFolder = name.BIOMOD_DATA)
   
   ## 3.2 Get and save calibration lines ---------------------------------------
   calib.lines <- bm_CrossValidation(bm.format = bm.format,
@@ -348,84 +340,30 @@ BIOMOD_Modeling <- function(bm.format,
                                     k = CV.k,
                                     balance = CV.balance,
                                     strat = CV.strat,
+                                    user.table = CV.user.table,
                                     do.full.models = do.full.models)
   models.out = .fill_BIOMOD.models.out("calib.lines", calib.lines, models.out
                                        , inMemory = FALSE, nameFolder = name.BIOMOD_DATA)
   
-  ## 3.3 Deal with weights ----------------------------------------------------
-  dataBM <- get_species_data(bm.format)
-  if (inherits(bm.format, "BIOMOD.formated.data.PA")) {
-    dataBM <- dataBM[which(dataBM[, paste0("PA", pa)] == TRUE), ]
-    dataBM[which(is.na(dataBM[, 1])), 1] <- 0
-  }
-  
-  ## weights --------------------------------------------------------
-  if (is.null(weights)) {
-    if (!is.null(prevalence)) {
-      cat("\n\t> Automatic weights creation to rise a", prevalence, "prevalence")
-      weights <- .automatic_weights_creation(as.numeric(dataBM[, 1]), prev = prevalence)
-      if (inherits(bm.format, "BIOMOD.formated.data.PA")) {
-        weights.pa <- foreach(pa = 1:ncol(bm.format@PA.table), .combine = "cbind") %do%
-          {
-            wei <- rep(NA, length(as.numeric(dataBM[, 1])))
-            wei[which(bm.format@PA.table[, pa] == TRUE)] <- weights
-            return(wei)
-          }
-        weights <- weights.pa
-      }
-    }
-    # else { ## NEVER OCCURRING NO ??
-    #   cat("\n\t> No weights : all observations will have the same weight")
-    #   weights <- rep(1, length(bm.format@data.species))
-    # }
-  } else {
-    if (inherits(bm.format, "BIOMOD.formated.data.PA")) {
-      weights.pa <- foreach(pa = 1:ncol(bm.format@PA.table), .combine = "cbind") %do%
-        {
-          wei <- weights
-          wei[which(bm.format@PA.table[, pa] == FALSE | is.na(bm.format@PA.table[, pa]))] <- NA
-          return(wei)
-        }
-      weights <- weights.pa
-    }
-  }
-  
-  # calib.lines <- mod.prep.dat[[1]]$calib.lines
-  # if (length(mod.prep.dat) > 1) { ## stack calib lines matrix along array 3rd-dimension
-  #   for (pa in 2:length(mod.prep.dat)) {
-  #     calib.lines <- abind(calib.lines, mod.prep.dat[[pa]]$calib.lines, along = 3)
-  #   }
-  # }
-  
-  ## 3. Gathering all in one list object given to bm_RunModelsLoop --
-  mod.prep.dat <- list(name = bm.format@sp.name,
-                       dir.name = bm.format@dir.name,
-                       # xy = xy,
-                       dataBM = dataBM,
-                       calib.lines = calib.lines,
-                       weights = weights,
-                       eval.data = get_eval_data(bm.format))
-                       # eval.xy = eval.xy)
-  
   ## 4. Print modeling summary in console ---------------------------------------------------------
-  .BIOMOD_Modeling.summary(mod.prep.dat, models, models.pa)
+  .BIOMOD_Modeling.summary(bm.format, calib.lines, models, models.pa)
   
   ## 5. Run models with loop over PA --------------------------------------------------------------
-  mod.out <- lapply(mod.prep.dat,
-                    FUN = bm_RunModelsLoop,
-                    modeling.id = models.out@modeling.id,
-                    models = models,
-                    models.pa = models.pa,
-                    bm.options = bm.options,
-                    var.import = var.import,
-                    metric.eval = metric.eval,
-                    save.output = save.output,
-                    scale.models = scale.models,
-                    nb.cpu = nb.cpu,
-                    seed.val = seed.val,
-                    do.progress = do.progress)
+  mod.out <- bm_RunModelsLoop(bm.format = bm.format,
+                              weights = weights,
+                              calib.lines = calib.lines,
+                              modeling.id = models.out@modeling.id,
+                              models = models,
+                              models.pa = models.pa,
+                              bm.options = bm.options,
+                              var.import = var.import,
+                              metric.eval = metric.eval,
+                              scale.models = scale.models,
+                              nb.cpu = nb.cpu,
+                              seed.val = seed.val,
+                              do.progress = do.progress)
   
-  ## 3.3 Rearrange and save outputs -------------------------------------------
+  ## 6. Rearrange and save outputs -------------------------------------------
   models.out@models.computed <- .transform_outputs_list("mod", mod.out, out = "model")
   models.out@models.failed <- .transform_outputs_list("mod", mod.out, out = "calib.failure")
   
@@ -436,29 +374,27 @@ BIOMOD_Modeling <- function(bm.format,
   
   ## 3.4 Rearrange and save models outputs : ----------------------------------
   ## models evaluation, variables importance, models prediction, predictions evaluation
-  if (save.output) {
-    models.evaluation <- .transform_outputs_list("mod", mod.out, out = "evaluation")
-    models.out = .fill_BIOMOD.models.out("models.evaluation", models.evaluation, models.out
-                                         , inMemory = TRUE, nameFolder = name.BIOMOD_DATA)
-    rm(models.evaluation)
-    
-    if (var.import > 0) {
-      variables.importance <- .transform_outputs_list("mod", mod.out, out = "var.import")
-      models.out = .fill_BIOMOD.models.out("variables.importance", variables.importance, models.out
-                                           , inMemory = FALSE, nameFolder = name.BIOMOD_DATA)
-      rm(variables.importance)
-    }
-    
-    models.prediction <- .transform_outputs_list("mod", mod.out, out = "pred")
-    models.out = .fill_BIOMOD.models.out("models.prediction", models.prediction, models.out
+  models.evaluation <- .transform_outputs_list("mod", mod.out, out = "evaluation")
+  models.out = .fill_BIOMOD.models.out("models.evaluation", models.evaluation, models.out
+                                       , inMemory = TRUE, nameFolder = name.BIOMOD_DATA)
+  rm(models.evaluation)
+  
+  if (var.import > 0) {
+    variables.importance <- .transform_outputs_list("mod", mod.out, out = "var.import")
+    models.out = .fill_BIOMOD.models.out("variables.importance", variables.importance, models.out
                                          , inMemory = FALSE, nameFolder = name.BIOMOD_DATA)
-    rm(models.prediction)
-    
-    models.prediction.eval <- .transform_outputs_list("mod", mod.out, out = "pred.eval")
-    models.out = .fill_BIOMOD.models.out("models.prediction.eval", models.prediction.eval, models.out
-                                         , inMemory = FALSE, nameFolder = name.BIOMOD_DATA)
-    rm(models.prediction.eval)
+    rm(variables.importance)
   }
+  
+  models.prediction <- .transform_outputs_list("mod", mod.out, out = "pred")
+  models.out = .fill_BIOMOD.models.out("models.prediction", models.prediction, models.out
+                                       , inMemory = FALSE, nameFolder = name.BIOMOD_DATA)
+  rm(models.prediction)
+  
+  models.prediction.eval <- .transform_outputs_list("mod", mod.out, out = "pred.eval")
+  models.out = .fill_BIOMOD.models.out("models.prediction.eval", models.prediction.eval, models.out
+                                       , inMemory = FALSE, nameFolder = name.BIOMOD_DATA)
+  rm(models.prediction.eval)
   rm(mod.out)
   
   ## 6. SAVE MODEL OBJECT ON HARD DRIVE ----------------------------
@@ -485,10 +421,10 @@ BIOMOD_Modeling <- function(bm.format,
 
 # ---------------------------------------------------------------------------- #
 
-.BIOMOD_Modeling.check.args <- function(bm.format, modeling.id, models, models.pa, bm.options, nb.rep
-                                        , data.split.perc, data.split.table
+.BIOMOD_Modeling.check.args <- function(bm.format, modeling.id, models, models.pa, bm.options
+                                        # , CV.strategy, CV.nb.rep, CV.perc, CV.k, CV.balance, CV.strat, CV.user.table
                                         , do.full.models, weights, prevalence, metric.eval, var.import
-                                        , save.output, scale.models, nb.cpu, seed.val, do.progress)
+                                        , scale.models, nb.cpu, seed.val, do.progress)
 {
   ## 0. Check bm.format and models arguments ----------------------------------
   cat('\n\nChecking Models arguments...\n')
@@ -592,22 +528,7 @@ BIOMOD_Modeling <- function(bm.format,
     }
   }
   
-  
-  ## 5. Check weights arguments -----------------------------------------------
-  if (!is.null(weights)) {
-    if (!is.numeric(weights)) { stop("weights must be a numeric vector") }
-    if (length(weights) != length(bm.format@data.species)) {
-      stop("The number of 'Weight' does not match with the input calibration data. Simulation cannot proceed.")
-    }
-  }
-  
-  ## 6. Check metric.eval arguments -------------------------------------------
-  metric.eval <- unique(metric.eval)
-  avail.eval.meth.list <- c('TSS', 'KAPPA', 'ACCURACY', 'BIAS', 'POD', 'FAR', 'POFD'
-                            , 'SR', 'CSI', 'ETS', 'HK', 'HSS', 'OR', 'ORSS', 'ROC')
-  .fun_testIfIn(TRUE, "metric.eval", metric.eval, avail.eval.meth.list)
-  
-  ## 7. Check prevalence arguments --------------------------------------------
+  ## 5. Check prevalence arguments --------------------------------------------
   if (!is.null(prevalence)) {
     .fun_testIf01(TRUE, "prevalence", prevalence)
     if ("MAXENT" %in% models) {
@@ -618,11 +539,63 @@ BIOMOD_Modeling <- function(bm.format,
     prevalence = 0.5
   }
   
-  ##### TO BE CHANGE BUT PREVENT FROM BUGS LATER :  Force object saving parameter
-  if (!save.output) {
-    cat("\n\t save.output param was automatically set to TRUE to prevent bugs.")
-    save.output <- TRUE
+  ## 6. Check weights arguments -----------------------------------------------
+  if (is.null(weights)) {
+    if (!is.null(prevalence)) {
+      cat("\n\t> Automatic weights creation to rise a", prevalence, "prevalence")
+      data.sp <- as.numeric(bm.format@data.species)
+      if (inherits(bm.format, "BIOMOD.formated.data.PA")) {
+        weights.pa <- foreach(pa = 1:ncol(bm.format@PA.table), .combine = "cbind") %do%
+          {
+            ind.PA <- which(bm.format@PA.table[, pa] == TRUE)
+            data.sp_pa <- data.sp[ind.PA]
+            data.sp_pa[which(is.na(data.sp_pa))] <- 0
+            weights <- .automatic_weights_creation(data.sp_pa, prev = prevalence)
+            
+            wei <- rep(NA, length(data.sp))
+            wei[ind.PA] <- weights
+            return(wei)
+          }
+        weights.pa <- cbind(weights.pa, rep(1, nrow(weights.pa)))
+        colnames(weights.pa) <- c(colnames(bm.format@PA.table), "allData")
+        weights <- weights.pa
+      } else {
+        weights <- .automatic_weights_creation(data.sp, prev = prevalence)
+        weights <- matrix(weights, nrow = length(weights), ncol = 1)
+        colnames(weights) <- "allData"
+      }
+    }
+    # else { ## NEVER OCCURRING NO ??
+    #   cat("\n\t> No weights : all observations will have the same weight")
+    #   weights <- rep(1, length(bm.format@data.species))
+    # }
+  } else {
+    if (!is.numeric(weights)) { stop("weights must be a numeric vector") }
+    if (length(weights) != length(bm.format@data.species)) {
+      stop("The number of 'Weight' does not match with the input calibration data. Simulation cannot proceed.")
+    }
+    if (inherits(bm.format, "BIOMOD.formated.data.PA")) {
+      weights.pa <- foreach(pa = 1:ncol(bm.format@PA.table), .combine = "cbind") %do%
+        {
+          wei <- weights
+          wei[which(bm.format@PA.table[, pa] == FALSE | is.na(bm.format@PA.table[, pa]))] <- NA
+          return(wei)
+        }
+      weights.pa <- cbind(weights.pa, rep(1, nrow(weights.pa)))
+      colnames(weights.pa) <- c(colnames(bm.format@PA.table), "allData")
+      weights <- weights.pa
+    } else {
+      weights <- matrix(weights, nrow = length(weights), ncol = 1)
+      colnames(weights) <- "allData"
+    }
   }
+  
+  ## 7. Check metric.eval arguments -------------------------------------------
+  metric.eval <- unique(metric.eval)
+  avail.eval.meth.list <- c('TSS', 'KAPPA', 'ACCURACY', 'BIAS', 'POD', 'FAR', 'POFD'
+                            , 'SR', 'CSI', 'ETS', 'HK', 'HSS', 'OR', 'ORSS', 'ROC')
+  .fun_testIfIn(TRUE, "metric.eval", metric.eval, avail.eval.meth.list)
+  
   
   if (!is.null(seed.val)) {
     set.seed(seed.val)
@@ -635,15 +608,11 @@ BIOMOD_Modeling <- function(bm.format,
   return(list(models = models,
               models.pa = models.pa,
               bm.options = bm.options,
-              nb.rep = nb.rep,
-              data.split.perc = data.split.perc,
               weights = weights,
               var.import = var.import,
               metric.eval = metric.eval,
               prevalence = prevalence,
               do.full.models = do.full.models,
-              save.output = save.output,
-              data.split.table = data.split.table,
               seed.val = seed.val,
               do.progress = do.progress))
 }
@@ -651,40 +620,23 @@ BIOMOD_Modeling <- function(bm.format,
 
 # ---------------------------------------------------------------------------- #
 
-.BIOMOD_Modeling.summary <- function(mod.prep.dat, models, models.pa = NULL)
+.BIOMOD_Modeling.summary <- function(bm.format, calib.lines, models, models.pa = NULL)
 {
   cat("\n\n")
-  .bm_cat(paste(unlist(strsplit(mod.prep.dat[[1]]$name, '_'))[1], "Modeling Summary"))
-  cat("\n", ncol(mod.prep.dat[[1]]$dataBM) - 1, " environmental variables (", colnames(mod.prep.dat[[1]]$dataBM)[-1], ")")
-  cat("\nNumber of evaluation repetitions :", ncol(mod.prep.dat[[1]]$calib.lines))
+  .bm_cat(paste(bm.format@sp.name, "Modeling Summary"))
+  cat("\n", ncol(bm.format@data.env.var), " environmental variables (", colnames(bm.format@data.env.var), ")")
+  cat("\nNumber of evaluation repetitions :", ncol(calib.lines))
   cat("\nModels selected :", models, "\n")
   if (is.null(models.pa)) {
-    nb.runs = ncol(mod.prep.dat[[1]]$calib.lines) * length(models) * length(mod.prep.dat)
+    # nb.runs = ncol(calib.lines) * length(models) * length(mod.prep.dat)
+    nb.runs = ncol(calib.lines) * length(models)
   } else {
     nb.runs = length(unlist(models.pa))
-    nb.runs = ncol(mod.prep.dat[[1]]$calib.lines) * nb.runs
+    nb.runs = ncol(calib.lines) * nb.runs
   }
   cat("\nTotal number of model runs:", nb.runs, "\n")
   .bm_cat()
 }
-
-
-# ---------------------------------------------------------------------------- #
-
-    
-    # ## force calib.lines object to be 3D array
-    # if (length(dim(calib.lines)) < 3) {
-    #   dn_tmp <- dimnames(calib.lines) ## keep track of dimnames
-    #   dim(calib.lines) <- c(dim(calib.lines), 1)
-    #   dimnames(calib.lines) <- list(dn_tmp[[1]], dn_tmp[[2]], "_allData")
-    # }
-    # ## PA
-    # if (length(dim(calib.lines)) < 3) {
-    #   dn_tmp <- dimnames(calib.lines) ## keep track of dimnames
-    #   dim(calib.lines) <- c(dim(calib.lines), 1)
-    #   dimnames(calib.lines) <- list(dn_tmp[[1]], dn_tmp[[2]], paste0("_PA", pa))
-    # }
-  
 
 # ---------------------------------------------------------------------------- #
 
