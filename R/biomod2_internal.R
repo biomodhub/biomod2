@@ -816,10 +816,10 @@ check_duplicated_cells <- function(env, xy, sp, filter.raster){
 
 .get_env_class <- function(new.env){
   .fun_testIfInherits(TRUE, "new.env", new.env, c('data.frame', 'SpatRaster'))
-  if (inherits(new.env("data.frame"))) {
+  if (inherits(new.env,"data.frame")) {
     return("data.frame")
   }
-  if (inherits(new.env("SpatRaster"))) {
+  if (inherits(new.env,"SpatRaster")) {
     return("SpatRaster")
   }
   NULL
