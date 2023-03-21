@@ -359,7 +359,9 @@ BIOMOD_EnsembleForecasting <- function(bm.em,
   }
   
   ## save projections
-  proj_out@type <- .get_env_class(new.env)
+  proj_out@type <- ifelse(is.null(new.env), 
+                          bm.proj@type,
+                          .get_env_class(new.env))
   if (!do.stack) {
     saved.files = unlist(proj.em)
   } else {
