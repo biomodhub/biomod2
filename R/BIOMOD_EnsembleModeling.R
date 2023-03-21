@@ -633,7 +633,7 @@ BIOMOD_EnsembleModeling <- function(bm.mod,
                     ## trick to detect when it is a full model but with a non common name
                     ## i.e. all lines used for calib => full model
                     calib.lines <- get_calib_lines(bm.mod)
-                    eval.lines <- !na.omit(calib.lines[, repet_id, pa_dataset_id])
+                    eval.lines <- !na.omit(calib.lines[, paste0(pa_dataset_id, repet_id)])
                     if (all(!eval.lines)) { eval.lines <- !eval.lines }
                   }
                 } else {

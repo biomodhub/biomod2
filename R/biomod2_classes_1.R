@@ -439,7 +439,8 @@ setMethod('plot', signature(x = 'BIOMOD.formated.data', y = "missing"),
                    PA,
                    run,
                    plot.eval,
-                   do.plot = TRUE){
+                   do.plot = TRUE)
+          {
             args <- .plot.BIOMOD.formated.data.check.args(x = x,
                                                           calib.lines = calib.lines,
                                                           plot.type = plot.type,
@@ -449,9 +450,7 @@ setMethod('plot', signature(x = 'BIOMOD.formated.data', y = "missing"),
                                                           plot.eval = plot.eval,
                                                           do.plot = do.plot)
             
-            for (argi in names(args)) { 
-              assign(x = argi, value = args[[argi]]) 
-            }
+            for (argi in names(args)) { assign(x = argi, value = args[[argi]]) }
             rm(args)
             
             
@@ -492,17 +491,17 @@ setMethod('plot', signature(x = 'BIOMOD.formated.data', y = "missing"),
                 foreach(this_PA = PA, .combine = 'rbind') %:%
                 foreach(this_run = run, .combine = 'rbind') %do% { # to change if format is updated
                   
-                  if( is.na(this_PA) ){ # run only
-                    this_name <- this_run
-                    this_calib <- calib.lines[ , this_run]
-                    this_valid <- ! calib.lines[ , this_run]
-                  } else if (is.na(this_run)){ # PA only
+                  if (is.na(this_PA) || this_PA == 'allData') { # run only
+                    this_name <- paste0("_", this_PA, "_", this_run)
+                    this_calib <- calib.lines[ , this_name]
+                    this_valid <- ! calib.lines[ , this_name]
+                  } else if (is.na(this_run)) { # PA only
                     this_name <- this_PA
                     this_calib <- x@PA.table[ , this_PA]
                   } else { # PA+run
-                    this_name <- paste0(this_PA,"_",this_run)
-                    this_calib <- calib.lines[ , this_run] & x@PA.table[ , this_PA]
-                    this_valid <- !calib.lines[ , this_run] & x@PA.table[ , this_PA]
+                    this_name <- paste0("_", this_PA, "_", this_run)
+                    this_calib <- calib.lines[ , this_name] & x@PA.table[ , this_PA]
+                    this_valid <- ! calib.lines[ , this_name] & x@PA.table[ , this_PA]
                   }
                   
                   calib.resp <- x@data.species[this_calib]
@@ -795,28 +794,21 @@ setMethod('plot', signature(x = 'BIOMOD.formated.data', y = "missing"),
   .fun_testIfInherits(TRUE, "x", x, c("BIOMOD.formated.data", "BIOMOD.formated.data.PA"))
   
   ## 2 - check calib.lines & run -----------------------------------------
-  
+  PA <- run <- NA
   if (!is.null(calib.lines)) {
     .fun_testIfInherits(TRUE, "calib.lines", calib.lines, c("matrix"))
     
-    expected_CVnames <- paste0("RUN", seq_len(ncol(calib.lines)))
+    expected_CVnames <- c(paste0("_allData_RUN", seq_len(ncol(calib.lines))), "_allData_allRun")
+    if (inherits(x, "BIOMOD.formated.data.PA")) {
+      expected_CVnames <- c(expected_CVnames
+                            , sapply(1:ncol(x@PA.table)
+                                     , function(this_PA) paste0("_", this_PA, "_RUN", seq_len(ncol(calib.lines)))))
+    }
+    .fun_testIfIn(TRUE, "colnames(calib.lines)", colnames(calib.lines), expected_CVnames)
     
-    if (any(colnames(calib.lines) != c(expected_CVnames))) {
-      stop("column names for `calib.lines` did not match ", deparse(expected_CVnames))  
-    }
-    
-    if (missing(run)) run <- 'all'
-    if ( ! ((length(run) == 1 && run == "all")
-            || all(run %in% c(expected_CVnames)))  ) {
-      stop("`run` must be 'all' or a combination among ", deparse(expected_CVnames))
-    }
-    if (length(run) == 1 && run == "all") {
-      run <- expected_CVnames
-    }
-  } else {
-    run <- NA
-  } 
-  
+    PA <- sapply(colnames(calib.lines), function(x) strsplit(x, "_")[[1]][2])
+    run <- sapply(colnames(calib.lines), function(x) strsplit(x, "_")[[1]][3])
+  }
   
   ## 3 - check plot.eval ----------------------
   if (missing(plot.eval)) {
@@ -868,24 +860,6 @@ setMethod('plot', signature(x = 'BIOMOD.formated.data', y = "missing"),
   ## 7 - do.plot ----------------------
   # do.plot
   stopifnot(is.logical(do.plot))
-  
-  ## 8 - check PA ----------------------
-  if (inherits(x, "BIOMOD.formated.data.PA")) {
-    if (missing(PA)) PA <- 'all'
-    
-    expected_PAnames <- colnames(x@PA.table)
-    
-    if ( ! ((length(PA) == 1 && PA == "all")
-            || all(PA %in% c(expected_PAnames)))  ) {
-      stop("`PA` must be 'all' or a combination among ", deparse(expected_PAnames))
-    }
-    if (length(PA) == 1 && PA == "all") {
-      PA <- expected_PAnames
-    }
-    
-  } else {
-    PA <- NA
-  }
   
   ##  9 - check that coordinates are available -------------------------------
   if(nrow(x@coord) == 0){
@@ -1050,30 +1024,26 @@ setMethod('summary', signature(object = 'BIOMOD.formated.data'),
                                          "Undefined" = sum(is.na(object@eval.data.species), na.rm = TRUE)))
             }
             
-            PA <- NA
-            run <- NA
-            if (inherits(object, "BIOMOD.formated.data.PA")) {
-              PA <- colnames(object@PA.table)
-            }
+            PA <- run <- NA
             if (!is.null(calib.lines)) {
-              run <- colnames(calib.lines)
+              PA <- sapply(colnames(calib.lines), function(x) strsplit(x, "_")[[1]][2])
+              run <- sapply(colnames(calib.lines), function(x) strsplit(x, "_")[[1]][3])
             }
             
             if (!is.null(calib.lines) || inherits(object, "BIOMOD.formated.data.PA")) {
               output <- rbind(output,
                               foreach(this_PA = PA, .combine = 'rbind') %:%
                                 foreach(this_run = run, .combine = 'rbind') %do% {
-                                  if (is.na(this_PA) ) { # run only
-                                    this_name <- this_run
-                                    this_calib <- calib.lines[ , this_run]
-                                    this_valid <- ! calib.lines[ , this_run]
+                                  if (is.na(this_PA) || this_PA == 'allData') { # run only
+                                    this_name <- paste0("_", this_PA, "_", this_run)
+                                    this_calib <- calib.lines[ , this_name]
+                                    this_valid <- ! calib.lines[ , this_name]
                                   } else if (is.na(this_run)) { # PA only
-                                    this_name <- this_PA
                                     this_calib <- object@PA.table[ , this_PA]
                                   } else { # PA+run
-                                    this_name <- paste0(this_PA,"_",this_run)
-                                    this_calib <- calib.lines[ , this_run] & object@PA.table[ , this_PA]
-                                    this_valid <- ! calib.lines[ , this_run] & object@PA.table[ , this_PA]
+                                    this_name <- paste0("_", this_PA, "_", this_run)
+                                    this_calib <- calib.lines[ , this_name] & object@PA.table[ , this_PA]
+                                    this_valid <- ! calib.lines[ , this_name] & object@PA.table[ , this_PA]
                                   }
                                   
                                   calib.resp <- object@data.species[which(this_calib == TRUE)]
@@ -1104,19 +1074,20 @@ setMethod('summary', signature(object = 'BIOMOD.formated.data'),
           }
 )
 
-.summary.BIOMOD.formated.data.check.args <- function(object,
-                                                     calib.lines){
+.summary.BIOMOD.formated.data.check.args <- function(object, calib.lines)
+{
   if (!is.null(calib.lines)) {
     .fun_testIfInherits(TRUE, "calib.lines", calib.lines, c("matrix"))
     
-    expected_CVnames <- paste0("RUN", seq_len(ncol(calib.lines)))
-    
-    if (any(colnames(calib.lines) != c(expected_CVnames))) {
-      stop("column names for `calib.lines` did not match ", deparse(expected_CVnames))  
+    expected_CVnames <- c(paste0("_allData_RUN", seq_len(ncol(calib.lines))), "_allData_allRun")
+    if (inherits(object, "BIOMOD.formated.data.PA")) {
+      expected_CVnames <- c(expected_CVnames
+                            , sapply(1:ncol(object@PA.table)
+                                     , function(this_PA) paste0("_", this_PA, "_RUN", seq_len(ncol(calib.lines)))))
     }
+    .fun_testIfIn(TRUE, "colnames(calib.lines)", colnames(calib.lines), expected_CVnames)
   }
-  return(list(object = object,
-              calib.lines = calib.lines))
+  return(list(object = object, calib.lines = calib.lines))
 }
 
 

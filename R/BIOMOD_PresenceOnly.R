@@ -186,9 +186,9 @@ BIOMOD_PresenceOnly <- function(bm.mod = NULL,
   
   ## 1. Get calib.lines ------------------------------------------------------
   if (!is.null(bm.mod)) {
-    calib.lines <- get_calib_lines(bm.mod)[, , 1]
+    calib.lines <- get_calib_lines(bm.mod)[, 1]
   } else {
-    calib.lines <- get_calib_lines(get_formal_data(bm.em))[, , 1]
+    calib.lines <- get_calib_lines(get_formal_data(bm.em))[, 1]
   }
   calib.notNA <- which(!is.na(calib.lines[, 1])) ## remove NA (pseudo-absences) from run1
   calib.lines <- calib.lines[calib.notNA, ] ## keep only lines associated to sites (no pseudo-absences)
@@ -298,7 +298,7 @@ BIOMOD_PresenceOnly <- function(bm.mod = NULL,
         ind.eval = 1:nrow(calib.lines) 
       } else {
         if (inherits(calib.lines, "matrix")) {
-          ind.eval = which(calib.lines[, paste0("_", run)] == FALSE)
+          ind.eval = which(calib.lines[, paste0("_", run)] == FALSE) ## NOT WORKING : need PA + run col name
         } else {
           ind.eval = which(calib.lines == FALSE)
         }
