@@ -164,7 +164,7 @@
 ###################################################################################################
 
 
-bm_CrossValidation <- function(bm.format, strategy = 'random', nb.rep, perc, k
+bm_CrossValidation <- function(bm.format, strategy = 'random', nb.rep = 0, perc = 0, k = 0
                                , balance = 'presences', strat = 'both'
                                , user.table = NULL, do.full.models = FALSE)
 {

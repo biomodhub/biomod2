@@ -209,6 +209,7 @@ bm_RunModel <- function(model, run.name, dir.name = '.'
   ## 0. Check arguments ---------------------------------------------------------------------------
   args <- .bm_RunModel.check.args(model, bm.options, Data, calib.lines.vec, weights.vec
                                   , eval.data, metric.eval, scale.models, seed.val, do.progress)
+  if (is.null(args)) { return(NULL) }
   for (argi in names(args)) { assign(x = argi, value = args[[argi]]) }
   rm(args)
   
@@ -922,17 +923,17 @@ bm_RunModel <- function(model, run.name, dir.name = '.'
   resp_name <- colnames(Data)[1] ## species name
   expl_var_names <- colnames(data_env) ## explanatory variable names
   # replace Pseudo absences selected (NA) into true absences (0).. for model computing purpose
-  if (sum(is.na(Data[, 1]))) { data_sp[which(is.na(data_sp))] < - 0 }
+  if (sum(is.na(Data[, 1]))) { data_sp[which(is.na(data_sp))] <- 0 }
   
   ## 1. Check CalibLines argument ---------------------------------------------
   if (any(calib.lines.vec == FALSE)) ## if some lines for evaluation...
   {
     eval.lines.vec <- !calib.lines.vec
     # ...test if there is (pseudo)absences AND presences in evaluation and calibration datasets
-    if (sum(data_sp[calib.lines.vec] == 0) == 0 ||
-        sum(data_sp[calib.lines.vec] == 0) == sum(calib.lines.vec) ||
-        sum(data_sp[eval.lines.vec] == 0) == 0 ||
-        sum(data_sp[eval.lines.vec] == 0) == sum(eval.lines.vec)) {
+    if (length(which(data_sp[calib.lines.vec] == 0)) == 0 ||
+        length(which(data_sp[calib.lines.vec] == 0)) == length(calib.lines.vec) ||
+        length(which(data_sp[eval.lines.vec] == 0)) == 0 ||
+        length(which(data_sp[eval.lines.vec] == 0)) == length(eval.lines.vec)) {
       warning(paste0(resp_name, " ", model,
                      " was switched off because of no both presences and absences data given"),
               immediate. = TRUE)
@@ -941,8 +942,8 @@ bm_RunModel <- function(model, run.name, dir.name = '.'
   } else { ## evaluation = calibration dataset
     eval.lines.vec <- calib.lines.vec
     # ...test if there is absences AND presences in whole dataset
-    if (sum(data_sp == 0) == 0 ||
-        sum(data_sp == 0) == length(data_sp)) {
+    if (length(which(data_sp == 0)) == 0 ||
+        length(which(data_sp == 0)) == length(data_sp)) {
       warning(paste0(resp_name, " ", model,
                      " was switched off because of no both presences and absences data given (full model)"),
               immediate. = TRUE)
@@ -1053,7 +1054,7 @@ bm_RunModel <- function(model, run.name, dir.name = '.'
     tmp = which(metric.eval %in% avail.eval.meth.list)
     warnings(paste0(toString(metric.eval[!tmp]), ' were switched off !'), imediate = TRUE)
     metric.eval <- metric.eval[tmp]
-  }
+  }  
   
   data_mod <- cbind(data_sp, data_env_w)
   colnames(data_mod) <- c(resp_name, colnames(data_env_w))

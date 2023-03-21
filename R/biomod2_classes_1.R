@@ -487,10 +487,8 @@ setMethod('plot', signature(x = 'BIOMOD.formated.data', y = "missing"),
             
             ## 1.3 - Pseudo Absences and CV dataset -----------------------------
             if (!is.null(calib.lines) | inherits(x, "BIOMOD.formated.data.PA")) {
-              PA_run.vect <-
-                foreach(this_PA = PA, .combine = 'rbind') %:%
-                foreach(this_run = run, .combine = 'rbind') %do% { # to change if format is updated
-                  
+              PA_run.vect <- foreach(this_PA = PA, this_run = run, .combine = 'rbind') %do%
+                {
                   if (is.na(this_PA) || this_PA == 'allData') { # run only
                     this_name <- paste0("_", this_PA, "_", this_run)
                     this_calib <- calib.lines[ , this_name]
@@ -802,12 +800,15 @@ setMethod('plot', signature(x = 'BIOMOD.formated.data', y = "missing"),
     if (inherits(x, "BIOMOD.formated.data.PA")) {
       expected_CVnames <- c(expected_CVnames
                             , sapply(1:ncol(x@PA.table)
-                                     , function(this_PA) paste0("_", this_PA, "_RUN", seq_len(ncol(calib.lines)))))
+                                     , function(this_PA) paste0("_PA", this_PA, "_RUN", seq_len(ncol(calib.lines)))))
     }
     .fun_testIfIn(TRUE, "colnames(calib.lines)", colnames(calib.lines), expected_CVnames)
     
-    PA <- sapply(colnames(calib.lines), function(x) strsplit(x, "_")[[1]][2])
-    run <- sapply(colnames(calib.lines), function(x) strsplit(x, "_")[[1]][3])
+    PA <- sapply(colnames(calib.lines), function(xx) strsplit(xx, "_")[[1]][2])
+    run <- sapply(colnames(calib.lines), function(xx) strsplit(xx, "_")[[1]][3])
+  } else if (inherits(object, "BIOMOD.formated.data.PA")) {
+    PA <- colnames(x@PA.table)
+    run <- rep(NA, length(PA))
   }
   
   ## 3 - check plot.eval ----------------------
@@ -865,7 +866,7 @@ setMethod('plot', signature(x = 'BIOMOD.formated.data', y = "missing"),
   if(nrow(x@coord) == 0){
     stop("coordinates are required to plot BIOMOD.formated.data objects")
   }
-
+  
   ## End - return arguments ----------------------------------------------------
   return(list(x = x,
               calib.lines = calib.lines,
@@ -1028,47 +1029,49 @@ setMethod('summary', signature(object = 'BIOMOD.formated.data'),
             if (!is.null(calib.lines)) {
               PA <- sapply(colnames(calib.lines), function(x) strsplit(x, "_")[[1]][2])
               run <- sapply(colnames(calib.lines), function(x) strsplit(x, "_")[[1]][3])
+            } else if (inherits(object, "BIOMOD.formated.data.PA")) {
+              PA <- colnames(object@PA.table)
+              run <- rep(NA, length(PA))
             }
             
             if (!is.null(calib.lines) || inherits(object, "BIOMOD.formated.data.PA")) {
               output <- rbind(output,
-                              foreach(this_PA = PA, .combine = 'rbind') %:%
-                                foreach(this_run = run, .combine = 'rbind') %do% {
-                                  if (is.na(this_PA) || this_PA == 'allData') { # run only
-                                    this_name <- paste0("_", this_PA, "_", this_run)
-                                    this_calib <- calib.lines[ , this_name]
-                                    this_valid <- ! calib.lines[ , this_name]
-                                  } else if (is.na(this_run)) { # PA only
-                                    this_calib <- object@PA.table[ , this_PA]
-                                  } else { # PA+run
-                                    this_name <- paste0("_", this_PA, "_", this_run)
-                                    this_calib <- calib.lines[ , this_name] & object@PA.table[ , this_PA]
-                                    this_valid <- ! calib.lines[ , this_name] & object@PA.table[ , this_PA]
-                                  }
+                              foreach(this_PA = PA, this_run = run, .combine = 'rbind') %do% {
+                                if (is.na(this_PA) || this_PA == 'allData') { # run only
+                                  this_name <- paste0("_", this_PA, "_", this_run)
+                                  this_calib <- calib.lines[ , this_name]
+                                  this_valid <- ! calib.lines[ , this_name]
+                                } else if (is.na(this_run)) { # PA only
+                                  this_calib <- object@PA.table[ , this_PA]
+                                } else { # PA+run
+                                  this_name <- paste0("_", this_PA, "_", this_run)
+                                  this_calib <- calib.lines[ , this_name] & object@PA.table[ , this_PA]
+                                  this_valid <- ! calib.lines[ , this_name] & object@PA.table[ , this_PA]
+                                }
+                                
+                                calib.resp <- object@data.species[which(this_calib == TRUE)]
+                                tmp <- data.frame("dataset" = "calibration",
+                                                  "run" = this_run,
+                                                  "PA" = this_PA,
+                                                  "Presences" = sum(calib.resp, na.rm = TRUE),
+                                                  "True_Absences" = sum(calib.resp == 0, na.rm = TRUE),
+                                                  "Pseudo_Absences" = sum(this_calib == TRUE, na.rm = TRUE) - sum(calib.resp, na.rm = TRUE),
+                                                  "Undefined" = NA)
+                                
+                                if (!is.na(this_run)) { 
+                                  valid.resp <- object@data.species[this_valid]
+                                  tmp <- rbind(tmp,
+                                               data.frame("dataset" = "validation",
+                                                          "run" = this_run,
+                                                          "PA" = this_PA,
+                                                          "Presences" = sum(valid.resp, na.rm = TRUE),
+                                                          "True_Absences" = sum(valid.resp == 0, na.rm = TRUE),
+                                                          "Pseudo_Absences" = sum(this_calib == TRUE, na.rm = TRUE) - sum(calib.resp, na.rm = TRUE),
+                                                          "Undefined" = NA))
                                   
-                                  calib.resp <- object@data.species[which(this_calib == TRUE)]
-                                  tmp <- data.frame("dataset" = "calibration",
-                                                    "run" = this_run,
-                                                    "PA" = this_PA,
-                                                    "Presences" = sum(calib.resp, na.rm = TRUE),
-                                                    "True_Absences" = sum(calib.resp == 0, na.rm = TRUE),
-                                                    "Pseudo_Absences" = sum(this_calib == TRUE, na.rm = TRUE) - sum(calib.resp, na.rm = TRUE),
-                                                    "Undefined" = NA)
-                                  
-                                  if (!is.na(this_run)) { 
-                                    valid.resp <- object@data.species[this_valid]
-                                    tmp <- rbind(tmp,
-                                                 data.frame("dataset" = "validation",
-                                                            "run" = this_run,
-                                                            "PA" = this_PA,
-                                                            "Presences" = sum(valid.resp, na.rm = TRUE),
-                                                            "True_Absences" = sum(valid.resp == 0, na.rm = TRUE),
-                                                            "Pseudo_Absences" = sum(this_calib == TRUE, na.rm = TRUE) - sum(calib.resp, na.rm = TRUE),
-                                                            "Undefined" = NA))
-                                    
-                                  }
-                                  return(tmp) # end foreach
-                                })
+                                }
+                                return(tmp) # end foreach
+                              })
             } 
             output
           }
@@ -1081,9 +1084,12 @@ setMethod('summary', signature(object = 'BIOMOD.formated.data'),
     
     expected_CVnames <- c(paste0("_allData_RUN", seq_len(ncol(calib.lines))), "_allData_allRun")
     if (inherits(object, "BIOMOD.formated.data.PA")) {
+      if (nrow(calib.lines) != nrow(object@PA.table)) {
+        stop("calib.lines and PA.table do not have the same number of rows")
+      }
       expected_CVnames <- c(expected_CVnames
                             , sapply(1:ncol(object@PA.table)
-                                     , function(this_PA) paste0("_", this_PA, "_RUN", seq_len(ncol(calib.lines)))))
+                                     , function(this_PA) paste0("_PA", this_PA, "_RUN", seq_len(ncol(calib.lines)))))
     }
     .fun_testIfIn(TRUE, "colnames(calib.lines)", colnames(calib.lines), expected_CVnames)
   }
@@ -1305,7 +1311,7 @@ setMethod('BIOMOD.formated.data.PA', signature(sp = 'numeric', env = 'SpatRaster
     sp <- output$sp
     rm(output)
   }
-
+  
   ## Convert sp in SpatVector
   if (is.numeric(sp)) {
     if (nrow(xy) == 0) {
@@ -1349,7 +1355,7 @@ setMethod('BIOMOD.formated.data.PA', signature(sp = 'numeric', env = 'SpatRaster
         pa.data.tmp$pa.tab <- pa.data.tmp$pa.tab[-rowToRm, , drop = FALSE]
       }
     }
-
+    
     if(!inherits(env,"SpatRaster")){
       env <- pa.data.tmp$env
     }
@@ -1525,30 +1531,30 @@ setClass("BIOMOD.models.options",
                              nodesize = 5,
                              maxnodes = NULL),
                    MAXENT = list(path_to_maxent.jar = getwd(),
-                                          memory_allocated = 512,
-                                          initial_heap_size = NULL,
-                                          max_heap_size = NULL,
-                                          background_data_dir = 'default',
-                                          maximumbackground = 'default',
-                                          maximumiterations = 200,
-                                          visible = FALSE,
-                                          linear = TRUE,
-                                          quadratic = TRUE,
-                                          product = TRUE,
-                                          threshold = TRUE,
-                                          hinge = TRUE,
-                                          lq2lqptthreshold = 80,
-                                          l2lqthreshold = 10,
-                                          hingethreshold = 15,
-                                          beta_threshold = -1.0,
-                                          beta_categorical = -1.0,
-                                          beta_lqp = -1.0,
-                                          beta_hinge = -1.0,
-                                          betamultiplier = 1,
-                                          defaultprevalence = 0.5),
+                                 memory_allocated = 512,
+                                 initial_heap_size = NULL,
+                                 max_heap_size = NULL,
+                                 background_data_dir = 'default',
+                                 maximumbackground = 'default',
+                                 maximumiterations = 200,
+                                 visible = FALSE,
+                                 linear = TRUE,
+                                 quadratic = TRUE,
+                                 product = TRUE,
+                                 threshold = TRUE,
+                                 hinge = TRUE,
+                                 lq2lqptthreshold = 80,
+                                 l2lqthreshold = 10,
+                                 hingethreshold = 15,
+                                 beta_threshold = -1.0,
+                                 beta_categorical = -1.0,
+                                 beta_lqp = -1.0,
+                                 beta_hinge = -1.0,
+                                 betamultiplier = 1,
+                                 defaultprevalence = 0.5),
                    MAXNET = list(myFormula = NULL,
-                                            regmult = 1,
-                                            regfun = maxnet::maxnet.default.regularization)
+                                 regmult = 1,
+                                 regfun = maxnet::maxnet.default.regularization)
          ),
          validity = function(object) {
            test <- TRUE
