@@ -800,13 +800,14 @@ setMethod('plot', signature(x = 'BIOMOD.formated.data', y = "missing"),
     if (inherits(x, "BIOMOD.formated.data.PA")) {
       expected_CVnames <- c(expected_CVnames
                             , sapply(1:ncol(x@PA.table)
-                                     , function(this_PA) paste0("_PA", this_PA, "_RUN", seq_len(ncol(calib.lines)))))
+                                     , function(this_PA) c(paste0("_PA", this_PA, "_RUN", seq_len(ncol(calib.lines)))
+                                                           , paste0("_PA", this_PA, "_allRun"))))
     }
     .fun_testIfIn(TRUE, "colnames(calib.lines)", colnames(calib.lines), expected_CVnames)
     
     PA <- sapply(colnames(calib.lines), function(xx) strsplit(xx, "_")[[1]][2])
     run <- sapply(colnames(calib.lines), function(xx) strsplit(xx, "_")[[1]][3])
-  } else if (inherits(object, "BIOMOD.formated.data.PA")) {
+  } else if (inherits(x, "BIOMOD.formated.data.PA")) {
     PA <- colnames(x@PA.table)
     run <- rep(NA, length(PA))
   }
@@ -1089,7 +1090,8 @@ setMethod('summary', signature(object = 'BIOMOD.formated.data'),
       }
       expected_CVnames <- c(expected_CVnames
                             , sapply(1:ncol(object@PA.table)
-                                     , function(this_PA) paste0("_PA", this_PA, "_RUN", seq_len(ncol(calib.lines)))))
+                                     , function(this_PA) c(paste0("_PA", this_PA, "_RUN", seq_len(ncol(calib.lines)))
+                                                           , paste0("_PA", this_PA, "_allRun"))))
     }
     .fun_testIfIn(TRUE, "colnames(calib.lines)", colnames(calib.lines), expected_CVnames)
   }

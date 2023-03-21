@@ -182,7 +182,7 @@ bm_CrossValidation <- function(bm.format, strategy = 'random', nb.rep = 0, perc 
     colnames(out) <- '_allRun'
   } else {
     out <- switch(strategy,
-                  user.defined = bm_CrossValidation_user.defined(user.table),
+                  user.defined = bm_CrossValidation_user.defined(bm.format, user.table),
                   random = bm_CrossValidation_random(bm.format, nb.rep, perc),
                   kfold = bm_CrossValidation_kfold(bm.format, nb.rep, k),
                   block = bm_CrossValidation_block(bm.format),

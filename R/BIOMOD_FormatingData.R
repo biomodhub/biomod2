@@ -638,8 +638,6 @@ BIOMOD_FormatingData <- function(resp.name,
 
 # Common tools ------------------------------------------------------------
 
-
-
 .check_formating_spatial <- function(resp.var, expl.var = NULL, resp.xy = NULL, eval.data = FALSE){
   if (!is.null(resp.xy)) {
     cat("\n      ! XY coordinates of response variable will be ignored because spatial response object is given.")

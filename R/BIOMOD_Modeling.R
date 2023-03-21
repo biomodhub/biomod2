@@ -30,8 +30,8 @@
 ##' A \code{matrix} or \code{data.frame} defining for each repetition (in columns) which 
 ##' observation lines should be used for models calibration (\code{TRUE}) and validation 
 ##' (\code{FALSE}) (see \code{\link{BIOMOD_CrossValidation}}) \cr (\emph{if specified, 
-##' \code{nb.rep}, \code{data.split.perc} and \code{do.full.models} will be ignored})
-##' @param do.full.models (\emph{optional, default} \code{TRUE}) \cr 
+##' \code{nb.rep}, \code{data.split.perc} and \code{CV.do.full.models} will be ignored})
+##' @param CV.do.full.models (\emph{optional, default} \code{TRUE}) \cr 
 ##' A \code{logical} value defining whether models calibrated and evaluated over the whole 
 ##' dataset should be computed or not
 ##' @param weights (\emph{optional, default} \code{NULL}) \cr 
@@ -172,7 +172,7 @@
 ##'   results}).
 ##'   }
 ##'   
-##'   \item{do.full.models}{Building models with all available information may be useful in some 
+##'   \item{CV.do.full.models}{Building models with all available information may be useful in some 
 ##'   particular cases (\emph{e.g. rare species with few presences points}). But calibration and 
 ##'   evaluation datasets will be the same, which might lead to over-optimistic evaluation scores.
 ##'   }
@@ -240,7 +240,7 @@
 ##'                                     data.split.perc = 80,
 ##'                                     metric.eval = c('TSS','ROC'),
 ##'                                     var.import = 2,
-##'                                     do.full.models = FALSE,
+##'                                     CV.do.full.models = FALSE,
 ##'                                     seed.val = 42)
 ##' myBiomodModelOut
 ##' 
@@ -291,7 +291,7 @@ BIOMOD_Modeling <- function(bm.format,
                             CV.balance = NULL,
                             CV.strat = NULL,
                             CV.user.table = NULL,
-                            do.full.models = TRUE,
+                            CV.do.full.models = TRUE,
                             weights = NULL,
                             prevalence = NULL,
                             metric.eval = c('KAPPA', 'TSS', 'ROC'),
@@ -305,8 +305,7 @@ BIOMOD_Modeling <- function(bm.format,
   
   ## 0. Check arguments ---------------------------------------------------------------------------
   args <- .BIOMOD_Modeling.check.args(bm.format, modeling.id, models, models.pa, bm.options
-                                      # , CV.strategy, CV.nb.rep, CV.perc, CV.k, CV.balance, CV.strat, CV.user.table
-                                      , do.full.models, weights, prevalence, metric.eval, var.import
+                                      , weights, prevalence, metric.eval, var.import
                                       , scale.models, nb.cpu, seed.val, do.progress)
   for (argi in names(args)) { assign(x = argi, value = args[[argi]]) }
   rm(args)
@@ -341,7 +340,7 @@ BIOMOD_Modeling <- function(bm.format,
                                     balance = CV.balance,
                                     strat = CV.strat,
                                     user.table = CV.user.table,
-                                    do.full.models = do.full.models)
+                                    do.full.models = CV.do.full.models)
   models.out = .fill_BIOMOD.models.out("calib.lines", calib.lines, models.out
                                        , inMemory = FALSE, nameFolder = name.BIOMOD_DATA)
   
@@ -422,8 +421,7 @@ BIOMOD_Modeling <- function(bm.format,
 # ---------------------------------------------------------------------------- #
 
 .BIOMOD_Modeling.check.args <- function(bm.format, modeling.id, models, models.pa, bm.options
-                                        # , CV.strategy, CV.nb.rep, CV.perc, CV.k, CV.balance, CV.strat, CV.user.table
-                                        , do.full.models, weights, prevalence, metric.eval, var.import
+                                        , weights, prevalence, metric.eval, var.import
                                         , scale.models, nb.cpu, seed.val, do.progress)
 {
   ## 0. Check bm.format and models arguments ----------------------------------
@@ -612,7 +610,6 @@ BIOMOD_Modeling <- function(bm.format,
               var.import = var.import,
               metric.eval = metric.eval,
               prevalence = prevalence,
-              do.full.models = do.full.models,
               seed.val = seed.val,
               do.progress = do.progress))
 }
