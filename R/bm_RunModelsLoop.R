@@ -834,7 +834,9 @@ bm_RunModel <- function(model, run.name, dir.name = '.'
         bm_FindOptimStat(metric.eval = xx,
                          obs = data_sp[which(eval.lines.vec == TRUE)],
                          fit = g.pred[which(eval.lines.vec == TRUE)],
-                         threshold = cross.validation["cutoff", xx])
+                         threshold = cross.validation$cutoff[
+                           which(cross.validation$metric.eval == xx)
+                           ])
       }
       cross.validation$validation <- stat.validation$best.stat
     } else {
