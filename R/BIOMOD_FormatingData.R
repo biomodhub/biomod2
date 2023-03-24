@@ -299,7 +299,7 @@
 ##' # plot(myBiomodData.u)
 ##' 
 ##' 
-##' @importFrom terra rast crds
+##' @importFrom terra rast crds categories
 ##' 
 ##' @export
 ##' 
@@ -702,7 +702,6 @@ BIOMOD_FormatingData <- function(resp.name,
 }
 
 .check_formating_expl.var <- function(expl.var, length.resp.var){
-  
   if (is.matrix(expl.var) | is.numeric(expl.var)) {
     expl.var <- as.data.frame(expl.var)
   }
@@ -732,12 +731,40 @@ BIOMOD_FormatingData <- function(resp.name,
   expl.var
 }
 
-categorical_stack_to_terra <- function(myraster){
-  rast(
+categorical_stack_to_terra <- function(myraster, expected_levels = NULL) {
+  myTerra <- rast(
     sapply(1:raster::nlayers(myraster), 
            function(thislayer){
              rast(myraster[[thislayer]])
            })
   )
-  
+  which.factor <- which(raster::is.factor(myraster))
+  for (this.layer in which.factor) {
+    this.levels <- raster::levels(myraster)[[this.layer]][[1]]
+    ind.levels <- ifelse(ncol(this.levels) > 1, 2, 1)
+    if (is.null(expected_levels)) {
+      # no check to do, just formatting
+      this.levels.df <- data.frame(ID = this.levels[,1],
+                                   value = paste0('levels_',this.levels[,ind.levels]))
+    } else {
+        new.levels <- paste0('levels_',this.levels[,ind.levels])
+        fit.levels <- levels(expected_levels[,this.layer])
+        if(!all(new.levels %in% fit.levels)){
+          cat("\n",
+              "!! Levels for layer", colnames(expected_levels)[this.layer],
+                     " do not match.", new.levels[which(!new.levels %in% fit.levels)], "not found in fit data",
+              "\n Fit data levels: ",paste0(fit.levels, collapse = " ; "),
+              "\n Projection data levels: ",paste0(new.levels, collapse = " ; "))
+          stop(paste0("Levels for ", colnames(expected_levels)[this.layer],
+                      " do not match."))
+        }
+        this.levels.df <- data.frame(ID = seq_along(fit.levels),
+                                     value = fit.levels)
+      
+    }
+    colnames(this.levels.df) <- c("ID",names(myTerra)[this.layer])
+    myTerra <- categories(myTerra, layer = this.layer, 
+                          this.levels.df)
+  }
+  return(myTerra)
 }
