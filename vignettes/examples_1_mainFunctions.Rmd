@@ -232,15 +232,15 @@ myBiomodModelOut
 
 # Get evaluation scores & variables importance
 get_evaluations(myBiomodModelOut)
-get_variables_importance(myBiomodModelOut, as.data.frame = TRUE)
+get_variables_importance(myBiomodModelOut)
 
 # Represent evaluation scores & variables importance
 bm_PlotEvalMean(bm.out = myBiomodModelOut)
 bm_PlotEvalBoxplot(bm.out = myBiomodModelOut, group.by = c('algo', 'algo'))
 bm_PlotEvalBoxplot(bm.out = myBiomodModelOut, group.by = c('algo', 'run'))
 bm_PlotVarImpBoxplot(bm.out = myBiomodModelOut, group.by = c('expl.var', 'algo', 'algo'))
-bm_PlotVarImpBoxplot(bm.out = myBiomodModelOut, group.by = c('expl.var', 'algo', 'dataset'))
-bm_PlotVarImpBoxplot(bm.out = myBiomodModelOut, group.by = c('algo', 'expl.var', 'dataset'))
+bm_PlotVarImpBoxplot(bm.out = myBiomodModelOut, group.by = c('expl.var', 'algo', 'run'))
+bm_PlotVarImpBoxplot(bm.out = myBiomodModelOut, group.by = c('algo', 'expl.var', 'run'))
 
 # Represent response curves
 bm_PlotResponseCurves(bm.out = myBiomodModelOut, 
@@ -267,26 +267,21 @@ myBiomodEM <- BIOMOD_EnsembleModeling(bm.mod = myBiomodModelOut,
                                       metric.select.thresh = c(0.7),
                                       var.import = 3,
                                       metric.eval = c('TSS', 'ROC'),
-                                      prob.mean = TRUE,
-                                      prob.median = TRUE,
-                                      prob.cv = TRUE,
-                                      prob.ci = TRUE,
-                                      prob.ci.alpha = 0.05,
-                                      committee.averaging = TRUE,
-                                      prob.mean.weight = TRUE,
-                                      prob.mean.weight.decay = 'proportional')
+                                      em.algo = c('EMmean', 'EMcv', 'EMci', 'EMmedian', 'EMca', 'EMwmean'),
+                                      EMci.alpha = 0.05,
+                                      EMwmean.decay = 'proportional')
 myBiomodEM
 
 # Get evaluation scores & variables importance
-get_evaluations(myBiomodEM, as.data.frame = TRUE)
-get_variables_importance(myBiomodEM, as.data.frame = TRUE)
+get_evaluations(myBiomodEM)
+get_variables_importance(myBiomodEM)
 
 # Represent evaluation scores & variables importance
-bm_PlotEvalMean(bm.out = myBiomodEM, group.by = 'model')
-bm_PlotEvalBoxplot(bm.out = myBiomodEM, group.by = c('model', 'model'))
-bm_PlotVarImpBoxplot(bm.out = myBiomodEM, group.by = c('expl.var', 'model', 'model'))
-bm_PlotVarImpBoxplot(bm.out = myBiomodEM, group.by = c('expl.var', 'model', 'dataset'))
-bm_PlotVarImpBoxplot(bm.out = myBiomodEM, group.by = c('model', 'expl.var', 'dataset'))
+bm_PlotEvalMean(bm.out = myBiomodEM, group.by = 'full.name')
+bm_PlotEvalBoxplot(bm.out = myBiomodEM, group.by = c('full.name', 'full.name'))
+bm_PlotVarImpBoxplot(bm.out = myBiomodEM, group.by = c('expl.var', 'full.name', 'full.name'))
+bm_PlotVarImpBoxplot(bm.out = myBiomodEM, group.by = c('expl.var', 'algo', 'merged.by.run'))
+bm_PlotVarImpBoxplot(bm.out = myBiomodEM, group.by = c('algo', 'expl.var', 'merged.by.run'))
 
 # Represent response curves
 bm_PlotResponseCurves(bm.out = myBiomodEM, 
@@ -371,11 +366,12 @@ myBiomodProjectionFuture <- BIOMOD_Projection(bm.mod = myBiomodModelOut,
                                               build.clamping.mask = TRUE)
 
 # Load current and future binary projections
-CurrentProj <- rast("GuloGulo/proj_Current/proj_Current_GuloGulo_TSSbin.grd")
-FutureProj <- rast("GuloGulo/proj_Future/proj_Future_GuloGulo_TSSbin.grd")
+CurrentProj <- get_predictions(myBiomodProj, metric.binary = "TSS")
+FutureProj <- get_predictions(myBiomodProjectionFuture, metric.binary = "TSS")
 
 # Compute differences
-myBiomodRangeSize <- BIOMOD_RangeSize(proj.current = CurrentProj, proj.future = FutureProj)
+myBiomodRangeSize <- BIOMOD_RangeSize(proj.current = CurrentProj, 
+                                      proj.future = FutureProj)
 
 myBiomodRangeSize$Compt.By.Models
 plot(myBiomodRangeSize$Diff.By.Pixel)

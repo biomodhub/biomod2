@@ -514,8 +514,10 @@ BIOMOD_Projection <- function(bm.mod,
 
   if (inherits(new.env, 'Raster')) {
     # conversion into SpatRaster
-    if (any(raster::is.factor(new.env))) {
-      new.env <- categorical_stack_to_terra(raster::stack(new.env))
+    if(any(raster::is.factor(new.env))){
+      new.env <- categorical_stack_to_terra(raster::stack(new.env),
+                                            expected_levels = head(get_formal_data(bm.mod, subinfo ="expl.var"))
+)
     } else {
       new.env <- rast(new.env)
     }
