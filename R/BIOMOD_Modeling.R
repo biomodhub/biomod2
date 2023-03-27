@@ -22,18 +22,34 @@
 ##' are to be used, must be among \code{colnames(bm.format@PA.table)}
 ##' @param bm.options a \code{\link{BIOMOD.models.options}} object returned by the  
 ##' \code{\link{BIOMOD_ModelingOptions}} function
-##' @param nb.rep an \code{integer} corresponding to the number of repetitions to be done for 
-##' calibration/validation splitting 
-##' @param data.split.perc a \code{numeric} between \code{0} and \code{100} corresponding to the 
-##' percentage of data used to calibrate the models (calibration/validation splitting)
-##' @param data.split.table (\emph{optional, default} \code{NULL}) \cr 
-##' A \code{matrix} or \code{data.frame} defining for each repetition (in columns) which 
-##' observation lines should be used for models calibration (\code{TRUE}) and validation 
-##' (\code{FALSE}) (see \code{\link{BIOMOD_CrossValidation}}) \cr (\emph{if specified, 
-##' \code{nb.rep}, \code{data.split.perc} and \code{CV.do.full.models} will be ignored})
-##' @param CV.do.full.models (\emph{optional, default} \code{TRUE}) \cr 
-##' A \code{logical} value defining whether models calibrated and evaluated over the whole 
-##' dataset should be computed or not
+##' 
+##' @param CV.strategy a \code{character} corresponding to the cross-validation selection strategy, 
+##' must be among \code{random}, \code{kfold}, \code{block}, \code{strat}, \code{env} or 
+##' \code{user.defined}
+##' @param CV.nb.rep (\emph{optional, default} \code{0}) \cr
+##' If \code{strategy = 'random'} or \code{strategy = 'kfold'}, an \code{integer} corresponding 
+##' to the number of sets (repetitions) of cross-validation points that will be drawn
+##' @param CV.perc (\emph{optional, default} \code{0}) \cr
+##' If \code{strategy = 'random'}, a \code{numeric} between \code{0} and \code{1} defining the 
+##' percentage of data that will be kept for calibration
+##' @param CV.k (\emph{optional, default} \code{0}) \cr
+##' If \code{strategy = 'kfold'} or \code{strategy = 'strat'} or \code{strategy = 'env'}, an 
+##' \code{integer} corresponding to the number of partitions 
+##' @param CV.balance (\emph{optional, default} \code{'presences'}) \cr
+##' If \code{strategy = 'strat'} or \code{strategy = 'env'}, a \code{character} corresponding 
+##' to how data will be balanced between partitions, must be either \code{presences} or 
+##' \code{absences} 
+##' @param CV.strat (\emph{optional, default} \code{'both'}) \cr
+##' If \code{strategy = 'env'}, a \code{character} corresponding to how data will partitioned 
+##' along gradient, must be among \code{x}, \code{y}, \code{both}
+##' @param CV.user.table (\emph{optional, default} \code{NULL}) \cr
+##' If \code{strategy = 'user.defined'}, a \code{matrix} or \code{data.frame} defining for each 
+##' repetition (in columns) which observation lines should be used for models calibration 
+##' (\code{TRUE}) and validation (\code{FALSE})
+##' @param CV.do.full.models (\emph{optional, default} \code{TRUE}) \cr  
+##' A \code{logical} value defining whether models should be also calibrated and validated over 
+##' the whole dataset (and pseudo-absence datasets) or not
+##' 
 ##' @param weights (\emph{optional, default} \code{NULL}) \cr 
 ##' A \code{vector} of \code{numeric} values corresponding to observation weights (one per 
 ##' observation, see Details)
@@ -110,22 +126,8 @@
 ##'   datasets to each single model.
 ##'   }
 ##'   
-##'   \item{nb.rep & data.split.perc}{
-##'   \itemize{
-##'     \item Most simple method in machine learning to calibrate and validate a model is to 
-##'     split the original dataset in two, one to calibrate the model and the other one to 
-##'     validate it. The \code{data.split.perc} argument defines the percentage of data that will be 
-##'     randomly selected and used for the \bold{calibration} part, the remaining data constituting the 
-##'     \bold{validation} part. This process is repeated \code{nb.rep} times, to be sure not to 
-##'     include bias both in the modeling and evaluation parts.
-##'     \item Other validation methods are also available to the user :
-##'     \itemize{
-##'       \item \bold{evaluation} dataset can be directly given to the 
-##'       \code{\link{BIOMOD_FormatingData}} function
-##'       \item \code{data.split.table} argument can be used and obtained from the 
-##'       \code{\link{BIOMOD_CrossValidation}} function
-##'     }
-##'   }}
+##'   \item{CV.[...] parameters}{Different methods are available to calibrate/validate the 
+##'   single models (see \code{\link{bm_CrossValidation}}.)}
 ##'   
 ##'   \item{weights & prevalence}{More or less weight can be given to some specific observations.
 ##'   \itemize{
@@ -170,11 +172,6 @@
 ##'   be particularly useful when doing ensemble forecasting to remove the scale prediction effect 
 ##'   (\emph{the more extended projections are, the more they influence ensemble forecasting 
 ##'   results}).
-##'   }
-##'   
-##'   \item{CV.do.full.models}{Building models with all available information may be useful in some 
-##'   particular cases (\emph{e.g. rare species with few presences points}). But calibration and 
-##'   evaluation datasets will be the same, which might lead to over-optimistic evaluation scores.
 ##'   }
 ##' }
 ##' 
@@ -625,7 +622,6 @@ BIOMOD_Modeling <- function(bm.format,
   cat("\nNumber of evaluation repetitions :", ncol(calib.lines))
   cat("\nModels selected :", models, "\n")
   if (is.null(models.pa)) {
-    # nb.runs = ncol(calib.lines) * length(models) * length(mod.prep.dat)
     nb.runs = ncol(calib.lines) * length(models)
   } else {
     nb.runs = length(unlist(models.pa))

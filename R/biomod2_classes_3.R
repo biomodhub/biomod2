@@ -988,7 +988,7 @@ setMethod("get_projected_models", "BIOMOD.projection.out",
                                                                                        , filtered.by = filtered.by
                                                                                        , algo = algo))
             } else {
-              keep_ind <- .filter_outputs.vec(out, obj.type = "mod", subset.list = list(full.name =  full.name, PA = PA
+              keep_ind <- .filter_outputs.vec(out, obj.type = "mod", subset.list = list(full.name = full.name, PA = PA
                                                                                         , run = run, algo = algo))
             }
             out <- out[keep_ind]

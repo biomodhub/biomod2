@@ -10,12 +10,17 @@
 ##' species distribution models (asked by the \code{\link{BIOMOD_Modeling}} function).
 ##' 
 ##' 
-##' @param mod.prep.dat.pa a \code{list} returned by the \code{\link{.BIOMOD_Modeling.prepare.data}} 
-##' function and containing pre-processed data from \code{\link{BIOMOD.formated.data}} or 
-##' \code{\link{BIOMOD.formated.data.PA}} for each pseudo-absence dataset 
+##' @param bm.format a \code{\link{BIOMOD.formated.data}} or \code{\link{BIOMOD.formated.data.PA}} 
+##' object returned by the \code{\link{BIOMOD_FormatingData}} function
+##' @param weights a \code{matrix} containing observation weights for each pseudo-absence (or 
+##' \code{allData}) dataset
+##' @param calib.lines a \code{matrix} containing calibration / validation lines for each 
+##' pseudo-absence (or \code{allData}) x repetition (or \code{allRun}) combination that can be 
+##' obtained with the \code{\link{bm_CrossValidation}} function
+##' 
 ##' @param modeling.id a \code{character} corresponding to the name (ID) of the simulation set 
 ##' (\emph{a random number by default})
-##' @param models a \code{character} corresponding to the model name to be computed, must be either 
+##' @param models a \code{vector} containing model names to be computed, must be among 
 ##' \code{GLM}, \code{GBM}, \code{GAM}, \code{CTA}, \code{ANN}, \code{SRE}, \code{FDA}, 
 ##' \code{MARS}, \code{RF}, \code{MAXENT}, \code{MAXNET}
 ##' @param models.pa (\emph{optional, default} \code{NULL}) \cr 
@@ -42,23 +47,23 @@
 ##' A \code{logical} value defining whether the progress bar is to be rendered or not
 ##' 
 ##' 
+##' @param model a \code{character} corresponding to the model name to be computed, must be either 
+##' \code{GLM}, \code{GBM}, \code{GAM}, \code{CTA}, \code{ANN}, \code{SRE}, \code{FDA}, 
+##' \code{MARS}, \code{RF}, \code{MAXENT}, \code{MAXNET}
+##' @param run.name a \code{character} corresponding to the model to be run (sp.name + pa.id + 
+##' run.id)
 ##' @param dir.name (\emph{optional, default} \code{.}) \cr
 ##' A \code{character} corresponding to the modeling folder
-##' @param weights a \code{vector} of \code{numeric} values corresponding to observation weights 
-##' (one per observation)
-##' @param nam a \code{character} corresponding to the model to be run (name + run.id)
-##' @param Data a \code{data.frame} containing \code{data.species} and \code{data.env.var} slots 
-##' of \code{mod.prep.dat.pa} parameter
-##' @param calib.lines a \code{data.frame} containing \code{data.split.table} slot of 
-##' \code{mod.prep.dat.pa} parameter, or an extraction of \code{data.species} slot (for a specific PA 
-##' dataset extracted from \code{PA.table} slot)
-##' @param xy a \code{data.frame} containing \code{coord} slot of \code{mod.prep.dat.pa} 
-##' parameter (for a specific PA dataset extracted from \code{PA.table} slot of \code{mod.prep.dat.pa} 
-##' parameter)
-##' @param eval.data a \code{data.frame} containing \code{eval.data.species} and 
-##' \code{eval.data.env.var} slots of \code{mod.prep.dat.pa} parameter
-##' @param eval.xy a \code{data.frame} containing \code{eval.coord} slot of \code{mod.prep.dat.pa} 
-##' parameter
+##' @param Data a \code{data.frame} containing observations, coordinates and environmental 
+##' variables that can be obtained with the \code{get_species_data} function
+##' @param weights.vec a \code{vector} containing observation weights the concerned pseudo-absence 
+##' (or \code{allData}) dataset
+##' @param calib.lines.vec a \code{vector} containing calibration / validation lines for the 
+##' concerned pseudo-absence (or \code{allData}) x repetition (or \code{allRun}) combination
+##' @param eval.data (\emph{optional, default} \code{NULL}) \cr
+##' A \code{data.frame} containing validation observations, coordinates and environmental 
+##' variables that can be obtained with the \code{get_eval_data} function
+##' 
 ##' 
 ##' 
 ##' @return  
@@ -178,8 +183,8 @@ bm_RunModelsLoop <- function(bm.format,
                   modeling.id = modeling.id,
                   bm.options = bm.options,
                   Data = list.data[[ii]]$data.all,
-                  calib.lines.vec = list.data[[ii]]$calib.lines.vec,
                   weights.vec = list.data[[ii]]$weights.vec,
+                  calib.lines.vec = list.data[[ii]]$calib.lines.vec,
                   eval.data = get_eval_data(bm.format),
                   metric.eval = metric.eval,
                   var.import = var.import,
@@ -201,13 +206,13 @@ bm_RunModelsLoop <- function(bm.format,
 
 bm_RunModel <- function(model, run.name, dir.name = '.'
                         , modeling.id = '', bm.options
-                        , Data, calib.lines.vec, weights.vec
-                        , xy = NULL, eval.data = NULL, eval.xy = NULL
+                        , Data, weights.vec, calib.lines.vec
+                        , eval.data = NULL
                         , metric.eval = c('ROC','TSS','KAPPA'), var.import = 0
                         , scale.models = TRUE, nb.cpu = 1, seed.val = NULL, do.progress = TRUE)
 {
   ## 0. Check arguments ---------------------------------------------------------------------------
-  args <- .bm_RunModel.check.args(model, bm.options, Data, calib.lines.vec, weights.vec
+  args <- .bm_RunModel.check.args(model, bm.options, Data, weights.vec, calib.lines.vec
                                   , eval.data, metric.eval, scale.models, seed.val, do.progress)
   if (is.null(args)) { return(NULL) }
   for (argi in names(args)) { assign(x = argi, value = args[[argi]]) }
