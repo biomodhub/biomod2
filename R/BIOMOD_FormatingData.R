@@ -725,13 +725,14 @@ BIOMOD_FormatingData <- function(resp.name,
   if (inherits(expl.var, 'Raster')) {
     expl.var <- raster::stack(expl.var, RAT = FALSE)
     if (any(is.factor(expl.var))) {
-      expl.var <- categorical_stack_to_terra(expl.var)
+      expl.var <- .categorical_stack_to_terra(expl.var)
     } else {
       # as of 20/10/2022 the line below does not work if categorical variables
       # are present, hence the trick above. 
       expl.var <- rast(expl.var)
     }
   }
+  
   if (inherits(expl.var, 'SpatialPoints')) {
     expl.var <- as.data.frame(expl.var@data)
   }
@@ -739,48 +740,10 @@ BIOMOD_FormatingData <- function(resp.name,
     expl.var <- as.data.frame(expl.var)
   }
   
-  if(inherits(expl.var, 'data.frame')){
+  if (inherits(expl.var, 'data.frame')) {
     if (nrow(expl.var) != length.resp.var) {
       stop("If explanatory variable is not a raster then dimensions of response variable and explanatory variable must match!")
     }
   }
   expl.var
-}
-
-categorical_stack_to_terra <- function(myraster, expected_levels = NULL) {
-  myTerra <- rast(
-    sapply(1:raster::nlayers(myraster), 
-           function(thislayer){
-             rast(myraster[[thislayer]])
-           })
-  )
-  which.factor <- which(raster::is.factor(myraster))
-  for (this.layer in which.factor) {
-    this.levels <- raster::levels(myraster)[[this.layer]][[1]]
-    ind.levels <- ifelse(ncol(this.levels) > 1, 2, 1)
-    if (is.null(expected_levels)) {
-      # no check to do, just formatting
-      this.levels.df <- data.frame(ID = this.levels[,1],
-                                   value = paste0('levels_',this.levels[,ind.levels]))
-    } else {
-        new.levels <- paste0('levels_',this.levels[,ind.levels])
-        fit.levels <- levels(expected_levels[,this.layer])
-        if(!all(new.levels %in% fit.levels)){
-          cat("\n",
-              "!! Levels for layer", colnames(expected_levels)[this.layer],
-                     " do not match.", new.levels[which(!new.levels %in% fit.levels)], "not found in fit data",
-              "\n Fit data levels: ",paste0(fit.levels, collapse = " ; "),
-              "\n Projection data levels: ",paste0(new.levels, collapse = " ; "))
-          stop(paste0("Levels for ", colnames(expected_levels)[this.layer],
-                      " do not match."))
-        }
-        this.levels.df <- data.frame(ID = seq_along(fit.levels),
-                                     value = fit.levels)
-      
-    }
-    colnames(this.levels.df) <- c("ID",names(myTerra)[this.layer])
-    myTerra <- categories(myTerra, layer = this.layer, 
-                          this.levels.df)
-  }
-  return(myTerra)
 }

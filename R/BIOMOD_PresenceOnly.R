@@ -448,7 +448,7 @@ BIOMOD_PresenceOnly <- function(bm.mod = NULL,
     
     if (inherits(bg.env, 'Raster')) {
       if(any(raster::is.factor(bg.env))){
-        bg.env <- categorical_stack_to_terra(bg.env)
+        bg.env <- .categorical_stack_to_terra(bg.env)
       } else {
         bg.env <- rast(bg.env)
       }

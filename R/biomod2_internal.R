@@ -355,7 +355,7 @@ get_var_range <- function(data)
     tmp$filtered.by <- .extract_modelNamesInfo(tmp$full.name, obj.type = "em", info = "filtered.by", as.unique = FALSE)
     tmp$algo <- .extract_modelNamesInfo(tmp$full.name, obj.type = "em", info = "algo", as.unique = FALSE)
     proj <- tmp[, c("full.name", "merged.by.PA", "merged.by.run", "merged.by.algo"
-                       , "filtered.by", "algo", "points", "pred")]
+                    , "filtered.by", "algo", "points", "pred")]
     
   }
   proj
@@ -599,7 +599,7 @@ get_var_range <- function(data)
   if(is.null(objValue)){
     eval(parse(text = paste0("objValue <- mod.out@", objName, "@val")))
   }
- 
+  
   save(objValue, file = file.path(nameFolder, objName), compress = TRUE)
   if (inMemory) {
     eval(parse(text = paste0("mod.out@", objName, "@val <- objValue")))
@@ -823,4 +823,119 @@ check_duplicated_cells <- function(env, xy, sp, filter.raster){
     return("SpatRaster")
   }
   NULL
+}
+
+
+# Categorical Variables Management ----------------------------------------
+
+.categorical_stack_to_terra <- function(myraster, expected_levels = NULL) {
+  myTerra <- rast(
+    sapply(1:raster::nlayers(myraster), 
+           function(thislayer){
+             rast(myraster[[thislayer]])
+           })
+  )
+  which.factor <- which(raster::is.factor(myraster))
+  for (this.layer in which.factor) {
+    this.levels <- raster::levels(myraster)[[this.layer]][[1]]
+    ind.levels <- ifelse(ncol(this.levels) > 1, 2, 1)
+    if (any(duplicated(this.levels[ , ind.levels]))) {
+      stop("duplicated levels in environmental raster")
+    }
+    if (is.null(expected_levels)) {
+      # no check to do, just formatting
+      this.levels.df <- data.frame(ID = this.levels[,ind.levels],
+                                   value = paste0(this.levels[,ind.levels]))
+    } else {
+      new.levels <- paste0(this.levels[,ind.levels])
+      new.index <- this.levels[,1]
+      this.layer.name <- names(new.env)[this.layer]
+      fit.levels <- levels(expected_levels[,this.layer.name])
+      if (!all(new.levels %in% fit.levels)) {
+        cat("\n",
+            "!! Levels for layer", colnames(expected_levels)[this.layer],
+            " do not match.", new.levels[which(!new.levels %in% fit.levels)], "not found in fit data",
+            "\n Fit data levels: ",paste0(fit.levels, collapse = " ; "),
+            "\n Projection data levels: ",paste0(new.levels, collapse = " ; "))
+        stop(paste0("Levels for ", colnames(expected_levels)[this.layer],
+                    " do not match."))
+      }
+      levels.to.add <- which(!fit.levels %in% new.levels)
+      if (length(levels.to.add) > 0) {
+        max.index <- max(new.index)
+        this.levels.df <- data.frame(ID = c(new.index, seq(max.index +
+                                                             seq_along(levels.to.add))),
+                                     value = c(new.levels, fit.levels[levels.to.add]))
+      } else {
+        this.levels.df <- data.frame(ID = new.index,
+                                     value = new.levels)
+      }
+      
+    }
+    colnames(this.levels.df) <- c("ID",names(myTerra)[this.layer])
+    myTerra <- categories(myTerra, layer = this.layer, 
+                          this.levels.df)
+  }
+  return(myTerra)
+}
+
+
+.check_env_levels <-  function(new.env, expected_levels) {
+  which.factor <- which(sapply(new.env, is.factor))
+  if (inherits(new.env, 'SpatRaster')) {
+    for (this.layer in which.factor) {
+      this.layer.name <- names(new.env)[this.layer]
+      this.levels <- cats(new.env)[[this.layer]]
+      ind.levels <- ifelse(ncol(this.levels) > 1, 2, 1)
+      new.levels <- paste0(this.levels[,ind.levels])
+      if( any(duplicated(new.levels)) ) {
+        stop("duplicated levels in `new.env`")
+      }
+      new.index <- this.levels[,1]
+      fit.levels <- levels(expected_levels[,this.layer.name])
+      if (!all(new.levels %in% fit.levels)) {
+        cat("\n",
+            "!! Levels for layer", colnames(expected_levels)[this.layer],
+            " do not match.", new.levels[which(!new.levels %in% fit.levels)], "not found in fit data",
+            "\n Fit data levels: ",paste0(fit.levels, collapse = " ; "),
+            "\n Projection data levels: ",paste0(new.levels, collapse = " ; "))
+        stop(paste0("Levels for ", colnames(expected_levels)[this.layer],
+                    " do not match."))
+      }
+      levels.to.add <- which(!fit.levels %in% new.levels)
+      if (length(levels.to.add) > 0) {
+        max.index <- max(new.index)
+        this.levels.df <- data.frame(ID = c(new.index, max.index +
+                                              seq_along(levels.to.add)),
+                                     value = c(new.levels, fit.levels[levels.to.add]))
+        
+        colnames(this.levels.df) <- c("ID", names(new.env)[this.layer])
+        new.env <- categories(new.env, layer = this.layer, 
+                              this.levels.df)
+      } 
+    }
+  } else {
+    for (this.layer in which.factor) {
+      this.layer.name <- names(new.env)[this.layer]
+      this.levels <- levels(new.env[,this.layer.name])
+      new.levels <- paste0(this.levels)
+      fit.levels <- levels(expected_levels[,this.layer.name])
+      if (!all(new.levels %in% fit.levels)) {
+        cat("\n",
+            "!! Levels for layer", colnames(expected_levels)[this.layer],
+            " do not match.", new.levels[which(!new.levels %in% fit.levels)], "not found in fit data",
+            "\n Fit data levels: ",paste0(fit.levels, collapse = " ; "),
+            "\n Projection data levels: ",paste0(new.levels, collapse = " ; "))
+        stop(paste0("Levels for ", colnames(expected_levels)[this.layer],
+                    " do not match."))
+      }
+      levels.to.add <- which(!fit.levels %in% new.levels)
+      if (length(levels.to.add) > 0) {
+        new.env[ , this.layer.name] <- factor(new.env[ , this.layer.name], 
+                                              levels = c(new.levels,
+                                                         fit.levels[levels.to.add]))
+      }
+    }
+  }
+  new.env 
 }

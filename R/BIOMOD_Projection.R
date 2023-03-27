@@ -187,7 +187,8 @@
 ##' 
 ##' @importFrom foreach foreach %dopar% 
 ## @importFrom doParallel registerDoParallel
-##' @importFrom terra rast subset nlyr writeRaster terraOptions wrap unwrap mem_info app
+##' @importFrom terra rast subset nlyr writeRaster terraOptions wrap unwrap
+##'  mem_info app is.factor
 ##' @importFrom utils capture.output
 ##' @importFrom abind asub
 ##' 
@@ -291,35 +292,35 @@ BIOMOD_Projection <- function(bm.mod,
   }
   
   proj <- foreach(mod.name = models.chosen) %dopar% {
-      cat("\n\t> Projecting", mod.name, "...")
-      if (do.stack) {
-        filename <- NULL
-      } else {
-        filename <- file.path(namePath, "individual_projections",
-                              paste0(nameProj, "_", mod.name, 
-                                     ifelse(output.format == ".RData"
-                                            , ".tif", output.format)))
-      }
-      
-      mod <- get(BIOMOD_LoadModels(bm.out = bm.mod, full.name = mod.name))
-      temp_workdir = NULL
-      if (length(grep("MAXENT$", mod.name)) == 1) {
-        temp_workdir = mod@model_output_dir
-      }
-      pred.tmp <- predict(mod, new.env, on_0_1000 = on_0_1000, 
-                          filename = filename, omit.na = omit.na, 
-                          temp_workdir = temp_workdir, seedval = seed.val, 
-                          overwrite = TRUE, mod.name = mod.name)
-      if (do.stack) {
-        if (proj_is_raster) {
-          return(wrap(pred.tmp)) 
-        } else {
-          return(pred.tmp)
-        }
-      } else {
-        return(filename)
-      }
+    cat("\n\t> Projecting", mod.name, "...")
+    if (do.stack) {
+      filename <- NULL
+    } else {
+      filename <- file.path(namePath, "individual_projections",
+                            paste0(nameProj, "_", mod.name, 
+                                   ifelse(output.format == ".RData"
+                                          , ".tif", output.format)))
     }
+    
+    mod <- get(BIOMOD_LoadModels(bm.out = bm.mod, full.name = mod.name))
+    temp_workdir = NULL
+    if (length(grep("MAXENT$", mod.name)) == 1) {
+      temp_workdir = mod@model_output_dir
+    }
+    pred.tmp <- predict(mod, new.env, on_0_1000 = on_0_1000, 
+                        filename = filename, omit.na = omit.na, 
+                        temp_workdir = temp_workdir, seedval = seed.val, 
+                        overwrite = TRUE, mod.name = mod.name)
+    if (do.stack) {
+      if (proj_is_raster) {
+        return(wrap(pred.tmp)) 
+      } else {
+        return(pred.tmp)
+      }
+    } else {
+      return(filename)
+    }
+  }
   ## Putting predictions into the right format
   if (do.stack) {
     if (proj_is_raster) {
@@ -511,13 +512,13 @@ BIOMOD_Projection <- function(bm.mod,
     # ensure that data.table are coerced into classic data.frame
     new.env <- as.data.frame(new.env) 
   }
-
+  
   if (inherits(new.env, 'Raster')) {
     # conversion into SpatRaster
-    if(any(raster::is.factor(new.env))){
-      new.env <- categorical_stack_to_terra(raster::stack(new.env),
-                                            expected_levels = head(get_formal_data(bm.mod, subinfo ="expl.var"))
-)
+    if (any(raster::is.factor(new.env))) {
+      new.env <- .categorical_stack_to_terra(raster::stack(new.env),
+                                            expected_levels = head(get_formal_data(bm.mod, subinfo = "expl.var"))
+      )
     } else {
       new.env <- rast(new.env)
     }
@@ -527,6 +528,12 @@ BIOMOD_Projection <- function(bm.mod,
     .fun_testIfIn(TRUE, "names(new.env)", names(new.env), bm.mod@expl.var.names)
   } else {
     .fun_testIfIn(TRUE, "colnames(new.env)", colnames(new.env), bm.mod@expl.var.names)
+  }
+  
+  which.factor <- which(sapply(new.env, is.factor))
+  if (length(which.factor) > 0) {
+    new.env <- .check_env_levels(new.env, 
+                                 expected_levels = head(get_formal_data(bm.mod, subinfo = "expl.var")))
   }
   
   ## 4. Check new.env.xy ------------------------------------------------------

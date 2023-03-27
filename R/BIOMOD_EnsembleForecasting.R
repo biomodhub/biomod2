@@ -293,7 +293,7 @@ BIOMOD_EnsembleForecasting <- function(bm.em,
                                      on_0_1000 = on_0_1000,
                                      nb.cpu = nb.cpu)
     formal_pred <- get_predictions(formal_pred, full.name = models.needed)
-
+    
     # remove tmp directory
     unlink(file.path(bm.em@dir.name, bm.em@sp.name, paste0("proj_", tmp_dir))
            , recursive = TRUE, force = TRUE)
@@ -580,7 +580,7 @@ BIOMOD_EnsembleForecasting <- function(bm.em,
     if (inherits(new.env, 'Raster')) {
       # conversion into SpatRaster
       if(any(raster::is.factor(new.env))){
-        new.env <- categorical_stack_to_terra(raster::stack(new.env))
+        new.env <- .categorical_stack_to_terra(raster::stack(new.env))
       } else {
         new.env <- rast(new.env)
       }
@@ -591,6 +591,12 @@ BIOMOD_EnsembleForecasting <- function(bm.em,
     } else {
       .fun_testIfIn(TRUE, "colnames(new.env)", colnames(new.env), bm.em@expl.var.names)
     }
+  }
+  
+  which.factor <- which(sapply(new.env, is.factor))
+  if (length(which.factor) > 0) {
+    new.env <- .check_env_levels(new.env, 
+                                 expected_levels = head(get_formal_data(bm.mod, subinfo = "expl.var")))
   }
   
   ## 4. Check models.chosen ---------------------------------------------------

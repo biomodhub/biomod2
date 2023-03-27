@@ -451,7 +451,7 @@ bm_PlotResponseCurves <- function(bm.out
   if (inherits(new.env, c("Raster"))) {
     categorical_var <- which(raster::is.factor(new.env))
     if (length(categorical_var) > 0) {
-      new.env = categorical_stack_to_terra(new.env)
+      new.env = .categorical_stack_to_terra(new.env)
     } else {
       new.env <- rast(new.env)
     }
@@ -482,7 +482,7 @@ bm_PlotResponseCurves <- function(bm.out
   
   ## 4. Check show.variables argument -----------------------------------------
   if (length(show.variables) > ncol(new.env) || 
-      any(! show.variables %in% colnames(new.env))) {
+      any(!show.variables %in% colnames(new.env))) {
     stop("columns wanted in show.variables do not match the data \n")
   }
   
