@@ -1,50 +1,109 @@
 ###################################################################################################
-##' @name BIOMOD_CrossValidation
-##' @author Frank Breiner
+##' @name bm_CrossValidation
+##' @author Frank Breiner, Maya Gueguen
 ##' 
-##' @title Custom models cross-validation procedure
+##' @title Build cross-validation table
 ##' 
-##' @description This function creates a \code{matrix} or \code{data.frame} that can be given to 
-##' \code{data.split.table} parameter of \code{\link{BIOMOD_Modeling}} function to evaluate 
-##' models with repeated k-fold or stratified cross-validation (CV) instead of repeated split samples.
+##' @description This internal \pkg{biomod2} function allows to build a cross-validation table 
+##' according to 6 different methods : \code{random}, \code{kfold}, \code{block}, \code{strat}, 
+##' \code{env} or \code{user.defined} (see Details).
 ##' 
-##' 
-##' @param bm.format a \code{\link{BIOMOD.formated.data-class}} or \code{\link{BIOMOD.formated.data.PA-class}} 
-##' object returned by the \code{\link{BIOMOD_FormatingData}} function
-##' @param k an \code{integer} corresponding to the number of bins/partitions for k-fold CV
-##' @param nb.rep an \code{integer} corresponding to the number of repetitions of k-fold CV 
-##' (\emph{set to \code{1} if \code{do.stratification = TRUE}})
-##' @param do.stratification a \code{logical} defining whether stratified CV should be run 
-##' @param method a \code{character} corresponding to the CV stratification method (\emph{if 
-##' \code{do.stratification = TRUE}}), must be \code{x}, \code{y}, \code{both}, \code{block} 
-##' or the name of a predictor for environmental stratified CV
-##' @param balance a \code{character} defining whether partitions should be balanced for 
-##' \code{presences} or \code{absences} (resp. pseudo-absences or background)
+##' @param bm.format a \code{\link{BIOMOD.formated.data-class}} or 
+##' \code{\link{BIOMOD.formated.data.PA-class}} object returned by the 
+##' \code{\link{BIOMOD_FormatingData}} function
+##' @param strategy a \code{character} corresponding to the cross-validation selection strategy, 
+##' must be among \code{random}, \code{kfold}, \code{block}, \code{strat}, \code{env} or 
+##' \code{user.defined}
+##' @param nb.rep (\emph{optional, default} \code{0}) \cr
+##' If \code{strategy = 'random'} or \code{strategy = 'kfold'}, an \code{integer} corresponding 
+##' to the number of sets (repetitions) of cross-validation points that will be drawn
+##' @param perc (\emph{optional, default} \code{0}) \cr
+##' If \code{strategy = 'random'}, a \code{numeric} between \code{0} and \code{1} defining the 
+##' percentage of data that will be kept for calibration
+##' @param k (\emph{optional, default} \code{0}) \cr
+##' If \code{strategy = 'kfold'} or \code{strategy = 'strat'} or \code{strategy = 'env'}, an 
+##' \code{integer} corresponding to the number of partitions 
+##' @param balance (\emph{optional, default} \code{'presences'}) \cr
+##' If \code{strategy = 'strat'} or \code{strategy = 'env'}, a \code{character} corresponding 
+##' to how data will be balanced between partitions, must be either \code{presences} or 
+##' \code{absences} 
+##' @param strat (\emph{optional, default} \code{'both'}) \cr
+##' If \code{strategy = 'env'}, a \code{character} corresponding to how data will partitioned 
+##' along gradient, must be among \code{x}, \code{y}, \code{both}
+##' @param user.table (\emph{optional, default} \code{NULL}) \cr
+##' If \code{strategy = 'user.defined'}, a \code{matrix} or \code{data.frame} defining for each 
+##' repetition (in columns) which observation lines should be used for models calibration 
+##' (\code{TRUE}) and validation (\code{FALSE})
 ##' @param do.full.models (\emph{optional, default} \code{TRUE}) \cr  
 ##' A \code{logical} value defining whether models should be also calibrated and validated over 
-##' the whole dataset or not
+##' the whole dataset (and pseudo-absence datasets) or not
 ##' 
 ##' 
 ##' @return 
 ##' 
-##' A \code{matrix} or \code{data.frame} with \code{k * nb.rep} (\emph{+ 1 if 
-##' \code{do.full.models = TRUE}}) columns that can be given to \code{data.split.table} 
-##' parameter of \code{\link{BIOMOD_Modeling}} function.
+##' A \code{matrix} or \code{data.frame} defining for each repetition (in columns) which 
+##' observation lines should be used for models calibration (\code{TRUE}) and validation 
+##' (\code{FALSE}).
+##' 
+##' 
+##'  \code{k * nb.rep} (\emph{+ 1 if 
 ##' 
 ##' 
 ##' @details
 ##' 
-##' \bold{Stratified cross-validation} may be used to test for model overfitting and to assess 
-##' transferability in geographic and environmental space : 
-##' \itemize{
-##'   \item \code{x} and \code{y} stratification was described in \emph{Wenger and Olden 2012} 
-##'   (see  \href{https://biomodhub.github.io/biomod2/reference/BIOMOD_CrossValidation.html#References}{References}). While \code{y} 
-##'   stratification uses \code{k} partitions along the y-gradient, \code{x} stratification does 
-##'   the same for the x-gradient, and \code{both} combines them.
-##'   \item \code{block} stratification was described in \emph{Muscarella et al. 2014} (see 
-##'   \href{https://biomodhub.github.io/biomod2/reference/BIOMOD_CrossValidation.html#References}{References}). Four bins of equal size are 
-##'   partitioned (bottom-left, bottom-right, top-left and top-right).
-##' }
+##' \bold{Concerning column names of \code{matrix} output :}
+##' 
+##' The number of columns depends on the strategy selected. 
+##' The column names are given \emph{a posteriori} of the selection, ranging from 1 to the 
+##' number of columns. 
+##' If \code{do.full.models = TRUE}, columns merging runs (and/or pseudo-absence datasets) 
+##' are added at the end.
+##' 
+##' |         | random | kfold | block | strat | env |
+##' | ------: | :----: | :---: | :---: | :---: | :-: |
+##' | nb.rep  | x      | x     |       |       |     |
+##' | perc    | x      |       |       |       |     |
+##' | k       |        | x     |       | x     | x   |
+##' | balance |        |       |       | x     | x   |
+##' | strat   |        |       |       | x     |     |
+##' 
+##' \cr \cr
+##' 
+##' 
+##' \bold{Concerning random selection :}
+##' 
+##' Most simple method to calibrate and validate a model is to split the original dataset in two 
+##' datasets : one to calibrate the model and the other one to validate it. The splitting can be 
+##' repeated \code{nb.rep} times.
+##' 
+##' \bold{Concerning k-fold selection :}
+##' 
+##' The k-fold method splits the original dataset in \code{k} datasets of equal sizes : each part 
+##' is used successively as the validation dataset while the other \code{k-1} parts are used for 
+##' the calibration, leading to \code{k} calibration/validation ensembles. This multiple splitting 
+##' can be repeated \code{nb.rep} times.
+##' 
+##' \bold{Concerning block selection :}
+##' 
+##' It may be used to test for model overfitting and to assess transferability in geographic space.
+##' \code{block} stratification was described in \emph{Muscarella et al. 2014} (see References). 
+##' Four bins of equal size are partitioned (bottom-left, bottom-right, top-left and top-right).
+##' 
+##' \bold{Concerning stratified selection :}
+##' 
+##' It may be used to test for model overfitting and to assess transferability in geographic space.
+##' \code{x} and \code{y} stratification was described in \emph{Wenger and Olden 2012} (see 
+##' References). \code{y} stratification uses \code{k} partitions along the y-gradient, \code{x} 
+##' stratification does the same for the x-gradient, and \code{both} combines them.
+##' 
+##' \bold{Concerning environmental selection :}
+##' 
+##' \bold{Concerning user-defined selection :}
+##' 
+##' 
+##' \cr \cr
+##' 
+##' \bold{Concerning balance parameter :}
 ##' 
 ##' If \code{balance = 'presences'}, presences are divided (balanced) equally over the 
 ##' partitions (e.g. \emph{Fig. 1b in Muscarelly et al. 2014}). Pseudo-absences will however be 
@@ -56,6 +115,8 @@
 ##' that absences are spread over the study area equally, approach similar to \emph{Fig. 1 in 
 ##' Wenger et Olden 2012}). Presences will however be unbalanced over the partitions especially 
 ##' if the presences are clumped on an edge of the study area.
+##' 
+##' 
 ##' 
 ##' 
 ##' @references
@@ -73,7 +134,7 @@
 ##' 
 ##' @seealso \code{\link[ENMeval]{get.block}}, \code{\link[dismo]{kfold}}, 
 ##' \code{\link{BIOMOD_FormatingData}}, \code{\link{BIOMOD_Modeling}}
-##' @family Main functions
+##' @family Secundary functions
 ##'
 ##'
 ##' @examples
@@ -231,12 +292,11 @@ bm_CrossValidation <- function(bm.format, strategy = 'random', nb.rep = 0, perc 
     if (nb.rep < 1) { stop("nb.rep must be an integer >= 1") }
     
     if (strategy == "random") {
-      if (perc < 0 || perc > 100) {
-        stop("perc must be a value between 0 and 100")
-      } else if (perc < 50) {
+      .fun_testIf01(TRUE, "perc", perc)
+      if (perc < 0.5) {
         warning("You chose to allocate more data to evaluation than to calibration of your model
-                (perc<50)\nMake sure you really wanted to do that. \n", immediate. = TRUE)
-      } else if (perc == 100) {
+                (perc<0.5)\nMake sure you really wanted to do that. \n", immediate. = TRUE)
+      } else if (perc == 1) {
         nb.rep <- 0
         warning(paste0("The models will be evaluated on the calibration data only "
                        , "(nb.rep=0 and no independent data) \n\t "
