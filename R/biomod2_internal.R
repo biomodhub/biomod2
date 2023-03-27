@@ -849,7 +849,7 @@ check_duplicated_cells <- function(env, xy, sp, filter.raster){
     } else {
       new.levels <- paste0(this.levels[,ind.levels])
       new.index <- this.levels[,1]
-      this.layer.name <- names(new.env)[this.layer]
+      this.layer.name <- names(myraster)[this.layer]
       fit.levels <- levels(expected_levels[,this.layer.name])
       if (!all(new.levels %in% fit.levels)) {
         cat("\n",
@@ -863,8 +863,9 @@ check_duplicated_cells <- function(env, xy, sp, filter.raster){
       levels.to.add <- which(!fit.levels %in% new.levels)
       if (length(levels.to.add) > 0) {
         max.index <- max(new.index)
-        this.levels.df <- data.frame(ID = c(new.index, seq(max.index +
-                                                             seq_along(levels.to.add))),
+        this.levels.df <- data.frame(ID = c(new.index,
+                                            max.index +
+                                              seq_along(levels.to.add)),
                                      value = c(new.levels, fit.levels[levels.to.add]))
       } else {
         this.levels.df <- data.frame(ID = new.index,
@@ -875,6 +876,7 @@ check_duplicated_cells <- function(env, xy, sp, filter.raster){
     colnames(this.levels.df) <- c("ID",names(myTerra)[this.layer])
     myTerra <- categories(myTerra, layer = this.layer, 
                           this.levels.df)
+    
   }
   return(myTerra)
 }
@@ -905,7 +907,8 @@ check_duplicated_cells <- function(env, xy, sp, filter.raster){
       levels.to.add <- which(!fit.levels %in% new.levels)
       if (length(levels.to.add) > 0) {
         max.index <- max(new.index)
-        this.levels.df <- data.frame(ID = c(new.index, max.index +
+        this.levels.df <- data.frame(ID = c(new.index,
+                                            max.index +
                                               seq_along(levels.to.add)),
                                      value = c(new.levels, fit.levels[levels.to.add]))
         
