@@ -591,14 +591,13 @@ BIOMOD_EnsembleForecasting <- function(bm.em,
     } else {
       .fun_testIfIn(TRUE, "colnames(new.env)", colnames(new.env), bm.em@expl.var.names)
     }
+    
+    which.factor <- which(sapply(new.env, is.factor))
+    if (length(which.factor) > 0) {
+      new.env <- .check_env_levels(new.env, 
+                                   expected_levels = head(get_formal_data(bm.mod, subinfo = "expl.var")))
+    }
   }
-  
-  which.factor <- which(sapply(new.env, is.factor))
-  if (length(which.factor) > 0) {
-    new.env <- .check_env_levels(new.env, 
-                                 expected_levels = head(get_formal_data(bm.mod, subinfo = "expl.var")))
-  }
-  
   ## 4. Check models.chosen ---------------------------------------------------
   if (models.chosen[1] == 'all') {
     models.chosen <- get_built_models(bm.em)
