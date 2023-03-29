@@ -177,7 +177,7 @@ setClass("BIOMOD.formated.data",
 setGeneric("BIOMOD.formated.data", def = function(sp, env, ...) { standardGeneric("BIOMOD.formated.data") })
 
 .BIOMOD.formated.data.check.args <- function(sp, env, xy = NULL, eval.sp = NULL, eval.env = NULL
-                                             , eval.xy = NULL, filter.raster)
+                                             , eval.xy = NULL, filter.raster = FALSE)
 {
   ## A.1 Check sp argument --------------------------------------------------------------
   if (inherits(sp, c('Raster','SpatRaster'))) {

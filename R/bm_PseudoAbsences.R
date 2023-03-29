@@ -238,6 +238,9 @@ bm_PseudoAbsences <- function(resp.var, expl.var, nb.rep = 1, strategy = 'random
                                 y = 0,
                                 resp = resp.var),
                      geom = c("x","y"))
+    if (!is.null(nb.absences) && length(nb.absences) > 1) {
+      stop("Selection of multiple number of pseudo-absences depends on coordinates. Please provide some.")
+    }
   }
   .fun_testIfInherits(TRUE, "resp.var", resp.var, "SpatVector")
   
@@ -258,9 +261,14 @@ bm_PseudoAbsences <- function(resp.var, expl.var, nb.rep = 1, strategy = 'random
   }
   .fun_testIfInherits(TRUE, "expl.var", expl.var, c("SpatVector", "SpatRaster"))
   
+  args <- .BIOMOD.formated.data.check.args(sp = resp.var, env = expl.var)
+  for (argi in names(args)) { assign(x = argi, value = args[[argi]]) }
+  rm(args)
+  
   ## 3. Check strategy argument -----------------------------------------------
   availableStrategies <- c("random", "sre", "disk", "user.defined")
-  if (is.null(strategy) || !(strategy %in% availableStrategies) || all(crds(resp.var) == 0)) {
+  if (is.null(strategy) || !(strategy %in% availableStrategies) || 
+      (strategy != 'user.defined' && all(crds(resp.var) == 0))) {
     # no coordinates or unknown strategy
     strategy <- "random"
     cat("\n   ! Random strategy was automatically selected (that can be due to points coordinates lack or unavailable strategy choosen)")
@@ -315,19 +323,9 @@ bm_PseudoAbsences <- function(resp.var, expl.var, nb.rep = 1, strategy = 'random
         stop("\n PA.user.table must have as many row than the number of observation of your response variable")
       }
       colnames(user.table) <- paste0("PA", 1:ncol(user.table))
+      nb.absences <- nrow(user.table)
     }
   }
-  
-  # if (is.null(PA.user.table) && PA.nb.rep < 1) {
-  #   if (!any(resp.var == 0, na.rm = TRUE) && !any(is.na(resp.var))) {
-  #     stop("No Absences were given and no Pseudo-Absences were given or configured, at least one of those option is required.")
-  #   }
-  #   cat("\n> No pseudo absences selection !")
-  #   PA.strategy <- "none"
-  #   PA.nb.rep <- 0
-  # }
-  # 
-
   
   return(list(resp.var = resp.var,
               expl.var = expl.var,
