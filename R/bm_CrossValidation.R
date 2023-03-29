@@ -294,7 +294,7 @@ bm_CrossValidation <- function(bm.format, strategy = 'random', nb.rep = 0, perc 
     if (strategy == "random") {
       .fun_testIf01(TRUE, "perc", perc)
       if (perc < 0.5) {
-        warning("You chose to allocate more data to evaluation than to calibration of your model
+        warning("You chose to allocate more data to validation than to calibration of your model
                 (perc<0.5)\nMake sure you really wanted to do that. \n", immediate. = TRUE)
       } else if (perc == 1) {
         nb.rep <- 0
@@ -367,8 +367,8 @@ bm_CrossValidation <- function(bm.format, strategy = 'random', nb.rep = 0, perc 
   pres <- which(data.sp == 1)
   abs <- (1:length(data.sp))[-pres]
   
-  nbPresEval <- round(length(pres) * data.split / 100)
-  nbAbsEval <- round(length(abs) * data.split / 100)
+  nbPresEval <- round(length(pres) * data.split)
+  nbAbsEval <- round(length(abs) * data.split)
   
   mat.out <- matrix(FALSE, nrow = length(data.sp), ncol = nb.rep)
   colnames(mat.out) <- paste0('_RUN', 1:nb.rep)
