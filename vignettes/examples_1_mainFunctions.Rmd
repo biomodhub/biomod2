@@ -7,15 +7,14 @@ vignette: >
   %\VignetteEncoding{UTF-8}
 ---
 
-<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.13/css/all.css" integrity="sha384-DNOHZ68U8hZfKXOrtjWvjxusGo9WQnrNx2sqG0tfsghAvtVlRW3tvkXWZh58N9jp" crossorigin="anonymous">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
 
 
-
-## <i class="fas fa-code"></i> Complete code example
+## <i class="fa-solid fa-code"></i> Complete code example
 
 Here are presented, in a full and complete example, all main functions (starting with `BIOMOD_[...]`) of `biomod2`.
 
-### <i class="fas fa-truck-loading"></i> Load dataset and variables
+### <i class="fa-solid fa-truck-ramp-box"></i> Load dataset and variables
 
 ```R
 library(biomod2)
@@ -40,7 +39,7 @@ myExpl <- rast(bioclim_current)
 ```
 
 
-### <i class="fas fa-tasks"></i> Prepare data & parameters
+### <i class="fa-solid fa-list-check"></i> Prepare data & parameters
 
 #### Format data (observations & explanatory variables)
 
@@ -56,6 +55,8 @@ plot(myBiomodData)
 
 #### Pseudo-absences extraction
 
+Single or multiple set of pseudo-absences can be selected with the [`BIOMOD_FormatingData`](../reference/BIOMOD_FormatingData.html) function, which calls the [`bm_PseudoAbsences`](../reference/bm_PseudoAbsences.html) function to do so. More examples are presented on the [Secundary functions webpage](examples_2_secundaryFunctions.html).
+
 ```R
 # # Transform true absences into potential pseudo-absences
 # myResp.PA <- ifelse(myResp == 1, 1, NA)
@@ -69,46 +70,8 @@ plot(myBiomodData)
 #                                        PA.nb.absences = 1000,
 #                                        PA.strategy = 'random')
 # 
-# # Format Data with pseudo-absences : disk method
-# myBiomodData.d <- BIOMOD_FormatingData(resp.var = myResp.PA,
-#                                        expl.var = myExpl,
-#                                        resp.xy = myRespXY,
-#                                        resp.name = myRespName,
-#                                        PA.nb.rep = 4,
-#                                        PA.nb.absences = 500,
-#                                        PA.strategy = 'disk',
-#                                        PA.dist.min = 5,
-#                                        PA.dist.max = 35)
-# 
-# # Format Data with pseudo-absences : SRE method
-# myBiomodData.s <- BIOMOD_FormatingData(resp.var = myResp.PA,
-#                                        expl.var = myExpl,
-#                                        resp.xy = myRespXY,
-#                                        resp.name = myRespName,
-#                                        PA.nb.rep = 4,
-#                                        PA.nb.absences = 1000,
-#                                        PA.strategy = 'sre',
-#                                        PA.sre.quant = 0.025)
-# 
-# # Format Data with pseudo-absences : user.defined method
-# myPAtable <- data.frame(PA1 = ifelse(myResp == 1, TRUE, FALSE),
-#                         PA2 = ifelse(myResp == 1, TRUE, FALSE))
-# for (i in 1:ncol(myPAtable)) myPAtable[sample(which(myPAtable[, i] == FALSE), 500), i] = TRUE
-# myBiomodData.u <- BIOMOD_FormatingData(resp.var = myResp.PA,
-#                                        expl.var = myExpl,
-#                                        resp.xy = myRespXY,
-#                                        resp.name = myRespName,
-#                                        PA.strategy = 'user.defined',
-#                                        PA.user.table = myPAtable)
-# 
 # myBiomodData.r
-# myBiomodData.d
-# myBiomodData.s
-# myBiomodData.u
 # plot(myBiomodData.r)
-# plot(myBiomodData.d)
-# plot(myBiomodData.s)
-# plot(myBiomodData.u)
 ```
 
 ```R
@@ -211,9 +174,9 @@ head(myBiomodCV)
 # head(myBiomodCV)
 ```
 
-### <i class="fas fa-cogs"></i> Run modelisation
+### <i class="fa-solid fa-gear"></i> Run modelisation
 
-#### Single models
+#### <i class="fa-solid fa-puzzle-piece"></i> Single models
 
 ```R
 # Model single models
@@ -256,7 +219,7 @@ bm_PlotResponseCurves(bm.out = myBiomodModelOut,
 ```
 
 
-#### Ensemble models
+#### <i class="fa-solid fa-puzzle"></i> Ensemble models
 
 ```R
 # Model ensemble models
@@ -312,9 +275,9 @@ myBiomodPO <- BIOMOD_PresenceOnly(bm.mod = myBiomodModelOut,
 myBiomodPO
 ```
 
-### <i class="fas fa-globe-europe"></i> Project models
+### <i class="fa-solid fa-earth-europe"></i> Project models
 
-#### Single models
+#### <i class="fa-solid fa-puzzle-piece"></i> Single models
 
 ```R
 # Project single models
@@ -329,7 +292,7 @@ myBiomodProj
 plot(myBiomodProj)
 ```
 
-#### Ensemble models
+#### <i class="fa-solid fa-puzzle"></i> Ensemble models
 
 ```R
 # Project ensemble models (from single projections)
@@ -350,7 +313,7 @@ myBiomodEMProj
 plot(myBiomodEMProj)
 ```
 
-### <i class="fas fa-ruler-combined"></i> Compare range sizes
+### <i class="fa-solid fa-ruler-combined"></i> Compare range sizes
 
 ```R
 # Load environmental variables extracted from BIOCLIM (bio_3, bio_4, bio_7, bio_11 & bio_12)

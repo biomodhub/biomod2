@@ -7,15 +7,14 @@ vignette: >
   %\VignetteEncoding{UTF-8}
 ---
 
-<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.13/css/all.css" integrity="sha384-DNOHZ68U8hZfKXOrtjWvjxusGo9WQnrNx2sqG0tfsghAvtVlRW3tvkXWZh58N9jp" crossorigin="anonymous">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
 
 
-
-## <i class="fas fa-code"></i> Small code examples
+## <i class="fa-solid fa-code"></i> Small code examples
 
 Here are presented, in small and unlinked examples, secundary functions (starting with `bm_[...]`) of `biomod2`. Most of these functions are internally called by some main functions (starting with `BIOMOD_[...]`) of `biomod2`, but can be easily used as such.
 
-### <i class="fas fa-truck-loading"></i> Prepare data
+### <i class="fa-solid fa-truck-ramp-box"></i> Prepare data
 
 #### Vector data
 
@@ -123,7 +122,7 @@ myResp.real.raster[cellFromXY(myResp.real.raster, myCoord.real.1)] <- 1
 
 
 
-### <i class="fas fa-cog"></i> Secundary functions : vector data
+### <i class="fa-solid fa-gear"></i> Secundary functions : vector data
 
 #### Generate calibration / evaluation datasets
 
@@ -159,9 +158,9 @@ cbind(vec.d, vec.d_bin, vec.d_filt)
 
 
 
-### <i class="fas fa-cogs"></i> Secundary functions : explanatory variables
+### <i class="fa-solid fa-gears"></i> Secundary functions : explanatory variables
 
-#### Generate automatic formula
+#### <i class="fa-solid fa-subscript"></i> Generate automatic formula
 
 ```R
 bm_MakeFormula(resp.name = 'myResp.sim',
@@ -170,7 +169,7 @@ bm_MakeFormula(resp.name = 'myResp.sim',
                interaction.level = 0)
 ```
 
-#### Sample all factor levels
+#### <i class="fa-solid fa-layer-group"></i> Sample all factor levels
 
 ```R
 samp1 <- bm_SampleFactorLevels(expl.var = stk, mask.out = mask.out)
@@ -212,7 +211,7 @@ bm_VariablesImportance(bm.model = mod,
 ```
 
 
-### <i class="fas fa-box-check"></i> Secundary functions : `biomod2` data
+### <i class="fa-solid fa-gear-complex-code"></i> Secundary functions : `biomod2` data
 
 ```R
 # Format Data with true absences
@@ -226,7 +225,7 @@ myResp.real.PA <- ifelse(myResp.real == 1, 1, NA)
 myResp.real.PA.vect <- vect(cbind(myCoord.real, myResp.real.PA), geom = c("X_WGS84","Y_WGS84"))
 ```
 
-#### Generate pseudo-absence datasets
+#### <i class="fa-solid fa-columns-3"></i> Generate pseudo-absence datasets
 
 ```R
 # random method
@@ -265,13 +264,19 @@ PA.u <- bm_PseudoAbsences(resp.var = myResp.real.PA,
 str(PA.r)
 head(PA.r$pa.tab)
 apply(PA.r$pa.tab, 2, table)
+plot(PA.r)
 
 head(PA.d$pa.tab)
 apply(PA.d$pa.tab, 2, table)
+plot(PA.d)
+
 head(PA.s$pa.tab)
 apply(PA.s$pa.tab, 2, table)
+plot(PA.s)
+
 tail(PA.u$pa.tab)
 apply(PA.u$pa.tab, 2, table)
+plot(PA.u)
 ```
 
 ```R
@@ -285,28 +290,37 @@ PA.r_mult <- bm_PseudoAbsences(resp.var = myResp.real.PA.vect,
 str(PA.r_mult)
 head(PA.r_mult$pa.tab)
 apply(PA.r_mult$pa.tab, 2, table)
+plot(PA.r_mult)
 ```
 
 
-#### Generate calibration / evaluation datasets
+#### <i class="fa-solid fa-split"></i> Generate calibration / evaluation datasets
 
 ```R
-# Create the different validation datasets
+# random selection
 cv.r <- bm_CrossValidation(bm.format = myBiomodData,
                            strategy = "random",
                            nb.rep = 3,
                            k = 0.8)
+
+# k-fold selection
 cv.k <- bm_CrossValidation(bm.format = myBiomodData,
                            strategy = "kfold",
                            nb.rep = 2,
                            k = 3)
+
+# block selection
 cv.b <- bm_CrossValidation(bm.format = myBiomodData,
                            strategy = "block")
+
+# stratified selection (geographic)
 cv.s <- bm_CrossValidation(bm.format = myBiomodData,
                            strategy = "strat",
                            k = 2,
                            balance = "presences",
                            strat = "x")
+
+# stratified selection (environmental)
 cv.e <- bm_CrossValidation(bm.format = myBiomodData,
                            strategy = "env",
                            k = 2,
