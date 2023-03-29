@@ -339,7 +339,7 @@ BIOMOD_FormatingData <- function(resp.name,
                                  eval.resp.xy = NULL,
                                  PA.nb.rep = 0,
                                  PA.nb.absences = 1000,
-                                 PA.strategy = 'random',
+                                 PA.strategy = NULL,
                                  PA.dist.min = 0,
                                  PA.dist.max = NULL,
                                  PA.sre.quant = 0.025,
@@ -358,20 +358,13 @@ BIOMOD_FormatingData <- function(resp.name,
                                            eval.resp.var,
                                            eval.expl.var,
                                            eval.resp.xy,
-                                           PA.nb.rep,
-                                           PA.nb.absences,
-                                           PA.strategy,
-                                           PA.dist.min,
-                                           PA.dist.max,
-                                           PA.sre.quant,
-                                           PA.user.table,
                                            filter.raster)
   for (argi in names(args)) { assign(x = argi, value = args[[argi]]) }
   rm(args)
   
   ## 2. build BIOMOD.formated.data object -------------------------------------
   out <- NULL
-  if( PA.strategy == 'none') { # no Pseudo Absences
+  if (is.null(PA.strategy) || PA.strategy == 'none') { # no Pseudo Absences
     out <- BIOMOD.formated.data(sp = resp.var,
                                 xy = resp.xy,
                                 env = expl.var,
@@ -416,13 +409,6 @@ BIOMOD_FormatingData <- function(resp.name,
                                              eval.resp.var,
                                              eval.expl.var,
                                              eval.resp.xy,
-                                             PA.nb.rep,
-                                             PA.nb.absences,
-                                             PA.strategy,
-                                             PA.dist.min,
-                                             PA.dist.max,
-                                             PA.sre.quant,
-                                             PA.user.table,
                                              filter.raster)
 {
   ## 0. Checking names (resp.name available ?) --------------------------------
@@ -439,311 +425,16 @@ BIOMOD_FormatingData <- function(resp.name,
     stop(paste0("Modeling folder '", dir.name, "' does not exist"))
   }
   
-  if (inherits(resp.var, c('Raster','SpatRaster'))) { 
-    ## resp.var raster object not supported yet
-    stop("Raster response variable not supported yet ! \nPlease extract your Presences and your absences by yourself")
-    #### TO DO #### extract the 0 and 1 in sp format
-  }
+  args <- .BIOMOD.formated.data.check.args(sp = resp.var, env = expl.var, xy = resp.xy
+                                           , eval.sp = eval.resp.var, eval.env = eval.expl.var
+                                           , eval.xy = eval.resp.xy, filter.raster = filter.raster)
   
-  
-  ## 1. Checking resp.var and expl.var -----------------------------------------
-  
-  ### 1.1 Checking resp.var ----------------------------------------------------
-  available.types.resp <- c('integer', 'numeric', 'data.frame', 'matrix',
-                            'SpatialPointsDataFrame', 'SpatialPoints', 'SpatVector')
-  
-  ####  Check response type -----------------------------------------------
-  .fun_testIfInherits(TRUE, "resp.var", resp.var, available.types.resp)
-  
-  ####  SpatialPoints, SpatialPointsDataFrame and SpatVector -------------------
-  if (inherits(resp.var, c('SpatialPoints','SpatVector'))) { 
-    .tmp <- .check_formating_spatial(resp.var = resp.var,
-                                     expl.var = expl.var, 
-                                     resp.xy = resp.xy,
-                                     eval.data = FALSE)
-    resp.var <- .tmp$resp.var
-    resp.xy <- .tmp$resp.xy
-    rm(.tmp)
-  }
-  ####  data.frame and matrix --------------------------
-  ## transforming into numeric
-  if (inherits(resp.var, c("matrix", "data.frame"))) {
-    resp.var <- .check_formating_table(resp.var)
-  }
-  ####  checking xy coordinates validity --------------------------
-  
-  if(!is.null(resp.xy)){
-    resp.xy <- .check_formating_xy(resp.xy, 
-                                   resp.length = length(resp.var))
-  } else if (inherits(expl.var, c('RasterLayer', 'RasterStack', 'SpatRaster'))) {
-    stop("`resp.xy` argument is missing. Please provide `resp.xy` when `expl.var` is a raster.")
-  } else {
-    resp.xy <- data.frame()
-  }
-  
-  
-  #### check presence/absence in resp.var -------------------------------------
-  resp.var <- .check_formating_resp.var(resp.var = resp.var, eval.data = FALSE)
-  
-  ### 1.2 checking expl.var -------------------------------------------------------
-  available.types.expl <- c('integer', 'numeric', 'data.frame', 'matrix',
-                            'RasterLayer', 'RasterStack', 'SpatRaster',
-                            'SpatialPointsDataFrame', 'SpatVector')
-  
-  .fun_testIfInherits(TRUE, "expl.var",
-                      expl.var, available.types.expl)
-  
-  expl.var <- .check_formating_expl.var(expl.var ,
-                                        length.resp.var = length(resp.var))
-  
-  #### At this point :
-  ####  - resp.var is a numeric
-  ####  - resp.xy is NULL or a data.frame
-  ####  - expl.var is a data.frame or a SpatRaster
-  ####  - sp.name is a character
-  
-  
-  ## 2. PA strategy ------------------------------------------------------------
-  if (is.null(PA.user.table) && PA.nb.rep < 1) {
-    if (!any(resp.var == 0, na.rm = TRUE) && !any(is.na(resp.var))) {
-      stop("No Absences were given and no Pseudo-Absences were given or configured, at least one of those option is required.")
-    }
-    cat("\n> No pseudo absences selection !")
-    PA.strategy <- "none"
-    PA.nb.rep <- 0
-  }
-  
-  if (is.null(PA.strategy) &&  PA.nb.rep > 0) {
-    cat("\n> Pseudo absences will be selected randomly !")
-    PA.strategy <- "random"
-  }
-  
-  if (!is.null(PA.user.table)) {
-    cat("\n> Pseudo absences used will be user defined ones !")
-    PA.strategy <- "user.defined"
-    PA.nb.rep <- 0
-  }
-  
-  if (PA.strategy == "user.defined") {
-    if (!(is.matrix(PA.user.table) | is.data.frame(PA.user.table)))
-      stop("\n PA.user.table must be a matrix or a data.frame")
-    
-    if (nrow(PA.user.table) != length(resp.var))
-      stop("\n PA.user.table must have as many row than the number of observation of your response variable")
-    
-    colnames(PA.user.table) <- paste0("PA", 1:ncol(PA.user.table))
-  }
-  
-  ## 3. Checking eval.resp.var and eval.expl.var -------------------------------
-  
-  ### 3.1 Checking eval.resp.var ---------------------------------------------------
-  available.types.eval.resp <- c('integer', 'numeric', 'data.frame', 'matrix',
-                                 'SpatialPointsDataFrame', 'SpatVector')
-  
-  if (!is.null(eval.resp.var)) {
-    if (inherits(eval.resp.var, c('Raster', 'SpatRaster'))) {
-      ## eval.resp.var raster object not supported yet
-      stop("Raster response variable not supported yet ! \nPlease extract your Presences and your absences by yourself")
-      #### TO DO #### extract the 0 and 1 in sp format
-    }
-    
-    .fun_testIfInherits(TRUE, "eval.resp.var",
-                        eval.resp.var, available.types.eval.resp)
-    
-    ####  SpatialPoints, SpatialPointsDataFrame and SpatVector -------------------
-    if (inherits(eval.resp.var, c('SpatialPoints','SpatVector'))) { 
-      .tmp <- .check_formating_spatial(resp.var = eval.resp.var,
-                                       expl.var = eval.expl.var, 
-                                       resp.xy = eval.resp.xy,
-                                       eval.data = TRUE)
-      eval.resp.var <- .tmp$resp.var
-      eval.resp.xy <- .tmp$resp.xy
-      rm(.tmp)
-    }
-    ### Matrix and data.frame -------------------------------------------------
-    
-    if (inherits(eval.resp.var, c("matrix","data.frame"))) {
-      eval.resp.var <- .check_formating_table(eval.resp.var)
-    }
-    
-    ### checking xy coordinates validity ----------------------------
-    if(!is.null(eval.resp.xy)){
-      eval.resp.xy <- .check_formating_xy(eval.resp.xy, 
-                                          resp.length = length(eval.resp.var))
-    }
-    
-    ### check presences and absences in evaluation dataset -------------------
-    eval.resp.var <- .check_formating_resp.var(resp.var = eval.resp.var,
-                                               eval.data = TRUE)
-    
-    ## 3.2 Checking eval.expl.var ---------------------------------------------------
-    
-    available.types.eval.expl <- c('integer', 'numeric', 'data.frame', 'matrix',
-                                   'RasterLayer', 'RasterStack', 'SpatRaster',
-                                   'SpatialPointsDataFrame', 'SpatVector', "NULL")
-    
-    .fun_testIfInherits(TRUE, "eval.expl.var",
-                        eval.expl.var, available.types.eval.expl)
-    
-    if (is.null(eval.expl.var)) {
-      if (!(inherits(expl.var, 'SpatRaster'))) {
-        stop("If explanatory variable is not a raster and you want to consider evaluation response variable, you have to give evaluation explanatory variables")
-      }
-    }
-    
-    eval.expl.var <- .check_formating_expl.var(eval.expl.var, 
-                                               length.resp.var = length(eval.resp.var))
-    
-    
-    ## remove NA from evaluation data
-    if (sum(is.na(eval.resp.var)) > 0) {
-      cat("\n      ! NAs have been automatically removed from Evaluation data")
-      if (!is.null(eval.resp.xy)) {
-        eval.resp.xy <- eval.resp.xy[-which(is.na(eval.resp.var)), ]
-      }
-      eval.resp.var <- na.omit(eval.resp.var)
-    }
-    
-  } else {
-    cat("\n      ! No data has been set aside for modeling evaluation")
-    eval.expl.var <- eval.resp.xy <- NULL
-  }
-  
-  
-  
-  ### 4 - argument filter.raster ---------------------------------------------------
-  if(inherits(expl.var, "SpatRaster")){
-    stopifnot(is.logical(filter.raster))
-  }
-  
-  ### PA arguments are not checked here because it will be done later... (may be will do it here later)
-  
-  return(list(resp.var = resp.var,
-              expl.var = expl.var,
-              resp.xy = resp.xy,
+  return(list(resp.var = args$sp,
+              expl.var = args$env,
+              resp.xy = args$xy,
               resp.name = resp.name,
               dir.name = dir.name,
-              eval.resp.var = eval.resp.var,
-              eval.expl.var = eval.expl.var,
-              eval.resp.xy = eval.resp.xy,
-              PA.nb.rep = PA.nb.rep,
-              PA.nb.absences = PA.nb.absences,
-              PA.strategy = PA.strategy,
-              PA.dist.min = PA.dist.min,
-              PA.dist.max = PA.dist.max,
-              PA.sre.quant = PA.sre.quant,
-              PA.user.table = PA.user.table))
-}
-
-
-# Common tools ------------------------------------------------------------
-
-.check_formating_spatial <- function(resp.var, expl.var = NULL, resp.xy = NULL, eval.data = FALSE){
-  if (!is.null(resp.xy)) {
-    cat("\n      ! XY coordinates of response variable will be ignored because spatial response object is given.")
-  }
-  
-  if (inherits(resp.var, 'SpatialPoints')) { 
-    resp.xy <- data.matrix(sp::coordinates(resp.var))
-    if (inherits(resp.var, 'SpatialPointsDataFrame')) {
-      resp.var <- resp.var@data
-    } else {
-      cat("\n      ! Response variable is considered as only presences... Is it really what you want?")
-      resp.var <- rep(1, nrow(resp.xy))
-    }
-  }
-  
-  if (inherits(resp.var, 'SpatVector')) { 
-    resp.xy <- data.matrix(crds(resp.var))
-    resp.var <- as.data.frame(resp.var)
-    if (ncol(resp.var) == 0) {
-      if(eval.data){
-        stop("eval.resp must have both presences and absences in the data associated to the SpatVector") 
-      } else {
-        cat("\n      ! Response variable is considered as only presences... Is it really what you want?")
-        resp.var <- rep(1, nrow(resp.xy))
-      }
-    }
-  }
-  
-  if(!eval.data){
-    if ( all(!is.na(resp.var)) && 
-         all(resp.var == 1, na.rm = TRUE) &&
-         !inherits(expl.var, c('Raster','SpatRaster'))) {
-      stop("For Presence-Only model based on SpatialPoints or SpatVector, expl.var needs to be a RasterStack or SpatRaster to be able to sample pseudo-absences")
-    }
-  }
-  
-  return(
-    list(resp.var = resp.var,
-         resp.xy = resp.xy)
-  )
-}
-
-.check_formating_resp.var <- function(resp.var, eval.data = FALSE){
-  if (length(which(!(resp.var %in% c(0, 1, NA)))) > 0) {
-    cat("\n      ! ", ifelse(eval.data, "Evaluation",""), "Response variable have non-binary values that will be converted into 0 (resp <=0) or 1 (resp > 0).")
-    resp.var[which(resp.var > 0)] <- 1
-    resp.var[which(resp.var <= 0)] <- 0
-  }
-  
-  if (eval.data) {
-    if (!any(resp.var == 1, na.rm = TRUE) || !any(resp.var == 0, na.rm = TRUE))
-    {
-      stop("Evaluation response data must have both presences and absences")
-    }
-  }
-  
-  resp.var
-}
-
-.check_formating_table <- function(resp.var){
-  resp.var = as.data.frame(resp.var)
-  if (ncol(resp.var) > 1) {
-    stop("You must give a monospecific response variable (1D object)")
-  } else {
-    resp.var <- as.numeric(resp.var[, 1])
-  }
-  resp.var
-}
-
-.check_formating_xy <- function(resp.xy, resp.length){
-  if (ncol(resp.xy) != 2) {
-    stop("If given, resp.xy must be a 2 column matrix or data.frame")
-  }
-  if (nrow(resp.xy) != resp.length) {
-    stop("Response variable and its coordinates don't match")
-  }
-  as.data.frame(resp.xy)
-}
-
-.check_formating_expl.var <- function(expl.var, length.resp.var){
-  if (is.matrix(expl.var) | is.numeric(expl.var)) {
-    expl.var <- as.data.frame(expl.var)
-  }
-  
-  if (inherits(expl.var, 'Raster')) {
-    expl.var <- raster::stack(expl.var, RAT = FALSE)
-    if (any(is.factor(expl.var))) {
-      expl.var <- .categorical_stack_to_terra(expl.var)
-    } else {
-      # as of 20/10/2022 the line below does not work if categorical variables
-      # are present, hence the trick above. 
-      expl.var <- rast(expl.var)
-    }
-  }
-  
-  if (inherits(expl.var, 'SpatialPoints')) {
-    expl.var <- as.data.frame(expl.var@data)
-  }
-  if (inherits(expl.var, 'SpatVector')) {
-    expl.var <- as.data.frame(expl.var)
-  }
-  
-  if (inherits(expl.var, 'data.frame')) {
-    if (nrow(expl.var) != length.resp.var) {
-      stop("If explanatory variable is not a raster then dimensions of response variable and explanatory variable must match!")
-    }
-  }
-  expl.var
+              eval.resp.var = args$eval.sp,
+              eval.expl.var = args$eval.env,
+              eval.resp.xy = args$eval.xy))
 }

@@ -213,7 +213,8 @@ bm_RunModel <- function(model, run.name, dir.name = '.'
 {
   ## 0. Check arguments ---------------------------------------------------------------------------
   args <- .bm_RunModel.check.args(model, bm.options, Data, weights.vec, calib.lines.vec
-                                  , eval.data, metric.eval, scale.models, seed.val, do.progress)
+                                  , eval.data, metric.eval, scale.models, seed.val, do.progress
+                                  , criteria = NULL, Prev = NULL)
   if (is.null(args)) { return(NULL) }
   for (argi in names(args)) { assign(x = argi, value = args[[argi]]) }
   rm(args)
@@ -919,7 +920,7 @@ bm_RunModel <- function(model, run.name, dir.name = '.'
 
 ###################################################################################################
 
-.bm_RunModel.check.args <- function(model, bm.options, Data, calib.lines.vec, weights.vec
+.bm_RunModel.check.args <- function(model, bm.options, Data, weights.vec, calib.lines.vec
                                     , eval.data, metric.eval, scale.models, seed.val = NULL, do.progress = TRUE
                                     , criteria = NULL, Prev = NULL)
 {

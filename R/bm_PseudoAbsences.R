@@ -102,11 +102,12 @@
 ## --------------------------------------------------------------------------- #
 
 
-bm_PseudoAbsences <- function(resp.var, expl.var, nb.rep = 1, strategy = 'random', dist.min = 0, dist.max = NULL
-                              , nb.absences = NULL, sre.quant = 0, user.table = NULL)
+bm_PseudoAbsences <- function(resp.var, expl.var, nb.rep = 1, strategy = 'random', nb.absences = NULL
+                              , sre.quant = 0, dist.min = 0, dist.max = NULL, user.table = NULL)
 {
   ## 0. Check arguments ---------------------------------------------------------------------------
-  args <- .bm_PseudoAbsences.check.args(resp.var, expl.var, nb.rep, strategy, dist.min, dist.max, nb.absences, sre.quant)
+  args <- .bm_PseudoAbsences.check.args(resp.var, expl.var, nb.rep, strategy, nb.absences
+                                        , sre.quant, dist.min, dist.max, user.table)
   for (argi in names(args)) { assign(x = argi, value = args[[argi]]) }
   rm(args)
   
@@ -228,7 +229,7 @@ bm_PseudoAbsences <- function(resp.var, expl.var, nb.rep = 1, strategy = 'random
 
 # Argument Check --------------------------------------------------------------
 
-.bm_PseudoAbsences.check.args <- function(resp.var, expl.var, nb.rep, strategy, dist.min, dist.max, nb.absences, sre.quant)
+.bm_PseudoAbsences.check.args <- function(resp.var, expl.var, nb.rep, strategy, nb.absences, sre.quant, dist.min, dist.max, user.table)
 {
   cat('\n\nChecking Pseudo-absence selection arguments...\n')
   ## 1. Check resp.var argument -----------------------------------------------
@@ -259,13 +260,31 @@ bm_PseudoAbsences <- function(resp.var, expl.var, nb.rep = 1, strategy = 'random
   
   ## 3. Check strategy argument -----------------------------------------------
   availableStrategies <- c("random", "sre", "disk", "user.defined")
-  if (!(strategy %in% availableStrategies) || all(crds(resp.var) == 0)) {
+  if (is.null(strategy) || !(strategy %in% availableStrategies) || all(crds(resp.var) == 0)) {
     # no coordinates or unknown strategy
     strategy <- "random"
     cat("\n   ! Random strategy was automatically selected (that can be due to points coordinates lack or unavailable strategy choosen)")
   }
   
-  ## 4. Check nb.absences argument --------------------------------------------
+  ## 4. Check sre.quant argument ----------------------------------------------
+  if (strategy == 'SRE' && (sre.quant >= 0.5 || sre.quant < 0)) {
+    stop("\n    ! SRE Quant should be a value between 0 and 0.5 ")
+  }
+  
+  ## 5. Check dist.min and dist.max arguments ---------------------------------
+  if (strategy == 'disk') {
+    if (!is.null(dist.min) && dist.min < 0) {
+      dist.min <- 0
+    }
+    if (!is.null(dist.max) && dist.max < 0) {
+      dist.max <- NULL
+    }
+    if (!is.null(dist.max) && !is.null(dist.min) && dist.min >= dist.max) {
+      stop("dist.min >= dist.max")
+    }
+  }
+  
+  ## 6. Check nb.absences argument --------------------------------------------
   if (strategy != "user.defined") {
     if (is.null(nb.absences)) {
       stop("You must give the number of pseudo absences you want")
@@ -284,30 +303,41 @@ bm_PseudoAbsences <- function(resp.var, expl.var, nb.rep = 1, strategy = 'random
     }
   }
   
-  ## 5. Check dist.min and dist.max arguments ---------------------------------
-  if (!is.null(dist.min) && dist.min < 0) {
-    dist.min <- 0
-  }
-  if (!is.null(dist.max) && dist.max < 0) {
-    dist.max <- NULL
-  }
-  if (!is.null(dist.max) && !is.null(dist.min) && dist.min >= dist.max) {
-    stop("dist.min >= dist.max")
+  ## 7. Check user.table argument --------------------------------------------
+  if (strategy == "user.defined") {
+    if (is.null(user.table)) {
+      stop("You must give a table defining the pseudo absences you want")
+    } else {
+      if (!(is.matrix(user.table) | is.data.frame(user.table))) {
+        stop("\n PA.user.table must be a matrix or a data.frame")
+      }
+      if (nrow(user.table) != length(resp.var)) {
+        stop("\n PA.user.table must have as many row than the number of observation of your response variable")
+      }
+      colnames(user.table) <- paste0("PA", 1:ncol(user.table))
+    }
   }
   
-  ## 6. Check sre.quant argument ----------------------------------------------
-  if (strategy == 'SRE' && (sre.quant >= 0.5 || sre.quant < 0)) {
-    stop("\n    ! SRE Quant should be a value between 0 and 0.5 ")
-  }
+  # if (is.null(PA.user.table) && PA.nb.rep < 1) {
+  #   if (!any(resp.var == 0, na.rm = TRUE) && !any(is.na(resp.var))) {
+  #     stop("No Absences were given and no Pseudo-Absences were given or configured, at least one of those option is required.")
+  #   }
+  #   cat("\n> No pseudo absences selection !")
+  #   PA.strategy <- "none"
+  #   PA.nb.rep <- 0
+  # }
+  # 
+
   
   return(list(resp.var = resp.var,
               expl.var = expl.var,
               nb.rep = nb.rep,
               strategy = strategy,
+              nb.absences = nb.absences,
+              sre.quant = sre.quant,
               dist.min = dist.min,
               dist.max = dist.max,
-              nb.absences = nb.absences,
-              sre.quant = sre.quant))
+              user.table = user.table))
 }
 
 # Additionnal tools ------------------------------------------------------------

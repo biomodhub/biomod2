@@ -176,6 +176,130 @@ setClass("BIOMOD.formated.data",
 # 1.2 Constructors -------------------------------------------------------------
 setGeneric("BIOMOD.formated.data", def = function(sp, env, ...) { standardGeneric("BIOMOD.formated.data") })
 
+.BIOMOD.formated.data.check.args <- function(sp, env, xy = NULL, eval.sp = NULL, eval.env = NULL
+                                             , eval.xy = NULL, filter.raster)
+{
+  ## A.1 Check sp argument --------------------------------------------------------------
+  if (inherits(sp, c('Raster','SpatRaster'))) {
+    ## sp raster object not supported yet
+    stop("Raster response variable not supported yet ! \nPlease extract your presences and your absences by yourself")
+    #### TO DO #### extract the 0 and 1 in sp format
+  }
+  available.types.resp <- c('integer', 'numeric', 'data.frame', 'matrix',
+                            'SpatialPointsDataFrame', 'SpatialPoints', 'SpatVector')
+  .fun_testIfInherits(TRUE, "sp", sp, available.types.resp)
+
+  ## SpatialPoints, SpatialPointsDataFrame, SpatVector
+  if (inherits(sp, c('SpatialPoints','SpatVector'))) {
+    .tmp <- .check_formating_spatial(resp.var = sp,
+                                     expl.var = env,
+                                     resp.xy = xy,
+                                     eval.data = FALSE)
+    sp <- .tmp$resp.var
+    xy <- .tmp$resp.xy
+    rm(.tmp)
+  }
+  
+  ## data.frame, matrix  : transform into numeric
+  if (inherits(sp, c("matrix", "data.frame"))) {
+    sp <- .check_formating_table(sp)
+  }
+  
+  ## Check presence/absence
+  sp <- .check_formating_resp.var(resp.var = sp, eval.data = FALSE)
+  
+  ## A.2 Check xy argument --------------------------------------------------------------
+  if (!is.null(xy)) {
+    xy <- .check_formating_xy(resp.xy = xy, resp.length = length(sp))
+  } else if (inherits(env, c('RasterLayer', 'RasterStack', 'SpatRaster'))) {
+    stop("`xy` argument is missing. Please provide `xy` when `env` is a raster.")
+  } else {
+    xy <- data.frame()
+  }
+  
+  ## A.3 Check env argument -------------------------------------------------------------
+  available.types.expl <- c('integer', 'numeric', 'data.frame', 'matrix',
+                            'RasterLayer', 'RasterStack', 'SpatRaster',
+                            'SpatialPointsDataFrame', 'SpatVector')
+  .fun_testIfInherits(TRUE, "env", env, available.types.expl)
+  env <- .check_formating_expl.var(expl.var = env, length.resp.var = length(sp))
+  
+  ## Check filter.raster argument
+  if (inherits(env, "SpatRaster")) {
+    stopifnot(is.logical(filter.raster))
+  }
+  
+  #### At this point :
+  ####  - sp is a numeric
+  ####  - xy is NULL or a data.frame
+  ####  - env is a data.frame or a SpatRaster
+  
+  
+  ## DO THE SAME FOR EVALUATION DATA ####################################################
+  if (is.null(eval.sp)) {
+    cat("\n      ! No data has been set aside for modeling evaluation")
+    evaL.env <- eval.xy <- NULL
+  } else {
+    ## B.1 Check eval.sp argument -------------------------------------------------------
+    if (inherits(eval.sp, c('Raster', 'SpatRaster'))) {
+      ## eval.sp raster object not supported yet
+      stop("Raster response variable not supported yet ! \nPlease extract your Presences and your absences by yourself")
+      #### TO DO #### extract the 0 and 1 in sp format
+    }
+    
+    .fun_testIfInherits(TRUE, "eval.sp", eval.sp, available.types.resp)
+    
+    ## SpatialPoints, SpatialPointsDataFrame, SpatVector
+    if (inherits(eval.sp, c('SpatialPoints','SpatVector'))) { 
+      .tmp <- .check_formating_spatial(resp.var = eval.sp,
+                                       expl.var = eval.env, 
+                                       resp.xy = eval.xy,
+                                       eval.data = TRUE)
+      eval.sp <- .tmp$resp.var
+      eval.xy <- .tmp$resp.xy
+      rm(.tmp)
+    }
+    ## data.frame, matrix  : transform into numeric
+    if (inherits(eval.sp, c("matrix","data.frame"))) {
+      eval.sp <- .check_formating_table(eval.sp)
+    }
+    
+    ## Check presence/absence
+    eval.sp <- .check_formating_resp.var(resp.var = eval.sp, eval.data = TRUE)
+    
+    ## B.2 Check eval.xy argument -------------------------------------------------------
+    if(!is.null(eval.xy)){
+      eval.xy <- .check_formating_xy(resp.xy = eval.xy, resp.length = length(eval.sp))
+    }
+    
+    ## B.3 Check eval.env argument ------------------------------------------------------
+    .fun_testIfInherits(TRUE, "eval.env", eval.env, c(available.types.expl, "NULL"))
+    if (is.null(eval.env)) {
+      if (!(inherits(env, 'SpatRaster'))) {
+        stop("If explanatory variable is not a raster and you want to consider evaluation response variable, you have to give evaluation explanatory variables")
+      }
+    }
+    eval.env <- .check_formating_expl.var(expl.var = eval.env, length.resp.var = length(eval.sp))
+    
+    ## B.4 Remove NA from evaluation data
+    if (sum(is.na(eval.sp)) > 0) {
+      cat("\n      ! NAs have been automatically removed from Evaluation data")
+      if (!is.null(eval.xy)) {
+        eval.xy <- eval.xy[-which(is.na(eval.sp)), ]
+      }
+      eval.sp <- na.omit(eval.sp)
+    }
+  }
+  
+  return(list(sp = sp,
+              env = env,
+              xy = xy,
+              eval.sp = eval.sp,
+              eval.env = eval.env,
+              eval.xy = eval.xy))
+}
+
+
 ## BIOMOD.formated.data(sp = numeric, env = data.frame) -----------------------------------
 ##' 
 ##' @rdname BIOMOD.formated.data
@@ -188,6 +312,13 @@ setMethod('BIOMOD.formated.data', signature(sp = 'numeric', env = 'data.frame'),
                    , na.rm = TRUE, data.mask = NULL, shared.eval.env = FALSE
                    , filter.raster = FALSE) 
           {
+            args <- .BIOMOD.formated.data.check.args(sp, env, xy, eval.sp, eval.env, eval.xy, filter.raster)
+            for (argi in names(args)) { assign(x = argi, value = args[[argi]]) }
+            rm(args)
+            
+            if (!any(sp == 0, na.rm = TRUE) && !any(is.na(sp))) {
+              stop("No absences were given and no pseudo-absences were given or configured, at least one of those option is required.")
+            }
             
             if (is.null(data.mask)) { 
               suppressWarnings(data.mask <- list("calibration" = wrap(rast())))
@@ -307,6 +438,14 @@ setMethod('BIOMOD.formated.data', signature(sp = 'numeric', env = 'SpatRaster'),
                    na.rm = TRUE, shared.eval.env = FALSE,
                    filter.raster = FALSE)
           {
+            args <- .BIOMOD.formated.data.check.args(sp, env, xy, eval.sp, eval.env, eval.xy, filter.raster)
+            for (argi in names(args)) { assign(x = argi, value = args[[argi]]) }
+            rm(args)
+            
+            if (!any(sp == 0, na.rm = TRUE) && !any(is.na(sp))) {
+              stop("No absences were given and no pseudo-absences were given or configured, at least one of those option is required.")
+            }
+            
             ## Keep same env variable for eval than calib (+ check for factor)
             if (!is.null(eval.sp) && is.null(eval.env)) {
               output <- check_duplicated_cells(env, eval.xy, eval.sp, filter.raster)
@@ -1303,6 +1442,16 @@ setMethod('BIOMOD.formated.data.PA', signature(sp = 'numeric', env = 'SpatRaster
                                       , PA.sre.quant = 0.025, PA.user.table = NULL
                                       , na.rm = TRUE, filter.raster = FALSE)
 {
+  args <- .BIOMOD.formated.data.check.args(sp, env, xy, eval.sp, eval.env, eval.xy, filter.raster)
+  for (argi in names(args)) { assign(x = argi, value = args[[argi]]) }
+  rm(args)
+  
+  if (is.null(PA.strategy) || PA.strategy == 'none' || PA.nb.rep < 1) {
+    if (!any(sp == 0, na.rm = TRUE) && !any(is.na(sp))) {
+      stop("No absences were given and no pseudo-absences were given or configured, at least one of those option is required.")
+    }
+  }
+  
   ### Check for categorical vars and filter duplicated data points
   categorical_var <- NULL
   if (inherits(env, 'SpatRaster')) {

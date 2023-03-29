@@ -826,6 +826,119 @@ check_duplicated_cells <- function(env, xy, sp, filter.raster){
 }
 
 
+# Common tools ------------------------------------------------------------
+
+.check_formating_spatial <- function(resp.var, expl.var = NULL, resp.xy = NULL, eval.data = FALSE){
+  if (!is.null(resp.xy)) {
+    cat("\n      ! XY coordinates of response variable will be ignored because spatial response object is given.")
+  }
+  
+  if (inherits(resp.var, 'SpatialPoints')) { 
+    resp.xy <- data.matrix(sp::coordinates(resp.var))
+    if (inherits(resp.var, 'SpatialPointsDataFrame')) {
+      resp.var <- resp.var@data
+    } else {
+      cat("\n      ! Response variable is considered as only presences... Is it really what you want?")
+      resp.var <- rep(1, nrow(resp.xy))
+    }
+  }
+  
+  if (inherits(resp.var, 'SpatVector')) { 
+    resp.xy <- data.matrix(crds(resp.var))
+    resp.var <- as.data.frame(resp.var)
+    if (ncol(resp.var) == 0) {
+      if(eval.data){
+        stop("eval.resp must have both presences and absences in the data associated to the SpatVector") 
+      } else {
+        cat("\n      ! Response variable is considered as only presences... Is it really what you want?")
+        resp.var <- rep(1, nrow(resp.xy))
+      }
+    }
+  }
+  
+  if(!eval.data){
+    if ( all(!is.na(resp.var)) && 
+         all(resp.var == 1, na.rm = TRUE) &&
+         !inherits(expl.var, c('Raster','SpatRaster'))) {
+      stop("For Presence-Only model based on SpatialPoints or SpatVector, expl.var needs to be a RasterStack or SpatRaster to be able to sample pseudo-absences")
+    }
+  }
+  
+  return(
+    list(resp.var = resp.var,
+         resp.xy = resp.xy)
+  )
+}
+
+.check_formating_resp.var <- function(resp.var, eval.data = FALSE){
+  if (length(which(!(resp.var %in% c(0, 1, NA)))) > 0) {
+    cat("\n      ! ", ifelse(eval.data, "Evaluation",""), "Response variable have non-binary values that will be converted into 0 (resp <=0) or 1 (resp > 0).")
+    resp.var[which(resp.var > 0)] <- 1
+    resp.var[which(resp.var <= 0)] <- 0
+  }
+  
+  if (eval.data) {
+    if (!any(resp.var == 1, na.rm = TRUE) || !any(resp.var == 0, na.rm = TRUE))
+    {
+      stop("Evaluation response data must have both presences and absences")
+    }
+  }
+  
+  resp.var
+}
+
+.check_formating_table <- function(resp.var){
+  resp.var = as.data.frame(resp.var)
+  if (ncol(resp.var) > 1) {
+    stop("You must give a monospecific response variable (1D object)")
+  } else {
+    resp.var <- as.numeric(resp.var[, 1])
+  }
+  resp.var
+}
+
+.check_formating_xy <- function(resp.xy, resp.length){
+  if (ncol(resp.xy) != 2) {
+    stop("If given, resp.xy must be a 2 column matrix or data.frame")
+  }
+  if (nrow(resp.xy) != resp.length) {
+    stop("Response variable and its coordinates don't match")
+  }
+  as.data.frame(resp.xy)
+}
+
+.check_formating_expl.var <- function(expl.var, length.resp.var){
+  if (is.matrix(expl.var) | is.numeric(expl.var)) {
+    expl.var <- as.data.frame(expl.var)
+  }
+  
+  if (inherits(expl.var, 'Raster')) {
+    expl.var <- raster::stack(expl.var, RAT = FALSE)
+    if (any(is.factor(expl.var))) {
+      expl.var <- .categorical_stack_to_terra(expl.var)
+    } else {
+      # as of 20/10/2022 the line below does not work if categorical variables
+      # are present, hence the trick above. 
+      expl.var <- rast(expl.var)
+    }
+  }
+  
+  if (inherits(expl.var, 'SpatialPoints')) {
+    expl.var <- as.data.frame(expl.var@data)
+  }
+  if (inherits(expl.var, 'SpatVector')) {
+    expl.var <- as.data.frame(expl.var)
+  }
+  
+  if (inherits(expl.var, 'data.frame')) {
+    if (nrow(expl.var) != length.resp.var) {
+      stop("If explanatory variable is not a raster then dimensions of response variable and explanatory variable must match!")
+    }
+  }
+  expl.var
+}
+
+
 # Categorical Variables Management ----------------------------------------
 
 .categorical_stack_to_terra <- function(myraster, expected_levels = NULL) {
@@ -873,14 +986,11 @@ check_duplicated_cells <- function(env, xy, sp, filter.raster){
       }
       
     }
-    colnames(this.levels.df) <- c("ID",names(myTerra)[this.layer])
-    myTerra <- categories(myTerra, layer = this.layer, 
-                          this.levels.df)
-    
+    colnames(this.levels.df) <- c("ID", names(myTerra)[this.layer])
+    try({myTerra <- categories(myTerra, layer = this.layer, this.levels.df)}, silent = TRUE)
   }
   return(myTerra)
 }
-
 
 .check_env_levels <-  function(new.env, expected_levels) {
   which.factor <- which(sapply(new.env, is.factor))
