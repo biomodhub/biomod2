@@ -14,9 +14,13 @@ vignette: >
 
 Here are presented, in small and unlinked examples, secundary functions (starting with `bm_[...]`) of `biomod2`. Most of these functions are internally called by some main functions (starting with `BIOMOD_[...]`) of `biomod2`, but can be easily used as such.
 
+
+<br/><br/>
+
+
 ### <i class="fa-solid fa-truck-ramp-box"></i> Prepare data
 
-#### Vector data
+#### <i class="fa-solid fa-bars"></i> Vector data
 
 ```R
 ## Generate a binary vector -------------------------------------------------------------
@@ -52,7 +56,7 @@ vec.d <- rnorm(100, 500, 100)
 
 
 
-#### Observations & explanatory variables
+#### <i class="fa-solid fa-eye"></i> Observations & explanatory variables
 
 ```R
 library(biomod2)
@@ -121,10 +125,12 @@ myResp.real.raster[cellFromXY(myResp.real.raster, myCoord.real.1)] <- 1
 </div>
 
 
+<br/><br/>
 
-### <i class="fa-solid fa-gear"></i> Secundary functions : vector data
 
-#### Generate calibration / evaluation datasets
+### <i class="fa-solid fa-square-check"></i> Secundary functions : vector data
+
+#### <i class="fa-solid fa-scissors"></i> Generate calibration / evaluation datasets
 
 ```R
 bm_SampleBinaryVector(obs = vec.a, ratio = 0.7)
@@ -141,14 +147,14 @@ bm_SampleBinaryVector(obs = vec.a, ratio = 0.7)
 <!-- abline(a = 0, b = 0.001, lty = 2) -->
 <!-- ``` -->
 
-#### Find optimal threshold for a specific evaluation metric
+#### <i class="fa-solid fa-scale-balanced"></i> Find optimal threshold for a specific evaluation metric
 
 ```R
 bm_FindOptimStat(metric.eval = 'TSS', obs = vec.a, fit = vec.b)
 bm_FindOptimStat(metric.eval = 'TSS', obs = vec.a, fit = vec.c, nb.thresh = 100)
 ```
 
-#### From continuous to binary / filtered vector
+#### <i class="fa-solid fa-filter"></i> From continuous to binary / filtered vector
 
 ```R
 vec.d_bin <- bm_BinaryTransformation(data = vec.d, threshold = 500)
@@ -157,8 +163,10 @@ cbind(vec.d, vec.d_bin, vec.d_filt)
 ```
 
 
+<br/><br/>
 
-### <i class="fa-solid fa-gears"></i> Secundary functions : explanatory variables
+
+### <i class="fa-solid fa-square-check"></i> Secundary functions : explanatory variables
 
 #### <i class="fa-solid fa-subscript"></i> Generate automatic formula
 
@@ -177,7 +185,7 @@ samp2 <- bm_SampleFactorLevels(expl.var = stk, mask.in = mask.in)
 samp3 <- bm_SampleFactorLevels(expl.var = stk, mask.out = mask.out, mask.in = mask.in)
 ```
 
-#### Compute Species Range Envelop model
+#### <i class="fa-solid fa-globe"></i> Compute Species Range Envelop model
 
 ```R
 # Compute SRE for several quantile values
@@ -200,7 +208,7 @@ names(res) <- c("Original distribution", "Full data calibration", "Over 95 perce
 plot(res, zlim = c(0, 1))
 ```
 
-#### Compute variables importance
+#### <i class="fa-solid fa-chart-column"></i> Compute variables importance
 
 ```R
 mod <- glm(var1 ~ var2 + var3, data = myExpl.sim)
@@ -211,7 +219,10 @@ bm_VariablesImportance(bm.model = mod,
 ```
 
 
-### <i class="fa-solid fa-gear-complex-code"></i> Secundary functions : `biomod2` data
+<br/><br/>
+
+
+### <i class="fa-solid fa-square-check"></i> Secundary functions : `biomod2` data
 
 ```R
 # Format Data with true absences
@@ -225,7 +236,7 @@ myResp.real.PA <- ifelse(myResp.real == 1, 1, NA)
 myResp.real.PA.vect <- vect(cbind(myCoord.real, myResp.real.PA), geom = c("X_WGS84","Y_WGS84"))
 ```
 
-#### <i class="fa-solid fa-columns-3"></i> Generate pseudo-absence datasets
+#### <i class="fa-solid fa-shuffle"></i> Generate pseudo-absence datasets
 
 ```R
 # random method
@@ -294,7 +305,7 @@ plot(PA.r_mult)
 ```
 
 
-#### <i class="fa-solid fa-split"></i> Generate calibration / evaluation datasets
+#### <i class="fa-solid fa-scissors"></i> Generate calibration / evaluation datasets
 
 ```R
 # random selection
