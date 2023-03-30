@@ -102,6 +102,13 @@
 ##' @return 
 ##' 
 ##' \describe{
+##'   \item{\code{get_species_data}}{a \code{data.frame} combining \code{data.species}, 
+##'   \code{coord}, \code{data.env.var} (and \code{PA.table}) slots of 
+##'   \code{\link{BIOMOD.formated.data}} (or \code{\link{BIOMOD.formated.data.PA}}) object}
+##'   \item{\code{get_eval_data}}{a \code{data.frame} combining \code{eval.data.species}, 
+##'   \code{eval.coord}, \code{eval.data.env.var} slots of 
+##'   \code{\link{BIOMOD.formated.data}} or \code{\link{BIOMOD.formated.data.PA}} object}
+##' 
 ##'   \item{\code{get_options}}{a
 ##'   \code{\link{BIOMOD.stored.models.options-class}} object from the
 ##'   \code{models.options} slot of a \code{\link{BIOMOD.models.out-class}}
@@ -349,11 +356,11 @@ setMethod('get_eval_data', signature('BIOMOD.formated.data'), function(obj) {
 ##'                                     modeling.id = 'AllModels',
 ##'                                     models = c('RF', 'GLM'),
 ##'                                     bm.options = myBiomodOptions,
-##'                                     nb.rep = 2,
-##'                                     data.split.perc = 80,
+##'                                     CV.strategy = 'random',
+##'                                     CV.nb.rep = 2,
+##'                                     CV.perc = 0.8,
 ##'                                     metric.eval = c('TSS','ROC'),
 ##'                                     var.import = 3,
-##'                                     do.full.models = FALSE,
 ##'                                     seed.val = 42)
 ##' myBiomodModelOut
 ##' 
@@ -705,11 +712,11 @@ setMethod("get_variables_importance", "BIOMOD.models.out",
 ##'                                       modeling.id = 'AllModels',
 ##'                                       models = c('RF', 'GLM'),
 ##'                                       bm.options = myBiomodOptions,
-##'                                       nb.rep = 2,
-##'                                       data.split.perc = 80,
+##'                                       CV.strategy = 'random',
+##'                                       CV.nb.rep = 2,
+##'                                       CV.perc = 0.8,
 ##'                                       metric.eval = c('TSS','ROC'),
 ##'                                       var.import = 3,
-##'                                       do.full.models = FALSE,
 ##'                                       seed.val = 42)
 ##' }
 ##' 
@@ -1176,11 +1183,11 @@ setMethod("get_predictions", "BIOMOD.projection.out",
 ##'                                       modeling.id = 'AllModels',
 ##'                                       models = c('RF', 'GLM'),
 ##'                                       bm.options = myBiomodOptions,
-##'                                       nb.rep = 2,
-##'                                       data.split.perc = 80,
+##'                                       CV.strategy = 'random',
+##'                                       CV.nb.rep = 2,
+##'                                       CV.perc = 0.8,
 ##'                                       metric.eval = c('TSS','ROC'),
 ##'                                       var.import = 3,
-##'                                       do.full.models = FALSE,
 ##'                                       seed.val = 42)
 ##' }
 ##' 

@@ -91,6 +91,103 @@
 ##' 
 ##' @seealso \code{\link{BIOMOD.formated.data.PA}}, \code{\link{BIOMOD_FormatingData}}
 ##' @family Secundary functions
+##' 
+##' 
+##' @examples 
+##' 
+##' library(terra)
+##' # Load species occurrences (6 species available)
+##' data(DataSpecies)
+##' head(DataSpecies)
+##' 
+##' # Select the name of the studied species
+##' myRespName <- 'GuloGulo'
+##' 
+##' # Get corresponding presence/absence data
+##' myResp <- as.numeric(DataSpecies[, myRespName])
+##' 
+##' # Get corresponding XY coordinates
+##' myRespXY <- DataSpecies[, c('X_WGS84', 'Y_WGS84')]
+##' 
+##' # Load environmental variables extracted from BIOCLIM (bio_3, bio_4, bio_7, bio_11 & bio_12)
+##' data(bioclim_current)
+##' myExpl <- terra::rast(bioclim_current)
+##' 
+##' \dontshow{
+##' myExtent <- terra::ext(0,30,45,70)
+##' myExpl <- terra::crop(myExpl, myExtent)
+##' }
+##' 
+##' 
+##' # ---------------------------------------------------------------
+##' # Create the different pseudo-absence datasets
+##' 
+##' # Transform true absences into potential pseudo-absences
+##' myResp.PA <- ifelse(myResp == 1, 1, NA)
+##' myResp.PA.vect <- vect(cbind(myRespXY, myResp.PA), geom = c("X_WGS84","Y_WGS84"))
+##' 
+##' # random method
+##' PA.r <- bm_PseudoAbsences(resp.var = myResp.PA,
+##'                           expl.var = myExpl,
+##'                           nb.rep = 4,
+##'                           nb.absences = 1000,
+##'                           strategy = 'random')
+##' 
+##' # disk method
+##' PA.d <- bm_PseudoAbsences(resp.var = myResp.PA,
+##'                           expl.var = myExpl,
+##'                           nb.rep = 4,
+##'                           nb.absences = 500,
+##'                           strategy = 'disk',
+##'                           dist.min = 5,
+##'                           dist.max = 35)
+##' 
+##' # SRE method
+##' PA.s <- bm_PseudoAbsences(resp.var = myResp.PA,
+##'                           expl.var = myExpl,
+##'                           nb.rep = 4,
+##'                           nb.absences = 1000,
+##'                           strategy = 'sre',
+##'                           sre.quant = 0.025)
+##' 
+##' # user.defined method
+##' myPAtable <- data.frame(PA1 = ifelse(myResp == 1, TRUE, FALSE),
+##'                         PA2 = ifelse(myResp == 1, TRUE, FALSE))
+##' for (i in 1:ncol(myPAtable)) myPAtable[sample(which(myPAtable[, i] == FALSE), 500), i] = TRUE
+##' PA.u <- bm_PseudoAbsences(resp.var = myResp.PA,
+##'                           expl.var = myExpl,
+##'                           strategy = 'user.defined',
+##'                           user.table = myPAtable)
+##' 
+##' str(PA.r)
+##' head(PA.r$pa.tab)
+##' apply(PA.r$pa.tab, 2, table)
+##' plot(PA.r)
+##' 
+##' head(PA.d$pa.tab)
+##' apply(PA.d$pa.tab, 2, table)
+##' plot(PA.d)
+##' 
+##' head(PA.s$pa.tab)
+##' apply(PA.s$pa.tab, 2, table)
+##' plot(PA.s)
+##' 
+##' tail(PA.u$pa.tab)
+##' apply(PA.u$pa.tab, 2, table)
+##' plot(PA.u)
+##' 
+##' 
+##' # random method : different number of PA
+##' PA.r_mult <- bm_PseudoAbsences(resp.var = myResp.PA.vect,
+##'                                expl.var = myExpl,
+##'                                nb.rep = 4,
+##'                                nb.absences = c(1000, 500, 500, 200),
+##'                                strategy = 'random')
+##' 
+##' str(PA.r_mult)
+##' head(PA.r_mult$pa.tab)
+##' apply(PA.r_mult$pa.tab, 2, table)
+##' plot(PA.r_mult)
 ##'
 ##' 
 ##' @importFrom terra rast vect freq spatSample values extract

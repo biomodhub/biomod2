@@ -169,52 +169,49 @@
 ##'                                      resp.xy = myRespXY,
 ##'                                      resp.name = myRespName)
 ##' 
-##' # Create default modeling options
-##' myBiomodOptions <- BIOMOD_ModelingOptions()
-##' 
-##'  
 ##' # ---------------------------------------------------------------
 ##' # Create the different validation datasets
-##' myBiomodCV <- BIOMOD_CrossValidation(bm.format = myBiomodData)
-##' head(myBiomodCV)
 ##' 
-##' # Several validation strategies can be combined
-##' DataSplitTable.b <- BIOMOD_CrossValidation(bm.format = myBiomodData,
-##'                                            k = 5,
-##'                                            nb.rep = 2,
-##'                                            do.full.models = FALSE)
-##' DataSplitTable.y <- BIOMOD_CrossValidation(bm.format = myBiomodData,
-##'                                            k = 2,
-##'                                            do.stratification = TRUE,
-##'                                            method = "y")
-##' colnames(DataSplitTable.y)[1:2] <- c("RUN11", "RUN12")
-##' myBiomodCV <- cbind(DataSplitTable.b, DataSplitTable.y)
-##' head(myBiomodCV)
+##' # random selection
+##' cv.r <- bm_CrossValidation(bm.format = myBiomodData,
+##'                            strategy = "random",
+##'                            nb.rep = 3,
+##'                            k = 0.8)
 ##' 
-##' # Model single models
-##' myBiomodModelOut <- BIOMOD_Modeling(bm.format = myBiomodData,
-##'                                     modeling.id = 'mod.CV',
-##'                                     models = c('RF'),
-##'                                     bm.options = myBiomodOptions,
-##'                                     nb.rep = 2,
-##'                                     data.split.table = myBiomodCV,
-##'                                     metric.eval = c('TSS','ROC'),
-##'                                     var.import = 0,
-##'                                     do.full.models = FALSE,
-##'                                     seed.val = 42)
+##' # k-fold selection
+##' cv.k <- bm_CrossValidation(bm.format = myBiomodData,
+##'                            strategy = "kfold",
+##'                            nb.rep = 2,
+##'                            k = 3)
 ##' 
-##' # Get evaluation scores & variables importance
-##' myEval <- get_evaluations(myBiomodModelOut)
-##' myEval$CV.strategy <- "Random"
-##' myEval$CV.strategy[grepl("13", myEval$full.name)] <- "Full"
-##' myEval$CV.strategy[grepl("11|12", myEval$full.name)] <- "Stratified"
-##' head(myEval)
+##' # block selection
+##' cv.b <- bm_CrossValidation(bm.format = myBiomodData,
+##'                            strategy = "block")
 ##' 
-##' boxplot(myEval$calibration ~ interaction(myEval$algo, myEval$CV.strategy),
-##'         xlab = "", ylab = "ROC AUC", col = rep(c("brown", "cadetblue"), 3))
-##' boxplot(myEval$validation ~ interaction(myEval$algo, myEval$CV.strategy),
-##'         xlab = "", ylab = "ROC AUC", col = rep(c("brown", "cadetblue"), 3))
-##'          
+##' # stratified selection (geographic)
+##' cv.s <- bm_CrossValidation(bm.format = myBiomodData,
+##'                            strategy = "strat",
+##'                            k = 2,
+##'                            balance = "presences",
+##'                            strat = "x")
+##' 
+##' # stratified selection (environmental)
+##' cv.e <- bm_CrossValidation(bm.format = myBiomodData,
+##'                            strategy = "env",
+##'                            k = 2,
+##'                            balance = "presences")
+##' 
+##' head(cv.r)
+##' apply(cv.r, 2, table)
+##' head(cv.k)
+##' apply(cv.k, 2, table)
+##' head(cv.b)
+##' apply(cv.b, 2, table)
+##' head(cv.s)
+##' apply(cv.s, 2, table)
+##' head(cv.e)
+##' apply(cv.e, 2, table)
+##' 
 ##' 
 ## @importFrom ENMeval get.block
 ## @importFrom dismo kfold

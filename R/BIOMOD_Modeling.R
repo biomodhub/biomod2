@@ -184,7 +184,7 @@
 ##' code{\link[nnet]{nnet}}, \code{\link[mda]{fda}}, \code{\link[earth]{earth}}, 
 ##' \code{\link[randomForest]{randomForest}}, \code{\link[maxnet]{maxnet}},
 ##' \code{\link{BIOMOD_FormatingData}}, \code{\link{BIOMOD_ModelingOptions}}, 
-##' \code{\link{BIOMOD_CrossValidation}}, \code{ \link{bm_VariablesImportance}}, 
+##' \code{\link{bm_CrossValidation}}, \code{ \link{bm_VariablesImportance}}, 
 ##' \code{\link{BIOMOD_Projection}}, \code{\link{BIOMOD_EnsembleModeling}},
 ##' \code{\link{bm_PlotEvalMean}}, \code{\link{bm_PlotEvalBoxplot}}, 
 ##' \code{\link{bm_PlotVarImpBoxplot}}, \code{\link{bm_PlotResponseCurves}}
@@ -233,11 +233,11 @@
 ##'                                     modeling.id = 'AllModels',
 ##'                                     models = c('RF', 'GLM'),
 ##'                                     bm.options = myBiomodOptions,
-##'                                     nb.rep = 2,
-##'                                     data.split.perc = 80,
+##'                                     CV.strategy = 'random',
+##'                                     CV.nb.rep = 2,
+##'                                     CV.perc = 0.8,
 ##'                                     metric.eval = c('TSS','ROC'),
 ##'                                     var.import = 2,
-##'                                     CV.do.full.models = FALSE,
 ##'                                     seed.val = 42)
 ##' myBiomodModelOut
 ##' 

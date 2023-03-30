@@ -168,8 +168,8 @@
 ##'   }
 ##'   \item{Evaluation data}{
 ##'   Although \pkg{biomod2} provides tools to automatically divide dataset into calibration and 
-##'   validation parts through the modeling process (see \code{nb.rep} and \code{data.split.perc} 
-##'   parameters in \code{\link{BIOMOD_Modeling}} function ; or \code{\link{BIOMOD_CrossValidation} 
+##'   validation parts through the modeling process (see \code{CV.[..]} parameters in 
+##'   \code{\link{BIOMOD_Modeling}} function ; or \code{\link{bm_CrossValidation} 
 ##'   function}), it is also possible (and strongly advised) to directly provide two independent 
 ##'   datasets, one for calibration/validation and one for evaluation
 ##'   }

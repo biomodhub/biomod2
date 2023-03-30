@@ -43,6 +43,23 @@ NULL
 #' @export
 BIOMOD_cv <- function(...) { .Deprecated("BIOMOD_CrossValidation") }
 
+#' @title BIOMOD_CrossValidation
+#' @description Deprecated function name for
+#'   \code{\link{bm_CrossValidation}}
+#' @param ... Additional arguments
+#'
+#' @name BIOMOD_CrossValidation-deprecated
+#' @usage BIOMOD_CrossValidation(...)
+#' @seealso \code{\link{biomod2-deprecated}}
+#' @keywords internal
+NULL
+#' @rdname biomod2-deprecated
+#' @section \code{BIOMOD_CrossValidation}:
+#' For \code{BIOMOD_CrossValidation} use \code{\link{bm_CrossValidation}}.
+#'
+#' @export
+BIOMOD_CrossValidation <- function(...) { .Deprecated("bm_CrossValidation") }
+
 #' @title BIOMOD_presenceonly
 #' @description Deprecated function name for
 #'   \code{\link{BIOMOD_PresenceOnly}}

@@ -10,7 +10,7 @@
 ##' @title \code{BIOMOD_FormatingData()} output object class
 ##' 
 ##' @description Class returned by \code{\link{BIOMOD_FormatingData}}, and used by 
-##' \code{\link{BIOMOD_Tuning}}, \code{\link{BIOMOD_CrossValidation}} and 
+##' \code{\link{BIOMOD_Tuning}}, \code{\link{bm_CrossValidation}} and 
 ##' \code{\link{BIOMOD_Modeling}}
 ##' 
 ##' 
@@ -95,7 +95,7 @@
 ##' 
 ##' 
 ##' @seealso \code{\link{BIOMOD_FormatingData}}, \code{\link{BIOMOD_Tuning}}, 
-##' \code{\link{BIOMOD_CrossValidation}}, \code{\link{BIOMOD_Modeling}}, 
+##' \code{\link{bm_CrossValidation}}, \code{\link{BIOMOD_Modeling}}, 
 ##' \code{\link{bm_RunModelsLoop}}
 ##' @family Toolbox objects
 ##' 
@@ -499,7 +499,7 @@ setMethod('BIOMOD.formated.data', signature(sp = 'numeric', env = 'SpatRaster'),
 ##' object. Coordinates must be available to be able to use \code{plot}.
 ##' @param calib.lines (\emph{optional, default} \code{NULL}) \cr
 ##' an \code{array} object returned by \code{\link{get_calib_lines}} or 
-##' \code{\link{BIOMOD_CrossValidation}} functions, to explore the distribution of calibration 
+##' \code{\link{bm_CrossValidation}} functions, to explore the distribution of calibration 
 ##' and validation datasets
 ##' @param plot.type a \code{character}, either \code{'points'} (\emph{default}) 
 ##' or \code{'raster'} (\emph{if environmental variables were given as a raster}). 
@@ -1094,7 +1094,7 @@ setMethod('show', signature('BIOMOD.formated.data'),
 ##' object returned by the \code{\link{BIOMOD_FormatingData}} function
 ##' @param calib.lines (\emph{optional, default} \code{NULL}) \cr
 ##' an \code{array} object returned by \code{\link{get_calib_lines}} or 
-##' \code{\link{BIOMOD_CrossValidation}} functions, to explore the distribution of calibration 
+##' \code{\link{bm_CrossValidation}} functions, to explore the distribution of calibration 
 ##' and validation datasets
 ##' 
 ##' 
@@ -1251,7 +1251,7 @@ setMethod('summary', signature(object = 'BIOMOD.formated.data'),
 ##' @title \code{BIOMOD_FormatingData()} output object class (with pseudo-absences)
 ##' 
 ##' @description Class returned by \code{\link{BIOMOD_FormatingData}}, and used by 
-##' \code{\link{BIOMOD_Tuning}}, \code{\link{BIOMOD_CrossValidation}} and 
+##' \code{\link{BIOMOD_Tuning}}, \code{\link{bm_CrossValidation}} and 
 ##' \code{\link{BIOMOD_Modeling}}
 ##' 
 ##' @inheritParams BIOMOD.formated.data
@@ -1320,7 +1320,7 @@ setMethod('summary', signature(object = 'BIOMOD.formated.data'),
 ##' 
 ##' 
 ##' @seealso \code{\link{BIOMOD_FormatingData}}, \code{\link{bm_PseudoAbsences}}, 
-##' \code{\link{BIOMOD_Tuning}}, \code{\link{BIOMOD_CrossValidation}}, 
+##' \code{\link{BIOMOD_Tuning}}, \code{\link{bm_CrossValidation}}, 
 ##' \code{\link{BIOMOD_Modeling}}, \code{\link{bm_RunModelsLoop}}
 ##' @family Toolbox objects
 ##' 

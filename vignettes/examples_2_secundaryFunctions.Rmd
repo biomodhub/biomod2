@@ -338,8 +338,13 @@ cv.e <- bm_CrossValidation(bm.format = myBiomodData,
                            balance = "presences")
 
 head(cv.r)
+apply(cv.r, 2, table)
 head(cv.k)
+apply(cv.k, 2, table)
 head(cv.b)
+apply(cv.b, 2, table)
 head(cv.s)
+apply(cv.s, 2, table)
 head(cv.e)
+apply(cv.e, 2, table)
 ```
