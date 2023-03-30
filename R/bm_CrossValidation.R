@@ -51,6 +51,19 @@
 ##' 
 ##' @details
 ##' 
+##' Several parameters are available within the function and some of them can be used with 
+##' different cross-validation strategies :
+##' 
+##' \code{| ....... | random | kfold | block | strat | env |} \cr
+##' __________________________________________________ \cr
+##' \code{| nb.rep. | x..... | x.... | ..... | ..... | ... |} \cr
+##' \code{| perc... | x..... | ..... | ..... | ..... | ... |} \cr
+##' \code{| k...... | ...... | x.... | ..... | x.... | x.. |} \cr
+##' \code{| balance | ...... | ..... | ..... | x.... | x.. |} \cr
+##' \code{| strat.. | ...... | ..... | ..... | x.... | ... |} \cr
+##' 
+##' \cr
+##' 
 ##' \bold{Concerning column names of \code{matrix} output :}
 ##' 
 ##' The number of columns depends on the strategy selected. 
@@ -59,49 +72,31 @@
 ##' If \code{do.full.models = TRUE}, columns merging runs (and/or pseudo-absence datasets) 
 ##' are added at the end.
 ##' 
-##' |         | random | kfold | block | strat | env |
-##' | ------: | :----: | :---: | :---: | :---: | :-: |
-##' | nb.rep  | x      | x     |       |       |     |
-##' | perc    | x      |       |       |       |     |
-##' | k       |        | x     |       | x     | x   |
-##' | balance |        |       |       | x     | x   |
-##' | strat   |        |       |       | x     |     |
-##' 
-##' \cr \cr
+##' \cr
 ##' 
 ##' 
-##' \bold{Concerning random selection :}
+##' \bold{Concerning cross-validation strategies :}
 ##' 
-##' Most simple method to calibrate and validate a model is to split the original dataset in two 
+##' \describe{
+##'   \item{random}{Most simple method to calibrate and validate a model is to split the original dataset in two 
 ##' datasets : one to calibrate the model and the other one to validate it. The splitting can be 
-##' repeated \code{nb.rep} times.
-##' 
-##' \bold{Concerning k-fold selection :}
-##' 
-##' The k-fold method splits the original dataset in \code{k} datasets of equal sizes : each part 
+##' repeated \code{nb.rep} times.}
+##'   \item{k-fold}{The k-fold method splits the original dataset in \code{k} datasets of equal sizes : each part 
 ##' is used successively as the validation dataset while the other \code{k-1} parts are used for 
 ##' the calibration, leading to \code{k} calibration/validation ensembles. This multiple splitting 
-##' can be repeated \code{nb.rep} times.
-##' 
-##' \bold{Concerning block selection :}
-##' 
-##' It may be used to test for model overfitting and to assess transferability in geographic space.
+##' can be repeated \code{nb.rep} times.}
+##'   \item{block}{It may be used to test for model overfitting and to assess transferability in geographic space.
 ##' \code{block} stratification was described in \emph{Muscarella et al. 2014} (see References). 
-##' Four bins of equal size are partitioned (bottom-left, bottom-right, top-left and top-right).
-##' 
-##' \bold{Concerning stratified selection :}
-##' 
-##' It may be used to test for model overfitting and to assess transferability in geographic space.
+##' Four bins of equal size are partitioned (bottom-left, bottom-right, top-left and top-right).}
+##'   \item{stratified}{It may be used to test for model overfitting and to assess transferability in geographic space.
 ##' \code{x} and \code{y} stratification was described in \emph{Wenger and Olden 2012} (see 
 ##' References). \code{y} stratification uses \code{k} partitions along the y-gradient, \code{x} 
-##' stratification does the same for the x-gradient, and \code{both} combines them.
+##' stratification does the same for the x-gradient, and \code{both} combines them.}
+##'   \item{environmental}{}
+##'   \item{user-defined}{}
+##' }
 ##' 
-##' \bold{Concerning environmental selection :}
-##' 
-##' \bold{Concerning user-defined selection :}
-##' 
-##' 
-##' \cr \cr
+##' \cr
 ##' 
 ##' \bold{Concerning balance parameter :}
 ##' 

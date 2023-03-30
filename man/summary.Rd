@@ -13,7 +13,7 @@ object returned by the \code{\link{BIOMOD_FormatingData}} function}
 
 \item{calib.lines}{(\emph{optional, default} \code{NULL}) \cr
 an \code{array} object returned by \code{\link{get_calib_lines}} or 
-\code{\link{BIOMOD_CrossValidation}} functions, to explore the distribution of calibration 
+\code{\link{bm_CrossValidation}} functions, to explore the distribution of calibration 
 and validation datasets}
 }
 \value{

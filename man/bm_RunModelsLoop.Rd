@@ -6,14 +6,15 @@
 \title{Loop to compute all single species distribution models}
 \usage{
 bm_RunModelsLoop(
-  mod.prep.dat.pa,
+  bm.format,
+  weights,
+  calib.lines,
   modeling.id,
   models,
   models.pa,
   bm.options,
   metric.eval,
   var.import,
-  save.output = TRUE,
   scale.models = TRUE,
   nb.cpu = 1,
   seed.val = NULL,
@@ -22,19 +23,16 @@ bm_RunModelsLoop(
 
 bm_RunModel(
   model,
-  Data,
+  run.name,
+  dir.name = ".",
   modeling.id = "",
   bm.options,
+  Data,
+  weights.vec,
   calib.lines.vec,
-  weights,
-  nam,
-  dir.name = ".",
-  xy = NULL,
   eval.data = NULL,
-  eval.xy = NULL,
   metric.eval = c("ROC", "TSS", "KAPPA"),
   var.import = 0,
-  save.output = FALSE,
   scale.models = TRUE,
   nb.cpu = 1,
   seed.val = NULL,
@@ -42,14 +40,20 @@ bm_RunModel(
 )
 }
 \arguments{
-\item{mod.prep.dat.pa}{a \code{list} returned by the \code{\link{.BIOMOD_Modeling.prepare.data}} 
-function and containing pre-processed data from \code{\link{BIOMOD.formated.data}} or 
-\code{\link{BIOMOD.formated.data.PA}} for each pseudo-absence dataset}
+\item{bm.format}{a \code{\link{BIOMOD.formated.data}} or \code{\link{BIOMOD.formated.data.PA}} 
+object returned by the \code{\link{BIOMOD_FormatingData}} function}
+
+\item{weights}{a \code{matrix} containing observation weights for each pseudo-absence (or 
+\code{allData}) dataset}
+
+\item{calib.lines}{a \code{matrix} containing calibration / validation lines for each 
+pseudo-absence (or \code{allData}) x repetition (or \code{allRun}) combination that can be 
+obtained with the \code{\link{bm_CrossValidation}} function}
 
 \item{modeling.id}{a \code{character} corresponding to the name (ID) of the simulation set 
 (\emph{a random number by default})}
 
-\item{models}{a \code{character} corresponding to the model name to be computed, must be either 
+\item{models}{a \code{vector} containing model names to be computed, must be among 
 \code{GLM}, \code{GBM}, \code{GAM}, \code{CTA}, \code{ANN}, \code{SRE}, \code{FDA}, 
 \code{MARS}, \code{RF}, \code{MAXENT}, \code{MAXNET}}
 
@@ -69,10 +73,6 @@ be among \code{ROC}, \code{TSS}, \code{KAPPA}, \code{ACCURACY}, \code{BIAS}, \co
 An \code{integer} corresponding to the number of permutations to be done for each variable to 
 estimate variable importance}
 
-\item{save.output}{(\emph{optional, default} \code{TRUE}) \cr 
-A \code{logical} value defining whether all outputs should be saved on hard drive or not 
-(\emph{! strongly recommended !})}
-
 \item{scale.models}{(\emph{optional, default} \code{FALSE}) \cr 
 A \code{logical} value defining whether all models predictions should be scaled with a 
 binomial GLM or not}
@@ -87,30 +87,28 @@ An \code{integer} value corresponding to the new seed value to be set}
 \item{do.progress}{(\emph{optional, default} \code{TRUE}) \cr 
 A \code{logical} value defining whether the progress bar is to be rendered or not}
 
-\item{Data}{a \code{data.frame} containing \code{data.species} and \code{data.env.var} slots 
-of \code{mod.prep.dat.pa} parameter}
+\item{model}{a \code{character} corresponding to the model name to be computed, must be either 
+\code{GLM}, \code{GBM}, \code{GAM}, \code{CTA}, \code{ANN}, \code{SRE}, \code{FDA}, 
+\code{MARS}, \code{RF}, \code{MAXENT}, \code{MAXNET}}
 
-\item{weights}{a \code{vector} of \code{numeric} values corresponding to observation weights 
-(one per observation)}
-
-\item{nam}{a \code{character} corresponding to the model to be run (name + run.id)}
+\item{run.name}{a \code{character} corresponding to the model to be run (sp.name + pa.id + 
+run.id)}
 
 \item{dir.name}{(\emph{optional, default} \code{.}) \cr
 A \code{character} corresponding to the modeling folder}
 
-\item{xy}{a \code{data.frame} containing \code{coord} slot of \code{mod.prep.dat.pa} 
-parameter (for a specific PA dataset extracted from \code{PA.table} slot of \code{mod.prep.dat.pa} 
-parameter)}
+\item{Data}{a \code{data.frame} containing observations, coordinates and environmental 
+variables that can be obtained with the \code{get_species_data} function}
 
-\item{eval.data}{a \code{data.frame} containing \code{eval.data.species} and 
-\code{eval.data.env.var} slots of \code{mod.prep.dat.pa} parameter}
+\item{weights.vec}{a \code{vector} containing observation weights the concerned pseudo-absence 
+(or \code{allData}) dataset}
 
-\item{eval.xy}{a \code{data.frame} containing \code{eval.coord} slot of \code{mod.prep.dat.pa} 
-parameter}
+\item{calib.lines.vec}{a \code{vector} containing calibration / validation lines for the 
+concerned pseudo-absence (or \code{allData}) x repetition (or \code{allRun}) combination}
 
-\item{calib.lines}{a \code{data.frame} containing \code{data.split.table} slot of 
-\code{mod.prep.dat.pa} parameter, or an extraction of \code{data.species} slot (for a specific PA 
-dataset extracted from \code{PA.table} slot)}
+\item{eval.data}{(\emph{optional, default} \code{NULL}) \cr
+A \code{data.frame} containing validation observations, coordinates and environmental 
+variables that can be obtained with the \code{get_eval_data} function}
 }
 \value{
 A \code{list} containing for each model a \code{list} containing the following elements :
@@ -141,6 +139,7 @@ species distribution models (asked by the \code{\link{BIOMOD_Modeling}} function
 Other Secundary functions: 
 \code{\link{bm_BinaryTransformation}()},
 \code{\link{bm_CVnnet}()},
+\code{\link{bm_CrossValidation}()},
 \code{\link{bm_FindOptimStat}()},
 \code{\link{bm_MakeFormula}()},
 \code{\link{bm_PlotEvalBoxplot}()},

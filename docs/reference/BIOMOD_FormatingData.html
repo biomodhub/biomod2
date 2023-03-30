@@ -113,7 +113,7 @@ with different strategies (see Details).</p>
 <span>  eval.resp.xy <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  PA.nb.rep <span class="op">=</span> <span class="fl">0</span>,</span>
 <span>  PA.nb.absences <span class="op">=</span> <span class="fl">1000</span>,</span>
-<span>  PA.strategy <span class="op">=</span> <span class="st">"random"</span>,</span>
+<span>  PA.strategy <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  PA.dist.min <span class="op">=</span> <span class="fl">0</span>,</span>
 <span>  PA.dist.max <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  PA.sre.quant <span class="op">=</span> <span class="fl">0.025</span>,</span>
@@ -308,8 +308,8 @@ and provides different methods to select pseudo-absences if needed. <br><br></p>
 
   <dt>Evaluation data</dt>
 <dd><p>Although <span class="pkg">biomod2</span> provides tools to automatically divide dataset into calibration and 
-  validation parts through the modeling process (see <code>nb.rep</code> and <code>data.split.perc</code> 
-  parameters in <code><a href="BIOMOD_Modeling.html">BIOMOD_Modeling</a></code> function ; or <code><a href="BIOMOD_CrossValidation.html">BIOMOD_CrossValidation</a> 
+  validation parts through the modeling process (see <code>CV.[..]</code> parameters in 
+  <code><a href="BIOMOD_Modeling.html">BIOMOD_Modeling</a></code> function ; or <code><a href="bm_CrossValidation.html">bm_CrossValidation</a> 
   function</code>), it is also possible (and strongly advised) to directly provide two independent 
   datasets, one for calibration/validation and one for evaluation</p></dd>
 
@@ -350,7 +350,6 @@ and provides different methods to select pseudo-absences if needed. <br><br></p>
     <h2>See also</h2>
     <div class="dont-index"><p><code><a href="bm_PseudoAbsences.html">bm_PseudoAbsences</a></code>, <code><a href="BIOMOD_Modeling.html">BIOMOD_Modeling</a></code></p>
 <p>Other Main functions: 
-<code><a href="BIOMOD_CrossValidation.html">BIOMOD_CrossValidation</a>()</code>,
 <code><a href="BIOMOD_EnsembleForecasting.html">BIOMOD_EnsembleForecasting</a>()</code>,
 <code><a href="BIOMOD_EnsembleModeling.html">BIOMOD_EnsembleModeling</a>()</code>,
 <code><a href="BIOMOD_LoadModels.html">BIOMOD_LoadModels</a>()</code>,

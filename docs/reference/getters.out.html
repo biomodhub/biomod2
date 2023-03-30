@@ -103,7 +103,16 @@ and formated data, models used or not, predictions, evaluations, variables impor
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="co"># S4 method for BIOMOD.models.out</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="co"># S4 method for BIOMOD.formated.data</span></span>
+<span><span class="fu">get_species_data</span><span class="op">(</span><span class="va">obj</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># S4 method for BIOMOD.formated.data.PA</span></span>
+<span><span class="fu">get_species_data</span><span class="op">(</span><span class="va">obj</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># S4 method for BIOMOD.formated.data</span></span>
+<span><span class="fu">get_eval_data</span><span class="op">(</span><span class="va">obj</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># S4 method for BIOMOD.models.out</span></span>
 <span><span class="fu">get_options</span><span class="op">(</span><span class="va">obj</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># S4 method for BIOMOD.models.out</span></span>
@@ -237,7 +246,8 @@ and formated data, models used or not, predictions, evaluations, variables impor
     <div id="arguments">
     <h2>Arguments</h2>
     <dl><dt>obj</dt>
-<dd><p>a <code><a href="BIOMOD.models.out.html">BIOMOD.models.out</a></code>, <code><a href="BIOMOD.projection.out.html">BIOMOD.projection.out</a></code> or 
+<dd><p>a <code><a href="BIOMOD.formated.data.html">BIOMOD.formated.data</a></code>, <code><a href="BIOMOD.formated.data.PA.html">BIOMOD.formated.data.PA</a></code>, 
+<code><a href="BIOMOD.models.out.html">BIOMOD.models.out</a></code>, <code><a href="BIOMOD.projection.out.html">BIOMOD.projection.out</a></code> or 
 <code><a href="BIOMOD.ensemble.models.out.html">BIOMOD.ensemble.models.out</a></code> object</p></dd>
 
 
@@ -356,14 +366,25 @@ function)</em>)</p></dd>
     <h2>Value</h2>
     
 
-<dl><dt><code>get_options</code></dt>
+<dl><dt><code>get_species_data</code></dt>
+<dd><p>a <code>data.frame</code> combining <code>data.species</code>, 
+  <code>coord</code>, <code>data.env.var</code> (and <code>PA.table</code>) slots of 
+  <code><a href="BIOMOD.formated.data.html">BIOMOD.formated.data</a></code> (or <code><a href="BIOMOD.formated.data.PA.html">BIOMOD.formated.data.PA</a></code>) object</p></dd>
+
+  <dt><code>get_eval_data</code></dt>
+<dd><p>a <code>data.frame</code> combining <code>eval.data.species</code>, 
+  <code>eval.coord</code>, <code>eval.data.env.var</code> slots of 
+  <code><a href="BIOMOD.formated.data.html">BIOMOD.formated.data</a></code> or <code><a href="BIOMOD.formated.data.PA.html">BIOMOD.formated.data.PA</a></code> object</p></dd>
+
+
+  <dt><code>get_options</code></dt>
 <dd><p>a
   <code><a href="BIOMOD.stored.data.html">BIOMOD.stored.models.options-class</a></code> object from the
   <code>models.options</code> slot of a <code><a href="BIOMOD.models.out.html">BIOMOD.models.out-class</a></code>
   object</p></dd>
  <dt><code>get_calib_lines</code></dt>
 <dd><p>a
-  <code><a href="BIOMOD.stored.data.html">BIOMOD.stored.array-class</a></code> object from the <code>calib.lines</code>
+  <code><a href="BIOMOD.stored.data.html">BIOMOD.stored.data.frame-class</a></code> object from the <code>calib.lines</code>
   slot of a <code><a href="BIOMOD.models.out.html">BIOMOD.models.out</a></code> object</p></dd>
 
 

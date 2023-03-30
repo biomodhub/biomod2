@@ -29,7 +29,8 @@
 ##' and formated data, models used or not, predictions, evaluations, variables importance.
 ##' 
 ##' 
-##' @param obj a \code{\link{BIOMOD.models.out}}, \code{\link{BIOMOD.projection.out}} or 
+##' @param obj a \code{\link{BIOMOD.formated.data}}, \code{\link{BIOMOD.formated.data.PA}}, 
+##' \code{\link{BIOMOD.models.out}}, \code{\link{BIOMOD.projection.out}} or 
 ##' \code{\link{BIOMOD.ensemble.models.out}} object
 ##' @param \ldots (\emph{optional, one or several of the following arguments depending on the selected 
 ##' function)}) 
@@ -217,10 +218,9 @@ setGeneric("get_evaluations", function(obj, ...) { standardGeneric("get_evaluati
 setGeneric("get_variables_importance", function(obj, ...) { standardGeneric("get_variables_importance") }) ## AC
 
 
-## -------------------------------------------------------------------------- #
-
+## get_species_data.BIOMOD.formated.data ------------------------------------------------
 ##' 
-##' @rdname BIOMOD.formated.data
+##' @rdname getters.out
 ##' @export
 ##' 
 
@@ -232,6 +232,12 @@ setMethod('get_species_data', signature('BIOMOD.formated.data'), function(obj) {
   return(tab.sp)
 })
 
+## get_species_data.BIOMOD.formated.data.PA ---------------------------------------------
+##' 
+##' @rdname getters.out
+##' @export
+##' 
+
 setMethod('get_species_data', signature('BIOMOD.formated.data.PA'), function(obj) {
   tab.sp <- data.frame(obj@data.species)
   tab.sp <- cbind(tab.sp, obj@coord)
@@ -240,6 +246,12 @@ setMethod('get_species_data', signature('BIOMOD.formated.data.PA'), function(obj
   tab.sp <- cbind(tab.sp, obj@PA.table)
   return(tab.sp)
 })
+
+## get_eval_data.BIOMOD.formated.data ---------------------------------------------------
+##' 
+##' @rdname getters.out
+##' @export
+##' 
 
 setMethod('get_eval_data', signature('BIOMOD.formated.data'), function(obj) {
   if (obj@has.data.eval) {

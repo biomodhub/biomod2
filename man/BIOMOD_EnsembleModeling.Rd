@@ -326,11 +326,11 @@ if (file.exists(file.out)) {
                                       modeling.id = 'AllModels',
                                       models = c('RF', 'GLM'),
                                       bm.options = myBiomodOptions,
-                                      nb.rep = 2,
-                                      data.split.perc = 80,
+                                      CV.strategy = 'random',
+                                      CV.nb.rep = 2,
+                                      CV.perc = 0.8,
                                       metric.eval = c('TSS','ROC'),
                                       var.import = 3,
-                                      do.full.models = FALSE,
                                       seed.val = 42)
 }
 
@@ -376,13 +376,12 @@ bm_PlotEvalBoxplot(bm.out = myBiomodEM, group.by = c('algo', 'algo'))
 }
 \seealso{
 \code{\link{BIOMOD_FormatingData}}, \code{\link{BIOMOD_ModelingOptions}}, 
-\code{\link{BIOMOD_CrossValidation}}, \code{\link{bm_VariablesImportance}}, 
+\code{\link{bm_CrossValidation}}, \code{\link{bm_VariablesImportance}}, 
 \code{\link{BIOMOD_Modeling}}, \code{\link{BIOMOD_EnsembleForecasting}},
 \code{\link{bm_PlotEvalMean}}, \code{\link{bm_PlotEvalBoxplot}}, 
 \code{\link{bm_PlotVarImpBoxplot}}, \code{\link{bm_PlotResponseCurves}}
 
 Other Main functions: 
-\code{\link{BIOMOD_CrossValidation}()},
 \code{\link{BIOMOD_EnsembleForecasting}()},
 \code{\link{BIOMOD_FormatingData}()},
 \code{\link{BIOMOD_LoadModels}()},

@@ -125,6 +125,7 @@ plot(res)
 Other Secundary functions: 
 \code{\link{bm_BinaryTransformation}()},
 \code{\link{bm_CVnnet}()},
+\code{\link{bm_CrossValidation}()},
 \code{\link{bm_FindOptimStat}()},
 \code{\link{bm_MakeFormula}()},
 \code{\link{bm_PlotEvalBoxplot}()},

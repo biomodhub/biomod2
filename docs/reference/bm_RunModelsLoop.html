@@ -99,14 +99,15 @@ species distribution models (asked by the <code><a href="BIOMOD_Modeling.html">B
 
     <div id="ref-usage">
     <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">bm_RunModelsLoop</span><span class="op">(</span></span>
-<span>  <span class="va">mod.prep.dat.pa</span>,</span>
+<span>  <span class="va">bm.format</span>,</span>
+<span>  <span class="va">weights</span>,</span>
+<span>  <span class="va">calib.lines</span>,</span>
 <span>  <span class="va">modeling.id</span>,</span>
 <span>  <span class="va">models</span>,</span>
 <span>  <span class="va">models.pa</span>,</span>
 <span>  <span class="va">bm.options</span>,</span>
 <span>  <span class="va">metric.eval</span>,</span>
 <span>  <span class="va">var.import</span>,</span>
-<span>  save.output <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  scale.models <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  nb.cpu <span class="op">=</span> <span class="fl">1</span>,</span>
 <span>  seed.val <span class="op">=</span> <span class="cn">NULL</span>,</span>
@@ -115,19 +116,16 @@ species distribution models (asked by the <code><a href="BIOMOD_Modeling.html">B
 <span></span>
 <span><span class="fu">bm_RunModel</span><span class="op">(</span></span>
 <span>  <span class="va">model</span>,</span>
-<span>  <span class="va">Data</span>,</span>
+<span>  <span class="va">run.name</span>,</span>
+<span>  dir.name <span class="op">=</span> <span class="st">"."</span>,</span>
 <span>  modeling.id <span class="op">=</span> <span class="st">""</span>,</span>
 <span>  <span class="va">bm.options</span>,</span>
+<span>  <span class="va">Data</span>,</span>
+<span>  <span class="va">weights.vec</span>,</span>
 <span>  <span class="va">calib.lines.vec</span>,</span>
-<span>  <span class="va">weights</span>,</span>
-<span>  <span class="va">nam</span>,</span>
-<span>  dir.name <span class="op">=</span> <span class="st">"."</span>,</span>
-<span>  xy <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  eval.data <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  eval.xy <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  metric.eval <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"ROC"</span>, <span class="st">"TSS"</span>, <span class="st">"KAPPA"</span><span class="op">)</span>,</span>
 <span>  var.import <span class="op">=</span> <span class="fl">0</span>,</span>
-<span>  save.output <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  scale.models <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  nb.cpu <span class="op">=</span> <span class="fl">1</span>,</span>
 <span>  seed.val <span class="op">=</span> <span class="cn">NULL</span>,</span>
@@ -137,10 +135,20 @@ species distribution models (asked by the <code><a href="BIOMOD_Modeling.html">B
 
     <div id="arguments">
     <h2>Arguments</h2>
-    <dl><dt>mod.prep.dat.pa</dt>
-<dd><p>a <code>list</code> returned by the <code>.BIOMOD_Modeling.prepare.data</code> 
-function and containing pre-processed data from <code><a href="BIOMOD.formated.data.html">BIOMOD.formated.data</a></code> or 
-<code><a href="BIOMOD.formated.data.PA.html">BIOMOD.formated.data.PA</a></code> for each pseudo-absence dataset</p></dd>
+    <dl><dt>bm.format</dt>
+<dd><p>a <code><a href="BIOMOD.formated.data.html">BIOMOD.formated.data</a></code> or <code><a href="BIOMOD.formated.data.PA.html">BIOMOD.formated.data.PA</a></code> 
+object returned by the <code><a href="BIOMOD_FormatingData.html">BIOMOD_FormatingData</a></code> function</p></dd>
+
+
+<dt>weights</dt>
+<dd><p>a <code>matrix</code> containing observation weights for each pseudo-absence (or 
+<code>allData</code>) dataset</p></dd>
+
+
+<dt>calib.lines</dt>
+<dd><p>a <code>matrix</code> containing calibration / validation lines for each 
+pseudo-absence (or <code>allData</code>) x repetition (or <code>allRun</code>) combination that can be 
+obtained with the <code><a href="bm_CrossValidation.html">bm_CrossValidation</a></code> function</p></dd>
 
 
 <dt>modeling.id</dt>
@@ -149,7 +157,7 @@ function and containing pre-processed data from <code><a href="BIOMOD.formated.d
 
 
 <dt>models</dt>
-<dd><p>a <code>character</code> corresponding to the model name to be computed, must be either 
+<dd><p>a <code>vector</code> containing model names to be computed, must be among 
 <code>GLM</code>, <code>GBM</code>, <code>GAM</code>, <code>CTA</code>, <code>ANN</code>, <code>SRE</code>, <code>FDA</code>, 
 <code>MARS</code>, <code>RF</code>, <code>MAXENT</code>, <code>MAXNET</code></p></dd>
 
@@ -178,12 +186,6 @@ An <code>integer</code> corresponding to the number of permutations to be done f
 estimate variable importance</p></dd>
 
 
-<dt>save.output</dt>
-<dd><p>(<em>optional, default</em> <code>TRUE</code>) <br> 
-A <code>logical</code> value defining whether all outputs should be saved on hard drive or not 
-(<em>! strongly recommended !</em>)</p></dd>
-
-
 <dt>scale.models</dt>
 <dd><p>(<em>optional, default</em> <code>FALSE</code>) <br> 
 A <code>logical</code> value defining whether all models predictions should be scaled with a 
@@ -206,18 +208,15 @@ An <code>integer</code> value corresponding to the new seed value to be set</p><
 A <code>logical</code> value defining whether the progress bar is to be rendered or not</p></dd>
 
 
-<dt>Data</dt>
-<dd><p>a <code>data.frame</code> containing <code>data.species</code> and <code>data.env.var</code> slots 
-of <code>mod.prep.dat.pa</code> parameter</p></dd>
+<dt>model</dt>
+<dd><p>a <code>character</code> corresponding to the model name to be computed, must be either 
+<code>GLM</code>, <code>GBM</code>, <code>GAM</code>, <code>CTA</code>, <code>ANN</code>, <code>SRE</code>, <code>FDA</code>, 
+<code>MARS</code>, <code>RF</code>, <code>MAXENT</code>, <code>MAXNET</code></p></dd>
 
 
-<dt>weights</dt>
-<dd><p>a <code>vector</code> of <code>numeric</code> values corresponding to observation weights 
-(one per observation)</p></dd>
-
-
-<dt>nam</dt>
-<dd><p>a <code>character</code> corresponding to the model to be run (name + run.id)</p></dd>
+<dt>run.name</dt>
+<dd><p>a <code>character</code> corresponding to the model to be run (sp.name + pa.id + 
+run.id)</p></dd>
 
 
 <dt>dir.name</dt>
@@ -225,26 +224,25 @@ of <code>mod.prep.dat.pa</code> parameter</p></dd>
 A <code>character</code> corresponding to the modeling folder</p></dd>
 
 
-<dt>xy</dt>
-<dd><p>a <code>data.frame</code> containing <code>coord</code> slot of <code>mod.prep.dat.pa</code> 
-parameter (for a specific PA dataset extracted from <code>PA.table</code> slot of <code>mod.prep.dat.pa</code> 
-parameter)</p></dd>
+<dt>Data</dt>
+<dd><p>a <code>data.frame</code> containing observations, coordinates and environmental 
+variables that can be obtained with the <code>get_species_data</code> function</p></dd>
+
+
+<dt>weights.vec</dt>
+<dd><p>a <code>vector</code> containing observation weights the concerned pseudo-absence 
+(or <code>allData</code>) dataset</p></dd>
+
+
+<dt>calib.lines.vec</dt>
+<dd><p>a <code>vector</code> containing calibration / validation lines for the 
+concerned pseudo-absence (or <code>allData</code>) x repetition (or <code>allRun</code>) combination</p></dd>
 
 
 <dt>eval.data</dt>
-<dd><p>a <code>data.frame</code> containing <code>eval.data.species</code> and 
-<code>eval.data.env.var</code> slots of <code>mod.prep.dat.pa</code> parameter</p></dd>
-
-
-<dt>eval.xy</dt>
-<dd><p>a <code>data.frame</code> containing <code>eval.coord</code> slot of <code>mod.prep.dat.pa</code> 
-parameter</p></dd>
-
-
-<dt>calib.lines</dt>
-<dd><p>a <code>data.frame</code> containing <code>data.split.table</code> slot of 
-<code>mod.prep.dat.pa</code> parameter, or an extraction of <code>data.species</code> slot (for a specific PA 
-dataset extracted from <code>PA.table</code> slot)</p></dd>
+<dd><p>(<em>optional, default</em> <code>NULL</code>) <br>
+A <code>data.frame</code> containing validation observations, coordinates and environmental 
+variables that can be obtained with the <code>get_eval_data</code> function</p></dd>
 
 </dl></div>
     <div id="value">
@@ -272,6 +270,7 @@ dataset extracted from <code>PA.table</code> slot)</p></dd>
 <p>Other Secundary functions: 
 <code><a href="bm_BinaryTransformation.html">bm_BinaryTransformation</a>()</code>,
 <code><a href="bm_CVnnet.html">bm_CVnnet</a>()</code>,
+<code><a href="bm_CrossValidation.html">bm_CrossValidation</a>()</code>,
 <code><a href="bm_FindOptimStat.html">bm_FindOptimStat</a>()</code>,
 <code><a href="bm_MakeFormula.html">bm_MakeFormula</a>()</code>,
 <code><a href="bm_PlotEvalBoxplot.html">bm_PlotEvalBoxplot</a>()</code>,

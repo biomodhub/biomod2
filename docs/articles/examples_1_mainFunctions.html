@@ -122,17 +122,19 @@
 
     
     
-<p><link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.13/css/all.css" integrity="sha384-DNOHZ68U8hZfKXOrtjWvjxusGo9WQnrNx2sqG0tfsghAvtVlRW3tvkXWZh58N9jp" crossorigin="anonymous"></p>
+<p><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"></p>
 <div class="section level2">
 <h2 id="complete-code-example">
-<i class="fas fa-code"></i> Complete code example<a class="anchor" aria-label="anchor" href="#complete-code-example"></a>
+<i class="fa-solid fa-code"></i> Complete code example<a class="anchor" aria-label="anchor" href="#complete-code-example"></a>
 </h2>
 <p>Here are presented, in a full and complete example, all main
 functions (starting with <code>BIOMOD_[...]</code>) of
 <code>biomod2</code>.</p>
+<p><br><br></p>
 <div class="section level3">
 <h3 id="load-dataset-and-variables">
-<i class="fas fa-truck-loading"></i> Load dataset and variables<a class="anchor" aria-label="anchor" href="#load-dataset-and-variables"></a>
+<i class="fa-solid fa-truck-ramp-box"></i> Load dataset and
+variables<a class="anchor" aria-label="anchor" href="#load-dataset-and-variables"></a>
 </h3>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va">biomod2</span><span class="op">)</span></span>
@@ -154,13 +156,17 @@ functions (starting with <code>BIOMOD_[...]</code>) of
 <span><span class="co"># Load environmental variables extracted from BIOCLIM (bio_3, bio_4, bio_7, bio_11 &amp; bio_12)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="st">"bioclim_current"</span><span class="op">)</span></span>
 <span><span class="va">myExpl</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/terra/man/rast.html" class="external-link">rast</a></span><span class="op">(</span><span class="va">bioclim_current</span><span class="op">)</span></span></code></pre></div>
+<p><br><br></p>
 </div>
 <div class="section level3">
 <h3 id="prepare-data-parameters">
-<i class="fas fa-tasks"></i> Prepare data &amp; parameters<a class="anchor" aria-label="anchor" href="#prepare-data-parameters"></a>
+<i class="fa-solid fa-list-check"></i> Prepare data &amp;
+parameters<a class="anchor" aria-label="anchor" href="#prepare-data-parameters"></a>
 </h3>
 <div class="section level4">
-<h4 id="format-data-observations-explanatory-variables">Format data (observations &amp; explanatory variables)<a class="anchor" aria-label="anchor" href="#format-data-observations-explanatory-variables"></a>
+<h4 id="format-data-observations-explanatory-variables">
+<i class="fa-solid fa-spell-check"></i> Format data (observations
+&amp; explanatory variables)<a class="anchor" aria-label="anchor" href="#format-data-observations-explanatory-variables"></a>
 </h4>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Format Data with true absences</span></span>
@@ -172,8 +178,13 @@ functions (starting with <code>BIOMOD_[...]</code>) of
 <span><span class="fu"><a href="https://rdrr.io/pkg/terra/man/plot.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">myBiomodData</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level4">
-<h4 id="pseudo-absences-extraction">Pseudo-absences extraction<a class="anchor" aria-label="anchor" href="#pseudo-absences-extraction"></a>
+<h4 id="pseudo-absences-extraction">
+<i class="fa-solid fa-shuffle"></i> Pseudo-absences extraction<a class="anchor" aria-label="anchor" href="#pseudo-absences-extraction"></a>
 </h4>
+<p>Single or multiple set of pseudo-absences can be selected with the <a href="../reference/BIOMOD_FormatingData.html"><code>BIOMOD_FormatingData</code></a>
+function, which calls the <a href="../reference/bm_PseudoAbsences.html"><code>bm_PseudoAbsences</code></a>
+function to do so. More examples are presented on the <a href="examples_2_secundaryFunctions.html">Secundary functions
+webpage</a>.</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># # Transform true absences into potential pseudo-absences</span></span>
 <span><span class="co"># myResp.PA &lt;- ifelse(myResp == 1, 1, NA)</span></span>
@@ -187,46 +198,8 @@ functions (starting with <code>BIOMOD_[...]</code>) of
 <span><span class="co">#                                        PA.nb.absences = 1000,</span></span>
 <span><span class="co">#                                        PA.strategy = 'random')</span></span>
 <span><span class="co"># </span></span>
-<span><span class="co"># # Format Data with pseudo-absences : disk method</span></span>
-<span><span class="co"># myBiomodData.d &lt;- BIOMOD_FormatingData(resp.var = myResp.PA,</span></span>
-<span><span class="co">#                                        expl.var = myExpl,</span></span>
-<span><span class="co">#                                        resp.xy = myRespXY,</span></span>
-<span><span class="co">#                                        resp.name = myRespName,</span></span>
-<span><span class="co">#                                        PA.nb.rep = 4,</span></span>
-<span><span class="co">#                                        PA.nb.absences = 500,</span></span>
-<span><span class="co">#                                        PA.strategy = 'disk',</span></span>
-<span><span class="co">#                                        PA.dist.min = 5,</span></span>
-<span><span class="co">#                                        PA.dist.max = 35)</span></span>
-<span><span class="co"># </span></span>
-<span><span class="co"># # Format Data with pseudo-absences : SRE method</span></span>
-<span><span class="co"># myBiomodData.s &lt;- BIOMOD_FormatingData(resp.var = myResp.PA,</span></span>
-<span><span class="co">#                                        expl.var = myExpl,</span></span>
-<span><span class="co">#                                        resp.xy = myRespXY,</span></span>
-<span><span class="co">#                                        resp.name = myRespName,</span></span>
-<span><span class="co">#                                        PA.nb.rep = 4,</span></span>
-<span><span class="co">#                                        PA.nb.absences = 1000,</span></span>
-<span><span class="co">#                                        PA.strategy = 'sre',</span></span>
-<span><span class="co">#                                        PA.sre.quant = 0.025)</span></span>
-<span><span class="co"># </span></span>
-<span><span class="co"># # Format Data with pseudo-absences : user.defined method</span></span>
-<span><span class="co"># myPAtable &lt;- data.frame(PA1 = ifelse(myResp == 1, TRUE, FALSE),</span></span>
-<span><span class="co">#                         PA2 = ifelse(myResp == 1, TRUE, FALSE))</span></span>
-<span><span class="co"># for (i in 1:ncol(myPAtable)) myPAtable[sample(which(myPAtable[, i] == FALSE), 500), i] = TRUE</span></span>
-<span><span class="co"># myBiomodData.u &lt;- BIOMOD_FormatingData(resp.var = myResp.PA,</span></span>
-<span><span class="co">#                                        expl.var = myExpl,</span></span>
-<span><span class="co">#                                        resp.xy = myRespXY,</span></span>
-<span><span class="co">#                                        resp.name = myRespName,</span></span>
-<span><span class="co">#                                        PA.strategy = 'user.defined',</span></span>
-<span><span class="co">#                                        PA.user.table = myPAtable)</span></span>
-<span><span class="co"># </span></span>
 <span><span class="co"># myBiomodData.r</span></span>
-<span><span class="co"># myBiomodData.d</span></span>
-<span><span class="co"># myBiomodData.s</span></span>
-<span><span class="co"># myBiomodData.u</span></span>
-<span><span class="co"># plot(myBiomodData.r)</span></span>
-<span><span class="co"># plot(myBiomodData.d)</span></span>
-<span><span class="co"># plot(myBiomodData.s)</span></span>
-<span><span class="co"># plot(myBiomodData.u)</span></span></code></pre></div>
+<span><span class="co"># plot(myBiomodData.r)</span></span></code></pre></div>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># # Select multiple sets of pseudo-absences</span></span>
 <span><span class="co">#</span></span>
@@ -246,7 +219,9 @@ functions (starting with <code>BIOMOD_[...]</code>) of
 <span><span class="co"># plot(myBiomodData.multi)</span></span></code></pre></div>
 </div>
 <div class="section level4">
-<h4 id="parameterize-modeling-options">Parameterize modeling options<a class="anchor" aria-label="anchor" href="#parameterize-modeling-options"></a>
+<h4 id="parameterize-modeling-options">
+<i class="fa-solid fa-wrench"></i> Parameterize modeling
+options<a class="anchor" aria-label="anchor" href="#parameterize-modeling-options"></a>
 </h4>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Print default modeling options</span></span>
@@ -304,45 +279,50 @@ functions (starting with <code>BIOMOD_[...]</code>) of
 <span><span class="co"># myBiomodOptions &lt;- bm.tuning$models.options</span></span></code></pre></div>
 </div>
 <div class="section level4">
-<h4 id="cross-validation-datasets">Cross-validation datasets<a class="anchor" aria-label="anchor" href="#cross-validation-datasets"></a>
+<h4 id="cross-validation-datasets">
+<i class="fa-solid fa-scissors"></i> Cross-validation datasets<a class="anchor" aria-label="anchor" href="#cross-validation-datasets"></a>
 </h4>
+<p>Several cross-validation methods are available and can be selected
+with the <a href="../reference/BIOMOD_Modeling.html"><code>BIOMOD_Modeling</code></a>
+function, which calls the <a href="../reference/bm_CrossValidation.html"><code>bm_CrossValidation</code></a>
+function to do so. More examples are presented on the <a href="examples_2_secundaryFunctions.html">Secundary functions
+webpage</a>.</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># Create the different validation datasets</span></span>
-<span><span class="va">myBiomodCV</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/BIOMOD_CrossValidation.html">BIOMOD_CrossValidation</a></span><span class="op">(</span>bm.format <span class="op">=</span> <span class="va">myBiomodData</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/pkg/terra/man/headtail.html" class="external-link">head</a></span><span class="op">(</span><span class="va">myBiomodCV</span><span class="op">)</span></span>
-<span></span>
-<span><span class="co"># # Several validation strategies can be combined</span></span>
-<span><span class="co"># DataSplitTable.b &lt;- BIOMOD_CrossValidation(bm.format = myBiomodData,</span></span>
-<span><span class="co">#                                            k = 5,</span></span>
-<span><span class="co">#                                            nb.rep = 2,</span></span>
-<span><span class="co">#                                            do.full.models = FALSE)</span></span>
-<span><span class="co"># DataSplitTable.y &lt;- BIOMOD_CrossValidation(bm.format = myBiomodData,</span></span>
-<span><span class="co">#                                            k = 2,</span></span>
-<span><span class="co">#                                            do.stratification = TRUE,</span></span>
-<span><span class="co">#                                            method = "y")</span></span>
-<span><span class="co"># colnames(DataSplitTable.y)[1:2] &lt;- c("RUN11", "RUN12")</span></span>
-<span><span class="co"># myBiomodCV &lt;- cbind(DataSplitTable.b, DataSplitTable.y)</span></span>
-<span><span class="co"># head(myBiomodCV)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="co"># # k-fold selection</span></span>
+<span><span class="co"># cv.k &lt;- bm_CrossValidation(bm.format = myBiomodData,</span></span>
+<span><span class="co">#                            strategy = "kfold",</span></span>
+<span><span class="co">#                            nb.rep = 2,</span></span>
+<span><span class="co">#                            k = 3)</span></span>
+<span><span class="co"># </span></span>
+<span><span class="co"># # stratified selection (geographic)</span></span>
+<span><span class="co"># cv.s &lt;- bm_CrossValidation(bm.format = myBiomodData,</span></span>
+<span><span class="co">#                            strategy = "strat",</span></span>
+<span><span class="co">#                            k = 2,</span></span>
+<span><span class="co">#                            balance = "presences",</span></span>
+<span><span class="co">#                            strat = "x")</span></span>
+<span><span class="co"># head(cv.k)</span></span>
+<span><span class="co"># head(cv.s)</span></span></code></pre></div>
+<p><br><br></p>
 </div>
 </div>
 <div class="section level3">
 <h3 id="run-modelisation">
-<i class="fas fa-cogs"></i> Run modelisation<a class="anchor" aria-label="anchor" href="#run-modelisation"></a>
+<i class="fa-solid fa-gear"></i> Run modelisation<a class="anchor" aria-label="anchor" href="#run-modelisation"></a>
 </h3>
 <div class="section level4">
-<h4 id="single-models">Single models<a class="anchor" aria-label="anchor" href="#single-models"></a>
+<h4 id="single-models">
+<i class="fa-solid fa-virus"></i> Single models<a class="anchor" aria-label="anchor" href="#single-models"></a>
 </h4>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Model single models</span></span>
 <span><span class="va">myBiomodModelOut</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/BIOMOD_Modeling.html">BIOMOD_Modeling</a></span><span class="op">(</span>bm.format <span class="op">=</span> <span class="va">myBiomodData</span>,</span>
 <span>                                    bm.options <span class="op">=</span> <span class="va">myBiomodOptions</span>,</span>
 <span>                                    modeling.id <span class="op">=</span> <span class="st">'AllModels'</span>,</span>
-<span>                                    nb.rep <span class="op">=</span> <span class="fl">2</span>,</span>
-<span>                                    data.split.perc <span class="op">=</span> <span class="fl">80</span>,</span>
-<span>                                    <span class="co"># data.split.table = myBiomodCV,</span></span>
+<span>                                    CV.strategy <span class="op">=</span> <span class="st">'random'</span>,</span>
+<span>                                    CV.nb.rep <span class="op">=</span> <span class="fl">2</span>,</span>
+<span>                                    CV.perc <span class="op">=</span> <span class="fl">0.8</span>,</span>
 <span>                                    var.import <span class="op">=</span> <span class="fl">3</span>,</span>
-<span>                                    metric.eval <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">'TSS'</span>,<span class="st">'ROC'</span><span class="op">)</span>,</span>
-<span>                                    do.full.models <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
+<span>                                    metric.eval <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">'TSS'</span>,<span class="st">'ROC'</span><span class="op">)</span><span class="op">)</span></span>
 <span>                                    <span class="co"># seed.val = 123)</span></span>
 <span>                                    <span class="co"># nb.cpu = 8)</span></span>
 <span><span class="va">myBiomodModelOut</span></span>
@@ -372,7 +352,8 @@ functions (starting with <code>BIOMOD_[...]</code>) of
 <span>                      do.bivariate <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level4">
-<h4 id="ensemble-models">Ensemble models<a class="anchor" aria-label="anchor" href="#ensemble-models"></a>
+<h4 id="ensemble-models">
+<i class="fa-solid fa-viruses"></i> Ensemble models<a class="anchor" aria-label="anchor" href="#ensemble-models"></a>
 </h4>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Model ensemble models</span></span>
@@ -425,14 +406,16 @@ functions (starting with <code>BIOMOD_[...]</code>) of
 <span>                                  bm.em <span class="op">=</span> <span class="va">myBiomodEM</span>, </span>
 <span>                                  bg.env <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/terra/man/values.html" class="external-link">values</a></span><span class="op">(</span><span class="va">myExpl</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="va">myBiomodPO</span></span></code></pre></div>
+<p><br><br></p>
 </div>
 </div>
 <div class="section level3">
 <h3 id="project-models">
-<i class="fas fa-globe-europe"></i> Project models<a class="anchor" aria-label="anchor" href="#project-models"></a>
+<i class="fa-solid fa-earth-europe"></i> Project models<a class="anchor" aria-label="anchor" href="#project-models"></a>
 </h3>
 <div class="section level4">
-<h4 id="single-models-1">Single models<a class="anchor" aria-label="anchor" href="#single-models-1"></a>
+<h4 id="single-models-1">
+<i class="fa-solid fa-virus"></i> Single models<a class="anchor" aria-label="anchor" href="#single-models-1"></a>
 </h4>
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Project single models</span></span>
@@ -447,7 +430,8 @@ functions (starting with <code>BIOMOD_[...]</code>) of
 <span><span class="fu"><a href="https://rdrr.io/pkg/terra/man/plot.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">myBiomodProj</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level4">
-<h4 id="ensemble-models-1">Ensemble models<a class="anchor" aria-label="anchor" href="#ensemble-models-1"></a>
+<h4 id="ensemble-models-1">
+<i class="fa-solid fa-viruses"></i> Ensemble models<a class="anchor" aria-label="anchor" href="#ensemble-models-1"></a>
 </h4>
 <div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Project ensemble models (from single projections)</span></span>
@@ -466,11 +450,12 @@ functions (starting with <code>BIOMOD_[...]</code>) of
 <span>                                             metric.filter <span class="op">=</span> <span class="st">'all'</span><span class="op">)</span></span>
 <span><span class="va">myBiomodEMProj</span></span>
 <span><span class="fu"><a href="https://rdrr.io/pkg/terra/man/plot.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">myBiomodEMProj</span><span class="op">)</span></span></code></pre></div>
+<p><br><br></p>
 </div>
 </div>
 <div class="section level3">
 <h3 id="compare-range-sizes">
-<i class="fas fa-ruler-combined"></i> Compare range sizes<a class="anchor" aria-label="anchor" href="#compare-range-sizes"></a>
+<i class="fa-solid fa-ruler-combined"></i> Compare range sizes<a class="anchor" aria-label="anchor" href="#compare-range-sizes"></a>
 </h3>
 <div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Load environmental variables extracted from BIOCLIM (bio_3, bio_4, bio_7, bio_11 &amp; bio_12)</span></span>

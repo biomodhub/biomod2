@@ -15,7 +15,7 @@ BIOMOD_FormatingData(
   eval.resp.xy = NULL,
   PA.nb.rep = 0,
   PA.nb.absences = 1000,
-  PA.strategy = "random",
+  PA.strategy = NULL,
   PA.dist.min = 0,
   PA.dist.max = NULL,
   PA.sre.quant = 0.025,
@@ -195,8 +195,8 @@ and provides different methods to select pseudo-absences if needed. \cr \cr
   }
   \item{Evaluation data}{
   Although \pkg{biomod2} provides tools to automatically divide dataset into calibration and 
-  validation parts through the modeling process (see \code{nb.rep} and \code{data.split.perc} 
-  parameters in \code{\link{BIOMOD_Modeling}} function ; or \code{\link{BIOMOD_CrossValidation} 
+  validation parts through the modeling process (see \code{CV.[..]} parameters in 
+  \code{\link{BIOMOD_Modeling}} function ; or \code{\link{bm_CrossValidation} 
   function}), it is also possible (and strongly advised) to directly provide two independent 
   datasets, one for calibration/validation and one for evaluation
   }
@@ -346,7 +346,6 @@ plot(myBiomodData)
 \code{\link{bm_PseudoAbsences}}, \code{\link{BIOMOD_Modeling}}
 
 Other Main functions: 
-\code{\link{BIOMOD_CrossValidation}()},
 \code{\link{BIOMOD_EnsembleForecasting}()},
 \code{\link{BIOMOD_EnsembleModeling}()},
 \code{\link{BIOMOD_LoadModels}()},

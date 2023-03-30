@@ -21,10 +21,10 @@ bm_PseudoAbsences(
   expl.var,
   nb.rep = 1,
   strategy = "random",
-  dist.min = 0,
-  dist.max = NULL,
   nb.absences = NULL,
   sre.quant = 0,
+  dist.min = 0,
+  dist.max = NULL,
   user.table = NULL
 )
 
@@ -82,14 +82,6 @@ pseudo-absence points that will be drawn}
 \item{strategy}{a \code{character} corresponding to the pseudo-absence selection strategy, 
 must be among \code{random}, \code{sre}, \code{disk} or \code{user.defined}}
 
-\item{dist.min}{(\emph{optional, default} \code{0}) \cr
-If \code{strategy = 'disk'}, a \code{numeric} defining the minimal distance to presence points 
-used to make the \code{disk} pseudo-absence selection (in meters)}
-
-\item{dist.max}{(\emph{optional, default} \code{NULL}) \cr
-If \code{strategy = 'disk'}, a \code{numeric} defining the maximal distance to presence points 
-used to make the \code{disk} pseudo-absence selection (in meters)}
-
 \item{nb.absences}{(\emph{optional, default} \code{NULL}) \cr
 If \code{strategy = 'random'} or \code{strategy = 'sre'} or \code{strategy = 'disk'}, an 
 \code{integer} corresponding to the number of pseudo-absence points that will be selected for 
@@ -98,6 +90,14 @@ each pseudo-absence repetition (true absences included)}
 \item{sre.quant}{(\emph{optional, default} \code{0}) \cr
 If \code{strategy = 'sre'}, a \code{numeric} between \code{0} and \code{0.5} defining the 
 half-quantile used to make the \code{sre} pseudo-absence selection (see \code{\link{bm_SRE}})}
+
+\item{dist.min}{(\emph{optional, default} \code{0}) \cr
+If \code{strategy = 'disk'}, a \code{numeric} defining the minimal distance to presence points 
+used to make the \code{disk} pseudo-absence selection (in meters)}
+
+\item{dist.max}{(\emph{optional, default} \code{NULL}) \cr
+If \code{strategy = 'disk'}, a \code{numeric} defining the maximal distance to presence points 
+used to make the \code{disk} pseudo-absence selection (in meters)}
 
 \item{user.table}{(\emph{optional, default} \code{NULL}) \cr
 If \code{strategy = 'user.defined'}, a \code{matrix} or \code{data.frame} with as many rows as 
@@ -147,12 +147,111 @@ The user can provide pseudo-absences locations through a table containing spatia
 in rows, pseudo-absences repetitions in columns, and \code{TRUE/FALSE} values indicating 
 whether each point is to be considered as pseudo-absence or not for each dataset.
 }
+\examples{
+
+library(terra)
+# Load species occurrences (6 species available)
+data(DataSpecies)
+head(DataSpecies)
+
+# Select the name of the studied species
+myRespName <- 'GuloGulo'
+
+# Get corresponding presence/absence data
+myResp <- as.numeric(DataSpecies[, myRespName])
+
+# Get corresponding XY coordinates
+myRespXY <- DataSpecies[, c('X_WGS84', 'Y_WGS84')]
+
+# Load environmental variables extracted from BIOCLIM (bio_3, bio_4, bio_7, bio_11 & bio_12)
+data(bioclim_current)
+myExpl <- terra::rast(bioclim_current)
+
+\dontshow{
+myExtent <- terra::ext(0,30,45,70)
+myExpl <- terra::crop(myExpl, myExtent)
+}
+
+
+# ---------------------------------------------------------------
+# Create the different pseudo-absence datasets
+
+# Transform true absences into potential pseudo-absences
+myResp.PA <- ifelse(myResp == 1, 1, NA)
+myResp.PA.vect <- vect(cbind(myRespXY, myResp.PA), geom = c("X_WGS84","Y_WGS84"))
+
+# random method
+PA.r <- bm_PseudoAbsences(resp.var = myResp.PA,
+                          expl.var = myExpl,
+                          nb.rep = 4,
+                          nb.absences = 1000,
+                          strategy = 'random')
+
+# disk method
+PA.d <- bm_PseudoAbsences(resp.var = myResp.PA,
+                          expl.var = myExpl,
+                          nb.rep = 4,
+                          nb.absences = 500,
+                          strategy = 'disk',
+                          dist.min = 5,
+                          dist.max = 35)
+
+# SRE method
+PA.s <- bm_PseudoAbsences(resp.var = myResp.PA,
+                          expl.var = myExpl,
+                          nb.rep = 4,
+                          nb.absences = 1000,
+                          strategy = 'sre',
+                          sre.quant = 0.025)
+
+# user.defined method
+myPAtable <- data.frame(PA1 = ifelse(myResp == 1, TRUE, FALSE),
+                        PA2 = ifelse(myResp == 1, TRUE, FALSE))
+for (i in 1:ncol(myPAtable)) myPAtable[sample(which(myPAtable[, i] == FALSE), 500), i] = TRUE
+PA.u <- bm_PseudoAbsences(resp.var = myResp.PA,
+                          expl.var = myExpl,
+                          strategy = 'user.defined',
+                          user.table = myPAtable)
+
+str(PA.r)
+head(PA.r$pa.tab)
+apply(PA.r$pa.tab, 2, table)
+plot(PA.r)
+
+head(PA.d$pa.tab)
+apply(PA.d$pa.tab, 2, table)
+plot(PA.d)
+
+head(PA.s$pa.tab)
+apply(PA.s$pa.tab, 2, table)
+plot(PA.s)
+
+tail(PA.u$pa.tab)
+apply(PA.u$pa.tab, 2, table)
+plot(PA.u)
+
+
+# random method : different number of PA
+PA.r_mult <- bm_PseudoAbsences(resp.var = myResp.PA.vect,
+                               expl.var = myExpl,
+                               nb.rep = 4,
+                               nb.absences = c(1000, 500, 500, 200),
+                               strategy = 'random')
+
+str(PA.r_mult)
+head(PA.r_mult$pa.tab)
+apply(PA.r_mult$pa.tab, 2, table)
+plot(PA.r_mult)
+
+
+}
 \seealso{
 \code{\link{BIOMOD.formated.data.PA}}, \code{\link{BIOMOD_FormatingData}}
 
 Other Secundary functions: 
 \code{\link{bm_BinaryTransformation}()},
 \code{\link{bm_CVnnet}()},
+\code{\link{bm_CrossValidation}()},
 \code{\link{bm_FindOptimStat}()},
 \code{\link{bm_MakeFormula}()},
 \code{\link{bm_PlotEvalBoxplot}()},

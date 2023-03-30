@@ -2,6 +2,8 @@
 % Please edit documentation in R/biomod2_classes_3.R
 \name{getters.out}
 \alias{getters.out}
+\alias{get_species_data}
+\alias{get_eval_data}
 \alias{get_options}
 \alias{get_calib_lines}
 \alias{get_formal_data}
@@ -12,6 +14,9 @@
 \alias{get_built_models}
 \alias{get_evaluations}
 \alias{get_variables_importance}
+\alias{get_species_data,BIOMOD.formated.data-method}
+\alias{get_species_data,BIOMOD.formated.data.PA-method}
+\alias{get_eval_data,BIOMOD.formated.data-method}
 \alias{get_options,BIOMOD.models.out-method}
 \alias{get_calib_lines,BIOMOD.models.out-method}
 \alias{get_formal_data,BIOMOD.models.out-method}
@@ -31,6 +36,12 @@
 \title{Functions to extract informations from \code{\link{BIOMOD.models.out}}, 
 \code{\link{BIOMOD.projection.out}} or \code{\link{BIOMOD.ensemble.models.out}} objects}
 \usage{
+\S4method{get_species_data}{BIOMOD.formated.data}(obj)
+
+\S4method{get_species_data}{BIOMOD.formated.data.PA}(obj)
+
+\S4method{get_eval_data}{BIOMOD.formated.data}(obj)
+
 \S4method{get_options}{BIOMOD.models.out}(obj)
 
 \S4method{get_calib_lines}{BIOMOD.models.out}(obj, as.data.frame = FALSE, PA = NULL, run = NULL)
@@ -146,7 +157,8 @@
 )
 }
 \arguments{
-\item{obj}{a \code{\link{BIOMOD.models.out}}, \code{\link{BIOMOD.projection.out}} or 
+\item{obj}{a \code{\link{BIOMOD.formated.data}}, \code{\link{BIOMOD.formated.data.PA}}, 
+\code{\link{BIOMOD.models.out}}, \code{\link{BIOMOD.projection.out}} or 
 \code{\link{BIOMOD.ensemble.models.out}} object}
 
 \item{as.data.frame}{a \code{logical} defining whether output should be returned as 
@@ -228,11 +240,18 @@ function)})}
 }
 \value{
 \describe{
+  \item{\code{get_species_data}}{a \code{data.frame} combining \code{data.species}, 
+  \code{coord}, \code{data.env.var} (and \code{PA.table}) slots of 
+  \code{\link{BIOMOD.formated.data}} (or \code{\link{BIOMOD.formated.data.PA}}) object}
+  \item{\code{get_eval_data}}{a \code{data.frame} combining \code{eval.data.species}, 
+  \code{eval.coord}, \code{eval.data.env.var} slots of 
+  \code{\link{BIOMOD.formated.data}} or \code{\link{BIOMOD.formated.data.PA}} object}
+
   \item{\code{get_options}}{a
   \code{\link{BIOMOD.stored.models.options-class}} object from the
   \code{models.options} slot of a \code{\link{BIOMOD.models.out-class}}
   object} \item{\code{get_calib_lines}}{a
-  \code{\link{BIOMOD.stored.array-class}} object from the \code{calib.lines}
+  \code{\link{BIOMOD.stored.data.frame-class}} object from the \code{calib.lines}
   slot of a \code{\link{BIOMOD.models.out}} object}
 
   \item{\code{get_projected_models}}{a \code{vector} from the
