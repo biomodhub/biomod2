@@ -110,7 +110,9 @@ A \code{logical} value defining whether models should be also calibrated and val
 the whole dataset (and pseudo-absence datasets) or not}
 }
 \value{
-
+A \code{matrix} or \code{data.frame} defining for each repetition (in columns) which 
+observation lines should be used for models calibration (\code{TRUE}) and validation 
+(\code{FALSE}).
 }
 \description{
 This internal \pkg{biomod2} function allows to build a cross-validation table 
@@ -159,8 +161,8 @@ Four bins of equal size are partitioned (bottom-left, bottom-right, top-left and
 \code{x} and \code{y} stratification was described in \emph{Wenger and Olden 2012} (see 
 References). \code{y} stratification uses \code{k} partitions along the y-gradient, \code{x} 
 stratification does the same for the x-gradient, and \code{both} combines them.}
-  \item{environmental}{}
-  \item{user-defined}{}
+  \item{environmental}{\emph{to be filled}}
+  \item{user-defined}{\emph{to be filled}}
 }
 
 \cr

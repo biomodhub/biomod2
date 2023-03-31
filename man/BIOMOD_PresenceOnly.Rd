@@ -124,16 +124,16 @@ if (file.exists(file.EM)) {
 
 
 # --------------------------------------------------------------- #
-# Evaluate models with Boyce index and MPA
-myBiomodPO <- BIOMOD_PresenceOnly(bm.mod = myBiomodModelOut,
-                                  bm.em = myBiomodEM)
-myBiomodPO
-
-# Evaluate models with Boyce index and MPA (using background data)
-myBiomodPO <- BIOMOD_PresenceOnly(bm.mod = myBiomodModelOut,
-                                  bm.em = myBiomodEM, 
-                                  bg.env = myExpl)
-myBiomodPO
+# # Evaluate models with Boyce index and MPA
+# myBiomodPO <- BIOMOD_PresenceOnly(bm.mod = myBiomodModelOut,
+#                                   bm.em = myBiomodEM)
+# myBiomodPO
+# 
+# # Evaluate models with Boyce index and MPA (using background data)
+# myBiomodPO <- BIOMOD_PresenceOnly(bm.mod = myBiomodModelOut,
+#                                   bm.em = myBiomodEM, 
+#                                   bg.env = myExpl)
+# myBiomodPO
 
 
 }

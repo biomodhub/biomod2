@@ -595,7 +595,7 @@ BIOMOD_EnsembleForecasting <- function(bm.em,
     which.factor <- which(sapply(new.env, is.factor))
     if (length(which.factor) > 0) {
       new.env <- .check_env_levels(new.env, 
-                                   expected_levels = head(get_formal_data(bm.mod, subinfo = "expl.var")))
+                                   expected_levels = head(get_formal_data(bm.em, subinfo = "expl.var")))
     }
   }
   ## 4. Check models.chosen ---------------------------------------------------

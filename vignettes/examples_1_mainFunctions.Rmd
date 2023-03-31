@@ -236,11 +236,11 @@ bm_PlotResponseCurves(bm.out = myBiomodModelOut,
 myBiomodEM <- BIOMOD_EnsembleModeling(bm.mod = myBiomodModelOut,
                                       models.chosen = 'all',
                                       em.by = 'all',
+                                      em.algo = c('EMmean', 'EMcv', 'EMci', 'EMmedian', 'EMca', 'EMwmean'),
                                       metric.select = c('TSS'),
                                       metric.select.thresh = c(0.7),
-                                      var.import = 3,
                                       metric.eval = c('TSS', 'ROC'),
-                                      em.algo = c('EMmean', 'EMcv', 'EMci', 'EMmedian', 'EMca', 'EMwmean'),
+                                      var.import = 3,
                                       EMci.alpha = 0.05,
                                       EMwmean.decay = 'proportional')
 myBiomodEM

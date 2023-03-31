@@ -199,6 +199,9 @@ head(DataSpecies)
 # Select the name of the studied species
 myRespName <- 'GuloGulo'
 
+# Keep only presence informations
+DataSpecies <- DataSpecies[which(DataSpecies[, myRespName] == 1), ]
+
 # Get corresponding presence/absence data
 myResp <- as.numeric(DataSpecies[, myRespName])
 
@@ -220,7 +223,7 @@ myBiomodData <- BIOMOD_FormatingData(resp.var = myResp,
                                      expl.var = myExpl,
                                      resp.xy = myRespXY,
                                      resp.name = myRespName,
-                                     PA.nb.rep = 0,
+                                     PA.nb.rep = 4,
                                      PA.strategy = 'random',
                                      PA.nb.absences = 1000)
 myBiomodData

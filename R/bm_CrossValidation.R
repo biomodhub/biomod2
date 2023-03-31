@@ -46,9 +46,6 @@
 ##' (\code{FALSE}).
 ##' 
 ##' 
-##'  \code{k * nb.rep} (\emph{+ 1 if 
-##' 
-##' 
 ##' @details
 ##' 
 ##' Several parameters are available within the function and some of them can be used with 
@@ -92,8 +89,8 @@
 ##' \code{x} and \code{y} stratification was described in \emph{Wenger and Olden 2012} (see 
 ##' References). \code{y} stratification uses \code{k} partitions along the y-gradient, \code{x} 
 ##' stratification does the same for the x-gradient, and \code{both} combines them.}
-##'   \item{environmental}{}
-##'   \item{user-defined}{}
+##'   \item{environmental}{\emph{to be filled}}
+##'   \item{user-defined}{\emph{to be filled}}
 ##' }
 ##' 
 ##' \cr

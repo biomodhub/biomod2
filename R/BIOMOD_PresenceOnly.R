@@ -149,16 +149,16 @@
 ##' 
 ##' 
 ##' # --------------------------------------------------------------- #
-##' # Evaluate models with Boyce index and MPA
-##' myBiomodPO <- BIOMOD_PresenceOnly(bm.mod = myBiomodModelOut,
-##'                                   bm.em = myBiomodEM)
-##' myBiomodPO
-##' 
-##' # Evaluate models with Boyce index and MPA (using background data)
-##' myBiomodPO <- BIOMOD_PresenceOnly(bm.mod = myBiomodModelOut,
-##'                                   bm.em = myBiomodEM, 
-##'                                   bg.env = myExpl)
-##' myBiomodPO
+##' # # Evaluate models with Boyce index and MPA
+##' # myBiomodPO <- BIOMOD_PresenceOnly(bm.mod = myBiomodModelOut,
+##' #                                   bm.em = myBiomodEM)
+##' # myBiomodPO
+##' # 
+##' # # Evaluate models with Boyce index and MPA (using background data)
+##' # myBiomodPO <- BIOMOD_PresenceOnly(bm.mod = myBiomodModelOut,
+##' #                                   bm.em = myBiomodEM, 
+##' #                                   bg.env = myExpl)
+##' # myBiomodPO
 ##' 
 ##' 
 ## @importFrom ecospat ecospat.boyce ecospat.mpa
@@ -229,7 +229,7 @@ BIOMOD_PresenceOnly <- function(bm.mod = NULL,
     ## Get evaluation scores
     myEvalEM <- get_evaluations(bm.em)
     if (!is.null(bm.mod)) {
-      myEvalMod <- do.call(rbind, list(myEvalMod, myEvalEM), fill = TRUE)
+      myEvalMod <- do.call(rbind, list(list(myEvalMod, myEvalEM), fill = TRUE))
     } else {
       myEvalMod <- myEvalEM
     }
