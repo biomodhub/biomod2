@@ -14,6 +14,9 @@
 ##' @param strategy a \code{character} corresponding to the cross-validation selection strategy, 
 ##' must be among \code{random}, \code{kfold}, \code{block}, \code{strat}, \code{env} or 
 ##' \code{user.defined}
+##' @param \ldots (\emph{optional, one or several of the following arguments depending on the selected 
+##' method)}) 
+##' 
 ##' @param nb.rep (\emph{optional, default} \code{0}) \cr
 ##' If \code{strategy = 'random'} or \code{strategy = 'kfold'}, an \code{integer} corresponding 
 ##' to the number of sets (repetitions) of cross-validation points that will be drawn
@@ -57,9 +60,8 @@
 ##' \code{| perc... | x..... | ..... | ..... | ..... | ... |} \cr
 ##' \code{| k...... | ...... | x.... | ..... | x.... | x.. |} \cr
 ##' \code{| balance | ...... | ..... | ..... | x.... | x.. |} \cr
-##' \code{| strat.. | ...... | ..... | ..... | x.... | ... |} \cr
+##' \code{| strat.. | ...... | ..... | ..... | x.... | ... |} \cr \cr \cr
 ##' 
-##' \cr
 ##' 
 ##' \bold{Concerning column names of \code{matrix} output :}
 ##' 
@@ -67,9 +69,8 @@
 ##' The column names are given \emph{a posteriori} of the selection, ranging from 1 to the 
 ##' number of columns. 
 ##' If \code{do.full.models = TRUE}, columns merging runs (and/or pseudo-absence datasets) 
-##' are added at the end.
+##' are added at the end. \cr \cr
 ##' 
-##' \cr
 ##' 
 ##' 
 ##' \bold{Concerning cross-validation strategies :}
@@ -90,10 +91,9 @@
 ##' References). \code{y} stratification uses \code{k} partitions along the y-gradient, \code{x} 
 ##' stratification does the same for the x-gradient, and \code{both} combines them.}
 ##'   \item{environmental}{\emph{to be filled}}
-##'   \item{user-defined}{\emph{to be filled}}
+##'   \item{user-defined}{\emph{to be filled} \cr \cr}
 ##' }
 ##' 
-##' \cr
 ##' 
 ##' \bold{Concerning balance parameter :}
 ##' 
@@ -204,9 +204,6 @@
 ##' head(cv.e)
 ##' apply(cv.e, 2, table)
 ##' 
-##' 
-## @importFrom ENMeval get.block
-## @importFrom dismo kfold
 ##' 
 ##' @export
 ##' 

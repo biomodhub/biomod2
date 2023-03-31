@@ -162,19 +162,15 @@
 ##' str(PA.r)
 ##' head(PA.r$pa.tab)
 ##' apply(PA.r$pa.tab, 2, table)
-##' plot(PA.r)
 ##' 
 ##' head(PA.d$pa.tab)
 ##' apply(PA.d$pa.tab, 2, table)
-##' plot(PA.d)
 ##' 
 ##' head(PA.s$pa.tab)
 ##' apply(PA.s$pa.tab, 2, table)
-##' plot(PA.s)
 ##' 
 ##' tail(PA.u$pa.tab)
 ##' apply(PA.u$pa.tab, 2, table)
-##' plot(PA.u)
 ##' 
 ##' 
 ##' # random method : different number of PA
@@ -187,7 +183,6 @@
 ##' str(PA.r_mult)
 ##' head(PA.r_mult$pa.tab)
 ##' apply(PA.r_mult$pa.tab, 2, table)
-##' plot(PA.r_mult)
 ##'
 ##' 
 ##' @importFrom terra rast vect freq spatSample values extract

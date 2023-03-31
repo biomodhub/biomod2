@@ -218,6 +218,11 @@ repetition (in columns) which observation lines should be used for models calibr
 A <code>logical</code> value defining whether models should be also calibrated and validated over 
 the whole dataset (and pseudo-absence datasets) or not</p></dd>
 
+
+<dt>...</dt>
+<dd><p>(<em>optional, one or several of the following arguments depending on the selected 
+method)</em>)</p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
@@ -232,15 +237,15 @@ observation lines should be used for models calibration (<code>TRUE</code>) and 
     <p>Several parameters are available within the function and some of them can be used with 
 different cross-validation strategies :</p>
 <p><code>| ....... | random | kfold | block | strat | env |</code> <br>
-__________________________________________________ <br><code>| nb.rep. | x..... | x.... | ..... | ..... | ... |</code> <br><code>| perc... | x..... | ..... | ..... | ..... | ... |</code> <br><code>| k...... | ...... | x.... | ..... | x.... | x.. |</code> <br><code>| balance | ...... | ..... | ..... | x.... | x.. |</code> <br><code>| strat.. | ...... | ..... | ..... | x.... | ... |</code> <br></p>
-<p><br></p>
+__________________________________________________ <br><code>| nb.rep. | x..... | x.... | ..... | ..... | ... |</code> <br><code>| perc... | x..... | ..... | ..... | ..... | ... |</code> <br><code>| k...... | ...... | x.... | ..... | x.... | x.. |</code> <br><code>| balance | ...... | ..... | ..... | x.... | x.. |</code> <br><code>| strat.. | ...... | ..... | ..... | x.... | ... |</code> <br><br><br></p>
+
 <p><b>Concerning column names of <code>matrix</code> output :</b></p>
 <p>The number of columns depends on the strategy selected. 
 The column names are given <em>a posteriori</em> of the selection, ranging from 1 to the 
 number of columns. 
 If <code>do.full.models = TRUE</code>, columns merging runs (and/or pseudo-absence datasets) 
-are added at the end.</p>
-<p><br></p>
+are added at the end. <br><br></p>
+
 
 <p><b>Concerning cross-validation strategies :</b></p>
 <dl><dt>random</dt>
@@ -269,11 +274,10 @@ stratification does the same for the x-gradient, and <code>both</code> combines 
 <dd><p><em>to be filled</em></p></dd>
 
   <dt>user-defined</dt>
-<dd><p><em>to be filled</em></p></dd>
+<dd><p><em>to be filled</em> <br><br></p></dd>
 
 
-</dl><p><br></p>
-<p><b>Concerning balance parameter :</b></p>
+</dl><p><b>Concerning balance parameter :</b></p>
 <p>If <code>balance = 'presences'</code>, presences are divided (balanced) equally over the 
 partitions (e.g. <em>Fig. 1b in Muscarelly et al. 2014</em>). Pseudo-absences will however be 
 unbalanced over the partitions especially if the presences are clumped on an edge of the 
@@ -396,7 +400,6 @@ if the presences are clumped on an edge of the study area.</p>
 <span><span class="fu"><a href="https://rdrr.io/r/base/apply.html" class="external-link">apply</a></span><span class="op">(</span><span class="va">cv.s</span>, <span class="fl">2</span>, <span class="va">table</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/pkg/terra/man/headtail.html" class="external-link">head</a></span><span class="op">(</span><span class="va">cv.e</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/apply.html" class="external-link">apply</a></span><span class="op">(</span><span class="va">cv.e</span>, <span class="fl">2</span>, <span class="va">table</span><span class="op">)</span></span>
-<span></span>
 <span></span>
 <span></span></code></pre></div>
     </div>

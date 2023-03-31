@@ -108,6 +108,9 @@ repetition (in columns) which observation lines should be used for models calibr
 \item{do.full.models}{(\emph{optional, default} \code{TRUE}) \cr
 A \code{logical} value defining whether models should be also calibrated and validated over 
 the whole dataset (and pseudo-absence datasets) or not}
+
+\item{\ldots}{(\emph{optional, one or several of the following arguments depending on the selected 
+method)})}
 }
 \value{
 A \code{matrix} or \code{data.frame} defining for each repetition (in columns) which 
@@ -129,9 +132,8 @@ __________________________________________________ \cr
 \code{| perc... | x..... | ..... | ..... | ..... | ... |} \cr
 \code{| k...... | ...... | x.... | ..... | x.... | x.. |} \cr
 \code{| balance | ...... | ..... | ..... | x.... | x.. |} \cr
-\code{| strat.. | ...... | ..... | ..... | x.... | ... |} \cr
+\code{| strat.. | ...... | ..... | ..... | x.... | ... |} \cr \cr \cr
 
-\cr
 
 \bold{Concerning column names of \code{matrix} output :}
 
@@ -139,9 +141,8 @@ The number of columns depends on the strategy selected.
 The column names are given \emph{a posteriori} of the selection, ranging from 1 to the 
 number of columns. 
 If \code{do.full.models = TRUE}, columns merging runs (and/or pseudo-absence datasets) 
-are added at the end.
+are added at the end. \cr \cr
 
-\cr
 
 
 \bold{Concerning cross-validation strategies :}
@@ -162,10 +163,9 @@ Four bins of equal size are partitioned (bottom-left, bottom-right, top-left and
 References). \code{y} stratification uses \code{k} partitions along the y-gradient, \code{x} 
 stratification does the same for the x-gradient, and \code{both} combines them.}
   \item{environmental}{\emph{to be filled}}
-  \item{user-defined}{\emph{to be filled}}
+  \item{user-defined}{\emph{to be filled} \cr \cr}
 }
 
-\cr
 
 \bold{Concerning balance parameter :}
 
@@ -254,7 +254,6 @@ head(cv.s)
 apply(cv.s, 2, table)
 head(cv.e)
 apply(cv.e, 2, table)
-
 
 
 }
