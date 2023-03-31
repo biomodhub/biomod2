@@ -208,22 +208,6 @@ setMethod("load_stored_object", "BIOMOD.stored.SpatRaster",
                            grepl(".img", obj@link) | 
                            grepl(".tif", obj@link))) {
               out <- rast(x = current_link)
-              ## rename layer in case of individual projections
-              if (all(grepl("individual_projections", current_link))) {
-                # remove directories arch and extension
-                if (any(grepl("bin", current_link)) | 
-                    any(grepl("filt", current_link)) ) {
-                  xx <- sub("_[^_]+$", "", current_link)
-                  xx <- sub("^.+individual_projections/", "", xx)
-                } else {
-                  xx <- sub("[:.:].+$", "",
-                            sub("^.+individual_projections/", "", current_link))
-                }
-                # remove projection name
-                to_rm <- unique(sub("[^_]+[:_:][^_]+[:_:][^_]+[:_:][^_]+$", "", xx))
-                xx <- sub(to_rm, "", xx)
-                names(out) <- xx
-              }
               return(out)
             }
           }
