@@ -322,17 +322,17 @@ bm_SRE <- function(resp.var = NULL,
 .sre_projection <- function(new.env, extrem.cond, mod.name = NULL) {
   if (is.data.frame(new.env) || is.matrix(new.env)) {
     out <- rep(1, nrow(new.env))
-    for (j in 1:ncol(new.env)) {
-      out <- out * as.numeric(new.env[, j] >= extrem.cond[j, 1] &
-                                new.env[, j] <= extrem.cond[j, 2])
+    for (this.var in rownames(extrem.cond)) {
+      out <- out * as.numeric(new.env[, this.var] >= extrem.cond[this.var, 1] &
+                                new.env[, this.var] <= extrem.cond[this.var, 2])
     }
   } else if (inherits(new.env, "SpatRaster")) {
     out <- classify(subset(new.env, 1), 
                     matrix(c(-Inf, Inf, 1), ncol = 3, byrow = TRUE),
                     wopt = list(names = mod.name))
-    for (j in 1:nlyr(new.env)) {
-      out <- out * (subset(new.env, j) >= extrem.cond[j, 1]) * 
-        (subset(new.env, j) <= extrem.cond[j, 2])
+    for (this.var in rownames(extrem.cond)) {
+      out <- out * (subset(new.env, this.var) >= extrem.cond[this.var, 1]) * 
+        (subset(new.env, this.var) <= extrem.cond[this.var, 2])
     }
     out <- subset(out, 1)
   }
