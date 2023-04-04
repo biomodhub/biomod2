@@ -360,11 +360,11 @@ webpage</a>.</p>
 <span><span class="va">myBiomodEM</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/BIOMOD_EnsembleModeling.html">BIOMOD_EnsembleModeling</a></span><span class="op">(</span>bm.mod <span class="op">=</span> <span class="va">myBiomodModelOut</span>,</span>
 <span>                                      models.chosen <span class="op">=</span> <span class="st">'all'</span>,</span>
 <span>                                      em.by <span class="op">=</span> <span class="st">'all'</span>,</span>
+<span>                                      em.algo <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">'EMmean'</span>, <span class="st">'EMcv'</span>, <span class="st">'EMci'</span>, <span class="st">'EMmedian'</span>, <span class="st">'EMca'</span>, <span class="st">'EMwmean'</span><span class="op">)</span>,</span>
 <span>                                      metric.select <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">'TSS'</span><span class="op">)</span>,</span>
 <span>                                      metric.select.thresh <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.7</span><span class="op">)</span>,</span>
-<span>                                      var.import <span class="op">=</span> <span class="fl">3</span>,</span>
 <span>                                      metric.eval <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">'TSS'</span>, <span class="st">'ROC'</span><span class="op">)</span>,</span>
-<span>                                      em.algo <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">'EMmean'</span>, <span class="st">'EMcv'</span>, <span class="st">'EMci'</span>, <span class="st">'EMmedian'</span>, <span class="st">'EMca'</span>, <span class="st">'EMwmean'</span><span class="op">)</span>,</span>
+<span>                                      var.import <span class="op">=</span> <span class="fl">3</span>,</span>
 <span>                                      EMci.alpha <span class="op">=</span> <span class="fl">0.05</span>,</span>
 <span>                                      EMwmean.decay <span class="op">=</span> <span class="st">'proportional'</span><span class="op">)</span></span>
 <span><span class="va">myBiomodEM</span></span>
@@ -510,7 +510,7 @@ webpage</a>.</p>
 
 <div class="pkgdown">
   <p></p>
-<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.7.</p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
 </div>
 
       </footer>
