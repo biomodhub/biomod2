@@ -632,7 +632,7 @@ setMethod('plot', signature(x = 'BIOMOD.formated.data', y = "missing"),
                     this_name <- paste0("_", this_PA, "_", this_run)
                     this_calib <- calib.lines[ , this_name]
                     this_valid <- ! calib.lines[ , this_name]
-                  } else if (is.na(this_run)) { # PA only
+                  } else if (is.na(this_run) || this_run == 'allRun') { # PA only
                     this_name <- this_PA
                     this_calib <- x@PA.table[ , this_PA]
                   } else { # PA+run
@@ -640,26 +640,24 @@ setMethod('plot', signature(x = 'BIOMOD.formated.data', y = "missing"),
                     this_calib <- calib.lines[ , this_name] & x@PA.table[ , this_PA]
                     this_valid <- ! calib.lines[ , this_name] & x@PA.table[ , this_PA]
                   }
-                  
-                  calib.resp <- x@data.species[this_calib]
+                  calib.resp <- x@data.species[which(this_calib)]
                   calib.resp <- ifelse(is.na(calib.resp), 30, 
                                        ifelse(calib.resp == 1, 10, 20))
-                  calib.xy <- x@coord[this_calib,]
+                  calib.xy <- x@coord[which(this_calib),]
                   calib.df <- data.frame(resp = calib.resp,
                                          x = calib.xy[, 1],
                                          y = calib.xy[, 2])
                   
-                  if (!is.na(this_run)) { 
-                    valid.resp <- x@data.species[this_valid]
+                  if (!is.na(this_run) & this_run != "allRun") { 
+                    valid.resp <- x@data.species[which(this_valid)]
                     valid.resp <- ifelse(is.na(valid.resp), 31, 
                                          ifelse(valid.resp == 1, 11, 21))
-                    valid.xy <- x@coord[this_valid,]
+                    valid.xy <- x@coord[which(this_valid),]
                     valid.df <- data.frame(resp = valid.resp,
                                            x = valid.xy[, 1],
                                            y = valid.xy[, 2])
                     calib.df <- rbind(calib.df, valid.df)
                   }
-                  
                   thisdf.vect <- vect(calib.df, geom = c("x","y"))
                   names(thisdf.vect) <- "resp"
                   thisdf.vect$dataset <- this_name
@@ -930,26 +928,49 @@ setMethod('plot', signature(x = 'BIOMOD.formated.data', y = "missing"),
   ## 1 - check x -----------------------------------------
   .fun_testIfInherits(TRUE, "x", x, c("BIOMOD.formated.data", "BIOMOD.formated.data.PA"))
   
-  ## 2 - check calib.lines & run -----------------------------------------
-  PA <- run <- NA
+  ## 2 - check PA & run -----------------------------------------
+  
+  # find possible dataset
+  allPA <- allrun <- NA
   if (!is.null(calib.lines)) {
     .fun_testIfInherits(TRUE, "calib.lines", calib.lines, c("matrix"))
-    
+
     expected_CVnames <- c(paste0("_allData_RUN", seq_len(ncol(calib.lines))), "_allData_allRun")
     if (inherits(x, "BIOMOD.formated.data.PA")) {
       expected_CVnames <- c(expected_CVnames
                             , sapply(1:ncol(x@PA.table)
                                      , function(this_PA) c(paste0("_PA", this_PA, "_RUN", seq_len(ncol(calib.lines)))
                                                            , paste0("_PA", this_PA, "_allRun"))))
-    }
+    } 
     .fun_testIfIn(TRUE, "colnames(calib.lines)", colnames(calib.lines), expected_CVnames)
     
-    PA <- sapply(colnames(calib.lines), function(xx) strsplit(xx, "_")[[1]][2])
-    run <- sapply(colnames(calib.lines), function(xx) strsplit(xx, "_")[[1]][3])
+    allPA <- sapply(colnames(calib.lines), function(xx) strsplit(xx, "_")[[1]][2])
+    allrun <- sapply(colnames(calib.lines), function(xx) strsplit(xx, "_")[[1]][3])
   } else if (inherits(x, "BIOMOD.formated.data.PA")) {
-    PA <- colnames(x@PA.table)
-    run <- rep(NA, length(PA))
+    allPA <- colnames(x@PA.table)
+    allrun <- rep(NA, length(PA))
   }
+  
+  # default value for PA and run
+  if (missing(PA)) {
+    PA <- allPA
+  }
+  if (missing(run)) {
+    run <- allrun
+  }
+  
+  # intersect possible and given dataset and check for PA and run values
+  keep <- rep(TRUE, length(allPA))
+  if (!is.null(calib.lines)) {
+    .fun_testIfIn(TRUE, "run", run, allrun)
+    keep[which(!allrun %in% run)] <- FALSE
+  }
+  if (inherits(x, "BIOMOD.formated.data.PA")) { # PA & CV
+    .fun_testIfIn(TRUE, "PA", PA, allPA)
+    keep[which(!allPA %in% PA)] <- FALSE
+  }
+  PA <- allPA[keep]
+  run <- allrun[keep]
   
   ## 3 - check plot.eval ----------------------
   if (missing(plot.eval)) {
@@ -1061,7 +1082,7 @@ setMethod('show', signature('BIOMOD.formated.data'),
               print(summary(object@eval.data.env.var))
             }
             
-            if(inherits(object, "biomod.formated.data.PA")){
+            if(inherits(object, "BIOMOD.formated.data.PA")){
               cat(
                 "\n\n",
                 ncol(object@PA.table),
@@ -1175,43 +1196,50 @@ setMethod('summary', signature(object = 'BIOMOD.formated.data'),
             }
             
             if (!is.null(calib.lines) || inherits(object, "BIOMOD.formated.data.PA")) {
-              output <- rbind(output,
-                              foreach(this_PA = PA, this_run = run, .combine = 'rbind') %do% {
-                                if (is.na(this_PA) || this_PA == 'allData') { # run only
-                                  this_name <- paste0("_", this_PA, "_", this_run)
-                                  this_calib <- calib.lines[ , this_name]
-                                  this_valid <- ! calib.lines[ , this_name]
-                                } else if (is.na(this_run)) { # PA only
-                                  this_calib <- object@PA.table[ , this_PA]
-                                } else { # PA+run
-                                  this_name <- paste0("_", this_PA, "_", this_run)
-                                  this_calib <- calib.lines[ , this_name] & object@PA.table[ , this_PA]
-                                  this_valid <- ! calib.lines[ , this_name] & object@PA.table[ , this_PA]
-                                }
-                                
-                                calib.resp <- object@data.species[which(this_calib == TRUE)]
-                                tmp <- data.frame("dataset" = "calibration",
-                                                  "run" = this_run,
-                                                  "PA" = this_PA,
-                                                  "Presences" = sum(calib.resp, na.rm = TRUE),
-                                                  "True_Absences" = sum(calib.resp == 0, na.rm = TRUE),
-                                                  "Pseudo_Absences" = sum(this_calib == TRUE, na.rm = TRUE) - sum(calib.resp, na.rm = TRUE),
-                                                  "Undefined" = NA)
-                                
-                                if (!is.na(this_run)) { 
-                                  valid.resp <- object@data.species[this_valid]
-                                  tmp <- rbind(tmp,
-                                               data.frame("dataset" = "validation",
-                                                          "run" = this_run,
-                                                          "PA" = this_PA,
-                                                          "Presences" = sum(valid.resp, na.rm = TRUE),
-                                                          "True_Absences" = sum(valid.resp == 0, na.rm = TRUE),
-                                                          "Pseudo_Absences" = sum(this_calib == TRUE, na.rm = TRUE) - sum(calib.resp, na.rm = TRUE),
-                                                          "Undefined" = NA))
-                                  
-                                }
-                                return(tmp) # end foreach
-                              })
+              output <- 
+                rbind(
+                  output,
+                  foreach(this_PA = PA, this_run = run, .combine = 'rbind') %do% {
+                    if (is.na(this_PA) || this_PA == 'allData') { # run only
+                      this_name <- paste0("_", this_PA, "_", this_run)
+                      this_calib <- calib.lines[ , this_name]
+                      this_valid <- ! calib.lines[ , this_name]
+                    } else if (is.na(this_run)) { # PA only
+                      this_calib <- object@PA.table[ , this_PA]
+                    } else { # PA+run
+                      this_name <- paste0("_", this_PA, "_", this_run)
+                      this_calib <- calib.lines[ , this_name] & object@PA.table[ , this_PA]
+                      this_valid <- ! calib.lines[ , this_name] & object@PA.table[ , this_PA]
+                    }
+                    calib.resp <- object@data.species[which(this_calib)]
+                    tmp <- data.frame("dataset" = "calibration",
+                                      "run" = this_run,
+                                      "PA" = this_PA,
+                                      "Presences" = length(which(calib.resp == 1)),
+                                      "True_Absences" = length(which(calib.resp == 0)),
+                                      "Pseudo_Absences" = 
+                                        length(which(this_calib)) - 
+                                        length(which(calib.resp == 1)) -
+                                        length(which(calib.resp == 0)),
+                                      "Undefined" = NA)
+                    
+                    if (!is.na(this_run)) { 
+                      valid.resp <- object@data.species[this_valid]
+                      tmp <- rbind(tmp,
+                                   data.frame("dataset" = "validation",
+                                              "run" = this_run,
+                                              "PA" = this_PA,
+                                              "Presences" = length(which(valid.resp == 1)),
+                                              "True_Absences" = length(which(valid.resp == 0)),
+                                              "Pseudo_Absences" = 
+                                                length(valid.resp) - 
+                                                length(which(valid.resp == 1)) -
+                                                length(which(valid.resp == 0)),
+                                              "Undefined" = NA))
+                      
+                    }
+                    return(tmp) # end foreach
+                  })
             } 
             output
           }
