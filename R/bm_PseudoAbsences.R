@@ -21,7 +21,7 @@
 ##' or \code{\link[terra:rast]{SpatRaster}} object containing the explanatory variables (in 
 ##' columns or layers) that will be used to find the pseudo-absences
 ##' @param \ldots (\emph{optional, one or several of the following arguments depending on the selected 
-##' method)}) 
+##' method}) 
 ##' 
 ##' @param nb.rep an \code{integer} corresponding to the number of sets (repetitions) of 
 ##' pseudo-absence points that will be drawn

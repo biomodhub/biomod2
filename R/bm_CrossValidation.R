@@ -1,4 +1,3 @@
-###################################################################################################
 ##' @name bm_CrossValidation
 ##' @author Frank Breiner, Maya Gueguen
 ##' 
@@ -15,7 +14,7 @@
 ##' must be among \code{random}, \code{kfold}, \code{block}, \code{strat}, \code{env} or 
 ##' \code{user.defined}
 ##' @param \ldots (\emph{optional, one or several of the following arguments depending on the selected 
-##' method)}) 
+##' method}) 
 ##' 
 ##' @param nb.rep (\emph{optional, default} \code{0}) \cr
 ##' If \code{strategy = 'random'} or \code{strategy = 'kfold'}, an \code{integer} corresponding 
@@ -154,14 +153,14 @@
 ##' myExpl <- terra::crop(myExpl, myExtent)
 ##' }
 ##' 
-##' # ---------------------------------------------------------------
+##' # --------------------------------------------------------------- #
 ##' # Format Data with true absences
 ##' myBiomodData <- BIOMOD_FormatingData(resp.var = myResp,
 ##'                                      expl.var = myExpl,
 ##'                                      resp.xy = myRespXY,
 ##'                                      resp.name = myRespName)
 ##' 
-##' # ---------------------------------------------------------------
+##' # --------------------------------------------------------------- #
 ##' # Create the different validation datasets
 ##' 
 ##' # random selection

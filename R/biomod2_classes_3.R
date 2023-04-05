@@ -33,7 +33,7 @@
 ##' \code{\link{BIOMOD.models.out}}, \code{\link{BIOMOD.projection.out}} or 
 ##' \code{\link{BIOMOD.ensemble.models.out}} object
 ##' @param \ldots (\emph{optional, one or several of the following arguments depending on the selected 
-##' function)}) 
+##' function}) 
 ##' @param as.data.frame a \code{logical} defining whether output should be returned as 
 ##' \code{data.frame} or \code{array} object
 ##' @param subinfo a \code{character} corresponding to the information to be extracted, must be 
