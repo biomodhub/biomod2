@@ -88,21 +88,22 @@
 ##'   \item{stratified}{It may be used to test for model overfitting and to assess transferability in geographic space.
 ##' \code{x} and \code{y} stratification was described in \emph{Wenger and Olden 2012} (see 
 ##' References). \code{y} stratification uses \code{k} partitions along the y-gradient, \code{x} 
-##' stratification does the same for the x-gradient, and \code{both} combines them.}
-##'   \item{environmental}{\emph{to be filled}}
-##'   \item{user-defined}{\emph{to be filled} \cr \cr}
+##' stratification does the same for the x-gradient. \code{both} returns \code{2k} partitions: \code{k} partitions stratified along the x-gradient and \code{k} partitions stratified along the y-gradient.}
+##'   \item{environmental}{It may be used to test for model overfitting and to assess transferability in environmental space. It returns \code{k} partitions for each variable given in \code{env.var}.}
+##'   \item{user-defined}{Allow the user to give its own crossvalidation table. For a presence-absence dataset, column names must be formatted as: \code{_allData_RUNx} with \code{x} an integer. For a presence-only dataset for which several pseudo-absence dataset were generated, column names must be formatted as: \code{_PAx_RUNy} with \code{x} an integer and \code{PAx} an existing pseudo-absence dataset and \code{y} an integer \cr \cr}
 ##' }
 ##' 
 ##' 
 ##' \bold{Concerning balance parameter :}
 ##' 
-##' If \code{balance = 'presences'}, presences are divided (balanced) equally over the 
-##' partitions (e.g. \emph{Fig. 1b in Muscarelly et al. 2014}). Pseudo-absences will however be 
-##' unbalanced over the partitions especially if the presences are clumped on an edge of the 
-##' study area.
+##' If \code{balance = 'presences'}, presences are divided (balanced) equally
+##' over the partitions (e.g. \emph{Fig. 1b in Muscarelly et al. 2014}).
+##' Absences or pseudo-absences will however be unbalanced over the partitions
+##' especially if the presences are clumped on an edge of the study area.
 ##' 
-##' If \code{balance = 'absences'}, absences (resp. pseudo-absences or background) are divided 
-##' (balanced) as equally as possible between the partitions (geographical balanced bins given 
+##' If \code{balance = 'absences'}, absences (resp. pseudo-absences or
+##' background) are divided (balanced) as equally as possible between the
+##' partitions (geographical balanced bins given
 ##' that absences are spread over the study area equally, approach similar to \emph{Fig. 1 in
 ##' Wenger et Olden 2012}). Presences will however be unbalanced over the partitions especially
 ##' if the presences are clumped on an edge of the study area.

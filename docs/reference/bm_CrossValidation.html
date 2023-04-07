@@ -107,6 +107,7 @@ according to 6 different methods : <code>random</code>, <code>kfold</code>, <cod
 <span>  perc <span class="op">=</span> <span class="fl">0</span>,</span>
 <span>  k <span class="op">=</span> <span class="fl">0</span>,</span>
 <span>  balance <span class="op">=</span> <span class="st">"presences"</span>,</span>
+<span>  env.var <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  strat <span class="op">=</span> <span class="st">"both"</span>,</span>
 <span>  user.table <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  do.full.models <span class="op">=</span> <span class="cn">FALSE</span></span>
@@ -155,10 +156,10 @@ according to 6 different methods : <code>random</code>, <code>kfold</code>, <cod
 <span><span class="fu">bm_CrossValidation_env</span><span class="op">(</span><span class="va">bm.format</span>, <span class="va">...</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># S4 method for BIOMOD.formated.data</span></span>
-<span><span class="fu">bm_CrossValidation_env</span><span class="op">(</span><span class="va">bm.format</span>, <span class="va">balance</span>, <span class="va">k</span><span class="op">)</span></span>
+<span><span class="fu">bm_CrossValidation_env</span><span class="op">(</span><span class="va">bm.format</span>, <span class="va">balance</span>, <span class="va">k</span>, <span class="va">env.var</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># S4 method for BIOMOD.formated.data.PA</span></span>
-<span><span class="fu">bm_CrossValidation_env</span><span class="op">(</span><span class="va">bm.format</span>, <span class="va">balance</span>, <span class="va">k</span><span class="op">)</span></span></code></pre></div>
+<span><span class="fu">bm_CrossValidation_env</span><span class="op">(</span><span class="va">bm.format</span>, <span class="va">balance</span>, <span class="va">k</span>, <span class="va">env.var</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
@@ -221,7 +222,7 @@ the whole dataset (and pseudo-absence datasets) or not</p></dd>
 
 <dt>...</dt>
 <dd><p>(<em>optional, one or several of the following arguments depending on the selected 
-method)</em>)</p></dd>
+method</em>)</p></dd>
 
 </dl></div>
     <div id="value">
@@ -268,24 +269,25 @@ Four bins of equal size are partitioned (bottom-left, bottom-right, top-left and
 <dd><p>It may be used to test for model overfitting and to assess transferability in geographic space.
 <code>x</code> and <code>y</code> stratification was described in <em>Wenger and Olden 2012</em> (see 
 References). <code>y</code> stratification uses <code>k</code> partitions along the y-gradient, <code>x</code> 
-stratification does the same for the x-gradient, and <code>both</code> combines them.</p></dd>
+stratification does the same for the x-gradient. <code>both</code> returns <code>2k</code> partitions: <code>k</code> partitions stratified along the x-gradient and <code>k</code> partitions stratified along the y-gradient.</p></dd>
 
   <dt>environmental</dt>
-<dd><p><em>to be filled</em></p></dd>
+<dd><p>It may be used to test for model overfitting and to assess transferability in environmental space. It returns <code>k</code> partitions for each variable given in <code>env.var</code>.</p></dd>
 
   <dt>user-defined</dt>
-<dd><p><em>to be filled</em> <br><br></p></dd>
+<dd><p>Allow the user to give its own crossvalidation table. For a presence-absence dataset, column names must be formatted as: <code>_allData_RUNx</code> with <code>x</code> an integer. For a presence-only dataset for which several pseudo-absence dataset were generated, column names must be formatted as: <code>_PAx_RUNy</code> with <code>x</code> an integer and <code>PAx</code> an existing pseudo-absence dataset and <code>y</code> an integer <br><br></p></dd>
 
 
 </dl><p><b>Concerning balance parameter :</b></p>
-<p>If <code>balance = 'presences'</code>, presences are divided (balanced) equally over the 
-partitions (e.g. <em>Fig. 1b in Muscarelly et al. 2014</em>). Pseudo-absences will however be 
-unbalanced over the partitions especially if the presences are clumped on an edge of the 
-study area.</p>
-<p>If <code>balance = 'absences'</code>, absences (resp. pseudo-absences or background) are divided 
-(balanced) as equally as possible between the partitions (geographical balanced bins given 
-that absences are spread over the study area equally, approach similar to <em>Fig. 1 in 
-Wenger et Olden 2012</em>). Presences will however be unbalanced over the partitions especially 
+<p>If <code>balance = 'presences'</code>, presences are divided (balanced) equally
+over the partitions (e.g. <em>Fig. 1b in Muscarelly et al. 2014</em>).
+Absences or pseudo-absences will however be unbalanced over the partitions
+especially if the presences are clumped on an edge of the study area.</p>
+<p>If <code>balance = 'absences'</code>, absences (resp. pseudo-absences or
+background) are divided (balanced) as equally as possible between the
+partitions (geographical balanced bins given
+that absences are spread over the study area equally, approach similar to <em>Fig. 1 in
+Wenger et Olden 2012</em>). Presences will however be unbalanced over the partitions especially
 if the presences are clumped on an edge of the study area.</p>
     </div>
     <div id="references">
@@ -351,14 +353,14 @@ if the presences are clumped on an edge of the study area.</p>
 <span><span class="va">myExpl</span> <span class="op">&lt;-</span> <span class="fu">terra</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/terra/man/crop.html" class="external-link">crop</a></span><span class="op">(</span><span class="va">myExpl</span>, <span class="va">myExtent</span><span class="op">)</span></span>
 <span><span class="co"># }</span></span>
 <span></span>
-<span><span class="co"># ---------------------------------------------------------------</span></span>
+<span><span class="co"># --------------------------------------------------------------- #</span></span>
 <span><span class="co"># Format Data with true absences</span></span>
 <span><span class="va">myBiomodData</span> <span class="op">&lt;-</span> <span class="fu"><a href="BIOMOD_FormatingData.html">BIOMOD_FormatingData</a></span><span class="op">(</span>resp.var <span class="op">=</span> <span class="va">myResp</span>,</span>
 <span>                                     expl.var <span class="op">=</span> <span class="va">myExpl</span>,</span>
 <span>                                     resp.xy <span class="op">=</span> <span class="va">myRespXY</span>,</span>
 <span>                                     resp.name <span class="op">=</span> <span class="va">myRespName</span><span class="op">)</span></span>
 <span></span>
-<span><span class="co"># ---------------------------------------------------------------</span></span>
+<span><span class="co"># --------------------------------------------------------------- #</span></span>
 <span><span class="co"># Create the different validation datasets</span></span>
 <span></span>
 <span><span class="co"># random selection</span></span>

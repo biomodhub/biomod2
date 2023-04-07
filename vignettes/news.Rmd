@@ -37,7 +37,7 @@ vignette: >
 * Ensemble model can again be calculated over models without validation
 * Correct print for multiple values in `RF$sampsize` parameter in `BIOMOD_ModelingOptions`
 * Fixed layer name in `BIOMOD_Projection` and `BIOMOD_EnsembleForecasting` when `terraOption(todisk = TRUE)` is activated (for large or numerous raster).
-* fixed Ensemble Models based on models without cross-validation ("AllRun")
+* fixed Ensemble Models based on models without cross-validation ("allRun")
 * model is now robust to using `data.table` object (that are converted into standard `data.frame`)
 * fixed projection raster name when using `do.stack = FALSE` and `resp.name` with `.` inside.
 

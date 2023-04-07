@@ -236,7 +236,7 @@ A \code{vector} containing evaluation metric to filter predictions, must be amon
 \code{POFD}, \code{SR}, \code{CSI}, \code{ETS}, \code{HK}, \code{HSS}, \code{OR}, \code{ORSS}}
 
 \item{\ldots}{(\emph{optional, one or several of the following arguments depending on the selected 
-function)})}
+function})}
 }
 \value{
 \describe{

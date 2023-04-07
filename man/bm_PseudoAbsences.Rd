@@ -106,7 +106,7 @@ If \code{strategy = 'user.defined'}, a \code{matrix} or \code{data.frame} with a
 model(s) for each repetition}
 
 \item{\ldots}{(\emph{optional, one or several of the following arguments depending on the selected 
-method)})}
+method})}
 }
 \value{
 A \code{list} containing the following elements :
