@@ -110,6 +110,30 @@
   return(test)
 }
 
+.check_calib.lines_names <- function(calib.lines, expected_PA.names){
+  full.names <- colnames(calib.lines)
+  if (missing(expected_PA.names)) { # CV only
+    expected_CV.names <- paste0("_allData_RUN", seq_len(ncol(calib.lines)))
+    .fun_testIfIn(TRUE, "colnames(calib.lines)", full.names, expected_CV.names)
+  } else {
+    err.msg <- "colnames(calib.lines) must follow the following format: '_PAx_RUNy' with x and y integer"
+    # check for beginning '_'
+    if (!all( substr(full.names, 1, 1) == "_")) {
+      stop(err.msg)
+    }
+    PA.names <- sapply(strsplit(full.names, split = "_"), function(x) x[2])
+    CV.names <- sapply(strsplit(full.names, split = "_"), function(x) x[3])
+    .fun_testIfIn(TRUE, "Pseudo-absence dataset in colnames(calib.lines)", PA.names, expected_PA.names)
+    if (!all( substr(CV.names, 1, 3) == "RUN")) {
+      stop(err.msg)
+    }
+    CV.num <- sapply(strsplit(CV.names, split = "RUN"), function(x) x[2])
+    if (any(is.na(as.numeric(CV.num)))) {
+      stop(err.msg)
+    }
+  }
+}
+
 # Functions to get variables ranges ---------------------------------
 # used bm_RunModelsLoop, BIOMOD_EnsembleModeling
 get_var_type <- function(data) { return(sapply(data, function(x) class(x)[1])) }

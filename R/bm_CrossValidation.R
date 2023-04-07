@@ -103,8 +103,8 @@
 ##' 
 ##' If \code{balance = 'absences'}, absences (resp. pseudo-absences or background) are divided 
 ##' (balanced) as equally as possible between the partitions (geographical balanced bins given 
-##' that absences are spread over the study area equally, approach similar to \emph{Fig. 1 in 
-##' Wenger et Olden 2012}). Presences will however be unbalanced over the partitions especially 
+##' that absences are spread over the study area equally, approach similar to \emph{Fig. 1 in
+##' Wenger et Olden 2012}). Presences will however be unbalanced over the partitions especially
 ##' if the presences are clumped on an edge of the study area.
 ##' 
 ##' 
@@ -252,7 +252,7 @@ bm_CrossValidation <- function(bm.format,
   }
   
   ## 2. CLEAN FINAL TABLE ----------------------------------------------------------------------------
-  if (!inherits(bm.format, "BIOMOD.formated.data.PA")) {
+  if (!inherits(bm.format, "BIOMOD.formated.data.PA") & strategy != "user.defined") {
     colnames(out) <- paste0("_allData", colnames(out))
   }
   if (do.full.models) {
@@ -377,7 +377,7 @@ bm_CrossValidation <- function(bm.format,
       if (dim(user.table)[1] != length(bm.format@data.species)) { 
         stop("user.table must have as many rows (dim1) than your species as data")
       }
-      nb.rep <- dim(user.table)[2]
+      # nb.rep <- dim(user.table)[2]
     }
   }
   
@@ -450,7 +450,7 @@ setMethod('bm_CrossValidation_user.defined', signature(bm.format = "BIOMOD.forma
           function(bm.format, user.table) {
             cat("\n   > User defined cross-validation selection")
             calib.lines <- user.table
-            colnames(calib.lines) <- paste0('_RUN', 1:ncol(calib.lines))
+            .check_calib.lines_names(calib.lines)
             return(calib.lines)
           })
 
@@ -463,13 +463,18 @@ setMethod('bm_CrossValidation_user.defined', signature(bm.format = "BIOMOD.forma
 setMethod('bm_CrossValidation_user.defined', signature(bm.format = "BIOMOD.formated.data.PA"),
           function(bm.format, user.table) {
             cat("\n   > User defined cross-validation selection")
-            calib.lines <- foreach(pa = 1:ncol(bm.format@PA.table), .combine = "cbind") %do%
-              {
-                calib.pa <- user.table
-                calib.pa[which(bm.format@PA.table[, pa] == FALSE | is.na(bm.format@PA.table[, pa])), ] <- NA
-                colnames(calib.pa) <- paste0('_PA', pa, '_RUN', 1:ncol(calib.pa))
-                return(calib.pa)
-              }
+            .check_calib.lines_names(user.table, 
+                                     expected_PA.names = colnames(bm.format@PA.table))
+            
+            calib.lines <-
+              foreach(this.colnames = colnames(user.table),
+                      .combine = "cbind") %do% {
+                        this.pa = strsplit(this.colnames, split = "_")[[1]][2]
+                        calib.pa <- user.table[,this.colnames, drop = FALSE]
+                        calib.pa[which(bm.format@PA.table[, this.pa] == FALSE |
+                                         is.na(bm.format@PA.table[, this.pa])), , drop = FALSE]
+                        return(calib.pa)
+                      }
             return(calib.lines)
           })
 
@@ -733,22 +738,22 @@ setMethod('bm_CrossValidation_strat', signature(bm.format = "BIOMOD.formated.dat
             
             if (strat == "x" || strat == "both") {
               bands <- quantile(tmp.coord[balance, 1], probs = seq(0, 100, 100 / k) / 100)
-              bands[1] <- bands[1] - 1
-              bands[k + 1] <- bands[k + 1] + 1
+              bands[1] <- -Inf
+              bands[k + 1] <- Inf
               calib.x <- matrix(NA, nrow(tmp.coord), k)
               for (i in 1:k) {
-                calib.x[, i] <- (tmp.coord[, 1] >= bands[i] & tmp.coord[, 1] < bands[i + 1])
+                calib.x[, i] <- !(tmp.coord[, 1] >= bands[i] & tmp.coord[, 1] < bands[i + 1])
               }
               if (strat == "x") { calib.lines <- calib.x }
             }
             
             if (strat == "y" || strat == "both") {
               bands <- quantile(tmp.coord[balance, 2], probs = seq(0, 100, 100 / k) / 100)
-              bands[1] <- bands[1] - 1
-              bands[k + 1] <- bands[k + 1] + 1
+              bands[1] <- -Inf
+              bands[k + 1] <- Inf
               calib.y <- matrix(NA, nrow(tmp.coord), k)
               for (i in 1:k) {
-                calib.y[, i] <- (tmp.coord[, 2] >= bands[i] & tmp.coord[, 2] < bands[i + 1])
+                calib.y[, i] <- !(tmp.coord[, 2] >= bands[i] & tmp.coord[, 2] < bands[i + 1])
               }
               if (strat == "y") { calib.lines <- calib.y }
             }
@@ -756,12 +761,12 @@ setMethod('bm_CrossValidation_strat', signature(bm.format = "BIOMOD.formated.dat
             if (strat == "both") { ## Merge X and Y tables
               calib.lines <- cbind(calib.x, calib.y)
             }
-            
+
             colnames(calib.lines) <- paste0('_RUN', 1:ncol(calib.lines))
             return(calib.lines)
           })
 
-## bm_CrossValidation block BIOMOD.formated.data.PA methods -----------------------------
+## bm_CrossValidation strat BIOMOD.formated.data.PA methods --------------------------------
 ##'
 ##' @rdname bm_CrossValidation
 ##' @export
@@ -776,32 +781,32 @@ setMethod('bm_CrossValidation_strat', signature(bm.format = "BIOMOD.formated.dat
               {
                 ind.PA <- which(bm.format@PA.table[, pa] == TRUE)
                 tmp.pa <- tmp.coord[ind.PA, ]
-                
+                tmp.pa.balance <- tmp.coord[intersect(ind.PA, which(balance)), ]
                 if (strat == "x" || strat == "both") {
-                  bands <- quantile(tmp.pa[balance, 1], probs = seq(0, 100, 100 / k) / 100)
-                  bands[1] <- bands[1] - 1
-                  bands[k + 1] <- bands[k + 1] + 1
+                  bands <- quantile(tmp.pa.balance[ , 1], probs = seq(0, 100, 100 / k) / 100)
+                  bands[1] <- -Inf
+                  bands[k + 1] <- Inf
                   calib.x <- matrix(NA, nrow(tmp.pa), k)
                   for (i in 1:k) {
-                    calib.x[, i] <- (tmp.pa[, 1] >= bands[i] & tmp.pa[, 1] < bands[i + 1])
+                    calib.x[, i] <- !(tmp.pa[, 1] >= bands[i] & tmp.pa[, 1] < bands[i + 1])
                   }
                   if (strat == "x") { calib.pa_rep <- calib.x }
                 }
                 if (strat == "y" || strat == "both") {
-                  bands <- quantile(tmp.pa[balance, 2], probs = seq(0, 100, 100 / k) / 100)
-                  bands[1] <- bands[1] - 1
-                  bands[k + 1] <- bands[k + 1] + 1
+                  bands <- quantile(tmp.pa[ , 2], probs = seq(0, 100, 100 / k) / 100)
+                  bands[1] <- -Inf
+                  bands[k + 1] <- Inf
                   calib.y <- matrix(NA, nrow(tmp.pa), k)
                   for (i in 1:k) {
-                    calib.y[, i] <- (tmp.pa[, 2] >= bands[i] & tmp.pa[, 2] < bands[i + 1])
+                    calib.y[, i] <- !(tmp.pa[, 2] >= bands[i] & tmp.pa[, 2] < bands[i + 1])
                   }
                   if (strat == "y") { calib.pa_rep <- calib.y }
                 }
                 if (strat == "both") { ## Merge X and Y tables
                   calib.pa_rep <- cbind(calib.x, calib.y)
                 }
-                
-                calib.pa <- matrix(NA, nrow = nrow(tmp.coord), ncol = 4)
+                calib.pa <- matrix(NA, nrow = nrow(tmp.coord), 
+                                   ncol = ifelse(strat =="both", 2*k, k))
                 calib.pa[ind.PA, ] <- calib.pa_rep
                 colnames(calib.pa) <- paste0('_PA', pa, '_RUN', 1:ncol(calib.pa))
                 return(calib.pa)
@@ -872,9 +877,10 @@ setMethod('bm_CrossValidation_env', signature(bm.format = "BIOMOD.formated.data.
                   }
                   calib.pa.env <- matrix(NA, nrow = nrow(bm.format@data.env.var), ncol = k)
                   calib.pa.env[ind.PA, ] <- calib.tmp.env
-                  colnames(calib.pa.env) <- paste0('_PA', pa, '_RUN', 1:ncol(calib.pa.env))
                   return(calib.pa.env)
                 }
+                colnames(calib.env) <- paste0('_PA', pa, '_RUN', 1:ncol(calib.env))
+                
                 return(calib.env)
               }
             return(calib.lines)
