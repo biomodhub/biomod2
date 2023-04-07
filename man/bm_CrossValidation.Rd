@@ -92,13 +92,19 @@ percentage of data that will be kept for calibration}
 If \code{strategy = 'kfold'} or \code{strategy = 'strat'} or \code{strategy = 'env'}, an 
 \code{integer} corresponding to the number of partitions}
 
-\item{balance}{(\emph{optional, default} \code{'presences'}) \cr
-If \code{strategy = 'strat'} or \code{strategy = 'env'}, a \code{character} corresponding 
-to how data will be balanced between partitions, must be either \code{presences} or 
-\code{absences}}
+\item{balance}{(\emph{optional, default} \code{'presences'}) \cr If
+\code{strategy = 'strat'} or \code{strategy = 'env'}, a \code{character}
+corresponding to how data will be balanced between partitions, must be
+either \code{presences} or \code{absence}}
 
-\item{strat}{(\emph{optional, default} \code{'both'}) \cr
-If \code{strategy = 'env'}, a \code{character} corresponding to how data will partitioned 
+\item{env.var}{(\emph{optional}) \cr If \code{strategy = 'env'}, a
+\code{character} corresponding to the environmental variables used to
+build the partition. \code{k} partitions will be built for each
+environmental variables. By default the function uses all environmental
+variables available.}
+
+\item{strat}{(\emph{optional, default} \code{'both'}) \cr If \code{strategy
+= 'env'}, a \code{character} corresponding to how data will partitioned
 along gradient, must be among \code{x}, \code{y}, \code{both}}
 
 \item{user.table}{(\emph{optional, default} \code{NULL}) \cr

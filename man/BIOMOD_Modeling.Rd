@@ -16,6 +16,7 @@ BIOMOD_Modeling(
   CV.perc = NULL,
   CV.k = NULL,
   CV.balance = NULL,
+  CV.env.var = NULL,
   CV.strat = NULL,
   CV.user.table = NULL,
   CV.do.full.models = TRUE,
@@ -65,8 +66,14 @@ If \code{strategy = 'kfold'} or \code{strategy = 'strat'} or \code{strategy = 'e
 
 \item{CV.balance}{(\emph{optional, default} \code{'presences'}) \cr
 If \code{strategy = 'strat'} or \code{strategy = 'env'}, a \code{character} corresponding 
-to how data will be balanced between partitions, must be either \code{presences} or 
+to how data will be balanced between partitions, must be either \code{presences} or
 \code{absences}}
+
+\item{CV.env.var}{(\emph{optional}) \cr If \code{strategy = 'env'}, a
+\code{character} corresponding to the environmental variables used to
+build the partition. \code{k} partitions will be built for each
+environmental variables. By default the function uses all environmental
+variables available.}
 
 \item{CV.strat}{(\emph{optional, default} \code{'both'}) \cr
 If \code{strategy = 'env'}, a \code{character} corresponding to how data will partitioned 

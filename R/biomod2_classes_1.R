@@ -948,7 +948,7 @@ setMethod('plot', signature(x = 'BIOMOD.formated.data', y = "missing"),
     allrun <- sapply(colnames(calib.lines), function(xx) strsplit(xx, "_")[[1]][3])
   } else if (inherits(x, "BIOMOD.formated.data.PA")) {
     allPA <- colnames(x@PA.table)
-    allrun <- rep(NA, length(PA))
+    allrun <- rep(NA, length(allPA))
   }
   
   # default value for PA and run

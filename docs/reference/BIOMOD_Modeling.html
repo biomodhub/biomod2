@@ -114,6 +114,7 @@ metrics (see Details).</p>
 <span>  CV.perc <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  CV.k <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  CV.balance <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  CV.env.var <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  CV.strat <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  CV.user.table <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  CV.do.full.models <span class="op">=</span> <span class="cn">TRUE</span>,</span>
@@ -184,8 +185,16 @@ If <code>strategy = 'kfold'</code> or <code>strategy = 'strat'</code> or <code>s
 <dt>CV.balance</dt>
 <dd><p>(<em>optional, default</em> <code>'presences'</code>) <br>
 If <code>strategy = 'strat'</code> or <code>strategy = 'env'</code>, a <code>character</code> corresponding 
-to how data will be balanced between partitions, must be either <code>presences</code> or 
+to how data will be balanced between partitions, must be either <code>presences</code> or
 <code>absences</code></p></dd>
+
+
+<dt>CV.env.var</dt>
+<dd><p>(<em>optional</em>) <br> If <code>strategy = 'env'</code>, a
+<code>character</code> corresponding to the environmental variables used to
+build the partition. <code>k</code> partitions will be built for each
+environmental variables. By default the function uses all environmental
+variables available.</p></dd>
 
 
 <dt>CV.strat</dt>

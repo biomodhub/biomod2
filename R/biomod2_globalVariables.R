@@ -73,7 +73,7 @@ utils::globalVariables(names = c("thiscol", "pred", "proj"))
 utils::globalVariables(names = c("i.abs"))
 
 ## bm_CrossValidation ------------
-utils::globalVariables(names = c("pa", "env"))
+utils::globalVariables(names = c("pa", "env", "this.colnames"))
 
 ## bm_RunModel ------------
 utils::globalVariables(names = c("expl_var_names", "resp_name", "criteria"

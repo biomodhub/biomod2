@@ -195,15 +195,23 @@ If <code>strategy = 'kfold'</code> or <code>strategy = 'strat'</code> or <code>s
 
 
 <dt>balance</dt>
-<dd><p>(<em>optional, default</em> <code>'presences'</code>) <br>
-If <code>strategy = 'strat'</code> or <code>strategy = 'env'</code>, a <code>character</code> corresponding 
-to how data will be balanced between partitions, must be either <code>presences</code> or 
-<code>absences</code></p></dd>
+<dd><p>(<em>optional, default</em> <code>'presences'</code>) <br> If
+<code>strategy = 'strat'</code> or <code>strategy = 'env'</code>, a <code>character</code>
+corresponding to how data will be balanced between partitions, must be
+either <code>presences</code> or <code>absence</code></p></dd>
+
+
+<dt>env.var</dt>
+<dd><p>(<em>optional</em>) <br> If <code>strategy = 'env'</code>, a
+<code>character</code> corresponding to the environmental variables used to
+build the partition. <code>k</code> partitions will be built for each
+environmental variables. By default the function uses all environmental
+variables available.</p></dd>
 
 
 <dt>strat</dt>
-<dd><p>(<em>optional, default</em> <code>'both'</code>) <br>
-If <code>strategy = 'env'</code>, a <code>character</code> corresponding to how data will partitioned 
+<dd><p>(<em>optional, default</em> <code>'both'</code>) <br> If <code>strategy
+= 'env'</code>, a <code>character</code> corresponding to how data will partitioned
 along gradient, must be among <code>x</code>, <code>y</code>, <code>both</code></p></dd>
 
 

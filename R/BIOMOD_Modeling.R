@@ -1,4 +1,4 @@
-###################################################################################################
+# BIOMOD_Modeling ---------------------------------------------------------
 ##' @name BIOMOD_Modeling
 ##' @author Wilfried Thuiller, Damien Georges, Robin Engler
 ##' 
@@ -37,8 +37,14 @@
 ##' \code{integer} corresponding to the number of partitions 
 ##' @param CV.balance (\emph{optional, default} \code{'presences'}) \cr
 ##' If \code{strategy = 'strat'} or \code{strategy = 'env'}, a \code{character} corresponding 
-##' to how data will be balanced between partitions, must be either \code{presences} or 
+##' to how data will be balanced between partitions, must be either \code{presences} or
 ##' \code{absences} 
+##' @param CV.env.var (\emph{optional}) \cr If \code{strategy = 'env'}, a
+##'   \code{character} corresponding to the environmental variables used to
+##'   build the partition. \code{k} partitions will be built for each
+##'   environmental variables. By default the function uses all environmental
+##'   variables available.
+
 ##' @param CV.strat (\emph{optional, default} \code{'both'}) \cr
 ##' If \code{strategy = 'env'}, a \code{character} corresponding to how data will partitioned 
 ##' along gradient, must be among \code{x}, \code{y}, \code{both}
@@ -273,7 +279,6 @@
 ##' @export
 ##' 
 ##' 
-###################################################################################################
 
 BIOMOD_Modeling <- function(bm.format,
                             modeling.id = as.character(format(Sys.time(), "%s")),
@@ -286,6 +291,7 @@ BIOMOD_Modeling <- function(bm.format,
                             CV.perc = NULL,
                             CV.k = NULL,
                             CV.balance = NULL,
+                            CV.env.var = NULL,
                             CV.strat = NULL,
                             CV.user.table = NULL,
                             CV.do.full.models = TRUE,
@@ -335,6 +341,7 @@ BIOMOD_Modeling <- function(bm.format,
                                     perc = CV.perc,
                                     k = CV.k,
                                     balance = CV.balance,
+                                    env.var = CV.env.var,
                                     strat = CV.strat,
                                     user.table = CV.user.table,
                                     do.full.models = CV.do.full.models)
