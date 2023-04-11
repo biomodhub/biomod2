@@ -67,10 +67,10 @@
 .fun_testIfPosNum <- function(test, objName, objValue)
 {
   if (!is.numeric(objValue)) {
-    stop(paste0("\n", objName, "must be a numeric"))
+    stop(paste0("\n", objName, " must be a numeric"))
     test <- FALSE
   } else if (objValue < 0) {
-    stop(paste0("\n", objName, "must be a positive numeric"))
+    stop(paste0("\n", objName, " must be a positive numeric"))
     test <- FALSE
   }
   return(test)
@@ -80,7 +80,7 @@
 {
   test <- .fun_testIfPosNum(test, objName, objValue)
   if (test && objValue > 1) {
-    stop(paste0("\n", objName, "must be a 0 to 1 numeric"))
+    stop(paste0("\n", objName, " must be a 0 to 1 numeric"))
     test <- FALSE
   }
   return(test)
@@ -89,10 +89,10 @@
 .fun_testIfPosInt <- function(test, objName, objValue)
 {
   if (!is.numeric(objValue)) {
-    cat(paste0("\n", objName, "must be a integer"))
+    cat(paste0("\n", objName, " must be a integer"))
     test <- FALSE
   } else if (any(objValue < 0) || any(objValue %% 1 != 0)) {
-    cat(paste0("\n", objName, "must be a positive integer"))
+    cat(paste0("\n", objName, " must be a positive integer"))
     test <- FALSE
   }
   return(test)
