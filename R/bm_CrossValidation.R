@@ -220,7 +220,7 @@
 bm_CrossValidation <- function(bm.format,
                                strategy = 'random',
                                nb.rep = 0, 
-                               perc = 0,
+                               perc = 0.8,
                                k = 0, 
                                balance = 'presences', 
                                env.var = NULL,
