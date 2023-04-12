@@ -327,6 +327,9 @@ bm_CrossValidation <- function(bm.format,
     if (nb.rep < 1) { stop("nb.rep must be an integer >= 1") }
     
     if (strategy == "random") {
+      if (is.null(perc)) {
+        stop("perc (or CV.perc) is required when strategy = 'random'")
+      }
       .fun_testIf01(TRUE, "perc", perc)
       if (perc < 0.5) {
         warning("You chose to allocate more data to validation than to calibration of your model
