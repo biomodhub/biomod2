@@ -55,7 +55,10 @@
 ##' @param CV.do.full.models (\emph{optional, default} \code{TRUE}) \cr  
 ##' A \code{logical} value defining whether models should be also calibrated and validated over 
 ##' the whole dataset (and pseudo-absence datasets) or not
-##' 
+##' @param nb.rep  \emph{deprecated}, now called \code{CV.nb.rep}
+##' @param data.split.perc \emph{deprecated}, now called \code{CV.perc}
+##' @param data.split.table \emph{deprecated}, now called \code{CV.user.table}
+##' @param do.full.models \emph{deprecated}, now called \code{CV.do.full.models}
 ##' @param weights (\emph{optional, default} \code{NULL}) \cr 
 ##' A \code{vector} of \code{numeric} values corresponding to observation weights (one per 
 ##' observation, see Details)
@@ -295,6 +298,10 @@ BIOMOD_Modeling <- function(bm.format,
                             CV.strat = NULL,
                             CV.user.table = NULL,
                             CV.do.full.models = TRUE,
+                            nb.rep,
+                            data.split.perc,
+                            data.split.table,
+                            do.full.models,
                             weights = NULL,
                             prevalence = NULL,
                             metric.eval = c('KAPPA', 'TSS', 'ROC'),
@@ -307,9 +314,36 @@ BIOMOD_Modeling <- function(bm.format,
   .bm_cat("Build Single Models")
   
   ## 0. Check arguments ---------------------------------------------------------------------------
-  args <- .BIOMOD_Modeling.check.args(bm.format, modeling.id, models, models.pa, bm.options
-                                      , weights, prevalence, metric.eval, var.import
-                                      , scale.models, nb.cpu, seed.val, do.progress)
+  args <- .BIOMOD_Modeling.check.args(
+    bm.format = bm.format, 
+    modeling.id = bm.format, 
+    models = bm.format, 
+    models.pa = bm.format, 
+    bm.options = bm.options, 
+    weights = weights, 
+    prevalence = prevalence, 
+    metric.eval = metric.eval, 
+    var.import = var.import, 
+    scale.models = scale.models,
+    nb.cpu = nb.cpu,
+    seed.val = seed.val,
+    do.progress = do.progress
+  )
+  for (argi in names(args)) { assign(x = argi, value = args[[argi]]) }
+  rm(args)
+  
+  # check for obsolete arguments
+  args <- .BIOMOD_Modeling.check.args.obsolete(
+    CV.strategy = CV.strategy,
+    data.split.perc = data.split.perc,
+    CV.perc = CV.perc,
+    data.split.table = data.split.table,
+    CV.user.table = CV.user.table,
+    nb.rep = nb.rep,
+    CV.nb.rep = CV.nb.rep,
+    do.full.models = do.full.models,
+    CV.do.full.models = CV.do.full.models
+  )
   for (argi in names(args)) { assign(x = argi, value = args[[argi]]) }
   rm(args)
   
@@ -494,7 +528,7 @@ BIOMOD_Modeling <- function(bm.format,
       models.pa = NULL
     }
   }
-
+  
   
   ## 3. Check bm.options arguments --------------------------------------------
   if (!is.null(bm.options)) {
@@ -618,6 +652,76 @@ BIOMOD_Modeling <- function(bm.format,
               do.progress = do.progress))
 }
 
+
+# Obsolete argument Check -------------------------------------------------------
+
+
+.BIOMOD_Modeling.check.args.obsolete <- function(CV.strategy,
+                                                 data.split.perc,
+                                                 CV.perc,
+                                                 data.split.table,
+                                                 CV.user.table,
+                                                 nb.rep,
+                                                 CV.nb.rep,
+                                                 do.full.models,
+                                                 CV.do.full.models)
+{
+  ## do.full.models ------------------------------
+  if (!missing(do.full.models)) {
+    if (!is.null(CV.do.full.models)) {
+      cat("\n! ignored obsolete argument 'do.full.models' as 'CV.do.full.models' was also given")
+    } else {
+      CV.do.full.models <- do.full.models
+      cat("\n!!! argument 'do.full.models' is obsolete, please use 'CV.do.full.models' instead")
+    }
+  }
+  
+  ## data.split.perc --------------------------
+  if (!missing(data.split.perc)) {
+    if (CV.strategy != "random") {
+      cat("\n! ignored obsolete argument 'data.split.perc' as 'CV.strategy' was not set to 'random'")
+    } else if (!is.null(CV.perc)) {
+      cat("\n! ignored obsolete argument 'data.split.perc' as 'CV.perc' was also given")
+    } else {
+      CV.perc <- data.split.perc/100
+      cat("\n!!! argument 'do.full.models' is obsolete, please use 'CV.perc' instead.
+          \n /!\ 'CV.perc' is on a scale 0-1 and was set to data.split.perc/100 =",CV.perc)
+    }
+  }
+  
+  ## nb.rep --------------------------
+  if (!missing(nb.rep)) {
+    if (! CV.strategy %in% c("random", "kfold")) {
+      cat("\n! ignored obsolete argument 'nb.rep' as 'CV.strategy' was not set to 'random' or 'kfold'")
+    } else if (!is.null(CV.nb.rep)) {
+      cat("\n! ignored obsolete argument 'nb.rep' as 'CV.nb.rep' was also given")
+    } else {
+      CV.nb.rep <- nb.rep
+      cat("\n!!! argument 'nb.rep' is obsolete, please use 'CV.nb.rep' instead.")
+    }
+  }
+  
+  
+  ## data.split.table --------------------------
+  if (!missing(data.split.table)) {
+    if (! CV.strategy %in% c("user.defined")) {
+      cat("\n! ignored obsolete argument 'data.split.table' as 'CV.strategy' was not set to 'user.defined'")
+    } else if (!is.null(CV.user.table)) {
+      cat("\n! ignored obsolete argument 'data.split.table' as 'CV.user.table' was also given")
+    } else {
+      CV.user.table <- data.split.table
+      cat("\n!!! argument 'data.split.table' is obsolete, please use 'CV.user.table' instead.")
+    }
+  }
+  return(list(
+    CV.perc = CV.perc,
+    CV.user.table = CV.user.table,
+    CV.nb.rep = CV.nb.rep,
+    CV.do.full.models = CV.do.full.models))
+}
+
+## 0. Check bm.format and models arguments ----------------------------------
+cat('\n\nChecking Models arguments...\n')
 
 # ---------------------------------------------------------------------------- #
 
