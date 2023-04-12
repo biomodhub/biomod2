@@ -316,9 +316,9 @@ BIOMOD_Modeling <- function(bm.format,
   ## 0. Check arguments ---------------------------------------------------------------------------
   args <- .BIOMOD_Modeling.check.args(
     bm.format = bm.format, 
-    modeling.id = bm.format, 
-    models = bm.format, 
-    models.pa = bm.format, 
+    modeling.id = modeling.id, 
+    models = models, 
+    models.pa = models.pa, 
     bm.options = bm.options, 
     weights = weights, 
     prevalence = prevalence, 
