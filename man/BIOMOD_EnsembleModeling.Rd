@@ -93,29 +93,36 @@ An \code{integer} value corresponding to the new seed value to be set}
 \item{do.progress}{(\emph{optional, default} \code{TRUE}) \cr 
 A \code{logical} value defining whether the progress bar is to be rendered or not}
 
-\item{prob.mean}{(\emph{deprecated} \code{TRUE}) \cr A \code{logical} value defining 
-whether to compute the mean probabilities across predictions or not}
+\item{prob.mean}{(\emph{deprecated}, please use \code{em.algo} instead) \cr
+A \code{logical} value defining whether to compute the mean probabilities
+across predictions or not}
 
-\item{prob.median}{(\emph{deprecated}) \cr A \code{logical} value defining whether to compute 
-the median probabilities across predictions or not}
+\item{prob.median}{(\emph{deprecated}, please use \code{em.algo} instead)
+\cr A \code{logical} value defining whether to compute the median
+probabilities across predictions or not}
 
-\item{prob.cv}{(\emph{deprecated}) \cr A \code{logical} value defining whether to compute the 
-coefficient of variation across predictions or not}
+\item{prob.cv}{(\emph{deprecated}, please use \code{em.algo} instead) \cr A
+\code{logical} value defining whether to compute the coefficient of
+variation across predictions or not}
 
-\item{prob.ci}{(\emph{deprecated}) \cr A \code{logical} value defining whether to compute the 
-confidence interval around the \code{prob.mean} ensemble model or not}
+\item{prob.ci}{(\emph{deprecated}, please use \code{em.algo} instead) \cr A
+\code{logical} value defining whether to compute the confidence interval
+around the \code{prob.mean} ensemble model or not}
 
-\item{committee.averaging}{(\emph{deprecated}) \cr A \code{logical} value defining whether to 
-compute the committee averaging across predictions or not}
+\item{committee.averaging}{(\emph{deprecated}, please use \code{em.algo}
+instead) \cr A \code{logical} value defining whether to compute the
+committee averaging across predictions or not}
 
-\item{prob.mean.weight}{(\emph{deprecated}) \cr A \code{logical} value defining whether to 
-compute the weighted sum of probabilities across predictions or not}
+\item{prob.mean.weight}{(\emph{deprecated}, please use \code{em.algo}
+instead) \cr A \code{logical} value defining whether to compute the
+weighted sum of probabilities across predictions or not}
 
-\item{prob.mean.weight.decay}{(\emph{deprecated})  \cr old argument name for
+\item{prob.mean.weight.decay}{(\emph{deprecated}, please use
+\code{EMwmean.decay} instead)  \cr old argument name for
 \code{EMwmean.decay}}
 
-\item{prob.ci.alpha}{(\emph{deprecated}) \cr old argument name for
-\code{EMci.alpha}}
+\item{prob.ci.alpha}{(\emph{deprecated}, please use \code{EMci.alpha}
+instead) \cr old argument name for \code{EMci.alpha}}
 }
 \value{
 A \code{BIOMOD.ensemble.models.out} object containing models outputs, or links to saved 

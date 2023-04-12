@@ -20,6 +20,10 @@ BIOMOD_Modeling(
   CV.strat = NULL,
   CV.user.table = NULL,
   CV.do.full.models = TRUE,
+  nb.rep,
+  data.split.perc,
+  data.split.table,
+  do.full.models,
   weights = NULL,
   prevalence = NULL,
   metric.eval = c("KAPPA", "TSS", "ROC"),
@@ -87,6 +91,14 @@ repetition (in columns) which observation lines should be used for models calibr
 \item{CV.do.full.models}{(\emph{optional, default} \code{TRUE}) \cr
 A \code{logical} value defining whether models should be also calibrated and validated over 
 the whole dataset (and pseudo-absence datasets) or not}
+
+\item{nb.rep}{\emph{deprecated}, now called \code{CV.nb.rep}}
+
+\item{data.split.perc}{\emph{deprecated}, now called \code{CV.perc}}
+
+\item{data.split.table}{\emph{deprecated}, now called \code{CV.user.table}}
+
+\item{do.full.models}{\emph{deprecated}, now called \code{CV.do.full.models}}
 
 \item{weights}{(\emph{optional, default} \code{NULL}) \cr 
 A \code{vector} of \code{numeric} values corresponding to observation weights (one per 

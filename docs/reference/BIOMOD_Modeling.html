@@ -118,6 +118,10 @@ metrics (see Details).</p>
 <span>  CV.strat <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  CV.user.table <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  CV.do.full.models <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  <span class="va">nb.rep</span>,</span>
+<span>  <span class="va">data.split.perc</span>,</span>
+<span>  <span class="va">data.split.table</span>,</span>
+<span>  <span class="va">do.full.models</span>,</span>
 <span>  weights <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  prevalence <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  metric.eval <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"KAPPA"</span>, <span class="st">"TSS"</span>, <span class="st">"ROC"</span><span class="op">)</span>,</span>
@@ -214,6 +218,22 @@ repetition (in columns) which observation lines should be used for models calibr
 <dd><p>(<em>optional, default</em> <code>TRUE</code>) <br>
 A <code>logical</code> value defining whether models should be also calibrated and validated over 
 the whole dataset (and pseudo-absence datasets) or not</p></dd>
+
+
+<dt>nb.rep</dt>
+<dd><p><em>deprecated</em>, now called <code>CV.nb.rep</code></p></dd>
+
+
+<dt>data.split.perc</dt>
+<dd><p><em>deprecated</em>, now called <code>CV.perc</code></p></dd>
+
+
+<dt>data.split.table</dt>
+<dd><p><em>deprecated</em>, now called <code>CV.user.table</code></p></dd>
+
+
+<dt>do.full.models</dt>
+<dd><p><em>deprecated</em>, now called <code>CV.do.full.models</code></p></dd>
 
 
 <dt>weights</dt>
