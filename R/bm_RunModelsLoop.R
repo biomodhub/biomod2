@@ -218,7 +218,6 @@ bm_RunModel <- function(model, run.name, dir.name = '.'
   if (is.null(args)) { return(NULL) }
   for (argi in names(args)) { assign(x = argi, value = args[[argi]]) }
   rm(args)
-  
   ## get model name and names of categorical variables
   dir_name = dir.name
   model_name <- paste0(run.name, '_', model)
@@ -386,7 +385,6 @@ bm_RunModel <- function(model, run.name, dir.name = '.'
     }
   } else if (model == "GLM"){
     ### 2.4 GLM model ----------------------------------------------------------
-    
     cat('\n\t> GLM modeling...')
     if (is.null(bm.options@GLM$myFormula)) {
       cat("\n\tAutomatic formula generation...")
@@ -397,7 +395,6 @@ bm_RunModel <- function(model, run.name, dir.name = '.'
     } else {
       glm.formula <- bm.options@GLM$myFormula
     }
-    
     if (bm.options@GLM$test != 'none') {
       ## make the model selection
       glmStart <- glm(eval(parse(text = paste0(resp_name, "~1"))), 
@@ -427,17 +424,15 @@ bm_RunModel <- function(model, run.name, dir.name = '.'
       ## keep the total model
       model.sp <- try(glm(glm.formula,
                           data = cbind(data_mod[calib.lines.vec, , drop = FALSE], 
-                                       matrix(weights.vec[calib.lines.vec], ncol = 1, dimnames = list(NULL, "weights"))), 
+                                       data.frame("weights" = weights.vec[calib.lines.vec])), 
                           family = bm.options@GLM$family,
                           control = eval(bm.options@GLM$control),
-                          weights = weights.vec[calib.lines.vec],
+                          weights = weights,
                           model = TRUE))
     }
-    
     if (!inherits(model.sp, "try-error")) {
       cat("\n\tselected formula : ")
       print(model.sp$formula, useSource = FALSE, showEnv = FALSE)
-      
       model.bm <- new("GLM_biomod2_model",
                       model = model.sp,
                       model_name = model_name,
@@ -657,11 +652,11 @@ bm_RunModel <- function(model, run.name, dir.name = '.'
     
     # file to log potential errors
     maxent_stderr_file <- paste0(MWD$m_outdir, "/maxent.stderr")
-
+    
     maxent.args <- 
       c(
         ifelse(is.null(bm.options@MAXENT$memory_allocated),"",
-          paste0("-mx", bm.options@MAXENT$memory_allocated, "m")), 
+               paste0("-mx", bm.options@MAXENT$memory_allocated, "m")), 
         ifelse(is.null(bm.options@MAXENT$initial_heap_size), "",
                paste0(" -Xms", bm.options@MAXENT$initial_heap_size)),
         ifelse(is.null(bm.options@MAXENT$max_heap_size), "",
@@ -696,7 +691,7 @@ bm_RunModel <- function(model, run.name, dir.name = '.'
         " nowarnings ", 
         " notooltips ",
         " noaddsamplestobackground"
-    )
+      )
     
     system2(command = "java", args = maxent.args,
             wait = TRUE,
@@ -842,7 +837,7 @@ bm_RunModel <- function(model, run.name, dir.name = '.'
                          fit = g.pred[which(eval.lines.vec == TRUE)],
                          threshold = cross.validation$cutoff[
                            which(cross.validation$metric.eval == xx)
-                           ])
+                         ])
       }
       cross.validation$validation <- stat.validation$best.stat
     } else {
@@ -856,7 +851,7 @@ bm_RunModel <- function(model, run.name, dir.name = '.'
       cross.validation$validation <- NA
     }
     
-
+    
     
     if (exists('g.pred.eval')) {
       
