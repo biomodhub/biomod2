@@ -113,7 +113,7 @@
 .check_calib.lines_names <- function(calib.lines, expected_PA.names){
   full.names <- colnames(calib.lines)
   if (missing(expected_PA.names)) { # CV only
-    expected_CV.names <- paste0("_allData_RUN", seq_len(ncol(calib.lines)))
+    expected_CV.names <- c(paste0("_allData_RUN", seq_len(ncol(calib.lines))), "_allData_allRun")
     .fun_testIfIn(TRUE, "colnames(calib.lines)", full.names, expected_CV.names)
   } else {
     err.msg <- "colnames(calib.lines) must follow the following format: '_PAx_RUNy' with x and y integer"
