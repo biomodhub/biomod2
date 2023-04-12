@@ -63,22 +63,29 @@
 ##' A \code{logical} value defining whether the progress bar is to be rendered or not
 ##' 
 ##' 
-##' @param prob.mean (\emph{deprecated} \code{TRUE}) \cr A \code{logical} value defining 
-##' whether to compute the mean probabilities across predictions or not
-##' @param prob.median (\emph{deprecated}) \cr A \code{logical} value defining whether to compute 
-##' the median probabilities across predictions or not
-##' @param prob.cv (\emph{deprecated}) \cr A \code{logical} value defining whether to compute the 
-##' coefficient of variation across predictions or not
-##' @param prob.ci (\emph{deprecated}) \cr A \code{logical} value defining whether to compute the 
-##' confidence interval around the \code{prob.mean} ensemble model or not
-##' @param committee.averaging (\emph{deprecated}) \cr A \code{logical} value defining whether to 
-##' compute the committee averaging across predictions or not
-##' @param prob.mean.weight (\emph{deprecated}) \cr A \code{logical} value defining whether to 
-##' compute the weighted sum of probabilities across predictions or not
+##' @param prob.mean (\emph{deprecated}, please use \code{em.algo} instead) \cr
+##'   A \code{logical} value defining whether to compute the mean probabilities
+##'   across predictions or not
+##' @param prob.median (\emph{deprecated}, please use \code{em.algo} instead)
+##'   \cr A \code{logical} value defining whether to compute the median
+##'   probabilities across predictions or not
+##' @param prob.cv (\emph{deprecated}, please use \code{em.algo} instead) \cr A
+##'   \code{logical} value defining whether to compute the coefficient of
+##'   variation across predictions or not
+##' @param prob.ci (\emph{deprecated}, please use \code{em.algo} instead) \cr A
+##'   \code{logical} value defining whether to compute the confidence interval
+##'   around the \code{prob.mean} ensemble model or not
+##' @param committee.averaging (\emph{deprecated}, please use \code{em.algo}
+##'   instead) \cr A \code{logical} value defining whether to compute the
+##'   committee averaging across predictions or not
+##' @param prob.mean.weight (\emph{deprecated}, please use \code{em.algo}
+##'   instead) \cr A \code{logical} value defining whether to compute the
+##'   weighted sum of probabilities across predictions or not
 ##' 
-##' @param prob.ci.alpha (\emph{deprecated}) \cr old argument name for
-##'   \code{EMci.alpha}
-##' @param prob.mean.weight.decay (\emph{deprecated})  \cr old argument name for
+##' @param prob.ci.alpha (\emph{deprecated}, please use \code{EMci.alpha}
+##'   instead) \cr old argument name for \code{EMci.alpha}
+##' @param prob.mean.weight.decay (\emph{deprecated}, please use
+##'   \code{EMwmean.decay} instead)  \cr old argument name for
 ##'   \code{EMwmean.decay}
 ##' @return
 ##' 
@@ -502,15 +509,15 @@ BIOMOD_EnsembleModeling <- function(bm.mod,
             if (eval.m == 'ROC') {
               sre.id <- grep("_SRE", models.kept.tmp)
               if (length(sre.id) > 0) {
-                cat("\n\n     !! SRE modeling cannot be used with prob.mean.weight by ROC and will be switched off for", assemb, " selected by ROC.")
+                cat("\n\n     !! SRE modeling cannot be used with EMwmean by ROC and will be switched off for", assemb, " selected by ROC.")
                 models.kept.tmp <- models.kept.tmp[-sre.id]
                 models.kept.scores.tmp <- models.kept.scores[-sre.id]
                 
                 if(length(models.kept.tmp) == 1){
-                  cat("\n     !! due to SRE switched off, ensemble models for prob.mean.weight in ", assemb, "will be based on only one single model.")
+                  cat("\n     !! due to SRE switched off, ensemble models for EMwmean in ", assemb, "will be based on only one single model.")
                   cat("\n     !! Please make sure this is intended or review your selection metrics and threshold.")
                 } else if (length(models.kept.tmp) == 0){
-                  cat("\n     !! due to SRE switched off, ensemble models for prob.mean.weight in ", assemb, "have no model left.")
+                  cat("\n     !! due to SRE switched off, ensemble models for EMwmean in ", assemb, "have no model left.")
                   cat("\n   ! Note : ", model_name, "failed!\n")
                   ListOut$calib.failure = model_name
                   return(ListOut) ## end of function.
@@ -827,8 +834,8 @@ BIOMOD_EnsembleModeling <- function(bm.mod,
       em.algo.user <- em.avail.check[c(prob.mean, prob.cv, 
                                        prob.ci, prob.median,
                                        committee.averaging, prob.mean.weight)]
-      # warning for obsolete arguments
-      cat(paste0("\n   ! arguments ", paste0(em.avail.old[-6], collapse = ", "),
+      # Stop for obsolete arguments
+      stop(paste0("\n   ! arguments ", paste0(em.avail.old[-6], collapse = ", "),
                  " and ",em.avail.old[6], " are obsolete. Please use `em.algo = c('",paste0(em.algo.user, collapse = "', '"),"')` instead."))
     }
   } else {
@@ -916,7 +923,7 @@ BIOMOD_EnsembleModeling <- function(bm.mod,
   if ("EMci" %in% em.algo) {
     if(!missing(prob.ci.alpha)){
       EMci.alpha <- prob.ci.alpha
-      cat("! argument `prob.ci.alpha` is deprecated, please use `EMci.alpha` instead.")
+      stop("! argument `prob.ci.alpha` is deprecated, please use `EMci.alpha` instead.")
     }
     
     .fun_testIfPosNum(TRUE, "EMci.alpha", EMci.alpha)
@@ -929,7 +936,7 @@ BIOMOD_EnsembleModeling <- function(bm.mod,
   if ("EMwmean" %in% em.algo) {
     if(!missing(prob.mean.weight.decay)){
       EMwmean.decay <- prob.mean.weight.decay
-      cat("! argument `prob.mean.weight.decay` is deprecated, please use `EMwmean.decay` instead.")
+      stop("! argument `prob.mean.weight.decay` is deprecated, please use `EMwmean.decay` instead.")
     }
     if ((!is.numeric(EMwmean.decay) &&
          !is.character(EMwmean.decay) &&
@@ -952,7 +959,7 @@ BIOMOD_EnsembleModeling <- function(bm.mod,
   if(em.by %in% names(em.by.avail.old)){
     em.by.old <- em.by
     em.by <- em.by.avail.old[em.by]
-    cat(paste0("! `em.by = '",em.by.old,"'` is deprecated, please use `em.by = '",em.by,"'` is instead"))
+    stop(paste0("! `em.by = '",em.by.old,"'` is deprecated, please use `em.by = '",em.by,"'` is instead"))
   }
   if(missing(em.by)){
     em.by <- "all"

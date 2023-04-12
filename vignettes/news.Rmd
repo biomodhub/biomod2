@@ -29,6 +29,7 @@ vignette: >
 * removed unused parameter `save.output`. output are now automatically saved.
 * Improved management of categorical raster for both `terra` and `raster`
 * `CV.perc` (formerly `data.split.perc`) now uses a 0-1 range (instead of 0-100)
+* Deprecated arguments for `BIOMOD_EnsembleModeling` now gives an error. 
 
 ##### Bugfix
 
