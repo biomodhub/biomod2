@@ -248,7 +248,6 @@ myBiomodOptions <- bm.tuning$models.options
 \code{\link{BIOMOD_ModelingOptions}}, \code{\link{BIOMOD_Modeling}}
 
 Other Main functions: 
-\code{\link{BIOMOD_CrossValidation}()},
 \code{\link{BIOMOD_EnsembleForecasting}()},
 \code{\link{BIOMOD_EnsembleModeling}()},
 \code{\link{BIOMOD_FormatingData}()},

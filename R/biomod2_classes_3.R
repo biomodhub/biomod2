@@ -3,9 +3,12 @@
 ## 0. Generic Functions definition ------------------------------------------
 ## -------------------------------------------------------------------------- #
 ## Used for different classes 
+##    01 = BIOMOD.formated.data, 02 = BIOMOD.formated.data.PA
 ##    A = BIOMOD.models.out, B = BIOMOD.projection.out, C = BIOMOD.ensemble.models.out
 
 ##' @name getters.out
+##' @aliases get_species_data
+##' @aliases get_eval_data
 ##' @aliases get_options
 ##' @aliases get_calib_lines
 ##' @aliases get_formal_data
@@ -26,10 +29,11 @@
 ##' and formated data, models used or not, predictions, evaluations, variables importance.
 ##' 
 ##' 
-##' @param obj a \code{\link{BIOMOD.models.out}}, \code{\link{BIOMOD.projection.out}} or 
+##' @param obj a \code{\link{BIOMOD.formated.data}}, \code{\link{BIOMOD.formated.data.PA}}, 
+##' \code{\link{BIOMOD.models.out}}, \code{\link{BIOMOD.projection.out}} or 
 ##' \code{\link{BIOMOD.ensemble.models.out}} object
 ##' @param \ldots (\emph{optional, one or several of the following arguments depending on the selected 
-##' function)}) 
+##' function}) 
 ##' @param as.data.frame a \code{logical} defining whether output should be returned as 
 ##' \code{data.frame} or \code{array} object
 ##' @param subinfo a \code{character} corresponding to the information to be extracted, must be 
@@ -99,11 +103,18 @@
 ##' @return 
 ##' 
 ##' \describe{
+##'   \item{\code{get_species_data}}{a \code{data.frame} combining \code{data.species}, 
+##'   \code{coord}, \code{data.env.var} (and \code{PA.table}) slots of 
+##'   \code{\link{BIOMOD.formated.data}} (or \code{\link{BIOMOD.formated.data.PA}}) object}
+##'   \item{\code{get_eval_data}}{a \code{data.frame} combining \code{eval.data.species}, 
+##'   \code{eval.coord}, \code{eval.data.env.var} slots of 
+##'   \code{\link{BIOMOD.formated.data}} or \code{\link{BIOMOD.formated.data.PA}} object}
+##' 
 ##'   \item{\code{get_options}}{a
 ##'   \code{\link{BIOMOD.stored.models.options-class}} object from the
 ##'   \code{models.options} slot of a \code{\link{BIOMOD.models.out-class}}
 ##'   object} \item{\code{get_calib_lines}}{a
-##'   \code{\link{BIOMOD.stored.array-class}} object from the \code{calib.lines}
+##'   \code{\link{BIOMOD.stored.data.frame-class}} object from the \code{calib.lines}
 ##'   slot of a \code{\link{BIOMOD.models.out}} object}
 ##'
 ##'   \item{\code{get_projected_models}}{a \code{vector} from the
@@ -161,12 +172,13 @@
 ##'   \code{models.computed} slot (or \code{em.computed}) of a
 ##'   \code{\link{BIOMOD.models.out}} (or
 ##'   \code{\link{BIOMOD.ensemble.models.out}}) object}
-##'   \item{\code{get_evaluations}}{a
-##'   \code{\link{BIOMOD.stored.data.frame-class}} (or
-##'   \code{matrix}) from the \code{models.evaluation} slot (or
-##'   \code{model_evaluation} of each model in \code{em.computed}) of a
-##'   \code{\link{BIOMOD.models.out}} (or
-##'   \code{\link{BIOMOD.ensemble.models.out}}) object}
+##'   \item{\code{get_evaluations}}{a data.frame from the \code{models.evaluation}
+##'    slot (or \code{model_evaluation} of each model in \code{em.computed}) of a
+##'   \code{\link{BIOMOD.models.out}} (or \code{\link{BIOMOD.ensemble.models.out}})
+##'    object. Contains evaluation metric for different models and dataset. 
+##'    Evaluation metric are calculated on the calibrating data (column calibration),
+##'    on the cross-validation data (column validation) or on the evaluation data
+##'    (column evaluation)}
 ##'   \item{\code{get_variables_importance}}{a
 ##'   \code{\link{BIOMOD.stored.data.frame-class}} from
 ##'   the \code{variables.importance} slot (or \code{model_variables_importance}
@@ -187,6 +199,9 @@
 ##' 
 NULL
 
+setGeneric("get_species_data", function(obj, ...) { standardGeneric("get_species_data") }) ## 012
+setGeneric("get_eval_data", function(obj, ...) { standardGeneric("get_eval_data") }) ## 012
+
 setGeneric("get_options", function(obj, ...) { standardGeneric("get_options") }) ## A
 setGeneric("get_calib_lines", function(obj, ...) { standardGeneric("get_calib_lines") }) ## A
 
@@ -201,6 +216,53 @@ setGeneric("get_formal_data", function(obj, ...) { standardGeneric("get_formal_d
 setGeneric("get_built_models", function(obj, ...) { standardGeneric("get_built_models") }) ## AC
 setGeneric("get_evaluations", function(obj, ...) { standardGeneric("get_evaluations") }) ## AC
 setGeneric("get_variables_importance", function(obj, ...) { standardGeneric("get_variables_importance") }) ## AC
+
+
+## get_species_data.BIOMOD.formated.data ------------------------------------------------
+##' 
+##' @rdname getters.out
+##' @export
+##' 
+
+setMethod('get_species_data', signature('BIOMOD.formated.data'), function(obj) {
+  tab.sp <- data.frame(obj@data.species)
+  tab.sp <- cbind(tab.sp, obj@coord)
+  colnames(tab.sp) <- c(obj@sp.name, "x", "y")
+  tab.sp <- cbind(tab.sp, obj@data.env.var)
+  return(tab.sp)
+})
+
+## get_species_data.BIOMOD.formated.data.PA ---------------------------------------------
+##' 
+##' @rdname getters.out
+##' @export
+##' 
+
+setMethod('get_species_data', signature('BIOMOD.formated.data.PA'), function(obj) {
+  tab.sp <- data.frame(obj@data.species)
+  tab.sp <- cbind(tab.sp, obj@coord)
+  colnames(tab.sp) <- c(obj@sp.name, "x", "y")
+  tab.sp <- cbind(tab.sp, obj@data.env.var)
+  tab.sp <- cbind(tab.sp, obj@PA.table)
+  return(tab.sp)
+})
+
+## get_eval_data.BIOMOD.formated.data ---------------------------------------------------
+##' 
+##' @rdname getters.out
+##' @export
+##' 
+
+setMethod('get_eval_data', signature('BIOMOD.formated.data'), function(obj) {
+  if (obj@has.data.eval) {
+    tab.sp <- data.frame(obj@eval.data.species)
+    tab.sp <- cbind(tab.sp, obj@eval.coord)
+    colnames(tab.sp) <- c(obj@sp.name, "x", "y")
+    tab.sp <- cbind(tab.sp, obj@eval.data.env.var)
+    return(tab.sp)
+  } else { return(NULL) }
+})
+
 
 ## -------------------------------------------------------------------------- #
 ## 4. BIOMOD.models.out -----------------------------------------------------
@@ -234,7 +296,7 @@ setGeneric("get_variables_importance", function(obj, ...) { standardGeneric("get
 ##' @slot formated.input.data a \code{\link{BIOMOD.stored.formated.data-class}}
 ##'   object containing informations from \code{\link{BIOMOD_FormatingData}}
 ##'   object
-##' @slot calib.lines a \code{\link{BIOMOD.stored.array-class}} object
+##' @slot calib.lines a \code{\link{BIOMOD.stored.data.frame-class}} object
 ##'   containing calibration lines
 ##' @slot models.options a \code{\link{BIOMOD.stored.models.options-class}}
 ##'   object containing informations from \code{\link{BIOMOD_ModelingOptions}}
@@ -306,11 +368,11 @@ setGeneric("get_variables_importance", function(obj, ...) { standardGeneric("get
 ##'                                     modeling.id = 'AllModels',
 ##'                                     models = c('RF', 'GLM'),
 ##'                                     bm.options = myBiomodOptions,
-##'                                     nb.rep = 2,
-##'                                     data.split.perc = 80,
+##'                                     CV.strategy = 'random',
+##'                                     CV.nb.rep = 2,
+##'                                     CV.perc = 0.8,
 ##'                                     metric.eval = c('TSS','ROC'),
 ##'                                     var.import = 3,
-##'                                     do.full.models = FALSE,
 ##'                                     seed.val = 42)
 ##' myBiomodModelOut
 ##' 
@@ -333,7 +395,7 @@ setClass("BIOMOD.models.out",
                         has.evaluation.data = 'logical',
                         scale.models = 'logical',
                         formated.input.data = 'BIOMOD.stored.formated.data',
-                        calib.lines = 'BIOMOD.stored.array',
+                        calib.lines = 'BIOMOD.stored.data.frame',
                         models.options = 'BIOMOD.stored.models.options',
                         models.evaluation = 'BIOMOD.stored.data.frame',
                         variables.importance = 'BIOMOD.stored.data.frame',
@@ -349,7 +411,7 @@ setClass("BIOMOD.models.out",
                    has.evaluation.data = FALSE,
                    scale.models = TRUE,
                    formated.input.data = new('BIOMOD.stored.formated.data'),
-                   calib.lines = new('BIOMOD.stored.array'),
+                   calib.lines = new('BIOMOD.stored.data.frame'),
                    models.options = new('BIOMOD.stored.models.options'),
                    models.evaluation = new('BIOMOD.stored.data.frame'),
                    variables.importance = new('BIOMOD.stored.data.frame'),
@@ -416,9 +478,9 @@ setMethod("get_calib_lines", "BIOMOD.models.out",
             out <- load_stored_object(obj@calib.lines)
             
             if (!is.null(out) && as.data.frame == TRUE) {
-              tmp <- melt(out, varnames = c("points", "run", "PA"))
-              tmp$PA = sub("_", "", tmp$PA)
-              tmp$run = sub("_", "", tmp$run)
+              tmp <- melt(out, varnames = c("points", "PA_run"))
+              tmp$PA = strsplit(sub("^_", "", tmp$PA_run), "_")[[1]][1]
+              tmp$run = strsplit(sub("^_", "", tmp$PA_run), "_")[[1]][2]
               out <- tmp[, c("PA", "run", "points", "value")]
               colnames(out)[4] = "calib.lines"
               
@@ -662,11 +724,11 @@ setMethod("get_variables_importance", "BIOMOD.models.out",
 ##'                                       modeling.id = 'AllModels',
 ##'                                       models = c('RF', 'GLM'),
 ##'                                       bm.options = myBiomodOptions,
-##'                                       nb.rep = 2,
-##'                                       data.split.perc = 80,
+##'                                       CV.strategy = 'random',
+##'                                       CV.nb.rep = 2,
+##'                                       CV.perc = 0.8,
 ##'                                       metric.eval = c('TSS','ROC'),
 ##'                                       var.import = 3,
-##'                                       do.full.models = FALSE,
 ##'                                       seed.val = 42)
 ##' }
 ##' 
@@ -945,7 +1007,7 @@ setMethod("get_projected_models", "BIOMOD.projection.out",
                                                                                        , filtered.by = filtered.by
                                                                                        , algo = algo))
             } else {
-              keep_ind <- .filter_outputs.vec(out, obj.type = "mod", subset.list = list(full.name =  full.name, PA = PA
+              keep_ind <- .filter_outputs.vec(out, obj.type = "mod", subset.list = list(full.name = full.name, PA = PA
                                                                                         , run = run, algo = algo))
             }
             out <- out[keep_ind]
@@ -1133,11 +1195,11 @@ setMethod("get_predictions", "BIOMOD.projection.out",
 ##'                                       modeling.id = 'AllModels',
 ##'                                       models = c('RF', 'GLM'),
 ##'                                       bm.options = myBiomodOptions,
-##'                                       nb.rep = 2,
-##'                                       data.split.perc = 80,
+##'                                       CV.strategy = 'random',
+##'                                       CV.nb.rep = 2,
+##'                                       CV.perc = 0.8,
 ##'                                       metric.eval = c('TSS','ROC'),
 ##'                                       var.import = 3,
-##'                                       do.full.models = FALSE,
 ##'                                       seed.val = 42)
 ##' }
 ##' 

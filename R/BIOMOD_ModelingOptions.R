@@ -357,14 +357,6 @@
 ##' }
 ##' 
 ##' # ---------------------------------------------------------------#
-##' # Format Data with true absences
-##' myBiomodData <- BIOMOD_FormatingData(resp.var = myResp,
-##'                                      expl.var = myExpl,
-##'                                      resp.xy = myRespXY,
-##'                                      resp.name = myRespName)
-##' 
-##' 
-##' # ---------------------------------------------------------------#
 ##' # Print default modeling options
 ##' bm_DefaultModelingOptions()
 ##' 

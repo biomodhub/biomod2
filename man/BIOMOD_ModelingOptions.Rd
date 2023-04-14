@@ -389,14 +389,6 @@ myExpl <- terra::crop(myExpl, myExtent)
 }
 
 # ---------------------------------------------------------------#
-# Format Data with true absences
-myBiomodData <- BIOMOD_FormatingData(resp.var = myResp,
-                                     expl.var = myExpl,
-                                     resp.xy = myRespXY,
-                                     resp.name = myRespName)
-
-
-# ---------------------------------------------------------------#
 # Print default modeling options
 bm_DefaultModelingOptions()
 
@@ -428,7 +420,6 @@ myBiomodOptions
 \code{\link{BIOMOD_Tuning}}, \code{\link{BIOMOD_Modeling}}
 
 Other Main functions: 
-\code{\link{BIOMOD_CrossValidation}()},
 \code{\link{BIOMOD_EnsembleForecasting}()},
 \code{\link{BIOMOD_EnsembleModeling}()},
 \code{\link{BIOMOD_FormatingData}()},

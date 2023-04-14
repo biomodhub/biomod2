@@ -38,7 +38,8 @@ BIOMOD_EnsembleModeling(
 \code{\link{get_built_models}} function}
 
 \item{em.by}{a \code{character} corresponding to the way kept models will be combined to build 
-the ensemble models, must be among \code{PA+run}, \code{PA+algo},}
+the ensemble models, must be among \code{all}, \code{algo}, \code{PA}, \code{PA+algo}, 
+\code{PA+run}}
 
 \item{em.algo}{a \code{vector} corresponding to the ensemble models that will be computed, 
 must be among \code{'EMmean'}, \code{'EMmedian'}, \code{'EMcv'}, \code{'EMci'}, 
@@ -92,29 +93,36 @@ An \code{integer} value corresponding to the new seed value to be set}
 \item{do.progress}{(\emph{optional, default} \code{TRUE}) \cr 
 A \code{logical} value defining whether the progress bar is to be rendered or not}
 
-\item{prob.mean}{(\emph{deprecated} \code{TRUE}) \cr A \code{logical} value defining 
-whether to compute the mean probabilities across predictions or not}
+\item{prob.mean}{(\emph{deprecated}, please use \code{em.algo} instead) \cr
+A \code{logical} value defining whether to compute the mean probabilities
+across predictions or not}
 
-\item{prob.median}{(\emph{deprecated}) \cr A \code{logical} value defining whether to compute 
-the median probabilities across predictions or not}
+\item{prob.median}{(\emph{deprecated}, please use \code{em.algo} instead)
+\cr A \code{logical} value defining whether to compute the median
+probabilities across predictions or not}
 
-\item{prob.cv}{(\emph{deprecated}) \cr A \code{logical} value defining whether to compute the 
-coefficient of variation across predictions or not}
+\item{prob.cv}{(\emph{deprecated}, please use \code{em.algo} instead) \cr A
+\code{logical} value defining whether to compute the coefficient of
+variation across predictions or not}
 
-\item{prob.ci}{(\emph{deprecated}) \cr A \code{logical} value defining whether to compute the 
-confidence interval around the \code{prob.mean} ensemble model or not}
+\item{prob.ci}{(\emph{deprecated}, please use \code{em.algo} instead) \cr A
+\code{logical} value defining whether to compute the confidence interval
+around the \code{prob.mean} ensemble model or not}
 
-\item{committee.averaging}{(\emph{deprecated}) \cr A \code{logical} value defining whether to 
-compute the committee averaging across predictions or not}
+\item{committee.averaging}{(\emph{deprecated}, please use \code{em.algo}
+instead) \cr A \code{logical} value defining whether to compute the
+committee averaging across predictions or not}
 
-\item{prob.mean.weight}{(\emph{deprecated}) \cr A \code{logical} value defining whether to 
-compute the weighted sum of probabilities across predictions or not}
+\item{prob.mean.weight}{(\emph{deprecated}, please use \code{em.algo}
+instead) \cr A \code{logical} value defining whether to compute the
+weighted sum of probabilities across predictions or not}
 
-\item{prob.mean.weight.decay}{(\emph{deprecated})  \cr old argument name for
+\item{prob.mean.weight.decay}{(\emph{deprecated}, please use
+\code{EMwmean.decay} instead)  \cr old argument name for
 \code{EMwmean.decay}}
 
-\item{prob.ci.alpha}{(\emph{deprecated}) \cr old argument name for
-\code{EMci.alpha}}
+\item{prob.ci.alpha}{(\emph{deprecated}, please use \code{EMci.alpha}
+instead) \cr old argument name for \code{EMci.alpha}}
 }
 \value{
 A \code{BIOMOD.ensemble.models.out} object containing models outputs, or links to saved 
@@ -162,7 +170,13 @@ conditions (see Details).
   Hence, depending on the chosen method, the number of ensemble models built will vary. \cr
   \emph{Be aware that if no evaluation data was given to the 
   \code{\link{BIOMOD_FormatingData}} function, some ensemble model evaluations may be biased 
-  due to difference in data used for single model evaluations.}}
+  due to difference in data used for single model evaluations.}
+  \bold{Be aware that all of these combinations are allowed, but some may not make sense 
+  depending mainly on how pseudo-absence datasets have been built and whether all of them 
+  have been used for all single models or not (see \code{PA.nb.absences} and \code{models.pa} 
+  parameters in \code{\link{BIOMOD_FormatingData}} and \code{\link{BIOMOD_Modeling}} functions 
+  respectively).}
+  }
 
   \item{Evaluation metrics}{
   \itemize{
@@ -319,11 +333,11 @@ if (file.exists(file.out)) {
                                       modeling.id = 'AllModels',
                                       models = c('RF', 'GLM'),
                                       bm.options = myBiomodOptions,
-                                      nb.rep = 2,
-                                      data.split.perc = 80,
+                                      CV.strategy = 'random',
+                                      CV.nb.rep = 2,
+                                      CV.perc = 0.8,
                                       metric.eval = c('TSS','ROC'),
                                       var.import = 3,
-                                      do.full.models = FALSE,
                                       seed.val = 42)
 }
 
@@ -369,13 +383,12 @@ bm_PlotEvalBoxplot(bm.out = myBiomodEM, group.by = c('algo', 'algo'))
 }
 \seealso{
 \code{\link{BIOMOD_FormatingData}}, \code{\link{BIOMOD_ModelingOptions}}, 
-\code{\link{BIOMOD_CrossValidation}}, \code{\link{bm_VariablesImportance}}, 
+\code{\link{bm_CrossValidation}}, \code{\link{bm_VariablesImportance}}, 
 \code{\link{BIOMOD_Modeling}}, \code{\link{BIOMOD_EnsembleForecasting}},
 \code{\link{bm_PlotEvalMean}}, \code{\link{bm_PlotEvalBoxplot}}, 
 \code{\link{bm_PlotVarImpBoxplot}}, \code{\link{bm_PlotResponseCurves}}
 
 Other Main functions: 
-\code{\link{BIOMOD_CrossValidation}()},
 \code{\link{BIOMOD_EnsembleForecasting}()},
 \code{\link{BIOMOD_FormatingData}()},
 \code{\link{BIOMOD_LoadModels}()},

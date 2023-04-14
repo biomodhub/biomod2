@@ -102,13 +102,7 @@ objects that can be obtained with the <code><a href="BIOMOD_Modeling.html">BIOMO
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">BIOMOD_PresenceOnly</span><span class="op">(</span></span>
-<span>  bm.mod <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  bm.em <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  bg.env <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  perc <span class="op">=</span> <span class="fl">0.9</span>,</span>
-<span>  save.output <span class="op">=</span> <span class="cn">TRUE</span></span>
-<span><span class="op">)</span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">BIOMOD_PresenceOnly</span><span class="op">(</span>bm.mod <span class="op">=</span> <span class="cn">NULL</span>, bm.em <span class="op">=</span> <span class="cn">NULL</span>, bg.env <span class="op">=</span> <span class="cn">NULL</span>, perc <span class="op">=</span> <span class="fl">0.9</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
@@ -138,12 +132,6 @@ pseudo-absences selected for modeling</em>)
 <dd><p>a <code>numeric</code> between <code>0</code> and <code>1</code> corresponding to the percentage of 
 correctly classified presences for Minimal Predicted Area (see 
 <code>ecospat.mpa()</code> in <span class="pkg">ecospat</span>)</p></dd>
-
-
-<dt>save.output</dt>
-<dd><p>(<em>optional, default</em> <code>TRUE</code>) <br> 
-A <code>logical</code> value defining whether the output is to be saved within the 
-<code>.BIOMOD_DATA</code> folder or not</p></dd>
 
 </dl></div>
     <div id="value">
@@ -185,7 +173,6 @@ functions have been copied within this file from version 3.2.2 (august 2022).</p
 <code><a href="BIOMOD.models.out.html">BIOMOD.models.out</a></code>, <code><a href="BIOMOD_Modeling.html">BIOMOD_Modeling</a></code>, 
 <code><a href="BIOMOD.ensemble.models.out.html">BIOMOD.ensemble.models.out</a></code>, <code><a href="BIOMOD_EnsembleModeling.html">BIOMOD_EnsembleModeling</a></code></p>
 <p>Other Main functions: 
-<code><a href="BIOMOD_CrossValidation.html">BIOMOD_CrossValidation</a>()</code>,
 <code><a href="BIOMOD_EnsembleForecasting.html">BIOMOD_EnsembleForecasting</a>()</code>,
 <code><a href="BIOMOD_EnsembleModeling.html">BIOMOD_EnsembleModeling</a>()</code>,
 <code><a href="BIOMOD_FormatingData.html">BIOMOD_FormatingData</a>()</code>,
@@ -247,11 +234,11 @@ functions have been copied within this file from version 3.2.2 (august 2022).</p
 <span>                                      modeling.id <span class="op">=</span> <span class="st">'AllModels'</span>,</span>
 <span>                                      models <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">'RF'</span>, <span class="st">'GLM'</span><span class="op">)</span>,</span>
 <span>                                      bm.options <span class="op">=</span> <span class="va">myBiomodOptions</span>,</span>
-<span>                                      nb.rep <span class="op">=</span> <span class="fl">2</span>,</span>
-<span>                                      data.split.perc <span class="op">=</span> <span class="fl">80</span>,</span>
+<span>                                      CV.strategy <span class="op">=</span> <span class="st">'random'</span>,</span>
+<span>                                      CV.nb.rep <span class="op">=</span> <span class="fl">2</span>,</span>
+<span>                                      CV.perc <span class="op">=</span> <span class="fl">0.8</span>,</span>
 <span>                                      metric.eval <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">'TSS'</span>,<span class="st">'ROC'</span><span class="op">)</span>,</span>
 <span>                                      var.import <span class="op">=</span> <span class="fl">3</span>,</span>
-<span>                                      do.full.models <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>                                      seed.val <span class="op">=</span> <span class="fl">42</span><span class="op">)</span></span>
 <span><span class="op">}</span></span>
 <span></span>
@@ -275,16 +262,16 @@ functions have been copied within this file from version 3.2.2 (august 2022).</p
 <span></span>
 <span></span>
 <span><span class="co"># --------------------------------------------------------------- #</span></span>
-<span><span class="co"># Evaluate models with Boyce index and MPA</span></span>
-<span><span class="va">myBiomodPO</span> <span class="op">&lt;-</span> <span class="fu">BIOMOD_PresenceOnly</span><span class="op">(</span>bm.mod <span class="op">=</span> <span class="va">myBiomodModelOut</span>,</span>
-<span>                                  bm.em <span class="op">=</span> <span class="va">myBiomodEM</span><span class="op">)</span></span>
-<span><span class="va">myBiomodPO</span></span>
-<span></span>
-<span><span class="co"># Evaluate models with Boyce index and MPA (using background data)</span></span>
-<span><span class="va">myBiomodPO</span> <span class="op">&lt;-</span> <span class="fu">BIOMOD_PresenceOnly</span><span class="op">(</span>bm.mod <span class="op">=</span> <span class="va">myBiomodModelOut</span>,</span>
-<span>                                  bm.em <span class="op">=</span> <span class="va">myBiomodEM</span>, </span>
-<span>                                  bg.env <span class="op">=</span> <span class="va">myExpl</span><span class="op">)</span></span>
-<span><span class="va">myBiomodPO</span></span>
+<span><span class="co"># # Evaluate models with Boyce index and MPA</span></span>
+<span><span class="co"># myBiomodPO &lt;- BIOMOD_PresenceOnly(bm.mod = myBiomodModelOut,</span></span>
+<span><span class="co">#                                   bm.em = myBiomodEM)</span></span>
+<span><span class="co"># myBiomodPO</span></span>
+<span><span class="co"># </span></span>
+<span><span class="co"># # Evaluate models with Boyce index and MPA (using background data)</span></span>
+<span><span class="co"># myBiomodPO &lt;- BIOMOD_PresenceOnly(bm.mod = myBiomodModelOut,</span></span>
+<span><span class="co">#                                   bm.em = myBiomodEM, </span></span>
+<span><span class="co">#                                   bg.env = myExpl)</span></span>
+<span><span class="co"># myBiomodPO</span></span>
 <span></span>
 <span></span></code></pre></div>
     </div>

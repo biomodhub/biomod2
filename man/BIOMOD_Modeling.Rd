@@ -9,16 +9,25 @@ BIOMOD_Modeling(
   modeling.id = as.character(format(Sys.time(), "\%s")),
   models = c("GLM", "GBM", "GAM", "CTA", "ANN", "SRE", "FDA", "MARS", "RF", "MAXENT",
     "MAXNET"),
+  models.pa = NULL,
   bm.options = NULL,
-  nb.rep = 1,
-  data.split.perc = 100,
-  data.split.table = NULL,
-  do.full.models = TRUE,
+  CV.strategy = "random",
+  CV.nb.rep = 1,
+  CV.perc = NULL,
+  CV.k = NULL,
+  CV.balance = NULL,
+  CV.env.var = NULL,
+  CV.strat = NULL,
+  CV.user.table = NULL,
+  CV.do.full.models = TRUE,
+  nb.rep,
+  data.split.perc,
+  data.split.table,
+  do.full.models,
   weights = NULL,
   prevalence = NULL,
   metric.eval = c("KAPPA", "TSS", "ROC"),
   var.import = 0,
-  save.output = TRUE,
   scale.models = FALSE,
   nb.cpu = 1,
   seed.val = NULL,
@@ -36,24 +45,60 @@ object returned by the \code{\link{BIOMOD_FormatingData}} function}
 \code{GBM}, \code{GAM}, \code{CTA}, \code{ANN}, \code{SRE}, \code{FDA}, \code{MARS}, 
 \code{RF}, \code{MAXENT}, \code{MAXNET}}
 
+\item{models.pa}{(\emph{optional, default} \code{NULL}) \cr 
+A \code{list} containing for each model a \code{vector} defining which pseudo-absence datasets 
+are to be used, must be among \code{colnames(bm.format@PA.table)}}
+
 \item{bm.options}{a \code{\link{BIOMOD.models.options}} object returned by the
 \code{\link{BIOMOD_ModelingOptions}} function}
 
-\item{nb.rep}{an \code{integer} corresponding to the number of repetitions to be done for 
-calibration/validation splitting}
+\item{CV.strategy}{a \code{character} corresponding to the cross-validation selection strategy, 
+must be among \code{random}, \code{kfold}, \code{block}, \code{strat}, \code{env} or 
+\code{user.defined}}
 
-\item{data.split.perc}{a \code{numeric} between \code{0} and \code{100} corresponding to the 
-percentage of data used to calibrate the models (calibration/validation splitting)}
+\item{CV.nb.rep}{(\emph{optional, default} \code{0}) \cr
+If \code{strategy = 'random'} or \code{strategy = 'kfold'}, an \code{integer} corresponding 
+to the number of sets (repetitions) of cross-validation points that will be drawn}
 
-\item{data.split.table}{(\emph{optional, default} \code{NULL}) \cr 
-A \code{matrix} or \code{data.frame} defining for each repetition (in columns) which 
-observation lines should be used for models calibration (\code{TRUE}) and validation 
-(\code{FALSE}) (see \code{\link{BIOMOD_CrossValidation}}) \cr (\emph{if specified, 
-\code{nb.rep}, \code{data.split.perc} and \code{do.full.models} will be ignored})}
+\item{CV.perc}{(\emph{optional, default} \code{0}) \cr
+If \code{strategy = 'random'}, a \code{numeric} between \code{0} and \code{1} defining the 
+percentage of data that will be kept for calibration}
 
-\item{do.full.models}{(\emph{optional, default} \code{TRUE}) \cr 
-A \code{logical} value defining whether models calibrated and evaluated over the whole 
-dataset should be computed or not}
+\item{CV.k}{(\emph{optional, default} \code{0}) \cr
+If \code{strategy = 'kfold'} or \code{strategy = 'strat'} or \code{strategy = 'env'}, an 
+\code{integer} corresponding to the number of partitions}
+
+\item{CV.balance}{(\emph{optional, default} \code{'presences'}) \cr
+If \code{strategy = 'strat'} or \code{strategy = 'env'}, a \code{character} corresponding 
+to how data will be balanced between partitions, must be either \code{presences} or
+\code{absences}}
+
+\item{CV.env.var}{(\emph{optional}) \cr If \code{strategy = 'env'}, a
+\code{character} corresponding to the environmental variables used to
+build the partition. \code{k} partitions will be built for each
+environmental variables. By default the function uses all environmental
+variables available.}
+
+\item{CV.strat}{(\emph{optional, default} \code{'both'}) \cr
+If \code{strategy = 'env'}, a \code{character} corresponding to how data will partitioned 
+along gradient, must be among \code{x}, \code{y}, \code{both}}
+
+\item{CV.user.table}{(\emph{optional, default} \code{NULL}) \cr
+If \code{strategy = 'user.defined'}, a \code{matrix} or \code{data.frame} defining for each 
+repetition (in columns) which observation lines should be used for models calibration 
+(\code{TRUE}) and validation (\code{FALSE})}
+
+\item{CV.do.full.models}{(\emph{optional, default} \code{TRUE}) \cr
+A \code{logical} value defining whether models should be also calibrated and validated over 
+the whole dataset (and pseudo-absence datasets) or not}
+
+\item{nb.rep}{\emph{deprecated}, now called \code{CV.nb.rep}}
+
+\item{data.split.perc}{\emph{deprecated}, now called \code{CV.perc}}
+
+\item{data.split.table}{\emph{deprecated}, now called \code{CV.user.table}}
+
+\item{do.full.models}{\emph{deprecated}, now called \code{CV.do.full.models}}
 
 \item{weights}{(\emph{optional, default} \code{NULL}) \cr 
 A \code{vector} of \code{numeric} values corresponding to observation weights (one per 
@@ -71,10 +116,6 @@ be among \code{ROC}, \code{TSS}, \code{KAPPA}, \code{ACCURACY}, \code{BIAS}, \co
 \item{var.import}{(\emph{optional, default} \code{NULL}) \cr 
 An \code{integer} corresponding to the number of permutations to be done for each variable to 
 estimate variable importance}
-
-\item{save.output}{(\emph{optional, default} \code{TRUE}) \cr 
-A \code{logical} value defining whether all outputs should be saved on hard drive or not 
-(\emph{! strongly recommended !})}
 
 \item{scale.models}{(\emph{optional, default} \code{FALSE}) \cr 
 A \code{logical} value defining whether all models predictions should be scaled with a 
@@ -138,22 +179,14 @@ metrics (see Details).
     \item \code{MAXNET} : Maximum Entropy (\code{\link[maxnet]{maxnet}})
   }}
   
-  \item{nb.rep & data.split.perc}{
-  \itemize{
-    \item Most simple method in machine learning to calibrate and validate a model is to 
-    split the original dataset in two, one to calibrate the model and the other one to 
-    validate it. The \code{data.split.perc} argument defines the percentage of data that will be 
-    randomly selected and used for the \bold{calibration} part, the remaining data constituting the 
-    \bold{validation} part. This process is repeated \code{nb.rep} times, to be sure not to 
-    include bias both in the modeling and evaluation parts.
-    \item Other validation methods are also available to the user :
-    \itemize{
-      \item \bold{evaluation} dataset can be directly given to the 
-      \code{\link{BIOMOD_FormatingData}} function
-      \item \code{data.split.table} argument can be used and obtained from the 
-      \code{\link{BIOMOD_CrossValidation}} function
-    }
-  }}
+  \item{models.pa}{Different models might respond differently to different numbers of 
+  pseudo-absences. It is possible to create sets of pseudo-absences with different numbers 
+  of points (see \code{\link{BIOMOD_FormatingData}}) and to assign only some of these 
+  datasets to each single model.
+  }
+  
+  \item{CV.[...] parameters}{Different methods are available to calibrate/validate the 
+  single models (see \code{\link{bm_CrossValidation}}.)}
   
   \item{weights & prevalence}{More or less weight can be given to some specific observations.
   \itemize{
@@ -191,12 +224,6 @@ metrics (see Details).
   to get detailed description of each metric.}
   }
   
-  \item{save.output}{\emph{If this argument is set to \code{FALSE}, it may prevent the evaluation 
-  of the ensemble models (see \code{\link{BIOMOD_EnsembleModeling}}) in further steps. Strong 
-  recommandation is to keep \code{save.output = TRUE}, even if it requires to have some free 
-  space onto the hard drive.}
-  }
-  
   \item{scale.models}{\bold{This parameter is quite experimental and it is recommended 
   not to use it. It may lead to reduction in projection scale amplitude.} Some categorical 
   models always have to be scaled (\code{FDA}, \code{ANN}), but it may be interesting to 
@@ -204,11 +231,6 @@ metrics (see Details).
   be particularly useful when doing ensemble forecasting to remove the scale prediction effect 
   (\emph{the more extended projections are, the more they influence ensemble forecasting 
   results}).
-  }
-  
-  \item{do.full.models}{Building models with all available information may be useful in some 
-  particular cases (\emph{e.g. rare species with few presences points}). But calibration and 
-  evaluation datasets will be the same, which might lead to over-optimistic evaluation scores.
   }
 }
 }
@@ -254,11 +276,11 @@ myBiomodModelOut <- BIOMOD_Modeling(bm.format = myBiomodData,
                                     modeling.id = 'AllModels',
                                     models = c('RF', 'GLM'),
                                     bm.options = myBiomodOptions,
-                                    nb.rep = 2,
-                                    data.split.perc = 80,
+                                    CV.strategy = 'random',
+                                    CV.nb.rep = 2,
+                                    CV.perc = 0.8,
                                     metric.eval = c('TSS','ROC'),
                                     var.import = 2,
-                                    do.full.models = FALSE,
                                     seed.val = 42)
 myBiomodModelOut
 
@@ -298,13 +320,12 @@ bm_PlotEvalBoxplot(bm.out = myBiomodModelOut, group.by = c('algo', 'run'))
 code{\link[nnet]{nnet}}, \code{\link[mda]{fda}}, \code{\link[earth]{earth}}, 
 \code{\link[randomForest]{randomForest}}, \code{\link[maxnet]{maxnet}},
 \code{\link{BIOMOD_FormatingData}}, \code{\link{BIOMOD_ModelingOptions}}, 
-\code{\link{BIOMOD_CrossValidation}}, \code{ \link{bm_VariablesImportance}}, 
+\code{\link{bm_CrossValidation}}, \code{ \link{bm_VariablesImportance}}, 
 \code{\link{BIOMOD_Projection}}, \code{\link{BIOMOD_EnsembleModeling}},
 \code{\link{bm_PlotEvalMean}}, \code{\link{bm_PlotEvalBoxplot}}, 
 \code{\link{bm_PlotVarImpBoxplot}}, \code{\link{bm_PlotResponseCurves}}
 
 Other Main functions: 
-\code{\link{BIOMOD_CrossValidation}()},
 \code{\link{BIOMOD_EnsembleForecasting}()},
 \code{\link{BIOMOD_EnsembleModeling}()},
 \code{\link{BIOMOD_FormatingData}()},

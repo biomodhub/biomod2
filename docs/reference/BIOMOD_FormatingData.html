@@ -113,7 +113,7 @@ with different strategies (see Details).</p>
 <span>  eval.resp.xy <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  PA.nb.rep <span class="op">=</span> <span class="fl">0</span>,</span>
 <span>  PA.nb.absences <span class="op">=</span> <span class="fl">1000</span>,</span>
-<span>  PA.strategy <span class="op">=</span> <span class="st">"random"</span>,</span>
+<span>  PA.strategy <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  PA.dist.min <span class="op">=</span> <span class="fl">0</span>,</span>
 <span>  PA.dist.max <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  PA.sre.quant <span class="op">=</span> <span class="fl">0.025</span>,</span>
@@ -200,7 +200,9 @@ If pseudo-absence selection, an <code>integer</code> corresponding to the number
 <dd><p>(<em>optional, default</em> <code>0</code>) <br> 
 If pseudo-absence selection, and <code>PA.strategy = 'random'</code> or <code>PA.strategy = 'sre'</code> 
 or <code>PA.strategy = 'disk'</code>, an <code>integer</code> corresponding to the number of pseudo-absence 
-points that will be selected for each pseudo-absence repetition (true absences included)</p></dd>
+points that will be selected for each pseudo-absence repetition (true absences included). <br>
+It can also be a <code>vector</code> of the same length as <code>PA.nb.rep</code> containing <code>integer</code> 
+values corresponding to the different numbers of pseudo-absences to be selected</p></dd>
 
 
 <dt>PA.strategy</dt>
@@ -279,10 +281,12 @@ and provides different methods to select pseudo-absences if needed. <br><br></p>
    with <code>resp.var</code> without considering XY coordinates. <br><em>Be sure to give explanatory and response values in the same row order !</em></p></li>
 </ul><p><b>Concerning pseudo-absence selection (see <code><a href="bm_PseudoAbsences.html">bm_PseudoAbsences</a></code>) :</b></p><ul><li><p>if both presence and absence data are available, and there is enough absences :
   set <code>PA.nb.rep = 0</code> and no pseudo-absence will be selected.</p></li>
-<li><p>if no absence data (or not enough) is available, several pseudo-absence repetitions  
+<li><p>if no absence data is available, several pseudo-absence repetitions  
   are recommended (to estimate the effect of pseudo-absence selection), as well as high 
   number of pseudo-absence points. <br><em>Be sure not to select more pseudo-absence points than maximum number of pixels in 
   the studied area ! <br><br><br><br></em></p></li>
+<li><p>it is possible now to create several pseudo-absence repetitions with different 
+  number of points, but with the same sampling strategy</p></li>
 </ul><dl><dt>Response variable</dt>
 <dd><p><span class="pkg">biomod2</span> models single species at a time (no multi-species). Hence, <code>resp.var</code> 
   must be a uni-dimensional object (either a <code>vector</code>, a one-column <code>matrix</code>, 
@@ -304,8 +308,8 @@ and provides different methods to select pseudo-absences if needed. <br><br></p>
 
   <dt>Evaluation data</dt>
 <dd><p>Although <span class="pkg">biomod2</span> provides tools to automatically divide dataset into calibration and 
-  validation parts through the modeling process (see <code>nb.rep</code> and <code>data.split.perc</code> 
-  parameters in <code><a href="BIOMOD_Modeling.html">BIOMOD_Modeling</a></code> function ; or <code><a href="BIOMOD_CrossValidation.html">BIOMOD_CrossValidation</a> 
+  validation parts through the modeling process (see <code>CV.[..]</code> parameters in 
+  <code><a href="BIOMOD_Modeling.html">BIOMOD_Modeling</a></code> function ; or <code><a href="bm_CrossValidation.html">bm_CrossValidation</a> 
   function</code>), it is also possible (and strongly advised) to directly provide two independent 
   datasets, one for calibration/validation and one for evaluation</p></dd>
 
@@ -346,7 +350,6 @@ and provides different methods to select pseudo-absences if needed. <br><br></p>
     <h2>See also</h2>
     <div class="dont-index"><p><code><a href="bm_PseudoAbsences.html">bm_PseudoAbsences</a></code>, <code><a href="BIOMOD_Modeling.html">BIOMOD_Modeling</a></code></p>
 <p>Other Main functions: 
-<code><a href="BIOMOD_CrossValidation.html">BIOMOD_CrossValidation</a>()</code>,
 <code><a href="BIOMOD_EnsembleForecasting.html">BIOMOD_EnsembleForecasting</a>()</code>,
 <code><a href="BIOMOD_EnsembleModeling.html">BIOMOD_EnsembleModeling</a>()</code>,
 <code><a href="BIOMOD_LoadModels.html">BIOMOD_LoadModels</a>()</code>,
@@ -452,6 +455,25 @@ and provides different methods to select pseudo-absences if needed. <br><br></p>
 <span><span class="co"># plot(myBiomodData.d)</span></span>
 <span><span class="co"># plot(myBiomodData.s)</span></span>
 <span><span class="co"># plot(myBiomodData.u)</span></span>
+<span></span>
+<span></span>
+<span><span class="co"># ---------------------------------------------------------------#</span></span>
+<span><span class="co"># # Select multiple sets of pseudo-absences</span></span>
+<span><span class="co">#</span></span>
+<span><span class="co"># # Transform true absences into potential pseudo-absences</span></span>
+<span><span class="co"># myResp.PA &lt;- ifelse(myResp == 1, 1, NA)</span></span>
+<span><span class="co"># </span></span>
+<span><span class="co"># # Format Data with pseudo-absences : random method</span></span>
+<span><span class="co"># myBiomodData.multi &lt;- BIOMOD_FormatingData(resp.var = myResp.PA,</span></span>
+<span><span class="co">#                                            expl.var = myExpl,</span></span>
+<span><span class="co">#                                            resp.xy = myRespXY,</span></span>
+<span><span class="co">#                                            resp.name = myRespName,</span></span>
+<span><span class="co">#                                            PA.nb.rep = 4,</span></span>
+<span><span class="co">#                                            PA.nb.absences = c(1000, 500, 500, 200),</span></span>
+<span><span class="co">#                                            PA.strategy = 'random')</span></span>
+<span><span class="co"># myBiomodData.multi</span></span>
+<span><span class="co"># summary(myBiomodData.multi)</span></span>
+<span><span class="co"># plot(myBiomodData.multi)</span></span>
 <span></span>
 <span></span></code></pre></div>
     </div>

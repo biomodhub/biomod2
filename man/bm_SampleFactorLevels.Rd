@@ -93,6 +93,7 @@ samp3 <- bm_SampleFactorLevels(expl.var = stk, mask.out = mask.out, mask.in = ma
 Other Secundary functions: 
 \code{\link{bm_BinaryTransformation}()},
 \code{\link{bm_CVnnet}()},
+\code{\link{bm_CrossValidation}()},
 \code{\link{bm_FindOptimStat}()},
 \code{\link{bm_MakeFormula}()},
 \code{\link{bm_PlotEvalBoxplot}()},

@@ -4,6 +4,7 @@
 \alias{biomod2-deprecated}
 \alias{BIOMOD_ConvertOldRun}
 \alias{BIOMOD_cv}
+\alias{BIOMOD_CrossValidation}
 \alias{BIOMOD_presenceonly}
 \alias{BIOMOD_tuning}
 \alias{BinaryTransformation}
@@ -29,6 +30,8 @@
 BIOMOD_ConvertOldRun(...)
 
 BIOMOD_cv(...)
+
+BIOMOD_CrossValidation(...)
 
 BIOMOD_presenceonly(...)
 
@@ -84,6 +87,11 @@ in the current version. When possible, alternative functions with similar
 \section{\code{BIOMOD_cv}}{
 
 For \code{BIOMOD_cv} use \code{\link{BIOMOD_CrossValidation}}.
+}
+
+\section{\code{BIOMOD_CrossValidation}}{
+
+For \code{BIOMOD_CrossValidation} use \code{\link{bm_CrossValidation}}.
 }
 
 \section{\code{BIOMOD_presenceonly}}{

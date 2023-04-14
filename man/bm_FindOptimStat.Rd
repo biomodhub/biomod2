@@ -89,6 +89,7 @@ bm_FindOptimStat(metric.eval = 'TSS', fit = vec.c, obs = vec.a, threshold = 280)
 Other Secundary functions: 
 \code{\link{bm_BinaryTransformation}()},
 \code{\link{bm_CVnnet}()},
+\code{\link{bm_CrossValidation}()},
 \code{\link{bm_MakeFormula}()},
 \code{\link{bm_PlotEvalBoxplot}()},
 \code{\link{bm_PlotEvalMean}()},

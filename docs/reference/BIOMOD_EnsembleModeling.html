@@ -145,7 +145,8 @@ conditions (see Details).</p>
 
 <dt>em.by</dt>
 <dd><p>a <code>character</code> corresponding to the way kept models will be combined to build 
-the ensemble models, must be among <code>PA+run</code>, <code>PA+algo</code>,</p></dd>
+the ensemble models, must be among <code>all</code>, <code>algo</code>, <code>PA</code>, <code>PA+algo</code>, 
+<code>PA+run</code></p></dd>
 
 
 <dt>em.algo</dt>
@@ -223,43 +224,50 @@ A <code>logical</code> value defining whether the progress bar is to be rendered
 
 
 <dt>prob.mean</dt>
-<dd><p>(<em>deprecated</em> <code>TRUE</code>) <br> A <code>logical</code> value defining 
-whether to compute the mean probabilities across predictions or not</p></dd>
+<dd><p>(<em>deprecated</em>, please use <code>em.algo</code> instead) <br>
+A <code>logical</code> value defining whether to compute the mean probabilities
+across predictions or not</p></dd>
 
 
 <dt>prob.median</dt>
-<dd><p>(<em>deprecated</em>) <br> A <code>logical</code> value defining whether to compute 
-the median probabilities across predictions or not</p></dd>
+<dd><p>(<em>deprecated</em>, please use <code>em.algo</code> instead)
+<br> A <code>logical</code> value defining whether to compute the median
+probabilities across predictions or not</p></dd>
 
 
 <dt>prob.cv</dt>
-<dd><p>(<em>deprecated</em>) <br> A <code>logical</code> value defining whether to compute the 
-coefficient of variation across predictions or not</p></dd>
+<dd><p>(<em>deprecated</em>, please use <code>em.algo</code> instead) <br> A
+<code>logical</code> value defining whether to compute the coefficient of
+variation across predictions or not</p></dd>
 
 
 <dt>prob.ci</dt>
-<dd><p>(<em>deprecated</em>) <br> A <code>logical</code> value defining whether to compute the 
-confidence interval around the <code>prob.mean</code> ensemble model or not</p></dd>
+<dd><p>(<em>deprecated</em>, please use <code>em.algo</code> instead) <br> A
+<code>logical</code> value defining whether to compute the confidence interval
+around the <code>prob.mean</code> ensemble model or not</p></dd>
 
 
 <dt>committee.averaging</dt>
-<dd><p>(<em>deprecated</em>) <br> A <code>logical</code> value defining whether to 
-compute the committee averaging across predictions or not</p></dd>
+<dd><p>(<em>deprecated</em>, please use <code>em.algo</code>
+instead) <br> A <code>logical</code> value defining whether to compute the
+committee averaging across predictions or not</p></dd>
 
 
 <dt>prob.mean.weight</dt>
-<dd><p>(<em>deprecated</em>) <br> A <code>logical</code> value defining whether to 
-compute the weighted sum of probabilities across predictions or not</p></dd>
+<dd><p>(<em>deprecated</em>, please use <code>em.algo</code>
+instead) <br> A <code>logical</code> value defining whether to compute the
+weighted sum of probabilities across predictions or not</p></dd>
 
 
 <dt>prob.mean.weight.decay</dt>
-<dd><p>(<em>deprecated</em>)  <br> old argument name for
+<dd><p>(<em>deprecated</em>, please use
+<code>EMwmean.decay</code> instead)  <br> old argument name for
 <code>EMwmean.decay</code></p></dd>
 
 
 <dt>prob.ci.alpha</dt>
-<dd><p>(<em>deprecated</em>) <br> old argument name for
-<code>EMci.alpha</code></p></dd>
+<dd><p>(<em>deprecated</em>, please use <code>EMci.alpha</code>
+instead) <br> old argument name for <code>EMci.alpha</code></p></dd>
 
 </dl></div>
     <div id="value">
@@ -301,7 +309,12 @@ folders created in the current working directory :</p><ol><li><p>a <em>models</e
 <li><p><code>all</code> : all models are combined into one</p></li>
 </ul><p>Hence, depending on the chosen method, the number of ensemble models built will vary. <br><em>Be aware that if no evaluation data was given to the 
   <code><a href="BIOMOD_FormatingData.html">BIOMOD_FormatingData</a></code> function, some ensemble model evaluations may be biased 
-  due to difference in data used for single model evaluations.</em></p></dd>
+  due to difference in data used for single model evaluations.</em>
+  <b>Be aware that all of these combinations are allowed, but some may not make sense 
+  depending mainly on how pseudo-absence datasets have been built and whether all of them 
+  have been used for all single models or not (see <code>PA.nb.absences</code> and <code>models.pa</code> 
+  parameters in <code><a href="BIOMOD_FormatingData.html">BIOMOD_FormatingData</a></code> and <code><a href="BIOMOD_Modeling.html">BIOMOD_Modeling</a></code> functions 
+  respectively).</b></p></dd>
 
 
   <dt>Evaluation metrics</dt>
@@ -402,12 +415,11 @@ model will be used to weight the models predictions.</em></p></dd>
     <div id="see-also">
     <h2>See also</h2>
     <div class="dont-index"><p><code><a href="BIOMOD_FormatingData.html">BIOMOD_FormatingData</a></code>, <code><a href="BIOMOD_ModelingOptions.html">BIOMOD_ModelingOptions</a></code>, 
-<code><a href="BIOMOD_CrossValidation.html">BIOMOD_CrossValidation</a></code>, <code><a href="bm_VariablesImportance.html">bm_VariablesImportance</a></code>, 
+<code><a href="bm_CrossValidation.html">bm_CrossValidation</a></code>, <code><a href="bm_VariablesImportance.html">bm_VariablesImportance</a></code>, 
 <code><a href="BIOMOD_Modeling.html">BIOMOD_Modeling</a></code>, <code><a href="BIOMOD_EnsembleForecasting.html">BIOMOD_EnsembleForecasting</a></code>,
 <code><a href="bm_PlotEvalMean.html">bm_PlotEvalMean</a></code>, <code><a href="bm_PlotEvalBoxplot.html">bm_PlotEvalBoxplot</a></code>, 
 <code><a href="bm_PlotVarImpBoxplot.html">bm_PlotVarImpBoxplot</a></code>, <code><a href="bm_PlotResponseCurves.html">bm_PlotResponseCurves</a></code></p>
 <p>Other Main functions: 
-<code><a href="BIOMOD_CrossValidation.html">BIOMOD_CrossValidation</a>()</code>,
 <code><a href="BIOMOD_EnsembleForecasting.html">BIOMOD_EnsembleForecasting</a>()</code>,
 <code><a href="BIOMOD_FormatingData.html">BIOMOD_FormatingData</a>()</code>,
 <code><a href="BIOMOD_LoadModels.html">BIOMOD_LoadModels</a>()</code>,
@@ -469,11 +481,11 @@ model will be used to weight the models predictions.</em></p></dd>
 <span>                                      modeling.id <span class="op">=</span> <span class="st">'AllModels'</span>,</span>
 <span>                                      models <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">'RF'</span>, <span class="st">'GLM'</span><span class="op">)</span>,</span>
 <span>                                      bm.options <span class="op">=</span> <span class="va">myBiomodOptions</span>,</span>
-<span>                                      nb.rep <span class="op">=</span> <span class="fl">2</span>,</span>
-<span>                                      data.split.perc <span class="op">=</span> <span class="fl">80</span>,</span>
+<span>                                      CV.strategy <span class="op">=</span> <span class="st">'random'</span>,</span>
+<span>                                      CV.nb.rep <span class="op">=</span> <span class="fl">2</span>,</span>
+<span>                                      CV.perc <span class="op">=</span> <span class="fl">0.8</span>,</span>
 <span>                                      metric.eval <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">'TSS'</span>,<span class="st">'ROC'</span><span class="op">)</span>,</span>
 <span>                                      var.import <span class="op">=</span> <span class="fl">3</span>,</span>
-<span>                                      do.full.models <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>                                      seed.val <span class="op">=</span> <span class="fl">42</span><span class="op">)</span></span>
 <span><span class="op">}</span></span>
 <span></span>

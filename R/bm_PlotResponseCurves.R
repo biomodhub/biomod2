@@ -134,11 +134,11 @@
 ##'                                       modeling.id = 'AllModels',
 ##'                                       models = c('RF', 'GLM'),
 ##'                                       bm.options = myBiomodOptions,
-##'                                       nb.rep = 2,
-##'                                       data.split.perc = 80,
+##'                                       CV.strategy = 'random',
+##'                                       CV.nb.rep = 2,
+##'                                       CV.perc = 0.8,
 ##'                                       metric.eval = c('TSS','ROC'),
 ##'                                       var.import = 3,
-##'                                       do.full.models = FALSE,
 ##'                                       seed.val = 42)
 ##' }
 ##' 
@@ -451,7 +451,7 @@ bm_PlotResponseCurves <- function(bm.out
   if (inherits(new.env, c("Raster"))) {
     categorical_var <- which(raster::is.factor(new.env))
     if (length(categorical_var) > 0) {
-      new.env = categorical_stack_to_terra(new.env)
+      new.env = .categorical_stack_to_terra(new.env)
     } else {
       new.env <- rast(new.env)
     }
@@ -482,7 +482,7 @@ bm_PlotResponseCurves <- function(bm.out
   
   ## 4. Check show.variables argument -----------------------------------------
   if (length(show.variables) > ncol(new.env) || 
-      any(! show.variables %in% colnames(new.env))) {
+      any(!show.variables %in% colnames(new.env))) {
     stop("columns wanted in show.variables do not match the data \n")
   }
   

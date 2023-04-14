@@ -67,10 +67,10 @@
 .fun_testIfPosNum <- function(test, objName, objValue)
 {
   if (!is.numeric(objValue)) {
-    stop(paste0("\n", objName, "must be a numeric"))
+    stop(paste0("\n", objName, " must be a numeric"))
     test <- FALSE
   } else if (objValue < 0) {
-    stop(paste0("\n", objName, "must be a positive numeric"))
+    stop(paste0("\n", objName, " must be a positive numeric"))
     test <- FALSE
   }
   return(test)
@@ -80,7 +80,7 @@
 {
   test <- .fun_testIfPosNum(test, objName, objValue)
   if (test && objValue > 1) {
-    stop(paste0("\n", objName, "must be a 0 to 1 numeric"))
+    stop(paste0("\n", objName, " must be a 0 to 1 numeric"))
     test <- FALSE
   }
   return(test)
@@ -89,10 +89,10 @@
 .fun_testIfPosInt <- function(test, objName, objValue)
 {
   if (!is.numeric(objValue)) {
-    cat(paste0("\n", objName, "must be a integer"))
+    cat(paste0("\n", objName, " must be a integer"))
     test <- FALSE
   } else if (any(objValue < 0) || any(objValue %% 1 != 0)) {
-    cat(paste0("\n", objName, "must be a positive integer"))
+    cat(paste0("\n", objName, " must be a positive integer"))
     test <- FALSE
   }
   return(test)
@@ -108,6 +108,30 @@
     test <- .fun_testIfIn(test, objName, objValue, values)
   }
   return(test)
+}
+
+.check_calib.lines_names <- function(calib.lines, expected_PA.names){
+  full.names <- colnames(calib.lines)
+  if (missing(expected_PA.names)) { # CV only
+    expected_CV.names <- c(paste0("_allData_RUN", seq_len(ncol(calib.lines))), "_allData_allRun")
+    .fun_testIfIn(TRUE, "colnames(calib.lines)", full.names, expected_CV.names)
+  } else {
+    err.msg <- "colnames(calib.lines) must follow the following format: '_PAx_RUNy' with x and y integer"
+    # check for beginning '_'
+    if (!all( substr(full.names, 1, 1) == "_")) {
+      stop(err.msg)
+    }
+    PA.names <- sapply(strsplit(full.names, split = "_"), function(x) x[2])
+    CV.names <- sapply(strsplit(full.names, split = "_"), function(x) x[3])
+    .fun_testIfIn(TRUE, "Pseudo-absence dataset in colnames(calib.lines)", PA.names, expected_PA.names)
+    if (!all( substr(CV.names, 1, 3) == "RUN")) {
+      stop(err.msg)
+    }
+    CV.num <- sapply(strsplit(CV.names, split = "RUN"), function(x) x[2])
+    if (any(is.na(as.numeric(CV.num)))) {
+      stop(err.msg)
+    }
+  }
 }
 
 # Functions to get variables ranges ---------------------------------
@@ -355,7 +379,7 @@ get_var_range <- function(data)
     tmp$filtered.by <- .extract_modelNamesInfo(tmp$full.name, obj.type = "em", info = "filtered.by", as.unique = FALSE)
     tmp$algo <- .extract_modelNamesInfo(tmp$full.name, obj.type = "em", info = "algo", as.unique = FALSE)
     proj <- tmp[, c("full.name", "merged.by.PA", "merged.by.run", "merged.by.algo"
-                       , "filtered.by", "algo", "points", "pred")]
+                    , "filtered.by", "algo", "points", "pred")]
     
   }
   proj
@@ -375,57 +399,84 @@ get_var_range <- function(data)
     dim_names <- c("merged.by", "filtered.by", "algo")
     dim_names.bis <- c("merged.by.PA", "merged.by.run", "merged.by.algo")
   }
-  ## 1. GET dimension names -------------------------------------------------------------
-  ## BIOMOD.models.out            -> dataset / run / algo
-  ## BIOMOD.ensemble.models.out   -> mergedBy / filteredBy / algo
-  dim1 <- length(obj.out)
-  dim2 <- length(obj.out[[1]])
-  dim3 <- length(obj.out[[1]][[1]])
   
-  ## 2. GET outputs ---------------------------------------------------------------------
-  output <- foreach(i.dim1 = 1:dim1, .combine = "rbind") %:%
-    foreach(i.dim2 = 1:dim2, .combine = "rbind") %:% 
-    foreach(i.dim3 = 1:dim3, .combine = "rbind") %do%
-    {
-      res <- obj.out[[i.dim1]][[i.dim2]][[i.dim3]][[out]]
-      if (!is.null(res) && length(res) > 0) {
-        res <- as.data.frame(res)
-        if (out %in% c("model", "calib.failure", "models.kept", "pred", "pred.eval")) {
-          colnames(res) <- out
-          res[["points"]] <- 1:nrow(res)
-          res <- res[, c("points", out)]
-        }
-        col_names <- colnames(res)
-        res[[dim_names[1]]] <- names(obj.out)[i.dim1]
-        res[[dim_names[2]]] <- names(obj.out[[i.dim1]])[i.dim2]
-        res[[dim_names[3]]] <- names(obj.out[[i.dim1]][[i.dim2]])[i.dim3]
-        tmp.full.name <- obj.out[[i.dim1]][[i.dim2]][[i.dim3]][["model"]]
-        if(out == "calib.failure" | is.null(tmp.full.name)){
-          res[["full.name"]] <- NA
-        } else {
-          res[["full.name"]] <- tmp.full.name
-        }
-        if (obj.type == "mod") {
-          res[[dim_names[1]]] <- sub(".*_", "", res[[dim_names[1]]])
-          res[[dim_names[2]]] <- sub(".*_", "", res[[dim_names[2]]])
-          return(res[, c("full.name", dim_names, col_names)])
-        } else {
-          tmp <- names(obj.out)[i.dim1]
-          res[[dim_names.bis[1]]] <- strsplit(tmp, "_")[[1]][1]
-          res[[dim_names.bis[2]]] <- strsplit(tmp, "_")[[1]][2]
-          res[[dim_names.bis[3]]] <- strsplit(tmp, "_")[[1]][3]
-          res[[dim_names[1]]] <- NULL
-          return(res[, c("full.name", dim_names.bis, dim_names[-1], col_names)])
+  if (obj.type == "mod") {
+    output <- foreach(i.dim1 = 1:length(obj.out), .combine = "rbind") %do%
+      {
+        res <- obj.out[[i.dim1]][[out]]
+        if (!is.null(res) && length(res) > 0) {
+          res <- as.data.frame(res)
+          if (out %in% c("model", "calib.failure", "models.kept", "pred", "pred.eval")) {
+            colnames(res) <- out
+            res[["points"]] <- 1:nrow(res)
+            res <- res[, c("points", out)]
+          }
+          col_names <- colnames(res)
+          tmp.full.name <- obj.out[[i.dim1]][["model"]]
+          if(out == "calib.failure" | is.null(tmp.full.name)){
+            res[["full.name"]] <- NA
+            return(res[, c("full.name", col_names)])
+          } else {
+            res[["full.name"]] <- tmp.full.name
+            res[[dim_names[1]]] <- strsplit(tmp.full.name, "_")[[1]][2]
+            res[[dim_names[2]]] <- strsplit(tmp.full.name, "_")[[1]][3]
+            res[[dim_names[3]]] <- strsplit(tmp.full.name, "_")[[1]][4]
+            return(res[, c("full.name", dim_names, col_names)])
+          }
         }
       }
-    }
+  } else if (obj.type == "em") {
+    
+    ## 1. GET dimension names -------------------------------------------------------------
+    ## BIOMOD.models.out            -> dataset / run / algo
+    ## BIOMOD.ensemble.models.out   -> mergedBy / filteredBy / algo
+    dim1 <- length(obj.out)
+    dim2 <- length(obj.out[[1]])
+    dim3 <- length(obj.out[[1]][[1]])
+    
+    ## 2. GET outputs ---------------------------------------------------------------------
+    output <- foreach(i.dim1 = 1:dim1, .combine = "rbind") %:%
+      foreach(i.dim2 = 1:dim2, .combine = "rbind") %:% 
+      foreach(i.dim3 = 1:dim3, .combine = "rbind") %do%
+      {
+        if (length(obj.out) >= i.dim1 &&
+            length(obj.out[[i.dim1]]) >= i.dim2 &&
+            length(obj.out[[i.dim1]][[i.dim2]]) >= i.dim3) {
+          res <- obj.out[[i.dim1]][[i.dim2]][[i.dim3]][[out]]
+          if (!is.null(res) && length(res) > 0) {
+            res <- as.data.frame(res)
+            if (out %in% c("model", "calib.failure", "models.kept", "pred", "pred.eval")) {
+              colnames(res) <- out
+              res[["points"]] <- 1:nrow(res)
+              res <- res[, c("points", out)]
+            }
+            col_names <- colnames(res)
+            res[[dim_names[1]]] <- names(obj.out)[i.dim1]
+            res[[dim_names[2]]] <- names(obj.out[[i.dim1]])[i.dim2]
+            res[[dim_names[3]]] <- names(obj.out[[i.dim1]][[i.dim2]])[i.dim3]
+            tmp.full.name <- obj.out[[i.dim1]][[i.dim2]][[i.dim3]][["model"]]
+            if(out == "calib.failure" | is.null(tmp.full.name)){
+              res[["full.name"]] <- NA
+            } else {
+              res[["full.name"]] <- tmp.full.name
+            }
+            tmp <- names(obj.out)[i.dim1]
+            res[[dim_names.bis[1]]] <- strsplit(tmp, "_")[[1]][1]
+            res[[dim_names.bis[2]]] <- strsplit(tmp, "_")[[1]][2]
+            res[[dim_names.bis[3]]] <- strsplit(tmp, "_")[[1]][3]
+            res[[dim_names[1]]] <- NULL
+            return(res[, c("full.name", dim_names.bis, dim_names[-1], col_names)])
+          }
+        }
+      }
+  }
   
   if (out %in% c("model", "calib.failure", "models.kept")) {
     if (is.null(output)) { 
       output <- 'none'
     } else { 
-        output <- unique(as.character(output[[out]]))
-        }
+      output <- unique(as.character(output[[out]]))
+    }
   }
   return(output)
 }
@@ -572,7 +623,7 @@ get_var_range <- function(data)
   if(is.null(objValue)){
     eval(parse(text = paste0("objValue <- mod.out@", objName, "@val")))
   }
- 
+  
   save(objValue, file = file.path(nameFolder, objName), compress = TRUE)
   if (inMemory) {
     eval(parse(text = paste0("mod.out@", objName, "@val <- objValue")))
@@ -774,4 +825,254 @@ check_duplicated_cells <- function(env, xy, sp, filter.raster){
   return(list("sp"  = sp, 
               "xy"  = xy))
   
+}
+
+## Get new.env class ----------------------------
+##' @name .get_env_class
+##' 
+##' @title Get class of environmental data provided
+##' 
+##' @description Get class of environmental data provided
+##' 
+##' @param new.env object to identify
+##' @return a character
+##' @keywords internal
+
+.get_env_class <- function(new.env){
+  .fun_testIfInherits(TRUE, "new.env", new.env, c('data.frame', 'SpatRaster'))
+  if (inherits(new.env,"data.frame")) {
+    return("data.frame")
+  }
+  if (inherits(new.env,"SpatRaster")) {
+    return("SpatRaster")
+  }
+  NULL
+}
+
+
+# Common tools ------------------------------------------------------------
+
+.check_formating_spatial <- function(resp.var, expl.var = NULL, resp.xy = NULL, eval.data = FALSE){
+  if (!is.null(resp.xy)) {
+    cat("\n      ! XY coordinates of response variable will be ignored because spatial response object is given.")
+  }
+  
+  if (inherits(resp.var, 'SpatialPoints')) { 
+    resp.xy <- data.matrix(sp::coordinates(resp.var))
+    if (inherits(resp.var, 'SpatialPointsDataFrame')) {
+      resp.var <- resp.var@data
+    } else {
+      cat("\n      ! Response variable is considered as only presences... Is it really what you want?")
+      resp.var <- rep(1, nrow(resp.xy))
+    }
+  }
+  
+  if (inherits(resp.var, 'SpatVector')) { 
+    resp.xy <- data.matrix(crds(resp.var))
+    resp.var <- as.data.frame(resp.var)
+    if (ncol(resp.var) == 0) {
+      if(eval.data){
+        stop("eval.resp must have both presences and absences in the data associated to the SpatVector") 
+      } else {
+        cat("\n      ! Response variable is considered as only presences... Is it really what you want?")
+        resp.var <- rep(1, nrow(resp.xy))
+      }
+    }
+  }
+  
+  if(!eval.data){
+    if ( all(!is.na(resp.var)) && 
+         all(resp.var == 1, na.rm = TRUE) &&
+         !inherits(expl.var, c('Raster','SpatRaster'))) {
+      stop("For Presence-Only model based on SpatialPoints or SpatVector, expl.var needs to be a RasterStack or SpatRaster to be able to sample pseudo-absences")
+    }
+  }
+  
+  return(
+    list(resp.var = resp.var,
+         resp.xy = resp.xy)
+  )
+}
+
+.check_formating_resp.var <- function(resp.var, eval.data = FALSE){
+  if (length(which(!(resp.var %in% c(0, 1, NA)))) > 0) {
+    cat("\n      ! ", ifelse(eval.data, "Evaluation",""), "Response variable have non-binary values that will be converted into 0 (resp <=0) or 1 (resp > 0).")
+    resp.var[which(resp.var > 0)] <- 1
+    resp.var[which(resp.var <= 0)] <- 0
+  }
+  
+  if (eval.data) {
+    if (!any(resp.var == 1, na.rm = TRUE) || !any(resp.var == 0, na.rm = TRUE))
+    {
+      stop("Evaluation response data must have both presences and absences")
+    }
+  }
+  
+  resp.var
+}
+
+.check_formating_table <- function(resp.var){
+  resp.var = as.data.frame(resp.var)
+  if (ncol(resp.var) > 1) {
+    stop("You must give a monospecific response variable (1D object)")
+  } else {
+    resp.var <- as.numeric(resp.var[, 1])
+  }
+  resp.var
+}
+
+.check_formating_xy <- function(resp.xy, resp.length){
+  if (ncol(resp.xy) != 2) {
+    stop("If given, resp.xy must be a 2 column matrix or data.frame")
+  }
+  if (nrow(resp.xy) != resp.length) {
+    stop("Response variable and its coordinates don't match")
+  }
+  as.data.frame(resp.xy)
+}
+
+.check_formating_expl.var <- function(expl.var, length.resp.var){
+  if (is.matrix(expl.var) | is.numeric(expl.var)) {
+    expl.var <- as.data.frame(expl.var)
+  }
+  
+  if (inherits(expl.var, 'Raster')) {
+    expl.var <- raster::stack(expl.var, RAT = FALSE)
+    if (any(is.factor(expl.var))) {
+      expl.var <- .categorical_stack_to_terra(expl.var)
+    } else {
+      # as of 20/10/2022 the line below does not work if categorical variables
+      # are present, hence the trick above. 
+      expl.var <- rast(expl.var)
+    }
+  }
+  
+  if (inherits(expl.var, 'SpatialPoints')) {
+    expl.var <- as.data.frame(expl.var@data)
+  }
+  if (inherits(expl.var, 'SpatVector')) {
+    expl.var <- as.data.frame(expl.var)
+  }
+  
+  if (inherits(expl.var, 'data.frame')) {
+    if (nrow(expl.var) != length.resp.var) {
+      stop("If explanatory variable is not a raster then dimensions of response variable and explanatory variable must match!")
+    }
+  }
+  expl.var
+}
+
+
+# Categorical Variables Management ----------------------------------------
+
+.categorical_stack_to_terra <- function(myraster, expected_levels = NULL) {
+  myTerra <- rast(
+    sapply(1:raster::nlayers(myraster), 
+           function(thislayer){
+             rast(myraster[[thislayer]])
+           })
+  )
+  which.factor <- which(raster::is.factor(myraster))
+  for (this.layer in which.factor) {
+    this.levels <- raster::levels(myraster)[[this.layer]][[1]]
+    ind.levels <- ifelse(ncol(this.levels) > 1, 2, 1)
+    if (any(duplicated(this.levels[ , ind.levels]))) {
+      stop("duplicated levels in environmental raster")
+    }
+    if (is.null(expected_levels)) {
+      # no check to do, just formatting
+      this.levels.df <- data.frame(ID = this.levels[,ind.levels],
+                                   value = paste0(this.levels[,ind.levels]))
+    } else {
+      new.levels <- paste0(this.levels[,ind.levels])
+      new.index <- this.levels[,1]
+      this.layer.name <- names(myraster)[this.layer]
+      fit.levels <- levels(expected_levels[,this.layer.name])
+      if (!all(new.levels %in% fit.levels)) {
+        cat("\n",
+            "!! Levels for layer", colnames(expected_levels)[this.layer],
+            " do not match.", new.levels[which(!new.levels %in% fit.levels)], "not found in fit data",
+            "\n Fit data levels: ",paste0(fit.levels, collapse = " ; "),
+            "\n Projection data levels: ",paste0(new.levels, collapse = " ; "))
+        stop(paste0("Levels for ", colnames(expected_levels)[this.layer],
+                    " do not match."))
+      }
+      levels.to.add <- which(!fit.levels %in% new.levels)
+      if (length(levels.to.add) > 0) {
+        max.index <- max(new.index)
+        this.levels.df <- data.frame(ID = c(new.index,
+                                            max.index +
+                                              seq_along(levels.to.add)),
+                                     value = c(new.levels, fit.levels[levels.to.add]))
+      } else {
+        this.levels.df <- data.frame(ID = new.index,
+                                     value = new.levels)
+      }
+      
+    }
+    colnames(this.levels.df) <- c("ID", names(myTerra)[this.layer])
+    try({myTerra <- categories(myTerra, layer = this.layer, this.levels.df)}, silent = TRUE)
+  }
+  return(myTerra)
+}
+
+.check_env_levels <-  function(new.env, expected_levels) {
+  which.factor <- which(sapply(new.env, is.factor))
+  if (inherits(new.env, 'SpatRaster')) {
+    for (this.layer in which.factor) {
+      this.layer.name <- names(new.env)[this.layer]
+      this.levels <- cats(new.env)[[this.layer]]
+      ind.levels <- ifelse(ncol(this.levels) > 1, 2, 1)
+      new.levels <- paste0(this.levels[,ind.levels])
+      if( any(duplicated(new.levels)) ) {
+        stop("duplicated levels in `new.env`")
+      }
+      new.index <- this.levels[,1]
+      fit.levels <- levels(expected_levels[,this.layer.name])
+      if (!all(new.levels %in% fit.levels)) {
+        cat("\n",
+            "!! Levels for layer", colnames(expected_levels)[this.layer],
+            " do not match.", new.levels[which(!new.levels %in% fit.levels)], "not found in fit data",
+            "\n Fit data levels: ",paste0(fit.levels, collapse = " ; "),
+            "\n Projection data levels: ",paste0(new.levels, collapse = " ; "))
+        stop(paste0("Levels for ", colnames(expected_levels)[this.layer],
+                    " do not match."))
+      }
+      levels.to.add <- which(!fit.levels %in% new.levels)
+      if (length(levels.to.add) > 0) {
+        max.index <- max(new.index)
+        this.levels.df <- data.frame(ID = c(new.index,
+                                            max.index +
+                                              seq_along(levels.to.add)),
+                                     value = c(new.levels, fit.levels[levels.to.add]))
+        
+        colnames(this.levels.df) <- c("ID", names(new.env)[this.layer])
+        new.env <- categories(new.env, layer = this.layer, 
+                              this.levels.df)
+      } 
+    }
+  } else {
+    for (this.layer in which.factor) {
+      this.layer.name <- names(new.env)[this.layer]
+      this.levels <- levels(new.env[,this.layer.name])
+      new.levels <- paste0(this.levels)
+      fit.levels <- levels(expected_levels[,this.layer.name])
+      if (!all(new.levels %in% fit.levels)) {
+        cat("\n",
+            "!! Levels for layer", colnames(expected_levels)[this.layer],
+            " do not match.", new.levels[which(!new.levels %in% fit.levels)], "not found in fit data",
+            "\n Fit data levels: ",paste0(fit.levels, collapse = " ; "),
+            "\n Projection data levels: ",paste0(new.levels, collapse = " ; "))
+        stop(paste0("Levels for ", colnames(expected_levels)[this.layer],
+                    " do not match."))
+      }
+      levels.to.add <- which(!fit.levels %in% new.levels)
+      if (length(levels.to.add) > 0) {
+        new.env[ , this.layer.name] <- factor(new.env[ , this.layer.name], 
+                                              levels = c(new.levels,
+                                                         fit.levels[levels.to.add]))
+      }
+    }
+  }
+  new.env 
 }

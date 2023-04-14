@@ -4,13 +4,7 @@
 \alias{BIOMOD_PresenceOnly}
 \title{Evaluate models with presence-only metrics}
 \usage{
-BIOMOD_PresenceOnly(
-  bm.mod = NULL,
-  bm.em = NULL,
-  bg.env = NULL,
-  perc = 0.9,
-  save.output = TRUE
-)
+BIOMOD_PresenceOnly(bm.mod = NULL, bm.em = NULL, bg.env = NULL, perc = 0.9)
 }
 \arguments{
 \item{bm.mod}{a \code{\link{BIOMOD.models.out}} object returned by the 
@@ -31,10 +25,6 @@ pseudo-absences selected for modeling})
 \item{perc}{a \code{numeric} between \code{0} and \code{1} corresponding to the percentage of 
 correctly classified presences for Minimal Predicted Area (see 
 \code{ecospat.mpa()} in \pkg{ecospat})}
-
-\item{save.output}{(\emph{optional, default} \code{TRUE}) \cr 
-A \code{logical} value defining whether the output is to be saved within the 
-\code{.BIOMOD_DATA} folder or not}
 }
 \value{
 A \code{data.frame} containing evaluation scores both for the evaluation metrics used in the 
@@ -106,11 +96,11 @@ if (file.exists(file.out)) {
                                       modeling.id = 'AllModels',
                                       models = c('RF', 'GLM'),
                                       bm.options = myBiomodOptions,
-                                      nb.rep = 2,
-                                      data.split.perc = 80,
+                                      CV.strategy = 'random',
+                                      CV.nb.rep = 2,
+                                      CV.perc = 0.8,
                                       metric.eval = c('TSS','ROC'),
                                       var.import = 3,
-                                      do.full.models = FALSE,
                                       seed.val = 42)
 }
 
@@ -134,16 +124,16 @@ if (file.exists(file.EM)) {
 
 
 # --------------------------------------------------------------- #
-# Evaluate models with Boyce index and MPA
-myBiomodPO <- BIOMOD_PresenceOnly(bm.mod = myBiomodModelOut,
-                                  bm.em = myBiomodEM)
-myBiomodPO
-
-# Evaluate models with Boyce index and MPA (using background data)
-myBiomodPO <- BIOMOD_PresenceOnly(bm.mod = myBiomodModelOut,
-                                  bm.em = myBiomodEM, 
-                                  bg.env = myExpl)
-myBiomodPO
+# # Evaluate models with Boyce index and MPA
+# myBiomodPO <- BIOMOD_PresenceOnly(bm.mod = myBiomodModelOut,
+#                                   bm.em = myBiomodEM)
+# myBiomodPO
+# 
+# # Evaluate models with Boyce index and MPA (using background data)
+# myBiomodPO <- BIOMOD_PresenceOnly(bm.mod = myBiomodModelOut,
+#                                   bm.em = myBiomodEM, 
+#                                   bg.env = myExpl)
+# myBiomodPO
 
 
 }
@@ -163,7 +153,6 @@ myBiomodPO
 \code{\link{BIOMOD.ensemble.models.out}}, \code{\link{BIOMOD_EnsembleModeling}}
 
 Other Main functions: 
-\code{\link{BIOMOD_CrossValidation}()},
 \code{\link{BIOMOD_EnsembleForecasting}()},
 \code{\link{BIOMOD_EnsembleModeling}()},
 \code{\link{BIOMOD_FormatingData}()},

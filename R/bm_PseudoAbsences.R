@@ -21,7 +21,7 @@
 ##' or \code{\link[terra:rast]{SpatRaster}} object containing the explanatory variables (in 
 ##' columns or layers) that will be used to find the pseudo-absences
 ##' @param \ldots (\emph{optional, one or several of the following arguments depending on the selected 
-##' method)}) 
+##' method}) 
 ##' 
 ##' @param nb.rep an \code{integer} corresponding to the number of sets (repetitions) of 
 ##' pseudo-absence points that will be drawn
@@ -91,6 +91,98 @@
 ##' 
 ##' @seealso \code{\link{BIOMOD.formated.data.PA}}, \code{\link{BIOMOD_FormatingData}}
 ##' @family Secundary functions
+##' 
+##' 
+##' @examples 
+##' 
+##' library(terra)
+##' # Load species occurrences (6 species available)
+##' data(DataSpecies)
+##' head(DataSpecies)
+##' 
+##' # Select the name of the studied species
+##' myRespName <- 'GuloGulo'
+##' 
+##' # Get corresponding presence/absence data
+##' myResp <- as.numeric(DataSpecies[, myRespName])
+##' 
+##' # Get corresponding XY coordinates
+##' myRespXY <- DataSpecies[, c('X_WGS84', 'Y_WGS84')]
+##' 
+##' # Load environmental variables extracted from BIOCLIM (bio_3, bio_4, bio_7, bio_11 & bio_12)
+##' data(bioclim_current)
+##' myExpl <- terra::rast(bioclim_current)
+##' 
+##' \dontshow{
+##' myExtent <- terra::ext(0,30,45,70)
+##' myExpl <- terra::crop(myExpl, myExtent)
+##' }
+##' 
+##' 
+##' # ---------------------------------------------------------------
+##' # Create the different pseudo-absence datasets
+##' 
+##' # Transform true absences into potential pseudo-absences
+##' myResp.PA <- ifelse(myResp == 1, 1, NA)
+##' myResp.PA.vect <- vect(cbind(myRespXY, myResp.PA), geom = c("X_WGS84","Y_WGS84"))
+##' 
+##' # random method
+##' PA.r <- bm_PseudoAbsences(resp.var = myResp.PA,
+##'                           expl.var = myExpl,
+##'                           nb.rep = 4,
+##'                           nb.absences = 1000,
+##'                           strategy = 'random')
+##' 
+##' # disk method
+##' PA.d <- bm_PseudoAbsences(resp.var = myResp.PA,
+##'                           expl.var = myExpl,
+##'                           nb.rep = 4,
+##'                           nb.absences = 500,
+##'                           strategy = 'disk',
+##'                           dist.min = 5,
+##'                           dist.max = 35)
+##' 
+##' # SRE method
+##' PA.s <- bm_PseudoAbsences(resp.var = myResp.PA,
+##'                           expl.var = myExpl,
+##'                           nb.rep = 4,
+##'                           nb.absences = 1000,
+##'                           strategy = 'sre',
+##'                           sre.quant = 0.025)
+##' 
+##' # user.defined method
+##' myPAtable <- data.frame(PA1 = ifelse(myResp == 1, TRUE, FALSE),
+##'                         PA2 = ifelse(myResp == 1, TRUE, FALSE))
+##' for (i in 1:ncol(myPAtable)) myPAtable[sample(which(myPAtable[, i] == FALSE), 500), i] = TRUE
+##' PA.u <- bm_PseudoAbsences(resp.var = myResp.PA,
+##'                           expl.var = myExpl,
+##'                           strategy = 'user.defined',
+##'                           user.table = myPAtable)
+##' 
+##' str(PA.r)
+##' head(PA.r$pa.tab)
+##' apply(PA.r$pa.tab, 2, table)
+##' 
+##' head(PA.d$pa.tab)
+##' apply(PA.d$pa.tab, 2, table)
+##' 
+##' head(PA.s$pa.tab)
+##' apply(PA.s$pa.tab, 2, table)
+##' 
+##' tail(PA.u$pa.tab)
+##' apply(PA.u$pa.tab, 2, table)
+##' 
+##' 
+##' # random method : different number of PA
+##' PA.r_mult <- bm_PseudoAbsences(resp.var = myResp.PA.vect,
+##'                                expl.var = myExpl,
+##'                                nb.rep = 4,
+##'                                nb.absences = c(1000, 500, 500, 200),
+##'                                strategy = 'random')
+##' 
+##' str(PA.r_mult)
+##' head(PA.r_mult$pa.tab)
+##' apply(PA.r_mult$pa.tab, 2, table)
 ##'
 ##' 
 ##' @importFrom terra rast vect freq spatSample values extract
@@ -102,32 +194,134 @@
 ## --------------------------------------------------------------------------- #
 
 
-bm_PseudoAbsences <- function(resp.var, expl.var, nb.rep = 1, strategy = 'random', dist.min = 0, dist.max = NULL
-                              , nb.absences = NULL, sre.quant = 0, user.table = NULL)
+bm_PseudoAbsences <- function(resp.var, expl.var, nb.rep = 1, strategy = 'random', nb.absences = NULL
+                              , sre.quant = 0, dist.min = 0, dist.max = NULL, user.table = NULL)
 {
   ## 0. Check arguments ---------------------------------------------------------------------------
-  args <- .bm_PseudoAbsences.check.args(resp.var, expl.var, nb.rep, strategy, dist.min, dist.max, nb.absences, sre.quant)
+  args <- .bm_PseudoAbsences.check.args(resp.var, expl.var, nb.rep, strategy, nb.absences
+                                        , sre.quant, dist.min, dist.max, user.table)
   for (argi in names(args)) { assign(x = argi, value = args[[argi]]) }
   rm(args)
   
   ## 1. Create output object ----------------------------------------------------------------------
-  if ((nb.rep == 0 | nb.absences <= 0) & strategy != 'user.defined') {
+  if ((nb.rep == 0 || any(nb.absences <= 0)) & strategy != 'user.defined') {
     out <- NULL
   } else {
-    out <- switch(strategy,
-                  user.defined = bm_PseudoAbsences_user.defined(resp.var, expl.var, user.table),
-                  random = bm_PseudoAbsences_random(resp.var, expl.var, nb.absences, nb.rep),
-                  sre = bm_PseudoAbsences_sre(resp.var, expl.var, sre.quant, nb.absences, nb.rep),
-                  disk = bm_PseudoAbsences_disk(resp.var, expl.var, dist.min, dist.max, nb.absences, nb.rep))
+    if (length(nb.absences) == 1) {
+      out <- switch(strategy,
+                    user.defined = bm_PseudoAbsences_user.defined(resp.var, expl.var, user.table),
+                    random = bm_PseudoAbsences_random(resp.var, expl.var, nb.absences, nb.rep),
+                    sre = bm_PseudoAbsences_sre(resp.var, expl.var, sre.quant, nb.absences, nb.rep),
+                    disk = bm_PseudoAbsences_disk(resp.var, expl.var, dist.min, dist.max, nb.absences, nb.rep))
+    } else if (length(nb.absences) == nb.rep) {
+      out.list = foreach(i.abs = unique(nb.absences)) %do% 
+        {
+          i.rep = which(nb.absences == i.abs)
+          cat("\n > Set ", paste0(i.rep, collapse = ", "), " (", i.abs, " pseudo absences wanted)", sep = "")
+          
+          out <- switch(strategy,
+                        user.defined = bm_PseudoAbsences_user.defined(resp.var, expl.var, user.table),
+                        random = bm_PseudoAbsences_random(resp.var, expl.var, i.abs, length(i.rep)),
+                        sre = bm_PseudoAbsences_sre(resp.var, expl.var, sre.quant, i.abs, length(i.rep)),
+                        disk = bm_PseudoAbsences_disk(resp.var, expl.var, dist.min, dist.max, i.abs, length(i.rep)))
+          
+          ## CASE where all available cells have been selected :
+          ## give back only one dataset, even if several were asked
+          if (ncol(out$pa.tab) == 1 && length(i.rep) > 1) {
+            col1 <- out$pa.tab
+            for (j in 2:length(i.rep)) {
+              out$pa.tab <- cbind(out$pa.tab, col1)
+            }
+            # i.rep = i.rep[1] ## NOT working with summary and plot functions
+          }
+          
+          colnames(out$pa.tab) = paste0("PA", i.rep)
+          return(out)
+        }
+      
+      ## GET XY -----------------------------------------------------
+      
+      ## Get coordinates of presences
+      ind.pres = which(out.list[[1]][["sp"]] == 1)
+      xy.pres = out.list[[1]][["xy"]][ind.pres, ]
+      nb.pres = length(ind.pres)
+      
+      ## Get coordinates of pseudo-absences
+      out.xy = foreach(i = 1:length(out.list)) %do%
+        {
+          ind.keep = 1:nrow(out.list[[i]][["xy"]])
+          ind.keep = ind.keep[-which(ind.keep %in% ind.pres)]
+          res = out.list[[i]][["xy"]][ind.keep, ]
+          res = cbind(res, ind.keep)
+          return(res)
+        }
+      
+      ## Merge all coordinates of pseudo-absences (may be duplicates)
+      out.xy = Reduce(function(x, y) merge(x, y, by = c("x", "y"), all = TRUE), out.xy)
+      
+      ## Get indexes of merged PA coordinates for each set
+      ## To be used to rebuild env and pa.tab 
+      out.index = out.xy[, -which(colnames(out.xy) %in% c("x", "y"))]
+      out.order = !is.na(out.index)
+      out.order = t(apply(out.order, 1, cumsum))
+      
+      ## Keep presences + pseudo-absences coordinates
+      out.xy = out.xy[, c("x", "y")]
+      out.xy = rbind(xy.pres, out.xy)
+      out.sp = c(rep(1, nb.pres), rep(NA, nrow(out.xy) - nb.pres))
+      
+      ## GET ENV & PA.TAB -------------------------------------------
+      
+      ## Initialize env matrix
+      out.env = matrix(NA, nrow = nrow(out.xy), ncol = ncol(out.list[[1]][["env"]]))
+      out.env = as.data.frame(out.env)
+      colnames(out.env) = colnames(out.list[[1]][["env"]])
+      out.env[1:nb.pres, ] = out.list[[1]][["env"]][1:nb.pres, ]
+      
+      ## Initialize pa.tab matrix
+      out.pa.tab = matrix(NA, nrow = nrow(out.xy), ncol = nb.rep)
+      out.pa.tab = as.data.frame(out.pa.tab)
+      colnames(out.pa.tab) = paste0("PA", 1:nb.rep)
+      out.pa.tab[1:nb.pres, ] = TRUE
+      
+      ind.start = 1
+      ind.end = ncol(out.list[[1]][["pa.tab"]])
+      
+      ## Fill first column
+      ind = which(out.order[, 1] == 1)
+      out.env[ind + nb.pres, ] = out.list[[1]][["env"]][out.index[ind, 1], ]
+      out.pa.tab[ind + nb.pres, ind.start:ind.end] = out.list[[1]][["pa.tab"]][out.index[ind, 1], ]
+      
+      ## Fill all other columns
+      for (j in 2:ncol(out.order)) {
+        ind = which(out.order[, j] != out.order[, j-1])
+        if (length(ind) > 0) {
+          
+          ## For env
+          out.env[ind + nb.pres, ] = out.list[[j]][["env"]][out.index[ind, j], ]
+          
+          ## For pa.tab
+          ind.start = ind.end + 1
+          ind.end = ind.start + ncol(out.list[[j]][["pa.tab"]]) - 1
+          out.pa.tab[ind + nb.pres, ind.start:ind.end] = out.list[[j]][["pa.tab"]][out.index[ind, j], ]
+        }
+      }
+      
+      ## GET everything ---------------------------------------------
+      out = list(xy = out.xy,
+                 sp = out.sp,
+                 env = out.env,
+                 pa.tab = out.pa.tab)
+    }
   }
-  
+  cat("\n")
   return(out)
 }
 
 
 # Argument Check --------------------------------------------------------------
 
-.bm_PseudoAbsences.check.args <- function(resp.var, expl.var, nb.rep, strategy, dist.min, dist.max, nb.absences, sre.quant)
+.bm_PseudoAbsences.check.args <- function(resp.var, expl.var, nb.rep, strategy, nb.absences, sre.quant, dist.min, dist.max, user.table)
 {
   cat('\n\nChecking Pseudo-absence selection arguments...\n')
   ## 1. Check resp.var argument -----------------------------------------------
@@ -136,6 +330,9 @@ bm_PseudoAbsences <- function(resp.var, expl.var, nb.rep = 1, strategy = 'random
                                 y = 0,
                                 resp = resp.var),
                      geom = c("x","y"))
+    if (!is.null(nb.absences) && length(nb.absences) > 1) {
+      stop("Selection of multiple number of pseudo-absences depends on coordinates. Please provide some.")
+    }
   }
   .fun_testIfInherits(TRUE, "resp.var", resp.var, "SpatVector")
   
@@ -156,53 +353,81 @@ bm_PseudoAbsences <- function(resp.var, expl.var, nb.rep = 1, strategy = 'random
   }
   .fun_testIfInherits(TRUE, "expl.var", expl.var, c("SpatVector", "SpatRaster"))
   
+  args <- .BIOMOD.formated.data.check.args(sp = resp.var, env = expl.var)
+  for (argi in names(args)) { assign(x = argi, value = args[[argi]]) }
+  rm(args)
+  
   ## 3. Check strategy argument -----------------------------------------------
   availableStrategies <- c("random", "sre", "disk", "user.defined")
-  if (!(strategy %in% availableStrategies) || all(crds(resp.var) == 0)) {
+  if (is.null(strategy) || !(strategy %in% availableStrategies) || 
+      (strategy != 'user.defined' && all(crds(resp.var) == 0))) {
     # no coordinates or unknown strategy
     strategy <- "random"
     cat("\n   ! Random strategy was automatically selected (that can be due to points coordinates lack or unavailable strategy choosen)")
   }
   
-  ## 4. Check nb.absences argument --------------------------------------------
+  ## 4. Check sre.quant argument ----------------------------------------------
+  if (strategy == 'SRE' && (sre.quant >= 0.5 || sre.quant < 0)) {
+    stop("\n    ! SRE Quant should be a value between 0 and 0.5 ")
+  }
+  
+  ## 5. Check dist.min and dist.max arguments ---------------------------------
+  if (strategy == 'disk') {
+    if (!is.null(dist.min) && dist.min < 0) {
+      dist.min <- 0
+    }
+    if (!is.null(dist.max) && dist.max < 0) {
+      dist.max <- NULL
+    }
+    if (!is.null(dist.max) && !is.null(dist.min) && dist.min >= dist.max) {
+      stop("dist.min >= dist.max")
+    }
+  }
+  
+  ## 6. Check nb.absences argument --------------------------------------------
   if (strategy != "user.defined") {
     if (is.null(nb.absences)) {
       stop("You must give the number of pseudo absences you want")
-    } else{
+    } else {
+      if (length(nb.absences) > 1) {
+        if (length(nb.absences) != nb.rep) {
+          stop("You must give one value for pseudo absences, or as many as the number of repetitions")
+        } else if (length(unique(nb.absences)) == 1) {
+          nb.absences = unique(nb.absences)
+        }
+      }
       nbTrueAbs <- .get_nb_true_abs(resp.var)
-      if (nbTrueAbs >= nb.absences) {
-        cat("\n    ! There is more 'true absences' than desired pseudo absences. No pseudo absences selection done.")
-        nb.absences = 0
-      } else {
-        nb.absences = nb.absences - nbTrueAbs
+      if (nbTrueAbs) {
+        stop("Your dataset contains true absences. This should not be mixed with pseudo absences selection")
       }
     }
   }
   
-  ## 5. Check dist.min and dist.max arguments ---------------------------------
-  if (!is.null(dist.min) && dist.min < 0) {
-    dist.min <- 0
-  }
-  if (!is.null(dist.max) && dist.max < 0) {
-    dist.max <- NULL
-  }
-  if (!is.null(dist.max) && !is.null(dist.min) && dist.min >= dist.max) {
-    stop("dist.min >= dist.max")
-  }
-  
-  ## 6. Check sre.quant argument ----------------------------------------------
-  if (strategy == 'SRE' && (sre.quant >= 0.5 || sre.quant < 0)) {
-    stop("\n    ! SRE Quant should be a value between 0 and 0.5 ")
+  ## 7. Check user.table argument --------------------------------------------
+  if (strategy == "user.defined") {
+    if (is.null(user.table)) {
+      stop("You must give a table defining the pseudo absences you want")
+    } else {
+      if (!(is.matrix(user.table) | is.data.frame(user.table))) {
+        stop("\n PA.user.table must be a matrix or a data.frame")
+      }
+      if (nrow(user.table) != length(resp.var)) {
+        stop("\n PA.user.table must have as many row than the number of observation of your response variable")
+      }
+      colnames(user.table) <- paste0("PA", 1:ncol(user.table))
+      nb.absences <- nrow(user.table)
+    }
   }
   
   return(list(resp.var = resp.var,
               expl.var = expl.var,
               nb.rep = nb.rep,
               strategy = strategy,
+              nb.absences = nb.absences,
+              sre.quant = sre.quant,
               dist.min = dist.min,
               dist.max = dist.max,
-              nb.absences = nb.absences,
-              sre.quant = sre.quant))
+              user.table = user.table))
 }
 
 # Additionnal tools ------------------------------------------------------------
@@ -514,6 +739,8 @@ setMethod('bm_PseudoAbsences_sre', signature(expl.var = "SpatVector"),
             # 0. calculate SRE to determine available pixels
             mask.in <- bm_SRE(resp.var = resp.var, expl.var = expl.var, new.env = values(expl.var), quant = sre.quant)
             mask.in <- data.frame(mask.in = !as.logical(mask.in)) ## revert the mask to sample PA out of SRE
+            mask.in$mask.in[c(which(values(resp.var)[, 1] == 1)
+                              , which(values(resp.var)[, 1] == 0))] <- FALSE
             
             # 1. Check if NA are present in resp.var observations or not to determine which dataset to use
             nb.cells <- .get_nb_available_pa_cells(mask.in$mask.in, PA.flag = TRUE)
@@ -528,10 +755,11 @@ setMethod('bm_PseudoAbsences_sre', signature(expl.var = "SpatVector"),
             # 3. Select always the presences and the true absences
             pa.tab <- matrix(FALSE, ncol = nb.rep, nrow = nrow(resp.var))
             colnames(pa.tab) <- paste0("PA", 1:nb.rep)
-            pa.tab[c(which(values(resp.var)[, 1] == 1), which(values(resp.var)[, 1] == 0)),] <- TRUE
+            pa.tab[c(which(values(resp.var)[, 1] == 1),
+                     which(values(resp.var)[, 1] == 0)),] <- TRUE
             
             # 4. For each repetition, select among NA cells
-            cand.cells <- which(!mask.in$mask.in)
+            cand.cells <- which(mask.in$mask.in == TRUE)
             for (j in 1:ncol(pa.tab)) {
               ## force to get at least one value of each factorial variable
               fact.level.cells <- bm_SampleFactorLevels(expl.var = as.data.frame(expl.var),
@@ -563,6 +791,7 @@ setMethod('bm_PseudoAbsences_sre', signature(expl.var = "SpatRaster"),
             # 0. calculate SRE to determine available pixels
             mask.in <- bm_SRE(resp.var = resp.var, expl.var = expl.var, new.env = expl.var, quant = sre.quant)
             mask.in[mask.in[] > 0] <- NA ## remove points that are in SRE
+            mask.in[cellFromXY(mask.in, crds(resp.var)[which(!is.na(values(resp.var)[, 1])), ])] <- NA
             
             ## mask of already sampled points (presences/absences)
             mask.out <- subset(expl.var, 1)
@@ -669,9 +898,11 @@ setMethod('bm_PseudoAbsences_disk', signature(expl.var = "SpatVector"),
                                              (coor[tmp.abs, 2] - coor[pres[i], 2]) ^ 2) < dist.max )
               }
             }
+            
             if (is.null(dist.max)) { # no cells are too far
               outside <- outside + 1
             }
+            
             selected.abs <- tmp.abs[(inside == length(pres)) & (outside > 0)]
             
             # 2. adding presences and true absences and selecting randomly pseudo absences

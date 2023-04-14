@@ -132,22 +132,95 @@
 <i class="fas fa-feather"></i> 2023<a class="anchor" aria-label="anchor" href="#section"></a>
 </h3>
 <div class="section level4">
-<h4 id="release-2023-2-2023-01-18">4.2-3 Release 2023.2 (2023-01-18)<a class="anchor" aria-label="anchor" href="#release-2023-2-2023-01-18"></a>
+<h4 id="cross-validation-and-pseudo-absences-2023-04-04">4.2-3 Cross-Validation and Pseudo-Absences (2023-04-04)<a class="anchor" aria-label="anchor" href="#cross-validation-and-pseudo-absences-2023-04-04"></a>
 </h4>
+<div class="section level5">
+<h5 id="major-changes">Major Changes<a class="anchor" aria-label="anchor" href="#major-changes"></a>
+</h5>
+<ul>
+<li>Improved pseudo-absence management: it is now possible to have
+pseudo-absence dataset of different size and algorithm can be setup to
+run on different pseudo-absence dataset (with <code>models.pa</code>
+argument in <code>BIOMOD_Modeling</code>).</li>
+<li>Rework and harmonization of cross-validation function.
+<code>BIOMOD_CrossValidation</code> have been renamed
+<code>bm_CrossValidation</code> and cross-validation with k-fold,
+stratified and environmental strategy now work properly with
+pseudo-absence dataset. All cross-validation strategy can now be called
+directly through <code>BIOMOD_Modeling</code>.</li>
+</ul>
+</div>
+<div class="section level5">
+<h5 id="minor-changes">Minor Changes<a class="anchor" aria-label="anchor" href="#minor-changes"></a>
+</h5>
+<ul>
+<li>Improved Documentation (<code>get_evaluations</code>,
+<code>BIOMOD_EnsembleModeling</code>, <code>bm_RunModelsLoop</code>,
+<code>bm_RunModel</code>)</li>
+<li>Updated website tutorial to use current biomod2 version</li>
+<li>removed unused parameter <code>save.output</code>. output are now
+automatically saved.</li>
+<li>Improved management of categorical raster for both
+<code>terra</code> and <code>raster</code>
+</li>
+<li>
+<code>CV.perc</code> (formerly <code>data.split.perc</code>) now
+uses a 0-1 range (instead of 0-100)</li>
+<li>Deprecated arguments for <code>BIOMOD_EnsembleModeling</code> now
+gives an error.</li>
+</ul>
+</div>
 <div class="section level5">
 <h5 id="bugfix">Bugfix<a class="anchor" aria-label="anchor" href="#bugfix"></a>
 </h5>
 <ul>
+<li>validation metric calculation now properly use the calibration
+threshold (i.e a threshold optimized on calibration data instead of
+validation data). This can lead to less optimistic threshold-dependent
+validation metric.</li>
+<li>fixed SRE projection assuming the same variables ordering in
+calibration and projection data</li>
 <li>Ensemble model can again be calculated over models without
 validation</li>
-<li>Correct print for multiple values in RF$sampsize parameter in
-<code>BIOMOD_ModelingOptions</code>
+<li>Correct print for multiple values in <code>RF$sampsize</code>
+parameter in <code>BIOMOD_ModelingOptions</code>
 </li>
-<li>Fixed <code>BIOMOD_Projection</code> for large (or numerous) raster
-for which <code>terraOption(todisk = TRUE)</code> is automatically
-activated.</li>
-<li>Fixed Ensemble Models based on models without cross-validation
-(“AllRun”)</li>
+<li>Fixed layer name in <code>BIOMOD_Projection</code> and
+<code>BIOMOD_EnsembleForecasting</code> when
+<code>terraOption(todisk = TRUE)</code> is activated (for large or
+numerous raster).</li>
+<li>fixed Ensemble Models based on models without cross-validation
+(“allRun”)</li>
+<li>model is now robust to using <code>data.table</code> object (that
+are converted into standard <code>data.frame</code>)</li>
+<li>fixed projection raster name when using
+<code>do.stack = FALSE</code> and <code>resp.name</code> with
+<code>.</code> inside.</li>
+</ul>
+</div>
+<div class="section level5">
+<h5 id="internal">Internal<a class="anchor" aria-label="anchor" href="#internal"></a>
+</h5>
+<ul>
+<li>add internal function <code>get_species_data</code> and
+<code>get_eval_data</code>
+</li>
+<li>removed .BIOMOD_Modeling.prepare.data</li>
+<li>reorganised bm_RunModelsLoop to do the PA loop within the
+function</li>
+<li>
+<code>calib.lines</code> and <code>eval.lines</code> variable names
+are standardised (no more <code>calibLines</code> or
+<code>eval_lines</code>)</li>
+<li>removed dependency to <code>data.table</code> (removed use of
+<code>rbindlist</code>)</li>
+<li>added <code>.get_env_class</code> to reduce code redundancy</li>
+<li>renamed <code>categorical_stack_to_terra</code> into
+<code>.categorical_stack_to_terra</code>
+</li>
+<li>dispatched some of <code>BIOMOD_FormatingData</code> checks into
+<code>bm_PseudoAbsences</code>
+</li>
 </ul>
 </div>
 </div>
@@ -155,7 +228,7 @@ activated.</li>
 <h4 id="improvement-patch-2023-01-13">4.2-2 Improvement patch (2023-01-13)<a class="anchor" aria-label="anchor" href="#improvement-patch-2023-01-13"></a>
 </h4>
 <div class="section level5">
-<h5 id="major-changes">Major Changes<a class="anchor" aria-label="anchor" href="#major-changes"></a>
+<h5 id="major-changes-1">Major Changes<a class="anchor" aria-label="anchor" href="#major-changes-1"></a>
 </h5>
 <ul>
 <li>‘.tif’ is available as an output format for raster projection</li>
@@ -182,7 +255,7 @@ using <code>get_predictions(x, model.as.col = TRUE)</code>.</li>
 </ul>
 </div>
 <div class="section level5">
-<h5 id="minor-changes">Minor Changes<a class="anchor" aria-label="anchor" href="#minor-changes"></a>
+<h5 id="minor-changes-1">Minor Changes<a class="anchor" aria-label="anchor" href="#minor-changes-1"></a>
 </h5>
 <ul>
 <li>Simplified maxent model names: ‘MAXENT.Phillips’ -&gt; ‘MAXENT’
@@ -247,7 +320,7 @@ evaluations.</li>
 <h4 id="bugfix-patch">4.2-1 Bugfix patch<a class="anchor" aria-label="anchor" href="#bugfix-patch"></a>
 </h4>
 <div class="section level5">
-<h5 id="major-changes-1">Major Changes<a class="anchor" aria-label="anchor" href="#major-changes-1"></a>
+<h5 id="major-changes-2">Major Changes<a class="anchor" aria-label="anchor" href="#major-changes-2"></a>
 </h5>
 <ul>
 <li>Package <code>sp</code> is back into <code>Imports</code> due to the
@@ -260,7 +333,7 @@ saved to the disk.</li>
 </ul>
 </div>
 <div class="section level5">
-<h5 id="minor-changes-1">Minor Changes<a class="anchor" aria-label="anchor" href="#minor-changes-1"></a>
+<h5 id="minor-changes-2">Minor Changes<a class="anchor" aria-label="anchor" href="#minor-changes-2"></a>
 </h5>
 <ul>
 <li>Added <code>initial_heap_size</code> and <code>max_heap_size</code>
@@ -298,7 +371,7 @@ are given</li>
 </ul>
 </div>
 <div class="section level5">
-<h5 id="internal">Internal<a class="anchor" aria-label="anchor" href="#internal"></a>
+<h5 id="internal-1">Internal<a class="anchor" aria-label="anchor" href="#internal-1"></a>
 </h5>
 <ul>
 <li>Updated github workflow : removed obsolete ubuntu 18.04 ; added test
@@ -319,7 +392,7 @@ dataset</li>
 <h4 id="terra-update">4.2-0 Terra Update<a class="anchor" aria-label="anchor" href="#terra-update"></a>
 </h4>
 <div class="section level5">
-<h5 id="major-changes-2">Major Changes<a class="anchor" aria-label="anchor" href="#major-changes-2"></a>
+<h5 id="major-changes-3">Major Changes<a class="anchor" aria-label="anchor" href="#major-changes-3"></a>
 </h5>
 <ul>
 <li>Package now rely only on <code>terra</code>
@@ -335,7 +408,7 @@ supported.</li>
 </ul>
 </div>
 <div class="section level5">
-<h5 id="minor-changes-2">Minor Changes<a class="anchor" aria-label="anchor" href="#minor-changes-2"></a>
+<h5 id="minor-changes-3">Minor Changes<a class="anchor" aria-label="anchor" href="#minor-changes-3"></a>
 </h5>
 <ul>
 <li>
@@ -464,7 +537,7 @@ instead of matrix.</p></li>
 <h4 id="current-cran-version">4.1-2 (2022-09-29 - Current CRAN Version)<a class="anchor" aria-label="anchor" href="#current-cran-version"></a>
 </h4>
 <div class="section level5">
-<h5 id="major-changes-3">Major changes<a class="anchor" aria-label="anchor" href="#major-changes-3"></a>
+<h5 id="major-changes-4">Major changes<a class="anchor" aria-label="anchor" href="#major-changes-4"></a>
 </h5>
 <ul>
 <li>
@@ -479,7 +552,7 @@ environmental space supplied.</li>
 </ul>
 </div>
 <div class="section level5">
-<h5 id="minor-changes-3">Minor changes<a class="anchor" aria-label="anchor" href="#minor-changes-3"></a>
+<h5 id="minor-changes-4">Minor changes<a class="anchor" aria-label="anchor" href="#minor-changes-4"></a>
 </h5>
 <ul>
 <li>Individual EM models projected as raster are now saved with

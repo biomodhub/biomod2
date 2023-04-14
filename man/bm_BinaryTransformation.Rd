@@ -74,6 +74,7 @@ cbind(vec.d, vec.d_bin, vec.d_filt)
 
 Other Secundary functions: 
 \code{\link{bm_CVnnet}()},
+\code{\link{bm_CrossValidation}()},
 \code{\link{bm_FindOptimStat}()},
 \code{\link{bm_MakeFormula}()},
 \code{\link{bm_PlotEvalBoxplot}()},

@@ -22,7 +22,7 @@ object. Coordinates must be available to be able to use \code{plot}.}
 
 \item{calib.lines}{(\emph{optional, default} \code{NULL}) \cr
 an \code{array} object returned by \code{\link{get_calib_lines}} or 
-\code{\link{BIOMOD_CrossValidation}} functions, to explore the distribution of calibration 
+\code{\link{bm_CrossValidation}} functions, to explore the distribution of calibration 
 and validation datasets}
 
 \item{plot.type}{a \code{character}, either \code{'points'} (\emph{default}) 

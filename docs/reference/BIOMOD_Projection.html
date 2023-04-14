@@ -240,7 +240,6 @@ calibration / validation range, identifying locations where predictions are unce
     <div class="dont-index"><p><code><a href="BIOMOD_Modeling.html">BIOMOD_Modeling</a></code>, <code><a href="BIOMOD_EnsembleModeling.html">BIOMOD_EnsembleModeling</a></code>, 
 <code><a href="BIOMOD_RangeSize.html">BIOMOD_RangeSize</a></code></p>
 <p>Other Main functions: 
-<code><a href="BIOMOD_CrossValidation.html">BIOMOD_CrossValidation</a>()</code>,
 <code><a href="BIOMOD_EnsembleForecasting.html">BIOMOD_EnsembleForecasting</a>()</code>,
 <code><a href="BIOMOD_EnsembleModeling.html">BIOMOD_EnsembleModeling</a>()</code>,
 <code><a href="BIOMOD_FormatingData.html">BIOMOD_FormatingData</a>()</code>,
@@ -302,11 +301,11 @@ calibration / validation range, identifying locations where predictions are unce
 <span>                                      modeling.id <span class="op">=</span> <span class="st">'AllModels'</span>,</span>
 <span>                                      models <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">'RF'</span>, <span class="st">'GLM'</span><span class="op">)</span>,</span>
 <span>                                      bm.options <span class="op">=</span> <span class="va">myBiomodOptions</span>,</span>
-<span>                                      nb.rep <span class="op">=</span> <span class="fl">2</span>,</span>
-<span>                                      data.split.perc <span class="op">=</span> <span class="fl">80</span>,</span>
+<span>                                      CV.strategy <span class="op">=</span> <span class="st">'random'</span>,</span>
+<span>                                      CV.nb.rep <span class="op">=</span> <span class="fl">2</span>,</span>
+<span>                                      CV.perc <span class="op">=</span> <span class="fl">0.8</span>,</span>
 <span>                                      metric.eval <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">'TSS'</span>,<span class="st">'ROC'</span><span class="op">)</span>,</span>
 <span>                                      var.import <span class="op">=</span> <span class="fl">3</span>,</span>
-<span>                                      do.full.models <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>                                      seed.val <span class="op">=</span> <span class="fl">42</span><span class="op">)</span></span>
 <span><span class="op">}</span></span>
 <span></span>

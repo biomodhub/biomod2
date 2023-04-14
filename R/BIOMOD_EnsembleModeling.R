@@ -17,7 +17,8 @@
 ##' \code{all} or a sub-selection of model names that can be obtained with the 
 ##' \code{\link{get_built_models}} function
 ##' @param em.by a \code{character} corresponding to the way kept models will be combined to build 
-##' the ensemble models, must be among \code{PA+run}, \code{PA+algo}, 
+##' the ensemble models, must be among \code{all}, \code{algo}, \code{PA}, \code{PA+algo}, 
+##' \code{PA+run}
 ##' @param em.algo a \code{vector} corresponding to the ensemble models that will be computed, 
 ##' must be among \code{'EMmean'}, \code{'EMmedian'}, \code{'EMcv'}, \code{'EMci'}, 
 ##' \code{'EMca'}, \code{'EMwmean'}
@@ -62,22 +63,29 @@
 ##' A \code{logical} value defining whether the progress bar is to be rendered or not
 ##' 
 ##' 
-##' @param prob.mean (\emph{deprecated} \code{TRUE}) \cr A \code{logical} value defining 
-##' whether to compute the mean probabilities across predictions or not
-##' @param prob.median (\emph{deprecated}) \cr A \code{logical} value defining whether to compute 
-##' the median probabilities across predictions or not
-##' @param prob.cv (\emph{deprecated}) \cr A \code{logical} value defining whether to compute the 
-##' coefficient of variation across predictions or not
-##' @param prob.ci (\emph{deprecated}) \cr A \code{logical} value defining whether to compute the 
-##' confidence interval around the \code{prob.mean} ensemble model or not
-##' @param committee.averaging (\emph{deprecated}) \cr A \code{logical} value defining whether to 
-##' compute the committee averaging across predictions or not
-##' @param prob.mean.weight (\emph{deprecated}) \cr A \code{logical} value defining whether to 
-##' compute the weighted sum of probabilities across predictions or not
+##' @param prob.mean (\emph{deprecated}, please use \code{em.algo} instead) \cr
+##'   A \code{logical} value defining whether to compute the mean probabilities
+##'   across predictions or not
+##' @param prob.median (\emph{deprecated}, please use \code{em.algo} instead)
+##'   \cr A \code{logical} value defining whether to compute the median
+##'   probabilities across predictions or not
+##' @param prob.cv (\emph{deprecated}, please use \code{em.algo} instead) \cr A
+##'   \code{logical} value defining whether to compute the coefficient of
+##'   variation across predictions or not
+##' @param prob.ci (\emph{deprecated}, please use \code{em.algo} instead) \cr A
+##'   \code{logical} value defining whether to compute the confidence interval
+##'   around the \code{prob.mean} ensemble model or not
+##' @param committee.averaging (\emph{deprecated}, please use \code{em.algo}
+##'   instead) \cr A \code{logical} value defining whether to compute the
+##'   committee averaging across predictions or not
+##' @param prob.mean.weight (\emph{deprecated}, please use \code{em.algo}
+##'   instead) \cr A \code{logical} value defining whether to compute the
+##'   weighted sum of probabilities across predictions or not
 ##' 
-##' @param prob.ci.alpha (\emph{deprecated}) \cr old argument name for
-##'   \code{EMci.alpha}
-##' @param prob.mean.weight.decay (\emph{deprecated})  \cr old argument name for
+##' @param prob.ci.alpha (\emph{deprecated}, please use \code{EMci.alpha}
+##'   instead) \cr old argument name for \code{EMci.alpha}
+##' @param prob.mean.weight.decay (\emph{deprecated}, please use
+##'   \code{EMwmean.decay} instead)  \cr old argument name for
 ##'   \code{EMwmean.decay}
 ##' @return
 ##' 
@@ -121,7 +129,13 @@
 ##'   Hence, depending on the chosen method, the number of ensemble models built will vary. \cr
 ##'   \emph{Be aware that if no evaluation data was given to the 
 ##'   \code{\link{BIOMOD_FormatingData}} function, some ensemble model evaluations may be biased 
-##'   due to difference in data used for single model evaluations.}}
+##'   due to difference in data used for single model evaluations.}
+##'   \bold{Be aware that all of these combinations are allowed, but some may not make sense 
+##'   depending mainly on how pseudo-absence datasets have been built and whether all of them 
+##'   have been used for all single models or not (see \code{PA.nb.absences} and \code{models.pa} 
+##'   parameters in \code{\link{BIOMOD_FormatingData}} and \code{\link{BIOMOD_Modeling}} functions 
+##'   respectively).}
+##'   }
 ##' 
 ##'   \item{Evaluation metrics}{
 ##'   \itemize{
@@ -238,7 +252,7 @@
 ##' 
 ##' 
 ##' @seealso \code{\link{BIOMOD_FormatingData}}, \code{\link{BIOMOD_ModelingOptions}}, 
-##' \code{\link{BIOMOD_CrossValidation}}, \code{\link{bm_VariablesImportance}}, 
+##' \code{\link{bm_CrossValidation}}, \code{\link{bm_VariablesImportance}}, 
 ##' \code{\link{BIOMOD_Modeling}}, \code{\link{BIOMOD_EnsembleForecasting}},
 ##' \code{\link{bm_PlotEvalMean}}, \code{\link{bm_PlotEvalBoxplot}}, 
 ##' \code{\link{bm_PlotVarImpBoxplot}}, \code{\link{bm_PlotResponseCurves}}
@@ -290,11 +304,11 @@
 ##'                                       modeling.id = 'AllModels',
 ##'                                       models = c('RF', 'GLM'),
 ##'                                       bm.options = myBiomodOptions,
-##'                                       nb.rep = 2,
-##'                                       data.split.perc = 80,
+##'                                       CV.strategy = 'random',
+##'                                       CV.nb.rep = 2,
+##'                                       CV.perc = 0.8,
 ##'                                       metric.eval = c('TSS','ROC'),
 ##'                                       var.import = 3,
-##'                                       do.full.models = FALSE,
 ##'                                       seed.val = 42)
 ##' }
 ##' 
@@ -430,7 +444,7 @@ BIOMOD_EnsembleModeling <- function(bm.mod,
         } else {
           kept_cells <- rep(TRUE, length(obs))
         }
-      } else if (em.by %in% c("algo","all")) { # no other option should be possible
+      } else if (em.by %in% c("algo", "all")) { # no other option should be possible
         if (inherits(get_formal_data(bm.mod), "BIOMOD.formated.data.PA")) {
           # get the union of pseudo absences
           kept_cells <- apply(get_formal_data(bm.mod)@PA.table, 1, any) 
@@ -441,8 +455,8 @@ BIOMOD_EnsembleModeling <- function(bm.mod,
         kept_cells <- rep(TRUE, length(obs))
       }
       
-      obs <- obs[kept_cells]
-      expl <- expl[kept_cells, , drop = FALSE]
+      obs <- obs[which(kept_cells == TRUE)]
+      expl <- expl[which(kept_cells == TRUE), , drop = FALSE]
       obs[is.na(obs)] <- 0
       
       ## get needed models predictions ----------------------------------------
@@ -450,7 +464,6 @@ BIOMOD_EnsembleModeling <- function(bm.mod,
                                                     , metric.select, metric.select.thresh
                                                     , metric.select.user, metric.select.table
                                                     , nb.cpu)
-      
 
       ## LOOP over evaluation metrics ------------------------------------------
       em.out.eval <- foreach(eval.m = metric.select) %do%  {
@@ -466,7 +479,6 @@ BIOMOD_EnsembleModeling <- function(bm.mod,
                           pred.eval = NULL,
                           evaluation = NULL,
                           var.import = NULL)
-          
           
           algo.long <- em.algo.long[algo]
           algo.class <- em.algo.class[algo]
@@ -497,15 +509,15 @@ BIOMOD_EnsembleModeling <- function(bm.mod,
             if (eval.m == 'ROC') {
               sre.id <- grep("_SRE", models.kept.tmp)
               if (length(sre.id) > 0) {
-                cat("\n\n     !! SRE modeling cannot be used with prob.mean.weight by ROC and will be switched off for", assemb, " selected by ROC.")
+                cat("\n\n     !! SRE modeling cannot be used with EMwmean by ROC and will be switched off for", assemb, " selected by ROC.")
                 models.kept.tmp <- models.kept.tmp[-sre.id]
                 models.kept.scores.tmp <- models.kept.scores[-sre.id]
                 
                 if(length(models.kept.tmp) == 1){
-                  cat("\n     !! due to SRE switched off, ensemble models for prob.mean.weight in ", assemb, "will be based on only one single model.")
+                  cat("\n     !! due to SRE switched off, ensemble models for EMwmean in ", assemb, "will be based on only one single model.")
                   cat("\n     !! Please make sure this is intended or review your selection metrics and threshold.")
                 } else if (length(models.kept.tmp) == 0){
-                  cat("\n     !! due to SRE switched off, ensemble models for prob.mean.weight in ", assemb, "have no model left.")
+                  cat("\n     !! due to SRE switched off, ensemble models for EMwmean in ", assemb, "have no model left.")
                   cat("\n   ! Note : ", model_name, "failed!\n")
                   ListOut$calib.failure = model_name
                   return(ListOut) ## end of function.
@@ -628,32 +640,32 @@ BIOMOD_EnsembleModeling <- function(bm.mod,
                   repet_id <- paste0("_", strsplit(assemb, "_")[[1]][2])
                   ## define and extract the subset of points model will be evaluated on
                   if (repet_id == "_allRun") {
-                    eval_lines <- rep(TRUE, length(pred.bm))
+                    eval.lines <- rep(TRUE, length(pred.bm))
                   } else {
                     ## trick to detect when it is a full model but with a non common name
                     ## i.e. all lines used for calib => full model
-                    calib_lines <- get_calib_lines(bm.mod)
-                    eval_lines <- !na.omit(calib_lines[, repet_id, pa_dataset_id])
-                    if (all(!eval_lines)) { eval_lines <- !eval_lines }
+                    calib.lines <- get_calib_lines(bm.mod)
+                    eval.lines <- !na.omit(calib.lines[, paste0(pa_dataset_id, repet_id)])
+                    if (all(!eval.lines)) { eval.lines <- !eval.lines }
                   }
                 } else {
-                  eval_lines <- rep(TRUE, length(pred.bm))
+                  eval.lines <- rep(TRUE, length(pred.bm))
                 }
                 
                 
-                if (length(which(eval_lines == TRUE)) < length(pred.bm)) {
+                if (length(which(eval.lines == TRUE)) < length(pred.bm)) {
                   ## CALIBRATION & VALIDATION LINES -------------------------------------------------
                   cross.validation <- foreach(xx = metric.eval, .combine = "rbind") %do% {
                     bm_FindOptimStat(metric.eval = xx,
-                                     obs = obs[!eval_lines],
-                                     fit = pred.bm[!eval_lines])
+                                     obs = obs[!eval.lines],
+                                     fit = pred.bm[!eval.lines])
                   }
                   colnames(cross.validation)[which(colnames(cross.validation) == "best.stat")] <- "calibration"
                   
                   stat.validation <- foreach(xx = metric.eval, .combine = "rbind") %do% {
                     bm_FindOptimStat(metric.eval = xx,
-                                     obs = obs[eval_lines],
-                                     fit = pred.bm[eval_lines],
+                                     obs = obs[eval.lines],
+                                     fit = pred.bm[eval.lines],
                                      threshold = cross.validation["cutoff", xx])
                   }
                   cross.validation$validation <- stat.validation$best.stat
@@ -661,8 +673,8 @@ BIOMOD_EnsembleModeling <- function(bm.mod,
                   ## NO VALIDATION LINES -----------------------------------------------------
                   cross.validation <- foreach(xx = metric.eval, .combine = "rbind") %do% {
                     bm_FindOptimStat(metric.eval = xx,
-                                     obs = obs[eval_lines],
-                                     fit = pred.bm[eval_lines])
+                                     obs = obs[eval.lines],
+                                     fit = pred.bm[eval.lines])
                   }
                   colnames(cross.validation)[which(colnames(cross.validation) == "best.stat")] <- "calibration"
                   cross.validation$validation <- NA
@@ -800,8 +812,8 @@ BIOMOD_EnsembleModeling <- function(bm.mod,
     if (all(c(missing(prob.mean), missing(prob.cv),
               missing(prob.ci), missing(prob.median),
               missing(committee.averaging), missing(prob.mean.weight)))) {
-      em.algo <- 'prob.mean'
-      cat("\n! setting em.algo to its default value c('prob.mean')")
+      em.algo <- 'EMmean'
+      cat("\n! setting em.algo to its default value c('EMmean')")
     } else {
       if (missing(prob.mean)) prob.mean <- FALSE
       if (missing(prob.cv)) prob.cv <- FALSE
@@ -822,8 +834,8 @@ BIOMOD_EnsembleModeling <- function(bm.mod,
       em.algo.user <- em.avail.check[c(prob.mean, prob.cv, 
                                        prob.ci, prob.median,
                                        committee.averaging, prob.mean.weight)]
-      # warning for obsolete arguments
-      cat(paste0("\n   ! arguments ", paste0(em.avail.old[-6], collapse = ", "),
+      # Stop for obsolete arguments
+      stop(paste0("\n   ! arguments ", paste0(em.avail.old[-6], collapse = ", "),
                  " and ",em.avail.old[6], " are obsolete. Please use `em.algo = c('",paste0(em.algo.user, collapse = "', '"),"')` instead."))
     }
   } else {
@@ -911,7 +923,7 @@ BIOMOD_EnsembleModeling <- function(bm.mod,
   if ("EMci" %in% em.algo) {
     if(!missing(prob.ci.alpha)){
       EMci.alpha <- prob.ci.alpha
-      cat("! argument `prob.ci.alpha` is deprecated, please use `EMci.alpha` instead.")
+      stop("! argument `prob.ci.alpha` is deprecated, please use `EMci.alpha` instead.")
     }
     
     .fun_testIfPosNum(TRUE, "EMci.alpha", EMci.alpha)
@@ -924,7 +936,7 @@ BIOMOD_EnsembleModeling <- function(bm.mod,
   if ("EMwmean" %in% em.algo) {
     if(!missing(prob.mean.weight.decay)){
       EMwmean.decay <- prob.mean.weight.decay
-      cat("! argument `prob.mean.weight.decay` is deprecated, please use `EMwmean.decay` instead.")
+      stop("! argument `prob.mean.weight.decay` is deprecated, please use `EMwmean.decay` instead.")
     }
     if ((!is.numeric(EMwmean.decay) &&
          !is.character(EMwmean.decay) &&
@@ -947,7 +959,7 @@ BIOMOD_EnsembleModeling <- function(bm.mod,
   if(em.by %in% names(em.by.avail.old)){
     em.by.old <- em.by
     em.by <- em.by.avail.old[em.by]
-    cat(paste0("! `em.by = '",em.by.old,"'` is deprecated, please use `em.by = '",em.by,"'` is instead"))
+    stop(paste0("! `em.by = '",em.by.old,"'` is deprecated, please use `em.by = '",em.by,"'` is instead"))
   }
   if(missing(em.by)){
     em.by <- "all"
@@ -1070,7 +1082,6 @@ BIOMOD_EnsembleModeling <- function(bm.mod,
                           metric.select.user, metric.select.table)
   
   models.kept.union <- unique(unlist(out$models.kept))
-  
   if (length(models.kept.union) > 0) {
     ## load prediction on each PA
     if (em.by %in% c("PA", 'PA+algo', 'PA+run') || 
@@ -1092,42 +1103,45 @@ BIOMOD_EnsembleModeling <- function(bm.mod,
       models.kept.PA <- .extract_modelNamesInfo(models.kept.union, obj.type = "mod", info = "PA", as.unique = FALSE)
       names(models.kept.PA) <- models.kept.union
       
-      out$predictions <-
-        foreach(this_PA = unique(models.kept.PA), .combine = "rbind") %do% {
+      out$predictions <- foreach(this_PA = unique(models.kept.PA), .combine = "rbind") %do%
+        {
           ## model kept for this PA dataset
           thismodels <- names(models.kept.PA)[which(models.kept.PA == this_PA)]
           ## index of data to predict and data already predicted
-          index_to_predict <- which(!PA.table[, this_PA] & kept_data)
-          index_current <- which(PA.table[, this_PA])
+          index_to_predict <- intersect(which(PA.table[, this_PA] == FALSE), which(kept_data == TRUE))
+          index_current <- which(PA.table[, this_PA] == TRUE)
           
           ## retrieve predictions for this PA dataset
           current_prediction <- get_predictions(bm.mod, full.name = thismodels)
           current_prediction$points <- index_current
           
-          # subsetting environment and coord
-          env_to_predict <- get_formal_data(bm.mod)@data.env.var[index_to_predict,]
-          coord_to_predict <- get_formal_data(bm.mod)@coord[index_to_predict,]
+          if (length(index_to_predict) > 0) {
+            # subsetting environment and coord
+            env_to_predict <- get_formal_data(bm.mod)@data.env.var[index_to_predict,]
+            coord_to_predict <- get_formal_data(bm.mod)@coord[index_to_predict,]
+            
+            # prediction on the other PA datasets
+            new_prediction <-
+              get_predictions(
+                BIOMOD_Projection(
+                  bm.mod = bm.mod,
+                  new.env = env_to_predict,
+                  proj.name = temp_name,
+                  xy.new.env = coord_to_predict,
+                  models.chosen = thismodels,
+                  compress = TRUE,
+                  build.clamping.mask = FALSE,
+                  do.stack = TRUE,
+                  nb.cpu = nb.cpu
+                ))
+            new_prediction$points <- index_to_predict
+            
+            ## combining old and new predictions
+            res <- rbind(current_prediction, new_prediction)
+          } else {
+            res = current_prediction
+          }
           
-          # prediction on the other PA datasets
-          new_prediction <-
-            get_predictions(
-              BIOMOD_Projection(
-                bm.mod = bm.mod,
-                new.env = env_to_predict,
-                proj.name = temp_name,
-                xy.new.env = coord_to_predict,
-                models.chosen = thismodels,
-                compress = TRUE,
-                build.clamping.mask = FALSE,
-                do.stack = TRUE,
-                nb.cpu = nb.cpu
-              ))
-          new_prediction$points <- index_to_predict
-          
-          ## combining old and new predictions
-          index_full <- c(index_current, index_to_predict)
-          
-          res <- rbind(current_prediction, new_prediction)
           res <- res[, c("full.name", "PA", "run", "algo", "points", "pred")]
           res <- res[order(res$full.name, res$points), ]
           return(res)

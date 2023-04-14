@@ -15,14 +15,43 @@ vignette: >
 
 ### <i class="fas fa-feather"></i> 2023 
 
-#### 4.2-3 Release 2023.2 (2023-01-18)
+#### 4.2-3 Cross-Validation and Pseudo-Absences (2023-04-04)
+
+##### Major Changes
+
+* Improved pseudo-absence management: it is now possible to have pseudo-absence dataset of different size and algorithm can be setup to run on different pseudo-absence dataset (with `models.pa` argument in `BIOMOD_Modeling`).
+* Rework and harmonization of cross-validation function. `BIOMOD_CrossValidation` have been renamed `bm_CrossValidation` and cross-validation with k-fold, stratified and environmental strategy now work properly with pseudo-absence dataset. All cross-validation strategy can now be called directly through `BIOMOD_Modeling`.
+
+##### Minor Changes
+
+* Improved Documentation (`get_evaluations`, `BIOMOD_EnsembleModeling`, `bm_RunModelsLoop`, `bm_RunModel`)
+* Updated website tutorial to use current biomod2 version
+* removed unused parameter `save.output`. output are now automatically saved.
+* Improved management of categorical raster for both `terra` and `raster`
+* `CV.perc` (formerly `data.split.perc`) now uses a 0-1 range (instead of 0-100)
+* Deprecated arguments for `BIOMOD_EnsembleModeling` now gives an error. 
 
 ##### Bugfix
 
+* validation metric calculation now properly use the calibration threshold (i.e a threshold optimized on calibration data instead of validation data). This can lead to less optimistic threshold-dependent validation metric.
+* fixed SRE projection assuming the same variables ordering in calibration and projection data
 * Ensemble model can again be calculated over models without validation
-* Correct print for multiple values in RF$sampsize parameter in `BIOMOD_ModelingOptions`
-* Fixed `BIOMOD_Projection` for large (or numerous) raster for which `terraOption(todisk = TRUE)` is automatically activated.
-* Fixed Ensemble Models based on models without cross-validation ("AllRun")
+* Correct print for multiple values in `RF$sampsize` parameter in `BIOMOD_ModelingOptions`
+* Fixed layer name in `BIOMOD_Projection` and `BIOMOD_EnsembleForecasting` when `terraOption(todisk = TRUE)` is activated (for large or numerous raster).
+* fixed Ensemble Models based on models without cross-validation ("allRun")
+* model is now robust to using `data.table` object (that are converted into standard `data.frame`)
+* fixed projection raster name when using `do.stack = FALSE` and `resp.name` with `.` inside.
+
+##### Internal 
+
+* add internal function `get_species_data` and `get_eval_data`
+* removed .BIOMOD_Modeling.prepare.data
+* reorganised bm_RunModelsLoop to do the PA loop within the function
+* `calib.lines` and `eval.lines` variable names are standardised (no more `calibLines` or `eval_lines`)
+* removed dependency to `data.table` (removed use of `rbindlist`)
+* added `.get_env_class` to reduce code redundancy
+* renamed `categorical_stack_to_terra` into `.categorical_stack_to_terra`
+* dispatched some of `BIOMOD_FormatingData` checks into `bm_PseudoAbsences`
 
 #### 4.2-2 Improvement patch (2023-01-13)
 

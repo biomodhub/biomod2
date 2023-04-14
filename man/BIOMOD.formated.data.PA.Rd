@@ -109,8 +109,9 @@ select the pseudo-absence points. Must be \code{random}, \code{sre}, \code{disk}
 
 \item{PA.nb.absences}{(\emph{optional, default} \code{0}) \cr 
 If pseudo-absence selection, and \code{PA.strategy = 'random'} or \code{PA.strategy = 'sre'} 
-or \code{PA.strategy = 'disk'}, an \code{integer} corresponding to the number of pseudo-absence 
-points that will be selected for each pseudo-absence repetition (true absences included)}
+or \code{PA.strategy = 'disk'}, an \code{integer} (or a \code{vector} of \code{integer} the 
+same size as \code{PA.nb.rep}) corresponding to the number of pseudo-absence points that 
+will be selected for each pseudo-absence repetition (true absences included)}
 
 \item{PA.dist.min}{(\emph{optional, default} \code{0}) \cr 
 If pseudo-absence selection and \code{PA.strategy = 'disk'}, a \code{numeric} defining the 
@@ -143,7 +144,7 @@ is to be filtered when several points occur in the same raster cell}
 }
 \description{
 Class returned by \code{\link{BIOMOD_FormatingData}}, and used by 
-\code{\link{BIOMOD_Tuning}}, \code{\link{BIOMOD_CrossValidation}} and 
+\code{\link{BIOMOD_Tuning}}, \code{\link{bm_CrossValidation}} and 
 \code{\link{BIOMOD_Modeling}}
 }
 \section{Slots}{
@@ -198,6 +199,9 @@ head(DataSpecies)
 # Select the name of the studied species
 myRespName <- 'GuloGulo'
 
+# Keep only presence informations
+DataSpecies <- DataSpecies[which(DataSpecies[, myRespName] == 1), ]
+
 # Get corresponding presence/absence data
 myResp <- as.numeric(DataSpecies[, myRespName])
 
@@ -219,7 +223,7 @@ myBiomodData <- BIOMOD_FormatingData(resp.var = myResp,
                                      expl.var = myExpl,
                                      resp.xy = myRespXY,
                                      resp.name = myRespName,
-                                     PA.nb.rep = 0,
+                                     PA.nb.rep = 4,
                                      PA.strategy = 'random',
                                      PA.nb.absences = 1000)
 myBiomodData
@@ -229,7 +233,7 @@ plot(myBiomodData)
 }
 \seealso{
 \code{\link{BIOMOD_FormatingData}}, \code{\link{bm_PseudoAbsences}}, 
-\code{\link{BIOMOD_Tuning}}, \code{\link{BIOMOD_CrossValidation}}, 
+\code{\link{BIOMOD_Tuning}}, \code{\link{bm_CrossValidation}}, 
 \code{\link{BIOMOD_Modeling}}, \code{\link{bm_RunModelsLoop}}
 
 Other Toolbox objects: 

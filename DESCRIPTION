@@ -2,7 +2,7 @@ Package: biomod2
 Type: Package
 Title: Ensemble Platform for Species Distribution Modeling
 Version: 4.2-3
-Date: 2023-01-18
+Date: 2023-04-12
 Authors@R: c(person("Wilfried", "Thuiller", role = c("aut")
                     , email = "wilfried.thuiller@univ-grenoble-alpes.fr"),
              person("Damien", "Georges", role = c("aut")),
@@ -42,7 +42,6 @@ Imports:
     reshape,
     reshape2,
     abind,
-    data.table,
     foreach,
     ggplot2,
     nnet,
@@ -73,7 +72,7 @@ Suggests:
     tidyterra,
     ggtext
 License: GPL-3
-RoxygenNote: 7.2.2
+RoxygenNote: 7.2.3
 Encoding: UTF-8
 VignetteBuilder: knitr
 Collate: 
@@ -86,7 +85,6 @@ Collate:
     'biomod2_classes_5.R'
     'biomod2_internal.R'
     'biomod2_data.R'
-    'BIOMOD_CrossValidation.R'
     'BIOMOD_EnsembleForecasting.R'
     'BIOMOD_EnsembleModeling.R'
     'BIOMOD_FormatingData.R'
@@ -99,6 +97,7 @@ Collate:
     'BIOMOD_Tuning.R'
     'DEPRECATED.R'
     'bm_BinaryTransformation.R'
+    'bm_CrossValidation.R'
     'bm_CVnnet.R'
     'bm_FindOptimStat.R'
     'bm_MakeFormula.R'

@@ -107,16 +107,25 @@ metrics (see Details).</p>
 <span>  modeling.id <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/character.html" class="external-link">as.character</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/format.html" class="external-link">format</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/Sys.time.html" class="external-link">Sys.time</a></span><span class="op">(</span><span class="op">)</span>, <span class="st">"%s"</span><span class="op">)</span><span class="op">)</span>,</span>
 <span>  models <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"GLM"</span>, <span class="st">"GBM"</span>, <span class="st">"GAM"</span>, <span class="st">"CTA"</span>, <span class="st">"ANN"</span>, <span class="st">"SRE"</span>, <span class="st">"FDA"</span>, <span class="st">"MARS"</span>, <span class="st">"RF"</span>, <span class="st">"MAXENT"</span>,</span>
 <span>    <span class="st">"MAXNET"</span><span class="op">)</span>,</span>
+<span>  models.pa <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  bm.options <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  nb.rep <span class="op">=</span> <span class="fl">1</span>,</span>
-<span>  data.split.perc <span class="op">=</span> <span class="fl">100</span>,</span>
-<span>  data.split.table <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  do.full.models <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  CV.strategy <span class="op">=</span> <span class="st">"random"</span>,</span>
+<span>  CV.nb.rep <span class="op">=</span> <span class="fl">1</span>,</span>
+<span>  CV.perc <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  CV.k <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  CV.balance <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  CV.env.var <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  CV.strat <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  CV.user.table <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  CV.do.full.models <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  <span class="va">nb.rep</span>,</span>
+<span>  <span class="va">data.split.perc</span>,</span>
+<span>  <span class="va">data.split.table</span>,</span>
+<span>  <span class="va">do.full.models</span>,</span>
 <span>  weights <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  prevalence <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  metric.eval <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"KAPPA"</span>, <span class="st">"TSS"</span>, <span class="st">"ROC"</span><span class="op">)</span>,</span>
 <span>  var.import <span class="op">=</span> <span class="fl">0</span>,</span>
-<span>  save.output <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  scale.models <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  nb.cpu <span class="op">=</span> <span class="fl">1</span>,</span>
 <span>  seed.val <span class="op">=</span> <span class="cn">NULL</span>,</span>
@@ -142,33 +151,89 @@ object returned by the <code><a href="BIOMOD_FormatingData.html">BIOMOD_Formatin
 <code>RF</code>, <code>MAXENT</code>, <code>MAXNET</code></p></dd>
 
 
+<dt>models.pa</dt>
+<dd><p>(<em>optional, default</em> <code>NULL</code>) <br> 
+A <code>list</code> containing for each model a <code>vector</code> defining which pseudo-absence datasets 
+are to be used, must be among <code>colnames(bm.format@PA.table)</code></p></dd>
+
+
 <dt>bm.options</dt>
 <dd><p>a <code><a href="BIOMOD.models.options.html">BIOMOD.models.options</a></code> object returned by the
 <code><a href="BIOMOD_ModelingOptions.html">BIOMOD_ModelingOptions</a></code> function</p></dd>
 
 
+<dt>CV.strategy</dt>
+<dd><p>a <code>character</code> corresponding to the cross-validation selection strategy, 
+must be among <code>random</code>, <code>kfold</code>, <code>block</code>, <code>strat</code>, <code>env</code> or 
+<code>user.defined</code></p></dd>
+
+
+<dt>CV.nb.rep</dt>
+<dd><p>(<em>optional, default</em> <code>0</code>) <br>
+If <code>strategy = 'random'</code> or <code>strategy = 'kfold'</code>, an <code>integer</code> corresponding 
+to the number of sets (repetitions) of cross-validation points that will be drawn</p></dd>
+
+
+<dt>CV.perc</dt>
+<dd><p>(<em>optional, default</em> <code>0</code>) <br>
+If <code>strategy = 'random'</code>, a <code>numeric</code> between <code>0</code> and <code>1</code> defining the 
+percentage of data that will be kept for calibration</p></dd>
+
+
+<dt>CV.k</dt>
+<dd><p>(<em>optional, default</em> <code>0</code>) <br>
+If <code>strategy = 'kfold'</code> or <code>strategy = 'strat'</code> or <code>strategy = 'env'</code>, an 
+<code>integer</code> corresponding to the number of partitions</p></dd>
+
+
+<dt>CV.balance</dt>
+<dd><p>(<em>optional, default</em> <code>'presences'</code>) <br>
+If <code>strategy = 'strat'</code> or <code>strategy = 'env'</code>, a <code>character</code> corresponding 
+to how data will be balanced between partitions, must be either <code>presences</code> or
+<code>absences</code></p></dd>
+
+
+<dt>CV.env.var</dt>
+<dd><p>(<em>optional</em>) <br> If <code>strategy = 'env'</code>, a
+<code>character</code> corresponding to the environmental variables used to
+build the partition. <code>k</code> partitions will be built for each
+environmental variables. By default the function uses all environmental
+variables available.</p></dd>
+
+
+<dt>CV.strat</dt>
+<dd><p>(<em>optional, default</em> <code>'both'</code>) <br>
+If <code>strategy = 'env'</code>, a <code>character</code> corresponding to how data will partitioned 
+along gradient, must be among <code>x</code>, <code>y</code>, <code>both</code></p></dd>
+
+
+<dt>CV.user.table</dt>
+<dd><p>(<em>optional, default</em> <code>NULL</code>) <br>
+If <code>strategy = 'user.defined'</code>, a <code>matrix</code> or <code>data.frame</code> defining for each 
+repetition (in columns) which observation lines should be used for models calibration 
+(<code>TRUE</code>) and validation (<code>FALSE</code>)</p></dd>
+
+
+<dt>CV.do.full.models</dt>
+<dd><p>(<em>optional, default</em> <code>TRUE</code>) <br>
+A <code>logical</code> value defining whether models should be also calibrated and validated over 
+the whole dataset (and pseudo-absence datasets) or not</p></dd>
+
+
 <dt>nb.rep</dt>
-<dd><p>an <code>integer</code> corresponding to the number of repetitions to be done for 
-calibration/validation splitting</p></dd>
+<dd><p><em>deprecated</em>, now called <code>CV.nb.rep</code></p></dd>
 
 
 <dt>data.split.perc</dt>
-<dd><p>a <code>numeric</code> between <code>0</code> and <code>100</code> corresponding to the 
-percentage of data used to calibrate the models (calibration/validation splitting)</p></dd>
+<dd><p><em>deprecated</em>, now called <code>CV.perc</code></p></dd>
 
 
 <dt>data.split.table</dt>
-<dd><p>(<em>optional, default</em> <code>NULL</code>) <br> 
-A <code>matrix</code> or <code>data.frame</code> defining for each repetition (in columns) which 
-observation lines should be used for models calibration (<code>TRUE</code>) and validation 
-(<code>FALSE</code>) (see <code><a href="BIOMOD_CrossValidation.html">BIOMOD_CrossValidation</a></code>) <br> (<em>if specified, 
-<code>nb.rep</code>, <code>data.split.perc</code> and <code>do.full.models</code> will be ignored</em>)</p></dd>
+<dd><p><em>deprecated</em>, now called <code>CV.user.table</code></p></dd>
 
 
 <dt>do.full.models</dt>
-<dd><p>(<em>optional, default</em> <code>TRUE</code>) <br> 
-A <code>logical</code> value defining whether models calibrated and evaluated over the whole 
-dataset should be computed or not</p></dd>
+<dd><p><em>deprecated</em>, now called <code>CV.do.full.models</code></p></dd>
 
 
 <dt>weights</dt>
@@ -194,12 +259,6 @@ be among <code>ROC</code>, <code>TSS</code>, <code>KAPPA</code>, <code>ACCURACY<
 <dd><p>(<em>optional, default</em> <code>NULL</code>) <br> 
 An <code>integer</code> corresponding to the number of permutations to be done for each variable to 
 estimate variable importance</p></dd>
-
-
-<dt>save.output</dt>
-<dd><p>(<em>optional, default</em> <code>TRUE</code>) <br> 
-A <code>logical</code> value defining whether all outputs should be saved on hard drive or not 
-(<em>! strongly recommended !</em>)</p></dd>
 
 
 <dt>scale.models</dt>
@@ -271,19 +330,16 @@ created in the current working directory :</p><ol><li><p>a <em>models</em> folde
 </ul></dd>
 
   
-  <dt>nb.rep &amp; data.split.perc</dt>
-<dd><p></p><ul><li><p>Most simple method in machine learning to calibrate and validate a model is to 
-    split the original dataset in two, one to calibrate the model and the other one to 
-    validate it. The <code>data.split.perc</code> argument defines the percentage of data that will be 
-    randomly selected and used for the <b>calibration</b> part, the remaining data constituting the 
-    <b>validation</b> part. This process is repeated <code>nb.rep</code> times, to be sure not to 
-    include bias both in the modeling and evaluation parts.</p></li>
-<li><p>Other validation methods are also available to the user :</p><ul><li><p><b>evaluation</b> dataset can be directly given to the 
-      <code><a href="BIOMOD_FormatingData.html">BIOMOD_FormatingData</a></code> function</p></li>
-<li><p><code>data.split.table</code> argument can be used and obtained from the 
-      <code><a href="BIOMOD_CrossValidation.html">BIOMOD_CrossValidation</a></code> function</p></li>
-</ul></li>
-</ul></dd>
+  <dt>models.pa</dt>
+<dd><p>Different models might respond differently to different numbers of 
+  pseudo-absences. It is possible to create sets of pseudo-absences with different numbers 
+  of points (see <code><a href="BIOMOD_FormatingData.html">BIOMOD_FormatingData</a></code>) and to assign only some of these 
+  datasets to each single model.</p></dd>
+
+  
+  <dt>CV.[...] parameters</dt>
+<dd><p>Different methods are available to calibrate/validate the 
+  single models (see <code><a href="bm_CrossValidation.html">bm_CrossValidation</a></code>.)</p></dd>
 
   
   <dt>weights &amp; prevalence</dt>
@@ -320,13 +376,6 @@ created in the current working directory :</p><ol><li><p>a <em>models</em> folde
   to get detailed description of each metric.</em></p></dd>
 
   
-  <dt>save.output</dt>
-<dd><p><em>If this argument is set to <code>FALSE</code>, it may prevent the evaluation 
-  of the ensemble models (see <code><a href="BIOMOD_EnsembleModeling.html">BIOMOD_EnsembleModeling</a></code>) in further steps. Strong 
-  recommandation is to keep <code>save.output = TRUE</code>, even if it requires to have some free 
-  space onto the hard drive.</em></p></dd>
-
-  
   <dt>scale.models</dt>
 <dd><p><b>This parameter is quite experimental and it is recommended 
   not to use it. It may lead to reduction in projection scale amplitude.</b> Some categorical 
@@ -335,12 +384,6 @@ created in the current working directory :</p><ol><li><p>a <em>models</em> folde
   be particularly useful when doing ensemble forecasting to remove the scale prediction effect 
   (<em>the more extended projections are, the more they influence ensemble forecasting 
   results</em>).</p></dd>
-
-  
-  <dt>do.full.models</dt>
-<dd><p>Building models with all available information may be useful in some 
-  particular cases (<em>e.g. rare species with few presences points</em>). But calibration and 
-  evaluation datasets will be the same, which might lead to over-optimistic evaluation scores.</p></dd>
 
 
 </dl></div>
@@ -351,12 +394,11 @@ created in the current working directory :</p><ol><li><p>a <em>models</em> folde
 code<a href="https://rdrr.io/pkg/nnet/man/nnet.html" class="external-link">nnet</a>, <code><a href="https://rdrr.io/pkg/mda/man/fda.html" class="external-link">fda</a></code>, <code><a href="https://rdrr.io/pkg/earth/man/earth.html" class="external-link">earth</a></code>, 
 <code><a href="https://rdrr.io/pkg/randomForest/man/randomForest.html" class="external-link">randomForest</a></code>, <code><a href="https://rdrr.io/pkg/maxnet/man/maxnet.html" class="external-link">maxnet</a></code>,
 <code><a href="BIOMOD_FormatingData.html">BIOMOD_FormatingData</a></code>, <code><a href="BIOMOD_ModelingOptions.html">BIOMOD_ModelingOptions</a></code>, 
-<code><a href="BIOMOD_CrossValidation.html">BIOMOD_CrossValidation</a></code>, <code> <a href="bm_VariablesImportance.html">bm_VariablesImportance</a></code>, 
+<code><a href="bm_CrossValidation.html">bm_CrossValidation</a></code>, <code> <a href="bm_VariablesImportance.html">bm_VariablesImportance</a></code>, 
 <code><a href="BIOMOD_Projection.html">BIOMOD_Projection</a></code>, <code><a href="BIOMOD_EnsembleModeling.html">BIOMOD_EnsembleModeling</a></code>,
 <code><a href="bm_PlotEvalMean.html">bm_PlotEvalMean</a></code>, <code><a href="bm_PlotEvalBoxplot.html">bm_PlotEvalBoxplot</a></code>, 
 <code><a href="bm_PlotVarImpBoxplot.html">bm_PlotVarImpBoxplot</a></code>, <code><a href="bm_PlotResponseCurves.html">bm_PlotResponseCurves</a></code></p>
 <p>Other Main functions: 
-<code><a href="BIOMOD_CrossValidation.html">BIOMOD_CrossValidation</a>()</code>,
 <code><a href="BIOMOD_EnsembleForecasting.html">BIOMOD_EnsembleForecasting</a>()</code>,
 <code><a href="BIOMOD_EnsembleModeling.html">BIOMOD_EnsembleModeling</a>()</code>,
 <code><a href="BIOMOD_FormatingData.html">BIOMOD_FormatingData</a>()</code>,
@@ -415,11 +457,11 @@ code<a href="https://rdrr.io/pkg/nnet/man/nnet.html" class="external-link">nnet<
 <span>                                    modeling.id <span class="op">=</span> <span class="st">'AllModels'</span>,</span>
 <span>                                    models <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">'RF'</span>, <span class="st">'GLM'</span><span class="op">)</span>,</span>
 <span>                                    bm.options <span class="op">=</span> <span class="va">myBiomodOptions</span>,</span>
-<span>                                    nb.rep <span class="op">=</span> <span class="fl">2</span>,</span>
-<span>                                    data.split.perc <span class="op">=</span> <span class="fl">80</span>,</span>
+<span>                                    CV.strategy <span class="op">=</span> <span class="st">'random'</span>,</span>
+<span>                                    CV.nb.rep <span class="op">=</span> <span class="fl">2</span>,</span>
+<span>                                    CV.perc <span class="op">=</span> <span class="fl">0.8</span>,</span>
 <span>                                    metric.eval <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">'TSS'</span>,<span class="st">'ROC'</span><span class="op">)</span>,</span>
 <span>                                    var.import <span class="op">=</span> <span class="fl">2</span>,</span>
-<span>                                    do.full.models <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>                                    seed.val <span class="op">=</span> <span class="fl">42</span><span class="op">)</span></span>
 <span><span class="va">myBiomodModelOut</span></span>
 <span></span>

@@ -41,8 +41,7 @@ utils::globalVariables(names = c("do.stack",
                                  
 
 ## BIOMOD_Modeling ------------
-utils::globalVariables(names = c("resp",
-                                 "value"))
+utils::globalVariables(names = c("resp", "value", "pa"))
 
 ## BIOMOD_EnsembleModeling ------------
 utils::globalVariables(names = c("eval.m",
@@ -67,15 +66,20 @@ utils::globalVariables(names = c("on_0_1000",
 utils::globalVariables(names = c("full.name", "models", "run", "PA"))
 
 ## BIOMOD_RangeSize ------------
-utils::globalVariables(names = c("thiscol",
-                                 "pred",
-                                 "proj"))
+utils::globalVariables(names = c("thiscol", "pred", "proj"))
+
+
+## bm_PseudoAbsences ------------
+utils::globalVariables(names = c("i.abs"))
+
+## bm_CrossValidation ------------
+utils::globalVariables(names = c("pa", "env", "this.colnames"))
 
 ## bm_RunModel ------------
-utils::globalVariables(names = c("expl_var_names", "resp_name", "criteria"))
+utils::globalVariables(names = c("expl_var_names", "resp_name", "criteria"
+                                 , "weights", "data_env", "data_sp", "data_xy"))
 ## bm_RunModelsLoop ------------
-utils::globalVariables(names = c("modi",
-                                 "xx"))
+utils::globalVariables(names = c("modi", "xx", "ii"))
 
 ## bm_VariablesImportance ------------
 utils::globalVariables(names = c("temp_workdir", "variables", "v", "r"))

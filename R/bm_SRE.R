@@ -148,7 +148,7 @@ bm_SRE <- function(resp.var = NULL,
     resp.names <- colnames(resp.var)
     for (j in 1:nb.resp) {
       occ.pts <- which(resp.var[, j] == 1)
-      extrem.cond <- t(apply(as.data.frame(expl.var[occ.pts, ]), 2, quantile
+      extrem.cond <- t(apply(as.data.frame(expl.var[occ.pts, , drop = FALSE]), 2, quantile
                              , probs = c(0 + quant, 1 - quant), na.rm = TRUE))
       if (!do.extrem) {
         lout[[j]] <- .sre_projection(new.env, extrem.cond)
@@ -157,7 +157,7 @@ bm_SRE <- function(resp.var = NULL,
   } else if (inherits(resp.var, 'SpatRaster')) {
     ## Remi 20/10/2022
     ## this section seems obsolete as resp.var support for Raster/SpatRaster
-    ## is currently deactivated.
+    ## but also SpatVector/SpatialPoints is currently deactivated.
     ### raster ------------------------------------
     nb.resp <- nlyr(resp.var)
     resp.names <- names(resp.var)
@@ -207,7 +207,6 @@ bm_SRE <- function(resp.var = NULL,
   
   
   ## RETURN results -------------------------------------------------------------------------------
-  
   if (do.extrem) {
     return(as.data.frame(extrem.cond))
   } else {
@@ -322,17 +321,17 @@ bm_SRE <- function(resp.var = NULL,
 .sre_projection <- function(new.env, extrem.cond, mod.name = NULL) {
   if (is.data.frame(new.env) || is.matrix(new.env)) {
     out <- rep(1, nrow(new.env))
-    for (j in 1:ncol(new.env)) {
-      out <- out * as.numeric(new.env[, j] >= extrem.cond[j, 1] &
-                                new.env[, j] <= extrem.cond[j, 2])
+    for (this.var in rownames(extrem.cond)) {
+      out <- out * as.numeric(new.env[, this.var] >= extrem.cond[this.var, 1] &
+                                new.env[, this.var] <= extrem.cond[this.var, 2])
     }
   } else if (inherits(new.env, "SpatRaster")) {
     out <- classify(subset(new.env, 1), 
                     matrix(c(-Inf, Inf, 1), ncol = 3, byrow = TRUE),
                     wopt = list(names = mod.name))
-    for (j in 1:nlyr(new.env)) {
-      out <- out * (subset(new.env, j) >= extrem.cond[j, 1]) * 
-        (subset(new.env, j) <= extrem.cond[j, 2])
+    for (this.var in rownames(extrem.cond)) {
+      out <- out * (subset(new.env, this.var) >= extrem.cond[this.var, 1]) * 
+        (subset(new.env, this.var) <= extrem.cond[this.var, 2])
     }
     out <- subset(out, 1)
   }

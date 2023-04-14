@@ -10,7 +10,7 @@
 ##' @title \code{BIOMOD_FormatingData()} output object class
 ##' 
 ##' @description Class returned by \code{\link{BIOMOD_FormatingData}}, and used by 
-##' \code{\link{BIOMOD_Tuning}}, \code{\link{BIOMOD_CrossValidation}} and 
+##' \code{\link{BIOMOD_Tuning}}, \code{\link{bm_CrossValidation}} and 
 ##' \code{\link{BIOMOD_Modeling}}
 ##' 
 ##' 
@@ -95,7 +95,7 @@
 ##' 
 ##' 
 ##' @seealso \code{\link{BIOMOD_FormatingData}}, \code{\link{BIOMOD_Tuning}}, 
-##' \code{\link{BIOMOD_CrossValidation}}, \code{\link{BIOMOD_Modeling}}, 
+##' \code{\link{bm_CrossValidation}}, \code{\link{BIOMOD_Modeling}}, 
 ##' \code{\link{bm_RunModelsLoop}}
 ##' @family Toolbox objects
 ##' 
@@ -176,6 +176,130 @@ setClass("BIOMOD.formated.data",
 # 1.2 Constructors -------------------------------------------------------------
 setGeneric("BIOMOD.formated.data", def = function(sp, env, ...) { standardGeneric("BIOMOD.formated.data") })
 
+.BIOMOD.formated.data.check.args <- function(sp, env, xy = NULL, eval.sp = NULL, eval.env = NULL
+                                             , eval.xy = NULL, filter.raster = FALSE)
+{
+  ## A.1 Check sp argument --------------------------------------------------------------
+  if (inherits(sp, c('Raster','SpatRaster'))) {
+    ## sp raster object not supported yet
+    stop("Raster response variable not supported yet ! \nPlease extract your presences and your absences by yourself")
+    #### TO DO #### extract the 0 and 1 in sp format
+  }
+  available.types.resp <- c('integer', 'numeric', 'data.frame', 'matrix',
+                            'SpatialPointsDataFrame', 'SpatialPoints', 'SpatVector')
+  .fun_testIfInherits(TRUE, "sp", sp, available.types.resp)
+
+  ## SpatialPoints, SpatialPointsDataFrame, SpatVector
+  if (inherits(sp, c('SpatialPoints','SpatVector'))) {
+    .tmp <- .check_formating_spatial(resp.var = sp,
+                                     expl.var = env,
+                                     resp.xy = xy,
+                                     eval.data = FALSE)
+    sp <- .tmp$resp.var
+    xy <- .tmp$resp.xy
+    rm(.tmp)
+  }
+  
+  ## data.frame, matrix  : transform into numeric
+  if (inherits(sp, c("matrix", "data.frame"))) {
+    sp <- .check_formating_table(sp)
+  }
+  
+  ## Check presence/absence
+  sp <- .check_formating_resp.var(resp.var = sp, eval.data = FALSE)
+  
+  ## A.2 Check xy argument --------------------------------------------------------------
+  if (!is.null(xy)) {
+    xy <- .check_formating_xy(resp.xy = xy, resp.length = length(sp))
+  } else if (inherits(env, c('RasterLayer', 'RasterStack', 'SpatRaster'))) {
+    stop("`xy` argument is missing. Please provide `xy` when `env` is a raster.")
+  } else {
+    xy <- data.frame()
+  }
+  
+  ## A.3 Check env argument -------------------------------------------------------------
+  available.types.expl <- c('integer', 'numeric', 'data.frame', 'matrix',
+                            'RasterLayer', 'RasterStack', 'SpatRaster',
+                            'SpatialPointsDataFrame', 'SpatVector')
+  .fun_testIfInherits(TRUE, "env", env, available.types.expl)
+  env <- .check_formating_expl.var(expl.var = env, length.resp.var = length(sp))
+  
+  ## Check filter.raster argument
+  if (inherits(env, "SpatRaster")) {
+    stopifnot(is.logical(filter.raster))
+  }
+  
+  #### At this point :
+  ####  - sp is a numeric
+  ####  - xy is NULL or a data.frame
+  ####  - env is a data.frame or a SpatRaster
+  
+  
+  ## DO THE SAME FOR EVALUATION DATA ####################################################
+  if (is.null(eval.sp)) {
+    cat("\n      ! No data has been set aside for modeling evaluation")
+    evaL.env <- eval.xy <- NULL
+  } else {
+    ## B.1 Check eval.sp argument -------------------------------------------------------
+    if (inherits(eval.sp, c('Raster', 'SpatRaster'))) {
+      ## eval.sp raster object not supported yet
+      stop("Raster response variable not supported yet ! \nPlease extract your Presences and your absences by yourself")
+      #### TO DO #### extract the 0 and 1 in sp format
+    }
+    
+    .fun_testIfInherits(TRUE, "eval.sp", eval.sp, available.types.resp)
+    
+    ## SpatialPoints, SpatialPointsDataFrame, SpatVector
+    if (inherits(eval.sp, c('SpatialPoints','SpatVector'))) { 
+      .tmp <- .check_formating_spatial(resp.var = eval.sp,
+                                       expl.var = eval.env, 
+                                       resp.xy = eval.xy,
+                                       eval.data = TRUE)
+      eval.sp <- .tmp$resp.var
+      eval.xy <- .tmp$resp.xy
+      rm(.tmp)
+    }
+    ## data.frame, matrix  : transform into numeric
+    if (inherits(eval.sp, c("matrix","data.frame"))) {
+      eval.sp <- .check_formating_table(eval.sp)
+    }
+    
+    ## Check presence/absence
+    eval.sp <- .check_formating_resp.var(resp.var = eval.sp, eval.data = TRUE)
+    
+    ## B.2 Check eval.xy argument -------------------------------------------------------
+    if(!is.null(eval.xy)){
+      eval.xy <- .check_formating_xy(resp.xy = eval.xy, resp.length = length(eval.sp))
+    }
+    
+    ## B.3 Check eval.env argument ------------------------------------------------------
+    .fun_testIfInherits(TRUE, "eval.env", eval.env, c(available.types.expl, "NULL"))
+    if (is.null(eval.env)) {
+      if (!(inherits(env, 'SpatRaster'))) {
+        stop("If explanatory variable is not a raster and you want to consider evaluation response variable, you have to give evaluation explanatory variables")
+      }
+    }
+    eval.env <- .check_formating_expl.var(expl.var = eval.env, length.resp.var = length(eval.sp))
+    
+    ## B.4 Remove NA from evaluation data
+    if (sum(is.na(eval.sp)) > 0) {
+      cat("\n      ! NAs have been automatically removed from Evaluation data")
+      if (!is.null(eval.xy)) {
+        eval.xy <- eval.xy[-which(is.na(eval.sp)), ]
+      }
+      eval.sp <- na.omit(eval.sp)
+    }
+  }
+  
+  return(list(sp = sp,
+              env = env,
+              xy = xy,
+              eval.sp = eval.sp,
+              eval.env = eval.env,
+              eval.xy = eval.xy))
+}
+
+
 ## BIOMOD.formated.data(sp = numeric, env = data.frame) -----------------------------------
 ##' 
 ##' @rdname BIOMOD.formated.data
@@ -188,6 +312,13 @@ setMethod('BIOMOD.formated.data', signature(sp = 'numeric', env = 'data.frame'),
                    , na.rm = TRUE, data.mask = NULL, shared.eval.env = FALSE
                    , filter.raster = FALSE) 
           {
+            args <- .BIOMOD.formated.data.check.args(sp, env, xy, eval.sp, eval.env, eval.xy, filter.raster)
+            for (argi in names(args)) { assign(x = argi, value = args[[argi]]) }
+            rm(args)
+            
+            if (!any(sp == 0, na.rm = TRUE) && !any(is.na(sp))) {
+              stop("No absences were given and no pseudo-absences were given or configured, at least one of those option is required.")
+            }
             
             if (is.null(data.mask)) { 
               suppressWarnings(data.mask <- list("calibration" = wrap(rast())))
@@ -307,6 +438,13 @@ setMethod('BIOMOD.formated.data', signature(sp = 'numeric', env = 'SpatRaster'),
                    na.rm = TRUE, shared.eval.env = FALSE,
                    filter.raster = FALSE)
           {
+            args <- .BIOMOD.formated.data.check.args(sp, env, xy, eval.sp, eval.env, eval.xy, filter.raster)
+            for (argi in names(args)) { assign(x = argi, value = args[[argi]]) }
+            rm(args)
+            
+            if (!any(sp == 0, na.rm = TRUE) && !any(is.na(sp))) {
+              stop("No absences were given and no pseudo-absences were given or configured, at least one of those option is required.")
+            }
             
             ## Keep same env variable for eval than calib (+ check for factor)
             if (!is.null(eval.sp) && is.null(eval.env)) {
@@ -361,7 +499,7 @@ setMethod('BIOMOD.formated.data', signature(sp = 'numeric', env = 'SpatRaster'),
 ##' object. Coordinates must be available to be able to use \code{plot}.
 ##' @param calib.lines (\emph{optional, default} \code{NULL}) \cr
 ##' an \code{array} object returned by \code{\link{get_calib_lines}} or 
-##' \code{\link{BIOMOD_CrossValidation}} functions, to explore the distribution of calibration 
+##' \code{\link{bm_CrossValidation}} functions, to explore the distribution of calibration 
 ##' and validation datasets
 ##' @param plot.type a \code{character}, either \code{'points'} (\emph{default}) 
 ##' or \code{'raster'} (\emph{if environmental variables were given as a raster}). 
@@ -440,7 +578,8 @@ setMethod('plot', signature(x = 'BIOMOD.formated.data', y = "missing"),
                    PA,
                    run,
                    plot.eval,
-                   do.plot = TRUE){
+                   do.plot = TRUE)
+          {
             args <- .plot.BIOMOD.formated.data.check.args(x = x,
                                                           calib.lines = calib.lines,
                                                           plot.type = plot.type,
@@ -450,9 +589,7 @@ setMethod('plot', signature(x = 'BIOMOD.formated.data', y = "missing"),
                                                           plot.eval = plot.eval,
                                                           do.plot = do.plot)
             
-            for (argi in names(args)) { 
-              assign(x = argi, value = args[[argi]]) 
-            }
+            for (argi in names(args)) { assign(x = argi, value = args[[argi]]) }
             rm(args)
             
             
@@ -489,42 +626,38 @@ setMethod('plot', signature(x = 'BIOMOD.formated.data', y = "missing"),
             
             ## 1.3 - Pseudo Absences and CV dataset -----------------------------
             if (!is.null(calib.lines) | inherits(x, "BIOMOD.formated.data.PA")) {
-              PA_run.vect <-
-                foreach(this_PA = PA, .combine = 'rbind') %:%
-                foreach(this_run = run, .combine = 'rbind') %do% { # to change if format is updated
-                  
-                  if( is.na(this_PA) ){ # run only
-                    this_name <- this_run
-                    this_calib <- calib.lines[ , this_run]
-                    this_valid <- ! calib.lines[ , this_run]
-                  } else if (is.na(this_run)){ # PA only
+              PA_run.vect <- foreach(this_PA = PA, this_run = run, .combine = 'rbind') %do%
+                {
+                  if (is.na(this_PA) || this_PA == 'allData') { # run only
+                    this_name <- paste0("_", this_PA, "_", this_run)
+                    this_calib <- calib.lines[ , this_name]
+                    this_valid <- ! calib.lines[ , this_name]
+                  } else if (is.na(this_run) || this_run == 'allRun') { # PA only
                     this_name <- this_PA
                     this_calib <- x@PA.table[ , this_PA]
                   } else { # PA+run
-                    this_name <- paste0(this_PA,"_",this_run)
-                    this_calib <- calib.lines[ , this_run] & x@PA.table[ , this_PA]
-                    this_valid <- !calib.lines[ , this_run] & x@PA.table[ , this_PA]
+                    this_name <- paste0("_", this_PA, "_", this_run)
+                    this_calib <- calib.lines[ , this_name] & x@PA.table[ , this_PA]
+                    this_valid <- ! calib.lines[ , this_name] & x@PA.table[ , this_PA]
                   }
-                  
-                  calib.resp <- x@data.species[this_calib]
+                  calib.resp <- x@data.species[which(this_calib)]
                   calib.resp <- ifelse(is.na(calib.resp), 30, 
                                        ifelse(calib.resp == 1, 10, 20))
-                  calib.xy <- x@coord[this_calib,]
+                  calib.xy <- x@coord[which(this_calib),]
                   calib.df <- data.frame(resp = calib.resp,
                                          x = calib.xy[, 1],
                                          y = calib.xy[, 2])
                   
-                  if (!is.na(this_run)) { 
-                    valid.resp <- x@data.species[this_valid]
+                  if (!is.na(this_run) & this_run != "allRun") { 
+                    valid.resp <- x@data.species[which(this_valid)]
                     valid.resp <- ifelse(is.na(valid.resp), 31, 
                                          ifelse(valid.resp == 1, 11, 21))
-                    valid.xy <- x@coord[this_valid,]
+                    valid.xy <- x@coord[which(this_valid),]
                     valid.df <- data.frame(resp = valid.resp,
                                            x = valid.xy[, 1],
                                            y = valid.xy[, 2])
                     calib.df <- rbind(calib.df, valid.df)
                   }
-                  
                   thisdf.vect <- vect(calib.df, geom = c("x","y"))
                   names(thisdf.vect) <- "resp"
                   thisdf.vect$dataset <- this_name
@@ -795,29 +928,49 @@ setMethod('plot', signature(x = 'BIOMOD.formated.data', y = "missing"),
   ## 1 - check x -----------------------------------------
   .fun_testIfInherits(TRUE, "x", x, c("BIOMOD.formated.data", "BIOMOD.formated.data.PA"))
   
-  ## 2 - check calib.lines & run -----------------------------------------
+  ## 2 - check PA & run -----------------------------------------
   
+  # find possible dataset
+  allPA <- allrun <- NA
   if (!is.null(calib.lines)) {
     .fun_testIfInherits(TRUE, "calib.lines", calib.lines, c("matrix"))
+
+    expected_CVnames <- c(paste0("_allData_RUN", seq_len(ncol(calib.lines))), "_allData_allRun")
+    if (inherits(x, "BIOMOD.formated.data.PA")) {
+      expected_CVnames <- c(expected_CVnames
+                            , sapply(1:ncol(x@PA.table)
+                                     , function(this_PA) c(paste0("_PA", this_PA, "_RUN", seq_len(ncol(calib.lines)))
+                                                           , paste0("_PA", this_PA, "_allRun"))))
+    } 
+    .fun_testIfIn(TRUE, "colnames(calib.lines)", colnames(calib.lines), expected_CVnames)
     
-    expected_CVnames <- paste0("RUN", seq_len(ncol(calib.lines)))
-    
-    if (any(colnames(calib.lines) != c(expected_CVnames))) {
-      stop("column names for `calib.lines` did not match ", deparse(expected_CVnames))  
-    }
-    
-    if (missing(run)) run <- 'all'
-    if ( ! ((length(run) == 1 && run == "all")
-            || all(run %in% c(expected_CVnames)))  ) {
-      stop("`run` must be 'all' or a combination among ", deparse(expected_CVnames))
-    }
-    if (length(run) == 1 && run == "all") {
-      run <- expected_CVnames
-    }
-  } else {
-    run <- NA
-  } 
+    allPA <- sapply(colnames(calib.lines), function(xx) strsplit(xx, "_")[[1]][2])
+    allrun <- sapply(colnames(calib.lines), function(xx) strsplit(xx, "_")[[1]][3])
+  } else if (inherits(x, "BIOMOD.formated.data.PA")) {
+    allPA <- colnames(x@PA.table)
+    allrun <- rep(NA, length(allPA))
+  }
   
+  # default value for PA and run
+  if (missing(PA)) {
+    PA <- allPA
+  }
+  if (missing(run)) {
+    run <- allrun
+  }
+  
+  # intersect possible and given dataset and check for PA and run values
+  keep <- rep(TRUE, length(allPA))
+  if (!is.null(calib.lines)) {
+    .fun_testIfIn(TRUE, "run", run, allrun)
+    keep[which(!allrun %in% run)] <- FALSE
+  }
+  if (inherits(x, "BIOMOD.formated.data.PA")) { # PA & CV
+    .fun_testIfIn(TRUE, "PA", PA, allPA)
+    keep[which(!allPA %in% PA)] <- FALSE
+  }
+  PA <- allPA[keep]
+  run <- allrun[keep]
   
   ## 3 - check plot.eval ----------------------
   if (missing(plot.eval)) {
@@ -866,42 +1019,16 @@ setMethod('plot', signature(x = 'BIOMOD.formated.data', y = "missing"),
     }
   }
   
-  
-  
   ## 7 - do.plot ----------------------
   # do.plot
   stopifnot(is.logical(do.plot))
   
-  ## 8 - check PA ----------------------
-  
-  if (inherits(x, "BIOMOD.formated.data.PA")) {
-    
-    if (missing(PA)) PA <- 'all'
-    
-    expected_PAnames <- colnames(x@PA.table)
-    
-    if ( ! ((length(PA) == 1 && PA == "all")
-            || all(PA %in% c(expected_PAnames)))  ) {
-      stop("`PA` must be 'all' or a combination among ", deparse(expected_PAnames))
-    }
-    if (length(PA) == 1 && PA == "all") {
-      PA <- expected_PAnames
-    }
-    
-  } else {
-    PA <- NA
-  }
-  
   ##  9 - check that coordinates are available -------------------------------
-  
   if(nrow(x@coord) == 0){
     stop("coordinates are required to plot BIOMOD.formated.data objects")
   }
   
-
   ## End - return arguments ----------------------------------------------------
-  
-  
   return(list(x = x,
               calib.lines = calib.lines,
               plot.type = plot.type,
@@ -955,7 +1082,7 @@ setMethod('show', signature('BIOMOD.formated.data'),
               print(summary(object@eval.data.env.var))
             }
             
-            if(inherits(object, "biomod.formated.data.PA")){
+            if(inherits(object, "BIOMOD.formated.data.PA")){
               cat(
                 "\n\n",
                 ncol(object@PA.table),
@@ -988,7 +1115,7 @@ setMethod('show', signature('BIOMOD.formated.data'),
 ##' object returned by the \code{\link{BIOMOD_FormatingData}} function
 ##' @param calib.lines (\emph{optional, default} \code{NULL}) \cr
 ##' an \code{array} object returned by \code{\link{get_calib_lines}} or 
-##' \code{\link{BIOMOD_CrossValidation}} functions, to explore the distribution of calibration 
+##' \code{\link{bm_CrossValidation}} functions, to explore the distribution of calibration 
 ##' and validation datasets
 ##' 
 ##' 
@@ -1059,75 +1186,83 @@ setMethod('summary', signature(object = 'BIOMOD.formated.data'),
                                          "Undefined" = sum(is.na(object@eval.data.species), na.rm = TRUE)))
             }
             
-            PA <- NA
-            run <- NA
-            if (inherits(object, "BIOMOD.formated.data.PA")) {
-              PA <- colnames(object@PA.table)
-            }
+            PA <- run <- NA
             if (!is.null(calib.lines)) {
-              run <- colnames(calib.lines)
+              PA <- sapply(colnames(calib.lines), function(x) strsplit(x, "_")[[1]][2])
+              run <- sapply(colnames(calib.lines), function(x) strsplit(x, "_")[[1]][3])
+            } else if (inherits(object, "BIOMOD.formated.data.PA")) {
+              PA <- colnames(object@PA.table)
+              run <- rep(NA, length(PA))
             }
             
             if (!is.null(calib.lines) || inherits(object, "BIOMOD.formated.data.PA")) {
-              output <- rbind(output,
-                              foreach(this_PA = PA, .combine = 'rbind') %:%
-                                foreach(this_run = run, .combine = 'rbind') %do% {
-                                  if ( is.na(this_PA) ) { # run only
-                                    this_name <- this_run
-                                    this_calib <- calib.lines[ , this_run]
-                                    this_valid <- ! calib.lines[ , this_run]
-                                  } else if (is.na(this_run)) { # PA only
-                                    this_name <- this_PA
-                                    this_calib <-
-                                      object@PA.table[ , this_PA]
-                                  } else { # PA+run
-                                    this_name <- paste0(this_PA,"_",this_run)
-                                    this_calib <- calib.lines[ , this_run] & object@PA.table[ , this_PA]
-                                    this_valid <- ! calib.lines[ , this_run] & object@PA.table[ , this_PA]
-                                  }
-                                  
-                                  calib.resp <- object@data.species[this_calib]
-                                  tmp <- data.frame("dataset" = "calibration",
-                                                    "run" = this_run,
-                                                    "PA" = this_PA,
-                                                    "Presences" = sum(calib.resp, na.rm = TRUE),
-                                                    "True_Absences" = sum(calib.resp == 0, na.rm = TRUE),
-                                                    "Pseudo_Absences" = length(which(is.na(calib.resp))),
-                                                    "Undefined" = NA)
-                                  
-                                  if (!is.na(this_run)) { 
-                                    valid.resp <- object@data.species[this_valid]
-                                    tmp <- rbind(tmp,
-                                                 data.frame("dataset" = "validation",
-                                                            "run" = this_run,
-                                                            "PA" = this_PA,
-                                                            "Presences" = sum(valid.resp, na.rm = TRUE),
-                                                            "True_Absences" = sum(valid.resp == 0, na.rm = TRUE),
-                                                            "Pseudo_Absences" = length(which(is.na(valid.resp))),
-                                                            "Undefined" = NA))
-                                    
-                                  }
-                                  return(tmp) # end foreach
-                                })
+              output <- 
+                rbind(
+                  output,
+                  foreach(this_PA = PA, this_run = run, .combine = 'rbind') %do% {
+                    if (is.na(this_PA) || this_PA == 'allData') { # run only
+                      this_name <- paste0("_", this_PA, "_", this_run)
+                      this_calib <- calib.lines[ , this_name]
+                      this_valid <- ! calib.lines[ , this_name]
+                    } else if (is.na(this_run)) { # PA only
+                      this_calib <- object@PA.table[ , this_PA]
+                    } else { # PA+run
+                      this_name <- paste0("_", this_PA, "_", this_run)
+                      this_calib <- calib.lines[ , this_name] & object@PA.table[ , this_PA]
+                      this_valid <- ! calib.lines[ , this_name] & object@PA.table[ , this_PA]
+                    }
+                    calib.resp <- object@data.species[which(this_calib)]
+                    tmp <- data.frame("dataset" = "calibration",
+                                      "run" = this_run,
+                                      "PA" = this_PA,
+                                      "Presences" = length(which(calib.resp == 1)),
+                                      "True_Absences" = length(which(calib.resp == 0)),
+                                      "Pseudo_Absences" = 
+                                        length(which(this_calib)) - 
+                                        length(which(calib.resp == 1)) -
+                                        length(which(calib.resp == 0)),
+                                      "Undefined" = NA)
+                    
+                    if (!is.na(this_run)) { 
+                      valid.resp <- object@data.species[this_valid]
+                      tmp <- rbind(tmp,
+                                   data.frame("dataset" = "validation",
+                                              "run" = this_run,
+                                              "PA" = this_PA,
+                                              "Presences" = length(which(valid.resp == 1)),
+                                              "True_Absences" = length(which(valid.resp == 0)),
+                                              "Pseudo_Absences" = 
+                                                length(valid.resp) - 
+                                                length(which(valid.resp == 1)) -
+                                                length(which(valid.resp == 0)),
+                                              "Undefined" = NA))
+                      
+                    }
+                    return(tmp) # end foreach
+                  })
             } 
-            output$Total_Absences <- output$True_Absences + output$Pseudo_Absences
             output
           }
 )
 
-.summary.BIOMOD.formated.data.check.args <- function(object,
-                                                     calib.lines){
+.summary.BIOMOD.formated.data.check.args <- function(object, calib.lines)
+{
   if (!is.null(calib.lines)) {
     .fun_testIfInherits(TRUE, "calib.lines", calib.lines, c("matrix"))
     
-    expected_CVnames <- paste0("RUN", seq_len(ncol(calib.lines)))
-    
-    if (any(colnames(calib.lines) != c(expected_CVnames))) {
-      stop("column names for `calib.lines` did not match ", deparse(expected_CVnames))  
+    expected_CVnames <- c(paste0("_allData_RUN", seq_len(ncol(calib.lines))), "_allData_allRun")
+    if (inherits(object, "BIOMOD.formated.data.PA")) {
+      if (nrow(calib.lines) != nrow(object@PA.table)) {
+        stop("calib.lines and PA.table do not have the same number of rows")
+      }
+      expected_CVnames <- c(expected_CVnames
+                            , sapply(1:ncol(object@PA.table)
+                                     , function(this_PA) c(paste0("_PA", this_PA, "_RUN", seq_len(ncol(calib.lines)))
+                                                           , paste0("_PA", this_PA, "_allRun"))))
     }
+    .fun_testIfIn(TRUE, "colnames(calib.lines)", colnames(calib.lines), expected_CVnames)
   }
-  return(list(object = object,
-              calib.lines = calib.lines))
+  return(list(object = object, calib.lines = calib.lines))
 }
 
 
@@ -1144,7 +1279,7 @@ setMethod('summary', signature(object = 'BIOMOD.formated.data'),
 ##' @title \code{BIOMOD_FormatingData()} output object class (with pseudo-absences)
 ##' 
 ##' @description Class returned by \code{\link{BIOMOD_FormatingData}}, and used by 
-##' \code{\link{BIOMOD_Tuning}}, \code{\link{BIOMOD_CrossValidation}} and 
+##' \code{\link{BIOMOD_Tuning}}, \code{\link{bm_CrossValidation}} and 
 ##' \code{\link{BIOMOD_Modeling}}
 ##' 
 ##' @inheritParams BIOMOD.formated.data
@@ -1160,8 +1295,9 @@ setMethod('summary', signature(object = 'BIOMOD.formated.data'),
 ##' \code{user.defined} (see Details)
 ##' @param PA.nb.absences (\emph{optional, default} \code{0}) \cr 
 ##' If pseudo-absence selection, and \code{PA.strategy = 'random'} or \code{PA.strategy = 'sre'} 
-##' or \code{PA.strategy = 'disk'}, an \code{integer} corresponding to the number of pseudo-absence 
-##' points that will be selected for each pseudo-absence repetition (true absences included)
+##' or \code{PA.strategy = 'disk'}, an \code{integer} (or a \code{vector} of \code{integer} the 
+##' same size as \code{PA.nb.rep}) corresponding to the number of pseudo-absence points that 
+##' will be selected for each pseudo-absence repetition (true absences included)
 ##' @param PA.sre.quant (\emph{optional, default} \code{0}) \cr 
 ##' If pseudo-absence selection and \code{PA.strategy = 'sre'}, a \code{numeric} between \code{0} 
 ##' and \code{0.5} defining the half-quantile used to make the \code{sre} pseudo-absence selection 
@@ -1212,7 +1348,7 @@ setMethod('summary', signature(object = 'BIOMOD.formated.data'),
 ##' 
 ##' 
 ##' @seealso \code{\link{BIOMOD_FormatingData}}, \code{\link{bm_PseudoAbsences}}, 
-##' \code{\link{BIOMOD_Tuning}}, \code{\link{BIOMOD_CrossValidation}}, 
+##' \code{\link{BIOMOD_Tuning}}, \code{\link{bm_CrossValidation}}, 
 ##' \code{\link{BIOMOD_Modeling}}, \code{\link{bm_RunModelsLoop}}
 ##' @family Toolbox objects
 ##' 
@@ -1230,6 +1366,9 @@ setMethod('summary', signature(object = 'BIOMOD.formated.data'),
 ##' 
 ##' # Select the name of the studied species
 ##' myRespName <- 'GuloGulo'
+##' 
+##' # Keep only presence informations
+##' DataSpecies <- DataSpecies[which(DataSpecies[, myRespName] == 1), ]
 ##' 
 ##' # Get corresponding presence/absence data
 ##' myResp <- as.numeric(DataSpecies[, myRespName])
@@ -1252,7 +1391,7 @@ setMethod('summary', signature(object = 'BIOMOD.formated.data'),
 ##'                                      expl.var = myExpl,
 ##'                                      resp.xy = myRespXY,
 ##'                                      resp.name = myRespName,
-##'                                      PA.nb.rep = 0,
+##'                                      PA.nb.rep = 4,
 ##'                                      PA.strategy = 'random',
 ##'                                      PA.nb.absences = 1000)
 ##' myBiomodData
@@ -1334,10 +1473,17 @@ setMethod('BIOMOD.formated.data.PA', signature(sp = 'numeric', env = 'SpatRaster
                                       , PA.sre.quant = 0.025, PA.user.table = NULL
                                       , na.rm = TRUE, filter.raster = FALSE)
 {
+  args <- .BIOMOD.formated.data.check.args(sp, env, xy, eval.sp, eval.env, eval.xy, filter.raster)
+  for (argi in names(args)) { assign(x = argi, value = args[[argi]]) }
+  rm(args)
   
-
-  #### check for categorical vars and filter duplicated data points
-
+  if (is.null(PA.strategy) || PA.strategy == 'none' || PA.nb.rep < 1) {
+    if (!any(sp == 0, na.rm = TRUE) && !any(is.na(sp))) {
+      stop("No absences were given and no pseudo-absences were given or configured, at least one of those option is required.")
+    }
+  }
+  
+  ### Check for categorical vars and filter duplicated data points
   categorical_var <- NULL
   if (inherits(env, 'SpatRaster')) {
     categorical_var <- names(env)[is.factor(env)] 
@@ -1346,11 +1492,9 @@ setMethod('BIOMOD.formated.data.PA', signature(sp = 'numeric', env = 'SpatRaster
     xy <- output$xy
     sp <- output$sp
     rm(output)
-    
   }
   
-
-  # Convert sp in SpatVector
+  ## Convert sp in SpatVector
   if (is.numeric(sp)) {
     if (nrow(xy) == 0) {
       sp.df <- data.frame(x = 0,
@@ -1361,7 +1505,7 @@ setMethod('BIOMOD.formated.data.PA', signature(sp = 'numeric', env = 'SpatRaster
                           y = xy[,2],
                           resp = sp)
     }
-    sp <- vect(sp.df, geom = c("x","y"))
+    sp <- vect(sp.df, geom = c("x", "y"))
   }
   
   pa.data.tmp <- bm_PseudoAbsences(resp.var = sp,
@@ -1393,7 +1537,7 @@ setMethod('BIOMOD.formated.data.PA', signature(sp = 'numeric', env = 'SpatRaster
         pa.data.tmp$pa.tab <- pa.data.tmp$pa.tab[-rowToRm, , drop = FALSE]
       }
     }
-
+    
     if(!inherits(env,"SpatRaster")){
       env <- pa.data.tmp$env
     }
@@ -1569,30 +1713,30 @@ setClass("BIOMOD.models.options",
                              nodesize = 5,
                              maxnodes = NULL),
                    MAXENT = list(path_to_maxent.jar = getwd(),
-                                          memory_allocated = 512,
-                                          initial_heap_size = NULL,
-                                          max_heap_size = NULL,
-                                          background_data_dir = 'default',
-                                          maximumbackground = 'default',
-                                          maximumiterations = 200,
-                                          visible = FALSE,
-                                          linear = TRUE,
-                                          quadratic = TRUE,
-                                          product = TRUE,
-                                          threshold = TRUE,
-                                          hinge = TRUE,
-                                          lq2lqptthreshold = 80,
-                                          l2lqthreshold = 10,
-                                          hingethreshold = 15,
-                                          beta_threshold = -1.0,
-                                          beta_categorical = -1.0,
-                                          beta_lqp = -1.0,
-                                          beta_hinge = -1.0,
-                                          betamultiplier = 1,
-                                          defaultprevalence = 0.5),
+                                 memory_allocated = 512,
+                                 initial_heap_size = NULL,
+                                 max_heap_size = NULL,
+                                 background_data_dir = 'default',
+                                 maximumbackground = 'default',
+                                 maximumiterations = 200,
+                                 visible = FALSE,
+                                 linear = TRUE,
+                                 quadratic = TRUE,
+                                 product = TRUE,
+                                 threshold = TRUE,
+                                 hinge = TRUE,
+                                 lq2lqptthreshold = 80,
+                                 l2lqthreshold = 10,
+                                 hingethreshold = 15,
+                                 beta_threshold = -1.0,
+                                 beta_categorical = -1.0,
+                                 beta_lqp = -1.0,
+                                 beta_hinge = -1.0,
+                                 betamultiplier = 1,
+                                 defaultprevalence = 0.5),
                    MAXNET = list(myFormula = NULL,
-                                            regmult = 1,
-                                            regfun = maxnet::maxnet.default.regularization)
+                                 regmult = 1,
+                                 regfun = maxnet::maxnet.default.regularization)
          ),
          validity = function(object) {
            test <- TRUE
