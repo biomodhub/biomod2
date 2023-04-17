@@ -15,6 +15,7 @@ BIOMOD_EnsembleForecasting(
   metric.filter = NULL,
   compress = TRUE,
   nb.cpu = 1,
+  na.rm = TRUE,
   ...
 )
 }
@@ -72,6 +73,10 @@ compressed when saved on hard drive, must be either \code{TRUE}, \code{FALSE}, \
 \item{nb.cpu}{(\emph{optional, default} \code{1}) \cr 
 An \code{integer} value corresponding to the number of computing resources to be used to 
 parallelize the single models computation}
+
+\item{na.rm}{(\emph{optional, default} \code{TRUE}) \cr
+A boolean defining whether Ensemble Model projection should ignore \code{NA}
+in Individual Model projection. Argument ignored by EWmean ensemble algorithm.}
 
 \item{\ldots}{(\emph{optional, see Details})}
 }
