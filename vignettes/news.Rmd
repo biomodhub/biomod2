@@ -44,6 +44,8 @@ vignette: >
 * model is now robust to using `data.table` object (that are converted into standard `data.frame`).
 * fixed projection raster name when using `do.stack = FALSE` and `resp.name` with `.` inside.
 * fixed using user-defined pseudo-absences along with `filter.raster = TRUE` in `bm_PseudoAbsence`.
+* fixed weights calculation when using only one pseudo-absence dataset
+* fixed summary and show method for `BIOMOD.formated.data.PA`
 
 ##### Internal 
 
