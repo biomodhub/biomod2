@@ -111,6 +111,7 @@ BIOMOD_EnsembleModeling function onto new environmental data
 <span>  metric.filter <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  compress <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  nb.cpu <span class="op">=</span> <span class="fl">1</span>,</span>
+<span>  na.rm <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  <span class="va">...</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
@@ -189,6 +190,12 @@ compressed when saved on hard drive, must be either <code>TRUE</code>, <code>FAL
 <dd><p>(<em>optional, default</em> <code>1</code>) <br> 
 An <code>integer</code> value corresponding to the number of computing resources to be used to 
 parallelize the single models computation</p></dd>
+
+
+<dt>na.rm</dt>
+<dd><p>(<em>optional, default</em> <code>TRUE</code>) <br>
+A boolean defining whether Ensemble Model projection should ignore <code>NA</code>
+in Individual Model projection. Argument ignored by EWmean ensemble algorithm.</p></dd>
 
 
 <dt>...</dt>
