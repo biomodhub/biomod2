@@ -590,7 +590,7 @@ BIOMOD_Modeling <- function(bm.format,
             
             wei <- rep(NA, length(data.sp))
             wei[ind.PA] <- weights
-            return(wei)
+            return(matrix(wei, ncol = 1))
           }
         weights.pa <- cbind(weights.pa, rep(1, nrow(weights.pa)))
         colnames(weights.pa) <- c(colnames(bm.format@PA.table), "allData")
@@ -615,7 +615,7 @@ BIOMOD_Modeling <- function(bm.format,
         {
           wei <- weights
           wei[which(bm.format@PA.table[, pa] == FALSE | is.na(bm.format@PA.table[, pa]))] <- NA
-          return(wei)
+          return(matrix(wei, ncol = 1))
         }
       weights.pa <- cbind(weights.pa, rep(1, nrow(weights.pa)))
       colnames(weights.pa) <- c(colnames(bm.format@PA.table), "allData")
