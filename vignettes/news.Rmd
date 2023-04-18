@@ -30,6 +30,8 @@ vignette: >
 * Improved management of categorical raster for both `terra` and `raster`
 * `CV.perc` (formerly `data.split.perc`) now uses a 0-1 range (instead of 0-100)
 * Deprecated arguments for `BIOMOD_EnsembleModeling` now gives an error. 
+* added argument `metric.select.dataset` to `BIOMOD_EnsembleModeling` to choose the dataset which evaluation metric should be used to filter and/or weigh the ensemble models. Default value is now 'validation' instead of 'evaluation'.
+* added argument `na.rm` to `BIOMOD_EnsembleModeling` to harmonize the management of `NA` among individual model predictions. 
 
 ##### Bugfix
 

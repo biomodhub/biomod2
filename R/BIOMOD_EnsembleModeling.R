@@ -1,4 +1,4 @@
-###################################################################################################
+# BIOMOD_EnsembleModeling docs ----------------------------------------------------
 ##' @name BIOMOD_EnsembleModeling
 ##' @author Wilfried Thuiller, Damien Georges, Robin Engler
 ##' 
@@ -33,11 +33,16 @@
 ##' A \code{vector} of \code{numeric} values corresponding to the minimum scores (one for each 
 ##' \code{metric.select}) below which single models will be excluded from the ensemble model 
 ##' building
-##' @param metric.select.table (\emph{optional, default} \code{NULL}) \cr 
-##' If \code{metric.select = 'user.defined'}, a \code{data.frame} containing evaluation scores 
-##' calculated for each single models and that will be compared to \code{metric.select.thresh} 
-##' values to exclude some of them from the ensemble model building, with \code{metric.select} 
-##' rownames, and \code{models.chosen} colnames
+##' @param metric.select.table (\emph{optional, default} \code{NULL}) \cr If
+##'   \code{metric.select = 'user.defined'}, a \code{data.frame} containing
+##'   evaluation scores calculated for each single models and that will be
+##'   compared to \code{metric.select.thresh} values to exclude some of them
+##'   from the ensemble model building, with \code{metric.select} rownames, and
+##'   \code{models.chosen} colnames
+##' @param metric.select.dataset (\emph{optional, default} \code{'validation'}
+##'   \emph{if possible}). A character determining which dataset should be used
+##'   to filter and/or weigh the ensemble models should be among 'evaluation',
+##'   'validation' or 'calibration'.
 ##' @param metric.eval a \code{vector} containing evaluation metric names to be used, must 
 ##' be among \code{ROC}, \code{TSS}, \code{KAPPA}, \code{ACCURACY}, \code{BIAS}, \code{POD}, 
 ##' \code{FAR}, \code{POFD}, \code{SR}, \code{CSI}, \code{ETS}, \code{HK}, \code{HSS}, \code{OR}, 
@@ -139,32 +144,38 @@
 ##' 
 ##'   \item{Evaluation metrics}{
 ##'   \itemize{
-##'     \item{\bold{\code{metric.select}} : }{the selected metrics must be chosen among the ones used 
-##'     within the \code{\link{BIOMOD_Modeling}} function to build the \code{model.output} object, 
-##'     unless \code{metric.select = 'user.defined'} and therefore values will be provided through 
-##'     the \code{metric.select.table} parameter. \cr In the case of the selection of several 
-##'     metrics, they will be used at different steps of the ensemble modeling function : 
+##'     \item{\bold{\code{metric.select}} : }{the selected metrics must be chosen among the ones used
+##'     within the \code{\link{BIOMOD_Modeling}} function to build the \code{model.output} object,
+##'     unless \code{metric.select = 'user.defined'} and therefore values will be provided through
+##'     the \code{metric.select.table} parameter. \cr In the case of the selection of several
+##'     metrics, they will be used at different steps of the ensemble modeling function :
 ##'     \enumerate{
 ##'       \item remove \emph{low quality} single models, having a score lower than
 ##'       \code{metric.select.thresh}
-##'       \item perform the binary transformation needed if \code{'EMca'} 
+##'       \item perform the binary transformation needed if \code{'EMca'}
 ##'       was given to argument \code{em.algo}
 ##'       \item weight models if \code{'EMwmean'} was given to argument \code{em.algo}
 ##'     }
 ##'     }
-##'     \item{\bold{\code{metric.select.thresh}} : }{as many values as evaluation metrics 
-##'     selected with the \code{metric.select} parameter, and defining the corresponding quality 
-##'     thresholds below which the single models will be excluded from the ensemble model 
+##'     \item{\bold{\code{metric.select.thresh}} : }{as many values as evaluation metrics
+##'     selected with the \code{metric.select} parameter, and defining the corresponding quality
+##'     thresholds below which the single models will be excluded from the ensemble model
 ##'     building.}
-##'     \item{\bold{\code{metric.select.table}} : }{a \code{data.frame} must be given if 
-##'     \code{metric.select = 'user.defined'} to allow the use of evaluation metrics other than 
-##'     those calculated within \pkg{biomod2}. The \code{data.frame} must contain as many columns 
-##'     as \code{models.chosen} with matching names, and as many rows as evaluation metrics to be 
-##'     used. The number of rows must match the length of the \code{metric.select.thresh} 
-##'     parameter. The values contained in the \code{data.frame} will be compared to those defined 
-##'     in \code{metric.select.thresh} to remove \emph{low quality} single models from 
+##'     \item{\bold{\code{metric.select.table}} : }{a \code{data.frame} must be given if
+##'     \code{metric.select = 'user.defined'} to allow the use of evaluation metrics other than
+##'     those calculated within \pkg{biomod2}. The \code{data.frame} must contain as many columns
+##'     as \code{models.chosen} with matching names, and as many rows as evaluation metrics to be
+##'     used. The number of rows must match the length of the \code{metric.select.thresh}
+##'     parameter. The values contained in the \code{data.frame} will be compared to those defined
+##'     in \code{metric.select.thresh} to remove \emph{low quality} single models from
 ##'     the ensemble model building.}
-##'     \item{\bold{\code{metric.eval}} : }{the selected metrics will be used to validate/evaluate 
+##'     \item{\bold{\code{metric.select.dataset}} : }{a \code{character} determining the dataset
+##'     which evaluation metric should be used to filter and/or weigh the
+##'     ensemble models. Should be among \code{evaluation}, \code{validation} or
+##'     \code{calibration}. By default \code{BIOMOD_EnsembleModeling} will use
+##'     the validation dataset unless no validation is available in which case
+##'     calibration dataset are used.}
+##'     \item{\bold{\code{metric.eval}} : }{the selected metrics will be used to validate/evaluate
 ##'     the ensemble models built}
 ##'   }
 ##'   }
@@ -258,7 +269,7 @@
 ##' \code{\link{bm_PlotVarImpBoxplot}}, \code{\link{bm_PlotResponseCurves}}
 ##' @family Main functions
 ##' 
-##'   
+## Examples -------------------------------------------------------------------
 ##' @examples
 ##' 
 ##' library(terra)
@@ -357,7 +368,6 @@
 ##' @export
 ##' 
 ##' 
-###################################################################################################
 
 BIOMOD_EnsembleModeling <- function(bm.mod,
                                     models.chosen = 'all',
@@ -366,6 +376,7 @@ BIOMOD_EnsembleModeling <- function(bm.mod,
                                     metric.select = 'all',
                                     metric.select.thresh = NULL,
                                     metric.select.table = NULL,
+                                    metric.select.dataset = NULL,
                                     metric.eval = c('KAPPA', 'TSS', 'ROC'),
                                     var.import = 0,
                                     EMci.alpha = 0.05,
@@ -390,6 +401,7 @@ BIOMOD_EnsembleModeling <- function(bm.mod,
                                               metric.select = metric.select,
                                               metric.select.thresh = metric.select.thresh,
                                               metric.select.table = metric.select.table,
+                                              metric.select.dataset = metric.select.dataset,
                                               metric.eval = metric.eval,
                                               prob.ci.alpha = prob.ci.alpha,
                                               prob.mean.weight.decay = prob.mean.weight.decay,
@@ -460,11 +472,12 @@ BIOMOD_EnsembleModeling <- function(bm.mod,
       obs[is.na(obs)] <- 0
       
       ## get needed models predictions ----------------------------------------
-      needed_predictions <- .get_needed_predictions(bm.mod, em.by, models.kept
-                                                    , metric.select, metric.select.thresh
-                                                    , metric.select.user, metric.select.table
-                                                    , nb.cpu)
-
+      needed_predictions <-
+        .get_needed_predictions(bm.mod, em.by, models.kept
+                                , metric.select, metric.select.thresh
+                                , metric.select.user, metric.select.table
+                                , metric.select.dataset, nb.cpu)
+      
       ## LOOP over evaluation metrics ------------------------------------------
       em.out.eval <- foreach(eval.m = metric.select) %do%  {
         models.kept <- needed_predictions$models.kept[[eval.m]]
@@ -781,6 +794,7 @@ BIOMOD_EnsembleModeling <- function(bm.mod,
                                                 metric.select,
                                                 metric.select.thresh,
                                                 metric.select.table,
+                                                metric.select.dataset,
                                                 metric.eval,
                                                 EMci.alpha,
                                                 EMwmean.decay,
@@ -836,7 +850,7 @@ BIOMOD_EnsembleModeling <- function(bm.mod,
                                        committee.averaging, prob.mean.weight)]
       # Stop for obsolete arguments
       stop(paste0("\n   ! arguments ", paste0(em.avail.old[-6], collapse = ", "),
-                 " and ",em.avail.old[6], " are obsolete. Please use `em.algo = c('",paste0(em.algo.user, collapse = "', '"),"')` instead."))
+                  " and ",em.avail.old[6], " are obsolete. Please use `em.algo = c('",paste0(em.algo.user, collapse = "', '"),"')` instead."))
     }
   } else {
     .fun_testIfIn(TRUE, "em.algo", em.algo, em.avail.check)
@@ -886,7 +900,34 @@ BIOMOD_EnsembleModeling <- function(bm.mod,
     }
   }
   
-  ## 5. Check metric.select.thresh --------------------------------------------
+  ## 5. metric.select.dataset -------------------------------------------------
+  has.validation.data <- any(!is.na((get_evaluations(bm.mod))$validation))
+  has.evaluation.data <- bm.mod@has.evaluation.data
+  
+  metric.select.dataset.available <- c("calibration")
+  if (has.validation.data) {
+    metric.select.dataset.available <- 
+      append(metric.select.dataset.available, "validation")
+  }
+  if (has.evaluation.data) {
+    metric.select.dataset.available <- 
+      append(metric.select.dataset.available, "evaluation")
+  }
+  
+  if (is.null(metric.select.dataset)) {
+    if (has.validation.data) {
+      metric.select.dataset <- "validation"
+      cat("\n  ! Ensemble Models will be filtered and/or weighted using validation dataset (if possible). Please use `metric.select.dataset` for alternative options.")
+    } else {
+      metric.select.dataset <- "calibration"
+      cat("\n  ! Ensemble Models will be filtered and/or weighted using calibration dataset. Please use `metric.select.dataset` for alternative options.")
+    }
+  } else {
+    .fun_testIfIn(TRUE, "metric.select.dataset",
+                  metric.select.dataset, metric.select.dataset.available)
+  }
+  
+  ## 6. Check metric.select.thresh --------------------------------------------
   if (!is.null(metric.select)) {
     if (!is.null(metric.select.thresh)) {
       if (!is.numeric(metric.select.thresh)) {
@@ -906,20 +947,22 @@ BIOMOD_EnsembleModeling <- function(bm.mod,
     metric.select <- 'none'
   }
   
-  ## 6. Check metric.eval -----------------------------------------------------
+  
+  
+  ## 7. Check metric.eval -----------------------------------------------------
   metric.eval <- unique(metric.eval)
   avail.eval.meth.list <- c('TSS', 'KAPPA', 'ACCURACY', 'BIAS', 'POD', 'FAR', 'POFD'
                             , 'SR', 'CSI', 'ETS', 'HK', 'HSS', 'OR', 'ORSS', 'ROC')
   .fun_testIfIn(TRUE, "metric.eval", metric.eval, avail.eval.meth.list)
   
-  ## 7. Check selected EM algo ------------------------------------------------
+  ## 8. Check selected EM algo ------------------------------------------------
   
   if (is.null(metric.select) && 
       any(c("committee.averaging", "prob.mean.weight") %in% em.algo)) {
     stop("You must choose metric.select if you want to compute Committee Averaging or Probability Weighted Mean algorithms")
   }
   
-  ## 7.1 Check alpha for Confident interval
+  ## 8.1 Check alpha for Confident interval
   if ("EMci" %in% em.algo) {
     if(!missing(prob.ci.alpha)){
       EMci.alpha <- prob.ci.alpha
@@ -932,7 +975,7 @@ BIOMOD_EnsembleModeling <- function(bm.mod,
     }
   }
   # prob.mean.weight.decay
-  ## 7.2 Check decay for wmean
+  ## 8.2 Check decay for wmean
   if ("EMwmean" %in% em.algo) {
     if(!missing(prob.mean.weight.decay)){
       EMwmean.decay <- prob.mean.weight.decay
@@ -947,7 +990,7 @@ BIOMOD_EnsembleModeling <- function(bm.mod,
     }
   }
   
-  ## 8. Check em.by -----------------------------------------------------------
+  ## 9. Check em.by -----------------------------------------------------------
   if(length(em.by) != 1){
     stop("\nem.by should be of length 1")
   }
@@ -976,7 +1019,7 @@ BIOMOD_EnsembleModeling <- function(bm.mod,
     models.chosen <- models.chosen[!grepl(pattern = "allRun", x = models.chosen)]
   }
   
-  ## 9. Check that ensemble model have > 1 model to run -------------
+  ## 10. Check that ensemble model have > 1 model to run -------------
   ## make a list of models names that will be combined together according to em.by argument
   em.mod.assemb <- .get_models_assembling(models.chosen, em.by)
   ### Check that all EM have > 1 model selected ----------------------------
@@ -984,7 +1027,8 @@ BIOMOD_EnsembleModeling <- function(bm.mod,
     out <- .get_kept_models(
       bm.mod, em.mod.assemb[[assemb]], 
       metric.select, metric.select.thresh,
-      metric.select.user, metric.select.table
+      metric.select.user, metric.select.table,
+      metric.select.dataset
     )$models.kept
     data.frame(models.kept = sapply(out, length),
                metric.select = names(out),
@@ -1022,6 +1066,7 @@ BIOMOD_EnsembleModeling <- function(bm.mod,
               metric.select.thresh = metric.select.thresh,
               metric.select.user = metric.select.user,
               metric.select.table = metric.select.table,
+              metric.select.dataset = metric.select.dataset,
               metric.eval = metric.eval,
               EMci.alpha = EMci.alpha,
               EMwmean.decay = EMwmean.decay,
@@ -1075,11 +1120,12 @@ BIOMOD_EnsembleModeling <- function(bm.mod,
 
 .get_needed_predictions <- function(bm.mod, em.by,  models.kept, metric.select
                                     , metric.select.thresh, metric.select.user
-                                    , metric.select.table, nb.cpu) {
+                                    , metric.select.table, metric.select.dataset, nb.cpu) {
   
   out <- .get_kept_models(bm.mod, models.kept, 
                           metric.select, metric.select.thresh,
-                          metric.select.user, metric.select.table)
+                          metric.select.user, metric.select.table,
+                          metric.select.dataset)
   
   models.kept.union <- unique(unlist(out$models.kept))
   if (length(models.kept.union) > 0) {
@@ -1163,7 +1209,8 @@ BIOMOD_EnsembleModeling <- function(bm.mod,
 
 .get_kept_models <- function(bm.mod, models.kept, 
                              metric.select, metric.select.thresh,
-                             metric.select.user, metric.select.table){
+                             metric.select.user, metric.select.table,
+                             metric.select.dataset){
   out <- list(predictions = NULL, models.kept = NULL, models.kept.scores = NULL)
   for (eval.m in metric.select) {
     if (eval.m != 'none') {
@@ -1176,13 +1223,8 @@ BIOMOD_EnsembleModeling <- function(bm.mod,
           alg <- .extract_modelNamesInfo(x, obj.type = "mod", info = "algo")
           # select evaluations scores obtained for Evaluation Data if exists or CV if not
           out <- get_evaluations(bm.mod, PA = dat, run = run, algo = alg, metric.eval = eval.m)
-          if (bm.mod@has.evaluation.data) {
-            return(out[, "evaluation"])
-          } else if (run != "allRun") {
-            return(out[, "validation"])
-          } else {
-            return(out[, "calibration"])
-          }
+          return(out[, metric.select.dataset])
+          
         }))
       }
       ## set NA to -1
