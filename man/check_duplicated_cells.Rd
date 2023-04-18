@@ -4,7 +4,7 @@
 \alias{check_duplicated_cells}
 \title{Check duplicated cells}
 \usage{
-check_duplicated_cells(env, xy, sp, filter.raster)
+check_duplicated_cells(env, xy, sp, filter.raster, PA.user.table = NULL)
 }
 \arguments{
 \item{env}{a \code{SpatRaster} with environmental data}

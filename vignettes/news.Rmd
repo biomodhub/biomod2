@@ -41,10 +41,9 @@ vignette: >
 * Correct print for multiple values in `RF$sampsize` parameter in `BIOMOD_ModelingOptions`
 * Fixed layer name in `BIOMOD_Projection` and `BIOMOD_EnsembleForecasting` when `terraOption(todisk = TRUE)` is activated (for large or numerous raster).
 * fixed Ensemble Models based on models without cross-validation ("allRun")
-* model is now robust to using `data.table` object (that are converted into standard `data.frame`)
+* model is now robust to using `data.table` object (that are converted into standard `data.frame`).
 * fixed projection raster name when using `do.stack = FALSE` and `resp.name` with `.` inside.
-* Added `na.rm` argument to `BIOMOD_EnsembleForecasting` to harmonize `NA`
-management among individual model predictions.
+* fixed using user-defined pseudo-absences along with `filter.raster = TRUE` in `bm_PseudoAbsence`.
 
 ##### Internal 
 

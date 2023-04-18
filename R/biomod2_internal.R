@@ -809,12 +809,16 @@ rast.has.values <- function(x){
 ##' 
 ##' @importFrom terra cellFromXY
 
-check_duplicated_cells <- function(env, xy, sp, filter.raster){
+check_duplicated_cells <- function(env, xy, sp, filter.raster, 
+                                   PA.user.table = NULL){
   sp.cell <- duplicated(cellFromXY(env, xy))
-  if(any(sp.cell)){
-    if(filter.raster){
+  if (any(sp.cell)) {
+    if (filter.raster) {
       sp <- sp[!sp.cell]
       xy <- xy[!sp.cell,]
+      if (!is.null(PA.user.table)) {
+        PA.user.table <- PA.user.table[!sp.cell, , drop = FALSE]
+      }
       cat("\n !!! Some data are located in the same raster cell. 
           Only the first data in each cell will be kept as `filter.raster = TRUE`.")
     } else {
@@ -823,7 +827,8 @@ check_duplicated_cells <- function(env, xy, sp, filter.raster){
     }
   }
   return(list("sp"  = sp, 
-              "xy"  = xy))
+              "xy"  = xy,
+              "PA.user.table" = PA.user.table))
   
 }
 

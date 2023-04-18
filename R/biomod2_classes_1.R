@@ -188,7 +188,7 @@ setGeneric("BIOMOD.formated.data", def = function(sp, env, ...) { standardGeneri
   available.types.resp <- c('integer', 'numeric', 'data.frame', 'matrix',
                             'SpatialPointsDataFrame', 'SpatialPoints', 'SpatVector')
   .fun_testIfInherits(TRUE, "sp", sp, available.types.resp)
-
+  
   ## SpatialPoints, SpatialPointsDataFrame, SpatVector
   if (inherits(sp, c('SpatialPoints','SpatVector'))) {
     .tmp <- .check_formating_spatial(resp.var = sp,
@@ -934,7 +934,7 @@ setMethod('plot', signature(x = 'BIOMOD.formated.data', y = "missing"),
   allPA <- allrun <- NA
   if (!is.null(calib.lines)) {
     .fun_testIfInherits(TRUE, "calib.lines", calib.lines, c("matrix"))
-
+    
     expected_CVnames <- c(paste0("_allData_RUN", seq_len(ncol(calib.lines))), "_allData_allRun")
     if (inherits(x, "BIOMOD.formated.data.PA")) {
       expected_CVnames <- c(expected_CVnames
@@ -1170,20 +1170,20 @@ setMethod('summary', signature(object = 'BIOMOD.formated.data'),
             output <- data.frame("dataset" = "initial",
                                  "run" = NA,
                                  "PA" = NA,
-                                 "Presences" = sum(object@data.species, na.rm = TRUE),
-                                 "True_Absences" = sum(object@data.species == 0, na.rm = TRUE),
+                                 "Presences" = length(which(object@data.species == 1)),
+                                 "True_Absences" = length(which(object@data.species == 0)),
                                  "Pseudo_Absences" = 0,
-                                 "Undefined" = sum(is.na(object@data.species), na.rm = TRUE))
+                                 "Undefined" = length(which(is.na(object@data.species))))
             
             if (object@has.data.eval) {
               output <- rbind(output,
                               data.frame("dataset" = "evaluation",
                                          "run" = NA,
                                          "PA" = NA,
-                                         "Presences" = sum(object@eval.data.species, na.rm = TRUE),
-                                         "True_Absences" = sum(object@eval.data.species == 0, na.rm = TRUE),
+                                         "Presences" =  length(which(object@eval.data.species == 1)),
+                                         "True_Absences" = length(which(object@eval.data.species == 0)),
                                          "Pseudo_Absences" = 0,
-                                         "Undefined" = sum(is.na(object@eval.data.species), na.rm = TRUE)))
+                                         "Undefined" = length(which(is.na(object@eval.data.species)))))
             }
             
             PA <- run <- NA
@@ -1199,47 +1199,48 @@ setMethod('summary', signature(object = 'BIOMOD.formated.data'),
               output <- 
                 rbind(
                   output,
-                  foreach(this_PA = PA, this_run = run, .combine = 'rbind') %do% {
-                    if (is.na(this_PA) || this_PA == 'allData') { # run only
-                      this_name <- paste0("_", this_PA, "_", this_run)
-                      this_calib <- calib.lines[ , this_name]
-                      this_valid <- ! calib.lines[ , this_name]
-                    } else if (is.na(this_run)) { # PA only
-                      this_calib <- object@PA.table[ , this_PA]
-                    } else { # PA+run
-                      this_name <- paste0("_", this_PA, "_", this_run)
-                      this_calib <- calib.lines[ , this_name] & object@PA.table[ , this_PA]
-                      this_valid <- ! calib.lines[ , this_name] & object@PA.table[ , this_PA]
-                    }
-                    calib.resp <- object@data.species[which(this_calib)]
-                    tmp <- data.frame("dataset" = "calibration",
-                                      "run" = this_run,
-                                      "PA" = this_PA,
-                                      "Presences" = length(which(calib.resp == 1)),
-                                      "True_Absences" = length(which(calib.resp == 0)),
-                                      "Pseudo_Absences" = 
-                                        length(which(this_calib)) - 
-                                        length(which(calib.resp == 1)) -
-                                        length(which(calib.resp == 0)),
-                                      "Undefined" = NA)
-                    
-                    if (!is.na(this_run)) { 
-                      valid.resp <- object@data.species[this_valid]
-                      tmp <- rbind(tmp,
-                                   data.frame("dataset" = "validation",
-                                              "run" = this_run,
-                                              "PA" = this_PA,
-                                              "Presences" = length(which(valid.resp == 1)),
-                                              "True_Absences" = length(which(valid.resp == 0)),
-                                              "Pseudo_Absences" = 
-                                                length(valid.resp) - 
-                                                length(which(valid.resp == 1)) -
-                                                length(which(valid.resp == 0)),
-                                              "Undefined" = NA))
+                  foreach(this_run = run, .combine = 'rbind') %:% 
+                    foreach(this_PA = PA, .combine = 'rbind') %do% {
+                      if (is.na(this_PA) || this_PA == 'allData') { # run only
+                        this_name <- paste0("_", this_PA, "_", this_run)
+                        this_calib <- calib.lines[ , this_name]
+                        this_valid <- ! calib.lines[ , this_name]
+                      } else if (is.na(this_run)) { # PA only
+                        this_calib <- object@PA.table[ , this_PA]
+                      } else { # PA+run
+                        this_name <- paste0("_", this_PA, "_", this_run)
+                        this_calib <- calib.lines[ , this_name] & object@PA.table[ , this_PA]
+                        this_valid <- ! calib.lines[ , this_name] & object@PA.table[ , this_PA]
+                      }
+                      calib.resp <- object@data.species[which(this_calib)]
+                      tmp <- data.frame("dataset" = "calibration",
+                                        "run" = this_run,
+                                        "PA" = this_PA,
+                                        "Presences" = length(which(calib.resp == 1)),
+                                        "True_Absences" = length(which(calib.resp == 0)),
+                                        "Pseudo_Absences" = 
+                                          length(which(this_calib)) - 
+                                          length(which(calib.resp == 1)) -
+                                          length(which(calib.resp == 0)),
+                                        "Undefined" = NA)
                       
-                    }
-                    return(tmp) # end foreach
-                  })
+                      if (!is.na(this_run)) { 
+                        valid.resp <- object@data.species[this_valid]
+                        tmp <- rbind(tmp,
+                                     data.frame("dataset" = "validation",
+                                                "run" = this_run,
+                                                "PA" = this_PA,
+                                                "Presences" = length(which(valid.resp == 1)),
+                                                "True_Absences" = length(which(valid.resp == 0)),
+                                                "Pseudo_Absences" = 
+                                                  length(valid.resp) - 
+                                                  length(which(valid.resp == 1)) -
+                                                  length(which(valid.resp == 0)),
+                                                "Undefined" = NA))
+                        
+                      }
+                      return(tmp) # end foreach
+                    })
             } 
             output
           }
@@ -1488,9 +1489,11 @@ setMethod('BIOMOD.formated.data.PA', signature(sp = 'numeric', env = 'SpatRaster
   if (inherits(env, 'SpatRaster')) {
     categorical_var <- names(env)[is.factor(env)] 
     
-    output <- check_duplicated_cells(env, xy, sp, filter.raster)
+    output <- check_duplicated_cells(env, xy, sp, filter.raster, 
+                                     PA.user.table = PA.user.table)
     xy <- output$xy
     sp <- output$sp
+    PA.user.table <- output$PA.user.table
     rm(output)
   }
   
