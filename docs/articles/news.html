@@ -168,6 +168,13 @@ automatically saved.</li>
 uses a 0-1 range (instead of 0-100)</li>
 <li>Deprecated arguments for <code>BIOMOD_EnsembleModeling</code> now
 gives an error.</li>
+<li>added argument <code>metric.select.dataset</code> to
+<code>BIOMOD_EnsembleModeling</code> to choose the dataset which
+evaluation metric should be used to filter and/or weigh the ensemble
+models. Default value is now ‘validation’ instead of ‘evaluation’.</li>
+<li>added argument <code>na.rm</code> to
+<code>BIOMOD_EnsembleModeling</code> to harmonize the management of
+<code>NA</code> among individual model predictions.</li>
 </ul>
 </div>
 <div class="section level5">
