@@ -1083,14 +1083,24 @@ setMethod('show', signature('BIOMOD.formated.data'),
             }
             
             if(inherits(object, "BIOMOD.formated.data.PA")){
+              PA.length <- sapply(object@PA.table, function(this.pa){
+                return(length(which(this.pa))
+                - length(which(object@data.species == 1)))
+              })
+              PA.unique <- unique(PA.length)
+              PA.dataset <- sapply(PA.unique, function(this.PA){
+                paste0(names(PA.length)[which(PA.length == this.PA)], collapse = ", ")
+              })
               cat(
                 "\n\n",
                 ncol(object@PA.table),
                 'Pseudo Absences dataset available (',
-                colnames(object@PA.table),
+                paste0(colnames(object@PA.table), collapse = ", "),
                 ") with ",
-                sum(object@PA.table[, 1], na.rm = TRUE) - sum(object@data.species, na.rm = TRUE),
-                'absences in each (true abs + pseudo abs)',
+                paste0(sapply(seq_len(length(PA.unique)), function(i){
+                  paste0(PA.unique[i], " (", PA.dataset[i],")")
+                }), collapse = ", "),
+                'pseudo absences',
                 fill = .Options$width
               )
             }
@@ -1206,7 +1216,7 @@ setMethod('summary', signature(object = 'BIOMOD.formated.data'),
                         this_calib <- calib.lines[ , this_name]
                         this_valid <- ! calib.lines[ , this_name]
                       } else if (is.na(this_run)) { # PA only
-                        this_calib <- object@PA.table[ , this_PA]
+                        this_calib <- ifelse(is.na(object@PA.table[ , this_PA]), FALSE, TRUE)
                       } else { # PA+run
                         this_name <- paste0("_", this_PA, "_", this_run)
                         this_calib <- calib.lines[ , this_name] & object@PA.table[ , this_PA]
@@ -1267,11 +1277,11 @@ setMethod('summary', signature(object = 'BIOMOD.formated.data'),
 }
 
 
-## --------------------------------------------------------------------------- #
+## ---------------------------------------------------------------------#
 ## 2. BIOMOD.formated.data.PA ------------------------------------------------
 ## this class inherits from BIOMOD.formated.data and have one more slot 'PA', 
 ## giving PA selected
-## --------------------------------------------------------------------------- #
+## -------------------------------------------------------------------- #
 
 ##' @name BIOMOD.formated.data.PA
 ##' @aliases BIOMOD.formated.data.PA-class
@@ -1555,7 +1565,6 @@ setMethod('BIOMOD.formated.data.PA', signature(sp = 'numeric', env = 'SpatRaster
                                 eval.xy = eval.xy,
                                 na.rm = na.rm,
                                 filter.raster = filter.raster)
-    
     BFDP <- new('BIOMOD.formated.data.PA',
                 dir.name = BFD@dir.name,
                 sp.name = BFD@sp.name,

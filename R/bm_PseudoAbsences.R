@@ -119,7 +119,7 @@
 ##' }
 ##' 
 ##' 
-##' # ---------------------------------------------------------------
+##' # --------------------------------------------------------------- #
 ##' # Create the different pseudo-absence datasets
 ##' 
 ##' # Transform true absences into potential pseudo-absences
