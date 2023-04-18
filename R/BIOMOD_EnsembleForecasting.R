@@ -57,6 +57,10 @@
 ##' An \code{integer} value corresponding to the number of computing resources to be used to 
 ##' parallelize the single models computation
 ##' 
+##' @param na.rm (\emph{optional, default} \code{TRUE}) \cr
+##' A boolean defining whether Ensemble Model projection should ignore \code{NA}
+##' in Individual Model projection. Argument ignored by EWmean ensemble algorithm.
+##' 
 ##' @param \ldots (\emph{optional, see Details})
 ##' 
 ##' 
@@ -235,13 +239,22 @@ BIOMOD_EnsembleForecasting <- function(bm.em,
                                        metric.filter = NULL,
                                        compress = TRUE,
                                        nb.cpu = 1,
+                                       na.rm = TRUE,
                                        ...)
 {
   .bm_cat("Do Ensemble Models Projection")
   
   ## 0. Check arguments ---------------------------------------------------------------------------
-  args <- .BIOMOD_EnsembleForecasting.check.args(bm.em, bm.proj, proj.name, new.env, new.env.xy,
-                                                 models.chosen, metric.binary, metric.filter, ...)
+  args <- .BIOMOD_EnsembleForecasting.check.args(bm.em = bm.em,
+                                                 bm.proj = bm.proj, 
+                                                 proj.name = proj.name, 
+                                                 new.env = new.env, 
+                                                 new.env.xy = new.env.xy,
+                                                 models.chosen = models.chosen, 
+                                                 metric.binary = metric.binary, 
+                                                 metric.filter = metric.filter, 
+                                                 na.rm = na.rm, 
+                                                 ...)
   for (argi in names(args)) { assign(x = argi, value = args[[argi]]) }
   rm(args)
   
@@ -324,10 +337,11 @@ BIOMOD_EnsembleForecasting <- function(bm.em,
                         , on_0_1000 = on_0_1000
                         , data_as_formal_predictions = TRUE
                         , filename = filename
-                        , mod.name = em.name)
+                        , mod.name = em.name
+                        , na.rm = na.rm)
       
-      if(do.stack){
-        if(proj_is_raster){
+      if (do.stack) {
+        if (proj_is_raster) {
           return(wrap(ef.tmp)) 
         } else {
           return(ef.tmp)
@@ -539,7 +553,8 @@ BIOMOD_EnsembleForecasting <- function(bm.em,
 .BIOMOD_EnsembleForecasting.check.args <- function(bm.em, bm.proj, proj.name
                                                    , new.env, new.env.xy
                                                    , models.chosen
-                                                   , metric.binary, metric.filter, ...)
+                                                   , metric.binary, metric.filter,
+                                                   na.rm, ...)
 {
   args <- list(...)
   
@@ -683,6 +698,9 @@ BIOMOD_EnsembleForecasting <- function(bm.em,
   } else {
     new.env.xy <- as.data.frame(new.env.xy)
   }
+  
+  ## 11. Check na.rm ------------------------------------------------------
+  stopifnot(is.logical(na.rm))
   
   return(list(bm.em = bm.em,
               bm.proj = bm.proj,

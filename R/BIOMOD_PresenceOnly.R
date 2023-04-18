@@ -186,19 +186,23 @@ BIOMOD_PresenceOnly <- function(bm.mod = NULL,
   
   ## 1. Get calib.lines ------------------------------------------------------
   if (!is.null(bm.mod)) {
-    calib.lines <- get_calib_lines(bm.mod)[, 1]
+    calib.lines <- get_calib_lines(bm.mod)#[, 1]
+    bm.data <- get_formal_data(bm.mod)
+    resp.var <- get_formal_data(bm.mod, subinfo = "resp.var")
   } else {
-    calib.lines <- get_calib_lines(get_formal_data(bm.em))[, 1]
+    calib.lines <- get_calib_lines(get_formal_data(bm.em))#[, 1]
+    bm.data <- get_formal_data(get_formal_data(bm.em))
+    resp.var <- get_formal_data(get_formal_data(bm.em), subinfo = "resp.var")
   }
-  calib.notNA <- which(!is.na(calib.lines[, 1])) ## remove NA (pseudo-absences) from run1
-  calib.lines <- calib.lines[calib.notNA, ] ## keep only lines associated to sites (no pseudo-absences)
   
+
+  calib.notNA <- which(!is.na(resp.var))
+  calib.lines <- calib.lines[calib.notNA, ]
   
   ## 2. Individual models ----------------------------------
   if (!is.null(bm.mod)) {
     ## Get calibration lines and observations
-    myResp <- get_formal_data(bm.mod)@data.species
-    myResp <- myResp[calib.notNA] ## keep only lines associated to sites (no pseudo-absences)
+    myResp <- resp.var[calib.notNA] ## keep only lines associated to sites (no pseudo-absences)
     
     ## Get evaluation scores
     myEvalMod <- get_evaluations(bm.mod)
@@ -229,7 +233,21 @@ BIOMOD_PresenceOnly <- function(bm.mod = NULL,
     ## Get evaluation scores
     myEvalEM <- get_evaluations(bm.em)
     if (!is.null(bm.mod)) {
-      myEvalMod <- do.call(rbind, list(list(myEvalMod, myEvalEM), fill = TRUE))
+      full.colnames <- c("full.name", "PA", "run", "algo",
+                         "metric.eval", "cutoff", 
+                         "sensitivity", "specificity", "calibration", 
+                         "validation", "evaluation",
+                         "merged.by.PA", "merged.by.run", "merged.by.algo", "filtered.by")
+      
+      myEvalMod$merged.by.PA <- NA
+      myEvalMod$merged.by.run <- NA
+      myEvalMod$merged.by.algo <- NA
+      myEvalMod$filtered.by <- NA
+      myEvalEM$PA <- NA
+      myEvalEM$run <- NA
+      
+      myEvalMod <- rbind(myEvalMod[,full.colnames],
+                         myEvalEM[,full.colnames])
     } else {
       myEvalMod <- myEvalEM
     }
@@ -258,9 +276,9 @@ BIOMOD_PresenceOnly <- function(bm.mod = NULL,
           proj.name = paste(bm.em@modeling.id, "cv_EF_bg", sep = "_"))
       } else {
         myPredEM <- BIOMOD_EnsembleForecasting(
-            bm.em = bm.em,
-            new.env = bg.env,
-            proj.name = paste(bm.em@modeling.id, "cv_EF_bg", sep = "_"))
+          bm.em = bm.em,
+          new.env = bg.env,
+          proj.name = paste(bm.em@modeling.id, "cv_EF_bg", sep = "_"))
       }
       myPredEM <- .get_list_predictions(bm.out = myPredEM, evaluation = FALSE)
     }
@@ -288,20 +306,23 @@ BIOMOD_PresenceOnly <- function(bm.mod = NULL,
     ## Get model informations
     full.name <- boyce.eval[i, 1]
     tmp <- strsplit(as.character(full.name), split = "_")[[1]]
-    run <- tmp[c(grep("RUN", tmp), grep("allRun", tmp), grep("mergedRun", tmp))]
-    
+    length.tmp <- length(tmp)
+    # run <- tmp[c(grep("RUN", tmp), grep("allRun", tmp), grep("mergedRun", tmp))]
+    run <- 
+      paste0(
+        "_",
+        paste0(tmp[c(length.tmp - 2, length.tmp - 1)], 
+               collapse = "_")
+      )
+    # message(run)
     ## Get evaluation lines
     if (length(run) == 0) {
       ind.eval = NULL
     } else {
-      if (run == "mergedRun") {
+      if (grepl(run, pattern = "allRun") | grepl(run, pattern = "mergedRun")) {
         ind.eval = 1:nrow(calib.lines) 
       } else {
-        if (inherits(calib.lines, "matrix")) {
-          ind.eval = which(calib.lines[, paste0("_", run)] == FALSE) ## NOT WORKING : need PA + run col name
-        } else {
-          ind.eval = which(calib.lines == FALSE)
-        }
+          ind.eval = which(!calib.lines[, run])
       }
     }
     
@@ -481,9 +502,9 @@ BIOMOD_PresenceOnly <- function(bm.mod = NULL,
   ## 5. Check MPA & Evaluation data ---------------------------------------------
   if ((!is.null(bm.mod) && bm.mod@has.evaluation.data) ||
       (is.null(bm.mod) && get_formal_data(bm.em)@has.evaluation.data)) {
-        cat("\n      ! Evaluation data will be ignored for MPA-related calculations")
-      }
-    
+    cat("\n      ! Evaluation data will be ignored for MPA-related calculations")
+  }
+  
   
   return(list(bm.mod = bm.mod,
               bm.em = bm.em,
