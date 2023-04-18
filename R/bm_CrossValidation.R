@@ -298,7 +298,11 @@ bm_CrossValidation <- function(bm.format,
             }
       ) != 2)
   
-  if(length(which.validation.unbalanced) > 0) {
+  # Models with allRun have no validation
+  which.validation.unbalanced <- 
+    which.validation.unbalanced[which(!grepl(names(which.validation.unbalanced), pattern = "allRun"))]
+  
+  if (length(which.validation.unbalanced) > 0) {
     cat("\n   !!! Some validation dataset do not have both presences and absences: ", 
         paste0(colnames(out)[which.validation.unbalanced], collapse = ", "))
     warning("Some validation repetion do not have both presences and absences")
