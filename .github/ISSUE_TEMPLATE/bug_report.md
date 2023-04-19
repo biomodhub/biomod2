@@ -14,7 +14,9 @@ _Please use screenshots only when you cannot copy-paste the object, e.g. for fig
 A short description of the error and its context.
 
 **Code used to get the error**
-Please add the code used to reproduce your error, starting with `BIOMOD_FormatingData` up to the function that bugged. Please add as well the output of `show` for the different object used or generated. 
+Please add the code used to reproduce your error, starting with `BIOMOD_FormatingData` up to the function that bugged. Please add as well :
+1. the output of `show` for the different object used or generated. 
+2. the console output of the function for which an error occurred.
 
 ```
 # Example for an error in BIOMOD_EnsembleForecasting
@@ -42,10 +44,7 @@ show(myExplFuture) # if projecting on a new environment raster
 # paste output here
 
 myBiomodEMProj <- BIOMOD_EnsembleForecasting( ** write arguments here **)
-show(myBiomodEMProj)
-# paste output here
-show(myExplFuture) # if projecting on a new environment raster
-# paste output here
+# paste BIOMOD_EnsembleForecasting console output here with the error
 ```
 
 **Environment Information**
