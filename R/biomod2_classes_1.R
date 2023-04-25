@@ -2051,15 +2051,7 @@ setClass("BIOMOD.models.options",
            }
            ## MAXNET
            ## As of 2022/11/22 options check for MAXNET are missing 
-           
-           ## MAXNET (MAXENT.Tsuruoka) --> Obsolete
-           ### TO BE DONE ===
-           # 		       if(!is.numeric(object@MAXENT.Tsuruoka$l1_regularizer)){ cat("\nMAXENT.Tsuruoka$l1_regularizer must be a numeric"); test <- FALSE }
-           # 		       if(!is.numeric(object@MAXENT.Tsuruoka$l2_regularizer)){ cat("\nMAXENT.Tsuruoka$l2_regularizer must be a numeric"); test <- FALSE }
-           # 		       if(!is.logical(object@MAXENT.Tsuruoka$use_sgd)){ cat("\nMAXENT.Tsuruoka$use_sgd must be a logical"); test <- FALSE }
-           # 		       if(!is.numeric(object@MAXENT.Tsuruoka$set_heldout)){ cat("\nMAXENT.Tsuruoka$set_heldout must be a numeric"); test <- FALSE }
-           # 		       if(!is.logical(object@MAXENT.Tsuruoka$verbose)){ cat("\nMAXENT.Tsuruoka$verbose must be a logical"); test <- FALSE }
-           
+
            return(test)
          }
 )
@@ -2212,14 +2204,7 @@ setMethod('show', signature('BIOMOD.models.options'),
             cat("\n     regfun = <function> )")
             cat("\n)")
             
-            # ## MAXENT.Tsuruoka
-            # cat("\n")
-            # cat("\nMAXENT.Tsuruoka = list( l1_regularizer = ", object@MAXENT.Tsuruoka$l1_regularizer, ",", sep="")
-            # cat("\n                        l2_regularizer = ", object@MAXENT.Tsuruoka$l2_regularizer, ",", sep="")
-            # cat("\n                        use_sgd = ", object@MAXENT.Tsuruoka$use_sgd, ",", sep="")
-            # cat("\n                        set_heldout = ", object@MAXENT.Tsuruoka$set_heldout, ",", sep="")
-            # cat("\n                        verbose = ", object@MAXENT.Tsuruoka$verbose, ")", sep="")
-            
+
             .bm_cat()
           }
 )
