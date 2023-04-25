@@ -15,6 +15,14 @@ vignette: >
 
 ### <i class="fas fa-feather"></i> 2023 
 
+#### 4.2-4 Xgboost and Tuning
+
+##### Major Changes
+- Added `XGBOOST` as a new possible model.
+
+##### Internal 
+- removed commented code on `MAXENT.Tsuruoka`.
+
 #### 4.2-3 Cross-Validation and Pseudo-Absences (2023-04-04)
 
 ##### Major Changes
