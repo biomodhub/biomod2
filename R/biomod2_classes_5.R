@@ -482,12 +482,12 @@ setMethod('predict2', signature(object = 'EMci_biomod2_model', newdata = "SpatRa
               side <- args$side
 
               if (is.null(mean_prediction)) { 
-                mean_prediction <- app(newdata, mean, wopt = list(names = mod.name,
-                                                                  na.rm = na.rm))
+                mean_prediction <- app(newdata, mean, wopt = list(names = mod.name),
+                                       na.rm = na.rm)
               }
               if (is.null(sd_prediction)) { 
-                sd_prediction <- app(newdata, sd, wopt = list(names = mod.name,
-                                                              na.rm = na.rm)) 
+                sd_prediction <- app(newdata, sd, wopt = list(names = mod.name),
+                                     na.rm = na.rm) 
               }
               
               ci_prediction <-  switch(

@@ -12,6 +12,7 @@ BIOMOD_EnsembleModeling(
   metric.select = "all",
   metric.select.thresh = NULL,
   metric.select.table = NULL,
+  metric.select.dataset = NULL,
   metric.eval = c("KAPPA", "TSS", "ROC"),
   var.import = 0,
   EMci.alpha = 0.05,
@@ -58,11 +59,17 @@ A \code{vector} of \code{numeric} values corresponding to the minimum scores (on
 \code{metric.select}) below which single models will be excluded from the ensemble model 
 building}
 
-\item{metric.select.table}{(\emph{optional, default} \code{NULL}) \cr 
-If \code{metric.select = 'user.defined'}, a \code{data.frame} containing evaluation scores 
-calculated for each single models and that will be compared to \code{metric.select.thresh} 
-values to exclude some of them from the ensemble model building, with \code{metric.select} 
-rownames, and \code{models.chosen} colnames}
+\item{metric.select.table}{(\emph{optional, default} \code{NULL}) \cr If
+\code{metric.select = 'user.defined'}, a \code{data.frame} containing
+evaluation scores calculated for each single models and that will be
+compared to \code{metric.select.thresh} values to exclude some of them
+from the ensemble model building, with \code{metric.select} rownames, and
+\code{models.chosen} colnames}
+
+\item{metric.select.dataset}{(\emph{optional, default} \code{'validation'}
+\emph{if possible}). A character determining which dataset should be used
+to filter and/or weigh the ensemble models should be among 'evaluation',
+'validation' or 'calibration'.}
 
 \item{metric.eval}{a \code{vector} containing evaluation metric names to be used, must 
 be among \code{ROC}, \code{TSS}, \code{KAPPA}, \code{ACCURACY}, \code{BIAS}, \code{POD}, 
@@ -180,32 +187,38 @@ conditions (see Details).
 
   \item{Evaluation metrics}{
   \itemize{
-    \item{\bold{\code{metric.select}} : }{the selected metrics must be chosen among the ones used 
-    within the \code{\link{BIOMOD_Modeling}} function to build the \code{model.output} object, 
-    unless \code{metric.select = 'user.defined'} and therefore values will be provided through 
-    the \code{metric.select.table} parameter. \cr In the case of the selection of several 
-    metrics, they will be used at different steps of the ensemble modeling function : 
+    \item{\bold{\code{metric.select}} : }{the selected metrics must be chosen among the ones used
+    within the \code{\link{BIOMOD_Modeling}} function to build the \code{model.output} object,
+    unless \code{metric.select = 'user.defined'} and therefore values will be provided through
+    the \code{metric.select.table} parameter. \cr In the case of the selection of several
+    metrics, they will be used at different steps of the ensemble modeling function :
     \enumerate{
       \item remove \emph{low quality} single models, having a score lower than
       \code{metric.select.thresh}
-      \item perform the binary transformation needed if \code{'EMca'} 
+      \item perform the binary transformation needed if \code{'EMca'}
       was given to argument \code{em.algo}
       \item weight models if \code{'EMwmean'} was given to argument \code{em.algo}
     }
     }
-    \item{\bold{\code{metric.select.thresh}} : }{as many values as evaluation metrics 
-    selected with the \code{metric.select} parameter, and defining the corresponding quality 
-    thresholds below which the single models will be excluded from the ensemble model 
+    \item{\bold{\code{metric.select.thresh}} : }{as many values as evaluation metrics
+    selected with the \code{metric.select} parameter, and defining the corresponding quality
+    thresholds below which the single models will be excluded from the ensemble model
     building.}
-    \item{\bold{\code{metric.select.table}} : }{a \code{data.frame} must be given if 
-    \code{metric.select = 'user.defined'} to allow the use of evaluation metrics other than 
-    those calculated within \pkg{biomod2}. The \code{data.frame} must contain as many columns 
-    as \code{models.chosen} with matching names, and as many rows as evaluation metrics to be 
-    used. The number of rows must match the length of the \code{metric.select.thresh} 
-    parameter. The values contained in the \code{data.frame} will be compared to those defined 
-    in \code{metric.select.thresh} to remove \emph{low quality} single models from 
+    \item{\bold{\code{metric.select.table}} : }{a \code{data.frame} must be given if
+    \code{metric.select = 'user.defined'} to allow the use of evaluation metrics other than
+    those calculated within \pkg{biomod2}. The \code{data.frame} must contain as many columns
+    as \code{models.chosen} with matching names, and as many rows as evaluation metrics to be
+    used. The number of rows must match the length of the \code{metric.select.thresh}
+    parameter. The values contained in the \code{data.frame} will be compared to those defined
+    in \code{metric.select.thresh} to remove \emph{low quality} single models from
     the ensemble model building.}
-    \item{\bold{\code{metric.eval}} : }{the selected metrics will be used to validate/evaluate 
+    \item{\bold{\code{metric.select.dataset}} : }{a \code{character} determining the dataset
+    which evaluation metric should be used to filter and/or weigh the
+    ensemble models. Should be among \code{evaluation}, \code{validation} or
+    \code{calibration}. By default \code{BIOMOD_EnsembleModeling} will use
+    the validation dataset unless no validation is available in which case
+    calibration dataset are used.}
+    \item{\bold{\code{metric.eval}} : }{the selected metrics will be used to validate/evaluate
     the ensemble models built}
   }
   }

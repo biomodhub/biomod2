@@ -173,7 +173,7 @@ myExpl <- terra::crop(myExpl, myExtent)
 }
 
 
-# ---------------------------------------------------------------
+# --------------------------------------------------------------- #
 # Create the different pseudo-absence datasets
 
 # Transform true absences into potential pseudo-absences

@@ -112,6 +112,7 @@ conditions (see Details).</p>
 <span>  metric.select <span class="op">=</span> <span class="st">"all"</span>,</span>
 <span>  metric.select.thresh <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  metric.select.table <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  metric.select.dataset <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  metric.eval <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"KAPPA"</span>, <span class="st">"TSS"</span>, <span class="st">"ROC"</span><span class="op">)</span>,</span>
 <span>  var.import <span class="op">=</span> <span class="fl">0</span>,</span>
 <span>  EMci.alpha <span class="op">=</span> <span class="fl">0.05</span>,</span>
@@ -173,11 +174,19 @@ building</p></dd>
 
 
 <dt>metric.select.table</dt>
-<dd><p>(<em>optional, default</em> <code>NULL</code>) <br> 
-If <code>metric.select = 'user.defined'</code>, a <code>data.frame</code> containing evaluation scores 
-calculated for each single models and that will be compared to <code>metric.select.thresh</code> 
-values to exclude some of them from the ensemble model building, with <code>metric.select</code> 
-rownames, and <code>models.chosen</code> colnames</p></dd>
+<dd><p>(<em>optional, default</em> <code>NULL</code>) <br> If
+<code>metric.select = 'user.defined'</code>, a <code>data.frame</code> containing
+evaluation scores calculated for each single models and that will be
+compared to <code>metric.select.thresh</code> values to exclude some of them
+from the ensemble model building, with <code>metric.select</code> rownames, and
+<code>models.chosen</code> colnames</p></dd>
+
+
+<dt>metric.select.dataset</dt>
+<dd><p>(<em>optional, default</em> <code>'validation'</code>
+<em>if possible</em>). A character determining which dataset should be used
+to filter and/or weigh the ensemble models should be among 'evaluation',
+'validation' or 'calibration'.</p></dd>
 
 
 <dt>metric.eval</dt>
@@ -318,30 +327,36 @@ folders created in the current working directory :</p><ol><li><p>a <em>models</e
 
 
   <dt>Evaluation metrics</dt>
-<dd><p></p><ul><li><p><b><code>metric.select</code></b> : the selected metrics must be chosen among the ones used 
-    within the <code><a href="BIOMOD_Modeling.html">BIOMOD_Modeling</a></code> function to build the <code>model.output</code> object, 
-    unless <code>metric.select = 'user.defined'</code> and therefore values will be provided through 
-    the <code>metric.select.table</code> parameter. <br> In the case of the selection of several 
-    metrics, they will be used at different steps of the ensemble modeling function : 
+<dd><p></p><ul><li><p><b><code>metric.select</code></b> : the selected metrics must be chosen among the ones used
+    within the <code><a href="BIOMOD_Modeling.html">BIOMOD_Modeling</a></code> function to build the <code>model.output</code> object,
+    unless <code>metric.select = 'user.defined'</code> and therefore values will be provided through
+    the <code>metric.select.table</code> parameter. <br> In the case of the selection of several
+    metrics, they will be used at different steps of the ensemble modeling function :
     </p><ol><li><p>remove <em>low quality</em> single models, having a score lower than
       <code>metric.select.thresh</code></p></li>
-<li><p>perform the binary transformation needed if <code>'EMca'</code> 
+<li><p>perform the binary transformation needed if <code>'EMca'</code>
       was given to argument <code>em.algo</code></p></li>
 <li><p>weight models if <code>'EMwmean'</code> was given to argument <code>em.algo</code></p></li>
 </ol></li>
-<li><p><b><code>metric.select.thresh</code></b> : as many values as evaluation metrics 
-    selected with the <code>metric.select</code> parameter, and defining the corresponding quality 
-    thresholds below which the single models will be excluded from the ensemble model 
+<li><p><b><code>metric.select.thresh</code></b> : as many values as evaluation metrics
+    selected with the <code>metric.select</code> parameter, and defining the corresponding quality
+    thresholds below which the single models will be excluded from the ensemble model
     building.</p></li>
-<li><p><b><code>metric.select.table</code></b> : a <code>data.frame</code> must be given if 
-    <code>metric.select = 'user.defined'</code> to allow the use of evaluation metrics other than 
-    those calculated within <span class="pkg">biomod2</span>. The <code>data.frame</code> must contain as many columns 
-    as <code>models.chosen</code> with matching names, and as many rows as evaluation metrics to be 
-    used. The number of rows must match the length of the <code>metric.select.thresh</code> 
-    parameter. The values contained in the <code>data.frame</code> will be compared to those defined 
-    in <code>metric.select.thresh</code> to remove <em>low quality</em> single models from 
+<li><p><b><code>metric.select.table</code></b> : a <code>data.frame</code> must be given if
+    <code>metric.select = 'user.defined'</code> to allow the use of evaluation metrics other than
+    those calculated within <span class="pkg">biomod2</span>. The <code>data.frame</code> must contain as many columns
+    as <code>models.chosen</code> with matching names, and as many rows as evaluation metrics to be
+    used. The number of rows must match the length of the <code>metric.select.thresh</code>
+    parameter. The values contained in the <code>data.frame</code> will be compared to those defined
+    in <code>metric.select.thresh</code> to remove <em>low quality</em> single models from
     the ensemble model building.</p></li>
-<li><p><b><code>metric.eval</code></b> : the selected metrics will be used to validate/evaluate 
+<li><p><b><code>metric.select.dataset</code></b> : a <code>character</code> determining the dataset
+    which evaluation metric should be used to filter and/or weigh the
+    ensemble models. Should be among <code>evaluation</code>, <code>validation</code> or
+    <code>calibration</code>. By default <code>BIOMOD_EnsembleModeling</code> will use
+    the validation dataset unless no validation is available in which case
+    calibration dataset are used.</p></li>
+<li><p><b><code>metric.eval</code></b> : the selected metrics will be used to validate/evaluate
     the ensemble models built</p></li>
 </ul><p></p></dd>
 

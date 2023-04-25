@@ -188,7 +188,7 @@ setGeneric("BIOMOD.formated.data", def = function(sp, env, ...) { standardGeneri
   available.types.resp <- c('integer', 'numeric', 'data.frame', 'matrix',
                             'SpatialPointsDataFrame', 'SpatialPoints', 'SpatVector')
   .fun_testIfInherits(TRUE, "sp", sp, available.types.resp)
-
+  
   ## SpatialPoints, SpatialPointsDataFrame, SpatVector
   if (inherits(sp, c('SpatialPoints','SpatVector'))) {
     .tmp <- .check_formating_spatial(resp.var = sp,
@@ -934,7 +934,7 @@ setMethod('plot', signature(x = 'BIOMOD.formated.data', y = "missing"),
   allPA <- allrun <- NA
   if (!is.null(calib.lines)) {
     .fun_testIfInherits(TRUE, "calib.lines", calib.lines, c("matrix"))
-
+    
     expected_CVnames <- c(paste0("_allData_RUN", seq_len(ncol(calib.lines))), "_allData_allRun")
     if (inherits(x, "BIOMOD.formated.data.PA")) {
       expected_CVnames <- c(expected_CVnames
@@ -1083,14 +1083,24 @@ setMethod('show', signature('BIOMOD.formated.data'),
             }
             
             if(inherits(object, "BIOMOD.formated.data.PA")){
+              PA.length <- sapply(object@PA.table, function(this.pa){
+                return(length(which(this.pa))
+                - length(which(object@data.species == 1)))
+              })
+              PA.unique <- unique(PA.length)
+              PA.dataset <- sapply(PA.unique, function(this.PA){
+                paste0(names(PA.length)[which(PA.length == this.PA)], collapse = ", ")
+              })
               cat(
                 "\n\n",
                 ncol(object@PA.table),
                 'Pseudo Absences dataset available (',
-                colnames(object@PA.table),
+                paste0(colnames(object@PA.table), collapse = ", "),
                 ") with ",
-                sum(object@PA.table[, 1], na.rm = TRUE) - sum(object@data.species, na.rm = TRUE),
-                'absences in each (true abs + pseudo abs)',
+                paste0(sapply(seq_len(length(PA.unique)), function(i){
+                  paste0(PA.unique[i], " (", PA.dataset[i],")")
+                }), collapse = ", "),
+                'pseudo absences',
                 fill = .Options$width
               )
             }
@@ -1170,20 +1180,20 @@ setMethod('summary', signature(object = 'BIOMOD.formated.data'),
             output <- data.frame("dataset" = "initial",
                                  "run" = NA,
                                  "PA" = NA,
-                                 "Presences" = sum(object@data.species, na.rm = TRUE),
-                                 "True_Absences" = sum(object@data.species == 0, na.rm = TRUE),
+                                 "Presences" = length(which(object@data.species == 1)),
+                                 "True_Absences" = length(which(object@data.species == 0)),
                                  "Pseudo_Absences" = 0,
-                                 "Undefined" = sum(is.na(object@data.species), na.rm = TRUE))
+                                 "Undefined" = length(which(is.na(object@data.species))))
             
             if (object@has.data.eval) {
               output <- rbind(output,
                               data.frame("dataset" = "evaluation",
                                          "run" = NA,
                                          "PA" = NA,
-                                         "Presences" = sum(object@eval.data.species, na.rm = TRUE),
-                                         "True_Absences" = sum(object@eval.data.species == 0, na.rm = TRUE),
+                                         "Presences" =  length(which(object@eval.data.species == 1)),
+                                         "True_Absences" = length(which(object@eval.data.species == 0)),
                                          "Pseudo_Absences" = 0,
-                                         "Undefined" = sum(is.na(object@eval.data.species), na.rm = TRUE)))
+                                         "Undefined" = length(which(is.na(object@eval.data.species)))))
             }
             
             PA <- run <- NA
@@ -1199,47 +1209,48 @@ setMethod('summary', signature(object = 'BIOMOD.formated.data'),
               output <- 
                 rbind(
                   output,
-                  foreach(this_PA = PA, this_run = run, .combine = 'rbind') %do% {
-                    if (is.na(this_PA) || this_PA == 'allData') { # run only
-                      this_name <- paste0("_", this_PA, "_", this_run)
-                      this_calib <- calib.lines[ , this_name]
-                      this_valid <- ! calib.lines[ , this_name]
-                    } else if (is.na(this_run)) { # PA only
-                      this_calib <- object@PA.table[ , this_PA]
-                    } else { # PA+run
-                      this_name <- paste0("_", this_PA, "_", this_run)
-                      this_calib <- calib.lines[ , this_name] & object@PA.table[ , this_PA]
-                      this_valid <- ! calib.lines[ , this_name] & object@PA.table[ , this_PA]
-                    }
-                    calib.resp <- object@data.species[which(this_calib)]
-                    tmp <- data.frame("dataset" = "calibration",
-                                      "run" = this_run,
-                                      "PA" = this_PA,
-                                      "Presences" = length(which(calib.resp == 1)),
-                                      "True_Absences" = length(which(calib.resp == 0)),
-                                      "Pseudo_Absences" = 
-                                        length(which(this_calib)) - 
-                                        length(which(calib.resp == 1)) -
-                                        length(which(calib.resp == 0)),
-                                      "Undefined" = NA)
-                    
-                    if (!is.na(this_run)) { 
-                      valid.resp <- object@data.species[this_valid]
-                      tmp <- rbind(tmp,
-                                   data.frame("dataset" = "validation",
-                                              "run" = this_run,
-                                              "PA" = this_PA,
-                                              "Presences" = length(which(valid.resp == 1)),
-                                              "True_Absences" = length(which(valid.resp == 0)),
-                                              "Pseudo_Absences" = 
-                                                length(valid.resp) - 
-                                                length(which(valid.resp == 1)) -
-                                                length(which(valid.resp == 0)),
-                                              "Undefined" = NA))
+                  foreach(this_run = run, .combine = 'rbind') %:% 
+                    foreach(this_PA = PA, .combine = 'rbind') %do% {
+                      if (is.na(this_PA) || this_PA == 'allData') { # run only
+                        this_name <- paste0("_", this_PA, "_", this_run)
+                        this_calib <- calib.lines[ , this_name]
+                        this_valid <- ! calib.lines[ , this_name]
+                      } else if (is.na(this_run)) { # PA only
+                        this_calib <- ifelse(is.na(object@PA.table[ , this_PA]), FALSE, TRUE)
+                      } else { # PA+run
+                        this_name <- paste0("_", this_PA, "_", this_run)
+                        this_calib <- calib.lines[ , this_name] & object@PA.table[ , this_PA]
+                        this_valid <- ! calib.lines[ , this_name] & object@PA.table[ , this_PA]
+                      }
+                      calib.resp <- object@data.species[which(this_calib)]
+                      tmp <- data.frame("dataset" = "calibration",
+                                        "run" = this_run,
+                                        "PA" = this_PA,
+                                        "Presences" = length(which(calib.resp == 1)),
+                                        "True_Absences" = length(which(calib.resp == 0)),
+                                        "Pseudo_Absences" = 
+                                          length(which(this_calib)) - 
+                                          length(which(calib.resp == 1)) -
+                                          length(which(calib.resp == 0)),
+                                        "Undefined" = NA)
                       
-                    }
-                    return(tmp) # end foreach
-                  })
+                      if (!is.na(this_run)) { 
+                        valid.resp <- object@data.species[this_valid]
+                        tmp <- rbind(tmp,
+                                     data.frame("dataset" = "validation",
+                                                "run" = this_run,
+                                                "PA" = this_PA,
+                                                "Presences" = length(which(valid.resp == 1)),
+                                                "True_Absences" = length(which(valid.resp == 0)),
+                                                "Pseudo_Absences" = 
+                                                  length(valid.resp) - 
+                                                  length(which(valid.resp == 1)) -
+                                                  length(which(valid.resp == 0)),
+                                                "Undefined" = NA))
+                        
+                      }
+                      return(tmp) # end foreach
+                    })
             } 
             output
           }
@@ -1266,11 +1277,11 @@ setMethod('summary', signature(object = 'BIOMOD.formated.data'),
 }
 
 
-## --------------------------------------------------------------------------- #
+## ---------------------------------------------------------------------#
 ## 2. BIOMOD.formated.data.PA ------------------------------------------------
 ## this class inherits from BIOMOD.formated.data and have one more slot 'PA', 
 ## giving PA selected
-## --------------------------------------------------------------------------- #
+## -------------------------------------------------------------------- #
 
 ##' @name BIOMOD.formated.data.PA
 ##' @aliases BIOMOD.formated.data.PA-class
@@ -1488,9 +1499,11 @@ setMethod('BIOMOD.formated.data.PA', signature(sp = 'numeric', env = 'SpatRaster
   if (inherits(env, 'SpatRaster')) {
     categorical_var <- names(env)[is.factor(env)] 
     
-    output <- check_duplicated_cells(env, xy, sp, filter.raster)
+    output <- check_duplicated_cells(env, xy, sp, filter.raster, 
+                                     PA.user.table = PA.user.table)
     xy <- output$xy
     sp <- output$sp
+    PA.user.table <- output$PA.user.table
     rm(output)
   }
   
@@ -1552,7 +1565,6 @@ setMethod('BIOMOD.formated.data.PA', signature(sp = 'numeric', env = 'SpatRaster
                                 eval.xy = eval.xy,
                                 na.rm = na.rm,
                                 filter.raster = filter.raster)
-    
     BFDP <- new('BIOMOD.formated.data.PA',
                 dir.name = BFD@dir.name,
                 sp.name = BFD@sp.name,
@@ -1609,6 +1621,7 @@ setMethod('BIOMOD.formated.data.PA', signature(sp = 'numeric', env = 'SpatRaster
 ##' @slot RF a \code{list} containing RF options
 ##' @slot MAXENT a \code{list} containing MAXENT options
 ##' @slot MAXNET a \code{list} containing MAXNET options
+##' @slot XGBOOST a \code{list} containing XGBOOST options
 ##' 
 ##' @param object a \code{\link{BIOMOD.models.options}} object
 ##' 
@@ -1648,7 +1661,8 @@ setClass("BIOMOD.models.options",
                         MARS = "list",
                         RF = "list",
                         MAXENT = "list",
-                        MAXNET = "list"),
+                        MAXNET = "list",
+                        XGBOOST = "list"),
          prototype(GLM = list(type = 'quadratic',
                               interaction.level = 0,
                               myFormula = NULL,
@@ -1736,7 +1750,8 @@ setClass("BIOMOD.models.options",
                                  defaultprevalence = 0.5),
                    MAXNET = list(myFormula = NULL,
                                  regmult = 1,
-                                 regfun = maxnet::maxnet.default.regularization)
+                                 regfun = maxnet::maxnet.default.regularization),
+                   XGBOOST = list() #empty for now
          ),
          validity = function(object) {
            test <- TRUE
@@ -2039,15 +2054,7 @@ setClass("BIOMOD.models.options",
            }
            ## MAXNET
            ## As of 2022/11/22 options check for MAXNET are missing 
-           
-           ## MAXNET (MAXENT.Tsuruoka) --> Obsolete
-           ### TO BE DONE ===
-           # 		       if(!is.numeric(object@MAXENT.Tsuruoka$l1_regularizer)){ cat("\nMAXENT.Tsuruoka$l1_regularizer must be a numeric"); test <- FALSE }
-           # 		       if(!is.numeric(object@MAXENT.Tsuruoka$l2_regularizer)){ cat("\nMAXENT.Tsuruoka$l2_regularizer must be a numeric"); test <- FALSE }
-           # 		       if(!is.logical(object@MAXENT.Tsuruoka$use_sgd)){ cat("\nMAXENT.Tsuruoka$use_sgd must be a logical"); test <- FALSE }
-           # 		       if(!is.numeric(object@MAXENT.Tsuruoka$set_heldout)){ cat("\nMAXENT.Tsuruoka$set_heldout must be a numeric"); test <- FALSE }
-           # 		       if(!is.logical(object@MAXENT.Tsuruoka$verbose)){ cat("\nMAXENT.Tsuruoka$verbose must be a logical"); test <- FALSE }
-           
+
            return(test)
          }
 )
@@ -2200,14 +2207,7 @@ setMethod('show', signature('BIOMOD.models.options'),
             cat("\n     regfun = <function> )")
             cat("\n)")
             
-            # ## MAXENT.Tsuruoka
-            # cat("\n")
-            # cat("\nMAXENT.Tsuruoka = list( l1_regularizer = ", object@MAXENT.Tsuruoka$l1_regularizer, ",", sep="")
-            # cat("\n                        l2_regularizer = ", object@MAXENT.Tsuruoka$l2_regularizer, ",", sep="")
-            # cat("\n                        use_sgd = ", object@MAXENT.Tsuruoka$use_sgd, ",", sep="")
-            # cat("\n                        set_heldout = ", object@MAXENT.Tsuruoka$set_heldout, ",", sep="")
-            # cat("\n                        verbose = ", object@MAXENT.Tsuruoka$verbose, ")", sep="")
-            
+
             .bm_cat()
           }
 )

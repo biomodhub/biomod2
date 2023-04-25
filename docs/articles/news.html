@@ -168,6 +168,13 @@ automatically saved.</li>
 uses a 0-1 range (instead of 0-100)</li>
 <li>Deprecated arguments for <code>BIOMOD_EnsembleModeling</code> now
 gives an error.</li>
+<li>added argument <code>metric.select.dataset</code> to
+<code>BIOMOD_EnsembleModeling</code> to choose the dataset which
+evaluation metric should be used to filter and/or weigh the ensemble
+models. Default value is now ‘validation’ instead of ‘evaluation’.</li>
+<li>added argument <code>na.rm</code> to
+<code>BIOMOD_EnsembleModeling</code> to harmonize the management of
+<code>NA</code> among individual model predictions.</li>
 </ul>
 </div>
 <div class="section level5">
@@ -192,13 +199,17 @@ numerous raster).</li>
 <li>fixed Ensemble Models based on models without cross-validation
 (“allRun”)</li>
 <li>model is now robust to using <code>data.table</code> object (that
-are converted into standard <code>data.frame</code>)</li>
+are converted into standard <code>data.frame</code>).</li>
 <li>fixed projection raster name when using
 <code>do.stack = FALSE</code> and <code>resp.name</code> with
 <code>.</code> inside.</li>
-<li>Added <code>na.rm</code> argument to
-<code>BIOMOD_EnsembleForecasting</code> to harmonize <code>NA</code>
-management among individual model predictions.</li>
+<li>fixed using user-defined pseudo-absences along with
+<code>filter.raster = TRUE</code> in <code>bm_PseudoAbsence</code>.</li>
+<li>fixed weights calculation when using only one pseudo-absence
+dataset</li>
+<li>fixed summary and show method for
+<code>BIOMOD.formated.data.PA</code>
+</li>
 </ul>
 </div>
 <div class="section level5">

@@ -30,6 +30,8 @@ vignette: >
 * Improved management of categorical raster for both `terra` and `raster`
 * `CV.perc` (formerly `data.split.perc`) now uses a 0-1 range (instead of 0-100)
 * Deprecated arguments for `BIOMOD_EnsembleModeling` now gives an error. 
+* added argument `metric.select.dataset` to `BIOMOD_EnsembleModeling` to choose the dataset which evaluation metric should be used to filter and/or weigh the ensemble models. Default value is now 'validation' instead of 'evaluation'.
+* added argument `na.rm` to `BIOMOD_EnsembleModeling` to harmonize the management of `NA` among individual model predictions. 
 
 ##### Bugfix
 
@@ -39,10 +41,11 @@ vignette: >
 * Correct print for multiple values in `RF$sampsize` parameter in `BIOMOD_ModelingOptions`
 * Fixed layer name in `BIOMOD_Projection` and `BIOMOD_EnsembleForecasting` when `terraOption(todisk = TRUE)` is activated (for large or numerous raster).
 * fixed Ensemble Models based on models without cross-validation ("allRun")
-* model is now robust to using `data.table` object (that are converted into standard `data.frame`)
+* model is now robust to using `data.table` object (that are converted into standard `data.frame`).
 * fixed projection raster name when using `do.stack = FALSE` and `resp.name` with `.` inside.
-* Added `na.rm` argument to `BIOMOD_EnsembleForecasting` to harmonize `NA`
-management among individual model predictions.
+* fixed using user-defined pseudo-absences along with `filter.raster = TRUE` in `bm_PseudoAbsence`.
+* fixed weights calculation when using only one pseudo-absence dataset
+* fixed summary and show method for `BIOMOD.formated.data.PA`
 
 ##### Internal 
 
