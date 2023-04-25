@@ -61,7 +61,6 @@ reference:
       - "BIOMOD_EnsembleForecasting"
       - "BIOMOD_RangeSize"
       - "BIOMOD_LoadModels"
-      - "BIOMOD_PresenceOnly"
   - subtitle: Secundary functions
     contents:
       - "bm_MakeFormula"

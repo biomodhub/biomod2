@@ -322,7 +322,7 @@ BIOMOD_PresenceOnly <- function(bm.mod = NULL,
       if (grepl(run, pattern = "allRun") | grepl(run, pattern = "mergedRun")) {
         ind.eval = 1:nrow(calib.lines) 
       } else {
-          ind.eval = which(!calib.lines[, run])
+        ind.eval = which(!calib.lines[, run])
       }
     }
     
@@ -418,8 +418,11 @@ BIOMOD_PresenceOnly <- function(bm.mod = NULL,
 
 .get_list_predictions <- function(bm.out, evaluation = FALSE)
 {
-  myPred <- get_predictions(bm.out, evaluation = evaluation)
-  myPred <- tapply(X = myPred$pred, INDEX = list(myPred$points, myPred$full.name), FUN = mean)
+  # myPred <- get_predictions(bm.out, evaluation = evaluation)
+  # myPred <- tapply(X = myPred$pred, INDEX = list(myPred$points, myPred$full.name), FUN = mean)
+  
+  myPred <- get_predictions(bm.out, evaluation = evaluation, model.as.col = TRUE)
+  
   # myPred <- as.data.frame(myPred)
   myPred.list <- lapply(1:ncol(myPred), function(x) myPred[, x])
   names(myPred.list) <- colnames(myPred)

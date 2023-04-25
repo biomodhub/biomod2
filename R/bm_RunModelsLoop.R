@@ -1076,7 +1076,8 @@ bm_RunModel <- function(model, run.name, dir.name = '.'
   ## 6. Check models.eval.meth arguments --------------------------------------
   metric.eval <- unique(metric.eval)
   avail.eval.meth.list <- c('TSS', 'KAPPA', 'ACCURACY', 'BIAS', 'POD', 'FAR', 'POFD'
-                            , 'SR', 'CSI', 'ETS', 'HK', 'HSS', 'OR', 'ORSS', 'ROC')
+                            , 'SR', 'CSI', 'ETS', 'HK', 'HSS', 'OR', 'ORSS', 'ROC'
+                            , 'BOYCE', 'MPA')
   # .fun_testIfIn(TRUE, "metric.eval", metric.eval, avail.eval.meth.list)
   if (sum(!(metric.eval %in% avail.eval.meth.list)) > 0) {
     tmp = which(metric.eval %in% avail.eval.meth.list)

@@ -472,11 +472,10 @@ BIOMOD_EnsembleModeling <- function(bm.mod,
       obs[is.na(obs)] <- 0
       
       ## get needed models predictions ----------------------------------------
-      needed_predictions <-
-        .get_needed_predictions(bm.mod, em.by, models.kept
-                                , metric.select, metric.select.thresh
-                                , metric.select.user, metric.select.table
-                                , metric.select.dataset, nb.cpu)
+      needed_predictions <- .get_needed_predictions(bm.mod, em.by, models.kept
+                                                    , metric.select, metric.select.thresh
+                                                    , metric.select.user, metric.select.table
+                                                    , metric.select.dataset, nb.cpu)
       
       ## LOOP over evaluation metrics ------------------------------------------
       em.out.eval <- foreach(eval.m = metric.select) %do%  {
@@ -897,6 +896,11 @@ BIOMOD_EnsembleModeling <- function(bm.mod,
         metric.select <- unique(get_evaluations(bm.mod)$metric.eval)
       }
       .fun_testIfIn(TRUE, "metric.select", metric.select, unique(get_evaluations(bm.mod)$metric.eval))
+      ## Remove MPA from metric.select
+      if ('MPA' %in% metric.select) {
+        metric.select.thresh <- metric.select.thresh[which(metric.select != 'MPA')]
+        metric.select <- metric.select[which(metric.select != 'MPA')]
+      }
     }
   }
   
@@ -952,7 +956,8 @@ BIOMOD_EnsembleModeling <- function(bm.mod,
   ## 7. Check metric.eval -----------------------------------------------------
   metric.eval <- unique(metric.eval)
   avail.eval.meth.list <- c('TSS', 'KAPPA', 'ACCURACY', 'BIAS', 'POD', 'FAR', 'POFD'
-                            , 'SR', 'CSI', 'ETS', 'HK', 'HSS', 'OR', 'ORSS', 'ROC')
+                            , 'SR', 'CSI', 'ETS', 'HK', 'HSS', 'OR', 'ORSS', 'ROC'
+                            , 'BOYCE', 'MPA')
   .fun_testIfIn(TRUE, "metric.eval", metric.eval, avail.eval.meth.list)
   
   ## 8. Check selected EM algo ------------------------------------------------

@@ -14,14 +14,25 @@
 ##'
 ##' @param metric.eval a \code{character} corresponding to the evaluation metric to be used, must 
 ##' be either \code{ROC}, \code{TSS}, \code{KAPPA}, \code{ACCURACY}, \code{BIAS}, \code{POD}, 
-##' \code{FAR}, \code{POFD}, \code{SR}, \code{CSI}, \code{ETS}, \code{HK}, \code{HSS}, \code{OR} 
-##' or \code{ORSS}
+##' \code{FAR}, \code{POFD}, \code{SR}, \code{CSI}, \code{ETS}, \code{HK}, \code{HSS}, \code{OR}, 
+##' \code{ORSS}, \code{BOYCE}, \code{MPA}
 ##' @param obs a \code{vector} of observed values (binary, \code{0} or \code{1})
 ##' @param fit a \code{vector} of fitted values (continuous)
 ##' @param nb.thresh an \code{integer} corresponding to the number of thresholds to be 
 ##' tested over the range of fitted values
 ##' @param threshold (\emph{optional, default} \code{NULL}) \cr 
 ##' A \code{numeric} corresponding to the threshold used to convert the given data
+##' @param boyce.bg.env (\emph{optional, default} \code{NULL}) \cr 
+##' A \code{matrix}, \code{data.frame}, \code{\link[terra:vect]{SpatVector}}
+##' or \code{\link[terra:rast]{SpatRaster}} object containing values of 
+##' environmental variables (in columns or layers) extracted from the background 
+##' (\emph{if presences are to be compared to background instead of absences or 
+##' pseudo-absences selected for modeling})
+##' \cr \emph{Note that old format from \pkg{raster} and \pkg{sp} are still supported such as 
+##' \code{RasterStack} and \code{SpatialPointsDataFrame} objects. }
+##' @param mpa.perc a \code{numeric} between \code{0} and \code{1} corresponding to the percentage 
+##' of correctly classified presences for Minimal Predicted Area (see \code{ecospat.mpa()} in 
+##' \pkg{ecospat})
 ##' @param misc a \code{matrix} corresponding to a contingency table
 ##'
 ##'
@@ -45,12 +56,37 @@
 ##' 
 ##' Note that if a value is given to \code{threshold}, no optimisation will be done., and 
 ##' only the score for this threshold will be returned.
+##' 
+##' The Boyce index returns \code{NA} values for \code{SRE} models because it can not be 
+##' calculated with binary predictions. \cr This is also the reason why some \code{NA} values 
+##' might appear for \code{GLM} models if they do not converge.
 ##'
+##' 
+##' @note In order to break dependency loop between packages \pkg{biomod2} and \pkg{ecospat}, 
+##' code of \code{ecospat.boyce()} and \code{ecospat.mpa()} in \pkg{ecospat})
+##' functions have been copied within this file from version 3.2.2 (august 2022).
+## \code{\link[ecospat]{ecospat.mpa}}) # generate R CMD Check error due 
+## to crossref missing ecospat package
+## code of \code{\link[ecospat]{ecospat.boyce}} and \code{\link[ecospat]{ecospat.mpa}} 
+## generate R CMD Check error due to crossref missing ecospat package 
+##'
+##'
+##' @references
+##' 
+##' \itemize{
+##'   \item Engler, R., Guisan, A., and Rechsteiner L. 2004. An improved approach for predicting 
+##'   the distribution of rare and endangered species from occurrence and pseudo-absence data. 
+##'   \emph{Journal of Applied Ecology}, \bold{41(2)}, 263-274.
+##'   \item Hirzel, A. H., Le Lay, G., Helfer, V., Randin, C., and Guisan, A. 2006. Evaluating 
+##'   the ability of habitat suitability models to predict species presences. \emph{Ecological 
+##'   Modelling}, \bold{199(2)}, 142-152.
+##' }
 ##'
 ##' @keywords models options evaluation
 ##' 
 ##'
-##' @seealso \code{\link{BIOMOD_Modeling}}, \code{\link{bm_RunModelsLoop}}, 
+##' @seealso \code{ecospat.boyce()} and \code{ecospat.mpa()} in \pkg{ecospat}, 
+##' \code{\link{BIOMOD_Modeling}}, \code{\link{bm_RunModelsLoop}}, 
 ##' \code{\link{BIOMOD_EnsembleModeling}}
 ##' @family Secundary functions
 ##' 
@@ -78,6 +114,7 @@
 ##'
 ##' 
 ##' @importFrom pROC roc coords auc
+##' @importFrom PresenceAbsence presence.absence.accuracy
 ##' 
 ##' @export
 ##' 
@@ -89,8 +126,15 @@ bm_FindOptimStat <- function(metric.eval = 'TSS',
                              obs,
                              fit,
                              nb.thresh = 100,
-                             threshold = NULL)
+                             threshold = NULL,
+                             boyce.bg.env = NULL,
+                             mpa.perc = 0.9)
 {
+  ## 0. Check arguments ---------------------------------------------------------------------------
+  args <- .bm_FindOptimStat.check.args(threshold, boyce.bg.env, mpa.perc)
+  for (argi in names(args)) { assign(x = argi, value = args[[argi]]) }
+  rm(args)
+  
   ## remove all unfinite values
   to_keep <- (is.finite(fit) & is.finite(obs))
   obs <- obs[to_keep]
@@ -108,8 +152,8 @@ bm_FindOptimStat <- function(metric.eval = 'TSS',
   }
   
   
-  if (metric.eval != 'ROC') { ## for all evaluation metrics other than ROC ------------------------
-    StatOptimum <- get_optim_value(metric.eval)
+  if (!(metric.eval %in% c('ROC', 'BOYCE', 'MPA')))
+  { ## for all evaluation metrics other than ROC, BOYCE, MPA --------------------------------------
     
     ## 1. get threshold values to be tested -----------------------------------
     if (is.null(threshold)) { # test a range of threshold to get the one giving the best score
@@ -144,6 +188,7 @@ bm_FindOptimStat <- function(metric.eval = 'TSS',
     }), bm_CalculateStat, metric.eval = metric.eval)
     
     ## 3. scale obtained scores and find best value ---------------------------
+    StatOptimum <- get_optim_value(metric.eval)
     calcStat <- 1 - abs(StatOptimum - calcStat)
     best.stat <- max(calcStat, na.rm = TRUE)
     cutoff <- median(valToTest[which(calcStat == best.stat)]) # if several values are selected
@@ -155,20 +200,85 @@ bm_FindOptimStat <- function(metric.eval = 'TSS',
     specificity <- (true.neg * 100) / sum(misc[, '0'])
     sensitivity <- (true.pos * 100) / sum(misc[, '1'])
     
-  } else { ## specific procedure for ROC value ----------------------------------------------------
+  } else if (metric.eval == 'ROC') { ## specific procedure for ROC value --------------------------
     roc1 <- roc(obs, fit, percent = TRUE, direction = "<", levels = c(0, 1))
     roc1.out <- coords(roc1, "best", ret = c("threshold", "sens", "spec"), transpose = TRUE)
     ## if two optimal values are returned keep only the first one
     if (!is.null(ncol(roc1.out))) { roc1.out <- roc1.out[, 1] }
     best.stat <- as.numeric(auc(roc1)) / 100
     cutoff <- as.numeric(roc1.out["threshold"])
-    sensitivity <- as.numeric(roc1.out["sensitivity"])
     specificity <- as.numeric(roc1.out["specificity"])
+    sensitivity <- as.numeric(roc1.out["sensitivity"])
+    
+  } else { ## specific procedure for BOYCE, MPA values --------------------------------------------
+    ## Prepare table to compute evaluation scores
+    DATA <- cbind(1:length(fit), obs, fit / 1000)
+    DATA[is.na(DATA[, 2]), 2] <- 0
+    DATA <- DATA[complete.cases(DATA), ]
+    cutoff <- sensitivity <- specificity <- best.stat <- NA
+    
+    if (metric.eval == "BOYCE") { ## Boyce index
+      boy <- ecospat.boyce(obs = fit[which(obs == 1)], fit = fit, PEplot = FALSE)
+      best.stat <- boy$cor
+      if (sum(boy$F.ratio < 1, na.rm = TRUE) > 0) {
+        cutoff <- round(boy$HS[max(which(boy$F.ratio < 1))], 0)
+      }
+    } else if (metric.eval == "MPA") {
+      cutoff <- ecospat.mpa(fit[which(obs == 1)], perc = mpa.perc)
+    }
+    
+    if (!is.na(cutoff / 1000)) {
+      EVAL <- presence.absence.accuracy(DATA, threshold = cutoff / 1000)
+      sensitivity <- EVAL$sensitivity * 100
+      specificity <- EVAL$specificity * 100
+    }
   }
   
   eval.out <- data.frame(metric.eval, cutoff, sensitivity, specificity, best.stat)
   return(eval.out)
 }
+
+
+# Check Arguments ---------------------------------------------------------------------------------
+.bm_FindOptimStat.check.args <- function(threshold, boyce.bg.env = NULL, mpa.perc = 0.9)
+{
+  ## 1. Check boyce.bg.env -----------------------------------------------------------
+  if (!is.null(boyce.bg.env)) {
+    available.types.resp <- c('numeric', 'data.frame', 'matrix', 'Raster',
+                              'SpatialPointsDataFrame', 'SpatVector', 'SpatRaster')
+    .fun_testIfInherits(TRUE, "boyce.bg.env", boyce.bg.env, available.types.resp)
+    
+    if(is.numeric(boyce.bg.env)) {
+      boyce.bg.env <- as.data.frame(boyce.bg.env)
+      colnames(boyce.bg.env) <- expl.var.names[1]
+    } else if (inherits(boyce.bg.env, 'Raster')) {
+      if(any(raster::is.factor(boyce.bg.env))){
+        boyce.bg.env <- .categorical_stack_to_terra(boyce.bg.env)
+      } else {
+        boyce.bg.env <- rast(boyce.bg.env)
+      }
+    }
+    if (is.matrix(boyce.bg.env) || inherits(boyce.bg.env, 'SpatRaster') || inherits(boyce.bg.env, 'SpatVector')) {
+      boyce.bg.env <- as.data.frame(boyce.bg.env)
+    } else if (inherits(boyce.bg.env, 'SpatialPoints')) {
+      boyce.bg.env <- as.data.frame(boyce.bg.env@data)
+    }
+    
+    ## remove NA from background data
+    if (sum(is.na(boyce.bg.env)) > 0) {
+      cat("\n      ! NAs have been automatically removed from boyce.bg.env data")
+      boyce.bg.env <- na.omit(boyce.bg.env)
+    }
+  }
+  
+  ## 2. Check perc -----------------------------------------------------------
+  .fun_testIf01(TRUE, "mpa.perc", mpa.perc)
+  
+  return(list(threshold = threshold
+              , boyce.bg.env = boyce.bg.env
+              , mpa.perc = mpa.perc))
+}
+
 
 ###################################################################################################
 
@@ -195,6 +305,8 @@ get_optim_value <- function(metric.eval)
          , 'OR' = 1000000
          , 'ORSS' = 1
          , 'ROC' = 1
+         , 'BOYCE' = 1
+         , 'MPA' = 1
   )
 }
 
@@ -290,4 +402,135 @@ bm_CalculateStat <- function(misc, metric.eval = 'TSS')
                , 'ORSS' = (hits * correct_negatives - misses * false_alarms) / (hits * correct_negatives + misses * false_alarms)
   )
 }
+
+
+###################################################################################################
+## FROM ECOSPAT PACKAGE VERSION 3.2.2 (august 2022)
+
+#### Calculating Boyce index as in Hirzel et al. 2006
+# fit: A vector or Raster-Layer containing the predicted suitability values 
+# obs: A vector containing the predicted suitability values or xy-coordinates 
+# (if fit is a Raster-Layer) of the validation points (presence records)
+# nclass : number of classes or vector with classes threshold. If nclass=0, Boyce index is 
+# calculated with a moving window (see next parameters)
+# windows.w : width of the moving window (by default 1/10 of the suitability range)
+# res : resolution of the moving window (by default 100 focals)
+# PEplot : if True, plot the predicted to expected ratio along the suitability class
+# rm.duplicate : if TRUE, the correlation exclude successive duplicated values
+# method : correlation method used to compute the boyce index
+
+
+ecospat.boyce <- function(fit, obs, nclass = 0, window.w = "default", res = 100, 
+                          PEplot = TRUE, rm.duplicate = TRUE, method = 'spearman')
+{
+  
+  #### internal function calculating predicted-to-expected ratio for each class-interval
+  boycei <- function(interval, obs, fit) {
+    pi <- sum(as.numeric(obs >= interval[1] & obs <= interval[2])) / length(obs)
+    ei <- sum(as.numeric(fit >= interval[1] & fit <= interval[2])) / length(fit)
+    return(round(pi/ei,10))
+  }
+  
+  # here, ecospat.boyce should not receive RasterLayer
+  # if (inherits(fit,"RasterLayer")) {
+  #   if (is.data.frame(obs) || is.matrix(obs)) {
+  #     obs <- extract(fit, obs)
+  #   }
+  #   fit <- getValues(fit)
+  #   fit <- fit[!is.na(fit)]
+  # }
+  
+  mini <- min(fit,obs)
+  maxi <- max(fit,obs)
+  
+  if(length(nclass)==1){
+    if (nclass == 0) { #moving window
+      if (window.w == "default") {window.w <- (max(fit) - min(fit))/10}
+      vec.mov <- seq(from = mini, to = maxi - window.w, by = (maxi - mini - window.w)/res)
+      vec.mov[res + 1] <- vec.mov[res + 1] + 1  #Trick to avoid error with closed interval in R
+      interval <- cbind(vec.mov, vec.mov + window.w)
+    } else{ #window based on nb of class
+      vec.mov <- seq(from = mini, to = maxi, by = (maxi - mini)/nclass)
+      interval <- cbind(vec.mov, c(vec.mov[-1], maxi))
+    }
+  } else{ #user defined window
+    vec.mov <- c(mini, sort(nclass[!nclass>maxi|nclass<mini]))
+    interval <- cbind(vec.mov, c(vec.mov[-1], maxi))
+  }
+  
+  f <- apply(interval, 1, boycei, obs, fit)
+  to.keep <- which(f != "NaN")  # index to keep no NaN data
+  f <- f[to.keep]
+  if (length(f) < 2) {
+    b <- NA  #at least two points are necessary to draw a correlation
+  } else {
+    r<-1:length(f)
+    if(rm.duplicate == TRUE){
+      r <- c(1:length(f))[f != c( f[-1],TRUE)]  #index to remove successive duplicates
+    }
+    b <- cor(f[r], vec.mov[to.keep][r], method = method)  # calculation of the correlation (i.e. Boyce index) after removing successive duplicated values
+  }
+  HS <- apply(interval, 1, sum)/2  # mean habitat suitability in the moving window
+  if(length(nclass)==1 & nclass == 0) {
+    HS[length(HS)] <- HS[length(HS)] - 1  #Correction of the 'trick' to deal with closed interval
+  }
+  HS <- HS[to.keep]  #exclude the NaN
+  if (PEplot == TRUE) {
+    plot(HS, f, xlab = "Habitat suitability", ylab = "Predicted/Expected ratio", col = "grey", cex = 0.75)
+    points(HS[r], f[r], pch = 19, cex = 0.75)
+  }
+  return(list(F.ratio = f, cor = round(b, 3), HS = HS))
+}
+
+
+###################################################################################################
+## FROM ECOSPAT PACKAGE VERSION 3.2.2 (august 2022)
+
+## This function calculates the Minimal Predicted Area.
+## 
+## R. Patin, Nov. 2022 : the function does not return minimal predicted area, but
+## rather the quantile of suitability corresponding to perc% of presence
+##  correctly predicted
+##  
+## FUNCTION'S ARGUMENTS
+## Pred:      numeric or RasterLayer .predicted suitabilities from a SDM prediction
+## Sp.occ.xy: xy-coordinates of the species (if Pred is a RasterLayer)
+## perc:      Percentage of Sp.occ.xy that should be encompassed by the binary map.
+
+## Details:
+
+## Value
+# Returns the Minimal Predicted Area
+
+## Author(s)
+# Frank Breiner
+
+## References
+# Engler, R., A. Guisan, and L. Rechsteiner. 2004. An improved approach for predicting the 
+# distribution of rare and endangered species from occurrence and pseudo-absence data. 
+# Journal of Applied Ecology 41:263-274.
+
+
+ecospat.mpa <- function(Pred, Sp.occ.xy = NULL, perc = 0.9)
+{
+  perc <- 1 - perc
+  if (!is.null(Sp.occ.xy)) {
+    Pred <- extract(Pred, Sp.occ.xy)
+  }
+  round(quantile(Pred, probs = perc,na.rm = TRUE), 3)
+}
+
+### EXAMPLE
+
+# obs <- (ecospat.testData$glm_Saxifraga_oppositifolia
+# [which(ecospat.testData$Saxifraga_oppositifolia==1)]) ecospat.mpa(obs) ecospat.mpa(obs,perc=1) ##
+# 100% of the presences encompassed
+
+
+## Example script for using Ensemble Small Models ESMs according to Lomba et al. 2010 Written by
+## Frank Breiner Swiss Federal Research Institute WSL, July 2014.
+
+## References: Lomba, A., Pellissier, L., Randin, C.F., Vicente, J., Moreira, F., Honrado, J. &
+## Guisan, A. (2010). Overcoming the rare species modeling paradox: A novel hierarchical framework
+## applied to an Iberian endemic plant. Biological Conservation, 143, 2647-2657.
 

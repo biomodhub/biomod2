@@ -77,6 +77,23 @@ NULL
 #' @export
 BIOMOD_presenceonly <- function(...) { .Deprecated("BIOMOD_PresenceOnly") }
 
+#' @title BIOMOD_PresenceOnly
+#' @description Deprecated function name for
+#'   \code{\link{bm_FindOptimStat}}
+#' @param ... Additional arguments
+#'
+#' @name BIOMOD_PresenceOnly-deprecated
+#' @usage BIOMOD_PresenceOnly(...)
+#' @seealso \code{\link{biomod2-deprecated}}
+#' @keywords internal
+NULL
+#' @rdname biomod2-deprecated
+#' @section \code{BIOMOD_PresenceOnly}:
+#' For \code{BIOMOD_PresenceOnly} use \code{\link{bm_FindOptimStat}}.
+#'
+#' @export
+BIOMOD_PresenceOnly <- function(...) { .Deprecated("bm_FindOptimStat") }
+
 
 #' @title BIOMOD_tuning
 #' @description Deprecated function name for

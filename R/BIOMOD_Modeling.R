@@ -68,7 +68,7 @@
 ##' @param metric.eval a \code{vector} containing evaluation metric names to be used, must 
 ##' be among \code{ROC}, \code{TSS}, \code{KAPPA}, \code{ACCURACY}, \code{BIAS}, \code{POD}, 
 ##' \code{FAR}, \code{POFD}, \code{SR}, \code{CSI}, \code{ETS}, \code{HK}, \code{HSS}, \code{OR}, 
-##' \code{ORSS}
+##' \code{ORSS}, \code{BOYCE}, \code{MPA}
 ##' @param var.import (\emph{optional, default} \code{NULL}) \cr 
 ##' An \code{integer} corresponding to the number of permutations to be done for each variable to 
 ##' estimate variable importance
@@ -168,6 +168,8 @@
 ##'     \item \code{POD} : Probability of detection (hit rate)
 ##'     \item \code{CSI} : Critical success index (threat score)
 ##'     \item \code{ETS} : Equitable threat score (Gilbert skill score)
+##'     \item \code{BOYCE} : Boyce index
+##'     \item \code{MPA} : Minimal Predicted Area (cutoff optimising MPA to predict 90% of presences)
 ##'   }
 ##'   Optimal value of each method can be obtained with the \code{\link{get_optim_value}} 
 ##'   function. Several evaluation metrics can be selected. \emph{Please refer to the 
@@ -633,7 +635,8 @@ BIOMOD_Modeling <- function(bm.format,
   ## 7. Check metric.eval arguments -------------------------------------------
   metric.eval <- unique(metric.eval)
   avail.eval.meth.list <- c('TSS', 'KAPPA', 'ACCURACY', 'BIAS', 'POD', 'FAR', 'POFD'
-                            , 'SR', 'CSI', 'ETS', 'HK', 'HSS', 'OR', 'ORSS', 'ROC')
+                            , 'SR', 'CSI', 'ETS', 'HK', 'HSS', 'OR', 'ORSS', 'ROC'
+                            , 'BOYCE', 'MPA')
   .fun_testIfIn(TRUE, "metric.eval", metric.eval, avail.eval.meth.list)
   
   
