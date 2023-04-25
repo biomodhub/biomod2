@@ -77,6 +77,7 @@ NULL
 ##' @aliases MAXNET_biomod2_model-class
 ##' @aliases RF_biomod2_model-class
 ##' @aliases SRE_biomod2_model-class
+##' @aliases XGBOOST_biomod2_model-class
 ##' @author Damien Georges
 ##' 
 ##' @title Single model output object class (when running \code{BIOMOD_Modeling()})
@@ -1122,3 +1123,53 @@ setMethod('predict2', signature(object = 'SRE_biomod2_model', newdata = "data.fr
 )
 
 
+
+#----------------------------------------------------------------------------- #
+## 8.12 XGBOOST_biomod2_model -----------------------------------------------------
+#----------------------------------------------------------------------------- #
+##' @name XGBOOST_biomod2_model-class
+##' @rdname biomod2_model
+##' @export
+
+setClass('XGBOOST_biomod2_model',
+         representation(n.trees_optim = 'numeric'),
+         contains = 'biomod2_model',
+         prototype = list(model_class = 'XGBOOST'),
+         validity = function(object) { ## check model class
+           if (!inherits(object@model, "xgb.Booster")) { 
+             return(FALSE) 
+           } else { 
+             return(TRUE) 
+           }
+         })
+
+##' 
+##' @rdname predict2.bm
+
+setMethod('predict2', signature(object = 'XGBOOST_biomod2_model', newdata = "SpatRaster"),
+          function(object, newdata, ...) {
+            predfun <- function(object, newdata, mod.name){
+              proj <- predict(newdata,
+                              model = get_formal_model(object),
+                              fun = xgbpred,
+                              na.rm = TRUE,
+                              wopt = list(names = mod.name))
+              proj
+            }
+            
+            # redirect to predict2.biomod2_model.SpatRaster
+            callNextMethod(object, newdata, predfun = predfun, ...)
+            
+          }
+)
+
+##' @rdname predict2.bm
+setMethod('predict2', signature(object = 'XGBOOST_biomod2_model', newdata = "data.frame"),
+          function(object, newdata, ...) {
+            predfun <- function(object, newdata, not_na_rows){
+              as.numeric(predict(get_formal_model(object), as.matrix(newdata[not_na_rows, , drop = FALSE])))
+            }
+            # redirect to predict2.biomod2_model.data.frame
+            callNextMethod(object, newdata, predfun = predfun, ...)
+          }
+)

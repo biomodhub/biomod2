@@ -46,6 +46,7 @@ Imports:
     ggplot2,
     nnet,
     gbm (>= 2.1.3),
+    xgboost,
     mda,
     randomForest,
     maxnet,

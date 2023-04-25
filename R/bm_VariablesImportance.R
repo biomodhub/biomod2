@@ -9,7 +9,7 @@
 ##' 
 ##' 
 ##' @param bm.model a \code{biomod2_model} object (or \code{nnet}, \code{rpart}, \code{fda}, 
-##' \code{gam}, \code{glm}, \code{lm}, \code{gbm}, \code{mars}, \code{randomForest}) that can be 
+##' \code{gam}, \code{glm}, \code{lm}, \code{gbm}, \code{mars}, \code{randomForest}), \code{xgb.Booster} that can be 
 ##' obtained with the \code{\link{get_formal_model}} function 
 ##' @param expl.var a \code{data.frame} containing the explanatory variables that will be used to 
 ##' compute the variables importance

@@ -308,6 +308,15 @@
 ##'   \code{numeric} corresponding to the default prevalence of the species \cr
 ##'   (\emph{probability of presence at ordinary occurrence points})}
 ##' }
+##' @section XGBOOST : (default \code{\link[xgboost]{xgboost}})
+##' 
+##' \emph{Please refer to \code{\link[xgboost]{xgboost}} help file for more details.}
+##' \itemize{
+##'   \item{\code{max.depth = 2}}
+##'   \item{\code{eta = 1}}
+##'   \item{\code{nrounds = 4}}
+##'   \item{\code{objective = "binary:logistic"}}
+##'   }
 ##'
 ##'
 ##' @keywords models options

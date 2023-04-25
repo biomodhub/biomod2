@@ -1621,6 +1621,7 @@ setMethod('BIOMOD.formated.data.PA', signature(sp = 'numeric', env = 'SpatRaster
 ##' @slot RF a \code{list} containing RF options
 ##' @slot MAXENT a \code{list} containing MAXENT options
 ##' @slot MAXNET a \code{list} containing MAXNET options
+##' @slot XGBOOST a \code{list} containing XGBOOST options
 ##' 
 ##' @param object a \code{\link{BIOMOD.models.options}} object
 ##' 
@@ -1660,7 +1661,8 @@ setClass("BIOMOD.models.options",
                         MARS = "list",
                         RF = "list",
                         MAXENT = "list",
-                        MAXNET = "list"),
+                        MAXNET = "list",
+                        XGBOOST = "list"),
          prototype(GLM = list(type = 'quadratic',
                               interaction.level = 0,
                               myFormula = NULL,
@@ -1748,7 +1750,8 @@ setClass("BIOMOD.models.options",
                                  defaultprevalence = 0.5),
                    MAXNET = list(myFormula = NULL,
                                  regmult = 1,
-                                 regfun = maxnet::maxnet.default.regularization)
+                                 regfun = maxnet::maxnet.default.regularization),
+                   XGBOOST = list() #empty for now
          ),
          validity = function(object) {
            test <- TRUE
