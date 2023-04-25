@@ -40,6 +40,8 @@ Class returned by \code{\link{BIOMOD_ModelingOptions}}, and used by
 \item{\code{MAXENT}}{a \code{list} containing MAXENT options}
 
 \item{\code{MAXNET}}{a \code{list} containing MAXNET options}
+
+\item{\code{XGBOOST}}{a \code{list} containing XGBOOST options}
 }}
 
 \examples{

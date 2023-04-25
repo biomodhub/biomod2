@@ -55,7 +55,7 @@ obtained with the \code{\link{bm_CrossValidation}} function}
 
 \item{models}{a \code{vector} containing model names to be computed, must be among 
 \code{GLM}, \code{GBM}, \code{GAM}, \code{CTA}, \code{ANN}, \code{SRE}, \code{FDA}, 
-\code{MARS}, \code{RF}, \code{MAXENT}, \code{MAXNET}}
+\code{MARS}, \code{RF}, \code{MAXENT}, \code{MAXNET},  \code{XGBOOST}}
 
 \item{models.pa}{(\emph{optional, default} \code{NULL}) \cr 
 A \code{list} containing for each model a \code{vector} defining which pseudo-absence datasets 
@@ -89,7 +89,7 @@ A \code{logical} value defining whether the progress bar is to be rendered or no
 
 \item{model}{a \code{character} corresponding to the model name to be computed, must be either 
 \code{GLM}, \code{GBM}, \code{GAM}, \code{CTA}, \code{ANN}, \code{SRE}, \code{FDA}, 
-\code{MARS}, \code{RF}, \code{MAXENT}, \code{MAXNET}}
+\code{MARS}, \code{RF}, \code{MAXENT}, \code{MAXNET}, \code{XGBOOST}}
 
 \item{run.name}{a \code{character} corresponding to the model to be run (sp.name + pa.id + 
 run.id)}
@@ -131,7 +131,7 @@ species distribution models (asked by the \code{\link{BIOMOD_Modeling}} function
 \code{\link[rpart]{rpart}}, \code{\link[rpart]{prune}}, \code{\link[gbm]{gbm}}, 
 \code{\link[MASS]{stepAIC}}, \code{\link[nnet]{nnet}}, \code{\link[earth]{earth}}, 
 \code{\link[mda]{fda}}, \code{\link[mda]{mars}}, \code{\link[maxnet]{maxnet}}, 
-\code{\link[randomForest]{randomForest}}, 
+\code{\link[randomForest]{randomForest}}, \code{\link[xgboost]{xgboost}}, 
 \code{\link{BIOMOD_ModelingOptions}}, \code{\link{BIOMOD_Modeling}}, 
 \code{\link{bm_MakeFormula}}, \code{\link{bm_SampleFactorLevels}}, 
 \code{\link{bm_FindOptimStat}}, \code{\link{bm_VariablesImportance}}
@@ -167,6 +167,7 @@ Damien Georges
 \keyword{MAXENT}
 \keyword{RF}
 \keyword{SRE}
+\keyword{XGBOOST}
 \keyword{formula}
 \keyword{models}
 \keyword{options}

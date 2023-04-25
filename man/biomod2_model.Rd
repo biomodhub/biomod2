@@ -15,6 +15,7 @@
 \alias{MAXNET_biomod2_model-class}
 \alias{RF_biomod2_model-class}
 \alias{SRE_biomod2_model-class}
+\alias{XGBOOST_biomod2_model-class}
 \alias{show,biomod2_model-method}
 \title{Single model output object class (when running \code{BIOMOD_Modeling()})}
 \usage{

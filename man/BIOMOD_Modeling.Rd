@@ -8,7 +8,7 @@ BIOMOD_Modeling(
   bm.format,
   modeling.id = as.character(format(Sys.time(), "\%s")),
   models = c("GLM", "GBM", "GAM", "CTA", "ANN", "SRE", "FDA", "MARS", "RF", "MAXENT",
-    "MAXNET"),
+    "MAXNET", "XGBOOST"),
   models.pa = NULL,
   bm.options = NULL,
   CV.strategy = "random",
@@ -43,7 +43,7 @@ object returned by the \code{\link{BIOMOD_FormatingData}} function}
 
 \item{models}{a \code{vector} containing model names to be computed, must be among \code{GLM}, 
 \code{GBM}, \code{GAM}, \code{CTA}, \code{ANN}, \code{SRE}, \code{FDA}, \code{MARS}, 
-\code{RF}, \code{MAXENT}, \code{MAXNET}}
+\code{RF}, \code{MAXENT}, \code{MAXNET}, \code{XGBOOST}}
 
 \item{models.pa}{(\emph{optional, default} \code{NULL}) \cr 
 A \code{list} containing for each model a \code{vector} defining which pseudo-absence datasets 
@@ -177,6 +177,7 @@ metrics (see Details).
     \item \code{MAXENT} : Maximum Entropy 
     (\url{https://biodiversityinformatics.amnh.org/open_source/maxent/})
     \item \code{MAXNET} : Maximum Entropy (\code{\link[maxnet]{maxnet}})
+    \item \code{XGBOOST} : eXtreme Gradient Boosting Training (\code{\link[xgboost]{xgboost}})
   }}
   
   \item{models.pa}{Different models might respond differently to different numbers of 
@@ -315,15 +316,17 @@ bm_PlotEvalBoxplot(bm.out = myBiomodModelOut, group.by = c('algo', 'run'))
 
 }
 \seealso{
-\code{\link[stats]{glm}}, \code{\link[gam]{gam}}, \code{\link[mgcv]{gam}}, 
-\code{\link[mgcv]{bam}}, \code{\link[gbm]{gbm}}, \code{\link[rpart]{rpart}}, 
-code{\link[nnet]{nnet}}, \code{\link[mda]{fda}}, \code{\link[earth]{earth}}, 
-\code{\link[randomForest]{randomForest}}, \code{\link[maxnet]{maxnet}},
-\code{\link{BIOMOD_FormatingData}}, \code{\link{BIOMOD_ModelingOptions}}, 
-\code{\link{bm_CrossValidation}}, \code{ \link{bm_VariablesImportance}}, 
-\code{\link{BIOMOD_Projection}}, \code{\link{BIOMOD_EnsembleModeling}},
-\code{\link{bm_PlotEvalMean}}, \code{\link{bm_PlotEvalBoxplot}}, 
-\code{\link{bm_PlotVarImpBoxplot}}, \code{\link{bm_PlotResponseCurves}}
+\code{\link[stats]{glm}}, \code{\link[gam]{gam}},
+  \code{\link[mgcv]{gam}}, \code{\link[mgcv]{bam}}, \code{\link[gbm]{gbm}},
+  \code{\link[rpart]{rpart}}, code{\link[nnet]{nnet}},
+  \code{\link[mda]{fda}}, \code{\link[earth]{earth}},
+  \code{\link[randomForest]{randomForest}}, \code{\link[maxnet]{maxnet}},
+  \code{\link[xgboost]{xgboost}}, \code{\link{BIOMOD_FormatingData}},
+  \code{\link{BIOMOD_ModelingOptions}}, \code{\link{bm_CrossValidation}},
+  \code{ \link{bm_VariablesImportance}}, \code{\link{BIOMOD_Projection}},
+  \code{\link{BIOMOD_EnsembleModeling}}, \code{\link{bm_PlotEvalMean}},
+  \code{\link{bm_PlotEvalBoxplot}}, \code{\link{bm_PlotVarImpBoxplot}},
+  \code{\link{bm_PlotResponseCurves}}
 
 Other Main functions: 
 \code{\link{BIOMOD_EnsembleForecasting}()},

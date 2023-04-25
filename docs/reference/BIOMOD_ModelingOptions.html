@@ -395,20 +395,15 @@ changes) as function arguments (see <a href="https://biomodhub.github.io/biomod2
 <li><p><code>defaultprevalence = 0.5</code> : a
   <code>numeric</code> corresponding to the default prevalence of the species <br>
   (<em>probability of presence at ordinary occurrence points</em>)</p></li>
-</ul><p><!-- % @section \bold{MAXENT.Tsuruoka (\code{\link[maxent]{maxent}})} : -->
-<!-- % \itemize{ -->
-<!-- %   \item{\code{l1_regularizer = 0.0}}{ : a \code{numeric} turning on L1 regularization and setting  -->
-<!-- %   the regularization parameter (\emph{a value of \code{0} will disable L1 regularization})} -->
-<!-- %   \item{\code{l2_regularizer = 0.0}}{ : a \code{numeric} turning on L2 regularization and setting  -->
-<!-- %   the regularization parameter (\emph{a value of \code{0} will disable L2 regularization})} -->
-<!-- %   \item{\code{use_sgd = FALSE}}{ : a \code{logical} to use SGD parameter estimation} -->
-<!-- %   \item{\code{set_heldout = 0}}{ : an \code{integer} corresponding to the number of documents to  -->
-<!-- %   hold out (\emph{to test against and prevent overfitting, use carefully in case of dataset with  -->
-<!-- %   low number of occurrences})} -->
-<!-- %   \item{\code{verbose = FALSE}}{ : a \code{logical} specifying whether to provide descriptive  -->
-<!-- %   output about the training process} -->
-<!-- % } --></p>
-    </div>
+</ul></div>
+    <div id="xgboost-">
+    <h2>XGBOOST </h2>
+    <p>(default <code><a href="https://rdrr.io/pkg/xgboost/man/xgb.train.html" class="external-link">xgboost</a></code>)</p>
+<p><em>Please refer to <code><a href="https://rdrr.io/pkg/xgboost/man/xgb.train.html" class="external-link">xgboost</a></code> help file for more details.</em></p><ul><li><p><code>max.depth = 2</code></p></li>
+<li><p><code>eta = 1</code></p></li>
+<li><p><code>nrounds = 4</code></p></li>
+<li><p><code>objective = "binary:logistic"</code></p></li>
+</ul></div>
     <div id="see-also">
     <h2>See also</h2>
     <div class="dont-index"><p><code><a href="BIOMOD_Tuning.html">BIOMOD_Tuning</a></code>, <code><a href="BIOMOD_Modeling.html">BIOMOD_Modeling</a></code></p>
