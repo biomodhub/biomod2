@@ -236,25 +236,25 @@ bm_RunModel <- function(model, run.name, dir.name = '.'
   ## APPLY GENERIC FUNCTION FROM OPTIONS
   .load_namespace(bm.opt@package) ## TO BE CODED
   
-  ## Simple formula : CTA, GBM, FDA, ANN, RF
-  if (model %in% c("CTA", "GBM", "FDA", "ANN", "RF")) {
-    form.cmd <- bm_MakeFormula(resp.name = resp_name
-                               , expl.var = head(data_env)
-                               , type = 'simple'
-                               , interaction.level = 0)
-  } else if (model %in% c("GAM", "GLM", "MARS")) {
-    ## Complex formula : GAM, GLM, MARS
-    form.cmd <- bm_MakeFormula(resp.name = resp_name
-                               , expl.var = head(data_env)
-                               , type = bm.opt@args.values[["PAxrun"]]$type ## RATHER HARD CODED / PARAM ?
-                               , interaction.level = bm.opt@args.values[["PAxrun"]]$interaction.level ## RATHER HARD CODED / PARAM ?
-                               , k = bm.opt@args.values[["PAxrun"]]$k) ## RATHER HARD CODED / PARAM ? ## GAM
-    # tmp = gsub("gam::", "", gam.formula)
-    # gam.formula = as.formula(paste0(tmp[c(2,1,3)], collapse = " "))
-  } else if (model %in% c("GAM", "GLM", "MARS")) {
-    ## Options formula : GAM, GLM, MARS
-    form.cmd <- bm.opt@args.values[["PAxrun"]]$formula
-  }
+  # ## Simple formula : CTA, GBM, FDA, ANN, RF
+  # if (model %in% c("CTA", "GBM", "FDA", "ANN", "RF")) {
+  #   form.cmd <- bm_MakeFormula(resp.name = bm.format@sp.name #resp_name
+  #                              , expl.var = head(bm.format@data.env.var) # head(data_env)
+  #                              , type = 'simple'
+  #                              , interaction.level = 0)
+  # } else if (model %in% c("GAM", "GLM", "MARS")) {
+  #   ## Complex formula : GAM, GLM, MARS
+  #   form.cmd <- bm_MakeFormula(resp.name = bm.format@sp.name #resp_name
+  #                              , expl.var = head(bm.format@data.env.var) # head(data_env)
+  #                              , type = bm.opt@args.values[["PAxrun"]]$type ## RATHER HARD CODED / PARAM ?
+  #                              , interaction.level = bm.opt@args.values[["PAxrun"]]$interaction.level ## RATHER HARD CODED / PARAM ?
+  #                              , k = bm.opt@args.values[["PAxrun"]]$k) ## RATHER HARD CODED / PARAM ? ## GAM
+  #   # tmp = gsub("gam::", "", gam.formula)
+  #   # gam.formula = as.formula(paste0(tmp[c(2,1,3)], collapse = " "))
+  # } else if (model %in% c("GAM", "GLM", "MARS")) {
+  #   ## Options formula : GAM, GLM, MARS
+  #   form.cmd <- bm.opt@args.values[["PAxrun"]]$formula
+  # }
   
   model.sp <- do.call(bm.opt@function, bm.opt@args.values[["PAxrun"]])
   

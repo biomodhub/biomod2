@@ -416,9 +416,7 @@
 ## GLM : formula + data = cbind(data_mod[calib.lines.vec, , drop = FALSE], 
 #                               data.frame("weights" = weights.vec[calib.lines.vec])) + weights
 ## MARS : formula + data = data_mod[calib.lines.vec, , drop = FALSE] + weights +
-# glm = list(family = binomial),
-# ncross = 0,
-# keepxy = FALSE
+#           glm = list(family = binomial), ncross = 0, keepxy = FALSE
 ## FDA : formula + data = data_mod[calib.lines.vec, , drop = FALSE] + weights.vec[calib.lines.vec]
 ## ANN : formula + data = data_mod[calib.lines.vec, , drop = FALSE] + weights (+ size, decay, trace)
 ## RF : formula + data = data_mod[calib.lines.vec, , drop = FALSE] (+ weights, mtry, importance, norm.votes, strata, sampsize)
@@ -468,9 +466,9 @@ bm_ModelingOptions <- function(data.type
                                           , val = val.ii
                                           , bm.format = bm.format
                                           , calib.lines = calib.lines)
-            BOD@args.values <- lapply(1:length(BOD$args.values) function(xx) {
-              BOD@args.values[[xx]][which(!(names(BOD$args.values[[xx]]) %in% c('formula', 'data', 'weights')))]
-            })
+            # BOD@args.values <- lapply(1:length(BOD$args.values) function(xx) {
+            #   BOD@args.values[[xx]][which(!(names(BOD$args.values[[xx]]) %in% c('data', 'weights')))]
+            # }) ## USELESS ? (values will be replaced anyway in bm_RunModel)
           }
         names(BOD.list) <- paste0(model, ".", data.type, ".", tab.model$package, ".", tab.model$func)
         return(BOD.list)
@@ -478,14 +476,7 @@ bm_ModelingOptions <- function(data.type
       # else { warning() } ## BUT SHOULD BE DEALT WITH IN CHECK ?
     }
   
-  # if (!is.null(GLM$type)) { opt@GLM$type <- GLM$type }
-  # if (!is.null(GLM$interaction.level)) { opt@GLM$interaction.level <- GLM$interaction.level }
-  # if (!is.null(GLM$myFormula)) { opt@GLM$myFormula <- GLM$myFormula }
   # if (!is.null(GBM$perf.method)) { opt@GBM$perf.method <- GBM$perf.method }
-  # if (!is.null(GAM$type)) { opt@GAM$type <- GAM$type }
-  # opt@GAM$k <- GAM$k
-  # if (!is.null(GAM$interaction.level)) { opt@GAM$interaction.level <- GAM$interaction.level }
-  # if (!is.null(GAM$myFormula)) { opt@GAM$myFormula <- GAM$myFormula }
   # opt@GAM$control <- gam::gam.control()
   # opt@GAM$control <- mgcv::gam.control()
   # if (!is.null(ANN$NbCV)) { opt@ANN$NbCV <- ANN$NbCV }
@@ -493,9 +484,6 @@ bm_ModelingOptions <- function(data.type
   # if (!is.null(ANN$decay)) { opt@ANN$decay <- ANN$decay }
   # if (!is.null(ANN$rang)) { opt@ANN$rang <- ANN$rang }
   # if (!is.null(ANN$maxit)) { opt@ANN$maxit <- ANN$maxit }
-  # if (!is.null(MARS$type)) { opt@MARS$type <- MARS$type }
-  # if (!is.null(MARS$interaction.level)) { opt@MARS$interaction.level <- MARS$interaction.level }
-  # if (!is.null(MARS$myFormula)) { opt@MARS$myFormula <- MARS$myFormula }
   # if (!is.null(RF$type)) { opt@RF$type <- RF$type }
   # 
   # if (!is.null(MAXENT$path_to_maxent.jar)) {
@@ -582,15 +570,3 @@ bm_ModelingOptions <- function(data.type
   }
 }
 
-
-# ##'
-# ##' @rdname bm_ModelingOptions
-# ##' @export
-# ##'
-# 
-# bm_DefaultModelingOptions <- function()
-# {
-#   cat('\n Defaut modeling options. Copy, change what you want, and paste it as arg to bm_ModelingOptions().\n\n')
-#   opt_tmp <- bm_ModelingOptions()
-#   print(opt_tmp)
-# }

@@ -205,6 +205,7 @@ setMethod('BIOMOD.options.dataset', signature(strategy = 'character'),
             
             BOM <- BIOMOD.options.default(mod, typ, pkg, fun)
             
+            ## GET parameter values according to strategy -------------------------------
             if (is.null(calib.lines)) {
               argsval <- list("AllData_AllRun" = BOM@args.default)
             } else {
@@ -224,6 +225,18 @@ setMethod('BIOMOD.options.dataset', signature(strategy = 'character'),
             } else if (strategy == "tuned") {
               ## Call to bm_Tuning for one model at a time
               argsval <- bm_Tuning(obj = BOM, bm.format = bm.format, calib.lines = calib.lines)
+            }
+            
+            ## SPECIFIC case of formula -------------------------------------------------
+            if ("formula" %in% BOM@args.names) {
+              for (ii in 1:length(argsval)) {
+                if (is.null(argsval[[ii]]$formula) || nchar(argsval[[ii]]$formula) == 0) {
+                  argsval[[ii]]$formula <- bm_MakeFormula(resp.name = bm.format@sp.name
+                                                          , expl.var = head(bm.format@data.env.var)
+                                                          , type = 'simple'
+                                                          , interaction.level = 0)
+                }
+              })
             }
             
             BOD <- new('BIOMOD.options.dataset', BOM, args.values = argsval)
