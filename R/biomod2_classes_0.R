@@ -158,22 +158,22 @@ setClass("BIOMOD.options.dataset",
 
 
 # 1.2 Constructors -------------------------------------------------------------
-setGeneric("BIOMOD.options.dataset", def = function(choice, val = NULL, bm.format = NULL, calib.lines = NULL) {
+setGeneric("BIOMOD.options.dataset", def = function(strategy, val = NULL, bm.format = NULL, calib.lines = NULL) {
   standardGeneric("BIOMOD.options.dataset") })
 
-.BIOMOD.options.dataset.check.args <- function(choice, val = NULL, bm.format = NULL, calib.lines = NULL)
+.BIOMOD.options.dataset.check.args <- function(strategy, val = NULL, bm.format = NULL, calib.lines = NULL)
 {
-  ## check if choice is supported
-  avail.choices.list <- c('default', 'bigboss', 'user.defined', 'tuned')
-  .fun_testIfIn(TRUE, "choice", choice, avail.choices.list)
+  ## check if strategy is supported
+  avail.strategys.list <- c('default', 'bigboss', 'user.defined', 'tuned')
+  .fun_testIfIn(TRUE, "strategy", strategy, avail.strategys.list)
   
   ## USER DEFINED parameterisation --------------
-  if (choice == "user.defined") {
+  if (strategy == "user.defined") {
     .fun_testIfInherits(TRUE, "val", val, c("list"))
   }
   
   ## TUNING with bm_Tuning parameterisation -----
-  if (choice == "tuned") {
+  if (strategy == "tuned") {
     .fun_testIfInherits(TRUE, "bm.format", bm.format, c("BIOMOD.formated.data", "BIOMOD.formated.data.PA"))
     
     if (!is.null(calib.lines)) {
@@ -198,20 +198,20 @@ setGeneric("BIOMOD.options.dataset", def = function(choice, val = NULL, bm.forma
 ##' @export
 ##' 
 
-setMethod('BIOMOD.options.dataset', signature(choice = 'character'),
-          function(mod, typ, pkg, fun, choice, val = NULL, bm.format = NULL, calib.lines = NULL)
+setMethod('BIOMOD.options.dataset', signature(strategy = 'character'),
+          function(mod, typ, pkg, fun, strategy, val = NULL, bm.format = NULL, calib.lines = NULL)
           {
-            .BIOMOD.options.dataset.check.args(choice, val, bm.format, calib.lines)
-
+            .BIOMOD.options.dataset.check.args(strategy, val, bm.format, calib.lines)
+            
             BOM <- BIOMOD.options.default(mod, typ, pkg, fun)
             
             argsval <- BOM$args.default
-            if (choice == "bigboss") {
+            if (strategy == "bigboss") {
               ## create and load specific dataset
-            } else if (choice == "user.defined") {
+            } else if (strategy == "user.defined") {
               .fun_testIfIn(TRUE, "names(val)", names(val), BOM$args.names)
               argsval <- val
-            } else if (choice == "tuned") {
+            } else if (strategy == "tuned") {
               ## Call to bm_Tuning for one model at a time
               argsval <- bm_Tuning(obj = BOM, bm.format = bm.format, calib.lines = calib.lines)
             }
@@ -224,4 +224,16 @@ setMethod('BIOMOD.options.dataset', signature(choice = 'character'),
 
 # 1.3 Other Functions -----------------------------------------------------------------------------
 
+
+###################################################################################################
+
+### BIOMOD.stored.options ------------------------------------------------
+##' @name BIOMOD.stored.options-class
+##' @rdname BIOMOD.stored.data
+##' 
+setClass("BIOMOD.stored.options",
+         contains = "BIOMOD.stored.data",
+         representation(val = 'BIOMOD.options.dataset'),
+         prototype(val = NULL),
+         validity = function(object){ return(TRUE) })
 
