@@ -205,9 +205,15 @@ setMethod('BIOMOD.options.dataset', signature(strategy = 'character'),
             
             BOM <- BIOMOD.options.default(mod, typ, pkg, fun)
             
-            argsval <- BOM@args.default
+            if (is.null(calib.lines)) {
+              argsval <- list("AllData_AllRun" = BOM@args.default)
+            } else {
+              argsval <- lapply(1:ncol(calib.lines), function(xx) { BOM@args.default })
+              names(argsval) <- colnames(calib.lines)
+            }
             if (strategy == "bigboss") {
               ## create and load specific dataset
+              ## TODO
             } else if (strategy == "user.defined") {
               if (!("..." %in% BOM@args.names)) {
                 .fun_testIfIn(TRUE, "names(val)", names(val), BOM@args.names)

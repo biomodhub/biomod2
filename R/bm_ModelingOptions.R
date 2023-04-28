@@ -409,6 +409,25 @@
 ##'
 ## -------------------------------------------------------------------------- ##
 
+## MINIMAL DATA REQUIRED :
+## CTA : formula + data = data_mod[calib.lines.vec, , drop = FALSE] + weights
+## GAM : 
+## GBM : formula + data = data_mod[calib.lines.vec, , drop = FALSE] + weights (+ var.monotone)
+## GLM : formula + data = cbind(data_mod[calib.lines.vec, , drop = FALSE], 
+#                               data.frame("weights" = weights.vec[calib.lines.vec])) + weights
+## MARS : formula + data = data_mod[calib.lines.vec, , drop = FALSE] + weights +
+# glm = list(family = binomial),
+# ncross = 0,
+# keepxy = FALSE
+## FDA : formula + data = data_mod[calib.lines.vec, , drop = FALSE] + weights.vec[calib.lines.vec]
+## ANN : formula + data = data_mod[calib.lines.vec, , drop = FALSE] + weights (+ size, decay, trace)
+## RF : formula + data = data_mod[calib.lines.vec, , drop = FALSE] (+ weights, mtry, importance, norm.votes, strata, sampsize)
+## SRE : resp.var = data_sp[calib.lines.vec] + expl.var = data_env[calib.lines.vec, , drop = FALSE] (+ new.env, do.extrem)
+## MAXENT : ...
+## MAXNET : p = data_sp[calib.lines.vec] + data = data_env[calib.lines.vec, , drop = FALSE]
+## XGBOOST : data = as.matrix(data_env[calib.lines.vec, , drop = FALSE]) + label = data_sp[calib.lines.vec] +
+##            weights.vec[calib.lines.vec] (+ max.depth, eta, nthread, nrounds, objective)
+
 TABLE_MODELS <- data.frame(model = c('ANN', 'CTA', 'FDA', 'GAM', 'GAM', 'GAM', 'GBM', 'GLM'
                                      , 'MARS', 'MAXENT', 'MAXNET', 'RF', 'SRE', 'XGBOOST')
                            , type = 'binary'
@@ -417,20 +436,6 @@ TABLE_MODELS <- data.frame(model = c('ANN', 'CTA', 'FDA', 'GAM', 'GAM', 'GAM', '
                            , func = c('nnet', 'rpart', 'fda', 'gam', 'bam', 'gam', 'gbm', 'glm'
                                       , 'earth', 'MAXENT', 'maxnet', 'randomForest', 'bm_SRE', 'xgboost'))
 
-# , args.data = list('ANN'
-#                    , 'CTA'
-#                    , 'FDA'
-#                    , 'GAM'
-#                    , 'GAM'
-#                    , 'GAM'
-#                    , 'GBM'
-#                    , 'GLM'
-#                    , 'MARS'
-#                    , 'MAXENT'
-#                    , 'MAXNET'
-#                    , 'RF'
-#                    , 'SRE'
-#                    , 'XGBOOST'))
 
 
 bm_ModelingOptions <- function(data.type
@@ -441,9 +446,7 @@ bm_ModelingOptions <- function(data.type
   .bm_cat("Build Modeling Options")
   
   ## 0. Check arguments --------------------------------------------------------
-  args <- .bm_ModelingOptions.check.args(data.type, models, strategy, val.list, bm.format, calib.lines)
-  for (argi in names(args)) { assign(x = argi, value = args[[argi]]) }
-  rm(args)
+  bm_ModelingOptions.check.args(data.type, models, strategy, val.list, bm.format, calib.lines)
   
   bm.options <- foreach (model = models) %do%
     {
@@ -452,14 +455,22 @@ bm_ModelingOptions <- function(data.type
       if (nrow(tab.model) > 0) {
         BOD.list <- foreach(ii = 1:nrow(tab.model)) %do%
           {
-            BIOMOD.options.dataset(mod = model
-                                   , typ = data.type
-                                   , pkg = tab.model$package[ii]
-                                   , fun = tab.model$func[ii]
-                                   , strategy = strategy
-                                   , val = val.list[[]]
-                                   , bm.format = bm.format
-                                   , calib.lines = calib.lines)
+            name_model <- paste0(model, ".", data.type, ".", tab.model$package[ii], ".", tab.model$func[ii])
+            val.ii <- NULL
+            if (strategy == "user.defined") {
+              val.ii <- val.list[[name_model]]
+            }
+            BOD <- BIOMOD.options.dataset(mod = model
+                                          , typ = data.type
+                                          , pkg = tab.model$package[ii]
+                                          , fun = tab.model$func[ii]
+                                          , strategy = strategy
+                                          , val = val.ii
+                                          , bm.format = bm.format
+                                          , calib.lines = calib.lines)
+            BOD@args.values <- lapply(1:length(BOD$args.values) function(xx) {
+              BOD@args.values[[xx]][which(!(names(BOD$args.values[[xx]]) %in% c('formula', 'data', 'weights')))]
+            })
           }
         names(BOD.list) <- paste0(model, ".", data.type, ".", tab.model$package, ".", tab.model$func)
         return(BOD.list)
@@ -471,7 +482,6 @@ bm_ModelingOptions <- function(data.type
   # if (!is.null(GLM$interaction.level)) { opt@GLM$interaction.level <- GLM$interaction.level }
   # if (!is.null(GLM$myFormula)) { opt@GLM$myFormula <- GLM$myFormula }
   # if (!is.null(GBM$perf.method)) { opt@GBM$perf.method <- GBM$perf.method }
-  # if (!is.null(GAM$algo)) { opt@GAM$algo <- GAM$algo }
   # if (!is.null(GAM$type)) { opt@GAM$type <- GAM$type }
   # opt@GAM$k <- GAM$k
   # if (!is.null(GAM$interaction.level)) { opt@GAM$interaction.level <- GAM$interaction.level }
@@ -516,7 +526,7 @@ bm_ModelingOptions <- function(data.type
   # opt@MAXENT$defaultprevalence <- MAXENT$defaultprevalence
   
   .bm_cat("Done")
-  return(opt)
+  return(bm.options)
 }
 
 # ---------------------------------------------------------------------------- #
@@ -543,23 +553,31 @@ bm_ModelingOptions <- function(data.type
     .fun_testIfInherits(TRUE, "val.list", val.list, c("list"))
     avail.options.list <- paste0(TABLE_MODELS$model, ".", TABLE_MODELS$type, ".", TABLE_MODELS$package, ".", TABLE_MODELS$func)
     .fun_testIfIn(TRUE, "names(val.list)", names(val.list), avail.options.list)
+    ## THEN can be directly arguments (all the same for all data) or a list with one set for each dataset (AllData_AllRun, ...)
   }
   
   ## TUNING with bm_Tuning parameterisation -----
   if (strategy == "tuned") {
     .fun_testIfInherits(TRUE, "bm.format", bm.format, c("BIOMOD.formated.data", "BIOMOD.formated.data.PA"))
+  }
+  
+  ## check calib.lines colnames
+  if (!is.null(calib.lines)) {
+    .fun_testIfInherits(TRUE, "calib.lines", calib.lines, c("matrix"))
     
-    if (!is.null(calib.lines)) {
-      .fun_testIfInherits(TRUE, "calib.lines", calib.lines, c("matrix"))
-      
-      expected_CVnames <- c(paste0("_allData_RUN", seq_len(ncol(calib.lines))), "_allData_allRun")
-      if (inherits(bm.format, "BIOMOD.formated.data.PA")) {
-        expected_CVnames <- c(expected_CVnames
-                              , sapply(1:ncol(bm.format@PA.table)
-                                       , function(this_PA) c(paste0("_PA", this_PA, "_RUN", seq_len(ncol(calib.lines)))
-                                                             , paste0("_PA", this_PA, "_allRun"))))
-      } 
-      .fun_testIfIn(TRUE, "colnames(calib.lines)", colnames(calib.lines), expected_CVnames)
+    expected_CVnames <- c(paste0("_allData_RUN", seq_len(ncol(calib.lines))), "_allData_allRun")
+    if (inherits(bm.format, "BIOMOD.formated.data.PA")) {
+      expected_CVnames <- c(expected_CVnames
+                            , sapply(1:ncol(bm.format@PA.table)
+                                     , function(this_PA) c(paste0("_PA", this_PA, "_RUN", seq_len(ncol(calib.lines)))
+                                                           , paste0("_PA", this_PA, "_allRun"))))
+    } 
+    .fun_testIfIn(TRUE, "colnames(calib.lines)", colnames(calib.lines), expected_CVnames)
+    
+    if (strategy == "user.defined") {
+      for (ii in 1:length(val.list)) {
+        .fun_testIfIn(TRUE, "names(val.list[[ii]])", names(val.list[[ii]]), expected_CVnames)
+      }
     }
   }
 }
