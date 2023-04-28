@@ -275,8 +275,27 @@ bm_RunModel <- function(model, run.name, dir.name = '.'
                     expl_var_range = get_var_range(data_env[calib.lines.vec, , drop = FALSE]))
   }
   
-  
 
+  
+  
+  ## MINIMAL DATA REQUIRED :
+  ## CTA : formula + data = data_mod[calib.lines.vec, , drop = FALSE] + weights
+  ## GAM : 
+  ## GBM : formula + data = data_mod[calib.lines.vec, , drop = FALSE] + weights (+ var.monotone)
+  ## GLM : formula + data = cbind(data_mod[calib.lines.vec, , drop = FALSE], 
+  #                               data.frame("weights" = weights.vec[calib.lines.vec])) + weights
+  ## MARS : formula + data = data_mod[calib.lines.vec, , drop = FALSE] + weights +
+  # glm = list(family = binomial),
+  # ncross = 0,
+  # keepxy = FALSE
+  ## FDA : formula + data = data_mod[calib.lines.vec, , drop = FALSE] + weights.vec[calib.lines.vec]
+  ## ANN : formula + data = data_mod[calib.lines.vec, , drop = FALSE] + weights (+ size, decay, trace)
+  ## RF : formula + data = data_mod[calib.lines.vec, , drop = FALSE] (+ weights, mtry, importance, norm.votes, strata, sampsize)
+  ## SRE : resp.var = data_sp[calib.lines.vec] + expl.var = data_env[calib.lines.vec, , drop = FALSE] (+ new.env, do.extrem)
+  ## MAXENT : ...
+  ## MAXNET : p = data_sp[calib.lines.vec] + data = data_env[calib.lines.vec, , drop = FALSE]
+  ## XGBOOST : data = as.matrix(data_env[calib.lines.vec, , drop = FALSE]) + label = data_sp[calib.lines.vec] +
+  ##            weights.vec[calib.lines.vec] (+ max.depth, eta, nthread, nrounds, objective)
   
   
   
