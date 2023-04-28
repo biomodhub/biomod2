@@ -19,7 +19,7 @@
 ##' (\code{binary}, \code{binary.PA}, \code{abundance}, \code{compositional})
 ##' @slot package a \code{character} corresponding to the package containing 
 ##' the model function to be called
-##' @slot function a \code{character} corresponding to the model function name 
+##' @slot func a \code{character} corresponding to the model function name 
 ##' to be called
 ##' @slot args.names a \code{vector} containing \code{character} corresponding 
 ##' to the model function arguments
@@ -52,7 +52,7 @@ setClass("BIOMOD.options.default",
          representation(model = 'character',
                         type = 'character',
                         package = "character",
-                        function = "character",
+                        func = "character",
                         args.names = "character",
                         args.default = "list"),
          validity = function(object){ return(TRUE) })
@@ -97,7 +97,7 @@ setMethod('BIOMOD.options.default', signature(mod = 'character', typ = 'characte
               model = mod,
               type = typ,
               package = pkg,
-              function = fun,
+              func = fun,
               args.names = formalArgs(fun),
               args.default = formals(fun)
             )
@@ -164,8 +164,8 @@ setGeneric("BIOMOD.options.dataset", def = function(strategy, val = NULL, bm.for
 .BIOMOD.options.dataset.check.args <- function(strategy, val = NULL, bm.format = NULL, calib.lines = NULL)
 {
   ## check if strategy is supported
-  avail.strategys.list <- c('default', 'bigboss', 'user.defined', 'tuned')
-  .fun_testIfIn(TRUE, "strategy", strategy, avail.strategys.list)
+  avail.strategy.list <- c('default', 'bigboss', 'user.defined', 'tuned')
+  .fun_testIfIn(TRUE, "strategy", strategy, avail.strategy.list)
   
   ## USER DEFINED parameterisation --------------
   if (strategy == "user.defined") {
@@ -205,11 +205,15 @@ setMethod('BIOMOD.options.dataset', signature(strategy = 'character'),
             
             BOM <- BIOMOD.options.default(mod, typ, pkg, fun)
             
-            argsval <- BOM$args.default
+            argsval <- BOM@args.default
             if (strategy == "bigboss") {
               ## create and load specific dataset
             } else if (strategy == "user.defined") {
-              .fun_testIfIn(TRUE, "names(val)", names(val), BOM$args.names)
+              if (!("..." %in% BOM@args.names)) {
+                .fun_testIfIn(TRUE, "names(val)", names(val), BOM@args.names)
+              } else {
+                ## ???
+              }
               argsval <- val
             } else if (strategy == "tuned") {
               ## Call to bm_Tuning for one model at a time
