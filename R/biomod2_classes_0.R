@@ -73,10 +73,10 @@ setGeneric("BIOMOD.options.default", def = function(mod, typ, pkg, fun) { standa
   .fun_testIfIn(TRUE, "typ", typ, avail.types.list)
   
   ## check package exists
-  if (!isNamespaceLoaded(pkg)) { requireNamespace(pkg, quietly = TRUE) }
+  if (!isNamespaceLoaded(pkg)) { requireNamespace(pkg, quietly = TRUE) } ## ATTENTION n'a pas l'air de suffire
   
   ## check function exists
-  avail.functions.list <- lsf.str(paste0("package:", pkg))
+  avail.functions.list <- lsf.str(paste0("package:", pkg)) ## Du coup ne marche pas si le package n'est pas explicitement loadé
   .fun_testIfIn(TRUE, "fun", fun, avail.functions.list)
 }
 
@@ -91,7 +91,6 @@ setMethod('BIOMOD.options.default', signature(mod = 'character', typ = 'characte
           function(mod, typ, pkg, fun) 
           {
             .BIOMOD.options.default.check.args(mod, typ, pkg, fun)
-            
             BOM <- new(
               'BIOMOD.options.default',
               model = mod,
@@ -99,7 +98,7 @@ setMethod('BIOMOD.options.default', signature(mod = 'character', typ = 'characte
               package = pkg,
               func = fun,
               args.names = formalArgs(fun),
-              args.default = formals(fun)
+              args.default = as.list(formals(fun))
             )
             return(BOM)
           }
@@ -158,7 +157,7 @@ setClass("BIOMOD.options.dataset",
 
 
 # 1.2 Constructors -------------------------------------------------------------
-setGeneric("BIOMOD.options.dataset", def = function(strategy, val = NULL, bm.format = NULL, calib.lines = NULL) {
+setGeneric("BIOMOD.options.dataset", def = function(strategy, val = NULL, bm.format = NULL, calib.lines = NULL, ...) {
   standardGeneric("BIOMOD.options.dataset") })
 
 .BIOMOD.options.dataset.check.args <- function(strategy, val = NULL, bm.format = NULL, calib.lines = NULL)
@@ -228,7 +227,7 @@ setMethod('BIOMOD.options.dataset', signature(strategy = 'character'),
             }
             
             ## SPECIFIC case of formula -------------------------------------------------
-            if ("formula" %in% BOM@args.names) {
+            if ("formula" %in% BOM@args.names && !is.null(bm.format)) {
               for (ii in 1:length(argsval)) {
                 if (is.null(argsval[[ii]]$formula) || nchar(argsval[[ii]]$formula) == 0) {
                   argsval[[ii]]$formula <- bm_MakeFormula(resp.name = bm.format@sp.name
@@ -236,8 +235,9 @@ setMethod('BIOMOD.options.dataset', signature(strategy = 'character'),
                                                           , type = 'simple'
                                                           , interaction.level = 0)
                 }
-              })
+              }
             }
+            ## ATTENTION : si on ne donne pas bm.format, on n'a pas de formula du coup
             
             BOD <- new('BIOMOD.options.dataset', BOM, args.values = argsval)
             return(BOD)

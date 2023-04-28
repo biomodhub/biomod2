@@ -256,14 +256,14 @@ bm_RunModel <- function(model, run.name, dir.name = '.'
   #   form.cmd <- bm.opt@args.values[["PAxrun"]]$formula
   # }
   
-  model.sp <- do.call(bm.opt@function, bm.opt@args.values[["PAxrun"]])
+  model.sp <- do.call(bm.opt@func, bm.opt@args.values[["PAxrun"]])
   
   if (!inherits(model.sp, "try-error")) {
     model.bm <- new(paste0(bm.opt@model, "_biomod2_model"),
                     model = model.sp,
                     model_name = model_name,
                     model_class = bm.opt@model,
-                    model_subclass = paste0(bm.opt@model, "_", bm.opt@type, "_", bm.opt@package) ## GAM
+                    model_subclass = paste0(bm.opt@model, "_", bm.opt@type, "_", bm.opt@package), ## GAM
                     model_options = bm.opt,
                     # n.trees_optim = best.iter, ## GBM
                     # extremal_conditions = model.sp, # SRE

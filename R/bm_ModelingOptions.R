@@ -444,9 +444,9 @@ bm_ModelingOptions <- function(data.type
   .bm_cat("Build Modeling Options")
   
   ## 0. Check arguments --------------------------------------------------------
-  bm_ModelingOptions.check.args(data.type, models, strategy, val.list, bm.format, calib.lines)
+  .bm_ModelingOptions.check.args(data.type, models, strategy, val.list, bm.format, calib.lines)
   
-  bm.options <- foreach (model = models) %do%
+  bm.options <- foreach (model = models, .combine = "c") %do%
     {
       tab.model <- TABLE_MODELS[which(TABLE_MODELS$model == model &
                                         TABLE_MODELS$type == data.type), ]
@@ -525,7 +525,7 @@ bm_ModelingOptions <- function(data.type
 {
   ## check if type is supported
   avail.types.list <- c('binary', 'binary.PA', 'abundance', 'compositional')
-  .fun_testIfIn(TRUE, "typ", typ, avail.types.list)
+  .fun_testIfIn(TRUE, "data.type", data.type, avail.types.list)
 
   ## check if model is supported
   avail.models.list <- c('GLM', 'GBM', 'GAM', 'CTA', 'ANN', 'SRE', 'FDA', 'MARS'
