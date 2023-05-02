@@ -14,6 +14,11 @@
 ## \code{\link{BIOMOD_Modeling}}
 ##' 
 ##' 
+##' @param mod 
+##' @param typ 
+##' @param pkg 
+##' @param fun 
+##' 
 ##' @slot model a \code{character} corresponding to the model
 ##' @slot type a \code{character} corresponding to the data type 
 ##' (\code{binary}, \code{binary.PA}, \code{abundance}, \code{compositional})
@@ -58,7 +63,7 @@ setClass("BIOMOD.options.default",
          validity = function(object){ return(TRUE) })
 
 
-# 1.2 Constructors -------------------------------------------------------------
+# 1.2 Constructors ----------------------------------------------------------------------
 setGeneric("BIOMOD.options.default", def = function(mod, typ, pkg, fun) { standardGeneric("BIOMOD.options.default") })
 
 .BIOMOD.options.default.check.args <- function(mod, typ, pkg, fun)
@@ -72,16 +77,19 @@ setGeneric("BIOMOD.options.default", def = function(mod, typ, pkg, fun) { standa
   avail.types.list <- c('binary', 'binary.PA', 'abundance', 'compositional')
   .fun_testIfIn(TRUE, "typ", typ, avail.types.list)
   
-  ## check package exists
-  if (!isNamespaceLoaded(pkg)) { requireNamespace(pkg, quietly = TRUE) } ## ATTENTION n'a pas l'air de suffire
-  
-  ## check function exists
-  avail.functions.list <- lsf.str(paste0("package:", pkg)) ## Du coup ne marche pas si le package n'est pas explicitement loadé
-  .fun_testIfIn(TRUE, "fun", fun, avail.functions.list)
+  if (mod != 'MAXENT') {
+    ## check package exists
+    # if (!isNamespaceLoaded(pkg)) { requireNamespace(pkg, quietly = TRUE) } ## ATTENTION n'a pas l'air de suffire
+    eval(parse(text = paste0("require(", pkg, ")")))
+    
+    ## check function exists
+    avail.functions.list <- lsf.str(pos = paste0("package:", pkg)) ## Du coup ne marche pas si le package n'est pas explicitement loadé
+    .fun_testIfIn(TRUE, "fun", fun, avail.functions.list)
+  }
 }
 
 
-## BIOMOD.options.default -------------------------------------------------------
+## BIOMOD.options.default -----------------------------------------------------
 ##' 
 ##' @rdname BIOMOD.options.default
 ##' @export
@@ -91,21 +99,53 @@ setMethod('BIOMOD.options.default', signature(mod = 'character', typ = 'characte
           function(mod, typ, pkg, fun) 
           {
             .BIOMOD.options.default.check.args(mod, typ, pkg, fun)
-            BOM <- new(
-              'BIOMOD.options.default',
-              model = mod,
-              type = typ,
-              package = pkg,
-              func = fun,
-              args.names = formalArgs(fun),
-              args.default = as.list(formals(fun))
-            )
+            if (mod != 'MAXENT') {
+              BOM <- new(
+                'BIOMOD.options.default',
+                model = mod,
+                type = typ,
+                package = pkg,
+                func = fun,
+                args.names = formalArgs(fun),
+                args.default = as.list(formals(fun))
+              )
+            } else {
+              params.MAXENT = list(path_to_maxent.jar = getwd(),
+                                   memory_allocated = 512,
+                                   initial_heap_size = NULL,
+                                   max_heap_size = NULL,
+                                   background_data_dir = 'default',
+                                   maximumbackground = 'default',
+                                   maximumiterations = 200,
+                                   visible = FALSE,
+                                   linear = TRUE,
+                                   quadratic = TRUE,
+                                   product = TRUE,
+                                   threshold = TRUE,
+                                   hinge = TRUE,
+                                   lq2lqptthreshold = 80,
+                                   l2lqthreshold = 10,
+                                   hingethreshold = 15,
+                                   beta_threshold = -1.0,
+                                   beta_categorical = -1.0,
+                                   beta_lqp = -1.0,
+                                   beta_hinge = -1.0,
+                                   betamultiplier = 1,
+                                   defaultprevalence = 0.5)
+              
+              BOM <- new(
+                'BIOMOD.options.default',
+                model = mod,
+                type = typ,
+                package = pkg,
+                func = fun,
+                args.names = names(params.MAXENT),
+                args.default = params.MAXENT
+              )
+            }
             return(BOM)
           }
 )
-
-
-# 1.3 Other Functions -----------------------------------------------------------------------------
 
 
 
@@ -124,7 +164,23 @@ setMethod('BIOMOD.options.default', signature(mod = 'character', typ = 'characte
 ## \code{\link{BIOMOD_Modeling}}
 ##' 
 ##' 
-##' @slot ... slots from \code{\link{BIOMOD.options.default}} object
+##' @inheritParams BIOMOD.options.default
+##' @param strategy 
+##' @param val 
+##' @param bm.format 
+##' @param calib.lines 
+##' 
+##' @slot model a \code{character} corresponding to the model
+##' @slot type a \code{character} corresponding to the data type 
+##' (\code{binary}, \code{binary.PA}, \code{abundance}, \code{compositional})
+##' @slot package a \code{character} corresponding to the package containing 
+##' the model function to be called
+##' @slot func a \code{character} corresponding to the model function name 
+##' to be called
+##' @slot args.names a \code{vector} containing \code{character} corresponding 
+##' to the model function arguments
+##' @slot args.default a \code{list} containing for each dataset the default 
+##' values for all arguments listed in \code{args.names}
 ##' @slot args.values a \code{list} containing for each dataset the to-be-used  
 ##' values for all arguments listed in \code{args.names}
 ##' 
@@ -156,7 +212,7 @@ setClass("BIOMOD.options.dataset",
          validity = function(object){ return(TRUE) })
 
 
-# 1.2 Constructors -------------------------------------------------------------
+# 1.2 Constructors ----------------------------------------------------------------------
 setGeneric("BIOMOD.options.dataset", def = function(strategy, val = NULL, bm.format = NULL, calib.lines = NULL, ...) {
   standardGeneric("BIOMOD.options.dataset") })
 
@@ -170,6 +226,12 @@ setGeneric("BIOMOD.options.dataset", def = function(strategy, val = NULL, bm.for
   if (strategy == "user.defined") {
     .fun_testIfInherits(TRUE, "val", val, c("list"))
   }
+  
+  # if (!is.null(MAXENT$path_to_maxent.jar)) {
+  #   opt@MAXENT$path_to_maxent.jar <- normalizePath(sub("maxent.jar", "", MAXENT$path_to_maxent.jar)) # ensure path format validity
+  # } else {
+  #   opt@MAXENT$path_to_maxent.jar <- getwd()
+  # }
   
   ## TUNING with bm_Tuning parameterisation -----
   if (strategy == "tuned") {
@@ -191,7 +253,7 @@ setGeneric("BIOMOD.options.dataset", def = function(strategy, val = NULL, bm.for
 }
 
 
-## BIOMOD.options.dataset -------------------------------------------------------
+## BIOMOD.options.dataset -----------------------------------------------------
 ##' 
 ##' @rdname BIOMOD.options.dataset
 ##' @export
@@ -200,6 +262,8 @@ setGeneric("BIOMOD.options.dataset", def = function(strategy, val = NULL, bm.for
 setMethod('BIOMOD.options.dataset', signature(strategy = 'character'),
           function(mod, typ, pkg, fun, strategy, val = NULL, bm.format = NULL, calib.lines = NULL)
           {
+            cat('\n\t> ', mod, 'options (datatype:', typ, ', package:', pkg, ', function:', fun, ')...')
+            
             .BIOMOD.options.dataset.check.args(strategy, val, bm.format, calib.lines)
             
             BOM <- BIOMOD.options.default(mod, typ, pkg, fun)
@@ -247,16 +311,58 @@ setMethod('BIOMOD.options.dataset', signature(strategy = 'character'),
 
 # 1.3 Other Functions -----------------------------------------------------------------------------
 
+### show BIOMOD.options.dataset -----------------------------------------------
+##'
+##' @rdname BIOMOD.options.dataset
+##' @importMethodsFrom methods show
+##' @export
+##'
+
+setMethod('show', signature('BIOMOD.options.dataset'),
+          function(object)
+          {
+            cat('\n\t> ', object@model, 'options (datatype:', object@type, ', package:', object@package, ', function:', object@func, ') :')
+            for (arg in object@args.names) {
+              val.def = capture.output(object@args.default[[arg]])
+              val.used = capture.output(object@args.values[["AllData_AllRun"]][[arg]])
+              
+              cat('\n\t\t- ', arg, "=", sub("\\[1\\] ", "", val.used))
+              if (!is.null(val.used) && !is.null(val.def) && val.used != val.def) {
+                cat('   (default:', val.def, ')')
+              }
+            }
+            cat("\n")
+          }
+)
+
 
 ###################################################################################################
 
-### BIOMOD.stored.options ------------------------------------------------
+### BIOMOD.stored.options -----------------------------------------------------
 ##' @name BIOMOD.stored.options-class
 ##' @rdname BIOMOD.stored.data
 ##' 
 setClass("BIOMOD.stored.options",
          contains = "BIOMOD.stored.data",
-         representation(val = 'BIOMOD.options.dataset'),
+         representation(val = 'list'),
          prototype(val = NULL),
          validity = function(object){ return(TRUE) })
+
+### show BIOMOD.stored.options ------------------------------------------------
+##'
+##' @rdname BIOMOD.stored.options
+##' @importMethodsFrom methods show
+##' @export
+##'
+
+setMethod('show', signature('BIOMOD.stored.options'),
+          function(object)
+          {
+            .bm_cat("BIOMOD.stored.options")
+            for (ii in 1:length(object@val)) {
+              show(object@val[[ii]])
+            }
+            .bm_cat()
+          }
+)
 

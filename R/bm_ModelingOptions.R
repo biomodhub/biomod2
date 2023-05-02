@@ -475,47 +475,21 @@ bm_ModelingOptions <- function(data.type
       }
       # else { warning() } ## BUT SHOULD BE DEALT WITH IN CHECK ?
     }
-  
-  # if (!is.null(GBM$perf.method)) { opt@GBM$perf.method <- GBM$perf.method }
-  # opt@GAM$control <- gam::gam.control()
-  # opt@GAM$control <- mgcv::gam.control()
-  # if (!is.null(ANN$NbCV)) { opt@ANN$NbCV <- ANN$NbCV }
-  # if (!is.null(ANN$size)) { opt@ANN$size <- ANN$size }
-  # if (!is.null(ANN$decay)) { opt@ANN$decay <- ANN$decay }
-  # if (!is.null(ANN$rang)) { opt@ANN$rang <- ANN$rang }
-  # if (!is.null(ANN$maxit)) { opt@ANN$maxit <- ANN$maxit }
-  # if (!is.null(RF$type)) { opt@RF$type <- RF$type }
-  # 
-  # if (!is.null(MAXENT$path_to_maxent.jar)) {
-  #   opt@MAXENT$path_to_maxent.jar <- normalizePath(sub("maxent.jar", "", MAXENT$path_to_maxent.jar)) # ensure path format validity
-  # } else {
-  #   opt@MAXENT$path_to_maxent.jar <- getwd()
-  # }
-  # opt@MAXENT$memory_allocated <- MAXENT$memory_allocated
-  # opt@MAXENT$initial_heap_size <- MAXENT$initial_heap_size
-  # opt@MAXENT$max_heap_size <- MAXENT$max_heap_size
-  # opt@MAXENT$background_data_dir <- MAXENT$background_data_dir
-  # opt@MAXENT$maximumbackground <- MAXENT$maximumbackground
-  # opt@MAXENT$maximumiterations <- MAXENT$maximumiterations
-  # opt@MAXENT$visible <- MAXENT$visible
-  # opt@MAXENT$linear <- MAXENT$linear
-  # opt@MAXENT$quadratic <- MAXENT$quadratic
-  # opt@MAXENT$product <- MAXENT$product
-  # opt@MAXENT$threshold <- MAXENT$threshold
-  # opt@MAXENT$hinge <- MAXENT$hinge
-  # opt@MAXENT$lq2lqptthreshold <- MAXENT$lq2lqptthreshold
-  # opt@MAXENT$l2lqthreshold <- MAXENT$l2lqthreshold
-  # opt@MAXENT$hingethreshold <- MAXENT$hingethreshold
-  # opt@MAXENT$beta_threshold <- MAXENT$beta_threshold
-  # opt@MAXENT$beta_categorical <- MAXENT$beta_categorical
-  # opt@MAXENT$beta_lqp <- MAXENT$beta_lqp
-  # opt@MAXENT$beta_hinge <- MAXENT$beta_hinge
-  # opt@MAXENT$betamultiplier <- MAXENT$betamultiplier
-  # opt@MAXENT$defaultprevalence <- MAXENT$defaultprevalence
-  
+  bm.options <- new('BIOMOD.stored.options', val = bm.options)
+  cat("\n")
   .bm_cat("Done")
   return(bm.options)
 }
+
+# if (!is.null(GBM$perf.method)) { opt@GBM$perf.method <- GBM$perf.method }
+# opt@GAM$control <- gam::gam.control()
+# opt@GAM$control <- mgcv::gam.control()
+# if (!is.null(ANN$NbCV)) { opt@ANN$NbCV <- ANN$NbCV }
+# if (!is.null(ANN$size)) { opt@ANN$size <- ANN$size }
+# if (!is.null(ANN$decay)) { opt@ANN$decay <- ANN$decay }
+# if (!is.null(ANN$rang)) { opt@ANN$rang <- ANN$rang }
+# if (!is.null(ANN$maxit)) { opt@ANN$maxit <- ANN$maxit }
+# if (!is.null(RF$type)) { opt@RF$type <- RF$type }
 
 # ---------------------------------------------------------------------------- #
 
@@ -569,4 +543,5 @@ bm_ModelingOptions <- function(data.type
     }
   }
 }
+
 
