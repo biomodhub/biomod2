@@ -7,17 +7,22 @@
 ##' @aliases BIOMOD.options.default-class
 ##' @author Maya Gueguen
 ##' 
-## @title \code{BIOMOD_FormatingData()} output object class
+##' @title \code{\link{bm_ModelingOptions}} output object class
 ##' 
-## @description Class returned by \code{\link{BIOMOD_FormatingData}}, and used by 
-## \code{\link{BIOMOD_Tuning}}, \code{\link{bm_CrossValidation}} and 
-## \code{\link{BIOMOD_Modeling}}
+##' @description Class returned by \code{\link{bm_ModelingOptions}} (a 
+##' \code{list} of \code{BIOMOD.options.dataset} more exactly), and used by 
+##' \code{\link{BIOMOD_Modeling}}
 ##' 
 ##' 
-##' @param mod 
-##' @param typ 
-##' @param pkg 
-##' @param fun 
+##' @param mod a \code{character} corresponding to the model name to be computed, must be either 
+##' \code{GLM}, \code{GBM}, \code{GAM}, \code{CTA}, \code{ANN}, \code{SRE}, \code{FDA}, 
+##' \code{MARS}, \code{RF}, \code{MAXENT}, \code{MAXNET}, \code{XGBOOST}
+##' @param typ a \code{character} corresponding to the data type to be used, must be either 
+##' \code{binary}, \code{binary.PA}, \code{abundance}, \code{compositional}
+##' @param pkg a \code{character} corresponding to the package containing 
+##' the model function to be called
+##' @param fun a \code{character} corresponding to the model function name 
+##' to be called
 ##' 
 ##' @slot model a \code{character} corresponding to the model
 ##' @slot type a \code{character} corresponding to the data type 
@@ -32,17 +37,14 @@
 ##' values for all arguments listed in \code{args.names}
 ##' 
 ##' 
-## @seealso \code{\link{BIOMOD_FormatingData}}, \code{\link{BIOMOD_Tuning}}, 
-## \code{\link{bm_CrossValidation}}, \code{\link{BIOMOD_Modeling}}, 
-## \code{\link{bm_RunModelsLoop}}
-## @family Toolbox objects
+##' @seealso \code{\link{BIOMOD.options.dataset}}, \code{\link{bm_ModelingOptions}}, 
+##' \code{\link{bm_Tuning}}, \code{\link{BIOMOD_Modeling}}, \code{\link{bm_RunModelsLoop}}
+##' @family Toolbox objects
 ##' 
 ##' 
 ##' @examples
 ##' 
 ##' showClass("BIOMOD.options.default")
-##' 
-##' ## ----------------------------------------------------------------------- #
 ##' 
 ##' 
 NULL
@@ -157,11 +159,11 @@ setMethod('BIOMOD.options.default', signature(mod = 'character', typ = 'characte
 ##' @aliases BIOMOD.options.dataset-class
 ##' @author Maya Gueguen
 ##' 
-## @title \code{BIOMOD_FormatingData()} output object class
+##' @title \code{\link{bm_ModelingOptions}} output object class
 ##' 
-## @description Class returned by \code{\link{BIOMOD_FormatingData}}, and used by 
-## \code{\link{BIOMOD_Tuning}}, \code{\link{bm_CrossValidation}} and 
-## \code{\link{BIOMOD_Modeling}}
+##' @description Class returned by \code{\link{bm_ModelingOptions}} (a 
+##' \code{list} of \code{BIOMOD.options.dataset} more exactly), and used by 
+##' \code{\link{BIOMOD_Modeling}}
 ##' 
 ##' 
 ##' @inheritParams BIOMOD.options.default
@@ -185,17 +187,14 @@ setMethod('BIOMOD.options.default', signature(mod = 'character', typ = 'characte
 ##' values for all arguments listed in \code{args.names}
 ##' 
 ##' 
-## @seealso \code{\link{BIOMOD_FormatingData}}, \code{\link{BIOMOD_Tuning}}, 
-## \code{\link{bm_CrossValidation}}, \code{\link{BIOMOD_Modeling}}, 
-## \code{\link{bm_RunModelsLoop}}
-## @family Toolbox objects
+##' @seealso \code{\link{BIOMOD.options.default}}, \code{\link{bm_ModelingOptions}}, 
+##' \code{\link{bm_Tuning}}, \code{\link{BIOMOD_Modeling}}, \code{\link{bm_RunModelsLoop}}
+##' @family Toolbox objects
 ##' 
 ##' 
 ##' @examples
 ##' 
 ##' showClass("BIOMOD.options.dataset")
-##' 
-##' ## ----------------------------------------------------------------------- #
 ##' 
 ##' 
 NULL
@@ -276,8 +275,71 @@ setMethod('BIOMOD.options.dataset', signature(strategy = 'character'),
               names(argsval) <- colnames(calib.lines)
             }
             if (strategy == "bigboss") {
-              ## create and load specific dataset
-              ## TODO
+              argstmp <- BOM@args.default
+              if (mod == "ANN") {
+                # argstmp$NbCV = 5
+                # argstmp$size = NULL
+                # argstmp$decay = 5
+                # argstmp$rang = 0.1
+                # argstmp$maxit = 200
+              } else if (mod == "CTA") {
+                argstmp$method = "class"
+                argstmp$parms = "default"
+                argstmp$control = list(xval = 5, 
+                                       minbucket = 5, 
+                                       minsplit = 5,
+                                       cp = 0.001, 
+                                       maxdepth = 25)
+                argstmp$cost = NULL
+              } else if (mod == "FDA") {
+                argstmp$method = "mars"
+              } else if (mod == "GAM" && pkg == "mgcv") {
+                if (!is.null(bm.format)) {
+                  argstmp$formula = bm_MakeFormula(resp.name = bm.format@sp.name
+                                                   , expl.var = head(bm.format@data.env.var)
+                                                   , type = 's_smoother'
+                                                   , interaction.level = 0
+                                                   , k = NULL)
+                }
+                argstmp$family = binomial(link = 'logit')
+                argstmp$method = "GCV.Cp"
+                argstmp$control = list(epsilon = 1e-06, trace = FALSE, maxit = 100)
+              } else if (mod == "GBM") {
+                argstmp$n.trees = 2500
+                argstmp$interaction.depth = 7
+                argstmp$n.minobsinnode = 5
+                argstmp$shrinkage = 0.001
+                argstmp$cv.folds = 3
+                argstmp$keep.data = FALSE
+                argstmp$n.cores = 1
+                # argstmp$perf.method = 'cv'
+              } else if (mod == "GLM") {
+                if (!is.null(bm.format)) {
+                  argstmp$formula = bm_MakeFormula(resp.name = bm.format@sp.name
+                                                   , expl.var = head(bm.format@data.env.var)
+                                                   , type = 'quadratic'
+                                                   , interaction.level = 0)
+                }
+                argstmp$family = binomial(link = 'logit')
+                argstmp$mustart = 0.5
+                argstmp$control = glm.control(maxit = 50)
+                # argstmp$test = 'AIC'
+              } else if (mod == "MARS") {
+                argstmp$nk = NULL
+                argstmp$penalty = 2
+                argstmp$thresh = 0.001
+                argstmp$nprune = NULL
+                argstmp$pmethod = 'backward'
+              } else if (mod == "RF") {
+                argstmp$do.classif = TRUE
+                argstmp$ntree = 500
+                argstmp$mtry = 'default'
+                argstmp$sampsize = NULL
+                argstmp$nodesize = 5
+                argstmp$maxnodes = NULL
+              }
+              
+              argsval <- list("AllData_AllRun" = argstmp)
             } else if (strategy == "user.defined") {
               if (!("..." %in% BOM@args.names)) {
                 .fun_testIfIn(TRUE, "names(val)", names(val), BOM@args.names)

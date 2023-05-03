@@ -1596,619 +1596,154 @@ setMethod('BIOMOD.formated.data.PA', signature(sp = 'numeric', env = 'SpatRaster
 }
 
 
-## --------------------------------------------------------------------------- #
-## 3. BIOMOD.models.options --------------------------------------------------
-## --------------------------------------------------------------------------- #
+           
+# test <- .fun_testIfIn(test, "GLM$type", object@GLM$type,
+#                       c("simple", "quadratic", "polynomial", "user.defined"))
+# test <- .fun_testIfIn(test, "GLM$test", object@GLM$test, c("AIC", "BIC", "none"))
+# test <- .fun_testIfIn(test, "GBM$distribution", object@GBM$distribution, 
+#                       c("bernoulli", "huberized", "multinomial", "adaboost"))
+# test <- .fun_testIfIn(test, "GBM$perf.method", object@GBM$perf.method, 
+#                       c('OOB', 'test', 'cv'))
+# test <- .fun_testIfIn(test, "GAM$type", object@GAM$type,
+#                       c('s_smoother', 's', 'lo', 'te'))
+# test <- .fun_testIfIn(test, "GAM$method", object@GAM$method,
+#                       c("GCV.Cp", "GACV.Cp", "REML", "P-REML", "ML", "P-ML"))
+# if (any(!object@GAM$optimizer %in% 
+#         c("perf", "outer", "newton", "bfgs", "optim", "nlm", "nlm.fd"))) {
+#   cat("\nGAM$optimizer bad definition (see ?mgcv::gam)")
+#   test <- FALSE
+# }
+# test <- .fun_testIfIn(test, "CTA$method", object@CTA$method, c("anova", "poisson", "class", "exp"))
+# test <- .fun_testIfIn(test, "FDA$method", object@FDA$method, c('polyreg', 'mars', 'bruto'))
+# test <- .fun_testIfIn(test, "MARS$type", object@MARS$type, c("simple", "quadratic", "polynomial", "user.defined"))
+# supported.pmethod <- c('backward', 'none', 'exhaustive', 'forward', 'seqrep', 'cv')
+# if(!is.element(object@MARS$pmethod, supported.pmethod)){
+#   cat("\nMARS$pmethod must be a one of", supported.pmethod);
+#   test <- FALSE 
+# }
+# 
+# ## MAXENT ------------------------------------------------------------
+# if (!is.character(object@MAXENT$path_to_maxent.jar)) {
+#   cat("\nMAXENT$path_to_maxent.jar must be a character")
+#   test <- FALSE
+# }
+# if (!is.null(object@MAXENT$memory_allocated)) {
+#   if (!is.numeric(object@MAXENT$memory_allocated)) {
+#     cat("\nMAXENT$memory_allocated must be a positive integer or NULL for unlimited memory allocation")
+#     test <- FALSE
+#   }
+# }
+# if (!is.character(object@MAXENT$background_data_dir)) {
+#   cat("\nMAXENT$background_data_dir must be 'default' (=> use the same pseudo absences than other models as background) or a path to the directory where your environmental layer are stored")
+#   test <- FALSE
+# }
+# tt <- is.character(object@MAXENT$maximumbackground) | is.numeric(object@MAXENT$maximumbackground)
+# if (is.character(object@MAXENT$maximumbackground)) if (object@MAXENT$maximumbackground != "default") tt <- FALSE
+# if (!tt) {
+#   cat("\nMAXENT$maximumbackground must be 'default' or numeric")
+#   test <- FALSE
+# }
+# test <- .fun_testIfPosInt(test, "MAXENT$maximumiterations", object@MAXENT$maximumiterations)
+# if (!is.logical(object@MAXENT$visible)) {
+#   cat("\nMAXENT$visible must be a logical")
+#   test <- FALSE
+# }
+# if (!is.logical(object@MAXENT$linear)) {
+#   cat("\nMAXENT$linear must be a logical")
+#   test <- FALSE
+# }
+# if (!is.logical(object@MAXENT$quadratic)) {
+#   cat("\nMAXENT$quadratic must be a logical")
+#   test <- FALSE
+# }
+# if (!is.logical(object@MAXENT$product)) {
+#   cat("\nMAXENT$product must be a logical")
+#   test <- FALSE
+# }
+# if (!is.logical(object@MAXENT$threshold)) {
+#   cat("\nMAXENT$threshold must be a logical")
+#   test <- FALSE
+# }
+# if (!is.logical(object@MAXENT$hinge)) {
+#   cat("\nMAXENT$hinge must be a logical")
+#   test <- FALSE
+# }
+# if (!is.numeric(object@MAXENT$lq2lqptthreshold)) {
+#   cat("\nMAXENT$lq2lqptthreshold must be a numeric")
+#   test <- FALSE
+# }
+# if (!is.numeric(object@MAXENT$l2lqthreshold)) {
+#   cat("\nMAXENT$l2lqthreshold must be a numeric")
+#   test <- FALSE
+# }
+# if (!is.numeric(object@MAXENT$lq2lqptthreshold)) {
+#   cat("\nMAXENT$lq2lqptthreshold must be a numeric")
+#   test <- FALSE
+# }
+# if (!is.numeric(object@MAXENT$hingethreshold)) {
+#   cat("\nMAXENT$hingethreshold must be a numeric")
+#   test <- FALSE
+# }
+# if (!is.numeric(object@MAXENT$beta_threshold)) {
+#   cat("\nMAXENT$beta_threshold must be a numeric")
+#   test <- FALSE
+# }
+# if (!is.numeric(object@MAXENT$beta_categorical)) {
+#   cat("\nMAXENT$beta_categorical must be a numeric")
+#   test <- FALSE
+# }
+# if (!is.numeric(object@MAXENT$beta_lqp)) {
+#   cat("\nMAXENT$beta_lqp must be a numeric")
+#   test <- FALSE
+# }
+# if (!is.numeric(object@MAXENT$beta_hinge)) {
+#   cat("\nMAXENT$beta_hinge must be a numeric")
+#   test <- FALSE
+# }
+# if (!is.numeric(object@MAXENT$betamultiplier)) {
+#   cat("\nMAXENT$betamultiplier must be a numeric")
+#   test <- FALSE
+# }
+# if (!is.numeric(object@MAXENT$defaultprevalence)) {
+#   cat("\nMAXENT$defaultprevalence must be a numeric")
+#   test <- FALSE
+# }
+# 
+# if(!is.null(object@MAXENT$initial_heap_size)){
+#   test <- .check_bytes_format(test,
+#                               object@MAXENT$initial_heap_size,
+#                               "initial_heap_size")
+# }
+# if(!is.null(object@MAXENT$max_heap_size)){
+#   test <- .check_bytes_format(test,
+#                               object@MAXENT$max_heap_size,
+#                               "max_heap_size")
+# }
 
-##' @name BIOMOD.models.options
-##' @aliases BIOMOD.models.options-class
-##' @author Damien Georges
-##' 
-##' @title \code{BIOMOD_ModelingOptions()} output object class
-##' 
-##' @description Class returned by \code{\link{BIOMOD_ModelingOptions}}, and used by 
-##' \code{\link{BIOMOD_Tuning}} and \code{\link{BIOMOD_Modeling}}
-##' 
-##' 
-##' @slot GLM a \code{list} containing GLM options
-##' @slot GBM a \code{list} containing GBM options
-##' @slot GAM a \code{list} containing GAM options
-##' @slot CTA a \code{list} containing CTA options
-##' @slot ANN a \code{list} containing ANN options
-##' @slot SRE a \code{list} containing SRE options
-##' @slot FDA a \code{list} containing FDA options
-##' @slot MARS a \code{list} containing MARS options
-##' @slot RF a \code{list} containing RF options
-##' @slot MAXENT a \code{list} containing MAXENT options
-##' @slot MAXNET a \code{list} containing MAXNET options
-##' @slot XGBOOST a \code{list} containing XGBOOST options
-##' 
-##' @param object a \code{\link{BIOMOD.models.options}} object
-##' 
-##' 
-##' @seealso \code{\link{BIOMOD_ModelingOptions}}, \code{\link{BIOMOD_Tuning}}, 
-##' \code{\link{BIOMOD_Modeling}}
-##' @family Toolbox objects
-##' 
-##' 
-##' @examples
-##' 
-##' showClass("BIOMOD.models.options")
-##' 
-##' ## ----------------------------------------------------------------------- #
-##' ## default BIOMOD.models.options object
-##' myBiomodOptions <- BIOMOD_ModelingOptions()
-##'
-##' ## print the object
-##' myBiomodOptions
-##'
-##' 
-NULL
 
-##' @name BIOMOD.models.options-class
-##' @rdname BIOMOD.models.options
-##' @export
-##' 
-
-setClass("BIOMOD.models.options",
-         representation(GLM = "list",
-                        GBM = "list",
-                        GAM = "list",
-                        CTA = "list",
-                        ANN = "list",
-                        SRE = "list",
-                        FDA = "list",
-                        MARS = "list",
-                        RF = "list",
-                        MAXENT = "list",
-                        MAXNET = "list",
-                        XGBOOST = "list"),
-         prototype(GLM = list(type = 'quadratic',
-                              interaction.level = 0,
-                              myFormula = NULL,
-                              test = 'AIC',
-                              family = binomial(link = 'logit'),
-                              mustart = 0.5,
-                              control = glm.control(maxit = 50)),
-                   GBM = list(distribution = 'bernoulli',
-                              n.trees = 2500,
-                              interaction.depth = 7,
-                              n.minobsinnode = 5,
-                              shrinkage = 0.001,
-                              bag.fraction = 0.5,
-                              train.fraction = 1,
-                              cv.folds = 3,
-                              keep.data = FALSE,
-                              verbose = FALSE,
-                              # class.stratify.cv = 'bernoulli',
-                              perf.method = 'cv',
-                              n.cores = 1),
-                   GAM = list(algo = "GAM_mgcv",
-                              type = "s_smoother",
-                              k = NULL,
-                              interaction.level = 0,
-                              myFormula = NULL,
-                              family = binomial(link = 'logit'),
-                              control = list(epsilon = 1e-06, trace = FALSE, maxit = 100),
-                              method = "GCV.Cp",
-                              optimizer = c("outer", "newton"),
-                              select = FALSE,
-                              knots = NULL,
-                              paraPen = NULL),
-                   CTA = list(method = 'class',
-                              parms = 'default',
-                              # control = rpart.control(xval = 5, minbucket = 5, minsplit = 5, cp = 0.001, maxdepth = 25),
-                              control = list(xval = 5, 
-                                             minbucket = 5, 
-                                             minsplit = 5,
-                                             cp = 0.001, 
-                                             maxdepth = 25),
-                              cost = NULL),
-                   ANN = list(NbCV = 5,
-                              size = NULL,
-                              decay = NULL,
-                              rang = 0.1,
-                              maxit = 200),
-                   SRE = list(quant = 0.025),
-                   FDA = list(method = 'mars', add_args = NULL),
-                   MARS = list(type = 'simple',
-                               interaction.level = 0,
-                               myFormula = NULL,
-                               # degree = 1,
-                               nk = NULL,
-                               penalty = 2,
-                               thresh = 0.001,
-                               nprune = NULL,
-                               pmethod = 'backward'),
-                   RF = list(do.classif = TRUE,
-                             ntree = 500,
-                             mtry = 'default',
-                             sampsize = NULL,
-                             nodesize = 5,
-                             maxnodes = NULL),
-                   MAXENT = list(path_to_maxent.jar = getwd(),
-                                 memory_allocated = 512,
-                                 initial_heap_size = NULL,
-                                 max_heap_size = NULL,
-                                 background_data_dir = 'default',
-                                 maximumbackground = 'default',
-                                 maximumiterations = 200,
-                                 visible = FALSE,
-                                 linear = TRUE,
-                                 quadratic = TRUE,
-                                 product = TRUE,
-                                 threshold = TRUE,
-                                 hinge = TRUE,
-                                 lq2lqptthreshold = 80,
-                                 l2lqthreshold = 10,
-                                 hingethreshold = 15,
-                                 beta_threshold = -1.0,
-                                 beta_categorical = -1.0,
-                                 beta_lqp = -1.0,
-                                 beta_hinge = -1.0,
-                                 betamultiplier = 1,
-                                 defaultprevalence = 0.5),
-                   MAXNET = list(myFormula = NULL,
-                                 regmult = 1,
-                                 regfun = maxnet::maxnet.default.regularization),
-                   XGBOOST = list() #empty for now
-         ),
-         validity = function(object) {
-           test <- TRUE
-           
-           ## GLM ------------------------------------------------------------
-           test <- .fun_testIfIn(test, "GLM$type", object@GLM$type,
-                                 c("simple", "quadratic", "polynomial", "user.defined"))
-           test <- .fun_testIfPosInt(test, "GLM$interaction.level", object@GLM$interaction.level)
-           
-           if (!is.null(object@GLM$myFormula) && 
-               !inherits(object@GLM$myFormula, "formula")) {
-             cat("\nGLM$myFormula must be NULL or a formula object")
-             test <- FALSE
-           }
-           
-           test <- .fun_testIfIn(test, "GLM$test", object@GLM$test, c("AIC", "BIC", "none"))
-           fam <- "none"
-           if (!inherits(object@GLM$family, "family")) {
-             cat("\nGLM$family must be a valid family object")
-             test <- FALSE
-           }
-           if (!is.list(object@GLM$control)) {
-             cat("\nGLM$control must be a list like that returned by glm.control")
-             test <- FALSE
-           }
-           
-           ## GBM ------------------------------------------------------------
-           test <- .fun_testIfIn(test, "GBM$distribution", object@GBM$distribution, 
-                                 c("bernoulli", "huberized", "multinomial", "adaboost"))
-           # test <- .fun_testIfPosInt(test, "GBM$n.trees", object@GBM$n.trees)
-           if (!is.numeric(object@GBM$n.trees)) {
-             cat("\nGBM$n.trees must be a integer")
-             test <- FALSE
-           } else {
-             if (object@GBM$n.trees < 0 | floor(object@GBM$n.trees) != object@GBM$n.trees) {
-               cat("\nGBM$n.trees must be a positive integer")
-               test <- FALSE
-             }
-           }
-           test <- .fun_testIfPosInt(test, "GBM$interaction.depth", object@GBM$interaction.depth)
-           test <- .fun_testIfPosInt(test, "GBM$n.minobsinnode", object@GBM$n.minobsinnode)
-           test <- .fun_testIfPosNum(test, "GBM$shrinkage", object@GBM$shrinkage)
-           test <- .fun_testIf01(test, "GBM$bag.fraction", object@GBM$bag.fraction)
-           test <- .fun_testIf01(test, "GBM$train.fraction", object@GBM$train.fraction)
-           test <- .fun_testIfPosInt(test, "GBM$cv.folds", object@GBM$cv.folds)
-           if (!is.logical(object@GBM$keep.data)) {
-             cat("\nGBM$keep.data must be a logical")
-             test <- FALSE
-           }
-           if (!is.logical(object@GBM$verbose)) {
-             cat("\nGBM$verbose must be a logical")
-             test <- FALSE
-           }
-           # test <- .fun_testIfIn(test, "GBM$class.stratify.cv", object@GBM$class.stratify.cv, c('bernoulli', 'multinomial'))
-           test <- .fun_testIfIn(test, "GBM$perf.method", object@GBM$perf.method, 
-                                 c('OOB', 'test', 'cv'))
-           
-           ## GAM ------------------------------------------------------------
-           test <- .fun_testIfIn(test, "GAM$algo", object@GAM$algo,
-                                 c('GAM_mgcv', 'GAM_gam', 'BAM_mgcv'))
-           test <- .fun_testIfIn(test, "GAM$type", object@GAM$type,
-                                 c('s_smoother', 's', 'lo', 'te'))
-           if (!is.null(object@GAM$k)) {
-             if (!is.numeric(object@GAM$k)) {
-               cat("\nGAM$k must be a integer")
-               test <- FALSE
-             } else {
-               if (object@GAM$k < -1 | object@GAM$k %% 1 != 0) {
-                 cat("\nGAM$k must be > -1")
-                 test <- FALSE
-               }
-             }
-           }
-           test <- .fun_testIfPosInt(test, "GAM$interaction.level", object@GAM$interaction.level)
-           if (!is.null(object@GAM$myFormula) &&
-               (!inherits(object@GAM$myFormula, "formula"))) {
-             cat("\nGAM$myFormula must be NULL or a formula object")
-             test <- FALSE
-           }
-           
-           if (!inherits(object@GAM$family, "family")) {
-             cat("\nGAM$family must be a valid family object")
-             test <- FALSE
-           }
-           if (!is.list(object@GAM$control)) {
-             cat("\nGAM$control must be a list like that returned by gam.control")
-             test <- FALSE
-           }
-           test <- .fun_testIfIn(test, "GAM$method", object@GAM$method,
-                                 c("GCV.Cp", "GACV.Cp", "REML", "P-REML", "ML", "P-ML"))
-           if (any(!object@GAM$optimizer %in% 
-                   c("perf", "outer", "newton", "bfgs", "optim", "nlm", "nlm.fd"))) {
-             cat("\nGAM$optimizer bad definition (see ?mgcv::gam)")
-             test <- FALSE
-           }
-           if (!is.logical(object@GAM$select)) {
-             cat("\nGAM$select must be a logical")
-             test <- FALSE
-           }
-           #            knots=NULL,
-           #            paraPen=NULL
-           
-           ## CTA ------------------------------------------------------------
-           test <- .fun_testIfIn(test, "CTA$method", object@CTA$method, c("anova", "poisson", "class", "exp"))
-           #parms = 'default',
-           if (!is.list(object@CTA$control)) {
-             cat("\nCTA$control must be a list like that returned by rpart.control")
-             test <- FALSE
-           }
-           if (length(object@CTA$cost) > 0 && (!is.numeric(object@CTA$cost))) {
-             cat("\nCTA$cost must be a non negative cost vector")
-             test <- FALSE
-           }
-           
-           
-           ## ANN ------------------------------------------------------------
-           test <- .fun_testIfPosInt(test, "ANN$NbCV", object@ANN$NbCV)
-           if ((is.null(object@ANN$size) || length(object@ANN$size) > 1) &&
-               object@ANN$NbCV <= 0) {
-             cat("\nANN$size has to be defined as a single integer if ANN$NbCV=0")
-             test <- FALSE
-           } else {
-             if (!is.null(object@ANN$size) &&
-                 (!is.numeric(object@ANN$size) || !all(object@ANN$size > 0) || !all(object@ANN$size %% 1 == 0))) {
-               cat("\nANN$size must be NULL or a positive (vector of) integer")
-               test <- FALSE
-             }
-           }
-           
-           
-           if ((is.null(object@ANN$decay) | length(object@ANN$decay) > 1) &&
-               object@ANN$NbCV <= 0) {
-             cat("\nANN$decay has to be defined as a single number if ANN$NbCV=0")
-             test <- FALSE
-           } else if (!is.null(object@ANN$decay) &&
-                      (!is.numeric(object@ANN$decay) || !all(object@ANN$decay > 0))) {
-             cat("\nANN$decay must be NULL or a positive (vector of) number")
-             test <- FALSE
-           }
-           
-           test <- .fun_testIfPosNum(test, "ANN$rang", object@ANN$rang)
-           test <- .fun_testIfPosInt(test, "ANN$maxit", object@ANN$maxit)
-           
-           ## FDA ------------------------------------------------------------
-           test <- .fun_testIfIn(test, "FDA$method", object@FDA$method, c('polyreg', 'mars', 'bruto'))
-           if (!is.null(object@FDA$add_args) &&
-               !is.list(object@FDA$add_args)) {
-             cat("\nFDA$add_args must be a list or NULL"); 
-             test <- FALSE
-           }
-           
-           
-           ## SRE ------------------------------------------------------------
-           if (!is.numeric(object@SRE$quant)) {
-             cat("\nSRE$quant must be a numeric"); test <- FALSE
-           } else if(object@SRE$quant >= 0.5 | object@SRE$quant < 0){ 
-             cat("\nSRE$quant must between 0 and 0.5"); test <- FALSE 
-           }
-           
-           ## MARS ------------------------------------------------------------
-           test <- .fun_testIfIn(test, "MARS$type", object@MARS$type, c("simple", "quadratic", "polynomial", "user.defined"))
-           test <- .fun_testIfPosInt(test, "MARS$interaction.level", object@MARS$interaction.level)
-           if (!is.null(object@MARS$myFormula) && !inherits(object@MARS$myFormula, "formula")) {
-             cat("\nMARS$myFormula must be NULL or a formula object")
-             test <- FALSE
-           }
-           # test <- .fun_testIfPosInt(test, "MARS$degree", object@MARS$degree)
-           if (!is.null(object@MARS$nk) && 
-               (object@MARS$nk < 0 | object@MARS$nk%%1!=0)) {
-             cat("\nMARS$nk must be a positive integer or NULL if you want to use default parameter")
-             test <- FALSE 
-           }
-           
-           test <- .fun_testIfPosInt(test, "MARS$penalty", object@MARS$penalty)
-           test <- .fun_testIfPosNum(test, "MARS$thresh", object@MARS$thresh)
-           if (!is.null(object@MARS$nprune) &&
-               !is.numeric(object@MARS$nprune)){
-             cat("\nMARS$nprune must be a numeric or NULL"); test <- FALSE 
-           }
-           
-           supported.pmethod <- c('backward', 'none', 'exhaustive', 'forward', 'seqrep', 'cv')
-           if(!is.element(object@MARS$pmethod, supported.pmethod)){
-             cat("\nMARS$pmethod must be a one of", supported.pmethod);
-             test <- FALSE 
-           }
-           
-           ## RF ------------------------------------------------------------
-           if (!is.logical(object@RF$do.classif)) {
-             cat("\nRF$do.classif must be a logical")
-             test <- FALSE
-           }
-           test <- .fun_testIfPosInt(test, "RF$ntree", object@RF$ntree)
-           if (object@RF$mtry != "default") {
-             test <- .fun_testIfPosInt(test, "RF$mtry", object@RF$mtry)
-           }
-           if (!is.null(object@RF$sampsize)) {
-             test <- .fun_testIfPosInt(test, "RF$sampsize", object@RF$sampsize)
-           }
-           test <- .fun_testIfPosInt(test, "RF$nodesize", object@RF$nodesize)
-           if (length(object@RF$maxnodes) > 0) {
-             test <- .fun_testIfPosInt(test, "RF$maxnodes", object@RF$maxnodes)
-           }
-           
-           ## MAXENT ------------------------------------------------------------
-           if (!is.character(object@MAXENT$path_to_maxent.jar)) {
-             cat("\nMAXENT$path_to_maxent.jar must be a character")
-             test <- FALSE
-           }
-           if (!is.null(object@MAXENT$memory_allocated)) {
-             if (!is.numeric(object@MAXENT$memory_allocated)) {
-               cat("\nMAXENT$memory_allocated must be a positive integer or NULL for unlimited memory allocation")
-               test <- FALSE
-             }
-           }
-           if (!is.character(object@MAXENT$background_data_dir)) {
-             cat("\nMAXENT$background_data_dir must be 'default' (=> use the same pseudo absences than other models as background) or a path to the directory where your environmental layer are stored")
-             test <- FALSE
-           }
-           tt <- is.character(object@MAXENT$maximumbackground) | is.numeric(object@MAXENT$maximumbackground)
-           if (is.character(object@MAXENT$maximumbackground)) if (object@MAXENT$maximumbackground != "default") tt <- FALSE
-           if (!tt) {
-             cat("\nMAXENT$maximumbackground must be 'default' or numeric")
-             test <- FALSE
-           }
-           test <- .fun_testIfPosInt(test, "MAXENT$maximumiterations", object@MAXENT$maximumiterations)
-           if (!is.logical(object@MAXENT$visible)) {
-             cat("\nMAXENT$visible must be a logical")
-             test <- FALSE
-           }
-           if (!is.logical(object@MAXENT$linear)) {
-             cat("\nMAXENT$linear must be a logical")
-             test <- FALSE
-           }
-           if (!is.logical(object@MAXENT$quadratic)) {
-             cat("\nMAXENT$quadratic must be a logical")
-             test <- FALSE
-           }
-           if (!is.logical(object@MAXENT$product)) {
-             cat("\nMAXENT$product must be a logical")
-             test <- FALSE
-           }
-           if (!is.logical(object@MAXENT$threshold)) {
-             cat("\nMAXENT$threshold must be a logical")
-             test <- FALSE
-           }
-           if (!is.logical(object@MAXENT$hinge)) {
-             cat("\nMAXENT$hinge must be a logical")
-             test <- FALSE
-           }
-           if (!is.numeric(object@MAXENT$lq2lqptthreshold)) {
-             cat("\nMAXENT$lq2lqptthreshold must be a numeric")
-             test <- FALSE
-           }
-           if (!is.numeric(object@MAXENT$l2lqthreshold)) {
-             cat("\nMAXENT$l2lqthreshold must be a numeric")
-             test <- FALSE
-           }
-           if (!is.numeric(object@MAXENT$lq2lqptthreshold)) {
-             cat("\nMAXENT$lq2lqptthreshold must be a numeric")
-             test <- FALSE
-           }
-           if (!is.numeric(object@MAXENT$hingethreshold)) {
-             cat("\nMAXENT$hingethreshold must be a numeric")
-             test <- FALSE
-           }
-           if (!is.numeric(object@MAXENT$beta_threshold)) {
-             cat("\nMAXENT$beta_threshold must be a numeric")
-             test <- FALSE
-           }
-           if (!is.numeric(object@MAXENT$beta_categorical)) {
-             cat("\nMAXENT$beta_categorical must be a numeric")
-             test <- FALSE
-           }
-           if (!is.numeric(object@MAXENT$beta_lqp)) {
-             cat("\nMAXENT$beta_lqp must be a numeric")
-             test <- FALSE
-           }
-           if (!is.numeric(object@MAXENT$beta_hinge)) {
-             cat("\nMAXENT$beta_hinge must be a numeric")
-             test <- FALSE
-           }
-           if (!is.numeric(object@MAXENT$betamultiplier)) {
-             cat("\nMAXENT$betamultiplier must be a numeric")
-             test <- FALSE
-           }
-           if (!is.numeric(object@MAXENT$defaultprevalence)) {
-             cat("\nMAXENT$defaultprevalence must be a numeric")
-             test <- FALSE
-           }
-           
-           if(!is.null(object@MAXENT$initial_heap_size)){
-             test <- .check_bytes_format(test,
-                                         object@MAXENT$initial_heap_size,
-                                         "initial_heap_size")
-           }
-           if(!is.null(object@MAXENT$max_heap_size)){
-             test <- .check_bytes_format(test,
-                                         object@MAXENT$max_heap_size,
-                                         "max_heap_size")
-           }
-           ## MAXNET
-           ## As of 2022/11/22 options check for MAXNET are missing 
-
-           return(test)
-         }
-)
-
-### show.BIOMOD.models.options -------------------------------------------------
-##'
-##' @rdname BIOMOD.models.options
-##' @importMethodsFrom methods show
-##' @export
-##'
-
-setMethod('show', signature('BIOMOD.models.options'),
-          function(object)
-          {
-            .bm_cat("BIOMOD.models.options")
-            cat("\n")
-            
-            ## GLM options
-            cat("\nGLM = list( type = '", object@GLM$type, "',", sep = "")
-            cat("\n            interaction.level = ", object@GLM$interaction.level, ",", sep = "")
-            cat("\n            myFormula = ",  ifelse(length(object@GLM$myFormula) < 1, 'NULL', paste(object@GLM$myFormula[2],
-                                                                                                      object@GLM$myFormula[1],
-                                                                                                      object@GLM$myFormula[3])), ",", sep = "")
-            cat("\n            test = '", object@GLM$test, "',", sep = "")
-            cat("\n            family = ", object@GLM$family$family, "(link = '", object@GLM$family$link, "'),", sep = "")
-            cat("\n            mustart = ", object@GLM$mustart, ",", sep = "")
-            cat("\n            control = glm.control(", .print_control(object@GLM$control), ") ),", sep = "", fill = .Options$width)
-            
-            ## GBM options
-            cat("\n")
-            cat("\nGBM = list( distribution = '", object@GBM$distribution, "',", sep = "")
-            cat("\n            n.trees = ", object@GBM$n.trees, ",", sep = "")
-            cat("\n            interaction.depth = ", object@GBM$interaction.depth, ",", sep = "")
-            cat("\n            n.minobsinnode = ", object@GBM$n.minobsinnode, ",", sep = "")
-            cat("\n            shrinkage = ", object@GBM$shrinkage, ",", sep = "")
-            cat("\n            bag.fraction = ", object@GBM$bag.fraction, ",", sep = "")
-            cat("\n            train.fraction = ", object@GBM$train.fraction, ",", sep = "")
-            cat("\n            cv.folds = ", object@GBM$cv.folds, ",", sep = "")
-            cat("\n            keep.data = ", object@GBM$keep.data, ",", sep = "")
-            cat("\n            verbose = ", object@GBM$verbose, ",", sep = "")
-            #             cat("\n            class.stratify.cv = '", object@GBM$class.stratify.cv, "',", sep="")
-            cat("\n            perf.method = '", object@GBM$perf.method, "',", sep = "")
-            cat("\n            n.cores = ", ifelse(length(object@GBM$n.cores), object@GBM$n.cores, 'NULL'), "),", sep = "")
-            
-            ## GAM options
-            cat("\n")
-            cat("\nGAM = list( algo = '", object@GAM$algo, "',", sep = "")
-            cat("\n            type = '", object@GAM$type, "',", sep = "")
-            cat("\n            k = ", ifelse(length(object@GAM$k) < 1, 'NULL', object@GAM$k), ",", sep = "")
-            cat("\n            interaction.level = ", object@GAM$interaction.level, ",", sep = "")
-            cat("\n            myFormula = ", ifelse(length(object@GAM$myFormula) < 1, 'NULL', paste(object@GAM$myFormula[2],
-                                                                                                     object@GAM$myFormula[1],
-                                                                                                     object@GAM$myFormula[3])), ",", sep = "")
-            cat("\n            family = ", object@GAM$family$family, "(link = '", object@GAM$family$link, "'),", sep = "")
-            if (object@GAM$algo == 'GAM_mgcv') {
-              cat("\n            method = '", object@GAM$method, "', ", sep = "")
-              cat("\n            optimizer = c('", paste(object@GAM$optimizer, collapse = "','"), "'),", sep = "")
-              cat("\n            select = ", object@GAM$select, ",", sep = "")
-              cat("\n            knots = ",  ifelse(length(object@GLM$knots) < 1, 'NULL', "'user.defined'"), ",", sep = "")
-              cat("\n            paraPen = ",  ifelse(length(object@GLM$paraPen) < 1, 'NULL', "'user.defined'"), ",", sep = "")
-            }
-            cat("\n            control = list(", .print_control(object@GAM$control), ") ),", sep = "", fill = .Options$width)
-            
-            ## CTA options
-            cat("\n")
-            cat("\nCTA = list( method = '", object@CTA$method, "',", sep = "")
-            cat("\n            parms = '", object@CTA$parms, "',", sep = "")
-            cat("\n            cost = ", ifelse(length(object@CTA$cost) < 1, 'NULL', object@CTA$cost), ",", sep = "")
-            cat("\n            control = list(", .print_control(object@CTA$control), ") ),", sep = "", fill = .Options$width)
-            
-            ## ANN options
-            cat("\n")
-            cat("\nANN = list( NbCV = ", object@ANN$NbCV, ",", sep = "")
-            cat("\n            size = ", ifelse(length(object@ANN$size) < 1, 'NULL', object@ANN$size), ",", sep = "")
-            cat("\n            decay = ", ifelse(length(object@ANN$decay) < 1, 'NULL', object@ANN$decay), ",", sep = "")
-            cat("\n            rang = ", object@ANN$rang, ",", sep = "")
-            cat("\n            maxit = ", object@ANN$maxit, "),", sep = "")
-            
-            ## SRE options
-            cat("\n")
-            cat("\nSRE = list( quant = ", object@SRE$quant, "),", sep = "")
-            
-            ## FDA options
-            cat("\n")
-            cat("\nFDA = list( method = '", object@FDA$method, "',", sep = "")
-            cat("\n            add_args = ", ifelse(length(object@FDA$add_args) < 1, 'NULL'
-                                                    , paste("list(", paste(.print_control(object@FDA$add_args), collapse = "")
-                                                            , ")", sep = "")), "),", sep = "")
-            
-            ## MARS options
-            cat("\n")
-            cat("\nMARS = list( type = '", object@MARS$type, "',", sep = "")
-            cat("\n             interaction.level = ", object@MARS$interaction.level, ",", sep = "")
-            cat("\n             myFormula = ",  ifelse(length(object@MARS$myFormula) < 1, 'NULL', paste(object@GLM$myFormula[2],
-                                                                                                        object@GLM$myFormula[1],
-                                                                                                        object@GLM$myFormula[3])), ",", sep = "")
-            #             cat("\n             degree = ", object@MARS$degree, ",", sep="")
-            cat("\n             nk = ", ifelse(length(object@MARS$nk) < 1, 'NULL', object@MARS$nk), ",", sep = "")
-            cat("\n             penalty = ", object@MARS$penalty, ",", sep = "")
-            cat("\n             thresh = ", object@MARS$thresh, ",", sep = "")
-            cat("\n             nprune = ", ifelse(length(object@MARS$nprune) < 1, 'NULL', object@MARS$nprune), ",", sep = "")
-            cat("\n             pmethod = '", object@MARS$pmethod, "'),", sep = "")
-            
-            ## RF options
-            cat("\n")
-            cat("\nRF = list( do.classif = ", object@RF$do.classif, ",", sep = "")
-            cat("\n           ntree = ", object@RF$ntree, ",", sep = "")
-            cat("\n           mtry = '", object@RF$mtry, "',", sep = "")
-            cat("\n           sampsize = ", ifelse(length(object@RF$sampsize) < 1, 'NULL', paste0(object@RF$sampsize, collapse = " ")), ",", sep = "")
-            cat("\n           nodesize = ", object@RF$nodesize, ",", sep = "")
-            cat("\n           maxnodes = ", ifelse(length(object@RF$maxnodes) < 1, 'NULL', object@RF$maxnodes),  "),", sep = "")
-            
-            ## MAXENT options
-            cat("\n")
-            cat("\nMAXENT = list( path_to_maxent.jar = '", object@MAXENT$path_to_maxent.jar, "', ", sep="")
-            cat("\n               memory_allocated = ", ifelse(is.null(object@MAXENT$memory_allocated), 'NULL'
-                                                               , object@MAXENT$memory_allocated), ",", sep = "")
-            cat("\n               initial heap size = ", 
-                ifelse(is.null(object@MAXENT$initial_heap_size), 
-                       'NULL'
-                       , object@MAXENT$initial_heap_size), ",", sep = "")
-            cat("\n               maximum heap size = ", 
-                ifelse(is.null(object@MAXENT$max_heap_size), 
-                       'NULL', object@MAXENT$max_heap_size), ",", sep = "")
-            cat("\n               background_data_dir = ", ifelse(is.character(object@MAXENT$background_data_dir), "'", "")
-                , object@MAXENT$background_data_dir, ifelse(is.character(object@MAXENT$background_data_dir), "'", ""), ",", sep = "")
-            cat("\n               maximumbackground = ", ifelse(is.character(object@MAXENT$maximumbackground), "'", "")
-                , object@MAXENT$maximumbackground, ifelse(is.character(object@MAXENT$maximumbackground), "'", ""), ",", sep = "")
-            cat("\n               maximumiterations = ", object@MAXENT$maximumiterations, ",", sep = "")
-            cat("\n               visible = ", object@MAXENT$visible, ",", sep = "")
-            cat("\n               linear = ", object@MAXENT$linear, ",", sep = "")
-            cat("\n               quadratic = ", object@MAXENT$quadratic, ",", sep = "")
-            cat("\n               product = ", object@MAXENT$product, ",", sep = "")
-            cat("\n               threshold = ", object@MAXENT$threshold, ",", sep = "")
-            cat("\n               hinge = ", object@MAXENT$hinge, ",", sep = "")
-            cat("\n               lq2lqptthreshold = ", object@MAXENT$lq2lqptthreshold, ",", sep = "")
-            cat("\n               l2lqthreshold = ", object@MAXENT$l2lqthreshold, ",", sep = "")
-            cat("\n               hingethreshold = ", object@MAXENT$hingethreshold, ",", sep = "")
-            cat("\n               beta_threshold = ", object@MAXENT$beta_threshold, ",", sep = "")
-            cat("\n               beta_categorical = ", object@MAXENT$beta_categorical, ",", sep = "")
-            cat("\n               beta_lqp = ", object@MAXENT$beta_lqp, ",", sep = "")
-            cat("\n               beta_hinge = ", object@MAXENT$beta_hinge, ",", sep = "")
-            cat("\n               betamultiplier = ", object@MAXENT$betamultiplier, ",", sep = "")
-            cat("\n               defaultprevalence = ", object@MAXENT$defaultprevalence, "),", sep = "")
-            
-            ## MAXNET options
-            cat("\n")
-            cat("\n MAXNET = list( myFormula = ", .print_formula(object@MAXNET$myFormula), ",", sep = "")
-            cat("\n     regmult = ", object@MAXNET$regmult, ",", sep = "")
-            cat("\n     regfun = <function> )")
-            cat("\n)")
-            
-
-            .bm_cat()
-          }
-)
+# ### show.BIOMOD.models.options -------------------------------------------------
+# 
+# ## GLM options
+# cat("\n            myFormula = ",  ifelse(length(object@GLM$myFormula) < 1, 'NULL', paste(object@GLM$myFormula[2],
+#                                                                                           object@GLM$myFormula[1],
+#                                                                                           object@GLM$myFormula[3])), ",", sep = "")
+# cat("\n            family = ", object@GLM$family$family, "(link = '", object@GLM$family$link, "'),", sep = "")
+# cat("\n            control = glm.control(", .print_control(object@GLM$control), ") ),", sep = "", fill = .Options$width)
+# 
+# ## ANN options
+# cat("\n            size = ", ifelse(length(object@ANN$size) < 1, 'NULL', object@ANN$size), ",", sep = "")
+# cat("\n            decay = ", ifelse(length(object@ANN$decay) < 1, 'NULL', object@ANN$decay), ",", sep = "")
+# 
+# ## FDA options
+# cat("\n            add_args = ", ifelse(length(object@FDA$add_args) < 1, 'NULL'
+#                                         , paste("list(", paste(.print_control(object@FDA$add_args), collapse = "")
+#                                                 , ")", sep = "")), "),", sep = "")
+# ## MAXENT options
+# cat("\n")
+# cat("\nMAXENT = list( path_to_maxent.jar = '", object@MAXENT$path_to_maxent.jar, "', ", sep="")
+# cat("\n               background_data_dir = ", ifelse(is.character(object@MAXENT$background_data_dir), "'", "")
+#     , object@MAXENT$background_data_dir, ifelse(is.character(object@MAXENT$background_data_dir), "'", ""), ",", sep = "")
+# 
+# ## MAXNET options
+# cat("\n MAXNET = list( myFormula = ", .print_formula(object@MAXNET$myFormula), ",", sep = "")
 
