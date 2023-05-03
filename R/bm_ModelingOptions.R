@@ -1,13 +1,12 @@
 # bm_ModelingOptions documentation -----------------------------------------
 ##' @name bm_ModelingOptions
 ##' @aliases bm_ModelingOptions
-##' @aliases bm_DefaultModelingOptions
 ##' @author Damien Georges, Wilfried Thuiller
 ##' @author Maya Gueguen
 ##' 
 ##' @title Configure the modeling options for each selected model
 ##'
-##' @description Parametrize and/or tune \pkg{biomod2}'s single models options.
+##' @description Parameterize and/or tune \pkg{biomod2}'s single models options.
 ##'
 ##' @param data.type a \code{character} corresponding to the data type to 
 ##' be used, must be either \code{binary}, \code{binary.PA}, \code{abundance}, 
@@ -30,22 +29,9 @@
 ##' 
 ##'
 ##'
-## @param GLM (\emph{optional, default} \code{NULL}) \cr A \code{list} containing GLM options
-## @param GBM (\emph{optional, default} \code{NULL}) \cr A \code{list} containing GBM options
-## @param GAM (\emph{optional, default} \code{NULL}) \cr A \code{list} containing GAM options
-## @param CTA (\emph{optional, default} \code{NULL}) \cr A \code{list} containing CTA options
-## @param ANN (\emph{optional, default} \code{NULL}) \cr A \code{list} containing ANN options
-## @param SRE (\emph{optional, default} \code{NULL}) \cr A \code{list} containing SRE options
-## @param FDA (\emph{optional, default} \code{NULL}) \cr A \code{list} containing FDA options
-## @param MARS (\emph{optional, default} \code{NULL}) \cr A \code{list} containing MARS options
-## @param RF (\emph{optional, default} \code{NULL}) \cr A \code{list} containing RF options
-## @param MAXENT (\emph{optional, default} \code{NULL}) \cr A \code{list} 
-## containing MAXENT options
-##'
-##'
 ##' @return 
 ##' 
-##' A \code{list} of \code{\link{BIOMOD.models.options}} object that can be used to build 
+##' A \code{\link{BIOMOD.models.options}} of object that can be used to build 
 ##' species distribution model(s) with the \code{\link{BIOMOD_Modeling}} function.
 ##' 
 ##' 
@@ -446,7 +432,7 @@ bm_ModelingOptions <- function(data.type
   ## 0. Check arguments --------------------------------------------------------
   .bm_ModelingOptions.check.args(data.type, models, strategy, val.list, bm.format, calib.lines)
   
-  bm.options <- foreach (model = models, .combine = "c") %do%
+  bm.opt <- foreach (model = models, .combine = "c") %do%
     {
       tab.model <- TABLE_MODELS[which(TABLE_MODELS$model == model &
                                         TABLE_MODELS$type == data.type), ]
@@ -475,7 +461,7 @@ bm_ModelingOptions <- function(data.type
       }
       # else { warning() } ## BUT SHOULD BE DEALT WITH IN CHECK ?
     }
-  bm.options <- new('BIOMOD.stored.options', val = bm.options)
+  bm.options <- new('BIOMOD.models.options', models = names(bm.opt), options = bm.opt)
   cat("\n")
   .bm_cat("Done")
   return(bm.options)

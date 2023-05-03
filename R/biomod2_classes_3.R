@@ -111,7 +111,7 @@
 ##'   \code{\link{BIOMOD.formated.data}} or \code{\link{BIOMOD.formated.data.PA}} object}
 ##' 
 ##'   \item{\code{get_options}}{a
-##'   \code{\link{BIOMOD.stored.models.options-class}} object from the
+##'   \code{\link{BIOMOD.stored.options-class}} object from the
 ##'   \code{models.options} slot of a \code{\link{BIOMOD.models.out-class}}
 ##'   object} \item{\code{get_calib_lines}}{a
 ##'   \code{\link{BIOMOD.stored.data.frame-class}} object from the \code{calib.lines}
@@ -298,8 +298,8 @@ setMethod('get_eval_data', signature('BIOMOD.formated.data'), function(obj) {
 ##'   object
 ##' @slot calib.lines a \code{\link{BIOMOD.stored.data.frame-class}} object
 ##'   containing calibration lines
-##' @slot models.options a \code{\link{BIOMOD.stored.models.options-class}}
-##'   object containing informations from \code{\link{BIOMOD_ModelingOptions}}
+##' @slot models.options a \code{\link{BIOMOD.stored.options-class}}
+##'   object containing informations from \code{\link{bm_ModelingOptions}}
 ##'   object
 ##' @slot models.evaluation a \code{\link{BIOMOD.stored.data.frame-class}} object
 ##'   containing models evaluation
@@ -396,7 +396,7 @@ setClass("BIOMOD.models.out",
                         scale.models = 'logical',
                         formated.input.data = 'BIOMOD.stored.formated.data',
                         calib.lines = 'BIOMOD.stored.data.frame',
-                        models.options = 'BIOMOD.stored.models.options',
+                        models.options = 'BIOMOD.stored.options',
                         models.evaluation = 'BIOMOD.stored.data.frame',
                         variables.importance = 'BIOMOD.stored.data.frame',
                         models.prediction = 'BIOMOD.stored.data.frame',
@@ -412,7 +412,7 @@ setClass("BIOMOD.models.out",
                    scale.models = TRUE,
                    formated.input.data = new('BIOMOD.stored.formated.data'),
                    calib.lines = new('BIOMOD.stored.data.frame'),
-                   models.options = new('BIOMOD.stored.models.options'),
+                   models.options = new('BIOMOD.stored.options'),
                    models.evaluation = new('BIOMOD.stored.data.frame'),
                    variables.importance = new('BIOMOD.stored.data.frame'),
                    models.prediction = new('BIOMOD.stored.data.frame'),

@@ -65,7 +65,7 @@ setClass("BIOMOD.options.default",
          validity = function(object){ return(TRUE) })
 
 
-# 1.2 Constructors ----------------------------------------------------------------------
+# 1.2 Constructors --------------------------------------------------------------------------------
 setGeneric("BIOMOD.options.default", def = function(mod, typ, pkg, fun) { standardGeneric("BIOMOD.options.default") })
 
 .BIOMOD.options.default.check.args <- function(mod, typ, pkg, fun)
@@ -167,10 +167,18 @@ setMethod('BIOMOD.options.default', signature(mod = 'character', typ = 'characte
 ##' 
 ##' 
 ##' @inheritParams BIOMOD.options.default
-##' @param strategy 
-##' @param val 
-##' @param bm.format 
-##' @param calib.lines 
+##' @param strategy a \code{character} corresponding to the method to 
+##' select models' parameters values, must be either \code{default}, 
+##' \code{bigboss}, \code{user.defined}, \code{tuned}
+##' @param val (\emph{optional, default} \code{NULL}) \cr
+##' A \code{list} containing parameters values
+##' @param bm.format (\emph{optional, default} \code{NULL}) \cr
+##' A \code{\link{BIOMOD.formated.data}} or \code{\link{BIOMOD.formated.data.PA}} 
+##' object returned by the \code{\link{BIOMOD_FormatingData}} function
+##' @param calib.lines (\emph{optional, default} \code{NULL}) \cr
+##' A \code{data.frame} object returned by \code{\link{get_calib_lines}} or 
+##' \code{\link{bm_CrossValidation}} functions, to explore the distribution of calibration 
+##' and validation datasets
 ##' 
 ##' @slot model a \code{character} corresponding to the model
 ##' @slot type a \code{character} corresponding to the data type 
@@ -204,14 +212,14 @@ NULL
 ##' @export
 ##' 
 
-# 1.1 Class Definition ----------------------------------------------------------------------------
+# 2.1 Class Definition ----------------------------------------------------------------------------
 setClass("BIOMOD.options.dataset",
          contains = "BIOMOD.options.default",
          representation(args.values = "list"),
          validity = function(object){ return(TRUE) })
 
 
-# 1.2 Constructors ----------------------------------------------------------------------
+# 2.2 Constructors --------------------------------------------------------------------------------
 setGeneric("BIOMOD.options.dataset", def = function(strategy, val = NULL, bm.format = NULL, calib.lines = NULL, ...) {
   standardGeneric("BIOMOD.options.dataset") })
 
@@ -371,7 +379,7 @@ setMethod('BIOMOD.options.dataset', signature(strategy = 'character'),
 )
 
 
-# 1.3 Other Functions -----------------------------------------------------------------------------
+# 2.3 Other Functions -----------------------------------------------------------------------------
 
 ### show BIOMOD.options.dataset -----------------------------------------------
 ##'
@@ -398,33 +406,222 @@ setMethod('show', signature('BIOMOD.options.dataset'),
 )
 
 
-###################################################################################################
+## --------------------------------------------------------------------------- #
+## 3. BIOMOD.models.options --------------------------------------------------
+## --------------------------------------------------------------------------- #
 
-### BIOMOD.stored.options -----------------------------------------------------
-##' @name BIOMOD.stored.options-class
-##' @rdname BIOMOD.stored.data
+##' @name BIOMOD.models.options
+##' @aliases BIOMOD.models.options-class
+##' @author Maya Gueguen
 ##' 
-setClass("BIOMOD.stored.options",
-         contains = "BIOMOD.stored.data",
-         representation(val = 'list'),
-         prototype(val = NULL),
+##' @title \code{\link{bm_ModelingOptions}} output object class
+##' 
+##' @description Class returned by \code{\link{bm_ModelingOptions}} and used by 
+##' \code{\link{BIOMOD_Modeling}
+##' 
+##' 
+##' @slot models a \code{vector} containing model names for which options have 
+##' been retrieved and defined, must be \code{algo.datatype.package.function}
+##' @slot options a \code{list} containing \code{\link{BIOMOD.options.dataset}} 
+##' object for each model
+##' 
+##' @param object a \code{\link{BIOMOD.models.options}} object
+##' 
+##' 
+##' @seealso \code{\link{BIOMOD.options.default}}, 
+##' \code{\link{BIOMOD.options.dataset}}, 
+##' \code{\link{bm_ModelingOptions}}, \code{\link{bm_Tuning}}, 
+##' \code{\link{BIOMOD_Modeling}}
+##' @family Toolbox objects
+##' 
+##' 
+##' @examples
+##' 
+##' showClass("BIOMOD.models.options")
+##' 
+##' 
+NULL
+
+##' @name BIOMOD.models.options-class
+##' @rdname BIOMOD.models.options
+##' @export
+##' 
+
+# 3.1 Class Definition ----------------------------------------------------------------------------
+setClass("BIOMOD.models.options",
+         representation(models = "character",
+                        options = "list"),
          validity = function(object){ return(TRUE) })
 
-### show BIOMOD.stored.options ------------------------------------------------
+# 3.3 Other Functions -----------------------------------------------------------------------------
+
+### show BIOMOD.models.options ------------------------------------------------
 ##'
-##' @rdname BIOMOD.stored.options
+##' @rdname BIOMOD.models.options
 ##' @importMethodsFrom methods show
 ##' @export
 ##'
 
-setMethod('show', signature('BIOMOD.stored.options'),
+setMethod('show', signature('BIOMOD.models.options'),
           function(object)
           {
-            .bm_cat("BIOMOD.stored.options")
-            for (ii in 1:length(object@val)) {
-              show(object@val[[ii]])
+            .bm_cat("BIOMOD.models.options")
+            for (mod in object@models) {
+              show(object@options[[mod]])
             }
             .bm_cat()
           }
 )
+
+# test <- .fun_testIfIn(test, "GLM$type", object@GLM$type,
+#                       c("simple", "quadratic", "polynomial", "user.defined"))
+# test <- .fun_testIfIn(test, "GLM$test", object@GLM$test, c("AIC", "BIC", "none"))
+# test <- .fun_testIfIn(test, "GBM$distribution", object@GBM$distribution, 
+#                       c("bernoulli", "huberized", "multinomial", "adaboost"))
+# test <- .fun_testIfIn(test, "GBM$perf.method", object@GBM$perf.method, 
+#                       c('OOB', 'test', 'cv'))
+# test <- .fun_testIfIn(test, "GAM$type", object@GAM$type,
+#                       c('s_smoother', 's', 'lo', 'te'))
+# test <- .fun_testIfIn(test, "GAM$method", object@GAM$method,
+#                       c("GCV.Cp", "GACV.Cp", "REML", "P-REML", "ML", "P-ML"))
+# if (any(!object@GAM$optimizer %in% 
+#         c("perf", "outer", "newton", "bfgs", "optim", "nlm", "nlm.fd"))) {
+#   cat("\nGAM$optimizer bad definition (see ?mgcv::gam)")
+#   test <- FALSE
+# }
+# test <- .fun_testIfIn(test, "CTA$method", object@CTA$method, c("anova", "poisson", "class", "exp"))
+# test <- .fun_testIfIn(test, "FDA$method", object@FDA$method, c('polyreg', 'mars', 'bruto'))
+# test <- .fun_testIfIn(test, "MARS$type", object@MARS$type, c("simple", "quadratic", "polynomial", "user.defined"))
+# supported.pmethod <- c('backward', 'none', 'exhaustive', 'forward', 'seqrep', 'cv')
+# if(!is.element(object@MARS$pmethod, supported.pmethod)){
+#   cat("\nMARS$pmethod must be a one of", supported.pmethod);
+#   test <- FALSE 
+# }
+# 
+# ## MAXENT ------------------------------------------------------------
+# if (!is.character(object@MAXENT$path_to_maxent.jar)) {
+#   cat("\nMAXENT$path_to_maxent.jar must be a character")
+#   test <- FALSE
+# }
+# if (!is.null(object@MAXENT$memory_allocated)) {
+#   if (!is.numeric(object@MAXENT$memory_allocated)) {
+#     cat("\nMAXENT$memory_allocated must be a positive integer or NULL for unlimited memory allocation")
+#     test <- FALSE
+#   }
+# }
+# if (!is.character(object@MAXENT$background_data_dir)) {
+#   cat("\nMAXENT$background_data_dir must be 'default' (=> use the same pseudo absences than other models as background) or a path to the directory where your environmental layer are stored")
+#   test <- FALSE
+# }
+# tt <- is.character(object@MAXENT$maximumbackground) | is.numeric(object@MAXENT$maximumbackground)
+# if (is.character(object@MAXENT$maximumbackground)) if (object@MAXENT$maximumbackground != "default") tt <- FALSE
+# if (!tt) {
+#   cat("\nMAXENT$maximumbackground must be 'default' or numeric")
+#   test <- FALSE
+# }
+# test <- .fun_testIfPosInt(test, "MAXENT$maximumiterations", object@MAXENT$maximumiterations)
+# if (!is.logical(object@MAXENT$visible)) {
+#   cat("\nMAXENT$visible must be a logical")
+#   test <- FALSE
+# }
+# if (!is.logical(object@MAXENT$linear)) {
+#   cat("\nMAXENT$linear must be a logical")
+#   test <- FALSE
+# }
+# if (!is.logical(object@MAXENT$quadratic)) {
+#   cat("\nMAXENT$quadratic must be a logical")
+#   test <- FALSE
+# }
+# if (!is.logical(object@MAXENT$product)) {
+#   cat("\nMAXENT$product must be a logical")
+#   test <- FALSE
+# }
+# if (!is.logical(object@MAXENT$threshold)) {
+#   cat("\nMAXENT$threshold must be a logical")
+#   test <- FALSE
+# }
+# if (!is.logical(object@MAXENT$hinge)) {
+#   cat("\nMAXENT$hinge must be a logical")
+#   test <- FALSE
+# }
+# if (!is.numeric(object@MAXENT$lq2lqptthreshold)) {
+#   cat("\nMAXENT$lq2lqptthreshold must be a numeric")
+#   test <- FALSE
+# }
+# if (!is.numeric(object@MAXENT$l2lqthreshold)) {
+#   cat("\nMAXENT$l2lqthreshold must be a numeric")
+#   test <- FALSE
+# }
+# if (!is.numeric(object@MAXENT$lq2lqptthreshold)) {
+#   cat("\nMAXENT$lq2lqptthreshold must be a numeric")
+#   test <- FALSE
+# }
+# if (!is.numeric(object@MAXENT$hingethreshold)) {
+#   cat("\nMAXENT$hingethreshold must be a numeric")
+#   test <- FALSE
+# }
+# if (!is.numeric(object@MAXENT$beta_threshold)) {
+#   cat("\nMAXENT$beta_threshold must be a numeric")
+#   test <- FALSE
+# }
+# if (!is.numeric(object@MAXENT$beta_categorical)) {
+#   cat("\nMAXENT$beta_categorical must be a numeric")
+#   test <- FALSE
+# }
+# if (!is.numeric(object@MAXENT$beta_lqp)) {
+#   cat("\nMAXENT$beta_lqp must be a numeric")
+#   test <- FALSE
+# }
+# if (!is.numeric(object@MAXENT$beta_hinge)) {
+#   cat("\nMAXENT$beta_hinge must be a numeric")
+#   test <- FALSE
+# }
+# if (!is.numeric(object@MAXENT$betamultiplier)) {
+#   cat("\nMAXENT$betamultiplier must be a numeric")
+#   test <- FALSE
+# }
+# if (!is.numeric(object@MAXENT$defaultprevalence)) {
+#   cat("\nMAXENT$defaultprevalence must be a numeric")
+#   test <- FALSE
+# }
+# 
+# if(!is.null(object@MAXENT$initial_heap_size)){
+#   test <- .check_bytes_format(test,
+#                               object@MAXENT$initial_heap_size,
+#                               "initial_heap_size")
+# }
+# if(!is.null(object@MAXENT$max_heap_size)){
+#   test <- .check_bytes_format(test,
+#                               object@MAXENT$max_heap_size,
+#                               "max_heap_size")
+# }
+
+
+# ### show.BIOMOD.models.options -------------------------------------------------
+# 
+# ## GLM options
+# cat("\n            myFormula = ",  ifelse(length(object@GLM$myFormula) < 1, 'NULL', paste(object@GLM$myFormula[2],
+#                                                                                           object@GLM$myFormula[1],
+#                                                                                           object@GLM$myFormula[3])), ",", sep = "")
+# cat("\n            family = ", object@GLM$family$family, "(link = '", object@GLM$family$link, "'),", sep = "")
+# cat("\n            control = glm.control(", .print_control(object@GLM$control), ") ),", sep = "", fill = .Options$width)
+# 
+# ## ANN options
+# cat("\n            size = ", ifelse(length(object@ANN$size) < 1, 'NULL', object@ANN$size), ",", sep = "")
+# cat("\n            decay = ", ifelse(length(object@ANN$decay) < 1, 'NULL', object@ANN$decay), ",", sep = "")
+# 
+# ## FDA options
+# cat("\n            add_args = ", ifelse(length(object@FDA$add_args) < 1, 'NULL'
+#                                         , paste("list(", paste(.print_control(object@FDA$add_args), collapse = "")
+#                                                 , ")", sep = "")), "),", sep = "")
+# ## MAXENT options
+# cat("\n")
+# cat("\nMAXENT = list( path_to_maxent.jar = '", object@MAXENT$path_to_maxent.jar, "', ", sep="")
+# cat("\n               background_data_dir = ", ifelse(is.character(object@MAXENT$background_data_dir), "'", "")
+#     , object@MAXENT$background_data_dir, ifelse(is.character(object@MAXENT$background_data_dir), "'", ""), ",", sep = "")
+# 
+# ## MAXNET options
+# cat("\n MAXNET = list( myFormula = ", .print_formula(object@MAXNET$myFormula), ",", sep = "")
+
+
 
