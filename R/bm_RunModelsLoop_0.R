@@ -256,6 +256,15 @@ bm_RunModel <- function(model, run.name, dir.name = '.'
   #   form.cmd <- bm.opt@args.values[["PAxrun"]]$formula
   # }
   
+  if (model %in% c("ANN", "CTA", "FDA", "GBM", "MARS", "RF")) {
+    bm.opt@args.values[["PAxrun"]]$data <- data_mod[calib.lines.vec, , drop = FALSE]
+  } else if (model == "GLM") {
+    bm.opt@args.values[["PAxrun"]]$data <- cbind(data_mod[calib.lines.vec, , drop = FALSE], 
+                                                 data.frame("weights" = weights.vec[calib.lines.vec]))
+  } else if (model == "XGBOOST") {
+    bm.opt@args.values[["PAxrun"]]$data <- as.matrix(data_env[calib.lines.vec, , drop = FALSE])
+  }
+  
   model.sp <- do.call(bm.opt@func, bm.opt@args.values[["PAxrun"]])
   
   if (!inherits(model.sp, "try-error")) {

@@ -47,107 +47,6 @@
 ##' 
 ##' Below is the detailed list of all modifiable parameters for each available model.
 ##'
-##' @section GLM : (\code{\link[stats]{glm}})
-##' \itemize{
-##'   \item{\code{myFormula}}{ : a typical \code{formula} object (see 
-##'   \href{https://biomodhub.github.io/biomod2/reference/bm_ModelingOptions.html#examples}{Examples}). \cr If not \code{NULL}, \code{type} 
-##'   and \code{interaction.level} parameters are switched off. \cr 
-##'   You can choose to either :
-##'   \itemize{
-##'     \item{generate automatically the GLM formula with the following parameters :
-##'     \itemize{
-##'       \item{\code{type = 'quadratic'}}{ : formula given to the model, must 
-##'       be \code{simple}, \code{quadratic} or \code{polynomial}}
-##'       \item{\code{interaction.level = 0}}{ : an \code{integer} corresponding 
-##'       to the interaction level between considered variables considered (\emph{be aware that 
-##'       interactions quickly enlarge the number of effective variables used into the GLM !})}
-##'     }
-##'     }
-##'     \item{or construct specific formula}
-##'   }
-##'   }
-##'   \item{\code{test = 'AIC'}}{ : information criteria for the stepwise 
-##'   selection procedure, must be \code{AIC} (\emph{Akaike Information Criteria}, \code{BIC} 
-##'   (\emph{Bayesian Information Criteria}) or \code{none} (\emph{consider only the full model, 
-##'   no stepwise selection, but this can lead to convergence issue and strange results !})}
-##'   \item{\code{family = binomial(link = 'logit')}}{ : a \code{character} 
-##'   defining the error distribution and link function to be used in the model, mus be a family 
-##'   name, a family function or the result of a call to a family function (see \link{family}) 
-##'   (\emph{so far, \pkg{biomod2} only runs on presence-absence data, so binomial family is the 
-##'   default !})}
-##'   \item{\code{control}}{ : a \code{list} of parameters to control the fitting process (passed to 
-##'   \code{\link{glm.control}})}
-##' }
-##'
-##' @section GBM : (default \code{\link[gbm]{gbm}})
-##' 
-##' \emph{Please refer to \code{\link[gbm]{gbm}} help file for more details.}
-##' \itemize{
-##'   \item{\code{distribution = 'bernoulli'}}
-##'   \item{\code{n.trees = 2500}}
-##'   \item{\code{interaction.depth = 7}}
-##'   \item{\code{n.minobsinnode = 5}}
-##'   \item{\code{shrinkage = 0.001}}
-##'   \item{\code{bag.fraction = 0.5}}
-##'   \item{\code{train.fraction = 1}}
-##'   \item{\code{cv.folds = 3}}
-##'   \item{\code{keep.data = FALSE}}
-##'   \item{\code{verbose = FALSE}}
-##'   \item{\code{perf.method = 'cv'}}
-##'   \item{\code{n.cores = 1}}
-##' }
-##'
-##' @section GAM : (\code{\link[gam]{gam}} or \code{\link[mgcv]{gam}})
-##' \itemize{
-##'   \item{\code{algo = 'GAM_gam'}}{ : a \code{character} defining the chosen GAM function, must 
-##'   be \code{GAM_gam} (see \code{\link[gam]{gam}}), \code{GAM_mgcv} (see \code{\link[mgcv]{gam}}) 
-##'   or \code{BAM_mgcv} (see \code{\link[mgcv]{bam}})}
-##'   \item{\code{myFormula}}{ : a typical \code{formula} object (see 
-##'   \href{https://biomodhub.github.io/biomod2/reference/bm_ModelingOptions.html#examples}{Examples}). \cr If not \code{NULL}, \code{type} 
-##'   and \code{interaction.level} parameters are switched off. \cr 
-##'   You can choose to either :
-##'   \itemize{
-##'     \item{generate automatically the GAM formula with the following parameters :
-##'     \itemize{
-##'       \item{\code{type = 's_smoother'}}{ : the smoother used to generate the formula}
-##'       \item{\code{interaction.level = 0}}{ : an \code{integer} corresponding 
-##'       to the interaction level between considered variables considered (\emph{be aware that 
-##'       interactions quickly enlarge the number of effective variables used into the GLM !})}
-##'     }
-##'     }
-##'     \item{or construct specific formula}
-##'   }
-##'   }
-##'   \item{\code{k = -1}}{a smooth term in a formula argument to gam, must be \code{-1} or 
-##'   \code{4} (see \pkg{gam} \code{\link[gam]{s}} or \pkg{mgcv} \code{\link[mgcv]{s}})}
-##'   \item{\code{family = binomial(link = 'logit')}}{ : a \code{character} defining 
-##'   the error distribution and link function to be used in the model, mus be a family name, a 
-##'   family function or the result of a call to a family function (see \link{family}) 
-##'   (\emph{so far, \pkg{biomod2} only runs on presence-absence data, so binomial family is the 
-##'   default !})}
-##'   \item{\code{control}}{ : a \code{list} of parameters to control the fitting process (passed to 
-##'   \code{\link[mgcv]{gam.control}} or \code{\link[gam]{gam.control}})}
-##'   \item{some options specific to \code{GAM_mgcv} (\emph{ignored if \code{algo = 'GAM_gam'}})}{
-##'   \itemize{
-##'     \item{\code{method = 'GCV.Cp'})}
-##'     \item{\code{optimizer = c('outer','newton')}}
-##'     \item{\code{select = FALSE}}
-##'     \item{\code{knots = NULL}}
-##'     \item{\code{paramPen = NULL}}
-##'   }
-##'   }
-##' }
-##'
-##' @section CTA : (\code{\link[rpart]{rpart}})
-##' 
-##' \emph{Please refer to \code{\link[rpart]{rpart}} help file for more details.}
-##' \itemize{
-##'   \item{\code{method = 'class'}}
-##'   \item{\code{parms = 'default'}}{ : if \code{'default'}, default \pkg{rpart} 
-##'   \code{parms} value are kept}
-##'   \item{\code{cost = NULL}}
-##'   \item{\code{control}}{ : see \code{\link[rpart]{rpart.control}}}
-##' }
 ##'
 ##' @section ANN : (\code{\link[nnet]{nnet}})
 ##' \itemize{
@@ -168,63 +67,13 @@
 ##'   \item{\code{maxit = 200}}{ : an \code{integer} corresponding to the maximum number of 
 ##'   iterations}
 ##' }
-##'
-##' @section SRE : (\code{\link{bm_SRE}})
-##' \itemize{
-##'   \item{\code{quant = 0.025}}{ : a \code{numeric} corresponding to the quantile of 
-##'   '\emph{extreme environmental variable}' removed to select species envelops}
-##' }
-##'
+##' @section CTA : (\code{\link[rpart]{rpart}})
 ##' @section FDA : (\code{\link[mda]{fda}})
-##' 
-##' \emph{Please refer to \code{\link[mda]{fda}} help file for more details.}
-##' \itemize{
-##'   \item{\code{method = 'mars'}}
-##'   \item{\code{add_args = NULL}}{ : a \code{list} of additional parameters to \code{method} and 
-##'   given to the \code{...} options of \code{\link[mda]{fda}} function}
-##' }
-##'
+##' @section GAM : (\code{\link[gam]{gam}} or \code{\link[mgcv]{gam}})
+##' (see \code{\link[gam]{gam}}, \code{\link[mgcv]{gam}}, \code{\link[mgcv]{bam}})
+##' @section GBM : (default \code{\link[gbm]{gbm}})
+##' @section GLM : (\code{\link[stats]{glm}})
 ##' @section MARS : (\code{\link[earth]{earth}})
-##' 
-##' \emph{Please refer to \code{\link[earth]{earth}} help file for more details.}
-##' \itemize{
-##'   \item{\code{myFormula}}{ : a typical \code{formula} object (see 
-##'   \href{https://biomodhub.github.io/biomod2/reference/bm_ModelingOptions.html#examples}{Examples}). \cr If not \code{NULL}, \code{type} 
-##'   and \code{interaction.level} parameters are switched off. \cr 
-##'   You can choose to either :
-##'   \itemize{
-##'     \item{generate automatically the MARS formula with the following parameters :
-##'     \itemize{
-##'       \item{\code{type = 'simple'}}{ : formula given to the model, must 
-##'       be \code{simple}, \code{quadratic} or \code{polynomial}}
-##'       \item{\code{interaction.level = 0}}{ : an \code{integer} corresponding 
-##'       to the interaction level between considered variables considered (\emph{be aware that 
-##'       interactions quickly enlarge the number of effective variables used into the MARS !})}
-##'     }
-##'     }
-##'     \item{or construct specific formula}
-##'   }
-##'   }
-##'   \item{\code{nk = NULL}}{ : an \code{integer} corresponding to the maximum number of model 
-##'   terms. \cr 
-##'   If \code{NULL} default MARS function value is used : \code{max(21, 2 * nb_expl_var + 1)}}
-##'   \item{\code{penalty = 2}}
-##'   \item{\code{thresh = 0.001}}
-##'   \item{\code{nprune = NULL}}
-##'   \item{\code{pmethod = 'backward'}}
-##' }
-##'
-##' @section RF : (\code{\link[randomForest]{randomForest}})
-##' \itemize{
-##'   \item{\code{do.classif = TRUE}}{ : if \code{TRUE} \emph{random.forest classification} will 
-##'   be computed, otherwise \emph{random.forest regression} will be done}
-##'   \item{\code{ntree = 500}}
-##'   \item{\code{mtry = 'default'}}
-##'   \item{\code{sampsize = NULL}}
-##'   \item{\code{nodesize = 5}}
-##'   \item{\code{maxnodes = NULL}}
-##' }
-##'
 ##' @section MAXENT : (\url{https://biodiversityinformatics.amnh.org/open_source/maxent/})
 ##' \itemize{
 ##'   \item{\code{path_to_maxent.jar = getwd()}}{ : a \code{character}
@@ -315,22 +164,17 @@
 ##'   \code{numeric} corresponding to the default prevalence of the species \cr
 ##'   (\emph{probability of presence at ordinary occurrence points})}
 ##' }
+##' @section MAXNET : (\code{\link[maxnet]{maxnet}})
+##' @section RF : (\code{\link[randomForest]{randomForest}})
+##' @section SRE : (\code{\link{bm_SRE}})
 ##' @section XGBOOST : (default \code{\link[xgboost]{xgboost}})
 ##' 
-##' \emph{Please refer to \code{\link[xgboost]{xgboost}} help file for more details.}
-##' \itemize{
-##'   \item{\code{max.depth = 2}}
-##'   \item{\code{eta = 1}}
-##'   \item{\code{nrounds = 4}}
-##'   \item{\code{objective = "binary:logistic"}}
-##'   }
-##'
 ##'
 ##' @keywords models options
 ##' 
 ##' 
-##' @seealso \code{\link{BIOMOD_Tuning}}, \code{\link{BIOMOD_Modeling}}
-##' @family Main functions
+##' @seealso \code{\link{bm_Tuning}}, \code{\link{BIOMOD_Modeling}}
+##' @family Secundary functions
 ##' 
 ##' 
 ##' @examples
@@ -385,15 +229,12 @@
 ##' # myBiomodOptions
 ##'
 ##'
-## @importFrom gam gam.control
-## @importFrom mgcv gam.control
 ##' @importFrom methods as new validObject
 ##' 
 ##' 
 ##' @export
 ##'
 ##'
-## -------------------------------------------------------------------------- ##
 
 ## MINIMAL DATA REQUIRED :
 ## CTA : formula + data = data_mod[calib.lines.vec, , drop = FALSE] + weights
