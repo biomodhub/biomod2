@@ -79,6 +79,7 @@ VignetteBuilder: knitr
 Collate: 
     'biomod2-package.R'
     'biomod2_globalVariables.R'
+    'biomod2_classes_0.R'
     'biomod2_classes_1.R'
     'biomod2_classes_2.R'
     'biomod2_classes_3.R'
@@ -91,7 +92,6 @@ Collate:
     'BIOMOD_FormatingData.R'
     'BIOMOD_LoadModels.R'
     'BIOMOD_Modeling.R'
-    'BIOMOD_ModelingOptions.R'
     'BIOMOD_PresenceOnly.R'
     'BIOMOD_Projection.R'
     'BIOMOD_RangeSize.R'
@@ -102,6 +102,7 @@ Collate:
     'bm_CVnnet.R'
     'bm_FindOptimStat.R'
     'bm_MakeFormula.R'
+    'bm_ModelingOptions.R'
     'bm_PlotEvalBoxplot.R'
     'bm_PlotEvalMean.R'
     'bm_PlotRangeSize.R'

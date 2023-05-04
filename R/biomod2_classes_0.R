@@ -285,14 +285,14 @@ setMethod('BIOMOD.options.dataset', signature(strategy = 'character'),
             if (strategy == "bigboss") {
               argstmp <- BOM@args.default
               if (mod == "ANN") {
-                # argstmp$NbCV = 5
-                # argstmp$size = NULL
-                # argstmp$decay = 5
-                # argstmp$rang = 0.1
-                # argstmp$maxit = 200
+                argstmp$size = NULL
+                argstmp$decay = 5
+                argstmp$trace = FALSE
+                argstmp$rang = 0.1
+                argstmp$maxit = 200
+                argstmp$NbCV = 5
               } else if (mod == "CTA") {
                 argstmp$method = "class"
-                argstmp$parms = "default"
                 argstmp$control = list(xval = 5, 
                                        minbucket = 5, 
                                        minsplit = 5,
@@ -333,6 +333,8 @@ setMethod('BIOMOD.options.dataset', signature(strategy = 'character'),
                 argstmp$control = glm.control(maxit = 50)
                 # argstmp$test = 'AIC'
               } else if (mod == "MARS") {
+                argstmp$glm = list(family = binomial)
+                argstmp$ncross = 0
                 argstmp$nk = NULL
                 argstmp$penalty = 2
                 argstmp$thresh = 0.001
@@ -341,10 +343,19 @@ setMethod('BIOMOD.options.dataset', signature(strategy = 'character'),
               } else if (mod == "RF") {
                 argstmp$do.classif = TRUE
                 argstmp$ntree = 500
-                argstmp$mtry = 'default'
+                argstmp$mtry = NULL
+                argstmp$strata = factor(c(0, 1))
                 argstmp$sampsize = NULL
                 argstmp$nodesize = 5
                 argstmp$maxnodes = NULL
+              } else if (mod == "SRE") {
+                argstmp$do.extrem = TRUE
+              } else if (mod == "XGBOOST") {
+                argstmp$max.depth = 2
+                argstmp$eta = 1
+                argstmp$nthread = 2
+                argstmp$nrounds = 4
+                argstmp$objective = "binary:logistic"
               }
               
               argsval <- list("AllData_AllRun" = argstmp)

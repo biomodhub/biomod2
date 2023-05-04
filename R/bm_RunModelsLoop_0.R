@@ -222,13 +222,6 @@ bm_RunModel <- function(model, run.name, dir.name = '.'
   dir_name = dir.name
   model_name <- paste0(run.name, '_', model)
   
-  ## 1. Create output object ----------------------------------------------------------------------
-  ListOut <- list(model = NULL,
-                  calib.failure = NULL,
-                  pred = NULL,
-                  pred.eval = NULL,
-                  evaluation = NULL,
-                  var.import = NULL)
   
   ## 2. CREATE MODELS -----------------------------------------------------------------------------
   set.seed(seed.val)
@@ -256,37 +249,6 @@ bm_RunModel <- function(model, run.name, dir.name = '.'
   #   form.cmd <- bm.opt@args.values[["PAxrun"]]$formula
   # }
   
-  if (model %in% c("ANN", "CTA", "FDA", "GBM", "MARS", "RF")) {
-    bm.opt@args.values[["PAxrun"]]$data <- data_mod[calib.lines.vec, , drop = FALSE]
-  } else if (model == "GLM") {
-    bm.opt@args.values[["PAxrun"]]$data <- cbind(data_mod[calib.lines.vec, , drop = FALSE], 
-                                                 data.frame("weights" = weights.vec[calib.lines.vec]))
-  } else if (model == "XGBOOST") {
-    bm.opt@args.values[["PAxrun"]]$data <- as.matrix(data_env[calib.lines.vec, , drop = FALSE])
-  }
-  
-  model.sp <- do.call(bm.opt@func, bm.opt@args.values[["PAxrun"]])
-  
-  if (!inherits(model.sp, "try-error")) {
-    model.bm <- new(paste0(bm.opt@model, "_biomod2_model"),
-                    model = model.sp,
-                    model_name = model_name,
-                    model_class = bm.opt@model,
-                    model_subclass = paste0(bm.opt@model, "_", bm.opt@type, "_", bm.opt@package), ## GAM
-                    model_options = bm.opt,
-                    # n.trees_optim = best.iter, ## GBM
-                    # extremal_conditions = model.sp, # SRE
-                    # model_output_dir = MWD$m_outdir, # MAXENT
-                    dir_name = dir_name,
-                    resp_name = resp_name,
-                    expl_var_names = expl_var_names,
-                    expl_var_type = get_var_type(data_env[calib.lines.vec, , drop = FALSE]),
-                    expl_var_range = get_var_range(data_env[calib.lines.vec, , drop = FALSE]))
-  }
-  
-
-  
-  
   ## MINIMAL DATA REQUIRED :
   ## CTA : formula + data = data_mod[calib.lines.vec, , drop = FALSE] + weights
   ## GAM : 
@@ -308,292 +270,114 @@ bm_RunModel <- function(model, run.name, dir.name = '.'
   
   
   
-  
-  if (model == "CTA") {
-    ### 2.1 CTA model ----------------------------------------------------------
-    cat('\n\t> CTA modeling...')
+  if (model != "MAXENT") {
     
-    # converting cost argument
-    # cost.tmp = bm.options@CTA$cost ## TO BE MOVED
-    # if (is.null(bm.options@CTA$cost)) { cost.tmp = rep(1, ncol(data_env)) } ## TO BE MOVED
-    
-    # defining rpart parameters for splitting function
-    # parms.tmp = bm.options@CTA$parms ## TO BE MOVED
-    # if (bm.options@CTA$parms == 'default') { parms.tmp = NULL } ## TO BE MOVED
-    
-    model.sp <- try(rpart(bm_MakeFormula(resp.name = resp_name
-                                         , expl.var = head(data_env)
-                                         , type = 'simple'
-                                         , interaction.level = 0),
-                          data = data_mod[calib.lines.vec, , drop = FALSE],
-                          weights = weights,
-                          method = bm.options@CTA$method,
-                          parms = parms.tmp,
-                          cost = cost.tmp,
-                          control = eval(bm.options@CTA$control)
-    ))
-    
-    if (!inherits(model.sp, "try-error")) {
-      # select best trees --------------- May be done otherway
-      tr <- as.data.frame(model.sp$cptable)
-      tr$xsum <- tr$xerror + tr$xstd
-      tr <- tr[tr$nsplit > 0,]
-      Cp <- tr[tr$xsum == min(tr$xsum), "CP"]
-      model.sp <- prune(model.sp, cp = Cp[length(Cp)])
-    }
-  } else if (model == "GAM") {
-    ### 2.2 GAM model ----------------------------------------------------------
-    
-    # package loading
-    .load_gam_namespace(bm.options@GAM$algo)
-    
-    if (bm.options@GAM$algo == 'GAM_gam') { ## gam package
-      # NOTE : To be able to take into account GAM options and weights we have to do a eval(parse(...))
-      # it's due to GAM implementation (using of match.call() troubles)
-      gamStart <- eval(parse(text = paste0("gam::gam(", resp_name, "~1 ,"
-                                           , " data = data_mod[calib.lines.vec, , drop = FALSE], family = ", bm.options@GAM$family$family
-                                           , "(link = '", bm.options@GAM$family$link, "')"
-                                           , ", weights = weights.vec[calib.lines.vec])")))
-      model.sp <- try(gam::step.Gam(gamStart,
-                                    .scope(head(data_env), "gam::s", bm.options@GAM$k),
-                                    data = data_mod[calib.lines.vec, , drop = FALSE],
-                                    direction = "both",
-                                    trace = bm.options@GAM$control$trace,
-                                    control = bm.options@GAM$control))
-    } else { ## mgcv package
-      
-      if (is.null(bm.options@GAM$myFormula)) {
-        cat("\n\tAutomatic formula generation...")
-        gam.formula <- bm_MakeFormula(resp.name = resp_name
-                                      , expl.var = head(data_env)
-                                      , type = bm.options@GAM$type
-                                      , interaction.level = bm.options@GAM$interaction.level
-                                      , k = bm.options@GAM$k)
-        tmp = gsub("gam::", "", gam.formula)
-        gam.formula = as.formula(paste0(tmp[c(2,1,3)], collapse = " "))
-      } else {
-        gam.formula <- bm.options@GAM$myFormula
-      }
-      
-      if (bm.options@GAM$algo == 'GAM_mgcv') {
-        cat('\n\t> GAM (mgcv) modeling...')
-        
-        model.sp <- try(mgcv::gam(gam.formula,
-                                  data = data_mod[calib.lines.vec, , drop = FALSE],
-                                  family = bm.options@GAM$family,
-                                  weights = weights.vec[calib.lines.vec],
-                                  control = bm.options@GAM$control))
-        
-      } else if (bm.options@GAM$algo == 'BAM_mgcv') { ## big data.frame gam version
-        cat('\n\t> BAM (mgcv) modeling...')
-        model.sp <- try(mgcv::bam(gam.formula,
-                                  data = data_mod[calib.lines.vec, , drop = FALSE],
-                                  family = bm.options@GAM$family,
-                                  weights = weights.vec[calib.lines.vec],
-                                  control = bm.options@GAM$control))
-      }
-    }
-  } else if (model == "GBM") {
-    ### 2.3 GBM model ----------------------------------------------------------
-    cat('\n\t> GBM modeling...')
-    
-    model.sp <- try(gbm(formula = bm_MakeFormula(resp.name = resp_name
-                                                 , expl.var = head(data_env)
-                                                 , type = 'simple'
-                                                 , interaction.level = 0),
-                        data = data_mod[calib.lines.vec, , drop = FALSE],
-                        distribution = bm.options@GBM$distribution,
-                        var.monotone = rep(0, length = ncol(data_env)),
-                        weights = weights,
-                        interaction.depth = bm.options@GBM$interaction.depth,
-                        n.minobsinnode = bm.options@GBM$n.minobsinnode,
-                        shrinkage = bm.options@GBM$shrinkage,
-                        bag.fraction = bm.options@GBM$bag.fraction,
-                        train.fraction = bm.options@GBM$train.fraction,
-                        n.trees = bm.options@GBM$n.trees,
-                        verbose = bm.options@GBM$verbose,
-                        #class.stratify.cv = bm.options@GBM$class.stratify.cv,
-                        cv.folds = bm.options@GBM$cv.folds,
-                        n.cores = bm.options@GBM$n.cores
-    ))
-    
-    if (!inherits(model.sp, "try-error")) {
-      best.iter <- try(gbm.perf(model.sp, method = bm.options@GBM$perf.method , plot.it = FALSE))
-    }
-  } else if (model == "GLM"){
-    ### 2.4 GLM model ----------------------------------------------------------
-    cat('\n\t> GLM modeling...')
-    if (is.null(bm.options@GLM$myFormula)) {
-      cat("\n\tAutomatic formula generation...")
-      glm.formula <- bm_MakeFormula(resp.name = resp_name
-                                    , expl.var = head(data_env)
-                                    , type = bm.options@GLM$type
-                                    , interaction.level = bm.options@GLM$interaction.level)
-    } else {
-      glm.formula <- bm.options@GLM$myFormula
-    }
-    if (bm.options@GLM$test != 'none') {
-      ## make the model selection
-      glmStart <- glm(eval(parse(text = paste0(resp_name, "~1"))), 
-                      data = data_mod[calib.lines.vec, , drop = FALSE], 
-                      family = bm.options@GLM$family,
-                      control = eval(bm.options@GLM$control),
-                      weights = weights.vec[calib.lines.vec],
-                      mustart = rep(bm.options@GLM$mustart, sum(calib.lines.vec)), 
-                      model = TRUE)
-      
-      ## remove warnings
-      warn <- options('warn')
-      options(warn = -1)
-      model.sp <- try(stepAIC(glmStart,
-                              glm.formula,
-                              data = data_mod[calib.lines.vec, , drop = FALSE],
-                              direction = "both",
-                              trace = FALSE,
-                              k = criteria,
-                              weights = weights.vec[calib.lines.vec], 
-                              steps = 10000,
-                              mustart = rep(bm.options@GLM$mustart, sum(calib.lines.vec))))
-      ## reexec warnings
-      options(warn)
-      
-    } else {
-      ## keep the total model
-      model.sp <- try(glm(glm.formula,
-                          data = cbind(data_mod[calib.lines.vec, , drop = FALSE], 
-                                       data.frame("weights" = weights.vec[calib.lines.vec])), 
-                          family = bm.options@GLM$family,
-                          control = eval(bm.options@GLM$control),
-                          weights = weights,
-                          model = TRUE))
-    }
-    if (!inherits(model.sp, "try-error")) {
-      cat("\n\tselected formula : ")
-      print(model.sp$formula, useSource = FALSE, showEnv = FALSE)
-    }
-  } else if (model == "MARS"){
-    ### 2.5 MARS model ---------------------------------------------------------
-    
-    cat('\n\t> MARS modeling...')
-    if (is.null(bm.options@MARS$myFormula)) {
-      cat("\n\tAutomatic formula generation...")
-      mars.formula <- bm_MakeFormula(resp.name = resp_name
-                                     , expl.var = head(data_env)
-                                     , type = bm.options@MARS$type
-                                     , interaction.level = bm.options@MARS$interaction.level)
-    } else {
-      mars.formula <- bm.options@MARS$myFormula
-    }
-    
-    ## deal with nk argument : if not defined, set up to default mars value i.e max(21, 2 * ncol(x) + 1)
-    # nk <- bm.options@MARS$nk ## TO BE MOVED
-    # if (is.null(nk)) { ## TO BE MOVED
-    #   nk <- min(200, max(20, 2 * length(expl_var_names))) + 1 ## TO BE MOVED
-    # } ## TO BE MOVED
-    
-    model.sp <- try(earth(formula = mars.formula,
-                          data = data_mod[calib.lines.vec, , drop = FALSE], 
-                          weights = weights,
-                          glm = list(family = binomial),
-                          ncross = 0,
-                          keepxy = FALSE,
-                          # degree = bm.options@MARS$degree,
-                          pmethod = bm.options@MARS$pmethod,
-                          nprune = bm.options@MARS$nprune,
-                          nk = nk,
-                          penalty = bm.options@MARS$penalty,
-                          thresh = bm.options@MARS$thresh))
-  } else if (model == "FDA") {
-    ### 2.6 FDA model ----------------------------------------------------------
-    cat('\n\t> FDA modeling...')
-    model.sp <- try(do.call(fda, c(list(formula = bm_MakeFormula(resp.name = resp_name
-                                                                 , expl.var = head(data_env)
-                                                                 , type = 'simple'
-                                                                 , interaction.level = 0),
-                                        data = data_mod[calib.lines.vec, , drop = FALSE], 
-                                        method = eval(parse(text = call(bm.options@FDA$method))),
-                                        weights = weights.vec[calib.lines.vec]),
-                                   bm.options@FDA$add_args)))
-  } else if (model == "ANN") {
-    ### 2.7 ANN model ----------------------------------------------------------
-    cat('\n\t> ANN modeling...')
-    size = bm.options@ANN$size
-    decay = bm.options@ANN$decay
-    if (is.null(size) | is.null(decay) | length(size) > 1 | length(decay) > 1) {
-      
+    ## PRELIMINAR ---------------------------------------------------
+    if (model == "ANN" && 
+        (is.null(bm.opt@args.values[["PAxrun"]]$size) || 
+         is.null(bm.opt@args.values[["PAxrun"]]$decay) || 
+         length(bm.opt@args.values[["PAxrun"]]$size) > 1 || 
+         length(bm.opt@args.values[["PAxrun"]]$decay) > 1)) {
       ## define the size and decay to test
       if (is.null(size)) { size <- c(2, 4, 6, 8) }
       if (is.null(decay)) { decay <- c(0.001, 0.01, 0.05, 0.1) }
       
-      ## do cross validation test to find the optimal values of size and decay parameters (prevent from overfitting)
-      CV_nnet <- bm_CVnnet(Input = data_env[calib.lines.vec, , drop = FALSE],
-                           Target = data_sp[calib.lines.vec], 
-                           size = size,
-                           decay = decay,
-                           maxit = bm.options@ANN$maxit,
-                           nbCV = bm.options@ANN$NbCV,
-                           weights = weights.vec[calib.lines.vec],
-                           seedval = seed.val)
+      # ## do cross validation test to find the optimal values of size and decay parameters (prevent from overfitting)
+      # CV_nnet <- bm_CVnnet(Input = data_env[calib.lines.vec, , drop = FALSE],
+      #                      Target = data_sp[calib.lines.vec], 
+      #                      size = size,
+      #                      decay = decay,
+      #                      maxit = bm.options@ANN$maxit,
+      #                      nbCV = bm.options@ANN$NbCV,
+      #                      weights = weights.vec[calib.lines.vec],
+      #                      seedval = seed.val)
       
       ## get the optimised parameters values
-      decay <- CV_nnet[1, 2]
-      size <- CV_nnet[1, 1]
+      bm.opt@args.values[["PAxrun"]]$size <- CV_nnet[1, 1]
+      bm.opt@args.values[["PAxrun"]]$decay <- CV_nnet[1, 2]
     }
     
-    model.sp <- try(nnet(formula = bm_MakeFormula(resp.name = resp_name
-                                                  , expl.var = head(data_env)
-                                                  , type = 'simple'
-                                                  , interaction.level = 0),
-                         data = data_mod[calib.lines.vec, , drop = FALSE], 
-                         size = size,
-                         rang = bm.options@ANN$rang,
-                         decay = decay,
-                         weights = weights,
-                         maxit = bm.options@ANN$maxit,
-                         trace = FALSE))
-  } else if (model == "RF") {
-    ### 2.8 RF model -----------------------------------------------------------
-    cat('\n\t> RF modeling...')
-    if (bm.options@RF$do.classif) {
+    if (model == "RF" && bm.opt@args.values[["PAxrun"]]$do.classif == TRUE) {
       # defining occurences as factor for doing classification and not regression in RF
       data_mod <- data_mod %>% mutate_at(resp_name, factor)
     }
     
-    # mtry.tmp = bm.options@RF$mtry
-    # if (bm.options@RF$mtry == 'default') { mtry.tmp = NULL }
+    ## FILL data parameter ------------------------------------------
+    if (model %in% c("ANN", "CTA", "FDA", "GBM", "MARS", "RF")) {
+      bm.opt@args.values[["PAxrun"]]$data <- data_mod[calib.lines.vec, , drop = FALSE]
+    } else if (model == "GLM") {
+      bm.opt@args.values[["PAxrun"]]$data <- cbind(data_mod[calib.lines.vec, , drop = FALSE], 
+                                                   data.frame("weights" = weights.vec[calib.lines.vec]))
+    } else if (model == "MAXNET") {
+      bm.opt@args.values[["PAxrun"]]$p <- data_sp[calib.lines.vec] 
+      bm.opt@args.values[["PAxrun"]]$data <- data_env[calib.lines.vec, , drop = FALSE]
+    } else if (model == "SRE") {
+      bm.opt@args.values[["PAxrun"]]$resp.var <- data_sp[calib.lines.vec]
+      bm.opt@args.values[["PAxrun"]]$expl.var <- data_env[calib.lines.vec, , drop = FALSE]
+    } else if (model == "XGBOOST") {
+      bm.opt@args.values[["PAxrun"]]$label <- data_sp[calib.lines.vec]
+      bm.opt@args.values[["PAxrun"]]$data <- as.matrix(data_env[calib.lines.vec, , drop = FALSE])
+    }
     
-    model.sp <- try(randomForest(formula = bm_MakeFormula(resp.name = resp_name
-                                                          , expl.var = head(data_env)
-                                                          , type = 'simple'
-                                                          , interaction.level = 0),
-                                 data = data_mod[calib.lines.vec, , drop = FALSE],
-                                 ntree = bm.options@RF$ntree,
-                                 # weights = weights.vec[calib.lines.vec],
-                                 # mtry = mtry.tmp, 
-                                 importance = FALSE,
-                                 norm.votes = TRUE,
-                                 strata = factor(c(0, 1)),
-                                 sampsize = unlist(ifelse(!is.null(bm.options@RF$sampsize), list(bm.options@RF$sampsize), length(data_sp[calib.lines.vec]))),
-                                 nodesize = bm.options@RF$nodesize,
-                                 maxnodes = bm.options@RF$maxnodes))
+    ## FILL weights parameter ---------------------------------------
+    if (model %in% c("ANN", "CTA", "GBM", "GLM", "MARS", "RF")) {
+      bm.opt@args.values[["PAxrun"]]$weights <- weights ## NOT SURE it will work as it is supposed to represent a column name in data_mod...
+    } else if (model %in% c("FDA", "XGBOOST")) {
+      bm.opt@args.values[["PAxrun"]]$weights <- weights.vec[calib.lines.vec]
+    }
     
-    if (bm.options@RF$do.classif) {
+    
+    ## RUN model ----------------------------------------------------
+    ## /!\
+    ## CTA :  control = eval(bm.options@CTA$control) ## /!\
+    ## FDA :  method = eval(parse(text = call(bm.options@FDA$method))),
+    ## GLM :  control = eval(bm.options@GLM$control),
+    
+    model.sp <- do.call(bm.opt@func, bm.opt@args.values[["PAxrun"]])
+    
+    ## GET results --------------------------------------------------
+    if (!inherits(model.sp, "try-error")) {
+      
+      # if (model == "CTA") {
+      #   # select best trees --------------- May be done otherway
+      #   tr <- as.data.frame(model.sp$cptable)
+      #   tr$xsum <- tr$xerror + tr$xstd
+      #   tr <- tr[tr$nsplit > 0,]
+      #   Cp <- tr[tr$xsum == min(tr$xsum), "CP"]
+      #   model.sp <- prune(model.sp, cp = Cp[length(Cp)])
+      # }
+      # if (model == "GBM") {
+      #   best.iter <- try(gbm.perf(model.sp, method = bm.options@GBM$perf.method , plot.it = FALSE))
+      # }
+      # if (model == "GLM") {
+      #   cat("\n\tselected formula : ")
+      #   print(model.sp$formula, useSource = FALSE, showEnv = FALSE)
+      # }
+      
+      model.bm <- new(paste0(bm.opt@model, "_biomod2_model"),
+                      model = model.sp,
+                      model_name = model_name,
+                      model_class = bm.opt@model,
+                      model_subclass = paste0(bm.opt@model, "_", bm.opt@type, "_", bm.opt@package), ## GAM
+                      model_options = bm.opt,
+                      # n.trees_optim = best.iter, ## GBM
+                      # extremal_conditions = model.sp, # SRE
+                      # model_output_dir = MWD$m_outdir, # MAXENT
+                      dir_name = dir_name,
+                      resp_name = resp_name,
+                      expl_var_names = expl_var_names,
+                      expl_var_type = get_var_type(data_env[calib.lines.vec, , drop = FALSE]),
+                      expl_var_range = get_var_range(data_env[calib.lines.vec, , drop = FALSE]))
+    }
+    
+    ## POSTLIMINAR --------------------------------------------------
+    if (model == "RF" && bm.opt@args.values[["PAxrun"]]$do.classif == TRUE) {
       # canceling occurences class modifications
       data_mod <- data_mod %>% mutate_at(resp_name, function(.x) {
         .x %>% as.character() %>% as.numeric()
       })
     }
-  } else if (model == "SRE") {
-    ### 2.9 SRE model ----------------------------------------------------------
-    cat('\n\t> SRE modeling...')
-    model.sp <- try(bm_SRE(resp.var = data_sp[calib.lines.vec],
-                           expl.var = data_env[calib.lines.vec, , drop = FALSE],
-                           new.env = NULL,
-                           quant = bm.options@SRE$quant,
-                           do.extrem = TRUE))
-  } else if (model == "MAXENT") {
-    ### 2.10 MAXENT model ---------------------------------------------
-    cat('\n\t> MAXENT modeling...')
+  } else {
     categorical_var <- .get_categorical_names(data_env)
     
     MWD <- .maxent.prepare.workdir(sp_name = resp_name
@@ -606,8 +390,7 @@ bm_RunModel <- function(model, run.name, dir.name = '.'
                                    , data_eval = eval.data
                                    , dir.name = dir_name
                                    , modeling.id = modeling.id
-                                   , background_data_dir = bm.options@MAXENT$background_data_dir)
-    
+                                   , background_data_dir = bm.opt@args.values[["PAxrun"]]$background_data_dir)
     # file to log potential errors
     maxent_stderr_file <- paste0(MWD$m_outdir, "/maxent.stderr")
     
@@ -691,24 +474,57 @@ bm_RunModel <- function(model, run.name, dir.name = '.'
                                                        , do.progress = do.progress)
       }
     }
-  } else if (model == "MAXNET") {
-    ### 2.11 MAXNET model -------------------------------------------
-    cat('\n\t> MAXNET modeling...')
-    model.sp <- try(maxnet(p = data_sp[calib.lines.vec], data = data_env[calib.lines.vec, , drop = FALSE]))
-  } else if (model == "XGBOOST") {
-    ### 2.12 XGBOOST model ----------------------------------------------------------
-    cat('\n\t> XGBOOST modeling...')
-    model.sp <- try(xgboost(data = as.matrix(data_env[calib.lines.vec, , drop = FALSE]),
-                            label = data_sp[calib.lines.vec],
-                            max.depth = 2,
-                            eta = 1,
-                            nthread = 2, 
-                            nrounds = 4,
-                            objective = "binary:logistic",
-                            weight = weights.vec[calib.lines.vec])
-    )
   }
   
+ 
+  # ## FOR bm_Tuning
+  # if (bm.options@GLM$test != 'none') {
+  #   ## make the model selection
+  #   glmStart <- glm(eval(parse(text = paste0(resp_name, "~1"))), 
+  #                   data = data_mod[calib.lines.vec, , drop = FALSE], 
+  #                   family = bm.options@GLM$family,
+  #                   control = eval(bm.options@GLM$control),
+  #                   weights = weights.vec[calib.lines.vec],
+  #                   mustart = rep(bm.options@GLM$mustart, sum(calib.lines.vec)), 
+  #                   model = TRUE)
+  #   
+  #   ## remove warnings
+  #   warn <- options('warn')
+  #   options(warn = -1)
+  #   model.sp <- try(stepAIC(glmStart,
+  #                           glm.formula,
+  #                           data = data_mod[calib.lines.vec, , drop = FALSE],
+  #                           direction = "both",
+  #                           trace = FALSE,
+  #                           k = criteria,
+  #                           weights = weights.vec[calib.lines.vec], 
+  #                           steps = 10000,
+  #                           mustart = rep(bm.options@GLM$mustart, sum(calib.lines.vec))))
+  #   ## reexec warnings
+  #   options(warn)
+  # }
+  # if (bm.options@GAM$algo == 'GAM_gam') { ## gam package
+  #   # NOTE : To be able to take into account GAM options and weights we have to do a eval(parse(...))
+  #   # it's due to GAM implementation (using of match.call() troubles)
+  #   gamStart <- eval(parse(text = paste0("gam::gam(", resp_name, "~1 ,"
+  #                                        , " data = data_mod[calib.lines.vec, , drop = FALSE], family = ", bm.options@GAM$family$family
+  #                                        , "(link = '", bm.options@GAM$family$link, "')"
+  #                                        , ", weights = weights.vec[calib.lines.vec])")))
+  #   model.sp <- try(gam::step.Gam(gamStart,
+  #                                 .scope(head(data_env), "gam::s", bm.options@GAM$k),
+  #                                 data = data_mod[calib.lines.vec, , drop = FALSE],
+  #                                 direction = "both",
+  #                                 trace = bm.options@GAM$control$trace,
+  #                                 control = bm.options@GAM$control))
+  # }
+  
+  ## 1. Create output object ----------------------------------------------------------------------
+  ListOut <- list(model = NULL,
+                  calib.failure = NULL,
+                  pred = NULL,
+                  pred.eval = NULL,
+                  evaluation = NULL,
+                  var.import = NULL)
   
   ## 3. CREATE PREDICTIONS ------------------------------------------------------------------------
   temp_workdir = NULL
