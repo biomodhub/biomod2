@@ -264,7 +264,7 @@ TABLE_MODELS <- data.frame(model = c('ANN', 'CTA', 'FDA', 'GAM', 'GAM', 'GAM', '
 
 
 bm_ModelingOptions <- function(data.type
-                               , models = c('ANN', 'CTA', 'FDA', 'GAM', 'GAM', 'GAM', 'GBM', 'GLM'
+                               , models = c('ANN', 'CTA', 'FDA', 'GAM', 'GBM', 'GLM'
                                           , 'MARS', 'MAXENT', 'MAXNET', 'RF', 'SRE', 'XGBOOST')
                                , strategy, val.list = NULL, bm.format = NULL, calib.lines = NULL)
 {

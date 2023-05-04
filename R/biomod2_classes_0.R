@@ -240,23 +240,29 @@ setGeneric("BIOMOD.options.dataset", def = function(strategy, val = NULL, bm.for
   #   opt@MAXENT$path_to_maxent.jar <- getwd()
   # }
   
-  ## TUNING with bm_Tuning parameterisation -----
-  if (strategy == "tuned") {
+  if (!is.null(bm.format)) {
     .fun_testIfInherits(TRUE, "bm.format", bm.format, c("BIOMOD.formated.data", "BIOMOD.formated.data.PA"))
-    
-    if (!is.null(calib.lines)) {
-      .fun_testIfInherits(TRUE, "calib.lines", calib.lines, c("matrix"))
-      
-      expected_CVnames <- c(paste0("_allData_RUN", seq_len(ncol(calib.lines))), "_allData_allRun")
-      if (inherits(bm.format, "BIOMOD.formated.data.PA")) {
-        expected_CVnames <- c(expected_CVnames
-                              , sapply(1:ncol(bm.format@PA.table)
-                                       , function(this_PA) c(paste0("_PA", this_PA, "_RUN", seq_len(ncol(calib.lines)))
-                                                             , paste0("_PA", this_PA, "_allRun"))))
-      } 
-      .fun_testIfIn(TRUE, "colnames(calib.lines)", colnames(calib.lines), expected_CVnames)
-    }
   }
+  if (!is.null(calib.lines)) {
+    .fun_testIfInherits(TRUE, "calib.lines", calib.lines, c("matrix"))
+    
+    expected_CVnames <- c(paste0("_allData_RUN", seq_len(ncol(calib.lines))), "_allData_allRun")
+    if (inherits(bm.format, "BIOMOD.formated.data.PA")) {
+      expected_CVnames <- c(expected_CVnames
+                            , sapply(1:ncol(bm.format@PA.table)
+                                     , function(this_PA) c(paste0("_PA", this_PA, "_RUN", seq_len(ncol(calib.lines)))
+                                                           , paste0("_PA", this_PA, "_allRun"))))
+    } 
+    .fun_testIfIn(TRUE, "colnames(calib.lines)", colnames(calib.lines), expected_CVnames)
+  }
+  #   allPA <- sapply(colnames(calib.lines), function(xx) strsplit(xx, "_")[[1]][2])
+  #   allrun <- sapply(colnames(calib.lines), function(xx) strsplit(xx, "_")[[1]][3])
+  # } else if (inherits(bm.format, "BIOMOD.formated.data.PA")) {
+  #   allPA <- colnames(bm.format@PA.table)
+  #   allrun <- rep(NA, length(allPA))
+  # }
+  # 
+  # return(list(allPA = allPA, allrun = allrun))
 }
 
 
@@ -276,87 +282,94 @@ setMethod('BIOMOD.options.dataset', signature(strategy = 'character'),
             BOM <- BIOMOD.options.default(mod, typ, pkg, fun)
             
             ## GET parameter values according to strategy -------------------------------
-            if (is.null(calib.lines)) {
-              argsval <- list("AllData_AllRun" = BOM@args.default)
-            } else {
-              argsval <- lapply(1:ncol(calib.lines), function(xx) { BOM@args.default })
-              names(argsval) <- colnames(calib.lines)
-            }
-            if (strategy == "bigboss") {
+            if (strategy %in% c("default", "bigboss")) {
               argstmp <- BOM@args.default
-              if (mod == "ANN") {
-                argstmp$size = NULL
-                argstmp$decay = 5
-                argstmp$trace = FALSE
-                argstmp$rang = 0.1
-                argstmp$maxit = 200
-                argstmp$NbCV = 5
-              } else if (mod == "CTA") {
-                argstmp$method = "class"
-                argstmp$control = list(xval = 5, 
-                                       minbucket = 5, 
-                                       minsplit = 5,
-                                       cp = 0.001, 
-                                       maxdepth = 25)
-                argstmp$cost = NULL
-              } else if (mod == "FDA") {
-                argstmp$method = "mars"
-              } else if (mod == "GAM" && pkg == "mgcv") {
-                if (!is.null(bm.format)) {
-                  argstmp$formula = bm_MakeFormula(resp.name = bm.format@sp.name
-                                                   , expl.var = head(bm.format@data.env.var)
-                                                   , type = 's_smoother'
-                                                   , interaction.level = 0
-                                                   , k = NULL)
-                }
-                argstmp$family = binomial(link = 'logit')
-                argstmp$method = "GCV.Cp"
-                argstmp$control = list(epsilon = 1e-06, trace = FALSE, maxit = 100)
-              } else if (mod == "GBM") {
-                argstmp$n.trees = 2500
-                argstmp$interaction.depth = 7
-                argstmp$n.minobsinnode = 5
-                argstmp$shrinkage = 0.001
-                argstmp$cv.folds = 3
-                argstmp$keep.data = FALSE
-                argstmp$n.cores = 1
-              } else if (mod == "GLM") {
-                if (!is.null(bm.format)) {
-                  argstmp$formula = bm_MakeFormula(resp.name = bm.format@sp.name
-                                                   , expl.var = head(bm.format@data.env.var)
-                                                   , type = 'quadratic'
-                                                   , interaction.level = 0)
-                }
-                argstmp$family = binomial(link = 'logit')
-                argstmp$mustart = 0.5
-                argstmp$control = glm.control(maxit = 50)
-              } else if (mod == "MARS") {
-                argstmp$glm = list(family = binomial)
-                argstmp$ncross = 0
-                argstmp$nk = NULL
-                argstmp$penalty = 2
-                argstmp$thresh = 0.001
-                argstmp$nprune = NULL
-                argstmp$pmethod = 'backward'
-              } else if (mod == "RF") {
-                argstmp$do.classif = TRUE
-                argstmp$ntree = 500
-                argstmp$mtry = NULL
-                argstmp$strata = factor(c(0, 1))
-                argstmp$sampsize = NULL
-                argstmp$nodesize = 5
-                argstmp$maxnodes = NULL
-              } else if (mod == "SRE") {
-                argstmp$do.extrem = TRUE
-              } else if (mod == "XGBOOST") {
-                argstmp$max.depth = 2
-                argstmp$eta = 1
-                argstmp$nthread = 2
-                argstmp$nrounds = 4
-                argstmp$objective = "binary:logistic"
-              }
               
-              argsval <- list("AllData_AllRun" = argstmp)
+              if (strategy == "bigboss") {
+                if (mod == "ANN") {
+                  argstmp$size = NULL
+                  argstmp$decay = 5
+                  argstmp$trace = FALSE
+                  argstmp$rang = 0.1
+                  argstmp$maxit = 200
+                  argstmp$NbCV = 5
+                } else if (mod == "CTA") {
+                  argstmp$method = "class"
+                  argstmp$control = list(xval = 5, 
+                                         minbucket = 5, 
+                                         minsplit = 5,
+                                         cp = 0.001, 
+                                         maxdepth = 25)
+                  argstmp$cost = NULL
+                } else if (mod == "FDA") {
+                  argstmp$method = "mars"
+                } else if (mod == "GAM" && pkg == "mgcv") {
+                  if (!is.null(bm.format)) {
+                    argstmp$formula = bm_MakeFormula(resp.name = bm.format@sp.name
+                                                     , expl.var = head(bm.format@data.env.var)
+                                                     , type = 's_smoother'
+                                                     , interaction.level = 0
+                                                     , k = NULL)
+                  }
+                  argstmp$family = binomial(link = 'logit')
+                  argstmp$method = "GCV.Cp"
+                  argstmp$control = list(epsilon = 1e-06, trace = FALSE, maxit = 100)
+                } else if (mod == "GBM") {
+                  argstmp$n.trees = 2500
+                  argstmp$interaction.depth = 7
+                  argstmp$n.minobsinnode = 5
+                  argstmp$shrinkage = 0.001
+                  argstmp$cv.folds = 3
+                  argstmp$keep.data = FALSE
+                  argstmp$n.cores = 1
+                } else if (mod == "GLM") {
+                  if (!is.null(bm.format)) {
+                    argstmp$formula = bm_MakeFormula(resp.name = bm.format@sp.name
+                                                     , expl.var = head(bm.format@data.env.var)
+                                                     , type = 'quadratic'
+                                                     , interaction.level = 0)
+                  }
+                  argstmp$family = binomial(link = 'logit')
+                  argstmp$mustart = 0.5
+                  argstmp$control = glm.control(maxit = 50)
+                } else if (mod == "MARS") {
+                  argstmp$glm = list(family = binomial)
+                  argstmp$ncross = 0
+                  argstmp$nk = NULL
+                  argstmp$penalty = 2
+                  argstmp$thresh = 0.001
+                  argstmp$nprune = NULL
+                  argstmp$pmethod = 'backward'
+                } else if (mod == "RF") {
+                  argstmp$do.classif = TRUE
+                  argstmp$ntree = 500
+                  argstmp$mtry = NULL
+                  argstmp$strata = factor(c(0, 1))
+                  argstmp$sampsize = NULL
+                  argstmp$nodesize = 5
+                  argstmp$maxnodes = NULL
+                } else if (mod == "SRE") {
+                  argstmp$do.extrem = TRUE
+                } else if (mod == "XGBOOST") {
+                  argstmp$max.depth = 2
+                  argstmp$eta = 1
+                  argstmp$nthread = 2
+                  argstmp$nrounds = 4
+                  argstmp$objective = "binary:logistic"
+                }
+              }
+                
+              if (is.null(calib.lines)) {
+                argsval <- list("_allData_allRun" = argstmp)
+                if (inherits(bm.format, "BIOMOD.formated.data.PA")) {
+                  for (PA in colnames(bm.format@PA.table)) {
+                    argsval[[paste0("_", PA, "_allRun")]] <- argsval[["_allData_allRun"]]
+                  }
+                }
+              } else {
+                argsval <- lapply(1:ncol(calib.lines), function(xx) { argstmp })
+                names(argsval) <- colnames(calib.lines)
+              }
             } else if (strategy == "user.defined") {
               if (!("..." %in% BOM@args.names)) {
                 .fun_testIfIn(TRUE, "names(val)", names(val), BOM@args.names)
@@ -372,7 +385,7 @@ setMethod('BIOMOD.options.dataset', signature(strategy = 'character'),
             ## SPECIFIC case of formula -------------------------------------------------
             if ("formula" %in% BOM@args.names && !is.null(bm.format)) {
               for (ii in 1:length(argsval)) {
-                if (is.null(argsval[[ii]]$formula) || nchar(argsval[[ii]]$formula) == 0) {
+                if (is.null(argsval[[ii]]$formula) || (length(argsval[[ii]]$formula) == 1 && nchar(argsval[[ii]]$formula) == 0)) {
                   argsval[[ii]]$formula <- bm_MakeFormula(resp.name = bm.format@sp.name
                                                           , expl.var = head(bm.format@data.env.var)
                                                           , type = 'simple'
@@ -397,14 +410,16 @@ setMethod('BIOMOD.options.dataset', signature(strategy = 'character'),
 ##' @export
 ##'
 
+
+## Attention ! print only values for _allData_allRun for now
 setMethod('show', signature('BIOMOD.options.dataset'),
           function(object)
           {
             cat('\n\t> ', object@model, 'options (datatype:', object@type, ', package:', object@package, ', function:', object@func, ') :')
             # for (arg in object@args.names) { ## NOT working for bigboss for example, if new parameters
-            for (arg in names(object@args.values[["AllData_AllRun"]])) {
+            for (arg in names(object@args.values[["_allData_allRun"]])) {
               val.def = capture.output(object@args.default[[arg]])
-              val.used = capture.output(object@args.values[["AllData_AllRun"]][[arg]])
+              val.used = capture.output(object@args.values[["_allData_allRun"]][[arg]])
               
               cat('\n\t\t- ', arg, "=", sub("\\[1\\] ", "", val.used))
               if (!is.null(val.used) && !is.null(val.def) && 
@@ -484,29 +499,21 @@ setMethod('show', signature('BIOMOD.models.options'),
           }
 )
 
-# test <- .fun_testIfIn(test, "GLM$type", object@GLM$type,
-#                       c("simple", "quadratic", "polynomial", "user.defined"))
+# test <- .fun_testIfIn(test, "GLM$type", object@GLM$type, c("simple", "quadratic", "polynomial", "user.defined")) ## MOVE in formula ?
 # test <- .fun_testIfIn(test, "GLM$test", object@GLM$test, c("AIC", "BIC", "none"))
-# test <- .fun_testIfIn(test, "GBM$distribution", object@GBM$distribution, 
-#                       c("bernoulli", "huberized", "multinomial", "adaboost"))
-# test <- .fun_testIfIn(test, "GBM$perf.method", object@GBM$perf.method, 
-#                       c('OOB', 'test', 'cv'))
-# test <- .fun_testIfIn(test, "GAM$type", object@GAM$type,
-#                       c('s_smoother', 's', 'lo', 'te'))
-# test <- .fun_testIfIn(test, "GAM$method", object@GAM$method,
-#                       c("GCV.Cp", "GACV.Cp", "REML", "P-REML", "ML", "P-ML"))
-# if (any(!object@GAM$optimizer %in% 
-#         c("perf", "outer", "newton", "bfgs", "optim", "nlm", "nlm.fd"))) {
+# test <- .fun_testIfIn(test, "GBM$distribution", object@GBM$distribution, c("bernoulli", "huberized", "multinomial", "adaboost"))
+# test <- .fun_testIfIn(test, "GBM$perf.method", object@GBM$perf.method, c('OOB', 'test', 'cv'))
+# test <- .fun_testIfIn(test, "GAM$type", object@GAM$type, c('s_smoother', 's', 'lo', 'te')) ## MOVE in formula ?
+# test <- .fun_testIfIn(test, "GAM$method", object@GAM$method, c("GCV.Cp", "GACV.Cp", "REML", "P-REML", "ML", "P-ML"))
+# if (any(!object@GAM$optimizer %in%  c("perf", "outer", "newton", "bfgs", "optim", "nlm", "nlm.fd"))) {
 #   cat("\nGAM$optimizer bad definition (see ?mgcv::gam)")
-#   test <- FALSE
 # }
 # test <- .fun_testIfIn(test, "CTA$method", object@CTA$method, c("anova", "poisson", "class", "exp"))
 # test <- .fun_testIfIn(test, "FDA$method", object@FDA$method, c('polyreg', 'mars', 'bruto'))
-# test <- .fun_testIfIn(test, "MARS$type", object@MARS$type, c("simple", "quadratic", "polynomial", "user.defined"))
+# test <- .fun_testIfIn(test, "MARS$type", object@MARS$type, c("simple", "quadratic", "polynomial", "user.defined")) ## MOVE in formula ?
 # supported.pmethod <- c('backward', 'none', 'exhaustive', 'forward', 'seqrep', 'cv')
 # if(!is.element(object@MARS$pmethod, supported.pmethod)){
 #   cat("\nMARS$pmethod must be a one of", supported.pmethod);
-#   test <- FALSE 
 # }
 # 
 # ## MAXENT ------------------------------------------------------------
@@ -528,72 +535,55 @@ setMethod('show', signature('BIOMOD.models.options'),
 # if (is.character(object@MAXENT$maximumbackground)) if (object@MAXENT$maximumbackground != "default") tt <- FALSE
 # if (!tt) {
 #   cat("\nMAXENT$maximumbackground must be 'default' or numeric")
-#   test <- FALSE
 # }
 # test <- .fun_testIfPosInt(test, "MAXENT$maximumiterations", object@MAXENT$maximumiterations)
 # if (!is.logical(object@MAXENT$visible)) {
 #   cat("\nMAXENT$visible must be a logical")
-#   test <- FALSE
 # }
 # if (!is.logical(object@MAXENT$linear)) {
 #   cat("\nMAXENT$linear must be a logical")
-#   test <- FALSE
 # }
 # if (!is.logical(object@MAXENT$quadratic)) {
 #   cat("\nMAXENT$quadratic must be a logical")
-#   test <- FALSE
 # }
 # if (!is.logical(object@MAXENT$product)) {
 #   cat("\nMAXENT$product must be a logical")
-#   test <- FALSE
 # }
 # if (!is.logical(object@MAXENT$threshold)) {
 #   cat("\nMAXENT$threshold must be a logical")
-#   test <- FALSE
 # }
 # if (!is.logical(object@MAXENT$hinge)) {
 #   cat("\nMAXENT$hinge must be a logical")
-#   test <- FALSE
 # }
 # if (!is.numeric(object@MAXENT$lq2lqptthreshold)) {
 #   cat("\nMAXENT$lq2lqptthreshold must be a numeric")
-#   test <- FALSE
 # }
 # if (!is.numeric(object@MAXENT$l2lqthreshold)) {
 #   cat("\nMAXENT$l2lqthreshold must be a numeric")
-#   test <- FALSE
 # }
 # if (!is.numeric(object@MAXENT$lq2lqptthreshold)) {
 #   cat("\nMAXENT$lq2lqptthreshold must be a numeric")
-#   test <- FALSE
 # }
 # if (!is.numeric(object@MAXENT$hingethreshold)) {
 #   cat("\nMAXENT$hingethreshold must be a numeric")
-#   test <- FALSE
 # }
 # if (!is.numeric(object@MAXENT$beta_threshold)) {
 #   cat("\nMAXENT$beta_threshold must be a numeric")
-#   test <- FALSE
 # }
 # if (!is.numeric(object@MAXENT$beta_categorical)) {
 #   cat("\nMAXENT$beta_categorical must be a numeric")
-#   test <- FALSE
 # }
 # if (!is.numeric(object@MAXENT$beta_lqp)) {
 #   cat("\nMAXENT$beta_lqp must be a numeric")
-#   test <- FALSE
 # }
 # if (!is.numeric(object@MAXENT$beta_hinge)) {
 #   cat("\nMAXENT$beta_hinge must be a numeric")
-#   test <- FALSE
 # }
 # if (!is.numeric(object@MAXENT$betamultiplier)) {
 #   cat("\nMAXENT$betamultiplier must be a numeric")
-#   test <- FALSE
 # }
 # if (!is.numeric(object@MAXENT$defaultprevalence)) {
 #   cat("\nMAXENT$defaultprevalence must be a numeric")
-#   test <- FALSE
 # }
 # 
 # if(!is.null(object@MAXENT$initial_heap_size)){
@@ -610,28 +600,8 @@ setMethod('show', signature('BIOMOD.models.options'),
 
 # ### show.BIOMOD.models.options -------------------------------------------------
 # 
-# ## GLM options
-# cat("\n            myFormula = ",  ifelse(length(object@GLM$myFormula) < 1, 'NULL', paste(object@GLM$myFormula[2],
-#                                                                                           object@GLM$myFormula[1],
-#                                                                                           object@GLM$myFormula[3])), ",", sep = "")
-# cat("\n            family = ", object@GLM$family$family, "(link = '", object@GLM$family$link, "'),", sep = "")
-# cat("\n            control = glm.control(", .print_control(object@GLM$control), ") ),", sep = "", fill = .Options$width)
-# 
-# ## ANN options
-# cat("\n            size = ", ifelse(length(object@ANN$size) < 1, 'NULL', object@ANN$size), ",", sep = "")
-# cat("\n            decay = ", ifelse(length(object@ANN$decay) < 1, 'NULL', object@ANN$decay), ",", sep = "")
-# 
-# ## FDA options
-# cat("\n            add_args = ", ifelse(length(object@FDA$add_args) < 1, 'NULL'
-#                                         , paste("list(", paste(.print_control(object@FDA$add_args), collapse = "")
-#                                                 , ")", sep = "")), "),", sep = "")
-# ## MAXENT options
-# cat("\n")
-# cat("\nMAXENT = list( path_to_maxent.jar = '", object@MAXENT$path_to_maxent.jar, "', ", sep="")
-# cat("\n               background_data_dir = ", ifelse(is.character(object@MAXENT$background_data_dir), "'", "")
-#     , object@MAXENT$background_data_dir, ifelse(is.character(object@MAXENT$background_data_dir), "'", ""), ",", sep = "")
-# 
-# ## MAXNET options
+# ## GLM options : control = glm.control(", .print_control(object@GLM$control), ") ),", sep = "", fill = .Options$width)
+# ## FDA options : paste(.print_control(object@FDA$add_args), collapse = "")
 # cat("\n MAXNET = list( myFormula = ", .print_formula(object@MAXNET$myFormula), ",", sep = "")
 
 
