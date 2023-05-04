@@ -320,7 +320,6 @@ setMethod('BIOMOD.options.dataset', signature(strategy = 'character'),
                 argstmp$cv.folds = 3
                 argstmp$keep.data = FALSE
                 argstmp$n.cores = 1
-                # argstmp$perf.method = 'cv'
               } else if (mod == "GLM") {
                 if (!is.null(bm.format)) {
                   argstmp$formula = bm_MakeFormula(resp.name = bm.format@sp.name
@@ -331,7 +330,6 @@ setMethod('BIOMOD.options.dataset', signature(strategy = 'character'),
                 argstmp$family = binomial(link = 'logit')
                 argstmp$mustart = 0.5
                 argstmp$control = glm.control(maxit = 50)
-                # argstmp$test = 'AIC'
               } else if (mod == "MARS") {
                 argstmp$glm = list(family = binomial)
                 argstmp$ncross = 0
@@ -403,13 +401,15 @@ setMethod('show', signature('BIOMOD.options.dataset'),
           function(object)
           {
             cat('\n\t> ', object@model, 'options (datatype:', object@type, ', package:', object@package, ', function:', object@func, ') :')
-            for (arg in object@args.names) {
+            # for (arg in object@args.names) { ## NOT working for bigboss for example, if new parameters
+            for (arg in names(object@args.values[["AllData_AllRun"]])) {
               val.def = capture.output(object@args.default[[arg]])
               val.used = capture.output(object@args.values[["AllData_AllRun"]][[arg]])
               
               cat('\n\t\t- ', arg, "=", sub("\\[1\\] ", "", val.used))
-              if (!is.null(val.used) && !is.null(val.def) && val.used != val.def) {
-                cat('   (default:', val.def, ')')
+              if (!is.null(val.used) && !is.null(val.def) && 
+                  (length(val.used) != length(val.def) || val.used != val.def)) {
+                cat('   (default:', sub("\\[1\\] ", "", val.def), ')')
               }
             }
             cat("\n")

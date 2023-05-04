@@ -347,7 +347,7 @@ bm_RunModel <- function(model, run.name, dir.name = '.'
       #   model.sp <- prune(model.sp, cp = Cp[length(Cp)])
       # }
       # if (model == "GBM") {
-      #   best.iter <- try(gbm.perf(model.sp, method = bm.options@GBM$perf.method , plot.it = FALSE))
+      #   best.iter <- try(gbm.perf(model.sp, method = bm.options@GBM$perf.method , plot.it = FALSE)) ## perf.method == "cv"
       # }
       # if (model == "GLM") {
       #   cat("\n\tselected formula : ")
@@ -478,7 +478,7 @@ bm_RunModel <- function(model, run.name, dir.name = '.'
   
  
   # ## FOR bm_Tuning
-  # if (bm.options@GLM$test != 'none') {
+  # if (bm.options@GLM$test != 'none') { ## "AIC"
   #   ## make the model selection
   #   glmStart <- glm(eval(parse(text = paste0(resp_name, "~1"))), 
   #                   data = data_mod[calib.lines.vec, , drop = FALSE], 
