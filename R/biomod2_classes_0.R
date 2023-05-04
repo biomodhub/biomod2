@@ -292,7 +292,7 @@ setMethod('BIOMOD.options.dataset', signature(strategy = 'character'),
                   argstmp$trace = FALSE
                   argstmp$rang = 0.1
                   argstmp$maxit = 200
-                  argstmp$NbCV = 5
+                  argstmp$nbCV = 5
                 } else if (mod == "CTA") {
                   argstmp$method = "class"
                   argstmp$control = list(xval = 5, 

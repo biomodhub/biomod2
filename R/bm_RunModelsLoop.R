@@ -218,16 +218,23 @@ bm_RunModel <- function(model, run.name, dir.name = '.'
   if (is.null(args)) { return(NULL) }
   for (argi in names(args)) { assign(x = argi, value = args[[argi]]) }
   rm(args)
-  ## get model name and names of categorical variables
-  dir_name = dir.name
-  model_name <- paste0(run.name, '_', model)
   
+  ## get model name and names of categorical variables
+  dir_name <- dir.name
+  model_name <- paste0(run.name, '_', model)
+  dataset_name <- paste0("_", paste0(strsplit(run.name, "_")[[1]][-1], collapse = "_"))
+  
+  ## get options for specific model
+  opt_name <- grep(model, names(bm.options@options), value = TRUE)
+  if (length(opt_name) == 1) {
+    bm.opt <- bm.options@options[[opt_name]]
+  } else { stop("pitiprobleum")}
   
   ## 2. CREATE MODELS -----------------------------------------------------------------------------
   set.seed(seed.val)
   
   ## APPLY GENERIC FUNCTION FROM OPTIONS
-  .load_namespace(bm.opt@package) ## TO BE CODED
+  # .load_namespace(bm.opt@package) ## TO BE CODED
   
   # ## Simple formula : CTA, GBM, FDA, ANN, RF
   # if (model %in% c("CTA", "GBM", "FDA", "ANN", "RF")) {
@@ -239,73 +246,89 @@ bm_RunModel <- function(model, run.name, dir.name = '.'
   #   ## Complex formula : GAM, GLM, MARS
   #   form.cmd <- bm_MakeFormula(resp.name = bm.format@sp.name #resp_name
   #                              , expl.var = head(bm.format@data.env.var) # head(data_env)
-  #                              , type = bm.opt@args.values[["PAxrun"]]$type ## RATHER HARD CODED / PARAM ?
-  #                              , interaction.level = bm.opt@args.values[["PAxrun"]]$interaction.level ## RATHER HARD CODED / PARAM ?
-  #                              , k = bm.opt@args.values[["PAxrun"]]$k) ## RATHER HARD CODED / PARAM ? ## GAM
+  #                              , type = bm.opt@args.values[[dataset_name]]$type ## RATHER HARD CODED / PARAM ?
+  #                              , interaction.level = bm.opt@args.values[[dataset_name]]$interaction.level ## RATHER HARD CODED / PARAM ?
+  #                              , k = bm.opt@args.values[[dataset_name]]$k) ## RATHER HARD CODED / PARAM ? ## GAM
   #   # tmp = gsub("gam::", "", gam.formula)
   #   # gam.formula = as.formula(paste0(tmp[c(2,1,3)], collapse = " "))
   # } else if (model %in% c("GAM", "GLM", "MARS")) {
   #   ## Options formula : GAM, GLM, MARS
-  #   form.cmd <- bm.opt@args.values[["PAxrun"]]$formula
+  #   form.cmd <- bm.opt@args.values[[dataset_name]]$formula
   # }
   
   
   if (model != "MAXENT") {
     
     ## PRELIMINAR ---------------------------------------------------
-    if (model == "ANN" && 
-        (is.null(bm.opt@args.values[["PAxrun"]]$size) || 
-         is.null(bm.opt@args.values[["PAxrun"]]$decay) || 
-         length(bm.opt@args.values[["PAxrun"]]$size) > 1 || 
-         length(bm.opt@args.values[["PAxrun"]]$decay) > 1)) {
-      ## define the size and decay to test
-      if (is.null(size)) { size <- c(2, 4, 6, 8) }
-      if (is.null(decay)) { decay <- c(0.001, 0.01, 0.05, 0.1) }
+    if (model == "ANN") {
+      bm.opt@args.values[[dataset_name]]$formula <- bm_MakeFormula(resp.name = resp_name
+                                                                   , expl.var = head(data_env)
+                                                                   , type = 'simple'
+                                                                   , interaction.level = 0)
       
-      # ## do cross validation test to find the optimal values of size and decay parameters (prevent from overfitting)
-      # CV_nnet <- bm_CVnnet(Input = data_env[calib.lines.vec, , drop = FALSE],
-      #                      Target = data_sp[calib.lines.vec], 
-      #                      size = size,
-      #                      decay = decay,
-      #                      maxit = bm.options@ANN$maxit,
-      #                      nbCV = bm.options@ANN$NbCV,
-      #                      weights = weights.vec[calib.lines.vec],
-      #                      seedval = seed.val)
-      
-      ## get the optimised parameters values
-      bm.opt@args.values[["PAxrun"]]$size <- CV_nnet[1, 1]
-      bm.opt@args.values[["PAxrun"]]$decay <- CV_nnet[1, 2]
+      if (!("size" %in% bm.opt@args.names) ||
+          !("decay" %in% bm.opt@args.names) ||
+          is.null(bm.opt@args.values[[dataset_name]]$size) || 
+          is.null(bm.opt@args.values[[dataset_name]]$decay) || 
+          length(bm.opt@args.values[[dataset_name]]$size) > 1 || 
+          length(bm.opt@args.values[[dataset_name]]$decay) > 1) {
+        ## define the size and decay to test
+        sizetmp <- bm.opt@args.values[[dataset_name]]$size
+        decaytmp <- bm.opt@args.values[[dataset_name]]$decay
+        maxittmp <- bm.opt@args.values[[dataset_name]]$maxit
+        nbCVtmp <- bm.opt@args.values[[dataset_name]]$nbCV
+        if (is.null(sizetmp)) { sizetmp <- c(2, 4, 6, 8) }
+        if (is.null(decaytmp)) { decaytmp <- c(0.001, 0.01, 0.05, 0.1) }
+        if (is.null(maxittmp)) { maxittmp <- 200 }
+        if (is.null(nbCVtmp)) { nbCVtmp <- 5 }
+        
+        ## do cross validation test to find the optimal values of size and decay parameters (prevent from overfitting)
+        CV_nnet <- bm_CVnnet(Input = data_env[calib.lines.vec, , drop = FALSE],
+                             Target = data_sp[calib.lines.vec],
+                             size = sizetmp,
+                             decay = decaytmp,
+                             maxit = maxittmp,
+                             nbCV = nbCVtmp,
+                             weights = weights.vec[calib.lines.vec],
+                             seedval = seed.val)
+        
+        ## get the optimised parameters values
+        bm.opt@args.values[[dataset_name]]$size <- CV_nnet[1, 1]
+        bm.opt@args.values[[dataset_name]]$decay <- CV_nnet[1, 2]
+      }
     }
     
-    if (model == "RF" && bm.opt@args.values[["PAxrun"]]$do.classif == TRUE) {
+    if (model == "RF" && bm.opt@args.values[[dataset_name]]$do.classif == TRUE) {
       # defining occurences as factor for doing classification and not regression in RF
       data_mod <- data_mod %>% mutate_at(resp_name, factor)
     }
     
     ## FILL data parameter ------------------------------------------
     if (model %in% c("ANN", "CTA", "FDA", "GBM", "MARS", "RF")) {
-      bm.opt@args.values[["PAxrun"]]$data <- data_mod[calib.lines.vec, , drop = FALSE]
+      bm.opt@args.values[[dataset_name]]$data <- data_mod[calib.lines.vec, , drop = FALSE]
     } else if (model == "GLM") {
-      bm.opt@args.values[["PAxrun"]]$data <- cbind(data_mod[calib.lines.vec, , drop = FALSE], 
+      bm.opt@args.values[[dataset_name]]$data <- cbind(data_mod[calib.lines.vec, , drop = FALSE], 
                                                    data.frame("weights" = weights.vec[calib.lines.vec]))
     } else if (model == "MAXNET") {
-      bm.opt@args.values[["PAxrun"]]$p <- data_sp[calib.lines.vec] 
-      bm.opt@args.values[["PAxrun"]]$data <- data_env[calib.lines.vec, , drop = FALSE]
+      bm.opt@args.values[[dataset_name]]$p <- data_sp[calib.lines.vec] 
+      bm.opt@args.values[[dataset_name]]$data <- data_env[calib.lines.vec, , drop = FALSE]
     } else if (model == "SRE") {
-      bm.opt@args.values[["PAxrun"]]$resp.var <- data_sp[calib.lines.vec]
-      bm.opt@args.values[["PAxrun"]]$expl.var <- data_env[calib.lines.vec, , drop = FALSE]
+      bm.opt@args.values[[dataset_name]]$resp.var <- data_sp[calib.lines.vec]
+      bm.opt@args.values[[dataset_name]]$expl.var <- data_env[calib.lines.vec, , drop = FALSE]
     } else if (model == "XGBOOST") {
-      bm.opt@args.values[["PAxrun"]]$label <- data_sp[calib.lines.vec]
-      bm.opt@args.values[["PAxrun"]]$data <- as.matrix(data_env[calib.lines.vec, , drop = FALSE])
+      bm.opt@args.values[[dataset_name]]$label <- data_sp[calib.lines.vec]
+      bm.opt@args.values[[dataset_name]]$data <- as.matrix(data_env[calib.lines.vec, , drop = FALSE])
     }
     
     ## FILL weights parameter ---------------------------------------
     if (model %in% c("ANN", "CTA", "GBM", "GLM", "MARS", "RF")) {
-      bm.opt@args.values[["PAxrun"]]$weights <- weights ## NOT SURE it will work as it is supposed to represent a column name in data_mod...
+      bm.opt@args.values[[dataset_name]]$weights <- weights ## NOT SURE it will work as it is supposed to represent a column name in data_mod...
     } else if (model %in% c("FDA", "XGBOOST")) {
-      bm.opt@args.values[["PAxrun"]]$weights <- weights.vec[calib.lines.vec]
+      bm.opt@args.values[[dataset_name]]$weights <- weights.vec[calib.lines.vec]
     }
-    
+    print("yeeeeeeeeeeeeeeees")
+    print(bm.opt@func)
+    print(bm.opt@args.values[[dataset_name]])
     
     ## RUN model ----------------------------------------------------
     ## /!\
@@ -313,26 +336,29 @@ bm_RunModel <- function(model, run.name, dir.name = '.'
     ## FDA :  method = eval(parse(text = call(bm.options@FDA$method))),
     ## GLM :  control = eval(bm.options@GLM$control),
     
-    model.sp <- do.call(bm.opt@func, bm.opt@args.values[["PAxrun"]])
+    model.sp <- do.call(bm.opt@func, bm.opt@args.values[[dataset_name]])
+    
+    print("hourraaaaaaaaa")
+    
     
     ## GET results --------------------------------------------------
     if (!inherits(model.sp, "try-error")) {
       
-      # if (model == "CTA") {
-      #   # select best trees --------------- May be done otherway
-      #   tr <- as.data.frame(model.sp$cptable)
-      #   tr$xsum <- tr$xerror + tr$xstd
-      #   tr <- tr[tr$nsplit > 0,]
-      #   Cp <- tr[tr$xsum == min(tr$xsum), "CP"]
-      #   model.sp <- prune(model.sp, cp = Cp[length(Cp)])
-      # }
+      if (model == "CTA") {
+        # select best trees --------------- May be done otherway
+        tr <- as.data.frame(model.sp$cptable)
+        tr$xsum <- tr$xerror + tr$xstd
+        tr <- tr[tr$nsplit > 0,]
+        Cp <- tr[tr$xsum == min(tr$xsum), "CP"]
+        model.sp <- prune(model.sp, cp = Cp[length(Cp)])
+      }
       # if (model == "GBM") {
       #   best.iter <- try(gbm.perf(model.sp, method = bm.options@GBM$perf.method , plot.it = FALSE)) ## perf.method == "cv"
       # }
-      # if (model == "GLM") {
-      #   cat("\n\tselected formula : ")
-      #   print(model.sp$formula, useSource = FALSE, showEnv = FALSE)
-      # }
+      if (model == "GLM") {
+        cat("\n\tselected formula : ")
+        print(model.sp$formula, useSource = FALSE, showEnv = FALSE)
+      }
       
       model.bm <- new(paste0(bm.opt@model, "_biomod2_model"),
                       model = model.sp,
@@ -351,7 +377,7 @@ bm_RunModel <- function(model, run.name, dir.name = '.'
     }
     
     ## POSTLIMINAR --------------------------------------------------
-    if (model == "RF" && bm.opt@args.values[["PAxrun"]]$do.classif == TRUE) {
+    if (model == "RF" && bm.opt@args.values[[dataset_name]]$do.classif == TRUE) {
       # canceling occurences class modifications
       data_mod <- data_mod %>% mutate_at(resp_name, function(.x) {
         .x %>% as.character() %>% as.numeric()
@@ -370,7 +396,7 @@ bm_RunModel <- function(model, run.name, dir.name = '.'
                                    , data_eval = eval.data
                                    , dir.name = dir_name
                                    , modeling.id = modeling.id
-                                   , background_data_dir = bm.opt@args.values[["PAxrun"]]$background_data_dir)
+                                   , background_data_dir = bm.opt@args.values[[dataset_name]]$background_data_dir)
     # file to log potential errors
     maxent_stderr_file <- paste0(MWD$m_outdir, "/maxent.stderr")
     
@@ -830,7 +856,7 @@ bm_RunModel <- function(model, run.name, dir.name = '.'
               scale.models = scale.models,
               resp_name = resp_name,
               expl_var_names = expl_var_names,
-              seed.val = seedval,
+              seed.val = seed.val, ##seedval, CAREFUL really user value now, don't know if it is good thing or not !
               do.progress = do.progress))
 }
 
