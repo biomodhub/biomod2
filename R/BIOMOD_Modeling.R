@@ -368,10 +368,8 @@ BIOMOD_Modeling <- function(bm.format,
   .BIOMOD_Modeling.prepare.workdir(bm.format@dir.name, bm.format@sp.name, models.out@modeling.id)
   name.BIOMOD_DATA = file.path(models.out@dir.name, models.out@sp.name, ".BIOMOD_DATA", models.out@modeling.id)
   
-  ## 3.1 Save input data and models options -----------------------------------
+  ## 3.1 Save input data ------------------------------------------------------
   models.out = .fill_BIOMOD.models.out("formated.input.data", bm.format, models.out
-                                       , inMemory = FALSE, nameFolder = name.BIOMOD_DATA)
-  models.out = .fill_BIOMOD.models.out("models.options", bm.options, models.out
                                        , inMemory = FALSE, nameFolder = name.BIOMOD_DATA)
   
   ## 3.2 Get and save calibration lines ---------------------------------------
@@ -386,6 +384,14 @@ BIOMOD_Modeling <- function(bm.format,
                                     user.table = CV.user.table,
                                     do.full.models = CV.do.full.models)
   models.out = .fill_BIOMOD.models.out("calib.lines", calib.lines, models.out
+                                       , inMemory = FALSE, nameFolder = name.BIOMOD_DATA)
+  
+  ## 3.3 Get and save models options ------------------------------------------
+  bm.options <- bm_ModelingOptions(data.type = "binary", 
+                                   strategy = "default", 
+                                   bm.format = bm.format,
+                                   calib.lines = calib.lines)
+  models.out = .fill_BIOMOD.models.out("models.options", bm.options, models.out
                                        , inMemory = FALSE, nameFolder = name.BIOMOD_DATA)
   
   ## 4. Print modeling summary in console ---------------------------------------------------------

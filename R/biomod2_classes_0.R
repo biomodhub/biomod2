@@ -284,6 +284,9 @@ setMethod('BIOMOD.options.dataset', signature(strategy = 'character'),
             ## GET parameter values according to strategy -------------------------------
             if (strategy %in% c("default", "bigboss")) {
               argstmp <- BOM@args.default
+              if (mod == "GLM") { ## SHOULD BE MOVED to place when testing values !!
+                argstmp$control = list()
+              }
               
               if (strategy == "bigboss") {
                 if (mod == "ANN") {

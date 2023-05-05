@@ -275,8 +275,7 @@ bm_ModelingOptions <- function(data.type
   
   bm.opt <- foreach (model = models, .combine = "c") %do%
     {
-      tab.model <- TABLE_MODELS[which(TABLE_MODELS$model == model &
-                                        TABLE_MODELS$type == data.type), ]
+      tab.model <- TABLE_MODELS[which(TABLE_MODELS$model == model & TABLE_MODELS$type == data.type), ]
       if (nrow(tab.model) > 0) {
         BOD.list <- foreach(ii = 1:nrow(tab.model)) %do%
           {
@@ -293,9 +292,12 @@ bm_ModelingOptions <- function(data.type
                                           , val = val.ii
                                           , bm.format = bm.format
                                           , calib.lines = calib.lines)
-            # BOD@args.values <- lapply(1:length(BOD$args.values) function(xx) {
-            #   BOD@args.values[[xx]][which(!(names(BOD$args.values[[xx]]) %in% c('data', 'weights')))]
-            # }) ## USELESS ? (values will be replaced anyway in bm_RunModel)
+            for (xx in 1:length(BOD@args.values)) { ## SHOULD BE MOVED to place when testing values !!
+              if ('...' %in% names(BOD@args.values[[xx]])) {
+                BOD@args.values[[xx]][['...']] <- NULL
+              }
+            }
+            return(BOD)
           }
         names(BOD.list) <- paste0(model, ".", data.type, ".", tab.model$package, ".", tab.model$func)
         return(BOD.list)

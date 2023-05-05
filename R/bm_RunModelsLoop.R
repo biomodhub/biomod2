@@ -228,7 +228,13 @@ bm_RunModel <- function(model, run.name, dir.name = '.'
   opt_name <- grep(model, names(bm.options@options), value = TRUE)
   if (length(opt_name) == 1) {
     bm.opt <- bm.options@options[[opt_name]]
-  } else { stop("pitiprobleum")}
+  } else { stop("pitiprobleum") }
+  print(dataset_name)
+  print(names(bm.opt@args.values))
+  if (dataset_name %in% names(bm.opt@args.values)) {
+    bm.opt.val <- bm.opt@args.values[[dataset_name]]
+  } else { stop("groprobleum") }
+  
   
   ## 2. CREATE MODELS -----------------------------------------------------------------------------
   set.seed(seed.val)
@@ -246,37 +252,37 @@ bm_RunModel <- function(model, run.name, dir.name = '.'
   #   ## Complex formula : GAM, GLM, MARS
   #   form.cmd <- bm_MakeFormula(resp.name = bm.format@sp.name #resp_name
   #                              , expl.var = head(bm.format@data.env.var) # head(data_env)
-  #                              , type = bm.opt@args.values[[dataset_name]]$type ## RATHER HARD CODED / PARAM ?
-  #                              , interaction.level = bm.opt@args.values[[dataset_name]]$interaction.level ## RATHER HARD CODED / PARAM ?
-  #                              , k = bm.opt@args.values[[dataset_name]]$k) ## RATHER HARD CODED / PARAM ? ## GAM
+  #                              , type = bm.opt.val$type ## RATHER HARD CODED / PARAM ?
+  #                              , interaction.level = bm.opt.val$interaction.level ## RATHER HARD CODED / PARAM ?
+  #                              , k = bm.opt.val$k) ## RATHER HARD CODED / PARAM ? ## GAM
   #   # tmp = gsub("gam::", "", gam.formula)
   #   # gam.formula = as.formula(paste0(tmp[c(2,1,3)], collapse = " "))
   # } else if (model %in% c("GAM", "GLM", "MARS")) {
   #   ## Options formula : GAM, GLM, MARS
-  #   form.cmd <- bm.opt@args.values[[dataset_name]]$formula
+  #   form.cmd <- bm.opt.val$formula
   # }
   
   
-  if (model != "MAXENT") {
+  if (model != "MAXENT") { ## ANY MODEL BUT MAXENT ------------------------------------------------
     
     ## PRELIMINAR ---------------------------------------------------
     if (model == "ANN") {
-      bm.opt@args.values[[dataset_name]]$formula <- bm_MakeFormula(resp.name = resp_name
-                                                                   , expl.var = head(data_env)
-                                                                   , type = 'simple'
-                                                                   , interaction.level = 0)
+      bm.opt.val$formula <- bm_MakeFormula(resp.name = resp_name
+                                           , expl.var = head(data_env)
+                                           , type = 'simple'
+                                           , interaction.level = 0)
       
       if (!("size" %in% bm.opt@args.names) ||
           !("decay" %in% bm.opt@args.names) ||
-          is.null(bm.opt@args.values[[dataset_name]]$size) || 
-          is.null(bm.opt@args.values[[dataset_name]]$decay) || 
-          length(bm.opt@args.values[[dataset_name]]$size) > 1 || 
-          length(bm.opt@args.values[[dataset_name]]$decay) > 1) {
+          is.null(bm.opt.val$size) || 
+          is.null(bm.opt.val$decay) || 
+          length(bm.opt.val$size) > 1 || 
+          length(bm.opt.val$decay) > 1) {
         ## define the size and decay to test
-        sizetmp <- bm.opt@args.values[[dataset_name]]$size
-        decaytmp <- bm.opt@args.values[[dataset_name]]$decay
-        maxittmp <- bm.opt@args.values[[dataset_name]]$maxit
-        nbCVtmp <- bm.opt@args.values[[dataset_name]]$nbCV
+        sizetmp <- bm.opt.val$size
+        decaytmp <- bm.opt.val$decay
+        maxittmp <- bm.opt.val$maxit
+        nbCVtmp <- bm.opt.val$nbCV
         if (is.null(sizetmp)) { sizetmp <- c(2, 4, 6, 8) }
         if (is.null(decaytmp)) { decaytmp <- c(0.001, 0.01, 0.05, 0.1) }
         if (is.null(maxittmp)) { maxittmp <- 200 }
@@ -293,42 +299,42 @@ bm_RunModel <- function(model, run.name, dir.name = '.'
                              seedval = seed.val)
         
         ## get the optimised parameters values
-        bm.opt@args.values[[dataset_name]]$size <- CV_nnet[1, 1]
-        bm.opt@args.values[[dataset_name]]$decay <- CV_nnet[1, 2]
+        bm.opt.val$size <- CV_nnet[1, 1]
+        bm.opt.val$decay <- CV_nnet[1, 2]
       }
     }
     
-    if (model == "RF" && bm.opt@args.values[[dataset_name]]$do.classif == TRUE) {
+    if (model == "RF" && bm.opt.val$do.classif == TRUE) {
       # defining occurences as factor for doing classification and not regression in RF
       data_mod <- data_mod %>% mutate_at(resp_name, factor)
     }
     
     ## FILL data parameter ------------------------------------------
     if (model %in% c("ANN", "CTA", "FDA", "GBM", "MARS", "RF")) {
-      bm.opt@args.values[[dataset_name]]$data <- data_mod[calib.lines.vec, , drop = FALSE]
+      bm.opt.val$data <- data_mod[calib.lines.vec, , drop = FALSE]
     } else if (model == "GLM") {
-      bm.opt@args.values[[dataset_name]]$data <- cbind(data_mod[calib.lines.vec, , drop = FALSE], 
-                                                   data.frame("weights" = weights.vec[calib.lines.vec]))
+      bm.opt.val$data <- cbind(data_mod[calib.lines.vec, , drop = FALSE], 
+                               data.frame("weights" = weights.vec[calib.lines.vec]))
     } else if (model == "MAXNET") {
-      bm.opt@args.values[[dataset_name]]$p <- data_sp[calib.lines.vec] 
-      bm.opt@args.values[[dataset_name]]$data <- data_env[calib.lines.vec, , drop = FALSE]
+      bm.opt.val$p <- data_sp[calib.lines.vec] 
+      bm.opt.val$data <- data_env[calib.lines.vec, , drop = FALSE]
     } else if (model == "SRE") {
-      bm.opt@args.values[[dataset_name]]$resp.var <- data_sp[calib.lines.vec]
-      bm.opt@args.values[[dataset_name]]$expl.var <- data_env[calib.lines.vec, , drop = FALSE]
+      bm.opt.val$resp.var <- data_sp[calib.lines.vec]
+      bm.opt.val$expl.var <- data_env[calib.lines.vec, , drop = FALSE]
     } else if (model == "XGBOOST") {
-      bm.opt@args.values[[dataset_name]]$label <- data_sp[calib.lines.vec]
-      bm.opt@args.values[[dataset_name]]$data <- as.matrix(data_env[calib.lines.vec, , drop = FALSE])
+      bm.opt.val$label <- data_sp[calib.lines.vec]
+      bm.opt.val$data <- as.matrix(data_env[calib.lines.vec, , drop = FALSE])
     }
     
     ## FILL weights parameter ---------------------------------------
     if (model %in% c("ANN", "CTA", "GBM", "GLM", "MARS", "RF")) {
-      bm.opt@args.values[[dataset_name]]$weights <- weights ## NOT SURE it will work as it is supposed to represent a column name in data_mod...
+      bm.opt.val$weights <- quote(weights) ## NOT SURE it will work as it is supposed to represent a column name in data_mod...
     } else if (model %in% c("FDA", "XGBOOST")) {
-      bm.opt@args.values[[dataset_name]]$weights <- weights.vec[calib.lines.vec]
+      bm.opt.val$weights <- weights.vec[calib.lines.vec]
     }
     print("yeeeeeeeeeeeeeeees")
     print(bm.opt@func)
-    print(bm.opt@args.values[[dataset_name]])
+    # print(bm.opt.val)
     
     ## RUN model ----------------------------------------------------
     ## /!\
@@ -336,8 +342,22 @@ bm_RunModel <- function(model, run.name, dir.name = '.'
     ## FDA :  method = eval(parse(text = call(bm.options@FDA$method))),
     ## GLM :  control = eval(bm.options@GLM$control),
     
-    model.sp <- do.call(bm.opt@func, bm.opt@args.values[[dataset_name]])
+    # print("----------------------------------------")
+    # print(bm.opt.val$formula)
+    # print(bm_MakeFormula(resp.name = resp_name
+    #                      , expl.var = head(data_env)
+    #                      , type = 'simple'
+    #                      , interaction.level = 0))
+    # print("Huuuuuum")
+    # # bm.opt.val$formula <- bm_MakeFormula(resp.name = resp_name
+    # #                                      , expl.var = head(data_env)
+    # #                                      , type = 'simple'
+    # #                                      , interaction.level = 0)
+    # print("okk")
     
+    model.sp <- do.call(bm.opt@func, bm.opt.val)
+    
+    # print(call(bm.opt@func, bm.opt.val))
     print("hourraaaaaaaaa")
     
     
@@ -364,7 +384,7 @@ bm_RunModel <- function(model, run.name, dir.name = '.'
                       model = model.sp,
                       model_name = model_name,
                       model_class = bm.opt@model,
-                      model_subclass = paste0(bm.opt@model, "_", bm.opt@type, "_", bm.opt@package), ## GAM
+                      # model_subclass = paste0(bm.opt@model, "_", bm.opt@type, "_", bm.opt@package), ## GAM
                       model_options = bm.opt,
                       # n.trees_optim = best.iter, ## GBM
                       # extremal_conditions = model.sp, # SRE
@@ -377,13 +397,13 @@ bm_RunModel <- function(model, run.name, dir.name = '.'
     }
     
     ## POSTLIMINAR --------------------------------------------------
-    if (model == "RF" && bm.opt@args.values[[dataset_name]]$do.classif == TRUE) {
+    if (model == "RF" && bm.opt.val$do.classif == TRUE) {
       # canceling occurences class modifications
       data_mod <- data_mod %>% mutate_at(resp_name, function(.x) {
         .x %>% as.character() %>% as.numeric()
       })
     }
-  } else {
+  } else { ## MAXENT ------------------------------------------------------------------------------
     categorical_var <- .get_categorical_names(data_env)
     
     MWD <- .maxent.prepare.workdir(sp_name = resp_name
@@ -396,7 +416,7 @@ bm_RunModel <- function(model, run.name, dir.name = '.'
                                    , data_eval = eval.data
                                    , dir.name = dir_name
                                    , modeling.id = modeling.id
-                                   , background_data_dir = bm.opt@args.values[[dataset_name]]$background_data_dir)
+                                   , background_data_dir = bm.opt.val$background_data_dir)
     # file to log potential errors
     maxent_stderr_file <- paste0(MWD$m_outdir, "/maxent.stderr")
     
@@ -482,7 +502,8 @@ bm_RunModel <- function(model, run.name, dir.name = '.'
     }
   }
   
- 
+  print("youpi")
+  
   # ## FOR bm_Tuning
   # if (bm.options@GLM$test != 'none') { ## "AIC"
   #   ## make the model selection
@@ -601,6 +622,7 @@ bm_RunModel <- function(model, run.name, dir.name = '.'
       cat('\n\tNote : some NA occurs in predictions')
     }
     
+    print("ICI PROBLEUM")
     if (length(which(eval.lines.vec == TRUE)) < length(g.pred)) {
       ## CALIBRATION & VALIDATION LINES -------------------------------------------------
       cross.validation <- foreach(xx = metric.eval, .combine = "rbind") %do% {
@@ -629,7 +651,7 @@ bm_RunModel <- function(model, run.name, dir.name = '.'
       colnames(cross.validation)[which(colnames(cross.validation) == "best.stat")] <- "calibration"
       cross.validation$validation <- NA
     }
-    
+    print("PIF")
     
     
     if (exists('g.pred.eval')) {
@@ -664,6 +686,7 @@ bm_RunModel <- function(model, run.name, dir.name = '.'
     rm(cross.validation)
   }
   
+  print("POUF")
   
   ## 5. COMPUTE VARIABLES IMPORTANCE --------------------------------------------------------------
   if (var.import > 0) {
@@ -681,12 +704,13 @@ bm_RunModel <- function(model, run.name, dir.name = '.'
     cat("\n")
   }
   
-  
+  print("PAF")
   ## 6. SAVE MODEL OBJECT ON HARD DRIVE -----------------------------------------------------------
   nameModel = paste(run.name, model, sep = "_") 
   assign(x = nameModel, value = model.bm)
   save(list = nameModel, file = file.path(dir_name, resp_name, "models", modeling.id, nameModel), compress = TRUE)
   
+  print("PUF")
   
   return(ListOut)
 }
