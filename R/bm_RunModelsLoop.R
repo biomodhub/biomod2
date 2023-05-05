@@ -213,8 +213,7 @@ bm_RunModel <- function(model, run.name, dir.name = '.'
 {
   ## 0. Check arguments ---------------------------------------------------------------------------
   args <- .bm_RunModel.check.args(model, bm.options, Data, weights.vec, calib.lines.vec
-                                  , eval.data, metric.eval, scale.models, seed.val, do.progress
-                                  , criteria = NULL, Prev = NULL)
+                                  , eval.data, metric.eval, scale.models, seed.val, do.progress)
   if (is.null(args)) { return(NULL) }
   for (argi in names(args)) { assign(x = argi, value = args[[argi]]) }
   rm(args)
@@ -231,13 +230,10 @@ bm_RunModel <- function(model, run.name, dir.name = '.'
   } else if (model == "GAM") {
     bm.opt <- bm.options@options[[opt_name[1]]] ## /!\ how to deal with all 3 ??
     subclass_name <- paste0(bm.opt@model, "_", bm.opt@type, "_", bm.opt@package)
-    print(subclass_name)
     .load_gam_namespace(model_subclass = subclass_name)
   } else { stop("pitiprobleum") }
   
   ## get options for specific dataset
-  print(dataset_name)
-  print(names(bm.opt@args.values))
   if (dataset_name %in% names(bm.opt@args.values)) {
     bm.opt.val <- bm.opt@args.values[[dataset_name]]
   } else { stop("groprobleum") }
@@ -247,7 +243,7 @@ bm_RunModel <- function(model, run.name, dir.name = '.'
   set.seed(seed.val)
   
   ## APPLY GENERIC FUNCTION FROM OPTIONS
-  # .load_namespace(bm.opt@package) ## TO BE CODED
+  # .load_namespace(bm.opt@package) ## TO BE CODED ==> not needed : loaded when creating modeling options ?
   
   # ## Simple formula : CTA, GBM, FDA, ANN, RF
   # if (model %in% c("CTA", "GBM", "FDA", "ANN", "RF")) {
@@ -345,33 +341,23 @@ bm_RunModel <- function(model, run.name, dir.name = '.'
     } else if (model %in% c("FDA", "GAM", "XGBOOST")) {
       bm.opt.val$weights <- weights.vec[calib.lines.vec]
     }
-    print("yeeeeeeeeeeeeeeees")
-    print(bm.opt@func)
-    print(bm.opt.val)
+    
+    ## PRE-PRINTS --------------------------------------------------- DO WE REALLY NEED THAT ??
+    # cat("\nModel =", "Generalised Boosting Regression", "\n")
+    # if ("formula" %in% bm.opt@args.names) {
+    #   cat("\n\tPrepared formula : ")
+    #   print(bm.opt.val$formula, useSource = FALSE, showEnv = FALSE)
+    # }
+    # #   cat("\t", bm.options@GBM$n.trees, "maximum different trees and ", bm.options@GBM$cv.folds, " Fold Cross-Validation")
+    # #   cat("\t", bm.options@CTA$control$xval, "Fold Cross-Validation")
+    # #   cat("\t", bm.options@ANN$NbCV, "Fold Cross Validation + 3 Repetitions")
     
     ## RUN model ----------------------------------------------------
-    ## /!\
+    ## /!\ est-ce que ça va marcher quand meme ?
     ## CTA :  control = eval(bm.options@CTA$control) ## /!\
     ## FDA :  method = eval(parse(text = call(bm.options@FDA$method))),
     ## GLM :  control = eval(bm.options@GLM$control),
-    
-    # print("----------------------------------------")
-    # print(bm.opt.val$formula)
-    # print(bm_MakeFormula(resp.name = resp_name
-    #                      , expl.var = head(data_env)
-    #                      , type = 'simple'
-    #                      , interaction.level = 0))
-    # print("Huuuuuum")
-    # # bm.opt.val$formula <- bm_MakeFormula(resp.name = resp_name
-    # #                                      , expl.var = head(data_env)
-    # #                                      , type = 'simple'
-    # #                                      , interaction.level = 0)
-    # print("okk")
-    
     model.sp <- do.call(bm.opt@func, bm.opt.val)
-    
-    # print(call(bm.opt@func, bm.opt.val))
-    print("hourraaaaaaaaa")
     
     
     ## GET results --------------------------------------------------
@@ -392,10 +378,10 @@ bm_RunModel <- function(model, run.name, dir.name = '.'
       # if (model == "GBM") {
       #   best.iter <- try(gbm.perf(model.sp, method = bm.options@GBM$perf.method , plot.it = FALSE)) ## perf.method == "cv"
       # }
-      if (model == "GLM") {
-        cat("\n\tselected formula : ")
-        print(model.sp$formula, useSource = FALSE, showEnv = FALSE)
-      }
+      # if (model == "GLM") {
+      #   cat("\n\tSelected formula : ")
+      #   print(model.sp$formula, useSource = FALSE, showEnv = FALSE) ## to keep if formula in model.sp && if stepAIC selection ?
+      # }
       
       model.bm <- new(paste0(bm.opt@model, "_biomod2_model"),
                       model = model.sp,
@@ -508,9 +494,18 @@ bm_RunModel <- function(model, run.name, dir.name = '.'
     }
   }
   
-  print("youpi")
-  
   # ## FOR bm_Tuning
+  #   if (bm.options@GLM$test == "AIC") { ## MOVE TO TUNING
+  #     criteria <- 2
+  #     cat("\n\tStepwise procedure using AIC criteria")
+  #   } else if (bm.options@GLM$test == "BIC") {
+  #     criteria <- log(ncol(data_env))
+  #     cat("\n\tStepwise procedure using BIC criteria")
+  #   } else if (bm.options@GLM$test == "none") {
+  #     criteria <- 0
+  #     cat("\n\tNo stepwise procedure")
+  #     cat("\n\t! You might be confronted to model convergence issues !")
+  #   }
   # if (bm.options@GLM$test != 'none') { ## "AIC"
   #   ## make the model selection
   #   glmStart <- glm(eval(parse(text = paste0(resp_name, "~1"))), 
@@ -628,7 +623,6 @@ bm_RunModel <- function(model, run.name, dir.name = '.'
       cat('\n\tNote : some NA occurs in predictions')
     }
     
-    print("ICI PROBLEUM")
     if (length(which(eval.lines.vec == TRUE)) < length(g.pred)) {
       ## CALIBRATION & VALIDATION LINES -------------------------------------------------
       cross.validation <- foreach(xx = metric.eval, .combine = "rbind") %do% {
@@ -657,11 +651,8 @@ bm_RunModel <- function(model, run.name, dir.name = '.'
       colnames(cross.validation)[which(colnames(cross.validation) == "best.stat")] <- "calibration"
       cross.validation$validation <- NA
     }
-    print("PIF")
-    
     
     if (exists('g.pred.eval')) {
-      
       ## Check no NA in g.pred.eval to avoid evaluation failures
       na_cell_id <- which(is.na(g.pred.eval))
       if (length(na_cell_id) > 0) {
@@ -692,8 +683,6 @@ bm_RunModel <- function(model, run.name, dir.name = '.'
     rm(cross.validation)
   }
   
-  print("POUF")
-  
   ## 5. COMPUTE VARIABLES IMPORTANCE --------------------------------------------------------------
   if (var.import > 0) {
     cat("\n\tEvaluating Predictor Contributions...")
@@ -710,13 +699,10 @@ bm_RunModel <- function(model, run.name, dir.name = '.'
     cat("\n")
   }
   
-  print("PAF")
   ## 6. SAVE MODEL OBJECT ON HARD DRIVE -----------------------------------------------------------
   nameModel = paste(run.name, model, sep = "_") 
   assign(x = nameModel, value = model.bm)
   save(list = nameModel, file = file.path(dir_name, resp_name, "models", modeling.id, nameModel), compress = TRUE)
-  
-  print("PUF")
   
   return(ListOut)
 }
@@ -725,8 +711,7 @@ bm_RunModel <- function(model, run.name, dir.name = '.'
 ###################################################################################################
 
 .bm_RunModel.check.args <- function(model, bm.options, Data, weights.vec, calib.lines.vec
-                                    , eval.data, metric.eval, scale.models, seed.val = NULL, do.progress = TRUE
-                                    , criteria = NULL, Prev = NULL)
+                                    , eval.data, metric.eval, scale.models, seed.val = NULL, do.progress = TRUE)
 {
   ## 0. Do some cleaning over Data argument -----------------------------------
   data_sp <- Data[, 1]
@@ -776,89 +761,8 @@ bm_RunModel <- function(model, run.name, dir.name = '.'
   ## 3. Check scale.models argument -------------------------------------------
   if (model == "SRE") { scale.models <- FALSE } else if (model %in% c("ANN", "FDA")) { scale.models <- TRUE }
   
-  
-  ## 4. Check bm.options argument ---------------------------------------------
-  ## TO BE MOVED ######################################################################################
-  # seedval = NULL
-  # if (model == "GLM") {
-  #   cat('\nModel=GLM')
-  #   if (!is.null(bm.options@GLM$myFormula)) {
-  #     cat('\n\tformula = ', paste(bm.options@GLM$myFormula[2],
-  #                                 bm.options@GLM$myFormula[1],
-  #                                 bm.options@GLM$myFormula[3]))
-  #   } else {
-  #     cat(' (', bm.options@GLM$type, 'with',
-  #         ifelse(bm.options@GLM$interaction.level == 0,
-  #                'no interaction )',
-  #                paste('order', bm.options@GLM$interaction.level, 'interaction level )')
-  #         ))
-  #   }
-  #   if (bm.options@GLM$test == "AIC") {
-  #     criteria <- 2
-  #     cat("\n\tStepwise procedure using AIC criteria")
-  #   } else if (bm.options@GLM$test == "BIC") {
-  #     criteria <- log(ncol(data_env))
-  #     cat("\n\tStepwise procedure using BIC criteria")
-  #   } else if (bm.options@GLM$test == "none") {
-  #     criteria <- 0
-  #     cat("\n\tNo stepwise procedure")
-  #     cat("\n\t! You might be confronted to model convergence issues !")
-  #   }
-  # } else if (model == "GBM") {
-  #   cat("\nModel=Generalised Boosting Regression \n")
-  #   cat("\t", bm.options@GBM$n.trees, "maximum different trees and ", bm.options@GBM$cv.folds, " Fold Cross-Validation")
-  #   seedval = 456 # to be able to refind our trees MAY BE BAD
-  # } else if (model == "GAM") {
-  #   cat("\nModel=GAM")
-  #   cat("\n\t", bm.options@GAM$algo, "algorithm chosen")
-  #   seedval = 321 # to be able to refind our trees MAY BE BAD
-  # } else if (model == "CTA") {
-  #   cat("\nModel=Classification tree \n")
-  #   cat("\t", bm.options@CTA$control$xval, "Fold Cross-Validation")
-  #   seedval = 123 # to be able to refind our trees MAY BE BAD
-  # } else if (model == "ANN") {
-  #   cat("\nModel=Artificial Neural Network \n")
-  #   cat("\t", bm.options@ANN$NbCV, "Fold Cross Validation + 3 Repetitions")
-  #   seedval = 555 # to be able to refind our trees MAY BE BAD
-  # } else if (model == "SRE") {
-  #   cat("\nModel=Surface Range Envelop")
-  # } else if (model == "FDA"){
-  #   cat("\nModel=Flexible Discriminant Analysis")
-  # } else if (model == "MARS"){
-  #   cat("\nModel=Multiple Adaptive Regression Splines")
-  #   if (!is.null(bm.options@MARS$myFormula)) {
-  #     cat('\n\tformula = ', paste(bm.options@MARS$myFormula[2],
-  #                                 bm.options@MARS$myFormula[1],
-  #                                 bm.options@MARS$myFormula[3]))
-  #   } else {
-  #     cat(' (', bm.options@MARS$type, 'with',
-  #         ifelse(bm.options@MARS$interaction.level == 0,
-  #                'no interaction )',
-  #                paste('order', bm.options@MARS$interaction.level, 'interaction level )')
-  #         ))
-  #   }
-  #   cat("\n")
-  # } else if (model == "RF") {
-  #   cat("\nModel=Breiman and Cutler's random forests for classification and regression")
-  #   seedval = 71
-  # } else if (model == 'MAXENT') {
-  #   cat('\nModel=MAXENT')
-  # } else if (model == 'MAXNET') {
-  #   cat('\nModel=MAXNET')
-  # }
-  # if (!is.null(seed.val)) {
-  #   seedval = seed.val
-  # }
-  ## TO BE MOVED ######################################################################################
-  
-  ## 5. Check Prev argument ---------------------------------------------------
-  # if (model == "GLM" | model == "GAM") {
-  #   Prev <- sum(data_sp, na.rm = TRUE) / length(data_sp)
-  # }
-  ## TO BE MOVED ??? ###################################################################################
-  
-  
-  ## 6. Check models.eval.meth arguments --------------------------------------
+
+  ## 4. Check models.eval.meth arguments --------------------------------------
   metric.eval <- unique(metric.eval)
   avail.eval.meth.list <- c('TSS', 'KAPPA', 'ACCURACY', 'BIAS', 'POD', 'FAR', 'POFD'
                             , 'SR', 'CSI', 'ETS', 'HK', 'HSS', 'OR', 'ORSS', 'ROC'
@@ -879,8 +783,6 @@ bm_RunModel <- function(model, run.name, dir.name = '.'
               data_mod = data_mod,
               weights.vec = weights.vec,
               eval.lines.vec = eval.lines.vec,
-              criteria = criteria,
-              Prev = Prev, 
               metric.eval = metric.eval,
               eval.data = eval.data,
               scale.models = scale.models,

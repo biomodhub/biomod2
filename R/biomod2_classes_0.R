@@ -282,8 +282,13 @@ setMethod('BIOMOD.options.dataset', signature(strategy = 'character'),
             BOM <- BIOMOD.options.default(mod, typ, pkg, fun)
             
             argstmp <- BOM@args.default
+            ## NEEDED TO WORK !!!! 
             ## SHOULD BE MOVED to place when testing values !! ??
-            if (mod == "ANN") { argstmp[["x"]] = NULL }
+            if (mod == "ANN") { 
+              argstmp[["x"]] = NULL
+              # argstmp$trace = FALSE
+              # argstmp = c(argstmp, trace = FALSE) ## marche pas
+            }
             if (mod == "FDA") {
               argstmp$dimension = NULL
               argstmp$keep.fitted = NULL
