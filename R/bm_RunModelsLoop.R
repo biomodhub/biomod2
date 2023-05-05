@@ -235,7 +235,7 @@ bm_RunModel <- function(model, run.name, dir.name = '.'
     bm.opt.val <- bm.opt@args.values[[dataset_name]]
   } else { stop("groprobleum") }
   
-  
+  print("yo")
   ## 2. CREATE MODELS -----------------------------------------------------------------------------
   set.seed(seed.val)
   
@@ -303,8 +303,14 @@ bm_RunModel <- function(model, run.name, dir.name = '.'
         bm.opt.val$decay <- CV_nnet[1, 2]
       }
     }
+    if (model %in% c("MARS", "RF")) {
+      bm.opt.val$formula <- bm_MakeFormula(resp.name = resp_name
+                                           , expl.var = head(data_env)
+                                           , type = 'simple'
+                                           , interaction.level = 0)
+    }
     
-    if (model == "RF" && bm.opt.val$do.classif == TRUE) {
+    if (model == "RF" && !is.null(bm.opt.val$do.classif) && bm.opt.val$do.classif == TRUE) {
       # defining occurences as factor for doing classification and not regression in RF
       data_mod <- data_mod %>% mutate_at(resp_name, factor)
     }
@@ -327,14 +333,14 @@ bm_RunModel <- function(model, run.name, dir.name = '.'
     }
     
     ## FILL weights parameter ---------------------------------------
-    if (model %in% c("ANN", "CTA", "GBM", "GLM", "MARS", "RF")) {
-      bm.opt.val$weights <- quote(weights) ## NOT SURE it will work as it is supposed to represent a column name in data_mod...
+    if (model %in% c("ANN", "CTA", "GBM", "GLM", "MARS")) { #, "RF")) { ## TO BE ADDED RF ??
+      bm.opt.val$weights <- quote(weights)
     } else if (model %in% c("FDA", "XGBOOST")) {
       bm.opt.val$weights <- weights.vec[calib.lines.vec]
     }
     print("yeeeeeeeeeeeeeeees")
     print(bm.opt@func)
-    # print(bm.opt.val)
+    print(bm.opt.val)
     
     ## RUN model ----------------------------------------------------
     ## /!\
@@ -369,8 +375,12 @@ bm_RunModel <- function(model, run.name, dir.name = '.'
         tr <- as.data.frame(model.sp$cptable)
         tr$xsum <- tr$xerror + tr$xstd
         tr <- tr[tr$nsplit > 0,]
-        Cp <- tr[tr$xsum == min(tr$xsum), "CP"]
-        model.sp <- prune(model.sp, cp = Cp[length(Cp)])
+        if (nrow(tr) > 0) {
+          Cp <- tr[tr$xsum == min(tr$xsum), "CP"]
+          model.sp <- prune(model.sp, cp = Cp[length(Cp)])
+        } else {
+          warning("pas de bon modele trouve, message a refaire")
+        }
       }
       # if (model == "GBM") {
       #   best.iter <- try(gbm.perf(model.sp, method = bm.options@GBM$perf.method , plot.it = FALSE)) ## perf.method == "cv"
@@ -397,7 +407,7 @@ bm_RunModel <- function(model, run.name, dir.name = '.'
     }
     
     ## POSTLIMINAR --------------------------------------------------
-    if (model == "RF" && bm.opt.val$do.classif == TRUE) {
+    if (model == "RF" && !is.null(bm.opt.val$do.classif) && bm.opt.val$do.classif == TRUE) {
       # canceling occurences class modifications
       data_mod <- data_mod %>% mutate_at(resp_name, function(.x) {
         .x %>% as.character() %>% as.numeric()
@@ -760,7 +770,7 @@ bm_RunModel <- function(model, run.name, dir.name = '.'
   ## 2. Check weights argument ------------------------------------------------
   if (is.null(weights.vec)) { weights.vec <- rep(1, nrow(Data)) }
   ## These models require data and weights to be in the same dataset
-  if (model %in% c('ANN', 'MARS', 'CTA', 'GBM')) {
+  if (model %in% c('ANN', 'MARS', 'CTA', 'GBM')) { ## TO BE ADDED RF ??
     data_env_w <- cbind(data_env, weights.vec)
     colnames(data_env_w) <- c(colnames(data_env), "weights")
   } else {

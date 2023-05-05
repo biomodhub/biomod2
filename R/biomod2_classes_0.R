@@ -284,9 +284,20 @@ setMethod('BIOMOD.options.dataset', signature(strategy = 'character'),
             ## GET parameter values according to strategy -------------------------------
             if (strategy %in% c("default", "bigboss")) {
               argstmp <- BOM@args.default
-              if (mod == "GLM") { ## SHOULD BE MOVED to place when testing values !!
-                argstmp$control = list()
-              }
+              ## SHOULD BE MOVED to place when testing values !! ??
+              if (mod == "ANN") { argstmp[["x"]] = NULL }
+              # if (mod == "FDA") { 
+              #   # argstmp$dimension = NULL
+              #   # argstmp$keep.fitted = NULL
+              #   # argstmp$eps = NULL
+              #   # argstmp$method = NULL
+              #   # argstmp$theta = NULL
+              # }
+              if (mod == "GLM") { argstmp$control = list() }
+              if (mod == "MAXNET") { argstmp[["f"]] = NULL }
+              if (mod == "RF") { argstmp[["x"]] = NULL }
+              if (mod == "XGBOOST") { argstmp$nrounds = 4 }
+              ## SHOULD BE MOVED to place when testing values !! ??
               
               if (strategy == "bigboss") {
                 if (mod == "ANN") {
