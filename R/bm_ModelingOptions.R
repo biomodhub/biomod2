@@ -236,30 +236,15 @@
 ##'
 ##'
 
-## MINIMAL DATA REQUIRED :
-## CTA : formula + data = data_mod[calib.lines.vec, , drop = FALSE] + weights
-## GAM : 
-## GBM : formula + data = data_mod[calib.lines.vec, , drop = FALSE] + weights (+ var.monotone)
-## GLM : formula + data = cbind(data_mod[calib.lines.vec, , drop = FALSE], 
-#                               data.frame("weights" = weights.vec[calib.lines.vec])) + weights
-## MARS : formula + data = data_mod[calib.lines.vec, , drop = FALSE] + weights +
-#           glm = list(family = binomial), ncross = 0, keepxy = FALSE
-## FDA : formula + data = data_mod[calib.lines.vec, , drop = FALSE] + weights.vec[calib.lines.vec]
-## ANN : formula + data = data_mod[calib.lines.vec, , drop = FALSE] + weights (+ size, decay, trace)
-## RF : formula + data = data_mod[calib.lines.vec, , drop = FALSE] (+ weights, mtry, importance, norm.votes, strata, sampsize)
-## SRE : resp.var = data_sp[calib.lines.vec] + expl.var = data_env[calib.lines.vec, , drop = FALSE] (+ new.env, do.extrem)
-## MAXENT : ...
-## MAXNET : p = data_sp[calib.lines.vec] + data = data_env[calib.lines.vec, , drop = FALSE]
-## XGBOOST : data = as.matrix(data_env[calib.lines.vec, , drop = FALSE]) + label = data_sp[calib.lines.vec] +
-##            weights.vec[calib.lines.vec] (+ max.depth, eta, nthread, nrounds, objective)
-
 TABLE_MODELS <- data.frame(model = c('ANN', 'CTA', 'FDA', 'GAM', 'GAM', 'GAM', 'GBM', 'GLM'
                                      , 'MARS', 'MAXENT', 'MAXNET', 'RF', 'SRE', 'XGBOOST')
                            , type = 'binary'
                            , package = c('nnet', 'rpart', 'mda', 'gam', 'mgcv', 'mgcv', 'gbm', 'stats'
                                          , 'earth', 'MAXENT', 'maxnet', 'randomForest', 'biomod2', 'xgboost')
                            , func = c('nnet', 'rpart', 'fda', 'gam', 'bam', 'gam', 'gbm', 'glm'
-                                      , 'earth', 'MAXENT', 'maxnet', 'randomForest', 'bm_SRE', 'xgboost'))
+                                      , 'earth', 'MAXENT', 'maxnet', 'randomForest', 'bm_SRE', 'xgboost')
+                           , train = c('avNNet', 'rpart', 'fda', 'gamSpline', 'bam', 'gam', 'gbm', 'glm'
+                                       , 'earth', 'ENMevaluate', '', 'rf', 'bm_SRE', 'xgbTree'))
 
 
 
@@ -289,7 +274,8 @@ bm_ModelingOptions <- function(data.type
                                           , pkg = tab.model$package[ii]
                                           , fun = tab.model$func[ii]
                                           , strategy = strategy
-                                          , val = val.ii
+                                          , user.val = val.ii
+                                          , tuning.fun = tab.model$train[ii]
                                           , bm.format = bm.format
                                           , calib.lines = calib.lines)
             for (xx in 1:length(BOD@args.values)) { ## SHOULD BE MOVED to place when testing values !!

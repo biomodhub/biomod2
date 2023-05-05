@@ -231,36 +231,82 @@ BIOMOD_Tuning <- function(bm.format,
                           RF.method = 'rf',
                           weights = NULL)
 {
-  .bm_cat("Tune Modeling Options")
   
   ## MAXENT: http://cran.r-project.org/web/packages/ENMeval/ENMeval.pdf --> ENMevaluate()
   ## or:    http://cran.r-project.org/web/packages/maxent/maxent.pdf -->  tune.maxent()
   
-  ## 0. Check namespaces ------------------------------------------------------
   
-  mod.names = c('GLM', 'GBM', 'GAM', 'CTA', 'ANN', 'SRE', 'FDA', 'MARS', 'RF', 'MAXENT')
+  .bm_cat("Tune Modeling Options")
   
-  if (sum(mod.names %in% models) > 0) {
-    if (!isNamespaceLoaded("caret")) { 
-      if(!requireNamespace('caret', quietly = TRUE)) stop("Package 'caret' not found")
-    }
-    if (!isNamespaceLoaded('dplyr')) { 
-      if(!requireNamespace('dplyr', quietly = TRUE)) stop("Package 'dplyr' not found")
-    }
-    if (is.null(ctrl.train)) {
-      ctrl.train <- caret::trainControl(method = "cv",
-                                        repeats = 3,
-                                        summaryFunction = caret::twoClassSummary,
-                                        classProbs = TRUE,
-                                        returnData = FALSE)
-    }
-    if ("MAXENT" %in% models && !isNamespaceLoaded('ENMeval')) { 
-      if(!requireNamespace('ENMeval', quietly = TRUE)) stop("Package 'ENMeval' not found")
-    }
-    if ("SRE" %in% models && !isNamespaceLoaded('dismo')) { 
-      if(!requireNamespace('dismo', quietly = TRUE)) stop("Package 'dismo' not found")
-    }
+  ## 0. Check arguments ---------------------------------------------------------------------------
+  args <- .bm_Tuning.check.args(...)
+  for (argi in names(args)) { assign(x = argi, value = args[[argi]]) }
+  rm(args)
+  
+  
+  ## 1. Check namespace ---------------------------------------------------------------------------
+  if (!isNamespaceLoaded("caret")) { 
+    if(!requireNamespace('caret', quietly = TRUE)) stop("Package 'caret' not found")
   }
+  if (!isNamespaceLoaded('dplyr')) { 
+    if(!requireNamespace('dplyr', quietly = TRUE)) stop("Package 'dplyr' not found")
+  }
+  if (is.null(ctrl.train)) {
+    ctrl.train <- caret::trainControl(method = "cv",
+                                      repeats = 3,
+                                      summaryFunction = caret::twoClassSummary,
+                                      classProbs = TRUE,
+                                      returnData = FALSE)
+  }
+  if ("MAXENT" %in% models && !isNamespaceLoaded('ENMeval')) { 
+    if(!requireNamespace('ENMeval', quietly = TRUE)) stop("Package 'ENMeval' not found")
+  }
+  if ("SRE" %in% models && !isNamespaceLoaded('dismo')) { 
+    if(!requireNamespace('dismo', quietly = TRUE)) stop("Package 'dismo' not found")
+  }
+  
+  ## Parameters to be tested
+  all.fun <- c('avNNet', 'rpart', 'fda', 'gamSpline', 'bam', 'gam', 'gbm', 'glm', 'earth', 'rf', 'xgbTree')
+  all.params <- foreach (fi = all.fun) %do% {
+    params <- getModelInfo(model = fi)
+    params <- params[[fi]]$parameters$parameter
+    return(params)
+  }
+  names(all.params) <- all.fun
+  train.params <- all.params[[tuning.fun]]
+  
+  
+  tuning.grid
+  ctrl.mod <- ctrl.train
+  tuning.length <- 1
+  if (CTA) tuning.length <- 30
+  if (RF) tuning.length <- min(30, ncol(bm.format@data.env.var))
+  
+  try(tuned.mod <- caret::train(x = bm.format@data.env.var, 
+                                y = resp,
+                                method = tuning.fun,
+                                tuneGrid = tuning.grid,
+                                tuneLength = tuning.length
+                                trControl = ctrl.mod,
+                                metric = metric.eval, ## RF
+                                verbose = FALSE,
+                                weights = weights))
+  
+  ##ANN ## Automatically standardize data prior to modeling and prediction
+  preProcess = c("center", "scale"),
+  linout = TRUE,
+  trace = FALSE,
+  MaxNWts.ANN = ANN.MaxNWts,
+  maxit = ANN.maxit,
+  
+  ## GLM : formula + data,  otherwise : x + y
+  # bm_MakeFormula(resp.name = "resp",
+  #                expl.var = bm.format@data.env.var,
+  #                type = type,
+  #                interaction.level = IA),
+  # data = cbind(bm.format@data.env.var, resp = resp),
+  
+  
   
   tune.SRE <- tune.GLM <- tune.MAXENT <- tune.GAM <- tune.GBM <- 
     tune.CTA.rpart <- tune.CTA.rpart2 <- tune.RF <- tune.ANN <- tune.MARS <- tune.FDA <- NULL
