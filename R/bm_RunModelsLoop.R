@@ -174,7 +174,7 @@ bm_RunModelsLoop <- function(bm.format,
       }}}
   
   ## RUN models -----------------------------------------------------------------------------------
-  out <- foreach(ii = 1:length(list.data)) %dopar%
+  out <- foreach(ii = 1:length(list.data), .combine =) %dopar%
     {
       cat('\n\n-=-=-=--=-=-=-', names(list.data)[ii], '\n')
       bm_RunModel(model = list.data[[ii]]$modi,
@@ -228,14 +228,21 @@ bm_RunModel <- function(model, run.name, dir.name = '.'
   opt_name <- grep(model, names(bm.options@options), value = TRUE)
   if (length(opt_name) == 1) {
     bm.opt <- bm.options@options[[opt_name]]
+  } else if (model == "GAM") {
+    bm.opt <- bm.options@options[[opt_name[1]]] ## /!\ how to deal with all 3 ??
+    subclass_name <- paste0(bm.opt@model, "_", bm.opt@type, "_", bm.opt@package)
+    print(subclass_name)
+    .load_gam_namespace(model_subclass = subclass_name)
   } else { stop("pitiprobleum") }
+  
+  ## get options for specific dataset
   print(dataset_name)
   print(names(bm.opt@args.values))
   if (dataset_name %in% names(bm.opt@args.values)) {
     bm.opt.val <- bm.opt@args.values[[dataset_name]]
   } else { stop("groprobleum") }
   
-  print("yo")
+  
   ## 2. CREATE MODELS -----------------------------------------------------------------------------
   set.seed(seed.val)
   
@@ -316,7 +323,7 @@ bm_RunModel <- function(model, run.name, dir.name = '.'
     }
     
     ## FILL data parameter ------------------------------------------
-    if (model %in% c("ANN", "CTA", "FDA", "GBM", "MARS", "RF")) {
+    if (model %in% c("ANN", "CTA", "FDA", "GAM", "GBM", "MARS", "RF")) {
       bm.opt.val$data <- data_mod[calib.lines.vec, , drop = FALSE]
     } else if (model == "GLM") {
       bm.opt.val$data <- cbind(data_mod[calib.lines.vec, , drop = FALSE], 
@@ -335,7 +342,7 @@ bm_RunModel <- function(model, run.name, dir.name = '.'
     ## FILL weights parameter ---------------------------------------
     if (model %in% c("ANN", "CTA", "GBM", "GLM", "MARS")) { #, "RF")) { ## TO BE ADDED RF ??
       bm.opt.val$weights <- quote(weights)
-    } else if (model %in% c("FDA", "XGBOOST")) {
+    } else if (model %in% c("FDA", "GAM", "XGBOOST")) {
       bm.opt.val$weights <- weights.vec[calib.lines.vec]
     }
     print("yeeeeeeeeeeeeeeees")
@@ -394,7 +401,6 @@ bm_RunModel <- function(model, run.name, dir.name = '.'
                       model = model.sp,
                       model_name = model_name,
                       model_class = bm.opt@model,
-                      # model_subclass = paste0(bm.opt@model, "_", bm.opt@type, "_", bm.opt@package), ## GAM
                       model_options = bm.opt,
                       # n.trees_optim = best.iter, ## GBM
                       # extremal_conditions = model.sp, # SRE
@@ -404,6 +410,7 @@ bm_RunModel <- function(model, run.name, dir.name = '.'
                       expl_var_names = expl_var_names,
                       expl_var_type = get_var_type(data_env[calib.lines.vec, , drop = FALSE]),
                       expl_var_range = get_var_range(data_env[calib.lines.vec, , drop = FALSE]))
+      if (model == "GAM") { model.bm@model_subclass = subclass_name } ## TO BE ADDED to all models ?
     }
     
     ## POSTLIMINAR --------------------------------------------------
@@ -430,45 +437,38 @@ bm_RunModel <- function(model, run.name, dir.name = '.'
     # file to log potential errors
     maxent_stderr_file <- paste0(MWD$m_outdir, "/maxent.stderr")
     
-    maxent.args <- 
-      c(
-        ifelse(is.null(bm.options@MAXENT$memory_allocated),"",
-               paste0("-mx", bm.options@MAXENT$memory_allocated, "m")), 
-        ifelse(is.null(bm.options@MAXENT$initial_heap_size), "",
-               paste0(" -Xms", bm.options@MAXENT$initial_heap_size)),
-        ifelse(is.null(bm.options@MAXENT$max_heap_size), "",
-               paste0(" -Xmx", bm.options@MAXENT$max_heap_size)),
-        paste0(" -jar ", 
-               file.path(bm.options@MAXENT$path_to_maxent.jar, "maxent.jar")),
-        paste0(" environmentallayers=\"", MWD$m_backgroundFile, "\""), 
-        paste0(" samplesfile=\"", MWD$m_speciesFile, "\""),
-        paste0(" projectionlayers=\"", gsub(", ", ",", toString(MWD$m_predictFile)), "\""),
-        paste0(" outputdirectory=\"", MWD$m_outdir, "\""),
-        paste0(" outputformat=logistic "), 
-        ifelse(length(categorical_var),
-               paste0(" togglelayertype=", categorical_var, collapse = " "),
-               ""),
-        " redoifexists",
-        paste0(" visible=", bm.options@MAXENT$visible),
-        paste0(" linear=", bm.options@MAXENT$linear),
-        paste0(" quadratic=", bm.options@MAXENT$quadratic),
-        paste0( " product=", bm.options@MAXENT$product),
-        paste0(" threshold=", bm.options@MAXENT$threshold),
-        paste0(" hinge=", bm.options@MAXENT$hinge),
-        paste0(" lq2lqptthreshold=", bm.options@MAXENT$lq2lqptthreshold),
-        paste0(" l2lqthreshold=", bm.options@MAXENT$l2lqthreshold),
-        paste0(" hingethreshold=", bm.options@MAXENT$hingethreshold),
-        paste0(" beta_threshold=", bm.options@MAXENT$beta_threshold),
-        paste0(" beta_categorical=", bm.options@MAXENT$beta_categorical),
-        paste0(" beta_lqp=", bm.options@MAXENT$beta_lqp),
-        paste0(" beta_hinge=", bm.options@MAXENT$beta_hinge),
-        paste0(" betamultiplier=", bm.options@MAXENT$betamultiplier),
-        paste0(" defaultprevalence=", bm.options@MAXENT$defaultprevalence),
-        " autorun ",
-        " nowarnings ", 
-        " notooltips ",
-        " noaddsamplestobackground"
-      )
+    maxent.args <- c(
+      ifelse(is.null(bm.opt.val$memory_allocated), "", paste0("-mx", bm.opt.val$memory_allocated, "m")), 
+      ifelse(is.null(bm.opt.val$initial_heap_size), "", paste0(" -Xms", bm.opt.val$initial_heap_size)),
+      ifelse(is.null(bm.opt.val$max_heap_size), "", paste0(" -Xmx", bm.opt.val$max_heap_size)),
+      paste0(" -jar ",  file.path(bm.opt.val$path_to_maxent.jar, "maxent.jar")),
+      paste0(" environmentallayers=\"", MWD$m_backgroundFile, "\""), 
+      paste0(" samplesfile=\"", MWD$m_speciesFile, "\""),
+      paste0(" projectionlayers=\"", gsub(", ", ",", toString(MWD$m_predictFile)), "\""),
+      paste0(" outputdirectory=\"", MWD$m_outdir, "\""),
+      paste0(" outputformat=logistic "), 
+      ifelse(length(categorical_var), paste0(" togglelayertype=", categorical_var, collapse = " "), ""),
+      " redoifexists",
+      paste0(" visible=", bm.opt.val$visible),
+      paste0(" linear=", bm.opt.val$linear),
+      paste0(" quadratic=", bm.opt.val$quadratic),
+      paste0( " product=", bm.opt.val$product),
+      paste0(" threshold=", bm.opt.val$threshold),
+      paste0(" hinge=", bm.opt.val$hinge),
+      paste0(" lq2lqptthreshold=", bm.opt.val$lq2lqptthreshold),
+      paste0(" l2lqthreshold=", bm.opt.val$l2lqthreshold),
+      paste0(" hingethreshold=", bm.opt.val$hingethreshold),
+      paste0(" beta_threshold=", bm.opt.val$beta_threshold),
+      paste0(" beta_categorical=", bm.opt.val$beta_categorical),
+      paste0(" beta_lqp=", bm.opt.val$beta_lqp),
+      paste0(" beta_hinge=", bm.opt.val$beta_hinge),
+      paste0(" betamultiplier=", bm.opt.val$betamultiplier),
+      paste0(" defaultprevalence=", bm.opt.val$defaultprevalence),
+      " autorun ",
+      " nowarnings ", 
+      " notooltips ",
+      " noaddsamplestobackground"
+    )
     
     system2(command = "java", args = maxent.args,
             wait = TRUE,
@@ -476,20 +476,16 @@ bm_RunModel <- function(model, run.name, dir.name = '.'
     
     maxent_exec_output <- readLines(maxent_stderr_file)
     
-    if(any(grepl(pattern = "Error", x = maxent_exec_output))) {
+    if (any(grepl(pattern = "Error", x = maxent_exec_output))) {
       g.pred <- NA
       class(g.pred) <- "try-error"
-      cat( 
-        paste0("\n*** Error in MAXENT, more info available in ",
-               maxent_stderr_file)
-      )
-      
+      cat("\n*** Error in MAXENT, more info available in ", maxent_stderr_file)
     } else {
       model.bm <- new("MAXENT_biomod2_model",
                       model_output_dir = MWD$m_outdir,
                       model_name = model_name,
-                      model_class = 'MAXENT',
-                      model_options = bm.options@MAXENT,
+                      model_class = bm.opt@model,
+                      model_options = bm.opt,
                       dir_name = dir_name,
                       resp_name = resp_name,
                       expl_var_names = expl_var_names,

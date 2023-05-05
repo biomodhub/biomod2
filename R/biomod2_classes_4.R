@@ -559,11 +559,11 @@ setMethod('predict2', signature(object = 'FDA_biomod2_model', newdata = "data.fr
 setClass('GAM_biomod2_model',
          representation(model_subclass = 'character'), 
          contains = 'biomod2_model',
-         prototype = list(model_class = 'GAM', model_subclass = 'GAM_mgcv'),
+         prototype = list(model_class = 'GAM', model_subclass = 'GAM_mgcv_gam'),
          validity = function(object) { ## check model class
-           if ((!(object@model_subclass %in% c('GAM_mgcv', 'GAM_gam', 'BAM_mgcv'))) ||
-               (object@model_subclass %in% c('GAM_mgcv', 'GAM_gam') && !inherits(object@model, c("gam", "Gam"))) ||
-               (object@model_subclass == 'BAM_mgcv' && !inherits(object@model, c("bam")))) {
+           if ((!(object@model_subclass %in% c('GAM_mgcv_gam', 'GAM_gam_gam', 'GAM_mgcv_bam'))) ||
+               (object@model_subclass %in% c('GAM_mgcv_gam', 'GAM_gam_gam') && !inherits(object@model, c("gam", "Gam"))) ||
+               (object@model_subclass == 'GAM_mgcv_bam' && !inherits(object@model, c("bam")))) {
              return(FALSE)
            } else {
              return(TRUE)
@@ -791,7 +791,7 @@ setMethod('predict2', signature(object = 'MAXENT_biomod2_model', newdata = "Spat
             }
             
             # checking maxent.jar is present
-            path_to_maxent.jar <- file.path(object@model_options$path_to_maxent.jar, "maxent.jar")
+            path_to_maxent.jar <- file.path(object@model_options@args.default$path_to_maxent.jar, "maxent.jar")
             if (!file.exists(path_to_maxent.jar)) {
               path_to_maxent.jar <-  file.path(getwd(), "maxent.jar")
             }
@@ -799,12 +799,12 @@ setMethod('predict2', signature(object = 'MAXENT_biomod2_model', newdata = "Spat
             
             maxent.command <- 
               paste0("java ",
-                     ifelse(is.null(object@model_options$memory_allocated), "",
-                            paste0("-mx", object@model_options$memory_allocated, "m")),
-                     ifelse(is.null(object@model_options$initial_heap_size), "",
-                            paste0(" -Xms", object@model_options$initial_heap_size)),
-                     ifelse(is.null(object@model_options$max_heap_size), "",
-                            paste0(" -Xmx", object@model_options$max_heap_size)),
+                     ifelse(is.null(object@model_options@args.default$memory_allocated), "",
+                            paste0("-mx", object@model_options@args.default$memory_allocated, "m")),
+                     ifelse(is.null(object@model_options@args.default$initial_heap_size), "",
+                            paste0(" -Xms", object@model_options@args.default$initial_heap_size)),
+                     ifelse(is.null(object@model_options@args.default$max_heap_size), "",
+                            paste0(" -Xmx", object@model_options@args.default$max_heap_size)),
                      " -cp ", "\"", path_to_maxent.jar, "\"",
                      " density.Project ",
                      "\"", list.files(path = object@model_output_dir, pattern = ".lambdas$", full.names = TRUE), "\" ",
@@ -886,7 +886,7 @@ setMethod('predict2', signature(object = 'MAXENT_biomod2_model', newdata = "data
             write.table(Pred_swd, file = m_predictFile, quote = FALSE, row.names = FALSE, col.names = TRUE, sep = ",")
             
             # checking maxent.jar is present
-            path_to_maxent.jar <- file.path(object@model_options$path_to_maxent.jar, "maxent.jar")
+            path_to_maxent.jar <- file.path(object@model_options@args.default$path_to_maxent.jar, "maxent.jar")
             if (!file.exists(path_to_maxent.jar)) {
               path_to_maxent.jar <-  file.path(getwd(), "maxent.jar")
             }
@@ -894,12 +894,12 @@ setMethod('predict2', signature(object = 'MAXENT_biomod2_model', newdata = "data
             # cat("\n\t\tRunning Maxent...")
             maxent.command <- 
               paste0("java ",
-                     ifelse(is.null(object@model_options$memory_allocated), "",
-                            paste0("-mx", object@model_options$memory_allocated, "m")),
-                     ifelse(is.null(object@model_options$initial_heap_size), "",
-                            paste0(" -Xms", object@model_options$initial_heap_size)),
-                     ifelse(is.null(object@model_options$max_heap_size), "",
-                            paste0(" -Xmx", object@model_options$max_heap_size)),
+                     ifelse(is.null(object@model_options@args.default$memory_allocated), "",
+                            paste0("-mx", object@model_options@args.default$memory_allocated, "m")),
+                     ifelse(is.null(object@model_options@args.default$initial_heap_size), "",
+                            paste0(" -Xms", object@model_options@args.default$initial_heap_size)),
+                     ifelse(is.null(object@model_options@args.default$max_heap_size), "",
+                            paste0(" -Xmx", object@model_options@args.default$max_heap_size)),
                      " -cp ", "\"", path_to_maxent.jar, "\"",
                      " density.Project ",
                      "\"", list.files(path = object@model_output_dir, pattern = ".lambdas$", full.names = TRUE), "\" ",

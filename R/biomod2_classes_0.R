@@ -281,24 +281,34 @@ setMethod('BIOMOD.options.dataset', signature(strategy = 'character'),
             
             BOM <- BIOMOD.options.default(mod, typ, pkg, fun)
             
+            argstmp <- BOM@args.default
+            ## SHOULD BE MOVED to place when testing values !! ??
+            if (mod == "ANN") { argstmp[["x"]] = NULL }
+            if (mod == "FDA") {
+              argstmp$dimension = NULL
+              argstmp$keep.fitted = NULL
+            }
+            if (mod == "GLM") { argstmp$control = list() }
+            if (mod == "MAXNET") { argstmp[["f"]] = NULL }
+            if (mod == "RF") { argstmp[["x"]] = NULL }
+            if (mod == "XGBOOST") { argstmp$nrounds = 4 }
+            ## SHOULD BE MOVED to place when testing values !! ??
+            
+            ## SPECIFIC case of formula -------------------------------------------------
+            if ("formula" %in% BOM@args.names && !is.null(bm.format)) {
+              if (is.null(argstmp$formula) || 
+                  (length(argstmp$formula) == 1 && nchar(argstmp$formula) == 0) ||
+                  argstmp$formula == "formula(data)") {
+                argstmp$formula <- bm_MakeFormula(resp.name = bm.format@sp.name
+                                                  , expl.var = head(bm.format@data.env.var)
+                                                  , type = 'simple'
+                                                  , interaction.level = 0)
+              }
+            }
+            ## ATTENTION : si on ne donne pas bm.format, on n'a pas de formula du coup
+            
             ## GET parameter values according to strategy -------------------------------
             if (strategy %in% c("default", "bigboss")) {
-              argstmp <- BOM@args.default
-              ## SHOULD BE MOVED to place when testing values !! ??
-              if (mod == "ANN") { argstmp[["x"]] = NULL }
-              # if (mod == "FDA") { 
-              #   # argstmp$dimension = NULL
-              #   # argstmp$keep.fitted = NULL
-              #   # argstmp$eps = NULL
-              #   # argstmp$method = NULL
-              #   # argstmp$theta = NULL
-              # }
-              if (mod == "GLM") { argstmp$control = list() }
-              if (mod == "MAXNET") { argstmp[["f"]] = NULL }
-              if (mod == "RF") { argstmp[["x"]] = NULL }
-              if (mod == "XGBOOST") { argstmp$nrounds = 4 }
-              ## SHOULD BE MOVED to place when testing values !! ??
-              
               if (strategy == "bigboss") {
                 if (mod == "ANN") {
                   argstmp$size = NULL
@@ -396,18 +406,17 @@ setMethod('BIOMOD.options.dataset', signature(strategy = 'character'),
               argsval <- bm_Tuning(obj = BOM, bm.format = bm.format, calib.lines = calib.lines)
             }
             
-            ## SPECIFIC case of formula -------------------------------------------------
-            if ("formula" %in% BOM@args.names && !is.null(bm.format)) {
-              for (ii in 1:length(argsval)) {
-                if (is.null(argsval[[ii]]$formula) || (length(argsval[[ii]]$formula) == 1 && nchar(argsval[[ii]]$formula) == 0)) {
-                  argsval[[ii]]$formula <- bm_MakeFormula(resp.name = bm.format@sp.name
-                                                          , expl.var = head(bm.format@data.env.var)
-                                                          , type = 'simple'
-                                                          , interaction.level = 0)
-                }
-              }
-            }
-            ## ATTENTION : si on ne donne pas bm.format, on n'a pas de formula du coup
+            # ## SPECIFIC case of formula -------------------------------------------------
+            # if ("formula" %in% BOM@args.names && !is.null(bm.format)) {
+            #   for (ii in 1:length(argsval)) {
+            #   if (is.null(argsval[[ii]]$formula) || (length(argsval[[ii]]$formula) == 1 && nchar(argsval[[ii]]$formula) == 0)) {
+            #     argsval[[ii]]$formula <- bm_MakeFormula(resp.name = bm.format@sp.name
+            #                                             , expl.var = head(bm.format@data.env.var)
+            #                                             , type = 'simple'
+            #                                             , interaction.level = 0)
+            #   }
+            #   }
+            # }
             
             BOD <- new('BIOMOD.options.dataset', BOM, args.values = argsval)
             return(BOD)

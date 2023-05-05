@@ -683,8 +683,8 @@ get_var_range <- function(data)
 ##' @param model_subclass the subclass of GAM model
 ##' @keywords internal
 
-.load_gam_namespace <- function(model_subclass = c("GAM_mgcv","BAM_mgcv", "GAM_gam")){
-  if (model_subclass %in% c("GAM_mgcv", "BAM_mgcv")) {
+.load_gam_namespace <- function(model_subclass = c("GAM_mgcv_gam","GAM_mgcv_bam", "GAM_gam_gam")){
+  if (model_subclass %in% c("GAM_mgcv_gam", "GAM_mgcv_bam")) {
     # cat("\n*** unloading gam package / loading mgcv package")
     if (isNamespaceLoaded("gam")) { unloadNamespace("gam") }
     if (!isNamespaceLoaded("mgcv")) { 
@@ -692,7 +692,7 @@ get_var_range <- function(data)
     }
   }
   
-  if (model_subclass == "GAM_gam") {
+  if (model_subclass == "GAM_gam_gam") {
     # cat("\n*** unloading mgcv package / loading gam package")
     if (isNamespaceLoaded("mgcv")) {
       if (isNamespaceLoaded("caret")) { unloadNamespace("caret")} ## need to unload caret before car

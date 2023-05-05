@@ -551,9 +551,9 @@ BIOMOD_Modeling <- function(bm.format,
   }
   
   ## 2.2 Specific check for MAXENT -----------------------------------
-  if ("MAXENT" %in% models)
-  {
-    if (!file.exists(file.path(bm.options@MAXENT$path_to_maxent.jar, "maxent.jar"))) {
+  if ("MAXENT" %in% models) {
+    MAXENT.options <- bm.options@options[[grep("MAXENT", names(bm.options@options))[1]]]
+    if (!file.exists(file.path(MAXENT.options@args.default$path_to_maxent.jar, "maxent.jar"))) {
       models = models[-which(models == 'MAXENT')]
       if (!is.null(models.pa)) {
         models.pa = models.pa[-which(names(models.pa) == 'MAXENT')]
