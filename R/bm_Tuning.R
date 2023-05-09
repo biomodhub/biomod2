@@ -226,58 +226,34 @@ BIOMOD_Tuning <- function(bm.format,
                           ME.env = NULL,
                           ME.metric = 'ROC',
                           ME.clamp = TRUE,
-                          ME.parallel = FALSE,
-                          ME.numCores = NULL,
                           RF.method = 'rf',
                           weights = NULL)
 {
   .bm_cat("Tune Modeling Options")
   
   ## 0. Check arguments ---------------------------------------------------------------------------
-  args <- .bm_Tuning.check.args(...)
+  args <- .bm_Tuning.check.args(model = model, bm.format = bm.format, weights = weights)
   for (argi in names(args)) { assign(x = argi, value = args[[argi]]) }
   rm(args)
   
   
-  ## 1. Check namespace ---------------------------------------------------------------------------
-  if (!isNamespaceLoaded("caret")) { 
-    if(!requireNamespace('caret', quietly = TRUE)) stop("Package 'caret' not found")
-  }
-  # if (!isNamespaceLoaded('dplyr')) { 
-  #   if(!requireNamespace('dplyr', quietly = TRUE)) stop("Package 'dplyr' not found")
-  # }
-  if (is.null(ctrl.train)) {
-    ctrl.train <- caret::trainControl(method = "cv",
-                                      repeats = 3,
-                                      summaryFunction = caret::twoClassSummary,
-                                      classProbs = TRUE,
-                                      returnData = FALSE)
-  }
-  if ("MAXENT" %in% models && !isNamespaceLoaded('ENMeval')) { 
-    if(!requireNamespace('ENMeval', quietly = TRUE)) stop("Package 'ENMeval' not found")
-    
+  ## 2. Run tuning --------------------------------------------------------------------------------
+  if ("MAXENT" %in% models) { 
     ## MAXENT: http://cran.r-project.org/web/packages/ENMeval/ENMeval.pdf --> ENMevaluate()
     ## or:    http://cran.r-project.org/web/packages/maxent/maxent.pdf -->  tune.maxent()
     
-    # cat(paste("\n-=-=-=-=-=-=-=-=-=-=\n", "Start tuning MAXENT\n"))
-    # if (ME.cvmethod != 'randomkfold') { ME.kfolds <- NA }
-    
-    try(tune.MAXENT <- ENMeval::ENMevaluate(pres = bm.format@data.env.var[bm.format@data.species == 1 & !is.na(bm.format@data.species), ],
+    try(tune.MAXENT <- ENMeval::ENMevaluate(occs = bm.format@data.env.var[bm.format@data.species == 1 & !is.na(bm.format@data.species), ],
                                             bg = bm.format@data.env.var[bm.format@data.species == 0 | is.na(bm.format@data.species), ],
                                             tune.args = list(rm = seq(0.5, 1, 0.5), fc = c("L")),
                                             algorithm = "maxent.jar",
                                             partitions = ME.cvmethod,
                                             partition.settings = list(kfolds = ME.kfolds),
-                                            doClamp = ME.clamp,
-                                            parallel = ME.parallel,
-                                            numCores = ME.numCores,
+                                            doClamp = TRUE, ## allow to change or not ?
+                                            parallel = TRUE,
+                                            numCores = nb.cpu, ## default to 1 or NULL (all available cores used then) ?
                                             categoricals = NULL))
     
     # if (!is.null(tune.MAXENT)) {
-    #   if (!ME.metric %in% c("auc.val.avg", "auc.diff.avg", "or.mtp.avg", "or.10p.avg", "AICc")) {
-    #     ME.metric <- "auc.val.avg"
-    #     cat("Invalid ME.metric argument! ME.metric was set to auc.val.avg")
-    #   }
     #   if (ME.metric == 'auc.val.avg') {
     #     tmp = which.max(tune.MAXENT@results[, ME.metric])
     #   } else {
@@ -290,9 +266,7 @@ BIOMOD_Tuning <- function(bm.format,
     #   bm.options@MAXENT$threshold <- grepl("T", tune.MAXENT@results[tmp, "fc"])
     #   bm.options@MAXENT$betamultiplier <- tune.MAXENT@results[tmp, "rm"]
     # }
-  } else if ("SRE" %in% models && !isNamespaceLoaded('dismo')) { 
-    if(!requireNamespace('dismo', quietly = TRUE)) stop("Package 'dismo' not found")
-    
+  } else if ("SRE" %in% models) { 
     # tune.SRE = foreach(rep = 1:ctrl.train$repeats, .combine = "rbind") %do%
     #   {
     #     fold <- dismo::kfold(resp, by = resp, k = ctrl.train$number)
@@ -368,37 +342,26 @@ BIOMOD_Tuning <- function(bm.format,
     # ## FDA
     # tune.grid <- expand.grid(.degree = 1:2, .nprune = 2:38)
     
-    
-    ctrl.mod <- ctrl.train ## if no control given for the specific model
-    tuning.length <- 1
-    if (CTA) tuning.length <- 30
-    if (RF) tuning.length <- min(30, ncol(bm.format@data.env.var))
-    if (is.null(weights)) { weights = rep(1, length(bm.format@data.species))}
-    
-    if(metric.eval == 'ROC' | metric.eval == 'TSS'){ resp <- as.factor(ifelse(resp == 1 & !is.na(resp), "Presence", "Absence")) }
+
     
     if (model == "GLM") {
-      if ("s_smoother" %in% GLM.type) { 
-        if(!requireNamespace('gam', quietly = TRUE)) stop("Package 'gam' not found")
-      }
-      
       try(tuned.mod <- caret::train(formula = bm_MakeFormula(resp.name = "resp",
-                                                             expl.var = bm.format@data.env.var,
+                                                             expl.var = myExpl,
                                                              type = type,
                                                              interaction.level = IA),
-                                    data = cbind(bm.format@data.env.var, resp = resp),
+                                    data = cbind(myExpl, resp = myResp),
                                     method = tuning.fun,
                                     tuneGrid = tuning.grid,
-                                    tuneLength = tuning.length
+                                    tuneLength = tuning.length,
                                     trControl = ctrl.mod,
                                     verbose = FALSE,
                                     weights = weights))
     } else {
-      try(tuned.mod <- caret::train(x = bm.format@data.env.var, 
-                                    y = bm.format@data.species,
+      try(tuned.mod <- caret::train(x = myExpl, 
+                                    y = myResp,
                                     method = tuning.fun,
                                     tuneGrid = tuning.grid,
-                                    tuneLength = tuning.length
+                                    tuneLength = tuning.length,
                                     trControl = ctrl.mod,
                                     metric = metric.eval, ## RF
                                     verbose = FALSE,
@@ -412,7 +375,6 @@ BIOMOD_Tuning <- function(bm.format,
     # MaxNWts.ANN = ANN.MaxNWts,
     # maxit = ANN.maxit,
   }
-  
   
   
   if ('GBM' %in% models)
@@ -478,29 +440,6 @@ BIOMOD_Tuning <- function(bm.format,
   
   if ('RF' %in% models)
   {
-    try(tune.RF <- caret::train(bm.format@data.env.var, 
-                                resp,
-                                method = RF.method,
-                                tuneLength = tuneLength.rf,
-                                trControl = ctrl.RF,
-                                metric = metric.eval,
-                                weights = weights))
-    
-    # model.sp <- try(randomForest(formula = bm_MakeFormula(resp.name = resp_name
-    #                                                       , expl.var = head(data_env)
-    #                                                       , type = 'simple'
-    #                                                       , interaction.level = 0),
-    #                              data = data_mod[calib.lines.vec, , drop = FALSE],
-    #                              ntree = bm.options@RF$ntree,
-    #                              # weights = weights.vec[calib.lines.vec],
-    #                              # mtry = mtry.tmp, 
-    #                              importance = FALSE,
-    #                              norm.votes = TRUE,
-    #                              strata = factor(c(0, 1)),
-    #                              sampsize = unlist(ifelse(!is.null(bm.options@RF$sampsize), list(bm.options@RF$sampsize), length(data_sp[calib.lines.vec]))),
-    #                              nodesize = bm.options@RF$nodesize,
-    #                              maxnodes = bm.options@RF$maxnodes))
-    
     if (!is.null(tune.RF)) { ## give both mtry as bestTune
       if (metric.eval == 'TSS') {
         bm.options@RF$mtry <- tune.RF$results[which.max(apply(tune.RF$results[, c("Sens", "Spec")], 1, sum) - 1), "mtry"]
@@ -530,18 +469,6 @@ BIOMOD_Tuning <- function(bm.format,
                                  maxit = ANN.maxit,
                                  metric = metric.eval,
                                  weights = weights))
-    
-    # model.sp <- try(nnet(formula = bm_MakeFormula(resp.name = resp_name
-    #                                               , expl.var = head(data_env)
-    #                                               , type = 'simple'
-    #                                               , interaction.level = 0),
-    #                      data = data_mod[calib.lines.vec, , drop = FALSE], 
-    #                      size = size,
-    #                      rang = bm.options@ANN$rang,
-    #                      decay = decay,
-    #                      weights = weights,
-    #                      maxit = bm.options@ANN$maxit,
-    #                      trace = FALSE))
     if (!is.null(tune.ANN)) {
       if (metric.eval == 'TSS') {
         tmp = which.max(apply(tune.ANN$results[, c("Sens", "Spec")], 1, sum) - 1)
@@ -558,11 +485,6 @@ BIOMOD_Tuning <- function(bm.format,
   
   if ('GAM' %in% models)
   {
-    try(tune.GAM <- caret::train(bm.format@data.env.var, 
-                                 resp, 
-                                 method = GAM.method,
-                                 trControl = ctrl.GAM,
-                                 weights = weights))
     if (!is.null(tune.GAM)) {
       if (metric.eval == 'TSS') {
         tmp = which.max(apply(tune.GAM$results[, c("Sens", "Spec")], 1, sum) - 1)
@@ -577,13 +499,6 @@ BIOMOD_Tuning <- function(bm.format,
   
   if ('MARS' %in% models)
   {
-    try(tune.MARS <- caret::train(bm.format@data.env.var, 
-                                  resp, 
-                                  method = MARS.method,
-                                  tuneGrid = tune.grid,
-                                  trControl = ctrl.MARS,
-                                  weights = weights))
-    
     if (!is.null(tune.MARS)) {
       if (metric.eval == 'TSS') {
         tmp = which.max(apply(tune.MARS$results[, c("Sens", "Spec")], 1, sum) - 1)
@@ -633,13 +548,6 @@ BIOMOD_Tuning <- function(bm.format,
   
   if ('FDA' %in% models)
   {
-    try(tune.FDA <- caret::train(bm.format@data.env.var, 
-                                 factor(resp), 
-                                 method = "fda",
-                                 tuneGrid = tune.grid,                  
-                                 trControl = ctrl.FDA,
-                                 weights = weights))
-    
     if (!is.null(tune.FDA)) {
       if (metric.eval == 'TSS') {
         tmp = which.max(apply(tune.FDA$results[, c("Sens", "Spec")], 1, sum) - 1)
@@ -692,5 +600,64 @@ BIOMOD_Tuning <- function(bm.format,
   }
   
   .bm_cat("Done")
+}
+
+
+
+# ---------------------------------------------------------------------------- #
+
+.bm_Tuning.check.args <- function(model, bm.format, weights = NULL)
+{
+  ## check namespace ----------------------------------------------------------
+  if (!(model %in% c("MAXENT", "SRE"))) {
+    if (!isNamespaceLoaded("caret")) { 
+      if(!requireNamespace('caret', quietly = TRUE)) stop("Package 'caret' not found")
+    }
+    if (is.null(ctrl.train)) {
+      ctrl.train <- caret::trainControl(method = "cv",
+                                        repeats = 3,
+                                        summaryFunction = caret::twoClassSummary,
+                                        classProbs = TRUE,
+                                        returnData = FALSE)
+    }
+  } else if (model == "MAXENT" && !isNamespaceLoaded('ENMeval')) { 
+    if(!requireNamespace('ENMeval', quietly = TRUE)) stop("Package 'ENMeval' not found")
+  } else if (model == "SRE" && !isNamespaceLoaded('dismo')) { 
+    if(!requireNamespace('dismo', quietly = TRUE)) stop("Package 'dismo' not found")
+  }
+  if (model == "GLM" && "s_smoother" %in% GLM.type) { 
+    if(!requireNamespace('gam', quietly = TRUE)) stop("Package 'gam' not found")
+  }
+  
+  ## check bm.format ----------------------------------------------------------
+  .fun_testIfInherits(TRUE, "bm.format", bm.format, c("BIOMOD.formated.data", "BIOMOD.formated.data.PA"))
+  
+  ## check evaluation metric --------------------------------------------------
+  if (model == "MAXENT") {
+    .fun_testIfIn(TRUE, "metric.eval", metric.eval, c("auc.val.avg", "auc.diff.avg", "or.mtp.avg", "or.10p.avg", "AICc"))
+  } else {
+    .fun_testIfIn(TRUE, "metric.eval", metric.eval, c("ROC", "TSS")) ## TO CHECK !!!!!
+  }
+  
+  ## create dataset -----------------------------------------------------------
+  myResp = bm.format@data.species
+  myExpl = bm.format@data.env.var
+  if (model = "FDA") myResp = factor(myResp)
+  if (metric.eval %in% c("ROC", "TSS")) myResp <- as.factor(ifelse(myResp == 1 & !is.na(myResp), "Presence", "Absence"))
+  
+  ## check weights ------------------------------------------------------------
+  if (is.null(weights)) { weights = rep(1, length(myResp))}
+  
+  ## check tuning.length ------------------------------------------------------
+  # ctrl.mod <- ctrl.train ## if no control given for the specific model
+  tuning.length <- 1
+  if (model == "CTA") tuning.length <- 30
+  if (model == "RF") tuning.length <- min(30, ncol(myExpl))
+  
+  
+  return(list(myResp = myResp
+              , myExpl = myExpl
+              , weights = weights
+              , tuning.length = tuning.length))
 }
 
