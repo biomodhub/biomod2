@@ -255,13 +255,27 @@ bm_ModelingOptions <- function(data.type
 {
   .bm_cat("Build Modeling Options")
   
-  ## 0. Check arguments --------------------------------------------------------
-  .bm_ModelingOptions.check.args(data.type, models, strategy, val.list, bm.format, calib.lines)
+  ## 0. Check arguments ---------------------------------------------------------------------------
+  args <- .bm_ModelingOptions.check.args(data.type = data.type, models = models, strategy = strategy
+                                         , val.list = val.list, bm.format = bm.format, calib.lines = calib.lines)
+  for (argi in names(args)) { assign(x = argi, value = args[[argi]]) }
+  rm(args)
   
+  ## 1. Get options -------------------------------------------------------------------------------
   bm.opt <- foreach (model = models, .combine = "c") %do%
     {
-      tab.model <- TABLE_MODELS[which(TABLE_MODELS$model == model & TABLE_MODELS$type == data.type), ]
+      ## Select model / package / function to keep
+      if (length(grep("GAM", model)) == 1) {
+        tab.model <- TABLE_MODELS[which(TABLE_MODELS$model == "GAM" & TABLE_MODELS$type == data.type &
+                                          TABLE_MODELS$package == strsplit(model, "[.]")[[1]][2] & 
+                                          TABLE_MODELS$func == strsplit(model, "[.]")[[1]][3]), ]
+        model = "GAM"
+      } else {
+        tab.model <- TABLE_MODELS[which(TABLE_MODELS$model == model & TABLE_MODELS$type == data.type), ]
+      }
+      
       if (nrow(tab.model) > 0) {
+        ## For each kept model : get corresponding options
         BOD.list <- foreach(ii = 1:nrow(tab.model)) %do%
           {
             name_model <- paste0(model, ".", data.type, ".", tab.model$package[ii], ".", tab.model$func[ii])
@@ -278,7 +292,7 @@ bm_ModelingOptions <- function(data.type
                                           , tuning.fun = tab.model$train[ii]
                                           , bm.format = bm.format
                                           , calib.lines = calib.lines)
-            for (xx in 1:length(BOD@args.values)) { ## SHOULD BE MOVED to place when testing values !!
+            for (xx in 1:length(BOD@args.values)) { ## SHOULD BE MOVED to place when testing values ??
               if ('...' %in% names(BOD@args.values[[xx]])) {
                 BOD@args.values[[xx]][['...']] <- NULL
               }
@@ -317,9 +331,16 @@ bm_ModelingOptions <- function(data.type
   .fun_testIfIn(TRUE, "data.type", data.type, avail.types.list)
 
   ## check if model is supported
-  avail.models.list <- c('GLM', 'GBM', 'GAM', 'CTA', 'ANN', 'SRE', 'FDA', 'MARS'
+  avail.models.list <- c('GLM', 'GBM', 'GAM', 'GAM.gam.gam', 'GAM.mgcv.bam', 'GAM.mgcv.gam'
+                         , 'CTA', 'ANN', 'SRE', 'FDA', 'MARS'
                          , 'RF', 'MAXENT', 'MAXNET', 'XGBOOST')
   .fun_testIfIn(TRUE, "models", models, avail.models.list)
+  if (length(grep('GAM', models)) > 1) {
+    stop("Only one GAM model can be activated. Please choose betwen 'GAM', 'GAM.gam.gam', 'GAM.mgcv.bam' or 'GAM.mgcv.gam'")
+  } else if ('GAM' %in% models) {
+    models[which(models == 'GAM')] = 'GAM.mgcv.gam'
+    warning("Only one GAM model can be activated. 'GAM.mgcv.gam' has been set (other available : 'GAM.gam.gam' or 'GAM.mgcv.bam')")
+  }
 
   ## check if strategy is supported
   avail.strategy.list <- c('default', 'bigboss', 'user.defined', 'tuned')
@@ -357,6 +378,8 @@ bm_ModelingOptions <- function(data.type
       }
     }
   }
+  
+  return(list(models = models))
 }
 
 

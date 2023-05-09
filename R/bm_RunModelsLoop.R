@@ -227,11 +227,15 @@ bm_RunModel <- function(model, run.name, dir.name = '.'
   opt_name <- grep(model, names(bm.options@options), value = TRUE)
   if (length(opt_name) == 1) {
     bm.opt <- bm.options@options[[opt_name]]
-  } else if (model == "GAM") {
-    bm.opt <- bm.options@options[[opt_name[1]]] ## /!\ how to deal with all 3 ??
+  # } else if (model == "GAM") {
+  #   bm.opt <- bm.options@options[[opt_name[1]]] ## /!\ how to deal with all 3 ??
+  #   subclass_name <- paste0(bm.opt@model, "_", bm.opt@type, "_", bm.opt@package)
+  #   .load_gam_namespace(model_subclass = subclass_name)
+  } else if (length(grep("GAM", model)) == 1) {
+    bm.opt <- bm.options@options[[opt_name]] ## /!\ how to deal with all 3 ??
     subclass_name <- paste0(bm.opt@model, "_", bm.opt@type, "_", bm.opt@package)
     .load_gam_namespace(model_subclass = subclass_name)
-  } else { stop("pitiprobleum") }
+  } else { stop("pitiprobleum") } ## Should not happen now
   
   ## get options for specific dataset
   if (dataset_name %in% names(bm.opt@args.values)) {
@@ -275,11 +279,11 @@ bm_RunModel <- function(model, run.name, dir.name = '.'
                                            , type = 'simple'
                                            , interaction.level = 0)
       
-      if (!("size" %in% bm.opt@args.names) ||
+      if (!("size" %in% bm.opt@args.names) || ### MOVE TO TUNING !!!
           !("decay" %in% bm.opt@args.names) ||
-          is.null(bm.opt.val$size) || 
-          is.null(bm.opt.val$decay) || 
-          length(bm.opt.val$size) > 1 || 
+          is.null(bm.opt.val$size) ||
+          is.null(bm.opt.val$decay) ||
+          length(bm.opt.val$size) > 1 ||
           length(bm.opt.val$decay) > 1) {
         ## define the size and decay to test
         sizetmp <- bm.opt.val$size
@@ -290,7 +294,7 @@ bm_RunModel <- function(model, run.name, dir.name = '.'
         if (is.null(decaytmp)) { decaytmp <- c(0.001, 0.01, 0.05, 0.1) }
         if (is.null(maxittmp)) { maxittmp <- 200 }
         if (is.null(nbCVtmp)) { nbCVtmp <- 5 }
-        
+
         ## do cross validation test to find the optimal values of size and decay parameters (prevent from overfitting)
         CV_nnet <- bm_CVnnet(Input = data_env[calib.lines.vec, , drop = FALSE],
                              Target = data_sp[calib.lines.vec],
@@ -300,7 +304,7 @@ bm_RunModel <- function(model, run.name, dir.name = '.'
                              nbCV = nbCVtmp,
                              weights = weights.vec[calib.lines.vec],
                              seedval = seed.val)
-        
+
         ## get the optimised parameters values
         bm.opt.val$size <- CV_nnet[1, 1]
         bm.opt.val$decay <- CV_nnet[1, 2]
