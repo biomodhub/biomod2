@@ -266,6 +266,66 @@ setGeneric("BIOMOD.options.dataset", def = function(strategy, user.val = NULL, t
   }
 }
 
+.BIOMOD.options.dataset.test <- function(bm.opt)
+{
+  ## create false dataset
+  mySp = "Hariba"
+  myResp = c(rep(1, 100), rep(0, 100))
+  myRespXY = data.frame(x = sample(1:100, 200, replace = TRUE)
+                        , y = sample(1:100, 200, replace = TRUE))
+  myExpl = data.frame(var1 = rnorm(200, mean = 3, sd = 0.4)
+                      , var2 = runif(200)
+                      , var3 = sample(1:5, 200, replace = TRUE))
+  mySpExpl = cbind(myResp, myExpl)
+  colnames(mySpExpl)[1] = mySp
+  
+  ## get options for specific model
+  if (bm.opt@model == "GAM") {
+    subclass_name <- paste0(bm.opt@model, "_", bm.opt@type, "_", bm.opt@package)
+    .load_gam_namespace(model_subclass = subclass_name)
+  }
+  
+  ## run test for each dataset
+  for (dataset_name in names(bm.opt@args.values)) {
+    bm.opt.val <- bm.opt@args.values[[dataset_name]]
+    
+    ## 2. CREATE MODELS -----------------------------------------------------------------------------
+    set.seed(42)
+    
+    if (bm.opt@model != "MAXENT") { ## ANY MODEL BUT MAXENT ------------------------------------------------
+      ## PRELIMINAR ---------------------------------------------------
+      bm.opt.val$formula <- bm_MakeFormula(resp.name = mySp
+                                           , expl.var = head(myExpl)
+                                           , type = 'simple'
+                                           , interaction.level = 0)
+      
+      if (bm.opt@model == "RF" && !is.null(bm.opt.val$do.classif) && bm.opt.val$do.classif == TRUE) {
+        # defining occurences as factor for doing classification and not regression in RF
+        mySpExpl <- mySpExpl %>% mutate_at(mySp, factor)
+      }
+      
+      ## FILL data parameter ------------------------------------------
+      if (bm.opt@model %in% c("ANN", "CTA", "FDA", "GAM", "GBM", "MARS", "RF", "GLM")) {
+        bm.opt.val$data <- mySpExpl
+      } else if (bm.opt@model == "MAXNET") {
+        bm.opt.val$p <- myResp
+        bm.opt.val$data <- myExpl
+      } else if (bm.opt@model == "SRE") {
+        bm.opt.val$resp.var <- myResp
+        bm.opt.val$expl.var <- myExpl
+      } else if (bm.opt@model == "XGBOOST") {
+        bm.opt.val$label <- myResp
+        bm.opt.val$data <- as.matrix(myExpl)
+      }
+      
+      ## RUN model ----------------------------------------------------
+      model.sp <- do.call(bm.opt@func, bm.opt.val)
+    } else {
+      ## STUFF MAXENT
+    }
+  }
+}
+
 
 ## BIOMOD.options.dataset -----------------------------------------------------
 ##' 
@@ -278,7 +338,7 @@ setMethod('BIOMOD.options.dataset', signature(strategy = 'character'),
           {
             cat('\n\t> ', mod, 'options (datatype:', typ, ', package:', pkg, ', function:', fun, ')...')
             
-            .BIOMOD.options.dataset.check.args(strategy, user.val, bm.format, calib.lines)
+            .BIOMOD.options.dataset.check.args(strategy = strategy, user.val = user.val, tuning.fun = NULL, bm.format = bm.format, calib.lines = calib.lines)
             
             BOM <- BIOMOD.options.default(mod, typ, pkg, fun)
             
@@ -415,6 +475,9 @@ setMethod('BIOMOD.options.dataset', signature(strategy = 'character'),
             }
             
             BOD <- new('BIOMOD.options.dataset', BOM, args.values = argsval)
+            
+            ## TEST that all given options do not produce errors ------------------------
+            .BIOMOD.options.dataset.test(bm.opt = BOD)
             return(BOD)
           }
 )
