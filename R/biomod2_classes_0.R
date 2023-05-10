@@ -286,6 +286,14 @@ setGeneric("BIOMOD.options.dataset", def = function(strategy, user.val = NULL, t
     .load_gam_namespace(model_subclass = subclass_name)
   }
   
+  ## 
+  for (xx in 1:length(bm.opt@args.values)) { ## SHOULD BE MOVED to place when testing values ??
+    if ('...' %in% names(bm.opt@args.values[[xx]])) {
+      bm.opt@args.values[[xx]][['...']] <- NULL
+    }
+  }
+  print(bm.opt)
+  
   ## run test for each dataset
   for (dataset_name in names(bm.opt@args.values)) {
     bm.opt.val <- bm.opt@args.values[[dataset_name]]
@@ -320,7 +328,9 @@ setGeneric("BIOMOD.options.dataset", def = function(strategy, user.val = NULL, t
       }
       
       ## RUN model ----------------------------------------------------
+      print("you")
       model.sp <- do.call(bm.opt@func, bm.opt.val)
+      print("pi")
     } else {
       ## STUFF MAXENT
     }
@@ -378,12 +388,12 @@ setMethod('BIOMOD.options.dataset', signature(strategy = 'character'),
             if (strategy %in% c("default", "bigboss")) {
               if (strategy == "bigboss") {
                 if (mod == "ANN") {
-                  argstmp$size = NULL
+                  argstmp$size = 5 #NULL
                   argstmp$decay = 5
                   argstmp$trace = FALSE
                   argstmp$rang = 0.1
                   argstmp$maxit = 200
-                  argstmp$nbCV = 5
+                  # argstmp$nbCV = 5
                 } else if (mod == "CTA") {
                   argstmp$method = "class"
                   argstmp$control = list(xval = 5, 
@@ -449,7 +459,7 @@ setMethod('BIOMOD.options.dataset', signature(strategy = 'character'),
                   argstmp$objective = "binary:logistic"
                 }
               }
-                
+              
               if (is.null(calib.lines)) {
                 argsval <- list("_allData_allRun" = argstmp)
                 if (inherits(bm.format, "BIOMOD.formated.data.PA")) {
@@ -478,7 +488,7 @@ setMethod('BIOMOD.options.dataset', signature(strategy = 'character'),
             BOD <- new('BIOMOD.options.dataset', BOM, args.values = argsval)
             
             ## TEST that all given options do not produce errors ------------------------
-            .BIOMOD.options.dataset.test(bm.opt = BOD)
+            # .BIOMOD.options.dataset.test(bm.opt = BOD)
             return(BOD)
           }
 )
