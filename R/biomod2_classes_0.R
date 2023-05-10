@@ -81,11 +81,12 @@ setGeneric("BIOMOD.options.default", def = function(mod, typ, pkg, fun) { standa
   
   if (mod != 'MAXENT') {
     ## check package exists
-    # if (!isNamespaceLoaded(pkg)) { requireNamespace(pkg, quietly = TRUE) } ## ATTENTION n'a pas l'air de suffire
-    eval(parse(text = paste0("require(", pkg, ")")))
+    # lsf.str can be used only with attached package so we are
+    # forced to load the packages used in the modeling with attachNamespace
+    attachNamespace(pkg)
     
     ## check function exists
-    avail.functions.list <- lsf.str(pos = paste0("package:", pkg)) ## Du coup ne marche pas si le package n'est pas explicitement loadé
+    avail.functions.list <- lsf.str(pos = paste0("package:", pkg))
     .fun_testIfIn(TRUE, "fun", fun, avail.functions.list)
   }
 }

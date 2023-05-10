@@ -642,7 +642,7 @@ BIOMOD_Tuning <- function(bm.format,
   ## create dataset -----------------------------------------------------------
   myResp = bm.format@data.species
   myExpl = bm.format@data.env.var
-  if (model = "FDA") myResp = factor(myResp)
+  if (model == "FDA") myResp = factor(myResp)
   if (metric.eval %in% c("ROC", "TSS")) myResp <- as.factor(ifelse(myResp == 1 & !is.na(myResp), "Presence", "Absence"))
   
   ## check weights ------------------------------------------------------------
