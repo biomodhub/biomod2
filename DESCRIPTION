@@ -2,7 +2,7 @@ Package: biomod2
 Type: Package
 Title: Ensemble Platform for Species Distribution Modeling
 Version: 4.2-3
-Date: 2023-04-18
+Date: 2023-05-09
 Authors@R: c(person("Wilfried", "Thuiller", role = c("aut")
                     , email = "wilfried.thuiller@univ-grenoble-alpes.fr"),
              person("Damien", "Georges", role = c("aut")),
