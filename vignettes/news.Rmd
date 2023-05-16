@@ -15,6 +15,12 @@ vignette: >
 
 ### <i class="fas fa-feather"></i> 2023 
 
+#### 4.2-4 Modeling options and Tuning
+
+##### Bugfix
+
+* fixed bugs in `bm_CrossValidation` with `user.defined` tables badly formatted (TRUE/FALSE for data not in the given PA dataset are now properly transformed into NA)
+
 #### 4.2-3 Cross-Validation and Pseudo-Absences (2023-05-09)
 
 ##### Major Changes
