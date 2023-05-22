@@ -17,7 +17,12 @@ vignette: >
 
 #### 4.2-4 Modeling options and Tuning
 
-##### Bugfix
+
+##### 4.2-3-2 Bugfix
+
+* fixed bugs in `BIOMOD_EnsembleForecasting` when several projection are running simultaneously and using the same temporary directory
+
+##### 4.2-3-1 Bugfix
 
 * fixed bugs in `bm_CrossValidation` with `user.defined` tables badly formatted (TRUE/FALSE for data not in the given PA dataset are now properly transformed into NA)
 

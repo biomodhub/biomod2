@@ -294,7 +294,7 @@ BIOMOD_EnsembleForecasting <- function(bm.em,
     formal_pred <- get_predictions(bm.proj, full.name = models.needed)
   } else {
     # make prediction according to given environment
-    tmp_dir <- paste0('Tmp', format(Sys.time(), "%s"))
+    tmp_dir <- paste0('Tmp', as.numeric(Sys.time())*100000)
     formal_pred <- BIOMOD_Projection(bm.mod = load_stored_object(bm.em@models.out),
                                      new.env = new.env,
                                      proj.name = tmp_dir,
@@ -309,7 +309,7 @@ BIOMOD_EnsembleForecasting <- function(bm.em,
     
     # remove tmp directory
     unlink(file.path(bm.em@dir.name, bm.em@sp.name, paste0("proj_", tmp_dir))
-           , recursive = TRUE, force = TRUE)
+    , recursive = TRUE, force = TRUE)
   }
   if (!proj_is_raster) {
     formal_pred <- tapply(X = formal_pred$pred, INDEX = list(formal_pred$points, formal_pred$full.name), FUN = mean)
