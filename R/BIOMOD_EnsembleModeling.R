@@ -1163,9 +1163,9 @@ BIOMOD_EnsembleModeling <- function(bm.mod,
           
           if (length(index_to_predict) > 0) {
             # subsetting environment and coord
-            env_to_predict <- get_formal_data(bm.mod)@data.env.var[index_to_predict,]
+            env_to_predict <- get_formal_data(bm.mod)@data.env.var[index_to_predict, , drop = FALSE]
             coord_to_predict <- get_formal_data(bm.mod)@coord[index_to_predict,]
-            
+
             # prediction on the other PA datasets
             new_prediction <-
               get_predictions(

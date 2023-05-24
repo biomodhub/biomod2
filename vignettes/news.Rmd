@@ -17,6 +17,9 @@ vignette: >
 
 #### 4.2-4 Modeling options and Tuning
 
+##### 4.2-3-3 Bugfix
+
+* fixed bug in `BIOMOD_EnsembleModeling` for additional projection with only one environmental variables
 
 ##### 4.2-3-2 Bugfix
 
