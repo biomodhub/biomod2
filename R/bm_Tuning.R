@@ -53,7 +53,7 @@
 ##' to use for \code{MARS}, \cr 
 ##' must be \code{earth} (see 
 ##' \url{http://topepo.github.io/caret/train-models-by-tag.html#Multivariate_Adaptive_Regression_Splines})
-##' @param ME.metric a \code{character} corresponding to the evaluation metric used to select 
+##' @param metric.eval a \code{character} corresponding to the evaluation metric used to select 
 ##' optimal model and tune parameters for \code{MAXENT}, must be either 
 ##' \code{auc.val.avg}, \code{auc.diff.avg}, \code{or.mtp.avg}, \code{or.10p.avg} or \code{AICc}
 ##' @param ME.cvmethod a \code{character} corresponding to the method used to partition data for 
@@ -196,24 +196,38 @@
 
 
 bm_Tuning <- function(bm.format,
-                      # bm.options,
-                      # models = c('GLM', 'GBM', 'GAM', 'CTA', 'ANN', 'SRE', 'FDA', 'MARS', 'RF', 'MAXENT'),
-                      metric.eval = 'ROC', ## to correct
+                      bm.opt.def,
+                      model,
+                      metric.eval = 'TSS',
+                      weights = NULL,
                       ctrl.train = NULL,
-                      tuning.length = 30, ## to correct
-                      ME.cvmethod = 'randomkfold',
-                      ME.kfolds = 10,
-                      SRE.quant = c(0, 0.0125, 0.025, 0.05, 0.1),
-                      ANN.method = 'avNNet',
-                      ANN.decay.tune = c(0.001, 0.01, 0.05, 0.1),
-                      ANN.size.tune = c(2, 4, 6, 8),
+                      params.train = list(ANN.size = c(2, 4, 6, 8),
+                                          ANN.decay = c(0.001, 0.01, 0.05, 0.1),
+                                          ANN.bag = FALSE, 
+                                          FDA.degree = 1:2, 
+                                          FDA.nprune = 2:38,
+                                          GBM.n.trees = c(500, 1000, 2500),
+                                          GBM.interaction.depth = seq(2, 8, by = 3),
+                                          GBM.shrinkage = c(0.001, 0.01, 0.1),
+                                          GBM.n.minobsinnode = 10,
+                                          MARS.degree = 1:2, 
+                                          MARS.nprune = 2:max(38, 2 * ncol(bm.format@data.env.var) + 1),
+                                          SRE.quant = c(0, 0.0125, 0.025, 0.05, 0.1),
+                                          XGBOOST.nrounds = 50,
+                                          XGBOOST.max_depth = 1,
+                                          XGBOOST.eta = c(0.3, 0.4),
+                                          XGBOOST.gamma = 0,
+                                          XGBOOST.colsample_bytree = c(0.6, 0.8),
+                                          XGBOOST.min_child_weight = 1,
+                                          XGBOOST.subsample = 0.5),
+                      ## ADD : mtry for rf ? select + method for bam / gam ?
                       ANN.maxit = 500,
                       ANN.MaxNWts = 10 * (ncol(bm.format@data.env.var) + 1) + 10 + 1,
-                      GLM.type = c('simple', 'quadratic', 'polynomial', 's_smoother'),
-                      GLM.interaction = c(0, 1, 2),
-                      weights = NULL)
+                      ME.cvmethod = 'randomkfold',
+                      ME.kfolds = 10)
 {
   .bm_cat("Tune Modeling Options")
+  
   
   ## 0. Check arguments ---------------------------------------------------------------------------
   args <- .bm_Tuning.check.args(model = model, bm.format = bm.format, metric.eval = metric.eval, weights = weights)
@@ -242,23 +256,23 @@ bm_Tuning <- function(bm.format,
                                               categoricals = NULL))
       
       if (!is.null(tune.MAXENT)) {
-        if (ME.metric == 'auc.val.avg') {
-          tmp = which.max(tune.MAXENT@results[, ME.metric])
+        if (metric.eval == 'auc.val.avg') {
+          tmp = which.max(tune.MAXENT@results[, metric.eval])
         } else {
-          tmp = which.min(tune.MAXENT@results[, ME.metric])
+          tmp = which.min(tune.MAXENT@results[, metric.eval])
         }
-        bm.options@MAXENT$linear <- grepl("L", tune.MAXENT@results[tmp, "fc"])
-        bm.options@MAXENT$quadratic <- grepl("Q", tune.MAXENT@results[tmp, "fc"])
-        bm.options@MAXENT$hinge <- grepl("H", tune.MAXENT@results[tmp, "fc"])
-        bm.options@MAXENT$product <- grepl("P", tune.MAXENT@results[tmp, "fc"])
-        bm.options@MAXENT$threshold <- grepl("T", tune.MAXENT@results[tmp, "fc"])
-        bm.options@MAXENT$betamultiplier <- tune.MAXENT@results[tmp, "rm"]
+        argstmp$linear <- grepl("L", tune.MAXENT@results[tmp, "fc"])
+        argstmp$quadratic <- grepl("Q", tune.MAXENT@results[tmp, "fc"])
+        argstmp$hinge <- grepl("H", tune.MAXENT@results[tmp, "fc"])
+        argstmp$product <- grepl("P", tune.MAXENT@results[tmp, "fc"])
+        argstmp$threshold <- grepl("T", tune.MAXENT@results[tmp, "fc"])
+        argstmp$betamultiplier <- tune.MAXENT@results[tmp, "rm"]
       }
     } else if (model == "SRE") { # ----------------------------------------------------------------
       tune.SRE = foreach(rep = 1:ctrl.train$repeats, .combine = "rbind") %do%
         {
           fold <- dismo::kfold(myResp, by = myResp, k = ctrl.train$number) ## by = to keep prevalence
-          RES = foreach (quant = SRE.quant, .combine = "rbind") %:%
+          RES = foreach (quant = params.train$SRE.quant, .combine = "rbind") %:%
             foreach (i = 1:ctrl.train$number, .combine = "rbind") %do%
             {
               DATA <- cbind(1:sum(fold == i)
@@ -268,15 +282,14 @@ bm_Tuning <- function(bm.format,
                                      new.env = myExpl[fold == i, ],
                                      quant = quant,
                                      do.extrem = FALSE))
-              RES = presence.absence.accuracy(DATA, threshold = as.vector(
-                optimal.thresholds(DATA, opt.methods = 3)[2], mode = "numeric"))
+              RES = presence.absence.accuracy(DATA, threshold = as.vector(optimal.thresholds(DATA, opt.methods = 3)[2], mode = "numeric"))
               return(data.frame(RES, quant = quant))
             }
           return(data.frame(RES, rep = rep))
         }
       tune.SRE$TSS <- tune.SRE$sensitivity + tune.SRE$specificity - 1
       tmp <- aggregate(tune.SRE[, c("sensitivity", "specificity", "Kappa", "AUC", "TSS")], by = list(quant = tune.SRE$quant), mean)
-      bm.options@SRE$quant <- tmp[which.max(tmp[, metric.eval]), "quant"]
+      argstmp$quant <- tmp[which.max(tmp[, metric.eval]), "quant"]
     }
     
   } else {
@@ -300,30 +313,30 @@ bm_Tuning <- function(bm.format,
     
     ## run tuning ---------------------------------------------------------------------------------
     if (model == "GLM") {
-      RES = foreach (typ = GLM.type, .combine = "rbind") %:%
-        foreach (intlev = GLM.interaction.level, .combine = "rbind") %do%
-        {
-          tuned.mod <- caret::train(form = bm_MakeFormula(resp.name = "resp",
-                                                          expl.var = myExpl,
-                                                          type = typ,
-                                                          interaction.level = intlev),
-                                    data = cbind(myExpl, resp = myResp),
-                                    method = tuning.fun,
-                                    metric = metric.eval,
-                                    trControl = ctrl.train)
-          if (!is.null(tuned.mod)) {
-            tmp = tuned.mod$results
-            tmp$TSS = tmp$Sens + tmp$Spec - 1
-            # formu = as.character(tuned.mod$finalModel$formula)
-            # formu = paste0(formu[c(2,1,3)], collapse = " ")
-            formu = tuned.mod$coefnames
-            formu = paste0(bm.format@sp.name, " ~ 1 + ", paste0(formu, collapse = " + "))
-            return(data.frame(tmp, type = typ, interaction.level = intlev, formula = formu))
-          }
-        }
-      for (param in train.params$params) { ## must be type, interaction.level, formula
-        bm.options@RF[[param]] <- tmp[which.max(tmp[, metric.eval]), param]
-      }
+      # RES = foreach (typ = GLM.type, .combine = "rbind") %:%
+      #   foreach (intlev = GLM.interaction.level, .combine = "rbind") %do%
+      #   {
+      #     tuned.mod <- caret::train(form = bm_MakeFormula(resp.name = "resp",
+      #                                                     expl.var = myExpl,
+      #                                                     type = typ,
+      #                                                     interaction.level = intlev),
+      #                               data = cbind(myExpl, resp = myResp),
+      #                               method = tuning.fun,
+      #                               metric = metric.eval,
+      #                               trControl = ctrl.train)
+      #     if (!is.null(tuned.mod)) {
+      #       tmp = tuned.mod$results
+      #       tmp$TSS = tmp$Sens + tmp$Spec - 1
+      #       # formu = as.character(tuned.mod$finalModel$formula)
+      #       # formu = paste0(formu[c(2,1,3)], collapse = " ")
+      #       formu = tuned.mod$coefnames
+      #       formu = paste0(bm.format@sp.name, " ~ 1 + ", paste0(formu, collapse = " + "))
+      #       return(data.frame(tmp, type = typ, interaction.level = intlev, formula = formu))
+      #     }
+      #   }
+      # for (param in train.params$params) { ## must be type, interaction.level, formula
+      #   argstmp[[param]] <- tmp[which.max(tmp[, metric.eval]), param]
+      # }
     } else {
       if (model == "ANN") {
         try(tuned.mod <- caret::train(x = myExpl,
@@ -371,7 +384,7 @@ bm_Tuning <- function(bm.format,
         tmp = tuned.mod$results
         tmp$TSS = tmp$Sens + tmp$Spec - 1
         for (param in train.params$params) {
-          bm.options@RF[[param]] <- tmp[which.max(tmp[, metric.eval]), param]
+          argstmp[[param]] <- tmp[which.max(tmp[, metric.eval]), param]
         }
       }
     }
@@ -419,7 +432,7 @@ TABLE_MODELS <- data.frame(model = c('ANN', 'CTA', 'FDA', 'GAM', 'GAM', 'GAM', '
   } else if (model == "SRE") {
     .fun_testIfIn(TRUE, "metric.eval", metric.eval, c("AUC", "Kappa", "TSS"))
   } else {
-    .fun_testIfIn(TRUE, "metric.eval", metric.eval, c("ROC", "TSS")) ## TO CHECK !!!!!
+    .fun_testIfIn(TRUE, "metric.eval", metric.eval, c("ROC", "TSS"))
   }
   
   ## check weights ------------------------------------------------------------
@@ -434,28 +447,22 @@ TABLE_MODELS <- data.frame(model = c('ANN', 'CTA', 'FDA', 'GAM', 'GAM', 'GAM', '
     return(list(pkg = params[[fi]]$library, params = params[[fi]]$parameters$parameter))
   }
   names(all.params) <- all.fun
-  tuning.fun <- TABLE_MODELS$train[which(TABLE_MODELS$model == model)]
+  # tuning.fun <- TABLE_MODELS$train[which(TABLE_MODELS$model == model)]
   train.params <- all.params[[tuning.fun]]
   
-  ## get tuning length
+  ## get tuning grid through params.train -------------------------------------
+  tuning.grid <- NULL
+  if (model %in% c("ANN", "FDA", "GBM", "MARS", "XGBOOST")) {
+    params.train = params.train[grep(model, names(params.train))]
+    .fun_testIfIn(TRUE, "names(params.train)", names(params.train), paste0(model, ".", train.params$params))
+    names(params.train) = sub(model, "", names(params.train))
+    tuning.grid <- do.call(expand.grid, params.train)
+  }
+  
+  ## get tuning length --------------------------------------------------------
   tuning.length <- 1
   if (model == "CTA") tuning.length <- 30
   if (model == "RF") tuning.length <- min(30, ncol(bm.format@data.env.var))
-  
-  ## get tuning grid
-  tuning.grid <- NULL
-  if (model %in% c("ANN", "FDA", "GBM", "MARS")) {
-    tuning.grid <- switch(EXPR = model
-                          , ANN = expand.grid(.decay = c(0.001, 0.01, 0.05, 0.1),
-                                              .size = c(2, 4, 6, 8),
-                                              .bag = FALSE)
-                          , FDA = expand.grid(.degree = 1:2, .nprune = 2:38)
-                          , GBM = expand.grid(.interaction.depth = seq(2, 8, by = 3),
-                                              .n.trees = c(500, 1000, 2500),
-                                              .shrinkage = c(0.001, 0.01, 0.1),
-                                              .n.minobsinnode = 10)
-                          , MARS = expand.grid(.degree = 1:2, .nprune = 2:max(38, 2 * ncol(bm.format@data.env.var) + 1)))
-  }
   
   
   return(list(tuning.fun = tuning.fun
@@ -464,3 +471,4 @@ TABLE_MODELS <- data.frame(model = c('ANN', 'CTA', 'FDA', 'GAM', 'GAM', 'GAM', '
               , tuning.grid = tuning.grid))
 }
 
+randomForest()
