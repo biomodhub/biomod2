@@ -83,7 +83,8 @@ setGeneric("BIOMOD.options.default", def = function(mod, typ, pkg, fun) { standa
     ## check package exists
     # lsf.str can be used only with attached package so we are
     # forced to load the packages used in the modeling with attachNamespace
-    attachNamespace(pkg)
+    # attachNamespace(pkg) ==> ERROR : l'espace de noms est déjà attaché
+    eval(parse(text = paste0("require(", pkg, ")")))
     
     ## check function exists
     avail.functions.list <- lsf.str(pos = paste0("package:", pkg))
