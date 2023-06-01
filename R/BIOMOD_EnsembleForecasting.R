@@ -221,7 +221,7 @@
 ##' plot(myBiomodEMProj)
 ##' 
 ##' 
-##' @importFrom terra rast `add<-` wrap writeRaster
+##' @importFrom terra rast `add<-` wrap writeRaster mask
 ##' 
 ##' 
 ##' @export
@@ -309,7 +309,7 @@ BIOMOD_EnsembleForecasting <- function(bm.em,
     
     # remove tmp directory
     unlink(file.path(bm.em@dir.name, bm.em@sp.name, paste0("proj_", tmp_dir))
-    , recursive = TRUE, force = TRUE)
+           , recursive = TRUE, force = TRUE)
   }
   if (!proj_is_raster) {
     formal_pred <- tapply(X = formal_pred$pred, INDEX = list(formal_pred$points, formal_pred$full.name), FUN = mean)
@@ -603,6 +603,8 @@ BIOMOD_EnsembleForecasting <- function(bm.em,
     
     if (inherits(new.env, 'SpatRaster')) {
       .fun_testIfIn(TRUE, "names(new.env)", names(new.env), bm.em@expl.var.names)
+      new.env.mask <- .get_data_mask(new.env, value.out = 1)
+      new.env <- mask(new.env, new.env.mask)
     } else {
       .fun_testIfIn(TRUE, "colnames(new.env)", colnames(new.env), bm.em@expl.var.names)
     }

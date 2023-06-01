@@ -17,6 +17,12 @@ vignette: >
 
 #### 4.2-4 Modeling options and Tuning
 
+##### 4.2-3-5 Bugfix
+
+* fixed some more issues related to categorical variables badly interacting with missing values. Projection and Ensemble Forecasting are now only calculated on cells without any missing values.
+* removed obsolete code for SRE pseudo absences sampling with categorical variables, as SRE do not work with categorical variables
+* added internal function to get mask of data `.get_data_mask`
+
 ##### 4.2-3-4 Bugfix
 
 * fixed bug in `BIOMOD_Modeling` when using `sampsize` as a vector. argument `strata` was badly formatted
