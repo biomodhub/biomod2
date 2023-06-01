@@ -813,13 +813,6 @@ setMethod('bm_PseudoAbsences_sre', signature(expl.var = "SpatRaster"),
               SR <- NULL ## initialise the vector of sample cells
               mask.in.tmp <- mask.in ## define a copy of the sampling mask
               
-              ## force to get at least one value of each factorial variable
-              fact.level.cells <- bm_SampleFactorLevels(expl.var = expl.var, mask.out = mask.out, mask.in = mask.in)
-              if (length(fact.level.cells) > 0) {
-                SR <- c(SR, fact.level.cells)
-                mask.in.tmp[SR] <- NA ## update the mask by removing already selected cells
-              }
-              
               ## repeat sampling until having the right number of points
               while (length(SR) < nb.absences) {
                 SR <- c(SR, spatSample(x = mask.in.tmp,
