@@ -576,7 +576,6 @@ bm_RunModel <- function(model, run.name, dir.name = '.'
     
     # mtry.tmp = bm.options@RF$mtry
     # if (bm.options@RF$mtry == 'default') { mtry.tmp = NULL }
-    
     model.sp <- try(randomForest(formula = bm_MakeFormula(resp.name = resp_name
                                                           , expl.var = head(data_env)
                                                           , type = 'simple'
@@ -587,7 +586,7 @@ bm_RunModel <- function(model, run.name, dir.name = '.'
                                  # mtry = mtry.tmp, 
                                  importance = FALSE,
                                  norm.votes = TRUE,
-                                 strata = factor(c(0, 1)),
+                                 strata = data_mod[calib.lines.vec, , drop = FALSE]$GuloGulo,
                                  sampsize = unlist(ifelse(!is.null(bm.options@RF$sampsize), list(bm.options@RF$sampsize), length(data_sp[calib.lines.vec]))),
                                  nodesize = bm.options@RF$nodesize,
                                  maxnodes = bm.options@RF$maxnodes))

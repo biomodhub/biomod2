@@ -17,6 +17,10 @@ vignette: >
 
 #### 4.2-4 Modeling options and Tuning
 
+##### 4.2-3-4 Bugfix
+
+* fixed bug in `BIOMOD_Modeling` when using `sampsize` as a vector. argument `strata` was badly formatted
+
 ##### 4.2-3-3 Bugfix
 
 * fixed bug in `BIOMOD_EnsembleModeling` for additional projection with only one environmental variables
