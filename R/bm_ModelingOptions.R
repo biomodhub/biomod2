@@ -310,15 +310,7 @@ bm_ModelingOptions <- function(data.type
   return(bm.options)
 }
 
-# if (!is.null(GBM$perf.method)) { opt@GBM$perf.method <- GBM$perf.method }
-# opt@GAM$control <- gam::gam.control()
-# opt@GAM$control <- mgcv::gam.control()
-# if (!is.null(ANN$NbCV)) { opt@ANN$NbCV <- ANN$NbCV }
-# if (!is.null(ANN$size)) { opt@ANN$size <- ANN$size }
-# if (!is.null(ANN$decay)) { opt@ANN$decay <- ANN$decay }
-# if (!is.null(ANN$rang)) { opt@ANN$rang <- ANN$rang }
-# if (!is.null(ANN$maxit)) { opt@ANN$maxit <- ANN$maxit }
-# if (!is.null(RF$type)) { opt@RF$type <- RF$type }
+
 
 # ---------------------------------------------------------------------------- #
 

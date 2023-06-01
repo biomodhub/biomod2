@@ -273,44 +273,7 @@ bm_RunModel <- function(model, run.name, dir.name = '.'
   if (model != "MAXENT") { ## ANY MODEL BUT MAXENT ------------------------------------------------
     
     ## PRELIMINAR ---------------------------------------------------
-    if (model == "ANN") {
-      bm.opt.val$formula <- bm_MakeFormula(resp.name = resp_name
-                                           , expl.var = head(data_env)
-                                           , type = 'simple'
-                                           , interaction.level = 0)
-      
-      if (!("size" %in% bm.opt@args.names) || ### MOVE TO TUNING !!!
-          !("decay" %in% bm.opt@args.names) ||
-          is.null(bm.opt.val$size) ||
-          is.null(bm.opt.val$decay) ||
-          length(bm.opt.val$size) > 1 ||
-          length(bm.opt.val$decay) > 1) {
-        ## define the size and decay to test
-        sizetmp <- bm.opt.val$size
-        decaytmp <- bm.opt.val$decay
-        maxittmp <- bm.opt.val$maxit
-        nbCVtmp <- bm.opt.val$nbCV
-        if (is.null(sizetmp)) { sizetmp <- c(2, 4, 6, 8) }
-        if (is.null(decaytmp)) { decaytmp <- c(0.001, 0.01, 0.05, 0.1) }
-        if (is.null(maxittmp)) { maxittmp <- 200 }
-        if (is.null(nbCVtmp)) { nbCVtmp <- 5 }
-
-        ## do cross validation test to find the optimal values of size and decay parameters (prevent from overfitting)
-        CV_nnet <- bm_CVnnet(Input = data_env[calib.lines.vec, , drop = FALSE],
-                             Target = data_sp[calib.lines.vec],
-                             size = sizetmp,
-                             decay = decaytmp,
-                             maxit = maxittmp,
-                             nbCV = nbCVtmp,
-                             weights = weights.vec[calib.lines.vec],
-                             seedval = seed.val)
-
-        ## get the optimised parameters values
-        bm.opt.val$size <- CV_nnet[1, 1]
-        bm.opt.val$decay <- CV_nnet[1, 2]
-      }
-    }
-    if (model %in% c("MARS", "RF")) {
+    if (model %in% c("ANN", "MARS", "RF")) {
       bm.opt.val$formula <- bm_MakeFormula(resp.name = resp_name
                                            , expl.var = head(data_env)
                                            , type = 'simple'

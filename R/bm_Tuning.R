@@ -234,163 +234,192 @@ bm_Tuning <- function(bm.format,
   for (argi in names(args)) { assign(x = argi, value = args[[argi]]) }
   rm(args)
   
-  
-  ## 1. SPECIFIC CASE OF MAXENT OR SRE ------------------------------------------------------------
-  if (model %in% c("MAXENT", "SRE")) {
-    
-    ## create dataset ---------------------------------------------------------
-    mySpExpl <- get_species_data(bm.format)
-    myResp = mySpExpl[, 1]
-    myExpl = mySpExpl[, 4:ncol(mySpExpl)]
-    
-    if (model == "MAXENT") { # --------------------------------------------------------------------
-      try(tune.MAXENT <- ENMeval::ENMevaluate(occs = mySpExpl[mySpExpl[, 1] == 1 & !is.na(mySpExpl[, 1]), ],
-                                              bg = mySpExpl[mySpExpl[, 1] == 0 | is.na(mySpExpl[, 1]), ],
-                                              tune.args = list(rm = seq(0.5, 1, 0.5), fc = c("L")),
-                                              algorithm = "maxent.jar",
-                                              partitions = ME.cvmethod,
-                                              partition.settings = list(kfolds = ME.kfolds),
-                                              doClamp = TRUE, ## allow to change or not ?
-                                              parallel = TRUE,
-                                              numCores = nb.cpu, ## default to 1 or NULL (all available cores used then) ?
-                                              categoricals = NULL))
-      
-      if (!is.null(tune.MAXENT)) {
-        if (metric.eval == 'auc.val.avg') {
-          tmp = which.max(tune.MAXENT@results[, metric.eval])
-        } else {
-          tmp = which.min(tune.MAXENT@results[, metric.eval])
-        }
-        argstmp$linear <- grepl("L", tune.MAXENT@results[tmp, "fc"])
-        argstmp$quadratic <- grepl("Q", tune.MAXENT@results[tmp, "fc"])
-        argstmp$hinge <- grepl("H", tune.MAXENT@results[tmp, "fc"])
-        argstmp$product <- grepl("P", tune.MAXENT@results[tmp, "fc"])
-        argstmp$threshold <- grepl("T", tune.MAXENT@results[tmp, "fc"])
-        argstmp$betamultiplier <- tune.MAXENT@results[tmp, "rm"]
-      }
-    } else if (model == "SRE") { # ----------------------------------------------------------------
-      tune.SRE = foreach(rep = 1:ctrl.train$repeats, .combine = "rbind") %do%
-        {
-          fold <- dismo::kfold(myResp, by = myResp, k = ctrl.train$number) ## by = to keep prevalence
-          RES = foreach (quant = params.train$SRE.quant, .combine = "rbind") %:%
-            foreach (i = 1:ctrl.train$number, .combine = "rbind") %do%
-            {
-              DATA <- cbind(1:sum(fold == i)
-                            , myResp[fold == i]
-                            , bm_SRE(resp.var = myResp[fold != i],
-                                     expl.var = myExpl[fold != i, ],
-                                     new.env = myExpl[fold == i, ],
-                                     quant = quant,
-                                     do.extrem = FALSE))
-              RES = presence.absence.accuracy(DATA, threshold = as.vector(optimal.thresholds(DATA, opt.methods = 3)[2], mode = "numeric"))
-              return(data.frame(RES, quant = quant))
-            }
-          return(data.frame(RES, rep = rep))
-        }
-      tune.SRE$TSS <- tune.SRE$sensitivity + tune.SRE$specificity - 1
-      tmp <- aggregate(tune.SRE[, c("sensitivity", "specificity", "Kappa", "AUC", "TSS")], by = list(quant = tune.SRE$quant), mean)
-      argstmp$quant <- tmp[which.max(tmp[, metric.eval]), "quant"]
-    }
-    
-  } else {
-    ## 2. ALL OTHER MODELS ------------------------------------------------------------------------
-    
-    ## create dataset ---------------------------------------------------------
-    mySpExpl <- get_species_data(bm.format)
-    myResp = mySpExpl[, 1]
-    myExpl = mySpExpl[, 4:ncol(mySpExpl)]
-    myResp <- as.factor(ifelse(myResp == 1 & !is.na(myResp), "Presence", "Absence"))
-    
-    
-    ## check control ----------------------------------------------------------
-    ctrl.train <- caret::trainControl(method = "repeatedcv",
-                                      repeats = 3,
-                                      number = 10,
-                                      summaryFunction = caret::twoClassSummary,
-                                      classProbs = TRUE,
-                                      returnData = FALSE)
-    
-    
-    ## run tuning ---------------------------------------------------------------------------------
-    if (model == "GLM") {
-      # RES = foreach (typ = GLM.type, .combine = "rbind") %:%
-      #   foreach (intlev = GLM.interaction.level, .combine = "rbind") %do%
-      #   {
-      #     tuned.mod <- caret::train(form = bm_MakeFormula(resp.name = "resp",
-      #                                                     expl.var = myExpl,
-      #                                                     type = typ,
-      #                                                     interaction.level = intlev),
-      #                               data = cbind(myExpl, resp = myResp),
-      #                               method = tuning.fun,
-      #                               metric = metric.eval,
-      #                               trControl = ctrl.train)
-      #     if (!is.null(tuned.mod)) {
-      #       tmp = tuned.mod$results
-      #       tmp$TSS = tmp$Sens + tmp$Spec - 1
-      #       # formu = as.character(tuned.mod$finalModel$formula)
-      #       # formu = paste0(formu[c(2,1,3)], collapse = " ")
-      #       formu = tuned.mod$coefnames
-      #       formu = paste0(bm.format@sp.name, " ~ 1 + ", paste0(formu, collapse = " + "))
-      #       return(data.frame(tmp, type = typ, interaction.level = intlev, formula = formu))
-      #     }
-      #   }
-      # for (param in train.params$params) { ## must be type, interaction.level, formula
-      #   argstmp[[param]] <- tmp[which.max(tmp[, metric.eval]), param]
-      # }
-    } else {
-      if (model == "ANN") {
-        try(tuned.mod <- caret::train(x = myExpl,
-                                      y = myResp,
-                                      method = tuning.fun,
-                                      tuneGrid = tuning.grid,
-                                      trControl = ctrl.train,
-                                      metric = metric.eval,
-                                      weights = weights,
-                                      ## Automatically standardize data prior to modeling and prediction
-                                      preProc = c("center", "scale"),
-                                      linout = TRUE,
-                                      trace = FALSE,
-                                      MaxNWts.ANN = ANN.MaxNWts,
-                                      maxit = ANN.maxit))
-      } else if (tuning.fun %in% c("earth", "bam", "fda", "rpart")) { ## remove verbose
-        try(tuned.mod <- caret::train(x = myExpl, 
-                                      y = myResp,
-                                      method = tuning.fun,
-                                      tuneGrid = tuning.grid,
-                                      tuneLength = tuning.length,
-                                      trControl = ctrl.train,
-                                      metric = metric.eval,
-                                      weights = weights))
-        
-        if (model == "CTA") {
-          ## get param control$cp
-          ## return with rpart2
-          ## get param control$maxdepth
-        }
-      } else {
-        try(tuned.mod <- caret::train(x = myExpl, 
-                                      y = myResp,
-                                      method = tuning.fun,
-                                      tuneGrid = tuning.grid,
-                                      tuneLength = tuning.length,
-                                      trControl = ctrl.train,
-                                      metric = metric.eval,
-                                      verbose = FALSE,
-                                      weights = weights))
-      }
-      
-      ## GET tuned parameter values ---------------------------------------------------------------
-      if (!is.null(tuned.mod)) {
-        tmp = tuned.mod$results
-        tmp$TSS = tmp$Sens + tmp$Spec - 1
-        for (param in train.params$params) {
-          argstmp[[param]] <- tmp[which.max(tmp[, metric.eval]), param]
-        }
-      }
-    }
+  ## LOOP OVER CALIB LINES 
+  if (is.null(calib.lines)) {
+    calib.lines = data.frame("_allData_allRun" = rep(TRUE, length(bm.format@data.species)))
   }
   
+  argsval <- foreach(calib.i = 1:ncol(calib.lines)) %do%
+    {
+      argstmp <- BOM@args.default
+      
+      ## 1. SPECIFIC CASE OF MAXENT OR SRE ------------------------------------------------------------
+      if (model %in% c("MAXENT", "SRE")) {
+        
+        ## create dataset ---------------------------------------------------------
+        mySpExpl <- get_species_data(bm.format)
+        mySpExpl <- mySpExpl[which(calib.lines[, calib.i] == TRUE), ]
+        myResp = mySpExpl[, 1]
+        myExpl = mySpExpl[, 4:ncol(mySpExpl)]
+        
+        
+        if (model == "MAXENT") { # --------------------------------------------------------------------
+          try(tune.MAXENT <- ENMeval::ENMevaluate(occs = mySpExpl[mySpExpl[, 1] == 1 & !is.na(mySpExpl[, 1]), ],
+                                                  bg = mySpExpl[mySpExpl[, 1] == 0 | is.na(mySpExpl[, 1]), ],
+                                                  tune.args = list(rm = seq(0.5, 1, 0.5), fc = c("L")),
+                                                  algorithm = "maxent.jar",
+                                                  partitions = ME.cvmethod,
+                                                  partition.settings = list(kfolds = ME.kfolds),
+                                                  doClamp = TRUE, ## allow to change or not ?
+                                                  parallel = TRUE,
+                                                  numCores = nb.cpu, ## default to 1 or NULL (all available cores used then) ?
+                                                  categoricals = NULL))
+          
+          if (!is.null(tune.MAXENT)) {
+            if (metric.eval == 'auc.val.avg') {
+              tmp = which.max(tune.MAXENT@results[, metric.eval])
+            } else {
+              tmp = which.min(tune.MAXENT@results[, metric.eval])
+            }
+            argstmp$linear <- grepl("L", tune.MAXENT@results[tmp, "fc"])
+            argstmp$quadratic <- grepl("Q", tune.MAXENT@results[tmp, "fc"])
+            argstmp$hinge <- grepl("H", tune.MAXENT@results[tmp, "fc"])
+            argstmp$product <- grepl("P", tune.MAXENT@results[tmp, "fc"])
+            argstmp$threshold <- grepl("T", tune.MAXENT@results[tmp, "fc"])
+            argstmp$betamultiplier <- tune.MAXENT@results[tmp, "rm"]
+          }
+        } else if (model == "SRE") { # ----------------------------------------------------------------
+          tune.SRE = foreach(rep = 1:ctrl.train$repeats, .combine = "rbind") %do%
+            {
+              fold <- dismo::kfold(myResp, by = myResp, k = ctrl.train$number) ## by = to keep prevalence
+              RES = foreach (quant = params.train$SRE.quant, .combine = "rbind") %:%
+                foreach (i = 1:ctrl.train$number, .combine = "rbind") %do%
+                {
+                  DATA <- cbind(1:sum(fold == i)
+                                , myResp[fold == i]
+                                , bm_SRE(resp.var = myResp[fold != i],
+                                         expl.var = myExpl[fold != i, ],
+                                         new.env = myExpl[fold == i, ],
+                                         quant = quant,
+                                         do.extrem = FALSE))
+                  RES = presence.absence.accuracy(DATA, threshold = as.vector(optimal.thresholds(DATA, opt.methods = 3)[2], mode = "numeric"))
+                  return(data.frame(RES, quant = quant))
+                }
+              return(data.frame(RES, rep = rep))
+            }
+          tune.SRE$TSS <- tune.SRE$sensitivity + tune.SRE$specificity - 1
+          tmp <- aggregate(tune.SRE[, c("sensitivity", "specificity", "Kappa", "AUC", "TSS")], by = list(quant = tune.SRE$quant), mean)
+          argstmp$quant <- tmp[which.max(tmp[, metric.eval]), "quant"]
+        }
+        
+      } else {
+        ## 2. ALL OTHER MODELS ------------------------------------------------------------------------
+        
+        ## create dataset ---------------------------------------------------------
+        mySpExpl <- get_species_data(bm.format)
+        mySpExpl <- mySpExpl[which(calib.lines[, calib.i] == TRUE), ]
+        myResp = mySpExpl[, 1]
+        myExpl = mySpExpl[, 4:ncol(mySpExpl)]
+        myResp <- as.factor(ifelse(myResp == 1 & !is.na(myResp), "Presence", "Absence"))
+        
+        
+        ## check control ----------------------------------------------------------
+        ctrl.train <- caret::trainControl(method = "repeatedcv",
+                                          repeats = 3,
+                                          number = 10,
+                                          summaryFunction = caret::twoClassSummary,
+                                          classProbs = TRUE,
+                                          returnData = FALSE)
+        
+        
+        ## run tuning ---------------------------------------------------------------------------------
+        if (model == "GLM") {
+          # RES = foreach (typ = GLM.type, .combine = "rbind") %:%
+          #   foreach (intlev = GLM.interaction.level, .combine = "rbind") %do%
+          #   {
+          #     tuned.mod <- caret::train(form = bm_MakeFormula(resp.name = "resp",
+          #                                                     expl.var = myExpl,
+          #                                                     type = typ,
+          #                                                     interaction.level = intlev),
+          #                               data = cbind(myExpl, resp = myResp),
+          #                               method = tuning.fun,
+          #                               metric = metric.eval,
+          #                               trControl = ctrl.train)
+          #     if (!is.null(tuned.mod)) {
+          #       tmp = tuned.mod$results
+          #       tmp$TSS = tmp$Sens + tmp$Spec - 1
+          #       # formu = as.character(tuned.mod$finalModel$formula)
+          #       # formu = paste0(formu[c(2,1,3)], collapse = " ")
+          #       formu = tuned.mod$coefnames
+          #       formu = paste0(bm.format@sp.name, " ~ 1 + ", paste0(formu, collapse = " + "))
+          #       return(data.frame(tmp, type = typ, interaction.level = intlev, formula = formu))
+          #     }
+          #   }
+          # for (param in train.params$params) { ## must be type, interaction.level, formula
+          #   argstmp[[param]] <- tmp[which.max(tmp[, metric.eval]), param]
+          # }
+        } else {
+          if (model == "ANN") {
+            try(tuned.mod <- caret::train(x = myExpl,
+                                          y = myResp,
+                                          method = tuning.fun,
+                                          tuneGrid = tuning.grid,
+                                          trControl = ctrl.train,
+                                          metric = metric.eval,
+                                          weights = weights,
+                                          ## Automatically standardize data prior to modeling and prediction
+                                          preProc = c("center", "scale"),
+                                          linout = TRUE,
+                                          trace = FALSE,
+                                          MaxNWts.ANN = ANN.MaxNWts,
+                                          maxit = ANN.maxit))
+          } else if (tuning.fun %in% c("earth", "bam", "fda", "rpart")) { ## remove verbose
+            try(tuned.mod <- caret::train(x = myExpl, 
+                                          y = myResp,
+                                          method = tuning.fun,
+                                          tuneGrid = tuning.grid,
+                                          tuneLength = tuning.length,
+                                          trControl = ctrl.train,
+                                          metric = metric.eval,
+                                          weights = weights))
+            
+            if (model == "CTA" && !is.null(tuned.mod)) {
+              tmp = tuned.mod$results
+              tmp$TSS = tmp$Sens + tmp$Spec - 1
+              argstmp[["cp"]] <- tmp[which.max(tmp[, metric.eval]), "cp"]
+              
+              try(tuned.mod <- caret::train(x = myExpl, 
+                                            y = myResp,
+                                            method = "rpart2",
+                                            tuneGrid = tuning.grid,
+                                            tuneLength = tuning.length,
+                                            trControl = ctrl.train,
+                                            metric = metric.eval,
+                                            weights = weights))
+              if (!is.null(tuned.mod)) {
+                tmp = tuned.mod$results
+                tmp$TSS = tmp$Sens + tmp$Spec - 1
+                argstmp[["maxdepth"]] <- tmp[which.max(tmp[, metric.eval]), "maxdepth"]
+              }
+            }
+          } else {
+            try(tuned.mod <- caret::train(x = myExpl, 
+                                          y = myResp,
+                                          method = tuning.fun,
+                                          tuneGrid = tuning.grid,
+                                          tuneLength = tuning.length,
+                                          trControl = ctrl.train,
+                                          metric = metric.eval,
+                                          verbose = FALSE,
+                                          weights = weights))
+          }
+          
+          ## GET tuned parameter values ---------------------------------------------------------------
+          if (!is.null(tuned.mod)) {
+            tmp = tuned.mod$results
+            tmp$TSS = tmp$Sens + tmp$Spec - 1
+            for (param in train.params$params) {
+              argstmp[[param]] <- tmp[which.max(tmp[, metric.eval]), param]
+            }
+          }
+        }
+      }
+      return(argstmp)
+    }
+  names(argsval) <- colnames(calib.lines)
+  
   .bm_cat("Done")
+  return(argsval)
 }
 
 
@@ -471,4 +500,3 @@ TABLE_MODELS <- data.frame(model = c('ANN', 'CTA', 'FDA', 'GAM', 'GAM', 'GAM', '
               , tuning.grid = tuning.grid))
 }
 
-randomForest()
