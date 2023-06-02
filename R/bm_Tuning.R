@@ -229,11 +229,9 @@ bm_Tuning <- function(model,
                       ME.cvmethod = 'randomkfold',
                       ME.kfolds = 10)
 {
-  .bm_cat("Tune Modeling Options")
-  
-  
   ## 0. Check arguments ---------------------------------------------------------------------------
-  args <- .bm_Tuning.check.args(model = model, bm.format = bm.format, metric.eval = metric.eval, weights = weights)
+  args <- .bm_Tuning.check.args(model = model, tuning.fun = tuning.fun, do.formula = do.formula, bm.format = bm.format
+                                , metric.eval = metric.eval, weights = weights, params.train = params.train)
   for (argi in names(args)) { assign(x = argi, value = args[[argi]]) }
   rm(args)
   
@@ -243,12 +241,23 @@ bm_Tuning <- function(model,
     colnames(calib.lines) <- "_allData_allRun"
   }
   
+  if (model != "MAXENT") {
+    ## check control
+    ctrl.train <- caret::trainControl(method = "repeatedcv",
+                                      repeats = 3,
+                                      number = 10,
+                                      summaryFunction = caret::twoClassSummary,
+                                      classProbs = TRUE,
+                                      returnData = FALSE)
+  }
+  
   argsval <- foreach(calib.i = 1:ncol(calib.lines)) %do%
     {
       argstmp <- bm.opt.def@args.default
       
       ## 1. SPECIFIC CASE OF MAXENT OR SRE ------------------------------------------------------------
       if (model %in% c("MAXENT", "SRE")) {
+        cat("\n\t\t> Tuning parameters...")
         
         ## create dataset ---------------------------------------------------------
         mySpExpl <- get_species_data(bm.format)
@@ -266,7 +275,7 @@ bm_Tuning <- function(model,
                                                   partition.settings = list(kfolds = ME.kfolds),
                                                   doClamp = TRUE, ## allow to change or not ?
                                                   parallel = TRUE,
-                                                  numCores = nb.cpu, ## default to 1 or NULL (all available cores used then) ?
+                                                  numCores = NULL, ## default to 1 or NULL (all available cores used then) ?
                                                   categoricals = NULL))
           
           if (!is.null(tune.MAXENT)) {
@@ -316,18 +325,9 @@ bm_Tuning <- function(model,
         myExpl <- mySpExpl[, 4:ncol(mySpExpl)]
         myResp <- as.factor(ifelse(myResp == 1 & !is.na(myResp), "Presence", "Absence"))
         
-        ## check control
-        ctrl.train <- caret::trainControl(method = "repeatedcv",
-                                          repeats = 3,
-                                          number = 10,
-                                          summaryFunction = caret::twoClassSummary,
-                                          classProbs = TRUE,
-                                          returnData = FALSE)
-        
-        
         ## run tuning -----------------------------------------------------------------------------
         cmd.tuning <- "caret::train(x = myExpl, y = myResp, method = tuning.fun, tuneGrid = tuning.grid,"
-        cmd.tuning <- paste0(cmd.tuning, " trControl = ctrl.train, metric = metric.eval, weights = weights,")
+        cmd.tuning <- paste0(cmd.tuning, " trControl = ctrl.train, metric = 'ROC', weights = weights,")
         
         if (model == "ANN") {
           ## Automatically standardize data prior to modeling and prediction
@@ -337,25 +337,29 @@ bm_Tuning <- function(model,
         } else if (tuning.fun %in% c("earth", "bam", "fda", "rpart")) { ## remove verbose
           cmd.tuning <- paste0(cmd.tuning, " tuneLength = tuning.length))")
           
-        } else if (model != "GLM") {
+        } else {
           cmd.tuning <- paste0(cmd.tuning, " tuneLength = tuning.length, verbose = FALSE))")
         }
         
-        eval(parse(text = paste0("try(tuned.mod <- ", cmd.tuning)))
-        
-        
-        ## GET tuned parameter values -------------------------------------------------------------
-        if (!is.null(tuned.mod)) {
-          tmp <- tuned.mod$results
-          tmp$TSS <- tmp$Sens + tmp$Spec - 1
-          for (param in train.params$params) {
-            argstmp[[param]] <- tmp[which.max(tmp[, metric.eval]), param]
+        if (model != "GLM") {
+          cat("\n\t\t> Tuning parameters...")
+          eval(parse(text = paste0("try(tuned.mod <- ", cmd.tuning)))
+          
+          ## GET tuned parameter values -------------------------------------------------------------
+          if (!is.null(tuned.mod)) {
+            tmp <- tuned.mod$results
+            tmp$TSS <- tmp$Sens + tmp$Spec - 1
+            for (param in train.params$params) {
+              argstmp[[param]] <- tmp[which.max(tmp[, metric.eval]), param]
+            }
+            tuning.form <- tuning.grid[which.max(tmp[, metric.eval]), ]
           }
-          tuning.form <- tuning.grid[which.max(tmp[, metric.eval]), ]
-        }
+        } else { tuning.form <- tuning.grid }
         
         ## run formula selection ------------------------------------------------------------------
         if (do.formula) {
+          cat("\n\t\t> Tuning formula...")
+          
           cmd.form <- sub("tuneGrid = tuning.grid", "tuneGrid = tuning.form", cmd.tuning)
           cmd.init <- "form = bm_MakeFormula(resp.name = 'resp', expl.var = myExpl, type = typ, interaction.level = intlev),"
           cmd.init <- paste0(cmd.init, " data = cbind(myExpl, resp = myResp),")
@@ -401,7 +405,6 @@ bm_Tuning <- function(model,
     }
   names(argsval) <- colnames(calib.lines)
   
-  .bm_cat("Done")
   return(argsval)
 }
 
@@ -409,8 +412,12 @@ bm_Tuning <- function(model,
 
 # ---------------------------------------------------------------------------- #
 
-.bm_Tuning.check.args <- function(model, bm.format, metric.eval, weights = NULL)
+.bm_Tuning.check.args <- function(model, tuning.fun, do.formula, bm.format, metric.eval, weights = NULL, params.train)
 {
+  ## check model --------------------------------------------------------------
+  .fun_testIfIn(TRUE, "model", model, c("ANN", "CTA", "FDA", "GAM", "GBM", "GLM"
+                                        , "MARS", "MAXENT", "MAXNET", "RF", "SRE", "XGBOOST"))
+  
   ## check namespace ----------------------------------------------------------
   if (!(model %in% c("MAXENT", "SRE"))) {
     if (!isNamespaceLoaded("caret")) { 
@@ -421,7 +428,7 @@ bm_Tuning <- function(model,
   } else if (model == "SRE" && !isNamespaceLoaded('dismo')) { 
     if(!requireNamespace('dismo', quietly = TRUE)) stop("Package 'dismo' not found")
   }
-  if (model == "GLM" && do.formula == TRUE) { 
+  if (do.formula == TRUE) {
     if(!requireNamespace('gam', quietly = TRUE)) stop("Package 'gam' not found")
   }
   
@@ -449,6 +456,8 @@ bm_Tuning <- function(model,
     return(list(pkg = params[[fi]]$library, params = params[[fi]]$parameters$parameter))
   }
   names(all.params) <- all.fun
+  
+  .fun_testIfIn(TRUE, "tuning.fun", tuning.fun, c(all.fun, "bm_SRE", "ENMevaluate"))
   train.params <- all.params[[tuning.fun]]
   
   ## get tuning grid through params.train -------------------------------------
