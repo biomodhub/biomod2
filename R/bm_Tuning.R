@@ -195,9 +195,12 @@
 #------------------------------------------------------------------------------#
 
 
-bm_Tuning <- function(bm.format,
+bm_Tuning <- function(model,
+                      tuning.fun,
+                      do.formula = FALSE,
                       bm.opt.def,
-                      model,
+                      bm.format,
+                      calib.lines = NULL,
                       metric.eval = 'TSS',
                       weights = NULL,
                       ctrl.train = NULL,
@@ -236,12 +239,13 @@ bm_Tuning <- function(bm.format,
   
   ## LOOP OVER CALIB LINES 
   if (is.null(calib.lines)) {
-    calib.lines = data.frame("_allData_allRun" = rep(TRUE, length(bm.format@data.species)))
+    calib.lines <- data.frame(rep(TRUE, length(bm.format@data.species)))
+    colnames(calib.lines) <- "_allData_allRun"
   }
   
   argsval <- foreach(calib.i = 1:ncol(calib.lines)) %do%
     {
-      argstmp <- BOM@args.default
+      argstmp <- bm.opt.def@args.default
       
       ## 1. SPECIFIC CASE OF MAXENT OR SRE ------------------------------------------------------------
       if (model %in% c("MAXENT", "SRE")) {
@@ -249,8 +253,8 @@ bm_Tuning <- function(bm.format,
         ## create dataset ---------------------------------------------------------
         mySpExpl <- get_species_data(bm.format)
         mySpExpl <- mySpExpl[which(calib.lines[, calib.i] == TRUE), ]
-        myResp = mySpExpl[, 1]
-        myExpl = mySpExpl[, 4:ncol(mySpExpl)]
+        myResp <- mySpExpl[, 1]
+        myExpl <- mySpExpl[, 4:ncol(mySpExpl)]
         
         
         if (model == "MAXENT") { # --------------------------------------------------------------------
@@ -267,9 +271,9 @@ bm_Tuning <- function(bm.format,
           
           if (!is.null(tune.MAXENT)) {
             if (metric.eval == 'auc.val.avg') {
-              tmp = which.max(tune.MAXENT@results[, metric.eval])
+              tmp <- which.max(tune.MAXENT@results[, metric.eval])
             } else {
-              tmp = which.min(tune.MAXENT@results[, metric.eval])
+              tmp <- which.min(tune.MAXENT@results[, metric.eval])
             }
             argstmp$linear <- grepl("L", tune.MAXENT@results[tmp, "fc"])
             argstmp$quadratic <- grepl("Q", tune.MAXENT@results[tmp, "fc"])
@@ -279,10 +283,10 @@ bm_Tuning <- function(bm.format,
             argstmp$betamultiplier <- tune.MAXENT@results[tmp, "rm"]
           }
         } else if (model == "SRE") { # ----------------------------------------------------------------
-          tune.SRE = foreach(rep = 1:ctrl.train$repeats, .combine = "rbind") %do%
+          tune.SRE <- foreach(rep = 1:ctrl.train$repeats, .combine = "rbind") %do%
             {
               fold <- dismo::kfold(myResp, by = myResp, k = ctrl.train$number) ## by = to keep prevalence
-              RES = foreach (quant = params.train$SRE.quant, .combine = "rbind") %:%
+              RES <- foreach (quant = params.train$SRE.quant, .combine = "rbind") %:%
                 foreach (i = 1:ctrl.train$number, .combine = "rbind") %do%
                 {
                   DATA <- cbind(1:sum(fold == i)
@@ -292,7 +296,7 @@ bm_Tuning <- function(bm.format,
                                          new.env = myExpl[fold == i, ],
                                          quant = quant,
                                          do.extrem = FALSE))
-                  RES = presence.absence.accuracy(DATA, threshold = as.vector(optimal.thresholds(DATA, opt.methods = 3)[2], mode = "numeric"))
+                  RES <- presence.absence.accuracy(DATA, threshold = as.vector(optimal.thresholds(DATA, opt.methods = 3)[2], mode = "numeric"))
                   return(data.frame(RES, quant = quant))
                 }
               return(data.frame(RES, rep = rep))
@@ -308,8 +312,8 @@ bm_Tuning <- function(bm.format,
         ## create dataset
         mySpExpl <- get_species_data(bm.format)
         mySpExpl <- mySpExpl[which(calib.lines[, calib.i] == TRUE), ]
-        myResp = mySpExpl[, 1]
-        myExpl = mySpExpl[, 4:ncol(mySpExpl)]
+        myResp <- mySpExpl[, 1]
+        myExpl <- mySpExpl[, 4:ncol(mySpExpl)]
         myResp <- as.factor(ifelse(myResp == 1 & !is.na(myResp), "Presence", "Absence"))
         
         ## check control
@@ -342,10 +346,10 @@ bm_Tuning <- function(bm.format,
         
         ## GET tuned parameter values -------------------------------------------------------------
         if (!is.null(tuned.mod)) {
-          tmp = tuned.mod$results
-          tmp$TSS = tmp$Sens + tmp$Spec - 1
+          tmp <- tuned.mod$results
+          tmp$TSS <- tmp$Sens + tmp$Spec - 1
           for (param in train.params$params) {
-            argstmp[[param]] <- tmp[, param]
+            argstmp[[param]] <- tmp[which.max(tmp[, metric.eval]), param]
           }
           tuning.form <- tuning.grid[which.max(tmp[, metric.eval]), ]
         }
@@ -357,16 +361,16 @@ bm_Tuning <- function(bm.format,
           cmd.init <- paste0(cmd.init, " data = cbind(myExpl, resp = myResp),")
           cmd.form <- sub("x = myExpl, y = myResp,", cmd.init, cmd.form)
           
-          TMP = foreach (typ = GLM.type, .combine = "rbind") %:%
-            foreach (intlev = GLM.interaction.level, .combine = "rbind") %do%
+          TMP <- foreach (typ = c("simple", "quadratic", "polynomial", "s_smoother"), .combine = "rbind") %:%
+            foreach (intlev = 0:3, .combine = "rbind") %do%
             {
               eval(parse(text = paste0("try(tuned.form <- ", cmd.form)))
               
               if (!is.null(tuned.form)) {
-                tmp = tuned.form$results
-                tmp$TSS = tmp$Sens + tmp$Spec - 1
-                formu = tuned.form$coefnames
-                formu = paste0(bm.format@sp.name, " ~ 1 + ", paste0(formu, collapse = " + "))
+                tmp <- tuned.form$results
+                tmp$TSS <- tmp$Sens + tmp$Spec - 1
+                formu <- tuned.form$coefnames
+                formu <- paste0(bm.format@sp.name, " ~ 1 + ", paste0(formu, collapse = " + "))
                 return(data.frame(tmp, type = typ, interaction.level = intlev, formula = formu))
               }
             }
@@ -417,7 +421,7 @@ bm_Tuning <- function(bm.format,
   } else if (model == "SRE" && !isNamespaceLoaded('dismo')) { 
     if(!requireNamespace('dismo', quietly = TRUE)) stop("Package 'dismo' not found")
   }
-  if (model == "GLM" && "s_smoother" %in% GLM.type) { 
+  if (model == "GLM" && do.formula == TRUE) { 
     if(!requireNamespace('gam', quietly = TRUE)) stop("Package 'gam' not found")
   }
   

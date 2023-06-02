@@ -346,11 +346,12 @@ setGeneric("BIOMOD.options.dataset", def = function(strategy, user.val = NULL, t
 ##' 
 
 setMethod('BIOMOD.options.dataset', signature(strategy = 'character'),
-          function(mod, typ, pkg, fun, strategy, user.val = NULL, bm.format = NULL, calib.lines = NULL)
+          function(mod, typ, pkg, fun, strategy, user.val = NULL, tuning.fun = NULL, bm.format = NULL, calib.lines = NULL)
           {
             cat('\n\t> ', mod, 'options (datatype:', typ, ', package:', pkg, ', function:', fun, ')...')
             
-            .BIOMOD.options.dataset.check.args(strategy = strategy, user.val = user.val, tuning.fun = NULL, bm.format = bm.format, calib.lines = calib.lines)
+            .BIOMOD.options.dataset.check.args(strategy = strategy, user.val = user.val, tuning.fun = tuning.fun
+                                               , bm.format = bm.format, calib.lines = calib.lines)
             
             BOM <- BIOMOD.options.default(mod, typ, pkg, fun)
             
@@ -481,9 +482,8 @@ setMethod('BIOMOD.options.dataset', signature(strategy = 'character'),
               argsval <- user.val
             } else if (strategy == "tuned") {
               ## Call to bm_Tuning for one model at a time
-              argsval <- bm_Tuning(obj = BOM, bm.format = bm.format, calib.lines = calib.lines
-                                   , do.tuning = TRUE, tuning.fun = tuning.fun
-                                   , do.stepAIC = TRUE)
+              argsval <- bm_Tuning(model = mod, tuning.fun = tuning.fun, do.formula = TRUE
+                                   , bm.opt.def = BOM, bm.format = bm.format, calib.lines = calib.lines)
             }
             
             BOD <- new('BIOMOD.options.dataset', BOM, args.values = argsval)
