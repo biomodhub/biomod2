@@ -586,7 +586,7 @@ bm_RunModel <- function(model, run.name, dir.name = '.'
                                  # mtry = mtry.tmp, 
                                  importance = FALSE,
                                  norm.votes = TRUE,
-                                 strata = data_mod[calib.lines.vec, , drop = FALSE]$GuloGulo,
+                                 strata = data_mod[calib.lines.vec, , drop = FALSE][ , resp_name],
                                  sampsize = unlist(ifelse(!is.null(bm.options@RF$sampsize), list(bm.options@RF$sampsize), length(data_sp[calib.lines.vec]))),
                                  nodesize = bm.options@RF$nodesize,
                                  maxnodes = bm.options@RF$maxnodes))
