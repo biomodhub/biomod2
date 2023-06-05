@@ -560,11 +560,6 @@ setMethod('show', signature('BIOMOD.models.options'),
 #   cat("\nMAXENT$background_data_dir must be 'default' (=> use the same pseudo absences than other models as background) or a path to the directory where your environmental layer are stored")
 #   test <- FALSE
 # }
-# tt <- is.character(object@MAXENT$maximumbackground) | is.numeric(object@MAXENT$maximumbackground)
-# if (is.character(object@MAXENT$maximumbackground)) if (object@MAXENT$maximumbackground != "default") tt <- FALSE
-# if (!tt) {
-#   cat("\nMAXENT$maximumbackground must be 'default' or numeric")
-# }
 # 
 # if(!is.null(object@MAXENT$initial_heap_size)){
 #   test <- .check_bytes_format(test,

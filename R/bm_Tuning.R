@@ -162,7 +162,7 @@ bm_Tuning <- function(model,
                                           ANN.bag = FALSE, 
                                           FDA.degree = 1:2, 
                                           FDA.nprune = 2:38,
-                                          GAM.select = ,
+                                          GAM.select = c(TRUE, FALSE),
                                           GAM.method = c('GCV.Cp', 'GACV.Cp', 'REML', 'P-REML', 'ML', 'P-ML'),
                                           GBM.n.trees = c(500, 1000, 2500),
                                           GBM.interaction.depth = seq(2, 8, by = 3),
@@ -282,16 +282,16 @@ bm_Tuning <- function(model,
         
         ## run tuning -----------------------------------------------------------------------------
         cmd.tuning <- "caret::train(x = myExpl, y = myResp, method = tuning.fun, tuneGrid = tuning.grid,"
-        cmd.tuning <- paste0(cmd.tuning, " trControl = ctrl.train, metric = 'ROC', weights = weights,")
-        
+        cmd.tuning <- paste0(cmd.tuning, " trControl = ctrl.train, metric = 'ROC',")
+        if (tuning.fun %in% c("fda", "rpart")) { ## add weights
+          cmd.tuning <- paste0(cmd.tuning, " weights = weights,")
+        }
         if (model == "ANN") {
           ## Automatically standardize data prior to modeling and prediction
           cmd.tuning <- paste0(cmd.tuning, " preProc = c('center', 'scale'), linout = TRUE, trace = FALSE,")
           cmd.tuning <- paste0(cmd.tuning, " MaxNWts.ANN = ANN.MaxNWts, maxit = ANN.maxit))")
-          
         } else if (tuning.fun %in% c("earth", "bam", "fda", "rpart")) { ## remove verbose
           cmd.tuning <- paste0(cmd.tuning, " tuneLength = tuning.length))")
-          
         } else {
           cmd.tuning <- paste0(cmd.tuning, " tuneLength = tuning.length, verbose = FALSE))")
         }
@@ -304,6 +304,7 @@ bm_Tuning <- function(model,
           if (!is.null(tuned.mod)) {
             tmp <- tuned.mod$results
             tmp$TSS <- tmp$Sens + tmp$Spec - 1
+            print(tmp)
             for (param in train.params$params) {
               argstmp[[param]] <- tmp[which.max(tmp[, metric.eval]), param]
             }
@@ -320,9 +321,13 @@ bm_Tuning <- function(model,
           cmd.init <- paste0(cmd.init, " data = cbind(myExpl, resp = myResp),")
           cmd.form <- sub("x = myExpl, y = myResp,", cmd.init, cmd.form)
           
-          TMP <- foreach (typ = c('simple', 'quadratic', 'polynomial', 's_smoother', 's', 'lo', 'te'), .combine = "rbind") %:%
+          TMP <- foreach (typ = c('simple', 'quadratic', 'polynomial', 's_smoother'), .combine = "rbind") %:%
             foreach (intlev = 0:3, .combine = "rbind") %do%
             {
+              print(cmd.form)
+              hop = bm_MakeFormula(resp.name = 'resp', expl.var = myExpl, type = typ, interaction.level = intlev)
+              print(hop)
+              # print(weights)
               eval(parse(text = paste0("try(tuned.form <- ", cmd.form)))
               
               if (!is.null(tuned.form)) {
@@ -483,7 +488,8 @@ bm_Tuning <- function(model,
   if (model == "RF") tuning.length <- min(30, ncol(bm.format@data.env.var))
   
   
-  return(list(tuning.fun = tuning.fun
+  return(list(weights = weights
+              , tuning.fun = tuning.fun
               , train.params = train.params
               , tuning.length = tuning.length
               , tuning.grid = tuning.grid))
