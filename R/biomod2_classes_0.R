@@ -15,8 +15,8 @@
 ##' 
 ##' 
 ##' @param mod a \code{character} corresponding to the model name to be computed, must be either 
-##' \code{GLM}, \code{GBM}, \code{GAM}, \code{CTA}, \code{ANN}, \code{SRE}, \code{FDA}, 
-##' \code{MARS}, \code{RF}, \code{MAXENT}, \code{MAXNET}, \code{XGBOOST}
+##' \code{ANN}, \code{CTA}, \code{FDA}, \code{GAM}, \code{GBM}, \code{GLM}, \code{MARS}, 
+##' \code{MAXENT}, \code{MAXNET}, \code{RF}, \code{SRE}, \code{XGBOOST}
 ##' @param typ a \code{character} corresponding to the data type to be used, must be either 
 ##' \code{binary}, \code{binary.PA}, \code{abundance}, \code{compositional}
 ##' @param pkg a \code{character} corresponding to the package containing 
@@ -71,8 +71,7 @@ setGeneric("BIOMOD.options.default", def = function(mod, typ, pkg, fun) { standa
 .BIOMOD.options.default.check.args <- function(mod, typ, pkg, fun)
 {
   ## check if model is supported
-  avail.models.list <- c('GLM', 'GBM', 'GAM', 'CTA', 'ANN', 'SRE', 'FDA', 'MARS'
-                         , 'RF', 'MAXENT', 'MAXNET', 'XGBOOST')
+  avail.models.list <- c('ANN', 'CTA', 'FDA', 'GAM', 'GBM', 'GLM', 'MARS', 'MAXENT', 'MAXNET', 'RF', 'SRE', 'XGBOOST')
   .fun_testIfIn(TRUE, "mod", mod, avail.models.list)
   
   ## check if type is supported

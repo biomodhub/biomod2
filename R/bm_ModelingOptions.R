@@ -11,9 +11,9 @@
 ##' @param data.type a \code{character} corresponding to the data type to 
 ##' be used, must be either \code{binary}, \code{binary.PA}, \code{abundance}, 
 ##' \code{compositional}
-##' @param models a \code{vector} containing model names to be computed, must be among \code{GLM}, 
-##' \code{GBM}, \code{GAM}, \code{CTA}, \code{ANN}, \code{SRE}, \code{FDA}, \code{MARS}, 
-##' \code{RF}, \code{MAXENT}, \code{MAXNET}, \code{XGBOOST}
+##' @param models a \code{vector} containing model names to be computed, must be among 
+##' \code{ANN}, \code{CTA}, \code{FDA}, \code{GAM}, \code{GBM}, \code{GLM}, \code{MARS}, 
+##' \code{MAXENT}, \code{MAXNET}, \code{RF}, \code{SRE}, \code{XGBOOST}
 ##' @param strategy a \code{character} corresponding to the method to 
 ##' select models' parameters values, must be either \code{default}, 
 ##' \code{bigboss}, \code{user.defined}, \code{tuned}
@@ -323,9 +323,8 @@ bm_ModelingOptions <- function(data.type
   .fun_testIfIn(TRUE, "data.type", data.type, avail.types.list)
 
   ## check if model is supported
-  avail.models.list <- c('GLM', 'GBM', 'GAM', 'GAM.gam.gam', 'GAM.mgcv.bam', 'GAM.mgcv.gam'
-                         , 'CTA', 'ANN', 'SRE', 'FDA', 'MARS'
-                         , 'RF', 'MAXENT', 'MAXNET', 'XGBOOST')
+  avail.models.list <- c('ANN', 'CTA', 'FDA', 'GAM', 'GAM.gam.gam', 'GAM.mgcv.bam', 'GAM.mgcv.gam'
+                         , 'GBM', 'GLM', 'MARS', 'MAXENT', 'MAXNET', 'RF', 'SRE', 'XGBOOST')
   .fun_testIfIn(TRUE, "models", models, avail.models.list)
   if (length(grep('GAM', models)) > 1) {
     stop("Only one GAM model can be activated. Please choose betwen 'GAM', 'GAM.gam.gam', 'GAM.mgcv.bam' or 'GAM.mgcv.gam'")

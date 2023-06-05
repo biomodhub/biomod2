@@ -21,8 +21,8 @@
 ##' @param modeling.id a \code{character} corresponding to the name (ID) of the simulation set 
 ##' (\emph{a random number by default})
 ##' @param models a \code{vector} containing model names to be computed, must be among 
-##' \code{GLM}, \code{GBM}, \code{GAM}, \code{CTA}, \code{ANN}, \code{SRE}, \code{FDA}, 
-##' \code{MARS}, \code{RF}, \code{MAXENT}, \code{MAXNET},  \code{XGBOOST}
+##' \code{ANN}, \code{CTA}, \code{FDA}, \code{GAM}, \code{GBM}, \code{GLM}, \code{MARS}, 
+##' \code{MAXENT}, \code{MAXNET}, \code{RF}, \code{SRE}, \code{XGBOOST}
 ##' @param models.pa (\emph{optional, default} \code{NULL}) \cr 
 ##' A \code{list} containing for each model a \code{vector} defining which pseudo-absence datasets 
 ##' are to be used, must be among \code{colnames(bm.format@PA.table)}
@@ -48,8 +48,8 @@
 ##' 
 ##' 
 ##' @param model a \code{character} corresponding to the model name to be computed, must be either 
-##' \code{GLM}, \code{GBM}, \code{GAM}, \code{CTA}, \code{ANN}, \code{SRE}, \code{FDA}, 
-##' \code{MARS}, \code{RF}, \code{MAXENT}, \code{MAXNET}, \code{XGBOOST}
+##' \code{ANN}, \code{CTA}, \code{FDA}, \code{GAM}, \code{GBM}, \code{GLM}, \code{MARS}, 
+##' \code{MAXENT}, \code{MAXNET}, \code{RF}, \code{SRE}, \code{XGBOOST}
 ##' @param run.name a \code{character} corresponding to the model to be run (sp.name + pa.id + 
 ##' run.id)
 ##' @param dir.name (\emph{optional, default} \code{.}) \cr

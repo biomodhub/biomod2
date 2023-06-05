@@ -14,9 +14,9 @@
 ##' object returned by the \code{\link{BIOMOD_FormatingData}} function
 ##' @param modeling.id a \code{character} corresponding to the name (ID) of the simulation set 
 ##' (\emph{a random number by default})
-##' @param models a \code{vector} containing model names to be computed, must be among \code{GLM}, 
-##' \code{GBM}, \code{GAM}, \code{CTA}, \code{ANN}, \code{SRE}, \code{FDA}, \code{MARS}, 
-##' \code{RF}, \code{MAXENT}, \code{MAXNET}, \code{XGBOOST}
+##' @param models a \code{vector} containing model names to be computed, must be among 
+##' \code{ANN}, \code{CTA}, \code{FDA}, \code{GAM}, \code{GBM}, \code{GLM}, \code{MARS}, 
+##' \code{MAXENT}, \code{MAXNET}, \code{RF}, \code{SRE}, \code{XGBOOST}
 ##' @param models.pa (\emph{optional, default} \code{NULL}) \cr 
 ##' A \code{list} containing for each model a \code{vector} defining which pseudo-absence datasets 
 ##' are to be used, must be among \code{colnames(bm.format@PA.table)}
@@ -290,9 +290,8 @@
 
 BIOMOD_Modeling <- function(bm.format,
                             modeling.id = as.character(format(Sys.time(), "%s")),
-                            models = c('GLM', 'GBM', 'GAM', 'CTA', 'ANN', 'SRE'
-                                       , 'FDA', 'MARS', 'RF', 'MAXENT', 'MAXNET',
-                                       'XGBOOST'),
+                            models = c('ANN', 'CTA', 'FDA', 'GAM', 'GBM', 'GLM', 'MARS'
+                                       , 'MAXENT', 'MAXNET', 'RF', 'SRE', 'XGBOOST'),
                             models.pa = NULL,
                             bm.options = NULL,
                             CV.strategy = 'random',
@@ -503,8 +502,7 @@ BIOMOD_Modeling <- function(bm.format,
   models.switch.off <- NULL
   
   ## check if model is supported
-  avail.models.list <- c('GLM', 'GBM', 'GAM', 'CTA', 'ANN', 'SRE', 'FDA', 'MARS'
-                         , 'RF', 'MAXENT', 'MAXNET', 'XGBOOST')
+  avail.models.list <- c('ANN', 'CTA', 'FDA', 'GAM', 'GBM', 'GLM', 'MARS', 'MAXENT', 'MAXNET', 'RF', 'SRE', 'XGBOOST')
   .fun_testIfIn(TRUE, "models", models, avail.models.list)
   
   

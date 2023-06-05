@@ -11,9 +11,9 @@
 ##' object returned by the \code{\link{BIOMOD_FormatingData}} function
 ##' @param bm.options a \code{\link{BIOMOD.models.options}} object returned by the  
 ##' \code{\link{BIOMOD_ModelingOptions}} function
-##' @param models a \code{vector} containing model names to be tuned, \cr 
-##' must be among \code{GLM}, \code{GBM}, \code{GAM}, \code{CTA}, \code{ANN}, \code{SRE}, 
-##' \code{FDA}, \code{MARS}, \code{RF}, \code{MAXENT}
+##' @param models a \code{vector} containing model names to be tuned, must be among 
+##' \code{ANN}, \code{CTA}, \code{FDA}, \code{GAM}, \code{GBM}, \code{GLM}, \code{MARS}, 
+##' \code{MAXENT}, \code{MAXNET}, \code{RF}, \code{SRE}, \code{XGBOOST}
 ##' @param metric.eval a \code{character} corresponding to the evaluation metric used to select 
 ##' optimal models and tune parameters, must be either \code{ROC} or \code{TSS} 
 ##' (\emph{maximizing Sensitivity and Specificity})
