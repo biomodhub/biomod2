@@ -20,8 +20,6 @@
 ##' @param models.pa (\emph{optional, default} \code{NULL}) \cr 
 ##' A \code{list} containing for each model a \code{vector} defining which pseudo-absence datasets 
 ##' are to be used, must be among \code{colnames(bm.format@PA.table)}
-##' @param bm.options a \code{\link{BIOMOD.models.options}} object returned by the  
-##' \code{\link{bm_ModelingOptions}} function
 ##' 
 ##' @param CV.strategy a \code{character} corresponding to the cross-validation selection strategy, 
 ##' must be among \code{random}, \code{kfold}, \code{block}, \code{strat}, \code{env} or 
@@ -39,12 +37,10 @@
 ##' If \code{strategy = 'strat'} or \code{strategy = 'env'}, a \code{character} corresponding 
 ##' to how data will be balanced between partitions, must be either \code{presences} or
 ##' \code{absences} 
-##' @param CV.env.var (\emph{optional}) \cr If \code{strategy = 'env'}, a
-##'   \code{character} corresponding to the environmental variables used to
-##'   build the partition. \code{k} partitions will be built for each
-##'   environmental variables. By default the function uses all environmental
-##'   variables available.
-
+##' @param CV.env.var (\emph{optional}) \cr If \code{strategy = 'env'}, a \code{character} 
+##' corresponding to the environmental variables used to build the partition. \code{k} partitions 
+##' will be built for each environmental variables. By default the function uses all 
+##' environmental variables available.
 ##' @param CV.strat (\emph{optional, default} \code{'both'}) \cr
 ##' If \code{strategy = 'env'}, a \code{character} corresponding to how data will partitioned 
 ##' along gradient, must be among \code{x}, \code{y}, \code{both}
@@ -59,6 +55,21 @@
 ##' @param data.split.perc \emph{deprecated}, now called \code{CV.perc}
 ##' @param data.split.table \emph{deprecated}, now called \code{CV.user.table}
 ##' @param do.full.models \emph{deprecated}, now called \code{CV.do.full.models}
+##' 
+##' @param OPT.data.type a \code{character} corresponding to the data type to 
+##' be used, must be either \code{binary}, \code{binary.PA}, \code{abundance}, 
+##' \code{compositional}
+##' @param OPT.strategy a \code{character} corresponding to the method to 
+##' select models' parameters values, must be either \code{default}, 
+##' \code{bigboss}, \code{user.defined}, \code{tuned}
+##' @param OPT.val.list (\emph{optional, default} \code{NULL}) \cr
+##' A \code{list} containing parameters values for some (all) models
+##' @param OPT.user (\emph{optional, default} \code{TRUE}) \cr  
+##' A \code{\link{BIOMOD.models.options}} object returned by the \code{\link{bm_ModelingOptions}} 
+##' function
+##' @param bm.options a \code{\link{BIOMOD.models.options}} object returned by the  
+##' \code{\link{bm_ModelingOptions}} function
+##' 
 ##' @param weights (\emph{optional, default} \code{NULL}) \cr 
 ##' A \code{vector} of \code{numeric} values corresponding to observation weights (one per 
 ##' observation, see Details)
@@ -293,7 +304,6 @@ BIOMOD_Modeling <- function(bm.format,
                             models = c('ANN', 'CTA', 'FDA', 'GAM', 'GBM', 'GLM', 'MARS'
                                        , 'MAXENT', 'MAXNET', 'RF', 'SRE', 'XGBOOST'),
                             models.pa = NULL,
-                            bm.options = NULL,
                             CV.strategy = 'random',
                             CV.nb.rep = 1,
                             CV.perc = NULL,
@@ -303,10 +313,15 @@ BIOMOD_Modeling <- function(bm.format,
                             CV.strat = NULL,
                             CV.user.table = NULL,
                             CV.do.full.models = TRUE,
-                            nb.rep,
-                            data.split.perc,
-                            data.split.table,
-                            do.full.models,
+                            OPT.data.type = 'binary',
+                            OPT.strategy = 'default',
+                            OPT.val.list = NULL,
+                            OPT.user = NULL,
+                            bm.options = NULL, ## deprecated
+                            nb.rep, ## deprecated
+                            data.split.perc, ## deprecated
+                            data.split.table, ## deprecated
+                            do.full.models, ## deprecated
                             weights = NULL,
                             prevalence = NULL,
                             metric.eval = c('KAPPA', 'TSS', 'ROC'),
@@ -324,7 +339,7 @@ BIOMOD_Modeling <- function(bm.format,
     modeling.id = modeling.id, 
     models = models, 
     models.pa = models.pa, 
-    bm.options = bm.options, 
+    OPT.user = OPT.user, 
     weights = weights, 
     prevalence = prevalence, 
     metric.eval = metric.eval, 
@@ -386,10 +401,17 @@ BIOMOD_Modeling <- function(bm.format,
                                        , inMemory = FALSE, nameFolder = name.BIOMOD_DATA)
   
   ## 3.3 Get and save models options ------------------------------------------
-  bm.options <- bm_ModelingOptions(data.type = "binary", 
-                                   strategy = "default", 
-                                   bm.format = bm.format,
-                                   calib.lines = calib.lines)
+  if (is.null(bm.options)) {
+    bm.options <- bm_ModelingOptions(data.type = OPT.data.type,
+                                     models = models,
+                                     strategy = OPT.strategy,
+                                     val.list = OPT.val.list,
+                                     bm.format = bm.format,
+                                     calib.lines = calib.lines)
+  } else {
+    bm.options <- OPT.user
+    ## ADD CHEKS TO VERIFY IT IS THE RIGHT SHAPE ?
+  }
   models.out = .fill_BIOMOD.models.out("models.options", bm.options, models.out
                                        , inMemory = FALSE, nameFolder = name.BIOMOD_DATA)
   
@@ -469,7 +491,7 @@ BIOMOD_Modeling <- function(bm.format,
 
 # ---------------------------------------------------------------------------- #
 
-.BIOMOD_Modeling.check.args <- function(bm.format, modeling.id, models, models.pa, bm.options
+.BIOMOD_Modeling.check.args <- function(bm.format, modeling.id, models, models.pa, OPT.user
                                         , weights, prevalence, metric.eval, var.import
                                         , scale.models, nb.cpu, seed.val, do.progress)
 {
@@ -540,9 +562,9 @@ BIOMOD_Modeling <- function(bm.format,
   }
   
   
-  ## 3. Check bm.options arguments --------------------------------------------
-  if (!is.null(bm.options)) {
-    .fun_testIfInherits(TRUE, "bm.options", bm.options, "BIOMOD.models.options")
+  ## 3. Check OPT.user arguments --------------------------------------------
+  if (!is.null(OPT.user)) {
+    .fun_testIfInherits(TRUE, "OPT.user", OPT.user, "BIOMOD.models.options")
   } 
   
   # else {
@@ -552,7 +574,7 @@ BIOMOD_Modeling <- function(bm.format,
   
   ## 2.2 Specific check for MAXENT -----------------------------------
   if ("MAXENT" %in% models) {
-    MAXENT.options <- bm.options@options[[grep("MAXENT", names(bm.options@options))[1]]]
+    MAXENT.options <- bm.options@options[[grep("MAXENT", names(bm.options@options))[1]]] ## PROBLEM
     if (!file.exists(file.path(MAXENT.options@args.default$path_to_maxent.jar, "maxent.jar"))) {
       models = models[-which(models == 'MAXENT')]
       if (!is.null(models.pa)) {
@@ -581,7 +603,7 @@ BIOMOD_Modeling <- function(bm.format,
     .fun_testIf01(TRUE, "prevalence", prevalence)
     if ("MAXENT" %in% models) {
       cat("\n\t MAXENT default prevalence option was updated to fit with modeling prevalence (i.e", prevalence, ")")
-      bm.options@MAXENT$defaultprevalence = prevalence
+      bm.options@MAXENT$defaultprevalence = prevalence ## PROBLEM
     }
   } else {
     prevalence = 0.5
@@ -656,7 +678,7 @@ BIOMOD_Modeling <- function(bm.format,
   
   return(list(models = models,
               models.pa = models.pa,
-              bm.options = bm.options,
+              # bm.options = bm.options,
               weights = weights,
               var.import = var.import,
               metric.eval = metric.eval,
