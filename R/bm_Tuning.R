@@ -136,12 +136,11 @@
 ##' 
 ##' 
 ##' @importFrom foreach foreach
+##' @importFrom stats aggregate  
+##' @importFrom PresenceAbsence optimal.thresholds presence.absence.accuracy
 ## @importFrom caret trainControl train twoClassSummary
 ## @importFrom dismo kfold
-##' @importFrom PresenceAbsence optimal.thresholds presence.absence.accuracy
 ## @importFrom ENMeval ENMevaluate
-##' @importFrom stats aggregate as.formula binomial complete.cases cor formula glm 
-##' median na.exclude na.omit qt quantile sd
 ##' 
 ##' 
 ##' @export
@@ -163,6 +162,8 @@ bm_Tuning <- function(model,
                                           ANN.bag = FALSE, 
                                           FDA.degree = 1:2, 
                                           FDA.nprune = 2:38,
+                                          GAM.select = ,
+                                          GAM.method = c('GCV.Cp', 'GACV.Cp', 'REML', 'P-REML', 'ML', 'P-ML'),
                                           GBM.n.trees = c(500, 1000, 2500),
                                           GBM.interaction.depth = seq(2, 8, by = 3),
                                           GBM.shrinkage = c(0.001, 0.01, 0.1),
@@ -319,7 +320,7 @@ bm_Tuning <- function(model,
           cmd.init <- paste0(cmd.init, " data = cbind(myExpl, resp = myResp),")
           cmd.form <- sub("x = myExpl, y = myResp,", cmd.init, cmd.form)
           
-          TMP <- foreach (typ = c("simple", "quadratic", "polynomial", "s_smoother"), .combine = "rbind") %:%
+          TMP <- foreach (typ = c('simple', 'quadratic', 'polynomial', 's_smoother', 's', 'lo', 'te'), .combine = "rbind") %:%
             foreach (intlev = 0:3, .combine = "rbind") %do%
             {
               eval(parse(text = paste0("try(tuned.form <- ", cmd.form)))
@@ -333,6 +334,60 @@ bm_Tuning <- function(model,
               }
             }
           argstmp$formula <- TMP[which.max(TMP[, metric.eval]), "formula"]
+        }
+        
+        ## run variable selection -----------------------------------------------------------------
+        if (do.stepAIC) {
+          #   if (bm.options@GLM$test == "AIC") { ## MOVE TO TUNING
+          #     criteria <- 2
+          #     cat("\n\tStepwise procedure using AIC criteria")
+          #   } else if (bm.options@GLM$test == "BIC") {
+          #     criteria <- log(ncol(data_env))
+          #     cat("\n\tStepwise procedure using BIC criteria")
+          #   } else if (bm.options@GLM$test == "none") {
+          #     criteria <- 0
+          #     cat("\n\tNo stepwise procedure")
+          #     cat("\n\t! You might be confronted to model convergence issues !")
+          #   }
+          # if (bm.options@GLM$test != 'none') { ## "AIC"
+          #   ## make the model selection
+          #   glmStart <- glm(eval(parse(text = paste0(resp_name, "~1"))), 
+          #                   data = data_mod[calib.lines.vec, , drop = FALSE], 
+          #                   family = bm.options@GLM$family,
+          #                   control = eval(bm.options@GLM$control),
+          #                   weights = weights.vec[calib.lines.vec],
+          #                   mustart = rep(bm.options@GLM$mustart, sum(calib.lines.vec)), 
+          #                   model = TRUE)
+          #   
+          #   ## remove warnings
+          #   warn <- options('warn')
+          #   options(warn = -1)
+          #   model.sp <- try(stepAIC(glmStart,
+          #                           glm.formula,
+          #                           data = data_mod[calib.lines.vec, , drop = FALSE],
+          #                           direction = "both",
+          #                           trace = FALSE,
+          #                           k = criteria,
+          #                           weights = weights.vec[calib.lines.vec], 
+          #                           steps = 10000,
+          #                           mustart = rep(bm.options@GLM$mustart, sum(calib.lines.vec))))
+          #   ## reexec warnings
+          #   options(warn)
+          # }
+          # if (bm.options@GAM$algo == 'GAM_gam') { ## gam package
+          #   # NOTE : To be able to take into account GAM options and weights we have to do a eval(parse(...))
+          #   # it's due to GAM implementation (using of match.call() troubles)
+          #   gamStart <- eval(parse(text = paste0("gam::gam(", resp_name, "~1 ,"
+          #                                        , " data = data_mod[calib.lines.vec, , drop = FALSE], family = ", bm.options@GAM$family$family
+          #                                        , "(link = '", bm.options@GAM$family$link, "')"
+          #                                        , ", weights = weights.vec[calib.lines.vec])")))
+          #   model.sp <- try(gam::step.Gam(gamStart,
+          #                                 .scope(head(data_env), "gam::s", bm.options@GAM$k),
+          #                                 data = data_mod[calib.lines.vec, , drop = FALSE],
+          #                                 direction = "both",
+          #                                 trace = bm.options@GAM$control$trace,
+          #                                 control = bm.options@GAM$control))
+          # }
         }
         
         # if (model == "CTA" && !is.null(tuned.mod)) {
@@ -373,11 +428,10 @@ bm_Tuning <- function(model,
                                         , "MARS", "MAXENT", "MAXNET", "RF", "SRE", "XGBOOST"))
   
   ## check namespace ----------------------------------------------------------
-  if (!(model %in% c("MAXENT", "SRE"))) {
-    if (!isNamespaceLoaded("caret")) { 
-      if(!requireNamespace('caret', quietly = TRUE)) stop("Package 'caret' not found")
-    }
-  } else if (model == "MAXENT" && !isNamespaceLoaded('ENMeval')) { 
+  if (!isNamespaceLoaded("caret")) { 
+    if(!requireNamespace('caret', quietly = TRUE)) stop("Package 'caret' not found")
+  }
+  if (model == "MAXENT" && !isNamespaceLoaded('ENMeval')) { 
     if(!requireNamespace('ENMeval', quietly = TRUE)) stop("Package 'ENMeval' not found")
   } else if (model == "SRE" && !isNamespaceLoaded('dismo')) { 
     if(!requireNamespace('dismo', quietly = TRUE)) stop("Package 'dismo' not found")
@@ -406,7 +460,7 @@ bm_Tuning <- function(model,
   ## get tuning function and parameters ---------------------------------------
   all.fun <- c('avNNet', 'rpart', 'rpart2', 'fda', 'gamSpline', 'bam', 'gam', 'gbm', 'glm', 'earth', 'rf', 'xgbTree')
   all.params <- foreach (fi = all.fun) %do% {
-    params <- getModelInfo(model = fi)
+    params <- caret::getModelInfo(model = fi)
     return(list(pkg = params[[fi]]$library, params = params[[fi]]$parameters$parameter))
   }
   names(all.params) <- all.fun
@@ -416,7 +470,7 @@ bm_Tuning <- function(model,
   
   ## get tuning grid through params.train -------------------------------------
   tuning.grid <- NULL
-  if (model %in% c("ANN", "FDA", "GBM", "MARS", "XGBOOST")) {
+  if (model %in% c("ANN", "FDA", "GAM", "GBM", "MARS", "XGBOOST")) {
     params.train = params.train[grep(model, names(params.train))]
     .fun_testIfIn(TRUE, "names(params.train)", names(params.train), paste0(model, ".", train.params$params))
     names(params.train) = sub(model, "", names(params.train))

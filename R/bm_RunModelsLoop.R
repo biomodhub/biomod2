@@ -249,27 +249,6 @@ bm_RunModel <- function(model, run.name, dir.name = '.'
   ## APPLY GENERIC FUNCTION FROM OPTIONS
   # .load_namespace(bm.opt@package) ## TO BE CODED ==> not needed : loaded when creating modeling options ?
   
-  # ## Simple formula : CTA, GBM, FDA, ANN, RF
-  # if (model %in% c("CTA", "GBM", "FDA", "ANN", "RF")) {
-  #   form.cmd <- bm_MakeFormula(resp.name = bm.format@sp.name #resp_name
-  #                              , expl.var = head(bm.format@data.env.var) # head(data_env)
-  #                              , type = 'simple'
-  #                              , interaction.level = 0)
-  # } else if (model %in% c("GAM", "GLM", "MARS")) {
-  #   ## Complex formula : GAM, GLM, MARS
-  #   form.cmd <- bm_MakeFormula(resp.name = bm.format@sp.name #resp_name
-  #                              , expl.var = head(bm.format@data.env.var) # head(data_env)
-  #                              , type = bm.opt.val$type ## RATHER HARD CODED / PARAM ?
-  #                              , interaction.level = bm.opt.val$interaction.level ## RATHER HARD CODED / PARAM ?
-  #                              , k = bm.opt.val$k) ## RATHER HARD CODED / PARAM ? ## GAM
-  #   # tmp = gsub("gam::", "", gam.formula)
-  #   # gam.formula = as.formula(paste0(tmp[c(2,1,3)], collapse = " "))
-  # } else if (model %in% c("GAM", "GLM", "MARS")) {
-  #   ## Options formula : GAM, GLM, MARS
-  #   form.cmd <- bm.opt.val$formula
-  # }
-  
-  
   if (model != "MAXENT") { ## ANY MODEL BUT MAXENT ------------------------------------------------
     
     ## PRELIMINAR ---------------------------------------------------
@@ -341,10 +320,9 @@ bm_RunModel <- function(model, run.name, dir.name = '.'
         } else {
           warning("pas de bon modele trouve, message a refaire")
         }
+      } else if (model == "GBM") {
+        best.iter <- try(gbm.perf(model.sp, method = "cv" , plot.it = FALSE)) ## c('OOB', 'test', 'cv')
       }
-      # if (model == "GBM") {
-      #   best.iter <- try(gbm.perf(model.sp, method = bm.options@GBM$perf.method , plot.it = FALSE)) ## perf.method == "cv"
-      # }
       # if (model == "GLM") {
       #   cat("\n\tSelected formula : ")
       #   print(model.sp$formula, useSource = FALSE, showEnv = FALSE) ## to keep if formula in model.sp && if stepAIC selection ?
@@ -460,58 +438,7 @@ bm_RunModel <- function(model, run.name, dir.name = '.'
       }
     }
   }
-  
-  # ## FOR bm_Tuning
-  #   if (bm.options@GLM$test == "AIC") { ## MOVE TO TUNING
-  #     criteria <- 2
-  #     cat("\n\tStepwise procedure using AIC criteria")
-  #   } else if (bm.options@GLM$test == "BIC") {
-  #     criteria <- log(ncol(data_env))
-  #     cat("\n\tStepwise procedure using BIC criteria")
-  #   } else if (bm.options@GLM$test == "none") {
-  #     criteria <- 0
-  #     cat("\n\tNo stepwise procedure")
-  #     cat("\n\t! You might be confronted to model convergence issues !")
-  #   }
-  # if (bm.options@GLM$test != 'none') { ## "AIC"
-  #   ## make the model selection
-  #   glmStart <- glm(eval(parse(text = paste0(resp_name, "~1"))), 
-  #                   data = data_mod[calib.lines.vec, , drop = FALSE], 
-  #                   family = bm.options@GLM$family,
-  #                   control = eval(bm.options@GLM$control),
-  #                   weights = weights.vec[calib.lines.vec],
-  #                   mustart = rep(bm.options@GLM$mustart, sum(calib.lines.vec)), 
-  #                   model = TRUE)
-  #   
-  #   ## remove warnings
-  #   warn <- options('warn')
-  #   options(warn = -1)
-  #   model.sp <- try(stepAIC(glmStart,
-  #                           glm.formula,
-  #                           data = data_mod[calib.lines.vec, , drop = FALSE],
-  #                           direction = "both",
-  #                           trace = FALSE,
-  #                           k = criteria,
-  #                           weights = weights.vec[calib.lines.vec], 
-  #                           steps = 10000,
-  #                           mustart = rep(bm.options@GLM$mustart, sum(calib.lines.vec))))
-  #   ## reexec warnings
-  #   options(warn)
-  # }
-  # if (bm.options@GAM$algo == 'GAM_gam') { ## gam package
-  #   # NOTE : To be able to take into account GAM options and weights we have to do a eval(parse(...))
-  #   # it's due to GAM implementation (using of match.call() troubles)
-  #   gamStart <- eval(parse(text = paste0("gam::gam(", resp_name, "~1 ,"
-  #                                        , " data = data_mod[calib.lines.vec, , drop = FALSE], family = ", bm.options@GAM$family$family
-  #                                        , "(link = '", bm.options@GAM$family$link, "')"
-  #                                        , ", weights = weights.vec[calib.lines.vec])")))
-  #   model.sp <- try(gam::step.Gam(gamStart,
-  #                                 .scope(head(data_env), "gam::s", bm.options@GAM$k),
-  #                                 data = data_mod[calib.lines.vec, , drop = FALSE],
-  #                                 direction = "both",
-  #                                 trace = bm.options@GAM$control$trace,
-  #                                 control = bm.options@GAM$control))
-  # }
+
   
   ## 1. Create output object ----------------------------------------------------------------------
   ListOut <- list(model = NULL,

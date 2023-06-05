@@ -592,22 +592,10 @@ setMethod('show', signature('BIOMOD.models.options'),
           }
 )
 
-# test <- .fun_testIfIn(test, "GLM$type", object@GLM$type, c("simple", "quadratic", "polynomial", "user.defined")) ## MOVE in formula ?
 # test <- .fun_testIfIn(test, "GLM$test", object@GLM$test, c("AIC", "BIC", "none"))
 # test <- .fun_testIfIn(test, "GBM$distribution", object@GBM$distribution, c("bernoulli", "huberized", "multinomial", "adaboost"))
-# test <- .fun_testIfIn(test, "GBM$perf.method", object@GBM$perf.method, c('OOB', 'test', 'cv'))
-# test <- .fun_testIfIn(test, "GAM$type", object@GAM$type, c('s_smoother', 's', 'lo', 'te')) ## MOVE in formula ?
-# test <- .fun_testIfIn(test, "GAM$method", object@GAM$method, c("GCV.Cp", "GACV.Cp", "REML", "P-REML", "ML", "P-ML"))
-# if (any(!object@GAM$optimizer %in%  c("perf", "outer", "newton", "bfgs", "optim", "nlm", "nlm.fd"))) {
-#   cat("\nGAM$optimizer bad definition (see ?mgcv::gam)")
-# }
 # test <- .fun_testIfIn(test, "CTA$method", object@CTA$method, c("anova", "poisson", "class", "exp"))
 # test <- .fun_testIfIn(test, "FDA$method", object@FDA$method, c('polyreg', 'mars', 'bruto'))
-# test <- .fun_testIfIn(test, "MARS$type", object@MARS$type, c("simple", "quadratic", "polynomial", "user.defined")) ## MOVE in formula ?
-# supported.pmethod <- c('backward', 'none', 'exhaustive', 'forward', 'seqrep', 'cv')
-# if(!is.element(object@MARS$pmethod, supported.pmethod)){
-#   cat("\nMARS$pmethod must be a one of", supported.pmethod);
-# }
 # 
 # ## MAXENT ------------------------------------------------------------
 # if (!is.character(object@MAXENT$path_to_maxent.jar)) {
