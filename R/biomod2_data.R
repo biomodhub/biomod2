@@ -26,6 +26,64 @@
 # 
 # usethis::use_data(ModelsTable, overwrite = TRUE)
 
+
+#' Bigboss pre-defined parameter values for single models
+#'
+#' A \code{\link{BIOMOD.models.options}} object containing for each single model available in 
+#' \pkg{biomod2} the parameter values pre-defined by \pkg{biomod2} team.
+#'
+#' @format A \code{\link{BIOMOD.models.options}} object
+
+"OptionsBigboss"
+
+# bm.opt <- bm_ModelingOptions(data.type = "binary", strategy = "default")
+# bm.opt@options$ANN.binary.nnet.nnet@args.values[['_allData_allRun']]$size = 5 #NULL
+# bm.opt@options$ANN.binary.nnet.nnet@args.values[['_allData_allRun']]$decay = 5
+# bm.opt@options$ANN.binary.nnet.nnet@args.values[['_allData_allRun']]$trace = FALSE
+# bm.opt@options$ANN.binary.nnet.nnet@args.values[['_allData_allRun']]$rang = 0.1
+# bm.opt@options$ANN.binary.nnet.nnet@args.values[['_allData_allRun']]$maxit = 200
+# bm.opt@options$CTA.binary.rpart.rpart@args.values[['_allData_allRun']]$method = "class"
+# bm.opt@options$CTA.binary.rpart.rpart@args.values[['_allData_allRun']]$control = list(xval = 5, minbucket = 5, minsplit = 5, cp = 0.001, maxdepth = 25)
+# bm.opt@options$CTA.binary.rpart.rpart@args.values[['_allData_allRun']]$cost = NULL
+# bm.opt@options$FDA.binary.mda.fda@args.values[['_allData_allRun']]$method = "mars"
+# bm.opt@options$GAM.binary.mgcv.gam@args.values[['_allData_allRun']]$family = binomial(link = 'logit')
+# bm.opt@options$GAM.binary.mgcv.gam@args.values[['_allData_allRun']]$method = "GCV.Cp"
+# bm.opt@options$GAM.binary.mgcv.gam@args.values[['_allData_allRun']]$control = list(epsilon = 1e-06, trace = FALSE, maxit = 100)
+# bm.opt@options$GBM.binary.gbm.gbm@args.values[['_allData_allRun']]$n.trees = 2500
+# bm.opt@options$GBM.binary.gbm.gbm@args.values[['_allData_allRun']]$interaction.depth = 7
+# bm.opt@options$GBM.binary.gbm.gbm@args.values[['_allData_allRun']]$n.minobsinnode = 5
+# bm.opt@options$GBM.binary.gbm.gbm@args.values[['_allData_allRun']]$shrinkage = 0.001
+# bm.opt@options$GBM.binary.gbm.gbm@args.values[['_allData_allRun']]$cv.folds = 3
+# bm.opt@options$GBM.binary.gbm.gbm@args.values[['_allData_allRun']]$keep.data = FALSE
+# bm.opt@options$GBM.binary.gbm.gbm@args.values[['_allData_allRun']]$n.cores = 1
+# bm.opt@options$GLM.binary.stats.glm@args.values[['_allData_allRun']]$family = binomial(link = 'logit')
+# bm.opt@options$GLM.binary.stats.glm@args.values[['_allData_allRun']]$mustart = 0.5
+# bm.opt@options$GLM.binary.stats.glm@args.values[['_allData_allRun']]$control = glm.control(maxit = 50)
+# bm.opt@options$MARS.binary.earth.earth@args.values[['_allData_allRun']]$glm = list(family = binomial)
+# bm.opt@options$MARS.binary.earth.earth@args.values[['_allData_allRun']]$ncross = 0
+# bm.opt@options$MARS.binary.earth.earth@args.values[['_allData_allRun']]$nk = NULL
+# bm.opt@options$MARS.binary.earth.earth@args.values[['_allData_allRun']]$penalty = 2
+# bm.opt@options$MARS.binary.earth.earth@args.values[['_allData_allRun']]$thresh = 0.001
+# bm.opt@options$MARS.binary.earth.earth@args.values[['_allData_allRun']]$nprune = NULL
+# bm.opt@options$MARS.binary.earth.earth@args.values[['_allData_allRun']]$pmethod = 'backward'
+# bm.opt@options$RF.binary.randomForest.randomForest@args.values[['_allData_allRun']]$do.classif = TRUE
+# bm.opt@options$RF.binary.randomForest.randomForest@args.values[['_allData_allRun']]$ntree = 500
+# bm.opt@options$RF.binary.randomForest.randomForest@args.values[['_allData_allRun']]$mtry = NULL
+# bm.opt@options$RF.binary.randomForest.randomForest@args.values[['_allData_allRun']]$strata = factor(c(0, 1))
+# bm.opt@options$RF.binary.randomForest.randomForest@args.values[['_allData_allRun']]$sampsize = NULL
+# bm.opt@options$RF.binary.randomForest.randomForest@args.values[['_allData_allRun']]$nodesize = 5
+# bm.opt@options$RF.binary.randomForest.randomForest@args.values[['_allData_allRun']]$maxnodes = NULL
+# bm.opt@options$SRE.binary.biomod2.bm_SRE@args.values[['_allData_allRun']]$do.extrem = TRUE
+# bm.opt@options$XGBOOST.binary.xgboost.xgboost@args.values[['_allData_allRun']]$max.depth = 2
+# bm.opt@options$XGBOOST.binary.xgboost.xgboost@args.values[['_allData_allRun']]$eta = 1
+# bm.opt@options$XGBOOST.binary.xgboost.xgboost@args.values[['_allData_allRun']]$nthread = 2
+# bm.opt@options$XGBOOST.binary.xgboost.xgboost@args.values[['_allData_allRun']]$nrounds = 4
+# bm.opt@options$XGBOOST.binary.xgboost.xgboost@args.values[['_allData_allRun']]$objective = "binary:logistic"
+# OptionsBigboss <- bm.opt
+# 
+# usethis::use_data(OptionsBigboss, overwrite = TRUE)
+
+
 #' Presence-Absence data to build test SDM
 #'
 #' A dataset covering all the continent with presence/absence data for 6 mammal
