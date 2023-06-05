@@ -47,6 +47,21 @@ species distribution model(s) with the \code{\link{BIOMOD_Modeling}} function.
 Parameterize and/or tune \pkg{biomod2}'s single models options.
 }
 \details{
+This function creates a \code{\link{BIOMOD.models.options}} object containing parameter values 
+for each single models that can be run within \pkg{biomod2} through 
+\code{\link{BIOMOD_Modeling}} function.
+
+12 models are currently available, and are listed within \code{\link{ModelsTable}} dataset.
+
+Different strategies are available to set those parameters, through the \code{strategy} 
+argument :
+\description{
+  \item{default}{all parameters names and values are directly retrieve from functions to be 
+  called through \code{\link{formalArgs}} and \code{\link{formals}} functions respectively}
+  \item{bigboss}{default parameter values are updated with predefined}
+  \item{user.defined}{}
+  \item{tuned}{}
+}
 This function allows advanced user to change some default parameters of \pkg{biomod2} inner 
 models. \cr 10 single models are available within the package, and their options can be set 
 with this function through \code{list} objects.
@@ -59,24 +74,6 @@ Below is the detailed list of all modifiable parameters for each available model
 }
 \section{ANN }{
  (\code{\link[nnet]{nnet}})
-\itemize{
-  \item{\code{NbCV = 5}}{ : an \code{integer} corresponding to the number of cross-validation 
-  repetitions to find best size and decay parameters}
-  \item{\code{size = NULL}}{ : an \code{integer} corresponding to the number of units in the 
-  hidden layer. If \code{NULL} then size parameter will be optimized by cross-validation based 
-  on model AUC (\code{NbCv} cross-validations ; tested size will be the following : 
-  \code{c(2, 4, 6, 8)}). It is also possible to give a \code{vector} of size values to be tested, 
-  and the one giving the best model AUC will be kept.}
-  \item{\code{decay = NULL}}{ : a \code{numeric} corresponding to weight decay. If \code{NULL} 
-  then decay parameter will be optimized by cross-validation based on model AUC (\code{NbCv} 
-  cross-validations ; tested size will be the following : \code{c(0.001, 0.01, 0.05, 0.1)}). 
-  It is also possible to give a \code{vector} of decay values to be tested, and the one giving 
-  the best model AUC will be kept.}
-  \item{\code{rang = 0.1}}{ : a \code{numeric} corresponding to the initial random weights on 
-  \code{[-rang, rang]}}
-  \item{\code{maxit = 200}}{ : an \code{integer} corresponding to the maximum number of 
-  iterations}
-}
 }
 
 \section{CTA }{
@@ -136,13 +133,6 @@ Below is the detailed list of all modifiable parameters for each available model
   its own background data from explanatory variables rasters (as usually
   done in \code{MAXENT} studies). Otherwise \pkg{biomod2} pseudo-absences
   will be used (see \code{\link{BIOMOD_FormatingData}})}
-  
-  \item{\code{maximumbackground}}{ : an \code{integer} corresponding to the
-  maximum number of background data to sample if the
-  \code{background_data_dir} parameter has been set}
-  
-  \item{\code{maximumiterations = 200}}{ : an \code{integer} corresponding
-  to the maximum number of iterations to do} 
   
   \item{\code{visible = FALSE}}{ : a \code{logical} to make the
   \code{MAXENT} user interface available}

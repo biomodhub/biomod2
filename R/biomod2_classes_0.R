@@ -118,8 +118,6 @@ setMethod('BIOMOD.options.default', signature(mod = 'character', typ = 'characte
                                    initial_heap_size = NULL,
                                    max_heap_size = NULL,
                                    background_data_dir = 'default',
-                                   maximumbackground = 'default',
-                                   maximumiterations = 200,
                                    visible = FALSE,
                                    linear = TRUE,
                                    quadratic = TRUE,
@@ -388,76 +386,26 @@ setMethod('BIOMOD.options.dataset', signature(strategy = 'character'),
             ## GET parameter values according to strategy -------------------------------
             if (strategy %in% c("default", "bigboss")) {
               if (strategy == "bigboss") {
-                if (mod == "ANN") {
-                  argstmp$size = 5 #NULL
-                  argstmp$decay = 5
-                  argstmp$trace = FALSE
-                  argstmp$rang = 0.1
-                  argstmp$maxit = 200
-                  # argstmp$nbCV = 5
-                } else if (mod == "CTA") {
-                  argstmp$method = "class"
-                  argstmp$control = list(xval = 5, 
-                                         minbucket = 5, 
-                                         minsplit = 5,
-                                         cp = 0.001, 
-                                         maxdepth = 25)
-                  argstmp$cost = NULL
-                } else if (mod == "FDA") {
-                  argstmp$method = "mars"
-                } else if (mod == "GAM" && pkg == "mgcv") {
-                  if (!is.null(bm.format)) {
+                data(OptionsBigboss)
+                
+                val <- bm.opt@options[[paste0(c(mod, typ, pkg, fun), collapse = ".")]]@args.values[['_allData_allRun']]
+                for (ii in names(val)) {
+                  if (ii != "formula") { argstmp[[ii]] <- val[[ii]] }
+                }
+                
+                if (!is.null(bm.format)) {
+                  if (mod == "GAM" && pkg == "mgcv") {
                     argstmp$formula = bm_MakeFormula(resp.name = bm.format@sp.name
                                                      , expl.var = head(bm.format@data.env.var)
                                                      , type = 's_smoother'
                                                      , interaction.level = 0
                                                      , k = NULL)
-                  }
-                  argstmp$family = binomial(link = 'logit')
-                  argstmp$method = "GCV.Cp"
-                  argstmp$control = list(epsilon = 1e-06, trace = FALSE, maxit = 100)
-                } else if (mod == "GBM") {
-                  argstmp$n.trees = 2500
-                  argstmp$interaction.depth = 7
-                  argstmp$n.minobsinnode = 5
-                  argstmp$shrinkage = 0.001
-                  argstmp$cv.folds = 3
-                  argstmp$keep.data = FALSE
-                  argstmp$n.cores = 1
-                } else if (mod == "GLM") {
-                  if (!is.null(bm.format)) {
+                  } else if (mod == "GLM") {
                     argstmp$formula = bm_MakeFormula(resp.name = bm.format@sp.name
                                                      , expl.var = head(bm.format@data.env.var)
                                                      , type = 'quadratic'
                                                      , interaction.level = 0)
                   }
-                  argstmp$family = binomial(link = 'logit')
-                  argstmp$mustart = 0.5
-                  argstmp$control = glm.control(maxit = 50)
-                } else if (mod == "MARS") {
-                  argstmp$glm = list(family = binomial)
-                  argstmp$ncross = 0
-                  argstmp$nk = NULL
-                  argstmp$penalty = 2
-                  argstmp$thresh = 0.001
-                  argstmp$nprune = NULL
-                  argstmp$pmethod = 'backward'
-                } else if (mod == "RF") {
-                  argstmp$do.classif = TRUE
-                  argstmp$ntree = 500
-                  argstmp$mtry = NULL
-                  argstmp$strata = factor(c(0, 1))
-                  argstmp$sampsize = NULL
-                  argstmp$nodesize = 5
-                  argstmp$maxnodes = NULL
-                } else if (mod == "SRE") {
-                  argstmp$do.extrem = TRUE
-                } else if (mod == "XGBOOST") {
-                  argstmp$max.depth = 2
-                  argstmp$eta = 1
-                  argstmp$nthread = 2
-                  argstmp$nrounds = 4
-                  argstmp$objective = "binary:logistic"
                 }
               }
               

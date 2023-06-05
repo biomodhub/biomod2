@@ -246,9 +246,6 @@ bm_RunModel <- function(model, run.name, dir.name = '.'
   ## 2. CREATE MODELS -----------------------------------------------------------------------------
   set.seed(seed.val)
   
-  ## APPLY GENERIC FUNCTION FROM OPTIONS
-  # .load_namespace(bm.opt@package) ## TO BE CODED ==> not needed : loaded when creating modeling options ?
-  
   if (model != "MAXENT") { ## ANY MODEL BUT MAXENT ------------------------------------------------
     
     ## PRELIMINAR ---------------------------------------------------
@@ -294,9 +291,6 @@ bm_RunModel <- function(model, run.name, dir.name = '.'
     #   cat("\n\tPrepared formula : ")
     #   print(bm.opt.val$formula, useSource = FALSE, showEnv = FALSE)
     # }
-    # #   cat("\t", bm.options@GBM$n.trees, "maximum different trees and ", bm.options@GBM$cv.folds, " Fold Cross-Validation")
-    # #   cat("\t", bm.options@CTA$control$xval, "Fold Cross-Validation")
-    # #   cat("\t", bm.options@ANN$NbCV, "Fold Cross Validation + 3 Repetitions")
     
     ## RUN model ----------------------------------------------------
     ## /!\ est-ce que ça va marcher quand meme ?
@@ -323,25 +317,20 @@ bm_RunModel <- function(model, run.name, dir.name = '.'
       } else if (model == "GBM") {
         best.iter <- try(gbm.perf(model.sp, method = "cv" , plot.it = FALSE)) ## c('OOB', 'test', 'cv')
       }
-      # if (model == "GLM") {
-      #   cat("\n\tSelected formula : ")
-      #   print(model.sp$formula, useSource = FALSE, showEnv = FALSE) ## to keep if formula in model.sp && if stepAIC selection ?
-      # }
       
       model.bm <- new(paste0(bm.opt@model, "_biomod2_model"),
                       model = model.sp,
                       model_name = model_name,
                       model_class = bm.opt@model,
                       model_options = bm.opt,
-                      # n.trees_optim = best.iter, ## GBM
-                      # extremal_conditions = model.sp, # SRE
-                      # model_output_dir = MWD$m_outdir, # MAXENT
                       dir_name = dir_name,
                       resp_name = resp_name,
                       expl_var_names = expl_var_names,
                       expl_var_type = get_var_type(data_env[calib.lines.vec, , drop = FALSE]),
                       expl_var_range = get_var_range(data_env[calib.lines.vec, , drop = FALSE]))
       if (model == "GAM") { model.bm@model_subclass = subclass_name } ## TO BE ADDED to all models ?
+      if (model == "GBM") { model.bm@n.trees_optim = best.iter }
+      if (model == "SRE") { model.bm@extremal_conditions = model.sp }
     }
     
     ## POSTLIMINAR --------------------------------------------------
@@ -365,9 +354,8 @@ bm_RunModel <- function(model, run.name, dir.name = '.'
                                    , dir.name = dir_name
                                    , modeling.id = modeling.id
                                    , background_data_dir = bm.opt.val$background_data_dir)
-    # file to log potential errors
-    maxent_stderr_file <- paste0(MWD$m_outdir, "/maxent.stderr")
-    
+
+    # list of arguments ---------------
     maxent.args <- c(
       ifelse(is.null(bm.opt.val$memory_allocated), "", paste0("-mx", bm.opt.val$memory_allocated, "m")), 
       ifelse(is.null(bm.opt.val$initial_heap_size), "", paste0(" -Xms", bm.opt.val$initial_heap_size)),
@@ -379,28 +367,19 @@ bm_RunModel <- function(model, run.name, dir.name = '.'
       paste0(" outputdirectory=\"", MWD$m_outdir, "\""),
       paste0(" outputformat=logistic "), 
       ifelse(length(categorical_var), paste0(" togglelayertype=", categorical_var, collapse = " "), ""),
-      " redoifexists",
-      paste0(" visible=", bm.opt.val$visible),
-      paste0(" linear=", bm.opt.val$linear),
-      paste0(" quadratic=", bm.opt.val$quadratic),
-      paste0( " product=", bm.opt.val$product),
-      paste0(" threshold=", bm.opt.val$threshold),
-      paste0(" hinge=", bm.opt.val$hinge),
-      paste0(" lq2lqptthreshold=", bm.opt.val$lq2lqptthreshold),
-      paste0(" l2lqthreshold=", bm.opt.val$l2lqthreshold),
-      paste0(" hingethreshold=", bm.opt.val$hingethreshold),
-      paste0(" beta_threshold=", bm.opt.val$beta_threshold),
-      paste0(" beta_categorical=", bm.opt.val$beta_categorical),
-      paste0(" beta_lqp=", bm.opt.val$beta_lqp),
-      paste0(" beta_hinge=", bm.opt.val$beta_hinge),
-      paste0(" betamultiplier=", bm.opt.val$betamultiplier),
-      paste0(" defaultprevalence=", bm.opt.val$defaultprevalence),
-      " autorun ",
-      " nowarnings ", 
-      " notooltips ",
-      " noaddsamplestobackground"
-    )
+      " redoifexists")
+    vec_x <- names(bm.opt.val)[which(names(bm.opt.val) != c("path_to_maxent.jar", "memory_allocated", "initial_heap_size",
+                                                            "max_heap_size", "background_data_dir"))]
+    maxent.args <- c(maxent.args, sapply(vec_x, function(xx) {
+      paste0(" ", xx, "=", bm.opt.val[[xx]])
+    }))
+    maxent.args <- c(maxent.args, " autorun ", " nowarnings ", " notooltips ", " noaddsamplestobackground")
     
+    # file to log potential errors ----
+    maxent_stderr_file <- paste0(MWD$m_outdir, "/maxent.stderr")
+    
+    
+    # run model -----------------------
     system2(command = "java", args = maxent.args,
             wait = TRUE,
             stdout = "", stderr = maxent_stderr_file)
@@ -417,6 +396,7 @@ bm_RunModel <- function(model, run.name, dir.name = '.'
                       model_name = model_name,
                       model_class = bm.opt@model,
                       model_options = bm.opt,
+                      model_output_dir = MWD$m_outdir, # MAXENT only
                       dir_name = dir_name,
                       resp_name = resp_name,
                       expl_var_names = expl_var_names,
