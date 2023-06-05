@@ -69,7 +69,6 @@ reference:
       - "bm_ModelingOptions"
       - "bm_Tuning"
       - "bm_RunModelsLoop"
-      - "bm_CVnnet"
       - "bm_SRE"
       - "bm_FindOptimStat"
       - "bm_BinaryTransformation"
