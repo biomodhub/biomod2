@@ -1,3 +1,31 @@
+#' Single models package and functions
+#'
+#' A \code{data.frame} containing for each single model available in \pkg{biomod2} 
+#' the package and functions to be called.
+#'
+#' @format A data frame with 12 rows and 5 variables:
+#' \describe{
+#'   \item{model}{all single models that can be computed in \pkg{biomod2}}
+#'   \item{type}{data type associated to the models}
+#'   \item{package}{R package used}
+#'   \item{func}{function used in the R package}
+#'   \item{train}{function called by \pkg{caret} for the tuning}
+#' }
+
+"ModelsTable"
+
+# ModelsTable <- data.frame(model = c('ANN', 'CTA', 'FDA', 'GAM', 'GAM', 'GAM', 'GBM', 'GLM'
+#                                      , 'MARS', 'MAXENT', 'MAXNET', 'RF', 'SRE', 'XGBOOST')
+#                            , type = 'binary'
+#                            , package = c('nnet', 'rpart', 'mda', 'gam', 'mgcv', 'mgcv', 'gbm', 'stats'
+#                                          , 'earth', 'MAXENT', 'maxnet', 'randomForest', 'biomod2', 'xgboost')
+#                            , func = c('nnet', 'rpart', 'fda', 'gam', 'bam', 'gam', 'gbm', 'glm'
+#                                       , 'earth', 'MAXENT', 'maxnet', 'randomForest', 'bm_SRE', 'xgboost')
+#                            , train = c('avNNet', 'rpart', 'fda', 'gamSpline', 'bam', 'gam', 'gbm', 'glm'
+#                                        , 'earth', 'ENMevaluate', '', 'rf', 'bm_SRE', 'xgbTree'))
+# 
+# usethis::use_data(ModelsTable, overwrite = TRUE)
+
 #' Presence-Absence data to build test SDM
 #'
 #' A dataset covering all the continent with presence/absence data for 6 mammal

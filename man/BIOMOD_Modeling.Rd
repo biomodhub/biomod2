@@ -10,7 +10,6 @@ BIOMOD_Modeling(
   models = c("ANN", "CTA", "FDA", "GAM", "GBM", "GLM", "MARS", "MAXENT", "MAXNET", "RF",
     "SRE", "XGBOOST"),
   models.pa = NULL,
-  bm.options = NULL,
   CV.strategy = "random",
   CV.nb.rep = 1,
   CV.perc = NULL,
@@ -20,6 +19,11 @@ BIOMOD_Modeling(
   CV.strat = NULL,
   CV.user.table = NULL,
   CV.do.full.models = TRUE,
+  OPT.data.type = "binary",
+  OPT.strategy = "default",
+  OPT.val.list = NULL,
+  OPT.user = NULL,
+  bm.options = NULL,
   nb.rep,
   data.split.perc,
   data.split.table,
@@ -49,9 +53,6 @@ object returned by the \code{\link{BIOMOD_FormatingData}} function}
 A \code{list} containing for each model a \code{vector} defining which pseudo-absence datasets 
 are to be used, must be among \code{colnames(bm.format@PA.table)}}
 
-\item{bm.options}{a \code{\link{BIOMOD.models.options}} object returned by the
-\code{\link{bm_ModelingOptions}} function}
-
 \item{CV.strategy}{a \code{character} corresponding to the cross-validation selection strategy, 
 must be among \code{random}, \code{kfold}, \code{block}, \code{strat}, \code{env} or 
 \code{user.defined}}
@@ -73,11 +74,10 @@ If \code{strategy = 'strat'} or \code{strategy = 'env'}, a \code{character} corr
 to how data will be balanced between partitions, must be either \code{presences} or
 \code{absences}}
 
-\item{CV.env.var}{(\emph{optional}) \cr If \code{strategy = 'env'}, a
-\code{character} corresponding to the environmental variables used to
-build the partition. \code{k} partitions will be built for each
-environmental variables. By default the function uses all environmental
-variables available.}
+\item{CV.env.var}{(\emph{optional}) \cr If \code{strategy = 'env'}, a \code{character} 
+corresponding to the environmental variables used to build the partition. \code{k} partitions 
+will be built for each environmental variables. By default the function uses all 
+environmental variables available.}
 
 \item{CV.strat}{(\emph{optional, default} \code{'both'}) \cr
 If \code{strategy = 'env'}, a \code{character} corresponding to how data will partitioned 
@@ -91,6 +91,24 @@ repetition (in columns) which observation lines should be used for models calibr
 \item{CV.do.full.models}{(\emph{optional, default} \code{TRUE}) \cr
 A \code{logical} value defining whether models should be also calibrated and validated over 
 the whole dataset (and pseudo-absence datasets) or not}
+
+\item{OPT.data.type}{a \code{character} corresponding to the data type to 
+be used, must be either \code{binary}, \code{binary.PA}, \code{abundance}, 
+\code{compositional}}
+
+\item{OPT.strategy}{a \code{character} corresponding to the method to 
+select models' parameters values, must be either \code{default}, 
+\code{bigboss}, \code{user.defined}, \code{tuned}}
+
+\item{OPT.val.list}{(\emph{optional, default} \code{NULL}) \cr
+A \code{list} containing parameters values for some (all) models}
+
+\item{OPT.user}{(\emph{optional, default} \code{TRUE}) \cr
+A \code{\link{BIOMOD.models.options}} object returned by the \code{\link{bm_ModelingOptions}} 
+function}
+
+\item{bm.options}{a \code{\link{BIOMOD.models.options}} object returned by the
+\code{\link{bm_ModelingOptions}} function}
 
 \item{nb.rep}{\emph{deprecated}, now called \code{CV.nb.rep}}
 

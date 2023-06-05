@@ -236,21 +236,10 @@
 ##'
 ##'
 
-TABLE_MODELS <- data.frame(model = c('ANN', 'CTA', 'FDA', 'GAM', 'GAM', 'GAM', 'GBM', 'GLM'
-                                     , 'MARS', 'MAXENT', 'MAXNET', 'RF', 'SRE', 'XGBOOST')
-                           , type = 'binary'
-                           , package = c('nnet', 'rpart', 'mda', 'gam', 'mgcv', 'mgcv', 'gbm', 'stats'
-                                         , 'earth', 'MAXENT', 'maxnet', 'randomForest', 'biomod2', 'xgboost')
-                           , func = c('nnet', 'rpart', 'fda', 'gam', 'bam', 'gam', 'gbm', 'glm'
-                                      , 'earth', 'MAXENT', 'maxnet', 'randomForest', 'bm_SRE', 'xgboost')
-                           , train = c('avNNet', 'rpart', 'fda', 'gamSpline', 'bam', 'gam', 'gbm', 'glm'
-                                       , 'earth', 'ENMevaluate', '', 'rf', 'bm_SRE', 'xgbTree'))
-
-
 
 bm_ModelingOptions <- function(data.type
                                , models = c('ANN', 'CTA', 'FDA', 'GAM', 'GBM', 'GLM'
-                                          , 'MARS', 'MAXENT', 'MAXNET', 'RF', 'SRE', 'XGBOOST')
+                                            , 'MARS', 'MAXENT', 'MAXNET', 'RF', 'SRE', 'XGBOOST')
                                , strategy, val.list = NULL, bm.format = NULL, calib.lines = NULL)
 {
   .bm_cat("Build Modeling Options")
@@ -261,17 +250,20 @@ bm_ModelingOptions <- function(data.type
   for (argi in names(args)) { assign(x = argi, value = args[[argi]]) }
   rm(args)
   
+  ## Load single models informations
+  data(ModelsTable)
+  
   ## 1. Get options -------------------------------------------------------------------------------
   bm.opt <- foreach (model = models, .combine = "c") %do%
     {
       ## Select model / package / function to keep
       if (length(grep("GAM", model)) == 1) {
-        tab.model <- TABLE_MODELS[which(TABLE_MODELS$model == "GAM" & TABLE_MODELS$type == data.type &
-                                          TABLE_MODELS$package == strsplit(model, "[.]")[[1]][2] & 
-                                          TABLE_MODELS$func == strsplit(model, "[.]")[[1]][3]), ]
+        tab.model <- ModelsTable[which(ModelsTable$model == "GAM" & ModelsTable$type == data.type &
+                                         ModelsTable$package == strsplit(model, "[.]")[[1]][2] & 
+                                         ModelsTable$func == strsplit(model, "[.]")[[1]][3]), ]
         model = "GAM"
       } else {
-        tab.model <- TABLE_MODELS[which(TABLE_MODELS$model == model & TABLE_MODELS$type == data.type), ]
+        tab.model <- ModelsTable[which(ModelsTable$model == model & ModelsTable$type == data.type), ]
       }
       
       if (nrow(tab.model) > 0) {
@@ -321,7 +313,7 @@ bm_ModelingOptions <- function(data.type
   ## check if type is supported
   avail.types.list <- c('binary', 'binary.PA', 'abundance', 'compositional')
   .fun_testIfIn(TRUE, "data.type", data.type, avail.types.list)
-
+  
   ## check if model is supported
   avail.models.list <- c('ANN', 'CTA', 'FDA', 'GAM', 'GAM.gam.gam', 'GAM.mgcv.bam', 'GAM.mgcv.gam'
                          , 'GBM', 'GLM', 'MARS', 'MAXENT', 'MAXNET', 'RF', 'SRE', 'XGBOOST')
@@ -332,15 +324,15 @@ bm_ModelingOptions <- function(data.type
     models[which(models == 'GAM')] = 'GAM.mgcv.gam'
     warning("Only one GAM model can be activated. 'GAM.mgcv.gam' has been set (other available : 'GAM.gam.gam' or 'GAM.mgcv.bam')")
   }
-
+  
   ## check if strategy is supported
   avail.strategy.list <- c('default', 'bigboss', 'user.defined', 'tuned')
   .fun_testIfIn(TRUE, "strategy", strategy, avail.strategy.list)
-
+  
   ## USER DEFINED parameterisation --------------
   if (strategy == "user.defined") {
     .fun_testIfInherits(TRUE, "val.list", val.list, c("list"))
-    avail.options.list <- paste0(TABLE_MODELS$model, ".", TABLE_MODELS$type, ".", TABLE_MODELS$package, ".", TABLE_MODELS$func)
+    avail.options.list <- paste0(ModelsTable$model, ".", ModelsTable$type, ".", ModelsTable$package, ".", ModelsTable$func)
     .fun_testIfIn(TRUE, "names(val.list)", names(val.list), avail.options.list)
     ## THEN can be directly arguments (all the same for all data) or a list with one set for each dataset (AllData_AllRun, ...)
   }
