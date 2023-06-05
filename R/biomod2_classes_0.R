@@ -536,7 +536,7 @@ setMethod('show', signature('BIOMOD.options.dataset'),
 ##' @title \code{\link{bm_ModelingOptions}} output object class
 ##' 
 ##' @description Class returned by \code{\link{bm_ModelingOptions}} and used by 
-##' \code{\link{BIOMOD_Modeling}
+##' \code{\link{BIOMOD_Modeling}}
 ##' 
 ##' 
 ##' @slot models a \code{vector} containing model names for which options have 
@@ -628,55 +628,6 @@ setMethod('show', signature('BIOMOD.models.options'),
 # if (is.character(object@MAXENT$maximumbackground)) if (object@MAXENT$maximumbackground != "default") tt <- FALSE
 # if (!tt) {
 #   cat("\nMAXENT$maximumbackground must be 'default' or numeric")
-# }
-# test <- .fun_testIfPosInt(test, "MAXENT$maximumiterations", object@MAXENT$maximumiterations)
-# if (!is.logical(object@MAXENT$visible)) {
-#   cat("\nMAXENT$visible must be a logical")
-# }
-# if (!is.logical(object@MAXENT$linear)) {
-#   cat("\nMAXENT$linear must be a logical")
-# }
-# if (!is.logical(object@MAXENT$quadratic)) {
-#   cat("\nMAXENT$quadratic must be a logical")
-# }
-# if (!is.logical(object@MAXENT$product)) {
-#   cat("\nMAXENT$product must be a logical")
-# }
-# if (!is.logical(object@MAXENT$threshold)) {
-#   cat("\nMAXENT$threshold must be a logical")
-# }
-# if (!is.logical(object@MAXENT$hinge)) {
-#   cat("\nMAXENT$hinge must be a logical")
-# }
-# if (!is.numeric(object@MAXENT$lq2lqptthreshold)) {
-#   cat("\nMAXENT$lq2lqptthreshold must be a numeric")
-# }
-# if (!is.numeric(object@MAXENT$l2lqthreshold)) {
-#   cat("\nMAXENT$l2lqthreshold must be a numeric")
-# }
-# if (!is.numeric(object@MAXENT$lq2lqptthreshold)) {
-#   cat("\nMAXENT$lq2lqptthreshold must be a numeric")
-# }
-# if (!is.numeric(object@MAXENT$hingethreshold)) {
-#   cat("\nMAXENT$hingethreshold must be a numeric")
-# }
-# if (!is.numeric(object@MAXENT$beta_threshold)) {
-#   cat("\nMAXENT$beta_threshold must be a numeric")
-# }
-# if (!is.numeric(object@MAXENT$beta_categorical)) {
-#   cat("\nMAXENT$beta_categorical must be a numeric")
-# }
-# if (!is.numeric(object@MAXENT$beta_lqp)) {
-#   cat("\nMAXENT$beta_lqp must be a numeric")
-# }
-# if (!is.numeric(object@MAXENT$beta_hinge)) {
-#   cat("\nMAXENT$beta_hinge must be a numeric")
-# }
-# if (!is.numeric(object@MAXENT$betamultiplier)) {
-#   cat("\nMAXENT$betamultiplier must be a numeric")
-# }
-# if (!is.numeric(object@MAXENT$defaultprevalence)) {
-#   cat("\nMAXENT$defaultprevalence must be a numeric")
 # }
 # 
 # if(!is.null(object@MAXENT$initial_heap_size)){

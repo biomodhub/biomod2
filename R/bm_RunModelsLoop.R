@@ -27,7 +27,7 @@
 ##' A \code{list} containing for each model a \code{vector} defining which pseudo-absence datasets 
 ##' are to be used, must be among \code{colnames(bm.format@PA.table)}
 ##' @param bm.options a \code{\link{BIOMOD.models.options}} object returned by the  
-##' \code{\link{BIOMOD_ModelingOptions}} function
+##' \code{\link{bm_ModelingOptions}} function
 ##' @param metric.eval a \code{vector} containing evaluation metric names to be used, must 
 ##' be among \code{ROC}, \code{TSS}, \code{KAPPA}, \code{ACCURACY}, \code{BIAS}, \code{POD}, 
 ##' \code{FAR}, \code{POFD}, \code{SR}, \code{CSI}, \code{ETS}, \code{HK}, \code{HSS}, \code{OR}, 
@@ -88,7 +88,7 @@
 ##' \code{\link[MASS]{stepAIC}}, \code{\link[nnet]{nnet}}, \code{\link[earth]{earth}}, 
 ##' \code{\link[mda]{fda}}, \code{\link[mda]{mars}}, \code{\link[maxnet]{maxnet}}, 
 ##' \code{\link[randomForest]{randomForest}}, \code{\link[xgboost]{xgboost}}, 
-##' \code{\link{BIOMOD_ModelingOptions}}, \code{\link{BIOMOD_Modeling}}, 
+##' \code{\link{bm_ModelingOptions}}, \code{\link{BIOMOD_Modeling}}, 
 ##' \code{\link{bm_MakeFormula}}, \code{\link{bm_SampleFactorLevels}}, 
 ##' \code{\link{bm_FindOptimStat}}, \code{\link{bm_VariablesImportance}}
 ##' @family Secundary functions

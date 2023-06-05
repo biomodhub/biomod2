@@ -95,22 +95,22 @@ NULL
 BIOMOD_PresenceOnly <- function(...) { .Deprecated("bm_FindOptimStat") }
 
 
-#' @title BIOMOD_tuning
+#' @title BIOMOD_Tuning
 #' @description Deprecated function name for
-#'   \code{\link{BIOMOD_Tuning}}
+#'   \code{\link{bm_Tuning}}
 #' @param ... Additional arguments
 #'
 #' @name BIOMOD_tuning-deprecated
-#' @usage BIOMOD_tuning(...)
+#' @usage BIOMOD_Tuning(...)
 #' @seealso \code{\link{biomod2-deprecated}}
 #' @keywords internal
 NULL
 #' @rdname biomod2-deprecated
-#' @section \code{BIOMOD_tuning}:
-#' For \code{BIOMOD_tuning} use \code{\link{BIOMOD_Tuning}}.
+#' @section \code{BIOMOD_Tuning}:
+#' For \code{BIOMOD_Tuning} use \code{\link{bm_Tuning}}.
 #'
 #' @export
-BIOMOD_tuning <- function(...) { .Deprecated("BIOMOD_Tuning") }
+BIOMOD_Tuning <- function(...) { .Deprecated("bm_Tuning") }
 
 #' @title BinaryTransformation
 #' @description Deprecated function name for
@@ -253,22 +253,6 @@ NULL
 #' @export
 models_scores_graph <- function(...) { .Deprecated("bm_PlotEvalMean") }
 
-#' @title Print_Default_ModelingOptions
-#' @description Deprecated function name for
-#'   \code{\link{bm_DefaultModelingOptions}}
-#' @param ... Additional arguments
-#'
-#' @name Print_Default_ModelingOptions-deprecated
-#' @usage Print_Default_ModelingOptions(...)
-#' @seealso \code{\link{biomod2-deprecated}}
-#' @keywords internal
-NULL
-#' @rdname biomod2-deprecated
-#' @section \code{Print_Default_ModelingOptions}:
-#' For \code{Print_Default_ModelingOptions} use \code{\link{bm_DefaultModelingOptions}}.
-#'
-#' @export
-Print_Default_ModelingOptions <- function(...) { .Deprecated("bm_DefaultModelingOptions") }
 
 #' @title ProbDensFunc
 #' @description Deprecated function name for

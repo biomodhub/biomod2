@@ -111,7 +111,7 @@ Collate:
     'bm_SRE.R'
     'bm_SampleBinaryVector.R'
     'bm_SampleFactorLevels.R'
-    'bm_Tuning'
+    'bm_Tuning.R'
     'bm_VariablesImportance.R'
     'zzz.R'
 LazyData: true

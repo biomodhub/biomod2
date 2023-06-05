@@ -78,7 +78,7 @@
 ##' 
 ##' 
 ##' @seealso \code{\link{bm_PseudoAbsences}}, \code{\link{BIOMOD_FormatingData}}, 
-##' \code{\link{BIOMOD_ModelingOptions}}, \code{\link{BIOMOD_Tuning}}, 
+##' \code{\link{bm_ModelingOptions}}, \code{\link{bm_Tuning}}, 
 ##' \code{\link{bm_RunModelsLoop}}, \code{\link{BIOMOD_Modeling}},
 ##' @family Secundary functions
 ##' 

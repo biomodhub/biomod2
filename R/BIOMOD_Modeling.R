@@ -21,7 +21,7 @@
 ##' A \code{list} containing for each model a \code{vector} defining which pseudo-absence datasets 
 ##' are to be used, must be among \code{colnames(bm.format@PA.table)}
 ##' @param bm.options a \code{\link{BIOMOD.models.options}} object returned by the  
-##' \code{\link{BIOMOD_ModelingOptions}} function
+##' \code{\link{bm_ModelingOptions}} function
 ##' 
 ##' @param CV.strategy a \code{character} corresponding to the cross-validation selection strategy, 
 ##' must be among \code{random}, \code{kfold}, \code{block}, \code{strat}, \code{env} or 
@@ -115,7 +115,7 @@
 ##'     \item \code{GLM} : Generalized Linear Model (\code{\link[stats]{glm}})
 ##'     \item \code{GAM} : Generalized Additive Model (\code{\link[gam]{gam}}, \code{\link[mgcv]{gam}} 
 ##'     or \code{\link[mgcv]{bam}}) \cr 
-##'     (see \code{\link{BIOMOD_ModelingOptions} for details on algorithm selection})
+##'     (see \code{\link{bm_ModelingOptions} for details on algorithm selection})
 ##'     \item \code{GBM} : Generalized Boosting Model, or usually called Boosted Regression Trees 
 ##'     (\code{\link[gbm]{gbm}})
 ##'     \item \code{CTA} : Classification Tree Analysis (\code{\link[rpart]{rpart}})
@@ -197,7 +197,7 @@
 ##'   \code{\link[mda]{fda}}, \code{\link[earth]{earth}},
 ##'   \code{\link[randomForest]{randomForest}}, \code{\link[maxnet]{maxnet}},
 ##'   \code{\link[xgboost]{xgboost}}, \code{\link{BIOMOD_FormatingData}},
-##'   \code{\link{BIOMOD_ModelingOptions}}, \code{\link{bm_CrossValidation}},
+##'   \code{\link{bm_ModelingOptions}}, \code{\link{bm_CrossValidation}},
 ##'   \code{ \link{bm_VariablesImportance}}, \code{\link{BIOMOD_Projection}},
 ##'   \code{\link{BIOMOD_EnsembleModeling}}, \code{\link{bm_PlotEvalMean}},
 ##'   \code{\link{bm_PlotEvalBoxplot}}, \code{\link{bm_PlotVarImpBoxplot}},
@@ -543,10 +543,12 @@ BIOMOD_Modeling <- function(bm.format,
   ## 3. Check bm.options arguments --------------------------------------------
   if (!is.null(bm.options)) {
     .fun_testIfInherits(TRUE, "bm.options", bm.options, "BIOMOD.models.options")
-  } else {
-    warning("Models will run with 'defaults' parameters", immediate. = TRUE)
-    bm.options <- BIOMOD_ModelingOptions()
-  }
+  } 
+  
+  # else {
+  #   warning("Models will run with 'default' parameters", immediate. = TRUE)
+  #   bm.options <- BIOMOD_ModelingOptions()
+  # }
   
   ## 2.2 Specific check for MAXENT -----------------------------------
   if ("MAXENT" %in% models) {

@@ -187,8 +187,8 @@ setMethod("load_stored_object", "BIOMOD.stored.data",
 )
 
 ##' @rdname load_stored_object
+##' @importFrom terra rast
 ##' @export
-##' @importFrom terra rast wrap
 ##' 
 
 setMethod("load_stored_object", "BIOMOD.stored.SpatRaster",

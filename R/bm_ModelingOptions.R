@@ -41,7 +41,7 @@
 ##' models. \cr 10 single models are available within the package, and their options can be set 
 ##' with this function through \code{list} objects.
 ##' 
-##' The \code{\link{bm_DefaultModelingOptions}} function prints all default parameter values for 
+##' The \code{bm_DefaultModelingOptions} function prints all default parameter values for 
 ##' all available models. \cr This output can be copied and pasted to be used as is (with wanted 
 ##' changes) as function arguments (see \href{https://biomodhub.github.io/biomod2/reference/bm_ModelingOptions.html#examples}{Examples}).
 ##' 

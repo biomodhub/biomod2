@@ -10,7 +10,7 @@
 ##' @title \code{BIOMOD_FormatingData()} output object class
 ##' 
 ##' @description Class returned by \code{\link{BIOMOD_FormatingData}}, and used by 
-##' \code{\link{BIOMOD_Tuning}}, \code{\link{bm_CrossValidation}} and 
+##' \code{\link{bm_Tuning}}, \code{\link{bm_CrossValidation}} and 
 ##' \code{\link{BIOMOD_Modeling}}
 ##' 
 ##' 
@@ -94,7 +94,7 @@
 ##' A \code{data.frame} containing explanatory variables for evaluation data
 ##' 
 ##' 
-##' @seealso \code{\link{BIOMOD_FormatingData}}, \code{\link{BIOMOD_Tuning}}, 
+##' @seealso \code{\link{BIOMOD_FormatingData}}, \code{\link{bm_Tuning}}, 
 ##' \code{\link{bm_CrossValidation}}, \code{\link{BIOMOD_Modeling}}, 
 ##' \code{\link{bm_RunModelsLoop}}
 ##' @family Toolbox objects
@@ -1290,7 +1290,7 @@ setMethod('summary', signature(object = 'BIOMOD.formated.data'),
 ##' @title \code{BIOMOD_FormatingData()} output object class (with pseudo-absences)
 ##' 
 ##' @description Class returned by \code{\link{BIOMOD_FormatingData}}, and used by 
-##' \code{\link{BIOMOD_Tuning}}, \code{\link{bm_CrossValidation}} and 
+##' \code{\link{bm_Tuning}}, \code{\link{bm_CrossValidation}} and 
 ##' \code{\link{BIOMOD_Modeling}}
 ##' 
 ##' @inheritParams BIOMOD.formated.data
@@ -1359,7 +1359,7 @@ setMethod('summary', signature(object = 'BIOMOD.formated.data'),
 ##' 
 ##' 
 ##' @seealso \code{\link{BIOMOD_FormatingData}}, \code{\link{bm_PseudoAbsences}}, 
-##' \code{\link{BIOMOD_Tuning}}, \code{\link{bm_CrossValidation}}, 
+##' \code{\link{bm_Tuning}}, \code{\link{bm_CrossValidation}}, 
 ##' \code{\link{BIOMOD_Modeling}}, \code{\link{bm_RunModelsLoop}}
 ##' @family Toolbox objects
 ##' 

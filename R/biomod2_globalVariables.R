@@ -27,8 +27,8 @@ utils::globalVariables(names = c("cv"))
 utils::globalVariables(names = c("i"))
 
 
-## BIOMOD_Tuning ------------
-utils::globalVariables(names = c("i", "quant", "type", "IA"))
+## bm_Tuning ------------
+utils::globalVariables(names = c("calib.i", "rep", "quant", "i", "typ", "intlev", "fi"))
 
 ## BIOMOD_Projection ------------
 utils::globalVariables(names = c("do.stack",

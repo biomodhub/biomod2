@@ -109,7 +109,7 @@
 ##' @keywords models projection
 ##' 
 ##' 
-##' @seealso \code{\link{BIOMOD_FormatingData}}, \code{\link{BIOMOD_ModelingOptions}}, 
+##' @seealso \code{\link{BIOMOD_FormatingData}}, \code{\link{bm_ModelingOptions}}, 
 ##' \code{\link{BIOMOD_Modeling}}, \code{\link{BIOMOD_EnsembleModeling}}, 
 ##' \code{\link{BIOMOD_RangeSize}}
 ##' @family Main functions

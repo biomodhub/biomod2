@@ -262,7 +262,7 @@
 ##' @keywords models ensemble weights
 ##' 
 ##' 
-##' @seealso \code{\link{BIOMOD_FormatingData}}, \code{\link{BIOMOD_ModelingOptions}}, 
+##' @seealso \code{\link{BIOMOD_FormatingData}}, \code{\link{bm_ModelingOptions}}, 
 ##' \code{\link{bm_CrossValidation}}, \code{\link{bm_VariablesImportance}}, 
 ##' \code{\link{BIOMOD_Modeling}}, \code{\link{BIOMOD_EnsembleForecasting}},
 ##' \code{\link{bm_PlotEvalMean}}, \code{\link{bm_PlotEvalBoxplot}}, 

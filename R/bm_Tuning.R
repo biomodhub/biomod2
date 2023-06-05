@@ -10,80 +10,34 @@
 ##' @param bm.format a \code{\link{BIOMOD.formated.data}} or \code{\link{BIOMOD.formated.data.PA}} 
 ##' object returned by the \code{\link{BIOMOD_FormatingData}} function
 ##' @param bm.options a \code{\link{BIOMOD.models.options}} object returned by the  
-##' \code{\link{BIOMOD_ModelingOptions}} function
+##' \code{\link{bm_ModelingOptions}} function
 ##' @param models a \code{vector} containing model names to be tuned, must be among 
 ##' \code{ANN}, \code{CTA}, \code{FDA}, \code{GAM}, \code{GBM}, \code{GLM}, \code{MARS}, 
 ##' \code{MAXENT}, \code{MAXNET}, \code{RF}, \code{SRE}, \code{XGBOOST}
 ##' @param metric.eval a \code{character} corresponding to the evaluation metric used to select 
 ##' optimal models and tune parameters, must be either \code{ROC} or \code{TSS} 
 ##' (\emph{maximizing Sensitivity and Specificity})
+##' \code{auc.val.avg}, \code{auc.diff.avg}, \code{or.mtp.avg}, \code{or.10p.avg} or \code{AICc}
 ##' @param ctrl.train global control parameters that can be obtained from the 
 ##' \code{\link[caret]{trainControl}} function
 ##' @param ctrl.train.tuneLength (see \code{tuneLength} parameter in \code{\link[caret]{train}})
-##' @param ctrl.ANN control parameters for \code{ANN}
-##' @param ctrl.CTA control parameters for \code{CTA}
-##' @param ctrl.FDA control parameters for \code{FDA}
-##' @param ctrl.GAM control parameters for \code{GAM}
-##' @param ctrl.GBM control parameters for \code{GBM}
-##' @param ctrl.GLM control parameters for \code{GLM}
-##' @param ctrl.MARS control parameters for \code{MARS}
-##' @param ctrl.RF control parameters for \code{RF}
-##' @param ANN.method a \code{character} corresponding to the classification or regression model 
-##' to use for \code{ANN}, \cr 
-##' must be \code{avNNet} (see \url{http://topepo.github.io/caret/train-models-by-tag.html#Neural_Network})
-##' @param ANN.size.tune a \code{vector} of size parameters (number of units in the hidden layer) 
 ##' for \code{ANN}
-##' @param ANN.decay.tune a \code{vector} of weight decay parameters for \code{ANN}
-##' @param ANN.maxit an \code{integer} corresponding to the maximum number of iterations for 
-##' \code{ANN}
 ##' @param ANN.MaxNWts an \code{integer} corresponding to the maximum allowable number of weights 
 ##' for \code{ANN}
-##' @param GAM.method a \code{character} corresponding to the classification or regression model 
-##' to use for \code{GAM}, \cr 
-##' must be \code{gam} (see \url{http://topepo.github.io/caret/train-models-by-tag.html#generalized-additive-model})
 ##' @param GLM.method a \code{character} corresponding to the classification or regression model 
 ##' to use for \code{GLM}, \cr 
 ##' must be \code{glmStepAIC} (see 
 ##' \url{http://topepo.github.io/caret/train-models-by-tag.html#Generalized_Linear_Model})
-##' @param GLM.type a \code{vector} of \code{character} corresponding to modeling types for 
-##' \code{GLM}, \cr must be among \code{simple}, \code{quadratic}, \code{polynomial}, 
-##' \code{s_smoother}
-##' @param GLM.interaction a \code{vector} of interaction types, must be among \code{0}, \code{1}
-##' @param MARS.method a \code{character} corresponding to the classification or regression model 
-##' to use for \code{MARS}, \cr 
-##' must be \code{earth} (see 
-##' \url{http://topepo.github.io/caret/train-models-by-tag.html#Multivariate_Adaptive_Regression_Splines})
-##' @param metric.eval a \code{character} corresponding to the evaluation metric used to select 
-##' optimal model and tune parameters for \code{MAXENT}, must be either 
-##' \code{auc.val.avg}, \code{auc.diff.avg}, \code{or.mtp.avg}, \code{or.10p.avg} or \code{AICc}
 ##' @param ME.cvmethod a \code{character} corresponding to the method used to partition data for 
 ##' \code{MAXENT}, \cr must be \code{randomkfold}
 ##' @param ME.kfolds an \code{integer} corresponding to the number of bins for k-fold 
 ##' cross-validation for \code{MAXENT}
-##' @param ME.overlap (\emph{optional, default} \code{FALSE}) \cr 
-##' A \code{logical} value defining whether to calculate pairwise metric of niche overlap or not 
-##' (see \code{\link[ENMeval]{calc.niche.overlap}})
-##' @param ME.clamp (\emph{optional, default} \code{TRUE}) \cr 
-##' A \code{logical} value defining whether \emph{Features are constrained to remain within the 
-##' range of values in the training data} (Elith et al. 2011) or not
-##' @param ME.n.bg an \code{integer} corresponding to the number of background points used to run 
-##' \code{MAXENT}
-##' @param ME.env a \code{\link[terra:rast]{SpatRaster}} object 
-##' containing model predictor variables
-##' @param ME.parallel (\emph{optional, default} \code{TRUE}) \cr 
-##' A \code{logical} value defining whether to enable parallel computing for 
-##' \code{MAXENT} or not
-##' @param ME.numCores an \code{integer} corresponding to the number of cores to be used to 
-##' train \code{MAXENT}
-##' @param RF.method a \code{character} corresponding to the classification or regression model 
-##' to use for \code{RF}, \cr 
-##' must be \code{rf} (see \url{http://topepo.github.io/caret/train-models-by-tag.html#random-forest})
 ##' @param weights a \code{vector} of \code{numeric} values corresponding to observation weights
 ##' 
 ##' 
 ##' @return 
 ##' 
-##' A \code{\link{BIOMOD.models.options}} object (see \code{\link{BIOMOD_ModelingOptions}}) with 
+##' A \code{\link{BIOMOD.models.options}} object (see \code{\link{bm_ModelingOptions}}) with 
 ##' optimized parameters
 ##' 
 ##' 
@@ -114,7 +68,7 @@
 ##' 
 ##' @seealso \code{\link[caret]{trainControl}}, \code{\link[caret]{train}}, 
 ##' \code{\link[ENMeval]{calc.niche.overlap}}, \code{\link[ENMeval]{ENMevaluate}}, 
-##' \code{\link{BIOMOD_ModelingOptions}}, \code{\link{BIOMOD_Modeling}}
+##' \code{\link{bm_ModelingOptions}}, \code{\link{BIOMOD_Modeling}}
 ##' @family Main functions
 ##' 
 ##' 
