@@ -4,7 +4,7 @@
 \alias{BIOMOD_PresenceOnly}
 \title{Evaluate models with presence-only metrics}
 \usage{
-BIOMOD_PresenceOnly(bm.mod = NULL, bm.em = NULL, bg.env = NULL, perc = 0.9)
+BIOMOD_PresenceOnly(...)
 }
 \arguments{
 \item{bm.mod}{a \code{\link{BIOMOD.models.out}} object returned by the 
@@ -157,11 +157,10 @@ Other Main functions:
 \code{\link{BIOMOD_EnsembleModeling}()},
 \code{\link{BIOMOD_FormatingData}()},
 \code{\link{BIOMOD_LoadModels}()},
-\code{\link{BIOMOD_ModelingOptions}()},
 \code{\link{BIOMOD_Modeling}()},
 \code{\link{BIOMOD_Projection}()},
 \code{\link{BIOMOD_RangeSize}()},
-\code{\link{BIOMOD_Tuning}()}
+\code{\link{bm_Tuning}()}
 }
 \author{
 Frank Breiner, Maya Gueguen

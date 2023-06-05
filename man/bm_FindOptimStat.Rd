@@ -11,7 +11,9 @@ bm_FindOptimStat(
   obs,
   fit,
   nb.thresh = 100,
-  threshold = NULL
+  threshold = NULL,
+  boyce.bg.env = NULL,
+  mpa.perc = 0.9
 )
 
 get_optim_value(metric.eval)
@@ -21,8 +23,8 @@ bm_CalculateStat(misc, metric.eval = "TSS")
 \arguments{
 \item{metric.eval}{a \code{character} corresponding to the evaluation metric to be used, must 
 be either \code{ROC}, \code{TSS}, \code{KAPPA}, \code{ACCURACY}, \code{BIAS}, \code{POD}, 
-\code{FAR}, \code{POFD}, \code{SR}, \code{CSI}, \code{ETS}, \code{HK}, \code{HSS}, \code{OR} 
-or \code{ORSS}}
+\code{FAR}, \code{POFD}, \code{SR}, \code{CSI}, \code{ETS}, \code{HK}, \code{HSS}, \code{OR}, 
+\code{ORSS}, \code{BOYCE}, \code{MPA}}
 
 \item{obs}{a \code{vector} of observed values (binary, \code{0} or \code{1})}
 
@@ -33,6 +35,19 @@ tested over the range of fitted values}
 
 \item{threshold}{(\emph{optional, default} \code{NULL}) \cr 
 A \code{numeric} corresponding to the threshold used to convert the given data}
+
+\item{boyce.bg.env}{(\emph{optional, default} \code{NULL}) \cr 
+A \code{matrix}, \code{data.frame}, \code{\link[terra:vect]{SpatVector}}
+or \code{\link[terra:rast]{SpatRaster}} object containing values of 
+environmental variables (in columns or layers) extracted from the background 
+(\emph{if presences are to be compared to background instead of absences or 
+pseudo-absences selected for modeling})
+\cr \emph{Note that old format from \pkg{raster} and \pkg{sp} are still supported such as 
+\code{RasterStack} and \code{SpatialPointsDataFrame} objects. }}
+
+\item{mpa.perc}{a \code{numeric} between \code{0} and \code{1} corresponding to the percentage 
+of correctly classified presences for Minimal Predicted Area (see \code{ecospat.mpa()} in 
+\pkg{ecospat})}
 
 \item{misc}{a \code{matrix} corresponding to a contingency table}
 }
@@ -58,6 +73,15 @@ evaluation metrics.}
 
 Note that if a value is given to \code{threshold}, no optimisation will be done., and 
 only the score for this threshold will be returned.
+
+The Boyce index returns \code{NA} values for \code{SRE} models because it can not be 
+calculated with binary predictions. \cr This is also the reason why some \code{NA} values 
+might appear for \code{GLM} models if they do not converge.
+}
+\note{
+In order to break dependency loop between packages \pkg{biomod2} and \pkg{ecospat}, 
+code of \code{ecospat.boyce()} and \code{ecospat.mpa()} in \pkg{ecospat})
+functions have been copied within this file from version 3.2.2 (august 2022).
 }
 \examples{
 
@@ -82,15 +106,26 @@ bm_FindOptimStat(metric.eval = 'TSS', fit = vec.c, obs = vec.a, threshold = 280)
 
 
 }
+\references{
+\itemize{
+  \item Engler, R., Guisan, A., and Rechsteiner L. 2004. An improved approach for predicting 
+  the distribution of rare and endangered species from occurrence and pseudo-absence data. 
+  \emph{Journal of Applied Ecology}, \bold{41(2)}, 263-274.
+  \item Hirzel, A. H., Le Lay, G., Helfer, V., Randin, C., and Guisan, A. 2006. Evaluating 
+  the ability of habitat suitability models to predict species presences. \emph{Ecological 
+  Modelling}, \bold{199(2)}, 142-152.
+}
+}
 \seealso{
+\code{ecospat.boyce()} and \code{ecospat.mpa()} in \pkg{ecospat}, 
 \code{\link{BIOMOD_Modeling}}, \code{\link{bm_RunModelsLoop}}, 
 \code{\link{BIOMOD_EnsembleModeling}}
 
 Other Secundary functions: 
 \code{\link{bm_BinaryTransformation}()},
-\code{\link{bm_CVnnet}()},
 \code{\link{bm_CrossValidation}()},
 \code{\link{bm_MakeFormula}()},
+\code{\link{bm_ModelingOptions}()},
 \code{\link{bm_PlotEvalBoxplot}()},
 \code{\link{bm_PlotEvalMean}()},
 \code{\link{bm_PlotRangeSize}()},

@@ -6,7 +6,8 @@
 \alias{BIOMOD_cv}
 \alias{BIOMOD_CrossValidation}
 \alias{BIOMOD_presenceonly}
-\alias{BIOMOD_tuning}
+\alias{BIOMOD_PresenceOnly}
+\alias{BIOMOD_Tuning}
 \alias{BinaryTransformation}
 \alias{calculate.stat}
 \alias{CustomIndexMaker}
@@ -15,7 +16,6 @@
 \alias{getStatOptimValue}
 \alias{makeFormula}
 \alias{models_scores_graph}
-\alias{Print_Default_ModelingOptions}
 \alias{ProbDensFunc}
 \alias{response.plot}
 \alias{response.plot2}
@@ -35,7 +35,9 @@ BIOMOD_CrossValidation(...)
 
 BIOMOD_presenceonly(...)
 
-BIOMOD_tuning(...)
+BIOMOD_PresenceOnly(...)
+
+BIOMOD_Tuning(...)
 
 BinaryTransformation(...)
 
@@ -52,8 +54,6 @@ getStatOptimValue(...)
 makeFormula(...)
 
 models_scores_graph(...)
-
-Print_Default_ModelingOptions(...)
 
 ProbDensFunc(...)
 
@@ -99,9 +99,14 @@ For \code{BIOMOD_CrossValidation} use \code{\link{bm_CrossValidation}}.
 For \code{BIOMOD_presenceonly} use \code{\link{BIOMOD_PresenceOnly}}.
 }
 
-\section{\code{BIOMOD_tuning}}{
+\section{\code{BIOMOD_PresenceOnly}}{
 
-For \code{BIOMOD_tuning} use \code{\link{BIOMOD_Tuning}}.
+For \code{BIOMOD_PresenceOnly} use \code{\link{bm_FindOptimStat}}.
+}
+
+\section{\code{BIOMOD_Tuning}}{
+
+For \code{BIOMOD_Tuning} use \code{\link{bm_Tuning}}.
 }
 
 \section{\code{BinaryTransformation}}{
@@ -142,11 +147,6 @@ For \code{makeFormula} use \code{\link{bm_MakeFormula}}.
 \section{\code{models_scores_graph}}{
 
 For \code{models_scores_graph} use \code{\link{bm_PlotEvalMean}}.
-}
-
-\section{\code{Print_Default_ModelingOptions}}{
-
-For \code{Print_Default_ModelingOptions} use \code{\link{bm_DefaultModelingOptions}}.
 }
 
 \section{\code{ProbDensFunc}}{

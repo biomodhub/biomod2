@@ -87,6 +87,8 @@ Other Toolbox objects:
 \code{\link{BIOMOD.formated.data}},
 \code{\link{BIOMOD.models.options}},
 \code{\link{BIOMOD.models.out}},
+\code{\link{BIOMOD.options.dataset}},
+\code{\link{BIOMOD.options.default}},
 \code{\link{BIOMOD.projection.out}},
 \code{\link{BIOMOD.stored.data}},
 \code{\link{biomod2_model}}

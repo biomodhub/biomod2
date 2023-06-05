@@ -2,16 +2,16 @@
 % Please edit documentation in R/DEPRECATED.R
 \name{BIOMOD_tuning-deprecated}
 \alias{BIOMOD_tuning-deprecated}
-\title{BIOMOD_tuning}
+\title{BIOMOD_Tuning}
 \usage{
-BIOMOD_tuning(...)
+BIOMOD_Tuning(...)
 }
 \arguments{
 \item{...}{Additional arguments}
 }
 \description{
 Deprecated function name for
-  \code{\link{BIOMOD_Tuning}}
+  \code{\link{bm_Tuning}}
 }
 \seealso{
 \code{\link{biomod2-deprecated}}

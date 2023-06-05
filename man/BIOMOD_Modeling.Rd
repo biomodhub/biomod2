@@ -7,8 +7,8 @@
 BIOMOD_Modeling(
   bm.format,
   modeling.id = as.character(format(Sys.time(), "\%s")),
-  models = c("GLM", "GBM", "GAM", "CTA", "ANN", "SRE", "FDA", "MARS", "RF", "MAXENT",
-    "MAXNET", "XGBOOST"),
+  models = c("ANN", "CTA", "FDA", "GAM", "GBM", "GLM", "MARS", "MAXENT", "MAXNET", "RF",
+    "SRE", "XGBOOST"),
   models.pa = NULL,
   bm.options = NULL,
   CV.strategy = "random",
@@ -41,16 +41,16 @@ object returned by the \code{\link{BIOMOD_FormatingData}} function}
 \item{modeling.id}{a \code{character} corresponding to the name (ID) of the simulation set 
 (\emph{a random number by default})}
 
-\item{models}{a \code{vector} containing model names to be computed, must be among \code{GLM}, 
-\code{GBM}, \code{GAM}, \code{CTA}, \code{ANN}, \code{SRE}, \code{FDA}, \code{MARS}, 
-\code{RF}, \code{MAXENT}, \code{MAXNET}, \code{XGBOOST}}
+\item{models}{a \code{vector} containing model names to be computed, must be among 
+\code{ANN}, \code{CTA}, \code{FDA}, \code{GAM}, \code{GBM}, \code{GLM}, \code{MARS}, 
+\code{MAXENT}, \code{MAXNET}, \code{RF}, \code{SRE}, \code{XGBOOST}}
 
 \item{models.pa}{(\emph{optional, default} \code{NULL}) \cr 
 A \code{list} containing for each model a \code{vector} defining which pseudo-absence datasets 
 are to be used, must be among \code{colnames(bm.format@PA.table)}}
 
 \item{bm.options}{a \code{\link{BIOMOD.models.options}} object returned by the
-\code{\link{BIOMOD_ModelingOptions}} function}
+\code{\link{bm_ModelingOptions}} function}
 
 \item{CV.strategy}{a \code{character} corresponding to the cross-validation selection strategy, 
 must be among \code{random}, \code{kfold}, \code{block}, \code{strat}, \code{env} or 
@@ -111,7 +111,7 @@ build '\emph{weighted response weights}' (see Details)}
 \item{metric.eval}{a \code{vector} containing evaluation metric names to be used, must 
 be among \code{ROC}, \code{TSS}, \code{KAPPA}, \code{ACCURACY}, \code{BIAS}, \code{POD}, 
 \code{FAR}, \code{POFD}, \code{SR}, \code{CSI}, \code{ETS}, \code{HK}, \code{HSS}, \code{OR}, 
-\code{ORSS}}
+\code{ORSS}, \code{BOYCE}, \code{MPA}}
 
 \item{var.import}{(\emph{optional, default} \code{NULL}) \cr 
 An \code{integer} corresponding to the number of permutations to be done for each variable to 
@@ -165,7 +165,7 @@ metrics (see Details).
     \item \code{GLM} : Generalized Linear Model (\code{\link[stats]{glm}})
     \item \code{GAM} : Generalized Additive Model (\code{\link[gam]{gam}}, \code{\link[mgcv]{gam}} 
     or \code{\link[mgcv]{bam}}) \cr 
-    (see \code{\link{BIOMOD_ModelingOptions} for details on algorithm selection})
+    (see \code{\link{bm_ModelingOptions} for details on algorithm selection})
     \item \code{GBM} : Generalized Boosting Model, or usually called Boosted Regression Trees 
     (\code{\link[gbm]{gbm}})
     \item \code{CTA} : Classification Tree Analysis (\code{\link[rpart]{rpart}})
@@ -218,6 +218,8 @@ metrics (see Details).
     \item \code{POD} : Probability of detection (hit rate)
     \item \code{CSI} : Critical success index (threat score)
     \item \code{ETS} : Equitable threat score (Gilbert skill score)
+    \item \code{BOYCE} : Boyce index
+    \item \code{MPA} : Minimal Predicted Area (cutoff optimising MPA to predict 90% of presences)
   }
   Optimal value of each method can be obtained with the \code{\link{get_optim_value}} 
   function. Several evaluation metrics can be selected. \emph{Please refer to the 
@@ -322,7 +324,7 @@ bm_PlotEvalBoxplot(bm.out = myBiomodModelOut, group.by = c('algo', 'run'))
   \code{\link[mda]{fda}}, \code{\link[earth]{earth}},
   \code{\link[randomForest]{randomForest}}, \code{\link[maxnet]{maxnet}},
   \code{\link[xgboost]{xgboost}}, \code{\link{BIOMOD_FormatingData}},
-  \code{\link{BIOMOD_ModelingOptions}}, \code{\link{bm_CrossValidation}},
+  \code{\link{bm_ModelingOptions}}, \code{\link{bm_CrossValidation}},
   \code{ \link{bm_VariablesImportance}}, \code{\link{BIOMOD_Projection}},
   \code{\link{BIOMOD_EnsembleModeling}}, \code{\link{bm_PlotEvalMean}},
   \code{\link{bm_PlotEvalBoxplot}}, \code{\link{bm_PlotVarImpBoxplot}},
@@ -333,11 +335,10 @@ Other Main functions:
 \code{\link{BIOMOD_EnsembleModeling}()},
 \code{\link{BIOMOD_FormatingData}()},
 \code{\link{BIOMOD_LoadModels}()},
-\code{\link{BIOMOD_ModelingOptions}()},
 \code{\link{BIOMOD_PresenceOnly}()},
 \code{\link{BIOMOD_Projection}()},
 \code{\link{BIOMOD_RangeSize}()},
-\code{\link{BIOMOD_Tuning}()}
+\code{\link{bm_Tuning}()}
 }
 \author{
 Wilfried Thuiller, Damien Georges, Robin Engler

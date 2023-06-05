@@ -21,7 +21,7 @@
 object. Coordinates must be available to be able to use \code{plot}.}
 
 \item{calib.lines}{(\emph{optional, default} \code{NULL}) \cr
-an \code{array} object returned by \code{\link{get_calib_lines}} or 
+an \code{data.frame} object returned by \code{\link{get_calib_lines}} or 
 \code{\link{bm_CrossValidation}} functions, to explore the distribution of calibration 
 and validation datasets}
 

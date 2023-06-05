@@ -395,7 +395,7 @@ bm_PlotEvalBoxplot(bm.out = myBiomodEM, group.by = c('algo', 'algo'))
 
 }
 \seealso{
-\code{\link{BIOMOD_FormatingData}}, \code{\link{BIOMOD_ModelingOptions}}, 
+\code{\link{BIOMOD_FormatingData}}, \code{\link{bm_ModelingOptions}}, 
 \code{\link{bm_CrossValidation}}, \code{\link{bm_VariablesImportance}}, 
 \code{\link{BIOMOD_Modeling}}, \code{\link{BIOMOD_EnsembleForecasting}},
 \code{\link{bm_PlotEvalMean}}, \code{\link{bm_PlotEvalBoxplot}}, 
@@ -405,12 +405,11 @@ Other Main functions:
 \code{\link{BIOMOD_EnsembleForecasting}()},
 \code{\link{BIOMOD_FormatingData}()},
 \code{\link{BIOMOD_LoadModels}()},
-\code{\link{BIOMOD_ModelingOptions}()},
 \code{\link{BIOMOD_Modeling}()},
 \code{\link{BIOMOD_PresenceOnly}()},
 \code{\link{BIOMOD_Projection}()},
 \code{\link{BIOMOD_RangeSize}()},
-\code{\link{BIOMOD_Tuning}()}
+\code{\link{bm_Tuning}()}
 }
 \author{
 Wilfried Thuiller, Damien Georges, Robin Engler

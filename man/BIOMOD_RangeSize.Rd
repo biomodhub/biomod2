@@ -183,11 +183,10 @@ Other Main functions:
 \code{\link{BIOMOD_EnsembleModeling}()},
 \code{\link{BIOMOD_FormatingData}()},
 \code{\link{BIOMOD_LoadModels}()},
-\code{\link{BIOMOD_ModelingOptions}()},
 \code{\link{BIOMOD_Modeling}()},
 \code{\link{BIOMOD_PresenceOnly}()},
 \code{\link{BIOMOD_Projection}()},
-\code{\link{BIOMOD_Tuning}()}
+\code{\link{bm_Tuning}()}
 }
 \author{
 Wilfried Thuiller, Damien Georges, Bruno Lafourcade

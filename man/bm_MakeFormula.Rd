@@ -59,14 +59,14 @@ bm_MakeFormula(resp.name = 'myResp.s',
 }
 \seealso{
 \code{\link[stats]{formula}}, \code{\link[mgcv]{s}}, \code{\link[gam]{s}}, 
-\code{\link{BIOMOD_ModelingOptions}}, \code{\link{BIOMOD_Tuning}}, 
+\code{\link{bm_ModelingOptions}}, \code{\link{bm_Tuning}}, 
 \code{\link{bm_RunModelsLoop}}
 
 Other Secundary functions: 
 \code{\link{bm_BinaryTransformation}()},
-\code{\link{bm_CVnnet}()},
 \code{\link{bm_CrossValidation}()},
 \code{\link{bm_FindOptimStat}()},
+\code{\link{bm_ModelingOptions}()},
 \code{\link{bm_PlotEvalBoxplot}()},
 \code{\link{bm_PlotEvalMean}()},
 \code{\link{bm_PlotRangeSize}()},

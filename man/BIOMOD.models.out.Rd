@@ -47,8 +47,8 @@ object}
 \item{\code{calib.lines}}{a \code{\link{BIOMOD.stored.data.frame-class}} object
 containing calibration lines}
 
-\item{\code{models.options}}{a \code{\link{BIOMOD.stored.models.options-class}}
-object containing informations from \code{\link{BIOMOD_ModelingOptions}}
+\item{\code{models.options}}{a \code{\link{BIOMOD.stored.options-class}}
+object containing informations from \code{\link{bm_ModelingOptions}}
 object}
 
 \item{\code{models.evaluation}}{a \code{\link{BIOMOD.stored.data.frame-class}} object
@@ -134,6 +134,8 @@ Other Toolbox objects:
 \code{\link{BIOMOD.formated.data.PA}},
 \code{\link{BIOMOD.formated.data}},
 \code{\link{BIOMOD.models.options}},
+\code{\link{BIOMOD.options.dataset}},
+\code{\link{BIOMOD.options.default}},
 \code{\link{BIOMOD.projection.out}},
 \code{\link{BIOMOD.stored.data}},
 \code{\link{biomod2_ensemble_model}},

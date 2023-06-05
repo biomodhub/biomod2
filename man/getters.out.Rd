@@ -184,9 +184,9 @@ sub-selection of model names that can be obtained with the \code{\link{get_built
 function}
 
 \item{algo}{(\emph{optional, default} \code{NULL}) \cr 
-A \code{character} containing algorithm to be loaded, must be either \code{GLM}, 
-\code{GBM}, \code{GAM}, \code{CTA}, \code{ANN}, \code{SRE}, \code{FDA}, \code{MARS}, 
-\code{RF}, \code{MAXENT}, \code{MAXNET}, \code{XGBOOST}}
+A \code{character} containing algorithm to be loaded, must be either 
+\code{ANN}, \code{CTA}, \code{FDA}, \code{GAM}, \code{GBM}, \code{GLM}, \code{MARS}, 
+\code{MAXENT}, \code{MAXNET}, \code{RF}, \code{SRE}, \code{XGBOOST}}
 
 \item{model.as.col}{(\emph{optional, default} \code{FALSE}) \cr
 A \code{boolean} given to \code{\link{get_predictions}}. If \code{TRUE} 
@@ -206,9 +206,9 @@ A \code{vector} containing explanatory variables to be kept, that can be obtaine
 \code{\link{get_formal_data}(obj, subinfo = 'expl.var.names')} function}
 
 \item{merged.by.algo}{(\emph{optional, default} \code{NULL}) \cr 
-A \code{character} containing merged algorithm to be loaded, must be among \code{GLM}, 
-\code{GBM}, \code{GAM}, \code{CTA}, \code{ANN}, \code{SRE}, \code{FDA}, \code{MARS}, 
-\code{RF}, \code{MAXENT}, \code{MAXNET}, \code{XGBOOST}, \code{mergedAlgo}}
+A \code{character} containing merged algorithm to be loaded, must be among 
+\code{ANN}, \code{CTA}, \code{FDA}, \code{GAM}, \code{GBM}, \code{GLM}, \code{MARS}, 
+\code{MAXENT}, \code{MAXNET}, \code{RF}, \code{SRE}, \code{XGBOOST}, \code{mergedAlgo}}
 
 \item{merged.by.run}{(\emph{optional, default} \code{NULL}) \cr 
 A \code{vector} containing merged repetition set to be loaded, must be among \code{RUN1}, 
@@ -248,7 +248,7 @@ function})}
   \code{\link{BIOMOD.formated.data}} or \code{\link{BIOMOD.formated.data.PA}} object}
 
   \item{\code{get_options}}{a
-  \code{\link{BIOMOD.stored.models.options-class}} object from the
+  \code{\link{BIOMOD.stored.options-class}} object from the
   \code{models.options} slot of a \code{\link{BIOMOD.models.out-class}}
   object} \item{\code{get_calib_lines}}{a
   \code{\link{BIOMOD.stored.data.frame-class}} object from the \code{calib.lines}

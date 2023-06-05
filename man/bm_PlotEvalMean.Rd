@@ -131,10 +131,10 @@ bm_PlotEvalMean(bm.out = myBiomodModelOut)
 
 Other Secundary functions: 
 \code{\link{bm_BinaryTransformation}()},
-\code{\link{bm_CVnnet}()},
 \code{\link{bm_CrossValidation}()},
 \code{\link{bm_FindOptimStat}()},
 \code{\link{bm_MakeFormula}()},
+\code{\link{bm_ModelingOptions}()},
 \code{\link{bm_PlotEvalBoxplot}()},
 \code{\link{bm_PlotRangeSize}()},
 \code{\link{bm_PlotResponseCurves}()},
