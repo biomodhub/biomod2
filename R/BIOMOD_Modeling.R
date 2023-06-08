@@ -404,8 +404,26 @@ BIOMOD_Modeling <- function(bm.format,
   
   ## 3.3 Get and save models options ------------------------------------------
   if (!is.null(OPT.user)) {
+    ## Check for model names -----------
+    if (sum(!(models %in% sapply(OPT.user@models, function(x) strsplit(x, "[.]")[[1]][1]))) > 0) {
+        stop(paste0("\n", "OPT.user", " must contain information for '",
+                    ifelse(length(models) > 1,
+                           paste0(paste0(models[1:(length(models) -1)], collapse = "', '"),
+                                  "' and '", models[length(models)])
+                           , paste0(models,"' models"))))
+    }
+    ## Check for calib.lines names -----
+    for (mod in OPT.user@models) {
+      if (any(! colnames(calib.lines) %in% names(OPT.user@options[[mod]]@args.values))) {
+        vals <- colnames(calib.lines)
+        stop(paste0("\n", "names(OPT.user@options[['", mod, "']]@args.values)", " must be '",
+                    ifelse(length(vals) > 1,
+                           paste0(paste0(vals[1:(length(vals) -1)], collapse = "', '"),
+                                  "' and '", vals[length(vals)])
+                           , paste0(vals,"'"))))
+      }
+    }
     bm.options <- OPT.user
-    ## ADD CHEKS TO VERIFY IT IS THE RIGHT SHAPE ?
   } else {
     bm.options <- bm_ModelingOptions(data.type = OPT.data.type,
                                      models = models,
