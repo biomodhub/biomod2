@@ -257,7 +257,7 @@ bm_RunModel <- function(model, run.name, dir.name = '.'
     }
     
     if (model == "RF" && !is.null(bm.opt.val$do.classif) && bm.opt.val$do.classif == TRUE) {
-      # defining occurences as factor for doing classification and not regression in RF
+      # defining occurrences as factor for doing classification and not regression in RF
       data_mod <- data_mod %>% mutate_at(resp_name, factor)
     }
     
@@ -281,22 +281,18 @@ bm_RunModel <- function(model, run.name, dir.name = '.'
     ## FILL weights parameter ---------------------------------------
     if (model %in% c("ANN", "CTA", "GBM", "GLM", "MARS")) { #, "RF")) { ## TO BE ADDED RF ??
       bm.opt.val$weights <- quote(weights)
-    } else if (model %in% c("FDA", "GAM", "XGBOOST")) {
+    } else if (model %in% c("FDA", "GAM")) {
       bm.opt.val$weights <- weights.vec[calib.lines.vec]
+    } else if (model %in% c("XGBOOST")) {
+      bm.opt.val$weight <- weights.vec[calib.lines.vec]
     }
     
-    ## PRE-PRINTS --------------------------------------------------- DO WE REALLY NEED THAT ??
-    # cat("\nModel =", "Generalised Boosting Regression", "\n")
-    # if ("formula" %in% bm.opt@args.names) {
-    #   cat("\n\tPrepared formula : ")
-    #   print(bm.opt.val$formula, useSource = FALSE, showEnv = FALSE)
-    # }
+    ## REORGANIZE order of parameters -------------------------------
+    if (model %in% c("ANN", "RF")) {
+      bm.opt.val <- bm.opt.val[c("formula", "data", names(bm.opt.val)[which(!(names(bm.opt.val) %in% c("formula", "data")))])]
+    }
     
     ## RUN model ----------------------------------------------------
-    ## /!\ est-ce que ça va marcher quand meme ?
-    ## CTA :  control = eval(bm.options@CTA$control) ## /!\
-    ## FDA :  method = eval(parse(text = call(bm.options@FDA$method))),
-    ## GLM :  control = eval(bm.options@GLM$control),
     model.sp <- do.call(bm.opt@func, bm.opt.val)
     
     
@@ -314,7 +310,7 @@ bm_RunModel <- function(model, run.name, dir.name = '.'
         } else {
           warning("pas de bon modele trouve, message a refaire")
         }
-      } else if (model == "GBM") {
+      } else if (model == "GBM" && bm.opt.val$cv.folds > 1) {
         best.iter <- try(gbm.perf(model.sp, method = "cv" , plot.it = FALSE)) ## c('OOB', 'test', 'cv')
       }
       
@@ -329,8 +325,13 @@ bm_RunModel <- function(model, run.name, dir.name = '.'
                       expl_var_type = get_var_type(data_env[calib.lines.vec, , drop = FALSE]),
                       expl_var_range = get_var_range(data_env[calib.lines.vec, , drop = FALSE]))
       if (model == "GAM") { model.bm@model_subclass = subclass_name } ## TO BE ADDED to all models ?
-      if (model == "GBM") { model.bm@n.trees_optim = best.iter }
-      if (model == "SRE") { model.bm@extremal_conditions = model.sp }
+      if (model == "GBM" && exists("best.iter")) { model.bm@n.trees_optim = best.iter }
+      if (model == "SRE" && bm.opt.val$do.extrem == TRUE) { model.bm@extremal_conditions = model.sp }
+      # if (model == "SRE") {
+      #   model.sp <- as.data.frame(model.sp)
+      #   rownames(model.sp) <- rownames(bm.opt.val$expl.var)
+      #   model.bm@extremal_conditions = model.sp
+      # }
     }
     
     ## POSTLIMINAR --------------------------------------------------
@@ -392,11 +393,10 @@ bm_RunModel <- function(model, run.name, dir.name = '.'
       cat("\n*** Error in MAXENT, more info available in ", maxent_stderr_file)
     } else {
       model.bm <- new("MAXENT_biomod2_model",
-                      model_output_dir = MWD$m_outdir,
+                      model_output_dir = MWD$m_outdir, # MAXENT only
                       model_name = model_name,
                       model_class = bm.opt@model,
                       model_options = bm.opt,
-                      model_output_dir = MWD$m_outdir, # MAXENT only
                       dir_name = dir_name,
                       resp_name = resp_name,
                       expl_var_names = expl_var_names,
@@ -432,7 +432,11 @@ bm_RunModel <- function(model, run.name, dir.name = '.'
   temp_workdir = NULL
   
   if (model != "MAXENT") {
-    g.pred <- try(predict(model.bm, data_env, on_0_1000 = TRUE, seedval = seed.val, temp_workdir = temp_workdir))
+    if (model == "SRE") {
+      g.pred <- model.sp
+    } else {
+      g.pred <- try(predict(model.bm, data_env, on_0_1000 = TRUE, seedval = seed.val, temp_workdir = temp_workdir))
+    }
   }
   
   if (model == "MAXENT" & !inherits(g.pred, 'try-error')) {

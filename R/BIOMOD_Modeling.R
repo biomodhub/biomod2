@@ -317,7 +317,7 @@ BIOMOD_Modeling <- function(bm.format,
                             OPT.strategy = 'default',
                             OPT.val.list = NULL,
                             OPT.user = NULL,
-                            bm.options = NULL, ## deprecated
+                            bm.options, ## deprecated
                             nb.rep, ## deprecated
                             data.split.perc, ## deprecated
                             data.split.table, ## deprecated
@@ -354,6 +354,8 @@ BIOMOD_Modeling <- function(bm.format,
   
   # check for obsolete arguments
   args <- .BIOMOD_Modeling.check.args.obsolete(
+    bm.options = bm.options,
+    OPT.user = OPT.user,
     CV.strategy = CV.strategy,
     data.split.perc = data.split.perc,
     CV.perc = CV.perc,
@@ -401,16 +403,16 @@ BIOMOD_Modeling <- function(bm.format,
                                        , inMemory = FALSE, nameFolder = name.BIOMOD_DATA)
   
   ## 3.3 Get and save models options ------------------------------------------
-  if (is.null(bm.options)) {
+  if (!is.null(OPT.user)) {
+    bm.options <- OPT.user
+    ## ADD CHEKS TO VERIFY IT IS THE RIGHT SHAPE ?
+  } else {
     bm.options <- bm_ModelingOptions(data.type = OPT.data.type,
                                      models = models,
                                      strategy = OPT.strategy,
                                      val.list = OPT.val.list,
                                      bm.format = bm.format,
                                      calib.lines = calib.lines)
-  } else {
-    bm.options <- OPT.user
-    ## ADD CHEKS TO VERIFY IT IS THE RIGHT SHAPE ?
   }
   models.out = .fill_BIOMOD.models.out("models.options", bm.options, models.out
                                        , inMemory = FALSE, nameFolder = name.BIOMOD_DATA)
@@ -566,45 +568,45 @@ BIOMOD_Modeling <- function(bm.format,
   if (!is.null(OPT.user)) {
     .fun_testIfInherits(TRUE, "OPT.user", OPT.user, "BIOMOD.models.options")
   } 
-  
   # else {
   #   warning("Models will run with 'default' parameters", immediate. = TRUE)
   #   bm.options <- BIOMOD_ModelingOptions()
   # }
   
   ## 2.2 Specific check for MAXENT -----------------------------------
-  if ("MAXENT" %in% models) {
-    MAXENT.options <- bm.options@options[[grep("MAXENT", names(bm.options@options))[1]]] ## PROBLEM
-    if (!file.exists(file.path(MAXENT.options@args.default$path_to_maxent.jar, "maxent.jar"))) {
-      models = models[-which(models == 'MAXENT')]
-      if (!is.null(models.pa)) {
-        models.pa = models.pa[-which(names(models.pa) == 'MAXENT')]
-      }
-      warning(paste0("MAXENT has been disabled because the maxent.jar file is missing. "
-                     , "`maxent.jar` file must be downloaded (https://biodiversityinformatics.amnh.org/open_source/maxent/) "
-                     , "and put in the working directory."), immediate. = TRUE)
-      ## -- 
-      ## The java installation check is temporally disabled cause it seems to cause 
-      ## issues on some Windows users machine.
-      ## --
-      # } else if(!.check.java.installed()){
-      #   models = models[-which(models=='MAXENT')]
-    } else if (nrow(bm.format@coord) == 1) {
-      models = models[-which(models == 'MAXENT')]
-      if (!is.null(models.pa)) {
-        models.pa = models.pa[-which(names(models.pa) == 'MAXENT')]
-      }
-      warning("MAXENT has been disabled because no XY coordinates have been given", immediate. = TRUE)
-    }
-  }
+  ## MOVE TO bm_ModelingOptions ???
+  # if ("MAXENT" %in% models) {
+  #   MAXENT.options <- bm.options@options[[grep("MAXENT", names(bm.options@options))[1]]] ## PROBLEM
+  #   if (!file.exists(file.path(MAXENT.options@args.default$path_to_maxent.jar, "maxent.jar"))) {
+  #     models = models[-which(models == 'MAXENT')]
+  #     if (!is.null(models.pa)) {
+  #       models.pa = models.pa[-which(names(models.pa) == 'MAXENT')]
+  #     }
+  #     warning(paste0("MAXENT has been disabled because the maxent.jar file is missing. "
+  #                    , "`maxent.jar` file must be downloaded (https://biodiversityinformatics.amnh.org/open_source/maxent/) "
+  #                    , "and put in the working directory."), immediate. = TRUE)
+  #     ## -- 
+  #     ## The java installation check is temporally disabled cause it seems to cause 
+  #     ## issues on some Windows users machine.
+  #     ## --
+  #     # } else if(!.check.java.installed()){
+  #     #   models = models[-which(models=='MAXENT')]
+  #   } else if (nrow(bm.format@coord) == 1) {
+  #     models = models[-which(models == 'MAXENT')]
+  #     if (!is.null(models.pa)) {
+  #       models.pa = models.pa[-which(names(models.pa) == 'MAXENT')]
+  #     }
+  #     warning("MAXENT has been disabled because no XY coordinates have been given", immediate. = TRUE)
+  #   }
+  # }
   
   ## 5. Check prevalence arguments --------------------------------------------
   if (!is.null(prevalence)) {
     .fun_testIf01(TRUE, "prevalence", prevalence)
-    if ("MAXENT" %in% models) {
-      cat("\n\t MAXENT default prevalence option was updated to fit with modeling prevalence (i.e", prevalence, ")")
-      bm.options@MAXENT$defaultprevalence = prevalence ## PROBLEM
-    }
+    # if ("MAXENT" %in% models) {
+    #   cat("\n\t MAXENT default prevalence option was updated to fit with modeling prevalence (i.e", prevalence, ")")
+    #   bm.options@MAXENT$defaultprevalence = prevalence ## PROBLEM
+    # }
   } else {
     prevalence = 0.5
   }
@@ -678,7 +680,6 @@ BIOMOD_Modeling <- function(bm.format,
   
   return(list(models = models,
               models.pa = models.pa,
-              # bm.options = bm.options,
               weights = weights,
               var.import = var.import,
               metric.eval = metric.eval,
@@ -691,7 +692,9 @@ BIOMOD_Modeling <- function(bm.format,
 # Obsolete argument Check -------------------------------------------------------
 
 
-.BIOMOD_Modeling.check.args.obsolete <- function(CV.strategy,
+.BIOMOD_Modeling.check.args.obsolete <- function(bm.options,
+                                                 OPT.user,
+                                                 CV.strategy,
                                                  data.split.perc,
                                                  CV.perc,
                                                  data.split.table,
@@ -701,6 +704,16 @@ BIOMOD_Modeling <- function(bm.format,
                                                  do.full.models,
                                                  CV.do.full.models)
 {
+  ## bm.options ------------------------------
+  if (!missing(bm.options)) {
+    if (!is.null(OPT.user)) {
+      cat("\n! ignored obsolete argument 'bm.options' as 'OPT.user' was also given")
+    } else {
+      OPT.user <- bm.options
+      cat("\n!!! argument 'bm.options' is obsolete, please use 'OPT.user' instead")
+    }
+  }
+  
   ## do.full.models ------------------------------
   if (!missing(do.full.models)) {
     if (!is.null(CV.do.full.models)) {

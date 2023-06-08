@@ -357,8 +357,7 @@ setMethod('BIOMOD.options.dataset', signature(strategy = 'character'),
             ## SHOULD BE MOVED to place when testing values !! ??
             if (mod == "ANN") { 
               argstmp[["x"]] = NULL
-              # argstmp$trace = FALSE
-              # argstmp = c(argstmp, trace = FALSE) ## marche pas
+              argstmp$size = 2
             }
             if (mod == "FDA") {
               argstmp$dimension = NULL
@@ -374,7 +373,10 @@ setMethod('BIOMOD.options.dataset', signature(strategy = 'character'),
               argstmp$control = list()
             }
             if (mod == "MAXNET") { argstmp[["f"]] = NULL }
-            if (mod == "RF") { argstmp[["x"]] = NULL }
+            if (mod == "RF") {
+              argstmp[["x"]] = NULL
+              argstmp$mtry = 1
+            }
             if (mod == "XGBOOST") { argstmp$nrounds = 4 }
             BOM@args.default <- argstmp
             ## SHOULD BE MOVED to place when testing values !! ??
@@ -397,7 +399,7 @@ setMethod('BIOMOD.options.dataset', signature(strategy = 'character'),
               if (strategy == "bigboss") {
                 data(OptionsBigboss)
                 
-                val <- bm.opt@options[[paste0(c(mod, typ, pkg, fun), collapse = ".")]]@args.values[['_allData_allRun']]
+                val <- OptionsBigboss@options[[paste0(c(mod, typ, pkg, fun), collapse = ".")]]@args.values[['_allData_allRun']]
                 for (ii in names(val)) {
                   if (ii != "formula") { argstmp[[ii]] <- val[[ii]] }
                 }

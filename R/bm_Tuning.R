@@ -311,8 +311,14 @@ bm_Tuning <- function(model,
             if (!is.null(tuned.mod)) {
               tmp <- tuned.mod$results
               tmp$TSS <- tmp$Sens + tmp$Spec - 1
-              for (param in train.params$params) {
-                argstmp[[param]] <- tmp[which.max(tmp[, metric.eval]), param]
+              if (model == "XGBOOST") {
+                for (param in train.params$params) {
+                  argstmp$params[[param]] <- tmp[which.max(tmp[, metric.eval]), param]
+                }
+              } else {
+                for (param in train.params$params) {
+                  argstmp[[param]] <- tmp[which.max(tmp[, metric.eval]), param]
+                }
               }
               tuning.form <- tuning.grid[which.max(tmp[, metric.eval]), ]
               
