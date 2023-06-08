@@ -85,7 +85,7 @@ bm_MakeFormula <- function(resp.name,
     explVarNames <- colnames(expl.var)
   }
   
-  interaction.level <- min(interaction.level, ncol(expl.var))
+  interaction.level <- min(interaction.level, ncol(expl.var) - 1)
   
   ## 2. Create the formula ------------------------------------------------------------------------
   junk <- c(1)

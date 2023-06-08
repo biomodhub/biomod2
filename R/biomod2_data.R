@@ -22,7 +22,7 @@
 #                            , func = c('nnet', 'rpart', 'fda', 'gam', 'bam', 'gam', 'gbm', 'glm'
 #                                       , 'earth', 'MAXENT', 'maxnet', 'randomForest', 'bm_SRE', 'xgboost')
 #                            , train = c('avNNet', 'rpart', 'fda', 'gamSpline', 'bam', 'gam', 'gbm', 'glm'
-#                                        , 'earth', 'ENMevaluate', '', 'rf', 'bm_SRE', 'xgbTree'))
+#                                        , 'earth', 'ENMevaluate', 'maxnet', 'rf', 'bm_SRE', 'xgbTree'))
 # 
 # usethis::use_data(ModelsTable, overwrite = TRUE)
 

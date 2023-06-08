@@ -138,6 +138,7 @@
 ##' @importFrom foreach foreach
 ##' @importFrom stats aggregate  
 ##' @importFrom PresenceAbsence optimal.thresholds presence.absence.accuracy
+## @importFrom MASS stepAIC
 ## @importFrom caret trainControl train twoClassSummary
 ## @importFrom dismo kfold
 ## @importFrom ENMeval ENMevaluate
@@ -151,10 +152,12 @@
 bm_Tuning <- function(model,
                       tuning.fun,
                       do.formula = FALSE,
+                      do.stepAIC = FALSE,
                       bm.opt.def,
                       bm.format,
                       calib.lines = NULL,
                       metric.eval = 'TSS',
+                      metric.AIC = 'AIC',
                       weights = NULL,
                       ctrl.train = NULL,
                       params.train = list(ANN.size = c(2, 4, 6, 8),
@@ -170,6 +173,7 @@ bm_Tuning <- function(model,
                                           GBM.n.minobsinnode = 10,
                                           MARS.degree = 1:2, 
                                           MARS.nprune = 2:max(38, 2 * ncol(bm.format@data.env.var) + 1),
+                                          RF.mtry = 1:min(10, ncol(bm.format@data.env.var)),
                                           SRE.quant = c(0, 0.0125, 0.025, 0.05, 0.1),
                                           XGBOOST.nrounds = 50,
                                           XGBOOST.max_depth = 1,
@@ -178,15 +182,15 @@ bm_Tuning <- function(model,
                                           XGBOOST.colsample_bytree = c(0.6, 0.8),
                                           XGBOOST.min_child_weight = 1,
                                           XGBOOST.subsample = 0.5),
-                      ## ADD : mtry for rf ? select + method for bam / gam ?
                       ANN.maxit = 500,
                       ANN.MaxNWts = 10 * (ncol(bm.format@data.env.var) + 1) + 10 + 1,
                       ME.cvmethod = 'randomkfold',
                       ME.kfolds = 10)
 {
   ## 0. Check arguments ---------------------------------------------------------------------------
-  args <- .bm_Tuning.check.args(model = model, tuning.fun = tuning.fun, do.formula = do.formula, bm.format = bm.format
-                                , metric.eval = metric.eval, weights = weights, params.train = params.train)
+  args <- .bm_Tuning.check.args(model = model, tuning.fun = tuning.fun, do.formula = do.formula, do.stepAIC = do.stepAIC
+                                , bm.format = bm.format, metric.eval = metric.eval, metric.AIC = metric.AIC
+                                , weights = weights, params.train = params.train)
   for (argi in names(args)) { assign(x = argi, value = args[[argi]]) }
   rm(args)
   
@@ -210,210 +214,186 @@ bm_Tuning <- function(model,
     {
       argstmp <- bm.opt.def@args.default
       
-      ## 1. SPECIFIC CASE OF MAXENT OR SRE ------------------------------------------------------------
-      if (model %in% c("MAXENT", "SRE")) {
-        cat("\n\t\t> Tuning parameters...")
-        
-        ## create dataset ---------------------------------------------------------
-        mySpExpl <- get_species_data(bm.format)
-        mySpExpl <- mySpExpl[which(calib.lines[, calib.i] == TRUE), ]
-        myResp <- mySpExpl[, 1]
-        myExpl <- mySpExpl[, 4:ncol(mySpExpl)]
-        
-        
-        if (model == "MAXENT") { # --------------------------------------------------------------------
-          try(tune.MAXENT <- ENMeval::ENMevaluate(occs = mySpExpl[mySpExpl[, 1] == 1 & !is.na(mySpExpl[, 1]), ],
-                                                  bg = mySpExpl[mySpExpl[, 1] == 0 | is.na(mySpExpl[, 1]), ],
-                                                  tune.args = list(rm = seq(0.5, 1, 0.5), fc = c("L")),
-                                                  algorithm = "maxent.jar",
-                                                  partitions = ME.cvmethod,
-                                                  partition.settings = list(kfolds = ME.kfolds),
-                                                  doClamp = TRUE, ## allow to change or not ?
-                                                  parallel = TRUE,
-                                                  numCores = NULL, ## default to 1 or NULL (all available cores used then) ?
-                                                  categoricals = NULL))
-          
-          if (!is.null(tune.MAXENT)) {
-            if (metric.eval == 'auc.val.avg') {
-              tmp <- which.max(tune.MAXENT@results[, metric.eval])
-            } else {
-              tmp <- which.min(tune.MAXENT@results[, metric.eval])
-            }
-            argstmp$linear <- grepl("L", tune.MAXENT@results[tmp, "fc"])
-            argstmp$quadratic <- grepl("Q", tune.MAXENT@results[tmp, "fc"])
-            argstmp$hinge <- grepl("H", tune.MAXENT@results[tmp, "fc"])
-            argstmp$product <- grepl("P", tune.MAXENT@results[tmp, "fc"])
-            argstmp$threshold <- grepl("T", tune.MAXENT@results[tmp, "fc"])
-            argstmp$betamultiplier <- tune.MAXENT@results[tmp, "rm"]
-          }
-        } else if (model == "SRE") { # ----------------------------------------------------------------
-          tune.SRE <- foreach(rep = 1:ctrl.train$repeats, .combine = "rbind") %do%
-            {
-              fold <- dismo::kfold(myResp, by = myResp, k = ctrl.train$number) ## by = to keep prevalence
-              RES <- foreach (quant = params.train$SRE.quant, .combine = "rbind") %:%
-                foreach (i = 1:ctrl.train$number, .combine = "rbind") %do%
-                {
-                  DATA <- cbind(1:sum(fold == i)
-                                , myResp[fold == i]
-                                , bm_SRE(resp.var = myResp[fold != i],
-                                         expl.var = myExpl[fold != i, ],
-                                         new.env = myExpl[fold == i, ],
-                                         quant = quant,
-                                         do.extrem = FALSE))
-                  RES <- presence.absence.accuracy(DATA, threshold = as.vector(optimal.thresholds(DATA, opt.methods = 3)[2], mode = "numeric"))
-                  return(data.frame(RES, quant = quant))
-                }
-              return(data.frame(RES, rep = rep))
-            }
-          tune.SRE$TSS <- tune.SRE$sensitivity + tune.SRE$specificity - 1
-          tmp <- aggregate(tune.SRE[, c("sensitivity", "specificity", "Kappa", "AUC", "TSS")], by = list(quant = tune.SRE$quant), mean)
-          argstmp$quant <- tmp[which.max(tmp[, metric.eval]), "quant"]
-        }
-        
+      if (model == "MAXNET") {
+        warning("No tuning available for that model. Sorry.")
       } else {
-        ## 2. ALL OTHER MODELS ------------------------------------------------------------------------
-        
-        ## create dataset
-        mySpExpl <- get_species_data(bm.format)
-        mySpExpl <- mySpExpl[which(calib.lines[, calib.i] == TRUE), ]
-        myResp <- mySpExpl[, 1]
-        myExpl <- mySpExpl[, 4:ncol(mySpExpl)]
-        myResp <- as.factor(ifelse(myResp == 1 & !is.na(myResp), "Presence", "Absence"))
-        
-        ## run tuning -----------------------------------------------------------------------------
-        cmd.tuning <- "caret::train(x = myExpl, y = myResp, method = tuning.fun, tuneGrid = tuning.grid,"
-        cmd.tuning <- paste0(cmd.tuning, " trControl = ctrl.train, metric = 'ROC',")
-        if (tuning.fun %in% c("fda", "rpart")) { ## add weights
-          cmd.tuning <- paste0(cmd.tuning, " weights = weights,")
-        }
-        if (model == "ANN") {
-          ## Automatically standardize data prior to modeling and prediction
-          cmd.tuning <- paste0(cmd.tuning, " preProc = c('center', 'scale'), linout = TRUE, trace = FALSE,")
-          cmd.tuning <- paste0(cmd.tuning, " MaxNWts.ANN = ANN.MaxNWts, maxit = ANN.maxit))")
-        } else if (tuning.fun %in% c("earth", "bam", "fda", "rpart")) { ## remove verbose
-          cmd.tuning <- paste0(cmd.tuning, " tuneLength = tuning.length))")
-        } else {
-          cmd.tuning <- paste0(cmd.tuning, " tuneLength = tuning.length, verbose = FALSE))")
-        }
-        
-        if (model != "GLM") {
+        ## 1. SPECIFIC CASE OF MAXENT OR SRE ------------------------------------------------------------
+        if (model %in% c("MAXENT", "SRE")) {
           cat("\n\t\t> Tuning parameters...")
-          eval(parse(text = paste0("try(tuned.mod <- ", cmd.tuning)))
           
-          ## GET tuned parameter values -------------------------------------------------------------
-          if (!is.null(tuned.mod)) {
-            tmp <- tuned.mod$results
-            tmp$TSS <- tmp$Sens + tmp$Spec - 1
-            print(tmp)
-            for (param in train.params$params) {
-              argstmp[[param]] <- tmp[which.max(tmp[, metric.eval]), param]
+          ## create dataset ---------------------------------------------------------
+          mySpExpl <- get_species_data(bm.format)
+          mySpExpl <- mySpExpl[which(calib.lines[, calib.i] == TRUE), ]
+          myResp <- mySpExpl[, 1]
+          myExpl <- mySpExpl[, 4:ncol(mySpExpl)]
+          
+          
+          if (model == "MAXENT") { # --------------------------------------------------------------------
+            try(tune.MAXENT <- ENMeval::ENMevaluate(occs = mySpExpl[mySpExpl[, 1] == 1 & !is.na(mySpExpl[, 1]), ],
+                                                    bg = mySpExpl[mySpExpl[, 1] == 0 | is.na(mySpExpl[, 1]), ],
+                                                    tune.args = list(rm = seq(0.5, 1, 0.5), fc = c("L")),
+                                                    algorithm = "maxent.jar",
+                                                    partitions = ME.cvmethod,
+                                                    partition.settings = list(kfolds = ME.kfolds),
+                                                    doClamp = TRUE, ## allow to change or not ?
+                                                    parallel = TRUE,
+                                                    numCores = NULL, ## default to 1 or NULL (all available cores used then) ?
+                                                    categoricals = NULL))
+            
+            if (!is.null(tune.MAXENT)) {
+              if (metric.eval == 'auc.val.avg') {
+                tmp <- which.max(tune.MAXENT@results[, metric.eval])
+              } else {
+                tmp <- which.min(tune.MAXENT@results[, metric.eval])
+              }
+              argstmp$linear <- grepl("L", tune.MAXENT@results[tmp, "fc"])
+              argstmp$quadratic <- grepl("Q", tune.MAXENT@results[tmp, "fc"])
+              argstmp$hinge <- grepl("H", tune.MAXENT@results[tmp, "fc"])
+              argstmp$product <- grepl("P", tune.MAXENT@results[tmp, "fc"])
+              argstmp$threshold <- grepl("T", tune.MAXENT@results[tmp, "fc"])
+              argstmp$betamultiplier <- tune.MAXENT@results[tmp, "rm"]
             }
-            tuning.form <- tuning.grid[which.max(tmp[, metric.eval]), ]
+          } else if (model == "SRE") { # ----------------------------------------------------------------
+            tune.SRE <- foreach(rep = 1:ctrl.train$repeats, .combine = "rbind") %do%
+              {
+                fold <- dismo::kfold(myResp, by = myResp, k = ctrl.train$number) ## by = to keep prevalence
+                RES <- foreach (quant = params.train$SRE.quant, .combine = "rbind") %:%
+                  foreach (i = 1:ctrl.train$number, .combine = "rbind") %do%
+                  {
+                    DATA <- cbind(1:sum(fold == i)
+                                  , myResp[fold == i]
+                                  , bm_SRE(resp.var = myResp[fold != i],
+                                           expl.var = myExpl[fold != i, ],
+                                           new.env = myExpl[fold == i, ],
+                                           quant = quant,
+                                           do.extrem = FALSE))
+                    RES <- presence.absence.accuracy(DATA, threshold = as.vector(optimal.thresholds(DATA, opt.methods = 3)[2], mode = "numeric"))
+                    return(data.frame(RES, quant = quant))
+                  }
+                return(data.frame(RES, rep = rep))
+              }
+            tune.SRE$TSS <- tune.SRE$sensitivity + tune.SRE$specificity - 1
+            tmp <- aggregate(tune.SRE[, c("sensitivity", "specificity", "Kappa", "AUC", "TSS")], by = list(quant = tune.SRE$quant), mean)
+            argstmp$quant <- tmp[which.max(tmp[, metric.eval]), "quant"]
           }
-        } else { tuning.form <- tuning.grid }
-        
-        ## run formula selection ------------------------------------------------------------------
-        if (do.formula) {
-          cat("\n\t\t> Tuning formula...")
           
-          cmd.form <- sub("tuneGrid = tuning.grid", "tuneGrid = tuning.form", cmd.tuning)
-          cmd.init <- "form = bm_MakeFormula(resp.name = 'resp', expl.var = myExpl, type = typ, interaction.level = intlev),"
-          cmd.init <- paste0(cmd.init, " data = cbind(myExpl, resp = myResp),")
-          cmd.form <- sub("x = myExpl, y = myResp,", cmd.init, cmd.form)
+        } else {
+          ## 2. ALL OTHER MODELS ------------------------------------------------------------------------
           
-          TMP <- foreach (typ = c('simple', 'quadratic', 'polynomial', 's_smoother'), .combine = "rbind") %:%
-            foreach (intlev = 0:3, .combine = "rbind") %do%
-            {
-              print(cmd.form)
-              hop = bm_MakeFormula(resp.name = 'resp', expl.var = myExpl, type = typ, interaction.level = intlev)
-              print(hop)
-              # print(weights)
-              eval(parse(text = paste0("try(tuned.form <- ", cmd.form)))
+          ## create dataset
+          mySpExpl <- get_species_data(bm.format)
+          mySpExpl <- mySpExpl[which(calib.lines[, calib.i] == TRUE), ]
+          mySpExpl[, 1] <- as.factor(ifelse(mySpExpl[, 1] == 1 & !is.na(mySpExpl[, 1]), "Presence", "Absence"))
+          myResp <- mySpExpl[, 1]
+          myExpl <- mySpExpl[, 4:ncol(mySpExpl)]
+          
+          ## run tuning -----------------------------------------------------------------------------
+          cmd.tuning <- "caret::train(x = myExpl, y = myResp, method = tuning.fun, tuneGrid = tuning.grid,"
+          cmd.tuning <- paste0(cmd.tuning, " trControl = ctrl.train, metric = 'ROC',")
+          if (tuning.fun %in% c("fda", "rpart")) { ## add weights
+            cmd.tuning <- paste0(cmd.tuning, " weights = weights,")
+          }
+          if (model == "ANN") {
+            ## Automatically standardize data prior to modeling and prediction
+            cmd.tuning <- paste0(cmd.tuning, " preProc = c('center', 'scale'), linout = TRUE, trace = FALSE,")
+            cmd.tuning <- paste0(cmd.tuning, " MaxNWts.ANN = ANN.MaxNWts, maxit = ANN.maxit))")
+          } else if (tuning.fun %in% c("earth", "bam", "fda", "rpart", "glm")) { ## remove verbose
+            cmd.tuning <- paste0(cmd.tuning, " tuneLength = tuning.length))")
+          } else {
+            cmd.tuning <- paste0(cmd.tuning, " tuneLength = tuning.length, verbose = FALSE))")
+          }
+          
+          if (model != "GLM") {
+            cat("\n\t\t> Tuning parameters...")
+            eval(parse(text = paste0("try(tuned.mod <- ", cmd.tuning)))
+            
+            ## GET tuned parameter values -------------------------------------------------------------
+            if (!is.null(tuned.mod)) {
+              tmp <- tuned.mod$results
+              tmp$TSS <- tmp$Sens + tmp$Spec - 1
+              for (param in train.params$params) {
+                argstmp[[param]] <- tmp[which.max(tmp[, metric.eval]), param]
+              }
+              tuning.form <- tuning.grid[which.max(tmp[, metric.eval]), ]
               
-              if (!is.null(tuned.form)) {
-                tmp <- tuned.form$results
-                tmp$TSS <- tmp$Sens + tmp$Spec - 1
-                formu <- tuned.form$coefnames
-                formu <- paste0(bm.format@sp.name, " ~ 1 + ", paste0(formu, collapse = " + "))
-                return(data.frame(tmp, type = typ, interaction.level = intlev, formula = formu))
+              if (model == "CTA") {
+                tuning.fun = "rpart2"
+                eval(parse(text = paste0("try(tuned.mod <- ", cmd.tuning)))
+                if (!is.null(tuned.mod)) {
+                  tmp = tuned.mod$results
+                  tmp$TSS = tmp$Sens + tmp$Spec - 1
+                  argstmp[["maxdepth"]] <- tmp[which.max(tmp[, metric.eval]), "maxdepth"]
+                }
               }
             }
-          argstmp$formula <- TMP[which.max(TMP[, metric.eval]), "formula"]
+          } else { tuning.form <- tuning.grid }
+          
+          ## run formula selection ------------------------------------------------------------------
+          if (do.formula) {
+            cat("\n\t\t> Tuning formula...")
+            
+            cmd.form <- sub("tuneGrid = tuning.grid", "tuneGrid = tuning.form", cmd.tuning)
+            cmd.init <- "form = bm_MakeFormula(resp.name = 'resp', expl.var = myExpl, type = typ, interaction.level = intlev),"
+            cmd.init <- paste0(cmd.init, " data = cbind(myExpl, resp = myResp),")
+            cmd.form <- sub("x = myExpl, y = myResp,", cmd.init, cmd.form)
+            
+            TMP <- foreach (typ = c('simple', 'quadratic', 'polynomial', 's_smoother'), .combine = "rbind") %:%
+              foreach (intlev = 0:(ncol(myExpl) - 1), .combine = "rbind") %do%
+              {
+                tuned.form <- NULL
+                eval(parse(text = paste0("capture.output("
+                                         , "try(tuned.form <- ", sub(")$", ", silent = TRUE)", cmd.form)
+                                         , ")")))
+                
+                if (!is.null(tuned.form)) {
+                  tmp <- tuned.form$results
+                  tmp$TSS <- tmp$Sens + tmp$Spec - 1
+                  formu <- tuned.form$coefnames
+                  formu <- paste0(bm.format@sp.name, " ~ 1 + ", paste0(formu, collapse = " + "))
+                  return(data.frame(tmp, type = typ, interaction.level = intlev, formula = formu))
+                }
+              }
+            argstmp$formula <- TMP[which.max(TMP[, metric.eval]), "formula"]
+          }
+          
+          ## run variable selection -----------------------------------------------------------------
+          if (do.stepAIC && model %in% c("GAM", "GLM")) {
+            cat("\n\t\t> Tuning variables (AIC)...")
+            
+            if (model == "GLM") {
+              glmStart <- glm(as.formula(paste0(bm.format@sp.name, " ~ 1")),
+                              data = mySpExpl, 
+                              family = argstmp$family, 
+                              control = argstmp$control, 
+                              weights = weights,
+                              mustart = rep(ifelse(!is.null(argstmp$mustart) & nchar(argstmp$mustart) > 0, argstmp$mustart, 0.5), length(myResp)),
+                              model = TRUE)
+              
+              
+              try(tuned.AIC <- stepAIC(glmStart,
+                                       scope = list(upper = (sub(".*~", "~", argstmp$formula)), lower = ~1),
+                                       k = criteria.AIC,
+                                       direction = "both",
+                                       trace = FALSE,
+                                       steps = 10000))
+              if (!is.null(tuned.AIC)) { argstmp$formula <- deparse(tuned.AIC$formula) }
+            } else if (model == "GAM") { # if (bm.options@GAM$algo == 'GAM_gam') { ## gam package
+              gamStart <- gam::gam(as.formula(paste0(bm.format@sp.name, " ~ 1")),
+                                   data = mySpExpl, 
+                                   family = argstmp$family, 
+                                   control = argstmp$control,
+                                   weights = weights)
+              # gamStart <- eval(parse(text = paste0("gam::gam(", bm.format@sp.name, " ~ 1, data = mySpExpl, family = argstmp$family, control = argstmp$control, weights = weights)")))
+              
+              try(tuned.AIC <- gam::step.Gam(gamStart,
+                                             # scope = list(upper = (sub(".*~", "~", argstmp$formula)), lower = ~1),
+                                             scope = .scope(head(myExpl), "gam::s", 6),
+                                             direction = "both",
+                                             trace = FALSE))
+              if (!is.null(tuned.AIC)) { argstmp$formula <- deparse(tuned.AIC$formula) }
+            }
+          }
         }
-        
-        ## run variable selection -----------------------------------------------------------------
-        if (do.stepAIC) {
-          #   if (bm.options@GLM$test == "AIC") { ## MOVE TO TUNING
-          #     criteria <- 2
-          #     cat("\n\tStepwise procedure using AIC criteria")
-          #   } else if (bm.options@GLM$test == "BIC") {
-          #     criteria <- log(ncol(data_env))
-          #     cat("\n\tStepwise procedure using BIC criteria")
-          #   } else if (bm.options@GLM$test == "none") {
-          #     criteria <- 0
-          #     cat("\n\tNo stepwise procedure")
-          #     cat("\n\t! You might be confronted to model convergence issues !")
-          #   }
-          # if (bm.options@GLM$test != 'none') { ## "AIC"
-          #   ## make the model selection
-          #   glmStart <- glm(eval(parse(text = paste0(resp_name, "~1"))), 
-          #                   data = data_mod[calib.lines.vec, , drop = FALSE], 
-          #                   family = bm.options@GLM$family,
-          #                   control = eval(bm.options@GLM$control),
-          #                   weights = weights.vec[calib.lines.vec],
-          #                   mustart = rep(bm.options@GLM$mustart, sum(calib.lines.vec)), 
-          #                   model = TRUE)
-          #   
-          #   ## remove warnings
-          #   warn <- options('warn')
-          #   options(warn = -1)
-          #   model.sp <- try(stepAIC(glmStart,
-          #                           glm.formula,
-          #                           data = data_mod[calib.lines.vec, , drop = FALSE],
-          #                           direction = "both",
-          #                           trace = FALSE,
-          #                           k = criteria,
-          #                           weights = weights.vec[calib.lines.vec], 
-          #                           steps = 10000,
-          #                           mustart = rep(bm.options@GLM$mustart, sum(calib.lines.vec))))
-          #   ## reexec warnings
-          #   options(warn)
-          # }
-          # if (bm.options@GAM$algo == 'GAM_gam') { ## gam package
-          #   # NOTE : To be able to take into account GAM options and weights we have to do a eval(parse(...))
-          #   # it's due to GAM implementation (using of match.call() troubles)
-          #   gamStart <- eval(parse(text = paste0("gam::gam(", resp_name, "~1 ,"
-          #                                        , " data = data_mod[calib.lines.vec, , drop = FALSE], family = ", bm.options@GAM$family$family
-          #                                        , "(link = '", bm.options@GAM$family$link, "')"
-          #                                        , ", weights = weights.vec[calib.lines.vec])")))
-          #   model.sp <- try(gam::step.Gam(gamStart,
-          #                                 .scope(head(data_env), "gam::s", bm.options@GAM$k),
-          #                                 data = data_mod[calib.lines.vec, , drop = FALSE],
-          #                                 direction = "both",
-          #                                 trace = bm.options@GAM$control$trace,
-          #                                 control = bm.options@GAM$control))
-          # }
-        }
-        
-        # if (model == "CTA" && !is.null(tuned.mod)) {
-        #   tmp = tuned.mod$results
-        #   tmp$TSS = tmp$Sens + tmp$Spec - 1
-        #   argstmp[["cp"]] <- tmp[which.max(tmp[, metric.eval]), "cp"]
-        #   
-        #   try(tuned.mod <- caret::train(x = myExpl, 
-        #                                 y = myResp,
-        #                                 method = "rpart2",
-        #                                 tuneGrid = tuning.grid,
-        #                                 tuneLength = tuning.length,
-        #                                 trControl = ctrl.train,
-        #                                 metric = metric.eval,
-        #                                 weights = weights))
-        #   if (!is.null(tuned.mod)) {
-        #     tmp = tuned.mod$results
-        #     tmp$TSS = tmp$Sens + tmp$Spec - 1
-        #     argstmp[["maxdepth"]] <- tmp[which.max(tmp[, metric.eval]), "maxdepth"]
-        #   }
-        # }
       }
       return(argstmp)
     }
@@ -426,7 +406,9 @@ bm_Tuning <- function(model,
 
 # ---------------------------------------------------------------------------- #
 
-.bm_Tuning.check.args <- function(model, tuning.fun, do.formula, bm.format, metric.eval, weights = NULL, params.train)
+.bm_Tuning.check.args <- function(model, tuning.fun, do.formula, do.stepAIC
+                                  , bm.format, metric.eval, metric.AIC
+                                  , weights = NULL, params.train)
 {
   ## check model --------------------------------------------------------------
   .fun_testIfIn(TRUE, "model", model, c("ANN", "CTA", "FDA", "GAM", "GBM", "GLM"
@@ -444,6 +426,9 @@ bm_Tuning <- function(model,
   if (do.formula == TRUE) {
     if(!requireNamespace('gam', quietly = TRUE)) stop("Package 'gam' not found")
   }
+  if (do.stepAIC == TRUE) {
+    if(!requireNamespace('MASS', quietly = TRUE)) stop("Package 'MASS' not found")
+  }
   
   ## check bm.format ----------------------------------------------------------
   .fun_testIfInherits(TRUE, "bm.format", bm.format, c("BIOMOD.formated.data", "BIOMOD.formated.data.PA"))
@@ -458,7 +443,7 @@ bm_Tuning <- function(model,
   }
   
   ## check weights ------------------------------------------------------------
-  if (model %in% c("CTA", "FDA") && is.null(weights)) { weights = rep(1, length(bm.format@data.species)) }
+  if (model %in% c("CTA", "FDA", "GLM", "GAM") && is.null(weights)) { weights = rep(1, length(bm.format@data.species)) }
   
   
   
@@ -470,16 +455,18 @@ bm_Tuning <- function(model,
   }
   names(all.params) <- all.fun
   
-  .fun_testIfIn(TRUE, "tuning.fun", tuning.fun, c(all.fun, "bm_SRE", "ENMevaluate"))
+  .fun_testIfIn(TRUE, "tuning.fun", tuning.fun, c(all.fun, "bm_SRE", "ENMevaluate", "maxnet"))
   train.params <- all.params[[tuning.fun]]
   
   ## get tuning grid through params.train -------------------------------------
   tuning.grid <- NULL
-  if (model %in% c("ANN", "FDA", "GAM", "GBM", "MARS", "XGBOOST")) {
-    params.train = params.train[grep(model, names(params.train))]
-    .fun_testIfIn(TRUE, "names(params.train)", names(params.train), paste0(model, ".", train.params$params))
-    names(params.train) = sub(model, "", names(params.train))
-    tuning.grid <- do.call(expand.grid, params.train)
+  if (model %in% c("ANN", "FDA", "GAM", "GBM", "MARS", "RF", "XGBOOST")) {
+    if (!(model == "GAM" && tuning.fun == "gamSpline")) {
+      params.train = params.train[grep(model, names(params.train))]
+      .fun_testIfIn(TRUE, "names(params.train)", names(params.train), paste0(model, ".", train.params$params))
+      names(params.train) = sub(model, "", names(params.train))
+      tuning.grid <- do.call(expand.grid, params.train)
+    }
   }
   
   ## get tuning length --------------------------------------------------------
@@ -487,8 +474,16 @@ bm_Tuning <- function(model,
   if (model == "CTA") tuning.length <- 30
   if (model == "RF") tuning.length <- min(30, ncol(bm.format@data.env.var))
   
+  ## get criteria -------------------------------------------------------------
+  if (do.stepAIC) {
+    .fun_testIfIn(TRUE, "metric.AIC", metric.AIC, c("AIC", "BIC"))
+    if (metric.AIC == "AIC") criteria.AIC <- 2
+    if (metric.AIC == "BIC") criteria.AIC <- log(ncol(bm.format@data.env.var))
+  }
+  
   
   return(list(weights = weights
+              , criteria.AIC = criteria.AIC
               , tuning.fun = tuning.fun
               , train.params = train.params
               , tuning.length = tuning.length

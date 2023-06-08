@@ -364,10 +364,19 @@ setMethod('BIOMOD.options.dataset', signature(strategy = 'character'),
               argstmp$dimension = NULL
               argstmp$keep.fitted = NULL
             }
-            if (mod == "GLM") { argstmp$control = list() }
+            if (mod == "GAM") {
+              argstmp$family = binomial(link = 'logit')
+              if (pkg == "gam") { argstmp$control = gam::gam.control() }
+              if (pkg == "mgcv") { argstmp$control = mgcv::gam.control() }
+            }
+            if (mod == "GLM") {
+              argstmp$family = binomial(link = 'logit')
+              argstmp$control = list()
+            }
             if (mod == "MAXNET") { argstmp[["f"]] = NULL }
             if (mod == "RF") { argstmp[["x"]] = NULL }
             if (mod == "XGBOOST") { argstmp$nrounds = 4 }
+            BOM@args.default <- argstmp
             ## SHOULD BE MOVED to place when testing values !! ??
             
             ## SPECIFIC case of formula -------------------------------------------------
@@ -429,8 +438,9 @@ setMethod('BIOMOD.options.dataset', signature(strategy = 'character'),
               argsval <- user.val
             } else if (strategy == "tuned") {
               ## Call to bm_Tuning for one model at a time
-              argsval <- bm_Tuning(model = mod, tuning.fun = tuning.fun, do.formula = TRUE
-                                   , bm.opt.def = BOM, bm.format = bm.format, calib.lines = calib.lines)
+              argsval <- bm_Tuning(model = mod, tuning.fun = tuning.fun, do.formula = TRUE, do.stepAIC = TRUE
+                                   , bm.opt.def = BOM, bm.format = bm.format, calib.lines = calib.lines
+                                   , metric.eval = ifelse(mod == "MAXENT", "auc.val.avg", "TSS"))
             }
             
             BOD <- new('BIOMOD.options.dataset', BOM, args.values = argsval)
