@@ -8,72 +8,71 @@ bm_Tuning(
   model,
   tuning.fun,
   do.formula = FALSE,
-  bm.opt.def,
+  do.stepAIC = FALSE,
+  bm.options,
   bm.format,
   calib.lines = NULL,
   metric.eval = "TSS",
+  metric.AIC = "AIC",
   weights = NULL,
   ctrl.train = NULL,
   params.train = list(ANN.size = c(2, 4, 6, 8), ANN.decay = c(0.001, 0.01, 0.05, 0.1),
-    ANN.bag = FALSE, FDA.degree = 1:2, FDA.nprune = 2:38, GAM.select = , GAM.method =
-    c("GCV.Cp", "GACV.Cp", "REML", "P-REML", "ML", "P-ML"), GBM.n.trees = c(500, 1000,
-    2500), GBM.interaction.depth = seq(2, 8, by = 3), GBM.shrinkage = c(0.001, 0.01,
-    0.1), GBM.n.minobsinnode = 10, MARS.degree = 1:2, MARS.nprune = 2:max(38, 2 *
-    ncol(bm.format@data.env.var) + 1), SRE.quant = c(0, 0.0125, 0.025, 0.05, 0.1),
-    XGBOOST.nrounds = 50, XGBOOST.max_depth = 1, 
-     XGBOOST.eta = c(0.3, 0.4),
-    XGBOOST.gamma = 0, XGBOOST.colsample_bytree = c(0.6, 0.8), XGBOOST.min_child_weight =
-    1, XGBOOST.subsample = 0.5),
-  ANN.maxit = 500,
-  ANN.MaxNWts = 10 * (ncol(bm.format@data.env.var) + 1) + 10 + 1,
-  ME.cvmethod = "randomkfold",
-  ME.kfolds = 10
+    ANN.bag = FALSE, FDA.degree = 1:2, FDA.nprune = 2:38, GAM.select = c(TRUE, FALSE),
+    GAM.method = c("GCV.Cp", "GACV.Cp", "REML", "P-REML", "ML", "P-ML"), GBM.n.trees =
+    c(500, 1000, 2500), GBM.interaction.depth = seq(2, 8, by = 3), GBM.shrinkage =
+    c(0.001, 0.01, 0.1), GBM.n.minobsinnode = 10, MARS.degree = 1:2, MARS.nprune =
+    2:max(38, 2 * ncol(bm.format@data.env.var) + 1), RF.mtry = 1:min(10,
+    ncol(bm.format@data.env.var)), SRE.quant = c(0, 
+     0.0125, 0.025, 0.05, 0.1),
+    XGBOOST.nrounds = 50, XGBOOST.max_depth = 1, XGBOOST.eta = c(0.3, 0.4), XGBOOST.gamma
+    = 0, XGBOOST.colsample_bytree = c(0.6, 0.8), XGBOOST.min_child_weight = 1,
+    XGBOOST.subsample = 0.5)
 )
 }
 \arguments{
-\item{bm.format}{a \code{\link{BIOMOD.formated.data}} or \code{\link{BIOMOD.formated.data.PA}} 
-object returned by the \code{\link{BIOMOD_FormatingData}} function}
-
-\item{metric.eval}{a \code{character} corresponding to the evaluation metric used to select 
-optimal models and tune parameters, must be either \code{ROC} or \code{TSS} 
-(\emph{maximizing Sensitivity and Specificity})
-\code{auc.val.avg}, \code{auc.diff.avg}, \code{or.mtp.avg}, \code{or.10p.avg} or \code{AICc}}
-
-\item{weights}{a \code{vector} of \code{numeric} values corresponding to observation weights}
-
-\item{ctrl.train}{global control parameters that can be obtained from the 
-\code{\link[caret]{trainControl}} function}
-
-\item{ANN.MaxNWts}{an \code{integer} corresponding to the maximum allowable number of weights 
-for \code{ANN}}
-
-\item{ME.cvmethod}{a \code{character} corresponding to the method used to partition data for 
-\code{MAXENT}, \cr must be \code{randomkfold}}
-
-\item{ME.kfolds}{an \code{integer} corresponding to the number of bins for k-fold 
-cross-validation for \code{MAXENT}}
-
-\item{bm.options}{a \code{\link{BIOMOD.models.options}} object returned by the
-\code{\link{bm_ModelingOptions}} function}
-
-\item{models}{a \code{vector} containing model names to be tuned, must be among 
+\item{model}{a \code{character} corresponding to the  algorithm to be tuned, must be either 
 \code{ANN}, \code{CTA}, \code{FDA}, \code{GAM}, \code{GBM}, \code{GLM}, \code{MARS}, 
 \code{MAXENT}, \code{MAXNET}, \code{RF}, \code{SRE}, \code{XGBOOST}}
 
-\item{ctrl.train.tuneLength}{(see \code{tuneLength} parameter in \code{\link[caret]{train}})
-for \code{ANN}}
+\item{tuning.fun}{a \code{character} corresponding to the model function name 
+to be called through \code{\link[caret]{train}} function for tuning parameters}
 
-\item{GLM.method}{a \code{character} corresponding to the classification or regression model 
-to use for \code{GLM}, \cr 
-must be \code{glmStepAIC} (see 
-\url{http://topepo.github.io/caret/train-models-by-tag.html#Generalized_Linear_Model})}
+\item{do.formula}{(\emph{optional, default} \code{FALSE}) \cr
+A \code{logical} value defining whether formula is to be optimized or not}
+
+\item{do.stepAIC}{(\emph{optional, default} \code{FALSE}) \cr
+A \code{logical} value defining whether selection variables is to be performed for 
+\code{GLM} and \code{GAM} models or not}
+
+\item{bm.options}{a \code{\link{BIOMOD.options.default}} or \code{\link{BIOMOD.options.dataset}} 
+object returned by the \code{\link{bm_ModelingOptions}} function}
+
+\item{bm.format}{a \code{\link{BIOMOD.formated.data}} or \code{\link{BIOMOD.formated.data.PA}} 
+object returned by the \code{\link{BIOMOD_FormatingData}} function}
+
+\item{calib.lines}{}
+
+\item{metric.eval}{a \code{character} corresponding to the evaluation metric to be used, must 
+be either \code{ROC}, \code{TSS}, \code{KAPPA} for \code{SRE} only, and \code{auc.val.avg}, 
+\code{auc.diff.avg}, \code{or.mtp.avg}, \code{or.10p.avg}, \code{AICc} for \code{MAXENT} only}
+
+\item{metric.AIC}{a \code{character} corresponding to the AIC metric to be used, must 
+be either \code{AIC}, \code{BIC}}
+
+\item{weights}{(\emph{optional, default} \code{NULL}) \cr 
+A \code{vector} of \code{numeric} values corresponding to observation weights (one per 
+observation, see Details)}
+
+\item{params.train}{a \code{list} containing values of model parameters to be tested 
+(see Details)}
 }
 \value{
 A \code{\link{BIOMOD.models.options}} object (see \code{\link{bm_ModelingOptions}}) with 
 optimized parameters
 }
 \description{
-Function to tune \pkg{biomod2} single models parameters
+This internal \pkg{biomod2} function allows to tune single model parameters and 
+select more efficient ones based on an evaluation metric (see Details).
 }
 \details{
 \itemize{
@@ -171,7 +170,6 @@ Other Main functions:
 \code{\link{BIOMOD_FormatingData}()},
 \code{\link{BIOMOD_LoadModels}()},
 \code{\link{BIOMOD_Modeling}()},
-\code{\link{BIOMOD_PresenceOnly}()},
 \code{\link{BIOMOD_Projection}()},
 \code{\link{BIOMOD_RangeSize}()}
 }

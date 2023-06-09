@@ -184,7 +184,6 @@ Other Main functions:
 \code{\link{BIOMOD_FormatingData}()},
 \code{\link{BIOMOD_LoadModels}()},
 \code{\link{BIOMOD_Modeling}()},
-\code{\link{BIOMOD_PresenceOnly}()},
 \code{\link{BIOMOD_Projection}()},
 \code{\link{bm_Tuning}()}
 }

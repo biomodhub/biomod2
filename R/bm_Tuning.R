@@ -1,38 +1,40 @@
-# bm_Tuning Documentation -------------------------------------------------
+###################################################################################################
 ##' @name bm_Tuning
 ##' @author Frank Breiner
 ##' 
 ##' @title Tune models parameters
 ##' 
-##' @description Function to tune \pkg{biomod2} single models parameters
+##' @description This internal \pkg{biomod2} function allows to tune single model parameters and 
+##' select more efficient ones based on an evaluation metric (see Details).
+##' 
 ##'
-##'
-##' @param bm.format a \code{\link{BIOMOD.formated.data}} or \code{\link{BIOMOD.formated.data.PA}} 
-##' object returned by the \code{\link{BIOMOD_FormatingData}} function
-##' @param bm.options a \code{\link{BIOMOD.models.options}} object returned by the  
-##' \code{\link{bm_ModelingOptions}} function
-##' @param models a \code{vector} containing model names to be tuned, must be among 
+##' @param model a \code{character} corresponding to the  algorithm to be tuned, must be either 
 ##' \code{ANN}, \code{CTA}, \code{FDA}, \code{GAM}, \code{GBM}, \code{GLM}, \code{MARS}, 
 ##' \code{MAXENT}, \code{MAXNET}, \code{RF}, \code{SRE}, \code{XGBOOST}
-##' @param metric.eval a \code{character} corresponding to the evaluation metric used to select 
-##' optimal models and tune parameters, must be either \code{ROC} or \code{TSS} 
-##' (\emph{maximizing Sensitivity and Specificity})
-##' \code{auc.val.avg}, \code{auc.diff.avg}, \code{or.mtp.avg}, \code{or.10p.avg} or \code{AICc}
-##' @param ctrl.train global control parameters that can be obtained from the 
-##' \code{\link[caret]{trainControl}} function
-##' @param ctrl.train.tuneLength (see \code{tuneLength} parameter in \code{\link[caret]{train}})
-##' for \code{ANN}
-##' @param ANN.MaxNWts an \code{integer} corresponding to the maximum allowable number of weights 
-##' for \code{ANN}
-##' @param GLM.method a \code{character} corresponding to the classification or regression model 
-##' to use for \code{GLM}, \cr 
-##' must be \code{glmStepAIC} (see 
-##' \url{http://topepo.github.io/caret/train-models-by-tag.html#Generalized_Linear_Model})
-##' @param ME.cvmethod a \code{character} corresponding to the method used to partition data for 
-##' \code{MAXENT}, \cr must be \code{randomkfold}
-##' @param ME.kfolds an \code{integer} corresponding to the number of bins for k-fold 
-##' cross-validation for \code{MAXENT}
-##' @param weights a \code{vector} of \code{numeric} values corresponding to observation weights
+##' @param tuning.fun a \code{character} corresponding to the model function name 
+##' to be called through \code{\link[caret]{train}} function for tuning parameters
+##' @param do.formula (\emph{optional, default} \code{FALSE}) \cr  
+##' A \code{logical} value defining whether formula is to be optimized or not
+##' @param do.stepAIC (\emph{optional, default} \code{FALSE}) \cr  
+##' A \code{logical} value defining whether selection variables is to be performed for 
+##' \code{GLM} and \code{GAM} models or not
+##' @param bm.options a \code{\link{BIOMOD.options.default}} or \code{\link{BIOMOD.options.dataset}} 
+##' object returned by the \code{\link{bm_ModelingOptions}} function
+##' @param bm.format a \code{\link{BIOMOD.formated.data}} or \code{\link{BIOMOD.formated.data.PA}} 
+##' object returned by the \code{\link{BIOMOD_FormatingData}} function
+##' @param calib.lines 
+##' @param metric.eval a \code{character} corresponding to the evaluation metric to be used, must 
+##' be either \code{ROC}, \code{TSS}, \code{KAPPA} for \code{SRE} only, and \code{auc.val.avg}, 
+##' \code{auc.diff.avg}, \code{or.mtp.avg}, \code{or.10p.avg}, \code{AICc} for \code{MAXENT} only
+##' @param metric.AIC a \code{character} corresponding to the AIC metric to be used, must 
+##' be either \code{AIC}, \code{BIC}
+##' @param weights (\emph{optional, default} \code{NULL}) \cr 
+##' A \code{vector} of \code{numeric} values corresponding to observation weights (one per 
+##' observation, see Details)
+##' 
+##' @param params.train a \code{list} containing values of model parameters to be tested 
+##' (see Details)
+## @param ctrl.train to be added ?
 ##' 
 ##' 
 ##' @return 
@@ -138,10 +140,6 @@
 ##' @importFrom foreach foreach
 ##' @importFrom stats aggregate  
 ##' @importFrom PresenceAbsence optimal.thresholds presence.absence.accuracy
-## @importFrom MASS stepAIC
-## @importFrom caret trainControl train twoClassSummary
-## @importFrom dismo kfold
-## @importFrom ENMeval ENMevaluate
 ##' 
 ##' 
 ##' @export
@@ -153,7 +151,7 @@ bm_Tuning <- function(model,
                       tuning.fun,
                       do.formula = FALSE,
                       do.stepAIC = FALSE,
-                      bm.opt.def,
+                      bm.options,
                       bm.format,
                       calib.lines = NULL,
                       metric.eval = 'TSS',
@@ -181,11 +179,7 @@ bm_Tuning <- function(model,
                                           XGBOOST.gamma = 0,
                                           XGBOOST.colsample_bytree = c(0.6, 0.8),
                                           XGBOOST.min_child_weight = 1,
-                                          XGBOOST.subsample = 0.5),
-                      ANN.maxit = 500,
-                      ANN.MaxNWts = 10 * (ncol(bm.format@data.env.var) + 1) + 10 + 1,
-                      ME.cvmethod = 'randomkfold',
-                      ME.kfolds = 10)
+                                          XGBOOST.subsample = 0.5))
 {
   ## 0. Check arguments ---------------------------------------------------------------------------
   args <- .bm_Tuning.check.args(model = model, tuning.fun = tuning.fun, do.formula = do.formula, do.stepAIC = do.stepAIC
@@ -212,7 +206,7 @@ bm_Tuning <- function(model,
   
   argsval <- foreach(calib.i = 1:ncol(calib.lines)) %do%
     {
-      argstmp <- bm.opt.def@args.default
+      argstmp <- bm.options@args.default
       
       if (model == "MAXNET") {
         warning("No tuning available for that model. Sorry.")
@@ -233,8 +227,8 @@ bm_Tuning <- function(model,
                                                     bg = mySpExpl[mySpExpl[, 1] == 0 | is.na(mySpExpl[, 1]), ],
                                                     tune.args = list(rm = seq(0.5, 1, 0.5), fc = c("L")),
                                                     algorithm = "maxent.jar",
-                                                    partitions = ME.cvmethod,
-                                                    partition.settings = list(kfolds = ME.kfolds),
+                                                    partitions = "randomkfold",
+                                                    partition.settings = list(kfolds = 10),
                                                     doClamp = TRUE, ## allow to change or not ?
                                                     parallel = TRUE,
                                                     numCores = NULL, ## default to 1 or NULL (all available cores used then) ?
@@ -294,9 +288,11 @@ bm_Tuning <- function(model,
             cmd.tuning <- paste0(cmd.tuning, " weights = weights,")
           }
           if (model == "ANN") {
+            maxit = 500
+            maxnwts = 10 * (ncol(myExpl) + 1) + 10 + 1
             ## Automatically standardize data prior to modeling and prediction
             cmd.tuning <- paste0(cmd.tuning, " preProc = c('center', 'scale'), linout = TRUE, trace = FALSE,")
-            cmd.tuning <- paste0(cmd.tuning, " MaxNWts.ANN = ANN.MaxNWts, maxit = ANN.maxit))")
+            cmd.tuning <- paste0(cmd.tuning, " MaxNWts.ANN = maxnwts, maxit = maxit))")
           } else if (tuning.fun %in% c("earth", "bam", "fda", "rpart", "glm")) { ## remove verbose
             cmd.tuning <- paste0(cmd.tuning, " tuneLength = tuning.length))")
           } else {
@@ -413,7 +409,7 @@ bm_Tuning <- function(model,
 # ---------------------------------------------------------------------------- #
 
 .bm_Tuning.check.args <- function(model, tuning.fun, do.formula, do.stepAIC
-                                  , bm.format, metric.eval, metric.AIC
+                                  , bm.options, bm.format, metric.eval, metric.AIC
                                   , weights = NULL, params.train)
 {
   ## check model --------------------------------------------------------------
@@ -436,6 +432,9 @@ bm_Tuning <- function(model,
     if(!requireNamespace('MASS', quietly = TRUE)) stop("Package 'MASS' not found")
   }
   
+  ##check bm.options ----------------------------------------------------------
+  .fun_testIfInherits(TRUE, "bm.options", bm.options, c("BIOMOD.options.default", "BIOMOD.options.dataset"))
+  
   ## check bm.format ----------------------------------------------------------
   .fun_testIfInherits(TRUE, "bm.format", bm.format, c("BIOMOD.formated.data", "BIOMOD.formated.data.PA"))
   
@@ -449,8 +448,9 @@ bm_Tuning <- function(model,
   }
   
   ## check weights ------------------------------------------------------------
-  if (model %in% c("CTA", "FDA", "GLM", "GAM") && is.null(weights)) { weights = rep(1, length(bm.format@data.species)) }
-  
+  if (model %in% c("CTA", "FDA", "GLM", "GAM") && is.null(weights)) { 
+    weights = rep(1, length(bm.format@data.species))
+  }
   
   
   ## get tuning function and parameters ---------------------------------------

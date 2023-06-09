@@ -75,7 +75,8 @@ setGeneric("BIOMOD.options.default", def = function(mod, typ, pkg, fun) { standa
   .fun_testIfIn(TRUE, "mod", mod, avail.models.list)
   
   ## check if type is supported
-  avail.types.list <- c('binary', 'binary.PA', 'abundance', 'compositional')
+  # avail.types.list <- c('binary', 'binary.PA', 'abundance', 'compositional')
+  avail.types.list <- c('binary')
   .fun_testIfIn(TRUE, "typ", typ, avail.types.list)
   
   if (mod != 'MAXENT') {
@@ -238,7 +239,9 @@ setGeneric("BIOMOD.options.dataset", def = function(strategy, user.val = NULL, t
   
   ## TUNING parameterisation --------------------
   if (strategy == "tuned") {
-    ## test over tuning.fun ??
+    all.fun <- c('avNNet', 'rpart', 'rpart2', 'fda', 'gamSpline', 'bam', 'gam', 'gbm', 'glm', 'earth', 'rf', 'xgbTree')
+    .fun_testIfIn(TRUE, "tuning.fun", tuning.fun, c(all.fun, "bm_SRE", "ENMevaluate", "maxnet"))
+    .fun_testIfInherits(TRUE, "bm.format", bm.format, c("BIOMOD.formated.data", "BIOMOD.formated.data.PA"))
   }
   
   # if (!is.null(MAXENT$path_to_maxent.jar)) {
@@ -255,7 +258,7 @@ setGeneric("BIOMOD.options.dataset", def = function(strategy, user.val = NULL, t
     .fun_testIfInherits(TRUE, "calib.lines", calib.lines, c("matrix"))
     
     expected_CVnames <- c(paste0("_allData_RUN", seq_len(ncol(calib.lines))), "_allData_allRun")
-    if (inherits(bm.format, "BIOMOD.formated.data.PA")) {
+    if (!is.null(bm.format) && inherits(bm.format, "BIOMOD.formated.data.PA")) {
       expected_CVnames <- c(expected_CVnames
                             , sapply(1:ncol(bm.format@PA.table)
                                      , function(this_PA) c(paste0("_PA", this_PA, "_RUN", seq_len(ncol(calib.lines)))
@@ -417,12 +420,14 @@ setMethod('BIOMOD.options.dataset', signature(strategy = 'character'),
                                                      , type = 'quadratic'
                                                      , interaction.level = 0)
                   }
+                } else {
+                  warning("No bm.format provided. No bigboss definition of formula for GAM.mgcv.gam and GLM models.")
                 }
               }
               
               if (is.null(calib.lines)) {
                 argsval <- list("_allData_allRun" = argstmp)
-                if (inherits(bm.format, "BIOMOD.formated.data.PA")) {
+                if (!is.null(bm.format) && inherits(bm.format, "BIOMOD.formated.data.PA")) {
                   for (PA in colnames(bm.format@PA.table)) {
                     argsval[[paste0("_", PA, "_allRun")]] <- argsval[["_allData_allRun"]]
                   }
@@ -439,7 +444,6 @@ setMethod('BIOMOD.options.dataset', signature(strategy = 'character'),
               }
               argsval <- user.val
             } else if (strategy == "tuned") {
-              ## Call to bm_Tuning for one model at a time
               argsval <- bm_Tuning(model = mod, tuning.fun = tuning.fun, do.formula = TRUE, do.stepAIC = TRUE
                                    , bm.opt.def = BOM, bm.format = bm.format, calib.lines = calib.lines
                                    , metric.eval = ifelse(mod == "MAXENT", "auc.val.avg", "TSS"))
@@ -449,6 +453,7 @@ setMethod('BIOMOD.options.dataset', signature(strategy = 'character'),
             
             ## TEST that all given options do not produce errors ------------------------
             # .BIOMOD.options.dataset.test(bm.opt = BOD)
+            
             return(BOD)
           }
 )

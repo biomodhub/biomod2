@@ -92,7 +92,6 @@ Collate:
     'BIOMOD_FormatingData.R'
     'BIOMOD_LoadModels.R'
     'BIOMOD_Modeling.R'
-    'BIOMOD_PresenceOnly.R'
     'BIOMOD_Projection.R'
     'BIOMOD_RangeSize.R'
     'DEPRECATED.R'
