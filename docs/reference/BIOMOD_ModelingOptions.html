@@ -106,7 +106,8 @@
 <span>  FDA <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  MARS <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  RF <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  MAXENT <span class="op">=</span> <span class="cn">NULL</span></span>
+<span>  MAXENT <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  XGBOOST <span class="op">=</span> <span class="cn">NULL</span></span>
 <span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu">bm_DefaultModelingOptions</span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
@@ -153,6 +154,11 @@
 <dt>MAXENT</dt>
 <dd><p>(<em>optional, default</em> <code>NULL</code>) <br> A <code>list</code> 
 containing MAXENT options</p></dd>
+
+
+<dt>XGBOOST</dt>
+<dd><p>(<em>optional, default</em> <code>NULL</code>) <br> A <code>list</code> 
+containing XGBOOST options</p></dd>
 
 </dl></div>
     <div id="value">
@@ -399,10 +405,11 @@ changes) as function arguments (see <a href="https://biomodhub.github.io/biomod2
     <div id="xgboost-">
     <h2>XGBOOST </h2>
     <p>(default <code><a href="https://rdrr.io/pkg/xgboost/man/xgb.train.html" class="external-link">xgboost</a></code>)</p>
-<p><em>Please refer to <code><a href="https://rdrr.io/pkg/xgboost/man/xgb.train.html" class="external-link">xgboost</a></code> help file for more details.</em></p><ul><li><p><code>max.depth = 2</code></p></li>
-<li><p><code>eta = 1</code></p></li>
-<li><p><code>nrounds = 4</code></p></li>
+<p><em>Please refer to <code><a href="https://rdrr.io/pkg/xgboost/man/xgb.train.html" class="external-link">xgboost</a></code> help file for more details.</em></p><ul><li><p><code>max.depth = 5</code></p></li>
+<li><p><code>eta = 0.1</code></p></li>
+<li><p><code>nrounds = 512</code></p></li>
 <li><p><code>objective = "binary:logistic"</code></p></li>
+<li><p><code>nthread = 1</code></p></li>
 </ul></div>
     <div id="see-also">
     <h2>See also</h2>

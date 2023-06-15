@@ -15,7 +15,8 @@ BIOMOD_ModelingOptions(
   FDA = NULL,
   MARS = NULL,
   RF = NULL,
-  MAXENT = NULL
+  MAXENT = NULL,
+  XGBOOST = NULL
 )
 
 bm_DefaultModelingOptions()
@@ -41,6 +42,9 @@ bm_DefaultModelingOptions()
 
 \item{MAXENT}{(\emph{optional, default} \code{NULL}) \cr A \code{list} 
 containing MAXENT options}
+
+\item{XGBOOST}{(\emph{optional, default} \code{NULL}) \cr A \code{list} 
+containing XGBOOST options}
 }
 \value{
 A \code{\link{BIOMOD.models.options}} object that can be used to build species distribution 
@@ -354,10 +358,11 @@ Below is the detailed list of all modifiable parameters for each available model
 
 \emph{Please refer to \code{\link[xgboost]{xgboost}} help file for more details.}
 \itemize{
-  \item{\code{max.depth = 2}}
-  \item{\code{eta = 1}}
-  \item{\code{nrounds = 4}}
+  \item{\code{max.depth = 5}}
+  \item{\code{eta = 0.1}}
+  \item{\code{nrounds = 512}}
   \item{\code{objective = "binary:logistic"}}
+  \item{\code{nthread = 1}}
   }
 }
 
