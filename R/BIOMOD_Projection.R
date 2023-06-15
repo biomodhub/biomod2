@@ -530,6 +530,7 @@ BIOMOD_Projection <- function(bm.mod,
     new.env <- mask(new.env, new.env.mask)
   } else {
     .fun_testIfIn(TRUE, "colnames(new.env)", colnames(new.env), bm.mod@expl.var.names)
+    new.env <- new.env[ , bm.mod@expl.var.names, drop = FALSE]
   }
   
   which.factor <- which(sapply(new.env, is.factor))
