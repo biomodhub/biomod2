@@ -15,7 +15,11 @@ vignette: >
 
 ### <i class="fas fa-feather"></i> 2023 
 
-#### 4.2-4 Modeling options and Tuning
+#### 4.2-4 xgboost
+
+##### Major Changes
+
+* Added xgboost as a possible algorithm in `BIOMOD_Modeling`
 
 ##### 4.2-3-5 Bugfix
 
