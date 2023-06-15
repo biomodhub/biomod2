@@ -20,6 +20,8 @@
 ##' @param RF (\emph{optional, default} \code{NULL}) \cr A \code{list} containing RF options
 ##' @param MAXENT (\emph{optional, default} \code{NULL}) \cr A \code{list} 
 ##' containing MAXENT options
+##' @param XGBOOST (\emph{optional, default} \code{NULL}) \cr A \code{list} 
+##' containing XGBOOST options
 ##'
 ##'
 ##' @return 
@@ -312,10 +314,11 @@
 ##' 
 ##' \emph{Please refer to \code{\link[xgboost]{xgboost}} help file for more details.}
 ##' \itemize{
-##'   \item{\code{max.depth = 2}}
-##'   \item{\code{eta = 1}}
-##'   \item{\code{nrounds = 4}}
+##'   \item{\code{max.depth = 5}}
+##'   \item{\code{eta = 0.1}}
+##'   \item{\code{nrounds = 512}}
 ##'   \item{\code{objective = "binary:logistic"}}
+##'   \item{\code{nthread = 1}}
 ##'   }
 ##'
 ##'
@@ -397,7 +400,8 @@ BIOMOD_ModelingOptions <- function(GLM = NULL,
                                    FDA = NULL,
                                    MARS = NULL,
                                    RF = NULL,
-                                   MAXENT = NULL)
+                                   MAXENT = NULL,
+                                   XGBOOST = NULL)
 {
   # .bm_cat("Build Modeling Options")
   
@@ -648,7 +652,25 @@ BIOMOD_ModelingOptions <- function(GLM = NULL,
   } else {
     opt@MAXENT$path_to_maxent.jar <- getwd()
   }
-  
+  ## 2.11 XGBOOST -----------------------------------------------------
+  if (!is.null(XGBOOST)) {
+    if (!is.null(XGBOOST$max.depth)) {
+      opt@XGBOOST$max.depth <- XGBOOST$max.depth
+    }
+    if (!is.null(XGBOOST$eta)) {
+      opt@XGBOOST$eta <- XGBOOST$eta
+    }
+    if (!is.null(XGBOOST$max.depth)) {
+      opt@XGBOOST$nrounds <- XGBOOST$nrounds
+    }
+    if (!is.null(XGBOOST$objective)) {
+      opt@XGBOOST$objective <- XGBOOST$objective
+    }
+    if (!is.null(XGBOOST$nthread)) {
+      opt@XGBOOST$nthread <- XGBOOST$nthread
+    }
+    
+  }
   ## 3. test validity ---------------------------------------------------------
   test <- as.logical(validObject(object = opt, test = TRUE, complete = FALSE))
   

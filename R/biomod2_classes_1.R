@@ -1751,7 +1751,11 @@ setClass("BIOMOD.models.options",
                    MAXNET = list(myFormula = NULL,
                                  regmult = 1,
                                  regfun = maxnet::maxnet.default.regularization),
-                   XGBOOST = list() #empty for now
+                   XGBOOST = list(max.depth = 5,
+                                  eta = 0.1,
+                                  nthread = 1, 
+                                  nrounds = 512,
+                                  objective = "binary:logistic")
          ),
          validity = function(object) {
            test <- TRUE
@@ -2042,19 +2046,36 @@ setClass("BIOMOD.models.options",
              test <- FALSE
            }
            
-           if(!is.null(object@MAXENT$initial_heap_size)){
+           if (!is.null(object@MAXENT$initial_heap_size)) {
              test <- .check_bytes_format(test,
                                          object@MAXENT$initial_heap_size,
                                          "initial_heap_size")
            }
-           if(!is.null(object@MAXENT$max_heap_size)){
+           if (!is.null(object@MAXENT$max_heap_size)) {
              test <- .check_bytes_format(test,
                                          object@MAXENT$max_heap_size,
                                          "max_heap_size")
            }
-           ## MAXNET
+           ## MAXNET ----------------------------------------------------------
            ## As of 2022/11/22 options check for MAXNET are missing 
-
+           
+           ## XGBOOST ---------------------------------------------------------
+           test <- .fun_testIfPosInt(test,
+                                     "XGBOOST$max.depth",
+                                     object@XGBOOST$max.depth)
+           test <- .fun_testIf01(test,
+                                 "XGBOOST$eta",
+                                 object@XGBOOST$eta)
+           test <- .fun_testIfPosInt(test,
+                                     "XGBOOST$nthread",
+                                     object@XGBOOST$nthread)
+           test <- .fun_testIfPosInt(test,
+                                     "XGBOOST$nrounds",
+                                     object@XGBOOST$nrounds)
+           test <- .fun_testIfIn(test, 
+                                 "XGBOOST$objective",
+                                 object@XGBOOST$objective,
+                                 c("binary:logistic"))
            return(test)
          }
 )
@@ -2072,7 +2093,7 @@ setMethod('show', signature('BIOMOD.models.options'),
             .bm_cat("BIOMOD.models.options")
             cat("\n")
             
-            ## GLM options
+            ## GLM options ----------------------------------------------------
             cat("\nGLM = list( type = '", object@GLM$type, "',", sep = "")
             cat("\n            interaction.level = ", object@GLM$interaction.level, ",", sep = "")
             cat("\n            myFormula = ",  ifelse(length(object@GLM$myFormula) < 1, 'NULL', paste(object@GLM$myFormula[2],
@@ -2083,7 +2104,7 @@ setMethod('show', signature('BIOMOD.models.options'),
             cat("\n            mustart = ", object@GLM$mustart, ",", sep = "")
             cat("\n            control = glm.control(", .print_control(object@GLM$control), ") ),", sep = "", fill = .Options$width)
             
-            ## GBM options
+            ## GBM options ----------------------------------------------------
             cat("\n")
             cat("\nGBM = list( distribution = '", object@GBM$distribution, "',", sep = "")
             cat("\n            n.trees = ", object@GBM$n.trees, ",", sep = "")
@@ -2099,7 +2120,7 @@ setMethod('show', signature('BIOMOD.models.options'),
             cat("\n            perf.method = '", object@GBM$perf.method, "',", sep = "")
             cat("\n            n.cores = ", ifelse(length(object@GBM$n.cores), object@GBM$n.cores, 'NULL'), "),", sep = "")
             
-            ## GAM options
+            ## GAM options ----------------------------------------------------
             cat("\n")
             cat("\nGAM = list( algo = '", object@GAM$algo, "',", sep = "")
             cat("\n            type = '", object@GAM$type, "',", sep = "")
@@ -2118,14 +2139,14 @@ setMethod('show', signature('BIOMOD.models.options'),
             }
             cat("\n            control = list(", .print_control(object@GAM$control), ") ),", sep = "", fill = .Options$width)
             
-            ## CTA options
+            ## CTA options ----------------------------------------------------
             cat("\n")
             cat("\nCTA = list( method = '", object@CTA$method, "',", sep = "")
             cat("\n            parms = '", object@CTA$parms, "',", sep = "")
             cat("\n            cost = ", ifelse(length(object@CTA$cost) < 1, 'NULL', object@CTA$cost), ",", sep = "")
             cat("\n            control = list(", .print_control(object@CTA$control), ") ),", sep = "", fill = .Options$width)
             
-            ## ANN options
+            ## ANN options ----------------------------------------------------
             cat("\n")
             cat("\nANN = list( NbCV = ", object@ANN$NbCV, ",", sep = "")
             cat("\n            size = ", ifelse(length(object@ANN$size) < 1, 'NULL', object@ANN$size), ",", sep = "")
@@ -2133,18 +2154,18 @@ setMethod('show', signature('BIOMOD.models.options'),
             cat("\n            rang = ", object@ANN$rang, ",", sep = "")
             cat("\n            maxit = ", object@ANN$maxit, "),", sep = "")
             
-            ## SRE options
+            ## SRE options ----------------------------------------------------
             cat("\n")
             cat("\nSRE = list( quant = ", object@SRE$quant, "),", sep = "")
             
-            ## FDA options
+            ## FDA options ----------------------------------------------------
             cat("\n")
             cat("\nFDA = list( method = '", object@FDA$method, "',", sep = "")
             cat("\n            add_args = ", ifelse(length(object@FDA$add_args) < 1, 'NULL'
                                                     , paste("list(", paste(.print_control(object@FDA$add_args), collapse = "")
                                                             , ")", sep = "")), "),", sep = "")
             
-            ## MARS options
+            ## MARS options ----------------------------------------------------
             cat("\n")
             cat("\nMARS = list( type = '", object@MARS$type, "',", sep = "")
             cat("\n             interaction.level = ", object@MARS$interaction.level, ",", sep = "")
@@ -2158,7 +2179,7 @@ setMethod('show', signature('BIOMOD.models.options'),
             cat("\n             nprune = ", ifelse(length(object@MARS$nprune) < 1, 'NULL', object@MARS$nprune), ",", sep = "")
             cat("\n             pmethod = '", object@MARS$pmethod, "'),", sep = "")
             
-            ## RF options
+            ## RF options ----------------------------------------------------
             cat("\n")
             cat("\nRF = list( do.classif = ", object@RF$do.classif, ",", sep = "")
             cat("\n           ntree = ", object@RF$ntree, ",", sep = "")
@@ -2167,7 +2188,7 @@ setMethod('show', signature('BIOMOD.models.options'),
             cat("\n           nodesize = ", object@RF$nodesize, ",", sep = "")
             cat("\n           maxnodes = ", ifelse(length(object@RF$maxnodes) < 1, 'NULL', object@RF$maxnodes),  "),", sep = "")
             
-            ## MAXENT options
+            ## MAXENT options ----------------------------------------------------
             cat("\n")
             cat("\nMAXENT = list( path_to_maxent.jar = '", object@MAXENT$path_to_maxent.jar, "', ", sep="")
             cat("\n               memory_allocated = ", ifelse(is.null(object@MAXENT$memory_allocated), 'NULL'
@@ -2200,13 +2221,20 @@ setMethod('show', signature('BIOMOD.models.options'),
             cat("\n               betamultiplier = ", object@MAXENT$betamultiplier, ",", sep = "")
             cat("\n               defaultprevalence = ", object@MAXENT$defaultprevalence, "),", sep = "")
             
-            ## MAXNET options
+            ## MAXNET options ----------------------------------------------------
             cat("\n")
             cat("\n MAXNET = list( myFormula = ", .print_formula(object@MAXNET$myFormula), ",", sep = "")
             cat("\n     regmult = ", object@MAXNET$regmult, ",", sep = "")
-            cat("\n     regfun = <function> )")
+            cat("\n     regfun = <function> ),")
+
+            ## XGBOOST options ----------------------------------------------------
+            cat("\n")
+            cat("\n XGBOOST = list( max.depth = ", object@XGBOOST$max.depth, ",", sep = "")
+            cat("\n                 eta = ", object@XGBOOST$eta, ",", sep = "")
+            cat("\n                 nrounds = ", object@XGBOOST$nrounds, ",", sep = "")
+            cat("\n                 objective = ", object@XGBOOST$objective, ",", sep = "")
+            cat("\n                 nthread = ", object@XGBOOST$nthread, " )", sep = "")
             cat("\n)")
-            
 
             .bm_cat()
           }

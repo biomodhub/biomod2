@@ -755,11 +755,11 @@ bm_RunModel <- function(model, run.name, dir.name = '.'
     cat('\n\t> XGBOOST modeling...')
     model.sp <- try(xgboost(data = as.matrix(data_env[calib.lines.vec, , drop = FALSE]),
                             label = data_sp[calib.lines.vec],
-                            max.depth = 2,
-                            eta = 1,
-                            nthread = 2, 
-                            nrounds = 4,
-                            objective = "binary:logistic",
+                            max.depth = bm.options@XGBOOST$max.depth,
+                            eta = bm.options@XGBOOST$eta,
+                            nthread = bm.options@XGBOOST$nthread, 
+                            nrounds = bm.options@XGBOOST$nrounds,
+                            objective = bm.options@XGBOOST$objective,
                             weight = weights.vec[calib.lines.vec])
     )
     
