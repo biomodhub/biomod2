@@ -110,7 +110,7 @@
 ##' @importFrom dplyr mutate_at select_at %>%
 ##' @importFrom maxnet maxnet
 ##' @importFrom randomForest randomForest
-##' 
+##' @importFrom xgboost xgboost
 ##' @export
 ##' 
 ##'
