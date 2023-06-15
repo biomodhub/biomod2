@@ -20,6 +20,8 @@
 ##' @param RF (\emph{optional, default} \code{NULL}) \cr A \code{list} containing RF options
 ##' @param MAXENT (\emph{optional, default} \code{NULL}) \cr A \code{list} 
 ##' containing MAXENT options
+##' @param XGBOOST (\emph{optional, default} \code{NULL}) \cr A \code{list} 
+##' containing XGBOOST options
 ##'
 ##'
 ##' @return 
@@ -308,20 +310,16 @@
 ##'   \code{numeric} corresponding to the default prevalence of the species \cr
 ##'   (\emph{probability of presence at ordinary occurrence points})}
 ##' }
-##'
-##' % @section \bold{MAXENT.Tsuruoka (\code{\link[maxent]{maxent}})} :
-##' % \itemize{
-##' %   \item{\code{l1_regularizer = 0.0}}{ : a \code{numeric} turning on L1 regularization and setting 
-##' %   the regularization parameter (\emph{a value of \code{0} will disable L1 regularization})}
-##' %   \item{\code{l2_regularizer = 0.0}}{ : a \code{numeric} turning on L2 regularization and setting 
-##' %   the regularization parameter (\emph{a value of \code{0} will disable L2 regularization})}
-##' %   \item{\code{use_sgd = FALSE}}{ : a \code{logical} to use SGD parameter estimation}
-##' %   \item{\code{set_heldout = 0}}{ : an \code{integer} corresponding to the number of documents to 
-##' %   hold out (\emph{to test against and prevent overfitting, use carefully in case of dataset with 
-##' %   low number of occurrences})}
-##' %   \item{\code{verbose = FALSE}}{ : a \code{logical} specifying whether to provide descriptive 
-##' %   output about the training process}
-##' % }
+##' @section XGBOOST : (default \code{\link[xgboost]{xgboost}})
+##' 
+##' \emph{Please refer to \code{\link[xgboost]{xgboost}} help file for more details.}
+##' \itemize{
+##'   \item{\code{max.depth = 5}}
+##'   \item{\code{eta = 0.1}}
+##'   \item{\code{nrounds = 512}}
+##'   \item{\code{objective = "binary:logistic"}}
+##'   \item{\code{nthread = 1}}
+##'   }
 ##'
 ##'
 ##' @keywords models options
@@ -402,7 +400,8 @@ BIOMOD_ModelingOptions <- function(GLM = NULL,
                                    FDA = NULL,
                                    MARS = NULL,
                                    RF = NULL,
-                                   MAXENT = NULL)
+                                   MAXENT = NULL,
+                                   XGBOOST = NULL)
 {
   # .bm_cat("Build Modeling Options")
   
@@ -653,15 +652,25 @@ BIOMOD_ModelingOptions <- function(GLM = NULL,
   } else {
     opt@MAXENT$path_to_maxent.jar <- getwd()
   }
-  
-  # if (!is.null(MAXENT.Tsuruoka)) {
-  #   if (!is.null(MAXENT.Tsuruoka$l1_regularizer)) { opt@MAXENT.Tsuruoka$l1_regularizer <- MAXENT.Tsuruoka$l1_regularizer }
-  #   if (!is.null(MAXENT.Tsuruoka$l2_regularizer)) { opt@MAXENT.Tsuruoka$l2_regularizer <- MAXENT.Tsuruoka$l2_regularizer }
-  #   if (!is.null(MAXENT.Tsuruoka$use_sgd)) { opt@MAXENT.Tsuruoka$use_sgd <- MAXENT.Tsuruoka$use_sgd }
-  #   if (!is.null(MAXENT.Tsuruoka$set_heldout)) { opt@MAXENT.Tsuruoka$set_heldout <- MAXENT.Tsuruoka$set_heldout }
-  #   if (!is.null(MAXENT.Tsuruoka$verbose)) { opt@MAXENT.Tsuruoka$verbose <- MAXENT.Tsuruoka$verbose }
-  # }
-  
+  ## 2.11 XGBOOST -----------------------------------------------------
+  if (!is.null(XGBOOST)) {
+    if (!is.null(XGBOOST$max.depth)) {
+      opt@XGBOOST$max.depth <- XGBOOST$max.depth
+    }
+    if (!is.null(XGBOOST$eta)) {
+      opt@XGBOOST$eta <- XGBOOST$eta
+    }
+    if (!is.null(XGBOOST$max.depth)) {
+      opt@XGBOOST$nrounds <- XGBOOST$nrounds
+    }
+    if (!is.null(XGBOOST$objective)) {
+      opt@XGBOOST$objective <- XGBOOST$objective
+    }
+    if (!is.null(XGBOOST$nthread)) {
+      opt@XGBOOST$nthread <- XGBOOST$nthread
+    }
+    
+  }
   ## 3. test validity ---------------------------------------------------------
   test <- as.logical(validObject(object = opt, test = TRUE, complete = FALSE))
   

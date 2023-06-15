@@ -1091,3 +1091,10 @@ check_duplicated_cells <- function(env, xy, sp, filter.raster,
   }
   new.env 
 }
+
+
+# Tools to predict on SpatRaster with xgboost -----------------------------
+
+xgbpred <- function(model, data, ...) {
+  predict(model, newdata = as.matrix(data), ...)
+}

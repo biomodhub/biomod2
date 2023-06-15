@@ -77,6 +77,7 @@ NULL
 ##' @aliases MAXNET_biomod2_model-class
 ##' @aliases RF_biomod2_model-class
 ##' @aliases SRE_biomod2_model-class
+##' @aliases XGBOOST_biomod2_model-class
 ##' @author Damien Georges
 ##' 
 ##' @title Single model output object class (when running \code{BIOMOD_Modeling()})
@@ -1025,71 +1026,6 @@ setMethod('predict2', signature(object = 'MAXNET_biomod2_model', newdata = "data
           }
 )
 
-
-#----------------------------------------------------------------------------- #
-## 8.9 MAXENT.Tsuruoka_biomod2_model -----------------------------------------
-#----------------------------------------------------------------------------- #
-
-# setClass('MAXENT.Tsuruoka_biomod2_model',
-#          representation(),
-#          contains = 'biomod2_model',
-#          prototype = list(model_class = 'MAXENT.Tsuruoka'),
-#          validity = function(object) { ## check model class
-#            if( sum(!(c("maxent") %in% class(object@model))) > 0) { return(FALSE) } else { return(TRUE) }
-#          })
-# 
-# setMethod('predict', signature(object = 'MAXENT.Tsuruoka_biomod2_model'),
-#           function(object, newdata, ...)
-#           {
-#             return(.template_predict(mod = "MAXENT.Tsuruoka", object, newdata, ...))
-#           })
-# 
-# .predict.MAXENT.Tsuruoka_biomod2_model.SpatRaster <- function(object, newdata, ...)*
-# {
-#   args <- list(...)
-#   namefile <- args$namefile
-#   overwrite <- args$overwrite
-#   on_0_1000 <- args$on_0_1000
-# 
-#   if (is.null(overwrite)) { overwrite <- TRUE }
-#   if (is.null(on_0_1000)) { on_0_1000 <- FALSE }
-# 
-#   proj <- calc(newdata, function(x) {
-#     proj.out <- rep(NA, nrow(x))
-#     x.no.na <- na.omit(x)
-#     if(nrow(x.no.na)){
-#       proj.not.na <- as.numeric(predict.maxent(get_formal_model(object), x.no.na)[, '1'])
-#       proj.out[-attr(x.no.na, "na.action")] <- proj.not.na
-#     }
-#     return(proj.out)
-#     })
-# 
-#   if (length(get_scaling_model(object))) {
-#     names(proj) <- "pred"
-#     proj <- .run_pred(object = get_scaling_model(object), Prev = 0.5 , dat = proj)
-#   }
-# 
-#   if (on_0_1000) { proj <- round(proj * 1000) }
-# 
-#   # save raster on hard drive ?
-#   if (!is.null(namefile)) {
-#     cat("\n\t\tWriting projection on hard drive...")
-#     if (on_0_1000) { ## projections are stored as positive integer
-#       writeRaster(proj, filename = namefile, overwrite = overwrite, datatype = "INT2S", NAflag = -9999)
-#     } else { ## keep default data format for saved raster
-#       writeRaster(proj, filename = namefile, overwrite = overwrite)
-#     }
-#     proj <- raster(namefile, RAT = FALSE)
-#   }
-#   return(proj)
-# }
-# 
-# .predict.MAXENT.Tsuruoka_biomod2_model.data.frame <- function(object, newdata, ...)
-# {
-#   return(.template_predict.data.frame(seedval = NULL, predcommand = "as.numeric(predict(get_formal_model(object), as.data.frame(newdata[not_na_rows, , drop = FALSE]))[,'1'])", object, newdata, ...))
-# }
-
-
 #----------------------------------------------------------------------------- #
 ## 8.10 RF_biomod2_model -----------------------------------------------------
 #----------------------------------------------------------------------------- #
@@ -1187,3 +1123,53 @@ setMethod('predict2', signature(object = 'SRE_biomod2_model', newdata = "data.fr
 )
 
 
+
+#----------------------------------------------------------------------------- #
+## 8.12 XGBOOST_biomod2_model -----------------------------------------------------
+#----------------------------------------------------------------------------- #
+##' @name XGBOOST_biomod2_model-class
+##' @rdname biomod2_model
+##' @export
+
+setClass('XGBOOST_biomod2_model',
+         representation(n.trees_optim = 'numeric'),
+         contains = 'biomod2_model',
+         prototype = list(model_class = 'XGBOOST'),
+         validity = function(object) { ## check model class
+           if (!inherits(object@model, "xgb.Booster")) { 
+             return(FALSE) 
+           } else { 
+             return(TRUE) 
+           }
+         })
+
+##' 
+##' @rdname predict2.bm
+
+setMethod('predict2', signature(object = 'XGBOOST_biomod2_model', newdata = "SpatRaster"),
+          function(object, newdata, ...) {
+            predfun <- function(object, newdata, mod.name){
+              proj <- predict(newdata,
+                              model = get_formal_model(object),
+                              fun = xgbpred,
+                              na.rm = TRUE,
+                              wopt = list(names = mod.name))
+              proj
+            }
+            
+            # redirect to predict2.biomod2_model.SpatRaster
+            callNextMethod(object, newdata, predfun = predfun, ...)
+            
+          }
+)
+
+##' @rdname predict2.bm
+setMethod('predict2', signature(object = 'XGBOOST_biomod2_model', newdata = "data.frame"),
+          function(object, newdata, ...) {
+            predfun <- function(object, newdata, not_na_rows){
+              as.numeric(predict(get_formal_model(object), as.matrix(newdata[not_na_rows, , drop = FALSE])))
+            }
+            # redirect to predict2.biomod2_model.data.frame
+            callNextMethod(object, newdata, predfun = predfun, ...)
+          }
+)

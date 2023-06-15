@@ -257,7 +257,6 @@ BIOMOD_Tuning <- function(bm.format,
     if ("MAXENT" %in% models && !isNamespaceLoaded('ENMeval')) { 
       if(!requireNamespace('ENMeval', quietly = TRUE)) stop("Package 'ENMeval' not found")
     }
-    # if ("MAXENT.Tsuruoka" %in% models && !isNamespaceLoaded('maxent')) { requireNamespace("maxent", quietly = TRUE) }
     if ("SRE" %in% models && !isNamespaceLoaded('dismo')) { 
       if(!requireNamespace('dismo', quietly = TRUE)) stop("Package 'dismo' not found")
     }
@@ -265,8 +264,7 @@ BIOMOD_Tuning <- function(bm.format,
   
   tune.SRE <- tune.GLM <- tune.MAXENT <- tune.GAM <- tune.GBM <- 
     tune.CTA.rpart <- tune.CTA.rpart2 <- tune.RF <- tune.ANN <- tune.MARS <- tune.FDA <- NULL
-  # tune.MAXENT.Tsuruoka <- NULL
-  
+
   resp <- bm.format@data.species
   # if (is.null(weights)) { weights = rep(1, length(bm.format@data.species))}
   
@@ -686,24 +684,10 @@ BIOMOD_Tuning <- function(bm.format,
   }
   
   
-  # if ('MAXENT.Tsuruoka' %in% models) {
-  #   cat("Start tuning MAXENT.Tsuruoka\n")
-  #   try(tune.MAXENT.Tsuruoka <- as.data.frame(tune.maxent(bm.format@data.env.var,bm.format@data.species,nfold=ME.kfolds,showall=T)))
-  #   cat(paste("Finished tuning MAXENT.Tsuruoka\n","\n-=-=-=-=-=-=-=-=-=-=\n"))
-  #   
-  #   if(!is.null(tune.MAXENT.Tsuruoka)){
-  #     bm.options@MAXENT.Tsuruoka$l1_regularizer <- tune.MAXENT.Tsuruoka$l1_regularizer[which.max(tune.MAXENT.Tsuruoka$accuracy)]
-  #     bm.options@MAXENT.Tsuruoka$l2_regularizer <- tune.MAXENT.Tsuruoka$l2_regularizer[which.max(tune.MAXENT.Tsuruoka$accuracy)]
-  #     bm.options@MAXENT.Tsuruoka$use_sgd <- ifelse(tune.MAXENT.Tsuruoka[which.max(tune.MAXENT.Tsuruoka$accuracy),]$use_sgd==0,F,T)
-  #     bm.options@MAXENT.Tsuruoka$set_heldout <- tune.MAXENT.Tsuruoka$set_heldout[which.max(tune.MAXENT.Tsuruoka$accuracy)]
-  #   } else { if('MAXENT.Tsuruoka' %in% models){cat("Tuning MAXENT.Tsuruoka failed!"); tune.MAXENT.Tsuruoka <- "FAILED"}}
-  # }  
-  
   .bm_cat("Done")
   return(list(models.options = bm.options, tune.SRE = tune.SRE,  tune.CTA.rpart = tune.CTA.rpart, tune.CTA.rpart2 = tune.CTA.rpart2,
               tune.RF = tune.RF, tune.ANN = tune.ANN,  tune.MARS = tune.MARS, tune.FDA = tune.FDA, tune.GBM = tune.GBM,
               tune.GAM = tune.GAM, tune.GLM = tune.GLM, tune.MAXENT = tune.MAXENT))
-  # tune.MAXENT.Tsuruoka = tune.MAXENT.Tsuruoka, 
 }
 
 

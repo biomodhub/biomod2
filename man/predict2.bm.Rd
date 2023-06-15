@@ -50,6 +50,8 @@
 \alias{predict2,RF_biomod2_model,data.frame-method}
 \alias{predict2,SRE_biomod2_model,SpatRaster-method}
 \alias{predict2,SRE_biomod2_model,data.frame-method}
+\alias{predict2,XGBOOST_biomod2_model,SpatRaster-method}
+\alias{predict2,XGBOOST_biomod2_model,data.frame-method}
 \title{Functions to get predictions from \code{\link{biomod2_model}} objects}
 \usage{
 predict2(object, newdata, ...)
@@ -101,6 +103,10 @@ predict2(object, newdata, ...)
 \S4method{predict2}{SRE_biomod2_model,SpatRaster}(object, newdata, ...)
 
 \S4method{predict2}{SRE_biomod2_model,data.frame}(object, newdata, ...)
+
+\S4method{predict2}{XGBOOST_biomod2_model,SpatRaster}(object, newdata, ...)
+
+\S4method{predict2}{XGBOOST_biomod2_model,data.frame}(object, newdata, ...)
 }
 \arguments{
 \item{object}{a \code{\link{biomod2_model}} object}

@@ -22,7 +22,7 @@
 ##' (\emph{a random number by default})
 ##' @param models a \code{vector} containing model names to be computed, must be among 
 ##' \code{GLM}, \code{GBM}, \code{GAM}, \code{CTA}, \code{ANN}, \code{SRE}, \code{FDA}, 
-##' \code{MARS}, \code{RF}, \code{MAXENT}, \code{MAXNET}
+##' \code{MARS}, \code{RF}, \code{MAXENT}, \code{MAXNET},  \code{XGBOOST}
 ##' @param models.pa (\emph{optional, default} \code{NULL}) \cr 
 ##' A \code{list} containing for each model a \code{vector} defining which pseudo-absence datasets 
 ##' are to be used, must be among \code{colnames(bm.format@PA.table)}
@@ -49,7 +49,7 @@
 ##' 
 ##' @param model a \code{character} corresponding to the model name to be computed, must be either 
 ##' \code{GLM}, \code{GBM}, \code{GAM}, \code{CTA}, \code{ANN}, \code{SRE}, \code{FDA}, 
-##' \code{MARS}, \code{RF}, \code{MAXENT}, \code{MAXNET}
+##' \code{MARS}, \code{RF}, \code{MAXENT}, \code{MAXNET}, \code{XGBOOST}
 ##' @param run.name a \code{character} corresponding to the model to be run (sp.name + pa.id + 
 ##' run.id)
 ##' @param dir.name (\emph{optional, default} \code{.}) \cr
@@ -81,13 +81,13 @@
 ##' }
 ##' 
 ##' 
-##' @keywords models formula options CTA GLM GBM GAM RF ANN FDA SRE MARS MAXENT
+##' @keywords models formula options CTA GLM GBM GAM RF ANN FDA SRE MARS MAXENT XGBOOST
 ##' 
 ##' 
 ##' @seealso \code{\link[rpart]{rpart}}, \code{\link[rpart]{prune}}, \code{\link[gbm]{gbm}}, 
 ##' \code{\link[MASS]{stepAIC}}, \code{\link[nnet]{nnet}}, \code{\link[earth]{earth}}, 
 ##' \code{\link[mda]{fda}}, \code{\link[mda]{mars}}, \code{\link[maxnet]{maxnet}}, 
-##' \code{\link[randomForest]{randomForest}}, 
+##' \code{\link[randomForest]{randomForest}}, \code{\link[xgboost]{xgboost}}, 
 ##' \code{\link{BIOMOD_ModelingOptions}}, \code{\link{BIOMOD_Modeling}}, 
 ##' \code{\link{bm_MakeFormula}}, \code{\link{bm_SampleFactorLevels}}, 
 ##' \code{\link{bm_FindOptimStat}}, \code{\link{bm_VariablesImportance}}
@@ -110,7 +110,7 @@
 ##' @importFrom dplyr mutate_at select_at %>%
 ##' @importFrom maxnet maxnet
 ##' @importFrom randomForest randomForest
-##' 
+##' @importFrom xgboost xgboost
 ##' @export
 ##' 
 ##'
@@ -750,7 +750,35 @@ bm_RunModel <- function(model, run.name, dir.name = '.'
                       expl_var_type = get_var_type(data_env[calib.lines.vec, , drop = FALSE]), 
                       expl_var_range = get_var_range(data_env[calib.lines.vec, , drop = FALSE]))
     }
+  } else if (model == "XGBOOST") {
+    ### 2.12 XGBOOST model ----------------------------------------------------------
+    cat('\n\t> XGBOOST modeling...')
+    model.sp <- try(xgboost(data = as.matrix(data_env[calib.lines.vec, , drop = FALSE]),
+                            label = data_sp[calib.lines.vec],
+                            max.depth = bm.options@XGBOOST$max.depth,
+                            eta = bm.options@XGBOOST$eta,
+                            nthread = bm.options@XGBOOST$nthread, 
+                            nrounds = bm.options@XGBOOST$nrounds,
+                            objective = bm.options@XGBOOST$objective,
+                            weight = weights.vec[calib.lines.vec])
+    )
+    
+    
+    if (!inherits(model.sp, "try-error")) {
+
+      model.bm <- new("XGBOOST_biomod2_model",
+                      model = model.sp,
+                      model_name = model_name,
+                      model_class = 'XGBOOST',
+                      model_options = bm.options@XGBOOST,
+                      dir_name = dir_name,
+                      resp_name = resp_name,
+                      expl_var_names = expl_var_names,
+                      expl_var_type = get_var_type(data_env[calib.lines.vec, , drop = FALSE]), 
+                      expl_var_range = get_var_range(data_env[calib.lines.vec, , drop = FALSE]))
+    }
   }
+  
   
   ## 3. CREATE PREDICTIONS ------------------------------------------------------------------------
   temp_workdir = NULL
@@ -1035,9 +1063,6 @@ bm_RunModel <- function(model, run.name, dir.name = '.'
   } else if (model == 'MAXNET') {
     cat('\nModel=MAXNET')
   }
-  # else if (model == 'MAXENT.Tsuruoka') {
-  #   cat('\nModel=MAXENT.Tsuruoka')
-  # }
   if (!is.null(seed.val)) {
     seedval = seed.val
   }

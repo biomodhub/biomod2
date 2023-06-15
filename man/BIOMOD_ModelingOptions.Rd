@@ -15,7 +15,8 @@ BIOMOD_ModelingOptions(
   FDA = NULL,
   MARS = NULL,
   RF = NULL,
-  MAXENT = NULL
+  MAXENT = NULL,
+  XGBOOST = NULL
 )
 
 bm_DefaultModelingOptions()
@@ -41,6 +42,9 @@ bm_DefaultModelingOptions()
 
 \item{MAXENT}{(\emph{optional, default} \code{NULL}) \cr A \code{list} 
 containing MAXENT options}
+
+\item{XGBOOST}{(\emph{optional, default} \code{NULL}) \cr A \code{list} 
+containing XGBOOST options}
 }
 \value{
 A \code{\link{BIOMOD.models.options}} object that can be used to build species distribution 
@@ -347,20 +351,19 @@ Below is the detailed list of all modifiable parameters for each available model
   \code{numeric} corresponding to the default prevalence of the species \cr
   (\emph{probability of presence at ordinary occurrence points})}
 }
+}
 
-% @section \bold{MAXENT.Tsuruoka (\code{\link[maxent]{maxent}})} :
-% \itemize{
-%   \item{\code{l1_regularizer = 0.0}}{ : a \code{numeric} turning on L1 regularization and setting 
-%   the regularization parameter (\emph{a value of \code{0} will disable L1 regularization})}
-%   \item{\code{l2_regularizer = 0.0}}{ : a \code{numeric} turning on L2 regularization and setting 
-%   the regularization parameter (\emph{a value of \code{0} will disable L2 regularization})}
-%   \item{\code{use_sgd = FALSE}}{ : a \code{logical} to use SGD parameter estimation}
-%   \item{\code{set_heldout = 0}}{ : an \code{integer} corresponding to the number of documents to 
-%   hold out (\emph{to test against and prevent overfitting, use carefully in case of dataset with 
-%   low number of occurrences})}
-%   \item{\code{verbose = FALSE}}{ : a \code{logical} specifying whether to provide descriptive 
-%   output about the training process}
-% }
+\section{XGBOOST }{
+ (default \code{\link[xgboost]{xgboost}})
+
+\emph{Please refer to \code{\link[xgboost]{xgboost}} help file for more details.}
+\itemize{
+  \item{\code{max.depth = 5}}
+  \item{\code{eta = 0.1}}
+  \item{\code{nrounds = 512}}
+  \item{\code{objective = "binary:logistic"}}
+  \item{\code{nthread = 1}}
+  }
 }
 
 \examples{
