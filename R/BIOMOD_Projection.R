@@ -188,7 +188,7 @@
 ##' @importFrom foreach foreach %dopar% 
 ## @importFrom doParallel registerDoParallel
 ##' @importFrom terra rast subset nlyr writeRaster terraOptions wrap unwrap
-##'  mem_info app is.factor
+##'  mem_info app is.factor mask
 ##' @importFrom utils capture.output
 ##' @importFrom abind asub
 ##' 
@@ -517,7 +517,7 @@ BIOMOD_Projection <- function(bm.mod,
     # conversion into SpatRaster
     if (any(raster::is.factor(new.env))) {
       new.env <- .categorical_stack_to_terra(raster::stack(new.env),
-                                            expected_levels = head(get_formal_data(bm.mod, subinfo = "expl.var"))
+                                             expected_levels = head(get_formal_data(bm.mod, subinfo = "expl.var"))
       )
     } else {
       new.env <- rast(new.env)
@@ -526,6 +526,8 @@ BIOMOD_Projection <- function(bm.mod,
   
   if (inherits(new.env, 'SpatRaster')) {
     .fun_testIfIn(TRUE, "names(new.env)", names(new.env), bm.mod@expl.var.names)
+    new.env.mask <- .get_data_mask(new.env, value.out = 1)
+    new.env <- mask(new.env, new.env.mask)
   } else {
     .fun_testIfIn(TRUE, "colnames(new.env)", colnames(new.env), bm.mod@expl.var.names)
   }

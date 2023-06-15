@@ -221,7 +221,7 @@
 ##' plot(myBiomodEMProj)
 ##' 
 ##' 
-##' @importFrom terra rast `add<-` wrap writeRaster
+##' @importFrom terra rast `add<-` wrap writeRaster mask
 ##' 
 ##' 
 ##' @export
@@ -294,7 +294,7 @@ BIOMOD_EnsembleForecasting <- function(bm.em,
     formal_pred <- get_predictions(bm.proj, full.name = models.needed)
   } else {
     # make prediction according to given environment
-    tmp_dir <- paste0('Tmp', format(Sys.time(), "%s"))
+    tmp_dir <- paste0('Tmp', as.numeric(Sys.time())*100000)
     formal_pred <- BIOMOD_Projection(bm.mod = load_stored_object(bm.em@models.out),
                                      new.env = new.env,
                                      proj.name = tmp_dir,
@@ -603,6 +603,8 @@ BIOMOD_EnsembleForecasting <- function(bm.em,
     
     if (inherits(new.env, 'SpatRaster')) {
       .fun_testIfIn(TRUE, "names(new.env)", names(new.env), bm.em@expl.var.names)
+      new.env.mask <- .get_data_mask(new.env, value.out = 1)
+      new.env <- mask(new.env, new.env.mask)
     } else {
       .fun_testIfIn(TRUE, "colnames(new.env)", colnames(new.env), bm.em@expl.var.names)
     }
