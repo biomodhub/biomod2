@@ -21,6 +21,10 @@ vignette: >
 
 * Added xgboost as a possible algorithm in `BIOMOD_Modeling`
 
+##### Minor Changes
+
+* Changed `CV.do.full.models` default value to `FALSE`
+
 ##### 4.2-3-5 Bugfix
 
 * fixed some more issues related to categorical variables badly interacting with missing values. Projection and Ensemble Forecasting are now only calculated on cells without any missing values.

@@ -19,7 +19,7 @@ BIOMOD_Modeling(
   CV.env.var = NULL,
   CV.strat = NULL,
   CV.user.table = NULL,
-  CV.do.full.models = TRUE,
+  CV.do.full.models = FALSE,
   nb.rep,
   data.split.perc,
   data.split.table,
