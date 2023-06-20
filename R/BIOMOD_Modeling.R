@@ -796,7 +796,11 @@ cat('\n\nChecking Models arguments...\n')
   cat("\n\n")
   .bm_cat(paste(bm.format@sp.name, "Modeling Summary"))
   cat("\n", ncol(bm.format@data.env.var), " environmental variables (", colnames(bm.format@data.env.var), ")")
-  cat("\nNumber of evaluation repetitions :", ncol(calib.lines))
+  nb.eval.rep <- 
+    ncol(calib.lines) /
+    ifelse(inherits(bm.format, "BIOMOD.formated.data.PA"),
+           ncol(bm.format@PA.table), 1)
+  cat("\nNumber of evaluation repetitions :", nb.eval.rep)
   cat("\nModels selected :", models, "\n")
   if (is.null(models.pa)) {
     nb.runs = ncol(calib.lines) * length(models)
