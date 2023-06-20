@@ -801,8 +801,10 @@ cat('\n\nChecking Models arguments...\n')
   if (is.null(models.pa)) {
     nb.runs = ncol(calib.lines) * length(models)
   } else {
-    nb.runs = length(unlist(models.pa))
-    nb.runs = ncol(calib.lines) * nb.runs
+    nb.runs = 
+      length(which(
+        sapply(unlist(models.pa), function(x) grepl(colnames(calib.lines), pattern = x))
+      ))
   }
   cat("\nTotal number of model runs:", nb.runs, "\n")
   .bm_cat()
