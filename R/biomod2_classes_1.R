@@ -209,12 +209,13 @@ setGeneric("BIOMOD.formated.data", def = function(sp, env, ...) { standardGeneri
   sp <- .check_formating_resp.var(resp.var = sp, eval.data = FALSE)
   
   ## A.2 Check xy argument --------------------------------------------------------------
+  
   if (!is.null(xy)) {
     xy <- .check_formating_xy(resp.xy = xy, resp.length = length(sp))
   } else if (inherits(env, c('RasterLayer', 'RasterStack', 'SpatRaster'))) {
     stop("`xy` argument is missing. Please provide `xy` when `env` is a raster.")
   } else {
-    xy <- data.frame()
+    xy <- data.frame("x" = numeric(), "y" = numeric())
   }
   
   ## A.3 Check env argument -------------------------------------------------------------

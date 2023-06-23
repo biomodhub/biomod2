@@ -15,6 +15,12 @@ vignette: >
 
 ### <i class="fas fa-feather"></i> 2023 
 
+#### 4.2-5 Tuning and Model Options
+
+
+##### 4.2-4-1 Bugfix
+- fixed `BIOMOD_FormatingData` checks for `resp.xy`
+
 #### 4.2-4 xgboost
 
 ##### Major Changes
