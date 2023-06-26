@@ -85,7 +85,7 @@
 ##' 
 ##' 
 ##' @seealso \code{\link[rpart]{rpart}}, \code{\link[rpart]{prune}}, \code{\link[gbm]{gbm}}, 
-##' \code{\link[MASS]{stepAIC}}, \code{\link[nnet]{nnet}}, \code{\link[earth]{earth}}, 
+##' \code{\link[nnet]{nnet}}, \code{\link[earth]{earth}}, 
 ##' \code{\link[mda]{fda}}, \code{\link[mda]{mars}}, \code{\link[maxnet]{maxnet}}, 
 ##' \code{\link[randomForest]{randomForest}}, \code{\link[xgboost]{xgboost}}, 
 ##' \code{\link{bm_ModelingOptions}}, \code{\link{BIOMOD_Modeling}}, 
@@ -94,23 +94,11 @@
 ##' @family Secundary functions
 ##' 
 ##' 
-##' 
 ##' @importFrom foreach foreach %dopar% 
-## @importFrom doParallel registerDoParallel 
-##' @importFrom rpart rpart prune
-## @importFrom caret 
-## @importFrom car 
-## @importFrom gam gam step.Gam s
-## @importFrom mgcv gam bam
-##' @importFrom gbm gbm gbm.perf
-##' @importFrom MASS stepAIC
-##' @importFrom nnet nnet
-##' @importFrom earth earth
-##' @importFrom mda fda mars
-##' @importFrom dplyr mutate_at select_at %>%
-##' @importFrom maxnet maxnet
-##' @importFrom randomForest randomForest
-##' @importFrom xgboost xgboost
+##' @importFrom rpart prune
+##' @importFrom gbm gbm.perf
+##' @importFrom dplyr mutate_at %>%
+##' 
 ##' @export
 ##' 
 ##'

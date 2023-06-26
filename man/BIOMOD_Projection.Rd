@@ -202,8 +202,7 @@ Other Main functions:
 \code{\link{BIOMOD_FormatingData}()},
 \code{\link{BIOMOD_LoadModels}()},
 \code{\link{BIOMOD_Modeling}()},
-\code{\link{BIOMOD_RangeSize}()},
-\code{\link{bm_Tuning}()}
+\code{\link{BIOMOD_RangeSize}()}
 }
 \author{
 Wilfried Thuiller, Damien Georges

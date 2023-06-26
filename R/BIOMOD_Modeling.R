@@ -56,12 +56,11 @@
 ##' @param data.split.table \emph{deprecated}, now called \code{CV.user.table}
 ##' @param do.full.models \emph{deprecated}, now called \code{CV.do.full.models}
 ##' 
-##' @param OPT.data.type a \code{character} corresponding to the data type to 
-##' be used, must be either \code{binary}, \code{binary.PA}, \code{abundance}, 
-##' \code{compositional}
-##' @param OPT.strategy a \code{character} corresponding to the method to 
-##' select models' parameters values, must be either \code{default}, 
-##' \code{bigboss}, \code{user.defined}, \code{tuned}
+##' @param OPT.data.type a \code{character} corresponding to the data type to be used, must be 
+##' either \code{binary}, \code{binary.PA}, \code{abundance}, \code{compositional}
+##' @param OPT.strategy a \code{character} corresponding to the method to select models' 
+##' parameters values, must be either \code{default}, \code{bigboss}, \code{user.defined}, 
+##' \code{tuned}
 ##' @param OPT.val.list (\emph{optional, default} \code{NULL}) \cr
 ##' A \code{list} containing parameters values for some (all) models
 ##' @param OPT.user (\emph{optional, default} \code{TRUE}) \cr  
@@ -120,24 +119,24 @@
 ##'   \code{\link{BIOMOD_FormatingData}}), \cr \code{PA.nb.rep *(nb.rep + 1)} models will be 
 ##'   created.}
 ##'   
-##'   \item{models}{The set of models to be calibrated on the data. 10 modeling techniques 
+##'   \item{models}{The set of models to be calibrated on the data. 12 modeling techniques 
 ##'   are currently available :
 ##'   \itemize{
-##'     \item \code{GLM} : Generalized Linear Model (\code{\link[stats]{glm}})
+##'     \item \code{ANN} : Artificial Neural Network (\code{\link[nnet]{nnet}})
+##'     \item \code{CTA} : Classification Tree Analysis (\code{\link[rpart]{rpart}})
+##'     \item \code{FDA} : Flexible Discriminant Analysis (\code{\link[mda]{fda}})
 ##'     \item \code{GAM} : Generalized Additive Model (\code{\link[gam]{gam}}, \code{\link[mgcv]{gam}} 
 ##'     or \code{\link[mgcv]{bam}}) \cr 
 ##'     (see \code{\link{bm_ModelingOptions} for details on algorithm selection})
 ##'     \item \code{GBM} : Generalized Boosting Model, or usually called Boosted Regression Trees 
 ##'     (\code{\link[gbm]{gbm}})
-##'     \item \code{CTA} : Classification Tree Analysis (\code{\link[rpart]{rpart}})
-##'     \item \code{ANN} : Artificial Neural Network (\code{\link[nnet]{nnet}})
-##'     \item \code{SRE} : Surface Range Envelop or usually called BIOCLIM
-##'     \item \code{FDA} : Flexible Discriminant Analysis (\code{\link[mda]{fda}})
+##'     \item \code{GLM} : Generalized Linear Model (\code{\link[stats]{glm}})
 ##'     \item \code{MARS} : Multiple Adaptive Regression Splines (\code{\link[earth]{earth}})
-##'     \item \code{RF} : Random Forest (\code{\link[randomForest]{randomForest}})
 ##'     \item \code{MAXENT} : Maximum Entropy 
 ##'     (\url{https://biodiversityinformatics.amnh.org/open_source/maxent/})
 ##'     \item \code{MAXNET} : Maximum Entropy (\code{\link[maxnet]{maxnet}})
+##'     \item \code{RF} : Random Forest (\code{\link[randomForest]{randomForest}})
+##'     \item \code{SRE} : Surface Range Envelop or usually called BIOCLIM
 ##'     \item \code{XGBOOST} : eXtreme Gradient Boosting Training (\code{\link[xgboost]{xgboost}})
 ##'   }}
 ##'   

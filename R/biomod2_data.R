@@ -3,13 +3,30 @@
 #' A \code{data.frame} containing for each single model available in \pkg{biomod2} 
 #' the package and functions to be called.
 #'
-#' @format A data frame with 12 rows and 5 variables:
+#' @format A \code{data.frame} object with 12 rows and 5 variables:
 #' \describe{
 #'   \item{model}{all single models that can be computed in \pkg{biomod2}}
 #'   \item{type}{data type associated to the models}
-#'   \item{package}{R package used}
-#'   \item{func}{function used in the R package}
+#'   \item{package}{\code{R} package used}
+#'   \item{func}{function used in the \code{R} package}
 #'   \item{train}{function called by \pkg{caret} for the tuning}
+#' }
+#' 
+#' All single models available are the following : 
+#' 
+#' \itemize{
+#'   \item ANN (\code{\link[nnet]{nnet}})
+#'   \item CTA (\code{\link[rpart]{rpart}})
+#'   \item FDA (\code{\link[mda]{fda}})
+#'   \item GAM (\code{\link[gam]{gam}}, \code{\link[mgcv]{gam}} or \code{\link[mgcv]{bam}})
+#'   \item GBM (\code{\link[gbm]{gbm}})
+#'   \item GLM (\code{\link[stats]{glm}})
+#'   \item MARS (\code{\link[earth]{earth}})
+#'   \item MAXENT (\url{https://biodiversityinformatics.amnh.org/open_source/maxent/})
+#'   \item MAXNET (\code{\link[maxnet]{maxnet}})
+#'   \item RF (\code{\link[randomForest]{randomForest}})
+#'   \item SRE (\code{\link{bm_SRE}})
+#'   \item XGBOOST (\code{\link[xgboost]{xgboost}})
 #' }
 
 "ModelsTable"
@@ -90,7 +107,7 @@
 #' species. Presence/absence were derived from range maps downloaded at 
 #' \href{https://www.iucnredlist.org/}{IUCN}.
 #'
-#' @format A data frame with 2488 rows and 10 variables:
+#' @format A \code{data.frame} object with 2488 rows and 10 variables:
 #' \describe{
 #'   \item{X_WGS84}{Longitude}
 #'   \item{Y_WGS84}{Latitude}

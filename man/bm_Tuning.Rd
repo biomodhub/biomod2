@@ -34,14 +34,15 @@ bm_Tuning(
 \code{ANN}, \code{CTA}, \code{FDA}, \code{GAM}, \code{GBM}, \code{GLM}, \code{MARS}, 
 \code{MAXENT}, \code{MAXNET}, \code{RF}, \code{SRE}, \code{XGBOOST}}
 
-\item{tuning.fun}{a \code{character} corresponding to the model function name 
-to be called through \code{\link[caret]{train}} function for tuning parameters}
+\item{tuning.fun}{a \code{character} corresponding to the model function name to be called 
+through \code{\link[caret]{train}} function for tuning parameters (see \code{\link{ModelsTable}} 
+dataset)}
 
 \item{do.formula}{(\emph{optional, default} \code{FALSE}) \cr
 A \code{logical} value defining whether formula is to be optimized or not}
 
 \item{do.stepAIC}{(\emph{optional, default} \code{FALSE}) \cr
-A \code{logical} value defining whether selection variables is to be performed for 
+A \code{logical} value defining whether variables selection is to be performed for 
 \code{GLM} and \code{GAM} models or not}
 
 \item{bm.options}{a \code{\link{BIOMOD.options.default}} or \code{\link{BIOMOD.options.dataset}} 
@@ -50,14 +51,16 @@ object returned by the \code{\link{bm_ModelingOptions}} function}
 \item{bm.format}{a \code{\link{BIOMOD.formated.data}} or \code{\link{BIOMOD.formated.data.PA}} 
 object returned by the \code{\link{BIOMOD_FormatingData}} function}
 
-\item{calib.lines}{}
+\item{calib.lines}{(\emph{optional, default} \code{NULL}) \cr
+A \code{data.frame} object returned by \code{\link{get_calib_lines}} or 
+\code{\link{bm_CrossValidation}} functions}
 
 \item{metric.eval}{a \code{character} corresponding to the evaluation metric to be used, must 
 be either \code{ROC}, \code{TSS}, \code{KAPPA} for \code{SRE} only, and \code{auc.val.avg}, 
 \code{auc.diff.avg}, \code{or.mtp.avg}, \code{or.10p.avg}, \code{AICc} for \code{MAXENT} only}
 
 \item{metric.AIC}{a \code{character} corresponding to the AIC metric to be used, must 
-be either \code{AIC}, \code{BIC}}
+be either \code{AIC} or \code{BIC}}
 
 \item{weights}{(\emph{optional, default} \code{NULL}) \cr 
 A \code{vector} of \code{numeric} values corresponding to observation weights (one per 
@@ -75,14 +78,44 @@ This internal \pkg{biomod2} function allows to tune single model parameters and
 select more efficient ones based on an evaluation metric (see Details).
 }
 \details{
+\bold{Concerning \code{ctrl.train} parameter :}
+
+Set by default to :
+\code{ctrl.train <- caret::trainControl(method = "repeatedcv", repeats = 3, number = 10,} \cr
+\code{                                  summaryFunction = caret::twoClassSummary,} \cr
+\code{                                  classProbs = TRUE, returnData = FALSE)}
+
+\bold{Concerning \code{params.train} parameter :}
+
+All elements of the \code{list} must have names matching \code{model.parameter_name}, 
+\code{parameter_name} being one of the parameter of the \code{tuning.fun} function called by 
+\code{caret} package and that can be found through the \code{\link[caret]{getModelInfo}} 
+function.
+
+Currently, the available parameters to be tuned are the following :
+\describe{
+  \item{ANN}{\code{size}, \code{decay}, \code{bag}}
+  \item{FDA}{\code{degree}, \code{nprune}}
+  \item{GAM}{\code{select}, \code{method}}
+  \item{GBM}{\code{n.trees}, \code{interaction.depth}, \code{shrinkage}, \code{n.minobsinnode}}
+  \item{MARS}{\code{degree}, \code{nprune}}
+  \item{RF}{\code{mtry}}
+  \item{SRE}{\code{quant}}
+  \item{XGBOOST}{\code{nrounds}, \code{max_depth}, \code{eta}, \code{gamma}, 
+  \code{colsampl_bytree}, \code{min_child_weight}, \code{subsample}}
+}
+
+The \code{\link{expand.grid}} function is used to build a \code{matrix} containing all 
+combinations of parameters to be tested.
+}
+\note{
 \itemize{
-  \item \code{ctrl.train} parameter is set by default to : \cr
-  \code{caret::trainControl(method = 'cv', summaryFunction = caret::twoClassSummary,} \cr
-  \code{classProbs = TRUE, returnData = FALSE)}.
-  \item All control parameters for other models are set to \code{ctrl.train} if unspecified.
-  \item For more details on \code{MAXENT} tuning, please refer to 
-  \code{\link[ENMeval]{ENMevaluate}}.
-  \item For more details on other models tuning, please refer to \code{\link[caret]{train}}.
+  \item No tuning for \code{GLM} and \code{MAXNET}
+  \item \code{MAXENT} is tuned through \code{\link[ENMeval]{ENMevaluate}} function
+  \item \code{SRE} is tuned through \code{\link{bm_SRE}} function
+  \item All other models are tuned through \code{\link[caret]{train}} function
+  \item No optimization of formula for \code{MAXENT}, \code{MAXNET} and \code{SRE}
+  \item Selection variables only for \code{GAM} and \code{GLM}
 }
 }
 \examples{
@@ -149,31 +182,31 @@ myBiomodOptions <- bm.tuning$models.options
 
 
 }
-\references{
-\itemize{
-  \item Kuhn, Max. 2008. Building predictive models in R using the caret package. 
-  \emph{Journal of Statistical Software} \bold{28}, 1-26.
-  \item Kuhn, Max, and Kjell Johnson. 2013. Applied predictive modeling. New York: Springer.
-  \item Muscarella, Robert, et al. 2014. ENMeval: An R package for conducting spatially 
-  independent evaluations and estimating optimal model complexity for Maxent ecological 
-  niche models. \emph{Methods in Ecology and Evolution}, \bold{5}, 1198-1205.
-}
-}
 \seealso{
 \code{\link[caret]{trainControl}}, \code{\link[caret]{train}}, 
-\code{\link[ENMeval]{calc.niche.overlap}}, \code{\link[ENMeval]{ENMevaluate}}, 
+\code{\link[ENMeval]{ENMevaluate}}, 
+\code{\link{ModelsTable}}, \code{\link{BIOMOD.models.options}}, 
 \code{\link{bm_ModelingOptions}}, \code{\link{BIOMOD_Modeling}}
 
-Other Main functions: 
-\code{\link{BIOMOD_EnsembleForecasting}()},
-\code{\link{BIOMOD_EnsembleModeling}()},
-\code{\link{BIOMOD_FormatingData}()},
-\code{\link{BIOMOD_LoadModels}()},
-\code{\link{BIOMOD_Modeling}()},
-\code{\link{BIOMOD_Projection}()},
-\code{\link{BIOMOD_RangeSize}()}
+Other Secundary functions: 
+\code{\link{bm_BinaryTransformation}()},
+\code{\link{bm_CrossValidation}()},
+\code{\link{bm_FindOptimStat}()},
+\code{\link{bm_MakeFormula}()},
+\code{\link{bm_ModelingOptions}()},
+\code{\link{bm_PlotEvalBoxplot}()},
+\code{\link{bm_PlotEvalMean}()},
+\code{\link{bm_PlotRangeSize}()},
+\code{\link{bm_PlotResponseCurves}()},
+\code{\link{bm_PlotVarImpBoxplot}()},
+\code{\link{bm_PseudoAbsences}()},
+\code{\link{bm_RunModelsLoop}()},
+\code{\link{bm_SRE}()},
+\code{\link{bm_SampleBinaryVector}()},
+\code{\link{bm_SampleFactorLevels}()},
+\code{\link{bm_VariablesImportance}()}
 }
 \author{
-Frank Breiner
+Frank Breiner, Maya Gueguen
 }
-\concept{Main functions}
+\concept{Secundary functions}

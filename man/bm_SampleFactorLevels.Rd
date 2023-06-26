@@ -105,6 +105,7 @@ Other Secundary functions:
 \code{\link{bm_RunModelsLoop}()},
 \code{\link{bm_SRE}()},
 \code{\link{bm_SampleBinaryVector}()},
+\code{\link{bm_Tuning}()},
 \code{\link{bm_VariablesImportance}()}
 }
 \author{

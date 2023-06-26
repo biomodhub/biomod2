@@ -129,7 +129,7 @@ species distribution models (asked by the \code{\link{BIOMOD_Modeling}} function
 }
 \seealso{
 \code{\link[rpart]{rpart}}, \code{\link[rpart]{prune}}, \code{\link[gbm]{gbm}}, 
-\code{\link[MASS]{stepAIC}}, \code{\link[nnet]{nnet}}, \code{\link[earth]{earth}}, 
+\code{\link[nnet]{nnet}}, \code{\link[earth]{earth}}, 
 \code{\link[mda]{fda}}, \code{\link[mda]{mars}}, \code{\link[maxnet]{maxnet}}, 
 \code{\link[randomForest]{randomForest}}, \code{\link[xgboost]{xgboost}}, 
 \code{\link{bm_ModelingOptions}}, \code{\link{BIOMOD_Modeling}}, 
@@ -151,6 +151,7 @@ Other Secundary functions:
 \code{\link{bm_SRE}()},
 \code{\link{bm_SampleBinaryVector}()},
 \code{\link{bm_SampleFactorLevels}()},
+\code{\link{bm_Tuning}()},
 \code{\link{bm_VariablesImportance}()}
 }
 \author{

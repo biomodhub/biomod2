@@ -92,13 +92,12 @@ repetition (in columns) which observation lines should be used for models calibr
 A \code{logical} value defining whether models should be also calibrated and validated over 
 the whole dataset (and pseudo-absence datasets) or not}
 
-\item{OPT.data.type}{a \code{character} corresponding to the data type to 
-be used, must be either \code{binary}, \code{binary.PA}, \code{abundance}, 
-\code{compositional}}
+\item{OPT.data.type}{a \code{character} corresponding to the data type to be used, must be 
+either \code{binary}, \code{binary.PA}, \code{abundance}, \code{compositional}}
 
-\item{OPT.strategy}{a \code{character} corresponding to the method to 
-select models' parameters values, must be either \code{default}, 
-\code{bigboss}, \code{user.defined}, \code{tuned}}
+\item{OPT.strategy}{a \code{character} corresponding to the method to select models' 
+parameters values, must be either \code{default}, \code{bigboss}, \code{user.defined}, 
+\code{tuned}}
 
 \item{OPT.val.list}{(\emph{optional, default} \code{NULL}) \cr
 A \code{list} containing parameters values for some (all) models}
@@ -177,24 +176,24 @@ metrics (see Details).
   \code{\link{BIOMOD_FormatingData}}), \cr \code{PA.nb.rep *(nb.rep + 1)} models will be 
   created.}
   
-  \item{models}{The set of models to be calibrated on the data. 10 modeling techniques 
+  \item{models}{The set of models to be calibrated on the data. 12 modeling techniques 
   are currently available :
   \itemize{
-    \item \code{GLM} : Generalized Linear Model (\code{\link[stats]{glm}})
+    \item \code{ANN} : Artificial Neural Network (\code{\link[nnet]{nnet}})
+    \item \code{CTA} : Classification Tree Analysis (\code{\link[rpart]{rpart}})
+    \item \code{FDA} : Flexible Discriminant Analysis (\code{\link[mda]{fda}})
     \item \code{GAM} : Generalized Additive Model (\code{\link[gam]{gam}}, \code{\link[mgcv]{gam}} 
     or \code{\link[mgcv]{bam}}) \cr 
     (see \code{\link{bm_ModelingOptions} for details on algorithm selection})
     \item \code{GBM} : Generalized Boosting Model, or usually called Boosted Regression Trees 
     (\code{\link[gbm]{gbm}})
-    \item \code{CTA} : Classification Tree Analysis (\code{\link[rpart]{rpart}})
-    \item \code{ANN} : Artificial Neural Network (\code{\link[nnet]{nnet}})
-    \item \code{SRE} : Surface Range Envelop or usually called BIOCLIM
-    \item \code{FDA} : Flexible Discriminant Analysis (\code{\link[mda]{fda}})
+    \item \code{GLM} : Generalized Linear Model (\code{\link[stats]{glm}})
     \item \code{MARS} : Multiple Adaptive Regression Splines (\code{\link[earth]{earth}})
-    \item \code{RF} : Random Forest (\code{\link[randomForest]{randomForest}})
     \item \code{MAXENT} : Maximum Entropy 
     (\url{https://biodiversityinformatics.amnh.org/open_source/maxent/})
     \item \code{MAXNET} : Maximum Entropy (\code{\link[maxnet]{maxnet}})
+    \item \code{RF} : Random Forest (\code{\link[randomForest]{randomForest}})
+    \item \code{SRE} : Surface Range Envelop or usually called BIOCLIM
     \item \code{XGBOOST} : eXtreme Gradient Boosting Training (\code{\link[xgboost]{xgboost}})
   }}
   
@@ -316,8 +315,8 @@ bm_PlotEvalBoxplot(bm.out = myBiomodModelOut, group.by = c('algo', 'run'))
 
 # # Represent variables importance 
 # bm_PlotVarImpBoxplot(bm.out = myBiomodModelOut, group.by = c('expl.var', 'algo', 'algo'))
-# bm_PlotVarImpBoxplot(bm.out = myBiomodModelOut, group.by = c('expl.var', 'algo', 'dataset'))
-# bm_PlotVarImpBoxplot(bm.out = myBiomodModelOut, group.by = c('algo', 'expl.var', 'dataset'))
+# bm_PlotVarImpBoxplot(bm.out = myBiomodModelOut, group.by = c('expl.var', 'algo', 'run'))
+# bm_PlotVarImpBoxplot(bm.out = myBiomodModelOut, group.by = c('algo', 'expl.var', 'run'))
 
 # # Represent response curves 
 # mods <- get_built_models(myBiomodModelOut, run = 'RUN1')
@@ -354,8 +353,7 @@ Other Main functions:
 \code{\link{BIOMOD_FormatingData}()},
 \code{\link{BIOMOD_LoadModels}()},
 \code{\link{BIOMOD_Projection}()},
-\code{\link{BIOMOD_RangeSize}()},
-\code{\link{bm_Tuning}()}
+\code{\link{BIOMOD_RangeSize}()}
 }
 \author{
 Wilfried Thuiller, Damien Georges, Robin Engler

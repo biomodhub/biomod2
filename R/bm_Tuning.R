@@ -1,6 +1,6 @@
 ###################################################################################################
 ##' @name bm_Tuning
-##' @author Frank Breiner
+##' @author Frank Breiner, Maya Gueguen
 ##' 
 ##' @title Tune models parameters
 ##' 
@@ -11,30 +11,33 @@
 ##' @param model a \code{character} corresponding to the  algorithm to be tuned, must be either 
 ##' \code{ANN}, \code{CTA}, \code{FDA}, \code{GAM}, \code{GBM}, \code{GLM}, \code{MARS}, 
 ##' \code{MAXENT}, \code{MAXNET}, \code{RF}, \code{SRE}, \code{XGBOOST}
-##' @param tuning.fun a \code{character} corresponding to the model function name 
-##' to be called through \code{\link[caret]{train}} function for tuning parameters
+##' @param tuning.fun a \code{character} corresponding to the model function name to be called 
+##' through \code{\link[caret]{train}} function for tuning parameters (see \code{\link{ModelsTable}} 
+##' dataset)
 ##' @param do.formula (\emph{optional, default} \code{FALSE}) \cr  
 ##' A \code{logical} value defining whether formula is to be optimized or not
 ##' @param do.stepAIC (\emph{optional, default} \code{FALSE}) \cr  
-##' A \code{logical} value defining whether selection variables is to be performed for 
+##' A \code{logical} value defining whether variables selection is to be performed for 
 ##' \code{GLM} and \code{GAM} models or not
 ##' @param bm.options a \code{\link{BIOMOD.options.default}} or \code{\link{BIOMOD.options.dataset}} 
 ##' object returned by the \code{\link{bm_ModelingOptions}} function
 ##' @param bm.format a \code{\link{BIOMOD.formated.data}} or \code{\link{BIOMOD.formated.data.PA}} 
 ##' object returned by the \code{\link{BIOMOD_FormatingData}} function
-##' @param calib.lines 
+##' @param calib.lines (\emph{optional, default} \code{NULL}) \cr
+##' A \code{data.frame} object returned by \code{\link{get_calib_lines}} or 
+##' \code{\link{bm_CrossValidation}} functions
 ##' @param metric.eval a \code{character} corresponding to the evaluation metric to be used, must 
 ##' be either \code{ROC}, \code{TSS}, \code{KAPPA} for \code{SRE} only, and \code{auc.val.avg}, 
 ##' \code{auc.diff.avg}, \code{or.mtp.avg}, \code{or.10p.avg}, \code{AICc} for \code{MAXENT} only
 ##' @param metric.AIC a \code{character} corresponding to the AIC metric to be used, must 
-##' be either \code{AIC}, \code{BIC}
+##' be either \code{AIC} or \code{BIC}
 ##' @param weights (\emph{optional, default} \code{NULL}) \cr 
 ##' A \code{vector} of \code{numeric} values corresponding to observation weights (one per 
 ##' observation, see Details)
 ##' 
 ##' @param params.train a \code{list} containing values of model parameters to be tested 
 ##' (see Details)
-## @param ctrl.train to be added ?
+## @param ctrl.train (\emph{optional, default} \code{NULL}) \cr to be added ?
 ##' 
 ##' 
 ##' @return 
@@ -45,33 +48,52 @@
 ##' 
 ##' @details 
 ##' 
-##' \itemize{
-##'   \item \code{ctrl.train} parameter is set by default to : \cr
-##'   \code{caret::trainControl(method = 'cv', summaryFunction = caret::twoClassSummary,} \cr
-##'   \code{classProbs = TRUE, returnData = FALSE)}.
-##'   \item All control parameters for other models are set to \code{ctrl.train} if unspecified.
-##'   \item For more details on \code{MAXENT} tuning, please refer to 
-##'   \code{\link[ENMeval]{ENMevaluate}}.
-##'   \item For more details on other models tuning, please refer to \code{\link[caret]{train}}.
+##' \bold{Concerning \code{ctrl.train} parameter :}
+##' 
+##' Set by default to :
+##' \code{ctrl.train <- caret::trainControl(method = "repeatedcv", repeats = 3, number = 10,} \cr
+##' \code{                                  summaryFunction = caret::twoClassSummary,} \cr
+##' \code{                                  classProbs = TRUE, returnData = FALSE)}
+##' 
+##' \bold{Concerning \code{params.train} parameter :}
+##' 
+##' All elements of the \code{list} must have names matching \code{model.parameter_name}, 
+##' \code{parameter_name} being one of the parameter of the \code{tuning.fun} function called by 
+##' \code{caret} package and that can be found through the \code{\link[caret]{getModelInfo}} 
+##' function.
+##' 
+##' Currently, the available parameters to be tuned are the following :
+##' \describe{
+##'   \item{ANN}{\code{size}, \code{decay}, \code{bag}}
+##'   \item{FDA}{\code{degree}, \code{nprune}}
+##'   \item{GAM}{\code{select}, \code{method}}
+##'   \item{GBM}{\code{n.trees}, \code{interaction.depth}, \code{shrinkage}, \code{n.minobsinnode}}
+##'   \item{MARS}{\code{degree}, \code{nprune}}
+##'   \item{RF}{\code{mtry}}
+##'   \item{SRE}{\code{quant}}
+##'   \item{XGBOOST}{\code{nrounds}, \code{max_depth}, \code{eta}, \code{gamma}, 
+##'   \code{colsampl_bytree}, \code{min_child_weight}, \code{subsample}}
 ##' }
 ##' 
+##' The \code{\link{expand.grid}} function is used to build a \code{matrix} containing all 
+##' combinations of parameters to be tested.
 ##' 
-##' @references
-##' 
+##' @note 
 ##' \itemize{
-##'   \item Kuhn, Max. 2008. Building predictive models in R using the caret package. 
-##'   \emph{Journal of Statistical Software} \bold{28}, 1-26.
-##'   \item Kuhn, Max, and Kjell Johnson. 2013. Applied predictive modeling. New York: Springer.
-##'   \item Muscarella, Robert, et al. 2014. ENMeval: An R package for conducting spatially 
-##'   independent evaluations and estimating optimal model complexity for Maxent ecological 
-##'   niche models. \emph{Methods in Ecology and Evolution}, \bold{5}, 1198-1205.
+##'   \item No tuning for \code{GLM} and \code{MAXNET}
+##'   \item \code{MAXENT} is tuned through \code{\link[ENMeval]{ENMevaluate}} function
+##'   \item \code{SRE} is tuned through \code{\link{bm_SRE}} function
+##'   \item All other models are tuned through \code{\link[caret]{train}} function
+##'   \item No optimization of formula for \code{MAXENT}, \code{MAXNET} and \code{SRE}
+##'   \item Selection variables only for \code{GAM} and \code{GLM}
 ##' }
 ##' 
 ##' 
 ##' @seealso \code{\link[caret]{trainControl}}, \code{\link[caret]{train}}, 
-##' \code{\link[ENMeval]{calc.niche.overlap}}, \code{\link[ENMeval]{ENMevaluate}}, 
+##' \code{\link[ENMeval]{ENMevaluate}}, 
+##' \code{\link{ModelsTable}}, \code{\link{BIOMOD.models.options}}, 
 ##' \code{\link{bm_ModelingOptions}}, \code{\link{BIOMOD_Modeling}}
-##' @family Main functions
+##' @family Secundary functions
 ##' 
 ##' 
 ##' @examples
@@ -137,7 +159,7 @@
 ##' }
 ##' 
 ##' 
-##' @importFrom foreach foreach
+##' @importFrom foreach foreach %do%
 ##' @importFrom stats aggregate  
 ##' @importFrom PresenceAbsence optimal.thresholds presence.absence.accuracy
 ##' 
