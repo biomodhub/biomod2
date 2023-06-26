@@ -85,6 +85,8 @@ reference:
       - "BIOMOD.formated.data.PA"
       - "plot,BIOMOD.formated.data,missing-method"
       - "summary,BIOMOD.formated.data-method"
+      - "BIOMOD.options.default"
+      - "BIOMOD.options.dataset"
       - "BIOMOD.models.options"
       - "BIOMOD.stored.data"
       - "biomod2_model"
@@ -100,6 +102,10 @@ reference:
       - "predict.bm"
       - "predict.em"
   - title: Data
+  - subtitle: Models options
+    contents:
+      - "ModelsTable"
+      - "OptionsBigboss"
   - subtitle: Species data
     contents:
       - "DataSpecies"

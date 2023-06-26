@@ -20,7 +20,7 @@ in the current version. When possible, alternative functions with similar
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">biomod2</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">4.2-4</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">4.2-5</span>
       </span>
     </div>
 
@@ -110,7 +110,9 @@ in the current version. When possible, alternative functions with similar
 <span></span>
 <span><span class="fu">BIOMOD_presenceonly</span><span class="op">(</span><span class="va">...</span><span class="op">)</span></span>
 <span></span>
-<span><span class="fu">BIOMOD_tuning</span><span class="op">(</span><span class="va">...</span><span class="op">)</span></span>
+<span><span class="fu">BIOMOD_PresenceOnly</span><span class="op">(</span><span class="va">...</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu">BIOMOD_Tuning</span><span class="op">(</span><span class="va">...</span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu">BinaryTransformation</span><span class="op">(</span><span class="va">...</span><span class="op">)</span></span>
 <span></span>
@@ -127,8 +129,6 @@ in the current version. When possible, alternative functions with similar
 <span><span class="fu">makeFormula</span><span class="op">(</span><span class="va">...</span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu">models_scores_graph</span><span class="op">(</span><span class="va">...</span><span class="op">)</span></span>
-<span></span>
-<span><span class="fu">Print_Default_ModelingOptions</span><span class="op">(</span><span class="va">...</span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu">ProbDensFunc</span><span class="op">(</span><span class="va">...</span><span class="op">)</span></span>
 <span></span>
@@ -171,13 +171,19 @@ in the current version. When possible, alternative functions with similar
     <h2><code>BIOMOD_presenceonly</code></h2>
     
 
-<p>For <code>BIOMOD_presenceonly</code> use <code><a href="BIOMOD_PresenceOnly.html">BIOMOD_PresenceOnly</a></code>.</p>
+<p>For <code>BIOMOD_presenceonly</code> use <code>BIOMOD_PresenceOnly</code>.</p>
     </div>
-    <div id="biomod-tuning">
-    <h2><code>BIOMOD_tuning</code></h2>
+    <div id="biomod-presenceonly">
+    <h2><code>BIOMOD_PresenceOnly</code></h2>
     
 
-<p>For <code>BIOMOD_tuning</code> use <code><a href="BIOMOD_Tuning.html">BIOMOD_Tuning</a></code>.</p>
+<p>For <code>BIOMOD_PresenceOnly</code> use <code><a href="bm_FindOptimStat.html">bm_FindOptimStat</a></code>.</p>
+    </div>
+    <div id="biomod-tuning">
+    <h2><code>BIOMOD_Tuning</code></h2>
+    
+
+<p>For <code>BIOMOD_Tuning</code> use <code><a href="bm_Tuning.html">bm_Tuning</a></code>.</p>
     </div>
     <div id="binarytransformation">
     <h2><code>BinaryTransformation</code></h2>
@@ -226,12 +232,6 @@ in the current version. When possible, alternative functions with similar
     
 
 <p>For <code>models_scores_graph</code> use <code><a href="bm_PlotEvalMean.html">bm_PlotEvalMean</a></code>.</p>
-    </div>
-    <div id="print-default-modelingoptions">
-    <h2><code>Print_Default_ModelingOptions</code></h2>
-    
-
-<p>For <code>Print_Default_ModelingOptions</code> use <code><a href="BIOMOD_ModelingOptions.html">bm_DefaultModelingOptions</a></code>.</p>
     </div>
     <div id="probdensfunc">
     <h2><code>ProbDensFunc</code></h2>
@@ -300,7 +300,7 @@ in the current version. When possible, alternative functions with similar
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.7.</p>
 </div>
 
       </footer></div>

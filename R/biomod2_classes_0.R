@@ -503,13 +503,12 @@ setMethod('show', signature('BIOMOD.options.dataset'),
 ##' @description Class returned by \code{\link{bm_ModelingOptions}} and used by 
 ##' \code{\link{BIOMOD_Modeling}}
 ##' 
+##' @param object a \code{\link{BIOMOD.models.options}} object
 ##' 
 ##' @slot models a \code{vector} containing model names for which options have 
 ##' been retrieved and defined, must be \code{algo.datatype.package.function}
 ##' @slot options a \code{list} containing \code{\link{BIOMOD.options.dataset}} 
 ##' object for each model
-##' 
-##' @param object a \code{\link{BIOMOD.models.options}} object
 ##' 
 ##' 
 ##' @seealso \code{\link{BIOMOD.options.default}}, 
@@ -533,8 +532,7 @@ NULL
 
 # 3.1 Class Definition ----------------------------------------------------------------------------
 setClass("BIOMOD.models.options",
-         representation(models = "character",
-                        options = "list"),
+         representation(models = "character", options = "list"),
          validity = function(object){ return(TRUE) })
 
 # 3.3 Other Functions -----------------------------------------------------------------------------

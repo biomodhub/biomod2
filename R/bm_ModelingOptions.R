@@ -1,8 +1,7 @@
 ###################################################################################################
 ##' @name bm_ModelingOptions
 ##' @aliases bm_ModelingOptions
-##' @author Damien Georges, Wilfried Thuiller
-##' @author Maya Gueguen
+##' @author Damien Georges, Wilfried Thuiller, Maya Gueguen
 ##' 
 ##' @title Configure the modeling options for each selected model
 ##'
@@ -42,9 +41,9 @@
 ##' 
 ##' Different strategies are available to set those parameters, through the \code{strategy} 
 ##' argument :
-##' \description{
+##' \describe{
 ##'   \item{default}{all parameters names and values are directly retrieve from functions to be 
-##'   called through \code{\link{formalArgs}} and \code{\link{formals}} functions respectively}
+##'   called through \code{\link[methods]{formalArgs}} and \code{\link{formals}} functions respectively}
 ##'   \item{bigboss}{default parameter values are updated with values predefined by \pkg{biomod2} 
 ##'   team}
 ##'   \item{user.defined}{default parameter values are updated with values provided by the user}

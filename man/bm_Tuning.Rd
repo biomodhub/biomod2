@@ -75,19 +75,21 @@ optimized parameters
 }
 \description{
 This internal \pkg{biomod2} function allows to tune single model parameters and 
-select more efficient ones based on an evaluation metric (see Details).
+select more efficient ones based on an evaluation metric.
 }
 \details{
 \bold{Concerning \code{ctrl.train} parameter :}
 
-Set by default to :
+Set by default to : \cr
+
 \code{ctrl.train <- caret::trainControl(method = "repeatedcv", repeats = 3, number = 10,} \cr
 \code{                                  summaryFunction = caret::twoClassSummary,} \cr
-\code{                                  classProbs = TRUE, returnData = FALSE)}
+\code{                                  classProbs = TRUE, returnData = FALSE)} \cr \cr
+
 
 \bold{Concerning \code{params.train} parameter :}
 
-All elements of the \code{list} must have names matching \code{model.parameter_name}, 
+All elements of the \code{list} must have names matching \code{model.parameter_name} format, 
 \code{parameter_name} being one of the parameter of the \code{tuning.fun} function called by 
 \code{caret} package and that can be found through the \code{\link[caret]{getModelInfo}} 
 function.

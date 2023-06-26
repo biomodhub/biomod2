@@ -18,7 +18,7 @@ species distribution models (asked by the BIOMOD_Modeling function)."><!-- mathj
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">biomod2</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">4.2-4</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">4.2-5</span>
       </span>
     </div>
 
@@ -158,8 +158,8 @@ obtained with the <code><a href="bm_CrossValidation.html">bm_CrossValidation</a>
 
 <dt>models</dt>
 <dd><p>a <code>vector</code> containing model names to be computed, must be among 
-<code>GLM</code>, <code>GBM</code>, <code>GAM</code>, <code>CTA</code>, <code>ANN</code>, <code>SRE</code>, <code>FDA</code>, 
-<code>MARS</code>, <code>RF</code>, <code>MAXENT</code>, <code>MAXNET</code>,  <code>XGBOOST</code></p></dd>
+<code>ANN</code>, <code>CTA</code>, <code>FDA</code>, <code>GAM</code>, <code>GBM</code>, <code>GLM</code>, <code>MARS</code>, 
+<code>MAXENT</code>, <code>MAXNET</code>, <code>RF</code>, <code>SRE</code>, <code>XGBOOST</code></p></dd>
 
 
 <dt>models.pa</dt>
@@ -170,7 +170,7 @@ are to be used, must be among <code>colnames(bm.format@PA.table)</code></p></dd>
 
 <dt>bm.options</dt>
 <dd><p>a <code><a href="BIOMOD.models.options.html">BIOMOD.models.options</a></code> object returned by the
-<code><a href="BIOMOD_ModelingOptions.html">BIOMOD_ModelingOptions</a></code> function</p></dd>
+<code><a href="bm_ModelingOptions.html">bm_ModelingOptions</a></code> function</p></dd>
 
 
 <dt>metric.eval</dt>
@@ -210,8 +210,8 @@ A <code>logical</code> value defining whether the progress bar is to be rendered
 
 <dt>model</dt>
 <dd><p>a <code>character</code> corresponding to the model name to be computed, must be either 
-<code>GLM</code>, <code>GBM</code>, <code>GAM</code>, <code>CTA</code>, <code>ANN</code>, <code>SRE</code>, <code>FDA</code>, 
-<code>MARS</code>, <code>RF</code>, <code>MAXENT</code>, <code>MAXNET</code>, <code>XGBOOST</code></p></dd>
+<code>ANN</code>, <code>CTA</code>, <code>FDA</code>, <code>GAM</code>, <code>GBM</code>, <code>GLM</code>, <code>MARS</code>, 
+<code>MAXENT</code>, <code>MAXNET</code>, <code>RF</code>, <code>SRE</code>, <code>XGBOOST</code></p></dd>
 
 
 <dt>run.name</dt>
@@ -261,18 +261,18 @@ variables that can be obtained with the <code>get_eval_data</code> function</p><
     <div id="see-also">
     <h2>See also</h2>
     <div class="dont-index"><p><code><a href="https://rdrr.io/pkg/rpart/man/rpart.html" class="external-link">rpart</a></code>, <code><a href="https://rdrr.io/pkg/rpart/man/prune.rpart.html" class="external-link">prune</a></code>, <code><a href="https://rdrr.io/pkg/gbm/man/gbm.html" class="external-link">gbm</a></code>, 
-<code><a href="https://rdrr.io/pkg/MASS/man/stepAIC.html" class="external-link">stepAIC</a></code>, <code><a href="https://rdrr.io/pkg/nnet/man/nnet.html" class="external-link">nnet</a></code>, <code><a href="https://rdrr.io/pkg/earth/man/earth.html" class="external-link">earth</a></code>, 
+<code><a href="https://rdrr.io/pkg/nnet/man/nnet.html" class="external-link">nnet</a></code>, <code><a href="https://rdrr.io/pkg/earth/man/earth.html" class="external-link">earth</a></code>, 
 <code><a href="https://rdrr.io/pkg/mda/man/fda.html" class="external-link">fda</a></code>, <code><a href="https://rdrr.io/pkg/mda/man/mars.html" class="external-link">mars</a></code>, <code><a href="https://rdrr.io/pkg/maxnet/man/maxnet.html" class="external-link">maxnet</a></code>, 
 <code><a href="https://rdrr.io/pkg/randomForest/man/randomForest.html" class="external-link">randomForest</a></code>, <code><a href="https://rdrr.io/pkg/xgboost/man/xgb.train.html" class="external-link">xgboost</a></code>, 
-<code><a href="BIOMOD_ModelingOptions.html">BIOMOD_ModelingOptions</a></code>, <code><a href="BIOMOD_Modeling.html">BIOMOD_Modeling</a></code>, 
+<code><a href="bm_ModelingOptions.html">bm_ModelingOptions</a></code>, <code><a href="BIOMOD_Modeling.html">BIOMOD_Modeling</a></code>, 
 <code><a href="bm_MakeFormula.html">bm_MakeFormula</a></code>, <code><a href="bm_SampleFactorLevels.html">bm_SampleFactorLevels</a></code>, 
 <code><a href="bm_FindOptimStat.html">bm_FindOptimStat</a></code>, <code><a href="bm_VariablesImportance.html">bm_VariablesImportance</a></code></p>
 <p>Other Secundary functions: 
 <code><a href="bm_BinaryTransformation.html">bm_BinaryTransformation</a>()</code>,
-<code><a href="bm_CVnnet.html">bm_CVnnet</a>()</code>,
 <code><a href="bm_CrossValidation.html">bm_CrossValidation</a>()</code>,
 <code><a href="bm_FindOptimStat.html">bm_FindOptimStat</a>()</code>,
 <code><a href="bm_MakeFormula.html">bm_MakeFormula</a>()</code>,
+<code><a href="bm_ModelingOptions.html">bm_ModelingOptions</a>()</code>,
 <code><a href="bm_PlotEvalBoxplot.html">bm_PlotEvalBoxplot</a>()</code>,
 <code><a href="bm_PlotEvalMean.html">bm_PlotEvalMean</a>()</code>,
 <code><a href="bm_PlotRangeSize.html">bm_PlotRangeSize</a>()</code>,
@@ -282,6 +282,7 @@ variables that can be obtained with the <code>get_eval_data</code> function</p><
 <code><a href="bm_SRE.html">bm_SRE</a>()</code>,
 <code><a href="bm_SampleBinaryVector.html">bm_SampleBinaryVector</a>()</code>,
 <code><a href="bm_SampleFactorLevels.html">bm_SampleFactorLevels</a>()</code>,
+<code><a href="bm_Tuning.html">bm_Tuning</a>()</code>,
 <code><a href="bm_VariablesImportance.html">bm_VariablesImportance</a>()</code></p></div>
     </div>
     <div id="author">
@@ -301,7 +302,7 @@ variables that can be obtained with the <code>get_eval_data</code> function</p><
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.7.</p>
 </div>
 
       </footer></div>
