@@ -760,7 +760,8 @@ bm_RunModel <- function(model, run.name, dir.name = '.'
                             nthread = bm.options@XGBOOST$nthread, 
                             nrounds = bm.options@XGBOOST$nrounds,
                             objective = bm.options@XGBOOST$objective,
-                            weight = weights.vec[calib.lines.vec])
+                            weight = weights.vec[calib.lines.vec],
+                            verbose = 0)
     )
     
     

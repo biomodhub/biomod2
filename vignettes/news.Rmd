@@ -17,6 +17,8 @@ vignette: >
 
 #### 4.2-5 Tuning and Model Options
 
+##### 4.2-4-2 Bugfix
+- set xgboost `verbose = 0` (from `verbose = 1`)
 
 ##### 4.2-4-1 Bugfix
 - fixed `BIOMOD_FormatingData` checks for `resp.xy`
