@@ -16,6 +16,7 @@
   std = TRUE,
   scales,
   size,
+  maxcell = 5e+05,
   ...
 )
 

@@ -13,6 +13,7 @@
   PA,
   run,
   plot.eval,
+  point.size = 1.5,
   do.plot = TRUE
 )
 }
