@@ -17,6 +17,9 @@ vignette: >
 
 #### 4.2-5 Tuning and Model Options
 
+##### 4.2-4-3 Bugfix
+- added point.size argument to plot.BIOMOD.Formated.data
+
 ##### 4.2-4-2 Bugfix
 - set xgboost `verbose = 0` (from `verbose = 1`)
 

@@ -579,6 +579,7 @@ setMethod('plot', signature(x = 'BIOMOD.formated.data', y = "missing"),
                    PA,
                    run,
                    plot.eval,
+                   point.size = 1.5,
                    do.plot = TRUE)
           {
             args <- .plot.BIOMOD.formated.data.check.args(x = x,
@@ -837,7 +838,7 @@ setMethod('plot', signature(x = 'BIOMOD.formated.data', y = "missing"),
                   geom_point(aes(x = x, y = y, 
                                  color = factor(resp, levels = data_breaks[-12]),
                                  shape = factor(resp, levels = data_breaks[-12])), 
-                             alpha = 1, size = 1.5)+
+                             alpha = 1, size = point.size)+
                   facet_wrap(~dataset)+
                   scale_color_manual(
                     NULL,
@@ -878,7 +879,7 @@ setMethod('plot', signature(x = 'BIOMOD.formated.data', y = "missing"),
                     geom_point(aes(x = x, y = y, 
                                    color = as.factor(resp),
                                    shape = as.factor(resp)),
-                               alpha = 1, size = 1.5)+
+                               alpha = 1, size = point.size)+
                     scale_color_manual(
                       NULL,
                       breaks = data_breaks,
@@ -1205,13 +1206,11 @@ setMethod('summary', signature(object = 'BIOMOD.formated.data'),
               PA <- colnames(object@PA.table)
               run <- rep(NA, length(PA))
             }
-            
             if (!is.null(calib.lines) || inherits(object, "BIOMOD.formated.data.PA")) {
               output <- 
                 rbind(
                   output,
-                  foreach(this_run = run, .combine = 'rbind') %:% 
-                    foreach(this_PA = PA, .combine = 'rbind') %do% {
+                  foreach(this_run = run, this_PA = PA, .combine = 'rbind')  %do% {
                       if (is.na(this_PA) || this_PA == 'allData') { # run only
                         this_name <- paste0("_", this_PA, "_", this_run)
                         this_calib <- calib.lines[ , this_name]
