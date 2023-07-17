@@ -800,6 +800,7 @@ setMethod(
            std = TRUE, # limits between 0 and 1000 or between 0 and max
            scales, # transmitted to facet_wrap
            size, # size of points transmitted to geom_point
+           maxcell = 5e5, # max number of cells to plot. Transmitted to terra::plot
            ...
   ){
     # extraction of projection happens in argument check
@@ -810,6 +811,7 @@ setMethod(
                                                    std = std,
                                                    scales = scales,
                                                    size = size,
+                                                   maxcell = maxcell,
                                                    ...)
     for (argi in names(args)) { 
       assign(x = argi, value = args[[argi]]) 
@@ -829,13 +831,15 @@ setMethod(
       
       if (plot.output == "facet") {
         g <- ggplot() +
-          tidyterra::geom_spatraster(data = proj) +
+          tidyterra::geom_spatraster(data = proj,
+                                     maxcell = maxcell) +
           scale_fill_viridis_c(NULL, limits = limits) +
           facet_wrap(~lyr)
       } else if (plot.output == "list") {
         g <- lapply(names(proj), function(thislayer){
           ggplot() +
-            tidyterra::geom_spatraster(data = subset(proj, thislayer)) +
+            tidyterra::geom_spatraster(data = subset(proj, thislayer),
+                                       maxcell = maxcell) +
             scale_fill_viridis_c(NULL, limits = limits) +
             ggtitle(thislayer)
         })
