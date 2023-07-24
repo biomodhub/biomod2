@@ -206,8 +206,10 @@ bm_Tuning <- function(model,
                                           XGBOOST.subsample = 0.5))
 {
   ## 0. Check arguments ---------------------------------------------------------------------------
-  args <- .bm_Tuning.check.args(model = model, tuning.fun = tuning.fun, do.formula = do.formula, do.stepAIC = do.stepAIC
-                                , bm.format = bm.format, metric.eval = metric.eval, metric.AIC = metric.AIC
+  args <- .bm_Tuning.check.args(model = model, tuning.fun = tuning.fun
+                                , do.formula = do.formula, do.stepAIC = do.stepAIC
+                                , bm.options = bm.options, bm.format = bm.format
+                                , metric.eval = metric.eval, metric.AIC = metric.AIC
                                 , weights = weights, params.train = params.train)
   for (argi in names(args)) { assign(x = argi, value = args[[argi]]) }
   rm(args)
@@ -217,6 +219,30 @@ bm_Tuning <- function(model,
     calib.lines <- data.frame(rep(TRUE, length(bm.format@data.species)))
     colnames(calib.lines) <- "_allData_allRun"
   }
+  ## LOOP OVER PA DATASETS
+  if (inherits(bm.format, "BIOMOD.formated.data.PA")) {
+    PA.lines <- colnames(bm.format@PA.table)
+  } else {
+    PA.lines <- "_allData_allRun"
+  }
+  ## LOOP OVER ALL COMBINED
+  combi <- expand.grid(PA = PA.lines, calib = colnames(calib.lines), stringsAsFactors = FALSE)
+  combi$name_dataset <- sapply(1:nrow(combi), function(ii) {
+    tmp1 <- combi$PA[ii]
+    tmp2 <- combi$calib[ii]
+    if (tmp2 == "_allData_allRun") tmp2 <- "_allRun"
+    if (tmp1 == "_allData_allRun") tmp1 <- "allData"
+    paste0("_", tmp1, tmp2)
+  })
+    
+  #   expected_CVnames <- paste0("_allData_RUN", seq_len(ncol(calib.lines)))
+  # 
+  # if (!is.null(bm.format) && inherits(bm.format, "BIOMOD.formated.data.PA")) {
+  #   expected_CVnames <- c(expected_CVnames
+  #                         , sapply(1:ncol(bm.format@PA.table)
+  #                                  , function(this_PA) c(paste0("_PA", this_PA, "_RUN", seq_len(ncol(calib.lines)))
+  #                                                        , paste0("_PA", this_PA, "_allRun"))))
+  # } 
   
   if (model != "MAXENT") {
     ## check control
@@ -228,8 +254,10 @@ bm_Tuning <- function(model,
                                       returnData = FALSE)
   }
   
-  argsval <- foreach(calib.i = 1:ncol(calib.lines)) %do%
+  argsval <- foreach(PA.i = combi$PA, calib.i = combi$calib) %do%
     {
+      # cat("\n\t\t> Dataset..")
+      
       argstmp <- bm.options@args.default
       
       if (model == "MAXNET") {
@@ -241,7 +269,9 @@ bm_Tuning <- function(model,
           
           ## create dataset ---------------------------------------------------------
           mySpExpl <- get_species_data(bm.format)
+          mySpExpl[["_allData_allRun"]] <- TRUE
           mySpExpl <- mySpExpl[which(calib.lines[, calib.i] == TRUE), ]
+          mySpExpl <- mySpExpl[which(mySpExpl[, PA.i] == TRUE), ]
           myResp <- mySpExpl[, 1]
           myExpl <- mySpExpl[, 4:ncol(mySpExpl)]
           
@@ -272,6 +302,8 @@ bm_Tuning <- function(model,
               argstmp$betamultiplier <- tune.MAXENT@results[tmp, "rm"]
             }
           } else if (model == "SRE") { # ----------------------------------------------------------------
+            myResp <- sapply(myResp, function(xx) ifelse(xx == 0 || is.na(xx), 0, 1))
+            
             tune.SRE <- foreach(rep = 1:ctrl.train$repeats, .combine = "rbind") %do%
               {
                 fold <- dismo::kfold(myResp, by = myResp, k = ctrl.train$number) ## by = to keep prevalence
@@ -300,7 +332,9 @@ bm_Tuning <- function(model,
           
           ## create dataset
           mySpExpl <- get_species_data(bm.format)
+          mySpExpl[["_allData_allRun"]] <- 1
           mySpExpl <- mySpExpl[which(calib.lines[, calib.i] == TRUE), ]
+          mySpExpl <- mySpExpl[which(mySpExpl[, PA.i] == TRUE), ]
           mySpExpl[, 1] <- as.factor(ifelse(mySpExpl[, 1] == 1 & !is.na(mySpExpl[, 1]), "Presence", "Absence"))
           myResp <- mySpExpl[, 1]
           myExpl <- mySpExpl[, 4:ncol(mySpExpl)]
@@ -423,7 +457,7 @@ bm_Tuning <- function(model,
       }
       return(argstmp)
     }
-  names(argsval) <- colnames(calib.lines)
+  names(argsval) <- combi$name_dataset
   
   return(argsval)
 }

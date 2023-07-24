@@ -234,7 +234,12 @@ setGeneric("BIOMOD.options.dataset", def = function(strategy, user.val = NULL, t
   
   ## USER DEFINED parameterisation --------------
   if (strategy == "user.defined") {
-    .fun_testIfInherits(TRUE, "user.val", user.val, c("list"))
+    if (!is.null(user.val)) {
+      .fun_testIfInherits(TRUE, "user.val", user.val, c("list"))
+    } else {
+      strategy = "default"
+      # warning("No user options defined for this model. Strategy switched to 'default'.") ## Needed or not ?
+    }
   }
   
   ## TUNING parameterisation --------------------
@@ -254,10 +259,12 @@ setGeneric("BIOMOD.options.dataset", def = function(strategy, user.val = NULL, t
   if (!is.null(bm.format)) {
     .fun_testIfInherits(TRUE, "bm.format", bm.format, c("BIOMOD.formated.data", "BIOMOD.formated.data.PA"))
   }
+  expected_CVnames <- "_allData_allRun"
   if (!is.null(calib.lines)) {
     .fun_testIfInherits(TRUE, "calib.lines", calib.lines, c("matrix"))
     
-    expected_CVnames <- c(paste0("_allData_RUN", seq_len(ncol(calib.lines))), "_allData_allRun")
+    expected_CVnames <- c(paste0("_allData_RUN", seq_len(ncol(calib.lines))), expected_CVnames)
+    
     if (!is.null(bm.format) && inherits(bm.format, "BIOMOD.formated.data.PA")) {
       expected_CVnames <- c(expected_CVnames
                             , sapply(1:ncol(bm.format@PA.table)
@@ -265,7 +272,26 @@ setGeneric("BIOMOD.options.dataset", def = function(strategy, user.val = NULL, t
                                                            , paste0("_PA", this_PA, "_allRun"))))
     } 
     .fun_testIfIn(TRUE, "colnames(calib.lines)", colnames(calib.lines), expected_CVnames)
+  } else {
+    if (!is.null(bm.format) && inherits(bm.format, "BIOMOD.formated.data.PA")) {
+      expected_CVnames <- c(expected_CVnames
+                            , sapply(1:ncol(bm.format@PA.table)
+                                     , function(this_PA) paste0("_PA", this_PA, "_allRun")))
+    }
   }
+  if (strategy == "user.defined" && !is.null(user.val)) {
+    .fun_testIfIn(TRUE, "names(user.val)", names(user.val), expected_CVnames)
+    if (length(names(user.val)) != length(expected_CVnames)) {
+      warning(paste0("Options will be changed only for a subset of datasets ("
+                     , paste0(names(user.val), collapse = ", ")
+                     , ") and not the others ("
+                     , paste0(setdiff(expected_CVnames, names(user.val)), collapse = ", ")
+                     , "). \nPlease update 'val.list' argument if this is not wanted."))
+    }
+  }
+  
+  return(list(strategy = strategy,
+              expected_CVnames = expected_CVnames))
 }
 
 .BIOMOD.options.dataset.test <- function(bm.opt)
@@ -350,8 +376,10 @@ setMethod('BIOMOD.options.dataset', signature(strategy = 'character'),
           {
             cat('\n\t> ', mod, 'options (datatype:', typ, ', package:', pkg, ', function:', fun, ')...')
             
-            .BIOMOD.options.dataset.check.args(strategy = strategy, user.val = user.val, tuning.fun = tuning.fun
-                                               , bm.format = bm.format, calib.lines = calib.lines)
+            args <- .BIOMOD.options.dataset.check.args(strategy = strategy, user.val = user.val, tuning.fun = tuning.fun
+                                                       , bm.format = bm.format, calib.lines = calib.lines)
+            for (argi in names(args)) { assign(x = argi, value = args[[argi]]) }
+            rm(args)
             
             BOM <- BIOMOD.options.default(mod, typ, pkg, fun)
             
@@ -420,32 +448,32 @@ setMethod('BIOMOD.options.dataset', signature(strategy = 'character'),
                                                      , type = 'quadratic'
                                                      , interaction.level = 0)
                   }
-                } else {
+                } else if ((mod == "GAM" && pkg == "mgcv") || mod == "GLM") {
                   warning("No bm.format provided. No bigboss definition of formula for GAM.mgcv.gam and GLM models.")
                 }
               }
               
-              if (is.null(calib.lines)) {
-                argsval <- list("_allData_allRun" = argstmp)
-                if (!is.null(bm.format) && inherits(bm.format, "BIOMOD.formated.data.PA")) {
-                  for (PA in colnames(bm.format@PA.table)) {
-                    argsval[[paste0("_", PA, "_allRun")]] <- argsval[["_allData_allRun"]]
-                  }
-                }
-              } else {
-                argsval <- lapply(1:ncol(calib.lines), function(xx) { argstmp })
-                names(argsval) <- colnames(calib.lines)
-              }
+              argsval <- lapply(expected_CVnames, function(xx) { argstmp })
+              names(argsval) <- expected_CVnames
             } else if (strategy == "user.defined") {
               if (!("..." %in% BOM@args.names)) {
-                .fun_testIfIn(TRUE, "names(user.val)", names(user.val), BOM@args.names)
+                for (CVname in names(user.val)) {
+                  .fun_testIfIn(TRUE, paste0("names(user.val[['", CVname, "']])"), names(user.val[[CVname]]), BOM@args.names)
+                }
               } else {
                 ## ???
               }
-              argsval <- user.val
+              
+              argsval <- lapply(expected_CVnames, function(xx) { argstmp })
+              names(argsval) <- expected_CVnames
+              
+              for (CVname in names(user.val)) {
+                val <- user.val[[CVname]]
+                for (ii in names(val)) { argsval[[CVname]][[ii]] <- val[[ii]] }
+              }
             } else if (strategy == "tuned") {
               argsval <- bm_Tuning(model = mod, tuning.fun = tuning.fun, do.formula = TRUE, do.stepAIC = TRUE
-                                   , bm.opt.def = BOM, bm.format = bm.format, calib.lines = calib.lines
+                                   , bm.options = BOM, bm.format = bm.format, calib.lines = calib.lines
                                    , metric.eval = ifelse(mod == "MAXENT", "auc.val.avg", "TSS"))
             }
             
@@ -475,13 +503,16 @@ setMethod('show', signature('BIOMOD.options.dataset'),
           {
             cat('\n\t> ', object@model, 'options (datatype:', object@type, ', package:', object@package, ', function:', object@func, ') :')
             # for (arg in object@args.names) { ## NOT working for bigboss for example, if new parameters
-            for (arg in names(object@args.values[["_allData_allRun"]])) {
+            dataset <- ifelse("_allData_allRun" %in% names(object@args.values), "_allData_allRun", names(object@args.values)[1])
+            cat('\n\t   ( dataset', dataset, ')')
+            
+            for (arg in names(object@args.values[[dataset]])) {
               val.def = capture.output(object@args.default[[arg]])
-              val.used = capture.output(object@args.values[["_allData_allRun"]][[arg]])
+              val.used = capture.output(object@args.values[[dataset]][[arg]])
               
               cat('\n\t\t- ', arg, "=", sub("\\[1\\] ", "", val.used))
               if (!is.null(val.used) && !is.null(val.def) && 
-                  (length(val.used) != length(val.def) || val.used != val.def)) {
+                  (length(val.used) != length(val.def) || any(val.used != val.def))) {
                 cat('   (default:', sub("\\[1\\] ", "", val.def), ')')
               }
             }
