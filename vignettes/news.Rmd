@@ -17,6 +17,9 @@ vignette: >
 
 #### 4.2-5 Tuning and Model Options
 
+##### 4.2-4-5 Bugfix
+- fixed summary method for `BIOMOD.formated.data` and `BIOMOD.formated.data.PA`
+
 ##### 4.2-4-4 Bugfix
 - fixed `bm_PlotResponseCurves` for ensemble models merged by algo (for Maxent)
 

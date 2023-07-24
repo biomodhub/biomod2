@@ -1212,12 +1212,12 @@ setMethod('summary', signature(object = 'BIOMOD.formated.data'),
                 rbind(
                   output,
                   foreach(this_run = run, this_PA = PA, .combine = 'rbind')  %do% {
-                      if (is.na(this_PA) || this_PA == 'allData') { # run only
+                    if (is.na(this_PA) || this_PA == 'allData') { # run only
                         this_name <- paste0("_", this_PA, "_", this_run)
                         this_calib <- calib.lines[ , this_name]
                         this_valid <- ! calib.lines[ , this_name]
                       } else if (is.na(this_run)) { # PA only
-                        this_calib <- ifelse(is.na(object@PA.table[ , this_PA]), FALSE, TRUE)
+                        this_calib <- ifelse(is.na(object@PA.table[ , this_PA]), FALSE, object@PA.table[ , this_PA])
                       } else { # PA+run
                         this_name <- paste0("_", this_PA, "_", this_run)
                         this_calib <- calib.lines[ , this_name] & object@PA.table[ , this_PA]
@@ -1230,9 +1230,7 @@ setMethod('summary', signature(object = 'BIOMOD.formated.data'),
                                         "Presences" = length(which(calib.resp == 1)),
                                         "True_Absences" = length(which(calib.resp == 0)),
                                         "Pseudo_Absences" = 
-                                          length(which(this_calib)) - 
-                                          length(which(calib.resp == 1)) -
-                                          length(which(calib.resp == 0)),
+                                          length(which(is.na(calib.resp))),
                                         "Undefined" = NA)
                       
                       if (!is.na(this_run)) { 
