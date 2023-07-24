@@ -789,6 +789,7 @@ setClass("BIOMOD.projection.out",
 ##' @rdname BIOMOD.projection.out
 ##' @export
 ##' @importFrom terra global
+##' @param maxcell maximum number of cells to plot. Argument transmitted to \code{\link[terra]{plot}}.
 ##' 
 
 setMethod(

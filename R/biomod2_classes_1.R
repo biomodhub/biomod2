@@ -522,7 +522,8 @@ setMethod('BIOMOD.formated.data', signature(sp = 'numeric', env = 'SpatRaster'),
 ##' A \code{logical} defining whether evaluation data should be added to the plot or not
 ##' @param do.plot (\emph{optional, default} \code{TRUE}) \cr 
 ##' A \code{logical} defining whether the plot is to be rendered or not
-##' 
+##' @param point.size a \code{numeric} to adjust the size of points when
+##'  \code{plot.type = 'points'}.
 ##' 
 ##' @return a \code{list} with the data used to generate the plot and a
 ##' \code{ggplot2} object 

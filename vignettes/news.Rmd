@@ -17,6 +17,9 @@ vignette: >
 
 #### 4.2-5 Tuning and Model Options
 
+##### 4.2-4-4 Bugfix
+- fixed `bm_PlotResponseCurves` for ensemble models merged by algo (for Maxent)
+
 ##### 4.2-4-3 Bugfix
 - added point.size argument to plot.BIOMOD.Formated.data
 - added maxcell argument to plot.BIOMOD.projected.out
