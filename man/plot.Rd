@@ -49,6 +49,9 @@ be represented}
 \item{plot.eval}{(\emph{optional, default} \code{TRUE}) \cr 
 A \code{logical} defining whether evaluation data should be added to the plot or not}
 
+\item{point.size}{a \code{numeric} to adjust the size of points when
+\code{plot.type = 'points'}.}
+
 \item{do.plot}{(\emph{optional, default} \code{TRUE}) \cr 
 A \code{logical} defining whether the plot is to be rendered or not}
 }
