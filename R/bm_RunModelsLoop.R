@@ -215,15 +215,12 @@ bm_RunModel <- function(model, run.name, dir.name = '.'
   opt_name <- grep(model, names(bm.options@options), value = TRUE)
   if (length(opt_name) == 1) {
     bm.opt <- bm.options@options[[opt_name]]
-  # } else if (model == "GAM") {
-  #   bm.opt <- bm.options@options[[opt_name[1]]] ## /!\ how to deal with all 3 ??
-  #   subclass_name <- paste0(bm.opt@model, "_", bm.opt@type, "_", bm.opt@package)
-  #   .load_gam_namespace(model_subclass = subclass_name)
-  } else if (length(grep("GAM", model)) == 1) {
-    bm.opt <- bm.options@options[[opt_name]] ## /!\ how to deal with all 3 ??
+  } else { stop("pitiprobleum") } ## Should not happen now
+  
+  if (length(grep("GAM", model)) == 1) {
     subclass_name <- paste0(bm.opt@model, "_", bm.opt@type, "_", bm.opt@package)
     .load_gam_namespace(model_subclass = subclass_name)
-  } else { stop("pitiprobleum") } ## Should not happen now
+  }
   
   ## get options for specific dataset
   if (dataset_name %in% names(bm.opt@args.values)) {
@@ -279,6 +276,10 @@ bm_RunModel <- function(model, run.name, dir.name = '.'
     if (model %in% c("ANN", "RF")) {
       bm.opt.val <- bm.opt.val[c("formula", "data", names(bm.opt.val)[which(!(names(bm.opt.val) %in% c("formula", "data")))])]
     }
+    if (model %in% c("FDA")) {
+      bm.opt.val$method <- eval(parse(text = paste0("quote(", bm.opt.val$method, ")")))
+    }
+    
     
     ## RUN model ----------------------------------------------------
     model.sp <- do.call(bm.opt@func, bm.opt.val)
