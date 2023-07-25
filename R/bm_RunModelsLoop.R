@@ -252,6 +252,12 @@ bm_RunModel <- function(model, run.name, dir.name = '.'
     } else if (model == "GLM") {
       bm.opt.val$data <- cbind(data_mod[calib.lines.vec, , drop = FALSE], 
                                data.frame("weights" = weights.vec[calib.lines.vec]))
+      if ("mustart" %in% names(bm.opt.val) &&
+          (length(bm.opt.val$mustart) > 0 && nchar(bm.opt.val$mustart) > 0) &&
+          length(bm.opt.val$mustart) < nrow(bm.opt.val$data)) {
+        bm.opt.val$mustart <- rep(bm.opt.val$mustart[1], nrow(bm.opt.val$data))
+        ## Should we put a warning about that ?
+      }
     } else if (model == "MAXNET") {
       bm.opt.val$p <- data_sp[calib.lines.vec] 
       bm.opt.val$data <- data_env[calib.lines.vec, , drop = FALSE]
@@ -273,7 +279,7 @@ bm_RunModel <- function(model, run.name, dir.name = '.'
     }
     
     ## REORGANIZE order of parameters -------------------------------
-    if (model %in% c("ANN", "RF")) {
+    if (model %in% c("ANN", "MARS", "RF")) {
       bm.opt.val <- bm.opt.val[c("formula", "data", names(bm.opt.val)[which(!(names(bm.opt.val) %in% c("formula", "data")))])]
     }
     if (model %in% c("FDA")) {
@@ -421,7 +427,7 @@ bm_RunModel <- function(model, run.name, dir.name = '.'
   temp_workdir = NULL
   
   if (model != "MAXENT") {
-    if (model == "SRE") {
+    if (model == "SRE" && bm.opt.val$do.extrem == FALSE) {
       g.pred <- model.sp
     } else {
       g.pred <- try(predict(model.bm, data_env, on_0_1000 = TRUE, seedval = seed.val, temp_workdir = temp_workdir))
