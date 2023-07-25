@@ -1,4 +1,4 @@
-###################################################################################################
+## --------------------------------------------------------------------------- ##
 ##' @name bm_Tuning
 ##' @author Frank Breiner, Maya Gueguen
 ##' 
@@ -276,7 +276,7 @@ bm_Tuning <- function(model,
           myExpl <- mySpExpl[, 4:ncol(mySpExpl)]
           
           
-          if (model == "MAXENT") { # --------------------------------------------------------------------
+          if (model == "MAXENT") { # ------------------------------------------#
             try(tune.MAXENT <- ENMeval::ENMevaluate(occs = mySpExpl[mySpExpl[, 1] == 1 & !is.na(mySpExpl[, 1]), ],
                                                     bg = mySpExpl[mySpExpl[, 1] == 0 | is.na(mySpExpl[, 1]), ],
                                                     tune.args = list(rm = seq(0.5, 1, 0.5), fc = c("L")),
@@ -301,7 +301,7 @@ bm_Tuning <- function(model,
               argstmp$threshold <- grepl("T", tune.MAXENT@results[tmp, "fc"])
               argstmp$betamultiplier <- tune.MAXENT@results[tmp, "rm"]
             }
-          } else if (model == "SRE") { # ----------------------------------------------------------------
+          } else if (model == "SRE") { # -------------------------------------- #
             myResp <- sapply(myResp, function(xx) ifelse(xx == 0 || is.na(xx), 0, 1))
             
             tune.SRE <- foreach(rep = 1:ctrl.train$repeats, .combine = "rbind") %do%
@@ -338,6 +338,7 @@ bm_Tuning <- function(model,
           mySpExpl[, 1] <- as.factor(ifelse(mySpExpl[, 1] == 1 & !is.na(mySpExpl[, 1]), "Presence", "Absence"))
           myResp <- mySpExpl[, 1]
           myExpl <- mySpExpl[, 4:ncol(mySpExpl)]
+          myExpl[["_allData_allRun"]] <- NULL
           
           ## run tuning -----------------------------------------------------------------------------
           cmd.tuning <- "caret::train(x = myExpl, y = myResp, method = tuning.fun, tuneGrid = tuning.grid,"
@@ -345,7 +346,7 @@ bm_Tuning <- function(model,
           if (tuning.fun %in% c("fda", "rpart")) { ## add weights
             cmd.tuning <- paste0(cmd.tuning, " weights = weights,")
           }
-          if (model == "ANN") {
+          if (tuning.fun == "avNNet") {
             maxit = 500
             maxnwts = 10 * (ncol(myExpl) + 1) + 10 + 1
             ## Automatically standardize data prior to modeling and prediction
@@ -464,7 +465,7 @@ bm_Tuning <- function(model,
 
 
 
-# ---------------------------------------------------------------------------- #
+# Check arguments ------------------------------------------------------------
 
 .bm_Tuning.check.args <- function(model, tuning.fun, do.formula, do.stepAIC
                                   , bm.options, bm.format, metric.eval, metric.AIC
@@ -476,18 +477,18 @@ bm_Tuning <- function(model,
   
   ## check namespace ----------------------------------------------------------
   if (!isNamespaceLoaded("caret")) { 
-    if(!requireNamespace('caret', quietly = TRUE)) stop("Package 'caret' not found")
+    if (!requireNamespace('caret', quietly = TRUE)) stop("Package 'caret' not found")
   }
   if (model == "MAXENT" && !isNamespaceLoaded('ENMeval')) { 
-    if(!requireNamespace('ENMeval', quietly = TRUE)) stop("Package 'ENMeval' not found")
+    if (!requireNamespace('ENMeval', quietly = TRUE)) stop("Package 'ENMeval' not found")
   } else if (model == "SRE" && !isNamespaceLoaded('dismo')) { 
-    if(!requireNamespace('dismo', quietly = TRUE)) stop("Package 'dismo' not found")
+    if (!requireNamespace('dismo', quietly = TRUE)) stop("Package 'dismo' not found")
   }
   if (do.formula == TRUE) {
-    if(!requireNamespace('gam', quietly = TRUE)) stop("Package 'gam' not found")
+    if (!requireNamespace('gam', quietly = TRUE)) stop("Package 'gam' not found")
   }
   if (do.stepAIC == TRUE) {
-    if(!requireNamespace('MASS', quietly = TRUE)) stop("Package 'MASS' not found")
+    if (!requireNamespace('MASS', quietly = TRUE)) stop("Package 'MASS' not found")
   }
   
   ##check bm.options ----------------------------------------------------------
