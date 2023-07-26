@@ -431,8 +431,7 @@ bm_Tuning <- function(model,
                               mustart = rep(ifelse(!is.null(argstmp$mustart) & nchar(argstmp$mustart) > 0, argstmp$mustart, 0.5), length(myResp)),
                               model = TRUE)
               
-              
-              try(tuned.AIC <- stepAIC(glmStart,
+              try(tuned.AIC <- MASS::stepAIC(glmStart,
                                        scope = list(upper = (sub(".*~", "~", argstmp$formula)), lower = ~1),
                                        k = criteria.AIC,
                                        direction = "both",
