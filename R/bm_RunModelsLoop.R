@@ -303,7 +303,7 @@ bm_RunModel <- function(model, run.name, dir.name = '.'
           Cp <- tr[tr$xsum == min(tr$xsum), "CP"]
           model.sp <- prune(model.sp, cp = Cp[length(Cp)])
         } else {
-          warning("pas de bon modele trouve, message a refaire")
+          warning("Pruning of CTA model failed")
         }
       } else if (model == "GBM" && bm.opt.val$cv.folds > 1) {
         best.iter <- try(gbm.perf(model.sp, method = "cv" , plot.it = FALSE)) ## c('OOB', 'test', 'cv')

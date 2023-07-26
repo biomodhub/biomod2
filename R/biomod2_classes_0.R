@@ -390,6 +390,9 @@ setMethod('BIOMOD.options.dataset', signature(strategy = 'character'),
               argstmp[["x"]] = NULL
               argstmp$size = 2
             }
+            
+            if (mod == "CTA") { argstmp$method <- "class" }
+            
             if (mod == "FDA") {
               argstmp$dimension = NULL
               argstmp$keep.fitted = NULL
