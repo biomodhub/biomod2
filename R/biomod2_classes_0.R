@@ -286,7 +286,7 @@ setGeneric("BIOMOD.options.dataset", def = function(strategy, user.val = NULL, t
                      , paste0(names(user.val), collapse = ", ")
                      , ") and not the others ("
                      , paste0(setdiff(expected_CVnames, names(user.val)), collapse = ", ")
-                     , "). \nPlease update 'val.list' argument if this is not wanted."))
+                     , "). \nPlease update 'user.val' argument if this is not wanted."))
     }
   }
   

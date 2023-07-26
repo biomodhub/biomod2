@@ -14,7 +14,7 @@
 ##' \code{MAXENT}, \code{MAXNET}, \code{RF}, \code{SRE}, \code{XGBOOST}
 ##' @param strategy a \code{character} corresponding to the method to select models' parameters 
 ##' values, must be either \code{default}, \code{bigboss}, \code{user.defined}, \code{tuned}
-##' @param val.list (\emph{optional, default} \code{NULL}) \cr
+##' @param user.val (\emph{optional, default} \code{NULL}) \cr
 ##' A \code{list} containing parameters values for some (all) models
 ##' @param bm.format (\emph{optional, default} \code{NULL}) \cr
 ##' A \code{\link{BIOMOD.formated.data}} or \code{\link{BIOMOD.formated.data.PA}} object returned 
@@ -192,13 +192,13 @@
 bm_ModelingOptions <- function(data.type
                                , models = c('ANN', 'CTA', 'FDA', 'GAM', 'GBM', 'GLM'
                                             , 'MARS', 'MAXENT', 'MAXNET', 'RF', 'SRE', 'XGBOOST')
-                               , strategy, val.list = NULL, bm.format = NULL, calib.lines = NULL)
+                               , strategy, user.val = NULL, bm.format = NULL, calib.lines = NULL)
 {
   .bm_cat("Build Modeling Options")
   
   ## 0. Check arguments ---------------------------------------------------------------------------
   args <- .bm_ModelingOptions.check.args(data.type = data.type, models = models, strategy = strategy
-                                         , val.list = val.list, bm.format = bm.format, calib.lines = calib.lines)
+                                         , user.val = user.val, bm.format = bm.format, calib.lines = calib.lines)
   for (argi in names(args)) { assign(x = argi, value = args[[argi]]) }
   rm(args)
   
@@ -225,7 +225,7 @@ bm_ModelingOptions <- function(data.type
             name_model <- paste0(model, ".", data.type, ".", tab.model$package[ii], ".", tab.model$func[ii])
             val.ii <- NULL
             if (strategy == "user.defined") {
-              val.ii <- val.list[[name_model]]
+              val.ii <- user.val[[name_model]]
             }
             BOD <- BIOMOD.options.dataset(mod = model
                                           , typ = data.type
@@ -260,7 +260,7 @@ bm_ModelingOptions <- function(data.type
 
 .bm_ModelingOptions.check.args <-
   function(data.type, models, strategy
-           , val.list = NULL
+           , user.val = NULL
            , bm.format = NULL, calib.lines = NULL) {
     ## check if type is supported
     avail.types.list <- c('binary', 'binary.PA', 'abundance', 'compositional')
@@ -283,9 +283,9 @@ bm_ModelingOptions <- function(data.type
     
     ## USER DEFINED parameterisation --------------
     if (strategy == "user.defined") {
-      .fun_testIfInherits(TRUE, "val.list", val.list, c("list"))
+      .fun_testIfInherits(TRUE, "user.val", user.val, c("list"))
       avail.options.list <- paste0(ModelsTable$model, ".", ModelsTable$type, ".", ModelsTable$package, ".", ModelsTable$func)
-      .fun_testIfIn(TRUE, "names(val.list)", names(val.list), avail.options.list)
+      .fun_testIfIn(TRUE, "names(user.val)", names(user.val), avail.options.list)
       ## THEN can be directly arguments (all the same for all data) or a list with one set for each dataset (AllData_AllRun, ...)
     }
     
@@ -312,8 +312,8 @@ bm_ModelingOptions <- function(data.type
       .fun_testIfIn(TRUE, "colnames(calib.lines)", colnames(calib.lines), expected_CVnames)
       
       if (strategy == "user.defined") {
-        for (ii in 1:length(val.list)) {
-          .fun_testIfIn(TRUE, "names(val.list[[ii]])", names(val.list[[ii]]), expected_CVnames)
+        for (ii in 1:length(user.val)) {
+          .fun_testIfIn(TRUE, "names(user.val[[ii]])", names(user.val[[ii]]), expected_CVnames)
         }
       }
     }

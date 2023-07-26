@@ -61,7 +61,7 @@
 ##' @param OPT.strategy a \code{character} corresponding to the method to select models' 
 ##' parameters values, must be either \code{default}, \code{bigboss}, \code{user.defined}, 
 ##' \code{tuned}
-##' @param OPT.val.list (\emph{optional, default} \code{NULL}) \cr
+##' @param OPT.user.val (\emph{optional, default} \code{NULL}) \cr
 ##' A \code{list} containing parameters values for some (all) models
 ##' @param OPT.user (\emph{optional, default} \code{TRUE}) \cr  
 ##' A \code{\link{BIOMOD.models.options}} object returned by the \code{\link{bm_ModelingOptions}} 
@@ -314,7 +314,7 @@ BIOMOD_Modeling <- function(bm.format,
                             CV.do.full.models = TRUE,
                             OPT.data.type = 'binary',
                             OPT.strategy = 'default',
-                            OPT.val.list = NULL,
+                            OPT.user.val = NULL,
                             OPT.user = NULL,
                             bm.options, ## deprecated
                             nb.rep, ## deprecated
@@ -427,7 +427,7 @@ BIOMOD_Modeling <- function(bm.format,
     bm.options <- bm_ModelingOptions(data.type = OPT.data.type,
                                      models = models,
                                      strategy = OPT.strategy,
-                                     val.list = OPT.val.list,
+                                     user.val = OPT.user.val,
                                      bm.format = bm.format,
                                      calib.lines = calib.lines)
   }
