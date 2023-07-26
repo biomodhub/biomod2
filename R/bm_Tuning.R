@@ -418,7 +418,8 @@ bm_Tuning <- function(model,
           }
           
           ## run variable selection -----------------------------------------------------------------
-          if (do.stepAIC && model %in% c("GAM", "GLM")) {
+          if (do.stepAIC && (model == "GLM" || 
+                             (model == "GAM" && bm.options@package == "gam")) ) {
             cat("\n\t\t> Tuning variables (AIC)...")
             
             if (model == "GLM") {
@@ -439,18 +440,20 @@ bm_Tuning <- function(model,
                                        steps = 10000))
               if (!is.null(tuned.AIC)) { argstmp$formula <- deparse(tuned.AIC$formula) }
             } else if (model == "GAM") { # if (bm.options@GAM$algo == 'GAM_gam') { ## gam package
-              gamStart <- gam::gam(as.formula(paste0(bm.format@sp.name, " ~ 1")),
-                                   data = mySpExpl, 
-                                   family = argstmp$family, 
-                                   control = argstmp$control,
-                                   weights = weights)
-              # gamStart <- eval(parse(text = paste0("gam::gam(", bm.format@sp.name, " ~ 1, data = mySpExpl, family = argstmp$family, control = argstmp$control, weights = weights)")))
-              
-              try(tuned.AIC <- gam::step.Gam(gamStart,
-                                             # scope = list(upper = (sub(".*~", "~", argstmp$formula)), lower = ~1),
-                                             scope = .scope(head(myExpl), "gam::s", 6),
-                                             direction = "both",
-                                             trace = FALSE))
+              gamStart <- do.call(gam::gam, list(formula = as.formula(paste0(bm.format@sp.name, " ~ 1")),
+                                                 data = mySpExpl, 
+                                                 family = argstmp$family,
+                                                 control = argstmp$control,
+                                                 weights = weights))          
+              tuned.AIC <- NULL
+              try(tuned.AIC <- 
+                    gam::step.Gam(
+                      gamStart,
+                      # scope = list(upper = (sub(".*~", "~", argstmp$formula)), lower = ~1),
+                      scope = .scope(head(myExpl),
+                                     "gam::s", 6),
+                      direction = "both",
+                      trace = FALSE))
               if (!is.null(tuned.AIC)) { argstmp$formula <- deparse(tuned.AIC$formula) }
             }
           }
