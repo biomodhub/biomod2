@@ -83,7 +83,7 @@
 # bm.opt@options$MARS.binary.earth.earth@args.values[['_allData_allRun']]$thresh = 0.001
 # bm.opt@options$MARS.binary.earth.earth@args.values[['_allData_allRun']]$nprune = NULL
 # bm.opt@options$MARS.binary.earth.earth@args.values[['_allData_allRun']]$pmethod = 'backward'
-# bm.opt@options$RF.binary.randomForest.randomForest@args.values[['_allData_allRun']]$do.classif = TRUE
+# bm.opt@options$RF.binary.randomForest.randomForest@args.values[['_allData_allRun']]$type = 'classification'
 # bm.opt@options$RF.binary.randomForest.randomForest@args.values[['_allData_allRun']]$ntree = 500
 # bm.opt@options$RF.binary.randomForest.randomForest@args.values[['_allData_allRun']]$mtry = NULL
 # bm.opt@options$RF.binary.randomForest.randomForest@args.values[['_allData_allRun']]$strata = factor(c(0, 1))

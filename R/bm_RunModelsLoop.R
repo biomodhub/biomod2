@@ -241,7 +241,7 @@ bm_RunModel <- function(model, run.name, dir.name = '.'
                                            , interaction.level = 0)
     }
     
-    if (model == "RF" && !is.null(bm.opt.val$do.classif) && bm.opt.val$do.classif == TRUE) {
+    if (model == "RF" && !is.null(bm.opt.val$type) && bm.opt.val$type == "classification") {
       # defining occurrences as factor for doing classification and not regression in RF
       data_mod <- data_mod %>% mutate_at(resp_name, factor)
     }
@@ -330,7 +330,7 @@ bm_RunModel <- function(model, run.name, dir.name = '.'
     }
     
     ## POSTLIMINAR --------------------------------------------------
-    if (model == "RF" && !is.null(bm.opt.val$do.classif) && bm.opt.val$do.classif == TRUE) {
+    if (model == "RF" && !is.null(bm.opt.val$type) && bm.opt.val$type == "classification") {
       # canceling occurences class modifications
       data_mod <- data_mod %>% mutate_at(resp_name, function(.x) {
         .x %>% as.character() %>% as.numeric()

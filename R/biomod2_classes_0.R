@@ -335,7 +335,7 @@ setGeneric("BIOMOD.options.dataset", def = function(strategy, user.val = NULL, t
                                            , type = 'simple'
                                            , interaction.level = 0)
       
-      if (bm.opt@model == "RF" && !is.null(bm.opt.val$do.classif) && bm.opt.val$do.classif == TRUE) {
+      if (bm.opt@model == "RF" && !is.null(bm.opt.val$type) && bm.opt.val$type == 'classification') {
         # defining occurences as factor for doing classification and not regression in RF
         mySpExpl <- mySpExpl %>% mutate_at(mySp, factor)
       }
@@ -407,6 +407,7 @@ setMethod('BIOMOD.options.dataset', signature(strategy = 'character'),
             if (mod == "RF") {
               argstmp[["x"]] = NULL
               argstmp$mtry = 1
+              argstmp$type <- "classification"
             }
             if (mod == "XGBOOST") { argstmp$nrounds = 4 }
             BOM@args.default <- argstmp
