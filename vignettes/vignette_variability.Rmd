@@ -7,11 +7,10 @@ vignette: >
   %\VignetteEncoding{UTF-8}
 ---
 
-<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.13/css/all.css" integrity="sha384-DNOHZ68U8hZfKXOrtjWvjxusGo9WQnrNx2sqG0tfsghAvtVlRW3tvkXWZh58N9jp" crossorigin="anonymous">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
 
 
-
-### <i class="fas fa-address-card"></i> Definition
+### <i class="fa-solid fa-address-card"></i> Definition
 
 When modelling species distribution, there is most of the time an **uncertainty** of what is actually modelled :
 
@@ -23,7 +22,7 @@ What can be evaluated is how much the modelisation results are **consistent** wi
 </br>
 
 
-### <i class="fas fa-chart-bar"></i> Variability - within the evaluation / importance of variables
+### <i class="fa-solid fa-chart-column"></i> Variability - within the evaluation / importance of variables
 
 Single and ensemble models can be evaluated by several available evaluation metrics, and the importance of variables can be calculated through several repetitions (see `metric.eval` and `var.import` parameters in [`BIOMOD_Modeling`](../reference/BIOMOD_Modeling.html) and [`BIOMOD_EnsembleModeling`](../reference/BIOMOD_EnsembleModeling.html)).
 
@@ -41,7 +40,7 @@ Variability in evaluation and importance values can come from the parametrisatio
 
 </br>
 
-### <i class="fas fa-map"></i> Variability - within the predictions
+### <i class="fa-solid fa-map"></i> Variability - within the predictions
 
 Making projections, either for single or ensemble models, can produce two additional sources of variability in results that can be explored through two parameters :
 

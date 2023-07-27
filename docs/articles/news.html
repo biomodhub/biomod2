@@ -33,7 +33,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">biomod2</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">4.2-4</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">4.2-5</span>
       </span>
     </div>
 
@@ -132,13 +132,15 @@
 <i class="fas fa-feather"></i> 2023<a class="anchor" aria-label="anchor" href="#section"></a>
 </h3>
 <div class="section level4">
-<h4 id="xgboost-and-tuning">4.2-4 Xgboost and Tuning<a class="anchor" aria-label="anchor" href="#xgboost-and-tuning"></a>
+<h4 id="tuning-and-modeling-options">4.2-5 Tuning and Modeling options<a class="anchor" aria-label="anchor" href="#tuning-and-modeling-options"></a>
 </h4>
 <div class="section level5">
-<h5 id="major-changes">Major Changes<a class="anchor" aria-label="anchor" href="#major-changes"></a>
+<h5 id="bugfix">Bugfix<a class="anchor" aria-label="anchor" href="#bugfix"></a>
 </h5>
 <ul>
-<li>Added <code>XGBOOST</code> as a new possible model.</li>
+<li>fixed calculations of the number of models in
+<code>BIOMOD_Modeling</code> when using <code>models.pa</code>
+</li>
 </ul>
 </div>
 <div class="section level5">
@@ -146,6 +148,17 @@
 </h5>
 <ul>
 <li>removed commented code on <code>MAXENT.Tsuruoka</code>.</li>
+</ul>
+</div>
+</div>
+<div class="section level4">
+<h4 id="xgboost-and-tuning">4.2-4 Xgboost and Tuning<a class="anchor" aria-label="anchor" href="#xgboost-and-tuning"></a>
+</h4>
+<div class="section level5">
+<h5 id="major-changes">Major Changes<a class="anchor" aria-label="anchor" href="#major-changes"></a>
+</h5>
+<ul>
+<li>Added <code>XGBOOST</code> as a new possible model.</li>
 </ul>
 </div>
 </div>
@@ -196,7 +209,7 @@ models. Default value is now ‘validation’ instead of ‘evaluation’.</li>
 </ul>
 </div>
 <div class="section level5">
-<h5 id="bugfix">Bugfix<a class="anchor" aria-label="anchor" href="#bugfix"></a>
+<h5 id="bugfix-1">Bugfix<a class="anchor" aria-label="anchor" href="#bugfix-1"></a>
 </h5>
 <ul>
 <li>validation metric calculation now properly use the calibration
@@ -315,7 +328,7 @@ ensemble models can now be done with
 </ul>
 </div>
 <div class="section level5">
-<h5 id="bugfix-1">Bugfix<a class="anchor" aria-label="anchor" href="#bugfix-1"></a>
+<h5 id="bugfix-2">Bugfix<a class="anchor" aria-label="anchor" href="#bugfix-2"></a>
 </h5>
 <ul>
 <li>Fixed <code>MAXENT.Phillips.2</code> and single variable
@@ -375,7 +388,7 @@ in <code>MAXENT.Phillips</code> modeling options</li>
 </ul>
 </div>
 <div class="section level5">
-<h5 id="bugfix-2">Bugfix<a class="anchor" aria-label="anchor" href="#bugfix-2"></a>
+<h5 id="bugfix-3">Bugfix<a class="anchor" aria-label="anchor" href="#bugfix-3"></a>
 </h5>
 <ul>
 <li>Fixed <code>MAXENT.Phillips</code> predict method for large dataset
@@ -470,7 +483,7 @@ future.</li>
 </ul>
 </div>
 <div class="section level5">
-<h5 id="bugfix-3">Bugfix<a class="anchor" aria-label="anchor" href="#bugfix-3"></a>
+<h5 id="bugfix-4">Bugfix<a class="anchor" aria-label="anchor" href="#bugfix-4"></a>
 </h5>
 <ul>
 <li>MAXENT.Phillips models can now properly fail</li>
@@ -540,7 +553,7 @@ CompteurSp that was defined within a function.</li>
 <h4 id="section-2">4.1-3<a class="anchor" aria-label="anchor" href="#section-2"></a>
 </h4>
 <div class="section level5">
-<h5 id="bugfix-4">Bugfix<a class="anchor" aria-label="anchor" href="#bugfix-4"></a>
+<h5 id="bugfix-5">Bugfix<a class="anchor" aria-label="anchor" href="#bugfix-5"></a>
 </h5>
 <ul>
 <li>Ensemble models that fails (e.g. EMcv with only one models) will not
@@ -1110,7 +1123,7 @@ coherence between functions)</li>
 
 <div class="pkgdown">
   <p></p>
-<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.7.</p>
 </div>
 
       </footer>
