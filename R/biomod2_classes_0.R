@@ -445,7 +445,7 @@ setMethod('BIOMOD.options.dataset', signature(strategy = 'character'),
             ## GET parameter values according to strategy -------------------------------
             if (strategy %in% c("default", "bigboss") || (strategy == "user.defined" && user.base == "bigboss")) {
               if (strategy == "bigboss" || (strategy == "user.defined" && user.base == "bigboss")) {
-                data(OptionsBigboss)
+                # data(OptionsBigboss) # internal data is readily available
                 
                 val <- OptionsBigboss@options[[paste0(c(mod, typ, pkg, fun), collapse = ".")]]@args.values[['_allData_allRun']]
                 for (ii in names(val)) {

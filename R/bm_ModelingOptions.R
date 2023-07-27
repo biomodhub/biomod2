@@ -212,7 +212,7 @@ bm_ModelingOptions <- function(data.type
   rm(args)
   
   ## Load single models informations
-  data(ModelsTable)
+  # data(ModelsTable) # internal data is already readily available
   
   ## 1. Get options -------------------------------------------------------------------------------
   bm.opt <- foreach(model = models, .combine = "c") %do% {

@@ -40,9 +40,8 @@
 #                                       , 'earth', 'MAXENT', 'maxnet', 'randomForest', 'bm_SRE', 'xgboost')
 #                            , train = c('avNNet', 'rpart', 'fda', 'gamSpline', 'bam', 'gam', 'gbm', 'glm'
 #                                        , 'earth', 'ENMevaluate', 'maxnet', 'rf', 'bm_SRE', 'xgbTree'))
-# 
-# usethis::use_data(ModelsTable, overwrite = TRUE)
 
+# usethis::use_data(ModelsTable, overwrite = TRUE)
 
 #' Bigboss pre-defined parameter values for single models
 #'
@@ -52,7 +51,7 @@
 #' @format A \code{\link{BIOMOD.models.options}} object
 
 "OptionsBigboss"
-
+# 
 # bm.opt <- bm_ModelingOptions(data.type = "binary", strategy = "default")
 # bm.opt@options$ANN.binary.nnet.nnet@args.values[['_allData_allRun']]$size = 5 #NULL
 # bm.opt@options$ANN.binary.nnet.nnet@args.values[['_allData_allRun']]$decay = 5
@@ -97,8 +96,9 @@
 # bm.opt@options$XGBOOST.binary.xgboost.xgboost@args.values[['_allData_allRun']]$nrounds = 4
 # bm.opt@options$XGBOOST.binary.xgboost.xgboost@args.values[['_allData_allRun']]$objective = "binary:logistic"
 # OptionsBigboss <- bm.opt
-# 
+
 # usethis::use_data(OptionsBigboss, overwrite = TRUE)
+# usethis::use_data(OptionsBigboss, ModelsTable, overwrite = TRUE, internal = TRUE)
 
 
 #' Presence-Absence data to build test SDM
