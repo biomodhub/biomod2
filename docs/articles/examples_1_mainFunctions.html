@@ -33,7 +33,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">biomod2</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">4.2-4</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">4.2-5</span>
       </span>
     </div>
 
@@ -219,66 +219,6 @@ webpage</a>.</p>
 <span><span class="co"># plot(myBiomodData.multi)</span></span></code></pre></div>
 </div>
 <div class="section level4">
-<h4 id="parameterize-modeling-options">
-<i class="fa-solid fa-wrench"></i> Parameterize modeling
-options<a class="anchor" aria-label="anchor" href="#parameterize-modeling-options"></a>
-</h4>
-<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># Print default modeling options</span></span>
-<span><span class="fu"><a href="../reference/BIOMOD_ModelingOptions.html">bm_DefaultModelingOptions</a></span><span class="op">(</span><span class="op">)</span></span>
-<span></span>
-<span><span class="co"># Create default modeling options</span></span>
-<span><span class="va">myBiomodOptions</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/BIOMOD_ModelingOptions.html">BIOMOD_ModelingOptions</a></span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="va">myBiomodOptions</span></span>
-<span></span>
-<span><span class="co"># # Part (or totality) of the print can be copied and customized</span></span>
-<span><span class="co"># # Below is an example to compute quadratic GLM and select best model with 'BIC' criterium</span></span>
-<span><span class="co"># myBiomodOptions &lt;- BIOMOD_ModelingOptions(</span></span>
-<span><span class="co">#   GLM = list(type = 'quadratic',</span></span>
-<span><span class="co">#              interaction.level = 0,</span></span>
-<span><span class="co">#              myFormula = NULL,</span></span>
-<span><span class="co">#              test = 'BIC',</span></span>
-<span><span class="co">#              family = 'binomial',</span></span>
-<span><span class="co">#              control = glm.control(epsilon = 1e-08,</span></span>
-<span><span class="co">#                                    maxit = 1000,</span></span>
-<span><span class="co">#                                    trace = FALSE)))</span></span>
-<span><span class="co"># myBiomodOptions</span></span>
-<span><span class="co"># </span></span>
-<span><span class="co"># # It is also possible to give a specific GLM formula</span></span>
-<span><span class="co"># myForm &lt;- 'Sp277 ~ bio3 + log(bio10) + poly(bio16, 2) + bio19 + bio3:bio19'</span></span>
-<span><span class="co"># myBiomodOptions &lt;- BIOMOD_ModelingOptions(GLM = list(myFormula = formula(myForm)))</span></span>
-<span><span class="co"># myBiomodOptions</span></span></code></pre></div>
-<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co">### Model parameters can also be automatically tuned for your specific </span></span>
-<span><span class="co">### dataset with an optimization algorithm. The tuning can however </span></span>
-<span><span class="co">### be quite long. Duration for tuning all models sequentially </span></span>
-<span><span class="co">### with default optimization settings :</span></span>
-<span><span class="co">### on 1 x 2.5 GHz processor: approx. 45 min tuning all models </span></span>
-<span><span class="co">### on 8 x 2.5 GHz processor: approx. 15 min tuning all models </span></span>
-<span><span class="co"># </span></span>
-<span><span class="co"># # library(doParallel)</span></span>
-<span><span class="co"># # cl &lt;- makeCluster(8)</span></span>
-<span><span class="co"># # doParallel::registerDoParallel(cl) </span></span>
-<span><span class="co"># </span></span>
-<span><span class="co"># time.seq &lt;- system.time(</span></span>
-<span><span class="co">#   bm.tuning &lt;- BIOMOD_Tuning(bm.format = myBiomodData, ME.env = myExpl, ME.n.bg = ncell(myExpl))</span></span>
-<span><span class="co"># )</span></span>
-<span><span class="co"># </span></span>
-<span><span class="co"># # stopCluster(cl)</span></span>
-<span><span class="co"># </span></span>
-<span><span class="co"># plot(bm.tuning$tune.CTA.rpart)</span></span>
-<span><span class="co"># plot(bm.tuning$tune.CTA.rpart2)</span></span>
-<span><span class="co"># plot(bm.tuning$tune.RF)</span></span>
-<span><span class="co"># plot(bm.tuning$tune.ANN)</span></span>
-<span><span class="co"># plot(bm.tuning$tune.MARS)</span></span>
-<span><span class="co"># plot(bm.tuning$tune.FDA)</span></span>
-<span><span class="co"># plot(bm.tuning$tune.GBM)</span></span>
-<span><span class="co"># plot(bm.tuning$tune.GAM)</span></span>
-<span><span class="co">#</span></span>
-<span><span class="co"># # Get tuned modeling options</span></span>
-<span><span class="co"># myBiomodOptions &lt;- bm.tuning$models.options</span></span></code></pre></div>
-</div>
-<div class="section level4">
 <h4 id="cross-validation-datasets">
 <i class="fa-solid fa-scissors"></i> Cross-validation datasets<a class="anchor" aria-label="anchor" href="#cross-validation-datasets"></a>
 </h4>
@@ -287,7 +227,7 @@ with the <a href="../reference/BIOMOD_Modeling.html"><code>BIOMOD_Modeling</code
 function, which calls the <a href="../reference/bm_CrossValidation.html"><code>bm_CrossValidation</code></a>
 function to do so. More examples are presented on the <a href="examples_2_secundaryFunctions.html">Secundary functions
 webpage</a>.</p>
-<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># # k-fold selection</span></span>
 <span><span class="co"># cv.k &lt;- bm_CrossValidation(bm.format = myBiomodData,</span></span>
 <span><span class="co">#                            strategy = "kfold",</span></span>
@@ -302,6 +242,33 @@ webpage</a>.</p>
 <span><span class="co">#                            strat = "x")</span></span>
 <span><span class="co"># head(cv.k)</span></span>
 <span><span class="co"># head(cv.s)</span></span></code></pre></div>
+</div>
+<div class="section level4">
+<h4 id="retrieve-modeling-options">
+<i class="fa-solid fa-rectangle-list"></i> Retrieve modeling
+options<a class="anchor" aria-label="anchor" href="#retrieve-modeling-options"></a>
+</h4>
+<p>Modeling options are automatically retrieved from selected models
+within the <a href="../reference/BIOMOD_Modeling.html"><code>BIOMOD_Modeling</code></a>
+function, which calls the <a href="../reference/bm_ModelingOptions.html"><code>bm_ModelingOptions</code></a>
+function to do so. Model parameters can also be automatically tuned to a
+specific dataset, by calling the <a href="../reference/bm_Tuning.html"><code>bm_Tuning</code></a> function,
+however it can be quite long. More examples are presented on the <a href="examples_2_secundaryFunctions.html">Secundary functions
+webpage</a>.</p>
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># # bigboss parameters</span></span>
+<span><span class="co"># opt.b &lt;- bm_ModelingOptions(data.type = 'binary',</span></span>
+<span><span class="co">#                             models = c('SRE', 'XGBOOST'),</span></span>
+<span><span class="co">#                             strategy = 'bigboss')</span></span>
+<span><span class="co"># </span></span>
+<span><span class="co"># # tuned parameters with formated data</span></span>
+<span><span class="co"># opt.t &lt;- bm_ModelingOptions(data.type = 'binary',</span></span>
+<span><span class="co">#                             models = c('SRE', 'XGBOOST'),</span></span>
+<span><span class="co">#                             strategy = 'tuned',</span></span>
+<span><span class="co">#                             bm.format = myBiomodData)</span></span>
+<span><span class="co"># </span></span>
+<span><span class="co"># opt.b</span></span>
+<span><span class="co"># opt.t</span></span></code></pre></div>
 <p><br><br></p>
 </div>
 </div>
@@ -313,7 +280,7 @@ webpage</a>.</p>
 <h4 id="single-models">
 <i class="fa-solid fa-virus"></i> Single models<a class="anchor" aria-label="anchor" href="#single-models"></a>
 </h4>
-<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Model single models</span></span>
 <span><span class="va">myBiomodModelOut</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/BIOMOD_Modeling.html">BIOMOD_Modeling</a></span><span class="op">(</span>bm.format <span class="op">=</span> <span class="va">myBiomodData</span>,</span>
 <span>                                    bm.options <span class="op">=</span> <span class="va">myBiomodOptions</span>,</span>
@@ -321,6 +288,7 @@ webpage</a>.</p>
 <span>                                    CV.strategy <span class="op">=</span> <span class="st">'random'</span>,</span>
 <span>                                    CV.nb.rep <span class="op">=</span> <span class="fl">2</span>,</span>
 <span>                                    CV.perc <span class="op">=</span> <span class="fl">0.8</span>,</span>
+<span>                                    OPT.strategy <span class="op">=</span> <span class="st">'bigboss'</span>,</span>
 <span>                                    var.import <span class="op">=</span> <span class="fl">3</span>,</span>
 <span>                                    metric.eval <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">'TSS'</span>,<span class="st">'ROC'</span><span class="op">)</span><span class="op">)</span></span>
 <span>                                    <span class="co"># seed.val = 123)</span></span>
@@ -355,7 +323,7 @@ webpage</a>.</p>
 <h4 id="ensemble-models">
 <i class="fa-solid fa-viruses"></i> Ensemble models<a class="anchor" aria-label="anchor" href="#ensemble-models"></a>
 </h4>
-<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Model ensemble models</span></span>
 <span><span class="va">myBiomodEM</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/BIOMOD_EnsembleModeling.html">BIOMOD_EnsembleModeling</a></span><span class="op">(</span>bm.mod <span class="op">=</span> <span class="va">myBiomodModelOut</span>,</span>
 <span>                                      models.chosen <span class="op">=</span> <span class="st">'all'</span>,</span>
@@ -391,21 +359,6 @@ webpage</a>.</p>
 <span>                      models.chosen <span class="op">=</span> <span class="fu"><a href="../reference/getters.out.html">get_built_models</a></span><span class="op">(</span><span class="va">myBiomodEM</span><span class="op">)</span><span class="op">[</span><span class="fl">7</span><span class="op">]</span>,</span>
 <span>                      fixed.var <span class="op">=</span> <span class="st">'median'</span>,</span>
 <span>                      do.bivariate <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
-</div>
-<div class="section level4">
-<h4 id="presence-only-evaluation">Presence-only evaluation<a class="anchor" aria-label="anchor" href="#presence-only-evaluation"></a>
-</h4>
-<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># Evaluate models with Boyce index and MPA</span></span>
-<span><span class="va">myBiomodPO</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/BIOMOD_PresenceOnly.html">BIOMOD_PresenceOnly</a></span><span class="op">(</span>bm.mod <span class="op">=</span> <span class="va">myBiomodModelOut</span>,</span>
-<span>                                  bm.em <span class="op">=</span> <span class="va">myBiomodEM</span><span class="op">)</span></span>
-<span><span class="va">myBiomodPO</span></span>
-<span></span>
-<span><span class="co"># Evaluate models with Boyce index and MPA (using background data)</span></span>
-<span><span class="va">myBiomodPO</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/BIOMOD_PresenceOnly.html">BIOMOD_PresenceOnly</a></span><span class="op">(</span>bm.mod <span class="op">=</span> <span class="va">myBiomodModelOut</span>,</span>
-<span>                                  bm.em <span class="op">=</span> <span class="va">myBiomodEM</span>, </span>
-<span>                                  bg.env <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/terra/man/values.html" class="external-link">values</a></span><span class="op">(</span><span class="va">myExpl</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="va">myBiomodPO</span></span></code></pre></div>
 <p><br><br></p>
 </div>
 </div>
@@ -417,7 +370,7 @@ webpage</a>.</p>
 <h4 id="single-models-1">
 <i class="fa-solid fa-virus"></i> Single models<a class="anchor" aria-label="anchor" href="#single-models-1"></a>
 </h4>
-<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Project single models</span></span>
 <span><span class="va">myBiomodProj</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/BIOMOD_Projection.html">BIOMOD_Projection</a></span><span class="op">(</span>bm.mod <span class="op">=</span> <span class="va">myBiomodModelOut</span>,</span>
 <span>                                  proj.name <span class="op">=</span> <span class="st">'Current'</span>,</span>
@@ -433,7 +386,7 @@ webpage</a>.</p>
 <h4 id="ensemble-models-1">
 <i class="fa-solid fa-viruses"></i> Ensemble models<a class="anchor" aria-label="anchor" href="#ensemble-models-1"></a>
 </h4>
-<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Project ensemble models (from single projections)</span></span>
 <span><span class="va">myBiomodEMProj</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/BIOMOD_EnsembleForecasting.html">BIOMOD_EnsembleForecasting</a></span><span class="op">(</span>bm.em <span class="op">=</span> <span class="va">myBiomodEM</span>, </span>
 <span>                                             bm.proj <span class="op">=</span> <span class="va">myBiomodProj</span>,</span>
@@ -457,7 +410,7 @@ webpage</a>.</p>
 <h3 id="compare-range-sizes">
 <i class="fa-solid fa-ruler-combined"></i> Compare range sizes<a class="anchor" aria-label="anchor" href="#compare-range-sizes"></a>
 </h3>
-<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Load environmental variables extracted from BIOCLIM (bio_3, bio_4, bio_7, bio_11 &amp; bio_12)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="st">"bioclim_future"</span><span class="op">)</span></span>
 <span><span class="va">myExplFuture</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/terra/man/rast.html" class="external-link">rast</a></span><span class="op">(</span><span class="va">bioclim_future</span><span class="op">)</span></span>
@@ -510,7 +463,7 @@ webpage</a>.</p>
 
 <div class="pkgdown">
   <p></p>
-<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.7.</p>
 </div>
 
       </footer>

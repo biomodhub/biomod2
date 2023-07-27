@@ -150,8 +150,14 @@ bm_SampleBinaryVector(obs = vec.a, ratio = 0.7)
 #### <i class="fa-solid fa-scale-balanced"></i> Find optimal threshold for a specific evaluation metric
 
 ```R
-bm_FindOptimStat(metric.eval = 'TSS', obs = vec.a, fit = vec.b)
-bm_FindOptimStat(metric.eval = 'TSS', obs = vec.a, fit = vec.c, nb.thresh = 100)
+# varying the number of thresholds to test
+bm_FindOptimStat(metric.eval = 'TSS', obs = vec.a, fit = vec.b, nb.thresh = 5)
+bm_FindOptimStat(metric.eval = 'TSS', obs = vec.a, fit = vec.b, nb.thresh = 100)
+
+# different metrics
+bm_FindOptimStat(metric.eval = 'TSS', obs = vec.a, fit = vec.c)
+bm_FindOptimStat(metric.eval = 'ROC', obs = vec.a, fit = vec.c)
+bm_FindOptimStat(metric.eval = 'BOYCE', obs = vec.a, fit = vec.c)
 ```
 
 #### <i class="fa-solid fa-filter"></i> From continuous to binary / filtered vector
@@ -348,3 +354,64 @@ apply(cv.s, 2, table)
 head(cv.e)
 apply(cv.e, 2, table)
 ```
+
+
+#### <i class="fa-solid fa-rectangle-list"></i> Retrieve modeling options
+
+All models currently available in `biomod2` (and their related package and function) are listed within a small dataset. Some of them can be tuned through the `train` function of the `caret` package and corresponding training function to be used is also indicated.
+
+```R
+data(ModelsTable)
+ModelsTable
+```
+
+```R
+# default parameters
+opt.d <- bm_ModelingOptions(data.type = 'binary',
+                            models = c('ANN', 'CTA', 'FDA', 'GAM', 'GBM', 'GLM'
+                                       , 'MARS', 'MAXENT', 'MAXNET', 'RF', 'SRE', 'XGBOOST'),
+                            strategy = 'default')
+
+# providing formated data
+opt.df <- bm_ModelingOptions(data.type = 'binary',
+                             models = c('ANN', 'CTA', 'FDA', 'GAM', 'GBM', 'GLM'
+                                        , 'MARS', 'MAXENT', 'MAXNET', 'RF', 'SRE', 'XGBOOST'),
+                             strategy = 'default',
+                             bm.format = myBiomodData,
+                             calib.lines = cv.k)
+
+opt.d
+opt.d@models
+opt.d@options$ANN.binary.nnet.nnet
+names(opt.d@options$ANN.binary.nnet.nnet@args.values)
+
+opt.df@options$ANN.binary.nnet.nnet
+names(opt.df@options$ANN.binary.nnet.nnet@args.values)
+```
+
+```R
+# bigboss parameters
+opt.b <- bm_ModelingOptions(data.type = 'binary',
+                            models = c('ANN', 'CTA', 'FDA', 'GAM', 'GBM', 'GLM'
+                                       , 'MARS', 'MAXENT', 'MAXNET', 'RF', 'SRE', 'XGBOOST'),
+                            strategy = 'bigboss')
+
+# user defined parameters
+user.val = list(SRE.binary.biomod2.bm_SRE = list('_allData_allRun' = list(quant = 0.01))
+                , XGBOOST.binary.xgboost.xgboost = list('_allData_allRun' = list(nrounds = 10)))
+opt.u <- bm_ModelingOptions(data.type = 'binary',
+                            models = c('SRE', 'XGBOOST'),
+                            strategy = 'user.defined',
+                            user.val = user.val)
+                              
+# tuned parameters with formated data
+opt.t <- bm_ModelingOptions(data.type = 'binary',
+                            models = c('SRE', 'XGBOOST'),
+                            strategy = 'tuned',
+                            bm.format = myBiomodData)
+
+opt.b
+opt.u
+opt.t
+```
+

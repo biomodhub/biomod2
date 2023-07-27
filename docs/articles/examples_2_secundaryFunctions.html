@@ -33,7 +33,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">biomod2</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">4.2-4</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">4.2-5</span>
       </span>
     </div>
 
@@ -267,8 +267,14 @@ evaluation datasets<a class="anchor" aria-label="anchor" href="#generate-calibra
 for a specific evaluation metric<a class="anchor" aria-label="anchor" href="#find-optimal-threshold-for-a-specific-evaluation-metric"></a>
 </h4>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/bm_FindOptimStat.html">bm_FindOptimStat</a></span><span class="op">(</span>metric.eval <span class="op">=</span> <span class="st">'TSS'</span>, obs <span class="op">=</span> <span class="va">vec.a</span>, fit <span class="op">=</span> <span class="va">vec.b</span><span class="op">)</span></span>
-<span><span class="fu"><a href="../reference/bm_FindOptimStat.html">bm_FindOptimStat</a></span><span class="op">(</span>metric.eval <span class="op">=</span> <span class="st">'TSS'</span>, obs <span class="op">=</span> <span class="va">vec.a</span>, fit <span class="op">=</span> <span class="va">vec.c</span>, nb.thresh <span class="op">=</span> <span class="fl">100</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="co"># varying the number of thresholds to test</span></span>
+<span><span class="fu"><a href="../reference/bm_FindOptimStat.html">bm_FindOptimStat</a></span><span class="op">(</span>metric.eval <span class="op">=</span> <span class="st">'TSS'</span>, obs <span class="op">=</span> <span class="va">vec.a</span>, fit <span class="op">=</span> <span class="va">vec.b</span>, nb.thresh <span class="op">=</span> <span class="fl">5</span><span class="op">)</span></span>
+<span><span class="fu"><a href="../reference/bm_FindOptimStat.html">bm_FindOptimStat</a></span><span class="op">(</span>metric.eval <span class="op">=</span> <span class="st">'TSS'</span>, obs <span class="op">=</span> <span class="va">vec.a</span>, fit <span class="op">=</span> <span class="va">vec.b</span>, nb.thresh <span class="op">=</span> <span class="fl">100</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># different metrics</span></span>
+<span><span class="fu"><a href="../reference/bm_FindOptimStat.html">bm_FindOptimStat</a></span><span class="op">(</span>metric.eval <span class="op">=</span> <span class="st">'TSS'</span>, obs <span class="op">=</span> <span class="va">vec.a</span>, fit <span class="op">=</span> <span class="va">vec.c</span><span class="op">)</span></span>
+<span><span class="fu"><a href="../reference/bm_FindOptimStat.html">bm_FindOptimStat</a></span><span class="op">(</span>metric.eval <span class="op">=</span> <span class="st">'ROC'</span>, obs <span class="op">=</span> <span class="va">vec.a</span>, fit <span class="op">=</span> <span class="va">vec.c</span><span class="op">)</span></span>
+<span><span class="fu"><a href="../reference/bm_FindOptimStat.html">bm_FindOptimStat</a></span><span class="op">(</span>metric.eval <span class="op">=</span> <span class="st">'BOYCE'</span>, obs <span class="op">=</span> <span class="va">vec.a</span>, fit <span class="op">=</span> <span class="va">vec.c</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level4">
 <h4 id="from-continuous-to-binary-filtered-vector">
@@ -476,6 +482,66 @@ evaluation datasets<a class="anchor" aria-label="anchor" href="#generate-calibra
 <span><span class="fu"><a href="https://rdrr.io/pkg/terra/man/headtail.html" class="external-link">head</a></span><span class="op">(</span><span class="va">cv.e</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/apply.html" class="external-link">apply</a></span><span class="op">(</span><span class="va">cv.e</span>, <span class="fl">2</span>, <span class="va">table</span><span class="op">)</span></span></code></pre></div>
 </div>
+<div class="section level4">
+<h4 id="retrieve-modeling-options">
+<i class="fa-solid fa-rectangle-list"></i> Retrieve modeling
+options<a class="anchor" aria-label="anchor" href="#retrieve-modeling-options"></a>
+</h4>
+<p>All models currently available in <code>biomod2</code> (and their
+related package and function) are listed within a small dataset. Some of
+them can be tuned through the <code>train</code> function of the
+<code>caret</code> package and corresponding training function to be
+used is also indicated.</p>
+<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="va">ModelsTable</span><span class="op">)</span></span>
+<span><span class="va">ModelsTable</span></span></code></pre></div>
+<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># default parameters</span></span>
+<span><span class="va">opt.d</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/bm_ModelingOptions.html">bm_ModelingOptions</a></span><span class="op">(</span>data.type <span class="op">=</span> <span class="st">'binary'</span>,</span>
+<span>                            models <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">'ANN'</span>, <span class="st">'CTA'</span>, <span class="st">'FDA'</span>, <span class="st">'GAM'</span>, <span class="st">'GBM'</span>, <span class="st">'GLM'</span></span>
+<span>                                       , <span class="st">'MARS'</span>, <span class="st">'MAXENT'</span>, <span class="st">'MAXNET'</span>, <span class="st">'RF'</span>, <span class="st">'SRE'</span>, <span class="st">'XGBOOST'</span><span class="op">)</span>,</span>
+<span>                            strategy <span class="op">=</span> <span class="st">'default'</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># providing formated data</span></span>
+<span><span class="va">opt.df</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/bm_ModelingOptions.html">bm_ModelingOptions</a></span><span class="op">(</span>data.type <span class="op">=</span> <span class="st">'binary'</span>,</span>
+<span>                             models <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">'ANN'</span>, <span class="st">'CTA'</span>, <span class="st">'FDA'</span>, <span class="st">'GAM'</span>, <span class="st">'GBM'</span>, <span class="st">'GLM'</span></span>
+<span>                                        , <span class="st">'MARS'</span>, <span class="st">'MAXENT'</span>, <span class="st">'MAXNET'</span>, <span class="st">'RF'</span>, <span class="st">'SRE'</span>, <span class="st">'XGBOOST'</span><span class="op">)</span>,</span>
+<span>                             strategy <span class="op">=</span> <span class="st">'default'</span>,</span>
+<span>                             bm.format <span class="op">=</span> <span class="va">myBiomodData</span>,</span>
+<span>                             calib.lines <span class="op">=</span> <span class="va">cv.k</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">opt.d</span></span>
+<span><span class="va">opt.d</span><span class="op">@</span><span class="va">models</span></span>
+<span><span class="va">opt.d</span><span class="op">@</span><span class="va">options</span><span class="op">$</span><span class="va">ANN.binary.nnet.nnet</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">opt.d</span><span class="op">@</span><span class="va">options</span><span class="op">$</span><span class="va">ANN.binary.nnet.nnet</span><span class="op">@</span><span class="va">args.values</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">opt.df</span><span class="op">@</span><span class="va">options</span><span class="op">$</span><span class="va">ANN.binary.nnet.nnet</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">opt.df</span><span class="op">@</span><span class="va">options</span><span class="op">$</span><span class="va">ANN.binary.nnet.nnet</span><span class="op">@</span><span class="va">args.values</span><span class="op">)</span></span></code></pre></div>
+<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># bigboss parameters</span></span>
+<span><span class="va">opt.b</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/bm_ModelingOptions.html">bm_ModelingOptions</a></span><span class="op">(</span>data.type <span class="op">=</span> <span class="st">'binary'</span>,</span>
+<span>                            models <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">'ANN'</span>, <span class="st">'CTA'</span>, <span class="st">'FDA'</span>, <span class="st">'GAM'</span>, <span class="st">'GBM'</span>, <span class="st">'GLM'</span></span>
+<span>                                       , <span class="st">'MARS'</span>, <span class="st">'MAXENT'</span>, <span class="st">'MAXNET'</span>, <span class="st">'RF'</span>, <span class="st">'SRE'</span>, <span class="st">'XGBOOST'</span><span class="op">)</span>,</span>
+<span>                            strategy <span class="op">=</span> <span class="st">'bigboss'</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># user defined parameters</span></span>
+<span><span class="va">user.val</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>SRE.binary.biomod2.bm_SRE <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="st">'_allData_allRun'</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>quant <span class="op">=</span> <span class="fl">0.01</span><span class="op">)</span><span class="op">)</span></span>
+<span>                , XGBOOST.binary.xgboost.xgboost <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="st">'_allData_allRun'</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>nrounds <span class="op">=</span> <span class="fl">10</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="va">opt.u</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/bm_ModelingOptions.html">bm_ModelingOptions</a></span><span class="op">(</span>data.type <span class="op">=</span> <span class="st">'binary'</span>,</span>
+<span>                            models <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">'SRE'</span>, <span class="st">'XGBOOST'</span><span class="op">)</span>,</span>
+<span>                            strategy <span class="op">=</span> <span class="st">'user.defined'</span>,</span>
+<span>                            user.val <span class="op">=</span> <span class="va">user.val</span><span class="op">)</span></span>
+<span>                              </span>
+<span><span class="co"># tuned parameters with formated data</span></span>
+<span><span class="va">opt.t</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/bm_ModelingOptions.html">bm_ModelingOptions</a></span><span class="op">(</span>data.type <span class="op">=</span> <span class="st">'binary'</span>,</span>
+<span>                            models <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">'SRE'</span>, <span class="st">'XGBOOST'</span><span class="op">)</span>,</span>
+<span>                            strategy <span class="op">=</span> <span class="st">'tuned'</span>,</span>
+<span>                            bm.format <span class="op">=</span> <span class="va">myBiomodData</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">opt.b</span></span>
+<span><span class="va">opt.u</span></span>
+<span><span class="va">opt.t</span></span></code></pre></div>
+</div>
 </div>
 </div>
   </div>
@@ -497,7 +563,7 @@ evaluation datasets<a class="anchor" aria-label="anchor" href="#generate-calibra
 
 <div class="pkgdown">
   <p></p>
-<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.7.</p>
 </div>
 
       </footer>
