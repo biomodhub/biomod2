@@ -172,6 +172,9 @@ setMethod('BIOMOD.options.default', signature(mod = 'character', typ = 'characte
 ##' \code{bigboss}, \code{user.defined}, \code{tuned}
 ##' @param user.val (\emph{optional, default} \code{NULL}) \cr
 ##' A \code{list} containing parameters values
+##' @param user.base (\emph{optional, default} \code{NULL}) \cr A character, 
+##' \code{default} or \code{bigboss} used when \code{strategy = 'user.defined'}. 
+##' It sets the bases of parameters to be modified by user defined values.
 ##' @param tuning.fun (\emph{optional, default} \code{NULL}) \cr
 ##' A \code{character} corresponding to the model function name 
 ##' to be called through \code{\link[caret]{train}} function for tuning parameters
@@ -223,10 +226,13 @@ setClass("BIOMOD.options.dataset",
 
 
 # 2.2 Constructors --------------------------------------------------------------------------------
-setGeneric("BIOMOD.options.dataset", def = function(strategy, user.val = NULL, tuning.fun = NULL, bm.format = NULL, calib.lines = NULL, ...) {
-  standardGeneric("BIOMOD.options.dataset") })
+setGeneric("BIOMOD.options.dataset",
+           def = function(strategy, user.val = NULL, user.base = NULL, 
+                          tuning.fun = NULL, bm.format = NULL, calib.lines = NULL, ...) {
+             standardGeneric("BIOMOD.options.dataset")
+           })
 
-.BIOMOD.options.dataset.check.args <- function(strategy, user.val = NULL, tuning.fun = NULL, bm.format = NULL, calib.lines = NULL)
+.BIOMOD.options.dataset.check.args <- function(strategy, user.val = NULL, user.base = NULL, tuning.fun = NULL, bm.format = NULL, calib.lines = NULL)
 {
   ## check if strategy is supported
   avail.strategy.list <- c('default', 'bigboss', 'user.defined', 'tuned')
@@ -234,10 +240,17 @@ setGeneric("BIOMOD.options.dataset", def = function(strategy, user.val = NULL, t
   
   ## USER DEFINED parameterisation --------------
   if (strategy == "user.defined") {
+    avail.user.base <- c('default', 'bigboss')
+    .fun_testIfIn(TRUE, "user.base", user.base, avail.user.base)
+    
     if (!is.null(user.val)) {
       .fun_testIfInherits(TRUE, "user.val", user.val, c("list"))
+      
+      
+    } else if (user.base == "bigboss") {
+      strategy <- "bigboss" # revert to bigboss options 
     } else {
-      strategy = "default"
+      strategy <- "default" # revert to default options
       # warning("No user options defined for this model. Strategy switched to 'default'.") ## Needed or not ?
     }
   }
@@ -372,11 +385,11 @@ setGeneric("BIOMOD.options.dataset", def = function(strategy, user.val = NULL, t
 ##' 
 
 setMethod('BIOMOD.options.dataset', signature(strategy = 'character'),
-          function(mod, typ, pkg, fun, strategy, user.val = NULL, tuning.fun = NULL, bm.format = NULL, calib.lines = NULL)
+          function(mod, typ, pkg, fun, strategy, user.val = NULL, user.base = NULL, tuning.fun = NULL, bm.format = NULL, calib.lines = NULL)
           {
             cat('\n\t> ', mod, 'options (datatype:', typ, ', package:', pkg, ', function:', fun, ')...')
             
-            args <- .BIOMOD.options.dataset.check.args(strategy = strategy, user.val = user.val, tuning.fun = tuning.fun
+            args <- .BIOMOD.options.dataset.check.args(strategy = strategy, user.val = user.val, user.base = user.base, tuning.fun = tuning.fun
                                                        , bm.format = bm.format, calib.lines = calib.lines)
             for (argi in names(args)) { assign(x = argi, value = args[[argi]]) }
             rm(args)
@@ -430,8 +443,8 @@ setMethod('BIOMOD.options.dataset', signature(strategy = 'character'),
             ## ATTENTION : si on ne donne pas bm.format, on n'a pas de formula du coup
             
             ## GET parameter values according to strategy -------------------------------
-            if (strategy %in% c("default", "bigboss")) {
-              if (strategy == "bigboss") {
+            if (strategy %in% c("default", "bigboss") || (strategy == "user.defined" && user.base == "bigboss")) {
+              if (strategy == "bigboss" || (strategy == "user.defined" && user.base == "bigboss")) {
                 data(OptionsBigboss)
                 
                 val <- OptionsBigboss@options[[paste0(c(mod, typ, pkg, fun), collapse = ".")]]@args.values[['_allData_allRun']]
@@ -459,7 +472,10 @@ setMethod('BIOMOD.options.dataset', signature(strategy = 'character'),
               
               argsval <- lapply(expected_CVnames, function(xx) { argstmp })
               names(argsval) <- expected_CVnames
-            } else if (strategy == "user.defined") {
+            } 
+            
+            if (strategy == "user.defined") {
+              
               if (!("..." %in% BOM@args.names)) {
                 for (CVname in names(user.val)) {
                   .fun_testIfIn(TRUE, paste0("names(user.val[['", CVname, "']])"), names(user.val[[CVname]]), BOM@args.names)
@@ -473,8 +489,11 @@ setMethod('BIOMOD.options.dataset', signature(strategy = 'character'),
               
               for (CVname in names(user.val)) {
                 val <- user.val[[CVname]]
-                for (ii in names(val)) { argsval[[CVname]][[ii]] <- val[[ii]] }
+                for (ii in names(val)) { 
+                  argsval[[CVname]][[ii]] <- val[[ii]] 
+                }
               }
+              
             } else if (strategy == "tuned") {
               argsval <- bm_Tuning(model = mod, tuning.fun = tuning.fun, do.formula = TRUE, do.stepAIC = TRUE
                                    , bm.options = BOM, bm.format = bm.format, calib.lines = calib.lines

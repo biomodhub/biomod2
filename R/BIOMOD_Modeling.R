@@ -63,6 +63,9 @@
 ##' \code{tuned}
 ##' @param OPT.user.val (\emph{optional, default} \code{NULL}) \cr
 ##' A \code{list} containing parameters values for some (all) models
+##' @param OPT.user.base (\emph{optional, default} \code{bigboss}) \cr A character, 
+##' \code{default} or \code{bigboss} used when \code{OPT.strategy = 'user.defined'}. 
+##' It sets the bases of parameters to be modified by user defined values.
 ##' @param OPT.user (\emph{optional, default} \code{TRUE}) \cr  
 ##' A \code{\link{BIOMOD.models.options}} object returned by the \code{\link{bm_ModelingOptions}} 
 ##' function
@@ -315,6 +318,7 @@ BIOMOD_Modeling <- function(bm.format,
                             OPT.data.type = 'binary',
                             OPT.strategy = 'default',
                             OPT.user.val = NULL,
+                            OPT.user.base = 'bigboss',
                             OPT.user = NULL,
                             bm.options, ## deprecated
                             nb.rep, ## deprecated
@@ -415,7 +419,7 @@ BIOMOD_Modeling <- function(bm.format,
     for (mod in OPT.user@models) {
       nam <- names(OPT.user@options[[mod]]@args.values)
       vals <- colnames(calib.lines)
-      if (any(! vals %in% nam)) {
+      if (any(!(vals %in% nam))) {
         if (length(nam) == 1 && nam == "_allData_allRun") {
           val <- OPT.user@options[[mod]]@args.values[[nam]]
           for (ii in vals) {
@@ -436,6 +440,7 @@ BIOMOD_Modeling <- function(bm.format,
                                      models = models,
                                      strategy = OPT.strategy,
                                      user.val = OPT.user.val,
+                                     user.base = OPT.user.base,
                                      bm.format = bm.format,
                                      calib.lines = calib.lines)
   }

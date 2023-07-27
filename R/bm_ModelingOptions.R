@@ -16,6 +16,9 @@
 ##' values, must be either \code{default}, \code{bigboss}, \code{user.defined}, \code{tuned}
 ##' @param user.val (\emph{optional, default} \code{NULL}) \cr
 ##' A \code{list} containing parameters values for some (all) models
+##' @param user.base (\emph{optional, default} \code{bigboss}) \cr A character, 
+##' \code{default} or \code{bigboss} used when \code{strategy = 'user.defined'}. 
+##' It sets the bases of parameters to be modified by user defined values.
 ##' @param bm.format (\emph{optional, default} \code{NULL}) \cr
 ##' A \code{\link{BIOMOD.formated.data}} or \code{\link{BIOMOD.formated.data.PA}} object returned 
 ##' by the \code{\link{BIOMOD_FormatingData}} function
@@ -192,13 +195,19 @@
 bm_ModelingOptions <- function(data.type
                                , models = c('ANN', 'CTA', 'FDA', 'GAM', 'GBM', 'GLM'
                                             , 'MARS', 'MAXENT', 'MAXNET', 'RF', 'SRE', 'XGBOOST')
-                               , strategy, user.val = NULL, bm.format = NULL, calib.lines = NULL)
+                               , strategy, user.val = NULL, user.base = "bigboss"
+                               , bm.format = NULL, calib.lines = NULL)
 {
   .bm_cat("Build Modeling Options")
   
   ## 0. Check arguments ---------------------------------------------------------------------------
-  args <- .bm_ModelingOptions.check.args(data.type = data.type, models = models, strategy = strategy
-                                         , user.val = user.val, bm.format = bm.format, calib.lines = calib.lines)
+  args <- .bm_ModelingOptions.check.args(data.type = data.type,
+                                         models = models,
+                                         strategy = strategy, 
+                                         user.val = user.val, 
+                                         user.base = user.base,
+                                         bm.format = bm.format, 
+                                         calib.lines = calib.lines)
   for (argi in names(args)) { assign(x = argi, value = args[[argi]]) }
   rm(args)
   
@@ -206,8 +215,7 @@ bm_ModelingOptions <- function(data.type
   data(ModelsTable)
   
   ## 1. Get options -------------------------------------------------------------------------------
-  bm.opt <- foreach (model = models, .combine = "c") %do%
-    {
+  bm.opt <- foreach(model = models, .combine = "c") %do% {
       ## Select model / package / function to keep
       if (length(grep("GAM", model)) == 1) {
         tab.model <- ModelsTable[which(ModelsTable$model == "GAM" & ModelsTable$type == data.type &
@@ -220,8 +228,7 @@ bm_ModelingOptions <- function(data.type
       
       if (nrow(tab.model) > 0) {
         ## For each kept model : get corresponding options
-        BOD.list <- foreach(ii = 1:nrow(tab.model)) %do%
-          {
+        BOD.list <- foreach(ii = 1:nrow(tab.model)) %do% {
             name_model <- paste0(model, ".", data.type, ".", tab.model$package[ii], ".", tab.model$func[ii])
             val.ii <- NULL
             if (strategy == "user.defined") {
@@ -233,6 +240,7 @@ bm_ModelingOptions <- function(data.type
                                           , fun = tab.model$func[ii]
                                           , strategy = strategy
                                           , user.val = val.ii
+                                          , user.base = user.base
                                           , tuning.fun = tab.model$train[ii]
                                           , bm.format = bm.format
                                           , calib.lines = calib.lines)
@@ -260,7 +268,7 @@ bm_ModelingOptions <- function(data.type
 
 .bm_ModelingOptions.check.args <-
   function(data.type, models, strategy
-           , user.val = NULL
+           , user.val = NULL, user.base = NULL
            , bm.format = NULL, calib.lines = NULL) {
     ## check if type is supported
     avail.types.list <- c('binary', 'binary.PA', 'abundance', 'compositional')
@@ -283,6 +291,9 @@ bm_ModelingOptions <- function(data.type
     
     ## USER DEFINED parameterisation --------------
     if (strategy == "user.defined") {
+      avail.user.base <- c('default', 'bigboss')
+      .fun_testIfIn(TRUE, "user.base", user.base, avail.user.base)
+      
       .fun_testIfInherits(TRUE, "user.val", user.val, c("list"))
       avail.options.list <- paste0(ModelsTable$model, ".", ModelsTable$type, ".", ModelsTable$package, ".", ModelsTable$func)
       .fun_testIfIn(TRUE, "names(user.val)", names(user.val), avail.options.list)
