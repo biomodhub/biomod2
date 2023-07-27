@@ -31,6 +31,8 @@ navbar:
         - text: Secundary functions
           href: articles/examples_2_secundaryFunctions.html
         - text: "---------"
+        - text: Data preparation
+          href: articles/vignette_dataPreparation.html
         - text: Pseudo-absences
           href: articles/vignette_pseudoAbsences.html
         - text: Variability in results
