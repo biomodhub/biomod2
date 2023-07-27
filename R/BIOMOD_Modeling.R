@@ -413,13 +413,21 @@ BIOMOD_Modeling <- function(bm.format,
     }
     ## Check for calib.lines names -----
     for (mod in OPT.user@models) {
-      if (any(! colnames(calib.lines) %in% names(OPT.user@options[[mod]]@args.values))) {
-        vals <- colnames(calib.lines)
-        stop(paste0("\n", "names(OPT.user@options[['", mod, "']]@args.values)", " must be '",
-                    ifelse(length(vals) > 1,
-                           paste0(paste0(vals[1:(length(vals) -1)], collapse = "', '"),
-                                  "' and '", vals[length(vals)])
-                           , paste0(vals,"'"))))
+      nam <- names(OPT.user@options[[mod]]@args.values)
+      vals <- colnames(calib.lines)
+      if (any(! vals %in% nam)) {
+        if (length(nam) == 1 && nam == "_allData_allRun") {
+          val <- OPT.user@options[[mod]]@args.values[[nam]]
+          for (ii in vals) {
+            OPT.user@options[[mod]]@args.values[[ii]] <- val
+          }
+        } else {
+          stop(paste0("\n", "names(OPT.user@options[['", mod, "']]@args.values)", " must be '",
+                      ifelse(length(vals) > 1,
+                             paste0(paste0(vals[1:(length(vals) -1)], collapse = "', '"),
+                                    "' and '", vals[length(vals)])
+                             , paste0(vals,"'"))))
+        }
       }
     }
     bm.options <- OPT.user
