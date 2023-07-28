@@ -262,12 +262,10 @@ bm_Tuning <- function(model,
                                       returnData = FALSE)
   }
   
-  
-  
-  argsval <- foreach(PA.i = combi$PA, calib.i = combi$calib) %do%
+
+  argsval <- foreach(PA.i = combi$PA, calib.i = combi$calib, dataset.i = combi$name_dataset) %do%
     {
-      # cat("\n\t\t> Dataset..")
-      
+      cat(paste0("\n\t\t> Dataset ", dataset.i))
       argstmp <- bm.options@args.default
       
       if (model == "MAXNET") {
@@ -275,7 +273,7 @@ bm_Tuning <- function(model,
       } else {
         ## 1. SPECIFIC CASE OF MAXENT OR SRE ------------------------------------------------------------
         if (model %in% c("MAXENT", "SRE")) {
-          cat("\n\t\t> Tuning parameters...")
+          cat("\n\t\t\t> Tuning parameters...")
           
           ## create dataset ---------------------------------------------------------
           mySpExpl <- get_species_data(bm.format)
@@ -283,8 +281,8 @@ bm_Tuning <- function(model,
           mySpExpl <- mySpExpl[which(calib.lines[, calib.i] == TRUE), ]
           mySpExpl <- mySpExpl[which(mySpExpl[, PA.i] == TRUE), ]
           myResp <- mySpExpl[, 1]
-          myExpl <- mySpExpl[, 4:ncol(mySpExpl)]
-          mySpExpl[["_allData_allRun"]] <- NULL
+          myExpl <- mySpExpl[, 4:(3+ncol(bm.format@data.env.var))]
+          # mySpExpl[["_allData_allRun"]] <- NULL
           
           
           if (model == "MAXENT") { # ------------------------------------------#
@@ -348,10 +346,10 @@ bm_Tuning <- function(model,
           mySpExpl <- mySpExpl[which(mySpExpl[, PA.i] == TRUE), ]
           mySpExpl[, 1] <- as.factor(ifelse(mySpExpl[, 1] == 1 & !is.na(mySpExpl[, 1]), "Presence", "Absence"))
           myResp <- mySpExpl[, 1]
-          myExpl <- mySpExpl[, 4:ncol(mySpExpl)]
-          myExpl[["_allData_allRun"]] <- NULL
-          
-          ## run tuning -----------------------------------------------------------------------------
+          myExpl <- mySpExpl[, 4:(3+ncol(bm.format@data.env.var))]
+
+          ## run tuning -------------------------------------------------------
+
           cmd.tuning <- "caret::train(x = myExpl, y = myResp, method = tuning.fun, tuneGrid = tuning.grid,"
           cmd.tuning <- paste0(cmd.tuning, " trControl = ctrl.train, metric = 'ROC',")
           if (tuning.fun %in% c("fda", "rpart")) { ## add weights
@@ -370,7 +368,7 @@ bm_Tuning <- function(model,
           }
           
           if (model != "GLM") {
-            cat("\n\t\t> Tuning parameters...")
+            cat("\n\t\t\t> Tuning parameters...")
             eval(parse(text = paste0("try(tuned.mod <- ", cmd.tuning)))
             
             ## GET tuned parameter values -------------------------------------------------------------
@@ -402,7 +400,7 @@ bm_Tuning <- function(model,
           
           ## run formula selection ------------------------------------------------------------------
           if (do.formula) {
-            cat("\n\t\t> Tuning formula...")
+            cat("\n\t\t\t> Tuning formula...")
             
             cmd.form <- sub("tuneGrid = tuning.grid", "tuneGrid = tuning.form", cmd.tuning)
             cmd.init <- "form = bm_MakeFormula(resp.name = 'resp', expl.var = myExpl, type = typ, interaction.level = intlev),"
@@ -431,7 +429,7 @@ bm_Tuning <- function(model,
           ## run variable selection -----------------------------------------------------------------
           if (do.stepAIC && (model == "GLM" || 
                              (model == "GAM" && bm.options@package == "gam")) ) {
-            cat("\n\t\t> Tuning variables (AIC)...")
+            cat("\n\t\t\t> Tuning variables (AIC)...")
             
             if (model == "GLM") {
               glmStart <- glm(as.formula(paste0(bm.format@sp.name, " ~ 1")),
