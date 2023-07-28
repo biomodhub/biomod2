@@ -226,23 +226,31 @@ bm_Tuning <- function(model,
     PA.lines <- "_allData_allRun"
   }
   ## LOOP OVER ALL COMBINED
-  combi <- expand.grid(PA = PA.lines, calib = colnames(calib.lines), stringsAsFactors = FALSE)
-  combi$name_dataset <- sapply(1:nrow(combi), function(ii) {
-    tmp1 <- combi$PA[ii]
-    tmp2 <- combi$calib[ii]
-    if (tmp2 == "_allData_allRun") tmp2 <- "_allRun"
-    if (tmp1 == "_allData_allRun") tmp1 <- "allData"
-    paste0("_", tmp1, tmp2)
-  })
-    
-  #   expected_CVnames <- paste0("_allData_RUN", seq_len(ncol(calib.lines)))
-  # 
-  # if (!is.null(bm.format) && inherits(bm.format, "BIOMOD.formated.data.PA")) {
-  #   expected_CVnames <- c(expected_CVnames
-  #                         , sapply(1:ncol(bm.format@PA.table)
-  #                                  , function(this_PA) c(paste0("_PA", this_PA, "_RUN", seq_len(ncol(calib.lines)))
-  #                                                        , paste0("_PA", this_PA, "_allRun"))))
-  # } 
+  test_forPA <- sapply(PA.lines, function(xx) any(grepl(xx, colnames(calib.lines))))
+  if (inherits(bm.format, "BIOMOD.formated.data.PA") && 
+      sum(test_forPA) == length(PA.lines)) {
+    combi <- expand.grid(PA = NA, calib = colnames(calib.lines), stringsAsFactors = FALSE)
+    combi$PA <- sapply(combi$calib, function(ii) strsplit(ii, "_")[[1]][2])
+    if (length(which(combi$calib == "_allData_allRun")) > 0) {
+      combi$PA[which(combi$calib == "_allData_allRun")] <- "_allData_allRun"
+    }
+    combi$name_dataset <- combi$calib
+  } else {
+    combi <- expand.grid(PA = PA.lines, calib = colnames(calib.lines), stringsAsFactors = FALSE)
+    combi$name_dataset <- sapply(1:nrow(combi), function(ii) {
+      tmp1 <- combi$PA[ii]
+      tmp2 <- combi$calib[ii]
+      if (!grepl("PA", tmp2) || (grepl("PA", tmp2) && grepl(tmp1, tmp2))) {
+        if (tmp1 == "_allData_allRun") tmp1 <- "allData"
+        tmp2 <- strsplit(tmp2, "_")[[1]][3]
+        return(paste0("_", tmp1, "_", tmp2))
+      } else {
+        return(NA)
+      }
+    })
+    combi <- na.exclude(combi)
+  }
+  
   
   if (model != "MAXENT") {
     ## check control
@@ -253,6 +261,8 @@ bm_Tuning <- function(model,
                                       classProbs = TRUE,
                                       returnData = FALSE)
   }
+  
+  
   
   argsval <- foreach(PA.i = combi$PA, calib.i = combi$calib) %do%
     {
