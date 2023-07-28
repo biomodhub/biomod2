@@ -15,6 +15,7 @@
   fun,
   strategy,
   user.val = NULL,
+  user.base = NULL,
   tuning.fun = NULL,
   bm.format = NULL,
   calib.lines = NULL
@@ -42,6 +43,10 @@ select models' parameters values, must be either \code{default},
 
 \item{user.val}{(\emph{optional, default} \code{NULL}) \cr
 A \code{list} containing parameters values}
+
+\item{user.base}{(\emph{optional, default} \code{NULL}) \cr A character, 
+\code{default} or \code{bigboss} used when \code{strategy = 'user.defined'}. 
+It sets the bases of parameters to be modified by user defined values.}
 
 \item{tuning.fun}{(\emph{optional, default} \code{NULL}) \cr
 A \code{character} corresponding to the model function name 

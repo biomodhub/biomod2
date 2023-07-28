@@ -21,7 +21,8 @@ BIOMOD_Modeling(
   CV.do.full.models = TRUE,
   OPT.data.type = "binary",
   OPT.strategy = "default",
-  OPT.val.list = NULL,
+  OPT.user.val = NULL,
+  OPT.user.base = "bigboss",
   OPT.user = NULL,
   bm.options,
   nb.rep,
@@ -99,8 +100,12 @@ either \code{binary}, \code{binary.PA}, \code{abundance}, \code{compositional}}
 parameters values, must be either \code{default}, \code{bigboss}, \code{user.defined}, 
 \code{tuned}}
 
-\item{OPT.val.list}{(\emph{optional, default} \code{NULL}) \cr
+\item{OPT.user.val}{(\emph{optional, default} \code{NULL}) \cr
 A \code{list} containing parameters values for some (all) models}
+
+\item{OPT.user.base}{(\emph{optional, default} \code{bigboss}) \cr A character, 
+\code{default} or \code{bigboss} used when \code{OPT.strategy = 'user.defined'}. 
+It sets the bases of parameters to be modified by user defined values.}
 
 \item{OPT.user}{(\emph{optional, default} \code{TRUE}) \cr
 A \code{\link{BIOMOD.models.options}} object returned by the \code{\link{bm_ModelingOptions}} 
@@ -286,9 +291,6 @@ myBiomodData <- BIOMOD_FormatingData(resp.var = myResp,
                                      resp.xy = myRespXY,
                                      resp.name = myRespName)
 
-# Create default modeling options
-myBiomodOptions <- BIOMOD_ModelingOptions()
-
 
 # ---------------------------------------------------------------------------- #
 # Model single models
@@ -299,6 +301,7 @@ myBiomodModelOut <- BIOMOD_Modeling(bm.format = myBiomodData,
                                     CV.strategy = 'random',
                                     CV.nb.rep = 2,
                                     CV.perc = 0.8,
+                                    OPT.strategy = 'bigboss',
                                     metric.eval = c('TSS','ROC'),
                                     var.import = 2,
                                     seed.val = 42)
