@@ -274,6 +274,7 @@ bm_Tuning <- function(model,
           mySpExpl <- mySpExpl[which(mySpExpl[, PA.i] == TRUE), ]
           myResp <- mySpExpl[, 1]
           myExpl <- mySpExpl[, 4:ncol(mySpExpl)]
+          mySpExpl[["_allData_allRun"]] <- NULL
           
           
           if (model == "MAXENT") { # ------------------------------------------#
