@@ -307,9 +307,6 @@
 ##'                                        resp.xy = myRespXY,
 ##'                                        resp.name = myRespName)
 ##' 
-##'   # Create default modeling options
-##'   myBiomodOptions <- BIOMOD_ModelingOptions()
-##' 
 ##'   # Model single models
 ##'   myBiomodModelOut <- BIOMOD_Modeling(bm.format = myBiomodData,
 ##'                                       modeling.id = 'AllModels',
@@ -318,6 +315,7 @@
 ##'                                       CV.strategy = 'random',
 ##'                                       CV.nb.rep = 2,
 ##'                                       CV.perc = 0.8,
+##'                                       OPT.strategy = 'bigboss',
 ##'                                       metric.eval = c('TSS','ROC'),
 ##'                                       var.import = 3,
 ##'                                       seed.val = 42)

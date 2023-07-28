@@ -251,7 +251,6 @@ setGeneric("BIOMOD.options.dataset",
       strategy <- "bigboss" # revert to bigboss options 
     } else {
       strategy <- "default" # revert to default options
-      # warning("No user options defined for this model. Strategy switched to 'default'.") ## Needed or not ?
     }
   }
   
@@ -385,7 +384,10 @@ setGeneric("BIOMOD.options.dataset",
 ##' 
 
 setMethod('BIOMOD.options.dataset', signature(strategy = 'character'),
-          function(mod, typ, pkg, fun, strategy, user.val = NULL, user.base = NULL, tuning.fun = NULL, bm.format = NULL, calib.lines = NULL)
+          function(mod, typ, pkg, fun, strategy
+                   , user.val = NULL, user.base = NULL
+                   , tuning.fun = NULL
+                   , bm.format = NULL, calib.lines = NULL)
           {
             cat('\n\t> ', mod, 'options (datatype:', typ, ', package:', pkg, ', function:', fun, ')...')
             
@@ -526,7 +528,8 @@ setMethod('show', signature('BIOMOD.options.dataset'),
           {
             cat('\n\t> ', object@model, 'options (datatype:', object@type, ', package:', object@package, ', function:', object@func, ') :')
             # for (arg in object@args.names) { ## NOT working for bigboss for example, if new parameters
-            dataset <- ifelse("_allData_allRun" %in% names(object@args.values), "_allData_allRun", names(object@args.values)[1])
+            dataset <- ifelse("_allData_allRun" %in% names(object@args.values)
+                              , "_allData_allRun", names(object@args.values)[1])
             cat('\n\t   ( dataset', dataset, ')')
             
             for (arg in names(object@args.values[[dataset]])) {

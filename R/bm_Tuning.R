@@ -132,33 +132,39 @@
 ##' 
 ##' 
 ##' # --------------------------------------------------------------- #
-##' ### Duration for turing all models sequential with default settings 
-##' ### on 3.4 GHz processor: approx. 45 min tuning all models in parallel
-##' ### (on 8 cores) using foreach loops runs much faster: approx. 14 min
+##' # List of all models currently available in `biomod2` (and their related package and function)
+##' # Some of them can be tuned through the `train` function of the `caret` package 
+##' # (and corresponding training function to be used is indicated)
+##' data(ModelsTable)
+##' ModelsTable
+##' 
+##' allModels <- c('ANN', 'CTA', 'FDA', 'GAM', 'GBM', 'GLM'
+##'                , 'MARS', 'MAXENT', 'MAXNET', 'RF', 'SRE', 'XGBOOST')
+##' 
+##' # default parameters
+##' opt.d <- bm_ModelingOptions(data.type = 'binary',
+##'                             models = allModels,
+##'                             strategy = 'default')
+##'                             
+##' # tune parameters for Random Forest model
+##' tuned.rf <- bm_Tuning(model = 'RF',
+##'                       tuning.fun = 'rf', ## see in ModelsTable
+##'                       do.formula = TRUE,
+##'                       bm.options = opt.d@options$RF.binary.randomForest.randomForest,
+##'                       bm.format = myBiomodData)
+##' tuned.rf
 ##' 
 ##' \dontrun{
-##' # library(doParallel)
-##' # cl <- makeCluster(8)
-##' # doParallel::registerDoParallel(cl) 
+##' # tune parameters for GAM (from mgcv package) model
+##' tuned.gam <- bm_Tuning(model = 'GAM',
+##'                        tuning.fun = 'gam', ## see in ModelsTable
+##'                        do.formula = TRUE,
+##'                        do.stepAIC = TRUE,
+##'                        bm.options = opt.d@options$GAM.binary.mgcv.gam,
+##'                        bm.format = myBiomodData)
+##' tuned.gam
+##' }                  
 ##' 
-##' time.seq <- system.time(
-##'   bm.tuning <- bm_Tuning(bm.format = myBiomodData, ME.env = myExpl, ME.n.bg = ncell(myExpl))
-##' )
-##' 
-##' # stopCluster(cl)
-##' 
-##' plot(bm.tuning$tune.CTA.rpart)
-##' plot(bm.tuning$tune.CTA.rpart2)
-##' plot(bm.tuning$tune.RF)
-##' plot(bm.tuning$tune.ANN)
-##' plot(bm.tuning$tune.MARS)
-##' plot(bm.tuning$tune.FDA)
-##' plot(bm.tuning$tune.GBM)
-##' plot(bm.tuning$tune.GAM)
-##' 
-##' # Get tuned modeling options
-##' myBiomodOptions <- bm.tuning$models.options
-##' }
 ##' 
 ##' 
 ##' @importFrom foreach foreach %do%
@@ -457,9 +463,7 @@ bm_Tuning <- function(model,
               try(tuned.AIC <- 
                     gam::step.Gam(
                       gamStart,
-                      # scope = list(upper = (sub(".*~", "~", argstmp$formula)), lower = ~1),
-                      scope = .scope(head(myExpl),
-                                     "gam::s", 6),
+                      scope = .scope(head(myExpl), "gam::s", 6),
                       direction = "both",
                       trace = FALSE))
               if (!is.null(tuned.AIC)) { argstmp$formula <- deparse(tuned.AIC$formula) }
@@ -551,10 +555,14 @@ bm_Tuning <- function(model,
   if (model == "RF") tuning.length <- min(30, ncol(bm.format@data.env.var))
   
   ## get criteria -------------------------------------------------------------
-  if (do.stepAIC) {
+  if (do.stepAIC && (model == "GLM" || 
+                     (model == "GAM" && bm.options@package == "gam"))) {
     .fun_testIfIn(TRUE, "metric.AIC", metric.AIC, c("AIC", "BIC"))
     if (metric.AIC == "AIC") criteria.AIC <- 2
     if (metric.AIC == "BIC") criteria.AIC <- log(ncol(bm.format@data.env.var))
+  } else {
+    do.stepAIC <- FALSE
+    criteria.AIC <- NA
   }
   
   

@@ -75,7 +75,7 @@ ras.1 <- ras.2 <- mask.out <- rast(nrows = 10, ncols = 10)
 ras.1[] <- as.factor(rep(c(1, 2, 3, 4, 5), each = 20))
 ras.2[] <- rnorm(100)
 stk <- c(ras.1, ras.2)
-names(stk) <- c("varFact", "varNorm")
+names(stk) <- c('varFact', 'varNorm')
 
 ## define a mask for already sampled points
 mask.out[1:40] <- 1
@@ -86,10 +86,10 @@ mask.in[[1]][1:80] <- NA ## only level 5 should be sampled in this mask
 mask.in[[1]][21:80] <- NA ## only levels 1 and 5 should be sampled in this mask
 
 ## Load real data ---------------------------------------------------------
-data("DataSpecies")
+data(DataSpecies)
 myResp.real <- as.numeric(DataSpecies[, 'GuloGulo'])
 
-data("bioclim_current")
+data(bioclim_current)
 myExpl.real <- rast(bioclim_current)
 
 myCoord.real <- DataSpecies[, c('X_WGS84', 'Y_WGS84')]
@@ -220,7 +220,7 @@ plot(res, zlim = c(0, 1))
 mod <- glm(var1 ~ var2 + var3, data = myExpl.sim)
 bm_VariablesImportance(bm.model = mod, 
                        expl.var = myExpl.sim[, c('var2', 'var3')],
-                       method = "full_rand",
+                       method = 'full_rand',
                        nb.rep = 3)
 ```
 
@@ -235,11 +235,11 @@ bm_VariablesImportance(bm.model = mod,
 myBiomodData <- BIOMOD_FormatingData(resp.var = myResp.real,
                                      expl.var = myExpl.real,
                                      resp.xy = myCoord.real,
-                                     resp.name = "Alien")
+                                     resp.name = 'Alien')
                                      
 # Transform true absences into potential pseudo-absences
 myResp.real.PA <- ifelse(myResp.real == 1, 1, NA)
-myResp.real.PA.vect <- vect(cbind(myCoord.real, myResp.real.PA), geom = c("X_WGS84","Y_WGS84"))
+myResp.real.PA.vect <- vect(cbind(myCoord.real, myResp.real.PA), geom = c('X_WGS84','Y_WGS84'))
 ```
 
 #### <i class="fa-solid fa-shuffle"></i> Generate pseudo-absence datasets
@@ -316,32 +316,32 @@ plot(PA.r_mult)
 ```R
 # random selection
 cv.r <- bm_CrossValidation(bm.format = myBiomodData,
-                           strategy = "random",
+                           strategy = 'random',
                            nb.rep = 3,
                            k = 0.8)
 
 # k-fold selection
 cv.k <- bm_CrossValidation(bm.format = myBiomodData,
-                           strategy = "kfold",
+                           strategy = 'kfold',
                            nb.rep = 2,
                            k = 3)
 
 # block selection
 cv.b <- bm_CrossValidation(bm.format = myBiomodData,
-                           strategy = "block")
+                           strategy = 'block')
 
 # stratified selection (geographic)
 cv.s <- bm_CrossValidation(bm.format = myBiomodData,
-                           strategy = "strat",
+                           strategy = 'strat',
                            k = 2,
-                           balance = "presences",
-                           strat = "x")
+                           balance = 'presences',
+                           strat = 'x')
 
 # stratified selection (environmental)
 cv.e <- bm_CrossValidation(bm.format = myBiomodData,
-                           strategy = "env",
+                           strategy = 'env',
                            k = 2,
-                           balance = "presences")
+                           balance = 'presences')
 
 head(cv.r)
 apply(cv.r, 2, table)
@@ -366,16 +366,17 @@ ModelsTable
 ```
 
 ```R
+allModels <- c('ANN', 'CTA', 'FDA', 'GAM', 'GBM', 'GLM'
+               , 'MARS', 'MAXENT', 'MAXNET', 'RF', 'SRE', 'XGBOOST')
+
 # default parameters
 opt.d <- bm_ModelingOptions(data.type = 'binary',
-                            models = c('ANN', 'CTA', 'FDA', 'GAM', 'GBM', 'GLM'
-                                       , 'MARS', 'MAXENT', 'MAXNET', 'RF', 'SRE', 'XGBOOST'),
+                            models = allModels,
                             strategy = 'default')
 
 # providing formated data
 opt.df <- bm_ModelingOptions(data.type = 'binary',
-                             models = c('ANN', 'CTA', 'FDA', 'GAM', 'GBM', 'GLM'
-                                        , 'MARS', 'MAXENT', 'MAXNET', 'RF', 'SRE', 'XGBOOST'),
+                             models = allModels,
                              strategy = 'default',
                              bm.format = myBiomodData,
                              calib.lines = cv.k)
@@ -392,17 +393,42 @@ names(opt.df@options$ANN.binary.nnet.nnet@args.values)
 ```R
 # bigboss parameters
 opt.b <- bm_ModelingOptions(data.type = 'binary',
-                            models = c('ANN', 'CTA', 'FDA', 'GAM', 'GBM', 'GLM'
-                                       , 'MARS', 'MAXENT', 'MAXNET', 'RF', 'SRE', 'XGBOOST'),
+                            models = allModels,
                             strategy = 'bigboss')
 
 # user defined parameters
-user.val = list(SRE.binary.biomod2.bm_SRE = list('_allData_allRun' = list(quant = 0.01))
-                , XGBOOST.binary.xgboost.xgboost = list('_allData_allRun' = list(nrounds = 10)))
+user.SRE <- list('_allData_allRun' = list(quant = 0.01))
+user.XGBOOST <- list('_allData_allRun' = list(nrounds = 10))
+user.val <- list(SRE.binary.biomod2.bm_SRE = user.SRE
+                 , XGBOOST.binary.xgboost.xgboost = user.XGBOOST)
+
 opt.u <- bm_ModelingOptions(data.type = 'binary',
                             models = c('SRE', 'XGBOOST'),
                             strategy = 'user.defined',
                             user.val = user.val)
+
+opt.b
+opt.u
+```
+
+```R
+# tune parameters for Random Forest model
+tuned.rf <- bm_Tuning(model = 'RF',
+                      tuning.fun = 'rf', ## see in ModelsTable
+                      do.formula = TRUE,
+                      bm.options = opt.d@options$RF.binary.randomForest.randomForest,
+                      bm.format = myBiomodData)
+tuned.rf ## list object
+
+# tune parameters for GAM (from mgcv package) model
+tuned.gam <- bm_Tuning(model = 'GAM',
+                       tuning.fun = 'gam', ## see in ModelsTable
+                       do.formula = TRUE,
+                       do.stepAIC = TRUE,
+                       bm.options = opt.d@options$GAM.binary.mgcv.gam,
+                       bm.format = myBiomodData)
+tuned.gam ##list object
+
                               
 # tuned parameters with formated data
 opt.t <- bm_ModelingOptions(data.type = 'binary',
@@ -410,8 +436,6 @@ opt.t <- bm_ModelingOptions(data.type = 'binary',
                             strategy = 'tuned',
                             bm.format = myBiomodData)
 
-opt.b
-opt.u
-opt.t
+opt.t ## BIOMOD.modeling.options object
 ```
 

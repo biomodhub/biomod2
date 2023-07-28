@@ -158,31 +158,71 @@
 ##' }
 ##' 
 ##' # ---------------------------------------------------------------#
-##' # Print default modeling options
-##' bm_DefaultModelingOptions()
+##' # Format Data with true absences
+##' myBiomodData <- BIOMOD_FormatingData(resp.var = myResp,
+##'                                      expl.var = myExpl,
+##'                                      resp.xy = myRespXY,
+##'                                      resp.name = myRespName)
 ##' 
-##' # Create default modeling options
-##' myBiomodOptions <- bm_ModelingOptions()
-##' myBiomodOptions
+##' # k-fold selection
+##' cv.k <- bm_CrossValidation(bm.format = myBiomodData,
+##'                            strategy = 'kfold',
+##'                            nb.rep = 2,
+##'                            k = 3)
 ##' 
-##' # # Part (or totality) of the print can be copied and customized
-##' # # Below is an example to compute quadratic GLM and select best model with 'BIC' criterium
-##' # myBiomodOptions <- bm_ModelingOptions(
-##' #   GLM = list(type = 'quadratic',
-##' #              interaction.level = 0,
-##' #              myFormula = NULL,
-##' #              test = 'BIC',
-##' #              family = 'binomial',
-##' #              control = glm.control(epsilon = 1e-08,
-##' #                                    maxit = 1000,
-##' #                                    trace = FALSE)))
-##' # myBiomodOptions
-##' # 
-##' # # It is also possible to give a specific GLM formula
-##' # myForm <- 'Sp277 ~ bio3 + log(bio10) + poly(bio16, 2) + bio19 + bio3:bio19'
-##' # myBiomodOptions <- bm_ModelingOptions(GLM = list(myFormula = formula(myForm)))
-##' # myBiomodOptions
-##'
+##' 
+##' # ---------------------------------------------------------------#
+##' allModels <- c('ANN', 'CTA', 'FDA', 'GAM', 'GBM', 'GLM'
+##'                , 'MARS', 'MAXENT', 'MAXNET', 'RF', 'SRE', 'XGBOOST')
+##' 
+##' # default parameters
+##' opt.d <- bm_ModelingOptions(data.type = 'binary',
+##'                             models = allModels,
+##'                             strategy = 'default')
+##' 
+##' # providing formated data
+##' opt.df <- bm_ModelingOptions(data.type = 'binary',
+##'                              models = allModels,
+##'                              strategy = 'default',
+##'                              bm.format = myBiomodData,
+##'                              calib.lines = cv.k)
+##' 
+##' opt.d
+##' opt.d@models
+##' opt.d@options$ANN.binary.nnet.nnet
+##' names(opt.d@options$ANN.binary.nnet.nnet@args.values)
+##' 
+##' opt.df@options$ANN.binary.nnet.nnet
+##' names(opt.df@options$ANN.binary.nnet.nnet@args.values)
+##' 
+##' 
+##' # ---------------------------------------------------------------#
+##' # bigboss parameters
+##' opt.b <- bm_ModelingOptions(data.type = 'binary',
+##'                             models = allModels,
+##'                             strategy = 'bigboss')
+##' 
+##' # user defined parameters
+##' user.SRE <- list('_allData_allRun' = list(quant = 0.01))
+##' user.XGBOOST <- list('_allData_allRun' = list(nrounds = 10))
+##' user.val <- list(SRE.binary.biomod2.bm_SRE = user.SRE
+##'                  , XGBOOST.binary.xgboost.xgboost = user.XGBOOST)
+##' 
+##' opt.u <- bm_ModelingOptions(data.type = 'binary',
+##'                             models = c('SRE', 'XGBOOST'),
+##'                             strategy = 'user.defined',
+##'                             user.val = user.val)
+##' 
+##' # tuned parameters with formated data
+##' opt.t <- bm_ModelingOptions(data.type = 'binary',
+##'                             models = c('SRE', 'XGBOOST'),
+##'                             strategy = 'tuned',
+##'                             bm.format = myBiomodData)
+##' 
+##' opt.b
+##' opt.u
+##' opt.t
+##' 
 ##'
 ##' @importFrom foreach foreach %do%
 ##' @importFrom methods new

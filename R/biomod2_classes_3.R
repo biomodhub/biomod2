@@ -358,10 +358,6 @@ setMethod('get_eval_data', signature('BIOMOD.formated.data'), function(obj) {
 ##'                                      resp.xy = myRespXY,
 ##'                                      resp.name = myRespName)
 ##' 
-##' # Create default modeling options
-##' myBiomodOptions <- BIOMOD_ModelingOptions()
-##' 
-##' 
 ##' ## ----------------------------------------------------------------------- #
 ##' # Model single models
 ##' myBiomodModelOut <- BIOMOD_Modeling(bm.format = myBiomodData,
@@ -371,6 +367,7 @@ setMethod('get_eval_data', signature('BIOMOD.formated.data'), function(obj) {
 ##'                                     CV.strategy = 'random',
 ##'                                     CV.nb.rep = 2,
 ##'                                     CV.perc = 0.8,
+##'                                     OPT.strategy = 'bigboss',
 ##'                                     metric.eval = c('TSS','ROC'),
 ##'                                     var.import = 3,
 ##'                                     seed.val = 42)
@@ -716,9 +713,6 @@ setMethod("get_variables_importance", "BIOMOD.models.out",
 ##'                                        resp.xy = myRespXY,
 ##'                                        resp.name = myRespName)
 ##' 
-##'   # Create default modeling options
-##'   myBiomodOptions <- BIOMOD_ModelingOptions()
-##' 
 ##'   # Model single models
 ##'   myBiomodModelOut <- BIOMOD_Modeling(bm.format = myBiomodData,
 ##'                                       modeling.id = 'AllModels',
@@ -727,6 +721,7 @@ setMethod("get_variables_importance", "BIOMOD.models.out",
 ##'                                       CV.strategy = 'random',
 ##'                                       CV.nb.rep = 2,
 ##'                                       CV.perc = 0.8,
+##'                                       OPT.strategy = 'bigboss',
 ##'                                       metric.eval = c('TSS','ROC'),
 ##'                                       var.import = 3,
 ##'                                       seed.val = 42)
@@ -1187,9 +1182,6 @@ setMethod("get_predictions", "BIOMOD.projection.out",
 ##'                                        resp.xy = myRespXY,
 ##'                                        resp.name = myRespName)
 ##' 
-##'   # Create default modeling options
-##'   myBiomodOptions <- BIOMOD_ModelingOptions()
-##' 
 ##'   # Model single models
 ##'   myBiomodModelOut <- BIOMOD_Modeling(bm.format = myBiomodData,
 ##'                                       modeling.id = 'AllModels',
@@ -1198,6 +1190,7 @@ setMethod("get_predictions", "BIOMOD.projection.out",
 ##'                                       CV.strategy = 'random',
 ##'                                       CV.nb.rep = 2,
 ##'                                       CV.perc = 0.8,
+##'                                       OPT.strategy = 'bigboss',
 ##'                                       metric.eval = c('TSS','ROC'),
 ##'                                       var.import = 3,
 ##'                                       seed.val = 42)
