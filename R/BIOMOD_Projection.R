@@ -311,7 +311,6 @@ BIOMOD_Projection <- function(bm.mod,
                         filename = filename, omit.na = omit.na, 
                         temp_workdir = temp_workdir, seedval = seed.val, 
                         overwrite = TRUE, mod.name = mod.name)
-    cat("\n step 3",mod.name)
     if (do.stack) {
       if (proj_is_raster) {
         return(wrap(pred.tmp)) 
