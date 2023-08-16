@@ -17,6 +17,9 @@ vignette: >
 
 #### 4.2-5 Tuning and Model Options
 
+##### 4.2-4-6 Bugfix
+- fixed parallelization in `BIOMOD_Projection`
+
 ##### 4.2-4-5 Bugfix
 - fixed summary method for `BIOMOD.formated.data` and `BIOMOD.formated.data.PA`
 

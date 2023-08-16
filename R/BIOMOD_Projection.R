@@ -290,9 +290,10 @@ BIOMOD_Projection <- function(bm.mod,
       warning("Parallelisation with `foreach` is not available for Windows. Sorry.")
     }
   }
-  
+  new.env.wrap <- wrap(new.env) # ensure parallel run compatibility
   proj <- foreach(mod.name = models.chosen) %dopar% {
     cat("\n\t> Projecting", mod.name, "...")
+    new.env <- unwrap(new.env.wrap) # ensure parallel run compatibility
     if (do.stack) {
       filename <- NULL
     } else {
@@ -301,7 +302,6 @@ BIOMOD_Projection <- function(bm.mod,
                                    ifelse(output.format == ".RData"
                                           , ".tif", output.format)))
     }
-    
     mod <- get(BIOMOD_LoadModels(bm.out = bm.mod, full.name = mod.name))
     temp_workdir = NULL
     if (length(grep("MAXENT$", mod.name)) == 1) {
@@ -311,6 +311,7 @@ BIOMOD_Projection <- function(bm.mod,
                         filename = filename, omit.na = omit.na, 
                         temp_workdir = temp_workdir, seedval = seed.val, 
                         overwrite = TRUE, mod.name = mod.name)
+    cat("\n step 3",mod.name)
     if (do.stack) {
       if (proj_is_raster) {
         return(wrap(pred.tmp)) 
@@ -318,6 +319,7 @@ BIOMOD_Projection <- function(bm.mod,
         return(pred.tmp)
       }
     } else {
+      cat(filename)
       return(filename)
     }
   }

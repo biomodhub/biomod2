@@ -33,7 +33,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">biomod2</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">4.2-4-5</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">4.2-4-6</span>
       </span>
     </div>
 
@@ -135,7 +135,15 @@
 <h4 id="tuning-and-model-options">4.2-5 Tuning and Model Options<a class="anchor" aria-label="anchor" href="#tuning-and-model-options"></a>
 </h4>
 <div class="section level5">
-<h5 id="bugfix">4.2-4-5 Bugfix<a class="anchor" aria-label="anchor" href="#bugfix"></a>
+<h5 id="bugfix">4.2-4-6 Bugfix<a class="anchor" aria-label="anchor" href="#bugfix"></a>
+</h5>
+<ul>
+<li>fixed parallelization in <code>BIOMOD_Projection</code>
+</li>
+</ul>
+</div>
+<div class="section level5">
+<h5 id="bugfix-1">4.2-4-5 Bugfix<a class="anchor" aria-label="anchor" href="#bugfix-1"></a>
 </h5>
 <ul>
 <li>fixed summary method for <code>BIOMOD.formated.data</code> and
@@ -144,7 +152,7 @@
 </ul>
 </div>
 <div class="section level5">
-<h5 id="bugfix-1">4.2-4-4 Bugfix<a class="anchor" aria-label="anchor" href="#bugfix-1"></a>
+<h5 id="bugfix-2">4.2-4-4 Bugfix<a class="anchor" aria-label="anchor" href="#bugfix-2"></a>
 </h5>
 <ul>
 <li>fixed <code>bm_PlotResponseCurves</code> for ensemble models merged
@@ -152,7 +160,7 @@ by algo (for Maxent)</li>
 </ul>
 </div>
 <div class="section level5">
-<h5 id="bugfix-2">4.2-4-3 Bugfix<a class="anchor" aria-label="anchor" href="#bugfix-2"></a>
+<h5 id="bugfix-3">4.2-4-3 Bugfix<a class="anchor" aria-label="anchor" href="#bugfix-3"></a>
 </h5>
 <ul>
 <li>added point.size argument to plot.BIOMOD.Formated.data</li>
@@ -160,7 +168,7 @@ by algo (for Maxent)</li>
 </ul>
 </div>
 <div class="section level5">
-<h5 id="bugfix-3">4.2-4-2 Bugfix<a class="anchor" aria-label="anchor" href="#bugfix-3"></a>
+<h5 id="bugfix-4">4.2-4-2 Bugfix<a class="anchor" aria-label="anchor" href="#bugfix-4"></a>
 </h5>
 <ul>
 <li>set xgboost <code>verbose = 0</code> (from
@@ -168,7 +176,7 @@ by algo (for Maxent)</li>
 </ul>
 </div>
 <div class="section level5">
-<h5 id="bugfix-4">4.2-4-1 Bugfix<a class="anchor" aria-label="anchor" href="#bugfix-4"></a>
+<h5 id="bugfix-5">4.2-4-1 Bugfix<a class="anchor" aria-label="anchor" href="#bugfix-5"></a>
 </h5>
 <ul>
 <li>fixed <code>BIOMOD_FormatingData</code> checks for
@@ -199,7 +207,7 @@ by algo (for Maxent)</li>
 </ul>
 </div>
 <div class="section level5">
-<h5 id="bugfix-5">4.2-3-5 Bugfix<a class="anchor" aria-label="anchor" href="#bugfix-5"></a>
+<h5 id="bugfix-6">4.2-3-5 Bugfix<a class="anchor" aria-label="anchor" href="#bugfix-6"></a>
 </h5>
 <ul>
 <li>fixed some more issues related to categorical variables badly
@@ -214,7 +222,7 @@ variables</li>
 </ul>
 </div>
 <div class="section level5">
-<h5 id="bugfix-6">4.2-3-4 Bugfix<a class="anchor" aria-label="anchor" href="#bugfix-6"></a>
+<h5 id="bugfix-7">4.2-3-4 Bugfix<a class="anchor" aria-label="anchor" href="#bugfix-7"></a>
 </h5>
 <ul>
 <li>fixed bug in <code>BIOMOD_Modeling</code> when using
@@ -223,7 +231,7 @@ badly formatted</li>
 </ul>
 </div>
 <div class="section level5">
-<h5 id="bugfix-7">4.2-3-3 Bugfix<a class="anchor" aria-label="anchor" href="#bugfix-7"></a>
+<h5 id="bugfix-8">4.2-3-3 Bugfix<a class="anchor" aria-label="anchor" href="#bugfix-8"></a>
 </h5>
 <ul>
 <li>fixed bug in <code>BIOMOD_EnsembleModeling</code> for additional
@@ -231,7 +239,7 @@ projection with only one environmental variables</li>
 </ul>
 </div>
 <div class="section level5">
-<h5 id="bugfix-8">4.2-3-2 Bugfix<a class="anchor" aria-label="anchor" href="#bugfix-8"></a>
+<h5 id="bugfix-9">4.2-3-2 Bugfix<a class="anchor" aria-label="anchor" href="#bugfix-9"></a>
 </h5>
 <ul>
 <li>fixed bugs in <code>BIOMOD_EnsembleForecasting</code> when several
@@ -240,7 +248,7 @@ directory</li>
 </ul>
 </div>
 <div class="section level5">
-<h5 id="bugfix-9">4.2-3-1 Bugfix<a class="anchor" aria-label="anchor" href="#bugfix-9"></a>
+<h5 id="bugfix-10">4.2-3-1 Bugfix<a class="anchor" aria-label="anchor" href="#bugfix-10"></a>
 </h5>
 <ul>
 <li>fixed bugs in <code>bm_CrossValidation</code> with
@@ -296,7 +304,7 @@ models. Default value is now ‘validation’ instead of ‘evaluation’.</li>
 </ul>
 </div>
 <div class="section level5">
-<h5 id="bugfix-10">Bugfix<a class="anchor" aria-label="anchor" href="#bugfix-10"></a>
+<h5 id="bugfix-11">Bugfix<a class="anchor" aria-label="anchor" href="#bugfix-11"></a>
 </h5>
 <ul>
 <li>validation metric calculation now properly use the calibration
@@ -415,7 +423,7 @@ ensemble models can now be done with
 </ul>
 </div>
 <div class="section level5">
-<h5 id="bugfix-11">Bugfix<a class="anchor" aria-label="anchor" href="#bugfix-11"></a>
+<h5 id="bugfix-12">Bugfix<a class="anchor" aria-label="anchor" href="#bugfix-12"></a>
 </h5>
 <ul>
 <li>Fixed <code>MAXENT.Phillips.2</code> and single variable
@@ -475,7 +483,7 @@ in <code>MAXENT.Phillips</code> modeling options</li>
 </ul>
 </div>
 <div class="section level5">
-<h5 id="bugfix-12">Bugfix<a class="anchor" aria-label="anchor" href="#bugfix-12"></a>
+<h5 id="bugfix-13">Bugfix<a class="anchor" aria-label="anchor" href="#bugfix-13"></a>
 </h5>
 <ul>
 <li>Fixed <code>MAXENT.Phillips</code> predict method for large dataset
@@ -570,7 +578,7 @@ future.</li>
 </ul>
 </div>
 <div class="section level5">
-<h5 id="bugfix-13">Bugfix<a class="anchor" aria-label="anchor" href="#bugfix-13"></a>
+<h5 id="bugfix-14">Bugfix<a class="anchor" aria-label="anchor" href="#bugfix-14"></a>
 </h5>
 <ul>
 <li>MAXENT.Phillips models can now properly fail</li>
@@ -640,7 +648,7 @@ CompteurSp that was defined within a function.</li>
 <h4 id="section-2">4.1-3<a class="anchor" aria-label="anchor" href="#section-2"></a>
 </h4>
 <div class="section level5">
-<h5 id="bugfix-14">Bugfix<a class="anchor" aria-label="anchor" href="#bugfix-14"></a>
+<h5 id="bugfix-15">Bugfix<a class="anchor" aria-label="anchor" href="#bugfix-15"></a>
 </h5>
 <ul>
 <li>Ensemble models that fails (e.g. EMcv with only one models) will not
