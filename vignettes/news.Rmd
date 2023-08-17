@@ -17,6 +17,9 @@ vignette: >
 
 #### 4.2-5 Tuning and Model Options
 
+##### 4.2-4-7 Bugfix
+- fixed `do.classif` ignored in `BIOMOD_ModelingOptions`
+
 ##### 4.2-4-6 Bugfix
 - fixed parallelization in `BIOMOD_Projection`
 

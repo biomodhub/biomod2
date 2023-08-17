@@ -577,6 +577,7 @@ BIOMOD_ModelingOptions <- function(GLM = NULL,
     if (!is.null(RF$sampsize)) { opt@RF$sampsize <- RF$sampsize }
     if (!is.null(RF$nodesize)) { opt@RF$nodesize <- RF$nodesize }
     if (!is.null(RF$maxnodes)) { opt@RF$maxnodes <- RF$maxnodes }
+    if (!is.null(RF$do.classif)) { opt@RF$do.classif <- RF$do.classif }
   }
   
   ## 2.10 MAXENT -----------------------------------------------------
