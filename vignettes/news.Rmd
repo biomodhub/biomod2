@@ -17,6 +17,9 @@ vignette: >
 
 #### 4.2-5 Tuning and Model Options
 
+##### 4.2-4-8 Bugfix
+- improved tests in `bm_PlotEvalMean`
+
 ##### 4.2-4-7 Bugfix
 - fixed `do.classif` ignored in `BIOMOD_ModelingOptions`
 
