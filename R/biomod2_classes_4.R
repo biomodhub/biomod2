@@ -1052,7 +1052,7 @@ setMethod('predict2', signature(object = 'RF_biomod2_model', newdata = "SpatRast
               
               # new predict command used with terra
               RF_model <- get_formal_model(object)
-              if(RF_model$type == "classification") {
+              if (RF_model$type == "classification") {
                 subset(predict(newdata, model = RF_model,
                                type = 'prob',
                                wopt = list(names = rep(mod.name,2))), 
@@ -1077,8 +1077,7 @@ setMethod('predict2', signature(object = 'RF_biomod2_model', newdata = "data.fra
           function(object, newdata, ...) {
             predfun <- function(object, newdata, not_na_rows){
               RF_model <- get_formal_model(object)
-              # browser()
-              if(RF_model$type == "classification") {
+              if (RF_model$type == "classification") {
                 as.numeric(predict(RF_model, as.data.frame(newdata[not_na_rows, , drop = FALSE]), type = 'prob')[, '1'])  
               } else {
                 as.numeric(predict(RF_model, as.data.frame(newdata[not_na_rows, , drop = FALSE])))

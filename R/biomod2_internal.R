@@ -926,11 +926,12 @@ check_duplicated_cells <- function(env, xy, sp, filter.raster,
   resp.var
 }
 
-.check_formating_xy <- function(resp.xy, resp.length){
+.check_formating_xy <- function(resp.xy, resp.length, env.as.df = FALSE){
   if (ncol(resp.xy) != 2) {
     stop("If given, resp.xy must be a 2 column matrix or data.frame")
   }
-  if (nrow(resp.xy) != resp.length) {
+  if (nrow(resp.xy) != resp.length &&
+      !(env.as.df & (nrow(resp.xy) == 0))) {
     stop("Response variable and its coordinates don't match")
   }
   as.data.frame(resp.xy)
