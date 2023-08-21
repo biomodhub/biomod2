@@ -395,6 +395,7 @@ bm_Tuning <- function(model,
               if (model == "CTA") {
                 tuning.fun = "rpart2"
                 eval(parse(text = paste0("try(tuned.mod <- ", cmd.tuning)))
+                tuning.fun = "rpart" # needed to reset the tuning function in non parallel mode
                 if (!is.null(tuned.mod)) {
                   tmp = tuned.mod$results
                   tmp$TSS = tmp$Sens + tmp$Spec - 1
@@ -403,7 +404,6 @@ bm_Tuning <- function(model,
               }
             }
           } else { tuning.form <- tuning.grid }
-          
           ## run formula selection ------------------------------------------------------------------
           if (do.formula) {
             cat("\n\t\t\t> Tuning formula...")
