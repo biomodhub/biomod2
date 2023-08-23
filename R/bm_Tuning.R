@@ -219,7 +219,6 @@ bm_Tuning <- function(model,
                                 , weights = weights, params.train = params.train)
   for (argi in names(args)) { assign(x = argi, value = args[[argi]]) }
   rm(args)
-  
   ## LOOP OVER CALIB LINES 
   if (is.null(calib.lines)) {
     calib.lines <- data.frame(rep(TRUE, length(bm.format@data.species)))
@@ -348,6 +347,8 @@ bm_Tuning <- function(model,
           ## create dataset
           mySpExpl <- get_species_data(bm.format)
           mySpExpl[["_allData_allRun"]] <- 1
+          current.weights <- weights[which(calib.lines[, calib.i] == TRUE &
+                                             mySpExpl[, PA.i] == TRUE)]
           mySpExpl <- mySpExpl[which(calib.lines[, calib.i] == TRUE), ]
           mySpExpl <- mySpExpl[which(mySpExpl[, PA.i] == TRUE), ]
           mySpExpl[, 1] <- as.factor(ifelse(mySpExpl[, 1] == 1 & !is.na(mySpExpl[, 1]), "Presence", "Absence"))
@@ -359,7 +360,7 @@ bm_Tuning <- function(model,
           cmd.tuning <- "caret::train(x = myExpl, y = myResp, method = tuning.fun, tuneGrid = tuning.grid,"
           cmd.tuning <- paste0(cmd.tuning, " trControl = ctrl.train, metric = 'ROC',")
           if (tuning.fun %in% c("fda", "rpart")) { ## add weights
-            cmd.tuning <- paste0(cmd.tuning, " weights = weights,")
+            cmd.tuning <- paste0(cmd.tuning, " weights = current.weights,")
           }
           if (tuning.fun == "avNNet") {
             maxit = 500
@@ -412,7 +413,6 @@ bm_Tuning <- function(model,
             cmd.init <- "form = bm_MakeFormula(resp.name = 'resp', expl.var = myExpl, type = typ, interaction.level = intlev),"
             cmd.init <- paste0(cmd.init, " data = cbind(myExpl, resp = myResp),")
             cmd.form <- sub("x = myExpl, y = myResp,", cmd.init, cmd.form)
-            
             TMP <- foreach (typ = c('simple', 'quadratic', 'polynomial', 's_smoother'), .combine = "rbind") %:%
               foreach (intlev = 0:(ncol(myExpl) - 1), .combine = "rbind") %do%
               {
@@ -442,10 +442,9 @@ bm_Tuning <- function(model,
                               data = mySpExpl, 
                               family = argstmp$family, 
                               control = argstmp$control, 
-                              weights = weights,
+                              weights = current.weights,
                               mustart = rep(ifelse(!is.null(argstmp$mustart) & nchar(argstmp$mustart) > 0, argstmp$mustart, 0.5), length(myResp)),
                               model = TRUE)
-              
               try(tuned.AIC <- MASS::stepAIC(glmStart,
                                        scope = list(upper = (sub(".*~", "~", argstmp$formula)), lower = ~1),
                                        k = criteria.AIC,
@@ -458,7 +457,7 @@ bm_Tuning <- function(model,
                                                  data = mySpExpl, 
                                                  family = argstmp$family,
                                                  control = argstmp$control,
-                                                 weights = weights))          
+                                                 weights = current.weights))          
               tuned.AIC <- NULL
               try(tuned.AIC <- 
                     gam::step.Gam(
