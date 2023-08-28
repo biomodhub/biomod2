@@ -257,7 +257,7 @@ BIOMOD_Projection <- function(bm.mod,
     assign(x = nameMask, value = .build_clamping_mask(new.env, MinMax))
     
     if (output.format == '.RData') {
-      if(proj_is_raster){
+      if (proj_is_raster) {
         save(list = wrap(nameMask),
              file = file.path(namePath, 
                               paste0(nameProj, "_ClampingMask", output.format)),
@@ -290,10 +290,14 @@ BIOMOD_Projection <- function(bm.mod,
       warning("Parallelisation with `foreach` is not available for Windows. Sorry.")
     }
   }
-  new.env.wrap <- wrap(new.env) # ensure parallel run compatibility
+  if (proj_is_raster) {
+    new.env.wrap <- wrap(new.env) # ensure parallel run compatibility
+  }
   proj <- foreach(mod.name = models.chosen) %dopar% {
     cat("\n\t> Projecting", mod.name, "...")
-    new.env <- unwrap(new.env.wrap) # ensure parallel run compatibility
+    if (proj_is_raster) {
+      new.env <- unwrap(new.env.wrap) # ensure parallel run compatibility
+    }
     if (do.stack) {
       filename <- NULL
     } else {

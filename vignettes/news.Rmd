@@ -17,6 +17,9 @@ vignette: >
 
 #### 4.2-5 Tuning and Model Options
 
+##### 4.2-4-10 Bugfix
+- fixed `wrap` applied to a `data.frame` in `BIOMOD_Projection`
+
 ##### 4.2-4-9 Bugfix
 - fixed `predict` method for `RF` with `do.classif = FALSE`
 
