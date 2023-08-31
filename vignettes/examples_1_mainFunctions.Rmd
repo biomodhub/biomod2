@@ -151,7 +151,6 @@ Modeling options are automatically retrieved from selected models within the [`B
 ```R
 # Model single models
 myBiomodModelOut <- BIOMOD_Modeling(bm.format = myBiomodData,
-                                    bm.options = myBiomodOptions,
                                     modeling.id = 'AllModels',
                                     CV.strategy = 'random',
                                     CV.nb.rep = 2,

@@ -375,7 +375,22 @@ created in the current working directory :</p><ol><li><p>a <em>models</em> folde
   
   <dt>CV.[...] parameters</dt>
 <dd><p>Different methods are available to calibrate/validate the 
-  single models (see <code><a href="bm_CrossValidation.html">bm_CrossValidation</a></code>.)</p></dd>
+  single models (see <code><a href="bm_CrossValidation.html">bm_CrossValidation</a></code>).</p></dd>
+
+  
+  <dt>OPT.[...] parameters</dt>
+<dd><p>Different methods are available to parameterize the 
+  single models (see <code><a href="BIOMOD.options.dataset.html">BIOMOD.options.dataset</a></code>). Note that only <code>binary</code> data 
+  type is allowed currently.</p><ul><li><p><code>default</code> : only default parameter values of default parameters of the single 
+    models functions are retrieved. Nothing is changed so it might not give good results.</p></li>
+<li><p><code>bigboss</code> : uses parameters pre-defined by <span class="pkg">biomod2</span> team and that are 
+    available in the dataset <code><a href="OptionsBigboss.html">OptionsBigboss</a></code>. <br><em>to be optimized in near future</em></p></li>
+<li><p><code>user.defined</code> : updates default or bigboss parameters with some parameters 
+    values defined by the user (but matching the format of a 
+    <code><a href="BIOMOD.models.options.html">BIOMOD.models.options</a></code> object)</p></li>
+<li><p><code>tuned</code> : calling the <code><a href="bm_Tuning.html">bm_Tuning</a></code> function to try and optimize 
+    some default values</p></li>
+</ul><p></p></dd>
 
   
   <dt>weights &amp; prevalence</dt>
@@ -410,8 +425,14 @@ created in the current working directory :</p><ol><li><p>a <em>models</em> folde
 <li><p><code>MPA</code> : Minimal Predicted Area (cutoff optimising MPA to predict 90<!-- % of presences) --></p></li>
 </ul><p>Optimal value of each method can be obtained with the <code><a href="bm_FindOptimStat.html">get_optim_value</a></code> 
   function. Several evaluation metrics can be selected. <em>Please refer to the 
-  <a href="https://www.cawcr.gov.au/projects/verification/" class="external-link">CAWRC website (section "Methods for dichotomous forecasts")</a> 
-  to get detailed description of each metric.</em></p></dd>
+  <a href="https://www.cawcr.gov.au/projects/verification/" class="external-link">CAWRC website (section "Methods for 
+  dichotomous forecasts")</a> to get detailed description of each metric.</em>
+  Results after modeling can be obtained through the <code><a href="getters.out.html">get_evaluations</a></code> function. <br> 
+  Evaluation metric are calculated on the calibrating data (column <code>calibration</code>), on 
+  the cross-validation data (column <code>validation</code>) or on the evaluation data 
+  (column <code>evaluation</code>). <br><em>For cross-validation data, see <code>CV.[...]</code> 
+  parameters in <code>BIOMOD_Modeling</code> function ; for evaluation data, see 
+  <code>eval.[...]</code> parameters in <code><a href="BIOMOD_FormatingData.html">BIOMOD_FormatingData</a></code>.</em></p></dd>
 
   
   <dt>scale.models</dt>
@@ -429,11 +450,12 @@ created in the current working directory :</p><ol><li><p>a <em>models</em> folde
     <h2>See also</h2>
     <div class="dont-index"><p><code><a href="https://rdrr.io/r/stats/glm.html" class="external-link">glm</a></code>, <code><a href="https://rdrr.io/pkg/gam/man/gam.html" class="external-link">gam</a></code>,
   <code><a href="https://rdrr.io/pkg/mgcv/man/gam.html" class="external-link">gam</a></code>, <code><a href="https://rdrr.io/pkg/mgcv/man/bam.html" class="external-link">bam</a></code>, <code><a href="https://rdrr.io/pkg/gbm/man/gbm.html" class="external-link">gbm</a></code>,
-  <code><a href="https://rdrr.io/pkg/rpart/man/rpart.html" class="external-link">rpart</a></code>, code<a href="https://rdrr.io/pkg/nnet/man/nnet.html" class="external-link">nnet</a>,
+  <code><a href="https://rdrr.io/pkg/rpart/man/rpart.html" class="external-link">rpart</a></code>, <code><a href="https://rdrr.io/pkg/nnet/man/nnet.html" class="external-link">nnet</a></code>,
   <code><a href="https://rdrr.io/pkg/mda/man/fda.html" class="external-link">fda</a></code>, <code><a href="https://rdrr.io/pkg/earth/man/earth.html" class="external-link">earth</a></code>,
   <code><a href="https://rdrr.io/pkg/randomForest/man/randomForest.html" class="external-link">randomForest</a></code>, <code><a href="https://rdrr.io/pkg/maxnet/man/maxnet.html" class="external-link">maxnet</a></code>,
   <code><a href="https://rdrr.io/pkg/xgboost/man/xgb.train.html" class="external-link">xgboost</a></code>, <code><a href="BIOMOD_FormatingData.html">BIOMOD_FormatingData</a></code>,
-  <code><a href="bm_ModelingOptions.html">bm_ModelingOptions</a></code>, <code><a href="bm_CrossValidation.html">bm_CrossValidation</a></code>,
+  <code><a href="bm_ModelingOptions.html">bm_ModelingOptions</a></code>, <code><a href="bm_Tuning.html">bm_Tuning</a></code>, 
+  <code><a href="bm_CrossValidation.html">bm_CrossValidation</a></code>,
   <code> <a href="bm_VariablesImportance.html">bm_VariablesImportance</a></code>, <code><a href="BIOMOD_Projection.html">BIOMOD_Projection</a></code>,
   <code><a href="BIOMOD_EnsembleModeling.html">BIOMOD_EnsembleModeling</a></code>, <code><a href="bm_PlotEvalMean.html">bm_PlotEvalMean</a></code>,
   <code><a href="bm_PlotEvalBoxplot.html">bm_PlotEvalBoxplot</a></code>, <code><a href="bm_PlotVarImpBoxplot.html">bm_PlotVarImpBoxplot</a></code>,
@@ -490,7 +512,6 @@ created in the current working directory :</p><ol><li><p>a <em>models</em> folde
 <span><span class="va">myBiomodModelOut</span> <span class="op">&lt;-</span> <span class="fu">BIOMOD_Modeling</span><span class="op">(</span>bm.format <span class="op">=</span> <span class="va">myBiomodData</span>,</span>
 <span>                                    modeling.id <span class="op">=</span> <span class="st">'AllModels'</span>,</span>
 <span>                                    models <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">'RF'</span>, <span class="st">'GLM'</span><span class="op">)</span>,</span>
-<span>                                    bm.options <span class="op">=</span> <span class="va">myBiomodOptions</span>,</span>
 <span>                                    CV.strategy <span class="op">=</span> <span class="st">'random'</span>,</span>
 <span>                                    CV.nb.rep <span class="op">=</span> <span class="fl">2</span>,</span>
 <span>                                    CV.perc <span class="op">=</span> <span class="fl">0.8</span>,</span>

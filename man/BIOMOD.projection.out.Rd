@@ -132,7 +132,6 @@ if (file.exists(file.out)) {
   myBiomodModelOut <- BIOMOD_Modeling(bm.format = myBiomodData,
                                       modeling.id = 'AllModels',
                                       models = c('RF', 'GLM'),
-                                      bm.options = myBiomodOptions,
                                       CV.strategy = 'random',
                                       CV.nb.rep = 2,
                                       CV.perc = 0.8,

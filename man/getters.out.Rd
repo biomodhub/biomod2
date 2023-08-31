@@ -312,9 +312,11 @@ function})}
    slot (or \code{model_evaluation} of each model in \code{em.computed}) of a
   \code{\link{BIOMOD.models.out}} (or \code{\link{BIOMOD.ensemble.models.out}})
    object. Contains evaluation metric for different models and dataset. 
-   Evaluation metric are calculated on the calibrating data (column calibration),
-   on the cross-validation data (column validation) or on the evaluation data
-   (column evaluation)}
+   Evaluation metric are calculated on the calibrating data (column \code{calibration}),
+   on the cross-validation data (column \code{validation}) or on the evaluation data 
+   (column \code{evaluation}). \cr \emph{For cross-validation data, see \code{CV.[...]} 
+   parameters in \code{\link{BIOMOD_Modeling}} function ; for evaluation data, see 
+   \code{eval.[...]} parameters in \code{\link{BIOMOD_FormatingData}}.}}
   \item{\code{get_variables_importance}}{a
   \code{\link{BIOMOD.stored.data.frame-class}} from
   the \code{variables.importance} slot (or \code{model_variables_importance}

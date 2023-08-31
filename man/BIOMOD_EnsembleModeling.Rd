@@ -92,7 +92,7 @@ models evaluation scores}
 
 \item{nb.cpu}{(\emph{optional, default} \code{1}) \cr 
 An \code{integer} value corresponding to the number of computing resources to be used to 
-parallelize the single models computation}
+parallelize the single models predictions and the ensemble models computation}
 
 \item{seed.val}{(\emph{optional, default} \code{NULL}) \cr 
 An \code{integer} value corresponding to the new seed value to be set}
@@ -342,7 +342,6 @@ if (file.exists(file.out)) {
   myBiomodModelOut <- BIOMOD_Modeling(bm.format = myBiomodData,
                                       modeling.id = 'AllModels',
                                       models = c('RF', 'GLM'),
-                                      bm.options = myBiomodOptions,
                                       CV.strategy = 'random',
                                       CV.nb.rep = 2,
                                       CV.perc = 0.8,
