@@ -150,7 +150,24 @@
 ##'   }
 ##'   
 ##'   \item{CV.[...] parameters}{Different methods are available to calibrate/validate the 
-##'   single models (see \code{\link{bm_CrossValidation}}.)}
+##'   single models (see \code{\link{bm_CrossValidation}}).}
+##'   
+##'   \item{OPT.[...] parameters}{Different methods are available to parameterize the 
+##'   single models (see \code{\link{BIOMOD.options.dataset}}). Note that only \code{binary} data 
+##'   type is allowed currently.
+##'   \itemize{
+##'     \item \code{default} : only default parameter values of default parameters of the single 
+##'     models functions are retrieved. Nothing is changed so it might not give good results.
+##'     \item \code{bigboss} : uses parameters pre-defined by \pkg{biomod2} team and that are 
+##'     available in the dataset \code{\link{OptionsBigboss}}. \cr 
+##'     \emph{to be optimized in near future}
+##'     \item \code{user.defined} : updates default or bigboss parameters with some parameters 
+##'     values defined by the user (but matching the format of a 
+##'     \code{\link{BIOMOD.models.options}} object)
+##'     \item \code{tuned} : calling the \code{\link{bm_Tuning}} function to try and optimize 
+##'     some default values
+##'   }
+##'   }
 ##'   
 ##'   \item{weights & prevalence}{More or less weight can be given to some specific observations.
 ##'   \itemize{
@@ -186,8 +203,14 @@
 ##'   }
 ##'   Optimal value of each method can be obtained with the \code{\link{get_optim_value}} 
 ##'   function. Several evaluation metrics can be selected. \emph{Please refer to the 
-##'   \href{https://www.cawcr.gov.au/projects/verification/}{CAWRC website (section "Methods for dichotomous forecasts")} 
-##'   to get detailed description of each metric.}
+##'   \href{https://www.cawcr.gov.au/projects/verification/}{CAWRC website (section "Methods for 
+##'   dichotomous forecasts")} to get detailed description of each metric.}
+##'   Results after modeling can be obtained through the \code{\link{get_evaluations}} function. \cr 
+##'   Evaluation metric are calculated on the calibrating data (column \code{calibration}), on 
+##'   the cross-validation data (column \code{validation}) or on the evaluation data 
+##'   (column \code{evaluation}). \cr \emph{For cross-validation data, see \code{CV.[...]} 
+##'   parameters in \code{\link{BIOMOD_Modeling}} function ; for evaluation data, see 
+##'   \code{eval.[...]} parameters in \code{\link{BIOMOD_FormatingData}}.}
 ##'   }
 ##'   
 ##'   \item{scale.models}{\bold{This parameter is quite experimental and it is recommended 
@@ -206,11 +229,12 @@
 ##' 
 ##' @seealso \code{\link[stats]{glm}}, \code{\link[gam]{gam}},
 ##'   \code{\link[mgcv]{gam}}, \code{\link[mgcv]{bam}}, \code{\link[gbm]{gbm}},
-##'   \code{\link[rpart]{rpart}}, code{\link[nnet]{nnet}},
+##'   \code{\link[rpart]{rpart}}, \code{\link[nnet]{nnet}},
 ##'   \code{\link[mda]{fda}}, \code{\link[earth]{earth}},
 ##'   \code{\link[randomForest]{randomForest}}, \code{\link[maxnet]{maxnet}},
 ##'   \code{\link[xgboost]{xgboost}}, \code{\link{BIOMOD_FormatingData}},
-##'   \code{\link{bm_ModelingOptions}}, \code{\link{bm_CrossValidation}},
+##'   \code{\link{bm_ModelingOptions}}, \code{\link{bm_Tuning}}, 
+##'   \code{\link{bm_CrossValidation}},
 ##'   \code{ \link{bm_VariablesImportance}}, \code{\link{BIOMOD_Projection}},
 ##'   \code{\link{BIOMOD_EnsembleModeling}}, \code{\link{bm_PlotEvalMean}},
 ##'   \code{\link{bm_PlotEvalBoxplot}}, \code{\link{bm_PlotVarImpBoxplot}},
@@ -256,7 +280,6 @@
 ##' myBiomodModelOut <- BIOMOD_Modeling(bm.format = myBiomodData,
 ##'                                     modeling.id = 'AllModels',
 ##'                                     models = c('RF', 'GLM'),
-##'                                     bm.options = myBiomodOptions,
 ##'                                     CV.strategy = 'random',
 ##'                                     CV.nb.rep = 2,
 ##'                                     CV.perc = 0.8,

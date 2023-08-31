@@ -343,7 +343,7 @@ get_var_range <- function(data)
         keep_tmp <- 1:length(out_names)
         if (!is.null(subset.list[[sub.i]])) {
           .fun_testIfIn(TRUE, sub.i, subset.list[[sub.i]], .extract_modelNamesInfo(out_names, obj.type = obj.type, info = sub.i, as.unique = TRUE))
-          keep_tmp <- grep(paste(subset.list[[sub.i]], collapse = "|"), out_names)
+          keep_tmp <- grep(paste0(subset.list[[sub.i]], "_", collapse = "|"), out_names)
         }
         return(keep_tmp)
       }
@@ -380,7 +380,6 @@ get_var_range <- function(data)
     tmp$algo <- .extract_modelNamesInfo(tmp$full.name, obj.type = "em", info = "algo", as.unique = FALSE)
     proj <- tmp[, c("full.name", "merged.by.PA", "merged.by.run", "merged.by.algo"
                     , "filtered.by", "algo", "points", "pred")]
-    
   }
   proj
 }

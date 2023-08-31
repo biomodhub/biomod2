@@ -176,9 +176,11 @@
 ##'    slot (or \code{model_evaluation} of each model in \code{em.computed}) of a
 ##'   \code{\link{BIOMOD.models.out}} (or \code{\link{BIOMOD.ensemble.models.out}})
 ##'    object. Contains evaluation metric for different models and dataset. 
-##'    Evaluation metric are calculated on the calibrating data (column calibration),
-##'    on the cross-validation data (column validation) or on the evaluation data
-##'    (column evaluation)}
+##'    Evaluation metric are calculated on the calibrating data (column \code{calibration}),
+##'    on the cross-validation data (column \code{validation}) or on the evaluation data 
+##'    (column \code{evaluation}). \cr \emph{For cross-validation data, see \code{CV.[...]} 
+##'    parameters in \code{\link{BIOMOD_Modeling}} function ; for evaluation data, see 
+##'    \code{eval.[...]} parameters in \code{\link{BIOMOD_FormatingData}}.}}
 ##'   \item{\code{get_variables_importance}}{a
 ##'   \code{\link{BIOMOD.stored.data.frame-class}} from
 ##'   the \code{variables.importance} slot (or \code{model_variables_importance}
@@ -363,7 +365,6 @@ setMethod('get_eval_data', signature('BIOMOD.formated.data'), function(obj) {
 ##' myBiomodModelOut <- BIOMOD_Modeling(bm.format = myBiomodData,
 ##'                                     modeling.id = 'AllModels',
 ##'                                     models = c('RF', 'GLM'),
-##'                                     bm.options = myBiomodOptions,
 ##'                                     CV.strategy = 'random',
 ##'                                     CV.nb.rep = 2,
 ##'                                     CV.perc = 0.8,
@@ -606,11 +607,16 @@ setMethod("get_evaluations", "BIOMOD.models.out",
 setMethod("get_variables_importance", "BIOMOD.models.out",
           function(obj, full.name = NULL, PA = NULL, run = NULL, algo = NULL, expl.var = NULL) {
             out <- load_stored_object(obj@variables.importance)
-            keep_lines <- .filter_outputs.df(out, subset.list = list(full.name =  full.name, PA = PA
-                                                                     , run = run, algo = algo
-                                                                     , expl.var = expl.var))
-            out <- out[keep_lines, ]
-            return(out)
+            if(obj@variables.importance@link == ''){
+              cat("\n! models have no variables importance\n")
+              return(invisible(NULL))
+            } else {
+              keep_lines <- .filter_outputs.df(out, subset.list = list(full.name =  full.name, PA = PA
+                                                                       , run = run, algo = algo
+                                                                       , expl.var = expl.var))
+              out <- out[keep_lines, ]
+              return(out)
+            }
           }
 )
 
@@ -717,7 +723,6 @@ setMethod("get_variables_importance", "BIOMOD.models.out",
 ##'   myBiomodModelOut <- BIOMOD_Modeling(bm.format = myBiomodData,
 ##'                                       modeling.id = 'AllModels',
 ##'                                       models = c('RF', 'GLM'),
-##'                                       bm.options = myBiomodOptions,
 ##'                                       CV.strategy = 'random',
 ##'                                       CV.nb.rep = 2,
 ##'                                       CV.perc = 0.8,
@@ -1186,7 +1191,6 @@ setMethod("get_predictions", "BIOMOD.projection.out",
 ##'   myBiomodModelOut <- BIOMOD_Modeling(bm.format = myBiomodData,
 ##'                                       modeling.id = 'AllModels',
 ##'                                       models = c('RF', 'GLM'),
-##'                                       bm.options = myBiomodOptions,
 ##'                                       CV.strategy = 'random',
 ##'                                       CV.nb.rep = 2,
 ##'                                       CV.perc = 0.8,

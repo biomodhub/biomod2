@@ -505,7 +505,7 @@ bm_Tuning <- function(model,
     if (!requireNamespace('MASS', quietly = TRUE)) stop("Package 'MASS' not found")
   }
   
-  ##check bm.options ----------------------------------------------------------
+  ## check bm.options ----------------------------------------------------------
   .fun_testIfInherits(TRUE, "bm.options", bm.options, c("BIOMOD.options.default", "BIOMOD.options.dataset"))
   
   ## check bm.format ----------------------------------------------------------

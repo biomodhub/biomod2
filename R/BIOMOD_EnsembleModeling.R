@@ -61,7 +61,7 @@
 ##' 
 ##' @param nb.cpu (\emph{optional, default} \code{1}) \cr 
 ##' An \code{integer} value corresponding to the number of computing resources to be used to 
-##' parallelize the single models computation
+##' parallelize the single models predictions and the ensemble models computation
 ##' @param seed.val (\emph{optional, default} \code{NULL}) \cr 
 ##' An \code{integer} value corresponding to the new seed value to be set
 ##' @param do.progress (\emph{optional, default} \code{TRUE}) \cr 
@@ -311,7 +311,6 @@
 ##'   myBiomodModelOut <- BIOMOD_Modeling(bm.format = myBiomodData,
 ##'                                       modeling.id = 'AllModels',
 ##'                                       models = c('RF', 'GLM'),
-##'                                       bm.options = myBiomodOptions,
 ##'                                       CV.strategy = 'random',
 ##'                                       CV.nb.rep = 2,
 ##'                                       CV.perc = 0.8,
@@ -414,9 +413,18 @@ BIOMOD_EnsembleModeling <- function(bm.mod,
   for (argi in names(args)) { assign(x = argi, value = args[[argi]]) }
   rm(args)
   
+  if (nb.cpu > 1) {
+    if (.getOS() != "windows") {
+      if (!isNamespaceLoaded("doParallel")) {
+        if(!requireNamespace('doParallel', quietly = TRUE)) stop("Package 'doParallel' not found")
+      }
+      doParallel::registerDoParallel(cores = nb.cpu)
+    } else {
+      warning("Parallelisation with `foreach` is not available for Windows. Sorry.")
+    }
+  }
   
-  ## Get selected options 
-  em.options <- list(em.by = em.by)
+  ## Get variables information
   expl_var_type = get_var_type(get_formal_data(bm.mod, 'expl.var'))
   expl_var_range = get_var_range(get_formal_data(bm.mod, 'expl.var'))
   
@@ -481,7 +489,7 @@ BIOMOD_EnsembleModeling <- function(bm.mod,
         models.kept.scores <- needed_predictions$models.kept.scores[[eval.m]]
         
         ### LOOP over em.algo ---------------------------------------------------
-        em.out.algo <- foreach(algo = em.algo) %do%  {
+        em.out.algo <- foreach(algo = em.algo) %dopar%  {
           ListOut <- list(model = NULL,
                           calib.failure = NULL,
                           models.kept = models.kept,
@@ -571,14 +579,12 @@ BIOMOD_EnsembleModeling <- function(bm.mod,
             cat("\n\t\t", " final models weights = ", models.kept.scores.tmp)
           }
           
-          
           ### Models building --------------------------------------------------
           cat("\n   >", algo.long, "by", eval.m, "...")
           model.bm <- new(paste0(algo.class, "_biomod2_model"),
                           model = models.kept.tmp,
                           model_name = model_name,
                           model_class = algo.class,
-                          model_options = em.options,
                           dir_name = bm.mod@dir.name,
                           resp_name = bm.mod@sp.name,
                           expl_var_names = bm.mod@expl.var.names,
