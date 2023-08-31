@@ -47,6 +47,10 @@
 ##' showClass("BIOMOD.options.default")
 ##' 
 ##' 
+##' @importFrom utils lsf.str
+##' @importFrom methods formalArgs
+##' 
+##' 
 NULL
 
 ##' @name BIOMOD.options.default-class
@@ -186,6 +190,8 @@ setMethod('BIOMOD.options.default', signature(mod = 'character', typ = 'characte
 ##' \code{\link{bm_CrossValidation}} functions, to explore the distribution of calibration 
 ##' and validation datasets
 ##' 
+##' @param object a \code{\link{BIOMOD.options.dataset}} object
+##' 
 ##' @slot model a \code{character} corresponding to the model
 ##' @slot type a \code{character} corresponding to the data type 
 ##' (\code{binary}, \code{binary.PA}, \code{abundance}, \code{compositional})
@@ -210,6 +216,8 @@ setMethod('BIOMOD.options.default', signature(mod = 'character', typ = 'characte
 ##' 
 ##' showClass("BIOMOD.options.dataset")
 ##' 
+##' 
+##' @importFrom stats rnorm runif na.omit na.exclude
 ##' 
 NULL
 

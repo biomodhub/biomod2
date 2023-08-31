@@ -43,8 +43,6 @@ bm_SampleBinaryVector(obs = vec.a, ratio = 0.7)
 
 }
 \seealso{
-\code{\link{bm_CVnnet}}
-
 Other Secundary functions: 
 \code{\link{bm_BinaryTransformation}()},
 \code{\link{bm_CrossValidation}()},

@@ -66,6 +66,9 @@ be either \code{AIC} or \code{BIC}}
 A \code{vector} of \code{numeric} values corresponding to observation weights (one per 
 observation, see Details)}
 
+\item{ctrl.train}{(\emph{optional, default} \code{NULL}) \cr 
+A \code{\link[caret]{trainControl}} object}
+
 \item{params.train}{a \code{list} containing values of model parameters to be tested 
 (see Details)}
 }

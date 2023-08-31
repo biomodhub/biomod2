@@ -84,6 +84,8 @@
 ##' 
 ##' @importFrom foreach foreach %:% %dopar%
 ## @importFrom doParallel registerDoParallel
+##' @importFrom stats cor
+##' 
 ##' 
 ##' @export
 ##' 

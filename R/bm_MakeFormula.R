@@ -57,7 +57,7 @@
 ##' 
 ##' 
 ##' @importFrom utils combn head read.csv setTxtProgressBar tail txtProgressBar write.table
-##' 
+##' @importFrom stats as.formula
 ##' 
 ##' @export
 ##' 

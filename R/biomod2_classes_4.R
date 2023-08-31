@@ -1048,7 +1048,7 @@ setClass('RF_biomod2_model',
 
 setMethod('predict2', signature(object = 'RF_biomod2_model', newdata = "SpatRaster"),
           function(object, newdata, ...) {
-            if (object@model_options$do.classif == TRUE) {
+            if (!is.null(object@model_options@args.default$type) && object@model_options@args.default$type == "classification") {
               predfun <- function(object, newdata, mod.name){
                 # new predict command used with terra
                 subset(predict(newdata, model = get_formal_model(object),
@@ -1078,7 +1078,7 @@ setMethod('predict2', signature(object = 'RF_biomod2_model', newdata = "SpatRast
 ##' @rdname predict2.bm
 setMethod('predict2', signature(object = 'RF_biomod2_model', newdata = "data.frame"),
           function(object, newdata, ...) {
-            if (object@model_options$do.classif == TRUE) {
+            if (!is.null(object@model_options@args.default$type) && object@model_options@args.default$type == "classification") {
               predfun <- function(object, newdata, not_na_rows) {
                 as.numeric(predict(get_formal_model(object), as.data.frame(newdata[not_na_rows, , drop = FALSE]), type = 'prob')[, '1'])        
               }

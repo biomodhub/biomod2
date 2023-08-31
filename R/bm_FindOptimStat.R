@@ -113,6 +113,7 @@
 ##' bm_FindOptimStat(metric.eval = 'TSS', fit = vec.c, obs = vec.a, threshold = 280)
 ##'
 ##' 
+##' @importFrom stats median complete.cases
 ##' @importFrom pROC roc coords auc
 ##' @importFrom PresenceAbsence presence.absence.accuracy
 ##' 

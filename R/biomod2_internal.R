@@ -278,6 +278,10 @@ get_var_range <- function(data)
 ## RESCALE MODEL WITH BINOMIAL GLM ----------------------------------------------------------------
 ## used in biomod2_classes_4.R, bm_RunModelsLoop files
 
+##' 
+##' @importFrom stats glm binomial
+##' 
+
 .scaling_model <- function(dataToRescale, ref = NULL, ...)
 {
   args <- list(...)
@@ -343,7 +347,7 @@ get_var_range <- function(data)
         keep_tmp <- 1:length(out_names)
         if (!is.null(subset.list[[sub.i]])) {
           .fun_testIfIn(TRUE, sub.i, subset.list[[sub.i]], .extract_modelNamesInfo(out_names, obj.type = obj.type, info = sub.i, as.unique = TRUE))
-          keep_tmp <- grep(paste0(subset.list[[sub.i]], "_", collapse = "|"), out_names)
+          keep_tmp <- grep(paste0(subset.list[[sub.i]], ifelse(sub.i %in% c("PA", "run"), "_", ""), collapse = "|"), out_names)
         }
         return(keep_tmp)
       }

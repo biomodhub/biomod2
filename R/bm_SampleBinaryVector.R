@@ -31,8 +31,6 @@
 ##'   
 ##' @keywords models formula options
 ##' 
-##' 
-##' @seealso \code{\link{bm_CVnnet}}
 ##' @family Secundary functions
 ##' 
 ##' 

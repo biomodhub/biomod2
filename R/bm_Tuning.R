@@ -34,10 +34,10 @@
 ##' @param weights (\emph{optional, default} \code{NULL}) \cr 
 ##' A \code{vector} of \code{numeric} values corresponding to observation weights (one per 
 ##' observation, see Details)
-##' 
+##' @param ctrl.train (\emph{optional, default} \code{NULL}) \cr 
+##' A \code{\link[caret]{trainControl}} object
 ##' @param params.train a \code{list} containing values of model parameters to be tested 
 ##' (see Details)
-## @param ctrl.train (\emph{optional, default} \code{NULL}) \cr to be added ?
 ##' 
 ##' 
 ##' @return 
@@ -257,7 +257,7 @@ bm_Tuning <- function(model,
   }
   
   
-  if (model != "MAXENT") {
+  if (model != "MAXENT" && is.null(ctrl.train)) {
     ## check control
     ctrl.train <- caret::trainControl(method = "repeatedcv",
                                       repeats = 3,

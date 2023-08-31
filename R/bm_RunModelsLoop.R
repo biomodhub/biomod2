@@ -244,8 +244,6 @@ bm_RunModel <- function(model, run.name, dir.name = '.'
     if (model == "RF" && !is.null(bm.opt.val$type) && bm.opt.val$type == "classification") {
       # defining occurrences as factor for doing classification and not regression in RF
       data_mod <- data_mod %>% mutate_at(resp_name, factor)
-    }
-    if (model == "RF" && !is.null(bm.opt.val$sampsize)) {
       bm.opt.val$strata <- data_mod[calib.lines.vec, , drop = FALSE][ , resp_name]
       bm.opt.val$sampsize <- unlist(ifelse(!is.null(bm.opt.val$sampsize), list(bm.opt.val$sampsize), length(data_sp[calib.lines.vec]))) ## TOCHECK !!
     }
@@ -317,7 +315,7 @@ bm_RunModel <- function(model, run.name, dir.name = '.'
                       model = model.sp,
                       model_name = model_name,
                       model_class = bm.opt@model,
-                      model_options = bm.opt,
+                      model_options = bm.opt, ## bm.opt.val ??
                       dir_name = dir_name,
                       resp_name = resp_name,
                       expl_var_names = expl_var_names,

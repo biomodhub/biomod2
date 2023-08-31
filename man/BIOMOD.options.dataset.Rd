@@ -60,6 +60,8 @@ object returned by the \code{\link{BIOMOD_FormatingData}} function}
 A \code{data.frame} object returned by \code{\link{get_calib_lines}} or 
 \code{\link{bm_CrossValidation}} functions, to explore the distribution of calibration 
 and validation datasets}
+
+\item{object}{a \code{\link{BIOMOD.options.dataset}} object}
 }
 \description{
 Class returned by \code{\link{bm_ModelingOptions}} (a 
