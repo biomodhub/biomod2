@@ -209,6 +209,7 @@ setGeneric("BIOMOD.formated.data", def = function(sp, env, ...) { standardGeneri
   sp <- .check_formating_resp.var(resp.var = sp, eval.data = FALSE)
   
   ## A.2 Check xy argument --------------------------------------------------------------
+  
   if (!is.null(xy)) {
     env.as.df <- inherits(env, c('data.frame'))
     xy <- .check_formating_xy(resp.xy = xy, resp.length = length(sp), env.as.df = env.as.df)
@@ -522,7 +523,8 @@ setMethod('BIOMOD.formated.data', signature(sp = 'numeric', env = 'SpatRaster'),
 ##' A \code{logical} defining whether evaluation data should be added to the plot or not
 ##' @param do.plot (\emph{optional, default} \code{TRUE}) \cr 
 ##' A \code{logical} defining whether the plot is to be rendered or not
-##' 
+##' @param point.size a \code{numeric} to adjust the size of points when
+##'  \code{plot.type = 'points'}.
 ##' 
 ##' @return a \code{list} with the data used to generate the plot and a
 ##' \code{ggplot2} object 
@@ -579,6 +581,7 @@ setMethod('plot', signature(x = 'BIOMOD.formated.data', y = "missing"),
                    PA,
                    run,
                    plot.eval,
+                   point.size = 1.5,
                    do.plot = TRUE)
           {
             args <- .plot.BIOMOD.formated.data.check.args(x = x,
@@ -837,7 +840,7 @@ setMethod('plot', signature(x = 'BIOMOD.formated.data', y = "missing"),
                   geom_point(aes(x = x, y = y, 
                                  color = factor(resp, levels = data_breaks[-12]),
                                  shape = factor(resp, levels = data_breaks[-12])), 
-                             alpha = 1, size = 1.5)+
+                             alpha = 1, size = point.size)+
                   facet_wrap(~dataset)+
                   scale_color_manual(
                     NULL,
@@ -878,7 +881,7 @@ setMethod('plot', signature(x = 'BIOMOD.formated.data', y = "missing"),
                     geom_point(aes(x = x, y = y, 
                                    color = as.factor(resp),
                                    shape = as.factor(resp)),
-                               alpha = 1, size = 1.5)+
+                               alpha = 1, size = point.size)+
                     scale_color_manual(
                       NULL,
                       breaks = data_breaks,
@@ -1205,19 +1208,17 @@ setMethod('summary', signature(object = 'BIOMOD.formated.data'),
               PA <- colnames(object@PA.table)
               run <- rep(NA, length(PA))
             }
-            
             if (!is.null(calib.lines) || inherits(object, "BIOMOD.formated.data.PA")) {
               output <- 
                 rbind(
                   output,
-                  foreach(this_run = run, .combine = 'rbind') %:% 
-                    foreach(this_PA = PA, .combine = 'rbind') %do% {
-                      if (is.na(this_PA) || this_PA == 'allData') { # run only
+                  foreach(this_run = run, this_PA = PA, .combine = 'rbind')  %do% {
+                    if (is.na(this_PA) || this_PA == 'allData') { # run only
                         this_name <- paste0("_", this_PA, "_", this_run)
                         this_calib <- calib.lines[ , this_name]
                         this_valid <- ! calib.lines[ , this_name]
                       } else if (is.na(this_run)) { # PA only
-                        this_calib <- ifelse(is.na(object@PA.table[ , this_PA]), FALSE, TRUE)
+                        this_calib <- ifelse(is.na(object@PA.table[ , this_PA]), FALSE, object@PA.table[ , this_PA])
                       } else { # PA+run
                         this_name <- paste0("_", this_PA, "_", this_run)
                         this_calib <- calib.lines[ , this_name] & object@PA.table[ , this_PA]
@@ -1230,9 +1231,7 @@ setMethod('summary', signature(object = 'BIOMOD.formated.data'),
                                         "Presences" = length(which(calib.resp == 1)),
                                         "True_Absences" = length(which(calib.resp == 0)),
                                         "Pseudo_Absences" = 
-                                          length(which(this_calib)) - 
-                                          length(which(calib.resp == 1)) -
-                                          length(which(calib.resp == 0)),
+                                          length(which(is.na(calib.resp))),
                                         "Undefined" = NA)
                       
                       if (!is.na(this_run)) { 

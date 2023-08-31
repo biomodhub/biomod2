@@ -631,12 +631,9 @@ setMethod('bm_PseudoAbsences_random', signature(expl.var = "SpatRaster"),
             } else {
               cat("\n   > Pseudo absences are selected in explanatory variables")
               # create a mask containing all not already sampled points (presences and absences)
-              mask.env <- mask.out <- subset(expl.var, 1)
-              ## the area we want to sample
-              mask.env <- classify(mask.env, matrix(c(-Inf, Inf, -1), 
-                                                    ncol = 3, byrow = TRUE)) 
-              mask.out[] <- NA
               
+              ## the area we want to sample
+              mask.out <- mask.env <- .get_data_mask(expl.var, value.out = -1)
               # add presences and true absences in our mask
               in.cells <- cellFromXY(mask.env, crds(resp.var))
               mask.env[in.cells] <- NA
@@ -813,13 +810,6 @@ setMethod('bm_PseudoAbsences_sre', signature(expl.var = "SpatRaster"),
               SR <- NULL ## initialise the vector of sample cells
               mask.in.tmp <- mask.in ## define a copy of the sampling mask
               
-              ## force to get at least one value of each factorial variable
-              fact.level.cells <- bm_SampleFactorLevels(expl.var = expl.var, mask.out = mask.out, mask.in = mask.in)
-              if (length(fact.level.cells) > 0) {
-                SR <- c(SR, fact.level.cells)
-                mask.in.tmp[SR] <- NA ## update the mask by removing already selected cells
-              }
-              
               ## repeat sampling until having the right number of points
               while (length(SR) < nb.absences) {
                 SR <- c(SR, spatSample(x = mask.in.tmp,
@@ -947,16 +937,16 @@ setMethod('bm_PseudoAbsences_disk', signature(expl.var = "SpatRaster"),
               
               if (is.null(dist.max)) { 
                 dist.max <- Inf 
-                }
+              }
               mask.in <- classify(dist.mask, 
                                   matrix(c(-Inf, dist.min, NA,
-                                               dist.min, dist.max, 1, 
-                                               dist.max, Inf, NA),
+                                           dist.min, dist.max, 1, 
+                                           dist.max, Inf, NA),
                                          ncol = 3, byrow = TRUE))
               mask.in[cellFromXY(mask.in, pres.xy)] <- 1
               mask.in = expl.var * mask.in
               names(mask.in) = names(expl.var)
-
+              
               # 2. selecting randomly pseudo absences
               return(bm_PseudoAbsences_random(resp.var, expl.var = mask.in, nb.absences, nb.rep))
             }

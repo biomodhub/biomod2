@@ -190,8 +190,9 @@ bm_PlotEvalMean <- function(bm.out, metric.eval = NULL, dataset = 'calibration',
   .fun_testIfInherits(TRUE, "bm.out", bm.out, c("BIOMOD.models.out", "BIOMOD.ensemble.models.out"))
   
   ## 2. Check metric.eval argument --------------------------------------------
-  if (is.null(metric.eval)) {
-    scores <- get_evaluations(bm.out)
+  scores <- get_evaluations(bm.out)
+  avail.metrics <- sort(unique(as.character(scores$metric.eval)))
+  if (is.null(metric.eval) && length(avail.metrics) > 1) {
     metric.eval <- sort(unique(as.character(scores$metric.eval)))[1:2]
     warnings(toString(metric.eval), " evaluation metric.eval automatically selected")
   } else {

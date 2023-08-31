@@ -10,3 +10,4 @@
 maxent.jar
 .tmp.pdf
 ^\.github$
+revdep

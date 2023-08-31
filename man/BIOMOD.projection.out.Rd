@@ -16,6 +16,7 @@
   std = TRUE,
   scales,
   size,
+  maxcell = 5e+05,
   ...
 )
 
@@ -48,6 +49,8 @@ to \code{\link[ggplot2:facet_wrap]{facet_wrap}}. Possible values: 'fixed', 'free
 \item{size}{(\emph{optional, default} \code{0.75}) a numeric determing the
 size of points on the plots and passed to
 \code{\link[ggplot2:geom_point]{geom_point}}.}
+
+\item{maxcell}{maximum number of cells to plot. Argument transmitted to \code{\link[terra]{plot}}.}
 
 \item{...}{additional parameters to be passed to \code{\link{get_predictions}} 
 to select the models that will be plotted}

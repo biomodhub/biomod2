@@ -246,7 +246,7 @@ bm_PlotResponseCurves <- function(bm.out
             mod.name <- ifelse(use.formal.names, formal_names[which(is.element(models, model))], model)
             
             temp_workdir = NULL
-            if (length(grep("MAXENT$", mod.name)) == 1) {
+            if (inherits(mod, "MAXENT_biomod2_model")) {
               temp_workdir = mod@model_output_dir
             }
             proj.tmp <- predict(mod, newdata = new.env.r.tmp, on_0_1000 = on_0_1000, do_check = FALSE, temp_workdir = temp_workdir, seedval = NULL)

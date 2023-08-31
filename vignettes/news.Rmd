@@ -15,20 +15,72 @@ vignette: >
 
 ### <i class="fas fa-feather"></i> 2023 
 
-#### 4.2-5 Tuning and Modeling options
+#### 4.2-5 Tuning and Model Options
 
-##### Bugfix
-- fixed calculations of the number of models in `BIOMOD_Modeling` when using `models.pa`
+##### 4.2-4-10 Bugfix
+- fixed `wrap` applied to a `data.frame` in `BIOMOD_Projection`
 
-##### Internal 
-- removed commented code on `MAXENT.Tsuruoka`.
+##### 4.2-4-9 Bugfix
+- fixed `predict` method for `RF` with `do.classif = FALSE`
 
-#### 4.2-4 Xgboost and Tuning
+##### 4.2-4-8 Bugfix
+- improved tests in `bm_PlotEvalMean`
+
+##### 4.2-4-7 Bugfix
+- fixed `do.classif` ignored in `BIOMOD_ModelingOptions`
+
+##### 4.2-4-6 Bugfix
+- fixed parallelization in `BIOMOD_Projection`
+
+##### 4.2-4-5 Bugfix
+- fixed summary method for `BIOMOD.formated.data` and `BIOMOD.formated.data.PA`
+
+##### 4.2-4-4 Bugfix
+- fixed `bm_PlotResponseCurves` for ensemble models merged by algo (for Maxent)
+
+##### 4.2-4-3 Bugfix
+- added point.size argument to plot.BIOMOD.Formated.data
+- added maxcell argument to plot.BIOMOD.projected.out
+
+##### 4.2-4-2 Bugfix
+- set xgboost `verbose = 0` (from `verbose = 1`)
+
+##### 4.2-4-1 Bugfix
+- fixed `BIOMOD_FormatingData` checks for `resp.xy`
+
+#### 4.2-4 xgboost
 
 ##### Major Changes
-- Added `XGBOOST` as a new possible model.
 
-#### 4.2-3 Cross-Validation and Pseudo-Absences (2023-04-04)
+* Added xgboost as a possible algorithm in `BIOMOD_Modeling`
+
+##### Minor Changes
+
+* Changed `CV.do.full.models` default value to `FALSE`
+
+##### 4.2-3-5 Bugfix
+
+* fixed some more issues related to categorical variables badly interacting with missing values. Projection and Ensemble Forecasting are now only calculated on cells without any missing values.
+* removed obsolete code for SRE pseudo absences sampling with categorical variables, as SRE do not work with categorical variables
+* added internal function to get mask of data `.get_data_mask`
+
+##### 4.2-3-4 Bugfix
+
+* fixed bug in `BIOMOD_Modeling` when using `sampsize` as a vector. argument `strata` was badly formatted
+
+##### 4.2-3-3 Bugfix
+
+* fixed bug in `BIOMOD_EnsembleModeling` for additional projection with only one environmental variables
+
+##### 4.2-3-2 Bugfix
+
+* fixed bugs in `BIOMOD_EnsembleForecasting` when several projection are running simultaneously and using the same temporary directory
+
+##### 4.2-3-1 Bugfix
+
+* fixed bugs in `bm_CrossValidation` with `user.defined` tables badly formatted (TRUE/FALSE for data not in the given PA dataset are now properly transformed into NA)
+
+#### 4.2-3 Cross-Validation and Pseudo-Absences (2023-05-09)
 
 ##### Major Changes
 
@@ -205,7 +257,7 @@ vignette: >
 
 * repaired support for cross-validation table given as data.frame instead of matrix.
 
-#### 4.1-2 (2022-09-29 - Current CRAN Version)
+#### 4.1-2 (2022-09-29)
 
 ##### Major changes
 

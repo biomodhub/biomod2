@@ -1048,18 +1048,21 @@ setClass('RF_biomod2_model',
 
 setMethod('predict2', signature(object = 'RF_biomod2_model', newdata = "SpatRaster"),
           function(object, newdata, ...) {
-            predfun <- function(object, newdata, mod.name){
-              
-              # new predict command used with terra
-              RF_model <- get_formal_model(object)
-              if (RF_model$type == "classification") {
-                subset(predict(newdata, model = RF_model,
+            if (object@model_options$do.classif == TRUE) {
+              predfun <- function(object, newdata, mod.name){
+                # new predict command used with terra
+                subset(predict(newdata, model = get_formal_model(object),
                                type = 'prob',
                                wopt = list(names = rep(mod.name,2))), 
                        2)   
-              } else {
-                predict(newdata, model = RF_model,
-                        wopt = list(names = rep(mod.name,2)))
+                # old predict function used with raster
+                # predict(newdata, model = get_formal_model(object), type = 'prob', index = 2)
+              }
+            } else { #regression case
+              predfun <- function(object, newdata, mod.name){
+                predict(newdata, model = get_formal_model(object),
+                        type = 'response',
+                        wopt = list(names = rep(mod.name,2))) 
               }
             }
             
@@ -1075,12 +1078,13 @@ setMethod('predict2', signature(object = 'RF_biomod2_model', newdata = "SpatRast
 ##' @rdname predict2.bm
 setMethod('predict2', signature(object = 'RF_biomod2_model', newdata = "data.frame"),
           function(object, newdata, ...) {
-            predfun <- function(object, newdata, not_na_rows){
-              RF_model <- get_formal_model(object)
-              if (RF_model$type == "classification") {
-                as.numeric(predict(RF_model, as.data.frame(newdata[not_na_rows, , drop = FALSE]), type = 'prob')[, '1'])  
-              } else {
-                as.numeric(predict(RF_model, as.data.frame(newdata[not_na_rows, , drop = FALSE])))
+            if (object@model_options$do.classif == TRUE) {
+              predfun <- function(object, newdata, not_na_rows) {
+                as.numeric(predict(get_formal_model(object), as.data.frame(newdata[not_na_rows, , drop = FALSE]), type = 'prob')[, '1'])        
+              }
+            } else { # regression case
+              predfun <- function(object, newdata, not_na_rows) {
+                as.numeric(predict(get_formal_model(object), as.data.frame(newdata[not_na_rows, , drop = FALSE]), type = 'response'))        
               }
             }
             # redirect to predict2.biomod2_model.data.frame

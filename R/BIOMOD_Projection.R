@@ -185,7 +185,7 @@
 ##' @importFrom foreach foreach %dopar% 
 ## @importFrom doParallel registerDoParallel
 ##' @importFrom terra rast subset nlyr writeRaster terraOptions wrap unwrap
-##'  mem_info app is.factor
+##'  mem_info app is.factor mask
 ##' @importFrom utils capture.output
 ##' @importFrom abind asub
 ##' 
@@ -254,7 +254,7 @@ BIOMOD_Projection <- function(bm.mod,
     assign(x = nameMask, value = .build_clamping_mask(new.env, MinMax))
     
     if (output.format == '.RData') {
-      if(proj_is_raster){
+      if (proj_is_raster) {
         save(list = wrap(nameMask),
              file = file.path(namePath, 
                               paste0(nameProj, "_ClampingMask", output.format)),
@@ -287,9 +287,14 @@ BIOMOD_Projection <- function(bm.mod,
       warning("Parallelisation with `foreach` is not available for Windows. Sorry.")
     }
   }
-  
+  if (proj_is_raster) {
+    new.env.wrap <- wrap(new.env) # ensure parallel run compatibility
+  }
   proj <- foreach(mod.name = models.chosen) %dopar% {
     cat("\n\t> Projecting", mod.name, "...")
+    if (proj_is_raster) {
+      new.env <- unwrap(new.env.wrap) # ensure parallel run compatibility
+    }
     if (do.stack) {
       filename <- NULL
     } else {
@@ -298,7 +303,6 @@ BIOMOD_Projection <- function(bm.mod,
                                    ifelse(output.format == ".RData"
                                           , ".tif", output.format)))
     }
-    
     mod <- get(BIOMOD_LoadModels(bm.out = bm.mod, full.name = mod.name))
     temp_workdir = NULL
     if (length(grep("MAXENT$", mod.name)) == 1) {
@@ -315,6 +319,7 @@ BIOMOD_Projection <- function(bm.mod,
         return(pred.tmp)
       }
     } else {
+      cat(filename)
       return(filename)
     }
   }
@@ -514,7 +519,7 @@ BIOMOD_Projection <- function(bm.mod,
     # conversion into SpatRaster
     if (any(raster::is.factor(new.env))) {
       new.env <- .categorical_stack_to_terra(raster::stack(new.env),
-                                            expected_levels = head(get_formal_data(bm.mod, subinfo = "expl.var"))
+                                             expected_levels = head(get_formal_data(bm.mod, subinfo = "expl.var"))
       )
     } else {
       new.env <- rast(new.env)
@@ -523,8 +528,11 @@ BIOMOD_Projection <- function(bm.mod,
   
   if (inherits(new.env, 'SpatRaster')) {
     .fun_testIfIn(TRUE, "names(new.env)", names(new.env), bm.mod@expl.var.names)
+    new.env.mask <- .get_data_mask(new.env, value.out = 1)
+    new.env <- mask(new.env, new.env.mask)
   } else {
     .fun_testIfIn(TRUE, "colnames(new.env)", colnames(new.env), bm.mod@expl.var.names)
+    new.env <- new.env[ , bm.mod@expl.var.names, drop = FALSE]
   }
   
   which.factor <- which(sapply(new.env, is.factor))

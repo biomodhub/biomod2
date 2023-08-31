@@ -245,6 +245,10 @@ bm_RunModel <- function(model, run.name, dir.name = '.'
       # defining occurrences as factor for doing classification and not regression in RF
       data_mod <- data_mod %>% mutate_at(resp_name, factor)
     }
+    if (model == "RF" && !is.null(bm.opt.val$sampsize)) {
+      bm.opt.val$strata <- data_mod[calib.lines.vec, , drop = FALSE][ , resp_name]
+      bm.opt.val$sampsize <- unlist(ifelse(!is.null(bm.opt.val$sampsize), list(bm.opt.val$sampsize), length(data_sp[calib.lines.vec]))) ## TOCHECK !!
+    }
     
     ## FILL data parameter ------------------------------------------
     if (model %in% c("ANN", "CTA", "FDA", "GAM", "GBM", "MARS", "RF")) {

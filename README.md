@@ -32,7 +32,7 @@ install.packages("biomod2", dependencies = TRUE)
 
 <br/>
 
-- **Development version** [![v](https://img.shields.io/badge/devel%20version-4.2--3-blue.svg)](https://github.com/biomodhub/biomod2) from [biomodhub](https://github.com/biomodhub/biomod2) :
+- **Development version** [![v](https://img.shields.io/badge/devel%20version-4.2--4-blue.svg)](https://github.com/biomodhub/biomod2) from [biomodhub](https://github.com/biomodhub/biomod2) :
 
 ```R
 library(devtools)
