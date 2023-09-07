@@ -15,70 +15,64 @@ vignette: >
 
 ### <i class="fas fa-feather"></i> 2023 
 
-#### 4.2-5 Tuning and Model Options
-
-##### 4.2-4-10 Bugfix
-- fixed `wrap` applied to a `data.frame` in `BIOMOD_Projection`
-
-##### 4.2-4-9 Bugfix
-- fixed `predict` method for `RF` with `do.classif = FALSE`
-
-##### 4.2-4-8 Bugfix
-- improved tests in `bm_PlotEvalMean`
-
-##### 4.2-4-7 Bugfix
-- fixed `do.classif` ignored in `BIOMOD_ModelingOptions`
-
-##### 4.2-4-6 Bugfix
-- fixed parallelization in `BIOMOD_Projection`
-
-##### 4.2-4-5 Bugfix
-- fixed summary method for `BIOMOD.formated.data` and `BIOMOD.formated.data.PA`
-
-##### 4.2-4-4 Bugfix
-- fixed `bm_PlotResponseCurves` for ensemble models merged by algo (for Maxent)
-
-##### 4.2-4-3 Bugfix
-- added point.size argument to plot.BIOMOD.Formated.data
-- added maxcell argument to plot.BIOMOD.projected.out
-
-##### 4.2-4-2 Bugfix
-- set xgboost `verbose = 0` (from `verbose = 1`)
-
-##### 4.2-4-1 Bugfix
-- fixed `BIOMOD_FormatingData` checks for `resp.xy`
-
-#### 4.2-4 xgboost
+#### 4.2-5 Modeling options and Tuning (2023-09-07)
 
 ##### Major Changes
 
-* Added xgboost as a possible algorithm in `BIOMOD_Modeling`
+- Reformat modeling options, how they are created and how they are given to models : 
+     + Create `BIOMOD.options.default` and `BIOMOD.options.dataset` classes, retrieving default parameters and values with `formalArgs` function
+     + Modeling options can now be different for PA x cross-validation datasets x models
+     + Add `ModelsTable` and `OptionsBigboss` datasets containing single models informations and pre-defined modeling options
+     + Move `BIOMOD_ModelingOptions` to `bm_ModelingOptions`
+     + Call `bm_ModelingOptions` directly in `BIOMOD_Modeling` and add related `OPT.[...]` parameters
+- Move `BIOMOD_Tuning` to `bm_Tuning` and adapt it to match with new modeling options
+- Modify the call to single models in `bm_RunModelsLoop` in a more generalized way dealing with new modeling options
 
 ##### Minor Changes
 
-* Changed `CV.do.full.models` default value to `FALSE`
+- Remove `BIOMOD_PresenceOnly` function and add `BOYCE` and `MPA` indices into `bm_FindOptimStat` function
+- Save ensemble projections with `FLT4S` datatype only when EMcv is activated, otherwise use `INT2S`
+- Add vignette for data preparation (_questions you should ask yourself before modeling_)
+- Correct getters (variable importance, built models)
+- Update examples and documentation
 
-##### 4.2-3-5 Bugfix
+##### Bugfix
 
-* fixed some more issues related to categorical variables badly interacting with missing values. Projection and Ensemble Forecasting are now only calculated on cells without any missing values.
-* removed obsolete code for SRE pseudo absences sampling with categorical variables, as SRE do not work with categorical variables
-* added internal function to get mask of data `.get_data_mask`
+- 4.2-4-10 : fixed `wrap` applied to a `data.frame` in `BIOMOD_Projection`
+- 4.2-4-9 : fixed `predict` method for `RF` with `do.classif = FALSE`
+- 4.2-4-8 : improved tests in `bm_PlotEvalMean`
+- 4.2-4-7 : fixed `do.classif` ignored in `BIOMOD_ModelingOptions`
+- 4.2-4-6 : fixed parallelization in `BIOMOD_Projection`
+- 4.2-4-5 : fixed summary method for `BIOMOD.formated.data` and `BIOMOD.formated.data.PA`
+- 4.2-4-4 : fixed `bm_PlotResponseCurves` for ensemble models merged by algo (for Maxent)
+- 4.2-4-3 :
+  + added `point.size` argument to `plot.BIOMOD.Formated.data`
+  + added `maxcell` argument to `plot.BIOMOD.projected.out`
+- 4.2-4-2  : set XGBOOST `verbose = 0` (from `verbose = 1`)
+- 4.2-4-1 : fixed `BIOMOD_FormatingData` checks for `resp.xy`
 
-##### 4.2-3-4 Bugfix
 
-* fixed bug in `BIOMOD_Modeling` when using `sampsize` as a vector. argument `strata` was badly formatted
+#### 4.2-4 XGBOOST (2023-06-21)
 
-##### 4.2-3-3 Bugfix
+##### Major Changes
 
-* fixed bug in `BIOMOD_EnsembleModeling` for additional projection with only one environmental variables
+* added XGBOOST as a possible algorithm in `BIOMOD_Modeling`
 
-##### 4.2-3-2 Bugfix
+##### Minor Changes
 
-* fixed bugs in `BIOMOD_EnsembleForecasting` when several projection are running simultaneously and using the same temporary directory
+* changed `CV.do.full.models` default value to `FALSE`
 
-##### 4.2-3-1 Bugfix
+##### Bugfix
 
-* fixed bugs in `bm_CrossValidation` with `user.defined` tables badly formatted (TRUE/FALSE for data not in the given PA dataset are now properly transformed into NA)
+- 4.2-3-5 :
+  * fixed some more issues related to categorical variables badly interacting with missing values. Projection and Ensemble Forecasting are now only calculated on cells without any missing values.
+  * removed obsolete code for SRE pseudo absences sampling with categorical variables, as SRE do not work with categorical variables
+  * added internal function to get mask of data `.get_data_mask`
+- 4.2-3-4 : fixed bug in `BIOMOD_Modeling` when using `sampsize` as a vector. argument `strata` was badly formatted
+- 4.2-3-3 : fixed bug in `BIOMOD_EnsembleModeling` for additional projection with only one environmental variables
+- 4.2-3-2 : fixed bugs in `BIOMOD_EnsembleForecasting` when several projection are running simultaneously and using the same temporary directory
+- 4.2-3-1 : fixed bugs in `bm_CrossValidation` with `user.defined` tables badly formatted (TRUE/FALSE for data not in the given PA dataset are now properly transformed into NA)
+
 
 #### 4.2-3 Cross-Validation and Pseudo-Absences (2023-05-09)
 
@@ -89,12 +83,12 @@ vignette: >
 
 ##### Minor Changes
 
-* Improved Documentation (`get_evaluations`, `BIOMOD_EnsembleModeling`, `bm_RunModelsLoop`, `bm_RunModel`)
-* Updated website tutorial to use current biomod2 version
+* improved Documentation (`get_evaluations`, `BIOMOD_EnsembleModeling`, `bm_RunModelsLoop`, `bm_RunModel`)
+* updated website tutorial to use current biomod2 version
 * removed unused parameter `save.output`. output are now automatically saved.
-* Improved management of categorical raster for both `terra` and `raster`
+* improved management of categorical raster for both `terra` and `raster`
 * `CV.perc` (formerly `data.split.perc`) now uses a 0-1 range (instead of 0-100)
-* Deprecated arguments for `BIOMOD_EnsembleModeling` now gives an error. 
+* deprecated arguments for `BIOMOD_EnsembleModeling` now gives an error. 
 * added argument `metric.select.dataset` to `BIOMOD_EnsembleModeling` to choose the dataset which evaluation metric should be used to filter and/or weigh the ensemble models. Default value is now 'validation' instead of 'evaluation'.
 * added argument `na.rm` to `BIOMOD_EnsembleModeling` to harmonize the management of `NA` among individual model predictions. 
 
@@ -102,9 +96,9 @@ vignette: >
 
 * validation metric calculation now properly use the calibration threshold (i.e a threshold optimized on calibration data instead of validation data). This can lead to less optimistic threshold-dependent validation metric.
 * fixed SRE projection assuming the same variables ordering in calibration and projection data
-* Ensemble model can again be calculated over models without validation
-* Correct print for multiple values in `RF$sampsize` parameter in `BIOMOD_ModelingOptions`
-* Fixed layer name in `BIOMOD_Projection` and `BIOMOD_EnsembleForecasting` when `terraOption(todisk = TRUE)` is activated (for large or numerous raster).
+* ensemble model can again be calculated over models without validation
+* correct print for multiple values in `RF$sampsize` parameter in `BIOMOD_ModelingOptions`
+* fixed layer name in `BIOMOD_Projection` and `BIOMOD_EnsembleForecasting` when `terraOption(todisk = TRUE)` is activated (for large or numerous raster).
 * fixed Ensemble Models based on models without cross-validation ("allRun")
 * model is now robust to using `data.table` object (that are converted into standard `data.frame`).
 * fixed projection raster name when using `do.stack = FALSE` and `resp.name` with `.` inside.
@@ -115,8 +109,8 @@ vignette: >
 ##### Internal 
 
 * add internal function `get_species_data` and `get_eval_data`
-* removed .BIOMOD_Modeling.prepare.data
-* reorganised bm_RunModelsLoop to do the PA loop within the function
+* removed `.BIOMOD_Modeling.prepare.data`
+* reorganised `bm_RunModelsLoop` to do the PA loop within the function
 * `calib.lines` and `eval.lines` variable names are standardised (no more `calibLines` or `eval_lines`)
 * removed dependency to `data.table` (removed use of `rbindlist`)
 * added `.get_env_class` to reduce code redundancy
@@ -127,8 +121,8 @@ vignette: >
 
 ##### Major Changes
 
-* '.tif' is available as an output format for raster projection
-* '.tif' is the new default output format for raster projection
+* `'.tif'` is available as an output format for raster projection
+* `'.tif'` is the new default output format for raster projection
 * Improved `plot` and `summary` methods for `BIOMOD_FormatingData` output. These method now support the use of `calib.lines` to explore how the cross-validation dataset are structured.
 * Updated `plot` methods for `BIOMOD.projection.out` objects so that it uses `ggplot2` for nicer plots.
 * Binary and Filtered transformation are now properly stored in `BIOMOD.projection.out` objects. They can be loaded from the disk with `get_predictions` or represented through `BIOMOD.projection.out` plot method.
@@ -140,7 +134,7 @@ vignette: >
 * Simplified maxent model names:  'MAXENT.Phillips' -> 'MAXENT' (based on `maxent.jar`); 'MAXENT.Phillips.2' -> 'MAXNET' (based on `maxnet` package).
 * `BIOMOD_FormatingData` now gives warning when several input data points are located in the same raster cells
 * Added options `filter.raster` in `BIOMOD_FormatingData` to filter data points so that none are located in the same raster cells.
-* `BIOMOD_EnsembleModeling` now have an argument `em.algo` to select the ensemble algorithm to be computed. Separate arguments are now deprecated (prob.mean, prob.median, prob.cv, prob.ci, committee.averaging, prob.mean.weight). Building all possible ensemble models can now be done with `em.algo = c('EMmean','EMmedian','EMcv','EMci','EMca','EMwmean')`.
+* `BIOMOD_EnsembleModeling` now have an argument `em.algo` to select the ensemble algorithm to be computed. Separate arguments are now deprecated (`prob.mean`, `prob.median`, `prob.cv`, `prob.ci`, `committee.averaging`, `prob.mean.weight`). Building all possible ensemble models can now be done with `em.algo = c('EMmean','EMmedian','EMcv','EMci','EMca','EMwmean')`.
 * Some possible values for `em.by` have slightly changed: 'PA_dataset' -> 'PA', 'PA_dataset+repet' -> 'PA+run' and 'PA_dataset+algo' -> 'PA+algo'
 * Added an appropriate message when all models fail for `BIOMOD_Modeling` and `BIOMOD_EnsembleModeling`.
 
@@ -149,8 +143,8 @@ vignette: >
 * Fixed `MAXENT.Phillips.2` and single variable models.
 * Fixed ensemble models when several filtering metrics were asked and some combination of ensemble/metrics had no models
 * Bugfix for projection for ensemble models to ensure that the proper set of models was selected
-* Bugfix for BIOMOD_CrossValidation for block-stratified sampling
-* Bugfix for BIOMOD_CrossValidation for pseudo-absences 
+* Bugfix for `BIOMOD_CrossValidation` for block-stratified sampling
+* Bugfix for `BIOMOD_CrossValidation` for pseudo-absences 
 
 ##### Internal Changes
 
@@ -177,8 +171,8 @@ vignette: >
 ##### Bugfix
 
 * Fixed `MAXENT.Phillips` predict method for large dataset (require `sp::read.asciigrid`). 
-* fixed ensemble models using a single PA dataset with em.by = 'all' or 'algo'.
-* models using repetition dataset cannot be merged anymore with models using Full dataset in `BIOMOD_EnsembleModeling`.
+* Fixed ensemble models using a single PA dataset with `em.by = 'all'` or `'algo'`.
+* Models using repetition dataset cannot be merged anymore with models using Full dataset in `BIOMOD_EnsembleModeling`.
 * Fixed error in `BIOMOD_EnsembleForecasting` when a single evaluation metric was available and binary/filtered transformation were asked for.
 * Bugfix for plot method for `BIOMOD.formated.data.PA` object.
 * Fixed `MAXENT.Phillips` for Windows.
@@ -191,7 +185,7 @@ vignette: >
 
 * Updated github workflow : removed obsolete ubuntu 18.04 ; added test on r-devel ; added cache for R packages.
 * Updated `MAXENT.Phillips` `predict2` method for `SpatRaster` so that it saves environmental data as `.asc` and do not use the `data.frame` method.
-* fixed some automatic boolean conversion
+* Fixed some automatic boolean conversion
 * Cleaned up `BIOMOD.formated.data@data.mask` slot. `data.mask` can now be safely saved and re-opened ; `data.mask` can now store a different extent for evaluation dataset
 
 ####  4.2-0 Terra Update
@@ -210,8 +204,8 @@ vignette: >
 * `BIOMOD_Projection` and `BIOMOD_EnsembleForecasting` now properly support matrix as `new.env`
 * `get_prediction` on `biomod.projection.out` generated from `BIOMOD_Projection` based on `SpatRaster` with arg `as.data.frame = TRUE` are now possible.
 * `bm_BinaryTransformation` now return same type of object as its input
-* Improved communcation for `BIOMOD_RangeSize`, indicating how comparison are done depending on the number of models in current vs future.
-* added argument check for BIOMOD_CrossValidation
+* Improved communication for `BIOMOD_RangeSize`, indicating how comparison are done depending on the number of models in current vs future.
+* Added argument check for `BIOMOD_CrossValidation`
 
 ##### Bugfix
 
@@ -247,22 +241,20 @@ vignette: >
 
 * Ensemble models that fails (e.g. EMcv with only one models) will not crash the full ensemble run. Instead a warning is generally displayed at the beginning and the resulting object will list failed models.
 * Fixed CTA raster prediction for categorical variables.
-* fixed binary transformation in `BIOMOD_EnsembleForecasting`.
+* Fixed binary transformation in `BIOMOD_EnsembleForecasting`.
 
 #### Internal Changes
 
-* New internal function .get_kept_models to generate list of models kept by ensemble modeling depending on metric.select.
-
-* Improved checks for BIOMOD_EnsembleModel to generate warnings when ensemble models are expected to be run with <= 1 models.
-
-* repaired support for cross-validation table given as data.frame instead of matrix.
+* New internal function .get_kept_models to generate list of models kept by ensemble modeling depending on `metric.select`.
+* Improved checks for `BIOMOD_EnsembleModeling` to generate warnings when ensemble models are expected to be run with <= 1 models.
+* Repaired support for cross-validation table given as `data.frame` instead of `matrix`.
 
 #### 4.1-2 (2022-09-29)
 
 ##### Major changes
 
 * `dir.name` can now be provided as project argument so that results may be saved in a custom folder.
-* predict with `CTA` algorithm and categorical variables on raster is now possible.
+* `predict` with `CTA` algorithm and categorical variables on raster is now possible.
 * Changed evaluation for EM models merging PA datasets  (`em.by = "algo"` or `em.by = "all"`) so that evaluation uses the union of PA data sets instead of the whole environmental space supplied.
 
 ##### Minor changes
@@ -281,17 +273,17 @@ vignette: >
 * Argument `on_0_1000` can now be passed without errors so that projection may either be on a range from 0 to 1 or from 0 to 1000. The latter option being more effective memory-wise.
 * Completed argument check for function `BIOMOD_EnsembleModeling` so that `em.by` can not be of `length > 1`.
 * Corrected function `.get_models_assembling` so that it did not confound `MAXENT.Phillips2` with `MAXENT.Phillips` when grouping models by algorithm in `BIOMOD_EnsembleModeling`.
-* get_prediction method for `BIOMOD.ensemble.models.out` now accepts an `evaluation` arg. Evaluation values, variables' importance and Calibration/Evaluation predictions for ensemble models are now properly saved by `BIOMOD_EnsembleModeling()`.
-* evaluation metrics are no longer calculated for models `prob.ci.inf` et `prob.ci.sup`.
+* `get_predictions` method for `BIOMOD.ensemble.models.out` now accepts an `evaluation` arg. Evaluation values, variables' importance and Calibration/Evaluation predictions for ensemble models are now properly saved by `BIOMOD_EnsembleModeling()`.
+* Evaluation metrics are no longer calculated for models `prob.ci.inf` et `prob.ci.sup`.
 * Package now properly pass R CMD check.
 * `BIOMOD_PresenceOnly` now properly manage `NA`.
-* Corrected bm_PlotResponseCurves to only plot show.variables.
+* Corrected `bm_PlotResponseCurves` to only plot `show.variables`.
 * `get_predictions.BIOMOD.projection.out` now properly works when asked for a subset of model.
 
 
 ##### Miscellaneous
 
-* Using models with a single predictor requires updating `gbm` package to its development version at rpatin/gbm can be used. (see issue *<https://github.com/biomodhub/biomod2/issues/102>*)
+  * Using models with a single predictor requires updating `gbm` package to its development version at rpatin/gbm can be used. (see issue *<https://github.com/biomodhub/biomod2/issues/102>*)
 
 #### 4.1-1 (2022-08-30)
 

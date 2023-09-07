@@ -246,9 +246,9 @@ metrics (see Details).
 
   \item{metric.eval}{
   \itemize{
-    \item \code{ROC} : Relative Operating Characteristic
+    \item \code{ROC} : Relative operating characteristic
     \item \code{KAPPA} : Cohen's Kappa (Heidke skill score)
-    \item \code{TSS} : True kill statistic (Hanssen and Kuipers discriminant, Peirce's skill 
+    \item \code{TSS} : True skill statistic (Hanssen and Kuipers discriminant, Peirce's skill 
     score)
     \item \code{FAR} : False alarm ratio
     \item \code{SR} : Success ratio
@@ -258,7 +258,7 @@ metrics (see Details).
     \item \code{CSI} : Critical success index (threat score)
     \item \code{ETS} : Equitable threat score (Gilbert skill score)
     \item \code{BOYCE} : Boyce index
-    \item \code{MPA} : Minimal Predicted Area (cutoff optimising MPA to predict 90% of presences)
+    \item \code{MPA} : Minimal predicted area (cutoff optimising MPA to predict 90% of presences)
   }
   Optimal value of each method can be obtained with the \code{\link{get_optim_value}} 
   function. Several evaluation metrics can be selected. \emph{Please refer to the 

@@ -125,6 +125,18 @@
 badge for github version :
 badger::badge_github_version("biomodhub/biomod2", "blue") 
 -->
+<style>
+.zoom p {
+width:800px;
+margin-left: auto;
+margin-right: auto;
+}
+.zoom p:hover {
+width:1500px;
+position: relative;
+z-index: 10;
+}
+</style>
 <div align="center">
 <p><b>————————————————————<br> Species distribution modeling, <br> calibration and evaluation, <br> ensemble modeling <br> ————————————————————<br></b></p>
 <p><a href="https://biomodhub.github.io/biomod2/" class="external-link uri">https://biomodhub.github.io/biomod2/</a></p>
@@ -143,7 +155,7 @@ badger::badge_github_version("biomodhub/biomod2", "blue")
 <p><br></p>
 <ul>
 <li>
-<strong>Development version</strong> <a href="https://github.com/biomodhub/biomod2" class="external-link"><img src="https://img.shields.io/badge/devel%20version-4.2--4-blue.svg" alt="v"></a> from <a href="https://github.com/biomodhub/biomod2" class="external-link">biomodhub</a> :</li>
+<strong>Development version</strong> <a href="https://github.com/biomodhub/biomod2" class="external-link"><img src="https://img.shields.io/badge/devel%20version-4.2--5-blue.svg" alt="v"></a> from <a href="https://github.com/biomodhub/biomod2" class="external-link">biomodhub</a> :</li>
 </ul>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://devtools.r-lib.org/" class="external-link">devtools</a></span><span class="op">)</span></span>
@@ -151,13 +163,46 @@ badger::badge_github_version("biomodhub/biomod2", "blue")
 <p><br><br></p>
 </div>
 <div class="section level3">
-<h3 id="id_-biomod-42---terra-update">
-<i class="fas fa-envelope-open-text"></i> <code>biomod 4.2</code> - Terra Update<a class="anchor" aria-label="anchor" href="#id_-biomod-42---terra-update"></a>
+<h3 id="id_-biomod-42-5---modeling-options--tuning-update">
+<i class="fas fa-envelope-open-text"></i> <code>biomod 4.2-5</code> - Modeling options &amp; Tuning Update<a class="anchor" aria-label="anchor" href="#id_-biomod-42-5---modeling-options--tuning-update"></a>
 </h3>
-<p><strong>! <code>biomod2 4.2</code> is now available !</strong></p>
+<p><strong>! <code>biomod2 4.2-5</code> is now available on GitHub !</strong></p>
+<p><code>/!\</code> Please <strong>feel free to indicate if you notice some strange new behaviors</strong> !</p>
 <div class="section level4">
 <h4 id="id_-what-is-changed-">
 <i class="fas fa-exchange-alt"></i> What is changed ?<a class="anchor" aria-label="anchor" href="#id_-what-is-changed-"></a>
+</h4>
+<ul>
+<li>modeling options are now automatically retrieved from single models functions, normally allowing the use of all arguments taken into account by these functions</li>
+<li>tuning has been cleaned up, but keep in mind that it is still a quite long running process</li>
+<li>in consequence, <code>BIOMOD_ModelingOptions</code> and <code>BIOMOD_Tuning</code> functions become secundary functions (<code>bm_ModelingOptions</code> and <code>bm_Tuning</code>), and modeling options can be directly built through <code>BIOMOD_Modeling</code> function</li>
+</ul>
+</div>
+<div class="section level4">
+<h4 id="id_-what-is-new-">
+<i class="fas fa-plus-square"></i> What is new ?<a class="anchor" aria-label="anchor" href="#id_-what-is-new-"></a>
+</h4>
+<ul>
+<li>
+<code>ModelsTable</code> and <code>OptionsBigboss</code> datasets (<em>note that improvement of bigboss modeling options is planned in near future</em>)</li>
+<li>
+<a href="https://biomodhub.github.io/biomod2/articles/vignette_dataPreparation.html" class="external-link">data preparation vignette</a> has been created (<em>questions you should ask yourself before modeling</em>)</li>
+</ul>
+<p><br></p>
+<div class="zoom">
+<p>
+<img src="articles/pictures/SCHEMA_BIOMOD2_WORKFLOW_functions.png" alt="Main workflow"></p>
+</div>
+<p><br><br></p>
+</div>
+</div>
+<div class="section level3">
+<h3 id="id_-biomod-42---terra-update">
+<i class="fas fa-envelope"></i> <code>biomod 4.2</code> - Terra Update<a class="anchor" aria-label="anchor" href="#id_-biomod-42---terra-update"></a>
+</h3>
+<div class="section level4">
+<h4 id="id_-what-is-changed--1">
+<i class="fas fa-exchange-alt"></i> What is changed ?<a class="anchor" aria-label="anchor" href="#id_-what-is-changed--1"></a>
 </h4>
 <ul>
 <li>
@@ -167,16 +212,17 @@ badger::badge_github_version("biomodhub/biomod2", "blue")
 <li>
 <code>biomod2</code> function will sometimes return <code>SpatRaster</code> from package <code>terra</code> that you can always convert into <code>RasterStack</code> using function <code>stack</code> in <code>raster</code>.</li>
 </ul>
+<p><br><br></p>
 </div>
 </div>
 <div class="section level3">
 <h3 id="id_-biomod-41-is-now-available">
-<i class="fas fa-envelope-open-text"></i> <code>biomod 4.1</code> is now available<a class="anchor" aria-label="anchor" href="#id_-biomod-41-is-now-available"></a>
+<i class="fas fa-envelope"></i> <code>biomod 4.1</code> is now available<a class="anchor" aria-label="anchor" href="#id_-biomod-41-is-now-available"></a>
 </h3>
 <p><code>/!\</code> Package fresh start… meaning some changes in function names and parameters. We apologize for the trouble <code>&gt;{o.o}&lt;</code> <br> Sorry for the inconvenience, and please <strong>feel free to indicate if you notice some strange new behaviors</strong> !</p>
 <div class="section level4">
-<h4 id="id_-what-is-changed--1">
-<i class="fas fa-exchange-alt"></i> What is changed ?<a class="anchor" aria-label="anchor" href="#id_-what-is-changed--1"></a>
+<h4 id="id_-what-is-changed--2">
+<i class="fas fa-exchange-alt"></i> What is changed ?<a class="anchor" aria-label="anchor" href="#id_-what-is-changed--2"></a>
 </h4>
 <ul>
 <li>all code functions have been cleaned, and old / unused functions have been removed</li>
@@ -186,8 +232,8 @@ badger::badge_github_version("biomodhub/biomod2", "blue")
 </ul>
 </div>
 <div class="section level4">
-<h4 id="id_-what-is-new-">
-<i class="fas fa-plus-square"></i> What is new ?<a class="anchor" aria-label="anchor" href="#id_-what-is-new-"></a>
+<h4 id="id_-what-is-new--1">
+<i class="fas fa-plus-square"></i> What is new ?<a class="anchor" aria-label="anchor" href="#id_-what-is-new--1"></a>
 </h4>
 <ul>
 <li>plot functions have been re-written with <code>ggplot2</code>
@@ -209,22 +255,6 @@ badger::badge_github_version("biomodhub/biomod2", "blue")
 </li>
 </ul>
 <p><br><br></p>
-<style>
-.zoom p {
-width:600px;
-margin-left: auto;
-margin-right: auto;
-}
-.zoom p:hover {
-width:1200px;
-position: relative;
-z-index: 10;
-}
-</style>
-<div class="zoom">
-<p>
-<img src="articles/pictures/SCHEMA_BIOMOD2_WORKFLOW_functions.png" alt="Main workflow"></p>
-</div>
 </div>
 </div>
 

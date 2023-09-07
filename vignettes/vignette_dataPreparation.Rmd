@@ -110,6 +110,10 @@ If *precipitations* could reflect the humidity of habitats, variables such as "*
 
 <br/><br/>
 
+**NOTE** that it is ALWAYS a good starting point to LOOK, PLOT, SUMMARIZE the data that is going to be used (occurrences, variables...).
+
+<br/><br/>
+
 ### <i class="fa-solid fa-route"></i> Modeling choices
 
 **Study area / resolution :** *at which resolution and extent are available the variables ? how many pixels and how heavy are the maps ?*
