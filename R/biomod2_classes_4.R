@@ -819,9 +819,14 @@ setMethod('predict2', signature(object = 'MAXENT_biomod2_model', newdata = "Spat
             proj <- rast(proj.spdf)
             
             # Remi 11/2022 Not sure the following lines are necessary
-            if (!inMemory(proj)) {
-              proj <- proj@ptr$readAll() # to prevent from tmp files removing
-              x <- message(proj, "readAll") # to have message if need be ?
+			## RH: I doubt that they are. In fact, I would recommend against them
+			## if the file raster data go to disk it is because of memory limitations
+			## forcing them back into memory could be risky.
+            if (!inMemory(proj)[1]) {
+			 ##RH: @ptr$... is not part of the stable user interface
+             ## proj <- proj@ptr$readAll() # to prevent from tmp files removing
+			 ## x <- message(proj, "readAll") # to have message if need be ?
+			  readAll(proj)           
             }
             
             if (on_0_1000) { 
