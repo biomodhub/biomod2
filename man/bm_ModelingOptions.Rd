@@ -218,15 +218,18 @@ opt.u <- bm_ModelingOptions(data.type = 'binary',
                             strategy = 'user.defined',
                             user.val = user.val)
 
+opt.b
+opt.u
+
+\dontrun{
 # tuned parameters with formated data
 opt.t <- bm_ModelingOptions(data.type = 'binary',
                             models = c('SRE', 'XGBOOST'),
                             strategy = 'tuned',
                             bm.format = myBiomodData)
-
-opt.b
-opt.u
 opt.t
+}
+
 
 
 }

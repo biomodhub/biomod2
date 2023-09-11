@@ -10,7 +10,7 @@
   {
     RFver <- read.dcf(file = system.file("DESCRIPTION", package = pkgname), fields = "Version")
     mess <- paste(pkgname, RFver, "loaded.\n")
-    mess <- paste(mess, "/!\\ New set up for modeling options. We apologize for the trouble ʕ´•.•`ʔ")
+    mess <- paste(mess, "/!\\ New set up for modeling options. We apologize for the trouble ^[*.*]^")
     packageStartupMessage(mess)
   }
 }
