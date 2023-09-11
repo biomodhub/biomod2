@@ -314,75 +314,75 @@ setGeneric("BIOMOD.options.dataset",
               expected_CVnames = expected_CVnames))
 }
 
-.BIOMOD.options.dataset.test <- function(bm.opt)
-{
-  ## create false dataset
-  mySp = "Hariba"
-  myResp = c(rep(1, 100), rep(0, 100))
-  myRespXY = data.frame(x = sample(1:100, 200, replace = TRUE)
-                        , y = sample(1:100, 200, replace = TRUE))
-  myExpl = data.frame(var1 = rnorm(200, mean = 3, sd = 0.4)
-                      , var2 = runif(200)
-                      , var3 = sample(1:5, 200, replace = TRUE))
-  mySpExpl = cbind(myResp, myExpl)
-  colnames(mySpExpl)[1] = mySp
-  
-  ## get options for specific model
-  if (bm.opt@model == "GAM") {
-    subclass_name <- paste0(bm.opt@model, "_", bm.opt@type, "_", bm.opt@package)
-    .load_gam_namespace(model_subclass = subclass_name)
-  }
-  
-  ## 
-  for (xx in 1:length(bm.opt@args.values)) { ## SHOULD BE MOVED to place when testing values ??
-    if ('...' %in% names(bm.opt@args.values[[xx]])) {
-      bm.opt@args.values[[xx]][['...']] <- NULL
-    }
-  }
-  print(bm.opt)
-  
-  ## run test for each dataset
-  for (dataset_name in names(bm.opt@args.values)) {
-    bm.opt.val <- bm.opt@args.values[[dataset_name]]
-    
-    ## 2. CREATE MODELS -----------------------------------------------------------------------------
-    set.seed(42)
-    
-    if (bm.opt@model != "MAXENT") { ## ANY MODEL BUT MAXENT ------------------------------------------------
-      ## PRELIMINAR ---------------------------------------------------
-      bm.opt.val$formula <- bm_MakeFormula(resp.name = mySp
-                                           , expl.var = head(myExpl)
-                                           , type = 'simple'
-                                           , interaction.level = 0)
-      
-      if (bm.opt@model == "RF" && !is.null(bm.opt.val$type) && bm.opt.val$type == 'classification') {
-        # defining occurences as factor for doing classification and not regression in RF
-        mySpExpl <- mySpExpl %>% mutate_at(mySp, factor)
-      }
-      
-      ## FILL data parameter ------------------------------------------
-      if (bm.opt@model %in% c("ANN", "CTA", "FDA", "GAM", "GBM", "MARS", "RF", "GLM")) {
-        bm.opt.val$data <- mySpExpl
-      } else if (bm.opt@model == "MAXNET") {
-        bm.opt.val$p <- myResp
-        bm.opt.val$data <- myExpl
-      } else if (bm.opt@model == "SRE") {
-        bm.opt.val$resp.var <- myResp
-        bm.opt.val$expl.var <- myExpl
-      } else if (bm.opt@model == "XGBOOST") {
-        bm.opt.val$label <- myResp
-        bm.opt.val$data <- as.matrix(myExpl)
-      }
-      
-      ## RUN model ----------------------------------------------------
-      print("you")
-      model.sp <- do.call(bm.opt@func, bm.opt.val)
-      print("pi")
-    } else {
-      ## STUFF MAXENT
-    }
-  }
-}
+# .BIOMOD.options.dataset.test <- function(bm.opt)
+# {
+#   ## create false dataset
+#   mySp = "Hariba"
+#   myResp = c(rep(1, 100), rep(0, 100))
+#   myRespXY = data.frame(x = sample(1:100, 200, replace = TRUE)
+#                         , y = sample(1:100, 200, replace = TRUE))
+#   myExpl = data.frame(var1 = rnorm(200, mean = 3, sd = 0.4)
+#                       , var2 = runif(200)
+#                       , var3 = sample(1:5, 200, replace = TRUE))
+#   mySpExpl = cbind(myResp, myExpl)
+#   colnames(mySpExpl)[1] = mySp
+#   
+#   ## get options for specific model
+#   if (bm.opt@model == "GAM") {
+#     subclass_name <- paste0(bm.opt@model, "_", bm.opt@type, "_", bm.opt@package)
+#     .load_gam_namespace(model_subclass = subclass_name)
+#   }
+#   
+#   ## 
+#   for (xx in 1:length(bm.opt@args.values)) { ## SHOULD BE MOVED to place when testing values ??
+#     if ('...' %in% names(bm.opt@args.values[[xx]])) {
+#       bm.opt@args.values[[xx]][['...']] <- NULL
+#     }
+#   }
+#   print(bm.opt)
+#   
+#   ## run test for each dataset
+#   for (dataset_name in names(bm.opt@args.values)) {
+#     bm.opt.val <- bm.opt@args.values[[dataset_name]]
+#     
+#     ## 2. CREATE MODELS -----------------------------------------------------------------------------
+#     set.seed(42)
+#     
+#     if (bm.opt@model != "MAXENT") { ## ANY MODEL BUT MAXENT ------------------------------------------------
+#       ## PRELIMINAR ---------------------------------------------------
+#       bm.opt.val$formula <- bm_MakeFormula(resp.name = mySp
+#                                            , expl.var = head(myExpl)
+#                                            , type = 'simple'
+#                                            , interaction.level = 0)
+#       
+#       if (bm.opt@model == "RF" && !is.null(bm.opt.val$type) && bm.opt.val$type == 'classification') {
+#         # defining occurences as factor for doing classification and not regression in RF
+#         mySpExpl <- mySpExpl %>% mutate_at(mySp, factor)
+#       }
+#       
+#       ## FILL data parameter ------------------------------------------
+#       if (bm.opt@model %in% c("ANN", "CTA", "FDA", "GAM", "GBM", "MARS", "RF", "GLM")) {
+#         bm.opt.val$data <- mySpExpl
+#       } else if (bm.opt@model == "MAXNET") {
+#         bm.opt.val$p <- myResp
+#         bm.opt.val$data <- myExpl
+#       } else if (bm.opt@model == "SRE") {
+#         bm.opt.val$resp.var <- myResp
+#         bm.opt.val$expl.var <- myExpl
+#       } else if (bm.opt@model == "XGBOOST") {
+#         bm.opt.val$label <- myResp
+#         bm.opt.val$data <- as.matrix(myExpl)
+#       }
+#       
+#       ## RUN model ----------------------------------------------------
+#       print("you")
+#       model.sp <- do.call(bm.opt@func, bm.opt.val)
+#       print("pi")
+#     } else {
+#       ## STUFF MAXENT
+#     }
+#   }
+# }
 
 
 ## BIOMOD.options.dataset -----------------------------------------------------
@@ -421,7 +421,10 @@ setMethod('BIOMOD.options.dataset', signature(strategy = 'character'),
               argstmp$keep.fitted = NULL
             }
             if (mod == "GAM") {
+              argstmp[["x"]] = NULL
+              argstmp[["y"]] = NULL
               argstmp$family = binomial(link = 'logit')
+              argstmp$method = "GCV.Cp"
               if (pkg == "gam") { argstmp$control = gam::gam.control() }
               if (pkg == "mgcv") { argstmp$control = mgcv::gam.control() }
             }
@@ -440,14 +443,20 @@ setMethod('BIOMOD.options.dataset', signature(strategy = 'character'),
             ## SHOULD BE MOVED to place when testing values !! ??
             
             ## SPECIFIC case of formula -------------------------------------------------
-            if ("formula" %in% BOM@args.names && !is.null(bm.format)) {
-              if (is.null(argstmp$formula) || 
-                  (length(argstmp$formula) == 1 && nchar(argstmp$formula) == 0) ||
-                  argstmp$formula == "formula(data)") {
-                argstmp$formula <- bm_MakeFormula(resp.name = bm.format@sp.name
-                                                  , expl.var = head(bm.format@data.env.var)
-                                                  , type = 'simple'
-                                                  , interaction.level = 0)
+            if ("formula" %in% BOM@args.names) {
+              if (!is.null(bm.format)) {
+                if (is.null(argstmp$formula) || 
+                    (length(argstmp$formula) == 1 && nchar(argstmp$formula) == 0) ||
+                    argstmp$formula == "formula(data)") {
+                  argstmp$formula <- bm_MakeFormula(resp.name = bm.format@sp.name
+                                                    , expl.var = head(bm.format@data.env.var)
+                                                    , type = ifelse(mod == "GAM" && pkg == "mgcv", 's_smoother'
+                                                                    , ifelse(mod == "GLM", 'quadratic'
+                                                                             , 'simple'))
+                                                    , interaction.level = 0)
+                }
+              } else {
+                warning("No bm.format provided. No definition of formula through bm_MakeFormula.")
               }
             }
             ## ATTENTION : si on ne donne pas bm.format, on n'a pas de formula du coup
@@ -460,23 +469,6 @@ setMethod('BIOMOD.options.dataset', signature(strategy = 'character'),
                 val <- OptionsBigboss@options[[paste0(c(mod, typ, pkg, fun), collapse = ".")]]@args.values[['_allData_allRun']]
                 for (ii in names(val)) {
                   if (ii != "formula") { argstmp[[ii]] <- val[[ii]] }
-                }
-                
-                if (!is.null(bm.format)) {
-                  if (mod == "GAM" && pkg == "mgcv") {
-                    argstmp$formula = bm_MakeFormula(resp.name = bm.format@sp.name
-                                                     , expl.var = head(bm.format@data.env.var)
-                                                     , type = 's_smoother'
-                                                     , interaction.level = 0
-                                                     , k = NULL)
-                  } else if (mod == "GLM") {
-                    argstmp$formula = bm_MakeFormula(resp.name = bm.format@sp.name
-                                                     , expl.var = head(bm.format@data.env.var)
-                                                     , type = 'quadratic'
-                                                     , interaction.level = 0)
-                  }
-                } else if ((mod == "GAM" && pkg == "mgcv") || mod == "GLM") {
-                  warning("No bm.format provided. No bigboss definition of formula for GAM.mgcv.gam and GLM models.")
                 }
               }
               

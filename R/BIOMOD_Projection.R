@@ -214,6 +214,7 @@ BIOMOD_Projection <- function(bm.mod,
   for (argi in names(args)) { assign(x = argi, value = args[[argi]]) }
   rm(args)
   
+  
   ## 1. Create output object ----------------------------------------------------------------------
   proj_out <- new('BIOMOD.projection.out',
                   proj.name = proj.name,
@@ -290,10 +291,12 @@ BIOMOD_Projection <- function(bm.mod,
   if (proj_is_raster) {
     new.env.wrap <- wrap(new.env) # ensure parallel run compatibility
   }
+  
   proj <- foreach(mod.name = models.chosen) %dopar% {
     cat("\n\t> Projecting", mod.name, "...")
     if (proj_is_raster) {
       new.env <- unwrap(new.env.wrap) # ensure parallel run compatibility
+      names(new.env) <- bm.mod@expl.var.names
     }
     if (do.stack) {
       filename <- NULL

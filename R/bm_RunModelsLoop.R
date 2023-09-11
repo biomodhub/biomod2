@@ -290,7 +290,8 @@ bm_RunModel <- function(model, run.name, dir.name = '.'
     
     
     ## RUN model ----------------------------------------------------
-    model.sp <- do.call(bm.opt@func, bm.opt.val)
+    model.call <- paste0(bm.opt@package, "::", bm.opt@func)
+    model.sp <- do.call(eval(parse(text = model.call)), bm.opt.val)
     
     
     ## GET results --------------------------------------------------
@@ -366,8 +367,8 @@ bm_RunModel <- function(model, run.name, dir.name = '.'
       paste0(" outputformat=logistic "), 
       ifelse(length(categorical_var), paste0(" togglelayertype=", categorical_var, collapse = " "), ""),
       " redoifexists")
-    vec_x <- names(bm.opt.val)[which(names(bm.opt.val) != c("path_to_maxent.jar", "memory_allocated", "initial_heap_size",
-                                                            "max_heap_size", "background_data_dir"))]
+    vec_x <- names(bm.opt.val)[which(!(names(bm.opt.val) %in% c("path_to_maxent.jar", "memory_allocated", "initial_heap_size",
+                                                                "max_heap_size", "background_data_dir")))]
     maxent.args <- c(maxent.args, sapply(vec_x, function(xx) {
       paste0(" ", xx, "=", bm.opt.val[[xx]])
     }))

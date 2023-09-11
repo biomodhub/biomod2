@@ -580,6 +580,13 @@ BIOMOD_Modeling <- function(bm.format,
   avail.models.list <- c('ANN', 'CTA', 'FDA', 'GAM', 'GBM', 'GLM', 'MARS', 'MAXENT', 'MAXNET', 'RF', 'SRE', 'XGBOOST')
   .fun_testIfIn(TRUE, "models", models, avail.models.list)
   
+  ## Specific case of one variable with GBM / MAXNET
+  if ('GBM' %in% models && ncol(bm.format@data.env.var) == 1) {
+    warning('GBM might have issues when only one variable is used. Please be sure to install the following version : devtools::install_github("rpatin/gbm")')
+  }
+  if ('MAXNET' %in% models && ncol(bm.format@data.env.var) == 1) {
+    warning('MAXNET might have issues when only one variable is used. Please be sure to install the following version : devtools::install_github("mrmaxent/maxnet")')
+  }
   
   ## 1.1 Remove models not supporting categorical variables --------------------
   categorical_var <- .get_categorical_names(bm.format@data.env.var)
