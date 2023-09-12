@@ -19,7 +19,7 @@ env or user.defined (see Details)."><!-- mathjax --><script src="https://cdnjs.c
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">biomod2</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">4.2-4-10</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">4.2-5</span>
       </span>
     </div>
 
@@ -52,6 +52,9 @@ env or user.defined (see Details)."><!-- mathjax --><script src="https://cdnjs.c
       <a href="../articles/examples_2_secundaryFunctions.html">Secundary functions</a>
     </li>
     <li class="divider">
+    <li>
+      <a href="../articles/vignette_dataPreparation.html">Data preparation</a>
+    </li>
     <li>
       <a href="../articles/vignette_pseudoAbsences.html">Pseudo-absences</a>
     </li>
@@ -195,23 +198,22 @@ If <code>strategy = 'kfold'</code> or <code>strategy = 'strat'</code> or <code>s
 
 
 <dt>balance</dt>
-<dd><p>(<em>optional, default</em> <code>'presences'</code>) <br> If
-<code>strategy = 'strat'</code> or <code>strategy = 'env'</code>, a <code>character</code>
-corresponding to how data will be balanced between partitions, must be
-either <code>presences</code> or <code>absence</code></p></dd>
+<dd><p>(<em>optional, default</em> <code>'presences'</code>) <br> 
+If <code>strategy = 'strat'</code> or <code>strategy = 'env'</code>, a <code>character</code> corresponding 
+to how data will be balanced between partitions, must be either <code>presences</code> or 
+<code>absence</code></p></dd>
 
 
 <dt>env.var</dt>
-<dd><p>(<em>optional</em>) <br> If <code>strategy = 'env'</code>, a
-<code>character</code> corresponding to the environmental variables used to
-build the partition. <code>k</code> partitions will be built for each
-environmental variables. By default the function uses all environmental
-variables available.</p></dd>
+<dd><p>(<em>optional</em>) <br> 
+If <code>strategy = 'env'</code>, a <code>character</code> corresponding to the environmental variables 
+used to build the partition. <code>k</code> partitions will be built for each environmental 
+variables. By default the function uses all environmental variables available.</p></dd>
 
 
 <dt>strat</dt>
-<dd><p>(<em>optional, default</em> <code>'both'</code>) <br> If <code>strategy
-= 'env'</code>, a <code>character</code> corresponding to how data will partitioned
+<dd><p>(<em>optional, default</em> <code>'both'</code>) <br> 
+If <code>strategy = 'env'</code>, a <code>character</code> corresponding to how data will partitioned 
 along gradient, must be among <code>x</code>, <code>y</code>, <code>both</code></p></dd>
 
 
@@ -315,9 +317,9 @@ if the presences are clumped on an edge of the study area.</p>
 <code><a href="BIOMOD_FormatingData.html">BIOMOD_FormatingData</a></code>, <code><a href="BIOMOD_Modeling.html">BIOMOD_Modeling</a></code></p>
 <p>Other Secundary functions: 
 <code><a href="bm_BinaryTransformation.html">bm_BinaryTransformation</a>()</code>,
-<code><a href="bm_CVnnet.html">bm_CVnnet</a>()</code>,
 <code><a href="bm_FindOptimStat.html">bm_FindOptimStat</a>()</code>,
 <code><a href="bm_MakeFormula.html">bm_MakeFormula</a>()</code>,
+<code><a href="bm_ModelingOptions.html">bm_ModelingOptions</a>()</code>,
 <code><a href="bm_PlotEvalBoxplot.html">bm_PlotEvalBoxplot</a>()</code>,
 <code><a href="bm_PlotEvalMean.html">bm_PlotEvalMean</a>()</code>,
 <code><a href="bm_PlotRangeSize.html">bm_PlotRangeSize</a>()</code>,
@@ -328,6 +330,7 @@ if the presences are clumped on an edge of the study area.</p>
 <code><a href="bm_SRE.html">bm_SRE</a>()</code>,
 <code><a href="bm_SampleBinaryVector.html">bm_SampleBinaryVector</a>()</code>,
 <code><a href="bm_SampleFactorLevels.html">bm_SampleFactorLevels</a>()</code>,
+<code><a href="bm_Tuning.html">bm_Tuning</a>()</code>,
 <code><a href="bm_VariablesImportance.html">bm_VariablesImportance</a>()</code></p></div>
     </div>
     <div id="author">

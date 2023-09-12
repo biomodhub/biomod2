@@ -19,7 +19,7 @@ BIOMOD_EnsembleModeling function onto new environmental data
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">biomod2</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">4.2-4-10</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">4.2-5</span>
       </span>
     </div>
 
@@ -52,6 +52,9 @@ BIOMOD_EnsembleModeling function onto new environmental data
       <a href="../articles/examples_2_secundaryFunctions.html">Secundary functions</a>
     </li>
     <li class="divider">
+    <li>
+      <a href="../articles/vignette_dataPreparation.html">Data preparation</a>
+    </li>
     <li>
       <a href="../articles/vignette_pseudoAbsences.html">Pseudo-absences</a>
     </li>
@@ -238,19 +241,16 @@ of their calibration / validation range, identifying locations where predictions
 </ul></div>
     <div id="see-also">
     <h2>See also</h2>
-    <div class="dont-index"><p><code><a href="BIOMOD_FormatingData.html">BIOMOD_FormatingData</a></code>, <code><a href="BIOMOD_ModelingOptions.html">BIOMOD_ModelingOptions</a></code>, 
+    <div class="dont-index"><p><code><a href="BIOMOD_FormatingData.html">BIOMOD_FormatingData</a></code>, <code><a href="bm_ModelingOptions.html">bm_ModelingOptions</a></code>, 
 <code><a href="BIOMOD_Modeling.html">BIOMOD_Modeling</a></code>, <code><a href="BIOMOD_EnsembleModeling.html">BIOMOD_EnsembleModeling</a></code>, 
 <code><a href="BIOMOD_RangeSize.html">BIOMOD_RangeSize</a></code></p>
 <p>Other Main functions: 
 <code><a href="BIOMOD_EnsembleModeling.html">BIOMOD_EnsembleModeling</a>()</code>,
 <code><a href="BIOMOD_FormatingData.html">BIOMOD_FormatingData</a>()</code>,
 <code><a href="BIOMOD_LoadModels.html">BIOMOD_LoadModels</a>()</code>,
-<code><a href="BIOMOD_ModelingOptions.html">BIOMOD_ModelingOptions</a>()</code>,
 <code><a href="BIOMOD_Modeling.html">BIOMOD_Modeling</a>()</code>,
-<code><a href="BIOMOD_PresenceOnly.html">BIOMOD_PresenceOnly</a>()</code>,
 <code><a href="BIOMOD_Projection.html">BIOMOD_Projection</a>()</code>,
-<code><a href="BIOMOD_RangeSize.html">BIOMOD_RangeSize</a>()</code>,
-<code><a href="BIOMOD_Tuning.html">BIOMOD_Tuning</a>()</code></p></div>
+<code><a href="BIOMOD_RangeSize.html">BIOMOD_RangeSize</a>()</code></p></div>
     </div>
     <div id="author">
     <h2>Author</h2>
@@ -296,17 +296,14 @@ of their calibration / validation range, identifying locations where predictions
 <span>                                       resp.xy <span class="op">=</span> <span class="va">myRespXY</span>,</span>
 <span>                                       resp.name <span class="op">=</span> <span class="va">myRespName</span><span class="op">)</span></span>
 <span></span>
-<span>  <span class="co"># Create default modeling options</span></span>
-<span>  <span class="va">myBiomodOptions</span> <span class="op">&lt;-</span> <span class="fu"><a href="BIOMOD_ModelingOptions.html">BIOMOD_ModelingOptions</a></span><span class="op">(</span><span class="op">)</span></span>
-<span></span>
 <span>  <span class="co"># Model single models</span></span>
 <span>  <span class="va">myBiomodModelOut</span> <span class="op">&lt;-</span> <span class="fu"><a href="BIOMOD_Modeling.html">BIOMOD_Modeling</a></span><span class="op">(</span>bm.format <span class="op">=</span> <span class="va">myBiomodData</span>,</span>
 <span>                                      modeling.id <span class="op">=</span> <span class="st">'AllModels'</span>,</span>
 <span>                                      models <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">'RF'</span>, <span class="st">'GLM'</span><span class="op">)</span>,</span>
-<span>                                      bm.options <span class="op">=</span> <span class="va">myBiomodOptions</span>,</span>
 <span>                                      CV.strategy <span class="op">=</span> <span class="st">'random'</span>,</span>
 <span>                                      CV.nb.rep <span class="op">=</span> <span class="fl">2</span>,</span>
 <span>                                      CV.perc <span class="op">=</span> <span class="fl">0.8</span>,</span>
+<span>                                      OPT.strategy <span class="op">=</span> <span class="st">'bigboss'</span>,</span>
 <span>                                      metric.eval <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">'TSS'</span>,<span class="st">'ROC'</span><span class="op">)</span>,</span>
 <span>                                      var.import <span class="op">=</span> <span class="fl">3</span>,</span>
 <span>                                      seed.val <span class="op">=</span> <span class="fl">42</span><span class="op">)</span></span>

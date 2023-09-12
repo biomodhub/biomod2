@@ -19,6 +19,7 @@
 ##' 
 ##' 
 ##' @importFrom terra app classify nlyr
+##' @importFrom stats qt sd
 ##' 
 NULL
 

@@ -1,4 +1,4 @@
-# bm_CrossValidation ------------------------------------------------------
+###################################################################################################
 ##' @name bm_CrossValidation
 ##' @author Frank Breiner, Maya Gueguen
 ##' 
@@ -26,18 +26,17 @@
 ##' @param k (\emph{optional, default} \code{0}) \cr
 ##' If \code{strategy = 'kfold'} or \code{strategy = 'strat'} or \code{strategy = 'env'}, an 
 ##' \code{integer} corresponding to the number of partitions 
-##' @param balance (\emph{optional, default} \code{'presences'}) \cr If
-##'   \code{strategy = 'strat'} or \code{strategy = 'env'}, a \code{character}
-##'   corresponding to how data will be balanced between partitions, must be
-##'   either \code{presences} or \code{absence}
-##' @param env.var (\emph{optional}) \cr If \code{strategy = 'env'}, a
-##'   \code{character} corresponding to the environmental variables used to
-##'   build the partition. \code{k} partitions will be built for each
-##'   environmental variables. By default the function uses all environmental
-##'   variables available.
-##' @param strat (\emph{optional, default} \code{'both'}) \cr If \code{strategy
-##'   = 'env'}, a \code{character} corresponding to how data will partitioned
-##'   along gradient, must be among \code{x}, \code{y}, \code{both}
+##' @param balance (\emph{optional, default} \code{'presences'}) \cr 
+##' If \code{strategy = 'strat'} or \code{strategy = 'env'}, a \code{character} corresponding 
+##' to how data will be balanced between partitions, must be either \code{presences} or 
+##' \code{absence}
+##' @param env.var (\emph{optional}) \cr 
+##' If \code{strategy = 'env'}, a \code{character} corresponding to the environmental variables 
+##' used to build the partition. \code{k} partitions will be built for each environmental 
+##' variables. By default the function uses all environmental variables available.
+##' @param strat (\emph{optional, default} \code{'both'}) \cr 
+##' If \code{strategy = 'env'}, a \code{character} corresponding to how data will partitioned 
+##' along gradient, must be among \code{x}, \code{y}, \code{both}
 ##' @param user.table (\emph{optional, default} \code{NULL}) \cr
 ##' If \code{strategy = 'user.defined'}, a \code{matrix} or \code{data.frame} defining for each 
 ##' repetition (in columns) which observation lines should be used for models calibration 

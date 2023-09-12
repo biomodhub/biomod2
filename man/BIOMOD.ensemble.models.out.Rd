@@ -100,17 +100,14 @@ if (file.exists(file.out)) {
                                        resp.xy = myRespXY,
                                        resp.name = myRespName)
 
-  # Create default modeling options
-  myBiomodOptions <- BIOMOD_ModelingOptions()
-
   # Model single models
   myBiomodModelOut <- BIOMOD_Modeling(bm.format = myBiomodData,
                                       modeling.id = 'AllModels',
                                       models = c('RF', 'GLM'),
-                                      bm.options = myBiomodOptions,
                                       CV.strategy = 'random',
                                       CV.nb.rep = 2,
                                       CV.perc = 0.8,
+                                      OPT.strategy = 'bigboss',
                                       metric.eval = c('TSS','ROC'),
                                       var.import = 3,
                                       seed.val = 42)
@@ -143,6 +140,8 @@ Other Toolbox objects:
 \code{\link{BIOMOD.formated.data}},
 \code{\link{BIOMOD.models.options}},
 \code{\link{BIOMOD.models.out}},
+\code{\link{BIOMOD.options.dataset}},
+\code{\link{BIOMOD.options.default}},
 \code{\link{BIOMOD.projection.out}},
 \code{\link{BIOMOD.stored.data}},
 \code{\link{biomod2_ensemble_model}},

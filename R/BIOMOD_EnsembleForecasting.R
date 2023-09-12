@@ -109,7 +109,7 @@
 ##' @keywords models projection
 ##' 
 ##' 
-##' @seealso \code{\link{BIOMOD_FormatingData}}, \code{\link{BIOMOD_ModelingOptions}}, 
+##' @seealso \code{\link{BIOMOD_FormatingData}}, \code{\link{bm_ModelingOptions}}, 
 ##' \code{\link{BIOMOD_Modeling}}, \code{\link{BIOMOD_EnsembleModeling}}, 
 ##' \code{\link{BIOMOD_RangeSize}}
 ##' @family Main functions
@@ -153,17 +153,14 @@
 ##'                                        resp.xy = myRespXY,
 ##'                                        resp.name = myRespName)
 ##' 
-##'   # Create default modeling options
-##'   myBiomodOptions <- BIOMOD_ModelingOptions()
-##' 
 ##'   # Model single models
 ##'   myBiomodModelOut <- BIOMOD_Modeling(bm.format = myBiomodData,
 ##'                                       modeling.id = 'AllModels',
 ##'                                       models = c('RF', 'GLM'),
-##'                                       bm.options = myBiomodOptions,
 ##'                                       CV.strategy = 'random',
 ##'                                       CV.nb.rep = 2,
 ##'                                       CV.perc = 0.8,
+##'                                       OPT.strategy = 'bigboss',
 ##'                                       metric.eval = c('TSS','ROC'),
 ##'                                       var.import = 3,
 ##'                                       seed.val = 42)
@@ -316,7 +313,6 @@ BIOMOD_EnsembleForecasting <- function(bm.em,
     formal_pred <- as.data.frame(formal_pred[, models.needed])
   }
   
-  
   ## 4. MAKING PROJECTIONS ------------------------------------------------------------------------
   proj.em <- foreach(em.name = models.chosen) %dopar%
     {
@@ -324,10 +320,6 @@ BIOMOD_EnsembleForecasting <- function(bm.em,
       if(do.stack){
         filename <- NULL
       } else {
-        # filename <- file.path(namePath, "individual_projections",
-        #                       paste0(nameProj, "_", mod.name, 
-        #                              ifelse(output.format == ".RData"
-        #                                     , ".tif", output.format)))
         filename <- file.path(indiv_proj_dir, paste0(em.name, output.format))
       }
       
@@ -385,7 +377,7 @@ BIOMOD_EnsembleForecasting <- function(bm.em,
       save(list = nameProjSp, file = saved.files, compress = compress)
     } else {
       writeRaster(x = rast(get(nameProjSp)), filename = saved.files,
-                  overwrite = TRUE, NAflag = -9999)#, datatype = ifelse(on_0_1000, "INT2S", "FLT4S")
+                  overwrite = TRUE, NAflag = -9999, datatype = ifelse(any(grepl("EMcv", models.chosen)), "FLT4S", "INT2S"))
     }
   }
   proj_out@proj.out@link <- saved.files
@@ -432,8 +424,8 @@ BIOMOD_EnsembleForecasting <- function(bm.em,
                 writeRaster(x = bm_BinaryTransformation(rast(file.tmp), thres.tmp[i]),
                             filename = file.tmp.binary,
                             overwrite = TRUE,
-                            # datatype = "INT2S",
-                            NAflag = -9999)
+                            NAflag = -9999,
+                            datatype = "INT2S")
               }
               
               if (eval.meth %in% metric.filter) {
@@ -444,8 +436,8 @@ BIOMOD_EnsembleForecasting <- function(bm.em,
                 writeRaster(x = bm_BinaryTransformation(rast(file.tmp), thres.tmp[i], do.filtering = TRUE),
                             filename = file.tmp.filtered,
                             overwrite = TRUE,
-                            # datatype = ifelse(on_0_1000, "INT2S", "FLT4S"),
-                            NAflag = -9999)
+                            NAflag = -9999,
+                            datatype = "INT2S")
               }
             }
           }
@@ -460,8 +452,6 @@ BIOMOD_EnsembleForecasting <- function(bm.em,
           
           if (eval.meth %in% metric.binary) {
             nameBin <- paste0(nameProjSp, "_", eval.meth, "bin")
-            
-            
             assign(x = nameBin, value = bm_BinaryTransformation(proj.trans, thres.tmp))
             
             file.tmp.binary <- file.path(namePath, paste0(nameBin, output.format))
@@ -477,8 +467,8 @@ BIOMOD_EnsembleForecasting <- function(bm.em,
               writeRaster(x = get(nameBin),
                           filename = file.tmp.binary,
                           overwrite = TRUE,
-                          # datatype = "INT2S",
-                          NAflag = -9999)
+                          NAflag = -9999,
+                          datatype = "INT2S")
             }
           }
           
@@ -500,8 +490,8 @@ BIOMOD_EnsembleForecasting <- function(bm.em,
               writeRaster(x = get(nameFilt),
                           filename = file.tmp.filtered,
                           overwrite = TRUE ,
-                          # datatype = ifelse(on_0_1000, "INT2S", "FLT4S"),
-                          NAflag = -9999)
+                          NAflag = -9999,
+                          datatype = "INT2S")
             }
           }
         }

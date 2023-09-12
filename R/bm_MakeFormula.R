@@ -36,7 +36,7 @@
 ##' 
 ##' 
 ##' @seealso \code{\link[stats]{formula}}, \code{\link[mgcv]{s}}, \code{\link[gam]{s}}, 
-##' \code{\link{BIOMOD_ModelingOptions}}, \code{\link{BIOMOD_Tuning}}, 
+##' \code{\link{bm_ModelingOptions}}, \code{\link{bm_Tuning}}, 
 ##' \code{\link{bm_RunModelsLoop}}
 ##' @family Secundary functions
 ##' 
@@ -57,7 +57,7 @@
 ##' 
 ##' 
 ##' @importFrom utils combn head read.csv setTxtProgressBar tail txtProgressBar write.table
-##' 
+##' @importFrom stats as.formula
 ##' 
 ##' @export
 ##' 
@@ -85,7 +85,7 @@ bm_MakeFormula <- function(resp.name,
     explVarNames <- colnames(expl.var)
   }
   
-  interaction.level <- min(interaction.level, ncol(expl.var))
+  interaction.level <- min(interaction.level, ncol(expl.var) - 1)
   
   ## 2. Create the formula ------------------------------------------------------------------------
   junk <- c(1)

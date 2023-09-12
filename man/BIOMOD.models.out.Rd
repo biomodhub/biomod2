@@ -47,8 +47,8 @@ object}
 \item{\code{calib.lines}}{a \code{\link{BIOMOD.stored.data.frame-class}} object
 containing calibration lines}
 
-\item{\code{models.options}}{a \code{\link{BIOMOD.stored.models.options-class}}
-object containing informations from \code{\link{BIOMOD_ModelingOptions}}
+\item{\code{models.options}}{a \code{\link{BIOMOD.stored.options-class}}
+object containing informations from \code{\link{bm_ModelingOptions}}
 object}
 
 \item{\code{models.evaluation}}{a \code{\link{BIOMOD.stored.data.frame-class}} object
@@ -102,19 +102,15 @@ myBiomodData <- BIOMOD_FormatingData(resp.var = myResp,
                                      resp.xy = myRespXY,
                                      resp.name = myRespName)
 
-# Create default modeling options
-myBiomodOptions <- BIOMOD_ModelingOptions()
-
-
 ## ----------------------------------------------------------------------- #
 # Model single models
 myBiomodModelOut <- BIOMOD_Modeling(bm.format = myBiomodData,
                                     modeling.id = 'AllModels',
                                     models = c('RF', 'GLM'),
-                                    bm.options = myBiomodOptions,
                                     CV.strategy = 'random',
                                     CV.nb.rep = 2,
                                     CV.perc = 0.8,
+                                    OPT.strategy = 'bigboss',
                                     metric.eval = c('TSS','ROC'),
                                     var.import = 3,
                                     seed.val = 42)
@@ -134,6 +130,8 @@ Other Toolbox objects:
 \code{\link{BIOMOD.formated.data.PA}},
 \code{\link{BIOMOD.formated.data}},
 \code{\link{BIOMOD.models.options}},
+\code{\link{BIOMOD.options.dataset}},
+\code{\link{BIOMOD.options.default}},
 \code{\link{BIOMOD.projection.out}},
 \code{\link{BIOMOD.stored.data}},
 \code{\link{biomod2_ensemble_model}},

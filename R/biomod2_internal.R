@@ -278,6 +278,10 @@ get_var_range <- function(data)
 ## RESCALE MODEL WITH BINOMIAL GLM ----------------------------------------------------------------
 ## used in biomod2_classes_4.R, bm_RunModelsLoop files
 
+##' 
+##' @importFrom stats glm binomial
+##' 
+
 .scaling_model <- function(dataToRescale, ref = NULL, ...)
 {
   args <- list(...)
@@ -343,7 +347,7 @@ get_var_range <- function(data)
         keep_tmp <- 1:length(out_names)
         if (!is.null(subset.list[[sub.i]])) {
           .fun_testIfIn(TRUE, sub.i, subset.list[[sub.i]], .extract_modelNamesInfo(out_names, obj.type = obj.type, info = sub.i, as.unique = TRUE))
-          keep_tmp <- grep(paste(subset.list[[sub.i]], collapse = "|"), out_names)
+          keep_tmp <- grep(paste0(subset.list[[sub.i]], ifelse(sub.i %in% c("PA", "run"), "_", ""), collapse = "|"), out_names)
         }
         return(keep_tmp)
       }
@@ -380,7 +384,6 @@ get_var_range <- function(data)
     tmp$algo <- .extract_modelNamesInfo(tmp$full.name, obj.type = "em", info = "algo", as.unique = FALSE)
     proj <- tmp[, c("full.name", "merged.by.PA", "merged.by.run", "merged.by.algo"
                     , "filtered.by", "algo", "points", "pred")]
-    
   }
   proj
 }
@@ -683,8 +686,8 @@ get_var_range <- function(data)
 ##' @param model_subclass the subclass of GAM model
 ##' @keywords internal
 
-.load_gam_namespace <- function(model_subclass = c("GAM_mgcv","BAM_mgcv", "GAM_gam")){
-  if (model_subclass %in% c("GAM_mgcv", "BAM_mgcv")) {
+.load_gam_namespace <- function(model_subclass = c("GAM_mgcv_gam","GAM_mgcv_bam", "GAM_gam_gam")){
+  if (model_subclass %in% c("GAM_mgcv_gam", "GAM_mgcv_bam")) {
     # cat("\n*** unloading gam package / loading mgcv package")
     if (isNamespaceLoaded("gam")) { unloadNamespace("gam") }
     if (!isNamespaceLoaded("mgcv")) { 
@@ -692,7 +695,7 @@ get_var_range <- function(data)
     }
   }
   
-  if (model_subclass == "GAM_gam") {
+  if (model_subclass == "GAM_gam_gam") {
     # cat("\n*** unloading mgcv package / loading gam package")
     if (isNamespaceLoaded("mgcv")) {
       if (isNamespaceLoaded("caret")) { unloadNamespace("caret")} ## need to unload caret before car
@@ -936,11 +939,12 @@ check_duplicated_cells <- function(env, xy, sp, filter.raster,
   resp.var
 }
 
-.check_formating_xy <- function(resp.xy, resp.length){
+.check_formating_xy <- function(resp.xy, resp.length, env.as.df = FALSE){
   if (ncol(resp.xy) != 2) {
     stop("If given, resp.xy must be a 2 column matrix or data.frame")
   }
-  if (nrow(resp.xy) != resp.length) {
+  if (nrow(resp.xy) != resp.length &&
+      !(env.as.df & (nrow(resp.xy) == 0))) {
     stop("Response variable and its coordinates don't match")
   }
   as.data.frame(resp.xy)

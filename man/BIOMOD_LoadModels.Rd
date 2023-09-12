@@ -35,9 +35,9 @@ A \code{vector} containing repetition set to be loaded, must be among \code{RUN1
 \code{RUN2}, \code{...}, \code{allRun}}
 
 \item{algo}{(\emph{optional, default} \code{NULL}) \cr 
-A \code{character} containing algorithm to be loaded, must be either \code{GLM}, 
-\code{GBM}, \code{GAM}, \code{CTA}, \code{ANN}, \code{SRE}, \code{FDA}, \code{MARS}, 
-\code{RF}, \code{MAXENT}, \code{MAXNET}, \code{XGBOOST}}
+A \code{character} containing algorithm to be loaded, must be either 
+\code{ANN}, \code{CTA}, \code{FDA}, \code{GAM}, \code{GBM}, \code{GLM}, \code{MARS}, 
+\code{MAXENT}, \code{MAXNET}, \code{RF}, \code{SRE}, \code{XGBOOST}}
 
 \item{merged.by.PA}{(\emph{optional, default} \code{NULL}) \cr 
 A \code{vector} containing merged pseudo-absence set to be loaded, must be among \code{PA1}, 
@@ -48,9 +48,9 @@ A \code{vector} containing merged repetition set to be loaded, must be among \co
 \code{RUN2}, \code{...}, \code{mergedRun}}
 
 \item{merged.by.algo}{(\emph{optional, default} \code{NULL}) \cr 
-A \code{character} containing merged algorithm to be loaded, must be among \code{GLM}, 
-\code{GBM}, \code{GAM}, \code{CTA}, \code{ANN}, \code{SRE}, \code{FDA}, \code{MARS}, 
-\code{RF}, \code{MAXENT}, \code{MAXNET}, \code{XGBOOST}, \code{mergedAlgo}}
+A \code{character} containing merged algorithm to be loaded, must be among 
+\code{ANN}, \code{CTA}, \code{FDA}, \code{GAM}, \code{GBM}, \code{GLM}, \code{MARS}, 
+\code{MAXENT}, \code{MAXNET}, \code{RF}, \code{SRE}, \code{XGBOOST}, \code{mergedAlgo}}
 
 \item{filtered.by}{(\emph{optional, default} \code{NULL}) \cr 
 A \code{vector} containing evaluation metric selected to filter single models to build the 
@@ -111,17 +111,14 @@ if (file.exists(file.out)) {
                                        resp.xy = myRespXY,
                                        resp.name = myRespName)
 
-  # Create default modeling options
-  myBiomodOptions <- BIOMOD_ModelingOptions()
-
   # Model single models
   myBiomodModelOut <- BIOMOD_Modeling(bm.format = myBiomodData,
                                       modeling.id = 'AllModels',
                                       models = c('RF', 'GLM'),
-                                      bm.options = myBiomodOptions,
                                       CV.strategy = 'random',
                                       CV.nb.rep = 2,
                                       CV.perc = 0.8,
+                                      OPT.strategy = 'bigboss',
                                       metric.eval = c('TSS','ROC'),
                                       var.import = 3,
                                       seed.val = 42)
@@ -141,12 +138,9 @@ Other Main functions:
 \code{\link{BIOMOD_EnsembleForecasting}()},
 \code{\link{BIOMOD_EnsembleModeling}()},
 \code{\link{BIOMOD_FormatingData}()},
-\code{\link{BIOMOD_ModelingOptions}()},
 \code{\link{BIOMOD_Modeling}()},
-\code{\link{BIOMOD_PresenceOnly}()},
 \code{\link{BIOMOD_Projection}()},
-\code{\link{BIOMOD_RangeSize}()},
-\code{\link{BIOMOD_Tuning}()}
+\code{\link{BIOMOD_RangeSize}()}
 }
 \author{
 Damien Georges

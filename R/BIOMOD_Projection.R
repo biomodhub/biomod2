@@ -153,17 +153,14 @@
 ##'                                        resp.xy = myRespXY,
 ##'                                        resp.name = myRespName)
 ##' 
-##'   # Create default modeling options
-##'   myBiomodOptions <- BIOMOD_ModelingOptions()
-##' 
 ##'   # Model single models
 ##'   myBiomodModelOut <- BIOMOD_Modeling(bm.format = myBiomodData,
 ##'                                       modeling.id = 'AllModels',
 ##'                                       models = c('RF', 'GLM'),
-##'                                       bm.options = myBiomodOptions,
 ##'                                       CV.strategy = 'random',
 ##'                                       CV.nb.rep = 2,
 ##'                                       CV.perc = 0.8,
+##'                                       OPT.strategy = 'bigboss',
 ##'                                       metric.eval = c('TSS','ROC'),
 ##'                                       var.import = 3,
 ##'                                       seed.val = 42)
@@ -216,6 +213,7 @@ BIOMOD_Projection <- function(bm.mod,
                                         , models.chosen, metric.binary, metric.filter, compress, seed.val, ...)
   for (argi in names(args)) { assign(x = argi, value = args[[argi]]) }
   rm(args)
+  
   
   ## 1. Create output object ----------------------------------------------------------------------
   proj_out <- new('BIOMOD.projection.out',
@@ -293,10 +291,12 @@ BIOMOD_Projection <- function(bm.mod,
   if (proj_is_raster) {
     new.env.wrap <- wrap(new.env) # ensure parallel run compatibility
   }
+  
   proj <- foreach(mod.name = models.chosen) %dopar% {
     cat("\n\t> Projecting", mod.name, "...")
     if (proj_is_raster) {
       new.env <- unwrap(new.env.wrap) # ensure parallel run compatibility
+      names(new.env) <- bm.mod@expl.var.names
     }
     if (do.stack) {
       filename <- NULL

@@ -53,9 +53,9 @@
 ##' A \code{vector} containing repetition set to be loaded, must be among \code{RUN1}, 
 ##' \code{RUN2}, \code{...}, \code{allRun}
 ##' @param algo (\emph{optional, default} \code{NULL}) \cr 
-##' A \code{character} containing algorithm to be loaded, must be either \code{GLM}, 
-##' \code{GBM}, \code{GAM}, \code{CTA}, \code{ANN}, \code{SRE}, \code{FDA}, \code{MARS}, 
-##' \code{RF}, \code{MAXENT}, \code{MAXNET}, \code{XGBOOST}
+##' A \code{character} containing algorithm to be loaded, must be either 
+##' \code{ANN}, \code{CTA}, \code{FDA}, \code{GAM}, \code{GBM}, \code{GLM}, \code{MARS}, 
+##' \code{MAXENT}, \code{MAXNET}, \code{RF}, \code{SRE}, \code{XGBOOST}
 ##' 
 ##' @param merged.by.PA (\emph{optional, default} \code{NULL}) \cr 
 ##' A \code{vector} containing merged pseudo-absence set to be loaded, must be among \code{PA1}, 
@@ -64,9 +64,9 @@
 ##' A \code{vector} containing merged repetition set to be loaded, must be among \code{RUN1}, 
 ##' \code{RUN2}, \code{...}, \code{mergedRun}
 ##' @param merged.by.algo (\emph{optional, default} \code{NULL}) \cr 
-##' A \code{character} containing merged algorithm to be loaded, must be among \code{GLM}, 
-##' \code{GBM}, \code{GAM}, \code{CTA}, \code{ANN}, \code{SRE}, \code{FDA}, \code{MARS}, 
-##' \code{RF}, \code{MAXENT}, \code{MAXNET}, \code{XGBOOST}, \code{mergedAlgo}
+##' A \code{character} containing merged algorithm to be loaded, must be among 
+##' \code{ANN}, \code{CTA}, \code{FDA}, \code{GAM}, \code{GBM}, \code{GLM}, \code{MARS}, 
+##' \code{MAXENT}, \code{MAXNET}, \code{RF}, \code{SRE}, \code{XGBOOST}, \code{mergedAlgo}
 ##' @param filtered.by (\emph{optional, default} \code{NULL}) \cr 
 ##' A \code{vector} containing evaluation metric selected to filter single models to build the 
 ##' ensemble models, must be among \code{ROC}, \code{TSS}, \code{KAPPA}, \code{ACCURACY}, 
@@ -111,7 +111,7 @@
 ##'   \code{\link{BIOMOD.formated.data}} or \code{\link{BIOMOD.formated.data.PA}} object}
 ##' 
 ##'   \item{\code{get_options}}{a
-##'   \code{\link{BIOMOD.stored.models.options-class}} object from the
+##'   \code{\link{BIOMOD.stored.options-class}} object from the
 ##'   \code{models.options} slot of a \code{\link{BIOMOD.models.out-class}}
 ##'   object} \item{\code{get_calib_lines}}{a
 ##'   \code{\link{BIOMOD.stored.data.frame-class}} object from the \code{calib.lines}
@@ -176,9 +176,11 @@
 ##'    slot (or \code{model_evaluation} of each model in \code{em.computed}) of a
 ##'   \code{\link{BIOMOD.models.out}} (or \code{\link{BIOMOD.ensemble.models.out}})
 ##'    object. Contains evaluation metric for different models and dataset. 
-##'    Evaluation metric are calculated on the calibrating data (column calibration),
-##'    on the cross-validation data (column validation) or on the evaluation data
-##'    (column evaluation)}
+##'    Evaluation metric are calculated on the calibrating data (column \code{calibration}),
+##'    on the cross-validation data (column \code{validation}) or on the evaluation data 
+##'    (column \code{evaluation}). \cr \emph{For cross-validation data, see \code{CV.[...]} 
+##'    parameters in \code{\link{BIOMOD_Modeling}} function ; for evaluation data, see 
+##'    \code{eval.[...]} parameters in \code{\link{BIOMOD_FormatingData}}.}}
 ##'   \item{\code{get_variables_importance}}{a
 ##'   \code{\link{BIOMOD.stored.data.frame-class}} from
 ##'   the \code{variables.importance} slot (or \code{model_variables_importance}
@@ -298,8 +300,8 @@ setMethod('get_eval_data', signature('BIOMOD.formated.data'), function(obj) {
 ##'   object
 ##' @slot calib.lines a \code{\link{BIOMOD.stored.data.frame-class}} object
 ##'   containing calibration lines
-##' @slot models.options a \code{\link{BIOMOD.stored.models.options-class}}
-##'   object containing informations from \code{\link{BIOMOD_ModelingOptions}}
+##' @slot models.options a \code{\link{BIOMOD.stored.options-class}}
+##'   object containing informations from \code{\link{bm_ModelingOptions}}
 ##'   object
 ##' @slot models.evaluation a \code{\link{BIOMOD.stored.data.frame-class}} object
 ##'   containing models evaluation
@@ -358,19 +360,15 @@ setMethod('get_eval_data', signature('BIOMOD.formated.data'), function(obj) {
 ##'                                      resp.xy = myRespXY,
 ##'                                      resp.name = myRespName)
 ##' 
-##' # Create default modeling options
-##' myBiomodOptions <- BIOMOD_ModelingOptions()
-##' 
-##' 
 ##' ## ----------------------------------------------------------------------- #
 ##' # Model single models
 ##' myBiomodModelOut <- BIOMOD_Modeling(bm.format = myBiomodData,
 ##'                                     modeling.id = 'AllModels',
 ##'                                     models = c('RF', 'GLM'),
-##'                                     bm.options = myBiomodOptions,
 ##'                                     CV.strategy = 'random',
 ##'                                     CV.nb.rep = 2,
 ##'                                     CV.perc = 0.8,
+##'                                     OPT.strategy = 'bigboss',
 ##'                                     metric.eval = c('TSS','ROC'),
 ##'                                     var.import = 3,
 ##'                                     seed.val = 42)
@@ -396,7 +394,7 @@ setClass("BIOMOD.models.out",
                         scale.models = 'logical',
                         formated.input.data = 'BIOMOD.stored.formated.data',
                         calib.lines = 'BIOMOD.stored.data.frame',
-                        models.options = 'BIOMOD.stored.models.options',
+                        models.options = 'BIOMOD.stored.options',
                         models.evaluation = 'BIOMOD.stored.data.frame',
                         variables.importance = 'BIOMOD.stored.data.frame',
                         models.prediction = 'BIOMOD.stored.data.frame',
@@ -412,7 +410,7 @@ setClass("BIOMOD.models.out",
                    scale.models = TRUE,
                    formated.input.data = new('BIOMOD.stored.formated.data'),
                    calib.lines = new('BIOMOD.stored.data.frame'),
-                   models.options = new('BIOMOD.stored.models.options'),
+                   models.options = new('BIOMOD.stored.options'),
                    models.evaluation = new('BIOMOD.stored.data.frame'),
                    variables.importance = new('BIOMOD.stored.data.frame'),
                    models.prediction = new('BIOMOD.stored.data.frame'),
@@ -609,11 +607,16 @@ setMethod("get_evaluations", "BIOMOD.models.out",
 setMethod("get_variables_importance", "BIOMOD.models.out",
           function(obj, full.name = NULL, PA = NULL, run = NULL, algo = NULL, expl.var = NULL) {
             out <- load_stored_object(obj@variables.importance)
-            keep_lines <- .filter_outputs.df(out, subset.list = list(full.name =  full.name, PA = PA
-                                                                     , run = run, algo = algo
-                                                                     , expl.var = expl.var))
-            out <- out[keep_lines, ]
-            return(out)
+            if(obj@variables.importance@link == ''){
+              cat("\n! models have no variables importance\n")
+              return(invisible(NULL))
+            } else {
+              keep_lines <- .filter_outputs.df(out, subset.list = list(full.name =  full.name, PA = PA
+                                                                       , run = run, algo = algo
+                                                                       , expl.var = expl.var))
+              out <- out[keep_lines, ]
+              return(out)
+            }
           }
 )
 
@@ -716,17 +719,14 @@ setMethod("get_variables_importance", "BIOMOD.models.out",
 ##'                                        resp.xy = myRespXY,
 ##'                                        resp.name = myRespName)
 ##' 
-##'   # Create default modeling options
-##'   myBiomodOptions <- BIOMOD_ModelingOptions()
-##' 
 ##'   # Model single models
 ##'   myBiomodModelOut <- BIOMOD_Modeling(bm.format = myBiomodData,
 ##'                                       modeling.id = 'AllModels',
 ##'                                       models = c('RF', 'GLM'),
-##'                                       bm.options = myBiomodOptions,
 ##'                                       CV.strategy = 'random',
 ##'                                       CV.nb.rep = 2,
 ##'                                       CV.perc = 0.8,
+##'                                       OPT.strategy = 'bigboss',
 ##'                                       metric.eval = c('TSS','ROC'),
 ##'                                       var.import = 3,
 ##'                                       seed.val = 42)
@@ -1192,17 +1192,14 @@ setMethod("get_predictions", "BIOMOD.projection.out",
 ##'                                        resp.xy = myRespXY,
 ##'                                        resp.name = myRespName)
 ##' 
-##'   # Create default modeling options
-##'   myBiomodOptions <- BIOMOD_ModelingOptions()
-##' 
 ##'   # Model single models
 ##'   myBiomodModelOut <- BIOMOD_Modeling(bm.format = myBiomodData,
 ##'                                       modeling.id = 'AllModels',
 ##'                                       models = c('RF', 'GLM'),
-##'                                       bm.options = myBiomodOptions,
 ##'                                       CV.strategy = 'random',
 ##'                                       CV.nb.rep = 2,
 ##'                                       CV.perc = 0.8,
+##'                                       OPT.strategy = 'bigboss',
 ##'                                       metric.eval = c('TSS','ROC'),
 ##'                                       var.import = 3,
 ##'                                       seed.val = 42)

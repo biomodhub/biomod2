@@ -115,17 +115,14 @@ if (file.exists(file.out)) {
                                        resp.xy = myRespXY,
                                        resp.name = myRespName)
 
-  # Create default modeling options
-  myBiomodOptions <- BIOMOD_ModelingOptions()
-
   # Model single models
   myBiomodModelOut <- BIOMOD_Modeling(bm.format = myBiomodData,
                                       modeling.id = 'AllModels',
                                       models = c('RF', 'GLM'),
-                                      bm.options = myBiomodOptions,
                                       CV.strategy = 'random',
                                       CV.nb.rep = 2,
                                       CV.perc = 0.8,
+                                      OPT.strategy = 'bigboss',
                                       metric.eval = c('TSS','ROC'),
                                       var.import = 3,
                                       seed.val = 42)
@@ -183,11 +180,8 @@ Other Main functions:
 \code{\link{BIOMOD_EnsembleModeling}()},
 \code{\link{BIOMOD_FormatingData}()},
 \code{\link{BIOMOD_LoadModels}()},
-\code{\link{BIOMOD_ModelingOptions}()},
 \code{\link{BIOMOD_Modeling}()},
-\code{\link{BIOMOD_PresenceOnly}()},
-\code{\link{BIOMOD_Projection}()},
-\code{\link{BIOMOD_Tuning}()}
+\code{\link{BIOMOD_Projection}()}
 }
 \author{
 Wilfried Thuiller, Damien Georges, Bruno Lafourcade

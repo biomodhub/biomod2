@@ -5,7 +5,7 @@
 \alias{DataSpecies}
 \title{Presence-Absence data to build test SDM}
 \format{
-A data frame with 2488 rows and 10 variables:
+A \code{data.frame} object with 2488 rows and 10 variables:
 \describe{
   \item{X_WGS84}{Longitude}
   \item{Y_WGS84}{Latitude}

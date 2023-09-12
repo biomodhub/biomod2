@@ -4,7 +4,9 @@
 \alias{.load_gam_namespace}
 \title{Load library for GAM models}
 \usage{
-.load_gam_namespace(model_subclass = c("GAM_mgcv", "BAM_mgcv", "GAM_gam"))
+.load_gam_namespace(
+  model_subclass = c("GAM_mgcv_gam", "GAM_mgcv_bam", "GAM_gam_gam")
+)
 }
 \arguments{
 \item{model_subclass}{the subclass of GAM model}

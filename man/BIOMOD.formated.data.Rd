@@ -138,7 +138,7 @@ is to be filtered when several points occur in the same raster cell}
 }
 \description{
 Class returned by \code{\link{BIOMOD_FormatingData}}, and used by 
-\code{\link{BIOMOD_Tuning}}, \code{\link{bm_CrossValidation}} and 
+\code{\link{bm_Tuning}}, \code{\link{bm_CrossValidation}} and 
 \code{\link{BIOMOD_Modeling}}
 }
 \section{Slots}{
@@ -215,7 +215,7 @@ summary(myBiomodData)
 
 }
 \seealso{
-\code{\link{BIOMOD_FormatingData}}, \code{\link{BIOMOD_Tuning}}, 
+\code{\link{BIOMOD_FormatingData}}, \code{\link{bm_Tuning}}, 
 \code{\link{bm_CrossValidation}}, \code{\link{BIOMOD_Modeling}}, 
 \code{\link{bm_RunModelsLoop}}
 
@@ -224,6 +224,8 @@ Other Toolbox objects:
 \code{\link{BIOMOD.formated.data.PA}},
 \code{\link{BIOMOD.models.options}},
 \code{\link{BIOMOD.models.out}},
+\code{\link{BIOMOD.options.dataset}},
+\code{\link{BIOMOD.options.default}},
 \code{\link{BIOMOD.projection.out}},
 \code{\link{BIOMOD.stored.data}},
 \code{\link{biomod2_ensemble_model}},

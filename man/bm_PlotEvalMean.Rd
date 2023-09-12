@@ -98,17 +98,14 @@ if (file.exists(file.out)) {
                                        resp.xy = myRespXY,
                                        resp.name = myRespName)
 
-  # Create default modeling options
-  myBiomodOptions <- BIOMOD_ModelingOptions()
-
   # Model single models
   myBiomodModelOut <- BIOMOD_Modeling(bm.format = myBiomodData,
                                       modeling.id = 'AllModels',
                                       models = c('RF', 'GLM'),
-                                      bm.options = myBiomodOptions,
                                       CV.strategy = 'random',
                                       CV.nb.rep = 2,
                                       CV.perc = 0.8,
+                                      OPT.strategy = 'bigboss',
                                       metric.eval = c('TSS','ROC'),
                                       var.import = 3,
                                       seed.val = 42)
@@ -131,10 +128,10 @@ bm_PlotEvalMean(bm.out = myBiomodModelOut)
 
 Other Secundary functions: 
 \code{\link{bm_BinaryTransformation}()},
-\code{\link{bm_CVnnet}()},
 \code{\link{bm_CrossValidation}()},
 \code{\link{bm_FindOptimStat}()},
 \code{\link{bm_MakeFormula}()},
+\code{\link{bm_ModelingOptions}()},
 \code{\link{bm_PlotEvalBoxplot}()},
 \code{\link{bm_PlotRangeSize}()},
 \code{\link{bm_PlotResponseCurves}()},
@@ -144,6 +141,7 @@ Other Secundary functions:
 \code{\link{bm_SRE}()},
 \code{\link{bm_SampleBinaryVector}()},
 \code{\link{bm_SampleFactorLevels}()},
+\code{\link{bm_Tuning}()},
 \code{\link{bm_VariablesImportance}()}
 
 Other Plot functions: 

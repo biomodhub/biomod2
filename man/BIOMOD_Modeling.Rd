@@ -7,10 +7,9 @@
 BIOMOD_Modeling(
   bm.format,
   modeling.id = as.character(format(Sys.time(), "\%s")),
-  models = c("GLM", "GBM", "GAM", "CTA", "ANN", "SRE", "FDA", "MARS", "RF", "MAXENT",
-    "MAXNET", "XGBOOST"),
+  models = c("ANN", "CTA", "FDA", "GAM", "GBM", "GLM", "MARS", "MAXENT", "MAXNET", "RF",
+    "SRE", "XGBOOST"),
   models.pa = NULL,
-  bm.options = NULL,
   CV.strategy = "random",
   CV.nb.rep = 1,
   CV.perc = NULL,
@@ -19,7 +18,13 @@ BIOMOD_Modeling(
   CV.env.var = NULL,
   CV.strat = NULL,
   CV.user.table = NULL,
-  CV.do.full.models = FALSE,
+  CV.do.full.models = TRUE,
+  OPT.data.type = "binary",
+  OPT.strategy = "default",
+  OPT.user.val = NULL,
+  OPT.user.base = "bigboss",
+  OPT.user = NULL,
+  bm.options,
   nb.rep,
   data.split.perc,
   data.split.table,
@@ -41,16 +46,13 @@ object returned by the \code{\link{BIOMOD_FormatingData}} function}
 \item{modeling.id}{a \code{character} corresponding to the name (ID) of the simulation set 
 (\emph{a random number by default})}
 
-\item{models}{a \code{vector} containing model names to be computed, must be among \code{GLM}, 
-\code{GBM}, \code{GAM}, \code{CTA}, \code{ANN}, \code{SRE}, \code{FDA}, \code{MARS}, 
-\code{RF}, \code{MAXENT}, \code{MAXNET}, \code{XGBOOST}}
+\item{models}{a \code{vector} containing model names to be computed, must be among 
+\code{ANN}, \code{CTA}, \code{FDA}, \code{GAM}, \code{GBM}, \code{GLM}, \code{MARS}, 
+\code{MAXENT}, \code{MAXNET}, \code{RF}, \code{SRE}, \code{XGBOOST}}
 
 \item{models.pa}{(\emph{optional, default} \code{NULL}) \cr 
 A \code{list} containing for each model a \code{vector} defining which pseudo-absence datasets 
 are to be used, must be among \code{colnames(bm.format@PA.table)}}
-
-\item{bm.options}{a \code{\link{BIOMOD.models.options}} object returned by the
-\code{\link{BIOMOD_ModelingOptions}} function}
 
 \item{CV.strategy}{a \code{character} corresponding to the cross-validation selection strategy, 
 must be among \code{random}, \code{kfold}, \code{block}, \code{strat}, \code{env} or 
@@ -73,11 +75,10 @@ If \code{strategy = 'strat'} or \code{strategy = 'env'}, a \code{character} corr
 to how data will be balanced between partitions, must be either \code{presences} or
 \code{absences}}
 
-\item{CV.env.var}{(\emph{optional}) \cr If \code{strategy = 'env'}, a
-\code{character} corresponding to the environmental variables used to
-build the partition. \code{k} partitions will be built for each
-environmental variables. By default the function uses all environmental
-variables available.}
+\item{CV.env.var}{(\emph{optional}) \cr If \code{strategy = 'env'}, a \code{character} 
+corresponding to the environmental variables used to build the partition. \code{k} partitions 
+will be built for each environmental variables. By default the function uses all 
+environmental variables available.}
 
 \item{CV.strat}{(\emph{optional, default} \code{'both'}) \cr
 If \code{strategy = 'env'}, a \code{character} corresponding to how data will partitioned 
@@ -91,6 +92,27 @@ repetition (in columns) which observation lines should be used for models calibr
 \item{CV.do.full.models}{(\emph{optional, default} \code{TRUE}) \cr
 A \code{logical} value defining whether models should be also calibrated and validated over 
 the whole dataset (and pseudo-absence datasets) or not}
+
+\item{OPT.data.type}{a \code{character} corresponding to the data type to be used, must be 
+either \code{binary}, \code{binary.PA}, \code{abundance}, \code{compositional}}
+
+\item{OPT.strategy}{a \code{character} corresponding to the method to select models' 
+parameters values, must be either \code{default}, \code{bigboss}, \code{user.defined}, 
+\code{tuned}}
+
+\item{OPT.user.val}{(\emph{optional, default} \code{NULL}) \cr
+A \code{list} containing parameters values for some (all) models}
+
+\item{OPT.user.base}{(\emph{optional, default} \code{bigboss}) \cr A character, 
+\code{default} or \code{bigboss} used when \code{OPT.strategy = 'user.defined'}. 
+It sets the bases of parameters to be modified by user defined values.}
+
+\item{OPT.user}{(\emph{optional, default} \code{TRUE}) \cr
+A \code{\link{BIOMOD.models.options}} object returned by the \code{\link{bm_ModelingOptions}} 
+function}
+
+\item{bm.options}{a \code{\link{BIOMOD.models.options}} object returned by the
+\code{\link{bm_ModelingOptions}} function}
 
 \item{nb.rep}{\emph{deprecated}, now called \code{CV.nb.rep}}
 
@@ -111,7 +133,7 @@ build '\emph{weighted response weights}' (see Details)}
 \item{metric.eval}{a \code{vector} containing evaluation metric names to be used, must 
 be among \code{ROC}, \code{TSS}, \code{KAPPA}, \code{ACCURACY}, \code{BIAS}, \code{POD}, 
 \code{FAR}, \code{POFD}, \code{SR}, \code{CSI}, \code{ETS}, \code{HK}, \code{HSS}, \code{OR}, 
-\code{ORSS}}
+\code{ORSS}, \code{BOYCE}, \code{MPA}}
 
 \item{var.import}{(\emph{optional, default} \code{NULL}) \cr 
 An \code{integer} corresponding to the number of permutations to be done for each variable to 
@@ -159,24 +181,24 @@ metrics (see Details).
   \code{\link{BIOMOD_FormatingData}}), \cr \code{PA.nb.rep *(nb.rep + 1)} models will be 
   created.}
   
-  \item{models}{The set of models to be calibrated on the data. 10 modeling techniques 
+  \item{models}{The set of models to be calibrated on the data. 12 modeling techniques 
   are currently available :
   \itemize{
-    \item \code{GLM} : Generalized Linear Model (\code{\link[stats]{glm}})
+    \item \code{ANN} : Artificial Neural Network (\code{\link[nnet]{nnet}})
+    \item \code{CTA} : Classification Tree Analysis (\code{\link[rpart]{rpart}})
+    \item \code{FDA} : Flexible Discriminant Analysis (\code{\link[mda]{fda}})
     \item \code{GAM} : Generalized Additive Model (\code{\link[gam]{gam}}, \code{\link[mgcv]{gam}} 
     or \code{\link[mgcv]{bam}}) \cr 
-    (see \code{\link{BIOMOD_ModelingOptions} for details on algorithm selection})
+    (see \code{\link{bm_ModelingOptions} for details on algorithm selection})
     \item \code{GBM} : Generalized Boosting Model, or usually called Boosted Regression Trees 
     (\code{\link[gbm]{gbm}})
-    \item \code{CTA} : Classification Tree Analysis (\code{\link[rpart]{rpart}})
-    \item \code{ANN} : Artificial Neural Network (\code{\link[nnet]{nnet}})
-    \item \code{SRE} : Surface Range Envelop or usually called BIOCLIM
-    \item \code{FDA} : Flexible Discriminant Analysis (\code{\link[mda]{fda}})
+    \item \code{GLM} : Generalized Linear Model (\code{\link[stats]{glm}})
     \item \code{MARS} : Multiple Adaptive Regression Splines (\code{\link[earth]{earth}})
-    \item \code{RF} : Random Forest (\code{\link[randomForest]{randomForest}})
     \item \code{MAXENT} : Maximum Entropy 
     (\url{https://biodiversityinformatics.amnh.org/open_source/maxent/})
     \item \code{MAXNET} : Maximum Entropy (\code{\link[maxnet]{maxnet}})
+    \item \code{RF} : Random Forest (\code{\link[randomForest]{randomForest}})
+    \item \code{SRE} : Surface Range Envelop or usually called BIOCLIM
     \item \code{XGBOOST} : eXtreme Gradient Boosting Training (\code{\link[xgboost]{xgboost}})
   }}
   
@@ -187,7 +209,24 @@ metrics (see Details).
   }
   
   \item{CV.[...] parameters}{Different methods are available to calibrate/validate the 
-  single models (see \code{\link{bm_CrossValidation}}.)}
+  single models (see \code{\link{bm_CrossValidation}}).}
+  
+  \item{OPT.[...] parameters}{Different methods are available to parameterize the 
+  single models (see \code{\link{BIOMOD.options.dataset}}). Note that only \code{binary} data 
+  type is allowed currently.
+  \itemize{
+    \item \code{default} : only default parameter values of default parameters of the single 
+    models functions are retrieved. Nothing is changed so it might not give good results.
+    \item \code{bigboss} : uses parameters pre-defined by \pkg{biomod2} team and that are 
+    available in the dataset \code{\link{OptionsBigboss}}. \cr 
+    \emph{to be optimized in near future}
+    \item \code{user.defined} : updates default or bigboss parameters with some parameters 
+    values defined by the user (but matching the format of a 
+    \code{\link{BIOMOD.models.options}} object)
+    \item \code{tuned} : calling the \code{\link{bm_Tuning}} function to try and optimize 
+    some default values
+  }
+  }
   
   \item{weights & prevalence}{More or less weight can be given to some specific observations.
   \itemize{
@@ -207,9 +246,9 @@ metrics (see Details).
 
   \item{metric.eval}{
   \itemize{
-    \item \code{ROC} : Relative Operating Characteristic
+    \item \code{ROC} : Relative operating characteristic
     \item \code{KAPPA} : Cohen's Kappa (Heidke skill score)
-    \item \code{TSS} : True kill statistic (Hanssen and Kuipers discriminant, Peirce's skill 
+    \item \code{TSS} : True skill statistic (Hanssen and Kuipers discriminant, Peirce's skill 
     score)
     \item \code{FAR} : False alarm ratio
     \item \code{SR} : Success ratio
@@ -218,11 +257,19 @@ metrics (see Details).
     \item \code{POD} : Probability of detection (hit rate)
     \item \code{CSI} : Critical success index (threat score)
     \item \code{ETS} : Equitable threat score (Gilbert skill score)
+    \item \code{BOYCE} : Boyce index
+    \item \code{MPA} : Minimal predicted area (cutoff optimising MPA to predict 90% of presences)
   }
   Optimal value of each method can be obtained with the \code{\link{get_optim_value}} 
   function. Several evaluation metrics can be selected. \emph{Please refer to the 
-  \href{https://www.cawcr.gov.au/projects/verification/}{CAWRC website (section "Methods for dichotomous forecasts")} 
-  to get detailed description of each metric.}
+  \href{https://www.cawcr.gov.au/projects/verification/}{CAWRC website (section "Methods for 
+  dichotomous forecasts")} to get detailed description of each metric.}
+  Results after modeling can be obtained through the \code{\link{get_evaluations}} function. \cr 
+  Evaluation metric are calculated on the calibrating data (column \code{calibration}), on 
+  the cross-validation data (column \code{validation}) or on the evaluation data 
+  (column \code{evaluation}). \cr \emph{For cross-validation data, see \code{CV.[...]} 
+  parameters in \code{\link{BIOMOD_Modeling}} function ; for evaluation data, see 
+  \code{eval.[...]} parameters in \code{\link{BIOMOD_FormatingData}}.}
   }
   
   \item{scale.models}{\bold{This parameter is quite experimental and it is recommended 
@@ -267,19 +314,16 @@ myBiomodData <- BIOMOD_FormatingData(resp.var = myResp,
                                      resp.xy = myRespXY,
                                      resp.name = myRespName)
 
-# Create default modeling options
-myBiomodOptions <- BIOMOD_ModelingOptions()
-
 
 # ---------------------------------------------------------------------------- #
 # Model single models
 myBiomodModelOut <- BIOMOD_Modeling(bm.format = myBiomodData,
                                     modeling.id = 'AllModels',
                                     models = c('RF', 'GLM'),
-                                    bm.options = myBiomodOptions,
                                     CV.strategy = 'random',
                                     CV.nb.rep = 2,
                                     CV.perc = 0.8,
+                                    OPT.strategy = 'bigboss',
                                     metric.eval = c('TSS','ROC'),
                                     var.import = 2,
                                     seed.val = 42)
@@ -296,8 +340,8 @@ bm_PlotEvalBoxplot(bm.out = myBiomodModelOut, group.by = c('algo', 'run'))
 
 # # Represent variables importance 
 # bm_PlotVarImpBoxplot(bm.out = myBiomodModelOut, group.by = c('expl.var', 'algo', 'algo'))
-# bm_PlotVarImpBoxplot(bm.out = myBiomodModelOut, group.by = c('expl.var', 'algo', 'dataset'))
-# bm_PlotVarImpBoxplot(bm.out = myBiomodModelOut, group.by = c('algo', 'expl.var', 'dataset'))
+# bm_PlotVarImpBoxplot(bm.out = myBiomodModelOut, group.by = c('expl.var', 'algo', 'run'))
+# bm_PlotVarImpBoxplot(bm.out = myBiomodModelOut, group.by = c('algo', 'expl.var', 'run'))
 
 # # Represent response curves 
 # mods <- get_built_models(myBiomodModelOut, run = 'RUN1')
@@ -318,11 +362,12 @@ bm_PlotEvalBoxplot(bm.out = myBiomodModelOut, group.by = c('algo', 'run'))
 \seealso{
 \code{\link[stats]{glm}}, \code{\link[gam]{gam}},
   \code{\link[mgcv]{gam}}, \code{\link[mgcv]{bam}}, \code{\link[gbm]{gbm}},
-  \code{\link[rpart]{rpart}}, code{\link[nnet]{nnet}},
+  \code{\link[rpart]{rpart}}, \code{\link[nnet]{nnet}},
   \code{\link[mda]{fda}}, \code{\link[earth]{earth}},
   \code{\link[randomForest]{randomForest}}, \code{\link[maxnet]{maxnet}},
   \code{\link[xgboost]{xgboost}}, \code{\link{BIOMOD_FormatingData}},
-  \code{\link{BIOMOD_ModelingOptions}}, \code{\link{bm_CrossValidation}},
+  \code{\link{bm_ModelingOptions}}, \code{\link{bm_Tuning}}, 
+  \code{\link{bm_CrossValidation}},
   \code{ \link{bm_VariablesImportance}}, \code{\link{BIOMOD_Projection}},
   \code{\link{BIOMOD_EnsembleModeling}}, \code{\link{bm_PlotEvalMean}},
   \code{\link{bm_PlotEvalBoxplot}}, \code{\link{bm_PlotVarImpBoxplot}},
@@ -333,11 +378,8 @@ Other Main functions:
 \code{\link{BIOMOD_EnsembleModeling}()},
 \code{\link{BIOMOD_FormatingData}()},
 \code{\link{BIOMOD_LoadModels}()},
-\code{\link{BIOMOD_ModelingOptions}()},
-\code{\link{BIOMOD_PresenceOnly}()},
 \code{\link{BIOMOD_Projection}()},
-\code{\link{BIOMOD_RangeSize}()},
-\code{\link{BIOMOD_Tuning}()}
+\code{\link{BIOMOD_RangeSize}()}
 }
 \author{
 Wilfried Thuiller, Damien Georges, Robin Engler

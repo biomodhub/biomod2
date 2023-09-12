@@ -7,11 +7,10 @@ vignette: >
   %\VignetteEncoding{UTF-8}
 ---
 
-<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.13/css/all.css" integrity="sha384-DNOHZ68U8hZfKXOrtjWvjxusGo9WQnrNx2sqG0tfsghAvtVlRW3tvkXWZh58N9jp" crossorigin="anonymous">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
 
 
-
-### <i class="fas fa-address-card"></i> Definition
+### <i class="fa-solid fa-address-card"></i> Definition
 
 `biomod2` requires either **presence / absence data**, or **presence-only data supplemented with pseudo-absences** that can be generated with the [`BIOMOD_FormatingData`](../reference/BIOMOD_FormatingData.html) function.
 
@@ -21,7 +20,7 @@ vignette: >
 
 </br>
 
-### <i class="fas fa-cookie"></i> How to select them ? - Methods
+### <i class="fa-solid fa-cookie"></i> How to select them ? - Methods
 
 3 different methods are implemented within `biomod2` to select pseudo-absences (PA) :
 
@@ -60,7 +59,7 @@ The **random** method is the one with the least assumptions, and should be the d
 
 </br>
 
-### <i class="fas fa-vial"></i> How to select them ? - Barbet-Massin et al. 2012
+### <i class="fa-solid fa-vial"></i> How to select them ? - Barbet-Massin et al. 2012
 
 **Barbet-Massin, M.**, Jiguet, F., Albert, C.H. and Thuiller, W. (**2012**), *Selecting pseudo-absences for species distribution models: how, where and how many?*. **Methods in Ecology and Evolution**, 3: 327-338. https://doi.org/10.1111/j.2041-210X.2011.00172.x
 

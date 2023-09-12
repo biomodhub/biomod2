@@ -5,6 +5,9 @@ utils::globalVariables(names = c("i.dim1",
                                  "i.dim3",
                                  "sub.i"))
 
+## biomod2_classes_0 ------------
+utils::globalVariables(names = c("expected_CVnames"))
+
 ## biomod2_classes_1 ------------
 utils::globalVariables(names = c("this_PA",
                                  "this_run",
@@ -27,8 +30,8 @@ utils::globalVariables(names = c("cv"))
 utils::globalVariables(names = c("i"))
 
 
-## BIOMOD_Tuning ------------
-utils::globalVariables(names = c("i", "quant", "type", "IA"))
+## bm_Tuning ------------
+utils::globalVariables(names = c("calib.i", "rep", "quant", "i", "typ", "intlev", "fi"))
 
 ## BIOMOD_Projection ------------
 utils::globalVariables(names = c("do.stack",
@@ -72,8 +75,14 @@ utils::globalVariables(names = c("thiscol", "pred", "proj"))
 ## bm_PseudoAbsences ------------
 utils::globalVariables(names = c("i.abs"))
 
+## bm_Tuning ------------
+utils::globalVariables(names = c("dataset.i", "PA.i", "tuned.mod", "train.params", "tuning.grid", "criteria.AIC"))
+
 ## bm_CrossValidation ------------
 utils::globalVariables(names = c("pa", "env", "this.colnames"))
+
+## bm_FindOptimStat ------------
+utils::globalVariables(names = c("expl.var.names"))
 
 ## bm_RunModel ------------
 utils::globalVariables(names = c("expl_var_names", "resp_name", "criteria"

@@ -78,7 +78,7 @@
 ##' 
 ##' 
 ##' @seealso \code{\link{bm_PseudoAbsences}}, \code{\link{BIOMOD_FormatingData}}, 
-##' \code{\link{BIOMOD_ModelingOptions}}, \code{\link{BIOMOD_Tuning}}, 
+##' \code{\link{bm_ModelingOptions}}, \code{\link{bm_Tuning}}, 
 ##' \code{\link{bm_RunModelsLoop}}, \code{\link{BIOMOD_Modeling}},
 ##' @family Secundary functions
 ##' 
@@ -134,7 +134,8 @@ bm_SRE <- function(resp.var = NULL,
                    expl.var = NULL, 
                    new.env = NULL, 
                    quant = 0.025, 
-                   do.extrem = FALSE) {
+                   do.extrem = FALSE)
+{
   ## 0. Check arguments ---------------------------------------------------------
   args <- .bm_SRE.check.args(resp.var, expl.var, new.env, quant)
   for (argi in names(args)) { assign(x = argi, value = args[[argi]]) }

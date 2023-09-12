@@ -245,10 +245,10 @@ apply(PA.r_mult$pa.tab, 2, table)
 
 Other Secundary functions: 
 \code{\link{bm_BinaryTransformation}()},
-\code{\link{bm_CVnnet}()},
 \code{\link{bm_CrossValidation}()},
 \code{\link{bm_FindOptimStat}()},
 \code{\link{bm_MakeFormula}()},
+\code{\link{bm_ModelingOptions}()},
 \code{\link{bm_PlotEvalBoxplot}()},
 \code{\link{bm_PlotEvalMean}()},
 \code{\link{bm_PlotRangeSize}()},
@@ -258,6 +258,7 @@ Other Secundary functions:
 \code{\link{bm_SRE}()},
 \code{\link{bm_SampleBinaryVector}()},
 \code{\link{bm_SampleFactorLevels}()},
+\code{\link{bm_Tuning}()},
 \code{\link{bm_VariablesImportance}()}
 }
 \author{

@@ -5,11 +5,12 @@
 ##' @aliases BIOMOD.stored.SpatRaster-class
 ##' @aliases BIOMOD.stored.files-class
 ##' @aliases BIOMOD.stored.formated.data-class
-##' @aliases BIOMOD.stored.models.options-class
+##' @aliases BIOMOD.stored.options-class
 ##' @aliases BIOMOD.stored.models.out-class
 ##' @author Damien Georges
 ##' 
-##' @title \code{BIOMOD_EnsembleModeling()} output object class
+##' @title \code{\link{BIOMOD_Modeling}} and \code{\link{BIOMOD_EnsembleModeling}} 
+##' output object class
 ##' 
 ##' @description Classes used by \code{\link{BIOMOD_Modeling}} and 
 ##' \code{\link{BIOMOD_EnsembleModeling}} to build their output object (see 
@@ -34,15 +35,14 @@
 ##'   \item{\code{BIOMOD.stored.files} : }{\code{val} is a \code{character}}
 ##'   \item{\code{BIOMOD.stored.formated.data} : }{\code{val} is a 
 ##'   \code{\link{BIOMOD.formated.data}} object}
-##'   \item{\code{BIOMOD.stored.models.options} : }{\code{val} is a 
+##'   \item{\code{BIOMOD.stored.options} : }{\code{val} is a 
 ##'   \code{\link{BIOMOD.models.options}} object}
 ##'   \item{\code{BIOMOD.stored.models.out} : }{\code{val} is a 
 ##'   \code{\link{BIOMOD.models.out}} object}
 ##' }
 ##' 
 ##' 
-##' @seealso \code{\link{BIOMOD.formated.data}}, \code{\link{BIOMOD.models.options}},
-##' \code{\link{BIOMOD.models.out}}, 
+##' @seealso \code{\link{BIOMOD.formated.data}}, \code{\link{BIOMOD.models.out}}, 
 ##' \code{\link{BIOMOD_Modeling}}, \code{\link{BIOMOD_EnsembleModeling}}, 
 ##' \code{\link{BIOMOD_Projection}}, \code{\link{BIOMOD_EnsembleForecasting}}
 ##' @family Toolbox objects
@@ -55,7 +55,7 @@
 ##' showClass("BIOMOD.stored.SpatRaster") 
 ##' showClass("BIOMOD.stored.files") 
 ##' showClass("BIOMOD.stored.formated.data") 
-##' showClass("BIOMOD.stored.models.options") 
+##' showClass("BIOMOD.stored.options") 
 ##' showClass("BIOMOD.stored.models.out") 
 ##' 
 ##' 
@@ -118,11 +118,11 @@ setClass("BIOMOD.stored.formated.data",
          prototype(val = NULL),
          validity = function(object){ return(TRUE) })
 
-### BIOMOD.stored.models.options ------------------------------------------------
-##' @name BIOMOD.stored.models.options-class
+### BIOMOD.stored.options -----------------------------------------------------
+##' @name BIOMOD.stored.options-class
 ##' @rdname BIOMOD.stored.data
 ##' 
-setClass("BIOMOD.stored.models.options",
+setClass("BIOMOD.stored.options",
          contains = "BIOMOD.stored.data",
          representation(val = 'BIOMOD.models.options'),
          prototype(val = NULL),
@@ -168,16 +168,14 @@ setGeneric("load_stored_object", function(obj, ...) { standardGeneric("load_stor
 setMethod("load_stored_object", "BIOMOD.stored.data",
           function(obj, layer = 1)
           {
-            
             if(length(layer) > 1){
               stop("No support for multilayer object in `load_stored_object` method for `BIOMOD.stored.data`")
             }
-            
             if(obj@inMemory & layer == 1){
               return(obj@val) 
             }
             # for all other stored objects
-          if (obj@link[layer] != '') {
+            if (obj@link[layer] != '') {
               return(get(load(obj@link[layer])))
             } else {
               warning("No link provided for this object")
@@ -187,8 +185,8 @@ setMethod("load_stored_object", "BIOMOD.stored.data",
 )
 
 ##' @rdname load_stored_object
+##' @importFrom terra rast
 ##' @export
-##' @importFrom terra rast wrap
 ##' 
 
 setMethod("load_stored_object", "BIOMOD.stored.SpatRaster",

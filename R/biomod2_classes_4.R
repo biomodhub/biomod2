@@ -151,7 +151,7 @@ NULL
 setClass('biomod2_model',
          representation(model_name = 'character',
                         model_class = 'character',
-                        model_options = 'list',
+                        model_options = 'BIOMOD.options.dataset',
                         model = 'ANY',
                         scaling_model = 'ANY',
                         dir_name = 'character',
@@ -161,9 +161,9 @@ setClass('biomod2_model',
                         expl_var_range = 'list',
                         model_evaluation = 'data.frame',
                         model_variables_importance = 'data.frame'),
-         prototype = list(model_name = 'mySpecies_DataSet_RunName_myModelClass',
+         prototype = list(model_name = 'mySpecies_DataSet_RunName_myModelClass', ## REMOVE prototype ??
                           model_class = 'myModelClass',
-                          model_options = list(),
+                          model_options = new('BIOMOD.options.dataset'),
                           model = list(),
                           scaling_model = list(),
                           dir_name = '.',
@@ -559,11 +559,11 @@ setMethod('predict2', signature(object = 'FDA_biomod2_model', newdata = "data.fr
 setClass('GAM_biomod2_model',
          representation(model_subclass = 'character'), 
          contains = 'biomod2_model',
-         prototype = list(model_class = 'GAM', model_subclass = 'GAM_mgcv'),
+         prototype = list(model_class = 'GAM', model_subclass = 'GAM_mgcv_gam'),
          validity = function(object) { ## check model class
-           if ((!(object@model_subclass %in% c('GAM_mgcv', 'GAM_gam', 'BAM_mgcv'))) ||
-               (object@model_subclass %in% c('GAM_mgcv', 'GAM_gam') && !inherits(object@model, c("gam", "Gam"))) ||
-               (object@model_subclass == 'BAM_mgcv' && !inherits(object@model, c("bam")))) {
+           if ((!(object@model_subclass %in% c('GAM_mgcv_gam', 'GAM_gam_gam', 'GAM_mgcv_bam'))) ||
+               (object@model_subclass %in% c('GAM_mgcv_gam', 'GAM_gam_gam') && !inherits(object@model, c("gam", "Gam"))) ||
+               (object@model_subclass == 'GAM_mgcv_bam' && !inherits(object@model, c("bam")))) {
              return(FALSE)
            } else {
              return(TRUE)
@@ -791,7 +791,7 @@ setMethod('predict2', signature(object = 'MAXENT_biomod2_model', newdata = "Spat
             }
             
             # checking maxent.jar is present
-            path_to_maxent.jar <- file.path(object@model_options$path_to_maxent.jar, "maxent.jar")
+            path_to_maxent.jar <- file.path(object@model_options@args.default$path_to_maxent.jar, "maxent.jar")
             if (!file.exists(path_to_maxent.jar)) {
               path_to_maxent.jar <-  file.path(getwd(), "maxent.jar")
             }
@@ -799,12 +799,12 @@ setMethod('predict2', signature(object = 'MAXENT_biomod2_model', newdata = "Spat
             
             maxent.command <- 
               paste0("java ",
-                     ifelse(is.null(object@model_options$memory_allocated), "",
-                            paste0("-mx", object@model_options$memory_allocated, "m")),
-                     ifelse(is.null(object@model_options$initial_heap_size), "",
-                            paste0(" -Xms", object@model_options$initial_heap_size)),
-                     ifelse(is.null(object@model_options$max_heap_size), "",
-                            paste0(" -Xmx", object@model_options$max_heap_size)),
+                     ifelse(is.null(object@model_options@args.default$memory_allocated), "",
+                            paste0("-mx", object@model_options@args.default$memory_allocated, "m")),
+                     ifelse(is.null(object@model_options@args.default$initial_heap_size), "",
+                            paste0(" -Xms", object@model_options@args.default$initial_heap_size)),
+                     ifelse(is.null(object@model_options@args.default$max_heap_size), "",
+                            paste0(" -Xmx", object@model_options@args.default$max_heap_size)),
                      " -cp ", "\"", path_to_maxent.jar, "\"",
                      " density.Project ",
                      "\"", list.files(path = object@model_output_dir, pattern = ".lambdas$", full.names = TRUE), "\" ",
@@ -891,7 +891,7 @@ setMethod('predict2', signature(object = 'MAXENT_biomod2_model', newdata = "data
             write.table(Pred_swd, file = m_predictFile, quote = FALSE, row.names = FALSE, col.names = TRUE, sep = ",")
             
             # checking maxent.jar is present
-            path_to_maxent.jar <- file.path(object@model_options$path_to_maxent.jar, "maxent.jar")
+            path_to_maxent.jar <- file.path(object@model_options@args.default$path_to_maxent.jar, "maxent.jar")
             if (!file.exists(path_to_maxent.jar)) {
               path_to_maxent.jar <-  file.path(getwd(), "maxent.jar")
             }
@@ -899,12 +899,12 @@ setMethod('predict2', signature(object = 'MAXENT_biomod2_model', newdata = "data
             # cat("\n\t\tRunning Maxent...")
             maxent.command <- 
               paste0("java ",
-                     ifelse(is.null(object@model_options$memory_allocated), "",
-                            paste0("-mx", object@model_options$memory_allocated, "m")),
-                     ifelse(is.null(object@model_options$initial_heap_size), "",
-                            paste0(" -Xms", object@model_options$initial_heap_size)),
-                     ifelse(is.null(object@model_options$max_heap_size), "",
-                            paste0(" -Xmx", object@model_options$max_heap_size)),
+                     ifelse(is.null(object@model_options@args.default$memory_allocated), "",
+                            paste0("-mx", object@model_options@args.default$memory_allocated, "m")),
+                     ifelse(is.null(object@model_options@args.default$initial_heap_size), "",
+                            paste0(" -Xms", object@model_options@args.default$initial_heap_size)),
+                     ifelse(is.null(object@model_options@args.default$max_heap_size), "",
+                            paste0(" -Xmx", object@model_options@args.default$max_heap_size)),
                      " -cp ", "\"", path_to_maxent.jar, "\"",
                      " density.Project ",
                      "\"", list.files(path = object@model_output_dir, pattern = ".lambdas$", full.names = TRUE), "\" ",
@@ -1053,7 +1053,7 @@ setClass('RF_biomod2_model',
 
 setMethod('predict2', signature(object = 'RF_biomod2_model', newdata = "SpatRaster"),
           function(object, newdata, ...) {
-            if (object@model_options$do.classif == TRUE) {
+            if (!is.null(object@model_options@args.default$type) && object@model_options@args.default$type == "classification") {
               predfun <- function(object, newdata, mod.name){
                 # new predict command used with terra
                 subset(predict(newdata, model = get_formal_model(object),
@@ -1070,7 +1070,11 @@ setMethod('predict2', signature(object = 'RF_biomod2_model', newdata = "SpatRast
                         wopt = list(names = rep(mod.name,2))) 
               }
             }
+            
+            # old predict function used with raster
+            # predict(newdata, model = get_formal_model(object), type = 'prob', index = 2)            
             # redirect to predict2.biomod2_model.SpatRaster
+            
             callNextMethod(object, newdata, predfun = predfun, ...)
             
           }
@@ -1079,7 +1083,7 @@ setMethod('predict2', signature(object = 'RF_biomod2_model', newdata = "SpatRast
 ##' @rdname predict2.bm
 setMethod('predict2', signature(object = 'RF_biomod2_model', newdata = "data.frame"),
           function(object, newdata, ...) {
-            if (object@model_options$do.classif == TRUE) {
+            if (!is.null(object@model_options@args.default$type) && object@model_options@args.default$type == "classification") {
               predfun <- function(object, newdata, not_na_rows) {
                 as.numeric(predict(get_formal_model(object), as.data.frame(newdata[not_na_rows, , drop = FALSE]), type = 'prob')[, '1'])        
               }
@@ -1088,7 +1092,6 @@ setMethod('predict2', signature(object = 'RF_biomod2_model', newdata = "data.fra
                 as.numeric(predict(get_formal_model(object), as.data.frame(newdata[not_na_rows, , drop = FALSE]), type = 'response'))        
               }
             }
-            
             # redirect to predict2.biomod2_model.data.frame
             callNextMethod(object, newdata, predfun = predfun, ...)
           }

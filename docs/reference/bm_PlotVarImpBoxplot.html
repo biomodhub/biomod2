@@ -21,7 +21,7 @@ grouping methods (see Details)."><!-- mathjax --><script src="https://cdnjs.clou
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">biomod2</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">4.2-4-10</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">4.2-5</span>
       </span>
     </div>
 
@@ -54,6 +54,9 @@ grouping methods (see Details)."><!-- mathjax --><script src="https://cdnjs.clou
       <a href="../articles/examples_2_secundaryFunctions.html">Secundary functions</a>
     </li>
     <li class="divider">
+    <li>
+      <a href="../articles/vignette_dataPreparation.html">Data preparation</a>
+    </li>
     <li>
       <a href="../articles/vignette_pseudoAbsences.html">Pseudo-absences</a>
     </li>
@@ -156,10 +159,10 @@ A <code>logical</code> value defining whether the plot is to be rendered or not<
 <code><a href="getters.out.html">get_variables_importance</a></code></p>
 <p>Other Secundary functions: 
 <code><a href="bm_BinaryTransformation.html">bm_BinaryTransformation</a>()</code>,
-<code><a href="bm_CVnnet.html">bm_CVnnet</a>()</code>,
 <code><a href="bm_CrossValidation.html">bm_CrossValidation</a>()</code>,
 <code><a href="bm_FindOptimStat.html">bm_FindOptimStat</a>()</code>,
 <code><a href="bm_MakeFormula.html">bm_MakeFormula</a>()</code>,
+<code><a href="bm_ModelingOptions.html">bm_ModelingOptions</a>()</code>,
 <code><a href="bm_PlotEvalBoxplot.html">bm_PlotEvalBoxplot</a>()</code>,
 <code><a href="bm_PlotEvalMean.html">bm_PlotEvalMean</a>()</code>,
 <code><a href="bm_PlotRangeSize.html">bm_PlotRangeSize</a>()</code>,
@@ -169,6 +172,7 @@ A <code>logical</code> value defining whether the plot is to be rendered or not<
 <code><a href="bm_SRE.html">bm_SRE</a>()</code>,
 <code><a href="bm_SampleBinaryVector.html">bm_SampleBinaryVector</a>()</code>,
 <code><a href="bm_SampleFactorLevels.html">bm_SampleFactorLevels</a>()</code>,
+<code><a href="bm_Tuning.html">bm_Tuning</a>()</code>,
 <code><a href="bm_VariablesImportance.html">bm_VariablesImportance</a>()</code></p>
 <p>Other Plot functions: 
 <code><a href="bm_PlotEvalBoxplot.html">bm_PlotEvalBoxplot</a>()</code>,
@@ -219,17 +223,14 @@ A <code>logical</code> value defining whether the plot is to be rendered or not<
 <span>                                       resp.xy <span class="op">=</span> <span class="va">myRespXY</span>,</span>
 <span>                                       resp.name <span class="op">=</span> <span class="va">myRespName</span><span class="op">)</span></span>
 <span></span>
-<span>  <span class="co"># Create default modeling options</span></span>
-<span>  <span class="va">myBiomodOptions</span> <span class="op">&lt;-</span> <span class="fu"><a href="BIOMOD_ModelingOptions.html">BIOMOD_ModelingOptions</a></span><span class="op">(</span><span class="op">)</span></span>
-<span></span>
 <span>  <span class="co"># Model single models</span></span>
 <span>  <span class="va">myBiomodModelOut</span> <span class="op">&lt;-</span> <span class="fu"><a href="BIOMOD_Modeling.html">BIOMOD_Modeling</a></span><span class="op">(</span>bm.format <span class="op">=</span> <span class="va">myBiomodData</span>,</span>
 <span>                                      modeling.id <span class="op">=</span> <span class="st">'AllModels'</span>,</span>
 <span>                                      models <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">'RF'</span>, <span class="st">'GLM'</span><span class="op">)</span>,</span>
-<span>                                      bm.options <span class="op">=</span> <span class="va">myBiomodOptions</span>,</span>
 <span>                                      CV.strategy <span class="op">=</span> <span class="st">'random'</span>,</span>
 <span>                                      CV.nb.rep <span class="op">=</span> <span class="fl">2</span>,</span>
 <span>                                      CV.perc <span class="op">=</span> <span class="fl">0.8</span>,</span>
+<span>                                      OPT.strategy <span class="op">=</span> <span class="st">'bigboss'</span>,</span>
 <span>                                      metric.eval <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">'TSS'</span>,<span class="st">'ROC'</span><span class="op">)</span>,</span>
 <span>                                      var.import <span class="op">=</span> <span class="fl">3</span>,</span>
 <span>                                      seed.val <span class="op">=</span> <span class="fl">42</span><span class="op">)</span></span>

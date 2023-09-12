@@ -31,6 +31,8 @@ navbar:
         - text: Secundary functions
           href: articles/examples_2_secundaryFunctions.html
         - text: "---------"
+        - text: Data preparation
+          href: articles/vignette_dataPreparation.html
         - text: Pseudo-absences
           href: articles/vignette_pseudoAbsences.html
         - text: Variability in results
@@ -53,15 +55,12 @@ reference:
   - subtitle: Main functions
     contents:
       - "BIOMOD_FormatingData"
-      - "BIOMOD_ModelingOptions"
-      - "BIOMOD_Tuning"
       - "BIOMOD_Modeling"
       - "BIOMOD_Projection"
       - "BIOMOD_EnsembleModeling"
       - "BIOMOD_EnsembleForecasting"
       - "BIOMOD_RangeSize"
       - "BIOMOD_LoadModels"
-      - "BIOMOD_PresenceOnly"
   - subtitle: Secundary functions
     contents:
       - "bm_MakeFormula"
@@ -69,8 +68,9 @@ reference:
       - "bm_SampleFactorLevels"
       - "bm_PseudoAbsences"
       - "bm_CrossValidation"
+      - "bm_ModelingOptions"
+      - "bm_Tuning"
       - "bm_RunModelsLoop"
-      - "bm_CVnnet"
       - "bm_SRE"
       - "bm_FindOptimStat"
       - "bm_BinaryTransformation"
@@ -87,6 +87,8 @@ reference:
       - "BIOMOD.formated.data.PA"
       - "plot,BIOMOD.formated.data,missing-method"
       - "summary,BIOMOD.formated.data-method"
+      - "BIOMOD.options.default"
+      - "BIOMOD.options.dataset"
       - "BIOMOD.models.options"
       - "BIOMOD.stored.data"
       - "biomod2_model"
@@ -102,6 +104,10 @@ reference:
       - "predict.bm"
       - "predict.em"
   - title: Data
+  - subtitle: Models options
+    contents:
+      - "ModelsTable"
+      - "OptionsBigboss"
   - subtitle: Species data
     contents:
       - "DataSpecies"

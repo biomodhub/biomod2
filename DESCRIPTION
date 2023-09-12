@@ -1,8 +1,8 @@
 Package: biomod2
 Type: Package
 Title: Ensemble Platform for Species Distribution Modeling
-Version: 4.2-4-10
-Date: 2023-06-15
+Version: 4.2-5
+Date: 2023-09-12
 Authors@R: c(person("Wilfried", "Thuiller", role = c("aut")
                     , email = "wilfried.thuiller@univ-grenoble-alpes.fr"),
              person("Damien", "Georges", role = c("aut")),
@@ -44,22 +44,22 @@ Imports:
     abind,
     foreach,
     ggplot2,
-    nnet,
     gbm (>= 2.1.3),
-    xgboost,
-    mda,
-    randomForest,
-    maxnet,
     rpart,
     MASS,
     pROC (>= 1.15.0),
     PresenceAbsence,
-    earth,
     dplyr
 Suggests:
     Hmisc,
     gam,
     mgcv,
+    earth,
+    maxnet,
+    mda,
+    nnet,
+    randomForest,
+    xgboost,
     car,
     caret,
     dismo,
@@ -79,6 +79,7 @@ VignetteBuilder: knitr
 Collate: 
     'biomod2-package.R'
     'biomod2_globalVariables.R'
+    'biomod2_classes_0.R'
     'biomod2_classes_1.R'
     'biomod2_classes_2.R'
     'biomod2_classes_3.R'
@@ -91,17 +92,14 @@ Collate:
     'BIOMOD_FormatingData.R'
     'BIOMOD_LoadModels.R'
     'BIOMOD_Modeling.R'
-    'BIOMOD_ModelingOptions.R'
-    'BIOMOD_PresenceOnly.R'
     'BIOMOD_Projection.R'
     'BIOMOD_RangeSize.R'
-    'BIOMOD_Tuning.R'
     'DEPRECATED.R'
     'bm_BinaryTransformation.R'
     'bm_CrossValidation.R'
-    'bm_CVnnet.R'
     'bm_FindOptimStat.R'
     'bm_MakeFormula.R'
+    'bm_ModelingOptions.R'
     'bm_PlotEvalBoxplot.R'
     'bm_PlotEvalMean.R'
     'bm_PlotRangeSize.R'
@@ -112,6 +110,7 @@ Collate:
     'bm_SRE.R'
     'bm_SampleBinaryVector.R'
     'bm_SampleFactorLevels.R'
+    'bm_Tuning.R'
     'bm_VariablesImportance.R'
     'zzz.R'
 LazyData: true

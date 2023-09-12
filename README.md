@@ -1,5 +1,5 @@
 [![Cran Version](https://www.r-pkg.org/badges/version/biomod2?color=yellow)](https://cran.r-project.org/package=biomod2)
-[![Github Version](https://img.shields.io/badge/devel%20version-4.2--4-blue.svg)](https://github.com/biomodhub/biomod2)
+[![Github Version](https://img.shields.io/badge/devel%20version-4.2--5-blue.svg)](https://github.com/biomodhub/biomod2)
 [![Last Commit](https://img.shields.io/github/last-commit/biomodhub/biomod2.svg)](https://github.com/biomodhub/biomod2/commits/master)
 [![R-CMD-check](https://github.com/biomodhub/biomod2/actions/workflows/R-CMD-check.yml/badge.svg)](https://github.com/biomodhub/biomod2/actions/workflows/R-CMD-check.yml)
 
@@ -8,6 +8,20 @@
 badge for github version :
 badger::badge_github_version("biomodhub/biomod2", "blue") 
 -->
+
+<style>
+.zoom p {
+width:800px;
+margin-left: auto;
+margin-right: auto;
+}
+.zoom p:hover {
+width:1500px;
+position: relative;
+z-index: 10;
+}
+</style>
+
 <div align="center">
 <b>------------------------------------------------------------<br/>
 Species distribution modeling, <br/>
@@ -32,7 +46,7 @@ install.packages("biomod2", dependencies = TRUE)
 
 <br/>
 
-- **Development version** [![v](https://img.shields.io/badge/devel%20version-4.2--4-blue.svg)](https://github.com/biomodhub/biomod2) from [biomodhub](https://github.com/biomodhub/biomod2) :
+- **Development version** [![v](https://img.shields.io/badge/devel%20version-4.2--5-blue.svg)](https://github.com/biomodhub/biomod2) from [biomodhub](https://github.com/biomodhub/biomod2) :
 
 ```R
 library(devtools)
@@ -41,10 +55,34 @@ devtools::install_github("biomodhub/biomod2", dependencies = TRUE)
 
 <br/><br/>
 
+### <i class="fas fa-envelope-open-text"></i> `biomod 4.2-5` - Modeling options & Tuning Update
 
-### <i class="fas fa-envelope-open-text"></i> `biomod 4.2` - Terra Update
+**! `biomod2 4.2-5` is now available on GitHub !**
 
-**! `biomod2 4.2` is now available !**
+`/!\` Please **feel free to indicate if you notice some strange new behaviors** !
+
+#### <i class="fas fa-exchange-alt"></i> What is changed ?
+
+- modeling options are now automatically retrieved from single models functions, normally allowing the use of all arguments taken into account by these functions
+- tuning has been cleaned up, but keep in mind that it is still a quite long running process
+- in consequence, `BIOMOD_ModelingOptions` and `BIOMOD_Tuning` functions become secundary functions (`bm_ModelingOptions` and `bm_Tuning`), and modeling options can be directly built through `BIOMOD_Modeling` function
+
+#### <i class="fas fa-plus-square"></i> What is new ?
+
+- `ModelsTable` and `OptionsBigboss` datasets (*note that improvement of bigboss modeling options is planned in near future*)
+- [data preparation vignette](https://biomodhub.github.io/biomod2/articles/vignette_dataPreparation.html) has been created (*questions you should ask yourself before modeling*)
+
+<br/>
+
+<div class="zoom">
+<p><img src="articles/pictures/SCHEMA_BIOMOD2_WORKFLOW_functions.png" alt="Main workflow"></img></p>
+</div>
+
+<br/><br/>
+
+
+
+### <i class="fas fa-envelope"></i> `biomod 4.2` - Terra Update
 
 #### <i class="fas fa-exchange-alt"></i> What is changed ?
 
@@ -52,7 +90,11 @@ devtools::install_github("biomodhub/biomod2", dependencies = TRUE)
 - `biomod2` is still compatible with old format such as `RasterStack`and `SpatialPointsDataFrame`.
 - `biomod2` function will sometimes return `SpatRaster` from package `terra` that you can always convert into `RasterStack` using function `stack` in `raster`.
 
-### <i class="fas fa-envelope-open-text"></i> `biomod 4.1` is now available
+<br/><br/>
+
+
+
+### <i class="fas fa-envelope"></i> `biomod 4.1` is now available
 
 `/!\` Package fresh start... meaning some changes in function names and parameters. We apologize for the trouble `>{o.o}<` <br/>
 Sorry for the inconvenience, and please **feel free to indicate if you notice some strange new behaviors** !
@@ -78,24 +120,6 @@ Sorry for the inconvenience, and please **feel free to indicate if you notice so
 
 <br/><br/>
 
-
-
-<style>
-.zoom p {
-width:600px;
-margin-left: auto;
-margin-right: auto;
-}
-.zoom p:hover {
-width:1200px;
-position: relative;
-z-index: 10;
-}
-</style>
-
-<div class="zoom">
-<p><img src="articles/pictures/SCHEMA_BIOMOD2_WORKFLOW_functions.png" alt="Main workflow"></img></p>
-</div>
 
 
 

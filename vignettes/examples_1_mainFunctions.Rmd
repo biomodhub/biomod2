@@ -100,66 +100,6 @@ Single or multiple set of pseudo-absences can be selected with the [`BIOMOD_Form
 # plot(myBiomodData.multi)
 ```
 
-#### <i class="fa-solid fa-wrench"></i> Parameterize modeling options
-
-```R
-# Print default modeling options
-bm_DefaultModelingOptions()
-
-# Create default modeling options
-myBiomodOptions <- BIOMOD_ModelingOptions()
-myBiomodOptions
-
-# # Part (or totality) of the print can be copied and customized
-# # Below is an example to compute quadratic GLM and select best model with 'BIC' criterium
-# myBiomodOptions <- BIOMOD_ModelingOptions(
-#   GLM = list(type = 'quadratic',
-#              interaction.level = 0,
-#              myFormula = NULL,
-#              test = 'BIC',
-#              family = 'binomial',
-#              control = glm.control(epsilon = 1e-08,
-#                                    maxit = 1000,
-#                                    trace = FALSE)))
-# myBiomodOptions
-# 
-# # It is also possible to give a specific GLM formula
-# myForm <- 'Sp277 ~ bio3 + log(bio10) + poly(bio16, 2) + bio19 + bio3:bio19'
-# myBiomodOptions <- BIOMOD_ModelingOptions(GLM = list(myFormula = formula(myForm)))
-# myBiomodOptions
-```
-
-```R
-### Model parameters can also be automatically tuned for your specific 
-### dataset with an optimization algorithm. The tuning can however 
-### be quite long. Duration for tuning all models sequentially 
-### with default optimization settings :
-### on 1 x 2.5 GHz processor: approx. 45 min tuning all models 
-### on 8 x 2.5 GHz processor: approx. 15 min tuning all models 
-# 
-# # library(doParallel)
-# # cl <- makeCluster(8)
-# # doParallel::registerDoParallel(cl) 
-# 
-# time.seq <- system.time(
-#   bm.tuning <- BIOMOD_Tuning(bm.format = myBiomodData, ME.env = myExpl, ME.n.bg = ncell(myExpl))
-# )
-# 
-# # stopCluster(cl)
-# 
-# plot(bm.tuning$tune.CTA.rpart)
-# plot(bm.tuning$tune.CTA.rpart2)
-# plot(bm.tuning$tune.RF)
-# plot(bm.tuning$tune.ANN)
-# plot(bm.tuning$tune.MARS)
-# plot(bm.tuning$tune.FDA)
-# plot(bm.tuning$tune.GBM)
-# plot(bm.tuning$tune.GAM)
-#
-# # Get tuned modeling options
-# myBiomodOptions <- bm.tuning$models.options
-```
-
 #### <i class="fa-solid fa-scissors"></i> Cross-validation datasets
 
 Several cross-validation methods are available and can be selected with the [`BIOMOD_Modeling`](../reference/BIOMOD_Modeling.html) function, which calls the [`bm_CrossValidation`](../reference/bm_CrossValidation.html) function to do so. More examples are presented on the [Secundary functions webpage](examples_2_secundaryFunctions.html).
@@ -181,6 +121,25 @@ Several cross-validation methods are available and can be selected with the [`BI
 # head(cv.s)
 ```
 
+#### <i class="fa-solid fa-rectangle-list"></i> Retrieve modeling options
+
+Modeling options are automatically retrieved from selected models within the [`BIOMOD_Modeling`](../reference/BIOMOD_Modeling.html) function, which calls the [`bm_ModelingOptions`](../reference/bm_ModelingOptions.html) function to do so. Model parameters can also be automatically tuned to a specific dataset, by calling the [`bm_Tuning`](../reference/bm_Tuning.html) function, however it can be quite long. More examples are presented on the [Secundary functions webpage](examples_2_secundaryFunctions.html).
+
+```R
+# # bigboss parameters
+# opt.b <- bm_ModelingOptions(data.type = 'binary',
+#                             models = c('SRE', 'XGBOOST'),
+#                             strategy = 'bigboss')
+# 
+# # tuned parameters with formated data
+# opt.t <- bm_ModelingOptions(data.type = 'binary',
+#                             models = c('SRE', 'XGBOOST'),
+#                             strategy = 'tuned',
+#                             bm.format = myBiomodData)
+# 
+# opt.b
+# opt.t
+```
 
 <br/><br/>
 
@@ -192,11 +151,11 @@ Several cross-validation methods are available and can be selected with the [`BI
 ```R
 # Model single models
 myBiomodModelOut <- BIOMOD_Modeling(bm.format = myBiomodData,
-                                    bm.options = myBiomodOptions,
                                     modeling.id = 'AllModels',
                                     CV.strategy = 'random',
                                     CV.nb.rep = 2,
                                     CV.perc = 0.8,
+                                    OPT.strategy = 'bigboss',
                                     var.import = 3,
                                     metric.eval = c('TSS','ROC'))
                                     # seed.val = 123)
@@ -268,23 +227,6 @@ bm_PlotResponseCurves(bm.out = myBiomodEM,
                       fixed.var = 'median',
                       do.bivariate = TRUE)
 ```
-
-
-#### Presence-only evaluation
-
-```R
-# Evaluate models with Boyce index and MPA
-myBiomodPO <- BIOMOD_PresenceOnly(bm.mod = myBiomodModelOut,
-                                  bm.em = myBiomodEM)
-myBiomodPO
-
-# Evaluate models with Boyce index and MPA (using background data)
-myBiomodPO <- BIOMOD_PresenceOnly(bm.mod = myBiomodModelOut,
-                                  bm.em = myBiomodEM, 
-                                  bg.env = values(myExpl))
-myBiomodPO
-```
-
 
 <br/><br/>
 

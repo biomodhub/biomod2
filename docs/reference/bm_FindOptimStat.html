@@ -19,7 +19,7 @@ metric."><!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax/libs/mat
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">biomod2</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">4.2-4-10</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">4.2-5</span>
       </span>
     </div>
 
@@ -52,6 +52,9 @@ metric."><!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax/libs/mat
       <a href="../articles/examples_2_secundaryFunctions.html">Secundary functions</a>
     </li>
     <li class="divider">
+    <li>
+      <a href="../articles/vignette_dataPreparation.html">Data preparation</a>
+    </li>
     <li>
       <a href="../articles/vignette_pseudoAbsences.html">Pseudo-absences</a>
     </li>
@@ -105,7 +108,9 @@ metric.</p>
 <span>  <span class="va">obs</span>,</span>
 <span>  <span class="va">fit</span>,</span>
 <span>  nb.thresh <span class="op">=</span> <span class="fl">100</span>,</span>
-<span>  threshold <span class="op">=</span> <span class="cn">NULL</span></span>
+<span>  threshold <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  boyce.bg.env <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  mpa.perc <span class="op">=</span> <span class="fl">0.9</span></span>
 <span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu">get_optim_value</span><span class="op">(</span><span class="va">metric.eval</span><span class="op">)</span></span>
@@ -118,8 +123,8 @@ metric.</p>
     <dl><dt>metric.eval</dt>
 <dd><p>a <code>character</code> corresponding to the evaluation metric to be used, must 
 be either <code>ROC</code>, <code>TSS</code>, <code>KAPPA</code>, <code>ACCURACY</code>, <code>BIAS</code>, <code>POD</code>, 
-<code>FAR</code>, <code>POFD</code>, <code>SR</code>, <code>CSI</code>, <code>ETS</code>, <code>HK</code>, <code>HSS</code>, <code>OR</code> 
-or <code>ORSS</code></p></dd>
+<code>FAR</code>, <code>POFD</code>, <code>SR</code>, <code>CSI</code>, <code>ETS</code>, <code>HK</code>, <code>HSS</code>, <code>OR</code>, 
+<code>ORSS</code>, <code>BOYCE</code>, <code>MPA</code></p></dd>
 
 
 <dt>obs</dt>
@@ -138,6 +143,23 @@ tested over the range of fitted values</p></dd>
 <dt>threshold</dt>
 <dd><p>(<em>optional, default</em> <code>NULL</code>) <br> 
 A <code>numeric</code> corresponding to the threshold used to convert the given data</p></dd>
+
+
+<dt>boyce.bg.env</dt>
+<dd><p>(<em>optional, default</em> <code>NULL</code>) <br> 
+A <code>matrix</code>, <code>data.frame</code>, <code><a href="https://rdrr.io/pkg/terra/man/vect.html" class="external-link">SpatVector</a></code>
+or <code><a href="https://rdrr.io/pkg/terra/man/rast.html" class="external-link">SpatRaster</a></code> object containing values of 
+environmental variables (in columns or layers) extracted from the background 
+(<em>if presences are to be compared to background instead of absences or 
+pseudo-absences selected for modeling</em>)
+<br><em>Note that old format from <span class="pkg">raster</span> and <span class="pkg">sp</span> are still supported such as 
+<code>RasterStack</code> and <code>SpatialPointsDataFrame</code> objects. </em></p></dd>
+
+
+<dt>mpa.perc</dt>
+<dd><p>a <code>numeric</code> between <code>0</code> and <code>1</code> corresponding to the percentage 
+of correctly classified presences for Minimal Predicted Area (see <code>ecospat.mpa()</code> in 
+<span class="pkg">ecospat</span>)</p></dd>
 
 
 <dt>misc</dt>
@@ -161,16 +183,36 @@ A <code>numeric</code> corresponding to the threshold used to convert the given 
 evaluation metrics.</em></p>
 <p>Note that if a value is given to <code>threshold</code>, no optimisation will be done., and 
 only the score for this threshold will be returned.</p>
+<p>The Boyce index returns <code>NA</code> values for <code>SRE</code> models because it can not be 
+calculated with binary predictions. <br> This is also the reason why some <code>NA</code> values 
+might appear for <code>GLM</code> models if they do not converge.</p>
     </div>
+    <div id="note">
+    <h2>Note</h2>
+    <p>In order to break dependency loop between packages <span class="pkg">biomod2</span> and <span class="pkg">ecospat</span>, 
+code of <code>ecospat.boyce()</code> and <code>ecospat.mpa()</code> in <span class="pkg">ecospat</span>)
+functions have been copied within this file from version 3.2.2 (august 2022).</p>
+    </div>
+    <div id="references">
+    <h2>References</h2>
+    
+<ul><li><p>Engler, R., Guisan, A., and Rechsteiner L. 2004. An improved approach for predicting 
+  the distribution of rare and endangered species from occurrence and pseudo-absence data. 
+  <em>Journal of Applied Ecology</em>, <b>41(2)</b>, 263-274.</p></li>
+<li><p>Hirzel, A. H., Le Lay, G., Helfer, V., Randin, C., and Guisan, A. 2006. Evaluating 
+  the ability of habitat suitability models to predict species presences. <em>Ecological 
+  Modelling</em>, <b>199(2)</b>, 142-152.</p></li>
+</ul></div>
     <div id="see-also">
     <h2>See also</h2>
-    <div class="dont-index"><p><code><a href="BIOMOD_Modeling.html">BIOMOD_Modeling</a></code>, <code><a href="bm_RunModelsLoop.html">bm_RunModelsLoop</a></code>, 
+    <div class="dont-index"><p><code>ecospat.boyce()</code> and <code>ecospat.mpa()</code> in <span class="pkg">ecospat</span>, 
+<code><a href="BIOMOD_Modeling.html">BIOMOD_Modeling</a></code>, <code><a href="bm_RunModelsLoop.html">bm_RunModelsLoop</a></code>, 
 <code><a href="BIOMOD_EnsembleModeling.html">BIOMOD_EnsembleModeling</a></code></p>
 <p>Other Secundary functions: 
 <code><a href="bm_BinaryTransformation.html">bm_BinaryTransformation</a>()</code>,
-<code><a href="bm_CVnnet.html">bm_CVnnet</a>()</code>,
 <code><a href="bm_CrossValidation.html">bm_CrossValidation</a>()</code>,
 <code><a href="bm_MakeFormula.html">bm_MakeFormula</a>()</code>,
+<code><a href="bm_ModelingOptions.html">bm_ModelingOptions</a>()</code>,
 <code><a href="bm_PlotEvalBoxplot.html">bm_PlotEvalBoxplot</a>()</code>,
 <code><a href="bm_PlotEvalMean.html">bm_PlotEvalMean</a>()</code>,
 <code><a href="bm_PlotRangeSize.html">bm_PlotRangeSize</a>()</code>,
@@ -181,6 +223,7 @@ only the score for this threshold will be returned.</p>
 <code><a href="bm_SRE.html">bm_SRE</a>()</code>,
 <code><a href="bm_SampleBinaryVector.html">bm_SampleBinaryVector</a>()</code>,
 <code><a href="bm_SampleFactorLevels.html">bm_SampleFactorLevels</a>()</code>,
+<code><a href="bm_Tuning.html">bm_Tuning</a>()</code>,
 <code><a href="bm_VariablesImportance.html">bm_VariablesImportance</a>()</code></p></div>
     </div>
     <div id="author">

@@ -14,14 +14,12 @@
 ##' object returned by the \code{\link{BIOMOD_FormatingData}} function
 ##' @param modeling.id a \code{character} corresponding to the name (ID) of the simulation set 
 ##' (\emph{a random number by default})
-##' @param models a \code{vector} containing model names to be computed, must be among \code{GLM}, 
-##' \code{GBM}, \code{GAM}, \code{CTA}, \code{ANN}, \code{SRE}, \code{FDA}, \code{MARS}, 
-##' \code{RF}, \code{MAXENT}, \code{MAXNET}, \code{XGBOOST}
+##' @param models a \code{vector} containing model names to be computed, must be among 
+##' \code{ANN}, \code{CTA}, \code{FDA}, \code{GAM}, \code{GBM}, \code{GLM}, \code{MARS}, 
+##' \code{MAXENT}, \code{MAXNET}, \code{RF}, \code{SRE}, \code{XGBOOST}
 ##' @param models.pa (\emph{optional, default} \code{NULL}) \cr 
 ##' A \code{list} containing for each model a \code{vector} defining which pseudo-absence datasets 
 ##' are to be used, must be among \code{colnames(bm.format@PA.table)}
-##' @param bm.options a \code{\link{BIOMOD.models.options}} object returned by the  
-##' \code{\link{BIOMOD_ModelingOptions}} function
 ##' 
 ##' @param CV.strategy a \code{character} corresponding to the cross-validation selection strategy, 
 ##' must be among \code{random}, \code{kfold}, \code{block}, \code{strat}, \code{env} or 
@@ -39,12 +37,10 @@
 ##' If \code{strategy = 'strat'} or \code{strategy = 'env'}, a \code{character} corresponding 
 ##' to how data will be balanced between partitions, must be either \code{presences} or
 ##' \code{absences} 
-##' @param CV.env.var (\emph{optional}) \cr If \code{strategy = 'env'}, a
-##'   \code{character} corresponding to the environmental variables used to
-##'   build the partition. \code{k} partitions will be built for each
-##'   environmental variables. By default the function uses all environmental
-##'   variables available.
-
+##' @param CV.env.var (\emph{optional}) \cr If \code{strategy = 'env'}, a \code{character} 
+##' corresponding to the environmental variables used to build the partition. \code{k} partitions 
+##' will be built for each environmental variables. By default the function uses all 
+##' environmental variables available.
 ##' @param CV.strat (\emph{optional, default} \code{'both'}) \cr
 ##' If \code{strategy = 'env'}, a \code{character} corresponding to how data will partitioned 
 ##' along gradient, must be among \code{x}, \code{y}, \code{both}
@@ -59,6 +55,23 @@
 ##' @param data.split.perc \emph{deprecated}, now called \code{CV.perc}
 ##' @param data.split.table \emph{deprecated}, now called \code{CV.user.table}
 ##' @param do.full.models \emph{deprecated}, now called \code{CV.do.full.models}
+##' 
+##' @param OPT.data.type a \code{character} corresponding to the data type to be used, must be 
+##' either \code{binary}, \code{binary.PA}, \code{abundance}, \code{compositional}
+##' @param OPT.strategy a \code{character} corresponding to the method to select models' 
+##' parameters values, must be either \code{default}, \code{bigboss}, \code{user.defined}, 
+##' \code{tuned}
+##' @param OPT.user.val (\emph{optional, default} \code{NULL}) \cr
+##' A \code{list} containing parameters values for some (all) models
+##' @param OPT.user.base (\emph{optional, default} \code{bigboss}) \cr A character, 
+##' \code{default} or \code{bigboss} used when \code{OPT.strategy = 'user.defined'}. 
+##' It sets the bases of parameters to be modified by user defined values.
+##' @param OPT.user (\emph{optional, default} \code{TRUE}) \cr  
+##' A \code{\link{BIOMOD.models.options}} object returned by the \code{\link{bm_ModelingOptions}} 
+##' function
+##' @param bm.options a \code{\link{BIOMOD.models.options}} object returned by the  
+##' \code{\link{bm_ModelingOptions}} function
+##' 
 ##' @param weights (\emph{optional, default} \code{NULL}) \cr 
 ##' A \code{vector} of \code{numeric} values corresponding to observation weights (one per 
 ##' observation, see Details)
@@ -68,7 +81,7 @@
 ##' @param metric.eval a \code{vector} containing evaluation metric names to be used, must 
 ##' be among \code{ROC}, \code{TSS}, \code{KAPPA}, \code{ACCURACY}, \code{BIAS}, \code{POD}, 
 ##' \code{FAR}, \code{POFD}, \code{SR}, \code{CSI}, \code{ETS}, \code{HK}, \code{HSS}, \code{OR}, 
-##' \code{ORSS}
+##' \code{ORSS}, \code{BOYCE}, \code{MPA}
 ##' @param var.import (\emph{optional, default} \code{NULL}) \cr 
 ##' An \code{integer} corresponding to the number of permutations to be done for each variable to 
 ##' estimate variable importance
@@ -109,24 +122,24 @@
 ##'   \code{\link{BIOMOD_FormatingData}}), \cr \code{PA.nb.rep *(nb.rep + 1)} models will be 
 ##'   created.}
 ##'   
-##'   \item{models}{The set of models to be calibrated on the data. 10 modeling techniques 
+##'   \item{models}{The set of models to be calibrated on the data. 12 modeling techniques 
 ##'   are currently available :
 ##'   \itemize{
-##'     \item \code{GLM} : Generalized Linear Model (\code{\link[stats]{glm}})
+##'     \item \code{ANN} : Artificial Neural Network (\code{\link[nnet]{nnet}})
+##'     \item \code{CTA} : Classification Tree Analysis (\code{\link[rpart]{rpart}})
+##'     \item \code{FDA} : Flexible Discriminant Analysis (\code{\link[mda]{fda}})
 ##'     \item \code{GAM} : Generalized Additive Model (\code{\link[gam]{gam}}, \code{\link[mgcv]{gam}} 
 ##'     or \code{\link[mgcv]{bam}}) \cr 
-##'     (see \code{\link{BIOMOD_ModelingOptions} for details on algorithm selection})
+##'     (see \code{\link{bm_ModelingOptions} for details on algorithm selection})
 ##'     \item \code{GBM} : Generalized Boosting Model, or usually called Boosted Regression Trees 
 ##'     (\code{\link[gbm]{gbm}})
-##'     \item \code{CTA} : Classification Tree Analysis (\code{\link[rpart]{rpart}})
-##'     \item \code{ANN} : Artificial Neural Network (\code{\link[nnet]{nnet}})
-##'     \item \code{SRE} : Surface Range Envelop or usually called BIOCLIM
-##'     \item \code{FDA} : Flexible Discriminant Analysis (\code{\link[mda]{fda}})
+##'     \item \code{GLM} : Generalized Linear Model (\code{\link[stats]{glm}})
 ##'     \item \code{MARS} : Multiple Adaptive Regression Splines (\code{\link[earth]{earth}})
-##'     \item \code{RF} : Random Forest (\code{\link[randomForest]{randomForest}})
 ##'     \item \code{MAXENT} : Maximum Entropy 
 ##'     (\url{https://biodiversityinformatics.amnh.org/open_source/maxent/})
 ##'     \item \code{MAXNET} : Maximum Entropy (\code{\link[maxnet]{maxnet}})
+##'     \item \code{RF} : Random Forest (\code{\link[randomForest]{randomForest}})
+##'     \item \code{SRE} : Surface Range Envelop or usually called BIOCLIM
 ##'     \item \code{XGBOOST} : eXtreme Gradient Boosting Training (\code{\link[xgboost]{xgboost}})
 ##'   }}
 ##'   
@@ -137,7 +150,24 @@
 ##'   }
 ##'   
 ##'   \item{CV.[...] parameters}{Different methods are available to calibrate/validate the 
-##'   single models (see \code{\link{bm_CrossValidation}}.)}
+##'   single models (see \code{\link{bm_CrossValidation}}).}
+##'   
+##'   \item{OPT.[...] parameters}{Different methods are available to parameterize the 
+##'   single models (see \code{\link{BIOMOD.options.dataset}}). Note that only \code{binary} data 
+##'   type is allowed currently.
+##'   \itemize{
+##'     \item \code{default} : only default parameter values of default parameters of the single 
+##'     models functions are retrieved. Nothing is changed so it might not give good results.
+##'     \item \code{bigboss} : uses parameters pre-defined by \pkg{biomod2} team and that are 
+##'     available in the dataset \code{\link{OptionsBigboss}}. \cr 
+##'     \emph{to be optimized in near future}
+##'     \item \code{user.defined} : updates default or bigboss parameters with some parameters 
+##'     values defined by the user (but matching the format of a 
+##'     \code{\link{BIOMOD.models.options}} object)
+##'     \item \code{tuned} : calling the \code{\link{bm_Tuning}} function to try and optimize 
+##'     some default values
+##'   }
+##'   }
 ##'   
 ##'   \item{weights & prevalence}{More or less weight can be given to some specific observations.
 ##'   \itemize{
@@ -157,9 +187,9 @@
 ##' 
 ##'   \item{metric.eval}{
 ##'   \itemize{
-##'     \item \code{ROC} : Relative Operating Characteristic
+##'     \item \code{ROC} : Relative operating characteristic
 ##'     \item \code{KAPPA} : Cohen's Kappa (Heidke skill score)
-##'     \item \code{TSS} : True kill statistic (Hanssen and Kuipers discriminant, Peirce's skill 
+##'     \item \code{TSS} : True skill statistic (Hanssen and Kuipers discriminant, Peirce's skill 
 ##'     score)
 ##'     \item \code{FAR} : False alarm ratio
 ##'     \item \code{SR} : Success ratio
@@ -168,11 +198,19 @@
 ##'     \item \code{POD} : Probability of detection (hit rate)
 ##'     \item \code{CSI} : Critical success index (threat score)
 ##'     \item \code{ETS} : Equitable threat score (Gilbert skill score)
+##'     \item \code{BOYCE} : Boyce index
+##'     \item \code{MPA} : Minimal predicted area (cutoff optimising MPA to predict 90% of presences)
 ##'   }
 ##'   Optimal value of each method can be obtained with the \code{\link{get_optim_value}} 
 ##'   function. Several evaluation metrics can be selected. \emph{Please refer to the 
-##'   \href{https://www.cawcr.gov.au/projects/verification/}{CAWRC website (section "Methods for dichotomous forecasts")} 
-##'   to get detailed description of each metric.}
+##'   \href{https://www.cawcr.gov.au/projects/verification/}{CAWRC website (section "Methods for 
+##'   dichotomous forecasts")} to get detailed description of each metric.}
+##'   Results after modeling can be obtained through the \code{\link{get_evaluations}} function. \cr 
+##'   Evaluation metric are calculated on the calibrating data (column \code{calibration}), on 
+##'   the cross-validation data (column \code{validation}) or on the evaluation data 
+##'   (column \code{evaluation}). \cr \emph{For cross-validation data, see \code{CV.[...]} 
+##'   parameters in \code{\link{BIOMOD_Modeling}} function ; for evaluation data, see 
+##'   \code{eval.[...]} parameters in \code{\link{BIOMOD_FormatingData}}.}
 ##'   }
 ##'   
 ##'   \item{scale.models}{\bold{This parameter is quite experimental and it is recommended 
@@ -191,11 +229,12 @@
 ##' 
 ##' @seealso \code{\link[stats]{glm}}, \code{\link[gam]{gam}},
 ##'   \code{\link[mgcv]{gam}}, \code{\link[mgcv]{bam}}, \code{\link[gbm]{gbm}},
-##'   \code{\link[rpart]{rpart}}, code{\link[nnet]{nnet}},
+##'   \code{\link[rpart]{rpart}}, \code{\link[nnet]{nnet}},
 ##'   \code{\link[mda]{fda}}, \code{\link[earth]{earth}},
 ##'   \code{\link[randomForest]{randomForest}}, \code{\link[maxnet]{maxnet}},
 ##'   \code{\link[xgboost]{xgboost}}, \code{\link{BIOMOD_FormatingData}},
-##'   \code{\link{BIOMOD_ModelingOptions}}, \code{\link{bm_CrossValidation}},
+##'   \code{\link{bm_ModelingOptions}}, \code{\link{bm_Tuning}}, 
+##'   \code{\link{bm_CrossValidation}},
 ##'   \code{ \link{bm_VariablesImportance}}, \code{\link{BIOMOD_Projection}},
 ##'   \code{\link{BIOMOD_EnsembleModeling}}, \code{\link{bm_PlotEvalMean}},
 ##'   \code{\link{bm_PlotEvalBoxplot}}, \code{\link{bm_PlotVarImpBoxplot}},
@@ -235,19 +274,16 @@
 ##'                                      resp.xy = myRespXY,
 ##'                                      resp.name = myRespName)
 ##' 
-##' # Create default modeling options
-##' myBiomodOptions <- BIOMOD_ModelingOptions()
-##' 
 ##' 
 ##' # ---------------------------------------------------------------------------- #
 ##' # Model single models
 ##' myBiomodModelOut <- BIOMOD_Modeling(bm.format = myBiomodData,
 ##'                                     modeling.id = 'AllModels',
 ##'                                     models = c('RF', 'GLM'),
-##'                                     bm.options = myBiomodOptions,
 ##'                                     CV.strategy = 'random',
 ##'                                     CV.nb.rep = 2,
 ##'                                     CV.perc = 0.8,
+##'                                     OPT.strategy = 'bigboss',
 ##'                                     metric.eval = c('TSS','ROC'),
 ##'                                     var.import = 2,
 ##'                                     seed.val = 42)
@@ -264,8 +300,8 @@
 ##' 
 ##' # # Represent variables importance 
 ##' # bm_PlotVarImpBoxplot(bm.out = myBiomodModelOut, group.by = c('expl.var', 'algo', 'algo'))
-##' # bm_PlotVarImpBoxplot(bm.out = myBiomodModelOut, group.by = c('expl.var', 'algo', 'dataset'))
-##' # bm_PlotVarImpBoxplot(bm.out = myBiomodModelOut, group.by = c('algo', 'expl.var', 'dataset'))
+##' # bm_PlotVarImpBoxplot(bm.out = myBiomodModelOut, group.by = c('expl.var', 'algo', 'run'))
+##' # bm_PlotVarImpBoxplot(bm.out = myBiomodModelOut, group.by = c('algo', 'expl.var', 'run'))
 ##' 
 ##' # # Represent response curves 
 ##' # mods <- get_built_models(myBiomodModelOut, run = 'RUN1')
@@ -288,11 +324,9 @@
 
 BIOMOD_Modeling <- function(bm.format,
                             modeling.id = as.character(format(Sys.time(), "%s")),
-                            models = c('GLM', 'GBM', 'GAM', 'CTA', 'ANN', 'SRE'
-                                       , 'FDA', 'MARS', 'RF', 'MAXENT', 'MAXNET',
-                                       'XGBOOST'),
+                            models = c('ANN', 'CTA', 'FDA', 'GAM', 'GBM', 'GLM', 'MARS'
+                                       , 'MAXENT', 'MAXNET', 'RF', 'SRE', 'XGBOOST'),
                             models.pa = NULL,
-                            bm.options = NULL,
                             CV.strategy = 'random',
                             CV.nb.rep = 1,
                             CV.perc = NULL,
@@ -301,11 +335,17 @@ BIOMOD_Modeling <- function(bm.format,
                             CV.env.var = NULL,
                             CV.strat = NULL,
                             CV.user.table = NULL,
-                            CV.do.full.models = FALSE,
-                            nb.rep,
-                            data.split.perc,
-                            data.split.table,
-                            do.full.models,
+                            CV.do.full.models = TRUE,
+                            OPT.data.type = 'binary',
+                            OPT.strategy = 'default',
+                            OPT.user.val = NULL,
+                            OPT.user.base = 'bigboss',
+                            OPT.user = NULL,
+                            bm.options, ## deprecated
+                            nb.rep, ## deprecated
+                            data.split.perc, ## deprecated
+                            data.split.table, ## deprecated
+                            do.full.models, ## deprecated
                             weights = NULL,
                             prevalence = NULL,
                             metric.eval = c('KAPPA', 'TSS', 'ROC'),
@@ -323,7 +363,7 @@ BIOMOD_Modeling <- function(bm.format,
     modeling.id = modeling.id, 
     models = models, 
     models.pa = models.pa, 
-    bm.options = bm.options, 
+    OPT.user = OPT.user, 
     weights = weights, 
     prevalence = prevalence, 
     metric.eval = metric.eval, 
@@ -338,6 +378,8 @@ BIOMOD_Modeling <- function(bm.format,
   
   # check for obsolete arguments
   args <- .BIOMOD_Modeling.check.args.obsolete(
+    bm.options = bm.options,
+    OPT.user = OPT.user,
     CV.strategy = CV.strategy,
     data.split.perc = data.split.perc,
     CV.perc = CV.perc,
@@ -366,10 +408,8 @@ BIOMOD_Modeling <- function(bm.format,
   .BIOMOD_Modeling.prepare.workdir(bm.format@dir.name, bm.format@sp.name, models.out@modeling.id)
   name.BIOMOD_DATA = file.path(models.out@dir.name, models.out@sp.name, ".BIOMOD_DATA", models.out@modeling.id)
   
-  ## 3.1 Save input data and models options -----------------------------------
+  ## 3.1 Save input data ------------------------------------------------------
   models.out = .fill_BIOMOD.models.out("formated.input.data", bm.format, models.out
-                                       , inMemory = FALSE, nameFolder = name.BIOMOD_DATA)
-  models.out = .fill_BIOMOD.models.out("models.options", bm.options, models.out
                                        , inMemory = FALSE, nameFolder = name.BIOMOD_DATA)
   
   ## 3.2 Get and save calibration lines ---------------------------------------
@@ -384,6 +424,48 @@ BIOMOD_Modeling <- function(bm.format,
                                     user.table = CV.user.table,
                                     do.full.models = CV.do.full.models)
   models.out = .fill_BIOMOD.models.out("calib.lines", calib.lines, models.out
+                                       , inMemory = FALSE, nameFolder = name.BIOMOD_DATA)
+  
+  ## 3.3 Get and save models options ------------------------------------------
+  if (!is.null(OPT.user)) {
+    ## Check for model names -----------
+    if (sum(!(models %in% sapply(OPT.user@models, function(x) strsplit(x, "[.]")[[1]][1]))) > 0) {
+        stop(paste0("\n", "OPT.user", " must contain information for '",
+                    ifelse(length(models) > 1,
+                           paste0(paste0(models[1:(length(models) -1)], collapse = "', '"),
+                                  "' and '", models[length(models)])
+                           , paste0(models,"' models"))))
+    }
+    ## Check for calib.lines names -----
+    for (mod in OPT.user@models) {
+      nam <- names(OPT.user@options[[mod]]@args.values)
+      vals <- colnames(calib.lines)
+      if (any(!(vals %in% nam))) {
+        if (length(nam) == 1 && nam == "_allData_allRun") {
+          val <- OPT.user@options[[mod]]@args.values[[nam]]
+          for (ii in vals) {
+            OPT.user@options[[mod]]@args.values[[ii]] <- val
+          }
+        } else {
+          stop(paste0("\n", "names(OPT.user@options[['", mod, "']]@args.values)", " must be '",
+                      ifelse(length(vals) > 1,
+                             paste0(paste0(vals[1:(length(vals) -1)], collapse = "', '"),
+                                    "' and '", vals[length(vals)])
+                             , paste0(vals,"'"))))
+        }
+      }
+    }
+    bm.options <- OPT.user
+  } else {
+    bm.options <- bm_ModelingOptions(data.type = OPT.data.type,
+                                     models = models,
+                                     strategy = OPT.strategy,
+                                     user.val = OPT.user.val,
+                                     user.base = OPT.user.base,
+                                     bm.format = bm.format,
+                                     calib.lines = calib.lines)
+  }
+  models.out = .fill_BIOMOD.models.out("models.options", bm.options, models.out
                                        , inMemory = FALSE, nameFolder = name.BIOMOD_DATA)
   
   ## 4. Print modeling summary in console ---------------------------------------------------------
@@ -462,7 +544,7 @@ BIOMOD_Modeling <- function(bm.format,
 
 # ---------------------------------------------------------------------------- #
 
-.BIOMOD_Modeling.check.args <- function(bm.format, modeling.id, models, models.pa, bm.options
+.BIOMOD_Modeling.check.args <- function(bm.format, modeling.id, models, models.pa, OPT.user
                                         , weights, prevalence, metric.eval, var.import
                                         , scale.models, nb.cpu, seed.val, do.progress)
 {
@@ -495,10 +577,16 @@ BIOMOD_Modeling <- function(bm.format,
   models.switch.off <- NULL
   
   ## check if model is supported
-  avail.models.list <- c('GLM', 'GBM', 'GAM', 'CTA', 'ANN', 'SRE', 'FDA', 'MARS'
-                         , 'RF', 'MAXENT', 'MAXNET', 'XGBOOST')
+  avail.models.list <- c('ANN', 'CTA', 'FDA', 'GAM', 'GBM', 'GLM', 'MARS', 'MAXENT', 'MAXNET', 'RF', 'SRE', 'XGBOOST')
   .fun_testIfIn(TRUE, "models", models, avail.models.list)
   
+  ## Specific case of one variable with GBM / MAXNET
+  if ('GBM' %in% models && ncol(bm.format@data.env.var) == 1) {
+    warning('GBM might have issues when only one variable is used. Please be sure to install the following version : devtools::install_github("rpatin/gbm")')
+  }
+  if ('MAXNET' %in% models && ncol(bm.format@data.env.var) == 1) {
+    warning('MAXNET might have issues when only one variable is used. Please be sure to install the following version : devtools::install_github("mrmaxent/maxnet")')
+  }
   
   ## 1.1 Remove models not supporting categorical variables --------------------
   categorical_var <- .get_categorical_names(bm.format@data.env.var)
@@ -534,47 +622,49 @@ BIOMOD_Modeling <- function(bm.format,
   }
   
   
-  ## 3. Check bm.options arguments --------------------------------------------
-  if (!is.null(bm.options)) {
-    .fun_testIfInherits(TRUE, "bm.options", bm.options, "BIOMOD.models.options")
-  } else {
-    warning("Models will run with 'defaults' parameters", immediate. = TRUE)
-    bm.options <- BIOMOD_ModelingOptions()
-  }
+  ## 3. Check OPT.user arguments --------------------------------------------
+  if (!is.null(OPT.user)) {
+    .fun_testIfInherits(TRUE, "OPT.user", OPT.user, "BIOMOD.models.options")
+  } 
+  # else {
+  #   warning("Models will run with 'default' parameters", immediate. = TRUE)
+  #   bm.options <- BIOMOD_ModelingOptions()
+  # }
   
   ## 2.2 Specific check for MAXENT -----------------------------------
-  if ("MAXENT" %in% models)
-  {
-    if (!file.exists(file.path(bm.options@MAXENT$path_to_maxent.jar, "maxent.jar"))) {
-      models = models[-which(models == 'MAXENT')]
-      if (!is.null(models.pa)) {
-        models.pa = models.pa[-which(names(models.pa) == 'MAXENT')]
-      }
-      warning(paste0("MAXENT has been disabled because the maxent.jar file is missing. "
-                     , "`maxent.jar` file must be downloaded (https://biodiversityinformatics.amnh.org/open_source/maxent/) "
-                     , "and put in the working directory."), immediate. = TRUE)
-      ## -- 
-      ## The java installation check is temporally disabled cause it seems to cause 
-      ## issues on some Windows users machine.
-      ## --
-      # } else if(!.check.java.installed()){
-      #   models = models[-which(models=='MAXENT')]
-    } else if (nrow(bm.format@coord) == 1) {
-      models = models[-which(models == 'MAXENT')]
-      if (!is.null(models.pa)) {
-        models.pa = models.pa[-which(names(models.pa) == 'MAXENT')]
-      }
-      warning("MAXENT has been disabled because no XY coordinates have been given", immediate. = TRUE)
-    }
-  }
+  ## MOVE TO bm_ModelingOptions ???
+  # if ("MAXENT" %in% models) {
+  #   MAXENT.options <- bm.options@options[[grep("MAXENT", names(bm.options@options))[1]]] ## PROBLEM
+  #   if (!file.exists(file.path(MAXENT.options@args.default$path_to_maxent.jar, "maxent.jar"))) {
+  #     models = models[-which(models == 'MAXENT')]
+  #     if (!is.null(models.pa)) {
+  #       models.pa = models.pa[-which(names(models.pa) == 'MAXENT')]
+  #     }
+  #     warning(paste0("MAXENT has been disabled because the maxent.jar file is missing. "
+  #                    , "`maxent.jar` file must be downloaded (https://biodiversityinformatics.amnh.org/open_source/maxent/) "
+  #                    , "and put in the working directory."), immediate. = TRUE)
+  #     ## -- 
+  #     ## The java installation check is temporally disabled cause it seems to cause 
+  #     ## issues on some Windows users machine.
+  #     ## --
+  #     # } else if(!.check.java.installed()){
+  #     #   models = models[-which(models=='MAXENT')]
+  #   } else if (nrow(bm.format@coord) == 1) {
+  #     models = models[-which(models == 'MAXENT')]
+  #     if (!is.null(models.pa)) {
+  #       models.pa = models.pa[-which(names(models.pa) == 'MAXENT')]
+  #     }
+  #     warning("MAXENT has been disabled because no XY coordinates have been given", immediate. = TRUE)
+  #   }
+  # }
   
   ## 5. Check prevalence arguments --------------------------------------------
   if (!is.null(prevalence)) {
     .fun_testIf01(TRUE, "prevalence", prevalence)
-    if ("MAXENT" %in% models) {
-      cat("\n\t MAXENT default prevalence option was updated to fit with modeling prevalence (i.e", prevalence, ")")
-      bm.options@MAXENT$defaultprevalence = prevalence
-    }
+    # if ("MAXENT" %in% models) {
+    #   cat("\n\t MAXENT default prevalence option was updated to fit with modeling prevalence (i.e", prevalence, ")")
+    #   bm.options@MAXENT$defaultprevalence = prevalence ## PROBLEM
+    # }
   } else {
     prevalence = 0.5
   }
@@ -633,7 +723,8 @@ BIOMOD_Modeling <- function(bm.format,
   ## 7. Check metric.eval arguments -------------------------------------------
   metric.eval <- unique(metric.eval)
   avail.eval.meth.list <- c('TSS', 'KAPPA', 'ACCURACY', 'BIAS', 'POD', 'FAR', 'POFD'
-                            , 'SR', 'CSI', 'ETS', 'HK', 'HSS', 'OR', 'ORSS', 'ROC')
+                            , 'SR', 'CSI', 'ETS', 'HK', 'HSS', 'OR', 'ORSS', 'ROC'
+                            , 'BOYCE', 'MPA')
   .fun_testIfIn(TRUE, "metric.eval", metric.eval, avail.eval.meth.list)
   
   
@@ -647,7 +738,6 @@ BIOMOD_Modeling <- function(bm.format,
   
   return(list(models = models,
               models.pa = models.pa,
-              bm.options = bm.options,
               weights = weights,
               var.import = var.import,
               metric.eval = metric.eval,
@@ -660,7 +750,9 @@ BIOMOD_Modeling <- function(bm.format,
 # Obsolete argument Check -------------------------------------------------------
 
 
-.BIOMOD_Modeling.check.args.obsolete <- function(CV.strategy,
+.BIOMOD_Modeling.check.args.obsolete <- function(bm.options,
+                                                 OPT.user,
+                                                 CV.strategy,
                                                  data.split.perc,
                                                  CV.perc,
                                                  data.split.table,
@@ -670,6 +762,16 @@ BIOMOD_Modeling <- function(bm.format,
                                                  do.full.models,
                                                  CV.do.full.models)
 {
+  ## bm.options ------------------------------
+  if (!missing(bm.options)) {
+    if (!is.null(OPT.user)) {
+      cat("\n! ignored obsolete argument 'bm.options' as 'OPT.user' was also given")
+    } else {
+      OPT.user <- bm.options
+      cat("\n!!! argument 'bm.options' is obsolete, please use 'OPT.user' instead")
+    }
+  }
+  
   ## do.full.models ------------------------------
   if (!missing(do.full.models)) {
     if (!is.null(CV.do.full.models)) {
@@ -734,13 +836,19 @@ cat('\n\nChecking Models arguments...\n')
   cat("\n\n")
   .bm_cat(paste(bm.format@sp.name, "Modeling Summary"))
   cat("\n", ncol(bm.format@data.env.var), " environmental variables (", colnames(bm.format@data.env.var), ")")
-  cat("\nNumber of evaluation repetitions :", ncol(calib.lines))
+  nb.eval.rep <- 
+    ncol(calib.lines) /
+    ifelse(inherits(bm.format, "BIOMOD.formated.data.PA"),
+           ncol(bm.format@PA.table), 1)
+  cat("\nNumber of evaluation repetitions :", nb.eval.rep)
   cat("\nModels selected :", models, "\n")
   if (is.null(models.pa)) {
     nb.runs = ncol(calib.lines) * length(models)
   } else {
-    nb.runs = length(unlist(models.pa))
-    nb.runs = ncol(calib.lines) * nb.runs
+    nb.runs = 
+      length(which(
+        sapply(unlist(models.pa), function(x) grepl(colnames(calib.lines), pattern = x))
+      ))
   }
   cat("\nTotal number of model runs:", nb.runs, "\n")
   .bm_cat()
