@@ -275,8 +275,8 @@ BIOMOD_Projection <- function(bm.mod,
     }
   }
   
-  ## 4. MAKING PROJECTIONS ------------------------------------------------------------------------
   
+  ## 4. MAKING PROJECTIONS ------------------------------------------------------------------------
   
   if (nb.cpu > 1) {
     if (.getOS() != "windows") {
@@ -326,6 +326,7 @@ BIOMOD_Projection <- function(bm.mod,
       return(filename)
     }
   }
+  
   ## Putting predictions into the right format
   if (do.stack) {
     if (proj_is_raster) {
@@ -465,7 +466,6 @@ BIOMOD_Projection <- function(bm.mod,
         }
       }
     }
-    
     
     ### save binary/filtered file link into proj_out ----------------------------
     if (!is.null(metric.binary)) {

@@ -12,6 +12,9 @@
     mess <- paste(pkgname, RFver, "loaded.\n")
     mess <- paste(mess, "/!\\ New set up for modeling options. We apologize for the trouble ^[*.*]^")
     packageStartupMessage(mess)
+    
+    toLoad <- unique(ModelsTable$package[-which(ModelsTable$package %in% c("MAXENT", "biomod2"))])
+    for (pkg in toLoad) eval(parse(text = paste0("require(", pkg, ")")))
   }
 }
 
