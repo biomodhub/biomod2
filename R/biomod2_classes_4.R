@@ -779,6 +779,10 @@ setMethod('predict2', signature(object = 'MAXENT_biomod2_model', newdata = "Spat
             
             if (is.null(on_0_1000)) { on_0_1000 <- FALSE }
             
+            pa <- .extract_modelNamesInfo(object@model_name, obj.type = "mod", info = "PA")
+            run <- .extract_modelNamesInfo(object@model_name, obj.type = "mod", info = "run")
+            dataset <- paste0("_", pa, "_", run)
+            
             # Proj Data
             vec_data_filename <- foreach(thislayername = names(newdata), .combine = 'c') %do% {
               current_data_filename <-
@@ -791,7 +795,7 @@ setMethod('predict2', signature(object = 'MAXENT_biomod2_model', newdata = "Spat
             }
             
             # checking maxent.jar is present
-            path_to_maxent.jar <- file.path(object@model_options$path_to_maxent.jar, "maxent.jar")
+            path_to_maxent.jar <- file.path(object@model_options@args.values[[dataset]]$path_to_maxent.jar, "maxent.jar")
             if (!file.exists(path_to_maxent.jar)) {
               path_to_maxent.jar <-  file.path(getwd(), "maxent.jar")
             }
@@ -799,12 +803,12 @@ setMethod('predict2', signature(object = 'MAXENT_biomod2_model', newdata = "Spat
             
             maxent.command <- 
               paste0("java ",
-                     ifelse(is.null(object@model_options$memory_allocated), "",
-                            paste0("-mx", object@model_options$memory_allocated, "m")),
-                     ifelse(is.null(object@model_options$initial_heap_size), "",
-                            paste0(" -Xms", object@model_options$initial_heap_size)),
-                     ifelse(is.null(object@model_options$max_heap_size), "",
-                            paste0(" -Xmx", object@model_options$max_heap_size)),
+                     ifelse(is.null(object@model_options@args.values[[dataset]]$memory_allocated), "",
+                            paste0("-mx", object@model_options@args.values[[dataset]]$memory_allocated, "m")),
+                     ifelse(is.null(object@model_options@args.values[[dataset]]$initial_heap_size), "",
+                            paste0(" -Xms", object@model_options@args.values[[dataset]]$initial_heap_size)),
+                     ifelse(is.null(object@model_options@args.values[[dataset]]$max_heap_size), "",
+                            paste0(" -Xmx", object@model_options@args.values[[dataset]]$max_heap_size)),
                      " -cp ", "\"", path_to_maxent.jar, "\"",
                      " density.Project ",
                      "\"", list.files(path = object@model_output_dir, pattern = ".lambdas$", full.names = TRUE), "\" ",
@@ -819,14 +823,13 @@ setMethod('predict2', signature(object = 'MAXENT_biomod2_model', newdata = "Spat
             proj <- rast(proj.spdf)
             
             # Remi 11/2022 Not sure the following lines are necessary
-			## RH: I doubt that they are. In fact, I would recommend against them
-			## if the file raster data go to disk it is because of memory limitations
-			## forcing them back into memory could be risky.
-            if (!inMemory(proj)[1]) {
-			 ##RH: @ptr$... is not part of the stable user interface
-             ## proj <- proj@ptr$readAll() # to prevent from tmp files removing
-			 ## x <- message(proj, "readAll") # to have message if need be ?
-			  readAll(proj)           
+            if (!inMemory(proj)) {
+              if (!isNamespaceLoaded("raster")) {
+                if(!requireNamespace('raster', quietly = TRUE)) stop("Package 'raster' not found")
+              }
+              
+              proj <- raster::readAll(proj@ptr) # to prevent from tmp files removing
+              x <- message(proj, "readAll") # to have message if need be ?
             }
             
             if (on_0_1000) { 
@@ -848,8 +851,10 @@ setMethod('predict2', signature(object = 'MAXENT_biomod2_model', newdata = "Spat
 )
 
 
+##' 
 ##' @rdname predict2.bm
 ##' @importFrom sp read.asciigrid
+##' 
 
 setMethod('predict2', signature(object = 'MAXENT_biomod2_model', newdata = "data.frame"),
           function(object, newdata, ...) {
@@ -859,6 +864,10 @@ setMethod('predict2', signature(object = 'MAXENT_biomod2_model', newdata = "data
             temp_workdir <- args$temp_workdir
             
             if (is.null(on_0_1000)) { on_0_1000 <- FALSE }
+            
+            pa <- .extract_modelNamesInfo(object@model_name, obj.type = "mod", info = "PA")
+            run <- .extract_modelNamesInfo(object@model_name, obj.type = "mod", info = "run")
+            dataset <- paste0("_", pa, "_", run)
             
             ## check if na occurs in newdata cause they are not well supported
             not_na_rows <- apply(newdata, 1, function(x){ all(!is.na(x)) })
@@ -891,7 +900,7 @@ setMethod('predict2', signature(object = 'MAXENT_biomod2_model', newdata = "data
             write.table(Pred_swd, file = m_predictFile, quote = FALSE, row.names = FALSE, col.names = TRUE, sep = ",")
             
             # checking maxent.jar is present
-            path_to_maxent.jar <- file.path(object@model_options$path_to_maxent.jar, "maxent.jar")
+            path_to_maxent.jar <- file.path(object@model_options@args.values[[dataset]]$path_to_maxent.jar, "maxent.jar")
             if (!file.exists(path_to_maxent.jar)) {
               path_to_maxent.jar <-  file.path(getwd(), "maxent.jar")
             }
@@ -899,12 +908,12 @@ setMethod('predict2', signature(object = 'MAXENT_biomod2_model', newdata = "data
             # cat("\n\t\tRunning Maxent...")
             maxent.command <- 
               paste0("java ",
-                     ifelse(is.null(object@model_options$memory_allocated), "",
-                            paste0("-mx", object@model_options$memory_allocated, "m")),
-                     ifelse(is.null(object@model_options$initial_heap_size), "",
-                            paste0(" -Xms", object@model_options$initial_heap_size)),
-                     ifelse(is.null(object@model_options$max_heap_size), "",
-                            paste0(" -Xmx", object@model_options$max_heap_size)),
+                     ifelse(is.null(object@model_options@args.values[[dataset]]$memory_allocated), "",
+                            paste0("-mx", object@model_options@args.values[[dataset]]$memory_allocated, "m")),
+                     ifelse(is.null(object@model_options@args.values[[dataset]]$initial_heap_size), "",
+                            paste0(" -Xms", object@model_options@args.values[[dataset]]$initial_heap_size)),
+                     ifelse(is.null(object@model_options@args.values[[dataset]]$max_heap_size), "",
+                            paste0(" -Xmx", object@model_options@args.values[[dataset]]$max_heap_size)),
                      " -cp ", "\"", path_to_maxent.jar, "\"",
                      " density.Project ",
                      "\"", list.files(path = object@model_output_dir, pattern = ".lambdas$", full.names = TRUE), "\" ",
@@ -1053,7 +1062,11 @@ setClass('RF_biomod2_model',
 
 setMethod('predict2', signature(object = 'RF_biomod2_model', newdata = "SpatRaster"),
           function(object, newdata, ...) {
-            if (!is.null(object@model_options$type) && object@model_options$type == "classification") {
+            pa <- .extract_modelNamesInfo(object@model_name, obj.type = "mod", info = "PA")
+            run <- .extract_modelNamesInfo(object@model_name, obj.type = "mod", info = "run")
+            dataset <- paste0("_", pa, "_", run)
+            
+            if (!is.null(object@model_options@args.values[[dataset]]$type) && object@model_options@args.values[[dataset]]$type == "classification") {
               predfun <- function(object, newdata, mod.name){
                 # new predict command used with terra
                 subset(predict(newdata, model = get_formal_model(object),
@@ -1083,7 +1096,11 @@ setMethod('predict2', signature(object = 'RF_biomod2_model', newdata = "SpatRast
 ##' @rdname predict2.bm
 setMethod('predict2', signature(object = 'RF_biomod2_model', newdata = "data.frame"),
           function(object, newdata, ...) {
-            if (!is.null(object@model_options$type) && object@model_options$type == "classification") {
+            pa <- .extract_modelNamesInfo(object@model_name, obj.type = "mod", info = "PA")
+            run <- .extract_modelNamesInfo(object@model_name, obj.type = "mod", info = "run")
+            dataset <- paste0("_", pa, "_", run)
+            
+            if (!is.null(object@model_options@args.values[[dataset]]$type) && object@model_options@args.values[[dataset]]$type == "classification") {
               predfun <- function(object, newdata, not_na_rows) {
                 as.numeric(predict(get_formal_model(object), as.data.frame(newdata[not_na_rows, , drop = FALSE]), type = 'prob')[, '1'])        
               }
