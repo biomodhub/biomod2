@@ -93,6 +93,13 @@ setGeneric("BIOMOD.options.default", def = function(mod, typ, pkg, fun) { standa
     ## check function exists
     avail.functions.list <- lsf.str(pos = paste0("package:", pkg))
     .fun_testIfIn(TRUE, "fun", fun, avail.functions.list)
+  } else {
+    if (!file.exists(file.path(getwd(), "maxent.jar"))) {
+      warning(paste0("'maxent.jar' file is missing in current working directory ("
+                     , getwd(), ").\n"
+                     , "It must be downloaded (https://biodiversityinformatics.amnh.org/open_source/maxent/) "
+                     , "and put in the working directory."))
+    }
   }
 }
 
@@ -268,12 +275,6 @@ setGeneric("BIOMOD.options.dataset",
     .fun_testIfIn(TRUE, "tuning.fun", tuning.fun, c(all.fun, "bm_SRE", "ENMevaluate", "maxnet"))
     .fun_testIfInherits(TRUE, "bm.format", bm.format, c("BIOMOD.formated.data", "BIOMOD.formated.data.PA"))
   }
-  
-  # if (!is.null(MAXENT$path_to_maxent.jar)) {
-  #   opt@MAXENT$path_to_maxent.jar <- normalizePath(sub("maxent.jar", "", MAXENT$path_to_maxent.jar)) # ensure path format validity
-  # } else {
-  #   opt@MAXENT$path_to_maxent.jar <- getwd()
-  # }
   
   ## check bm.format, bm.format@PA.table and calib.lines
   if (!is.null(bm.format)) {
@@ -616,40 +617,4 @@ setMethod('show', signature('BIOMOD.models.options'),
 # test <- .fun_testIfIn(test, "GBM$distribution", object@GBM$distribution, c("bernoulli", "huberized", "multinomial", "adaboost"))
 # test <- .fun_testIfIn(test, "CTA$method", object@CTA$method, c("anova", "poisson", "class", "exp"))
 # test <- .fun_testIfIn(test, "FDA$method", object@FDA$method, c('polyreg', 'mars', 'bruto'))
-# 
-# ## MAXENT ------------------------------------------------------------
-# if (!is.character(object@MAXENT$path_to_maxent.jar)) {
-#   cat("\nMAXENT$path_to_maxent.jar must be a character")
-#   test <- FALSE
-# }
-# if (!is.null(object@MAXENT$memory_allocated)) {
-#   if (!is.numeric(object@MAXENT$memory_allocated)) {
-#     cat("\nMAXENT$memory_allocated must be a positive integer or NULL for unlimited memory allocation")
-#     test <- FALSE
-#   }
-# }
-# if (!is.character(object@MAXENT$background_data_dir)) {
-#   cat("\nMAXENT$background_data_dir must be 'default' (=> use the same pseudo absences than other models as background) or a path to the directory where your environmental layer are stored")
-#   test <- FALSE
-# }
-# 
-# if(!is.null(object@MAXENT$initial_heap_size)){
-#   test <- .check_bytes_format(test,
-#                               object@MAXENT$initial_heap_size,
-#                               "initial_heap_size")
-# }
-# if(!is.null(object@MAXENT$max_heap_size)){
-#   test <- .check_bytes_format(test,
-#                               object@MAXENT$max_heap_size,
-#                               "max_heap_size")
-# }
-
-
-# ### show.BIOMOD.models.options -------------------------------------------------
-# 
-# ## GLM options : control = glm.control(", .print_control(object@GLM$control), ") ),", sep = "", fill = .Options$width)
-# ## FDA options : paste(.print_control(object@FDA$add_args), collapse = "")
-# cat("\n MAXNET = list( myFormula = ", .print_formula(object@MAXNET$myFormula), ",", sep = "")
-
-
 

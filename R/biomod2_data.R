@@ -51,7 +51,7 @@
 #' @format A \code{\link{BIOMOD.models.options}} object
 
 "OptionsBigboss"
-# 
+
 # bm.opt <- bm_ModelingOptions(data.type = "binary", strategy = "default")
 # bm.opt@options$ANN.binary.nnet.nnet@args.values[['_allData_allRun']]$size = 5 #NULL
 # bm.opt@options$ANN.binary.nnet.nnet@args.values[['_allData_allRun']]$decay = 5
@@ -75,13 +75,15 @@
 # bm.opt@options$GLM.binary.stats.glm@args.values[['_allData_allRun']]$family = binomial(link = 'logit')
 # bm.opt@options$GLM.binary.stats.glm@args.values[['_allData_allRun']]$mustart = 0.5
 # bm.opt@options$GLM.binary.stats.glm@args.values[['_allData_allRun']]$control = glm.control(maxit = 50)
-# bm.opt@options$MARS.binary.earth.earth@args.values[['_allData_allRun']]$glm = list(family = binomial)
+# bm.opt@options$MARS.binary.earth.earth@args.values[['_allData_allRun']]$glm = list(family = binomial(link = 'logit'))
 # bm.opt@options$MARS.binary.earth.earth@args.values[['_allData_allRun']]$ncross = 0
 # bm.opt@options$MARS.binary.earth.earth@args.values[['_allData_allRun']]$nk = NULL
 # bm.opt@options$MARS.binary.earth.earth@args.values[['_allData_allRun']]$penalty = 2
 # bm.opt@options$MARS.binary.earth.earth@args.values[['_allData_allRun']]$thresh = 0.001
 # bm.opt@options$MARS.binary.earth.earth@args.values[['_allData_allRun']]$nprune = NULL
 # bm.opt@options$MARS.binary.earth.earth@args.values[['_allData_allRun']]$pmethod = 'backward'
+# bm.opt@options$MAXENT.binary.MAXENT.MAXENT@args.default$path_to_maxent.jar = '.'
+# bm.opt@options$MAXENT.binary.MAXENT.MAXENT@args.values[['_allData_allRun']]$path_to_maxent.jar = '.'
 # bm.opt@options$RF.binary.randomForest.randomForest@args.values[['_allData_allRun']]$type = 'classification'
 # bm.opt@options$RF.binary.randomForest.randomForest@args.values[['_allData_allRun']]$ntree = 500
 # bm.opt@options$RF.binary.randomForest.randomForest@args.values[['_allData_allRun']]$mtry = NULL

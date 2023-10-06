@@ -353,15 +353,18 @@ default parameters, and their values, are the following :</p>
 <span>                            strategy <span class="op">=</span> <span class="st">'user.defined'</span>,</span>
 <span>                            user.val <span class="op">=</span> <span class="va">user.val</span><span class="op">)</span></span>
 <span></span>
+<span><span class="va">opt.b</span></span>
+<span><span class="va">opt.u</span></span>
+<span></span>
+<span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span></span>
 <span><span class="co"># tuned parameters with formated data</span></span>
 <span><span class="va">opt.t</span> <span class="op">&lt;-</span> <span class="fu">bm_ModelingOptions</span><span class="op">(</span>data.type <span class="op">=</span> <span class="st">'binary'</span>,</span>
 <span>                            models <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">'SRE'</span>, <span class="st">'XGBOOST'</span><span class="op">)</span>,</span>
 <span>                            strategy <span class="op">=</span> <span class="st">'tuned'</span>,</span>
 <span>                            bm.format <span class="op">=</span> <span class="va">myBiomodData</span><span class="op">)</span></span>
-<span></span>
-<span><span class="va">opt.b</span></span>
-<span><span class="va">opt.u</span></span>
 <span><span class="va">opt.t</span></span>
+<span><span class="op">}</span></span>
+<span></span>
 <span></span>
 <span></span></code></pre></div>
     </div>

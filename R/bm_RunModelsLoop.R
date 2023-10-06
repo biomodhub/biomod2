@@ -340,79 +340,89 @@ bm_RunModel <- function(model, run.name, dir.name = '.'
       })
     }
   } else { ## MAXENT ------------------------------------------------------------------------------
-    categorical_var <- .get_categorical_names(data_env)
-    
-    MWD <- .maxent.prepare.workdir(sp_name = resp_name
-                                   , run_name = run.name
-                                   , data_sp = data_sp
-                                   , data_xy = data_xy
-                                   , data_env = data_env
-                                   , categorical_var = categorical_var
-                                   , calib.lines.vec = calib.lines.vec
-                                   , data_eval = eval.data
-                                   , dir.name = dir_name
-                                   , modeling.id = modeling.id
-                                   , background_data_dir = bm.opt.val$background_data_dir)
-
-    # list of arguments ---------------
-    maxent.args <- c(
-      ifelse(is.null(bm.opt.val$memory_allocated), "", paste0("-mx", bm.opt.val$memory_allocated, "m")), 
-      ifelse(is.null(bm.opt.val$initial_heap_size), "", paste0(" -Xms", bm.opt.val$initial_heap_size)),
-      ifelse(is.null(bm.opt.val$max_heap_size), "", paste0(" -Xmx", bm.opt.val$max_heap_size)),
-      paste0(" -jar ",  file.path(bm.opt.val$path_to_maxent.jar, "maxent.jar")),
-      paste0(" environmentallayers=\"", MWD$m_backgroundFile, "\""), 
-      paste0(" samplesfile=\"", MWD$m_speciesFile, "\""),
-      paste0(" projectionlayers=\"", gsub(", ", ",", toString(MWD$m_predictFile)), "\""),
-      paste0(" outputdirectory=\"", MWD$m_outdir, "\""),
-      paste0(" outputformat=logistic "), 
-      ifelse(length(categorical_var), paste0(" togglelayertype=", categorical_var, collapse = " "), ""),
-      " redoifexists")
-    vec_x <- names(bm.opt.val)[which(!(names(bm.opt.val) %in% c("path_to_maxent.jar", "memory_allocated", "initial_heap_size",
-                                                                "max_heap_size", "background_data_dir")))]
-    maxent.args <- c(maxent.args, sapply(vec_x, function(xx) {
-      paste0(" ", xx, "=", bm.opt.val[[xx]])
-    }))
-    maxent.args <- c(maxent.args, " autorun ", " nowarnings ", " notooltips ", " noaddsamplestobackground")
-    
-    # file to log potential errors ----
-    maxent_stderr_file <- paste0(MWD$m_outdir, "/maxent.stderr")
-    
-    
-    # run model -----------------------
-    system2(command = "java", args = maxent.args,
-            wait = TRUE,
-            stdout = "", stderr = maxent_stderr_file)
-    
-    maxent_exec_output <- readLines(maxent_stderr_file)
-    
-    if (any(grepl(pattern = "Error", x = maxent_exec_output))) {
+    if (!file.exists(file.path(bm.opt.val$path_to_maxent.jar, "maxent.jar"))) {
+      warning(paste0("'maxent.jar' file is missing in specified directory ("
+                     , bm.opt.val$path_to_maxent.jar, ").\n"
+                     , "It must be downloaded (https://biodiversityinformatics.amnh.org/open_source/maxent/) "
+                     , "and put in that directory."), immediate. = TRUE)
       g.pred <- NA
       class(g.pred) <- "try-error"
-      cat("\n*** Error in MAXENT, more info available in ", maxent_stderr_file)
+      cat("\n*** Error in MAXENT, no executable file")
     } else {
-      model.bm <- new("MAXENT_biomod2_model",
-                      model_output_dir = MWD$m_outdir, # MAXENT only
-                      model_name = model_name,
-                      model_class = bm.opt@model,
-                      model_options = bm.opt,
-                      dir_name = dir_name,
-                      resp_name = resp_name,
-                      expl_var_names = expl_var_names,
-                      expl_var_type = get_var_type(data_env[calib.lines.vec, , drop = FALSE]), 
-                      expl_var_range = get_var_range(data_env[calib.lines.vec, , drop = FALSE]))
+      categorical_var <- .get_categorical_names(data_env)
       
-      # for MAXENT predictions are calculated in the same time than models building to save time.
-      cat("\n Getting predictions...")
-      g.pred <- try(round(as.numeric(read.csv(MWD$m_outputFile)[, 3]) * 1000))
+      MWD <- .maxent.prepare.workdir(sp_name = resp_name
+                                     , run_name = run.name
+                                     , data_sp = data_sp
+                                     , data_xy = data_xy
+                                     , data_env = data_env
+                                     , categorical_var = categorical_var
+                                     , calib.lines.vec = calib.lines.vec
+                                     , data_eval = eval.data
+                                     , dir.name = dir_name
+                                     , modeling.id = modeling.id
+                                     , background_data_dir = bm.opt.val$background_data_dir)
       
-      if (var.import > 0) {
-        cat("\n Getting predictor contributions...")
-        variables.importance <- bm_VariablesImportance(bm.model = model.bm
-                                                       , expl.var = data_env
-                                                       , nb.rep = var.import
-                                                       , temp_workdir = MWD$m_outdir
-                                                       , seed.val = seed.val
-                                                       , do.progress = do.progress)
+      # list of arguments ---------------
+      maxent.args <- c(
+        ifelse(is.null(bm.opt.val$memory_allocated), "", paste0("-mx", bm.opt.val$memory_allocated, "m")), 
+        ifelse(is.null(bm.opt.val$initial_heap_size), "", paste0(" -Xms", bm.opt.val$initial_heap_size)),
+        ifelse(is.null(bm.opt.val$max_heap_size), "", paste0(" -Xmx", bm.opt.val$max_heap_size)),
+        paste0(" -jar ", file.path(bm.opt.val$path_to_maxent.jar, "maxent.jar")),
+        paste0(" environmentallayers=\"", MWD$m_backgroundFile, "\""), 
+        paste0(" samplesfile=\"", MWD$m_speciesFile, "\""),
+        paste0(" projectionlayers=\"", gsub(", ", ",", toString(MWD$m_predictFile)), "\""),
+        paste0(" outputdirectory=\"", MWD$m_outdir, "\""),
+        paste0(" outputformat=logistic "), 
+        ifelse(length(categorical_var), paste0(" togglelayertype=", categorical_var, collapse = " "), ""),
+        " redoifexists")
+      vec_x <- names(bm.opt.val)[which(!(names(bm.opt.val) %in% c("path_to_maxent.jar", "memory_allocated", "initial_heap_size",
+                                                                  "max_heap_size", "background_data_dir")))]
+      maxent.args <- c(maxent.args, sapply(vec_x, function(xx) {
+        paste0(" ", xx, "=", bm.opt.val[[xx]])
+      }))
+      maxent.args <- c(maxent.args, " autorun ", " nowarnings ", " notooltips ", " noaddsamplestobackground")
+      
+      # file to log potential errors ----
+      maxent_stderr_file <- paste0(MWD$m_outdir, "/maxent.stderr")
+      
+      
+      # run model -----------------------
+      system2(command = "java", args = maxent.args,
+              wait = TRUE,
+              stdout = "", stderr = maxent_stderr_file)
+      
+      maxent_exec_output <- readLines(maxent_stderr_file)
+      
+      if (any(grepl(pattern = "Error", x = maxent_exec_output))) {
+        g.pred <- NA
+        class(g.pred) <- "try-error"
+        cat("\n*** Error in MAXENT, more info available in ", maxent_stderr_file)
+      } else {
+        model.bm <- new("MAXENT_biomod2_model",
+                        model_output_dir = MWD$m_outdir, # MAXENT only
+                        model_name = model_name,
+                        model_class = bm.opt@model,
+                        model_options = bm.opt,
+                        dir_name = dir_name,
+                        resp_name = resp_name,
+                        expl_var_names = expl_var_names,
+                        expl_var_type = get_var_type(data_env[calib.lines.vec, , drop = FALSE]), 
+                        expl_var_range = get_var_range(data_env[calib.lines.vec, , drop = FALSE]))
+        
+        # for MAXENT predictions are calculated in the same time than models building to save time.
+        cat("\n Getting predictions...")
+        g.pred <- try(round(as.numeric(read.csv(MWD$m_outputFile)[, 3]) * 1000))
+        
+        if (var.import > 0) {
+          cat("\n Getting predictor contributions...")
+          variables.importance <- bm_VariablesImportance(bm.model = model.bm
+                                                         , expl.var = data_env
+                                                         , nb.rep = var.import
+                                                         , temp_workdir = MWD$m_outdir
+                                                         , seed.val = seed.val
+                                                         , do.progress = do.progress)
+        }
       }
     }
   }

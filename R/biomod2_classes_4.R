@@ -800,7 +800,6 @@ setMethod('predict2', signature(object = 'MAXENT_biomod2_model', newdata = "Spat
               path_to_maxent.jar <-  file.path(getwd(), "maxent.jar")
             }
             
-            
             maxent.command <- 
               paste0("java ",
                      ifelse(is.null(object@model_options@args.values[[dataset]]$memory_allocated), "",
@@ -905,7 +904,6 @@ setMethod('predict2', signature(object = 'MAXENT_biomod2_model', newdata = "data
               path_to_maxent.jar <-  file.path(getwd(), "maxent.jar")
             }
             
-            # cat("\n\t\tRunning Maxent...")
             maxent.command <- 
               paste0("java ",
                      ifelse(is.null(object@model_options@args.values[[dataset]]$memory_allocated), "",

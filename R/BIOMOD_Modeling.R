@@ -465,8 +465,13 @@ BIOMOD_Modeling <- function(bm.format,
                                      bm.format = bm.format,
                                      calib.lines = calib.lines)
   }
+  if (!is.null(prevalence) && "MAXENT" %in% models) {
+    for (nam in names(bm.options@options$MAXENT.binary.MAXENT.MAXENT@args.values)) {
+      bm.options@options$MAXENT.binary.MAXENT.MAXENT@args.values[[nam]][['defaultprevalence']] <- prevalence
+    }
+  }
   models.out = .fill_BIOMOD.models.out("models.options", bm.options, models.out
-                                       , inMemory = FALSE, nameFolder = name.BIOMOD_DATA)
+                                       , inMemory = TRUE, nameFolder = name.BIOMOD_DATA)
   
   ## 4. Print modeling summary in console ---------------------------------------------------------
   .BIOMOD_Modeling.summary(bm.format, calib.lines, models, models.pa)
@@ -631,40 +636,9 @@ BIOMOD_Modeling <- function(bm.format,
   #   bm.options <- BIOMOD_ModelingOptions()
   # }
   
-  ## 2.2 Specific check for MAXENT -----------------------------------
-  ## MOVE TO bm_ModelingOptions ???
-  # if ("MAXENT" %in% models) {
-  #   MAXENT.options <- bm.options@options[[grep("MAXENT", names(bm.options@options))[1]]] ## PROBLEM
-  #   if (!file.exists(file.path(MAXENT.options@args.default$path_to_maxent.jar, "maxent.jar"))) {
-  #     models = models[-which(models == 'MAXENT')]
-  #     if (!is.null(models.pa)) {
-  #       models.pa = models.pa[-which(names(models.pa) == 'MAXENT')]
-  #     }
-  #     warning(paste0("MAXENT has been disabled because the maxent.jar file is missing. "
-  #                    , "`maxent.jar` file must be downloaded (https://biodiversityinformatics.amnh.org/open_source/maxent/) "
-  #                    , "and put in the working directory."), immediate. = TRUE)
-  #     ## -- 
-  #     ## The java installation check is temporally disabled cause it seems to cause 
-  #     ## issues on some Windows users machine.
-  #     ## --
-  #     # } else if(!.check.java.installed()){
-  #     #   models = models[-which(models=='MAXENT')]
-  #   } else if (nrow(bm.format@coord) == 1) {
-  #     models = models[-which(models == 'MAXENT')]
-  #     if (!is.null(models.pa)) {
-  #       models.pa = models.pa[-which(names(models.pa) == 'MAXENT')]
-  #     }
-  #     warning("MAXENT has been disabled because no XY coordinates have been given", immediate. = TRUE)
-  #   }
-  # }
-  
   ## 5. Check prevalence arguments --------------------------------------------
   if (!is.null(prevalence)) {
     .fun_testIf01(TRUE, "prevalence", prevalence)
-    # if ("MAXENT" %in% models) {
-    #   cat("\n\t MAXENT default prevalence option was updated to fit with modeling prevalence (i.e", prevalence, ")")
-    #   bm.options@MAXENT$defaultprevalence = prevalence ## PROBLEM
-    # }
   } else {
     prevalence = 0.5
   }
