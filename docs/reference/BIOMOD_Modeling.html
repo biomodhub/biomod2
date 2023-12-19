@@ -322,7 +322,7 @@ A <code>logical</code> value defining whether the progress bar is to be rendered
     <h2>Value</h2>
     
 
-<p>A <code>BIOMOD.models.out</code> object containing models outputs, or links to saved outputs. <br></p>
+<p>A <code><a href="BIOMOD.models.out.html">BIOMOD.models.out</a></code> object containing models outputs, or links to saved outputs. <br></p>
 
 
 <p>Models outputs are stored out of <span style="R">R</span> (for memory storage reasons) in 2 different folders 
@@ -332,15 +332,15 @@ created in the current working directory :</p><ol><li><p>a <em>models</em> folde
 <li><p>a <em>hidden</em> folder, named <code>.BIOMOD_DATA</code>, and containing outputs related 
   files (original dataset, calibration lines, pseudo-absences selected, predictions, 
   variables importance, evaluation values...), that can be retrieved with 
-  <a href="https://biomodhub.github.io/biomod2/reference/getters.out.html" class="external-link"><code>get_[...]</code></a> or <code><a href="https://rdrr.io/r/base/load.html" class="external-link">load</a></code> functions, and used by other 
-  <span class="pkg">biomod2</span> functions, like <code><a href="BIOMOD_Projection.html">BIOMOD_Projection</a></code> or 
-  <code><a href="BIOMOD_EnsembleModeling.html">BIOMOD_EnsembleModeling</a></code></p></li>
+  <code><a href="https://biomodhub.github.io/biomod2/reference/getters.out.html" class="external-link">get_[...]</a></code> 
+  or <code><a href="https://rdrr.io/r/base/load.html" class="external-link">load</a></code> functions, and used by other <span class="pkg">biomod2</span> functions, like 
+  <code><a href="BIOMOD_Projection.html">BIOMOD_Projection</a></code> or <code><a href="BIOMOD_EnsembleModeling.html">BIOMOD_EnsembleModeling</a></code></p></li>
 </ol></div>
     <div id="details">
     <h2>Details</h2>
     
 <dl><dt>bm.format</dt>
-<dd><p>If you have decided to add pseudo absences to your original dataset (see 
+<dd><p>If pseudo absences have been added to the original dataset (see 
   <code><a href="BIOMOD_FormatingData.html">BIOMOD_FormatingData</a></code>), <br><code>PA.nb.rep *(nb.rep + 1)</code> models will be 
   created.</p></dd>
 
@@ -361,7 +361,7 @@ created in the current working directory :</p><ol><li><p>a <em>models</em> folde
     (<a href="https://biodiversityinformatics.amnh.org/open_source/maxent/" class="external-link">https://biodiversityinformatics.amnh.org/open_source/maxent/</a>)</p></li>
 <li><p><code>MAXNET</code> : Maximum Entropy (<code><a href="https://rdrr.io/pkg/maxnet/man/maxnet.html" class="external-link">maxnet</a></code>)</p></li>
 <li><p><code>RF</code> : Random Forest (<code><a href="https://rdrr.io/pkg/randomForest/man/randomForest.html" class="external-link">randomForest</a></code>)</p></li>
-<li><p><code>SRE</code> : Surface Range Envelop or usually called BIOCLIM</p></li>
+<li><p><code>SRE</code> : Surface Range Envelop or usually called BIOCLIM (<code><a href="bm_SRE.html">bm_SRE</a></code>)</p></li>
 <li><p><code>XGBOOST</code> : eXtreme Gradient Boosting Training (<code><a href="https://rdrr.io/pkg/xgboost/man/xgb.train.html" class="external-link">xgboost</a></code>)</p></li>
 </ul></dd>
 
@@ -380,8 +380,9 @@ created in the current working directory :</p><ol><li><p>a <em>models</em> folde
   
   <dt>OPT.[...] parameters</dt>
 <dd><p>Different methods are available to parameterize the 
-  single models (see <code><a href="BIOMOD.options.dataset.html">BIOMOD.options.dataset</a></code>). Note that only <code>binary</code> data 
-  type is allowed currently.</p><ul><li><p><code>default</code> : only default parameter values of default parameters of the single 
+  single models (see <code><a href="bm_ModelingOptions.html">bm_ModelingOptions</a></code> and 
+  <code><a href="BIOMOD.options.dataset.html">BIOMOD.options.dataset</a></code>). Note that only <code>binary</code> data type is 
+  allowed currently.</p><ul><li><p><code>default</code> : only default parameter values of default parameters of the single 
     models functions are retrieved. Nothing is changed so it might not give good results.</p></li>
 <li><p><code>bigboss</code> : uses parameters pre-defined by <span class="pkg">biomod2</span> team and that are 
     available in the dataset <code><a href="OptionsBigboss.html">OptionsBigboss</a></code>. <br><em>to be optimized in near future</em></p></li>
@@ -410,20 +411,34 @@ created in the current working directory :</p><ol><li><p>a <em>models</em> folde
 
 
   <dt>metric.eval</dt>
-<dd><p></p><ul><li><p><code>ROC</code> : Relative operating characteristic</p></li>
-<li><p><code>KAPPA</code> : Cohen's Kappa (Heidke skill score)</p></li>
-<li><p><code>TSS</code> : True skill statistic (Hanssen and Kuipers discriminant, Peirce's skill 
-    score)</p></li>
+<dd><p></p><dl><dt>simple</dt>
+<dd><p></p><ul><li><p><code>POD</code> : Probability of detection (hit rate)</p></li>
 <li><p><code>FAR</code> : False alarm ratio</p></li>
+<li><p><code>POFD</code> : Probability of false detection (fall-out)</p></li>
 <li><p><code>SR</code> : Success ratio</p></li>
-<li><p><code>ACCURANCY</code> : Accuracy (fraction correct)</p></li>
+<li><p><code>ACCURACY</code> : Accuracy (fraction correct)</p></li>
 <li><p><code>BIAS</code> : Bias score (frequency bias)</p></li>
-<li><p><code>POD</code> : Probability of detection (hit rate)</p></li>
+</ul><p></p></dd>
+
+    <dt>complex</dt>
+<dd><p></p><ul><li><p><code>ROC</code> : Relative operating characteristic</p></li>
+<li><p><code>TSS</code> : True skill statistic (Hanssen and Kuipers discriminant, Peirce's 
+      skill score)</p></li>
+<li><p><code>KAPPA</code> : Cohen's Kappa (Heidke skill score)</p></li>
+<li><p><code>OR</code> : Odds Ratio</p></li>
+<li><p><code>ORSS</code> : Odds ratio skill score (Yule's Q)</p></li>
 <li><p><code>CSI</code> : Critical success index (threat score)</p></li>
 <li><p><code>ETS</code> : Equitable threat score (Gilbert skill score)</p></li>
-<li><p><code>BOYCE</code> : Boyce index</p></li>
-<li><p><code>MPA</code> : Minimal predicted area (cutoff optimising MPA to predict 90<!-- % of presences) --></p></li>
-</ul><p>Optimal value of each method can be obtained with the <code><a href="bm_FindOptimStat.html">get_optim_value</a></code> 
+</ul><p></p></dd>
+
+    <dt>presence-only</dt>
+<dd><p></p><ul><li><p><code>BOYCE</code> : Boyce index</p></li>
+<li><p><code>MPA</code> : Minimal predicted area (cutoff optimising MPA to predict 90% of 
+      presences)</p></li>
+</ul><p></p></dd>
+
+  
+</dl><p>Optimal value of each method can be obtained with the <code><a href="bm_FindOptimStat.html">get_optim_value</a></code> 
   function. Several evaluation metrics can be selected. <em>Please refer to the 
   <a href="https://www.cawcr.gov.au/projects/verification/" class="external-link">CAWRC website (section "Methods for 
   dichotomous forecasts")</a> to get detailed description of each metric.</em>
@@ -433,6 +448,12 @@ created in the current working directory :</p><ol><li><p>a <em>models</em> folde
   (column <code>evaluation</code>). <br><em>For cross-validation data, see <code>CV.[...]</code> 
   parameters in <code>BIOMOD_Modeling</code> function ; for evaluation data, see 
   <code>eval.[...]</code> parameters in <code><a href="BIOMOD_FormatingData.html">BIOMOD_FormatingData</a></code>.</em></p></dd>
+
+  
+  <dt>var.import</dt>
+<dd><p>A value caracterizing how much each variable has an impact on each model 
+  predictions can be calculated by randomizing the variable of interest and computing the 
+  correlation between original and shuffled variables (see <code><a href="bm_VariablesImportance.html">bm_VariablesImportance</a></code>).</p></dd>
 
   
   <dt>scale.models</dt>

@@ -9,8 +9,8 @@
 ##' 
 ##' 
 ##' @param bm.model a \code{biomod2_model} object (or \code{nnet}, \code{rpart}, \code{fda}, 
-##' \code{gam}, \code{glm}, \code{lm}, \code{gbm}, \code{mars}, \code{randomForest}), \code{xgb.Booster} that can be 
-##' obtained with the \code{\link{get_formal_model}} function 
+##' \code{gam}, \code{glm}, \code{lm}, \code{gbm}, \code{mars}, \code{randomForest}, 
+##' \code{xgb.Booster}) that can be obtained with the \code{\link{get_formal_model}} function 
 ##' @param expl.var a \code{data.frame} containing the explanatory variables that will be used to 
 ##' compute the variables importance
 ##' @param variables (\emph{optional, default} \code{NULL}) \cr 
@@ -26,7 +26,6 @@
 ##' An \code{integer} value corresponding to the new seed value to be set
 ##' @param do.progress (\emph{optional, default} \code{TRUE}) \cr 
 ##' A \code{logical} value defining whether the progress bar is to be rendered or not
-##' @param ... additional arguments
 ##' 
 ##' @return  
 ##' 
@@ -67,7 +66,6 @@
 ##' 
 ##' 
 ##' @examples
-##' 
 ##' ## Create simple simulated data
 ##' myResp.s <- sample(c(0, 1), 20, replace = TRUE)
 ##' myExpl.s <- data.frame(var1 = sample(c(0, 1), 100, replace = TRUE),
@@ -99,10 +97,9 @@ bm_VariablesImportance <- function(bm.model,
                                    nb.rep = 1,
                                    # nb.cpu = 1,
                                    seed.val = NULL,
-                                   do.progress = TRUE,
-                                   ...)
+                                   do.progress = TRUE)
 {
-  args <- .bm_VariablesImportance.check.args(bm.model, expl.var, variables, method, nb.rep, seed.val, do.progress, ...)
+  args <- .bm_VariablesImportance.check.args(bm.model, expl.var, variables, method, nb.rep, seed.val, do.progress)
   for (argi in names(args)) { assign(x = argi, value = args[[argi]]) }
   rm(args)
   ## Test if prediction is computable
@@ -151,7 +148,7 @@ bm_VariablesImportance <- function(bm.model,
 ###################################################################################################
 
 
-.bm_VariablesImportance.check.args <- function(bm.model, expl.var, variables, method, nb.rep, seed.val, do.progress, temp_workdir, ...)
+.bm_VariablesImportance.check.args <- function(bm.model, expl.var, variables, method, nb.rep, seed.val, do.progress, temp_workdir)
 {
   # test that input data is supported
   .fun_testIfInherits(TRUE, "bm.model", bm.model, c("biomod2_model", "nnet", "rpart", "fda", "gam"

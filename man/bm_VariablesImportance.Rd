@@ -11,14 +11,13 @@ bm_VariablesImportance(
   method = "full_rand",
   nb.rep = 1,
   seed.val = NULL,
-  do.progress = TRUE,
-  ...
+  do.progress = TRUE
 )
 }
 \arguments{
 \item{bm.model}{a \code{biomod2_model} object (or \code{nnet}, \code{rpart}, \code{fda}, 
-\code{gam}, \code{glm}, \code{lm}, \code{gbm}, \code{mars}, \code{randomForest}), \code{xgb.Booster} that can be 
-obtained with the \code{\link{get_formal_model}} function}
+\code{gam}, \code{glm}, \code{lm}, \code{gbm}, \code{mars}, \code{randomForest}, 
+\code{xgb.Booster}) that can be obtained with the \code{\link{get_formal_model}} function}
 
 \item{expl.var}{a \code{data.frame} containing the explanatory variables that will be used to 
 compute the variables importance}
@@ -37,8 +36,6 @@ An \code{integer} value corresponding to the new seed value to be set}
 
 \item{do.progress}{(\emph{optional, default} \code{TRUE}) \cr 
 A \code{logical} value defining whether the progress bar is to be rendered or not}
-
-\item{...}{additional arguments}
 }
 \value{
 A \code{3} columns \code{data.frame} containing variable's importance scores for each 
@@ -70,7 +67,6 @@ the variable on the model.
 The same principle is used in \code{\link[randomForest]{randomForest}}.
 }
 \examples{
-
 ## Create simple simulated data
 myResp.s <- sample(c(0, 1), 20, replace = TRUE)
 myExpl.s <- data.frame(var1 = sample(c(0, 1), 100, replace = TRUE),

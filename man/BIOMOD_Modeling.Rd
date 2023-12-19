@@ -154,7 +154,7 @@ An \code{integer} value corresponding to the new seed value to be set}
 A \code{logical} value defining whether the progress bar is to be rendered or not}
 }
 \value{
-A \code{BIOMOD.models.out} object containing models outputs, or links to saved outputs. \cr
+A \code{\link{BIOMOD.models.out}} object containing models outputs, or links to saved outputs. \cr
 Models outputs are stored out of \R (for memory storage reasons) in 2 different folders 
 created in the current working directory :
 \enumerate{
@@ -164,9 +164,9 @@ created in the current working directory :
   \item a \emph{hidden} folder, named \code{.BIOMOD_DATA}, and containing outputs related 
   files (original dataset, calibration lines, pseudo-absences selected, predictions, 
   variables importance, evaluation values...), that can be retrieved with 
-  \href{https://biomodhub.github.io/biomod2/reference/getters.out.html}{\code{get_[...]}} or \code{\link{load}} functions, and used by other 
-  \pkg{biomod2} functions, like \code{\link{BIOMOD_Projection}} or 
-  \code{\link{BIOMOD_EnsembleModeling}}
+  \code{\href{https://biomodhub.github.io/biomod2/reference/getters.out.html}{get_[...]}} 
+  or \code{\link{load}} functions, and used by other \pkg{biomod2} functions, like 
+  \code{\link{BIOMOD_Projection}} or \code{\link{BIOMOD_EnsembleModeling}}
 }
 }
 \description{
@@ -177,7 +177,7 @@ metrics (see Details).
 }
 \details{
 \describe{
-  \item{bm.format}{If you have decided to add pseudo absences to your original dataset (see 
+  \item{bm.format}{If pseudo absences have been added to the original dataset (see 
   \code{\link{BIOMOD_FormatingData}}), \cr \code{PA.nb.rep *(nb.rep + 1)} models will be 
   created.}
   
@@ -198,7 +198,7 @@ metrics (see Details).
     (\url{https://biodiversityinformatics.amnh.org/open_source/maxent/})
     \item \code{MAXNET} : Maximum Entropy (\code{\link[maxnet]{maxnet}})
     \item \code{RF} : Random Forest (\code{\link[randomForest]{randomForest}})
-    \item \code{SRE} : Surface Range Envelop or usually called BIOCLIM
+    \item \code{SRE} : Surface Range Envelop or usually called BIOCLIM (\code{\link{bm_SRE}})
     \item \code{XGBOOST} : eXtreme Gradient Boosting Training (\code{\link[xgboost]{xgboost}})
   }}
   
@@ -212,8 +212,9 @@ metrics (see Details).
   single models (see \code{\link{bm_CrossValidation}}).}
   
   \item{OPT.[...] parameters}{Different methods are available to parameterize the 
-  single models (see \code{\link{BIOMOD.options.dataset}}). Note that only \code{binary} data 
-  type is allowed currently.
+  single models (see \code{\link{bm_ModelingOptions}} and 
+  \code{\link{BIOMOD.options.dataset}}). Note that only \code{binary} data type is 
+  allowed currently.
   \itemize{
     \item \code{default} : only default parameter values of default parameters of the single 
     models functions are retrieved. Nothing is changed so it might not give good results.
@@ -245,20 +246,36 @@ metrics (see Details).
   }}
 
   \item{metric.eval}{
-  \itemize{
-    \item \code{ROC} : Relative operating characteristic
-    \item \code{KAPPA} : Cohen's Kappa (Heidke skill score)
-    \item \code{TSS} : True skill statistic (Hanssen and Kuipers discriminant, Peirce's skill 
-    score)
-    \item \code{FAR} : False alarm ratio
-    \item \code{SR} : Success ratio
-    \item \code{ACCURANCY} : Accuracy (fraction correct)
-    \item \code{BIAS} : Bias score (frequency bias)
-    \item \code{POD} : Probability of detection (hit rate)
-    \item \code{CSI} : Critical success index (threat score)
-    \item \code{ETS} : Equitable threat score (Gilbert skill score)
-    \item \code{BOYCE} : Boyce index
-    \item \code{MPA} : Minimal predicted area (cutoff optimising MPA to predict 90% of presences)
+  \describe{
+    \item{simple}{
+    \itemize{
+      \item \code{POD} : Probability of detection (hit rate)
+      \item \code{FAR} : False alarm ratio
+      \item \code{POFD} : Probability of false detection (fall-out)
+      \item \code{SR} : Success ratio
+      \item \code{ACCURACY} : Accuracy (fraction correct)
+      \item \code{BIAS} : Bias score (frequency bias)
+    }
+    }
+    \item{complex}{
+    \itemize{
+      \item \code{ROC} : Relative operating characteristic
+      \item \code{TSS} : True skill statistic (Hanssen and Kuipers discriminant, Peirce's 
+      skill score)
+      \item \code{KAPPA} : Cohen's Kappa (Heidke skill score)
+      \item \code{OR} : Odds Ratio
+      \item \code{ORSS} : Odds ratio skill score (Yule's Q)
+      \item \code{CSI} : Critical success index (threat score)
+      \item \code{ETS} : Equitable threat score (Gilbert skill score)
+    }
+    }
+    \item{presence-only}{
+    \itemize{
+      \item \code{BOYCE} : Boyce index
+      \item \code{MPA} : Minimal predicted area (cutoff optimising MPA to predict 90\% of 
+      presences)
+    }
+    }
   }
   Optimal value of each method can be obtained with the \code{\link{get_optim_value}} 
   function. Several evaluation metrics can be selected. \emph{Please refer to the 
@@ -271,6 +288,10 @@ metrics (see Details).
   parameters in \code{\link{BIOMOD_Modeling}} function ; for evaluation data, see 
   \code{eval.[...]} parameters in \code{\link{BIOMOD_FormatingData}}.}
   }
+  
+  \item{var.import}{A value caracterizing how much each variable has an impact on each model 
+  predictions can be calculated by randomizing the variable of interest and computing the 
+  correlation between original and shuffled variables (see \code{\link{bm_VariablesImportance}}).}
   
   \item{scale.models}{\bold{This parameter is quite experimental and it is recommended 
   not to use it. It may lead to reduction in projection scale amplitude.} Some categorical 

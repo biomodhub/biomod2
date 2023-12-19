@@ -22,9 +22,9 @@ bm_CalculateStat(misc, metric.eval = "TSS")
 }
 \arguments{
 \item{metric.eval}{a \code{character} corresponding to the evaluation metric to be used, must 
-be either \code{ROC}, \code{TSS}, \code{KAPPA}, \code{ACCURACY}, \code{BIAS}, \code{POD}, 
-\code{FAR}, \code{POFD}, \code{SR}, \code{CSI}, \code{ETS}, \code{HK}, \code{HSS}, \code{OR}, 
-\code{ORSS}, \code{BOYCE}, \code{MPA}}
+be either \code{POD}, \code{FAR}, \code{POFD}, \code{SR}, \code{ACCURACY}, \code{BIAS}, 
+\code{ROC}, \code{TSS}, \code{KAPPA}, \code{OR}, \code{ORSS}, \code{CSI}, \code{ETS}, 
+\code{BOYCE}, \code{MPA}}
 
 \item{obs}{a \code{vector} of observed values (binary, \code{0} or \code{1})}
 
@@ -68,8 +68,41 @@ convert continuous values into binary ones leading to the best score for a given
 metric.
 }
 \details{
-\emph{Please refer to \code{\link{BIOMOD_Modeling}} to get more information about these 
-evaluation metrics.}
+\describe{
+  \item{simple}{
+  \itemize{
+    \item \code{POD} : Probability of detection (hit rate)
+    \item \code{FAR} : False alarm ratio
+    \item \code{POFD} : Probability of false detection (fall-out)
+    \item \code{SR} : Success ratio
+    \item \code{ACCURACY} : Accuracy (fraction correct)
+    \item \code{BIAS} : Bias score (frequency bias)
+  }
+  }
+  \item{complex}{
+  \itemize{
+    \item \code{ROC} : Relative operating characteristic
+    \item \code{TSS} : True skill statistic (Hanssen and Kuipers discriminant, Peirce's 
+    skill score)
+    \item \code{KAPPA} : Cohen's Kappa (Heidke skill score)
+    \item \code{OR} : Odds Ratio
+    \item \code{ORSS} : Odds ratio skill score (Yule's Q)
+    \item \code{CSI} : Critical success index (threat score)
+    \item \code{ETS} : Equitable threat score (Gilbert skill score)
+  }
+  }
+  \item{presence-only}{
+  \itemize{
+    \item \code{BOYCE} : Boyce index
+    \item \code{MPA} : Minimal predicted area (cutoff optimising MPA to predict 90\% of 
+    presences)
+  }
+  }
+}
+  
+Optimal value of each method can be obtained with the \code{\link{get_optim_value}} function. \cr
+\emph{Please refer to the \href{https://www.cawcr.gov.au/projects/verification/}{CAWRC website 
+(section "Methods for dichotomous forecasts")} to get detailed description of each metric.}
 
 Note that if a value is given to \code{threshold}, no optimisation will be done., and 
 only the score for this threshold will be returned.
@@ -84,7 +117,6 @@ code of \code{ecospat.boyce()} and \code{ecospat.mpa()} in \pkg{ecospat})
 functions have been copied within this file from version 3.2.2 (august 2022).
 }
 \examples{
-
 ## Generate a binary vector
 vec.a <- sample(c(0, 1), 100, replace = TRUE)
 
@@ -143,6 +175,10 @@ Other Secundary functions:
 Damien Georges
 }
 \concept{Secundary functions}
+\keyword{auc}
+\keyword{boyce}
 \keyword{evaluation}
 \keyword{models}
+\keyword{mpa}
 \keyword{options}
+\keyword{tss}

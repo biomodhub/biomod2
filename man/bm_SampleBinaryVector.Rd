@@ -13,19 +13,19 @@ bm_SampleBinaryVector(obs, ratio, as.logical = FALSE, seedval = NULL)
 of \code{obs} values to sample}
 
 \item{as.logical}{(\emph{optional, default} \code{FALSE}) \cr 
-A \code{logical} value defining whether a \code{vector} of \code{TRUE/FALSE} values should 
-be returned (if \code{as.logical = TRUE}) or a \code{vector} containing the indices of 
-\code{obs} elements to keep}
+A \code{logical} value defining whether output should be returned as a \code{vector} of 
+\code{TRUE/FALSE} values or \code{integer} values corresponding to the indices of \code{obs} 
+elements to be kept}
 
 \item{seedval}{(\emph{optional, default} \code{NULL}) \cr 
 An \code{integer} value corresponding to the new seed value to be set}
 }
 \value{
-A \code{list} containing to elements is returned :
-\describe{
-  \item{calibration}{IDs of elements selected for calibration}
-  \item{validation}{IDs of elements selected for validation (complementary to the calibration 
-  set)}
+A \code{list} containing the following elements :
+\itemize{
+  \item{\code{calibration} : }{elements selected for calibration}
+  \item{\code{validation} : }{elements selected for validation (complementary to the 
+  calibration set)}
 }
 }
 \description{
@@ -33,7 +33,6 @@ This internal \pkg{biomod2} function allows the user to sample a binary vector
 keeping the same proportion of \code{0} and \code{1} as the initial vector.
 }
 \examples{
-
 ## Generate a binary vector
 vec.a <- sample(c(0, 1), 100, replace = TRUE)
 
@@ -65,6 +64,5 @@ Other Secundary functions:
 Damien Georges
 }
 \concept{Secundary functions}
-\keyword{formula}
-\keyword{models}
-\keyword{options}
+\keyword{binary}
+\keyword{sample}

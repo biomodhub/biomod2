@@ -132,7 +132,7 @@ weighted sum of probabilities across predictions or not}
 instead) \cr old argument name for \code{EMci.alpha}}
 }
 \value{
-A \code{BIOMOD.ensemble.models.out} object containing models outputs, or links to saved 
+A \code{\link{BIOMOD.ensemble.models.out}} object containing models outputs, or links to saved 
 outputs. \cr Models outputs are stored out of \R (for memory storage reasons) in 2 different 
 folders created in the current working directory :
 \enumerate{
@@ -141,8 +141,9 @@ folders created in the current working directory :
   \item a \emph{hidden} folder, named \code{.BIOMOD_DATA}, and containing outputs related 
   files (original dataset, calibration lines, pseudo-absences selected, predictions, 
   variables importance, evaluation values...), that can be retrieved with 
-  \href{https://biomodhub.github.io/biomod2/reference/getters.out.html}{\code{get_[...]}} or \code{\link{load}} functions, and used by other 
-  \pkg{biomod2} functions, like \code{\link{BIOMOD_EnsembleForecasting}}
+  \href{https://biomodhub.github.io/biomod2/reference/getters.out.html}{\code{get_[...]}} 
+  or \code{\link{load}} functions, and used by other \pkg{biomod2} functions, like 
+  \code{\link{BIOMOD_EnsembleForecasting}}
 }
 }
 \description{

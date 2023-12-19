@@ -117,9 +117,9 @@ of <code>obs</code> values to sample</p></dd>
 
 <dt>as.logical</dt>
 <dd><p>(<em>optional, default</em> <code>FALSE</code>) <br> 
-A <code>logical</code> value defining whether a <code>vector</code> of <code>TRUE/FALSE</code> values should 
-be returned (if <code>as.logical = TRUE</code>) or a <code>vector</code> containing the indices of 
-<code>obs</code> elements to keep</p></dd>
+A <code>logical</code> value defining whether output should be returned as a <code>vector</code> of 
+<code>TRUE/FALSE</code> values or <code>integer</code> values corresponding to the indices of <code>obs</code> 
+elements to be kept</p></dd>
 
 
 <dt>seedval</dt>
@@ -131,15 +131,10 @@ An <code>integer</code> value corresponding to the new seed value to be set</p><
     <h2>Value</h2>
     
 
-<p>A <code>list</code> containing to elements is returned :</p><dl><dt>calibration</dt>
-<dd><p>IDs of elements selected for calibration</p></dd>
-
-  <dt>validation</dt>
-<dd><p>IDs of elements selected for validation (complementary to the calibration 
-  set)</p></dd>
-
-
-</dl></div>
+<p>A <code>list</code> containing the following elements :</p><ul><li><p><code>calibration</code> : elements selected for calibration</p></li>
+<li><p><code>validation</code> : elements selected for validation (complementary to the 
+  calibration set)</p></li>
+</ul></div>
     <div id="see-also">
     <h2>See also</h2>
     <div class="dont-index"><p>Other Secundary functions: 
@@ -167,8 +162,7 @@ An <code>integer</code> value corresponding to the new seed value to be set</p><
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span></span>
-<span><span class="co">## Generate a binary vector</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="co">## Generate a binary vector</span></span>
 <span><span class="va">vec.a</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/sample.html" class="external-link">sample</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">1</span><span class="op">)</span>, <span class="fl">100</span>, replace <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co">## Generate calibration / validation datasets</span></span>

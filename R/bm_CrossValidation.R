@@ -8,14 +8,13 @@
 ##' according to 6 different methods : \code{random}, \code{kfold}, \code{block}, \code{strat}, 
 ##' \code{env} or \code{user.defined} (see Details).
 ##' 
-##' @param bm.format a \code{\link{BIOMOD.formated.data-class}} or 
-##' \code{\link{BIOMOD.formated.data.PA-class}} object returned by the 
-##' \code{\link{BIOMOD_FormatingData}} function
+##' @param bm.format a \code{\link{BIOMOD.formated.data}} or \code{\link{BIOMOD.formated.data.PA}} 
+##' object returned by the \code{\link{BIOMOD_FormatingData}} function
 ##' @param strategy a \code{character} corresponding to the cross-validation selection strategy, 
 ##' must be among \code{random}, \code{kfold}, \code{block}, \code{strat}, \code{env} or 
 ##' \code{user.defined}
-##' @param \ldots (\emph{optional, one or several of the following arguments depending on the selected 
-##' method}) 
+##' @param \ldots (\emph{optional, one or several of the following arguments depending on the 
+##' selected method}) 
 ##' 
 ##' @param nb.rep (\emph{optional, default} \code{0}) \cr
 ##' If \code{strategy = 'random'} or \code{strategy = 'kfold'}, an \code{integer} corresponding 

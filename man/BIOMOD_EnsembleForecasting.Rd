@@ -81,7 +81,7 @@ in Individual Model projection. Argument ignored by EWmean ensemble algorithm.}
 \item{\ldots}{(\emph{optional, see Details})}
 }
 \value{
-A \code{BIOMOD.projection.out} object containing models projections, or links to saved 
+A \code{\link{BIOMOD.projection.out}} object containing models projections, or links to saved 
 outputs. \cr Models projections are stored out of \R (for memory storage reasons) in 
 \code{proj.name} folder created in the current working directory :
 \enumerate{

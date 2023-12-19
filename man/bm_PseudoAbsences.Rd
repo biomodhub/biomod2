@@ -105,7 +105,7 @@ If \code{strategy = 'user.defined'}, a \code{matrix} or \code{data.frame} with a
 \code{FALSE} values defining which points will be used to build the species distribution 
 model(s) for each repetition}
 
-\item{\ldots}{(\emph{optional, one or several of the following arguments depending on the selected 
+\item{\ldots}{(\emph{optional, one or several of the above arguments depending on the selected 
 method})}
 }
 \value{
@@ -129,7 +129,7 @@ The idea is to select pseudo-absences randomly in spatial locations where the sp
 been sampled. This method is the simplest one and the most appropriate if lacking information 
 about the presence sampling (non-exhaustive, biased sampling, etc). \cr \cr
 
-\bold{Concerning SRE selection :}
+\bold{Concerning SRE selection (see \code{\link{bm_SRE}}) :}
 
 The idea is to select pseudo-absences in spatial locations whose environmental conditions are 
 different from those of the presence points. This method is appropriate when most of the 
@@ -148,8 +148,8 @@ in rows, pseudo-absences repetitions in columns, and \code{TRUE/FALSE} values in
 whether each point is to be considered as pseudo-absence or not for each dataset.
 }
 \examples{
-
 library(terra)
+
 # Load species occurrences (6 species available)
 data(DataSpecies)
 head(DataSpecies)
@@ -241,7 +241,8 @@ apply(PA.r_mult$pa.tab, 2, table)
 
 }
 \seealso{
-\code{\link{BIOMOD.formated.data.PA}}, \code{\link{BIOMOD_FormatingData}}
+\code{\link{bm_SRE}}, \code{\link{BIOMOD.formated.data.PA}}, 
+\code{\link{BIOMOD_FormatingData}}
 
 Other Secundary functions: 
 \code{\link{bm_BinaryTransformation}()},

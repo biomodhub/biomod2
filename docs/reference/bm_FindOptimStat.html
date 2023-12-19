@@ -122,9 +122,9 @@ metric.</p>
     <h2>Arguments</h2>
     <dl><dt>metric.eval</dt>
 <dd><p>a <code>character</code> corresponding to the evaluation metric to be used, must 
-be either <code>ROC</code>, <code>TSS</code>, <code>KAPPA</code>, <code>ACCURACY</code>, <code>BIAS</code>, <code>POD</code>, 
-<code>FAR</code>, <code>POFD</code>, <code>SR</code>, <code>CSI</code>, <code>ETS</code>, <code>HK</code>, <code>HSS</code>, <code>OR</code>, 
-<code>ORSS</code>, <code>BOYCE</code>, <code>MPA</code></p></dd>
+be either <code>POD</code>, <code>FAR</code>, <code>POFD</code>, <code>SR</code>, <code>ACCURACY</code>, <code>BIAS</code>, 
+<code>ROC</code>, <code>TSS</code>, <code>KAPPA</code>, <code>OR</code>, <code>ORSS</code>, <code>CSI</code>, <code>ETS</code>, 
+<code>BOYCE</code>, <code>MPA</code></p></dd>
 
 
 <dt>obs</dt>
@@ -179,8 +179,36 @@ of correctly classified presences for Minimal Predicted Area (see <code>ecospat.
 </ul></div>
     <div id="details">
     <h2>Details</h2>
-    <p><em>Please refer to <code><a href="BIOMOD_Modeling.html">BIOMOD_Modeling</a></code> to get more information about these 
-evaluation metrics.</em></p>
+    
+<dl><dt>simple</dt>
+<dd><p></p><ul><li><p><code>POD</code> : Probability of detection (hit rate)</p></li>
+<li><p><code>FAR</code> : False alarm ratio</p></li>
+<li><p><code>POFD</code> : Probability of false detection (fall-out)</p></li>
+<li><p><code>SR</code> : Success ratio</p></li>
+<li><p><code>ACCURACY</code> : Accuracy (fraction correct)</p></li>
+<li><p><code>BIAS</code> : Bias score (frequency bias)</p></li>
+</ul><p></p></dd>
+
+  <dt>complex</dt>
+<dd><p></p><ul><li><p><code>ROC</code> : Relative operating characteristic</p></li>
+<li><p><code>TSS</code> : True skill statistic (Hanssen and Kuipers discriminant, Peirce's 
+    skill score)</p></li>
+<li><p><code>KAPPA</code> : Cohen's Kappa (Heidke skill score)</p></li>
+<li><p><code>OR</code> : Odds Ratio</p></li>
+<li><p><code>ORSS</code> : Odds ratio skill score (Yule's Q)</p></li>
+<li><p><code>CSI</code> : Critical success index (threat score)</p></li>
+<li><p><code>ETS</code> : Equitable threat score (Gilbert skill score)</p></li>
+</ul><p></p></dd>
+
+  <dt>presence-only</dt>
+<dd><p></p><ul><li><p><code>BOYCE</code> : Boyce index</p></li>
+<li><p><code>MPA</code> : Minimal predicted area (cutoff optimising MPA to predict 90% of 
+    presences)</p></li>
+</ul><p></p></dd>
+
+
+</dl><p>Optimal value of each method can be obtained with the <code>get_optim_value</code> function. <br><em>Please refer to the <a href="https://www.cawcr.gov.au/projects/verification/" class="external-link">CAWRC website 
+(section "Methods for dichotomous forecasts")</a> to get detailed description of each metric.</em></p>
 <p>Note that if a value is given to <code>threshold</code>, no optimisation will be done., and 
 only the score for this threshold will be returned.</p>
 <p>The Boyce index returns <code>NA</code> values for <code>SRE</code> models because it can not be 
@@ -233,8 +261,7 @@ functions have been copied within this file from version 3.2.2 (august 2022).</p
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span></span>
-<span><span class="co">## Generate a binary vector</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="co">## Generate a binary vector</span></span>
 <span><span class="va">vec.a</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/sample.html" class="external-link">sample</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">1</span><span class="op">)</span>, <span class="fl">100</span>, replace <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co">## Generate a 0-1000 vector (random drawing)</span></span>

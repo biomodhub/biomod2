@@ -20,8 +20,6 @@
 ##' @param expl.var a \code{matrix}, \code{data.frame}, \code{\link[sp]{SpatialPointsDataFrame}} 
 ##' or \code{\link[terra:rast]{SpatRaster}} object containing the explanatory variables (in 
 ##' columns or layers) that will be used to find the pseudo-absences
-##' @param \ldots (\emph{optional, one or several of the following arguments depending on the selected 
-##' method}) 
 ##' 
 ##' @param nb.rep an \code{integer} corresponding to the number of sets (repetitions) of 
 ##' pseudo-absence points that will be drawn
@@ -46,6 +44,9 @@
 ##' \code{FALSE} values defining which points will be used to build the species distribution 
 ##' model(s) for each repetition
 ##' 
+##' @param \ldots (\emph{optional, one or several of the above arguments depending on the selected 
+##' method}) 
+##' 
 ##' 
 ##' @return 
 ##' 
@@ -67,7 +68,7 @@
 ##' been sampled. This method is the simplest one and the most appropriate if lacking information 
 ##' about the presence sampling (non-exhaustive, biased sampling, etc). \cr \cr
 ##' 
-##' \bold{Concerning SRE selection :}
+##' \bold{Concerning SRE selection (see \code{\link{bm_SRE}}) :}
 ##' 
 ##' The idea is to select pseudo-absences in spatial locations whose environmental conditions are 
 ##' different from those of the presence points. This method is appropriate when most of the 
@@ -89,13 +90,14 @@
 ##' @keywords pseudo-absence random SRE disk
 ##' 
 ##' 
-##' @seealso \code{\link{BIOMOD.formated.data.PA}}, \code{\link{BIOMOD_FormatingData}}
+##' @seealso \code{\link{bm_SRE}}, \code{\link{BIOMOD.formated.data.PA}}, 
+##' \code{\link{BIOMOD_FormatingData}}
 ##' @family Secundary functions
 ##' 
 ##' 
 ##' @examples 
-##' 
 ##' library(terra)
+##' 
 ##' # Load species occurrences (6 species available)
 ##' data(DataSpecies)
 ##' head(DataSpecies)

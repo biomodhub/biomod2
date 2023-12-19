@@ -5,17 +5,18 @@
 ##' @aliases bm_SampleFactorLevels.data.frame
 ##' @author Damien Georges
 ##' 
-##' @title Tool to ensure the sampling of all levels of a factorial variable 
+##' @title Sample all levels of a factorial variable 
 ##' 
-##' @description This internal \pkg{biomod2} function samples randomly an element of each level of 
-##' all the factorial variables contained in a \code{raster*} or \code{data.frame} object.
+##' @description This internal \pkg{biomod2} function allows the user to sample all levels of all 
+##' the factorial variables contained in a \code{data.frame} or \code{\link[terra:rast]{SpatRaster}} 
+##' object.
 ##' 
 ##' @param expl.var a \code{data.frame} or \code{\link[terra:rast]{SpatRaster}}
 ##' object containing the explanatory variables (in columns or layers)
 ##' @param mask.out a \code{data.frame} or \code{\link[terra:rast]{SpatRaster}}
 ##' object containing the area that has already been sampled (\emph{factor 
 ##' levels within this mask will not be sampled})
-##' @param mask.in a \code{data.frame} or \code{\link[terra:rast]{SpatRaster}}
+##' @param mask.in a \code{data.frame} or \code{\link[terra:rast]{SpatRaster}} 
 ##' object containing areas where factor levels are to be sampled in priority. 
 ##' \emph{Note that if after having explored these masks, some factor levels 
 ##' remain unsampled, they will be sampled in the reference input object \code{expl.var}.}
@@ -23,11 +24,11 @@
 ##' 
 ##' @return  
 ##' 
-##' A \code{numeric vector} containing point IDs (either cell number for \code{raster*} objects, 
-##' or row number for \code{data.frame}), each refering to a single level of a single factorial 
-##' variable.
+##' A \code{vector} of \code{numeric} values corresponding to either row (\code{data.frame}) or 
+##' cell (\code{\link[terra:rast]{SpatRaster}}) numbers, each refering to a single level of a 
+##' single factorial variable.
 ##' 
-##' In case any factorial variable is found in the input object, \code{NULL} is returned.
+##' In case no factorial variable is found in the input object, \code{NULL} is returned.
 ##' 
 ##'
 ##' @details 
@@ -36,36 +37,35 @@
 ##' dimensions :
 ##' \itemize{
 ##'   \item same number of rows for \code{data.frame} objects
-##'   \item same resolution, projection system and number of cells for \code{raster*} objects 
+##'   \item same resolution, projection system and number of cells for \code{\link[terra:rast]{SpatRaster}} objects 
 ##'   \cr \cr
 ##' }
 ##' 
-##' If \code{mask.in} contains several masks (either it is a 
-##' \code{\link[raster:stack]{RasterStack}} object or a multi-columns \code{data.frame}), then 
-##' the order of masks / columns matters : they will be considered successively to sample missing 
-##' factor levels. \cr \cr
+##' If \code{mask.in} contains several columns (\code{data.frame}) or layers 
+##' (\code{\link[terra:rast]{SpatRaster}}), then their order matters : 
+##' they will be considered successively to sample missing factor levels. \cr \cr
 ##' 
 ##' \itemize{
-##'   \item \code{raster*} masks will be understood as :
-##'   \itemize{
-##'     \item \code{NA} : out of mask
-##'     \item \code{not NA} : in mask
-##'   }
-##'   \item \code{data.frame} masks will be understood as :
+##'   \item Values in \code{data.frame} will be understood as :
 ##'   \itemize{
 ##'     \item \code{FALSE} : out of mask
 ##'     \item \code{TRUE} : in mask
 ##'   }
+##'   \item Values in \code{\link[terra:rast]{SpatRaster}} will be understood as :
+##'   \itemize{
+##'     \item \code{NA} : out of mask
+##'     \item \code{not NA} : in mask
+##'   }
 ##' }
 ##' 
 ##' 
-##' @seealso \code{\link{bm_PseudoAbsences}}, \code{\link{bm_RunModelsLoop}}, 
-##' \code{\link{BIOMOD_Modeling}}
+##' @keywords sample factor
+##' 
+##' @seealso \code{\link{bm_PseudoAbsences}}, \code{\link{bm_CrossValidation}}
 ##' @family Secundary functions
 ##' 
 ##'   
 ##' @examples
-##' 
 ##' library(terra)
 ##' 
 ##' ## Create raster data

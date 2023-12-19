@@ -72,9 +72,8 @@ bm_CrossValidation_env(bm.format, ...)
 \S4method{bm_CrossValidation_env}{BIOMOD.formated.data.PA}(bm.format, balance, k, env.var)
 }
 \arguments{
-\item{bm.format}{a \code{\link{BIOMOD.formated.data-class}} or 
-\code{\link{BIOMOD.formated.data.PA-class}} object returned by the 
-\code{\link{BIOMOD_FormatingData}} function}
+\item{bm.format}{a \code{\link{BIOMOD.formated.data}} or \code{\link{BIOMOD.formated.data.PA}} 
+object returned by the \code{\link{BIOMOD_FormatingData}} function}
 
 \item{strategy}{a \code{character} corresponding to the cross-validation selection strategy, 
 must be among \code{random}, \code{kfold}, \code{block}, \code{strat}, \code{env} or 
@@ -115,8 +114,8 @@ repetition (in columns) which observation lines should be used for models calibr
 A \code{logical} value defining whether models should be also calibrated and validated over 
 the whole dataset (and pseudo-absence datasets) or not}
 
-\item{\ldots}{(\emph{optional, one or several of the following arguments depending on the selected 
-method})}
+\item{\ldots}{(\emph{optional, one or several of the following arguments depending on the 
+selected method})}
 }
 \value{
 A \code{matrix} or \code{data.frame} defining for each repetition (in columns) which 

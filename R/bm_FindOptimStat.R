@@ -13,9 +13,9 @@
 ##'
 ##'
 ##' @param metric.eval a \code{character} corresponding to the evaluation metric to be used, must 
-##' be either \code{ROC}, \code{TSS}, \code{KAPPA}, \code{ACCURACY}, \code{BIAS}, \code{POD}, 
-##' \code{FAR}, \code{POFD}, \code{SR}, \code{CSI}, \code{ETS}, \code{HK}, \code{HSS}, \code{OR}, 
-##' \code{ORSS}, \code{BOYCE}, \code{MPA}
+##' be either \code{POD}, \code{FAR}, \code{POFD}, \code{SR}, \code{ACCURACY}, \code{BIAS}, 
+##' \code{ROC}, \code{TSS}, \code{KAPPA}, \code{OR}, \code{ORSS}, \code{CSI}, \code{ETS}, 
+##' \code{BOYCE}, \code{MPA}
 ##' @param obs a \code{vector} of observed values (binary, \code{0} or \code{1})
 ##' @param fit a \code{vector} of fitted values (continuous)
 ##' @param nb.thresh an \code{integer} corresponding to the number of thresholds to be 
@@ -51,8 +51,41 @@
 ##'
 ##' @details
 ##' 
-##' \emph{Please refer to \code{\link{BIOMOD_Modeling}} to get more information about these 
-##' evaluation metrics.}
+##' \describe{
+##'   \item{simple}{
+##'   \itemize{
+##'     \item \code{POD} : Probability of detection (hit rate)
+##'     \item \code{FAR} : False alarm ratio
+##'     \item \code{POFD} : Probability of false detection (fall-out)
+##'     \item \code{SR} : Success ratio
+##'     \item \code{ACCURACY} : Accuracy (fraction correct)
+##'     \item \code{BIAS} : Bias score (frequency bias)
+##'   }
+##'   }
+##'   \item{complex}{
+##'   \itemize{
+##'     \item \code{ROC} : Relative operating characteristic
+##'     \item \code{TSS} : True skill statistic (Hanssen and Kuipers discriminant, Peirce's 
+##'     skill score)
+##'     \item \code{KAPPA} : Cohen's Kappa (Heidke skill score)
+##'     \item \code{OR} : Odds Ratio
+##'     \item \code{ORSS} : Odds ratio skill score (Yule's Q)
+##'     \item \code{CSI} : Critical success index (threat score)
+##'     \item \code{ETS} : Equitable threat score (Gilbert skill score)
+##'   }
+##'   }
+##'   \item{presence-only}{
+##'   \itemize{
+##'     \item \code{BOYCE} : Boyce index
+##'     \item \code{MPA} : Minimal predicted area (cutoff optimising MPA to predict 90\% of 
+##'     presences)
+##'   }
+##'   }
+##' }
+##'   
+##' Optimal value of each method can be obtained with the \code{\link{get_optim_value}} function. \cr
+##' \emph{Please refer to the \href{https://www.cawcr.gov.au/projects/verification/}{CAWRC website 
+##' (section "Methods for dichotomous forecasts")} to get detailed description of each metric.}
 ##' 
 ##' Note that if a value is given to \code{threshold}, no optimisation will be done., and 
 ##' only the score for this threshold will be returned.
@@ -65,10 +98,6 @@
 ##' @note In order to break dependency loop between packages \pkg{biomod2} and \pkg{ecospat}, 
 ##' code of \code{ecospat.boyce()} and \code{ecospat.mpa()} in \pkg{ecospat})
 ##' functions have been copied within this file from version 3.2.2 (august 2022).
-## \code{\link[ecospat]{ecospat.mpa}}) # generate R CMD Check error due 
-## to crossref missing ecospat package
-## code of \code{\link[ecospat]{ecospat.boyce}} and \code{\link[ecospat]{ecospat.mpa}} 
-## generate R CMD Check error due to crossref missing ecospat package 
 ##'
 ##'
 ##' @references
@@ -82,7 +111,7 @@
 ##'   Modelling}, \bold{199(2)}, 142-152.
 ##' }
 ##'
-##' @keywords models options evaluation
+##' @keywords models options evaluation auc tss boyce mpa
 ##' 
 ##'
 ##' @seealso \code{ecospat.boyce()} and \code{ecospat.mpa()} in \pkg{ecospat}, 
@@ -92,7 +121,6 @@
 ##' 
 ##' 
 ##' @examples
-##' 
 ##' ## Generate a binary vector
 ##' vec.a <- sample(c(0, 1), 100, replace = TRUE)
 ##' 
@@ -291,21 +319,19 @@ bm_FindOptimStat <- function(metric.eval = 'TSS',
 get_optim_value <- function(metric.eval)
 {
   switch(metric.eval
-         , 'TSS' = 1
-         , 'KAPPA' = 1
-         , 'ACCURACY' = 1
-         , 'BIAS' = 1
          , 'POD' = 1
          , 'FAR' = 0
          , 'POFD' = 0
          , 'SR' = 1
-         , 'CSI' = 1
-         , 'ETS' = 1
-         , 'HK' = 1
-         , 'HSS' = 1
+         , 'ACCURACY' = 1
+         , 'BIAS' = 1
+         , 'ROC' = 1
+         , 'TSS' = 1
+         , 'KAPPA' = 1
          , 'OR' = 1000000
          , 'ORSS' = 1
-         , 'ROC' = 1
+         , 'CSI' = 1
+         , 'ETS' = 1
          , 'BOYCE' = 1
          , 'MPA' = 1
   )
@@ -369,38 +395,33 @@ bm_CalculateStat <- function(misc, metric.eval = 'TSS')
   correct_negatives <- misc['FALSE', '0'] ## true negatives
   
   total <- sum(misc)
-  forecast_1 <- sum(misc['TRUE', ])
-  forecast_0 <- sum(misc['FALSE', ])
-  observed_1 <- sum(misc[, '1'])
-  observed_0 <- sum(misc[, '0'])
+  forecast_1 <- sum(misc['TRUE', ]) ## hits + false_alarms
+  forecast_0 <- sum(misc['FALSE', ]) ## misses + correct_negatives
+  observed_1 <- sum(misc[, '1']) ## hits + misses
+  observed_0 <- sum(misc[, '0']) ## false_alarms + correct_negatives
   
   ## calculate chosen evaluation metric ---------------------------------------
   out = switch(metric.eval
-               , 'TSS' = (hits / (hits + misses)) + (correct_negatives / (false_alarms + correct_negatives)) - 1
-               , 'KAPPA' = {
+               , 'POD' =  hits / observed_1
+               , 'POFD' = false_alarms / observed_0
+               , 'FAR' = false_alarms / forecast_1
+               , 'SR' = hits / forecast_1
+               , 'ACCURACY' = (hits + correct_negatives) / total
+               , 'BIAS' = forecast_1 / observed_1
+               
+               , 'TSS' = (hits / observed_1) + (correct_negatives / observed_0) - 1
+               , 'KAPPA' = { ## PAREIL ?
                  Po <- (1 / total) * (hits + correct_negatives)
                  Pe <- ((1 / total) ^ 2) * ((forecast_1 * observed_1) + (forecast_0 * observed_0))
                  return((Po - Pe) / (1 - Pe))
                }
-               , 'ACCURACY' = (hits + correct_negatives) / total
-               , 'BIAS' = (hits + false_alarms) / (hits + misses)
-               , 'POD' =  hits / (hits + misses)
-               , 'FAR' = false_alarms / (hits + false_alarms)
-               , 'POFD' = false_alarms / (correct_negatives + false_alarms)
-               , 'SR' = hits / (hits + false_alarms)
-               , 'CSI' = hits / (hits + misses + false_alarms)
-               , 'ETS' = {
-                 hits_rand <- ((hits + misses) * (hits + false_alarms)) / total
-                 return((hits - hits_rand) / (hits + misses + false_alarms - hits_rand))
-               }
-               , 'HK' = (hits / (hits + misses)) - (false_alarms / (false_alarms + correct_negatives))
-               , 'HSS' = {
-                 expected_correct_rand <- (1 / total) * 
-                   (((hits + misses) * (hits + false_alarms)) + ((correct_negatives + misses) * (correct_negatives + false_alarms)))
-                 return((hits + correct_negatives - expected_correct_rand) / (total - expected_correct_rand))
-               }
                , 'OR' = (hits * correct_negatives) / (misses * false_alarms)
                , 'ORSS' = (hits * correct_negatives - misses * false_alarms) / (hits * correct_negatives + misses * false_alarms)
+               , 'CSI' = hits / (observed_1 + false_alarms)
+               , 'ETS' = {
+                 hits_rand <- (observed_1 * forecast_1) / total
+                 return((hits - hits_rand) / (observed_1 + false_alarms - hits_rand))
+               }
   )
 }
 

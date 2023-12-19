@@ -108,8 +108,7 @@ importance value for each variable involved in the given model.</p>
 <span>  method <span class="op">=</span> <span class="st">"full_rand"</span>,</span>
 <span>  nb.rep <span class="op">=</span> <span class="fl">1</span>,</span>
 <span>  seed.val <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  do.progress <span class="op">=</span> <span class="cn">TRUE</span>,</span>
-<span>  <span class="va">...</span></span>
+<span>  do.progress <span class="op">=</span> <span class="cn">TRUE</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -117,8 +116,8 @@ importance value for each variable involved in the given model.</p>
     <h2>Arguments</h2>
     <dl><dt>bm.model</dt>
 <dd><p>a <code>biomod2_model</code> object (or <code>nnet</code>, <code>rpart</code>, <code>fda</code>, 
-<code>gam</code>, <code>glm</code>, <code>lm</code>, <code>gbm</code>, <code>mars</code>, <code>randomForest</code>), <code>xgb.Booster</code> that can be 
-obtained with the <code><a href="getters.bm.html">get_formal_model</a></code> function</p></dd>
+<code>gam</code>, <code>glm</code>, <code>lm</code>, <code>gbm</code>, <code>mars</code>, <code>randomForest</code>, 
+<code>xgb.Booster</code>) that can be obtained with the <code><a href="getters.bm.html">get_formal_model</a></code> function</p></dd>
 
 
 <dt>expl.var</dt>
@@ -149,10 +148,6 @@ An <code>integer</code> value corresponding to the new seed value to be set</p><
 <dt>do.progress</dt>
 <dd><p>(<em>optional, default</em> <code>TRUE</code>) <br> 
 A <code>logical</code> value defining whether the progress bar is to be rendered or not</p></dd>
-
-
-<dt>...</dt>
-<dd><p>additional arguments</p></dd>
 
 </dl></div>
     <div id="value">
@@ -207,8 +202,7 @@ the variable on the model.</p>
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span></span>
-<span><span class="co">## Create simple simulated data</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="co">## Create simple simulated data</span></span>
 <span><span class="va">myResp.s</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/sample.html" class="external-link">sample</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">1</span><span class="op">)</span>, <span class="fl">20</span>, replace <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
 <span><span class="va">myExpl.s</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span>var1 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sample.html" class="external-link">sample</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">1</span><span class="op">)</span>, <span class="fl">100</span>, replace <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>,</span>
 <span>                       var2 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="fl">100</span><span class="op">)</span>,</span>
