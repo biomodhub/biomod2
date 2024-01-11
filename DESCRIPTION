@@ -26,6 +26,7 @@ Contact: Wilfried Thuiller <wilfried.thuiller@univ-grenoble-alpes.fr>, Damien Ge
     <damien.georges2@gmail.com>, Maya Gueguen <maya.gueguen@univ-grenoble-alpes.fr>, 
     Remi Patin <remi.patin@univ-grenoble-alpes.fr>
 BugReports: https://github.com/biomodhub/biomod2/issues
+URL: https://biomodhub.github.io/biomod2/
 Description: Functions for species distribution modeling, calibration and evaluation, 
   ensemble of models, ensemble forecasting and visualization. The package permits to run
   consistently up to 10 single models on a presence/absences (resp presences/pseudo-absences)
