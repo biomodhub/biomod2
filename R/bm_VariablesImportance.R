@@ -97,9 +97,10 @@ bm_VariablesImportance <- function(bm.model,
                                    nb.rep = 1,
                                    # nb.cpu = 1,
                                    seed.val = NULL,
-                                   do.progress = TRUE)
+                                   do.progress = TRUE,
+                                   temp_workdir = NULL)
 {
-  args <- .bm_VariablesImportance.check.args(bm.model, expl.var, variables, method, nb.rep, seed.val, do.progress)
+  args <- .bm_VariablesImportance.check.args(bm.model, expl.var, variables, method, nb.rep, seed.val, do.progress,temp_workdir)
   for (argi in names(args)) { assign(x = argi, value = args[[argi]]) }
   rm(args)
   ## Test if prediction is computable

@@ -255,8 +255,7 @@ bm_FindOptimStat <- function(metric.eval = 'TSS',
     } else if (metric.eval == "MPA") {
       cutoff <- ecospat.mpa(fit[which(obs == 1)], perc = mpa.perc)
     }
-    
-    if (!is.na(cutoff / 1000)) {
+    if (!is.na(cutoff / 1000) & cutoff <= 1000) {
       EVAL <- presence.absence.accuracy(DATA, threshold = cutoff / 1000)
       sensitivity <- EVAL$sensitivity * 100
       specificity <- EVAL$specificity * 100

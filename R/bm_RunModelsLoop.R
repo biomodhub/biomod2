@@ -516,6 +516,7 @@ bm_RunModel <- function(model, run.name, dir.name = '.'
                          obs = data_sp[which(eval.lines.vec == FALSE)],
                          fit = g.pred[which(eval.lines.vec == FALSE)])
       }
+      if (max(cross.validation$cutoff,na.rm = T) > 1000) {cat("\n*** Wrong values predicted, please be careful with the results fo this model")}
       colnames(cross.validation)[which(colnames(cross.validation) == "best.stat")] <- "calibration"
       
       stat.validation <- foreach(xx = metric.eval, .combine = "rbind") %do% {
