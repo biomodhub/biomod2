@@ -106,8 +106,85 @@ biomod2 the parameter values pre-defined by biomod2 team."><!-- mathjax --><scri
 
     <div id="format">
     <h2>Format</h2>
-    <p>A <code><a href="BIOMOD.models.options.html">BIOMOD.models.options</a></code> object</p>
-    </div>
+    <p>A <code><a href="BIOMOD.models.options.html">BIOMOD.models.options</a></code> object with some changed values :</p>
+<dl><dt><code>ANN.binary.nnet.nnet</code></dt>
+<dd><p></p><ul><li><p><code>size = 5</code></p></li>
+<li><p><code>decay = 5</code></p></li>
+<li><p><code>trace = FALSE</code></p></li>
+<li><p><code>rang = 0.1</code></p></li>
+<li><p><code>maxit = 200</code></p></li>
+</ul><p></p></dd>
+
+   <dt><code>CTA.binary.rpart.rpart</code></dt>
+<dd><p></p><ul><li><p><code>method = 'class'</code></p></li>
+<li><p><code>control = list(xval = 5, minbucket = 5, minsplit = 5, cp = 0.001, maxdepth = 25)</code></p></li>
+<li><p><code>cost = NULL</code></p></li>
+</ul><p></p></dd>
+
+   <dt><code>FDA.binary.mda.fda</code></dt>
+<dd><p></p><ul><li><p><code>method = 'mars'</code></p></li>
+</ul><p></p></dd>
+
+   <dt><code>GAM.binary.mgcv.gam</code></dt>
+<dd><p></p><ul><li><p><code>family = binomial(link = 'logit')</code></p></li>
+<li><p><code>method = 'GCV.Cp'</code></p></li>
+<li><p><code>control = list(epsilon = 1e-06, trace = FALSE, maxit = 100)</code></p></li>
+</ul><p></p></dd>
+
+   <dt><code>GBM.binary.gbm.gbm</code></dt>
+<dd><p></p><ul><li><p><code>n.trees = 2500</code></p></li>
+<li><p><code>interaction.depth = 7</code></p></li>
+<li><p><code>n.minobsinnode = 5</code></p></li>
+<li><p><code>shrinkage = 0.001</code></p></li>
+<li><p><code>cv.folds = 3</code></p></li>
+<li><p><code>keep.data = FALSE</code></p></li>
+<li><p><code>n.cores = 1</code></p></li>
+</ul><p></p></dd>
+
+   <dt><code>GLM.binary.stats.glm</code></dt>
+<dd><p></p><ul><li><p><code>family = binomial(link = 'logit')</code></p></li>
+<li><p><code>mustart = 0.5</code></p></li>
+<li><p><code>control = glm.control(maxit = 50)</code></p></li>
+</ul><p></p></dd>
+
+   <dt><code>MARS.binary.earth.earth</code></dt>
+<dd><p></p><ul><li><p><code>glm = list(family = binomial(link = 'logit'))</code></p></li>
+<li><p><code>ncross = 0</code></p></li>
+<li><p><code>nk = NULL</code></p></li>
+<li><p><code>penalty = 2</code></p></li>
+<li><p><code>thresh = 0.001</code></p></li>
+<li><p><code>nprune = NULL</code></p></li>
+<li><p><code>pmethod = 'backward'</code></p></li>
+</ul><p></p></dd>
+
+   <dt><code>MAXENT.binary.MAXENT.MAXENT</code></dt>
+<dd><p></p><ul><li><p><code>path_to_maxent.jar = '.'</code></p></li>
+</ul><p></p></dd>
+
+   <dt><code>RF.binary.randomForest.randomForest</code></dt>
+<dd><p></p><ul><li><p><code>type = 'classification'</code></p></li>
+<li><p><code>ntree = 500</code></p></li>
+<li><p><code>mtry = NULL</code></p></li>
+<li><p><code>strata = factor(c(0, 1))</code></p></li>
+<li><p><code>sampsize = NULL</code></p></li>
+<li><p><code>nodesize = 5</code></p></li>
+<li><p><code>maxnodes = NULL</code></p></li>
+</ul><p></p></dd>
+
+   <dt><code>SRE.binary.biomod2.bm_SRE</code></dt>
+<dd><p></p><ul><li><p><code>do.extrem = TRUE</code></p></li>
+</ul><p></p></dd>
+
+   <dt><code>XGBOOST.binary.xgboost.xgboost</code></dt>
+<dd><p></p><ul><li><p><code>max.depth = 2</code></p></li>
+<li><p><code>eta = 1</code></p></li>
+<li><p><code>nthread = 2</code></p></li>
+<li><p><code>nrounds = 4</code></p></li>
+<li><p><code>objective = 'binary:logistic'</code></p></li>
+</ul><p></p></dd>
+
+
+</dl></div>
 
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">

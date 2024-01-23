@@ -25,22 +25,22 @@
 ##'   \item{Compt.By.Species}{a \code{data.frame} containing the summary of range change for each 
 ##'   comparison
 ##'   \itemize{
-##'     \item{\code{Loss} : }{number of pixels predicted to be lost}
-##'     \item{\code{Stable0} : }{number of pixels not currently occupied and not predicted to be}
-##'     \item{\code{Stable1} : }{number of pixels currently occupied and predicted to remain 
-##'     occupied}
-##'     \item{\code{Gain} : }{number of pixels predicted to be gained}
-##'     \item{\code{PercLoss} : }{percentage of pixels currently occupied and predicted to be lost 
-##'     (\code{Loss / (Loss + Stable1)})}
-##'     \item{\code{PercGain} : }{percentage of pixels predicted to be gained compare to the 
-##'     number of pixels currently occupied (\code{Gain / (Loss + Stable1)})}
-##'     \item{\code{SpeciesRangeChange} : }{percentage of pixels predicted to change (loss or gain) 
-##'     compare to the number of pixels currently occupied (\code{PercGain - PercLoss})}
-##'     \item{\code{CurrentRangeSize} : }{number of pixels currently occupied}
-##'     \item{\code{FutureRangeSize0Disp} : }{number of pixels predicted to be occupied, assuming 
-##'     no migration}
-##'     \item{\code{FutureRangeSize1Disp} : }{number of pixels predicted to be occupied, assuming 
-##'     migration}
+##'     \item \code{Loss} : number of pixels predicted to be lost
+##'     \item \code{Stable0} : number of pixels not currently occupied and not predicted to be
+##'     \item \code{Stable1} : number of pixels currently occupied and predicted to remain 
+##'     occupied
+##'     \item \code{Gain} : number of pixels predicted to be gained
+##'     \item \code{PercLoss} : percentage of pixels currently occupied and predicted to be lost 
+##'     (\code{Loss / (Loss + Stable1)})
+##'     \item \code{PercGain} : percentage of pixels predicted to be gained compare to the 
+##'     number of pixels currently occupied (\code{Gain / (Loss + Stable1)})
+##'     \item \code{SpeciesRangeChange} : percentage of pixels predicted to change (loss or gain) 
+##'     compare to the number of pixels currently occupied (\code{PercGain - PercLoss})
+##'     \item \code{CurrentRangeSize} : number of pixels currently occupied
+##'     \item \code{FutureRangeSize0Disp} : number of pixels predicted to be occupied, assuming 
+##'     no migration
+##'     \item \code{FutureRangeSize1Disp} : number of pixels predicted to be occupied, assuming 
+##'     migration
 ##'   }
 ##'   }
 ##'   \item{Diff.By.Pixel}{an object in the same form than the input data (\code{proj.current} and 

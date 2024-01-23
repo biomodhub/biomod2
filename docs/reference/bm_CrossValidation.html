@@ -207,7 +207,7 @@ to how data will be balanced between partitions, must be either <code>presences<
 <dd><p>(<em>optional</em>) <br> 
 If <code>strategy = 'env'</code>, a <code>character</code> corresponding to the environmental variables 
 used to build the partition. <code>k</code> partitions will be built for each environmental 
-variables. By default the function uses all environmental variables available.</p></dd>
+variables. <em>By default the function uses all environmental variables available.</em></p></dd>
 
 
 <dt>strat</dt>
@@ -259,43 +259,51 @@ are added at the end. <br><br></p>
 
 <p><b>Concerning cross-validation strategies :</b></p>
 <dl><dt>random</dt>
-<dd><p>Most simple method to calibrate and validate a model is to split the original dataset in two 
-datasets : one to calibrate the model and the other one to validate it. The splitting can be 
-repeated <code>nb.rep</code> times.</p></dd>
+<dd><p>Most simple method to calibrate and validate a model is to split the original 
+  dataset in two datasets : one to calibrate the model and the other one to validate it. The 
+  splitting can be repeated <code>nb.rep</code> times.</p></dd>
 
   <dt>k-fold</dt>
-<dd><p>The k-fold method splits the original dataset in <code>k</code> datasets of equal sizes : each part 
-is used successively as the validation dataset while the other <code>k-1</code> parts are used for 
-the calibration, leading to <code>k</code> calibration/validation ensembles. This multiple splitting 
-can be repeated <code>nb.rep</code> times.</p></dd>
+<dd><p>The k-fold method splits the original dataset in <code>k</code> datasets of equal 
+  sizes : each part is used successively as the validation dataset while the other <code>k-1</code> 
+  parts are used for the calibration, leading to <code>k</code> calibration/validation ensembles. 
+  This multiple splitting can be repeated <code>nb.rep</code> times.</p></dd>
 
   <dt>block</dt>
-<dd><p>It may be used to test for model overfitting and to assess transferability in geographic space.
-<code>block</code> stratification was described in <em>Muscarella et al. 2014</em> (see References). 
-Four bins of equal size are partitioned (bottom-left, bottom-right, top-left and top-right).</p></dd>
+<dd><p>It may be used to test for model overfitting and to assess transferability in 
+  geographic space. <code>block</code> stratification was described in <em>Muscarella et al. 2014</em> 
+  (see References). Four bins of equal size are partitioned (bottom-left, bottom-right, 
+  top-left and top-right).</p></dd>
 
   <dt>stratified</dt>
-<dd><p>It may be used to test for model overfitting and to assess transferability in geographic space.
-<code>x</code> and <code>y</code> stratification was described in <em>Wenger and Olden 2012</em> (see 
-References). <code>y</code> stratification uses <code>k</code> partitions along the y-gradient, <code>x</code> 
-stratification does the same for the x-gradient. <code>both</code> returns <code>2k</code> partitions: <code>k</code> partitions stratified along the x-gradient and <code>k</code> partitions stratified along the y-gradient.</p></dd>
+<dd><p>It may be used to test for model overfitting and to assess transferability 
+  in geographic space. <code>x</code> and <code>y</code> stratification was described in <em>Wenger and 
+  Olden 2012</em> (see References). <code>y</code> stratification uses <code>k</code> partitions along the 
+  y-gradient, <code>x</code> stratification does the same for the x-gradient. <code>both</code> returns 
+  <code>2k</code> partitions: <code>k</code> partitions stratified along the x-gradient and <code>k</code> 
+  partitions stratified along the y-gradient.</p></dd>
 
   <dt>environmental</dt>
-<dd><p>It may be used to test for model overfitting and to assess transferability in environmental space. It returns <code>k</code> partitions for each variable given in <code>env.var</code>.</p></dd>
+<dd><p>It may be used to test for model overfitting and to assess 
+  transferability in environmental space. It returns <code>k</code> partitions for each variable 
+  given in <code>env.var</code>.</p></dd>
 
   <dt>user-defined</dt>
-<dd><p>Allow the user to give its own crossvalidation table. For a presence-absence dataset, column names must be formatted as: <code>_allData_RUNx</code> with <code>x</code> an integer. For a presence-only dataset for which several pseudo-absence dataset were generated, column names must be formatted as: <code>_PAx_RUNy</code> with <code>x</code> an integer and <code>PAx</code> an existing pseudo-absence dataset and <code>y</code> an integer <br><br></p></dd>
+<dd><p>Allow the user to give its own crossvalidation table. For a 
+  presence-absence dataset, column names must be formatted as: <code>_allData_RUNx</code> with 
+  <code>x</code> an integer. For a presence-only dataset for which several pseudo-absence dataset 
+  were generated, column names must be formatted as: <code>_PAx_RUNy</code> with <code>x</code> an 
+  integer and <code>PAx</code> an existing pseudo-absence dataset and <code>y</code> an integer <br><br></p></dd>
 
 
 </dl><p><b>Concerning balance parameter :</b></p>
-<p>If <code>balance = 'presences'</code>, presences are divided (balanced) equally
-over the partitions (e.g. <em>Fig. 1b in Muscarelly et al. 2014</em>).
-Absences or pseudo-absences will however be unbalanced over the partitions
-especially if the presences are clumped on an edge of the study area.</p>
-<p>If <code>balance = 'absences'</code>, absences (resp. pseudo-absences or
-background) are divided (balanced) as equally as possible between the
-partitions (geographical balanced bins given
-that absences are spread over the study area equally, approach similar to <em>Fig. 1 in
+<p>If <code>balance = 'presences'</code>, presences are divided (balanced) equally over the partitions 
+(e.g. <em>Fig. 1b in Muscarelly et al. 2014</em>). 
+Absences or pseudo-absences will however be unbalanced over the partitions especially if the 
+presences are clumped on an edge of the study area.</p>
+<p>If <code>balance = 'absences'</code>, absences (resp. pseudo-absences or background) are divided 
+(balanced) as equally as possible between the partitions (geographical balanced bins given 
+that absences are spread over the study area equally, approach similar to <em>Fig. 1 in 
 Wenger et Olden 2012</em>). Presences will however be unbalanced over the partitions especially
 if the presences are clumped on an edge of the study area.</p>
     </div>

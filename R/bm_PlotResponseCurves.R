@@ -67,7 +67,7 @@
 ##' \code{...} can take the following values :
 ##' 
 ##' \itemize{
-##'   \item{\code{main}}{ : a \code{character} corresponding to the graphic title}
+##'   \item \code{main} : a \code{character} corresponding to the graphic title
 ##' }
 ##' 
 ##' 

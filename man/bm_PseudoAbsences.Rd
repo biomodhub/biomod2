@@ -111,11 +111,11 @@ method})}
 \value{
 A \code{list} containing the following elements :
 \itemize{
-  \item{\code{xy} : }{the coordinates of the species observations}
-  \item{\code{sp} : }{the values of the species observations (\code{0}, \code{1} or \code{NA})}
-  \item{\code{env} : }{the explanatory variables}
-  \item{\code{pa.tab} : }{the corresponding table of selected pseudo-absences (indicated by 
-  \code{TRUE} or \code{FALSE})}
+  \item \code{xy} : the coordinates of the species observations
+  \item \code{sp} : the values of the species observations (\code{0}, \code{1} or \code{NA})
+  \item \code{env} : the explanatory variables
+  \item \code{pa.tab} : the corresponding table of selected pseudo-absences (indicated by 
+  \code{TRUE} or \code{FALSE})
 }
 }
 \description{

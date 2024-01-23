@@ -47,10 +47,10 @@ grouping methods (see Details).
 \code{...} can take the following values :
 
 \itemize{
-  \item{\code{main}}{ : a \code{character} corresponding to the graphic title}
-  \item{\code{scales}}{ : a \code{character} corresponding to the \code{scales} argument of 
+  \item \code{main} : a \code{character} corresponding to the graphic title
+  \item \code{scales} : a \code{character} corresponding to the \code{scales} argument of 
   the \code{\link[ggplot2]{facet_wrap}} function, must be either \code{fixed}, \code{free_x}, 
-  \code{free_y} or \code{free}}
+  \code{free_y} or \code{free}
 }
 }
 \examples{

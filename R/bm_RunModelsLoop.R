@@ -70,14 +70,14 @@
 ##' 
 ##' A \code{list} containing for each model a \code{list} containing the following elements :
 ##' \itemize{
-##'   \item{\code{model} : }{the name of correctly computed model}
-##'   \item{\code{calib.failure} : }{the name of incorrectly computed model}
-##'   \item{\code{pred} : }{the prediction outputs for calibration data}
-##'   \item{\code{pred.eval} : }{the prediction outputs for evaluation data}
-##'   \item{\code{evaluation} : }{the evaluation outputs returned by the 
-##'   \code{\link{bm_FindOptimStat}} function}
-##'   \item{\code{var.import} : }{the mean of variables importance returned by the 
-##'   \code{\link{bm_VariablesImportance}} function}
+##'   \item \code{model} : the name of correctly computed model
+##'   \item \code{calib.failure} : the name of incorrectly computed model
+##'   \item \code{pred} : the prediction outputs for calibration data
+##'   \item \code{pred.eval} : the prediction outputs for evaluation data
+##'   \item \code{evaluation} : the evaluation outputs returned by the 
+##'   \code{\link{bm_FindOptimStat}} function
+##'   \item \code{var.import} : the mean of variables importance returned by the 
+##'   \code{\link{bm_VariablesImportance}} function
 ##' }
 ##' 
 ##' 
@@ -419,7 +419,7 @@ bm_RunModel <- function(model, run.name, dir.name = '.'
           variables.importance <- bm_VariablesImportance(bm.model = model.bm
                                                          , expl.var = data_env
                                                          , nb.rep = var.import
-                                                         , temp_workdir = MWD$m_outdir
+                                                         , temp.workdir = MWD$m_outdir
                                                          , seed.val = seed.val
                                                          , do.progress = do.progress)
         }

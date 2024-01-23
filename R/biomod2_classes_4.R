@@ -107,17 +107,17 @@ NULL
 ##' \code{model_class} slot specific value :
 ##' 
 ##' \itemize{
-##'   \item{\code{ANN_biomod2_model} : }{\code{model_class} is \code{ANN}}
-##'   \item{\code{CTA_biomod2_model} : }{\code{model_class} is \code{CTA}}
-##'   \item{\code{FDA_biomod2_model} : }{\code{model_class} is \code{FDA}}
-##'   \item{\code{GBM_biomod2_model} : }{\code{model_class} is \code{GBM}}
-##'   \item{\code{GLM_biomod2_model} : }{\code{model_class} is \code{GLM}}
-##'   \item{\code{MARS_biomod2_model} : }{\code{model_class} is \code{MARS}}
-##'   \item{\code{MAXENT_biomod2_model} : }{\code{model_class} is \code{MAXENT}}
-##'   \item{\code{MAXNET_biomod2_model} : }{\code{model_class} is 
-##'   \code{MAXNET}}
-##'   \item{\code{RF_biomod2_model} : }{\code{model_class} is \code{RF}}
-##'   \item{\code{SRE_biomod2_model} : }{\code{model_class} is \code{SRE}}
+##'   \item \code{ANN_biomod2_model} : \code{model_class} is \code{ANN}
+##'   \item \code{CTA_biomod2_model} : \code{model_class} is \code{CTA}
+##'   \item \code{FDA_biomod2_model} : \code{model_class} is \code{FDA}
+##'   \item \code{GBM_biomod2_model} : \code{model_class} is \code{GBM}
+##'   \item \code{GLM_biomod2_model} : \code{model_class} is \code{GLM}
+##'   \item \code{MARS_biomod2_model} : \code{model_class} is \code{MARS}
+##'   \item \code{MAXENT_biomod2_model} : \code{model_class} is \code{MAXENT}
+##'   \item \code{MAXNET_biomod2_model} : \code{model_class} is 
+##'   \code{MAXNET}
+##'   \item \code{RF_biomod2_model} : \code{model_class} is \code{RF}
+##'   \item \code{SRE_biomod2_model} : \code{model_class} is \code{SRE}
 ##' }
 ##' 
 ##' 

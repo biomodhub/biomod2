@@ -58,69 +58,70 @@
 ##' default parameters, and their values, are the following :
 ##' 
 ##' \itemize{
-##'   \item{\code{path_to_maxent.jar = getwd()}}{ : a \code{character} corresponding to path to 
-##'   \code{maxent.jar} file} 
-##'   \item{\code{memory_allocated = 512}}{ : an \code{integer} corresponding to the amount of 
+##'   \item \code{path_to_maxent.jar = getwd()} : a \code{character} corresponding to path to 
+##'   \code{maxent.jar} file
+##'   \item \code{memory_allocated = 512} : an \code{integer} corresponding to the amount of 
 ##'   memory (in Mo) reserved for \code{java} to run \code{MAXENT}, must be either \code{64}, 
 ##'   \code{128}, \code{256}, \code{512}, \code{1024}... or \code{NULL} to use default \code{java}
-##'   memory limitation parameter}
+##'   memory limitation parameter
 ##'   
-##'   \item{\code{initial_heap_size = NULL}}{ : a \code{character} corresponding to initial heap 
+##'   \item \code{initial_heap_size = NULL} : a \code{character} corresponding to initial heap 
 ##'   space (shared memory space) allocated to \code{java} (argument \code{-Xms} when calling 
 ##'   \code{java}), must be either \code{1024K}, \code{4096M}, \code{10G} ... or \code{NULL} to 
 ##'   use default \code{java} parameter. Used in \code{\link{BIOMOD_Projection}} but not in 
-##'   \code{\link{BIOMOD_Modeling}}.}
-##'   \item{\code{max_heap_size = NULL}}{ : a \code{character} corresponding to maximum heap 
+##'   \code{\link{BIOMOD_Modeling}}.
+##'   \item \code{max_heap_size = NULL} : a \code{character} corresponding to maximum heap 
 ##'   space (shared memory space) allocated to \code{java} (argument \code{-Xmx} when calling 
 ##'   \code{java}), must be either \code{1024K}, \code{4096M}, \code{10G} ... or \code{NULL} to 
 ##'   use default \code{java} parameter, and must be larger than \code{initial_heap_size}. Used 
-##'   in \code{\link{BIOMOD_Projection}} but not in \code{\link{BIOMOD_Modeling}}.}
+##'   in \code{\link{BIOMOD_Projection}} but not in \code{\link{BIOMOD_Modeling}}.
 ##'   
-##'   \item{\code{background_data_dir = 'default'}}{ : a \code{character} corresponding to path 
+##'   \item \code{background_data_dir = 'default'} : a \code{character} corresponding to path 
 ##'   to folder where explanatory variables are stored as \code{ASCII} files (raster format). 
 ##'   If specified, \code{MAXENT} will generate its own background data from rasters of 
 ##'   explanatory variables (\code{'default'} value). Otherwise \pkg{biomod2} pseudo-absences
-##'   will be used (see \code{\link{BIOMOD_FormatingData}}).}
-##'   \item{\code{visible = FALSE}}{ : a \code{logical} value defining whether \code{MAXENT} 
-##'   user interface is to be used or not}
+##'   will be used (see \code{\link{BIOMOD_FormatingData}}).
+##'   \item \code{visible = FALSE} : a \code{logical} value defining whether \code{MAXENT} 
+##'   user interface is to be used or not
 ##'   
-##'   \item{\code{linear = TRUE}}{ : a \code{logical} value defining whether linear features are 
-##'   to be used or not}
-##'   \item{\code{quadratic = TRUE}}{ : a \code{logical} value defining whether quadratic features are 
-##'   to be used or not}
-##'   \item{\code{product = TRUE}}{ : a \code{logical} value defining whether product features are 
-##'   to be used or not}
-##'   \item{\code{threshold = TRUE}}{ : a \code{logical} value defining whether threshold features are 
-##'   to be used or not}
-##'   \item{\code{hinge = TRUE}}{ : a \code{logical} value defining whether hinge features are 
-##'   to be used or not}
+##'   \item \code{linear = TRUE} : a \code{logical} value defining whether linear features are 
+##'   to be used or not
+##'   \item \code{quadratic = TRUE} : a \code{logical} value defining whether quadratic features are 
+##'   to be used or not
+##'   \item \code{product = TRUE} : a \code{logical} value defining whether product features are 
+##'   to be used or not
+##'   \item \code{threshold = TRUE} : a \code{logical} value defining whether threshold features are 
+##'   to be used or not
+##'   \item \code{hinge = TRUE} : a \code{logical} value defining whether hinge features are 
+##'   to be used or not
 ##'   
-##'   \item{\code{l2lqthreshold = 10}}{ : an \code{integer} corresponding to the number of 
-##'   samples at which quadratic features start being used}
-##'   \item{\code{lq2lqptthreshold = 80}}{ : an \code{integer} corresponding to the number of 
-##'   samples at which product and threshold features start being used}
-##'   \item{\code{hingethreshold = 15}}{ : an \code{integer} corresponding to the number of 
-##'   samples at which hinge features start being used}
+##'   \item \code{l2lqthreshold = 10} : an \code{integer} corresponding to the number of 
+##'   samples at which quadratic features start being used
+##'   \item \code{lq2lqptthreshold = 80} : an \code{integer} corresponding to the number of 
+##'   samples at which product and threshold features start being used
+##'   \item \code{hingethreshold = 15} : an \code{integer} corresponding to the number of 
+##'   samples at which hinge features start being used
 ##'   
-##'   \item{\code{beta_lqp = -1.0}}{ : a \code{numeric} corresponding to the regularization 
+##'   \item \code{beta_lqp = -1.0} : a \code{numeric} corresponding to the regularization 
 ##'   parameter to be applied to all linear, quadratic and product features (\emph{negative value 
-##'   enables automatic setting})} 
-##'   \item{\code{beta_threshold = -1.0}}{ : a \code{numeric} corresponding to the regularization 
+##'   enables automatic setting})
+##'   \item \code{beta_threshold = -1.0} : a \code{numeric} corresponding to the regularization 
 ##'   parameter to be applied to all threshold features (\emph{negative value enables automatic 
-##'   setting})} 
-##'   \item{\code{beta_hinge = -1.0}}{ : a \code{numeric} corresponding to the regularization 
+##'   setting})
+##'   \item \code{beta_hinge = -1.0} : a \code{numeric} corresponding to the regularization 
 ##'   parameter to be applied to all hinge features (\emph{negative value enables automatic 
-##'   setting})} 
-##'   \item{\code{beta_categorical = -1.0}}{ : a \code{numeric} corresponding to the regularization 
+##'   setting})
+##'   \item \code{beta_categorical = -1.0} : a \code{numeric} corresponding to the regularization 
 ##'   parameter to be applied to all categorical features (\emph{negative value enables automatic 
-##'   setting})} 
+##'   setting})
 ##'   
-##'   \item{\code{betamultiplier = 1}}{ : a \code{numeric} corresponding to the number by which 
+##'   \item \code{betamultiplier = 1} : a \code{numeric} corresponding to the number by which 
 ##'   multiply all automatic regularization parameters (\emph{higher number gives a more 
-##'   spread-out distribution})} 
+##'   spread-out distribution})
 ##'   
-##'   \item{\code{defaultprevalence = 0.5}}{ : a \code{numeric} corresponding to the default 
-##'   prevalence of the modelled species (\emph{probability of presence at ordinary occurrence points})}
+##'   \item \code{defaultprevalence = 0.5} : a \code{numeric} corresponding to the default 
+##'   prevalence of the modelled species (\emph{probability of presence at ordinary occurrence 
+##'   points})
 ##' }
 ##' 
 ##'

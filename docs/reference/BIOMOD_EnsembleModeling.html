@@ -335,8 +335,7 @@ folders created in the current working directory :</p><ol><li><p>a <em>models</e
     within the <code><a href="BIOMOD_Modeling.html">BIOMOD_Modeling</a></code> function to build the <code>model.output</code> object,
     unless <code>metric.select = 'user.defined'</code> and therefore values will be provided through
     the <code>metric.select.table</code> parameter. <br> In the case of the selection of several
-    metrics, they will be used at different steps of the ensemble modeling function :
-    </p><ol><li><p>remove <em>low quality</em> single models, having a score lower than
+    metrics, they will be used at different steps of the ensemble modeling function :</p><ol><li><p>remove <em>low quality</em> single models, having a score lower than
       <code>metric.select.thresh</code></p></li>
 <li><p>perform the binary transformation needed if <code>'EMca'</code>
       was given to argument <code>em.algo</code></p></li>
@@ -367,7 +366,8 @@ folders created in the current working directory :</p><ol><li><p>a <em>models</e
 
   <dt>Ensemble-models algorithms</dt>
 <dd><p>The set of models to be calibrated on the data. <br> 
-  6 modeling techniques are currently available :</p><ul><li><p><b><code>EMmean</code></b> : Mean of probabilities over the selected models. Old name: <code>prob.mean</code></p></li>
+  6 modeling techniques are currently available :</p><ul><li><p><b><code>EMmean</code></b> : Mean of probabilities over the selected models. 
+    Old name: <code>prob.mean</code></p></li>
 <li><p><b><code>EMmedian</code></b> : Median of probabilities over the selected models <br> 
     The median is less sensitive to outliers than the mean, however it requires more 
     computation time and memory as it loads all predictions (on the contrary to the mean or 
@@ -382,32 +382,28 @@ folders created in the current working directory :</p><ol><li><p>a <em>models</e
     CV is a nice complement to the mean probability.  Old name: <code>prob.cv</code></p></li>
 <li><p><b><code>EMci</code></b> &amp; <b><code>EMci.alpha</code></b> : Confidence interval around 
     the mean of probabilities of the selected models <br> 
-    It is also a nice complement to the mean probability. It creates 2 ensemble models : 
-    </p><ul><li><p><em>LOWER</em> : there is less than <code>100 * EMci.alpha / 2</code> % of chance to 
+    It is also a nice complement to the mean probability. It creates 2 ensemble models :</p><ul><li><p><em>LOWER</em> : there is less than <code>100 * EMci.alpha / 2</code> % of chance to 
       get probabilities lower than the given ones</p></li>
 <li><p><em>UPPER</em> : there is less than <code>100 * EMci.alpha / 2</code> % of chance to 
       get probabilities upper than the given ones</p></li>
-</ul>
-    These intervals are calculated with the following function :
+</ul><p>These intervals are calculated with the following function :
     $$I_c = [ \bar{x} -  \frac{t_\alpha sd }{ \sqrt{n} }; 
     \bar{x} +  \frac{t_\alpha sd }{ \sqrt{n} }]$$
     <br>
-    Old parameter name: <code>prob.ci</code> &amp; <code>prob.ci.alpha</code></li>
+    Old parameter name: <code>prob.ci</code> &amp; <code>prob.ci.alpha</code></p></li>
 <li><p><b><code>EMca</code></b> : Probabilities from the selected models are 
     first transformed into binary data according to the thresholds defined when building the 
     <code>model.output</code> object with the <code>BIOMOD_Modeling</code> function, maximizing the 
     evaluation metric score over the testing dataset. The committee averaging score is 
     obtained by taking the average of these binary predictions. It is built on the analogy 
-    of a simple vote :
-    </p><ul><li><p>each single model votes for the species being either present (<code>1</code>) or absent 
+    of a simple vote :</p><ul><li><p>each single model votes for the species being either present (<code>1</code>) or absent 
       (<code>0</code>)</p></li>
 <li><p>the sum of <code>1</code> is then divided by the number of single models <em>voting</em></p></li>
-</ul>
-    The interesting feature of this measure is that it gives both a prediction and a measure 
+</ul><p>The interesting feature of this measure is that it gives both a prediction and a measure 
     of uncertainty. When the prediction is close to <code>0</code> or <code>1</code>, it means that all 
     models agree to predict <code>0</code> or <code>1</code> respectively. When the prediction is around 
     <code>0.5</code>, it means that half the models predict <code>1</code> and the other half <code>0</code>. 
-    <br> Old parameter name: <code>committee.averaging</code></li>
+    <br> Old parameter name: <code>committee.averaging</code></p></li>
 <li><p><b><code>EMwmean</code></b> &amp; <b><code>EMwmean.decay</code></b> : 
     Probabilities from the selected models are weighted according to their evaluation scores 
     obtained when building the <code>model.output</code> object with the <code>BIOMOD_Modeling</code> 

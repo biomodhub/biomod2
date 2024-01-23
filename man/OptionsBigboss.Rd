@@ -5,7 +5,97 @@
 \alias{OptionsBigboss}
 \title{Bigboss pre-defined parameter values for single models}
 \format{
-A \code{\link{BIOMOD.models.options}} object
+A \code{\link{BIOMOD.models.options}} object with some changed values :
+
+\describe{
+   \item{\code{ANN.binary.nnet.nnet}}{
+     \itemize{
+       \item \code{size = 5}
+       \item \code{decay = 5}
+       \item \code{trace = FALSE}
+       \item \code{rang = 0.1}
+       \item \code{maxit = 200}
+     }
+   }
+   \item{\code{CTA.binary.rpart.rpart}}{
+     \itemize{
+       \item \code{method = 'class'}
+       \item \code{control = list(xval = 5, minbucket = 5, minsplit = 5, cp = 0.001, maxdepth = 25)}
+       \item \code{cost = NULL}
+     }
+   }
+   \item{\code{FDA.binary.mda.fda}}{
+     \itemize{
+       \item \code{method = 'mars'}
+     }
+   }
+   \item{\code{GAM.binary.mgcv.gam}}{
+     \itemize{
+       \item \code{family = binomial(link = 'logit')}
+       \item \code{method = 'GCV.Cp'}
+       \item \code{control = list(epsilon = 1e-06, trace = FALSE, maxit = 100)}
+     }
+   }
+   \item{\code{GBM.binary.gbm.gbm}}{
+     \itemize{
+       \item \code{n.trees = 2500}
+       \item \code{interaction.depth = 7}
+       \item \code{n.minobsinnode = 5}
+       \item \code{shrinkage = 0.001}
+       \item \code{cv.folds = 3}
+       \item \code{keep.data = FALSE}
+       \item \code{n.cores = 1}
+     }
+   }
+   \item{\code{GLM.binary.stats.glm}}{
+     \itemize{
+       \item \code{family = binomial(link = 'logit')}
+       \item \code{mustart = 0.5}
+       \item \code{control = glm.control(maxit = 50)}
+     }
+   }
+   \item{\code{MARS.binary.earth.earth}}{
+     \itemize{
+       \item \code{glm = list(family = binomial(link = 'logit'))}
+       \item \code{ncross = 0}
+       \item \code{nk = NULL}
+       \item \code{penalty = 2}
+       \item \code{thresh = 0.001}
+       \item \code{nprune = NULL}
+       \item \code{pmethod = 'backward'}
+     }
+   }
+   \item{\code{MAXENT.binary.MAXENT.MAXENT}}{
+     \itemize{
+       \item \code{path_to_maxent.jar = '.'}
+     }
+   }
+   \item{\code{RF.binary.randomForest.randomForest}}{
+     \itemize{
+       \item \code{type = 'classification'}
+       \item \code{ntree = 500}
+       \item \code{mtry = NULL}
+       \item \code{strata = factor(c(0, 1))}
+       \item \code{sampsize = NULL}
+       \item \code{nodesize = 5}
+       \item \code{maxnodes = NULL}
+     }
+   }
+   \item{\code{SRE.binary.biomod2.bm_SRE}}{
+     \itemize{
+       \item \code{do.extrem = TRUE}
+     }
+   }
+   \item{\code{XGBOOST.binary.xgboost.xgboost}}{
+     \itemize{
+       \item \code{max.depth = 2}
+       \item \code{eta = 1}
+       \item \code{nthread = 2}
+       \item \code{nrounds = 4}
+       \item \code{objective = 'binary:logistic'}
+     }
+   }
+}
 }
 \usage{
 OptionsBigboss

@@ -23,9 +23,9 @@
 ##'  
 ##' A \code{list} containing the following elements :
 ##' \itemize{
-##'   \item{\code{calibration} : }{elements selected for calibration}
-##'   \item{\code{validation} : }{elements selected for validation (complementary to the 
-##'   calibration set)}
+##'   \item \code{calibration} : elements selected for calibration
+##'   \item \code{validation} : elements selected for validation (complementary to the 
+##'   calibration set)
 ##' }
 ##'   
 ##'   

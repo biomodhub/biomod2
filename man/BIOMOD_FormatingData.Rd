@@ -122,8 +122,8 @@ is to be filtered when several points occur in the same raster cell}
 \value{
 A \code{\link{BIOMOD.formated.data}} object that can be used to build species distribution 
 model(s) with the \code{\link{BIOMOD_Modeling}} function. \cr
-\code{\href{BIOMOD.formated.data.html}{print/show}}, \code{\href{plot.html}{plot}} and 
-\code{\href{summary.html}{summary}} functions are available to have a summary of the 
+\href{BIOMOD.formated.data.html}{\code{print/show}}, \href{plot.html}{\code{plot}} and 
+\href{summary.html}{\code{summary}} functions are available to have a summary of the 
 created object.
 }
 \description{
@@ -159,17 +159,15 @@ and provides different methods to select pseudo-absences if needed. \cr \cr
 
 \bold{Concerning pseudo-absence selection (see \code{\link{bm_PseudoAbsences}}) :}
 \itemize{
-  \item{if both presence and absence data are available, and there is enough absences :
+  \item if both presence and absence data are available, and there is enough absences :
   set \code{PA.nb.rep = 0} and no pseudo-absence will be selected.
-  }
-  \item{if no absence data is available, several pseudo-absence repetitions  
+  \item if no absence data is available, several pseudo-absence repetitions  
   are recommended (to estimate the effect of pseudo-absence selection), as well as high 
   number of pseudo-absence points. \cr
   \emph{Be sure not to select more pseudo-absence points than maximum number of pixels in 
   the studied area !}
-  }
-  \item{it is possible now to create several pseudo-absence repetitions with different 
-  number of points, BUT with the same sampling strategy. \cr \cr \cr \cr}
+  \item it is possible now to create several pseudo-absence repetitions with different 
+  number of points, BUT with the same sampling strategy. \cr \cr \cr \cr
 }
 
 \describe{

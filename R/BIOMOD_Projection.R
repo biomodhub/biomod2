@@ -89,22 +89,22 @@
 ##' 
 ##' \code{...} can take the following values :
 ##' \itemize{
-##   \item{\code{clamping.level} : }{a \code{logical} value defining whether \code{clamping.mask} 
+##   \item \code{clamping.level} : a \code{logical} value defining whether \code{clamping.mask} 
 ##   cells with at least one variable out of its calibration range are to be removed from the 
 ##   projections or not
-##'   \item{\code{omit.na} : }{a \code{logical} value defining whether all not fully referenced 
-##'   environmental points will get \code{NA} as predictions or not}
-##'   \item{\code{on_0_1000} : }{a \code{logical} value defining whether \code{0 - 1} probabilities 
-##'   are to be converted to \code{0 - 1000} scale to save memory on backup}
-##'   \item{\code{do.stack} : }{a \code{logical} value defining whether all projections are to be 
+##'   \item \code{omit.na} : a \code{logical} value defining whether all not fully referenced 
+##'   environmental points will get \code{NA} as predictions or not
+##'   \item \code{on_0_1000} : a \code{logical} value defining whether \code{0 - 1} probabilities 
+##'   are to be converted to \code{0 - 1000} scale to save memory on backup
+##'   \item \code{do.stack} : a \code{logical} value defining whether all projections are to be 
 ##'   saved as one \code{\link[terra:rast]{SpatRaster}} object or several 
 ##'   \code{\link[terra:rast]{SpatRaster}} files (\emph{the default if projections are too heavy to 
-##'   be all loaded at once in memory})}
-##'   \item{\code{keep.in.memory} : }{a \code{logical} value defining whether all projections are 
-##'   to be kept loaded at once in memory, or only links pointing to hard drive are to be returned}
-##'   \item{\code{output.format} : }{a \code{character} value corresponding to the projections 
+##'   be all loaded at once in memory})
+##'   \item \code{keep.in.memory} : a \code{logical} value defining whether all projections are 
+##'   to be kept loaded at once in memory, or only links pointing to hard drive are to be returned
+##'   \item \code{output.format} : a \code{character} value corresponding to the projections 
 ##'   saving format on hard drive, must be either \code{.grd}, \code{.img}, \code{.tif} or \code{.RData} (the 
-##'   default if \code{new.env} is given as \code{matrix} or \code{data.frame})}
+##'   default if \code{new.env} is given as \code{matrix} or \code{data.frame})
 ##' }
 ##' 
 ##' 

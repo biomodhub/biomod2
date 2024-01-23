@@ -40,12 +40,12 @@
 ##' 
 ##' A \code{1} row x \code{5} columns \code{data.frame} containing :
 ##' \itemize{
-##'   \item{\code{metric.eval}}{ : the chosen evaluation metric}
-##'   \item{\code{cutoff}}{ : the associated cut-off used to transform the continuous values into 
-##'   binary}
-##'   \item{\code{sensitivity}}{ : the sensibility obtained on fitted values with this threshold}
-##'   \item{\code{specificity}}{ : the specificity obtained on fitted values with this threshold}
-##'   \item{\code{best.stat}}{ : the best score obtained for the chosen evaluation metric}
+##'   \item \code{metric.eval} : the chosen evaluation metric
+##'   \item \code{cutoff} : the associated cut-off used to transform the continuous values into 
+##'   binary
+##'   \item \code{sensitivity} : the sensibility obtained on fitted values with this threshold
+##'   \item \code{specificity} : the specificity obtained on fitted values with this threshold
+##'   \item \code{best.stat} : the best score obtained for the chosen evaluation metric
 ##' }
 ##' 
 ##'

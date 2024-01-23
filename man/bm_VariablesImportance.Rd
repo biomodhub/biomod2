@@ -12,7 +12,7 @@ bm_VariablesImportance(
   nb.rep = 1,
   seed.val = NULL,
   do.progress = TRUE,
-  temp_workdir = NULL
+  temp.workdir = NULL
 )
 }
 \arguments{
@@ -37,14 +37,18 @@ An \code{integer} value corresponding to the new seed value to be set}
 
 \item{do.progress}{(\emph{optional, default} \code{TRUE}) \cr 
 A \code{logical} value defining whether the progress bar is to be rendered or not}
+
+\item{temp.workdir}{(\emph{optional, default} \code{NULL}) \cr 
+A \code{character} value corresponding to the folder name containing temporal prediction files 
+when using \code{MAXENT}}
 }
 \value{
 A \code{3} columns \code{data.frame} containing variable's importance scores for each 
 permutation run :
 \itemize{
-  \item{\code{expl.var}}{ : the considered explanatory variable (the one permuted)}
-  \item{\code{rand}}{ : the ID of the permutation run}
-  \item{\code{var.imp}}{ : the variable's importance score}
+  \item \code{expl.var} : the considered explanatory variable (the one permuted)
+  \item \code{rand} : the ID of the permutation run
+  \item \code{var.imp} : the variable's importance score
 }
 }
 \description{

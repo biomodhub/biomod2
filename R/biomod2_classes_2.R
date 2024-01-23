@@ -29,16 +29,16 @@
 ##' contain a \code{val} slot of specific type :
 ##' 
 ##' \itemize{
-##'   \item{\code{BIOMOD.stored.data.frame} : }{\code{val} is a \code{data.frame}}
-##'   \item{\code{BIOMOD.stored.SpatRaster} : }{\code{val} is a 
-##'   \code{\link[terra:PackedSpatRaster-class]{PackedSpatRaster}}}
-##'   \item{\code{BIOMOD.stored.files} : }{\code{val} is a \code{character}}
-##'   \item{\code{BIOMOD.stored.formated.data} : }{\code{val} is a 
-##'   \code{\link{BIOMOD.formated.data}} object}
-##'   \item{\code{BIOMOD.stored.options} : }{\code{val} is a 
-##'   \code{\link{BIOMOD.models.options}} object}
-##'   \item{\code{BIOMOD.stored.models.out} : }{\code{val} is a 
-##'   \code{\link{BIOMOD.models.out}} object}
+##'   \item \code{BIOMOD.stored.data.frame} : \code{val} is a \code{data.frame}
+##'   \item \code{BIOMOD.stored.SpatRaster} : \code{val} is a 
+##'   \code{\link[terra:PackedSpatRaster-class]{PackedSpatRaster}}
+##'   \item \code{BIOMOD.stored.files} : \code{val} is a \code{character}
+##'   \item \code{BIOMOD.stored.formated.data} : \code{val} is a 
+##'   \code{\link{BIOMOD.formated.data}} object
+##'   \item \code{BIOMOD.stored.options} : \code{val} is a 
+##'   \code{\link{BIOMOD.models.options}} object
+##'   \item \code{BIOMOD.stored.models.out} : \code{val} is a 
+##'   \code{\link{BIOMOD.models.out}} object
 ##' }
 ##' 
 ##' 

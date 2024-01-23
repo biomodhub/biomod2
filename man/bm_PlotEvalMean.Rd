@@ -55,10 +55,10 @@ represented according to 2 different evaluation methods, and models can be group
 \code{...} can take the following values :
 
 \itemize{
-  \item{\code{xlim}}{ : an \code{integer} corresponding to the x maximum limit to represent}
-  \item{\code{ylim}}{ : an \code{integer} corresponding to the y maximum limit to represent}
-  \item{\code{main}}{ : a \code{character} corresponding to the graphic title}
-  \item{\code{col}}{ : a \code{vector} containing new color values}
+  \item \code{xlim} : an \code{integer} corresponding to the x maximum limit to represent
+  \item \code{ylim} : an \code{integer} corresponding to the y maximum limit to represent
+  \item \code{main} : a \code{character} corresponding to the graphic title
+  \item \code{col} : a \code{vector} containing new color values
 }
 }
 \examples{

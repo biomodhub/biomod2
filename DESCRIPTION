@@ -9,22 +9,23 @@ Authors@R: c(person("Wilfried", "Thuiller", role = c("aut")
              person("Maya", "Gueguen", role = c("aut", "cre")
                     , email = "maya.gueguen@univ-grenoble-alpes.fr"),
              person("Robin", "Engler", role = "aut"),
-             person("Frank", "Breiner", role = "aut"
-                    , email = "frank.breiner@wsl.ch"),
+             person("Frank", "Breiner", role = "aut"),
              person("Bruno", "Lafourcade", role = "aut"),
-             person("Remi", "Patin", role = "aut"
-                    , email = "remi.patin@univ-grenoble-alpes.fr"))
+             person("Remi", "Patin", role = "aut"),
+             person("Helene", "Blancheteau", role = "aut"
+                    , email = "helene.blancheteau@univ-grenoble-alpes.fr"))
 Author: Wilfried Thuiller [aut],
     Damien Georges [aut],
     Maya Gueguen [aut, cre],
     Robin Engler [aut],
     Frank Breiner [aut],
     Bruno Lafourcade [aut],
-    Remi Patin [aut]
+    Remi Patin [aut],
+    Helene Blancheteau [aut]
 Maintainer: Maya Gueguen <maya.gueguen@univ-grenoble-alpes.fr>
-Contact: Wilfried Thuiller <wilfried.thuiller@univ-grenoble-alpes.fr>, Damien Georges
-    <damien.georges2@gmail.com>, Maya Gueguen <maya.gueguen@univ-grenoble-alpes.fr>, 
-    Remi Patin <remi.patin@univ-grenoble-alpes.fr>
+Contact: Wilfried Thuiller <wilfried.thuiller@univ-grenoble-alpes.fr>, 
+    Maya Gueguen <maya.gueguen@univ-grenoble-alpes.fr>, 
+    Helene Blancheteau <helene.blancheteau@univ-grenoble-alpes.fr>
 BugReports: https://github.com/biomodhub/biomod2/issues
 URL: https://biomodhub.github.io/biomod2/
 Description: Functions for species distribution modeling, calibration and evaluation, 
