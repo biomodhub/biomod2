@@ -181,14 +181,14 @@ myResp.PA <- ifelse(myResp == 1, 1, NA)
 myResp.PA.vect <- vect(cbind(myRespXY, myResp.PA), geom = c("X_WGS84","Y_WGS84"))
 
 # random method
-PA.r <- bm_PseudoAbsences(resp.var = myResp.PA,
+PA.r <- bm_PseudoAbsences(resp.var = myResp.PA.vect,
                           expl.var = myExpl,
                           nb.rep = 4,
                           nb.absences = 1000,
                           strategy = 'random')
 
 # disk method
-PA.d <- bm_PseudoAbsences(resp.var = myResp.PA,
+PA.d <- bm_PseudoAbsences(resp.var = myResp.PA.vect,
                           expl.var = myExpl,
                           nb.rep = 4,
                           nb.absences = 500,
@@ -197,7 +197,7 @@ PA.d <- bm_PseudoAbsences(resp.var = myResp.PA,
                           dist.max = 35)
 
 # SRE method
-PA.s <- bm_PseudoAbsences(resp.var = myResp.PA,
+PA.s <- bm_PseudoAbsences(resp.var = myResp.PA.vect,
                           expl.var = myExpl,
                           nb.rep = 4,
                           nb.absences = 1000,
@@ -208,7 +208,7 @@ PA.s <- bm_PseudoAbsences(resp.var = myResp.PA,
 myPAtable <- data.frame(PA1 = ifelse(myResp == 1, TRUE, FALSE),
                         PA2 = ifelse(myResp == 1, TRUE, FALSE))
 for (i in 1:ncol(myPAtable)) myPAtable[sample(which(myPAtable[, i] == FALSE), 500), i] = TRUE
-PA.u <- bm_PseudoAbsences(resp.var = myResp.PA,
+PA.u <- bm_PseudoAbsences(resp.var = myResp.PA.vect,
                           expl.var = myExpl,
                           strategy = 'user.defined',
                           user.table = myPAtable)

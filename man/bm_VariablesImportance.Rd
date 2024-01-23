@@ -11,7 +11,8 @@ bm_VariablesImportance(
   method = "full_rand",
   nb.rep = 1,
   seed.val = NULL,
-  do.progress = TRUE
+  do.progress = TRUE,
+  temp_workdir = NULL
 )
 }
 \arguments{

@@ -73,6 +73,7 @@ myExpl.sim <- data.frame(var1 = sample(c(0, 1), 100, replace = TRUE),
 ## Create raster data -------------------------------------------------------------------
 ras.1 <- ras.2 <- mask.out <- rast(nrows = 10, ncols = 10)
 ras.1[] <- as.factor(rep(c(1, 2, 3, 4, 5), each = 20))
+ras.1 <- as.factor(ras.1)
 ras.2[] <- rnorm(100)
 stk <- c(ras.1, ras.2)
 names(stk) <- c('varFact', 'varNorm')
@@ -246,14 +247,14 @@ myResp.real.PA.vect <- vect(cbind(myCoord.real, myResp.real.PA), geom = c('X_WGS
 
 ```R
 # random method
-PA.r <- bm_PseudoAbsences(resp.var = myResp.real.PA,
+PA.r <- bm_PseudoAbsences(resp.var = myResp.real.PA.vect,
                           expl.var = myExpl.real,
                           nb.rep = 4,
                           nb.absences = 1000,
                           strategy = 'random')
 
 # disk method
-PA.d <- bm_PseudoAbsences(resp.var = myResp.real.PA,
+PA.d <- bm_PseudoAbsences(resp.var = myResp.real.PA.vect,
                           expl.var = myExpl.real,
                           nb.rep = 4,
                           nb.absences = 500,
@@ -262,7 +263,7 @@ PA.d <- bm_PseudoAbsences(resp.var = myResp.real.PA,
                           dist.max = 35)
 
 # SRE method
-PA.s <- bm_PseudoAbsences(resp.var = myResp.real.PA,
+PA.s <- bm_PseudoAbsences(resp.var = myResp.real.PA.vect,
                           expl.var = myExpl.real,
                           nb.rep = 4,
                           nb.absences = 1000,
@@ -273,7 +274,7 @@ PA.s <- bm_PseudoAbsences(resp.var = myResp.real.PA,
 myPAtable <- data.frame(PA1 = ifelse(myResp.real == 1, TRUE, FALSE),
                         PA2 = ifelse(myResp.real == 1, TRUE, FALSE))
 for (i in 1:ncol(myPAtable)) myPAtable[sample(which(myPAtable[, i] == FALSE), 500), i] = TRUE
-PA.u <- bm_PseudoAbsences(resp.var = myResp.real.PA,
+PA.u <- bm_PseudoAbsences(resp.var = myResp.real.PA.vect,
                           expl.var = myExpl.real,
                           strategy = 'user.defined',
                           user.table = myPAtable)
@@ -281,19 +282,15 @@ PA.u <- bm_PseudoAbsences(resp.var = myResp.real.PA,
 str(PA.r)
 head(PA.r$pa.tab)
 apply(PA.r$pa.tab, 2, table)
-plot(PA.r)
 
 head(PA.d$pa.tab)
 apply(PA.d$pa.tab, 2, table)
-plot(PA.d)
 
 head(PA.s$pa.tab)
 apply(PA.s$pa.tab, 2, table)
-plot(PA.s)
 
 tail(PA.u$pa.tab)
 apply(PA.u$pa.tab, 2, table)
-plot(PA.u)
 ```
 
 ```R
@@ -307,7 +304,6 @@ PA.r_mult <- bm_PseudoAbsences(resp.var = myResp.real.PA.vect,
 str(PA.r_mult)
 head(PA.r_mult$pa.tab)
 apply(PA.r_mult$pa.tab, 2, table)
-plot(PA.r_mult)
 ```
 
 
