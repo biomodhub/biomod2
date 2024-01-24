@@ -198,6 +198,9 @@ setMethod('BIOMOD.options.default', signature(mod = 'character', typ = 'characte
 ##' and validation datasets
 ##' 
 ##' @param object a \code{\link{BIOMOD.options.dataset}} object
+##' @param x a \code{\link{BIOMOD.options.dataset}} object
+##' @param dataset a \code{character} corresponding to the name of a dataset contained 
+##' in the \code{arg.values} slot
 ##' 
 ##' @slot model a \code{character} corresponding to the model
 ##' @slot type a \code{character} corresponding to the data type 
@@ -523,7 +526,7 @@ setMethod('BIOMOD.options.dataset', signature(strategy = 'character'),
 ##'
 
 
-## Attention ! print only values for _allData_allRun for now
+## Attention ! print only values for _allData_allRun
 setMethod('show', signature('BIOMOD.options.dataset'),
           function(object)
           {
@@ -531,6 +534,35 @@ setMethod('show', signature('BIOMOD.options.dataset'),
             # for (arg in object@args.names) { ## NOT working for bigboss for example, if new parameters
             dataset <- ifelse("_allData_allRun" %in% names(object@args.values)
                               , "_allData_allRun", names(object@args.values)[1])
+            cat('\n\t   ( dataset', dataset, ')')
+
+            for (arg in names(object@args.values[[dataset]])) {
+              val.def = capture.output(object@args.default[[arg]])
+              val.used = capture.output(object@args.values[[dataset]][[arg]])
+
+              cat('\n\t\t- ', arg, "=", sub("\\[1\\] ", "", val.used))
+              if (!is.null(val.used) && !is.null(val.def) &&
+                  (length(val.used) != length(val.def) || any(val.used != val.def))) {
+                cat('   (default:', sub("\\[1\\] ", "", val.def), ')')
+              }
+            }
+            cat("\n")
+          }
+)
+
+##'
+##' @rdname BIOMOD.options.dataset
+##' @export
+##'
+
+setMethod('print', signature('BIOMOD.options.dataset'),
+          function(x, dataset = '_allData_allRun')
+          {
+            object = x
+            cat('\n\t> ', object@model, 'options (datatype:', object@type, ', package:', object@package, ', function:', object@func, ') :')
+            dataset <- ifelse(dataset %in% names(object@args.values)
+                              , dataset, ifelse("_allData_allRun" %in% names(object@args.values)
+                                                , "_allData_allRun", names(object@args.values)[1]))
             cat('\n\t   ( dataset', dataset, ')')
             
             for (arg in names(object@args.values[[dataset]])) {
@@ -562,6 +594,10 @@ setMethod('show', signature('BIOMOD.options.dataset'),
 ##' \code{\link{BIOMOD_Modeling}}
 ##' 
 ##' @param object a \code{\link{BIOMOD.models.options}} object
+##' @param x a \code{\link{BIOMOD.models.options}} object
+##' @param dataset a \code{character} corresponding to the name of a dataset contained 
+##' in the \code{arg.values} slot of the \code{\link{BIOMOD.options.dataset}} object 
+##' for each model
 ##' 
 ##' @slot models a \code{vector} containing model names for which options have 
 ##' been retrieved and defined, must be \code{algo.datatype.package.function}
@@ -608,6 +644,23 @@ setMethod('show', signature('BIOMOD.models.options'),
             .bm_cat("BIOMOD.models.options")
             for (mod in object@models) {
               show(object@options[[mod]])
+            }
+            .bm_cat()
+          }
+)
+
+##'
+##' @rdname BIOMOD.models.options
+##' @export
+##'
+
+setMethod('print', signature('BIOMOD.models.options'),
+          function(x, dataset = '_allData_allRun')
+          {
+            object = x
+            .bm_cat("BIOMOD.models.options")
+            for (mod in object@models) {
+              print(object@options[[mod]], dataset = dataset)
             }
             .bm_cat()
           }

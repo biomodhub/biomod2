@@ -6,6 +6,7 @@
 \alias{BIOMOD.options.dataset-class}
 \alias{BIOMOD.options.dataset,character-method}
 \alias{show,BIOMOD.options.dataset-method}
+\alias{print,BIOMOD.options.dataset-method}
 \title{\code{\link{bm_ModelingOptions}} output object class}
 \usage{
 \S4method{BIOMOD.options.dataset}{character}(
@@ -22,6 +23,8 @@
 )
 
 \S4method{show}{BIOMOD.options.dataset}(object)
+
+\S4method{print}{BIOMOD.options.dataset}(x, dataset = "_allData_allRun")
 }
 \arguments{
 \item{mod}{a \code{character} corresponding to the model name to be computed, must be either 
@@ -62,6 +65,11 @@ A \code{data.frame} object returned by \code{\link{get_calib_lines}} or
 and validation datasets}
 
 \item{object}{a \code{\link{BIOMOD.options.dataset}} object}
+
+\item{x}{a \code{\link{BIOMOD.options.dataset}} object}
+
+\item{dataset}{a \code{character} corresponding to the name of a dataset contained 
+in the \code{arg.values} slot}
 }
 \description{
 Class returned by \code{\link{bm_ModelingOptions}} (a 

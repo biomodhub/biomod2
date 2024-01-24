@@ -27,8 +27,9 @@
 ##' A \code{data.frame} object returned by \code{\link{get_calib_lines}} or 
 ##' \code{\link{bm_CrossValidation}} functions
 ##' @param metric.eval a \code{character} corresponding to the evaluation metric to be used, must 
-##' be either \code{ROC}, \code{TSS}, \code{KAPPA} for \code{SRE} only, and \code{auc.val.avg}, 
-##' \code{auc.diff.avg}, \code{or.mtp.avg}, \code{or.10p.avg}, \code{AICc} for \code{MAXENT} only
+##' be either \code{AUC}, \code{Kappa} or \code{TSS} for \code{SRE} only ; \code{auc.val.avg}, 
+##' \code{auc.diff.avg}, \code{or.mtp.avg}, \code{or.10p.avg}, \code{AICc} for \code{MAXENT} only ; 
+##' \code{ROC} or \code{TSS} for all other models
 ##' @param metric.AIC a \code{character} corresponding to the AIC metric to be used, must 
 ##' be either \code{AIC} or \code{BIC}
 ##' @param weights (\emph{optional, default} \code{NULL}) \cr 

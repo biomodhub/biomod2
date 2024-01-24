@@ -5,12 +5,21 @@
 \alias{BIOMOD.models.options}
 \alias{BIOMOD.models.options-class}
 \alias{show,BIOMOD.models.options-method}
+\alias{print,BIOMOD.models.options-method}
 \title{\code{\link{bm_ModelingOptions}} output object class}
 \usage{
 \S4method{show}{BIOMOD.models.options}(object)
+
+\S4method{print}{BIOMOD.models.options}(x, dataset = "_allData_allRun")
 }
 \arguments{
 \item{object}{a \code{\link{BIOMOD.models.options}} object}
+
+\item{x}{a \code{\link{BIOMOD.models.options}} object}
+
+\item{dataset}{a \code{character} corresponding to the name of a dataset contained 
+in the \code{arg.values} slot of the \code{\link{BIOMOD.options.dataset}} object 
+for each model}
 }
 \description{
 Class returned by \code{\link{bm_ModelingOptions}} and used by 
