@@ -72,6 +72,16 @@
 #'        \item \code{method = 'mars'}
 #'      }
 #'    }
+#'    \item{\code{GAM.binary.gam.gam}}{
+# \itemize{
+#   \item ...
+# }
+#'    }
+#'    \item{\code{GAM.binary.mgcv.bam}}{
+     # \itemize{
+     #   \item ...
+     # }
+#'    }
 #'    \item{\code{GAM.binary.mgcv.gam}}{
 #'      \itemize{
 #'        \item \code{family = binomial(link = 'logit')}
@@ -145,6 +155,11 @@
 "OptionsBigboss"
 
 # bm.opt <- bm_ModelingOptions(data.type = "binary", strategy = "default")
+# bm.opt_gam2 <- bm_ModelingOptions(data.type = "binary", strategy = "default", models = "GAM.gam.gam")
+# bm.opt_gam3 <- bm_ModelingOptions(data.type = "binary", strategy = "default", models = "GAM.mgcv.bam")
+# bm.opt@models <- sort(unique(c(bm.opt@models, bm.opt_gam2@models, bm.opt_gam3@models)))
+# bm.opt@options <- c(bm.opt@options, bm.opt_gam2@options, bm.opt_gam3@options)
+# bm.opt@options <- bm.opt@options[bm.opt@models]
 # bm.opt@options$ANN.binary.nnet.nnet@args.values[['_allData_allRun']]$size = 5 #NULL
 # bm.opt@options$ANN.binary.nnet.nnet@args.values[['_allData_allRun']]$decay = 5
 # bm.opt@options$ANN.binary.nnet.nnet@args.values[['_allData_allRun']]$trace = FALSE

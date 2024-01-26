@@ -29,6 +29,10 @@ A \code{\link{BIOMOD.models.options}} object with some changed values :
        \item \code{method = 'mars'}
      }
    }
+   \item{\code{GAM.binary.gam.gam}}{
+   }
+   \item{\code{GAM.binary.mgcv.bam}}{
+   }
    \item{\code{GAM.binary.mgcv.gam}}{
      \itemize{
        \item \code{family = binomial(link = 'logit')}
