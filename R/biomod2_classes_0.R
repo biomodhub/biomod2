@@ -121,8 +121,8 @@ setMethod('BIOMOD.options.default', signature(mod = 'character', typ = 'characte
                 type = typ,
                 package = pkg,
                 func = fun,
-                args.names = formalArgs(fun),
-                args.default = as.list(formals(fun))
+                args.names = eval(parse(text = paste0("formalArgs(", pkg, "::", fun, ")"))),
+                args.default = eval(parse(text = paste0("as.list(formals(", pkg, "::", fun, "))")))
               )
             } else {
               params.MAXENT = list(path_to_maxent.jar = getwd(),
@@ -428,9 +428,11 @@ setMethod('BIOMOD.options.dataset', signature(strategy = 'character'),
               argstmp[["x"]] = NULL
               argstmp[["y"]] = NULL
               argstmp$family = binomial(link = 'logit')
-              argstmp$method = "GCV.Cp"
               if (pkg == "gam") { argstmp$control = gam::gam.control() }
-              if (pkg == "mgcv") { argstmp$control = mgcv::gam.control() }
+              if (pkg == "mgcv") {
+                argstmp$method = "GCV.Cp"
+                argstmp$control = mgcv::gam.control()
+              }
             }
             if (mod == "GLM") {
               argstmp$family = binomial(link = 'logit')
