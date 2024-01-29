@@ -291,7 +291,7 @@ bm_RunModel <- function(model, run.name, dir.name = '.'
     
     ## RUN model ----------------------------------------------------
     model.call <- paste0(bm.opt@package, "::", bm.opt@func)
-    model.sp <- do.call(eval(parse(text = model.call)), bm.opt.val)
+    model.sp <- try(do.call(eval(parse(text = model.call)), bm.opt.val))
     
     
     ## GET results --------------------------------------------------
@@ -440,7 +440,11 @@ bm_RunModel <- function(model, run.name, dir.name = '.'
   temp_workdir = NULL
   
   if (model != "MAXENT") {
-    if (model == "SRE" && bm.opt.val$do.extrem == FALSE) {
+    if (inherits(model.sp, "try-error")) {
+      g.pred <- NA
+      class(g.pred) <- "try-error"
+      cat("\n*** Error in ", model, ", calibration failed")
+    } else if (model == "SRE" && bm.opt.val$do.extrem == FALSE) {
       g.pred <- model.sp
     } else {
       g.pred <- try(predict(model.bm, data_env, on_0_1000 = TRUE, seedval = seed.val, temp_workdir = temp_workdir))
