@@ -164,6 +164,13 @@ bm_FindOptimStat <- function(metric.eval = 'TSS',
   for (argi in names(args)) { assign(x = argi, value = args[[argi]]) }
   rm(args)
   
+  ## Check obs and fit 
+  if (length(obs) != length(fit)) {
+    cat("obs and fit are not the same length  => model evaluation skipped !")
+    eval.out <- matrix(NA, 1, 4, dimnames = list(metric.eval, c("best.stat", "cutoff", "sensitivity", "specificity")))
+    return(eval.out)
+  }
+  
   ## remove all unfinite values
   to_keep <- (is.finite(fit) & is.finite(obs))
   obs <- obs[to_keep]
