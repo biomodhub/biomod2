@@ -59,6 +59,12 @@ object."><!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax/libs/mat
       <a href="../articles/vignette_pseudoAbsences.html">Pseudo-absences</a>
     </li>
     <li>
+      <a href="../articles/vignette_crossValidation.html">Cross-validation</a>
+    </li>
+    <li>
+      <a href="../articles/vignette_modelingOptions.html">Modeling options</a>
+    </li>
+    <li>
       <a href="../articles/vignette_variability.html">Variability in results</a>
     </li>
   </ul></li>
@@ -98,7 +104,7 @@ object."><!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax/libs/mat
 
     <div class="ref-description">
     <p>This internal <span class="pkg">biomod2</span> function allows the user to sample all levels of all 
-the factorial variables contained in a <code>data.frame</code> or <code><a href="https://rdrr.io/pkg/terra/man/rast.html" class="external-link">SpatRaster</a></code> 
+the factorial variables contained in a <code>data.frame</code> or <code><a href="https://rspatial.github.io/terra/reference/rast.html" class="external-link">SpatRaster</a></code> 
 object.</p>
     </div>
 
@@ -109,18 +115,18 @@ object.</p>
     <div id="arguments">
     <h2>Arguments</h2>
     <dl><dt>expl.var</dt>
-<dd><p>a <code>data.frame</code> or <code><a href="https://rdrr.io/pkg/terra/man/rast.html" class="external-link">SpatRaster</a></code>
+<dd><p>a <code>data.frame</code> or <code><a href="https://rspatial.github.io/terra/reference/rast.html" class="external-link">SpatRaster</a></code>
 object containing the explanatory variables (in columns or layers)</p></dd>
 
 
 <dt>mask.out</dt>
-<dd><p>a <code>data.frame</code> or <code><a href="https://rdrr.io/pkg/terra/man/rast.html" class="external-link">SpatRaster</a></code>
+<dd><p>a <code>data.frame</code> or <code><a href="https://rspatial.github.io/terra/reference/rast.html" class="external-link">SpatRaster</a></code>
 object containing the area that has already been sampled (<em>factor 
 levels within this mask will not be sampled</em>)</p></dd>
 
 
 <dt>mask.in</dt>
-<dd><p>a <code>data.frame</code> or <code><a href="https://rdrr.io/pkg/terra/man/rast.html" class="external-link">SpatRaster</a></code> 
+<dd><p>a <code>data.frame</code> or <code><a href="https://rspatial.github.io/terra/reference/rast.html" class="external-link">SpatRaster</a></code> 
 object containing areas where factor levels are to be sampled in priority. 
 <em>Note that if after having explored these masks, some factor levels 
 remain unsampled, they will be sampled in the reference input object <code>expl.var</code>.</em></p></dd>
@@ -131,7 +137,7 @@ remain unsampled, they will be sampled in the reference input object <code>expl.
     
 
 <p>A <code>vector</code> of <code>numeric</code> values corresponding to either row (<code>data.frame</code>) or 
-cell (<code><a href="https://rdrr.io/pkg/terra/man/rast.html" class="external-link">SpatRaster</a></code>) numbers, each refering to a single level of a 
+cell (<code><a href="https://rspatial.github.io/terra/reference/rast.html" class="external-link">SpatRaster</a></code>) numbers, each refering to a single level of a 
 single factorial variable.</p>
 
 
@@ -141,15 +147,15 @@ single factorial variable.</p>
     <h2>Details</h2>
     <p>The <code>expl.var</code>, <code>mask.out</code> and <code>mask.in</code> parameters must be coherent in terms of 
 dimensions :</p><ul><li><p>same number of rows for <code>data.frame</code> objects</p></li>
-<li><p>same resolution, projection system and number of cells for <code><a href="https://rdrr.io/pkg/terra/man/rast.html" class="external-link">SpatRaster</a></code> objects 
+<li><p>same resolution, projection system and number of cells for <code><a href="https://rspatial.github.io/terra/reference/rast.html" class="external-link">SpatRaster</a></code> objects 
   <br><br></p></li>
 </ul><p>If <code>mask.in</code> contains several columns (<code>data.frame</code>) or layers 
-(<code><a href="https://rdrr.io/pkg/terra/man/rast.html" class="external-link">SpatRaster</a></code>), then their order matters : 
+(<code><a href="https://rspatial.github.io/terra/reference/rast.html" class="external-link">SpatRaster</a></code>), then their order matters : 
 they will be considered successively to sample missing factor levels. <br><br></p>
 <ul><li><p>Values in <code>data.frame</code> will be understood as :</p><ul><li><p><code>FALSE</code> : out of mask</p></li>
 <li><p><code>TRUE</code> : in mask</p></li>
 </ul></li>
-<li><p>Values in <code><a href="https://rdrr.io/pkg/terra/man/rast.html" class="external-link">SpatRaster</a></code> will be understood as :</p><ul><li><p><code>NA</code> : out of mask</p></li>
+<li><p>Values in <code><a href="https://rspatial.github.io/terra/reference/rast.html" class="external-link">SpatRaster</a></code> will be understood as :</p><ul><li><p><code>NA</code> : out of mask</p></li>
 <li><p><code>not NA</code> : in mask</p></li>
 </ul></li>
 </ul></div>
@@ -184,12 +190,12 @@ they will be considered successively to sample missing factor levels. <br><br></
     <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://rspatial.org/" class="external-link">terra</a></span><span class="op">)</span></span>
 <span></span>
 <span><span class="co">## Create raster data</span></span>
-<span><span class="va">ras.1</span> <span class="op">&lt;-</span> <span class="va">ras.2</span> <span class="op">&lt;-</span> <span class="va">mask.out</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/terra/man/rast.html" class="external-link">rast</a></span><span class="op">(</span>nrows <span class="op">=</span> <span class="fl">10</span>, ncols <span class="op">=</span> <span class="fl">10</span><span class="op">)</span></span>
-<span><span class="va">ras.1</span><span class="op">[</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/terra/man/is.bool.html" class="external-link">as.factor</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">2</span>, <span class="fl">3</span>, <span class="fl">4</span>, <span class="fl">5</span><span class="op">)</span>, each <span class="op">=</span> <span class="fl">20</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="va">ras.1</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/terra/man/is.bool.html" class="external-link">as.factor</a></span><span class="op">(</span><span class="va">ras.1</span><span class="op">)</span></span>
+<span><span class="va">ras.1</span> <span class="op">&lt;-</span> <span class="va">ras.2</span> <span class="op">&lt;-</span> <span class="va">mask.out</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rspatial.github.io/terra/reference/rast.html" class="external-link">rast</a></span><span class="op">(</span>nrows <span class="op">=</span> <span class="fl">10</span>, ncols <span class="op">=</span> <span class="fl">10</span><span class="op">)</span></span>
+<span><span class="va">ras.1</span><span class="op">[</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rspatial.github.io/terra/reference/is.bool.html" class="external-link">as.factor</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">2</span>, <span class="fl">3</span>, <span class="fl">4</span>, <span class="fl">5</span><span class="op">)</span>, each <span class="op">=</span> <span class="fl">20</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="va">ras.1</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rspatial.github.io/terra/reference/is.bool.html" class="external-link">as.factor</a></span><span class="op">(</span><span class="va">ras.1</span><span class="op">)</span></span>
 <span><span class="va">ras.2</span><span class="op">[</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="fl">100</span><span class="op">)</span></span>
 <span><span class="va">stk</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">ras.1</span>, <span class="va">ras.2</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">stk</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"varFact"</span>, <span class="st">"varNorm"</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rspatial.github.io/terra/reference/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">stk</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"varFact"</span>, <span class="st">"varNorm"</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co">## define a mask for already sampled points</span></span>
 <span><span class="va">mask.out</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">40</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="fl">1</span></span>
@@ -214,7 +220,7 @@ they will be considered successively to sample missing factor levels. <br><br></
 
 
       <footer><div class="copyright">
-  <p></p><p>Developed by <a href="http://www.will.chez-alice.fr/" class="external-link">Wilfried Thuiller</a>, Damien Georges, <a href="https://mayagueguen.github.io" class="external-link">Maya Gueguen</a>, Robin Engler, Frank Breiner, Bruno Lafourcade, Remi Patin.</p>
+  <p></p><p>Developed by <a href="http://www.will.chez-alice.fr/" class="external-link">Wilfried Thuiller</a>, Damien Georges, <a href="https://mayagueguen.github.io" class="external-link">Maya Gueguen</a>, Robin Engler, Frank Breiner, Bruno Lafourcade, Remi Patin, Helene Blancheteau.</p>
 </div>
 
 <div class="pkgdown">

@@ -35,6 +35,10 @@ navbar:
           href: articles/vignette_dataPreparation.html
         - text: Pseudo-absences
           href: articles/vignette_pseudoAbsences.html
+        - text: Cross-validation
+          href: articles/vignette_crossValidation.html
+        - text: Modeling options
+          href: articles/vignette_modelingOptions.html
         - text: Variability in results
           href: articles/vignette_variability.html
     reference:
