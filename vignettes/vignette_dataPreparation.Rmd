@@ -146,3 +146,4 @@ It is USELESS to put too many variables into a model :
 
 Correlated variables in one model will only reduce the signal of which variable is truly important or not (if A and B are correlated, sometimes it will be A selected and sometimes B).
 Selecting variables *a priori* is absolutely necessary to guide the model in first step, improve computation of variables' importance and put ecological hypotheses down on paper.
+

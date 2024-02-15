@@ -83,4 +83,3 @@ Results were varying between modelling techniques :
 - number of PA = 3 times the number of presences
 - 10 repetitions
 
-

@@ -182,8 +182,9 @@ vignette</a>.</em></p>
 <p><code>biomod2</code> has a set of <code>default</code> options,
 matching most of the time the algorithms’ default values, but with some
 minor modifications to allow the <a href="../reference/BIOMOD_Modeling.html"><code>BIOMOD_Modeling</code></a>
-function to run smoothly. <br><em>Please be aware that this strategy
-can often lead to bad models or even some errors.</em></p>
+function to run smoothly. <br></p>
+<p><em>Please be aware that this strategy can often lead to bad models
+or even some errors.</em></p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">myBiomodModelOut</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/BIOMOD_Modeling.html">BIOMOD_Modeling</a></span><span class="op">(</span>bm.format <span class="op">=</span> <span class="va">myBiomodData</span>,</span>
 <span>                                    modeling.id <span class="op">=</span> <span class="st">'Example'</span>,</span>
@@ -207,7 +208,8 @@ can often lead to bad models or even some errors.</em></p>
 <p>The <code>bigboss</code> set of parameters is available in the
 dataset <a href="../reference/OptionsBigboss.html"><code>OptionsBigboss</code></a>.
 This set should give better results than the default set and will be
-continued to be optimized by the <code>biomod2</code> Team. <br><em>Keep in mind that this is something general and dependent of your
+continued to be optimized by the <code>biomod2</code> Team. <br></p>
+<p><em>Keep in mind that this is something general and dependent of your
 case, the results can be not better than the default set.</em></p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">myBiomodModelOut</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/BIOMOD_Modeling.html">BIOMOD_Modeling</a></span><span class="op">(</span>bm.format <span class="op">=</span> <span class="va">myBiomodData</span>,</span>
@@ -304,7 +306,8 @@ formula will be chosen between the different type (<code>simple</code>,
 <code>s_smoother</code>) and for different interaction level.<br>
 In the same way, a variable selection can be run for <code>GLM</code>
 and <code>GAM</code> if <code>do.stepAIC = TRUE</code> (respectively,
-<code><a href="https://rdrr.io/pkg/MASS/man/stepAIC.html" class="external-link">MASS::stepAIC</a></code> and <code><a href="https://rdrr.io/pkg/gam/man/step.gam.html" class="external-link">gam::step.Gam</a></code>). <br><em>More information about the training can be found in the
+<code><a href="https://rdrr.io/pkg/MASS/man/stepAIC.html" class="external-link">MASS::stepAIC</a></code> and <code><a href="https://rdrr.io/pkg/gam/man/step.gam.html" class="external-link">gam::step.Gam</a></code>). <br></p>
+<p><em>More information about the training can be found in the
 documentation of the <a href="../reference/bm_tuning.html"><code>bm_Tuning</code></a>
 function.</em></p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">

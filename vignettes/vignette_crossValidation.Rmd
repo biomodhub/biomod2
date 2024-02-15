@@ -13,6 +13,7 @@ vignette: >
 ### &#10008; Definition
 
 Whether independent data is available or not, **data-splitting** methods allow to divide input data into pieces to **calibrate** and **validate** the models on different parts.  
+
 Most common procedures either split randomly the original dataset in two parts (**random**) with higher proportion to calibrate the models ; or in k datasets of equal sizes (**k-fold**), each of them being used in turn to validate the model, while the remaining is used for calibration. For both methods, the splitting can be repeated several times.   
 Other procedures are available to test for model overfitting and to assess transferability either in geographic or environmental space : **block** method described in *Muscarella et al. 2014* partitions data in four bins of equal size (bottom-left, bottom-right, top-left and top-right), while **x-y-stratification** described in *Wenger and Olden 2012* uses k partitions along the x-(or y-) gradient and returns 2k partitions ; **environmental** partitioning returns k partitions for each environmental variable provided.  
 These methods can be balanced over presences or absences to ensure equal distribution over space, especially if some data is clumped on an edge of the study area.  
@@ -28,7 +29,7 @@ The user can also define its own data partitioning (**user.defined**).
 ### &#10016; How you can select methods 
 
 `biomod2` allows you to use different strategies to separate your data into a calibration dataset and a validation dataset for the cross-validation. With the argument `CV.strategy` in [`BIOMOD_Modeling`](../reference/BIOMOD_.html), you can select : 
-
+<br/>
 <dl>
 <dt>Random</dt>
 <dd>The most simple method to calibrate and validate a model is to split the original dataset in two datasets : one to calibrate the model and the other one to validate it. The splitting can be repeated `nb.rep` times. You can adjust the size of the splitting between calibration and validation with `perc`.</dd>
@@ -51,9 +52,9 @@ You can choose `x`, `y` and `both` stratification with the argument `strat`. </d
 
 <br> 
 
-<blockquote>
-If you are ensure about the strategy and want to make verification, [`get_calib_lines()`](../reference/getters.out.html) can help you to visualize the split. (`TRUE` for calibration and `FALSE` for validation)
-</blockquote>
+<fieldset>
+_If you are ensure about the strategy and want to make verification, [`get_calib_lines()`](../reference/getters.out.html) can help you to visualize the split. (`TRUE` for calibration and `FALSE` for validation)_
+</fieldset>
 
 
 </br>
@@ -62,13 +63,16 @@ If you are ensure about the strategy and want to make verification, [`get_calib_
 
 `biomod2` allows to use a cross-validation method to build (**calibration**) and validate (**validation**) the model, but it can also be tested on another independent dataset if available (**evaluation**). This second independent dataset can be integrated with the `eval.resp`, `eval.xy` and `eval.env.data` parameters in the [`BIOMOD_FormatingData`](../reference/BIOMOD_FormatingData.html) function.
 
-<blockquote>
-For example : 
 
-- *dataset 1* will be used to build the individual models, <br/> 
-being split for instance 10 times into 70/30 percentages to cross-validate them.
-- *dataset 2* will be used to evaluate all models (individual or ensemble).
-</blockquote>
+<br>
+<fieldset>
+_For example :_ 
+
+- _*dataset 1* will be used to build the individual models,_ 
+_being split for instance 10 times into 70/30 percentages to cross-validate them._
+- _*dataset 2* will be used to evaluate all models (individual or ensemble)._
+</fieldset>
+</br>
 
 **Note that**, if you can have as many *evaluation* values (with *dataset 2*) as your number of cross-validation splitting for single models, you can have only one *evaluation* value for ensemble models.
 
@@ -107,6 +111,7 @@ plot(myBiomodData, calib.lines = myCalibLines)
 <p><img src="pictures/MyBiomodData_With_CalibLines.png" alt="Visualization of the data with the different runs" style="width:750px;"></p>
 </div>
 
+</br>
 To create a cross-validation table with [`bm_CrossValidation`](../reference/bm_CrossValidation.html). 
 
 ```R

@@ -138,13 +138,13 @@
 <p>Whether independent data is available or not,
 <strong>data-splitting</strong> methods allow to divide input data into
 pieces to <strong>calibrate</strong> and <strong>validate</strong> the
-models on different parts.<br>
-Most common procedures either split randomly the original dataset in two
-parts (<strong>random</strong>) with higher proportion to calibrate the
-models ; or in k datasets of equal sizes (<strong>k-fold</strong>), each
-of them being used in turn to validate the model, while the remaining is
-used for calibration. For both methods, the splitting can be repeated
-several times.<br>
+models on different parts.</p>
+<p>Most common procedures either split randomly the original dataset in
+two parts (<strong>random</strong>) with higher proportion to calibrate
+the models ; or in k datasets of equal sizes (<strong>k-fold</strong>),
+each of them being used in turn to validate the model, while the
+remaining is used for calibration. For both methods, the splitting can
+be repeated several times.<br>
 Other procedures are available to test for model overfitting and to
 assess transferability either in geographic or environmental space :
 <strong>block</strong> method described in <em>Muscarella et
@@ -168,12 +168,10 @@ The user can also define its own data partitioning
 <div class="section level3">
 <h3 id="how-you-can-select-methods">✠ How you can select methods<a class="anchor" aria-label="anchor" href="#how-you-can-select-methods"></a>
 </h3>
-<p><code>biomod2</code> allows you to use different strategies to
-separate your data into a calibration dataset and a validation dataset
-for the cross-validation. With the argument <code>CV.strategy</code> in
-<a href="../reference/BIOMOD_.html"><code>BIOMOD_Modeling</code></a>,
-you can select :</p>
-<dl>
+<code>biomod2</code> allows you to use different strategies to separate
+your data into a calibration dataset and a validation dataset for the
+cross-validation. With the argument <code>CV.strategy</code> in <a href="../reference/BIOMOD_.html"><code>BIOMOD_Modeling</code></a>, you
+can select : <br><dl>
 <dt>
 Random
 </dt>
@@ -243,11 +241,12 @@ with <code>x</code> an integer and <code>PAx</code> an existing
 pseudo-absence dataset and <code>y</code> an integer
 </dd>
 <p><br></p>
-<blockquote>
-If you are ensure about the strategy and want to make verification, <a href="../reference/getters.out.html"><code>get_calib_lines()</code></a>
+<fieldset>
+<em>If you are ensure about the strategy and want to make verification,
+<a href="../reference/getters.out.html"><code>get_calib_lines()</code></a>
 can help you to visualize the split. (<code>TRUE</code> for calibration
-and <code>FALSE</code> for validation)
-</blockquote>
+and <code>FALSE</code> for validation)</em>
+</fieldset>
 <p></p>
 </dl>
 </div>
@@ -262,18 +261,19 @@ This second independent dataset can be integrated with the
 <code>eval.resp</code>, <code>eval.xy</code> and
 <code>eval.env.data</code> parameters in the <a href="../reference/BIOMOD_FormatingData.html"><code>BIOMOD_FormatingData</code></a>
 function.</p>
-<blockquote>
-<p>For example :</p>
+<br><fieldset>
+<p><em>For example :</em></p>
 <ul>
 <li>
-<em>dataset 1</em> will be used to build the individual models,
-<br> being split for instance 10 times into 70/30 percentages to
-cross-validate them.</li>
-<li>
-<em>dataset 2</em> will be used to evaluate all models (individual
-or ensemble).</li>
+<em><em>dataset 1</em> will be used to build the individual
+models,</em> <em>being split for instance 10 times into 70/30
+percentages to cross-validate them.</em>
+</li>
+<li><em><em>dataset 2</em> will be used to evaluate all models
+(individual or ensemble).</em></li>
 </ul>
-</blockquote>
+</fieldset>
+<p></p>
 <p><strong>Note that</strong>, if you can have as many
 <em>evaluation</em> values (with <em>dataset 2</em>) as your number of
 cross-validation splitting for single models, you can have only one
@@ -317,7 +317,7 @@ object.</p>
 <p>
 <img src="pictures/MyBiomodData_With_CalibLines.png" alt="Visualization of the data with the different runs" style="width:750px;"></p>
 </div>
-<p>To create a cross-validation table with <a href="../reference/bm_CrossValidation.html"><code>bm_CrossValidation</code></a>.</p>
+<p> To create a cross-validation table with <a href="../reference/bm_CrossValidation.html"><code>bm_CrossValidation</code></a>.</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/bm_CrossValidation.html">bm_CrossValidation</a></span><span class="op">(</span>bm.format <span class="op">=</span> <span class="va">myBiomodData</span>,</span>
 <span>                   strategy <span class="op">=</span> <span class="st">"strat"</span>,</span>

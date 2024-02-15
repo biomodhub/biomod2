@@ -47,6 +47,7 @@ In the dataset [`ModelsTable`](../reference/ModelsTable.html), all the different
 ### <i class="fa-solid fa-database"></i> Default options 
 
 `biomod2` has a set of `default` options, matching most of the time the algorithms' default values, but with some minor modifications to allow the [`BIOMOD_Modeling`](../reference/BIOMOD_Modeling.html) function to run smoothly. <br/>
+
 *Please be aware that this strategy can often lead to bad models or even some errors.*
 
 ```R
@@ -72,6 +73,7 @@ get_options(myBiomodModelOut)
 ### <i class="fa-solid fa-hand-fist"></i> Bigboss options 
 
 The `bigboss` set of parameters is available in the dataset [`OptionsBigboss`](../reference/OptionsBigboss.html). This set should give better results than the default set and will be continued to be optimized by the `biomod2` Team. <br/>
+
 *Keep in mind that this is something general and dependent of your case, the results can be not better than the default set.*
 
 ```R
@@ -109,6 +111,7 @@ Here is the list of the parameters that can be tuned :
 
 For almost every algorithm (except `MAXENT`, `MAXNET` and `SRE`), you can choose to optimize the formula by setting `do.formula = TRUE`. The optimized formula will be chosen between the different type (`simple`, `quadratic`, `polynomial`, `s_smoother`) and for different interaction level.    
 In the same way, a variable selection can be run for `GLM` and `GAM` if `do.stepAIC = TRUE` (respectively, `MASS::stepAIC` and `gam::step.Gam`). <br/>
+
 *More information about the training can be found in the documentation of the [`bm_Tuning`](../reference/bm_tuning.html) function.*
 
 
@@ -162,6 +165,7 @@ myOpt  <- bm_ModelingOptions(data.type = 'binary',
 print(myOpt)
 ```
 
+
 - You decide to tune the parameters for `RF` and you want to change the formula for `GLM`.
 
 
@@ -182,6 +186,7 @@ user.GLM <- list('_allData_RUN1' = list(formula = form.GLM),
                  '_allData_RUN2' = list(formula = form.GLM))
 
 ```
+
 
 - As you have all the parameters ready, you can set your [`BIOMOD.models.options`](../reference/BIOMOD.models.options.html) object and run the [`BIOMOD_Modeling`](../reference/BIOMOD_Modeling.html) function.
 
