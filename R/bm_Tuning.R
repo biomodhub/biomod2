@@ -72,11 +72,13 @@
 ##'   \item{GAM}{\code{select}, \code{method}}
 ##'   \item{GBM}{\code{n.trees}, \code{interaction.depth}, \code{shrinkage}, \code{n.minobsinnode}}
 ##'   \item{MARS}{\code{degree}, \code{nprune}}
+##'   \item{MAXENT}{\code{algorithm}}
 ##'   \item{RF}{\code{mtry}}
 ##'   \item{SRE}{\code{quant}}
 ##'   \item{XGBOOST}{\code{nrounds}, \code{max_depth}, \code{eta}, \code{gamma}, 
 ##'   \code{colsampl_bytree}, \code{min_child_weight}, \code{subsample}}
 ##' }
+##' 
 ##' 
 ##' The \code{\link{expand.grid}} function is used to build a \code{matrix} containing all 
 ##' combinations of parameters to be tested.
@@ -84,7 +86,13 @@
 ##' @note 
 ##' \itemize{
 ##'   \item No tuning for \code{GLM} and \code{MAXNET}
-##'   \item \code{MAXENT} is tuned through \code{\link[ENMeval]{ENMevaluate}} function
+##'   \item \code{MAXENT} is tuned through \code{\link[ENMeval]{ENMevaluate}} function which is
+##'   calling either :
+##'   \itemize{
+##'     \item maxnet (by defining \code{MAXENT.algorithm = 'maxnet'}) (\emph{default})
+##'     \item Java version of Maxent defined in \pkg{dismo} package (by defining 
+##'     \code{MAXENT.algorithm = 'maxent.jar'})
+##'   }
 ##'   \item \code{SRE} is tuned through \code{\link{bm_SRE}} function
 ##'   \item All other models are tuned through \code{\link[caret]{train}} function
 ##'   \item No optimization of formula for \code{MAXENT}, \code{MAXNET} and \code{SRE}
@@ -202,6 +210,7 @@ bm_Tuning <- function(model,
                                           GBM.n.minobsinnode = 10,
                                           MARS.degree = 1:2, 
                                           MARS.nprune = 2:max(38, 2 * ncol(bm.format@data.env.var) + 1),
+                                          MAXENT.algorithm = 'maxnet',
                                           RF.mtry = 1:min(10, ncol(bm.format@data.env.var)),
                                           SRE.quant = c(0, 0.0125, 0.025, 0.05, 0.1),
                                           XGBOOST.nrounds = 50,
@@ -286,16 +295,23 @@ bm_Tuning <- function(model,
           mySpExpl[["_allData_allRun"]] <- TRUE
           mySpExpl <- mySpExpl[which(calib.lines[, calib.i] == TRUE), ]
           mySpExpl <- mySpExpl[which(mySpExpl[, PA.i] == TRUE), ]
+          
+          ## SRE case
           myResp <- mySpExpl[, 1]
           myExpl <- mySpExpl[, 4:(3+ncol(bm.format@data.env.var))]
-          # mySpExpl[["_allData_allRun"]] <- NULL
+          
+          ## MAXENT case
+          if (params.train$MAXENT.algorithm == "maxnet") {
+            mySpExpl[["_allData_allRun"]] <- NULL
+            mySpExpl[, 1] <- ifelse(mySpExpl[, 1] == 1 & !is.na(mySpExpl[, 1]), 1, 0)
+          }
           
           
           if (model == "MAXENT") { # ------------------------------------------#
             try(tune.MAXENT <- ENMeval::ENMevaluate(occs = mySpExpl[mySpExpl[, 1] == 1 & !is.na(mySpExpl[, 1]), ],
                                                     bg = mySpExpl[mySpExpl[, 1] == 0 | is.na(mySpExpl[, 1]), ],
                                                     tune.args = list(rm = seq(0.5, 1, 0.5), fc = c("L")),
-                                                    algorithm = "maxent.jar",
+                                                    algorithm = params.train$MAXENT.algorithm,
                                                     partitions = "randomkfold",
                                                     partition.settings = list(kfolds = 10),
                                                     doClamp = TRUE, ## allow to change or not ?
@@ -515,8 +531,10 @@ bm_Tuning <- function(model,
   ## check evaluation metric --------------------------------------------------
   if (model == "MAXENT") {
     .fun_testIfIn(TRUE, "metric.eval", metric.eval, c("auc.val.avg", "auc.diff.avg", "or.mtp.avg", "or.10p.avg", "AICc"))
+    .fun_testIfIn(TRUE, "params.train$MAXENT.algorithm", params.train$MAXENT.algorithm, c("maxent.jar", "maxnet"))
   } else if (model == "SRE") {
     .fun_testIfIn(TRUE, "metric.eval", metric.eval, c("AUC", "Kappa", "TSS"))
+    .fun_testIf01(TRUE, "params.train$SRE.quant", params.train$SRE.quant)
   } else {
     .fun_testIfIn(TRUE, "metric.eval", metric.eval, c("ROC", "TSS"))
   }

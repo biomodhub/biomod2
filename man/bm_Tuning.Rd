@@ -21,12 +21,12 @@ bm_Tuning(
     GAM.method = c("GCV.Cp", "GACV.Cp", "REML", "P-REML", "ML", "P-ML"), GBM.n.trees =
     c(500, 1000, 2500), GBM.interaction.depth = seq(2, 8, by = 3), GBM.shrinkage =
     c(0.001, 0.01, 0.1), GBM.n.minobsinnode = 10, MARS.degree = 1:2, MARS.nprune =
-    2:max(38, 2 * ncol(bm.format@data.env.var) + 1), RF.mtry = 1:min(10,
-    ncol(bm.format@data.env.var)), SRE.quant = c(0, 
-     0.0125, 0.025, 0.05, 0.1),
-    XGBOOST.nrounds = 50, XGBOOST.max_depth = 1, XGBOOST.eta = c(0.3, 0.4), XGBOOST.gamma
-    = 0, XGBOOST.colsample_bytree = c(0.6, 0.8), XGBOOST.min_child_weight = 1,
-    XGBOOST.subsample = 0.5)
+    2:max(38, 2 * ncol(bm.format@data.env.var) + 1), MAXENT.algorithm = "maxnet", RF.mtry
+    = 1:min(10, ncol(bm.format@data.env.var)), 
+     SRE.quant = c(0, 0.0125, 0.025,
+    0.05, 0.1), XGBOOST.nrounds = 50, XGBOOST.max_depth = 1, XGBOOST.eta = c(0.3, 0.4),
+    XGBOOST.gamma = 0, XGBOOST.colsample_bytree = c(0.6, 0.8), XGBOOST.min_child_weight =
+    1, XGBOOST.subsample = 0.5)
 )
 }
 \arguments{
@@ -105,11 +105,13 @@ Currently, the available parameters to be tuned are the following :
   \item{GAM}{\code{select}, \code{method}}
   \item{GBM}{\code{n.trees}, \code{interaction.depth}, \code{shrinkage}, \code{n.minobsinnode}}
   \item{MARS}{\code{degree}, \code{nprune}}
+  \item{MAXENT}{\code{algorithm}}
   \item{RF}{\code{mtry}}
   \item{SRE}{\code{quant}}
   \item{XGBOOST}{\code{nrounds}, \code{max_depth}, \code{eta}, \code{gamma}, 
   \code{colsampl_bytree}, \code{min_child_weight}, \code{subsample}}
 }
+
 
 The \code{\link{expand.grid}} function is used to build a \code{matrix} containing all 
 combinations of parameters to be tested.
@@ -117,7 +119,13 @@ combinations of parameters to be tested.
 \note{
 \itemize{
   \item No tuning for \code{GLM} and \code{MAXNET}
-  \item \code{MAXENT} is tuned through \code{\link[ENMeval]{ENMevaluate}} function
+  \item \code{MAXENT} is tuned through \code{\link[ENMeval]{ENMevaluate}} function which is
+  calling either :
+  \itemize{
+    \item maxnet (by defining \code{MAXENT.algorithm = 'maxnet'}) (\emph{default})
+    \item Java version of Maxent defined in \pkg{dismo} package (by defining 
+    \code{MAXENT.algorithm = 'maxent.jar'})
+  }
   \item \code{SRE} is tuned through \code{\link{bm_SRE}} function
   \item All other models are tuned through \code{\link[caret]{train}} function
   \item No optimization of formula for \code{MAXENT}, \code{MAXNET} and \code{SRE}
