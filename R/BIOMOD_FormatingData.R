@@ -93,6 +93,8 @@
 ##' @param filter.raster (\emph{optional, default} \code{FALSE}) \cr 
 ##' If \code{expl.var} is of raster type, a \code{logical} value defining whether \code{resp.var} 
 ##' is to be filtered when several points occur in the same raster cell
+##' @param seed.val (\emph{optional, default} \code{NULL}) \cr 
+##' An \code{integer} value corresponding to the new seed value to be set
 ##' 
 ##' 
 ##' @return 
@@ -345,7 +347,8 @@ BIOMOD_FormatingData <- function(resp.name,
                                  PA.sre.quant = 0.025,
                                  PA.user.table = NULL,
                                  na.rm = TRUE,
-                                 filter.raster = FALSE)
+                                 filter.raster = FALSE,
+                                 seed.val = NULL)
 {
   .bm_cat(paste0(resp.name, " Data Formating"))
   
@@ -392,7 +395,8 @@ BIOMOD_FormatingData <- function(resp.name,
                                    PA.sre.quant = PA.sre.quant,
                                    PA.user.table = PA.user.table,
                                    na.rm = na.rm,
-                                   filter.raster = filter.raster)
+                                   filter.raster = filter.raster,
+                                   seed.val)
   }
   .bm_cat("Done")
   return(out)

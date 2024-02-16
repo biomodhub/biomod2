@@ -46,6 +46,8 @@
 ##' 
 ##' @param \ldots (\emph{optional, one or several of the above arguments depending on the selected 
 ##' method}) 
+##' @param seed.val (\emph{optional, default} \code{NULL}) \cr 
+##' An \code{integer} value corresponding to the new seed value to be set
 ##' 
 ##' 
 ##' @return 
@@ -197,11 +199,11 @@
 
 
 bm_PseudoAbsences <- function(resp.var, expl.var, nb.rep = 1, strategy = 'random', nb.absences = NULL
-                              , sre.quant = 0, dist.min = 0, dist.max = NULL, user.table = NULL)
+                              , sre.quant = 0, dist.min = 0, dist.max = NULL, user.table = NULL, seed.val= NULL)
 {
   ## 0. Check arguments ---------------------------------------------------------------------------
   args <- .bm_PseudoAbsences.check.args(resp.var, expl.var, nb.rep, strategy, nb.absences
-                                        , sre.quant, dist.min, dist.max, user.table)
+                                        , sre.quant, dist.min, dist.max, user.table,seed.val)
   for (argi in names(args)) { assign(x = argi, value = args[[argi]]) }
   rm(args)
   
@@ -323,7 +325,7 @@ bm_PseudoAbsences <- function(resp.var, expl.var, nb.rep = 1, strategy = 'random
 
 # Argument Check --------------------------------------------------------------
 
-.bm_PseudoAbsences.check.args <- function(resp.var, expl.var, nb.rep, strategy, nb.absences, sre.quant, dist.min, dist.max, user.table)
+.bm_PseudoAbsences.check.args <- function(resp.var, expl.var, nb.rep, strategy, nb.absences, sre.quant, dist.min, dist.max, user.table,seed.val)
 {
   cat('\n\nChecking Pseudo-absence selection arguments...\n')
   ## 1. Check resp.var argument -----------------------------------------------
@@ -419,6 +421,11 @@ bm_PseudoAbsences <- function(resp.var, expl.var, nb.rep = 1, strategy = 'random
       colnames(user.table) <- paste0("PA", 1:ncol(user.table))
       nb.absences <- nrow(user.table)
     }
+  }
+  
+  ## 8. Set the seed (if needed) ---------------------------------------------
+  if (!is.null(seed.val)) {
+    set.seed(seed.val)
   }
   
   return(list(resp.var = resp.var,
