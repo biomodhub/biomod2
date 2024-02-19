@@ -72,7 +72,7 @@
 ##'   \item{GAM}{\code{select}, \code{method}}
 ##'   \item{GBM}{\code{n.trees}, \code{interaction.depth}, \code{shrinkage}, \code{n.minobsinnode}}
 ##'   \item{MARS}{\code{degree}, \code{nprune}}
-##'   \item{MAXENT}{\code{algorithm}}
+##'   \item{MAXENT}{\code{algorithm}, \code{parallel}}
 ##'   \item{RF}{\code{mtry}}
 ##'   \item{SRE}{\code{quant}}
 ##'   \item{XGBOOST}{\code{nrounds}, \code{max_depth}, \code{eta}, \code{gamma}, 
@@ -211,6 +211,7 @@ bm_Tuning <- function(model,
                                           MARS.degree = 1:2, 
                                           MARS.nprune = 2:max(38, 2 * ncol(bm.format@data.env.var) + 1),
                                           MAXENT.algorithm = 'maxnet',
+                                          MAXENT.parallel = 'TRUE',
                                           RF.mtry = 1:min(10, ncol(bm.format@data.env.var)),
                                           SRE.quant = c(0, 0.0125, 0.025, 0.05, 0.1),
                                           XGBOOST.nrounds = 50,
@@ -315,7 +316,7 @@ bm_Tuning <- function(model,
                                                     partitions = "randomkfold",
                                                     partition.settings = list(kfolds = 10),
                                                     doClamp = TRUE, ## allow to change or not ?
-                                                    parallel = TRUE,
+                                                    parallel = params.train$MAXENT.parallel,
                                                     numCores = NULL, ## default to 1 or NULL (all available cores used then) ?
                                                     categoricals = NULL))
             
