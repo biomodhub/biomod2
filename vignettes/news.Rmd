@@ -13,6 +13,16 @@ vignette: >
 
 ## <i class="fas fa-code"></i> Development updates
 
+### <i class="fas fa-feather"></i> 2024
+
+#### 4.2-6 Devel actuel
+
+- Add _seed.val_ for bm_pseudoAbsences and BIOMOD_FormatingData
+- Stop dans BIOMOD_FormatingData (càd biomod2_classes_1) si selection de PA à échouer. (Message okay ?)
+- Add an argument _fact.agg_ (factor.aggregate à changer au besoin) for PseudoAbsences selection with the disk method. It allows to reduce the resolution of the environnement. NULL par défaut, donné à aggregate pour modifier résolution. **à faire remonter à BIOMOD_FormatingData ou laisser à bm_PseudoAbsences**
+
+
+
 ### <i class="fas fa-feather"></i> 2023 
 
 #### 4.2-5 Modeling options and Tuning (2023-09-12)

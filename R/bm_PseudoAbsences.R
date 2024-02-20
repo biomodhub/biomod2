@@ -38,6 +38,8 @@
 ##' @param dist.max (\emph{optional, default} \code{NULL}) \cr
 ##' If \code{strategy = 'disk'}, a \code{numeric} defining the maximal distance to presence points 
 ##' used to make the \code{disk} pseudo-absence selection (in meters)
+##' @param fact.aggr (\emph{optional, default} \code{NULL}) \cr
+##' If \code{strategy = 'disk'}, a \code{integer} defining the factor of aggregation to reduce the resolution
 ##' @param user.table (\emph{optional, default} \code{NULL}) \cr
 ##' If \code{strategy = 'user.defined'}, a \code{matrix} or \code{data.frame} with as many rows as 
 ##' \code{resp.var} values, as many columns as \code{nb.rep}, and containing \code{TRUE} or 
@@ -199,7 +201,7 @@
 
 
 bm_PseudoAbsences <- function(resp.var, expl.var, nb.rep = 1, strategy = 'random', nb.absences = NULL
-                              , sre.quant = 0, dist.min = 0, dist.max = NULL, user.table = NULL, seed.val= NULL)
+                              , sre.quant = 0, dist.min = 0, dist.max = NULL,fact.aggr = NULL, user.table = NULL, seed.val= NULL)
 {
   ## 0. Check arguments ---------------------------------------------------------------------------
   args <- .bm_PseudoAbsences.check.args(resp.var, expl.var, nb.rep, strategy, nb.absences
@@ -216,7 +218,7 @@ bm_PseudoAbsences <- function(resp.var, expl.var, nb.rep = 1, strategy = 'random
                     user.defined = bm_PseudoAbsences_user.defined(resp.var, expl.var, user.table),
                     random = bm_PseudoAbsences_random(resp.var, expl.var, nb.absences, nb.rep),
                     sre = bm_PseudoAbsences_sre(resp.var, expl.var, sre.quant, nb.absences, nb.rep),
-                    disk = bm_PseudoAbsences_disk(resp.var, expl.var, dist.min, dist.max, nb.absences, nb.rep))
+                    disk = bm_PseudoAbsences_disk(resp.var, expl.var, dist.min, dist.max, nb.absences, nb.rep,fact.aggr))
     } else if (length(nb.absences) == nb.rep) {
       out.list = foreach(i.abs = unique(nb.absences)) %do% 
         {
@@ -227,7 +229,7 @@ bm_PseudoAbsences <- function(resp.var, expl.var, nb.rep = 1, strategy = 'random
                         user.defined = bm_PseudoAbsences_user.defined(resp.var, expl.var, user.table),
                         random = bm_PseudoAbsences_random(resp.var, expl.var, i.abs, length(i.rep)),
                         sre = bm_PseudoAbsences_sre(resp.var, expl.var, sre.quant, i.abs, length(i.rep)),
-                        disk = bm_PseudoAbsences_disk(resp.var, expl.var, dist.min, dist.max, i.abs, length(i.rep)))
+                        disk = bm_PseudoAbsences_disk(resp.var, expl.var, dist.min, dist.max, i.abs, length(i.rep),fact.aggr))
           
           ## CASE where all available cells have been selected :
           ## give back only one dataset, even if several were asked
@@ -918,7 +920,7 @@ setMethod('bm_PseudoAbsences_disk', signature(expl.var = "SpatVector"),
 ##'
 
 setMethod('bm_PseudoAbsences_disk', signature(expl.var = "SpatRaster"),
-          function(resp.var, expl.var, dist.min, dist.max, nb.absences, nb.rep)
+          function(resp.var, expl.var, dist.min, dist.max, nb.absences, nb.rep,fact.aggr)
           {
             cat("\n   > Disk pseudo absences selection")
             
@@ -932,8 +934,10 @@ setMethod('bm_PseudoAbsences_disk', signature(expl.var = "SpatRaster"),
                                        nb.absences, nb.rep)
               )
             } else {
-              cat("\n   > Pseudo absences are selected in explanatory variables")
               
+              
+              cat("\n   > Pseudo absences are selected in explanatory variables")
+              cat("\n")
               # create a mask
               dist.mask <- subset(expl.var, 1)
               dist.mask[] <- NA
@@ -943,6 +947,11 @@ setMethod('bm_PseudoAbsences_disk', signature(expl.var = "SpatRaster"),
               
               dist.mask <- distance(dist.mask)
               dist.mask <- mask(dist.mask, subset(expl.var, 1))
+              
+              if (!is.null(fact.aggr)){
+                dist.mask <- aggregate(dist.mask,fact= fact.aggr)
+                expl.var <- aggregate(expl.var,fact = fact.aggr)
+              }
               
               if (is.null(dist.max)) { 
                 dist.max <- Inf 

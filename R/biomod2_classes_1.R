@@ -1586,14 +1586,14 @@ setMethod('BIOMOD.formated.data.PA', signature(sp = 'numeric', env = 'SpatRaster
     rm(list = 'BFD')
   } else {
     stop("\n   ! PA selection not done : \n The PA selection is not possible with the parameters selected." )
-    BFDP <- BIOMOD.formated.data(sp = as.vector(values(sp)[,1]),
-                                 env = env,
-                                 xy = xy,
-                                 dir.name = dir.name,
-                                 sp.name = sp.name, 
-                                 eval.sp = eval.sp,
-                                 eval.env = eval.env,
-                                 eval.xy = eval.xy)
+    # BFDP <- BIOMOD.formated.data(sp = as.vector(values(sp)[,1]),
+    #                              env = env,
+    #                              xy = xy,
+    #                              dir.name = dir.name,
+    #                              sp.name = sp.name, 
+    #                              eval.sp = eval.sp,
+    #                              eval.env = eval.env,
+    #                              eval.xy = eval.xy)
   }
   rm(list = "pa.data.tmp" )
   return(BFDP)
