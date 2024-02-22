@@ -141,7 +141,7 @@
 #'    }
 #'    \item{\code{XGBOOST.binary.xgboost.xgboost}}{
 #'      \itemize{
-#'        \item \code{max.depth = 2}
+#'        \item \code{max_depth = 2}
 #'        \item \code{eta = 1}
 #'        \item \code{nthread = 2}
 #'        \item \code{nrounds = 4}

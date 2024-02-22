@@ -284,7 +284,7 @@ bm_Tuning <- function(model,
       cat(paste0("\n\t\t> Dataset ", dataset.i))
       argstmp <- bm.options@args.default
       
-      if (model == "MAXNET") {
+      if (model == "MAXNET" | model == "BRF") {
         warning("No tuning available for that model. Sorry.")
       } else {
         ## 1. SPECIFIC CASE OF MAXENT OR SRE ------------------------------------------------------------
@@ -505,7 +505,7 @@ bm_Tuning <- function(model,
 {
   ## check model --------------------------------------------------------------
   .fun_testIfIn(TRUE, "model", model, c("ANN", "CTA", "FDA", "GAM", "GBM", "GLM"
-                                        , "MARS", "MAXENT", "MAXNET", "RF", "SRE", "XGBOOST"))
+                                        , "MARS", "MAXENT", "MAXNET", "RF","BRF", "SRE", "XGBOOST"))
   
   ## check namespace ----------------------------------------------------------
   if (!isNamespaceLoaded("caret")) { 

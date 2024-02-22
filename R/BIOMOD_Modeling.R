@@ -16,7 +16,7 @@
 ##' (\emph{a random number by default})
 ##' @param models a \code{vector} containing model names to be computed, must be among 
 ##' \code{ANN}, \code{CTA}, \code{FDA}, \code{GAM}, \code{GBM}, \code{GLM}, \code{MARS}, 
-##' \code{MAXENT}, \code{MAXNET}, \code{RF}, \code{SRE}, \code{XGBOOST}
+##' \code{MAXENT}, \code{MAXNET}, \code{RF}, \code{BRF}, \code{SRE}, \code{XGBOOST}
 ##' @param models.pa (\emph{optional, default} \code{NULL}) \cr 
 ##' A \code{list} containing for each model a \code{vector} defining which pseudo-absence datasets 
 ##' are to be used, must be among \code{colnames(bm.format@PA.table)}
@@ -139,6 +139,7 @@
 ##'     (\url{https://biodiversityinformatics.amnh.org/open_source/maxent/})
 ##'     \item \code{MAXNET} : Maximum Entropy (\code{\link[maxnet]{maxnet}})
 ##'     \item \code{RF} : Random Forest (\code{\link[randomForest]{randomForest}})
+##'     \item \code{BRF} : Balanced Random Forest (\code{\link[randomForest]{randomForest}})
 ##'     \item \code{SRE} : Surface Range Envelop or usually called BIOCLIM (\code{\link{bm_SRE}})
 ##'     \item \code{XGBOOST} : eXtreme Gradient Boosting Training (\code{\link[xgboost]{xgboost}})
 ##'   }}
@@ -603,7 +604,7 @@ BIOMOD_Modeling <- function(bm.format,
   models.switch.off <- NULL
   
   ## check if model is supported
-  avail.models.list <- c('ANN', 'CTA', 'FDA', 'GAM', 'GBM', 'GLM', 'MARS', 'MAXENT', 'MAXNET', 'RF', 'SRE', 'XGBOOST')
+  avail.models.list <- c('ANN', 'CTA', 'FDA', 'GAM', 'GBM', 'GLM', 'MARS', 'MAXENT', 'MAXNET', 'RF','BRF', 'SRE', 'XGBOOST')
   .fun_testIfIn(TRUE, "models", models, avail.models.list)
   
   ## Specific case of one variable with GBM / MAXNET
