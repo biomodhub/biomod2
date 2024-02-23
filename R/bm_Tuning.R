@@ -305,6 +305,7 @@ bm_Tuning <- function(model,
           if (params.train$MAXENT.algorithm == "maxnet") {
             mySpExpl[["_allData_allRun"]] <- NULL
             mySpExpl[, 1] <- ifelse(mySpExpl[, 1] == 1 & !is.na(mySpExpl[, 1]), 1, 0)
+            mySpExpl <- mySpExpl[, 1:(3+ncol(bm.format@data.env.var))]
           }
           
           if (model == "MAXENT") { # ------------------------------------------#
