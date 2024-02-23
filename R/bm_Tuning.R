@@ -211,7 +211,7 @@ bm_Tuning <- function(model,
                                           MARS.degree = 1:2, 
                                           MARS.nprune = 2:max(38, 2 * ncol(bm.format@data.env.var) + 1),
                                           MAXENT.algorithm = 'maxnet',
-                                          MAXENT.parallel = 'TRUE',
+                                          MAXENT.parallel = TRUE,
                                           RF.mtry = 1:min(10, ncol(bm.format@data.env.var)),
                                           SRE.quant = c(0, 0.0125, 0.025, 0.05, 0.1),
                                           XGBOOST.nrounds = 50,
@@ -306,7 +306,6 @@ bm_Tuning <- function(model,
             mySpExpl[["_allData_allRun"]] <- NULL
             mySpExpl[, 1] <- ifelse(mySpExpl[, 1] == 1 & !is.na(mySpExpl[, 1]), 1, 0)
           }
-          
           
           if (model == "MAXENT") { # ------------------------------------------#
             try(tune.MAXENT <- ENMeval::ENMevaluate(occs = mySpExpl[mySpExpl[, 1] == 1 & !is.na(mySpExpl[, 1]), ],
@@ -529,6 +528,38 @@ bm_Tuning <- function(model,
   ## check bm.format ----------------------------------------------------------
   .fun_testIfInherits(TRUE, "bm.format", bm.format, c("BIOMOD.formated.data", "BIOMOD.formated.data.PA"))
   
+  ## check params.train -------------------------------------------------------
+  params.train_init = list(ANN.size = c(2, 4, 6, 8),
+                           ANN.decay = c(0.001, 0.01, 0.05, 0.1),
+                           ANN.bag = FALSE, 
+                           FDA.degree = 1:2, 
+                           FDA.nprune = 2:38,
+                           GAM.select = c(TRUE, FALSE),
+                           GAM.method = c('GCV.Cp', 'GACV.Cp', 'REML', 'P-REML', 'ML', 'P-ML'),
+                           GBM.n.trees = c(500, 1000, 2500),
+                           GBM.interaction.depth = seq(2, 8, by = 3),
+                           GBM.shrinkage = c(0.001, 0.01, 0.1),
+                           GBM.n.minobsinnode = 10,
+                           MARS.degree = 1:2, 
+                           MARS.nprune = 2:max(38, 2 * ncol(bm.format@data.env.var) + 1),
+                           MAXENT.algorithm = 'maxnet',
+                           MAXENT.parallel = TRUE,
+                           RF.mtry = 1:min(10, ncol(bm.format@data.env.var)),
+                           SRE.quant = c(0, 0.0125, 0.025, 0.05, 0.1),
+                           XGBOOST.nrounds = 50,
+                           XGBOOST.max_depth = 1,
+                           XGBOOST.eta = c(0.3, 0.4),
+                           XGBOOST.gamma = 0,
+                           XGBOOST.colsample_bytree = c(0.6, 0.8),
+                           XGBOOST.min_child_weight = 1,
+                           XGBOOST.subsample = 0.5)
+  for (i in names(params.train)) {
+    if (i %in% names(params.train_init)) {
+      params.train_init[[i]] = params.train[[i]]
+    }
+  }
+  params.train = params.train_init
+  
   ## check evaluation metric --------------------------------------------------
   if (model == "MAXENT") {
     .fun_testIfIn(TRUE, "metric.eval", metric.eval, c("auc.val.avg", "auc.diff.avg", "or.mtp.avg", "or.10p.avg", "AICc"))
@@ -590,6 +621,7 @@ bm_Tuning <- function(model,
               , tuning.fun = tuning.fun
               , train.params = train.params
               , tuning.length = tuning.length
-              , tuning.grid = tuning.grid))
+              , tuning.grid = tuning.grid
+              , params.train = params.train))
 }
 
