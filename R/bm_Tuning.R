@@ -10,7 +10,7 @@
 ##'
 ##' @param model a \code{character} corresponding to the  algorithm to be tuned, must be either 
 ##' \code{ANN}, \code{CTA}, \code{FDA}, \code{GAM}, \code{GBM}, \code{GLM}, \code{MARS}, 
-##' \code{MAXENT}, \code{MAXNET}, \code{RF}, \code{SRE}, \code{XGBOOST}
+##' \code{MAXENT}, \code{MAXNET}, \code{RF}, \code{BRF}, \code{SRE}, \code{XGBOOST}
 ##' @param tuning.fun a \code{character} corresponding to the model function name to be called 
 ##' through \code{\link[caret]{train}} function for tuning parameters (see \code{\link{ModelsTable}} 
 ##' dataset)
@@ -74,6 +74,7 @@
 ##'   \item{MARS}{\code{degree}, \code{nprune}}
 ##'   \item{MAXENT}{\code{algorithm}, \code{parallel}}
 ##'   \item{RF}{\code{mtry}}
+##'   \item{BRF}{\code{mtry}}
 ##'   \item{SRE}{\code{quant}}
 ##'   \item{XGBOOST}{\code{nrounds}, \code{max_depth}, \code{eta}, \code{gamma}, 
 ##'   \code{colsampl_bytree}, \code{min_child_weight}, \code{subsample}}
@@ -213,6 +214,7 @@ bm_Tuning <- function(model,
                                           MAXENT.algorithm = 'maxnet',
                                           MAXENT.parallel = 'TRUE',
                                           RF.mtry = 1:min(10, ncol(bm.format@data.env.var)),
+                                          BRF.mtry = 1:min(10, ncol(bm.format@data.env.var)),
                                           SRE.quant = c(0, 0.0125, 0.025, 0.05, 0.1),
                                           XGBOOST.nrounds = 50,
                                           XGBOOST.max_depth = 1,
@@ -284,7 +286,7 @@ bm_Tuning <- function(model,
       cat(paste0("\n\t\t> Dataset ", dataset.i))
       argstmp <- bm.options@args.default
       
-      if (model == "MAXNET" | model == "BRF") {
+      if (model == "MAXNET") {
         warning("No tuning available for that model. Sorry.")
       } else {
         ## 1. SPECIFIC CASE OF MAXENT OR SRE ------------------------------------------------------------
@@ -305,6 +307,7 @@ bm_Tuning <- function(model,
           if (params.train$MAXENT.algorithm == "maxnet") {
             mySpExpl[["_allData_allRun"]] <- NULL
             mySpExpl[, 1] <- ifelse(mySpExpl[, 1] == 1 & !is.na(mySpExpl[, 1]), 1, 0)
+            mySpExpl <- mySpExpl[, 1:(3+ncol(bm.format@data.env.var))]
           }
           
           
@@ -529,6 +532,40 @@ bm_Tuning <- function(model,
   ## check bm.format ----------------------------------------------------------
   .fun_testIfInherits(TRUE, "bm.format", bm.format, c("BIOMOD.formated.data", "BIOMOD.formated.data.PA"))
   
+  ## check params.train -------------------------------------------------------
+  params.train_init = list(ANN.size = c(2, 4, 6, 8),
+                           ANN.decay = c(0.001, 0.01, 0.05, 0.1),
+                           ANN.bag = FALSE, 
+                           FDA.degree = 1:2, 
+                           FDA.nprune = 2:38,
+                           GAM.select = c(TRUE, FALSE),
+                           GAM.method = c('GCV.Cp', 'GACV.Cp', 'REML', 'P-REML', 'ML', 'P-ML'),
+                           GBM.n.trees = c(500, 1000, 2500),
+                           GBM.interaction.depth = seq(2, 8, by = 3),
+                           GBM.shrinkage = c(0.001, 0.01, 0.1),
+                           GBM.n.minobsinnode = 10,
+                           MARS.degree = 1:2, 
+                           MARS.nprune = 2:max(38, 2 * ncol(bm.format@data.env.var) + 1),
+                           MAXENT.algorithm = 'maxnet',
+                           MAXENT.parallel = TRUE,
+                           RF.mtry = 1:min(10, ncol(bm.format@data.env.var)),
+                           SRE.quant = c(0, 0.0125, 0.025, 0.05, 0.1),
+                           XGBOOST.nrounds = 50,
+                           XGBOOST.max_depth = 1,
+                           XGBOOST.eta = c(0.3, 0.4),
+                           XGBOOST.gamma = 0,
+                           XGBOOST.colsample_bytree = c(0.6, 0.8),
+                           XGBOOST.min_child_weight = 1,
+                           XGBOOST.subsample = 0.5)
+  for (i in names(params.train)) {
+    if (i %in% names(params.train_init)) {
+      params.train_init[[i]] = params.train[[i]]
+    }
+  }
+  params.train = params.train_init
+  
+  
+  
   ## check evaluation metric --------------------------------------------------
   if (model == "MAXENT") {
     .fun_testIfIn(TRUE, "metric.eval", metric.eval, c("auc.val.avg", "auc.diff.avg", "or.mtp.avg", "or.10p.avg", "AICc"))
@@ -559,9 +596,13 @@ bm_Tuning <- function(model,
   
   ## get tuning grid through params.train -------------------------------------
   tuning.grid <- NULL
-  if (model %in% c("ANN", "FDA", "GAM", "GBM", "MARS", "RF", "XGBOOST")) {
+  if (model %in% c("ANN", "FDA", "GAM", "GBM", "MARS", "RF","BRF", "XGBOOST")) {
     if (!(model == "GAM" && tuning.fun == "gamSpline")) {
-      params.train = params.train[grep(model, names(params.train))]
+      if (model == "BRF") {
+        params.train = params.train[grep("RF", names(params.train))]
+        names(params.train) <- "BRF.mtry"
+        }
+      else {params.train = params.train[grep(model, names(params.train))]}
       .fun_testIfIn(TRUE, "names(params.train)", names(params.train), paste0(model, ".", train.params$params))
       names(params.train) = sub(model, "", names(params.train))
       tuning.grid <- do.call(expand.grid, params.train)
@@ -571,7 +612,7 @@ bm_Tuning <- function(model,
   ## get tuning length --------------------------------------------------------
   tuning.length <- 1
   if (model == "CTA") tuning.length <- 30
-  if (model == "RF") tuning.length <- min(30, ncol(bm.format@data.env.var))
+  if (model == "RF" | model == "BRF") tuning.length <- min(30, ncol(bm.format@data.env.var))
   
   ## get criteria -------------------------------------------------------------
   if (do.stepAIC && (model == "GLM" || 
@@ -590,6 +631,7 @@ bm_Tuning <- function(model,
               , tuning.fun = tuning.fun
               , train.params = train.params
               , tuning.length = tuning.length
-              , tuning.grid = tuning.grid))
+              , tuning.grid = tuning.grid
+              , params.train = params.train))
 }
 

@@ -239,7 +239,7 @@
 
 bm_ModelingOptions <- function(data.type
                                , models = c('ANN', 'CTA', 'FDA', 'GAM', 'GBM', 'GLM'
-                                            , 'MARS', 'MAXENT', 'MAXNET', 'RF', 'SRE', 'XGBOOST')
+                                            , 'MARS', 'MAXENT', 'MAXNET', 'RF','BRF', 'SRE', 'XGBOOST')
                                , strategy, user.val = NULL, user.base = "bigboss"
                                , bm.format = NULL, calib.lines = NULL)
 {
