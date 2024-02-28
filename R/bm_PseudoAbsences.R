@@ -879,7 +879,7 @@ setGeneric("bm_PseudoAbsences_disk",
 ##'
 
 setMethod('bm_PseudoAbsences_disk', signature(expl.var = "SpatVector"),
-          function(resp.var, expl.var, dist.min, dist.max, nb.absences, nb.rep) {
+          function(resp.var, expl.var, dist.min, dist.max, nb.absences, nb.rep, fact.aggr) {
             cat("\n   > Disk pseudo absences selection")
             # 1. determining area which can be selected
             coor <- crds(resp.var)
