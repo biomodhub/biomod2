@@ -283,7 +283,7 @@ bm_Tuning <- function(model,
     {
       cat(paste0("\n\t\t> Dataset ", dataset.i))
       argstmp <- bm.options@args.default
-      
+
       if (model == "MAXNET") {
         warning("No tuning available for that model. Sorry.")
       } else {
@@ -402,7 +402,11 @@ bm_Tuning <- function(model,
               tmp$TSS <- tmp$Sens + tmp$Spec - 1
               if (model == "XGBOOST") {
                 for (param in train.params$params) {
-                  argstmp$params[[param]] <- tmp[which.max(tmp[, metric.eval]), param]
+                  if (is.null(argstmp[[param]])){
+                    argstmp$params[[param]] <- tmp[which.max(tmp[, metric.eval]), param]
+                  }
+                  else {
+                    argstmp[[param]] <- tmp[which.max(tmp[, metric.eval]), param]}
                 }
               } else {
                 for (param in train.params$params) {
