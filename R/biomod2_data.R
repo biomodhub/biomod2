@@ -141,8 +141,7 @@
 #'    }
 #'    \item{\code{XGBOOST.binary.xgboost.xgboost}}{
 #'      \itemize{
-#'        \item \code{max_depth = 2}
-#'        \item \code{eta = 1}
+#'        \item \code{params = list(max_depth = 2, eta = 1)}
 #'        \item \code{nthread = 2}
 #'        \item \code{nrounds = 4}
 #'        \item \code{objective = 'binary:logistic'}
@@ -205,14 +204,13 @@
 # bm.opt@options$BRF.binary.randomForest.randomForest@args.values[['_allData_allRun']]$nodesize = 5
 # bm.opt@options$BRF.binary.randomForest.randomForest@args.values[['_allData_allRun']]$maxnodes = NULL
 # bm.opt@options$SRE.binary.biomod2.bm_SRE@args.values[['_allData_allRun']]$do.extrem = TRUE
-# bm.opt@options$XGBOOST.binary.xgboost.xgboost@args.values[['_allData_allRun']]$max.depth = 2
-# bm.opt@options$XGBOOST.binary.xgboost.xgboost@args.values[['_allData_allRun']]$eta = 1
+# bm.opt@options$XGBOOST.binary.xgboost.xgboost@args.values[['_allData_allRun']]$params = list(max_depth = 2, eta = 1)
 # bm.opt@options$XGBOOST.binary.xgboost.xgboost@args.values[['_allData_allRun']]$nthread = 2
 # bm.opt@options$XGBOOST.binary.xgboost.xgboost@args.values[['_allData_allRun']]$nrounds = 4
 # bm.opt@options$XGBOOST.binary.xgboost.xgboost@args.values[['_allData_allRun']]$objective = "binary:logistic"
 # OptionsBigboss <- bm.opt
 
-# usethis::use_data(OptionsBigboss, overwrite = TRUE)
+# usethis::use_data(OptionsBigboss, overwrite = TRUE, internal = TRUE)
 # usethis::use_data(OptionsBigboss, ModelsTable, overwrite = TRUE, internal = TRUE)
 
 

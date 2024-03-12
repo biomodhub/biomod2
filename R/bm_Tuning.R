@@ -212,7 +212,7 @@ bm_Tuning <- function(model,
                                           MARS.degree = 1:2, 
                                           MARS.nprune = 2:max(38, 2 * ncol(bm.format@data.env.var) + 1),
                                           MAXENT.algorithm = 'maxnet',
-                                          MAXENT.parallel = 'TRUE',
+                                          MAXENT.parallel = TRUE,
                                           RF.mtry = 1:min(10, ncol(bm.format@data.env.var)),
                                           BRF.mtry = 1:min(10, ncol(bm.format@data.env.var)),
                                           SRE.quant = c(0, 0.0125, 0.025, 0.05, 0.1),
@@ -285,7 +285,7 @@ bm_Tuning <- function(model,
     {
       cat(paste0("\n\t\t> Dataset ", dataset.i))
       argstmp <- bm.options@args.default
-      
+
       if (model == "MAXNET") {
         warning("No tuning available for that model. Sorry.")
       } else {
@@ -309,7 +309,6 @@ bm_Tuning <- function(model,
             mySpExpl[, 1] <- ifelse(mySpExpl[, 1] == 1 & !is.na(mySpExpl[, 1]), 1, 0)
             mySpExpl <- mySpExpl[, 1:(3+ncol(bm.format@data.env.var))]
           }
-          
           
           if (model == "MAXENT") { # ------------------------------------------#
             try(tune.MAXENT <- ENMeval::ENMevaluate(occs = mySpExpl[mySpExpl[, 1] == 1 & !is.na(mySpExpl[, 1]), ],
@@ -405,7 +404,11 @@ bm_Tuning <- function(model,
               tmp$TSS <- tmp$Sens + tmp$Spec - 1
               if (model == "XGBOOST") {
                 for (param in train.params$params) {
-                  argstmp$params[[param]] <- tmp[which.max(tmp[, metric.eval]), param]
+                  if (is.null(argstmp[[param]])){
+                    argstmp$params[[param]] <- tmp[which.max(tmp[, metric.eval]), param]
+                  }
+                  else {
+                    argstmp[[param]] <- tmp[which.max(tmp[, metric.eval]), param]}
                 }
               } else {
                 for (param in train.params$params) {
@@ -564,8 +567,7 @@ bm_Tuning <- function(model,
   }
   params.train = params.train_init
   
-  
-  
+
   ## check evaluation metric --------------------------------------------------
   if (model == "MAXENT") {
     .fun_testIfIn(TRUE, "metric.eval", metric.eval, c("auc.val.avg", "auc.diff.avg", "or.mtp.avg", "or.10p.avg", "AICc"))
