@@ -204,7 +204,7 @@
 # bm.opt@options$XGBOOST.binary.xgboost.xgboost@args.values[['_allData_allRun']]$objective = "binary:logistic"
 # OptionsBigboss <- bm.opt
 
-# usethis::use_data(OptionsBigboss, overwrite = TRUE)
+# usethis::use_data(OptionsBigboss, overwrite = TRUE, internal = TRUE)
 # usethis::use_data(OptionsBigboss, ModelsTable, overwrite = TRUE, internal = TRUE)
 
 
