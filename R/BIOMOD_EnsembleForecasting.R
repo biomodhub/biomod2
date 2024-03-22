@@ -447,7 +447,7 @@ BIOMOD_EnsembleForecasting <- function(bm.em,
           if(proj_is_raster){
             proj.trans <- subset(proj.trans, models.chosen)
           } else {
-            proj.trans <- proj.trans[,models.chosen]
+            proj.trans <- proj.trans[, models.chosen, drop = FALSE]
           }
           
           if (eval.meth %in% metric.binary) {
