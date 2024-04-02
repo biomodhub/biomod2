@@ -527,7 +527,7 @@ setMethod('predict2', signature(object = 'EMci_biomod2_model', newdata = "data.f
               on_0_1000 <- args$on_0_1000
               
               if (is.null(mean_prediction)) { 
-                mean_prediction <- round(rowMeans(newdata, na.rm = na.rm)) 
+                mean_prediction <- rowMeans(newdata, na.rm = na.rm)
               }
               if (is.null(sd_prediction)) { 
                 sd_prediction <- apply(newdata, 1, sd, na.rm = na.rm)
