@@ -176,7 +176,7 @@
 ##' 
 ##' 
 ##' 
-##' @importFrom foreach foreach %do%
+##' @importFrom foreach foreach %do% %:%
 ##' @importFrom stats aggregate  
 ##' @importFrom PresenceAbsence optimal.thresholds presence.absence.accuracy
 ##' 

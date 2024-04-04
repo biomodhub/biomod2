@@ -339,6 +339,8 @@
 ##' #                       do.bivariate = TRUE)
 ##' 
 ##' 
+##' @importFrom foreach foreach %do%
+##' 
 ##' @export
 ##' 
 ##' 

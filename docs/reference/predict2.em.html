@@ -58,6 +58,12 @@ biomod2_ensemble_model on (new) explanatory variables."><!-- mathjax --><script 
       <a href="../articles/vignette_pseudoAbsences.html">Pseudo-absences</a>
     </li>
     <li>
+      <a href="../articles/vignette_crossValidation.html">Cross-validation</a>
+    </li>
+    <li>
+      <a href="../articles/vignette_modelingOptions.html">Modeling options</a>
+    </li>
+    <li>
       <a href="../articles/vignette_variability.html">Variability in results</a>
     </li>
   </ul></li>
@@ -151,7 +157,7 @@ biomod2_ensemble_model on (new) explanatory variables."><!-- mathjax --><script 
 
 
 <dt>newdata</dt>
-<dd><p>a <code>data.frame</code> or <code><a href="https://rdrr.io/pkg/terra/man/rast.html" class="external-link">SpatRaster</a></code> object 
+<dd><p>a <code>data.frame</code> or <code><a href="https://rspatial.github.io/terra/reference/rast.html" class="external-link">SpatRaster</a></code> object 
 containing data for new predictions</p></dd>
 
 
@@ -172,12 +178,6 @@ value corresponding to the new seed value to be set</p></dd>
 <code>boolean</code> describing whether <code>newdata</code> is given as raw environmental 
 data (<code>FALSE</code>) or as formal predictions of the individual models 
 used to build the ensemble model (<code>TRUE</code>).</p></dd>
-
-
-<dt>na.rm</dt>
-<dd><p>(<em>optional, default</em> <code>TRUE</code>) <br>
-A boolean defining whether Ensemble Model projection should ignore <code>NA</code>
-in Individual Model projection. Argument ignored by EWmean ensemble algorithm.</p></dd>
 
 
 <dt>...</dt>
@@ -208,7 +208,7 @@ in Individual Model projection. Argument ignored by EWmean ensemble algorithm.</
 
 
       <footer><div class="copyright">
-  <p></p><p>Developed by <a href="http://www.will.chez-alice.fr/" class="external-link">Wilfried Thuiller</a>, Damien Georges, <a href="https://mayagueguen.github.io" class="external-link">Maya Gueguen</a>, Robin Engler, Frank Breiner, Bruno Lafourcade, Remi Patin.</p>
+  <p></p><p>Developed by <a href="http://www.will.chez-alice.fr/" class="external-link">Wilfried Thuiller</a>, Damien Georges, <a href="https://mayagueguen.github.io" class="external-link">Maya Gueguen</a>, Robin Engler, Frank Breiner, Bruno Lafourcade, Remi Patin, Helene Blancheteau.</p>
 </div>
 
 <div class="pkgdown">

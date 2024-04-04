@@ -217,6 +217,8 @@
 ##' apply(cv.e, 2, table)
 ##' 
 ##' 
+##' @importFrom foreach foreach %do%
+##' 
 ##' @export
 ##' 
 ##' 

@@ -218,6 +218,7 @@
 ##' plot(myBiomodEMProj)
 ##' 
 ##' 
+##' @importFrom foreach foreach %dopar%
 ##' @importFrom terra rast `add<-` wrap writeRaster mask
 ##' 
 ##' 

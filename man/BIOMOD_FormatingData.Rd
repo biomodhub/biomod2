@@ -122,9 +122,10 @@ is to be filtered when several points occur in the same raster cell}
 \value{
 A \code{\link{BIOMOD.formated.data}} object that can be used to build species distribution 
 model(s) with the \code{\link{BIOMOD_Modeling}} function. \cr
-\href{BIOMOD.formated.data.html}{\code{print/show}}, \href{plot.html}{\code{plot}} and 
-\href{summary.html}{\code{summary}} functions are available to have a summary of the 
-created object.
+\href{https://biomodhub.github.io/biomod2/reference/BIOMOD.formated.data.html}{\code{print/show}}, 
+\href{https://biomodhub.github.io/biomod2/reference/plot.html}{\code{plot}} and 
+\href{https://biomodhub.github.io/biomod2/reference/summary.html}{\code{summary}} functions 
+are available to have a summary of the created object.
 }
 \description{
 This function gathers together all input data needed (\emph{xy, 

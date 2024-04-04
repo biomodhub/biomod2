@@ -94,7 +94,7 @@
 ##' @family Secundary functions
 ##' 
 ##' 
-##' @importFrom foreach foreach %dopar% 
+##' @importFrom foreach foreach %do% %dopar% 
 ##' @importFrom rpart prune
 ##' @importFrom gbm gbm.perf
 ##' @importFrom dplyr mutate_at %>%

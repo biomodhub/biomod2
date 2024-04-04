@@ -78,6 +78,9 @@ utils::globalVariables(names = c("i.abs"))
 ## bm_Tuning ------------
 utils::globalVariables(names = c("dataset.i", "PA.i", "tuned.mod", "train.params", "tuning.grid", "criteria.AIC"))
 
+## bm_ModelingOptions ------------
+utils::globalVariables(names = c("ModelsTable"))
+
 ## bm_CrossValidation ------------
 utils::globalVariables(names = c("pa", "env", "this.colnames"))
 

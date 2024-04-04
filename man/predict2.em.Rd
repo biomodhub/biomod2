@@ -79,10 +79,6 @@ value corresponding to the new seed value to be set}
 data (\code{FALSE}) or as formal predictions of the individual models 
 used to build the ensemble model (\code{TRUE}).}
 
-\item{na.rm}{(\emph{optional, default} \code{TRUE}) \cr
-A boolean defining whether Ensemble Model projection should ignore \code{NA}
-in Individual Model projection. Argument ignored by EWmean ensemble algorithm.}
-
 \item{\ldots}{(\emph{optional})}
 }
 \description{

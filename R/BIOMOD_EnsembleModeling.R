@@ -359,6 +359,7 @@
 ##' #                       do.bivariate = TRUE)
 ##' 
 ##' 
+##' @importFrom foreach foreach %do% %dopar%
 ##' @importFrom terra rast  
 ##' 
 ##' 
