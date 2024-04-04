@@ -230,6 +230,7 @@ bm_Tuning <- function(model,
                                 , weights = weights, params.train = params.train)
   for (argi in names(args)) { assign(x = argi, value = args[[argi]]) }
   rm(args)
+  
   ## LOOP OVER CALIB LINES 
   if (is.null(calib.lines)) {
     calib.lines <- data.frame(rep(TRUE, length(bm.format@data.species)))
@@ -495,7 +496,6 @@ bm_Tuning <- function(model,
       return(argstmp)
     }
   names(argsval) <- combi$name_dataset
-  
   return(argsval)
 }
 
@@ -529,10 +529,8 @@ bm_Tuning <- function(model,
   
   ## check bm.options ----------------------------------------------------------
   .fun_testIfInherits(TRUE, "bm.options", bm.options, c("BIOMOD.options.default", "BIOMOD.options.dataset"))
-  
   ## check bm.format ----------------------------------------------------------
   .fun_testIfInherits(TRUE, "bm.format", bm.format, c("BIOMOD.formated.data", "BIOMOD.formated.data.PA"))
-  
   ## check params.train -------------------------------------------------------
   params.train_init = list(ANN.size = c(2, 4, 6, 8),
                            ANN.decay = c(0.001, 0.01, 0.05, 0.1),
@@ -564,18 +562,16 @@ bm_Tuning <- function(model,
     }
   }
   params.train = params.train_init
-  
   ## check evaluation metric --------------------------------------------------
   if (model == "MAXENT") {
     .fun_testIfIn(TRUE, "metric.eval", metric.eval, c("auc.val.avg", "auc.diff.avg", "or.mtp.avg", "or.10p.avg", "AICc"))
     .fun_testIfIn(TRUE, "params.train$MAXENT.algorithm", params.train$MAXENT.algorithm, c("maxent.jar", "maxnet"))
   } else if (model == "SRE") {
     .fun_testIfIn(TRUE, "metric.eval", metric.eval, c("AUC", "Kappa", "TSS"))
-    .fun_testIf01(TRUE, "params.train$SRE.quant", params.train$SRE.quant)
+    sapply(params.train$SRE.quant,FUN=.fun_testIf01,test = TRUE,objName =  "params.train$SRE.quant")
   } else {
     .fun_testIfIn(TRUE, "metric.eval", metric.eval, c("ROC", "TSS"))
   }
-  
   ## check weights ------------------------------------------------------------
   if (model %in% c("CTA", "FDA", "GLM", "GAM") && is.null(weights)) { 
     weights = rep(1, length(bm.format@data.species))
@@ -592,7 +588,6 @@ bm_Tuning <- function(model,
   
   .fun_testIfIn(TRUE, "tuning.fun", tuning.fun, c(all.fun, "bm_SRE", "ENMevaluate", "maxnet"))
   train.params <- all.params[[tuning.fun]]
-  
   ## get tuning grid through params.train -------------------------------------
   tuning.grid <- NULL
   if (model %in% c("ANN", "FDA", "GAM", "GBM", "MARS", "RF", "XGBOOST")) {
@@ -619,7 +614,6 @@ bm_Tuning <- function(model,
     do.stepAIC <- FALSE
     criteria.AIC <- NA
   }
-  
   
   return(list(weights = weights
               , criteria.AIC = criteria.AIC

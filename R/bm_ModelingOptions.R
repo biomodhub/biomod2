@@ -256,6 +256,7 @@ bm_ModelingOptions <- function(data.type
   for (argi in names(args)) { assign(x = argi, value = args[[argi]]) }
   rm(args)
   
+  
   ## Load single models informations
   # data(ModelsTable) # internal data is already readily available
   
@@ -270,7 +271,6 @@ bm_ModelingOptions <- function(data.type
       } else {
         tab.model <- ModelsTable[which(ModelsTable$model == model & ModelsTable$type == data.type), ]
       }
-      
       if (nrow(tab.model) > 0) {
         ## For each kept model : get corresponding options
         BOD.list <- foreach(ii = 1:nrow(tab.model)) %do% {

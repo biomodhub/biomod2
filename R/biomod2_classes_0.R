@@ -507,7 +507,6 @@ setMethod('BIOMOD.options.dataset', signature(strategy = 'character'),
                                    , bm.options = BOM, bm.format = bm.format, calib.lines = calib.lines
                                    , metric.eval = ifelse(mod == "MAXENT", "auc.val.avg", "TSS"))
             }
-            
             BOD <- new('BIOMOD.options.dataset', BOM, args.values = argsval)
             
             ## TEST that all given options do not produce errors ------------------------
