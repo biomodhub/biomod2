@@ -234,7 +234,7 @@ bm_RunModel <- function(model, run.name, dir.name = '.'
   if (model != "MAXENT") { ## ANY MODEL BUT MAXENT ------------------------------------------------
     
     ## PRELIMINAR ---------------------------------------------------
-    if (model %in% c("ANN", "MARS", "RF")) {
+    if (model %in% c("ANN", "MARS", "RF") & is.null(bm.opt.val$formula)) {
       bm.opt.val$formula <- bm_MakeFormula(resp.name = resp_name
                                            , expl.var = head(data_env)
                                            , type = 'simple'

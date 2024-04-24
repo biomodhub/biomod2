@@ -415,6 +415,7 @@ bm_Tuning <- function(model,
                 }
               }
               tuning.form <- tuning.grid[which.max(tmp[, metric.eval]), ]
+              if (model == "RF"){tuning.form <- data.frame(mtry = tuning.grid[which.max(tmp[, metric.eval]), ])}
               
               if (model == "CTA") {
                 tuning.fun = "rpart2"
@@ -428,31 +429,94 @@ bm_Tuning <- function(model,
               }
             }
           } else { tuning.form <- tuning.grid }
+          
           ## run formula selection ------------------------------------------------------------------
           if (do.formula) {
             cat("\n\t\t\t> Tuning formula...")
             
             cmd.form <- sub("tuneGrid = tuning.grid", "tuneGrid = tuning.form", cmd.tuning)
+            cmd.form <- sub("weights = current.weights,","",cmd.form)
             cmd.init <- "form = bm_MakeFormula(resp.name = 'resp', expl.var = myExpl, type = typ, interaction.level = intlev),"
             cmd.init <- paste0(cmd.init, " data = cbind(myExpl, resp = myResp),")
             cmd.form <- sub("x = myExpl, y = myResp,", cmd.init, cmd.form)
-            TMP <- foreach (typ = c('simple', 'quadratic', 'polynomial', 's_smoother'), .combine = "rbind") %:%
-              foreach (intlev = 0:(ncol(myExpl) - 1), .combine = "rbind") %do%
-              {
-                tuned.form <- NULL
-                eval(parse(text = paste0("capture.output("
-                                         , "try(tuned.form <- ", sub(")$", ", silent = TRUE)", cmd.form)
-                                         , ")")))
-                
-                if (!is.null(tuned.form)) {
-                  tmp <- tuned.form$results
-                  tmp$TSS <- tmp$Sens + tmp$Spec - 1
-                  formu <- tuned.form$coefnames
-                  formu <- paste0(bm.format@sp.name, " ~ 1 + ", paste0(formu, collapse = " + "))
-                  return(data.frame(tmp, type = typ, interaction.level = intlev, formula = formu))
+            
+            max.intlev <- min(ncol(myExpl) - 1,3)
+            
+            if (model %in% c("CTA")){
+              TMP <- foreach (typ = c('simple', 'quadratic', 'polynomial', 's_smoother'), .combine = "rbind") %do%
+                {
+                  tuned.form <- NULL
+                  intlev <- 0
+                  eval(parse(text = paste0("capture.output("
+                                           , "try(tuned.form <- ", sub(")$", ", silent = TRUE)", cmd.form)
+                                           , ")")))
+                  if (!is.null(tuned.form)) {
+                    tmp <- tuned.form$results
+                    tmp$TSS <- tmp$Sens + tmp$Spec - 1
+                    formu <- tuned.form$coefnames
+                    formu <- paste0(bm.format@sp.name, " ~ 1 + ", paste0(formu, collapse = " + "))
+                    return(data.frame(tmp, type = typ, interaction.level = intlev, formula = formu))
+                  }
                 }
-              }
+              
+            } else if (model == "FDA"){
+              TMP <- foreach (typ = c('simple','s_smoother'), .combine = "rbind") %do%
+                { 
+                  tuned.form <- NULL
+                  intlev <- 0
+                  eval(parse(text = paste0("capture.output("
+                                           , "try(tuned.form <- ", sub(")$", ", silent = TRUE)", cmd.form)
+                                           , ")")))
+                  if (!is.null(tuned.form)) {
+                    tmp <- tuned.form$results
+                    tmp$TSS <- tmp$Sens + tmp$Spec - 1
+                    formu <- tuned.form$coefnames
+                    formu <- paste0(bm.format@sp.name, " ~ 1 + ", paste0(formu, collapse = " + "))
+                    return(data.frame(tmp, type = typ, interaction.level = intlev, formula = formu))
+                  }
+                }
+            } else if (model == "RF"){
+              TMP <- foreach (typ = c('simple','quadratic', 'polynomial'), .combine = "rbind") %:%
+                foreach (intlev = 0:max.intlev, .combine = "rbind") %do%
+                {
+                  tuned.form <- NULL
+                  eval(parse(text = paste0("capture.output("
+                                           , "try(tuned.form <- ", sub(")$", ", silent = TRUE)", cmd.form)
+                                           , ")")))
+                  if (!is.null(tuned.form)) {
+                    tmp <- tuned.form$results
+                    tmp$TSS <- tmp$Sens + tmp$Spec - 1
+                    formu <- tuned.form$coefnames
+                    formu <- paste0(bm.format@sp.name, " ~ 1 + ", paste0(formu, collapse = " + "))
+                    return(data.frame(tmp, type = typ, interaction.level = intlev, formula = formu))
+                  }
+                }
+            } else {
+              TMP <- foreach (typ = c('simple', 'quadratic', 'polynomial', 's_smoother'), .combine = "rbind") %:%
+                foreach (intlev = 0:max.intlev, .combine = "rbind") %do%
+                {
+                  tuned.form <- NULL
+                  eval(parse(text = paste0("capture.output("
+                                           , "try(tuned.form <- ", sub(")$", ", silent = TRUE)", cmd.form)
+                                           , ")")))
+                  if (!is.null(tuned.form)) {
+                    tmp <- tuned.form$results
+                    tmp$TSS <- tmp$Sens + tmp$Spec - 1
+                    formu <- tuned.form$coefnames
+                    formu <- paste0(bm.format@sp.name, " ~ 1 + ", paste0(formu, collapse = " + "))
+                    return(data.frame(tmp, type = typ, interaction.level = intlev, formula = formu))
+                  }
+                }
+            }
             argstmp$formula <- TMP[which.max(TMP[, metric.eval]), "formula"]
+            if (model %in% c("GBM","GAM","MARS","RF","ANN")){argstmp$formula <- formula(argstmp$formula)}
+          } else {
+            if (model %in% c("CTA","GAM","FDA","GBM","GLM")){
+              argstmp$formula <- bm_MakeFormula(resp.name = bm.format@sp.name
+                                                , expl.var = myExpl
+                                                , type = 'simple'
+                                                , interaction.level = 0)
+            }
           }
           
           ## run variable selection -----------------------------------------------------------------
@@ -605,6 +669,12 @@ bm_Tuning <- function(model,
   if (model == "CTA") tuning.length <- 30
   if (model == "RF") tuning.length <- min(30, ncol(bm.format@data.env.var))
   
+  ## Do formula ---------------------------------------------------------------
+  if (model %in% c("MAXENT","MAXNET","SRE","XGBOOST")& do.formula == TRUE){
+    do.formula <- FALSE 
+    cat("\n No optimization of formula for", model)
+  }
+  
   ## get criteria -------------------------------------------------------------
   if (do.stepAIC && (model == "GLM" || 
                      (model == "GAM" && bm.options@package == "gam"))) {
@@ -617,6 +687,7 @@ bm_Tuning <- function(model,
   }
   
   return(list(weights = weights
+              , do.formula = do.formula
               , criteria.AIC = criteria.AIC
               , tuning.fun = tuning.fun
               , train.params = train.params
