@@ -68,6 +68,7 @@
 ##' Currently, the available parameters to be tuned are the following :
 ##' \describe{
 ##'   \item{ANN}{\code{size}, \code{decay}, \code{bag}}
+##'   \item{CTA}{\code{maxdepth}}
 ##'   \item{FDA}{\code{degree}, \code{nprune}}
 ##'   \item{GAM.mgcv}{\code{select}, \code{method}}
 ##'   \item{GBM}{\code{n.trees}, \code{interaction.depth}, \code{shrinkage}, \code{n.minobsinnode}}
@@ -97,6 +98,7 @@
 ##'   \item All other models are tuned through \code{\link[caret]{train}} function
 ##'   \item No optimization of formula for \code{MAXENT}, \code{MAXNET}, \code{SRE} and 
 ##'   \code{XGBOOST}
+##'   \item No interaction included in formula for \code{CTA}
 ##'   \item Variables selection only for \code{GAM.gam} and \code{GLM}
 ##' }
 ##' 
