@@ -296,6 +296,7 @@ setGeneric("BIOMOD.options.dataset",
                                                            , paste0("_PA", this_PA, "_allRun"))))
     } 
     .fun_testIfIn(TRUE, "colnames(calib.lines)", colnames(calib.lines), expected_CVnames)
+    expected_CVnames <- colnames(calib.lines)
   } else {
     if (!is.null(bm.format) && inherits(bm.format, "BIOMOD.formated.data.PA")) {
       expected_CVnames <- c(expected_CVnames
