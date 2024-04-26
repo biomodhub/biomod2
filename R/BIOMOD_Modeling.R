@@ -386,7 +386,9 @@ BIOMOD_Modeling <- function(bm.format,
     modeling.id = modeling.id, 
     models = models, 
     models.pa = models.pa, 
-    OPT.user = OPT.user, 
+    OPT.user = OPT.user,
+    CV.user.table = CV.user.table,
+    CV.do.full.models = CV.do.full.models,
     weights = weights, 
     prevalence = prevalence, 
     metric.eval = metric.eval, 
@@ -573,6 +575,7 @@ BIOMOD_Modeling <- function(bm.format,
 # ---------------------------------------------------------------------------- #
 
 .BIOMOD_Modeling.check.args <- function(bm.format, modeling.id, models, models.pa, OPT.user
+                                        , CV.user.table, CV.do.full.models
                                         , weights, prevalence, metric.eval, var.import
                                         , scale.models, nb.cpu, seed.val, do.progress)
 {
@@ -659,6 +662,14 @@ BIOMOD_Modeling <- function(bm.format,
   #   bm.options <- BIOMOD_ModelingOptions()
   # }
   
+  ## 4. Check user 
+  if (!is.null(CV.user.table)){
+    if(!("_allData_allRun" %in% colnames(CV.user.table)) & CV.do.full.models == T){ 
+      CV.do.full.models = FALSE
+      warning("CV.do.full.model has been disabled because '_allData_allRun' is not provided in CV.user.table")
+    }
+  }
+  
   ## 5. Check prevalence arguments --------------------------------------------
   if (!is.null(prevalence)) {
     .fun_testIf01(TRUE, "prevalence", prevalence)
@@ -740,7 +751,8 @@ BIOMOD_Modeling <- function(bm.format,
               metric.eval = metric.eval,
               prevalence = prevalence,
               seed.val = seed.val,
-              do.progress = do.progress))
+              do.progress = do.progress,
+              CV.do.full.models = CV.do.full.models))
 }
 
 
