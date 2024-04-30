@@ -18,15 +18,16 @@ bm_Tuning(
   ctrl.train = NULL,
   params.train = list(ANN.size = c(2, 4, 6, 8), ANN.decay = c(0.001, 0.01, 0.05, 0.1),
     ANN.bag = FALSE, FDA.degree = 1:2, FDA.nprune = 2:38, GAM.select = c(TRUE, FALSE),
-    GAM.method = c("GCV.Cp", "GACV.Cp", "REML", "P-REML", "ML", "P-ML"), GBM.n.trees =
-    c(500, 1000, 2500), GBM.interaction.depth = seq(2, 8, by = 3), GBM.shrinkage =
-    c(0.001, 0.01, 0.1), GBM.n.minobsinnode = 10, MARS.degree = 1:2, MARS.nprune =
-    2:max(38, 2 * ncol(bm.format@data.env.var) + 1), MAXENT.algorithm = "maxnet",
-    MAXENT.parallel = TRUE, RF.mtry = 1:min(10, 
-     ncol(bm.format@data.env.var)),
-    SRE.quant = c(0, 0.0125, 0.025, 0.05, 0.1), XGBOOST.nrounds = 50, XGBOOST.max_depth =
-    1, XGBOOST.eta = c(0.3, 0.4), XGBOOST.gamma = 0, XGBOOST.colsample_bytree = c(0.6,
-    0.8), XGBOOST.min_child_weight = 1, XGBOOST.subsample = 0.5)
+    GAM.method = c("GCV.Cp", "GACV.Cp", "REML", "P-REML", "ML", "P-ML"), GAM.span =
+    c(0.3, 0.5, 0.7), GAM.degree = 1, GBM.n.trees = c(500, 1000, 2500),
+    GBM.interaction.depth = seq(2, 8, by = 3), GBM.shrinkage = c(0.001, 0.01, 0.1),
+    GBM.n.minobsinnode = 10, MARS.degree = 1:2, MARS.nprune = 2:max(38, 2 *
+    ncol(bm.format@data.env.var) + 1), MAXENT.algorithm = "maxnet", 
+     MAXENT.parallel
+    = TRUE, RF.mtry = 1:min(10, ncol(bm.format@data.env.var)), SRE.quant = c(0, 0.0125,
+    0.025, 0.05, 0.1), XGBOOST.nrounds = 50, XGBOOST.max_depth = 1, XGBOOST.eta = c(0.3,
+    0.4), XGBOOST.gamma = 0, XGBOOST.colsample_bytree = c(0.6, 0.8),
+    XGBOOST.min_child_weight = 1, XGBOOST.subsample = 0.5)
 )
 }
 \arguments{
@@ -101,8 +102,10 @@ function.
 Currently, the available parameters to be tuned are the following :
 \describe{
   \item{ANN}{\code{size}, \code{decay}, \code{bag}}
+  \item{CTA}{\code{maxdepth}}
   \item{FDA}{\code{degree}, \code{nprune}}
-  \item{GAM}{\code{select}, \code{method}}
+  \item{GAM.gam}{\code{span}, \code{degree}}
+  \item{GAM.mgcv}{\code{select}, \code{method}}
   \item{GBM}{\code{n.trees}, \code{interaction.depth}, \code{shrinkage}, \code{n.minobsinnode}}
   \item{MARS}{\code{degree}, \code{nprune}}
   \item{MAXENT}{\code{algorithm}, \code{parallel}}
@@ -128,8 +131,10 @@ combinations of parameters to be tested.
   }
   \item \code{SRE} is tuned through \code{\link{bm_SRE}} function
   \item All other models are tuned through \code{\link[caret]{train}} function
-  \item No optimization of formula for \code{MAXENT}, \code{MAXNET} and \code{SRE}
-  \item Selection variables only for \code{GAM} and \code{GLM}
+  \item No optimization of formula for \code{MAXENT}, \code{MAXNET}, \code{SRE} and 
+  \code{XGBOOST}
+  \item No interaction included in formula for \code{CTA}
+  \item Variables selection only for \code{GAM.gam} and \code{GLM}
 }
 }
 \examples{
@@ -183,7 +188,7 @@ opt.d <- bm_ModelingOptions(data.type = 'binary',
 # tune parameters for Random Forest model
 tuned.rf <- bm_Tuning(model = 'RF',
                       tuning.fun = 'rf', ## see in ModelsTable
-                      do.formula = TRUE,
+                      do.formula = FALSE,
                       bm.options = opt.d@options$RF.binary.randomForest.randomForest,
                       bm.format = myBiomodData)
 tuned.rf
@@ -227,6 +232,6 @@ Other Secundary functions:
 \code{\link{bm_VariablesImportance}()}
 }
 \author{
-Frank Breiner, Maya Gueguen
+Frank Breiner, Maya Gueguen, Helene Blancheteau
 }
 \concept{Secundary functions}

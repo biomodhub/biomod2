@@ -136,8 +136,8 @@ myBiomodEM
 \code{\link{bm_PlotVarImpBoxplot}}, \code{\link{bm_PlotResponseCurves}}
 
 Other Toolbox objects: 
-\code{\link{BIOMOD.formated.data.PA}},
 \code{\link{BIOMOD.formated.data}},
+\code{\link{BIOMOD.formated.data.PA}},
 \code{\link{BIOMOD.models.options}},
 \code{\link{BIOMOD.models.out}},
 \code{\link{BIOMOD.options.dataset}},

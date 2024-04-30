@@ -6,7 +6,7 @@ utils::globalVariables(names = c("i.dim1",
                                  "sub.i"))
 
 ## biomod2_classes_0 ------------
-utils::globalVariables(names = c("expected_CVnames"))
+utils::globalVariables(names = c("expected_CVnames", "OptionsBigboss"))
 
 ## biomod2_classes_1 ------------
 utils::globalVariables(names = c("this_PA",

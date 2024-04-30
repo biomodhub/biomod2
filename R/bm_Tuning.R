@@ -70,6 +70,7 @@
 ##'   \item{ANN}{\code{size}, \code{decay}, \code{bag}}
 ##'   \item{CTA}{\code{maxdepth}}
 ##'   \item{FDA}{\code{degree}, \code{nprune}}
+##'   \item{GAM.gam}{\code{span}, \code{degree}}
 ##'   \item{GAM.mgcv}{\code{select}, \code{method}}
 ##'   \item{GBM}{\code{n.trees}, \code{interaction.depth}, \code{shrinkage}, \code{n.minobsinnode}}
 ##'   \item{MARS}{\code{degree}, \code{nprune}}
@@ -86,7 +87,7 @@
 ##' 
 ##' @note 
 ##' \itemize{
-##'   \item No tuning for \code{GAM.gam}, \code{GLM} and \code{MAXNET}
+##'   \item No tuning for \code{GLM} and \code{MAXNET}
 ##'   \item \code{MAXENT} is tuned through \code{\link[ENMeval]{ENMevaluate}} function which is
 ##'   calling either :
 ##'   \itemize{
@@ -161,7 +162,7 @@
 ##' # tune parameters for Random Forest model
 ##' tuned.rf <- bm_Tuning(model = 'RF',
 ##'                       tuning.fun = 'rf', ## see in ModelsTable
-##'                       do.formula = TRUE,
+##'                       do.formula = FALSE,
 ##'                       bm.options = opt.d@options$RF.binary.randomForest.randomForest,
 ##'                       bm.format = myBiomodData)
 ##' tuned.rf
@@ -207,7 +208,7 @@ bm_Tuning <- function(model,
                                           FDA.nprune = 2:38,
                                           GAM.select = c(TRUE, FALSE),
                                           GAM.method = c('GCV.Cp', 'GACV.Cp', 'REML', 'P-REML', 'ML', 'P-ML'),
-                                          GAM.span = c(0.3,0.5,0.7),
+                                          GAM.span = c(0.3, 0.5, 0.7),
                                           GAM.degree = 1,
                                           GBM.n.trees = c(500, 1000, 2500),
                                           GBM.interaction.depth = seq(2, 8, by = 3),
@@ -592,7 +593,7 @@ bm_Tuning <- function(model,
                            FDA.nprune = 2:38,
                            GAM.select = c(TRUE, FALSE),
                            GAM.method = c('GCV.Cp', 'GACV.Cp', 'REML', 'P-REML', 'ML', 'P-ML'),
-                           GAM.span = c(0.3,0.5,0.7),
+                           GAM.span = c(0.3, 0.5, 0.7),
                            GAM.degree = 1,
                            GBM.n.trees = c(500, 1000, 2500),
                            GBM.interaction.depth = seq(2, 8, by = 3),
@@ -651,9 +652,9 @@ bm_Tuning <- function(model,
       params.train = params.train[grep(model, names(params.train))]
       .fun_testIfIn(TRUE, "names(params.train)", names(params.train), paste0(model, ".", train.params$params))
     } else if (tuning.fun == "gamLoess"){
-      params.train = params.train[c('GAM.span',"GAM.degree")]
+      params.train = params.train[c('GAM.span', "GAM.degree")]
     } else {
-      params.train = params.train[c('GAM.select','GAM.method')]
+      params.train = params.train[c('GAM.select', 'GAM.method')]
     }
     names(params.train) = sub(model, "", names(params.train))
     tuning.grid <- do.call(expand.grid, params.train)
