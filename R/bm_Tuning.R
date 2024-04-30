@@ -207,6 +207,8 @@ bm_Tuning <- function(model,
                                           FDA.nprune = 2:38,
                                           GAM.select = c(TRUE, FALSE),
                                           GAM.method = c('GCV.Cp', 'GACV.Cp', 'REML', 'P-REML', 'ML', 'P-ML'),
+                                          GAM.span = c(0.3,0.5,0.7),
+                                          GAM.degree = 1,
                                           GBM.n.trees = c(500, 1000, 2500),
                                           GBM.interaction.depth = seq(2, 8, by = 3),
                                           GBM.shrinkage = c(0.001, 0.01, 0.1),
@@ -375,8 +377,7 @@ bm_Tuning <- function(model,
                                              mySpExpl[, PA.i] == TRUE)]
           mySpExpl <- mySpExpl[which(calib.lines[, calib.i] == TRUE), ]
           mySpExpl <- mySpExpl[which(mySpExpl[, PA.i] == TRUE), ]
-          mySpExpl[, 1] <- as.factor(ifelse(mySpExpl[, 1] == 1 & !is.na(mySpExpl[, 1])
-                                            , "Presence", "Absence"))
+          mySpExpl[, 1] <- as.factor(ifelse(mySpExpl[, 1] == 1 & !is.na(mySpExpl[, 1]), "presence", "absence"))
           myResp <- mySpExpl[, 1]
           myExpl <- mySpExpl[, 4:(3 + ncol(bm.format@data.env.var))]
           
@@ -402,7 +403,7 @@ bm_Tuning <- function(model,
           if (model != "GLM") {
             cat("\n\t\t\t> Tuning parameters...")
             eval(parse(text = paste0("try(tuned.mod <- ", cmd.tuning)))
-            
+          
             ## GET tuned parameter values -------------------------------------------------------------
             if (!is.null(tuned.mod)) {
               tmp <- tuned.mod$results
@@ -540,7 +541,7 @@ bm_Tuning <- function(model,
                       scope = .scope(head(myExpl), "gam::s", 6),
                       direction = "both",
                       trace = FALSE))
-              if (!is.null(tuned.AIC)) { argstmp$formula <- deparse(tuned.AIC$formula) }
+              if (!is.null(tuned.AIC)) { argstmp$formula <- formula(deparse(tuned.AIC$formula)) }
             }
           }
         }
@@ -591,6 +592,8 @@ bm_Tuning <- function(model,
                            FDA.nprune = 2:38,
                            GAM.select = c(TRUE, FALSE),
                            GAM.method = c('GCV.Cp', 'GACV.Cp', 'REML', 'P-REML', 'ML', 'P-ML'),
+                           GAM.span = c(0.3,0.5,0.7),
+                           GAM.degree = 1,
                            GBM.n.trees = c(500, 1000, 2500),
                            GBM.interaction.depth = seq(2, 8, by = 3),
                            GBM.shrinkage = c(0.001, 0.01, 0.1),
@@ -632,7 +635,7 @@ bm_Tuning <- function(model,
   
   
   ## get tuning function and parameters ---------------------------------------
-  all.fun <- c('avNNet', 'rpart', 'rpart2', 'fda', 'gamSpline', 'bam', 'gam', 'gbm', 'glm', 'earth', 'rf', 'xgbTree')
+  all.fun <- c('avNNet', 'rpart', 'rpart2', 'fda', 'gamLoess', 'bam', 'gam', 'gbm', 'glm', 'earth', 'rf', 'xgbTree')
   all.params <- foreach (fi = all.fun) %do% {
     params <- caret::getModelInfo(model = fi)
     return(list(pkg = params[[fi]]$library, params = params[[fi]]$parameters$parameter))
@@ -644,12 +647,16 @@ bm_Tuning <- function(model,
   ## get tuning grid through params.train -------------------------------------
   tuning.grid <- NULL
   if (model %in% c("ANN", "FDA", "GAM", "GBM", "MARS", "RF", "XGBOOST")) {
-    if (!(model == "GAM" && tuning.fun == "gamSpline")) {
+    if (!(model == "GAM")) {
       params.train = params.train[grep(model, names(params.train))]
       .fun_testIfIn(TRUE, "names(params.train)", names(params.train), paste0(model, ".", train.params$params))
-      names(params.train) = sub(model, "", names(params.train))
-      tuning.grid <- do.call(expand.grid, params.train)
+    } else if (tuning.fun == "gamLoess"){
+      params.train = params.train[c('GAM.span',"GAM.degree")]
+    } else {
+      params.train = params.train[c('GAM.select','GAM.method')]
     }
+    names(params.train) = sub(model, "", names(params.train))
+    tuning.grid <- do.call(expand.grid, params.train)
   }
   
   ## get tuning length --------------------------------------------------------

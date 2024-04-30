@@ -38,10 +38,10 @@
 #                                          , 'earth', 'MAXENT', 'maxnet', 'randomForest', 'biomod2', 'xgboost')
 #                            , func = c('nnet', 'rpart', 'fda', 'gam', 'bam', 'gam', 'gbm', 'glm'
 #                                       , 'earth', 'MAXENT', 'maxnet', 'randomForest', 'bm_SRE', 'xgboost')
-#                            , train = c('avNNet', 'rpart', 'fda', 'gamSpline', 'bam', 'gam', 'gbm', 'glm'
+#                            , train = c('avNNet', 'rpart', 'fda', 'gamLoess', 'bam', 'gam', 'gbm', 'glm'
 #                                        , 'earth', 'ENMevaluate', 'maxnet', 'rf', 'bm_SRE', 'xgbTree'))
 
-# usethis::use_data(ModelsTable, overwrite = TRUE)
+# usethis::use_data(ModelsTable, overwrite = TRUE, internal = TRUE)
 
 #' Bigboss pre-defined parameter values for single models
 #'
