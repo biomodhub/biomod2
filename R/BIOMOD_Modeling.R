@@ -471,6 +471,16 @@ BIOMOD_Modeling <- function(bm.format,
           for (ii in vals) {
             OPT.user@options[[mod]]@args.values[[ii]] <- val
           }
+        } else if (all(grepl("_allRun", nam))){ #Check if the user create the options just for PA dataset
+          model.name <- unlist(strsplit(mod,split = '[.]'))[1]
+          cat("\n \t The options for",model.name, "for '_PAx_allRun' will be given to all runs with PAx (_PAx_RUN1, _PAx_RUN2,...) \n")
+          for (run in vals){
+            PA.set <- grep("PA", unlist(strsplit(run, "_")), value = T)
+            if (length(PA.set) == 0){
+              PA.set <- "allData"
+            }
+            OPT.user@options[[mod]]@args.values[[run]] <- OPT.user@options[[mod]]@args.values[[paste0("_", PA.set, "_allRun")]]
+          }
         } else {
           stop(paste0("\n", "names(OPT.user@options[['", mod, "']]@args.values)", " must be '",
                       ifelse(length(vals) > 1,
@@ -662,7 +672,7 @@ BIOMOD_Modeling <- function(bm.format,
   #   bm.options <- BIOMOD_ModelingOptions()
   # }
   
-  ## 4. Check user 
+  ## 4. Check CV.user.table
   if (!is.null(CV.user.table)){
     if(!("_allData_allRun" %in% colnames(CV.user.table)) & CV.do.full.models == T){ 
       CV.do.full.models = FALSE
