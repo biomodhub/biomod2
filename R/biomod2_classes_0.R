@@ -446,6 +446,8 @@ setMethod('BIOMOD.options.dataset', signature(strategy = 'character'),
               argstmp$type <- "classification"
             }
             if (mod == "XGBOOST") { argstmp$nrounds = 4 }
+            
+            argstmp[["..."]] = NULL
             BOM@args.default <- argstmp
             ## SHOULD BE MOVED to place when testing values !! ??
             
