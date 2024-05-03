@@ -471,14 +471,14 @@ BIOMOD_Modeling <- function(bm.format,
           for (ii in vals) {
             OPT.user@options[[mod]]@args.values[[ii]] <- val
           }
-        } else if (all(grepl("_allRun", nam))){ #Check if the user create the options just for PA dataset
-          sep.name <- unlist(strsplit(mod,split = '[.]'))
-          cat("\n \n \t The options for",sep.name[1], "for '_PAx_allRun' will be given to all runs with PAx (_PAx_RUN1, _PAx_RUN2,...) \n")
-          for (run in vals){
-            PA.set <- grep("PA|allData", unlist(strsplit(run, "_")), value = T)
-            if (is.null(OPT.user@options[[mod]]@args.values[[paste0("_", PA.set, "_allRun")]])){
-              opt.default <- BIOMOD.options.dataset(mod = sep.name[1],typ = sep.name[2],pkg =sep.name[3], fun = sep.name[4], strategy = "default",
-                                                    bm.format = bm.format, calib.lines = calib.lines)
+        } else if (all(grepl("_allRun", nam))) { #Check if the user create the options just for PA dataset
+          sep.name <- unlist(strsplit(mod, split = '[.]'))
+          cat("\n \n \t The options for", sep.name[1], "for '_PAx_allRun' will be given to all runs with PAx (_PAx_RUN1, _PAx_RUN2,...) \n")
+          for (run in vals) {
+            PA.set <- grep("PA|allData", unlist(strsplit(run, "_")), value = TRUE)
+            if (is.null(OPT.user@options[[mod]]@args.values[[paste0("_", PA.set, "_allRun")]])) {
+              opt.default <- BIOMOD.options.dataset(mod = sep.name[1], typ = sep.name[2], pkg =sep.name[3], fun = sep.name[4]
+                                                    , strategy = "default", bm.format = bm.format, calib.lines = calib.lines)
               OPT.user@options[[mod]]@args.values[[run]] <- opt.default@args.values[["_allData_allRun"]]
             } else {
               OPT.user@options[[mod]]@args.values[[run]] <- OPT.user@options[[mod]]@args.values[[paste0("_", PA.set, "_allRun")]]

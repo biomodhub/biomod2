@@ -138,13 +138,82 @@
 </h2>
 <div class="section level3">
 <h3 id="section">
-<i class="fas fa-feather"></i> 2023<a class="anchor" aria-label="anchor" href="#section"></a>
+<i class="fas fa-pencil-alt"></i> 2024<a class="anchor" aria-label="anchor" href="#section"></a>
+</h3>
+<div class="section level4">
+<h4 id="modeling-options-and-tuning-2024-05-02">4.2-5 Modeling options and Tuning (2024-05-02)<a class="anchor" aria-label="anchor" href="#modeling-options-and-tuning-2024-05-02"></a>
+</h4>
+<ul>
+<li>Submitted on CRAN</li>
+</ul>
+<div class="section level5">
+<h5 id="major-changes">Major Changes<a class="anchor" aria-label="anchor" href="#major-changes"></a>
+</h5>
+<ul>
+<li>Add print function for <code>BIOMOD.options.dataset</code> and
+<code>BIOMOD.models.options</code> classes</li>
+<li>Add <code>GAM.binary.gam.gam</code> and
+<code>GAM.binary.mgcv.bam</code> in <code>OptionsBigboss</code>
+dataset</li>
+<li>Add checks for <code>obs</code> and <code>fit</code> parameters in
+<code>bm_FindOptimStat</code>
+</li>
+<li>In <code>bm_Tuning</code> function :
+<ul>
+<li>add <code>MAXENT.algorithm</code> and <code>MAXENT.parallel</code>
+parameters</li>
+<li>be sure to update default tuning parameters if not all provided</li>
+<li>fix tuning for <code>XGBOOST</code> and <code>SRE</code>
+</li>
+<li>fix optimization of formula</li>
+<li>switch from <code>gamSpline</code> to <code>gamLoess</code> method
+to tune <code>GAM.gam.gam</code> model, and add <code>GAM.span</code>
+and <code>GAM.degree</code> parameters</li>
+</ul>
+</li>
+<li>Fix multiple cases when using different settings of PA /
+cross-validation / modeling options through all the different secundary
+functions and <code>BIOMOD_Modeling</code>
+</li>
+</ul>
+</div>
+<div class="section level5">
+<h5 id="minor-changes">Minor Changes<a class="anchor" aria-label="anchor" href="#minor-changes"></a>
+</h5>
+<ul>
+<li>Add vignette for cross-validation (<em>to prepare your own
+calibration / validation datasets</em>)</li>
+<li>Add vignette for modeling options (<em>to help you navigate through
+the new way of parameterizing single models</em>)</li>
+<li>Update examples and documentation</li>
+</ul>
+</div>
+<div class="section level5">
+<h5 id="bugfix">Bugfix<a class="anchor" aria-label="anchor" href="#bugfix"></a>
+</h5>
+<ul>
+<li>Add <code>try</code> and error message in call for models in
+<code>bm_RunModelsLoop</code>
+</li>
+<li>Check for predictions <code>&gt;1000</code>
+</li>
+<li>Correct <code>BIOMOD_EnsembleForecasting</code> when using
+<code>data.frame</code>
+</li>
+<li>Correct predictions for <code>EMci</code> (removing round)</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="section level3">
+<h3 id="section-1">
+<i class="fas fa-feather"></i> 2023<a class="anchor" aria-label="anchor" href="#section-1"></a>
 </h3>
 <div class="section level4">
 <h4 id="modeling-options-and-tuning-2023-09-12">4.2-5 Modeling options and Tuning (2023-09-12)<a class="anchor" aria-label="anchor" href="#modeling-options-and-tuning-2023-09-12"></a>
 </h4>
 <div class="section level5">
-<h5 id="major-changes">Major Changes<a class="anchor" aria-label="anchor" href="#major-changes"></a>
+<h5 id="major-changes-1">Major Changes<a class="anchor" aria-label="anchor" href="#major-changes-1"></a>
 </h5>
 <ul>
 <li>Reformat modeling options, how they are created and how they are
@@ -173,7 +242,7 @@ a more generalized way dealing with new modeling options</li>
 </ul>
 </div>
 <div class="section level5">
-<h5 id="minor-changes">Minor Changes<a class="anchor" aria-label="anchor" href="#minor-changes"></a>
+<h5 id="minor-changes-1">Minor Changes<a class="anchor" aria-label="anchor" href="#minor-changes-1"></a>
 </h5>
 <ul>
 <li>Remove <code>BIOMOD_PresenceOnly</code> function and add
@@ -189,7 +258,7 @@ yourself before modeling</em>)</li>
 </ul>
 </div>
 <div class="section level5">
-<h5 id="bugfix">Bugfix<a class="anchor" aria-label="anchor" href="#bugfix"></a>
+<h5 id="bugfix-1">Bugfix<a class="anchor" aria-label="anchor" href="#bugfix-1"></a>
 </h5>
 <ul>
 <li>4.2-4-10 : fixed <code>wrap</code> applied to a
@@ -233,7 +302,7 @@ models merged by algo (for Maxent)</li>
 <h4 id="xgboost-2023-06-21">4.2-4 XGBOOST (2023-06-21)<a class="anchor" aria-label="anchor" href="#xgboost-2023-06-21"></a>
 </h4>
 <div class="section level5">
-<h5 id="major-changes-1">Major Changes<a class="anchor" aria-label="anchor" href="#major-changes-1"></a>
+<h5 id="major-changes-2">Major Changes<a class="anchor" aria-label="anchor" href="#major-changes-2"></a>
 </h5>
 <ul>
 <li>added XGBOOST as a possible algorithm in
@@ -242,7 +311,7 @@ models merged by algo (for Maxent)</li>
 </ul>
 </div>
 <div class="section level5">
-<h5 id="minor-changes-1">Minor Changes<a class="anchor" aria-label="anchor" href="#minor-changes-1"></a>
+<h5 id="minor-changes-2">Minor Changes<a class="anchor" aria-label="anchor" href="#minor-changes-2"></a>
 </h5>
 <ul>
 <li>changed <code>CV.do.full.models</code> default value to
@@ -251,7 +320,7 @@ models merged by algo (for Maxent)</li>
 </ul>
 </div>
 <div class="section level5">
-<h5 id="bugfix-1">Bugfix<a class="anchor" aria-label="anchor" href="#bugfix-1"></a>
+<h5 id="bugfix-2">Bugfix<a class="anchor" aria-label="anchor" href="#bugfix-2"></a>
 </h5>
 <ul>
 <li>4.2-3-5 :
@@ -285,7 +354,7 @@ not in the given PA dataset are now properly transformed into NA)</li>
 <h4 id="cross-validation-and-pseudo-absences-2023-05-09">4.2-3 Cross-Validation and Pseudo-Absences (2023-05-09)<a class="anchor" aria-label="anchor" href="#cross-validation-and-pseudo-absences-2023-05-09"></a>
 </h4>
 <div class="section level5">
-<h5 id="major-changes-2">Major Changes<a class="anchor" aria-label="anchor" href="#major-changes-2"></a>
+<h5 id="major-changes-3">Major Changes<a class="anchor" aria-label="anchor" href="#major-changes-3"></a>
 </h5>
 <ul>
 <li>Improved pseudo-absence management: it is now possible to have
@@ -301,7 +370,7 @@ directly through <code>BIOMOD_Modeling</code>.</li>
 </ul>
 </div>
 <div class="section level5">
-<h5 id="minor-changes-2">Minor Changes<a class="anchor" aria-label="anchor" href="#minor-changes-2"></a>
+<h5 id="minor-changes-3">Minor Changes<a class="anchor" aria-label="anchor" href="#minor-changes-3"></a>
 </h5>
 <ul>
 <li>improved Documentation (<code>get_evaluations</code>,
@@ -328,7 +397,7 @@ models. Default value is now ‘validation’ instead of ‘evaluation’.</li>
 </ul>
 </div>
 <div class="section level5">
-<h5 id="bugfix-2">Bugfix<a class="anchor" aria-label="anchor" href="#bugfix-2"></a>
+<h5 id="bugfix-3">Bugfix<a class="anchor" aria-label="anchor" href="#bugfix-3"></a>
 </h5>
 <ul>
 <li>validation metric calculation now properly use the calibration
@@ -393,7 +462,7 @@ are standardised (no more <code>calibLines</code> or
 <h4 id="improvement-patch-2023-01-13">4.2-2 Improvement patch (2023-01-13)<a class="anchor" aria-label="anchor" href="#improvement-patch-2023-01-13"></a>
 </h4>
 <div class="section level5">
-<h5 id="major-changes-3">Major Changes<a class="anchor" aria-label="anchor" href="#major-changes-3"></a>
+<h5 id="major-changes-4">Major Changes<a class="anchor" aria-label="anchor" href="#major-changes-4"></a>
 </h5>
 <ul>
 <li>
@@ -424,7 +493,7 @@ using <code>get_predictions(x, model.as.col = TRUE)</code>.</li>
 </ul>
 </div>
 <div class="section level5">
-<h5 id="minor-changes-3">Minor Changes<a class="anchor" aria-label="anchor" href="#minor-changes-3"></a>
+<h5 id="minor-changes-4">Minor Changes<a class="anchor" aria-label="anchor" href="#minor-changes-4"></a>
 </h5>
 <ul>
 <li>Simplified maxent model names: ‘MAXENT.Phillips’ -&gt; ‘MAXENT’
@@ -453,7 +522,7 @@ Building all possible ensemble models can now be done with
 </ul>
 </div>
 <div class="section level5">
-<h5 id="bugfix-3">Bugfix<a class="anchor" aria-label="anchor" href="#bugfix-3"></a>
+<h5 id="bugfix-4">Bugfix<a class="anchor" aria-label="anchor" href="#bugfix-4"></a>
 </h5>
 <ul>
 <li>Fixed <code>MAXENT.Phillips.2</code> and single variable
@@ -485,14 +554,14 @@ evaluations.</li>
 </div>
 </div>
 <div class="section level3">
-<h3 id="section-1">
-<i class="fas fa-chess-pawn"></i> 2022<a class="anchor" aria-label="anchor" href="#section-1"></a>
+<h3 id="section-2">
+<i class="fas fa-chess-pawn"></i> 2022<a class="anchor" aria-label="anchor" href="#section-2"></a>
 </h3>
 <div class="section level4">
 <h4 id="bugfix-patch">4.2-1 Bugfix patch<a class="anchor" aria-label="anchor" href="#bugfix-patch"></a>
 </h4>
 <div class="section level5">
-<h5 id="major-changes-4">Major Changes<a class="anchor" aria-label="anchor" href="#major-changes-4"></a>
+<h5 id="major-changes-5">Major Changes<a class="anchor" aria-label="anchor" href="#major-changes-5"></a>
 </h5>
 <ul>
 <li>Package <code>sp</code> is back into <code>Imports</code> due to the
@@ -505,7 +574,7 @@ saved to the disk.</li>
 </ul>
 </div>
 <div class="section level5">
-<h5 id="minor-changes-4">Minor Changes<a class="anchor" aria-label="anchor" href="#minor-changes-4"></a>
+<h5 id="minor-changes-5">Minor Changes<a class="anchor" aria-label="anchor" href="#minor-changes-5"></a>
 </h5>
 <ul>
 <li>Added <code>initial_heap_size</code> and <code>max_heap_size</code>
@@ -515,7 +584,7 @@ in <code>MAXENT.Phillips</code> modeling options</li>
 </ul>
 </div>
 <div class="section level5">
-<h5 id="bugfix-4">Bugfix<a class="anchor" aria-label="anchor" href="#bugfix-4"></a>
+<h5 id="bugfix-5">Bugfix<a class="anchor" aria-label="anchor" href="#bugfix-5"></a>
 </h5>
 <ul>
 <li>Fixed <code>MAXENT.Phillips</code> predict method for large dataset
@@ -564,7 +633,7 @@ dataset</li>
 <h4 id="terra-update">4.2-0 Terra Update<a class="anchor" aria-label="anchor" href="#terra-update"></a>
 </h4>
 <div class="section level5">
-<h5 id="major-changes-5">Major Changes<a class="anchor" aria-label="anchor" href="#major-changes-5"></a>
+<h5 id="major-changes-6">Major Changes<a class="anchor" aria-label="anchor" href="#major-changes-6"></a>
 </h5>
 <ul>
 <li>Package now rely only on <code>terra</code>
@@ -580,7 +649,7 @@ supported.</li>
 </ul>
 </div>
 <div class="section level5">
-<h5 id="minor-changes-5">Minor Changes<a class="anchor" aria-label="anchor" href="#minor-changes-5"></a>
+<h5 id="minor-changes-6">Minor Changes<a class="anchor" aria-label="anchor" href="#minor-changes-6"></a>
 </h5>
 <ul>
 <li>
@@ -611,7 +680,7 @@ future.</li>
 </ul>
 </div>
 <div class="section level5">
-<h5 id="bugfix-5">Bugfix<a class="anchor" aria-label="anchor" href="#bugfix-5"></a>
+<h5 id="bugfix-6">Bugfix<a class="anchor" aria-label="anchor" href="#bugfix-6"></a>
 </h5>
 <ul>
 <li>MAXENT.Phillips models can now properly fail</li>
@@ -678,10 +747,10 @@ CompteurSp that was defined within a function.</li>
 </div>
 </div>
 <div class="section level4">
-<h4 id="section-2">4.1-3<a class="anchor" aria-label="anchor" href="#section-2"></a>
+<h4 id="section-3">4.1-3<a class="anchor" aria-label="anchor" href="#section-3"></a>
 </h4>
 <div class="section level5">
-<h5 id="bugfix-6">Bugfix<a class="anchor" aria-label="anchor" href="#bugfix-6"></a>
+<h5 id="bugfix-7">Bugfix<a class="anchor" aria-label="anchor" href="#bugfix-7"></a>
 </h5>
 <ul>
 <li>Ensemble models that fails (e.g. EMcv with only one models) will not
@@ -707,10 +776,10 @@ models.</li>
 </ul>
 </div>
 <div class="section level4">
-<h4 id="section-3">4.1-2 (2022-09-29)<a class="anchor" aria-label="anchor" href="#section-3"></a>
+<h4 id="section-4">4.1-2 (2022-09-29)<a class="anchor" aria-label="anchor" href="#section-4"></a>
 </h4>
 <div class="section level5">
-<h5 id="major-changes-6">Major changes<a class="anchor" aria-label="anchor" href="#major-changes-6"></a>
+<h5 id="major-changes-7">Major changes<a class="anchor" aria-label="anchor" href="#major-changes-7"></a>
 </h5>
 <ul>
 <li>
@@ -726,7 +795,7 @@ environmental space supplied.</li>
 </ul>
 </div>
 <div class="section level5">
-<h5 id="minor-changes-6">Minor changes<a class="anchor" aria-label="anchor" href="#minor-changes-6"></a>
+<h5 id="minor-changes-7">Minor changes<a class="anchor" aria-label="anchor" href="#minor-changes-7"></a>
 </h5>
 <ul>
 <li>Individual EM models projected as raster are now saved with
@@ -803,7 +872,7 @@ used. (see issue <em><a href="https://github.com/biomodhub/biomod2/issues/102" c
 </div>
 </div>
 <div class="section level4">
-<h4 id="section-4">4.1-1 (2022-08-30)<a class="anchor" aria-label="anchor" href="#section-4"></a>
+<h4 id="section-5">4.1-1 (2022-08-30)<a class="anchor" aria-label="anchor" href="#section-5"></a>
 </h4>
 <ul>
 <li>add <code>do.progress</code> parameter (to render or not progress
@@ -815,14 +884,14 @@ bar) and <code>dir.name</code> parameter in
 </ul>
 </div>
 <div class="section level4">
-<h4 id="section-5">4.1 (2022-07-12)<a class="anchor" aria-label="anchor" href="#section-5"></a>
+<h4 id="section-6">4.1 (2022-07-12)<a class="anchor" aria-label="anchor" href="#section-6"></a>
 </h4>
 <ul>
 <li>fix bugs following major release 4.0</li>
 </ul>
 </div>
 <div class="section level4">
-<h4 id="section-6">4.0 (2022-03-01)<a class="anchor" aria-label="anchor" href="#section-6"></a>
+<h4 id="section-7">4.0 (2022-03-01)<a class="anchor" aria-label="anchor" href="#section-7"></a>
 </h4>
 <ul>
 <li>MAJOR RELEASE</li>
@@ -837,11 +906,11 @@ news</li>
 </div>
 </div>
 <div class="section level3">
-<h3 id="section-7">
-<i class="fas fa-charging-station"></i> 2021<a class="anchor" aria-label="anchor" href="#section-7"></a>
+<h3 id="section-8">
+<i class="fas fa-charging-station"></i> 2021<a class="anchor" aria-label="anchor" href="#section-8"></a>
 </h3>
 <div class="section level4">
-<h4 id="section-8">3.5-3 (2021-11-02)<a class="anchor" aria-label="anchor" href="#section-8"></a>
+<h4 id="section-9">3.5-3 (2021-11-02)<a class="anchor" aria-label="anchor" href="#section-9"></a>
 </h4>
 <ul>
 <li>clean BIOMOD classes definitions and functions
@@ -856,7 +925,7 @@ model when only one single model was kept</li>
 </ul>
 </div>
 <div class="section level4">
-<h4 id="section-9">3.5-2 (2021-10-18)<a class="anchor" aria-label="anchor" href="#section-9"></a>
+<h4 id="section-10">3.5-2 (2021-10-18)<a class="anchor" aria-label="anchor" href="#section-10"></a>
 </h4>
 <ul>
 <li>fix <code>BIOMOD_PresenceOnly</code> function (previously
@@ -869,11 +938,11 @@ factor included : should get clamping mask to work</li>
 </div>
 </div>
 <div class="section level3">
-<h3 id="section-10">
-<i class="fas fa-battery-full"></i> 2018-2019<a class="anchor" aria-label="anchor" href="#section-10"></a>
+<h3 id="section-11">
+<i class="fas fa-battery-full"></i> 2018-2019<a class="anchor" aria-label="anchor" href="#section-11"></a>
 </h3>
 <div class="section level4">
-<h4 id="section-11">3.3-20 (2019-03-05)<a class="anchor" aria-label="anchor" href="#section-11"></a>
+<h4 id="section-12">3.3-20 (2019-03-05)<a class="anchor" aria-label="anchor" href="#section-12"></a>
 </h4>
 <ul>
 <li>Remove maxent Tsurukoa because not maintained anymore (required by
@@ -881,14 +950,14 @@ CRAN team)</li>
 </ul>
 </div>
 <div class="section level4">
-<h4 id="section-12">3.3-18 (2018-07-04)<a class="anchor" aria-label="anchor" href="#section-12"></a>
+<h4 id="section-13">3.3-18 (2018-07-04)<a class="anchor" aria-label="anchor" href="#section-13"></a>
 </h4>
 <ul>
 <li>fix the gbm multicore issue</li>
 </ul>
 </div>
 <div class="section level4">
-<h4 id="section-13">3.3-17 (2018-04-23)<a class="anchor" aria-label="anchor" href="#section-13"></a>
+<h4 id="section-14">3.3-17 (2018-04-23)<a class="anchor" aria-label="anchor" href="#section-14"></a>
 </h4>
 <ul>
 <li>correct the single presence pseudo-absences generation bug
@@ -897,18 +966,18 @@ CRAN team)</li>
 </div>
 </div>
 <div class="section level3">
-<h3 id="section-14">
-<i class="fas fa-battery-three-quarters"></i> 2016<a class="anchor" aria-label="anchor" href="#section-14"></a>
+<h3 id="section-15">
+<i class="fas fa-battery-three-quarters"></i> 2016<a class="anchor" aria-label="anchor" href="#section-15"></a>
 </h3>
 <div class="section level4">
-<h4 id="section-15">3.3-6 (2016-01-14)<a class="anchor" aria-label="anchor" href="#section-15"></a>
+<h4 id="section-16">3.3-6 (2016-01-14)<a class="anchor" aria-label="anchor" href="#section-16"></a>
 </h4>
 <ul>
 <li>add <code>get_predictions</code> function for ensemble models</li>
 </ul>
 </div>
 <div class="section level4">
-<h4 id="section-16">3.3-5 (2016-01-04)<a class="anchor" aria-label="anchor" href="#section-16"></a>
+<h4 id="section-17">3.3-5 (2016-01-04)<a class="anchor" aria-label="anchor" href="#section-17"></a>
 </h4>
 <ul>
 <li>MARS models are now computed throw <code>earth</code> package (was
@@ -920,11 +989,11 @@ CRAN team)</li>
 </div>
 </div>
 <div class="section level3">
-<h3 id="section-17">
-<i class="fas fa-battery-half"></i> 2015<a class="anchor" aria-label="anchor" href="#section-17"></a>
+<h3 id="section-18">
+<i class="fas fa-battery-half"></i> 2015<a class="anchor" aria-label="anchor" href="#section-18"></a>
 </h3>
 <div class="section level4">
-<h4 id="section-18">3.3-4 (2015-11-04)<a class="anchor" aria-label="anchor" href="#section-18"></a>
+<h4 id="section-19">3.3-4 (2015-11-04)<a class="anchor" aria-label="anchor" href="#section-19"></a>
 </h4>
 <ul>
 <li>update <code>BIOMOD_tuning</code> function (<strong>Frank
@@ -932,7 +1001,7 @@ B.</strong>)</li>
 </ul>
 </div>
 <div class="section level4">
-<h4 id="section-19">3.3-3 (2015-10-27)<a class="anchor" aria-label="anchor" href="#section-19"></a>
+<h4 id="section-20">3.3-3 (2015-10-27)<a class="anchor" aria-label="anchor" href="#section-20"></a>
 </h4>
 <ul>
 <li>force sampling of each level of factorial variables</li>
@@ -941,7 +1010,7 @@ B.</strong>)</li>
 </ul>
 </div>
 <div class="section level4">
-<h4 id="section-20">3.3-00 (2015-10-05)<a class="anchor" aria-label="anchor" href="#section-20"></a>
+<h4 id="section-21">3.3-00 (2015-10-05)<a class="anchor" aria-label="anchor" href="#section-21"></a>
 </h4>
 <ul>
 <li>MAJOR RELEASE</li>
@@ -957,7 +1026,7 @@ background data</li>
 </ul>
 </div>
 <div class="section level4">
-<h4 id="section-21">3.2-00 (2015-07-28)<a class="anchor" aria-label="anchor" href="#section-21"></a>
+<h4 id="section-22">3.2-00 (2015-07-28)<a class="anchor" aria-label="anchor" href="#section-22"></a>
 </h4>
 <ul>
 <li>add 3 new functions in <code>biomod2</code> (<strong>Frank B.
@@ -975,11 +1044,11 @@ boyce and mpa indices</li>
 </div>
 </div>
 <div class="section level3">
-<h3 id="section-22">
-<i class="fas fa-battery-quarter"></i> 2014<a class="anchor" aria-label="anchor" href="#section-22"></a>
+<h3 id="section-23">
+<i class="fas fa-battery-quarter"></i> 2014<a class="anchor" aria-label="anchor" href="#section-23"></a>
 </h3>
 <div class="section level4">
-<h4 id="section-23">3.1-59 (2014-10-23)<a class="anchor" aria-label="anchor" href="#section-23"></a>
+<h4 id="section-24">3.1-59 (2014-10-23)<a class="anchor" aria-label="anchor" href="#section-24"></a>
 </h4>
 <ul>
 <li>add model evaluation scores plotting function</li>
@@ -988,7 +1057,7 @@ boyce and mpa indices</li>
 </ul>
 </div>
 <div class="section level4">
-<h4 id="section-24">3.1-53 (2014-08-06)<a class="anchor" aria-label="anchor" href="#section-24"></a>
+<h4 id="section-25">3.1-53 (2014-08-06)<a class="anchor" aria-label="anchor" href="#section-25"></a>
 </h4>
 <ul>
 <li>new ensemble models names to be more coherent with formal models
@@ -996,7 +1065,7 @@ names</li>
 </ul>
 </div>
 <div class="section level4">
-<h4 id="section-25">3.1-44 (2014-05-20)<a class="anchor" aria-label="anchor" href="#section-25"></a>
+<h4 id="section-26">3.1-44 (2014-05-20)<a class="anchor" aria-label="anchor" href="#section-26"></a>
 </h4>
 <ul>
 <li>possibility to use user defined function to influence the way models
@@ -1005,7 +1074,7 @@ B.</strong>)</li>
 </ul>
 </div>
 <div class="section level4">
-<h4 id="section-26">3.1-43 (2014-05-20)<a class="anchor" aria-label="anchor" href="#section-26"></a>
+<h4 id="section-27">3.1-43 (2014-05-20)<a class="anchor" aria-label="anchor" href="#section-27"></a>
 </h4>
 <ul>
 <li>add of <code>as.data.frame</code> argument for
@@ -1014,7 +1083,7 @@ models evaluation scores merging</li>
 </ul>
 </div>
 <div class="section level4">
-<h4 id="section-27">3.1-42 (2014-05-19)<a class="anchor" aria-label="anchor" href="#section-27"></a>
+<h4 id="section-28">3.1-42 (2014-05-19)<a class="anchor" aria-label="anchor" href="#section-28"></a>
 </h4>
 <ul>
 <li>enable ensemble forecasting models selection (<strong>thanks to
@@ -1023,11 +1092,11 @@ Robin E.</strong>)</li>
 </div>
 </div>
 <div class="section level3">
-<h3 id="section-28">
-<i class="fas fa-battery-empty"></i> 2013<a class="anchor" aria-label="anchor" href="#section-28"></a>
+<h3 id="section-29">
+<i class="fas fa-battery-empty"></i> 2013<a class="anchor" aria-label="anchor" href="#section-29"></a>
 </h3>
 <div class="section level4">
-<h4 id="section-29">3.1-17 (2013-10-23)<a class="anchor" aria-label="anchor" href="#section-29"></a>
+<h4 id="section-30">3.1-17 (2013-10-23)<a class="anchor" aria-label="anchor" href="#section-30"></a>
 </h4>
 <ul>
 <li>add parameter to control amount of memory reserved for
@@ -1040,7 +1109,7 @@ G.</strong>)</li>
 </ul>
 </div>
 <div class="section level4">
-<h4 id="section-30">3.1-1 (2013-09-04)<a class="anchor" aria-label="anchor" href="#section-30"></a>
+<h4 id="section-31">3.1-1 (2013-09-04)<a class="anchor" aria-label="anchor" href="#section-31"></a>
 </h4>
 <ul>
 <li>limitation of package dependencies</li>
@@ -1050,7 +1119,7 @@ to the current one</li>
 </ul>
 </div>
 <div class="section level4">
-<h4 id="section-31">3.0.2 (2013-07-23)<a class="anchor" aria-label="anchor" href="#section-31"></a>
+<h4 id="section-32">3.0.2 (2013-07-23)<a class="anchor" aria-label="anchor" href="#section-32"></a>
 </h4>
 <ul>
 <li>new functions to evaluate a-posteriori models quality</li>
@@ -1059,7 +1128,7 @@ default</li>
 </ul>
 </div>
 <div class="section level4">
-<h4 id="section-32">3.0.0 (2013-07-01)<a class="anchor" aria-label="anchor" href="#section-32"></a>
+<h4 id="section-33">3.0.0 (2013-07-01)<a class="anchor" aria-label="anchor" href="#section-33"></a>
 </h4>
 <ul>
 <li>MAJOR RELEASES</li>
@@ -1078,7 +1147,7 @@ variables</li>
 </ul>
 </div>
 <div class="section level4">
-<h4 id="section-33">2.1.37 (2013-06-12)<a class="anchor" aria-label="anchor" href="#section-33"></a>
+<h4 id="section-34">2.1.37 (2013-06-12)<a class="anchor" aria-label="anchor" href="#section-34"></a>
 </h4>
 <ul>
 <li>change (temporally?) gam default package from <code>mgcv</code> to
@@ -1089,7 +1158,7 @@ with factorial variables)</li>
 </ul>
 </div>
 <div class="section level4">
-<h4 id="section-34">2.1.32 (2013-05-30)<a class="anchor" aria-label="anchor" href="#section-34"></a>
+<h4 id="section-35">2.1.32 (2013-05-30)<a class="anchor" aria-label="anchor" href="#section-35"></a>
 </h4>
 <ul>
 <li>weights for user defined pseudo-absences are now supported
@@ -1099,7 +1168,7 @@ M.</strong>)</li>
 </ul>
 </div>
 <div class="section level4">
-<h4 id="section-35">2.1.13 (2013-03-06)<a class="anchor" aria-label="anchor" href="#section-35"></a>
+<h4 id="section-36">2.1.13 (2013-03-06)<a class="anchor" aria-label="anchor" href="#section-36"></a>
 </h4>
 <ul>
 <li>Add <code><a href="../reference/biomod2-deprecated.html">ProbDensFunc()</a></code> function to package to produce nice
@@ -1107,7 +1176,7 @@ plots that show inter-models variability</li>
 </ul>
 </div>
 <div class="section level4">
-<h4 id="section-36">2.1.12 (2013-03-04)<a class="anchor" aria-label="anchor" href="#section-36"></a>
+<h4 id="section-37">2.1.12 (2013-03-04)<a class="anchor" aria-label="anchor" href="#section-37"></a>
 </h4>
 <ul>
 <li>add <code>rasterVis</code> dependency for nicer <code>biomod2</code>
@@ -1119,7 +1188,7 @@ absences selection</li>
 </ul>
 </div>
 <div class="section level4">
-<h4 id="section-37">2.1.9 (2013-02-28)<a class="anchor" aria-label="anchor" href="#section-37"></a>
+<h4 id="section-38">2.1.9 (2013-02-28)<a class="anchor" aria-label="anchor" href="#section-38"></a>
 </h4>
 <ul>
 <li>possibility to indicate manually which data should be used for
@@ -1129,7 +1198,7 @@ calibration (resp. for validation) of models within
 </ul>
 </div>
 <div class="section level4">
-<h4 id="section-38">2.1.9 (2013-02-27)<a class="anchor" aria-label="anchor" href="#section-38"></a>
+<h4 id="section-39">2.1.9 (2013-02-27)<a class="anchor" aria-label="anchor" href="#section-39"></a>
 </h4>
 <ul>
 <li>one var modeling supported (<strong>thanks Anne O.</strong>)</li>
@@ -1138,14 +1207,14 @@ calibration (resp. for validation) of models within
 </ul>
 </div>
 <div class="section level4">
-<h4 id="section-39">2.1.8 (2013-02-25)<a class="anchor" aria-label="anchor" href="#section-39"></a>
+<h4 id="section-40">2.1.8 (2013-02-25)<a class="anchor" aria-label="anchor" href="#section-40"></a>
 </h4>
 <ul>
 <li>response plot supports now formal models</li>
 </ul>
 </div>
 <div class="section level4">
-<h4 id="section-40">2.1.0 (2013-02-21)<a class="anchor" aria-label="anchor" href="#section-40"></a>
+<h4 id="section-41">2.1.0 (2013-02-21)<a class="anchor" aria-label="anchor" href="#section-41"></a>
 </h4>
 <ul>
 <li>MAJOR RELEASE</li>
@@ -1164,7 +1233,7 @@ and hard drive: <code>RemoveProperly()</code>
 </ul>
 </div>
 <div class="section level4">
-<h4 id="section-41">2.0.11 (2013-02-18)<a class="anchor" aria-label="anchor" href="#section-41"></a>
+<h4 id="section-42">2.0.11 (2013-02-18)<a class="anchor" aria-label="anchor" href="#section-42"></a>
 </h4>
 <ul>
 <li>possibility to consider a user.defined pseudo absences selection
@@ -1174,7 +1243,7 @@ Frank B.</strong>)</li>
 </ul>
 </div>
 <div class="section level4">
-<h4 id="section-42">2.0.9 (2013-02-15)<a class="anchor" aria-label="anchor" href="#section-42"></a>
+<h4 id="section-43">2.0.9 (2013-02-15)<a class="anchor" aria-label="anchor" href="#section-43"></a>
 </h4>
 <ul>
 <li>automatic save on hard drive of <code>BIOMOD_Projection</code>
@@ -1182,7 +1251,7 @@ outputs</li>
 </ul>
 </div>
 <div class="section level4">
-<h4 id="section-43">2.0.8 (2013-02-14)<a class="anchor" aria-label="anchor" href="#section-43"></a>
+<h4 id="section-44">2.0.8 (2013-02-14)<a class="anchor" aria-label="anchor" href="#section-44"></a>
 </h4>
 <ul>
 <li>
@@ -1192,14 +1261,14 @@ Frank B.</strong>)</li>
 </ul>
 </div>
 <div class="section level4">
-<h4 id="section-44">2.0.7 (2013-02-12)<a class="anchor" aria-label="anchor" href="#section-44"></a>
+<h4 id="section-45">2.0.7 (2013-02-12)<a class="anchor" aria-label="anchor" href="#section-45"></a>
 </h4>
 <ul>
 <li>bug on weights corrected (<strong>thanks to Lugi M.</strong>)</li>
 </ul>
 </div>
 <div class="section level4">
-<h4 id="section-45">2.0.3 (2013-01-18)<a class="anchor" aria-label="anchor" href="#section-45"></a>
+<h4 id="section-46">2.0.3 (2013-01-18)<a class="anchor" aria-label="anchor" href="#section-46"></a>
 </h4>
 <ul>
 <li>deal with <code>MAXENT</code> categorical variables and categorical
@@ -1207,7 +1276,7 @@ raster input</li>
 </ul>
 </div>
 <div class="section level4">
-<h4 id="section-46">2.0.0 (2013-01-17)<a class="anchor" aria-label="anchor" href="#section-46"></a>
+<h4 id="section-47">2.0.0 (2013-01-17)<a class="anchor" aria-label="anchor" href="#section-47"></a>
 </h4>
 <ul>
 <li>MAJOR RELEASE</li>
