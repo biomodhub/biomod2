@@ -340,6 +340,8 @@
 ##' #                       do.bivariate = TRUE)
 ##' 
 ##' 
+##' @importFrom foreach foreach %do%
+##' 
 ##' @export
 ##' 
 ##' 
@@ -385,7 +387,9 @@ BIOMOD_Modeling <- function(bm.format,
     modeling.id = modeling.id, 
     models = models, 
     models.pa = models.pa, 
-    OPT.user = OPT.user, 
+    OPT.user = OPT.user,
+    CV.user.table = CV.user.table,
+    CV.do.full.models = CV.do.full.models,
     weights = weights, 
     prevalence = prevalence, 
     metric.eval = metric.eval, 
@@ -467,6 +471,20 @@ BIOMOD_Modeling <- function(bm.format,
           val <- OPT.user@options[[mod]]@args.values[[nam]]
           for (ii in vals) {
             OPT.user@options[[mod]]@args.values[[ii]] <- val
+          }
+        } else if (all(grepl("_allRun", nam))){ #Check if the user create the options just for PA dataset
+          sep.name <- unlist(strsplit(mod,split = '[.]'))
+          cat("\n \n \t The options for",sep.name[1], "for '_PAx_allRun' will be given to all runs with PAx (_PAx_RUN1, _PAx_RUN2,...) \n")
+          for (run in vals){
+            PA.set <- grep("PA|allData", unlist(strsplit(run, "_")), value = T)
+            if (is.null(OPT.user@options[[mod]]@args.values[[paste0("_", PA.set, "_allRun")]])){
+              opt.default <- BIOMOD.options.dataset(mod = sep.name[1],typ = sep.name[2],pkg =sep.name[3], fun = sep.name[4], strategy = "default",
+                                                    bm.format = bm.format, calib.lines = calib.lines)
+              OPT.user@options[[mod]]@args.values[[run]] <- opt.default@args.values[["_allData_allRun"]]
+            } else {
+              OPT.user@options[[mod]]@args.values[[run]] <- OPT.user@options[[mod]]@args.values[[paste0("_", PA.set, "_allRun")]]
+            }
+            
           }
         } else {
           stop(paste0("\n", "names(OPT.user@options[['", mod, "']]@args.values)", " must be '",
@@ -572,6 +590,7 @@ BIOMOD_Modeling <- function(bm.format,
 # ---------------------------------------------------------------------------- #
 
 .BIOMOD_Modeling.check.args <- function(bm.format, modeling.id, models, models.pa, OPT.user
+                                        , CV.user.table, CV.do.full.models
                                         , weights, prevalence, metric.eval, var.import
                                         , scale.models, nb.cpu, seed.val, do.progress)
 {
@@ -658,6 +677,14 @@ BIOMOD_Modeling <- function(bm.format,
   #   bm.options <- BIOMOD_ModelingOptions()
   # }
   
+  ## 4. Check CV.user.table
+  if (!is.null(CV.user.table)){
+    if(!("_allData_allRun" %in% colnames(CV.user.table)) & CV.do.full.models == T){ 
+      CV.do.full.models = FALSE
+      warning("CV.do.full.model has been disabled because '_allData_allRun' is not provided in CV.user.table")
+    }
+  }
+  
   ## 5. Check prevalence arguments --------------------------------------------
   if (!is.null(prevalence)) {
     .fun_testIf01(TRUE, "prevalence", prevalence)
@@ -739,7 +766,8 @@ BIOMOD_Modeling <- function(bm.format,
               metric.eval = metric.eval,
               prevalence = prevalence,
               seed.val = seed.val,
-              do.progress = do.progress))
+              do.progress = do.progress,
+              CV.do.full.models = CV.do.full.models))
 }
 
 

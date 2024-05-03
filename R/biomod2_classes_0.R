@@ -296,6 +296,7 @@ setGeneric("BIOMOD.options.dataset",
                                                            , paste0("_PA", this_PA, "_allRun"))))
     } 
     .fun_testIfIn(TRUE, "colnames(calib.lines)", colnames(calib.lines), expected_CVnames)
+    expected_CVnames <- colnames(calib.lines)
   } else {
     if (!is.null(bm.format) && inherits(bm.format, "BIOMOD.formated.data.PA")) {
       expected_CVnames <- c(expected_CVnames
@@ -450,6 +451,8 @@ setMethod('BIOMOD.options.dataset', signature(strategy = 'character'),
               argstmp$type <- "classification"
             }
             if (mod == "XGBOOST") { argstmp$nrounds = 4 }
+            
+            argstmp[["..."]] = NULL
             BOM@args.default <- argstmp
             ## SHOULD BE MOVED to place when testing values !! ??
             
@@ -512,7 +515,6 @@ setMethod('BIOMOD.options.dataset', signature(strategy = 'character'),
                                    , bm.options = BOM, bm.format = bm.format, calib.lines = calib.lines
                                    , metric.eval = ifelse(mod == "MAXENT", "auc.val.avg", "TSS"))
             }
-            
             BOD <- new('BIOMOD.options.dataset', BOM, args.values = argsval)
             
             ## TEST that all given options do not produce errors ------------------------

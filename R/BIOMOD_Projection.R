@@ -183,7 +183,6 @@
 ##' 
 ##' 
 ##' @importFrom foreach foreach %dopar% 
-## @importFrom doParallel registerDoParallel
 ##' @importFrom terra rast subset nlyr writeRaster terraOptions wrap unwrap
 ##'  mem_info app is.factor mask
 ##' @importFrom utils capture.output

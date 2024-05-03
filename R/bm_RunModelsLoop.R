@@ -94,7 +94,7 @@
 ##' @family Secundary functions
 ##' 
 ##' 
-##' @importFrom foreach foreach %dopar% 
+##' @importFrom foreach foreach %do% %dopar% 
 ##' @importFrom rpart prune
 ##' @importFrom gbm gbm.perf
 ##' @importFrom dplyr mutate_at %>%
@@ -235,7 +235,9 @@ bm_RunModel <- function(model, run.name, dir.name = '.'
   if (model != "MAXENT") { ## ANY MODEL BUT MAXENT ------------------------------------------------
     
     ## PRELIMINAR ---------------------------------------------------
-    if (model %in% c("ANN", "MARS", "RF","BRF")) {
+
+
+    if (model %in% c("ANN", "MARS", "RF","BRF") & is.null(bm.opt.val$formula)) {
       bm.opt.val$formula <- bm_MakeFormula(resp.name = resp_name
                                            , expl.var = head(data_env)
                                            , type = 'simple'

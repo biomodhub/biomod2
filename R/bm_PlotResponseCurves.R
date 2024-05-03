@@ -163,7 +163,7 @@
 ##'                                       
 ##'                                       
 ##' @importFrom terra rast cats global is.factor nlyr                                    
-##' @importFrom foreach foreach %:%
+##' @importFrom foreach foreach %do% %:%
 ##' @importFrom reshape2 melt
 ##' @importFrom ggplot2 ggplot aes_string geom_line geom_rug geom_raster facet_wrap xlab ylab labs 
 ##' theme element_blank element_rect element_text scale_fill_viridis_c

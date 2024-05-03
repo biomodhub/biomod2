@@ -1,6 +1,6 @@
 ## --------------------------------------------------------------------------- ##
 ##' @name bm_Tuning
-##' @author Frank Breiner, Maya Gueguen
+##' @author Frank Breiner, Maya Gueguen, Helene Blancheteau
 ##' 
 ##' @title Tune models parameters
 ##' 
@@ -68,8 +68,10 @@
 ##' Currently, the available parameters to be tuned are the following :
 ##' \describe{
 ##'   \item{ANN}{\code{size}, \code{decay}, \code{bag}}
+##'   \item{CTA}{\code{maxdepth}}
 ##'   \item{FDA}{\code{degree}, \code{nprune}}
-##'   \item{GAM}{\code{select}, \code{method}}
+##'   \item{GAM.gam}{\code{span}, \code{degree}}
+##'   \item{GAM.mgcv}{\code{select}, \code{method}}
 ##'   \item{GBM}{\code{n.trees}, \code{interaction.depth}, \code{shrinkage}, \code{n.minobsinnode}}
 ##'   \item{MARS}{\code{degree}, \code{nprune}}
 ##'   \item{MAXENT}{\code{algorithm}, \code{parallel}}
@@ -96,8 +98,10 @@
 ##'   }
 ##'   \item \code{SRE} is tuned through \code{\link{bm_SRE}} function
 ##'   \item All other models are tuned through \code{\link[caret]{train}} function
-##'   \item No optimization of formula for \code{MAXENT}, \code{MAXNET} and \code{SRE}
-##'   \item Selection variables only for \code{GAM} and \code{GLM}
+##'   \item No optimization of formula for \code{MAXENT}, \code{MAXNET}, \code{SRE} and 
+##'   \code{XGBOOST}
+##'   \item No interaction included in formula for \code{CTA}
+##'   \item Variables selection only for \code{GAM.gam} and \code{GLM}
 ##' }
 ##' 
 ##' 
@@ -159,7 +163,7 @@
 ##' # tune parameters for Random Forest model
 ##' tuned.rf <- bm_Tuning(model = 'RF',
 ##'                       tuning.fun = 'rf', ## see in ModelsTable
-##'                       do.formula = TRUE,
+##'                       do.formula = FALSE,
 ##'                       bm.options = opt.d@options$RF.binary.randomForest.randomForest,
 ##'                       bm.format = myBiomodData)
 ##' tuned.rf
@@ -177,8 +181,8 @@
 ##' 
 ##' 
 ##' 
-##' @importFrom foreach foreach %do%
-##' @importFrom stats aggregate  
+##' @importFrom foreach foreach %do% %:%
+##' @importFrom stats aggregate formula 
 ##' @importFrom PresenceAbsence optimal.thresholds presence.absence.accuracy
 ##' 
 ##' 
@@ -205,6 +209,8 @@ bm_Tuning <- function(model,
                                           FDA.nprune = 2:38,
                                           GAM.select = c(TRUE, FALSE),
                                           GAM.method = c('GCV.Cp', 'GACV.Cp', 'REML', 'P-REML', 'ML', 'P-ML'),
+                                          GAM.span = c(0.3, 0.5, 0.7),
+                                          GAM.degree = 1,
                                           GBM.n.trees = c(500, 1000, 2500),
                                           GBM.interaction.depth = seq(2, 8, by = 3),
                                           GBM.shrinkage = c(0.001, 0.01, 0.1),
@@ -232,6 +238,7 @@ bm_Tuning <- function(model,
                                 , weights = weights, params.train = params.train)
   for (argi in names(args)) { assign(x = argi, value = args[[argi]]) }
   rm(args)
+  
   ## LOOP OVER CALIB LINES 
   if (is.null(calib.lines)) {
     calib.lines <- data.frame(rep(TRUE, length(bm.format@data.species)))
@@ -280,12 +287,12 @@ bm_Tuning <- function(model,
                                       returnData = FALSE)
   }
   
-
+  
   argsval <- foreach(PA.i = combi$PA, calib.i = combi$calib, dataset.i = combi$name_dataset) %do%
     {
       cat(paste0("\n\t\t> Dataset ", dataset.i))
       argstmp <- bm.options@args.default
-
+      
       if (model == "MAXNET") {
         warning("No tuning available for that model. Sorry.")
       } else {
@@ -301,13 +308,13 @@ bm_Tuning <- function(model,
           
           ## SRE case
           myResp <- mySpExpl[, 1]
-          myExpl <- mySpExpl[, 4:(3+ncol(bm.format@data.env.var))]
+          myExpl <- mySpExpl[, 4:(3 + ncol(bm.format@data.env.var))]
           
           ## MAXENT case
           if (params.train$MAXENT.algorithm == "maxnet") {
             mySpExpl[["_allData_allRun"]] <- NULL
             mySpExpl[, 1] <- ifelse(mySpExpl[, 1] == 1 & !is.na(mySpExpl[, 1]), 1, 0)
-            mySpExpl <- mySpExpl[, 1:(3+ncol(bm.format@data.env.var))]
+            mySpExpl <- mySpExpl[, 1:(3 + ncol(bm.format@data.env.var))]
           }
           
           if (model == "MAXENT") { # ------------------------------------------#
@@ -351,13 +358,15 @@ bm_Tuning <- function(model,
                                            new.env = myExpl[fold == i, ],
                                            quant = quant,
                                            do.extrem = FALSE))
-                    RES <- presence.absence.accuracy(DATA, threshold = as.vector(optimal.thresholds(DATA, opt.methods = 3)[2], mode = "numeric"))
+                    thresh <- as.vector(optimal.thresholds(DATA, opt.methods = 3)[2], mode = "numeric")
+                    RES <- presence.absence.accuracy(DATA, threshold = thresh)
                     return(data.frame(RES, quant = quant))
                   }
                 return(data.frame(RES, rep = rep))
               }
             tune.SRE$TSS <- tune.SRE$sensitivity + tune.SRE$specificity - 1
-            tmp <- aggregate(tune.SRE[, c("sensitivity", "specificity", "Kappa", "AUC", "TSS")], by = list(quant = tune.SRE$quant), mean)
+            tmp <- aggregate(tune.SRE[, c("sensitivity", "specificity", "Kappa", "AUC", "TSS")]
+                             , by = list(quant = tune.SRE$quant), mean)
             argstmp$quant <- tmp[which.max(tmp[, metric.eval]), "quant"]
           }
           
@@ -371,12 +380,12 @@ bm_Tuning <- function(model,
                                              mySpExpl[, PA.i] == TRUE)]
           mySpExpl <- mySpExpl[which(calib.lines[, calib.i] == TRUE), ]
           mySpExpl <- mySpExpl[which(mySpExpl[, PA.i] == TRUE), ]
-          mySpExpl[, 1] <- as.factor(ifelse(mySpExpl[, 1] == 1 & !is.na(mySpExpl[, 1]), "Presence", "Absence"))
+          mySpExpl[, 1] <- as.factor(ifelse(mySpExpl[, 1] == 1 & !is.na(mySpExpl[, 1]), "presence", "absence"))
           myResp <- mySpExpl[, 1]
-          myExpl <- mySpExpl[, 4:(3+ncol(bm.format@data.env.var))]
-
+          myExpl <- mySpExpl[, 4:(3 + ncol(bm.format@data.env.var))]
+          
           ## run tuning -------------------------------------------------------
-
+          
           cmd.tuning <- "caret::train(x = myExpl, y = myResp, method = tuning.fun, tuneGrid = tuning.grid,"
           cmd.tuning <- paste0(cmd.tuning, " trControl = ctrl.train, metric = 'ROC',")
           if (tuning.fun %in% c("fda", "rpart")) { ## add weights
@@ -397,17 +406,17 @@ bm_Tuning <- function(model,
           if (model != "GLM") {
             cat("\n\t\t\t> Tuning parameters...")
             eval(parse(text = paste0("try(tuned.mod <- ", cmd.tuning)))
-            
+          
             ## GET tuned parameter values -------------------------------------------------------------
             if (!is.null(tuned.mod)) {
               tmp <- tuned.mod$results
               tmp$TSS <- tmp$Sens + tmp$Spec - 1
+              
               if (model == "XGBOOST") {
                 for (param in train.params$params) {
                   if (is.null(argstmp[[param]])){
                     argstmp$params[[param]] <- tmp[which.max(tmp[, metric.eval]), param]
-                  }
-                  else {
+                  } else {
                     argstmp[[param]] <- tmp[which.max(tmp[, metric.eval]), param]}
                 }
               } else {
@@ -415,7 +424,12 @@ bm_Tuning <- function(model,
                   argstmp[[param]] <- tmp[which.max(tmp[, metric.eval]), param]
                 }
               }
+              
               tuning.form <- tuning.grid[which.max(tmp[, metric.eval]), ]
+              
+              if (model == "RF") {
+                tuning.form <- data.frame(mtry = tuning.grid[which.max(tmp[, metric.eval]), ])
+              }
               
               if (model == "CTA") {
                 tuning.fun = "rpart2"
@@ -429,36 +443,75 @@ bm_Tuning <- function(model,
               }
             }
           } else { tuning.form <- tuning.grid }
+          
           ## run formula selection ------------------------------------------------------------------
           if (do.formula) {
             cat("\n\t\t\t> Tuning formula...")
             
             cmd.form <- sub("tuneGrid = tuning.grid", "tuneGrid = tuning.form", cmd.tuning)
+            cmd.form <- sub("weights = current.weights,", "", cmd.form)
             cmd.init <- "form = bm_MakeFormula(resp.name = 'resp', expl.var = myExpl, type = typ, interaction.level = intlev),"
             cmd.init <- paste0(cmd.init, " data = cbind(myExpl, resp = myResp),")
             cmd.form <- sub("x = myExpl, y = myResp,", cmd.init, cmd.form)
-            TMP <- foreach (typ = c('simple', 'quadratic', 'polynomial', 's_smoother'), .combine = "rbind") %:%
-              foreach (intlev = 0:(ncol(myExpl) - 1), .combine = "rbind") %do%
-              {
-                tuned.form <- NULL
-                eval(parse(text = paste0("capture.output("
-                                         , "try(tuned.form <- ", sub(")$", ", silent = TRUE)", cmd.form)
-                                         , ")")))
-                
-                if (!is.null(tuned.form)) {
-                  tmp <- tuned.form$results
-                  tmp$TSS <- tmp$Sens + tmp$Spec - 1
-                  formu <- tuned.form$coefnames
-                  formu <- paste0(bm.format@sp.name, " ~ 1 + ", paste0(formu, collapse = " + "))
-                  return(data.frame(tmp, type = typ, interaction.level = intlev, formula = formu))
+            
+            max.intlev <- min(ncol(myExpl) - 1, 3)
+            typ.vec = c('simple', 'quadratic', 'polynomial', 's_smoother')
+            
+            if (model %in% c("CTA", "FDA")) {
+              if (model == "CTA") { typ.vec = c('simple', 'quadratic', 'polynomial', 's_smoother') }
+              if (model == "FDA") { typ.vec = c('simple', 's_smoother') }
+              
+              TMP <- foreach (typ = typ.vec, .combine = "rbind") %do%
+                {
+                  tuned.form <- NULL
+                  intlev <- 0
+                  eval(parse(text = paste0("capture.output("
+                                           , "try(tuned.form <- ", sub(")$", ", silent = TRUE)", cmd.form)
+                                           , ")")))
+                  if (!is.null(tuned.form)) {
+                    tmp <- tuned.form$results
+                    tmp$TSS <- tmp$Sens + tmp$Spec - 1
+                    formu <- tuned.form$coefnames
+                    formu <- paste0(bm.format@sp.name, " ~ 1 + ", paste0(formu, collapse = " + "))
+                    return(data.frame(tmp, type = typ, interaction.level = intlev, formula = formu))
+                  }
                 }
-              }
+            } else {
+              if (model == "RF") { typ.vec = c('simple','quadratic', 'polynomial') }
+              
+              TMP <- foreach (typ = typ.vec, .combine = "rbind") %:%
+                foreach (intlev = 0:max.intlev, .combine = "rbind") %do%
+                {
+                  tuned.form <- NULL
+                  eval(parse(text = paste0("capture.output("
+                                           , "try(tuned.form <- ", sub(")$", ", silent = TRUE)", cmd.form)
+                                           , ")")))
+                  if (!is.null(tuned.form)) {
+                    tmp <- tuned.form$results
+                    tmp$TSS <- tmp$Sens + tmp$Spec - 1
+                    formu <- tuned.form$coefnames
+                    formu <- paste0(bm.format@sp.name, " ~ 1 + ", paste0(formu, collapse = " + "))
+                    return(data.frame(tmp, type = typ, interaction.level = intlev, formula = formu))
+                  }
+                }
+            }
             argstmp$formula <- TMP[which.max(TMP[, metric.eval]), "formula"]
+            if (model %in% c("ANN", "GAM", "GBM", "MARS", "RF")) {
+              argstmp$formula <- formula(argstmp$formula)
+            }
+          } else {
+            if (model %in% c("CTA", "FDA", "GAM", "GBM", "GLM")) {
+              argstmp$formula <- bm_MakeFormula(resp.name = bm.format@sp.name
+                                                , expl.var = myExpl
+                                                , type = 'simple'
+                                                , interaction.level = 0)
+            }
           }
           
           ## run variable selection -----------------------------------------------------------------
-          if (do.stepAIC && (model == "GLM" || 
-                             (model == "GAM" && bm.options@package == "gam")) ) {
+          if (do.stepAIC &&
+              (model == "GLM" || 
+               (model == "GAM" && bm.options@package == "gam")) ) {
             cat("\n\t\t\t> Tuning variables (AIC)...")
             
             if (model == "GLM") {
@@ -467,15 +520,17 @@ bm_Tuning <- function(model,
                               family = argstmp$family, 
                               control = argstmp$control, 
                               weights = current.weights,
-                              mustart = rep(ifelse(!is.null(argstmp$mustart) & nchar(argstmp$mustart) > 0, argstmp$mustart, 0.5), length(myResp)),
+                              mustart = rep(ifelse(!is.null(argstmp$mustart) & nchar(argstmp$mustart) > 0
+                                                   , argstmp$mustart, 0.5), length(myResp)),
                               model = TRUE)
               try(tuned.AIC <- MASS::stepAIC(glmStart,
-                                       scope = list(upper = (sub(".*~", "~", argstmp$formula)), lower = ~1),
-                                       k = criteria.AIC,
-                                       direction = "both",
-                                       trace = FALSE,
-                                       steps = 10000))
+                                             scope = list(upper = (sub(".*~", "~", argstmp$formula)), lower = ~1),
+                                             k = criteria.AIC,
+                                             direction = "both",
+                                             trace = FALSE,
+                                             steps = 10000))
               if (!is.null(tuned.AIC)) { argstmp$formula <- deparse(tuned.AIC$formula) }
+              
             } else if (model == "GAM") { # if (bm.options@GAM$algo == 'GAM_gam') { ## gam package
               gamStart <- do.call(gam::gam, list(formula = as.formula(paste0(bm.format@sp.name, " ~ 1")),
                                                  data = mySpExpl, 
@@ -489,7 +544,7 @@ bm_Tuning <- function(model,
                       scope = .scope(head(myExpl), "gam::s", 6),
                       direction = "both",
                       trace = FALSE))
-              if (!is.null(tuned.AIC)) { argstmp$formula <- deparse(tuned.AIC$formula) }
+              if (!is.null(tuned.AIC)) { argstmp$formula <- formula(deparse(tuned.AIC$formula)) }
             }
           }
         }
@@ -497,7 +552,6 @@ bm_Tuning <- function(model,
       return(argstmp)
     }
   names(argsval) <- combi$name_dataset
-  
   return(argsval)
 }
 
@@ -531,10 +585,8 @@ bm_Tuning <- function(model,
   
   ## check bm.options ----------------------------------------------------------
   .fun_testIfInherits(TRUE, "bm.options", bm.options, c("BIOMOD.options.default", "BIOMOD.options.dataset"))
-  
   ## check bm.format ----------------------------------------------------------
   .fun_testIfInherits(TRUE, "bm.format", bm.format, c("BIOMOD.formated.data", "BIOMOD.formated.data.PA"))
-  
   ## check params.train -------------------------------------------------------
   params.train_init = list(ANN.size = c(2, 4, 6, 8),
                            ANN.decay = c(0.001, 0.01, 0.05, 0.1),
@@ -543,6 +595,8 @@ bm_Tuning <- function(model,
                            FDA.nprune = 2:38,
                            GAM.select = c(TRUE, FALSE),
                            GAM.method = c('GCV.Cp', 'GACV.Cp', 'REML', 'P-REML', 'ML', 'P-ML'),
+                           GAM.span = c(0.3, 0.5, 0.7),
+                           GAM.degree = 1,
                            GBM.n.trees = c(500, 1000, 2500),
                            GBM.interaction.depth = seq(2, 8, by = 3),
                            GBM.shrinkage = c(0.001, 0.01, 0.1),
@@ -560,13 +614,13 @@ bm_Tuning <- function(model,
                            XGBOOST.colsample_bytree = c(0.6, 0.8),
                            XGBOOST.min_child_weight = 1,
                            XGBOOST.subsample = 0.5)
+  
   for (i in names(params.train)) {
     if (i %in% names(params.train_init)) {
       params.train_init[[i]] = params.train[[i]]
     }
   }
   params.train = params.train_init
-  
 
   ## check evaluation metric --------------------------------------------------
   if (model == "MAXENT") {
@@ -574,19 +628,18 @@ bm_Tuning <- function(model,
     .fun_testIfIn(TRUE, "params.train$MAXENT.algorithm", params.train$MAXENT.algorithm, c("maxent.jar", "maxnet"))
   } else if (model == "SRE") {
     .fun_testIfIn(TRUE, "metric.eval", metric.eval, c("AUC", "Kappa", "TSS"))
-    .fun_testIf01(TRUE, "params.train$SRE.quant", params.train$SRE.quant)
+    sapply(params.train$SRE.quant,FUN=.fun_testIf01,test = TRUE,objName =  "params.train$SRE.quant")
   } else {
     .fun_testIfIn(TRUE, "metric.eval", metric.eval, c("ROC", "TSS"))
   }
-  
   ## check weights ------------------------------------------------------------
-  if (model %in% c("CTA", "FDA", "GLM", "GAM") && is.null(weights)) { 
+  if (model %in% c("CTA", "FDA", "GAM", "GLM") && is.null(weights)) { 
     weights = rep(1, length(bm.format@data.species))
   }
   
   
   ## get tuning function and parameters ---------------------------------------
-  all.fun <- c('avNNet', 'rpart', 'rpart2', 'fda', 'gamSpline', 'bam', 'gam', 'gbm', 'glm', 'earth', 'rf', 'xgbTree')
+  all.fun <- c('avNNet', 'rpart', 'rpart2', 'fda', 'gamLoess', 'bam', 'gam', 'gbm', 'glm', 'earth', 'rf', 'xgbTree')
   all.params <- foreach (fi = all.fun) %do% {
     params <- caret::getModelInfo(model = fi)
     return(list(pkg = params[[fi]]$library, params = params[[fi]]$parameters$parameter))
@@ -595,26 +648,33 @@ bm_Tuning <- function(model,
   
   .fun_testIfIn(TRUE, "tuning.fun", tuning.fun, c(all.fun, "bm_SRE", "ENMevaluate", "maxnet"))
   train.params <- all.params[[tuning.fun]]
-  
   ## get tuning grid through params.train -------------------------------------
   tuning.grid <- NULL
-  if (model %in% c("ANN", "FDA", "GAM", "GBM", "MARS", "RF","BRF", "XGBOOST")) {
-    if (!(model == "GAM" && tuning.fun == "gamSpline")) {
-      if (model == "BRF") {
-        params.train = params.train[grep("RF", names(params.train))]
-        names(params.train) <- "BRF.mtry"
-        }
-      else {params.train = params.train[grep(model, names(params.train))]}
+
+  if (model %in% c("ANN", "FDA", "GAM", "GBM", "MARS", "RF", "BRF", "XGBOOST")) {
+    if (!(model == "GAM")) {
+      params.train = params.train[grep(model, names(params.train))]
+	  if (model == "BRF") {names(params.train) <- "BRF.mtry"}
       .fun_testIfIn(TRUE, "names(params.train)", names(params.train), paste0(model, ".", train.params$params))
-      names(params.train) = sub(model, "", names(params.train))
-      tuning.grid <- do.call(expand.grid, params.train)
+    } else if (tuning.fun == "gamLoess"){
+      params.train = params.train[c('GAM.span', "GAM.degree")]
+    } else {
+      params.train = params.train[c('GAM.select', 'GAM.method')]
     }
+    names(params.train) = sub(model, "", names(params.train))
+    tuning.grid <- do.call(expand.grid, params.train)
   }
   
   ## get tuning length --------------------------------------------------------
   tuning.length <- 1
   if (model == "CTA") tuning.length <- 30
   if (model == "RF" | model == "BRF") tuning.length <- min(30, ncol(bm.format@data.env.var))
+  
+  ## Do formula ---------------------------------------------------------------
+  if (model %in% c("MAXENT", "MAXNET", "SRE", "XGBOOST") && do.formula == TRUE) {
+    do.formula <- FALSE 
+    cat("\n No optimization of formula for", model)
+  }
   
   ## get criteria -------------------------------------------------------------
   if (do.stepAIC && (model == "GLM" || 
@@ -627,8 +687,8 @@ bm_Tuning <- function(model,
     criteria.AIC <- NA
   }
   
-  
   return(list(weights = weights
+              , do.formula = do.formula
               , criteria.AIC = criteria.AIC
               , tuning.fun = tuning.fun
               , train.params = train.params

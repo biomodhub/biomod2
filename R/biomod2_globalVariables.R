@@ -6,7 +6,7 @@ utils::globalVariables(names = c("i.dim1",
                                  "sub.i"))
 
 ## biomod2_classes_0 ------------
-utils::globalVariables(names = c("expected_CVnames"))
+utils::globalVariables(names = c("expected_CVnames", "OptionsBigboss"))
 
 ## biomod2_classes_1 ------------
 utils::globalVariables(names = c("this_PA",
@@ -31,7 +31,8 @@ utils::globalVariables(names = c("i"))
 
 
 ## bm_Tuning ------------
-utils::globalVariables(names = c("calib.i", "rep", "quant", "i", "typ", "intlev", "fi"))
+utils::globalVariables(names = c("calib.i", "rep", "quant"
+                                 , "i", "typ", "intlev", "fi"))
 
 ## BIOMOD_Projection ------------
 utils::globalVariables(names = c("do.stack",
@@ -76,7 +77,11 @@ utils::globalVariables(names = c("thiscol", "pred", "proj"))
 utils::globalVariables(names = c("i.abs"))
 
 ## bm_Tuning ------------
-utils::globalVariables(names = c("dataset.i", "PA.i", "tuned.mod", "train.params", "tuning.grid", "criteria.AIC"))
+utils::globalVariables(names = c("dataset.i", "PA.i", "tuned.mod", "train.params"
+                                 , "tuning.grid", "criteria.AIC"))
+
+## bm_ModelingOptions ------------
+utils::globalVariables(names = c("ModelsTable"))
 
 ## bm_CrossValidation ------------
 utils::globalVariables(names = c("pa", "env", "this.colnames"))

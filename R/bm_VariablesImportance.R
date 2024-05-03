@@ -84,8 +84,7 @@
 ##'                        nb.rep = 3)
 ##' 
 ##' 
-##' @importFrom foreach foreach %:% %dopar%
-## @importFrom doParallel registerDoParallel
+##' @importFrom foreach foreach %do% %:% 
 ##' @importFrom stats cor
 ##' 
 ##' 
@@ -99,7 +98,6 @@ bm_VariablesImportance <- function(bm.model,
                                    variables = NULL,
                                    method = "full_rand", 
                                    nb.rep = 1,
-                                   # nb.cpu = 1,
                                    seed.val = NULL,
                                    do.progress = TRUE,
                                    temp.workdir = NULL)
@@ -122,14 +120,6 @@ bm_VariablesImportance <- function(bm.model,
     PROGRESS = txtProgressBar(min = 0, max = nb.rep * length(variables), style = 3)
     i.iter = 0
   }
-  # if (nb.cpu > 1) {
-  #   if (.getOS() != "windows") {
-  #     if (!isNamespaceLoaded("doParallel")) { requireNamespace("doParallel", quietly = TRUE) }
-  #     doParallel::registerDoParallel(cores = nb.cpu)
-  #   } else {
-  #     warning("Parallelisation with `foreach` is not available for Windows. Sorry.")
-  #   }
-  # }
   out = foreach (r = 1:nb.rep, .combine = "rbind") %:%
     foreach (v = variables, .combine = "rbind") %do%
     {

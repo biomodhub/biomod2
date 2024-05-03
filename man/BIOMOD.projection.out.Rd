@@ -164,8 +164,8 @@ plot(myBiomodProj)
 
 Other Toolbox objects: 
 \code{\link{BIOMOD.ensemble.models.out}},
-\code{\link{BIOMOD.formated.data.PA}},
 \code{\link{BIOMOD.formated.data}},
+\code{\link{BIOMOD.formated.data.PA}},
 \code{\link{BIOMOD.models.options}},
 \code{\link{BIOMOD.models.out}},
 \code{\link{BIOMOD.options.dataset}},

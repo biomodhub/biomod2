@@ -154,9 +154,6 @@ setMethod('show', signature('biomod2_ensemble_model'),
 ##' \code{boolean} describing whether \code{newdata} is given as raw environmental 
 ##' data (\code{FALSE}) or as formal predictions of the individual models 
 ##' used to build the ensemble model (\code{TRUE}).
-##' @param na.rm (\emph{optional, default} \code{TRUE}) \cr
-##' A boolean defining whether Ensemble Model projection should ignore \code{NA}
-##' in Individual Model projection. Argument ignored by EWmean ensemble algorithm.
 ##' 
 ##' @param \ldots (\emph{optional}) 
 ##' @inheritParams predict2.bm
@@ -527,7 +524,7 @@ setMethod('predict2', signature(object = 'EMci_biomod2_model', newdata = "data.f
               on_0_1000 <- args$on_0_1000
               
               if (is.null(mean_prediction)) { 
-                mean_prediction <- round(rowMeans(newdata, na.rm = na.rm)) 
+                mean_prediction <- rowMeans(newdata, na.rm = na.rm)
               }
               if (is.null(sd_prediction)) { 
                 sd_prediction <- apply(newdata, 1, sd, na.rm = na.rm)

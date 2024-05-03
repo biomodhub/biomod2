@@ -191,6 +191,7 @@
 ##' apply(PA.r_mult$pa.tab, 2, table)
 ##'
 ##' 
+##' @importFrom foreach foreach %do%
 ##' @importFrom terra rast vect freq spatSample values extract
 ##' @importFrom utils packageVersion
 ##'
