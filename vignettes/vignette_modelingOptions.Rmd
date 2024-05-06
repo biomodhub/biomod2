@@ -24,7 +24,7 @@ In the dataset [`ModelsTable`](../reference/ModelsTable.html), all the different
 1            ANN binary         nnet         nnet      avNNet
 2            CTA binary        rpart        rpart       rpart
 3            FDA binary          mda          fda         fda
-4            GAM binary          gam          gam   gamSpline
+4            GAM binary          gam          gam    gamLoess
 5            GAM binary         mgcv          bam         bam
 6            GAM binary         mgcv          gam         gam
 7            GBM binary          gbm          gbm         gbm

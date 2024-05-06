@@ -1,0 +1,64 @@
+---
+title: "Presentation"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Presentation}
+  %\VignetteEngine{knitr::knitr}
+  %\VignetteEncoding{UTF-8}
+---
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
+
+
+*To follow **biomod2** evolution of organization and features, the presentation below details the different steps and modules of the package.*
+
+<br/><br/>
+
+<div style="text-align:center;">
+<embed src="pictures/biomod2_presentation.workflow_05_2024.pdf" width="900" height="700" type="application/pdf" allowfullscreen webkitallowfullscreen>
+</embed>
+</div>
+
+<br/><br/>
+
+<div align="center">
+<p><a href="pictures/SCHEMA_BIOMOD2_WORKFLOW_functions.pdf">Download pdf of WORKFLOW GRAPHIC <i class="fas fa-download"></i></a></p>
+<p><a href="pictures/biomod2_presentation.workflow_05_2024.pdf">Download pdf of PRESENTATION <i class="fas fa-download"></i></a></p>
+</div>
+
+
+
+#### <i class="fa-solid fa-list-check"></i> Data formating : [BIOMOD_FormatingData](../reference/BIOMOD_FormatingData.html)
+
+- **Formating data** : combine observations, coordinates and explanatory variables, <br/>and sample pseudo-absences for presence-only data (*through [bm_PseudoAbsences](../reference/bm_PseudoAbsences.html)*)
+
+- **Cross-validation** : create calibration / validation datasets (*through [bm_CrossValidation](../reference/bm_CrossValidation.html)*)
+
+- **Modeling options** (*with the help of [ModelsTable](../reference/ModelsTable.html) and [OptionsBigboss](../reference/OptionsBigboss.html) datasets*)
+    + Define specific options for single models (*through [bm_ModelingOptions](../reference/bm_ModelingOptions.html)*)
+    + And tune with your own data (*through [bm_Tuning](../reference/bm_Tuning.html)*)
+
+#### <i class="fa-solid fa-virus"></i> Single models : [BIOMOD_Modeling](../reference/BIOMOD_Modeling.html)
+
+- **Evaluation** : transform predicted probabilities in binary values (*through [bm_BinaryTransformation](../reference/bm_BinaryTransformation.html)*), <br/>and compute evaluation metrics (*through [bm_FindOptimStat](../reference/bm_FindOptimStat.html)*)
+
+- **Variables' importance** : estimate the impact of each explanatory variable on predictions (*through [bm_VariablesImportance](../reference/bm_VariablesImportance.html)*)
+    
+#### <i class="fa-solid fa-viruses"></i> Ensemble models : [BIOMOD_EnsembleModeling](../reference/BIOMOD_EnsembleModeling.html)
+
+- Filter single models based on one evaluation metric
+- Combine them according to different combinations
+- And build ensemble models
+    
+#### <i class="fas fa-chart-bar"></i> Exploring outputs
+
+- Evaluation : [bm_PlotEvalMean](../reference/bm_PlotEvalMean.html), [bm_PlotEvalBoxplot](../reference/bm_PlotEvalBoxplot.html)
+- Variables' importance : [bm_PlotVarImpBoxplot](../reference/bm_PlotVarImpBoxplot.html)
+- Response curves : [bm_PlotResponseCurves](../reference/bm_PlotResponseCurves.html)
+
+#### <i class="fa-solid fa-earth-europe"></i> Projecting models : [BIOMOD_Projection](../reference/BIOMOD_Projection.html), [BIOMOD_EnsembleForecasting](../reference/BIOMOD_BIOMOD_EnsembleForecasting.html)
+
+- Project models onto new conditions
+- Transform predicted probabilities in binary values (*through [bm_BinaryTransformation](../reference/bm_BinaryTransformation.html)*)
+
+#### <i class="fa-solid fa-ruler-combined"></i> Species range change : [BIOMOD_RangeSize](../reference/BIOMOD_RangeSize.html)
