@@ -22,7 +22,10 @@ z-index: 10;
 }
 </style>
 
+
 <div align="center">
+<p><img src="articles/pictures/LogoBiomod.png" alt="Logo biomod2" width=150px></img></p>
+
 <b>------------------------------------------------------------<br/>
 Species distribution modeling, <br/>
 calibration and evaluation, <br/>
@@ -81,7 +84,7 @@ devtools::install_github("biomodhub/biomod2", dependencies = TRUE)
 <p><img src="articles/pictures/SCHEMA_BIOMOD2_WORKFLOW_functions.png" alt="Main workflow"></img></p>
 </div>
 
-<br/><br/>
+<br/><br/><br/>
 
 
 
