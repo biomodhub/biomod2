@@ -509,6 +509,10 @@ setMethod('BIOMOD.options.dataset', signature(strategy = 'character'),
               argsval <- bm_Tuning(model = mod, tuning.fun = tuning.fun, do.formula = TRUE, do.stepAIC = TRUE
                                    , bm.options = BOM, bm.format = bm.format, calib.lines = calib.lines
                                    , metric.eval = ifelse(mod == "MAXENT", "auc.val.avg", "TSS"))
+              
+              # To avoid problem with ENMeval and "bad closing" of foreach loop
+              env <- foreach:::.foreachGlobals
+              rm(list = ls(name = env), pos = env)
             }
             BOD <- new('BIOMOD.options.dataset', BOM, args.values = argsval)
             
