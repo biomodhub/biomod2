@@ -24,6 +24,40 @@ vignette: >
 - Add BRF Balenced Random Forest (down-sampling)
 - Tuning for BRF: similar to RF (mtry only)
 
+### <i class="fas fa-pencil-alt"></i> 2024 
+
+#### 4.2-5 Modeling options and Tuning (2024-05-02)
+
+- Submitted on CRAN
+
+##### Major Changes
+
+- Add print function for `BIOMOD.options.dataset` and `BIOMOD.models.options` classes
+- Add `GAM.binary.gam.gam` and `GAM.binary.mgcv.bam` in `OptionsBigboss` dataset
+- Add checks for `obs` and `fit` parameters in `bm_FindOptimStat`
+- In `bm_Tuning` function :
+    + add `MAXENT.algorithm` and `MAXENT.parallel` parameters
+    + be sure to update default tuning parameters if not all provided
+    + fix tuning for `XGBOOST` and `SRE`
+    + fix optimization of formula
+    + switch from `gamSpline` to `gamLoess` method to tune `GAM.gam.gam` model, and add `GAM.span` and `GAM.degree` parameters
+- Fix multiple cases when using different settings of PA / cross-validation / modeling options through all the different secundary functions and `BIOMOD_Modeling`
+
+
+##### Minor Changes
+
+- Add vignette for cross-validation (_to prepare your own calibration / validation datasets_)
+- Add vignette for modeling options (_to help you navigate through the new way of parameterizing single models_)
+- Update examples and documentation
+
+##### Bugfix
+
+- Add `try` and error message in call for models in `bm_RunModelsLoop`
+- Check for predictions `>1000`
+- Correct `BIOMOD_EnsembleForecasting` when using `data.frame`
+- Correct predictions for `EMci` (removing round)
+
+
 
 ### <i class="fas fa-feather"></i> 2023 
 

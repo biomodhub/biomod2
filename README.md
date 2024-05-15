@@ -57,7 +57,7 @@ devtools::install_github("biomodhub/biomod2", dependencies = TRUE)
 
 ### <i class="fas fa-envelope-open-text"></i> `biomod 4.2-5` - Modeling options & Tuning Update
 
-**! `biomod2 4.2-5` is now available on GitHub !**
+**! `biomod2 4.2-5` is now available on CRAN !**
 
 `/!\` Please **feel free to indicate if you notice some strange new behaviors** !
 
@@ -70,7 +70,10 @@ devtools::install_github("biomodhub/biomod2", dependencies = TRUE)
 #### <i class="fas fa-plus-square"></i> What is new ?
 
 - `ModelsTable` and `OptionsBigboss` datasets (*note that improvement of bigboss modeling options is planned in near future*)
-- [data preparation vignette](https://biomodhub.github.io/biomod2/articles/vignette_dataPreparation.html) has been created (*questions you should ask yourself before modeling*)
+- 3 new vignettes have been created :
+    - [data preparation](https://biomodhub.github.io/biomod2/articles/vignette_dataPreparation.html) (*questions you should ask yourself before modeling*)
+    - [cross-validation](https://biomodhub.github.io/biomod2/articles/vignette_crossValidation.html) (*to prepare your own calibration / validation datasets*)
+    - [modeling options](https://biomodhub.github.io/biomod2/articles/vignette_dataPreparation.html) (*to help you navigate through the new way of parameterizing single models*)
 
 <br/>
 
