@@ -51,9 +51,10 @@
   return(test)
 }
 
-.fun_testIfIn <- function(test, objName, objValue, values)
+.fun_testIfIn <- function(test, objName, objValue, values, exact = FALSE)
 {
-  if (any(! objValue %in% values)) {
+  if (any(! objValue %in% values) ||
+      (exact == TRUE && any(! values %in% objValue))) {
     stop(paste0("\n", objName, " must be '", 
                 ifelse(length(values) > 1, 
                        paste0(paste0(values[1:(length(values) -1)], collapse = "', '"),

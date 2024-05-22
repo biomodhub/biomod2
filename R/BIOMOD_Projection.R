@@ -529,11 +529,11 @@ BIOMOD_Projection <- function(bm.mod,
   }
   
   if (inherits(new.env, 'SpatRaster')) {
-    .fun_testIfIn(TRUE, "names(new.env)", names(new.env), bm.mod@expl.var.names)
+    .fun_testIfIn(TRUE, "names(new.env)", names(new.env), bm.mod@expl.var.names, exact = TRUE)
     new.env.mask <- .get_data_mask(new.env, value.out = 1)
     new.env <- mask(new.env, new.env.mask)
   } else {
-    .fun_testIfIn(TRUE, "colnames(new.env)", colnames(new.env), bm.mod@expl.var.names)
+    .fun_testIfIn(TRUE, "colnames(new.env)", colnames(new.env), bm.mod@expl.var.names, exact = TRUE)
     new.env <- new.env[ , bm.mod@expl.var.names, drop = FALSE]
   }
   
