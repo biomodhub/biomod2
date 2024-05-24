@@ -76,7 +76,7 @@ NULL
 ##' @aliases MAXENT_biomod2_model-class
 ##' @aliases MAXNET_biomod2_model-class
 ##' @aliases RF_biomod2_model-class
-##' @aliases BRF_biomod2_model-class
+##' @aliases RFd_biomod2_model-class
 ##' @aliases SRE_biomod2_model-class
 ##' @aliases XGBOOST_biomod2_model-class
 ##' @author Damien Georges
@@ -118,7 +118,7 @@ NULL
 ##'   \item \code{MAXNET_biomod2_model} : \code{model_class} is 
 ##'   \code{MAXNET}
 ##'   \item \code{RF_biomod2_model} : \code{model_class} is \code{RF}
-##'   \item \code{BRF_biomod2_model} : \code{model_class} is \code{BRF}
+##'   \item \code{RFd_biomod2_model} : \code{model_class} is \code{RFd}
 ##'   \item \code{SRE_biomod2_model} : \code{model_class} is \code{SRE}
 ##' }
 ##' 
@@ -140,7 +140,7 @@ NULL
 ##' showClass("MAXENT_biomod2_model")
 ##' showClass("MAXNET_biomod2_model")
 ##' showClass("RF_biomod2_model")
-##' showClass("BRF_biomod2_model")
+##' showClass("RFd_biomod2_model")
 ##' showClass("SRE_biomod2_model")
 ##' 
 NULL
@@ -278,8 +278,8 @@ setMethod('predict', signature(object = 'biomod2_model'),
 ##' @aliases predict2.MAXNET_biomod2_model.data.frame
 ##' @aliases predict2.RF_biomod2_model.SpatRaster
 ##' @aliases predict2.RF_biomod2_model.data.frame
-##' @aliases predict2.BRF_biomod2_model.SpatRaster
-##' @aliases predict2.BRF_biomod2_model.data.frame
+##' @aliases predict2.RFd_biomod2_model.SpatRaster
+##' @aliases predict2.RFd_biomod2_model.data.frame
 ##' @aliases predict2.SRE_biomod2_model.SpatRaster
 ##' @aliases predict2.SRE_biomod2_model.data.frame
 ##' @author Remi Patin
@@ -1118,16 +1118,16 @@ setMethod('predict2', signature(object = 'RF_biomod2_model', newdata = "data.fra
 )
 
 #----------------------------------------------------------------------------- #
-## 8.10_bis BRF_biomod2_model -----------------------------------------------------
+## 8.10_bis RFd_biomod2_model -----------------------------------------------------
 #----------------------------------------------------------------------------- #
-##' @name BRF_biomod2_model-class
+##' @name RFd_biomod2_model-class
 ##' @rdname biomod2_model
 ##' @export
 
-setClass('BRF_biomod2_model',
+setClass('RFd_biomod2_model',
          representation(),
          contains = 'biomod2_model',
-         prototype = list(model_class = 'BRF'),
+         prototype = list(model_class = 'RFd'),
          validity = function(object) { # check model class
            if (!inherits(object@model, "randomForest")) { return(FALSE)} else { return(TRUE) }
          })
@@ -1137,7 +1137,7 @@ setClass('BRF_biomod2_model',
 ##' 
 
 
-setMethod('predict2', signature(object = 'BRF_biomod2_model', newdata = "SpatRaster"),
+setMethod('predict2', signature(object = 'RFd_biomod2_model', newdata = "SpatRaster"),
           function(object, newdata, ...) {
             pa <- .extract_modelNamesInfo(object@model_name, obj.type = "mod", info = "PA")
             run <- .extract_modelNamesInfo(object@model_name, obj.type = "mod", info = "run")
@@ -1171,7 +1171,7 @@ setMethod('predict2', signature(object = 'BRF_biomod2_model', newdata = "SpatRas
 )
 
 ##' @rdname predict2.bm
-setMethod('predict2', signature(object = 'BRF_biomod2_model', newdata = "data.frame"),
+setMethod('predict2', signature(object = 'RFd_biomod2_model', newdata = "data.frame"),
           function(object, newdata, ...) {
             pa <- .extract_modelNamesInfo(object@model_name, obj.type = "mod", info = "PA")
             run <- .extract_modelNamesInfo(object@model_name, obj.type = "mod", info = "run")
