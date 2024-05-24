@@ -33,7 +33,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">biomod2</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">4.2-5</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">4.2-5-1</span>
       </span>
     </div>
 
@@ -50,6 +50,13 @@
     <span class="fas fa-video"></span>
      
     Videos
+  </a>
+</li>
+<li>
+  <a href="../articles/vignette_presentation.html">
+    <span class="fas fa-graduation-cap"></span>
+     
+    Presentation
   </a>
 </li>
 <li class="dropdown">
@@ -140,6 +147,22 @@
 <h3 id="section">
 <i class="fas fa-pencil-alt"></i> 2024<a class="anchor" aria-label="anchor" href="#section"></a>
 </h3>
+<div class="section level5">
+<h5 id="bugfix">Bugfix<a class="anchor" aria-label="anchor" href="#bugfix"></a>
+</h5>
+<ul>
+<li>4.2-5-1 :
+<ul>
+<li>removed <code>tests/</code> folder (unused)</li>
+<li>fixed check for variable names for <code>new.env</code> in
+<code>BIOMOD_Projection</code> and
+<code>BIOMOD_EnsembleForecasting</code>
+</li>
+<li>fixed connexion issue with MAXENT tuning</li>
+</ul>
+</li>
+</ul>
+</div>
 <div class="section level4">
 <h4 id="modeling-options-and-tuning-2024-05-02">4.2-5 Modeling options and Tuning (2024-05-02)<a class="anchor" aria-label="anchor" href="#modeling-options-and-tuning-2024-05-02"></a>
 </h4>
@@ -189,7 +212,7 @@ the new way of parameterizing single models</em>)</li>
 </ul>
 </div>
 <div class="section level5">
-<h5 id="bugfix">Bugfix<a class="anchor" aria-label="anchor" href="#bugfix"></a>
+<h5 id="bugfix-1">Bugfix<a class="anchor" aria-label="anchor" href="#bugfix-1"></a>
 </h5>
 <ul>
 <li>Add <code>try</code> and error message in call for models in
@@ -258,7 +281,7 @@ yourself before modeling</em>)</li>
 </ul>
 </div>
 <div class="section level5">
-<h5 id="bugfix-1">Bugfix<a class="anchor" aria-label="anchor" href="#bugfix-1"></a>
+<h5 id="bugfix-2">Bugfix<a class="anchor" aria-label="anchor" href="#bugfix-2"></a>
 </h5>
 <ul>
 <li>4.2-4-10 : fixed <code>wrap</code> applied to a
@@ -320,7 +343,7 @@ models merged by algo (for Maxent)</li>
 </ul>
 </div>
 <div class="section level5">
-<h5 id="bugfix-2">Bugfix<a class="anchor" aria-label="anchor" href="#bugfix-2"></a>
+<h5 id="bugfix-3">Bugfix<a class="anchor" aria-label="anchor" href="#bugfix-3"></a>
 </h5>
 <ul>
 <li>4.2-3-5 :
@@ -397,7 +420,7 @@ models. Default value is now ‘validation’ instead of ‘evaluation’.</li>
 </ul>
 </div>
 <div class="section level5">
-<h5 id="bugfix-3">Bugfix<a class="anchor" aria-label="anchor" href="#bugfix-3"></a>
+<h5 id="bugfix-4">Bugfix<a class="anchor" aria-label="anchor" href="#bugfix-4"></a>
 </h5>
 <ul>
 <li>validation metric calculation now properly use the calibration
@@ -522,7 +545,7 @@ Building all possible ensemble models can now be done with
 </ul>
 </div>
 <div class="section level5">
-<h5 id="bugfix-4">Bugfix<a class="anchor" aria-label="anchor" href="#bugfix-4"></a>
+<h5 id="bugfix-5">Bugfix<a class="anchor" aria-label="anchor" href="#bugfix-5"></a>
 </h5>
 <ul>
 <li>Fixed <code>MAXENT.Phillips.2</code> and single variable
@@ -565,7 +588,7 @@ evaluations.</li>
 </h5>
 <ul>
 <li>Package <code>sp</code> is back into <code>Imports</code> due to the
-need to use <code><a href="https://rdrr.io/pkg/sp/man/asciigrid.html" class="external-link">sp::read.asciigrid</a></code>
+need to use <code><a href="https://edzer.github.io/sp/reference/asciigrid.html" class="external-link">sp::read.asciigrid</a></code>
 </li>
 <li>Added control for <code>terra</code> version number (&gt;= 1.6-33)
 as <code>terra</code> 1.6-41 was released on CRAN.</li>
@@ -584,11 +607,11 @@ in <code>MAXENT.Phillips</code> modeling options</li>
 </ul>
 </div>
 <div class="section level5">
-<h5 id="bugfix-5">Bugfix<a class="anchor" aria-label="anchor" href="#bugfix-5"></a>
+<h5 id="bugfix-6">Bugfix<a class="anchor" aria-label="anchor" href="#bugfix-6"></a>
 </h5>
 <ul>
 <li>Fixed <code>MAXENT.Phillips</code> predict method for large dataset
-(require <code><a href="https://rdrr.io/pkg/sp/man/asciigrid.html" class="external-link">sp::read.asciigrid</a></code>).</li>
+(require <code><a href="https://edzer.github.io/sp/reference/asciigrid.html" class="external-link">sp::read.asciigrid</a></code>).</li>
 <li>Fixed ensemble models using a single PA dataset with
 <code>em.by = 'all'</code> or <code>'algo'</code>.</li>
 <li>Models using repetition dataset cannot be merged anymore with models
@@ -680,7 +703,7 @@ future.</li>
 </ul>
 </div>
 <div class="section level5">
-<h5 id="bugfix-6">Bugfix<a class="anchor" aria-label="anchor" href="#bugfix-6"></a>
+<h5 id="bugfix-7">Bugfix<a class="anchor" aria-label="anchor" href="#bugfix-7"></a>
 </h5>
 <ul>
 <li>MAXENT.Phillips models can now properly fail</li>
@@ -750,7 +773,7 @@ CompteurSp that was defined within a function.</li>
 <h4 id="section-3">4.1-3<a class="anchor" aria-label="anchor" href="#section-3"></a>
 </h4>
 <div class="section level5">
-<h5 id="bugfix-7">Bugfix<a class="anchor" aria-label="anchor" href="#bugfix-7"></a>
+<h5 id="bugfix-8">Bugfix<a class="anchor" aria-label="anchor" href="#bugfix-8"></a>
 </h5>
 <ul>
 <li>Ensemble models that fails (e.g. EMcv with only one models) will not

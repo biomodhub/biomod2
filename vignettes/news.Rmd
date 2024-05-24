@@ -26,6 +26,13 @@ vignette: >
 
 ### <i class="fas fa-pencil-alt"></i> 2024 
 
+##### Bugfix
+
+- 4.2-5-1 :
+  + removed `tests/` folder (unused)
+  + fixed check for variable names for `new.env` in `BIOMOD_Projection` and `BIOMOD_EnsembleForecasting`
+  + fixed connexion issue with MAXENT tuning
+
 #### 4.2-5 Modeling options and Tuning (2024-05-02)
 
 - Submitted on CRAN

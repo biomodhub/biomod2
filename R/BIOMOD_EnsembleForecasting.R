@@ -593,11 +593,11 @@ BIOMOD_EnsembleForecasting <- function(bm.em,
     }
     
     if (inherits(new.env, 'SpatRaster')) {
-      .fun_testIfIn(TRUE, "names(new.env)", names(new.env), bm.em@expl.var.names)
+      .fun_testIfIn(TRUE, "names(new.env)", names(new.env), bm.em@expl.var.names, exact = TRUE)
       new.env.mask <- .get_data_mask(new.env, value.out = 1)
       new.env <- mask(new.env, new.env.mask)
     } else {
-      .fun_testIfIn(TRUE, "colnames(new.env)", colnames(new.env), bm.em@expl.var.names)
+      .fun_testIfIn(TRUE, "colnames(new.env)", colnames(new.env), bm.em@expl.var.names, exact = TRUE)
     }
     
     which.factor <- which(sapply(new.env, is.factor))

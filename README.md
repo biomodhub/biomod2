@@ -1,5 +1,5 @@
 [![Cran Version](https://www.r-pkg.org/badges/version/biomod2?color=yellow)](https://cran.r-project.org/package=biomod2)
-[![Github Version](https://img.shields.io/badge/devel%20version-4.2--5-blue.svg)](https://github.com/biomodhub/biomod2)
+[![Github Version](https://img.shields.io/badge/devel%20version-4.2--5--1-blue.svg)](https://github.com/biomodhub/biomod2)
 [![Last Commit](https://img.shields.io/github/last-commit/biomodhub/biomod2.svg)](https://github.com/biomodhub/biomod2/commits/master)
 [![R-CMD-check](https://github.com/biomodhub/biomod2/actions/workflows/R-CMD-check.yml/badge.svg)](https://github.com/biomodhub/biomod2/actions/workflows/R-CMD-check.yml)
 
@@ -22,7 +22,10 @@ z-index: 10;
 }
 </style>
 
+
 <div align="center">
+<p><img src="articles/pictures/LogoBiomod.png" alt="Logo biomod2" width=150px></img></p>
+
 <b>------------------------------------------------------------<br/>
 Species distribution modeling, <br/>
 calibration and evaluation, <br/>
@@ -46,7 +49,7 @@ install.packages("biomod2", dependencies = TRUE)
 
 <br/>
 
-- **Development version** [![v](https://img.shields.io/badge/devel%20version-4.2--5-blue.svg)](https://github.com/biomodhub/biomod2) from [biomodhub](https://github.com/biomodhub/biomod2) :
+- **Development version** [![v](https://img.shields.io/badge/devel%20version-4.2--5--1-blue.svg)](https://github.com/biomodhub/biomod2) from [biomodhub](https://github.com/biomodhub/biomod2) :
 
 ```R
 library(devtools)
@@ -81,7 +84,7 @@ devtools::install_github("biomodhub/biomod2", dependencies = TRUE)
 <p><img src="articles/pictures/SCHEMA_BIOMOD2_WORKFLOW_functions.png" alt="Main workflow"></img></p>
 </div>
 
-<br/><br/>
+<br/><br/><br/>
 
 
 

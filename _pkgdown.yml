@@ -9,6 +9,7 @@ navbar:
     left:
     - home
     - videos
+    - presentation
     - examples
     - reference
     right:
@@ -22,6 +23,10 @@ navbar:
       text: Videos
       icon: fas fa-video
       href: articles/vignette_videos.html
+    presentation:
+      text: Presentation
+      icon: fas fa-graduation-cap
+      href: articles/vignette_presentation.html
     examples:
       text: Examples
       icon: fas fa-stethoscope
