@@ -10,7 +10,7 @@
 ##'
 ##' @param model a \code{character} corresponding to the  algorithm to be tuned, must be either 
 ##' \code{ANN}, \code{CTA}, \code{FDA}, \code{GAM}, \code{GBM}, \code{GLM}, \code{MARS}, 
-##' \code{MAXENT}, \code{MAXNET}, \code{RF}, \code{BRF}, \code{SRE}, \code{XGBOOST}
+##' \code{MAXENT}, \code{MAXNET}, \code{RF}, \code{RFd}, \code{SRE}, \code{XGBOOST}
 ##' @param tuning.fun a \code{character} corresponding to the model function name to be called 
 ##' through \code{\link[caret]{train}} function for tuning parameters (see \code{\link{ModelsTable}} 
 ##' dataset)
@@ -76,7 +76,7 @@
 ##'   \item{MARS}{\code{degree}, \code{nprune}}
 ##'   \item{MAXENT}{\code{algorithm}, \code{parallel}}
 ##'   \item{RF}{\code{mtry}}
-##'   \item{BRF}{\code{mtry}}
+##'   \item{RFd}{\code{mtry}}
 ##'   \item{SRE}{\code{quant}}
 ##'   \item{XGBOOST}{\code{nrounds}, \code{max_depth}, \code{eta}, \code{gamma}, 
 ##'   \code{colsampl_bytree}, \code{min_child_weight}, \code{subsample}}
@@ -220,7 +220,7 @@ bm_Tuning <- function(model,
                                           MAXENT.algorithm = 'maxnet',
                                           MAXENT.parallel = TRUE,
                                           RF.mtry = 1:min(10, ncol(bm.format@data.env.var)),
-                                          BRF.mtry = 1:min(10, ncol(bm.format@data.env.var)),
+                                          RFd.mtry = 1:min(10, ncol(bm.format@data.env.var)),
                                           SRE.quant = c(0, 0.0125, 0.025, 0.05, 0.1),
                                           XGBOOST.nrounds = 50,
                                           XGBOOST.max_depth = 1,
@@ -565,7 +565,7 @@ bm_Tuning <- function(model,
 {
   ## check model --------------------------------------------------------------
   .fun_testIfIn(TRUE, "model", model, c("ANN", "CTA", "FDA", "GAM", "GBM", "GLM"
-                                        , "MARS", "MAXENT", "MAXNET", "RF","BRF", "SRE", "XGBOOST"))
+                                        , "MARS", "MAXENT", "MAXNET", "RF","RFd", "SRE", "XGBOOST"))
   
   ## check namespace ----------------------------------------------------------
   if (!isNamespaceLoaded("caret")) { 
@@ -651,10 +651,10 @@ bm_Tuning <- function(model,
   ## get tuning grid through params.train -------------------------------------
   tuning.grid <- NULL
 
-  if (model %in% c("ANN", "FDA", "GAM", "GBM", "MARS", "RF", "BRF", "XGBOOST")) {
+  if (model %in% c("ANN", "FDA", "GAM", "GBM", "MARS", "RF", "RFd", "XGBOOST")) {
     if (!(model == "GAM")) {
       params.train = params.train[grep(model, names(params.train))]
-	  if (model == "BRF") {names(params.train) <- "BRF.mtry"}
+	  if (model == "RFd") {names(params.train) <- "RFd.mtry"}
       .fun_testIfIn(TRUE, "names(params.train)", names(params.train), paste0(model, ".", train.params$params))
     } else if (tuning.fun == "gamLoess"){
       params.train = params.train[c('GAM.span', "GAM.degree")]
@@ -668,7 +668,7 @@ bm_Tuning <- function(model,
   ## get tuning length --------------------------------------------------------
   tuning.length <- 1
   if (model == "CTA") tuning.length <- 30
-  if (model == "RF" | model == "BRF") tuning.length <- min(30, ncol(bm.format@data.env.var))
+  if (model == "RF" | model == "RFd") tuning.length <- min(30, ncol(bm.format@data.env.var))
   
   ## Do formula ---------------------------------------------------------------
   if (model %in% c("MAXENT", "MAXNET", "SRE", "XGBOOST") && do.formula == TRUE) {

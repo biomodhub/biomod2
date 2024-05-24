@@ -75,7 +75,7 @@ setGeneric("BIOMOD.options.default", def = function(mod, typ, pkg, fun) { standa
 .BIOMOD.options.default.check.args <- function(mod, typ, pkg, fun)
 {
   ## check if model is supported
-  avail.models.list <- c('ANN', 'CTA', 'FDA', 'GAM', 'GBM', 'GLM', 'MARS', 'MAXENT', 'MAXNET', 'RF','BRF', 'SRE', 'XGBOOST')
+  avail.models.list <- c('ANN', 'CTA', 'FDA', 'GAM', 'GBM', 'GLM', 'MARS', 'MAXENT', 'MAXNET', 'RF','RFd', 'SRE', 'XGBOOST')
   .fun_testIfIn(TRUE, "mod", mod, avail.models.list)
   
   ## check if type is supported
@@ -445,7 +445,7 @@ setMethod('BIOMOD.options.dataset', signature(strategy = 'character'),
               argstmp$mtry = 1
               argstmp$type <- "classification"
             }
-            if (mod == "BRF") {
+            if (mod == "RFd") {
               argstmp[["x"]] = NULL
               argstmp$mtry = 1
               argstmp$type <- "classification"

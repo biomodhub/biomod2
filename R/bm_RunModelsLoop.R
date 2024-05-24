@@ -22,7 +22,7 @@
 ##' (\emph{a random number by default})
 ##' @param models a \code{vector} containing model names to be computed, must be among 
 ##' \code{ANN}, \code{CTA}, \code{FDA}, \code{GAM}, \code{GBM}, \code{GLM}, \code{MARS}, 
-##' \code{MAXENT}, \code{MAXNET}, \code{RF}, \code{BRF}, \code{SRE}, \code{XGBOOST}
+##' \code{MAXENT}, \code{MAXNET}, \code{RF}, \code{RFd}, \code{SRE}, \code{XGBOOST}
 ##' @param models.pa (\emph{optional, default} \code{NULL}) \cr 
 ##' A \code{list} containing for each model a \code{vector} defining which pseudo-absence datasets 
 ##' are to be used, must be among \code{colnames(bm.format@PA.table)}
@@ -237,7 +237,7 @@ bm_RunModel <- function(model, run.name, dir.name = '.'
     ## PRELIMINAR ---------------------------------------------------
 
 
-    if (model %in% c("ANN", "MARS", "RF","BRF") & is.null(bm.opt.val$formula)) {
+    if (model %in% c("ANN", "MARS", "RF","RFd") & is.null(bm.opt.val$formula)) {
       bm.opt.val$formula <- bm_MakeFormula(resp.name = resp_name
                                            , expl.var = head(data_env)
                                            , type = 'simple'
@@ -250,7 +250,7 @@ bm_RunModel <- function(model, run.name, dir.name = '.'
       bm.opt.val$strata <- data_mod[calib.lines.vec, , drop = FALSE][ , resp_name]
       bm.opt.val$sampsize <- unlist(ifelse(!is.null(bm.opt.val$sampsize), list(bm.opt.val$sampsize), length(data_sp[calib.lines.vec]))) ## TOCHECK !!
     }
-    if (model == "BRF" && !is.null(bm.opt.val$type) && bm.opt.val$type == "classification") {
+    if (model == "RFd" && !is.null(bm.opt.val$type) && bm.opt.val$type == "classification") {
       # defining occurrences as factor for doing classification and not regression in RF
       data_mod <- data_mod %>% mutate_at(resp_name, factor)
       bm.opt.val$strata <- data_mod[calib.lines.vec, , drop = FALSE][ , resp_name]
@@ -260,7 +260,7 @@ bm_RunModel <- function(model, run.name, dir.name = '.'
     }
     
     ## FILL data parameter ------------------------------------------
-    if (model %in% c("ANN", "CTA", "FDA", "GAM", "GBM", "MARS", "RF","BRF")) {
+    if (model %in% c("ANN", "CTA", "FDA", "GAM", "GBM", "MARS", "RF","RFd")) {
       bm.opt.val$data <- data_mod[calib.lines.vec, , drop = FALSE]
     } else if (model == "GLM") {
       bm.opt.val$data <- cbind(data_mod[calib.lines.vec, , drop = FALSE], 
@@ -292,7 +292,7 @@ bm_RunModel <- function(model, run.name, dir.name = '.'
     }
     
     ## REORGANIZE order of parameters -------------------------------
-    if (model %in% c("ANN", "MARS", "RF","BRF")) {
+    if (model %in% c("ANN", "MARS", "RF","RFd")) {
       bm.opt.val <- bm.opt.val[c("formula", "data", names(bm.opt.val)[which(!(names(bm.opt.val) %in% c("formula", "data")))])]
     }
     if (model %in% c("FDA")) {
@@ -344,7 +344,7 @@ bm_RunModel <- function(model, run.name, dir.name = '.'
     }
     
     ## POSTLIMINAR --------------------------------------------------
-    if (model %in% c("RF","BRF") && !is.null(bm.opt.val$type) && bm.opt.val$type == "classification") {
+    if (model %in% c("RF","RFd") && !is.null(bm.opt.val$type) && bm.opt.val$type == "classification") {
       # canceling occurences class modifications
       data_mod <- data_mod %>% mutate_at(resp_name, function(.x) {
         .x %>% as.character() %>% as.numeric()

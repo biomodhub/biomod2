@@ -32,14 +32,14 @@
 "ModelsTable"
 
 # ModelsTable <- data.frame(model = c('ANN', 'CTA', 'FDA', 'GAM', 'GAM', 'GAM', 'GBM', 'GLM'
-#                                      , 'MARS', 'MAXENT', 'MAXNET', 'RF', 'SRE', 'XGBOOST')
+#                                      , 'MARS', 'MAXENT', 'MAXNET', 'RF','RFd', 'SRE', 'XGBOOST')
 #                            , type = 'binary'
 #                            , package = c('nnet', 'rpart', 'mda', 'gam', 'mgcv', 'mgcv', 'gbm', 'stats'
-#                                          , 'earth', 'MAXENT', 'maxnet', 'randomForest', 'biomod2', 'xgboost')
+#                                          , 'earth', 'MAXENT', 'maxnet', 'randomForest','randomForest', 'biomod2', 'xgboost')
 #                            , func = c('nnet', 'rpart', 'fda', 'gam', 'bam', 'gam', 'gbm', 'glm'
-#                                       , 'earth', 'MAXENT', 'maxnet', 'randomForest', 'bm_SRE', 'xgboost')
+#                                       , 'earth', 'MAXENT', 'maxnet', 'randomForest','randomForest', 'bm_SRE', 'xgboost')
 #                            , train = c('avNNet', 'rpart', 'fda', 'gamLoess', 'bam', 'gam', 'gbm', 'glm'
-#                                        , 'earth', 'ENMevaluate', 'maxnet', 'rf', 'bm_SRE', 'xgbTree'))
+#                                        , 'earth', 'ENMevaluate', 'maxnet', 'rf','rf', 'bm_SRE', 'xgbTree'))
 
 # usethis::use_data(ModelsTable, overwrite = TRUE)
 # usethis::use_data(ModelsTable, overwrite = TRUE, internal = TRUE)
@@ -198,6 +198,13 @@
 # bm.opt@options$RF.binary.randomForest.randomForest@args.values[['_allData_allRun']]$sampsize = NULL
 # bm.opt@options$RF.binary.randomForest.randomForest@args.values[['_allData_allRun']]$nodesize = 5
 # bm.opt@options$RF.binary.randomForest.randomForest@args.values[['_allData_allRun']]$maxnodes = NULL
+# bm.opt@options$RFd.binary.randomForest.randomForest@args.values[['_allData_allRun']]$type = 'classification'
+# bm.opt@options$RFd.binary.randomForest.randomForest@args.values[['_allData_allRun']]$ntree = 500
+# bm.opt@options$RFd.binary.randomForest.randomForest@args.values[['_allData_allRun']]$mtry = NULL
+# bm.opt@options$RFd.binary.randomForest.randomForest@args.values[['_allData_allRun']]$strata = factor(c(0, 1))
+# bm.opt@options$RFd.binary.randomForest.randomForest@args.values[['_allData_allRun']]$sampsize = NULL
+# bm.opt@options$RFd.binary.randomForest.randomForest@args.values[['_allData_allRun']]$nodesize = 5
+# bm.opt@options$RFd.binary.randomForest.randomForest@args.values[['_allData_allRun']]$maxnodes = NULL
 # bm.opt@options$SRE.binary.biomod2.bm_SRE@args.values[['_allData_allRun']]$do.extrem = TRUE
 # bm.opt@options$XGBOOST.binary.xgboost.xgboost@args.values[['_allData_allRun']]$params = list(max_depth = 2, eta = 1)
 # bm.opt@options$XGBOOST.binary.xgboost.xgboost@args.values[['_allData_allRun']]$nthread = 2
