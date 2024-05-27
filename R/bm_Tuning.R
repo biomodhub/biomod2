@@ -427,7 +427,7 @@ bm_Tuning <- function(model,
               
               tuning.form <- tuning.grid[which.max(tmp[, metric.eval]), ]
               
-              if (model == "RF") {
+              if (model %in% c("RF","RFd")) {
                 tuning.form <- data.frame(mtry = tuning.grid[which.max(tmp[, metric.eval]), ])
               }
               
@@ -477,7 +477,7 @@ bm_Tuning <- function(model,
                   }
                 }
             } else {
-              if (model == "RF") { typ.vec = c('simple','quadratic', 'polynomial') }
+              if (model %in% c("RF","RFd")) { typ.vec = c('simple','quadratic', 'polynomial') }
               
               TMP <- foreach (typ = typ.vec, .combine = "rbind") %:%
                 foreach (intlev = 0:max.intlev, .combine = "rbind") %do%
@@ -496,7 +496,7 @@ bm_Tuning <- function(model,
                 }
             }
             argstmp$formula <- TMP[which.max(TMP[, metric.eval]), "formula"]
-            if (model %in% c("ANN", "GAM", "GBM", "MARS", "RF")) {
+            if (model %in% c("ANN", "GAM", "GBM", "MARS", "RF","RFd")) {
               argstmp$formula <- formula(argstmp$formula)
             }
           } else {
@@ -606,6 +606,7 @@ bm_Tuning <- function(model,
                            MAXENT.algorithm = 'maxnet',
                            MAXENT.parallel = TRUE,
                            RF.mtry = 1:min(10, ncol(bm.format@data.env.var)),
+                           RFd.mtry = 1:min(10, ncol(bm.format@data.env.var)),
                            SRE.quant = c(0, 0.0125, 0.025, 0.05, 0.1),
                            XGBOOST.nrounds = 50,
                            XGBOOST.max_depth = 1,
@@ -653,8 +654,7 @@ bm_Tuning <- function(model,
 
   if (model %in% c("ANN", "FDA", "GAM", "GBM", "MARS", "RF", "RFd", "XGBOOST")) {
     if (!(model == "GAM")) {
-      params.train = params.train[grep(model, names(params.train))]
-	  if (model == "RFd") {names(params.train) <- "RFd.mtry"}
+      params.train = params.train[grep(paste0(model,"\\."), names(params.train))]
       .fun_testIfIn(TRUE, "names(params.train)", names(params.train), paste0(model, ".", train.params$params))
     } else if (tuning.fun == "gamLoess"){
       params.train = params.train[c('GAM.span', "GAM.degree")]

@@ -139,7 +139,7 @@
 ##'     (\url{https://biodiversityinformatics.amnh.org/open_source/maxent/})
 ##'     \item \code{MAXNET} : Maximum Entropy (\code{\link[maxnet]{maxnet}})
 ##'     \item \code{RF} : Random Forest (\code{\link[randomForest]{randomForest}})
-##'     \item \code{RFd} : Balanced Random Forest (\code{\link[randomForest]{randomForest}})
+##'     \item \code{RFd} : Random Forest downsampled (\code{\link[randomForest]{randomForest}})
 ##'     \item \code{SRE} : Surface Range Envelop or usually called BIOCLIM (\code{\link{bm_SRE}})
 ##'     \item \code{XGBOOST} : eXtreme Gradient Boosting Training (\code{\link[xgboost]{xgboost}})
 ##'   }}
