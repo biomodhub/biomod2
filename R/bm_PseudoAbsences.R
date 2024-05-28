@@ -950,8 +950,8 @@ setMethod('bm_PseudoAbsences_disk', signature(expl.var = "SpatRaster"),
               dist.mask <- mask(dist.mask, subset(expl.var, 1))
               
               if (!is.null(fact.aggr)){
-                dist.mask <- aggregate(dist.mask,fact= fact.aggr)
-                expl.var <- aggregate(expl.var,fact = fact.aggr)
+                dist.mask <- terra::aggregate(dist.mask,fact= fact.aggr)
+                expl.var <- terra::aggregate(expl.var,fact = fact.aggr)
               }
               
               if (is.null(dist.max)) { 
