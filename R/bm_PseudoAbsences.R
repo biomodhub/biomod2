@@ -596,7 +596,7 @@ setMethod('bm_PseudoAbsences_random', signature(expl.var = "SpatVector"),
                           env = as.data.frame(expl.var),
                           pa.tab = pa.tab))
             } else {
-              cat("\nUnsupported case yet!")
+              cat("\n Unsupported case yet!")
               return(NULL)
             }
           })
@@ -917,7 +917,7 @@ setMethod('bm_PseudoAbsences_disk', signature(expl.var = "SpatVector"),
 ##'
 ##' @rdname bm_PseudoAbsences
 ##' @export
-##' @importFrom terra rast distance subset mask crds cellFromXY extract
+##' @importFrom terra rast distance subset mask crds cellFromXY extract aggregate
 ##'
 
 setMethod('bm_PseudoAbsences_disk', signature(expl.var = "SpatRaster"),
