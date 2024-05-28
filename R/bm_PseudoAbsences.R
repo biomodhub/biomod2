@@ -192,7 +192,7 @@
 ##'
 ##' 
 ##' @importFrom foreach foreach %do%
-##' @importFrom terra rast vect freq spatSample values extract
+##' @importFrom terra rast vect freq spatSample values extract aggregate
 ##' @importFrom utils packageVersion
 ##'
 ##' @export
