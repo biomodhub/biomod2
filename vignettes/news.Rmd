@@ -17,6 +17,7 @@ vignette: >
 
 ##### Bugfix
 
+- 4.2-5-2 : always keep same order for variable names for `new.env` in `BIOMOD_Projection` and `BIOMOD_EnsembleForecasting`
 - 4.2-5-1 :
   + removed `tests/` folder (unused)
   + fixed check for variable names for `new.env` in `BIOMOD_Projection` and `BIOMOD_EnsembleForecasting`
