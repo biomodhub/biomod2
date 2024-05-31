@@ -1333,6 +1333,8 @@ setMethod('summary', signature(object = 'BIOMOD.formated.data'),
 ##' @param filter.raster (\emph{optional, default} \code{FALSE}) \cr 
 ##' If \code{env} is of raster type, a \code{logical} value defining whether \code{sp} 
 ##' is to be filtered when several points occur in the same raster cell
+##' @param seed.val (\emph{optional, default} \code{NULL}) \cr 
+##' An \code{integer} value corresponding to the new seed value to be set
 ##' 
 ##' @slot dir.name a \code{character} corresponding to the modeling folder
 ##' @slot sp.name a \code{character} corresponding to the species name
@@ -1467,7 +1469,7 @@ setMethod('BIOMOD.formated.data.PA', signature(sp = 'numeric', env = 'SpatRaster
                    , PA.nb.rep = 1, PA.strategy = 'random', PA.nb.absences = NULL
                    , PA.dist.min = 0, PA.dist.max = NULL
                    , PA.sre.quant = 0.025, PA.user.table = NULL
-                   , na.rm = TRUE, filter.raster = FALSE,seed.val = NULL) {
+                   , na.rm = TRUE, filter.raster = FALSE, seed.val = NULL) {
             .BIOMOD.formated.data.PA(sp, env, xy, dir.name, sp.name
                                      , eval.sp, eval.env, eval.xy
                                      , PA.nb.rep, PA.strategy, PA.nb.absences

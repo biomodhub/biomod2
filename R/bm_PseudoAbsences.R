@@ -202,7 +202,8 @@
 
 
 bm_PseudoAbsences <- function(resp.var, expl.var, nb.rep = 1, strategy = 'random', nb.absences = NULL
-                              , sre.quant = 0, dist.min = 0, dist.max = NULL,fact.aggr = NULL, user.table = NULL, seed.val= NULL)
+                              , sre.quant = 0, dist.min = 0, dist.max = NULL, fact.aggr = NULL
+                              , user.table = NULL, seed.val = NULL)
 {
   ## 0. Check arguments ---------------------------------------------------------------------------
   args <- .bm_PseudoAbsences.check.args(resp.var, expl.var, nb.rep, strategy, nb.absences
@@ -219,7 +220,7 @@ bm_PseudoAbsences <- function(resp.var, expl.var, nb.rep = 1, strategy = 'random
                     user.defined = bm_PseudoAbsences_user.defined(resp.var, expl.var, user.table),
                     random = bm_PseudoAbsences_random(resp.var, expl.var, nb.absences, nb.rep),
                     sre = bm_PseudoAbsences_sre(resp.var, expl.var, sre.quant, nb.absences, nb.rep),
-                    disk = bm_PseudoAbsences_disk(resp.var, expl.var, dist.min, dist.max, nb.absences, nb.rep,fact.aggr))
+                    disk = bm_PseudoAbsences_disk(resp.var, expl.var, dist.min, dist.max, nb.absences, nb.rep, fact.aggr))
     } else if (length(nb.absences) == nb.rep) {
       out.list = foreach(i.abs = unique(nb.absences)) %do% 
         {
@@ -230,7 +231,7 @@ bm_PseudoAbsences <- function(resp.var, expl.var, nb.rep = 1, strategy = 'random
                         user.defined = bm_PseudoAbsences_user.defined(resp.var, expl.var, user.table),
                         random = bm_PseudoAbsences_random(resp.var, expl.var, i.abs, length(i.rep)),
                         sre = bm_PseudoAbsences_sre(resp.var, expl.var, sre.quant, i.abs, length(i.rep)),
-                        disk = bm_PseudoAbsences_disk(resp.var, expl.var, dist.min, dist.max, i.abs, length(i.rep),fact.aggr))
+                        disk = bm_PseudoAbsences_disk(resp.var, expl.var, dist.min, dist.max, i.abs, length(i.rep), fact.aggr))
           
           ## CASE where all available cells have been selected :
           ## give back only one dataset, even if several were asked
@@ -328,7 +329,8 @@ bm_PseudoAbsences <- function(resp.var, expl.var, nb.rep = 1, strategy = 'random
 
 # Argument Check --------------------------------------------------------------
 
-.bm_PseudoAbsences.check.args <- function(resp.var, expl.var, nb.rep, strategy, nb.absences, sre.quant, dist.min, dist.max, user.table,seed.val)
+.bm_PseudoAbsences.check.args <- function(resp.var, expl.var, nb.rep, strategy, nb.absences
+                                          , sre.quant, dist.min, dist.max, user.table, seed.val)
 {
   cat('\n\nChecking Pseudo-absence selection arguments...\n')
   ## 1. Check resp.var argument -----------------------------------------------
@@ -921,7 +923,7 @@ setMethod('bm_PseudoAbsences_disk', signature(expl.var = "SpatVector"),
 ##'
 
 setMethod('bm_PseudoAbsences_disk', signature(expl.var = "SpatRaster"),
-          function(resp.var, expl.var, dist.min, dist.max, nb.absences, nb.rep,fact.aggr)
+          function(resp.var, expl.var, dist.min, dist.max, nb.absences, nb.rep, fact.aggr)
           {
             cat("\n   > Disk pseudo absences selection")
             
@@ -949,9 +951,9 @@ setMethod('bm_PseudoAbsences_disk', signature(expl.var = "SpatRaster"),
               dist.mask <- distance(dist.mask)
               dist.mask <- mask(dist.mask, subset(expl.var, 1))
               
-              if (!is.null(fact.aggr)){
-                dist.mask <- terra::aggregate(dist.mask,fact= fact.aggr)
-                expl.var <- terra::aggregate(expl.var,fact = fact.aggr)
+              if (!is.null(fact.aggr)) {
+                dist.mask <- terra::aggregate(dist.mask, fact = fact.aggr)
+                expl.var <- terra::aggregate(expl.var, fact = fact.aggr)
               }
               
               if (is.null(dist.max)) { 

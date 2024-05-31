@@ -48,7 +48,7 @@ object returned by the \code{\link{BIOMOD_FormatingData}} function}
 
 \item{models}{a \code{vector} containing model names to be computed, must be among 
 \code{ANN}, \code{CTA}, \code{FDA}, \code{GAM}, \code{GBM}, \code{GLM}, \code{MARS}, 
-\code{MAXENT}, \code{MAXNET}, \code{RF}, \code{SRE}, \code{XGBOOST}}
+\code{MAXENT}, \code{MAXNET}, \code{RF}, \code{RFd}, \code{SRE}, \code{XGBOOST}}
 
 \item{models.pa}{(\emph{optional, default} \code{NULL}) \cr 
 A \code{list} containing for each model a \code{vector} defining which pseudo-absence datasets 
@@ -198,6 +198,7 @@ metrics (see Details).
     (\url{https://biodiversityinformatics.amnh.org/open_source/maxent/})
     \item \code{MAXNET} : Maximum Entropy (\code{\link[maxnet]{maxnet}})
     \item \code{RF} : Random Forest (\code{\link[randomForest]{randomForest}})
+    \item \code{RFd} : Random Forest downsampled (\code{\link[randomForest]{randomForest}})
     \item \code{SRE} : Surface Range Envelop or usually called BIOCLIM (\code{\link{bm_SRE}})
     \item \code{XGBOOST} : eXtreme Gradient Boosting Training (\code{\link[xgboost]{xgboost}})
   }}

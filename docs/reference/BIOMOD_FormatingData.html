@@ -135,7 +135,8 @@ with different strategies (see Details).</p>
 <span>  PA.sre.quant <span class="op">=</span> <span class="fl">0.025</span>,</span>
 <span>  PA.user.table <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  na.rm <span class="op">=</span> <span class="cn">TRUE</span>,</span>
-<span>  filter.raster <span class="op">=</span> <span class="cn">FALSE</span></span>
+<span>  filter.raster <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  seed.val <span class="op">=</span> <span class="cn">NULL</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -267,6 +268,11 @@ explanatory variables should be removed from the analysis or not</p></dd>
 <dd><p>(<em>optional, default</em> <code>FALSE</code>) <br> 
 If <code>expl.var</code> is of raster type, a <code>logical</code> value defining whether <code>resp.var</code> 
 is to be filtered when several points occur in the same raster cell</p></dd>
+
+
+<dt>seed.val</dt>
+<dd><p>(<em>optional, default</em> <code>NULL</code>) <br> 
+An <code>integer</code> value corresponding to the new seed value to be set</p></dd>
 
 </dl></div>
     <div id="value">

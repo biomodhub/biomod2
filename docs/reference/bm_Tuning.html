@@ -134,10 +134,11 @@ select more efficient ones based on an evaluation metric.</p>
 <span>    GBM.n.minobsinnode <span class="op">=</span> <span class="fl">10</span>, MARS.degree <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">2</span>, MARS.nprune <span class="op">=</span> <span class="fl">2</span><span class="op">:</span><span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">max</a></span><span class="op">(</span><span class="fl">38</span>, <span class="fl">2</span> <span class="op">*</span></span>
 <span>    <span class="fu"><a href="https://rspatial.github.io/terra/reference/dimensions.html" class="external-link">ncol</a></span><span class="op">(</span><span class="va">bm.format</span><span class="op">@</span><span class="va">data.env.var</span><span class="op">)</span> <span class="op">+</span> <span class="fl">1</span><span class="op">)</span>, MAXENT.algorithm <span class="op">=</span> <span class="st">"maxnet"</span>, </span>
 <span>     MAXENT.parallel</span>
-<span>    <span class="op">=</span> <span class="cn">TRUE</span>, RF.mtry <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">min</a></span><span class="op">(</span><span class="fl">10</span>, <span class="fu"><a href="https://rspatial.github.io/terra/reference/dimensions.html" class="external-link">ncol</a></span><span class="op">(</span><span class="va">bm.format</span><span class="op">@</span><span class="va">data.env.var</span><span class="op">)</span><span class="op">)</span>, SRE.quant <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">0.0125</span>,</span>
-<span>    <span class="fl">0.025</span>, <span class="fl">0.05</span>, <span class="fl">0.1</span><span class="op">)</span>, XGBOOST.nrounds <span class="op">=</span> <span class="fl">50</span>, XGBOOST.max_depth <span class="op">=</span> <span class="fl">1</span>, XGBOOST.eta <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.3</span>,</span>
-<span>    <span class="fl">0.4</span><span class="op">)</span>, XGBOOST.gamma <span class="op">=</span> <span class="fl">0</span>, XGBOOST.colsample_bytree <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.6</span>, <span class="fl">0.8</span><span class="op">)</span>,</span>
-<span>    XGBOOST.min_child_weight <span class="op">=</span> <span class="fl">1</span>, XGBOOST.subsample <span class="op">=</span> <span class="fl">0.5</span><span class="op">)</span></span>
+<span>    <span class="op">=</span> <span class="cn">TRUE</span>, RF.mtry <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">min</a></span><span class="op">(</span><span class="fl">10</span>, <span class="fu"><a href="https://rspatial.github.io/terra/reference/dimensions.html" class="external-link">ncol</a></span><span class="op">(</span><span class="va">bm.format</span><span class="op">@</span><span class="va">data.env.var</span><span class="op">)</span><span class="op">)</span>, RFd.mtry <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">min</a></span><span class="op">(</span><span class="fl">10</span>,</span>
+<span>    <span class="fu"><a href="https://rspatial.github.io/terra/reference/dimensions.html" class="external-link">ncol</a></span><span class="op">(</span><span class="va">bm.format</span><span class="op">@</span><span class="va">data.env.var</span><span class="op">)</span><span class="op">)</span>, SRE.quant <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">0.0125</span>, <span class="fl">0.025</span>, <span class="fl">0.05</span>, <span class="fl">0.1</span><span class="op">)</span>,</span>
+<span>    XGBOOST.nrounds <span class="op">=</span> <span class="fl">50</span>, XGBOOST.max_depth <span class="op">=</span> <span class="fl">1</span>, XGBOOST.eta <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.3</span>, <span class="fl">0.4</span><span class="op">)</span>, XGBOOST.gamma</span>
+<span>    <span class="op">=</span> <span class="fl">0</span>, XGBOOST.colsample_bytree <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.6</span>, <span class="fl">0.8</span><span class="op">)</span>, XGBOOST.min_child_weight <span class="op">=</span> <span class="fl">1</span>,</span>
+<span>    XGBOOST.subsample <span class="op">=</span> <span class="fl">0.5</span><span class="op">)</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -146,7 +147,7 @@ select more efficient ones based on an evaluation metric.</p>
     <dl><dt>model</dt>
 <dd><p>a <code>character</code> corresponding to the  algorithm to be tuned, must be either 
 <code>ANN</code>, <code>CTA</code>, <code>FDA</code>, <code>GAM</code>, <code>GBM</code>, <code>GLM</code>, <code>MARS</code>, 
-<code>MAXENT</code>, <code>MAXNET</code>, <code>RF</code>, <code>SRE</code>, <code>XGBOOST</code></p></dd>
+<code>MAXENT</code>, <code>MAXNET</code>, <code>RF</code>, <code>RFd</code>, <code>SRE</code>, <code>XGBOOST</code></p></dd>
 
 
 <dt>tuning.fun</dt>
@@ -253,6 +254,9 @@ function.</p>
 <dd><p><code>algorithm</code>, <code>parallel</code></p></dd>
 
   <dt>RF</dt>
+<dd><p><code>mtry</code></p></dd>
+
+  <dt>RFd</dt>
 <dd><p><code>mtry</code></p></dd>
 
   <dt>SRE</dt>

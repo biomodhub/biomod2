@@ -7,7 +7,7 @@
 bm_ModelingOptions(
   data.type,
   models = c("ANN", "CTA", "FDA", "GAM", "GBM", "GLM", "MARS", "MAXENT", "MAXNET", "RF",
-    "SRE", "XGBOOST"),
+    "RFd", "SRE", "XGBOOST"),
   strategy,
   user.val = NULL,
   user.base = "bigboss",
@@ -21,7 +21,7 @@ bm_ModelingOptions(
 
 \item{models}{a \code{vector} containing model names to be computed, must be among 
 \code{ANN}, \code{CTA}, \code{FDA}, \code{GAM}, \code{GBM}, \code{GLM}, \code{MARS}, 
-\code{MAXENT}, \code{MAXNET}, \code{RF}, \code{SRE}, \code{XGBOOST}}
+\code{MAXENT}, \code{MAXNET}, \code{RF}, \code{RFd}, \code{SRE}, \code{XGBOOST}}
 
 \item{strategy}{a \code{character} corresponding to the method to select models' parameters 
 values, must be either \code{default}, \code{bigboss}, \code{user.defined}, \code{tuned}}

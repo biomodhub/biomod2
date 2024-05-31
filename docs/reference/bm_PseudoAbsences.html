@@ -123,7 +123,9 @@ to 4 different methods : <code>random</code>, <code>sre</code>, <code>disk</code
 <span>  sre.quant <span class="op">=</span> <span class="fl">0</span>,</span>
 <span>  dist.min <span class="op">=</span> <span class="fl">0</span>,</span>
 <span>  dist.max <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  user.table <span class="op">=</span> <span class="cn">NULL</span></span>
+<span>  fact.aggr <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  user.table <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  seed.val <span class="op">=</span> <span class="cn">NULL</span></span>
 <span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu">bm_PseudoAbsences_user.defined</span><span class="op">(</span><span class="va">resp.var</span>, <span class="va">expl.var</span>, <span class="va">...</span><span class="op">)</span></span>
@@ -159,7 +161,8 @@ to 4 different methods : <code>random</code>, <code>sre</code>, <code>disk</code
 <span>  <span class="va">dist.min</span>,</span>
 <span>  <span class="va">dist.max</span>,</span>
 <span>  <span class="va">nb.absences</span>,</span>
-<span>  <span class="va">nb.rep</span></span>
+<span>  <span class="va">nb.rep</span>,</span>
+<span>  <span class="va">fact.aggr</span></span>
 <span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># S4 method for ANY,SpatRaster</span></span>
@@ -169,7 +172,8 @@ to 4 different methods : <code>random</code>, <code>sre</code>, <code>disk</code
 <span>  <span class="va">dist.min</span>,</span>
 <span>  <span class="va">dist.max</span>,</span>
 <span>  <span class="va">nb.absences</span>,</span>
-<span>  <span class="va">nb.rep</span></span>
+<span>  <span class="va">nb.rep</span>,</span>
+<span>  <span class="va">fact.aggr</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -223,12 +227,22 @@ If <code>strategy = 'disk'</code>, a <code>numeric</code> defining the maximal d
 used to make the <code>disk</code> pseudo-absence selection (in meters)</p></dd>
 
 
+<dt>fact.aggr</dt>
+<dd><p>(<em>optional, default</em> <code>NULL</code>) <br>
+If <code>strategy = 'disk'</code>, a <code>integer</code> defining the factor of aggregation to reduce the resolution</p></dd>
+
+
 <dt>user.table</dt>
 <dd><p>(<em>optional, default</em> <code>NULL</code>) <br>
 If <code>strategy = 'user.defined'</code>, a <code>matrix</code> or <code>data.frame</code> with as many rows as 
 <code>resp.var</code> values, as many columns as <code>nb.rep</code>, and containing <code>TRUE</code> or 
 <code>FALSE</code> values defining which points will be used to build the species distribution 
 model(s) for each repetition</p></dd>
+
+
+<dt>seed.val</dt>
+<dd><p>(<em>optional, default</em> <code>NULL</code>) <br> 
+An <code>integer</code> value corresponding to the new seed value to be set</p></dd>
 
 
 <dt>...</dt>

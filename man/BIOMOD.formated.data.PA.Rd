@@ -25,7 +25,8 @@
   PA.sre.quant = 0.025,
   PA.user.table = NULL,
   na.rm = TRUE,
-  filter.raster = FALSE
+  filter.raster = FALSE,
+  seed.val = NULL
 )
 
 \S4method{BIOMOD.formated.data.PA}{numeric,SpatRaster}(
@@ -45,7 +46,8 @@
   PA.sre.quant = 0.025,
   PA.user.table = NULL,
   na.rm = TRUE,
-  filter.raster = FALSE
+  filter.raster = FALSE,
+  seed.val = NULL
 )
 }
 \arguments{
@@ -141,6 +143,9 @@ values for explanatory variables should be removed from the analysis or not}
 \item{filter.raster}{(\emph{optional, default} \code{FALSE}) \cr 
 If \code{env} is of raster type, a \code{logical} value defining whether \code{sp} 
 is to be filtered when several points occur in the same raster cell}
+
+\item{seed.val}{(\emph{optional, default} \code{NULL}) \cr 
+An \code{integer} value corresponding to the new seed value to be set}
 }
 \description{
 Class returned by \code{\link{BIOMOD_FormatingData}}, and used by 

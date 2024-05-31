@@ -24,16 +24,17 @@ bm_Tuning(
     GBM.n.minobsinnode = 10, MARS.degree = 1:2, MARS.nprune = 2:max(38, 2 *
     ncol(bm.format@data.env.var) + 1), MAXENT.algorithm = "maxnet", 
      MAXENT.parallel
-    = TRUE, RF.mtry = 1:min(10, ncol(bm.format@data.env.var)), SRE.quant = c(0, 0.0125,
-    0.025, 0.05, 0.1), XGBOOST.nrounds = 50, XGBOOST.max_depth = 1, XGBOOST.eta = c(0.3,
-    0.4), XGBOOST.gamma = 0, XGBOOST.colsample_bytree = c(0.6, 0.8),
-    XGBOOST.min_child_weight = 1, XGBOOST.subsample = 0.5)
+    = TRUE, RF.mtry = 1:min(10, ncol(bm.format@data.env.var)), RFd.mtry = 1:min(10,
+    ncol(bm.format@data.env.var)), SRE.quant = c(0, 0.0125, 0.025, 0.05, 0.1),
+    XGBOOST.nrounds = 50, XGBOOST.max_depth = 1, XGBOOST.eta = c(0.3, 0.4), XGBOOST.gamma
+    = 0, XGBOOST.colsample_bytree = c(0.6, 0.8), XGBOOST.min_child_weight = 1,
+    XGBOOST.subsample = 0.5)
 )
 }
 \arguments{
 \item{model}{a \code{character} corresponding to the  algorithm to be tuned, must be either 
 \code{ANN}, \code{CTA}, \code{FDA}, \code{GAM}, \code{GBM}, \code{GLM}, \code{MARS}, 
-\code{MAXENT}, \code{MAXNET}, \code{RF}, \code{SRE}, \code{XGBOOST}}
+\code{MAXENT}, \code{MAXNET}, \code{RF}, \code{RFd}, \code{SRE}, \code{XGBOOST}}
 
 \item{tuning.fun}{a \code{character} corresponding to the model function name to be called 
 through \code{\link[caret]{train}} function for tuning parameters (see \code{\link{ModelsTable}} 
@@ -110,6 +111,7 @@ Currently, the available parameters to be tuned are the following :
   \item{MARS}{\code{degree}, \code{nprune}}
   \item{MAXENT}{\code{algorithm}, \code{parallel}}
   \item{RF}{\code{mtry}}
+  \item{RFd}{\code{mtry}}
   \item{SRE}{\code{quant}}
   \item{XGBOOST}{\code{nrounds}, \code{max_depth}, \code{eta}, \code{gamma}, 
   \code{colsampl_bytree}, \code{min_child_weight}, \code{subsample}}

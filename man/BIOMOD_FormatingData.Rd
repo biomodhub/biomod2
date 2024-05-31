@@ -21,7 +21,8 @@ BIOMOD_FormatingData(
   PA.sre.quant = 0.025,
   PA.user.table = NULL,
   na.rm = TRUE,
-  filter.raster = FALSE
+  filter.raster = FALSE,
+  seed.val = NULL
 )
 }
 \arguments{
@@ -118,6 +119,9 @@ explanatory variables should be removed from the analysis or not}
 \item{filter.raster}{(\emph{optional, default} \code{FALSE}) \cr 
 If \code{expl.var} is of raster type, a \code{logical} value defining whether \code{resp.var} 
 is to be filtered when several points occur in the same raster cell}
+
+\item{seed.val}{(\emph{optional, default} \code{NULL}) \cr 
+An \code{integer} value corresponding to the new seed value to be set}
 }
 \value{
 A \code{\link{BIOMOD.formated.data}} object that can be used to build species distribution 
