@@ -161,12 +161,12 @@
 # bm.opt@options <- c(bm.opt@options, bm.opt_gam2@options, bm.opt_gam3@options)
 # bm.opt@options <- bm.opt@options[bm.opt@models]
 # bm.opt@options$ANN.binary.nnet.nnet@args.values[['_allData_allRun']]$size = 5 #NULL
-# bm.opt@options$ANN.binary.nnet.nnet@args.values[['_allData_allRun']]$decay = 5
+# bm.opt@options$ANN.binary.nnet.nnet@args.values[['_allData_allRun']]$decay = 0.1
 # bm.opt@options$ANN.binary.nnet.nnet@args.values[['_allData_allRun']]$trace = FALSE
 # bm.opt@options$ANN.binary.nnet.nnet@args.values[['_allData_allRun']]$rang = 0.1
 # bm.opt@options$ANN.binary.nnet.nnet@args.values[['_allData_allRun']]$maxit = 200
 # bm.opt@options$CTA.binary.rpart.rpart@args.values[['_allData_allRun']]$method = "class"
-# bm.opt@options$CTA.binary.rpart.rpart@args.values[['_allData_allRun']]$control = list(xval = 5, minbucket = 5, minsplit = 5, cp = 0.001, maxdepth = 25)
+# bm.opt@options$CTA.binary.rpart.rpart@args.values[['_allData_allRun']]$control = list(xval = 5, minbucket = 5, minsplit = 5, cp = 0.001, maxdepth = 10)
 # bm.opt@options$CTA.binary.rpart.rpart@args.values[['_allData_allRun']]$cost = NULL
 # bm.opt@options$FDA.binary.mda.fda@args.values[['_allData_allRun']]$method = "mars"
 # bm.opt@options$GAM.binary.mgcv.gam@args.values[['_allData_allRun']]$family = binomial(link = 'logit')
@@ -193,14 +193,14 @@
 # bm.opt@options$MAXENT.binary.MAXENT.MAXENT@args.values[['_allData_allRun']]$path_to_maxent.jar = '.'
 # bm.opt@options$RF.binary.randomForest.randomForest@args.values[['_allData_allRun']]$type = 'classification'
 # bm.opt@options$RF.binary.randomForest.randomForest@args.values[['_allData_allRun']]$ntree = 500
-# bm.opt@options$RF.binary.randomForest.randomForest@args.values[['_allData_allRun']]$mtry = NULL
+# bm.opt@options$RF.binary.randomForest.randomForest@args.values[['_allData_allRun']]$mtry = 2
 # bm.opt@options$RF.binary.randomForest.randomForest@args.values[['_allData_allRun']]$strata = factor(c(0, 1))
 # bm.opt@options$RF.binary.randomForest.randomForest@args.values[['_allData_allRun']]$sampsize = NULL
 # bm.opt@options$RF.binary.randomForest.randomForest@args.values[['_allData_allRun']]$nodesize = 5
 # bm.opt@options$RF.binary.randomForest.randomForest@args.values[['_allData_allRun']]$maxnodes = NULL
 # bm.opt@options$RFd.binary.randomForest.randomForest@args.values[['_allData_allRun']]$type = 'classification'
 # bm.opt@options$RFd.binary.randomForest.randomForest@args.values[['_allData_allRun']]$ntree = 500
-# bm.opt@options$RFd.binary.randomForest.randomForest@args.values[['_allData_allRun']]$mtry = NULL
+# bm.opt@options$RFd.binary.randomForest.randomForest@args.values[['_allData_allRun']]$mtry = 2
 # bm.opt@options$RFd.binary.randomForest.randomForest@args.values[['_allData_allRun']]$strata = factor(c(0, 1))
 # bm.opt@options$RFd.binary.randomForest.randomForest@args.values[['_allData_allRun']]$sampsize = NULL
 # bm.opt@options$RFd.binary.randomForest.randomForest@args.values[['_allData_allRun']]$nodesize = 5
@@ -212,7 +212,7 @@
 # bm.opt@options$XGBOOST.binary.xgboost.xgboost@args.values[['_allData_allRun']]$objective = "binary:logistic"
 # OptionsBigboss <- bm.opt
 
-# usethis::use_data(OptionsBigboss, overwrite = TRUE, internal = TRUE)
+# usethis::use_data(OptionsBigboss, overwrite = TRUE, internal = T)
 # usethis::use_data(OptionsBigboss, ModelsTable, overwrite = TRUE, internal = TRUE)
 
 

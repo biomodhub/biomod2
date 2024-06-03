@@ -17,8 +17,10 @@ vignette: >
 
 #### 4.2-6 Devel actuel
 
-- Add *RFd*: Random Forest down-sampling
-- Add _seed.val_ for bm_pseudoAbsences and BIOMOD_FormatingData
+- Warning ! New options for OptionsBigboss have been modified ( concern only ANN, CTA and RF models)
+- Some changes for the tuning ranges.
+- Add *RFd*: Random Forest with down-sampling method.
+- Add _seed.val_ for bm_pseudoAbsences and BIOMOD_FormatingData.
 - Add  _fact.aggr_ argument for pseudoabsences selection with the random and disk method. It allows to reduce the resolution of the environnement.
 - Possibility to give the same options for all datasets with _"for_all_datasets"_ in bm_ModelingOptions.
 

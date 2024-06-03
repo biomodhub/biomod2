@@ -305,14 +305,16 @@ setGeneric("BIOMOD.options.dataset",
     }
   }
   if (strategy == "user.defined" && !is.null(user.val)) {
+    
     if ("for_all_datasets" %in% names(user.val)){
       if (length(names(user.val)) > 1 ){
-        user.val <- user.val[["for_all_datasets"]]
+        user.val <- user.val["for_all_datasets"]
         cat("\n\t\t> Only the options defined for 'for_all_datasets' will be taken into account")
       }
       user.val <- rep(user.val, length(expected_CVnames))
       names(user.val) <- expected_CVnames
     }
+    
     .fun_testIfIn(TRUE, "names(user.val)", names(user.val), expected_CVnames)
     if (length(names(user.val)) != length(expected_CVnames)) {
       warning(paste0("Options will be changed only for a subset of datasets ("
