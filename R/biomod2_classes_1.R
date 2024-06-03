@@ -1321,6 +1321,8 @@ setMethod('summary', signature(object = 'BIOMOD.formated.data'),
 ##' If pseudo-absence selection and \code{PA.strategy = 'disk'}, a \code{numeric} defining the 
 ##' maximal distance to presence points used to make the \code{disk} pseudo-absence selection 
 ##' (in meters, see Details)
+##' @param PA.fact.aggr (\emph{optional, default} \code{NULL}) \cr
+##' If \code{strategy = 'random'} or \code{strategy = 'disk'}, a \code{integer} defining the factor of aggregation to reduce the resolution
 ##' @param PA.user.table (\emph{optional, default} \code{NULL}) \cr 
 ##' If pseudo-absence selection and \code{PA.strategy = 'user.defined'}, a \code{matrix} or 
 ##' \code{data.frame} with as many rows as \code{resp.var} values, as many columns as 
@@ -1445,13 +1447,14 @@ setMethod('BIOMOD.formated.data.PA', signature(sp = 'numeric', env = 'data.frame
                    , eval.sp = NULL, eval.env = NULL, eval.xy = NULL
                    , PA.nb.rep = 1, PA.strategy = 'random', PA.nb.absences = NULL
                    , PA.dist.min = 0, PA.dist.max = NULL
-                   , PA.sre.quant = 0.025, PA.user.table = NULL
+                   , PA.sre.quant = 0.025, PA.fact.aggr = NULL
+                   , PA.user.table = NULL
                    , na.rm = TRUE, filter.raster = FALSE, seed.val = NULL) {
             .BIOMOD.formated.data.PA(sp, env, xy, dir.name, sp.name
                                      , eval.sp, eval.env, eval.xy
                                      , PA.nb.rep, PA.strategy, PA.nb.absences
                                      , PA.dist.min, PA.dist.max
-                                     , PA.sre.quant, PA.user.table
+                                     , PA.sre.quant, PA.fact.aggr, PA.user.table
                                      , na.rm
                                      , filter.raster = filter.raster
                                      , seed.val)
@@ -1468,13 +1471,14 @@ setMethod('BIOMOD.formated.data.PA', signature(sp = 'numeric', env = 'SpatRaster
                    , eval.sp = NULL, eval.env = NULL, eval.xy = NULL
                    , PA.nb.rep = 1, PA.strategy = 'random', PA.nb.absences = NULL
                    , PA.dist.min = 0, PA.dist.max = NULL
-                   , PA.sre.quant = 0.025, PA.user.table = NULL
+                   , PA.sre.quant = 0.025, PA.fact.aggr = NULL
+                   , PA.user.table = NULL
                    , na.rm = TRUE, filter.raster = FALSE, seed.val = NULL) {
             .BIOMOD.formated.data.PA(sp, env, xy, dir.name, sp.name
                                      , eval.sp, eval.env, eval.xy
                                      , PA.nb.rep, PA.strategy, PA.nb.absences
                                      , PA.dist.min, PA.dist.max
-                                     , PA.sre.quant, PA.user.table
+                                     , PA.sre.quant, PA.fact.aggr, PA.user.table
                                      , na.rm
                                      , filter.raster = filter.raster
                                      , seed.val)
@@ -1485,7 +1489,8 @@ setMethod('BIOMOD.formated.data.PA', signature(sp = 'numeric', env = 'SpatRaster
                                       , eval.sp = NULL, eval.env = NULL, eval.xy = NULL
                                       , PA.nb.rep = 1, PA.strategy = 'random', PA.nb.absences = NULL
                                       , PA.dist.min = 0, PA.dist.max = NULL
-                                      , PA.sre.quant = 0.025, PA.user.table = NULL
+                                      , PA.sre.quant = 0.025, PA.fact.aggr = NULL
+                                      , PA.user.table = NULL
                                       , na.rm = TRUE, filter.raster = FALSE, seed.val = NULL)
 {
   args <- .BIOMOD.formated.data.check.args(sp, env, xy, eval.sp, eval.env, eval.xy, filter.raster)
@@ -1533,6 +1538,7 @@ setMethod('BIOMOD.formated.data.PA', signature(sp = 'numeric', env = 'SpatRaster
                                    sre.quant = PA.sre.quant,
                                    dist.min = PA.dist.min,
                                    dist.max = PA.dist.max,
+                                   fact.aggr = PA.fact.aggr,
                                    user.table = PA.user.table,
                                    seed.val = seed.val)
   

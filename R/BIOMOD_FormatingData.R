@@ -81,6 +81,8 @@
 ##' If pseudo-absence selection and \code{PA.strategy = 'disk'}, a \code{numeric} defining the 
 ##' maximal distance to presence points used to make the \code{disk} pseudo-absence selection 
 ##' (in meters, see Details)
+##' @param PA.fact.aggr (\emph{optional, default} \code{NULL}) \cr
+##' If \code{strategy = 'random'} or \code{strategy = 'disk'}, a \code{integer} defining the factor of aggregation to reduce the resolution
 ##' @param PA.user.table (\emph{optional, default} \code{NULL}) \cr 
 ##' If pseudo-absence selection and \code{PA.strategy = 'user.defined'}, a \code{matrix} or 
 ##' \code{data.frame} with as many rows as \code{resp.var} values, as many columns as 
@@ -346,6 +348,7 @@ BIOMOD_FormatingData <- function(resp.name,
                                  PA.dist.min = 0,
                                  PA.dist.max = NULL,
                                  PA.sre.quant = 0.025,
+                                 PA.fact.aggr = NULL,
                                  PA.user.table = NULL,
                                  na.rm = TRUE,
                                  filter.raster = FALSE,
@@ -394,6 +397,7 @@ BIOMOD_FormatingData <- function(resp.name,
                                    PA.dist.min = PA.dist.min,
                                    PA.dist.max = PA.dist.max,
                                    PA.sre.quant = PA.sre.quant,
+                                   PA.fact.aggr = PA.fact.aggr,
                                    PA.user.table = PA.user.table,
                                    na.rm = na.rm,
                                    filter.raster = filter.raster,

@@ -17,12 +17,11 @@ vignette: >
 
 #### 4.2-6 Devel actuel
 
+- Add *RFd*: Random Forest down-sampling
 - Add _seed.val_ for bm_pseudoAbsences and BIOMOD_FormatingData
-- Stop dans BIOMOD_FormatingData (càd biomod2_classes_1) si selection de PA à échouer. (Message okay ?)
-- Add an argument _fact.agg_ (factor.aggregate nom à changer au besoin) for PseudoAbsences selection with the disk method. It allows to reduce the resolution of the environnement. NULL par défaut, donné à aggregate pour modifier résolution. **à faire remonter à BIOMOD_FormatingData ou laisser à bm_PseudoAbsences**
-- Change max.depth into max_depth in OptionsBigboss (automatic in default)
-- Add RFd Random Forest down-sampling
-- Tuning for RFd: similar to RF (mtry only)
+- Add  _fact.aggr_ argument for pseudoabsences selection with the random and disk method. It allows to reduce the resolution of the environnement.
+- Possibility to give the same options for all datasets with _"for_all_datasets"_ in bm_ModelingOptions.
+
 
 ### <i class="fas fa-pencil-alt"></i> 2024 
 

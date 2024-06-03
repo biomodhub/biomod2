@@ -54,6 +54,9 @@
 ##'   function}
 ##' }
 ##' 
+##' To define the same options for all datasets of a model, you can provide these options as a list in 
+##' user.val with the names "for_all_datasets".
+##' 
 ##' @note \code{MAXENT} being the only external model (not called through a \code{R} package), 
 ##' default parameters, and their values, are the following :
 ##' 
@@ -357,7 +360,7 @@ bm_ModelingOptions <- function(data.type
       }
       .fun_testIfInherits(TRUE, "calib.lines", calib.lines, c("matrix"))
       
-      expected_CVnames <- c(paste0("_allData_RUN", seq_len(ncol(calib.lines))), "_allData_allRun")
+      expected_CVnames <- c(paste0("_allData_RUN", seq_len(ncol(calib.lines))), "_allData_allRun", "for_all_datasets")
       if (inherits(bm.format, "BIOMOD.formated.data.PA")) {
         expected_CVnames <- c(expected_CVnames
                               , sapply(1:ncol(bm.format@PA.table)
