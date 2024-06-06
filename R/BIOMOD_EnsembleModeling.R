@@ -666,7 +666,8 @@ BIOMOD_EnsembleModeling <- function(bm.mod,
                     if (all(!eval.lines)) { eval.lines <- !eval.lines }
                   }
                 } else {
-                  eval.lines <- rep(TRUE, length(pred.bm))
+                  eval.lines <- rep(FALSE, length(obs))
+                  eval.lines[as.numeric(rownames(pred.newdata))] <- TRUE
                 }
                 
                 

@@ -151,9 +151,16 @@
 <h5 id="bugfix">Bugfix<a class="anchor" aria-label="anchor" href="#bugfix"></a>
 </h5>
 <ul>
-<li>4.2-5-2 : always keep same order for variable names for
-<code>new.env</code> in <code>BIOMOD_Projection</code> and
+<li>4.2-5-2 :
+<ul>
+<li>fixed <code>BIOMOD_EnsembleModeling</code> when multiple PA datasets
+(<code>obs</code> and <code>fit</code> not matching when calling
+<code>bm_FindOptimStat</code>)</li>
+<li>always keep same order for variable names for <code>new.env</code>
+in <code>BIOMOD_Projection</code> and
 <code>BIOMOD_EnsembleForecasting</code>
+</li>
+</ul>
 </li>
 <li>4.2-5-1 :
 <ul>
