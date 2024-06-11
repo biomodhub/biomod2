@@ -83,6 +83,7 @@ Collate:
     'biomod2_globalVariables.R'
     'biomod2_classes_0.R'
     'biomod2_classes_1.R'
+    'biomod2_classes_1_bis.R'
     'biomod2_classes_2.R'
     'biomod2_classes_3.R'
     'biomod2_classes_4.R'

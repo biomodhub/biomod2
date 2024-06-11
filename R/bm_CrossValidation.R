@@ -283,37 +283,39 @@ bm_CrossValidation <- function(bm.format,
     }
   }
   
-  # check for unbalanced dataset (dataset missing presences or absences)
-  which.calibration.unbalanced <-
-    which(
-      apply(out, 2, 
-            function(x) {
-              length(unique(bm.format@data.species[which(x)]))
-            }
-      ) != 2)
-  
-  if(length(which.calibration.unbalanced) > 0) {
-    cat("\n   !!! Some calibration dataset do not have both presences and absences: ", 
-        paste0(colnames(out)[which.calibration.unbalanced], collapse = ", "))
-    warning("Some calibration repetion do not have both presences and absences")
-  }
-  
-  which.validation.unbalanced <-
-    which(
-      apply(out, 2, 
-            function(x) {
-              length(unique(bm.format@data.species[which(!x)]))
-            }
-      ) != 2)
-  
-  # Models with allRun have no validation
-  which.validation.unbalanced <- 
-    which.validation.unbalanced[which(!grepl(names(which.validation.unbalanced), pattern = "allRun"))]
-  
-  if (length(which.validation.unbalanced) > 0) {
-    cat("\n   !!! Some validation dataset do not have both presences and absences: ", 
-        paste0(colnames(out)[which.validation.unbalanced], collapse = ", "))
-    warning("Some validation repetion do not have both presences and absences")
+  if (inherits(bm.format, "BIOMOD.formated.data")){
+    # check for unbalanced dataset (dataset missing presences or absences)
+    which.calibration.unbalanced <-
+      which(
+        apply(out, 2, 
+              function(x) {
+                length(unique(bm.format@data.species[which(x)]))
+              }
+        ) != 2)
+    
+    if(length(which.calibration.unbalanced) > 0) {
+      cat("\n   !!! Some calibration dataset do not have both presences and absences: ", 
+          paste0(colnames(out)[which.calibration.unbalanced], collapse = ", "))
+      warning("Some calibration repetion do not have both presences and absences")
+    }
+    
+    which.validation.unbalanced <-
+      which(
+        apply(out, 2, 
+              function(x) {
+                length(unique(bm.format@data.species[which(!x)]))
+              }
+        ) != 2)
+    
+    # Models with allRun have no validation
+    which.validation.unbalanced <- 
+      which.validation.unbalanced[which(!grepl(names(which.validation.unbalanced), pattern = "allRun"))]
+    
+    if (length(which.validation.unbalanced) > 0) {
+      cat("\n   !!! Some validation dataset do not have both presences and absences: ", 
+          paste0(colnames(out)[which.validation.unbalanced], collapse = ", "))
+      warning("Some validation repetion do not have both presences and absences")
+    }
   }
   
   cat("\n")
@@ -328,7 +330,7 @@ bm_CrossValidation <- function(bm.format,
   cat('\n\nChecking Cross-Validation arguments...\n')
   
   ## 0. Check bm.format argument ------------------------------------
-  .fun_testIfInherits(TRUE, "bm.format", bm.format, c("BIOMOD.formated.data", "BIOMOD.formated.data.PA"))
+  .fun_testIfInherits(TRUE, "bm.format", bm.format, c("BIOMOD.formated.data", "BIOMOD.formated.data.PA", "BIOMOD.formated.data.abundance"))
   
   ## 1. Check strategy argument -------------------------------------
   .fun_testIfIn(TRUE, "strategy", strategy, c("random", "kfold", "block", "strat", "env", "user.defined"))
@@ -449,6 +451,38 @@ bm_CrossValidation <- function(bm.format,
 }
 
 
+.sample_abundance <- function(data.sp, data.split, nb.rep = 1, data.env = NULL, seed.val = NULL)
+{
+  # data.sp is a vector with positive numeric
+  # return a matrix with nb.rep columns of boolean (T: calib, F= eval)
+  
+  pres <- which(data.sp > 0)
+  abs <- (1:length(data.sp))[-pres]
+  
+  nbPresEval <- round(length(pres) * data.split)
+  nbAbsEval <- round(length(abs) * data.split)
+  
+  mat.out <- matrix(FALSE, nrow = length(data.sp), ncol = nb.rep)
+  colnames(mat.out) <- paste0('_RUN', 1:nb.rep)
+  
+  set.seed(seed.val)
+  for (i in 1:ncol(mat.out)) {
+    ## force to sample at least one level of each factorial variable for calibration
+    fact.cell.samp <- NULL
+    if (!is.null(data.env)) {
+      fact.cell.samp <- bm_SampleFactorLevels(expl.var = data.env)
+      mat.out[fact.cell.samp, i] <- TRUE ## in fact.cell.samp
+    }
+    mat.out[sample(setdiff(pres, fact.cell.samp), ## in pres, not in fact.cell.samp
+                   max(nbPresEval - length(fact.cell.samp), 0)), i] <- TRUE
+    mat.out[sample(setdiff(abs, fact.cell.samp), ## in abs, not in fact.cell.samp
+                   max(nbAbsEval - length(fact.cell.samp), 0)), i] <- TRUE
+  }
+  return(mat.out)
+}
+
+
+
 
 # bm_CrossValidation user-defined methods ---------------------------------------------------------
 
@@ -504,6 +538,15 @@ setMethod('bm_CrossValidation_user.defined', signature(bm.format = "BIOMOD.forma
                         }
                         return(calib.pa)
                       }
+            return(calib.lines)
+          })
+
+
+setMethod('bm_CrossValidation_user.defined', signature(bm.format = "BIOMOD.formated.data.abundance"),
+          function(bm.format, user.table) {
+            cat("\n   > User defined cross-validation selection")
+            calib.lines <- user.table
+            .check_calib.lines_names(calib.lines)
             return(calib.lines)
           })
 
@@ -574,6 +617,27 @@ setMethod('bm_CrossValidation_random', signature(bm.format = "BIOMOD.formated.da
             return(calib.lines)
           })
 
+## bm_CrossValidation random BIOMOD.formated.data.abundance methods ----------------------------
+##'
+##' @rdname bm_CrossValidation
+##' @export
+##'
+
+setMethod('bm_CrossValidation_random', signature(bm.format = "BIOMOD.formated.data.abundance"),
+          function(bm.format, nb.rep, perc) {
+            cat("\n   > Random cross-validation selection")
+            if (nb.rep == 0) { # take all available data
+              calib.lines <- matrix(rep(TRUE, length(bm.format@data.species)), ncol = 1)
+              colnames(calib.lines) <- '_allRun'
+            } else {
+              calib.lines <- .sample_abundance(data.sp = bm.format@data.species,
+                                               data.split = perc,
+                                               nb.rep = nb.rep,
+                                               data.env = bm.format@data.env.var)
+              # seed.val = seed.val)
+            }
+            return(calib.lines)
+          })
 
 # bm_CrossValidation kfold methods ----------------------------------------------------------------
 
@@ -662,6 +726,38 @@ setMethod('bm_CrossValidation_kfold', signature(bm.format = "BIOMOD.formated.dat
             return(calib.lines)
           })
 
+## bm_CrossValidation kfold BIOMOD.formated.data.abundance methods --------------------------------
+##'
+##' @rdname bm_CrossValidation
+##' @export
+##'
+
+setMethod('bm_CrossValidation_kfold', signature(bm.format = "BIOMOD.formated.data.abundance"),
+          function(bm.format, nb.rep, k) {
+            cat("\n   > k-fold cross-validation selection")
+            if (!isNamespaceLoaded("dismo")) { 
+              if(!requireNamespace('dismo', quietly = TRUE)) stop("Package 'dismo' not found")
+            }
+            
+            ind.NA  <- which(is.na(bm.format@data.species))
+            tmp  <- bm.format@data.species
+            tmp[ind.NA] <- 0
+            
+            calib.lines <- foreach(rep = 1:nb.rep, .combine = "cbind") %do%
+              {
+                fold <- dismo::kfold(tmp, by = tmp, k = k)
+                calib.rep <- NULL
+                for (i in 1:k) {
+                  calib.rep <- cbind(calib.rep, fold != i)
+                }
+                return(calib.rep)
+              }
+            colnames(calib.lines) <- paste0('_RUN', 1:ncol(calib.lines))
+            return(calib.lines)
+          })
+
+
+
 
 # bm_CrossValidation block methods ----------------------------------------------------------------
 
@@ -738,6 +834,35 @@ setMethod('bm_CrossValidation_block', signature(bm.format = "BIOMOD.formated.dat
                 colnames(calib.pa) <- paste0('_PA', pa, '_RUN', 1:ncol(calib.pa))
                 return(calib.pa)
               }
+            return(calib.lines)
+          })
+
+
+## bm_CrossValidation block BIOMOD.formated.data.abundance methods --------------------------------
+##'
+##' @rdname bm_CrossValidation
+##' @export
+##'
+
+setMethod('bm_CrossValidation_block', signature(bm.format = "BIOMOD.formated.data.abundance"),
+          function(bm.format) {
+            cat("\n   > Block cross-validation selection")
+            if (!isNamespaceLoaded("ENMeval")) { 
+              if(!requireNamespace('ENMeval', quietly = TRUE)) stop("Package 'ENMeval' not found")
+            }
+            
+            ind.NA  <- which(is.na(bm.format@data.species))
+            tmp  <- bm.format@data.species
+            tmp[ind.NA] <- 0
+            
+            tab.coord <- bm.format@coord
+            blocks <- ENMeval::get.block(tab.coord[tmp > 0, ], tab.coord[tmp == 0, ])
+            calib.lines <- matrix(NA, nrow = length(tmp), ncol = 4)
+            for (i in 1:4) {
+              calib.lines[tmp >  0, i] <- blocks[[1]] != i
+              calib.lines[tmp == 0, i] <- blocks[[2]] != i     
+            }
+            colnames(calib.lines) <- paste0('_RUN', 1:ncol(calib.lines))
             return(calib.lines)
           })
 
@@ -843,6 +968,48 @@ setMethod('bm_CrossValidation_strat', signature(bm.format = "BIOMOD.formated.dat
             return(calib.lines)
           })
 
+## bm_CrossValidation strat BIOMOD.formated.data.abundance methods --------------------------------
+##'
+##' @rdname bm_CrossValidation
+##' @export
+##'
+
+setMethod('bm_CrossValidation_strat', signature(bm.format = "BIOMOD.formated.data.abundance"),
+          function(bm.format, balance, strat, k) {
+            cat("\n   > Stratified cross-validation selection")
+            tmp.coord <- bm.format@coord
+            
+            if (strat == "x" || strat == "both") {
+              bands <- quantile(tmp.coord[balance, 1], probs = seq(0, 100, 100 / k) / 100)
+              bands[1] <- -Inf
+              bands[k + 1] <- Inf
+              calib.x <- matrix(NA, nrow(tmp.coord), k)
+              for (i in 1:k) {
+                calib.x[, i] <- !(tmp.coord[, 1] >= bands[i] & tmp.coord[, 1] < bands[i + 1])
+              }
+              if (strat == "x") { calib.lines <- calib.x }
+            }
+            
+            if (strat == "y" || strat == "both") {
+              bands <- quantile(tmp.coord[balance, 2], probs = seq(0, 100, 100 / k) / 100)
+              bands[1] <- -Inf
+              bands[k + 1] <- Inf
+              calib.y <- matrix(NA, nrow(tmp.coord), k)
+              for (i in 1:k) {
+                calib.y[, i] <- !(tmp.coord[, 2] >= bands[i] & tmp.coord[, 2] < bands[i + 1])
+              }
+              if (strat == "y") { calib.lines <- calib.y }
+            }
+            
+            if (strat == "both") { ## Merge X and Y tables
+              calib.lines <- cbind(calib.x, calib.y)
+            }
+            
+            colnames(calib.lines) <- paste0('_RUN', 1:ncol(calib.lines))
+            return(calib.lines)
+          })
+
+
 
 # bm_CrossValidation env methods ------------------------------------------------------------------
 
@@ -912,5 +1079,31 @@ setMethod('bm_CrossValidation_env', signature(bm.format = "BIOMOD.formated.data.
                 
                 return(calib.env)
               }
+            return(calib.lines)
+          })
+
+## bm_CrossValidation env BIOMOD.formated.data.abundance methods ----------------------------------
+##'
+##' @rdname bm_CrossValidation
+##' @export
+##'
+
+setMethod('bm_CrossValidation_env', signature(bm.format = "BIOMOD.formated.data.abundance"),
+          function(bm.format, balance, k, env.var) {
+            cat("\n   > Environmental cross-validation selection")
+            calib.lines <- foreach(env = env.var, .combine = "cbind") %do%
+              {
+                tmp.env <- bm.format@data.env.var[balance, env]
+                full.env <- bm.format@data.env.var[ , env]
+                bands <- quantile(tmp.env, probs = seq(0, 100, 100 / k) / 100)
+                bands[1] <- bands[1] - 1
+                bands[k + 1] <- bands[k + 1] + 1
+                calib.env <- matrix(NA, nrow = length(full.env), ncol = k)
+                for (i in 1:k) {
+                  calib.env[, i] <- (full.env <= bands[i] | full.env > bands[i + 1])
+                }
+                return(calib.env)
+              }
+            colnames(calib.lines) <- paste0('_RUN', 1:ncol(calib.lines))
             return(calib.lines)
           })

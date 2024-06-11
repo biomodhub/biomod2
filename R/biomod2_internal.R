@@ -1104,3 +1104,12 @@ check_duplicated_cells <- function(env, xy, sp, filter.raster,
 xgbpred <- function(model, data, ...) {
   predict(model, newdata = as.matrix(data), ...)
 }
+
+
+# is.data.abundance ----------------------------
+
+.is.Data.Abundance <- function(resp.var){
+  nb_factor <- length(unique(resp.var)) <= 3
+  negative <- any(resp.var < 0 )
+  return(!any(c(nb_factor,negative)))
+}
