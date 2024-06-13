@@ -29,7 +29,9 @@ vignette: >
 
 ##### Bugfix
 
-- 4.2-5-2 : always keep same order for variable names for `new.env` in `BIOMOD_Projection` and `BIOMOD_EnsembleForecasting`
+- 4.2-5-2 :
+  + fixed `BIOMOD_EnsembleModeling` when multiple PA datasets (`obs` and `fit` not matching when calling `bm_FindOptimStat`)
+  + always keep same order for variable names for `new.env` in `BIOMOD_Projection` and `BIOMOD_EnsembleForecasting`
 - 4.2-5-1 :
   + removed `tests/` folder (unused)
   + fixed check for variable names for `new.env` in `BIOMOD_Projection` and `BIOMOD_EnsembleForecasting`
