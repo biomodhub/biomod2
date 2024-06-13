@@ -626,14 +626,14 @@ setMethod('plot', signature(x = 'BIOMOD.formated.data.abundance', y = "missing")
                     this_calib <- calib.lines[ , this_name]
                     this_valid <- ! calib.lines[ , this_name] 
                   }
-                  #   else if (is.na(this_run) || this_run == 'allRun') { # PA only
-                  #   this_name <- this_PA
-                  #   this_calib <- x@PA.table[ , this_PA]
-                  # } else { # PA+run
-                  #   this_name <- paste0("_", this_PA, "_", this_run)
-                  #   this_calib <- calib.lines[ , this_name] & x@PA.table[ , this_PA]
-                  #   this_valid <- ! calib.lines[ , this_name] & x@PA.table[ , this_PA]
-                  # }
+                    else if (is.na(this_run) || this_run == 'allRun') { # PA only
+                    this_name <- this_PA
+                    this_calib <- x@PA.table[ , this_PA]
+                  } else { # PA+run
+                    this_name <- paste0("_", this_PA, "_", this_run)
+                    this_calib <- calib.lines[ , this_name] & x@PA.table[ , this_PA]
+                    this_valid <- ! calib.lines[ , this_name] & x@PA.table[ , this_PA]
+                  }
                   calib.resp <- x@data.species[which(this_calib)]
                   # calib.resp <- ifelse(is.na(calib.resp), 30, 
                   #                      ifelse(calib.resp == 1, 10, 20))
@@ -662,74 +662,22 @@ setMethod('plot', signature(x = 'BIOMOD.formated.data.abundance', y = "missing")
             
             
             # 2- define colors and breaks ------------------------------------
-            data_breaks <- c(9,10, 11, 12, # presence
-                             19,20, 21, 22, # absence
-                             29,30, 31,         # pseudo-absences
-                             1)              # background
-            data_labels <- c("9" = "**Presences**",
-                             "10" = "Presences (calibration)",
-                             "11" = "Presences (validation)",
-                             "12" = "Presences (evaluation)",
-                             "19" = "**True Absences**",
-                             "20" = "True Absences (calibration)",
-                             "21" = "True Absences (validation)",
-                             "22" = "True Absences (evaluation)",
-                             "29" = "**Pseudo-Absences**",
-                             "30" = "Pseudo-Absences (calibration)",
-                             "31" = "Pseudo-Absences (validation)",
-                             "1" = "Background")
-            data_labels_facet <- c("9" = "**Presences**",
-                                   "10" = "calibration",
-                                   "11" = "validation",
-                                   "12" = "evaluation",
-                                   "19" = "**True Absences**",
-                                   "20" = "calibration",
-                                   "21" = "validation",
-                                   "22" = "evaluation",
-                                   "29" = "**Pseudo-Absences**",
-                                   "30" = "calibration",
-                                   "31" = "validation",
-                                   "1" = NA) # background
+            data_breaks <- c("Initial dataset", "Evaluation dataset", colnames(calib.lines))              
+            data_labels <- data_breaks
+            data_labels_facet <- c("all data","all data", paste0("RUN", 1:length(colnames(calib.lines)))) # background
             
-            data_colors <- c("9" = NA,
-                             "10" = "#004488",
-                             "11" = "#6699CC",
-                             "12" = "#6699CC",
-                             "19" = NA,
-                             "20" = "#994455",
-                             "21" = "#EE99AA",
-                             "22" = "#EE99AA",
-                             "29" = NA,
-                             "30" = "#997700",
-                             "31" = "#EECC66",
-                             "1" = "grey70")
+            data_colors <- c("Initial dataset" = "#004488",
+                             "Evaluation dataset" = "#994455",
+                             "_allData_RUN1" = "#997700",
+                             "_allData_RUN2" = "#997700",
+                             "_allData_RUN3" = "#997700")
             
             shape_fit <- 16
             shape_eval <- 17
-            data_shape <- c("9" = NA,
-                            "10" = shape_fit,
-                            "11" = shape_fit,
-                            "12" = shape_eval,
-                            "19" = NA,
-                            "20" = shape_fit,
-                            "21" = shape_fit,
-                            "22" = shape_eval,
-                            "29" = NA,
-                            "30" = shape_fit,
-                            "31" = shape_fit,
-                            "1" = NA)
-            data_alpha <- c("9" = 0,
-                            "10" = 1,
-                            "11" = 1,
-                            "12" = 1,
-                            "19" = 0,
-                            "20" = 1,
-                            "21" = 1,
-                            "22" = 1,
-                            "29" = 0,
-                            "30" = 1,
-                            "31" = 1,
-                            "1"  = 0)
+            data_shape <- c(shape_fit,
+                           shape_eval,
+                            rep(shape_fit,length(colnames(calib.lines)) ))
+            data_alpha <- c()
             data_background <- "#FFFFFF00"
             
             
@@ -757,154 +705,91 @@ setMethod('plot', signature(x = 'BIOMOD.formated.data.abundance', y = "missing")
             }
             ## 3.1 Raster plot --------------------------------------------------------
             
-            if(plot.type == "raster"){
-              
-              rast.plot <- foreach(this_dataset = unique(full.df.vect$dataset), .combine = 'c') %do% {
-                this_rast  <-
-                  rasterize(subset(full.df.vect,
-                                   full.df.vect$dataset == this_dataset), 
-                            plot_mask[[this_dataset]],
-                            field = "resp", background = 1)
-                names(this_rast) <- this_dataset
-                this_rast*this_mask
+            
+            ## 3.2 Points plot --------------------------------------------------------
+            
+            data.df <- as.data.frame(full.df.vect, geom = "XY")
+            if(plot.output == "facet"){
+              base_g <-  ggplot(data.df)
+              if(has.mask){
+                base_g <- base_g +
+                  tidyterra::geom_spatraster(data = this_mask, aes(fill = factor(after_stat(value))))
               }
               
-              if(plot.output == "facet"){
-                g <- ggplot()+
-                  tidyterra::geom_spatraster(data = rast.plot,
-                                             aes(fill = factor(after_stat(value), data_breaks)))+
-                  facet_wrap(~lyr)+
-                  scale_fill_manual(
-                    NULL,
-                    breaks = data_breaks,
-                    values = data_colors,
-                    labels = data_labels_facet,
-                    na.value = data_background, 
-                    drop = FALSE)+
-                  guides(fill = guide_legend(
-                    override.aes = list(alpha = data_alpha),
-                    ncol = 3))+
-                  theme(legend.position = "top",
-                        legend.key = element_blank(),
-                        legend.background = element_rect(fill = "grey90"),
-                        legend.text = ggtext::element_markdown())
-                
-              } else {
-                g <- lapply(names(rast.plot), function(thisname){
-                  ggplot()+
-                    tidyterra::geom_spatraster(data = rast.plot[[thisname]],
-                                               aes(fill = factor(after_stat(value))))+
-                    scale_fill_manual(
-                      NULL,
-                      breaks = data_breaks,
-                      values = data_colors,
-                      labels = data_labels,
-                      na.value = data_background)+
-                    ggtitle(thisname)+
-                    guides(color = guide_legend(nrow = 2))+
-                    theme(legend.position = "top",
-                          legend.key = element_blank(),
-                          legend.background = element_rect(fill = "grey90"))
-                })
-              }
-              if(do.plot){
-                print(g)
-              }
-              return(list("data.vect"  = full.df.vect,
-                          "data.rast"  = rast.plot,
-                          "data.label" = data_labels,
-                          "data.plot"  = g))
+              
+              g <- base_g +      
+                geom_point(aes(x = x, y = y, 
+                               color = resp,
+                               shape = factor(dataset, levels = data_breaks)), 
+                           alpha = 1, size = point.size)+
+                facet_wrap(~dataset)+
+                scale_shape_manual(
+                  NULL,
+                  breaks = data_breaks,
+                  values = data_shape,
+                  labels = data_labels_facet,
+                  drop = FALSE)+
+                scale_fill_manual(
+                  guide = "none",
+                  breaks = data_breaks,
+                  values = data_colors,
+                  labels = data_labels,
+                  na.value = data_background)+
+                xlab(NULL)+ ylab(NULL)+
+                guides(color = guide_legend(override.aes = list(size = 3),
+                                            ncol = 3))+
+                theme(legend.position = "top",
+                      legend.key = element_blank(),
+                      legend.background = element_rect(fill = "grey90"),
+                      legend.text = ggtext::element_markdown())
+              
             } else {
-              ## 3.2 Points plot --------------------------------------------------------
-              
-              data.df <- as.data.frame(full.df.vect, geom = "XY")
-              if(plot.output == "facet"){
-                base_g <-  ggplot(data.df)
+              g <- lapply(unique(data.df$dataset), function(thisname){
+                base_g <-  ggplot(subset(data.df,
+                                         data.df$dataset == thisname))
                 if(has.mask){
-                  base_g <- base_g +
-                    tidyterra::geom_spatraster(data = this_mask, aes(fill = factor(after_stat(value))))
+                  base_g <- base_g + 
+                    tidyterra::geom_spatraster(data = this_mask,
+                                               aes(fill = factor(after_stat(value))))
                 }
-                
-                
-                g <- base_g +      
+                base_g +      
                   geom_point(aes(x = x, y = y, 
-                                 color = factor(resp, levels = data_breaks[-12]),
-                                 shape = factor(resp, levels = data_breaks[-12])), 
+                                 color = resp,
+                                 shape = as.factor(dataset)),
                              alpha = 1, size = point.size)+
-                  facet_wrap(~dataset)+
-                  scale_color_manual(
-                    NULL,
-                    breaks = data_breaks,
-                    values = data_colors,
-                    labels = data_labels_facet,
-                    drop = FALSE)+
-                  scale_shape_manual(
-                    NULL,
-                    breaks = data_breaks,
-                    values = data_shape,
-                    labels = data_labels_facet,
-                    drop = FALSE)+
-                  scale_fill_manual(
-                    guide = "none",
-                    breaks = data_breaks,
-                    values = data_colors,
-                    labels = data_labels,
-                    na.value = data_background)+
+                  # scale_color_manual(
+                  #   NULL,
+                  #   breaks = data_breaks,
+                  #   values = data_colors,
+                  #   labels = data_labels)+
+                  # scale_shape_manual(
+                  #   NULL,
+                  #   breaks = data_breaks,
+                  #   values = data_shape,
+                  #   labels = data_labels)+
+                  # scale_fill_manual(
+                  #   guide = "none",
+                  #   breaks = data_breaks,
+                  #   values = data_colors,
+                  #   labels = data_labels,
+                  #   na.value = data_background)+
                   xlab(NULL)+ ylab(NULL)+
                   guides(color = guide_legend(override.aes = list(size = 3),
-                                              ncol = 3))+
+                                              nrow = 2))+
                   theme(legend.position = "top",
                         legend.key = element_blank(),
-                        legend.background = element_rect(fill = "grey90"),
-                        legend.text = ggtext::element_markdown())
-                
-              } else {
-                g <- lapply(unique(data.df$dataset), function(thisname){
-                  base_g <-  ggplot(subset(data.df,
-                                           data.df$dataset == thisname))
-                  if(has.mask){
-                    base_g <- base_g + 
-                      tidyterra::geom_spatraster(data = this_mask,
-                                                 aes(fill = factor(after_stat(value))))
-                  }
-                  base_g +      
-                    geom_point(aes(x = x, y = y, 
-                                   color = as.factor(resp),
-                                   shape = as.factor(resp)),
-                               alpha = 1, size = point.size)+
-                    scale_color_manual(
-                      NULL,
-                      breaks = data_breaks,
-                      values = data_colors,
-                      labels = data_labels)+
-                    scale_shape_manual(
-                      NULL,
-                      breaks = data_breaks,
-                      values = data_shape,
-                      labels = data_labels)+
-                    scale_fill_manual(
-                      guide = "none",
-                      breaks = data_breaks,
-                      values = data_colors,
-                      labels = data_labels,
-                      na.value = data_background)+
-                    xlab(NULL)+ ylab(NULL)+
-                    guides(color = guide_legend(override.aes = list(size = 3),
-                                                nrow = 2))+
-                    theme(legend.position = "top",
-                          legend.key = element_blank(),
-                          legend.background = element_rect(fill = "grey90"))+
-                    ggtitle(thisname)
-                })
-                
-              }
-              if(do.plot){
-                print(g)
-              }
-              return(list("data.vect"  = full.df.vect,
-                          "data.label" = data_labels,
-                          "data.plot"  = g))
+                        legend.background = element_rect(fill = "grey90"))+
+                  ggtitle(thisname)
+              })
+              
             }
+            if(do.plot){
+              print(g)
+            }
+            return(list("data.vect"  = full.df.vect,
+                        "data.label" = data_labels,
+                        "data.plot"  = g))
+            
           }
 )
 

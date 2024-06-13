@@ -562,3 +562,37 @@ ecospat.mpa <- function(Pred, Sp.occ.xy = NULL, perc = 0.9)
 ## Guisan, A. (2010). Overcoming the rare species modeling paradox: A novel hierarchical framework
 ## applied to an Iberian endemic plant. Biological Conservation, 143, 2647-2657.
 
+
+
+
+## New function in the case of abundancedata
+
+bm_EvalAbundanceModel <- function(bm.mod, metric.eval){
+  
+  .bm_EvalAbundanceModel.check.args(bm.mod, metric.eval)
+  #for (argi in names(args)) { assign(x = argi, value = args[[argi]]) }
+  #rm(args)
+  
+  if (metric.eval == "AIC"){
+    eval.out <- AIC(bm.mod$model)
+  }
+  
+  if (metric.eval == "Rsq"){
+    eval.out <-  rsq::rsq(bm.mod$model)
+  }
+   
+  eval.out <- data.frame(metric.eval, eval.out)
+  return(eval.out)
+}
+
+.bm_EvalAbundanceModel.check.args <- function(bm.mod, metric.eval){
+  
+  # Check if data.type = abundance}
+  if (bm.mod$data.type != "abundance"){
+    stop("This model is not an abundance model")
+  }
+  
+  avail.eval.meth.list <- c('AIC', 'Rsq')
+  .fun_testIfIn(TRUE, "metric.eval", metric.eval, avail.eval.meth.list)
+  
+}

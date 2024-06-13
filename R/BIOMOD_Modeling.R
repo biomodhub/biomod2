@@ -747,7 +747,7 @@ BIOMOD_Modeling <- function(bm.format,
   metric.eval <- unique(metric.eval)
   avail.eval.meth.list <- c('TSS', 'KAPPA', 'ACCURACY', 'BIAS', 'POD', 'FAR', 'POFD'
                             , 'SR', 'CSI', 'ETS', 'HK', 'HSS', 'OR', 'ORSS', 'ROC'
-                            , 'BOYCE', 'MPA')
+                            , 'BOYCE', 'MPA', 'AIC', 'Rsq')
   .fun_testIfIn(TRUE, "metric.eval", metric.eval, avail.eval.meth.list)
   
   
