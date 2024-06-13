@@ -16,9 +16,9 @@
 ##' object that can be obtained with the \code{\link{BIOMOD_Modeling}} or 
 ##' \code{\link{BIOMOD_EnsembleModeling}} functions
 ##' @param metric.eval a \code{vector} containing evaluation metric names to be used, must 
-##' be among \code{ROC}, \code{TSS}, \code{KAPPA}, \code{ACCURACY}, \code{BIAS}, \code{POD}, 
-##' \code{FAR}, \code{POFD}, \code{SR}, \code{CSI}, \code{ETS}, \code{HK}, \code{HSS}, \code{OR}, 
-##' \code{ORSS}
+##' be among \code{POD}, \code{FAR}, \code{POFD}, \code{SR}, \code{ACCURACY}, \code{BIAS}, 
+##' \code{ROC}, \code{TSS}, \code{KAPPA}, \code{OR}, \code{ORSS}, \code{CSI}, \code{ETS}, 
+##' \code{BOYCE}, \code{MPA}
 ##' @param dataset a \code{character} corresponding to the dataset upon which evaluation metrics 
 ##' have been calculated and that is to be represented, must be among \code{calibration}, 
 ##' \code{validation}, \code{evaluation}

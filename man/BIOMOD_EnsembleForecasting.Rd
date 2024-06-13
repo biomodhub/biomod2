@@ -53,17 +53,17 @@ be used to project the ensemble species distribution model(s)}
 A \code{vector} containing evaluation metric names to be used to transform prediction values 
 into binary values based on models evaluation scores obtained with the 
 \code{\link{BIOMOD_Modeling}} function. Must be among \code{all} (same evaluation metrics than 
-those of \code{modeling.output}) or \code{ROC}, \code{TSS}, \code{KAPPA}, \code{ACCURACY}, 
-\code{BIAS}, \code{POD}, \code{FAR}, \code{POFD}, \code{SR}, \code{CSI}, \code{ETS}, 
-\code{HK}, \code{HSS}, \code{OR}, \code{ORSS}}
+those of \code{modeling.output}) or \code{POD}, \code{FAR}, \code{POFD}, \code{SR}, 
+\code{ACCURACY}, \code{BIAS}, \code{ROC}, \code{TSS}, \code{KAPPA}, \code{OR}, \code{ORSS}, 
+\code{CSI}, \code{ETS}, \code{BOYCE}, \code{MPA}}
 
 \item{metric.filter}{(\emph{optional, default} \code{NULL}) \cr 
 A \code{vector} containing evaluation metric names to be used to transform prediction values 
 into filtered values based on models evaluation scores obtained with the 
 \code{\link{BIOMOD_Modeling}} function. Must be among \code{all} (same evaluation metrics than 
-those of \code{modeling.output}) or \code{ROC}, \code{TSS}, \code{KAPPA}, \code{ACCURACY}, 
-\code{BIAS}, \code{POD}, \code{FAR}, \code{POFD}, \code{SR}, \code{CSI}, \code{ETS}, 
-\code{HK}, \code{HSS}, \code{OR}, \code{ORSS}}
+those of \code{modeling.output}) or \code{POD}, \code{FAR}, \code{POFD}, \code{SR}, 
+\code{ACCURACY}, \code{BIAS}, \code{ROC}, \code{TSS}, \code{KAPPA}, \code{OR}, \code{ORSS}, 
+\code{CSI}, \code{ETS}, \code{BOYCE}, \code{MPA}}
 
 \item{compress}{(\emph{optional, default} \code{TRUE}) \cr 
 A \code{logical} or a \code{character} value defining whether and how objects should be 

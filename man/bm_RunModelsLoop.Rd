@@ -65,9 +65,9 @@ are to be used, must be among \code{colnames(bm.format@PA.table)}}
 \code{\link{bm_ModelingOptions}} function}
 
 \item{metric.eval}{a \code{vector} containing evaluation metric names to be used, must 
-be among \code{ROC}, \code{TSS}, \code{KAPPA}, \code{ACCURACY}, \code{BIAS}, \code{POD}, 
-\code{FAR}, \code{POFD}, \code{SR}, \code{CSI}, \code{ETS}, \code{HK}, \code{HSS}, \code{OR}, 
-\code{ORSS}}
+be among \code{POD}, \code{FAR}, \code{POFD}, \code{SR}, \code{ACCURACY}, \code{BIAS}, 
+\code{ROC}, \code{TSS}, \code{KAPPA}, \code{OR}, \code{ORSS}, \code{CSI}, \code{ETS}, 
+\code{BOYCE}, \code{MPA}}
 
 \item{var.import}{(\emph{optional, default} \code{NULL}) \cr 
 An \code{integer} corresponding to the number of permutations to be done for each variable to 

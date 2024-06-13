@@ -197,9 +197,9 @@ as a long \code{data.frame} with many additional informations readily
 available.}
 
 \item{metric.eval}{(\emph{optional, default} \code{NULL}) \cr 
-A \code{vector} containing evaluation metric to be kept, must be among \code{ROC}, 
-\code{TSS}, \code{KAPPA}, \code{ACCURACY}, \code{BIAS}, \code{POD}, \code{FAR}, 
-\code{POFD}, \code{SR}, \code{CSI}, \code{ETS}, \code{HK}, \code{HSS}, \code{OR}, \code{ORSS}}
+A \code{vector} containing evaluation metric to be kept, must be among \code{POD}, 
+\code{FAR}, \code{POFD}, \code{SR}, \code{ACCURACY}, \code{BIAS}, \code{ROC}, \code{TSS}, 
+\code{KAPPA}, \code{OR}, \code{ORSS}, \code{CSI}, \code{ETS}, \code{BOYCE}, \code{MPA}}
 
 \item{expl.var}{(\emph{optional, default} \code{NULL}) \cr 
 A \code{vector} containing explanatory variables to be kept, that can be obtained with the 
@@ -220,20 +220,20 @@ A \code{vector} containing merged pseudo-absence set to be loaded, must be among
 
 \item{filtered.by}{(\emph{optional, default} \code{NULL}) \cr 
 A \code{vector} containing evaluation metric selected to filter single models to build the 
-ensemble models, must be among \code{ROC}, \code{TSS}, \code{KAPPA}, \code{ACCURACY}, 
-\code{BIAS}, \code{POD}, \code{FAR}, \code{POFD}, \code{SR}, \code{CSI}, \code{ETS}, 
-\code{HK}, \code{HSS}, \code{OR}, \code{ORSS}}
+ensemble models, must be among \code{POD}, \code{FAR}, \code{POFD}, \code{SR}, 
+\code{ACCURACY}, \code{BIAS}, \code{ROC}, \code{TSS}, \code{KAPPA}, \code{OR}, \code{ORSS}, 
+\code{CSI}, \code{ETS}, \code{BOYCE}, \code{MPA}}
 
 \item{metric.binary}{(\emph{optional, default} \code{NULL}) \cr 
 A \code{vector} containing evaluation metric selected to transform predictions into binary 
-values, must be among \code{ROC}, \code{TSS}, \code{KAPPA}, \code{ACCURACY}, \code{BIAS}, 
-\code{POD}, \code{FAR}, \code{POFD}, \code{SR}, \code{CSI}, \code{ETS}, \code{HK}, 
-\code{HSS}, \code{OR}, \code{ORSS}}
+values, must be among \code{POD}, \code{FAR}, \code{POFD}, \code{SR}, \code{ACCURACY}, 
+\code{BIAS}, \code{ROC}, \code{TSS}, \code{KAPPA}, \code{OR}, \code{ORSS}, \code{CSI}, 
+\code{ETS}, \code{BOYCE}, \code{MPA}}
 
 \item{metric.filter}{(\emph{optional, default} \code{NULL}) \cr 
-A \code{vector} containing evaluation metric to filter predictions, must be among \code{ROC}, 
-\code{TSS}, \code{KAPPA}, \code{ACCURACY}, \code{BIAS}, \code{POD}, \code{FAR}, 
-\code{POFD}, \code{SR}, \code{CSI}, \code{ETS}, \code{HK}, \code{HSS}, \code{OR}, \code{ORSS}}
+A \code{vector} containing evaluation metric to filter predictions, must be among \code{POD}, 
+\code{FAR}, \code{POFD}, \code{SR}, \code{ACCURACY}, \code{BIAS}, \code{ROC}, \code{TSS}, 
+\code{KAPPA}, \code{OR}, \code{ORSS}, \code{CSI}, \code{ETS}, \code{BOYCE}, \code{MPA}}
 
 \item{\ldots}{(\emph{optional, one or several of the following arguments depending on the selected 
 function})}
