@@ -557,7 +557,7 @@ setGeneric("bm_PseudoAbsences_random",
 ##'
 
 setMethod('bm_PseudoAbsences_random', signature(expl.var = "SpatVector"),
-          function(resp.var, expl.var, nb.absences, nb.rep)
+          function(resp.var, expl.var, nb.absences, nb.rep, fact.aggr)
           {
             cat("\n   > random pseudo absences selection")
             
