@@ -79,8 +79,7 @@ setGeneric("BIOMOD.options.default", def = function(mod, typ, pkg, fun) { standa
   .fun_testIfIn(TRUE, "mod", mod, avail.models.list)
   
   ## check if type is supported
-  # avail.types.list <- c('binary', 'binary.PA', 'abundance', 'compositional')
-  avail.types.list <- c('binary')
+  avail.types.list <- c('binary', 'binary.PA', 'abundance', 'compositional')
   .fun_testIfIn(TRUE, "typ", typ, avail.types.list)
   
   if (mod != 'MAXENT') {
@@ -281,7 +280,7 @@ setGeneric("BIOMOD.options.dataset",
   
   ## check bm.format, bm.format@PA.table and calib.lines
   if (!is.null(bm.format)) {
-    .fun_testIfInherits(TRUE, "bm.format", bm.format, c("BIOMOD.formated.data", "BIOMOD.formated.data.PA"))
+    .fun_testIfInherits(TRUE, "bm.format", bm.format, c("BIOMOD.formated.data", "BIOMOD.formated.data.PA", "BIOMOD.formated.data.abundance"))
   }
   expected_CVnames <- "_allData_allRun"
   if (!is.null(calib.lines)) {
@@ -423,47 +422,9 @@ setMethod('BIOMOD.options.dataset', signature(strategy = 'character'),
             BOM <- BIOMOD.options.default(mod, typ, pkg, fun)
             
             argstmp <- BOM@args.default
-            ## NEEDED TO WORK !!!! ------------------------------------------------------
-            ## SHOULD BE MOVED to place when testing values !! ??
-            if (mod == "ANN") { 
-              argstmp[["x"]] = NULL
-              argstmp$size = 2
-            }
             
-            if (mod == "CTA") { argstmp$method <- "class" }
+            argstmp <- .bm_adaptation.data.type(data.type = typ, mod = mod, argstmp = argstmp)
             
-            if (mod == "FDA") {
-              argstmp$dimension = NULL
-              argstmp$keep.fitted = NULL
-            }
-            if (mod == "GAM") {
-              argstmp[["x"]] = NULL
-              argstmp[["y"]] = NULL
-              argstmp$family = binomial(link = 'logit')
-              if (pkg == "gam") { argstmp$control = gam::gam.control() }
-              if (pkg == "mgcv") {
-                argstmp$method = "GCV.Cp"
-                argstmp$control = mgcv::gam.control()
-              }
-            }
-            if (mod == "GLM") {
-              argstmp$family = binomial(link = 'logit')
-              argstmp$control = list()
-            }
-            if (mod == "MAXNET") { argstmp[["f"]] = NULL }
-            if (mod == "RF") {
-              argstmp[["x"]] = NULL
-              argstmp$mtry = 1
-              argstmp$type <- "classification"
-            }
-            if (mod == "RFd") {
-              argstmp[["x"]] = NULL
-              argstmp$mtry = 1
-              argstmp$type <- "classification"
-            }
-            if (mod == "XGBOOST") { argstmp$nrounds = 4 }
-            
-            argstmp[["..."]] = NULL
             BOM@args.default <- argstmp
             ## SHOULD BE MOVED to place when testing values !! ??
             
@@ -694,4 +655,57 @@ setMethod('print', signature('BIOMOD.models.options'),
 # test <- .fun_testIfIn(test, "GBM$distribution", object@GBM$distribution, c("bernoulli", "huberized", "multinomial", "adaboost"))
 # test <- .fun_testIfIn(test, "CTA$method", object@CTA$method, c("anova", "poisson", "class", "exp"))
 # test <- .fun_testIfIn(test, "FDA$method", object@FDA$method, c('polyreg', 'mars', 'bruto'))
+
+
+
+### Adapatation to each data.type 
+
+.bm_adaptation.data.type <- function(data.type, mod, argstmp) {
+  
+  if (data.type == "binary"){
+    type <- "classification"
+    family <- binomial(link = 'logit')
+  } else {
+    type <- "regression"
+    family <- gaussian(link = 'identity')}
+  
+  if (mod == "ANN") { 
+    argstmp[["x"]] = NULL
+    argstmp$size = 2
+  }
+  if (mod == "CTA") { argstmp$method <- "class" }
+  if (mod == "FDA") {
+    argstmp$dimension = NULL
+    argstmp$keep.fitted = NULL
+  }
+  if (mod == "GAM") {
+    argstmp[["x"]] = NULL
+    argstmp[["y"]] = NULL
+    argstmp$family = binomial(link = 'logit')
+    if (pkg == "gam") { argstmp$control = gam::gam.control() }
+    if (pkg == "mgcv") {
+      argstmp$method = "GCV.Cp"
+      argstmp$control = mgcv::gam.control()
+    }
+  }
+  if (mod == "GLM") {
+    argstmp$family = family
+    argstmp$control = list()
+  }
+  if (mod == "MAXNET") { argstmp[["f"]] = NULL }
+  if (mod == "RF") {
+    argstmp[["x"]] = NULL
+    argstmp$mtry = 1
+    argstmp$type <- type
+  }
+  if (mod == "RFd") {
+    argstmp[["x"]] = NULL
+    argstmp$mtry = 1
+    argstmp$type <- type
+  }
+  if (mod == "XGBOOST") { argstmp$nrounds = 4 }
+  
+  argstmp[["..."]] = NULL
+  return(argstmp)
+}
 

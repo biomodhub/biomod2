@@ -360,7 +360,7 @@ BIOMOD_Modeling <- function(bm.format,
                             CV.strat = NULL,
                             CV.user.table = NULL,
                             CV.do.full.models = TRUE,
-                            OPT.data.type = 'binary',
+                            #OPT.data.type = 'binary',
                             OPT.strategy = 'default',
                             OPT.user.val = NULL,
                             OPT.user.base = 'bigboss',
@@ -424,6 +424,7 @@ BIOMOD_Modeling <- function(bm.format,
                     dir.name = bm.format@dir.name,
                     sp.name = bm.format@sp.name,
                     modeling.id = modeling.id,
+                    data.type = bm.format@data.type,
                     expl.var.names = colnames(bm.format@data.env.var),
                     has.evaluation.data = bm.format@has.data.eval,
                     scale.models = scale.models)
@@ -497,7 +498,7 @@ BIOMOD_Modeling <- function(bm.format,
     }
     bm.options <- OPT.user
   } else {
-    bm.options <- bm_ModelingOptions(data.type = OPT.data.type,
+    bm.options <- bm_ModelingOptions(data.type = bm.format@data.type,
                                      models = models,
                                      strategy = OPT.strategy,
                                      user.val = OPT.user.val,
@@ -599,7 +600,7 @@ BIOMOD_Modeling <- function(bm.format,
   
   if (!is.character(modeling.id) || length(modeling.id) > 1) { stop("modeling.id must be a 'character' of length 1") }
   
-  .fun_testIfInherits(TRUE, "bm.format", bm.format, c("BIOMOD.formated.data", "BIOMOD.formated.data.PA"))
+  .fun_testIfInherits(TRUE, "bm.format", bm.format, c("BIOMOD.formated.data", "BIOMOD.formated.data.PA", "BIOMOD.formated.data.abundance"))
   if (!is.character(models)) { stop("models must be a 'character' vector") }
   
   # Support for old names in models
@@ -747,7 +748,7 @@ BIOMOD_Modeling <- function(bm.format,
   metric.eval <- unique(metric.eval)
   avail.eval.meth.list <- c('TSS', 'KAPPA', 'ACCURACY', 'BIAS', 'POD', 'FAR', 'POFD'
                             , 'SR', 'CSI', 'ETS', 'HK', 'HSS', 'OR', 'ORSS', 'ROC'
-                            , 'BOYCE', 'MPA', 'AIC', 'Rsq')
+                            , 'BOYCE', 'MPA', 'AIC', 'Rsq', 'RMSE')
   .fun_testIfIn(TRUE, "metric.eval", metric.eval, avail.eval.meth.list)
   
   
@@ -851,7 +852,7 @@ BIOMOD_Modeling <- function(bm.format,
 }
 
 ## 0. Check bm.format and models arguments ----------------------------------
-cat('\n\nChecking Models arguments...\n')
+#cat('\n\nChecking Models arguments...\n')
 
 # ---------------------------------------------------------------------------- #
 

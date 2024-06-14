@@ -350,7 +350,7 @@ bm_ModelingOptions <- function(data.type
     
     ## TUNING with bm_Tuning parameterisation -----
     if (strategy == "tuned") {
-      .fun_testIfInherits(TRUE, "bm.format", bm.format, c("BIOMOD.formated.data", "BIOMOD.formated.data.PA"))
+      .fun_testIfInherits(TRUE, "bm.format", bm.format, c("BIOMOD.formated.data", "BIOMOD.formated.data.PA", "BIOMOD.formated.data.abundance"))
     }
     
     ## check calib.lines colnames

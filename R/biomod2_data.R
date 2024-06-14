@@ -31,15 +31,15 @@
 
 "ModelsTable"
 
-# ModelsTable <- data.frame(model = c('ANN', 'CTA', 'FDA', 'GAM', 'GAM', 'GAM', 'GBM', 'GLM'
-#                                      , 'MARS', 'MAXENT', 'MAXNET', 'RF','RFd', 'SRE', 'XGBOOST')
-#                            , type = 'binary'
-#                            , package = c('nnet', 'rpart', 'mda', 'gam', 'mgcv', 'mgcv', 'gbm', 'stats'
-#                                          , 'earth', 'MAXENT', 'maxnet', 'randomForest','randomForest', 'biomod2', 'xgboost')
-#                            , func = c('nnet', 'rpart', 'fda', 'gam', 'bam', 'gam', 'gbm', 'glm'
-#                                       , 'earth', 'MAXENT', 'maxnet', 'randomForest','randomForest', 'bm_SRE', 'xgboost')
-#                            , train = c('avNNet', 'rpart', 'fda', 'gamLoess', 'bam', 'gam', 'gbm', 'glm'
-#                                        , 'earth', 'ENMevaluate', 'maxnet', 'rf','rf', 'bm_SRE', 'xgbTree'))
+ModelsTable <- data.frame(model = c('ANN', 'CTA', 'FDA', 'GAM', 'GAM', 'GAM', 'GBM', 'GLM'
+                                     , 'MARS', 'MAXENT', 'MAXNET', 'RF','RFd', 'SRE', 'XGBOOST', 'GLM','RF')
+                           , type = c(rep('binary',15), rep('abundance',2))
+                           , package = c('nnet', 'rpart', 'mda', 'gam', 'mgcv', 'mgcv', 'gbm', 'stats'
+                                         , 'earth', 'MAXENT', 'maxnet', 'randomForest','randomForest', 'biomod2', 'xgboost', 'stats', 'randomForest')
+                           , func = c('nnet', 'rpart', 'fda', 'gam', 'bam', 'gam', 'gbm', 'glm'
+                                      , 'earth', 'MAXENT', 'maxnet', 'randomForest','randomForest', 'bm_SRE', 'xgboost', 'glm', 'randomForest')
+                           , train = c('avNNet', 'rpart', 'fda', 'gamLoess', 'bam', 'gam', 'gbm', 'glm'
+                                       , 'earth', 'ENMevaluate', 'maxnet', 'rf','rf', 'bm_SRE', 'xgbTree' ,'glm', 'rf'))
 
 # usethis::use_data(ModelsTable, overwrite = TRUE)
 # usethis::use_data(ModelsTable, overwrite = TRUE, internal = TRUE)

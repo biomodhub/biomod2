@@ -291,6 +291,10 @@ bm_RunModel <- function(model, run.name, dir.name = '.'
       bm.opt.val$weight <- weights.vec[calib.lines.vec]
     }
     
+    if (data.type == "abundance"){
+      bm.opt.val$weights <- NULL # ??????????????????????????????????????????????????????
+    }
+    
     ## REORGANIZE order of parameters -------------------------------
     if (model %in% c("ANN", "MARS", "RF","RFd")) {
       bm.opt.val <- bm.opt.val[c("formula", "data", names(bm.opt.val)[which(!(names(bm.opt.val) %in% c("formula", "data")))])]
@@ -527,20 +531,31 @@ bm_RunModel <- function(model, run.name, dir.name = '.'
     if (length(which(eval.lines.vec == TRUE)) < length(g.pred)) {
       ## CALIBRATION & VALIDATION LINES -------------------------------------------------
       cross.validation <- foreach(xx = metric.eval, .combine = "rbind") %do% {
+        if (data.type == 'binary'){
         bm_FindOptimStat(metric.eval = xx,
                          obs = data_sp[which(eval.lines.vec == FALSE)],
                          fit = g.pred[which(eval.lines.vec == FALSE)])
+        }
+        else {bm_EvalAbundanceModel(metric.eval = xx, bm.mod = model.bm,
+                               obs = data_sp[which(eval.lines.vec == FALSE)],
+                               fit = g.pred[which(eval.lines.vec == FALSE)])}
       }
       if (max(cross.validation$cutoff,na.rm = T) > 1000) {cat("\n*** Wrong values predicted, please be careful with the results fo this model")}
       colnames(cross.validation)[which(colnames(cross.validation) == "best.stat")] <- "calibration"
       
       stat.validation <- foreach(xx = metric.eval, .combine = "rbind") %do% {
-        bm_FindOptimStat(metric.eval = xx,
+        if (data.type == 'binary'){
+          bm_FindOptimStat(metric.eval = xx,
                          obs = data_sp[which(eval.lines.vec == TRUE)],
                          fit = g.pred[which(eval.lines.vec == TRUE)],
                          threshold = cross.validation$cutoff[
                            which(cross.validation$metric.eval == xx)
                          ])
+        }
+        else {bm_EvalAbundanceModel(metric.eval = xx, bm.mod = model.bm,
+                                    obs = data_sp[which(eval.lines.vec == TRUE)],
+                                    fit = g.pred[which(eval.lines.vec == TRUE)])}
+        
       }
       cross.validation$validation <- stat.validation$best.stat
     } else {
@@ -668,7 +683,7 @@ bm_RunModel <- function(model, run.name, dir.name = '.'
   metric.eval <- unique(metric.eval)
   avail.eval.meth.list <- c('TSS', 'KAPPA', 'ACCURACY', 'BIAS', 'POD', 'FAR', 'POFD'
                             , 'SR', 'CSI', 'ETS', 'HK', 'HSS', 'OR', 'ORSS', 'ROC'
-                            , 'BOYCE', 'MPA')
+                            , 'BOYCE', 'MPA', 'AIC', 'Rsq', 'RMSE')
   # .fun_testIfIn(TRUE, "metric.eval", metric.eval, avail.eval.meth.list)
   if (sum(!(metric.eval %in% avail.eval.meth.list)) > 0) {
     tmp = which(metric.eval %in% avail.eval.meth.list)
@@ -679,6 +694,11 @@ bm_RunModel <- function(model, run.name, dir.name = '.'
   data_mod <- cbind(data_sp, data_env_w)
   colnames(data_mod) <- c(resp_name, colnames(data_env_w))
   
+  ## 5. Check data.type
+  data.type <- bm.options@options[[1]]@type
+  avail.types.list <- c('binary', 'binary.PA', 'abundance', 'compositional')
+  .fun_testIfIn(TRUE, "data.type", data.type, avail.types.list)
+  
   return(list(data_sp = data_sp,
               data_xy = data_xy,
               data_env = data_env,
@@ -686,6 +706,7 @@ bm_RunModel <- function(model, run.name, dir.name = '.'
               weights.vec = weights.vec,
               eval.lines.vec = eval.lines.vec,
               metric.eval = metric.eval,
+              data.type = data.type,
               eval.data = eval.data,
               scale.models = scale.models,
               resp_name = resp_name,

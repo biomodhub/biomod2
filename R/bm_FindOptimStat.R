@@ -567,32 +567,33 @@ ecospat.mpa <- function(Pred, Sp.occ.xy = NULL, perc = 0.9)
 
 ## New function in the case of abundancedata
 
-bm_EvalAbundanceModel <- function(bm.mod, metric.eval){
+bm_EvalAbundanceModel <- function(metric.eval, bm.mod, obs  = NULL, fit = NULL){
   
   .bm_EvalAbundanceModel.check.args(bm.mod, metric.eval)
   #for (argi in names(args)) { assign(x = argi, value = args[[argi]]) }
   #rm(args)
   
+  best.stat <- NULL
   if (metric.eval == "AIC"){
-    eval.out <- AIC(bm.mod$model)
+    best.stat <- AIC(bm.mod)
   }
   
   if (metric.eval == "Rsq"){
-    eval.out <-  rsq::rsq(bm.mod$model)
+    best.stat <-  cor(obs,fit)^2
+  }
+  
+  if (metric.eval == "RMSE"){
+    best.stat <-  sqrt(mean((obs - fit)^2))
   }
    
-  eval.out <- data.frame(metric.eval, eval.out)
+  eval.out <- data.frame(metric.eval, best.stat)
   return(eval.out)
 }
 
 .bm_EvalAbundanceModel.check.args <- function(bm.mod, metric.eval){
   
-  # Check if data.type = abundance}
-  if (bm.mod$data.type != "abundance"){
-    stop("This model is not an abundance model")
-  }
   
-  avail.eval.meth.list <- c('AIC', 'Rsq')
+  avail.eval.meth.list <- c('AIC', 'Rsq', 'RMSE')
   .fun_testIfIn(TRUE, "metric.eval", metric.eval, avail.eval.meth.list)
   
 }
