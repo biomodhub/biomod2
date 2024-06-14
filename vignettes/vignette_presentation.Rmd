@@ -22,8 +22,8 @@ vignette: >
 <br/><br/>
 
 <div align="center">
-<p><a href="pictures/SCHEMA_BIOMOD2_WORKFLOW_functions.pdf">Download pdf of WORKFLOW GRAPHIC <i class="fas fa-download"></i></a></p>
-<p><a href="pictures/biomod2_presentation.workflow_05_2024.pdf">Download pdf of PRESENTATION <i class="fas fa-download"></i></a></p>
+<p><a href="https://biomodhub.github.io/biomod2/articles/pictures/SCHEMA_BIOMOD2_WORKFLOW_functions.pdf">Download pdf of WORKFLOW GRAPHIC <i class="fas fa-download"></i></a></p>
+<p><a href="https://biomodhub.github.io/biomod2/articles/pictures/biomod2_presentation.workflow_05_2024.pdf">Download pdf of PRESENTATION <i class="fas fa-download"></i></a></p>
 </div>
 
 
