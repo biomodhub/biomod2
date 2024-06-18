@@ -60,13 +60,12 @@ devtools::install_github("biomodhub/biomod2", dependencies = TRUE)
 
 ### <i class="fas fa-envelope-open-text"></i> `biomod 4.2-6` - Improved OptionsBigBoss and new model
 
-**! `biomod2 4.2-5` is now available on CRAN !**
 
 `/!\` Please **feel free to indicate if you notice some strange new behaviors** !
 
 #### <i class="fas fa-exchange-alt"></i> What is changed ?
 
-- To improve the models, we made some change in the options for **`OptionsBigboss`**. (This only affects the ANN, CTA and RF models.) You can check all your options with the `get_options()` function.
+- To improve the models, we made some change in the options for [**`OptionsBigboss`**](https://biomodhub.github.io/biomod2/reference/OptionsBigboss.html). (This only affects the ANN, CTA and RF models.) You can check all your options with the `get_options()` function.
 - To reduce the tuning calculation time, we update the tuning ranges for ANN, FDA and MARS models.
 
 #### <i class="fas fa-plus-square"></i> What is new ?
