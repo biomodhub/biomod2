@@ -54,9 +54,9 @@ A \code{character} containing merged algorithm to be loaded, must be among
 
 \item{filtered.by}{(\emph{optional, default} \code{NULL}) \cr 
 A \code{vector} containing evaluation metric selected to filter single models to build the 
-ensemble models, must be among \code{ROC}, \code{TSS}, \code{KAPPA}, \code{ACCURACY}, 
-\code{BIAS}, \code{POD}, \code{FAR}, \code{POFD}, \code{SR}, \code{CSI}, \code{ETS}, 
-\code{HK}, \code{HSS}, \code{OR}, \code{ORSS}}
+ensemble models, must be among \code{POD}, \code{FAR}, \code{POFD}, \code{SR}, 
+\code{ACCURACY}, \code{BIAS}, \code{ROC}, \code{TSS}, \code{KAPPA}, \code{OR}, 
+\code{ORSS}, \code{CSI}, \code{ETS}, \code{BOYCE}, \code{MPA}}
 }
 \value{
 A \code{vector} containing the names of the loaded models.

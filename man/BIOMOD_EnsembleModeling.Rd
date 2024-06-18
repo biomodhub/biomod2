@@ -50,31 +50,29 @@ must be among \code{'EMmean'}, \code{'EMmedian'}, \code{'EMcv'}, \code{'EMci'},
 \code{metric.select.thresh} to exclude single models based on their evaluation scores 
 (for ensemble methods like probability weighted mean or committee averaging). Must be among  
 \code{all} (same evaluation metrics than those of \code{bm.mod}), \code{user.defined} 
-(and defined through \code{metric.select.table}) or \code{ROC}, \code{TSS}, \code{KAPPA}, 
-\code{ACCURACY}, \code{BIAS}, \code{POD}, \code{FAR}, \code{POFD}, \code{SR}, \code{CSI}, 
-\code{ETS}, \code{HK}, \code{HSS}, \code{OR}, \code{ORSS}}
+(and defined through \code{metric.select.table}) or \code{POD}, \code{FAR}, \code{POFD}, 
+\code{SR}, \code{ACCURACY}, \code{BIAS}, \code{ROC}, \code{TSS}, \code{KAPPA}, \code{OR}, 
+\code{ORSS}, \code{CSI}, \code{ETS}, \code{BOYCE}, \code{MPA}}
 
 \item{metric.select.thresh}{(\emph{optional, default} \code{NULL}) \cr 
 A \code{vector} of \code{numeric} values corresponding to the minimum scores (one for each 
 \code{metric.select}) below which single models will be excluded from the ensemble model 
 building}
 
-\item{metric.select.table}{(\emph{optional, default} \code{NULL}) \cr If
-\code{metric.select = 'user.defined'}, a \code{data.frame} containing
-evaluation scores calculated for each single models and that will be
-compared to \code{metric.select.thresh} values to exclude some of them
-from the ensemble model building, with \code{metric.select} rownames, and
-\code{models.chosen} colnames}
+\item{metric.select.table}{(\emph{optional, default} \code{NULL}) \cr If 
+\code{metric.select = 'user.defined'}, a \code{data.frame} containing evaluation scores 
+calculated for each single models and that will be compared to \code{metric.select.thresh} 
+values to exclude some of them from the ensemble model building, with \code{metric.select} 
+rownames, and \code{models.chosen} colnames}
 
-\item{metric.select.dataset}{(\emph{optional, default} \code{'validation'}
-\emph{if possible}). A character determining which dataset should be used
-to filter and/or weigh the ensemble models should be among 'evaluation',
-'validation' or 'calibration'.}
+\item{metric.select.dataset}{(\emph{optional, default} \code{'validation'} 
+\emph{if possible}). A character determining which dataset should be used to filter and/or 
+weigh the ensemble models should be among 'evaluation', 'validation' or 'calibration'.}
 
 \item{metric.eval}{a \code{vector} containing evaluation metric names to be used, must 
-be among \code{ROC}, \code{TSS}, \code{KAPPA}, \code{ACCURACY}, \code{BIAS}, \code{POD}, 
-\code{FAR}, \code{POFD}, \code{SR}, \code{CSI}, \code{ETS}, \code{HK}, \code{HSS}, \code{OR}, 
-\code{ORSS}}
+be among  \code{POD}, \code{FAR}, \code{POFD}, \code{SR}, \code{ACCURACY}, \code{BIAS}, 
+\code{ROC}, \code{TSS}, \code{KAPPA}, \code{OR}, \code{ORSS}, \code{CSI}, \code{ETS}, 
+\code{BOYCE}, \code{MPA}}
 
 \item{var.import}{(\emph{optional, default} \code{NULL}) \cr 
 An \code{integer} corresponding to the number of permutations to be done for each variable to 

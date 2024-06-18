@@ -79,9 +79,9 @@
 ##' A \code{numeric} between \code{0} and \code{1} corresponding to the species prevalence to 
 ##' build '\emph{weighted response weights}' (see Details)
 ##' @param metric.eval a \code{vector} containing evaluation metric names to be used, must 
-##' be among \code{ROC}, \code{TSS}, \code{KAPPA}, \code{ACCURACY}, \code{BIAS}, \code{POD}, 
-##' \code{FAR}, \code{POFD}, \code{SR}, \code{CSI}, \code{ETS}, \code{HK}, \code{HSS}, \code{OR}, 
-##' \code{ORSS}, \code{BOYCE}, \code{MPA}
+##' be among \code{POD}, \code{FAR}, \code{POFD}, \code{SR}, \code{ACCURACY}, \code{BIAS}, 
+##' \code{ROC}, \code{TSS}, \code{KAPPA}, \code{OR}, \code{ORSS}, \code{CSI}, \code{ETS}, 
+##' \code{BOYCE}, \code{MPA}
 ##' @param var.import (\emph{optional, default} \code{NULL}) \cr 
 ##' An \code{integer} corresponding to the number of permutations to be done for each variable to 
 ##' estimate variable importance
@@ -745,9 +745,9 @@ BIOMOD_Modeling <- function(bm.format,
   
   ## 7. Check metric.eval arguments -------------------------------------------
   metric.eval <- unique(metric.eval)
-  avail.eval.meth.list <- c('TSS', 'KAPPA', 'ACCURACY', 'BIAS', 'POD', 'FAR', 'POFD'
-                            , 'SR', 'CSI', 'ETS', 'HK', 'HSS', 'OR', 'ORSS', 'ROC'
-                            , 'BOYCE', 'MPA')
+  avail.eval.meth.list <- c('POD', 'FAR', 'POFD', 'SR', 'ACCURACY', 'BIAS'
+                            , 'ROC', 'TSS', 'KAPPA', 'OR', 'ORSS', 'CSI'
+                            , 'ETS', 'BOYCE', 'MPA')
   .fun_testIfIn(TRUE, "metric.eval", metric.eval, avail.eval.meth.list)
   
   
