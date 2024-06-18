@@ -331,6 +331,7 @@ bm_RunModel <- function(model, run.name, dir.name = '.'
                       model = model.sp,
                       model_name = model_name,
                       model_class = bm.opt@model,
+                      model_type = data.type,
                       model_options = bm.opt, ## bm.opt.val ??
                       dir_name = dir_name,
                       resp_name = resp_name,
@@ -462,7 +463,7 @@ bm_RunModel <- function(model, run.name, dir.name = '.'
     } else if (model == "SRE" && bm.opt.val$do.extrem == FALSE) {
       g.pred <- model.sp
     } else {
-      g.pred <- try(predict(model.bm, data_env, on_0_1000 = TRUE, seedval = seed.val, temp_workdir = temp_workdir))
+      g.pred <- try(predict(model.bm, data_env, on_0_1000 = on_0_1000, seedval = seed.val, temp_workdir = temp_workdir))
     }
   }
   
@@ -473,9 +474,10 @@ bm_RunModel <- function(model, run.name, dir.name = '.'
   ## scale or not predictions -------------------------------------------------
   if (scale.models & !inherits(g.pred, 'try-error')) {
     cat("\n\tModel scaling...")
+    g.pred <- try(predict(model.bm, data_env, on_0_1000 = TRUE, seedval = seed.val, temp_workdir = temp_workdir))
     model.bm@scaling_model <- try(.scaling_model(g.pred / 1000, data_sp, weights = weights.vec))
     ## with weights
-    g.pred <- try(predict(model.bm, data_env, on_0_1000 = TRUE, seedval = seed.val, temp_workdir = temp_workdir))
+    g.pred <- try(predict(model.bm, data_env, on_0_1000 = on_0_1000, seedval = seed.val, temp_workdir = temp_workdir))
   }
   
   ## check predictions existence and stop execution if not ok -----------------
@@ -506,7 +508,7 @@ bm_RunModel <- function(model, run.name, dir.name = '.'
     g.pred.eval <- try(
       predict(model.bm, 
               eval.data[, expl_var_names, drop = FALSE], 
-              on_0_1000 = TRUE, 
+              on_0_1000 = on_0_1000, 
               seedval = seed.val, 
               temp_workdir = temp_workdir)
     )
@@ -699,6 +701,11 @@ bm_RunModel <- function(model, run.name, dir.name = '.'
   avail.types.list <- c('binary', 'binary.PA', 'abundance', 'compositional')
   .fun_testIfIn(TRUE, "data.type", data.type, avail.types.list)
   
+  on_0_1000 <- TRUE
+  if(data.type == "abundance"){
+    on_0_1000 <- FALSE
+  }
+  
   return(list(data_sp = data_sp,
               data_xy = data_xy,
               data_env = data_env,
@@ -712,6 +719,7 @@ bm_RunModel <- function(model, run.name, dir.name = '.'
               resp_name = resp_name,
               expl_var_names = expl_var_names,
               seed.val = seed.val, ##seedval, CAREFUL really user value now, don't know if it is good thing or not !
+              on_0_1000 = on_0_1000,
               do.progress = do.progress))
 }
 

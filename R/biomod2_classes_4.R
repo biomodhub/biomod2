@@ -88,6 +88,7 @@ NULL
 ##' 
 ##' @slot model_name a \code{character} corresponding to the model name
 ##' @slot model_class a \code{character} corresponding to the model class
+##' @slot model_type a \code{character} corresponding to the type of data
 ##' @slot model_options a \code{list} containing the model options
 ##' @slot model the corresponding model object
 ##' @slot scaling_model the corresponding scaled model object
@@ -154,6 +155,7 @@ NULL
 setClass('biomod2_model',
          representation(model_name = 'character',
                         model_class = 'character',
+                        model_type = 'character',
                         model_options = 'BIOMOD.options.dataset',
                         model = 'ANY',
                         scaling_model = 'ANY',
@@ -166,6 +168,7 @@ setClass('biomod2_model',
                         model_variables_importance = 'data.frame'),
          prototype = list(model_name = 'mySpecies_DataSet_RunName_myModelClass', ## REMOVE prototype ??
                           model_class = 'myModelClass',
+                          model_type = 'data.type',
                           model_options = new('BIOMOD.options.dataset'),
                           model = list(),
                           scaling_model = list(),
@@ -470,11 +473,14 @@ setClass('CTA_biomod2_model',
 
 setMethod('predict2', signature(object = 'CTA_biomod2_model', newdata = "SpatRaster"),
           function(object, newdata, ...) {
+            data.type <- object@model_type
+            type = 'prob'
+            if(data.type == "abundance") {type = "matrix"}
             predfun <- function(object, newdata, mod.name){
               proj <- 
                 subset(predict(newdata,
                                model = get_formal_model(object), 
-                               type = 'prob', na.rm = TRUE,
+                               type = type, na.rm = TRUE,
                                wopt = list(names = rep(mod.name,2))), 
                        2)    
               proj
@@ -487,8 +493,11 @@ setMethod('predict2', signature(object = 'CTA_biomod2_model', newdata = "SpatRas
 ##' @rdname predict2.bm
 setMethod('predict2', signature(object = 'CTA_biomod2_model', newdata = "data.frame"),
           function(object, newdata, ...) {
+            data.type <- object@model_type
+            type = 'prob'
+            if(data.type == "abundance") {type = "matrix"}
             predfun <- function(object, newdata, not_na_rows){
-              as.numeric(predict(get_formal_model(object), as.data.frame(newdata[not_na_rows, , drop = FALSE]), type = 'prob')[, 2])
+              as.numeric(predict(get_formal_model(object), as.data.frame(newdata[not_na_rows, , drop = FALSE]), type = type)[, 2])
             }
             
             # redirect to predict2.biomod2_model.data.frame

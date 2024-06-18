@@ -32,14 +32,22 @@
 "ModelsTable"
 
 ModelsTable <- data.frame(model = c('ANN', 'CTA', 'FDA', 'GAM', 'GAM', 'GAM', 'GBM', 'GLM'
-                                     , 'MARS', 'MAXENT', 'MAXNET', 'RF','RFd', 'SRE', 'XGBOOST', 'GLM','RF')
-                           , type = c(rep('binary',15), rep('abundance',2))
+                                     , 'MARS', 'MAXENT', 'MAXNET', 'RF','RFd', 'SRE', 'XGBOOST', 
+                                    'CTA', 'FDA', 'GAM', 'GAM', 'GAM', 'GBM', 'GLM'
+                                    , 'MARS', 'RF','RFd', 'XGBOOST')
+                           , type = c(rep('binary',15), rep('abundance',11))
                            , package = c('nnet', 'rpart', 'mda', 'gam', 'mgcv', 'mgcv', 'gbm', 'stats'
-                                         , 'earth', 'MAXENT', 'maxnet', 'randomForest','randomForest', 'biomod2', 'xgboost', 'stats', 'randomForest')
+                                         , 'earth', 'MAXENT', 'maxnet', 'randomForest','randomForest', 'biomod2', 'xgboost', 
+                                         'rpart', 'mda', 'gam', 'mgcv', 'mgcv', 'gbm', 'stats'
+                                         , 'earth', 'randomForest','randomForest', 'xgboost')
                            , func = c('nnet', 'rpart', 'fda', 'gam', 'bam', 'gam', 'gbm', 'glm'
-                                      , 'earth', 'MAXENT', 'maxnet', 'randomForest','randomForest', 'bm_SRE', 'xgboost', 'glm', 'randomForest')
+                                      , 'earth', 'MAXENT', 'maxnet', 'randomForest','randomForest', 'bm_SRE', 'xgboost',
+                                      'rpart', 'fda', 'gam', 'bam', 'gam', 'gbm', 'glm'
+                                      , 'earth', 'randomForest','randomForest', 'xgboost')
                            , train = c('avNNet', 'rpart', 'fda', 'gamLoess', 'bam', 'gam', 'gbm', 'glm'
-                                       , 'earth', 'ENMevaluate', 'maxnet', 'rf','rf', 'bm_SRE', 'xgbTree' ,'glm', 'rf'))
+                                       , 'earth', 'ENMevaluate', 'maxnet', 'rf','rf', 'bm_SRE', 'xgbTree',
+                                       'rpart', 'fda', 'gamLoess', 'bam', 'gam', 'gbm', 'glm'
+                                       , 'earth', 'rf','rf', 'xgbTree'))
 
 # usethis::use_data(ModelsTable, overwrite = TRUE)
 # usethis::use_data(ModelsTable, overwrite = TRUE, internal = TRUE)

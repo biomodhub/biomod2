@@ -663,17 +663,22 @@ setMethod('print', signature('BIOMOD.models.options'),
 .bm_adaptation.data.type <- function(data.type, mod, argstmp) {
   
   if (data.type == "binary"){
-    type <- "classification"
+    RFtype <- "classification"
     family <- binomial(link = 'logit')
+    CTAmethod <- "class"
+    GBMdistribution <- "bernoulli"
   } else {
-    type <- "regression"
-    family <- gaussian(link = 'identity')}
+    RFtype <- "regression"
+    family <- gaussian(link = 'identity')
+    CTAmethod <- "poisson"
+    GBMdistribution <- "gaussian"
+  }
   
   if (mod == "ANN") { 
     argstmp[["x"]] = NULL
     argstmp$size = 2
   }
-  if (mod == "CTA") { argstmp$method <- "class" }
+  if (mod == "CTA") { argstmp$method <- CTAmethod }
   if (mod == "FDA") {
     argstmp$dimension = NULL
     argstmp$keep.fitted = NULL
@@ -681,12 +686,15 @@ setMethod('print', signature('BIOMOD.models.options'),
   if (mod == "GAM") {
     argstmp[["x"]] = NULL
     argstmp[["y"]] = NULL
-    argstmp$family = binomial(link = 'logit')
+    argstmp$family = family
     if (pkg == "gam") { argstmp$control = gam::gam.control() }
     if (pkg == "mgcv") {
       argstmp$method = "GCV.Cp"
       argstmp$control = mgcv::gam.control()
     }
+  }
+  if (mod == "GBM"){
+    argstmp$distribution = GBMdistribution
   }
   if (mod == "GLM") {
     argstmp$family = family
@@ -696,12 +704,12 @@ setMethod('print', signature('BIOMOD.models.options'),
   if (mod == "RF") {
     argstmp[["x"]] = NULL
     argstmp$mtry = 1
-    argstmp$type <- type
+    argstmp$type <- RFtype
   }
   if (mod == "RFd") {
     argstmp[["x"]] = NULL
     argstmp$mtry = 1
-    argstmp$type <- type
+    argstmp$type <- RFtype
   }
   if (mod == "XGBOOST") { argstmp$nrounds = 4 }
   
