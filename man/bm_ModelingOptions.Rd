@@ -66,6 +66,9 @@ argument :
   \item{tuned}{default parameter values are updated by calling \code{\link{bm_Tuning}} 
   function}
 }
+
+To define the same options for all datasets of a model, you can provide these options as a list in 
+user.val with the names "for_all_datasets".
 }
 \note{
 \code{MAXENT} being the only external model (not called through a \code{R} package), 

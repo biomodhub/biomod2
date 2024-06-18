@@ -1,5 +1,5 @@
 [![Cran Version](https://www.r-pkg.org/badges/version/biomod2?color=yellow)](https://cran.r-project.org/package=biomod2)
-[![Github Version](https://img.shields.io/badge/devel%20version-4.2--5--2-blue.svg)](https://github.com/biomodhub/biomod2)
+[![Github Version](https://img.shields.io/badge/devel%20version-4.2--6-blue.svg)](https://github.com/biomodhub/biomod2)
 [![Last Commit](https://img.shields.io/github/last-commit/biomodhub/biomod2.svg)](https://github.com/biomodhub/biomod2/commits/master)
 [![R-CMD-check](https://github.com/biomodhub/biomod2/actions/workflows/R-CMD-check.yml/badge.svg)](https://github.com/biomodhub/biomod2/actions/workflows/R-CMD-check.yml)
 
@@ -49,7 +49,7 @@ install.packages("biomod2", dependencies = TRUE)
 
 <br/>
 
-- **Development version** [![v](https://img.shields.io/badge/devel%20version-4.2--5--2-blue.svg)](https://github.com/biomodhub/biomod2) from [biomodhub](https://github.com/biomodhub/biomod2) :
+- **Development version** [![v](https://img.shields.io/badge/devel%20version-4.2--6-blue.svg)](https://github.com/biomodhub/biomod2) from [biomodhub](https://github.com/biomodhub/biomod2) :
 
 ```R
 library(devtools)
@@ -58,11 +58,36 @@ devtools::install_github("biomodhub/biomod2", dependencies = TRUE)
 
 <br/><br/>
 
-### <i class="fas fa-envelope-open-text"></i> `biomod 4.2-5` - Modeling options & Tuning Update
+### <i class="fas fa-envelope-open-text"></i> `biomod 4.2-6` - Improved OptionsBigBoss and new model
 
 **! `biomod2 4.2-5` is now available on CRAN !**
 
 `/!\` Please **feel free to indicate if you notice some strange new behaviors** !
+
+#### <i class="fas fa-exchange-alt"></i> What is changed ?
+
+- To improve the models, we made some change in the options for **`OptionsBigboss`**. (This only affects the ANN, CTA and RF models.) You can check all your options with the `get_options()` function.
+- To reduce the tuning calculation time, we update the tuning ranges for ANN, FDA and MARS models.
+
+#### <i class="fas fa-plus-square"></i> What is new ?
+
+- We add a new model : **RFd**. It's a Random Forest model with a down-sampling method.
+- You can now define _seed.val_ for `bm_PseudoAbsences()` and `BIOMOD_FormatingData()`.
+- We have added _fact.aggr_ argument for pseudo-absences selection with the random and disk methods. It allows to reduce the resolution of the environment.
+- Possibility to give the same options for all datasets with _"for_all_datasets"_ in `bm_ModelingOptions()`.
+
+<br/>
+
+<div class="zoom">
+<p><img src="articles/pictures/SCHEMA_BIOMOD2_WORKFLOW_functions.png" alt="Main workflow"></img></p>
+</div>
+
+<br/><br/><br/>
+
+<br/><br/>
+
+
+### <i class="fas fa-envelope-open-text"></i> `biomod 4.2-5` - Modeling options & Tuning Update
 
 #### <i class="fas fa-exchange-alt"></i> What is changed ?
 
@@ -79,14 +104,6 @@ devtools::install_github("biomodhub/biomod2", dependencies = TRUE)
     - [modeling options](https://biomodhub.github.io/biomod2/articles/vignette_dataPreparation.html) (*to help you navigate through the new way of parameterizing single models*)
 
 <br/>
-
-<div class="zoom">
-<p><img src="articles/pictures/SCHEMA_BIOMOD2_WORKFLOW_functions.png" alt="Main workflow"></img></p>
-</div>
-
-<br/><br/><br/>
-
-
 
 ### <i class="fas fa-envelope"></i> `biomod 4.2` - Terra Update
 
