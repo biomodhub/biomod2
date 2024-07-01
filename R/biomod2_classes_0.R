@@ -75,7 +75,7 @@ setGeneric("BIOMOD.options.default", def = function(mod, typ, pkg, fun) { standa
 .BIOMOD.options.default.check.args <- function(mod, typ, pkg, fun)
 {
   ## check if model is supported
-  avail.models.list <- c('ANN', 'CTA', 'FDA', 'GAM', 'GBM', 'GLM', 'MARS', 'MAXENT', 'MAXNET', 'RF', 'SRE', 'XGBOOST')
+  avail.models.list <- c('ANN', 'CTA', 'FDA', 'GAM', 'GBM', 'GLM', 'MARS', 'MAXENT', 'MAXNET', 'RF','RFd', 'SRE', 'XGBOOST')
   .fun_testIfIn(TRUE, "mod", mod, avail.models.list)
   
   ## check if type is supported
@@ -305,6 +305,16 @@ setGeneric("BIOMOD.options.dataset",
     }
   }
   if (strategy == "user.defined" && !is.null(user.val)) {
+    
+    if ("for_all_datasets" %in% names(user.val)){
+      if (length(names(user.val)) > 1 ){
+        user.val <- user.val["for_all_datasets"]
+        cat("\n\t\t> Only the options defined for 'for_all_datasets' will be taken into account")
+      }
+      user.val <- rep(user.val, length(expected_CVnames))
+      names(user.val) <- expected_CVnames
+    }
+    
     .fun_testIfIn(TRUE, "names(user.val)", names(user.val), expected_CVnames)
     if (length(names(user.val)) != length(expected_CVnames)) {
       warning(paste0("Options will be changed only for a subset of datasets ("
@@ -316,7 +326,8 @@ setGeneric("BIOMOD.options.dataset",
   }
   
   return(list(strategy = strategy,
-              expected_CVnames = expected_CVnames))
+              expected_CVnames = expected_CVnames,
+              user.val = user.val))
 }
 
 # .BIOMOD.options.dataset.test <- function(bm.opt)
@@ -441,6 +452,11 @@ setMethod('BIOMOD.options.dataset', signature(strategy = 'character'),
             }
             if (mod == "MAXNET") { argstmp[["f"]] = NULL }
             if (mod == "RF") {
+              argstmp[["x"]] = NULL
+              argstmp$mtry = 1
+              argstmp$type <- "classification"
+            }
+            if (mod == "RFd") {
               argstmp[["x"]] = NULL
               argstmp$mtry = 1
               argstmp$type <- "classification"

@@ -25,7 +25,9 @@ bm_PseudoAbsences(
   sre.quant = 0,
   dist.min = 0,
   dist.max = NULL,
-  user.table = NULL
+  fact.aggr = NULL,
+  user.table = NULL,
+  seed.val = NULL
 )
 
 bm_PseudoAbsences_user.defined(resp.var, expl.var, ...)
@@ -36,9 +38,9 @@ bm_PseudoAbsences_user.defined(resp.var, expl.var, ...)
 
 bm_PseudoAbsences_random(resp.var, expl.var, ...)
 
-\S4method{bm_PseudoAbsences_random}{ANY,SpatVector}(resp.var, expl.var, nb.absences, nb.rep)
+\S4method{bm_PseudoAbsences_random}{ANY,SpatVector}(resp.var, expl.var, nb.absences, nb.rep, fact.aggr)
 
-\S4method{bm_PseudoAbsences_random}{ANY,SpatRaster}(resp.var, expl.var, nb.absences, nb.rep)
+\S4method{bm_PseudoAbsences_random}{ANY,SpatRaster}(resp.var, expl.var, nb.absences, nb.rep, fact.aggr)
 
 bm_PseudoAbsences_sre(resp.var, expl.var, ...)
 
@@ -54,7 +56,8 @@ bm_PseudoAbsences_disk(resp.var, expl.var, ...)
   dist.min,
   dist.max,
   nb.absences,
-  nb.rep
+  nb.rep,
+  fact.aggr
 )
 
 \S4method{bm_PseudoAbsences_disk}{ANY,SpatRaster}(
@@ -63,7 +66,8 @@ bm_PseudoAbsences_disk(resp.var, expl.var, ...)
   dist.min,
   dist.max,
   nb.absences,
-  nb.rep
+  nb.rep,
+  fact.aggr
 )
 }
 \arguments{
@@ -99,11 +103,17 @@ used to make the \code{disk} pseudo-absence selection (in meters)}
 If \code{strategy = 'disk'}, a \code{numeric} defining the maximal distance to presence points 
 used to make the \code{disk} pseudo-absence selection (in meters)}
 
+\item{fact.aggr}{(\emph{optional, default} \code{NULL}) \cr
+If \code{strategy = 'random'} or \code{strategy = 'disk'}, a \code{integer} defining the factor of aggregation to reduce the resolution}
+
 \item{user.table}{(\emph{optional, default} \code{NULL}) \cr
 If \code{strategy = 'user.defined'}, a \code{matrix} or \code{data.frame} with as many rows as 
 \code{resp.var} values, as many columns as \code{nb.rep}, and containing \code{TRUE} or 
 \code{FALSE} values defining which points will be used to build the species distribution 
 model(s) for each repetition}
+
+\item{seed.val}{(\emph{optional, default} \code{NULL}) \cr 
+An \code{integer} value corresponding to the new seed value to be set}
 
 \item{\ldots}{(\emph{optional, one or several of the above arguments depending on the selected 
 method})}

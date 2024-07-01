@@ -14,6 +14,7 @@
 \alias{MAXENT_biomod2_model-class}
 \alias{MAXNET_biomod2_model-class}
 \alias{RF_biomod2_model-class}
+\alias{RFd_biomod2_model-class}
 \alias{SRE_biomod2_model-class}
 \alias{XGBOOST_biomod2_model-class}
 \alias{show,biomod2_model-method}
@@ -43,6 +44,7 @@ Class created by \code{\link{BIOMOD_Modeling}} and \code{\link{bm_RunModel}}
   \item \code{MAXNET_biomod2_model} : \code{model_class} is 
   \code{MAXNET}
   \item \code{RF_biomod2_model} : \code{model_class} is \code{RF}
+  \item \code{RFd_biomod2_model} : \code{model_class} is \code{RFd}
   \item \code{SRE_biomod2_model} : \code{model_class} is \code{SRE}
 }
 }
@@ -87,6 +89,7 @@ showClass("MARS_biomod2_model")
 showClass("MAXENT_biomod2_model")
 showClass("MAXNET_biomod2_model")
 showClass("RF_biomod2_model")
+showClass("RFd_biomod2_model")
 showClass("SRE_biomod2_model")
 
 }

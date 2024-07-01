@@ -20,7 +20,7 @@ with different strategies (see Details)."><!-- mathjax --><script src="https://c
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">biomod2</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">4.2-5-2</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">4.2-6</span>
       </span>
     </div>
 
@@ -133,9 +133,11 @@ with different strategies (see Details).</p>
 <span>  PA.dist.min <span class="op">=</span> <span class="fl">0</span>,</span>
 <span>  PA.dist.max <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  PA.sre.quant <span class="op">=</span> <span class="fl">0.025</span>,</span>
+<span>  PA.fact.aggr <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  PA.user.table <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  na.rm <span class="op">=</span> <span class="cn">TRUE</span>,</span>
-<span>  filter.raster <span class="op">=</span> <span class="cn">FALSE</span></span>
+<span>  filter.raster <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  seed.val <span class="op">=</span> <span class="cn">NULL</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -249,6 +251,11 @@ and <code>0.5</code> defining the half-quantile used to make the <code>sre</code
 (see Details)</p></dd>
 
 
+<dt>PA.fact.aggr</dt>
+<dd><p>(<em>optional, default</em> <code>NULL</code>) <br>
+If <code>strategy = 'random'</code> or <code>strategy = 'disk'</code>, a <code>integer</code> defining the factor of aggregation to reduce the resolution</p></dd>
+
+
 <dt>PA.user.table</dt>
 <dd><p>(<em>optional, default</em> <code>NULL</code>) <br> 
 If pseudo-absence selection and <code>PA.strategy = 'user.defined'</code>, a <code>matrix</code> or 
@@ -267,6 +274,11 @@ explanatory variables should be removed from the analysis or not</p></dd>
 <dd><p>(<em>optional, default</em> <code>FALSE</code>) <br> 
 If <code>expl.var</code> is of raster type, a <code>logical</code> value defining whether <code>resp.var</code> 
 is to be filtered when several points occur in the same raster cell</p></dd>
+
+
+<dt>seed.val</dt>
+<dd><p>(<em>optional, default</em> <code>NULL</code>) <br> 
+An <code>integer</code> value corresponding to the new seed value to be set</p></dd>
 
 </dl></div>
     <div id="value">

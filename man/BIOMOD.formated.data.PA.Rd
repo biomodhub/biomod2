@@ -23,9 +23,11 @@
   PA.dist.min = 0,
   PA.dist.max = NULL,
   PA.sre.quant = 0.025,
+  PA.fact.aggr = NULL,
   PA.user.table = NULL,
   na.rm = TRUE,
-  filter.raster = FALSE
+  filter.raster = FALSE,
+  seed.val = NULL
 )
 
 \S4method{BIOMOD.formated.data.PA}{numeric,SpatRaster}(
@@ -43,9 +45,11 @@
   PA.dist.min = 0,
   PA.dist.max = NULL,
   PA.sre.quant = 0.025,
+  PA.fact.aggr = NULL,
   PA.user.table = NULL,
   na.rm = TRUE,
-  filter.raster = FALSE
+  filter.raster = FALSE,
+  seed.val = NULL
 )
 }
 \arguments{
@@ -128,6 +132,9 @@ If pseudo-absence selection and \code{PA.strategy = 'sre'}, a \code{numeric} bet
 and \code{0.5} defining the half-quantile used to make the \code{sre} pseudo-absence selection 
 (see Details)}
 
+\item{PA.fact.aggr}{(\emph{optional, default} \code{NULL}) \cr
+If \code{strategy = 'random'} or \code{strategy = 'disk'}, a \code{integer} defining the factor of aggregation to reduce the resolution}
+
 \item{PA.user.table}{(\emph{optional, default} \code{NULL}) \cr 
 If pseudo-absence selection and \code{PA.strategy = 'user.defined'}, a \code{matrix} or 
 \code{data.frame} with as many rows as \code{resp.var} values, as many columns as 
@@ -141,6 +148,9 @@ values for explanatory variables should be removed from the analysis or not}
 \item{filter.raster}{(\emph{optional, default} \code{FALSE}) \cr 
 If \code{env} is of raster type, a \code{logical} value defining whether \code{sp} 
 is to be filtered when several points occur in the same raster cell}
+
+\item{seed.val}{(\emph{optional, default} \code{NULL}) \cr 
+An \code{integer} value corresponding to the new seed value to be set}
 }
 \description{
 Class returned by \code{\link{BIOMOD_FormatingData}}, and used by 

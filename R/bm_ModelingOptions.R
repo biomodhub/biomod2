@@ -11,7 +11,7 @@
 ##' \code{binary}, \code{binary.PA}, \code{abundance}, \code{compositional}
 ##' @param models a \code{vector} containing model names to be computed, must be among 
 ##' \code{ANN}, \code{CTA}, \code{FDA}, \code{GAM}, \code{GBM}, \code{GLM}, \code{MARS}, 
-##' \code{MAXENT}, \code{MAXNET}, \code{RF}, \code{SRE}, \code{XGBOOST}
+##' \code{MAXENT}, \code{MAXNET}, \code{RF}, \code{RFd}, \code{SRE}, \code{XGBOOST}
 ##' @param strategy a \code{character} corresponding to the method to select models' parameters 
 ##' values, must be either \code{default}, \code{bigboss}, \code{user.defined}, \code{tuned}
 ##' @param user.val (\emph{optional, default} \code{NULL}) \cr
@@ -53,6 +53,9 @@
 ##'   \item{tuned}{default parameter values are updated by calling \code{\link{bm_Tuning}} 
 ##'   function}
 ##' }
+##' 
+##' To define the same options for all datasets of a model, you can provide these options as a list in 
+##' user.val with the names "for_all_datasets".
 ##' 
 ##' @note \code{MAXENT} being the only external model (not called through a \code{R} package), 
 ##' default parameters, and their values, are the following :
@@ -239,7 +242,7 @@
 
 bm_ModelingOptions <- function(data.type
                                , models = c('ANN', 'CTA', 'FDA', 'GAM', 'GBM', 'GLM'
-                                            , 'MARS', 'MAXENT', 'MAXNET', 'RF', 'SRE', 'XGBOOST')
+                                            , 'MARS', 'MAXENT', 'MAXNET', 'RF','RFd', 'SRE', 'XGBOOST')
                                , strategy, user.val = NULL, user.base = "bigboss"
                                , bm.format = NULL, calib.lines = NULL)
 {
@@ -321,7 +324,7 @@ bm_ModelingOptions <- function(data.type
     
     ## check if model is supported
     avail.models.list <- c('ANN', 'CTA', 'FDA', 'GAM', 'GAM.gam.gam', 'GAM.mgcv.bam', 'GAM.mgcv.gam'
-                           , 'GBM', 'GLM', 'MARS', 'MAXENT', 'MAXNET', 'RF', 'SRE', 'XGBOOST')
+                           , 'GBM', 'GLM', 'MARS', 'MAXENT', 'MAXNET', 'RF','RFd', 'SRE', 'XGBOOST')
     .fun_testIfIn(TRUE, "models", models, avail.models.list)
     if (length(grep('GAM', models)) > 1) {
       stop("Only one GAM model can be activated. Please choose betwen 'GAM', 'GAM.gam.gam', 'GAM.mgcv.bam' or 'GAM.mgcv.gam'")
@@ -357,7 +360,7 @@ bm_ModelingOptions <- function(data.type
       }
       .fun_testIfInherits(TRUE, "calib.lines", calib.lines, c("matrix"))
       
-      expected_CVnames <- c(paste0("_allData_RUN", seq_len(ncol(calib.lines))), "_allData_allRun")
+      expected_CVnames <- c(paste0("_allData_RUN", seq_len(ncol(calib.lines))), "_allData_allRun", "for_all_datasets")
       if (inherits(bm.format, "BIOMOD.formated.data.PA")) {
         expected_CVnames <- c(expected_CVnames
                               , sapply(1:ncol(bm.format@PA.table)

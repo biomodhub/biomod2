@@ -1321,6 +1321,8 @@ setMethod('summary', signature(object = 'BIOMOD.formated.data'),
 ##' If pseudo-absence selection and \code{PA.strategy = 'disk'}, a \code{numeric} defining the 
 ##' maximal distance to presence points used to make the \code{disk} pseudo-absence selection 
 ##' (in meters, see Details)
+##' @param PA.fact.aggr (\emph{optional, default} \code{NULL}) \cr
+##' If \code{strategy = 'random'} or \code{strategy = 'disk'}, a \code{integer} defining the factor of aggregation to reduce the resolution
 ##' @param PA.user.table (\emph{optional, default} \code{NULL}) \cr 
 ##' If pseudo-absence selection and \code{PA.strategy = 'user.defined'}, a \code{matrix} or 
 ##' \code{data.frame} with as many rows as \code{resp.var} values, as many columns as 
@@ -1333,6 +1335,8 @@ setMethod('summary', signature(object = 'BIOMOD.formated.data'),
 ##' @param filter.raster (\emph{optional, default} \code{FALSE}) \cr 
 ##' If \code{env} is of raster type, a \code{logical} value defining whether \code{sp} 
 ##' is to be filtered when several points occur in the same raster cell
+##' @param seed.val (\emph{optional, default} \code{NULL}) \cr 
+##' An \code{integer} value corresponding to the new seed value to be set
 ##' 
 ##' @slot dir.name a \code{character} corresponding to the modeling folder
 ##' @slot sp.name a \code{character} corresponding to the species name
@@ -1443,15 +1447,17 @@ setMethod('BIOMOD.formated.data.PA', signature(sp = 'numeric', env = 'data.frame
                    , eval.sp = NULL, eval.env = NULL, eval.xy = NULL
                    , PA.nb.rep = 1, PA.strategy = 'random', PA.nb.absences = NULL
                    , PA.dist.min = 0, PA.dist.max = NULL
-                   , PA.sre.quant = 0.025, PA.user.table = NULL
-                   , na.rm = TRUE, filter.raster = FALSE) {
+                   , PA.sre.quant = 0.025, PA.fact.aggr = NULL
+                   , PA.user.table = NULL
+                   , na.rm = TRUE, filter.raster = FALSE, seed.val = NULL) {
             .BIOMOD.formated.data.PA(sp, env, xy, dir.name, sp.name
                                      , eval.sp, eval.env, eval.xy
                                      , PA.nb.rep, PA.strategy, PA.nb.absences
                                      , PA.dist.min, PA.dist.max
-                                     , PA.sre.quant, PA.user.table
+                                     , PA.sre.quant, PA.fact.aggr, PA.user.table
                                      , na.rm
-                                     , filter.raster = filter.raster)
+                                     , filter.raster = filter.raster
+                                     , seed.val)
           })
 
 ### BIOMOD.formated.data.PA(sp = numeric, env = SpatRaster) -------------------
@@ -1465,15 +1471,17 @@ setMethod('BIOMOD.formated.data.PA', signature(sp = 'numeric', env = 'SpatRaster
                    , eval.sp = NULL, eval.env = NULL, eval.xy = NULL
                    , PA.nb.rep = 1, PA.strategy = 'random', PA.nb.absences = NULL
                    , PA.dist.min = 0, PA.dist.max = NULL
-                   , PA.sre.quant = 0.025, PA.user.table = NULL
-                   , na.rm = TRUE, filter.raster = FALSE) {
+                   , PA.sre.quant = 0.025, PA.fact.aggr = NULL
+                   , PA.user.table = NULL
+                   , na.rm = TRUE, filter.raster = FALSE, seed.val = NULL) {
             .BIOMOD.formated.data.PA(sp, env, xy, dir.name, sp.name
                                      , eval.sp, eval.env, eval.xy
                                      , PA.nb.rep, PA.strategy, PA.nb.absences
                                      , PA.dist.min, PA.dist.max
-                                     , PA.sre.quant, PA.user.table
+                                     , PA.sre.quant, PA.fact.aggr, PA.user.table
                                      , na.rm
-                                     , filter.raster = filter.raster)
+                                     , filter.raster = filter.raster
+                                     , seed.val)
           })
 
 ### .BIOMOD.formated.data.PA ---------------------------------------------------
@@ -1481,8 +1489,9 @@ setMethod('BIOMOD.formated.data.PA', signature(sp = 'numeric', env = 'SpatRaster
                                       , eval.sp = NULL, eval.env = NULL, eval.xy = NULL
                                       , PA.nb.rep = 1, PA.strategy = 'random', PA.nb.absences = NULL
                                       , PA.dist.min = 0, PA.dist.max = NULL
-                                      , PA.sre.quant = 0.025, PA.user.table = NULL
-                                      , na.rm = TRUE, filter.raster = FALSE)
+                                      , PA.sre.quant = 0.025, PA.fact.aggr = NULL
+                                      , PA.user.table = NULL
+                                      , na.rm = TRUE, filter.raster = FALSE, seed.val = NULL)
 {
   args <- .BIOMOD.formated.data.check.args(sp, env, xy, eval.sp, eval.env, eval.xy, filter.raster)
   for (argi in names(args)) { assign(x = argi, value = args[[argi]]) }
@@ -1529,7 +1538,10 @@ setMethod('BIOMOD.formated.data.PA', signature(sp = 'numeric', env = 'SpatRaster
                                    sre.quant = PA.sre.quant,
                                    dist.min = PA.dist.min,
                                    dist.max = PA.dist.max,
-                                   user.table = PA.user.table)
+                                   fact.aggr = PA.fact.aggr,
+                                   user.table = PA.user.table,
+                                   seed.val = seed.val)
+  
   
   if (!is.null(pa.data.tmp)) {
     ## Keep same env variable for eval than calib (+ check for factor)
@@ -1581,15 +1593,15 @@ setMethod('BIOMOD.formated.data.PA', signature(sp = 'numeric', env = 'SpatRaster
     
     rm(list = 'BFD')
   } else {
-    cat("\n   ! PA selection not done", fill = .Options$width)
-    BFDP <- BIOMOD.formated.data(sp = as.vector(values(sp)[,1]),
-                                 env = env,
-                                 xy = xy,
-                                 dir.name = dir.name,
-                                 sp.name = sp.name, 
-                                 eval.sp = eval.sp,
-                                 eval.env = eval.env,
-                                 eval.xy = eval.xy)
+    stop("\n   ! PA selection not done : \n The PA selection is not possible with the parameters selected." )
+    # BFDP <- BIOMOD.formated.data(sp = as.vector(values(sp)[,1]),
+    #                              env = env,
+    #                              xy = xy,
+    #                              dir.name = dir.name,
+    #                              sp.name = sp.name, 
+    #                              eval.sp = eval.sp,
+    #                              eval.env = eval.env,
+    #                              eval.xy = eval.xy)
   }
   rm(list = "pa.data.tmp" )
   return(BFDP)

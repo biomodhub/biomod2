@@ -76,6 +76,7 @@ NULL
 ##' @aliases MAXENT_biomod2_model-class
 ##' @aliases MAXNET_biomod2_model-class
 ##' @aliases RF_biomod2_model-class
+##' @aliases RFd_biomod2_model-class
 ##' @aliases SRE_biomod2_model-class
 ##' @aliases XGBOOST_biomod2_model-class
 ##' @author Damien Georges
@@ -117,6 +118,7 @@ NULL
 ##'   \item \code{MAXNET_biomod2_model} : \code{model_class} is 
 ##'   \code{MAXNET}
 ##'   \item \code{RF_biomod2_model} : \code{model_class} is \code{RF}
+##'   \item \code{RFd_biomod2_model} : \code{model_class} is \code{RFd}
 ##'   \item \code{SRE_biomod2_model} : \code{model_class} is \code{SRE}
 ##' }
 ##' 
@@ -138,6 +140,7 @@ NULL
 ##' showClass("MAXENT_biomod2_model")
 ##' showClass("MAXNET_biomod2_model")
 ##' showClass("RF_biomod2_model")
+##' showClass("RFd_biomod2_model")
 ##' showClass("SRE_biomod2_model")
 ##' 
 NULL
@@ -275,6 +278,8 @@ setMethod('predict', signature(object = 'biomod2_model'),
 ##' @aliases predict2.MAXNET_biomod2_model.data.frame
 ##' @aliases predict2.RF_biomod2_model.SpatRaster
 ##' @aliases predict2.RF_biomod2_model.data.frame
+##' @aliases predict2.RFd_biomod2_model.SpatRaster
+##' @aliases predict2.RFd_biomod2_model.data.frame
 ##' @aliases predict2.SRE_biomod2_model.SpatRaster
 ##' @aliases predict2.SRE_biomod2_model.data.frame
 ##' @author Remi Patin
@@ -1111,6 +1116,81 @@ setMethod('predict2', signature(object = 'RF_biomod2_model', newdata = "data.fra
             callNextMethod(object, newdata, predfun = predfun, ...)
           }
 )
+
+#----------------------------------------------------------------------------- #
+## 8.10_bis RFd_biomod2_model -----------------------------------------------------
+#----------------------------------------------------------------------------- #
+##' @name RFd_biomod2_model-class
+##' @rdname biomod2_model
+##' @export
+
+setClass('RFd_biomod2_model',
+         representation(),
+         contains = 'biomod2_model',
+         prototype = list(model_class = 'RFd'),
+         validity = function(object) { # check model class
+           if (!inherits(object@model, "randomForest")) { return(FALSE)} else { return(TRUE) }
+         })
+
+##' 
+##' @rdname predict2.bm
+##' 
+
+
+setMethod('predict2', signature(object = 'RFd_biomod2_model', newdata = "SpatRaster"),
+          function(object, newdata, ...) {
+            pa <- .extract_modelNamesInfo(object@model_name, obj.type = "mod", info = "PA")
+            run <- .extract_modelNamesInfo(object@model_name, obj.type = "mod", info = "run")
+            dataset <- paste0("_", pa, "_", run)
+            
+            if (!is.null(object@model_options@args.values[[dataset]]$type) && object@model_options@args.values[[dataset]]$type == "classification") {
+              predfun <- function(object, newdata, mod.name){
+                # new predict command used with terra
+                subset(predict(newdata, model = get_formal_model(object),
+                               type = 'prob',
+                               wopt = list(names = rep(mod.name,2))), 
+                       2)   
+                # old predict function used with raster
+                # predict(newdata, model = get_formal_model(object), type = 'prob', index = 2)
+              }
+            } else { #regression case
+              predfun <- function(object, newdata, mod.name){
+                predict(newdata, model = get_formal_model(object),
+                        type = 'response',
+                        wopt = list(names = rep(mod.name,2))) 
+              }
+            }
+            
+            # old predict function used with raster
+            # predict(newdata, model = get_formal_model(object), type = 'prob', index = 2)            
+            # redirect to predict2.biomod2_model.SpatRaster
+            
+            callNextMethod(object, newdata, predfun = predfun, ...)
+            
+          }
+)
+
+##' @rdname predict2.bm
+setMethod('predict2', signature(object = 'RFd_biomod2_model', newdata = "data.frame"),
+          function(object, newdata, ...) {
+            pa <- .extract_modelNamesInfo(object@model_name, obj.type = "mod", info = "PA")
+            run <- .extract_modelNamesInfo(object@model_name, obj.type = "mod", info = "run")
+            dataset <- paste0("_", pa, "_", run)
+            
+            if (!is.null(object@model_options@args.values[[dataset]]$type) && object@model_options@args.values[[dataset]]$type == "classification") {
+              predfun <- function(object, newdata, not_na_rows) {
+                as.numeric(predict(get_formal_model(object), as.data.frame(newdata[not_na_rows, , drop = FALSE]), type = 'prob')[, '1'])        
+              }
+            } else { # regression case
+              predfun <- function(object, newdata, not_na_rows) {
+                as.numeric(predict(get_formal_model(object), as.data.frame(newdata[not_na_rows, , drop = FALSE]), type = 'response'))        
+              }
+            }
+            # redirect to predict2.biomod2_model.data.frame
+            callNextMethod(object, newdata, predfun = predfun, ...)
+          }
+)
+
 
 
 #----------------------------------------------------------------------------- #

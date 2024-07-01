@@ -55,7 +55,7 @@ obtained with the \code{\link{bm_CrossValidation}} function}
 
 \item{models}{a \code{vector} containing model names to be computed, must be among 
 \code{ANN}, \code{CTA}, \code{FDA}, \code{GAM}, \code{GBM}, \code{GLM}, \code{MARS}, 
-\code{MAXENT}, \code{MAXNET}, \code{RF}, \code{SRE}, \code{XGBOOST}}
+\code{MAXENT}, \code{MAXNET}, \code{RF}, \code{RFd}, \code{SRE}, \code{XGBOOST}}
 
 \item{models.pa}{(\emph{optional, default} \code{NULL}) \cr 
 A \code{list} containing for each model a \code{vector} defining which pseudo-absence datasets 
@@ -89,7 +89,7 @@ A \code{logical} value defining whether the progress bar is to be rendered or no
 
 \item{model}{a \code{character} corresponding to the model name to be computed, must be either 
 \code{ANN}, \code{CTA}, \code{FDA}, \code{GAM}, \code{GBM}, \code{GLM}, \code{MARS}, 
-\code{MAXENT}, \code{MAXNET}, \code{RF}, \code{SRE}, \code{XGBOOST}}
+\code{MAXENT}, \code{MAXNET}, \code{RF}, \code{RFd}, \code{SRE}, \code{XGBOOST}}
 
 \item{run.name}{a \code{character} corresponding to the model to be run (sp.name + pa.id + 
 run.id)}
