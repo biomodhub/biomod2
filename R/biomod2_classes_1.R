@@ -177,7 +177,7 @@ setClass("BIOMOD.formated.data",
 # 1.2 Constructors -------------------------------------------------------------
 setGeneric("BIOMOD.formated.data", def = function(sp, env, ...) { standardGeneric("BIOMOD.formated.data") })
 
-.BIOMOD.formated.data.check.args <- function(sp, env, xy = NULL, eval.sp = NULL, eval.env = NULL
+.BIOMOD.formated.data.check.args <- function(sp, env, data.type = NULL, xy = NULL, eval.sp = NULL, eval.env = NULL
                                              , eval.xy = NULL, filter.raster = FALSE)
 {
   ## A.1 Check sp argument --------------------------------------------------------------
@@ -206,8 +206,23 @@ setGeneric("BIOMOD.formated.data", def = function(sp, env, ...) { standardGeneri
     sp <- .check_formating_table(sp)
   }
   
+  ## Check data.type
+  presumed.data.type = .which.data.type(sp)
+  if (!is.null(data.type)){
+    if (presumed.data.type != "data.type"){
+      cat("\n\t The data.type doesn't seem to correspond to your data. It will be switch to", presumed.data.type)
+      data.type <- presumed.data.type
+    }
+  } else {
+    data.type <- presumed.data.type
+  }
+  
   ## Check presence/absence
-  sp <- .check_formating_resp.var(resp.var = sp, eval.data = FALSE)
+  if(data.type == "binary"){
+    sp <- .check_formating_resp.var(resp.var = sp, eval.data = FALSE)
+  } else {
+    .is.Data.Abundance(sp)
+  }
   
   ## A.2 Check xy argument --------------------------------------------------------------
   
@@ -268,7 +283,12 @@ setGeneric("BIOMOD.formated.data", def = function(sp, env, ...) { standardGeneri
     }
     
     ## Check presence/absence
-    eval.sp <- .check_formating_resp.var(resp.var = eval.sp, eval.data = TRUE)
+    if(data.type == "binary"){
+      eval.sp <- .check_formating_resp.var(resp.var = eval.sp, eval.data = TRUE)
+    } else {
+      .is.Data.Abundance(eval.sp)
+    }
+    
     
     ## B.2 Check eval.xy argument -------------------------------------------------------
     if(!is.null(eval.xy)){
@@ -297,6 +317,7 @@ setGeneric("BIOMOD.formated.data", def = function(sp, env, ...) { standardGeneri
   return(list(sp = sp,
               env = env,
               xy = xy,
+              data.type = data.type,
               eval.sp = eval.sp,
               eval.env = eval.env,
               eval.xy = eval.xy))
@@ -310,12 +331,12 @@ setGeneric("BIOMOD.formated.data", def = function(sp, env, ...) { standardGeneri
 ##' 
 
 setMethod('BIOMOD.formated.data', signature(sp = 'numeric', env = 'data.frame'),
-          function(sp, env, xy = NULL, dir.name = '.', sp.name = NULL
+          function(sp, env, xy = NULL, dir.name = '.', data.type = NULL, sp.name = NULL
                    , eval.sp = NULL, eval.env = NULL, eval.xy = NULL
                    , na.rm = TRUE, data.mask = NULL, shared.eval.env = FALSE
                    , filter.raster = FALSE) 
           {
-            args <- .BIOMOD.formated.data.check.args(sp, env, xy, eval.sp, eval.env, eval.xy, filter.raster)
+            args <- .BIOMOD.formated.data.check.args(sp, env, data.type, xy, eval.sp, eval.env, eval.xy, filter.raster)
             for (argi in names(args)) { assign(x = argi, value = args[[argi]]) }
             rm(args)
             
@@ -330,7 +351,7 @@ setMethod('BIOMOD.formated.data', signature(sp = 'numeric', env = 'data.frame'),
             if (is.null(eval.sp)) { ## NO EVALUATION DATA
               BFD <- new(
                 'BIOMOD.formated.data',
-                data.type = 'binary',
+                data.type = data.type,
                 coord = xy,
                 data.species = sp,
                 data.env.var = env,
@@ -357,7 +378,7 @@ setMethod('BIOMOD.formated.data', signature(sp = 'numeric', env = 'data.frame'),
               
               BFD <- new(
                 'BIOMOD.formated.data',
-                data.type = 'binary',
+                data.type = data.type,
                 coord = xy,
                 data.species = sp,
                 data.env.var = env,
@@ -403,13 +424,13 @@ setMethod('BIOMOD.formated.data', signature(sp = 'numeric', env = 'data.frame'),
 ##' 
 
 setMethod('BIOMOD.formated.data', signature(sp = 'data.frame'),
-          function(sp, env, xy = NULL, dir.name = '.', sp.name = NULL,
+          function(sp, env, xy = NULL, dir.name = '.', data.type = NULL, sp.name = NULL,
                    eval.sp = NULL, eval.env = NULL, eval.xy = NULL,
                    na.rm = TRUE, filter.raster = FALSE)
           {
             if (ncol(sp) > 1) { stop("Invalid response variable") }
             sp <- as.numeric(unlist(sp))
-            BFD <- BIOMOD.formated.data(sp, env, xy, dir.name, sp.name, eval.sp, eval.env, eval.xy, na.rm = na.rm)
+            BFD <- BIOMOD.formated.data(sp, env, xy, dir.name, data.type, sp.name, eval.sp, eval.env, eval.xy, na.rm = na.rm)
             return(BFD)
           }
 )
@@ -421,12 +442,12 @@ setMethod('BIOMOD.formated.data', signature(sp = 'data.frame'),
 ##' 
 
 setMethod('BIOMOD.formated.data', signature(sp = 'numeric', env = 'matrix'),
-          function(sp, env, xy = NULL, dir.name = '.', sp.name = NULL,
+          function(sp, env, xy = NULL, dir.name = '.', data.type = NULL, sp.name = NULL,
                    eval.sp = NULL, eval.env = NULL, eval.xy = NULL,
                    na.rm = TRUE, filter.raster = FALSE)
           {
             env <- as.data.frame(env)
-            BFD <- BIOMOD.formated.data(sp, env, xy, dir.name, sp.name, eval.sp, eval.env, eval.xy, na.rm = na.rm)
+            BFD <- BIOMOD.formated.data(sp, env, xy, dir.name, data.type, sp.name, eval.sp, eval.env, eval.xy, na.rm = na.rm)
             return(BFD)
           }
 )
@@ -438,12 +459,12 @@ setMethod('BIOMOD.formated.data', signature(sp = 'numeric', env = 'matrix'),
 ##' 
 
 setMethod('BIOMOD.formated.data', signature(sp = 'numeric', env = 'SpatRaster'),
-          function(sp, env, xy = NULL, dir.name = '.', sp.name = NULL,
+          function(sp, env, xy = NULL, dir.name = '.', data.type = NULL, sp.name = NULL,
                    eval.sp = NULL, eval.env = NULL, eval.xy = NULL,
                    na.rm = TRUE, shared.eval.env = FALSE,
                    filter.raster = FALSE)
           {
-            args <- .BIOMOD.formated.data.check.args(sp, env, xy, eval.sp, eval.env, eval.xy, filter.raster)
+            args <- .BIOMOD.formated.data.check.args(sp, env, data.type, xy, eval.sp, eval.env, eval.xy, filter.raster)
             for (argi in names(args)) { assign(x = argi, value = args[[argi]]) }
             rm(args)
             
@@ -475,7 +496,7 @@ setMethod('BIOMOD.formated.data', signature(sp = 'numeric', env = 'SpatRaster'),
             
             env <- as.data.frame(extract(env, xy, factors = TRUE, ID = FALSE))
             
-            BFD <- BIOMOD.formated.data(sp, env, xy, dir.name, sp.name, 
+            BFD <- BIOMOD.formated.data(sp, env, xy, dir.name, data.type, sp.name, 
                                         eval.sp, eval.env, eval.xy,
                                         na.rm = na.rm, data.mask = data.mask,
                                         shared.eval.env = shared.eval.env,
@@ -1061,7 +1082,8 @@ setMethod('show', signature('BIOMOD.formated.data'),
             .bm_cat("BIOMOD.formated.data")
             cat("\ndir.name = ", object@dir.name, fill = .Options$width)
             cat("\nsp.name = ", object@sp.name, fill = .Options$width)
-            cat("\n\t",
+            if (object@data.type == "binary") {
+              cat("\n\t",
                 sum(object@data.species, na.rm = TRUE),
                 'presences, ',
                 sum(object@data.species == 0, na.rm = TRUE),
@@ -1069,6 +1091,15 @@ setMethod('show', signature('BIOMOD.formated.data'),
                 sum(is.na(object@data.species), na.rm = TRUE),
                 'undefined points in dataset',
                 fill = .Options$width)
+            } else {
+              cat("\n\t",
+                  length(object@data.species),
+                  'points, with a range from',
+                  min(object@data.species, na.rm = TRUE),
+                  'to',
+                  max(object@data.species, na.rm = TRUE),
+                  fill = .Options$width)
+            }
             cat("\n\n\t",
                 ncol(object@data.env.var),
                 'explanatory variables\n',
@@ -1184,6 +1215,7 @@ setMethod('summary', signature(object = 'BIOMOD.formated.data'),
             for (argi in names(args)) { assign(x = argi, value = args[[argi]]) }
             rm(args)
             
+            if (object@data.type == "binary") {
             output <- data.frame("dataset" = "initial",
                                  "run" = NA,
                                  "PA" = NA,
@@ -1191,6 +1223,14 @@ setMethod('summary', signature(object = 'BIOMOD.formated.data'),
                                  "True_Absences" = length(which(object@data.species == 0)),
                                  "Pseudo_Absences" = 0,
                                  "Undefined" = length(which(is.na(object@data.species))))
+            } else {
+              output <- data.frame("dataset" = "initial",
+                                   "run" = NA,
+                                   "Points" = length(object@data.species),
+                                   "Min" = min(object@data.species, na.rm = T),
+                                   "Max" = max(object@data.species, na.rm = T),
+                                   "Transformation"  = "Untouched")
+            }
             
             if (object@has.data.eval) {
               output <- rbind(output,

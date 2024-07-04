@@ -319,7 +319,7 @@ bm_ModelingOptions <- function(data.type
            , user.val = NULL, user.base = NULL
            , bm.format = NULL, calib.lines = NULL) {
     ## check if type is supported
-    avail.types.list <- c('binary', 'binary.PA', 'abundance', 'compositional')
+    avail.types.list <- c('binary', 'binary.PA', 'abundance', 'count')
     .fun_testIfIn(TRUE, "data.type", data.type, avail.types.list)
     
     ## check if model is supported
@@ -350,7 +350,7 @@ bm_ModelingOptions <- function(data.type
     
     ## TUNING with bm_Tuning parameterisation -----
     if (strategy == "tuned") {
-      .fun_testIfInherits(TRUE, "bm.format", bm.format, c("BIOMOD.formated.data", "BIOMOD.formated.data.PA", "BIOMOD.formated.data.abundance"))
+      .fun_testIfInherits(TRUE, "bm.format", bm.format, c("BIOMOD.formated.data", "BIOMOD.formated.data.PA"))
     }
     
     ## check calib.lines colnames

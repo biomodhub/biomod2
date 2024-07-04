@@ -56,8 +56,6 @@
 ##' @param data.split.table \emph{deprecated}, now called \code{CV.user.table}
 ##' @param do.full.models \emph{deprecated}, now called \code{CV.do.full.models}
 ##' 
-##' @param OPT.data.type a \code{character} corresponding to the data type to be used, must be 
-##' either \code{binary}, \code{binary.PA}, \code{abundance}, \code{compositional}
 ##' @param OPT.strategy a \code{character} corresponding to the method to select models' 
 ##' parameters values, must be either \code{default}, \code{bigboss}, \code{user.defined}, 
 ##' \code{tuned}
@@ -600,7 +598,7 @@ BIOMOD_Modeling <- function(bm.format,
   
   if (!is.character(modeling.id) || length(modeling.id) > 1) { stop("modeling.id must be a 'character' of length 1") }
   
-  .fun_testIfInherits(TRUE, "bm.format", bm.format, c("BIOMOD.formated.data", "BIOMOD.formated.data.PA", "BIOMOD.formated.data.abundance"))
+  .fun_testIfInherits(TRUE, "bm.format", bm.format, c("BIOMOD.formated.data", "BIOMOD.formated.data.PA"))
   if (!is.character(models)) { stop("models must be a 'character' vector") }
   
   # Support for old names in models

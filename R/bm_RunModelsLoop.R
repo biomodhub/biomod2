@@ -534,13 +534,15 @@ bm_RunModel <- function(model, run.name, dir.name = '.'
       ## CALIBRATION & VALIDATION LINES -------------------------------------------------
       cross.validation <- foreach(xx = metric.eval, .combine = "rbind") %do% {
         if (data.type == 'binary'){
-        bm_FindOptimStat(metric.eval = xx,
-                         obs = data_sp[which(eval.lines.vec == FALSE)],
-                         fit = g.pred[which(eval.lines.vec == FALSE)])
+          bm_FindOptimStat(metric.eval = xx,
+                           obs = data_sp[which(eval.lines.vec == FALSE)],
+                           fit = g.pred[which(eval.lines.vec == FALSE)])
         }
-        else {bm_EvalAbundanceModel(metric.eval = xx, bm.mod = model.bm,
+        else {
+          bm_EvalAbundanceModel(metric.eval = xx, bm.mod = model.bm,
                                obs = data_sp[which(eval.lines.vec == FALSE)],
-                               fit = g.pred[which(eval.lines.vec == FALSE)])}
+                               fit = g.pred[which(eval.lines.vec == FALSE)]) 
+          }
       }
       if (max(cross.validation$cutoff,na.rm = T) > 1000) {cat("\n*** Wrong values predicted, please be careful with the results fo this model")}
       colnames(cross.validation)[which(colnames(cross.validation) == "best.stat")] <- "calibration"
@@ -698,11 +700,11 @@ bm_RunModel <- function(model, run.name, dir.name = '.'
   
   ## 5. Check data.type
   data.type <- bm.options@options[[1]]@type
-  avail.types.list <- c('binary', 'binary.PA', 'abundance', 'compositional')
+  avail.types.list <- c('binary', 'binary.PA', 'abundance', 'count')
   .fun_testIfIn(TRUE, "data.type", data.type, avail.types.list)
   
   on_0_1000 <- TRUE
-  if(data.type == "abundance"){
+  if(data.type %in% c("abundance","count")){
     on_0_1000 <- FALSE
   }
   

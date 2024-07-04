@@ -150,19 +150,19 @@ NULL
 ##' 
 
 # 1.1 Class Definition ----------------------------------------------------------------------------
-setClass("BIOMOD.formated.data.abundance",
-         representation(data.type = 'character',
-                        dir.name = 'character',
-                        sp.name = 'character',
-                        coord = "data.frame",
-                        data.species = "numeric",
-                        data.env.var = "data.frame",
-                        data.mask = "list",
-                        has.data.eval = "logical",
-                        eval.coord = "data.frame",
-                        eval.data.species = "numeric",
-                        eval.data.env.var = "data.frame"),
-         validity = function(object) { return(TRUE) })
+# setClass("BIOMOD.formated.data.abundance",
+#          representation(data.type = 'character',
+#                         dir.name = 'character',
+#                         sp.name = 'character',
+#                         coord = "data.frame",
+#                         data.species = "numeric",
+#                         data.env.var = "data.frame",
+#                         data.mask = "list",
+#                         has.data.eval = "logical",
+#                         eval.coord = "data.frame",
+#                         eval.data.species = "numeric",
+#                         eval.data.env.var = "data.frame"),
+#          validity = function(object) { return(TRUE) })
 
 
 # 1.2 Constructors -------------------------------------------------------------
@@ -318,7 +318,7 @@ setMethod('BIOMOD.formated.data.abundance', signature(sp = 'numeric', env = 'dat
             
             if (is.null(eval.sp)) { ## NO EVALUATION DATA
               BFD <- new(
-                'BIOMOD.formated.data.abundance',
+                'BIOMOD.formated.data',
                 coord = xy,
                 data.species = sp,
                 data.env.var = env,
@@ -345,7 +345,7 @@ setMethod('BIOMOD.formated.data.abundance', signature(sp = 'numeric', env = 'dat
               }
               
               BFD <- new(
-                'BIOMOD.formated.data.abundance',
+                'BIOMOD.formated.data',
                 data.type = "abundance",
                 coord = xy,
                 data.species = sp,
@@ -920,49 +920,6 @@ setMethod('plot', signature(x = 'BIOMOD.formated.data.abundance', y = "missing")
               has.mask.eval = has.mask.eval))
 }
 
-### show.BIOMOD.formated.data  --------------------------------------------------
-##' 
-##' @rdname BIOMOD.formated.data
-##' @importMethodsFrom methods show
-##' @export
-##' 
-
-setMethod('show', signature('BIOMOD.formated.data.abundance'),
-          function(object)
-          {
-            .bm_cat("BIOMOD.formated.data")
-            cat("\ndir.name = ", object@dir.name, fill = .Options$width)
-            cat("\nsp.name = ", object@sp.name, fill = .Options$width)
-            cat("\n\t",
-                length(object@data.species),
-                'points, with a range from',
-                min(object@data.species, na.rm = TRUE),
-                'to',
-                max(object@data.species, na.rm = TRUE),
-                fill = .Options$width)
-            cat("\n\n\t",
-                ncol(object@data.env.var),
-                'explanatory variables\n',
-                fill = .Options$width)
-            print(summary(object@data.env.var))
-            
-            if (object@has.data.eval) {
-              cat("\n\nEvaluation data :", fill = .Options$width)
-              cat("\n\t",
-                  sum(object@eval.data.species, na.rm = TRUE),
-                  'presences, ',
-                  sum(object@eval.data.species == 0, na.rm = TRUE),
-                  'true absences and ',
-                  sum(is.na(object@eval.data.species), na.rm = TRUE),
-                  'undefined points in dataset',
-                  fill = .Options$width)
-              cat("\n\n", fill = .Options$width)
-              print(summary(object@eval.data.env.var))
-            }
-            .bm_cat()
-          }
-)
-
 
 ### summary.BIOMOD.formated.data.abundance  --------------------------------------------------
 ##' 
@@ -1032,12 +989,7 @@ setMethod('summary', signature(object = 'BIOMOD.formated.data.abundance'),
             for (argi in names(args)) { assign(x = argi, value = args[[argi]]) }
             rm(args)
             
-            output <- data.frame("dataset" = "initial",
-                                 "run" = NA,
-                                 "Points" = length(object@data.species),
-                                 "Min" = min(object@data.species, na.rm = T),
-                                 "Max" = max(object@data.species, na.rm = T),
-                                 "Transformation"  = "Untouched")
+            
             
             if (object@has.data.eval) {
               output <- rbind(output,

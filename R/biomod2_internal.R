@@ -1108,8 +1108,27 @@ xgbpred <- function(model, data, ...) {
 
 # is.data.abundance ----------------------------
 
-.is.Data.Abundance <- function(resp.var){
-  nb_factor <- length(unique(resp.var)) <= 3
+.is.Data.Abundance <- function(resp.var){ #accept positive value only / Something else ? 
+  # Check si c'est des facteurs ? 
   negative <- any(resp.var < 0 )
-  return(!any(c(nb_factor,negative)))
+  if (negative){
+    stop("biomod2 don't accept negative value : please check your response data.")
+  }
+}
+
+
+# which.data.type ? 
+
+.which.data.type <- function(resp.var){
+  element <- sort(unique(resp.var))
+  if (identical(element,c(0,1)) | identical(element,1)){
+    data.type <- "binary"
+  } else {
+    if (identical(as.numeric(as.integer(element)),element)){
+      data.type <- "count"
+    } else {
+      data.type <- "abundance"
+    }
+  }
+  return(data.type)
 }

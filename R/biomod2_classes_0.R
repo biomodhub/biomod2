@@ -79,7 +79,7 @@ setGeneric("BIOMOD.options.default", def = function(mod, typ, pkg, fun) { standa
   .fun_testIfIn(TRUE, "mod", mod, avail.models.list)
   
   ## check if type is supported
-  avail.types.list <- c('binary', 'binary.PA', 'abundance', 'compositional')
+  avail.types.list <- c('binary', 'binary.PA', 'abundance', 'count')
   .fun_testIfIn(TRUE, "typ", typ, avail.types.list)
   
   if (mod != 'MAXENT') {
@@ -280,7 +280,7 @@ setGeneric("BIOMOD.options.dataset",
   
   ## check bm.format, bm.format@PA.table and calib.lines
   if (!is.null(bm.format)) {
-    .fun_testIfInherits(TRUE, "bm.format", bm.format, c("BIOMOD.formated.data", "BIOMOD.formated.data.PA", "BIOMOD.formated.data.abundance"))
+    .fun_testIfInherits(TRUE, "bm.format", bm.format, c("BIOMOD.formated.data", "BIOMOD.formated.data.PA"))
   }
   expected_CVnames <- "_allData_allRun"
   if (!is.null(calib.lines)) {

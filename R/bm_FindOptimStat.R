@@ -565,7 +565,7 @@ ecospat.mpa <- function(Pred, Sp.occ.xy = NULL, perc = 0.9)
 
 
 
-## New function in the case of abundancedata
+## New function in the case of abundance data
 
 bm_EvalAbundanceModel <- function(metric.eval, bm.mod, obs  = NULL, fit = NULL){
   

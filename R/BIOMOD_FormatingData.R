@@ -338,6 +338,7 @@ BIOMOD_FormatingData <- function(resp.name,
                                  resp.var,
                                  expl.var,
                                  dir.name = '.',
+                                 data.type = NULL,
                                  resp.xy = NULL,
                                  eval.resp.var = NULL,
                                  eval.expl.var = NULL,
@@ -356,68 +357,56 @@ BIOMOD_FormatingData <- function(resp.name,
 { 
   .bm_cat(paste0(resp.name, " Data Formating"))
   
-  dataAbundance <- .is.Data.Abundance(resp.var)
+  ## 1. check args ------------------------------------------------------------
+  args <- .BIOMOD_FormatingData.check.args(resp.name,
+                                           resp.var,
+                                           expl.var,
+                                           dir.name,
+                                           data.type,
+                                           resp.xy,
+                                           eval.resp.var,
+                                           eval.expl.var,
+                                           eval.resp.xy,
+                                           filter.raster)
+  for (argi in names(args)) { assign(x = argi, value = args[[argi]]) }
+  rm(args)
   
-  if (dataAbundance) {
-    out <- BIOMOD.formated.data.abundance(sp = resp.var,
-                                          xy = resp.xy,
-                                          env = expl.var,
-                                          dir.name = dir.name,
-                                          sp.name = resp.name,
-                                          eval.sp = eval.resp.var,
-                                          eval.env = eval.expl.var,
-                                          eval.xy = eval.resp.xy,
-                                          na.rm = na.rm,
-                                          filter.raster = filter.raster)
-  } else {
-    ## 1. check args ------------------------------------------------------------
-    args <- .BIOMOD_FormatingData.check.args(resp.name,
-                                             resp.var,
-                                             expl.var,
-                                             dir.name,
-                                             resp.xy,
-                                             eval.resp.var,
-                                             eval.expl.var,
-                                             eval.resp.xy,
-                                             filter.raster)
-    for (argi in names(args)) { assign(x = argi, value = args[[argi]]) }
-    rm(args)
-    
-    ## 2. build BIOMOD.formated.data object -------------------------------------
-    out <- NULL
-    if (is.null(PA.strategy) || PA.strategy == 'none') { # no Pseudo Absences
-      out <- BIOMOD.formated.data(sp = resp.var,
-                                  xy = resp.xy,
-                                  env = expl.var,
-                                  dir.name = dir.name,
-                                  sp.name = resp.name,
-                                  eval.sp = eval.resp.var,
-                                  eval.env = eval.expl.var,
-                                  eval.xy = eval.resp.xy,
-                                  na.rm = na.rm,
-                                  filter.raster = filter.raster)
-    } else { # automatic Pseudo Absences selection
-      out <- BIOMOD.formated.data.PA(sp = resp.var,
-                                     xy = resp.xy,
-                                     env = expl.var,
-                                     dir.name = dir.name,
-                                     sp.name = resp.name,
-                                     eval.sp = eval.resp.var,
-                                     eval.env = eval.expl.var,
-                                     eval.xy = eval.resp.xy,
-                                     PA.nb.rep = PA.nb.rep,
-                                     PA.strategy = PA.strategy,
-                                     PA.nb.absences = PA.nb.absences,
-                                     PA.dist.min = PA.dist.min,
-                                     PA.dist.max = PA.dist.max,
-                                     PA.sre.quant = PA.sre.quant,
-                                     PA.fact.aggr = PA.fact.aggr,
-                                     PA.user.table = PA.user.table,
-                                     na.rm = na.rm,
-                                     filter.raster = filter.raster,
-                                     seed.val)
-    }
+  ## 2. build BIOMOD.formated.data object -------------------------------------
+  out <- NULL
+  if (is.null(PA.strategy) || PA.strategy == 'none') { # no Pseudo Absences
+    out <- BIOMOD.formated.data(sp = resp.var,
+                                xy = resp.xy,
+                                env = expl.var,
+                                dir.name = dir.name,
+                                sp.name = resp.name,
+                                data.type = data.type,
+                                eval.sp = eval.resp.var,
+                                eval.env = eval.expl.var,
+                                eval.xy = eval.resp.xy,
+                                na.rm = na.rm,
+                                filter.raster = filter.raster)
+  } else { # automatic Pseudo Absences selection
+    out <- BIOMOD.formated.data.PA(sp = resp.var,
+                                   xy = resp.xy,
+                                   env = expl.var,
+                                   dir.name = dir.name,
+                                   sp.name = resp.name,
+                                   eval.sp = eval.resp.var,
+                                   eval.env = eval.expl.var,
+                                   eval.xy = eval.resp.xy,
+                                   PA.nb.rep = PA.nb.rep,
+                                   PA.strategy = PA.strategy,
+                                   PA.nb.absences = PA.nb.absences,
+                                   PA.dist.min = PA.dist.min,
+                                   PA.dist.max = PA.dist.max,
+                                   PA.sre.quant = PA.sre.quant,
+                                   PA.fact.aggr = PA.fact.aggr,
+                                   PA.user.table = PA.user.table,
+                                   na.rm = na.rm,
+                                   filter.raster = filter.raster,
+                                   seed.val)
   }
+  
   .bm_cat("Done")
   return(out)
 }
@@ -429,6 +418,7 @@ BIOMOD_FormatingData <- function(resp.name,
                                              resp.var,
                                              expl.var,
                                              dir.name,
+                                             data.type,
                                              resp.xy,
                                              eval.resp.var,
                                              eval.expl.var,
@@ -449,7 +439,7 @@ BIOMOD_FormatingData <- function(resp.name,
     stop(paste0("Modeling folder '", dir.name, "' does not exist"))
   }
   
-  args <- .BIOMOD.formated.data.check.args(sp = resp.var, env = expl.var, xy = resp.xy
+  args <- .BIOMOD.formated.data.check.args(sp = resp.var, env = expl.var, data.type = data.type, xy = resp.xy
                                            , eval.sp = eval.resp.var, eval.env = eval.expl.var
                                            , eval.xy = eval.resp.xy, filter.raster = filter.raster)
   
@@ -458,6 +448,7 @@ BIOMOD_FormatingData <- function(resp.name,
               resp.xy = args$xy,
               resp.name = resp.name,
               dir.name = dir.name,
+              data.type = data.type,
               eval.resp.var = args$eval.sp,
               eval.expl.var = args$eval.env,
               eval.resp.xy = args$eval.xy))

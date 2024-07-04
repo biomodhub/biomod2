@@ -249,20 +249,6 @@ setMethod('get_species_data', signature('BIOMOD.formated.data.PA'), function(obj
   return(tab.sp)
 })
 
-## get_species_data.BIOMOD.formated.data.abundance ------------------------------------------------
-##' 
-##' @rdname getters.out
-##' @export
-##' 
-
-setMethod('get_species_data', signature('BIOMOD.formated.data.abundance'), function(obj) {
-  tab.sp <- data.frame(obj@data.species)
-  tab.sp <- cbind(tab.sp, obj@coord)
-  colnames(tab.sp) <- c(obj@sp.name, "x", "y")
-  tab.sp <- cbind(tab.sp, obj@data.env.var)
-  return(tab.sp)
-})
-
 
 ## get_eval_data.BIOMOD.formated.data ---------------------------------------------------
 ##' 
@@ -281,21 +267,6 @@ setMethod('get_eval_data', signature('BIOMOD.formated.data'), function(obj) {
 })
 
 
-## get_eval_data.BIOMOD.formated.data.abundance ---------------------------------------------------
-##' 
-##' @rdname getters.out
-##' @export
-##' 
-
-setMethod('get_eval_data', signature('BIOMOD.formated.data.abundance'), function(obj) {
-  if (obj@has.data.eval) {
-    tab.sp <- data.frame(obj@eval.data.species)
-    tab.sp <- cbind(tab.sp, obj@eval.coord)
-    colnames(tab.sp) <- c(obj@sp.name, "x", "y")
-    tab.sp <- cbind(tab.sp, obj@eval.data.env.var)
-    return(tab.sp)
-  } else { return(NULL) }
-})
 
 ## -------------------------------------------------------------------------- #
 ## 4. BIOMOD.models.out -----------------------------------------------------

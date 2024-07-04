@@ -119,15 +119,7 @@ setClass("BIOMOD.stored.formated.data",
          validity = function(object){ return(TRUE) })
 
 
-### BIOMOD.stored.formated.data.abundance ------------------------------------------------
-##' @name BIOMOD.stored.formated.data.abundance-class
-##' @rdname BIOMOD.stored.data
-##' 
-setClass("BIOMOD.stored.formated.data",
-         contains = "BIOMOD.stored.data",
-         representation(val = 'BIOMOD.formated.data.abundance'),
-         prototype(val = NULL),
-         validity = function(object){ return(TRUE) })
+
 
 ### BIOMOD.stored.options -----------------------------------------------------
 ##' @name BIOMOD.stored.options-class
