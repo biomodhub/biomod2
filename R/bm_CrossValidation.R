@@ -797,10 +797,10 @@ setMethod('bm_CrossValidation_block', signature(bm.format = "BIOMOD.formated.dat
             tmp[ind.NA] <- 0
             
             tab.coord <- bm.format@coord
-            blocks <- ENMeval::get.block(tab.coord[tmp >= 1, ], tab.coord[tmp == 0, ])
+            blocks <- ENMeval::get.block(tab.coord[tmp > 0, ], tab.coord[tmp == 0, ])
             calib.lines <- matrix(NA, nrow = length(tmp), ncol = 4)
             for (i in 1:4) {
-              calib.lines[tmp >= 1, i] <- blocks[[1]] != i
+              calib.lines[tmp > 0, i] <- blocks[[1]] != i
               calib.lines[tmp == 0, i] <- blocks[[2]] != i     
             }
             colnames(calib.lines) <- paste0('_RUN', 1:ncol(calib.lines))

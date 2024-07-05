@@ -620,6 +620,19 @@ setMethod('plot', signature(x = 'BIOMOD.formated.data', y = "missing"),
             for (argi in names(args)) { assign(x = argi, value = args[[argi]]) }
             rm(args)
             
+            if (x@data.type != "binary"){
+              plot_abundance <- .plot.BIOMOD.formated.data.abundance(x = x,
+                                                   calib.lines = calib.lines,
+                                                   plot.type = plot.type,
+                                                   plot.output = plot.output, 
+                                                   run = run,
+                                                   plot.eval = plot.eval,
+                                                   point.size = point.size,
+                                                   do.plot = do.plot,
+                                                   has.mask = has.mask,
+                                                   has.mask.eval = has.mask.eval)
+              return(plot_abundance)
+            }
             
             # 1 - extract SpatVector for all required data ----------------------
             

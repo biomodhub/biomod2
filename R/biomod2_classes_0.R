@@ -423,7 +423,7 @@ setMethod('BIOMOD.options.dataset', signature(strategy = 'character'),
             
             argstmp <- BOM@args.default
             
-            argstmp <- .bm_adaptation.data.type(data.type = typ, mod = mod, argstmp = argstmp)
+            argstmp <- .bm_adaptation.data.type(data.type = typ, mod = mod, argstmp = argstmp, pkg = pkg)
             
             BOM@args.default <- argstmp
             ## SHOULD BE MOVED to place when testing values !! ??
@@ -660,7 +660,7 @@ setMethod('print', signature('BIOMOD.models.options'),
 
 ### Adapatation to each data.type 
 
-.bm_adaptation.data.type <- function(data.type, mod, argstmp) {
+.bm_adaptation.data.type <- function(data.type, mod, argstmp, pkg) {
   
   if (data.type == "binary"){
     RFtype <- "classification"
