@@ -439,7 +439,11 @@ BIOMOD_FormatingData <- function(resp.name,
     stop(paste0("Modeling folder '", dir.name, "' does not exist"))
   }
   
-  args <- .BIOMOD.formated.data.check.args(sp = resp.var, env = expl.var, data.type = data.type, xy = resp.xy
+  # args <- .BIOMOD.formated.data.check.args(sp = resp.var, env = expl.var, data.type = data.type, xy = resp.xy
+  #                                          , eval.sp = eval.resp.var, eval.env = eval.expl.var
+  #                                          , eval.xy = eval.resp.xy, filter.raster = filter.raster)
+  
+  args <- list(sp = resp.var, env = expl.var, data.type = data.type, xy = resp.xy
                                            , eval.sp = eval.resp.var, eval.env = eval.expl.var
                                            , eval.xy = eval.resp.xy, filter.raster = filter.raster)
   

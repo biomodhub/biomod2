@@ -223,6 +223,7 @@ BIOMOD_Projection <- function(bm.mod,
                   models.projected = models.chosen,
                   scale.models = bm.mod@scale.models,
                   coord = new.env.xy,
+                  data.type = bm.mod@data.type,
                   modeling.id = bm.mod@modeling.id)
   proj_out@models.out@link = bm.mod@link
   
@@ -368,7 +369,7 @@ BIOMOD_Projection <- function(bm.mod,
   }
   
   ## 5. Compute binary and/or filtered transformation ---------------------------------------------
-  if (!is.null(metric.binary) | !is.null(metric.filter)) {
+  if ((!is.null(metric.binary) | !is.null(metric.filter)) & bm.mod@data.type == "binary" ) {
     cat("\n")
     saved.files.binary <- NULL
     saved.files.filtered <- NULL
@@ -653,6 +654,10 @@ BIOMOD_Projection <- function(bm.mod,
     do.stack <- TRUE
   }
   
+  ## 10.on_0_1000 --------------------------------
+  
+  on_0_1000 <- ifelse(is.null(args$on_0_1000), TRUE, args$on_0_1000)
+  if (bm.mod@data.type != "binary") {on_0_1000 <- FALSE}
   
   
   return(list(proj.name = proj.name,
@@ -667,7 +672,7 @@ BIOMOD_Projection <- function(bm.mod,
               omit.na = ifelse(is.null(args$omit.na), TRUE, args$omit.na),
               do.stack = do.stack,
               keep.in.memory = ifelse(is.null(args$keep.in.memory), TRUE, args$keep.in.memory),
-              on_0_1000 = ifelse(is.null(args$on_0_1000), TRUE, args$on_0_1000),
+              on_0_1000 = on_0_1000,
               seed.val = seed.val))
 }
 

@@ -603,7 +603,7 @@
     
     eval.df.vect <- vect(eval.df, geom = c("x","y"))
     names(eval.df.vect) <- "resp"
-    eval.df.vect$dataset <- "Evaluation dataset"
+    eval.df.vect$dataset <- "Initial dataset"
     eval.df.vect$part <- "Evaluation"
     full.df.vect <- rbind(full.df.vect, eval.df.vect)
   }
@@ -633,7 +633,7 @@
         calib.df <- data.frame(resp = calib.resp,
                                x = calib.xy[, 1],
                                y = calib.xy[, 2],
-                               part = "calibration")
+                               part = "Calibration")
         
         if (!is.na(this_run) & this_run != "allRun") { 
           valid.resp <- x@data.species[which(this_valid)]
@@ -643,7 +643,7 @@
           valid.df <- data.frame(resp = valid.resp,
                                  x = valid.xy[, 1],
                                  y = valid.xy[, 2],
-                                 part = "validation")
+                                 part = "Validation")
           calib.df <- rbind(calib.df, valid.df)
         }
         thisdf.vect <- vect(calib.df, geom = c("x","y"))
@@ -656,14 +656,14 @@
   
   
   # 2- define colors and breaks ------------------------------------
-  data_breaks <- c("Initial", "Evaluation", "calibration", "validation")              
+  data_breaks <- c("Initial", "Evaluation", "Calibration", "Validation")              
   data_labels <- data_breaks
-  data_labels_facet <- c("Initial", "Evaluation", "calibration", "validation") # background
+  data_labels_facet <- c("Initial", "Evaluation", "Calibration", "Validation") # background
   
   data_colors <- c("Initial" = "#004488",
                    "Evaluation" = "#994455",
-                   "calibration" = "#997700",
-                   "validation" = "#EECC66")
+                   "Calibration" = "#997700",
+                   "Validation" = "#EECC66")
   
   shape_fit <- 16
   shape_eval <- 17
@@ -760,6 +760,10 @@
     ## 3.2 Points plot --------------------------------------------------------
     
     data.df <- as.data.frame(full.df.vect, geom = "XY")
+    datasets <- unique(data.df$dataset)
+    datasets <- sort(datasets)
+    datasets <- c("Initial dataset", datasets[-length(datasets)])
+    data.df$dataset <- factor(data.df$dataset, datasets)
     
     if(plot.output == "facet"){
       base_g <-  ggplot(data.df)

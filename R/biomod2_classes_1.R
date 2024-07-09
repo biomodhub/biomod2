@@ -179,7 +179,7 @@ setGeneric("BIOMOD.formated.data", def = function(sp, env, ...) { standardGeneri
 
 .BIOMOD.formated.data.check.args <- function(sp, env, data.type = NULL, xy = NULL, eval.sp = NULL, eval.env = NULL
                                              , eval.xy = NULL, filter.raster = FALSE)
-{
+{ 
   ## A.1 Check sp argument --------------------------------------------------------------
   if (inherits(sp, c('Raster','SpatRaster'))) {
     ## sp raster object not supported yet
@@ -254,9 +254,10 @@ setGeneric("BIOMOD.formated.data", def = function(sp, env, ...) { standardGeneri
   
   
   ## DO THE SAME FOR EVALUATION DATA ####################################################
+  
   if (is.null(eval.sp)) {
     cat("\n      ! No data has been set aside for modeling evaluation")
-    evaL.env <- eval.xy <- NULL
+    eval.env <- eval.xy <- NULL
   } else {
     ## B.1 Check eval.sp argument -------------------------------------------------------
     if (inherits(eval.sp, c('Raster', 'SpatRaster'))) {
@@ -339,7 +340,6 @@ setMethod('BIOMOD.formated.data', signature(sp = 'numeric', env = 'data.frame'),
             args <- .BIOMOD.formated.data.check.args(sp, env, data.type, xy, eval.sp, eval.env, eval.xy, filter.raster)
             for (argi in names(args)) { assign(x = argi, value = args[[argi]]) }
             rm(args)
-            
             if (!any(sp == 0, na.rm = TRUE) && !any(is.na(sp))) {
               stop("No absences were given and no pseudo-absences were given or configured, at least one of those option is required.")
             }
@@ -391,7 +391,7 @@ setMethod('BIOMOD.formated.data', signature(sp = 'numeric', env = 'data.frame'),
                 eval.data.env.var = BFDeval@data.env.var
               )
               
-              rm('BFDeval')
+              rm(BFDeval)
             }
             
             ## REMOVE NA IF ANY

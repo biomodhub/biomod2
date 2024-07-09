@@ -744,10 +744,15 @@ BIOMOD_Modeling <- function(bm.format,
   
   ## 7. Check metric.eval arguments -------------------------------------------
   metric.eval <- unique(metric.eval)
-  avail.eval.meth.list <- c('TSS', 'KAPPA', 'ACCURACY', 'BIAS', 'POD', 'FAR', 'POFD'
+  if (bm.format@data.type == "bianry"){
+    avail.eval.meth.list <- c('TSS', 'KAPPA', 'ACCURACY', 'BIAS', 'POD', 'FAR', 'POFD'
                             , 'SR', 'CSI', 'ETS', 'HK', 'HSS', 'OR', 'ORSS', 'ROC'
-                            , 'BOYCE', 'MPA', 'AIC', 'Rsq', 'RMSE')
-  .fun_testIfIn(TRUE, "metric.eval", metric.eval, avail.eval.meth.list)
+                            , 'BOYCE', 'MPA')
+  } else {
+    avail.eval.meth.list <- c('AIC', 'Rsq', 'RMSE')
+  }
+  
+  .fun_testIfIn(TRUE, paste0("metric.eval with ", bm.format@data.type, " data type"), metric.eval, avail.eval.meth.list)
   
   
   if (!is.null(seed.val)) {

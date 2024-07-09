@@ -773,6 +773,7 @@ setClass("BIOMOD.projection.out",
                         models.projected = 'character',
                         models.out = 'BIOMOD.stored.data',
                         type = 'character',
+                        data.type = 'character',
                         proj.out = 'BIOMOD.stored.data'),
          prototype(modeling.id = '',
                    proj.name = '',
@@ -782,7 +783,8 @@ setClass("BIOMOD.projection.out",
                    coord = data.frame(),
                    scale.models = TRUE,
                    models.projected = '',
-                   type = ''),
+                   type = '',
+                   data.type = "binary"),
          validity = function(object){ return(TRUE) })
 
 
@@ -826,7 +828,8 @@ setMethod(
     ### Plot SpatRaster ---------------------------------------------------------
     
     if (inherits(proj,"SpatRaster")) {
-      maxi <- ifelse(max(global(proj, "max", na.rm = TRUE)$max) > 1, 1000, 1) 
+      maxi <- ifelse(max(global(proj, "max", na.rm = TRUE)$max) > 1, 1000, 1)
+      if (x@data.type != "binary") {maxi <- max(global(proj, "max", na.rm = TRUE)$max)}
       if (std) {
         limits <-  c(0,maxi)
       } else {
