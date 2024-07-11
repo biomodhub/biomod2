@@ -34,20 +34,20 @@
 ModelsTable <- data.frame(model = c('ANN', 'CTA', 'FDA', 'GAM', 'GAM', 'GAM', 'GBM', 'GLM'
                                      , 'MARS', 'MAXENT', 'MAXNET', 'RF','RFd', 'SRE', 'XGBOOST', 
                                     'CTA', 'FDA', 'GAM', 'GAM', 'GAM', 'GBM', 'GLM'
-                                    , 'MARS', 'RF','RFd', 'XGBOOST')
-                           , type = c(rep('binary',15), rep('abundance',11))
+                                    , 'MARS', 'RF', 'XGBOOST')
+                           , type = c(rep('binary',15), rep('nonbinary',10))
                            , package = c('nnet', 'rpart', 'mda', 'gam', 'mgcv', 'mgcv', 'gbm', 'stats'
                                          , 'earth', 'MAXENT', 'maxnet', 'randomForest','randomForest', 'biomod2', 'xgboost', 
                                          'rpart', 'mda', 'gam', 'mgcv', 'mgcv', 'gbm', 'stats'
-                                         , 'earth', 'randomForest','randomForest', 'xgboost')
+                                         , 'earth', 'randomForest', 'xgboost')
                            , func = c('nnet', 'rpart', 'fda', 'gam', 'bam', 'gam', 'gbm', 'glm'
                                       , 'earth', 'MAXENT', 'maxnet', 'randomForest','randomForest', 'bm_SRE', 'xgboost',
                                       'rpart', 'fda', 'gam', 'bam', 'gam', 'gbm', 'glm'
-                                      , 'earth', 'randomForest','randomForest', 'xgboost')
+                                      , 'earth', 'randomForest', 'xgboost')
                            , train = c('avNNet', 'rpart', 'fda', 'gamLoess', 'bam', 'gam', 'gbm', 'glm'
                                        , 'earth', 'ENMevaluate', 'maxnet', 'rf','rf', 'bm_SRE', 'xgbTree',
                                        'rpart', 'fda', 'gamLoess', 'bam', 'gam', 'gbm', 'glm'
-                                       , 'earth', 'rf','rf', 'xgbTree'))
+                                       , 'earth', 'rf', 'xgbTree'))
 
 # usethis::use_data(ModelsTable, overwrite = TRUE)
 # usethis::use_data(ModelsTable, overwrite = TRUE, internal = TRUE)
@@ -218,6 +218,43 @@ ModelsTable <- data.frame(model = c('ANN', 'CTA', 'FDA', 'GAM', 'GAM', 'GAM', 'G
 # bm.opt@options$XGBOOST.binary.xgboost.xgboost@args.values[['_allData_allRun']]$nthread = 2
 # bm.opt@options$XGBOOST.binary.xgboost.xgboost@args.values[['_allData_allRun']]$nrounds = 4
 # bm.opt@options$XGBOOST.binary.xgboost.xgboost@args.values[['_allData_allRun']]$objective = "binary:logistic"
+# 
+# #Nonbinary part
+# bm.opt.nonbinary <- bm_ModelingOptions(data.type = "nonbinary", strategy = "default")
+# bm.opt@models <- sort(unique(c(bm.opt@models, bm.opt.nonbinary@models)))
+# bm.opt@options <- c(bm.opt@options, bm.opt.nonbinary@options)
+# 
+# bm.opt@options$CTA.nonbinary.rpart.rpart@args.values[['_allData_allRun']]$control = list(xval = 5, minbucket = 5, minsplit = 5, cp = 0.001, maxdepth = 10)
+# bm.opt@options$CTA.nonbinary.rpart.rpart@args.values[['_allData_allRun']]$cost = NULL
+# bm.opt@options$FDA.nonbinary.mda.fda@args.values[['_allData_allRun']]$method = "polyreg"
+# bm.opt@options$GAM.nonbinary.mgcv.gam@args.values[['_allData_allRun']]$method = "GCV.Cp"
+# bm.opt@options$GAM.nonbinary.mgcv.gam@args.values[['_allData_allRun']]$control = list(epsilon = 1e-06, trace = FALSE, maxit = 100)
+# bm.opt@options$GBM.nonbinary.gbm.gbm@args.values[['_allData_allRun']]$n.trees = 2500
+# bm.opt@options$GBM.nonbinary.gbm.gbm@args.values[['_allData_allRun']]$interaction.depth = 7
+# bm.opt@options$GBM.nonbinary.gbm.gbm@args.values[['_allData_allRun']]$n.minobsinnode = 5
+# bm.opt@options$GBM.nonbinary.gbm.gbm@args.values[['_allData_allRun']]$shrinkage = 0.001
+# bm.opt@options$GBM.nonbinary.gbm.gbm@args.values[['_allData_allRun']]$cv.folds = 3
+# bm.opt@options$GBM.nonbinary.gbm.gbm@args.values[['_allData_allRun']]$keep.data = FALSE
+# bm.opt@options$GBM.nonbinary.gbm.gbm@args.values[['_allData_allRun']]$n.cores = 1
+# bm.opt@options$GLM.nonbinary.stats.glm@args.values[['_allData_allRun']]$mustart = 0.5
+# bm.opt@options$GLM.nonbinary.stats.glm@args.values[['_allData_allRun']]$control = glm.control(maxit = 50)
+# bm.opt@options$MARS.nonbinary.earth.earth@args.values[['_allData_allRun']]$ncross = 0
+# bm.opt@options$MARS.nonbinary.earth.earth@args.values[['_allData_allRun']]$nk = NULL
+# bm.opt@options$MARS.nonbinary.earth.earth@args.values[['_allData_allRun']]$penalty = 2
+# bm.opt@options$MARS.nonbinary.earth.earth@args.values[['_allData_allRun']]$thresh = 0.001
+# bm.opt@options$MARS.nonbinary.earth.earth@args.values[['_allData_allRun']]$nprune = NULL
+# bm.opt@options$MARS.nonbinary.earth.earth@args.values[['_allData_allRun']]$pmethod = 'backward'
+# bm.opt@options$RF.nonbinary.randomForest.randomForest@args.values[['_allData_allRun']]$ntree = 500
+# bm.opt@options$RF.nonbinary.randomForest.randomForest@args.values[['_allData_allRun']]$mtry = 2
+# bm.opt@options$RF.nonbinary.randomForest.randomForest@args.values[['_allData_allRun']]$sampsize = NULL
+# bm.opt@options$RF.nonbinary.randomForest.randomForest@args.values[['_allData_allRun']]$nodesize = 5
+# bm.opt@options$RF.nonbinary.randomForest.randomForest@args.values[['_allData_allRun']]$maxnodes = NULL
+# bm.opt@options$XGBOOST.nonbinary.xgboost.xgboost@args.values[['_allData_allRun']]$params = list(max_depth = 2, eta = 1)
+# bm.opt@options$XGBOOST.nonbinary.xgboost.xgboost@args.values[['_allData_allRun']]$nthread = 2
+# bm.opt@options$XGBOOST.nonbinary.xgboost.xgboost@args.values[['_allData_allRun']]$nrounds = 4
+
+
+
 # OptionsBigboss <- bm.opt
 
 # usethis::use_data(OptionsBigboss, overwrite = TRUE, internal = T)

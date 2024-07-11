@@ -209,7 +209,7 @@ setGeneric("BIOMOD.formated.data", def = function(sp, env, ...) { standardGeneri
   ## Check data.type
   presumed.data.type = .which.data.type(sp)
   if (!is.null(data.type)){
-    if (presumed.data.type != "data.type"){
+    if (presumed.data.type != data.type){
       cat("\n\t The data.type doesn't seem to correspond to your data. It will be switch to", presumed.data.type)
       data.type <- presumed.data.type
     }
@@ -366,6 +366,7 @@ setMethod('BIOMOD.formated.data', signature(sp = 'numeric', env = 'data.frame'),
                 env = eval.env,
                 xy = eval.xy,
                 dir.name = dir.name,
+                data.type = data.type,
                 sp.name = sp.name,
                 filter.raster = filter.raster
               )

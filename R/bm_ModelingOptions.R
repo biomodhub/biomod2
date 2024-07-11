@@ -263,16 +263,18 @@ bm_ModelingOptions <- function(data.type
   ## Load single models informations
   # data(ModelsTable) # internal data is already readily available
   
+  data.type.ModelsTable <- ifelse(data.type == "binary", "binary", "nonbinary")
+  
   ## 1. Get options -------------------------------------------------------------------------------
   bm.opt <- foreach(model = models, .combine = "c") %do% {
       ## Select model / package / function to keep
       if (length(grep("GAM", model)) == 1) {
-        tab.model <- ModelsTable[which(ModelsTable$model == "GAM" & ModelsTable$type == data.type &
+        tab.model <- ModelsTable[which(ModelsTable$model == "GAM" & ModelsTable$type == data.type.ModelsTable &
                                          ModelsTable$package == strsplit(model, "[.]")[[1]][2] & 
                                          ModelsTable$func == strsplit(model, "[.]")[[1]][3]), ]
         model = "GAM"
       } else {
-        tab.model <- ModelsTable[which(ModelsTable$model == model & ModelsTable$type == data.type), ]
+        tab.model <- ModelsTable[which(ModelsTable$model == model & ModelsTable$type == data.type.ModelsTable), ]
       }
       if (nrow(tab.model) > 0) {
         ## For each kept model : get corresponding options
@@ -319,7 +321,7 @@ bm_ModelingOptions <- function(data.type
            , user.val = NULL, user.base = NULL
            , bm.format = NULL, calib.lines = NULL) {
     ## check if type is supported
-    avail.types.list <- c('binary', 'binary.PA', 'abundance', 'count')
+    avail.types.list <- c('binary', 'binary.PA', 'abundance', 'count', 'nonbinary')
     .fun_testIfIn(TRUE, "data.type", data.type, avail.types.list)
     
     ## check if model is supported

@@ -693,7 +693,7 @@ BIOMOD_Modeling <- function(bm.format,
   
   ## 6. Check weights arguments -----------------------------------------------
   if (is.null(weights)) {
-    if (!is.null(prevalence)) {
+    if (!is.null(prevalence) & bm.format@data.type == "binary") {
       cat("\n\t> Automatic weights creation to rise a", prevalence, "prevalence")
       data.sp <- as.numeric(bm.format@data.species)
       if (inherits(bm.format, "BIOMOD.formated.data.PA")) {
@@ -717,10 +717,10 @@ BIOMOD_Modeling <- function(bm.format,
         colnames(weights) <- "allData"
       }
     }
-    # else { ## NEVER OCCURRING NO ??
-    #   cat("\n\t> No weights : all observations will have the same weight")
-    #   weights <- rep(1, length(bm.format@data.species))
-    # }
+    else { ## NEVER OCCURRING NO ?? --> now happen with the abundance
+      cat("\n\t> No weights : all observations will have the same weight\n")
+      #weights <- rep(1, length(bm.format@data.species))
+    }
   } else {
     if (!is.numeric(weights)) { stop("weights must be a numeric vector") }
     if (length(weights) != length(bm.format@data.species)) {
@@ -744,7 +744,7 @@ BIOMOD_Modeling <- function(bm.format,
   
   ## 7. Check metric.eval arguments -------------------------------------------
   metric.eval <- unique(metric.eval)
-  if (bm.format@data.type == "bianry"){
+  if (bm.format@data.type == "binary"){
     avail.eval.meth.list <- c('TSS', 'KAPPA', 'ACCURACY', 'BIAS', 'POD', 'FAR', 'POFD'
                             , 'SR', 'CSI', 'ETS', 'HK', 'HSS', 'OR', 'ORSS', 'ROC'
                             , 'BOYCE', 'MPA')

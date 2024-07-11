@@ -960,10 +960,15 @@ BIOMOD_EnsembleModeling <- function(bm.mod,
   
   ## 7. Check metric.eval -----------------------------------------------------
   metric.eval <- unique(metric.eval)
-  avail.eval.meth.list <- c('TSS', 'KAPPA', 'ACCURACY', 'BIAS', 'POD', 'FAR', 'POFD'
-                            , 'SR', 'CSI', 'ETS', 'HK', 'HSS', 'OR', 'ORSS', 'ROC'
-                            , 'BOYCE', 'MPA')
-  .fun_testIfIn(TRUE, "metric.eval", metric.eval, avail.eval.meth.list)
+  if (bm.mod@data.type == "binary"){
+    avail.eval.meth.list <- c('TSS', 'KAPPA', 'ACCURACY', 'BIAS', 'POD', 'FAR', 'POFD'
+                              , 'SR', 'CSI', 'ETS', 'HK', 'HSS', 'OR', 'ORSS', 'ROC'
+                              , 'BOYCE', 'MPA')
+  } else {
+    avail.eval.meth.list <- c('AIC', 'Rsq', 'RMSE')
+  }
+  
+  .fun_testIfIn(TRUE, paste0("metric.eval with ", bm.format@data.type, " data type"), metric.eval, avail.eval.meth.list)
   
   ## 8. Check selected EM algo ------------------------------------------------
   

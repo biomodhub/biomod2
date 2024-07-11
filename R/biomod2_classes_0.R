@@ -79,7 +79,7 @@ setGeneric("BIOMOD.options.default", def = function(mod, typ, pkg, fun) { standa
   .fun_testIfIn(TRUE, "mod", mod, avail.models.list)
   
   ## check if type is supported
-  avail.types.list <- c('binary', 'binary.PA', 'abundance', 'count')
+  avail.types.list <- c('binary', 'binary.PA', 'abundance', 'count', 'nonbinary')
   .fun_testIfIn(TRUE, "typ", typ, avail.types.list)
   
   if (mod != 'MAXENT') {
@@ -451,8 +451,9 @@ setMethod('BIOMOD.options.dataset', signature(strategy = 'character'),
             if (strategy %in% c("default", "bigboss") || (strategy == "user.defined" && user.base == "bigboss")) {
               if (strategy == "bigboss" || (strategy == "user.defined" && user.base == "bigboss")) {
                 # data(OptionsBigboss) # internal data is readily available
+                typ.bigboss <- ifelse(typ == "binary", "binary", "nonbinary")
                 
-                val <- OptionsBigboss@options[[paste0(c(mod, typ, pkg, fun), collapse = ".")]]@args.values[['_allData_allRun']]
+                val <- OptionsBigboss@options[[paste0(c(mod, typ.bigboss, pkg, fun), collapse = ".")]]@args.values[['_allData_allRun']]
                 for (ii in names(val)) {
                   if (ii != "formula") { argstmp[[ii]] <- val[[ii]] }
                 }
@@ -667,11 +668,13 @@ setMethod('print', signature('BIOMOD.models.options'),
     family <- binomial(link = 'logit')
     CTAmethod <- "class"
     GBMdistribution <- "bernoulli"
+    FDAmethod <- "mars"
   } else {
     RFtype <- "regression"
     family <- gaussian(link = 'identity')
     CTAmethod <- "poisson"
     GBMdistribution <- "gaussian"
+    FDAmethod <- "polyreg"
   }
   
   if (mod == "ANN") { 
@@ -682,6 +685,7 @@ setMethod('print', signature('BIOMOD.models.options'),
   if (mod == "FDA") {
     argstmp$dimension = NULL
     argstmp$keep.fitted = NULL
+    argstmp$method = FDAmethod
   }
   if (mod == "GAM") {
     argstmp[["x"]] = NULL

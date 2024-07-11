@@ -475,7 +475,7 @@ setMethod('predict2', signature(object = 'CTA_biomod2_model', newdata = "SpatRas
           function(object, newdata, ...) {
             data.type <- object@model_type
             type = 'prob'
-            if(data.type == "abundance") {type = "matrix"}
+            if(data.type != "binary") {type = "matrix"}
             predfun <- function(object, newdata, mod.name){
               proj <- 
                 subset(predict(newdata,
@@ -495,7 +495,7 @@ setMethod('predict2', signature(object = 'CTA_biomod2_model', newdata = "data.fr
           function(object, newdata, ...) {
             data.type <- object@model_type
             type = 'prob'
-            if(data.type == "abundance") {type = "matrix"}
+            if(data.type != "binary") {type = "matrix"}
             predfun <- function(object, newdata, not_na_rows){
               as.numeric(predict(get_formal_model(object), as.data.frame(newdata[not_na_rows, , drop = FALSE]), type = type)[, 2])
             }
