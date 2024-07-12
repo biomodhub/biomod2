@@ -264,7 +264,8 @@ BIOMOD_EnsembleForecasting <- function(bm.em,
                   expl.var.names = bm.em@expl.var.names,
                   models.projected = models.chosen,
                   coord = new.env.xy,
-                  modeling.id = bm.em@modeling.id)
+                  modeling.id = bm.em@modeling.id,
+                  data.type = bm.em@data.type)
   proj_out@models.out@link = bm.em@link
   
   proj_is_raster <- FALSE
@@ -390,7 +391,7 @@ BIOMOD_EnsembleForecasting <- function(bm.em,
   
   
   ## 5. Compute binary and/or filtered transformation ---------------------------------------------
-  if (length(metric.binary) > 0 | length(metric.filter) > 0)
+  if ((length(metric.binary) > 0 | length(metric.filter ) > 0) & bm.em@data.type == "binary")
   {
     cat("\n")
     saved.files.binary <- NULL
@@ -627,27 +628,33 @@ BIOMOD_EnsembleForecasting <- function(bm.em,
   
   ## 6. Check metric.binary & metric.filter -----------------------------------
   if (!is.null(metric.binary) | !is.null(metric.filter)) {
-    models.evaluation <- get_evaluations(bm.em)
-    if (is.null(models.evaluation)) {
-      warning("Binary and/or Filtered transformations of projection not ran because of models evaluation information missing")
+    if ( bm.em@data.type != "binary"){
+      cat ("No metric.binary or metric.filter are needed with",bm.em@data.type, "data")
+      metric.binary <- NULL
+      metric.filter <- NULL
     } else {
-      available.evaluation <- as.character(unique(models.evaluation$metric.eval))
-      if (!is.null(metric.binary) && metric.binary[1] == 'all') {
-        metric.binary <- available.evaluation
-      } else if (!is.null(metric.binary) && 
-                 any(! metric.binary %in% available.evaluation)) {
-        warning(paste0(toString(metric.binary[!(metric.binary %in% available.evaluation)]),
-                       " Binary Transformation were switched off because no corresponding evaluation method found"))
-        metric.binary <- metric.binary[metric.binary %in% available.evaluation]
-      }
-      
-      if (!is.null(metric.filter) && metric.filter[1] == 'all') {
-        metric.filter <- available.evaluation
-      } else if (!is.null(metric.filter) &&
-                 any(!(metric.filter %in% available.evaluation))) {
-        warning(paste0(toString(metric.filter[!(metric.filter %in% available.evaluation)]),
-                       " Filtered Transformation were switched off because no corresponding evaluation method found"))
-        metric.filter <- metric.filter[metric.filter %in% available.evaluation]
+      models.evaluation <- get_evaluations(bm.em)
+      if (is.null(models.evaluation)) {
+        warning("Binary and/or Filtered transformations of projection not ran because of models evaluation information missing")
+      } else {
+        available.evaluation <- as.character(unique(models.evaluation$metric.eval))
+        if (!is.null(metric.binary) && metric.binary[1] == 'all') {
+          metric.binary <- available.evaluation
+        } else if (!is.null(metric.binary) && 
+                   any(! metric.binary %in% available.evaluation)) {
+          warning(paste0(toString(metric.binary[!(metric.binary %in% available.evaluation)]),
+                         " Binary Transformation were switched off because no corresponding evaluation method found"))
+          metric.binary <- metric.binary[metric.binary %in% available.evaluation]
+        }
+        
+        if (!is.null(metric.filter) && metric.filter[1] == 'all') {
+          metric.filter <- available.evaluation
+        } else if (!is.null(metric.filter) &&
+                   any(!(metric.filter %in% available.evaluation))) {
+          warning(paste0(toString(metric.filter[!(metric.filter %in% available.evaluation)]),
+                         " Filtered Transformation were switched off because no corresponding evaluation method found"))
+          metric.filter <- metric.filter[metric.filter %in% available.evaluation]
+        }
       }
     }
   }
@@ -696,6 +703,12 @@ BIOMOD_EnsembleForecasting <- function(bm.em,
   
   ## 11. Check na.rm ------------------------------------------------------
   stopifnot(is.logical(na.rm))
+  
+  
+  ## 12.on_0_1000 --------------------------------
+  
+  on_0_1000 <- ifelse(is.null(args$on_0_1000), TRUE, args$on_0_1000)
+  if (bm.em@data.type != "binary") {on_0_1000 <- FALSE}
   
   return(list(bm.em = bm.em,
               bm.proj = bm.proj,

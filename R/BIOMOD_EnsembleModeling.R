@@ -435,7 +435,8 @@ BIOMOD_EnsembleModeling <- function(bm.mod,
             modeling.id = bm.mod@modeling.id,
             dir.name = bm.mod@dir.name,
             sp.name = bm.mod@sp.name,
-            expl.var.names = bm.mod@expl.var.names)
+            expl.var.names = bm.mod@expl.var.names,
+            data.type = bm.mod@data.type)
   EM@models.out@link <- bm.mod@link
   EM@em.by = em.by
   
@@ -577,6 +578,9 @@ BIOMOD_EnsembleModeling <- function(bm.mod,
             ### Standardise model weights
             models.kept.scores.tmp <- round(models.kept.scores.tmp / sum(models.kept.scores.tmp, na.rm = TRUE)
                                             , digits = 3)
+            if (eval.m %in% c("RMSE","AIC")){
+              models.kept.scores.tmp <- rev(models.kept.scores.tmp)
+            }
             cat("\n\t\t", " final models weights = ", models.kept.scores.tmp)
           }
           
@@ -586,6 +590,7 @@ BIOMOD_EnsembleModeling <- function(bm.mod,
                           model = models.kept.tmp,
                           model_name = model_name,
                           model_class = algo.class,
+                          model_type = bm.mod@data.type,
                           dir_name = bm.mod@dir.name,
                           resp_name = bm.mod@sp.name,
                           expl_var_names = bm.mod@expl.var.names,
@@ -673,25 +678,43 @@ BIOMOD_EnsembleModeling <- function(bm.mod,
                 if (length(which(eval.lines == TRUE)) < length(pred.bm)) {
                   ## CALIBRATION & VALIDATION LINES -------------------------------------------------
                   cross.validation <- foreach(xx = metric.eval, .combine = "rbind") %do% {
-                    bm_FindOptimStat(metric.eval = xx,
-                                     obs = obs[!eval.lines],
-                                     fit = pred.bm[!eval.lines])
+                    if (bm.mod@data.type == 'binary'){
+                      bm_FindOptimStat(metric.eval = xx,
+                                       obs = obs[!eval.lines],
+                                       fit = pred.bm[!eval.lines])
+                    }
+                    else {bm_EvalAbundanceModel(metric.eval = xx, bm.mod = model.bm,
+                                                obs = obs[!eval.lines],
+                                                fit = pred.bm[!eval.lines])}
+                    
+                    
                   }
                   colnames(cross.validation)[which(colnames(cross.validation) == "best.stat")] <- "calibration"
                   
                   stat.validation <- foreach(xx = metric.eval, .combine = "rbind") %do% {
-                    bm_FindOptimStat(metric.eval = xx,
-                                     obs = obs[eval.lines],
-                                     fit = pred.bm[eval.lines],
-                                     threshold = cross.validation["cutoff", xx])
+                    if (bm.mod@data.type == 'binary'){
+                      bm_FindOptimStat(metric.eval = xx,
+                                       obs = obs[eval.lines],
+                                       fit = pred.bm[eval.lines],
+                                       threshold = cross.validation["cutoff", xx])
+                    }
+                    else {bm_EvalAbundanceModel(metric.eval = xx, bm.mod = model.bm,
+                                                obs = obs[eval.lines],
+                                                fit = pred.bm[eval.lines])}
                   }
                   cross.validation$validation <- stat.validation$best.stat
                 } else {
                   ## NO VALIDATION LINES -----------------------------------------------------
                   cross.validation <- foreach(xx = metric.eval, .combine = "rbind") %do% {
-                    bm_FindOptimStat(metric.eval = xx,
-                                     obs = obs[eval.lines],
-                                     fit = pred.bm[eval.lines])
+                    if (bm.mod@data.type == 'binary'){
+                      bm_FindOptimStat(metric.eval = xx,
+                                       obs = obs[eval.lines],
+                                       fit = pred.bm[eval.lines])
+                    }
+                    else {bm_EvalAbundanceModel(metric.eval = xx, bm.mod = model.bm,
+                                                obs = obs[eval.lines],
+                                                fit = pred.bm[eval.lines])}
+
                   }
                   colnames(cross.validation)[which(colnames(cross.validation) == "best.stat")] <- "calibration"
                   cross.validation$validation <- NA
@@ -864,6 +887,10 @@ BIOMOD_EnsembleModeling <- function(bm.mod,
       em.algo <- em.algo[-which(testCI)]
       em.algo <- c(em.algo, 'EMciInf', 'EMciSup')
     }
+    if (bm.mod@data.type != "binary" & 'EMca' %in% em.algo){
+      cat ("\n\t EMca is not available with",bm.mod@data.type, "data")
+      em.algo <- em.algo[-which(em.algo == "EMca")]
+    }
   }
   
   em.algo.long <- c('EMmean' = 'Mean of probabilities', 
@@ -946,8 +973,20 @@ BIOMOD_EnsembleModeling <- function(bm.mod,
         stop("you must specify as many metric.select.thresh as metric.select (if you specify some)")
       }
       cat("\n   > Evaluation & Weighting methods summary :\n")
-      cat(paste(metric.select, metric.select.thresh, sep = " over ", collapse = "\n      ")
-          , fill = TRUE, labels = "     ")
+      if ("RMSE" %in% metric.select | "AIC" %in% metric.select){
+        metric.select.over <- metric.select[-which(metric.select == "AIC" | metric.select == "RMSE")]
+        metric.select.thresh.over <- metric.select.thresh[-which(metric.select == "AIC" | metric.select == "RMSE")]
+        cat(paste(metric.select.over, metric.select.thresh.over, sep = " over ", collapse = "\n      ")
+            , fill = TRUE, labels = "     ")
+        
+        metric.select.under <- metric.select[which(metric.select == "AIC" | metric.select == "RMSE")]
+        metric.select.thresh.under <- metric.select.thresh[which(metric.select == "AIC" | metric.select == "RMSE")]
+        cat(paste(metric.select.under, metric.select.thresh.under, sep = " under the best + ", collapse = "\n      ")
+            , fill = TRUE, labels = "     ")
+      } else {
+        cat(paste(metric.select, metric.select.thresh, sep = " over ", collapse = "\n      ")
+            , fill = TRUE, labels = "     ")
+      }
     } else {
       cat("\n   ! No metric.select.thresh -> All models will be kept for Ensemble Modeling")
       metric.select.thresh <- rep(0, length(metric.select))
@@ -967,8 +1006,7 @@ BIOMOD_EnsembleModeling <- function(bm.mod,
   } else {
     avail.eval.meth.list <- c('AIC', 'Rsq', 'RMSE')
   }
-  
-  .fun_testIfIn(TRUE, paste0("metric.eval with ", bm.format@data.type, " data type"), metric.eval, avail.eval.meth.list)
+  .fun_testIfIn(TRUE, paste0("metric.eval with ", bm.mod@data.type, " data type"), metric.eval, avail.eval.meth.list)
   
   ## 8. Check selected EM algo ------------------------------------------------
   
@@ -1247,8 +1285,14 @@ BIOMOD_EnsembleModeling <- function(bm.mod,
         models.kept.scores[is.na(models.kept.scores)] <- -1
       }
       thresh = metric.select.thresh[which(metric.select == eval.m)]
-      out$models.kept[[eval.m]] <- models.kept[models.kept.scores > thresh]
-      out$models.kept.scores[[eval.m]] <- models.kept.scores[models.kept.scores > thresh]
+      if (eval.m %in% c("RMSE","AIC")){
+        best <- min(models.kept.scores, na.rm = T)
+        out$models.kept[[eval.m]] <- models.kept[models.kept.scores < (best + thresh)]
+        out$models.kept.scores[[eval.m]] <- models.kept.scores[models.kept.scores < (best + thresh)]
+      } else {
+        out$models.kept[[eval.m]] <- models.kept[models.kept.scores > thresh]
+        out$models.kept.scores[[eval.m]] <- models.kept.scores[models.kept.scores > thresh]
+      }
     } else {
       out$models.kept[[eval.m]] <- models.kept
     }
