@@ -324,6 +324,14 @@ bm_ModelingOptions <- function(data.type
     avail.types.list <- c('binary', 'binary.PA', 'abundance', 'count', 'nonbinary')
     .fun_testIfIn(TRUE, "data.type", data.type, avail.types.list)
     
+    ## Check data.type coherence 
+    if (!is.null(bm.format)){
+      if ((bm.format@data.type == "binary" & data.type != "binary")|
+          (bm.format@data.type != "binary" & data.type == "binary")) {
+        stop("\n data.type should match the data.type of your bm.format")
+      }
+    }
+      
     ## check if model is supported
     avail.models.list <- c('ANN', 'CTA', 'FDA', 'GAM', 'GAM.gam.gam', 'GAM.mgcv.bam', 'GAM.mgcv.gam'
                            , 'GBM', 'GLM', 'MARS', 'MAXENT', 'MAXNET', 'RF','RFd', 'SRE', 'XGBOOST')

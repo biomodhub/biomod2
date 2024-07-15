@@ -656,14 +656,15 @@
   
   
   # 2- define colors and breaks ------------------------------------
-  data_breaks <- c("Initial", "Evaluation", "Calibration", "Validation")              
+  data_breaks <- c("Initial", "Evaluation", "Calibration", "Validation","Background")              
   data_labels <- data_breaks
-  data_labels_facet <- c("Initial", "Evaluation", "Calibration", "Validation") # background
+  data_labels_facet <- c("Initial", "Evaluation", "Calibration", "Validation", NA) # background
   
   data_colors <- c("Initial" = "#004488",
                    "Evaluation" = "#994455",
                    "Calibration" = "#997700",
-                   "Validation" = "#EECC66")
+                   "Validation" = "#EECC66",
+                   "1" = "grey70")
   
   shape_fit <- 16
   shape_eval <- 17
@@ -705,7 +706,7 @@
         rasterize(subset(full.df.vect,
                          full.df.vect$dataset == this_dataset), 
                   plot_mask[[this_dataset]],
-                  field = "resp", background = 1)
+                  field = "resp", background = "1")
       names(this_rast) <- this_dataset
       this_rast*this_mask
     }

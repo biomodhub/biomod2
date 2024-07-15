@@ -723,10 +723,15 @@ BIOMOD_EnsembleModeling <- function(bm.mod,
                 
                 if (exists('eval_pred.bm')) {
                   stat.evaluation <- foreach(xx = metric.eval, .combine = "rbind") %do% {
-                    bm_FindOptimStat(metric.eval = xx,
-                                     obs = eval.obs,
-                                     fit = eval_pred.bm * 1000,
-                                     threshold = cross.validation["cutoff", xx])
+                    if (bm.mod@data.type == 'binary'){
+                      bm_FindOptimStat(metric.eval = xx,
+                                       obs = eval.obs,
+                                       fit = eval_pred.bm * 1000,
+                                       threshold = cross.validation["cutoff", xx])
+                    }
+                    else {bm_EvalAbundanceModel(metric.eval = xx, bm.mod = model.bm,
+                                                obs = eval.obs,
+                                                fit = eval_pred.bm)}
                   }
                   cross.validation$evaluation <- stat.evaluation$best.stat
                 } else {

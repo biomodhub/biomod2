@@ -196,6 +196,7 @@ setMethod('predict2', signature(object = 'biomod2_ensemble_model', newdata = "Sp
             sd_prediction <- args$sd_prediction
             mean_prediction <- args$mean_prediction
             side <- args$side
+            data.type <- args$data.type
             # additional arg retrived for EMca
             thresh <- args$thresh
             # additional arg retrived for EMwmean
@@ -214,6 +215,7 @@ setMethod('predict2', signature(object = 'biomod2_ensemble_model', newdata = "Sp
                            mean_prediction = mean_prediction,
                            sd_prediction = sd_prediction, 
                            side = side,
+                           data.type = data.type,
                            thresh = thresh, 
                            penalization_scores = penalization_scores,
                            mod.name = mod.name,
@@ -257,6 +259,7 @@ setMethod('predict2', signature(object = 'biomod2_ensemble_model', newdata = "da
             sd_prediction <- args$sd_prediction
             mean_prediction <- args$mean_prediction
             side <- args$side
+            data.type <- args$data.type
             # additional arg retrived for EMca
             thresh <- args$thresh
             # additional arg retrived for EMwmean
@@ -272,6 +275,7 @@ setMethod('predict2', signature(object = 'biomod2_ensemble_model', newdata = "da
                            mean_prediction = mean_prediction,
                            sd_prediction = sd_prediction,
                            side = side,
+                           data.type = data.type,
                            thresh = thresh, 
                            penalization_scores = penalization_scores,
                            na.rm = na.rm)
@@ -478,6 +482,7 @@ setMethod('predict2', signature(object = 'EMci_biomod2_model', newdata = "SpatRa
               mean_prediction <- args$mean_prediction
               sd_prediction <- args$sd_prediction
               side <- args$side
+              data.type <- args$data.type
 
               if (is.null(mean_prediction)) { 
                 mean_prediction <- app(newdata, mean, wopt = list(names = mod.name),
@@ -494,22 +499,24 @@ setMethod('predict2', signature(object = 'EMci_biomod2_model', newdata = "SpatRa
                 superior = mean_prediction +  (sd_prediction * (qt((1-object@alpha/2), df = length(object@model) + 1 ) / sqrt(length(object@model))) )
               )
               
-              if (on_0_1000) {
-                ci_prediction <- classify(round(ci_prediction),
-                                          matrix(c(-Inf, 0, 0,
-                                                   1000, Inf, 1000),
-                                                 nrow = 2, byrow = TRUE))
-              } else {
-                ci_prediction <- classify(round(ci_prediction),
-                                          matrix(c(-Inf, 0, 0,
-                                                   1, Inf, 1),
-                                                 nrow = 2, byrow = TRUE))     
+              if (data.type == "binary"){
+                if (on_0_1000) {
+                  ci_prediction <- classify(round(ci_prediction),
+                                            matrix(c(-Inf, 0, 0,
+                                                     1000, Inf, 1000),
+                                                   nrow = 2, byrow = TRUE))
+                } else {
+                  ci_prediction <- classify(round(ci_prediction),
+                                            matrix(c(-Inf, 0, 0,
+                                                     1, Inf, 1),
+                                                   nrow = 2, byrow = TRUE))
+                }
               }
               ci_prediction
             } 
             
             # redirect to predict2.biomod2_ensemble_model.SpatRaster
-            callNextMethod(object, newdata, predfun = predfun, side = object@side, ...)
+            callNextMethod(object, newdata, predfun = predfun, side = object@side, data.type = object@model_type, ...)
           }
 )
 
@@ -521,6 +528,7 @@ setMethod('predict2', signature(object = 'EMci_biomod2_model', newdata = "data.f
               mean_prediction <- args$mean_prediction
               sd_prediction <- args$sd_prediction
               side <- args$side
+              data.type <- args$data.type
               on_0_1000 <- args$on_0_1000
               
               if (is.null(mean_prediction)) { 
@@ -535,18 +543,21 @@ setMethod('predict2', signature(object = 'EMci_biomod2_model', newdata = "data.f
                                       superior = mean_prediction +  (sd_prediction * (qt((1-object@alpha/2), df = length(object@model) + 1 ) / sqrt(length(object@model))) ))
               
               # reclassify prediction to prevent from out of bounds prediction
-              if (on_0_1000) {
-                ci_prediction <- round(ci_prediction * 1000)
-                ci_prediction[ci_prediction > 1000] <- 1000
-                ci_prediction[ci_prediction < 0] <- 0
-              } else {
-                ci_prediction[ci_prediction > 1] <- 1
-                ci_prediction[ci_prediction < 0] <- 0
+              if (data.type == "binary"){
+                if (on_0_1000) {
+                  ci_prediction <- round(ci_prediction * 1000)
+                  ci_prediction[ci_prediction > 1000] <- 1000
+                  ci_prediction[ci_prediction < 0] <- 0
+                } else {
+                  ci_prediction[ci_prediction > 1] <- 1
+                  ci_prediction[ci_prediction < 0] <- 0
+                }
               }
+              
               ci_prediction
             }
             # redirect to predict2.biomod2_ensemble_model.data.frame
-            callNextMethod(object, newdata, predfun = predfun, side = object@side, ...)
+            callNextMethod(object, newdata, predfun = predfun, side = object@side, data.type = object@model_type, ...)
           }
 )
 

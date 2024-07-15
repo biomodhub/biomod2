@@ -461,6 +461,12 @@ BIOMOD_Modeling <- function(bm.format,
                                   "' and '", models[length(models)])
                            , paste0(models,"' models"))))
     }
+    ## Check data.type coherence 
+    data.type.options <- strsplit(OPT.user@models[1],".", fixed = T)[[1]][2]
+    if ((bm.format@data.type == "binary" & data.type.options != "binary")|
+        (bm.format@data.type != "binary" & data.type.options == "binary")) {
+      stop("\n The data.type of OPT.user should match the data.type of your bm.format")
+    }
     ## Check for calib.lines names -----
     for (mod in OPT.user@models) {
       nam <- names(OPT.user@options[[mod]]@args.values)
