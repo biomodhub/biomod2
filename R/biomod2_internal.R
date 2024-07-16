@@ -1108,11 +1108,17 @@ xgbpred <- function(model, data, ...) {
 
 # is.data.abundance ----------------------------
 
-.is.Data.Abundance <- function(resp.var){ #accept positive value only / Something else ? 
+.check.for.data.abundance <- function(resp.var){ #accept positive value only / Something else ? 
+  if (!is.numeric(resp.var)){
+    stop("biomod2 accept only numeric values : please check your response data.")
+  }
   # Check si c'est des facteurs ? 
+  if (-Inf %in% resp.var | Inf %in% resp.var){
+    stop("It seems there is Inf in your response data. Please check and remove it.")
+  }
   negative <- any(resp.var < 0 )
   if (negative){
-    stop("biomod2 don't accept negative value : please check your response data.")
+    stop("biomod2 doesn't accept negative values : please check your response data.")
   }
 }
 

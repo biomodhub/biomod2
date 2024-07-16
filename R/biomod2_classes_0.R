@@ -663,16 +663,30 @@ setMethod('print', signature('BIOMOD.models.options'),
 
 .bm_adaptation.data.type <- function(data.type, mod, argstmp, pkg) {
   
-  if (data.type == "binary"){
+  ## Possibilité de le simplifier mais meilleure lecture ? 
+  if (data.type == "binary" | data.type == 'binary.PA'){
     RFtype <- "classification"
     family <- binomial(link = 'logit')
     CTAmethod <- "class"
     GBMdistribution <- "bernoulli"
     FDAmethod <- "mars"
-  } else {
+  } else if(data.type == "count"){
+    RFtype <- "regression"
+    family <- poisson(link = "log")
+    CTAmethod <- "poisson"
+    GBMdistribution <- "poisson"
+    FDAmethod <- "polyreg"
+  }
+  else if (data.type == "compositional"){
+    RFtype <- "classification"
+    family <- binomial() ##? 
+    CTAmethod <- "class"
+    GBMdistribution <- "multinomial"
+    FDAmethod <- "mars" #???
+  } else { # data.type = nonbinary or data.type = abundance
     RFtype <- "regression"
     family <- gaussian(link = 'identity')
-    CTAmethod <- "poisson"
+    CTAmethod <- "anova" #??
     GBMdistribution <- "gaussian"
     FDAmethod <- "polyreg"
   }

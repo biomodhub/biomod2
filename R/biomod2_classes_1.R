@@ -178,7 +178,7 @@ setClass("BIOMOD.formated.data",
 setGeneric("BIOMOD.formated.data", def = function(sp, env, ...) { standardGeneric("BIOMOD.formated.data") })
 
 .BIOMOD.formated.data.check.args <- function(sp, env, data.type = NULL, xy = NULL, eval.sp = NULL, eval.env = NULL
-                                             , eval.xy = NULL, filter.raster = FALSE)
+                                             , eval.xy = NULL, filter.raster = FALSE, PA.strategy = NULL)
 { 
   ## A.1 Check sp argument --------------------------------------------------------------
   if (inherits(sp, c('Raster','SpatRaster'))) {
@@ -208,6 +208,10 @@ setGeneric("BIOMOD.formated.data", def = function(sp, env, ...) { standardGeneri
   
   ## Check data.type
   presumed.data.type = .which.data.type(sp)
+  if (presumed.data.type != "binary" &  !(is.null(PA.strategy) || PA.strategy == 'none')){
+    stop("PA selection is not available with non binary data !")
+  }
+  
   if (!is.null(data.type)){
     if (presumed.data.type != data.type){
       cat("\n\t The data.type doesn't seem to correspond to your data. It will be switch to", presumed.data.type)
@@ -217,11 +221,12 @@ setGeneric("BIOMOD.formated.data", def = function(sp, env, ...) { standardGeneri
     data.type <- presumed.data.type
   }
   
+  
   ## Check presence/absence
   if(data.type == "binary"){
     sp <- .check_formating_resp.var(resp.var = sp, eval.data = FALSE)
   } else {
-    .is.Data.Abundance(sp)
+    .check.for.data.abundance(sp)
   }
   
   ## A.2 Check xy argument --------------------------------------------------------------
@@ -287,7 +292,7 @@ setGeneric("BIOMOD.formated.data", def = function(sp, env, ...) { standardGeneri
     if(data.type == "binary"){
       eval.sp <- .check_formating_resp.var(resp.var = eval.sp, eval.data = TRUE)
     } else {
-      .is.Data.Abundance(eval.sp)
+      .check.for.data.abundance(eval.sp)
     }
     
     
@@ -1549,8 +1554,8 @@ setMethod('BIOMOD.formated.data.PA', signature(sp = 'numeric', env = 'SpatRaster
                                       , PA.sre.quant = 0.025, PA.fact.aggr = NULL
                                       , PA.user.table = NULL
                                       , na.rm = TRUE, filter.raster = FALSE, seed.val = NULL)
-{
-  args <- .BIOMOD.formated.data.check.args(sp, env, xy, eval.sp, eval.env, eval.xy, filter.raster)
+{ 
+  args <- .BIOMOD.formated.data.check.args(sp, env, xy, eval.sp, eval.env, eval.xy, filter.raster, PA.strategy = PA.strategy)
   for (argi in names(args)) { assign(x = argi, value = args[[argi]]) }
   rm(args)
   

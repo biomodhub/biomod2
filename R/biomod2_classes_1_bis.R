@@ -522,7 +522,7 @@
 ##' \code{ggplot2} object 
 ##' 
 ##' @importFrom terra rast minmax crds ext
-##' @importFrom ggplot2 ggplot aes scale_color_manual scale_shape_manual scale_fill_manual guides xlim ylim ggtitle facet_wrap theme guide_legend after_stat
+##' @importFrom ggplot2 ggplot aes scale_color_manual scale_shape_manual scale_fill_manual guides xlim ylim ggtitle facet_wrap theme guide_legend after_stat scale_size
 ##' 
 ##' @export
 ##' 
@@ -664,7 +664,7 @@
                    "Evaluation" = "#994455",
                    "Calibration" = "#997700",
                    "Validation" = "#EECC66",
-                   "1" = "grey70")
+                   "1" = "#D4D4D4")
   
   shape_fit <- 16
   shape_eval <- 17
@@ -673,6 +673,7 @@
                   rep(shape_fit,length(colnames(calib.lines)) ))
   data_alpha <- c()
   data_background <- "#FFFFFF00"
+  
   
   
   # 3 - prepare plots -------------------------------------------------------
@@ -776,19 +777,15 @@
       g <- base_g +      
         geom_point(aes(x = x, y = y, 
                        alpha= resp,
-                       color = part),
-                   size = point.size)+
+                       color = part,
+                       size = resp),
+                   shape = 18)+ #size = point.size
         facet_wrap(~dataset)+
+        scale_size(range =c(0.5,3))+
         scale_color_manual(
           NULL,
           breaks = data_breaks,
           values = data_colors,
-          labels = data_labels_facet,
-          drop = FALSE)+
-        scale_shape_manual(
-          NULL,
-          breaks = data_breaks,
-          values = data_shape,
           labels = data_labels_facet,
           drop = FALSE)+
         scale_fill_manual(
@@ -798,12 +795,12 @@
           labels = data_labels,
           na.value = data_background)+
         xlab(NULL)+ ylab(NULL)+
-        # guides(color = guide_legend(override.aes = list(size = 3),
-        #                             ncol = 3))+
+        guides(color = guide_legend(override.aes = list(size = 3)))+
         theme(legend.position = "top",
               legend.key = element_blank(),
               legend.background = element_rect(fill = "grey90"),
-              legend.text = ggtext::element_markdown())
+              legend.text = ggtext::element_markdown(), 
+              legend.box = "vertical")
       
     } else {
       g <- lapply(unique(data.df$dataset), function(thisname){
@@ -816,18 +813,15 @@
         }
         base_g +      
           geom_point(aes(x = x, y = y, 
-                         alpha = resp,
-                         color = as.factor(dataset)),
-                     size = point.size)+
+                         alpha= resp,
+                         color = part,
+                         size = resp),
+                     shape = 18)+
+          scale_size(range =c(0.5,3))+
           scale_color_manual(
             NULL,
             breaks = data_breaks,
             values = data_colors,
-            labels = data_labels)+
-          scale_shape_manual(
-            NULL,
-            breaks = data_breaks,
-            values = data_shape,
             labels = data_labels)+
           scale_fill_manual(
             guide = "none",

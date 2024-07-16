@@ -367,7 +367,8 @@ BIOMOD_FormatingData <- function(resp.name,
                                            eval.resp.var,
                                            eval.expl.var,
                                            eval.resp.xy,
-                                           filter.raster)
+                                           filter.raster,
+                                           PA.strategy)
   for (argi in names(args)) { assign(x = argi, value = args[[argi]]) }
   rm(args)
   
@@ -423,7 +424,8 @@ BIOMOD_FormatingData <- function(resp.name,
                                              eval.resp.var,
                                              eval.expl.var,
                                              eval.resp.xy,
-                                             filter.raster)
+                                             filter.raster,
+                                             PA.strategy)
 {
   ## 0. Checking names (resp.name available ?) --------------------------------
   if (grepl('/', resp.name)) {

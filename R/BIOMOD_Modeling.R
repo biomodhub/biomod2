@@ -79,7 +79,8 @@
 ##' @param metric.eval a \code{vector} containing evaluation metric names to be used, must 
 ##' be among \code{ROC}, \code{TSS}, \code{KAPPA}, \code{ACCURACY}, \code{BIAS}, \code{POD}, 
 ##' \code{FAR}, \code{POFD}, \code{SR}, \code{CSI}, \code{ETS}, \code{HK}, \code{HSS}, \code{OR}, 
-##' \code{ORSS}, \code{BOYCE}, \code{MPA}
+##' \code{ORSS}, \code{BOYCE}, \code{MPA}, \code{RMSE}, \code{MAE}, \code{MSE}, \code{Rsq}, \code{Rsq_aj},
+##' \code{Max_error}, \code{AIC}
 ##' @param var.import (\emph{optional, default} \code{NULL}) \cr 
 ##' An \code{integer} corresponding to the number of permutations to be done for each variable to 
 ##' estimate variable importance
@@ -140,7 +141,8 @@
 ##'     \item \code{RFd} : Random Forest downsampled (\code{\link[randomForest]{randomForest}})
 ##'     \item \code{SRE} : Surface Range Envelop or usually called BIOCLIM (\code{\link{bm_SRE}})
 ##'     \item \code{XGBOOST} : eXtreme Gradient Boosting Training (\code{\link[xgboost]{xgboost}})
-##'   }}
+##'   }
+##'   For abundance data, you can use the models : CTA, FDA, GAM, GBM, GLM, MARS, RF and XGBOOST}
 ##'   
 ##'   \item{models.pa}{Different models might respond differently to different numbers of 
 ##'   pseudo-absences. It is possible to create sets of pseudo-absences with different numbers 
@@ -153,8 +155,7 @@
 ##'   
 ##'   \item{OPT.[...] parameters}{Different methods are available to parameterize the 
 ##'   single models (see \code{\link{bm_ModelingOptions}} and 
-##'   \code{\link{BIOMOD.options.dataset}}). Note that only \code{binary} data type is 
-##'   allowed currently.
+##'   \code{\link{BIOMOD.options.dataset}}). 
 ##'   \itemize{
 ##'     \item \code{default} : only default parameter values of default parameters of the single 
 ##'     models functions are retrieved. Nothing is changed so it might not give good results.
@@ -214,6 +215,17 @@
 ##'       \item \code{BOYCE} : Boyce index
 ##'       \item \code{MPA} : Minimal predicted area (cutoff optimising MPA to predict 90\% of 
 ##'       presences)
+##'     }
+##'     }
+##'     \item{For abundance data}{
+##'     \itemize{
+##'       \item \code{RMSE} : Root Mean Square Error
+##'       \item \code{MSE} : Mean Square Error
+##'       \item \code{MAE} : Mean Absolute Error
+##'       \item \code{AIC} : Akaike Information Criterion
+##'       \item \code{Rsq} : R square
+##'       \item \code{Rsq_aj} : R square adjusted
+##'       \item \code{Max_error} : Max_error
 ##'     }
 ##'     }
 ##'   }
@@ -628,8 +640,14 @@ BIOMOD_Modeling <- function(bm.format,
   models.switch.off <- NULL
   
   ## check if model is supported
-  avail.models.list <- c('ANN', 'CTA', 'FDA', 'GAM', 'GBM', 'GLM', 'MARS', 'MAXENT', 'MAXNET', 'RF','RFd', 'SRE', 'XGBOOST')
-  .fun_testIfIn(TRUE, "models", models, avail.models.list)
+  if (bm.format@data.type == "binary"){
+    avail.models.list <- c('ANN', 'CTA', 'FDA', 'GAM', 'GBM', 'GLM', 'MARS', 'MAXENT', 'MAXNET', 'RF','RFd', 'SRE', 'XGBOOST')
+    .fun_testIfIn(TRUE, "models", models, avail.models.list)
+  } else {
+    avail.models.list <- c('CTA', 'FDA', 'GAM', 'GBM', 'GLM', 'MARS', 'RF', 'XGBOOST')
+    .fun_testIfIn(TRUE, paste0("models with ", bm.format@data.type, " data type"), models, avail.models.list)
+  }
+  
   
   ## Specific case of one variable with GBM / MAXNET
   if ('GBM' %in% models && ncol(bm.format@data.env.var) == 1) {
