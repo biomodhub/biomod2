@@ -522,7 +522,7 @@
 ##' \code{ggplot2} object 
 ##' 
 ##' @importFrom terra rast minmax crds ext
-##' @importFrom ggplot2 ggplot aes scale_color_manual scale_shape_manual scale_fill_manual guides xlim ylim ggtitle facet_wrap theme guide_legend after_stat scale_size
+##' @importFrom ggplot2 ggplot aes scale_color_manual scale_shape_manual scale_fill_manual guides xlim ylim ggtitle facet_wrap theme guide_legend after_stat scale_size scale_alpha_continuous
 ##' 
 ##' @export
 ##' 
@@ -698,56 +698,70 @@
                          }
     names(plot_mask) <- unique(full.df.vect$dataset)
   }
-  
+
   ## 3.1 Raster plot --------------------------------------------------------
   if(plot.type == "raster"){
-    
+
     rast.plot <- foreach(this_dataset = unique(full.df.vect$dataset), .combine = 'c') %do% {
       this_rast  <-
         rasterize(subset(full.df.vect,
                          full.df.vect$dataset == this_dataset), 
                   plot_mask[[this_dataset]],
-                  field = "resp", background = "1")
-      names(this_rast) <- this_dataset
+                  field = "resp", by = "part", fun = mean, background = 0)
+      if (this_dataset == "Initial dataset"){
+        names(this_rast) <- this_dataset
+      } else {
+        names(this_rast) <- paste(this_dataset, c("calibration","validation"), sep = "_")
+      }
       this_rast*this_mask
     }
     
+    data_colors <- c("#004488")
+    if(plot.eval){
+      data_colors <- c(data.color,"#994455")
+    }
+    if(!is.null(calib.lines)){
+      nb_run <- ncol(calib.lines)
+      data_colors <- c(data_colors, rep(c( "#997700","#EECC66"), nb_run))
+    }
+    names(data_colors) <- names(rast.plot)
+
     if(plot.output == "facet"){
       g <- ggplot()+
-        tidyterra::geom_spatraster(data = rast.plot,
-                                   aes(fill = factor(after_stat(value), data_breaks)))+
+        tidyterra::geom_spatraster(data = rast.plot, aes(alpha = after_stat(value), fill = lyr))+
         facet_wrap(~lyr)+
         scale_fill_manual(
           NULL,
-          breaks = data_breaks,
+          breaks = names(rast.plot),
           values = data_colors,
-          labels = data_labels_facet,
-          na.value = data_background, 
+          labels = names(rast.plot),
           drop = FALSE)+
-        guides(fill = guide_legend(
-          override.aes = list(alpha = data_alpha),
-          ncol = 3))+
+        scale_alpha_continuous(
+          NULL,
+          range = c(0.1,1),
+          na.value = 0)+
+        guides(fill = guide_legend(nrow = 2))+
         theme(legend.position = "top",
               legend.key = element_blank(),
               legend.background = element_rect(fill = "grey90"),
-              legend.text = ggtext::element_markdown())
+              legend.text = ggtext::element_markdown(),
+              legend.box = "vertical")
       
     } else {
       g <- lapply(names(rast.plot), function(thisname){
         ggplot()+
-          tidyterra::geom_spatraster(data = rast.plot[[thisname]],
-                                     aes(fill = factor(after_stat(value))))+
-          scale_fill_manual(
+          tidyterra::geom_spatraster(data = rast.plot[[thisname]], aes(alpha = after_stat(value)), fill = data_colors[thisname])+
+          scale_alpha_continuous(
             NULL,
-            breaks = data_breaks,
-            values = data_colors,
-            labels = data_labels,
-            na.value = data_background)+
+            range = c(0.1,1),
+            na.value = 0)+
           ggtitle(thisname)+
-          guides(color = guide_legend(nrow = 2))+
+          guides(fill = guide_legend(nrow = 2))+
           theme(legend.position = "top",
                 legend.key = element_blank(),
-                legend.background = element_rect(fill = "grey90"))
+                legend.background = element_rect(fill = "grey90"),
+                legend.text = ggtext::element_markdown(),
+                legend.box = "vertical")
       })
     }
     if(do.plot){
@@ -830,11 +844,11 @@
             labels = data_labels,
             na.value = data_background)+
           xlab(NULL)+ ylab(NULL)+
-          guides(color = guide_legend(override.aes = list(size = 3),
-                                      nrow = 2))+
+          guides(color = guide_legend(override.aes = list(size = 3)))+
           theme(legend.position = "top",
                 legend.key = element_blank(),
-                legend.background = element_rect(fill = "grey90"))+
+                legend.background = element_rect(fill = "grey90"),
+                legend.box = "vertical")+
           ggtitle(thisname)
       })
       

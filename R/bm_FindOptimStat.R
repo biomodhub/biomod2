@@ -34,6 +34,8 @@
 ##' of correctly classified presences for Minimal Predicted Area (see \code{ecospat.mpa()} in 
 ##' \pkg{ecospat})
 ##' @param misc a \code{matrix} corresponding to a contingency table
+##' @param model the complete model for AIC metrics 
+##' @param k a \code{numeric} corresponding to the number of predictive facot in the model
 ##'
 ##'
 ##' @return 
@@ -157,7 +159,9 @@ bm_FindOptimStat <- function(metric.eval = 'TSS',
                              nb.thresh = 100,
                              threshold = NULL,
                              boyce.bg.env = NULL,
-                             mpa.perc = 0.9)
+                             mpa.perc = 0.9,
+                             model = NULL,
+                             k = NULL)
 {
   ## 0. Check arguments ---------------------------------------------------------------------------
   args <- .bm_FindOptimStat.check.args(threshold, boyce.bg.env, mpa.perc)
@@ -187,8 +191,9 @@ bm_FindOptimStat <- function(metric.eval = 'TSS',
     warning("\nObserved or fitted data contains a unique value... Be careful with this models predictions\n", immediate. = TRUE)
   }
   
+  abundance_metrics <- c("RMSE", "MSE" ,"MAE" ,"AIC" ,'Rsq' ,'Rsq_aj', 'Max_error')
   
-  if (!(metric.eval %in% c('ROC', 'BOYCE', 'MPA')))
+  if (!(metric.eval %in% c('ROC', 'BOYCE', 'MPA',abundance_metrics)))
   { ## for all evaluation metrics other than ROC, BOYCE, MPA --------------------------------------
     
     ## 1. get threshold values to be tested -----------------------------------
@@ -246,7 +251,9 @@ bm_FindOptimStat <- function(metric.eval = 'TSS',
     specificity <- as.numeric(roc1.out["specificity"])
     sensitivity <- as.numeric(roc1.out["sensitivity"])
     
-  } else { ## specific procedure for BOYCE, MPA values --------------------------------------------
+    eval.out <- data.frame(metric.eval, cutoff, sensitivity, specificity, best.stat)
+    
+  } else if (metric.eval %in% c('BOYCE', 'MPA')){ ## specific procedure for BOYCE, MPA values --------------------------------------------
     ## Prepare table to compute evaluation scores
     DATA <- cbind(1:length(fit), obs, fit / 1000)
     DATA[is.na(DATA[, 2]), 2] <- 0
@@ -267,9 +274,14 @@ bm_FindOptimStat <- function(metric.eval = 'TSS',
       sensitivity <- EVAL$sensitivity * 100
       specificity <- EVAL$specificity * 100
     }
+    eval.out <- data.frame(metric.eval, cutoff, sensitivity, specificity, best.stat)
+    
+  } else { #abundance metrics 
+    fun_eval <- .get_function_abundance_metrics(metric.eval)
+    best.stat <- try(eval(parse(text = fun_eval)))
+    eval.out <- data.frame(metric.eval, best.stat)
   }
   
-  eval.out <- data.frame(metric.eval, cutoff, sensitivity, specificity, best.stat)
   return(eval.out)
 }
 
@@ -567,33 +579,46 @@ ecospat.mpa <- function(Pred, Sp.occ.xy = NULL, perc = 0.9)
 
 ## New function in the case of abundance data
 
-bm_EvalAbundanceModel <- function(metric.eval, bm.mod, obs  = NULL, fit = NULL){
-  
-  .bm_EvalAbundanceModel.check.args(bm.mod, metric.eval)
-  #for (argi in names(args)) { assign(x = argi, value = args[[argi]]) }
-  #rm(args)
-  
-  best.stat <- NULL
-  if (metric.eval == "AIC"){
-    best.stat <- AIC(bm.mod)
-  }
-  
-  if (metric.eval == "Rsq"){
-    best.stat <-  cor(obs,fit)^2
-  }
-  
-  if (metric.eval == "RMSE"){
-    best.stat <-  sqrt(mean((obs - fit)^2))
-  }
-   
-  eval.out <- data.frame(metric.eval, best.stat)
-  return(eval.out)
-}
+# bm_EvalAbundanceModel <- function(metric.eval, bm.mod, obs  = NULL, fit = NULL){
+#   
+#   .bm_EvalAbundanceModel.check.args(bm.mod, metric.eval)
+#   #for (argi in names(args)) { assign(x = argi, value = args[[argi]]) }
+#   #rm(args)
+#   
+#   best.stat <- NULL
+#   if (metric.eval == "AIC"){
+#     best.stat <- AIC(bm.mod)
+#   }
+#   
+#   if (metric.eval == "Rsq"){
+#     best.stat <-  cor(obs,fit)^2
+#   }
+#   
+#   if (metric.eval == "RMSE"){
+#     best.stat <-  sqrt(mean((obs - fit)^2))
+#   }
+#    
+#   eval.out <- data.frame(metric.eval, best.stat)
+#   return(eval.out)
+# }
+# 
+# .bm_EvalAbundanceModel.check.args <- function(bm.mod, metric.eval){
+#   
+#   
+#   avail.eval.meth.list <- c('AIC', 'Rsq', 'RMSE')
+#   .fun_testIfIn(TRUE, "metric.eval", metric.eval, avail.eval.meth.list)
+#   
+# }
 
-.bm_EvalAbundanceModel.check.args <- function(bm.mod, metric.eval){
-  
-  
-  avail.eval.meth.list <- c('AIC', 'Rsq', 'RMSE')
-  .fun_testIfIn(TRUE, "metric.eval", metric.eval, avail.eval.meth.list)
-  
+.get_function_abundance_metrics<- function(metric.eval)
+{
+  switch(metric.eval
+         , 'RMSE' = "sqrt(mean((obs - fit)^2))"
+         , 'MSE' = "mean((obs - fit)^2)"
+         , 'MAE' = "mean(abs(obs - fit))"
+         , 'AIC' = "AIC(model)"
+         , 'Rsq' = "cor(obs,fit)^2"
+         , "Rsq_aj" = "1 - (1 - cor(obs,fit)^2) * (length(obs)-1) / (length(obs)-k-1) "
+         , 'Max_error' = "max(abs(obs-fit), na.rm = T)"
+  )
 }

@@ -205,7 +205,6 @@ bm_RunModel <- function(model, run.name, dir.name = '.'
   if (is.null(args)) { return(NULL) }
   for (argi in names(args)) { assign(x = argi, value = args[[argi]]) }
   rm(args)
-  
   ## get model name and names of categorical variables
   dir_name <- dir.name
   model_name <- paste0(run.name, '_', model)
@@ -528,52 +527,39 @@ bm_RunModel <- function(model, run.name, dir.name = '.'
     
     if (length(which(eval.lines.vec == TRUE)) < length(g.pred)) {
       ## CALIBRATION & VALIDATION LINES -------------------------------------------------
-      if (data.type == 'binary'){
-        cross.validation <- foreach(xx = metric.eval, .combine = "rbind") %do% {
-          bm_FindOptimStat(metric.eval = xx,
-                           obs = data_sp[which(eval.lines.vec == FALSE)],
-                           fit = g.pred[which(eval.lines.vec == FALSE)])
-          if (max(cross.validation$cutoff,na.rm = T) > 1000) {cat("\n*** Wrong values predicted, please be careful with the results fo this model")}
-        }
+      cross.validation <- foreach(xx = metric.eval, .combine = "rbind") %do% {
+        bm_FindOptimStat(metric.eval = xx,
+                         obs = data_sp[which(eval.lines.vec == FALSE)],
+                         fit = g.pred[which(eval.lines.vec == FALSE)],
+                         model = model.sp,
+                         k = length(expl_var_names))
       }
-      else {
-        cross.validation <- foreach(xx = metric.eval, .combine = "rbind") %do% {
-          bm_EvalAbundanceModel(metric.eval = xx, bm.mod = model.bm,
-                                obs = data_sp[which(eval.lines.vec == FALSE)],
-                                fit = g.pred[which(eval.lines.vec == FALSE)]) 
-        }
+
+      if (data.type == 'binary'){
+        if (max(cross.validation$cutoff,na.rm = T) > 1000) {cat("\n*** Wrong values predicted, please be careful with the results fo this model")}
       }
       
-        colnames(cross.validation)[which(colnames(cross.validation) == "best.stat")] <- "calibration"
-        
-        stat.validation <- foreach(xx = metric.eval, .combine = "rbind") %do% {
-          if (data.type == 'binary'){
+      colnames(cross.validation)[which(colnames(cross.validation) == "best.stat")] <- "calibration"
+      
+      stat.validation <- foreach(xx = metric.eval, .combine = "rbind") %do% {
+          bm_FindOptimStat(metric.eval = xx,
+                           obs = data_sp[which(eval.lines.vec == TRUE)],
+                           fit = g.pred[which(eval.lines.vec == TRUE)],
+                           threshold = cross.validation$cutoff[
+                             which(cross.validation$metric.eval == xx)
+                           ],
+                           model = model.sp,
+                           k = length(expl_var_names))
+      }
+      cross.validation$validation <- stat.validation$best.stat
+    } else {
+        ## NO VALIDATION LINES -----------------------------------------------------
+        cross.validation <- foreach(xx = metric.eval, .combine = "rbind") %do% {
             bm_FindOptimStat(metric.eval = xx,
                              obs = data_sp[which(eval.lines.vec == TRUE)],
                              fit = g.pred[which(eval.lines.vec == TRUE)],
-                             threshold = cross.validation$cutoff[
-                               which(cross.validation$metric.eval == xx)
-                             ])
-          }
-          else {bm_EvalAbundanceModel(metric.eval = xx, bm.mod = model.bm,
-                                      obs = data_sp[which(eval.lines.vec == TRUE)],
-                                      fit = g.pred[which(eval.lines.vec == TRUE)])}
-          
-        }
-        cross.validation$validation <- stat.validation$best.stat
-      } else {
-        ## NO VALIDATION LINES -----------------------------------------------------
-        cross.validation <- foreach(xx = metric.eval, .combine = "rbind") %do% {
-          
-          if (data.type == 'binary'){
-            bm_FindOptimStat(metric.eval = xx,
-                             obs = data_sp[which(eval.lines.vec == TRUE)],
-                             fit = g.pred[which(eval.lines.vec == TRUE)])
-          }
-          else {bm_EvalAbundanceModel(metric.eval = xx, bm.mod = model.bm,
-                                      obs = data_sp[which(eval.lines.vec == TRUE)],
-                                      fit = g.pred[which(eval.lines.vec == TRUE)])}
-          
+                             model = model.sp,
+                             k = length(expl_var_names))
         }
         colnames(cross.validation)[which(colnames(cross.validation) == "best.stat")] <- "calibration"
         cross.validation$validation <- NA
@@ -594,7 +580,9 @@ bm_RunModel <- function(model, run.name, dir.name = '.'
           bm_FindOptimStat(metric.eval = xx,
                            obs = eval.data[, 1],
                            fit = g.pred.eval.without.na,
-                           threshold = cross.validation["cutoff", xx])
+                           threshold = cross.validation["cutoff", xx],
+                           model = model.sp,
+                           k = length(expl_var_names))
         }
         cross.validation$evaluation <- stat.evaluation$best.stat
       } else {
@@ -693,7 +681,7 @@ bm_RunModel <- function(model, run.name, dir.name = '.'
     metric.eval <- unique(metric.eval)
     avail.eval.meth.list <- c('TSS', 'KAPPA', 'ACCURACY', 'BIAS', 'POD', 'FAR', 'POFD'
                               , 'SR', 'CSI', 'ETS', 'HK', 'HSS', 'OR', 'ORSS', 'ROC'
-                              , 'BOYCE', 'MPA', 'AIC', 'Rsq', 'RMSE')
+                              , 'BOYCE', 'MPA', 'RMSE','MSE',"MAE","Rsq","Rsq_aj","Max_error")
     # .fun_testIfIn(TRUE, "metric.eval", metric.eval, avail.eval.meth.list)
     if (sum(!(metric.eval %in% avail.eval.meth.list)) > 0) {
       tmp = which(metric.eval %in% avail.eval.meth.list)

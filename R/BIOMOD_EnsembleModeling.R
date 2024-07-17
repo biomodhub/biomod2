@@ -428,7 +428,7 @@ BIOMOD_EnsembleModeling <- function(bm.mod,
   ## Get variables information
   expl_var_type = get_var_type(get_formal_data(bm.mod, 'expl.var'))
   expl_var_range = get_var_range(get_formal_data(bm.mod, 'expl.var'))
-  
+  k <- length(bm.mod@expl.var.names)
   
   ## 1. Create output object ---------------------------------------------------
   EM <- new('BIOMOD.ensemble.models.out',
@@ -678,43 +678,29 @@ BIOMOD_EnsembleModeling <- function(bm.mod,
                 if (length(which(eval.lines == TRUE)) < length(pred.bm)) {
                   ## CALIBRATION & VALIDATION LINES -------------------------------------------------
                   cross.validation <- foreach(xx = metric.eval, .combine = "rbind") %do% {
-                    if (bm.mod@data.type == 'binary'){
-                      bm_FindOptimStat(metric.eval = xx,
-                                       obs = obs[!eval.lines],
-                                       fit = pred.bm[!eval.lines])
-                    }
-                    else {bm_EvalAbundanceModel(metric.eval = xx, bm.mod = model.bm,
-                                                obs = obs[!eval.lines],
-                                                fit = pred.bm[!eval.lines])}
-                    
-                    
+                    bm_FindOptimStat(metric.eval = xx,
+                                     obs = obs[!eval.lines],
+                                     fit = pred.bm[!eval.lines],
+                                     k = k)
                   }
                   colnames(cross.validation)[which(colnames(cross.validation) == "best.stat")] <- "calibration"
                   
                   stat.validation <- foreach(xx = metric.eval, .combine = "rbind") %do% {
-                    if (bm.mod@data.type == 'binary'){
-                      bm_FindOptimStat(metric.eval = xx,
-                                       obs = obs[eval.lines],
-                                       fit = pred.bm[eval.lines],
-                                       threshold = cross.validation["cutoff", xx])
-                    }
-                    else {bm_EvalAbundanceModel(metric.eval = xx, bm.mod = model.bm,
-                                                obs = obs[eval.lines],
-                                                fit = pred.bm[eval.lines])}
+                    bm_FindOptimStat(metric.eval = xx,
+                                     obs = obs[eval.lines],
+                                     fit = pred.bm[eval.lines],
+                                     threshold = cross.validation["cutoff", xx],
+                                     k = k)
                   }
                   cross.validation$validation <- stat.validation$best.stat
                 } else {
                   ## NO VALIDATION LINES -----------------------------------------------------
                   cross.validation <- foreach(xx = metric.eval, .combine = "rbind") %do% {
-                    if (bm.mod@data.type == 'binary'){
-                      bm_FindOptimStat(metric.eval = xx,
-                                       obs = obs[eval.lines],
-                                       fit = pred.bm[eval.lines])
-                    }
-                    else {bm_EvalAbundanceModel(metric.eval = xx, bm.mod = model.bm,
-                                                obs = obs[eval.lines],
-                                                fit = pred.bm[eval.lines])}
-
+                    bm_FindOptimStat(metric.eval = xx,
+                                     obs = obs[eval.lines],
+                                     fit = pred.bm[eval.lines],
+                                     k = k)
+                    
                   }
                   colnames(cross.validation)[which(colnames(cross.validation) == "best.stat")] <- "calibration"
                   cross.validation$validation <- NA
@@ -723,15 +709,11 @@ BIOMOD_EnsembleModeling <- function(bm.mod,
                 
                 if (exists('eval_pred.bm')) {
                   stat.evaluation <- foreach(xx = metric.eval, .combine = "rbind") %do% {
-                    if (bm.mod@data.type == 'binary'){
                       bm_FindOptimStat(metric.eval = xx,
                                        obs = eval.obs,
                                        fit = eval_pred.bm * 1000,
-                                       threshold = cross.validation["cutoff", xx])
-                    }
-                    else {bm_EvalAbundanceModel(metric.eval = xx, bm.mod = model.bm,
-                                                obs = eval.obs,
-                                                fit = eval_pred.bm)}
+                                       threshold = cross.validation["cutoff", xx],
+                                       k = k)
                   }
                   cross.validation$evaluation <- stat.evaluation$best.stat
                 } else {
@@ -1009,7 +991,7 @@ BIOMOD_EnsembleModeling <- function(bm.mod,
                               , 'SR', 'CSI', 'ETS', 'HK', 'HSS', 'OR', 'ORSS', 'ROC'
                               , 'BOYCE', 'MPA')
   } else {
-    avail.eval.meth.list <- c('AIC', 'Rsq', 'RMSE')
+    avail.eval.meth.list <- c('RMSE','MSE',"MAE","Rsq","Rsq_aj","Max_error")
   }
   .fun_testIfIn(TRUE, paste0("metric.eval with ", bm.mod@data.type, " data type"), metric.eval, avail.eval.meth.list)
   

@@ -80,7 +80,7 @@
 ##' be among \code{ROC}, \code{TSS}, \code{KAPPA}, \code{ACCURACY}, \code{BIAS}, \code{POD}, 
 ##' \code{FAR}, \code{POFD}, \code{SR}, \code{CSI}, \code{ETS}, \code{HK}, \code{HSS}, \code{OR}, 
 ##' \code{ORSS}, \code{BOYCE}, \code{MPA}, \code{RMSE}, \code{MAE}, \code{MSE}, \code{Rsq}, \code{Rsq_aj},
-##' \code{Max_error}, \code{AIC}
+##' \code{Max_error}
 ##' @param var.import (\emph{optional, default} \code{NULL}) \cr 
 ##' An \code{integer} corresponding to the number of permutations to be done for each variable to 
 ##' estimate variable importance
@@ -222,7 +222,6 @@
 ##'       \item \code{RMSE} : Root Mean Square Error
 ##'       \item \code{MSE} : Mean Square Error
 ##'       \item \code{MAE} : Mean Absolute Error
-##'       \item \code{AIC} : Akaike Information Criterion
 ##'       \item \code{Rsq} : R square
 ##'       \item \code{Rsq_aj} : R square adjusted
 ##'       \item \code{Max_error} : Max_error
@@ -773,7 +772,7 @@ BIOMOD_Modeling <- function(bm.format,
                             , 'SR', 'CSI', 'ETS', 'HK', 'HSS', 'OR', 'ORSS', 'ROC'
                             , 'BOYCE', 'MPA')
   } else {
-    avail.eval.meth.list <- c('AIC', 'Rsq', 'RMSE')
+    avail.eval.meth.list <- c('RMSE','MSE',"MAE","Rsq","Rsq_aj","Max_error")
   }
   
   .fun_testIfIn(TRUE, paste0("metric.eval with ", bm.format@data.type, " data type"), metric.eval, avail.eval.meth.list)
