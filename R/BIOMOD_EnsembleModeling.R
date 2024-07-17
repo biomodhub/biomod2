@@ -578,7 +578,7 @@ BIOMOD_EnsembleModeling <- function(bm.mod,
             ### Standardise model weights
             models.kept.scores.tmp <- round(models.kept.scores.tmp / sum(models.kept.scores.tmp, na.rm = TRUE)
                                             , digits = 3)
-            if (eval.m %in% c("RMSE","AIC")){
+            if (eval.m %in% c("RMSE", "MSE", "MAE", "Max_error")){
               models.kept.scores.tmp <- rev(models.kept.scores.tmp)
             }
             cat("\n\t\t", " final models weights = ", models.kept.scores.tmp)
@@ -960,14 +960,14 @@ BIOMOD_EnsembleModeling <- function(bm.mod,
         stop("you must specify as many metric.select.thresh as metric.select (if you specify some)")
       }
       cat("\n   > Evaluation & Weighting methods summary :\n")
-      if ("RMSE" %in% metric.select | "AIC" %in% metric.select){
-        metric.select.over <- metric.select[-which(metric.select == "AIC" | metric.select == "RMSE")]
-        metric.select.thresh.over <- metric.select.thresh[-which(metric.select == "AIC" | metric.select == "RMSE")]
+      if (any(c("RMSE", "MSE", "MAE", "Max_error") %in% metric.select)){
+        metric.select.over <- metric.select[-which(metric.select %in% c("RMSE", "MSE", "MAE", "Max_error"))]
+        metric.select.thresh.over <- metric.select.thresh[-which(metric.select %in% c("RMSE", "MSE", "MAE", "Max_error"))]
         cat(paste(metric.select.over, metric.select.thresh.over, sep = " over ", collapse = "\n      ")
             , fill = TRUE, labels = "     ")
         
-        metric.select.under <- metric.select[which(metric.select == "AIC" | metric.select == "RMSE")]
-        metric.select.thresh.under <- metric.select.thresh[which(metric.select == "AIC" | metric.select == "RMSE")]
+        metric.select.under <- metric.select[which(metric.select %in% c("RMSE", "MSE", "MAE", "Max_error"))]
+        metric.select.thresh.under <- metric.select.thresh[which(metric.select %in% c("RMSE", "MSE", "MAE", "Max_error"))]
         cat(paste(metric.select.under, metric.select.thresh.under, sep = " under the best + ", collapse = "\n      ")
             , fill = TRUE, labels = "     ")
       } else {
@@ -1272,7 +1272,7 @@ BIOMOD_EnsembleModeling <- function(bm.mod,
         models.kept.scores[is.na(models.kept.scores)] <- -1
       }
       thresh = metric.select.thresh[which(metric.select == eval.m)]
-      if (eval.m %in% c("RMSE","AIC")){
+      if (eval.m %in% c("RMSE", "MSE", "MAE", "Max_error")){
         best <- min(models.kept.scores, na.rm = T)
         out$models.kept[[eval.m]] <- models.kept[models.kept.scores < (best + thresh)]
         out$models.kept.scores[[eval.m]] <- models.kept.scores[models.kept.scores < (best + thresh)]
