@@ -223,10 +223,20 @@ ModelsTable <- data.frame(model = c('ANN', 'CTA', 'FDA', 'GAM', 'GAM', 'GAM', 'G
 # bm.opt.nonbinary <- bm_ModelingOptions(data.type = "nonbinary", strategy = "default")
 # bm.opt@models <- sort(unique(c(bm.opt@models, bm.opt.nonbinary@models)))
 # bm.opt@options <- c(bm.opt@options, bm.opt.nonbinary@options)
+
+# # Remove things to be adapted to "count", "abundance" and "compositional"
+
+# bm.opt@options$CTA.nonbinary.rpart.rpart@args.values[['_allData_allRun']] <- bm.opt@options$CTA.nonbinary.rpart.rpart@args.values[['_allData_allRun']][-which(names(bm.opt@options$CTA.nonbinary.rpart.rpart@args.values[['_allData_allRun']]) == "method")]
+# bm.opt@options$FDA.nonbinary.mda.fda@args.values[['_allData_allRun']] <- bm.opt@options$FDA.nonbinary.mda.fda@args.values[['_allData_allRun']][-which(names(bm.opt@options$FDA.nonbinary.mda.fda@args.values[['_allData_allRun']]) == "method")]
+# bm.opt@options$GAM.nonbinary.mgcv.gam@args.values[['_allData_allRun']] <- bm.opt@options$GAM.nonbinary.mgcv.gam@args.values[['_allData_allRun']][-which(names(bm.opt@options$GAM.nonbinary.mgcv.gam@args.values[['_allData_allRun']]) == "family")]
+# bm.opt@options$GBM.nonbinary.gbm.gbm@args.values[['_allData_allRun']] <- bm.opt@options$GBM.nonbinary.gbm.gbm@args.values[['_allData_allRun']][-which(names(bm.opt@options$GBM.nonbinary.gbm.gbm@args.values[['_allData_allRun']]) == "distribution")]
+# bm.opt@options$GLM.nonbinary.stats.glm@args.values[['_allData_allRun']] <- bm.opt@options$GLM.nonbinary.stats.glm@args.values[['_allData_allRun']][-which(names(bm.opt@options$GLM.nonbinary.stats.glm@args.values[['_allData_allRun']]) == "family")]
+# bm.opt@options$RF.nonbinary.randomForest.randomForest@args.values[['_allData_allRun']] <- bm.opt@options$RF.nonbinary.randomForest.randomForest@args.values[['_allData_allRun']][-which(names(bm.opt@options$RF.nonbinary.randomForest.randomForest@args.values[['_allData_allRun']]) == "type")]
+
 # 
 # bm.opt@options$CTA.nonbinary.rpart.rpart@args.values[['_allData_allRun']]$control = list(xval = 5, minbucket = 5, minsplit = 5, cp = 0.001, maxdepth = 10)
 # bm.opt@options$CTA.nonbinary.rpart.rpart@args.values[['_allData_allRun']]$cost = NULL
-# bm.opt@options$FDA.nonbinary.mda.fda@args.values[['_allData_allRun']]$method = "polyreg"
+# # bm.opt@options$FDA.nonbinary.mda.fda@args.values[['_allData_allRun']]$method = "polyreg"
 # bm.opt@options$GAM.nonbinary.mgcv.gam@args.values[['_allData_allRun']]$method = "GCV.Cp"
 # bm.opt@options$GAM.nonbinary.mgcv.gam@args.values[['_allData_allRun']]$control = list(epsilon = 1e-06, trace = FALSE, maxit = 100)
 # bm.opt@options$GBM.nonbinary.gbm.gbm@args.values[['_allData_allRun']]$n.trees = 2500
