@@ -185,7 +185,11 @@ bm_PlotEvalBoxplot <- function(bm.out, dataset = 'calibration', group.by = c('al
   if ("scales" %in% names(args)) {
     .fun_testIfIn(TRUE, "args$scales", args$scales, c('fixed', 'free_x', 'free_y', 'free'))
   } else {
-    args$scales = "fixed"
+    if(bm.out@data.type == "binary"){
+      args$scales = "fixed"
+    } else {
+      args$scales = "free_y"
+    }
   }
   
   

@@ -15,10 +15,8 @@
 ##' @param bm.out a \code{\link{BIOMOD.models.out}} or \code{\link{BIOMOD.ensemble.models.out}} 
 ##' object that can be obtained with the \code{\link{BIOMOD_Modeling}} or 
 ##' \code{\link{BIOMOD_EnsembleModeling}} functions
-##' @param metric.eval a \code{vector} containing evaluation metric names to be used, must 
-##' be among \code{ROC}, \code{TSS}, \code{KAPPA}, \code{ACCURACY}, \code{BIAS}, \code{POD}, 
-##' \code{FAR}, \code{POFD}, \code{SR}, \code{CSI}, \code{ETS}, \code{HK}, \code{HSS}, \code{OR}, 
-##' \code{ORSS}
+##' @param metric.eval a 2-length \code{vector} containing evaluation metric names to be used, must 
+##' be among the metrics use for \code{bm.out} 
 ##' @param dataset a \code{character} corresponding to the dataset upon which evaluation metrics 
 ##' have been calculated and that is to be represented, must be among \code{calibration}, 
 ##' \code{validation}, \code{evaluation}
@@ -139,6 +137,7 @@ bm_PlotEvalMean <- function(bm.out, metric.eval = NULL, dataset = 'calibration',
   ## 1. Get data for graphic ----------------------------------------------------------------------
   ## Get evaluation values
   scores <- get_evaluations(bm.out)
+  scores <- scores[scores$metric.eval %in% metric.eval, ]
   
   ## Compute mean and sd evaluation scores
   models_mean = tapply(X = scores[, dataset]
