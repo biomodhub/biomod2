@@ -18,7 +18,7 @@ biomod2 the parameter values pre-defined by biomod2 team."><!-- mathjax --><scri
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">biomod2</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">4.2-5-2</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">4.2-6</span>
       </span>
     </div>
 
@@ -122,7 +122,7 @@ biomod2 the parameter values pre-defined by biomod2 team."><!-- mathjax --><scri
     <p>A <code><a href="BIOMOD.models.options.html">BIOMOD.models.options</a></code> object with some changed values :</p>
 <dl><dt><code>ANN.binary.nnet.nnet</code></dt>
 <dd><p></p><ul><li><p><code>size = 5</code></p></li>
-<li><p><code>decay = 5</code></p></li>
+<li><p><code>decay = 0.1</code></p></li>
 <li><p><code>trace = FALSE</code></p></li>
 <li><p><code>rang = 0.1</code></p></li>
 <li><p><code>maxit = 200</code></p></li>
@@ -130,7 +130,7 @@ biomod2 the parameter values pre-defined by biomod2 team."><!-- mathjax --><scri
 
    <dt><code>CTA.binary.rpart.rpart</code></dt>
 <dd><p></p><ul><li><p><code>method = 'class'</code></p></li>
-<li><p><code>control = list(xval = 5, minbucket = 5, minsplit = 5, cp = 0.001, maxdepth = 25)</code></p></li>
+<li><p><code>control = list(xval = 5, minbucket = 5, minsplit = 5, cp = 0.001, maxdepth = 10)</code></p></li>
 <li><p><code>cost = NULL</code></p></li>
 </ul><p></p></dd>
 
@@ -183,7 +183,17 @@ biomod2 the parameter values pre-defined by biomod2 team."><!-- mathjax --><scri
    <dt><code>RF.binary.randomForest.randomForest</code></dt>
 <dd><p></p><ul><li><p><code>type = 'classification'</code></p></li>
 <li><p><code>ntree = 500</code></p></li>
-<li><p><code>mtry = NULL</code></p></li>
+<li><p><code>mtry = 2</code></p></li>
+<li><p><code>strata = factor(c(0, 1))</code></p></li>
+<li><p><code>sampsize = NULL</code></p></li>
+<li><p><code>nodesize = 5</code></p></li>
+<li><p><code>maxnodes = NULL</code></p></li>
+</ul><p></p></dd>
+
+   <dt><code>RFd.binary.randomForest.randomForest</code></dt>
+<dd><p></p><ul><li><p><code>type = 'classification'</code></p></li>
+<li><p><code>ntree = 500</code></p></li>
+<li><p><code>mtry = 2</code></p></li>
 <li><p><code>strata = factor(c(0, 1))</code></p></li>
 <li><p><code>sampsize = NULL</code></p></li>
 <li><p><code>nodesize = 5</code></p></li>

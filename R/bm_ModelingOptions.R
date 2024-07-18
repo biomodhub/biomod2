@@ -376,8 +376,7 @@ bm_ModelingOptions <- function(data.type
                               , sapply(1:ncol(bm.format@PA.table)
                                        , function(this_PA) c(paste0("_PA", this_PA, "_RUN", seq_len(ncol(calib.lines)))
                                                              , paste0("_PA", this_PA, "_allRun"))))
-      } 
-
+      }
       .fun_testIfIn(TRUE, "colnames(calib.lines)", colnames(calib.lines), expected_CVnames)
       
       if (strategy == "user.defined") {

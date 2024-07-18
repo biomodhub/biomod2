@@ -261,8 +261,8 @@ setGeneric("BIOMOD.formated.data", def = function(sp, env, ...) { standardGeneri
   ## DO THE SAME FOR EVALUATION DATA ####################################################
   
   if (is.null(eval.sp)) {
-    cat("\n      ! No data has been set aside for modeling evaluation")
     eval.env <- eval.xy <- NULL
+
   } else {
     ## B.1 Check eval.sp argument -------------------------------------------------------
     if (inherits(eval.sp, c('Raster', 'SpatRaster'))) {
@@ -354,6 +354,8 @@ setMethod('BIOMOD.formated.data', signature(sp = 'numeric', env = 'data.frame'),
             }
             
             if (is.null(eval.sp)) { ## NO EVALUATION DATA
+              cat("\n      ! No data has been set aside for modeling evaluation")
+              
               BFD <- new(
                 'BIOMOD.formated.data',
                 data.type = data.type,

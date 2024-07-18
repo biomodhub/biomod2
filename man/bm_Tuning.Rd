@@ -16,19 +16,18 @@ bm_Tuning(
   metric.AIC = "AIC",
   weights = NULL,
   ctrl.train = NULL,
-  params.train = list(ANN.size = c(2, 4, 6, 8), ANN.decay = c(0.001, 0.01, 0.05, 0.1),
-    ANN.bag = FALSE, FDA.degree = 1:2, FDA.nprune = 2:38, GAM.select = c(TRUE, FALSE),
-    GAM.method = c("GCV.Cp", "GACV.Cp", "REML", "P-REML", "ML", "P-ML"), GAM.span =
-    c(0.3, 0.5, 0.7), GAM.degree = 1, GBM.n.trees = c(500, 1000, 2500),
-    GBM.interaction.depth = seq(2, 8, by = 3), GBM.shrinkage = c(0.001, 0.01, 0.1),
-    GBM.n.minobsinnode = 10, MARS.degree = 1:2, MARS.nprune = 2:max(38, 2 *
-    ncol(bm.format@data.env.var) + 1), MAXENT.algorithm = "maxnet", 
-     MAXENT.parallel
-    = TRUE, RF.mtry = 1:min(10, ncol(bm.format@data.env.var)), RFd.mtry = 1:min(10,
-    ncol(bm.format@data.env.var)), SRE.quant = c(0, 0.0125, 0.025, 0.05, 0.1),
-    XGBOOST.nrounds = 50, XGBOOST.max_depth = 1, XGBOOST.eta = c(0.3, 0.4), XGBOOST.gamma
-    = 0, XGBOOST.colsample_bytree = c(0.6, 0.8), XGBOOST.min_child_weight = 1,
-    XGBOOST.subsample = 0.5)
+  params.train = list(ANN.size = c(2, 4, 6, 8), ANN.decay = c(0.01, 0.05, 0.1), ANN.bag =
+    FALSE, FDA.degree = 1:2, FDA.nprune = 2:25, GAM.select = c(TRUE, FALSE), GAM.method =
+    c("GCV.Cp", "GACV.Cp", "REML", "P-REML", "ML", "P-ML"), GAM.span = c(0.3, 0.5, 0.7),
+    GAM.degree = 1, GBM.n.trees = c(500, 1000, 2500), GBM.interaction.depth = seq(2, 8,
+    by = 3), GBM.shrinkage = c(0.001, 0.01, 0.1), GBM.n.minobsinnode = 10, MARS.degree =
+    1:2, MARS.nprune = 2:max(21, 2 * ncol(bm.format@data.env.var) + 1), MAXENT.algorithm
+    = "maxnet", 
+     MAXENT.parallel = TRUE, RF.mtry = 1:min(10,
+    ncol(bm.format@data.env.var)), RFd.mtry = 1:min(10, ncol(bm.format@data.env.var)),
+    SRE.quant = c(0, 0.0125, 0.025, 0.05, 0.1), XGBOOST.nrounds = 50, XGBOOST.max_depth =
+    1, XGBOOST.eta = c(0.3, 0.4), XGBOOST.gamma = 0, XGBOOST.colsample_bytree = c(0.6,
+    0.8), XGBOOST.min_child_weight = 1, XGBOOST.subsample = 0.5)
 )
 }
 \arguments{

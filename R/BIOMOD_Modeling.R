@@ -776,6 +776,7 @@ BIOMOD_Modeling <- function(bm.format,
   }
   
   .fun_testIfIn(TRUE, paste0("metric.eval with ", bm.format@data.type, " data type"), metric.eval, avail.eval.meth.list)
+
   
   
   if (!is.null(seed.val)) {

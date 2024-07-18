@@ -282,7 +282,7 @@ setGeneric("BIOMOD.options.dataset",
   if (!is.null(bm.format)) {
     .fun_testIfInherits(TRUE, "bm.format", bm.format, c("BIOMOD.formated.data", "BIOMOD.formated.data.PA"))
   }
-  expected_CVnames <- "_allData_allRun"
+  expected_CVnames <- c("_allData_allRun", "for_all_datasets")
   if (!is.null(calib.lines)) {
     .fun_testIfInherits(TRUE, "calib.lines", calib.lines, c("matrix"))
     
@@ -304,7 +304,6 @@ setGeneric("BIOMOD.options.dataset",
     }
   }
   if (strategy == "user.defined" && !is.null(user.val)) {
-    
     if ("for_all_datasets" %in% names(user.val)){
       if (length(names(user.val)) > 1 ){
         user.val <- user.val["for_all_datasets"]

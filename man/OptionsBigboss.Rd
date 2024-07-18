@@ -11,7 +11,7 @@ A \code{\link{BIOMOD.models.options}} object with some changed values :
    \item{\code{ANN.binary.nnet.nnet}}{
      \itemize{
        \item \code{size = 5}
-       \item \code{decay = 5}
+       \item \code{decay = 0.1}
        \item \code{trace = FALSE}
        \item \code{rang = 0.1}
        \item \code{maxit = 200}
@@ -20,7 +20,7 @@ A \code{\link{BIOMOD.models.options}} object with some changed values :
    \item{\code{CTA.binary.rpart.rpart}}{
      \itemize{
        \item \code{method = 'class'}
-       \item \code{control = list(xval = 5, minbucket = 5, minsplit = 5, cp = 0.001, maxdepth = 25)}
+       \item \code{control = list(xval = 5, minbucket = 5, minsplit = 5, cp = 0.001, maxdepth = 10)}
        \item \code{cost = NULL}
      }
    }
@@ -78,7 +78,18 @@ A \code{\link{BIOMOD.models.options}} object with some changed values :
      \itemize{
        \item \code{type = 'classification'}
        \item \code{ntree = 500}
-       \item \code{mtry = NULL}
+       \item \code{mtry = 2}
+       \item \code{strata = factor(c(0, 1))}
+       \item \code{sampsize = NULL}
+       \item \code{nodesize = 5}
+       \item \code{maxnodes = NULL}
+     }
+   }
+   \item{\code{RFd.binary.randomForest.randomForest}}{
+     \itemize{
+       \item \code{type = 'classification'}
+       \item \code{ntree = 500}
+       \item \code{mtry = 2}
        \item \code{strata = factor(c(0, 1))}
        \item \code{sampsize = NULL}
        \item \code{nodesize = 5}

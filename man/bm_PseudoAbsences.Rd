@@ -38,9 +38,9 @@ bm_PseudoAbsences_user.defined(resp.var, expl.var, ...)
 
 bm_PseudoAbsences_random(resp.var, expl.var, ...)
 
-\S4method{bm_PseudoAbsences_random}{ANY,SpatVector}(resp.var, expl.var, nb.absences, nb.rep)
+\S4method{bm_PseudoAbsences_random}{ANY,SpatVector}(resp.var, expl.var, nb.absences, nb.rep, fact.aggr)
 
-\S4method{bm_PseudoAbsences_random}{ANY,SpatRaster}(resp.var, expl.var, nb.absences, nb.rep)
+\S4method{bm_PseudoAbsences_random}{ANY,SpatRaster}(resp.var, expl.var, nb.absences, nb.rep, fact.aggr)
 
 bm_PseudoAbsences_sre(resp.var, expl.var, ...)
 
@@ -104,7 +104,7 @@ If \code{strategy = 'disk'}, a \code{numeric} defining the maximal distance to p
 used to make the \code{disk} pseudo-absence selection (in meters)}
 
 \item{fact.aggr}{(\emph{optional, default} \code{NULL}) \cr
-If \code{strategy = 'disk'}, a \code{integer} defining the factor of aggregation to reduce the resolution}
+If \code{strategy = 'random'} or \code{strategy = 'disk'}, a \code{integer} defining the factor of aggregation to reduce the resolution}
 
 \item{user.table}{(\emph{optional, default} \code{NULL}) \cr
 If \code{strategy = 'user.defined'}, a \code{matrix} or \code{data.frame} with as many rows as 

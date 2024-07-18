@@ -21,7 +21,7 @@ conditions (see Details)."><!-- mathjax --><script src="https://cdnjs.cloudflare
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">biomod2</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">4.2-5-2</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">4.2-6</span>
       </span>
     </div>
 
@@ -177,9 +177,9 @@ must be among <code>'EMmean'</code>, <code>'EMmedian'</code>, <code>'EMcv'</code
 <code>metric.select.thresh</code> to exclude single models based on their evaluation scores 
 (for ensemble methods like probability weighted mean or committee averaging). Must be among  
 <code>all</code> (same evaluation metrics than those of <code>bm.mod</code>), <code>user.defined</code> 
-(and defined through <code>metric.select.table</code>) or <code>ROC</code>, <code>TSS</code>, <code>KAPPA</code>, 
-<code>ACCURACY</code>, <code>BIAS</code>, <code>POD</code>, <code>FAR</code>, <code>POFD</code>, <code>SR</code>, <code>CSI</code>, 
-<code>ETS</code>, <code>HK</code>, <code>HSS</code>, <code>OR</code>, <code>ORSS</code></p></dd>
+(and defined through <code>metric.select.table</code>) or <code>POD</code>, <code>FAR</code>, <code>POFD</code>, 
+<code>SR</code>, <code>ACCURACY</code>, <code>BIAS</code>, <code>ROC</code>, <code>TSS</code>, <code>KAPPA</code>, <code>OR</code>, 
+<code>ORSS</code>, <code>CSI</code>, <code>ETS</code>, <code>BOYCE</code>, <code>MPA</code></p></dd>
 
 
 <dt>metric.select.thresh</dt>
@@ -190,26 +190,24 @@ building</p></dd>
 
 
 <dt>metric.select.table</dt>
-<dd><p>(<em>optional, default</em> <code>NULL</code>) <br> If
-<code>metric.select = 'user.defined'</code>, a <code>data.frame</code> containing
-evaluation scores calculated for each single models and that will be
-compared to <code>metric.select.thresh</code> values to exclude some of them
-from the ensemble model building, with <code>metric.select</code> rownames, and
-<code>models.chosen</code> colnames</p></dd>
+<dd><p>(<em>optional, default</em> <code>NULL</code>) <br> If 
+<code>metric.select = 'user.defined'</code>, a <code>data.frame</code> containing evaluation scores 
+calculated for each single models and that will be compared to <code>metric.select.thresh</code> 
+values to exclude some of them from the ensemble model building, with <code>metric.select</code> 
+rownames, and <code>models.chosen</code> colnames</p></dd>
 
 
 <dt>metric.select.dataset</dt>
-<dd><p>(<em>optional, default</em> <code>'validation'</code>
-<em>if possible</em>). A character determining which dataset should be used
-to filter and/or weigh the ensemble models should be among 'evaluation',
-'validation' or 'calibration'.</p></dd>
+<dd><p>(<em>optional, default</em> <code>'validation'</code> 
+<em>if possible</em>). A character determining which dataset should be used to filter and/or 
+weigh the ensemble models should be among 'evaluation', 'validation' or 'calibration'.</p></dd>
 
 
 <dt>metric.eval</dt>
 <dd><p>a <code>vector</code> containing evaluation metric names to be used, must 
-be among <code>ROC</code>, <code>TSS</code>, <code>KAPPA</code>, <code>ACCURACY</code>, <code>BIAS</code>, <code>POD</code>, 
-<code>FAR</code>, <code>POFD</code>, <code>SR</code>, <code>CSI</code>, <code>ETS</code>, <code>HK</code>, <code>HSS</code>, <code>OR</code>, 
-<code>ORSS</code></p></dd>
+be among  <code>POD</code>, <code>FAR</code>, <code>POFD</code>, <code>SR</code>, <code>ACCURACY</code>, <code>BIAS</code>, 
+<code>ROC</code>, <code>TSS</code>, <code>KAPPA</code>, <code>OR</code>, <code>ORSS</code>, <code>CSI</code>, <code>ETS</code>, 
+<code>BOYCE</code>, <code>MPA</code></p></dd>
 
 
 <dt>var.import</dt>

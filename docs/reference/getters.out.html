@@ -19,7 +19,7 @@ and formated data, models used or not, predictions, evaluations, variables impor
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">biomod2</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">4.2-5-2</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">4.2-6</span>
       </span>
     </div>
 
@@ -317,9 +317,9 @@ available.</p></dd>
 
 <dt>metric.eval</dt>
 <dd><p>(<em>optional, default</em> <code>NULL</code>) <br> 
-A <code>vector</code> containing evaluation metric to be kept, must be among <code>ROC</code>, 
-<code>TSS</code>, <code>KAPPA</code>, <code>ACCURACY</code>, <code>BIAS</code>, <code>POD</code>, <code>FAR</code>, 
-<code>POFD</code>, <code>SR</code>, <code>CSI</code>, <code>ETS</code>, <code>HK</code>, <code>HSS</code>, <code>OR</code>, <code>ORSS</code></p></dd>
+A <code>vector</code> containing evaluation metric to be kept, must be among <code>POD</code>, 
+<code>FAR</code>, <code>POFD</code>, <code>SR</code>, <code>ACCURACY</code>, <code>BIAS</code>, <code>ROC</code>, <code>TSS</code>, 
+<code>KAPPA</code>, <code>OR</code>, <code>ORSS</code>, <code>CSI</code>, <code>ETS</code>, <code>BOYCE</code>, <code>MPA</code></p></dd>
 
 
 <dt>expl.var</dt>
@@ -350,24 +350,24 @@ A <code>vector</code> containing merged pseudo-absence set to be loaded, must be
 <dt>filtered.by</dt>
 <dd><p>(<em>optional, default</em> <code>NULL</code>) <br> 
 A <code>vector</code> containing evaluation metric selected to filter single models to build the 
-ensemble models, must be among <code>ROC</code>, <code>TSS</code>, <code>KAPPA</code>, <code>ACCURACY</code>, 
-<code>BIAS</code>, <code>POD</code>, <code>FAR</code>, <code>POFD</code>, <code>SR</code>, <code>CSI</code>, <code>ETS</code>, 
-<code>HK</code>, <code>HSS</code>, <code>OR</code>, <code>ORSS</code></p></dd>
+ensemble models, must be among <code>POD</code>, <code>FAR</code>, <code>POFD</code>, <code>SR</code>, 
+<code>ACCURACY</code>, <code>BIAS</code>, <code>ROC</code>, <code>TSS</code>, <code>KAPPA</code>, <code>OR</code>, <code>ORSS</code>, 
+<code>CSI</code>, <code>ETS</code>, <code>BOYCE</code>, <code>MPA</code></p></dd>
 
 
 <dt>metric.binary</dt>
 <dd><p>(<em>optional, default</em> <code>NULL</code>) <br> 
 A <code>vector</code> containing evaluation metric selected to transform predictions into binary 
-values, must be among <code>ROC</code>, <code>TSS</code>, <code>KAPPA</code>, <code>ACCURACY</code>, <code>BIAS</code>, 
-<code>POD</code>, <code>FAR</code>, <code>POFD</code>, <code>SR</code>, <code>CSI</code>, <code>ETS</code>, <code>HK</code>, 
-<code>HSS</code>, <code>OR</code>, <code>ORSS</code></p></dd>
+values, must be among <code>POD</code>, <code>FAR</code>, <code>POFD</code>, <code>SR</code>, <code>ACCURACY</code>, 
+<code>BIAS</code>, <code>ROC</code>, <code>TSS</code>, <code>KAPPA</code>, <code>OR</code>, <code>ORSS</code>, <code>CSI</code>, 
+<code>ETS</code>, <code>BOYCE</code>, <code>MPA</code></p></dd>
 
 
 <dt>metric.filter</dt>
 <dd><p>(<em>optional, default</em> <code>NULL</code>) <br> 
-A <code>vector</code> containing evaluation metric to filter predictions, must be among <code>ROC</code>, 
-<code>TSS</code>, <code>KAPPA</code>, <code>ACCURACY</code>, <code>BIAS</code>, <code>POD</code>, <code>FAR</code>, 
-<code>POFD</code>, <code>SR</code>, <code>CSI</code>, <code>ETS</code>, <code>HK</code>, <code>HSS</code>, <code>OR</code>, <code>ORSS</code></p></dd>
+A <code>vector</code> containing evaluation metric to filter predictions, must be among <code>POD</code>, 
+<code>FAR</code>, <code>POFD</code>, <code>SR</code>, <code>ACCURACY</code>, <code>BIAS</code>, <code>ROC</code>, <code>TSS</code>, 
+<code>KAPPA</code>, <code>OR</code>, <code>ORSS</code>, <code>CSI</code>, <code>ETS</code>, <code>BOYCE</code>, <code>MPA</code></p></dd>
 
 
 <dt>...</dt>

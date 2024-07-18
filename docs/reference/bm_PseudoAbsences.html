@@ -18,7 +18,7 @@ to 4 different methods : random, sre, disk or user.defined (see Details)."><!-- 
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">biomod2</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">4.2-5-2</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">4.2-6</span>
       </span>
     </div>
 
@@ -139,10 +139,10 @@ to 4 different methods : <code>random</code>, <code>sre</code>, <code>disk</code
 <span><span class="fu">bm_PseudoAbsences_random</span><span class="op">(</span><span class="va">resp.var</span>, <span class="va">expl.var</span>, <span class="va">...</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># S4 method for ANY,SpatVector</span></span>
-<span><span class="fu">bm_PseudoAbsences_random</span><span class="op">(</span><span class="va">resp.var</span>, <span class="va">expl.var</span>, <span class="va">nb.absences</span>, <span class="va">nb.rep</span><span class="op">)</span></span>
+<span><span class="fu">bm_PseudoAbsences_random</span><span class="op">(</span><span class="va">resp.var</span>, <span class="va">expl.var</span>, <span class="va">nb.absences</span>, <span class="va">nb.rep</span>, <span class="va">fact.aggr</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># S4 method for ANY,SpatRaster</span></span>
-<span><span class="fu">bm_PseudoAbsences_random</span><span class="op">(</span><span class="va">resp.var</span>, <span class="va">expl.var</span>, <span class="va">nb.absences</span>, <span class="va">nb.rep</span><span class="op">)</span></span>
+<span><span class="fu">bm_PseudoAbsences_random</span><span class="op">(</span><span class="va">resp.var</span>, <span class="va">expl.var</span>, <span class="va">nb.absences</span>, <span class="va">nb.rep</span>, <span class="va">fact.aggr</span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu">bm_PseudoAbsences_sre</span><span class="op">(</span><span class="va">resp.var</span>, <span class="va">expl.var</span>, <span class="va">...</span><span class="op">)</span></span>
 <span></span>
@@ -229,7 +229,7 @@ used to make the <code>disk</code> pseudo-absence selection (in meters)</p></dd>
 
 <dt>fact.aggr</dt>
 <dd><p>(<em>optional, default</em> <code>NULL</code>) <br>
-If <code>strategy = 'disk'</code>, a <code>integer</code> defining the factor of aggregation to reduce the resolution</p></dd>
+If <code>strategy = 'random'</code> or <code>strategy = 'disk'</code>, a <code>integer</code> defining the factor of aggregation to reduce the resolution</p></dd>
 
 
 <dt>user.table</dt>

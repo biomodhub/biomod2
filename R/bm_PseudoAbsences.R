@@ -557,7 +557,7 @@ setGeneric("bm_PseudoAbsences_random",
 ##'
 
 setMethod('bm_PseudoAbsences_random', signature(expl.var = "SpatVector"),
-          function(resp.var, expl.var, nb.absences, nb.rep)
+          function(resp.var, expl.var, nb.absences, nb.rep, fact.aggr)
           {
             cat("\n   > random pseudo absences selection")
             
@@ -889,6 +889,7 @@ setGeneric("bm_PseudoAbsences_disk",
 setMethod('bm_PseudoAbsences_disk', signature(expl.var = "SpatVector"),
           function(resp.var, expl.var, dist.min, dist.max, nb.absences, nb.rep, fact.aggr) {
             cat("\n   > Disk pseudo absences selection")
+            
             # 1. determining area which can be selected
             coor <- crds(resp.var)
             pres <- which(values(resp.var)[, 1] == 1)
@@ -930,8 +931,6 @@ setMethod('bm_PseudoAbsences_disk', signature(expl.var = "SpatVector"),
 setMethod('bm_PseudoAbsences_disk', signature(expl.var = "SpatRaster"),
           function(resp.var, expl.var, dist.min, dist.max, nb.absences, nb.rep, fact.aggr)
           {
-            cat("\n   > Disk pseudo absences selection")
-            
             # 1. Check if NA are present in resp.var observations or not to determine which dataset to use
             nb.cells <- .get_nb_available_pa_cells(resp.var)
             if (nb.cells > 0) { # PA will be taken into response variable
@@ -942,7 +941,7 @@ setMethod('bm_PseudoAbsences_disk', signature(expl.var = "SpatRaster"),
                                        nb.absences, nb.rep)
               )
             } else {
-              
+              cat("\n   > Disk pseudo absences selection")
               
               cat("\n   > Pseudo absences are selected in explanatory variables")
               cat("\n")
