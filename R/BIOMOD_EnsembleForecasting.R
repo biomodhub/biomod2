@@ -397,7 +397,7 @@ BIOMOD_EnsembleForecasting <- function(bm.em,
     saved.files.filtered <- NULL
     to.rm <- grepl("EMcv|EMci", models.chosen)
     if(any(to.rm)){
-      cat("\n! Binary/Filtered transformation automatically deactivated for ensemble models with coefficient of variation or confidence intervals")
+      cat("\n! Binary/Filtered transformation automatically desactivated for ensemble models with coefficient of variation or confidence intervals")
       models.chosen <- models.chosen[!to.rm]
     }
     
@@ -415,10 +415,12 @@ BIOMOD_EnsembleForecasting <- function(bm.em,
         if (!do.stack) {
           for (i in 1:length(proj_out@proj.out@link)) {
             file.tmp <- proj_out@proj.out@link[i]
+            output.format.search <- paste0("\\",output.format)
             if (grepl(pattern = paste0(models.chosen, collapse = "|"),
                       x = file.tmp)) {
               if (eval.meth %in% metric.binary) {
-                file.tmp.binary <- sub(output.format,
+                
+                file.tmp.binary <- sub(output.format.search,
                                        paste0("_", eval.meth, "bin", output.format),
                                        file.tmp)
                 saved.files.binary <- c(saved.files.binary, file.tmp.binary)
@@ -430,7 +432,7 @@ BIOMOD_EnsembleForecasting <- function(bm.em,
               }
               
               if (eval.meth %in% metric.filter) {
-                file.tmp.filtered <- sub(output.format,
+                file.tmp.filtered <- sub(output.format.search,
                                          paste0("_", eval.meth, "filt", output.format),
                                          file.tmp)
                 saved.files.filtered <- c(saved.files.filtered, file.tmp.filtered)

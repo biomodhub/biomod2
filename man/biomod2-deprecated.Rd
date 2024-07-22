@@ -3,6 +3,7 @@
 \name{biomod2-deprecated}
 \alias{biomod2-deprecated}
 \alias{BIOMOD_CrossValidation}
+\alias{BIOMOD_ModelingOptions}
 \alias{BIOMOD_PresenceOnly}
 \alias{BIOMOD_Tuning}
 \alias{BinaryTransformation}
@@ -20,6 +21,8 @@
 \title{Deprecated functions in package \pkg{biomod2}.}
 \usage{
 BIOMOD_CrossValidation(...)
+
+BIOMOD_ModelingOptions(...)
 
 BIOMOD_PresenceOnly(...)
 
@@ -58,6 +61,11 @@ in the current version. When possible, alternative functions with similar
 \section{\code{BIOMOD_CrossValidation}}{
 
 For \code{BIOMOD_CrossValidation} use \code{\link{bm_CrossValidation}}.
+}
+
+\section{\code{BIOMOD_ModelingOptions}}{
+
+For \code{BIOMOD_ModelingOptions} use \code{\link{bm_ModelingOptions}}.
 }
 
 \section{\code{BIOMOD_PresenceOnly}}{

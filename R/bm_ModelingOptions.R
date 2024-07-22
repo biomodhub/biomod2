@@ -8,7 +8,7 @@
 ##' @description Parameterize and/or tune \pkg{biomod2}'s single models options.
 ##'
 ##' @param data.type a \code{character} corresponding to the data type to be used, must be either 
-##' \code{binary}, \code{binary.PA}, \code{abundance}, \code{compositional}
+##' \code{binary}, \code{binary.PA}, \code{abundance}, \code{compositional}. For the moment, only \code{binary} is accept.
 ##' @param models a \code{vector} containing model names to be computed, must be among 
 ##' \code{ANN}, \code{CTA}, \code{FDA}, \code{GAM}, \code{GBM}, \code{GLM}, \code{MARS}, 
 ##' \code{MAXENT}, \code{MAXNET}, \code{RF}, \code{RFd}, \code{SRE}, \code{XGBOOST}

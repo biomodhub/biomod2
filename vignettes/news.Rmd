@@ -15,6 +15,10 @@ vignette: >
 
 ### <i class="fas fa-feather"></i> 2024
 
+#### 4.2-6-1 Devel actuel 
+
+- Correction : Some paths failed depending on the name of the species (e.g.: name of data format (as "tif") in the species name)
+
 #### 4.2-6 Devel actuel
 
 - Warning ! Some options for `OptionsBigboss` have been modified (concern only ANN, CTA and RF models)
