@@ -685,7 +685,7 @@ setMethod('print', signature('BIOMOD.models.options'),
   } else { # data.type = nonbinary or data.type = abundance
     RFtype <- "regression"
     family <- gaussian(link = 'identity')
-    CTAmethod <- "anova" #??
+    CTAmethod <- "poisson" #??
     GBMdistribution <- "gaussian"
     FDAmethod <- "polyreg"
   }

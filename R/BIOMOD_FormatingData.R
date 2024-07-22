@@ -22,6 +22,9 @@
 ##' \cr \emph{Note that old format from \pkg{sp} are still supported such as
 ##'  \code{SpatialPoints}  (if presence-only) or \code{SpatialPointsDataFrame}
 ##'  object containing binary data.}
+##' @param data.type a \code{character}, corresponding to the data type to be used, must be either 
+##' \code{binary}, \code{count}, \code{ordinal}, \code{relative}, or \code{abundance}. If data.type is not provided,
+##' biomod2 will try to guess.
 ##' 
 ##' @param expl.var a \code{matrix}, \code{data.frame}, \code{\link[terra:vect]{SpatVector}}
 ##' or \code{\link[terra:rast]{SpatRaster}} object containing the explanatory variables 

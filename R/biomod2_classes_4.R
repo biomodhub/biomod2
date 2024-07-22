@@ -475,14 +475,16 @@ setMethod('predict2', signature(object = 'CTA_biomod2_model', newdata = "SpatRas
           function(object, newdata, ...) {
             data.type <- object@model_type
             type = 'prob'
-            if(data.type != "binary") {type = "matrix"}
+            n <- 2
+            if(data.type != "binary") {type = "matrix"; n <- 1}
             predfun <- function(object, newdata, mod.name){
               proj <- 
                 subset(predict(newdata,
                                model = get_formal_model(object), 
-                               type = type, na.rm = TRUE,
+                               #type = type,
+                               na.rm = TRUE,
                                wopt = list(names = rep(mod.name,2))), 
-                       2)    
+                       n)    
               proj
             }
             # redirect to predict2.biomod2_model.SpatRaster
@@ -495,9 +497,12 @@ setMethod('predict2', signature(object = 'CTA_biomod2_model', newdata = "data.fr
           function(object, newdata, ...) {
             data.type <- object@model_type
             type = 'prob'
-            if(data.type != "binary") {type = "matrix"}
+            n <- 2
+            if(data.type != "binary") {type = "matrix"; n <- 1}
             predfun <- function(object, newdata, not_na_rows){
-              as.numeric(predict(get_formal_model(object), as.data.frame(newdata[not_na_rows, , drop = FALSE]), type = type)[, 2])
+              as.numeric(predict(get_formal_model(object), 
+                                 as.data.frame(newdata[not_na_rows, , drop = FALSE]),
+                                 type = type)[, n])
             }
             
             # redirect to predict2.biomod2_model.data.frame
