@@ -67,8 +67,7 @@
 ##' @param OPT.user (\emph{optional, default} \code{TRUE}) \cr  
 ##' A \code{\link{BIOMOD.models.options}} object returned by the \code{\link{bm_ModelingOptions}} 
 ##' function
-##' @param bm.options a \code{\link{BIOMOD.models.options}} object returned by the  
-##' \code{\link{bm_ModelingOptions}} function
+##' @param bm.options \emph{deprecated}, now called \code{OPT.user}
 ##' 
 ##' @param weights (\emph{optional, default} \code{NULL}) \cr 
 ##' A \code{vector} of \code{numeric} values corresponding to observation weights (one per 
@@ -184,6 +183,8 @@
 ##'     \code{\link{BIOMOD_FormatingData}}), weights are by default calculated such that 
 ##'     \code{prevalence = 0.5}. \emph{Automatically created \code{weights} will be \code{integer} 
 ##'     values to prevent some modeling issues.}
+##'     \item \emph{NOTE THAT \code{MAXENT}, \code{MAXNET}, \code{RF}, \code{RFd} and \code{SRE} 
+##'     models do not take weights into account.}
 ##'   }}
 ##' 
 ##'   \item{metric.eval}{

@@ -20,7 +20,7 @@ metrics (see Details)."><!-- mathjax --><script src="https://cdnjs.cloudflare.co
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">biomod2</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">4.2-6</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">4.2-6-1</span>
       </span>
     </div>
 
@@ -264,8 +264,7 @@ function</p></dd>
 
 
 <dt>bm.options</dt>
-<dd><p>a <code><a href="BIOMOD.models.options.html">BIOMOD.models.options</a></code> object returned by the
-<code><a href="bm_ModelingOptions.html">bm_ModelingOptions</a></code> function</p></dd>
+<dd><p><em>deprecated</em>, now called <code>OPT.user</code></p></dd>
 
 
 <dt>nb.rep</dt>
@@ -421,6 +420,8 @@ created in the current working directory :</p><ol><li><p>a <em>models</em> folde
     <code><a href="BIOMOD_FormatingData.html">BIOMOD_FormatingData</a></code>), weights are by default calculated such that 
     <code>prevalence = 0.5</code>. <em>Automatically created <code>weights</code> will be <code>integer</code> 
     values to prevent some modeling issues.</em></p></li>
+<li><p><em>NOTE THAT <code>MAXENT</code>, <code>MAXNET</code>, <code>RF</code>, <code>RFd</code> and <code>SRE</code> 
+    models do not take weights into account.</em></p></li>
 </ul></dd>
 
 

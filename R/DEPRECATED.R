@@ -26,6 +26,23 @@ NULL
 #' @export
 BIOMOD_CrossValidation <- function(...) { .Deprecated("bm_CrossValidation") }
 
+#' @title BIOMOD_ModelingOptions
+#' @description Deprecated function name for
+#'   \code{\link{bm_ModelingOptions}}
+#' @param ... Additional arguments
+#'
+#' @name BIOMOD_ModelingOptions-deprecated
+#' @usage BIOMOD_ModelingOptions(...)
+#' @seealso \code{\link{biomod2-deprecated}}
+#' @keywords internal
+NULL
+#' @rdname biomod2-deprecated
+#' @section \code{BIOMOD_ModelingOptions}:
+#' For \code{BIOMOD_ModelingOptions} use \code{\link{bm_ModelingOptions}}.
+#'
+#' @export
+BIOMOD_ModelingOptions <- function(...) { .Deprecated("bm_ModelingOptions") }
+
 #' @title BIOMOD_PresenceOnly
 #' @description Deprecated function name for
 #'   \code{\link{bm_FindOptimStat}}
