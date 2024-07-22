@@ -185,6 +185,8 @@
 ##'     \code{\link{BIOMOD_FormatingData}}), weights are by default calculated such that 
 ##'     \code{prevalence = 0.5}. \emph{Automatically created \code{weights} will be \code{integer} 
 ##'     values to prevent some modeling issues.}
+##'     \item \emph{NOTE THAT \code{MAXENT}, \code{MAXNET}, \code{RF}, \code{RFd} and \code{SRE} 
+##'     models do not take weights into account.}
 ##'   }}
 ##' 
 ##'   \item{metric.eval}{
