@@ -564,9 +564,9 @@ get_var_range <- function(data)
   sub(pattern     = paste0(".*?_",sp.name), 
       replacement = "",
       x           = out.names)
-  out.binary <- grepl(pattern = "bin/.",
+  out.binary <- grepl(pattern = "bin\\.",
                       x = out.names)
-  out.filt <- grepl(pattern = "filt/.",
+  out.filt <- grepl(pattern = "filt\\.",
                     x = out.names)
   out.type <- ifelse(out.binary,
                      "bin",
@@ -587,7 +587,6 @@ get_var_range <- function(data)
                            return(  sub(paste0(out.type[i],".*"), "", begin.cut) )
                          }
                        })
-
   data.frame("link"   = out.names,
              "type"   = out.type,
              "metric" = out.metric)
