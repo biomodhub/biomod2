@@ -48,6 +48,8 @@
 ##' A \code{logical} or a \code{character} value defining whether and how objects should be 
 ##' compressed when saved on hard drive. Must be either \code{TRUE}, \code{FALSE}, \code{xz} or 
 ##' \code{gzip} (see Details)
+##' @param digits (\emph{optional, default} \code{0}) \cr 
+##' A \code{integer} value defining the number of digits of the predictions. 
 ##' @param build.clamping.mask (\emph{optional, default} \code{TRUE}) \cr 
 ##' A \code{logical} value defining whether a clamping mask should be built and saved on hard 
 ##' drive or not (see Details)
@@ -201,6 +203,7 @@ BIOMOD_Projection <- function(bm.mod,
                               metric.binary = NULL,
                               metric.filter = NULL,
                               compress = TRUE,
+                              digits = 0,
                               build.clamping.mask = TRUE,
                               nb.cpu = 1,
                               seed.val = NULL,
@@ -315,6 +318,12 @@ BIOMOD_Projection <- function(bm.mod,
                         filename = filename, omit.na = omit.na, 
                         temp_workdir = temp_workdir, seedval = seed.val, 
                         overwrite = TRUE, mod.name = mod.name)
+    ## Cleaning 
+    if (bm.mod@data.type %in% c("count","abundance")){
+      pred.tmp[pred.tmp < 0] <- 0
+      pred.tmp <- round(pred.tmp,digits = digits)
+    }
+    
     if (do.stack) {
       if (proj_is_raster) {
         return(wrap(pred.tmp)) 
@@ -326,6 +335,8 @@ BIOMOD_Projection <- function(bm.mod,
       return(filename)
     }
   }
+  
+
   
   ## Putting predictions into the right format
   if (do.stack) {
@@ -358,7 +369,9 @@ BIOMOD_Projection <- function(bm.mod,
       save(list = nameProjSp, file = saved.files, compress = compress)
     } else  {
       writeRaster(x = rast(get(nameProjSp)), filename = saved.files,
-                  overwrite = TRUE, datatype = ifelse(on_0_1000, "INT2S", "FLT4S"), NAflag = -9999)
+                  overwrite = TRUE,
+                  datatype = ifelse(bm.mod@data.type == "binary",ifelse(on_0_1000, "INT2S", "FLT4S"), ifelse(digits == 0, "INT2S", "FLT4S"))
+                  , NAflag = -9999)
     }
   }
   proj_out@proj.out@link <- saved.files
@@ -663,7 +676,7 @@ BIOMOD_Projection <- function(bm.mod,
   ## 10.on_0_1000 --------------------------------
   
   on_0_1000 <- ifelse(is.null(args$on_0_1000), TRUE, args$on_0_1000)
-  if (bm.mod@data.type != "binary") {on_0_1000 <- FALSE}
+  if (bm.mod@data.type %in% c("count","abundance","ordinal")) {on_0_1000 <- FALSE}
   
   
   return(list(proj.name = proj.name,

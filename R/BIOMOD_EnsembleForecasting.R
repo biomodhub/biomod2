@@ -236,6 +236,7 @@ BIOMOD_EnsembleForecasting <- function(bm.em,
                                        metric.binary = NULL,
                                        metric.filter = NULL,
                                        compress = TRUE,
+                                       digits =0,
                                        nb.cpu = 1,
                                        na.rm = TRUE,
                                        ...)
@@ -334,6 +335,13 @@ BIOMOD_EnsembleForecasting <- function(bm.em,
                         , mod.name = em.name
                         , na.rm = na.rm)
       
+      ## Cleaning 
+      if (bm.em@data.type %in% c("count","abundance")){
+        ef.tmp[ef.tmp < 0] <- 0
+        ef.tmp <- round(ef.tmp,digits = digits)
+      }
+      
+      
       if (do.stack) {
         if (proj_is_raster) {
           return(wrap(ef.tmp)) 
@@ -379,7 +387,7 @@ BIOMOD_EnsembleForecasting <- function(bm.em,
       save(list = nameProjSp, file = saved.files, compress = compress)
     } else {
       writeRaster(x = rast(get(nameProjSp)), filename = saved.files,
-                  overwrite = TRUE, NAflag = -9999, datatype = ifelse(any(grepl("EMcv", models.chosen)), "FLT4S", "INT2S"))
+                  overwrite = TRUE, NAflag = -9999, datatype = ifelse(any(grepl("EMcv", models.chosen) | digits != 0), "FLT4S", "INT2S"))
     }
   }
   proj_out@proj.out@link <- saved.files
@@ -710,7 +718,7 @@ BIOMOD_EnsembleForecasting <- function(bm.em,
   ## 12.on_0_1000 --------------------------------
   
   on_0_1000 <- ifelse(is.null(args$on_0_1000), TRUE, args$on_0_1000)
-  if (bm.em@data.type != "binary") {on_0_1000 <- FALSE}
+  if (bm.em@data.type  %in% c("count","abundance","ordinal")) {on_0_1000 <- FALSE}
   
   return(list(bm.em = bm.em,
               bm.proj = bm.proj,
