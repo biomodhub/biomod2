@@ -79,7 +79,7 @@ setGeneric("BIOMOD.options.default", def = function(mod, typ, pkg, fun) { standa
   .fun_testIfIn(TRUE, "mod", mod, avail.models.list)
   
   ## check if type is supported
-  avail.types.list <- c('binary', 'binary.PA', 'abundance', 'count', 'nonbinary')
+  avail.types.list <- c('binary', 'abundance', 'count', 'ordinal', 'relative', 'nonbinary')
   .fun_testIfIn(TRUE, "typ", typ, avail.types.list)
   
   if (mod != 'MAXENT') {
@@ -663,7 +663,7 @@ setMethod('print', signature('BIOMOD.models.options'),
 .bm_adaptation.data.type <- function(data.type, mod, argstmp, pkg) {
   
   ## Possibilité de le simplifier mais meilleure lecture ? 
-  if (data.type == "binary" | data.type == 'binary.PA'){
+  if (data.type == "binary"){
     RFtype <- "classification"
     family <- binomial(link = 'logit')
     CTAmethod <- "class"
@@ -676,12 +676,19 @@ setMethod('print', signature('BIOMOD.models.options'),
     GBMdistribution <- "poisson"
     FDAmethod <- "polyreg"
   }
-  else if (data.type == "compositional"){
+  else if (data.type == "ordinal"){
     RFtype <- "classification"
     family <- binomial() ##? 
     CTAmethod <- "class"
     GBMdistribution <- "multinomial"
     FDAmethod <- "mars" #???
+  } else if (data.type == "relative"){
+    RFtype <- "regression"
+    family <- quasibinomial(link = 'logit')
+    #GAMfamily <- betar(link="logit")
+    CTAmethod <- "poisson"
+    GBMdistribution <- "tweedie"
+    FDAmethod <- "polyreg"
   } else { # data.type = nonbinary or data.type = abundance
     RFtype <- "regression"
     family <- gaussian(link = 'identity')

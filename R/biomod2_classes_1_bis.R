@@ -582,7 +582,7 @@
   filter <- !is.na(x@data.species)
   full.resp <- x@data.species[filter]
   full.xy <- x@coord[filter,]
-  full.df <- data.frame(resp = full.resp,
+  full.df <- data.frame(resp = as.numeric(full.resp),
                         x = full.xy[,1],
                         y = full.xy[,2])
   
@@ -597,7 +597,7 @@
   if (plot.eval) {
     eval.resp <- x@eval.data.species
     eval.xy <- x@eval.coord
-    eval.df <- data.frame(resp = eval.resp,
+    eval.df <- data.frame(resp = as.numeric(eval.resp),
                           x = eval.xy[,1],
                           y = eval.xy[,2])
     

@@ -321,16 +321,17 @@ bm_ModelingOptions <- function(data.type
            , user.val = NULL, user.base = NULL
            , bm.format = NULL, calib.lines = NULL) {
     ## check if type is supported
-    avail.types.list <- c('binary', 'binary.PA', 'abundance', 'count', 'nonbinary')
+    avail.types.list <- c('binary', 'count', 'ordinal', 'relative', 'abundance', 'nonbinary')
     .fun_testIfIn(TRUE, "data.type", data.type, avail.types.list)
     
     ## Check data.type coherence 
     if (!is.null(bm.format)){
-      if ((bm.format@data.type == "binary" & data.type != "binary")|
-          (bm.format@data.type != "binary" & data.type == "binary")) {
+      if ((data.type == "nonbinary" && bm.format@data.type == "binary") ||
+          (data.type != "nonbinary" && bm.format@data.type != data.type)){
         stop("\n data.type should match the data.type of your bm.format")
-      }
+      } 
     }
+    # data.type <- bm.format@data.type #???
       
     ## check if model is supported
     avail.models.list <- c('ANN', 'CTA', 'FDA', 'GAM', 'GAM.gam.gam', 'GAM.mgcv.bam', 'GAM.mgcv.gam'
@@ -386,7 +387,8 @@ bm_ModelingOptions <- function(data.type
       }
     }
     
-    return(list(models = models))
+    return(list(models = models,
+                data.type = data.type))
   }
 
 

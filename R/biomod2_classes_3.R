@@ -853,7 +853,8 @@ setMethod(
       }
     } else {
       ### Plot data.frame  -----------------------------------------------------
-      maxi <- ifelse(max(proj$pred) > 1, 1000, 1) 
+      maxi <- ifelse(max(proj$pred) > 1, 1000, 1)
+      if (x@data.type != "binary") {maxi <- max(proj$pred, na.rm = TRUE)}
       if (std) {
         limits <-  c(0,maxi)
       } else {

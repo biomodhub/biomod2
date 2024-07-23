@@ -1,7 +1,8 @@
 ###################################################################################################
 ##' @name bm_FindOptimStat
 ##' @aliases bm_FindOptimStat
-##' @aliases bm_CalculateStat
+##' @aliases bm_CalculateStatBin
+##' @aliases bm_CalculateStatAbund
 ##' @aliases get_optim_value
 ##' @author Damien Georges
 ##' 
@@ -223,10 +224,10 @@ bm_FindOptimStat <- function(metric.eval = 'TSS',
       valToTest <- threshold
     }
     
-    ## 2. apply the bm_CalculateStat function ---------------------------------
+    ## 2. apply the bm_CalculateStatBin function ---------------------------------
     calcStat <- sapply(lapply(valToTest, function(x) {
       return(table(fit > x, obs))
-    }), bm_CalculateStat, metric.eval = metric.eval)
+    }), bm_CalculateStatBin, metric.eval = metric.eval)
     
     ## 3. scale obtained scores and find best value ---------------------------
     StatOptimum <- get_optim_value(metric.eval)
@@ -277,7 +278,7 @@ bm_FindOptimStat <- function(metric.eval = 'TSS',
     eval.out <- data.frame(metric.eval, cutoff, sensitivity, specificity, best.stat)
     
   } else { #abundance metrics 
-    fun_eval <- .get_function_abundance_metrics(metric.eval)
+    fun_eval <- bm_CalculateStatAbun(metric.eval)
     best.stat <- try(eval(parse(text = fun_eval)))
     eval.out <- data.frame(metric.eval, best.stat)
   }
@@ -401,7 +402,7 @@ get_optim_value <- function(metric.eval)
 ##' @export
 ##'
 
-bm_CalculateStat <- function(misc, metric.eval = 'TSS')
+bm_CalculateStatBin <- function(misc, metric.eval = 'TSS')
 {
   ## check contagency table
   misc <- .contingency_table_check(misc)
@@ -579,38 +580,7 @@ ecospat.mpa <- function(Pred, Sp.occ.xy = NULL, perc = 0.9)
 
 ## New function in the case of abundance data
 
-# bm_EvalAbundanceModel <- function(metric.eval, bm.mod, obs  = NULL, fit = NULL){
-#   
-#   .bm_EvalAbundanceModel.check.args(bm.mod, metric.eval)
-#   #for (argi in names(args)) { assign(x = argi, value = args[[argi]]) }
-#   #rm(args)
-#   
-#   best.stat <- NULL
-#   if (metric.eval == "AIC"){
-#     best.stat <- AIC(bm.mod)
-#   }
-#   
-#   if (metric.eval == "Rsq"){
-#     best.stat <-  cor(obs,fit)^2
-#   }
-#   
-#   if (metric.eval == "RMSE"){
-#     best.stat <-  sqrt(mean((obs - fit)^2))
-#   }
-#    
-#   eval.out <- data.frame(metric.eval, best.stat)
-#   return(eval.out)
-# }
-# 
-# .bm_EvalAbundanceModel.check.args <- function(bm.mod, metric.eval){
-#   
-#   
-#   avail.eval.meth.list <- c('AIC', 'Rsq', 'RMSE')
-#   .fun_testIfIn(TRUE, "metric.eval", metric.eval, avail.eval.meth.list)
-#   
-# }
-
-.get_function_abundance_metrics<- function(metric.eval)
+bm_CalculateStatAbun <- function(metric.eval)
 {
   switch(metric.eval
          , 'RMSE' = "sqrt(mean((obs - fit)^2))"

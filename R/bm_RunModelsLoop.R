@@ -628,6 +628,8 @@ bm_RunModel <- function(model, run.name, dir.name = '.'
   .bm_RunModel.check.args <- function(model, bm.options, Data, weights.vec, calib.lines.vec
                                       , eval.data, metric.eval, scale.models, seed.val = NULL, do.progress = TRUE)
   {
+    data.type <- bm.options@options[[1]]@type
+    
     ## 0. Do some cleaning over Data argument -----------------------------------
     data_sp <- Data[, 1]
     data_xy <- Data[, c("x", "y")]
@@ -642,9 +644,9 @@ bm_RunModel <- function(model, run.name, dir.name = '.'
     {
       eval.lines.vec <- !calib.lines.vec
       # ...test if there is (pseudo)absences AND presences in evaluation and calibration datasets
-      if (length(which(data_sp[calib.lines.vec] == 0)) == 0 ||
+      if ((length(which(data_sp[calib.lines.vec] == 0)) == 0 & data.type == "binary") ||
           length(which(data_sp[calib.lines.vec] == 0)) == length(calib.lines.vec) ||
-          length(which(data_sp[eval.lines.vec] == 0)) == 0 ||
+          (length(which(data_sp[eval.lines.vec] == 0)) == 0 & data.type == "binary") ||
           length(which(data_sp[eval.lines.vec] == 0)) == length(eval.lines.vec)) {
         warning(paste0(resp_name, " ", model,
                        " was switched off because of no both presences and absences data given"),
@@ -654,7 +656,7 @@ bm_RunModel <- function(model, run.name, dir.name = '.'
     } else { ## evaluation = calibration dataset
       eval.lines.vec <- calib.lines.vec
       # ...test if there is absences AND presences in whole dataset
-      if (length(which(data_sp == 0)) == 0 ||
+      if ((length(which(data_sp == 0)) == 0 & data.type == "binary")  ||
           length(which(data_sp == 0)) == length(data_sp)) {
         warning(paste0(resp_name, " ", model,
                        " was switched off because of no both presences and absences data given (full model)"),
@@ -693,12 +695,11 @@ bm_RunModel <- function(model, run.name, dir.name = '.'
     colnames(data_mod) <- c(resp_name, colnames(data_env_w))
     
     ## 5. Check data.type
-    data.type <- bm.options@options[[1]]@type
-    avail.types.list <- c('binary', 'binary.PA', 'abundance', 'count')
+    avail.types.list <- c('binary', 'count', 'ordinal', 'relative', 'abundance')
     .fun_testIfIn(TRUE, "data.type", data.type, avail.types.list)
     
     on_0_1000 <- TRUE
-    if(data.type %in% c("abundance","count")){
+    if(data.type %in% c("abundance","count", "ordinal")){
       on_0_1000 <- FALSE
     }
     

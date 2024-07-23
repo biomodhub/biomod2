@@ -1142,7 +1142,7 @@ xgbpred <- function(model, data, ...) {
     data.type <- ifelse(nlevels(resp.var) <= 2, "binary", "ordinal")
   } else{
     element <- sort(unique(resp.var))
-    if (identical(element,c(0,1)) | identical(element,1)){
+    if (identical(as.numeric(element),c(0,1)) | identical(as.numeric(element),1)){
       data.type <- "binary"
     } else {
       if (identical(as.numeric(as.integer(element)),element)){

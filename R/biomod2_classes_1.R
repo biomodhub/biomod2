@@ -186,7 +186,7 @@ setGeneric("BIOMOD.formated.data", def = function(sp, env, ...) { standardGeneri
     stop("Raster response variable not supported yet ! \nPlease extract your presences and your absences by yourself")
     #### TO DO #### extract the 0 and 1 in sp format
   }
-  available.types.resp <- c('integer', 'numeric', 'data.frame', 'matrix',
+  available.types.resp <- c('integer', 'numeric','factor', 'data.frame', 'matrix',
                             'SpatialPointsDataFrame', 'SpatialPoints', 'SpatVector')
   .fun_testIfInherits(TRUE, "sp", sp, available.types.resp)
   
@@ -345,7 +345,7 @@ setMethod('BIOMOD.formated.data', signature(sp = 'numeric', env = 'data.frame'),
             args <- .BIOMOD.formated.data.check.args(sp, env, data.type, xy, eval.sp, eval.env, eval.xy, filter.raster)
             for (argi in names(args)) { assign(x = argi, value = args[[argi]]) }
             rm(args)
-            if (!any(sp == 0, na.rm = TRUE) && !any(is.na(sp))) {
+            if (!any(sp == 0, na.rm = TRUE) && !any(is.na(sp)) && data.type == "binary") {
               stop("No absences were given and no pseudo-absences were given or configured, at least one of those option is required.")
             }
             
@@ -476,7 +476,7 @@ setMethod('BIOMOD.formated.data', signature(sp = 'numeric', env = 'SpatRaster'),
             for (argi in names(args)) { assign(x = argi, value = args[[argi]]) }
             rm(args)
             
-            if (!any(sp == 0, na.rm = TRUE) && !any(is.na(sp))) {
+            if (!any(sp == 0, na.rm = TRUE) && !any(is.na(sp)) && data.type == "binary") {
               stop("No absences were given and no pseudo-absences were given or configured, at least one of those option is required.")
             }
             
@@ -1562,7 +1562,7 @@ setMethod('BIOMOD.formated.data.PA', signature(sp = 'numeric', env = 'SpatRaster
   rm(args)
   
   if (is.null(PA.strategy) || PA.strategy == 'none' || PA.nb.rep < 1) {
-    if (!any(sp == 0, na.rm = TRUE) && !any(is.na(sp))) {
+    if (!any(sp == 0, na.rm = TRUE) && !any(is.na(sp)) && data.type == "binary") {
       stop("No absences were given and no pseudo-absences were given or configured, at least one of those option is required.")
     }
   }
