@@ -1123,7 +1123,6 @@ xgbpred <- function(model, data, ...) {
       }
     }
   } else {
-    # Check si c'est des facteurs ? 
     if (-Inf %in% resp.var | Inf %in% resp.var){
       stop("It seems there is Inf in your response data. Please check and remove it.")
     }
@@ -1132,6 +1131,8 @@ xgbpred <- function(model, data, ...) {
       stop("biomod2 doesn't accept negative values : please check your response data.")
     }
   }
+  resp.var <- resp.var[!is.na(resp.var)] ## Add a warning ? 
+  return(resp.var)
 }
 
 

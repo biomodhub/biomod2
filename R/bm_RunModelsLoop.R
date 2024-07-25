@@ -302,7 +302,7 @@ bm_RunModel <- function(model, run.name, dir.name = '.'
     ## RUN model ----------------------------------------------------
     model.call <- paste0(bm.opt@package, "::", bm.opt@func)
     model.sp <- try(do.call(eval(parse(text = model.call)), bm.opt.val))
-    
+
     
     ## GET results --------------------------------------------------
     if (!inherits(model.sp, "try-error")) {
@@ -461,6 +461,7 @@ bm_RunModel <- function(model, run.name, dir.name = '.'
       g.pred <- try(predict(model.bm, data_env, on_0_1000 = on_0_1000, seedval = seed.val, temp_workdir = temp_workdir))
     }
   }
+
   
   if (model == "MAXENT" & !inherits(g.pred, 'try-error')) {
     temp_workdir = model.bm@model_output_dir
@@ -699,7 +700,7 @@ bm_RunModel <- function(model, run.name, dir.name = '.'
     .fun_testIfIn(TRUE, "data.type", data.type, avail.types.list)
     
     on_0_1000 <- TRUE
-    if(data.type %in% c("abundance","count", "ordinal")){
+    if(data.type %in% c("abundance","count", "ordinal","relative")){
       on_0_1000 <- FALSE
     }
     

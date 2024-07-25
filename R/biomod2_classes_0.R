@@ -687,7 +687,7 @@ setMethod('print', signature('BIOMOD.models.options'),
     family <- quasibinomial(link = 'logit')
     #GAMfamily <- betar(link="logit")
     CTAmethod <- "poisson"
-    GBMdistribution <- "tweedie"
+    GBMdistribution <- "gaussian"
     FDAmethod <- "polyreg"
   } else { # data.type = nonbinary or data.type = abundance
     RFtype <- "regression"

@@ -230,6 +230,11 @@ bm_Tuning <- function(model,
                                           XGBOOST.min_child_weight = 1,
                                           XGBOOST.subsample = 0.5))
 {
+  
+  if (bm.format@data.type != "binary"){
+    stop("The tuning options is not ready for abundance data yet! Sorry...")
+  }
+  
   ## 0. Check arguments ---------------------------------------------------------------------------
   args <- .bm_Tuning.check.args(model = model, tuning.fun = tuning.fun
                                 , do.formula = do.formula, do.stepAIC = do.stepAIC

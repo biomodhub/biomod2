@@ -535,14 +535,25 @@ setMethod('predict2', signature(object = 'FDA_biomod2_model', newdata = "SpatRas
           function(object, newdata, ...) {
             predfun <- function(object, newdata, mod.name){
               # new predict command used with terra
-              proj <- 
-                subset(
-                  predict(newdata, 
-                          model = get_formal_model(object), 
-                          type = 'posterior',
-                          na.rm = TRUE,
-                          wopt = list(names = mod.name)), 
-                  2)   
+              if (object@model_type == "relative"){
+                proj <- 
+                  subset(
+                    predict(newdata, 
+                            model = get_formal_model(object), 
+                            #type = 'posterior',
+                            na.rm = TRUE,
+                            wopt = list(names = mod.name)), 
+                    1)
+              } else {
+                proj <- 
+                  subset(
+                    predict(newdata, 
+                            model = get_formal_model(object), 
+                            type = 'posterior',
+                            na.rm = TRUE,
+                            wopt = list(names = mod.name)), 
+                    2)
+              }
               # datamask <- classify(any(is.na(newdata)), 
               # matrix(c(0,0,1,NA),ncol = 2, byrow = TRUE))
               # mask(proj, datamask)
@@ -560,7 +571,12 @@ setMethod('predict2', signature(object = 'FDA_biomod2_model', newdata = "SpatRas
 setMethod('predict2', signature(object = 'FDA_biomod2_model', newdata = "data.frame"),
           function(object, newdata, ...) {
             predfun <- function(object, newdata, not_na_rows){
-              as.numeric(predict(get_formal_model(object), as.data.frame(newdata[not_na_rows, , drop = FALSE]), type = 'posterior')[, 2])
+              if (object@model_type == "relative") {
+                as.numeric(as.character(predict(get_formal_model(object), as.data.frame(newdata[not_na_rows, , drop = FALSE]))))
+              }
+              else {
+                as.numeric(predict(get_formal_model(object), as.data.frame(newdata[not_na_rows, , drop = FALSE]), type = 'posterior')[, 2])
+              }
             }
             
             # redirect to predict2.biomod2_model.data.frame

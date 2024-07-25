@@ -326,9 +326,9 @@ bm_CrossValidation <- function(bm.format,
       which(
         apply(out, 2, 
               function(x) {
-                length(unique(bm.format@data.species[which(x) & bm.format@data.species != 0]))
+                length(unique(bm.format@data.species[which(x) ]))
               }
-        ) == 1)
+        ) <= 2)
     
     if(length(which.calibration.unbalanced) > 0) {
       cat("\n   !!! Some calibration dataset may have an unique value: ", 
@@ -340,9 +340,9 @@ bm_CrossValidation <- function(bm.format,
       which(
         apply(out, 2, 
               function(x) {
-                length(unique(bm.format@data.species[which(!x) & bm.format@data.species != 0]))
+                length(unique(bm.format@data.species[which(!x)]))
               }
-        ) == 1)
+        ) <= 2)
     
     # Models with allRun have no validation
     which.validation.unbalanced <- 

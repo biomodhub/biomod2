@@ -717,7 +717,7 @@ BIOMOD_Modeling <- function(bm.format,
   
   ## 6. Check weights arguments -----------------------------------------------
   if (is.null(weights)) {
-    if (!is.null(prevalence) & bm.format@data.type == "binary") {
+    if (!is.null(prevalence) & bm.format@data.type != "ordinal") {
       cat("\n\t> Automatic weights creation to rise a", prevalence, "prevalence")
       data.sp <- as.numeric(bm.format@data.species)
       if (inherits(bm.format, "BIOMOD.formated.data.PA")) {
@@ -766,12 +766,15 @@ BIOMOD_Modeling <- function(bm.format,
     }
   }
   
+  
   ## 7. Check metric.eval arguments -------------------------------------------
   metric.eval <- unique(metric.eval)
   if (bm.format@data.type == "binary"){
     avail.eval.meth.list <- c('TSS', 'KAPPA', 'ACCURACY', 'BIAS', 'POD', 'FAR', 'POFD'
                             , 'SR', 'CSI', 'ETS', 'HK', 'HSS', 'OR', 'ORSS', 'ROC'
                             , 'BOYCE', 'MPA')
+  } else if (bm.format@data.type == "ordinal"){
+    avail.eval.meth.list <- c("accuracy")
   } else {
     avail.eval.meth.list <- c('RMSE','MSE',"MAE","Rsq","Rsq_aj","Max_error")
   }
@@ -913,9 +916,9 @@ BIOMOD_Modeling <- function(bm.format,
 {
   if (is.null(subset)) { subset <- rep(TRUE, length(resp)) }
   
-  nbPres <- sum(resp[subset], na.rm = TRUE)
+  nbPres <- sum(resp[subset] > 0, na.rm = TRUE)
   # The number of true absences + pseudo absences to maintain true value of prevalence
-  nbAbsKept <- sum(subset, na.rm = TRUE) - sum(resp[subset], na.rm = TRUE)
+  nbAbsKept <- sum(subset, na.rm = TRUE) - sum(resp[subset] > 0, na.rm = TRUE)
   weights <- rep(1, length(resp))
   
   if (nbAbsKept > nbPres) {

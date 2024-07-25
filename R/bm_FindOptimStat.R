@@ -183,7 +183,7 @@ bm_FindOptimStat <- function(metric.eval = 'TSS',
   
   ## check some data is still here
   if (!length(obs) | !length(fit)) {
-    cat("Non finite obs or fit available => model evaluation skipped !")
+    cat("\n Non finite obs or fit available => model evaluation skipped !")
     eval.out <- matrix(NA, 1, 4, dimnames = list(metric.eval, c("best.stat", "cutoff", "sensitivity", "specificity")))
     return(eval.out)
   }
@@ -194,7 +194,7 @@ bm_FindOptimStat <- function(metric.eval = 'TSS',
   
   abundance_metrics <- c("RMSE", "MSE" ,"MAE" ,"AIC" ,'Rsq' ,'Rsq_aj', 'Max_error')
   
-  if (!(metric.eval %in% c('ROC', 'BOYCE', 'MPA',abundance_metrics)))
+  if (!(metric.eval %in% c('ROC', 'BOYCE', 'MPA',abundance_metrics, 'accuracy')))
   { ## for all evaluation metrics other than ROC, BOYCE, MPA --------------------------------------
     
     ## 1. get threshold values to be tested -----------------------------------
@@ -242,6 +242,8 @@ bm_FindOptimStat <- function(metric.eval = 'TSS',
     specificity <- (true.neg * 100) / sum(misc[, '0'])
     sensitivity <- (true.pos * 100) / sum(misc[, '1'])
     
+    eval.out <- data.frame(metric.eval, cutoff, sensitivity, specificity, best.stat)
+    
   } else if (metric.eval == 'ROC') { ## specific procedure for ROC value --------------------------
     roc1 <- roc(obs, fit, percent = TRUE, direction = "<", levels = c(0, 1))
     roc1.out <- coords(roc1, "best", ret = c("threshold", "sens", "spec"), transpose = TRUE)
@@ -277,9 +279,14 @@ bm_FindOptimStat <- function(metric.eval = 'TSS',
     }
     eval.out <- data.frame(metric.eval, cutoff, sensitivity, specificity, best.stat)
     
-  } else { #abundance metrics 
+  } else if (metric.eval %in% abundance_metrics) { #abundance metrics 
     fun_eval <- bm_CalculateStatAbun(metric.eval)
     best.stat <- try(eval(parse(text = fun_eval)))
+    eval.out <- data.frame(metric.eval, best.stat)
+  } else { #Cette boucle commence à être dégeulasse ~(´•︵•`)~
+    # accuracy: case 
+    correct <- sum(obs == fit)
+    best.stat <- correct/length(obs)
     eval.out <- data.frame(metric.eval, best.stat)
   }
   
@@ -592,3 +599,5 @@ bm_CalculateStatAbun <- function(metric.eval)
          , 'Max_error' = "max(abs(obs-fit), na.rm = T)"
   )
 }
+
+

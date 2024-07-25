@@ -226,7 +226,7 @@ setGeneric("BIOMOD.formated.data", def = function(sp, env, ...) { standardGeneri
   if(data.type == "binary"){
     sp <- .check_formating_resp.var(resp.var = sp, eval.data = FALSE)
   } else {
-    .check.for.data.abundance(sp)
+    sp <- .check.for.data.abundance(sp)
   }
   
   ## A.2 Check xy argument --------------------------------------------------------------
@@ -292,7 +292,7 @@ setGeneric("BIOMOD.formated.data", def = function(sp, env, ...) { standardGeneri
     if(data.type == "binary"){
       eval.sp <- .check_formating_resp.var(resp.var = eval.sp, eval.data = TRUE)
     } else {
-      .check.for.data.abundance(eval.sp)
+      eval.sp <- .check.for.data.abundance(eval.sp)
     }
     
     
