@@ -489,6 +489,18 @@ bm_RunModel <- function(model, run.name, dir.name = '.'
     cat("\n*** single value predicted")
   }
   
+  ## Find good format of prediction
+  if (data.type == "ordinal"){
+    if (model %in% c("GLM", "GAM", "XGBOOST")){
+      g.pred <- .bm_numerictofactor(g.pred, data_sp)
+    } else {
+      g.pred <- factor(g.pred, levels = levels(data_sp), ordered = T)
+    }
+  } else {
+    g.pred <- as.numeric(g.pred) 
+  }
+  
+  ## If everything is ok 
   if (test_pred_ok) {
     # keep the model name
     ListOut$model <- model_name
@@ -684,7 +696,7 @@ bm_RunModel <- function(model, run.name, dir.name = '.'
     metric.eval <- unique(metric.eval)
     avail.eval.meth.list <- c('TSS', 'KAPPA', 'ACCURACY', 'BIAS', 'POD', 'FAR', 'POFD'
                               , 'SR', 'CSI', 'ETS', 'HK', 'HSS', 'OR', 'ORSS', 'ROC'
-                              , 'BOYCE', 'MPA', 'RMSE','MSE',"MAE","Rsq","Rsq_aj","Max_error")
+                              , 'BOYCE', 'MPA', 'RMSE','MSE',"MAE","Rsq","Rsq_aj","Max_error", "accuracy")
     # .fun_testIfIn(TRUE, "metric.eval", metric.eval, avail.eval.meth.list)
     if (sum(!(metric.eval %in% avail.eval.meth.list)) > 0) {
       tmp = which(metric.eval %in% avail.eval.meth.list)

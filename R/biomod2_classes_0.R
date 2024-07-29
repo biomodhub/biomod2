@@ -678,7 +678,7 @@ setMethod('print', signature('BIOMOD.models.options'),
   }
   else if (data.type == "ordinal"){
     RFtype <- "classification"
-    family <- binomial() ##? 
+    family <- quasibinomial() 
     CTAmethod <- "class"
     GBMdistribution <- "multinomial"
     FDAmethod <- "mars" #???

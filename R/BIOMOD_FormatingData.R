@@ -451,6 +451,7 @@ BIOMOD_FormatingData <- function(resp.name,
   args <- list(sp = resp.var, env = expl.var, data.type = data.type, xy = resp.xy
                                            , eval.sp = eval.resp.var, eval.env = eval.expl.var
                                            , eval.xy = eval.resp.xy, filter.raster = filter.raster)
+
   
   return(list(resp.var = args$sp,
               expl.var = args$env,

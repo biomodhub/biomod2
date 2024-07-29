@@ -285,6 +285,10 @@ bm_FindOptimStat <- function(metric.eval = 'TSS',
     eval.out <- data.frame(metric.eval, best.stat)
   } else { #Cette boucle commence à être dégeulasse ~(´•︵•`)~
     # accuracy: case 
+    if (length(levels(obs)) != length(levels(fit))){
+      fit <- factor(fit, levels = levels(obs), ordered = T)
+      cat("\n \t\t Careful : some categories are not predicted! ")
+    }
     correct <- sum(obs == fit)
     best.stat <- correct/length(obs)
     eval.out <- data.frame(metric.eval, best.stat)

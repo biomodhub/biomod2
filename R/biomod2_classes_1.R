@@ -155,7 +155,7 @@ setClass("BIOMOD.formated.data",
                         dir.name = 'character',
                         sp.name = 'character',
                         coord = "data.frame",
-                        data.species = "numeric",
+                        data.species = "ANY",
                         data.env.var = "data.frame",
                         data.mask = "list",
                         has.data.eval = "logical",
@@ -228,6 +228,7 @@ setGeneric("BIOMOD.formated.data", def = function(sp, env, ...) { standardGeneri
   } else {
     sp <- .check.for.data.abundance(sp)
   }
+  
   
   ## A.2 Check xy argument --------------------------------------------------------------
   
@@ -319,6 +320,7 @@ setGeneric("BIOMOD.formated.data", def = function(sp, env, ...) { standardGeneri
       eval.sp <- na.omit(eval.sp)
     }
   }
+  
   
   return(list(sp = sp,
               env = env,
@@ -437,7 +439,11 @@ setMethod('BIOMOD.formated.data', signature(sp = 'data.frame'),
                    na.rm = TRUE, filter.raster = FALSE)
           {
             if (ncol(sp) > 1) { stop("Invalid response variable") }
-            sp <- as.numeric(unlist(sp))
+            if (data.type == "ordinal"){
+              sp <- as.factor(unlist(sp))
+            } else {
+              sp <- as.numeric(unlist(sp))
+            }
             BFD <- BIOMOD.formated.data(sp, env, xy, dir.name, data.type, sp.name, eval.sp, eval.env, eval.xy, na.rm = na.rm)
             return(BFD)
           }

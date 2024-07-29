@@ -933,7 +933,7 @@ check_duplicated_cells <- function(env, xy, sp, filter.raster,
     }
   }
   
-  resp.var
+  as.numeric(resp.var)
 }
 
 .check_formating_table <- function(resp.var){
@@ -1154,4 +1154,17 @@ xgbpred <- function(model, data, ...) {
     }
   } 
   return(data.type)
+}
+
+
+# Transform prediction into factor 
+
+.bm_numerictofactor <- function(pred, obs){
+  nblevels <- length(levels(obs))
+  pred <- round(pred)
+  pred[pred > nblevels] <- nblevels
+  pred[pred < 1] <- 1
+  newlevels <- levels(obs)[unique(pred)]
+  pred <- factor(pred, labels = newlevels, ordered = T)
+  return(pred)
 }
