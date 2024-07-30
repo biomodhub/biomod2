@@ -314,15 +314,30 @@ BIOMOD_Projection <- function(bm.mod,
     if (length(grep("MAXENT$", mod.name)) == 1) {
       temp_workdir = mod@model_output_dir
     }
+    
     pred.tmp <- predict(mod, new.env, on_0_1000 = on_0_1000, 
                         filename = filename, omit.na = omit.na, 
                         temp_workdir = temp_workdir, seedval = seed.val, 
                         overwrite = TRUE, mod.name = mod.name)
+    
+
     ## Cleaning 
     if (bm.mod@data.type %in% c("count","abundance")){
       pred.tmp[pred.tmp < 0] <- 0
       pred.tmp <- round(pred.tmp,digits = digits)
     }
+
+    if (bm.mod@data.type == "ordinal"){
+      data_sp <- get_formal_data(bm.mod, subinfo = "resp.var")
+      nblevels <- length(levels(data_sp))
+      pred.tmp <- round(as.numeric(pred.tmp))
+      pred.tmp[pred.tmp < 1] <- 1
+      pred.tmp[pred.tmp > nblevels] <- nblevels
+
+      #newlevels <- levels(data_sp)[sort(levels(as.factor(pred.tmp)))]
+      #pred.tmp <- factor(pred.tmp, labels = levels(data_sp), ordered = T)
+    }
+    
     
     if (do.stack) {
       if (proj_is_raster) {
@@ -335,7 +350,6 @@ BIOMOD_Projection <- function(bm.mod,
       return(filename)
     }
   }
-  
 
   
   ## Putting predictions into the right format
@@ -368,9 +382,10 @@ BIOMOD_Projection <- function(bm.mod,
     if (output.format == '.RData') {
       save(list = nameProjSp, file = saved.files, compress = compress)
     } else  {
+      save.type <- ifelse(bm.mod@data.type == "binary",ifelse(on_0_1000, "INT2S", "FLT4S"), ifelse(digits == 0, "INT2S", "FLT4S"))
       writeRaster(x = rast(get(nameProjSp)), filename = saved.files,
                   overwrite = TRUE,
-                  datatype = ifelse(bm.mod@data.type == "binary",ifelse(on_0_1000, "INT2S", "FLT4S"), ifelse(digits == 0, "INT2S", "FLT4S"))
+                  datatype = save.type
                   , NAflag = -9999)
     }
   }

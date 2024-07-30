@@ -1164,7 +1164,7 @@ xgbpred <- function(model, data, ...) {
   pred <- round(pred)
   pred[pred > nblevels] <- nblevels
   pred[pred < 1] <- 1
-  newlevels <- levels(obs)[unique(pred)]
+  newlevels <- levels(obs)[sort(unique(pred))]
   pred <- factor(pred, labels = newlevels, ordered = T)
   return(pred)
 }

@@ -243,7 +243,7 @@ bm_RunModel <- function(model, run.name, dir.name = '.'
                                            , interaction.level = 0)
     }
     
-    if (model == "RF" && !is.null(bm.opt.val$type) && bm.opt.val$type == "classification") {
+    if (model == "RF" && !is.null(bm.opt.val$type) && bm.opt.val$type == "classification" && data.type == "binary") {
       # defining occurrences as factor for doing classification and not regression in RF
       data_mod <- data_mod %>% mutate_at(resp_name, factor)
       bm.opt.val$strata <- data_mod[calib.lines.vec, , drop = FALSE][ , resp_name]
@@ -344,7 +344,7 @@ bm_RunModel <- function(model, run.name, dir.name = '.'
     }
     
     ## POSTLIMINAR --------------------------------------------------
-    if (model %in% c("RF","RFd") && !is.null(bm.opt.val$type) && bm.opt.val$type == "classification") {
+    if (model %in% c("RF","RFd") && !is.null(bm.opt.val$type) && bm.opt.val$type == "classification" && data.type == "binary") {
       # canceling occurences class modifications
       data_mod <- data_mod %>% mutate_at(resp_name, function(.x) {
         .x %>% as.character() %>% as.numeric()

@@ -648,6 +648,15 @@ BIOMOD_Modeling <- function(bm.format,
     .fun_testIfIn(TRUE, paste0("models with ", bm.format@data.type, " data type"), models, avail.models.list)
   }
   
+  ## Remove GBM for ordinal data
+  if (bm.format@data.type == "ordinal") {
+    models.fact.unsupport <- c("GBM")
+    models.switch.off <- c(models.switch.off, intersect(models, models.fact.unsupport))
+    if (length(models.switch.off) > 0) {
+      models <- setdiff(models, models.switch.off)
+      cat(paste0("\n\t! ", paste(models.switch.off, collapse = ",")," was switched off because of ordinal datatype"))
+    }
+  }
   
   ## Specific case of one variable with GBM / MAXNET
   if ('GBM' %in% models && ncol(bm.format@data.env.var) == 1) {

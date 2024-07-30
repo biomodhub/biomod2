@@ -336,6 +336,7 @@ setMethod('predict2', signature(object = 'biomod2_model', newdata = "SpatRaster"
             if (is.null(overwrite)) { overwrite <- TRUE }
             if (is.null(on_0_1000)) { on_0_1000 <- FALSE }
             set.seed(seedval)
+            
             proj <- predfun(object, newdata, mod.name)
             
             if (length(get_scaling_model(object)) > 0) {
@@ -476,15 +477,16 @@ setMethod('predict2', signature(object = 'CTA_biomod2_model', newdata = "SpatRas
             data.type <- object@model_type
             type = 'prob'
             n <- 2
+            rep <- 2
             if(data.type != "binary") {type = "matrix"; n <- 1}
-            if(data.type == "ordinal" ) {type = "class"; n <- 1} 
+            if(data.type == "ordinal" ) {type = "class"; n <- 1; rep =  1} 
             predfun <- function(object, newdata, mod.name){
               proj <- 
                 subset(predict(newdata,
                                model = get_formal_model(object), 
-                               #type = type,
+                               type = type,
                                na.rm = TRUE,
-                               wopt = list(names = rep(mod.name,2))), 
+                               wopt = list(names = rep(mod.name,rep))), 
                        n)    
               proj
             }
@@ -544,7 +546,7 @@ setMethod('predict2', signature(object = 'FDA_biomod2_model', newdata = "SpatRas
           function(object, newdata, ...) {
             predfun <- function(object, newdata, mod.name){
               # new predict command used with terra
-              if (object@model_type == "relative"){
+              if (object@model_type %in% c("relative", "ordinal")){
                 proj <- 
                   subset(
                     predict(newdata, 
@@ -630,7 +632,7 @@ setMethod('predict2', signature(object = 'GAM_biomod2_model', newdata = "SpatRas
               }
             } else {
               predfun <- function(object, newdata, mod.name){
-                predict(get_formal_model(object), newdata) 
+                predict(model = get_formal_model(object), object = newdata, wopt = list(names = mod.name)) 
               }
             }
           
@@ -738,13 +740,13 @@ setClass('GLM_biomod2_model',
 
 setMethod('predict2', signature(object = 'GLM_biomod2_model', newdata = "SpatRaster"),
           function(object, newdata, ...) {
-            if (object@model_type == "binary"){
+            if (object@model_type != "ordinal"){
               predfun <- function(object, newdata, mod.name){
                 .run_pred(object = get_formal_model(object), Prev = 0.5 , dat = newdata, mod.name = mod.name)  
               }
             } else {
               predfun <- function(object, newdata, mod.name){
-                predict(get_formal_model(object), newdata) 
+                predict(model = get_formal_model(object), object = newdata, wopt = list(names = mod.name))
               }
             }
           
@@ -797,10 +799,14 @@ setClass('MARS_biomod2_model',
 
 setMethod('predict2', signature(object = 'MARS_biomod2_model', newdata = "SpatRaster"),
           function(object, newdata, ...) {
-            type <- ifelse(object@model_type == "ordinal", "class", "response")
             predfun <- function(object, newdata, mod.name){
-              predict(newdata, model = get_formal_model(object),
-                      type = type, wopt = list(names = mod.name))
+              pred <- predict(newdata, model = get_formal_model(object),
+                      type = "response", wopt = list(names = mod.name))
+              if (object@model_type == "ordinal"){
+                pred <- which.max(pred)
+                names(pred) <- mod.name
+              }
+              return(pred)
             }
             # redirect to predict2.biomod2_model.SpatRaster
             callNextMethod(object, newdata, predfun = predfun, ...)
@@ -1138,14 +1144,22 @@ setMethod('predict2', signature(object = 'RF_biomod2_model', newdata = "SpatRast
             dataset <- paste0("_", pa, "_", run)
             
             if (!is.null(object@model_options@args.values[[dataset]]$type) && object@model_options@args.values[[dataset]]$type == "classification") {
-              predfun <- function(object, newdata, mod.name){
-                # new predict command used with terra
-                subset(predict(newdata, model = get_formal_model(object),
-                               type = 'prob',
-                               wopt = list(names = rep(mod.name,2))), 
-                       2)   
-                # old predict function used with raster
-                # predict(newdata, model = get_formal_model(object), type = 'prob', index = 2)
+              if (object@model_type == "binary"){
+                predfun <- function(object, newdata, mod.name){
+                  # new predict command used with terra
+                  subset(predict(newdata, model = get_formal_model(object),
+                                 type = 'prob',
+                                 wopt = list(names = rep(mod.name,2))), 
+                         2)   
+                  # old predict function used with raster
+                  # predict(newdata, model = get_formal_model(object), type = 'prob', index = 2)
+                }
+              } else {#Ordinal
+                predfun <- function(object, newdata, mod.name){
+                  predict(newdata, model = get_formal_model(object),
+                                 type = 'class',
+                                 wopt = list(names = rep(mod.name,2)))   
+                }
               }
             } else { #regression case
               predfun <- function(object, newdata, mod.name){

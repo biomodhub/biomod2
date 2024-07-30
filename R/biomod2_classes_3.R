@@ -520,7 +520,7 @@ setMethod("get_formal_data", "BIOMOD.models.out",
             } else if (subinfo == 'expl.var.names') {
               return(obj@expl.var.names)
             } else if (subinfo == 'resp.var') {
-              return(as.numeric(get_formal_data(obj)@data.species))
+              return(get_formal_data(obj)@data.species)
             } else if (subinfo == 'eval.resp.var') {
               return(as.numeric(get_formal_data(obj)@eval.data.species))
             } else if (subinfo == 'eval.expl.var') {
