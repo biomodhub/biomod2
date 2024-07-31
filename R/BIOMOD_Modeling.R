@@ -51,10 +51,6 @@
 ##' @param CV.do.full.models (\emph{optional, default} \code{TRUE}) \cr  
 ##' A \code{logical} value defining whether models should be also calibrated and validated over 
 ##' the whole dataset (and pseudo-absence datasets) or not
-##' @param nb.rep  \emph{deprecated}, now called \code{CV.nb.rep}
-##' @param data.split.perc \emph{deprecated}, now called \code{CV.perc}
-##' @param data.split.table \emph{deprecated}, now called \code{CV.user.table}
-##' @param do.full.models \emph{deprecated}, now called \code{CV.do.full.models}
 ##' 
 ##' @param OPT.strategy a \code{character} corresponding to the method to select models' 
 ##' parameters values, must be either \code{default}, \code{bigboss}, \code{user.defined}, 
@@ -67,7 +63,6 @@
 ##' @param OPT.user (\emph{optional, default} \code{TRUE}) \cr  
 ##' A \code{\link{BIOMOD.models.options}} object returned by the \code{\link{bm_ModelingOptions}} 
 ##' function
-##' @param bm.options \emph{deprecated}, now called \code{OPT.user}
 ##' 
 ##' @param weights (\emph{optional, default} \code{NULL}) \cr 
 ##' A \code{vector} of \code{numeric} values corresponding to observation weights (one per 
@@ -77,9 +72,9 @@
 ##' build '\emph{weighted response weights}' (see Details)
 ##' @param metric.eval a \code{vector} containing evaluation metric names to be used, must 
 ##' be among \code{ROC}, \code{TSS}, \code{KAPPA}, \code{ACCURACY}, \code{BIAS}, \code{POD}, 
-##' \code{FAR}, \code{POFD}, \code{SR}, \code{CSI}, \code{ETS}, \code{HK}, \code{HSS}, \code{OR}, 
+##' \code{FAR}, \code{POFD}, \code{SR}, \code{CSI}, \code{ETS}, \code{OR}, 
 ##' \code{ORSS}, \code{BOYCE}, \code{MPA}, \code{RMSE}, \code{MAE}, \code{MSE}, \code{Rsq}, \code{Rsq_aj},
-##' \code{Max_error}
+##' \code{Max_error}, \code{accuracy}
 ##' @param var.import (\emph{optional, default} \code{NULL}) \cr 
 ##' An \code{integer} corresponding to the number of permutations to be done for each variable to 
 ##' estimate variable importance
@@ -141,7 +136,9 @@
 ##'     \item \code{SRE} : Surface Range Envelop or usually called BIOCLIM (\code{\link{bm_SRE}})
 ##'     \item \code{XGBOOST} : eXtreme Gradient Boosting Training (\code{\link[xgboost]{xgboost}})
 ##'   }
-##'   For abundance data, you can use the models : CTA, FDA, GAM, GBM, GLM, MARS, RF and XGBOOST}
+##'   For abundance/count/relative data, you can use the models : CTA, FDA, GAM, GBM, GLM, MARS, RF and XGBOOST.  
+##'   For ordinal data, you can use the models : CTA, FDA, GAM, GLM, MARS, RF and XGBOOST.  
+##'   }
 ##'   
 ##'   \item{models.pa}{Different models might respond differently to different numbers of 
 ##'   pseudo-absences. It is possible to create sets of pseudo-absences with different numbers 
@@ -218,14 +215,19 @@
 ##'       presences)
 ##'     }
 ##'     }
-##'     \item{For abundance data}{
+##'     \item{For abundance/count/relative data}{
 ##'     \itemize{
 ##'       \item \code{RMSE} : Root Mean Square Error
 ##'       \item \code{MSE} : Mean Square Error
 ##'       \item \code{MAE} : Mean Absolute Error
 ##'       \item \code{Rsq} : R square
 ##'       \item \code{Rsq_aj} : R square adjusted
-##'       \item \code{Max_error} : Max_error
+##'       \item \code{Max_error} : Maximum error
+##'     }
+##'     }
+##'     \item{For ordinal data}{
+##'     \itemize{
+##'       \item \code{accuracy} : Accuracy
 ##'     }
 ##'     }
 ##'   }

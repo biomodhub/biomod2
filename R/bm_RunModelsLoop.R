@@ -489,7 +489,7 @@ bm_RunModel <- function(model, run.name, dir.name = '.'
     cat("\n*** single value predicted")
   }
   
-  ## Find good format of prediction
+  ## Find good format of prediction for ordinal
   if (data.type == "ordinal"){
     if (model %in% c("GLM", "GAM", "XGBOOST")){
       g.pred <- .bm_numerictofactor(g.pred, data_sp)

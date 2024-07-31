@@ -221,6 +221,7 @@ setMethod('predict2', signature(object = 'biomod2_ensemble_model', newdata = "Sp
                            mod.name = mod.name,
                            na.rm = na.rm)
             
+            
             if (!is.null(out) & !is.null(filename)) {
               cat("\n\t\tWriting projection on hard drive...")
               if (on_0_1000 & !inherits(object, "EMcv_biomod2_model")) { ## projections are stored as positive integer
@@ -239,6 +240,7 @@ setMethod('predict2', signature(object = 'biomod2_ensemble_model', newdata = "Sp
 ##' @rdname predict2.em
 setMethod('predict2', signature(object = 'biomod2_ensemble_model', newdata = "data.frame"),
           function(object, newdata, predfun, seedval = NULL,  ...) {
+
             args <- list(...)
             data_as_formal_predictions <- args$data_as_formal_predictions
             if (is.null(data_as_formal_predictions)) {
@@ -270,6 +272,7 @@ setMethod('predict2', signature(object = 'biomod2_ensemble_model', newdata = "da
             } else  {
               newdata <- .get_formal_predictions(object, newdata, on_0_1000 = on_0_1000, seedval = seedval)
             }
+            
             out <- predfun(newdata,
                            on_0_1000 = on_0_1000,
                            mean_prediction = mean_prediction,
@@ -279,6 +282,7 @@ setMethod('predict2', signature(object = 'biomod2_ensemble_model', newdata = "da
                            thresh = thresh, 
                            penalization_scores = penalization_scores,
                            na.rm = na.rm)
+            
             return(out)
             
           })

@@ -44,7 +44,8 @@
 ##' @param metric.eval a \code{vector} containing evaluation metric names to be used, must 
 ##' be among  \code{POD}, \code{FAR}, \code{POFD}, \code{SR}, \code{ACCURACY}, \code{BIAS}, 
 ##' \code{ROC}, \code{TSS}, \code{KAPPA}, \code{OR}, \code{ORSS}, \code{CSI}, \code{ETS}, 
-##' \code{BOYCE}, \code{MPA}
+##' \code{BOYCE}, \code{MPA}, \code{RMSE}, \code{MAE}, \code{MSE}, \code{Rsq}, \code{Rsq_aj},
+##' \code{Max_error}, \code{accuracy}
 ##' @param var.import (\emph{optional, default} \code{NULL}) \cr 
 ##' An \code{integer} corresponding to the number of permutations to be done for each variable to 
 ##' estimate variable importance
@@ -66,30 +67,6 @@
 ##' A \code{logical} value defining whether the progress bar is to be rendered or not
 ##' 
 ##' 
-##' @param prob.mean (\emph{deprecated}, please use \code{em.algo} instead) \cr
-##'   A \code{logical} value defining whether to compute the mean probabilities
-##'   across predictions or not
-##' @param prob.median (\emph{deprecated}, please use \code{em.algo} instead)
-##'   \cr A \code{logical} value defining whether to compute the median
-##'   probabilities across predictions or not
-##' @param prob.cv (\emph{deprecated}, please use \code{em.algo} instead) \cr A
-##'   \code{logical} value defining whether to compute the coefficient of
-##'   variation across predictions or not
-##' @param prob.ci (\emph{deprecated}, please use \code{em.algo} instead) \cr A
-##'   \code{logical} value defining whether to compute the confidence interval
-##'   around the \code{prob.mean} ensemble model or not
-##' @param committee.averaging (\emph{deprecated}, please use \code{em.algo}
-##'   instead) \cr A \code{logical} value defining whether to compute the
-##'   committee averaging across predictions or not
-##' @param prob.mean.weight (\emph{deprecated}, please use \code{em.algo}
-##'   instead) \cr A \code{logical} value defining whether to compute the
-##'   weighted sum of probabilities across predictions or not
-##' 
-##' @param prob.ci.alpha (\emph{deprecated}, please use \code{EMci.alpha}
-##'   instead) \cr old argument name for \code{EMci.alpha}
-##' @param prob.mean.weight.decay (\emph{deprecated}, please use
-##'   \code{EMwmean.decay} instead)  \cr old argument name for
-##'   \code{EMwmean.decay}
 ##' @return
 ##' 
 ##' A \code{\link{BIOMOD.ensemble.models.out}} object containing models outputs, or links to saved 
@@ -227,7 +204,8 @@
 ##'     The interesting feature of this measure is that it gives both a prediction and a measure 
 ##'     of uncertainty. When the prediction is close to \code{0} or \code{1}, it means that all 
 ##'     models agree to predict \code{0} or \code{1} respectively. When the prediction is around 
-##'     \code{0.5}, it means that half the models predict \code{1} and the other half \code{0}. 
+##'     \code{0.5}, it means that half the models predict \code{1} and the other half \code{0}.
+##'     This model is are available with binary data.
 ##'     \cr Old parameter name: \code{committee.averaging}
 ##'     
 ##'     \item \bold{\code{EMwmean}} & \bold{\code{EMwmean.decay}} : 
@@ -379,15 +357,7 @@ BIOMOD_EnsembleModeling <- function(bm.mod,
                                     EMwmean.decay = 'proportional',
                                     nb.cpu = 1,
                                     seed.val = NULL,
-                                    do.progress = TRUE,
-                                    prob.mean, # deprecated
-                                    prob.median, # deprecated
-                                    prob.cv, # deprecated
-                                    prob.ci, # deprecated  
-                                    committee.averaging, # deprecated
-                                    prob.mean.weight, # deprecated
-                                    prob.mean.weight.decay,# deprecated
-                                    prob.ci.alpha) { # deprecated
+                                    do.progress = TRUE) { 
   .bm_cat("Build Ensemble Models")
   ## 0. Check arguments --------------------------------------------------------
   args <- .BIOMOD_EnsembleModeling.check.args(bm.mod = bm.mod,
@@ -402,13 +372,7 @@ BIOMOD_EnsembleModeling <- function(bm.mod,
                                               prob.ci.alpha = prob.ci.alpha,
                                               prob.mean.weight.decay = prob.mean.weight.decay,
                                               EMci.alpha = EMci.alpha,
-                                              EMwmean.decay = EMwmean.decay,
-                                              prob.mean = prob.mean,
-                                              prob.cv = prob.cv,
-                                              prob.ci = prob.ci,
-                                              prob.median = prob.median,
-                                              committee.averaging = committee.averaging,
-                                              prob.mean.weight = prob.mean.weight)
+                                              EMwmean.decay = EMwmean.decay)
   for (argi in names(args)) { assign(x = argi, value = args[[argi]]) }
   rm(args)
   
@@ -483,6 +447,8 @@ BIOMOD_EnsembleModeling <- function(bm.mod,
                                                     , metric.select.user, metric.select.table
                                                     , metric.select.dataset, nb.cpu)
       
+      
+      
       ## LOOP over evaluation metrics ------------------------------------------
       em.out.eval <- foreach(eval.m = metric.select) %do%  {
         models.kept <- needed_predictions$models.kept[[eval.m]]
@@ -552,7 +518,7 @@ BIOMOD_EnsembleModeling <- function(bm.mod,
             models.kept.scores.tmp <- round(models.kept.scores.tmp, 3) # sometimes there can be a rounding issue in R, so here I make sure all values are rounded equally.
             
             # dealing with numerical decay
-            cat("\n\t\t", " original models scores = ", models.kept.scores.tmp)
+            cat("\n\n\t\t", " original models scores = ", models.kept.scores.tmp)
             if (is.numeric(EMwmean.decay)) {
               DecayCount <- sum(models.kept.scores.tmp > 0)
               WOrder <- order(models.kept.scores.tmp, decreasing = TRUE)
@@ -583,7 +549,7 @@ BIOMOD_EnsembleModeling <- function(bm.mod,
           }
           
           ### Models building --------------------------------------------------
-          cat("\n   >", algo.long, "by", eval.m, "...")
+          cat("\n\n   >", algo.long, "by", eval.m, "...")
           model.bm <- new(paste0(algo.class, "_biomod2_model"),
                           model = models.kept.tmp,
                           model_name = model_name,
@@ -614,14 +580,15 @@ BIOMOD_EnsembleModeling <- function(bm.mod,
           pred.bm.outfile <- file.path(name.BIOMOD_DATA, "ensemble.models.predictions", pred.bm.name)
           dir.create(dirname(pred.bm.outfile), showWarnings = FALSE, recursive = TRUE)
           pred.newdata <- needed_predictions$predictions[which(needed_predictions$predictions$full.name %in% model.bm@model), c("full.name", "points", "pred")]
-          pred.newdata <- tapply(X = pred.newdata$pred, INDEX = list(pred.newdata$points, pred.newdata$full.name), FUN = mean)
+          pred.newdata <- tapply(X = as.numeric(pred.newdata$pred), INDEX = list(pred.newdata$points, pred.newdata$full.name), FUN = mean) ## attention impact sur les autres datatypes ?
           pred.newdata <- as.data.frame(pred.newdata)
           
           ## store models prediction on the hard drive
+          on_1_1000 <- ifelse(bm.mod@data.type == "binary", TRUE, FALSE)
           pred.bm <- try(predict(model.bm
                                  , newdata = pred.newdata
                                  , data_as_formal_predictions = TRUE
-                                 , on_0_1000 = TRUE
+                                 , on_0_1000 = on_1_1000
                                  , seedval = seed.val))
           
           if (inherits(pred.bm, "try-error")) {
@@ -630,6 +597,11 @@ BIOMOD_EnsembleModeling <- function(bm.mod,
             ListOut$calib.failure = model_name
             return(ListOut) ## end of function.
           } else {
+            ## Find good format of prediction for ordinal
+            if (bm.mod@data.type == "ordinal" && algo != 'EMcv'){
+              newlevels <- levels(obs)[sort(unique(round(pred.bm)))]
+              pred.bm <- factor(round(pred.bm), labels = newlevels, ordered = T)
+            } 
             ListOut$model <- model_name
             ListOut$pred <- pred.bm
             assign(pred.bm.name, pred.bm)
@@ -642,6 +614,11 @@ BIOMOD_EnsembleModeling <- function(bm.mod,
               pred.bm.eval.outfile <- paste0(pred.bm.outfile,"Eval")
               pred.bm.name <- paste0(model_name, ".predictionsEval")
               eval_pred.bm <- predict(model.bm, newdata = eval.expl, seedval = seed.val)
+              
+              if (bm.mod@data.type == "ordinal" && algo != 'EMcv'){
+                newlevels <- levels(obs)[sort(unique(round(eval_pred.bm)))]
+                eval_pred.bm <- factor(round(eval_pred.bm), labels = newlevels, ordered = T)
+              }
               ListOut$pred.eval <- eval_pred.bm
               assign(pred.bm.name, eval_pred.bm)
               save(list = pred.bm.name, file = pred.bm.eval.outfile, compress = TRUE)
@@ -651,8 +628,8 @@ BIOMOD_EnsembleModeling <- function(bm.mod,
             # Models Evaluation ----------------------------------------------------
             
             if (length(metric.eval) > 0 ) {
-              cat("\n\t\t\tEvaluating Model stuff...")
               if (!(algo %in% c('EMcv', 'EMciInf','EMciSup'))) {
+                cat("\n\t\t\tEvaluating Model stuff...")
                 if (em.by == "PA+run") {
                   ## select the same evaluation data than formal models
                   ## get info on wich dataset and which repet this ensemble model is based on
@@ -810,15 +787,7 @@ BIOMOD_EnsembleModeling <- function(bm.mod,
                                                 metric.select.dataset,
                                                 metric.eval,
                                                 EMci.alpha,
-                                                EMwmean.decay,
-                                                prob.ci.alpha, # deprecated
-                                                prob.mean.weight.decay, # deprecated
-                                                prob.mean, # deprecated
-                                                prob.cv, # deprecated
-                                                prob.ci, # deprecated
-                                                prob.median, # deprecated
-                                                committee.averaging, # deprecated
-                                                prob.mean.weight) { # deprecated
+                                                EMwmean.decay) { 
   ## 1. Check bm.mod ----------------------------------------------------------
   .fun_testIfInherits(TRUE, "bm.mod", bm.mod, "BIOMOD.models.out")
   
@@ -989,6 +958,8 @@ BIOMOD_EnsembleModeling <- function(bm.mod,
     avail.eval.meth.list <- c('TSS', 'KAPPA', 'ACCURACY', 'BIAS', 'POD', 'FAR', 'POFD'
                               , 'SR', 'CSI', 'ETS', 'HK', 'HSS', 'OR', 'ORSS', 'ROC'
                               , 'BOYCE', 'MPA')
+  } else if (bm.mod@data.type == "ordinal"){
+    avail.eval.meth.list <- c("accuracy")
   } else {
     avail.eval.meth.list <- c('RMSE','MSE',"MAE","Rsq","Rsq_aj","Max_error")
   }

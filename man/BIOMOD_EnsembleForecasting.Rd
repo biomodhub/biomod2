@@ -14,6 +14,7 @@ BIOMOD_EnsembleForecasting(
   metric.binary = NULL,
   metric.filter = NULL,
   compress = TRUE,
+  digits = 0,
   nb.cpu = 1,
   na.rm = TRUE,
   ...

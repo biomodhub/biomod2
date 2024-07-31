@@ -735,7 +735,10 @@ setMethod('print', signature('BIOMOD.models.options'),
     argstmp$mtry = 1
     argstmp$type <- RFtype
   }
-  if (mod == "XGBOOST") { argstmp$nrounds = 4 }
+  if (mod == "XGBOOST") { 
+    argstmp$nrounds = 4
+    argstmp$verbose =0
+  }
   
   argstmp[["..."]] = NULL
   return(argstmp)

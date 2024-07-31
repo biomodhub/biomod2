@@ -13,6 +13,7 @@ BIOMOD_Projection(
   metric.binary = NULL,
   metric.filter = NULL,
   compress = TRUE,
+  digits = 0,
   build.clamping.mask = TRUE,
   nb.cpu = 1,
   seed.val = NULL,
@@ -63,6 +64,9 @@ those of \code{bm.mod}) or \code{POD}, \code{FAR}, \code{POFD}, \code{SR}, \code
 A \code{logical} or a \code{character} value defining whether and how objects should be 
 compressed when saved on hard drive. Must be either \code{TRUE}, \code{FALSE}, \code{xz} or 
 \code{gzip} (see Details)}
+
+\item{digits}{(\emph{optional, default} \code{0}) \cr 
+A \code{integer} value defining the number of digits of the predictions.}
 
 \item{build.clamping.mask}{(\emph{optional, default} \code{TRUE}) \cr 
 A \code{logical} value defining whether a clamping mask should be built and saved on hard 

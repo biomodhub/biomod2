@@ -19,7 +19,6 @@ BIOMOD_Modeling(
   CV.strat = NULL,
   CV.user.table = NULL,
   CV.do.full.models = TRUE,
-  OPT.data.type = "binary",
   OPT.strategy = "default",
   OPT.user.val = NULL,
   OPT.user.base = "bigboss",
@@ -93,9 +92,6 @@ repetition (in columns) which observation lines should be used for models calibr
 A \code{logical} value defining whether models should be also calibrated and validated over 
 the whole dataset (and pseudo-absence datasets) or not}
 
-\item{OPT.data.type}{a \code{character} corresponding to the data type to be used, must be 
-either \code{binary}, \code{binary.PA}, \code{abundance}, \code{compositional}}
-
 \item{OPT.strategy}{a \code{character} corresponding to the method to select models' 
 parameters values, must be either \code{default}, \code{bigboss}, \code{user.defined}, 
 \code{tuned}}
@@ -111,16 +107,6 @@ It sets the bases of parameters to be modified by user defined values.}
 A \code{\link{BIOMOD.models.options}} object returned by the \code{\link{bm_ModelingOptions}} 
 function}
 
-\item{bm.options}{\emph{deprecated}, now called \code{OPT.user}}
-
-\item{nb.rep}{\emph{deprecated}, now called \code{CV.nb.rep}}
-
-\item{data.split.perc}{\emph{deprecated}, now called \code{CV.perc}}
-
-\item{data.split.table}{\emph{deprecated}, now called \code{CV.user.table}}
-
-\item{do.full.models}{\emph{deprecated}, now called \code{CV.do.full.models}}
-
 \item{weights}{(\emph{optional, default} \code{NULL}) \cr 
 A \code{vector} of \code{numeric} values corresponding to observation weights (one per 
 observation, see Details)}
@@ -130,9 +116,10 @@ A \code{numeric} between \code{0} and \code{1} corresponding to the species prev
 build '\emph{weighted response weights}' (see Details)}
 
 \item{metric.eval}{a \code{vector} containing evaluation metric names to be used, must 
-be among \code{POD}, \code{FAR}, \code{POFD}, \code{SR}, \code{ACCURACY}, \code{BIAS}, 
-\code{ROC}, \code{TSS}, \code{KAPPA}, \code{OR}, \code{ORSS}, \code{CSI}, \code{ETS}, 
-\code{BOYCE}, \code{MPA}}
+be among \code{ROC}, \code{TSS}, \code{KAPPA}, \code{ACCURACY}, \code{BIAS}, \code{POD}, 
+\code{FAR}, \code{POFD}, \code{SR}, \code{CSI}, \code{ETS}, \code{OR}, 
+\code{ORSS}, \code{BOYCE}, \code{MPA}, \code{RMSE}, \code{MAE}, \code{MSE}, \code{Rsq}, \code{Rsq_aj},
+\code{Max_error}, \code{accuracy}}
 
 \item{var.import}{(\emph{optional, default} \code{NULL}) \cr 
 An \code{integer} corresponding to the number of permutations to be done for each variable to 
@@ -200,7 +187,10 @@ metrics (see Details).
     \item \code{RFd} : Random Forest downsampled (\code{\link[randomForest]{randomForest}})
     \item \code{SRE} : Surface Range Envelop or usually called BIOCLIM (\code{\link{bm_SRE}})
     \item \code{XGBOOST} : eXtreme Gradient Boosting Training (\code{\link[xgboost]{xgboost}})
-  }}
+  }
+  For abundance/count/relative data, you can use the models : CTA, FDA, GAM, GBM, GLM, MARS, RF and XGBOOST.  
+  For ordinal data, you can use the models : CTA, FDA, GAM, GLM, MARS, RF and XGBOOST.  
+  }
   
   \item{models.pa}{Different models might respond differently to different numbers of 
   pseudo-absences. It is possible to create sets of pseudo-absences with different numbers 
@@ -213,8 +203,7 @@ metrics (see Details).
   
   \item{OPT.[...] parameters}{Different methods are available to parameterize the 
   single models (see \code{\link{bm_ModelingOptions}} and 
-  \code{\link{BIOMOD.options.dataset}}). Note that only \code{binary} data type is 
-  allowed currently.
+  \code{\link{BIOMOD.options.dataset}}). 
   \itemize{
     \item \code{default} : only default parameter values of default parameters of the single 
     models functions are retrieved. Nothing is changed so it might not give good results.
@@ -276,6 +265,21 @@ metrics (see Details).
       \item \code{BOYCE} : Boyce index
       \item \code{MPA} : Minimal predicted area (cutoff optimising MPA to predict 90\% of 
       presences)
+    }
+    }
+    \item{For abundance/count/relative data}{
+    \itemize{
+      \item \code{RMSE} : Root Mean Square Error
+      \item \code{MSE} : Mean Square Error
+      \item \code{MAE} : Mean Absolute Error
+      \item \code{Rsq} : R square
+      \item \code{Rsq_aj} : R square adjusted
+      \item \code{Max_error} : Maximum error
+    }
+    }
+    \item{For ordinal data}{
+    \itemize{
+      \item \code{accuracy} : Accuracy
     }
     }
   }

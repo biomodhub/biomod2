@@ -55,6 +55,8 @@ Class created by \code{\link{BIOMOD_Modeling}} and \code{\link{bm_RunModel}}
 
 \item{\code{model_class}}{a \code{character} corresponding to the model class}
 
+\item{\code{model_type}}{a \code{character} corresponding to the type of data}
+
 \item{\code{model_options}}{a \code{list} containing the model options}
 
 \item{\code{model}}{the corresponding model object}
