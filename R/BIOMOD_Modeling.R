@@ -74,7 +74,7 @@
 ##' be among \code{ROC}, \code{TSS}, \code{KAPPA}, \code{ACCURACY}, \code{BIAS}, \code{POD}, 
 ##' \code{FAR}, \code{POFD}, \code{SR}, \code{CSI}, \code{ETS}, \code{OR}, 
 ##' \code{ORSS}, \code{BOYCE}, \code{MPA}, \code{RMSE}, \code{MAE}, \code{MSE}, \code{Rsq}, \code{Rsq_aj},
-##' \code{Max_error}, \code{accuracy}
+##' \code{Max_error}, \code{accuracy}, \code{"recall"}, \code{"precision"}, \code{"F1score"}
 ##' @param var.import (\emph{optional, default} \code{NULL}) \cr 
 ##' An \code{integer} corresponding to the number of permutations to be done for each variable to 
 ##' estimate variable importance
@@ -228,6 +228,9 @@
 ##'     \item{For ordinal data}{
 ##'     \itemize{
 ##'       \item \code{accuracy} : Accuracy
+##'       \item \code{recall} : Macro average recall
+##'       \item \code{precision} : Macro average precision
+##'       \item \code{F1score} : Macro F1 score
 ##'     }
 ##'     }
 ##'   }
@@ -785,7 +788,7 @@ BIOMOD_Modeling <- function(bm.format,
                             , 'SR', 'CSI', 'ETS', 'HK', 'HSS', 'OR', 'ORSS', 'ROC'
                             , 'BOYCE', 'MPA')
   } else if (bm.format@data.type == "ordinal"){
-    avail.eval.meth.list <- c("accuracy")
+    avail.eval.meth.list <- c("accuracy", "recall", "precision", "F1score")
   } else {
     avail.eval.meth.list <- c('RMSE','MSE',"MAE","Rsq","Rsq_aj","Max_error")
   }

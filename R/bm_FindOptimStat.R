@@ -17,7 +17,7 @@
 ##' be either \code{POD}, \code{FAR}, \code{POFD}, \code{SR}, \code{ACCURACY}, \code{BIAS}, 
 ##' \code{ROC}, \code{TSS}, \code{KAPPA}, \code{OR}, \code{ORSS}, \code{CSI}, \code{ETS}, 
 ##' \code{BOYCE}, \code{MPA}, \code{RMSE}, \code{MAE}, \code{MSE}, \code{Rsq}, \code{Rsq_aj},
-##' \code{Max_error}, \code{accuracy}
+##' \code{Max_error}, \code{accuracy}, \code{"recall"}, \code{"precision"}, \code{"F1score"}
 ##' @param obs a \code{vector} of observed values (binary, \code{0} or \code{1})
 ##' @param fit a \code{vector} of fitted values (continuous)
 ##' @param nb.thresh an \code{integer} corresponding to the number of thresholds to be 
@@ -98,6 +98,9 @@
 ##'     \item{For ordinal data}{
 ##'     \itemize{
 ##'       \item \code{accuracy} : Accuracy
+##'       \item \code{recall} : Macro average recall
+##'       \item \code{precision} : Macro average precision
+##'       \item \code{F1score} : Macro F1 score
 ##'     }
 ##'     }
 ##' }
@@ -208,9 +211,9 @@ bm_FindOptimStat <- function(metric.eval = 'TSS',
     warning("\nObserved or fitted data contains a unique value... Be careful with this models predictions\n", immediate. = TRUE)
   }
   
-  abundance_metrics <- c("RMSE", "MSE" ,"MAE" ,"AIC" ,'Rsq' ,'Rsq_aj', 'Max_error')
+  abundance_metrics <- c("RMSE", "MSE" ,"MAE" ,"AIC" ,'Rsq' ,'Rsq_aj', 'Max_error',"accuracy", "recall", "precision", "F1score")
   
-  if (!(metric.eval %in% c('ROC', 'BOYCE', 'MPA',abundance_metrics, 'accuracy')))
+  if (!(metric.eval %in% c('ROC', 'BOYCE', 'MPA',abundance_metrics)))
   { ## for all evaluation metrics other than ROC, BOYCE, MPA --------------------------------------
     
     ## 1. get threshold values to be tested -----------------------------------
@@ -296,19 +299,20 @@ bm_FindOptimStat <- function(metric.eval = 'TSS',
     eval.out <- data.frame(metric.eval, cutoff, sensitivity, specificity, best.stat)
     
   } else if (metric.eval %in% abundance_metrics) { #abundance metrics 
-    fun_eval <- bm_CalculateStatAbun(metric.eval)
-    best.stat <- try(eval(parse(text = fun_eval)))
-    eval.out <- data.frame(metric.eval, best.stat)
-  } else { #Cette boucle commence à être dégeulasse ~(´•︵•`)~
-    # accuracy: case 
-    if (length(levels(obs)) != length(levels(fit))){
+    if (metric.eval %in% c("accuracy", "recall", "precision", "F1score") && length(levels(obs)) != length(levels(fit))){
       fit <- factor(fit, levels = levels(obs), ordered = T)
       cat("\n \t\t Careful : some categories are not predicted! ")
     }
-    correct <- sum(obs == fit)
-    best.stat <- correct/length(obs)
+    best.stat <- bm_CalculateStatAbun(metric.eval, obs, fit, k)
     eval.out <- data.frame(metric.eval, best.stat)
-  }
+  } 
+  # else { #Cette boucle commence à être dégeulasse ~(´•︵•`)~
+  #   # accuracy: case 
+  #   
+  #   correct <- sum(obs == fit)
+  #   best.stat <- correct/length(obs)
+  #   eval.out <- data.frame(metric.eval, best.stat)
+  # }
   
   return(eval.out)
 }
@@ -607,17 +611,36 @@ ecospat.mpa <- function(Pred, Sp.occ.xy = NULL, perc = 0.9)
 
 ## New function in the case of abundance data
 
-bm_CalculateStatAbun <- function(metric.eval)
-{
+bm_CalculateStatAbun <- function(metric.eval, obs, fit, k){
+  if (metric.eval %in% c("accuracy", "recall", "precision", "F1score")){
+    m <- .contingency_table_ordinal(obs, fit)
+    print(m)
+  }
   switch(metric.eval
-         , 'RMSE' = "sqrt(mean((obs - fit)^2))"
-         , 'MSE' = "mean((obs - fit)^2)"
-         , 'MAE' = "mean(abs(obs - fit))"
-         , 'AIC' = "AIC(model)"
-         , 'Rsq' = "cor(obs,fit)^2"
-         , "Rsq_aj" = "1 - (1 - cor(obs,fit)^2) * (length(obs)-1) / (length(obs)-k-1) "
-         , 'Max_error' = "max(abs(obs-fit), na.rm = T)"
+         , 'RMSE' = sqrt(mean((obs - fit)^2))
+         , 'MSE' = mean((obs - fit)^2)
+         , 'MAE' = mean(abs(obs - fit))
+         #, 'AIC' = "AIC(model)"
+         , 'Rsq' = cor(obs,fit)^2
+         , "Rsq_aj" = 1 - (1 - cor(obs,fit)^2) * (length(obs)-1) / (length(obs)-k-1) 
+         , 'Max_error' = max(abs(obs-fit), na.rm = T)
+         , "accuracy" = sum(diag(m)) / sum(m)
+         , "recall" = sum(diag(m) / colSums(m), na.rm = T) / nrow(m)
+         , "precision" = sum(diag(m) / rowSums(m), na.rm = T) / nrow(m)
+         , "F1score" = {
+           p <- sum(diag(m) / rowSums(m), na.rm = T) / nrow(m)
+           r <- sum(diag(m) / colSums(m), na.rm = T) / nrow(m)
+           return(2 * p * r/ (p + r))
+         }
   )
 }
 
 
+.contingency_table_ordinal <- function(obs, fit){
+  nblevels <- length(levels(obs))
+  m <- matrix(0,nrow = nblevels, ncol = nblevels, dimnames = list(levels(obs), levels(obs)))
+  for (i in 1:length(obs)){
+    m[obs[i], fit[i]] <-  m[obs[i], fit[i]] + 1
+  }
+  return(m)
+}
