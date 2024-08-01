@@ -614,7 +614,6 @@ ecospat.mpa <- function(Pred, Sp.occ.xy = NULL, perc = 0.9)
 bm_CalculateStatAbun <- function(metric.eval, obs, fit, k){
   if (metric.eval %in% c("accuracy", "recall", "precision", "F1score")){
     m <- .contingency_table_ordinal(obs, fit)
-    print(m)
   }
   switch(metric.eval
          , 'RMSE' = sqrt(mean((obs - fit)^2))

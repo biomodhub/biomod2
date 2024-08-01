@@ -114,6 +114,12 @@ bm_VariablesImportance <- function(bm.model,
     )
   if (inherits(ref, "try-error")) { stop("Unable to make model prediction") }
   
+  if (bm.model@model_type == "ordinal"){
+    if (!(bm.model@model_name %in% c("GLM", "GAM", "XGBOOST"))){## laissez en numeric pour eux 
+      ref <- as.numeric(factor(ref, ordered = T))
+    }
+  }
+  
   ## Make randomisation
   cat('\n')
   if (do.progress) {
@@ -125,8 +131,15 @@ bm_VariablesImportance <- function(bm.model,
     {
       data_rand <- .randomise_data(expl.var, v, method) #, seedval = seed.val)
       shuffled.pred <- predict(bm.model, data_rand, temp_workdir = temp.workdir, seedval = seed.val)
+      
+      if (bm.model@model_type == "ordinal"){
+        if (!(bm.model@model_name %in% c("GLM", "GAM", "XGBOOST"))){ ## laissez en numeric pour eux ??
+          shuffled.pred <- as.numeric(factor(shuffled.pred, ordered = T))
+        }
+      }
+      method_cor <- ifelse(bm.model@model_type != "ordinal","pearson", "spearman")
       out_vr <- 1 - max(round(
-        cor(x = ref, y = shuffled.pred, use = "pairwise.complete.obs", method = "pearson")
+        cor(x = ref, y = shuffled.pred, use = "pairwise.complete.obs", method = method_cor)
         , digits = 6), 0, na.rm = TRUE)
       if (do.progress) {
         i.iter = i.iter + 1
