@@ -282,7 +282,7 @@ setGeneric("BIOMOD.options.dataset",
   if (!is.null(bm.format)) {
     .fun_testIfInherits(TRUE, "bm.format", bm.format, c("BIOMOD.formated.data", "BIOMOD.formated.data.PA"))
   }
-  expected_CVnames <- c("_allData_allRun", "for_all_datasets")
+  expected_CVnames <- c("_allData_allRun")
   if (!is.null(calib.lines)) {
     .fun_testIfInherits(TRUE, "calib.lines", calib.lines, c("matrix"))
     
@@ -313,7 +313,8 @@ setGeneric("BIOMOD.options.dataset",
       names(user.val) <- expected_CVnames
     }
     
-    .fun_testIfIn(TRUE, "names(user.val)", names(user.val), expected_CVnames)
+    .fun_testIfIn(TRUE, "names(user.val)", names(user.val), c(expected_CVnames, "for_all_datasets"))
+    
     if (length(names(user.val)) != length(expected_CVnames)) {
       warning(paste0("Options will be changed only for a subset of datasets ("
                      , paste0(names(user.val), collapse = ", ")
