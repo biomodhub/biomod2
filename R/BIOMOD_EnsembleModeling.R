@@ -371,8 +371,6 @@ BIOMOD_EnsembleModeling <- function(bm.mod,
                                               metric.select.table = metric.select.table,
                                               metric.select.dataset = metric.select.dataset,
                                               metric.eval = metric.eval,
-                                              prob.ci.alpha = prob.ci.alpha,
-                                              prob.mean.weight.decay = prob.mean.weight.decay,
                                               EMci.alpha = EMci.alpha,
                                               EMwmean.decay = EMwmean.decay)
   for (argi in names(args)) { assign(x = argi, value = args[[argi]]) }
@@ -807,35 +805,8 @@ BIOMOD_EnsembleModeling <- function(bm.mod,
   em.avail.check <- c('EMmean', 'EMcv', 'EMci', 'EMmedian', 'EMca', 'EMwmean')
   em.avail <- c('EMmean', 'EMcv', 'EMciInf', 'EMciSup', 'EMmedian', 'EMca', 'EMwmean')
   if (missing(em.algo)) {
-    if (all(c(missing(prob.mean), missing(prob.cv),
-              missing(prob.ci), missing(prob.median),
-              missing(committee.averaging), missing(prob.mean.weight)))) {
-      em.algo <- 'EMmean'
-      cat("\n! setting em.algo to its default value c('EMmean')")
-    } else {
-      if (missing(prob.mean)) prob.mean <- FALSE
-      if (missing(prob.cv)) prob.cv <- FALSE
-      if (missing(prob.ci)) prob.ci <- FALSE
-      if (missing(prob.median)) prob.median <- FALSE
-      if (missing(committee.averaging)) committee.averaging <- FALSE
-      if (missing(prob.mean.weight)) prob.mean.weight <- FALSE
-      
-      if (!is.logical(prob.mean) | !is.logical(prob.median) |
-          !is.logical(prob.cv) | !is.logical(prob.ci) | 
-          !is.logical(committee.averaging) | !is.logical(prob.mean.weight)) {
-        stop("prob.mean, prob.cv, prob.ci, prob.median, committee.averaging and prob.mean.weight arguments must be logical")
-      }
-      
-      em.algo <- em.avail[c(prob.mean, prob.cv,  prob.ci,  prob.ci,
-                            prob.median, committee.averaging, prob.mean.weight)]
-      
-      em.algo.user <- em.avail.check[c(prob.mean, prob.cv, 
-                                       prob.ci, prob.median,
-                                       committee.averaging, prob.mean.weight)]
-      # Stop for obsolete arguments
-      stop(paste0("\n   ! arguments ", paste0(em.avail.old[-6], collapse = ", "),
-                  " and ",em.avail.old[6], " are obsolete. Please use `em.algo = c('",paste0(em.algo.user, collapse = "', '"),"')` instead."))
-    }
+    em.algo <- 'EMmean'
+    cat("\n! setting em.algo to its default value c('EMmean')")
   } else {
     .fun_testIfIn(TRUE, "em.algo", em.algo, em.avail.check)
     em.algo <- unique(em.algo)
@@ -977,11 +948,6 @@ BIOMOD_EnsembleModeling <- function(bm.mod,
   
   ## 8.1 Check alpha for Confident interval
   if ("EMci" %in% em.algo) {
-    if(!missing(prob.ci.alpha)){
-      EMci.alpha <- prob.ci.alpha
-      stop("! argument `prob.ci.alpha` is deprecated, please use `EMci.alpha` instead.")
-    }
-    
     .fun_testIfPosNum(TRUE, "EMci.alpha", EMci.alpha)
     if (EMci.alpha <= 0 | EMci.alpha >= 0.5) {
       stop("EMci.alpha must be a numeric between 0 and 0.5")
@@ -990,10 +956,6 @@ BIOMOD_EnsembleModeling <- function(bm.mod,
   # prob.mean.weight.decay
   ## 8.2 Check decay for wmean
   if ("EMwmean" %in% em.algo) {
-    if(!missing(prob.mean.weight.decay)){
-      EMwmean.decay <- prob.mean.weight.decay
-      stop("! argument `prob.mean.weight.decay` is deprecated, please use `EMwmean.decay` instead.")
-    }
     if ((!is.numeric(EMwmean.decay) &&
          !is.character(EMwmean.decay) &&
          !is.function(EMwmean.decay)) ||
@@ -1012,11 +974,6 @@ BIOMOD_EnsembleModeling <- function(bm.mod,
                        "PA_dataset+algo"  = "PA+algo")
   em.by.avail <- c('PA', 'algo', 'all', 'PA+run', 'PA+algo')
   
-  if(em.by %in% names(em.by.avail.old)){
-    em.by.old <- em.by
-    em.by <- em.by.avail.old[em.by]
-    stop(paste0("! `em.by = '",em.by.old,"'` is deprecated, please use `em.by = '",em.by,"'` is instead"))
-  }
   if(missing(em.by)){
     em.by <- "all"
     cat("\n! `em.by` automatically set to 'all'")

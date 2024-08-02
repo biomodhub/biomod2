@@ -16,6 +16,7 @@
 ##' @param proj.future a \code{data.frame}, \code{\link[raster:stack]{RasterLayer}} 
 ##' or \code{\link[terra:rast]{SpatRaster}} object containing the final binary projection(s) 
 ##' of the (ensemble) species distribution model(s)
+##' @param thresholds
 ##' 
 ##' 
 ##' @return
@@ -183,10 +184,10 @@
 
 
 setGeneric("BIOMOD_RangeSize",
-           def = function(proj.current, proj.future) {
+           def = function(proj.current, proj.future, thresholds) {
              if (inherits(proj.current, "Raster") && inherits(proj.future, "Raster")) {
                return(
-                 BIOMOD_RangeSize(rast(proj.current), rast(proj.future))
+                 BIOMOD_RangeSize(rast(proj.current), rast(proj.future), thresholds)
                )
              } else {
                stop("'proj.current' and 'proj.future' must have the same class among 'data.frame', 'SpatRaster' and 'array'" )
@@ -202,37 +203,82 @@ setGeneric("BIOMOD_RangeSize",
 ##'
 
 setMethod('BIOMOD_RangeSize', signature(proj.current = 'data.frame', proj.future = 'data.frame'),
-          function(proj.current, proj.future)
+          function(proj.current, proj.future, thresholds)
           {
             .bm_cat("Do Range Size Computation")
-            args <- .BIOMOD_RangeSize.check.args(proj.current, proj.future)
+            args <- .BIOMOD_RangeSize.check.args(proj.current, proj.future, thresholds)
             for (argi in names(args)) { assign(x = argi, value = args[[argi]]) }
             rm(args)
             
             if (ncol(proj.future) == ncol(proj.current)) {
-              Diff.By.Pixel <- as.data.frame(proj.future - 2 * proj.current)
+              if (nonbinary) {
+                Diff.By.Pixel <- as.data.frame((proj.future - proj.current)/proj.current) *100 
+              } else {
+                Diff.By.Pixel <- as.data.frame(proj.future - 2 * proj.current)
+              }
+              
               this_rownames <- colnames(proj.current)
             } else {
               Diff.By.Pixel <- foreach(thiscol = seq_len(ncol(proj.future)), .combine = 'cbind') %do% {
-                tmp <- as.data.frame(proj.future[,thiscol] - 2 * proj.current[,1])
+                if (nonbinary){
+                  tmp <- as.data.frame((proj.future[,thiscol] - proj.current[,1])/proj.current[,1]) *100 
+                } else {
+                  tmp <- as.data.frame(proj.future[,thiscol] - 2 * proj.current[,1])
+                }
                 colnames(tmp) <- colnames(proj.future)[thiscol]
                 tmp
               }
               this_rownames <- colnames(proj.future)
             }
-            Compt.By.Models <- as.data.frame(.CompteurSp(Diff.By.Pixel, c(-2, 0, -1, 1)))
-            Compt.By.Models[, seq(5,10)] <- NA
-            Compt.By.Models[, 8] <- Compt.By.Models[, 1] + Compt.By.Models[, 3]
-            Compt.By.Models[, 9] <- Compt.By.Models[, 3]
-            Compt.By.Models[, 10] <- Compt.By.Models[, 4] + Compt.By.Models[, 3]
             
-            Compt.By.Models[, 5] <- (100 * Compt.By.Models[, 1]) / Compt.By.Models[, 8]
-            Compt.By.Models[, 6] <- (100 * Compt.By.Models[, 4]) / Compt.By.Models[, 8]
-            Compt.By.Models[, 7] <- Compt.By.Models[, 6] - Compt.By.Models[, 5]
-
-            dimnames(Compt.By.Models) <- list(this_rownames, c("Loss", "Stable0", "Stable1", "Gain"
-                                                                       , "PercLoss", "PercGain", "SpeciesRangeChange"
-                                                                       , "CurrentRangeSize", "FutureRangeSize.NoDisp", "FutureRangeSize.FullDisp"))
+            if (nonbinary){
+              nbpixels <- sum(!is.na(Diff.By.Pixel[]))
+              
+              CBS[i, "Stable"] <- length(which(Diff.By.Pixel[] > -min(thresholds) & Diff.By.Pixel[] <= min(thresholds)))
+              CBS[i, "Stableperc"] <- round(CBS[i, "Stable"] / nbpixels * 100, digits = 3)
+              
+              for (thre in thresholds){
+                if (thre == max(thresholds)){
+                  thre_max <- Inf
+                } else {
+                  thre_max <- thresholds[which(thresholds == thre) + 1]
+                }
+                
+                CBS[i, paste0("loss", -thre)] <- length(which(Diff.By.Pixel[] > -thre_max & Diff.By.Pixel[] <= -thre))
+                CBS[i, paste0("gain", thre)] <- length(which(Diff.By.Pixel[] > thre & Diff.By.Pixel[] <= thre_max))
+                
+                CBS[i, paste0("loss", -thre, "perc")] <- round(CBS[i, paste0("loss", -thre)] / nbpixels * 100, digits = 3)
+                CBS[i, paste0("gain", thre, "perc")] <- round(CBS[i, paste0("gain", thre)] / nbpixels * 100, digits = 3)
+              }
+              
+              CBS[i, "SpeciesRangeChange"] <- 100 - CBS[i, "Stableperc"]
+              CBS[i, "CurrentRangeSize"] <- length(which(proj.current[] > 0))
+              CBS[i, "FutureRangeSize.NoDisp"] <- length(which(proj.future[] > 0) & which(proj.current[] > 0))
+              CBS[i, "FutureRangeSize.FullDisp"] <- length(which(proj.future[] > 0))
+              
+              
+              names.res <- c(paste0("loss", sort(-thresholds)), "Stable", paste0("gain", thresholds))
+              names.res <- c(names.res, paste0(names.res, "perc"))
+              names.res <- c(names.res, c("SpeciesRangeChange", "CurrentRangeSize", "FutureRangeSize.NoDisp", "FutureRangeSize.FullDisp"))
+              
+              Compt.By.Models <- CBS
+              dimnames(Compt.By.Models) <- names.res
+              
+            } else {
+              Compt.By.Models <- as.data.frame(.CompteurSp(Diff.By.Pixel, c(-2, 0, -1, 1)))
+              Compt.By.Models[, seq(5,10)] <- NA
+              Compt.By.Models[, 8] <- Compt.By.Models[, 1] + Compt.By.Models[, 3]
+              Compt.By.Models[, 9] <- Compt.By.Models[, 3]
+              Compt.By.Models[, 10] <- Compt.By.Models[, 4] + Compt.By.Models[, 3]
+              
+              Compt.By.Models[, 5] <- (100 * Compt.By.Models[, 1]) / Compt.By.Models[, 8]
+              Compt.By.Models[, 6] <- (100 * Compt.By.Models[, 4]) / Compt.By.Models[, 8]
+              Compt.By.Models[, 7] <- Compt.By.Models[, 6] - Compt.By.Models[, 5]
+              
+              dimnames(Compt.By.Models) <- list(this_rownames, c("Loss", "Stable0", "Stable1", "Gain"
+                                                                 , "PercLoss", "PercGain", "SpeciesRangeChange"
+                                                                 , "CurrentRangeSize", "FutureRangeSize.NoDisp", "FutureRangeSize.FullDisp"))
+            }
             
             Output <- list(Compt.By.Models = Compt.By.Models, Diff.By.Pixel = Diff.By.Pixel)
             .bm_cat("Done")
@@ -248,48 +294,89 @@ setMethod('BIOMOD_RangeSize', signature(proj.current = 'data.frame', proj.future
 ##'
 
 setMethod('BIOMOD_RangeSize', signature(proj.current = 'SpatRaster', proj.future = 'SpatRaster'),
-          function(proj.current, proj.future)
+          function(proj.current, proj.future, thresholds)
           {
             .bm_cat("Do Range Size Computation")
-            args <- .BIOMOD_RangeSize.check.args(proj.current, proj.future)
+            args <- .BIOMOD_RangeSize.check.args(proj.current, proj.future, thresholds)
             for (argi in names(args)) { assign(x = argi, value = args[[argi]]) }
             rm(args)
             
-            names.res = c("Loss", "Stable0", "Stable1", "Gain"
+            if (nonbinary == FALSE){
+              names.res = c("Loss", "Stable0", "Stable1", "Gain"
                           , "PercLoss", "PercGain", "SpeciesRangeChange"
                           , "CurrentRangeSize", "FutureRangeSize.NoDisp", "FutureRangeSize.FullDisp")
+            } else {
+              names.res <- c(paste0("loss", sort(-thresholds)), "Stable", paste0("gain", thresholds))
+              names.res <- c(names.res, paste0(names.res, "perc"))
+              names.res <- c(names.res, c("SpeciesRangeChange", "CurrentRangeSize", "FutureRangeSize.NoDisp", "FutureRangeSize.FullDisp"))
+            }
+            
             if(nlyr(proj.current) > 1){
-              CBS <- matrix(ncol = 10, nrow = nlyr(proj.current),
+              CBS <- matrix(ncol = length(names.res), nrow = nlyr(proj.current),
                           dimnames = list(names(proj.current), names.res))
             } else {
-              CBS <- matrix(ncol = 10, nrow = nlyr(proj.future),
+              CBS <- matrix(ncol = length(names.res), nrow = nlyr(proj.future),
                             dimnames = list(names(proj.future), names.res))
             }
 
             sp.rast <- rast()
             Cur <- proj.current[[1]]
             for (i in seq_len(nlyr(proj.future))) {
-              ## DiffByPixel
               if(nlyr(proj.current) > 1){
                 Cur <- proj.current[[i]]
               }
               Fut <- proj.future[[i]]
-              Ras <- Fut - (Cur + Cur)
-              add(sp.rast) <- Ras
               
-              ## ComptBySpecies
-              CBS[i, 1] <- length(which(Ras[] == -2))
-              CBS[i, 2] <- length(which(Ras[] == 0))
-              CBS[i, 3] <- length(which(Ras[] == -1))
-              CBS[i, 4] <- length(which(Ras[] == 1))
+              if (nonbinary){
+                ## DiffByPixel
+                Ras <- (Fut - Cur)/ Cur *100
+                add(sp.rast) <- Ras
+                
+                ## ComptBySpecies
+                nbpixels <- sum(!is.na(Ras[]))
+                
+                CBS[i, "Stable"] <- length(which(Ras[] > -min(thresholds) & Ras[] <= min(thresholds)))
+                CBS[i, "Stableperc"] <- round(CBS[i, "Stable"] / nbpixels * 100, digits = 3)
+                
+                for (thre in thresholds){
+                  if (thre == max(thresholds)){
+                    thre_max <- Inf
+                  } else {
+                    thre_max <- thresholds[which(thresholds == thre) + 1]
+                  }
+                  
+                  CBS[i, paste0("loss", -thre)] <- length(which(Ras[] > -thre_max & Ras[] <= -thre))
+                  CBS[i, paste0("gain", thre)] <- length(which(Ras[] > thre & Ras[] <= thre_max))
+                  
+                  CBS[i, paste0("loss", -thre, "perc")] <- round(CBS[i, paste0("loss", -thre)] / nbpixels * 100, digits = 3)
+                  CBS[i, paste0("gain", thre, "perc")] <- round(CBS[i, paste0("gain", thre)] / nbpixels * 100, digits = 3)
+                }
+                
+                CBS[i, "SpeciesRangeChange"] <- 100 - CBS[i, "Stableperc"]
+                CBS[i, "CurrentRangeSize"] <- length(which(Cur[] > 0))
+                CBS[i, "FutureRangeSize.NoDisp"] <- length(which(Fut[] > 0) & which(Cur[] > 0))
+                CBS[i, "FutureRangeSize.FullDisp"] <- length(which(Fut[] > 0))
+
+              } else {
+                ## DiffByPixel
+                Ras <- Fut - (Cur + Cur)
+                add(sp.rast) <- Ras
+                
+                ## ComptBySpecies
+                CBS[i, 1] <- length(which(Ras[] == -2))
+                CBS[i, 2] <- length(which(Ras[] == 0))
+                CBS[i, 3] <- length(which(Ras[] == -1))
+                CBS[i, 4] <- length(which(Ras[] == 1))
+                
+                CBS[i, 8] <- CBS[i, 1] + CBS[i, 3]
+                CBS[i, 9] <- CBS[i, 3]
+                CBS[i, 10] <- CBS[i, 3] + CBS[i, 4]
+                
+                CBS[i, 5] <- round(CBS[i, 1] / CBS[i, 8] * 100, digits = 3)
+                CBS[i, 6] <- round(CBS[i, 4] / CBS[i, 8] * 100, digits = 3)
+                CBS[i, 7] <- round(CBS[i, 10] / CBS[i, 8] * 100 - 100, digits = 3)
+              }
               
-              CBS[i, 8] <- CBS[i, 1] + CBS[i, 3]
-              CBS[i, 9] <- CBS[i, 3]
-              CBS[i, 10] <- CBS[i, 3] + CBS[i, 4]
-              
-              CBS[i, 5] <- round(CBS[i, 1] / CBS[i, 8] * 100, digits = 3)
-              CBS[i, 6] <- round(CBS[i, 4] / CBS[i, 8] * 100, digits = 3)
-              CBS[i, 7] <- round(CBS[i, 10] / CBS[i, 8] * 100 - 100, digits = 3)
             }
             names(sp.rast) <- rownames(CBS)
             
@@ -300,7 +387,7 @@ setMethod('BIOMOD_RangeSize', signature(proj.current = 'SpatRaster', proj.future
 
 # Argument Check ---------------------------------------------------------------
 
-.BIOMOD_RangeSize.check.args <- function(proj.current, proj.future) {
+.BIOMOD_RangeSize.check.args <- function(proj.current, proj.future, thresholds) {
   
   ## dimensions checking ------------------------
   if (inherits(proj.current, "data.frame")) {
@@ -355,12 +442,20 @@ setMethod('BIOMOD_RangeSize', signature(proj.current = 'SpatRaster', proj.future
     test_binary_future <- all(na.omit(values(proj.future)) %in% c(0,1))
   }
   
-  if (!test_binary_current | !test_binary_future) {
-    stop("'proj.current' and 'proj.future' must have only values among 0, 1 or NA.")
-  }
+  nonbinary <- ifelse((!test_binary_current | !test_binary_future), TRUE, FALSE)
+  # if (!test_binary_current | !test_binary_future) {
+  #   stop("'proj.current' and 'proj.future' must have only values among 0, 1 or NA.")
+  # }
+  
+  # Thresholds
+  .fun_testIfInherits(TRUE, "thresholds", thresholds, "numeric")
+  thresholds <- sort(thresholds)
+  
   
   return(list("proj.current" = proj.current,
-              "proj.future" = proj.future))
+              "proj.future" = proj.future,
+              nonbinary = nonbinary,
+              thresholds = thresholds))
 }
 
 
@@ -378,6 +473,28 @@ setMethod('BIOMOD_RangeSize', signature(proj.current = 'SpatRaster', proj.future
       Compt[i, 4] <- length(Data[Data[, i] == Value[4], i])
       i <- i + 1
     }
+    return(Compt)
+  }
+}
+
+.CompteurThresh <- function(Data, Value) {
+  if (is.data.frame(Data)) {
+    N <- dim(Data)[2]
+    V <- (length(Value)*2) +1
+    Compt <- as.data.frame(matrix(FALSE, ncol = V, nrow = N))
+    m <- (V+1)/2
+    i <- 1
+    bornes <- unique(sort(c(Value, -Value)))
+    nb <- length(bornes) +1
+    while(i <= N) {
+      Compt[i,m] <- length(Data[Data[, i] == 0, i])
+      for (v in 1:(m-1)){
+        Compt[i, v] <- length(Data[(Data[, i] <= bornes[v] & Data[, i] > bornes[v-1]) , i])
+        Compt[i, ncol(Compt) +1 - v] <- length(Data[(Data[, i] >= bornes[nb -v] & Data[, i] < bornes[nb-v+1]) , i])
+      }
+      i <- i + 1
+    }
+    colnames(Compt) <- c("verslinfini",bornes,"etaudela")
     return(Compt)
   }
 }
