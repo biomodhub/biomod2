@@ -184,7 +184,7 @@
 
 
 setGeneric("BIOMOD_RangeSize",
-           def = function(proj.current, proj.future, thresholds) {
+           def = function(proj.current, proj.future, thresholds = c(10,30,50)) {
              if (inherits(proj.current, "Raster") && inherits(proj.future, "Raster")) {
                return(
                  BIOMOD_RangeSize(rast(proj.current), rast(proj.future), thresholds)
@@ -212,7 +212,7 @@ setMethod('BIOMOD_RangeSize', signature(proj.current = 'data.frame', proj.future
             
             if (ncol(proj.future) == ncol(proj.current)) {
               if (nonbinary) {
-                Diff.By.Pixel <- as.data.frame((proj.future - proj.current)/proj.current) *100 
+                Diff.By.Pixel <- as.data.frame((proj.future - proj.current)/(proj.current + 0.0001)) *100 
               } else {
                 Diff.By.Pixel <- as.data.frame(proj.future - 2 * proj.current)
               }
@@ -221,7 +221,7 @@ setMethod('BIOMOD_RangeSize', signature(proj.current = 'data.frame', proj.future
             } else {
               Diff.By.Pixel <- foreach(thiscol = seq_len(ncol(proj.future)), .combine = 'cbind') %do% {
                 if (nonbinary){
-                  tmp <- as.data.frame((proj.future[,thiscol] - proj.current[,1])/proj.current[,1]) *100 
+                  tmp <- as.data.frame((proj.future[,thiscol] - proj.current[,1])/(proj.current[,1] + 0.0001)) *100 
                 } else {
                   tmp <- as.data.frame(proj.future[,thiscol] - 2 * proj.current[,1])
                 }
@@ -329,7 +329,9 @@ setMethod('BIOMOD_RangeSize', signature(proj.current = 'SpatRaster', proj.future
               
               if (nonbinary){
                 ## DiffByPixel
-                Ras <- (Fut - Cur)/ Cur *100
+                Ras <- (Fut - Cur)/ (Cur + 0.0001) *100 #Comment gérer la division par zéro
+                #Ras[Ras == Inf] <- 0
+                #Ras[Ras == -Inf] <- 0
                 add(sp.rast) <- Ras
                 
                 ## ComptBySpecies

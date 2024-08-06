@@ -675,27 +675,27 @@ setMethod('print', signature('BIOMOD.models.options'),
     family <- poisson(link = "log")
     CTAmethod <- "poisson"
     GBMdistribution <- "poisson"
-    FDAmethod <- "polyreg"
+    FDAmethod <- NULL
   }
   else if (data.type == "ordinal"){
     RFtype <- "classification"
     family <- quasibinomial() 
     CTAmethod <- "class"
     GBMdistribution <- "multinomial"
-    FDAmethod <- "mars" #???
+    FDAmethod <- "mars"
   } else if (data.type == "relative"){
     RFtype <- "regression"
     family <- quasibinomial(link = 'logit')
     #GAMfamily <- betar(link="logit")
     CTAmethod <- "poisson"
     GBMdistribution <- "gaussian"
-    FDAmethod <- "polyreg"
+    FDAmethod <- NULL
   } else { # data.type = nonbinary or data.type = abundance
     RFtype <- "regression"
     family <- gaussian(link = 'identity')
     CTAmethod <- "poisson" #??
     GBMdistribution <- "gaussian"
-    FDAmethod <- "polyreg"
+    FDAmethod <- NULL
   }
   
   if (mod == "ANN") { 
@@ -738,7 +738,7 @@ setMethod('print', signature('BIOMOD.models.options'),
   }
   if (mod == "XGBOOST") { 
     argstmp$nrounds = 4
-    argstmp$verbose =0
+    argstmp$verbose = 0
   }
   
   argstmp[["..."]] = NULL

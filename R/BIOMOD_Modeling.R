@@ -136,7 +136,7 @@
 ##'     \item \code{SRE} : Surface Range Envelop or usually called BIOCLIM (\code{\link{bm_SRE}})
 ##'     \item \code{XGBOOST} : eXtreme Gradient Boosting Training (\code{\link[xgboost]{xgboost}})
 ##'   }
-##'   For abundance/count/relative data, you can use the models : CTA, FDA, GAM, GBM, GLM, MARS, RF and XGBOOST.  
+##'   For abundance/count/relative data, you can use the models : CTA, GAM, GBM, GLM, MARS, RF and XGBOOST.  
 ##'   For ordinal data, you can use the models : CTA, FDA, GAM, GLM, MARS, RF and XGBOOST.  
 ##'   }
 ##'   
@@ -647,21 +647,13 @@ BIOMOD_Modeling <- function(bm.format,
   ## check if model is supported
   if (bm.format@data.type == "binary"){
     avail.models.list <- c('ANN', 'CTA', 'FDA', 'GAM', 'GBM', 'GLM', 'MARS', 'MAXENT', 'MAXNET', 'RF','RFd', 'SRE', 'XGBOOST')
-    .fun_testIfIn(TRUE, "models", models, avail.models.list)
+  } else if (bm.format@data.type == "ordinal") {
+    avail.models.list <- c('CTA', 'FDA', 'GAM', 'GLM', 'MARS', 'RF', 'XGBOOST')
   } else {
-    avail.models.list <- c('CTA', 'FDA', 'GAM', 'GBM', 'GLM', 'MARS', 'RF', 'XGBOOST')
-    .fun_testIfIn(TRUE, paste0("models with ", bm.format@data.type, " data type"), models, avail.models.list)
+    avail.models.list <- c('CTA', 'GAM', 'GBM', 'GLM', 'MARS', 'RF', 'XGBOOST')
   }
+  .fun_testIfIn(TRUE, paste0("models with ", bm.format@data.type, " data type"), models, avail.models.list)
   
-  ## Remove GBM for ordinal data
-  if (bm.format@data.type == "ordinal") {
-    models.fact.unsupport <- c("GBM")
-    models.switch.off <- c(models.switch.off, intersect(models, models.fact.unsupport))
-    if (length(models.switch.off) > 0) {
-      models <- setdiff(models, models.switch.off)
-      cat(paste0("\n\t! ", paste(models.switch.off, collapse = ",")," was switched off because of ordinal datatype"))
-    }
-  }
   
   ## Specific case of one variable with GBM / MAXNET
   if ('GBM' %in% models && ncol(bm.format@data.env.var) == 1) {

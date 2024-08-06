@@ -330,13 +330,21 @@ bm_ModelingOptions <- function(data.type
           (data.type != "nonbinary" && bm.format@data.type != data.type)){
         stop("\n data.type should match the data.type of your bm.format")
       } 
-    }
-    # data.type <- bm.format@data.type #???
+    } 
       
     ## check if model is supported
-    avail.models.list <- c('ANN', 'CTA', 'FDA', 'GAM', 'GAM.gam.gam', 'GAM.mgcv.bam', 'GAM.mgcv.gam'
-                           , 'GBM', 'GLM', 'MARS', 'MAXENT', 'MAXNET', 'RF','RFd', 'SRE', 'XGBOOST')
-    .fun_testIfIn(TRUE, "models", models, avail.models.list)
+    if (data.type == "binary"){
+      avail.models.list <- c('ANN', 'CTA', 'FDA', 'GAM', 'GAM.gam.gam', 'GAM.mgcv.bam', 'GAM.mgcv.gam', 'GBM', 'GLM', 'MARS', 'MAXENT', 'MAXNET', 'RF','RFd', 'SRE', 'XGBOOST')
+    } else if (data.type == "ordinal") {
+      avail.models.list <- c('CTA', 'FDA', 'GAM', 'GAM.gam.gam', 'GAM.mgcv.bam', 'GAM.mgcv.gam', 'GLM', 'MARS', 'RF', 'XGBOOST')
+    } else {
+      avail.models.list <- c('CTA', 'GAM','GAM.gam.gam', 'GAM.mgcv.bam', 'GAM.mgcv.gam', 'GBM', 'GLM', 'MARS', 'RF', 'XGBOOST')
+    }
+    .fun_testIfIn(TRUE, paste0("Models with ", data.type, " data type"), models, avail.models.list)
+    
+    # avail.models.list <- c('ANN', 'CTA', 'FDA', 'GAM', 'GAM.gam.gam', 'GAM.mgcv.bam', 'GAM.mgcv.gam'
+    #                        , 'GBM', 'GLM', 'MARS', 'MAXENT', 'MAXNET', 'RF','RFd', 'SRE', 'XGBOOST')
+    # .fun_testIfIn(TRUE, "models", models, avail.models.list)
     if (length(grep('GAM', models)) > 1) {
       stop("Only one GAM model can be activated. Please choose betwen 'GAM', 'GAM.gam.gam', 'GAM.mgcv.bam' or 'GAM.mgcv.gam'")
     } else if ('GAM' %in% models) {

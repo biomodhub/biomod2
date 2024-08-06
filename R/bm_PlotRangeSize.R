@@ -226,7 +226,7 @@ bm_PlotRangeSize <- function(bm.range, do.count = TRUE, do.perc = TRUE
           colvalues <- c("#fc8d62", "grey",  "#66c2a5")
         } else if (nbthresholds == 2){
           colvalues <- c("#fc8d62", "#fdb194", "grey", "#8ad1ba",  "#66c2a5")
-        } else {colvalues <- c("#fb6930", "#fc8d62", "grey", "#8ad1ba",  "#66c2a5", "#46af8e")}
+        } else {colvalues <- c("#fb6930", "#fc8d62","#fdb194", "grey", "#8ad1ba",  "#66c2a5", "#46af8e")}
         names(colvalues) <- names_count
       } else {
         data <- ggdat[which(ggdat$count.level != "Stable0"), ]

@@ -546,15 +546,15 @@ setMethod('predict2', signature(object = 'FDA_biomod2_model', newdata = "SpatRas
           function(object, newdata, ...) {
             predfun <- function(object, newdata, mod.name){
               # new predict command used with terra
-              if (object@model_type %in% c("relative", "ordinal")){
+              if (object@model_type == "ordinal" ){ 
                 proj <- 
                   subset(
                     predict(newdata, 
                             model = get_formal_model(object), 
-                            #type = 'posterior',
                             na.rm = TRUE,
-                            wopt = list(names = mod.name)), 
-                    1)
+                            type = "class",
+                            wopt = list(names = mod.name)) 
+                    , 1)
               } else {
                 proj <- 
                   subset(
@@ -564,7 +564,7 @@ setMethod('predict2', signature(object = 'FDA_biomod2_model', newdata = "SpatRas
                             na.rm = TRUE,
                             wopt = list(names = mod.name)), 
                     2)
-              }
+              } 
               # datamask <- classify(any(is.na(newdata)), 
               # matrix(c(0,0,1,NA),ncol = 2, byrow = TRUE))
               # mask(proj, datamask)
@@ -582,10 +582,7 @@ setMethod('predict2', signature(object = 'FDA_biomod2_model', newdata = "SpatRas
 setMethod('predict2', signature(object = 'FDA_biomod2_model', newdata = "data.frame"),
           function(object, newdata, ...) {
             predfun <- function(object, newdata, not_na_rows){
-              if (object@model_type == "relative") {
-                as.numeric(as.character(predict(get_formal_model(object), as.data.frame(newdata[not_na_rows, , drop = FALSE]))))
-              }
-              else if (object@model_type == "ordinal"){
+              if (object@model_type == "ordinal"){
                 predict(get_formal_model(object), as.data.frame(newdata[not_na_rows, , drop = FALSE]), type = 'class')
               } else {
                 as.numeric(predict(get_formal_model(object), as.data.frame(newdata[not_na_rows, , drop = FALSE]), type = 'posterior')[, 2])
@@ -740,13 +737,13 @@ setClass('GLM_biomod2_model',
 
 setMethod('predict2', signature(object = 'GLM_biomod2_model', newdata = "SpatRaster"),
           function(object, newdata, ...) {
-            if (object@model_type != "ordinal"){
+            if (object@model_type == "binary"){
               predfun <- function(object, newdata, mod.name){
                 .run_pred(object = get_formal_model(object), Prev = 0.5 , dat = newdata, mod.name = mod.name)  
               }
             } else {
               predfun <- function(object, newdata, mod.name){
-                predict(model = get_formal_model(object), object = newdata, wopt = list(names = mod.name))
+                predict(model = get_formal_model(object), object = newdata, wopt = list(names = mod.name), type = "response")
               }
             }
           
@@ -764,7 +761,7 @@ setMethod('predict2', signature(object = 'GLM_biomod2_model', newdata = "data.fr
               }
             } else {
               predfun <- function(object, newdata, not_na_rows){
-                as.numeric(predict(get_formal_model(object),as.data.frame(newdata[not_na_rows, , drop = FALSE])))
+                as.numeric(predict(get_formal_model(object),as.data.frame(newdata[not_na_rows, , drop = FALSE]), type = "response"))
               }
             }
             
