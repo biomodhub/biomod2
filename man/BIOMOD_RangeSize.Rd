@@ -6,11 +6,11 @@
 \alias{BIOMOD_RangeSize,SpatRaster,SpatRaster-method}
 \title{Analyze the range size differences between projections of species distribution models}
 \usage{
-BIOMOD_RangeSize(proj.current, proj.future, thresholds)
+BIOMOD_RangeSize(proj.current, proj.future, thresholds = c(10, 30, 50))
 
-\S4method{BIOMOD_RangeSize}{data.frame,data.frame}(proj.current, proj.future, thresholds)
+\S4method{BIOMOD_RangeSize}{data.frame,data.frame}(proj.current, proj.future, thresholds = c(10, 30, 50))
 
-\S4method{BIOMOD_RangeSize}{SpatRaster,SpatRaster}(proj.current, proj.future, thresholds)
+\S4method{BIOMOD_RangeSize}{SpatRaster,SpatRaster}(proj.current, proj.future, thresholds = c(10, 30, 50))
 }
 \arguments{
 \item{proj.current}{a \code{data.frame}, \code{\link[raster:stack]{RasterLayer}}

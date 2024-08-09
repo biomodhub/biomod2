@@ -20,7 +20,7 @@ time scales or environmental scenarios for example)."><!-- mathjax --><script sr
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">biomod2</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">4.2-5-2</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">4.2-7</span>
       </span>
     </div>
 
@@ -118,13 +118,13 @@ time scales or environmental scenarios for example</em>).</p>
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">BIOMOD_RangeSize</span><span class="op">(</span><span class="va">proj.current</span>, <span class="va">proj.future</span><span class="op">)</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">BIOMOD_RangeSize</span><span class="op">(</span><span class="va">proj.current</span>, <span class="va">proj.future</span>, thresholds <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">10</span>, <span class="fl">30</span>, <span class="fl">50</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># S4 method for data.frame,data.frame</span></span>
-<span><span class="fu">BIOMOD_RangeSize</span><span class="op">(</span><span class="va">proj.current</span>, <span class="va">proj.future</span><span class="op">)</span></span>
+<span><span class="fu">BIOMOD_RangeSize</span><span class="op">(</span><span class="va">proj.current</span>, <span class="va">proj.future</span>, thresholds <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">10</span>, <span class="fl">30</span>, <span class="fl">50</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># S4 method for SpatRaster,SpatRaster</span></span>
-<span><span class="fu">BIOMOD_RangeSize</span><span class="op">(</span><span class="va">proj.current</span>, <span class="va">proj.future</span><span class="op">)</span></span></code></pre></div>
+<span><span class="fu">BIOMOD_RangeSize</span><span class="op">(</span><span class="va">proj.current</span>, <span class="va">proj.future</span>, thresholds <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">10</span>, <span class="fl">30</span>, <span class="fl">50</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
@@ -139,6 +139,10 @@ of the (ensemble) species distribution model(s)</p></dd>
 <dd><p>a <code>data.frame</code>, <code><a href="https://rdrr.io/pkg/raster/man/stack.html" class="external-link">RasterLayer</a></code>
 or <code><a href="https://rspatial.github.io/terra/reference/rast.html" class="external-link">SpatRaster</a></code> object containing the final binary projection(s)
 of the (ensemble) species distribution model(s)</p></dd>
+
+
+<dt>thresholds</dt>
+<dd></dd>
 
 </dl></div>
     <div id="value">

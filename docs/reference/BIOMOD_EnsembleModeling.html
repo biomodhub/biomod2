@@ -21,7 +21,7 @@ conditions (see Details)."><!-- mathjax --><script src="https://cdnjs.cloudflare
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">biomod2</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">4.2-6</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">4.2-7</span>
       </span>
     </div>
 
@@ -135,15 +135,7 @@ conditions (see Details).</p>
 <span>  EMwmean.decay <span class="op">=</span> <span class="st">"proportional"</span>,</span>
 <span>  nb.cpu <span class="op">=</span> <span class="fl">1</span>,</span>
 <span>  seed.val <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  do.progress <span class="op">=</span> <span class="cn">TRUE</span>,</span>
-<span>  <span class="va">prob.mean</span>,</span>
-<span>  <span class="va">prob.median</span>,</span>
-<span>  <span class="va">prob.cv</span>,</span>
-<span>  <span class="va">prob.ci</span>,</span>
-<span>  <span class="va">committee.averaging</span>,</span>
-<span>  <span class="va">prob.mean.weight</span>,</span>
-<span>  <span class="va">prob.mean.weight.decay</span>,</span>
-<span>  <span class="va">prob.ci.alpha</span></span>
+<span>  do.progress <span class="op">=</span> <span class="cn">TRUE</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -179,7 +171,9 @@ must be among <code>'EMmean'</code>, <code>'EMmedian'</code>, <code>'EMcv'</code
 <code>all</code> (same evaluation metrics than those of <code>bm.mod</code>), <code>user.defined</code> 
 (and defined through <code>metric.select.table</code>) or <code>POD</code>, <code>FAR</code>, <code>POFD</code>, 
 <code>SR</code>, <code>ACCURACY</code>, <code>BIAS</code>, <code>ROC</code>, <code>TSS</code>, <code>KAPPA</code>, <code>OR</code>, 
-<code>ORSS</code>, <code>CSI</code>, <code>ETS</code>, <code>BOYCE</code>, <code>MPA</code></p></dd>
+<code>ORSS</code>, <code>CSI</code>, <code>ETS</code>, <code>BOYCE</code>, <code>MPA</code>, <code>RMSE</code>, <code>MAE</code>, 
+<code>MSE</code>, <code>Rsq</code>, <code>Rsq_aj</code>, <code>Max_error</code>, <code>accuracy</code>, <code>"recall"</code>,
+<code>"precision"</code>, <code>"F1score"</code></p></dd>
 
 
 <dt>metric.select.thresh</dt>
@@ -207,7 +201,8 @@ weigh the ensemble models should be among 'evaluation', 'validation' or 'calibra
 <dd><p>a <code>vector</code> containing evaluation metric names to be used, must 
 be among  <code>POD</code>, <code>FAR</code>, <code>POFD</code>, <code>SR</code>, <code>ACCURACY</code>, <code>BIAS</code>, 
 <code>ROC</code>, <code>TSS</code>, <code>KAPPA</code>, <code>OR</code>, <code>ORSS</code>, <code>CSI</code>, <code>ETS</code>, 
-<code>BOYCE</code>, <code>MPA</code></p></dd>
+<code>BOYCE</code>, <code>MPA</code>, <code>RMSE</code>, <code>MAE</code>, <code>MSE</code>, <code>Rsq</code>, <code>Rsq_aj</code>,
+<code>Max_error</code>, <code>accuracy</code>, <code>"recall"</code>, <code>"precision"</code>, <code>"F1score"</code></p></dd>
 
 
 <dt>var.import</dt>
@@ -244,53 +239,6 @@ An <code>integer</code> value corresponding to the new seed value to be set</p><
 <dt>do.progress</dt>
 <dd><p>(<em>optional, default</em> <code>TRUE</code>) <br> 
 A <code>logical</code> value defining whether the progress bar is to be rendered or not</p></dd>
-
-
-<dt>prob.mean</dt>
-<dd><p>(<em>deprecated</em>, please use <code>em.algo</code> instead) <br>
-A <code>logical</code> value defining whether to compute the mean probabilities
-across predictions or not</p></dd>
-
-
-<dt>prob.median</dt>
-<dd><p>(<em>deprecated</em>, please use <code>em.algo</code> instead)
-<br> A <code>logical</code> value defining whether to compute the median
-probabilities across predictions or not</p></dd>
-
-
-<dt>prob.cv</dt>
-<dd><p>(<em>deprecated</em>, please use <code>em.algo</code> instead) <br> A
-<code>logical</code> value defining whether to compute the coefficient of
-variation across predictions or not</p></dd>
-
-
-<dt>prob.ci</dt>
-<dd><p>(<em>deprecated</em>, please use <code>em.algo</code> instead) <br> A
-<code>logical</code> value defining whether to compute the confidence interval
-around the <code>prob.mean</code> ensemble model or not</p></dd>
-
-
-<dt>committee.averaging</dt>
-<dd><p>(<em>deprecated</em>, please use <code>em.algo</code>
-instead) <br> A <code>logical</code> value defining whether to compute the
-committee averaging across predictions or not</p></dd>
-
-
-<dt>prob.mean.weight</dt>
-<dd><p>(<em>deprecated</em>, please use <code>em.algo</code>
-instead) <br> A <code>logical</code> value defining whether to compute the
-weighted sum of probabilities across predictions or not</p></dd>
-
-
-<dt>prob.mean.weight.decay</dt>
-<dd><p>(<em>deprecated</em>, please use
-<code>EMwmean.decay</code> instead)  <br> old argument name for
-<code>EMwmean.decay</code></p></dd>
-
-
-<dt>prob.ci.alpha</dt>
-<dd><p>(<em>deprecated</em>, please use <code>EMci.alpha</code>
-instead) <br> old argument name for <code>EMci.alpha</code></p></dd>
 
 </dl></div>
     <div id="value">
@@ -413,7 +361,8 @@ folders created in the current working directory :</p><ol><li><p>a <em>models</e
 </ul><p>The interesting feature of this measure is that it gives both a prediction and a measure 
     of uncertainty. When the prediction is close to <code>0</code> or <code>1</code>, it means that all 
     models agree to predict <code>0</code> or <code>1</code> respectively. When the prediction is around 
-    <code>0.5</code>, it means that half the models predict <code>1</code> and the other half <code>0</code>. 
+    <code>0.5</code>, it means that half the models predict <code>1</code> and the other half <code>0</code>.
+    This model is are available with binary data.
     <br> Old parameter name: <code>committee.averaging</code></p></li>
 <li><p><b><code>EMwmean</code></b> &amp; <b><code>EMwmean.decay</code></b> : 
     Probabilities from the selected models are weighted according to their evaluation scores 

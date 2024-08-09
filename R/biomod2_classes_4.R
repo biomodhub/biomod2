@@ -741,6 +741,10 @@ setMethod('predict2', signature(object = 'GLM_biomod2_model', newdata = "SpatRas
               predfun <- function(object, newdata, mod.name){
                 .run_pred(object = get_formal_model(object), Prev = 0.5 , dat = newdata, mod.name = mod.name)  
               }
+            } else if (object@model_type == "ordinal") {
+              predfun <- function(object, newdata, mod.name){
+                predict(model = get_formal_model(object), object = newdata, wopt = list(names = mod.name))
+              }
             } else {
               predfun <- function(object, newdata, mod.name){
                 predict(model = get_formal_model(object), object = newdata, wopt = list(names = mod.name), type = "response")
@@ -758,6 +762,10 @@ setMethod('predict2', signature(object = 'GLM_biomod2_model', newdata = "data.fr
             if (object@model_type == "binary"){
               predfun <- function(object, newdata, not_na_rows){
                 as.numeric(.run_pred(object = get_formal_model(object), Prev = 0.5 , dat = as.data.frame(newdata[not_na_rows, , drop = FALSE])))
+              }
+            } else if (object@model_type == "ordinal") {
+              predfun <- function(object, newdata, not_na_rows){
+                as.numeric(predict(get_formal_model(object),as.data.frame(newdata[not_na_rows, , drop = FALSE])))
               }
             } else {
               predfun <- function(object, newdata, not_na_rows){

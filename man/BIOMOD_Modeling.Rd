@@ -119,7 +119,7 @@ build '\emph{weighted response weights}' (see Details)}
 be among \code{ROC}, \code{TSS}, \code{KAPPA}, \code{ACCURACY}, \code{BIAS}, \code{POD}, 
 \code{FAR}, \code{POFD}, \code{SR}, \code{CSI}, \code{ETS}, \code{OR}, 
 \code{ORSS}, \code{BOYCE}, \code{MPA}, \code{RMSE}, \code{MAE}, \code{MSE}, \code{Rsq}, \code{Rsq_aj},
-\code{Max_error}, \code{accuracy}}
+\code{Max_error}, \code{accuracy}, \code{"recall"}, \code{"precision"}, \code{"F1score"}}
 
 \item{var.import}{(\emph{optional, default} \code{NULL}) \cr 
 An \code{integer} corresponding to the number of permutations to be done for each variable to 
@@ -188,7 +188,7 @@ metrics (see Details).
     \item \code{SRE} : Surface Range Envelop or usually called BIOCLIM (\code{\link{bm_SRE}})
     \item \code{XGBOOST} : eXtreme Gradient Boosting Training (\code{\link[xgboost]{xgboost}})
   }
-  For abundance/count/relative data, you can use the models : CTA, FDA, GAM, GBM, GLM, MARS, RF and XGBOOST.  
+  For abundance/count/relative data, you can use the models : CTA, GAM, GBM, GLM, MARS, RF and XGBOOST.  
   For ordinal data, you can use the models : CTA, FDA, GAM, GLM, MARS, RF and XGBOOST.  
   }
   
@@ -280,6 +280,9 @@ metrics (see Details).
     \item{For ordinal data}{
     \itemize{
       \item \code{accuracy} : Accuracy
+      \item \code{recall} : Macro average recall
+      \item \code{precision} : Macro average precision
+      \item \code{F1score} : Macro F1 score
     }
     }
   }

@@ -28,7 +28,7 @@ bm_CalculateStatBin(misc, metric.eval = "TSS")
 be either \code{POD}, \code{FAR}, \code{POFD}, \code{SR}, \code{ACCURACY}, \code{BIAS}, 
 \code{ROC}, \code{TSS}, \code{KAPPA}, \code{OR}, \code{ORSS}, \code{CSI}, \code{ETS}, 
 \code{BOYCE}, \code{MPA}, \code{RMSE}, \code{MAE}, \code{MSE}, \code{Rsq}, \code{Rsq_aj},
-\code{Max_error}, \code{accuracy}}
+\code{Max_error}, \code{accuracy}, \code{"recall"}, \code{"precision"}, \code{"F1score"}}
 
 \item{obs}{a \code{vector} of observed values (binary, \code{0} or \code{1})}
 
@@ -119,6 +119,9 @@ metric.
     \item{For ordinal data}{
     \itemize{
       \item \code{accuracy} : Accuracy
+      \item \code{recall} : Macro average recall
+      \item \code{precision} : Macro average precision
+      \item \code{F1score} : Macro F1 score
     }
     }
 }

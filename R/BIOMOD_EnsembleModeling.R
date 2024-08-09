@@ -439,7 +439,7 @@ BIOMOD_EnsembleModeling <- function(bm.mod,
       
       obs <- obs[which(kept_cells == TRUE)]
       expl <- expl[which(kept_cells == TRUE), , drop = FALSE]
-      obs[is.na(obs)] <- 0
+      obs[is.na(obs)] <- ifelse(bm.mod@data.type == "ordinal", NA, 0)
       
       ## get needed models predictions ----------------------------------------
       needed_predictions <- .get_needed_predictions(bm.mod, em.by, models.kept
@@ -599,8 +599,9 @@ BIOMOD_EnsembleModeling <- function(bm.mod,
           } else {
             ## Find good format of prediction for ordinal
             if (bm.mod@data.type == "ordinal" && algo != 'EMcv'){
-              newlevels <- levels(obs)[sort(unique(round(pred.bm)))]
-              pred.bm <- factor(round(pred.bm), labels = newlevels, ordered = T)
+              #newlevels <- levels(obs)[sort(unique(round(pred.bm)))]
+              #pred.bm <- factor(round(pred.bm), labels = newlevels, ordered = T)
+              pred.bm <- round(pred.bm)
             } 
             ListOut$model <- model_name
             ListOut$pred <- pred.bm
@@ -616,8 +617,9 @@ BIOMOD_EnsembleModeling <- function(bm.mod,
               eval_pred.bm <- predict(model.bm, newdata = eval.expl, seedval = seed.val)
               
               if (bm.mod@data.type == "ordinal" && algo != 'EMcv'){
-                newlevels <- levels(obs)[sort(unique(round(eval_pred.bm)))]
-                eval_pred.bm <- factor(round(eval_pred.bm), labels = newlevels, ordered = T)
+                #newlevels <- levels(obs)[sort(unique(round(eval_pred.bm)))]
+                #eval_pred.bm <- factor(round(eval_pred.bm), labels = newlevels, ordered = T)
+                eval_pred.bm <- round(eval_pred.bm)
               }
               ListOut$pred.eval <- eval_pred.bm
               assign(pred.bm.name, eval_pred.bm)

@@ -44,7 +44,9 @@ must be among \code{'EMmean'}, \code{'EMmedian'}, \code{'EMcv'}, \code{'EMci'},
 \code{all} (same evaluation metrics than those of \code{bm.mod}), \code{user.defined} 
 (and defined through \code{metric.select.table}) or \code{POD}, \code{FAR}, \code{POFD}, 
 \code{SR}, \code{ACCURACY}, \code{BIAS}, \code{ROC}, \code{TSS}, \code{KAPPA}, \code{OR}, 
-\code{ORSS}, \code{CSI}, \code{ETS}, \code{BOYCE}, \code{MPA}}
+\code{ORSS}, \code{CSI}, \code{ETS}, \code{BOYCE}, \code{MPA}, \code{RMSE}, \code{MAE}, 
+\code{MSE}, \code{Rsq}, \code{Rsq_aj}, \code{Max_error}, \code{accuracy}, \code{"recall"},
+\code{"precision"}, \code{"F1score"}}
 
 \item{metric.select.thresh}{(\emph{optional, default} \code{NULL}) \cr 
 A \code{vector} of \code{numeric} values corresponding to the minimum scores (one for each 
@@ -65,7 +67,7 @@ weigh the ensemble models should be among 'evaluation', 'validation' or 'calibra
 be among  \code{POD}, \code{FAR}, \code{POFD}, \code{SR}, \code{ACCURACY}, \code{BIAS}, 
 \code{ROC}, \code{TSS}, \code{KAPPA}, \code{OR}, \code{ORSS}, \code{CSI}, \code{ETS}, 
 \code{BOYCE}, \code{MPA}, \code{RMSE}, \code{MAE}, \code{MSE}, \code{Rsq}, \code{Rsq_aj},
-\code{Max_error}, \code{accuracy}}
+\code{Max_error}, \code{accuracy}, \code{"recall"}, \code{"precision"}, \code{"F1score"}}
 
 \item{var.import}{(\emph{optional, default} \code{NULL}) \cr 
 An \code{integer} corresponding to the number of permutations to be done for each variable to 

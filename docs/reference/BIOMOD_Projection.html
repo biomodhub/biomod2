@@ -19,7 +19,7 @@ represent new areas, resolution or time scales for example)."><!-- mathjax --><s
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">biomod2</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">4.2-6</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">4.2-7</span>
       </span>
     </div>
 
@@ -125,6 +125,7 @@ represent new areas, resolution or time scales for example</em>).</p>
 <span>  metric.binary <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  metric.filter <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  compress <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  digits <span class="op">=</span> <span class="fl">0</span>,</span>
 <span>  build.clamping.mask <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  nb.cpu <span class="op">=</span> <span class="fl">1</span>,</span>
 <span>  seed.val <span class="op">=</span> <span class="cn">NULL</span>,</span>
@@ -192,6 +193,11 @@ those of <code>bm.mod</code>) or <code>POD</code>, <code>FAR</code>, <code>POFD<
 A <code>logical</code> or a <code>character</code> value defining whether and how objects should be 
 compressed when saved on hard drive. Must be either <code>TRUE</code>, <code>FALSE</code>, <code>xz</code> or 
 <code>gzip</code> (see Details)</p></dd>
+
+
+<dt>digits</dt>
+<dd><p>(<em>optional, default</em> <code>0</code>) <br> 
+A <code>integer</code> value defining the number of digits of the predictions.</p></dd>
 
 
 <dt>build.clamping.mask</dt>
