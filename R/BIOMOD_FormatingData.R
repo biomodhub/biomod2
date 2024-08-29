@@ -76,11 +76,11 @@
 ##' @param PA.dist.min (\emph{optional, default} \code{0}) \cr 
 ##' If pseudo-absence selection and \code{PA.strategy = 'disk'}, a \code{numeric} defining the 
 ##' minimal distance to presence points used to make the \code{disk} pseudo-absence selection 
-##' (in meters, see Details)
+##' (in the same projection system units as \code{resp.xy} and \code{expl.var}, see Details)
 ##' @param PA.dist.max (\emph{optional, default} \code{0}) \cr 
 ##' If pseudo-absence selection and \code{PA.strategy = 'disk'}, a \code{numeric} defining the 
 ##' maximal distance to presence points used to make the \code{disk} pseudo-absence selection 
-##' (in meters, see Details)
+##' (in the same projection system units as \code{resp.xy} and \code{expl.var}, see Details)
 ##' @param PA.fact.aggr (\emph{optional, default} \code{NULL}) \cr
 ##' If \code{strategy = 'random'} or \code{strategy = 'disk'}, a \code{integer} defining the factor of aggregation to reduce the resolution
 ##' @param PA.user.table (\emph{optional, default} \code{NULL}) \cr 
@@ -198,9 +198,10 @@
 ##'     otherwise it may lead to over-optimistic model evaluations and predictions !}
 ##'     }
 ##'     \item{disk}{pseudo-absences are selected within circles around presence points defined by 
-##'     \code{PA.dist.min} and \code{PA.dist.max} distance values (in meters). It allows to select 
-##'     pseudo-absence points that are not too close to (avoid same niche and pseudo-replication) 
-##'     or too far (localized sampling strategy) from presences.
+##'     \code{PA.dist.min} and \code{PA.dist.max} distance values (in the same projection system 
+##'     units as \code{coord} and \code{expl.var}). It allows to select pseudo-absence points that 
+##'     are not too close to (avoid same niche and pseudo-replication) or too far (localized 
+##'     sampling strategy) from presences.
 ##'     }
 ##'     \item{user.defined}{pseudo-absences are defined in advance and given as \code{data.frame} 
 ##'     through the \code{PA.user.table} parameter.

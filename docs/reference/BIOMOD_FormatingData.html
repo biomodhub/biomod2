@@ -234,14 +234,14 @@ select the pseudo-absence points. Must be <code>random</code>, <code>sre</code>,
 <dd><p>(<em>optional, default</em> <code>0</code>) <br> 
 If pseudo-absence selection and <code>PA.strategy = 'disk'</code>, a <code>numeric</code> defining the 
 minimal distance to presence points used to make the <code>disk</code> pseudo-absence selection 
-(in meters, see Details)</p></dd>
+(in the same projection system units as <code>resp.xy</code> and <code>expl.var</code>, see Details)</p></dd>
 
 
 <dt>PA.dist.max</dt>
 <dd><p>(<em>optional, default</em> <code>0</code>) <br> 
 If pseudo-absence selection and <code>PA.strategy = 'disk'</code>, a <code>numeric</code> defining the 
 maximal distance to presence points used to make the <code>disk</code> pseudo-absence selection 
-(in meters, see Details)</p></dd>
+(in the same projection system units as <code>resp.xy</code> and <code>expl.var</code>, see Details)</p></dd>
 
 
 <dt>PA.sre.quant</dt>
@@ -364,9 +364,10 @@ and provides different methods to select pseudo-absences if needed. <br><br></p>
 
     <dt>disk</dt>
 <dd><p>pseudo-absences are selected within circles around presence points defined by 
-    <code>PA.dist.min</code> and <code>PA.dist.max</code> distance values (in meters). It allows to select 
-    pseudo-absence points that are not too close to (avoid same niche and pseudo-replication) 
-    or too far (localized sampling strategy) from presences.</p></dd>
+    <code>PA.dist.min</code> and <code>PA.dist.max</code> distance values (in the same projection system 
+    units as <code>coord</code> and <code>expl.var</code>). It allows to select pseudo-absence points that 
+    are not too close to (avoid same niche and pseudo-replication) or too far (localized 
+    sampling strategy) from presences.</p></dd>
 
     <dt>user.defined</dt>
 <dd><p>pseudo-absences are defined in advance and given as <code>data.frame</code> 

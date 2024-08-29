@@ -34,12 +34,15 @@
 ##' half-quantile used to make the \code{sre} pseudo-absence selection (see \code{\link{bm_SRE}})
 ##' @param dist.min (\emph{optional, default} \code{0}) \cr
 ##' If \code{strategy = 'disk'}, a \code{numeric} defining the minimal distance to presence points 
-##' used to make the \code{disk} pseudo-absence selection (in meters)
+##' used to make the \code{disk} pseudo-absence selection (in the same projection system units as 
+##' \code{expl.var})
 ##' @param dist.max (\emph{optional, default} \code{NULL}) \cr
 ##' If \code{strategy = 'disk'}, a \code{numeric} defining the maximal distance to presence points 
-##' used to make the \code{disk} pseudo-absence selection (in meters)
+##' used to make the \code{disk} pseudo-absence selection (in the same projection system units as 
+##' \code{expl.var})
 ##' @param fact.aggr (\emph{optional, default} \code{NULL}) \cr
-##' If \code{strategy = 'random'} or \code{strategy = 'disk'}, a \code{integer} defining the factor of aggregation to reduce the resolution
+##' If \code{strategy = 'random'} or \code{strategy = 'disk'}, a \code{integer} defining the 
+##' factor of aggregation to reduce the resolution
 ##' @param user.table (\emph{optional, default} \code{NULL}) \cr
 ##' If \code{strategy = 'user.defined'}, a \code{matrix} or \code{data.frame} with as many rows as 
 ##' \code{resp.var} values, as many columns as \code{nb.rep}, and containing \code{TRUE} or 

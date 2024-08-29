@@ -218,18 +218,21 @@ half-quantile used to make the <code>sre</code> pseudo-absence selection (see <c
 <dt>dist.min</dt>
 <dd><p>(<em>optional, default</em> <code>0</code>) <br>
 If <code>strategy = 'disk'</code>, a <code>numeric</code> defining the minimal distance to presence points 
-used to make the <code>disk</code> pseudo-absence selection (in meters)</p></dd>
+used to make the <code>disk</code> pseudo-absence selection (in the same projection system units as 
+<code>expl.var</code>)</p></dd>
 
 
 <dt>dist.max</dt>
 <dd><p>(<em>optional, default</em> <code>NULL</code>) <br>
 If <code>strategy = 'disk'</code>, a <code>numeric</code> defining the maximal distance to presence points 
-used to make the <code>disk</code> pseudo-absence selection (in meters)</p></dd>
+used to make the <code>disk</code> pseudo-absence selection (in the same projection system units as 
+<code>expl.var</code>)</p></dd>
 
 
 <dt>fact.aggr</dt>
 <dd><p>(<em>optional, default</em> <code>NULL</code>) <br>
-If <code>strategy = 'random'</code> or <code>strategy = 'disk'</code>, a <code>integer</code> defining the factor of aggregation to reduce the resolution</p></dd>
+If <code>strategy = 'random'</code> or <code>strategy = 'disk'</code>, a <code>integer</code> defining the 
+factor of aggregation to reduce the resolution</p></dd>
 
 
 <dt>user.table</dt>
