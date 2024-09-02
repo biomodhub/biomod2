@@ -10,7 +10,6 @@ vignette: >
 <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.13/css/all.css" integrity="sha384-DNOHZ68U8hZfKXOrtjWvjxusGo9WQnrNx2sqG0tfsghAvtVlRW3tvkXWZh58N9jp" crossorigin="anonymous">
 
 
-
 ## <i class="fas fa-code"></i> Development updates
 
 ### <i class="fas fa-feather"></i> 2024

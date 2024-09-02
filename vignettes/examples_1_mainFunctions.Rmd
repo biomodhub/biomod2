@@ -308,4 +308,3 @@ gg = bm_PlotRangeSize(bm.range = myBiomodRangeSize,
                       do.plot = TRUE,
                       row.names = c("Species", "Dataset", "Run", "Algo"))
 ```
-

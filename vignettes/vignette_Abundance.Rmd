@@ -88,7 +88,7 @@ myResp[myResp == 1] <- poissonDistri
 <br/><br/>
 
 
-### <i class="fa-regular fa-arrows-to-dot"></i> Prepare data & parameters
+### <i class="fa-regular fa-arrows-to-circle"></i> Prepare data & parameters
 
 #### <i class="fa-solid fa-align-center"></i> Format data (observations & explanatory variables)
 
@@ -255,7 +255,7 @@ bm_PlotResponseCurves(bm.out = myBiomodEM,
 <br/><br/>
 
 
-### <i class="fa-light fa-cannon"></i> Project models
+### <i class="fa-regular fa-map-location"></i> Project models
 
 #### <i class="fa-solid fa-cube"></i> Single models
 

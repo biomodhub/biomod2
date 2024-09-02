@@ -434,4 +434,3 @@ opt.t <- bm_ModelingOptions(data.type = 'binary',
 
 opt.t ## BIOMOD.modeling.options object
 ```
-
