@@ -33,7 +33,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">biomod2</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">4.2-5-2</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">4.2-6-1</span>
       </span>
     </div>
 
@@ -90,6 +90,9 @@
     </li>
     <li>
       <a href="../articles/vignette_variability.html">Variability in results</a>
+    </li>
+    <li>
+      <a href="../articles/vignette_Abundance.html">Abundance modelling</a>
     </li>
   </ul>
 </li>
@@ -373,7 +376,7 @@ to change the formula for <code>GLM</code>.</li>
 <code class="sourceCode R"><span><span class="va">tuned.rf</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/bm_Tuning.html">bm_Tuning</a></span><span class="op">(</span>model <span class="op">=</span> <span class="st">'RF'</span>,</span>
 <span>                      tuning.fun <span class="op">=</span> <span class="st">'rf'</span>, <span class="co">## see in ModelsTable</span></span>
 <span>                      do.formula <span class="op">=</span> <span class="cn">TRUE</span>,</span>
-<span>                      bm.options <span class="op">=</span> <span class="va">opt.d</span><span class="op">@</span><span class="va">options</span><span class="op">$</span><span class="va">RF.binary.randomForest.randomForest</span>,</span>
+<span>                      bm.options <span class="op">=</span> <span class="va">myOpt</span><span class="op">@</span><span class="va">options</span><span class="op">$</span><span class="va">RF.binary.randomForest.randomForest</span>,</span>
 <span>                      bm.format <span class="op">=</span> <span class="va">myBiomodData</span>, </span>
 <span>                      calib.lines <span class="op">=</span> <span class="va">myCVtable</span><span class="op">)</span></span>
 <span></span>

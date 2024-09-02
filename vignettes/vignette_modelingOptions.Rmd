@@ -173,7 +173,7 @@ print(myOpt)
 tuned.rf <- bm_Tuning(model = 'RF',
                       tuning.fun = 'rf', ## see in ModelsTable
                       do.formula = TRUE,
-                      bm.options = opt.d@options$RF.binary.randomForest.randomForest,
+                      bm.options = myOpt@options$RF.binary.randomForest.randomForest,
                       bm.format = myBiomodData, 
                       calib.lines = myCVtable)
 

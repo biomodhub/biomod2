@@ -660,13 +660,13 @@ setMethod('predict2', signature(object = 'EMwmean_biomod2_model', newdata = "Spa
               stop("Model EMwmean was not computed because no single model was kept in ensemble modeling")
             }
             predfun <- function(newdata, on_0_1000, penalization_scores,
-                                mod.name, ...){
+                                mod.name, na.rm, ...){
               if (nlyr(newdata) == 1) {
                 return(newdata)
               } else {
                 return(
                   app(newdata, function(x) {
-                    wm <- sum(x * penalization_scores)
+                    wm <- sum(x * penalization_scores, na.rm = na.rm)
                     if (on_0_1000) { 
                       wm <- round(wm) 
                     }

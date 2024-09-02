@@ -46,6 +46,8 @@ navbar:
           href: articles/vignette_modelingOptions.html
         - text: Variability in results
           href: articles/vignette_variability.html
+        - text: Abundance modelling
+          href: articles/vignette_Abundance.html
     reference:
       text: Reference
       icon: fa-book fa-lg
