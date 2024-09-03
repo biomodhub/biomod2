@@ -196,7 +196,7 @@ bm_RunModel <- function(model, run.name, dir.name = '.'
                         , modeling.id = '', bm.options
                         , Data, weights.vec, calib.lines.vec
                         , eval.data = NULL
-                        , metric.eval = c('ROC','TSS','KAPPA'), var.import = 0
+                        , metric.eval = c('ROC', 'TSS', 'KAPPA'), var.import = 0
                         , scale.models = TRUE, nb.cpu = 1, seed.val = NULL, do.progress = TRUE)
 {
   ## 0. Check arguments ---------------------------------------------------------------------------
@@ -236,7 +236,7 @@ bm_RunModel <- function(model, run.name, dir.name = '.'
     ## PRELIMINAR ---------------------------------------------------
     
     
-    if (model %in% c("ANN", "MARS", "RF","RFd") & is.null(bm.opt.val$formula)) {
+    if (model %in% c("ANN", "MARS", "RF", "RFd") & is.null(bm.opt.val$formula)) { #add all models (not XGBOOST)? 
       bm.opt.val$formula <- bm_MakeFormula(resp.name = resp_name
                                            , expl.var = head(data_env)
                                            , type = 'simple'
@@ -253,13 +253,13 @@ bm_RunModel <- function(model, run.name, dir.name = '.'
       # defining occurrences as factor for doing classification and not regression in RF
       data_mod <- data_mod %>% mutate_at(resp_name, factor)
       bm.opt.val$strata <- data_mod[calib.lines.vec, , drop = FALSE][ , resp_name]
-      nb_presences <- summary(data_mod[calib.lines.vec,resp_name])[["1"]]
-      bm.opt.val$sampsize <- unlist(ifelse(!is.null(bm.opt.val$sampsize), list(bm.opt.val$sampsize), list(c("0" =nb_presences,"1" =nb_presences))))
+      nb_presences <- summary(data_mod[calib.lines.vec, resp_name])[["1"]]
+      bm.opt.val$sampsize <- unlist(ifelse(!is.null(bm.opt.val$sampsize), list(bm.opt.val$sampsize), list(c("0" =nb_presences, "1" =nb_presences))))
       bm.opt.val$replace <- unlist(ifelse(!is.null(bm.opt.val$replace), list(bm.opt.val$replace), TRUE))
     }
     
     ## FILL data parameter ------------------------------------------
-    if (model %in% c("ANN", "CTA", "FDA", "GAM", "GBM", "MARS", "RF","RFd")) {
+    if (model %in% c("ANN", "CTA", "FDA", "GAM", "GBM", "MARS", "RF", "RFd")) {
       bm.opt.val$data <- data_mod[calib.lines.vec, , drop = FALSE]
     } else if (model == "GLM") {
       bm.opt.val$data <- cbind(data_mod[calib.lines.vec, , drop = FALSE], 
@@ -292,7 +292,7 @@ bm_RunModel <- function(model, run.name, dir.name = '.'
     
     
     ## REORGANIZE order of parameters -------------------------------
-    if (model %in% c("ANN", "MARS", "RF","RFd")) {
+    if (model %in% c("ANN", "MARS", "RF", "RFd")) {
       bm.opt.val <- bm.opt.val[c("formula", "data", names(bm.opt.val)[which(!(names(bm.opt.val) %in% c("formula", "data")))])]
     }
     if (model %in% c("FDA")) {
@@ -344,7 +344,7 @@ bm_RunModel <- function(model, run.name, dir.name = '.'
     }
     
     ## POSTLIMINAR --------------------------------------------------
-    if (model %in% c("RF","RFd") && !is.null(bm.opt.val$type) && bm.opt.val$type == "classification" && data.type == "binary") {
+    if (model %in% c("RF", "RFd") && !is.null(bm.opt.val$type) && bm.opt.val$type == "classification" && data.type == "binary") {
       # canceling occurences class modifications
       data_mod <- data_mod %>% mutate_at(resp_name, function(.x) {
         .x %>% as.character() %>% as.numeric()
@@ -549,7 +549,7 @@ bm_RunModel <- function(model, run.name, dir.name = '.'
       }
 
       if (data.type == 'binary'){
-        if (max(cross.validation$cutoff,na.rm = T) > 1000) {cat("\n*** Wrong values predicted, please be careful with the results fo this model")}
+        if (max(cross.validation$cutoff, na.rm = T) > 1000) {cat("\n*** Wrong values predicted, please be careful with the results fo this model")}
       }
       
       colnames(cross.validation)[which(colnames(cross.validation) == "best.stat")] <- "calibration"
@@ -696,7 +696,7 @@ bm_RunModel <- function(model, run.name, dir.name = '.'
     metric.eval <- unique(metric.eval)
     avail.eval.meth.list <- c('TSS', 'KAPPA', 'ACCURACY', 'BIAS', 'POD', 'FAR', 'POFD'
                               , 'SR', 'CSI', 'ETS', 'HK', 'HSS', 'OR', 'ORSS', 'ROC'
-                              , 'BOYCE', 'MPA', 'RMSE','MSE',"MAE","Rsq","Rsq_aj","Max_error"
+                              , 'BOYCE', 'MPA', 'RMSE', 'MSE', "MAE", "Rsq", "Rsq_aj", "Max_error"
                               , "accuracy", "recall", "precision", "F1score")
     # .fun_testIfIn(TRUE, "metric.eval", metric.eval, avail.eval.meth.list)
     if (sum(!(metric.eval %in% avail.eval.meth.list)) > 0) {
@@ -713,7 +713,7 @@ bm_RunModel <- function(model, run.name, dir.name = '.'
     .fun_testIfIn(TRUE, "data.type", data.type, avail.types.list)
     
     on_0_1000 <- TRUE
-    if(data.type %in% c("abundance","count", "ordinal","relative")){
+    if(data.type %in% c("abundance", "count", "ordinal", "relative")){
       on_0_1000 <- FALSE
     }
     

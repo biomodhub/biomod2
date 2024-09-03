@@ -241,13 +241,18 @@
 
 
 bm_ModelingOptions <- function(data.type
-                               , models = c('ANN', 'CTA', 'FDA', 'GAM', 'GBM', 'GLM'
-                                            , 'MARS', 'MAXENT', 'MAXNET', 'RF','RFd', 'SRE', 'XGBOOST')
+                               , models 
                                , strategy, user.val = NULL, user.base = "bigboss"
                                , bm.format = NULL, calib.lines = NULL)
 {
   .bm_cat("Build Modeling Options")
   
+  if (missing(models)){
+    models <- ifelse(data.type == "binary", c('ANN', 'CTA', 'FDA', 'GAM', 'GBM', 'GLM'
+                                              , 'MARS', 'MAXENT', 'MAXNET', 'RF','RFd', 'SRE', 'XGBOOST'),
+                     ifelse(data.type == "ordinal", c('CTA', 'FDA', 'GAM', 'GAM.gam.gam', 'GAM.mgcv.bam', 'GAM.mgcv.gam', 'GLM', 'MARS', 'RF', 'XGBOOST'),
+                            c('CTA', 'GAM','GAM.gam.gam', 'GAM.mgcv.bam', 'GAM.mgcv.gam', 'GBM', 'GLM', 'MARS', 'RF', 'XGBOOST')))
+  }
   ## 0. Check arguments ---------------------------------------------------------------------------
   args <- .bm_ModelingOptions.check.args(data.type = data.type,
                                          models = models,

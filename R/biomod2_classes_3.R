@@ -836,6 +836,14 @@ setMethod(
         limits <- NULL
       }
       
+      # if(x@data.type == "ordinal"){
+      #   breaks = 1:maxi
+      #   labels = c("a","b","c","d")
+      # } else {
+      #   breaks = waiver()
+      #   labels = waiver() 
+      # }
+      
       if (plot.output == "facet") {
         g <- ggplot() +
           tidyterra::geom_spatraster(data = proj,

@@ -161,7 +161,9 @@ setClass("BIOMOD.formated.data",
                         has.data.eval = "logical",
                         eval.coord = "data.frame",
                         eval.data.species = "numeric",
-                        eval.data.env.var = "data.frame"),
+                        eval.data.env.var = "data.frame",
+                        has.filter.raster = "logical",
+                        biomod2.version = "character"),
          validity = function(object){ 
            check.data.mask <- suppressWarnings(
              all(sapply(object@data.mask, function(x) inherits(x, "PackedSpatRaster")))
@@ -364,10 +366,12 @@ setMethod('BIOMOD.formated.data', signature(sp = 'numeric', env = 'data.frame'),
                 coord = xy,
                 data.species = sp,
                 data.env.var = env,
-                dir.name = dir.name,
+                dir.name = R.utils::getAbsolutePath(dir.name),
                 sp.name = sp.name,
                 data.mask = data.mask,
-                has.data.eval = FALSE
+                has.data.eval = FALSE,
+                has.filter.raster = filter.raster,
+                biomod2.version = as.character(packageVersion("biomod2"))
               )
             } else { ## EVALUATION DATA
               BFDeval <- BIOMOD.formated.data(
@@ -392,13 +396,15 @@ setMethod('BIOMOD.formated.data', signature(sp = 'numeric', env = 'data.frame'),
                 coord = xy,
                 data.species = sp,
                 data.env.var = env,
-                dir.name = dir.name,
+                dir.name = R.utils::getAbsolutePath(dir.name),
                 sp.name = sp.name,
                 data.mask = data.mask,
                 has.data.eval = TRUE,
                 eval.coord = BFDeval@coord,
                 eval.data.species = BFDeval@data.species,
-                eval.data.env.var = BFDeval@data.env.var
+                eval.data.env.var = BFDeval@data.env.var,
+                has.filter.raster = filter.raster,
+                biomod2.version = as.character(packageVersion("biomod2"))
               )
               
               rm(BFDeval)
@@ -1660,7 +1666,9 @@ setMethod('BIOMOD.formated.data.PA', signature(sp = 'numeric', env = 'SpatRaster
                 eval.data.species = BFD@eval.data.species,
                 eval.data.env.var = BFD@eval.data.env.var,
                 PA.strategy = PA.strategy,
-                PA.table = as.data.frame(pa.data.tmp$pa.tab))
+                PA.table = as.data.frame(pa.data.tmp$pa.tab),
+                has.filter.raster = filter.raster,
+                biomod2.version = as.character(packageVersion("biomod2")))
     
     rm(list = 'BFD')
   } else {

@@ -522,7 +522,7 @@
 ##' \code{ggplot2} object 
 ##' 
 ##' @importFrom terra rast minmax crds ext
-##' @importFrom ggplot2 ggplot aes scale_color_manual scale_shape_manual scale_fill_manual guides xlim ylim ggtitle facet_wrap theme guide_legend after_stat scale_size scale_alpha_continuous
+##' @importFrom ggplot2 ggplot aes scale_color_manual scale_shape_manual scale_fill_manual guides xlim ylim ggtitle facet_wrap theme guide_legend after_stat scale_size scale_alpha_continuous scale_alpha waiver
 ##' 
 ##' @export
 ##' 
@@ -781,6 +781,10 @@
     datasets <- c("Initial dataset", datasets[-length(datasets)])
     data.df$dataset <- factor(data.df$dataset, datasets)
     
+    if (x@data.type == "ordinal"){
+      labels_ordinal <- levels(d@data.species)
+    } else {labels_ordinal <- waiver() }
+    
     if(plot.output == "facet"){
       base_g <-  ggplot(data.df)
       if(has.mask){
@@ -795,7 +799,9 @@
                        size = resp),
                    shape = 18)+ #size = point.size
         facet_wrap(~dataset)+
-        scale_size(range =c(0.5,3))+
+        scale_size(range =c(0.5,3), 
+                  labels = labels_ordinal
+                   )+
         scale_color_manual(
           NULL,
           breaks = data_breaks,
@@ -808,6 +814,9 @@
           values = data_colors,
           labels = data_labels,
           na.value = data_background)+
+        scale_alpha(
+          labels = labels_ordinal
+        )+
         xlab(NULL)+ ylab(NULL)+
         guides(color = guide_legend(override.aes = list(size = 3)))+
         theme(legend.position = "top",
