@@ -118,8 +118,9 @@
 ##' bm_PlotEvalMean(bm.out = myBiomodModelOut)
 ##' 
 ##' 
-##' @importFrom ggplot2 ggplot aes_string geom_point geom_errorbarh geom_errorbar xlab ylab
+##' @importFrom ggplot2 ggplot geom_point geom_errorbarh geom_errorbar xlab ylab
 ##' theme element_blank element_rect coord_cartesian labs
+##' @importFrom rlang .data
 ##' 
 ##' @export
 ##' 
@@ -153,11 +154,11 @@ bm_PlotEvalMean <- function(bm.out, metric.eval = NULL, dataset = 'calibration',
                  by = "name" )
   colnames(ggdat) <- c("name", "mean1", "mean2", "sd1", "sd2")
   
-  limits1 <- aes_string(xmax = "mean1 + sd1", xmin = "mean1 - sd1", fill = NULL)
-  limits2 <- aes_string(ymax = "mean2 + sd2", ymin = "mean2 - sd2", fill = NULL)
+  limits1 <- aes(xmax = .data$mean1 + .data$sd1, xmin = .data$mean1 - .data$sd1, fill = NULL)
+  limits2 <- aes(ymax = .data$mean2 + .data$sd2, ymin = .data$mean2 - .data$sd2, fill = NULL)
   
   ## 2. PLOT graphic ------------------------------------------------------------------------------
-  gg <- ggplot(ggdat, aes_string(x = "mean1", y = "mean2", colour = "name", fill = NULL)) +
+  gg <- ggplot(ggdat, aes(x = .data$mean1, y = .data$mean2, colour = .data$name, fill = NULL)) +
     geom_point() + ## add mean points
     geom_errorbarh(limits1, height = 0) + ## add horizontal error bars
     geom_errorbar(limits2, width = 0) + ## add vertical error bars

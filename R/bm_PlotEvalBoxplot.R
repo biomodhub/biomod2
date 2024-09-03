@@ -114,8 +114,9 @@
 ##' bm_PlotEvalBoxplot(bm.out = myBiomodModelOut, group.by = c('algo', 'run'))
 ##' 
 ##' 
-##' @importFrom ggplot2 ggplot aes_string geom_boxplot facet_wrap xlab 
+##' @importFrom ggplot2 ggplot geom_boxplot facet_wrap xlab 
 ##' theme element_blank element_rect element_text labs
+##' @importFrom rlang .data
 ##' 
 ##' @export
 ##' 
@@ -139,7 +140,7 @@ bm_PlotEvalBoxplot <- function(bm.out, dataset = 'calibration', group.by = c('al
   ggdat = scores
   
   ## 2. PLOT graphic ------------------------------------------------------------------------------
-  gg <- ggplot(ggdat, aes_string(x = group.by[1], y = dataset, fill = group.by[2])) +
+  gg <- ggplot(ggdat, aes(x = .data[[group.by[1]]], y = .data[[dataset]], fill = .data[[group.by[2]]])) +
     geom_boxplot() + ## add boxplot
     facet_wrap("metric.eval", scales = scales) +
     xlab("") +
