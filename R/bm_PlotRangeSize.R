@@ -159,6 +159,7 @@
 ##' @importFrom ggplot2 ggplot geom_col geom_tile facet_wrap xlab ylab labs scale_fill_viridis_c
 ##' theme element_blank element_rect scale_fill_manual
 ##' @importFrom rlang .data
+##' @importFrom ggalluvial geom_alluvium
 ##' 
 ##' @export
 ##' 
@@ -178,8 +179,42 @@ bm_PlotRangeSize <- function(bm.range, do.count = TRUE, do.perc = TRUE
   }
   out = list()
   
-  nonbinary <- ifelse(colnames(bm.range$Compt.By.Models)[1] == "Loss", FALSE, TRUE)
+  ordinal <- is.list(bm.range$Compt.By.Models)
+  if (ordinal){
+
+    links <- bm.range$Compt.By.Models
+    links$color <- ifelse((links$Target - links$Source) == 0, "stable", ifelse((links$Target - links$Source) > 0, "gain","loss"))
+    
+    gg.sankey <- ggplot(links, aes(y = n, axis1 = Source, axis2 = Target)) +
+      facet_wrap("full.name", scales = "free")+
+      geom_alluvium(aes(fill = color), width = 1/1000) +
+      geom_stratum(width = 1/50, fill = "lightblue", color = "black") +
+      geom_label(stat = "stratum", aes(label = after_stat(stratum))) +
+      scale_x_discrete(limits = c("Current", "Future"), expand = c(.05, .05)) +
+      scale_fill_manual(values = c(gain = "#fc8d62", loss = "#66c2a5", stable = "grey"))+
+      theme_bw() +
+      theme(axis.line = element_blank(),
+            axis.text.y = element_blank(),
+            axis.title.y = element_blank(),
+            axis.ticks.y = element_blank(),
+            panel.grid.major = element_blank(),
+            panel.grid.minor = element_blank(),
+            panel.border = element_blank(),
+            panel.background = element_blank())+
+      ggtitle("Sankey diagram")
+
+    do.count <- FALSE
+    do.perc <- FALSE
+    do.mean <- FALSE
+    gg.count <- NULL
+    gg.perc <- NULL
+    nonbinary <- TRUE
+  } else {
+    nonbinary <- ifelse(colnames(bm.range$Compt.By.Models)[1] == "Loss", FALSE, TRUE)
+    gg.sankey <- NULL
+  }
   
+
   ## 1. Create PLOTS for Compt.By.Models ----------------------------------------------------------
   if (do.count || do.perc)
   {
@@ -289,16 +324,22 @@ bm_PlotRangeSize <- function(bm.range, do.count = TRUE, do.perc = TRUE
       # gg.maps = 'terra::plot(ggdat, col = c("-2" = "#fc8d62", "-1" = "grey", "0" = "white", "1" = "#66c2a5")
       #      , legend.width = 2, legend.shrink = 0.7
       #      , axis.args = list(at = c(-2, -1, 0, 1), labels = c("Loss", "Stable1", "Stable0", "Gain"), cex.axis = 1))'
-      if (nonbinary == FALSE){
+      if (nonbinary == FALSE && ordinal == FALSE){
         gg.maps <- 'plot(ggdat,
                         col = data.frame(
                           value = c(-2, -1, 0, 1),
                           color = c("#fc8d62", "lightgoldenrod2", "grey", "#66c2a5")),
                         colNA = "white")'
-      } else {
+      } else if (ordinal == FALSE) {
         gg.maps <- 'plot(ggdat,
                         col = c("#fb6930", "#fc8d62", "#fc9f7b", "#fdb194", "#fdc4ad", "grey", "#9dd8c5", "#8ad1ba", "#78c9b0", "#66c2a5", "#46af8e"),
                         breaks = c(-150,-100,-75,-50,-25,0,25,50,75,100,150),
+                        colNA = "white")'
+      } else {
+        gg.maps <- 'plot(ggdat,
+                        col = c("#fc9f7b", "grey", "#78c9b0"),
+                        breaks = c(-Inf,-0.5,0.5,Inf),
+                        plg = list(legend=c("loss","stable","gain")),
                         colNA = "white")'
       }
 
@@ -449,11 +490,15 @@ bm_PlotRangeSize <- function(bm.range, do.count = TRUE, do.perc = TRUE
   }
   ## RETURN PLOTS
   if (do.plot) { 
-    print(gg.count)
-    plot.new()
-    print(gg.perc, newpage = FALSE)
+    if(ordinal){
+      print(gg.sankey)
+    } else {
+      print(gg.count)
+      plot.new()
+      print(gg.perc, newpage = FALSE)
+      print(gg.ca)
+    }
     eval(parse(text = gg.maps))
-    print(gg.ca)
   }
   return(out)
 }

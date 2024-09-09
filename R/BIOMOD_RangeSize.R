@@ -16,7 +16,8 @@
 ##' @param proj.future a \code{data.frame}, \code{\link[raster:stack]{RasterLayer}} 
 ##' or \code{\link[terra:rast]{SpatRaster}} object containing the final binary projection(s) 
 ##' of the (ensemble) species distribution model(s)
-##' @param thresholds
+##' @param thresholds a \code{vector} defining the thresholds in percent 
+##' @param ordinal a \code{logical} indicating whether or not the projections should be considered as ordinal data
 ##' 
 ##' 
 ##' @return
@@ -176,6 +177,7 @@
 ##' 
 ##' @importFrom foreach foreach %do%
 ##' @importFrom terra rast nlyr `add<-` values
+##' @importFrom dplyr count
 ##' 
 ##' @export
 ##' 
@@ -184,7 +186,7 @@
 
 
 setGeneric("BIOMOD_RangeSize",
-           def = function(proj.current, proj.future, thresholds = c(10,30,50)) {
+           def = function(proj.current, proj.future, thresholds = c(10,30,50), ordinal = FALSE) {
              if (inherits(proj.current, "Raster") && inherits(proj.future, "Raster")) {
                return(
                  BIOMOD_RangeSize(rast(proj.current), rast(proj.future), thresholds)
@@ -203,27 +205,44 @@ setGeneric("BIOMOD_RangeSize",
 ##'
 
 setMethod('BIOMOD_RangeSize', signature(proj.current = 'data.frame', proj.future = 'data.frame'),
-          function(proj.current, proj.future, thresholds)
+          function(proj.current, proj.future, thresholds, ordinal)
           {
             .bm_cat("Do Range Size Computation")
             args <- .BIOMOD_RangeSize.check.args(proj.current, proj.future, thresholds)
             for (argi in names(args)) { assign(x = argi, value = args[[argi]]) }
             rm(args)
             
+            if(ordinal){CBS_ordinal <- data.frame()}
+            
             if (ncol(proj.future) == ncol(proj.current)) {
-              if (nonbinary) {
+              if (nonbinary && !ordinal) {
                 Diff.By.Pixel <- as.data.frame((proj.future - proj.current)/(proj.current + 0.0001)) *100 
-              } else {
+              } else if (!ordinal){
                 Diff.By.Pixel <- as.data.frame(proj.future - 2 * proj.current)
+              } else {
+                Diff.By.Pixel <- as.data.frame(proj.future - proj.current)
+                CBS_ordinal <- foreach(i = 1:ncol(proj.future), .combine = rbind){
+                  links <- data.frame("Source" = as.vector(proj.current[,i]), "Target" = as.vector(proj.future)[,i])
+                  links <- links[(!is.na(links$Source)) & (!is.na(links$Target)),]
+                  links <- links %>% count(Source, Target) 
+                  links$full.name <- names(proj.future)
+                }
               }
-              
               this_rownames <- colnames(proj.current)
             } else {
               Diff.By.Pixel <- foreach(thiscol = seq_len(ncol(proj.future)), .combine = 'cbind') %do% {
-                if (nonbinary){
+                if (nonbinary && !ordinal){
                   tmp <- as.data.frame((proj.future[,thiscol] - proj.current[,1])/(proj.current[,1] + 0.0001)) *100 
-                } else {
+                } else if (!ordinal) {
                   tmp <- as.data.frame(proj.future[,thiscol] - 2 * proj.current[,1])
+                } else {
+                  tmp <- as.data.frame(proj.future[,thiscol] - proj.current[,1])
+                  CBS_ordinal <- foreach(i = 1:ncol(proj.future), .combine = rbind){
+                    links <- data.frame("Source" = as.vector(proj.current[,1]), "Target" = as.vector(proj.future)[,i])
+                    links <- links[(!is.na(links$Source)) & (!is.na(links$Target)),]
+                    links <- links %>% count(Source, Target) 
+                    links$full.name <- names(proj.future)
+                  }
                 }
                 colnames(tmp) <- colnames(proj.future)[thiscol]
                 tmp
@@ -231,7 +250,7 @@ setMethod('BIOMOD_RangeSize', signature(proj.current = 'data.frame', proj.future
               this_rownames <- colnames(proj.future)
             }
             
-            if (nonbinary){
+            if (nonbinary && !ordinal){
               nbpixels <- sum(!is.na(Diff.By.Pixel[]))
               
               CBS[i, "Stable"] <- length(which(Diff.By.Pixel[] > -min(thresholds) & Diff.By.Pixel[] <= min(thresholds)))
@@ -264,7 +283,7 @@ setMethod('BIOMOD_RangeSize', signature(proj.current = 'data.frame', proj.future
               Compt.By.Models <- CBS
               dimnames(Compt.By.Models) <- names.res
               
-            } else {
+            } else if (!ordinal) {
               Compt.By.Models <- as.data.frame(.CompteurSp(Diff.By.Pixel, c(-2, 0, -1, 1)))
               Compt.By.Models[, seq(5,10)] <- NA
               Compt.By.Models[, 8] <- Compt.By.Models[, 1] + Compt.By.Models[, 3]
@@ -278,6 +297,8 @@ setMethod('BIOMOD_RangeSize', signature(proj.current = 'data.frame', proj.future
               dimnames(Compt.By.Models) <- list(this_rownames, c("Loss", "Stable0", "Stable1", "Gain"
                                                                  , "PercLoss", "PercGain", "SpeciesRangeChange"
                                                                  , "CurrentRangeSize", "FutureRangeSize.NoDisp", "FutureRangeSize.FullDisp"))
+            } else {
+              Compt.By.Models <- CBS_ordinal ##Le code sera à améliorer
             }
             
             Output <- list(Compt.By.Models = Compt.By.Models, Diff.By.Pixel = Diff.By.Pixel)
@@ -294,7 +315,7 @@ setMethod('BIOMOD_RangeSize', signature(proj.current = 'data.frame', proj.future
 ##'
 
 setMethod('BIOMOD_RangeSize', signature(proj.current = 'SpatRaster', proj.future = 'SpatRaster'),
-          function(proj.current, proj.future, thresholds)
+          function(proj.current, proj.future, thresholds, ordinal)
           {
             .bm_cat("Do Range Size Computation")
             args <- .BIOMOD_RangeSize.check.args(proj.current, proj.future, thresholds)
@@ -320,6 +341,7 @@ setMethod('BIOMOD_RangeSize', signature(proj.current = 'SpatRaster', proj.future
             }
 
             sp.rast <- rast()
+            CBS_ordinal <- data.frame()
             Cur <- proj.current[[1]]
             for (i in seq_len(nlyr(proj.future))) {
               if(nlyr(proj.current) > 1){
@@ -327,7 +349,7 @@ setMethod('BIOMOD_RangeSize', signature(proj.current = 'SpatRaster', proj.future
               }
               Fut <- proj.future[[i]]
               
-              if (nonbinary){
+              if (nonbinary && !ordinal){
                 ## DiffByPixel
                 Ras <- (Fut - Cur)/ (Cur + 0.0001) *100 #Comment gérer la division par zéro
                 #Ras[Ras == Inf] <- 0
@@ -359,7 +381,7 @@ setMethod('BIOMOD_RangeSize', signature(proj.current = 'SpatRaster', proj.future
                 CBS[i, "FutureRangeSize.NoDisp"] <- length(which(Fut[] > 0) & which(Cur[] > 0))
                 CBS[i, "FutureRangeSize.FullDisp"] <- length(which(Fut[] > 0))
 
-              } else {
+              } else if (!ordinal) {
                 ## DiffByPixel
                 Ras <- Fut - (Cur + Cur)
                 add(sp.rast) <- Ras
@@ -377,10 +399,24 @@ setMethod('BIOMOD_RangeSize', signature(proj.current = 'SpatRaster', proj.future
                 CBS[i, 5] <- round(CBS[i, 1] / CBS[i, 8] * 100, digits = 3)
                 CBS[i, 6] <- round(CBS[i, 4] / CBS[i, 8] * 100, digits = 3)
                 CBS[i, 7] <- round(CBS[i, 10] / CBS[i, 8] * 100 - 100, digits = 3)
+              } else {
+                Ras <- Fut - Cur 
+                add(sp.rast) <- Ras
+                links <- data.frame("Source" = values(Cur)[,1], "Target" = values(Fut)[,1])
+                links <- links[(!is.na(links$Source)) & (!is.na(links$Target)),]
+                links <- links %>% count(Source, Target) 
+                links$full.name <- names(proj.future)[i]
+                CBS_ordinal <- rbind(CBS_ordinal,links)
               }
-              
             }
-            names(sp.rast) <- rownames(CBS)
+            
+            if(ordinal){
+              names(sp.rast) <- names(proj.future)
+              CBS <- CBS <- CBS_ordinal
+            } else {
+              names(sp.rast) <- rownames(CBS)
+            }
+            
             
             .bm_cat("Done")
             return(list(Compt.By.Models = CBS, Diff.By.Pixel = sp.rast))
