@@ -1437,3 +1437,111 @@ setMethod("get_variables_importance", "BIOMOD.ensemble.models.out",
           }
 )
 
+## -------------------------------------------------------------------------- #
+## 7. Generic Functions definition ------------------------------------------
+## -------------------------------------------------------------------------- #
+## Used for different classes 
+##    01 = BIOMOD.formated.data, 02 = BIOMOD.formated.data.PA
+##    A = BIOMOD.models.out, B = BIOMOD.projection.out, C = BIOMOD.ensemble.models.out
+
+##' @name setters
+##' @aliases set_newdirname
+##' @author Hélène Blancheteau
+##' 
+##' @title Functions to change the place of the different biomod2 objects
+##' 
+##' @description This function allow the user to change the folder where
+##' the modelling of biomod2 have been done.
+##' 
+##' 
+##' @param obj a \code{\link{BIOMOD.formated.data}}, \code{\link{BIOMOD.formated.data.PA}}, 
+##' \code{\link{BIOMOD.models.out}}, \code{\link{BIOMOD.projection.out}} or 
+##' \code{\link{BIOMOD.ensemble.models.out}} object
+##' @param \ldots (\emph{optional, one or several of the following arguments depending on the selected 
+##' function}) 
+##' @param new.dir.name
+##' 
+##' @seealso \code{\link{BIOMOD.models.out}}, \code{\link{BIOMOD.projection.out}}, 
+##' \code{\link{BIOMOD.ensemble.models.out}}
+##' @family Toolbox functions
+##' 
+##' 
+
+setGeneric("set_newdirname", function(obj, ...) { standardGeneric("set_newdirname") }) ##ABC ## 012 ? 
+
+setMethod('set_newdirname', signature(obj = 'BIOMOD.models.out'), function(obj, new.dir.name) {
+  new.object <- obj
+  new.dir.name <- R.utils::getAbsolutePath(new.dir.name)
+  sp.name <- new.object@sp.name
+  modellingID <- new.object@modeling.id
+
+  new.object@dir.name <- new.dir.name
+  to.change <- c("formated.input.data", "calib.lines","models.options", "models.evaluation", "variables.importance", "models.prediction","models.prediction.eval")
+  for (n in to.change){
+    eval(parse(text = paste0("new.object@",n,"@link","<- file.path(new.dir.name, sp.name,'.BIOMOD_DATA' ,modellingID,n)"))) #Plus tordu que ça tu meurs
+  }
+  # Copy in the new file 
+  dir.create(file.path(new.dir.name,sp.name))
+  dir.create(file.path(new.dir.name,sp.name,'.BIOMOD_DATA'))
+  file.copy(from = file.path(obj@dir.name, sp.name, '.BIOMOD_DATA'),
+            to = file.path(new.dir.name, sp.name), recursive = T)
+  dir.create(file.path(new.dir.name,sp.name,'models'))
+  file.copy(from = file.path(obj@dir.name, sp.name, 'models'),
+            to = file.path(new.dir.name, sp.name), recursive = T)
+  
+  name.OUT = paste0(sp.name, '.', modellingID, '.models.out')
+  new.object@link <- file.path(new.object@dir.name, sp.name, name.OUT)
+  assign(x = name.OUT, value = new.object)
+  save(list = name.OUT, file = new.object@link)
+  
+  #remove ??
+})
+
+
+setMethod('set_newdirname', signature(obj = 'BIOMOD.projection.out'), function(obj, new.dir.name) {
+  new.object <- obj
+  new.dir.name <- R.utils::getAbsolutePath(new.dir.name)
+  sp.name <- new.object@sp.name
+  modellingID <- new.object@modeling.id
+  proj.name <- paste0("proj_",new.object@proj.name)
+  name.OUT = paste0(sp.name, '.', modellingID, '.models.out')
+  
+  new.object@dir.name <- new.dir.name
+  new.object@models.out@link <- file.path(new.dir.name, sp.name, name.OUT) 
+  new.object@proj.out@link <- file.path(new.dir.name, sp.name, proj.name, paste0(proj.name,"_",sp.name,".tif")) 
+
+  # Copy in the new file 
+  dir.create(file.path(new.dir.name, sp.name, proj.name), recursive = T)
+  file.copy(from = file.path(obj@dir.name, sp.name, proj.name),
+            to = file.path(new.dir.name, sp.name), recursive = T)
+
+})
+
+
+setMethod('set_newdirname', signature(obj = 'BIOMOD.ensemble.models.out'), function(obj, new.dir.name) {
+  new.object <- obj
+  new.dir.name <- R.utils::getAbsolutePath(new.dir.name)
+  sp.name <- new.object@sp.name
+  modellingID <- new.object@modeling.id
+  
+  new.object@dir.name <- new.dir.name
+  to.change <- c("models.out", "models.evaluation", "variables.importance", "models.prediction","models.prediction.eval")
+  for (n in to.change){
+    eval(parse(text = paste0("new.object@", n, "@link", "<- file.path(new.dir.name, sp.name, '.BIOMOD_DATA', modellingID, 'ensemble.models', n)"))) 
+  }
+  
+  # Copy in the new file 
+  dir.create(file.path(new.dir.name,sp.name), showWarnings = FALSE)
+  dir.create(file.path(new.dir.name,sp.name,'.BIOMOD_DATA'), showWarnings = FALSE)
+  file.copy(from = file.path(obj@dir.name, sp.name, '.BIOMOD_DATA'),
+            to = file.path(new.dir.name, sp.name), recursive = T)
+  dir.create(file.path(new.dir.name,sp.name,'models'), showWarnings = FALSE)
+  file.copy(from = file.path(obj@dir.name, sp.name, 'models'),
+            to = file.path(new.dir.name, sp.name), recursive = T)
+  
+  name.OUT = paste0(sp.name, '.', modellingID, '.ensemble.models.out')
+  new.object@link <- file.path(new.object@dir.name, sp.name, name.OUT)
+  assign(x = name.OUT, value = new.object)
+  save(list = name.OUT, file = new.object@link)
+  
+})

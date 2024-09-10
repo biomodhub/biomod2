@@ -221,7 +221,7 @@ setMethod('BIOMOD_RangeSize', signature(proj.current = 'data.frame', proj.future
                 Diff.By.Pixel <- as.data.frame(proj.future - 2 * proj.current)
               } else {
                 Diff.By.Pixel <- as.data.frame(proj.future - proj.current)
-                CBS_ordinal <- foreach(i = 1:ncol(proj.future), .combine = rbind){
+                CBS_ordinal <- foreach(i = 1:ncol(proj.future), .combine = rbind) %do% {
                   links <- data.frame("Source" = as.vector(proj.current[,i]), "Target" = as.vector(proj.future)[,i])
                   links <- links[(!is.na(links$Source)) & (!is.na(links$Target)),]
                   links <- links %>% count(Source, Target) 
@@ -237,7 +237,7 @@ setMethod('BIOMOD_RangeSize', signature(proj.current = 'data.frame', proj.future
                   tmp <- as.data.frame(proj.future[,thiscol] - 2 * proj.current[,1])
                 } else {
                   tmp <- as.data.frame(proj.future[,thiscol] - proj.current[,1])
-                  CBS_ordinal <- foreach(i = 1:ncol(proj.future), .combine = rbind){
+                  CBS_ordinal <- foreach(i = 1:ncol(proj.future), .combine = rbind) %do% {
                     links <- data.frame("Source" = as.vector(proj.current[,1]), "Target" = as.vector(proj.future)[,i])
                     links <- links[(!is.na(links$Source)) & (!is.na(links$Target)),]
                     links <- links %>% count(Source, Target) 
