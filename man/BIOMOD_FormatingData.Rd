@@ -196,10 +196,13 @@ and provides different methods to select pseudo-absences if needed. \cr \cr
   If pseudo-absence points are to be selected, \code{NA} points must be provided in order to 
   select pseudo-absences among them.
   
+  \itemize {
   \item For abundance datatype, \code{resp.var} must containing positive numeric.
   \item For count datatype, \code{resp.var} must containing positive integer. 
   \item For ordinal datatype, \code{resp.var} must containing ordered factor. 
   \item For relative datatype, \code{resp.var} must containing numeric between 0 and 1.
+  }
+  }
   }
   \item{Explanatory variables}{
   Factorial variables are allowed, but might lead to some pseudo-absence strategy or models 
@@ -239,7 +242,6 @@ and provides different methods to select pseudo-absences if needed. \cr \cr
     \item{user.defined}{pseudo-absences are defined in advance and given as \code{data.frame} 
     through the \code{PA.user.table} parameter.
     }
-  }
   }
 }
 }

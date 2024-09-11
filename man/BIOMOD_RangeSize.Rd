@@ -6,11 +6,26 @@
 \alias{BIOMOD_RangeSize,SpatRaster,SpatRaster-method}
 \title{Analyze the range size differences between projections of species distribution models}
 \usage{
-BIOMOD_RangeSize(proj.current, proj.future, thresholds = c(10, 30, 50))
+BIOMOD_RangeSize(
+  proj.current,
+  proj.future,
+  thresholds = c(10, 30, 50),
+  ordinal = FALSE
+)
 
-\S4method{BIOMOD_RangeSize}{data.frame,data.frame}(proj.current, proj.future, thresholds = c(10, 30, 50))
+\S4method{BIOMOD_RangeSize}{data.frame,data.frame}(
+  proj.current,
+  proj.future,
+  thresholds = c(10, 30, 50),
+  ordinal = FALSE
+)
 
-\S4method{BIOMOD_RangeSize}{SpatRaster,SpatRaster}(proj.current, proj.future, thresholds = c(10, 30, 50))
+\S4method{BIOMOD_RangeSize}{SpatRaster,SpatRaster}(
+  proj.current,
+  proj.future,
+  thresholds = c(10, 30, 50),
+  ordinal = FALSE
+)
 }
 \arguments{
 \item{proj.current}{a \code{data.frame}, \code{\link[raster:stack]{RasterLayer}}
@@ -21,7 +36,9 @@ of the (ensemble) species distribution model(s)}
 or \code{\link[terra:rast]{SpatRaster}} object containing the final binary projection(s)
 of the (ensemble) species distribution model(s)}
 
-\item{thresholds}{}
+\item{thresholds}{a \code{vector} defining the thresholds in percent}
+
+\item{ordinal}{a \code{logical} indicating whether or not the projections should be considered as ordinal data}
 }
 \value{
 A \code{list} containing two objects :

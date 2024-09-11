@@ -6,8 +6,7 @@
 \usage{
 bm_ModelingOptions(
   data.type,
-  models = c("ANN", "CTA", "FDA", "GAM", "GBM", "GLM", "MARS", "MAXENT", "MAXNET", "RF",
-    "RFd", "SRE", "XGBOOST"),
+  models,
   strategy,
   user.val = NULL,
   user.base = "bigboss",
