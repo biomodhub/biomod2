@@ -207,7 +207,6 @@
 ##'     through the \code{PA.user.table} parameter.
 ##'     }
 ##'   }
-##'   }
 ##' }
 ##' 
 ##' 
