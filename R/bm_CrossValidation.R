@@ -138,7 +138,7 @@
 ##' 
 ##' @seealso \code{\link[ENMeval]{get.block}}, \code{\link[dismo]{kfold}}, 
 ##' \code{\link{BIOMOD_FormatingData}}, \code{\link{BIOMOD_Modeling}}
-##' @family Secundary functions
+##' @family Secondary functions
 ##'
 ##'
 ##' @examples

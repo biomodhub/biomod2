@@ -94,7 +94,7 @@ metric.
   \item{presence-only}{
   \itemize{
     \item \code{BOYCE} : Boyce index
-    \item \code{MPA} : Minimal predicted area (cutoff optimising MPA to predict 90\% of 
+    \item \code{MPA} : Minimal predicted area (cutoff optimizing MPA to predict 90\% of 
     presences)
   }
   }
@@ -153,7 +153,7 @@ bm_FindOptimStat(metric.eval = 'TSS', fit = vec.c, obs = vec.a, threshold = 280)
 \code{\link{BIOMOD_Modeling}}, \code{\link{bm_RunModelsLoop}}, 
 \code{\link{BIOMOD_EnsembleModeling}}
 
-Other Secundary functions: 
+Other Secondary functions: 
 \code{\link{bm_BinaryTransformation}()},
 \code{\link{bm_CrossValidation}()},
 \code{\link{bm_MakeFormula}()},
@@ -174,7 +174,7 @@ Other Secundary functions:
 \author{
 Damien Georges
 }
-\concept{Secundary functions}
+\concept{Secondary functions}
 \keyword{auc}
 \keyword{boyce}
 \keyword{evaluation}

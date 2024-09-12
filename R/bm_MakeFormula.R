@@ -38,7 +38,7 @@
 ##' @seealso \code{\link[stats]{formula}}, \code{\link[mgcv]{s}}, \code{\link[gam]{s}}, 
 ##' \code{\link{bm_ModelingOptions}}, \code{\link{bm_Tuning}}, 
 ##' \code{\link{bm_RunModelsLoop}}
-##' @family Secundary functions
+##' @family Secondary functions
 ##' 
 ##' 
 ##' @examples

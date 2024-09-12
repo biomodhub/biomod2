@@ -136,7 +136,7 @@ species distribution models (asked by the \code{\link{BIOMOD_Modeling}} function
 \code{\link{bm_MakeFormula}}, \code{\link{bm_SampleFactorLevels}}, 
 \code{\link{bm_FindOptimStat}}, \code{\link{bm_VariablesImportance}}
 
-Other Secundary functions: 
+Other Secondary functions: 
 \code{\link{bm_BinaryTransformation}()},
 \code{\link{bm_CrossValidation}()},
 \code{\link{bm_FindOptimStat}()},
@@ -157,7 +157,7 @@ Other Secundary functions:
 \author{
 Damien Georges
 }
-\concept{Secundary functions}
+\concept{Secondary functions}
 \keyword{ANN}
 \keyword{CTA}
 \keyword{FDA}

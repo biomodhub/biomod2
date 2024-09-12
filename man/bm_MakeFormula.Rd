@@ -62,7 +62,7 @@ bm_MakeFormula(resp.name = 'myResp.s',
 \code{\link{bm_ModelingOptions}}, \code{\link{bm_Tuning}}, 
 \code{\link{bm_RunModelsLoop}}
 
-Other Secundary functions: 
+Other Secondary functions: 
 \code{\link{bm_BinaryTransformation}()},
 \code{\link{bm_CrossValidation}()},
 \code{\link{bm_FindOptimStat}()},
@@ -83,7 +83,7 @@ Other Secundary functions:
 \author{
 Damien Georges
 }
-\concept{Secundary functions}
+\concept{Secondary functions}
 \keyword{formula}
 \keyword{models}
 \keyword{options}

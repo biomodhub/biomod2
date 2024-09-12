@@ -109,7 +109,7 @@
 ##' \code{\link[ENMeval]{ENMevaluate}}, 
 ##' \code{\link{ModelsTable}}, \code{\link{BIOMOD.models.options}}, 
 ##' \code{\link{bm_ModelingOptions}}, \code{\link{BIOMOD_Modeling}}
-##' @family Secundary functions
+##' @family Secondary functions
 ##' 
 ##' 
 ##' @examples

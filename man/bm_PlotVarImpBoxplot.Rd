@@ -112,7 +112,7 @@ bm_PlotVarImpBoxplot(bm.out = myBiomodModelOut, group.by = c('algo', 'expl.var',
 \code{\link{BIOMOD_Modeling}}, \code{\link{BIOMOD_EnsembleModeling}}, 
 \code{\link{get_variables_importance}}
 
-Other Secundary functions: 
+Other Secondary functions: 
 \code{\link{bm_BinaryTransformation}()},
 \code{\link{bm_CrossValidation}()},
 \code{\link{bm_FindOptimStat}()},
@@ -140,7 +140,7 @@ Other Plot functions:
 Damien Georges, Maya Gueguen
 }
 \concept{Plot functions}
-\concept{Secundary functions}
+\concept{Secondary functions}
 \keyword{boxplot}
 \keyword{evaluation}
 \keyword{ggplot}

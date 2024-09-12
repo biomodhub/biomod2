@@ -99,7 +99,7 @@
 ##' 
 ##' @seealso \code{\link{bm_SRE}}, \code{\link{BIOMOD.formated.data.PA}}, 
 ##' \code{\link{BIOMOD_FormatingData}}
-##' @family Secundary functions
+##' @family Secondary functions
 ##' 
 ##' 
 ##' @examples 

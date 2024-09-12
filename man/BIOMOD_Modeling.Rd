@@ -274,7 +274,7 @@ metrics (see Details).
     \item{presence-only}{
     \itemize{
       \item \code{BOYCE} : Boyce index
-      \item \code{MPA} : Minimal predicted area (cutoff optimising MPA to predict 90\% of 
+      \item \code{MPA} : Minimal predicted area (cutoff optimizing MPA to predict 90\% of 
       presences)
     }
     }
@@ -291,7 +291,7 @@ metrics (see Details).
   \code{eval.[...]} parameters in \code{\link{BIOMOD_FormatingData}}.}
   }
   
-  \item{var.import}{A value caracterizing how much each variable has an impact on each model 
+  \item{var.import}{A value characterizing how much each variable has an impact on each model 
   predictions can be calculated by randomizing the variable of interest and computing the 
   correlation between original and shuffled variables (see \code{\link{bm_VariablesImportance}}).}
   

@@ -46,7 +46,7 @@ determining whether x and y scales are shared among facet. Argument passed
 to \code{\link[ggplot2:facet_wrap]{facet_wrap}}. Possible values: 'fixed', 'free_x',
 'free_y', 'free'.}
 
-\item{size}{(\emph{optional, default} \code{0.75}) a numeric determing the
+\item{size}{(\emph{optional, default} \code{0.75}) a numeric determining the
 size of points on the plots and passed to
 \code{\link[ggplot2:geom_point]{geom_point}}.}
 
