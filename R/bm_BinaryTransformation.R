@@ -45,7 +45,7 @@
 ##' @keywords convert threshold binary filter
 ##' 
 ##' @seealso \code{\link{BIOMOD_Projection}}, \code{\link{BIOMOD_EnsembleForecasting}}
-##' @family Secundary functions
+##' @family Secondary functions
 ##'
 ##' 
 ##' @examples

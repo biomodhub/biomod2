@@ -17,7 +17,7 @@ When modelling species distribution, there is most of the time an **uncertainty*
 - the *fundamental niche* is most of the time unknown
 - and there might be an uncertainty in the *realized niche*, except in the case of an exhaustive sampling.
 
-What can be evaluated is how much the modelisation results are **consistent** with what is known and observed, and how much **variability** is present in the results in function of modelling choices.
+What can be evaluated is how much the modeling results are **consistent** with what is known and observed, and how much **variability** is present in the results in function of modelling choices.
 
 </br>
 
@@ -26,7 +26,7 @@ What can be evaluated is how much the modelisation results are **consistent** wi
 
 Single and ensemble models can be evaluated by several available evaluation metrics, and the importance of variables can be calculated through several repetitions (see `metric.eval` and `var.import` parameters in [`BIOMOD_Modeling`](../reference/BIOMOD_Modeling.html) and [`BIOMOD_EnsembleModeling`](../reference/BIOMOD_EnsembleModeling.html)).
 
-Variability in evaluation and importance values can come from the parametrisation of different elements of the modelling :
+Variability in evaluation and importance values can come from the parametrization of different elements of the modelling :
 
 - **observed dataset**, 
     + through the number of repetitions of calibration / validation splitting, 

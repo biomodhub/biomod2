@@ -77,7 +77,7 @@ Results were varying between modelling techniques :
 - MARS, MDA : averaging several runs with relatively fewer PA (100) with presences and absences weighted equally
 - CTA, BRT, RF : same amount of PA as available presences
 
-`biomod2` team advices :
+advice from `biomod2`'s team:
 
 - random selection of PA when high specificity is valued over high sensitivity
 - number of PA = 3 times the number of presences

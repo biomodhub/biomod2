@@ -163,7 +163,7 @@ The tuning option are not available yet with non binary data.
 <br/><br/>
 
 
-### <i class="fa-solid fa-desktop"></i> Run modelisation
+### <i class="fa-solid fa-desktop"></i> Run modeling
 
 #### <i class="fa-solid fa-cube"></i> Single models
 

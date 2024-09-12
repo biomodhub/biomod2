@@ -31,7 +31,7 @@
 ##'   
 ##' @keywords sample binary
 ##' 
-##' @family Secundary functions
+##' @family Secondary functions
 ##' 
 ##' 
 ##' @examples

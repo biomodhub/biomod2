@@ -10,7 +10,7 @@ vignette: >
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
 
 
-## <i class="fa-solid fa-circle-question"></i> Small preliminar questions
+## <i class="fa-solid fa-circle-question"></i> Small preliminary questions
 
 `biomod2` functions, as any statistical function, will run *as long as the data provided matches the functions requirements*, e.g. coordinate points associated with variable values.
 BUT **the reliability of the data and the assumptions behind it** mostly depend on the attention of the modeler.
@@ -68,7 +68,7 @@ Here are some questions that one's modeler should ask himself before starting hi
 
 **Outliers :** *are some points really distant from the others ? if yes, why ?*
 
-In example 1), the main repartition of the species seem to be in northern Europe, but some points occur in South Africa. It will be good to check if these points are correct, or due to error in coordinates or sampling.
+In example 1), the main distribution of the species seem to be in northern Europe, but some points occur in South Africa. It will be good to check if these points are correct, or due to error in coordinates or sampling.
 
 <br/>
 
@@ -104,7 +104,7 @@ For example, western green lizard (*Lacerta bilineata*) is found (according to W
 - the edges of woods,
 - shrubland, open grassland, arable land, and pastureland.
 
-**Representativity :** *do the available variables reflect these preferences ?*
+**Representativeness :** *do the available variables reflect these preferences ?*
 
 If *precipitations* could reflect the humidity of habitats, variables such as "*is the environment open or closed*", or *percentage of habitat types* would be a plus. However, are those variables available, and at which resolution ? On the contrary, *slope* or *soil type* would be non-interesting here for this species.
 

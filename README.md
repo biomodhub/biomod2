@@ -94,7 +94,7 @@ devtools::install_github("biomodhub/biomod2", dependencies = TRUE)
 
 - modeling options are now automatically retrieved from single models functions, normally allowing the use of all arguments taken into account by these functions
 - tuning has been cleaned up, but keep in mind that it is still a quite long running process
-- in consequence, `BIOMOD_ModelingOptions` and `BIOMOD_Tuning` functions become secundary functions (`bm_ModelingOptions` and `bm_Tuning`), and modeling options can be directly built through `BIOMOD_Modeling` function
+- in consequence, `BIOMOD_ModelingOptions` and `BIOMOD_Tuning` functions become secondary functions (`bm_ModelingOptions` and `bm_Tuning`), and modeling options can be directly built through `BIOMOD_Modeling` function
 
 #### <i class="fas fa-plus-square"></i> What is new ?
 
@@ -102,7 +102,7 @@ devtools::install_github("biomodhub/biomod2", dependencies = TRUE)
 - 3 new vignettes have been created :
     - [data preparation](https://biomodhub.github.io/biomod2/articles/vignette_dataPreparation.html) (*questions you should ask yourself before modeling*)
     - [cross-validation](https://biomodhub.github.io/biomod2/articles/vignette_crossValidation.html) (*to prepare your own calibration / validation datasets*)
-    - [modeling options](https://biomodhub.github.io/biomod2/articles/vignette_dataPreparation.html) (*to help you navigate through the new way of parameterizing single models*)
+    - [modeling options](https://biomodhub.github.io/biomod2/articles/vignette_dataPreparation.html) (*to help you navigate through the new way of parametrizing single models*)
 
 <br/>
 
@@ -127,7 +127,7 @@ Sorry for the inconvenience, and please **feel free to indicate if you notice so
 #### <i class="fas fa-exchange-alt"></i> What is changed ?
 
 - all code functions have been cleaned, and old / unused functions have been removed
-- function names have been standardized (`BIOMOD_` for main functions, `bm_` for secundary functions)
+- function names have been standardized (`BIOMOD_` for main functions, `bm_` for secondary functions)
 - parameter names have been standardized (same typo, same names for similar parameters across functions)
 - all documentation and examples have been cleaned up
 

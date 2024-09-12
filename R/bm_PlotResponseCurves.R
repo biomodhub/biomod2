@@ -85,7 +85,7 @@
 ##' 
 ##' @seealso \code{\link{BIOMOD.models.out}}, \code{\link{BIOMOD.ensemble.models.out}}, 
 ##' \code{\link{BIOMOD_Modeling}}, \code{\link{BIOMOD_EnsembleModeling}}
-##' @family Secundary functions
+##' @family Secondary functions
 ##' @family Plot functions
 ##' 
 ##' 

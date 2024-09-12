@@ -77,7 +77,7 @@
 ##'   \item{presence-only}{
 ##'   \itemize{
 ##'     \item \code{BOYCE} : Boyce index
-##'     \item \code{MPA} : Minimal predicted area (cutoff optimising MPA to predict 90\% of 
+##'     \item \code{MPA} : Minimal predicted area (cutoff optimizing MPA to predict 90\% of 
 ##'     presences)
 ##'   }
 ##'   }
@@ -87,7 +87,7 @@
 ##' \emph{Please refer to the \href{https://www.cawcr.gov.au/projects/verification/}{CAWRC website 
 ##' (section "Methods for dichotomous forecasts")} to get detailed description of each metric.}
 ##' 
-##' Note that if a value is given to \code{threshold}, no optimisation will be done., and 
+##' Note that if a value is given to \code{threshold}, no optimization will be done., and 
 ##' only the score for this threshold will be returned.
 ##' 
 ##' The Boyce index returns \code{NA} values for \code{SRE} models because it can not be 
@@ -117,7 +117,7 @@
 ##' @seealso \code{ecospat.boyce()} and \code{ecospat.mpa()} in \pkg{ecospat}, 
 ##' \code{\link{BIOMOD_Modeling}}, \code{\link{bm_RunModelsLoop}}, 
 ##' \code{\link{BIOMOD_EnsembleModeling}}
-##' @family Secundary functions
+##' @family Secondary functions
 ##' 
 ##' 
 ##' @examples
