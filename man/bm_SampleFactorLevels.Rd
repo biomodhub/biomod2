@@ -23,7 +23,7 @@ remain unsampled, they will be sampled in the reference input object \code{expl.
 }
 \value{
 A \code{vector} of \code{numeric} values corresponding to either row (\code{data.frame}) or 
-cell (\code{\link[terra:rast]{SpatRaster}}) numbers, each refering to a single level of a 
+cell (\code{\link[terra:rast]{SpatRaster}}) numbers, each referring to a single level of a 
 single factorial variable.
 
 In case no factorial variable is found in the input object, \code{NULL} is returned.
@@ -88,7 +88,7 @@ samp3 <- bm_SampleFactorLevels(expl.var = stk, mask.out = mask.out, mask.in = ma
 \seealso{
 \code{\link{bm_PseudoAbsences}}, \code{\link{bm_CrossValidation}}
 
-Other Secundary functions: 
+Other Secondary functions: 
 \code{\link{bm_BinaryTransformation}()},
 \code{\link{bm_CrossValidation}()},
 \code{\link{bm_FindOptimStat}()},
@@ -109,6 +109,6 @@ Other Secundary functions:
 \author{
 Damien Georges
 }
-\concept{Secundary functions}
+\concept{Secondary functions}
 \keyword{factor}
 \keyword{sample}

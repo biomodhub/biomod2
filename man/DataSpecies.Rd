@@ -12,7 +12,7 @@ A \code{data.frame} object with 2488 rows and 10 variables:
   \item{ConnochaetesGnou}{Presence (1) or Absence (0) for black wildebeest}
   \item{GuloGulo}{Presence (1) or Absence (0) for wolverine}
   \item{PantheraOnca}{Presence (1) or Absence (0) for jaguar}
-  \item{PteropusGiganteus}{Presence (1) or Absence (0) for indian flying fox}
+  \item{PteropusGiganteus}{Presence (1) or Absence (0) for Indian flying fox}
   \item{TenrecEcaudatus}{Presence (1) or Absence (0) for tailless tenrec}
   \item{VulpesVulpes}{Presence (1) or Absence (0) for red fox}
 }

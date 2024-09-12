@@ -257,7 +257,7 @@ apply(PA.r_mult$pa.tab, 2, table)
 \code{\link{bm_SRE}}, \code{\link{BIOMOD.formated.data.PA}}, 
 \code{\link{BIOMOD_FormatingData}}
 
-Other Secundary functions: 
+Other Secondary functions: 
 \code{\link{bm_BinaryTransformation}()},
 \code{\link{bm_CrossValidation}()},
 \code{\link{bm_FindOptimStat}()},
@@ -278,7 +278,7 @@ Other Secundary functions:
 \author{
 Wilfried Thuiller, Damien Georges
 }
-\concept{Secundary functions}
+\concept{Secondary functions}
 \keyword{SRE}
 \keyword{disk}
 \keyword{pseudo-absence}

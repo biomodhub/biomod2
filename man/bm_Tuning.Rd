@@ -214,7 +214,7 @@ tuned.gam
 \code{\link{ModelsTable}}, \code{\link{BIOMOD.models.options}}, 
 \code{\link{bm_ModelingOptions}}, \code{\link{BIOMOD_Modeling}}
 
-Other Secundary functions: 
+Other Secondary functions: 
 \code{\link{bm_BinaryTransformation}()},
 \code{\link{bm_CrossValidation}()},
 \code{\link{bm_FindOptimStat}()},
@@ -235,4 +235,4 @@ Other Secundary functions:
 \author{
 Frank Breiner, Maya Gueguen, Helene Blancheteau
 }
-\concept{Secundary functions}
+\concept{Secondary functions}

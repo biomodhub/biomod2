@@ -286,7 +286,7 @@ apply(cv.e, 2, table)
 \code{\link[ENMeval]{get.block}}, \code{\link[dismo]{kfold}}, 
 \code{\link{BIOMOD_FormatingData}}, \code{\link{BIOMOD_Modeling}}
 
-Other Secundary functions: 
+Other Secondary functions: 
 \code{\link{bm_BinaryTransformation}()},
 \code{\link{bm_FindOptimStat}()},
 \code{\link{bm_MakeFormula}()},
@@ -307,4 +307,4 @@ Other Secundary functions:
 \author{
 Frank Breiner, Maya Gueguen
 }
-\concept{Secundary functions}
+\concept{Secondary functions}

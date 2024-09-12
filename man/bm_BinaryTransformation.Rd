@@ -72,7 +72,7 @@ cbind(vec.d, vec.d_bin, vec.d_filt)
 \seealso{
 \code{\link{BIOMOD_Projection}}, \code{\link{BIOMOD_EnsembleForecasting}}
 
-Other Secundary functions: 
+Other Secondary functions: 
 \code{\link{bm_CrossValidation}()},
 \code{\link{bm_FindOptimStat}()},
 \code{\link{bm_MakeFormula}()},
@@ -93,7 +93,7 @@ Other Secundary functions:
 \author{
 Wilfried Thuiller, Damien Georges
 }
-\concept{Secundary functions}
+\concept{Secondary functions}
 \keyword{binary}
 \keyword{convert}
 \keyword{filter}
