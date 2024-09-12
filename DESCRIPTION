@@ -51,7 +51,9 @@ Imports:
     MASS,
     pROC (>= 1.15.0),
     PresenceAbsence,
-    dplyr
+    dplyr,
+    ggalluvial,
+    rlang
 Suggests:
     Hmisc,
     gam,

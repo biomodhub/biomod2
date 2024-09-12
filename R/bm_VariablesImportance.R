@@ -114,7 +114,7 @@ bm_VariablesImportance <- function(bm.model,
     )
   if (inherits(ref, "try-error")) { stop("Unable to make model prediction") }
   
-  if (bm.model@model_type == "ordinal"){
+  if (model_type == "ordinal"){
     if (!(bm.model@model_name %in% c("GLM", "GAM", "XGBOOST"))){## laissez en numeric pour eux 
       ref <- as.numeric(factor(ref, ordered = T))
     }
@@ -132,12 +132,12 @@ bm_VariablesImportance <- function(bm.model,
       data_rand <- .randomise_data(expl.var, v, method) #, seedval = seed.val)
       shuffled.pred <- predict(bm.model, data_rand, temp_workdir = temp.workdir, seedval = seed.val)
       
-      if (bm.model@model_type == "ordinal"){
+      if (model_type == "ordinal"){
         if (!(bm.model@model_name %in% c("GLM", "GAM", "XGBOOST"))){ ## laissez en numeric pour eux ??
           shuffled.pred <- as.numeric(factor(shuffled.pred, ordered = T))
         }
       }
-      method_cor <- ifelse(bm.model@model_type != "ordinal","pearson", "spearman")
+      method_cor <- ifelse(model_type != "ordinal", "pearson", "spearman")
       out_vr <- 1 - max(round(
         cor(x = ref, y = shuffled.pred, use = "pairwise.complete.obs", method = method_cor)
         , digits = 6), 0, na.rm = TRUE)
@@ -162,6 +162,8 @@ bm_VariablesImportance <- function(bm.model,
   .fun_testIfInherits(TRUE, "bm.model", bm.model, c("biomod2_model", "nnet", "rpart", "fda", "gam"
                                                     , "glm", "lm", "gbm", "mars", "randomForest"))
   
+  model_type <- ifelse(inherits(bm.model, "biomod2_model"), bm.model@model_type, "binary")
+  
   # test method is supported
   .fun_testIfIn(TRUE, "method", method, c('full_rand'))
   
@@ -175,7 +177,8 @@ bm_VariablesImportance <- function(bm.model,
               , method = method
               , variables = variables
               , seed.val = seed.val
-              , temp.workdir = temp.workdir))
+              , temp.workdir = temp.workdir
+              , model_type = model_type))
 }
 
 

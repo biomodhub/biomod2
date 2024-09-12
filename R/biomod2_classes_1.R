@@ -1569,7 +1569,7 @@ setMethod('BIOMOD.formated.data.PA', signature(sp = 'numeric', env = 'SpatRaster
                                       , PA.user.table = NULL
                                       , na.rm = TRUE, filter.raster = FALSE, seed.val = NULL)
 { 
-  args <- .BIOMOD.formated.data.check.args(sp, env, xy, eval.sp, eval.env, eval.xy, filter.raster, PA.strategy = PA.strategy)
+  args <- .BIOMOD.formated.data.check.args(sp, env, data.type = NULL, xy, eval.sp, eval.env, eval.xy, filter.raster, PA.strategy = PA.strategy)
   for (argi in names(args)) { assign(x = argi, value = args[[argi]]) }
   rm(args)
   

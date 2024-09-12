@@ -32,7 +32,7 @@
 )
 }
 \arguments{
-\item{x}{a \code{\link{BIOMOD.formated.data.abundance}} or \code{\link{BIOMOD.formated.data.abundance.PA}}
+\item{x}{a \code{\link{BIOMOD.formated.data.abundance}} 
 object. Coordinates must be available to be able to use \code{plot}.}
 
 \item{calib.lines}{(\emph{optional, default} \code{NULL}) \cr
