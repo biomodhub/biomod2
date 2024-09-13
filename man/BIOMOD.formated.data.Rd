@@ -95,6 +95,8 @@ species distribution model(s)}
 
 \item{dir.name}{a \code{character} corresponding to the modeling folder}
 
+\item{data.type}{a \code{character} corresponding to the data type}
+
 \item{sp.name}{a \code{character} corresponding to the species name}
 
 \item{eval.sp}{(\emph{optional, default} \code{NULL}) \cr 
@@ -148,6 +150,8 @@ Class returned by \code{\link{BIOMOD_FormatingData}}, and used by
 \section{Slots}{
 
 \describe{
+\item{\code{data.type}}{a \code{character} corresponding to the data type}
+
 \item{\code{dir.name}}{a \code{character} corresponding to the modeling folder}
 
 \item{\code{sp.name}}{a \code{character} corresponding to the species name}

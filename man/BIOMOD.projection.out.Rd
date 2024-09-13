@@ -87,6 +87,8 @@ not}
 \item{\code{type}}{a \code{character} corresponding to the class of the \code{val} slot of the 
 \code{proj.out} slot}
 
+\item{\code{data.type}}{a \code{character} corresponding to the data type}
+
 \item{\code{proj.out}}{a \code{\link{BIOMOD.stored.data}} object}
 }}
 

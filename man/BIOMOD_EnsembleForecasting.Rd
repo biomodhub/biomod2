@@ -71,6 +71,9 @@ A \code{logical} or a \code{character} value defining whether and how objects sh
 compressed when saved on hard drive, must be either \code{TRUE}, \code{FALSE}, \code{xz} or 
 \code{gzip} (see Details)}
 
+\item{digits}{(\emph{optional, default} \code{0}) \cr 
+A \code{integer} value defining the number of digits of the predictions.}
+
 \item{nb.cpu}{(\emph{optional, default} \code{1}) \cr 
 An \code{integer} value corresponding to the number of computing resources to be used to 
 parallelize the single models computation}

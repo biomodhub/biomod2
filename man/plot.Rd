@@ -32,7 +32,7 @@
 )
 }
 \arguments{
-\item{x}{a \code{\link{BIOMOD.formated.data.abundance}} 
+\item{x}{a \code{BIOMOD.formated.data.abundance} 
 object. Coordinates must be available to be able to use \code{plot}.}
 
 \item{calib.lines}{(\emph{optional, default} \code{NULL}) \cr
@@ -53,7 +53,7 @@ as a single facet with all plots or a \code{list} of individual plots
 (better when there are numerous graphics)}
 
 \item{PA}{(\emph{optional, default} \code{'all'}) \cr 
-If \code{x} is a \code{\link{BIOMOD.formated.data.abundance.PA}} object, a \code{vector} 
+If \code{x} is a \code{BIOMOD.formated.data.PA} object, a \code{vector} 
 containing pseudo-absence set to be represented}
 
 \item{run}{(\emph{optional, default} \code{'all'}) \cr 
@@ -64,10 +64,14 @@ be represented}
 A \code{logical} defining whether evaluation data should be added to the plot or not}
 
 \item{point.size}{a \code{numeric} to adjust the size of points when
-\code{plot.type = 'points'}.}
+\code{plot.type = 'points'}}
 
 \item{do.plot}{(\emph{optional, default} \code{TRUE}) \cr 
 A \code{logical} defining whether the plot is to be rendered or not}
+
+\item{has.mask}{a \code{logical}. Is a proper mask available ?}
+
+\item{has.mask.eval}{a \code{logical}. Is a proper mask available for evaluation data ?}
 }
 \value{
 a \code{list} with the data used to generate the plot and a

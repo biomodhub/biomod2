@@ -16,6 +16,7 @@
 ##' 
 ##' @param dir.name a \code{character} corresponding to the modeling folder
 ##' @param sp.name a \code{character} corresponding to the species name
+##' @param data.type a \code{character} corresponding to the data type
 ##' 
 ##' @param sp A \code{vector}, a \code{\link[terra:vect]{SpatVector}} without associated 
 ##' data (\emph{if presence-only}), or a \code{\link[terra:vect]{SpatVector}}
@@ -73,7 +74,7 @@
 ##' 
 ##' @param object a \code{\link{BIOMOD.formated.data}} object
 ##' 
-##' 
+##' @slot data.type a \code{character} corresponding to the data type
 ##' @slot dir.name a \code{character} corresponding to the modeling folder
 ##' @slot sp.name a \code{character} corresponding to the species name
 ##' @slot coord a 2-columns \code{data.frame} containing the corresponding \code{X} and \code{Y} 

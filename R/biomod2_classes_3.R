@@ -289,6 +289,7 @@ setMethod('get_eval_data', signature('BIOMOD.formated.data'), function(obj) {
 ##'   simulation set
 ##' @slot dir.name a \code{character} corresponding to the modeling folder
 ##' @slot sp.name a \code{character} corresponding to the species name
+##' @slot data.type a \code{character} corresponding to the data type
 ##' @slot expl.var.names a \code{vector} containing names of explanatory
 ##'   variables
 ##' @slot models.computed a \code{vector} containing names of computed models
@@ -651,6 +652,7 @@ setMethod("get_variables_importance", "BIOMOD.models.out",
 ##' @slot models.out a \code{\link{BIOMOD.stored.data}} object
 ##' @slot type a \code{character} corresponding to the class of the \code{val} slot of the 
 ##' \code{proj.out} slot
+##' @slot data.type a \code{character} corresponding to the data type
 ##' @slot proj.out a \code{\link{BIOMOD.stored.data}} object
 ##' 
 ##' @param x a \code{\link{BIOMOD.projection.out}} object
@@ -1135,6 +1137,7 @@ setMethod("get_predictions", "BIOMOD.projection.out",
 ##' @slot sp.name a \code{character} corresponding to the species name
 ##' @slot expl.var.names a \code{vector} containing names of explanatory
 ##'   variables
+##' @slot data.tyoe a \code{character} corresponding to the data type
 ##' @slot models.out a \code{\link{BIOMOD.stored.models.out-class}} object
 ##'   containing informations from \code{\link{BIOMOD_Modeling}} object
 ##' @slot em.by a \code{character} corresponding to the way kept models have
@@ -1457,9 +1460,7 @@ setMethod("get_variables_importance", "BIOMOD.ensemble.models.out",
 ##' @param obj a \code{\link{BIOMOD.formated.data}}, \code{\link{BIOMOD.formated.data.PA}}, 
 ##' \code{\link{BIOMOD.models.out}}, \code{\link{BIOMOD.projection.out}} or 
 ##' \code{\link{BIOMOD.ensemble.models.out}} object
-##' @param \ldots (\emph{optional, one or several of the following arguments depending on the selected 
-##' function}) 
-##' @param new.dir.name
+##' @param new.dir.name a \code{character} corresponding to the new folder path
 ##' 
 ##' @seealso \code{\link{BIOMOD.models.out}}, \code{\link{BIOMOD.projection.out}}, 
 ##' \code{\link{BIOMOD.ensemble.models.out}}
@@ -1467,7 +1468,7 @@ setMethod("get_variables_importance", "BIOMOD.ensemble.models.out",
 ##' 
 ##' 
 
-setGeneric("set_newdirname", function(obj, ...) { standardGeneric("set_newdirname") }) ##ABC ## 012 ? 
+setGeneric("set_newdirname", function(obj, new.dir.name) { standardGeneric("set_newdirname") }) ##ABC ## 012 ? 
 
 setMethod('set_newdirname', signature(obj = 'BIOMOD.models.out'), function(obj, new.dir.name) {
   new.object <- obj

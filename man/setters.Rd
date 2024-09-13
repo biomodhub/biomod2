@@ -5,17 +5,14 @@
 \alias{set_newdirname}
 \title{Functions to change the place of the different biomod2 objects}
 \usage{
-set_newdirname(obj, ...)
+set_newdirname(obj, new.dir.name)
 }
 \arguments{
 \item{obj}{a \code{\link{BIOMOD.formated.data}}, \code{\link{BIOMOD.formated.data.PA}}, 
 \code{\link{BIOMOD.models.out}}, \code{\link{BIOMOD.projection.out}} or 
 \code{\link{BIOMOD.ensemble.models.out}} object}
 
-\item{\ldots}{(\emph{optional, one or several of the following arguments depending on the selected 
-function})}
-
-\item{new.dir.name}{}
+\item{new.dir.name}{a \code{character} corresponding to the new folder path}
 }
 \description{
 This function allow the user to change the folder where

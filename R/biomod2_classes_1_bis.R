@@ -15,7 +15,7 @@
 ##' \code{\link{BIOMOD_FormatingData}}.
 ##' 
 ##' 
-##' @param x a \code{\link{BIOMOD.formated.data.abundance}} 
+##' @param x a \code{BIOMOD.formated.data.abundance} 
 ##' object. Coordinates must be available to be able to use \code{plot}.
 ##' @param calib.lines (\emph{optional, default} \code{NULL}) \cr
 ##' an \code{data.frame} object returned by \code{\link{get_calib_lines}} or 
@@ -32,7 +32,7 @@
 ##' as a single facet with all plots or a \code{list} of individual plots
 ##' (better when there are numerous graphics)
 ##' @param PA (\emph{optional, default} \code{'all'}) \cr 
-##' If \code{x} is a \code{\link{BIOMOD.formated.data.abundance.PA}} object, a \code{vector} 
+##' If \code{x} is a \code{BIOMOD.formated.data.PA} object, a \code{vector} 
 ##' containing pseudo-absence set to be represented 
 ##' @param run (\emph{optional, default} \code{'all'}) \cr 
 ##' If \code{calib.lines} provided, a \code{vector} containing repetition set to 
@@ -42,7 +42,9 @@
 ##' @param do.plot (\emph{optional, default} \code{TRUE}) \cr 
 ##' A \code{logical} defining whether the plot is to be rendered or not
 ##' @param point.size a \code{numeric} to adjust the size of points when
-##'  \code{plot.type = 'points'}.
+##'  \code{plot.type = 'points'}
+##' @param has.mask a \code{logical}. Is a proper mask available ?
+##' @param has.mask.eval a \code{logical}. Is a proper mask available for evaluation data ?  
 ##' 
 ##' @return a \code{list} with the data used to generate the plot and a
 ##' \code{ggplot2} object 
