@@ -231,8 +231,8 @@ bm_Tuning <- function(model,
                                           XGBOOST.subsample = 0.5))
 {
   
-  if (bm.format@data.type != "binary"){
-    stop("The tuning options is not ready for abundance data yet! Sorry...")
+  if (bm.format@data.type == "ordinal"){
+    stop("The tuning options is not ready for ordinal data yet! Sorry...")
   }
   
   ## 0. Check arguments ---------------------------------------------------------------------------
@@ -434,23 +434,29 @@ bm_Tuning <- function(model,
               tmp <- tuned.mod$results
               if (bm.format@data.type == 'binary') tmp$TSS <- tmp$Sens + tmp$Spec - 1
               
+              if(metric.eval == "RMSE"){
+                selected <- which.min(tmp[, metric.eval])
+              } else {
+                selected <- which.max(tmp[, metric.eval])
+              }
+              
               if (model == "XGBOOST") {
                 for (param in train.params$params) {
                   if (is.null(argstmp[[param]])){
-                    argstmp$params[[param]] <- tmp[which.max(tmp[, metric.eval]), param]
+                    argstmp$params[[param]] <- tmp[selected, param]
                   } else {
-                    argstmp[[param]] <- tmp[which.max(tmp[, metric.eval]), param]}
+                    argstmp[[param]] <- tmp[selected, param]}
                 }
               } else {
                 for (param in train.params$params) {
-                  argstmp[[param]] <- tmp[which.max(tmp[, metric.eval]), param]
+                  argstmp[[param]] <- tmp[selected, param]
                 }
               }
               
-              tuning.form <- tuning.grid[which.max(tmp[, metric.eval]), ]
+              tuning.form <- tuning.grid[selected, ]
               
               if (model %in% c("RF","RFd")) {
-                tuning.form <- data.frame(mtry = tuning.grid[which.max(tmp[, metric.eval]), ])
+                tuning.form <- data.frame(mtry = tuning.grid[selected, ])
               }
               
               if (model == "CTA") {
@@ -460,7 +466,11 @@ bm_Tuning <- function(model,
                 if (!is.null(tuned.mod)) {
                   tmp = tuned.mod$results
                   if (bm.format@data.type == 'binary') tmp$TSS = tmp$Sens + tmp$Spec - 1
-                  argstmp[["maxdepth"]] <- tmp[which.max(tmp[, metric.eval]), "maxdepth"]
+                  if(metric.eval == "RMSE"){
+                    argstmp[["maxdepth"]] <- tmp[which.min(tmp[, metric.eval]), "maxdepth"]
+                  } else {
+                    argstmp[["maxdepth"]] <- tmp[which.max(tmp[, metric.eval]), "maxdepth"]
+                  }
                 }
               }
               
@@ -478,7 +488,7 @@ bm_Tuning <- function(model,
               typ.vec = c('simple', 's_smoother') 
               max.intlev <- 0
             }
-            if (model %in% c("RF","RFd")) { typ.vec = c('simple','quadratic', 'polynomial') }
+            if (model %in% c("RF","RFd", "GBM")) { typ.vec = c('simple', 'quadratic', 'polynomial') }
             
             TMP <- foreach (typ = typ.vec, .combine = "rbind") %:%
               foreach (intlev = 0:max.intlev, .combine = "rbind") %do%
@@ -490,14 +500,19 @@ bm_Tuning <- function(model,
                 argstmp$formula <- formu
                 argstmp$data <- data
                 argstmp <- argstmp[c("formula", "data", names(argstmp)[which(!(names(argstmp) %in% c("formula", "data")))])]
-                tuned.form <- try(do.call(eval(parse(text = model.call)), argstmp))
+                tuned.form <- try(do.call(eval(parse(text = model.call)), argstmp), silent = T)
                 if (!is.null(tuned.form)) {
-                  tmp <- bm_FindOptimStat(metric.eval, obs = myResp, fit = predict(tuned.form), tuned.form)[,"best.stat"]
+                  tmp <- bm_FindOptimStat(metric.bm, obs = myResp, fit = predict(tuned.form), tuned.form)[,"best.stat"]
                   formu <- paste0(bm.format@sp.name, "~" , as.character(formu)[3])
                   return(data.frame(stat = tmp, type = typ, interaction.level = intlev, formula = formu))
                 }
               }
-            argstmp$formula <- formula(TMP[which.max(TMP[, 'stat']), "formula"])
+            
+            if(metric.eval == "RMSE"){
+              argstmp$formula <- formula(TMP[which.min(TMP[, 'stat']), "formula"])
+            } else {
+              argstmp$formula <- formula(TMP[which.max(TMP[, 'stat']), "formula"])
+            }
             
             # cmd.form <- sub("tuneGrid = tuning.grid", "tuneGrid = tuning.form", cmd.tuning)
             # cmd.form <- sub("weights = current.weights,", "", cmd.form)
@@ -677,6 +692,7 @@ bm_Tuning <- function(model,
   params.train = params.train_init
 
   ## check evaluation metric --------------------------------------------------
+  metric.bm <- NULL
   if (model == "MAXENT") {
     .fun_testIfIn(TRUE, "metric.eval", metric.eval, c("auc.val.avg", "auc.diff.avg", "or.mtp.avg", "or.10p.avg", "AICc"))
     .fun_testIfIn(TRUE, "params.train$MAXENT.algorithm", params.train$MAXENT.algorithm, c("maxent.jar", "maxnet"))
@@ -685,10 +701,13 @@ bm_Tuning <- function(model,
     sapply(params.train$SRE.quant,FUN=.fun_testIf01,test = TRUE,objName =  "params.train$SRE.quant")
   } else if (bm.format@data.type == "binary"){
     .fun_testIfIn(TRUE, "metric.eval", metric.eval, c("ROC", "TSS"))
+    metric.bm <- metric.eval
   } else if (bm.format@data.type == "ordinal"){
     .fun_testIfIn(TRUE, "metric.eval", metric.eval, c("Accuracy"))
+    metric.bm <- "accuracy"
   } else {
     .fun_testIfIn(TRUE, "metric.eval", metric.eval, c("RMSE", "Rsquared"))
+    metric.bm <- ifelse(metric.eval == "RMSE", "RMSE", "Rsq")
   }
   
   ## check weights ------------------------------------------------------------
@@ -752,6 +771,7 @@ bm_Tuning <- function(model,
               , train.params = train.params
               , tuning.length = tuning.length
               , tuning.grid = tuning.grid
-              , params.train = params.train))
+              , params.train = params.train
+              , metric.bm = metric.bm))
 }
 
