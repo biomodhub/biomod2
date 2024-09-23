@@ -231,8 +231,8 @@ bm_Tuning <- function(model,
                                           XGBOOST.subsample = 0.5))
 {
   
-  if (bm.format@data.type == "ordinal"){
-    stop("The tuning options is not ready for ordinal data yet! Sorry...")
+  if (!bm.format@data.type == "binary"){
+    stop("The tuning options is not ready for abundance data yet! Sorry...")
   }
   
   ## 0. Check arguments ---------------------------------------------------------------------------
@@ -487,8 +487,24 @@ bm_Tuning <- function(model,
             if (model == "FDA") { 
               typ.vec = c('simple', 's_smoother') 
               max.intlev <- 0
+              argstmp$method <- eval(parse(text = paste0("quote(", argstmp$method, ")")))
             }
             if (model %in% c("RF","RFd", "GBM")) { typ.vec = c('simple', 'quadratic', 'polynomial') }
+            
+            if (bm.format@data.type == "binary"){
+              myObs <- as.numeric(factor(myResp, labels = c("absence" = 0, "presence" = 1))) -1
+            } else {
+              myObs <- myResp
+            }
+            
+            data <- cbind(myExpl, resp = myObs)
+            if (bm.format@data.type == "binary" && model %in% c("RF","RFd")){
+              data <- data %>% mutate_at("resp", factor)
+              argstmp$strata <- data[ ,"resp"]
+              argstmp$sampsize <- unlist(ifelse(!is.null(argstmp$sampsize), list(argstmp$sampsize), nrow(data)))
+            }
+            argstmp$data <- data
+            
             
             TMP <- foreach (typ = typ.vec, .combine = "rbind") %:%
               foreach (intlev = 0:max.intlev, .combine = "rbind") %do%
@@ -496,13 +512,31 @@ bm_Tuning <- function(model,
                 tuned.form <- NULL
                 model.call <- paste0(bm.options@package, "::", bm.options@func)
                 formu <- bm_MakeFormula(resp.name = "resp", expl.var = myExpl, type = typ, interaction.level = intlev)
-                data <- cbind(myExpl, resp = myResp)
                 argstmp$formula <- formu
-                argstmp$data <- data
                 argstmp <- argstmp[c("formula", "data", names(argstmp)[which(!(names(argstmp) %in% c("formula", "data")))])]
-                tuned.form <- try(do.call(eval(parse(text = model.call)), argstmp), silent = T)
-                if (!is.null(tuned.form)) {
-                  tmp <- bm_FindOptimStat(metric.bm, obs = myResp, fit = predict(tuned.form), tuned.form)[,"best.stat"]
+                tuned.form <- try(do.call(eval(parse(text = model.call)), argstmp), silent = F)
+                
+                if (!inherits(tuned.form, "try-error")) {
+                  fit <- predict(tuned.form)
+                  if (bm.format@data.type == "ordinal") {
+                    if (model %in% c("GAM", "GLM")){ 
+                      fit <- threshold_ordinal(myObs, fit, metric.bm)$fit_factor 
+                    } else if (model %in% c("CTA", "MARS")){
+                      fit <- predict(tuned.form, type = "class")
+                    }
+                  }
+                  if (bm.format@data.type == "binary" && model %in% c("CTA", "FDA", "RF")){
+                    fit <- predict(tuned.form, type = "class")
+                    fit <- as.numeric(fit) - 1
+                  }
+                  if (model == "MARS"){
+                    if (bm.format@data.type == "ordinal"){
+                      fit <- as.factor(fit[,1])
+                    } else if (bm.format@data.type == "binary"){
+                      fit <- as.numeric(fit[,1])
+                    }
+                  }
+                  tmp <- bm_FindOptimStat(metric.bm, obs = myObs, fit = fit, model = tuned.form)[,"best.stat"]
                   formu <- paste0(bm.format@sp.name, "~" , as.character(formu)[3])
                   return(data.frame(stat = tmp, type = typ, interaction.level = intlev, formula = formu))
                 }
@@ -754,8 +788,9 @@ bm_Tuning <- function(model,
   }
   
   ## get criteria -------------------------------------------------------------
-  if (do.stepAIC && (model == "GLM" || 
-                     (model == "GAM" && bm.options@package == "gam"))) {
+  if (do.stepAIC &&
+      (model == "GLM" || (model == "GAM" && bm.options@package == "gam")) && 
+      bm.format@data.type != "ordinal") {
     .fun_testIfIn(TRUE, "metric.AIC", metric.AIC, c("AIC", "BIC"))
     if (metric.AIC == "AIC") criteria.AIC <- 2
     if (metric.AIC == "BIC") criteria.AIC <- log(ncol(bm.format@data.env.var))
