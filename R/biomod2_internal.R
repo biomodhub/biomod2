@@ -1168,3 +1168,41 @@ xgbpred <- function(model, data, ...) {
   pred <- factor(pred, labels = newlevels, ordered = T)
   return(pred)
 }
+
+
+# threshold_ordinal choose the optimized cutoff between each ordinal variables
+.threshold_ordinal <- function(obs, fit, metric.eval){
+  nlevels <- length(levels(obs))
+  
+  #manage extremum
+  fit[fit < 1] <- 1
+  fit[fit > nlevels] <- nlevels
+  
+  #Define all the possibility
+  seq <- list(seq(0.2, 0.8, by = 0.1))
+  possibility <- rep(seq, nlevels-1)
+  names(possibility) <- paste0("Threshold_", 1:(nlevels-1))
+  grid <- expand.grid(possibility)
+  
+  test_seq <- foreach(i = 1:nrow(grid), .combine = rbind) %do% {
+    fit_factor <- fit
+    for (j in 1:(nlevels - 1)){
+      fit_factor[fit_factor <= j + grid[i, j] & fit_factor >= j ] <- j
+      fit_factor[fit_factor > j + grid[i, j] & fit_factor < j+1 ] <- j+1
+    }
+    stat <- bm_CalculateStatAbun(metric.eval, obs, fit_factor)
+    return(data.frame(grid[i, ], "stat" = stat))
+  }
+  
+  max <- test_seq[test_seq$stat == max(test_seq$stat), ]
+  limits <- colMeans(max) #several maximum !?!
+  
+  fit_factor <- fit
+  for (j in 1:(nlevels - 1)){
+    fit_factor[fit_factor <= j + limits[j] & fit_factor >= j ] <- j
+    fit_factor[fit_factor > j + limits[j] & fit_factor < j + 1 ] <- j + 1
+  }
+  fit_factor <- factor(fit_factor, labels = levels(obs), ordered = T)
+  
+  return(list(limits = limits, fit_factor = fit_factor))
+}
