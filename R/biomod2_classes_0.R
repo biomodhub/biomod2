@@ -660,6 +660,7 @@ setMethod('print', signature('BIOMOD.models.options'),
 
 
 ### Adapatation to each data.type 
+##' @importFrom stats gaussian poisson quasibinomial
 
 .bm_adaptation.data.type <- function(data.type, mod, argstmp, pkg) {
   

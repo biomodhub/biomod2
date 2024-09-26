@@ -85,6 +85,7 @@
 ##' @slot data.mask a \code{\link[terra:rast]{SpatRaster}} object containing the mask of the 
 ##' studied area
 ##' @slot has.data.eval a \code{logical} value defining whether evaluation data is given
+##' @slot has.filter.raster a \code{logical} value defining whether filtering have been done or not
 ##' @slot eval.coord (\emph{optional, default} \code{NULL}) \cr 
 ##' A 2-columns \code{data.frame} containing the corresponding \code{X} and \code{Y} 
 ##' coordinates for evaluation data
@@ -93,6 +94,7 @@
 ##' evaluation data
 ##' @slot eval.data.env.var (\emph{optional, default} \code{NULL}) \cr 
 ##' A \code{data.frame} containing explanatory variables for evaluation data
+##' @slot biomod2.version a \code{character} corresponding to the biomod2 version
 ##' 
 ##' 
 ##' @seealso \code{\link{BIOMOD_FormatingData}}, \code{\link{bm_Tuning}}, 

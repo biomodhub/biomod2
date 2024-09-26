@@ -310,7 +310,7 @@
     data.df$dataset <- factor(data.df$dataset, datasets)
     
     if (x@data.type == "ordinal"){
-      labels_ordinal <- levels(d@data.species)
+      labels_ordinal <- levels(x@data.species)
     } else {labels_ordinal <- waiver() }
     
     if(plot.output == "facet"){

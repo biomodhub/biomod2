@@ -169,6 +169,8 @@ studied area}
 
 \item{\code{has.data.eval}}{a \code{logical} value defining whether evaluation data is given}
 
+\item{\code{has.filter.raster}}{a \code{logical} value defining whether filtering have been done or not}
+
 \item{\code{eval.coord}}{(\emph{optional, default} \code{NULL}) \cr 
 A 2-columns \code{data.frame} containing the corresponding \code{X} and \code{Y} 
 coordinates for evaluation data}
@@ -179,6 +181,8 @@ evaluation data}
 
 \item{\code{eval.data.env.var}}{(\emph{optional, default} \code{NULL}) \cr 
 A \code{data.frame} containing explanatory variables for evaluation data}
+
+\item{\code{biomod2.version}}{a \code{character} corresponding to the biomod2 version}
 }}
 
 \examples{

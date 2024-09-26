@@ -52,7 +52,6 @@ Imports:
     pROC (>= 1.15.0),
     PresenceAbsence,
     dplyr,
-    ggalluvial,
     rlang
 Suggests:
     Hmisc,
@@ -75,7 +74,9 @@ Suggests:
     knitr,
     markdown,
     tidyterra,
-    ggtext
+    ggtext,
+    ggalluvial,
+    R.utils
 License: GPL-3
 RoxygenNote: 7.3.2
 Encoding: UTF-8

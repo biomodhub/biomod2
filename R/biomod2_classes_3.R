@@ -1137,7 +1137,7 @@ setMethod("get_predictions", "BIOMOD.projection.out",
 ##' @slot sp.name a \code{character} corresponding to the species name
 ##' @slot expl.var.names a \code{vector} containing names of explanatory
 ##'   variables
-##' @slot data.tyoe a \code{character} corresponding to the data type
+##' @slot data.type a \code{character} corresponding to the data type
 ##' @slot models.out a \code{\link{BIOMOD.stored.models.out-class}} object
 ##'   containing informations from \code{\link{BIOMOD_Modeling}} object
 ##' @slot em.by a \code{character} corresponding to the way kept models have

@@ -15,6 +15,8 @@ utils::globalVariables(names = c("this_PA",
                                  "has.mask",
                                  "has.mask.eval",
                                  "y"))
+## biomod2_classes_1_bis -------
+utils::globalVariables(names = c("data.color", "lyr", "part"))
 
 ## biomod2_classes_3 ------------
 utils::globalVariables(names = c("i"))
@@ -70,7 +72,7 @@ utils::globalVariables(names = c("on_0_1000",
 utils::globalVariables(names = c("full.name", "models", "run", "PA"))
 
 ## BIOMOD_RangeSize ------------
-utils::globalVariables(names = c("thiscol", "pred", "proj"))
+utils::globalVariables(names = c("thiscol", "pred", "proj", "nonbinary", "Source", "Target"))
 
 
 ## bm_PseudoAbsences ------------
@@ -78,7 +80,7 @@ utils::globalVariables(names = c("i.abs"))
 
 ## bm_Tuning ------------
 utils::globalVariables(names = c("dataset.i", "PA.i", "tuned.mod", "train.params"
-                                 , "tuning.grid", "criteria.AIC"))
+                                 , "tuning.grid", "criteria.AIC", "metric.bm"))
 
 ## bm_ModelingOptions ------------
 utils::globalVariables(names = c("ModelsTable"))
@@ -91,12 +93,12 @@ utils::globalVariables(names = c("expl.var.names"))
 
 ## bm_RunModel ------------
 utils::globalVariables(names = c("expl_var_names", "resp_name", "criteria"
-                                 , "weights", "data_env", "data_sp", "data_xy"))
+                                 , "weights", "data_env", "data_sp", "data_xy", "data.type"))
 ## bm_RunModelsLoop ------------
 utils::globalVariables(names = c("modi", "xx", "ii"))
 
 ## bm_VariablesImportance ------------
-utils::globalVariables(names = c("temp_workdir", "variables", "v", "r"))
+utils::globalVariables(names = c("temp_workdir", "variables", "v", "r", "model_type"))
 
 
 
@@ -124,5 +126,5 @@ utils::globalVariables(names = c("data_species",
 
 
 ## bm_PlotRangeSize ------------
-utils::globalVariables(names = c("vali"))
+utils::globalVariables(names = c("vali", "n", "Source", "Target", "color", "stratum"))
 

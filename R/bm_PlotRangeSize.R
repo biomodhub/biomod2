@@ -156,10 +156,9 @@
 ##' @importFrom reshape2 melt
 ##' @importFrom foreach foreach %do%
 ##' @importFrom terra rast which.max nlyr  classify plot
-##' @importFrom ggplot2 ggplot geom_col geom_tile facet_wrap xlab ylab labs scale_fill_viridis_c
-##' theme element_blank element_rect scale_fill_manual
+##' @importFrom ggplot2 ggplot geom_col geom_tile geom_label facet_wrap xlab ylab labs scale_fill_viridis_c
+##' theme theme_bw element_blank element_rect scale_fill_manual scale_x_discrete 
 ##' @importFrom rlang .data
-##' @importFrom ggalluvial geom_alluvium geom_stratum
 ##' 
 ##' @export
 ##' 
@@ -187,8 +186,8 @@ bm_PlotRangeSize <- function(bm.range, do.count = TRUE, do.perc = TRUE
     
     gg.sankey <- ggplot(links, aes(y = n, axis1 = Source, axis2 = Target)) +
       facet_wrap("full.name", scales = "free")+
-      geom_alluvium(aes(fill = color), width = 1/1000, discern = T) +
-      geom_stratum(width = 1/50, fill = "lightblue", color = "black", discern = T) +
+      ggalluvial::geom_alluvium(aes(fill = color), width = 1/1000, discern = T) +
+      ggalluvial::geom_stratum(width = 1/50, fill = "lightblue", color = "black", discern = T) +
       geom_label(stat = "stratum", aes(label = after_stat(stratum))) +
       scale_x_discrete(limits = c("Current", "Future"), expand = c(.05, .05)) +
       scale_fill_manual(values = c(gain = "#fc8d62", loss = "#66c2a5", stable = "grey"))+
