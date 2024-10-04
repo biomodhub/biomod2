@@ -29,8 +29,8 @@
 ##' (and defined through \code{metric.select.table}) or \code{POD}, \code{FAR}, \code{POFD}, 
 ##' \code{SR}, \code{ACCURACY}, \code{BIAS}, \code{ROC}, \code{TSS}, \code{KAPPA}, \code{OR}, 
 ##' \code{ORSS}, \code{CSI}, \code{ETS}, \code{BOYCE}, \code{MPA}, \code{RMSE}, \code{MAE}, 
-##' \code{MSE}, \code{Rsq}, \code{Rsq_aj}, \code{Max_error}, \code{accuracy}, \code{"recall"},
-##' \code{"precision"}, \code{"F1score"}
+##' \code{MSE}, \code{Rsq}, \code{Rsq_aj}, \code{Max_error}, \code{accuracy}, \code{recall},
+##' \code{precision}, \code{F1score}
 ##' @param metric.select.thresh (\emph{optional, default} \code{NULL}) \cr 
 ##' A \code{vector} of \code{numeric} values corresponding to the minimum scores (one for each 
 ##' \code{metric.select}) below which single models will be excluded from the ensemble model 
@@ -47,7 +47,7 @@
 ##' be among  \code{POD}, \code{FAR}, \code{POFD}, \code{SR}, \code{ACCURACY}, \code{BIAS}, 
 ##' \code{ROC}, \code{TSS}, \code{KAPPA}, \code{OR}, \code{ORSS}, \code{CSI}, \code{ETS}, 
 ##' \code{BOYCE}, \code{MPA}, \code{RMSE}, \code{MAE}, \code{MSE}, \code{Rsq}, \code{Rsq_aj},
-##' \code{Max_error}, \code{accuracy}, \code{"recall"}, \code{"precision"}, \code{"F1score"}
+##' \code{Max_error}, \code{accuracy}, \code{recall}, \code{precision}, \code{F1score}
 ##' @param var.import (\emph{optional, default} \code{NULL}) \cr 
 ##' An \code{integer} corresponding to the number of permutations to be done for each variable to 
 ##' estimate variable importance
@@ -112,7 +112,7 @@
 ##'   Hence, depending on the chosen method, the number of ensemble models built will vary. \cr
 ##'   \emph{Be aware that if no evaluation data was given to the 
 ##'   \code{\link{BIOMOD_FormatingData}} function, some ensemble model evaluations may be biased 
-##'   due to difference in data used for single model evaluations.}
+##'   due to difference in data used for single model evaluations.} \cr
 ##'   \bold{Be aware that all of these combinations are allowed, but some may not make sense 
 ##'   depending mainly on how pseudo-absence datasets have been built and whether all of them 
 ##'   have been used for all single models or not (see \code{PA.nb.absences} and \code{models.pa} 
@@ -360,6 +360,7 @@ BIOMOD_EnsembleModeling <- function(bm.mod,
                                     nb.cpu = 1,
                                     seed.val = NULL,
                                     do.progress = TRUE) { 
+  
   .bm_cat("Build Ensemble Models")
   ## 0. Check arguments --------------------------------------------------------
   args <- .BIOMOD_EnsembleModeling.check.args(bm.mod = bm.mod,
@@ -599,9 +600,7 @@ BIOMOD_EnsembleModeling <- function(bm.mod,
           } else {
             ## Find good format of prediction for ordinal
             if (bm.mod@data.type == "ordinal" && algo != 'EMcv'){
-              #newlevels <- levels(obs)[sort(unique(round(pred.bm)))]
-              #pred.bm <- factor(round(pred.bm), labels = newlevels, ordered = T)
-              pred.bm <- round(pred.bm)
+              pred.bm <- round(pred.bm) #stay in numeric to be similar at EMcv
             } 
             ListOut$model <- model_name
             ListOut$pred <- pred.bm
@@ -617,8 +616,6 @@ BIOMOD_EnsembleModeling <- function(bm.mod,
               eval_pred.bm <- predict(model.bm, newdata = eval.expl, seedval = seed.val)
               
               if (bm.mod@data.type == "ordinal" && algo != 'EMcv'){
-                #newlevels <- levels(obs)[sort(unique(round(eval_pred.bm)))]
-                #eval_pred.bm <- factor(round(eval_pred.bm), labels = newlevels, ordered = T)
                 eval_pred.bm <- round(eval_pred.bm)
               }
               ListOut$pred.eval <- eval_pred.bm

@@ -329,6 +329,7 @@ BIOMOD_EnsembleForecasting <- function(bm.em,
       }
       
       mod <- get(BIOMOD_LoadModels(bm.out = bm.em, full.name = em.name))
+      rm(list = em.name)
       ef.tmp <- predict(mod
                         , newdata = formal_pred
                         , on_0_1000 = on_0_1000
@@ -340,7 +341,7 @@ BIOMOD_EnsembleForecasting <- function(bm.em,
       ## Cleaning 
       if (bm.em@data.type %in% c("count","abundance")){
         ef.tmp[ef.tmp < 0] <- 0
-        ef.tmp <- round(ef.tmp,digits = digits)
+        ef.tmp <- round(ef.tmp, digits = digits)
       }
       
       
@@ -546,7 +547,6 @@ BIOMOD_EnsembleForecasting <- function(bm.em,
 .BIOMOD_EnsembleForecasting.prepare.workdir <- function(dir.name, sp.name, proj.folder)
 {
   cat("\nCreating suitable Workdir...\n")
-  dir.create(file.path(dir.name, sp.name, proj.folder), showWarnings = FALSE, recursive = TRUE, mode = "777")
   indiv_proj_dir <- file.path(dir.name, sp.name, proj.folder, "individual_projections")
   dir.create(indiv_proj_dir, showWarnings = FALSE, recursive = TRUE, mode = "777")
   return(indiv_proj_dir)
@@ -557,8 +557,8 @@ BIOMOD_EnsembleForecasting <- function(bm.em,
 .BIOMOD_EnsembleForecasting.check.args <- function(bm.em, bm.proj, proj.name
                                                    , new.env, new.env.xy
                                                    , models.chosen
-                                                   , metric.binary, metric.filter,
-                                                   na.rm, ...)
+                                                   , metric.binary, metric.filter
+                                                   , na.rm, ...)
 {
   args <- list(...)
   
@@ -731,7 +731,7 @@ BIOMOD_EnsembleForecasting <- function(bm.em,
               metric.filter = metric.filter,
               output.format = output.format,
               compress = ifelse(is.null(args$compress), FALSE, args$compress),
-              on_0_1000 = ifelse(is.null(args$on_0_1000), TRUE, args$on_0_1000),
+              on_0_1000 = on_0_1000,
               do.stack = do.stack,
               keep.in.memory = keep.in.memory,
               new.env.xy = new.env.xy))

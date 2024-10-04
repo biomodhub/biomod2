@@ -380,11 +380,6 @@ BIOMOD_Modeling <- function(bm.format,
                             OPT.user.val = NULL,
                             OPT.user.base = 'bigboss',
                             OPT.user = NULL,
-                            bm.options, ## deprecated
-                            nb.rep, ## deprecated
-                            data.split.perc, ## deprecated
-                            data.split.table, ## deprecated
-                            do.full.models, ## deprecated
                             weights = NULL,
                             prevalence = NULL,
                             metric.eval = c('KAPPA', 'TSS', 'ROC'),
@@ -418,19 +413,19 @@ BIOMOD_Modeling <- function(bm.format,
   rm(args)
   
   # check for obsolete arguments
-  args <- .BIOMOD_Modeling.check.args.obsolete(
-    bm.options = bm.options,
-    OPT.user = OPT.user,
-    CV.strategy = CV.strategy,
-    data.split.perc = data.split.perc,
-    CV.perc = CV.perc,
-    data.split.table = data.split.table,
-    CV.user.table = CV.user.table,
-    nb.rep = nb.rep,
-    CV.nb.rep = CV.nb.rep,
-    do.full.models = do.full.models,
-    CV.do.full.models = CV.do.full.models
-  )
+  # args <- .BIOMOD_Modeling.check.args.obsolete(
+  #   bm.options = bm.options,
+  #   OPT.user = OPT.user,
+  #   CV.strategy = CV.strategy,
+  #   data.split.perc = data.split.perc,
+  #   CV.perc = CV.perc,
+  #   data.split.table = data.split.table,
+  #   CV.user.table = CV.user.table,
+  #   nb.rep = nb.rep,
+  #   CV.nb.rep = CV.nb.rep,
+  #   do.full.models = do.full.models,
+  #   CV.do.full.models = CV.do.full.models
+  # )
   for (argi in names(args)) { assign(x = argi, value = args[[argi]]) }
   rm(args)
   
