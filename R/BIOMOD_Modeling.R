@@ -426,8 +426,8 @@ BIOMOD_Modeling <- function(bm.format,
   #   do.full.models = do.full.models,
   #   CV.do.full.models = CV.do.full.models
   # )
-  for (argi in names(args)) { assign(x = argi, value = args[[argi]]) }
-  rm(args)
+  # for (argi in names(args)) { assign(x = argi, value = args[[argi]]) }
+  # rm(args)
   
   ## 1. Create output object ----------------------------------------------------------------------
   models.out <- new('BIOMOD.models.out',

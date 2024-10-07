@@ -629,6 +629,13 @@ BIOMOD_EnsembleModeling <- function(bm.mod,
             if (length(metric.eval) > 0 ) {
               if (!(algo %in% c('EMcv', 'EMciInf','EMciSup'))) {
                 cat("\n\t\t\tEvaluating Model stuff...")
+                
+                if (bm.mod@data.type == "ordinal"){
+                  levels <- 1:length(levels(obs))
+                  names(levels) <- levels(obs)
+                  pred.bm <- factor(pred.bm, levels = levels, ordered = T)
+                }
+                
                 if (em.by == "PA+run") {
                   ## select the same evaluation data than formal models
                   ## get info on wich dataset and which repet this ensemble model is based on
