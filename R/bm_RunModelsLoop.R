@@ -492,7 +492,10 @@ bm_RunModel <- function(model, run.name, dir.name = '.'
   ## Find good format of prediction for ordinal
   if (data.type == "ordinal"){
     if (model %in% c("GLM", "GAM", "XGBOOST")){
-      g.pred <- .bm_numerictofactor(g.pred, data_sp)
+      optimized_pred <- .threshold_ordinal(fit = g.pred, obs = data_sp, metric.eval = "accuracy")
+      g.pred <- optimized_pred$fit_factor
+      model.bm@thresholds_ordinal <- optimized_pred$limits
+      # g.pred <- .bm_numerictofactor(g.pred, data_sp)
     } else {
       g.pred <- factor(g.pred, levels = levels(data_sp), ordered = T)
     }

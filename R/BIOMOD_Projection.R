@@ -330,12 +330,21 @@ BIOMOD_Projection <- function(bm.mod,
     if (bm.mod@data.type == "ordinal"){
       data_sp <- get_formal_data(bm.mod, subinfo = "resp.var")
       nblevels <- length(levels(data_sp))
-      pred.tmp <- round(as.numeric(pred.tmp))
       pred.tmp[pred.tmp < 1] <- 1
       pred.tmp[pred.tmp > nblevels] <- nblevels
-
-      #newlevels <- levels(data_sp)[sort(levels(as.factor(pred.tmp)))]
-      #pred.tmp <- factor(pred.tmp, labels = levels(data_sp), ordered = T)
+      
+      #pred.tmp <- round(as.numeric(pred.tmp))
+      if (length(grep("GAM$|GLM$|XGBOOST$", mod.name)) == 1){
+        limits <- mod@thresholds_ordinal
+        for (j in 1:(nblevels - 1)){
+          pred.tmp[pred.tmp <= j + limits[j] & pred.tmp >= j ] <- j
+          pred.tmp[pred.tmp > j + limits[j] & pred.tmp < j + 1 ] <- j + 1
+        }
+      }
+      
+      # levels <- 1:length(levels(data_sp))
+      # names(levels) <- levels(data_sp)
+      # pred.tmp <- factor(pred.tmp, levels = levels, ordered = T)
     }
     
     

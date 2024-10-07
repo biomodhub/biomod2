@@ -92,6 +92,7 @@ NULL
 ##' @slot model_options a \code{list} containing the model options
 ##' @slot model the corresponding model object
 ##' @slot scaling_model the corresponding scaled model object
+##' @slot thresholds_ordinal the optimized limits for the different ordinal categories
 ##' @slot dir_name a \code{character} corresponding to the modeling folder
 ##' @slot resp_name a \code{character} corresponding to the species name
 ##' @slot expl_var_names a \code{vector} containing names of explanatory variables
@@ -159,6 +160,7 @@ setClass('biomod2_model',
                         model_options = 'BIOMOD.options.dataset',
                         model = 'ANY',
                         scaling_model = 'ANY',
+                        thresholds_ordinal = 'ANY',
                         dir_name = 'character',
                         resp_name = 'character',
                         expl_var_names = 'character',

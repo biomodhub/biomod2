@@ -1173,7 +1173,6 @@ xgbpred <- function(model, data, ...) {
 # threshold_ordinal choose the optimized cutoff between each ordinal variables
 .threshold_ordinal <- function(obs, fit, metric.eval){
   nlevels <- length(levels(obs))
-  
   #manage extremum
   fit[fit < 1] <- 1
   fit[fit > nlevels] <- nlevels
@@ -1202,7 +1201,10 @@ xgbpred <- function(model, data, ...) {
     fit_factor[fit_factor <= j + limits[j] & fit_factor >= j ] <- j
     fit_factor[fit_factor > j + limits[j] & fit_factor < j + 1 ] <- j + 1
   }
-  fit_factor <- factor(fit_factor, labels = levels(obs), ordered = T)
+  
+  levels <- 1:length(levels(obs))
+  names(levels) <- levels(obs)
+  fit_factor <- factor(fit_factor, levels = levels, ordered = T)
   
   return(list(limits = limits, fit_factor = fit_factor))
 }
