@@ -191,7 +191,7 @@ setGeneric("BIOMOD.formated.data", def = function(sp, env, ...) { standardGeneri
     stop("Raster response variable not supported yet ! \nPlease extract your presences and your absences by yourself")
     #### TO DO #### extract the 0 and 1 in sp format
   }
-  available.types.resp <- c('integer', 'numeric','factor', 'data.frame', 'matrix',
+  available.types.resp <- c('integer', 'numeric', 'factor', 'data.frame', 'matrix',
                             'SpatialPointsDataFrame', 'SpatialPoints', 'SpatVector')
   .fun_testIfInherits(TRUE, "sp", sp, available.types.resp)
   
@@ -497,7 +497,7 @@ setMethod('BIOMOD.formated.data', signature(sp = 'numeric', env = 'SpatRaster'),
             
             ## Keep same env variable for eval than calib (+ check for factor)
             if (!is.null(eval.sp) && is.null(eval.env)) {
-              output <- check_duplicated_cells(env, eval.xy, eval.sp, filter.raster)
+              output <- .check_duplicated_cells(env, eval.xy, eval.sp, filter.raster)
               eval.xy <- output$xy
               eval.sp <- output$sp
               rm(output)
@@ -512,7 +512,7 @@ setMethod('BIOMOD.formated.data', signature(sp = 'numeric', env = 'SpatRaster'),
             data.mask <- list("calibration" = wrap(data.mask))
             ## Keep same env variable for eval than calib (+ check for factor)
             
-            output <- check_duplicated_cells(env, xy, sp, filter.raster)
+            output <- .check_duplicated_cells(env, xy, sp, filter.raster)
             xy <- output$xy
             sp <- output$sp
             rm(output)
@@ -1587,7 +1587,7 @@ setMethod('BIOMOD.formated.data.PA', signature(sp = 'numeric', env = 'SpatRaster
   if (inherits(env, 'SpatRaster')) {
     categorical_var <- names(env)[is.factor(env)] 
     
-    output <- check_duplicated_cells(env, xy, sp, filter.raster, 
+    output <- .check_duplicated_cells(env, xy, sp, filter.raster, 
                                      PA.user.table = PA.user.table)
     xy <- output$xy
     sp <- output$sp

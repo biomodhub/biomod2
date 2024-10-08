@@ -331,8 +331,8 @@ bm_RunModel <- function(model, run.name, dir.name = '.'
                       dir_name = dir_name,
                       resp_name = resp_name,
                       expl_var_names = expl_var_names,
-                      expl_var_type = get_var_type(data_env[calib.lines.vec, , drop = FALSE]),
-                      expl_var_range = get_var_range(data_env[calib.lines.vec, , drop = FALSE]))
+                      expl_var_type = .get_var_type(data_env[calib.lines.vec, , drop = FALSE]),
+                      expl_var_range = .get_var_range(data_env[calib.lines.vec, , drop = FALSE]))
       if (model == "GAM") { model.bm@model_subclass = subclass_name } ## TO BE ADDED to all models ?
       if (model == "GBM" && exists("best.iter")) { model.bm@n.trees_optim = best.iter }
       if (model == "SRE" && bm.opt.val$do.extrem == TRUE) { model.bm@extremal_conditions = model.sp }
@@ -418,8 +418,8 @@ bm_RunModel <- function(model, run.name, dir.name = '.'
                         dir_name = dir_name,
                         resp_name = resp_name,
                         expl_var_names = expl_var_names,
-                        expl_var_type = get_var_type(data_env[calib.lines.vec, , drop = FALSE]), 
-                        expl_var_range = get_var_range(data_env[calib.lines.vec, , drop = FALSE]))
+                        expl_var_type = .get_var_type(data_env[calib.lines.vec, , drop = FALSE]), 
+                        expl_var_range = .get_var_range(data_env[calib.lines.vec, , drop = FALSE]))
         
         # for MAXENT predictions are calculated in the same time than models building to save time.
         cat("\n Getting predictions...")
@@ -495,7 +495,7 @@ bm_RunModel <- function(model, run.name, dir.name = '.'
       optimized_pred <- .threshold_ordinal(fit = g.pred, obs = data_sp, metric.eval = "accuracy")
       g.pred <- optimized_pred$fit_factor
       model.bm@thresholds_ordinal <- optimized_pred$limits
-      # g.pred <- .bm_numerictofactor(g.pred, data_sp)
+      # g.pred <- .numeric2factor(g.pred, data_sp)
     } else {
       g.pred <- factor(g.pred, levels = levels(data_sp), ordered = T)
     }

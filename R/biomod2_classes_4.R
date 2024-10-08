@@ -1362,7 +1362,7 @@ setMethod('predict2', signature(object = 'XGBOOST_biomod2_model', newdata = "Spa
             predfun <- function(object, newdata, mod.name){
               proj <- predict(newdata,
                               model = get_formal_model(object),
-                              fun = xgbpred,
+                              fun = .xgb_pred,
                               na.rm = TRUE,
                               wopt = list(names = mod.name))
               proj
