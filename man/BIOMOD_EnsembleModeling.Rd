@@ -45,8 +45,8 @@ must be among \code{'EMmean'}, \code{'EMmedian'}, \code{'EMcv'}, \code{'EMci'},
 (and defined through \code{metric.select.table}) or \code{POD}, \code{FAR}, \code{POFD}, 
 \code{SR}, \code{ACCURACY}, \code{BIAS}, \code{ROC}, \code{TSS}, \code{KAPPA}, \code{OR}, 
 \code{ORSS}, \code{CSI}, \code{ETS}, \code{BOYCE}, \code{MPA}, \code{RMSE}, \code{MAE}, 
-\code{MSE}, \code{Rsq}, \code{Rsq_aj}, \code{Max_error}, \code{accuracy}, \code{"recall"},
-\code{"precision"}, \code{"F1score"}}
+\code{MSE}, \code{Rsq}, \code{Rsq_aj}, \code{Max_error}, \code{accuracy}, \code{recall},
+\code{precision}, \code{F1score}}
 
 \item{metric.select.thresh}{(\emph{optional, default} \code{NULL}) \cr 
 A \code{vector} of \code{numeric} values corresponding to the minimum scores (one for each 
@@ -67,7 +67,7 @@ weigh the ensemble models should be among 'evaluation', 'validation' or 'calibra
 be among  \code{POD}, \code{FAR}, \code{POFD}, \code{SR}, \code{ACCURACY}, \code{BIAS}, 
 \code{ROC}, \code{TSS}, \code{KAPPA}, \code{OR}, \code{ORSS}, \code{CSI}, \code{ETS}, 
 \code{BOYCE}, \code{MPA}, \code{RMSE}, \code{MAE}, \code{MSE}, \code{Rsq}, \code{Rsq_aj},
-\code{Max_error}, \code{accuracy}, \code{"recall"}, \code{"precision"}, \code{"F1score"}}
+\code{Max_error}, \code{accuracy}, \code{recall}, \code{precision}, \code{F1score}}
 
 \item{var.import}{(\emph{optional, default} \code{NULL}) \cr 
 An \code{integer} corresponding to the number of permutations to be done for each variable to 
@@ -140,7 +140,7 @@ conditions (see Details).
   Hence, depending on the chosen method, the number of ensemble models built will vary. \cr
   \emph{Be aware that if no evaluation data was given to the 
   \code{\link{BIOMOD_FormatingData}} function, some ensemble model evaluations may be biased 
-  due to difference in data used for single model evaluations.}
+  due to difference in data used for single model evaluations.} \cr
   \bold{Be aware that all of these combinations are allowed, but some may not make sense 
   depending mainly on how pseudo-absence datasets have been built and whether all of them 
   have been used for all single models or not (see \code{PA.nb.absences} and \code{models.pa} 
