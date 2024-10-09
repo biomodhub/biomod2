@@ -155,7 +155,7 @@
   return(list(resp.var = resp.var, resp.xy = resp.xy))
 }
 
-.check_formating_resp.var <- function(resp.var, eval.data = FALSE)
+.check_formating_resp.var.bin <- function(resp.var, eval.data = FALSE)
 {
   if (length(which(!(resp.var %in% c(0, 1, NA)))) > 0) {
     cat("\n      ! ", ifelse(eval.data, "Evaluation",""), "Response variable have non-binary values that will be converted into 0 (resp <=0) or 1 (resp > 0).")
@@ -168,6 +168,27 @@
     }
   }
   as.numeric(resp.var)
+}
+
+.check_formating_resp.var.abun <- function(resp.var)
+{  
+  if (!is.numeric(resp.var)) {
+    if (!is.factor(resp.var)) {
+      stop("biomod2 accept only numeric or factor values : please check your response data.")
+    } else if (!is.ordered(resp.var)) {
+      stop("Your ordinal data doesn't seem ordered : please check your response data.")
+    }
+  } else {
+    if (-Inf %in% resp.var | Inf %in% resp.var) {
+      stop("It seems there is Inf in your response data. Please check and remove it.")
+    }
+    negative <- any(resp.var < 0 )
+    if (negative) {
+      stop("biomod2 doesn't accept negative values : please check your response data.")
+    }
+  }
+  resp.var <- resp.var[!is.na(resp.var)] ## Add a warning ? 
+  return(resp.var)
 }
 
 .check_formating_table <- function(resp.var)
@@ -1040,28 +1061,6 @@ rast.has.values <- function(x)
 ## ABUNDANCE tools --------------------------------------------------------------------------------
 
 ## used in biomod2_classes_1
-.check.for.data.abundance <- function(resp.var)
-{  
-  if (!is.numeric(resp.var)) {
-    if (!is.factor(resp.var)) {
-      stop("biomod2 accept only numeric or factor values : please check your response data.")
-    } else if (!is.ordered(resp.var)) {
-      stop("Your ordinal data doesn't seem ordered : please check your response data.")
-    }
-  } else {
-    if (-Inf %in% resp.var | Inf %in% resp.var) {
-      stop("It seems there is Inf in your response data. Please check and remove it.")
-    }
-    negative <- any(resp.var < 0 )
-    if (negative) {
-      stop("biomod2 doesn't accept negative values : please check your response data.")
-    }
-  }
-  resp.var <- resp.var[!is.na(resp.var)] ## Add a warning ? 
-  return(resp.var)
-}
-
-## used in biomod2_classes_4
 .which.data.type <- function(resp.var)
 {
   if (is.factor(resp.var)) {
