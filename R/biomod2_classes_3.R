@@ -824,71 +824,71 @@ setMethod('plot', signature(x = 'BIOMOD.projection.out', y = "missing"),
                                                            ...)
             for (argi in names(args)) { assign(x = argi, value = args[[argi]]) }
             rm(args)
-    
-    
-    ### Plot SpatRaster ---------------------------------------------------------
-    
-    if (inherits(proj,"SpatRaster")) {
-      maxi <- ifelse(max(global(proj, "max", na.rm = TRUE)$max) > 1, 1000, 1)
-      if (x@data.type != "binary") { maxi <- max(global(proj, "max", na.rm = TRUE)$max) }
-      if (std) {
-        limits <-  c(0, maxi)
-      } else {
-        limits <- NULL
-      }
-      
-      # if(x@data.type == "ordinal"){
-      #   breaks = 1:maxi
-      #   labels = c("a","b","c","d")
-      # } else {
-      #   breaks = waiver()
-      #   labels = waiver() 
-      # }
-      
-      if (plot.output == "facet") {
-        g <- ggplot() +
-          tidyterra::geom_spatraster(data = proj,
-                                     maxcell = maxcell) +
-          scale_fill_viridis_c(NULL, limits = limits) +
-          facet_wrap(~lyr)
-      } else if (plot.output == "list") {
-        g <- lapply(names(proj), function(thislayer){
-          ggplot() +
-            tidyterra::geom_spatraster(data = subset(proj, thislayer),
-                                       maxcell = maxcell) +
-            scale_fill_viridis_c(NULL, limits = limits) +
-            ggtitle(thislayer)
-        })
-      }
-    } else {
-      ### Plot data.frame  -----------------------------------------------------
-      maxi <- ifelse(max(proj$pred) > 1, 1000, 1)
-      if (x@data.type != "binary") { maxi <- max(proj$pred, na.rm = TRUE) }
-      if (std) {
-        limits <-  c(0,maxi)
-      } else {
-        limits <- NULL
-      }
-      plot.df <- merge(proj, coord, by = c("points"))
-      if (plot.output == "facet") {
-        g <- ggplot(plot.df)+
-          geom_point(aes(x = x, y = y, color = pred), size = size) +
-          scale_colour_viridis_c(NULL, limits = limits) +
-          facet_wrap(~full.name)
-      } else if (plot.output == "list"){
-        g <- lapply(unique(plot.df$full.name), function(thislayer) {
-          ggplot(subset(plot.df, plot.df$full.name == thislayer)) +
-            geom_point(aes(x = x, y = y, color = pred), size = size) +
-            scale_colour_viridis_c(NULL, limits = limits) +
-            ggtitle(thislayer)
-        })
-      }
-    }
-    if (do.plot) {
-      show(g)
-    } 
-    return(g)
-  }
+            
+            
+            ### Plot SpatRaster ---------------------------------------------------------
+            
+            if (inherits(proj,"SpatRaster")) {
+              maxi <- ifelse(max(global(proj, "max", na.rm = TRUE)$max) > 1, 1000, 1)
+              if (x@data.type != "binary") { maxi <- max(global(proj, "max", na.rm = TRUE)$max) }
+              if (std) {
+                limits <-  c(0, maxi)
+              } else {
+                limits <- NULL
+              }
+              
+              # if(x@data.type == "ordinal"){
+              #   breaks = 1:maxi
+              #   labels = c("a","b","c","d")
+              # } else {
+              #   breaks = waiver()
+              #   labels = waiver() 
+              # }
+              
+              if (plot.output == "facet") {
+                g <- ggplot() +
+                  tidyterra::geom_spatraster(data = proj,
+                                             maxcell = maxcell) +
+                  scale_fill_viridis_c(NULL, limits = limits) +
+                  facet_wrap(~lyr)
+              } else if (plot.output == "list") {
+                g <- lapply(names(proj), function(thislayer){
+                  ggplot() +
+                    tidyterra::geom_spatraster(data = subset(proj, thislayer),
+                                               maxcell = maxcell) +
+                    scale_fill_viridis_c(NULL, limits = limits) +
+                    ggtitle(thislayer)
+                })
+              }
+            } else {
+              ### Plot data.frame  -----------------------------------------------------
+              maxi <- ifelse(max(proj$pred) > 1, 1000, 1)
+              if (x@data.type != "binary") { maxi <- max(proj$pred, na.rm = TRUE) }
+              if (std) {
+                limits <-  c(0,maxi)
+              } else {
+                limits <- NULL
+              }
+              plot.df <- merge(proj, coord, by = c("points"))
+              if (plot.output == "facet") {
+                g <- ggplot(plot.df)+
+                  geom_point(aes(x = x, y = y, color = pred), size = size) +
+                  scale_colour_viridis_c(NULL, limits = limits) +
+                  facet_wrap(~full.name)
+              } else if (plot.output == "list"){
+                g <- lapply(unique(plot.df$full.name), function(thislayer) {
+                  ggplot(subset(plot.df, plot.df$full.name == thislayer)) +
+                    geom_point(aes(x = x, y = y, color = pred), size = size) +
+                    scale_colour_viridis_c(NULL, limits = limits) +
+                    ggtitle(thislayer)
+                })
+              }
+            }
+            if (do.plot) {
+              show(g)
+            } 
+            return(g)
+          }
 )
 
 ### .plot.BIOMOD.projection.out.check.args ----------------------------------
