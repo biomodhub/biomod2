@@ -167,11 +167,11 @@ setClass("BIOMOD.formated.data",
                         eval.data.env.var = "data.frame",
                         has.filter.raster = "logical",
                         biomod2.version = "character"),
-         validity = function(object){ 
+         validity = function(object) { 
            check.data.mask <- suppressWarnings(
              all(sapply(object@data.mask, function(x) inherits(x, "PackedSpatRaster")))
            )
-           if(check.data.mask){
+           if (check.data.mask) {
              return(TRUE)
            } else {
              return(FALSE)
@@ -182,150 +182,130 @@ setClass("BIOMOD.formated.data",
 # 1.2 Constructors -------------------------------------------------------------
 setGeneric("BIOMOD.formated.data", def = function(sp, env, ...) { standardGeneric("BIOMOD.formated.data") })
 
-.BIOMOD.formated.data.check.args <- function(sp, env, data.type = NULL, xy = NULL, eval.sp = NULL, eval.env = NULL
-                                             , eval.xy = NULL, filter.raster = FALSE, PA.strategy = NULL)
-{ 
-  ## A.1 Check sp argument --------------------------------------------------------------
-  if (inherits(sp, c('Raster','SpatRaster'))) {
+.BIOMOD.formated.data.check_data <- function(sp, env, xy = NULL, is.eval = FALSE, data.type = NULL, PA.strategy = NULL)
+{
+  ## 1. Check sp argument ---------------------------------------------------------------
+  if (inherits(sp, c('Raster', 'SpatRaster'))) {
     ## sp raster object not supported yet
     stop("Raster response variable not supported yet ! \nPlease extract your presences and your absences by yourself")
     #### TO DO #### extract the 0 and 1 in sp format
   }
   available.types.resp <- c('integer', 'numeric', 'factor', 'data.frame', 'matrix',
                             'SpatialPointsDataFrame', 'SpatialPoints', 'SpatVector')
-  .fun_testIfInherits(TRUE, "sp", sp, available.types.resp)
+  .fun_testIfInherits(TRUE, ifelse(is.eval == TRUE, "eval.sp", "sp"), sp, available.types.resp)
   
   ## SpatialPoints, SpatialPointsDataFrame, SpatVector
   if (inherits(sp, c('SpatialPoints','SpatVector'))) {
     .tmp <- .check_formating_spatial(resp.var = sp,
                                      expl.var = env,
                                      resp.xy = xy,
-                                     eval.data = FALSE)
+                                     eval.data = is.eval)
     sp <- .tmp$resp.var
     xy <- .tmp$resp.xy
     rm(.tmp)
   }
   
-  ## data.frame, matrix  : transform into numeric
+  ## data.frame, matrix : transform into numeric
   if (inherits(sp, c("matrix", "data.frame"))) {
     sp <- .check_formating_table(sp)
   }
   
   ## Check data.type
-  presumed.data.type = .which.data.type(sp)
-  if (presumed.data.type != "binary" &  !(is.null(PA.strategy) || PA.strategy == 'none')){
-    stop("PA selection is not available with non binary data !")
-  }
-  
-  if (!is.null(data.type)){
-    if (presumed.data.type != data.type){
-      cat("\n\t The data.type doesn't seem to correspond to your data. It will be switch to", presumed.data.type)
+  if (is.eval == FALSE) {
+    presumed.data.type = .which.data.type(sp)
+    if (presumed.data.type != "binary" &  !(is.null(PA.strategy) || PA.strategy == 'none')){
+      stop("PA selection is not available with non binary data !")
+    }
+    
+    if (!is.null(data.type)){
+      if (presumed.data.type != data.type){
+        cat("\n\t The data.type doesn't seem to correspond to your data. It will be switch to", presumed.data.type)
+        data.type <- presumed.data.type
+      }
+    } else {
       data.type <- presumed.data.type
     }
-  } else {
-    data.type <- presumed.data.type
   }
   
-  
-  ## Check presence/absence
+  ## Check sp
   if(data.type == "binary"){
-    sp <- .check_formating_resp.var(resp.var = sp, eval.data = FALSE)
+    sp <- .check_formating_resp.var.bin(resp.var = sp, eval.data = is.eval)
   } else {
-    sp <- .check.for.data.abundance(sp)
+    sp <- .check_formating_resp.var.abun(resp.var = sp)
   }
   
   
-  ## A.2 Check xy argument --------------------------------------------------------------
-  
-  if (!is.null(xy)) {
-    env.as.df <- inherits(env, c('data.frame'))
-    xy <- .check_formating_xy(resp.xy = xy, resp.length = length(sp), env.as.df = env.as.df)
-  } else if (inherits(env, c('RasterLayer', 'RasterStack', 'SpatRaster'))) {
-    stop("`xy` argument is missing. Please provide `xy` when `env` is a raster.")
+  ## 2. Check xy argument ---------------------------------------------------------------
+  if (is.eval == TRUE) {
+    xy <- .check_formating_xy(resp.xy = xy, resp.length = length(sp), env.as.df = FALSE)
   } else {
-    xy <- data.frame("x" = numeric(), "y" = numeric())
+    if (!is.null(xy)) {
+      env.as.df <- inherits(env, c('data.frame'))
+      xy <- .check_formating_xy(resp.xy = xy, resp.length = length(sp), env.as.df = env.as.df)
+    } else if (inherits(env, c('RasterLayer', 'RasterStack', 'SpatRaster'))) {
+      stop("`xy` argument is missing. Please provide `xy` when `env` is a raster.")
+    } else {
+      xy <- data.frame("x" = numeric(), "y" = numeric())
+    }
   }
   
-  ## A.3 Check env argument -------------------------------------------------------------
+  ## 3. Check env argument --------------------------------------------------------------
   available.types.expl <- c('integer', 'numeric', 'data.frame', 'matrix',
                             'RasterLayer', 'RasterStack', 'SpatRaster',
                             'SpatialPointsDataFrame', 'SpatVector')
+  if (is.eval == TRUE) available.types.expl <- c(available.types.expl, "NULL")
   .fun_testIfInherits(TRUE, "env", env, available.types.expl)
   env <- .check_formating_expl.var(expl.var = env, length.resp.var = length(sp))
+  
+  
+  #### At this point :
+  ####  - sp is a numeric
+  ####  - xy is NULL or a data.frame
+  ####  - env is a data.frame or a SpatRaster
+  return(list(sp = sp, env = env, xy = xy, data.type = data.type))
+}
+
+.BIOMOD.formated.data.check.args <- function(sp, env, data.type = NULL, xy = NULL, eval.sp = NULL, eval.env = NULL
+                                             , eval.xy = NULL, filter.raster = FALSE, PA.strategy = NULL)
+{
+  ## CHECK DATA -------------------------------------------------------------------------
+  .tmp <- .BIOMOD.formated.data.check_data(sp = sp, env = env, xy = xy, is.eval = FALSE
+                                           , data.type = data.type, PA.strategy = PA.strategy)
+  sp <- .tmp$sp
+  env <- .tmp$env
+  xy <- .tmp$xy
+  data.type <- .tmp$data.type
   
   ## Check filter.raster argument
   if (inherits(env, "SpatRaster")) {
     stopifnot(is.logical(filter.raster))
   }
   
-  #### At this point :
-  ####  - sp is a numeric
-  ####  - xy is NULL or a data.frame
-  ####  - env is a data.frame or a SpatRaster
-  
-  
-  ## DO THE SAME FOR EVALUATION DATA ####################################################
-  
+  ## DO THE SAME FOR EVALUATION DATA ----------------------------------------------------
   if (is.null(eval.sp)) {
     eval.env <- eval.xy <- NULL
-
+    
   } else {
-    ## B.1 Check eval.sp argument -------------------------------------------------------
-    if (inherits(eval.sp, c('Raster', 'SpatRaster'))) {
-      ## eval.sp raster object not supported yet
-      stop("Raster response variable not supported yet ! \nPlease extract your Presences and your absences by yourself")
-      #### TO DO #### extract the 0 and 1 in sp format
-    }
+    .tmp <- .BIOMOD.formated.data.check_data(sp = eval.sp, env = eval.env, xy = eval.xy, is.eval = TRUE
+                                             , data.type = data.type)
+    eval.sp <- .tmp$sp
+    eval.env <- .tmp$env
+    eval.xy <- .tmp$xy
     
-    .fun_testIfInherits(TRUE, "eval.sp", eval.sp, available.types.resp)
-    
-    ## SpatialPoints, SpatialPointsDataFrame, SpatVector
-    if (inherits(eval.sp, c('SpatialPoints','SpatVector'))) { 
-      .tmp <- .check_formating_spatial(resp.var = eval.sp,
-                                       expl.var = eval.env, 
-                                       resp.xy = eval.xy,
-                                       eval.data = TRUE)
-      eval.sp <- .tmp$resp.var
-      eval.xy <- .tmp$resp.xy
-      rm(.tmp)
-    }
-    ## data.frame, matrix  : transform into numeric
-    if (inherits(eval.sp, c("matrix","data.frame"))) {
-      eval.sp <- .check_formating_table(eval.sp)
-    }
-    
-    ## Check presence/absence
-    if(data.type == "binary"){
-      eval.sp <- .check_formating_resp.var(resp.var = eval.sp, eval.data = TRUE)
-    } else {
-      eval.sp <- .check.for.data.abundance(eval.sp)
-    }
-    
-    
-    ## B.2 Check eval.xy argument -------------------------------------------------------
-    if(!is.null(eval.xy)){
-      eval.xy <- .check_formating_xy(resp.xy = eval.xy, resp.length = length(eval.sp))
-    }
-    
-    ## B.3 Check eval.env argument ------------------------------------------------------
-    .fun_testIfInherits(TRUE, "eval.env", eval.env, c(available.types.expl, "NULL"))
-    if (is.null(eval.env)) {
-      if (!(inherits(env, 'SpatRaster'))) {
-        stop("If explanatory variable is not a raster and you want to consider evaluation response variable, you have to give evaluation explanatory variables")
-      }
-    }
-    eval.env <- .check_formating_expl.var(expl.var = eval.env, length.resp.var = length(eval.sp))
-    
-    ## B.4 Remove NA from evaluation data
+    ## Remove NA from evaluation data
     if (sum(is.na(eval.sp)) > 0) {
-      cat("\n      ! NAs have been automatically removed from Evaluation data")
+      cat("\n      ! NAs have been automatically removed from evaluation data")
       if (!is.null(eval.xy)) {
         eval.xy <- eval.xy[-which(is.na(eval.sp)), ]
       }
       eval.sp <- na.omit(eval.sp)
     }
+    
+    ## If no eval.env given, check that env is SpatRaster
+    if (is.null(eval.env) && !(inherits(env, 'SpatRaster'))) {
+      stop("If explanatory variable is not a raster and you want to consider evaluation response variable, you have to give evaluation explanatory variables")
+    }
   }
-  
   
   return(list(sp = sp,
               env = env,
@@ -352,6 +332,7 @@ setMethod('BIOMOD.formated.data', signature(sp = 'numeric', env = 'data.frame'),
             args <- .BIOMOD.formated.data.check.args(sp, env, data.type, xy, eval.sp, eval.env, eval.xy, filter.raster)
             for (argi in names(args)) { assign(x = argi, value = args[[argi]]) }
             rm(args)
+            
             if (!any(sp == 0, na.rm = TRUE) && !any(is.na(sp)) && data.type == "binary") {
               stop("No absences were given and no pseudo-absences were given or configured, at least one of those option is required.")
             }
@@ -387,10 +368,10 @@ setMethod('BIOMOD.formated.data', signature(sp = 'numeric', env = 'data.frame'),
                 filter.raster = filter.raster
               )
               
-              if (rast.has.values(rast(BFDeval@data.mask[[1]]))) {
-                data.mask[["evaluation"]] <- BFDeval@data.mask[[1]]
-              } else if (shared.eval.env) {
+              if (shared.eval.env) {
                 data.mask[["evaluation"]] <- data.mask[["calibration"]]
+              } else if (rast.has.values(rast(BFDeval@data.mask[[1]]))) {
+                data.mask[["evaluation"]] <- BFDeval@data.mask[[1]]
               }
               
               BFD <- new(
@@ -448,7 +429,7 @@ setMethod('BIOMOD.formated.data', signature(sp = 'data.frame'),
                    na.rm = TRUE, filter.raster = FALSE)
           {
             if (ncol(sp) > 1) { stop("Invalid response variable") }
-            if (data.type == "ordinal"){
+            if (data.type == "ordinal") {
               sp <- as.factor(unlist(sp))
             } else {
               sp <- as.numeric(unlist(sp))
@@ -495,27 +476,29 @@ setMethod('BIOMOD.formated.data', signature(sp = 'numeric', env = 'SpatRaster'),
               stop("No absences were given and no pseudo-absences were given or configured, at least one of those option is required.")
             }
             
-            ## Keep same env variable for eval than calib (+ check for factor)
+            ## Check for duplicated cells over env data
+            output <- .check_duplicated_cells(env, xy, sp, filter.raster)
+            xy <- output$xy
+            sp <- output$sp
+            rm(output)
+            
+            ## Prepare mask of studied area
+            data.mask <- prod(classify(env, matrix(c(-Inf, Inf, 1), nrow = 1)))
+            names(data.mask) <- "Environmental Mask"
+            data.mask <- list("calibration" = wrap(data.mask))
+            
+            ## IF eval.sp but eval.env == NULL, keep same env variable for eval than calib
             if (!is.null(eval.sp) && is.null(eval.env)) {
+              shared.eval.env <- TRUE
+              
+              ## Check for duplicated cells over env data
               output <- .check_duplicated_cells(env, eval.xy, eval.sp, filter.raster)
               eval.xy <- output$xy
               eval.sp <- output$sp
               rm(output)
               
               eval.env <- as.data.frame(extract(env, eval.xy, ID = FALSE))
-              shared.eval.env <- TRUE
             }
-            
-            ## Prepare mask of studied area
-            data.mask <- prod(classify(env, matrix(c(-Inf,Inf,1), nrow = 1)))
-            names(data.mask) <- "Environmental Mask"
-            data.mask <- list("calibration" = wrap(data.mask))
-            ## Keep same env variable for eval than calib (+ check for factor)
-            
-            output <- .check_duplicated_cells(env, xy, sp, filter.raster)
-            xy <- output$xy
-            sp <- output$sp
-            rm(output)
             
             env <- as.data.frame(extract(env, xy, factors = TRUE, ID = FALSE))
             
@@ -645,15 +628,15 @@ setMethod('plot', signature(x = 'BIOMOD.formated.data', y = "missing"),
             
             if (x@data.type != "binary"){
               plot_abundance <- .plot.BIOMOD.formated.data.abundance(x = x,
-                                                   calib.lines = calib.lines,
-                                                   plot.type = plot.type,
-                                                   plot.output = plot.output, 
-                                                   run = run,
-                                                   plot.eval = plot.eval,
-                                                   point.size = point.size,
-                                                   do.plot = do.plot,
-                                                   has.mask = has.mask,
-                                                   has.mask.eval = has.mask.eval)
+                                                                     calib.lines = calib.lines,
+                                                                     plot.type = plot.type,
+                                                                     plot.output = plot.output, 
+                                                                     run = run,
+                                                                     plot.eval = plot.eval,
+                                                                     point.size = point.size,
+                                                                     do.plot = do.plot,
+                                                                     has.mask = has.mask,
+                                                                     has.mask.eval = has.mask.eval)
               return(plot_abundance)
             }
             
@@ -1120,13 +1103,13 @@ setMethod('show', signature('BIOMOD.formated.data'),
             cat("\nsp.name = ", object@sp.name, fill = .Options$width)
             if (object@data.type == "binary") {
               cat("\n\t",
-                sum(object@data.species, na.rm = TRUE),
-                'presences, ',
-                sum(object@data.species == 0, na.rm = TRUE),
-                'true absences and ',
-                sum(is.na(object@data.species), na.rm = TRUE),
-                'undefined points in dataset',
-                fill = .Options$width)
+                  sum(object@data.species, na.rm = TRUE),
+                  'presences, ',
+                  sum(object@data.species == 0, na.rm = TRUE),
+                  'true absences and ',
+                  sum(is.na(object@data.species), na.rm = TRUE),
+                  'undefined points in dataset',
+                  fill = .Options$width)
             } else {
               cat("\n\t",
                   length(object@data.species),
@@ -1252,13 +1235,13 @@ setMethod('summary', signature(object = 'BIOMOD.formated.data'),
             rm(args)
             
             if (object@data.type == "binary") {
-            output <- data.frame("dataset" = "initial",
-                                 "run" = NA,
-                                 "PA" = NA,
-                                 "Presences" = length(which(object@data.species == 1)),
-                                 "True_Absences" = length(which(object@data.species == 0)),
-                                 "Pseudo_Absences" = 0,
-                                 "Undefined" = length(which(is.na(object@data.species))))
+              output <- data.frame("dataset" = "initial",
+                                   "run" = NA,
+                                   "PA" = NA,
+                                   "Presences" = length(which(object@data.species == 1)),
+                                   "True_Absences" = length(which(object@data.species == 0)),
+                                   "Pseudo_Absences" = 0,
+                                   "Undefined" = length(which(is.na(object@data.species))))
             } else {
               output <- data.frame("dataset" = "initial",
                                    "run" = NA,
@@ -1293,43 +1276,43 @@ setMethod('summary', signature(object = 'BIOMOD.formated.data'),
                   output,
                   foreach(this_run = run, this_PA = PA, .combine = 'rbind')  %do% {
                     if (is.na(this_PA) || this_PA == 'allData') { # run only
-                        this_name <- paste0("_", this_PA, "_", this_run)
-                        this_calib <- calib.lines[ , this_name]
-                        this_valid <- ! calib.lines[ , this_name]
-                      } else if (is.na(this_run)) { # PA only
-                        this_calib <- ifelse(is.na(object@PA.table[ , this_PA]), FALSE, object@PA.table[ , this_PA])
-                      } else { # PA+run
-                        this_name <- paste0("_", this_PA, "_", this_run)
-                        this_calib <- calib.lines[ , this_name] & object@PA.table[ , this_PA]
-                        this_valid <- ! calib.lines[ , this_name] & object@PA.table[ , this_PA]
-                      }
-                      calib.resp <- object@data.species[which(this_calib)]
-                      tmp <- data.frame("dataset" = "calibration",
-                                        "run" = this_run,
-                                        "PA" = this_PA,
-                                        "Presences" = length(which(calib.resp == 1)),
-                                        "True_Absences" = length(which(calib.resp == 0)),
-                                        "Pseudo_Absences" = 
-                                          length(which(is.na(calib.resp))),
-                                        "Undefined" = NA)
+                      this_name <- paste0("_", this_PA, "_", this_run)
+                      this_calib <- calib.lines[ , this_name]
+                      this_valid <- ! calib.lines[ , this_name]
+                    } else if (is.na(this_run)) { # PA only
+                      this_calib <- ifelse(is.na(object@PA.table[ , this_PA]), FALSE, object@PA.table[ , this_PA])
+                    } else { # PA+run
+                      this_name <- paste0("_", this_PA, "_", this_run)
+                      this_calib <- calib.lines[ , this_name] & object@PA.table[ , this_PA]
+                      this_valid <- ! calib.lines[ , this_name] & object@PA.table[ , this_PA]
+                    }
+                    calib.resp <- object@data.species[which(this_calib)]
+                    tmp <- data.frame("dataset" = "calibration",
+                                      "run" = this_run,
+                                      "PA" = this_PA,
+                                      "Presences" = length(which(calib.resp == 1)),
+                                      "True_Absences" = length(which(calib.resp == 0)),
+                                      "Pseudo_Absences" = 
+                                        length(which(is.na(calib.resp))),
+                                      "Undefined" = NA)
+                    
+                    if (!is.na(this_run)) { 
+                      valid.resp <- object@data.species[this_valid]
+                      tmp <- rbind(tmp,
+                                   data.frame("dataset" = "validation",
+                                              "run" = this_run,
+                                              "PA" = this_PA,
+                                              "Presences" = length(which(valid.resp == 1)),
+                                              "True_Absences" = length(which(valid.resp == 0)),
+                                              "Pseudo_Absences" = 
+                                                length(valid.resp) - 
+                                                length(which(valid.resp == 1)) -
+                                                length(which(valid.resp == 0)),
+                                              "Undefined" = NA))
                       
-                      if (!is.na(this_run)) { 
-                        valid.resp <- object@data.species[this_valid]
-                        tmp <- rbind(tmp,
-                                     data.frame("dataset" = "validation",
-                                                "run" = this_run,
-                                                "PA" = this_PA,
-                                                "Presences" = length(which(valid.resp == 1)),
-                                                "True_Absences" = length(which(valid.resp == 0)),
-                                                "Pseudo_Absences" = 
-                                                  length(valid.resp) - 
-                                                  length(which(valid.resp == 1)) -
-                                                  length(which(valid.resp == 0)),
-                                                "Undefined" = NA))
-                        
-                      }
-                      return(tmp) # end foreach
-                    })
+                    }
+                    return(tmp) # end foreach
+                  })
             } 
             output
           }
@@ -1587,8 +1570,7 @@ setMethod('BIOMOD.formated.data.PA', signature(sp = 'numeric', env = 'SpatRaster
   if (inherits(env, 'SpatRaster')) {
     categorical_var <- names(env)[is.factor(env)] 
     
-    output <- .check_duplicated_cells(env, xy, sp, filter.raster, 
-                                     PA.user.table = PA.user.table)
+    output <- .check_duplicated_cells(env, xy, sp, filter.raster, PA.user.table = PA.user.table)
     xy <- output$xy
     sp <- output$sp
     PA.user.table <- output$PA.user.table
@@ -1598,13 +1580,9 @@ setMethod('BIOMOD.formated.data.PA', signature(sp = 'numeric', env = 'SpatRaster
   ## Convert sp in SpatVector
   if (is.numeric(sp)) {
     if (nrow(xy) == 0) {
-      sp.df <- data.frame(x = 0,
-                          y = 0,
-                          resp = sp)
+      sp.df <- data.frame(x = 0, y = 0, resp = sp)
     } else {
-      sp.df <- data.frame(x = xy[,1],
-                          y = xy[,2],
-                          resp = sp)
+      sp.df <- data.frame(x = xy[,1], y = xy[,2], resp = sp)
     }
     sp <- vect(sp.df, geom = c("x", "y"))
   }
@@ -1676,14 +1654,6 @@ setMethod('BIOMOD.formated.data.PA', signature(sp = 'numeric', env = 'SpatRaster
     rm(list = 'BFD')
   } else {
     stop("\n   ! PA selection not done : \n The PA selection is not possible with the parameters selected." )
-    # BFDP <- BIOMOD.formated.data(sp = as.vector(values(sp)[,1]),
-    #                              env = env,
-    #                              xy = xy,
-    #                              dir.name = dir.name,
-    #                              sp.name = sp.name, 
-    #                              eval.sp = eval.sp,
-    #                              eval.env = eval.env,
-    #                              eval.xy = eval.xy)
   }
   rm(list = "pa.data.tmp" )
   return(BFDP)
