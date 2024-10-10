@@ -102,21 +102,22 @@ bm_VariablesImportance <- function(bm.model,
                                    do.progress = TRUE,
                                    temp.workdir = NULL)
 {
-  args <- .bm_VariablesImportance.check.args(bm.model, expl.var, variables, method, nb.rep, seed.val, do.progress, temp.workdir)
+  args <- .bm_VariablesImportance.check.args(bm.model, expl.var, variables, method, temp.workdir)
   for (argi in names(args)) { assign(x = argi, value = args[[argi]]) }
   rm(args)
+  
   ## Test if prediction is computable
   ref <- try(
     predict(bm.model,
             newdata = expl.var,
             temp_workdir = temp.workdir,
             seedval = seed.val)
-    )
+  )
   if (inherits(ref, "try-error")) { stop("Unable to make model prediction") }
   
-  if (model_type == "ordinal"){
-    if (!(bm.model@model_name %in% c("GLM", "GAM", "XGBOOST"))){## laissez en numeric pour eux 
-      ref <- as.numeric(factor(ref, ordered = T))
+  if (model_type == "ordinal") {
+    if (!(bm.model@model_name %in% c("GLM", "GAM", "XGBOOST"))) {## laissez en numeric pour eux 
+      ref <- as.numeric(factor(ref, ordered = TRUE))
     }
   }
   
@@ -132,9 +133,9 @@ bm_VariablesImportance <- function(bm.model,
       data_rand <- .randomise_data(expl.var, v, method) #, seedval = seed.val)
       shuffled.pred <- predict(bm.model, data_rand, temp_workdir = temp.workdir, seedval = seed.val)
       
-      if (model_type == "ordinal"){
-        if (!(bm.model@model_name %in% c("GLM", "GAM", "XGBOOST"))){ ## laissez en numeric pour eux ??
-          shuffled.pred <- as.numeric(factor(shuffled.pred, ordered = T))
+      if (model_type == "ordinal") {
+        if (!(bm.model@model_name %in% c("GLM", "GAM", "XGBOOST"))) { ## laissez en numeric pour eux ??
+          shuffled.pred <- as.numeric(factor(shuffled.pred, ordered = TRUE))
         }
       }
       method_cor <- ifelse(model_type != "ordinal", "pearson", "spearman")
@@ -156,7 +157,7 @@ bm_VariablesImportance <- function(bm.model,
 ###################################################################################################
 
 
-.bm_VariablesImportance.check.args <- function(bm.model, expl.var, variables, method, nb.rep, seed.val, do.progress, temp.workdir)
+.bm_VariablesImportance.check.args <- function(bm.model, expl.var, variables, method, temp.workdir)
 {
   # test that input data is supported
   .fun_testIfInherits(TRUE, "bm.model", bm.model, c("biomod2_model", "nnet", "rpart", "fda", "gam"
@@ -164,11 +165,11 @@ bm_VariablesImportance <- function(bm.model,
   
   model_type <- ifelse(inherits(bm.model, "biomod2_model"), bm.model@model_type, "binary")
   
-  # test method is supported
-  .fun_testIfIn(TRUE, "method", method, c('full_rand'))
-  
   # get variables names
   if (is.null(variables)) { variables <- colnames(expl.var) }
+  
+  # test method is supported
+  .fun_testIfIn(TRUE, "method", method, c('full_rand'))
   
   if(missing(temp.workdir)){ temp.workdir <- NULL }
   
@@ -176,7 +177,6 @@ bm_VariablesImportance <- function(bm.model,
               , expl.var = expl.var
               , method = method
               , variables = variables
-              , seed.val = seed.val
               , temp.workdir = temp.workdir
               , model_type = model_type))
 }

@@ -360,11 +360,12 @@
 ##' @export
 ##' 
 ##' 
+###################################################################################################
 
 BIOMOD_Modeling <- function(bm.format,
                             modeling.id = as.character(format(Sys.time(), "%s")),
                             models = c('ANN', 'CTA', 'FDA', 'GAM', 'GBM', 'GLM', 'MARS'
-                                       , 'MAXENT', 'MAXNET', 'RF', 'SRE', 'XGBOOST'),
+                                       , 'MAXENT', 'MAXNET', 'RF', 'RFd', 'SRE', 'XGBOOST'),
                             models.pa = NULL,
                             CV.strategy = 'random',
                             CV.nb.rep = 1,
@@ -412,22 +413,6 @@ BIOMOD_Modeling <- function(bm.format,
   for (argi in names(args)) { assign(x = argi, value = args[[argi]]) }
   rm(args)
   
-  # check for obsolete arguments
-  # args <- .BIOMOD_Modeling.check.args.obsolete(
-  #   bm.options = bm.options,
-  #   OPT.user = OPT.user,
-  #   CV.strategy = CV.strategy,
-  #   data.split.perc = data.split.perc,
-  #   CV.perc = CV.perc,
-  #   data.split.table = data.split.table,
-  #   CV.user.table = CV.user.table,
-  #   nb.rep = nb.rep,
-  #   CV.nb.rep = CV.nb.rep,
-  #   do.full.models = do.full.models,
-  #   CV.do.full.models = CV.do.full.models
-  # )
-  # for (argi in names(args)) { assign(x = argi, value = args[[argi]]) }
-  # rm(args)
   
   ## 1. Create output object ----------------------------------------------------------------------
   models.out <- new('BIOMOD.models.out',
@@ -467,14 +452,14 @@ BIOMOD_Modeling <- function(bm.format,
   if (!is.null(OPT.user)) {
     ## Check for model names -----------
     if (sum(!(models %in% sapply(OPT.user@models, function(x) strsplit(x, "[.]")[[1]][1]))) > 0) {
-        stop(paste0("\n", "OPT.user", " must contain information for '",
-                    ifelse(length(models) > 1,
-                           paste0(paste0(models[1:(length(models) -1)], collapse = "', '"),
-                                  "' and '", models[length(models)])
-                           , paste0(models,"' models"))))
+      stop(paste0("\n", "OPT.user", " must contain information for '",
+                  ifelse(length(models) > 1,
+                         paste0(paste0(models[1:(length(models) -1)], collapse = "', '"),
+                                "' and '", models[length(models)])
+                         , paste0(models,"' models"))))
     }
     ## Check data.type coherence 
-    data.type.options <- strsplit(OPT.user@models[1],".", fixed = T)[[1]][2]
+    data.type.options <- strsplit(OPT.user@models[1],".", fixed = TRUE)[[1]][2]
     if ((bm.format@data.type == "binary" & data.type.options != "binary")|
         (bm.format@data.type != "binary" & data.type.options == "binary")) {
       stop("\n The data.type of OPT.user should match the data.type of your bm.format")
@@ -495,7 +480,7 @@ BIOMOD_Modeling <- function(bm.format,
           for (run in vals) {
             PA.set <- grep("PA|allData", unlist(strsplit(run, "_")), value = TRUE)
             if (is.null(OPT.user@options[[mod]]@args.values[[paste0("_", PA.set, "_allRun")]])) {
-              opt.default <- BIOMOD.options.dataset(mod = sep.name[1], typ = sep.name[2], pkg =sep.name[3], fun = sep.name[4]
+              opt.default <- BIOMOD.options.dataset(mod = sep.name[1], typ = sep.name[2], pkg = sep.name[3], fun = sep.name[4]
                                                     , strategy = "default", bm.format = bm.format, calib.lines = calib.lines)
               OPT.user@options[[mod]]@args.values[[run]] <- opt.default@args.values[["_allData_allRun"]]
             } else {
@@ -506,9 +491,9 @@ BIOMOD_Modeling <- function(bm.format,
         } else {
           stop(paste0("\n", "names(OPT.user@options[['", mod, "']]@args.values)", " must be '",
                       ifelse(length(vals) > 1,
-                             paste0(paste0(vals[1:(length(vals) -1)], collapse = "', '"),
+                             paste0(paste0(vals[1:(length(vals) - 1)], collapse = "', '"),
                                     "' and '", vals[length(vals)])
-                             , paste0(vals,"'"))))
+                             , paste0(vals, "'"))))
         }
       }
     }
@@ -552,7 +537,7 @@ BIOMOD_Modeling <- function(bm.format,
   models.out@models.computed <- .transform_outputs_list("mod", mod.out, out = "model")
   models.out@models.failed <- .transform_outputs_list("mod", mod.out, out = "calib.failure")
   
-  if(length(models.out@models.computed) == 1 && models.out@models.computed == "none"){
+  if (length(models.out@models.computed) == 1 && models.out@models.computed == "none") {
     cat("\n! All models failed")
     return(models.out)
   }
@@ -619,23 +604,6 @@ BIOMOD_Modeling <- function(bm.format,
   .fun_testIfInherits(TRUE, "bm.format", bm.format, c("BIOMOD.formated.data", "BIOMOD.formated.data.PA"))
   if (!is.character(models)) { stop("models must be a 'character' vector") }
   
-  # Support for old names in models
-  # Deprecated MAXENT.Phillips/MAXENT.Phillips.2
-  if (any(models == "MAXENT.Phillips")) {
-    models[which(models == "MAXENT.Phillips")] <- "MAXENT"
-    cat(paste0("\n\t! 'MAXENT.Phillips' model name is deprecated, please use 'MAXENT' instead."))
-  }
-  if (any(models == "MAXENT.Phillips.2")) {
-    models[which(models == "MAXENT.Phillips.2")] <- "MAXNET"
-    cat(paste0("\n\t! 'MAXENT.Phillips.2' model name is deprecated, please use 'MAXNET' instead."))
-  }
-  ## Deprecated MAXENT.Tsuruoka 
-  ## because of package maintaining issue (request from B Ripley 03-2019)
-  if ('MAXENT.Tsuruoka' %in% models) {
-    models.switch.off <- unique(c(models.switch.off, "MAXENT.Tsuruoka"))
-    models <- setdiff(models, models.switch.off)
-    warning('MAXENT.Tsuruoka has been disabled because of package maintaining issue (request from cran team 03-2019)')
-  }
   models <- unique(models)
   models.switch.off <- NULL
   
@@ -741,8 +709,7 @@ BIOMOD_Modeling <- function(bm.format,
         weights <- matrix(weights, nrow = length(weights), ncol = 1)
         colnames(weights) <- "allData"
       }
-    }
-    else { ## NEVER OCCURRING NO ?? --> now happen with the abundance
+    } else { ## NEVER OCCURRING NO ?? --> now happen with the abundance
       cat("\n\t> No weights : all observations will have the same weight\n")
       #weights <- rep(1, length(bm.format@data.species))
     }
@@ -770,27 +737,20 @@ BIOMOD_Modeling <- function(bm.format,
   
   ## 7. Check metric.eval arguments -------------------------------------------
   metric.eval <- unique(metric.eval)
-  if (bm.format@data.type == "binary"){
+  if (bm.format@data.type == "binary") {
     avail.eval.meth.list <- c('TSS', 'KAPPA', 'ACCURACY', 'BIAS', 'POD', 'FAR', 'POFD'
-                            , 'SR', 'CSI', 'ETS', 'HK', 'HSS', 'OR', 'ORSS', 'ROC'
-                            , 'BOYCE', 'MPA')
-  } else if (bm.format@data.type == "ordinal"){
+                              , 'SR', 'CSI', 'ETS', 'HK', 'HSS', 'OR', 'ORSS', 'ROC'
+                              , 'BOYCE', 'MPA')
+  } else if (bm.format@data.type == "ordinal") {
     avail.eval.meth.list <- c("accuracy", "recall", "precision", "F1score")
   } else {
     avail.eval.meth.list <- c('RMSE','MSE',"MAE","Rsq","Rsq_aj","Max_error")
   }
-  
   .fun_testIfIn(TRUE, paste0("metric.eval with ", bm.format@data.type, " data type"), metric.eval, avail.eval.meth.list)
-
   
   
-  if (!is.null(seed.val)) {
-    set.seed(seed.val)
-  }
-  
-  if (is.null(var.import)) {
-    var.import = 0
-  }
+  if (!is.null(seed.val)) { set.seed(seed.val) }
+  if (is.null(var.import)) { var.import = 0 }
   
   return(list(models = models,
               models.pa = models.pa,
@@ -804,88 +764,6 @@ BIOMOD_Modeling <- function(bm.format,
 }
 
 
-# Obsolete argument Check -------------------------------------------------------
-
-
-.BIOMOD_Modeling.check.args.obsolete <- function(bm.options,
-                                                 OPT.user,
-                                                 CV.strategy,
-                                                 data.split.perc,
-                                                 CV.perc,
-                                                 data.split.table,
-                                                 CV.user.table,
-                                                 nb.rep,
-                                                 CV.nb.rep,
-                                                 do.full.models,
-                                                 CV.do.full.models)
-{
-  ## bm.options ------------------------------
-  if (!missing(bm.options)) {
-    if (!is.null(OPT.user)) {
-      cat("\n! ignored obsolete argument 'bm.options' as 'OPT.user' was also given")
-    } else {
-      OPT.user <- bm.options
-      cat("\n!!! argument 'bm.options' is obsolete, please use 'OPT.user' instead")
-    }
-  }
-  
-  ## do.full.models ------------------------------
-  if (!missing(do.full.models)) {
-    if (!is.null(CV.do.full.models)) {
-      cat("\n! ignored obsolete argument 'do.full.models' as 'CV.do.full.models' was also given")
-    } else {
-      CV.do.full.models <- do.full.models
-      cat("\n!!! argument 'do.full.models' is obsolete, please use 'CV.do.full.models' instead")
-    }
-  }
-  
-  ## data.split.perc --------------------------
-  if (!missing(data.split.perc)) {
-    if (CV.strategy != "random") {
-      cat("\n! ignored obsolete argument 'data.split.perc' as 'CV.strategy' was not set to 'random'")
-    } else if (!is.null(CV.perc)) {
-      cat("\n! ignored obsolete argument 'data.split.perc' as 'CV.perc' was also given")
-    } else {
-      CV.perc <- data.split.perc/100
-      cat("\n!!! argument 'do.full.models' is obsolete, please use 'CV.perc' instead.
-          \n /!\ 'CV.perc' is on a scale 0-1 and was set to data.split.perc/100 =",CV.perc)
-    }
-  }
-  
-  ## nb.rep --------------------------
-  if (!missing(nb.rep)) {
-    if (! CV.strategy %in% c("random", "kfold")) {
-      cat("\n! ignored obsolete argument 'nb.rep' as 'CV.strategy' was not set to 'random' or 'kfold'")
-    } else if (!is.null(CV.nb.rep)) {
-      cat("\n! ignored obsolete argument 'nb.rep' as 'CV.nb.rep' was also given")
-    } else {
-      CV.nb.rep <- nb.rep
-      cat("\n!!! argument 'nb.rep' is obsolete, please use 'CV.nb.rep' instead.")
-    }
-  }
-  
-  
-  ## data.split.table --------------------------
-  if (!missing(data.split.table)) {
-    if (! CV.strategy %in% c("user.defined")) {
-      cat("\n! ignored obsolete argument 'data.split.table' as 'CV.strategy' was not set to 'user.defined'")
-    } else if (!is.null(CV.user.table)) {
-      cat("\n! ignored obsolete argument 'data.split.table' as 'CV.user.table' was also given")
-    } else {
-      CV.user.table <- data.split.table
-      cat("\n!!! argument 'data.split.table' is obsolete, please use 'CV.user.table' instead.")
-    }
-  }
-  return(list(
-    CV.perc = CV.perc,
-    CV.user.table = CV.user.table,
-    CV.nb.rep = CV.nb.rep,
-    CV.do.full.models = CV.do.full.models))
-}
-
-## 0. Check bm.format and models arguments ----------------------------------
-#cat('\n\nChecking Models arguments...\n')
-
 # ---------------------------------------------------------------------------- #
 
 .BIOMOD_Modeling.summary <- function(bm.format, calib.lines, models, models.pa = NULL)
@@ -893,19 +771,15 @@ BIOMOD_Modeling <- function(bm.format,
   cat("\n\n")
   .bm_cat(paste(bm.format@sp.name, "Modeling Summary"))
   cat("\n", ncol(bm.format@data.env.var), " environmental variables (", colnames(bm.format@data.env.var), ")")
-  nb.eval.rep <- 
-    ncol(calib.lines) /
-    ifelse(inherits(bm.format, "BIOMOD.formated.data.PA"),
-           ncol(bm.format@PA.table), 1)
+  nb.eval.rep <- ncol(calib.lines) / ifelse(inherits(bm.format, "BIOMOD.formated.data.PA"), ncol(bm.format@PA.table), 1)
   cat("\nNumber of evaluation repetitions :", nb.eval.rep)
   cat("\nModels selected :", models, "\n")
   if (is.null(models.pa)) {
     nb.runs = ncol(calib.lines) * length(models)
   } else {
-    nb.runs = 
-      length(which(
-        sapply(unlist(models.pa), function(x) grepl(colnames(calib.lines), pattern = x))
-      ))
+    nb.runs = length(which(
+      sapply(unlist(models.pa), function(x) grepl(colnames(calib.lines), pattern = x))
+    ))
   }
   cat("\nTotal number of model runs:", nb.runs, "\n")
   .bm_cat()

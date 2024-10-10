@@ -1457,7 +1457,7 @@ setMethod("get_variables_importance", "BIOMOD.ensemble.models.out",
 ##' 
 ##' 
 
-setGeneric("set_new_dirname", function(obj, new.dir.name) { standardGeneric("set_newdirname") }) ##ABC ## 012 ? 
+setGeneric("set_new_dirname", function(obj, new.dir.name) { standardGeneric("set_new_dirname") }) ##ABC ## 012 ? 
 
 .set_new_dirname.models <- function(obj, new.dir.name, obj.type)
 {

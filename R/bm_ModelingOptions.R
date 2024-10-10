@@ -247,12 +247,12 @@ bm_ModelingOptions <- function(data.type
 {
   .bm_cat("Build Modeling Options")
   
-  if (missing(models)){
-    models <- ifelse(data.type == "binary", c('ANN', 'CTA', 'FDA', 'GAM', 'GBM', 'GLM'
-                                              , 'MARS', 'MAXENT', 'MAXNET', 'RF','RFd', 'SRE', 'XGBOOST'),
+  if (missing(models)) {
+    models <- ifelse(data.type == "binary", c('ANN', 'CTA', 'FDA', 'GAM', 'GBM', 'GLM', 'MARS', 'MAXENT', 'MAXNET', 'RF','RFd', 'SRE', 'XGBOOST'),
                      ifelse(data.type == "ordinal", c('CTA', 'FDA', 'GAM', 'GAM.gam.gam', 'GAM.mgcv.bam', 'GAM.mgcv.gam', 'GLM', 'MARS', 'RF', 'XGBOOST'),
                             c('CTA', 'GAM','GAM.gam.gam', 'GAM.mgcv.bam', 'GAM.mgcv.gam', 'GBM', 'GLM', 'MARS', 'RF', 'XGBOOST')))
   }
+  
   ## 0. Check arguments ---------------------------------------------------------------------------
   args <- .bm_ModelingOptions.check.args(data.type = data.type,
                                          models = models,
@@ -271,7 +271,8 @@ bm_ModelingOptions <- function(data.type
   data.type.ModelsTable <- ifelse(data.type == "binary", "binary", "nonbinary")
   
   ## 1. Get options -------------------------------------------------------------------------------
-  bm.opt <- foreach(model = models, .combine = "c") %do% {
+  bm.opt <- foreach(model = models, .combine = "c") %do%
+    {
       ## Select model / package / function to keep
       if (length(grep("GAM", model)) == 1) {
         tab.model <- ModelsTable[which(ModelsTable$model == "GAM" & ModelsTable$type == data.type.ModelsTable &
@@ -283,7 +284,8 @@ bm_ModelingOptions <- function(data.type
       }
       if (nrow(tab.model) > 0) {
         ## For each kept model : get corresponding options
-        BOD.list <- foreach(ii = 1:nrow(tab.model)) %do% {
+        BOD.list <- foreach(ii = 1:nrow(tab.model)) %do%
+          {
             name_model <- paste0(model, ".", data.type, ".", tab.model$package[ii], ".", tab.model$func[ii])
             val.ii <- NULL
             if (strategy == "user.defined") {
@@ -321,87 +323,83 @@ bm_ModelingOptions <- function(data.type
 
 # ---------------------------------------------------------------------------- #
 
-.bm_ModelingOptions.check.args <-
-  function(data.type, models, strategy
-           , user.val = NULL, user.base = NULL
-           , bm.format = NULL, calib.lines = NULL) {
-    ## check if type is supported
-    avail.types.list <- c('binary', 'count', 'ordinal', 'relative', 'abundance', 'nonbinary')
-    .fun_testIfIn(TRUE, "data.type", data.type, avail.types.list)
-    
-    ## Check data.type coherence 
-    if (!is.null(bm.format)){
-      if ((data.type == "nonbinary" && bm.format@data.type == "binary") ||
-          (data.type != "nonbinary" && bm.format@data.type != data.type)){
-        stop("\n data.type should match the data.type of your bm.format")
-      } 
+.bm_ModelingOptions.check.args <- function(data.type, models, strategy
+                                           , user.val = NULL, user.base = NULL
+                                           , bm.format = NULL, calib.lines = NULL)
+{
+  ## check if type is supported
+  avail.types.list <- c('binary', 'count', 'ordinal', 'relative', 'abundance', 'nonbinary')
+  .fun_testIfIn(TRUE, "data.type", data.type, avail.types.list)
+  
+  ## Check data.type coherence 
+  if (!is.null(bm.format)) {
+    if ((data.type == "nonbinary" && bm.format@data.type == "binary") ||
+        (data.type != "nonbinary" && bm.format@data.type != data.type)) {
+      stop("\n data.type should match the data.type of your bm.format")
     } 
-      
-    ## check if model is supported
-    if (data.type == "binary"){
-      avail.models.list <- c('ANN', 'CTA', 'FDA', 'GAM', 'GAM.gam.gam', 'GAM.mgcv.bam', 'GAM.mgcv.gam', 'GBM', 'GLM', 'MARS', 'MAXENT', 'MAXNET', 'RF','RFd', 'SRE', 'XGBOOST')
-    } else if (data.type == "ordinal") {
-      avail.models.list <- c('CTA', 'FDA', 'GAM', 'GAM.gam.gam', 'GAM.mgcv.bam', 'GAM.mgcv.gam', 'GLM', 'MARS', 'RF', 'XGBOOST')
-    } else {
-      avail.models.list <- c('CTA', 'GAM','GAM.gam.gam', 'GAM.mgcv.bam', 'GAM.mgcv.gam', 'GBM', 'GLM', 'MARS', 'RF', 'XGBOOST')
-    }
-    .fun_testIfIn(TRUE, paste0("Models with ", data.type, " data type"), models, avail.models.list)
-    
-    # avail.models.list <- c('ANN', 'CTA', 'FDA', 'GAM', 'GAM.gam.gam', 'GAM.mgcv.bam', 'GAM.mgcv.gam'
-    #                        , 'GBM', 'GLM', 'MARS', 'MAXENT', 'MAXNET', 'RF','RFd', 'SRE', 'XGBOOST')
-    # .fun_testIfIn(TRUE, "models", models, avail.models.list)
-    if (length(grep('GAM', models)) > 1) {
-      stop("Only one GAM model can be activated. Please choose betwen 'GAM', 'GAM.gam.gam', 'GAM.mgcv.bam' or 'GAM.mgcv.gam'")
-    } else if ('GAM' %in% models) {
-      models[which(models == 'GAM')] = 'GAM.mgcv.gam'
-      warning("Only one GAM model can be activated. 'GAM.mgcv.gam' has been set (other available : 'GAM.gam.gam' or 'GAM.mgcv.bam')")
-    }
-    
-    ## check if strategy is supported
-    avail.strategy.list <- c('default', 'bigboss', 'user.defined', 'tuned')
-    .fun_testIfIn(TRUE, "strategy", strategy, avail.strategy.list)
-    
-    ## USER DEFINED parameterisation --------------
-    if (strategy == "user.defined") {
-      avail.user.base <- c('default', 'bigboss')
-      .fun_testIfIn(TRUE, "user.base", user.base, avail.user.base)
-      
-      .fun_testIfInherits(TRUE, "user.val", user.val, c("list"))
-      avail.options.list <- paste0(ModelsTable$model, ".", ModelsTable$type, ".", ModelsTable$package, ".", ModelsTable$func)
-      .fun_testIfIn(TRUE, "names(user.val)", names(user.val), avail.options.list)
-      ## THEN can be directly arguments (all the same for all data) or a list with one set for each dataset (AllData_AllRun, ...)
-    }
-    
-    ## TUNING with bm_Tuning parameterisation -----
-    if (strategy == "tuned") {
-      .fun_testIfInherits(TRUE, "bm.format", bm.format, c("BIOMOD.formated.data", "BIOMOD.formated.data.PA"))
-    }
-    
-    ## check calib.lines colnames
-    if (!is.null(calib.lines)) {
-      if (is.null(bm.format)) {
-        stop("`bm.format` must be given along with `calib.lines`")
-      }
-      .fun_testIfInherits(TRUE, "calib.lines", calib.lines, c("matrix"))
-      
-      expected_CVnames <- c(paste0("_allData_RUN", seq_len(ncol(calib.lines))), "_allData_allRun", "for_all_datasets")
-      if (inherits(bm.format, "BIOMOD.formated.data.PA")) {
-        expected_CVnames <- c(expected_CVnames
-                              , sapply(1:ncol(bm.format@PA.table)
-                                       , function(this_PA) c(paste0("_PA", this_PA, "_RUN", seq_len(ncol(calib.lines)))
-                                                             , paste0("_PA", this_PA, "_allRun"))))
-      }
-      .fun_testIfIn(TRUE, "colnames(calib.lines)", colnames(calib.lines), expected_CVnames)
-      
-      if (strategy == "user.defined") {
-        for (ii in 1:length(user.val)) {
-          .fun_testIfIn(TRUE, "names(user.val[[ii]])", names(user.val[[ii]]), expected_CVnames)
-        }
-      }
-    }
-    
-    return(list(models = models,
-                data.type = data.type))
+  } 
+  
+  ## check if model is supported
+  if (data.type == "binary") {
+    avail.models.list <- c('ANN', 'CTA', 'FDA', 'GAM', 'GAM.gam.gam', 'GAM.mgcv.bam', 'GAM.mgcv.gam', 'GBM', 'GLM', 'MARS', 'MAXENT', 'MAXNET', 'RF', 'RFd', 'SRE', 'XGBOOST')
+  } else if (data.type == "ordinal") {
+    avail.models.list <- c('CTA', 'FDA', 'GAM', 'GAM.gam.gam', 'GAM.mgcv.bam', 'GAM.mgcv.gam', 'GLM', 'MARS', 'RF', 'XGBOOST')
+  } else {
+    avail.models.list <- c('CTA', 'GAM','GAM.gam.gam', 'GAM.mgcv.bam', 'GAM.mgcv.gam', 'GBM', 'GLM', 'MARS', 'RF', 'XGBOOST')
   }
+  .fun_testIfIn(TRUE, paste0("Models with ", data.type, " data type"), models, avail.models.list)
+  
+  if (length(grep('GAM', models)) > 1) {
+    stop("Only one GAM model can be activated. Please choose betwen 'GAM', 'GAM.gam.gam', 'GAM.mgcv.bam' or 'GAM.mgcv.gam'")
+  } else if ('GAM' %in% models) {
+    models[which(models == 'GAM')] = 'GAM.mgcv.gam'
+    warning("Only one GAM model can be activated. 'GAM.mgcv.gam' has been set (other available : 'GAM.gam.gam' or 'GAM.mgcv.bam')")
+  }
+  
+  ## check if strategy is supported
+  avail.strategy.list <- c('default', 'bigboss', 'user.defined', 'tuned')
+  .fun_testIfIn(TRUE, "strategy", strategy, avail.strategy.list)
+  
+  ## USER DEFINED parameterisation --------------
+  if (strategy == "user.defined") {
+    avail.user.base <- c('default', 'bigboss')
+    .fun_testIfIn(TRUE, "user.base", user.base, avail.user.base)
+    
+    .fun_testIfInherits(TRUE, "user.val", user.val, c("list"))
+    avail.options.list <- paste0(ModelsTable$model, ".", ModelsTable$type, ".", ModelsTable$package, ".", ModelsTable$func)
+    .fun_testIfIn(TRUE, "names(user.val)", names(user.val), avail.options.list)
+    ## THEN can be directly arguments (all the same for all data) or a list with one set for each dataset (AllData_AllRun, ...)
+  }
+  
+  ## TUNING with bm_Tuning parameterisation -----
+  if (strategy == "tuned") {
+    .fun_testIfInherits(TRUE, "bm.format", bm.format, c("BIOMOD.formated.data", "BIOMOD.formated.data.PA"))
+  }
+  
+  ## check calib.lines colnames
+  if (!is.null(calib.lines)) {
+    if (is.null(bm.format)) {
+      stop("`bm.format` must be given along with `calib.lines`")
+    }
+    .fun_testIfInherits(TRUE, "calib.lines", calib.lines, c("matrix"))
+    
+    expected_CVnames <- c(paste0("_allData_RUN", seq_len(ncol(calib.lines))), "_allData_allRun", "for_all_datasets")
+    if (inherits(bm.format, "BIOMOD.formated.data.PA")) {
+      expected_CVnames <- c(expected_CVnames
+                            , sapply(1:ncol(bm.format@PA.table)
+                                     , function(this_PA) c(paste0("_PA", this_PA, "_RUN", seq_len(ncol(calib.lines)))
+                                                           , paste0("_PA", this_PA, "_allRun"))))
+    }
+    .fun_testIfIn(TRUE, "colnames(calib.lines)", colnames(calib.lines), expected_CVnames)
+    
+    if (strategy == "user.defined") {
+      for (ii in 1:length(user.val)) {
+        .fun_testIfIn(TRUE, "names(user.val[[ii]])", names(user.val[[ii]]), expected_CVnames)
+      }
+    }
+  }
+  
+  return(list(models = models, data.type = data.type))
+}
 
 
