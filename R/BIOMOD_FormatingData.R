@@ -361,17 +361,7 @@ BIOMOD_FormatingData <- function(resp.name,
   .bm_cat(paste0(resp.name, " Data Formating"))
   
   ## 1. check args ------------------------------------------------------------
-  args <- .BIOMOD_FormatingData.check.args(resp.name,
-                                           resp.var,
-                                           expl.var,
-                                           dir.name,
-                                           data.type,
-                                           resp.xy,
-                                           eval.resp.var,
-                                           eval.expl.var,
-                                           eval.resp.xy,
-                                           filter.raster,
-                                           PA.strategy)
+  args <- .BIOMOD_FormatingData.check.args(resp.name, dir.name)
   for (argi in names(args)) { assign(x = argi, value = args[[argi]]) }
   rm(args)
   
@@ -418,17 +408,7 @@ BIOMOD_FormatingData <- function(resp.name,
 
 # Argument Check -------------------------------------------------------------
 
-.BIOMOD_FormatingData.check.args <- function(resp.name,
-                                             resp.var,
-                                             expl.var,
-                                             dir.name,
-                                             data.type,
-                                             resp.xy,
-                                             eval.resp.var,
-                                             eval.expl.var,
-                                             eval.resp.xy,
-                                             filter.raster,
-                                             PA.strategy)
+.BIOMOD_FormatingData.check.args <- function(resp.name, dir.name)
 {
   ## 0. Checking names (resp.name available ?) --------------------------------
   if (grepl('/', resp.name)) {
@@ -444,22 +424,5 @@ BIOMOD_FormatingData <- function(resp.name,
     stop(paste0("Modeling folder '", dir.name, "' does not exist"))
   }
   
-  # args <- .BIOMOD.formated.data.check.args(sp = resp.var, env = expl.var, data.type = data.type, xy = resp.xy
-  #                                          , eval.sp = eval.resp.var, eval.env = eval.expl.var
-  #                                          , eval.xy = eval.resp.xy, filter.raster = filter.raster)
-  
-  args <- list(sp = resp.var, env = expl.var, data.type = data.type, xy = resp.xy
-                                           , eval.sp = eval.resp.var, eval.env = eval.expl.var
-                                           , eval.xy = eval.resp.xy, filter.raster = filter.raster)
-
-  
-  return(list(resp.var = args$sp,
-              expl.var = args$env,
-              resp.xy = args$xy,
-              resp.name = resp.name,
-              dir.name = dir.name,
-              data.type = data.type,
-              eval.resp.var = args$eval.sp,
-              eval.expl.var = args$eval.env,
-              eval.resp.xy = args$eval.xy))
+  return(list(resp.name = resp.name, dir.name = dir.name))
 }
