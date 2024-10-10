@@ -427,13 +427,10 @@ bm_CrossValidation <- function(bm.format,
 # ---------------------------------------------------------------------------- #
 ## return a matrix with nb.rep columns of boolean (T: calib, F: eval)
 
-.sample_num <- function(data.sp, data.split, nb.rep = 1, data.env = NULL, seed.val = NULL, is.bin = TRUE)
+.sample_num <- function(data.sp, data.split, nb.rep = 1, data.env = NULL, seed.val = NULL)
 {
-  if (is.bin == TRUE) {
-    pres <- which(data.sp == 1) # data.sp is a 0,1 vector
-  } else {
-    pres <- which(data.sp > 0) # data.sp is a vector with positive numeric
-  }
+  # data.sp is a vector with either 0/1 or positive numeric
+  pres <- which(data.sp > 0)
   abs <- (1:length(data.sp))[-pres]
   
   nbPresEval <- round(length(pres) * data.split)
@@ -582,8 +579,7 @@ setMethod('bm_CrossValidation_random', signature(bm.format = "BIOMOD.formated.da
                 calib.lines <- .sample_num(data.sp = bm.format@data.species,
                                            data.split = perc,
                                            nb.rep = nb.rep,
-                                           data.env = bm.format@data.env.var,
-                                           is.bin = FALSE)
+                                           data.env = bm.format@data.env.var)
               }
             }
             return(calib.lines)
@@ -612,8 +608,7 @@ setMethod('bm_CrossValidation_random', signature(bm.format = "BIOMOD.formated.da
                   sampled.mat <- .sample_num(data.sp = bm.format@data.species[ind.PA],
                                              data.split = perc,
                                              nb.rep = nb.rep,
-                                             data.env = bm.format@data.env.var[ind.PA, , drop = FALSE], 
-                                             is.bin = TRUE)
+                                             data.env = bm.format@data.env.var[ind.PA, , drop = FALSE])
                   calib.pa <- matrix(NA, nrow = length(bm.format@data.species), ncol = nb.rep)
                   calib.pa[ind.PA, ] <- sampled.mat
                   colnames(calib.pa) <- paste0('_PA', pa, '_RUN', 1:ncol(calib.pa))
