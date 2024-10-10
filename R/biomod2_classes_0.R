@@ -167,25 +167,25 @@ setMethod('BIOMOD.options.default', signature(mod = 'character', typ = 'characte
 .BIOMOD.options.default.correct <- function(mod, typ, pkg, argstmp)
 {
   ## Define type / method / family / distribution according to data.type
-  if (data.type == "binary") {
+  if (typ == "binary") {
     RFtype <- "classification"
     MODfamily <- binomial(link = 'logit')
     CTAmethod <- "class"
     GBMdistribution <- "bernoulli"
     FDAmethod <- "mars"
-  } else if(data.type == "count") {
+  } else if(typ == "count") {
     RFtype <- "regression"
     MODfamily <- poisson(link = "log")
     CTAmethod <- "poisson"
     GBMdistribution <- "poisson"
     FDAmethod <- NULL
-  } else if (data.type == "ordinal") {
+  } else if (typ == "ordinal") {
     RFtype <- "classification"
     MODfamily <- quasibinomial() 
     CTAmethod <- "class"
     GBMdistribution <- "multinomial"
     FDAmethod <- "mars"
-  } else if (data.type == "relative") {
+  } else if (typ == "relative") {
     RFtype <- "regression"
     MODfamily <- quasibinomial(link = 'logit')
     #GAMfamily <- betar(link="logit")
