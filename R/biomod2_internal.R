@@ -1,5 +1,5 @@
 
-.getOS = function()
+.getOS <- function()
 {
   sysinf = Sys.info()
   if (!is.null(sysinf))
@@ -420,7 +420,7 @@ rast.has.values <- function(x)
 ## TRANSFORM models outputs getting specific slot -------------------------------------------------
 ## used in BIOMOD_Modeling, BIOMOD_EnsembleModeling
 
-.transform_outputs_list = function(obj.type, obj.out, out = 'evaluation')
+.transform_outputs_list <- function(obj.type, obj.out, out = 'evaluation')
 {
   ## 0. CHECK object type ---------------------------------------------------------------
   .fun_testIfIn(TRUE, "obj.type", obj.type, c("mod", "em"))

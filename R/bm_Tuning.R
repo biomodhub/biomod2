@@ -532,7 +532,7 @@ bm_Tuning <- function(model,
                       fit <- as.numeric(fit[, 1])
                     }
                   }
-                  tmp <- bm_FindOptimStat(metric.bm, obs = myObs, fit = fit, model = tuned.form)[, "best.stat"]
+                  tmp <- bm_FindOptimStat(metric.bm, obs = myObs, fit = fit)[, "best.stat"]
                   formu <- paste0(bm.format@sp.name, "~" , as.character(formu)[3])
                   return(data.frame(stat = tmp, type = typ, interaction.level = intlev, formula = formu))
                 }

@@ -106,8 +106,7 @@ setMethod('bm_BinaryTransformation', signature('data.frame'),
                 return(out)
               } else { ## return NAs
                 return(as.data.frame(
-                  matrix(NA, ncol = ncol(data), nrow = nrow(data)
-                              , dimnames = dimnames(data))
+                  matrix(NA, ncol = ncol(data), nrow = nrow(data), dimnames = dimnames(data))
                 ))
               }
             }
@@ -156,7 +155,7 @@ setMethod('bm_BinaryTransformation', signature('SpatRaster'),
             }
             StkTmp <- rast()
             for (i in 1:nlyr(data)) {
-              if(!is.na(threshold[i])){
+              if (!is.na(threshold[i])) {
                 if (do.filtering) {
                   ras <- classify(subset(data, i),
                                   matrix(c(-Inf, threshold[i], 0),
@@ -164,8 +163,7 @@ setMethod('bm_BinaryTransformation', signature('SpatRaster'),
                                   right = FALSE)
                 } else {
                   ras <- classify(subset(data, i), 
-                                  matrix(c(-Inf, threshold[i], 0, 
-                                           threshold[i], +Inf, 1),
+                                  matrix(c(-Inf, threshold[i], 0, threshold[i], +Inf, 1),
                                          ncol = 3, byrow = TRUE),
                                   right = FALSE)
                 }
@@ -180,9 +178,11 @@ setMethod('bm_BinaryTransformation', signature('SpatRaster'),
             return(StkTmp)
           })
 
-### .convert_bin.matrix --------------------------------------------------------
 
-.convert_bin.matrix = function(data, threshold, do.filtering = FALSE) {
+# ---------------------------------------------------------------------------- #
+
+.convert_bin.matrix <- function(data, threshold, do.filtering = FALSE)
+{
   ind.0 = t(t(data) < threshold)
   data[ind.0] <- 0
   if (!do.filtering) { 
@@ -195,11 +195,13 @@ setMethod('bm_BinaryTransformation', signature('SpatRaster'),
   }
 }
 
-.convert_bin.array = function(x, y) {
+.convert_bin.array <- function(x, y)
+{
   return(ifelse(x >= y, 1, 0))
 }
 
-.convert_bin.array.filt = function(x, y) {
+.convert_bin.array.filt <- function(x, y)
+{
   x[x <= y] <- 0
   return(x)
 }

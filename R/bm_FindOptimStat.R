@@ -180,7 +180,6 @@ bm_FindOptimStat <- function(metric.eval = 'TSS',
                              threshold = NULL,
                              boyce.bg.env = NULL,
                              mpa.perc = 0.9,
-                             # model = NULL, ## for AIC with abundance data ?
                              k = NULL)
 {
   ## 0. Check arguments ---------------------------------------------------------------------------
@@ -491,7 +490,6 @@ bm_CalculateStatAbun <- function(metric.eval, obs, fit, k)
                , 'RMSE' = sqrt(mean((obs - fit) ^ 2))
                , 'MSE' = mean((obs - fit) ^ 2)
                , 'MAE' = mean(abs(obs - fit))
-               #, 'AIC' = "AIC(model)"
                , 'Rsq' = cor(obs,fit) ^ 2
                , "Rsq_aj" = 1 - (1 - cor(obs, fit) ^ 2) * (length(obs) - 1) / (length(obs) - k - 1) 
                , 'Max_error' = max(abs(obs - fit), na.rm = TRUE)
