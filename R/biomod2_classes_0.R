@@ -446,6 +446,9 @@ setMethod('BIOMOD.options.dataset', signature(strategy = 'character'),
                 argstmp$control = mgcv::gam.control()
               }
             }
+            if (mod == "GBM"){
+              argstmp$n.cores = 1
+            }
             if (mod == "GLM") {
               argstmp$family = binomial(link = 'logit')
               argstmp$control = list()
