@@ -379,39 +379,6 @@ rast.has.values <- function(x)
 }
 
 
-## CREATE MODEL FORMULA ---------------------------------------------------------------------------
-## used in bm_Tuning
-
-.scope <- function(enviroTrain, Smoother, degree)
-{
-  XXX <- enviroTrain
-  deg <- degree
-  vnames <- names(XXX[])
-  step.list <- as.list(vnames)
-  names(step.list) <- vnames
-  NbVar <- dim(enviroTrain)[2]
-  i <- 1
-  while (i <= NbVar)
-  {
-    vname <- names(XXX)[i]
-    # loops through independent variable names
-    junk <- paste0("1 + ", vname)
-    # minimum scope
-    if (is.numeric(XXX[, i])) {
-      junk <- c(junk, paste0(Smoother, "(", vname, ",", deg, ")"))
-      junk <- eval(parse(text = paste("~", paste(junk, collapse = "+"))))
-    } else if (is.factor(XXX[, i])) {
-      junk <- c(junk, vname)
-      junk <- eval(parse(text = paste("~", paste(junk, collapse = "+"))))
-    }
-    step.list[[vname]] <- junk
-    i <- i + 1
-  }
-  
-  return(step.list)
-}
-
-
 ## RESCALE MODEL WITH BINOMIAL GLM ----------------------------------------------------------------
 ## used in bm_RunModelsLoop
 

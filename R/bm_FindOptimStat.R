@@ -302,11 +302,6 @@ bm_FindOptimStat <- function(metric.eval = 'TSS',
     }
     best.stat <- bm_CalculateStatAbun(metric.eval, obs, fit, k)
   }
-  # else { #Cette boucle commence à être dégeulasse ~(´•︵•`)~
-  #   # accuracy: case 
-  #   correct <- sum(obs == fit)
-  #   best.stat <- correct/length(obs)
-  # }
   
   eval.out <- data.frame(metric.eval, cutoff, sensitivity, specificity, best.stat)
   return(eval.out)
