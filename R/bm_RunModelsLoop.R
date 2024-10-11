@@ -205,6 +205,7 @@ bm_RunModel <- function(model, run.name, dir.name = '.'
   if (is.null(args)) { return(NULL) }
   for (argi in names(args)) { assign(x = argi, value = args[[argi]]) }
   rm(args)
+  
   ## get model name and names of categorical variables
   dir_name <- dir.name
   model_name <- paste0(run.name, '_', model)
@@ -214,8 +215,9 @@ bm_RunModel <- function(model, run.name, dir.name = '.'
   opt_name <- grep(model, names(bm.options@options), value = TRUE)
   if (length(opt_name) == 1) {
     bm.opt <- bm.options@options[[opt_name]]
-  } else if (model == 'RF'){bm.opt <- bm.options@options[["RF.binary.randomForest.randomForest"]] }
-  else { stop("pitiprobleum") } ## Should not happen now
+  } else if (model == 'RF') {
+    bm.opt <- bm.options@options[["RF.binary.randomForest.randomForest"]]
+  } else { stop("pitiprobleum") } ## Should not happen now
   
   if (length(grep("GAM", model)) == 1) {
     subclass_name <- paste0(bm.opt@model, "_", bm.opt@type, "_", bm.opt@package)
@@ -234,8 +236,6 @@ bm_RunModel <- function(model, run.name, dir.name = '.'
   if (model != "MAXENT") { ## ANY MODEL BUT MAXENT ------------------------------------------------
     
     ## PRELIMINAR ---------------------------------------------------
-    
-    
     if (model %in% c("ANN", "MARS", "RF", "RFd") & is.null(bm.opt.val$formula)) { #add all models (not XGBOOST)? 
       bm.opt.val$formula <- bm_MakeFormula(resp.name = resp_name
                                            , expl.var = head(data_env)
@@ -254,7 +254,7 @@ bm_RunModel <- function(model, run.name, dir.name = '.'
       data_mod <- data_mod %>% mutate_at(resp_name, factor)
       bm.opt.val$strata <- data_mod[calib.lines.vec, , drop = FALSE][ , resp_name]
       nb_presences <- summary(data_mod[calib.lines.vec, resp_name])[["1"]]
-      bm.opt.val$sampsize <- unlist(ifelse(!is.null(bm.opt.val$sampsize), list(bm.opt.val$sampsize), list(c("0" =nb_presences, "1" =nb_presences))))
+      bm.opt.val$sampsize <- unlist(ifelse(!is.null(bm.opt.val$sampsize), list(bm.opt.val$sampsize), list(c("0" = nb_presences, "1" = nb_presences))))
       bm.opt.val$replace <- unlist(ifelse(!is.null(bm.opt.val$replace), list(bm.opt.val$replace), TRUE))
     }
     
@@ -290,7 +290,6 @@ bm_RunModel <- function(model, run.name, dir.name = '.'
       bm.opt.val$weight <- weights.vec[calib.lines.vec]
     }
     
-    
     ## REORGANIZE order of parameters -------------------------------
     if (model %in% c("ANN", "MARS", "RF", "RFd")) {
       bm.opt.val <- bm.opt.val[c("formula", "data", names(bm.opt.val)[which(!(names(bm.opt.val) %in% c("formula", "data")))])]
@@ -302,7 +301,7 @@ bm_RunModel <- function(model, run.name, dir.name = '.'
     ## RUN model ----------------------------------------------------
     model.call <- paste0(bm.opt@package, "::", bm.opt@func)
     model.sp <- try(do.call(eval(parse(text = model.call)), bm.opt.val))
-
+    
     
     ## GET results --------------------------------------------------
     if (!inherits(model.sp, "try-error")) {
@@ -311,7 +310,7 @@ bm_RunModel <- function(model, run.name, dir.name = '.'
         # select best trees --------------- May be done otherway
         tr <- as.data.frame(model.sp$cptable)
         tr$xsum <- tr$xerror + tr$xstd
-        tr <- tr[tr$nsplit > 0,]
+        tr <- tr[tr$nsplit > 0, ]
         if (nrow(tr) > 0) {
           Cp <- tr[tr$xsum == min(tr$xsum), "CP"]
           model.sp <- prune(model.sp, cp = Cp[length(Cp)])
@@ -460,15 +459,12 @@ bm_RunModel <- function(model, run.name, dir.name = '.'
     } else {
       g.pred <- try(predict(model.bm, data_env, on_0_1000 = on_0_1000, seedval = seed.val, temp_workdir = temp_workdir))
     }
-  }
-
-  
-  if (model == "MAXENT" & !inherits(g.pred, 'try-error')) {
+  } else if (model == "MAXENT" & !inherits(g.pred, 'try-error')) {
     temp_workdir = model.bm@model_output_dir
   }
   
   ## scale or not predictions -------------------------------------------------
-  if (scale.models & !inherits(g.pred, 'try-error') & data.type == "binary" ) {
+  if (scale.models & !inherits(g.pred, 'try-error') & data.type == "binary") {
     cat("\n\tModel scaling...")
     g.pred <- try(predict(model.bm, data_env, on_0_1000 = TRUE, seedval = seed.val, temp_workdir = temp_workdir))
     model.bm@scaling_model <- try(.scaling_model(g.pred / 1000, data_sp, weights = weights.vec))
@@ -490,14 +486,14 @@ bm_RunModel <- function(model, run.name, dir.name = '.'
   }
   
   ## Find good format of prediction for ordinal
-  if (data.type == "ordinal"){
-    if (model %in% c("GLM", "GAM", "XGBOOST")){
+  if (data.type == "ordinal") {
+    if (model %in% c("GLM", "GAM", "XGBOOST")) {
       optimized_pred <- .threshold_ordinal(fit = g.pred, obs = data_sp, metric.eval = "accuracy")
       g.pred <- optimized_pred$fit_factor
       model.bm@thresholds_ordinal <- optimized_pred$limits
       # g.pred <- .numeric2factor(g.pred, data_sp)
     } else {
-      g.pred <- factor(g.pred, levels = levels(data_sp), ordered = T)
+      g.pred <- factor(g.pred, levels = levels(data_sp), ordered = TRUE)
     }
   } else {
     g.pred <- as.numeric(g.pred) 
@@ -550,271 +546,269 @@ bm_RunModel <- function(model, run.name, dir.name = '.'
                          model = model.sp,
                          k = length(expl_var_names))
       }
-
-      if (data.type == 'binary'){
-        if (max(cross.validation$cutoff, na.rm = T) > 1000) {cat("\n*** Wrong values predicted, please be careful with the results fo this model")}
-      }
-      
       colnames(cross.validation)[which(colnames(cross.validation) == "best.stat")] <- "calibration"
       
+      if (data.type == 'binary' && max(cross.validation$cutoff, na.rm = TRUE) > 1000) {
+        cat("\n*** Wrong values predicted, please be careful with the results fo this model")
+      }
+      
       stat.validation <- foreach(xx = metric.eval, .combine = "rbind") %do% {
-          bm_FindOptimStat(metric.eval = xx,
-                           obs = data_sp[which(eval.lines.vec == TRUE)],
-                           fit = g.pred[which(eval.lines.vec == TRUE)],
-                           threshold = cross.validation$cutoff[
-                             which(cross.validation$metric.eval == xx)
-                           ],
-                           model = model.sp,
-                           k = length(expl_var_names))
+        bm_FindOptimStat(metric.eval = xx,
+                         obs = data_sp[which(eval.lines.vec == TRUE)],
+                         fit = g.pred[which(eval.lines.vec == TRUE)],
+                         threshold = cross.validation$cutoff[
+                           which(cross.validation$metric.eval == xx)
+                         ],
+                         model = model.sp,
+                         k = length(expl_var_names))
       }
       cross.validation$validation <- stat.validation$best.stat
     } else {
-        ## NO VALIDATION LINES -----------------------------------------------------
-        cross.validation <- foreach(xx = metric.eval, .combine = "rbind") %do% {
-            bm_FindOptimStat(metric.eval = xx,
-                             obs = data_sp[which(eval.lines.vec == TRUE)],
-                             fit = g.pred[which(eval.lines.vec == TRUE)],
-                             model = model.sp,
-                             k = length(expl_var_names))
-        }
-        colnames(cross.validation)[which(colnames(cross.validation) == "best.stat")] <- "calibration"
-        cross.validation$validation <- NA
+      ## NO VALIDATION LINES -----------------------------------------------------
+      cross.validation <- foreach(xx = metric.eval, .combine = "rbind") %do% {
+        bm_FindOptimStat(metric.eval = xx,
+                         obs = data_sp[which(eval.lines.vec == TRUE)],
+                         fit = g.pred[which(eval.lines.vec == TRUE)],
+                         model = model.sp,
+                         k = length(expl_var_names))
       }
-      
-      if (exists('g.pred.eval')) {
-        ## Check no NA in g.pred.eval to avoid evaluation failures
-        na_cell_id <- which(is.na(g.pred.eval))
-        if (length(na_cell_id) > 0) {
-          g.pred.eval.without.na <- g.pred.eval[-na_cell_id]
-          eval.data <- eval.data[-na_cell_id, ]
-          cat('\n\tNote : some NA occurs in evaluation predictions')
-        } else {
-          g.pred.eval.without.na <- g.pred.eval
-        }
-        
-        stat.evaluation <- foreach(xx = metric.eval, .combine = "rbind") %do% {
-          bm_FindOptimStat(metric.eval = xx,
-                           obs = eval.data[, 1],
-                           fit = g.pred.eval.without.na,
-                           threshold = cross.validation["cutoff", xx],
-                           model = model.sp,
-                           k = length(expl_var_names))
-        }
-        cross.validation$evaluation <- stat.evaluation$best.stat
+      colnames(cross.validation)[which(colnames(cross.validation) == "best.stat")] <- "calibration"
+      cross.validation$validation <- NA
+    }
+    
+    if (exists('g.pred.eval')) {
+      ## Check no NA in g.pred.eval to avoid evaluation failures
+      na_cell_id <- which(is.na(g.pred.eval))
+      if (length(na_cell_id) > 0) {
+        g.pred.eval.without.na <- g.pred.eval[-na_cell_id]
+        eval.data <- eval.data[-na_cell_id, ]
+        cat('\n\tNote : some NA occurs in evaluation predictions')
       } else {
-        cross.validation$evaluation <- NA
+        g.pred.eval.without.na <- g.pred.eval
       }
       
-      ## store results
-      for (col.i in 2:ncol(cross.validation)) {
-        cross.validation[, col.i] <- round(cross.validation[, col.i], digits = 3)
+      stat.evaluation <- foreach(xx = metric.eval, .combine = "rbind") %do% {
+        bm_FindOptimStat(metric.eval = xx,
+                         obs = eval.data[, 1],
+                         fit = g.pred.eval.without.na,
+                         threshold = cross.validation["cutoff", xx],
+                         model = model.sp,
+                         k = length(expl_var_names))
       }
-      ListOut$evaluation <- cross.validation
-      model.bm@model_evaluation <- cross.validation
-      rm(cross.validation)
-    }
-    
-    ## 5. COMPUTE VARIABLES IMPORTANCE --------------------------------------------------------------
-    if (var.import > 0) {
-      cat("\n\tEvaluating Predictor Contributions...")
-      if (model != "MAXENT") {
-        variables.importance <- bm_VariablesImportance(bm.model = model.bm
-                                                       , expl.var = data_env
-                                                       , nb.rep = var.import
-                                                       , seed.val = seed.val
-                                                       , do.progress = do.progress)
-      }
-      ListOut$var.import <- variables.importance
-      model.bm@model_variables_importance <- variables.importance
-      rm(variables.importance)
-      cat("\n")
-    }
-    
-    ## 6. SAVE MODEL OBJECT ON HARD DRIVE -----------------------------------------------------------
-    nameModel = paste(run.name, model, sep = "_") 
-    assign(x = nameModel, value = model.bm)
-    save(list = nameModel, file = file.path(dir_name, resp_name, "models", modeling.id, nameModel), compress = TRUE)
-    
-    return(ListOut)
-  }
-  
-  
-  ###################################################################################################
-  
-  .bm_RunModel.check.args <- function(model, bm.options, Data, weights.vec, calib.lines.vec
-                                      , eval.data, metric.eval, scale.models, seed.val = NULL, do.progress = TRUE)
-  {
-    data.type <- bm.options@options[[1]]@type
-    
-    ## 0. Do some cleaning over Data argument -----------------------------------
-    data_sp <- Data[, 1]
-    data_xy <- Data[, c("x", "y")]
-    data_env <- Data[, -c(1, which(colnames(Data) %in% c("x", "y"))), drop = FALSE]
-    resp_name <- colnames(Data)[1] ## species name
-    expl_var_names <- colnames(data_env) ## explanatory variable names
-    # replace Pseudo absences selected (NA) into true absences (0).. for model computing purpose
-    if (sum(is.na(Data[, 1]))) { data_sp[which(is.na(data_sp))] <- 0 }
-    
-    ## 1. Check CalibLines argument ---------------------------------------------
-    if (any(calib.lines.vec == FALSE)) ## if some lines for evaluation...
-    {
-      eval.lines.vec <- !calib.lines.vec
-      # ...test if there is (pseudo)absences AND presences in evaluation and calibration datasets
-      if ((length(which(data_sp[calib.lines.vec] == 0)) == 0 & data.type == "binary") ||
-          length(which(data_sp[calib.lines.vec] == 0)) == length(calib.lines.vec) ||
-          (length(which(data_sp[eval.lines.vec] == 0)) == 0 & data.type == "binary") ||
-          length(which(data_sp[eval.lines.vec] == 0)) == length(eval.lines.vec)) {
-        warning(paste0(resp_name, " ", model,
-                       " was switched off because of no both presences and absences data given"),
-                immediate. = TRUE)
-        return(NULL)
-      }
-    } else { ## evaluation = calibration dataset
-      eval.lines.vec <- calib.lines.vec
-      # ...test if there is absences AND presences in whole dataset
-      if ((length(which(data_sp == 0)) == 0 & data.type == "binary")  ||
-          length(which(data_sp == 0)) == length(data_sp)) {
-        warning(paste0(resp_name, " ", model,
-                       " was switched off because of no both presences and absences data given (full model)"),
-                immediate. = TRUE)
-        return(NULL)
-      }
-    }
-    
-    ## 2. Check weights argument ------------------------------------------------
-    if (is.null(weights.vec)) { weights.vec <- rep(1, nrow(Data)) }
-    ## These models require data and weights to be in the same dataset
-    if (model %in% c('ANN', 'MARS', 'CTA', 'GBM')) { ## TO BE ADDED RF ??
-      data_env_w <- cbind(data_env, weights.vec)
-      colnames(data_env_w) <- c(colnames(data_env), "weights")
+      cross.validation$evaluation <- stat.evaluation$best.stat
     } else {
-      data_env_w <- data_env
+      cross.validation$evaluation <- NA
     }
     
-    ## 3. Check scale.models argument -------------------------------------------
-    if (model == "SRE") { scale.models <- FALSE } else if (model %in% c("ANN", "FDA")) { scale.models <- TRUE }
-    
-    
-    ## 4. Check models.eval.meth arguments --------------------------------------
-    metric.eval <- unique(metric.eval)
-    avail.eval.meth.list <- c('TSS', 'KAPPA', 'ACCURACY', 'BIAS', 'POD', 'FAR', 'POFD'
-                              , 'SR', 'CSI', 'ETS', 'HK', 'HSS', 'OR', 'ORSS', 'ROC'
-                              , 'BOYCE', 'MPA', 'RMSE', 'MSE', "MAE", "Rsq", "Rsq_aj", "Max_error"
-                              , "accuracy", "recall", "precision", "F1score")
-    # .fun_testIfIn(TRUE, "metric.eval", metric.eval, avail.eval.meth.list)
-    if (sum(!(metric.eval %in% avail.eval.meth.list)) > 0) {
-      tmp = which(metric.eval %in% avail.eval.meth.list)
-      warnings(paste0(toString(metric.eval[!tmp]), ' were switched off !'), imediate = TRUE)
-      metric.eval <- metric.eval[tmp]
-    }  
-    
-    data_mod <- cbind(data_sp, data_env_w)
-    colnames(data_mod) <- c(resp_name, colnames(data_env_w))
-    
-    ## 5. Check data.type
-    avail.types.list <- c('binary', 'count', 'ordinal', 'relative', 'abundance')
-    .fun_testIfIn(TRUE, "data.type", data.type, avail.types.list)
-    
-    on_0_1000 <- TRUE
-    if(data.type %in% c("abundance", "count", "ordinal", "relative")){
-      on_0_1000 <- FALSE
+    ## store results
+    for (col.i in 2:ncol(cross.validation)) {
+      cross.validation[, col.i] <- round(cross.validation[, col.i], digits = 3)
     }
-    
-    return(list(data_sp = data_sp,
-                data_xy = data_xy,
-                data_env = data_env,
-                data_mod = data_mod,
-                weights.vec = weights.vec,
-                eval.lines.vec = eval.lines.vec,
-                metric.eval = metric.eval,
-                data.type = data.type,
-                eval.data = eval.data,
-                scale.models = scale.models,
-                resp_name = resp_name,
-                expl_var_names = expl_var_names,
-                seed.val = seed.val, ##seedval, CAREFUL really user value now, don't know if it is good thing or not !
-                on_0_1000 = on_0_1000,
-                do.progress = do.progress))
+    ListOut$evaluation <- cross.validation
+    model.bm@model_evaluation <- cross.validation
+    rm(cross.validation)
   }
   
+  ## 5. COMPUTE VARIABLES IMPORTANCE --------------------------------------------------------------
+  if (var.import > 0) {
+    cat("\n\tEvaluating Predictor Contributions...")
+    if (model != "MAXENT") {
+      variables.importance <- bm_VariablesImportance(bm.model = model.bm
+                                                     , expl.var = data_env
+                                                     , nb.rep = var.import
+                                                     , seed.val = seed.val
+                                                     , do.progress = do.progress)
+    }
+    ListOut$var.import <- variables.importance
+    model.bm@model_variables_importance <- variables.importance
+    rm(variables.importance)
+    cat("\n")
+  }
   
-  .maxent.prepare.workdir <- function(sp_name, run_name = NULL, data_sp, data_xy, data_env
-                                      , categorical_var = NULL, calib.lines.vec = NULL, data_eval
-                                      , dir.name = '.', modeling.id = '', background_data_dir = 'default')
+  ## 6. SAVE MODEL OBJECT ON HARD DRIVE -----------------------------------------------------------
+  nameModel = paste(run.name, model, sep = "_") 
+  assign(x = nameModel, value = model.bm)
+  save(list = nameModel, file = file.path(dir_name, resp_name, "models", modeling.id, nameModel), compress = TRUE)
+  
+  return(ListOut)
+}
+
+
+###################################################################################################
+
+.bm_RunModel.check.args <- function(model, bm.options, Data, weights.vec, calib.lines.vec
+                                    , eval.data, metric.eval, scale.models, seed.val = NULL, do.progress = TRUE)
+{
+  data.type <- bm.options@options[[1]]@type
+  
+  ## 0. Do some cleaning over Data argument -----------------------------------
+  data_sp <- Data[, 1]
+  data_xy <- Data[, c("x", "y")]
+  data_env <- Data[, -c(1, which(colnames(Data) %in% c("x", "y"))), drop = FALSE]
+  resp_name <- colnames(Data)[1] ## species name
+  expl_var_names <- colnames(data_env) ## explanatory variable names
+  # replace Pseudo absences selected (NA) into true absences (0).. for model computing purpose
+  if (sum(is.na(Data[, 1]))) { data_sp[which(is.na(data_sp))] <- 0 }
+  
+  ## 1. Check CalibLines argument ---------------------------------------------
+  if (any(calib.lines.vec == FALSE)) ## if some lines for evaluation...
   {
-    cat('\n\t\tCreating Maxent Temp Proj Data...')
-    
-    ## initialise output
-    MWD <- list()
-    class(MWD) <- "maxent_workdir_info"
-    
-    ## default parameters setting
-    if (is.null(run_name)) { run_name <- sp_name }
-    if (is.null(calib.lines.vec)) { calib.lines.vec <- rep(TRUE, nrow(data_env)) }
-    
-    ## define all paths to files needed by MAXENT
-    nameFolder = file.path(dir.name, sp_name, 'models', modeling.id)
-    m_outdir <- file.path(nameFolder, paste0(run_name, '_MAXENT_outputs'))
-    m_predictDir <- file.path(m_outdir, "Predictions")
-    MWD$m_outdir <- m_outdir
-    MWD$m_outputFile <- file.path(m_outdir, paste0(run_name, '_Pred_swd.csv'))
-    MWD$m_predictDir <- m_predictDir
-    
-    ## directories creation
-    dir.create(m_outdir, showWarnings = FALSE, recursive = TRUE, mode = '777')
-    dir.create(m_predictDir, showWarnings = FALSE, recursive = TRUE, mode = '777')
-    
-    ## transform categorical variables into numeric to avoid factors being saved 
-    ## as characters, which are not readable by maxent
-    data_env <- .categorical2numeric(data_env, categorical_var)
-    
-    ## Presence Data --------------------------------------------------------------------------------
-    presLines <- which((data_sp == 1) & calib.lines.vec)
-    absLines <- which((data_sp == 0) & calib.lines.vec)
-    Sp_swd <- cbind(rep(run_name, length(presLines))
-                    , data_xy[presLines, ]
-                    , data_env[presLines, , drop = FALSE])
-    colnames(Sp_swd) <- c('species', 'X', 'Y', colnames(data_env))
-    
-    m_speciesFile <- file.path(m_outdir, "Sp_swd.csv")
-    write.table(Sp_swd, file = m_speciesFile, quote = FALSE, row.names = FALSE, sep = ",")
-    MWD$m_speciesFile <- m_speciesFile
-    
-    ## Background Data (create background file only if needed) --------------------------------------
-    if (background_data_dir == 'default')  {
-      # keep only 0 of calib lines
-      Back_swd <- cbind(rep("background", length(absLines))
-                        , data_xy[absLines, ]
-                        , data_env[absLines, , drop = FALSE])
-      colnames(Back_swd) <- c("background", colnames(Back_swd)[-1])
-      
-      m_backgroundFile <- file.path(m_outdir, "Back_swd.csv")
-      write.table(Back_swd, file = m_backgroundFile, quote = FALSE, row.names = FALSE, col.names = TRUE, sep = ",")
-      MWD$m_backgroundFile <- m_backgroundFile
-    } else { ## use background directory given as an option
-      MWD$m_backgroundFile <- background_data_dir
+    eval.lines.vec <- !calib.lines.vec
+    # ...test if there is (pseudo)absences AND presences in evaluation and calibration datasets
+    if ((length(which(data_sp[calib.lines.vec] == 0)) == 0 & data.type == "binary") ||
+        length(which(data_sp[calib.lines.vec] == 0)) == length(calib.lines.vec) ||
+        (length(which(data_sp[eval.lines.vec] == 0)) == 0 & data.type == "binary") ||
+        length(which(data_sp[eval.lines.vec] == 0)) == length(eval.lines.vec)) {
+      warning(paste0(resp_name, " ", model,
+                     " was switched off because of no both presences and absences data given"),
+              immediate. = TRUE)
+      return(NULL)
     }
-    
-    ## Prediction Data ------------------------------------------------------------------------------
-    Pred_swd <- cbind(rep("predict", nrow(data_xy)), data_xy, data_env)
-    colnames(Pred_swd)  <- c("predict", "x", "y", colnames(data_env))
-    
-    m_predictFile <- file.path(m_predictDir, "Pred_swd.csv")
-    write.table(Pred_swd, file = m_predictFile, quote = FALSE, row.names = FALSE, col.names = TRUE, sep = ",")
-    MWD$m_predictFile <- m_predictFile
-    
-    ## dealing with independent evaluation data -----------------------------------------------------
-    if (!is.null(data_eval)) {
-      Pred_eval_swd <- cbind(rep("predictEval", nrow(data_eval))
-                             , data_eval[, c("x", "y")]
-                             , data_eval[, colnames(data_env), drop = FALSE])
-      colnames(Pred_eval_swd) <- c("predict", colnames(Back_swd)[-1])
-      
-      m_predictEvalFile <- file.path(m_predictDir, "PredEval_swd.csv")
-      write.table(Pred_eval_swd, file = m_predictEvalFile, quote = FALSE, row.names = FALSE, col.names = TRUE, sep = ",")
-      MWD$m_predictEvalFile <- m_predictEvalFile
+  } else { ## evaluation = calibration dataset
+    eval.lines.vec <- calib.lines.vec
+    # ...test if there is absences AND presences in whole dataset
+    if ((length(which(data_sp == 0)) == 0 & data.type == "binary")  ||
+        length(which(data_sp == 0)) == length(data_sp)) {
+      warning(paste0(resp_name, " ", model,
+                     " was switched off because of no both presences and absences data given (full model)"),
+              immediate. = TRUE)
+      return(NULL)
     }
-    
-    return(MWD)
   }
   
+  ## 2. Check weights argument ------------------------------------------------
+  if (is.null(weights.vec)) { weights.vec <- rep(1, nrow(Data)) }
+  ## These models require data and weights to be in the same dataset
+  if (model %in% c('ANN', 'MARS', 'CTA', 'GBM')) { ## TO BE ADDED RF ??
+    data_env_w <- cbind(data_env, weights.vec)
+    colnames(data_env_w) <- c(colnames(data_env), "weights")
+  } else {
+    data_env_w <- data_env
+  }
+  
+  ## 3. Check scale.models argument -------------------------------------------
+  if (model == "SRE") { scale.models <- FALSE } else if (model %in% c("ANN", "FDA")) { scale.models <- TRUE }
+  
+  
+  ## 4. Check models.eval.meth arguments --------------------------------------
+  metric.eval <- unique(metric.eval)
+  avail.eval.meth.list <- c('TSS', 'KAPPA', 'ACCURACY', 'BIAS', 'POD', 'FAR', 'POFD'
+                            , 'SR', 'CSI', 'ETS', 'HK', 'HSS', 'OR', 'ORSS', 'ROC'
+                            , 'BOYCE', 'MPA', 'RMSE', 'MSE', "MAE", "Rsq", "Rsq_aj", "Max_error"
+                            , "accuracy", "recall", "precision", "F1score")
+  # .fun_testIfIn(TRUE, "metric.eval", metric.eval, avail.eval.meth.list)
+  if (sum(!(metric.eval %in% avail.eval.meth.list)) > 0) {
+    tmp = which(metric.eval %in% avail.eval.meth.list)
+    warnings(paste0(toString(metric.eval[!tmp]), ' were switched off !'), imediate = TRUE)
+    metric.eval <- metric.eval[tmp]
+  }  
+  
+  data_mod <- cbind(data_sp, data_env_w)
+  colnames(data_mod) <- c(resp_name, colnames(data_env_w))
+  
+  ## 5. Check data.type
+  avail.types.list <- c('binary', 'count', 'ordinal', 'relative', 'abundance')
+  .fun_testIfIn(TRUE, "data.type", data.type, avail.types.list)
+  
+  on_0_1000 <- TRUE
+  if (data.type %in% c("abundance", "count", "ordinal", "relative")) {
+    on_0_1000 <- FALSE
+  }
+  
+  return(list(data_sp = data_sp,
+              data_xy = data_xy,
+              data_env = data_env,
+              data_mod = data_mod,
+              weights.vec = weights.vec,
+              eval.lines.vec = eval.lines.vec,
+              metric.eval = metric.eval,
+              data.type = data.type,
+              eval.data = eval.data,
+              scale.models = scale.models,
+              resp_name = resp_name,
+              expl_var_names = expl_var_names,
+              seed.val = seed.val, ##seedval, CAREFUL really user value now, don't know if it is good thing or not !
+              on_0_1000 = on_0_1000,
+              do.progress = do.progress))
+}
+
+
+.maxent.prepare.workdir <- function(sp_name, run_name = NULL, data_sp, data_xy, data_env
+                                    , categorical_var = NULL, calib.lines.vec = NULL, data_eval
+                                    , dir.name = '.', modeling.id = '', background_data_dir = 'default')
+{
+  cat('\n\t\tCreating Maxent Temp Proj Data...')
+  
+  ## initialise output
+  MWD <- list()
+  class(MWD) <- "maxent_workdir_info"
+  
+  ## default parameters setting
+  if (is.null(run_name)) { run_name <- sp_name }
+  if (is.null(calib.lines.vec)) { calib.lines.vec <- rep(TRUE, nrow(data_env)) }
+  
+  ## define all paths to files needed by MAXENT
+  nameFolder = file.path(dir.name, sp_name, 'models', modeling.id)
+  m_outdir <- file.path(nameFolder, paste0(run_name, '_MAXENT_outputs'))
+  m_predictDir <- file.path(m_outdir, "Predictions")
+  MWD$m_outdir <- m_outdir
+  MWD$m_outputFile <- file.path(m_outdir, paste0(run_name, '_Pred_swd.csv'))
+  MWD$m_predictDir <- m_predictDir
+  
+  ## directories creation
+  dir.create(m_outdir, showWarnings = FALSE, recursive = TRUE, mode = '777')
+  dir.create(m_predictDir, showWarnings = FALSE, recursive = TRUE, mode = '777')
+  
+  ## transform categorical variables into numeric to avoid factors being saved 
+  ## as characters, which are not readable by maxent
+  data_env <- .categorical2numeric(data_env, categorical_var)
+  
+  ## Presence Data --------------------------------------------------------------------------------
+  presLines <- which((data_sp == 1) & calib.lines.vec)
+  absLines <- which((data_sp == 0) & calib.lines.vec)
+  Sp_swd <- cbind(rep(run_name, length(presLines))
+                  , data_xy[presLines, ]
+                  , data_env[presLines, , drop = FALSE])
+  colnames(Sp_swd) <- c('species', 'X', 'Y', colnames(data_env))
+  
+  m_speciesFile <- file.path(m_outdir, "Sp_swd.csv")
+  write.table(Sp_swd, file = m_speciesFile, quote = FALSE, row.names = FALSE, sep = ",")
+  MWD$m_speciesFile <- m_speciesFile
+  
+  ## Background Data (create background file only if needed) --------------------------------------
+  if (background_data_dir == 'default')  {
+    # keep only 0 of calib lines
+    Back_swd <- cbind(rep("background", length(absLines))
+                      , data_xy[absLines, ]
+                      , data_env[absLines, , drop = FALSE])
+    colnames(Back_swd) <- c("background", colnames(Back_swd)[-1])
+    
+    m_backgroundFile <- file.path(m_outdir, "Back_swd.csv")
+    write.table(Back_swd, file = m_backgroundFile, quote = FALSE, row.names = FALSE, col.names = TRUE, sep = ",")
+    MWD$m_backgroundFile <- m_backgroundFile
+  } else { ## use background directory given as an option
+    MWD$m_backgroundFile <- background_data_dir
+  }
+  
+  ## Prediction Data ------------------------------------------------------------------------------
+  Pred_swd <- cbind(rep("predict", nrow(data_xy)), data_xy, data_env)
+  colnames(Pred_swd)  <- c("predict", "x", "y", colnames(data_env))
+  
+  m_predictFile <- file.path(m_predictDir, "Pred_swd.csv")
+  write.table(Pred_swd, file = m_predictFile, quote = FALSE, row.names = FALSE, col.names = TRUE, sep = ",")
+  MWD$m_predictFile <- m_predictFile
+  
+  ## dealing with independent evaluation data -----------------------------------------------------
+  if (!is.null(data_eval)) {
+    Pred_eval_swd <- cbind(rep("predictEval", nrow(data_eval))
+                           , data_eval[, c("x", "y")]
+                           , data_eval[, colnames(data_env), drop = FALSE])
+    colnames(Pred_eval_swd) <- c("predict", colnames(Back_swd)[-1])
+    
+    m_predictEvalFile <- file.path(m_predictDir, "PredEval_swd.csv")
+    write.table(Pred_eval_swd, file = m_predictEvalFile, quote = FALSE, row.names = FALSE, col.names = TRUE, sep = ",")
+    MWD$m_predictEvalFile <- m_predictEvalFile
+  }
+  
+  return(MWD)
+}
