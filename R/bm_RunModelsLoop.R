@@ -543,7 +543,6 @@ bm_RunModel <- function(model, run.name, dir.name = '.'
         bm_FindOptimStat(metric.eval = xx,
                          obs = data_sp[which(eval.lines.vec == FALSE)],
                          fit = g.pred[which(eval.lines.vec == FALSE)],
-                         model = model.sp,
                          k = length(expl_var_names))
       }
       colnames(cross.validation)[which(colnames(cross.validation) == "best.stat")] <- "calibration"
@@ -559,7 +558,6 @@ bm_RunModel <- function(model, run.name, dir.name = '.'
                          threshold = cross.validation$cutoff[
                            which(cross.validation$metric.eval == xx)
                          ],
-                         model = model.sp,
                          k = length(expl_var_names))
       }
       cross.validation$validation <- stat.validation$best.stat
@@ -569,7 +567,6 @@ bm_RunModel <- function(model, run.name, dir.name = '.'
         bm_FindOptimStat(metric.eval = xx,
                          obs = data_sp[which(eval.lines.vec == TRUE)],
                          fit = g.pred[which(eval.lines.vec == TRUE)],
-                         model = model.sp,
                          k = length(expl_var_names))
       }
       colnames(cross.validation)[which(colnames(cross.validation) == "best.stat")] <- "calibration"
@@ -592,7 +589,6 @@ bm_RunModel <- function(model, run.name, dir.name = '.'
                          obs = eval.data[, 1],
                          fit = g.pred.eval.without.na,
                          threshold = cross.validation["cutoff", xx],
-                         model = model.sp,
                          k = length(expl_var_names))
       }
       cross.validation$evaluation <- stat.evaluation$best.stat

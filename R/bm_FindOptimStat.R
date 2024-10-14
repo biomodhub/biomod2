@@ -36,7 +36,6 @@
 ##' of correctly classified presences for Minimal Predicted Area (see \code{ecospat.mpa()} in 
 ##' \pkg{ecospat})
 ##' @param misc a \code{matrix} corresponding to a contingency table
-##' @param model the complete model  
 ##' @param k a \code{numeric} corresponding to the number of predictive factor in the model
 ##'
 ##'

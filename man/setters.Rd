@@ -2,10 +2,10 @@
 % Please edit documentation in R/biomod2_classes_3.R
 \name{setters}
 \alias{setters}
-\alias{set_newdirname}
+\alias{set_new_dirname}
 \title{Functions to change the place of the different biomod2 objects}
 \usage{
-set_newdirname(obj, new.dir.name)
+set_new_dirname(obj, new.dir.name)
 }
 \arguments{
 \item{obj}{a \code{\link{BIOMOD.formated.data}}, \code{\link{BIOMOD.formated.data.PA}}, 

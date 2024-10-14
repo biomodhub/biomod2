@@ -5,6 +5,7 @@
 \alias{bm_CalculateStatBin}
 \alias{bm_CalculateStatAbund}
 \alias{get_optim_value}
+\alias{bm_CalculateStatAbun}
 \title{Calculate the best score according to a given evaluation method}
 \usage{
 bm_FindOptimStat(
@@ -15,13 +16,14 @@ bm_FindOptimStat(
   threshold = NULL,
   boyce.bg.env = NULL,
   mpa.perc = 0.9,
-  model = NULL,
   k = NULL
 )
 
 get_optim_value(metric.eval)
 
 bm_CalculateStatBin(misc, metric.eval = "TSS")
+
+bm_CalculateStatAbun(metric.eval, obs, fit, k)
 }
 \arguments{
 \item{metric.eval}{a \code{character} corresponding to the evaluation metric to be used, must 
@@ -52,8 +54,6 @@ pseudo-absences selected for modeling})
 \item{mpa.perc}{a \code{numeric} between \code{0} and \code{1} corresponding to the percentage 
 of correctly classified presences for Minimal Predicted Area (see \code{ecospat.mpa()} in 
 \pkg{ecospat})}
-
-\item{model}{the complete model}
 
 \item{k}{a \code{numeric} corresponding to the number of predictive factor in the model}
 

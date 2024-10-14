@@ -8,7 +8,7 @@ BIOMOD_Modeling(
   bm.format,
   modeling.id = as.character(format(Sys.time(), "\%s")),
   models = c("ANN", "CTA", "FDA", "GAM", "GBM", "GLM", "MARS", "MAXENT", "MAXNET", "RF",
-    "SRE", "XGBOOST"),
+    "RFd", "SRE", "XGBOOST"),
   models.pa = NULL,
   CV.strategy = "random",
   CV.nb.rep = 1,

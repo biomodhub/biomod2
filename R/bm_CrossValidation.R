@@ -305,12 +305,12 @@ bm_CrossValidation <- function(bm.format,
     if (length(ind.calib.unbalanced) > 0) {
       cat("\n   !!! Some calibration dataset ", mess, ": ",
           paste0(colnames(out)[ind.calib.unbalanced], collapse = ", "))
-      warning(paste0("Some calibration repetition ", mess1))
+      warning(paste0("Some calibration repetition ", mess))
     }
     if (length(ind.valid.unbalanced) > 0) {
       cat("\n   !!! Some validation dataset ", mess, ": ",
           paste0(colnames(out)[ind.valid.unbalanced], collapse = ", "))
-      warning(paste0("Some validation repetition ", mess1))
+      warning(paste0("Some validation repetition ", mess))
     }
   }
   
