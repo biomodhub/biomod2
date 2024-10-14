@@ -488,7 +488,7 @@ bm_RunModel <- function(model, run.name, dir.name = '.'
   ## Find good format of prediction for ordinal
   if (data.type == "ordinal") {
     if (model %in% c("GLM", "GAM", "XGBOOST")) {
-      optimized_pred <- .threshold_ordinal(fit = g.pred, obs = data_sp, metric.eval = "accuracy")
+      optimized_pred <- .threshold_ordinal(fit = g.pred, obs = data_sp, metric.eval = "Accuracy")
       g.pred <- optimized_pred$fit_factor
       model.bm@thresholds_ordinal <- optimized_pred$limits
       # g.pred <- .numeric2factor(g.pred, data_sp)
@@ -690,8 +690,8 @@ bm_RunModel <- function(model, run.name, dir.name = '.'
   metric.eval <- unique(metric.eval)
   avail.eval.meth.list <- c('TSS', 'KAPPA', 'ACCURACY', 'BIAS', 'POD', 'FAR', 'POFD'
                             , 'SR', 'CSI', 'ETS', 'HK', 'HSS', 'OR', 'ORSS', 'ROC'
-                            , 'BOYCE', 'MPA', 'RMSE', 'MSE', "MAE", "Rsq", "Rsq_aj", "Max_error"
-                            , "accuracy", "recall", "precision", "F1score")
+                            , 'BOYCE', 'MPA', 'RMSE', 'MSE', "MAE", "Rsquared", "Rsquared_aj", "Max_error"
+                            , "Accuracy", "Recall", "Precision", "F1")
   # .fun_testIfIn(TRUE, "metric.eval", metric.eval, avail.eval.meth.list)
   if (sum(!(metric.eval %in% avail.eval.meth.list)) > 0) {
     tmp = which(metric.eval %in% avail.eval.meth.list)

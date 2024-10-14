@@ -113,8 +113,8 @@ build '\emph{weighted response weights}' (see Details)}
 \item{metric.eval}{a \code{vector} containing evaluation metric names to be used, must 
 be among \code{ROC}, \code{TSS}, \code{KAPPA}, \code{ACCURACY}, \code{BIAS}, \code{POD}, 
 \code{FAR}, \code{POFD}, \code{SR}, \code{CSI}, \code{ETS}, \code{OR}, 
-\code{ORSS}, \code{BOYCE}, \code{MPA}, \code{RMSE}, \code{MAE}, \code{MSE}, \code{Rsq}, \code{Rsq_aj},
-\code{Max_error}, \code{accuracy}, \code{"recall"}, \code{"precision"}, \code{"F1score"}}
+\code{ORSS}, \code{BOYCE}, \code{MPA}, \code{RMSE}, \code{MAE}, \code{MSE}, \code{Rsquared}, \code{Rsquared_aj},
+\code{Max_error}, \code{Accuracy}, \code{"Recall"}, \code{"Precision"}, \code{"F1"}}
 
 \item{var.import}{(\emph{optional, default} \code{NULL}) \cr 
 An \code{integer} corresponding to the number of permutations to be done for each variable to 
@@ -267,17 +267,17 @@ metrics (see Details).
       \item \code{RMSE} : Root Mean Square Error
       \item \code{MSE} : Mean Square Error
       \item \code{MAE} : Mean Absolute Error
-      \item \code{Rsq} : R square
-      \item \code{Rsq_aj} : R square adjusted
+      \item \code{Rsquared} : R square
+      \item \code{Rsquared_aj} : R square adjusted
       \item \code{Max_error} : Maximum error
     }
     }
     \item{For ordinal data}{
     \itemize{
-      \item \code{accuracy} : Accuracy
-      \item \code{recall} : Macro average recall
-      \item \code{precision} : Macro average precision
-      \item \code{F1score} : Macro F1 score
+      \item \code{Accuracy} : Accuracy
+      \item \code{Recall} : Macro average Recall
+      \item \code{Precision} : Macro average Precision
+      \item \code{F1} : Macro F1 score
     }
     }
   }

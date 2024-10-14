@@ -16,8 +16,8 @@
 ##' @param metric.eval a \code{character} corresponding to the evaluation metric to be used, must 
 ##' be either \code{POD}, \code{FAR}, \code{POFD}, \code{SR}, \code{ACCURACY}, \code{BIAS}, 
 ##' \code{ROC}, \code{TSS}, \code{KAPPA}, \code{OR}, \code{ORSS}, \code{CSI}, \code{ETS}, 
-##' \code{BOYCE}, \code{MPA}, \code{RMSE}, \code{MAE}, \code{MSE}, \code{Rsq}, \code{Rsq_aj},
-##' \code{Max_error}, \code{accuracy}, \code{"recall"}, \code{"precision"}, \code{"F1score"}
+##' \code{BOYCE}, \code{MPA}, \code{RMSE}, \code{MAE}, \code{MSE}, \code{Rsquared}, \code{Rsquared_aj},
+##' \code{Max_error}, \code{Accuracy}, \code{"Recall"}, \code{"Precision"}, \code{"F1"}
 ##' @param obs a \code{vector} of observed values (binary, \code{0} or \code{1})
 ##' @param fit a \code{vector} of fitted values (continuous)
 ##' @param nb.thresh an \code{integer} corresponding to the number of thresholds to be 
@@ -89,17 +89,17 @@
 ##'       \item \code{RMSE} : Root Mean Square Error
 ##'       \item \code{MSE} : Mean Square Error
 ##'       \item \code{MAE} : Mean Absolute Error
-##'       \item \code{Rsq} : R square
-##'       \item \code{Rsq_aj} : R square adjusted
+##'       \item \code{Rsquared} : R square
+##'       \item \code{Rsquared_aj} : R square adjusted
 ##'       \item \code{Max_error} : Max_error
 ##'     }
 ##'     }
 ##'     \item{For ordinal data}{
 ##'     \itemize{
-##'       \item \code{accuracy} : Accuracy
-##'       \item \code{recall} : Macro average recall
-##'       \item \code{precision} : Macro average precision
-##'       \item \code{F1score} : Macro F1 score
+##'       \item \code{Accuracy} : Accuracy
+##'       \item \code{Recall} : Macro average Recall
+##'       \item \code{Precision} : Macro average Precision
+##'       \item \code{F1} : Macro F1 score
 ##'     }
 ##'     }
 ##' }
@@ -212,8 +212,8 @@ bm_FindOptimStat <- function(metric.eval = 'TSS',
   
   ## 1. Compute metrics ---------------------------------------------------------------------------
   cutoff <- sensitivity <- specificity <- best.stat <- NA
-  abundance_metrics <- c("RMSE", "MSE" ,"MAE" ,"AIC" ,'Rsq' ,'Rsq_aj'
-                         , 'Max_error',"accuracy", "recall", "precision", "F1score")
+  abundance_metrics <- c("RMSE", "MSE" ,"MAE" ,"AIC" ,'Rsquared' ,'Rsquared_aj'
+                         , 'Max_error',"Accuracy", "Recall", "Precision", "F1")
   
   if (!(metric.eval %in% c('ROC', abundance_metrics))) ## BINARY METRICS OTHER THAN ROC -----------
   {
@@ -293,7 +293,7 @@ bm_FindOptimStat <- function(metric.eval = 'TSS',
     
   } else if (metric.eval %in% abundance_metrics) ## ABUNDANCE METRICS -----------------------------
   {
-    if (metric.eval %in% c("accuracy", "recall", "precision", "F1score") &&
+    if (metric.eval %in% c("Accuracy", "Recall", "Precision", "F1") &&
         length(levels(obs)) != length(levels(fit))) {
       fit <- factor(fit, levels = levels(obs), ordered = TRUE)
       cat("\n \t\t Careful : some categories are not predicted! ")
@@ -480,7 +480,7 @@ bm_CalculateStatBin <- function(misc, metric.eval = 'TSS')
 bm_CalculateStatAbun <- function(metric.eval, obs, fit, k)
 {
   ## get contingency table
-  if (metric.eval %in% c("accuracy", "recall", "precision", "F1score")) {
+  if (metric.eval %in% c("Accuracy", "Recall", "Precision", "F1")) {
     m <- .contingency_table_ordinal(obs, fit)
   }
   
@@ -489,13 +489,13 @@ bm_CalculateStatAbun <- function(metric.eval, obs, fit, k)
                , 'RMSE' = sqrt(mean((obs - fit) ^ 2))
                , 'MSE' = mean((obs - fit) ^ 2)
                , 'MAE' = mean(abs(obs - fit))
-               , 'Rsq' = cor(obs,fit) ^ 2
-               , "Rsq_aj" = 1 - (1 - cor(obs, fit) ^ 2) * (length(obs) - 1) / (length(obs) - k - 1) 
+               , 'Rsquared' = cor(obs,fit) ^ 2
+               , "Rsquared_aj" = 1 - (1 - cor(obs, fit) ^ 2) * (length(obs) - 1) / (length(obs) - k - 1) 
                , 'Max_error' = max(abs(obs - fit), na.rm = TRUE)
-               , "accuracy" = sum(diag(m)) / sum(m)
-               , "recall" = sum(diag(m) / colSums(m), na.rm = TRUE) / nrow(m)
-               , "precision" = sum(diag(m) / rowSums(m), na.rm = TRUE) / nrow(m)
-               , "F1score" = {
+               , "Accuracy" = sum(diag(m)) / sum(m)
+               , "Recall" = sum(diag(m) / colSums(m), na.rm = TRUE) / nrow(m)
+               , "Precision" = sum(diag(m) / rowSums(m), na.rm = TRUE) / nrow(m)
+               , "F1" = {
                  p <- sum(diag(m) / rowSums(m), na.rm = TRUE) / nrow(m)
                  r <- sum(diag(m) / colSums(m), na.rm = TRUE) / nrow(m)
                  return(2 * p * r / (p + r))

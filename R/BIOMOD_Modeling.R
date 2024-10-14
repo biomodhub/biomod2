@@ -73,8 +73,8 @@
 ##' @param metric.eval a \code{vector} containing evaluation metric names to be used, must 
 ##' be among \code{ROC}, \code{TSS}, \code{KAPPA}, \code{ACCURACY}, \code{BIAS}, \code{POD}, 
 ##' \code{FAR}, \code{POFD}, \code{SR}, \code{CSI}, \code{ETS}, \code{OR}, 
-##' \code{ORSS}, \code{BOYCE}, \code{MPA}, \code{RMSE}, \code{MAE}, \code{MSE}, \code{Rsq}, \code{Rsq_aj},
-##' \code{Max_error}, \code{accuracy}, \code{"recall"}, \code{"precision"}, \code{"F1score"}
+##' \code{ORSS}, \code{BOYCE}, \code{MPA}, \code{RMSE}, \code{MAE}, \code{MSE}, \code{Rsquared}, \code{Rsquared_aj},
+##' \code{Max_error}, \code{Accuracy}, \code{"Recall"}, \code{"Precision"}, \code{"F1"}
 ##' @param var.import (\emph{optional, default} \code{NULL}) \cr 
 ##' An \code{integer} corresponding to the number of permutations to be done for each variable to 
 ##' estimate variable importance
@@ -220,17 +220,17 @@
 ##'       \item \code{RMSE} : Root Mean Square Error
 ##'       \item \code{MSE} : Mean Square Error
 ##'       \item \code{MAE} : Mean Absolute Error
-##'       \item \code{Rsq} : R square
-##'       \item \code{Rsq_aj} : R square adjusted
+##'       \item \code{Rsquared} : R square
+##'       \item \code{Rsquared_aj} : R square adjusted
 ##'       \item \code{Max_error} : Maximum error
 ##'     }
 ##'     }
 ##'     \item{For ordinal data}{
 ##'     \itemize{
-##'       \item \code{accuracy} : Accuracy
-##'       \item \code{recall} : Macro average recall
-##'       \item \code{precision} : Macro average precision
-##'       \item \code{F1score} : Macro F1 score
+##'       \item \code{Accuracy} : Accuracy
+##'       \item \code{Recall} : Macro average Recall
+##'       \item \code{Precision} : Macro average Precision
+##'       \item \code{F1} : Macro F1 score
 ##'     }
 ##'     }
 ##'   }
@@ -742,9 +742,9 @@ BIOMOD_Modeling <- function(bm.format,
                               , 'SR', 'CSI', 'ETS', 'HK', 'HSS', 'OR', 'ORSS', 'ROC'
                               , 'BOYCE', 'MPA')
   } else if (bm.format@data.type == "ordinal") {
-    avail.eval.meth.list <- c("accuracy", "recall", "precision", "F1score")
+    avail.eval.meth.list <- c("Accuracy", "Recall", "Precision", "F1")
   } else {
-    avail.eval.meth.list <- c('RMSE','MSE',"MAE","Rsq","Rsq_aj","Max_error")
+    avail.eval.meth.list <- c('RMSE','MSE',"MAE","Rsquared","Rsquared_aj","Max_error")
   }
   .fun_testIfIn(TRUE, paste0("metric.eval with ", bm.format@data.type, " data type"), metric.eval, avail.eval.meth.list)
   

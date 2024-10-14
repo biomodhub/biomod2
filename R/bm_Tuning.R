@@ -680,10 +680,10 @@ bm_Tuning <- function(model,
     metric.bm <- metric.eval
   } else if (bm.format@data.type == "ordinal") {
     .fun_testIfIn(TRUE, "metric.eval", metric.eval, c("Accuracy"))
-    metric.bm <- "accuracy"
+    metric.bm <- "Accuracy"
   } else {
-    .fun_testIfIn(TRUE, "metric.eval", metric.eval, c("RMSE", "Rsquared"))
-    metric.bm <- ifelse(metric.eval == "RMSE", "RMSE", "Rsq")
+    .fun_testIfIn(TRUE, "metric.eval", metric.eval, c("RMSE", "Rsquareduared"))
+    metric.bm <- ifelse(metric.eval == "RMSE", "RMSE", "Rsquared")
   }
   
   ## check weights ------------------------------------------------------------

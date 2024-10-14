@@ -29,8 +29,8 @@ bm_CalculateStatAbun(metric.eval, obs, fit, k)
 \item{metric.eval}{a \code{character} corresponding to the evaluation metric to be used, must 
 be either \code{POD}, \code{FAR}, \code{POFD}, \code{SR}, \code{ACCURACY}, \code{BIAS}, 
 \code{ROC}, \code{TSS}, \code{KAPPA}, \code{OR}, \code{ORSS}, \code{CSI}, \code{ETS}, 
-\code{BOYCE}, \code{MPA}, \code{RMSE}, \code{MAE}, \code{MSE}, \code{Rsq}, \code{Rsq_aj},
-\code{Max_error}, \code{accuracy}, \code{"recall"}, \code{"precision"}, \code{"F1score"}}
+\code{BOYCE}, \code{MPA}, \code{RMSE}, \code{MAE}, \code{MSE}, \code{Rsquared}, \code{Rsquared_aj},
+\code{Max_error}, \code{Accuracy}, \code{"Recall"}, \code{"Precision"}, \code{"F1"}}
 
 \item{obs}{a \code{vector} of observed values (binary, \code{0} or \code{1})}
 
@@ -111,17 +111,17 @@ metric.
       \item \code{RMSE} : Root Mean Square Error
       \item \code{MSE} : Mean Square Error
       \item \code{MAE} : Mean Absolute Error
-      \item \code{Rsq} : R square
-      \item \code{Rsq_aj} : R square adjusted
+      \item \code{Rsquared} : R square
+      \item \code{Rsquared_aj} : R square adjusted
       \item \code{Max_error} : Max_error
     }
     }
     \item{For ordinal data}{
     \itemize{
-      \item \code{accuracy} : Accuracy
-      \item \code{recall} : Macro average recall
-      \item \code{precision} : Macro average precision
-      \item \code{F1score} : Macro F1 score
+      \item \code{Accuracy} : Accuracy
+      \item \code{Recall} : Macro average Recall
+      \item \code{Precision} : Macro average Precision
+      \item \code{F1} : Macro F1 score
     }
     }
 }

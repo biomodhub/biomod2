@@ -45,8 +45,8 @@ must be among \code{'EMmean'}, \code{'EMmedian'}, \code{'EMcv'}, \code{'EMci'},
 (and defined through \code{metric.select.table}) or \code{POD}, \code{FAR}, \code{POFD}, 
 \code{SR}, \code{ACCURACY}, \code{BIAS}, \code{ROC}, \code{TSS}, \code{KAPPA}, \code{OR}, 
 \code{ORSS}, \code{CSI}, \code{ETS}, \code{BOYCE}, \code{MPA}, \code{RMSE}, \code{MAE}, 
-\code{MSE}, \code{Rsq}, \code{Rsq_aj}, \code{Max_error}, \code{accuracy}, \code{recall},
-\code{precision}, \code{F1score}}
+\code{MSE}, \code{Rsquared}, \code{Rsquared_aj}, \code{Max_error}, \code{Accuracy}, \code{Recall},
+\code{Precision}, \code{F1}}
 
 \item{metric.select.thresh}{(\emph{optional, default} \code{NULL}) \cr 
 A \code{vector} of \code{numeric} values corresponding to the minimum scores (one for each 
@@ -66,8 +66,8 @@ weigh the ensemble models should be among 'evaluation', 'validation' or 'calibra
 \item{metric.eval}{a \code{vector} containing evaluation metric names to be used, must 
 be among  \code{POD}, \code{FAR}, \code{POFD}, \code{SR}, \code{ACCURACY}, \code{BIAS}, 
 \code{ROC}, \code{TSS}, \code{KAPPA}, \code{OR}, \code{ORSS}, \code{CSI}, \code{ETS}, 
-\code{BOYCE}, \code{MPA}, \code{RMSE}, \code{MAE}, \code{MSE}, \code{Rsq}, \code{Rsq_aj},
-\code{Max_error}, \code{accuracy}, \code{recall}, \code{precision}, \code{F1score}}
+\code{BOYCE}, \code{MPA}, \code{RMSE}, \code{MAE}, \code{MSE}, \code{Rsquared}, \code{Rsquared_aj},
+\code{Max_error}, \code{Accuracy}, \code{Recall}, \code{Precision}, \code{F1}}
 
 \item{var.import}{(\emph{optional, default} \code{NULL}) \cr 
 An \code{integer} corresponding to the number of permutations to be done for each variable to 

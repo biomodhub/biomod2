@@ -29,8 +29,8 @@
 ##' (and defined through \code{metric.select.table}) or \code{POD}, \code{FAR}, \code{POFD}, 
 ##' \code{SR}, \code{ACCURACY}, \code{BIAS}, \code{ROC}, \code{TSS}, \code{KAPPA}, \code{OR}, 
 ##' \code{ORSS}, \code{CSI}, \code{ETS}, \code{BOYCE}, \code{MPA}, \code{RMSE}, \code{MAE}, 
-##' \code{MSE}, \code{Rsq}, \code{Rsq_aj}, \code{Max_error}, \code{accuracy}, \code{recall},
-##' \code{precision}, \code{F1score}
+##' \code{MSE}, \code{Rsquared}, \code{Rsquared_aj}, \code{Max_error}, \code{Accuracy}, \code{Recall},
+##' \code{Precision}, \code{F1}
 ##' @param metric.select.thresh (\emph{optional, default} \code{NULL}) \cr 
 ##' A \code{vector} of \code{numeric} values corresponding to the minimum scores (one for each 
 ##' \code{metric.select}) below which single models will be excluded from the ensemble model 
@@ -46,8 +46,8 @@
 ##' @param metric.eval a \code{vector} containing evaluation metric names to be used, must 
 ##' be among  \code{POD}, \code{FAR}, \code{POFD}, \code{SR}, \code{ACCURACY}, \code{BIAS}, 
 ##' \code{ROC}, \code{TSS}, \code{KAPPA}, \code{OR}, \code{ORSS}, \code{CSI}, \code{ETS}, 
-##' \code{BOYCE}, \code{MPA}, \code{RMSE}, \code{MAE}, \code{MSE}, \code{Rsq}, \code{Rsq_aj},
-##' \code{Max_error}, \code{accuracy}, \code{recall}, \code{precision}, \code{F1score}
+##' \code{BOYCE}, \code{MPA}, \code{RMSE}, \code{MAE}, \code{MSE}, \code{Rsquared}, \code{Rsquared_aj},
+##' \code{Max_error}, \code{Accuracy}, \code{Recall}, \code{Precision}, \code{F1}
 ##' @param var.import (\emph{optional, default} \code{NULL}) \cr 
 ##' An \code{integer} corresponding to the number of permutations to be done for each variable to 
 ##' estimate variable importance
@@ -938,9 +938,9 @@ BIOMOD_EnsembleModeling <- function(bm.mod,
                               , 'SR', 'CSI', 'ETS', 'HK', 'HSS', 'OR', 'ORSS', 'ROC'
                               , 'BOYCE', 'MPA')
   } else if (bm.mod@data.type == "ordinal"){
-    avail.eval.meth.list <- c("accuracy", "recall", "precision", "F1score")
+    avail.eval.meth.list <- c("Accuracy", "Recall", "Precision", "F1")
   } else {
-    avail.eval.meth.list <- c('RMSE','MSE',"MAE","Rsq","Rsq_aj","Max_error")
+    avail.eval.meth.list <- c('RMSE','MSE',"MAE","Rsquared","Rsquared_aj","Max_error")
   }
   .fun_testIfIn(TRUE, paste0("metric.eval with ", bm.mod@data.type, " data type"), metric.eval, avail.eval.meth.list)
 
