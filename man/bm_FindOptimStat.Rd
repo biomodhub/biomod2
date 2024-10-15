@@ -104,7 +104,7 @@ Optimal value of each method can be obtained with the \code{\link{get_optim_valu
 \emph{Please refer to the \href{https://www.cawcr.gov.au/projects/verification/}{CAWRC website 
 (section "Methods for dichotomous forecasts")} to get detailed description of each metric.}
 
-Note that if a value is given to \code{threshold}, no optimisation will be done., and 
+Note that if a value is given to \code{threshold}, no optimization will be done., and 
 only the score for this threshold will be returned.
 
 The Boyce index returns \code{NA} values for \code{SRE} models because it can not be 

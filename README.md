@@ -102,7 +102,7 @@ devtools::install_github("biomodhub/biomod2", dependencies = TRUE)
 - 3 new vignettes have been created :
     - [data preparation](https://biomodhub.github.io/biomod2/articles/vignette_dataPreparation.html) (*questions you should ask yourself before modeling*)
     - [cross-validation](https://biomodhub.github.io/biomod2/articles/vignette_crossValidation.html) (*to prepare your own calibration / validation datasets*)
-    - [modeling options](https://biomodhub.github.io/biomod2/articles/vignette_dataPreparation.html) (*to help you navigate through the new way of parametrizing single models*)
+    - [modeling options](https://biomodhub.github.io/biomod2/articles/vignette_modelingOptions.html) (*to help you navigate through the new way of parametrizing single models*)
 
 <br/>
 
