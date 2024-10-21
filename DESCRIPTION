@@ -106,6 +106,7 @@ Collate:
     'bm_FindOptimStat.R'
     'bm_MakeFormula.R'
     'bm_ModelingOptions.R'
+    'bm_ModelAnalysis.R'
     'bm_PlotEvalBoxplot.R'
     'bm_PlotEvalMean.R'
     'bm_PlotRangeSize.R'
