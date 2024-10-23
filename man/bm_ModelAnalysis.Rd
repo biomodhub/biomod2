@@ -14,7 +14,9 @@ bm_ModelAnalysis(
 \arguments{
 \item{bm.mod}{a \code{BIOMOD.models.out}}
 
-\item{models.chosen}{}
+\item{models.chosen}{a \code{vector} containing model names to be kept, must be either
+\code{all} or a sub-selection of model names that can be obtained with the
+\code{\link{get_built_models}} function}
 
 \item{do.plot}{a \code{logical}, print the plot or not}
 

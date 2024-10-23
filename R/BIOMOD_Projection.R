@@ -107,6 +107,8 @@
 ##'   \item \code{output.format} : a \code{character} value corresponding to the projections 
 ##'   saving format on hard drive, must be either \code{.grd}, \code{.img}, \code{.tif} or \code{.RData} (the 
 ##'   default if \code{new.env} is given as \code{matrix} or \code{data.frame})
+##'   \item \code{overwrite} : a \code{logical}. FALSE by default. If some projections with the same project ID 
+##'   and modeling ID are already create, does biomod2 crush it or not ? 
 ##' }
 ##' 
 ##' 
@@ -318,7 +320,7 @@ BIOMOD_Projection <- function(bm.mod,
     pred.tmp <- predict(mod, new.env, on_0_1000 = on_0_1000, 
                         filename = filename, omit.na = omit.na, 
                         temp_workdir = temp_workdir, seedval = seed.val, 
-                        overwrite = TRUE, mod.name = mod.name)
+                        overwrite = overwrite, mod.name = mod.name)
     
 
     ## Cleaning 
@@ -341,10 +343,6 @@ BIOMOD_Projection <- function(bm.mod,
           pred.tmp[pred.tmp > j + limits[j] & pred.tmp < j + 1 ] <- j + 1
         }
       }
-      
-      # levels <- 1:length(levels(data_sp))
-      # names(levels) <- levels(data_sp)
-      # pred.tmp <- factor(pred.tmp, levels = levels, ordered = T)
     }
     
     
@@ -355,7 +353,7 @@ BIOMOD_Projection <- function(bm.mod,
         return(pred.tmp)
       }
     } else {
-      cat(filename)
+      cat("\n\t\t", filename)
       return(filename)
     }
   }
@@ -702,6 +700,12 @@ BIOMOD_Projection <- function(bm.mod,
   on_0_1000 <- ifelse(is.null(args$on_0_1000), TRUE, args$on_0_1000)
   if (bm.mod@data.type %in% c("count","abundance","ordinal")) {on_0_1000 <- FALSE}
   
+  ## 11.Check overwrite
+  overwrite <- ifelse(is.null(args$overwrite), ifelse(do.stack, TRUE, FALSE), args$overwrite)
+  if (!overwrite){
+    cat("\n\t\t! 'overwrite' arg is set as FALSE. Projections that have already been saved will not be redone. 
+        Please be carfeul if you have changed the models in the meantime. ")
+  }
   
   return(list(proj.name = proj.name,
               new.env = new.env,
@@ -716,7 +720,8 @@ BIOMOD_Projection <- function(bm.mod,
               do.stack = do.stack,
               keep.in.memory = ifelse(is.null(args$keep.in.memory), TRUE, args$keep.in.memory),
               on_0_1000 = on_0_1000,
-              seed.val = seed.val))
+              seed.val = seed.val,
+              overwrite = overwrite))
 }
 
 

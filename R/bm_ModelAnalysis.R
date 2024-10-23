@@ -8,7 +8,9 @@
 ##' 
 ##' 
 ##' @param bm.mod a \code{BIOMOD.models.out}
-##' @param models.chosen 
+##' @param models.chosen a \code{vector} containing model names to be kept, must be either 
+##' \code{all} or a sub-selection of model names that can be obtained with the 
+##' \code{\link{get_built_models}} function
 ##' @param do.plot a \code{logical}, print the plot or not 
 ##' @param color.by a \code{character} between "full.name", "species", "PA", "RUN" or "algo" 
 ##' 
@@ -31,7 +33,8 @@
 ##' 
 ##' 
 ##' @importFrom foreach foreach %do%
-##' @importFrom ggplot2 ggplot geom_hline geom_point stat_qq stat_qq_line
+##' @importFrom ggplot2 ggplot geom_hline geom_point stat_qq stat_qq_line vars geom_histogram
+##' @importFrom tidyr separate
 ##' 
 ##' @export
 ##' 
@@ -137,6 +140,12 @@ bm_ModelAnalysis <- function(bm.mod,
 
 # method pour cas avec residuals 
 # method pour RF 
+
+##' @name bm_return_info_analysis
+##' @title Functions to get residuals and fitted values of a model
+##' 
+##' @param mod a \code{biomod2_model} 
+##' @importFrom stats fitted residuals
 
 setGeneric("bm_return_info_analysis", function(mod) { standardGeneric("bm_return_info_analysis")})
 

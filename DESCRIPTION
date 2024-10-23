@@ -52,6 +52,7 @@ Imports:
     pROC (>= 1.15.0),
     PresenceAbsence,
     dplyr,
+    tidyr,
     rlang
 Suggests:
     Hmisc,

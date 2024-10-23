@@ -124,6 +124,8 @@ calibration / validation range, identifying locations where predictions are unce
   \item \code{output.format} : a \code{character} value corresponding to the projections 
   saving format on hard drive, must be either \code{.grd}, \code{.img}, \code{.tif} or \code{.RData} (the 
   default if \code{new.env} is given as \code{matrix} or \code{data.frame})
+  \item \code{overwrite} : a \code{logical}. FALSE by default. If some projections with the same project ID 
+  and modeling ID are already create, does biomod2 crush it or not ? 
 }
 }
 \examples{

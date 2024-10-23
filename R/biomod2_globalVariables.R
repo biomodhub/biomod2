@@ -42,7 +42,8 @@ utils::globalVariables(names = c("do.stack",
                                  "mod.name",
                                  "on_0_1000",
                                  "omit.na",
-                                 "keep.in.memory"))
+                                 "keep.in.memory",
+                                 "overwrite"))
 
                                  
 
@@ -84,6 +85,9 @@ utils::globalVariables(names = c("dataset.i", "PA.i", "tuned.mod", "train.params
 
 ## bm_ModelingOptions ------------
 utils::globalVariables(names = c("ModelsTable"))
+
+## bm_ModelAnalysis ------------
+utils::globalVariables(names = c("fitted", "metric", "obs", "point", "residuals"))
 
 ## bm_CrossValidation ------------
 utils::globalVariables(names = c("pa", "env", "this.colnames"))
