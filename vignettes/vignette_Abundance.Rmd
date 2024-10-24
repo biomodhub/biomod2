@@ -173,11 +173,11 @@ However, not all models are available. We have :
  - `CTA`, `FDA`, `GAM`, `GLM`, `MARS`, `RF`, and `XGBOOST` for ordinal data
 
 The metrics are also different obviously. For the moment, we have implemented :
-`RMSE`, `MSE`, `MAE`, `Max_error`, `Rsq` and `Rsq_aj` (see `?BIOMOD_Modeling`)  
+`RMSE`, `MSE`, `MAE`, `Max_error`, `Rsquared` and `Rsquared_aj` (see `?BIOMOD_Modeling`)  
 
-For ordinal data, we have `accuracy`, `recall`, `precision` and `F1score`.  
-(`accuracy` is in lower case to contrast with `ACCURACY` for binary data)   
-**! Warning !** this name will probably change to avoid some confusion !   
+For ordinal data, we have `Accuracy`, `Recall`, `Precision` and `F1`.  
+(`Accuracy` is in lower case to contrast with `ACCURACY` for binary data)   
+ 
 
 ```R
 # Model single models
@@ -189,7 +189,7 @@ myBiomodModelOut <- BIOMOD_Modeling(bm.format = myBiomodData,
                                     CV.perc = 0.8,
                                     OPT.strategy = 'bigboss',
                                     var.import = 3,
-                                    metric.eval = c('RMSE','Rsq'))
+                                    metric.eval = c('RMSE','Rsquared'))
 
 
 myBiomodModelOut
@@ -227,9 +227,9 @@ myBiomodEM <- BIOMOD_EnsembleModeling(bm.mod = myBiomodModelOut,
                                       models.chosen = 'all',
                                       em.by = 'all',
                                       em.algo = c('EMmean', 'EMcv', 'EMci', 'EMmedian', 'EMwmean'),
-                                      metric.select = c('RMSE','Rsq'),
+                                      metric.select = c('RMSE','Rsquared'),
                                       metric.select.thresh = c(2, 0.4),
-                                      metric.eval = c('RMSE','Rsq'),
+                                      metric.eval = c('RMSE','Rsquared'),
                                       var.import = 3,
                                       EMci.alpha = 0.05,
                                       EMwmean.decay = 'proportional')
@@ -334,6 +334,6 @@ Don't hesitate to let us know what new features you'd like to see, what warnings
 
 <br/> 
 
-<i class="fa-thin fa-trillium"></i> The biomod2 Team ! <i class="fa-thin fa-trillium"></i>
+<i class="fa-solid fa-clover"></i> The biomod2 Team ! <i class="fa-solid fa-clover"></i>
 
 

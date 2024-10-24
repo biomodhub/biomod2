@@ -348,13 +348,12 @@ models are available. We have :<br>
 <code>XGBOOST</code> for ordinal data</p>
 <p>The metrics are also different obviously. For the moment, we have
 implemented : <code>RMSE</code>, <code>MSE</code>, <code>MAE</code>,
-<code>Max_error</code>, <code>Rsq</code> and <code>Rsq_aj</code> (see
-<code><a href="../reference/BIOMOD_Modeling.html">?BIOMOD_Modeling</a></code>)</p>
-<p>For ordinal data, we have <code>accuracy</code>, <code>recall</code>,
-<code>precision</code> and <code>F1score</code>.<br>
-(<code>accuracy</code> is in lower case to contrast with
-<code>ACCURACY</code> for binary data)<br><strong>! Warning !</strong> this name will probably change to avoid
-some confusion !</p>
+<code>Max_error</code>, <code>Rsquared</code> and
+<code>Rsquared_aj</code> (see <code><a href="../reference/BIOMOD_Modeling.html">?BIOMOD_Modeling</a></code>)</p>
+<p>For ordinal data, we have <code>Accuracy</code>, <code>Recall</code>,
+<code>Precision</code> and <code>F1</code>.<br>
+(<code>Accuracy</code> is in lower case to contrast with
+<code>ACCURACY</code> for binary data)</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Model single models</span></span>
 <span><span class="va">myBiomodModelOut</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/BIOMOD_Modeling.html">BIOMOD_Modeling</a></span><span class="op">(</span>bm.format <span class="op">=</span> <span class="va">myBiomodData</span>,</span>
@@ -365,7 +364,7 @@ some confusion !</p>
 <span>                                    CV.perc <span class="op">=</span> <span class="fl">0.8</span>,</span>
 <span>                                    OPT.strategy <span class="op">=</span> <span class="st">'bigboss'</span>,</span>
 <span>                                    var.import <span class="op">=</span> <span class="fl">3</span>,</span>
-<span>                                    metric.eval <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">'RMSE'</span>,<span class="st">'Rsq'</span><span class="op">)</span><span class="op">)</span></span>
+<span>                                    metric.eval <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">'RMSE'</span>,<span class="st">'Rsquared'</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
 <span></span>
 <span><span class="va">myBiomodModelOut</span></span>
@@ -405,9 +404,9 @@ the models with a <code>RMSE</code> under <code>1.850 + 2</code>.</p>
 <span>                                      models.chosen <span class="op">=</span> <span class="st">'all'</span>,</span>
 <span>                                      em.by <span class="op">=</span> <span class="st">'all'</span>,</span>
 <span>                                      em.algo <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">'EMmean'</span>, <span class="st">'EMcv'</span>, <span class="st">'EMci'</span>, <span class="st">'EMmedian'</span>, <span class="st">'EMwmean'</span><span class="op">)</span>,</span>
-<span>                                      metric.select <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">'RMSE'</span>,<span class="st">'Rsq'</span><span class="op">)</span>,</span>
+<span>                                      metric.select <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">'RMSE'</span>,<span class="st">'Rsquared'</span><span class="op">)</span>,</span>
 <span>                                      metric.select.thresh <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">2</span>, <span class="fl">0.4</span><span class="op">)</span>,</span>
-<span>                                      metric.eval <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">'RMSE'</span>,<span class="st">'Rsq'</span><span class="op">)</span>,</span>
+<span>                                      metric.eval <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">'RMSE'</span>,<span class="st">'Rsquared'</span><span class="op">)</span>,</span>
 <span>                                      var.import <span class="op">=</span> <span class="fl">3</span>,</span>
 <span>                                      EMci.alpha <span class="op">=</span> <span class="fl">0.05</span>,</span>
 <span>                                      EMwmean.decay <span class="op">=</span> <span class="st">'proportional'</span><span class="op">)</span></span>
@@ -513,8 +512,8 @@ Don’t hesitate to let us know what new features you’d like to see, what
 warnings you feel are missing, or what needs to be adapted for some
 types of data !</p>
 <p><br></p>
-<p><i class="fa-thin fa-trillium"></i> The biomod2 Team !
-<i class="fa-thin fa-trillium"></i></p>
+<p><i class="fa-solid fa-clover"></i> The biomod2 Team !
+<i class="fa-solid fa-clover"></i></p>
 </div>
 </div>
   </div>
