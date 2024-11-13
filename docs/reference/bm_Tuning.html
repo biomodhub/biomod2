@@ -18,7 +18,7 @@ select more efficient ones based on an evaluation metric."><!-- mathjax --><scri
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">biomod2</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">4.2-6-1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">4.2-6-2</span>
       </span>
     </div>
 
@@ -136,7 +136,8 @@ select more efficient ones based on an evaluation metric.</p>
 <span>    by <span class="op">=</span> <span class="fl">3</span><span class="op">)</span>, GBM.shrinkage <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.001</span>, <span class="fl">0.01</span>, <span class="fl">0.1</span><span class="op">)</span>, GBM.n.minobsinnode <span class="op">=</span> <span class="fl">10</span>, MARS.degree <span class="op">=</span></span>
 <span>    <span class="fl">1</span><span class="op">:</span><span class="fl">2</span>, MARS.nprune <span class="op">=</span> <span class="fl">2</span><span class="op">:</span><span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">max</a></span><span class="op">(</span><span class="fl">21</span>, <span class="fl">2</span> <span class="op">*</span> <span class="fu"><a href="https://rspatial.github.io/terra/reference/dimensions.html" class="external-link">ncol</a></span><span class="op">(</span><span class="va">bm.format</span><span class="op">@</span><span class="va">data.env.var</span><span class="op">)</span> <span class="op">+</span> <span class="fl">1</span><span class="op">)</span>, MAXENT.algorithm</span>
 <span>    <span class="op">=</span> <span class="st">"maxnet"</span>, </span>
-<span>     MAXENT.parallel <span class="op">=</span> <span class="cn">TRUE</span>, RF.mtry <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">min</a></span><span class="op">(</span><span class="fl">10</span>,</span>
+<span>     MAXENT.parallel <span class="op">=</span> <span class="cn">TRUE</span>, MAXENT.partitions <span class="op">=</span> <span class="st">"randomkfold"</span>,</span>
+<span>    MAXENT.kfolds <span class="op">=</span> <span class="fl">10</span>, MAXENT.user.grp <span class="op">=</span> <span class="cn">NULL</span>, RF.mtry <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">min</a></span><span class="op">(</span><span class="fl">10</span>,</span>
 <span>    <span class="fu"><a href="https://rspatial.github.io/terra/reference/dimensions.html" class="external-link">ncol</a></span><span class="op">(</span><span class="va">bm.format</span><span class="op">@</span><span class="va">data.env.var</span><span class="op">)</span><span class="op">)</span>, RFd.mtry <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">min</a></span><span class="op">(</span><span class="fl">10</span>, <span class="fu"><a href="https://rspatial.github.io/terra/reference/dimensions.html" class="external-link">ncol</a></span><span class="op">(</span><span class="va">bm.format</span><span class="op">@</span><span class="va">data.env.var</span><span class="op">)</span><span class="op">)</span>,</span>
 <span>    SRE.quant <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">0.0125</span>, <span class="fl">0.025</span>, <span class="fl">0.05</span>, <span class="fl">0.1</span><span class="op">)</span>, XGBOOST.nrounds <span class="op">=</span> <span class="fl">50</span>, XGBOOST.max_depth <span class="op">=</span></span>
 <span>    <span class="fl">1</span>, XGBOOST.eta <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.3</span>, <span class="fl">0.4</span><span class="op">)</span>, XGBOOST.gamma <span class="op">=</span> <span class="fl">0</span>, XGBOOST.colsample_bytree <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.6</span>,</span>
@@ -253,7 +254,8 @@ function.</p>
 <dd><p><code>degree</code>, <code>nprune</code></p></dd>
 
   <dt>MAXENT</dt>
-<dd><p><code>algorithm</code>, <code>parallel</code></p></dd>
+<dd><p><code>algorithm</code>, <code>parallel</code>, <code>partitions</code>, <code>kfolds</code>,
+  <code>user.grp</code></p></dd>
 
   <dt>RF</dt>
 <dd><p><code>mtry</code></p></dd>
@@ -400,7 +402,7 @@ combinations of parameters to be tested.</p>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.0.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.1.</p>
 </div>
 
       </footer></div>
