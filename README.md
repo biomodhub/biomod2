@@ -57,13 +57,19 @@ devtools::install_github("biomodhub/biomod2", dependencies = TRUE)
 ```
 
 <br/><br/>
-`/!\` All changes between versions are detailed in [News](https://biomodhub.github.io/biomod2/articles/news.html).
+<i class="fas fa-exclamation-triangle"></i> All changes between versions are detailed in [News](https://biomodhub.github.io/biomod2/articles/news.html).
 <br/><br/>
+<i class="fab fa-youtube"></i> **NEW** video tutorial in [Videos](https://biomodhub.github.io/biomod2/articles/vignette_videos.html) !
+
+<br/><br/><br/>
+
+<br/><br/>
+
 
 ### <i class="fas fa-envelope-open-text"></i> `biomod 4.2-6` - Improved OptionsBigBoss and new model
 
 
-`/!\` Please **feel free to indicate if you notice some strange new behaviors** !
+<i class="fas fa-exclamation-triangle"></i> Please **feel free to indicate if you notice some strange new behaviors** !
 
 #### <i class="fas fa-exchange-alt"></i> What is changed ?
 
