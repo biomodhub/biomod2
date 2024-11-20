@@ -130,6 +130,12 @@ bm_RunModelsLoop <- function(bm.format,
     }
   }
   
+  if (.getOS() == "windows" && "MAXENT" %in% models){
+    cl <- parallel::makeCluster(2)
+    doParallel::registerDoParallel(cl)
+    on.exit(parallel::stopCluster(cl))
+  }
+  
   ## PREPARE DATA ---------------------------------------------------------------------------------
   list.data <- list()
   pa.list = sapply(colnames(calib.lines), function(x) strsplit(x, "_")[[1]][2])

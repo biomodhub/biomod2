@@ -16,7 +16,7 @@ vignette: >
 
 ##### Bugfix
 
-- 4.2-6-2 : add `MAXENT.partitions`, `MAXENT.kfolds` and `MAXENT.user.grp` parameters in `bm_Tuning` function
+- 4.2-6-2 : add `MAXENT.partitions`, `MAXENT.kfolds`, `MAXENT.user.grp` and `MAXENT.tune.args` parameters in `bm_Tuning` function
 - 4.2-6-1 : fixed path failure within species name (e.g. data format like `tif`)
 
 

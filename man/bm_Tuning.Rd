@@ -23,12 +23,13 @@ bm_Tuning(
     by = 3), GBM.shrinkage = c(0.001, 0.01, 0.1), GBM.n.minobsinnode = 10, MARS.degree =
     1:2, MARS.nprune = 2:max(21, 2 * ncol(bm.format@data.env.var) + 1), MAXENT.algorithm
     = "maxnet", 
-     MAXENT.parallel = TRUE, MAXENT.partitions = "randomkfold",
-    MAXENT.kfolds = 10, MAXENT.user.grp = NULL, RF.mtry = 1:min(10,
-    ncol(bm.format@data.env.var)), RFd.mtry = 1:min(10, ncol(bm.format@data.env.var)),
-    SRE.quant = c(0, 0.0125, 0.025, 0.05, 0.1), XGBOOST.nrounds = 50, XGBOOST.max_depth =
-    1, XGBOOST.eta = c(0.3, 0.4), XGBOOST.gamma = 0, XGBOOST.colsample_bytree = c(0.6,
-    0.8), XGBOOST.min_child_weight = 1, XGBOOST.subsample = 0.5)
+     MAXENT.parallel = TRUE, MAXENT.tune.args = list(rm = seq(0.5, 1,
+    0.5), fc = c("L")), MAXENT.partitions = "randomkfold", MAXENT.kfolds = 10,
+    MAXENT.user.grp = NULL, RF.mtry = 1:min(10, ncol(bm.format@data.env.var)), RFd.mtry =
+    1:min(10, ncol(bm.format@data.env.var)), SRE.quant = c(0, 0.0125, 0.025, 0.05, 0.1),
+    XGBOOST.nrounds = 50, XGBOOST.max_depth = 1, XGBOOST.eta = c(0.3, 0.4), XGBOOST.gamma
+    = 0, XGBOOST.colsample_bytree = c(0.6, 0.8), XGBOOST.min_child_weight = 1,
+    XGBOOST.subsample = 0.5)
 )
 }
 \arguments{
@@ -109,7 +110,7 @@ Currently, the available parameters to be tuned are the following :
   \item{GAM.mgcv}{\code{select}, \code{method}}
   \item{GBM}{\code{n.trees}, \code{interaction.depth}, \code{shrinkage}, \code{n.minobsinnode}}
   \item{MARS}{\code{degree}, \code{nprune}}
-  \item{MAXENT}{\code{algorithm}, \code{parallel}, \code{partitions}, \code{kfolds}, 
+  \item{MAXENT}{\code{algorithm},\code{tune.args}, \code{parallel}, \code{partitions}, \code{kfolds}, 
   \code{user.grp}}
   \item{RF}{\code{mtry}}
   \item{RFd}{\code{mtry}}

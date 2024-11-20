@@ -74,7 +74,7 @@
 ##'   \item{GAM.mgcv}{\code{select}, \code{method}}
 ##'   \item{GBM}{\code{n.trees}, \code{interaction.depth}, \code{shrinkage}, \code{n.minobsinnode}}
 ##'   \item{MARS}{\code{degree}, \code{nprune}}
-##'   \item{MAXENT}{\code{algorithm}, \code{parallel}, \code{partitions}, \code{kfolds}, 
+##'   \item{MAXENT}{\code{algorithm},\code{tune.args}, \code{parallel}, \code{partitions}, \code{kfolds}, 
 ##'   \code{user.grp}}
 ##'   \item{RF}{\code{mtry}}
 ##'   \item{RFd}{\code{mtry}}
@@ -220,6 +220,7 @@ bm_Tuning <- function(model,
                                           MARS.nprune = 2:max(21, 2 * ncol(bm.format@data.env.var) + 1),
                                           MAXENT.algorithm = 'maxnet',
                                           MAXENT.parallel = TRUE,
+                                          MAXENT.tune.args = list(rm = seq(0.5, 1, 0.5), fc = c("L")),
                                           MAXENT.partitions = 'randomkfold',
                                           MAXENT.kfolds = 10,
                                           MAXENT.user.grp = NULL,
@@ -322,9 +323,10 @@ bm_Tuning <- function(model,
           }
           
           if (model == "MAXENT") { # ------------------------------------------#
+            
             try(tune.MAXENT <- ENMeval::ENMevaluate(occs = mySpExpl[mySpExpl[, 1] == 1 & !is.na(mySpExpl[, 1]), ],
                                                     bg = mySpExpl[mySpExpl[, 1] == 0 | is.na(mySpExpl[, 1]), ],
-                                                    tune.args = list(rm = seq(0.5, 1, 0.5), fc = c("L")),
+                                                    tune.args = params.train$MAXENT.tune.args,
                                                     algorithm = params.train$MAXENT.algorithm,
                                                     partitions = params.train$MAXENT.partitions,
                                                     partition.settings = list(kfolds = params.train$MAXENT.kfolds),
@@ -609,6 +611,7 @@ bm_Tuning <- function(model,
                            MARS.degree = 1:2, 
                            MARS.nprune = 2:max(21, 2 * ncol(bm.format@data.env.var) + 1),
                            MAXENT.algorithm = 'maxnet',
+                           MAXENT.tune.args = list(rm = seq(0.5, 1, 0.5), fc = c("L")),
                            MAXENT.parallel = TRUE,
                            MAXENT.partitions = 'randomkfold',
                            MAXENT.kfolds = 10,
