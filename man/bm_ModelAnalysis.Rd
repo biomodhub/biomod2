@@ -32,10 +32,10 @@ bm_ModelAnalysis(
 }
 }
 \description{
-This function return a pdf with differetn graph about the residuals of the single models.
+This function return differents graphs to help analyse the single models.
 }
 \details{
-Only yhe models coherent with a residuals analysis will be selected for some plots.
+Only the models coherent with a residuals analysis will be selected for some plots.
 }
 \author{
 Hélène Blancheteau

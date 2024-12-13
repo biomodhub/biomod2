@@ -923,7 +923,8 @@ BIOMOD_EnsembleModeling <- function(bm.mod,
       }
     } else {
       cat("\n   ! No metric.select.thresh -> All models will be kept for Ensemble Modeling")
-      metric.select.thresh <- rep(0, length(metric.select))
+      #metric.select.thresh <- rep(0, length(metric.select))
+      metric.select.thresh <- ifelse(metric.select %in% c("RMSE", "MSE", "MAE", "Max_error"), 1000, 0)
     }
   } else {
     metric.select <- 'none'

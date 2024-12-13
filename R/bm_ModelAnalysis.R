@@ -4,7 +4,7 @@
 ##' 
 ##' @title Analyze the residuals of the single models 
 ##' 
-##' @description This function return a pdf with differetn graph about the residuals of the single models.
+##' @description This function return differents graphs to help analyse the single models.
 ##' 
 ##' 
 ##' @param bm.mod a \code{BIOMOD.models.out}
@@ -25,7 +25,7 @@
 ##' 
 ##' 
 ##' @details 
-##' Only yhe models coherent with a residuals analysis will be selected for some plots.
+##' Only the models coherent with a residuals analysis will be selected for some plots.
 ##' 
 ##' @md
 ##' 
@@ -115,6 +115,12 @@ bm_ModelAnalysis <- function(bm.mod,
     Psquared <- rbind(Psquared, 
                       data.frame(full.name = eval_Rsq$full.name, metric = "Rsquared_calibration", value = eval_Rsq$calibration),
                       data.frame(full.name = eval_Rsq$full.name, metric = "Rsquared_validation", value = eval_Rsq$validation)) ##C'est tordu mais c'est pour pas appeler melt
+  }
+  if ("Rsquared_aj" %in% unique(eval$metric.eval)){
+    eval_Rsq_aj <- eval[eval$full.name %in% models.chosen & eval$metric.eval == "Rsquared_aj", c("full.name", "calibration", "validation")]
+    Psquared <- rbind(Psquared, 
+                      data.frame(full.name = eval_Rsq_aj$full.name, metric = "Rsquared_aj_calibration", value = eval_Rsq_aj$calibration),
+                      data.frame(full.name = eval_Rsq_aj$full.name, metric = "Rsquared_aj_validation", value = eval_Rsq_aj$validation)) 
   }
   Psquared <- tidyr::separate(Psquared, col = "full.name", into = c("species", "PA", "RUN", "algo"), remove = FALSE)
   
