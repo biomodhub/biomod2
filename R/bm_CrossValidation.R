@@ -822,7 +822,7 @@ setMethod('bm_CrossValidation_strat', signature(bm.format = "BIOMOD.formated.dat
                   if (strat == "x") { calib.pa_rep <- calib.x }
                 }
                 if (strat == "y" || strat == "both") {
-                  bands <- quantile(tmp.pa[ , 2], probs = seq(0, 100, 100 / k) / 100)
+                  bands <- quantile(tmp.pa.balance[ , 2], probs = seq(0, 100, 100 / k) / 100)
                   bands[1] <- -Inf
                   bands[k + 1] <- Inf
                   calib.y <- matrix(NA, nrow(tmp.pa), k)
