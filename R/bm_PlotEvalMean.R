@@ -139,6 +139,7 @@ bm_PlotEvalMean <- function(bm.out, metric.eval = NULL, dataset = 'calibration',
   ## 1. Get data for graphic ----------------------------------------------------------------------
   ## Get evaluation values
   scores <- get_evaluations(bm.out)
+  scores <- scores[scores$metric.eval %in% metric.eval, ]
   
   ## Compute mean and sd evaluation scores
   models_mean = tapply(X = scores[, dataset]
@@ -194,7 +195,7 @@ bm_PlotEvalMean <- function(bm.out, metric.eval = NULL, dataset = 'calibration',
   avail.metrics <- sort(unique(as.character(scores$metric.eval)))
   if (is.null(metric.eval) && length(avail.metrics) > 1) {
     metric.eval <- sort(unique(as.character(scores$metric.eval)))[1:2]
-    warnings(toString(metric.eval), " evaluation metric.eval automatically selected")
+    warning(toString(metric.eval), " evaluation metric.eval automatically selected")
   } else {
     metric.eval = sort(unique(as.character(metric.eval)))
     if (length(metric.eval) < 2) {
