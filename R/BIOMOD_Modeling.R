@@ -571,6 +571,11 @@ BIOMOD_Modeling <- function(bm.format,
   models.out@link <- file.path(models.out@dir.name, models.out@sp.name, name.OUT)
   assign(x = name.OUT, value = models.out)
   save(list = name.OUT, file = models.out@link)
+ 
+  # if (.getOS() == "windows" && "MAXENT" %in% models){
+  #   env <- foreach:::.foreachGlobals
+  #   rm(list=ls(name=env), pos=env)
+  # }
   
   .bm_cat("Done")
   return(models.out)

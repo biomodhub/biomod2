@@ -213,10 +213,10 @@ BIOMOD_Projection <- function(bm.mod,
   for (argi in names(args)) { assign(x = argi, value = args[[argi]]) }
   rm(args)
   
-  if (.getOS() == "windows" && any(grep("MAXENT", bm.mod@models.computed))){
-    env <- foreach:::.foreachGlobals
-    rm(list=ls(name=env), pos=env)
-  }
+  # if (.getOS() == "windows" && any(grep("MAXENT", bm.mod@models.computed))){
+  #   env <- foreach:::.foreachGlobals
+  #   rm(list=ls(name=env), pos=env)
+  # }
   
   
   ## 1. Create output object ----------------------------------------------------------------------

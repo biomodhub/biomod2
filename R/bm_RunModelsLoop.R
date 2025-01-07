@@ -130,11 +130,14 @@ bm_RunModelsLoop <- function(bm.format,
     }
   }
   
-  if (.getOS() == "windows" && "MAXENT" %in% models){
-    cl <- parallel::makeCluster(2)
-    doParallel::registerDoParallel(cl)
-    on.exit(parallel::stopCluster(cl))
-  }
+  # if (.getOS() == "windows" && "MAXENT" %in% models){
+  #   cl <- parallel::makeCluster(2)
+  #   doParallel::registerDoParallel(cl)
+  #   on.exit(parallel::stopCluster(cl))
+  # 
+  #   # env <- foreach:::.foreachGlobals
+  #   # rm(list=ls(name=env), pos=env)
+  # }
   
   ## PREPARE DATA ---------------------------------------------------------------------------------
   list.data <- list()
@@ -168,7 +171,7 @@ bm_RunModelsLoop <- function(bm.format,
       }}}
   
   ## RUN models -----------------------------------------------------------------------------------
-  out <- foreach(ii = 1:length(list.data), .combine =) %dopar%
+  out <- foreach(ii = 1:length(list.data), .combine =, .errorhandling = "pass") %dopar%
     {
       cat('\n\n-=-=-=--=-=-=-', names(list.data)[ii], '\n')
       bm_RunModel(model = list.data[[ii]]$modi,
@@ -186,6 +189,18 @@ bm_RunModelsLoop <- function(bm.format,
                   seed.val = seed.val,
                   do.progress = TRUE)
     }
+  
+  for (iii in 1:length(out)){
+    if (names(out[[iii]][1]) == "message"){
+      out[[iii]] <- list(model = NULL,
+                       calib.failure = names(list.data)[iii],
+                       pred = NULL,
+                       pred.eval = NULL,
+                       evaluation = NULL,
+                       var.import = NULL)
+    }
+  }
+  
   
   return(out)
 }
