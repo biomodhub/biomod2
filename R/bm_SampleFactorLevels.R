@@ -25,7 +25,7 @@
 ##' @return  
 ##' 
 ##' A \code{vector} of \code{numeric} values corresponding to either row (\code{data.frame}) or 
-##' cell (\code{\link[terra:rast]{SpatRaster}}) numbers, each refering to a single level of a 
+##' cell (\code{\link[terra:rast]{SpatRaster}}) numbers, each referring to a single level of a 
 ##' single factorial variable.
 ##' 
 ##' In case no factorial variable is found in the input object, \code{NULL} is returned.
@@ -62,7 +62,7 @@
 ##' @keywords sample factor
 ##' 
 ##' @seealso \code{\link{bm_PseudoAbsences}}, \code{\link{bm_CrossValidation}}
-##' @family Secundary functions
+##' @family Secondary functions
 ##' 
 ##'   
 ##' @examples

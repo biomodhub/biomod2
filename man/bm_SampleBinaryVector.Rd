@@ -42,7 +42,7 @@ bm_SampleBinaryVector(obs = vec.a, ratio = 0.7)
 
 }
 \seealso{
-Other Secundary functions: 
+Other Secondary functions: 
 \code{\link{bm_BinaryTransformation}()},
 \code{\link{bm_CrossValidation}()},
 \code{\link{bm_FindOptimStat}()},
@@ -63,6 +63,6 @@ Other Secundary functions:
 \author{
 Damien Georges
 }
-\concept{Secundary functions}
+\concept{Secondary functions}
 \keyword{binary}
 \keyword{sample}

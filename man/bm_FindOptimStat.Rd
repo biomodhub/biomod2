@@ -102,7 +102,7 @@ metric.
   \item{presence-only}{
   \itemize{
     \item \code{BOYCE} : Boyce index
-    \item \code{MPA} : Minimal predicted area (cutoff optimising MPA to predict 90\% of 
+    \item \code{MPA} : Minimal predicted area (cutoff optimizing MPA to predict 90\% of 
     presences)
   }
   }
@@ -130,7 +130,7 @@ Optimal value of each method can be obtained with the \code{\link{get_optim_valu
 \emph{Please refer to the \href{https://www.cawcr.gov.au/projects/verification/}{CAWRC website 
 (section "Methods for dichotomous forecasts")} to get detailed description of each metric.}
 
-Note that if a value is given to \code{threshold}, no optimisation will be done., and 
+Note that if a value is given to \code{threshold}, no optimization will be done., and 
 only the score for this threshold will be returned.
 
 The Boyce index returns \code{NA} values for \code{SRE} models because it can not be 
@@ -179,7 +179,7 @@ bm_FindOptimStat(metric.eval = 'TSS', fit = vec.c, obs = vec.a, threshold = 280)
 \code{\link{BIOMOD_Modeling}}, \code{\link{bm_RunModelsLoop}}, 
 \code{\link{BIOMOD_EnsembleModeling}}
 
-Other Secundary functions: 
+Other Secondary functions: 
 \code{\link{bm_BinaryTransformation}()},
 \code{\link{bm_CrossValidation}()},
 \code{\link{bm_MakeFormula}()},
@@ -200,7 +200,7 @@ Other Secundary functions:
 \author{
 Damien Georges
 }
-\concept{Secundary functions}
+\concept{Secondary functions}
 \keyword{auc}
 \keyword{boyce}
 \keyword{evaluation}

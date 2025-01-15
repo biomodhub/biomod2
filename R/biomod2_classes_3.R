@@ -675,7 +675,7 @@ setMethod("get_variables_importance", "BIOMOD.models.out",
 ##'   determining whether x and y scales are shared among facet. Argument passed
 ##'   to \code{\link[ggplot2:facet_wrap]{facet_wrap}}. Possible values: 'fixed', 'free_x',
 ##'   'free_y', 'free'.
-##' @param size (\emph{optional, default} \code{0.75}) a numeric determing the
+##' @param size (\emph{optional, default} \code{0.75}) a numeric determining the
 ##'   size of points on the plots and passed to
 ##'   \code{\link[ggplot2:geom_point]{geom_point}}.
 ##' @param ... additional parameters to be passed to \code{\link{get_predictions}} 

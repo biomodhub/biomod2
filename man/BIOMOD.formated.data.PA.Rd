@@ -120,12 +120,12 @@ will be selected for each pseudo-absence repetition (true absences included)}
 \item{PA.dist.min}{(\emph{optional, default} \code{0}) \cr 
 If pseudo-absence selection and \code{PA.strategy = 'disk'}, a \code{numeric} defining the 
 minimal distance to presence points used to make the \code{disk} pseudo-absence selection 
-(in meters, see Details)}
+(in the same projection system units as \code{coord}, see Details)}
 
 \item{PA.dist.max}{(\emph{optional, default} \code{0}) \cr 
 If pseudo-absence selection and \code{PA.strategy = 'disk'}, a \code{numeric} defining the 
 maximal distance to presence points used to make the \code{disk} pseudo-absence selection 
-(in meters, see Details)}
+(in the same projection system units as \code{coord}, see Details)}
 
 \item{PA.sre.quant}{(\emph{optional, default} \code{0}) \cr 
 If pseudo-absence selection and \code{PA.strategy = 'sre'}, a \code{numeric} between \code{0} 

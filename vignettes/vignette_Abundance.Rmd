@@ -1,0 +1,339 @@
+---
+title: "Vignette Abundance"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Vignette Abundance}
+  %\VignetteEngine{knitr::knitr}
+  %\VignetteEncoding{UTF-8}
+---
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
+
+
+## <i class="fa-regular fa-gem"></i> Abundance modeling
+
+Hello ! 
+If you are here, you want to model abundance data.   
+You could try and install our new version of `biomod2` with the Abundance branch:
+
+```R
+devtools::install_github("biomodhub/biomod2", ref = "Abundance")
+```
+Keep in mind that it is a development branch: it can change quickly and sometimes fail ! 
+Consequently, this branch is not reproducibility-friendly. 
+
+We invite you to report any problems, to ask for enhances or to discuss about the modeling in the issues or the forum of the `biomod2` github. 
+
+This vignette will be updated regularly : think to look at it to see if there are a few modifications.  
+We will also update the documentation on the branch : you can call the help `?BIOMOD_FormatingData` for example.   
+The documentation on this website will still be the documentation of `biomod2 V4.2-6-1`.   
+
+
+<br/><br/>
+
+Here is presented an example of abundance modeling with `biomod2`.   
+(As we haven't add example data to `biomod2` yet, the example will be made with fake data. Sorry `>{o.o}<` )
+
+
+```R
+library(biomod2)
+library(terra)
+
+# Load species occurrences (6 species available)
+data("DataSpecies")
+head(DataSpecies)
+
+# Select the name of the studied species
+myRespName <- 'VulpesVulpes'
+
+# Get corresponding presence/absence data
+myResp <- as.numeric(DataSpecies[, myRespName])
+
+# Get corresponding XY coordinates
+myRespXY <- DataSpecies[, c('X_WGS84', 'Y_WGS84')]
+
+# Load environmental variables extracted from BIOCLIM (bio_3, bio_4, bio_7, bio_11 & bio_12)
+data("bioclim_current")
+myExpl <- rast(bioclim_current)
+```
+
+<br/><br/>
+
+
+### <i class="fa-solid fa-percent"></i> Data type
+
+Creating your `BIOMOD.formated.data` object is similar than `biomod2` with binary data. 
+`biomod2` will guess your data type but you can specify it with the argument `data.type`.
+
+There are 5 different data types :
+
+| Type          | Data                                          | Distribution   |
+| --------------| ----------------------------------------------| ---------------|
+| binary        | Numeric (or factor) response with only 0 and 1| binomial       |
+| abundance     | Positive numeric response                     | gaussian       |
+| count         | Positive integer response                     | poisson        |
+| ordinal       | Ordered factor response                       | classification |
+| relative      | Numeric response between 0 and 1               | beta           |
+
+
+Here we will build count data, by transforming our available binary data :
+
+```R
+# Transform binary data as count data
+poissonDistri <- rpois(sum(myResp), 5)
+myResp[myResp == 1] <- poissonDistri
+```
+
+
+<br/><br/>
+
+
+### <i class="fa-regular fa-arrows-to-circle"></i> Prepare data & parameters
+
+#### <i class="fa-solid fa-align-center"></i> Format data (observations & explanatory variables)
+
+```R
+# Format Data with true absences
+myBiomodData <- BIOMOD_FormatingData(resp.var = myResp,
+                                     expl.var = myExpl,
+                                     resp.xy = myRespXY,
+                                     resp.name = myRespName)
+myBiomodData
+plot(myBiomodData)
+
+#Or
+myBiomodData <- BIOMOD_FormatingData(resp.var = myResp,
+                                     expl.var = myExpl,
+                                     resp.xy = myRespXY,
+                                     resp.name = myRespName,
+                                     data.type = "count")
+
+```
+
+As usual, it also possible to add evaluation data. However, no pseudo-absences extraction is possible with abundance data. 
+
+
+
+#### <i class="fa-regular fa-hand-scissors"></i> Cross-validation datasets
+
+The same cross-validation (CV) methods are available and can be selected with the [`BIOMOD_Modeling`](../reference/BIOMOD_Modeling.html) function, which calls the [`bm_CrossValidation`](../reference/bm_CrossValidation.html) function to do so.   
+The same proportion of absences of the whole data will be kept for the different CV datasets (if possible).   
+A balance will be kept for the different classes in the case of ordinal data.   
+
+```R
+# # k-fold selection
+# cv.k <- bm_CrossValidation(bm.format = myBiomodData,
+#                            strategy = "kfold",
+#                            nb.rep = 2,
+#                            k = 3)
+#
+# # random selection
+# cv.r <- bm_CrossValidation(bm.format = myBiomodData,
+#                            strategy = "random",
+#                            nb.rep = 4,
+#                            perc = 0.8)
+# head(cv.k)
+# head(cv.r)
+# plot(myBiomodData, calib.lines = cv.r)
+```
+
+#### <i class="fa-regular fa-filter"></i> Retrieve modeling options
+
+Different sets of modeling options are built corresponding to the `data.type`.   
+You still have the `default` options and `bigboss` options. However, lot of work must be done in order to optimize `bigboss` options. So for the moment, it's totally possible `bigboss` doesn't lead to better results than `default` options. 
+
+The tuning option are not available yet with non binary data.
+
+```R
+# # bigboss parameters with ordinal datatype
+# opt.o <- bm_ModelingOptions(data.type = 'ordinal',
+#                             models = c('RF', 'GLM'),
+#                             strategy = 'bigboss')
+# 
+# # tuned parameters with formated data
+# opt.c <- bm_ModelingOptions(data.type = 'count',
+#                             models = c('GAM', 'MARS'),
+#                             strategy = 'default',
+#                             bm.format = myBiomodData)
+# 
+# opt.o
+# opt.c
+```
+
+<br/><br/>
+
+
+### <i class="fa-solid fa-desktop"></i> Run modeling
+
+#### <i class="fa-solid fa-cube"></i> Single models
+
+The modeling is similar than with binary data. 
+However, not all models are available. We have :  
+ - `CTA`, `GAM`, `GBM`, `GLM`, `MARS`, `RF`, and `XGBOOST` for abundance, count and relative data  
+ - `CTA`, `FDA`, `GAM`, `GLM`, `MARS`, `RF`, and `XGBOOST` for ordinal data
+
+The metrics are also different obviously. For the moment, we have implemented :
+`RMSE`, `MSE`, `MAE`, `Max_error`, `Rsquared` and `Rsquared_aj` (see `?BIOMOD_Modeling`)  
+
+For ordinal data, we have `Accuracy`, `Recall`, `Precision` and `F1`.  
+(`Accuracy` is in lower case to contrast with `ACCURACY` for binary data)   
+ 
+
+```R
+# Model single models
+myBiomodModelOut <- BIOMOD_Modeling(bm.format = myBiomodData,
+                                    modeling.id = 'CountExample',
+                                    models = c("GAM","MARS","RF"),
+                                    CV.strategy = 'random',
+                                    CV.nb.rep = 3,
+                                    CV.perc = 0.8,
+                                    OPT.strategy = 'bigboss',
+                                    var.import = 3,
+                                    metric.eval = c('RMSE','Rsquared'))
+
+
+myBiomodModelOut
+
+# Get evaluation scores & variables importance
+get_evaluations(myBiomodModelOut)
+get_variables_importance(myBiomodModelOut)
+
+# Represent evaluation scores & variables importance
+bm_PlotEvalMean(bm.out = myBiomodModelOut)
+bm_PlotEvalBoxplot(bm.out = myBiomodModelOut, group.by = c('algo', 'algo'))
+bm_PlotEvalBoxplot(bm.out = myBiomodModelOut, group.by = c('algo', 'run'))
+bm_PlotVarImpBoxplot(bm.out = myBiomodModelOut, group.by = c('expl.var', 'algo', 'algo'))
+bm_PlotVarImpBoxplot(bm.out = myBiomodModelOut, group.by = c('expl.var', 'algo', 'run'))
+
+# Represent response curves
+bm_PlotResponseCurves(bm.out = myBiomodModelOut, 
+                      models.chosen = get_built_models(myBiomodModelOut)[c(1:3)],
+                      fixed.var = 'median')
+
+```
+
+
+#### <i class="fa-solid fa-cubes"></i> Ensemble models
+
+**! Warning !** The selection of single models for the ensemble modeling is different for the metrics `RMSE`, `MSE`, `MAE` and `Max_error`.
+
+For example, with `RMSE`, `biomod2` will select the best model and all the models with a `RMSE` under the best value + the threshold you give (here 2). 
+
+E.g. if the best model have a `RMSE` of `1.850`, `BIOMOD_EnsembleModeling` will select all the models with a `RMSE` under `1.850 + 2`.
+
+```R
+# Model ensemble models
+myBiomodEM <- BIOMOD_EnsembleModeling(bm.mod = myBiomodModelOut,
+                                      models.chosen = 'all',
+                                      em.by = 'all',
+                                      em.algo = c('EMmean', 'EMcv', 'EMci', 'EMmedian', 'EMwmean'),
+                                      metric.select = c('RMSE','Rsquared'),
+                                      metric.select.thresh = c(2, 0.4),
+                                      metric.eval = c('RMSE','Rsquared'),
+                                      var.import = 3,
+                                      EMci.alpha = 0.05,
+                                      EMwmean.decay = 'proportional')
+myBiomodEM
+
+# Get evaluation scores & variables importance
+get_evaluations(myBiomodEM)
+get_variables_importance(myBiomodEM)
+
+# Represent evaluation scores & variables importance
+bm_PlotEvalMean(bm.out = myBiomodEM, group.by = 'full.name')
+bm_PlotEvalBoxplot(bm.out = myBiomodEM, group.by = c('full.name', 'full.name'))
+bm_PlotVarImpBoxplot(bm.out = myBiomodEM, group.by = c('expl.var', 'algo', 'merged.by.run'))
+
+
+# Represent response curves
+bm_PlotResponseCurves(bm.out = myBiomodEM, 
+                      models.chosen = get_built_models(myBiomodEM)[c(1, 5, 6)],
+                      fixed.var = 'median')
+
+```
+
+<br/><br/>
+
+
+### <i class="fa-regular fa-map-location"></i> Project models
+
+#### <i class="fa-solid fa-cube"></i> Single models
+
+The argument `digits` indicates the number of digits for the predicted values.  
+Keep in mind that `integer` are "lighter" than `float`.  
+For `relative` data, you can use the same argument `on_0_1000` than binary data. 
+
+```R
+# Project single models
+myBiomodProj <- BIOMOD_Projection(bm.mod = myBiomodModelOut,
+                                  proj.name = 'Current',
+                                  new.env = myExpl,
+                                  models.chosen = 'all',
+                                  build.clamping.mask = TRUE,
+                                  digits = 1)
+myBiomodProj
+plot(myBiomodProj)
+```
+
+#### <i class="fa-solid fa-cubes"></i> Ensemble models
+
+```R
+# Project ensemble models (from single projections)
+myBiomodEMProj <- BIOMOD_EnsembleForecasting(bm.em = myBiomodEM, 
+                                             bm.proj = myBiomodProj,
+                                             models.chosen = get_built_models(myBiomodEM)[c(1,3:7,9:12)])
+                                             
+myBiomodEMProj
+plot(myBiomodEMProj)
+```
+
+
+<br/><br/>
+
+
+### <i class="fa-regular fa-compass"></i> Compare range sizes
+
+```R
+# Load environmental variables extracted from BIOCLIM (bio_3, bio_4, bio_7, bio_11 & bio_12)
+data("bioclim_future")
+myExplFuture = rast(bioclim_future)
+
+# Project onto future conditions
+myBiomodProjFuture <- BIOMOD_Projection(bm.mod = myBiomodModelOut,
+                                                 proj.name = 'FutureProj',
+                                                 new.env = myExplFuture,
+                                                 models.chosen = 'all')
+
+# Load current and future binary projections
+CurrentProj <- get_predictions(myBiomodProj)
+FutureProj <- get_predictions(myBiomodProjFuture)
+
+
+myBiomodRangeSize <- BIOMOD_RangeSize(proj.current = CurrentProj, 
+                                      proj.future = FutureProj, 
+                                      thresholds = c(10,30,50))
+
+# Represent main results 
+gg = bm_PlotRangeSize(bm.range = myBiomodRangeSize, 
+                      do.count = TRUE,
+                      do.perc = TRUE,
+                      do.maps = TRUE,
+                      do.mean = FALSE,
+                      do.plot = TRUE,
+                      row.names = c("Species", "Dataset", "Run", "Algo"))
+
+
+```
+
+**! Remember !** This is fake data ! 
+
+### <i class="fa-solid fa-hourglass-half"></i> New developments
+
+The branch is still a work in progress.  
+Don't hesitate to let us know what new features you'd like to see, what warnings you feel are missing, or what needs to be adapted for some types of data ! 
+
+<br/> 
+
+<i class="fa-solid fa-clover"></i> The biomod2 Team ! <i class="fa-solid fa-clover"></i>
+
+

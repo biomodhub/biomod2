@@ -160,7 +160,7 @@ bm_PlotRangeSize(bm.range = myBiomodRangeSize)
 \seealso{
 \code{\link{BIOMOD_RangeSize}}
 
-Other Secundary functions: 
+Other Secondary functions: 
 \code{\link{bm_BinaryTransformation}()},
 \code{\link{bm_CrossValidation}()},
 \code{\link{bm_FindOptimStat}()},
@@ -188,7 +188,7 @@ Other Plot functions:
 Maya Gueguen
 }
 \concept{Plot functions}
-\concept{Secundary functions}
+\concept{Secondary functions}
 \keyword{"species}
 \keyword{change"}
 \keyword{gain}

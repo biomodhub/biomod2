@@ -55,7 +55,7 @@
 ##' @seealso \code{\link{BIOMOD.models.out}}, \code{\link{BIOMOD.ensemble.models.out}}, 
 ##' \code{\link{BIOMOD_Modeling}}, \code{\link{BIOMOD_EnsembleModeling}}, 
 ##' \code{\link{get_evaluations}}
-##' @family Secundary functions
+##' @family Secondary functions
 ##' @family Plot functions
 ##' 
 ##' 
@@ -194,7 +194,7 @@ bm_PlotEvalMean <- function(bm.out, metric.eval = NULL, dataset = 'calibration',
   avail.metrics <- sort(unique(as.character(scores$metric.eval)))
   if (is.null(metric.eval) && length(avail.metrics) > 1) {
     metric.eval <- sort(unique(as.character(scores$metric.eval)))[1:2]
-    warnings(toString(metric.eval), " evaluation metric.eval automatically selected")
+    warning(toString(metric.eval), " evaluation metric.eval automatically selected")
   } else {
     metric.eval = sort(unique(as.character(metric.eval)))
     if (length(metric.eval) < 2) {

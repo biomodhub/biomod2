@@ -1378,11 +1378,11 @@ setMethod('summary', signature(object = 'BIOMOD.formated.data'),
 ##' @param PA.dist.min (\emph{optional, default} \code{0}) \cr 
 ##' If pseudo-absence selection and \code{PA.strategy = 'disk'}, a \code{numeric} defining the 
 ##' minimal distance to presence points used to make the \code{disk} pseudo-absence selection 
-##' (in meters, see Details)
+##' (in the same projection system units as \code{coord}, see Details)
 ##' @param PA.dist.max (\emph{optional, default} \code{0}) \cr 
 ##' If pseudo-absence selection and \code{PA.strategy = 'disk'}, a \code{numeric} defining the 
 ##' maximal distance to presence points used to make the \code{disk} pseudo-absence selection 
-##' (in meters, see Details)
+##' (in the same projection system units as \code{coord}, see Details)
 ##' @param PA.fact.aggr (\emph{optional, default} \code{NULL}) \cr
 ##' If \code{strategy = 'random'} or \code{strategy = 'disk'}, a \code{integer} defining the factor of aggregation to reduce the resolution
 ##' @param PA.user.table (\emph{optional, default} \code{NULL}) \cr 

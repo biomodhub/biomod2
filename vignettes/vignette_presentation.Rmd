@@ -28,9 +28,9 @@ vignette: >
 
 
 
-#### <i class="fa-solid fa-list-check"></i> Data formating : [BIOMOD_FormatingData](../reference/BIOMOD_FormatingData.html)
+#### <i class="fa-solid fa-list-check"></i> Data formatting : [BIOMOD_FormatingData](../reference/BIOMOD_FormatingData.html)
 
-- **Formating data** : combine observations, coordinates and explanatory variables, <br/>and sample pseudo-absences for presence-only data (*through [bm_PseudoAbsences](../reference/bm_PseudoAbsences.html)*)
+- **Formatting data** : combine observations, coordinates and explanatory variables, <br/>and sample pseudo-absences for presence-only data (*through [bm_PseudoAbsences](../reference/bm_PseudoAbsences.html)*)
 
 - **Cross-validation** : create calibration / validation datasets (*through [bm_CrossValidation](../reference/bm_CrossValidation.html)*)
 

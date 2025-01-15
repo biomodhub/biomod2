@@ -10,26 +10,24 @@ vignette: >
 <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.13/css/all.css" integrity="sha384-DNOHZ68U8hZfKXOrtjWvjxusGo9WQnrNx2sqG0tfsghAvtVlRW3tvkXWZh58N9jp" crossorigin="anonymous">
 
 
-
 ## <i class="fas fa-code"></i> Development updates
 
-### <i class="fas fa-feather"></i> 2024
+### <i class="fas fa-pencil-alt"></i> 2024
 
-#### 4.2-6-1 Devel actuel 
+##### Bugfix
 
-- Correction : Some paths failed depending on the name of the species (e.g.: name of data format (as "tif") in the species name)
+- 4.2-6-2 : add `MAXENT.partitions`, `MAXENT.kfolds`, `MAXENT.user.grp` and `MAXENT.tune.args` parameters in `bm_Tuning` function
+- 4.2-6-1 : fixed path failure within species name (e.g. data format like `tif`)
 
-#### 4.2-6 Devel actuel
 
-- Warning ! Some options for `OptionsBigboss` have been modified (concern only ANN, CTA and RF models)
+#### 4.2-6 RFd and some tuning (2024-07-22)
+
+- Warning ! Some options for `OptionsBigboss` have been modified (concerns only ANN, CTA and RF models)
 - Some changes for the tuning ranges.
-- Add *RFd*: Random Forest with a down-sampling method.
-- Add _seed.val_ for `bm_pseudoAbsences` and `BIOMOD_FormatingData`.
-- Add  _fact.aggr_ argument for pseudo-absences selection with the random and disk methods. It allows to reduce the resolution of the environment.
-- Possibility to give the same options for all datasets with _"for_all_datasets"_ in `bm_ModelingOptions`.
-
-
-### <i class="fas fa-pencil-alt"></i> 2024 
+- Add `RFd` : Random Forest with a down-sampling method.
+- Add `seed.val` for `bm_pseudoAbsences` and `BIOMOD_FormatingData`.
+- Add `fact.aggr` argument for pseudo-absences selection with the random and disk methods. It allows to reduce the resolution of the environment.
+- Possibility to give the same options to all datasets with _"for_all_datasets"_ in `bm_ModelingOptions`.
 
 ##### Bugfix
 
@@ -39,7 +37,8 @@ vignette: >
 - 4.2-5-1 :
   + removed `tests/` folder (unused)
   + fixed check for variable names for `new.env` in `BIOMOD_Projection` and `BIOMOD_EnsembleForecasting`
-  + fixed connexion issue with MAXENT tuning
+  + fixed connection issue with `MAXENT` tuning
+
 
 #### 4.2-5 Modeling options and Tuning (2024-05-02)
 

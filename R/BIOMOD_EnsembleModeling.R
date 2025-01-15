@@ -388,6 +388,12 @@ BIOMOD_EnsembleModeling <- function(bm.mod,
     }
   }
   
+  
+  # if (.getOS() == "windows" && any(grep("MAXENT", bm.mod@models.computed))){
+  #   env <- foreach:::.foreachGlobals
+  #   rm(list=ls(name=env), pos=env)
+  # }
+  
   ## Get variables information
   expl_var_type = .get_var_type(get_formal_data(bm.mod, 'expl.var'))
   expl_var_range = .get_var_range(get_formal_data(bm.mod, 'expl.var'))

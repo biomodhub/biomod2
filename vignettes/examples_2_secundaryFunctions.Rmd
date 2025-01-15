@@ -1,8 +1,8 @@
 ---
-title: "Secundary functions"
+title: "Secondary functions"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Secundary functions}
+  %\VignetteIndexEntry{Secondary functions}
   %\VignetteEngine{knitr::knitr}
   %\VignetteEncoding{UTF-8}
 ---
@@ -12,7 +12,7 @@ vignette: >
 
 ## <i class="fa-solid fa-code"></i> Small code examples
 
-Here are presented, in small and unlinked examples, secundary functions (starting with `bm_[...]`) of `biomod2`. Most of these functions are internally called by some main functions (starting with `BIOMOD_[...]`) of `biomod2`, but can be easily used as such.
+Here are presented, in small and unlinked examples, secondary functions (starting with `bm_[...]`) of `biomod2`. Most of these functions are internally called by some main functions (starting with `BIOMOD_[...]`) of `biomod2`, but can be easily used as such.
 
 
 <br/><br/>
@@ -129,7 +129,7 @@ myResp.real.raster[cellFromXY(myResp.real.raster, myCoord.real.1)] <- 1
 <br/><br/>
 
 
-### <i class="fa-solid fa-square-check"></i> Secundary functions : vector data
+### <i class="fa-solid fa-square-check"></i> Secondary functions : vector data
 
 #### <i class="fa-solid fa-scissors"></i> Generate calibration / evaluation datasets
 
@@ -173,7 +173,7 @@ cbind(vec.d, vec.d_bin, vec.d_filt)
 <br/><br/>
 
 
-### <i class="fa-solid fa-square-check"></i> Secundary functions : explanatory variables
+### <i class="fa-solid fa-square-check"></i> Secondary functions : explanatory variables
 
 #### <i class="fa-solid fa-subscript"></i> Generate automatic formula
 
@@ -229,7 +229,7 @@ bm_VariablesImportance(bm.model = mod,
 <br/><br/>
 
 
-### <i class="fa-solid fa-square-check"></i> Secundary functions : `biomod2` data
+### <i class="fa-solid fa-square-check"></i> Secondary functions : `biomod2` data
 
 ```R
 # Format Data with true absences
@@ -434,4 +434,3 @@ opt.t <- bm_ModelingOptions(data.type = 'binary',
 
 opt.t ## BIOMOD.modeling.options object
 ```
-

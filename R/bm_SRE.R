@@ -51,7 +51,7 @@
 ##' can discriminate the extreme values from the main tendency, the SRE considers them as 
 ##' important as any other data point leading to changes in predictions. \cr \cr
 ##' 
-##' \emph{The more (non-colinear) variables, the more restrictive the model will be.} \cr \cr
+##' \emph{The more (non-collinear) variables, the more restrictive the model will be.} \cr \cr
 ##' 
 ##' Predictions are returned as binary (\code{0} or \code{1}) values, a site being either 
 ##' potentially suitable for all the variables, or out of bounds for at least one variable and 
@@ -80,7 +80,7 @@
 ##' @seealso \code{\link{bm_PseudoAbsences}}, \code{\link{BIOMOD_FormatingData}}, 
 ##' \code{\link{bm_ModelingOptions}}, \code{\link{bm_Tuning}}, 
 ##' \code{\link{bm_RunModelsLoop}}, \code{\link{BIOMOD_Modeling}},
-##' @family Secundary functions
+##' @family Secondary functions
 ##' 
 ##' @examples
 ##' 

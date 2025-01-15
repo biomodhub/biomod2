@@ -97,14 +97,17 @@ half-quantile used to make the \code{sre} pseudo-absence selection (see \code{\l
 
 \item{dist.min}{(\emph{optional, default} \code{0}) \cr
 If \code{strategy = 'disk'}, a \code{numeric} defining the minimal distance to presence points 
-used to make the \code{disk} pseudo-absence selection (in meters)}
+used to make the \code{disk} pseudo-absence selection (in the same projection system units as 
+\code{expl.var})}
 
 \item{dist.max}{(\emph{optional, default} \code{NULL}) \cr
 If \code{strategy = 'disk'}, a \code{numeric} defining the maximal distance to presence points 
-used to make the \code{disk} pseudo-absence selection (in meters)}
+used to make the \code{disk} pseudo-absence selection (in the same projection system units as 
+\code{expl.var})}
 
 \item{fact.aggr}{(\emph{optional, default} \code{NULL}) \cr
-If \code{strategy = 'random'} or \code{strategy = 'disk'}, a \code{integer} defining the factor of aggregation to reduce the resolution}
+If \code{strategy = 'random'} or \code{strategy = 'disk'}, a \code{integer} defining the 
+factor of aggregation to reduce the resolution}
 
 \item{user.table}{(\emph{optional, default} \code{NULL}) \cr
 If \code{strategy = 'user.defined'}, a \code{matrix} or \code{data.frame} with as many rows as 
@@ -254,7 +257,7 @@ apply(PA.r_mult$pa.tab, 2, table)
 \code{\link{bm_SRE}}, \code{\link{BIOMOD.formated.data.PA}}, 
 \code{\link{BIOMOD_FormatingData}}
 
-Other Secundary functions: 
+Other Secondary functions: 
 \code{\link{bm_BinaryTransformation}()},
 \code{\link{bm_CrossValidation}()},
 \code{\link{bm_FindOptimStat}()},
@@ -275,7 +278,7 @@ Other Secundary functions:
 \author{
 Wilfried Thuiller, Damien Georges
 }
-\concept{Secundary functions}
+\concept{Secondary functions}
 \keyword{SRE}
 \keyword{disk}
 \keyword{pseudo-absence}

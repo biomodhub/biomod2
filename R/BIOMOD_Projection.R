@@ -188,7 +188,7 @@
 ##' 
 ##' @importFrom foreach foreach %dopar% 
 ##' @importFrom terra rast subset nlyr writeRaster terraOptions wrap unwrap
-##'  mem_info app is.factor mask
+##'  mem_info app is.factor mask classify
 ##' @importFrom utils capture.output
 ##' @importFrom abind asub
 ##' 
@@ -217,6 +217,11 @@ BIOMOD_Projection <- function(bm.mod,
                                         , models.chosen, metric.binary, metric.filter, compress, seed.val, ...)
   for (argi in names(args)) { assign(x = argi, value = args[[argi]]) }
   rm(args)
+  
+  # if (.getOS() == "windows" && any(grep("MAXENT", bm.mod@models.computed))){
+  #   env <- foreach:::.foreachGlobals
+  #   rm(list=ls(name=env), pos=env)
+  # }
   
   
   ## 1. Create output object ----------------------------------------------------------------------

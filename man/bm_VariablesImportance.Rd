@@ -26,7 +26,7 @@ compute the variables importance}
 \item{variables}{(\emph{optional, default} \code{NULL}) \cr 
 A \code{vector} containing the names of the explanatory variables that will be considered}
 
-\item{method}{a \code{character} corresponding to the randomisation method to be used, must be 
+\item{method}{a \code{character} corresponding to the randomization method to be used, must be 
 \code{full_rand} (\emph{only method available so far})}
 
 \item{nb.rep}{an \code{integer} corresponding to the number of permutations to be done for 
@@ -93,7 +93,7 @@ bm_VariablesImportance(bm.model = mod,
 \code{\link{BIOMOD_EnsembleModeling}}, \code{\link{bm_PlotVarImpBoxplot}}, 
 \code{\link{get_variables_importance}}
 
-Other Secundary functions: 
+Other Secondary functions: 
 \code{\link{bm_BinaryTransformation}()},
 \code{\link{bm_CrossValidation}()},
 \code{\link{bm_FindOptimStat}()},
@@ -114,7 +114,7 @@ Other Secundary functions:
 \author{
 Damien Georges
 }
-\concept{Secundary functions}
+\concept{Secondary functions}
 \keyword{"Pearson}
 \keyword{correlation"}
 \keyword{importance}

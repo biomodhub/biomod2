@@ -133,7 +133,7 @@
 ##' 
 ##' @seealso \code{\link{ModelsTable}}, \code{\link{BIOMOD.models.options}}, 
 ##' \code{\link{bm_Tuning}}, \code{\link{BIOMOD_Modeling}}
-##' @family Secundary functions
+##' @family Secondary functions
 ##' 
 ##' 
 ##' @examples

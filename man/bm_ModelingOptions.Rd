@@ -240,7 +240,7 @@ opt.t
 \code{\link{ModelsTable}}, \code{\link{BIOMOD.models.options}}, 
 \code{\link{bm_Tuning}}, \code{\link{BIOMOD_Modeling}}
 
-Other Secundary functions: 
+Other Secondary functions: 
 \code{\link{bm_BinaryTransformation}()},
 \code{\link{bm_CrossValidation}()},
 \code{\link{bm_FindOptimStat}()},
@@ -261,6 +261,6 @@ Other Secundary functions:
 \author{
 Damien Georges, Wilfried Thuiller, Maya Gueguen
 }
-\concept{Secundary functions}
+\concept{Secondary functions}
 \keyword{models}
 \keyword{options}

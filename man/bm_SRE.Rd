@@ -59,7 +59,7 @@ This method is highly influenced by the extremes of the data input. Whereas a li
 can discriminate the extreme values from the main tendency, the SRE considers them as 
 important as any other data point leading to changes in predictions. \cr \cr
 
-\emph{The more (non-colinear) variables, the more restrictive the model will be.} \cr \cr
+\emph{The more (non-collinear) variables, the more restrictive the model will be.} \cr \cr
 
 Predictions are returned as binary (\code{0} or \code{1}) values, a site being either 
 potentially suitable for all the variables, or out of bounds for at least one variable and 
@@ -122,7 +122,7 @@ plot(res)
 \code{\link{bm_ModelingOptions}}, \code{\link{bm_Tuning}}, 
 \code{\link{bm_RunModelsLoop}}, \code{\link{BIOMOD_Modeling}},
 
-Other Secundary functions: 
+Other Secondary functions: 
 \code{\link{bm_BinaryTransformation}()},
 \code{\link{bm_CrossValidation}()},
 \code{\link{bm_FindOptimStat}()},
@@ -143,7 +143,7 @@ Other Secundary functions:
 \author{
 Wilfried Thuiller, Bruno Lafourcade, Damien Georges
 }
-\concept{Secundary functions}
+\concept{Secondary functions}
 \keyword{"surface}
 \keyword{envelop"}
 \keyword{models}

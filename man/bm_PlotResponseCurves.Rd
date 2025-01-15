@@ -171,7 +171,7 @@ bm_PlotResponseCurves(bm.out = myBiomodModelOut,
 \code{\link{BIOMOD.models.out}}, \code{\link{BIOMOD.ensemble.models.out}}, 
 \code{\link{BIOMOD_Modeling}}, \code{\link{BIOMOD_EnsembleModeling}}
 
-Other Secundary functions: 
+Other Secondary functions: 
 \code{\link{bm_BinaryTransformation}()},
 \code{\link{bm_CrossValidation}()},
 \code{\link{bm_FindOptimStat}()},
@@ -199,7 +199,7 @@ Other Plot functions:
 Damien Georges, Maya Gueguen
 }
 \concept{Plot functions}
-\concept{Secundary functions}
+\concept{Secondary functions}
 \keyword{curve}
 \keyword{ggplot}
 \keyword{response}

@@ -62,7 +62,7 @@ plot(myBiomodData)
 
 #### <i class="fa-solid fa-shuffle"></i> Pseudo-absences extraction
 
-Single or multiple set of pseudo-absences can be selected with the [`BIOMOD_FormatingData`](../reference/BIOMOD_FormatingData.html) function, which calls the [`bm_PseudoAbsences`](../reference/bm_PseudoAbsences.html) function to do so. More examples are presented on the [Secundary functions webpage](examples_2_secundaryFunctions.html).
+Single or multiple set of pseudo-absences can be selected with the [`BIOMOD_FormatingData`](../reference/BIOMOD_FormatingData.html) function, which calls the [`bm_PseudoAbsences`](../reference/bm_PseudoAbsences.html) function to do so. More examples are presented on the [Secondary functions webpage](examples_2_secundaryFunctions.html).
 
 ```R
 # # Transform true absences into potential pseudo-absences
@@ -102,7 +102,7 @@ Single or multiple set of pseudo-absences can be selected with the [`BIOMOD_Form
 
 #### <i class="fa-solid fa-scissors"></i> Cross-validation datasets
 
-Several cross-validation methods are available and can be selected with the [`BIOMOD_Modeling`](../reference/BIOMOD_Modeling.html) function, which calls the [`bm_CrossValidation`](../reference/bm_CrossValidation.html) function to do so. More examples are presented on the [Secundary functions webpage](examples_2_secundaryFunctions.html).
+Several cross-validation methods are available and can be selected with the [`BIOMOD_Modeling`](../reference/BIOMOD_Modeling.html) function, which calls the [`bm_CrossValidation`](../reference/bm_CrossValidation.html) function to do so. More examples are presented on the [Secondary functions webpage](examples_2_secundaryFunctions.html).
 
 ```R
 # # k-fold selection
@@ -123,7 +123,7 @@ Several cross-validation methods are available and can be selected with the [`BI
 
 #### <i class="fa-solid fa-rectangle-list"></i> Retrieve modeling options
 
-Modeling options are automatically retrieved from selected models within the [`BIOMOD_Modeling`](../reference/BIOMOD_Modeling.html) function, which calls the [`bm_ModelingOptions`](../reference/bm_ModelingOptions.html) function to do so. Model parameters can also be automatically tuned to a specific dataset, by calling the [`bm_Tuning`](../reference/bm_Tuning.html) function, however it can be quite long. More examples are presented on the [Secundary functions webpage](examples_2_secundaryFunctions.html).
+Modeling options are automatically retrieved from selected models within the [`BIOMOD_Modeling`](../reference/BIOMOD_Modeling.html) function, which calls the [`bm_ModelingOptions`](../reference/bm_ModelingOptions.html) function to do so. Model parameters can also be automatically tuned to a specific dataset, by calling the [`bm_Tuning`](../reference/bm_Tuning.html) function, however it can be quite long. More examples are presented on the [Secondary functions webpage](examples_2_secundaryFunctions.html).
 
 ```R
 # # bigboss parameters
@@ -144,7 +144,7 @@ Modeling options are automatically retrieved from selected models within the [`B
 <br/><br/>
 
 
-### <i class="fa-solid fa-gear"></i> Run modelisation
+### <i class="fa-solid fa-gear"></i> Run modeling
 
 #### <i class="fa-solid fa-virus"></i> Single models
 
@@ -308,4 +308,3 @@ gg = bm_PlotRangeSize(bm.range = myBiomodRangeSize,
                       do.plot = TRUE,
                       row.names = c("Species", "Dataset", "Run", "Algo"))
 ```
-

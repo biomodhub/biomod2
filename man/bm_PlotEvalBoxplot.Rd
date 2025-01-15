@@ -118,7 +118,7 @@ bm_PlotEvalBoxplot(bm.out = myBiomodModelOut, group.by = c('algo', 'run'))
 \code{\link{BIOMOD_Modeling}}, \code{\link{BIOMOD_EnsembleModeling}}, 
 \code{\link{get_evaluations}}
 
-Other Secundary functions: 
+Other Secondary functions: 
 \code{\link{bm_BinaryTransformation}()},
 \code{\link{bm_CrossValidation}()},
 \code{\link{bm_FindOptimStat}()},
@@ -146,7 +146,7 @@ Other Plot functions:
 Damien Georges, Maya Gueguen
 }
 \concept{Plot functions}
-\concept{Secundary functions}
+\concept{Secondary functions}
 \keyword{boxplot}
 \keyword{evaluation}
 \keyword{ggplot}
