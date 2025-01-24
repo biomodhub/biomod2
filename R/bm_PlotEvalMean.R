@@ -136,48 +136,50 @@ bm_PlotEvalMean <- function(bm.out, metric.eval = NULL, dataset = 'calibration',
   for (argi in names(args)) { assign(x = argi, value = args[[argi]]) }
   rm(args)
   
-  ## 1. Get data for graphic ----------------------------------------------------------------------
-  ## Get evaluation values
-  scores <- get_evaluations(bm.out)
-  scores <- scores[scores$metric.eval %in% metric.eval, ]
-  
-  ## Compute mean and sd evaluation scores
-  models_mean = tapply(X = scores[, dataset]
+  if (!is.null.out) {
+    ## 1. Get data for graphic ----------------------------------------------------------------------
+    ## Get evaluation values
+    scores <- get_evaluations(bm.out)
+    scores <- scores[scores$metric.eval %in% metric.eval, ]
+    
+    ## Compute mean and sd evaluation scores
+    models_mean = tapply(X = scores[, dataset]
+                         , INDEX = list(scores$metric.eval, scores[, group.by])
+                         , FUN = mean, na.rm = TRUE)
+    models_sd = tapply(X = scores[, dataset]
                        , INDEX = list(scores$metric.eval, scores[, group.by])
-                       , FUN = mean, na.rm = TRUE)
-  models_sd = tapply(X = scores[, dataset]
-                     , INDEX = list(scores$metric.eval, scores[, group.by])
-                     , FUN = sd, na.rm = TRUE)
-  
-  ## Prepare data table for graphic
-  ggdat <- merge(data.frame(name = colnames(models_mean), t(models_mean)),
-                 data.frame(name = colnames(models_sd), t(models_sd)), 
-                 by = "name" )
-  colnames(ggdat) <- c("name", "mean1", "mean2", "sd1", "sd2")
-  
-  limits1 <- aes_string(xmax = "mean1 + sd1", xmin = "mean1 - sd1", fill = NULL)
-  limits2 <- aes_string(ymax = "mean2 + sd2", ymin = "mean2 - sd2", fill = NULL)
-  
-  ## 2. PLOT graphic ------------------------------------------------------------------------------
-  gg <- ggplot(ggdat, aes_string(x = "mean1", y = "mean2", colour = "name", fill = NULL)) +
-    geom_point() + ## add mean points
-    geom_errorbarh(limits1, height = 0) + ## add horizontal error bars
-    geom_errorbar(limits2, width = 0) + ## add vertical error bars
-    xlab(metric.eval[1]) +
-    ylab(metric.eval[2]) +
-    theme(legend.title = element_blank()
-          , legend.key = element_rect(fill = "white"))
-  
-  if (length(ylim) > 0 | length(xlim) > 0) { ## fix scale
-    gg <- gg + coord_cartesian(ylim = ylim, xlim = xlim)
+                       , FUN = sd, na.rm = TRUE)
+    
+    ## Prepare data table for graphic
+    ggdat <- merge(data.frame(name = colnames(models_mean), t(models_mean)),
+                   data.frame(name = colnames(models_sd), t(models_sd)), 
+                   by = "name" )
+    colnames(ggdat) <- c("name", "mean1", "mean2", "sd1", "sd2")
+    
+    limits1 <- aes_string(xmax = "mean1 + sd1", xmin = "mean1 - sd1", fill = NULL)
+    limits2 <- aes_string(ymax = "mean2 + sd2", ymin = "mean2 - sd2", fill = NULL)
+    
+    ## 2. PLOT graphic ------------------------------------------------------------------------------
+    gg <- ggplot(ggdat, aes_string(x = "mean1", y = "mean2", colour = "name", fill = NULL)) +
+      geom_point() + ## add mean points
+      geom_errorbarh(limits1, height = 0) + ## add horizontal error bars
+      geom_errorbar(limits2, width = 0) + ## add vertical error bars
+      xlab(metric.eval[1]) +
+      ylab(metric.eval[2]) +
+      theme(legend.title = element_blank()
+            , legend.key = element_rect(fill = "white"))
+    
+    if (length(ylim) > 0 | length(xlim) > 0) { ## fix scale
+      gg <- gg + coord_cartesian(ylim = ylim, xlim = xlim)
+    }
+    
+    if (length(main) > 0) { ## add title
+      gg <- gg + labs(title = main)
+    }
+    
+    if (do.plot){ print(gg) }
+    return(list(tab = ggdat, plot = invisible(gg)))
   }
-  
-  if (length(main) > 0) { ## add title
-    gg <- gg + labs(title = main)
-  }
-  
-  if (do.plot){ print(gg) }
-  return(list(tab = ggdat, plot = invisible(gg)))
 }
 
 
@@ -192,39 +194,43 @@ bm_PlotEvalMean <- function(bm.out, metric.eval = NULL, dataset = 'calibration',
   
   ## 2. Check metric.eval argument --------------------------------------------
   scores <- get_evaluations(bm.out)
-  avail.metrics <- sort(unique(as.character(scores$metric.eval)))
-  if (is.null(metric.eval) && length(avail.metrics) > 1) {
-    metric.eval <- sort(unique(as.character(scores$metric.eval)))[1:2]
-    warning(toString(metric.eval), " evaluation metric.eval automatically selected")
-  } else {
-    metric.eval = sort(unique(as.character(metric.eval)))
-    if (length(metric.eval) < 2) {
-      stop("2 different evaluations metric.eval needed")
-    } else if (length(metric.eval) > 2) {
-      metric.eval = metric.eval[1:2]
-      warning("2 different evaluations metric.eval needed, only the first 2 will be kept")
+  
+  if (!is.null(scores))
+  {
+    avail.metrics <- sort(unique(as.character(scores$metric.eval)))
+    if (is.null(metric.eval) && length(avail.metrics) > 1) {
+      metric.eval <- sort(unique(as.character(scores$metric.eval)))[1:2]
+      warning(toString(metric.eval), " evaluation metric.eval automatically selected")
+    } else {
+      metric.eval = sort(unique(as.character(metric.eval)))
+      if (length(metric.eval) < 2) {
+        stop("2 different evaluations metric.eval needed")
+      } else if (length(metric.eval) > 2) {
+        metric.eval = metric.eval[1:2]
+        warning("2 different evaluations metric.eval needed, only the first 2 will be kept")
+      }
     }
+    
+    ## 2. Check dataset argument ------------------------------------------------
+    .fun_testIfIn(TRUE, "dataset", dataset, c("calibration", "validation", "evaluation"))
+    
+    ## 3. Check group.by argument -----------------------------------------------
+    if (inherits(bm.out, "BIOMOD.models.out")) {
+      .fun_testIfIn(TRUE, "group.by", group.by, c("full.name", "PA", "run", "algo"))
+    } else if (inherits(bm.out, "BIOMOD.ensemble.models.out")) {
+      .fun_testIfIn(TRUE, "group.by", group.by, c("full.name", "merged.by.PA", "merged.by.run", "algo"))
+    } 
+    if (length(group.by) > 1) {
+      group.by = group.by[1]
+      warning("`group.by` must contain only one value, only the first one will be kept")
+    }
+    
+    ## 4. Check extra args argument ---------------------------------------------
+    .fun_testIfIn(TRUE, "names(args)", names(args), c('xlim', 'ylim', 'main'))
   }
   
-  ## 2. Check dataset argument ------------------------------------------------
-  .fun_testIfIn(TRUE, "dataset", dataset, c("calibration", "validation", "evaluation"))
-  
-  ## 3. Check group.by argument -----------------------------------------------
-  if (inherits(bm.out, "BIOMOD.models.out")) {
-    .fun_testIfIn(TRUE, "group.by", group.by, c("full.name", "PA", "run", "algo"))
-  } else if (inherits(bm.out, "BIOMOD.ensemble.models.out")) {
-    .fun_testIfIn(TRUE, "group.by", group.by, c("full.name", "merged.by.PA", "merged.by.run", "algo"))
-  } 
-  if (length(group.by) > 1) {
-    group.by = group.by[1]
-    warning("`group.by` must contain only one value, only the first one will be kept")
-  }
-  
-  ## 4. Check extra args argument ---------------------------------------------
-  .fun_testIfIn(TRUE, "names(args)", names(args), c('xlim', 'ylim', 'main'))
-  
-  
-  return(list(metric.eval = metric.eval,
+  return(list(is.null.out = is.null(scores),
+              metric.eval = metric.eval,
               group.by = group.by,
               xlim = args$xlim,
               ylim = args$ylim,

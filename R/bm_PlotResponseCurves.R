@@ -189,7 +189,8 @@ bm_PlotResponseCurves <- function(bm.out
   args <- .bm_PlotResponseCurves.check.args(bm.out, models.chosen, new.env, show.variables, do.bivariate, ...)
   for (argi in names(args)) { assign(x = argi, value = args[[argi]]) }
   rm(args)
-
+  
+  
   ## 1. Create output object ----------------------------------------------------------------------
   ref_table <- new.env[1, , drop = FALSE]
   rownames(ref_table) <- NULL
@@ -388,6 +389,10 @@ bm_PlotResponseCurves <- function(bm.out
   
   ## 1. Check bm.out argument -------------------------------------------------
   .fun_testIfInherits(TRUE, "bm.out", bm.out, c("BIOMOD.models.out", "BIOMOD.ensemble.models.out"))
+  
+  if (get_built_models(bm.out)[1] == "none") {
+    stop('No models computed')
+  }
   
   ## 2. Check models.chosen ---------------------------------------------------
   if (models.chosen[1] == 'all') {

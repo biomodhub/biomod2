@@ -132,23 +132,26 @@ bm_PlotVarImpBoxplot <- function(bm.out, group.by = c('run', 'expl.var', 'algo')
   ## Get variables importance values & Prepare data table for graphic
   ggdat = get_variables_importance(bm.out)
   
-  ## 2. PLOT graphic ------------------------------------------------------------------------------
-  gg <- ggplot(ggdat, aes_string(x = group.by[1], y = "var.imp", fill = group.by[2])) +
-    geom_boxplot() + ## add boxplot
-    facet_wrap(group.by[3], scales = "free_x") +
-    scale_y_continuous(breaks = seq(0, 1, 0.1), labels = paste0(seq(0, 100, 10), "%")) + 
-    xlab("") +
-    ylab("") +
-    theme(legend.title = element_blank()
-          , legend.key = element_rect(fill = "white")
-          , axis.text.x = element_text(angle = 45, hjust = 1))
-  
-  if (length(main) > 0) { ## add title
-    gg <- gg + labs(title = main)
+  if (!is.null(ggdat))
+  {
+    ## 2. PLOT graphic ------------------------------------------------------------------------------
+    gg <- ggplot(ggdat, aes_string(x = group.by[1], y = "var.imp", fill = group.by[2])) +
+      geom_boxplot() + ## add boxplot
+      facet_wrap(group.by[3], scales = "free_x") +
+      scale_y_continuous(breaks = seq(0, 1, 0.1), labels = paste0(seq(0, 100, 10), "%")) + 
+      xlab("") +
+      ylab("") +
+      theme(legend.title = element_blank()
+            , legend.key = element_rect(fill = "white")
+            , axis.text.x = element_text(angle = 45, hjust = 1))
+    
+    if (length(main) > 0) { ## add title
+      gg <- gg + labs(title = main)
+    }
+    
+    if (do.plot){ print(gg) }
+    return(list(tab = ggdat, plot = invisible(gg)))
   }
-  
-  if (do.plot){ print(gg) }
-  return(list(tab = ggdat, plot = invisible(gg)))
 }
 
 

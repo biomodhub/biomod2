@@ -135,24 +135,27 @@ bm_PlotEvalBoxplot <- function(bm.out, dataset = 'calibration', group.by = c('al
   ## Get evaluation values
   scores <- get_evaluations(bm.out)
   
-  ## Prepare data table for graphic
-  ggdat = scores
-  
-  ## 2. PLOT graphic ------------------------------------------------------------------------------
-  gg <- ggplot(ggdat, aes_string(x = group.by[1], y = dataset, fill = group.by[2])) +
-    geom_boxplot() + ## add boxplot
-    facet_wrap("metric.eval", scales = scales) +
-    xlab("") +
-    theme(legend.title = element_blank()
-          , legend.key = element_rect(fill = "white")
-          , axis.text.x = element_text(angle = 45, hjust = 1))
-  
-  if (length(main) > 0) { ## add title
-    gg <- gg + labs(title = main)
+  if (!is.null(scores))
+  {
+    ## Prepare data table for graphic
+    ggdat = scores
+    
+    ## 2. PLOT graphic ------------------------------------------------------------------------------
+    gg <- ggplot(ggdat, aes_string(x = group.by[1], y = dataset, fill = group.by[2])) +
+      geom_boxplot() + ## add boxplot
+      facet_wrap("metric.eval", scales = scales) +
+      xlab("") +
+      theme(legend.title = element_blank()
+            , legend.key = element_rect(fill = "white")
+            , axis.text.x = element_text(angle = 45, hjust = 1))
+    
+    if (length(main) > 0) { ## add title
+      gg <- gg + labs(title = main)
+    }
+    
+    if (do.plot){ print(gg) }
+    return(list(tab = ggdat, plot = invisible(gg)))
   }
-  
-  if (do.plot){ print(gg) }
-  return(list(tab = ggdat, plot = invisible(gg)))
 }
 
 
