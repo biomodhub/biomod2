@@ -12,11 +12,20 @@ vignette: >
 
 ## <i class="fas fa-code"></i> Development updates
 
+### <i class="fas fa-pen-alt"></i> 2025
+
 ### <i class="fas fa-pencil-alt"></i> 2024
 
 ##### Bugfix
 
-- 4.2-6-2 : add `MAXENT.partitions`, `MAXENT.kfolds`, `MAXENT.user.grp` and `MAXENT.tune.args` parameters in `bm_Tuning` function
+- 4.2-6-2 :
+  + fix `get_evaluations` and `get_variables_importance` message when data is not available (extended to `bm_Plot[...]` functions)
+  + ~~add cluster management code through `parallel::stopCluster` and `foreach:::.foreachGlobals`~~ <br/>
+  finally rather through `.errorhandling` in `foreach` loop in `bm_RunModelsLoop` (_for MAXENT on Windows_)
+  + merge request improving balanced partitions for stratification strategy in `bm_CrossValidation`
+  + fix metric selection in `bm_PlotEvalMean`
+  + add new tutorial video (_for version 4.2-6_)
+  + add `MAXENT.partitions`, `MAXENT.kfolds`, `MAXENT.user.grp` and `MAXENT.tune.args` parameters in `bm_Tuning` function
 - 4.2-6-1 : fixed path failure within species name (e.g. data format like `tif`)
 
 

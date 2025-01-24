@@ -24,7 +24,7 @@ All single models available are the following :
   \item GBM (\code{\link[gbm]{gbm}})
   \item GLM (\code{\link[stats]{glm}})
   \item MARS (\code{\link[earth]{earth}})
-  \item MAXENT (\url{https://biodiversityinformatics.amnh.org/open_source/maxent/})
+  \item MAXENT (\href{https://biodiversityinformatics.amnh.org/open_source/maxent/}{see Maxent website})
   \item MAXNET (\code{\link[maxnet]{maxnet}})
   \item RF (\code{\link[randomForest]{randomForest}})
   \item SRE (\code{\link{bm_SRE}})

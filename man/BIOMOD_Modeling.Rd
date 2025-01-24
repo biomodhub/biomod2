@@ -194,7 +194,7 @@ metrics (see Details).
     \item \code{GLM} : Generalized Linear Model (\code{\link[stats]{glm}})
     \item \code{MARS} : Multiple Adaptive Regression Splines (\code{\link[earth]{earth}})
     \item \code{MAXENT} : Maximum Entropy 
-    (\url{https://biodiversityinformatics.amnh.org/open_source/maxent/})
+    (\href{https://biodiversityinformatics.amnh.org/open_source/maxent/}{see Maxent website})
     \item \code{MAXNET} : Maximum Entropy (\code{\link[maxnet]{maxnet}})
     \item \code{RF} : Random Forest (\code{\link[randomForest]{randomForest}})
     \item \code{RFd} : Random Forest downsampled (\code{\link[randomForest]{randomForest}})
