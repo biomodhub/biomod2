@@ -13,6 +13,7 @@
 ##' \code{\link{get_built_models}} function
 ##' @param do.plot a \code{logical}, print the plot or not 
 ##' @param color.by a \code{character} between "full.name", "species", "PA", "RUN" or "algo" 
+##' @param do.Rpredicted a \code{logical} : do Rpredicted have to be computed or no ?  
 ##' 
 ##' @return
 ##' \enumerate{
@@ -43,7 +44,8 @@
 bm_ModelAnalysis <- function(bm.mod, 
                              models.chosen = "all",
                              do.plot = TRUE, 
-                             color.by = "full.name"){
+                             color.by = "full.name",
+                             do.Rpredicted = FALSE){
   
   .bm_cat("Model analysis")
   args <- .bm_ModelAnalysis.check.args(bm.mod = bm.mod, models.chosen = models.chosen)
@@ -61,15 +63,18 @@ bm_ModelAnalysis <- function(bm.mod,
   res <- tidyr::separate(res, col = "full.name", into = c("species", "PA", "RUN", "algo"), remove = FALSE)
   cat("\n")
   
-  Psquared <- foreach(mod.name = models.chosen, .combine = c) %dopar% {
-    cat("\n\t> Psquared", mod.name, "...")
-    PRESS <- .bm_PRESS(bm.mod, mod.name, perc = 1) ## attention perc ? 
-    TSS <- .bm_TotalSumSquares(bm.mod, mod.name)
-    pred_Rsquared <- 1 - PRESS/TSS
-    return(pred_Rsquared)
+  if (do.Rpredicted){
+    Psquared <- foreach(mod.name = models.chosen, .combine = c) %dopar% {
+      cat("\n\t> Psquared", mod.name, "...")
+      PRESS <- .bm_PRESS(bm.mod, mod.name, perc = 1) ## attention perc ? 
+      TSS <- .bm_TotalSumSquares(bm.mod, mod.name)
+      pred_Rsquared <- 1 - PRESS/TSS
+      return(pred_Rsquared)
+    }
+  } else {
+    Psquared = NA
   }
 
-    
   ## Outliers
   plot_outliers <- ggplot(res, aes(y = residuals, x = obs, color = .data[[color.by]]))+
     geom_point() +
@@ -247,14 +252,20 @@ setMethod("bm_return_info_analysis", signature("MARS_biomod2_model"), function(m
       formu <- bm_MakeFormula(resp.name = names(mySpExpl)[1], expl.var = mySpExpl[1, 4:ncol(mySpExpl)], type = "simple", interaction.level = 0)
       argstmp$formula <- formu
     }
-    argstmp <- argstmp[c("formula", "data", names(argstmp)[which(!(names(argstmp) %in% c("formula", "data")))])]
+    # if(algo == "XGBOOST"){
+    #   argstmp$label <- argstmp$data[,1]
+    #   argstmp$data <- as.matrix(argstmp$data[, 4:ncol(mySpExpl)])
+    #   argstmp <- argstmp[c("data", names(argstmp)[which(!(names(argstmp) %in% c("formula", "data")))])]
+    # } 
+    argstmp <- argstmp[c("formula","data", names(argstmp)[which(!(names(argstmp) %in% c("formula", "data")))])]
+    
     
     new.model <- try(do.call(eval(parse(text = model.call)), argstmp), silent = TRUE)
     new.res <- NA
     if (inherits(new.model, 'try-error') != T){
       new.pred <- predict(new.model, mySpExpl[point, ])
       new.res <- mySpExpl[point, 1] - new.pred
-    } else {print(paste("error with ", algo, ": ", new.model))}
+    } 
     
     return(new.res)
   }## Return residuals x(-i)

@@ -8,7 +8,8 @@ bm_ModelAnalysis(
   bm.mod,
   models.chosen = "all",
   do.plot = TRUE,
-  color.by = "full.name"
+  color.by = "full.name",
+  do.Rpredicted = FALSE
 )
 }
 \arguments{
@@ -21,6 +22,8 @@ bm_ModelAnalysis(
 \item{do.plot}{a \code{logical}, print the plot or not}
 
 \item{color.by}{a \code{character} between "full.name", "species", "PA", "RUN" or "algo"}
+
+\item{do.Rpredicted}{a \code{logical} : do Rpredicted have to be computed or no ?}
 }
 \value{
 \enumerate{
