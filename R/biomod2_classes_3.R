@@ -588,14 +588,13 @@ setMethod("get_built_models", "BIOMOD.models.out",
 ##' 
 
 setMethod("get_evaluations", "BIOMOD.models.out",
-          function(obj, full.name = NULL, PA = NULL, run = NULL, algo = NULL, metric.eval = NULL)
-          {
-            out <- load_stored_object(obj@models.evaluation)
-            if (nrow(out) == 0) {
+          function(obj, full.name = NULL, PA = NULL, run = NULL, algo = NULL, metric.eval = NULL) {
+            if(obj@models.evaluation@link == ''){
               cat("\n! models have no evaluations\n")
               return(invisible(NULL))
             } else {
-              keep_lines <- .filter_outputs.df(out, subset.list = list(full.name = full.name, PA = PA
+              out <- load_stored_object(obj@models.evaluation)
+              keep_lines <- .filter_outputs.df(out, subset.list = list(full.name =  full.name, PA = PA
                                                                        , run = run, algo = algo
                                                                        , metric.eval = metric.eval))
               out <- out[keep_lines, ]
@@ -610,13 +609,12 @@ setMethod("get_evaluations", "BIOMOD.models.out",
 ##' 
 
 setMethod("get_variables_importance", "BIOMOD.models.out",
-          function(obj, full.name = NULL, PA = NULL, run = NULL, algo = NULL, expl.var = NULL)
-          {
-            out <- load_stored_object(obj@variables.importance)
-            if (obj@variables.importance@link == '') {
+          function(obj, full.name = NULL, PA = NULL, run = NULL, algo = NULL, expl.var = NULL) {
+            if(obj@variables.importance@link == ''){
               cat("\n! models have no variables importance\n")
               return(invisible(NULL))
             } else {
+              out <- load_stored_object(obj@variables.importance)
               keep_lines <- .filter_outputs.df(out, subset.list = list(full.name =  full.name, PA = PA
                                                                        , run = run, algo = algo
                                                                        , expl.var = expl.var))
@@ -1388,11 +1386,11 @@ setMethod("get_evaluations", "BIOMOD.ensemble.models.out",
           function(obj, full.name = NULL, merged.by.algo = NULL, merged.by.run = NULL
                    , merged.by.PA = NULL, filtered.by = NULL, algo = NULL, metric.eval = NULL)
           {
-            out <- load_stored_object(obj@models.evaluation)
-            if (nrow(out) == 0) {
+            if(obj@models.evaluation@link == ''){
               cat("\n! models have no evaluations\n")
               return(invisible(NULL))
             } else {
+              out <- load_stored_object(obj@models.evaluation)
               keep_lines <- .filter_outputs.df(out, subset.list = list(full.name = full.name
                                                                        , merged.by.algo = merged.by.algo
                                                                        , merged.by.run = merged.by.run
@@ -1416,16 +1414,21 @@ setMethod("get_variables_importance", "BIOMOD.ensemble.models.out",
           function(obj, full.name = NULL, merged.by.algo = NULL, merged.by.run = NULL
                    , merged.by.PA = NULL, filtered.by = NULL, algo = NULL, expl.var = NULL)
           {
-            out <- load_stored_object(obj@variables.importance)
-            keep_lines <- .filter_outputs.df(out, subset.list = list(full.name = full.name
-                                                                     , merged.by.algo = merged.by.algo
-                                                                     , merged.by.run = merged.by.run
-                                                                     , merged.by.PA = merged.by.PA
-                                                                     , filtered.by = filtered.by
-                                                                     , algo = algo
-                                                                     , expl.var = expl.var))
-            out <- out[keep_lines, ]
-            return(out)
+            if(obj@variables.importance@link == ''){
+              cat("\n! models have no variables importance\n")
+              return(invisible(NULL))
+            } else {
+              out <- load_stored_object(obj@variables.importance)
+              keep_lines <- .filter_outputs.df(out, subset.list = list(full.name = full.name
+                                                                       , merged.by.algo = merged.by.algo
+                                                                       , merged.by.run = merged.by.run
+                                                                       , merged.by.PA = merged.by.PA
+                                                                       , filtered.by = filtered.by
+                                                                       , algo = algo
+                                                                       , expl.var = expl.var))
+              out <- out[keep_lines, ]
+              return(out)
+            }
           }
 )
 

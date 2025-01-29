@@ -133,7 +133,9 @@ bm_PlotVarImpBoxplot <- function(bm.out, group.by = c('run', 'expl.var', 'algo')
   ## Get variables importance values & Prepare data table for graphic
   ggdat = get_variables_importance(bm.out)
   
-  ## 2. PLOT graphic ------------------------------------------------------------------------------
+  if (!is.null(ggdat))
+  { 
+    ## 2. PLOT graphic ------------------------------------------------------------------------------
   gg <- ggplot(ggdat, aes(x = .data[[group.by[1]]], y = .data$var.imp, fill = .data[[group.by[2]]])) +
     geom_boxplot() + ## add boxplot
     facet_wrap(group.by[3], scales = "free_x") +
@@ -146,10 +148,11 @@ bm_PlotVarImpBoxplot <- function(bm.out, group.by = c('run', 'expl.var', 'algo')
   
   if (length(main) > 0) { ## add title
     gg <- gg + labs(title = main)
+    }
+    
+    if (do.plot){ print(gg) }
+    return(list(tab = ggdat, plot = invisible(gg)))
   }
-  
-  if (do.plot){ print(gg) }
-  return(list(tab = ggdat, plot = invisible(gg)))
 }
 
 

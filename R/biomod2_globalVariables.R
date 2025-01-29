@@ -107,7 +107,7 @@ utils::globalVariables(names = c("temp_workdir", "variables", "v", "r", "model_t
 
 
 ## bm_PlotEvalMean ------------
-utils::globalVariables(names = c("xlim", "ylim", "main"))
+utils::globalVariables(names = c("xlim", "ylim", "main", "is.null.out"))
 
 ## bm_PlotEvalBoxplot ------------
 utils::globalVariables(names = c("scales", "main"))

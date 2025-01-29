@@ -135,7 +135,8 @@ bm_PlotEvalBoxplot <- function(bm.out, dataset = 'calibration', group.by = c('al
   ## 1. Get data for graphic ----------------------------------------------------------------------
   ## Get evaluation values
   scores <- get_evaluations(bm.out)
-  
+  if (!is.null(scores))
+  {
   ## Prepare data table for graphic
   ggdat = scores
   
@@ -151,9 +152,10 @@ bm_PlotEvalBoxplot <- function(bm.out, dataset = 'calibration', group.by = c('al
   if (length(main) > 0) { ## add title
     gg <- gg + labs(title = main)
   }
-  
-  if (do.plot){ print(gg) }
-  return(list(tab = ggdat, plot = invisible(gg)))
+    
+    if (do.plot){ print(gg) }
+    return(list(tab = ggdat, plot = invisible(gg)))
+  }
 }
 
 
