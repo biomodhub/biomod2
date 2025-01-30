@@ -86,6 +86,7 @@ reference:
       - "bm_FindOptimStat"
       - "bm_BinaryTransformation"
       - "bm_VariablesImportance"
+      - "bm_ModelAnalysis" 
       - "bm_PlotEvalMean"
       - "bm_PlotEvalBoxplot"
       - "bm_PlotVarImpBoxplot"
@@ -112,6 +113,7 @@ reference:
       - "load_stored_object"
       - "getters.bm"
       - "getters.out"
+      - "setters"
       - "predict.bm"
       - "predict.em"
   - title: Data

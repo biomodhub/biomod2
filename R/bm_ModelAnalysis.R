@@ -28,7 +28,6 @@
 ##' @details 
 ##' Only the models coherent with a residuals analysis will be selected for some plots.
 ##' 
-##' @md
 ##' 
 ##' @keywords analyze models residuals
 ##' 
@@ -57,7 +56,7 @@ bm_ModelAnalysis <- function(bm.mod,
   res <- foreach(mod.name = models.coherent, .combine = rbind) %dopar% {
     cat("\n\t> Analysis", mod.name, "...")
     mod <- get(BIOMOD_LoadModels(bm.out = bm.mod, full.name = mod.name))
-    infos <- bm_return_info_analysis(mod)
+    infos <- .bm_return_info_analysys(mod)
     return(data.frame("full.name" = mod.name, infos))
   }
   res <- tidyr::separate(res, col = "full.name", into = c("species", "PA", "RUN", "algo"), remove = FALSE)
@@ -147,38 +146,37 @@ bm_ModelAnalysis <- function(bm.mod,
   return(res)
 }
 
-# bm_RunModelAnalysis
 
-# method pour cas avec residuals 
-# method pour RF 
 
-##' @name bm_return_info_analysis
-##' @title Functions to get residuals and fitted values of a model
-##' 
-##' @param mod a \code{biomod2_model} 
-##' @importFrom stats fitted residuals
+# .bm_return_info_analysys
+# Functions to get residuals and fitted values of a model
+# 
+# param mod a \code{biomod2_model}
+# importFrom stats fitted residuals
+# 
+# export
 
-setGeneric("bm_return_info_analysis", function(mod) { standardGeneric("bm_return_info_analysis")})
+setGeneric(".bm_return_info_analysys", function(mod) { standardGeneric(".bm_return_info_analysys")})
 
-setMethod("bm_return_info_analysis", signature("CTA_biomod2_model"), function(mod){
+setMethod(".bm_return_info_analysys", signature("CTA_biomod2_model"), function(mod){
   resids <- as.vector(residuals(mod@model)) 
   fit <- as.vector(mod@model$y) #[,"y"]
   return(data.frame("obs" = 1:length(resids), "residuals" = resids, "fitted" = fit))
 })
 
-setMethod("bm_return_info_analysis", signature("GAM_biomod2_model"), function(mod){
+setMethod(".bm_return_info_analysys", signature("GAM_biomod2_model"), function(mod){
   resids <- as.vector(residuals(mod@model)) 
   fit <- as.vector(fitted(mod@model))
   return(data.frame("obs" = 1:length(resids), "residuals" = resids, "fitted" = fit))
 })
 
-setMethod("bm_return_info_analysis", signature("GLM_biomod2_model"), function(mod){
+setMethod(".bm_return_info_analysys", signature("GLM_biomod2_model"), function(mod){
   resids <- as.vector(residuals(mod@model)) 
   fit <- as.vector(fitted(mod@model))
   return(data.frame("obs" = 1:length(resids), "residuals" = resids, "fitted" = fit))
 })
 
-setMethod("bm_return_info_analysis", signature("MARS_biomod2_model"), function(mod){
+setMethod(".bm_return_info_analysys", signature("MARS_biomod2_model"), function(mod){
   resids <- as.vector(residuals(mod@model)) 
   fit <- as.vector(fitted(mod@model))
   return(data.frame( "obs" = 1:length(resids), "residuals" = resids, "fitted" = fit))

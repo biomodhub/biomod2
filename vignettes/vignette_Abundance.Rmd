@@ -1,5 +1,5 @@
 ---
-title: "Abundance with Biomod2"
+title: "vignette_Abundance"
 output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{Vignette Abundance}

@@ -61,6 +61,25 @@ devtools::install_github("biomodhub/biomod2", dependencies = TRUE)
 <br/><br/>
 <i class="fab fa-youtube"></i> **NEW** video tutorial in [Videos](https://biomodhub.github.io/biomod2/articles/vignette_videos.html) !
 
+
+<br/><br/><br/>
+
+<br/><br/>
+
+
+### <i class="fas fa-envelope-open-text"></i> `biomod 4.3` - Abundance modelling
+
+
+<i class="fas fa-exclamation-triangle"></i> Please **feel free to indicate if you notice some strange new behaviors** !
+
+#### <i class="fas fa-exchange-alt"></i> What is changed ?
+
+ Nothing for presences/absences (or presence-only) models. 
+ 
+#### <i class="fas fa-plus-square"></i> What is new ?
+
+ You can now use non-binary data four your modelling. All the information can be found in the [Abundance Vignette](https://biomodhub.github.io/biomod2/articles/vignette_Abundance.html). 
+
 <br/><br/><br/>
 
 <br/><br/>
@@ -68,8 +87,6 @@ devtools::install_github("biomodhub/biomod2", dependencies = TRUE)
 
 ### <i class="fas fa-envelope-open-text"></i> `biomod 4.2-6` - Improved OptionsBigBoss and new model
 
-
-<i class="fas fa-exclamation-triangle"></i> Please **feel free to indicate if you notice some strange new behaviors** !
 
 #### <i class="fas fa-exchange-alt"></i> What is changed ?
 

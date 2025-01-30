@@ -15,8 +15,8 @@ bm_ModelAnalysis(
 \arguments{
 \item{bm.mod}{a \code{BIOMOD.models.out}}
 
-\item{models.chosen}{a \code{vector} containing model names to be kept, must be either
-\code{all} or a sub-selection of model names that can be obtained with the
+\item{models.chosen}{a \code{vector} containing model names to be kept, must be either 
+\code{all} or a sub-selection of model names that can be obtained with the 
 \code{\link{get_built_models}} function}
 
 \item{do.plot}{a \code{logical}, print the plot or not}
@@ -27,11 +27,11 @@ bm_ModelAnalysis(
 }
 \value{
 \enumerate{
-\item a plot residuals ~ observations to detect outliers
-\item a histogramm of the residuals
-\item a qqplot of the residuals
-\item plot residuals ~ fitted
-\item a plot of the different Rsquared available (Rsquared, Rsquared_aj, Psquared)
+  \item a plot residuals ~ observations to detect outliers
+  \item a histogramm of the residuals 
+  \item a qqplot of the residuals
+  \item plot residuals ~ fitted
+  \item a plot of the different Rsquared available (Rsquared, Rsquared_aj, Psquared)
 }
 }
 \description{

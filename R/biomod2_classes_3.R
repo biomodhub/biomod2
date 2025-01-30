@@ -1457,6 +1457,8 @@ setMethod("get_variables_importance", "BIOMOD.ensemble.models.out",
 ##' @seealso \code{\link{BIOMOD.models.out}}, \code{\link{BIOMOD.projection.out}}, 
 ##' \code{\link{BIOMOD.ensemble.models.out}}
 ##' @family Toolbox functions
+##' 
+##' @rdname setters
 ##' @export
 ##' 
 
