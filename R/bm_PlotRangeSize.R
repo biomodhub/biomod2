@@ -156,8 +156,9 @@
 ##' @importFrom reshape2 melt
 ##' @importFrom foreach foreach %do%
 ##' @importFrom terra rast which.max nlyr  classify plot
-##' @importFrom ggplot2 ggplot aes_string geom_col geom_tile facet_wrap xlab ylab labs scale_fill_viridis_c
-##' theme element_blank element_rect scale_fill_manual
+##' @importFrom ggplot2 ggplot geom_col geom_tile geom_label facet_wrap xlab ylab labs scale_fill_viridis_c
+##' theme theme_bw element_blank element_rect scale_fill_manual scale_x_discrete 
+##' @importFrom rlang .data
 ##' 
 ##' @export
 ##' 
@@ -177,6 +178,42 @@ bm_PlotRangeSize <- function(bm.range, do.count = TRUE, do.perc = TRUE
   }
   out = list()
   
+  ordinal <- is.list(bm.range$Compt.By.Models)
+  if (ordinal){
+
+    links <- bm.range$Compt.By.Models
+    links$color <- ifelse((links$Target - links$Source) == 0, "stable", ifelse((links$Target - links$Source) > 0, "gain","loss"))
+    
+    gg.sankey <- ggplot(links, aes(y = n, axis1 = Source, axis2 = Target)) +
+      facet_wrap("full.name", scales = "free")+
+      ggalluvial::geom_alluvium(aes(fill = color), width = 1/1000, discern = T) +
+      ggalluvial::geom_stratum(width = 1/50, fill = "lightblue", color = "black", discern = T) +
+      geom_label(stat = "stratum", aes(label = after_stat(stratum))) +
+      scale_x_discrete(limits = c("Current", "Future"), expand = c(.05, .05)) +
+      scale_fill_manual(values = c(gain = "#fc8d62", loss = "#66c2a5", stable = "grey"))+
+      theme_bw() +
+      theme(axis.line = element_blank(),
+            axis.text.y = element_blank(),
+            axis.title.y = element_blank(),
+            axis.ticks.y = element_blank(),
+            panel.grid.major = element_blank(),
+            panel.grid.minor = element_blank(),
+            panel.border = element_blank(),
+            panel.background = element_blank())+
+      ggtitle("Sankey diagram")
+
+    do.count <- FALSE
+    do.perc <- FALSE
+    do.mean <- FALSE
+    gg.count <- NULL
+    gg.perc <- NULL
+    nonbinary <- TRUE
+  } else {
+    nonbinary <- ifelse(colnames(bm.range$Compt.By.Models)[1] == "Loss", FALSE, TRUE)
+    gg.sankey <- NULL
+  }
+  
+
   ## 1. Create PLOTS for Compt.By.Models ----------------------------------------------------------
   if (do.count || do.perc)
   {
@@ -196,44 +233,79 @@ bm_PlotRangeSize <- function(bm.range, do.count = TRUE, do.perc = TRUE
     }
     
     ## Rearrange data
-    ggdat = melt(ggdat, measure.vars = row.names, variable.name = "group.level", value.name = "group.value")
-    ggdat = melt(ggdat, measure.vars = c("Loss", "Stable0", "Stable1", "Gain"), variable.name = "count.level", value.name = "count.value")
-    ggdat$PercLoss = ggdat$PercLoss * (-1)
-    ggdat = melt(ggdat, measure.vars = c("PercLoss", "PercGain", "SpeciesRangeChange"), variable.name = "perc.level", value.name = "perc.value")
-    ggdat = melt(ggdat, measure.vars = c("CurrentRangeSize", "FutureRangeSize.NoDisp", "FutureRangeSize.FullDisp")
-                 , variable.name = "range.level", value.name = "range.value")
+    if (nonbinary){
+      names_range <- c("SpeciesRangeChange", "CurrentRangeSize", "FutureRangeSize.NoDisp", "FutureRangeSize.FullDisp")
+      names_perc <- grep("perc", colnames(bm.range$Compt.By.Models), value = T)
+      names_count <- setdiff(colnames(bm.range$Compt.By.Models), c(names_range, names_perc))
+      ggdat = melt(ggdat, measure.vars = row.names, variable.name = "group.level", value.name = "group.value")
+      ggdat = melt(ggdat, measure.vars = names_count, variable.name = "count.level", value.name = "count.value")
+      ggdat = melt(ggdat, measure.vars = names_perc, variable.name = "perc.level", value.name = "perc.value")
+      ggdat = melt(ggdat, measure.vars = names_range, variable.name = "range.level", value.name = "range.value")
+    } else {
+      ggdat = melt(ggdat, measure.vars = row.names, variable.name = "group.level", value.name = "group.value")
+      ggdat = melt(ggdat, measure.vars = c("Loss", "Stable0", "Stable1", "Gain"), variable.name = "count.level", value.name = "count.value")
+      ggdat$PercLoss = ggdat$PercLoss * (-1)
+      ggdat = melt(ggdat, measure.vars = c("PercLoss", "PercGain", "SpeciesRangeChange"), variable.name = "perc.level", value.name = "perc.value")
+      ggdat = melt(ggdat, measure.vars = c("CurrentRangeSize", "FutureRangeSize.NoDisp", "FutureRangeSize.FullDisp")
+                   , variable.name = "range.level", value.name = "range.value")
+    }
+    
     
     ## a. Count plot ----------------------------------------------------------
     if (do.count) {
-      gg.count = ggplot(ggdat[which(ggdat$count.level != "Stable0"), ]
-                        , aes_string(x = "group.value", y = "count.value", fill = "count.level")) +
+      if (nonbinary){
+        data <- ggdat
+        nbthresholds <- (length(names_count) - 1)/2
+        if (nbthresholds == 1){
+          colvalues <- c("#fc8d62", "grey",  "#66c2a5")
+        } else if (nbthresholds == 2){
+          colvalues <- c("#fc8d62", "#fdb194", "grey", "#8ad1ba",  "#66c2a5")
+        } else {colvalues <- c("#fb6930", "#fc8d62","#fdb194", "grey", "#8ad1ba",  "#66c2a5", "#46af8e")}
+        names(colvalues) <- names_count
+      } else {
+        data <- ggdat[which(ggdat$count.level != "Stable0"), ]
+        colvalues <- c("Loss" = "#fc8d62", "Gain" = "#66c2a5", "Stable1" = "grey")
+      }
+      
+      gg.count = ggplot(data, aes(x = .data$group.value, y = .data$count.value, fill = .data$count.level)) +
         geom_col(position = "stack") +
         facet_wrap("group.level", scales = "free") +
-        scale_fill_manual("", values = c("Loss" = "#fc8d62"
-                                         , "Gain" = "#66c2a5"
-                                         , "Stable1" = "grey")) +
+        scale_fill_manual("", values = colvalues) +
         xlab("") +
         ylab("Number of pixels\n") +
         theme(legend.title = element_blank()
               , legend.key = element_rect(fill = "white")
               , legend.position = "top")
-    } else { gg.count = NULL }
+    } else { 
+      gg.count = NULL 
+    }
     
     ## b. Percentage plot -----------------------------------------------------
     if (do.perc) {
-      gg.perc = ggplot(ggdat, aes_string(x = "group.value", y = "perc.value", fill = "perc.level")) +
+      if (nonbinary){
+        nbthresholds <- (length(names_perc) - 1)/2
+        if (nbthresholds == 1){
+          colvalues <- c("#fc8d62", "grey",  "#66c2a5")
+        } else if (nbthresholds == 2){
+          colvalues <- c("#fc8d62", "#fdb194", "grey", "#8ad1ba",  "#66c2a5")
+        } else {colvalues <- c("#fb6930", "#fc8d62", "#fdb194", "grey", "#8ad1ba",  "#66c2a5", "#46af8e")}
+        names(colvalues) <- names_perc
+      } else {
+        colvalues <- c("PercLoss" = "#fc8d62", "PercGain" = "#66c2a5", "SpeciesRangeChange" = "#8da0cb")
+      }
+      
+      gg.perc = ggplot(ggdat, aes(x = .data$group.value, y = .data$perc.value, fill = .data$perc.level)) +
         geom_col(position = "dodge") +
         # geom_boxplot() +
         facet_wrap("group.level", scales = "free_x") +
-        scale_fill_manual("", values = c("PercLoss" = "#fc8d62"
-                                         , "PercGain" = "#66c2a5"
-                                         , "SpeciesRangeChange" = "#8da0cb")) +
+        scale_fill_manual("", values = colvalues) +
         xlab("") +
         ylab("Percentage (%)\n") +
         theme(legend.title = element_blank()
               , legend.key = element_rect(fill = "white")
               , legend.position = "top")
     } else { gg.perc = NULL }
+    
     out$tab.count = ggdat
     out$plot.count = invisible(gg.count)
     out$plot.perc = invisible(gg.perc)
@@ -251,11 +323,25 @@ bm_PlotRangeSize <- function(bm.range, do.count = TRUE, do.perc = TRUE
       # gg.maps = 'terra::plot(ggdat, col = c("-2" = "#fc8d62", "-1" = "grey", "0" = "white", "1" = "#66c2a5")
       #      , legend.width = 2, legend.shrink = 0.7
       #      , axis.args = list(at = c(-2, -1, 0, 1), labels = c("Loss", "Stable1", "Stable0", "Gain"), cex.axis = 1))'
-      gg.maps <- 'plot(ggdat,
-           col = data.frame(
-             value = c(-2, -1, 0, 1),
-             color = c("#fc8d62", "lightgoldenrod2", "grey", "#66c2a5")),
-           colNA = "white")'
+      if (nonbinary == FALSE && ordinal == FALSE){
+        gg.maps <- 'plot(ggdat,
+                        col = data.frame(
+                          value = c(-2, -1, 0, 1),
+                          color = c("#fc8d62", "lightgoldenrod2", "grey", "#66c2a5")),
+                        colNA = "white")'
+      } else if (ordinal == FALSE) {
+        gg.maps <- 'plot(ggdat,
+                        col = c("#fb6930", "#fc8d62", "#fc9f7b", "#fdb194", "#fdc4ad", "grey", "#9dd8c5", "#8ad1ba", "#78c9b0", "#66c2a5", "#46af8e"),
+                        breaks = c(-150,-100,-75,-50,-25,0,25,50,75,100,150),
+                        colNA = "white")'
+      } else {
+        gg.maps <- 'plot(ggdat,
+                        col = c("#fc9f7b", "grey", "#78c9b0"),
+                        breaks = c(-Inf,-0.5,0.5,Inf),
+                        plg = list(legend=c("loss","stable","gain")),
+                        colNA = "white")'
+      }
+
       # ggdat = as.data.frame(rasterToPoints(ggdat))
       # 
       # ## Get models information
@@ -296,100 +382,105 @@ bm_PlotRangeSize <- function(bm.range, do.count = TRUE, do.perc = TRUE
     
     ## d. SRC mean maps per group.level ---------------------------------------
     if (do.mean) {
-      if(!requireNamespace('ggpubr', quietly = TRUE)) stop("Package 'ggpubr' not found")
-      
-      corres = data.frame(full.name = names(ggdat))
-      for (ii in 1:length(row.names)) {
-        corres[[row.names[ii]]] = sapply(corres$full.name, function(x) strsplit(x, "_")[[1]][ii])
-      }
-      reclass_table = data.frame(is = c(1, 2, 3), becomes = c(1, -1, -2))
-      fun_mode = function(x) {
-        tmp = table(x)
-        return(names(tmp)[which.max(tmp)])
-      }
-      
-      list.cons = list.perc = list()
-      for (ii in row.names) {
-        for (jj in unique(corres[, ii])) {
-          ras = ggdat[[corres$full.name[which(corres[, ii] == jj)]]]
-          if (nlyr(ras) > 1) {
-            stk = foreach (vali = c(1, -1, -2), .combine = "c") %do% {
-              res = ras
-              res = classify(res, rcl = matrix(c(vali,1), ncol = 2), others = 0)
-              res = sum(res, na.rm = TRUE)
-              names(res) = paste0("VAL_", vali)
-              res = classify(res, rcl = matrix(c(0,NA), ncol = 2))
-              return(res)
+      if (nonbinary) {
+        gg.ca = NULL
+        warning("'do.mean' is only available for binary data")
+      } else {
+        if(!requireNamespace('ggpubr', quietly = TRUE)) stop("Package 'ggpubr' not found")
+        
+        corres = data.frame(full.name = names(ggdat))
+        for (ii in 1:length(row.names)) {
+          corres[[row.names[ii]]] = sapply(corres$full.name, function(x) strsplit(x, "_")[[1]][ii])
+        }
+        reclass_table = data.frame(is = c(1, 2, 3), becomes = c(1, -1, -2))
+        fun_mode = function(x) {
+          tmp = table(x)
+          return(names(tmp)[which.max(tmp)])
+        }
+        
+        list.cons = list.perc = list()
+        for (ii in row.names) {
+          for (jj in unique(corres[, ii])) {
+            ras = ggdat[[corres$full.name[which(corres[, ii] == jj)]]]
+            if (nlyr(ras) > 1) {
+              stk = foreach (vali = c(1, -1, -2), .combine = "c") %do% {
+                res = ras
+                res = classify(res, rcl = matrix(c(vali,1), ncol = 2), others = 0)
+                res = sum(res, na.rm = TRUE)
+                names(res) = paste0("VAL_", vali)
+                res = classify(res, rcl = matrix(c(0,NA), ncol = 2))
+                return(res)
+              }
+              ras1 = which.max(stk)
+              ras1 = classify(ras1, reclass_table)
+              ras2 = max(stk, na.rm = TRUE) / sum(stk, na.rm = TRUE)
+              list.cons[[paste0(ii, "_", jj)]] = ras1
+              list.perc[[paste0(ii, "_", jj)]] = ras2
             }
-            ras1 = which.max(stk)
-            ras1 = classify(ras1, reclass_table)
-            ras2 = max(stk, na.rm = TRUE) / sum(stk, na.rm = TRUE)
-            list.cons[[paste0(ii, "_", jj)]] = ras1
-            list.perc[[paste0(ii, "_", jj)]] = ras2
           }
         }
-      }
-      if (length(list.cons) > 0 && length(list.perc) > 0) {
-        stk.cons = rast(list.cons)
-        stk.perc = rast(list.perc)
-        tab1 = as.data.frame(stk.cons, xy = TRUE)
-        tab1 = melt(tab1, id.vars = c("x", "y"))
-        tab1$group.level = tab1$group.value = ""
-        for (ii in row.names) {
-          tab1$group.level[grep(ii, tab1$variable)] = ii
+        if (length(list.cons) > 0 && length(list.perc) > 0) {
+          stk.cons = rast(list.cons)
+          stk.perc = rast(list.perc)
+          tab1 = as.data.frame(stk.cons, xy = TRUE)
+          tab1 = melt(tab1, id.vars = c("x", "y"))
+          tab1$group.level = tab1$group.value = ""
+          for (ii in row.names) {
+            tab1$group.level[grep(ii, tab1$variable)] = ii
+          }
+          for (jj in unique(unlist(corres[, 2:ncol(corres)]))) { 
+            tab1$group.value[grep(jj, tab1$variable)] = jj 
+          }
+          tab1$value[which(is.na(tab1$value))] = 0
+          
+          tab2 = as.data.frame(stk.perc, xy = TRUE)
+          tab2 = melt(tab2, id.vars = c("x", "y"))
+          tab2$group.level = tab2$group.value = ""
+          for (ii in row.names) { tab2$group.level[grep(ii, tab2$variable)] = ii }
+          for (jj in unique(unlist(corres[, 2:ncol(corres)]))) { tab2$group.value[grep(jj, tab2$variable)] = jj }
+          tab2$value[which(tab2$value == 1 & tab1$value == 0)] = NA
+          
+          gg.ca1 = ggplot(tab1, aes(x = .data$x, y = .data$y, fill = as.factor(.data$value))) +
+            geom_tile() +
+            facet_wrap("group.level ~ group.value") +
+            scale_fill_manual("", values = c("-2" = "#fc8d62"
+                                             , "-1" = "grey"
+                                             , "0" = "white"
+                                             , "1" = "#66c2a5")
+                              , labels = c("-2" = "Loss"
+                                           , "-1" = "Stable1"
+                                           , "0" = ""
+                                           , "1" = "Gain")) +
+            xlab("") +
+            ylab("") +
+            labs(title = "Community averaging value across models") +
+            theme(legend.title = element_blank()
+                  , legend.key = element_rect(fill = "white")
+                  , legend.position = "top")
+          
+          gg.ca2 = ggplot(tab2, aes(x = .data$x, y = .data$y, fill = .data$value)) +
+            geom_tile() +
+            facet_wrap("group.level ~ group.value") +
+            scale_fill_viridis_c(""
+                                 , direction = -1
+                                 , limits = c(0, 1)
+                                 , na.value = "white"
+                                 , breaks = seq(0, 1, 0.5)
+                                 , labels = paste0(seq(0, 100, 50), "%")) +
+            xlab("") +
+            ylab("") +
+            labs(title = "Percentage of models' agreement") +
+            theme(legend.key = element_rect(fill = "white")
+                  , legend.position = "top")
+          
+          gg.ca = ggpubr::ggarrange(gg.ca1, gg.ca2, ncol = 2)
+          out$tab.ca1 = tab1
+          out$tab.ca2 = tab2
+          out$plot.ca = invisible(gg.ca)
+        } else {
+          gg.ca = NULL
+          warning("'do.mean' is only available if several maps are provided")
         }
-        for (jj in unique(unlist(corres[, 2:ncol(corres)]))) { 
-          tab1$group.value[grep(jj, tab1$variable)] = jj 
-        }
-        tab1$value[which(is.na(tab1$value))] = 0
-        
-        tab2 = as.data.frame(stk.perc, xy = TRUE)
-        tab2 = melt(tab2, id.vars = c("x", "y"))
-        tab2$group.level = tab2$group.value = ""
-        for (ii in row.names) { tab2$group.level[grep(ii, tab2$variable)] = ii }
-        for (jj in unique(unlist(corres[, 2:ncol(corres)]))) { tab2$group.value[grep(jj, tab2$variable)] = jj }
-        tab2$value[which(tab2$value == 1 & tab1$value == 0)] = NA
-        
-        gg.ca1 = ggplot(tab1, aes_string(x = "x", y = "y", fill = "as.factor(value)")) +
-          geom_tile() +
-          facet_wrap("group.level ~ group.value") +
-          scale_fill_manual("", values = c("-2" = "#fc8d62"
-                                           , "-1" = "grey"
-                                           , "0" = "white"
-                                           , "1" = "#66c2a5")
-                            , labels = c("-2" = "Loss"
-                                         , "-1" = "Stable1"
-                                         , "0" = ""
-                                         , "1" = "Gain")) +
-          xlab("") +
-          ylab("") +
-          labs(title = "Community averaging value across models") +
-          theme(legend.title = element_blank()
-                , legend.key = element_rect(fill = "white")
-                , legend.position = "top")
-        
-        gg.ca2 = ggplot(tab2, aes_string(x = "x", y = "y", fill = "value")) +
-          geom_tile() +
-          facet_wrap("group.level ~ group.value") +
-          scale_fill_viridis_c(""
-                               , direction = -1
-                               , limits = c(0, 1)
-                               , na.value = "white"
-                               , breaks = seq(0, 1, 0.5)
-                               , labels = paste0(seq(0, 100, 50), "%")) +
-          xlab("") +
-          ylab("") +
-          labs(title = "Percentage of models' agreement") +
-          theme(legend.key = element_rect(fill = "white")
-                , legend.position = "top")
-        
-        gg.ca = ggpubr::ggarrange(gg.ca1, gg.ca2, ncol = 2)
-        out$tab.ca1 = tab1
-        out$tab.ca2 = tab2
-        out$plot.ca = invisible(gg.ca)
-      } else {
-        gg.ca = NULL
-        warning("'do.mean' is only available if several maps are provided")
       }
     } else { gg.ca = NULL }
   } else {
@@ -398,11 +489,15 @@ bm_PlotRangeSize <- function(bm.range, do.count = TRUE, do.perc = TRUE
   }
   ## RETURN PLOTS
   if (do.plot) { 
-    print(gg.count)
-    plot.new()
-    print(gg.perc, newpage = FALSE)
+    if(ordinal){
+      print(gg.sankey)
+    } else {
+      print(gg.count)
+      plot.new()
+      print(gg.perc, newpage = FALSE)
+      print(gg.ca)
+    }
     eval(parse(text = gg.maps))
-    print(gg.ca)
   }
   return(out)
 }

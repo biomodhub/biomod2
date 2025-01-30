@@ -14,14 +14,10 @@
 ##' A \code{character} corresponding to the modeling folder
 ##' @param resp.name a \code{character} corresponding to the species name
 ##' 
-##' @param resp.var a \code{vector}, a \code{\link[terra:vect]{SpatVector}}
-##' without associated data (\emph{if presence-only}), 
-##' or a \code{\link[terra:vect]{SpatVector}} object containing binary data  
-##' (\code{0} : absence, \code{1} : presence, \code{NA} : indeterminate) 
-##' for a single species that will be used to build the species distribution model(s)
-##' \cr \emph{Note that old format from \pkg{sp} are still supported such as
-##'  \code{SpatialPoints}  (if presence-only) or \code{SpatialPointsDataFrame}
-##'  object containing binary data.}
+##' @param resp.var a \code{vector} or a \code{\link[terra:vect]{SpatVector}} containing your response variable (See Details).
+##' @param data.type a \code{character}, corresponding to the response data type to be used, must be either 
+##' \code{binary}, \code{count}, \code{ordinal}, \code{relative}, or \code{abundance}. If data.type is not provided,
+##' \code{biomod2} will try to guess.
 ##' 
 ##' @param expl.var a \code{matrix}, \code{data.frame}, \code{\link[terra:vect]{SpatVector}}
 ##' or \code{\link[terra:rast]{SpatRaster}} object containing the explanatory variables 
@@ -154,8 +150,8 @@
 ##'   must be a uni-dimensional object (either a \code{vector}, a one-column \code{matrix}, 
 ##'   \code{data.frame}, a \code{\link[terra:vect]{SpatVector}} (\emph{without associated 
 ##'   data - if presence-only}), a \code{SpatialPoints} (\emph{if presence-only}), 
-##'   a \code{SpatialPointsDataFrame} or \code{\link[terra:vect]{SpatVector}} object),
-##'    containing values among :
+##'   a \code{SpatialPointsDataFrame} or \code{\link[terra:vect]{SpatVector}} object).
+##'   For binary datatyp, it containing values among :
 ##'   \itemize{
 ##'     \item \code{1} : presences
 ##'     \item \code{0} : true absences (if any)
@@ -166,6 +162,13 @@
 ##'   \code{data.frame}), XY coordinates must be provided through \code{resp.xy}. \cr 
 ##'   If pseudo-absence points are to be selected, \code{NA} points must be provided in order to 
 ##'   select pseudo-absences among them.
+##'   
+##'   \itemize{
+##'   \item{For abundance datatype, \code{resp.var} must containing positive numeric.}
+##'   \item{For count datatype, \code{resp.var} must containing positive integer.} 
+##'   \item{For ordinal datatype, \code{resp.var} must containing ordered factor.}
+##'   \item{For relative datatype, \code{resp.var} must containing numeric between 0 and 1.}
+##'   }
 ##'   }
 ##'   \item{Explanatory variables}{
 ##'   Factorial variables are allowed, but might lead to some pseudo-absence strategy or models 
@@ -339,6 +342,7 @@ BIOMOD_FormatingData <- function(resp.name,
                                  resp.var,
                                  expl.var,
                                  dir.name = '.',
+                                 data.type = "binary",
                                  resp.xy = NULL,
                                  eval.resp.var = NULL,
                                  eval.expl.var = NULL,
@@ -354,19 +358,11 @@ BIOMOD_FormatingData <- function(resp.name,
                                  na.rm = TRUE,
                                  filter.raster = FALSE,
                                  seed.val = NULL)
-{
+{ 
   .bm_cat(paste0(resp.name, " Data Formating"))
   
   ## 1. check args ------------------------------------------------------------
-  args <- .BIOMOD_FormatingData.check.args(resp.name,
-                                           resp.var,
-                                           expl.var,
-                                           dir.name,
-                                           resp.xy,
-                                           eval.resp.var,
-                                           eval.expl.var,
-                                           eval.resp.xy,
-                                           filter.raster)
+  args <- .BIOMOD_FormatingData.check.args(resp.name, dir.name)
   for (argi in names(args)) { assign(x = argi, value = args[[argi]]) }
   rm(args)
   
@@ -378,6 +374,7 @@ BIOMOD_FormatingData <- function(resp.name,
                                 env = expl.var,
                                 dir.name = dir.name,
                                 sp.name = resp.name,
+                                data.type = data.type,
                                 eval.sp = eval.resp.var,
                                 eval.env = eval.expl.var,
                                 eval.xy = eval.resp.xy,
@@ -404,6 +401,7 @@ BIOMOD_FormatingData <- function(resp.name,
                                    filter.raster = filter.raster,
                                    seed.val)
   }
+  
   .bm_cat("Done")
   return(out)
 }
@@ -411,15 +409,7 @@ BIOMOD_FormatingData <- function(resp.name,
 
 # Argument Check -------------------------------------------------------------
 
-.BIOMOD_FormatingData.check.args <- function(resp.name,
-                                             resp.var,
-                                             expl.var,
-                                             dir.name,
-                                             resp.xy,
-                                             eval.resp.var,
-                                             eval.expl.var,
-                                             eval.resp.xy,
-                                             filter.raster)
+.BIOMOD_FormatingData.check.args <- function(resp.name, dir.name)
 {
   ## 0. Checking names (resp.name available ?) --------------------------------
   if (grepl('/', resp.name)) {
@@ -435,16 +425,5 @@ BIOMOD_FormatingData <- function(resp.name,
     stop(paste0("Modeling folder '", dir.name, "' does not exist"))
   }
   
-  args <- .BIOMOD.formated.data.check.args(sp = resp.var, env = expl.var, xy = resp.xy
-                                           , eval.sp = eval.resp.var, eval.env = eval.expl.var
-                                           , eval.xy = eval.resp.xy, filter.raster = filter.raster)
-  
-  return(list(resp.var = args$sp,
-              expl.var = args$env,
-              resp.xy = args$xy,
-              resp.name = resp.name,
-              dir.name = dir.name,
-              eval.resp.var = args$eval.sp,
-              eval.expl.var = args$eval.env,
-              eval.resp.xy = args$eval.xy))
+  return(list(resp.name = resp.name, dir.name = dir.name))
 }

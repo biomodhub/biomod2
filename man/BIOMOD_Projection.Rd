@@ -13,6 +13,7 @@ BIOMOD_Projection(
   metric.binary = NULL,
   metric.filter = NULL,
   compress = TRUE,
+  digits = 0,
   build.clamping.mask = TRUE,
   nb.cpu = 1,
   seed.val = NULL,
@@ -63,6 +64,9 @@ those of \code{bm.mod}) or \code{POD}, \code{FAR}, \code{POFD}, \code{SR}, \code
 A \code{logical} or a \code{character} value defining whether and how objects should be 
 compressed when saved on hard drive. Must be either \code{TRUE}, \code{FALSE}, \code{xz} or 
 \code{gzip} (see Details)}
+
+\item{digits}{(\emph{optional, default} \code{0}) \cr 
+A \code{integer} value defining the number of digits of the predictions.}
 
 \item{build.clamping.mask}{(\emph{optional, default} \code{TRUE}) \cr 
 A \code{logical} value defining whether a clamping mask should be built and saved on hard 
@@ -120,6 +124,8 @@ calibration / validation range, identifying locations where predictions are unce
   \item \code{output.format} : a \code{character} value corresponding to the projections 
   saving format on hard drive, must be either \code{.grd}, \code{.img}, \code{.tif} or \code{.RData} (the 
   default if \code{new.env} is given as \code{matrix} or \code{data.frame})
+  \item \code{overwrite} : a \code{logical}. FALSE by default. If some projections with the same project ID 
+  and modeling ID are already create, does biomod2 crush it or not ? 
 }
 }
 \examples{

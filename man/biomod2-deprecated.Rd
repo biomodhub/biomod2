@@ -85,7 +85,7 @@ For \code{BinaryTransformation} use \code{\link{bm_BinaryTransformation}}.
 
 \section{\code{calculate.stat}}{
 
-For \code{calculate.stat} use \code{\link{bm_CalculateStat}}.
+For \code{calculate.stat} use \code{\link{bm_CalculateStatBin}}.
 }
 
 \section{\code{Find.Optim.Stat}}{

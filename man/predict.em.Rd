@@ -24,7 +24,8 @@ Other Toolbox functions:
 \code{\link{load_stored_object}()},
 \code{\link{predict.bm}},
 \code{\link{predict2.bm}},
-\code{\link{predict2.em}}
+\code{\link{predict2.em}},
+\code{\link{setters}}
 }
 \author{
 Damien Georges

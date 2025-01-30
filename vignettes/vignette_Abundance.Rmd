@@ -1,5 +1,5 @@
 ---
-title: "Vignette Abundance"
+title: "vignette_Abundance"
 output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{Vignette Abundance}
@@ -14,19 +14,16 @@ vignette: >
 
 Hello ! 
 If you are here, you want to model abundance data.   
-You could try and install our new version of `biomod2` with the Abundance branch:
+You could try and install our version 4.3 of `biomod2` on Github:
 
 ```R
-devtools::install_github("biomodhub/biomod2", ref = "Abundance")
+devtools::install_github("biomodhub/biomod2", dependencies = TRUE)
 ```
-Keep in mind that it is a development branch: it can change quickly and sometimes fail ! 
-Consequently, this branch is not reproducibility-friendly. 
 
 We invite you to report any problems, to ask for enhances or to discuss about the modeling in the issues or the forum of the `biomod2` github. 
 
 This vignette will be updated regularly : think to look at it to see if there are a few modifications.  
-We will also update the documentation on the branch : you can call the help `?BIOMOD_FormatingData` for example.   
-The documentation on this website will still be the documentation of `biomod2 V4.2-6-1`.   
+We will also update the documentation on the website.   
 
 
 <br/><br/>
@@ -140,9 +137,7 @@ A balance will be kept for the different classes in the case of ordinal data.
 #### <i class="fa-regular fa-filter"></i> Retrieve modeling options
 
 Different sets of modeling options are built corresponding to the `data.type`.   
-You still have the `default` options and `bigboss` options. However, lot of work must be done in order to optimize `bigboss` options. So for the moment, it's totally possible `bigboss` doesn't lead to better results than `default` options. 
-
-The tuning option are not available yet with non binary data.
+You still have the `default` options and `bigboss` options. However, lot of work must be done in order to optimize `bigboss` options. It's totally possible `bigboss` doesn't lead to better results than `default` options. 
 
 ```R
 # # bigboss parameters with ordinal datatype
@@ -150,7 +145,7 @@ The tuning option are not available yet with non binary data.
 #                             models = c('RF', 'GLM'),
 #                             strategy = 'bigboss')
 # 
-# # tuned parameters with formated data
+# # default parameters with formated data
 # opt.c <- bm_ModelingOptions(data.type = 'count',
 #                             models = c('GAM', 'MARS'),
 #                             strategy = 'default',
@@ -176,7 +171,6 @@ The metrics are also different obviously. For the moment, we have implemented :
 `RMSE`, `MSE`, `MAE`, `Max_error`, `Rsquared` and `Rsquared_aj` (see `?BIOMOD_Modeling`)  
 
 For ordinal data, we have `Accuracy`, `Recall`, `Precision` and `F1`.  
-(`Accuracy` is in lower case to contrast with `ACCURACY` for binary data)   
  
 
 ```R
@@ -219,7 +213,7 @@ bm_PlotResponseCurves(bm.out = myBiomodModelOut,
 
 For example, with `RMSE`, `biomod2` will select the best model and all the models with a `RMSE` under the best value + the threshold you give (here 2). 
 
-E.g. if the best model have a `RMSE` of `1.850`, `BIOMOD_EnsembleModeling` will select all the models with a `RMSE` under `1.850 + 2`.
+E.g. if the best model have a `RMSE` of `1.85`, `BIOMOD_EnsembleModeling` will select all the models with a `RMSE` under `1.85 + 2`.
 
 ```R
 # Model ensemble models
@@ -329,7 +323,7 @@ gg = bm_PlotRangeSize(bm.range = myBiomodRangeSize,
 
 ### <i class="fa-solid fa-hourglass-half"></i> New developments
 
-The branch is still a work in progress.  
+This part of `biomod2` is still a work in progress.  
 Don't hesitate to let us know what new features you'd like to see, what warnings you feel are missing, or what needs to be adapted for some types of data ! 
 
 <br/> 

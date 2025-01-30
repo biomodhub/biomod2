@@ -11,7 +11,7 @@ calculate.stat(...)
 }
 \description{
 Deprecated function name for
-  \code{\link{bm_CalculateStat}}
+  \code{\link{bm_CalculateStatBin}}
 }
 \seealso{
 \code{\link{biomod2-deprecated}}

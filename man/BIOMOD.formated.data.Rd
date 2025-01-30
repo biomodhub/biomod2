@@ -16,6 +16,7 @@
   env,
   xy = NULL,
   dir.name = ".",
+  data.type = NULL,
   sp.name = NULL,
   eval.sp = NULL,
   eval.env = NULL,
@@ -31,6 +32,7 @@
   env,
   xy = NULL,
   dir.name = ".",
+  data.type = NULL,
   sp.name = NULL,
   eval.sp = NULL,
   eval.env = NULL,
@@ -44,6 +46,7 @@
   env,
   xy = NULL,
   dir.name = ".",
+  data.type = NULL,
   sp.name = NULL,
   eval.sp = NULL,
   eval.env = NULL,
@@ -57,6 +60,7 @@
   env,
   xy = NULL,
   dir.name = ".",
+  data.type = NULL,
   sp.name = NULL,
   eval.sp = NULL,
   eval.env = NULL,
@@ -90,6 +94,8 @@ containing the corresponding \code{X} and \code{Y} coordinates that will be used
 species distribution model(s)}
 
 \item{dir.name}{a \code{character} corresponding to the modeling folder}
+
+\item{data.type}{a \code{character} corresponding to the data type}
 
 \item{sp.name}{a \code{character} corresponding to the species name}
 
@@ -144,6 +150,8 @@ Class returned by \code{\link{BIOMOD_FormatingData}}, and used by
 \section{Slots}{
 
 \describe{
+\item{\code{data.type}}{a \code{character} corresponding to the data type}
+
 \item{\code{dir.name}}{a \code{character} corresponding to the modeling folder}
 
 \item{\code{sp.name}}{a \code{character} corresponding to the species name}
@@ -161,6 +169,8 @@ studied area}
 
 \item{\code{has.data.eval}}{a \code{logical} value defining whether evaluation data is given}
 
+\item{\code{has.filter.raster}}{a \code{logical} value defining whether filtering have been done or not}
+
 \item{\code{eval.coord}}{(\emph{optional, default} \code{NULL}) \cr 
 A 2-columns \code{data.frame} containing the corresponding \code{X} and \code{Y} 
 coordinates for evaluation data}
@@ -171,6 +181,8 @@ evaluation data}
 
 \item{\code{eval.data.env.var}}{(\emph{optional, default} \code{NULL}) \cr 
 A \code{data.frame} containing explanatory variables for evaluation data}
+
+\item{\code{biomod2.version}}{a \code{character} corresponding to the biomod2 version}
 }}
 
 \examples{

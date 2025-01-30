@@ -96,7 +96,7 @@ BinaryTransformation <- function(...) { .Deprecated("bm_BinaryTransformation") }
 
 #' @title calculate.stat
 #' @description Deprecated function name for
-#'   \code{\link{bm_CalculateStat}}
+#'   \code{\link{bm_CalculateStatBin}}
 #' @param ... Additional arguments
 #'
 #' @name calculate.stat-deprecated
@@ -106,10 +106,10 @@ BinaryTransformation <- function(...) { .Deprecated("bm_BinaryTransformation") }
 NULL
 #' @rdname biomod2-deprecated
 #' @section \code{calculate.stat}:
-#' For \code{calculate.stat} use \code{\link{bm_CalculateStat}}.
+#' For \code{calculate.stat} use \code{\link{bm_CalculateStatBin}}.
 #'
 #' @export
-calculate.stat <- function(...) { .Deprecated("bm_CalculateStat") }
+calculate.stat <- function(...) { .Deprecated("bm_CalculateStatBin") }
 
 #' @title Find.Optim.Stat
 #' @description Deprecated function name for

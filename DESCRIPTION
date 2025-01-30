@@ -1,7 +1,7 @@
 Package: biomod2
 Type: Package
 Title: Ensemble Platform for Species Distribution Modeling
-Version: 4.2-6-2
+Version: 4.2-7
 Date: 2025-01-24
 Authors@R: c(person("Wilfried", "Thuiller", role = c("aut")
                     , email = "wilfried.thuiller@univ-grenoble-alpes.fr"),
@@ -32,7 +32,7 @@ Description: Functions for species distribution modeling, calibration and evalua
   ensemble of models, ensemble forecasting and visualization. The package permits to run
   consistently up to 10 single models on a presence/absences (resp presences/pseudo-absences)
   dataset and to combine them in ensemble models and ensemble projections. Some bench of other 
-  evaluation and visualization tools are also available within the package.
+  evaluation and visualisation tools are also available within the package.
 Depends:
     R (>= 4.1)
 Imports:
@@ -51,7 +51,9 @@ Imports:
     MASS,
     pROC (>= 1.15.0),
     PresenceAbsence,
-    dplyr
+    dplyr,
+    tidyr,
+    rlang
 Suggests:
     Hmisc,
     gam,
@@ -73,7 +75,9 @@ Suggests:
     knitr,
     markdown,
     tidyterra,
-    ggtext
+    ggtext,
+    ggalluvial,
+    R.utils
 License: GPL-3
 RoxygenNote: 7.3.2
 Encoding: UTF-8
@@ -83,6 +87,7 @@ Collate:
     'biomod2_globalVariables.R'
     'biomod2_classes_0.R'
     'biomod2_classes_1.R'
+    'biomod2_classes_1_bis.R'
     'biomod2_classes_2.R'
     'biomod2_classes_3.R'
     'biomod2_classes_4.R'
@@ -102,6 +107,7 @@ Collate:
     'bm_FindOptimStat.R'
     'bm_MakeFormula.R'
     'bm_ModelingOptions.R'
+    'bm_ModelAnalysis.R'
     'bm_PlotEvalBoxplot.R'
     'bm_PlotEvalMean.R'
     'bm_PlotRangeSize.R'

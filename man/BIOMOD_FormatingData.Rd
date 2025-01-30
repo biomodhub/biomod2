@@ -9,6 +9,7 @@ BIOMOD_FormatingData(
   resp.var,
   expl.var,
   dir.name = ".",
+  data.type = "binary",
   resp.xy = NULL,
   eval.resp.var = NULL,
   eval.expl.var = NULL,
@@ -29,14 +30,7 @@ BIOMOD_FormatingData(
 \arguments{
 \item{resp.name}{a \code{character} corresponding to the species name}
 
-\item{resp.var}{a \code{vector}, a \code{\link[terra:vect]{SpatVector}}
-without associated data (\emph{if presence-only}), 
-or a \code{\link[terra:vect]{SpatVector}} object containing binary data  
-(\code{0} : absence, \code{1} : presence, \code{NA} : indeterminate) 
-for a single species that will be used to build the species distribution model(s)
-\cr \emph{Note that old format from \pkg{sp} are still supported such as
- \code{SpatialPoints}  (if presence-only) or \code{SpatialPointsDataFrame}
- object containing binary data.}}
+\item{resp.var}{a \code{vector} or a \code{\link[terra:vect]{SpatVector}} containing your response variable (See Details).}
 
 \item{expl.var}{a \code{matrix}, \code{data.frame}, \code{\link[terra:vect]{SpatVector}}
 or \code{\link[terra:rast]{SpatRaster}} object containing the explanatory variables 
@@ -46,6 +40,10 @@ or \code{\link[terra:rast]{SpatRaster}} object containing the explanatory variab
 
 \item{dir.name}{(\emph{optional, default} \code{.}) \cr
 A \code{character} corresponding to the modeling folder}
+
+\item{data.type}{a \code{character}, corresponding to the response data type to be used, must be either 
+\code{binary}, \code{count}, \code{ordinal}, \code{relative}, or \code{abundance}. If data.type is not provided,
+\code{biomod2} will try to guess.}
 
 \item{resp.xy}{(\emph{optional, default} \code{NULL}) \cr 
 If \code{resp.var} is a \code{vector}, a 2-columns \code{matrix} or \code{data.frame} 
@@ -185,8 +183,8 @@ and provides different methods to select pseudo-absences if needed. \cr \cr
   must be a uni-dimensional object (either a \code{vector}, a one-column \code{matrix}, 
   \code{data.frame}, a \code{\link[terra:vect]{SpatVector}} (\emph{without associated 
   data - if presence-only}), a \code{SpatialPoints} (\emph{if presence-only}), 
-  a \code{SpatialPointsDataFrame} or \code{\link[terra:vect]{SpatVector}} object),
-   containing values among :
+  a \code{SpatialPointsDataFrame} or \code{\link[terra:vect]{SpatVector}} object).
+  For binary datatyp, it containing values among :
   \itemize{
     \item \code{1} : presences
     \item \code{0} : true absences (if any)
@@ -197,6 +195,13 @@ and provides different methods to select pseudo-absences if needed. \cr \cr
   \code{data.frame}), XY coordinates must be provided through \code{resp.xy}. \cr 
   If pseudo-absence points are to be selected, \code{NA} points must be provided in order to 
   select pseudo-absences among them.
+  
+  \itemize{
+  \item{For abundance datatype, \code{resp.var} must containing positive numeric.}
+  \item{For count datatype, \code{resp.var} must containing positive integer.} 
+  \item{For ordinal datatype, \code{resp.var} must containing ordered factor.}
+  \item{For relative datatype, \code{resp.var} must containing numeric between 0 and 1.}
+  }
   }
   \item{Explanatory variables}{
   Factorial variables are allowed, but might lead to some pseudo-absence strategy or models 

@@ -30,6 +30,8 @@ simulation set}
 \item{\code{expl.var.names}}{a \code{vector} containing names of explanatory
 variables}
 
+\item{\code{data.type}}{a \code{character} corresponding to the data type}
+
 \item{\code{models.out}}{a \code{\link{BIOMOD.stored.models.out-class}} object
 containing informations from \code{\link{BIOMOD_Modeling}} object}
 

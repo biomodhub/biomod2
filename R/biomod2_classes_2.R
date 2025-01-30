@@ -118,6 +118,9 @@ setClass("BIOMOD.stored.formated.data",
          prototype(val = NULL),
          validity = function(object){ return(TRUE) })
 
+
+
+
 ### BIOMOD.stored.options -----------------------------------------------------
 ##' @name BIOMOD.stored.options-class
 ##' @rdname BIOMOD.stored.data

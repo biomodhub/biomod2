@@ -114,8 +114,9 @@
 ##' bm_PlotEvalBoxplot(bm.out = myBiomodModelOut, group.by = c('algo', 'run'))
 ##' 
 ##' 
-##' @importFrom ggplot2 ggplot aes_string geom_boxplot facet_wrap xlab 
+##' @importFrom ggplot2 ggplot geom_boxplot facet_wrap xlab 
 ##' theme element_blank element_rect element_text labs
+##' @importFrom rlang .data
 ##' 
 ##' @export
 ##' 
@@ -134,14 +135,12 @@ bm_PlotEvalBoxplot <- function(bm.out, dataset = 'calibration', group.by = c('al
   ## 1. Get data for graphic ----------------------------------------------------------------------
   ## Get evaluation values
   scores <- get_evaluations(bm.out)
-  
-  if (!is.null(scores))
-  {
-    ## Prepare data table for graphic
+  if (!is.null(scores)) {
+  ## Prepare data table for graphic
     ggdat = scores
     
     ## 2. PLOT graphic ------------------------------------------------------------------------------
-    gg <- ggplot(ggdat, aes_string(x = group.by[1], y = dataset, fill = group.by[2])) +
+    gg <- ggplot(ggdat, aes(x = .data[[group.by[1]]], y = .data[[dataset]], fill = .data[[group.by[2]]])) +
       geom_boxplot() + ## add boxplot
       facet_wrap("metric.eval", scales = scales) +
       xlab("") +
@@ -188,7 +187,11 @@ bm_PlotEvalBoxplot <- function(bm.out, dataset = 'calibration', group.by = c('al
   if ("scales" %in% names(args)) {
     .fun_testIfIn(TRUE, "args$scales", args$scales, c('fixed', 'free_x', 'free_y', 'free'))
   } else {
-    args$scales = "fixed"
+    if(bm.out@data.type == "binary"){
+      args$scales = "fixed"
+    } else {
+      args$scales = "free_y"
+    }
   }
   
   

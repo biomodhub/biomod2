@@ -1,7 +1,8 @@
 ###################################################################################################
 ##' @name bm_FindOptimStat
 ##' @aliases bm_FindOptimStat
-##' @aliases bm_CalculateStat
+##' @aliases bm_CalculateStatBin
+##' @aliases bm_CalculateStatAbund
 ##' @aliases get_optim_value
 ##' @author Damien Georges
 ##' 
@@ -15,7 +16,8 @@
 ##' @param metric.eval a \code{character} corresponding to the evaluation metric to be used, must 
 ##' be either \code{POD}, \code{FAR}, \code{POFD}, \code{SR}, \code{ACCURACY}, \code{BIAS}, 
 ##' \code{ROC}, \code{TSS}, \code{KAPPA}, \code{OR}, \code{ORSS}, \code{CSI}, \code{ETS}, 
-##' \code{BOYCE}, \code{MPA}
+##' \code{BOYCE}, \code{MPA}, \code{RMSE}, \code{MAE}, \code{MSE}, \code{Rsquared}, \code{Rsquared_aj},
+##' \code{Max_error}, \code{Accuracy}, \code{"Recall"}, \code{"Precision"}, \code{"F1"}
 ##' @param obs a \code{vector} of observed values (binary, \code{0} or \code{1})
 ##' @param fit a \code{vector} of fitted values (continuous)
 ##' @param nb.thresh an \code{integer} corresponding to the number of thresholds to be 
@@ -34,6 +36,7 @@
 ##' of correctly classified presences for Minimal Predicted Area (see \code{ecospat.mpa()} in 
 ##' \pkg{ecospat})
 ##' @param misc a \code{matrix} corresponding to a contingency table
+##' @param k a \code{numeric} corresponding to the number of predictive factor in the model
 ##'
 ##'
 ##' @return 
@@ -81,6 +84,24 @@
 ##'     presences)
 ##'   }
 ##'   }
+##'   \item{For abundance/count/relative data}{
+##'     \itemize{
+##'       \item \code{RMSE} : Root Mean Square Error
+##'       \item \code{MSE} : Mean Square Error
+##'       \item \code{MAE} : Mean Absolute Error
+##'       \item \code{Rsquared} : R square
+##'       \item \code{Rsquared_aj} : R square adjusted
+##'       \item \code{Max_error} : Max_error
+##'     }
+##'     }
+##'     \item{For ordinal data}{
+##'     \itemize{
+##'       \item \code{Accuracy} : Accuracy
+##'       \item \code{Recall} : Macro average Recall
+##'       \item \code{Precision} : Macro average Precision
+##'       \item \code{F1} : Macro F1 score
+##'     }
+##'     }
 ##' }
 ##'   
 ##' Optimal value of each method can be obtained with the \code{\link{get_optim_value}} function. \cr
@@ -157,10 +178,11 @@ bm_FindOptimStat <- function(metric.eval = 'TSS',
                              nb.thresh = 100,
                              threshold = NULL,
                              boyce.bg.env = NULL,
-                             mpa.perc = 0.9)
+                             mpa.perc = 0.9,
+                             k = NULL)
 {
   ## 0. Check arguments ---------------------------------------------------------------------------
-  args <- .bm_FindOptimStat.check.args(threshold, boyce.bg.env, mpa.perc)
+  args <- .bm_FindOptimStat.check.args(boyce.bg.env, mpa.perc)
   for (argi in names(args)) { assign(x = argi, value = args[[argi]]) }
   rm(args)
   
@@ -178,95 +200,105 @@ bm_FindOptimStat <- function(metric.eval = 'TSS',
   
   ## check some data is still here
   if (!length(obs) | !length(fit)) {
-    cat("Non finite obs or fit available => model evaluation skipped !")
+    cat("\n Non finite obs or fit available => model evaluation skipped !")
     eval.out <- matrix(NA, 1, 4, dimnames = list(metric.eval, c("best.stat", "cutoff", "sensitivity", "specificity")))
     return(eval.out)
   }
   
   if (length(unique(obs)) == 1 | length(unique(fit)) == 1) {
-    warning("\nObserved or fitted data contains a unique value... Be careful with this models predictions\n", immediate. = TRUE)
+    warning("\nObserved or fitted data contains a unique value... Be careful with these model predictions\n", immediate. = TRUE)
   }
   
   
-  if (!(metric.eval %in% c('ROC', 'BOYCE', 'MPA')))
-  { ## for all evaluation metrics other than ROC, BOYCE, MPA --------------------------------------
-    
-    ## 1. get threshold values to be tested -----------------------------------
-    if (is.null(threshold)) { # test a range of threshold to get the one giving the best score
-      
-      ## guess fit value scale (e.g. 0-1 for a classic fit or 0-1000 for a biomod2 model fit)
-      fit.scale <- .guess_scale(fit)
-      
-      if (length(unique(fit)) == 1) {
-        valToTest <- unique(fit)
-        ## add 2 values to test based on mean with 0 and the guessed max of fit (1 or 1000)
-        valToTest <- round(c(mean(c(fit.scale["min"], valToTest)),
-                             mean(c(fit.scale["max"], valToTest))))
-      } else {
-        mini <- max(min(fit, na.rm = TRUE), fit.scale["min"], na.rm = TRUE)
-        maxi <- min(max(fit, na.rm = TRUE), fit.scale["max"], na.rm = TRUE)
-        valToTest <- try(unique(round(c(seq(mini, maxi, length.out = nb.thresh), mini, maxi))))
-        if (inherits(valToTest, "try-error")) {
-          valToTest <- seq(fit.scale["min"], fit.scale["max"], length.out = nb.thresh)
+  ## 1. Compute metrics ---------------------------------------------------------------------------
+  cutoff <- sensitivity <- specificity <- best.stat <- NA
+  abundance_metrics <- c("RMSE", "MSE" ,"MAE" ,"AIC" ,'Rsquared' ,'Rsquared_aj'
+                         , 'Max_error',"Accuracy", "Recall", "Precision", "F1")
+  
+  if (!(metric.eval %in% c('ROC', abundance_metrics))) ## BINARY METRICS OTHER THAN ROC -----------
+  {
+    if (!(metric.eval %in% c('BOYCE', 'MPA'))) ## BINARY METRICS OTHER THAN BOYCE, MPA ------------
+    {
+      ## A. get threshold values to be tested -----------------------------------
+      if (is.null(threshold)) { # test a range of threshold to get the one giving the best score
+        
+        ## guess fit value scale (e.g. 0-1 for a classic fit or 0-1000 for a biomod2 model fit)
+        fit.scale <- .guess_scale(fit)
+        
+        if (length(unique(fit)) == 1) { ## ONE VALUE predicted
+          valToTest <- unique(fit)
+          ## add 2 values to test based on mean with 0 and the guessed max of fit (1 or 1000)
+          valToTest <- round(c(mean(c(fit.scale["min"], valToTest)),
+                               mean(c(fit.scale["max"], valToTest))))
+        } else { ## SEVERAL VALUES predicted
+          mini <- max(min(fit, na.rm = TRUE), fit.scale["min"], na.rm = TRUE)
+          maxi <- min(max(fit, na.rm = TRUE), fit.scale["max"], na.rm = TRUE)
+          valToTest <- try(unique(round(c(seq(mini, maxi, length.out = nb.thresh), mini, maxi))))
+          if (inherits(valToTest, "try-error")) {
+            valToTest <- seq(fit.scale["min"], fit.scale["max"], length.out = nb.thresh)
+          }
+          # deal with unique value to test case
+          if (length(valToTest) < 3) {
+            valToTest <- round(c(mean(fit.scale["min"], mini), valToTest, mean(fit.scale["max"], maxi)))
+          }
         }
-        # deal with unique value to test case
-        if (length(valToTest) < 3) {
-          valToTest <- round(c(mean(fit.scale["min"], mini), valToTest, mean(fit.scale["max"], maxi)))
-        }
+      } else { # test only one value
+        valToTest <- threshold
       }
-    } else { # test only one value
-      valToTest <- threshold
-    }
-    
-    ## 2. apply the bm_CalculateStat function ---------------------------------
-    calcStat <- sapply(lapply(valToTest, function(x) {
-      return(table(fit > x, obs))
-    }), bm_CalculateStat, metric.eval = metric.eval)
-    
-    ## 3. scale obtained scores and find best value ---------------------------
-    StatOptimum <- get_optim_value(metric.eval)
-    calcStat <- 1 - abs(StatOptimum - calcStat)
-    best.stat <- max(calcStat, na.rm = TRUE)
-    cutoff <- median(valToTest[which(calcStat == best.stat)]) # if several values are selected
-    
-    misc <- table(fit >= cutoff, obs)
-    misc <- .contingency_table_check(misc)
-    true.pos <- misc['TRUE', '1']
-    true.neg <- misc['FALSE', '0']
-    specificity <- (true.neg * 100) / sum(misc[, '0'])
-    sensitivity <- (true.pos * 100) / sum(misc[, '1'])
-    
-  } else if (metric.eval == 'ROC') { ## specific procedure for ROC value --------------------------
-    roc1 <- roc(obs, fit, percent = TRUE, direction = "<", levels = c(0, 1))
-    roc1.out <- coords(roc1, "best", ret = c("threshold", "sens", "spec"), transpose = TRUE)
-    ## if two optimal values are returned keep only the first one
-    if (!is.null(ncol(roc1.out))) { roc1.out <- roc1.out[, 1] }
-    best.stat <- as.numeric(auc(roc1)) / 100
-    cutoff <- as.numeric(roc1.out["threshold"])
-    specificity <- as.numeric(roc1.out["specificity"])
-    sensitivity <- as.numeric(roc1.out["sensitivity"])
-    
-  } else { ## specific procedure for BOYCE, MPA values --------------------------------------------
-    ## Prepare table to compute evaluation scores
-    DATA <- cbind(1:length(fit), obs, fit / 1000)
-    DATA[is.na(DATA[, 2]), 2] <- 0
-    DATA <- DATA[complete.cases(DATA), ]
-    cutoff <- sensitivity <- specificity <- best.stat <- NA
-    
-    if (metric.eval == "BOYCE") { ## Boyce index
+      
+      ## B. apply the bm_CalculateStatBin function ------------------------------
+      calcStat <- sapply(lapply(valToTest, function(x) {
+        return(table(fit >= x, obs))
+      }), bm_CalculateStatBin, metric.eval = metric.eval)
+      
+      ## C. scale obtained scores and find best value ---------------------------
+      StatOptimum <- get_optim_value(metric.eval)
+      calcStat <- 1 - abs(StatOptimum - calcStat)
+      best.stat <- max(calcStat, na.rm = TRUE)
+      cutoff <- median(valToTest[which(calcStat == best.stat)]) # if several values are selected
+      
+    } else if (metric.eval == "BOYCE") ## BOYCE ---------------------------------------------------
+    {
       boy <- ecospat.boyce(obs = fit[which(obs == 1)], fit = fit, PEplot = FALSE)
       best.stat <- boy$cor
       if (sum(boy$F.ratio < 1, na.rm = TRUE) > 0) {
         cutoff <- round(boy$HS[max(which(boy$F.ratio < 1))], 0)
       }
-    } else if (metric.eval == "MPA") {
+    } else if (metric.eval == "MPA") ## MPA -------------------------------------------------------
+    {
       cutoff <- ecospat.mpa(fit[which(obs == 1)], perc = mpa.perc)
     }
+    
     if (!is.na(cutoff / 1000) & cutoff <= 1000) {
-      EVAL <- presence.absence.accuracy(DATA, threshold = cutoff / 1000)
+      DATA <- cbind(1:length(fit), obs, fit / 1000)
+      DATA[is.na(DATA[, 2]), 2] <- 0
+      DATA <- DATA[complete.cases(DATA), ]
+      EVAL <- presence.absence.accuracy(DATA, threshold = cutoff / 1000, find.auc = FALSE)
       sensitivity <- EVAL$sensitivity * 100
       specificity <- EVAL$specificity * 100
     }
+    
+  } else if (metric.eval == 'ROC') ## ROC ---------------------------------------------------------
+  {
+    roc1 <- roc(obs, fit, percent = TRUE, direction = "<", levels = c(0, 1))
+    roc1.out <- coords(roc1, "best", ret = c("threshold", "sens", "spec")
+                       , transpose = TRUE, best.method = "closest.topleft")
+    ## if two optimal values are returned keep only the first one
+    if (!is.null(ncol(roc1.out))) { roc1.out <- roc1.out[, 1] }
+    
+    best.stat <- as.numeric(auc(roc1)) / 100
+    cutoff <- as.numeric(roc1.out["threshold"])
+    specificity <- as.numeric(roc1.out["specificity"])
+    sensitivity <- as.numeric(roc1.out["sensitivity"])
+    
+  } else if (metric.eval %in% abundance_metrics) ## ABUNDANCE METRICS -----------------------------
+  {
+    if (metric.eval %in% c("Accuracy", "Recall", "Precision", "F1") &&
+        length(levels(obs)) != length(levels(fit))) {
+      fit <- factor(fit, levels = levels(obs), ordered = TRUE)
+      cat("\n \t\t Careful : some categories are not predicted! ")
+    }
+    best.stat <- bm_CalculateStatAbun(metric.eval, obs, fit, k)
   }
   
   eval.out <- data.frame(metric.eval, cutoff, sensitivity, specificity, best.stat)
@@ -275,19 +307,19 @@ bm_FindOptimStat <- function(metric.eval = 'TSS',
 
 
 # Check Arguments ---------------------------------------------------------------------------------
-.bm_FindOptimStat.check.args <- function(threshold, boyce.bg.env = NULL, mpa.perc = 0.9)
+.bm_FindOptimStat.check.args <- function(boyce.bg.env = NULL, mpa.perc = 0.9)
 {
-  ## 1. Check boyce.bg.env -----------------------------------------------------------
+  ## 1. Check boyce.bg.env ----------------------------------------------------
   if (!is.null(boyce.bg.env)) {
     available.types.resp <- c('numeric', 'data.frame', 'matrix', 'Raster',
                               'SpatialPointsDataFrame', 'SpatVector', 'SpatRaster')
     .fun_testIfInherits(TRUE, "boyce.bg.env", boyce.bg.env, available.types.resp)
     
-    if(is.numeric(boyce.bg.env)) {
+    if (is.numeric(boyce.bg.env)) {
       boyce.bg.env <- as.data.frame(boyce.bg.env)
       colnames(boyce.bg.env) <- expl.var.names[1]
     } else if (inherits(boyce.bg.env, 'Raster')) {
-      if(any(raster::is.factor(boyce.bg.env))){
+      if (any(raster::is.factor(boyce.bg.env))) {
         boyce.bg.env <- .categorical_stack_to_terra(boyce.bg.env)
       } else {
         boyce.bg.env <- rast(boyce.bg.env)
@@ -306,12 +338,10 @@ bm_FindOptimStat <- function(metric.eval = 'TSS',
     }
   }
   
-  ## 2. Check perc -----------------------------------------------------------
+  ## 2. Check mpa.perc --------------------------------------------------------
   .fun_testIf01(TRUE, "mpa.perc", mpa.perc)
   
-  return(list(threshold = threshold
-              , boyce.bg.env = boyce.bg.env
-              , mpa.perc = mpa.perc))
+  return(list(boyce.bg.env = boyce.bg.env, mpa.perc = mpa.perc))
 }
 
 
@@ -384,14 +414,25 @@ get_optim_value <- function(metric.eval)
   return(misc)
 }
 
+.contingency_table_ordinal <- function(obs, fit)
+{
+  nblevels <- length(levels(obs))
+  m <- matrix(0,nrow = nblevels, ncol = nblevels, dimnames = list(levels(obs), levels(obs)))
+  for (i in 1:length(obs)) {
+    m[obs[i], fit[i]] <- m[obs[i], fit[i]] + 1
+  }
+  return(m)
+}
+
+
 ##'
 ##' @rdname bm_FindOptimStat
 ##' @export
 ##'
 
-bm_CalculateStat <- function(misc, metric.eval = 'TSS')
+bm_CalculateStatBin <- function(misc, metric.eval = 'TSS')
 {
-  ## check contagency table
+  ## check contingency table
   misc <- .contingency_table_check(misc)
   
   ## calculate basic classification information -------------------------------
@@ -427,6 +468,37 @@ bm_CalculateStat <- function(misc, metric.eval = 'TSS')
                , 'ETS' = {
                  hits_rand <- (observed_1 * forecast_1) / total
                  return((hits - hits_rand) / (observed_1 + false_alarms - hits_rand))
+               }
+  )
+}
+
+##'
+##' @rdname bm_FindOptimStat
+##' @export
+##'
+
+bm_CalculateStatAbun <- function(metric.eval, obs, fit, k)
+{
+  ## get contingency table
+  if (metric.eval %in% c("Accuracy", "Recall", "Precision", "F1")) {
+    m <- .contingency_table_ordinal(obs, fit)
+  }
+  
+  ## calculate chosen evaluation metric ---------------------------------------
+  out = switch(metric.eval
+               , 'RMSE' = sqrt(mean((obs - fit) ^ 2))
+               , 'MSE' = mean((obs - fit) ^ 2)
+               , 'MAE' = mean(abs(obs - fit))
+               , 'Rsquared' = cor(obs,fit) ^ 2
+               , "Rsquared_aj" = 1 - (1 - cor(obs, fit) ^ 2) * (length(obs) - 1) / (length(obs) - k - 1) 
+               , 'Max_error' = max(abs(obs - fit), na.rm = TRUE)
+               , "Accuracy" = sum(diag(m)) / sum(m)
+               , "Recall" = sum(diag(m) / colSums(m), na.rm = TRUE) / nrow(m)
+               , "Precision" = sum(diag(m) / rowSums(m), na.rm = TRUE) / nrow(m)
+               , "F1" = {
+                 p <- sum(diag(m) / rowSums(m), na.rm = TRUE) / nrow(m)
+                 r <- sum(diag(m) / colSums(m), na.rm = TRUE) / nrow(m)
+                 return(2 * p * r / (p + r))
                }
   )
 }

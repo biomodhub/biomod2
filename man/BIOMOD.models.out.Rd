@@ -27,6 +27,8 @@ simulation set}
 
 \item{\code{sp.name}}{a \code{character} corresponding to the species name}
 
+\item{\code{data.type}}{a \code{character} corresponding to the data type}
+
 \item{\code{expl.var.names}}{a \code{vector} containing names of explanatory
 variables}
 

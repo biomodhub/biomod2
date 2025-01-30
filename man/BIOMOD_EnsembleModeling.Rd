@@ -19,15 +19,7 @@ BIOMOD_EnsembleModeling(
   EMwmean.decay = "proportional",
   nb.cpu = 1,
   seed.val = NULL,
-  do.progress = TRUE,
-  prob.mean,
-  prob.median,
-  prob.cv,
-  prob.ci,
-  committee.averaging,
-  prob.mean.weight,
-  prob.mean.weight.decay,
-  prob.ci.alpha
+  do.progress = TRUE
 )
 }
 \arguments{
@@ -52,7 +44,9 @@ must be among \code{'EMmean'}, \code{'EMmedian'}, \code{'EMcv'}, \code{'EMci'},
 \code{all} (same evaluation metrics than those of \code{bm.mod}), \code{user.defined} 
 (and defined through \code{metric.select.table}) or \code{POD}, \code{FAR}, \code{POFD}, 
 \code{SR}, \code{ACCURACY}, \code{BIAS}, \code{ROC}, \code{TSS}, \code{KAPPA}, \code{OR}, 
-\code{ORSS}, \code{CSI}, \code{ETS}, \code{BOYCE}, \code{MPA}}
+\code{ORSS}, \code{CSI}, \code{ETS}, \code{BOYCE}, \code{MPA}, \code{RMSE}, \code{MAE}, 
+\code{MSE}, \code{Rsquared}, \code{Rsquared_aj}, \code{Max_error}, \code{Accuracy}, \code{Recall},
+\code{Precision}, \code{F1}}
 
 \item{metric.select.thresh}{(\emph{optional, default} \code{NULL}) \cr 
 A \code{vector} of \code{numeric} values corresponding to the minimum scores (one for each 
@@ -72,7 +66,8 @@ weigh the ensemble models should be among 'evaluation', 'validation' or 'calibra
 \item{metric.eval}{a \code{vector} containing evaluation metric names to be used, must 
 be among  \code{POD}, \code{FAR}, \code{POFD}, \code{SR}, \code{ACCURACY}, \code{BIAS}, 
 \code{ROC}, \code{TSS}, \code{KAPPA}, \code{OR}, \code{ORSS}, \code{CSI}, \code{ETS}, 
-\code{BOYCE}, \code{MPA}}
+\code{BOYCE}, \code{MPA}, \code{RMSE}, \code{MAE}, \code{MSE}, \code{Rsquared}, \code{Rsquared_aj},
+\code{Max_error}, \code{Accuracy}, \code{Recall}, \code{Precision}, \code{F1}}
 
 \item{var.import}{(\emph{optional, default} \code{NULL}) \cr 
 An \code{integer} corresponding to the number of permutations to be done for each variable to 
@@ -97,37 +92,6 @@ An \code{integer} value corresponding to the new seed value to be set}
 
 \item{do.progress}{(\emph{optional, default} \code{TRUE}) \cr 
 A \code{logical} value defining whether the progress bar is to be rendered or not}
-
-\item{prob.mean}{(\emph{deprecated}, please use \code{em.algo} instead) \cr
-A \code{logical} value defining whether to compute the mean probabilities
-across predictions or not}
-
-\item{prob.median}{(\emph{deprecated}, please use \code{em.algo} instead)
-\cr A \code{logical} value defining whether to compute the median
-probabilities across predictions or not}
-
-\item{prob.cv}{(\emph{deprecated}, please use \code{em.algo} instead) \cr A
-\code{logical} value defining whether to compute the coefficient of
-variation across predictions or not}
-
-\item{prob.ci}{(\emph{deprecated}, please use \code{em.algo} instead) \cr A
-\code{logical} value defining whether to compute the confidence interval
-around the \code{prob.mean} ensemble model or not}
-
-\item{committee.averaging}{(\emph{deprecated}, please use \code{em.algo}
-instead) \cr A \code{logical} value defining whether to compute the
-committee averaging across predictions or not}
-
-\item{prob.mean.weight}{(\emph{deprecated}, please use \code{em.algo}
-instead) \cr A \code{logical} value defining whether to compute the
-weighted sum of probabilities across predictions or not}
-
-\item{prob.mean.weight.decay}{(\emph{deprecated}, please use
-\code{EMwmean.decay} instead)  \cr old argument name for
-\code{EMwmean.decay}}
-
-\item{prob.ci.alpha}{(\emph{deprecated}, please use \code{EMci.alpha}
-instead) \cr old argument name for \code{EMci.alpha}}
 }
 \value{
 A \code{\link{BIOMOD.ensemble.models.out}} object containing models outputs, or links to saved 
@@ -176,7 +140,7 @@ conditions (see Details).
   Hence, depending on the chosen method, the number of ensemble models built will vary. \cr
   \emph{Be aware that if no evaluation data was given to the 
   \code{\link{BIOMOD_FormatingData}} function, some ensemble model evaluations may be biased 
-  due to difference in data used for single model evaluations.}
+  due to difference in data used for single model evaluations.} \cr
   \bold{Be aware that all of these combinations are allowed, but some may not make sense 
   depending mainly on how pseudo-absence datasets have been built and whether all of them 
   have been used for all single models or not (see \code{PA.nb.absences} and \code{models.pa} 
@@ -270,7 +234,8 @@ conditions (see Details).
     The interesting feature of this measure is that it gives both a prediction and a measure 
     of uncertainty. When the prediction is close to \code{0} or \code{1}, it means that all 
     models agree to predict \code{0} or \code{1} respectively. When the prediction is around 
-    \code{0.5}, it means that half the models predict \code{1} and the other half \code{0}. 
+    \code{0.5}, it means that half the models predict \code{1} and the other half \code{0}.
+    This model is are available with binary data.
     \cr Old parameter name: \code{committee.averaging}
     
     \item \bold{\code{EMwmean}} & \bold{\code{EMwmean.decay}} : 

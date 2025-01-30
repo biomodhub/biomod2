@@ -6,8 +6,7 @@
 \usage{
 bm_ModelingOptions(
   data.type,
-  models = c("ANN", "CTA", "FDA", "GAM", "GBM", "GLM", "MARS", "MAXENT", "MAXNET", "RF",
-    "RFd", "SRE", "XGBOOST"),
+  models,
   strategy,
   user.val = NULL,
   user.base = "bigboss",
@@ -17,7 +16,7 @@ bm_ModelingOptions(
 }
 \arguments{
 \item{data.type}{a \code{character} corresponding to the data type to be used, must be either 
-\code{binary}, \code{binary.PA}, \code{abundance}, \code{compositional}. For the moment, only \code{binary} is accept.}
+\code{binary}, \code{count}, \code{ordinal}, \code{relative}, or \code{abundance}}
 
 \item{models}{a \code{vector} containing model names to be computed, must be among 
 \code{ANN}, \code{CTA}, \code{FDA}, \code{GAM}, \code{GBM}, \code{GLM}, \code{MARS}, 

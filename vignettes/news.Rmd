@@ -14,6 +14,10 @@ vignette: >
 
 ### <i class="fas fa-pen-alt"></i> 2025
 
+- 4.3: 
+ + Abundance modelling is now possible. All the information is available in the Abundance vignette.
+ + Cleaning of deprecated arguments. 
+
 ### <i class="fas fa-pencil-alt"></i> 2024
 
 ##### Bugfix

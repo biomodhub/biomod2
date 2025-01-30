@@ -2,8 +2,10 @@
 % Please edit documentation in R/bm_FindOptimStat.R
 \name{bm_FindOptimStat}
 \alias{bm_FindOptimStat}
-\alias{bm_CalculateStat}
+\alias{bm_CalculateStatBin}
+\alias{bm_CalculateStatAbund}
 \alias{get_optim_value}
+\alias{bm_CalculateStatAbun}
 \title{Calculate the best score according to a given evaluation method}
 \usage{
 bm_FindOptimStat(
@@ -13,18 +15,22 @@ bm_FindOptimStat(
   nb.thresh = 100,
   threshold = NULL,
   boyce.bg.env = NULL,
-  mpa.perc = 0.9
+  mpa.perc = 0.9,
+  k = NULL
 )
 
 get_optim_value(metric.eval)
 
-bm_CalculateStat(misc, metric.eval = "TSS")
+bm_CalculateStatBin(misc, metric.eval = "TSS")
+
+bm_CalculateStatAbun(metric.eval, obs, fit, k)
 }
 \arguments{
 \item{metric.eval}{a \code{character} corresponding to the evaluation metric to be used, must 
 be either \code{POD}, \code{FAR}, \code{POFD}, \code{SR}, \code{ACCURACY}, \code{BIAS}, 
 \code{ROC}, \code{TSS}, \code{KAPPA}, \code{OR}, \code{ORSS}, \code{CSI}, \code{ETS}, 
-\code{BOYCE}, \code{MPA}}
+\code{BOYCE}, \code{MPA}, \code{RMSE}, \code{MAE}, \code{MSE}, \code{Rsquared}, \code{Rsquared_aj},
+\code{Max_error}, \code{Accuracy}, \code{"Recall"}, \code{"Precision"}, \code{"F1"}}
 
 \item{obs}{a \code{vector} of observed values (binary, \code{0} or \code{1})}
 
@@ -48,6 +54,8 @@ pseudo-absences selected for modeling})
 \item{mpa.perc}{a \code{numeric} between \code{0} and \code{1} corresponding to the percentage 
 of correctly classified presences for Minimal Predicted Area (see \code{ecospat.mpa()} in 
 \pkg{ecospat})}
+
+\item{k}{a \code{numeric} corresponding to the number of predictive factor in the model}
 
 \item{misc}{a \code{matrix} corresponding to a contingency table}
 }
@@ -98,6 +106,24 @@ metric.
     presences)
   }
   }
+  \item{For abundance/count/relative data}{
+    \itemize{
+      \item \code{RMSE} : Root Mean Square Error
+      \item \code{MSE} : Mean Square Error
+      \item \code{MAE} : Mean Absolute Error
+      \item \code{Rsquared} : R square
+      \item \code{Rsquared_aj} : R square adjusted
+      \item \code{Max_error} : Max_error
+    }
+    }
+    \item{For ordinal data}{
+    \itemize{
+      \item \code{Accuracy} : Accuracy
+      \item \code{Recall} : Macro average Recall
+      \item \code{Precision} : Macro average Precision
+      \item \code{F1} : Macro F1 score
+    }
+    }
 }
   
 Optimal value of each method can be obtained with the \code{\link{get_optim_value}} function. \cr

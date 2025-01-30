@@ -48,6 +48,8 @@
 ##' A \code{logical} or a \code{character} value defining whether and how objects should be 
 ##' compressed when saved on hard drive. Must be either \code{TRUE}, \code{FALSE}, \code{xz} or 
 ##' \code{gzip} (see Details)
+##' @param digits (\emph{optional, default} \code{0}) \cr 
+##' A \code{integer} value defining the number of digits of the predictions. 
 ##' @param build.clamping.mask (\emph{optional, default} \code{TRUE}) \cr 
 ##' A \code{logical} value defining whether a clamping mask should be built and saved on hard 
 ##' drive or not (see Details)
@@ -105,6 +107,8 @@
 ##'   \item \code{output.format} : a \code{character} value corresponding to the projections 
 ##'   saving format on hard drive, must be either \code{.grd}, \code{.img}, \code{.tif} or \code{.RData} (the 
 ##'   default if \code{new.env} is given as \code{matrix} or \code{data.frame})
+##'   \item \code{overwrite} : a \code{logical}. FALSE by default. If some projections with the same project ID 
+##'   and modeling ID are already create, does biomod2 crush it or not ? 
 ##' }
 ##' 
 ##' 
@@ -201,6 +205,7 @@ BIOMOD_Projection <- function(bm.mod,
                               metric.binary = NULL,
                               metric.filter = NULL,
                               compress = TRUE,
+                              digits = 0,
                               build.clamping.mask = TRUE,
                               nb.cpu = 1,
                               seed.val = NULL,
@@ -228,6 +233,7 @@ BIOMOD_Projection <- function(bm.mod,
                   models.projected = models.chosen,
                   scale.models = bm.mod@scale.models,
                   coord = new.env.xy,
+                  data.type = bm.mod@data.type,
                   modeling.id = bm.mod@modeling.id)
   proj_out@models.out@link = bm.mod@link
   
@@ -315,10 +321,36 @@ BIOMOD_Projection <- function(bm.mod,
     if (length(grep("MAXENT$", mod.name)) == 1) {
       temp_workdir = mod@model_output_dir
     }
+    
     pred.tmp <- predict(mod, new.env, on_0_1000 = on_0_1000, 
                         filename = filename, omit.na = omit.na, 
                         temp_workdir = temp_workdir, seedval = seed.val, 
-                        overwrite = TRUE, mod.name = mod.name)
+                        overwrite = overwrite, mod.name = mod.name)
+    
+
+    ## Cleaning 
+    if (bm.mod@data.type %in% c("count","abundance")){
+      pred.tmp[pred.tmp < 0] <- 0
+      pred.tmp <- round(pred.tmp,digits = digits)
+    }
+
+    if (bm.mod@data.type == "ordinal"){
+      data_sp <- get_formal_data(bm.mod, subinfo = "resp.var")
+      nblevels <- length(levels(data_sp))
+      pred.tmp[pred.tmp < 1] <- 1
+      pred.tmp[pred.tmp > nblevels] <- nblevels
+      
+      #pred.tmp <- round(as.numeric(pred.tmp))
+      if (length(grep("GAM$|GLM$|XGBOOST$", mod.name)) == 1){
+        limits <- mod@thresholds_ordinal
+        for (j in 1:(nblevels - 1)){
+          pred.tmp[pred.tmp <= j + limits[j] & pred.tmp >= j ] <- j
+          pred.tmp[pred.tmp > j + limits[j] & pred.tmp < j + 1 ] <- j + 1
+        }
+      }
+    }
+    
+    
     if (do.stack) {
       if (proj_is_raster) {
         return(wrap(pred.tmp)) 
@@ -326,10 +358,11 @@ BIOMOD_Projection <- function(bm.mod,
         return(pred.tmp)
       }
     } else {
-      cat(filename)
+      cat("\n\t\t", filename)
       return(filename)
     }
   }
+
   
   ## Putting predictions into the right format
   if (do.stack) {
@@ -361,8 +394,11 @@ BIOMOD_Projection <- function(bm.mod,
     if (output.format == '.RData') {
       save(list = nameProjSp, file = saved.files, compress = compress)
     } else  {
+      save.type <- ifelse(bm.mod@data.type == "binary",ifelse(on_0_1000, "INT2S", "FLT4S"), ifelse(digits == 0, "INT2S", "FLT4S"))
       writeRaster(x = rast(get(nameProjSp)), filename = saved.files,
-                  overwrite = TRUE, datatype = ifelse(on_0_1000, "INT2S", "FLT4S"), NAflag = -9999)
+                  overwrite = TRUE,
+                  datatype = save.type
+                  , NAflag = -9999)
     }
   }
   proj_out@proj.out@link <- saved.files
@@ -373,7 +409,7 @@ BIOMOD_Projection <- function(bm.mod,
   }
   
   ## 5. Compute binary and/or filtered transformation ---------------------------------------------
-  if (!is.null(metric.binary) | !is.null(metric.filter)) {
+  if ((!is.null(metric.binary) | !is.null(metric.filter)) & bm.mod@data.type == "binary" ) {
     cat("\n")
     saved.files.binary <- NULL
     saved.files.filtered <- NULL
@@ -586,25 +622,31 @@ BIOMOD_Projection <- function(bm.mod,
   
   ## 6. Check metric.binary & metric.filter -----------------------------------
   if (!is.null(metric.binary) | !is.null(metric.filter)) {
-    models.evaluation <- get_evaluations(bm.mod)
-    if (is.null(models.evaluation)) {
-      warning("Binary and/or Filtered transformations of projection not ran because of models evaluation information missing")
+    if ( bm.mod@data.type != "binary"){
+      cat ("No metric.binary or metric.filter are needed with",bm.mod@data.type, "data")
+      metric.binary <- NULL
+      metric.filter <- NULL
     } else {
-      available.evaluation <- unique(models.evaluation$metric.eval)
-      if (!is.null(metric.binary) && metric.binary[1] == 'all') {
-        metric.binary <- available.evaluation
-      } else if (!is.null(metric.binary) && sum(!(metric.binary %in% available.evaluation)) > 0) {
-        warning(paste0(toString(metric.binary[!(metric.binary %in% available.evaluation)]),
-                       " Binary Transformation were switched off because no corresponding evaluation method found"))
-        metric.binary <- metric.binary[metric.binary %in% available.evaluation]
-      }
-      
-      if (!is.null(metric.filter) && metric.filter[1] == 'all') {
-        metric.filter <- available.evaluation
-      } else if (!is.null(metric.filter) && sum(!(metric.filter %in% available.evaluation)) > 0) {
-        warning(paste0(toString(metric.filter[!(metric.filter %in% available.evaluation)]),
-                       " Filtered Transformation were switched off because no corresponding evaluation method found"))
-        metric.filter <- metric.filter[metric.filter %in% available.evaluation]
+      models.evaluation <- get_evaluations(bm.mod)
+      if (is.null(models.evaluation)) {
+        warning("Binary and/or Filtered transformations of projection not ran because of models evaluation information missing")
+      } else {
+        available.evaluation <- unique(models.evaluation$metric.eval)
+        if (!is.null(metric.binary) && metric.binary[1] == 'all') {
+          metric.binary <- available.evaluation
+        } else if (!is.null(metric.binary) && sum(!(metric.binary %in% available.evaluation)) > 0) {
+          warning(paste0(toString(metric.binary[!(metric.binary %in% available.evaluation)]),
+                         " Binary Transformation were switched off because no corresponding evaluation method found"))
+          metric.binary <- metric.binary[metric.binary %in% available.evaluation]
+        }
+        
+        if (!is.null(metric.filter) && metric.filter[1] == 'all') {
+          metric.filter <- available.evaluation
+        } else if (!is.null(metric.filter) && sum(!(metric.filter %in% available.evaluation)) > 0) {
+          warning(paste0(toString(metric.filter[!(metric.filter %in% available.evaluation)]),
+                         " Filtered Transformation were switched off because no corresponding evaluation method found"))
+          metric.filter <- metric.filter[metric.filter %in% available.evaluation]
+        }
       }
     }
   }
@@ -658,7 +700,17 @@ BIOMOD_Projection <- function(bm.mod,
     do.stack <- TRUE
   }
   
+  ## 10.on_0_1000 --------------------------------
   
+  on_0_1000 <- ifelse(is.null(args$on_0_1000), TRUE, args$on_0_1000)
+  if (bm.mod@data.type %in% c("count","abundance","ordinal")) {on_0_1000 <- FALSE}
+  
+  ## 11.Check overwrite
+  overwrite <- ifelse(is.null(args$overwrite), ifelse(do.stack, TRUE, FALSE), args$overwrite)
+  if (!overwrite){
+    cat("\n\t\t! 'overwrite' arg is set as FALSE. Projections that have already been saved will not be redone. 
+        Please be carfeul if you have changed the models in the meantime. ")
+  }
   
   return(list(proj.name = proj.name,
               new.env = new.env,
@@ -672,8 +724,9 @@ BIOMOD_Projection <- function(bm.mod,
               omit.na = ifelse(is.null(args$omit.na), TRUE, args$omit.na),
               do.stack = do.stack,
               keep.in.memory = ifelse(is.null(args$keep.in.memory), TRUE, args$keep.in.memory),
-              on_0_1000 = ifelse(is.null(args$on_0_1000), TRUE, args$on_0_1000),
-              seed.val = seed.val))
+              on_0_1000 = on_0_1000,
+              seed.val = seed.val,
+              overwrite = overwrite))
 }
 
 

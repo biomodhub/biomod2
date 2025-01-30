@@ -12,7 +12,7 @@
 \item{model_subclass}{the subclass of GAM model}
 }
 \description{
-This function loads library for either GAM and BAM from mgcv
-  package or for GAM from gam package.
+This function loads library for either GAM and BAM from mgcv package or 
+for GAM from gam package.
 }
 \keyword{internal}

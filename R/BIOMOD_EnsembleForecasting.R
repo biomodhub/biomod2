@@ -53,6 +53,8 @@
 ##' A \code{logical} or a \code{character} value defining whether and how objects should be 
 ##' compressed when saved on hard drive, must be either \code{TRUE}, \code{FALSE}, \code{xz} or 
 ##' \code{gzip} (see Details)
+##' @param digits (\emph{optional, default} \code{0}) \cr 
+##' A \code{integer} value defining the number of digits of the predictions. 
 ##' @param nb.cpu (\emph{optional, default} \code{1}) \cr 
 ##' An \code{integer} value corresponding to the number of computing resources to be used to 
 ##' parallelize the single models computation
@@ -236,6 +238,7 @@ BIOMOD_EnsembleForecasting <- function(bm.em,
                                        metric.binary = NULL,
                                        metric.filter = NULL,
                                        compress = TRUE,
+                                       digits = 0,
                                        nb.cpu = 1,
                                        na.rm = TRUE,
                                        ...)
@@ -264,7 +267,8 @@ BIOMOD_EnsembleForecasting <- function(bm.em,
                   expl.var.names = bm.em@expl.var.names,
                   models.projected = models.chosen,
                   coord = new.env.xy,
-                  modeling.id = bm.em@modeling.id)
+                  modeling.id = bm.em@modeling.id,
+                  data.type = bm.em@data.type)
   proj_out@models.out@link = bm.em@link
   
   proj_is_raster <- FALSE
@@ -325,6 +329,7 @@ BIOMOD_EnsembleForecasting <- function(bm.em,
       }
       
       mod <- get(BIOMOD_LoadModels(bm.out = bm.em, full.name = em.name))
+      rm(list = em.name)
       ef.tmp <- predict(mod
                         , newdata = formal_pred
                         , on_0_1000 = on_0_1000
@@ -332,6 +337,13 @@ BIOMOD_EnsembleForecasting <- function(bm.em,
                         , filename = filename
                         , mod.name = em.name
                         , na.rm = na.rm)
+      
+      ## Cleaning 
+      if (bm.em@data.type %in% c("count","abundance")){
+        ef.tmp[ef.tmp < 0] <- 0
+        ef.tmp <- round(ef.tmp, digits = digits)
+      }
+      
       
       if (do.stack) {
         if (proj_is_raster) {
@@ -378,7 +390,7 @@ BIOMOD_EnsembleForecasting <- function(bm.em,
       save(list = nameProjSp, file = saved.files, compress = compress)
     } else {
       writeRaster(x = rast(get(nameProjSp)), filename = saved.files,
-                  overwrite = TRUE, NAflag = -9999, datatype = ifelse(any(grepl("EMcv", models.chosen)), "FLT4S", "INT2S"))
+                  overwrite = TRUE, NAflag = -9999, datatype = ifelse(any(grepl("EMcv", models.chosen) | digits != 0), "FLT4S", "INT2S"))
     }
   }
   proj_out@proj.out@link <- saved.files
@@ -390,7 +402,7 @@ BIOMOD_EnsembleForecasting <- function(bm.em,
   
   
   ## 5. Compute binary and/or filtered transformation ---------------------------------------------
-  if (length(metric.binary) > 0 | length(metric.filter) > 0)
+  if ((length(metric.binary) > 0 | length(metric.filter ) > 0) & bm.em@data.type == "binary")
   {
     cat("\n")
     saved.files.binary <- NULL
@@ -535,7 +547,6 @@ BIOMOD_EnsembleForecasting <- function(bm.em,
 .BIOMOD_EnsembleForecasting.prepare.workdir <- function(dir.name, sp.name, proj.folder)
 {
   cat("\nCreating suitable Workdir...\n")
-  dir.create(file.path(dir.name, sp.name, proj.folder), showWarnings = FALSE, recursive = TRUE, mode = "777")
   indiv_proj_dir <- file.path(dir.name, sp.name, proj.folder, "individual_projections")
   dir.create(indiv_proj_dir, showWarnings = FALSE, recursive = TRUE, mode = "777")
   return(indiv_proj_dir)
@@ -546,8 +557,8 @@ BIOMOD_EnsembleForecasting <- function(bm.em,
 .BIOMOD_EnsembleForecasting.check.args <- function(bm.em, bm.proj, proj.name
                                                    , new.env, new.env.xy
                                                    , models.chosen
-                                                   , metric.binary, metric.filter,
-                                                   na.rm, ...)
+                                                   , metric.binary, metric.filter
+                                                   , na.rm, ...)
 {
   args <- list(...)
   
@@ -629,27 +640,33 @@ BIOMOD_EnsembleForecasting <- function(bm.em,
   
   ## 6. Check metric.binary & metric.filter -----------------------------------
   if (!is.null(metric.binary) | !is.null(metric.filter)) {
-    models.evaluation <- get_evaluations(bm.em)
-    if (is.null(models.evaluation)) {
-      warning("Binary and/or Filtered transformations of projection not ran because of models evaluation information missing")
+    if ( bm.em@data.type != "binary"){
+      cat ("No metric.binary or metric.filter are needed with",bm.em@data.type, "data")
+      metric.binary <- NULL
+      metric.filter <- NULL
     } else {
-      available.evaluation <- as.character(unique(models.evaluation$metric.eval))
-      if (!is.null(metric.binary) && metric.binary[1] == 'all') {
-        metric.binary <- available.evaluation
-      } else if (!is.null(metric.binary) && 
-                 any(! metric.binary %in% available.evaluation)) {
-        warning(paste0(toString(metric.binary[!(metric.binary %in% available.evaluation)]),
-                       " Binary Transformation were switched off because no corresponding evaluation method found"))
-        metric.binary <- metric.binary[metric.binary %in% available.evaluation]
-      }
-      
-      if (!is.null(metric.filter) && metric.filter[1] == 'all') {
-        metric.filter <- available.evaluation
-      } else if (!is.null(metric.filter) &&
-                 any(!(metric.filter %in% available.evaluation))) {
-        warning(paste0(toString(metric.filter[!(metric.filter %in% available.evaluation)]),
-                       " Filtered Transformation were switched off because no corresponding evaluation method found"))
-        metric.filter <- metric.filter[metric.filter %in% available.evaluation]
+      models.evaluation <- get_evaluations(bm.em)
+      if (is.null(models.evaluation)) {
+        warning("Binary and/or Filtered transformations of projection not ran because of models evaluation information missing")
+      } else {
+        available.evaluation <- as.character(unique(models.evaluation$metric.eval))
+        if (!is.null(metric.binary) && metric.binary[1] == 'all') {
+          metric.binary <- available.evaluation
+        } else if (!is.null(metric.binary) && 
+                   any(! metric.binary %in% available.evaluation)) {
+          warning(paste0(toString(metric.binary[!(metric.binary %in% available.evaluation)]),
+                         " Binary Transformation were switched off because no corresponding evaluation method found"))
+          metric.binary <- metric.binary[metric.binary %in% available.evaluation]
+        }
+        
+        if (!is.null(metric.filter) && metric.filter[1] == 'all') {
+          metric.filter <- available.evaluation
+        } else if (!is.null(metric.filter) &&
+                   any(!(metric.filter %in% available.evaluation))) {
+          warning(paste0(toString(metric.filter[!(metric.filter %in% available.evaluation)]),
+                         " Filtered Transformation were switched off because no corresponding evaluation method found"))
+          metric.filter <- metric.filter[metric.filter %in% available.evaluation]
+        }
       }
     }
   }
@@ -699,6 +716,12 @@ BIOMOD_EnsembleForecasting <- function(bm.em,
   ## 11. Check na.rm ------------------------------------------------------
   stopifnot(is.logical(na.rm))
   
+  
+  ## 12.on_0_1000 --------------------------------
+  
+  on_0_1000 <- ifelse(is.null(args$on_0_1000), TRUE, args$on_0_1000)
+  if (bm.em@data.type  %in% c("count","abundance","ordinal")) {on_0_1000 <- FALSE}
+  
   return(list(bm.em = bm.em,
               bm.proj = bm.proj,
               new.env = new.env,
@@ -708,7 +731,7 @@ BIOMOD_EnsembleForecasting <- function(bm.em,
               metric.filter = metric.filter,
               output.format = output.format,
               compress = ifelse(is.null(args$compress), FALSE, args$compress),
-              on_0_1000 = ifelse(is.null(args$on_0_1000), TRUE, args$on_0_1000),
+              on_0_1000 = on_0_1000,
               do.stack = do.stack,
               keep.in.memory = keep.in.memory,
               new.env.xy = new.env.xy))
