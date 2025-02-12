@@ -362,7 +362,15 @@ BIOMOD_FormatingData <- function(resp.name,
   .bm_cat(paste0(resp.name, " Data Formating"))
   
   ## 1. check args ------------------------------------------------------------
-  args <- .BIOMOD_FormatingData.check.args(resp.name, dir.name)
+  args <- .BIOMOD_FormatingData.check.args(resp.name,
+                                           resp.var,
+                                           expl.var,
+                                           dir.name,
+                                           resp.xy,
+                                           eval.resp.var,
+                                           eval.expl.var,
+                                           eval.resp.xy,
+                                           filter.raster)
   for (argi in names(args)) { assign(x = argi, value = args[[argi]]) }
   rm(args)
   
@@ -409,7 +417,15 @@ BIOMOD_FormatingData <- function(resp.name,
 
 # Argument Check -------------------------------------------------------------
 
-.BIOMOD_FormatingData.check.args <- function(resp.name, dir.name)
+.BIOMOD_FormatingData.check.args <- function(resp.name,
+                                             resp.var,
+                                             expl.var,
+                                             dir.name,
+                                             resp.xy,
+                                             eval.resp.var,
+                                             eval.expl.var,
+                                             eval.resp.xy,
+                                             filter.raster)
 {
   ## 0. Checking names (resp.name available ?) --------------------------------
   if (grepl('/', resp.name)) {
@@ -424,6 +440,16 @@ BIOMOD_FormatingData <- function(resp.name,
   if (!dir.exists(dir.name)) {
     stop(paste0("Modeling folder '", dir.name, "' does not exist"))
   }
+  args <- .BIOMOD.formated.data.check.args(sp = resp.var, env = expl.var, xy = resp.xy
+                                           , eval.sp = eval.resp.var, eval.env = eval.expl.var
+                                           , eval.xy = eval.resp.xy, filter.raster = filter.raster)
   
-  return(list(resp.name = resp.name, dir.name = dir.name))
+  return(list(resp.var = args$sp,
+              expl.var = args$env,
+              resp.xy = args$xy,
+              resp.name = resp.name,
+              dir.name = dir.name,
+              eval.resp.var = args$eval.sp,
+              eval.expl.var = args$eval.env,
+              eval.resp.xy = args$eval.xy))
 }
