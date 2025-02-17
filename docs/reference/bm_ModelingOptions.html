@@ -132,7 +132,7 @@
 
 <dl><dt id="arg-data-type">data.type<a class="anchor" aria-label="anchor" href="#arg-data-type"></a></dt>
 <dd><p>a <code>character</code> corresponding to the data type to be used, must be either
-<code>binary</code>, <code>count</code>, <code>ordinal</code>, <code>relative</code>, or <code>abundance</code></p></dd>
+<code>binary</code>, <code>count</code>, <code>relative</code>, <code>abundance</code>, <code>ordinal</code></p></dd>
 
 
 <dt id="arg-models">models<a class="anchor" aria-label="anchor" href="#arg-models"></a></dt>
@@ -143,7 +143,8 @@
 
 <dt id="arg-strategy">strategy<a class="anchor" aria-label="anchor" href="#arg-strategy"></a></dt>
 <dd><p>a <code>character</code> corresponding to the method to select models' parameters
-values, must be either <code>default</code>, <code>bigboss</code>, <code>user.defined</code>, <code>tuned</code></p></dd>
+values, must be either <code>default</code>, <code>bigboss</code>, <code>user.defined</code>, <code>tuned</code>
+(see Details)</p></dd>
 
 
 <dt id="arg-user-val">user.val<a class="anchor" aria-label="anchor" href="#arg-user-val"></a></dt>
@@ -152,9 +153,10 @@ A <code>list</code> containing parameters values for some (all) models</p></dd>
 
 
 <dt id="arg-user-base">user.base<a class="anchor" aria-label="anchor" href="#arg-user-base"></a></dt>
-<dd><p>(<em>optional, default</em> <code>bigboss</code>) <br> A character,
-<code>default</code> or <code>bigboss</code> used when <code>strategy = 'user.defined'</code>.
-It sets the bases of parameters to be modified by user defined values.</p></dd>
+<dd><p>(<em>optional, default</em> <code>bigboss</code>) <br>
+If <code>strategy = 'user.defined'</code>, a <code>character</code> corresponding to the basic set of
+options to be modified by user defined values, must be either <code>default</code> or <code>bigboss</code>
+(see Details)</p></dd>
 
 
 <dt id="arg-bm-format">bm.format<a class="anchor" aria-label="anchor" href="#arg-bm-format"></a></dt>
@@ -179,15 +181,18 @@ distribution model(s) with the <code><a href="BIOMOD_Modeling.html">BIOMOD_Model
     <p>This function creates a <code><a href="BIOMOD.models.options.html">BIOMOD.models.options</a></code> object containing parameter values
 for each single model that can be run within <span class="pkg">biomod2</span> through
 <code><a href="BIOMOD_Modeling.html">BIOMOD_Modeling</a></code> function.</p>
-<p>12 models are currently available, and are listed within the <code><a href="ModelsTable.html">ModelsTable</a></code> dataset.</p>
+<p>11 different algorithms are currently available, with different versions for some (<code>GAM</code>,
+<code>MAXENT</code>, <code>RF</code>). These models are associated with <em>binary</em> or <em>nonbinary</em>
+datatypes, but all combinations are not available. They are all listed within the
+<code><a href="ModelsTable.html">ModelsTable</a></code> dataset.</p>
 <p>Different strategies are available to set those parameters, through the <code>strategy</code>
 argument :</p><dl><dt>default</dt>
 <dd><p>all parameters names and values are directly retrieve from functions to be
-  called through <code><a href="https://rdrr.io/r/methods/methodUtilities.html" class="external-link">formalArgs</a></code> and <code><a href="https://rdrr.io/r/base/formals.html" class="external-link">formals</a></code> functions respectively</p></dd>
+  called through <code><a href="https://rdrr.io/r/methods/methodUtilities.html" class="external-link">formalArgs</a></code> and <code><a href="https://rdrr.io/r/base/formals.html" class="external-link">formals</a></code> functions</p></dd>
 
   <dt>bigboss</dt>
 <dd><p>default parameter values are updated with values predefined by <span class="pkg">biomod2</span>
-  team</p></dd>
+  team (see <code><a href="OptionsBigboss.html">OptionsBigboss</a></code>)</p></dd>
 
   <dt>user.defined</dt>
 <dd><p>default parameter values are updated with values provided by the user</p></dd>
@@ -197,8 +202,8 @@ argument :</p><dl><dt>default</dt>
   function</p></dd>
 
 
-</dl><p>To define the same options for all datasets of a model, you can provide these options as a list in
-user.val with the names "for_all_datasets".</p>
+</dl><p>To define the same options for all datasets of a model, options can be provided through the
+<code>user.val</code> parameter as a <code>list</code> whose name is <code>for_all_datasets</code>.</p>
     </div>
     <div id="note">
     <h2>Note</h2>
@@ -264,7 +269,8 @@ default parameters, and their values, are the following :</p>
 </ul></div>
     <div id="see-also">
     <h2>See also</h2>
-    <div class="dont-index"><p><code><a href="ModelsTable.html">ModelsTable</a></code>, <code><a href="BIOMOD.models.options.html">BIOMOD.models.options</a></code>,
+    <div class="dont-index"><p><code><a href="ModelsTable.html">ModelsTable</a></code>, <code><a href="OptionsBigboss.html">OptionsBigboss</a></code>,
+<code><a href="BIOMOD.models.options.html">BIOMOD.models.options</a></code>,
 <code><a href="bm_Tuning.html">bm_Tuning</a></code>, <code><a href="BIOMOD_Modeling.html">BIOMOD_Modeling</a></code></p>
 <p>Other Secondary functions:
 <code><a href="bm_BinaryTransformation.html">bm_BinaryTransformation</a>()</code>,
@@ -317,10 +323,10 @@ default parameters, and their values, are the following :</p>
 <span></span>
 <span><span class="co"># ---------------------------------------------------------------#</span></span>
 <span><span class="co"># Format Data with true absences</span></span>
-<span><span class="va">myBiomodData</span> <span class="op">&lt;-</span> <span class="fu"><a href="BIOMOD_FormatingData.html">BIOMOD_FormatingData</a></span><span class="op">(</span>resp.var <span class="op">=</span> <span class="va">myResp</span>,</span>
-<span>                                     expl.var <span class="op">=</span> <span class="va">myExpl</span>,</span>
+<span><span class="va">myBiomodData</span> <span class="op">&lt;-</span> <span class="fu"><a href="BIOMOD_FormatingData.html">BIOMOD_FormatingData</a></span><span class="op">(</span>resp.name <span class="op">=</span> <span class="va">myRespName</span>,</span>
+<span>                                     resp.var <span class="op">=</span> <span class="va">myResp</span>,</span>
 <span>                                     resp.xy <span class="op">=</span> <span class="va">myRespXY</span>,</span>
-<span>                                     resp.name <span class="op">=</span> <span class="va">myRespName</span><span class="op">)</span></span>
+<span>                                     expl.var <span class="op">=</span> <span class="va">myExpl</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># k-fold selection</span></span>
 <span><span class="va">cv.k</span> <span class="op">&lt;-</span> <span class="fu"><a href="bm_CrossValidation.html">bm_CrossValidation</a></span><span class="op">(</span>bm.format <span class="op">=</span> <span class="va">myBiomodData</span>,</span>
@@ -330,8 +336,8 @@ default parameters, and their values, are the following :</p>
 <span></span>
 <span></span>
 <span><span class="co"># ---------------------------------------------------------------#</span></span>
-<span><span class="va">allModels</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">'ANN'</span>, <span class="st">'CTA'</span>, <span class="st">'FDA'</span>, <span class="st">'GAM'</span>, <span class="st">'GBM'</span>, <span class="st">'GLM'</span></span>
-<span>               , <span class="st">'MARS'</span>, <span class="st">'MAXENT'</span>, <span class="st">'MAXNET'</span>, <span class="st">'RF'</span>, <span class="st">'SRE'</span>, <span class="st">'XGBOOST'</span><span class="op">)</span></span>
+<span><span class="va">allModels</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">'ANN'</span>, <span class="st">'CTA'</span>, <span class="st">'FDA'</span>, <span class="st">'GAM'</span>, <span class="st">'GBM'</span>, <span class="st">'GLM'</span>, <span class="st">'MARS'</span></span>
+<span>               , <span class="st">'MAXENT'</span>, <span class="st">'MAXNET'</span>, <span class="st">'RF'</span>, <span class="st">'RFd'</span>, <span class="st">'SRE'</span>, <span class="st">'XGBOOST'</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># default parameters</span></span>
 <span><span class="va">opt.d</span> <span class="op">&lt;-</span> <span class="fu">bm_ModelingOptions</span><span class="op">(</span>data.type <span class="op">=</span> <span class="st">'binary'</span>,</span>

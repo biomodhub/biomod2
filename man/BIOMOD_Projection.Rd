@@ -12,8 +12,6 @@ BIOMOD_Projection(
   models.chosen = "all",
   metric.binary = NULL,
   metric.filter = NULL,
-  compress = TRUE,
-  digits = 0,
   build.clamping.mask = TRUE,
   nb.cpu = 1,
   seed.val = NULL,
@@ -42,7 +40,7 @@ used to project the species distribution model(s)}
 
 \item{models.chosen}{a \code{vector} containing model names to be kept, must be either 
 \code{all} or a sub-selection of model names that can be obtained with the 
-\code{\link{get_built_models}} function}
+\code{\link{get_built_models}} function applied to \code{bm.mod}}
 
 \item{metric.binary}{(\emph{optional, default} \code{NULL}) \cr 
 A \code{vector} containing evaluation metric names to be used to transform prediction values 
@@ -50,7 +48,8 @@ into binary values based on models evaluation scores obtained with the
 \code{\link{BIOMOD_Modeling}} function. Must be among \code{all} (same evaluation metrics than 
 those of \code{bm.mod}) or \code{POD}, \code{FAR}, \code{POFD}, \code{SR}, \code{ACCURACY}, 
 \code{BIAS}, \code{ROC}, \code{TSS}, \code{KAPPA}, \code{OR}, \code{ORSS}, \code{CSI}, 
-\code{ETS}, \code{BOYCE}, \code{MPA}}
+\code{ETS}, \code{BOYCE}, \code{MPA}
+\cr \emph{Note that this is for binary data only.}}
 
 \item{metric.filter}{(\emph{optional, default} \code{NULL}) \cr 
 A \code{vector} containing evaluation metric names to be used to transform prediction values 
@@ -58,15 +57,8 @@ into filtered values based on models evaluation scores obtained with the
 \code{\link{BIOMOD_Modeling}} function. Must be among \code{all} (same evaluation metrics than 
 those of \code{bm.mod}) or \code{POD}, \code{FAR}, \code{POFD}, \code{SR}, \code{ACCURACY}, 
 \code{BIAS}, \code{ROC}, \code{TSS}, \code{KAPPA}, \code{OR}, \code{ORSS}, \code{CSI}, 
-\code{ETS}, \code{BOYCE}, \code{MPA}}
-
-\item{compress}{(\emph{optional, default} \code{TRUE}) \cr 
-A \code{logical} or a \code{character} value defining whether and how objects should be 
-compressed when saved on hard drive. Must be either \code{TRUE}, \code{FALSE}, \code{xz} or 
-\code{gzip} (see Details)}
-
-\item{digits}{(\emph{optional, default} \code{0}) \cr 
-A \code{integer} value defining the number of digits of the predictions.}
+\code{ETS}, \code{BOYCE}, \code{MPA}
+\cr \emph{Note that this is for binary data only.}}
 
 \item{build.clamping.mask}{(\emph{optional, default} \code{TRUE}) \cr 
 A \code{logical} value defining whether a clamping mask should be built and saved on hard 
@@ -110,22 +102,41 @@ This mask values will correspond to the number of variables in each pixel that a
 calibration / validation range, identifying locations where predictions are uncertain. \cr \cr
 
 \code{...} can take the following values :
-\itemize{
-  \item \code{omit.na} : a \code{logical} value defining whether all not fully referenced 
-  environmental points will get \code{NA} as predictions or not
-  \item \code{on_0_1000} : a \code{logical} value defining whether \code{0 - 1} probabilities 
-  are to be converted to \code{0 - 1000} scale to save memory on backup
-  \item \code{do.stack} : a \code{logical} value defining whether all projections are to be 
-  saved as one \code{\link[terra:rast]{SpatRaster}} object or several 
-  \code{\link[terra:rast]{SpatRaster}} files (\emph{the default if projections are too heavy to 
-  be all loaded at once in memory})
-  \item \code{keep.in.memory} : a \code{logical} value defining whether all projections are 
-  to be kept loaded at once in memory, or only links pointing to hard drive are to be returned
-  \item \code{output.format} : a \code{character} value corresponding to the projections 
-  saving format on hard drive, must be either \code{.grd}, \code{.img}, \code{.tif} or \code{.RData} (the 
-  default if \code{new.env} is given as \code{matrix} or \code{data.frame})
-  \item \code{overwrite} : a \code{logical}. FALSE by default. If some projections with the same project ID 
-  and modeling ID are already create, does biomod2 crush it or not ? 
+\describe{
+  \item{omit.na}{(\emph{optional, default} \code{TRUE}) : \cr
+  a \code{logical} value defining whether all not fully referenced environmental points will 
+  get \code{NA} as predictions or not
+  }
+  \item{digits}{(\emph{optional, default} \code{0}) : \cr
+  an \code{integer} value corresponding to the number of digits of the predictions
+  }
+  \item{on_0_1000}{(\emph{optional, default} \code{TRUE}) : \cr
+  a \code{logical} value defining whether \code{0 - 1} probabilities are to be converted to 
+  \code{0 - 1000} scale to save memory on backup
+  }
+  \item{keep.in.memory}{(\emph{optional, default} \code{TRUE}) : \cr
+  a \code{logical} value defining whether all projections are to be kept loaded at once in 
+  memory, or only links pointing to hard drive are to be returned
+  }
+  \item{do.stack}{(\emph{optional, default} \code{TRUE}) : \cr 
+  a \code{logical} value defining whether all projections are to be saved as one 
+  \code{\link[terra:rast]{SpatRaster}} object or several \code{\link[terra:rast]{SpatRaster}} 
+  files (\emph{the default if projections are too heavy to be all loaded at once in memory})
+  }
+  \item{output.format}{(\emph{optional, default} \code{.RData} or \code{.tif}) : \cr
+  a \code{character} value corresponding to the projections saving format on hard drive, must 
+  be either \code{.grd}, \code{.img}, \code{.tif} or \code{.RData} (the default if 
+  \code{new.env} is given as \code{matrix} or \code{data.frame})
+  }
+  \item{compress}{(\emph{optional, default} \code{TRUE}) : \cr
+  a \code{logical} or a \code{character} value defining whether and how objects should be 
+  compressed when saved on hard drive. Must be either \code{TRUE}, \code{FALSE}, \code{gzip} 
+  (for Windows OS) or \code{xz} (for other OS)
+  }
+  \item{overwrite}{(\emph{optional, default} \code{do.stack}) : \cr
+  a \code{logical} defining whether pre-existing projections with same modeling ID and 
+  project name should be replaced or not
+  }
 }
 }
 \examples{
@@ -160,10 +171,10 @@ if (file.exists(file.out)) {
 } else {
 
   # Format Data with true absences
-  myBiomodData <- BIOMOD_FormatingData(resp.var = myResp,
-                                       expl.var = myExpl,
+  myBiomodData <- BIOMOD_FormatingData(resp.name = myRespName,
+                                       resp.var = myResp,
                                        resp.xy = myRespXY,
-                                       resp.name = myRespName)
+                                       expl.var = myExpl)
 
   # Model single models
   myBiomodModelOut <- BIOMOD_Modeling(bm.format = myBiomodData,

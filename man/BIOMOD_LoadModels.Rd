@@ -24,7 +24,7 @@ object that can be obtained with the \code{\link{BIOMOD_Modeling}} or
 \item{full.name}{(\emph{optional, default} \code{NULL}) \cr 
 A \code{vector} containing model names to be kept, must be either \code{all} or a 
 sub-selection of model names that can be obtained with the \code{\link{get_built_models}} 
-function}
+function applied to \code{bm.out}}
 
 \item{PA}{(\emph{optional, default} \code{NULL}) \cr 
 A \code{vector} containing pseudo-absence set to be loaded, must be among \code{PA1}, 
@@ -35,9 +35,9 @@ A \code{vector} containing repetition set to be loaded, must be among \code{RUN1
 \code{RUN2}, \code{...}, \code{allRun}}
 
 \item{algo}{(\emph{optional, default} \code{NULL}) \cr 
-A \code{character} containing algorithm to be loaded, must be either 
-\code{ANN}, \code{CTA}, \code{FDA}, \code{GAM}, \code{GBM}, \code{GLM}, \code{MARS}, 
-\code{MAXENT}, \code{MAXNET}, \code{RF}, \code{SRE}, \code{XGBOOST}}
+A \code{character} containing algorithm to be loaded, must be either \code{ANN}, \code{CTA}, 
+\code{FDA}, \code{GAM}, \code{GBM}, \code{GLM}, \code{MARS}, \code{MAXENT}, \code{MAXNET}, 
+\code{RF}, \code{RFd}, \code{SRE}, \code{XGBOOST}}
 
 \item{merged.by.PA}{(\emph{optional, default} \code{NULL}) \cr 
 A \code{vector} containing merged pseudo-absence set to be loaded, must be among \code{PA1}, 
@@ -48,15 +48,18 @@ A \code{vector} containing merged repetition set to be loaded, must be among \co
 \code{RUN2}, \code{...}, \code{mergedRun}}
 
 \item{merged.by.algo}{(\emph{optional, default} \code{NULL}) \cr 
-A \code{character} containing merged algorithm to be loaded, must be among 
-\code{ANN}, \code{CTA}, \code{FDA}, \code{GAM}, \code{GBM}, \code{GLM}, \code{MARS}, 
-\code{MAXENT}, \code{MAXNET}, \code{RF}, \code{SRE}, \code{XGBOOST}, \code{mergedAlgo}}
+A \code{character} containing merged algorithm to be loaded, must be among \code{ANN}, 
+\code{CTA}, \code{FDA}, \code{GAM}, \code{GBM}, \code{GLM}, \code{MARS}, \code{MAXENT}, 
+\code{MAXNET}, \code{RF}, \code{RFd}, \code{SRE}, \code{XGBOOST}, \code{mergedAlgo}}
 
 \item{filtered.by}{(\emph{optional, default} \code{NULL}) \cr 
 A \code{vector} containing evaluation metric selected to filter single models to build the 
-ensemble models, must be among \code{POD}, \code{FAR}, \code{POFD}, \code{SR}, 
-\code{ACCURACY}, \code{BIAS}, \code{ROC}, \code{TSS}, \code{KAPPA}, \code{OR}, 
-\code{ORSS}, \code{CSI}, \code{ETS}, \code{BOYCE}, \code{MPA}}
+ensemble models, must be among \code{ROC}, \code{TSS}, \code{KAPPA}, \code{ACCURACY}, 
+\code{BIAS}, \code{POD}, \code{FAR}, \code{POFD}, \code{SR}, \code{CSI}, \code{ETS}, 
+\code{OR}, \code{ORSS}, \code{BOYCE}, \code{MPA} (\emph{binary data}), 
+\code{RMSE}, \code{MAE}, \code{MSE}, \code{Rsquared}, \code{Rsquared_aj}, \code{Max_error} 
+(\emph{abundance / count / relative data}), 
+\code{Accuracy}, \code{Recall}, \code{Precision}, \code{F1} (\emph{ordinal data})}
 }
 \value{
 A \code{vector} containing the names of the loaded models.
@@ -106,10 +109,10 @@ if (file.exists(file.out)) {
 } else {
 
   # Format Data with true absences
-  myBiomodData <- BIOMOD_FormatingData(resp.var = myResp,
-                                       expl.var = myExpl,
+  myBiomodData <- BIOMOD_FormatingData(resp.name = myRespName,
+                                       resp.var = myResp,
                                        resp.xy = myRespXY,
-                                       resp.name = myRespName)
+                                       expl.var = myExpl)
 
   # Model single models
   myBiomodModelOut <- BIOMOD_Modeling(bm.format = myBiomodData,

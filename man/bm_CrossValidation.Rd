@@ -114,7 +114,7 @@ repetition (in columns) which observation lines should be used for models calibr
 A \code{logical} value defining whether models should be also calibrated and validated over 
 the whole dataset (and pseudo-absence datasets) or not}
 
-\item{\ldots}{(\emph{optional, one or several of the following arguments depending on the 
+\item{\ldots}{(\emph{optional, one or several of the listed above arguments depending on the 
 selected method})}
 }
 \value{
@@ -147,7 +147,6 @@ The column names are given \emph{a posteriori} of the selection, ranging from 1 
 number of columns. 
 If \code{do.full.models = TRUE}, columns merging runs (and/or pseudo-absence datasets) 
 are added at the end. \cr \cr
-
 
 
 \bold{Concerning cross-validation strategies :}
@@ -221,10 +220,10 @@ myExpl <- terra::crop(myExpl, myExtent)
 
 # --------------------------------------------------------------- #
 # Format Data with true absences
-myBiomodData <- BIOMOD_FormatingData(resp.var = myResp,
-                                     expl.var = myExpl,
+myBiomodData <- BIOMOD_FormatingData(resp.name = myRespName,
+                                     resp.var = myResp,
                                      resp.xy = myRespXY,
-                                     resp.name = myRespName)
+                                     expl.var = myExpl)
 
 # --------------------------------------------------------------- #
 # Create the different validation datasets

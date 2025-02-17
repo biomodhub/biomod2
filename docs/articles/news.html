@@ -149,19 +149,142 @@
 <h3 id="section">
 <i class="fas fa-pen-alt"></i> 2025<a class="anchor" aria-label="anchor" href="#section"></a>
 </h3>
+<div class="section level4">
+<h4 id="abundance-2025-01-30">4.3 Abundance (2025-01-30)<a class="anchor" aria-label="anchor" href="#abundance-2025-01-30"></a>
+</h4>
+<div class="section level5">
+<h5 id="major-changes">Major Changes<a class="anchor" aria-label="anchor" href="#major-changes"></a>
+</h5>
 <ul>
-<li>4.3:</li>
-<li>Abundance modelling is now possible. All the information is
-available in the Abundance vignette.</li>
-<li>Cleaning of deprecated arguments.</li>
+<li>In <em>biomod2_classes_0</em> file :
+<ul>
+<li>add new data types : <em>“binary”</em>, <em>“abundance”</em>,
+<em>“count”</em>, <em>“ordinal”</em>, <em>“relative”</em>,
+<em>“nonbinary”</em>
+</li>
+<li>add <code>data.type</code>, <code>has.filter.raster</code> and
+<code>biomod2.version</code> slot for <code>BIOMOD.formated.data</code>
+and <code>BIOMOD.formated.data.PA</code> classes</li>
+<li>add <code>.BIOMOD.options.default.correct</code> function (default
+changes and corrections depending on the data type (mainly for
+<code>type</code>, <code>method</code>, <code>family</code> and
+<code>distribution</code> options) to
+<code>BIOMOD.options.dataset</code>)</li>
 </ul>
+</li>
+<li>In <em>biomod2_classes_1</em> file :
+<ul>
+<li>add <code>.BIOMOD.formated.data.check_data</code> function (routine
+that can be applied to both original and evaluation datasets)</li>
+<li>add <code>.plot.BIOMOD.formated.data.abundance</code> function (to
+plot formated data when data type is not binary)</li>
+<li>update <code>BIOMOD.formated.data</code> summary to the different
+data types</li>
+</ul>
+</li>
+<li>In <em>biomod2_classes_3</em> file :
+<ul>
+<li>add <code>data.type</code> slot for <code>BIOMOD.models.out</code>
+class</li>
+<li>add <code>set_new_dirname</code> and
+<code>set_new_dirname.models</code> functions (to recursively modify the
+<code>dir.name</code> slot in all biomod2 objects of an existing
+simulation directory)</li>
+</ul>
+</li>
+<li>In <em>biomod2_classes_4</em> file :
+<ul>
+<li>add <code>model_type</code> and <code>thresholds_ordinal</code> slot
+for <code>biomod2_model</code> class</li>
+<li>update all <code>predict2</code> functions for single models to deal
+with the different data types (mainly between <em>binary</em>,
+<em>ordinal</em> and the others)</li>
+</ul>
+</li>
+<li>In <code>bm_CrossValidation</code> function :
+<ul>
+<li>split <code>.sample_mat</code> function into
+<code>.sample_num</code> and <code>.sample_class</code> functions</li>
+<li>update all functions to deal with the different data types (mainly
+between <em>ordinal</em> and the others)</li>
+</ul>
+</li>
+<li>In <code>bm_FindOptimStat</code> function :
+<ul>
+<li>add new evaluation metrics : <em>“RMSE”</em>, <em>“MAE”</em>,
+<em>“MSE”</em>, <em>“Rsquared”</em>, <em>“Rsquared_aj”</em>,
+<em>“Max_error”</em> (for abundance/count/relative data) and
+<em>“Accuracy”</em>, <em>“Recall”</em>, <em>“Precision”</em>,
+<em>“F1”</em> (for ordinal data)</li>
+<li>add <code>k</code> parameter</li>
+<li>add <code>.contingency_table_ordinal</code> function</li>
+<li>split <code>bm_CalculateStat</code> function into
+<code>bm_CalculateStatBin</code> and <code>bm_CalculateStatAbun</code>
+functions</li>
+</ul>
+</li>
+<li>In <code>bm_VariablesImportance</code> function :
+<ul>
+<li>use <em>Spearman</em> correlation for <em>ordinal</em>,
+<em>Pearson</em> otherwise</li>
+</ul>
+</li>
+<li>Use either <code>on_0_1000</code> or <code>on_1_1000</code> when
+making projections</li>
+<li>Correct and adapt tuning</li>
+<li>Add <code>bm_ModelAnalysis</code> function (<em>to analyse the
+residuals of single models</em>)</li>
+</ul>
+</div>
+<div class="section level5">
+<h5 id="minor-changes">Minor Changes<a class="anchor" aria-label="anchor" href="#minor-changes"></a>
+</h5>
+<ul>
+<li>Update <code>ModelsTable</code> data with <code>nonbinary</code>
+data type</li>
+<li>Update <code>OptionsBigboss</code> data with all <em>nonbinary</em>
+single models options</li>
+<li>Change <code>dir.name</code> slot within
+<code>BIOMOD.formated.data</code> into absolute one instead of relative
+by default</li>
+<li>Change <code>aes_string</code> to [<code>aes</code> +
+<code>.data</code>] in <code>bm_Plot[...]</code> functions</li>
+<li>Add <code>digits</code> and <code>overwrite</code> parameters in
+<code>BIOMOD_Projection</code> function</li>
+<li>Change <code>get_var_type</code> and <code>get_var_range</code> to
+internal functions (<code>.get_var_type</code> and
+<code>.get_var_range</code>) <!-- - Remove `raster` dependency -->
+</li>
+<li>Remove deprecated functions and corresponding documentation</li>
+<li>Add vignette for abundance (<em>to help you navigate through the new
+datatypes available</em>)</li>
+<li>Update examples and documentation</li>
+</ul>
+</div>
+<div class="section level5">
+<h5 id="bugfix">Bugfix<a class="anchor" aria-label="anchor" href="#bugfix"></a>
+</h5>
+<ul>
+<li>Fix stratified cross-validation strategy in
+<code>bm_CrossValidation</code> (partitions not being balanced
+correctly)</li>
+<li>Fix selection of metrics in <code>bm_PlotEvalMean</code>
+</li>
+<li>Fix formula when given by user in <code>bm_Tuning</code> (to be able
+to run the step AIC with the user formula)</li>
+<li>Change <code>scale.models = FALSE</code> by default in
+<code>BIOMOD_Modeling</code> and <code>bm_RunModelsLoop</code>
+</li>
+</ul>
+</div>
+</div>
 </div>
 <div class="section level3">
 <h3 id="section-1">
 <i class="fas fa-pencil-alt"></i> 2024<a class="anchor" aria-label="anchor" href="#section-1"></a>
 </h3>
 <div class="section level5">
-<h5 id="bugfix">Bugfix<a class="anchor" aria-label="anchor" href="#bugfix"></a>
+<h5 id="bugfix-1">Bugfix<a class="anchor" aria-label="anchor" href="#bugfix-1"></a>
 </h5>
 <ul>
 <li>4.2-6-2 :
@@ -208,7 +331,7 @@ the environment.</li>
 <em>“for_all_datasets”</em> in <code>bm_ModelingOptions</code>.</li>
 </ul>
 <div class="section level5">
-<h5 id="bugfix-1">Bugfix<a class="anchor" aria-label="anchor" href="#bugfix-1"></a>
+<h5 id="bugfix-2">Bugfix<a class="anchor" aria-label="anchor" href="#bugfix-2"></a>
 </h5>
 <ul>
 <li>4.2-5-2 :
@@ -238,11 +361,8 @@ in <code>BIOMOD_Projection</code> and
 <div class="section level4">
 <h4 id="modeling-options-and-tuning-2024-05-02">4.2-5 Modeling options and Tuning (2024-05-02)<a class="anchor" aria-label="anchor" href="#modeling-options-and-tuning-2024-05-02"></a>
 </h4>
-<ul>
-<li>Submitted on CRAN</li>
-</ul>
 <div class="section level5">
-<h5 id="major-changes">Major Changes<a class="anchor" aria-label="anchor" href="#major-changes"></a>
+<h5 id="major-changes-1">Major Changes<a class="anchor" aria-label="anchor" href="#major-changes-1"></a>
 </h5>
 <ul>
 <li>Add print function for <code>BIOMOD.options.dataset</code> and
@@ -273,7 +393,7 @@ functions and <code>BIOMOD_Modeling</code>
 </ul>
 </div>
 <div class="section level5">
-<h5 id="minor-changes">Minor Changes<a class="anchor" aria-label="anchor" href="#minor-changes"></a>
+<h5 id="minor-changes-1">Minor Changes<a class="anchor" aria-label="anchor" href="#minor-changes-1"></a>
 </h5>
 <ul>
 <li>Add vignette for cross-validation (<em>to prepare your own
@@ -284,7 +404,7 @@ the new way of parameterizing single models</em>)</li>
 </ul>
 </div>
 <div class="section level5">
-<h5 id="bugfix-2">Bugfix<a class="anchor" aria-label="anchor" href="#bugfix-2"></a>
+<h5 id="bugfix-3">Bugfix<a class="anchor" aria-label="anchor" href="#bugfix-3"></a>
 </h5>
 <ul>
 <li>Add <code>try</code> and error message in call for models in
@@ -308,7 +428,7 @@ the new way of parameterizing single models</em>)</li>
 <h4 id="modeling-options-and-tuning-2023-09-12">4.2-5 Modeling options and Tuning (2023-09-12)<a class="anchor" aria-label="anchor" href="#modeling-options-and-tuning-2023-09-12"></a>
 </h4>
 <div class="section level5">
-<h5 id="major-changes-1">Major Changes<a class="anchor" aria-label="anchor" href="#major-changes-1"></a>
+<h5 id="major-changes-2">Major Changes<a class="anchor" aria-label="anchor" href="#major-changes-2"></a>
 </h5>
 <ul>
 <li>Reformat modeling options, how they are created and how they are
@@ -337,7 +457,7 @@ a more generalized way dealing with new modeling options</li>
 </ul>
 </div>
 <div class="section level5">
-<h5 id="minor-changes-1">Minor Changes<a class="anchor" aria-label="anchor" href="#minor-changes-1"></a>
+<h5 id="minor-changes-2">Minor Changes<a class="anchor" aria-label="anchor" href="#minor-changes-2"></a>
 </h5>
 <ul>
 <li>Remove <code>BIOMOD_PresenceOnly</code> function and add
@@ -353,7 +473,7 @@ yourself before modeling</em>)</li>
 </ul>
 </div>
 <div class="section level5">
-<h5 id="bugfix-3">Bugfix<a class="anchor" aria-label="anchor" href="#bugfix-3"></a>
+<h5 id="bugfix-4">Bugfix<a class="anchor" aria-label="anchor" href="#bugfix-4"></a>
 </h5>
 <ul>
 <li>4.2-4-10 : fixed <code>wrap</code> applied to a
@@ -397,7 +517,7 @@ models merged by algo (for Maxent)</li>
 <h4 id="xgboost-2023-06-21">4.2-4 XGBOOST (2023-06-21)<a class="anchor" aria-label="anchor" href="#xgboost-2023-06-21"></a>
 </h4>
 <div class="section level5">
-<h5 id="major-changes-2">Major Changes<a class="anchor" aria-label="anchor" href="#major-changes-2"></a>
+<h5 id="major-changes-3">Major Changes<a class="anchor" aria-label="anchor" href="#major-changes-3"></a>
 </h5>
 <ul>
 <li>added XGBOOST as a possible algorithm in
@@ -406,7 +526,7 @@ models merged by algo (for Maxent)</li>
 </ul>
 </div>
 <div class="section level5">
-<h5 id="minor-changes-2">Minor Changes<a class="anchor" aria-label="anchor" href="#minor-changes-2"></a>
+<h5 id="minor-changes-3">Minor Changes<a class="anchor" aria-label="anchor" href="#minor-changes-3"></a>
 </h5>
 <ul>
 <li>changed <code>CV.do.full.models</code> default value to
@@ -415,7 +535,7 @@ models merged by algo (for Maxent)</li>
 </ul>
 </div>
 <div class="section level5">
-<h5 id="bugfix-4">Bugfix<a class="anchor" aria-label="anchor" href="#bugfix-4"></a>
+<h5 id="bugfix-5">Bugfix<a class="anchor" aria-label="anchor" href="#bugfix-5"></a>
 </h5>
 <ul>
 <li>4.2-3-5 :
@@ -449,7 +569,7 @@ not in the given PA dataset are now properly transformed into NA)</li>
 <h4 id="cross-validation-and-pseudo-absences-2023-05-09">4.2-3 Cross-Validation and Pseudo-Absences (2023-05-09)<a class="anchor" aria-label="anchor" href="#cross-validation-and-pseudo-absences-2023-05-09"></a>
 </h4>
 <div class="section level5">
-<h5 id="major-changes-3">Major Changes<a class="anchor" aria-label="anchor" href="#major-changes-3"></a>
+<h5 id="major-changes-4">Major Changes<a class="anchor" aria-label="anchor" href="#major-changes-4"></a>
 </h5>
 <ul>
 <li>Improved pseudo-absence management: it is now possible to have
@@ -465,7 +585,7 @@ directly through <code>BIOMOD_Modeling</code>.</li>
 </ul>
 </div>
 <div class="section level5">
-<h5 id="minor-changes-3">Minor Changes<a class="anchor" aria-label="anchor" href="#minor-changes-3"></a>
+<h5 id="minor-changes-4">Minor Changes<a class="anchor" aria-label="anchor" href="#minor-changes-4"></a>
 </h5>
 <ul>
 <li>improved Documentation (<code>get_evaluations</code>,
@@ -492,7 +612,7 @@ models. Default value is now ‘validation’ instead of ‘evaluation’.</li>
 </ul>
 </div>
 <div class="section level5">
-<h5 id="bugfix-5">Bugfix<a class="anchor" aria-label="anchor" href="#bugfix-5"></a>
+<h5 id="bugfix-6">Bugfix<a class="anchor" aria-label="anchor" href="#bugfix-6"></a>
 </h5>
 <ul>
 <li>validation metric calculation now properly use the calibration
@@ -557,7 +677,7 @@ are standardised (no more <code>calibLines</code> or
 <h4 id="improvement-patch-2023-01-13">4.2-2 Improvement patch (2023-01-13)<a class="anchor" aria-label="anchor" href="#improvement-patch-2023-01-13"></a>
 </h4>
 <div class="section level5">
-<h5 id="major-changes-4">Major Changes<a class="anchor" aria-label="anchor" href="#major-changes-4"></a>
+<h5 id="major-changes-5">Major Changes<a class="anchor" aria-label="anchor" href="#major-changes-5"></a>
 </h5>
 <ul>
 <li>
@@ -588,7 +708,7 @@ using <code>get_predictions(x, model.as.col = TRUE)</code>.</li>
 </ul>
 </div>
 <div class="section level5">
-<h5 id="minor-changes-4">Minor Changes<a class="anchor" aria-label="anchor" href="#minor-changes-4"></a>
+<h5 id="minor-changes-5">Minor Changes<a class="anchor" aria-label="anchor" href="#minor-changes-5"></a>
 </h5>
 <ul>
 <li>Simplified maxent model names: ‘MAXENT.Phillips’ -&gt; ‘MAXENT’
@@ -617,7 +737,7 @@ Building all possible ensemble models can now be done with
 </ul>
 </div>
 <div class="section level5">
-<h5 id="bugfix-6">Bugfix<a class="anchor" aria-label="anchor" href="#bugfix-6"></a>
+<h5 id="bugfix-7">Bugfix<a class="anchor" aria-label="anchor" href="#bugfix-7"></a>
 </h5>
 <ul>
 <li>Fixed <code>MAXENT.Phillips.2</code> and single variable
@@ -656,7 +776,7 @@ evaluations.</li>
 <h4 id="bugfix-patch">4.2-1 Bugfix patch<a class="anchor" aria-label="anchor" href="#bugfix-patch"></a>
 </h4>
 <div class="section level5">
-<h5 id="major-changes-5">Major Changes<a class="anchor" aria-label="anchor" href="#major-changes-5"></a>
+<h5 id="major-changes-6">Major Changes<a class="anchor" aria-label="anchor" href="#major-changes-6"></a>
 </h5>
 <ul>
 <li>Package <code>sp</code> is back into <code>Imports</code> due to the
@@ -669,7 +789,7 @@ saved to the disk.</li>
 </ul>
 </div>
 <div class="section level5">
-<h5 id="minor-changes-5">Minor Changes<a class="anchor" aria-label="anchor" href="#minor-changes-5"></a>
+<h5 id="minor-changes-6">Minor Changes<a class="anchor" aria-label="anchor" href="#minor-changes-6"></a>
 </h5>
 <ul>
 <li>Added <code>initial_heap_size</code> and <code>max_heap_size</code>
@@ -679,7 +799,7 @@ in <code>MAXENT.Phillips</code> modeling options</li>
 </ul>
 </div>
 <div class="section level5">
-<h5 id="bugfix-7">Bugfix<a class="anchor" aria-label="anchor" href="#bugfix-7"></a>
+<h5 id="bugfix-8">Bugfix<a class="anchor" aria-label="anchor" href="#bugfix-8"></a>
 </h5>
 <ul>
 <li>Fixed <code>MAXENT.Phillips</code> predict method for large dataset
@@ -728,7 +848,7 @@ dataset</li>
 <h4 id="terra-update">4.2-0 Terra Update<a class="anchor" aria-label="anchor" href="#terra-update"></a>
 </h4>
 <div class="section level5">
-<h5 id="major-changes-6">Major Changes<a class="anchor" aria-label="anchor" href="#major-changes-6"></a>
+<h5 id="major-changes-7">Major Changes<a class="anchor" aria-label="anchor" href="#major-changes-7"></a>
 </h5>
 <ul>
 <li>Package now rely only on <code>terra</code>
@@ -744,7 +864,7 @@ supported.</li>
 </ul>
 </div>
 <div class="section level5">
-<h5 id="minor-changes-6">Minor Changes<a class="anchor" aria-label="anchor" href="#minor-changes-6"></a>
+<h5 id="minor-changes-7">Minor Changes<a class="anchor" aria-label="anchor" href="#minor-changes-7"></a>
 </h5>
 <ul>
 <li>
@@ -775,7 +895,7 @@ future.</li>
 </ul>
 </div>
 <div class="section level5">
-<h5 id="bugfix-8">Bugfix<a class="anchor" aria-label="anchor" href="#bugfix-8"></a>
+<h5 id="bugfix-9">Bugfix<a class="anchor" aria-label="anchor" href="#bugfix-9"></a>
 </h5>
 <ul>
 <li>MAXENT.Phillips models can now properly fail</li>
@@ -845,7 +965,7 @@ CompteurSp that was defined within a function.</li>
 <h4 id="section-4">4.1-3<a class="anchor" aria-label="anchor" href="#section-4"></a>
 </h4>
 <div class="section level5">
-<h5 id="bugfix-9">Bugfix<a class="anchor" aria-label="anchor" href="#bugfix-9"></a>
+<h5 id="bugfix-10">Bugfix<a class="anchor" aria-label="anchor" href="#bugfix-10"></a>
 </h5>
 <ul>
 <li>Ensemble models that fails (e.g. EMcv with only one models) will not
@@ -874,7 +994,7 @@ models.</li>
 <h4 id="section-5">4.1-2 (2022-09-29)<a class="anchor" aria-label="anchor" href="#section-5"></a>
 </h4>
 <div class="section level5">
-<h5 id="major-changes-7">Major changes<a class="anchor" aria-label="anchor" href="#major-changes-7"></a>
+<h5 id="major-changes-8">Major changes<a class="anchor" aria-label="anchor" href="#major-changes-8"></a>
 </h5>
 <ul>
 <li>
@@ -890,7 +1010,7 @@ environmental space supplied.</li>
 </ul>
 </div>
 <div class="section level5">
-<h5 id="minor-changes-7">Minor changes<a class="anchor" aria-label="anchor" href="#minor-changes-7"></a>
+<h5 id="minor-changes-8">Minor changes<a class="anchor" aria-label="anchor" href="#minor-changes-8"></a>
 </h5>
 <ul>
 <li>Individual EM models projected as raster are now saved with

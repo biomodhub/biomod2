@@ -128,10 +128,8 @@ BIOMOD_EnsembleModeling function onto new environmental data
 <span>  models.chosen <span class="op">=</span> <span class="st">"all"</span>,</span>
 <span>  metric.binary <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  metric.filter <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  compress <span class="op">=</span> <span class="cn">TRUE</span>,</span>
-<span>  digits <span class="op">=</span> <span class="fl">0</span>,</span>
-<span>  nb.cpu <span class="op">=</span> <span class="fl">1</span>,</span>
 <span>  na.rm <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  nb.cpu <span class="op">=</span> <span class="fl">1</span>,</span>
 <span>  <span class="va">...</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
@@ -178,51 +176,41 @@ be used to project the ensemble species distribution model(s)</p></dd>
 <dt id="arg-models-chosen">models.chosen<a class="anchor" aria-label="anchor" href="#arg-models-chosen"></a></dt>
 <dd><p>a <code>vector</code> containing model names to be kept, must be either
 <code>all</code> or a sub-selection of model names that can be obtained with the
-<code><a href="getters.out.html">get_built_models</a></code> function</p></dd>
+<code><a href="getters.out.html">get_built_models</a></code> function applied to <code>bm.mod</code></p></dd>
 
 
 <dt id="arg-metric-binary">metric.binary<a class="anchor" aria-label="anchor" href="#arg-metric-binary"></a></dt>
 <dd><p>(<em>optional, default</em> <code>NULL</code>) <br>
 A <code>vector</code> containing evaluation metric names to be used to transform prediction values
 into binary values based on models evaluation scores obtained with the
-<code><a href="BIOMOD_Modeling.html">BIOMOD_Modeling</a></code> function. Must be among <code>all</code> (same evaluation metrics than
-those of <code>modeling.output</code>) or <code>POD</code>, <code>FAR</code>, <code>POFD</code>, <code>SR</code>,
+<code><a href="BIOMOD_EnsembleModeling.html">BIOMOD_EnsembleModeling</a></code> function. Must be among <code>all</code> (same evaluation
+metrics than those of <code>bm.mod</code>) or <code>POD</code>, <code>FAR</code>, <code>POFD</code>, <code>SR</code>,
 <code>ACCURACY</code>, <code>BIAS</code>, <code>ROC</code>, <code>TSS</code>, <code>KAPPA</code>, <code>OR</code>, <code>ORSS</code>,
-<code>CSI</code>, <code>ETS</code>, <code>BOYCE</code>, <code>MPA</code></p></dd>
+<code>CSI</code>, <code>ETS</code>, <code>BOYCE</code>, <code>MPA</code>
+<br><em>Note that this is for binary data only.</em></p></dd>
 
 
 <dt id="arg-metric-filter">metric.filter<a class="anchor" aria-label="anchor" href="#arg-metric-filter"></a></dt>
 <dd><p>(<em>optional, default</em> <code>NULL</code>) <br>
 A <code>vector</code> containing evaluation metric names to be used to transform prediction values
 into filtered values based on models evaluation scores obtained with the
-<code><a href="BIOMOD_Modeling.html">BIOMOD_Modeling</a></code> function. Must be among <code>all</code> (same evaluation metrics than
-those of <code>modeling.output</code>) or <code>POD</code>, <code>FAR</code>, <code>POFD</code>, <code>SR</code>,
+<code><a href="BIOMOD_EnsembleModeling.html">BIOMOD_EnsembleModeling</a></code> function. Must be among <code>all</code> (same evaluation
+metrics than those of <code>bm.mod</code>) or <code>POD</code>, <code>FAR</code>, <code>POFD</code>, <code>SR</code>,
 <code>ACCURACY</code>, <code>BIAS</code>, <code>ROC</code>, <code>TSS</code>, <code>KAPPA</code>, <code>OR</code>, <code>ORSS</code>,
-<code>CSI</code>, <code>ETS</code>, <code>BOYCE</code>, <code>MPA</code></p></dd>
+<code>CSI</code>, <code>ETS</code>, <code>BOYCE</code>, <code>MPA</code>
+<br><em>Note that this is for binary data only.</em></p></dd>
 
 
-<dt id="arg-compress">compress<a class="anchor" aria-label="anchor" href="#arg-compress"></a></dt>
+<dt id="arg-na-rm">na.rm<a class="anchor" aria-label="anchor" href="#arg-na-rm"></a></dt>
 <dd><p>(<em>optional, default</em> <code>TRUE</code>) <br>
-A <code>logical</code> or a <code>character</code> value defining whether and how objects should be
-compressed when saved on hard drive, must be either <code>TRUE</code>, <code>FALSE</code>, <code>xz</code> or
-<code>gzip</code> (see Details)</p></dd>
-
-
-<dt id="arg-digits">digits<a class="anchor" aria-label="anchor" href="#arg-digits"></a></dt>
-<dd><p>(<em>optional, default</em> <code>0</code>) <br>
-A <code>integer</code> value defining the number of digits of the predictions.</p></dd>
+A <code>logical</code> value defining whether ensemble model projection should ignore missing values
+in single model projections or not (<em>ignored by <code>EMwmean</code> algorithm</em>)</p></dd>
 
 
 <dt id="arg-nb-cpu">nb.cpu<a class="anchor" aria-label="anchor" href="#arg-nb-cpu"></a></dt>
 <dd><p>(<em>optional, default</em> <code>1</code>) <br>
 An <code>integer</code> value corresponding to the number of computing resources to be used to
-parallelize the single models computation</p></dd>
-
-
-<dt id="arg-na-rm">na.rm<a class="anchor" aria-label="anchor" href="#arg-na-rm"></a></dt>
-<dd><p>(<em>optional, default</em> <code>TRUE</code>) <br>
-A boolean defining whether Ensemble Model projection should ignore <code>NA</code>
-in Individual Model projection. Argument ignored by EWmean ensemble algorithm.</p></dd>
+parallelize the single models computatio</p></dd>
 
 
 <dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>
@@ -235,32 +223,48 @@ in Individual Model projection. Argument ignored by EWmean ensemble algorithm.</
 outputs. <br> Models projections are stored out of <span style="R">R</span> (for memory storage reasons) in
 <code>proj.name</code> folder created in the current working directory :</p><ol><li><p>the output is a <code>data.frame</code> if <code>new.env</code> is a <code>matrix</code> or a
   <code>data.frame</code></p></li>
-<li><p>it is a <code><a href="https://rspatial.github.io/terra/reference/rast.html" class="external-link">SpatRaster</a></code> if <code>new.env</code>
-  is a <code><a href="https://rspatial.github.io/terra/reference/rast.html" class="external-link">SpatRaster</a></code> (or several
-  <code><a href="https://rspatial.github.io/terra/reference/rast.html" class="external-link">SpatRaster</a></code> objects, if <code>new.env</code> is too large)</p></li>
-<li><p>raw projections, as well as binary and filtered projections (if asked),
-   are saved in the <code>proj.name</code> folder</p></li>
+<li><p>it is a <code><a href="https://rspatial.github.io/terra/reference/rast.html" class="external-link">SpatRaster</a></code> if <code>new.env</code> is a
+  <code><a href="https://rspatial.github.io/terra/reference/rast.html" class="external-link">SpatRaster</a></code> (or several <code><a href="https://rspatial.github.io/terra/reference/rast.html" class="external-link">SpatRaster</a></code>
+  objects, if <code>new.env</code> is too large)</p></li>
+<li><p>raw projections, as well as binary and filtered projections (if asked), are saved in
+  the <code>proj.name</code> folder</p></li>
 </ol></div>
     <div id="details">
     <h2>Details</h2>
-    <p>If <code>models.chosen = 'all'</code>, projections are done for all calibration and pseudo absences
-runs if applicable. <br> These projections may be used later by the
-<code>BIOMOD_EnsembleForecasting</code> function. <br><br></p>
-<p>If <code>build.clamping.mask = TRUE</code>, a raster file will be saved within the projection
-folder. This mask values will correspond to the number of variables in each pixel that are out
-of their calibration / validation range, identifying locations where predictions are uncertain.
-<br><br></p>
-<p><code>...</code> can take the following values :</p><ul><li><p><code>on_0_1000</code> : a <code>logical</code> value defining whether <code>0 - 1</code>
-  probabilities are to be converted to <code>0 - 1000</code> scale to save memory on backup</p></li>
-<li><p><code>do.stack</code> : a <code>logical</code> value defining whether all projections are to be
-  saved as one <code>SpatRaster</code> object or several <code>SpatRaster</code> files (<em>the
-  default if projections are too heavy to be all loaded at once in memory</em>)</p></li>
-<li><p><code>keep.in.memory</code> : a <code>logical</code> value defining whether all projections are
-  to be kept loaded at once in memory, or only links pointing to hard drive are to be returned</p></li>
-<li><p><code>output.format</code> : a <code>character</code> value corresponding to the projections
-  saving format on hard drive, must be either <code>.grd</code>, <code>.img</code>, <code>.tif</code> or <code>.RData</code> (the
-  default if <code>new.env</code> is given as <code>matrix</code> or <code>data.frame</code>)</p></li>
-</ul></div>
+    <p><code>...</code> can take the following values :</p><dl><dt>digits</dt>
+<dd><p>(<em>optional, default</em> <code>0</code>) : <br>
+  an <code>integer</code> value corresponding to the number of digits of the predictions</p></dd>
+
+  <dt>on_0_1000</dt>
+<dd><p>(<em>optional, default</em> <code>TRUE</code>) : <br>
+  a <code>logical</code> value defining whether <code>0 - 1</code> probabilities are to be converted to
+  <code>0 - 1000</code> scale to save memory on backup</p></dd>
+
+  <dt>keep.in.memory</dt>
+<dd><p>(<em>optional, default</em> <code>TRUE</code>) : <br>
+  a <code>logical</code> value defining whether all projections are to be kept loaded at once in
+  memory, or only links pointing to hard drive are to be returned</p></dd>
+
+  <dt>do.stack</dt>
+<dd><p>(<em>optional, default</em> <code>TRUE</code>) : <br>
+  a <code>logical</code> value defining whether all projections are to be saved as one
+  <code><a href="https://rspatial.github.io/terra/reference/rast.html" class="external-link">SpatRaster</a></code> object or several <code><a href="https://rspatial.github.io/terra/reference/rast.html" class="external-link">SpatRaster</a></code>
+  files (<em>the default if projections are too heavy to be all loaded at once in memory</em>)</p></dd>
+
+  <dt>output.format</dt>
+<dd><p>(<em>optional, default</em> <code>.RData</code> or <code>.tif</code>) : <br>
+  a <code>character</code> value corresponding to the projections saving format on hard drive, must
+  be either <code>.grd</code>, <code>.img</code>, <code>.tif</code> or <code>.RData</code> (the default if
+  <code>new.env</code> is given as <code>matrix</code> or <code>data.frame</code>)</p></dd>
+
+  <dt>compress</dt>
+<dd><p>(<em>optional, default</em> <code>TRUE</code>) : <br>
+  a <code>logical</code> or a <code>character</code> value defining whether and how objects should be
+  compressed when saved on hard drive. Must be either <code>TRUE</code>, <code>FALSE</code>, <code>gzip</code>
+  (for Windows OS) or <code>xz</code> (for other OS)</p></dd>
+
+
+</dl></div>
     <div id="see-also">
     <h2>See also</h2>
     <div class="dont-index"><p><code><a href="BIOMOD_FormatingData.html">BIOMOD_FormatingData</a></code>, <code><a href="bm_ModelingOptions.html">bm_ModelingOptions</a></code>,
@@ -313,10 +317,10 @@ of their calibration / validation range, identifying locations where predictions
 <span><span class="op">}</span> <span class="kw">else</span> <span class="op">{</span></span>
 <span></span>
 <span>  <span class="co"># Format Data with true absences</span></span>
-<span>  <span class="va">myBiomodData</span> <span class="op">&lt;-</span> <span class="fu"><a href="BIOMOD_FormatingData.html">BIOMOD_FormatingData</a></span><span class="op">(</span>resp.var <span class="op">=</span> <span class="va">myResp</span>,</span>
-<span>                                       expl.var <span class="op">=</span> <span class="va">myExpl</span>,</span>
+<span>  <span class="va">myBiomodData</span> <span class="op">&lt;-</span> <span class="fu"><a href="BIOMOD_FormatingData.html">BIOMOD_FormatingData</a></span><span class="op">(</span>resp.name <span class="op">=</span> <span class="va">myRespName</span>,</span>
+<span>                                       resp.var <span class="op">=</span> <span class="va">myResp</span>,</span>
 <span>                                       resp.xy <span class="op">=</span> <span class="va">myRespXY</span>,</span>
-<span>                                       resp.name <span class="op">=</span> <span class="va">myRespName</span><span class="op">)</span></span>
+<span>                                       expl.var <span class="op">=</span> <span class="va">myExpl</span><span class="op">)</span></span>
 <span></span>
 <span>  <span class="co"># Model single models</span></span>
 <span>  <span class="va">myBiomodModelOut</span> <span class="op">&lt;-</span> <span class="fu"><a href="BIOMOD_Modeling.html">BIOMOD_Modeling</a></span><span class="op">(</span>bm.format <span class="op">=</span> <span class="va">myBiomodData</span>,</span>
@@ -326,7 +330,7 @@ of their calibration / validation range, identifying locations where predictions
 <span>                                      CV.nb.rep <span class="op">=</span> <span class="fl">2</span>,</span>
 <span>                                      CV.perc <span class="op">=</span> <span class="fl">0.8</span>,</span>
 <span>                                      OPT.strategy <span class="op">=</span> <span class="st">'bigboss'</span>,</span>
-<span>                                      metric.eval <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">'TSS'</span>,<span class="st">'ROC'</span><span class="op">)</span>,</span>
+<span>                                      metric.eval <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">'TSS'</span>, <span class="st">'ROC'</span><span class="op">)</span>,</span>
 <span>                                      var.import <span class="op">=</span> <span class="fl">3</span>,</span>
 <span>                                      seed.val <span class="op">=</span> <span class="fl">42</span><span class="op">)</span></span>
 <span><span class="op">}</span></span>

@@ -18,7 +18,7 @@ select more efficient ones based on an evaluation metric."><!-- mathjax --><scri
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">biomod2</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">4.2-6-2</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">4.3</span>
       </span>
     </div>
 
@@ -226,7 +226,7 @@ optimized parameters</p>
     <h2>Details</h2>
     <p><b>Concerning <code>ctrl.train</code> parameter :</b></p>
 <p>Set by default to : <br></p>
-<p><code>ctrl.train &lt;- caret::trainControl(method = "repeatedcv", repeats = 3, number = 10,</code> <br><code>                                  summaryFunction = caret::twoClassSummary,</code> <br><code>                                  classProbs = TRUE, returnData = FALSE)</code> <br><br></p>
+<p><code>ctrl.train &lt;- caret::trainControl(method = "repeatedcv", repeats = 3, number = 10,</code> <br><code>summaryFunction = caret::twoClassSummary,</code> <br><code>classProbs = TRUE, returnData = FALSE)</code> <br><br></p>
 
 <p><b>Concerning <code>params.train</code> parameter :</b></p>
 <p>All elements of the <code>list</code> must have names matching <code>model.parameter_name</code> format,
@@ -348,10 +348,10 @@ combinations of parameters to be tested.</p>
 <span></span>
 <span><span class="co"># --------------------------------------------------------------- #</span></span>
 <span><span class="co"># Format Data with true absences</span></span>
-<span><span class="va">myBiomodData</span> <span class="op">&lt;-</span> <span class="fu"><a href="BIOMOD_FormatingData.html">BIOMOD_FormatingData</a></span><span class="op">(</span>resp.var <span class="op">=</span> <span class="va">myResp</span>,</span>
-<span>                                     expl.var <span class="op">=</span> <span class="va">myExpl</span>,</span>
+<span><span class="va">myBiomodData</span> <span class="op">&lt;-</span> <span class="fu"><a href="BIOMOD_FormatingData.html">BIOMOD_FormatingData</a></span><span class="op">(</span>resp.name <span class="op">=</span> <span class="va">myRespName</span>,</span>
+<span>                                     resp.var <span class="op">=</span> <span class="va">myResp</span>,</span>
 <span>                                     resp.xy <span class="op">=</span> <span class="va">myRespXY</span>,</span>
-<span>                                     resp.name <span class="op">=</span> <span class="va">myRespName</span><span class="op">)</span></span>
+<span>                                     expl.var <span class="op">=</span> <span class="va">myExpl</span><span class="op">)</span></span>
 <span></span>
 <span></span>
 <span><span class="co"># --------------------------------------------------------------- #</span></span>

@@ -7,15 +7,15 @@
 \usage{
 bm_RunModelsLoop(
   bm.format,
-  weights,
-  calib.lines,
   modeling.id,
   models,
   models.pa,
+  calib.lines,
   bm.options,
   metric.eval,
   var.import,
-  scale.models = TRUE,
+  weights,
+  scale.models = FALSE,
   nb.cpu = 1,
   seed.val = NULL,
   do.progress = TRUE
@@ -26,14 +26,14 @@ bm_RunModel(
   run.name,
   dir.name = ".",
   modeling.id = "",
-  bm.options,
   Data,
-  weights.vec,
+  bm.options,
   calib.lines.vec,
   eval.data = NULL,
   metric.eval = c("ROC", "TSS", "KAPPA"),
   var.import = 0,
-  scale.models = TRUE,
+  weights.vec,
+  scale.models = FALSE,
   nb.cpu = 1,
   seed.val = NULL,
   do.progress = TRUE
@@ -42,13 +42,6 @@ bm_RunModel(
 \arguments{
 \item{bm.format}{a \code{\link{BIOMOD.formated.data}} or \code{\link{BIOMOD.formated.data.PA}} 
 object returned by the \code{\link{BIOMOD_FormatingData}} function}
-
-\item{weights}{a \code{matrix} containing observation weights for each pseudo-absence (or 
-\code{allData}) dataset}
-
-\item{calib.lines}{a \code{matrix} containing calibration / validation lines for each 
-pseudo-absence (or \code{allData}) x repetition (or \code{allRun}) combination that can be 
-obtained with the \code{\link{bm_CrossValidation}} function}
 
 \item{modeling.id}{a \code{character} corresponding to the name (ID) of the simulation set 
 (\emph{a random number by default})}
@@ -61,17 +54,27 @@ obtained with the \code{\link{bm_CrossValidation}} function}
 A \code{list} containing for each model a \code{vector} defining which pseudo-absence datasets 
 are to be used, must be among \code{colnames(bm.format@PA.table)}}
 
+\item{calib.lines}{a \code{matrix} containing calibration / validation lines for each 
+pseudo-absence (or \code{allData}) x repetition (or \code{allRun}) combination that can be 
+obtained with the \code{\link{bm_CrossValidation}} function}
+
 \item{bm.options}{a \code{\link{BIOMOD.models.options}} object returned by the
 \code{\link{bm_ModelingOptions}} function}
 
 \item{metric.eval}{a \code{vector} containing evaluation metric names to be used, must 
 be among \code{ROC}, \code{TSS}, \code{KAPPA}, \code{ACCURACY}, \code{BIAS}, \code{POD}, 
-\code{FAR}, \code{POFD}, \code{SR}, \code{CSI}, \code{ETS}, \code{HK}, \code{HSS}, \code{OR}, 
-\code{ORSS}}
+\code{FAR}, \code{POFD}, \code{SR}, \code{CSI}, \code{ETS}, \code{OR}, \code{ORSS}, 
+\code{BOYCE}, \code{MPA} (\emph{binary data}), 
+\code{RMSE}, \code{MAE}, \code{MSE}, \code{Rsquared}, \code{Rsquared_aj}, \code{Max_error} 
+(\emph{abundance / count / relative data}), 
+\code{Accuracy}, \code{Recall}, \code{Precision}, \code{F1} (\emph{ordinal data})}
 
 \item{var.import}{(\emph{optional, default} \code{NULL}) \cr 
 An \code{integer} corresponding to the number of permutations to be done for each variable to 
 estimate variable importance}
+
+\item{weights}{a \code{matrix} containing observation weights for each pseudo-absence (or 
+\code{allData}) dataset}
 
 \item{scale.models}{(\emph{optional, default} \code{FALSE}) \cr 
 A \code{logical} value defining whether all models predictions should be scaled with a 
@@ -100,15 +103,15 @@ A \code{character} corresponding to the modeling folder}
 \item{Data}{a \code{data.frame} containing observations, coordinates and environmental 
 variables that can be obtained with the \code{get_species_data} function}
 
-\item{weights.vec}{a \code{vector} containing observation weights the concerned pseudo-absence 
-(or \code{allData}) dataset}
-
 \item{calib.lines.vec}{a \code{vector} containing calibration / validation lines for the 
 concerned pseudo-absence (or \code{allData}) x repetition (or \code{allRun}) combination}
 
 \item{eval.data}{(\emph{optional, default} \code{NULL}) \cr
 A \code{data.frame} containing validation observations, coordinates and environmental 
 variables that can be obtained with the \code{get_eval_data} function}
+
+\item{weights.vec}{a \code{vector} containing observation weights the concerned pseudo-absence 
+(or \code{allData}) dataset}
 }
 \value{
 A \code{list} containing for each model a \code{list} containing the following elements :

@@ -140,10 +140,10 @@ metrics (see Details).</p>
 <span>  OPT.user.val <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  OPT.user.base <span class="op">=</span> <span class="st">"bigboss"</span>,</span>
 <span>  OPT.user <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  weights <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  prevalence <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  metric.eval <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"KAPPA"</span>, <span class="st">"TSS"</span>, <span class="st">"ROC"</span><span class="op">)</span>,</span>
 <span>  var.import <span class="op">=</span> <span class="fl">0</span>,</span>
+<span>  weights <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  prevalence <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  scale.models <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  nb.cpu <span class="op">=</span> <span class="fl">1</span>,</span>
 <span>  seed.val <span class="op">=</span> <span class="cn">NULL</span>,</span>
@@ -209,10 +209,10 @@ to how data will be balanced between partitions, must be either <code>presences<
 
 
 <dt id="arg-cv-env-var">CV.env.var<a class="anchor" aria-label="anchor" href="#arg-cv-env-var"></a></dt>
-<dd><p>(<em>optional</em>) <br> If <code>strategy = 'env'</code>, a <code>character</code>
-corresponding to the environmental variables used to build the partition. <code>k</code> partitions
-will be built for each environmental variables. By default the function uses all
-environmental variables available.</p></dd>
+<dd><p>(<em>optional, default</em> <code>NULL</code>) <br>
+If <code>strategy = 'env'</code>, a <code>character</code> corresponding to the environmental variables
+used to build the partition (all available variables by default), and for which <code>CV.k</code>
+partitions will be built</p></dd>
 
 
 <dt id="arg-cv-strat">CV.strat<a class="anchor" aria-label="anchor" href="#arg-cv-strat"></a></dt>
@@ -257,6 +257,22 @@ A <code><a href="BIOMOD.models.options.html">BIOMOD.models.options</a></code> ob
 function</p></dd>
 
 
+<dt id="arg-metric-eval">metric.eval<a class="anchor" aria-label="anchor" href="#arg-metric-eval"></a></dt>
+<dd><p>a <code>vector</code> containing evaluation metric names to be used, must
+be among <code>ROC</code>, <code>TSS</code>, <code>KAPPA</code>, <code>ACCURACY</code>, <code>BIAS</code>, <code>POD</code>,
+<code>FAR</code>, <code>POFD</code>, <code>SR</code>, <code>CSI</code>, <code>ETS</code>, <code>OR</code>, <code>ORSS</code>,
+<code>BOYCE</code>, <code>MPA</code> (<em>binary data</em>),
+<code>RMSE</code>, <code>MAE</code>, <code>MSE</code>, <code>Rsquared</code>, <code>Rsquared_aj</code>, <code>Max_error</code>
+(<em>abundance / count / relative data</em>),
+<code>Accuracy</code>, <code>Recall</code>, <code>Precision</code>, <code>F1</code> (<em>ordinal data</em>)</p></dd>
+
+
+<dt id="arg-var-import">var.import<a class="anchor" aria-label="anchor" href="#arg-var-import"></a></dt>
+<dd><p>(<em>optional, default</em> <code>NULL</code>) <br>
+An <code>integer</code> corresponding to the number of permutations to be done for each variable to
+estimate variable importance</p></dd>
+
+
 <dt id="arg-weights">weights<a class="anchor" aria-label="anchor" href="#arg-weights"></a></dt>
 <dd><p>(<em>optional, default</em> <code>NULL</code>) <br>
 A <code>vector</code> of <code>numeric</code> values corresponding to observation weights (one per
@@ -264,23 +280,9 @@ observation, see Details)</p></dd>
 
 
 <dt id="arg-prevalence">prevalence<a class="anchor" aria-label="anchor" href="#arg-prevalence"></a></dt>
-<dd><p>(<em>optional, default</em> <code>NULL</code>) <br>
+<dd><p>(<em>optional, default</em> <code>0.5</code>) <br>
 A <code>numeric</code> between <code>0</code> and <code>1</code> corresponding to the species prevalence to
 build '<em>weighted response weights</em>' (see Details)</p></dd>
-
-
-<dt id="arg-metric-eval">metric.eval<a class="anchor" aria-label="anchor" href="#arg-metric-eval"></a></dt>
-<dd><p>a <code>vector</code> containing evaluation metric names to be used, must
-be among <code>ROC</code>, <code>TSS</code>, <code>KAPPA</code>, <code>ACCURACY</code>, <code>BIAS</code>, <code>POD</code>,
-<code>FAR</code>, <code>POFD</code>, <code>SR</code>, <code>CSI</code>, <code>ETS</code>, <code>OR</code>,
-<code>ORSS</code>, <code>BOYCE</code>, <code>MPA</code>, <code>RMSE</code>, <code>MAE</code>, <code>MSE</code>, <code>Rsquared</code>, <code>Rsquared_aj</code>,
-<code>Max_error</code>, <code>Accuracy</code>, <code>"Recall"</code>, <code>"Precision"</code>, <code>"F1"</code></p></dd>
-
-
-<dt id="arg-var-import">var.import<a class="anchor" aria-label="anchor" href="#arg-var-import"></a></dt>
-<dd><p>(<em>optional, default</em> <code>NULL</code>) <br>
-An <code>integer</code> corresponding to the number of permutations to be done for each variable to
-estimate variable importance</p></dd>
 
 
 <dt id="arg-scale-models">scale.models<a class="anchor" aria-label="anchor" href="#arg-scale-models"></a></dt>
@@ -335,7 +337,7 @@ created in the current working directory :</p><ol><li><p>a <em>models</em> folde
 <li><p><code>FDA</code> : Flexible Discriminant Analysis (<code><a href="https://rdrr.io/pkg/mda/man/fda.html" class="external-link">fda</a></code>)</p></li>
 <li><p><code>GAM</code> : Generalized Additive Model (<code><a href="https://rdrr.io/pkg/gam/man/gam.html" class="external-link">gam</a></code>, <code><a href="https://rdrr.io/pkg/mgcv/man/gam.html" class="external-link">gam</a></code>
     or <code><a href="https://rdrr.io/pkg/mgcv/man/bam.html" class="external-link">bam</a></code>) <br>
-    (see <code><a href="bm_ModelingOptions.html">bm_ModelingOptions</a> for details on algorithm selection</code>)</p></li>
+    (see <code><a href="bm_ModelingOptions.html">bm_ModelingOptions</a></code> for details on algorithm selection)</p></li>
 <li><p><code>GBM</code> : Generalized Boosting Model, or usually called Boosted Regression Trees
     (<code><a href="https://rdrr.io/pkg/gbm/man/gbm.html" class="external-link">gbm</a></code>)</p></li>
 <li><p><code>GLM</code> : Generalized Linear Model (<code><a href="https://rdrr.io/r/stats/glm.html" class="external-link">glm</a></code>)</p></li>
@@ -347,8 +349,7 @@ created in the current working directory :</p><ol><li><p>a <em>models</em> folde
 <li><p><code>RFd</code> : Random Forest downsampled (<code><a href="https://rdrr.io/pkg/randomForest/man/randomForest.html" class="external-link">randomForest</a></code>)</p></li>
 <li><p><code>SRE</code> : Surface Range Envelop or usually called BIOCLIM (<code><a href="bm_SRE.html">bm_SRE</a></code>)</p></li>
 <li><p><code>XGBOOST</code> : eXtreme Gradient Boosting Training (<code><a href="https://rdrr.io/pkg/xgboost/man/xgb.train.html" class="external-link">xgboost</a></code>)</p></li>
-</ul><p>For abundance/count/relative data, you can use the models : CTA, GAM, GBM, GLM, MARS, RF and XGBOOST.
-  For ordinal data, you can use the models : CTA, FDA, GAM, GLM, MARS, RF and XGBOOST.</p></dd>
+</ul><p></p><table class="table table"><tr><td></td><td><strong>ANN</strong></td><td><strong>CTA</strong></td><td><strong>FDA</strong></td><td><strong>GAM</strong></td><td><strong>GBM</strong></td><td><strong>GLM</strong></td><td><strong>MARS</strong></td><td><strong>MAXENT</strong></td><td><strong>MAXNET</strong></td><td><strong>RF</strong></td><td><strong>RFd</strong></td><td><strong>SRE</strong></td><td><strong>XGBOOST</strong></td></tr><tr><td>binary</td><td>x</td><td>x</td><td>x</td><td>x</td><td>x</td><td>x</td><td>x</td><td>x</td><td>x</td><td>x</td><td>x</td><td>x</td><td>x</td></tr><tr><td>ordinal</td><td></td><td>x</td><td>x</td><td>x</td><td></td><td>x</td><td>x</td><td></td><td></td><td>x</td><td></td><td></td><td>x</td></tr><tr><td>abundance / count / relative</td><td></td><td>x</td><td></td><td>x</td><td>x</td><td>x</td><td>x</td><td></td><td></td><td>x</td><td></td><td></td><td>x</td></tr></table><p></p></dd>
 
 
   <dt>models.pa</dt>
@@ -378,26 +379,13 @@ created in the current working directory :</p><ol><li><p>a <em>models</em> folde
 </ul><p></p></dd>
 
 
-  <dt>weights &amp; prevalence</dt>
-<dd><p>More or less weight can be given to some specific observations.</p><ul><li><p>If <code>weights = prevalence = NULL</code>, each observation (presence or absence) will
-    have the same weight, no matter the total number of presences and absences.</p></li>
-<li><p>If <code>prevalence = 0.5</code>, presences and absences will be weighted equally
-    (<em>i.e. the weighted sum of presences equals the weighted sum of absences</em>).</p></li>
-<li><p>If <code>prevalence</code> is set below (<em>above</em>) <code>0.5</code>, more weight will be
-    given to absences (<em>presences</em>).</p></li>
-<li><p>If <code>weights</code> is defined, <code>prevalence</code> argument will be ignored, and each
-    observation will have its own weight.</p></li>
-<li><p>If pseudo-absences have been generated (<code>PA.nb.rep &gt; 0</code> in
-    <code><a href="BIOMOD_FormatingData.html">BIOMOD_FormatingData</a></code>), weights are by default calculated such that
-    <code>prevalence = 0.5</code>. <em>Automatically created <code>weights</code> will be <code>integer</code>
-    values to prevent some modeling issues.</em></p></li>
-<li><p><em>NOTE THAT <code>MAXENT</code>, <code>MAXNET</code>, <code>RF</code>, <code>RFd</code> and <code>SRE</code>
-    models do not take weights into account.</em></p></li>
-</ul></dd>
-
-
   <dt>metric.eval</dt>
-<dd><p></p><dl><dt>simple</dt>
+<dd><p><em>Please refer to
+  <a href="https://www.cawcr.gov.au/projects/verification/" class="external-link">CAWRC website ("Methods for
+  dichotomous forecasts")</a> to get detailed description (simple/complex metrics).</em> <br>
+  Several evaluation metrics can be selected. <br>
+  Optimal value of each method can be obtained with the <code><a href="bm_FindOptimStat.html">get_optim_value</a></code>
+  function.</p><dl><dt>simple</dt>
 <dd><p></p><ul><li><p><code>POD</code> : Probability of detection (hit rate)</p></li>
 <li><p><code>FAR</code> : False alarm ratio</p></li>
 <li><p><code>POFD</code> : Probability of false detection (fall-out)</p></li>
@@ -423,16 +411,16 @@ created in the current working directory :</p><ol><li><p>a <em>models</em> folde
       presences)</p></li>
 </ul><p></p></dd>
 
-    <dt>For abundance/count/relative data</dt>
+    <dt>abundance / count / relative data</dt>
 <dd><p></p><ul><li><p><code>RMSE</code> : Root Mean Square Error</p></li>
 <li><p><code>MSE</code> : Mean Square Error</p></li>
 <li><p><code>MAE</code> : Mean Absolute Error</p></li>
-<li><p><code>Rsquared</code> : R square</p></li>
-<li><p><code>Rsquared_aj</code> : R square adjusted</p></li>
+<li><p><code>Rsquared</code> : R squared</p></li>
+<li><p><code>Rsquared_aj</code> : R squared adjusted</p></li>
 <li><p><code>Max_error</code> : Maximum error</p></li>
 </ul><p></p></dd>
 
-    <dt>For ordinal data</dt>
+    <dt>ordinal data</dt>
 <dd><p></p><ul><li><p><code>Accuracy</code> : Accuracy</p></li>
 <li><p><code>Recall</code> : Macro average Recall</p></li>
 <li><p><code>Precision</code> : Macro average Precision</p></li>
@@ -440,15 +428,11 @@ created in the current working directory :</p><ol><li><p>a <em>models</em> folde
 </ul><p></p></dd>
 
 
-</dl><p>Optimal value of each method can be obtained with the <code><a href="bm_FindOptimStat.html">get_optim_value</a></code>
-  function. Several evaluation metrics can be selected. <em>Please refer to the
-  <a href="https://www.cawcr.gov.au/projects/verification/" class="external-link">CAWRC website (section "Methods for
-  dichotomous forecasts")</a> to get detailed description of each metric.</em>
-  Results after modeling can be obtained through the <code><a href="getters.out.html">get_evaluations</a></code> function. <br>
+</dl><p>Results after modeling can be obtained through the <code><a href="getters.out.html">get_evaluations</a></code> function. <br>
   Evaluation metric are calculated on the calibrating data (column <code>calibration</code>), on
   the cross-validation data (column <code>validation</code>) or on the evaluation data
-  (column <code>evaluation</code>). <br><em>For cross-validation data, see <code>CV.[...]</code>
-  parameters in <code>BIOMOD_Modeling</code> function ; for evaluation data, see
+  (column <code>evaluation</code>). <br><em>For cross-validation data, see <code>CV.[...]</code> parameters in
+  <code>BIOMOD_Modeling</code> function. <br> For evaluation data, see
   <code>eval.[...]</code> parameters in <code><a href="BIOMOD_FormatingData.html">BIOMOD_FormatingData</a></code>.</em></p></dd>
 
 
@@ -458,14 +442,28 @@ created in the current working directory :</p><ol><li><p>a <em>models</em> folde
   correlation between original and shuffled variables (see <code><a href="bm_VariablesImportance.html">bm_VariablesImportance</a></code>).</p></dd>
 
 
+  <dt>weights &amp; prevalence</dt>
+<dd><p>More or less weight can be given to some specific observations. <br> Automatically created
+  <code>weights</code> will be <code>integer</code> values to prevent some modeling issues. <br><em>Note that <code>MAXENT</code>, <code>MAXNET</code>, <code>RF</code>, <code>RFd</code> and <code>SRE</code> models
+  do not take weights into account.</em></p><ul><li><p>If <code>weights = prevalence = NULL</code>, each observation (presence or absence) will
+    have the same weight, no matter the total number of presences and absences.</p></li>
+<li><p>If <code>prevalence = 0.5</code>, presences and absences will be weighted equally
+    (<em>i.e. the weighted sum of presences equals the weighted sum of absences</em>).</p></li>
+<li><p>If <code>prevalence</code> is set below (<em>above</em>) <code>0.5</code>, more weight will be
+    given to absences (<em>presences</em>).</p></li>
+<li><p>If <code>weights</code> is defined, <code>prevalence</code> argument will be ignored
+    (<em>EXCEPT for <code>MAXENT</code></em>).</p></li>
+<li><p>If pseudo-absences have been generated (<code>PA.nb.rep &gt; 0</code> in
+    <code><a href="BIOMOD_FormatingData.html">BIOMOD_FormatingData</a></code>), weights are by default calculated such that
+    <code>prevalence = 0.5</code>. ##TODO C'EST FAUX</p></li>
+</ul></dd>
+
+
   <dt>scale.models</dt>
-<dd><p><b>This parameter is quite experimental and it is recommended
-  not to use it. It may lead to reduction in projection scale amplitude.</b> Some categorical
-  models always have to be scaled (<code>FDA</code>, <code>ANN</code>), but it may be interesting to
-  scale all computed models to ensure comparable predictions (<code>0-1000</code> range). It might
-  be particularly useful when doing ensemble forecasting to remove the scale prediction effect
-  (<em>the more extended projections are, the more they influence ensemble forecasting
-  results</em>).</p></dd>
+<dd><p>A binomial GLM is created to scale predictions from 0 to 1. <br><code>SRE</code> is never scaled, and <code>ANN</code> and <code>FDA</code> categorical models always are. <br><em>Note that it may lead to reduction in projected scale amplitude.</em> <br><b>This parameter is quite experimental and it is recommended not to use it.</b> It was
+  developed in the idea to ensure comparable predictions by removing the scale prediction
+  effect (<em>the more extended projections are, the more they influence ensemble
+  forecasting results</em>).</p></dd>
 
 
 </dl></div>
@@ -524,10 +522,10 @@ created in the current working directory :</p><ol><li><p>a <em>models</em> folde
 <span></span>
 <span><span class="co"># ---------------------------------------------------------------------------- #</span></span>
 <span><span class="co"># Format Data with true absences</span></span>
-<span><span class="va">myBiomodData</span> <span class="op">&lt;-</span> <span class="fu"><a href="BIOMOD_FormatingData.html">BIOMOD_FormatingData</a></span><span class="op">(</span>resp.var <span class="op">=</span> <span class="va">myResp</span>,</span>
-<span>                                     expl.var <span class="op">=</span> <span class="va">myExpl</span>,</span>
+<span><span class="va">myBiomodData</span> <span class="op">&lt;-</span> <span class="fu"><a href="BIOMOD_FormatingData.html">BIOMOD_FormatingData</a></span><span class="op">(</span>resp.name <span class="op">=</span> <span class="va">myRespName</span>,</span>
+<span>                                     resp.var <span class="op">=</span> <span class="va">myResp</span>,</span>
 <span>                                     resp.xy <span class="op">=</span> <span class="va">myRespXY</span>,</span>
-<span>                                     resp.name <span class="op">=</span> <span class="va">myRespName</span><span class="op">)</span></span>
+<span>                                     expl.var <span class="op">=</span> <span class="va">myExpl</span><span class="op">)</span></span>
 <span></span>
 <span></span>
 <span><span class="co"># ---------------------------------------------------------------------------- #</span></span>

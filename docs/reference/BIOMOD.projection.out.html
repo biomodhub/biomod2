@@ -305,10 +305,10 @@ not</p></dd>
 <span><span class="op">}</span> <span class="kw">else</span> <span class="op">{</span></span>
 <span></span>
 <span>  <span class="co"># Format Data with true absences</span></span>
-<span>  <span class="va">myBiomodData</span> <span class="op">&lt;-</span> <span class="fu"><a href="BIOMOD_FormatingData.html">BIOMOD_FormatingData</a></span><span class="op">(</span>resp.var <span class="op">=</span> <span class="va">myResp</span>,</span>
-<span>                                       expl.var <span class="op">=</span> <span class="va">myExpl</span>,</span>
+<span>  <span class="va">myBiomodData</span> <span class="op">&lt;-</span> <span class="fu"><a href="BIOMOD_FormatingData.html">BIOMOD_FormatingData</a></span><span class="op">(</span>resp.name <span class="op">=</span> <span class="va">myRespName</span>,</span>
+<span>                                       resp.var <span class="op">=</span> <span class="va">myResp</span>,</span>
 <span>                                       resp.xy <span class="op">=</span> <span class="va">myRespXY</span>,</span>
-<span>                                       resp.name <span class="op">=</span> <span class="va">myRespName</span><span class="op">)</span></span>
+<span>                                       expl.var <span class="op">=</span> <span class="va">myExpl</span><span class="op">)</span></span>
 <span></span>
 <span>  <span class="co"># Model single models</span></span>
 <span>  <span class="va">myBiomodModelOut</span> <span class="op">&lt;-</span> <span class="fu"><a href="BIOMOD_Modeling.html">BIOMOD_Modeling</a></span><span class="op">(</span>bm.format <span class="op">=</span> <span class="va">myBiomodData</span>,</span>
@@ -318,7 +318,7 @@ not</p></dd>
 <span>                                      CV.nb.rep <span class="op">=</span> <span class="fl">2</span>,</span>
 <span>                                      CV.perc <span class="op">=</span> <span class="fl">0.8</span>,</span>
 <span>                                      OPT.strategy <span class="op">=</span> <span class="st">'bigboss'</span>,</span>
-<span>                                      metric.eval <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">'TSS'</span>,<span class="st">'ROC'</span><span class="op">)</span>,</span>
+<span>                                      metric.eval <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">'TSS'</span>, <span class="st">'ROC'</span><span class="op">)</span>,</span>
 <span>                                      var.import <span class="op">=</span> <span class="fl">3</span>,</span>
 <span>                                      seed.val <span class="op">=</span> <span class="fl">42</span><span class="op">)</span></span>
 <span><span class="op">}</span></span>

@@ -23,7 +23,7 @@ bm_BinaryTransformation(data, threshold, do.filtering = FALSE)
 \code{\link[terra:rast]{SpatRaster}} containing the data to be converted}
 
 \item{threshold}{a \code{numeric} or a \code{vector} of \code{numeric} corresponding to 
-the threshold used to convert the given data}
+the threshold used to convert the given data (see Details)}
 
 \item{do.filtering}{(\emph{optional, default} \code{FALSE}) \cr 
 A \code{logical} value defining whether filtered data should be returned, or binary one 

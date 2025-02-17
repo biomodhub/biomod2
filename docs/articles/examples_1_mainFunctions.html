@@ -12,14 +12,13 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/v4-shims.min.css" integrity="sha256-wZjR52fzng1pJHwx4aV2AO3yyTOXrcDW7jBpJtTwVxw=" crossorigin="anonymous">
 <!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><!-- headroom.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/headroom.min.js" integrity="sha256-AsUX4SJE1+yuDu5+mAVzJbuYNPHj/WroHuZ8Ir/CkE0=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script><!-- pkgdown --><link href="../pkgdown.css" rel="stylesheet">
 <script src="../pkgdown.js"></script><meta property="og:title" content="Main functions">
-<meta property="og:description" content="biomod2">
 <!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js" integrity="sha256-nvJJv9wWKEm88qvoQl9ekL2J+k/RWIsaSScxxlsrv8k=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/config/TeX-AMS-MML_HTMLorMML.js" integrity="sha256-84DKXVJXs0/F8OTMzX4UR909+jtl4G7SPypPavF+GfA=" crossorigin="anonymous"></script><!--[if lt IE 9]>
 <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
 <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
 <![endif]-->
 </head>
 <body data-spy="scroll" data-target="#toc">
-    
+
 
     <div class="container template-article">
       <header><div class="navbar navbar-default navbar-fixed-top" role="navigation">
@@ -33,7 +32,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">biomod2</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">4.2-7</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">4.3</span>
       </span>
     </div>
 
@@ -42,29 +41,29 @@
 <li>
   <a href="../index.html">
     <span class="fa fa-home fa-lg"></span>
-     
+
   </a>
 </li>
 <li>
   <a href="../articles/vignette_videos.html">
     <span class="fas fa-video"></span>
-     
+
     Videos
   </a>
 </li>
 <li>
   <a href="../articles/vignette_presentation.html">
     <span class="fas fa-graduation-cap"></span>
-     
+
     Presentation
   </a>
 </li>
 <li class="dropdown">
   <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     <span class="fas fa-stethoscope"></span>
-     
+
     Examples
-     
+
     <span class="caret"></span>
   </a>
   <ul class="dropdown-menu" role="menu">
@@ -91,12 +90,15 @@
     <li>
       <a href="../articles/vignette_variability.html">Variability in results</a>
     </li>
+    <li>
+      <a href="../articles/vignette_Abundance.html">Abundance modelling</a>
+    </li>
   </ul>
 </li>
 <li>
   <a href="../reference/index.html">
     <span class="fa fa-book fa-lg"></span>
-     
+
     Reference
   </a>
 </li>
@@ -105,14 +107,14 @@
 <li>
   <a href="../articles/news.html">
     <span class="fas fa-newspaper"></span>
-     
+
     News
   </a>
 </li>
 <li>
   <a href="https://github.com/biomodhub/biomod2.git" class="external-link">
     <span class="fa fa-github fa-lg"></span>
-     
+
   </a>
 </li>
       </ul>
@@ -123,7 +125,7 @@
 </div>
 <!--/.navbar -->
 
-      
+
 
       </header><div class="row">
   <div class="col-md-9 contents">
@@ -199,7 +201,7 @@ parameters<a class="anchor" aria-label="anchor" href="#prepare-data-parameters">
 </h4>
 <p>Single or multiple set of pseudo-absences can be selected with the <a href="../reference/BIOMOD_FormatingData.html"><code>BIOMOD_FormatingData</code></a>
 function, which calls the <a href="../reference/bm_PseudoAbsences.html"><code>bm_PseudoAbsences</code></a>
-function to do so. More examples are presented on the <a href="examples_2_secundaryFunctions.html">Secundary functions
+function to do so. More examples are presented on the <a href="examples_2_secundaryFunctions.html">Secondary functions
 webpage</a>.</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># # Transform true absences into potential pseudo-absences</span></span>
@@ -241,7 +243,7 @@ webpage</a>.</p>
 <p>Several cross-validation methods are available and can be selected
 with the <a href="../reference/BIOMOD_Modeling.html"><code>BIOMOD_Modeling</code></a>
 function, which calls the <a href="../reference/bm_CrossValidation.html"><code>bm_CrossValidation</code></a>
-function to do so. More examples are presented on the <a href="examples_2_secundaryFunctions.html">Secundary functions
+function to do so. More examples are presented on the <a href="examples_2_secundaryFunctions.html">Secondary functions
 webpage</a>.</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># # k-fold selection</span></span>
@@ -269,7 +271,7 @@ within the <a href="../reference/BIOMOD_Modeling.html"><code>BIOMOD_Modeling</co
 function, which calls the <a href="../reference/bm_ModelingOptions.html"><code>bm_ModelingOptions</code></a>
 function to do so. Model parameters can also be automatically tuned to a
 specific dataset, by calling the <a href="../reference/bm_Tuning.html"><code>bm_Tuning</code></a> function,
-however it can be quite long. More examples are presented on the <a href="examples_2_secundaryFunctions.html">Secundary functions
+however it can be quite long. More examples are presented on the <a href="examples_2_secundaryFunctions.html">Secondary functions
 webpage</a>.</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># # bigboss parameters</span></span>
@@ -289,8 +291,8 @@ webpage</a>.</p>
 </div>
 </div>
 <div class="section level3">
-<h3 id="run-modelisation">
-<i class="fa-solid fa-gear"></i> Run modelisation<a class="anchor" aria-label="anchor" href="#run-modelisation"></a>
+<h3 id="run-modeling">
+<i class="fa-solid fa-gear"></i> Run modeling<a class="anchor" aria-label="anchor" href="#run-modeling"></a>
 </h3>
 <div class="section level4">
 <h4 id="single-models">
@@ -463,9 +465,7 @@ webpage</a>.</p>
 
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
 
-        <nav id="toc" data-toggle="toc"><h2 data-toc-skip>Contents</h2>
-    </nav>
-</div>
+      </div>
 
 </div>
 
@@ -478,16 +478,16 @@ webpage</a>.</p>
 
 <div class="pkgdown">
   <p></p>
-<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.9.</p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.1.</p>
 </div>
 
       </footer>
 </div>
 
-  
 
 
-  
+
+
 
   </body>
 </html>

@@ -90,8 +90,8 @@ select more efficient ones based on an evaluation metric.
 Set by default to : \cr
 
 \code{ctrl.train <- caret::trainControl(method = "repeatedcv", repeats = 3, number = 10,} \cr
-\code{                                  summaryFunction = caret::twoClassSummary,} \cr
-\code{                                  classProbs = TRUE, returnData = FALSE)} \cr \cr
+\code{summaryFunction = caret::twoClassSummary,} \cr
+\code{classProbs = TRUE, returnData = FALSE)} \cr \cr
 
 
 \bold{Concerning \code{params.train} parameter :}
@@ -168,10 +168,10 @@ myExpl <- terra::crop(myExpl, myExtent)
 
 # --------------------------------------------------------------- #
 # Format Data with true absences
-myBiomodData <- BIOMOD_FormatingData(resp.var = myResp,
-                                     expl.var = myExpl,
+myBiomodData <- BIOMOD_FormatingData(resp.name = myRespName,
+                                     resp.var = myResp,
                                      resp.xy = myRespXY,
-                                     resp.name = myRespName)
+                                     expl.var = myExpl)
 
 
 # --------------------------------------------------------------- #

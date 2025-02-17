@@ -147,7 +147,8 @@ object that can be obtained with the <code><a href="BIOMOD_Modeling.html">BIOMOD
 
 <dt id="arg-metric-eval">metric.eval<a class="anchor" aria-label="anchor" href="#arg-metric-eval"></a></dt>
 <dd><p>a 2-length <code>vector</code> containing evaluation metric names to be used, must
-be among the metrics use for <code>bm.out</code></p></dd>
+be among the metrics used for <code>bm.out</code> and that can be obtained with the
+<code><a href="getters.out.html">get_evaluations</a></code> function applied to <code>bm.out</code></p></dd>
 
 
 <dt id="arg-dataset">dataset<a class="anchor" aria-label="anchor" href="#arg-dataset"></a></dt>
@@ -253,10 +254,10 @@ evaluation methods.</p>
 <span><span class="op">}</span> <span class="kw">else</span> <span class="op">{</span></span>
 <span></span>
 <span>  <span class="co"># Format Data with true absences</span></span>
-<span>  <span class="va">myBiomodData</span> <span class="op">&lt;-</span> <span class="fu"><a href="BIOMOD_FormatingData.html">BIOMOD_FormatingData</a></span><span class="op">(</span>resp.var <span class="op">=</span> <span class="va">myResp</span>,</span>
-<span>                                       expl.var <span class="op">=</span> <span class="va">myExpl</span>,</span>
+<span>  <span class="va">myBiomodData</span> <span class="op">&lt;-</span> <span class="fu"><a href="BIOMOD_FormatingData.html">BIOMOD_FormatingData</a></span><span class="op">(</span>resp.name <span class="op">=</span> <span class="va">myRespName</span>,</span>
+<span>                                       resp.var <span class="op">=</span> <span class="va">myResp</span>,</span>
 <span>                                       resp.xy <span class="op">=</span> <span class="va">myRespXY</span>,</span>
-<span>                                       resp.name <span class="op">=</span> <span class="va">myRespName</span><span class="op">)</span></span>
+<span>                                       expl.var <span class="op">=</span> <span class="va">myExpl</span><span class="op">)</span></span>
 <span></span>
 <span>  <span class="co"># Model single models</span></span>
 <span>  <span class="va">myBiomodModelOut</span> <span class="op">&lt;-</span> <span class="fu"><a href="BIOMOD_Modeling.html">BIOMOD_Modeling</a></span><span class="op">(</span>bm.format <span class="op">=</span> <span class="va">myBiomodData</span>,</span>
@@ -266,7 +267,7 @@ evaluation methods.</p>
 <span>                                      CV.nb.rep <span class="op">=</span> <span class="fl">2</span>,</span>
 <span>                                      CV.perc <span class="op">=</span> <span class="fl">0.8</span>,</span>
 <span>                                      OPT.strategy <span class="op">=</span> <span class="st">'bigboss'</span>,</span>
-<span>                                      metric.eval <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">'TSS'</span>,<span class="st">'ROC'</span><span class="op">)</span>,</span>
+<span>                                      metric.eval <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">'TSS'</span>, <span class="st">'ROC'</span><span class="op">)</span>,</span>
 <span>                                      var.import <span class="op">=</span> <span class="fl">3</span>,</span>
 <span>                                      seed.val <span class="op">=</span> <span class="fl">42</span><span class="op">)</span></span>
 <span><span class="op">}</span></span>

@@ -89,7 +89,9 @@ must be among \code{random}, \code{sre}, \code{disk} or \code{user.defined}}
 \item{nb.absences}{(\emph{optional, default} \code{NULL}) \cr
 If \code{strategy = 'random'} or \code{strategy = 'sre'} or \code{strategy = 'disk'}, an 
 \code{integer} corresponding to the number of pseudo-absence points that will be selected for 
-each pseudo-absence repetition (true absences included)}
+each pseudo-absence repetition (true absences included). \cr
+It can also be a \code{vector} of the same length as \code{nb.rep} containing \code{integer} 
+values corresponding to the different numbers of pseudo-absences to be selected (see Details)}
 
 \item{sre.quant}{(\emph{optional, default} \code{0}) \cr
 If \code{strategy = 'sre'}, a \code{numeric} between \code{0} and \code{0.5} defining the 
@@ -106,8 +108,8 @@ used to make the \code{disk} pseudo-absence selection (in the same projection sy
 \code{expl.var})}
 
 \item{fact.aggr}{(\emph{optional, default} \code{NULL}) \cr
-If \code{strategy = 'random'} or \code{strategy = 'disk'}, a \code{integer} defining the 
-factor of aggregation to reduce the resolution}
+If \code{strategy = 'random'} or \code{strategy = 'disk'}, an \code{integer} defining the 
+factor of aggregation to reduce the spatial resolution of the environmental variables}
 
 \item{user.table}{(\emph{optional, default} \code{NULL}) \cr
 If \code{strategy = 'user.defined'}, a \code{matrix} or \code{data.frame} with as many rows as 
@@ -118,8 +120,8 @@ model(s) for each repetition}
 \item{seed.val}{(\emph{optional, default} \code{NULL}) \cr 
 An \code{integer} value corresponding to the new seed value to be set}
 
-\item{\ldots}{(\emph{optional, one or several of the above arguments depending on the selected 
-method})}
+\item{\ldots}{(\emph{optional, one or several of the listed above arguments depending on the 
+selected method})}
 }
 \value{
 A \code{list} containing the following elements :
@@ -158,7 +160,13 @@ been sampled. \cr \cr
 
 The user can provide pseudo-absences locations through a table containing spatial locations 
 in rows, pseudo-absences repetitions in columns, and \code{TRUE/FALSE} values indicating 
-whether each point is to be considered as pseudo-absence or not for each dataset.
+whether each point is to be considered as pseudo-absence or not for each dataset. \cr \cr
+
+\bold{Concerning multiple size selection :}
+
+It is possible to select create several pseudo-absence repetitions with different number of 
+points, BUT with the same sampling strategy. \code{nb.absences} must contain as many values 
+as the number of sets of pseudo-absences (\code{nb.rep}).
 }
 \examples{
 library(terra)

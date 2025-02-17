@@ -3,9 +3,18 @@
 \name{setters}
 \alias{setters}
 \alias{set_new_dirname}
+\alias{set_new_dirname,BIOMOD.models.out-method}
+\alias{set_new_dirname,BIOMOD.ensemble.models.out-method}
+\alias{set_new_dirname,BIOMOD.projection.out-method}
 \title{Functions to change the place of the different biomod2 objects}
 \usage{
 set_new_dirname(obj, new.dir.name)
+
+\S4method{set_new_dirname}{BIOMOD.models.out}(obj, new.dir.name)
+
+\S4method{set_new_dirname}{BIOMOD.ensemble.models.out}(obj, new.dir.name)
+
+\S4method{set_new_dirname}{BIOMOD.projection.out}(obj, new.dir.name)
 }
 \arguments{
 \item{obj}{a \code{\link{BIOMOD.formated.data}}, \code{\link{BIOMOD.formated.data.PA}}, 

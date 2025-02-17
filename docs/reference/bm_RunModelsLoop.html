@@ -119,15 +119,15 @@ species distribution models (asked by the <code><a href="BIOMOD_Modeling.html">B
     <div id="ref-usage">
     <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">bm_RunModelsLoop</span><span class="op">(</span></span>
 <span>  <span class="va">bm.format</span>,</span>
-<span>  <span class="va">weights</span>,</span>
-<span>  <span class="va">calib.lines</span>,</span>
 <span>  <span class="va">modeling.id</span>,</span>
 <span>  <span class="va">models</span>,</span>
 <span>  <span class="va">models.pa</span>,</span>
+<span>  <span class="va">calib.lines</span>,</span>
 <span>  <span class="va">bm.options</span>,</span>
 <span>  <span class="va">metric.eval</span>,</span>
 <span>  <span class="va">var.import</span>,</span>
-<span>  scale.models <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  <span class="va">weights</span>,</span>
+<span>  scale.models <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  nb.cpu <span class="op">=</span> <span class="fl">1</span>,</span>
 <span>  seed.val <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  do.progress <span class="op">=</span> <span class="cn">TRUE</span></span>
@@ -138,14 +138,14 @@ species distribution models (asked by the <code><a href="BIOMOD_Modeling.html">B
 <span>  <span class="va">run.name</span>,</span>
 <span>  dir.name <span class="op">=</span> <span class="st">"."</span>,</span>
 <span>  modeling.id <span class="op">=</span> <span class="st">""</span>,</span>
-<span>  <span class="va">bm.options</span>,</span>
 <span>  <span class="va">Data</span>,</span>
-<span>  <span class="va">weights.vec</span>,</span>
+<span>  <span class="va">bm.options</span>,</span>
 <span>  <span class="va">calib.lines.vec</span>,</span>
 <span>  eval.data <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  metric.eval <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"ROC"</span>, <span class="st">"TSS"</span>, <span class="st">"KAPPA"</span><span class="op">)</span>,</span>
 <span>  var.import <span class="op">=</span> <span class="fl">0</span>,</span>
-<span>  scale.models <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  <span class="va">weights.vec</span>,</span>
+<span>  scale.models <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  nb.cpu <span class="op">=</span> <span class="fl">1</span>,</span>
 <span>  seed.val <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  do.progress <span class="op">=</span> <span class="cn">TRUE</span></span>
@@ -159,17 +159,6 @@ species distribution models (asked by the <code><a href="BIOMOD_Modeling.html">B
 <dl><dt id="arg-bm-format">bm.format<a class="anchor" aria-label="anchor" href="#arg-bm-format"></a></dt>
 <dd><p>a <code><a href="BIOMOD.formated.data.html">BIOMOD.formated.data</a></code> or <code><a href="BIOMOD.formated.data.PA.html">BIOMOD.formated.data.PA</a></code>
 object returned by the <code><a href="BIOMOD_FormatingData.html">BIOMOD_FormatingData</a></code> function</p></dd>
-
-
-<dt id="arg-weights">weights<a class="anchor" aria-label="anchor" href="#arg-weights"></a></dt>
-<dd><p>a <code>matrix</code> containing observation weights for each pseudo-absence (or
-<code>allData</code>) dataset</p></dd>
-
-
-<dt id="arg-calib-lines">calib.lines<a class="anchor" aria-label="anchor" href="#arg-calib-lines"></a></dt>
-<dd><p>a <code>matrix</code> containing calibration / validation lines for each
-pseudo-absence (or <code>allData</code>) x repetition (or <code>allRun</code>) combination that can be
-obtained with the <code><a href="bm_CrossValidation.html">bm_CrossValidation</a></code> function</p></dd>
 
 
 <dt id="arg-modeling-id">modeling.id<a class="anchor" aria-label="anchor" href="#arg-modeling-id"></a></dt>
@@ -189,6 +178,12 @@ A <code>list</code> containing for each model a <code>vector</code> defining whi
 are to be used, must be among <code>colnames(bm.format@PA.table)</code></p></dd>
 
 
+<dt id="arg-calib-lines">calib.lines<a class="anchor" aria-label="anchor" href="#arg-calib-lines"></a></dt>
+<dd><p>a <code>matrix</code> containing calibration / validation lines for each
+pseudo-absence (or <code>allData</code>) x repetition (or <code>allRun</code>) combination that can be
+obtained with the <code><a href="bm_CrossValidation.html">bm_CrossValidation</a></code> function</p></dd>
+
+
 <dt id="arg-bm-options">bm.options<a class="anchor" aria-label="anchor" href="#arg-bm-options"></a></dt>
 <dd><p>a <code><a href="BIOMOD.models.options.html">BIOMOD.models.options</a></code> object returned by the
 <code><a href="bm_ModelingOptions.html">bm_ModelingOptions</a></code> function</p></dd>
@@ -197,14 +192,22 @@ are to be used, must be among <code>colnames(bm.format@PA.table)</code></p></dd>
 <dt id="arg-metric-eval">metric.eval<a class="anchor" aria-label="anchor" href="#arg-metric-eval"></a></dt>
 <dd><p>a <code>vector</code> containing evaluation metric names to be used, must
 be among <code>ROC</code>, <code>TSS</code>, <code>KAPPA</code>, <code>ACCURACY</code>, <code>BIAS</code>, <code>POD</code>,
-<code>FAR</code>, <code>POFD</code>, <code>SR</code>, <code>CSI</code>, <code>ETS</code>, <code>HK</code>, <code>HSS</code>, <code>OR</code>,
-<code>ORSS</code></p></dd>
+<code>FAR</code>, <code>POFD</code>, <code>SR</code>, <code>CSI</code>, <code>ETS</code>, <code>OR</code>, <code>ORSS</code>,
+<code>BOYCE</code>, <code>MPA</code> (<em>binary data</em>),
+<code>RMSE</code>, <code>MAE</code>, <code>MSE</code>, <code>Rsquared</code>, <code>Rsquared_aj</code>, <code>Max_error</code>
+(<em>abundance / count / relative data</em>),
+<code>Accuracy</code>, <code>Recall</code>, <code>Precision</code>, <code>F1</code> (<em>ordinal data</em>)</p></dd>
 
 
 <dt id="arg-var-import">var.import<a class="anchor" aria-label="anchor" href="#arg-var-import"></a></dt>
 <dd><p>(<em>optional, default</em> <code>NULL</code>) <br>
 An <code>integer</code> corresponding to the number of permutations to be done for each variable to
 estimate variable importance</p></dd>
+
+
+<dt id="arg-weights">weights<a class="anchor" aria-label="anchor" href="#arg-weights"></a></dt>
+<dd><p>a <code>matrix</code> containing observation weights for each pseudo-absence (or
+<code>allData</code>) dataset</p></dd>
 
 
 <dt id="arg-scale-models">scale.models<a class="anchor" aria-label="anchor" href="#arg-scale-models"></a></dt>
@@ -250,11 +253,6 @@ A <code>character</code> corresponding to the modeling folder</p></dd>
 variables that can be obtained with the <code>get_species_data</code> function</p></dd>
 
 
-<dt id="arg-weights-vec">weights.vec<a class="anchor" aria-label="anchor" href="#arg-weights-vec"></a></dt>
-<dd><p>a <code>vector</code> containing observation weights the concerned pseudo-absence
-(or <code>allData</code>) dataset</p></dd>
-
-
 <dt id="arg-calib-lines-vec">calib.lines.vec<a class="anchor" aria-label="anchor" href="#arg-calib-lines-vec"></a></dt>
 <dd><p>a <code>vector</code> containing calibration / validation lines for the
 concerned pseudo-absence (or <code>allData</code>) x repetition (or <code>allRun</code>) combination</p></dd>
@@ -264,6 +262,11 @@ concerned pseudo-absence (or <code>allData</code>) x repetition (or <code>allRun
 <dd><p>(<em>optional, default</em> <code>NULL</code>) <br>
 A <code>data.frame</code> containing validation observations, coordinates and environmental
 variables that can be obtained with the <code>get_eval_data</code> function</p></dd>
+
+
+<dt id="arg-weights-vec">weights.vec<a class="anchor" aria-label="anchor" href="#arg-weights-vec"></a></dt>
+<dd><p>a <code>vector</code> containing observation weights the concerned pseudo-absence
+(or <code>allData</code>) dataset</p></dd>
 
 </dl></div>
     <div id="value">

@@ -25,12 +25,12 @@ will be used at the modeling step}
 between explanatory variables}
 
 \item{k}{(\emph{optional, default} \code{NULL}) \cr 
-An \code{integer} corresponding to the smoothing parameter value of \code{\link[mgcv]{s}} 
-or \code{\link[gam]{s}} arguments (\emph{used only if \code{type = 's_smoother'}})}
+If \code{type = 's_smoother'}, an \code{integer} corresponding to the smoothing parameter 
+value of \code{\link[mgcv]{s}} or \code{\link[gam]{s}} arguments}
 }
 \value{
-A \code{\link[stats]{formula}} class object that can be directly given to most of 
-\R statistical models.
+A \code{\link[stats]{formula}} class object that can be directly given to most of \R 
+statistical models.
 }
 \description{
 This internal \pkg{biomod2} function allows the user to create easily a 

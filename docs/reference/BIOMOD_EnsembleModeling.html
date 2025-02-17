@@ -154,7 +154,7 @@ conditions (see Details).</p>
 <dt id="arg-models-chosen">models.chosen<a class="anchor" aria-label="anchor" href="#arg-models-chosen"></a></dt>
 <dd><p>a <code>vector</code> containing model names to be kept, must be either
 <code>all</code> or a sub-selection of model names that can be obtained with the
-<code><a href="getters.out.html">get_built_models</a></code> function</p></dd>
+<code><a href="getters.out.html">get_built_models</a></code> function applied to <code>bm.mod</code></p></dd>
 
 
 <dt id="arg-em-by">em.by<a class="anchor" aria-label="anchor" href="#arg-em-by"></a></dt>
@@ -165,20 +165,19 @@ the ensemble models, must be among <code>all</code>, <code>algo</code>, <code>PA
 
 <dt id="arg-em-algo">em.algo<a class="anchor" aria-label="anchor" href="#arg-em-algo"></a></dt>
 <dd><p>a <code>vector</code> corresponding to the ensemble models that will be computed,
-must be among <code>'EMmean'</code>, <code>'EMmedian'</code>, <code>'EMcv'</code>, <code>'EMci'</code>,
-<code>'EMca'</code>, <code>'EMwmean'</code></p></dd>
+must be among <code>EMmean</code>, <code>EMmedian</code>, <code>EMcv</code>, <code>EMci</code>,
+<code>EMca</code>, <code>EMwmean</code></p></dd>
 
 
 <dt id="arg-metric-select">metric.select<a class="anchor" aria-label="anchor" href="#arg-metric-select"></a></dt>
-<dd><p>a <code>vector</code> containing evaluation metric names to be used together with
-<code>metric.select.thresh</code> to exclude single models based on their evaluation scores
-(for ensemble methods like probability weighted mean or committee averaging). Must be among
-<code>all</code> (same evaluation metrics than those of <code>bm.mod</code>), <code>user.defined</code>
-(and defined through <code>metric.select.table</code>) or <code>POD</code>, <code>FAR</code>, <code>POFD</code>,
-<code>SR</code>, <code>ACCURACY</code>, <code>BIAS</code>, <code>ROC</code>, <code>TSS</code>, <code>KAPPA</code>, <code>OR</code>,
-<code>ORSS</code>, <code>CSI</code>, <code>ETS</code>, <code>BOYCE</code>, <code>MPA</code>, <code>RMSE</code>, <code>MAE</code>,
-<code>MSE</code>, <code>Rsquared</code>, <code>Rsquared_aj</code>, <code>Max_error</code>, <code>Accuracy</code>, <code>Recall</code>,
-<code>Precision</code>, <code>F1</code></p></dd>
+<dd><p>a <code>vector</code> containing evaluation metric names to be used to select
+single models based on their evaluation scores, must be among <code>user.defined</code> or
+<code>ROC</code>, <code>TSS</code>, <code>KAPPA</code>, <code>ACCURACY</code>, <code>BIAS</code>, <code>POD</code>,
+<code>FAR</code>, <code>POFD</code>, <code>SR</code>, <code>CSI</code>, <code>ETS</code>, <code>OR</code>, <code>ORSS</code>,
+<code>BOYCE</code>, <code>MPA</code> (<em>binary data</em>),
+<code>RMSE</code>, <code>MAE</code>, <code>MSE</code>, <code>Rsquared</code>, <code>Rsquared_aj</code>, <code>Max_error</code>
+(<em>abundance / count / relative data</em>),
+<code>Accuracy</code>, <code>Recall</code>, <code>Precision</code>, <code>F1</code> (<em>ordinal data</em>)</p></dd>
 
 
 <dt id="arg-metric-select-thresh">metric.select.thresh<a class="anchor" aria-label="anchor" href="#arg-metric-select-thresh"></a></dt>
@@ -189,25 +188,27 @@ building</p></dd>
 
 
 <dt id="arg-metric-select-table">metric.select.table<a class="anchor" aria-label="anchor" href="#arg-metric-select-table"></a></dt>
-<dd><p>(<em>optional, default</em> <code>NULL</code>) <br> If
-<code>metric.select = 'user.defined'</code>, a <code>data.frame</code> containing evaluation scores
+<dd><p>(<em>optional, default</em> <code>NULL</code>) <br>
+If <code>metric.select = 'user.defined'</code>, a <code>data.frame</code> containing evaluation scores
 calculated for each single models and that will be compared to <code>metric.select.thresh</code>
-values to exclude some of them from the ensemble model building, with <code>metric.select</code>
-rownames, and <code>models.chosen</code> colnames</p></dd>
+values below which single models will be excluded from the ensemble model, with
+<code>metric.select</code> rownames, and <code>models.chosen</code> colnames</p></dd>
 
 
 <dt id="arg-metric-select-dataset">metric.select.dataset<a class="anchor" aria-label="anchor" href="#arg-metric-select-dataset"></a></dt>
-<dd><p>(<em>optional, default</em> <code>'validation'</code>
-<em>if possible</em>). A character determining which dataset should be used to filter and/or
-weigh the ensemble models should be among 'evaluation', 'validation' or 'calibration'.</p></dd>
+<dd><p>(<em>optional, default</em> <code>validation</code> if possible) <br>
+A <code>character</code> defining which dataset should be used to filter and/or weight the ensemble
+models, must be among <code>calibration</code>, <code>validation</code>, <code>evaluation</code></p></dd>
 
 
 <dt id="arg-metric-eval">metric.eval<a class="anchor" aria-label="anchor" href="#arg-metric-eval"></a></dt>
 <dd><p>a <code>vector</code> containing evaluation metric names to be used, must
-be among  <code>POD</code>, <code>FAR</code>, <code>POFD</code>, <code>SR</code>, <code>ACCURACY</code>, <code>BIAS</code>,
-<code>ROC</code>, <code>TSS</code>, <code>KAPPA</code>, <code>OR</code>, <code>ORSS</code>, <code>CSI</code>, <code>ETS</code>,
-<code>BOYCE</code>, <code>MPA</code>, <code>RMSE</code>, <code>MAE</code>, <code>MSE</code>, <code>Rsquared</code>, <code>Rsquared_aj</code>,
-<code>Max_error</code>, <code>Accuracy</code>, <code>Recall</code>, <code>Precision</code>, <code>F1</code></p></dd>
+be among <code>ROC</code>, <code>TSS</code>, <code>KAPPA</code>, <code>ACCURACY</code>, <code>BIAS</code>, <code>POD</code>,
+<code>FAR</code>, <code>POFD</code>, <code>SR</code>, <code>CSI</code>, <code>ETS</code>, <code>OR</code>, <code>ORSS</code>,
+<code>BOYCE</code>, <code>MPA</code> (<em>binary data</em>),
+<code>RMSE</code>, <code>MAE</code>, <code>MSE</code>, <code>Rsquared</code>, <code>Rsquared_aj</code>, <code>Max_error</code>
+(<em>abundance / count / relative data</em>),
+<code>Accuracy</code>, <code>Recall</code>, <code>Precision</code>, <code>F1</code> (<em>ordinal data</em>)</p></dd>
 
 
 <dt id="arg-var-import">var.import<a class="anchor" aria-label="anchor" href="#arg-var-import"></a></dt>
@@ -222,12 +223,11 @@ A <code>numeric</code> value corresponding to the significance level to estimate
 
 
 <dt id="arg-emwmean-decay">EMwmean.decay<a class="anchor" aria-label="anchor" href="#arg-emwmean-decay"></a></dt>
-<dd><p>(<em>optional, default</em> <code>proportional</code>) <br> A
-value defining the relative importance of the weights (if <code>'EMwmean'</code>
-was given to argument <code>em.algo</code>). A high value will strongly
-discriminate <em>good</em> models from the <em>bad</em> ones (see Details),
-while <code>proportional</code> will attribute weights proportionally to the
-models evaluation scores</p></dd>
+<dd><p>(<em>optional, default</em> <code>proportional</code>) <br>
+If <code>em.algo = 'EMWmean'</code>, a <code>numeric</code> value defining the relative importance of
+weights. A high value will strongly discriminate <em>good</em> models from the <code>bad</code> ones
+(see Details). It is also possible to set it to <code>proportional</code> and weights will be
+proportional to the single models evaluation scores, or to provide a <code>function</code>.</p></dd>
 
 
 <dt id="arg-nb-cpu">nb.cpu<a class="anchor" aria-label="anchor" href="#arg-nb-cpu"></a></dt>
@@ -261,131 +261,133 @@ folders created in the current working directory :</p><ol><li><p>a <em>models</e
 </ol></div>
     <div id="details">
     <h2>Details</h2>
+    <p><b>Concerning models sub-selection (<code>models.chosen</code>) :</b> <br>
+Applying <code><a href="getters.out.html">get_built_models</a></code> function to the <code>bm.mod</code> object gives the names
+of the single models created with the <code><a href="BIOMOD_Modeling.html">BIOMOD_Modeling</a></code> function. The
+<code>models.chosen</code> argument can take either a sub-selection of these single model names, or
+the <code>all</code> default value, to decide which single models will be used for the ensemble
+model building. <br><br></p>
+<p><b>Concerning models assembly rules (<code>em.by</code>) :</b> <br>
+Single models built with the <code><a href="BIOMOD_Modeling.html">BIOMOD_Modeling</a></code> function can be combined in 5
+different ways to obtain ensemble models :</p><dl><dt>PA+run</dt>
+<dd><p>each combination of pseudo-absence and repetition datasets is done,
+  <em>merging</em> algorithms together</p></dd>
 
-<dl><dt>Models sub-selection (<code>models.chosen</code>)</dt>
-<dd><p>Applying <code><a href="getters.out.html">get_built_models</a></code>
-  function to the <code>bm.mod</code> object gives the names of the single models created
-  with the <code><a href="BIOMOD_Modeling.html">BIOMOD_Modeling</a></code> function. The <code>models.chosen</code> argument can take
-  either a sub-selection of these single model names, or the <code>all</code> default value, to
-  decide which single models will be used for the ensemble model building.</p></dd>
+  <dt>PA+algo</dt>
+<dd><p>each combination of pseudo-absence and algorithm datasets is done,
+  <em>merging</em> repetitions together</p></dd>
 
+  <dt>PA</dt>
+<dd><p>pseudo-absence datasets are considered individually, <em>merging</em> algorithms
+  and repetitions together</p></dd>
 
-  <dt>Models assembly rules (<code>em.by</code>)</dt>
-<dd><p>Single models built with the
-  <code><a href="BIOMOD_Modeling.html">BIOMOD_Modeling</a></code> function can be combined in 5 different ways to obtain
-  ensemble models :</p><ul><li><p><code>PA+run</code> : each combination of pseudo-absence and repetition
-    datasets is done, <em>merging</em> algorithms together</p></li>
-<li><p><code>PA+algo</code> : each combination of pseudo-absence and algorithm datasets
-    is done, <em>merging</em> repetitions together</p></li>
-<li><p><code>PA</code> : pseudo-absence datasets are considered individually,
-    <em>merging</em> algorithms and repetitions together</p></li>
-<li><p><code>algo</code> : algorithm datasets are considered individually, <em>merging</em>
-    pseudo-absence and repetitions together</p></li>
-<li><p><code>all</code> : all models are combined into one</p></li>
-</ul><p>Hence, depending on the chosen method, the number of ensemble models built will vary. <br><em>Be aware that if no evaluation data was given to the
-  <code><a href="BIOMOD_FormatingData.html">BIOMOD_FormatingData</a></code> function, some ensemble model evaluations may be biased
-  due to difference in data used for single model evaluations.</em> <br><b>Be aware that all of these combinations are allowed, but some may not make sense
-  depending mainly on how pseudo-absence datasets have been built and whether all of them
-  have been used for all single models or not (see <code>PA.nb.absences</code> and <code>models.pa</code>
-  parameters in <code><a href="BIOMOD_FormatingData.html">BIOMOD_FormatingData</a></code> and <code><a href="BIOMOD_Modeling.html">BIOMOD_Modeling</a></code> functions
-  respectively).</b></p></dd>
+  <dt>algo</dt>
+<dd><p>algorithm datasets are considered individually, <em>merging</em> pseudo-absence
+  and repetitions together</p></dd>
+
+  <dt>all</dt>
+<dd><p>all single models are combined into one</p></dd>
 
 
-  <dt>Evaluation metrics</dt>
-<dd><p></p><ul><li><p><b><code>metric.select</code></b> : the selected metrics must be chosen among the ones used
-    within the <code><a href="BIOMOD_Modeling.html">BIOMOD_Modeling</a></code> function to build the <code>model.output</code> object,
-    unless <code>metric.select = 'user.defined'</code> and therefore values will be provided through
-    the <code>metric.select.table</code> parameter. <br> In the case of the selection of several
-    metrics, they will be used at different steps of the ensemble modeling function :</p><ol><li><p>remove <em>low quality</em> single models, having a score lower than
-      <code>metric.select.thresh</code></p></li>
-<li><p>perform the binary transformation needed if <code>'EMca'</code>
-      was given to argument <code>em.algo</code></p></li>
-<li><p>weight models if <code>'EMwmean'</code> was given to argument <code>em.algo</code></p></li>
-</ol></li>
-<li><p><b><code>metric.select.thresh</code></b> : as many values as evaluation metrics
-    selected with the <code>metric.select</code> parameter, and defining the corresponding quality
-    thresholds below which the single models will be excluded from the ensemble model
-    building.</p></li>
-<li><p><b><code>metric.select.table</code></b> : a <code>data.frame</code> must be given if
-    <code>metric.select = 'user.defined'</code> to allow the use of evaluation metrics other than
-    those calculated within <span class="pkg">biomod2</span>. The <code>data.frame</code> must contain as many columns
-    as <code>models.chosen</code> with matching names, and as many rows as evaluation metrics to be
-    used. The number of rows must match the length of the <code>metric.select.thresh</code>
-    parameter. The values contained in the <code>data.frame</code> will be compared to those defined
-    in <code>metric.select.thresh</code> to remove <em>low quality</em> single models from
-    the ensemble model building.</p></li>
-<li><p><b><code>metric.select.dataset</code></b> : a <code>character</code> determining the dataset
-    which evaluation metric should be used to filter and/or weigh the
-    ensemble models. Should be among <code>evaluation</code>, <code>validation</code> or
-    <code>calibration</code>. By default <code>BIOMOD_EnsembleModeling</code> will use
-    the validation dataset unless no validation is available in which case
-    calibration dataset are used.</p></li>
-<li><p><b><code>metric.eval</code></b> : the selected metrics will be used to validate/evaluate
-    the ensemble models built</p></li>
-</ul><p></p></dd>
+</dl><p>Hence, depending on the chosen method, the number of ensemble models built will vary. <br><em>If no evaluation data was given to the <code><a href="BIOMOD_FormatingData.html">BIOMOD_FormatingData</a></code> function,
+some ensemble model evaluations may be biased due to difference in data used for single
+model evaluations.</em> <br><b>Be aware that all of these combinations are allowed, but some may not make sense
+depending mainly on how pseudo-absence datasets have been built and whether all of them
+have been used for all single models or not</b> (see <code>PA.nb.absences</code> and <code>models.pa</code>
+parameters in <code><a href="BIOMOD_FormatingData.html">BIOMOD_FormatingData</a></code> and <code><a href="BIOMOD_Modeling.html">BIOMOD_Modeling</a></code> functions
+respectively). <br><br><br></p>
+<p><b>Concerning evaluation metrics :</b></p><dl><dt>metric.select</dt>
+<dd><p>metric(s) must be chosen among the ones used within the
+  <code><a href="BIOMOD_Modeling.html">BIOMOD_Modeling</a></code> function to build the <code>bm.mod</code> object, unless
+  <code>metric.select = 'user.defined'</code> and therefore values will be provided through the
+  <code>metric.select.table</code> parameter. <br>
+  Each selected metric will be used at different steps of the ensemble modeling function to :</p><ol><li><p>remove <em>low quality</em> single models having a score lower than
+    <code>metric.select.thresh</code></p></li>
+<li><p>perform the binary transformation if <code>em.algo = 'EMca'</code></p></li>
+<li><p>weight models if <code>em.algo = 'EMwmean'</code></p></li>
+</ol><p><em>Note that metrics are not combined together, and one ensemble model is built for each
+  metric provided.</em></p></dd>
+
+  <dt>metric.select.table</dt>
+<dd><p>if <code>metric.select = 'user.defined'</code>, this parameter allows
+  to use evaluation metrics other than those calculated within <span class="pkg">biomod2</span>. It must be a
+  <code>data.frame</code> containing as many columns as <code>models.chosen</code> with matching names,
+  and as many rows as evaluation metrics to be used. The number of rows must match the length
+  of <code>metric.select.thresh</code>, and values will be compared to those defined in
+  <code>metric.select.thresh</code> to remove <em>low quality</em> single models from the ensemble
+  model building.</p></dd>
+
+  <dt>metric.select.dataset</dt>
+<dd><p>by default, <em>validation</em> datasets will be used, unless no
+  validation is available (no cross-validation) in which case <em>calibration</em> datasets
+  will be used <br><br><br></p></dd>
 
 
-  <dt>Ensemble-models algorithms</dt>
-<dd><p>The set of models to be calibrated on the data. <br>
-  6 modeling techniques are currently available :</p><ul><li><p><b><code>EMmean</code></b> : Mean of probabilities over the selected models.
-    Old name: <code>prob.mean</code></p></li>
-<li><p><b><code>EMmedian</code></b> : Median of probabilities over the selected models <br>
-    The median is less sensitive to outliers than the mean, however it requires more
-    computation time and memory as it loads all predictions (on the contrary to the mean or
-    the weighted mean). Old name: <code>prob.median</code></p></li>
-<li><p><b><code>EMcv</code></b> : Coefficient of variation (sd / mean) of probabilities
-    over the selected models <br>
-    This model is not scaled. It will be evaluated like all other ensemble models although its
-    interpretation will be obviously different. CV is a measure of uncertainty rather a
-    measure of probability of occurrence. If the CV gets a high evaluation score, it means
-    that the uncertainty is high where the species is observed (which might not be a good
-    feature of the model). <em>The lower is the score, the better are the models.</em>
-    CV is a nice complement to the mean probability.  Old name: <code>prob.cv</code></p></li>
-<li><p><b><code>EMci</code></b> &amp; <b><code>EMci.alpha</code></b> : Confidence interval around
-    the mean of probabilities of the selected models <br>
-    It is also a nice complement to the mean probability. It creates 2 ensemble models :</p><ul><li><p><em>LOWER</em> : there is less than <code>100 * EMci.alpha / 2</code> % of chance to
-      get probabilities lower than the given ones</p></li>
-<li><p><em>UPPER</em> : there is less than <code>100 * EMci.alpha / 2</code> % of chance to
-      get probabilities upper than the given ones</p></li>
-</ul><p>These intervals are calculated with the following function :
-    $$I_c = [ \bar{x} -  \frac{t_\alpha sd }{ \sqrt{n} };
-    \bar{x} +  \frac{t_\alpha sd }{ \sqrt{n} }]$$
-    <br>
-    Old parameter name: <code>prob.ci</code> &amp; <code>prob.ci.alpha</code></p></li>
-<li><p><b><code>EMca</code></b> : Probabilities from the selected models are
-    first transformed into binary data according to the thresholds defined when building the
-    <code>model.output</code> object with the <code>BIOMOD_Modeling</code> function, maximizing the
-    evaluation metric score over the testing dataset. The committee averaging score is
-    obtained by taking the average of these binary predictions. It is built on the analogy
-    of a simple vote :</p><ul><li><p>each single model votes for the species being either present (<code>1</code>) or absent
-      (<code>0</code>)</p></li>
-<li><p>the sum of <code>1</code> is then divided by the number of single models <em>voting</em></p></li>
-</ul><p>The interesting feature of this measure is that it gives both a prediction and a measure
-    of uncertainty. When the prediction is close to <code>0</code> or <code>1</code>, it means that all
-    models agree to predict <code>0</code> or <code>1</code> respectively. When the prediction is around
-    <code>0.5</code>, it means that half the models predict <code>1</code> and the other half <code>0</code>.
-    This model is are available with binary data.
-    <br> Old parameter name: <code>committee.averaging</code></p></li>
-<li><p><b><code>EMwmean</code></b> &amp; <b><code>EMwmean.decay</code></b> :
-    Probabilities from the selected models are weighted according to their evaluation scores
-    obtained when building the <code>model.output</code> object with the <code>BIOMOD_Modeling</code>
-    function (<em>better a model is, more importance it has in the ensemble</em>) and summed. <br>
-    Old parameter name: <code>prob.mean.weight</code> &amp; <code>prob.mean.weight.decay</code></p></li>
-</ul><p>The <code>EMwmean.decay</code> is the ratio between a weight and the next or previous one.
-The formula is : <code>W = W(-1) * EMwmean.decay</code>. <em>For example, with the value
-of <code>1.6</code> and <code>4</code> weights wanted, the relative importance of the weights will be
-<code>1/1.6/2.56(=1.6*1.6)/4.096(=2.56*1.6)</code> from the weakest to the strongest, and gives
-<code>0.11/0.17/0.275/0.445</code> considering that the sum of the weights is equal to one. The
-lower the <code>EMwmean.decay</code>, the smoother the differences between the weights
-enhancing a weak discrimination between models.</em></p>
+</dl><p><b>Concerning ensemble algorithms :</b> <br>
+6 modeling techniques are currently available :</p><dl><dt>EMmedian</dt>
+<dd><p>median of probabilities over the selected models <br></p>
+<p>Less sensitive to outliers than the mean</p></dd>
+
+
+  <dt>EMmean</dt>
+<dd><p>mean of probabilities over the selected models</p></dd>
+
+
+  <dt>EMwmean</dt>
+<dd><p>weighted mean of probabilities over the selected models <br></p>
+<p>Probabilities are weighted according to their model evaluation scores obtained when
+  building the <code>bm.out</code> object with the <code>BIOMOD_Modeling</code> function (<em>better a
+  model is, more importance it has in the ensemble</em>) and summed.</p>
+<p>The <code>EMwmean.decay</code> is the ratio between a weight and the next or previous one. <br>
+  The formula is : <code>W = W(-1) * EMwmean.decay</code>. <br><em>For example, with the value of <code>1.6</code> and <code>4</code> weights wanted, the relative
+  importance of the weights will be <code>1 / 1.6 / 2.56 (=1.6*1.6) / 4.096 (=2.56*1.6)</code> from
+  the weakest to the strongest, and gives <code>0.11 / 0.17 / 0.275 / 0.445</code> considering that
+  the sum of the weights is equal to one. The lower the <code>EMwmean.decay</code>, the smoother
+  the differences between the weights enhancing a weak discrimination between models.</em></p>
 <p>If <code>EMwmean.decay = 'proportional'</code>, the weights are assigned to each model
-proportionally to their evaluation scores. The discrimination is fairer than using the
-<em>decay</em> method where close scores can have strongly diverging weights, while the
-proportional method would assign them similar weights.</p>
-<p>It is also possible to define the <code>EMwmean.decay</code> parameter as a function that
-will be applied to single models scores and transform them into weights. <em>For example,
-if <code>EMwmean.decay = function(x) {x^2}</code>, the squared of evaluation score of each
-model will be used to weight the models predictions.</em></p></dd>
+  proportionally to their evaluation scores. The discrimination is fairer than using the
+  <em>decay</em> method where close scores can have strongly diverging weights, while the
+  proportional method would assign them similar weights.</p>
+<p>It is also possible to define the <code>EMwmean.decay</code> parameter as a function that will be
+  applied to single models scores and transform them into weights. <br><em>For example, if <code>EMwmean.decay = function(x) {x^2}</code>, the squared of evaluation
+  score of each model will be used to weight the models predictions.</em></p></dd>
+
+
+  <dt>EMca</dt>
+<dd><p>committee averaging over the selected models <br></p>
+<p>Probabilities are first transformed into binary data according to the threshold defined
+  when building the <code>bm.out</code> object with the <code>BIOMOD_Modeling</code> function
+  (maximizing the evaluation metric score over the <em>calibration</em> dataset). The committee
+  averaging score is obtained by taking the average of these binary predictions. <br>
+  It is built on the analogy of a simple vote :</p><ul><li><p>each single model votes for the species being either present (<code>1</code>) or absent
+    (<code>0</code>)</p></li>
+<li><p>the sum of <code>1</code> is then divided by the number of single models <em>voting</em></p></li>
+</ul><p>The interesting feature of this measure is that it gives both a prediction and a measure of
+  uncertainty. When the prediction is close to <code>0</code> or <code>1</code>, it means that all models
+  agree to predict <code>0</code> or <code>1</code> respectively. When the prediction is around
+  <code>0.5</code>, it means that half the models predict <code>1</code> and the other half <code>0</code>. <br><em>Note that this is for binary data only.</em></p></dd>
+
+
+  <dt>EMci</dt>
+<dd><p>confidence interval around the mean of probabilities of the selected models <br></p>
+<p>It creates 2 <em>ensemble</em> models :</p><ul><li><p><em>LOWER</em> : there is less than <code>100 * EMci.alpha / 2</code> % of chance to get
+    probabilities lower than the given ones</p></li>
+<li><p><em>UPPER</em> : there is less than <code>100 * EMci.alpha / 2</code> % of chance to get
+    probabilities upper than the given ones</p></li>
+</ul><p>These intervals are calculated with the following function :
+  $$I_c = [ \bar{x} -  \frac{t_\alpha sd }{ \sqrt{n} };
+  \bar{x} +  \frac{t_\alpha sd }{ \sqrt{n} }]$$</p></dd>
+
+
+  <dt>EMcv</dt>
+<dd><p>coefficient of variation (<code>sd / mean</code>) of probabilities over the selected
+  models <br></p>
+<p>This is the only <em>ensemble</em> model that might not be over the same scale than the
+  others, as CV is a measure of uncertainty rather a measure of probability of occurrence.
+  It will be evaluated like all other ensemble models although its interpretation will be
+  obviously different. If the CV gets a high evaluation score, it means that the uncertainty
+  is high where the species is observed (which might not be a good feature of the model).
+  <em>The lower is the score, the better are the models.</em></p></dd>
 
 
 </dl></div>
@@ -442,10 +444,10 @@ model will be used to weight the models predictions.</em></p></dd>
 <span><span class="op">}</span> <span class="kw">else</span> <span class="op">{</span></span>
 <span></span>
 <span>  <span class="co"># Format Data with true absences</span></span>
-<span>  <span class="va">myBiomodData</span> <span class="op">&lt;-</span> <span class="fu"><a href="BIOMOD_FormatingData.html">BIOMOD_FormatingData</a></span><span class="op">(</span>resp.var <span class="op">=</span> <span class="va">myResp</span>,</span>
-<span>                                       expl.var <span class="op">=</span> <span class="va">myExpl</span>,</span>
+<span>  <span class="va">myBiomodData</span> <span class="op">&lt;-</span> <span class="fu"><a href="BIOMOD_FormatingData.html">BIOMOD_FormatingData</a></span><span class="op">(</span>resp.name <span class="op">=</span> <span class="va">myRespName</span>,</span>
+<span>                                       resp.var <span class="op">=</span> <span class="va">myResp</span>,</span>
 <span>                                       resp.xy <span class="op">=</span> <span class="va">myRespXY</span>,</span>
-<span>                                       resp.name <span class="op">=</span> <span class="va">myRespName</span><span class="op">)</span></span>
+<span>                                       expl.var <span class="op">=</span> <span class="va">myExpl</span><span class="op">)</span></span>
 <span></span>
 <span>  <span class="co"># Model single models</span></span>
 <span>  <span class="va">myBiomodModelOut</span> <span class="op">&lt;-</span> <span class="fu"><a href="BIOMOD_Modeling.html">BIOMOD_Modeling</a></span><span class="op">(</span>bm.format <span class="op">=</span> <span class="va">myBiomodData</span>,</span>
@@ -455,7 +457,7 @@ model will be used to weight the models predictions.</em></p></dd>
 <span>                                      CV.nb.rep <span class="op">=</span> <span class="fl">2</span>,</span>
 <span>                                      CV.perc <span class="op">=</span> <span class="fl">0.8</span>,</span>
 <span>                                      OPT.strategy <span class="op">=</span> <span class="st">'bigboss'</span>,</span>
-<span>                                      metric.eval <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">'TSS'</span>,<span class="st">'ROC'</span><span class="op">)</span>,</span>
+<span>                                      metric.eval <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">'TSS'</span>, <span class="st">'ROC'</span><span class="op">)</span>,</span>
 <span>                                      var.import <span class="op">=</span> <span class="fl">3</span>,</span>
 <span>                                      seed.val <span class="op">=</span> <span class="fl">42</span><span class="op">)</span></span>
 <span><span class="op">}</span></span>

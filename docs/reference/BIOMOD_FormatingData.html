@@ -124,13 +124,13 @@ with different strategies (see Details).</p>
     <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">BIOMOD_FormatingData</span><span class="op">(</span></span>
 <span>  <span class="va">resp.name</span>,</span>
 <span>  <span class="va">resp.var</span>,</span>
+<span>  resp.xy <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  <span class="va">expl.var</span>,</span>
 <span>  dir.name <span class="op">=</span> <span class="st">"."</span>,</span>
 <span>  data.type <span class="op">=</span> <span class="st">"binary"</span>,</span>
-<span>  resp.xy <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  eval.resp.var <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  eval.expl.var <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  eval.resp.xy <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  eval.expl.var <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  PA.nb.rep <span class="op">=</span> <span class="fl">0</span>,</span>
 <span>  PA.nb.absences <span class="op">=</span> <span class="fl">1000</span>,</span>
 <span>  PA.strategy <span class="op">=</span> <span class="cn">NULL</span>,</span>
@@ -154,7 +154,21 @@ with different strategies (see Details).</p>
 
 
 <dt id="arg-resp-var">resp.var<a class="anchor" aria-label="anchor" href="#arg-resp-var"></a></dt>
-<dd><p>a <code>vector</code> or a <code><a href="https://rspatial.github.io/terra/reference/vect.html" class="external-link">SpatVector</a></code> containing your response variable (See Details).</p></dd>
+<dd><p>a <code>vector</code>, a <code><a href="https://rspatial.github.io/terra/reference/vect.html" class="external-link">SpatVector</a></code> without associated
+data (<em>if presence-only</em>), or a <code><a href="https://rspatial.github.io/terra/reference/vect.html" class="external-link">SpatVector</a></code> object containing
+binary data (<code>1</code> : presence, <code>0</code> : absence, <code>NA</code> : indeterminate) or other
+data (see <code>data.type</code> and Details) for a single species that will be used to build the
+species distribution model(s)
+<br><em>Note that old format from <span class="pkg">sp</span> are still supported such as
+ <code>SpatialPoints</code> (if presence-only) or <code>SpatialPointsDataFrame</code>
+ object containing binary data or other data.</em></p></dd>
+
+
+<dt id="arg-resp-xy">resp.xy<a class="anchor" aria-label="anchor" href="#arg-resp-xy"></a></dt>
+<dd><p>(<em>optional, default</em> <code>NULL</code>) <br>
+If <code>resp.var</code> is a <code>vector</code>, a 2-columns <code>matrix</code> or <code>data.frame</code>
+containing the corresponding <code>X</code> and <code>Y</code> coordinates that will be
+used to build the species distribution model(s)</p></dd>
 
 
 <dt id="arg-expl-var">expl.var<a class="anchor" aria-label="anchor" href="#arg-expl-var"></a></dt>
@@ -171,46 +185,37 @@ A <code>character</code> corresponding to the modeling folder</p></dd>
 
 
 <dt id="arg-data-type">data.type<a class="anchor" aria-label="anchor" href="#arg-data-type"></a></dt>
-<dd><p>a <code>character</code>, corresponding to the response data type to be used, must be either
-<code>binary</code>, <code>count</code>, <code>ordinal</code>, <code>relative</code>, or <code>abundance</code>. If data.type is not provided,
-<code>biomod2</code> will try to guess.</p></dd>
-
-
-<dt id="arg-resp-xy">resp.xy<a class="anchor" aria-label="anchor" href="#arg-resp-xy"></a></dt>
-<dd><p>(<em>optional, default</em> <code>NULL</code>) <br>
-If <code>resp.var</code> is a <code>vector</code>, a 2-columns <code>matrix</code> or <code>data.frame</code>
-containing the corresponding <code>X</code> and <code>Y</code> coordinates that will be
-used to build the species distribution model(s)</p></dd>
+<dd><p>a <code>character</code>, corresponding to the response data type to be used,
+must be either <code>binary</code>, <code>count</code>, <code>ordinal</code>, <code>relative</code>, or
+<code>abundance</code>, and match the data contained in <code>resp.var</code>
+<br><em>If not provided, <code>biomod2</code> will try to guess.</em></p></dd>
 
 
 <dt id="arg-eval-resp-var">eval.resp.var<a class="anchor" aria-label="anchor" href="#arg-eval-resp-var"></a></dt>
 <dd><p>(<em>optional, default</em> <code>NULL</code>) <br>
-A <code>vector</code>, a <code><a href="https://rspatial.github.io/terra/reference/vect.html" class="external-link">SpatVector</a></code>
-without associated data (<em>if presence-only</em>),
-or a <code><a href="https://rspatial.github.io/terra/reference/vect.html" class="external-link">SpatVector</a></code> object containing binary data
-(<code>0</code> : absence, <code>1</code> : presence, <code>NA</code> : indeterminate)
- for a single species that will be used to
-evaluate the species distribution model(s) with independent data
+A <code>vector</code> or a <code><a href="https://rspatial.github.io/terra/reference/vect.html" class="external-link">SpatVector</a></code> object containing binary data
+(<code>1</code> : presence, <code>0</code> : absence) for a single species that will be used to evaluate
+the species distribution model(s) with independent data
 <br><em>Note that old format from <span class="pkg">sp</span> are still supported such as
- <code>SpatialPoints</code>  (if presence-only) or <code>SpatialPointsDataFrame</code>
+ <code>SpatialPoints</code> (if presence-only) or <code>SpatialPointsDataFrame</code>
  object containing binary data.</em></p></dd>
-
-
-<dt id="arg-eval-expl-var">eval.expl.var<a class="anchor" aria-label="anchor" href="#arg-eval-expl-var"></a></dt>
-<dd><p>(<em>optional, default</em> <code>NULL</code>) <br>
-A <code>matrix</code>, <code>data.frame</code>, <code><a href="https://rspatial.github.io/terra/reference/vect.html" class="external-link">SpatVector</a></code>
-or <code><a href="https://rspatial.github.io/terra/reference/rast.html" class="external-link">SpatRaster</a></code> object containing the explanatory variables (in
-columns or layers) that will be used to evaluate the species distribution model(s) with
-independent data.
-<br><em>Note that old format from <span class="pkg">raster</span> and <span class="pkg">sp</span> are still supported such as
-<code>RasterStack</code> and <code>SpatialPointsDataFrame</code> objects. </em></p></dd>
 
 
 <dt id="arg-eval-resp-xy">eval.resp.xy<a class="anchor" aria-label="anchor" href="#arg-eval-resp-xy"></a></dt>
 <dd><p>(<em>optional, default</em> <code>NULL</code>) <br>
 If <code>resp.var</code> is a <code>vector</code>, a 2-columns <code>matrix</code> or <code>data.frame</code>
-containing the corresponding <code>X</code> and <code>Y</code> coordinates that will be used to evaluate
-the species distribution model(s) with independent data</p></dd>
+containing the corresponding <code>X</code> and <code>Y</code> coordinates that will be
+used to evaluate the species distribution model(s) with independent data</p></dd>
+
+
+<dt id="arg-eval-expl-var">eval.expl.var<a class="anchor" aria-label="anchor" href="#arg-eval-expl-var"></a></dt>
+<dd><p>(<em>optional, default</em> <code>NULL</code>) <br>
+A <code>matrix</code>, <code>data.frame</code>, <code><a href="https://rspatial.github.io/terra/reference/vect.html" class="external-link">SpatVector</a></code>
+or <code><a href="https://rspatial.github.io/terra/reference/rast.html" class="external-link">SpatRaster</a></code> object containing the explanatory variables
+(in columns or layers) that will be used to evalute the species distribution model(s) with
+independent data.
+<br><em>Note that old format from <span class="pkg">raster</span> and <span class="pkg">sp</span> are still supported such as
+<code>RasterStack</code> and <code>SpatialPointsDataFrame</code> objects. </em></p></dd>
 
 
 <dt id="arg-pa-nb-rep">PA.nb.rep<a class="anchor" aria-label="anchor" href="#arg-pa-nb-rep"></a></dt>
@@ -225,7 +230,7 @@ If pseudo-absence selection, and <code>PA.strategy = 'random'</code> or <code>PA
 or <code>PA.strategy = 'disk'</code>, an <code>integer</code> corresponding to the number of pseudo-absence
 points that will be selected for each pseudo-absence repetition (true absences included). <br>
 It can also be a <code>vector</code> of the same length as <code>PA.nb.rep</code> containing <code>integer</code>
-values corresponding to the different numbers of pseudo-absences to be selected</p></dd>
+values corresponding to the different numbers of pseudo-absences to be selected (see Details)</p></dd>
 
 
 <dt id="arg-pa-strategy">PA.strategy<a class="anchor" aria-label="anchor" href="#arg-pa-strategy"></a></dt>
@@ -258,7 +263,9 @@ and <code>0.5</code> defining the half-quantile used to make the <code>sre</code
 
 <dt id="arg-pa-fact-aggr">PA.fact.aggr<a class="anchor" aria-label="anchor" href="#arg-pa-fact-aggr"></a></dt>
 <dd><p>(<em>optional, default</em> <code>NULL</code>) <br>
-If <code>strategy = 'random'</code> or <code>strategy = 'disk'</code>, a <code>integer</code> defining the factor of aggregation to reduce the resolution</p></dd>
+If pseudo-absence selection and <code>PA.strategy = 'random'</code> or <code>PA.strategy = 'disk'</code>,
+an <code>integer</code> defining the factor of aggregation to reduce the spatial resolution of the
+environmental variables</p></dd>
 
 
 <dt id="arg-pa-user-table">PA.user.table<a class="anchor" aria-label="anchor" href="#arg-pa-user-table"></a></dt>
@@ -288,8 +295,9 @@ An <code>integer</code> value corresponding to the new seed value to be set</p><
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>A <code><a href="BIOMOD.formated.data.html">BIOMOD.formated.data</a></code> object that can be used to build species distribution
-model(s) with the <code><a href="BIOMOD_Modeling.html">BIOMOD_Modeling</a></code> function. <br><a href="https://biomodhub.github.io/biomod2/reference/BIOMOD.formated.data.html" class="external-link"><code>print/show</code></a>,
+    <p>A <code><a href="BIOMOD.formated.data.html">BIOMOD.formated.data</a></code> or <code><a href="BIOMOD.formated.data.PA.html">BIOMOD.formated.data.PA</a></code> object that can
+be used to build species distribution model(s) with the <code><a href="BIOMOD_Modeling.html">BIOMOD_Modeling</a></code>
+function. <br><a href="https://biomodhub.github.io/biomod2/reference/BIOMOD.formated.data.html" class="external-link"><code>print/show</code></a>,
 <a href="https://biomodhub.github.io/biomod2/reference/plot.html" class="external-link"><code>plot</code></a> and
 <a href="https://biomodhub.github.io/biomod2/reference/summary.html" class="external-link"><code>summary</code></a> functions
 are available to have a summary of the created object.</p>
@@ -303,40 +311,49 @@ and provides different methods to select pseudo-absences if needed. <br><br></p>
 <p><b>Concerning explanatory variables and XY coordinates :</b></p><ul><li><p>if <code><a href="https://rspatial.github.io/terra/reference/rast.html" class="external-link">SpatRaster</a></code>, <code>RasterLayer</code> or <code>RasterStack</code>
   provided for <code>expl.var</code> or <code>eval.expl.var</code>, <br><span class="pkg">biomod2</span> will extract
   the corresponding values from XY coordinates provided :</p><ul><li><p>either through <code>resp.xy</code> or <code>eval.resp.xy</code> respectively</p></li>
-<li><p>or <code>resp.var</code> or <code>eval.resp.var</code>, if provided as
+<li><p>or through <code>resp.var</code> or <code>eval.resp.var</code>, if provided as
     <code><a href="https://rspatial.github.io/terra/reference/vect.html" class="external-link">SpatVector</a></code> or <code>SpatialPointsDataFrame</code></p></li>
 </ul><p><em>Be sure to give the objects containing XY coordinates in the same projection
   system than the raster objects !</em></p></li>
 <li><p>if <code>data.frame</code> or <code>matrix</code> provided for <code>expl.var</code> or
    <code>eval.expl.var</code>, <br><span class="pkg">biomod2</span> will simply merge it (<code>cbind</code>)
    with <code>resp.var</code> without considering XY coordinates. <br><em>Be sure to give explanatory and response values in the same row order !</em></p></li>
-</ul><p><b>Concerning pseudo-absence selection (see <code><a href="bm_PseudoAbsences.html">bm_PseudoAbsences</a></code>) :</b></p><ul><li><p>if both presence and absence data are available, and there is enough absences :
-  set <code>PA.nb.rep = 0</code> and no pseudo-absence will be selected.</p></li>
+</ul><p><b>Concerning pseudo-absence selection (see <code><a href="bm_PseudoAbsences.html">bm_PseudoAbsences</a></code>) :</b>
+<br><em>Only in the case of <code>binary</code> data !</em></p><ul><li><p>if both presence and absence data are available : <code>PA.nb.rep = 0</code> and no
+  pseudo-absence will be selected.</p></li>
 <li><p>if no absence data is available, several pseudo-absence repetitions
   are recommended (to estimate the effect of pseudo-absence selection), as well as high
   number of pseudo-absence points. <br><em>Be sure not to select more pseudo-absence points than maximum number of pixels in
   the studied area !</em></p></li>
-<li><p>it is possible now to create several pseudo-absence repetitions with different
-  number of points, BUT with the same sampling strategy. <br><br><br><br></p></li>
+<li><p>it is possible to create several pseudo-absence repetitions <em>with different
+  number of points</em>, BUT with the same sampling strategy. <code>PA.nb.absences</code> must contain
+  as many values as the number of sets of pseudo-absences (<code>PA.nb.rep</code>). <br><br><br><br></p></li>
 </ul><dl><dt>Response variable</dt>
-<dd><p><span class="pkg">biomod2</span> models single species at a time (no multi-species). Hence, <code>resp.var</code>
-  must be a uni-dimensional object (either a <code>vector</code>, a one-column <code>matrix</code>,
-  <code>data.frame</code>, a <code><a href="https://rspatial.github.io/terra/reference/vect.html" class="external-link">SpatVector</a></code> (<em>without associated
-  data - if presence-only</em>), a <code>SpatialPoints</code> (<em>if presence-only</em>),
-  a <code>SpatialPointsDataFrame</code> or <code><a href="https://rspatial.github.io/terra/reference/vect.html" class="external-link">SpatVector</a></code> object).
-  For binary datatyp, it containing values among :</p><ul><li><p><code>1</code> : presences</p></li>
-<li><p><code>0</code> : true absences (if any)</p></li>
-<li><p><code>NA</code> : no information point (might be used to select pseudo-absences if any)</p></li>
-</ul><p>If no true absences are available, pseudo-absence selection must be done. <br>
-  If <code>resp.var</code> is a non-spatial object (<code>vector</code>, <code>matrix</code> or
-  <code>data.frame</code>), XY coordinates must be provided through <code>resp.xy</code>. <br>
-  If pseudo-absence points are to be selected, <code>NA</code> points must be provided in order to
-  select pseudo-absences among them.</p>
-<p></p><ul><li><p>For abundance datatype, <code>resp.var</code> must containing positive numeric.</p></li>
-<li><p>For count datatype, <code>resp.var</code> must containing positive integer.</p></li>
-<li><p>For ordinal datatype, <code>resp.var</code> must containing ordered factor.</p></li>
-<li><p>For relative datatype, <code>resp.var</code> must containing numeric between 0 and 1.</p></li>
-</ul><p></p></dd>
+<dd><p><span class="pkg">biomod2</span> models single species at a time (no multi-species). <br>
+  Hence, <code>resp.var</code> must be an uni-dimensional object, either :</p><ul><li><p>a <code>vector</code>, a one-column <code>matrix</code> or <code>data.frame</code>, a
+    <code><a href="https://rspatial.github.io/terra/reference/vect.html" class="external-link">SpatVector</a></code> (<em>without associated data - if presence-only</em>)</p></li>
+<li><p>a <code>SpatialPoints</code> (<em>if presence-only</em>)</p></li>
+<li><p>a <code>SpatialPointsDataFrame</code> or <code><a href="https://rspatial.github.io/terra/reference/vect.html" class="external-link">SpatVector</a></code> object</p></li>
+</ul><p>If <code>resp.var</code> is a non-spatial object (<code>vector</code>, <code>matrix</code> or
+  <code>data.frame</code>), XY coordinates must be provided through <code>resp.xy</code>. <br><br>
+  Different data types are available, and require different values :</p><dl><dt>binary</dt>
+<dd><p><code>1</code> : presences, <code>0</code> : true absences or <code>NA</code> : no
+    information point (can be used to select pseudo-absences) <br><em>If no true absences are available, pseudo-absence selection must be done.</em></p></dd>
+
+    <dt>count</dt>
+<dd><p>positive <code>integer</code> values</p></dd>
+
+    <dt>ordinal</dt>
+<dd><p>ordered <code>factor</code> values</p></dd>
+
+    <dt>relative</dt>
+<dd><p><code>numeric</code> values between <code>0</code> and <code>1</code></p></dd>
+
+    <dt>abundance</dt>
+<dd><p>positive <code>numeric</code> values</p></dd>
+
+
+</dl><p></p></dd>
 
   <dt>Explanatory variables</dt>
 <dd><p>Factorial variables are allowed, but might lead to some pseudo-absence strategy or models
@@ -350,12 +367,13 @@ and provides different methods to select pseudo-absences if needed. <br><br></p>
   datasets, one for calibration/validation and one for evaluation</p></dd>
 
   <dt>Pseudo-absence selection (see <code><a href="bm_PseudoAbsences.html">bm_PseudoAbsences</a></code>)</dt>
-<dd><p>If no true absences are available, pseudo-absences must be selected from the
+<dd><p><em>Only in the case of <code>binary</code> data !</em> <br>
+  If no true absences are available, pseudo-absences must be selected from the
   <em>background data</em>, meaning data there is no information whether the species of
   interest occurs or not. It corresponds either to the remaining pixels of the <code>expl.var</code>
-  (if provided as a <code><a href="https://rspatial.github.io/terra/reference/rast.html" class="external-link">SpatRaster</a></code> or <code>RasterSatck</code>)
+  (if provided as a <code><a href="https://rspatial.github.io/terra/reference/rast.html" class="external-link">SpatRaster</a></code> or <code>RasterStack</code>)
   or to the points identified as  <code>NA</code> in <code>resp.var</code> (if <code>expl.var</code>
-  provided as a <code>matrix</code> or <code>data.frame</code>). <br>
+  provided as a <code>matrix</code> or <code>data.frame</code>). <br><br>
   Several methods are available to do this selection :</p><dl><dt>random</dt>
 <dd><p>all points of initial background are pseudo-absence candidates.
     <code>PA.nb.absences</code> are drawn randomly, for each <code>PA.nb.rep</code> requested.</p></dd>
@@ -427,10 +445,10 @@ and provides different methods to select pseudo-absences if needed. <br><br></p>
 <span></span>
 <span><span class="co"># ---------------------------------------------------------------#</span></span>
 <span><span class="co"># Format Data with true absences</span></span>
-<span><span class="va">myBiomodData</span> <span class="op">&lt;-</span> <span class="fu">BIOMOD_FormatingData</span><span class="op">(</span>resp.var <span class="op">=</span> <span class="va">myResp</span>,</span>
-<span>                                     expl.var <span class="op">=</span> <span class="va">myExpl</span>,</span>
+<span><span class="va">myBiomodData</span> <span class="op">&lt;-</span> <span class="fu">BIOMOD_FormatingData</span><span class="op">(</span>resp.name <span class="op">=</span> <span class="va">myRespName</span>,</span>
+<span>                                     resp.var <span class="op">=</span> <span class="va">myResp</span>,</span>
 <span>                                     resp.xy <span class="op">=</span> <span class="va">myRespXY</span>,</span>
-<span>                                     resp.name <span class="op">=</span> <span class="va">myRespName</span><span class="op">)</span></span>
+<span>                                     expl.var <span class="op">=</span> <span class="va">myExpl</span><span class="op">)</span></span>
 <span><span class="va">myBiomodData</span></span>
 <span><span class="fu"><a href="https://rspatial.github.io/terra/reference/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">myBiomodData</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rspatial.github.io/terra/reference/plot.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">myBiomodData</span><span class="op">)</span></span>
@@ -441,19 +459,19 @@ and provides different methods to select pseudo-absences if needed. <br><br></p>
 <span><span class="co"># myResp.PA &lt;- ifelse(myResp == 1, 1, NA)</span></span>
 <span><span class="co"># </span></span>
 <span><span class="co"># # Format Data with pseudo-absences : random method</span></span>
-<span><span class="co"># myBiomodData.r &lt;- BIOMOD_FormatingData(resp.var = myResp.PA,</span></span>
-<span><span class="co">#                                        expl.var = myExpl,</span></span>
+<span><span class="co"># myBiomodData.r &lt;- BIOMOD_FormatingData(resp.name = myRespName,</span></span>
+<span><span class="co">#                                        resp.var = myResp.PA,</span></span>
 <span><span class="co">#                                        resp.xy = myRespXY,</span></span>
-<span><span class="co">#                                        resp.name = myRespName,</span></span>
+<span><span class="co">#                                        expl.var = myExpl,</span></span>
 <span><span class="co">#                                        PA.nb.rep = 4,</span></span>
 <span><span class="co">#                                        PA.nb.absences = 1000,</span></span>
 <span><span class="co">#                                        PA.strategy = 'random')</span></span>
 <span><span class="co"># </span></span>
 <span><span class="co"># # Format Data with pseudo-absences : disk method</span></span>
-<span><span class="co"># myBiomodData.d &lt;- BIOMOD_FormatingData(resp.var = myResp.PA,</span></span>
-<span><span class="co">#                                        expl.var = myExpl,</span></span>
+<span><span class="co"># myBiomodData.d &lt;- BIOMOD_FormatingData(resp.name = myRespName,</span></span>
+<span><span class="co">#                                        resp.var = myResp.PA,</span></span>
 <span><span class="co">#                                        resp.xy = myRespXY,</span></span>
-<span><span class="co">#                                        resp.name = myRespName,</span></span>
+<span><span class="co">#                                        expl.var = myExpl,</span></span>
 <span><span class="co">#                                        PA.nb.rep = 4,</span></span>
 <span><span class="co">#                                        PA.nb.absences = 500,</span></span>
 <span><span class="co">#                                        PA.strategy = 'disk',</span></span>
@@ -461,10 +479,10 @@ and provides different methods to select pseudo-absences if needed. <br><br></p>
 <span><span class="co">#                                        PA.dist.max = 35)</span></span>
 <span><span class="co"># </span></span>
 <span><span class="co"># # Format Data with pseudo-absences : SRE method</span></span>
-<span><span class="co"># myBiomodData.s &lt;- BIOMOD_FormatingData(resp.var = myResp.PA,</span></span>
-<span><span class="co">#                                        expl.var = myExpl,</span></span>
+<span><span class="co"># myBiomodData.s &lt;- BIOMOD_FormatingData(resp.name = myRespName,</span></span>
+<span><span class="co">#                                        resp.var = myResp.PA,</span></span>
 <span><span class="co">#                                        resp.xy = myRespXY,</span></span>
-<span><span class="co">#                                        resp.name = myRespName,</span></span>
+<span><span class="co">#                                        expl.var = myExpl,</span></span>
 <span><span class="co">#                                        PA.nb.rep = 4,</span></span>
 <span><span class="co">#                                        PA.nb.absences = 1000,</span></span>
 <span><span class="co">#                                        PA.strategy = 'sre',</span></span>
@@ -474,10 +492,10 @@ and provides different methods to select pseudo-absences if needed. <br><br></p>
 <span><span class="co"># myPAtable &lt;- data.frame(PA1 = ifelse(myResp == 1, TRUE, FALSE),</span></span>
 <span><span class="co">#                         PA2 = ifelse(myResp == 1, TRUE, FALSE))</span></span>
 <span><span class="co"># for (i in 1:ncol(myPAtable)) myPAtable[sample(which(myPAtable[, i] == FALSE), 500), i] = TRUE</span></span>
-<span><span class="co"># myBiomodData.u &lt;- BIOMOD_FormatingData(resp.var = myResp.PA,</span></span>
-<span><span class="co">#                                        expl.var = myExpl,</span></span>
+<span><span class="co"># myBiomodData.u &lt;- BIOMOD_FormatingData(resp.name = myRespName,</span></span>
+<span><span class="co">#                                        resp.var = myResp.PA,</span></span>
 <span><span class="co">#                                        resp.xy = myRespXY,</span></span>
-<span><span class="co">#                                        resp.name = myRespName,</span></span>
+<span><span class="co">#                                        expl.var = myExpl,</span></span>
 <span><span class="co">#                                        PA.strategy = 'user.defined',</span></span>
 <span><span class="co">#                                        PA.user.table = myPAtable)</span></span>
 <span><span class="co"># </span></span>
@@ -498,10 +516,10 @@ and provides different methods to select pseudo-absences if needed. <br><br></p>
 <span><span class="co"># myResp.PA &lt;- ifelse(myResp == 1, 1, NA)</span></span>
 <span><span class="co"># </span></span>
 <span><span class="co"># # Format Data with pseudo-absences : random method</span></span>
-<span><span class="co"># myBiomodData.multi &lt;- BIOMOD_FormatingData(resp.var = myResp.PA,</span></span>
-<span><span class="co">#                                            expl.var = myExpl,</span></span>
+<span><span class="co"># myBiomodData.multi &lt;- BIOMOD_FormatingData(resp.name = myRespName,</span></span>
+<span><span class="co">#                                            resp.var = myResp.PA,</span></span>
 <span><span class="co">#                                            resp.xy = myRespXY,</span></span>
-<span><span class="co">#                                            resp.name = myRespName,</span></span>
+<span><span class="co">#                                            expl.var = myExpl,</span></span>
 <span><span class="co">#                                            PA.nb.rep = 4,</span></span>
 <span><span class="co">#                                            PA.nb.absences = c(1000, 500, 500, 200),</span></span>
 <span><span class="co">#                                            PA.strategy = 'random')</span></span>
