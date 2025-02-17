@@ -115,7 +115,7 @@
 ## CHECK formated data ----------------------------------------------------------------------------
 ## used in biomod2_classes_1
 
-.check_formating_spatial <- function(resp.var, expl.var = NULL, resp.xy = NULL, eval.data = FALSE)
+.check_formating_spatial <- function(resp.var, expl.var = NULL, resp.xy = NULL, is.eval = FALSE)
 {
   if (!is.null(resp.xy)) {
     cat("\n      ! XY coordinates of response variable will be ignored because spatial response object is given.")
@@ -135,7 +135,7 @@
     resp.xy <- data.matrix(crds(resp.var))
     resp.var <- as.data.frame(resp.var)
     if (ncol(resp.var) == 0) {
-      if(eval.data){
+      if(is.eval){
         stop("eval.resp must have both presences and absences in the data associated to the SpatVector") 
       } else {
         cat("\n      ! Response variable is considered as only presences... Is it really what you want?")
@@ -144,7 +144,7 @@
     }
   }
   
-  if (!eval.data) {
+  if (!is.eval) {
     if ( all(!is.na(resp.var)) && 
          all(resp.var == 1, na.rm = TRUE) &&
          !inherits(expl.var, c('Raster','SpatRaster'))) {
@@ -155,14 +155,14 @@
   return(list(resp.var = resp.var, resp.xy = resp.xy))
 }
 
-.check_formating_resp.var.bin <- function(resp.var, eval.data = FALSE)
+.check_formating_resp.var.bin <- function(resp.var, is.eval = FALSE)
 {
   if (length(which(!(resp.var %in% c(0, 1, NA)))) > 0) {
-    cat("\n      ! ", ifelse(eval.data, "Evaluation",""), "Response variable have non-binary values that will be converted into 0 (resp <=0) or 1 (resp > 0).")
+    cat("\n      ! ", ifelse(is.eval, "Evaluation",""), "Response variable have non-binary values that will be converted into 0 (resp <=0) or 1 (resp > 0).")
     resp.var[which(resp.var > 0)] <- 1
     resp.var[which(resp.var <= 0)] <- 0
   }
-  if (eval.data) {
+  if (is.eval) {
     if (!any(resp.var == 1, na.rm = TRUE) || !any(resp.var == 0, na.rm = TRUE)) {
       stop("Evaluation response data must have both presences and absences")
     }
@@ -379,6 +379,34 @@ rast.has.values <- function(x)
 }
 
 
+## CREATE WEIGHTS AUTOMATICALLY according to PREVALENCE -------------------------------------------
+## used in BIOMOD_Modeling
+
+.automatic_weights_creation <- function(resp, prev = 0.5, subset = NULL)
+{
+  if (is.null(subset)) { ## NEVER used
+    subset <- rep(TRUE, length(resp))
+  } else if (length(subset) != length(resp)) {
+    stop("subset should be a vector of logical of the same length as resp")
+  }
+  
+  nbPres <- sum(resp[subset] > 0, na.rm = TRUE)
+  # number of true absences + pseudo absences to maintain true value of prevalence
+  nbAbs <- length(resp[subset]) - nbPres
+  weights <- rep(1, length(resp))
+  
+  if (nbAbs > nbPres) { # code absences as 1
+    weights[which(resp > 0)] <- (prev * nbAbs) / (nbPres * (1 - prev))
+  } else { # code presences as 1
+    weights[which(resp == 0 | is.na(resp))] <- (nbPres * (1 - prev)) / (prev * nbAbs)
+  }
+  weights = round(weights[]) # to remove glm & gam warnings
+  weights[!subset] <- 0
+  
+  return(weights)
+}
+
+
 ## RESCALE MODEL WITH BINOMIAL GLM ----------------------------------------------------------------
 ## used in bm_RunModelsLoop
 
@@ -386,32 +414,24 @@ rast.has.values <- function(x)
 ##' @importFrom stats glm binomial
 ##' 
 
-.scaling_model <- function(dataToRescale, ref = NULL, ...)
+.scaling_model <- function(data.to.rescale, data.ref = NULL, ...)
 {
   args <- list(...)
   prevalence <- args$prevalence
   weights <- args$weights
   
-  ## if no weights given, some are created to rise the define prevalence ------
-  if (is.null(weights) && ! is.null(prevalence)) {
-    nbPres <- sum(ref, na.rm = TRUE)
-    nbAbs <- length(ref) - nbPres
-    weights <- rep(1, length(ref))
-    
-    if (nbAbs > nbPres) { # code absences as 1
-      weights[which(ref > 0)] <- (prevalence * nbAbs) / (nbPres * (1 - prevalence))
-    } else { # code presences as 1
-      weights[which(ref == 0 | is.na(ref))] <- (nbPres * (1 - prevalence)) / (prevalence * nbAbs)
+  if (is.null(weights)) {
+    if (!is.null(prevalence)) { # create weights to rise the defined prevalence
+      weights <- .automatic_weights_creation(resp = data.ref, prev = prevalence)
+    } else { # only 1 vector
+      weights <- rep(1, length(data.ref))
     }
-    weights = round(weights[]) # to remove glm & gam warnings
-    
-  } else if (is.null(weights)) { ## only 1 weights vector ---------------------
-    weights <- rep(1, length(ref))
   }
   
-  ## define a glm to scale predictions from 0 to 1 ----------------------------
-  scaling_model <- glm(ref ~ pred, data = data.frame(ref = as.numeric(ref), pred = as.numeric(dataToRescale))
-                       , family = binomial(link = probit), x = TRUE, weights = weights)
+  ## define a glm to scale predictions from 0 to 1
+  new.data <- data.frame(ref = as.numeric(data.ref), pred = as.numeric(data.to.rescale))
+  scaling_model <- glm(ref ~ pred, data = new.data, family = binomial(link = probit)
+                       , x = TRUE, weights = weights)
   
   return(scaling_model)
 }

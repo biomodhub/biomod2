@@ -14,10 +14,12 @@
 ##'
 ##'
 ##' @param metric.eval a \code{character} corresponding to the evaluation metric to be used, must 
-##' be either \code{POD}, \code{FAR}, \code{POFD}, \code{SR}, \code{ACCURACY}, \code{BIAS}, 
-##' \code{ROC}, \code{TSS}, \code{KAPPA}, \code{OR}, \code{ORSS}, \code{CSI}, \code{ETS}, 
-##' \code{BOYCE}, \code{MPA}, \code{RMSE}, \code{MAE}, \code{MSE}, \code{Rsquared}, \code{Rsquared_aj},
-##' \code{Max_error}, \code{Accuracy}, \code{"Recall"}, \code{"Precision"}, \code{"F1"}
+##' be either \code{ROC}, \code{TSS}, \code{KAPPA}, \code{ACCURACY}, \code{BIAS}, \code{POD}, 
+##' \code{FAR}, \code{POFD}, \code{SR}, \code{CSI}, \code{ETS}, \code{OR}, \code{ORSS}, 
+##' \code{BOYCE}, \code{MPA} (\emph{binary data}), 
+##' \code{RMSE}, \code{MAE}, \code{MSE}, \code{Rsquared}, \code{Rsquared_aj}, \code{Max_error} 
+##' (\emph{abundance / count / relative data}), 
+##' \code{Accuracy}, \code{Recall}, \code{Precision}, \code{F1} (\emph{ordinal data})
 ##' @param obs a \code{vector} of observed values (binary, \code{0} or \code{1})
 ##' @param fit a \code{vector} of fitted values (continuous)
 ##' @param nb.thresh an \code{integer} corresponding to the number of thresholds to be 
@@ -35,8 +37,9 @@
 ##' @param mpa.perc a \code{numeric} between \code{0} and \code{1} corresponding to the percentage 
 ##' of correctly classified presences for Minimal Predicted Area (see \code{ecospat.mpa()} in 
 ##' \pkg{ecospat})
+##' @param k an \code{integer} corresponding to the number of environmental variables used in the 
+##' model
 ##' @param misc a \code{matrix} corresponding to a contingency table
-##' @param k a \code{numeric} corresponding to the number of predictive factor in the model
 ##'
 ##'
 ##' @return 
@@ -53,6 +56,10 @@
 ##' 
 ##'
 ##' @details
+##' 
+##' \emph{Please refer to \href{https://www.cawcr.gov.au/projects/verification/}{CAWRC website 
+##' ("Methods for dichotomous forecasts")} to get detailed description (simple/complex metrics).} \cr
+##' Optimal value of each method can be obtained with the \code{\link{get_optim_value}} function.
 ##' 
 ##' \describe{
 ##'   \item{simple}{
@@ -84,36 +91,32 @@
 ##'     presences)
 ##'   }
 ##'   }
-##'   \item{For abundance/count/relative data}{
-##'     \itemize{
-##'       \item \code{RMSE} : Root Mean Square Error
-##'       \item \code{MSE} : Mean Square Error
-##'       \item \code{MAE} : Mean Absolute Error
-##'       \item \code{Rsquared} : R square
-##'       \item \code{Rsquared_aj} : R square adjusted
-##'       \item \code{Max_error} : Max_error
-##'     }
-##'     }
-##'     \item{For ordinal data}{
-##'     \itemize{
-##'       \item \code{Accuracy} : Accuracy
-##'       \item \code{Recall} : Macro average Recall
-##'       \item \code{Precision} : Macro average Precision
-##'       \item \code{F1} : Macro F1 score
-##'     }
-##'     }
+##'   \item{abundance / count / relative data}{
+##'   \itemize{
+##'     \item \code{RMSE} : Root Mean Square Error
+##'     \item \code{MSE} : Mean Square Error
+##'     \item \code{MAE} : Mean Absolute Error
+##'     \item \code{Rsquared} : R squared
+##'     \item \code{Rsquared_aj} : R squared adjusted
+##'     \item \code{Max_error} : Maximum error
+##'   }
+##'   }
+##'   \item{ordinal data}{
+##'   \itemize{
+##'     \item \code{Accuracy} : Accuracy
+##'     \item \code{Recall} : Macro average Recall
+##'     \item \code{Precision} : Macro average Precision
+##'     \item \code{F1} : Macro F1 score
+##'   }
+##'   }
 ##' }
 ##'   
-##' Optimal value of each method can be obtained with the \code{\link{get_optim_value}} function. \cr
-##' \emph{Please refer to the \href{https://www.cawcr.gov.au/projects/verification/}{CAWRC website 
-##' (section "Methods for dichotomous forecasts")} to get detailed description of each metric.}
-##' 
-##' Note that if a value is given to \code{threshold}, no optimization will be done., and 
+##' Note that if a value is given to \code{threshold}, no optimization will be done, and 
 ##' only the score for this threshold will be returned.
 ##' 
 ##' The Boyce index returns \code{NA} values for \code{SRE} models because it can not be 
 ##' calculated with binary predictions. \cr This is also the reason why some \code{NA} values 
-##' might appear for \code{GLM} models if they do not converge.
+##' might appear for \code{GLM} models if they did not converge.
 ##'
 ##' 
 ##' @note In order to break dependency loop between packages \pkg{biomod2} and \pkg{ecospat}, 
@@ -212,8 +215,8 @@ bm_FindOptimStat <- function(metric.eval = 'TSS',
   
   ## 1. Compute metrics ---------------------------------------------------------------------------
   cutoff <- sensitivity <- specificity <- best.stat <- NA
-  abundance_metrics <- c("RMSE", "MSE" ,"MAE" ,"AIC" ,'Rsquared' ,'Rsquared_aj'
-                         , 'Max_error',"Accuracy", "Recall", "Precision", "F1")
+  abundance_metrics <- c("RMSE", "MSE", "MAE", "AIC","Rsquared", "Rsquared_aj"
+                         , "Max_error", "Accuracy", "Recall", "Precision", "F1")
   
   if (!(metric.eval %in% c('ROC', abundance_metrics))) ## BINARY METRICS OTHER THAN ROC -----------
   {
@@ -306,7 +309,8 @@ bm_FindOptimStat <- function(metric.eval = 'TSS',
 }
 
 
-# Check Arguments ---------------------------------------------------------------------------------
+###################################################################################################
+
 .bm_FindOptimStat.check.args <- function(boyce.bg.env = NULL, mpa.perc = 0.9)
 {
   ## 1. Check boyce.bg.env ----------------------------------------------------
@@ -372,6 +376,7 @@ get_optim_value <- function(metric.eval)
          , 'MPA' = 1
   )
 }
+
 
 ###################################################################################################
 
@@ -490,12 +495,12 @@ bm_CalculateStatAbun <- function(metric.eval, obs, fit, k)
                , 'MSE' = mean((obs - fit) ^ 2)
                , 'MAE' = mean(abs(obs - fit))
                , 'Rsquared' = cor(obs,fit) ^ 2
-               , "Rsquared_aj" = 1 - (1 - cor(obs, fit) ^ 2) * (length(obs) - 1) / (length(obs) - k - 1) 
+               , 'Rsquared_aj' = 1 - (1 - cor(obs, fit) ^ 2) * (length(obs) - 1) / (length(obs) - k - 1) 
                , 'Max_error' = max(abs(obs - fit), na.rm = TRUE)
-               , "Accuracy" = sum(diag(m)) / sum(m)
-               , "Recall" = sum(diag(m) / colSums(m), na.rm = TRUE) / nrow(m)
-               , "Precision" = sum(diag(m) / rowSums(m), na.rm = TRUE) / nrow(m)
-               , "F1" = {
+               , 'Accuracy' = sum(diag(m)) / sum(m)
+               , 'Recall' = sum(diag(m) / colSums(m), na.rm = TRUE) / nrow(m)
+               , 'Precision' = sum(diag(m) / rowSums(m), na.rm = TRUE) / nrow(m)
+               , 'F1' = {
                  p <- sum(diag(m) / rowSums(m), na.rm = TRUE) / nrow(m)
                  r <- sum(diag(m) / colSums(m), na.rm = TRUE) / nrow(m)
                  return(2 * p * r / (p + r))

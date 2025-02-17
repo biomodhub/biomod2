@@ -93,6 +93,7 @@
 ##' 
 ###################################################################################################
 
+
 bm_VariablesImportance <- function(bm.model, 
                                    expl.var,
                                    variables = NULL,
@@ -116,7 +117,7 @@ bm_VariablesImportance <- function(bm.model,
   if (inherits(ref, "try-error")) { stop("Unable to make model prediction") }
   
   if (model_type == "ordinal") {
-    if (!(bm.model@model_name %in% c("GLM", "GAM", "XGBOOST"))) {## laissez en numeric pour eux 
+    if (!(bm.model@model_name %in% c("GLM", "GAM", "XGBOOST"))) { ## keep numeric values for these 3 models
       ref <- as.numeric(factor(ref, ordered = TRUE))
     }
   }
@@ -134,7 +135,7 @@ bm_VariablesImportance <- function(bm.model,
       shuffled.pred <- predict(bm.model, data_rand, temp_workdir = temp.workdir, seedval = seed.val)
       
       if (model_type == "ordinal") {
-        if (!(bm.model@model_name %in% c("GLM", "GAM", "XGBOOST"))) { ## laissez en numeric pour eux ??
+        if (!(bm.model@model_name %in% c("GLM", "GAM", "XGBOOST"))) { ## keep numeric values for these 3 models
           shuffled.pred <- as.numeric(factor(shuffled.pred, ordered = TRUE))
         }
       }
@@ -155,7 +156,6 @@ bm_VariablesImportance <- function(bm.model,
 
 
 ###################################################################################################
-
 
 .bm_VariablesImportance.check.args <- function(bm.model, expl.var, variables, method, temp.workdir)
 {

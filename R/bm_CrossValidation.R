@@ -13,8 +13,6 @@
 ##' @param strategy a \code{character} corresponding to the cross-validation selection strategy, 
 ##' must be among \code{random}, \code{kfold}, \code{block}, \code{strat}, \code{env} or 
 ##' \code{user.defined}
-##' @param \ldots (\emph{optional, one or several of the following arguments depending on the 
-##' selected method}) 
 ##' 
 ##' @param nb.rep (\emph{optional, default} \code{0}) \cr
 ##' If \code{strategy = 'random'} or \code{strategy = 'kfold'}, an \code{integer} corresponding 
@@ -43,6 +41,9 @@
 ##' @param do.full.models (\emph{optional, default} \code{TRUE}) \cr  
 ##' A \code{logical} value defining whether models should be also calibrated and validated over 
 ##' the whole dataset (and pseudo-absence datasets) or not
+##' 
+##' @param \ldots (\emph{optional, one or several of the listed above arguments depending on the 
+##' selected method}) 
 ##' 
 ##' 
 ##' @return 
@@ -73,7 +74,6 @@
 ##' number of columns. 
 ##' If \code{do.full.models = TRUE}, columns merging runs (and/or pseudo-absence datasets) 
 ##' are added at the end. \cr \cr
-##' 
 ##' 
 ##' 
 ##' \bold{Concerning cross-validation strategies :}
@@ -122,7 +122,6 @@
 ##' 
 ##' 
 ##' 
-##' 
 ##' @references
 ##' 
 ##' \itemize{
@@ -168,10 +167,10 @@
 ##' 
 ##' # --------------------------------------------------------------- #
 ##' # Format Data with true absences
-##' myBiomodData <- BIOMOD_FormatingData(resp.var = myResp,
-##'                                      expl.var = myExpl,
+##' myBiomodData <- BIOMOD_FormatingData(resp.name = myRespName,
+##'                                      resp.var = myResp,
 ##'                                      resp.xy = myRespXY,
-##'                                      resp.name = myRespName)
+##'                                      expl.var = myExpl)
 ##' 
 ##' # --------------------------------------------------------------- #
 ##' # Create the different validation datasets
@@ -319,7 +318,7 @@ bm_CrossValidation <- function(bm.format,
 }
 
 
-# Argument Check ----------------------------------------------------------------------------------
+###################################################################################################
 
 .bm_CrossValidation.check.args <- function(bm.format, strategy, nb.rep, perc, k, balance,
                                            env.var, strat, user.table, do.full.models)
@@ -424,8 +423,9 @@ bm_CrossValidation <- function(bm.format,
               user.table = user.table))
 }
 
-# ---------------------------------------------------------------------------- #
-## return a matrix with nb.rep columns of boolean (T: calib, F: eval)
+
+###################################################################################################
+## return a matrix with nb.rep columns of boolean (TRUE: calib, FALSE: eval)
 
 .sample_num <- function(data.sp, data.split, nb.rep = 1, data.env = NULL, seed.val = NULL)
 {
@@ -484,6 +484,7 @@ bm_CrossValidation <- function(bm.format,
 }
 
 
+###################################################################################################
 
 # bm_CrossValidation user-defined methods ---------------------------------------------------------
 

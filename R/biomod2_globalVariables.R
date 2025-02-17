@@ -37,15 +37,11 @@ utils::globalVariables(names = c("calib.i", "rep", "quant"
                                  , "i", "typ", "intlev", "fi"))
 
 ## BIOMOD_Projection ------------
-utils::globalVariables(names = c("do.stack",
-                                 "output.format",
-                                 "mod.name",
-                                 "on_0_1000",
-                                 "omit.na",
-                                 "keep.in.memory",
-                                 "overwrite"))
-
-                                 
+utils::globalVariables(names = c("omit.na", "digits",
+                                 "on_0_1000", "keep.in.memory",
+                                 "do.stack", "output.format",
+                                 "compress", "overwrite", 
+                                 "mod.name"))
 
 ## BIOMOD_Modeling ------------
 utils::globalVariables(names = c("resp", "value", "pa"))
@@ -64,8 +60,8 @@ utils::globalVariables(names = c("eval.m",
 utils::globalVariables(names = c("this_PA"))
 
 ## BIOMOD_EnsembleForecasting ------------
-utils::globalVariables(names = c("on_0_1000",
-                                 "output.format",
+utils::globalVariables(names = c("digits", "on_0_1000",
+                                 "output.format", "compress",
                                  "keep.in.memory",
                                  "em.name"))
 

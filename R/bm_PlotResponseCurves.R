@@ -121,10 +121,10 @@
 ##' } else {
 ##' 
 ##'   # Format Data with true absences
-##'   myBiomodData <- BIOMOD_FormatingData(resp.var = myResp,
-##'                                        expl.var = myExpl,
+##'   myBiomodData <- BIOMOD_FormatingData(resp.name = myRespName,
+##'                                        resp.var = myResp,
 ##'                                        resp.xy = myRespXY,
-##'                                        resp.name = myRespName)
+##'                                        expl.var = myExpl)
 ##' 
 ##'   # Model single models
 ##'   myBiomodModelOut <- BIOMOD_Modeling(bm.format = myBiomodData,
@@ -134,7 +134,7 @@
 ##'                                       CV.nb.rep = 2,
 ##'                                       CV.perc = 0.8,
 ##'                                       OPT.strategy = 'bigboss',
-##'                                       metric.eval = c('TSS','ROC'),
+##'                                       metric.eval = c('TSS', 'ROC'),
 ##'                                       var.import = 3,
 ##'                                       seed.val = 42)
 ##' }
@@ -173,6 +173,7 @@
 ##' 
 ##' 
 ###################################################################################################
+
 
 bm_PlotResponseCurves <- function(bm.out
                                   , models.chosen = 'all'
@@ -251,7 +252,8 @@ bm_PlotResponseCurves <- function(bm.out
             if (inherits(mod, "MAXENT_biomod2_model")) {
               temp_workdir = mod@model_output_dir
             }
-            proj.tmp <- predict(mod, newdata = new.env.r.tmp, on_0_1000 = on_0_1000, do_check = FALSE, temp_workdir = temp_workdir, seedval = NULL)
+            proj.tmp <- predict(mod, newdata = new.env.r.tmp, on_0_1000 = on_0_1000
+                                , do_check = FALSE, temp_workdir = temp_workdir, seedval = NULL)
             
             res = data.frame(pts.tmp, proj.tmp)
             colnames(res) = c(vari, mod.name)
@@ -307,7 +309,8 @@ bm_PlotResponseCurves <- function(bm.out
               temp_workdir = mod@model_output_dir
             }
             
-            proj.tmp <- predict(mod, newdata = new.env.r.tmp, on_0_1000 = on_0_1000, do_check = FALSE, temp_workdir = temp_workdir, seedval = NULL)
+            proj.tmp <- predict(mod, newdata = new.env.r.tmp, on_0_1000 = on_0_1000
+                                , do_check = FALSE, temp_workdir = temp_workdir, seedval = NULL)
             
             res = data.frame(pts.tmp1, pts.tmp2, proj.tmp)
             colnames(res) = c(vari1, vari2, mod.name)
@@ -382,7 +385,7 @@ bm_PlotResponseCurves <- function(bm.out
 }
 
 
-# Argument check ---------------------------------------------------------------
+###################################################################################################
 
 .bm_PlotResponseCurves.check.args <- function(bm.out, models.chosen, new.env, show.variables, do.bivariate, ...)
 {
@@ -440,7 +443,6 @@ bm_PlotResponseCurves <- function(bm.out
   }
   
   ## 3. Check new.env argument ------------------------------------------------
-
   .fun_testIfInherits(TRUE, "new.env", new.env, 
                       c("SpatRaster","Raster","data.frame","matrix"))
   
@@ -522,7 +524,7 @@ bm_PlotResponseCurves <- function(bm.out
 }
 
 
-# Tools -----------------------------------------------------------------------
+###################################################################################################
 
 .as_ggdat <- function(list.dat, do.bivariate)
 {

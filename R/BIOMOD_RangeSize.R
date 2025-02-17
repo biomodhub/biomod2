@@ -1,4 +1,4 @@
-# BIOMOD_RangeSize documentation ----------------------------------------------
+###################################################################################################
 ##' @name BIOMOD_RangeSize
 ##' @author Wilfried Thuiller, Damien Georges, Bruno Lafourcade
 ##' 
@@ -115,10 +115,10 @@
 ##' } else {
 ##' 
 ##'   # Format Data with true absences
-##'   myBiomodData <- BIOMOD_FormatingData(resp.var = myResp,
-##'                                        expl.var = myExpl,
+##'   myBiomodData <- BIOMOD_FormatingData(resp.name = myRespName,
+##'                                        resp.var = myResp,
 ##'                                        resp.xy = myRespXY,
-##'                                        resp.name = myRespName)
+##'                                        expl.var = myExpl)
 ##' 
 ##'   # Model single models
 ##'   myBiomodModelOut <- BIOMOD_Modeling(bm.format = myBiomodData,
@@ -128,7 +128,7 @@
 ##'                                       CV.nb.rep = 2,
 ##'                                       CV.perc = 0.8,
 ##'                                       OPT.strategy = 'bigboss',
-##'                                       metric.eval = c('TSS','ROC'),
+##'                                       metric.eval = c('TSS', 'ROC'),
 ##'                                       var.import = 3,
 ##'                                       seed.val = 42)
 ##' }
@@ -182,7 +182,7 @@
 ##' @export
 ##' 
 ##' 
-## BIOMOD_RangeSize generic method ---------------------------------------------
+###################################################################################################
 
 
 setGeneric("BIOMOD_RangeSize",
@@ -423,10 +423,10 @@ setMethod('BIOMOD_RangeSize', signature(proj.current = 'SpatRaster', proj.future
           })
 
 
-# Argument Check ---------------------------------------------------------------
+###################################################################################################
 
-.BIOMOD_RangeSize.check.args <- function(proj.current, proj.future, thresholds) {
-  
+.BIOMOD_RangeSize.check.args <- function(proj.current, proj.future, thresholds)
+{
   ## dimensions checking ------------------------
   if (inherits(proj.current, "data.frame")) {
     dim_current <- nrow(proj.current)
@@ -497,9 +497,10 @@ setMethod('BIOMOD_RangeSize', signature(proj.current = 'SpatRaster', proj.future
 }
 
 
-# Additionnal tools -------------------------------------------------------
+###################################################################################################
 
-.CompteurSp <- function(Data, Value) {
+.CompteurSp <- function(Data, Value)
+{
   if (is.data.frame(Data)) {
     N <- dim(Data)[2]
     Compt <- as.data.frame(matrix(0, ncol = 4, nrow = dim(Data)[2]))
@@ -515,7 +516,8 @@ setMethod('BIOMOD_RangeSize', signature(proj.current = 'SpatRaster', proj.future
   }
 }
 
-.CompteurThresh <- function(Data, Value) {
+.CompteurThresh <- function(Data, Value)
+{
   if (is.data.frame(Data)) {
     N <- dim(Data)[2]
     V <- (length(Value)*2) +1

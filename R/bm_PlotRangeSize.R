@@ -1,4 +1,4 @@
-# bm_PlotRangeSize documentation ------------------------------------------------
+###################################################################################################
 ##' @name bm_PlotRangeSize
 ##' @author Maya Gueguen
 ##' 
@@ -88,10 +88,10 @@
 ##' } else {
 ##' 
 ##'   # Format Data with true absences
-##'   myBiomodData <- BIOMOD_FormatingData(resp.var = myResp,
-##'                                        expl.var = myExpl, 
+##'   myBiomodData <- BIOMOD_FormatingData(resp.name = myRespName,
+##'                                        resp.var = myResp,
 ##'                                        resp.xy = myRespXY,
-##'                                        resp.name = myRespName)
+##'                                        expl.var = myExpl)
 ##' 
 ##'   # Model single models
 ##'   myBiomodModelOut <- BIOMOD_Modeling(bm.format = myBiomodData,
@@ -101,7 +101,7 @@
 ##'                                       CV.nb.rep = 2,
 ##'                                       CV.perc = 0.8,
 ##'                                       OPT.strategy = 'bigboss',
-##'                                       metric.eval = c('TSS','ROC'),
+##'                                       metric.eval = c('TSS', 'ROC'),
 ##'                                       var.import = 3,
 ##'                                       seed.val = 42)
 ##' }
@@ -163,7 +163,7 @@
 ##' @export
 ##' 
 ##' 
-#------------------------------------------------------------------------------#
+###################################################################################################
 
 
 bm_PlotRangeSize <- function(bm.range, do.count = TRUE, do.perc = TRUE
@@ -182,15 +182,16 @@ bm_PlotRangeSize <- function(bm.range, do.count = TRUE, do.perc = TRUE
   if (ordinal){
 
     links <- bm.range$Compt.By.Models
-    links$color <- ifelse((links$Target - links$Source) == 0, "stable", ifelse((links$Target - links$Source) > 0, "gain","loss"))
+    links$color <- ifelse((links$Target - links$Source) == 0, "stable"
+                          , ifelse((links$Target - links$Source) > 0, "gain","loss"))
     
     gg.sankey <- ggplot(links, aes(y = n, axis1 = Source, axis2 = Target)) +
-      facet_wrap("full.name", scales = "free")+
-      ggalluvial::geom_alluvium(aes(fill = color), width = 1/1000, discern = T) +
-      ggalluvial::geom_stratum(width = 1/50, fill = "lightblue", color = "black", discern = T) +
+      facet_wrap("full.name", scales = "free") +
+      ggalluvial::geom_alluvium(aes(fill = color), width = 1/1000, discern = TRUE) +
+      ggalluvial::geom_stratum(width = 1/50, fill = "lightblue", color = "black", discern = TRUE) +
       geom_label(stat = "stratum", aes(label = after_stat(stratum))) +
       scale_x_discrete(limits = c("Current", "Future"), expand = c(.05, .05)) +
-      scale_fill_manual(values = c(gain = "#fc8d62", loss = "#66c2a5", stable = "grey"))+
+      scale_fill_manual(values = c(gain = "#fc8d62", loss = "#66c2a5", stable = "grey")) +
       theme_bw() +
       theme(axis.line = element_blank(),
             axis.text.y = element_blank(),
@@ -199,7 +200,7 @@ bm_PlotRangeSize <- function(bm.range, do.count = TRUE, do.perc = TRUE
             panel.grid.major = element_blank(),
             panel.grid.minor = element_blank(),
             panel.border = element_blank(),
-            panel.background = element_blank())+
+            panel.background = element_blank()) +
       ggtitle("Sankey diagram")
 
     do.count <- FALSE
@@ -253,14 +254,16 @@ bm_PlotRangeSize <- function(bm.range, do.count = TRUE, do.perc = TRUE
     
     ## a. Count plot ----------------------------------------------------------
     if (do.count) {
-      if (nonbinary){
+      if (nonbinary) {
         data <- ggdat
         nbthresholds <- (length(names_count) - 1)/2
-        if (nbthresholds == 1){
+        if (nbthresholds == 1) {
           colvalues <- c("#fc8d62", "grey",  "#66c2a5")
-        } else if (nbthresholds == 2){
+        } else if (nbthresholds == 2) {
           colvalues <- c("#fc8d62", "#fdb194", "grey", "#8ad1ba",  "#66c2a5")
-        } else {colvalues <- c("#fb6930", "#fc8d62","#fdb194", "grey", "#8ad1ba",  "#66c2a5", "#46af8e")}
+        } else {
+          colvalues <- c("#fb6930", "#fc8d62","#fdb194", "grey", "#8ad1ba",  "#66c2a5", "#46af8e")
+        }
         names(colvalues) <- names_count
       } else {
         data <- ggdat[which(ggdat$count.level != "Stable0"), ]
@@ -282,13 +285,15 @@ bm_PlotRangeSize <- function(bm.range, do.count = TRUE, do.perc = TRUE
     
     ## b. Percentage plot -----------------------------------------------------
     if (do.perc) {
-      if (nonbinary){
+      if (nonbinary) {
         nbthresholds <- (length(names_perc) - 1)/2
-        if (nbthresholds == 1){
+        if (nbthresholds == 1) {
           colvalues <- c("#fc8d62", "grey",  "#66c2a5")
-        } else if (nbthresholds == 2){
+        } else if (nbthresholds == 2) {
           colvalues <- c("#fc8d62", "#fdb194", "grey", "#8ad1ba",  "#66c2a5")
-        } else {colvalues <- c("#fb6930", "#fc8d62", "#fdb194", "grey", "#8ad1ba",  "#66c2a5", "#46af8e")}
+        } else {
+          colvalues <- c("#fb6930", "#fc8d62", "#fdb194", "grey", "#8ad1ba",  "#66c2a5", "#46af8e")
+        }
         names(colvalues) <- names_perc
       } else {
         colvalues <- c("PercLoss" = "#fc8d62", "PercGain" = "#66c2a5", "SpeciesRangeChange" = "#8da0cb")
@@ -323,7 +328,7 @@ bm_PlotRangeSize <- function(bm.range, do.count = TRUE, do.perc = TRUE
       # gg.maps = 'terra::plot(ggdat, col = c("-2" = "#fc8d62", "-1" = "grey", "0" = "white", "1" = "#66c2a5")
       #      , legend.width = 2, legend.shrink = 0.7
       #      , axis.args = list(at = c(-2, -1, 0, 1), labels = c("Loss", "Stable1", "Stable0", "Gain"), cex.axis = 1))'
-      if (nonbinary == FALSE && ordinal == FALSE){
+      if (nonbinary == FALSE && ordinal == FALSE) {
         gg.maps <- 'plot(ggdat,
                         col = data.frame(
                           value = c(-2, -1, 0, 1),

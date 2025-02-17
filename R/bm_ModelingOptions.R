@@ -1,4 +1,4 @@
-##----------------------------------------------------------------------------##
+###################################################################################################
 ##' @name bm_ModelingOptions
 ##' @aliases bm_ModelingOptions
 ##' @author Damien Georges, Wilfried Thuiller, Maya Gueguen
@@ -8,24 +8,25 @@
 ##' @description Parameterize and/or tune \pkg{biomod2}'s single models options.
 ##'
 ##' @param data.type a \code{character} corresponding to the data type to be used, must be either 
-##' \code{binary}, \code{count}, \code{ordinal}, \code{relative}, or \code{abundance}
+##' \code{binary}, \code{count}, \code{relative}, \code{abundance}, \code{ordinal}
 ##' @param models a \code{vector} containing model names to be computed, must be among 
 ##' \code{ANN}, \code{CTA}, \code{FDA}, \code{GAM}, \code{GBM}, \code{GLM}, \code{MARS}, 
 ##' \code{MAXENT}, \code{MAXNET}, \code{RF}, \code{RFd}, \code{SRE}, \code{XGBOOST}
 ##' @param strategy a \code{character} corresponding to the method to select models' parameters 
-##' values, must be either \code{default}, \code{bigboss}, \code{user.defined}, \code{tuned}
+##' values, must be either \code{default}, \code{bigboss}, \code{user.defined}, \code{tuned} 
+##' (see Details)
 ##' @param user.val (\emph{optional, default} \code{NULL}) \cr
 ##' A \code{list} containing parameters values for some (all) models
-##' @param user.base (\emph{optional, default} \code{bigboss}) \cr A character, 
-##' \code{default} or \code{bigboss} used when \code{strategy = 'user.defined'}. 
-##' It sets the bases of parameters to be modified by user defined values.
+##' @param user.base (\emph{optional, default} \code{bigboss}) \cr
+##' If \code{strategy = 'user.defined'}, a \code{character} corresponding to the basic set of 
+##' options to be modified by user defined values, must be either \code{default} or \code{bigboss} 
+##' (see Details)
 ##' @param bm.format (\emph{optional, default} \code{NULL}) \cr
 ##' A \code{\link{BIOMOD.formated.data}} or \code{\link{BIOMOD.formated.data.PA}} object returned 
 ##' by the \code{\link{BIOMOD_FormatingData}} function
 ##' @param calib.lines (\emph{optional, default} \code{NULL}) \cr
 ##' A \code{data.frame} object returned by \code{\link{get_calib_lines}} or 
 ##' \code{\link{bm_CrossValidation}} functions
-##' 
 ##' 
 ##'
 ##' @return 
@@ -40,22 +41,26 @@
 ##' for each single model that can be run within \pkg{biomod2} through 
 ##' \code{\link{BIOMOD_Modeling}} function.
 ##' 
-##' 12 models are currently available, and are listed within the \code{\link{ModelsTable}} dataset.
+##' 11 different algorithms are currently available, with different versions for some (\code{GAM}, 
+##' \code{MAXENT}, \code{RF}). These models are associated with \emph{binary} or \emph{nonbinary} 
+##' datatypes, but all combinations are not available. They are all listed within the 
+##' \code{\link{ModelsTable}} dataset.
 ##' 
 ##' Different strategies are available to set those parameters, through the \code{strategy} 
 ##' argument :
 ##' \describe{
 ##'   \item{default}{all parameters names and values are directly retrieve from functions to be 
-##'   called through \code{\link[methods]{formalArgs}} and \code{\link{formals}} functions respectively}
+##'   called through \code{\link[methods]{formalArgs}} and \code{\link{formals}} functions}
 ##'   \item{bigboss}{default parameter values are updated with values predefined by \pkg{biomod2} 
-##'   team}
+##'   team (see \code{\link{OptionsBigboss}})}
 ##'   \item{user.defined}{default parameter values are updated with values provided by the user}
 ##'   \item{tuned}{default parameter values are updated by calling \code{\link{bm_Tuning}} 
 ##'   function}
 ##' }
 ##' 
-##' To define the same options for all datasets of a model, you can provide these options as a list in 
-##' user.val with the names "for_all_datasets".
+##' To define the same options for all datasets of a model, options can be provided through the 
+##' \code{user.val} parameter as a \code{list} whose name is \code{for_all_datasets}.
+##' 
 ##' 
 ##' @note \code{MAXENT} being the only external model (not called through a \code{R} package), 
 ##' default parameters, and their values, are the following :
@@ -131,7 +136,8 @@
 ##' @keywords models options
 ##' 
 ##' 
-##' @seealso \code{\link{ModelsTable}}, \code{\link{BIOMOD.models.options}}, 
+##' @seealso \code{\link{ModelsTable}}, \code{\link{OptionsBigboss}}, 
+##' \code{\link{BIOMOD.models.options}}, 
 ##' \code{\link{bm_Tuning}}, \code{\link{BIOMOD_Modeling}}
 ##' @family Secondary functions
 ##' 
@@ -163,10 +169,10 @@
 ##' 
 ##' # ---------------------------------------------------------------#
 ##' # Format Data with true absences
-##' myBiomodData <- BIOMOD_FormatingData(resp.var = myResp,
-##'                                      expl.var = myExpl,
+##' myBiomodData <- BIOMOD_FormatingData(resp.name = myRespName,
+##'                                      resp.var = myResp,
 ##'                                      resp.xy = myRespXY,
-##'                                      resp.name = myRespName)
+##'                                      expl.var = myExpl)
 ##' 
 ##' # k-fold selection
 ##' cv.k <- bm_CrossValidation(bm.format = myBiomodData,
@@ -176,8 +182,8 @@
 ##' 
 ##' 
 ##' # ---------------------------------------------------------------#
-##' allModels <- c('ANN', 'CTA', 'FDA', 'GAM', 'GBM', 'GLM'
-##'                , 'MARS', 'MAXENT', 'MAXNET', 'RF', 'SRE', 'XGBOOST')
+##' allModels <- c('ANN', 'CTA', 'FDA', 'GAM', 'GBM', 'GLM', 'MARS'
+##'                , 'MAXENT', 'MAXNET', 'RF', 'RFd', 'SRE', 'XGBOOST')
 ##' 
 ##' # default parameters
 ##' opt.d <- bm_ModelingOptions(data.type = 'binary',
@@ -229,7 +235,6 @@
 ##' opt.t
 ##' }
 ##' 
-
 ##' 
 ##'
 ##' @importFrom foreach foreach %do%
@@ -238,6 +243,7 @@
 ##' @export
 ##'
 ##'
+###################################################################################################
 
 
 bm_ModelingOptions <- function(data.type
@@ -248,9 +254,12 @@ bm_ModelingOptions <- function(data.type
   .bm_cat("Build Modeling Options")
   
   if (missing(models)) {
-    models <- ifelse(data.type == "binary", c('ANN', 'CTA', 'FDA', 'GAM', 'GBM', 'GLM', 'MARS', 'MAXENT', 'MAXNET', 'RF','RFd', 'SRE', 'XGBOOST'),
-                     ifelse(data.type == "ordinal", c('CTA', 'FDA', 'GAM', 'GAM.gam.gam', 'GAM.mgcv.bam', 'GAM.mgcv.gam', 'GLM', 'MARS', 'RF', 'XGBOOST'),
-                            c('CTA', 'GAM','GAM.gam.gam', 'GAM.mgcv.bam', 'GAM.mgcv.gam', 'GBM', 'GLM', 'MARS', 'RF', 'XGBOOST')))
+    models <- ifelse(data.type == "binary", c('ANN', 'CTA', 'FDA', 'GAM', 'GBM', 'GLM', 'MARS'
+                                              , 'MAXENT', 'MAXNET', 'RF', 'RFd', 'SRE', 'XGBOOST'),
+                     ifelse(data.type == "ordinal", c('CTA', 'FDA', 'GAM', 'GAM.gam.gam', 'GAM.mgcv.bam'
+                                                      , 'GAM.mgcv.gam', 'GLM', 'MARS', 'RF', 'XGBOOST'),
+                            c('CTA', 'GAM', 'GAM.gam.gam', 'GAM.mgcv.bam', 'GAM.mgcv.gam'
+                              , 'GBM', 'GLM', 'MARS', 'RF', 'XGBOOST')))
   }
   
   ## 0. Check arguments ---------------------------------------------------------------------------
@@ -267,7 +276,6 @@ bm_ModelingOptions <- function(data.type
   
   ## Load single models informations
   # data(ModelsTable) # internal data is already readily available
-  
   data.type.ModelsTable <- ifelse(data.type == "binary", "binary", "nonbinary")
   
   ## 1. Get options -------------------------------------------------------------------------------
@@ -320,15 +328,14 @@ bm_ModelingOptions <- function(data.type
 }
 
 
-
-# ---------------------------------------------------------------------------- #
+###################################################################################################
 
 .bm_ModelingOptions.check.args <- function(data.type, models, strategy
                                            , user.val = NULL, user.base = NULL
                                            , bm.format = NULL, calib.lines = NULL)
 {
   ## check if type is supported
-  avail.types.list <- c('binary', 'count', 'ordinal', 'relative', 'abundance', 'nonbinary')
+  avail.types.list <- c('binary', 'count', 'relative', 'abundance', 'ordinal', 'nonbinary')
   .fun_testIfIn(TRUE, "data.type", data.type, avail.types.list)
   
   ## Check data.type coherence 
@@ -341,7 +348,8 @@ bm_ModelingOptions <- function(data.type
   
   ## check if model is supported
   if (data.type == "binary") {
-    avail.models.list <- c('ANN', 'CTA', 'FDA', 'GAM', 'GAM.gam.gam', 'GAM.mgcv.bam', 'GAM.mgcv.gam', 'GBM', 'GLM', 'MARS', 'MAXENT', 'MAXNET', 'RF', 'RFd', 'SRE', 'XGBOOST')
+    avail.models.list <- c('ANN', 'CTA', 'FDA', 'GAM', 'GAM.gam.gam', 'GAM.mgcv.bam', 'GAM.mgcv.gam'
+                           , 'GBM', 'GLM', 'MARS', 'MAXENT', 'MAXNET', 'RF', 'RFd', 'SRE', 'XGBOOST')
   } else if (data.type == "ordinal") {
     avail.models.list <- c('CTA', 'FDA', 'GAM', 'GAM.gam.gam', 'GAM.mgcv.bam', 'GAM.mgcv.gam', 'GLM', 'MARS', 'RF', 'XGBOOST')
   } else {
@@ -401,5 +409,4 @@ bm_ModelingOptions <- function(data.type
   
   return(list(models = models, data.type = data.type))
 }
-
 

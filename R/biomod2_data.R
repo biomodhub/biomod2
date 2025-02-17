@@ -1,3 +1,4 @@
+###################################################################################################
 #' Single models package and functions
 #'
 #' A \code{data.frame} containing for each single model available in \pkg{biomod2} 
@@ -28,6 +29,8 @@
 #'   \item SRE (\code{\link{bm_SRE}})
 #'   \item XGBOOST (\code{\link[xgboost]{xgboost}})
 #' }
+#' 
+###################################################################################################
 
 "ModelsTable"
 
@@ -52,6 +55,8 @@ ModelsTable <- data.frame(model = c('ANN', 'CTA', 'FDA', 'GAM', 'GAM', 'GAM', 'G
 # usethis::use_data(ModelsTable, overwrite = TRUE)
 # usethis::use_data(ModelsTable, overwrite = TRUE, internal = TRUE)
 
+
+###################################################################################################
 #' Bigboss pre-defined parameter values for single models
 #'
 #' A \code{\link{BIOMOD.models.options}} object containing for each single model available in 
@@ -169,7 +174,7 @@ ModelsTable <- data.frame(model = c('ANN', 'CTA', 'FDA', 'GAM', 'GAM', 'GAM', 'G
 #'    }
 #' }
 #' 
-#' 
+###################################################################################################
 
 "OptionsBigboss"
 
@@ -282,6 +287,7 @@ ModelsTable <- data.frame(model = c('ANN', 'CTA', 'FDA', 'GAM', 'GAM', 'GAM', 'G
 # usethis::use_data(OptionsBigboss, ModelsTable, overwrite = TRUE, internal = TRUE)
 
 
+###################################################################################################
 #' Presence-Absence data to build test SDM
 #'
 #' A dataset covering all the continent with presence/absence data for 6 mammal
@@ -299,6 +305,8 @@ ModelsTable <- data.frame(model = c('ANN', 'CTA', 'FDA', 'GAM', 'GAM', 'GAM', 'G
 #'   \item{TenrecEcaudatus}{Presence (1) or Absence (0) for tailless tenrec}
 #'   \item{VulpesVulpes}{Presence (1) or Absence (0) for red fox}
 #' }
+#' 
+###################################################################################################
 
 "DataSpecies"
 
@@ -310,6 +318,7 @@ ModelsTable <- data.frame(model = c('ANN', 'CTA', 'FDA', 'GAM', 'GAM', 'GAM', 'G
 # usethis::use_data(DataSpecies, overwrite = TRUE)
 
 
+###################################################################################################
 #' Bioclimatic variables for SDM based on current condition
 #'
 #' A \code{\link[terra:rast]{SpatRaster}} with 5 bioclimatic variables commonly
@@ -324,6 +333,8 @@ ModelsTable <- data.frame(model = c('ANN', 'CTA', 'FDA', 'GAM', 'GAM', 'GAM', 'G
 #'   \item{bio11}{Mean Temperature of Coldest Quarter}
 #'   \item{bio12}{Annual Precipitation}
 #' }
+#' 
+###################################################################################################
 
 "bioclim_current"
 
@@ -339,6 +350,8 @@ ModelsTable <- data.frame(model = c('ANN', 'CTA', 'FDA', 'GAM', 'GAM', 'GAM', 'G
 #   )
 # usethis::use_data(bioclim_current, overwrite = TRUE )
 
+
+###################################################################################################
 #' Bioclimatic variables for SDM based on future condition
 #'
 #' A \code{\link[terra:rast]{SpatRaster}} with 5 bioclimatic variables commonly
@@ -353,6 +366,8 @@ ModelsTable <- data.frame(model = c('ANN', 'CTA', 'FDA', 'GAM', 'GAM', 'GAM', 'G
 #'   \item{bio11}{Mean Temperature of Coldest Quarter}
 #'   \item{bio12}{Annual Precipitation}
 #' }
+#' 
+###################################################################################################
 
 "bioclim_future"
 

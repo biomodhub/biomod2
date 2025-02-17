@@ -16,7 +16,8 @@
 ##' object that can be obtained with the \code{\link{BIOMOD_Modeling}} or 
 ##' \code{\link{BIOMOD_EnsembleModeling}} functions
 ##' @param metric.eval a 2-length \code{vector} containing evaluation metric names to be used, must 
-##' be among the metrics use for \code{bm.out} 
+##' be among the metrics used for \code{bm.out} and that can be obtained with the 
+##' \code{\link{get_evaluations}} function applied to \code{bm.out}
 ##' @param dataset a \code{character} corresponding to the dataset upon which evaluation metrics 
 ##' have been calculated and that is to be represented, must be among \code{calibration}, 
 ##' \code{validation}, \code{evaluation}
@@ -91,10 +92,10 @@
 ##' } else {
 ##' 
 ##'   # Format Data with true absences
-##'   myBiomodData <- BIOMOD_FormatingData(resp.var = myResp,
-##'                                        expl.var = myExpl,
+##'   myBiomodData <- BIOMOD_FormatingData(resp.name = myRespName,
+##'                                        resp.var = myResp,
 ##'                                        resp.xy = myRespXY,
-##'                                        resp.name = myRespName)
+##'                                        expl.var = myExpl)
 ##' 
 ##'   # Model single models
 ##'   myBiomodModelOut <- BIOMOD_Modeling(bm.format = myBiomodData,
@@ -104,7 +105,7 @@
 ##'                                       CV.nb.rep = 2,
 ##'                                       CV.perc = 0.8,
 ##'                                       OPT.strategy = 'bigboss',
-##'                                       metric.eval = c('TSS','ROC'),
+##'                                       metric.eval = c('TSS', 'ROC'),
 ##'                                       var.import = 3,
 ##'                                       seed.val = 42)
 ##' }
@@ -194,8 +195,7 @@ bm_PlotEvalMean <- function(bm.out, metric.eval = NULL, dataset = 'calibration',
   ## 2. Check metric.eval argument --------------------------------------------
   scores <- get_evaluations(bm.out)
   
-  if (!is.null(scores)){
-    
+  if (!is.null(scores)) {
     avail.metrics <- sort(unique(as.character(scores$metric.eval)))
     if (is.null(metric.eval) && length(avail.metrics) > 1) {
       metric.eval <- sort(unique(as.character(scores$metric.eval)))[1:2]

@@ -1,4 +1,4 @@
-# bm_PseudoAbsences doc ---------------------------------------------------------
+###################################################################################################
 ##' @name bm_PseudoAbsences
 ##' @aliases bm_PseudoAbsences
 ##' @aliases bm_PseudoAbsences_random
@@ -28,7 +28,9 @@
 ##' @param nb.absences (\emph{optional, default} \code{NULL}) \cr
 ##' If \code{strategy = 'random'} or \code{strategy = 'sre'} or \code{strategy = 'disk'}, an 
 ##' \code{integer} corresponding to the number of pseudo-absence points that will be selected for 
-##' each pseudo-absence repetition (true absences included)
+##' each pseudo-absence repetition (true absences included). \cr
+##' It can also be a \code{vector} of the same length as \code{nb.rep} containing \code{integer} 
+##' values corresponding to the different numbers of pseudo-absences to be selected (see Details)
 ##' @param sre.quant (\emph{optional, default} \code{0}) \cr
 ##' If \code{strategy = 'sre'}, a \code{numeric} between \code{0} and \code{0.5} defining the 
 ##' half-quantile used to make the \code{sre} pseudo-absence selection (see \code{\link{bm_SRE}})
@@ -41,18 +43,19 @@
 ##' used to make the \code{disk} pseudo-absence selection (in the same projection system units as 
 ##' \code{expl.var})
 ##' @param fact.aggr (\emph{optional, default} \code{NULL}) \cr
-##' If \code{strategy = 'random'} or \code{strategy = 'disk'}, a \code{integer} defining the 
-##' factor of aggregation to reduce the resolution
+##' If \code{strategy = 'random'} or \code{strategy = 'disk'}, an \code{integer} defining the 
+##' factor of aggregation to reduce the spatial resolution of the environmental variables
 ##' @param user.table (\emph{optional, default} \code{NULL}) \cr
 ##' If \code{strategy = 'user.defined'}, a \code{matrix} or \code{data.frame} with as many rows as 
 ##' \code{resp.var} values, as many columns as \code{nb.rep}, and containing \code{TRUE} or 
 ##' \code{FALSE} values defining which points will be used to build the species distribution 
 ##' model(s) for each repetition
 ##' 
-##' @param \ldots (\emph{optional, one or several of the above arguments depending on the selected 
-##' method}) 
 ##' @param seed.val (\emph{optional, default} \code{NULL}) \cr 
 ##' An \code{integer} value corresponding to the new seed value to be set
+##' 
+##' @param \ldots (\emph{optional, one or several of the listed above arguments depending on the 
+##' selected method}) 
 ##' 
 ##' 
 ##' @return 
@@ -91,7 +94,13 @@
 ##' 
 ##' The user can provide pseudo-absences locations through a table containing spatial locations 
 ##' in rows, pseudo-absences repetitions in columns, and \code{TRUE/FALSE} values indicating 
-##' whether each point is to be considered as pseudo-absence or not for each dataset.
+##' whether each point is to be considered as pseudo-absence or not for each dataset. \cr \cr
+##' 
+##' \bold{Concerning multiple size selection :}
+##' 
+##' It is possible to select create several pseudo-absence repetitions with different number of 
+##' points, BUT with the same sampling strategy. \code{nb.absences} must contain as many values 
+##' as the number of sets of pseudo-absences (\code{nb.rep}).
 ##' 
 ##'
 ##' @keywords pseudo-absence random SRE disk
@@ -201,7 +210,7 @@
 ##' @export
 ##' 
 ##' 
-## --------------------------------------------------------------------------- #
+###################################################################################################
 
 
 bm_PseudoAbsences <- function(resp.var, expl.var, nb.rep = 1, strategy = 'random', nb.absences = NULL
@@ -215,7 +224,7 @@ bm_PseudoAbsences <- function(resp.var, expl.var, nb.rep = 1, strategy = 'random
   rm(args)
   
   ## 1. Create output object ----------------------------------------------------------------------
-  if ((nb.rep == 0 || any(nb.absences <= 0)) & strategy != 'user.defined') {
+  if ((nb.rep == 0 || any(nb.absences <= 0)) && strategy != 'user.defined') {
     out <- NULL
   } else {
     if (length(nb.absences) == 1) {
@@ -330,7 +339,7 @@ bm_PseudoAbsences <- function(resp.var, expl.var, nb.rep = 1, strategy = 'random
 }
 
 
-# Argument Check --------------------------------------------------------------
+###################################################################################################
 
 .bm_PseudoAbsences.check.args <- function(resp.var, expl.var, nb.rep, strategy, nb.absences
                                           , sre.quant, dist.min, dist.max, user.table, seed.val)
@@ -447,7 +456,8 @@ bm_PseudoAbsences <- function(resp.var, expl.var, nb.rep = 1, strategy = 'random
               user.table = user.table))
 }
 
-# Additionnal tools ------------------------------------------------------------
+
+###################################################################################################
 
 .get_nb_true_abs <- function(sp)
 {
@@ -495,6 +505,8 @@ bm_PseudoAbsences <- function(resp.var, expl.var, nb.rep = 1, strategy = 'random
   return(xy)
 }
 
+
+###################################################################################################
 
 # bm_PseudoAbsences user-defined methods --------------------------------------
 

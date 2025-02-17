@@ -1,4 +1,4 @@
-## --------------------------------------------------------------------------- ##
+###################################################################################################
 ##' @name bm_Tuning
 ##' @author Frank Breiner, Maya Gueguen, Helene Blancheteau
 ##' 
@@ -54,8 +54,8 @@
 ##' Set by default to : \cr
 ##' 
 ##' \code{ctrl.train <- caret::trainControl(method = "repeatedcv", repeats = 3, number = 10,} \cr
-##' \code{                                  summaryFunction = caret::twoClassSummary,} \cr
-##' \code{                                  classProbs = TRUE, returnData = FALSE)} \cr \cr
+##' \code{summaryFunction = caret::twoClassSummary,} \cr
+##' \code{classProbs = TRUE, returnData = FALSE)} \cr \cr
 ##' 
 ##' 
 ##' \bold{Concerning \code{params.train} parameter :}
@@ -140,10 +140,10 @@
 ##' 
 ##' # --------------------------------------------------------------- #
 ##' # Format Data with true absences
-##' myBiomodData <- BIOMOD_FormatingData(resp.var = myResp,
-##'                                      expl.var = myExpl,
+##' myBiomodData <- BIOMOD_FormatingData(resp.name = myRespName,
+##'                                      resp.var = myResp,
 ##'                                      resp.xy = myRespXY,
-##'                                      resp.name = myRespName)
+##'                                      expl.var = myExpl)
 ##' 
 ##' 
 ##' # --------------------------------------------------------------- #
@@ -189,7 +189,8 @@
 ##' 
 ##' @export
 ##' 
-#------------------------------------------------------------------------------#
+##' 
+###################################################################################################
 
 
 bm_Tuning <- function(model,
@@ -220,7 +221,7 @@ bm_Tuning <- function(model,
                                           MARS.nprune = 2:max(21, 2 * ncol(bm.format@data.env.var) + 1),
                                           MAXENT.algorithm = 'maxnet',
                                           MAXENT.parallel = TRUE,
-                                          MAXENT.tune.args = list(rm = seq(0.5, 1, 0.5), fc = c("L")),
+                                          MAXENT.tune.args = list(rm = seq(0.5, 1, 0.5), fc = c('L')),
                                           MAXENT.partitions = 'randomkfold',
                                           MAXENT.kfolds = 10,
                                           MAXENT.user.grp = NULL,
@@ -235,8 +236,6 @@ bm_Tuning <- function(model,
                                           XGBOOST.min_child_weight = 1,
                                           XGBOOST.subsample = 0.5))
 {
-  
-  
   ## 0. Check arguments ---------------------------------------------------------------------------
   args <- .bm_Tuning.check.args(model = model, tuning.fun = tuning.fun
                                 , do.formula = do.formula, do.stepAIC = do.stepAIC
@@ -308,6 +307,7 @@ bm_Tuning <- function(model,
     {
       cat(paste0("\n\t\t> Dataset ", dataset.i))
       argstmp <- bm.options@args.default
+      argstmp$formula <- bm.options@args.values[[dataset.i]]$formula
       
       if (model == "MAXNET") {
         warning("No tuning available for that model. Sorry.")
@@ -551,7 +551,7 @@ bm_Tuning <- function(model,
               argstmp$formula <- formula(TMP[which.max(TMP[, 'stat']), "formula"])
             }
           } else {
-            if (model %in% c("CTA", "FDA", "GAM", "GBM", "GLM")) {
+            if (length(argstmp$formula) <= 1 && model %in% c("CTA", "FDA", "GAM", "GBM", "GLM")) {
               argstmp$formula <- bm_MakeFormula(resp.name = bm.format@sp.name
                                                 , expl.var = myExpl
                                                 , type = 'simple'
@@ -607,8 +607,7 @@ bm_Tuning <- function(model,
 }
 
 
-
-# ---------------------------------------------------------------------------- #
+###################################################################################################
 
 .bm_Tuning.check.args <- function(model, tuning.fun, do.formula, do.stepAIC
                                   , bm.options, bm.format, metric.eval, metric.AIC
@@ -764,7 +763,8 @@ bm_Tuning <- function(model,
               , metric.bm = metric.bm))
 }
 
-# ---------------------------------------------------------------------------- #
+
+###################################################################################################
 
 .scope <- function(enviroTrain, Smoother, degree)
 {
@@ -794,3 +794,4 @@ bm_Tuning <- function(model,
   
   return(step.list)
 }
+

@@ -358,10 +358,10 @@ setMethod('get_eval_data', signature('BIOMOD.formated.data'), function(obj) {
 ##' 
 ##' ## ----------------------------------------------------------------------- #
 ##' # Format Data with true absences
-##' myBiomodData <- BIOMOD_FormatingData(resp.var = myResp,
-##'                                      expl.var = myExpl,
+##' myBiomodData <- BIOMOD_FormatingData(resp.name = myRespName,
+##'                                      resp.var = myResp,
 ##'                                      resp.xy = myRespXY,
-##'                                      resp.name = myRespName)
+##'                                      expl.var = myExpl)
 ##' 
 ##' ## ----------------------------------------------------------------------- #
 ##' # Model single models
@@ -372,7 +372,7 @@ setMethod('get_eval_data', signature('BIOMOD.formated.data'), function(obj) {
 ##'                                     CV.nb.rep = 2,
 ##'                                     CV.perc = 0.8,
 ##'                                     OPT.strategy = 'bigboss',
-##'                                     metric.eval = c('TSS','ROC'),
+##'                                     metric.eval = c('TSS', 'ROC'),
 ##'                                     var.import = 3,
 ##'                                     seed.val = 42)
 ##' myBiomodModelOut
@@ -411,7 +411,7 @@ setClass("BIOMOD.models.out",
                    models.computed = '',
                    models.failed = '',
                    has.evaluation.data = FALSE,
-                   scale.models = TRUE,
+                   scale.models = FALSE,
                    formated.input.data = new('BIOMOD.stored.formated.data'),
                    calib.lines = new('BIOMOD.stored.data.frame'),
                    models.options = new('BIOMOD.stored.options'),
@@ -719,10 +719,10 @@ setMethod("get_variables_importance", "BIOMOD.models.out",
 ##' } else {
 ##' 
 ##'   # Format Data with true absences
-##'   myBiomodData <- BIOMOD_FormatingData(resp.var = myResp,
-##'                                        expl.var = myExpl,
+##'   myBiomodData <- BIOMOD_FormatingData(resp.name = myRespName,
+##'                                        resp.var = myResp,
 ##'                                        resp.xy = myRespXY,
-##'                                        resp.name = myRespName)
+##'                                        expl.var = myExpl)
 ##' 
 ##'   # Model single models
 ##'   myBiomodModelOut <- BIOMOD_Modeling(bm.format = myBiomodData,
@@ -732,7 +732,7 @@ setMethod("get_variables_importance", "BIOMOD.models.out",
 ##'                                       CV.nb.rep = 2,
 ##'                                       CV.perc = 0.8,
 ##'                                       OPT.strategy = 'bigboss',
-##'                                       metric.eval = c('TSS','ROC'),
+##'                                       metric.eval = c('TSS', 'ROC'),
 ##'                                       var.import = 3,
 ##'                                       seed.val = 42)
 ##' }
@@ -783,7 +783,7 @@ setClass("BIOMOD.projection.out",
                    sp.name = '',
                    expl.var.names = '',
                    coord = data.frame(),
-                   scale.models = TRUE,
+                   scale.models = FALSE,
                    models.projected = '',
                    type = '',
                    data.type = "binary"),
@@ -1191,10 +1191,10 @@ setMethod("get_predictions", "BIOMOD.projection.out",
 ##' } else {
 ##' 
 ##'   # Format Data with true absences
-##'   myBiomodData <- BIOMOD_FormatingData(resp.var = myResp,
-##'                                        expl.var = myExpl,
+##'   myBiomodData <- BIOMOD_FormatingData(resp.name = myRespName,
+##'                                        resp.var = myResp,
 ##'                                        resp.xy = myRespXY,
-##'                                        resp.name = myRespName)
+##'                                        expl.var = myExpl)
 ##' 
 ##'   # Model single models
 ##'   myBiomodModelOut <- BIOMOD_Modeling(bm.format = myBiomodData,
@@ -1204,7 +1204,7 @@ setMethod("get_predictions", "BIOMOD.projection.out",
 ##'                                       CV.nb.rep = 2,
 ##'                                       CV.perc = 0.8,
 ##'                                       OPT.strategy = 'bigboss',
-##'                                       metric.eval = c('TSS','ROC'),
+##'                                       metric.eval = c('TSS', 'ROC'),
 ##'                                       var.import = 3,
 ##'                                       seed.val = 42)
 ##' }
@@ -1500,13 +1500,32 @@ setGeneric("set_new_dirname", function(obj, new.dir.name) { standardGeneric("set
   save(list = name.OUT, file = new.object@link)
 }
 
+
+## set_new_dirname.BIOMOD.models.out ------------------------------------------
+##' 
+##' @rdname setters
+##' @export
+##' 
+
 setMethod('set_new_dirname', signature(obj = 'BIOMOD.models.out'), function(obj, new.dir.name) {
   .set_new_dirname.models(obj = obj, new.dir.name = new.dir.name, obj.type = "mod")
 })
 
+## set_new_dirname.BIOMOD.ensemble.models.out ---------------------------------
+##' 
+##' @rdname setters
+##' @export
+##' 
+
 setMethod('set_new_dirname', signature(obj = 'BIOMOD.ensemble.models.out'), function(obj, new.dir.name) {
   .set_new_dirname.models(obj = obj, new.dir.name = new.dir.name, obj.type = "em")
 })
+
+## set_new_dirname.BIOMOD.projection.out --------------------------------------
+##' 
+##' @rdname setters
+##' @export
+##' 
 
 setMethod('set_new_dirname', signature(obj = 'BIOMOD.projection.out'), function(obj, new.dir.name)
 {

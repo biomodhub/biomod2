@@ -134,10 +134,10 @@
 ##' 
 ##' ## ----------------------------------------------------------------------- #
 ##' # Format Data with true absences
-##' myBiomodData <- BIOMOD_FormatingData(resp.var = myResp,
-##'                                      expl.var = myExpl,
+##' myBiomodData <- BIOMOD_FormatingData(resp.name = myRespName,
+##'                                      resp.var = myResp,
 ##'                                      resp.xy = myRespXY,
-##'                                      resp.name = myRespName)
+##'                                      expl.var = myExpl)
 ##' myBiomodData
 ##' plot(myBiomodData)
 ##' summary(myBiomodData)
@@ -199,7 +199,7 @@ setGeneric("BIOMOD.formated.data", def = function(sp, env, ...) { standardGeneri
     .tmp <- .check_formating_spatial(resp.var = sp,
                                      expl.var = env,
                                      resp.xy = xy,
-                                     eval.data = is.eval)
+                                     is.eval = is.eval)
     sp <- .tmp$resp.var
     xy <- .tmp$resp.xy
     rm(.tmp)
@@ -229,7 +229,7 @@ setGeneric("BIOMOD.formated.data", def = function(sp, env, ...) { standardGeneri
   
   ## Check sp
   if(data.type == "binary"){
-    sp <- .check_formating_resp.var.bin(resp.var = sp, eval.data = is.eval)
+    sp <- .check_formating_resp.var.bin(resp.var = sp, is.eval = is.eval)
   } else {
     sp <- .check_formating_resp.var.abun(resp.var = sp)
   }
@@ -593,10 +593,10 @@ setMethod('BIOMOD.formated.data', signature(sp = 'numeric', env = 'SpatRaster'),
 ##' 
 ##' ## ----------------------------------------------------------------------- #
 ##' # Format Data with true absences
-##' myBiomodData <- BIOMOD_FormatingData(resp.var = myResp,
-##'                                      expl.var = myExpl,
+##' myBiomodData <- BIOMOD_FormatingData(resp.name = myRespName,
+##'                                      resp.var = myResp,
 ##'                                      resp.xy = myRespXY,
-##'                                      resp.name = myRespName)
+##'                                      expl.var = myExpl)
 ##' myBiomodData
 ##' plot(myBiomodData)
 ##' 
@@ -1218,10 +1218,10 @@ setMethod('show', signature('BIOMOD.formated.data'),
 ##' 
 ##' ## ----------------------------------------------------------------------- #
 ##' # Format Data with true absences
-##' myBiomodData <- BIOMOD_FormatingData(resp.var = myResp,
-##'                                      expl.var = myExpl,
+##' myBiomodData <- BIOMOD_FormatingData(resp.name = myRespName,
+##'                                      resp.var = myResp,
 ##'                                      resp.xy = myRespXY,
-##'                                      resp.name = myRespName)
+##'                                      expl.var = myExpl)
 ##' myBiomodData
 ##' summary(myBiomodData)
 ##' 
@@ -1464,10 +1464,10 @@ setMethod('summary', signature(object = 'BIOMOD.formated.data'),
 ##' 
 ##' ## ----------------------------------------------------------------------- #
 ##' # Format Data with pseudo-absences : random method
-##' myBiomodData <- BIOMOD_FormatingData(resp.var = myResp,
-##'                                      expl.var = myExpl,
+##' myBiomodData <- BIOMOD_FormatingData(resp.name = myRespName,
+##'                                      resp.var = myResp,
 ##'                                      resp.xy = myRespXY,
-##'                                      resp.name = myRespName,
+##'                                      expl.var = myExpl,
 ##'                                      PA.nb.rep = 4,
 ##'                                      PA.strategy = 'random',
 ##'                                      PA.nb.absences = 1000)

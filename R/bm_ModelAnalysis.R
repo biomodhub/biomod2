@@ -1,4 +1,4 @@
-# BIOMOD_RangeSize documentation ----------------------------------------------
+###################################################################################################
 ##' @name bm_ModelAnalysis
 ##' @author Hélène Blancheteau
 ##' 
@@ -39,19 +39,21 @@
 ##' @export
 ##' 
 ##' 
+###################################################################################################
+
 
 bm_ModelAnalysis <- function(bm.mod, 
-                             models.chosen = "all",
+                             models.chosen = 'all',
                              do.plot = TRUE, 
-                             color.by = "full.name",
-                             do.Rpredicted = FALSE){
-  
+                             color.by = 'full.name',
+                             do.Rpredicted = FALSE)
+{
   .bm_cat("Model analysis")
   args <- .bm_ModelAnalysis.check.args(bm.mod = bm.mod, models.chosen = models.chosen)
   for (argi in names(args)) { assign(x = argi, value = args[[argi]]) }
   rm(args)
   
-  models.coherent <- grep("GAM|MARS|GLM|CTA", models.chosen, value = T)
+  models.coherent <- grep("GAM|MARS|GLM|CTA", models.chosen, value = TRUE)
 
   res <- foreach(mod.name = models.coherent, .combine = rbind) %dopar% {
     cat("\n\t> Analysis", mod.name, "...")
@@ -147,6 +149,7 @@ bm_ModelAnalysis <- function(bm.mod,
 }
 
 
+###################################################################################################
 
 # .bm_return_info_analysys
 # Functions to get residuals and fitted values of a model
@@ -158,36 +161,35 @@ bm_ModelAnalysis <- function(bm.mod,
 
 setGeneric(".bm_return_info_analysys", function(mod) { standardGeneric(".bm_return_info_analysys")})
 
-setMethod(".bm_return_info_analysys", signature("CTA_biomod2_model"), function(mod){
+setMethod(".bm_return_info_analysys", signature("CTA_biomod2_model"), function(mod) {
   resids <- as.vector(residuals(mod@model)) 
   fit <- as.vector(mod@model$y) #[,"y"]
   return(data.frame("obs" = 1:length(resids), "residuals" = resids, "fitted" = fit))
 })
 
-setMethod(".bm_return_info_analysys", signature("GAM_biomod2_model"), function(mod){
+setMethod(".bm_return_info_analysys", signature("GAM_biomod2_model"), function(mod) {
   resids <- as.vector(residuals(mod@model)) 
   fit <- as.vector(fitted(mod@model))
   return(data.frame("obs" = 1:length(resids), "residuals" = resids, "fitted" = fit))
 })
 
-setMethod(".bm_return_info_analysys", signature("GLM_biomod2_model"), function(mod){
+setMethod(".bm_return_info_analysys", signature("GLM_biomod2_model"), function(mod) {
   resids <- as.vector(residuals(mod@model)) 
   fit <- as.vector(fitted(mod@model))
   return(data.frame("obs" = 1:length(resids), "residuals" = resids, "fitted" = fit))
 })
 
-setMethod(".bm_return_info_analysys", signature("MARS_biomod2_model"), function(mod){
+setMethod(".bm_return_info_analysys", signature("MARS_biomod2_model"), function(mod) {
   resids <- as.vector(residuals(mod@model)) 
   fit <- as.vector(fitted(mod@model))
   return(data.frame( "obs" = 1:length(resids), "residuals" = resids, "fitted" = fit))
 })
 
 
+###################################################################################################
 
-# Argument Check ---------------------------------------------------------------
-
-.bm_ModelAnalysis.check.args <- function(bm.mod, models.chosen) {
-  
+.bm_ModelAnalysis.check.args <- function(bm.mod, models.chosen)
+{
   .fun_testIfInherits(TRUE, "bm.mod", bm.mod, "BIOMOD.models.out")
   
   ## Stop if ordinal -------------------------------------------------------
@@ -224,6 +226,7 @@ setMethod(".bm_return_info_analysys", signature("MARS_biomod2_model"), function(
 }
 
 
+###################################################################################################
 
 .bm_PRESS <- function(bm.mod, mod.name, perc = 0.5) { #perc --> percentage of points evaluate for overfitting 
   

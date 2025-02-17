@@ -1,4 +1,4 @@
-# BIOMOD_Modeling ---------------------------------------------------------
+###################################################################################################
 ##' @name BIOMOD_Modeling
 ##' @author Wilfried Thuiller, Damien Georges, Robin Engler
 ##' 
@@ -37,10 +37,10 @@
 ##' If \code{strategy = 'strat'} or \code{strategy = 'env'}, a \code{character} corresponding 
 ##' to how data will be balanced between partitions, must be either \code{presences} or
 ##' \code{absences} 
-##' @param CV.env.var (\emph{optional}) \cr If \code{strategy = 'env'}, a \code{character} 
-##' corresponding to the environmental variables used to build the partition. \code{k} partitions 
-##' will be built for each environmental variables. By default the function uses all 
-##' environmental variables available.
+##' @param CV.env.var (\emph{optional, default} \code{NULL}) \cr 
+##' If \code{strategy = 'env'}, a \code{character} corresponding to the environmental variables 
+##' used to build the partition (all available variables by default), and for which \code{CV.k} 
+##' partitions will be built
 ##' @param CV.strat (\emph{optional, default} \code{'both'}) \cr
 ##' If \code{strategy = 'env'}, a \code{character} corresponding to how data will partitioned 
 ##' along gradient, must be among \code{x}, \code{y}, \code{both}
@@ -64,23 +64,27 @@
 ##' A \code{\link{BIOMOD.models.options}} object returned by the \code{\link{bm_ModelingOptions}} 
 ##' function
 ##' 
-##' @param weights (\emph{optional, default} \code{NULL}) \cr 
-##' A \code{vector} of \code{numeric} values corresponding to observation weights (one per 
-##' observation, see Details)
-##' @param prevalence (\emph{optional, default} \code{NULL}) \cr 
-##' A \code{numeric} between \code{0} and \code{1} corresponding to the species prevalence to 
-##' build '\emph{weighted response weights}' (see Details)
 ##' @param metric.eval a \code{vector} containing evaluation metric names to be used, must 
 ##' be among \code{ROC}, \code{TSS}, \code{KAPPA}, \code{ACCURACY}, \code{BIAS}, \code{POD}, 
-##' \code{FAR}, \code{POFD}, \code{SR}, \code{CSI}, \code{ETS}, \code{OR}, 
-##' \code{ORSS}, \code{BOYCE}, \code{MPA}, \code{RMSE}, \code{MAE}, \code{MSE}, \code{Rsquared}, \code{Rsquared_aj},
-##' \code{Max_error}, \code{Accuracy}, \code{"Recall"}, \code{"Precision"}, \code{"F1"}
+##' \code{FAR}, \code{POFD}, \code{SR}, \code{CSI}, \code{ETS}, \code{OR}, \code{ORSS}, 
+##' \code{BOYCE}, \code{MPA} (\emph{binary data}), 
+##' \code{RMSE}, \code{MAE}, \code{MSE}, \code{Rsquared}, \code{Rsquared_aj}, \code{Max_error} 
+##' (\emph{abundance / count / relative data}), 
+##' \code{Accuracy}, \code{Recall}, \code{Precision}, \code{F1} (\emph{ordinal data})
 ##' @param var.import (\emph{optional, default} \code{NULL}) \cr 
 ##' An \code{integer} corresponding to the number of permutations to be done for each variable to 
 ##' estimate variable importance
+##' 
+##' @param weights (\emph{optional, default} \code{NULL}) \cr 
+##' A \code{vector} of \code{numeric} values corresponding to observation weights (one per 
+##' observation, see Details)
+##' @param prevalence (\emph{optional, default} \code{0.5}) \cr 
+##' A \code{numeric} between \code{0} and \code{1} corresponding to the species prevalence to 
+##' build '\emph{weighted response weights}' (see Details)
 ##' @param scale.models (\emph{optional, default} \code{FALSE}) \cr 
 ##' A \code{logical} value defining whether all models predictions should be scaled with a 
 ##' binomial GLM or not
+##' 
 ##' @param nb.cpu (\emph{optional, default} \code{1}) \cr 
 ##' An \code{integer} value corresponding to the number of computing resources to be used to 
 ##' parallelize the single models computation
@@ -123,7 +127,7 @@
 ##'     \item \code{FDA} : Flexible Discriminant Analysis (\code{\link[mda]{fda}})
 ##'     \item \code{GAM} : Generalized Additive Model (\code{\link[gam]{gam}}, \code{\link[mgcv]{gam}} 
 ##'     or \code{\link[mgcv]{bam}}) \cr 
-##'     (see \code{\link{bm_ModelingOptions} for details on algorithm selection})
+##'     (see \code{\link{bm_ModelingOptions}} for details on algorithm selection)
 ##'     \item \code{GBM} : Generalized Boosting Model, or usually called Boosted Regression Trees 
 ##'     (\code{\link[gbm]{gbm}})
 ##'     \item \code{GLM} : Generalized Linear Model (\code{\link[stats]{glm}})
@@ -136,8 +140,14 @@
 ##'     \item \code{SRE} : Surface Range Envelop or usually called BIOCLIM (\code{\link{bm_SRE}})
 ##'     \item \code{XGBOOST} : eXtreme Gradient Boosting Training (\code{\link[xgboost]{xgboost}})
 ##'   }
-##'   For abundance/count/relative data, you can use the models : CTA, GAM, GBM, GLM, MARS, RF and XGBOOST.  
-##'   For ordinal data, you can use the models : CTA, FDA, GAM, GLM, MARS, RF and XGBOOST.  
+##'   \tabular{rccccccccccccc}{
+##'     \tab \strong{ANN} \tab \strong{CTA} \tab \strong{FDA} \tab \strong{GAM} \tab \strong{GBM} 
+##'     \tab \strong{GLM} \tab \strong{MARS} \tab \strong{MAXENT} \tab \strong{MAXNET} 
+##'     \tab \strong{RF} \tab \strong{RFd} \tab \strong{SRE} \tab \strong{XGBOOST} \cr
+##'    binary \tab x \tab x \tab x \tab x \tab x \tab x \tab x \tab x \tab x \tab x \tab x \tab x \tab x \cr
+##'    ordinal \tab  \tab x \tab x \tab x \tab  \tab x \tab x \tab  \tab  \tab x \tab  \tab  \tab x \cr
+##'    abundance / count / relative \tab  \tab x \tab  \tab x \tab x \tab x \tab x \tab  \tab  \tab x \tab  \tab  \tab x
+##'   }
 ##'   }
 ##'   
 ##'   \item{models.pa}{Different models might respond differently to different numbers of 
@@ -165,26 +175,14 @@
 ##'     some default values
 ##'   }
 ##'   }
-##'   
-##'   \item{weights & prevalence}{More or less weight can be given to some specific observations.
-##'   \itemize{
-##'     \item If \code{weights = prevalence = NULL}, each observation (presence or absence) will 
-##'     have the same weight, no matter the total number of presences and absences.
-##'     \item If \code{prevalence = 0.5}, presences and absences will be weighted equally 
-##'     (\emph{i.e. the weighted sum of presences equals the weighted sum of absences}). 
-##'     \item If \code{prevalence} is set below (\emph{above}) \code{0.5}, more weight will be 
-##'     given to absences (\emph{presences}).
-##'     \item If \code{weights} is defined, \code{prevalence} argument will be ignored, and each 
-##'     observation will have its own weight.
-##'     \item If pseudo-absences have been generated (\code{PA.nb.rep > 0} in 
-##'     \code{\link{BIOMOD_FormatingData}}), weights are by default calculated such that 
-##'     \code{prevalence = 0.5}. \emph{Automatically created \code{weights} will be \code{integer} 
-##'     values to prevent some modeling issues.}
-##'     \item \emph{NOTE THAT \code{MAXENT}, \code{MAXNET}, \code{RF}, \code{RFd} and \code{SRE} 
-##'     models do not take weights into account.}
-##'   }}
 ##' 
 ##'   \item{metric.eval}{
+##'   \emph{Please refer to  
+##'   \href{https://www.cawcr.gov.au/projects/verification/}{CAWRC website ("Methods for 
+##'   dichotomous forecasts")} to get detailed description (simple/complex metrics).} \cr
+##'   Several evaluation metrics can be selected. \cr
+##'   Optimal value of each method can be obtained with the \code{\link{get_optim_value}} 
+##'   function.
 ##'   \describe{
 ##'     \item{simple}{
 ##'     \itemize{
@@ -215,17 +213,17 @@
 ##'       presences)
 ##'     }
 ##'     }
-##'     \item{For abundance/count/relative data}{
+##'     \item{abundance / count / relative data}{
 ##'     \itemize{
 ##'       \item \code{RMSE} : Root Mean Square Error
 ##'       \item \code{MSE} : Mean Square Error
 ##'       \item \code{MAE} : Mean Absolute Error
-##'       \item \code{Rsquared} : R square
-##'       \item \code{Rsquared_aj} : R square adjusted
+##'       \item \code{Rsquared} : R squared
+##'       \item \code{Rsquared_aj} : R squared adjusted
 ##'       \item \code{Max_error} : Maximum error
 ##'     }
 ##'     }
-##'     \item{For ordinal data}{
+##'     \item{ordinal data}{
 ##'     \itemize{
 ##'       \item \code{Accuracy} : Accuracy
 ##'       \item \code{Recall} : Macro average Recall
@@ -234,15 +232,12 @@
 ##'     }
 ##'     }
 ##'   }
-##'   Optimal value of each method can be obtained with the \code{\link{get_optim_value}} 
-##'   function. Several evaluation metrics can be selected. \emph{Please refer to the 
-##'   \href{https://www.cawcr.gov.au/projects/verification/}{CAWRC website (section "Methods for 
-##'   dichotomous forecasts")} to get detailed description of each metric.}
 ##'   Results after modeling can be obtained through the \code{\link{get_evaluations}} function. \cr 
 ##'   Evaluation metric are calculated on the calibrating data (column \code{calibration}), on 
 ##'   the cross-validation data (column \code{validation}) or on the evaluation data 
-##'   (column \code{evaluation}). \cr \emph{For cross-validation data, see \code{CV.[...]} 
-##'   parameters in \code{\link{BIOMOD_Modeling}} function ; for evaluation data, see 
+##'   (column \code{evaluation}). \cr 
+##'   \emph{For cross-validation data, see \code{CV.[...]} parameters in 
+##'   \code{\link{BIOMOD_Modeling}} function. \cr For evaluation data, see 
 ##'   \code{eval.[...]} parameters in \code{\link{BIOMOD_FormatingData}}.}
 ##'   }
 ##'   
@@ -250,13 +245,32 @@
 ##'   predictions can be calculated by randomizing the variable of interest and computing the 
 ##'   correlation between original and shuffled variables (see \code{\link{bm_VariablesImportance}}).}
 ##'   
-##'   \item{scale.models}{\bold{This parameter is quite experimental and it is recommended 
-##'   not to use it. It may lead to reduction in projection scale amplitude.} Some categorical 
-##'   models always have to be scaled (\code{FDA}, \code{ANN}), but it may be interesting to 
-##'   scale all computed models to ensure comparable predictions (\code{0-1000} range). It might 
-##'   be particularly useful when doing ensemble forecasting to remove the scale prediction effect 
-##'   (\emph{the more extended projections are, the more they influence ensemble forecasting 
-##'   results}).
+##'   \item{weights & prevalence}{
+##'   More or less weight can be given to some specific observations. \cr Automatically created 
+##'   \code{weights} will be \code{integer} values to prevent some modeling issues. \cr 
+##'   \emph{Note that \code{MAXENT}, \code{MAXNET}, \code{RF}, \code{RFd} and \code{SRE} models 
+##'   do not take weights into account.}
+##'   \itemize{
+##'     \item If \code{weights = prevalence = NULL}, each observation (presence or absence) will 
+##'     have the same weight, no matter the total number of presences and absences.
+##'     \item If \code{prevalence = 0.5}, presences and absences will be weighted equally 
+##'     (\emph{i.e. the weighted sum of presences equals the weighted sum of absences}). 
+##'     \item If \code{prevalence} is set below (\emph{above}) \code{0.5}, more weight will be 
+##'     given to absences (\emph{presences}).
+##'     \item If \code{weights} is defined, \code{prevalence} argument will be ignored 
+##'     (\emph{EXCEPT for \code{MAXENT}}).
+##'     \item If pseudo-absences have been generated (\code{PA.nb.rep > 0} in 
+##'     \code{\link{BIOMOD_FormatingData}}), weights are by default calculated such that 
+##'     \code{prevalence = 0.5}. ##TODO C'EST FAUX
+##'   }}
+##'   
+##'   \item{scale.models}{A binomial GLM is created to scale predictions from 0 to 1. \cr
+##'   \code{SRE} is never scaled, and \code{ANN} and \code{FDA} categorical models always are. \cr
+##'   \emph{Note that it may lead to reduction in projected scale amplitude.} \cr
+##'   \bold{This parameter is quite experimental and it is recommended not to use it.} It was 
+##'   developed in the idea to ensure comparable predictions by removing the scale prediction 
+##'   effect (\emph{the more extended projections are, the more they influence ensemble 
+##'   forecasting results}).
 ##'   }
 ##' }
 ##' 
@@ -306,10 +320,10 @@
 ##' 
 ##' # ---------------------------------------------------------------------------- #
 ##' # Format Data with true absences
-##' myBiomodData <- BIOMOD_FormatingData(resp.var = myResp,
-##'                                      expl.var = myExpl,
+##' myBiomodData <- BIOMOD_FormatingData(resp.name = myRespName,
+##'                                      resp.var = myResp,
 ##'                                      resp.xy = myRespXY,
-##'                                      resp.name = myRespName)
+##'                                      expl.var = myExpl)
 ##' 
 ##' 
 ##' # ---------------------------------------------------------------------------- #
@@ -362,6 +376,7 @@
 ##' 
 ###################################################################################################
 
+
 BIOMOD_Modeling <- function(bm.format,
                             modeling.id = as.character(format(Sys.time(), "%s")),
                             models = c('ANN', 'CTA', 'FDA', 'GAM', 'GBM', 'GLM', 'MARS'
@@ -381,10 +396,10 @@ BIOMOD_Modeling <- function(bm.format,
                             OPT.user.val = NULL,
                             OPT.user.base = 'bigboss',
                             OPT.user = NULL,
-                            weights = NULL,
-                            prevalence = NULL,
                             metric.eval = c('KAPPA', 'TSS', 'ROC'),
                             var.import = 0,
+                            weights = NULL,
+                            prevalence = NULL,
                             scale.models = FALSE,
                             nb.cpu = 1,
                             seed.val = NULL,
@@ -460,7 +475,7 @@ BIOMOD_Modeling <- function(bm.format,
     }
     ## Check data.type coherence 
     data.type.options <- strsplit(OPT.user@models[1],".", fixed = TRUE)[[1]][2]
-    if ((bm.format@data.type == "binary" & data.type.options != "binary")|
+    if ((bm.format@data.type == "binary" & data.type.options != "binary") ||
         (bm.format@data.type != "binary" & data.type.options == "binary")) {
       stop("\n The data.type of OPT.user should match the data.type of your bm.format")
     }
@@ -520,14 +535,14 @@ BIOMOD_Modeling <- function(bm.format,
   
   ## 5. Run models with loop over PA --------------------------------------------------------------
   mod.out <- bm_RunModelsLoop(bm.format = bm.format,
-                              weights = weights,
-                              calib.lines = calib.lines,
                               modeling.id = models.out@modeling.id,
                               models = models,
                               models.pa = models.pa,
+                              calib.lines = calib.lines,
                               bm.options = bm.options,
-                              var.import = var.import,
                               metric.eval = metric.eval,
+                              var.import = var.import,
+                              weights = weights,
                               scale.models = scale.models,
                               nb.cpu = nb.cpu,
                               seed.val = seed.val,
@@ -583,18 +598,7 @@ BIOMOD_Modeling <- function(bm.format,
 }
 
 
-# ---------------------------------------------------------------------------- #
-
-.BIOMOD_Modeling.prepare.workdir <- function(dir.name, sp.name, modeling.id)
-{
-  cat("\nCreating suitable Workdir...\n")
-  dir.create(file.path(dir.name, sp.name), showWarnings = FALSE, recursive = TRUE)
-  dir.create(file.path(dir.name, sp.name, ".BIOMOD_DATA", modeling.id), showWarnings = FALSE, recursive = TRUE)
-  dir.create(file.path(dir.name, sp.name, "models", modeling.id), showWarnings = FALSE, recursive = TRUE)
-}
-
-
-# ---------------------------------------------------------------------------- #
+###################################################################################################
 
 .BIOMOD_Modeling.check.args <- function(bm.format, modeling.id, models, models.pa, OPT.user
                                         , CV.user.table, CV.do.full.models
@@ -675,8 +679,8 @@ BIOMOD_Modeling <- function(bm.format,
   # }
   
   ## 4. Check CV.user.table
-  if (!is.null(CV.user.table)){
-    if(!("_allData_allRun" %in% colnames(CV.user.table)) & CV.do.full.models == T){ 
+  if (!is.null(CV.user.table)) {
+    if (!("_allData_allRun" %in% colnames(CV.user.table)) && CV.do.full.models == TRUE) { 
       CV.do.full.models = FALSE
       warning("CV.do.full.model has been disabled because '_allData_allRun' is not provided in CV.user.table")
     }
@@ -691,7 +695,7 @@ BIOMOD_Modeling <- function(bm.format,
   
   ## 6. Check weights arguments -----------------------------------------------
   if (is.null(weights)) {
-    if (!is.null(prevalence) & bm.format@data.type != "ordinal") {
+    if (!is.null(prevalence) && bm.format@data.type != "ordinal") {
       cat("\n\t> Automatic weights creation to rise a", prevalence, "prevalence")
       data.sp <- as.numeric(bm.format@data.species)
       if (inherits(bm.format, "BIOMOD.formated.data.PA")) {
@@ -700,7 +704,7 @@ BIOMOD_Modeling <- function(bm.format,
             ind.PA <- which(bm.format@PA.table[, pa] == TRUE)
             data.sp_pa <- data.sp[ind.PA]
             data.sp_pa[which(is.na(data.sp_pa))] <- 0
-            weights <- .automatic_weights_creation(data.sp_pa, prev = prevalence)
+            weights <- .automatic_weights_creation(resp = data.sp_pa, prev = prevalence)
             
             wei <- rep(NA, length(data.sp))
             wei[ind.PA] <- weights
@@ -710,13 +714,13 @@ BIOMOD_Modeling <- function(bm.format,
         colnames(weights.pa) <- c(colnames(bm.format@PA.table), "allData")
         weights <- weights.pa
       } else {
-        weights <- .automatic_weights_creation(data.sp, prev = prevalence)
+        weights <- .automatic_weights_creation(resp = data.sp, prev = prevalence)
         weights <- matrix(weights, nrow = length(weights), ncol = 1)
         colnames(weights) <- "allData"
       }
     } else { ## NEVER OCCURRING NO ?? --> now happen with the abundance
       cat("\n\t> No weights : all observations will have the same weight\n")
-      #weights <- rep(1, length(bm.format@data.species))
+      #weights <- rep(1, length(bm.format@data.species)) ##TODO il faut decommenter ça du coup non ?
     }
   } else {
     if (!is.numeric(weights)) { stop("weights must be a numeric vector") }
@@ -747,9 +751,9 @@ BIOMOD_Modeling <- function(bm.format,
                               , 'SR', 'CSI', 'ETS', 'HK', 'HSS', 'OR', 'ORSS', 'ROC'
                               , 'BOYCE', 'MPA')
   } else if (bm.format@data.type == "ordinal") {
-    avail.eval.meth.list <- c("Accuracy", "Recall", "Precision", "F1")
+    avail.eval.meth.list <- c('Accuracy', 'Recall', 'Precision', 'F1')
   } else {
-    avail.eval.meth.list <- c('RMSE','MSE',"MAE","Rsquared","Rsquared_aj","Max_error")
+    avail.eval.meth.list <- c('RMSE', 'MSE', 'MAE', 'Rsquared', 'Rsquared_aj', 'Max_error')
   }
   .fun_testIfIn(TRUE, paste0("metric.eval with ", bm.format@data.type, " data type"), metric.eval, avail.eval.meth.list)
   
@@ -769,7 +773,17 @@ BIOMOD_Modeling <- function(bm.format,
 }
 
 
-# ---------------------------------------------------------------------------- #
+###################################################################################################
+
+.BIOMOD_Modeling.prepare.workdir <- function(dir.name, sp.name, modeling.id)
+{
+  cat("\nCreating suitable Workdir...\n")
+  dir.create(file.path(dir.name, sp.name), showWarnings = FALSE, recursive = TRUE)
+  dir.create(file.path(dir.name, sp.name, ".BIOMOD_DATA", modeling.id), showWarnings = FALSE, recursive = TRUE)
+  dir.create(file.path(dir.name, sp.name, "models", modeling.id), showWarnings = FALSE, recursive = TRUE)
+}
+
+# ----------------------------------------------------------------------------------------------- #
 
 .BIOMOD_Modeling.summary <- function(bm.format, calib.lines, models, models.pa = NULL)
 {
@@ -788,29 +802,5 @@ BIOMOD_Modeling <- function(bm.format,
   }
   cat("\nTotal number of model runs:", nb.runs, "\n")
   .bm_cat()
-}
-
-# ---------------------------------------------------------------------------- #
-
-.automatic_weights_creation <- function(resp, prev = 0.5, subset = NULL)
-{
-  if (is.null(subset)) { subset <- rep(TRUE, length(resp)) }
-  
-  nbPres <- sum(resp[subset] > 0, na.rm = TRUE)
-  # The number of true absences + pseudo absences to maintain true value of prevalence
-  nbAbsKept <- sum(subset, na.rm = TRUE) - sum(resp[subset] > 0, na.rm = TRUE)
-  weights <- rep(1, length(resp))
-  
-  if (nbAbsKept > nbPres) {
-    # code absences as 1
-    weights[which(resp > 0)] <- (prev * nbAbsKept) / (nbPres * (1 - prev))
-  } else {
-    # code presences as 1
-    weights[which(resp == 0 | is.na(resp))] <- (nbPres * (1 - prev)) / (prev * nbAbsKept)
-  }
-  weights = round(weights[])
-  weights[!subset] <- 0
-  
-  return(weights)
 }
 

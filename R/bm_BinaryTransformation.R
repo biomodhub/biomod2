@@ -12,7 +12,7 @@
 ##' @param data a \code{vector}, a \code{matrix}, \code{data.frame}, or a 
 ##' \code{\link[terra:rast]{SpatRaster}} containing the data to be converted
 ##' @param threshold a \code{numeric} or a \code{vector} of \code{numeric} corresponding to 
-##' the threshold used to convert the given data
+##' the threshold used to convert the given data (see Details)
 ##' @param do.filtering (\emph{optional, default} \code{FALSE}) \cr 
 ##' A \code{logical} value defining whether filtered data should be returned, or binary one 
 ##' (see Details)
@@ -179,7 +179,7 @@ setMethod('bm_BinaryTransformation', signature('SpatRaster'),
           })
 
 
-# ---------------------------------------------------------------------------- #
+###################################################################################################
 
 .convert_bin.matrix <- function(data, threshold, do.filtering = FALSE)
 {
@@ -205,3 +205,4 @@ setMethod('bm_BinaryTransformation', signature('SpatRaster'),
   x[x <= y] <- 0
   return(x)
 }
+

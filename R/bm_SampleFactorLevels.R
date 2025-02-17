@@ -96,6 +96,7 @@
 ##' 
 ###################################################################################################
 
+
 bm_SampleFactorLevels <- function(expl.var, mask.out = NULL, mask.in = NULL)
 {
   if (inherits(expl.var, 'SpatRaster')) {
