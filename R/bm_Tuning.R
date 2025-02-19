@@ -285,7 +285,7 @@ bm_Tuning <- function(model,
   
   if (model != "MAXENT" && is.null(ctrl.train)) {
     ## check control
-    if(bm.format@data.type == "binary"){
+    if (bm.format@data.type == "binary") {
       ctrl.train <- caret::trainControl(method = "repeatedcv",
                                         repeats = 3,
                                         number = 10,
@@ -476,7 +476,6 @@ bm_Tuning <- function(model,
                   }
                 }
               }
-              
             }
           } else { tuning.form <- tuning.grid }
           
@@ -701,7 +700,6 @@ bm_Tuning <- function(model,
     weights = rep(1, length(bm.format@data.species))
   }
   
-  
   ## get tuning function and parameters ---------------------------------------
   all.fun <- c('avNNet', 'rpart', 'rpart2', 'fda', 'gamLoess', 'bam', 'gam', 'gbm', 'glm', 'earth', 'rf', 'xgbTree')
   all.params <- foreach (fi = all.fun) %do% {
@@ -711,10 +709,11 @@ bm_Tuning <- function(model,
   names(all.params) <- all.fun
   
   .fun_testIfIn(TRUE, "tuning.fun", tuning.fun, c(all.fun, "bm_SRE", "ENMevaluate", "maxnet"))
+  .fun_testIfIn(TRUE, "tuning.fun", tuning.fun, unique(ModelsTable$train[which(ModelsTable$model == model)]))
   train.params <- all.params[[tuning.fun]]
+  
   ## get tuning grid through params.train -------------------------------------
   tuning.grid <- NULL
-  
   if (model %in% c("ANN", "FDA", "GAM", "GBM", "MARS", "RF", "RFd", "XGBOOST")) {
     if (!(model == "GAM")) {
       params.train = params.train[grep(paste0(model,"\\."), names(params.train))]

@@ -707,7 +707,7 @@ BIOMOD_Projection <- function(bm.mod,
     # if (test[1] > test[2]) {
     #   terraOptions(todisk = TRUE) 
     # }
-  } else if (output.format == "RData"){
+  } else if (output.format == "RData") {
     cat("\n\t\t! 'do.stack' arg is always set as TRUE for .RData output format") 
     do.stack <- TRUE
   }

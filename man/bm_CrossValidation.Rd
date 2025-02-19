@@ -194,8 +194,8 @@ Wenger et Olden 2012}). Presences will however be unbalanced over the partitions
 if the presences are clumped on an edge of the study area.
 }
 \examples{
-
 library(terra)
+
 # Load species occurrences (6 species available)
 data(DataSpecies)
 head(DataSpecies)
