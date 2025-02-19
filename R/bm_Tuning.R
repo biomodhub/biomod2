@@ -692,7 +692,7 @@ bm_Tuning <- function(model,
     .fun_testIfIn(TRUE, "metric.eval", metric.eval, c("Accuracy"))
     metric.bm <- "Accuracy"
   } else {
-    .fun_testIfIn(TRUE, "metric.eval", metric.eval, c("RMSE", "Rsquareduared"))
+    .fun_testIfIn(TRUE, "metric.eval", metric.eval, c("RMSE", "Rsquared"))
     metric.bm <- ifelse(metric.eval == "RMSE", "RMSE", "Rsquared")
   }
   
