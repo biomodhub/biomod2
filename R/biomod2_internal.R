@@ -196,6 +196,9 @@
   resp.var = as.data.frame(resp.var)
   if (ncol(resp.var) > 1) {
     stop("You must give a monospecific response variable (1D object)")
+  } else if (is.ordered(resp.var[, 1])) {
+    levels <- levels(resp.var[, 1])
+    resp.var <- factor(resp.var[, 1], levels = levels, ordered = T)
   } else {
     resp.var <- as.numeric(resp.var[, 1])
   }
