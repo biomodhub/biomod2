@@ -1,6 +1,6 @@
 ###################################################################################################
 ##' @name BIOMOD_RangeSize
-##' @author Wilfried Thuiller, Damien Georges, Bruno Lafourcade
+##' @author Maya Guegen Helene Blancheteau
 ##' 
 ##' @title Analyze the range size differences between projections of species distribution models
 ##' 
@@ -10,32 +10,35 @@
 ##' time scales or environmental scenarios for example}).
 ##' 
 ##' 
-##' @param proj.current a \code{data.frame}, \code{\link[raster:stack]{RasterLayer}} 
-##' or \code{\link[terra:rast]{SpatRaster}} object containing the initial binary projection(s) 
+##' @param proj.current a \code{BIOMOD.projection.out} object containing the initial projection(s) 
 ##' of the (ensemble) species distribution model(s)
-##' @param proj.future a \code{data.frame}, \code{\link[raster:stack]{RasterLayer}} 
-##' or \code{\link[terra:rast]{SpatRaster}} object containing the final binary projection(s) 
+##' @param proj.future a \code{BIOMOD.projection.out} object containing the final binary projection(s) 
 ##' of the (ensemble) species distribution model(s)
-##' @param thresholds a \code{vector} defining the thresholds in percent 
-##' @param ordinal a \code{logical} indicating whether or not the projections should be considered as ordinal data
-##' 
+##' @param models.chosen a \code{vector} containing model names to be kept, must be either 
+##' \code{all} or a sub-selection of model names that can be obtained with the 
+##' \code{\link{get_projected_models}} function
+##' @param metric.binary (\emph{optional, default} \code{NULL}) \cr 
+##' A \code{vector} containing evaluation metric selected to transform predictions into binary 
+##' values, must be among \code{POD}, \code{FAR}, \code{POFD}, \code{SR}, \code{ACCURACY}, 
+##' \code{BIAS}, \code{ROC}, \code{TSS}, \code{KAPPA}, \code{OR}, \code{ORSS}, \code{CSI}, 
+##' \code{ETS}, \code{BOYCE}, \code{MPA}
 ##' 
 ##' @return
 ##' 
-##' A \code{list} containing two objects :
+##' A \code{BIOMOD.rangesize.out} containing principaly two objects :
 ##' \describe{
 ##'   \item{Compt.By.Species}{a \code{data.frame} containing the summary of range change for each 
 ##'   comparison
 ##'   \itemize{
 ##'     \item \code{Loss} : number of pixels predicted to be lost
-##'     \item \code{Stable0} : number of pixels not currently occupied and not predicted to be
-##'     \item \code{Stable1} : number of pixels currently occupied and predicted to remain 
+##'     \item \code{Stable_Abs} : number of pixels not currently occupied and not predicted to be
+##'     \item \code{Stable_Pres} : number of pixels currently occupied and predicted to remain 
 ##'     occupied
 ##'     \item \code{Gain} : number of pixels predicted to be gained
 ##'     \item \code{PercLoss} : percentage of pixels currently occupied and predicted to be lost 
-##'     (\code{Loss / (Loss + Stable1)})
+##'     (\code{Loss / (Loss + Stable_Pres)})
 ##'     \item \code{PercGain} : percentage of pixels predicted to be gained compare to the 
-##'     number of pixels currently occupied (\code{Gain / (Loss + Stable1)})
+##'     number of pixels currently occupied (\code{Gain / (Loss + Stable_Pres)})
 ##'     \item \code{SpeciesRangeChange} : percentage of pixels predicted to change (loss or gain) 
 ##'     compare to the number of pixels currently occupied (\code{PercGain - PercLoss})
 ##'     \item \code{CurrentRangeSize} : number of pixels currently occupied
@@ -45,7 +48,7 @@
 ##'     migration
 ##'   }
 ##'   }
-##'   \item{Diff.By.Pixel}{an object in the same form than the input data (\code{proj.current} and 
+##'   \item{loss.gain}{an object in the same form than the input data (\code{proj.current} and 
 ##'   \code{proj.future}) and containing a value for each point/pixel of each comparison among :
 ##'   \itemize{
 ##'     \item \code{-2} : predicted to be lost
@@ -54,26 +57,15 @@
 ##'     \item \code{1} : predicted to be gained
 ##'   }
 ##'   }
+##'   \item{Diff.By.Pixel}{an object in the same form than the input data (\code{proj.current} and 
+##'   \code{proj.future}) and containing a value for each point/pixel of each comparison obtain with :
+##'   \itemize{
+##'   \item \code{Future - 2* Current} for binary data
+##'   \item \code{Future - Current} for nonbinary after rescaling Future and Current from 0 to 1.
+##'   }
+##'   }
 ##' }
 ##' 
-##' 
-##' @details 
-##' 
-##' Note that \bold{this function is only relevant to compare binary projections, made on the 
-##' same area with the same resolution}. \cr
-##' 
-##' Comparison between \code{proj.current} and \code{proj.future} depends 
-##' on the number of projection in both objects:
-##'| \code{proj.current}   | \code{proj.future} | \bold{Comparison}  |
-##'| ------------------------- | ---------------------- | --------------------  |
-##'| \bold{1 projection} (\emph{e.g. data.frame with 1 column, SpatRaster with 1 layer}) | \bold{1 projection}  (\emph{e.g. data.frame with 1 column, SpatRaster with 1 layer})  | comparison of both projection  (\emph{e.g. current vs future conditions for the same model ; current vs current condition for two different models}) |
-##'| \bold{\code{n} projections}  (\emph{e.g. data.frame with n column, SpatRaster with n layer}) |  \bold{\code{n} projections}  (\emph{e.g. data.frame with n column, SpatRaster with n layer}) |  comparing projection \code{i} in \code{proj.current} to projection \code{i} in \code{proj.future}  (\emph{e.g. comparing current vs future condition for n models}) |
-##'| \bold{\code{1} projection}   (\emph{e.g. data.frame with 1 column, SpatRaster with 1 layer}) |  \bold{\code{n} projections}  (\emph{e.g. data.frame with n column, SpatRaster with n layer}) |  comparing projection in \code{proj.current} to each projection in \code{proj.future}  (\emph{e.g. comparing current vs n different future condition (e.g. climate change scenario) for 1 model}) |
-##' 
-##' \code{Diff.By.Pixel} object is obtained by applying the simple following formula :
-##' \deqn{proj.future - 2 * proj.current}
-##' 
-##' @md
 ##' 
 ##' @keywords "species range change" projections gain loss
 ##' 
@@ -157,22 +149,16 @@
 ##'                                               new.env = myExplFuture,
 ##'                                               models.chosen = models.proj,
 ##'                                               metric.binary = 'TSS')
-##' 
-##' # Load current and future binary projections
-##' CurrentProj <- get_predictions(myBiomodProj,
-##'                                metric.binary = "TSS",
-##'                                model.as.col = TRUE)
-##' FutureProj <- get_predictions(myBiomodProjectionFuture,
-##'                                metric.binary = "TSS",
-##'                                model.as.col = TRUE)
+##'                                               
 ##' # Compute differences
-##' myBiomodRangeSize <- BIOMOD_RangeSize(proj.current = CurrentProj, proj.future = FutureProj)
+##' myBiomodRangeSize <- BIOMOD_RangeSize(proj.current = myBiomodProj,
+##'                                       proj.future = myBiomodProjectionFuture,
+##'                                       metric.binary = "TSS")
 ##' 
-##' myBiomodRangeSize$Compt.By.Models
-##' plot(myBiomodRangeSize$Diff.By.Pixel)
 ##' 
-##' # Represent main results 
+##' # Represent main results
 ##' bm_PlotRangeSize(bm.range = myBiomodRangeSize)
+##' 
 ##' 
 ##' 
 ##' @importFrom foreach foreach %do%
@@ -185,357 +171,137 @@
 ###################################################################################################
 
 
-setGeneric("BIOMOD_RangeSize",
-           def = function(proj.current, proj.future, thresholds = c(10,30,50), ordinal = FALSE) {
-             if (inherits(proj.current, "Raster") && inherits(proj.future, "Raster")) {
-               return(
-                 BIOMOD_RangeSize(rast(proj.current), rast(proj.future), thresholds)
-               )
-             } else {
-               stop("'proj.current' and 'proj.future' must have the same class among 'data.frame', 'SpatRaster' and 'array'" )
-             }
-           })
-
-
-## BIOMOD_RangeSize data.frame-data.frame Method ----------------------
-
-##'
-##' @rdname BIOMOD_RangeSize
-##' @export
-##'
-
-setMethod('BIOMOD_RangeSize', signature(proj.current = 'data.frame', proj.future = 'data.frame'),
-          function(proj.current, proj.future, thresholds, ordinal)
-          {
-            .bm_cat("Do Range Size Computation")
-            args <- .BIOMOD_RangeSize.check.args(proj.current, proj.future, thresholds)
-            for (argi in names(args)) { assign(x = argi, value = args[[argi]]) }
-            rm(args)
-            
-            if(ordinal){CBS_ordinal <- data.frame()}
-            
-            if (ncol(proj.future) == ncol(proj.current)) {
-              if (nonbinary && !ordinal) {
-                Diff.By.Pixel <- as.data.frame((proj.future - proj.current)/(proj.current + 0.0001)) *100 
-              } else if (!ordinal){
-                Diff.By.Pixel <- as.data.frame(proj.future - 2 * proj.current)
-              } else {
-                Diff.By.Pixel <- as.data.frame(proj.future - proj.current)
-                CBS_ordinal <- foreach(i = 1:ncol(proj.future), .combine = rbind) %do% {
-                  links <- data.frame("Source" = as.vector(proj.current[,i]), "Target" = as.vector(proj.future)[,i])
-                  links <- links[(!is.na(links$Source)) & (!is.na(links$Target)),]
-                  links <- links %>% count(Source, Target) 
-                  links$full.name <- names(proj.future)
-                }
-              }
-              this_rownames <- colnames(proj.current)
-            } else {
-              Diff.By.Pixel <- foreach(thiscol = seq_len(ncol(proj.future)), .combine = 'cbind') %do% {
-                if (nonbinary && !ordinal){
-                  tmp <- as.data.frame((proj.future[,thiscol] - proj.current[,1])/(proj.current[,1] + 0.0001)) *100 
-                } else if (!ordinal) {
-                  tmp <- as.data.frame(proj.future[,thiscol] - 2 * proj.current[,1])
-                } else {
-                  tmp <- as.data.frame(proj.future[,thiscol] - proj.current[,1])
-                  CBS_ordinal <- foreach(i = 1:ncol(proj.future), .combine = rbind) %do% {
-                    links <- data.frame("Source" = as.vector(proj.current[,1]), "Target" = as.vector(proj.future)[,i])
-                    links <- links[(!is.na(links$Source)) & (!is.na(links$Target)),]
-                    links <- links %>% count(Source, Target) 
-                    links$full.name <- names(proj.future)
-                  }
-                }
-                colnames(tmp) <- colnames(proj.future)[thiscol]
-                tmp
-              }
-              this_rownames <- colnames(proj.future)
-            }
-            
-            if (nonbinary && !ordinal){
-              nbpixels <- sum(!is.na(Diff.By.Pixel[]))
-              
-              CBS[i, "Stable"] <- length(which(Diff.By.Pixel[] > -min(thresholds) & Diff.By.Pixel[] <= min(thresholds)))
-              CBS[i, "Stableperc"] <- round(CBS[i, "Stable"] / nbpixels * 100, digits = 3)
-              
-              for (thre in thresholds){
-                if (thre == max(thresholds)){
-                  thre_max <- Inf
-                } else {
-                  thre_max <- thresholds[which(thresholds == thre) + 1]
-                }
-                
-                CBS[i, paste0("loss", -thre)] <- length(which(Diff.By.Pixel[] > -thre_max & Diff.By.Pixel[] <= -thre))
-                CBS[i, paste0("gain", thre)] <- length(which(Diff.By.Pixel[] > thre & Diff.By.Pixel[] <= thre_max))
-                
-                CBS[i, paste0("loss", -thre, "perc")] <- round(CBS[i, paste0("loss", -thre)] / nbpixels * 100, digits = 3)
-                CBS[i, paste0("gain", thre, "perc")] <- round(CBS[i, paste0("gain", thre)] / nbpixels * 100, digits = 3)
-              }
-              
-              CBS[i, "SpeciesRangeChange"] <- 100 - CBS[i, "Stableperc"]
-              CBS[i, "CurrentRangeSize"] <- length(which(proj.current[] > 0))
-              CBS[i, "FutureRangeSize.NoDisp"] <- length(which(proj.future[] > 0) & which(proj.current[] > 0))
-              CBS[i, "FutureRangeSize.FullDisp"] <- length(which(proj.future[] > 0))
-              
-              
-              names.res <- c(paste0("loss", sort(-thresholds)), "Stable", paste0("gain", thresholds))
-              names.res <- c(names.res, paste0(names.res, "perc"))
-              names.res <- c(names.res, c("SpeciesRangeChange", "CurrentRangeSize", "FutureRangeSize.NoDisp", "FutureRangeSize.FullDisp"))
-              
-              Compt.By.Models <- CBS
-              dimnames(Compt.By.Models) <- names.res
-              
-            } else if (!ordinal) {
-              Compt.By.Models <- as.data.frame(.CompteurSp(Diff.By.Pixel, c(-2, 0, -1, 1)))
-              Compt.By.Models[, seq(5,10)] <- NA
-              Compt.By.Models[, 8] <- Compt.By.Models[, 1] + Compt.By.Models[, 3]
-              Compt.By.Models[, 9] <- Compt.By.Models[, 3]
-              Compt.By.Models[, 10] <- Compt.By.Models[, 4] + Compt.By.Models[, 3]
-              
-              Compt.By.Models[, 5] <- (100 * Compt.By.Models[, 1]) / Compt.By.Models[, 8]
-              Compt.By.Models[, 6] <- (100 * Compt.By.Models[, 4]) / Compt.By.Models[, 8]
-              Compt.By.Models[, 7] <- Compt.By.Models[, 6] - Compt.By.Models[, 5]
-              
-              dimnames(Compt.By.Models) <- list(this_rownames, c("Loss", "Stable0", "Stable1", "Gain"
-                                                                 , "PercLoss", "PercGain", "SpeciesRangeChange"
-                                                                 , "CurrentRangeSize", "FutureRangeSize.NoDisp", "FutureRangeSize.FullDisp"))
-            } else {
-              Compt.By.Models <- CBS_ordinal ##Le code sera à améliorer
-            }
-            
-            Output <- list(Compt.By.Models = Compt.By.Models, Diff.By.Pixel = Diff.By.Pixel)
-            .bm_cat("Done")
-            invisible(Output)
-          })
-
-
-## BIOMOD_RangeSize SpatRaster-SpatRaster Method ----------------------
-
-##'
-##' @rdname BIOMOD_RangeSize
-##' @export
-##'
-
-setMethod('BIOMOD_RangeSize', signature(proj.current = 'SpatRaster', proj.future = 'SpatRaster'),
-          function(proj.current, proj.future, thresholds, ordinal)
-          {
-            .bm_cat("Do Range Size Computation")
-            args <- .BIOMOD_RangeSize.check.args(proj.current, proj.future, thresholds)
-            for (argi in names(args)) { assign(x = argi, value = args[[argi]]) }
-            rm(args)
-            
-            if (nonbinary == FALSE){
-              names.res = c("Loss", "Stable0", "Stable1", "Gain"
-                          , "PercLoss", "PercGain", "SpeciesRangeChange"
-                          , "CurrentRangeSize", "FutureRangeSize.NoDisp", "FutureRangeSize.FullDisp")
-            } else {
-              names.res <- c(paste0("loss", sort(-thresholds)), "Stable", paste0("gain", thresholds))
-              names.res <- c(names.res, paste0(names.res, "perc"))
-              names.res <- c(names.res, c("SpeciesRangeChange", "CurrentRangeSize", "FutureRangeSize.NoDisp", "FutureRangeSize.FullDisp"))
-            }
-            
-            if(nlyr(proj.current) > 1){
-              CBS <- matrix(ncol = length(names.res), nrow = nlyr(proj.current),
-                          dimnames = list(names(proj.current), names.res))
-            } else {
-              CBS <- matrix(ncol = length(names.res), nrow = nlyr(proj.future),
-                            dimnames = list(names(proj.future), names.res))
-            }
-
-            sp.rast <- rast()
-            CBS_ordinal <- data.frame()
-            Cur <- proj.current[[1]]
-            for (i in seq_len(nlyr(proj.future))) {
-              if(nlyr(proj.current) > 1){
-                Cur <- proj.current[[i]]
-              }
-              Fut <- proj.future[[i]]
-              
-              if (nonbinary && !ordinal){
-                ## DiffByPixel
-                Ras <- (Fut - Cur)/ (Cur + 0.0001) *100 #Comment gérer la division par zéro
-                #Ras[Ras == Inf] <- 0
-                #Ras[Ras == -Inf] <- 0
-                add(sp.rast) <- Ras
-                
-                ## ComptBySpecies
-                nbpixels <- sum(!is.na(Ras[]))
-                
-                CBS[i, "Stable"] <- length(which(Ras[] > -min(thresholds) & Ras[] <= min(thresholds)))
-                CBS[i, "Stableperc"] <- round(CBS[i, "Stable"] / nbpixels * 100, digits = 3)
-                
-                for (thre in thresholds){
-                  if (thre == max(thresholds)){
-                    thre_max <- Inf
-                  } else {
-                    thre_max <- thresholds[which(thresholds == thre) + 1]
-                  }
-                  
-                  CBS[i, paste0("loss", -thre)] <- length(which(Ras[] > -thre_max & Ras[] <= -thre))
-                  CBS[i, paste0("gain", thre)] <- length(which(Ras[] > thre & Ras[] <= thre_max))
-                  
-                  CBS[i, paste0("loss", -thre, "perc")] <- round(CBS[i, paste0("loss", -thre)] / nbpixels * 100, digits = 3)
-                  CBS[i, paste0("gain", thre, "perc")] <- round(CBS[i, paste0("gain", thre)] / nbpixels * 100, digits = 3)
-                }
-                
-                CBS[i, "SpeciesRangeChange"] <- 100 - CBS[i, "Stableperc"]
-                CBS[i, "CurrentRangeSize"] <- length(which(Cur[] > 0))
-                CBS[i, "FutureRangeSize.NoDisp"] <- length(which(Fut[] > 0) & which(Cur[] > 0))
-                CBS[i, "FutureRangeSize.FullDisp"] <- length(which(Fut[] > 0))
-
-              } else if (!ordinal) {
-                ## DiffByPixel
-                Ras <- Fut - (Cur + Cur)
-                add(sp.rast) <- Ras
-                
-                ## ComptBySpecies
-                CBS[i, 1] <- length(which(Ras[] == -2))
-                CBS[i, 2] <- length(which(Ras[] == 0))
-                CBS[i, 3] <- length(which(Ras[] == -1))
-                CBS[i, 4] <- length(which(Ras[] == 1))
-                
-                CBS[i, 8] <- CBS[i, 1] + CBS[i, 3]
-                CBS[i, 9] <- CBS[i, 3]
-                CBS[i, 10] <- CBS[i, 3] + CBS[i, 4]
-                
-                CBS[i, 5] <- round(CBS[i, 1] / CBS[i, 8] * 100, digits = 3)
-                CBS[i, 6] <- round(CBS[i, 4] / CBS[i, 8] * 100, digits = 3)
-                CBS[i, 7] <- round(CBS[i, 10] / CBS[i, 8] * 100 - 100, digits = 3)
-              } else {
-                Ras <- Fut - Cur 
-                add(sp.rast) <- Ras
-                links <- data.frame("Source" = values(Cur)[,1], "Target" = values(Fut)[,1])
-                links <- links[(!is.na(links$Source)) & (!is.na(links$Target)),]
-                links <- links %>% count(Source, Target) 
-                links$full.name <- names(proj.future)[i]
-                CBS_ordinal <- rbind(CBS_ordinal,links)
-              }
-            }
-            
-            if(ordinal){
-              names(sp.rast) <- names(proj.future)
-              CBS <- CBS <- CBS_ordinal
-            } else {
-              names(sp.rast) <- rownames(CBS)
-            }
-            
-            
-            .bm_cat("Done")
-            return(list(Compt.By.Models = CBS, Diff.By.Pixel = sp.rast))
-          })
-
-
-###################################################################################################
-
-.BIOMOD_RangeSize.check.args <- function(proj.current, proj.future, thresholds)
-{
-  ## dimensions checking ------------------------
-  if (inherits(proj.current, "data.frame")) {
-    dim_current <- nrow(proj.current)
-    dim_future <- nrow(proj.future)
-  } else { # SpatRaster case
-    dim_current <- dim(proj.current)[c(1,2)]
-    dim_future <- dim(proj.future)[c(1,2)]
-  }
+BIOMOD_RangeSize <- function(proj.current, proj.future, 
+                             models.chosen = "all", metric.binary = NULL){
+  ## 0. Check arguments ---------------------------------------------------------------------------
+  args <- .BIOMOD_RangeSize.check.args(proj.current, proj.future, 
+                                       models.chosen, metric.binary)
+  for (argi in names(args)) { assign(x = argi, value = args[[argi]]) }
+  rm(args)
   
-  if (any(dim_current != dim_future)) {
-    stop(paste0("'proj.current' and 'proj.future' do not have the same dimensions ",
-                "(data.frame must have either the same number of lines ; ",
-                "raster must have the same spatial extent and resolution)."))
+  pred_current <- get_predictions(proj.current,
+                                  full.name = models.chosen,
+                                  metric.binary = metric.binary,
+                                  model.as.col = TRUE)
+  
+  pred_future <- get_predictions(proj.future,
+                                 full.name = models.chosen,
+                                 metric.binary = metric.binary,
+                                 model.as.col = TRUE)
+  
+  coord <- proj.future@coord
+  if(is.data.frame(pred_future)){
+    if(nrow(pred_current) != nrow(pred_future)){
+      good <- intersect(rownames(pred_current), rownames(pred_future))
+      pred_current <- as.data.frame(pred_current[rownames(pred_current) %in% good,])
+      pred_future <- as.data.frame(pred_future[rownames(pred_future) %in% good,])
+      #coord <- as.data.frame(proj.future@coord[rownames(proj.future@coord) %in% good,])
+    } 
   }
   
   
-  ## checking number of models to be compared ----------------------------
-  if (inherits(proj.current, "data.frame")) {
-    n_current <- ncol(proj.current)
-    n_future <- ncol(proj.future)
-  } else { # SpatRaster case
-    n_current <- nlyr(proj.current)
-    n_future <- nlyr(proj.future)
-  }
+  ordinal <- (proj.current@data.type == "ordinal")
+  bm.range <- bm_RangeSize(proj.current = pred_current, proj.future = pred_future, ordinal = ordinal)
   
-  if (n_current == 1) {
-    if (n_future == 1) {
-      cat("\n Comparing 'proj.current' and 'proj.future'. ")
-    } else if (n_future > 1) {
-      cat("\n Comparing 'proj.current' with the ", n_future, " projections in 'proj.future'. ")
-    } else {
-      stop("'proj.future' require at least one layer or one column.")
-    }
-  } else if (n_current > 1) {
-    if (n_future == n_current) {
-      cat("\n Each projection in 'proj.current' will be compared once with its corresponding projection in 'proj.future'. ")
-    } else {
-      stop("When proj.current' have more than 1 projection, 'proj.future' must have the same number of projection.")
-    }
+  link.models <- proj.current@models.out@link
+  if(grepl("ensemble.models.out", link.models)){
+    row.names <- c("Species", "EMmodel", "Merged_Dataset", "Merged_Run", "Merged_Algo")
   } else {
-    stop("'proj.current' require at least one layer or one column.")
+    row.names <- c("Species", "Dataset", "Run", "Algo")
   }
   
   
-  ## checking 0/1 ----------------------------
-  if (inherits(proj.current, "data.frame")) {
-    test_binary_current <- all(na.omit(unlist(proj.current)) %in% c(0,1))
-    test_binary_future <- all(na.omit(unlist(proj.future)) %in% c(0,1))
-  } else { # SpatRaster case
-    test_binary_current <- all(na.omit(values(proj.current)) %in% c(0,1))
-    test_binary_future <- all(na.omit(values(proj.future)) %in% c(0,1))
-  }
+  out <- new("BIOMOD.rangesize.out",
+             Compt.By.Models = bm.range$Compt.By.Models,
+             Diff.By.Pixel = bm.range$Diff.By.Pixel,
+             loss.gain = bm.range$loss.gain,
+             data.type = bm.range$data.type,
+             coord = coord,
+             row.names = row.names)
   
-  nonbinary <- ifelse((!test_binary_current | !test_binary_future), TRUE, FALSE)
-  # if (!test_binary_current | !test_binary_future) {
-  #   stop("'proj.current' and 'proj.future' must have only values among 0, 1 or NA.")
-  # }
-  
-  # Thresholds
-  .fun_testIfInherits(TRUE, "thresholds", thresholds, "numeric")
-  thresholds <- sort(thresholds)
-  
-  
-  return(list("proj.current" = proj.current,
-              "proj.future" = proj.future,
-              nonbinary = nonbinary,
-              thresholds = thresholds))
+  return(out)
 }
 
 
-###################################################################################################
-
-.CompteurSp <- function(Data, Value)
-{
-  if (is.data.frame(Data)) {
-    N <- dim(Data)[2]
-    Compt <- as.data.frame(matrix(0, ncol = 4, nrow = dim(Data)[2]))
-    i <- 1
-    while(i <= N) {
-      Compt[i, 1] <- length(Data[Data[, i] == Value[1], i])
-      Compt[i, 2] <- length(Data[Data[, i] == Value[2], i])
-      Compt[i, 3] <- length(Data[Data[, i] == Value[3], i])
-      Compt[i, 4] <- length(Data[Data[, i] == Value[4], i])
-      i <- i + 1
-    }
-    return(Compt)
+.BIOMOD_RangeSize.check.args <- function(proj.current, proj.future, 
+                                         models.chosen, metric.binary){
+  
+  if(inherits(proj.current, "SpatRaster") | inherits(proj.current, "data.frame") |inherits(proj.current, "raster")){
+    stop("BIOMOD.RangeSize now accepts BIOMOD.projection.out objects directly. \n
+         If you want to compare ", class(proj.current), " objects, use bm_RangeSize function. ")
+  } # To Remove after a while. 
+  
+  .fun_testIfInherits(TRUE, "proj.current", proj.current, "BIOMOD.projection.out")
+  .fun_testIfInherits(TRUE, "proj.future", proj.future, "BIOMOD.projection.out")
+  
+  ## Check models.chosen ---------------------------------------------------
+  if (models.chosen[1] == 'all') {
+    models.chosen <- proj.future@models.projected
+    models.chosen <- intersect(models.chosen, proj.current@models.projected)
+  } else {
+    models.chosen <- intersect(models.chosen, proj.current@models.projected)
+    models.chosen <- intersect(models.chosen, proj.future@models.projected)
   }
+  if (length(models.chosen) < 1) {
+    stop('No models selected')
+  }
+  
+  if (proj.current@data.type == "binary" && is.null(metric.binary)){
+    stop("Metric.binary is necessary for binary data.")
+  }
+  
+  if (proj.current@data.type != "binary" && !is.null(metric.binary)){
+    metric.binary <- NULL
+    warning("metric.binary set to NULL for non binary data.")
+  }
+  
+  
+  return(list(models.chosen = models.chosen,
+              metric.binary = metric.binary))
 }
 
-.CompteurThresh <- function(Data, Value)
-{
-  if (is.data.frame(Data)) {
-    N <- dim(Data)[2]
-    V <- (length(Value)*2) +1
-    Compt <- as.data.frame(matrix(FALSE, ncol = V, nrow = N))
-    m <- (V+1)/2
-    i <- 1
-    bornes <- unique(sort(c(Value, -Value)))
-    nb <- length(bornes) +1
-    while(i <= N) {
-      Compt[i,m] <- length(Data[Data[, i] == 0, i])
-      for (v in 1:(m-1)){
-        Compt[i, v] <- length(Data[(Data[, i] <= bornes[v] & Data[, i] > bornes[v-1]) , i])
-        Compt[i, ncol(Compt) +1 - v] <- length(Data[(Data[, i] >= bornes[nb -v] & Data[, i] < bornes[nb-v+1]) , i])
-      }
-      i <- i + 1
-    }
-    colnames(Compt) <- c("verslinfini",bornes,"etaudela")
-    return(Compt)
-  }
-}
 
+### Class
+
+##' @name BIOMOD.rangesize.out
+##' @aliases BIOMOD.rangesize.out-class
+##' @author Helene Blancheteau
+##' 
+##' @title \code{BIOMOD_RangeSize()} output object class
+##' 
+##' @description Class returned by \code{\link{BIOMOD_RangeSize}}, and used by 
+##' \code{\link{bm_PlotRangeSize}}
+##' 
+##' 
+##' @slot Compt.By.Models a \code{data.frame} containing the summary of range change for each comparison
+##' @slot Diff.By.Pixel a \code{SpatRaster} or a \code{data.frame} containing a value for each point/pixel of each comparison
+##' @slot loss.gain a \code{SpatRaster} or a \code{data.frame} containg for each point/pixel 
+##' a value indicating a loss, a gain or a stable sitatution
+##' @slot data.type a \code{character} corresponding to the data type
+##' @slot coord a 2-columns \code{matrix} or \code{data.frame} containing the corresponding 
+##' \code{X} and \code{Y} coordinates used to project the species distribution model(s)
+##' @slot row.names A \code{vector} containing tags matching models names splitted by 
+##' '_' character
+##' 
+##' @family Toolbox objects
+##' 
+NULL
+
+##' @name BIOMOD.rangesize.out-class
+##' @rdname BIOMOD.rangesize.out
+##' @export
+##' 
+
+# Class Definition  -----------------------------------
+
+setClass("BIOMOD.rangesize.out",
+         representation(Compt.By.Models = 'data.frame',
+                        Diff.By.Pixel = 'ANY',
+                        loss.gain = 'ANY',
+                        data.type = 'character',
+                        coord = 'data.frame',
+                        row.names = 'character'),
+         prototype(data.type = "binary"),
+         validity = function(object){ return(TRUE) })               
+  
+        

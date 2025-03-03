@@ -72,6 +72,7 @@ Other Toolbox objects:
 \code{\link{BIOMOD.options.dataset}},
 \code{\link{BIOMOD.options.default}},
 \code{\link{BIOMOD.projection.out}},
+\code{\link{BIOMOD.rangesize.out}},
 \code{\link{biomod2_ensemble_model}},
 \code{\link{biomod2_model}}
 }

@@ -126,5 +126,7 @@ utils::globalVariables(names = c("data_species",
 
 
 ## bm_PlotRangeSize ------------
-utils::globalVariables(names = c("vali", "n", "Source", "Target", "color", "stratum"))
+utils::globalVariables(names = c("vali", "n", "Source", "Target", "color", "stratum",
+                                 "count.level", "count.value", "group.value", "perc.level", "perc.value",
+                                 "type.df"))
 

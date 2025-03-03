@@ -10,12 +10,11 @@ bm_PlotRangeSize(
   do.perc = TRUE,
   do.maps = TRUE,
   do.mean = TRUE,
-  do.plot = TRUE,
-  row.names = c("Species", "Dataset", "Run", "Algo")
+  do.plot = TRUE
 )
 }
 \arguments{
-\item{bm.range}{an object returned by the \code{\link{BIOMOD_RangeSize}} function}
+\item{bm.range}{an \code{BIOMOD.rangesize.out} object returned by the \code{\link{BIOMOD_RangeSize}} function}
 
 \item{do.count}{(\emph{optional, default} \code{TRUE}) \cr 
 A \code{logical} value defining whether the count plot is to be computed or not}
@@ -31,10 +30,6 @@ A \code{logical} value defining whether the mean maps plot is to be computed or 
 
 \item{do.plot}{(\emph{optional, default} \code{TRUE}) \cr 
 A \code{logical} value defining whether the plots are to be rendered or not}
-
-\item{row.names}{(\emph{optional, default} \code{c('Species', 'Dataset', 'Run', 'Algo')}) \cr 
-A \code{vector} containing tags matching \code{bm.range$Compt.By.Models} rownames splitted by 
-'_' character}
 }
 \value{
 A \code{list} containing one or several \code{data.frame} and the corresponding 
@@ -136,29 +131,20 @@ myBiomodProjectionFuture <- BIOMOD_Projection(bm.mod = myBiomodModelOut,
                                               models.chosen = models.proj,
                                               metric.binary = 'TSS')
 
-# Load current and future binary projections
-CurrentProj <- get_predictions(myBiomodProj,
-                               metric.binary = "TSS",
-                               model.as.col = TRUE)
-FutureProj <- get_predictions(myBiomodProjectionFuture,
-                               metric.binary = "TSS",
-                               model.as.col = TRUE)
-
 # Compute differences
-myBiomodRangeSize <- BIOMOD_RangeSize(proj.current = CurrentProj, proj.future = FutureProj)
+myBiomodRangeSize <- BIOMOD_RangeSize(proj.current = myBiomodProj,
+                                      proj.future = myBiomodProjectionFuture,
+                                      metric.binary = "TSS")
 
 
-# ---------------------------------------------------------------#
-myBiomodRangeSize$Compt.By.Models
-plot(myBiomodRangeSize$Diff.By.Pixel)
-
-# Represent main results 
+# Represent main results
 bm_PlotRangeSize(bm.range = myBiomodRangeSize)
+
 
 
 }
 \seealso{
-\code{\link{BIOMOD_RangeSize}}
+\code{\link{BIOMOD_RangeSize}} \code{\link{bm_RangeSize}}
 
 Other Secondary functions: 
 \code{\link{bm_BinaryTransformation}()},
@@ -171,6 +157,7 @@ Other Secondary functions:
 \code{\link{bm_PlotResponseCurves}()},
 \code{\link{bm_PlotVarImpBoxplot}()},
 \code{\link{bm_PseudoAbsences}()},
+\code{\link{bm_RangeSize}()},
 \code{\link{bm_RunModelsLoop}()},
 \code{\link{bm_SRE}()},
 \code{\link{bm_SampleBinaryVector}()},

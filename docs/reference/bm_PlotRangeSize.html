@@ -19,7 +19,7 @@ global counts or proportions of gains / losses, as well as spatial representatio
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">biomod2</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">4.3</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">4.3-1</span>
       </span>
     </div>
 
@@ -125,8 +125,7 @@ global counts or proportions of gains / losses, as well as spatial representatio
 <span>  do.perc <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  do.maps <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  do.mean <span class="op">=</span> <span class="cn">TRUE</span>,</span>
-<span>  do.plot <span class="op">=</span> <span class="cn">TRUE</span>,</span>
-<span>  row.names <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Species"</span>, <span class="st">"Dataset"</span>, <span class="st">"Run"</span>, <span class="st">"Algo"</span><span class="op">)</span></span>
+<span>  do.plot <span class="op">=</span> <span class="cn">TRUE</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -135,7 +134,7 @@ global counts or proportions of gains / losses, as well as spatial representatio
 
 
 <dl><dt id="arg-bm-range">bm.range<a class="anchor" aria-label="anchor" href="#arg-bm-range"></a></dt>
-<dd><p>an object returned by the <code><a href="BIOMOD_RangeSize.html">BIOMOD_RangeSize</a></code> function</p></dd>
+<dd><p>an <code>BIOMOD.rangesize.out</code> object returned by the <code><a href="BIOMOD_RangeSize.html">BIOMOD_RangeSize</a></code> function</p></dd>
 
 
 <dt id="arg-do-count">do.count<a class="anchor" aria-label="anchor" href="#arg-do-count"></a></dt>
@@ -161,12 +160,6 @@ A <code>logical</code> value defining whether the mean maps plot is to be comput
 <dt id="arg-do-plot">do.plot<a class="anchor" aria-label="anchor" href="#arg-do-plot"></a></dt>
 <dd><p>(<em>optional, default</em> <code>TRUE</code>) <br>
 A <code>logical</code> value defining whether the plots are to be rendered or not</p></dd>
-
-
-<dt id="arg-row-names">row.names<a class="anchor" aria-label="anchor" href="#arg-row-names"></a></dt>
-<dd><p>(<em>optional, default</em> <code>c('Species', 'Dataset', 'Run', 'Algo')</code>) <br>
-A <code>vector</code> containing tags matching <code>bm.range$Compt.By.Models</code> rownames splitted by
-'_' character</p></dd>
 
 </dl></div>
     <div id="value">
@@ -198,7 +191,7 @@ A <code>vector</code> containing tags matching <code>bm.range$Compt.By.Models</c
     </div>
     <div id="see-also">
     <h2>See also</h2>
-    <div class="dont-index"><p><code><a href="BIOMOD_RangeSize.html">BIOMOD_RangeSize</a></code></p>
+    <div class="dont-index"><p><code><a href="BIOMOD_RangeSize.html">BIOMOD_RangeSize</a></code> <code><a href="bm_RangeSize.html">bm_RangeSize</a></code></p>
 <p>Other Secondary functions:
 <code><a href="bm_BinaryTransformation.html">bm_BinaryTransformation</a>()</code>,
 <code><a href="bm_CrossValidation.html">bm_CrossValidation</a>()</code>,
@@ -210,6 +203,7 @@ A <code>vector</code> containing tags matching <code>bm.range$Compt.By.Models</c
 <code><a href="bm_PlotResponseCurves.html">bm_PlotResponseCurves</a>()</code>,
 <code><a href="bm_PlotVarImpBoxplot.html">bm_PlotVarImpBoxplot</a>()</code>,
 <code><a href="bm_PseudoAbsences.html">bm_PseudoAbsences</a>()</code>,
+<code><a href="bm_RangeSize.html">bm_RangeSize</a>()</code>,
 <code><a href="bm_RunModelsLoop.html">bm_RunModelsLoop</a>()</code>,
 <code><a href="bm_SRE.html">bm_SRE</a>()</code>,
 <code><a href="bm_SampleBinaryVector.html">bm_SampleBinaryVector</a>()</code>,
@@ -304,24 +298,15 @@ A <code>vector</code> containing tags matching <code>bm.range$Compt.By.Models</c
 <span>                                              models.chosen <span class="op">=</span> <span class="va">models.proj</span>,</span>
 <span>                                              metric.binary <span class="op">=</span> <span class="st">'TSS'</span><span class="op">)</span></span>
 <span></span>
-<span><span class="co"># Load current and future binary projections</span></span>
-<span><span class="va">CurrentProj</span> <span class="op">&lt;-</span> <span class="fu"><a href="getters.out.html">get_predictions</a></span><span class="op">(</span><span class="va">myBiomodProj</span>,</span>
-<span>                               metric.binary <span class="op">=</span> <span class="st">"TSS"</span>,</span>
-<span>                               model.as.col <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
-<span><span class="va">FutureProj</span> <span class="op">&lt;-</span> <span class="fu"><a href="getters.out.html">get_predictions</a></span><span class="op">(</span><span class="va">myBiomodProjectionFuture</span>,</span>
-<span>                               metric.binary <span class="op">=</span> <span class="st">"TSS"</span>,</span>
-<span>                               model.as.col <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
-<span></span>
 <span><span class="co"># Compute differences</span></span>
-<span><span class="va">myBiomodRangeSize</span> <span class="op">&lt;-</span> <span class="fu"><a href="BIOMOD_RangeSize.html">BIOMOD_RangeSize</a></span><span class="op">(</span>proj.current <span class="op">=</span> <span class="va">CurrentProj</span>, proj.future <span class="op">=</span> <span class="va">FutureProj</span><span class="op">)</span></span>
+<span><span class="va">myBiomodRangeSize</span> <span class="op">&lt;-</span> <span class="fu"><a href="BIOMOD_RangeSize.html">BIOMOD_RangeSize</a></span><span class="op">(</span>proj.current <span class="op">=</span> <span class="va">myBiomodProj</span>,</span>
+<span>                                      proj.future <span class="op">=</span> <span class="va">myBiomodProjectionFuture</span>,</span>
+<span>                                      metric.binary <span class="op">=</span> <span class="st">"TSS"</span><span class="op">)</span></span>
 <span></span>
 <span></span>
-<span><span class="co"># ---------------------------------------------------------------#</span></span>
-<span><span class="va">myBiomodRangeSize</span><span class="op">$</span><span class="va">Compt.By.Models</span></span>
-<span><span class="fu"><a href="https://rspatial.github.io/terra/reference/plot.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">myBiomodRangeSize</span><span class="op">$</span><span class="va">Diff.By.Pixel</span><span class="op">)</span></span>
-<span></span>
-<span><span class="co"># Represent main results </span></span>
+<span><span class="co"># Represent main results</span></span>
 <span><span class="fu">bm_PlotRangeSize</span><span class="op">(</span>bm.range <span class="op">=</span> <span class="va">myBiomodRangeSize</span><span class="op">)</span></span>
+<span></span>
 <span></span>
 <span></span></code></pre></div>
     </div>

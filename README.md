@@ -1,5 +1,5 @@
 [![Cran Version](https://www.r-pkg.org/badges/version/biomod2?color=yellow)](https://cran.r-project.org/package=biomod2)
-[![Github Version](https://img.shields.io/badge/devel%20version-4.3-blue.svg)](https://github.com/biomodhub/biomod2)
+[![Github Version](https://img.shields.io/badge/devel%20version-4.3-1-blue.svg)](https://github.com/biomodhub/biomod2)
 [![Last Commit](https://img.shields.io/github/last-commit/biomodhub/biomod2.svg)](https://github.com/biomodhub/biomod2/commits/master)
 [![R-CMD-check](https://github.com/biomodhub/biomod2/actions/workflows/R-CMD-check.yml/badge.svg)](https://github.com/biomodhub/biomod2/actions/workflows/R-CMD-check.yml)
 
@@ -49,7 +49,7 @@ install.packages("biomod2", dependencies = TRUE)
 
 <br/>
 
-- **Development version** [![v](https://img.shields.io/badge/devel%20version-4.3-blue.svg)](https://github.com/biomodhub/biomod2) from [biomodhub](https://github.com/biomodhub/biomod2) :
+- **Development version** [![v](https://img.shields.io/badge/devel%20version-4.3-1-blue.svg)](https://github.com/biomodhub/biomod2) from [biomodhub](https://github.com/biomodhub/biomod2) :
 
 ```R
 library(devtools)
@@ -67,14 +67,15 @@ devtools::install_github("biomodhub/biomod2", dependencies = TRUE)
 <br/><br/>
 
 
-### <i class="fas fa-envelope-open-text"></i> `biomod 4.3` - Abundance modelling
+### <i class="fas fa-envelope-open-text"></i> `biomod 4.3-1` - Abundance modelling
 
 
 <i class="fas fa-exclamation-triangle"></i> Please **feel free to indicate if you notice some strange new behaviors** !
 
 #### <i class="fas fa-exchange-alt"></i> What is changed ?
 
- Nothing for presences/absences (or presence-only) models. 
+- Nothing for presences/absences (or presence-only) modelling.
+- `BIOMOD_RangeSize` becomes `bm_RangeSize` and the new `BIOMOD_RangeSize` accepts `BIOMOD.projection.out` objects. See [News](https://biomodhub.github.io/biomod2/articles/news.html) for more information.
  
 #### <i class="fas fa-plus-square"></i> What is new ?
 

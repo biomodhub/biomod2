@@ -16,6 +16,16 @@ vignette: >
 
 #### 4.3 Abundance (2025-01-30)
 
+##### 4.3-1 RangeSize (2025-03-03)
+
+- `BIOMOD_RangeSize` becomes `bm_RangeSize` and the new `BIOMOD_RangeSize` accepts `BIOMOD.projection.out` objects.
+- Add a new class `BIOMOD.rangesize.out`.
+- `bm_PlotRangeSize` accepts `BIOMOD.rangesize.out` only now. 
+_ `bm_PlotRangeSize` projects now maps with the coordinates of the `BIOMOD.projection.out` objects.
+
+
+##### 4.3-0 Abundance (2025-01-30)
+
 ##### Major Changes
 
 - In _biomod2_classes_0_ file :

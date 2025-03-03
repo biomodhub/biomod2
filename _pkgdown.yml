@@ -86,7 +86,8 @@ reference:
       - "bm_FindOptimStat"
       - "bm_BinaryTransformation"
       - "bm_VariablesImportance"
-      - "bm_ModelAnalysis" 
+      - "bm_ModelAnalysis"
+      - "bm_RangeSize"      
       - "bm_PlotEvalMean"
       - "bm_PlotEvalBoxplot"
       - "bm_PlotVarImpBoxplot"
@@ -108,6 +109,7 @@ reference:
       - "BIOMOD.models.out"
       - "BIOMOD.projection.out"
       - "BIOMOD.ensemble.models.out"
+      - "BIOMOD.rangesize.out"
   - subtitle: Getters
     contents:
       - "load_stored_object"

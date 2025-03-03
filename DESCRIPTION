@@ -1,8 +1,8 @@
 Package: biomod2
 Type: Package
 Title: Ensemble Platform for Species Distribution Modeling
-Version: 4.3
-Date: 2025-01-30
+Version: 4.3-1
+Date: 2025-03-03
 Authors@R: c(person("Wilfried", "Thuiller", role = c("aut")
                     , email = "wilfried.thuiller@univ-grenoble-alpes.fr"),
              person("Damien", "Georges", role = c("aut")),
@@ -53,7 +53,8 @@ Imports:
     PresenceAbsence,
     dplyr,
     tidyr,
-    rlang
+    rlang,
+    scales
 Suggests:
     Hmisc,
     gam,
@@ -115,6 +116,7 @@ Collate:
     'bm_PlotVarImpBoxplot.R'
     'bm_PseudoAbsences.R'
     'bm_RunModelsLoop.R'
+    'bm_RangeSize.R'
     'bm_SRE.R'
     'bm_SampleBinaryVector.R'
     'bm_SampleFactorLevels.R'
