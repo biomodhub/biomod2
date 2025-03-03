@@ -145,7 +145,7 @@
 ##' @importFrom foreach foreach %do%
 ##' @importFrom terra rast which.max nlyr  classify plot
 ##' @importFrom ggplot2 ggplot geom_col geom_tile geom_label facet_wrap xlab ylab labs scale_fill_viridis_c
-##' theme theme_bw element_blank element_rect scale_fill_manual scale_x_discrete guide_legend aes_string
+##' theme theme_bw element_blank element_rect scale_fill_manual scale_x_discrete guide_legend scale_color_gradientn
 ##' @importFrom rlang .data
 ##' 
 ##' @export
@@ -301,7 +301,7 @@ bm_PlotRangeSize <- function(bm.range, do.count = TRUE, do.perc = TRUE
           
           gg.maps <- 'ggplot() +
   facet_wrap(~lyr)+
-  geom_spatraster(data = ggdat) +
+  tidyterra::geom_spatraster(data = ggdat) +
   scale_fill_gradientn(colours = c("grey", "#d13d04","#fed3c2", "white","#acdece", "#337f67"),
                        values = c(0,0.01,0.45,0.5,0.55,1), limits = c(-lim - 0.1, lim),
                        na.value = "transparent", 
