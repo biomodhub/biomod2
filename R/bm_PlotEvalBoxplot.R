@@ -135,7 +135,7 @@ bm_PlotEvalBoxplot <- function(bm.out, dataset = 'calibration', group.by = c('al
   ## 1. Get data for graphic ----------------------------------------------------------------------
   ## Get evaluation values
   scores <- get_evaluations(bm.out)
-  if (!is.null(scores)) {
+  if (!is.null(scores) && any(!is.na(scores[, dataset]))) {
   ## Prepare data table for graphic
     ggdat = scores
     
@@ -143,7 +143,11 @@ bm_PlotEvalBoxplot <- function(bm.out, dataset = 'calibration', group.by = c('al
     gg <- ggplot(ggdat, aes(x = .data[[group.by[1]]], y = .data[[dataset]], fill = .data[[group.by[2]]])) +
       geom_boxplot() + ## add boxplot
       facet_wrap("metric.eval", scales = scales) +
-      xlab("") +
+      labs(x = "", y = ""
+           , subtitle = switch(dataset
+                               , "calibration" = "Calibration dataset"
+                               , "validation" = "Validation dataset"
+                               , "evaluation" = "Evaluation dataset")) +
       theme(legend.title = element_blank()
             , legend.key = element_rect(fill = "white")
             , axis.text.x = element_text(angle = 45, hjust = 1))

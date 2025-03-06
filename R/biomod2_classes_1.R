@@ -1099,8 +1099,8 @@ setMethod('show', signature('BIOMOD.formated.data'),
           function(object)
           {
             .bm_cat("BIOMOD.formated.data")
-            cat("\ndir.name = ", object@dir.name, fill = .Options$width)
-            cat("\nsp.name = ", object@sp.name, fill = .Options$width)
+            cat("\nModeling directory (dir.name) :", object@dir.name, fill = .Options$width)
+            cat("\nModeled species (sp.name) :", object@sp.name, fill = .Options$width)
             if (object@data.type == "binary") {
               cat("\n\t",
                   sum(object@data.species, na.rm = TRUE),

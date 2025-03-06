@@ -14,17 +14,16 @@ vignette: >
 
 ### <i class="fas fa-pen-alt"></i> 2025
 
-#### 4.3 Abundance (2025-01-30)
+#### 4.3-1 RangeSize (2025-03-03)
 
-##### 4.3-1 RangeSize (2025-03-03)
+- Change `BIOMOD_RangeSize` to `bm_RangeSize`
+- Change `BIOMOD_RangeSize` inputs to `BIOMOD.projection.out` objects
+- Add new class `BIOMOD.rangesize.out`
+- Change `bm_PlotRangeSize` input to `BIOMOD.rangesize.out` objects, and project maps with coordinates of `BIOMOD.projection.out` object
+- Fix `show` outputs of `BIOMOD.[...].out` objects
 
-- `BIOMOD_RangeSize` becomes `bm_RangeSize` and the new `BIOMOD_RangeSize` accepts `BIOMOD.projection.out` objects.
-- Add a new class `BIOMOD.rangesize.out`.
-- `bm_PlotRangeSize` accepts `BIOMOD.rangesize.out` only now. 
-_ `bm_PlotRangeSize` projects now maps with the coordinates of the `BIOMOD.projection.out` objects.
 
-
-##### 4.3-0 Abundance (2025-01-30)
+#### 4.3-0 Abundance (2025-01-30)
 
 ##### Major Changes
 

@@ -217,24 +217,24 @@ setMethod('get_scaling_model', signature('biomod2_model'),
 
 setMethod('show', signature('biomod2_model'), function(object) {
   .bm_cat("biomod2_model")
-  cat("\n\t model name :", object@model_name, fill = .Options$width)
-  cat("\n\t model class :", object@model_class, fill = .Options$width)
-  cat("\n\t This model", ifelse(length(object@scaling_model), "has", "doesn't have"), "its own scale", fill = .Options$width)
-  
+  cat("\n\t Model name (model_name) :", object@model_name, fill = .Options$width)
+  cat("\n\t Model class (model_class) :", object@model_class, fill = .Options$width)
+  cat("\n\t Scaling model (scaling_model) : This model"
+      , ifelse(length(object@scaling_model), "has", "doesn't have"), "its own scale", fill = .Options$width)
   cat("\n")
-  cat("\n\t modeling folder:", object@dir_name, fill = .Options$width)
-  cat("\n\t response modelled:", object@resp_name, fill = .Options$width)
-  cat("\n\n\t explanatory variables used:", fill = .Options$width)
+  cat("\n\t Modeling directory (dir_name) :", object@dir_name, fill = .Options$width)
+  cat("\n\t Modeled species (resp_name) :", object@resp_name, fill = .Options$width)
+  cat("\n\n\t Explanatory variables (expl.var.names) :", fill = .Options$width)
   cat("\n\t", "name", "\t", "type", "\t", "range", fill = .Options$width)
   for (i in 1:length(object@expl_var_names)) {
-    cat("\n\t", object@expl_var_names[i],"\t", object@expl_var_type[i], "\t", object@expl_var_range[[i]], fill = .Options$width)
+    cat("\n\t", object@expl_var_names[i]
+        , "\t", object@expl_var_type[i]
+        , "\t", object@expl_var_range[[i]], fill = .Options$width)
   }
-  
   cat("\n")
   cat("\n\t NOTE : ")
   cat("\n\t\t You can access 'formal' model with get_formal_model function")
   cat(ifelse(length(object@scaling_model), "\n\t\t You can access scaling model with get_scaling_model function\n", "\n"))
-  
   .bm_cat()
 })
 

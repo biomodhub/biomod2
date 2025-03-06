@@ -445,12 +445,12 @@ setClass("BIOMOD.stored.models.out",
 
 setMethod('show', signature('BIOMOD.models.out'), function(object) {
   .bm_cat("BIOMOD.models.out")
-  cat("\nModeling folder :", object@dir.name, fill = .Options$width)
-  cat("\nSpecies modeled :", object@sp.name, fill = .Options$width)
-  cat("\nModeling id :", object@modeling.id, fill = .Options$width)
-  cat("\nConsidered variables :", object@expl.var.names, fill = .Options$width)
-  cat("\n\nComputed Models : ", object@models.computed, fill = .Options$width)
-  cat("\n\nFailed Models : ", object@models.failed, fill = .Options$width)
+  cat("\nModeling directory (dir.name) :", object@dir.name, fill = .Options$width)
+  cat("\nModeled species (sp.name) :", object@sp.name, fill = .Options$width)
+  cat("\nModeling id (modeling.id) :", object@modeling.id, fill = .Options$width)
+  cat("\nExplanatory variables (expl.var.names) :", object@expl.var.names, fill = .Options$width)
+  cat("\n\nComputed models (models.computed) : ", object@models.computed, fill = .Options$width)
+  cat("\nFailed models (models.failed) : ", object@models.failed, fill = .Options$width)
   .bm_cat()
 })
 
@@ -977,21 +977,20 @@ setMethod('plot', signature(x = 'BIOMOD.projection.out', y = "missing"),
 setMethod('show', signature('BIOMOD.projection.out'), function(object)
 {
   .bm_cat("BIOMOD.projection.out")
-  cat("\nProjection directory :", paste0(object@dir.name, "/", object@sp.name, "/", object@proj.name), fill = .Options$width)
-  cat("\n")
-  cat("\nsp.name :", object@sp.name, fill = .Options$width)
-  cat("\nexpl.var.names :", object@expl.var.names, fill = .Options$width)
-  cat("\n")
-  cat("\nmodeling.id :", object@modeling.id , "(", object@models.out@link , ")", fill = .Options$width)
-  cat("\nmodels.projected :", toString(object@models.projected), fill = .Options$width)
+  cat("\nModeled species (sp.name) :", object@sp.name, fill = .Options$width)
+  cat("\nModeling id (modeling.id) :", object@modeling.id , "(", object@models.out@link , ")", fill = .Options$width)
+  cat("\nExplanatory variables (expl.var.names) :", object@expl.var.names, fill = .Options$width)
+  cat("\nProjection directory (dir.name/sp.name/proj.name) :"
+      , paste0(object@dir.name, "/", object@sp.name, "/", object@proj.name), fill = .Options$width)
+  cat("\n\nProjected models (models.projected) : ", object@models.projected, fill = .Options$width)
   df.info <- .extract_projlinkInfo(object)
   if (any(df.info$type == "bin")) {
     available.metric <- unique(subset(df.info, df.info$type == "bin")$metric)
-    cat("\navailable binary projection :", toString(available.metric), fill = .Options$width)
+    cat("\nAvailable binary projection :", available.metric, fill = .Options$width)
   }
   if (any(df.info$type == "filt")) {
     available.metric <- unique(subset(df.info, df.info$type == "filt")$metric)
-    cat("\navailable filtered projection :", toString(available.metric), fill = .Options$width)
+    cat("\nAvailable filtered projection :", available.metric, fill = .Options$width)
   }
   .bm_cat()
 })
@@ -1277,11 +1276,11 @@ setClass("BIOMOD.ensemble.models.out",
 
 setMethod('show', signature('BIOMOD.ensemble.models.out'), function(object) {
   .bm_cat("BIOMOD.ensemble.models.out")
-  cat("\nsp.name :", object@sp.name, fill = .Options$width)
-  cat("\nexpl.var.names :", object@expl.var.names, fill = .Options$width)
-  cat("\n")
-  cat("\nmodels computed:", toString(object@em.computed), fill = .Options$width)
-  cat("\nmodels failed:", toString(object@em.failed), fill = .Options$width)
+  cat("\nModeled species (sp.name) :", object@sp.name, fill = .Options$width)
+  cat("\nModeling id (modeling.id) :", object@modeling.id , "(", object@models.out@link , ")", fill = .Options$width)
+  cat("\nExplanatory variables (expl.var.names) :", object@expl.var.names, fill = .Options$width)
+  cat("\n\nComputed models (em.computed) : ", object@em.computed, fill = .Options$width)
+  cat("\nFailed models (em.failed) : ", object@em.failed, fill = .Options$width)
   .bm_cat()
 })
 
