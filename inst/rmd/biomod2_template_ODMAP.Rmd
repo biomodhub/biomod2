@@ -1,0 +1,337 @@
+---
+title: '`biomod2` - Modeling `r sp.name` - ODMAP'
+output:
+  html_document:
+    toc: true
+    theme: united
+date: "Last compiled on `r format(Sys.time(), '%d %B, %Y')`"
+params:
+  sp.name: 
+    value: NA
+  bm.files:
+    value: NA
+  bm.mod:
+    value: NA
+  bm.ens:
+    value: NA
+  bm.form:
+    value: NA
+  params.ODMAP:
+    value: NA
+---
+
+</br></br>
+
+
+
+
+<link rel="stylesheet" href="//use.fontawesome.com/releases/v6.7.2/css/all.css">
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+options(width = 120)
+library(biomod2)
+library(terra)
+library(data.table)
+```
+
+
+```{r init-objects, echo=FALSE, warning=FALSE}
+bm.calib = NULL
+hasEvalMod = hasEvalEns = FALSE
+# hasVarImpMod = hasVarImpEns = FALSE
+hasBmFiles = !is.na(bm.files)
+hasBmMod = !is.na(bm.mod)
+hasBmEns = !is.na(bm.ens)
+hasBmForm = !is.na(bm.form)
+```
+
+```{r get-calib, echo=FALSE, eval=hasBmMod}
+bm.calib = get_calib_lines(bm.mod)
+
+name.all = colnames(bm.calib)
+name.PA = sapply(name.all, function(x) strsplit(x, "_")[[1]][2])
+name.PA = unique(name.PA)
+name.run = sapply(name.all, function(x) strsplit(x, "_")[[1]][3])
+name.run = unique(name.run)
+nb.PA = sum(!grepl("allData", name.PA))
+nb.rep = sum(!grepl("allRun", name.run))
+```
+
+```{r get-dataset-info, echo=FALSE, eval=hasBmForm, results='hide'}
+hasPA = inherits(bm.form, "BIOMOD.formated.data.PA")
+hasDataEval = ifelse("has.data.eval" %in% slotNames(bm.form), bm.form@has.data.eval, FALSE)
+hasFilterRaster = ifelse("has.filter.raster" %in% slotNames(bm.form)
+                         , bm.form@has.filter.raster, FALSE) ##
+
+form.summ = summary(bm.form, calib.lines = bm.calib)
+form.summ = as.data.frame(form.summ)
+
+nb.1 = form.summ$Presences[which(form.summ$dataset == "initial")]
+nb.0 = form.summ$True_Absences[which(form.summ$dataset == "initial")]
+nb.NA = form.summ$Pseudo_Absences[which(form.summ$dataset == "calibration" &
+                                          form.summ$run == "allRun" &
+                                          form.summ$PA == "PA1")]
+
+CV.perc = round(100 * form.summ$Presences[which(form.summ$dataset == "calibration" &
+                                                  form.summ$run == "RUN1" &
+                                                  form.summ$PA == "allData")] / nb.1) ##
+CV.perc.PA = round(100 * form.summ$Presences[which(form.summ$dataset == "calibration" &
+                                                  form.summ$run == "RUN1" &
+                                                  form.summ$PA == "PA1")] / nb.1) ##
+
+name.var = colnames(bm.form@data.env.var)
+```
+
+```{r get-eval-varImp-mod, echo=FALSE, eval=hasBmMod}
+eval.mod = get_evaluations(bm.mod)
+hasEvalMod = !is.null(eval.mod)
+```
+
+```{r get-eval-varImp-ens, echo=FALSE, eval=hasBmEns}
+eval.ens = get_evaluations(bm.ens)
+hasEvalEns = !is.null(eval.ens)
+```
+
+```{r get-algo-mod, echo=FALSE, eval=hasBmMod}
+# name.var = get_formal_data(bm.mod, subinfo = "expl.var.names")
+name.algo = get_built_models(bm.mod)
+name.algo = sapply(name.algo, function(x) strsplit(x, "_")[[1]][4])
+name.algo = sort(unique(name.algo))
+```
+
+```{r get-algo-ens, echo=FALSE, eval=hasBmEns}
+name.ens = get_built_models(bm.ens)
+name.ens = sapply(name.ens, function(x) strsplit(x, "_")[[1]][2])
+name.ens = sort(unique(name.ens))
+```
+
+```{r get-metrics, echo=FALSE}
+name.eval.mod = name.eval.ens = NULL
+evalSame = FALSE
+if (hasEvalMod) {
+  name.eval.mod = sort(unique(eval.mod$metric.eval))
+}
+if (hasEvalEns) {
+  name.eval.ens = sort(unique(eval.ens$metric.eval))
+}
+if (hasEvalMod && hasEvalEns) {
+  evalSame = (length(name.eval.mod) == length(name.eval.ens) &&
+              all.equal(name.eval.mod, name.eval.ens))
+}
+```
+
+```{r get-coeff, echo=FALSE}
+# mod.list = get_built_models(bm.mod)
+# i = 12
+# BIOMOD_LoadModels(bm.mod, full.name = mod.list[i])
+# mod.i = get(mod.list[i])
+# hop = get_formal_model(mod.i)
+# # if GAM, GLM, MARS hop$coefficients
+# rm(list = mod.list[i])
+```
+
+
+
+___________________________________________________________________________________________________
+
+## <font style="color:#eb4034;"><i class="fa-solid fa-table"></i> ODMAP protocol</font>
+___________________________________________________________________________________________________
+
+```{r get-ODMAP-empty, echo=FALSE}
+# ODMAP = read.table("ODMAP_empty.csv", header = TRUE, sep = ",")
+# ODMAP$element = sub(" $", "", ODMAP$element)
+data(ODMAP)
+```
+
+```{r fun-ODMAP, echo=FALSE}
+fun_ind <- function(section, subsection, element) {
+  return(which(ODMAP$section == section &
+                    ODMAP$subsection == subsection &
+                    ODMAP$element == element))
+}
+```
+
+```{r fill-ODMAP-1, echo=FALSE}
+## Information to be filled by hand by user
+ODMAP$Value[fun_ind("Overview", "Authorship", "Study title")] = "tobefilledbyuser"
+ODMAP$Value[fun_ind("Overview", "Authorship", "Author names")] = "tobefilledbyuser"
+ODMAP$Value[fun_ind("Overview", "Authorship", "Contact")] = "tobefilledbyuser"
+ODMAP$Value[fun_ind("Overview", "Authorship", "Study link")] = "tobefilledbyuser"
+ODMAP$Value[fun_ind("Overview", "Model objective", "Target output")] = "tobefilledbyuser"
+ODMAP$Value[fun_ind("Overview", "Location", "Location")] = "tobefilledbyuser"
+ODMAP$Value[fun_ind("Overview", "Hypotheses", "Hypotheses")] = "tobefilledbyuser"
+ODMAP$Value[fun_ind("Overview", "Assumptions", "Model assumptions")] = "tobefilledbyuser"
+
+## Information to be chosen by user
+ODMAP$Value[fun_ind("Overview", "Model objective", "Model objective")] = params.ODMAP$O.mod.objective
+ODMAP$Value[fun_ind("Overview", "Scale of Analysis", "Boundary")] = params.ODMAP$O.boundary
+ODMAP$Value[fun_ind("Overview", "Biodiversity data", "Observation type")] = paste0(params.ODMAP$O.obs.type, collapse = ", ")
+ODMAP$Value[fun_ind("Overview", "Predictors", "Predictor types")] = paste0(params.ODMAP$O.pred.type, collapse = ", ")
+ODMAP$Value[fun_ind("Data", "Biodiversity data", "Ecological level")] = params.ODMAP$D.eco.level
+ODMAP$Value[fun_ind("Data", "Biodiversity data", "Sampling design")] = params.ODMAP$D.samp.design
+```
+
+```{r fill-ODMAP-2, echo=FALSE}
+## Species name
+ODMAP$Value[fun_ind("Overview", "Focal Taxon", "Focal Taxon")] = sp.name
+ODMAP$Value[fun_ind("Data", "Biodiversity data", "Taxon names")] = sp.name
+
+if (!is.null(bm.form@data.mask)) {
+  mm = unwrap(bm.form@data.mask$calibration)
+  
+  ## Overview
+  ODMAP$Value[fun_ind("Overview", "Scale of Analysis", "Spatial extent")] = as.character(ext(mm))
+  ODMAP$Value[fun_ind("Overview", "Scale of Analysis", "Spatial resolution")] = paste0(res(mm), collapse = ", ")
+  
+  ## Predictor variables
+  ODMAP$Value[fun_ind("Data", "Predictor variables", "Spatial extent")] = as.character(ext(mm))
+  ODMAP$Value[fun_ind("Data", "Predictor variables", "Spatial resolution")] = paste0(res(mm), collapse = ", ")
+  ODMAP$Value[fun_ind("Data", "Predictor variables", "Coordinate reference system")] = crs(mm, proj = TRUE)
+}
+
+ODMAP$Value[fun_ind("Overview", "Biodiversity data", "Response data type")] = ifelse(hasPA, "presence-only", "presence-absence")
+
+if (hasBmMod) {
+  ODMAP$Value[fun_ind("Overview", "Algorithms", "Modelling techniques")] = paste0(name.algo, collapse = ", ")
+}
+if (hasBmEns) {
+  ODMAP$Value[fun_ind("Overview", "Algorithms", "Model averaging")] = paste0(name.ens, collapse = ", ")
+}
+ODMAP$Value[fun_ind("Overview", "Software", "Software")] = paste0("biomod2 v", packageVersion("biomod2"))
+
+
+if (hasFilterRaster){
+  ODMAP$Value[fun_ind("Data", "Biodiversity data", "Scaling")] = "Thinning to keep only one occurrence per cell"
+} else {
+  ODMAP$Value[fun_ind("Data", "Biodiversity data", "Scaling")] = "none"
+}
+
+if (hasPA) {
+  ODMAP$Value[fun_ind("Data", "Biodiversity data", "Absence data")] = "none"
+  ODMAP$Value[fun_ind("Data", "Biodiversity data", "Background data")] = paste(nb.PA, "sets of", nb.NA, "pseudo-absences selected with", bm.form@PA.strategy, "strategy")
+} else {
+  ODMAP$Value[fun_ind("Data", "Biodiversity data", "Absence data")] = paste(nb.0, "true absences")
+  ODMAP$Value[fun_ind("Data", "Biodiversity data", "Background data")] = "none"
+}
+
+ODMAP$Value[fun_ind("Data", "Biodiversity data", "Sample size")] = paste0(c(paste(nb.1, "presences")
+                                                                , ifelse(nb.0 > 0, paste(nb.0, "true absences"), "")), collapse = ", ")
+
+if (hasBmMod) {
+if (hasPA) {
+    ODMAP$Value[fun_ind("Data", "Data partitioning", "Training data")] = ifelse(nb.rep == 0, "all", paste(nb.rep, "sets of", CV.perc.PA, "percent of the data for each pseudo-absence dataset"))
+  ODMAP$Value[fun_ind("Data", "Data partitioning", "Validation data")] = ifelse(nb.rep == 0, "none", paste(nb.rep, "sets of", 100 - CV.perc.PA, "percent of the data for each pseudo-absence dataset"))
+} else {
+  ODMAP$Value[fun_ind("Data", "Data partitioning", "Training data")] = ifelse(nb.rep == 0, "all", paste(nb.rep, "sets of", CV.perc, "percent of the data"))
+  ODMAP$Value[fun_ind("Data", "Data partitioning", "Validation data")] = ifelse(nb.rep == 0, "none", paste(nb.rep, "sets of", 100 - CV.perc, "percent of the data"))
+}
+}
+ODMAP$Value[fun_ind("Data", "Data partitioning", "Test data")] = ifelse(hasDataEval, "TRUC", "none")
+
+ODMAP$Value[fun_ind("Data", "Predictor variables", "Predictor variables")] = paste0(name.var, collapse = ", ")
+
+ODMAP$Value[fun_ind("Model", "Model estimates", "Coefficient")] = paste0(name.var, collapse = ", ")
+```
+
+```{r fill-ODMAP-3, echo=FALSE}
+if (hasEvalMod || hasEvalEns) {
+  if (evalSame) {
+    mess = paste0(paste0(name.eval.mod, collapse = ", "), " for all models")
+  } else {
+    mess = paste0(paste0(name.eval.mod, collapse = ", "), " for single models ; "
+                  , paste0(name.eval.ens, collapse = ", "), " for ensemble models")
+  }
+} else { mess = NA }
+ODMAP$Value[fun_ind("Assessment", "Performance statistics", "Performance on training data")] = mess
+ODMAP$Value[fun_ind("Assessment", "Performance statistics", "Performance on validation data")] = mess
+ODMAP$Value[fun_ind("Assessment", "Performance statistics", "Performance on test data")] = mess
+if (hasBmMod) {
+  ODMAP$Value[fun_ind("Assessment", "Plausibility check", "Response shapes")] = "Response curves"
+}
+```
+
+```{r write-ODMAP, echo=FALSE}
+fwrite(ODMAP, file = paste0("biomod2_ODMAP_", sp.name, "_table.csv")
+       , col.names = FALSE, row.names = FALSE, quote = FALSE, sep = "\t")
+```
+
+
+
+
+```{r fun-print-ODMAP, echo=FALSE}
+fun_print <- function(tmp, rm.na = FALSE) {
+  if (rm.na) {
+    tmp = tmp[which(!is.na(tmp$Value)), ]
+  }
+  subsection.prev = text.toprint = ""
+  for(i in 1:nrow(tmp)){
+    if (tmp$subsection[i] == subsection.prev) {
+      cat.subsection = ""
+    } else {
+      cat.subsection = paste0(ifelse(i == 1, "", "\n"), "\t", tmp$subsection[i])
+      subsection.prev = tmp$subsection[i]
+    }
+    cat.element = tmp$element[i]
+    cat.value = tmp$Value[i]
+    nb.tab = ifelse(nchar(cat.element) < 8, 6
+                    , ifelse(nchar(cat.element) < 12, 5
+                             , ifelse(nchar(cat.element) < 16, 4
+                                      , ifelse(nchar(cat.element) < 20, 3, 2))))
+    text.toprint = c(text.toprint, paste0(cat.subsection
+                                        , "\n\t\t"
+                                        , cat.element
+                                        , paste0(rep("\t", nb.tab), collapse = "")
+                                        , cat.value))
+  }
+  text.toprint = paste0(text.toprint, collapse = "")
+  # text.toprint = gsub("tobefilledbyuser", "*tobefilledbyuser*", text.toprint)
+  return(text.toprint)
+}
+```
+
+
+### <font style="color:#e0918b;">Overview</font>
+
+```{r print-overview, echo=FALSE}
+tmp = ODMAP[which(ODMAP$section == "Overview"), ]
+# cat(fun_print(tmp, rm.na = TRUE))
+cat(fun_print(tmp, rm.na = FALSE))
+```
+
+### <font style="color:#e0918b;">Data</font>
+
+```{r print-data, echo=FALSE}
+tmp = ODMAP[which(ODMAP$section == "Data"), ]
+if (any(!is.na(tmp$Value))) {
+  cat(fun_print(tmp, rm.na = FALSE))
+}
+```
+
+### <font style="color:#e0918b;">Model</font>
+
+```{r print-model, echo=FALSE}
+tmp = ODMAP[which(ODMAP$section == "Model"), ]
+if (any(!is.na(tmp$Value))) {
+  cat(fun_print(tmp, rm.na = FALSE))
+}
+```
+
+### <font style="color:#e0918b;">Assessment</font>
+
+```{r print-assessment, echo=FALSE}
+tmp = ODMAP[which(ODMAP$section == "Assessment"), ]
+if (any(!is.na(tmp$Value))) {
+  cat(fun_print(tmp, rm.na = FALSE))
+}
+```
+
+### <font style="color:#e0918b;">Prediction</font>
+
+```{r print-prediction, echo=FALSE}
+tmp = ODMAP[which(ODMAP$section == "Prediction"), ]
+if (any(!is.na(tmp$Value))) {
+  cat(fun_print(tmp, rm.na = FALSE))
+}
+```
+

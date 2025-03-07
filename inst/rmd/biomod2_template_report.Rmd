@@ -1,0 +1,307 @@
+---
+title: '`biomod2` - Modeling `r sp.name` - report'
+output:
+  html_document:
+    toc: true
+    theme: united
+date: "Last compiled on `r format(Sys.time(), '%d %B, %Y')`"
+params:
+  sp.name: 
+    value: NA
+  bm.files:
+    value: NA
+  bm.mod:
+    value: NA
+  bm.ens:
+    value: NA
+  bm.form:
+    value: NA
+---
+
+</br></br>
+
+
+
+
+<link rel="stylesheet" href="//use.fontawesome.com/releases/v6.7.2/css/all.css">
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+options(width = 120)
+library(biomod2)
+library(terra)
+library(data.table)
+library(kableExtra)
+library(DT)
+library(patchwork)
+```
+
+
+```{r init-objects, echo=FALSE, warning=FALSE}
+bm.calib = NULL
+hasEvalMod = hasEvalEns = FALSE
+hasVarImpMod = hasVarImpEns = FALSE
+hasBmFiles = !is.na(bm.files)
+hasBmMod = !is.na(bm.mod)
+hasBmEns = !is.na(bm.ens)
+hasBmForm = !is.na(bm.form)
+ind.mod = ind.ens = ind.proj = NA
+```
+
+```{r get-calib, echo=FALSE, eval=hasBmMod}
+bm.calib = get_calib_lines(bm.mod)
+```
+
+```{r get-dataset-info, echo=FALSE, eval=hasBmForm, results='hide'}
+hasPA = inherits(bm.form, "BIOMOD.formated.data.PA")
+hasDataEval = ifelse("has.data.eval" %in% slotNames(bm.form), bm.form@has.data.eval, FALSE)
+
+form.summ = summary(bm.form, calib.lines = bm.calib)
+form.summ = as.data.frame(form.summ)
+
+nb.1 = form.summ$Presences[which(form.summ$dataset == "initial")]
+nb.0 = form.summ$True_Absences[which(form.summ$dataset == "initial")]
+nb.NA = form.summ$Pseudo_Absences[which(form.summ$dataset == "calibration" &
+                                          form.summ$run == "allRun" &
+                                          form.summ$PA == "PA1")]
+```
+
+```{r load-projection-files, echo=FALSE, eval=hasBmMod, warning=FALSE, results='hide'}
+# ind.mod = which(bm.files$file == sub("[.]/", "", bm.mod@link))
+ind.mod = which(bm.files$file == sub(paste0(".*", sp.name, "/"), paste0(sp.name, "/"), bm.mod@link))
+ind.proj = which(bm.files$type == "projection" &
+                   bm.files$refer_to == bm.files$refer_to[ind.mod])
+name.proj = unique(bm.files$ID[ind.proj])
+
+ind.ens = which(bm.files$type == "models" &
+                        bm.files$level == "ensemble" &
+                        bm.files$refer_to == bm.files$refer_to[ind.mod])
+```
+
+```{r get-eval-varImp-mod, echo=FALSE, eval=hasBmMod}
+eval.mod = get_evaluations(bm.mod)
+hasEvalMod = !is.null(eval.mod)
+
+varImp.mod = get_variables_importance(bm.mod)
+hasVarImpMod = !is.null(varImp.mod)
+if (hasVarImpMod) {
+  varImp.mod$var.imp = round(varImp.mod$var.imp, 3)
+}
+```
+
+```{r get-eval-varImp-ens, echo=FALSE, eval=hasBmEns}
+eval.ens = get_evaluations(bm.ens)
+hasEvalEns = !is.null(eval.ens)
+
+varImp.ens = get_variables_importance(bm.ens)
+hasVarImpEns = !is.null(varImp.ens)
+if (hasVarImpEns) {
+  varImp.ens$var.imp = round(varImp.ens$var.imp, 3)
+}
+```
+
+
+
+
+
+<!-- ___________________________________________________________________________________________________ -->
+
+<!-- ## <font style="color:#eb4034;"><i class="fa-solid fa-folder-tree"></i> FILES & FOLDERS</font> -->
+<!-- ___________________________________________________________________________________________________ -->
+
+
+```{r print-modeling-files, echo=FALSE, eval=hasBmFiles}
+tab = knitr::kable(bm.files[, c("file", "path", "type", "level", "ID")], format = "html")
+tab = kable_styling(tab, bootstrap_options = "condensed")
+if (any(!is.na(c(ind.mod, ind.ens)))) {
+  row_spec(tab, c(ind.mod, ind.ens), bold = TRUE, color = "#eb4034")
+}
+```
+
+</br></br>
+
+
+## <font style="color:#eb4034;"><i class="fa-solid fa-list-check"></i> Formated data</font>
+
+The `r sp.name` species dataset contains `r nb.1` presences and `r nb.0` true absences. 
+
+```{r cond-hasPA, echo=FALSE, results='asis', eval=hasPA}
+cat('
+Pseudo-absences have been drawn from the'
+, form.summ$Undefined[which(form.summ$dataset == "initial")]
+, ' available background points.
+')
+```
+
+```{r data-print, echo=FALSE, eval=hasBmForm}
+print(bm.form)
+```
+
+```{r data-summary, echo=FALSE}
+tab = knitr::kable(form.summ, format = "html")
+kable_styling(tab, bootstrap_options = "hover")
+```
+
+```{r data-plot, echo=FALSE, message=FALSE, fig.align='center', fig.height=5, fig.width=10}
+form.plot = plot(bm.form, calib.lines = bm.calib, plot.type = "raster")
+```
+
+</br></br>
+
+
+
+## <font style="color:#eb4034;"><i class="fa-solid fa-virus"></i> Single models</font>
+
+```{r mod-print, echo=FALSE, eval=hasBmMod}
+print(bm.mod)
+```
+
+</br>
+
+### <font style="color:#e0918b;">Evaluation</font>
+
+```{r mod-eval-print, echo=FALSE, eval=hasEvalMod}
+rmCol = c("full.name")
+if (!hasDataEval) { rmCol = c("full.name", "evaluation") }
+DT::datatable(eval.mod[, -which(colnames(eval.mod) %in% rmCol)])
+```
+
+```{r mod-eval-plot, echo=FALSE, eval=hasEvalMod, message=FALSE, warning=FALSE, fig.align='center', fig.height=5, fig.width=10}
+pp1 = bm_PlotEvalMean(bm.out = bm.mod, dataset = "calibration", do.plot = FALSE)
+pp2 = bm_PlotEvalMean(bm.out = bm.mod, dataset = "validation", do.plot = FALSE)
+pp3 = bm_PlotEvalMean(bm.out = bm.mod, dataset = "evaluation", do.plot = FALSE)
+pp1$plot + pp2$plot + pp3$plot
+
+pp1 = bm_PlotEvalBoxplot(bm.out = bm.mod, dataset = "calibration"
+                         , group.by = c("algo", "run"), do.plot = FALSE)
+pp2 = bm_PlotEvalBoxplot(bm.out = bm.mod, dataset = "validation"
+                         , group.by = c("algo", "run"), do.plot = FALSE)
+pp3 = bm_PlotEvalBoxplot(bm.out = bm.mod, dataset = "evaluation"
+                         , group.by = c("algo", "run"), do.plot = FALSE)
+pp1$plot + pp2$plot + pp3$plot
+```
+</br>
+
+### <font style="color:#e0918b;">Variables' importance</font>
+
+```{r mod-varImp-print, echo=FALSE, eval=hasVarImpMod}
+rmCol = c("full.name")
+DT::datatable(varImp.mod[, -which(colnames(varImp.mod) %in% rmCol)])
+```
+
+```{r mod-varImp-plot, echo=FALSE, eval=hasVarImpMod, message=FALSE, warning=FALSE, fig.align='center', fig.height=5, fig.width=10}
+pp = bm_PlotVarImpBoxplot(bm.out = bm.mod
+                          , group.by = c("algo", "expl.var", "expl.var")
+                          , do.plot = FALSE)
+pp$plot
+```
+
+</br>
+
+### <font style="color:#e0918b;">Response curves</font>
+
+```{r mod-respCurves-plot, echo=FALSE, eval=hasBmMod, message=FALSE, warning=FALSE, fig.align='center', fig.height=10, fig.width=10}
+pp = bm_PlotResponseCurves(bm.out = bm.mod
+                           , fixed.var = "mean"
+                           , do.bivariate = FALSE
+                           , do.plot = FALSE
+                           , do.progress = FALSE)
+pp$plot + guides(color = guide_legend(ncol = 3))
+```
+
+
+</br></br>
+
+
+
+## <font style="color:#eb4034;"><i class="fa-solid fa-viruses"></i> Ensemble models</font>
+
+```{r ens-print, echo=FALSE, eval=hasBmEns}
+print(bm.ens)
+```
+</br>
+
+### <font style="color:#e0918b;">Evaluation</font>
+
+```{r ens-eval-print, echo=FALSE, eval=hasEvalEns}
+rmCol = c("full.name")
+if (!hasDataEval) { rmCol = c("full.name", "evaluation") }
+tab = knitr::kable(eval.ens[, -which(colnames(eval.ens) %in% rmCol)], format = "html")
+kable_styling(tab, bootstrap_options = "hover")
+```
+
+```{r ens-eval-plot, echo=FALSE, eval=hasEvalEns, message=FALSE, warning=FALSE, fig.align='center', fig.height=5, fig.width=10}
+pp1 = bm_PlotEvalMean(bm.out = bm.ens, dataset = "calibration", do.plot = FALSE)
+pp2 = bm_PlotEvalMean(bm.out = bm.ens, dataset = "validation", do.plot = FALSE)
+pp3 = bm_PlotEvalMean(bm.out = bm.ens, dataset = "evaluation", do.plot = FALSE)
+pp1$plot + pp2$plot + pp3$plot
+
+pp1 = bm_PlotEvalBoxplot(bm.out = bm.ens, dataset = "calibration"
+                         , group.by = c("algo", "algo"), do.plot = FALSE)
+pp2 = bm_PlotEvalBoxplot(bm.out = bm.ens, dataset = "validation"
+                         , group.by = c("algo", "algo"), do.plot = FALSE)
+pp3 = bm_PlotEvalBoxplot(bm.out = bm.ens, dataset = "evaluation"
+                         , group.by = c("algo", "algo"), do.plot = FALSE)
+pp1$plot + pp2$plot + pp3$plot
+```
+</br>
+
+### <font style="color:#e0918b;">Variables' importance</font>
+
+```{r ens-varImp-print, echo=FALSE, eval=hasVarImpEns}
+rmCol = c("full.name")
+DT::datatable(varImp.ens[, -which(colnames(varImp.ens) %in% rmCol)])
+```
+
+```{r ens-varImp-plot, echo=FALSE, eval=hasVarImpEns, message=FALSE, warning=FALSE, fig.align='center', fig.height=5, fig.width=10}
+pp = bm_PlotVarImpBoxplot(bm.out = bm.ens
+                          , group.by = c("algo", "expl.var", "expl.var")
+                          , do.plot = FALSE)
+pp$plot
+```
+
+</br>
+
+### <font style="color:#e0918b;">Response curves</font>
+
+```{r ens-respCurves-plot, echo=FALSE, eval=hasBmEns, message=FALSE, warning=FALSE, fig.align='center', fig.height=10, fig.width=10}
+pp = bm_PlotResponseCurves(bm.out = bm.ens
+                           , fixed.var = "mean"
+                           , do.bivariate = FALSE
+                           , do.plot = FALSE
+                           , do.progress = FALSE)
+pp$plot + guides(color = guide_legend(ncol = 1))
+```
+
+</br></br>
+
+
+
+## <font style="color:#eb4034;"><i class="fa-solid fa-earth-europe"></i> Projections</font>
+
+```{r print-projection-files, echo=FALSE, eval=hasBmFiles}
+tab = knitr::kable(bm.files[, c("file", "path", "type", "level", "ID")], format = "html")
+tab = kable_styling(tab, bootstrap_options = "condensed")
+if (any(!is.na(ind.proj))) {
+  row_spec(tab, ind.proj, bold = TRUE, color = "#658f70")
+}
+```
+
+```{r plot-projection-files, echo=FALSE, eval=!is.na(ind.proj), warning=FALSE, fig.align='center', fig.height=5, fig.width=10}
+for (proj.i in name.proj) {
+  ind.proj.i = intersect(ind.proj, which(bm.files$ID == proj.i))
+  for (j in ind.proj.i) {
+    bm.proj = get(load(file = bm.files$file[j]))
+    if (inherits(try(bm.proj@data.type), "try-error")) {
+      bm.proj@data.type <- "binary"
+    }
+    print(bm.proj)
+    plot(bm.proj)
+    ## + clamping mask ??
+  }
+}
+rm(list = basename(bm.files$file))
+```
+
+</br></br>
+
