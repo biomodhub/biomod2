@@ -198,7 +198,8 @@ if (hasBmMod) {
 if (hasBmEns) {
   ODMAP$Value[fun_ind("Overview", "Algorithms", "Model averaging")] = paste0(name.ens, collapse = ", ")
 }
-ODMAP$Value[fun_ind("Overview", "Software", "Software")] = paste0("biomod2 v", packageVersion("biomod2"))
+# ODMAP$Value[fun_ind("Overview", "Software", "Software")] = paste0("biomod2 v", packageVersion("biomod2"))
+ODMAP$Value[fun_ind("Overview", "Software", "Software")] = paste0("biomod2 v", bm.form@biomod2.version)
 
 
 if (hasFilterRaster){

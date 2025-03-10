@@ -2,8 +2,8 @@
 % Please edit documentation in R/BIOMOD_Report.R
 \name{BIOMOD_Report}
 \alias{BIOMOD_Report}
-\alias{BIOMOD_Report.summary}
-\alias{BIOMOD_Report.ODMAP}
+\alias{BIOMOD_Report_summary}
+\alias{BIOMOD_Report_ODMAP}
 \title{Produce summary outputs from a simulation folder}
 \usage{
 BIOMOD_Report(
@@ -13,9 +13,17 @@ BIOMOD_Report(
     O.pred.type = NULL, D.eco.level = NULL, D.samp.design = NULL)
 )
 
-BIOMOD_Report.summary(sp.name, bm.files, bm.mod, bm.ens, bm.form)
+BIOMOD_Report_summary(sp.name, dir.name, bm.files, bm.form, bm.mod, bm.ens)
 
-BIOMOD_Report.ODMAP(sp.name, bm.files, bm.mod, bm.ens, bm.form, params.ODMAP)
+BIOMOD_Report_ODMAP(
+  sp.name,
+  dir.name,
+  bm.files,
+  bm.form,
+  bm.mod,
+  bm.ens,
+  params.ODMAP
+)
 }
 \arguments{
 \item{bm.out}{a \code{\link{BIOMOD.formated.data}} or \code{\link{BIOMOD.formated.data.PA}} 
@@ -29,6 +37,18 @@ must be \code{report}, \code{ODMAP} or \code{code} (see Details)}
 
 \item{params.ODMAP}{a \code{list} containing values of some ODMAP fields to be filled in 
 from pre-existing choices (see Details)}
+
+\item{sp.name}{.}
+
+\item{dir.name}{.}
+
+\item{bm.files}{.}
+
+\item{bm.form}{.}
+
+\item{bm.mod}{.}
+
+\item{bm.ens}{.}
 }
 \value{
 A ...

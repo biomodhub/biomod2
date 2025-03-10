@@ -71,6 +71,9 @@ utils::globalVariables(names = c("full.name", "models", "run", "PA"))
 ## BIOMOD_RangeSize ------------
 utils::globalVariables(names = c("thiscol", "pred", "proj", "nonbinary", "Source", "Target"))
 
+## BIOMOD_Report ------------
+utils::globalVariables(names = c("sp.name", "dir.name", "name.bm.mod"))
+
 
 ## bm_PseudoAbsences ------------
 utils::globalVariables(names = c("i.abs"))

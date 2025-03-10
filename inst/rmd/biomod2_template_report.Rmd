@@ -56,8 +56,14 @@ bm.calib = get_calib_lines(bm.mod)
 hasPA = inherits(bm.form, "BIOMOD.formated.data.PA")
 hasDataEval = ifelse("has.data.eval" %in% slotNames(bm.form), bm.form@has.data.eval, FALSE)
 
-form.summ = summary(bm.form, calib.lines = bm.calib)
-form.summ = as.data.frame(form.summ)
+# form.summ = summary(bm.form, calib.lines = bm.calib) ## TODO CORRECT
+form.summ = data.frame("dataset" = "initial",
+                       "run" = NA,
+                       "PA" = NA,
+                       "Presences" = length(which(bm.form@data.species == 1)),
+                       "True_Absences" = length(which(bm.form@data.species == 0)),
+                       "Pseudo_Absences" = 0,
+                       "Undefined" = length(which(is.na(bm.form@data.species))))
 
 nb.1 = form.summ$Presences[which(form.summ$dataset == "initial")]
 nb.0 = form.summ$True_Absences[which(form.summ$dataset == "initial")]

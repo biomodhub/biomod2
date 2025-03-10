@@ -10,7 +10,7 @@ A \code{data.frame} object with 84 rows and 4 variables:
   \item{section}{Overview, Data, Model, Assessment or Prediction step}
   \item{subsection}{corresponding field}
   \item{element}{corresponding field}
-  \item{value}{to be filled with \code{\link{bm_Report}} function}
+  \item{value}{to be filled with \code{\link{BIOMOD_Report}} function}
 }
 }
 \usage{

@@ -18,6 +18,13 @@
 ##' @param params.ODMAP a \code{list} containing values of some ODMAP fields to be filled in 
 ##' from pre-existing choices (see Details)
 ##' 
+##' @param sp.name .
+##' @param dir.name .
+##' @param bm.files .
+##' @param bm.form .
+##' @param bm.mod .
+##' @param bm.ens .
+##' 
 ##' 
 ##' @return 
 ##' 
@@ -57,15 +64,18 @@ BIOMOD_Report <- function(bm.out
                                                 , D.eco.level = NULL
                                                 , D.samp.design = NULL))
 {
+  .bm_cat("Do biomod2 Report")
   bm.files = bm.mod = bm.ens = bm.form = NA
+  
   
   ## 0. Check arguments ---------------------------------------------------------------------------
   args <- .BIOMOD_Report.check.args(bm.out, strategy, params.ODMAP)
   for (argi in names(args)) { assign(x = argi, value = args[[argi]]) }
   rm(args)
-  
-  
+
+    
   ## 1. Get modeling files ------------------------------------------------------------------------
+  cat("\n\t> Getting modeling files...")
   bm.files = list.files(path = sp.name, pattern = ".out$", recursive = TRUE, full.names = TRUE)
   if (length(bm.files) > 0) {
     bm.files = data.frame(file = bm.files
@@ -97,7 +107,7 @@ BIOMOD_Report <- function(bm.out
       ind.mod = which(bm.files$type == "models" &
                         bm.files$level == "single")
       if (length(ind.mod) > 0) {
-        warning(paste0("No bm.mod selected but some available. Please select one among :"
+        warning(paste0("No bm.mod selected but some available. Please select one among : "
                        , paste0(bm.files$file[ind.mod], collapse = ", ")))
       }
     } else {
@@ -142,11 +152,12 @@ BIOMOD_Report <- function(bm.out
   
   
   ## 2. Create output object ----------------------------------------------------------------------
+  cat("\n\t> Building report...")
   out <- switch(strategy,
-                report = BIOMOD_Report.summary(sp.name, bm.files, bm.mod, bm.ens, bm.form),
-                ODMAP = BIOMOD_Report.ODMAP(sp.name, bm.files, bm.mod, bm.ens, bm.form, params.ODMAP))
-  cat("\n")
-  return(out)
+                report = BIOMOD_Report_summary(sp.name, dir.name, bm.files, bm.form, bm.mod, bm.ens),
+                ODMAP = BIOMOD_Report_ODMAP(sp.name, dir.name, bm.files, bm.form, bm.mod, bm.ens, params.ODMAP))
+  
+  .bm_cat("Done")
 }
 
 
@@ -160,23 +171,26 @@ BIOMOD_Report <- function(bm.out
   }
   
   
-  sp.name = name.bm.mod = bm.form = NA
+  sp.name = dir.name = name.bm.mod = bm.form = NA
   
   ## 1. Check bm.out -------------------------------------------------------
   test.format <- inherits(bm.out, c("BIOMOD.formated.data", "BIOMOD.formated.data.PA"))
   test.models <- inherits(bm.out, c("BIOMOD.models.out", "BIOMOD.ensemble.models.out"))
   if (test.format && !test.models) {
     sp.name <- bm.out@sp.name
+    dir.name <- bm.out@dir.name
     bm.form <- bm.out
   } else if (!test.format && test.models) {
     sp.name <- bm.out@sp.name
+    dir.name <- bm.out@dir.name
     if (inherits(bm.out, "BIOMOD.models.out")) {
       name.bm.mod <- sub(paste0(".*", sp.name, "/"), paste0(sp.name, "/"), bm.out@link)
     } else {
       name.bm.mod <- sub(paste0(".*", sp.name, "/"), paste0(sp.name, "/"), bm.out@models.out@link)
     }
   } else {
-    stop("")
+    .fun_testIfInherits(TRUE, "bm.out", bm.out, c("BIOMOD.formated.data", "BIOMOD.formated.data.PA"
+                                                  , "BIOMOD.models.out", "BIOMOD.ensemble.models.out"))
   }
   
   
@@ -221,6 +235,7 @@ BIOMOD_Report <- function(bm.out
   }
   
   return(list(sp.name = sp.name
+              , dir.name = dir.name
               , name.bm.mod = name.bm.mod
               , bm.form = bm.form
               , params.ODMAP = params.ODMAP))
@@ -231,37 +246,43 @@ BIOMOD_Report <- function(bm.out
 
 ##'
 ##' @rdname BIOMOD_Report
-##' @export
 ##'
 
-BIOMOD_Report.summary <- function(sp.name, bm.files, bm.mod, bm.ens, bm.form)
+BIOMOD_Report_summary <- function(sp.name, dir.name, bm.files, bm.form, bm.mod, bm.ens)
 {
-  # rmarkdown::render(input = "biomod2_template_report.Rmd"
-  rmarkdown::render(input = system.file("rmd", "biomod2_template_report.Rmd", package = "biomod2")
-                    , params = list(sp.name = sp.name
-                                    , bm.files = bm.files
-                                    , bm.mod = bm.mod
-                                    , bm.ens = bm.ens
-                                    , bm.form = bm.form)
-                    , output_format = "html_document"
-                    , output_file = paste0("biomod2_report_", sp.name, ".html"))
+  out <- rmarkdown::render(input = system.file("rmd", "biomod2_template_report.Rmd", package = "biomod2")
+                           , params = list(sp.name = sp.name
+                                           , bm.files = bm.files
+                                           , bm.mod = bm.mod
+                                           , bm.ens = bm.ens
+                                           , bm.form = bm.form)
+                           , output_format = "html_document"
+                           , output_file = paste0("biomod2_report_", sp.name, ".html")
+                           , output_dir = dir.name
+                           , knit_root_dir = dir.name
+                           , quiet = FALSE)
+  cat("\n\t> Report has been created : ", out)
+  cat("\n")
 }
 
 ##'
 ##' @rdname BIOMOD_Report
-##' @export
 ##'
 
-BIOMOD_Report.ODMAP <- function(sp.name, bm.files, bm.mod, bm.ens, bm.form, params.ODMAP)
+BIOMOD_Report_ODMAP <- function(sp.name, dir.name, bm.files, bm.form, bm.mod, bm.ens, params.ODMAP)
 {
-  # rmarkdown::render(input = paste0("biomod2_template_ODMAP.Rmd")
-  rmarkdown::render(input = system.file("rmd", "biomod2_template_ODMAP.Rmd", package = "biomod2")
-                    , params = list(sp.name = sp.name
-                                    , bm.files = bm.files
-                                    , bm.mod = bm.mod
-                                    , bm.ens = bm.ens
-                                    , bm.form = bm.form
-                                    , params.ODMAP = params.ODMAP)
-                    , output_format = "html_document"
-                    , output_file = paste0("biomod2_ODMAP_", sp.name, ".html"))
+  out <- rmarkdown::render(input = system.file("rmd", "biomod2_template_ODMAP.Rmd", package = "biomod2")
+                           , params = list(sp.name = sp.name
+                                           , bm.files = bm.files
+                                           , bm.mod = bm.mod
+                                           , bm.ens = bm.ens
+                                           , bm.form = bm.form
+                                           , params.ODMAP = params.ODMAP)
+                           , output_format = "html_document"
+                           , output_file = paste0("biomod2_ODMAP_", sp.name, ".html")
+                           , output_dir = dir.name
+                           , knit_root_dir = dir.name
+                           , quiet = FALSE)
+  cat("\n\t> ODMAP has been created : ", out)
+  cat("\n")
 }

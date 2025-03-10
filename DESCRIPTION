@@ -103,6 +103,7 @@ Collate:
     'BIOMOD_Modeling.R'
     'BIOMOD_Projection.R'
     'BIOMOD_RangeSize.R'
+    'BIOMOD_Report.R'
     'DEPRECATED.R'
     'bm_BinaryTransformation.R'
     'bm_CrossValidation.R'
