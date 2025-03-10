@@ -75,6 +75,7 @@ Suggests:
     testthat,
     knitr,
     markdown,
+    rmarkdown,
     tidyterra,
     ggtext,
     ggalluvial,

@@ -1,23 +1,66 @@
 ###################################################################################################
-##' @name bm_Report
+##' @name BIOMOD_Report
+##' @author Maya Gueguen
+##' 
+##' @title Produce summary outputs from a simulation folder
+##' 
+##' @description This function allows to produce summary report or ODMAP table from a 
+##' \pkg{biomod2} simulation folder.
+##' 
+##' 
+##' @param bm.out a \code{\link{BIOMOD.formated.data}} or \code{\link{BIOMOD.formated.data.PA}} 
+##' object returned by the \code{\link{BIOMOD_FormatingData}} function ; or a 
+##' \code{\link{BIOMOD.models.out}} or \code{\link{BIOMOD.ensemble.models.out}} 
+##' object that can be obtained with the \code{\link{BIOMOD_Modeling}} or 
+##' \code{\link{BIOMOD_EnsembleModeling}} functions
+##' @param strategy a \code{character} defining the type of summary file that will be produced, 
+##' must be \code{report}, \code{ODMAP} or \code{code} (see Details)
+##' @param params.ODMAP a \code{list} containing values of some ODMAP fields to be filled in 
+##' from pre-existing choices (see Details)
+##' 
+##' 
+##' @return 
+##' 
+##' A ...
+##' 
+##' 
+##' @details 
+##' 
+##' \bold{Concerning \code{ctrl.train} parameter :}
+##' 
+##' Set by default to : \cr
+##' 
+##' 
+##' @seealso \code{\link{ODMAP}}
+##' @family Primary functions
+##' 
+##' 
+##' @examples
+##' library(terra)
+##' 
+##' 
+# @importFrom foreach foreach %do% %:%
+##' 
+##' 
+##' @export
 ##' 
 ##' 
 ###################################################################################################
 
 
-bm_Report <- function(bm.out
-                      , strategy = 'report'
-                      , params.ODMAP = list(O.mod.objective = NULL
-                                            , O.boundary = NULL
-                                            , O.obs.type = NULL
-                                            , O.pred.type = NULL
-                                            , D.eco.level = NULL
-                                            , D.samp.design = NULL))
+BIOMOD_Report <- function(bm.out
+                          , strategy = 'report'
+                          , params.ODMAP = list(O.mod.objective = NULL
+                                                , O.boundary = NULL
+                                                , O.obs.type = NULL
+                                                , O.pred.type = NULL
+                                                , D.eco.level = NULL
+                                                , D.samp.design = NULL))
 {
   bm.files = bm.mod = bm.ens = bm.form = NA
   
   ## 0. Check arguments ---------------------------------------------------------------------------
-  args <- .bm_Report.check.args(bm.out, strategy, params.ODMAP)
+  args <- .BIOMOD_Report.check.args(bm.out, strategy, params.ODMAP)
   for (argi in names(args)) { assign(x = argi, value = args[[argi]]) }
   rm(args)
   
@@ -100,8 +143,8 @@ bm_Report <- function(bm.out
   
   ## 2. Create output object ----------------------------------------------------------------------
   out <- switch(strategy,
-                report = bm_Report_report(sp.name, bm.files, bm.mod, bm.ens, bm.form),
-                ODMAP = bm_Report_ODMAP(sp.name, bm.files, bm.mod, bm.ens, bm.form, params.ODMAP))
+                report = BIOMOD_Report.summary(sp.name, bm.files, bm.mod, bm.ens, bm.form),
+                ODMAP = BIOMOD_Report.ODMAP(sp.name, bm.files, bm.mod, bm.ens, bm.form, params.ODMAP))
   cat("\n")
   return(out)
 }
@@ -109,8 +152,14 @@ bm_Report <- function(bm.out
 
 ###################################################################################################
 
-.bm_Report.check.args <- function(bm.out, strategy, params.ODMAP)
+.BIOMOD_Report.check.args <- function(bm.out, strategy, params.ODMAP)
 {
+  ## check namespace ----------------------------------------------------------
+  if (!isNamespaceLoaded("rmarkdown")) { 
+    if (!requireNamespace('rmarkdown', quietly = TRUE)) stop("Package 'rmarkdown' not found")
+  }
+  
+  
   sp.name = name.bm.mod = bm.form = NA
   
   ## 1. Check bm.out -------------------------------------------------------
@@ -181,11 +230,11 @@ bm_Report <- function(bm.out
 ###################################################################################################
 
 ##'
-##' @rdname bm_Report
+##' @rdname BIOMOD_Report
 ##' @export
 ##'
 
-bm_Report_report <- function(sp.name, bm.files, bm.mod, bm.ens, bm.form)
+BIOMOD_Report.summary <- function(sp.name, bm.files, bm.mod, bm.ens, bm.form)
 {
   # rmarkdown::render(input = "biomod2_template_report.Rmd"
   rmarkdown::render(input = system.file("rmd", "biomod2_template_report.Rmd", package = "biomod2")
@@ -199,11 +248,11 @@ bm_Report_report <- function(sp.name, bm.files, bm.mod, bm.ens, bm.form)
 }
 
 ##'
-##' @rdname bm_Report
+##' @rdname BIOMOD_Report
 ##' @export
 ##'
 
-bm_Report_ODMAP <- function(sp.name, bm.files, bm.mod, bm.ens, bm.form, params.ODMAP)
+BIOMOD_Report.ODMAP <- function(sp.name, bm.files, bm.mod, bm.ens, bm.form, params.ODMAP)
 {
   # rmarkdown::render(input = paste0("biomod2_template_ODMAP.Rmd")
   rmarkdown::render(input = system.file("rmd", "biomod2_template_ODMAP.Rmd", package = "biomod2")
