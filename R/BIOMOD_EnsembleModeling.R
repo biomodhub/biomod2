@@ -778,6 +778,7 @@ BIOMOD_EnsembleModeling <- function(bm.mod,
   ## fix model names ----------------------------------------------------------
   name.OUT <- paste0(EM@sp.name, '.', EM@modeling.id, '.ensemble.models.out')
   EM@link <- file.path(EM@dir.name, EM@sp.name, name.OUT)
+  EM@call <- match.call()
   assign(x = name.OUT, value = EM)
   save(list = name.OUT, file = EM@link)
   

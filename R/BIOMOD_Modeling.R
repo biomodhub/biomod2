@@ -584,9 +584,10 @@ BIOMOD_Modeling <- function(bm.format,
   ## 6. SAVE MODEL OBJECT ON HARD DRIVE ----------------------------
   name.OUT = paste0(models.out@sp.name, '.', models.out@modeling.id, '.models.out')
   models.out@link <- file.path(models.out@dir.name, models.out@sp.name, name.OUT)
+  models.out@call <- match.call()
   assign(x = name.OUT, value = models.out)
   save(list = name.OUT, file = models.out@link)
- 
+  
   # if (.getOS() == "windows" && "MAXENT" %in% models){
   #   env <- foreach:::.foreachGlobals
   #   rm(list=ls(name=env), pos=env)

@@ -18,7 +18,7 @@
 ##' @param sp.name a \code{character} corresponding to the species name
 ##' @param data.type a \code{character} corresponding to the data type
 ##' 
-##' @param sp A \code{vector}, a \code{\link[terra:vect]{SpatVector}} without associated 
+##' @param sp a \code{vector}, a \code{\link[terra:vect]{SpatVector}} without associated 
 ##' data (\emph{if presence-only}), or a \code{\link[terra:vect]{SpatVector}}
 ##' object containing binary data (\code{0} : absence,  \code{1} : presence,
 ##' \code{NA} : indeterminate) for a single species that will be used to 
@@ -95,6 +95,7 @@
 ##' @slot eval.data.env.var (\emph{optional, default} \code{NULL}) \cr 
 ##' A \code{data.frame} containing explanatory variables for evaluation data
 ##' @slot biomod2.version a \code{character} corresponding to the biomod2 version
+##' @slot call a \code{language} object corresponding to the call used to obtain the object
 ##' 
 ##' 
 ##' @seealso \code{\link{BIOMOD_FormatingData}}, \code{\link{bm_Tuning}}, 
@@ -157,16 +158,17 @@ setClass("BIOMOD.formated.data",
          representation(data.type = 'character',
                         dir.name = 'character',
                         sp.name = 'character',
-                        coord = "data.frame",
-                        data.species = "ANY",
-                        data.env.var = "data.frame",
-                        data.mask = "list",
-                        has.data.eval = "logical",
-                        eval.coord = "data.frame",
-                        eval.data.species = "numeric",
-                        eval.data.env.var = "data.frame",
-                        has.filter.raster = "logical",
-                        biomod2.version = "character"),
+                        coord = 'data.frame',
+                        data.species = 'ANY',
+                        data.env.var = 'data.frame',
+                        data.mask = 'list',
+                        has.data.eval = 'logical',
+                        eval.coord = 'data.frame',
+                        eval.data.species = 'numeric',
+                        eval.data.env.var = 'data.frame',
+                        has.filter.raster = 'logical',
+                        biomod2.version = 'character',
+                        call = 'ANY'),
          validity = function(object) { 
            check.data.mask <- suppressWarnings(
              all(sapply(object@data.mask, function(x) inherits(x, "PackedSpatRaster")))

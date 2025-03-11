@@ -250,6 +250,7 @@ BIOMOD_Projection <- function(bm.mod,
                   data.type = bm.mod@data.type,
                   modeling.id = bm.mod@modeling.id)
   proj_out@models.out@link = bm.mod@link
+  proj_out@call <- match.call()
   
   proj_is_raster <- FALSE
   if (inherits(new.env, 'SpatRaster')) {

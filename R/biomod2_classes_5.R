@@ -642,7 +642,7 @@ setMethod('predict2', signature(object = 'EMca_biomod2_model', newdata = "data.f
 ##' @export
 
 setClass('EMwmean_biomod2_model',
-         representation(penalization_scores='numeric'),
+         representation(penalization_scores = 'numeric'),
          contains = 'biomod2_ensemble_model',
          prototype = list(model_class = 'EMwmean'),
          validity = function(object) { return(TRUE) })

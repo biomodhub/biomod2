@@ -271,6 +271,7 @@ BIOMOD_EnsembleForecasting <- function(bm.em,
                   modeling.id = bm.em@modeling.id,
                   data.type = bm.em@data.type)
   proj_out@models.out@link = bm.em@link
+  proj_out@call <- match.call()
   
   proj_is_raster <- FALSE
   if (inherits(new.env, 'SpatRaster') || (length(bm.proj) && inherits(bm.proj@proj.out, 'BIOMOD.stored.SpatRaster'))) {

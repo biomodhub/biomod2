@@ -315,6 +315,7 @@ setMethod('get_eval_data', signature('BIOMOD.formated.data'), function(obj) {
 ##' @slot models.prediction.eval a \code{\link{BIOMOD.stored.data.frame-class}}
 ##'   object containing models predictions for evaluation data
 ##' @slot link a \code{character} containing the file name of the saved object
+##' @slot call a \code{language} object corresponding to the call used to obtain the object
 ##'
 ##' @param object a \code{\link{BIOMOD.models.out}} object
 ##' 
@@ -403,7 +404,8 @@ setClass("BIOMOD.models.out",
                         variables.importance = 'BIOMOD.stored.data.frame',
                         models.prediction = 'BIOMOD.stored.data.frame',
                         models.prediction.eval = 'BIOMOD.stored.data.frame',
-                        link = 'character'),
+                        link = 'character',
+                        call = 'ANY'),
          prototype(modeling.id = as.character(format(Sys.time(), "%s")),
                    dir.name = '.',
                    sp.name = '',
@@ -419,7 +421,8 @@ setClass("BIOMOD.models.out",
                    variables.importance = new('BIOMOD.stored.data.frame'),
                    models.prediction = new('BIOMOD.stored.data.frame'),
                    models.prediction.eval = new('BIOMOD.stored.data.frame'),
-                   link = ''),
+                   link = '',
+                   call = ''),
          validity = function(object){ return(TRUE) } )
 
 # BIOMOD.stored.models.out is defined here and not with outher BIOMOD.stored.data
@@ -654,6 +657,7 @@ setMethod("get_variables_importance", "BIOMOD.models.out",
 ##' \code{proj.out} slot
 ##' @slot data.type a \code{character} corresponding to the data type
 ##' @slot proj.out a \code{\link{BIOMOD.stored.data}} object
+##' @slot call a \code{language} object corresponding to the call used to obtain the object
 ##' 
 ##' @param x a \code{\link{BIOMOD.projection.out}} object
 ##' @param object a \code{\link{BIOMOD.projection.out}} object
@@ -776,7 +780,8 @@ setClass("BIOMOD.projection.out",
                         models.out = 'BIOMOD.stored.data',
                         type = 'character',
                         data.type = 'character',
-                        proj.out = 'BIOMOD.stored.data'),
+                        proj.out = 'BIOMOD.stored.data',
+                        call = 'ANY'),
          prototype(modeling.id = '',
                    proj.name = '',
                    dir.name = '.',
@@ -786,7 +791,8 @@ setClass("BIOMOD.projection.out",
                    scale.models = FALSE,
                    models.projected = '',
                    type = '',
-                   data.type = "binary"),
+                   data.type = 'binary',
+                   call = ''),
          validity = function(object){ return(TRUE) })
 
 
@@ -1142,6 +1148,7 @@ setMethod("get_predictions", "BIOMOD.projection.out",
 ##' @slot models.prediction.eval a \code{\link{BIOMOD.stored.data.frame-class}}
 ##'   object containing models predictions for evaluation data
 ##' @slot link a \code{character} containing the file name of the saved object
+##' @slot call a \code{language} object corresponding to the call used to obtain the object
 ##'   
 ##' @param object a \code{\link{BIOMOD.ensemble.models.out}} object
 ##' 
@@ -1247,7 +1254,8 @@ setClass("BIOMOD.ensemble.models.out",
                         variables.importance = 'BIOMOD.stored.data.frame',
                         models.prediction = 'BIOMOD.stored.data.frame',
                         models.prediction.eval = 'BIOMOD.stored.data.frame',
-                        link = 'character'),
+                        link = 'character',
+                        call = 'ANY'),
          prototype(modeling.id = '.',
                    dir.name = '.',
                    sp.name = '',
@@ -1262,7 +1270,8 @@ setClass("BIOMOD.ensemble.models.out",
                    variables.importance = new('BIOMOD.stored.data.frame'),
                    models.prediction = new('BIOMOD.stored.data.frame'),
                    models.prediction.eval = new('BIOMOD.stored.data.frame'),
-                   link = ''),
+                   link = '',
+                   call = ''),
          validity = function(object){ return(TRUE) })
 
 

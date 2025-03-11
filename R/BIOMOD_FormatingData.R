@@ -417,6 +417,7 @@ BIOMOD_FormatingData <- function(resp.name,
                                    filter.raster = filter.raster,
                                    seed.val)
   }
+  out@call <- match.call()
   
   .bm_cat("Done")
   return(out)
