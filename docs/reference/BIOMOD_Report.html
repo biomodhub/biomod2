@@ -18,7 +18,7 @@ biomod2 simulation folder."><!-- mathjax --><script src="https://cdnjs.cloudflar
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">biomod2</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">4.3-1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">4.3-2</span>
       </span>
     </div>
 
@@ -120,20 +120,9 @@ biomod2 simulation folder."><!-- mathjax --><script src="https://cdnjs.cloudflar
     <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">BIOMOD_Report</span><span class="op">(</span></span>
 <span>  <span class="va">bm.out</span>,</span>
 <span>  strategy <span class="op">=</span> <span class="st">"report"</span>,</span>
+<span>  params.color <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>color1 <span class="op">=</span> <span class="st">"#eb4034"</span>, color2 <span class="op">=</span> <span class="st">"#e0918b"</span>, color3 <span class="op">=</span> <span class="st">"#658f70"</span><span class="op">)</span>,</span>
 <span>  params.ODMAP <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>O.mod.objective <span class="op">=</span> <span class="cn">NULL</span>, O.boundary <span class="op">=</span> <span class="cn">NULL</span>, O.obs.type <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>    O.pred.type <span class="op">=</span> <span class="cn">NULL</span>, D.eco.level <span class="op">=</span> <span class="cn">NULL</span>, D.samp.design <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span>
-<span><span class="op">)</span></span>
-<span></span>
-<span><span class="fu">BIOMOD_Report_summary</span><span class="op">(</span><span class="va">sp.name</span>, <span class="va">dir.name</span>, <span class="va">bm.files</span>, <span class="va">bm.mod</span>, <span class="va">bm.ens</span>, <span class="va">bm.form</span><span class="op">)</span></span>
-<span></span>
-<span><span class="fu">BIOMOD_Report_ODMAP</span><span class="op">(</span></span>
-<span>  <span class="va">sp.name</span>,</span>
-<span>  <span class="va">dir.name</span>,</span>
-<span>  <span class="va">bm.files</span>,</span>
-<span>  <span class="va">bm.mod</span>,</span>
-<span>  <span class="va">bm.ens</span>,</span>
-<span>  <span class="va">bm.form</span>,</span>
-<span>  <span class="va">params.ODMAP</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -154,6 +143,10 @@ object that can be obtained with the <code><a href="BIOMOD_Modeling.html">BIOMOD
 must be <code>report</code>, <code>ODMAP</code> or <code>code</code> (see Details)</p></dd>
 
 
+<dt id="arg-params-color">params.color<a class="anchor" aria-label="anchor" href="#arg-params-color"></a></dt>
+<dd><p>a <code>list</code> containing 3 color values to custom the reports</p></dd>
+
+
 <dt id="arg-params-odmap">params.ODMAP<a class="anchor" aria-label="anchor" href="#arg-params-odmap"></a></dt>
 <dd><p>a <code>list</code> containing values of some ODMAP fields to be filled in
 from pre-existing choices (see Details)</p></dd>
@@ -161,16 +154,56 @@ from pre-existing choices (see Details)</p></dd>
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>A ...</p>
+    <p>A standardized <code>.html</code> file obtained from an <code>Rmarkdown</code> template, and a <code>.csv</code>
+table in the case of ODMAP report.</p>
     </div>
     <div id="details">
     <h2>Details</h2>
-    <p><b>Concerning <code>ctrl.train</code> parameter :</b></p>
-<p>Set by default to : <br></p>
-    </div>
+    <p>This function gathers and formats all objects contained in one <span class="pkg">biomod2</span> modeling folder
+to produce, based on <code>Rmarkdown</code> templates, standardized reports to help the user :</p><ul><li><p>summarize its modeling results</p></li>
+<li><p>share them through standardized informations through ODMAP protocol</p></li>
+<li><p>provide reproducible code <br><br></p></li>
+</ul><dl><dt>Type of report</dt>
+<dd><p>Different data types are available, and require different values :</p><dl><dt>report</dt>
+<dd><p><span class="pkg">biomod2</span> provides functions to summarize the information, such as
+    <code>print</code>, <code>plot</code> or <code>summary</code> methods adapted to <code>BIOMOD.[...].out</code>
+    objects, as well as
+    <a href="https://biomodhub.github.io/biomod2/reference/getters.out.html" class="external-link"><code>get_[...]</code></a>
+    and <code>bm_Plot[...]</code> functions. All these are called here and applied to objects
+    contained in the provided modeling folder.</p></dd>
+
+    <dt>ODMAP</dt>
+<dd><p>following Zurell et al. 2020, ODMAP (Overview, Data, Model, Assessment and
+    Prediction) protocol aims to standardize documentation of modeling to help improve both
+    transparency and reproducibility of results.
+    <a href="https://odmap.wsl.ch/" class="external-link">ODMAP v1.0 website</a> provides an application to fill this type
+    of report. <span class="pkg">biomod2</span> tries here to help one user to pre-fill the fields of this
+    protocol.</p></dd>
+
+    <dt>code</dt>
+<dd><p><code>call</code> slot contained within <code><a href="BIOMOD.formated.data.html">BIOMOD.formated.data</a></code>,
+    <code>BIOMOD.models.out</code>, <code>BIOMOD.projection.out</code> and
+    <code>BIOMOD.ensemble.models.out</code> objects keep in memory the R command used to obtain
+    them. All these calls are gathered here in one summary file.</p></dd>
+
+
+</dl><p></p></dd>
+
+
+</dl></div>
+    <div id="references">
+    <h2>References</h2>
+
+<ul><li><p>Zurell D, Franklin J, König C, Bouchet PJ, Serra-Diaz JM, Dormann CF, Elith J,
+  Fandos Guzman G, Feng X, Guillera-Arroita G, Guisan A, Leitão PJ, Lahoz-Monfort JJ,
+  Park DS, Peterson AT, Rapacciuolo G, Schmatz DR, Schröder B, Thuiller W, Yates KL,
+  Zimmermann NE, Merow C (2020) A standard protocol for describing species distribution
+  models. <em>Ecography</em> <b>43</b>: 1261-1277. DOI:
+  <a href="https://doi.org/10.1111/ecog.04960" class="external-link">10.1111/ecog.04960</a></p></li>
+</ul></div>
     <div id="see-also">
     <h2>See also</h2>
-    <div class="dont-index"><p><code><a href="ODMAP.html">ODMAP</a></code></p></div>
+    <div class="dont-index"><p><code><a href="ODMAP.html">ODMAP</a></code>, <code><a href="https://rdrr.io/r/base/match.call.html" class="external-link">match.call</a></code></p></div>
     </div>
     <div id="author">
     <h2>Author</h2>

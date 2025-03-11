@@ -90,6 +90,8 @@ not}
 \item{\code{data.type}}{a \code{character} corresponding to the data type}
 
 \item{\code{proj.out}}{a \code{\link{BIOMOD.stored.data}} object}
+
+\item{\code{call}}{a \code{language} object corresponding to the call used to obtain the object}
 }}
 
 \examples{

@@ -53,7 +53,7 @@
 )
 }
 \arguments{
-\item{sp}{A \code{vector}, a \code{\link[terra:vect]{SpatVector}} without associated 
+\item{sp}{a \code{vector}, a \code{\link[terra:vect]{SpatVector}} without associated 
 data (\emph{if presence-only}), or a \code{\link[terra:vect]{SpatVector}}
 object containing binary data (\code{0} : absence,  \code{1} : presence,
 \code{NA} : indeterminate) for a single species that will be used to 

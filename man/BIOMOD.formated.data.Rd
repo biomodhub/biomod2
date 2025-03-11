@@ -73,7 +73,7 @@
 \S4method{show}{BIOMOD.formated.data}(object)
 }
 \arguments{
-\item{sp}{A \code{vector}, a \code{\link[terra:vect]{SpatVector}} without associated 
+\item{sp}{a \code{vector}, a \code{\link[terra:vect]{SpatVector}} without associated 
 data (\emph{if presence-only}), or a \code{\link[terra:vect]{SpatVector}}
 object containing binary data (\code{0} : absence,  \code{1} : presence,
 \code{NA} : indeterminate) for a single species that will be used to 
@@ -183,6 +183,8 @@ evaluation data}
 A \code{data.frame} containing explanatory variables for evaluation data}
 
 \item{\code{biomod2.version}}{a \code{character} corresponding to the biomod2 version}
+
+\item{\code{call}}{a \code{language} object corresponding to the call used to obtain the object}
 }}
 
 \examples{

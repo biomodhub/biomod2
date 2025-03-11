@@ -2,27 +2,14 @@
 % Please edit documentation in R/BIOMOD_Report.R
 \name{BIOMOD_Report}
 \alias{BIOMOD_Report}
-\alias{BIOMOD_Report_summary}
-\alias{BIOMOD_Report_ODMAP}
 \title{Produce summary outputs from a simulation folder}
 \usage{
 BIOMOD_Report(
   bm.out,
   strategy = "report",
+  params.color = list(color1 = "#eb4034", color2 = "#e0918b", color3 = "#658f70"),
   params.ODMAP = list(O.mod.objective = NULL, O.boundary = NULL, O.obs.type = NULL,
     O.pred.type = NULL, D.eco.level = NULL, D.samp.design = NULL)
-)
-
-BIOMOD_Report_summary(sp.name, dir.name, bm.files, bm.form, bm.mod, bm.ens)
-
-BIOMOD_Report_ODMAP(
-  sp.name,
-  dir.name,
-  bm.files,
-  bm.form,
-  bm.mod,
-  bm.ens,
-  params.ODMAP
 )
 }
 \arguments{
@@ -35,32 +22,54 @@ object that can be obtained with the \code{\link{BIOMOD_Modeling}} or
 \item{strategy}{a \code{character} defining the type of summary file that will be produced, 
 must be \code{report}, \code{ODMAP} or \code{code} (see Details)}
 
+\item{params.color}{a \code{list} containing 3 color values to custom the reports}
+
 \item{params.ODMAP}{a \code{list} containing values of some ODMAP fields to be filled in 
 from pre-existing choices (see Details)}
-
-\item{sp.name}{.}
-
-\item{dir.name}{.}
-
-\item{bm.files}{.}
-
-\item{bm.form}{.}
-
-\item{bm.mod}{.}
-
-\item{bm.ens}{.}
 }
 \value{
-A ...
+A standardized \code{.html} file obtained from an \code{Rmarkdown} template, and a \code{.csv} 
+table in the case of ODMAP report.
 }
 \description{
 This function allows to produce summary report or ODMAP table from a 
 \pkg{biomod2} simulation folder.
 }
 \details{
-\bold{Concerning \code{ctrl.train} parameter :}
+This function gathers and formats all objects contained in one \pkg{biomod2} modeling folder 
+to produce, based on \code{Rmarkdown} templates, standardized reports to help the user :
+\itemize{
+  \item summarize its modeling results
+  \item share them through standardized informations through ODMAP protocol
+  \item provide reproducible code \cr \cr
+}
 
-Set by default to : \cr
+
+\describe{
+  \item{Type of report}{
+  Different data types are available, and require different values :
+  \describe{
+    \item{report}{\pkg{biomod2} provides functions to summarize the information, such as 
+    \code{print}, \code{plot} or \code{summary} methods adapted to \code{BIOMOD.[...].out} 
+    objects, as well as 
+    \href{https://biomodhub.github.io/biomod2/reference/getters.out.html}{\code{get_[...]}} 
+    and \code{bm_Plot[...]} functions. All these are called here and applied to objects 
+    contained in the provided modeling folder.
+    }
+    \item{ODMAP}{following Zurell et al. 2020, ODMAP (Overview, Data, Model, Assessment and 
+    Prediction) protocol aims to standardize documentation of modeling to help improve both 
+    transparency and reproducibility of results. 
+    \href{https://odmap.wsl.ch/}{ODMAP v1.0 website} provides an application to fill this type 
+    of report. \pkg{biomod2} tries here to help one user to pre-fill the fields of this 
+    protocol.
+    }
+    \item{code}{\code{call} slot contained within \code{\link{BIOMOD.formated.data}}, 
+    \code{BIOMOD.models.out}, \code{BIOMOD.projection.out} and 
+    \code{BIOMOD.ensemble.models.out} objects keep in memory the R command used to obtain 
+    them. All these calls are gathered here in one summary file.}
+  }
+  }
+}
 }
 \examples{
 library(terra)
@@ -69,10 +78,24 @@ library(terra)
 
 
 }
+\references{
+\itemize{
+  \item Zurell D, Franklin J, König C, Bouchet PJ, Serra-Diaz JM, Dormann CF, Elith J, 
+  Fandos Guzman G, Feng X, Guillera-Arroita G, Guisan A, Leitão PJ, Lahoz-Monfort JJ, 
+  Park DS, Peterson AT, Rapacciuolo G, Schmatz DR, Schröder B, Thuiller W, Yates KL, 
+  Zimmermann NE, Merow C (2020) A standard protocol for describing species distribution 
+  models. \emph{Ecography} \bold{43}: 1261-1277. DOI: 
+  \href{https://doi.org/10.1111/ecog.04960}{10.1111/ecog.04960}
+}
+}
 \seealso{
-\code{\link{ODMAP}}
+\code{\link{ODMAP}}, \code{\link[base]{match.call}}
 }
 \author{
 Maya Gueguen
 }
 \concept{Primary functions}
+\keyword{ODMAP}
+\keyword{html}
+\keyword{markdown}
+\keyword{report}

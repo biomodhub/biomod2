@@ -66,6 +66,8 @@ containing models predictions}
 object containing models predictions for evaluation data}
 
 \item{\code{link}}{a \code{character} containing the file name of the saved object}
+
+\item{\code{call}}{a \code{language} object corresponding to the call used to obtain the object}
 }}
 
 \examples{
