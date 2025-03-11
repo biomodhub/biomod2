@@ -1,0 +1,142 @@
+---
+title: '`biomod2` - Modeling `r sp.name` - code'
+output:
+  html_document:
+    toc: true
+    theme: united
+date: "Last compiled on `r format(Sys.time(), '%d %B, %Y')`"
+params:
+  sp.name: 
+    value: NA
+  bm.files:
+    value: NA
+  bm.mod:
+    value: NA
+  bm.ens:
+    value: NA
+  bm.form:
+    value: NA
+  params.color:
+    value: NA
+---
+
+</br></br>
+
+
+
+
+<link rel="stylesheet" href="//use.fontawesome.com/releases/v6.7.2/css/all.css">
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, comment = NA)
+options(width = 120)
+library(biomod2)
+library(kableExtra)
+```
+
+
+```{r init-objects, echo=FALSE, warning=FALSE}
+hasBmFiles = !is.na(bm.files)
+hasBmMod = !is.na(bm.mod)
+hasBmEns = !is.na(bm.ens)
+hasBmForm = !is.na(bm.form)
+ind.mod = ind.ens = ind.proj = NA
+color1 = params.color$color1
+color2 = params.color$color2
+color3 = params.color$color3
+```
+
+```{r load-projection-files, echo=FALSE, eval=hasBmMod, warning=FALSE, results='hide'}
+# ind.mod = which(bm.files$file == sub("[.]/", "", bm.mod@link))
+ind.mod = which(bm.files$file == sub(paste0(".*", sp.name, "/"), paste0(sp.name, "/"), bm.mod@link))
+ind.proj = which(bm.files$type == "projection" &
+                   bm.files$refer_to == bm.files$refer_to[ind.mod])
+name.proj = unique(bm.files$ID[ind.proj])
+
+ind.ens = which(bm.files$type == "models" &
+                        bm.files$level == "ensemble" &
+                        bm.files$refer_to == bm.files$refer_to[ind.mod])
+```
+
+```{r fun-call, echo=FALSE}
+fun_call <- function(myCall, myName, ntab = 4) {
+  mess = deparse(myCall)
+  mess = paste0(mess, collapse = "")
+  mess = gsub("    ", "", mess)
+  mess = gsub(", ", "\n, ", mess)
+  mess = gsub("\n, \"", ", \"", mess)
+  
+  mess = paste0(myName, " <- ", mess)
+  mess = gsub("\n,", paste0("\n", paste0(rep("\t", ntab), collapse = "")), mess)
+  return(mess)
+}
+```
+
+
+
+
+```{r print-modeling-files, echo=FALSE, eval=hasBmFiles}
+tab = knitr::kable(bm.files[, c("file", "path", "type", "level", "ID")], format = "html")
+tab = kable_styling(tab, bootstrap_options = "condensed")
+if (any(!is.na(c(ind.mod, ind.ens)))) {
+  row_spec(tab, c(ind.mod, ind.ens), bold = TRUE, color = color1)
+}
+```
+
+</br></br>
+
+
+## <font style="color:`r color1`;"><i class="fa-solid fa-list-check"></i> Formated data</font>
+
+```{r data-print, echo=FALSE, eval=hasBmForm}
+cat(fun_call(bm.form@call, "myBiomodData", 10))
+```
+</br></br>
+
+
+
+## <font style="color:`r color1`;"><i class="fa-solid fa-virus"></i> Single models</font>
+
+```{r mod-print, echo=FALSE, eval=hasBmMod}
+cat(fun_call(bm.mod@call, "myBiomodModelOut", 10))
+```
+</br></br>
+
+
+
+## <font style="color:`r color1`;"><i class="fa-solid fa-viruses"></i> Ensemble models</font>
+
+```{r ens-print, echo=FALSE, eval=hasBmEns}
+cat(fun_call(bm.ens@call, "myBiomodEM", 10))
+```
+</br></br>
+
+
+
+## <font style="color:`r color1`;"><i class="fa-solid fa-earth-europe"></i> Projections</font>
+
+```{r print-projection-files, echo=FALSE, eval=hasBmFiles}
+tab = knitr::kable(bm.files[, c("file", "path", "type", "level", "ID")], format = "html")
+tab = kable_styling(tab, bootstrap_options = "condensed")
+if (any(!is.na(ind.proj))) {
+  row_spec(tab, ind.proj, bold = TRUE, color = color3)
+}
+```
+
+```{r plot-projection-files, echo=FALSE, eval=!is.na(ind.proj), warning=FALSE}
+for (proj.i in name.proj) {
+  ind.proj.i = intersect(ind.proj, which(bm.files$ID == proj.i))
+  for (j in ind.proj.i) {
+    bm.proj = get(load(file = bm.files$file[j]))
+    if (inherits(try(bm.proj@data.type), "try-error")) {
+      bm.proj@data.type <- "binary"
+    }
+    cat(fun_call(bm.proj@call, "myBiomodProj", 10))
+    cat("\n\n")
+  }
+}
+rm(list = basename(bm.files$file))
+```
+
+</br></br>
+

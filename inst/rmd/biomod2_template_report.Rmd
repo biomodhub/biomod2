@@ -16,6 +16,8 @@ params:
     value: NA
   bm.form:
     value: NA
+  params.color:
+    value: NA
 ---
 
 </br></br>
@@ -26,8 +28,8 @@ params:
 <link rel="stylesheet" href="//use.fontawesome.com/releases/v6.7.2/css/all.css">
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
-options(width = 120)
+knitr::opts_chunk$set(echo = TRUE, comment = NA)
+options(width = 100)
 library(biomod2)
 library(terra)
 library(data.table)
@@ -35,7 +37,6 @@ library(kableExtra)
 library(DT)
 library(patchwork)
 ```
-
 
 ```{r init-objects, echo=FALSE, warning=FALSE}
 bm.calib = NULL
@@ -46,6 +47,9 @@ hasBmMod = !is.na(bm.mod)
 hasBmEns = !is.na(bm.ens)
 hasBmForm = !is.na(bm.form)
 ind.mod = ind.ens = ind.proj = NA
+color1 = params.color$color1
+color2 = params.color$color2
+color3 = params.color$color3
 ```
 
 ```{r get-calib, echo=FALSE, eval=hasBmMod}
@@ -109,25 +113,18 @@ if (hasVarImpEns) {
 
 
 
-
-<!-- ___________________________________________________________________________________________________ -->
-
-<!-- ## <font style="color:#eb4034;"><i class="fa-solid fa-folder-tree"></i> FILES & FOLDERS</font> -->
-<!-- ___________________________________________________________________________________________________ -->
-
-
 ```{r print-modeling-files, echo=FALSE, eval=hasBmFiles}
 tab = knitr::kable(bm.files[, c("file", "path", "type", "level", "ID")], format = "html")
 tab = kable_styling(tab, bootstrap_options = "condensed")
 if (any(!is.na(c(ind.mod, ind.ens)))) {
-  row_spec(tab, c(ind.mod, ind.ens), bold = TRUE, color = "#eb4034")
+  row_spec(tab, c(ind.mod, ind.ens), bold = TRUE, color = color1)
 }
 ```
 
 </br></br>
 
 
-## <font style="color:#eb4034;"><i class="fa-solid fa-list-check"></i> Formated data</font>
+## <font style="color:`r color1`;"><i class="fa-solid fa-list-check"></i> Formated data</font>
 
 The `r sp.name` species dataset contains `r nb.1` presences and `r nb.0` true absences. 
 
@@ -156,7 +153,7 @@ form.plot = plot(bm.form, calib.lines = bm.calib, plot.type = "raster")
 
 
 
-## <font style="color:#eb4034;"><i class="fa-solid fa-virus"></i> Single models</font>
+## <font style="color:`r color1`;"><i class="fa-solid fa-virus"></i> Single models</font>
 
 ```{r mod-print, echo=FALSE, eval=hasBmMod}
 print(bm.mod)
@@ -164,7 +161,7 @@ print(bm.mod)
 
 </br>
 
-### <font style="color:#e0918b;">Evaluation</font>
+### <font style="color:`r color2`;">Evaluation</font>
 
 ```{r mod-eval-print, echo=FALSE, eval=hasEvalMod}
 rmCol = c("full.name")
@@ -188,7 +185,7 @@ pp1$plot + pp2$plot + pp3$plot
 ```
 </br>
 
-### <font style="color:#e0918b;">Variables' importance</font>
+### <font style="color:`r color2`;">Variables' importance</font>
 
 ```{r mod-varImp-print, echo=FALSE, eval=hasVarImpMod}
 rmCol = c("full.name")
@@ -204,7 +201,7 @@ pp$plot
 
 </br>
 
-### <font style="color:#e0918b;">Response curves</font>
+### <font style="color:`r color2`;">Response curves</font>
 
 ```{r mod-respCurves-plot, echo=FALSE, eval=hasBmMod, message=FALSE, warning=FALSE, fig.align='center', fig.height=10, fig.width=10}
 pp = bm_PlotResponseCurves(bm.out = bm.mod
@@ -220,14 +217,14 @@ pp$plot + guides(color = guide_legend(ncol = 3))
 
 
 
-## <font style="color:#eb4034;"><i class="fa-solid fa-viruses"></i> Ensemble models</font>
+## <font style="color:`r color1`;"><i class="fa-solid fa-viruses"></i> Ensemble models</font>
 
 ```{r ens-print, echo=FALSE, eval=hasBmEns}
 print(bm.ens)
 ```
 </br>
 
-### <font style="color:#e0918b;">Evaluation</font>
+### <font style="color:`r color2`;">Evaluation</font>
 
 ```{r ens-eval-print, echo=FALSE, eval=hasEvalEns}
 rmCol = c("full.name")
@@ -252,7 +249,7 @@ pp1$plot + pp2$plot + pp3$plot
 ```
 </br>
 
-### <font style="color:#e0918b;">Variables' importance</font>
+### <font style="color:`r color2`;">Variables' importance</font>
 
 ```{r ens-varImp-print, echo=FALSE, eval=hasVarImpEns}
 rmCol = c("full.name")
@@ -268,7 +265,7 @@ pp$plot
 
 </br>
 
-### <font style="color:#e0918b;">Response curves</font>
+### <font style="color:`r color2`;">Response curves</font>
 
 ```{r ens-respCurves-plot, echo=FALSE, eval=hasBmEns, message=FALSE, warning=FALSE, fig.align='center', fig.height=10, fig.width=10}
 pp = bm_PlotResponseCurves(bm.out = bm.ens
@@ -283,13 +280,13 @@ pp$plot + guides(color = guide_legend(ncol = 1))
 
 
 
-## <font style="color:#eb4034;"><i class="fa-solid fa-earth-europe"></i> Projections</font>
+## <font style="color:`r color1`;"><i class="fa-solid fa-earth-europe"></i> Projections</font>
 
 ```{r print-projection-files, echo=FALSE, eval=hasBmFiles}
 tab = knitr::kable(bm.files[, c("file", "path", "type", "level", "ID")], format = "html")
 tab = kable_styling(tab, bootstrap_options = "condensed")
 if (any(!is.na(ind.proj))) {
-  row_spec(tab, ind.proj, bold = TRUE, color = "#658f70")
+  row_spec(tab, ind.proj, bold = TRUE, color = color3)
 }
 ```
 
