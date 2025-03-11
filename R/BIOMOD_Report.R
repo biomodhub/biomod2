@@ -15,30 +15,70 @@
 ##' \code{\link{BIOMOD_EnsembleModeling}} functions
 ##' @param strategy a \code{character} defining the type of summary file that will be produced, 
 ##' must be \code{report}, \code{ODMAP} or \code{code} (see Details)
+##' @param params.color a \code{list} containing 3 color values to custom the reports
 ##' @param params.ODMAP a \code{list} containing values of some ODMAP fields to be filled in 
 ##' from pre-existing choices (see Details)
-##' 
-##' @param sp.name .
-##' @param dir.name .
-##' @param bm.files .
-##' @param bm.form .
-##' @param bm.mod .
-##' @param bm.ens .
 ##' 
 ##' 
 ##' @return 
 ##' 
-##' A ...
+##' A standardized \code{.html} file obtained from an \code{Rmarkdown} template, and a \code{.csv} 
+##' table in the case of ODMAP report.
 ##' 
 ##' 
 ##' @details 
 ##' 
-##' \bold{Concerning \code{ctrl.train} parameter :}
+##' This function gathers and formats all objects contained in one \pkg{biomod2} modeling folder 
+##' to produce, based on \code{Rmarkdown} templates, standardized reports to help the user :
+##' \itemize{
+##'   \item summarize its modeling results
+##'   \item share them through standardized informations through ODMAP protocol
+##'   \item provide reproducible code \cr \cr
+##' }
 ##' 
-##' Set by default to : \cr
+##' 
+##' \describe{
+##'   \item{Type of report}{
+##'   Different data types are available, and require different values :
+##'   \describe{
+##'     \item{report}{\pkg{biomod2} provides functions to summarize the information, such as 
+##'     \code{print}, \code{plot} or \code{summary} methods adapted to \code{BIOMOD.[...].out} 
+##'     objects, as well as 
+##'     \href{https://biomodhub.github.io/biomod2/reference/getters.out.html}{\code{get_[...]}} 
+##'     and \code{bm_Plot[...]} functions. All these are called here and applied to objects 
+##'     contained in the provided modeling folder.
+##'     }
+##'     \item{ODMAP}{following Zurell et al. 2020, ODMAP (Overview, Data, Model, Assessment and 
+##'     Prediction) protocol aims to standardize documentation of modeling to help improve both 
+##'     transparency and reproducibility of results. 
+##'     \href{https://odmap.wsl.ch/}{ODMAP v1.0 website} provides an application to fill this type 
+##'     of report. \pkg{biomod2} tries here to help one user to pre-fill the fields of this 
+##'     protocol.
+##'     }
+##'     \item{code}{\code{call} slot contained within \code{\link{BIOMOD.formated.data}}, 
+##'     \code{BIOMOD.models.out}, \code{BIOMOD.projection.out} and 
+##'     \code{BIOMOD.ensemble.models.out} objects keep in memory the R command used to obtain 
+##'     them. All these calls are gathered here in one summary file.}
+##'   }
+##'   }
+##' }
+##' 
+##'   
+##' @references
+##' 
+##' \itemize{
+##'   \item Zurell D, Franklin J, König C, Bouchet PJ, Serra-Diaz JM, Dormann CF, Elith J, 
+##'   Fandos Guzman G, Feng X, Guillera-Arroita G, Guisan A, Leitão PJ, Lahoz-Monfort JJ, 
+##'   Park DS, Peterson AT, Rapacciuolo G, Schmatz DR, Schröder B, Thuiller W, Yates KL, 
+##'   Zimmermann NE, Merow C (2020) A standard protocol for describing species distribution 
+##'   models. \emph{Ecography} \bold{43}: 1261-1277. DOI: 
+##'   \href{https://doi.org/10.1111/ecog.04960}{10.1111/ecog.04960}
+##' }
+##'
+##' @keywords report ODMAP markdown html
 ##' 
 ##' 
-##' @seealso \code{\link{ODMAP}}
+##' @seealso \code{\link{ODMAP}}, \code{\link[base]{match.call}}
 ##' @family Primary functions
 ##' 
 ##' 
@@ -57,6 +97,9 @@
 
 BIOMOD_Report <- function(bm.out
                           , strategy = 'report'
+                          , params.color = list(color1 = "#eb4034"
+                                                , color2 = "#e0918b"
+                                                , color3 = "#658f70")
                           , params.ODMAP = list(O.mod.objective = NULL
                                                 , O.boundary = NULL
                                                 , O.obs.type = NULL
@@ -69,7 +112,7 @@ BIOMOD_Report <- function(bm.out
   
   
   ## 0. Check arguments ---------------------------------------------------------------------------
-  args <- .BIOMOD_Report.check.args(bm.out, strategy, params.ODMAP)
+  args <- .BIOMOD_Report.check.args(bm.out, strategy, params.color, params.ODMAP)
   for (argi in names(args)) { assign(x = argi, value = args[[argi]]) }
   rm(args)
 
@@ -154,8 +197,9 @@ BIOMOD_Report <- function(bm.out
   ## 2. Create output object ----------------------------------------------------------------------
   cat("\n\t> Building report...")
   out <- switch(strategy,
-                report = BIOMOD_Report_summary(sp.name, dir.name, bm.files, bm.form, bm.mod, bm.ens),
-                ODMAP = BIOMOD_Report_ODMAP(sp.name, dir.name, bm.files, bm.form, bm.mod, bm.ens, params.ODMAP))
+                report = BIOMOD_Report_summary(sp.name, dir.name, bm.files, bm.form, bm.mod, bm.ens, params.color),
+                ODMAP = BIOMOD_Report_ODMAP(sp.name, dir.name, bm.files, bm.form, bm.mod, bm.ens, params.color, params.ODMAP),
+                code = BIOMOD_Report_code(sp.name, dir.name, bm.files, bm.form, bm.mod, bm.ens, params.color))
   
   .bm_cat("Done")
 }
@@ -163,7 +207,7 @@ BIOMOD_Report <- function(bm.out
 
 ###################################################################################################
 
-.BIOMOD_Report.check.args <- function(bm.out, strategy, params.ODMAP)
+.BIOMOD_Report.check.args <- function(bm.out, strategy, params.color, params.ODMAP)
 {
   ## check namespace ----------------------------------------------------------
   if (!isNamespaceLoaded("rmarkdown")) { 
@@ -234,28 +278,30 @@ BIOMOD_Report <- function(bm.out
     } else { params.ODMAP$D.samp.design = NA }
   }
   
+  ## 4. Check params.color argument -------------------------------------------
+  .fun_testIfIn(TRUE, "names(params.color)", names(params.color), c("color1", "color2", "color3"))
+  
+  
   return(list(sp.name = sp.name
               , dir.name = dir.name
               , name.bm.mod = name.bm.mod
               , bm.form = bm.form
+              , params.color = params.color
               , params.ODMAP = params.ODMAP))
 }
 
 
 ###################################################################################################
 
-##'
-##' @rdname BIOMOD_Report
-##'
-
-BIOMOD_Report_summary <- function(sp.name, dir.name, bm.files, bm.form, bm.mod, bm.ens)
+BIOMOD_Report_summary <- function(sp.name, dir.name, bm.files, bm.form, bm.mod, bm.ens, params.color)
 {
   out <- rmarkdown::render(input = system.file("rmd", "biomod2_template_report.Rmd", package = "biomod2")
                            , params = list(sp.name = sp.name
                                            , bm.files = bm.files
                                            , bm.mod = bm.mod
                                            , bm.ens = bm.ens
-                                           , bm.form = bm.form)
+                                           , bm.form = bm.form
+                                           , params.color = params.color)
                            , output_format = "html_document"
                            , output_file = paste0("biomod2_report_", sp.name, ".html")
                            , output_dir = dir.name
@@ -265,11 +311,7 @@ BIOMOD_Report_summary <- function(sp.name, dir.name, bm.files, bm.form, bm.mod, 
   cat("\n")
 }
 
-##'
-##' @rdname BIOMOD_Report
-##'
-
-BIOMOD_Report_ODMAP <- function(sp.name, dir.name, bm.files, bm.form, bm.mod, bm.ens, params.ODMAP)
+BIOMOD_Report_ODMAP <- function(sp.name, dir.name, bm.files, bm.form, bm.mod, bm.ens, params.color, params.ODMAP)
 {
   out <- rmarkdown::render(input = system.file("rmd", "biomod2_template_ODMAP.Rmd", package = "biomod2")
                            , params = list(sp.name = sp.name
@@ -277,6 +319,7 @@ BIOMOD_Report_ODMAP <- function(sp.name, dir.name, bm.files, bm.form, bm.mod, bm
                                            , bm.mod = bm.mod
                                            , bm.ens = bm.ens
                                            , bm.form = bm.form
+                                           , params.color = params.color
                                            , params.ODMAP = params.ODMAP)
                            , output_format = "html_document"
                            , output_file = paste0("biomod2_ODMAP_", sp.name, ".html")
@@ -286,3 +329,22 @@ BIOMOD_Report_ODMAP <- function(sp.name, dir.name, bm.files, bm.form, bm.mod, bm
   cat("\n\t> ODMAP has been created : ", out)
   cat("\n")
 }
+
+BIOMOD_Report_code <- function(sp.name, dir.name, bm.files, bm.form, bm.mod, bm.ens, params.color)
+{
+  out <- rmarkdown::render(input = system.file("rmd", "biomod2_template_code.Rmd", package = "biomod2")
+                           , params = list(sp.name = sp.name
+                                           , bm.files = bm.files
+                                           , bm.mod = bm.mod
+                                           , bm.ens = bm.ens
+                                           , bm.form = bm.form
+                                           , params.color = params.color)
+                           , output_format = "html_document"
+                           , output_file = paste0("biomod2_code_", sp.name, ".html")
+                           , output_dir = dir.name
+                           , knit_root_dir = dir.name
+                           , quiet = FALSE)
+  cat("\n\t> Code has been created : ", out)
+  cat("\n")
+}
+
