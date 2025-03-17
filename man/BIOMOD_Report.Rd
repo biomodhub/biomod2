@@ -92,7 +92,7 @@ library(terra)
 \code{\link{ODMAP}}, \code{\link[base]{match.call}}
 }
 \author{
-Maya Gueguen
+Maya Guéguen
 }
 \concept{Primary functions}
 \keyword{ODMAP}

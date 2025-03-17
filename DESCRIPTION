@@ -3,29 +3,24 @@ Type: Package
 Title: Ensemble Platform for Species Distribution Modeling
 Version: 4.3-2
 Date: 2025-03-11
-Authors@R: c(person("Wilfried", "Thuiller", role = c("aut")
-                    , email = "wilfried.thuiller@univ-grenoble-alpes.fr"),
-             person("Damien", "Georges", role = c("aut")),
-             person("Maya", "Gueguen", role = c("aut", "cre")
+Authors@R: c(person("Maya", "Guéguen", role = c("aut", "cre")
                     , email = "maya.gueguen@univ-grenoble-alpes.fr"),
-             person("Robin", "Engler", role = "aut"),
-             person("Frank", "Breiner", role = "aut"),
-             person("Bruno", "Lafourcade", role = "aut"),
-             person("Remi", "Patin", role = "aut"),
-             person("Helene", "Blancheteau", role = "aut"
-                    , email = "helene.blancheteau@univ-grenoble-alpes.fr"))
-Author: Wilfried Thuiller [aut],
+             person("Hélène", "Blancheteau", role = "aut"
+                    , email = "helene.blancheteau@univ-grenoble-alpes.fr"),
+             person("Wilfried", "Thuiller", role = c("aut")
+                    , email = "wilfried.thuiller@univ-grenoble-alpes.fr"))
+Author: Maya Guéguen [aut, cre],
+    Hélène Blancheteau [aut],
+    Remi Patin [aut],
     Damien Georges [aut],
-    Maya Gueguen [aut, cre],
+    Wilfried Thuiller [aut],
     Robin Engler [aut],
     Frank Breiner [aut],
-    Bruno Lafourcade [aut],
-    Remi Patin [aut],
-    Helene Blancheteau [aut]
-Maintainer: Maya Gueguen <maya.gueguen@univ-grenoble-alpes.fr>
-Contact: Wilfried Thuiller <wilfried.thuiller@univ-grenoble-alpes.fr>, 
-    Maya Gueguen <maya.gueguen@univ-grenoble-alpes.fr>, 
-    Helene Blancheteau <helene.blancheteau@univ-grenoble-alpes.fr>
+    Bruno Lafourcade [aut]
+Maintainer: Maya Guéguen <maya.gueguen@univ-grenoble-alpes.fr>
+Contact: Maya Guéguen <maya.gueguen@univ-grenoble-alpes.fr>,
+    Hélène Blancheteau <helene.blancheteau@univ-grenoble-alpes.fr>,
+    Wilfried Thuiller <wilfried.thuiller@univ-grenoble-alpes.fr>
 BugReports: https://github.com/biomodhub/biomod2/issues
 URL: https://biomodhub.github.io/biomod2/
 Description: Functions for species distribution modeling, calibration and evaluation, 

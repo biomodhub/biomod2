@@ -606,6 +606,7 @@ BIOMOD_Projection <- function(bm.mod,
   } else {
     new.env.xy = data.frame()
   }
+  
   ## 5. Check models.chosen ---------------------------------------------------
   if (models.chosen[1] == 'all') {
     models.chosen <- bm.mod@models.computed

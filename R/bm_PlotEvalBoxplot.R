@@ -1,6 +1,6 @@
 ###################################################################################################
 ##' @name bm_PlotEvalBoxplot
-##' @author Damien Georges, Maya Gueguen
+##' @author Damien Georges, Maya Guéguen
 ##' 
 ##' @title Plot boxplot of evaluation scores
 ##' 

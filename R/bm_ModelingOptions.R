@@ -1,7 +1,7 @@
 ###################################################################################################
 ##' @name bm_ModelingOptions
 ##' @aliases bm_ModelingOptions
-##' @author Damien Georges, Wilfried Thuiller, Maya Gueguen
+##' @author Damien Georges, Wilfried Thuiller, Maya Guéguen
 ##' 
 ##' @title Configure the modeling options for each selected model
 ##'

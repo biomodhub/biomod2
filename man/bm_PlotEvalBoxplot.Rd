@@ -144,7 +144,7 @@ Other Plot functions:
 \code{\link{bm_PlotVarImpBoxplot}()}
 }
 \author{
-Damien Georges, Maya Gueguen
+Damien Georges, Maya Guéguen
 }
 \concept{Plot functions}
 \concept{Secondary functions}

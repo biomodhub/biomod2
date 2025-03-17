@@ -266,7 +266,7 @@ Other Secondary functions:
 \code{\link{bm_VariablesImportance}()}
 }
 \author{
-Damien Georges, Wilfried Thuiller, Maya Gueguen
+Damien Georges, Wilfried Thuiller, Maya Guéguen
 }
 \concept{Secondary functions}
 \keyword{models}

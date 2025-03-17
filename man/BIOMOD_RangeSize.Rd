@@ -176,7 +176,7 @@ Other Main functions:
 \code{\link{BIOMOD_Projection}()}
 }
 \author{
-Maya Guegen Helene Blancheteau
+Maya Guéguen, Hélène Blancheteau
 }
 \concept{Main functions}
 \keyword{"species}

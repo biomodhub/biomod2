@@ -6,7 +6,7 @@
 ##' 
 ##' @rdname plot
 ##' @docType methods
-##' @author Helene Blancheteau
+##' @author Hélène Blancheteau
 ##' @title \code{plot} method for \code{BIOMOD.formated.data.abundance} object class
 ##' 
 ##' @description Plot the spatial distribution of presences, absences and 

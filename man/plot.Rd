@@ -166,5 +166,5 @@ plot(myBiomodData)
 \author{
 Remi Patin
 
-Helene Blancheteau
+Hélène Blancheteau
 }

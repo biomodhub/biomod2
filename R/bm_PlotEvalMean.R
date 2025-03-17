@@ -1,6 +1,6 @@
 ###################################################################################################
 ##' @name bm_PlotEvalMean
-##' @author Damien Georges, Maya Gueguen
+##' @author Damien Georges, Maya Guéguen
 ##' 
 ##' @title Plot mean evaluation scores
 ##' 

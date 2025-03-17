@@ -172,7 +172,7 @@ Other Plot functions:
 \code{\link{bm_PlotVarImpBoxplot}()}
 }
 \author{
-Maya Gueguen
+Maya Guéguen, Hélène Blancheteau
 }
 \concept{Plot functions}
 \concept{Secondary functions}

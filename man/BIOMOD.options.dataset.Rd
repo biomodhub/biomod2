@@ -124,6 +124,6 @@ Other Toolbox objects:
 \code{\link{biomod2_model}}
 }
 \author{
-Maya Gueguen
+Maya Guéguen
 }
 \concept{Toolbox objects}

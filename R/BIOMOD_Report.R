@@ -1,6 +1,6 @@
 ###################################################################################################
 ##' @name BIOMOD_Report
-##' @author Maya Gueguen
+##' @author Maya Guéguen
 ##' 
 ##' @title Produce summary outputs from a simulation folder
 ##' 

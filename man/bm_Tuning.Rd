@@ -237,6 +237,6 @@ Other Secondary functions:
 \code{\link{bm_VariablesImportance}()}
 }
 \author{
-Frank Breiner, Maya Gueguen, Helene Blancheteau
+Frank Breiner, Maya Guéguen, Hélène Blancheteau
 }
 \concept{Secondary functions}

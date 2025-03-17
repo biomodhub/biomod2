@@ -1,6 +1,6 @@
 ###################################################################################################
 ##' @name bm_PlotResponseCurves
-##' @author Damien Georges, Maya Gueguen
+##' @author Damien Georges, Maya Guéguen
 ##' 
 ##' @title Plot response curves
 ##' 

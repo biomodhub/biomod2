@@ -43,6 +43,6 @@ Other Toolbox objects:
 \code{\link{biomod2_model}}
 }
 \author{
-Helene Blancheteau
+Hélène Blancheteau
 }
 \concept{Toolbox objects}

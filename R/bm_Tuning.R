@@ -1,6 +1,6 @@
 ###################################################################################################
 ##' @name bm_Tuning
-##' @author Frank Breiner, Maya Gueguen, Helene Blancheteau
+##' @author Frank Breiner, Maya Guéguen, Hélène Blancheteau
 ##' 
 ##' @title Tune models parameters
 ##' 

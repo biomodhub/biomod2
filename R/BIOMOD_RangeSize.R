@@ -1,6 +1,6 @@
 ###################################################################################################
 ##' @name BIOMOD_RangeSize
-##' @author Maya Guegen Helene Blancheteau
+##' @author Maya Guéguen, Hélène Blancheteau
 ##' 
 ##' @title Analyze the range size differences between projections of species distribution models
 ##' 
@@ -265,7 +265,7 @@ BIOMOD_RangeSize <- function(proj.current, proj.future,
 
 ##' @name BIOMOD.rangesize.out
 ##' @aliases BIOMOD.rangesize.out-class
-##' @author Helene Blancheteau
+##' @author Hélène Blancheteau
 ##' 
 ##' @title \code{BIOMOD_RangeSize()} output object class
 ##' 

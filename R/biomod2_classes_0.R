@@ -5,7 +5,7 @@
 
 ##' @name BIOMOD.options.default
 ##' @aliases BIOMOD.options.default-class
-##' @author Maya Gueguen
+##' @author Maya Guéguen
 ##' 
 ##' @title \code{\link{bm_ModelingOptions}} output object class
 ##' 
@@ -252,7 +252,7 @@ setMethod('BIOMOD.options.default', signature(mod = 'character', typ = 'characte
 
 ##' @name BIOMOD.options.dataset
 ##' @aliases BIOMOD.options.dataset-class
-##' @author Maya Gueguen
+##' @author Maya Guéguen
 ##' 
 ##' @title \code{\link{bm_ModelingOptions}} output object class
 ##' 
@@ -660,7 +660,7 @@ setMethod('print', signature('BIOMOD.options.dataset'),
 
 ##' @name BIOMOD.models.options
 ##' @aliases BIOMOD.models.options-class
-##' @author Maya Gueguen
+##' @author Maya Guéguen
 ##' 
 ##' @title \code{\link{bm_ModelingOptions}} output object class
 ##' 

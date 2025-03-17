@@ -158,6 +158,13 @@ form.plot = plot(bm.form, calib.lines = bm.calib, plot.type = "raster")
 ```{r mod-print, echo=FALSE, eval=hasBmMod}
 print(bm.mod)
 ```
+</br>
+
+### <font style="color:`r color2`;">Modeling options</font>
+
+```{r mod-print-options, echo=FALSE, eval=hasBmMod}
+print(get_options(bm.mod))
+```
 
 </br>
 

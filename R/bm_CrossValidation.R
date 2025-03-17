@@ -1,6 +1,6 @@
 ###################################################################################################
 ##' @name bm_CrossValidation
-##' @author Frank Breiner, Maya Gueguen
+##' @author Frank Breiner, Maya Guéguen
 ##' 
 ##' @title Build cross-validation table
 ##' 

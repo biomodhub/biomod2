@@ -1,6 +1,6 @@
 ###################################################################################################
 ##' @name bm_PlotRangeSize
-##' @author Maya Gueguen
+##' @author Maya Guéguen, Hélène Blancheteau
 ##' 
 ##' @title Plot species range change
 ##' 
