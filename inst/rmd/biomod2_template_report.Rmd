@@ -110,6 +110,18 @@ if (hasVarImpEns) {
 }
 ```
 
+```{r get-algo-mod, echo=FALSE, eval=hasBmMod}
+# name.var = get_formal_data(bm.mod, subinfo = "expl.var.names")
+name.models.mod = get_built_models(bm.mod)
+name.algo = sapply(name.models.mod, function(x) strsplit(x, "_")[[1]][4])
+name.algo = sort(unique(name.algo))
+```
+
+```{r get-algo-ens, echo=FALSE, eval=hasBmEns}
+name.models.ens = get_built_models(bm.ens)
+name.ens = sapply(name.models.ens, function(x) strsplit(x, "_")[[1]][2])
+name.ens = sort(unique(name.ens))
+```
 
 
 
@@ -145,7 +157,7 @@ tab = knitr::kable(form.summ, format = "html")
 kable_styling(tab, bootstrap_options = "hover")
 ```
 
-```{r data-plot, echo=FALSE, message=FALSE, fig.align='center', fig.height=5, fig.width=10}
+```{r data-plot, echo=FALSE, message=FALSE, fig.align='center', fig.height=10, fig.width=10}
 form.plot = plot(bm.form, calib.lines = bm.calib, plot.type = "raster")
 ```
 
@@ -176,7 +188,7 @@ if (!hasDataEval) { rmCol = c("full.name", "evaluation") }
 DT::datatable(eval.mod[, -which(colnames(eval.mod) %in% rmCol)])
 ```
 
-```{r mod-eval-plot, echo=FALSE, eval=hasEvalMod, message=FALSE, warning=FALSE, fig.align='center', fig.height=5, fig.width=10}
+```{r mod-eval-plot, echo=FALSE, eval=hasEvalMod, message=FALSE, warning=FALSE, fig.align='center', fig.height=7, fig.width=10}
 pp1 = bm_PlotEvalMean(bm.out = bm.mod, dataset = "calibration", do.plot = FALSE)
 pp2 = bm_PlotEvalMean(bm.out = bm.mod, dataset = "validation", do.plot = FALSE)
 pp3 = bm_PlotEvalMean(bm.out = bm.mod, dataset = "evaluation", do.plot = FALSE)
@@ -199,7 +211,7 @@ rmCol = c("full.name")
 DT::datatable(varImp.mod[, -which(colnames(varImp.mod) %in% rmCol)])
 ```
 
-```{r mod-varImp-plot, echo=FALSE, eval=hasVarImpMod, message=FALSE, warning=FALSE, fig.align='center', fig.height=5, fig.width=10}
+```{r mod-varImp-plot, echo=FALSE, eval=hasVarImpMod, message=FALSE, warning=FALSE, fig.align='center', fig.height=10, fig.width=10}
 pp = bm_PlotVarImpBoxplot(bm.out = bm.mod
                           , group.by = c("algo", "expl.var", "expl.var")
                           , do.plot = FALSE)
@@ -211,12 +223,67 @@ pp$plot
 ### <font style="color:`r color2`;">Response curves</font>
 
 ```{r mod-respCurves-plot, echo=FALSE, eval=hasBmMod, message=FALSE, warning=FALSE, fig.align='center', fig.height=10, fig.width=10}
-pp = bm_PlotResponseCurves(bm.out = bm.mod
-                           , fixed.var = "mean"
-                           , do.bivariate = FALSE
-                           , do.plot = FALSE
-                           , do.progress = FALSE)
-pp$plot + guides(color = guide_legend(ncol = 3))
+if (length(name.models.mod) > 9) {
+  # mod.ind = seq(1, length(name.models.mod), 9)
+  # mod.ind = c(mod.ind, length(name.models.mod))
+  # mod.ind = unique(mod.ind)
+  # mod.sel = lapply(1:(length(mod.ind)-1), function(x) {
+  #   name.models.mod[mod.ind[x]:mod.ind[x+1]]
+  # })
+  
+  mod.sel = lapply(name.algo, function(x) {
+    grep(x, name.models.mod, value = TRUE)
+  })
+} else {
+  mod.sel = list("all")
+}
+
+for (mod.i in mod.sel) {
+  pp = bm_PlotResponseCurves(bm.out = bm.mod
+                             , fixed.var = "mean"
+                             , models.chosen = mod.i
+                             , do.bivariate = FALSE
+                             , do.plot = FALSE
+                             , do.progress = FALSE)
+  pp = pp$plot + ylim(0, 1) + guides(color = guide_legend(ncol = 3))
+  print(pp)
+}
+
+# require(foreach)
+# require(confintr)
+# require(ggplot2)
+# 
+# # tmp = resp_models$tab
+# tmp = TAB
+# tmp$pred.name = as.character(tmp$pred.name)
+# tmp$PA = sapply(tmp$pred.name, function(x) strsplit(x, "_")[[1]][2])
+# tmp$RUN = sapply(tmp$pred.name, function(x) strsplit(x, "_")[[1]][3])
+# tmp$algo = sapply(tmp$pred.name, function(x) strsplit(x, "_")[[1]][4])
+# tmp.split = split(tmp, list(tmp$expl.name, tmp$algo, tmp$id))
+# tmp.mean = foreach(tabi = tmp.split, .combine = "rbind") %do%
+#   {
+#     res = unique(tabi[, c("id", "expl.name", "algo", "expl.val")])
+#     if (length(unique(tabi$pred.val)) == 1) {
+#       res$pred.val = res$conf.inf = res$conf.sup = mean(tabi$pred.val)
+#     } else {
+#       res$pred.val = mean(tabi$pred.val)
+#       res$conf.inf = ci_mean(tabi$pred.val)$interval[1]
+#       res$conf.sup = ci_mean(tabi$pred.val)$interval[2]
+#     }
+#     return(res)
+#   }
+# head(tmp.mean)
+# 
+# ggplot(tmp.mean, aes_string(x = "expl.val", y = "pred.val", group = "algo")) + 
+#   geom_ribbon(aes(ymin = conf.inf, ymax = conf.sup), alpha = 0.5, fill = "grey60") +
+#   geom_line(aes(color = algo)) + 
+#   facet_wrap("expl.name", scales = "free_x") + 
+#   xlab("") + 
+#   ylab("") + 
+#   ylim(0, 1) +
+#   theme(legend.title = element_blank(), 
+#         legend.key = element_rect(fill = "white"), legend.position = "bottom", 
+#         axis.text.x = element_text(angle = 45, hjust = 1))
 ```
 
 
@@ -240,7 +307,7 @@ tab = knitr::kable(eval.ens[, -which(colnames(eval.ens) %in% rmCol)], format = "
 kable_styling(tab, bootstrap_options = "hover")
 ```
 
-```{r ens-eval-plot, echo=FALSE, eval=hasEvalEns, message=FALSE, warning=FALSE, fig.align='center', fig.height=5, fig.width=10}
+```{r ens-eval-plot, echo=FALSE, eval=hasEvalEns, message=FALSE, warning=FALSE, fig.align='center', fig.height=7, fig.width=10}
 pp1 = bm_PlotEvalMean(bm.out = bm.ens, dataset = "calibration", do.plot = FALSE)
 pp2 = bm_PlotEvalMean(bm.out = bm.ens, dataset = "validation", do.plot = FALSE)
 pp3 = bm_PlotEvalMean(bm.out = bm.ens, dataset = "evaluation", do.plot = FALSE)
@@ -263,7 +330,7 @@ rmCol = c("full.name")
 DT::datatable(varImp.ens[, -which(colnames(varImp.ens) %in% rmCol)])
 ```
 
-```{r ens-varImp-plot, echo=FALSE, eval=hasVarImpEns, message=FALSE, warning=FALSE, fig.align='center', fig.height=5, fig.width=10}
+```{r ens-varImp-plot, echo=FALSE, eval=hasVarImpEns, message=FALSE, warning=FALSE, fig.align='center', fig.height=10, fig.width=10}
 pp = bm_PlotVarImpBoxplot(bm.out = bm.ens
                           , group.by = c("algo", "expl.var", "expl.var")
                           , do.plot = FALSE)
@@ -275,12 +342,23 @@ pp$plot
 ### <font style="color:`r color2`;">Response curves</font>
 
 ```{r ens-respCurves-plot, echo=FALSE, eval=hasBmEns, message=FALSE, warning=FALSE, fig.align='center', fig.height=10, fig.width=10}
-pp = bm_PlotResponseCurves(bm.out = bm.ens
-                           , fixed.var = "mean"
-                           , do.bivariate = FALSE
-                           , do.plot = FALSE
-                           , do.progress = FALSE)
-pp$plot + guides(color = guide_legend(ncol = 1))
+if (any(grepl("EMcv", name.models.ens))) {
+  mod.sel = list(name.models.ens[!grepl("EMcv", name.models.ens)]
+                 , name.models.ens[grepl("EMcv", name.models.ens)])
+} else {
+  mod.sel = list("all")
+}
+
+for (mod.i in mod.sel) {
+  pp = bm_PlotResponseCurves(bm.out = bm.ens
+                             , fixed.var = "mean"
+                             , models.chosen = mod.i
+                             , do.bivariate = FALSE
+                             , do.plot = FALSE
+                             , do.progress = FALSE)
+  pp = pp$plot + guides(color = guide_legend(ncol = 1))
+  print(pp)
+}
 ```
 
 </br></br>
@@ -297,7 +375,7 @@ if (any(!is.na(ind.proj))) {
 }
 ```
 
-```{r plot-projection-files, echo=FALSE, eval=!is.na(ind.proj), warning=FALSE, fig.align='center', fig.height=5, fig.width=10}
+```{r plot-projection-files, echo=FALSE, eval=!is.na(ind.proj), warning=FALSE, fig.align='center', fig.height=10, fig.width=10}
 for (proj.i in name.proj) {
   ind.proj.i = intersect(ind.proj, which(bm.files$ID == proj.i))
   for (j in ind.proj.i) {
