@@ -5,7 +5,7 @@
 \title{Configure the modeling options for each selected model}
 \usage{
 bm_ModelingOptions(
-  data.type,
+  data.type = "binary",
   models,
   strategy,
   user.val = NULL,

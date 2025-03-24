@@ -793,10 +793,13 @@ BIOMOD_Modeling <- function(bm.format,
   
   if (inherits(bm.format, "BIOMOD.formated.data.PA")){
     cat("\n\n> Number of PA datasets :", ncol(bm.format@PA.table))
+    nb.PA <- ncol(bm.format@PA.table)
+  } else {
+    nb.PA <- 0
   }
   
   if (do.full.models){
-    nb.full.models <- ncol(bm.format@PA.table) + 1
+    nb.full.models <- nb.PA + 1
     nb.eval.rep <- (ncol(calib.lines) - nb.full.models) / ifelse(inherits(bm.format, "BIOMOD.formated.data.PA"), ncol(bm.format@PA.table), 1)
     cat("\n\n> Number of calibration/validation splits :", nb.eval.rep)
     cat("\n CV.do.full.models activated: +", nb.full.models,  "models")
