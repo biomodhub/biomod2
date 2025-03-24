@@ -307,7 +307,10 @@ bm_Tuning <- function(model,
     {
       cat(paste0("\n\t\t> Dataset ", dataset.i))
       argstmp <- bm.options@args.default
-      argstmp$formula <- bm.options@args.values[[dataset.i]]$formula
+      if(inherits(bm.options, "BIOMOD.options.dataset")){
+        argstmp$formula <- bm.options@args.values[[dataset.i]]$formula
+      }
+      
       
       if (model == "MAXNET") {
         warning("No tuning available for that model. Sorry.")

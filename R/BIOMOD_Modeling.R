@@ -530,7 +530,7 @@ BIOMOD_Modeling <- function(bm.format,
                                        , inMemory = TRUE, nameFolder = name.BIOMOD_DATA)
   
   ## 4. Print modeling summary in console ---------------------------------------------------------
-  .BIOMOD_Modeling.summary(bm.format, calib.lines, models, models.pa)
+  .BIOMOD_Modeling.summary(bm.format, calib.lines, models, models.pa, CV.do.full.models)
   
   ## 5. Run models with loop over PA --------------------------------------------------------------
   mod.out <- bm_RunModelsLoop(bm.format = bm.format,
@@ -785,22 +785,40 @@ BIOMOD_Modeling <- function(bm.format,
 
 # ----------------------------------------------------------------------------------------------- #
 
-.BIOMOD_Modeling.summary <- function(bm.format, calib.lines, models, models.pa = NULL)
+.BIOMOD_Modeling.summary <- function(bm.format, calib.lines, models, models.pa = NULL, do.full.models)
 {
   cat("\n\n")
   .bm_cat(paste(bm.format@sp.name, "Modeling Summary"))
-  cat("\n", ncol(bm.format@data.env.var), " environmental variables (", colnames(bm.format@data.env.var), ")")
-  nb.eval.rep <- ncol(calib.lines) / ifelse(inherits(bm.format, "BIOMOD.formated.data.PA"), ncol(bm.format@PA.table), 1)
-  cat("\nNumber of evaluation repetitions :", nb.eval.rep)
-  cat("\nModels selected :", models, "\n")
+  cat("\n>", ncol(bm.format@data.env.var), "environmental variables (", colnames(bm.format@data.env.var), ")")
+  
+  if (inherits(bm.format, "BIOMOD.formated.data.PA")){
+    cat("\n\n> Number of PA datasets :", ncol(bm.format@PA.table))
+  }
+  
+  if (do.full.models){
+    nb.full.models <- ncol(bm.format@PA.table) + 1
+    nb.eval.rep <- (ncol(calib.lines) - nb.full.models) / ifelse(inherits(bm.format, "BIOMOD.formated.data.PA"), ncol(bm.format@PA.table), 1)
+    cat("\n\n> Number of calibration/validation splits :", nb.eval.rep)
+    cat("\n CV.do.full.models activated: +", nb.full.models,  "models")
+    nb.eval.rep <- nb.eval.rep +1 #for models.pa
+  } else {
+    nb.eval.rep <- ncol(calib.lines) / ifelse(inherits(bm.format, "BIOMOD.formated.data.PA"), ncol(bm.format@PA.table), 1)
+    cat("\n\n> Number of calibration/validation splits :", nb.eval.rep)
+  }
+  
+  cat("\n\n> Algorithms selected :", models)
   if (is.null(models.pa)) {
     nb.runs = ncol(calib.lines) * length(models)
+    cat("\n", ncol(calib.lines), "models for each algorithm")
   } else {
     nb.runs = length(which(
       sapply(unlist(models.pa), function(x) grepl(colnames(calib.lines), pattern = x))
     ))
+    for (algo in names(models.pa)){
+      cat("\n\t", algo, ":", length(models.pa[[algo]]) * nb.eval.rep , " models")
+    }
   }
-  cat("\nTotal number of model runs:", nb.runs, "\n")
+  cat("\n\nTotal number of model runs:", nb.runs, "\n")
   .bm_cat()
 }
 
