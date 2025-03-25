@@ -14,6 +14,16 @@ vignette: >
 
 ### <i class="fas fa-pen-alt"></i> 2025
 
+##### Bugfix
+
+- 4.3-2-1 :
+  + fix `.check_calib.lines_names` for `BIOMOD.formated.data.PA` object in `bm_CrossValidation_user.defined`
+  + merge `binary` and `nonbinary` models into `OptionsBigboss`
+  + set `data.type = 'binary'` by default in `bm_ModelingOptions`
+  + correct `.BIOMOD_Modeling.summary` 
+  + remove `gam::` in `bm_MakeFormula`
+
+
 #### 4.3-2 Report (2025-03-11)
 
 - Add `call` slot for `BIOMOD.formated.data` and `BIOMOD.formated.data.PA`, `BIOMOD.models.out`, `BIOMOD.projection.out`, and `BIOMOD.ensemble.models.out` classes

@@ -523,11 +523,13 @@ setMethod('bm_CrossValidation_user.defined', signature(bm.format = "BIOMOD.forma
           {
             cat("\n   > User defined cross-validation selection")
             nb_PA <- ncol(bm.format@PA.table)
-            names_to_remove <- c("_allData_allRun", paste0("_PA", 1:nb_PA, "_allRun")) #We suppose that if they are in the format it should be fine
-            table_to_test <- user.table[,!(colnames(user.table) %in% names_to_remove)]
             
-            expected_PA.names <- colnames(bm.format@PA.table)
-            .check_calib.lines_names(table_to_test, expected_PA.names = expected_PA.names)
+            names_to_remove <- c("_allData_allRun", paste0("_PA", 1:nb_PA, "_allRun")) #We suppose that if they are in the format it should be fine
+            table_to_test <- user.table[, !(colnames(user.table) %in% names_to_remove)]
+            if (ncol(table_to_test) > 0) {
+              expected_PA.names <- colnames(bm.format@PA.table)
+              .check_calib.lines_names(table_to_test, expected_PA.names = expected_PA.names)
+            }
             
             PA.table <- cbind(bm.format@PA.table, "allData" = TRUE) #just to pass the check
             calib.lines <- foreach(this.colnames = colnames(user.table), .combine = "cbind") %do%
@@ -535,7 +537,7 @@ setMethod('bm_CrossValidation_user.defined', signature(bm.format = "BIOMOD.forma
                 this.pa = strsplit(this.colnames, split = "_")[[1]][2]
                 calib.pa <- user.table[,this.colnames, drop = FALSE]
                 which.not.pa <- which(PA.table[, this.pa] == FALSE | is.na(PA.table[, this.pa]))
-                if(length(which.not.pa) > 0){
+                if (length(which.not.pa) > 0) {
                   calib.pa[which.not.pa, ] <- NA
                 }
                 return(calib.pa)
