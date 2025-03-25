@@ -238,7 +238,7 @@ ModelsTable <- data.frame(model = c('ANN', 'CTA', 'FDA', 'GAM', 'GAM', 'GAM', 'G
 # bm.opt@options$GLM.binary.stats.glm@args.values[['_allData_allRun']] <- bm.opt@options$GLM.binary.stats.glm@args.values[['_allData_allRun']][-which(names(bm.opt@options$GLM.binary.stats.glm@args.values[['_allData_allRun']]) == "family")]
 # bm.opt@options$MARS.binary.earth.earth@args.values[['_allData_allRun']] <- bm.opt@options$MARS.binary.earth.earth@args.values[['_allData_allRun']][-which(names(bm.opt@options$MARS.binary.earth.earth@args.values[['_allData_allRun']]) == "glm")]
 # bm.opt@options$RF.binary.randomForest.randomForest@args.values[['_allData_allRun']] <- bm.opt@options$RF.binary.randomForest.randomForest@args.values[['_allData_allRun']][-which(names(bm.opt@options$RF.binary.randomForest.randomForest@args.values[['_allData_allRun']]) == "type")]
-
+# bm.opt@options$XGBOOST.binary.xgboost.xgboost@args.values[['_allData_allRun']] <- bm.opt@options$XGBOOST.binary.xgboost.xgboost@args.values[['_allData_allRun']][-which(names(bm.opt@options$XGBOOST.binary.xgboost.xgboost@args.values[['_allData_allRun']]) == "objective")]
 
 # bm.opt@models <- sub(".binary", "", bm.opt@models)
 # names(bm.opt@options) <- bm.opt@models

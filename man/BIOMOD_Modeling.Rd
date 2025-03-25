@@ -75,7 +75,7 @@ used to build the partition (all available variables by default), and for which 
 partitions will be built}
 
 \item{CV.strat}{(\emph{optional, default} \code{'both'}) \cr
-If \code{strategy = 'env'}, a \code{character} corresponding to how data will partitioned 
+If \code{strategy = 'strat'}, a \code{character} corresponding to how data will partitioned 
 along gradient, must be among \code{x}, \code{y}, \code{both}}
 
 \item{CV.user.table}{(\emph{optional, default} \code{NULL}) \cr

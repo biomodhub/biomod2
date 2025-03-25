@@ -270,7 +270,10 @@ bm_CrossValidation <- function(bm.format,
     colnames(out) <- paste0("_allData", colnames(out))
   }
   if (do.full.models) {
-    out <- cbind(out, TRUE)
+    if(!((strategy %in% c('random', 'kfold') && nb.rep == 0) ||
+       (strategy %in% c('kfold', 'strat', 'env') && k == 0))){
+      out <- cbind(out, TRUE)
+    }
     colnames(out)[ncol(out)] <- "_allData_allRun"
     if (inherits(bm.format, "BIOMOD.formated.data.PA")) {
       for (pa in 1:ncol(bm.format@PA.table)) {
@@ -288,13 +291,13 @@ bm_CrossValidation <- function(bm.format,
     ind <- apply(out, 2, function(x) {
       length(unique(bm.format@data.species[which(x)]))
     })
-    ind.calib.unbalanced <- which(ind != 2)
+    ind.calib.unbalanced <- which(ind < 2)
     
     ## for validation (models with allRun have no validation)
     ind <- apply(out, 2, function(x) {
       length(unique(bm.format@data.species[which(!x)]))
     })
-    ind.valid.unbalanced <- which(ind != 2)
+    ind.valid.unbalanced <- which(ind < 2)
     ind.valid.unbalanced <- 
       ind.valid.unbalanced[which(!grepl(names(ind.valid.unbalanced), pattern = "allRun"))]
     
@@ -406,7 +409,9 @@ bm_CrossValidation <- function(bm.format,
       if (dim(user.table)[1] != length(bm.format@data.species)) { 
         stop("user.table must have as many rows (dim1) than your species as data")
       }
-      # nb.rep <- dim(user.table)[2]
+      if ("_allData_allRun" %in% colnames(user.table)){
+        do.full.models <- FALSE
+      }
     }
   }
   

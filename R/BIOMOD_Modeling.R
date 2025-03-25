@@ -42,7 +42,7 @@
 ##' used to build the partition (all available variables by default), and for which \code{CV.k} 
 ##' partitions will be built
 ##' @param CV.strat (\emph{optional, default} \code{'both'}) \cr
-##' If \code{strategy = 'env'}, a \code{character} corresponding to how data will partitioned 
+##' If \code{strategy = 'strat'}, a \code{character} corresponding to how data will partitioned 
 ##' along gradient, must be among \code{x}, \code{y}, \code{both}
 ##' @param CV.user.table (\emph{optional, default} \code{NULL}) \cr
 ##' If \code{strategy = 'user.defined'}, a \code{matrix} or \code{data.frame} defining for each 
@@ -454,9 +454,9 @@ BIOMOD_Modeling <- function(bm.format,
                                     nb.rep = CV.nb.rep,
                                     perc = CV.perc,
                                     k = CV.k,
-                                    balance = CV.balance,
+                                    balance = ifelse(!is.null(CV.balance), CV.balance, "presences"),
                                     env.var = CV.env.var,
-                                    strat = CV.strat,
+                                    strat = ifelse(!is.null(CV.strat), CV.strat, "both"),
                                     user.table = CV.user.table,
                                     do.full.models = CV.do.full.models)
   models.out = .fill_BIOMOD.models.out("calib.lines", calib.lines, models.out
