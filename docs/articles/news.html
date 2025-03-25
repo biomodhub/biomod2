@@ -32,7 +32,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">biomod2</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">4.3-2</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">4.3-2-1</span>
       </span>
     </div>
 
@@ -149,6 +149,30 @@
 <h3 id="section">
 <i class="fas fa-pen-alt"></i> 2025<a class="anchor" aria-label="anchor" href="#section"></a>
 </h3>
+<div class="section level5">
+<h5 id="bugfix">Bugfix<a class="anchor" aria-label="anchor" href="#bugfix"></a>
+</h5>
+<ul>
+<li>4.3-2-1 :
+<ul>
+<li>fix <code>.check_calib.lines_names</code> for
+<code>BIOMOD.formated.data.PA</code> object in
+<code>bm_CrossValidation_user.defined</code>
+</li>
+<li>merge <code>binary</code> and <code>nonbinary</code> models into
+<code>OptionsBigboss</code>
+</li>
+<li>set <code>data.type = 'binary'</code> by default in
+<code>bm_ModelingOptions</code>
+</li>
+<li>correct <code>.BIOMOD_Modeling.summary</code>
+</li>
+<li>remove <code>gam::</code> in <code>bm_MakeFormula</code>
+</li>
+</ul>
+</li>
+</ul>
+</div>
 <div class="section level4">
 <h4 id="report-2025-03-11">4.3-2 Report (2025-03-11)<a class="anchor" aria-label="anchor" href="#report-2025-03-11"></a>
 </h4>
@@ -293,7 +317,7 @@ datatypes available</em>)</li>
 </ul>
 </div>
 <div class="section level5">
-<h5 id="bugfix">Bugfix<a class="anchor" aria-label="anchor" href="#bugfix"></a>
+<h5 id="bugfix-1">Bugfix<a class="anchor" aria-label="anchor" href="#bugfix-1"></a>
 </h5>
 <ul>
 <li>Fix stratified cross-validation strategy in
@@ -315,7 +339,7 @@ to run the step AIC with the user formula)</li>
 <i class="fas fa-pencil-alt"></i> 2024<a class="anchor" aria-label="anchor" href="#section-1"></a>
 </h3>
 <div class="section level5">
-<h5 id="bugfix-1">Bugfix<a class="anchor" aria-label="anchor" href="#bugfix-1"></a>
+<h5 id="bugfix-2">Bugfix<a class="anchor" aria-label="anchor" href="#bugfix-2"></a>
 </h5>
 <ul>
 <li>4.2-6-2 :
@@ -362,7 +386,7 @@ the environment.</li>
 <em>“for_all_datasets”</em> in <code>bm_ModelingOptions</code>.</li>
 </ul>
 <div class="section level5">
-<h5 id="bugfix-2">Bugfix<a class="anchor" aria-label="anchor" href="#bugfix-2"></a>
+<h5 id="bugfix-3">Bugfix<a class="anchor" aria-label="anchor" href="#bugfix-3"></a>
 </h5>
 <ul>
 <li>4.2-5-2 :
@@ -435,7 +459,7 @@ the new way of parameterizing single models</em>)</li>
 </ul>
 </div>
 <div class="section level5">
-<h5 id="bugfix-3">Bugfix<a class="anchor" aria-label="anchor" href="#bugfix-3"></a>
+<h5 id="bugfix-4">Bugfix<a class="anchor" aria-label="anchor" href="#bugfix-4"></a>
 </h5>
 <ul>
 <li>Add <code>try</code> and error message in call for models in
@@ -504,7 +528,7 @@ yourself before modeling</em>)</li>
 </ul>
 </div>
 <div class="section level5">
-<h5 id="bugfix-4">Bugfix<a class="anchor" aria-label="anchor" href="#bugfix-4"></a>
+<h5 id="bugfix-5">Bugfix<a class="anchor" aria-label="anchor" href="#bugfix-5"></a>
 </h5>
 <ul>
 <li>4.2-4-10 : fixed <code>wrap</code> applied to a
@@ -566,7 +590,7 @@ models merged by algo (for Maxent)</li>
 </ul>
 </div>
 <div class="section level5">
-<h5 id="bugfix-5">Bugfix<a class="anchor" aria-label="anchor" href="#bugfix-5"></a>
+<h5 id="bugfix-6">Bugfix<a class="anchor" aria-label="anchor" href="#bugfix-6"></a>
 </h5>
 <ul>
 <li>4.2-3-5 :
@@ -643,7 +667,7 @@ models. Default value is now ‘validation’ instead of ‘evaluation’.</li>
 </ul>
 </div>
 <div class="section level5">
-<h5 id="bugfix-6">Bugfix<a class="anchor" aria-label="anchor" href="#bugfix-6"></a>
+<h5 id="bugfix-7">Bugfix<a class="anchor" aria-label="anchor" href="#bugfix-7"></a>
 </h5>
 <ul>
 <li>validation metric calculation now properly use the calibration
@@ -768,7 +792,7 @@ Building all possible ensemble models can now be done with
 </ul>
 </div>
 <div class="section level5">
-<h5 id="bugfix-7">Bugfix<a class="anchor" aria-label="anchor" href="#bugfix-7"></a>
+<h5 id="bugfix-8">Bugfix<a class="anchor" aria-label="anchor" href="#bugfix-8"></a>
 </h5>
 <ul>
 <li>Fixed <code>MAXENT.Phillips.2</code> and single variable
@@ -830,7 +854,7 @@ in <code>MAXENT.Phillips</code> modeling options</li>
 </ul>
 </div>
 <div class="section level5">
-<h5 id="bugfix-8">Bugfix<a class="anchor" aria-label="anchor" href="#bugfix-8"></a>
+<h5 id="bugfix-9">Bugfix<a class="anchor" aria-label="anchor" href="#bugfix-9"></a>
 </h5>
 <ul>
 <li>Fixed <code>MAXENT.Phillips</code> predict method for large dataset
@@ -926,7 +950,7 @@ future.</li>
 </ul>
 </div>
 <div class="section level5">
-<h5 id="bugfix-9">Bugfix<a class="anchor" aria-label="anchor" href="#bugfix-9"></a>
+<h5 id="bugfix-10">Bugfix<a class="anchor" aria-label="anchor" href="#bugfix-10"></a>
 </h5>
 <ul>
 <li>MAXENT.Phillips models can now properly fail</li>
@@ -996,7 +1020,7 @@ CompteurSp that was defined within a function.</li>
 <h4 id="section-4">4.1-3<a class="anchor" aria-label="anchor" href="#section-4"></a>
 </h4>
 <div class="section level5">
-<h5 id="bugfix-10">Bugfix<a class="anchor" aria-label="anchor" href="#bugfix-10"></a>
+<h5 id="bugfix-11">Bugfix<a class="anchor" aria-label="anchor" href="#bugfix-11"></a>
 </h5>
 <ul>
 <li>Ensemble models that fails (e.g. EMcv with only one models) will not
