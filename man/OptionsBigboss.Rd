@@ -8,7 +8,7 @@
 A \code{\link{BIOMOD.models.options}} object with some changed values :
 
 \describe{
-   \item{\code{ANN.binary.nnet.nnet}}{
+   \item{\code{ANN.nnet.nnet}}{
      \itemize{
        \item \code{size = 5}
        \item \code{decay = 0.1}
@@ -17,30 +17,25 @@ A \code{\link{BIOMOD.models.options}} object with some changed values :
        \item \code{maxit = 200}
      }
    }
-   \item{\code{CTA.binary.rpart.rpart}}{
+   \item{\code{CTA.rpart.rpart}}{
      \itemize{
-       \item \code{method = 'class'}
        \item \code{control = list(xval = 5, minbucket = 5, minsplit = 5, cp = 0.001, maxdepth = 10)}
        \item \code{cost = NULL}
      }
    }
-   \item{\code{FDA.binary.mda.fda}}{
+   \item{\code{FDA.mda.fda}}{
+   }
+   \item{\code{GAM.gam.gam}}{
+   }
+   \item{\code{GAM.mgcv.bam}}{
+   }
+   \item{\code{GAM.mgcv.gam}}{
      \itemize{
-       \item \code{method = 'mars'}
-     }
-   }
-   \item{\code{GAM.binary.gam.gam}}{
-   }
-   \item{\code{GAM.binary.mgcv.bam}}{
-   }
-   \item{\code{GAM.binary.mgcv.gam}}{
-     \itemize{
-       \item \code{family = binomial(link = 'logit')}
        \item \code{method = 'GCV.Cp'}
        \item \code{control = list(epsilon = 1e-06, trace = FALSE, maxit = 100)}
      }
    }
-   \item{\code{GBM.binary.gbm.gbm}}{
+   \item{\code{GBM.gbm.gbm}}{
      \itemize{
        \item \code{n.trees = 2500}
        \item \code{interaction.depth = 7}
@@ -51,16 +46,14 @@ A \code{\link{BIOMOD.models.options}} object with some changed values :
        \item \code{n.cores = 1}
      }
    }
-   \item{\code{GLM.binary.stats.glm}}{
+   \item{\code{GLM.stats.glm}}{
      \itemize{
-       \item \code{family = binomial(link = 'logit')}
        \item \code{mustart = 0.5}
        \item \code{control = glm.control(maxit = 50)}
      }
    }
-   \item{\code{MARS.binary.earth.earth}}{
+   \item{\code{MARS.earth.earth}}{
      \itemize{
-       \item \code{glm = list(family = binomial(link = 'logit'))}
        \item \code{ncross = 0}
        \item \code{nk = NULL}
        \item \code{penalty = 2}
@@ -69,12 +62,21 @@ A \code{\link{BIOMOD.models.options}} object with some changed values :
        \item \code{pmethod = 'backward'}
      }
    }
-   \item{\code{MAXENT.binary.MAXENT.MAXENT}}{
+   \item{\code{MAXENT.MAXENT.MAXENT}}{
      \itemize{
        \item \code{path_to_maxent.jar = '.'}
      }
    }
-   \item{\code{RF.binary.randomForest.randomForest}}{
+   \item{\code{RF.randomForest.randomForest}}{
+     \itemize{
+       \item \code{ntree = 500}
+       \item \code{mtry = 2}
+       \item \code{sampsize = NULL}
+       \item \code{nodesize = 5}
+       \item \code{maxnodes = NULL}
+     }
+   }
+   \item{\code{RFd.randomForest.randomForest}}{
      \itemize{
        \item \code{type = 'classification'}
        \item \code{ntree = 500}
@@ -85,28 +87,16 @@ A \code{\link{BIOMOD.models.options}} object with some changed values :
        \item \code{maxnodes = NULL}
      }
    }
-   \item{\code{RFd.binary.randomForest.randomForest}}{
-     \itemize{
-       \item \code{type = 'classification'}
-       \item \code{ntree = 500}
-       \item \code{mtry = 2}
-       \item \code{strata = factor(c(0, 1))}
-       \item \code{sampsize = NULL}
-       \item \code{nodesize = 5}
-       \item \code{maxnodes = NULL}
-     }
-   }
-   \item{\code{SRE.binary.biomod2.bm_SRE}}{
+   \item{\code{SRE.biomod2.bm_SRE}}{
      \itemize{
        \item \code{do.extrem = TRUE}
      }
    }
-   \item{\code{XGBOOST.binary.xgboost.xgboost}}{
+   \item{\code{XGBOOST.xgboost.xgboost}}{
      \itemize{
        \item \code{params = list(max_depth = 2, eta = 1)}
        \item \code{nthread = 2}
        \item \code{nrounds = 4}
-       \item \code{objective = 'binary:logistic'}
      }
    }
 }

@@ -173,18 +173,21 @@ setMethod('BIOMOD.options.default', signature(mod = 'character', typ = 'characte
     CTAmethod <- "class"
     GBMdistribution <- "bernoulli"
     FDAmethod <- "mars"
+    XGBOOSTobjective <- "binary:logistic"
   } else if(typ == "count") {
     RFtype <- "regression"
     MODfamily <- poisson(link = "log")
     CTAmethod <- "poisson"
     GBMdistribution <- "poisson"
     FDAmethod <- NULL
+    XGBOOSTobjective <- "count:poisson"
   } else if (typ == "ordinal") {
     RFtype <- "classification"
     MODfamily <- quasibinomial() 
     CTAmethod <- "class"
     GBMdistribution <- "multinomial"
     FDAmethod <- "mars"
+    XGBOOSTobjective <- NULL
   } else if (typ == "relative") {
     RFtype <- "regression"
     MODfamily <- quasibinomial(link = 'logit')
@@ -192,12 +195,14 @@ setMethod('BIOMOD.options.default', signature(mod = 'character', typ = 'characte
     CTAmethod <- "poisson"
     GBMdistribution <- "gaussian"
     FDAmethod <- NULL
+    XGBOOSTobjective <- "reg:squarederror"
   } else { # data.type = nonbinary or data.type = abundance
     RFtype <- "regression"
     MODfamily <- gaussian(link = 'identity')
     CTAmethod <- "poisson" #??
     GBMdistribution <- "gaussian"
     FDAmethod <- NULL
+    XGBOOSTobjective <- "reg:squarederror"
   }
   
   ## Correct default options
@@ -229,6 +234,7 @@ setMethod('BIOMOD.options.default', signature(mod = 'character', typ = 'characte
     argstmp$control = list()
   }
   if (mod == "MAXNET") { argstmp[["f"]] = NULL }
+  if (mod == "MARS") { argstmp$glm = list(family = MODfamily)}
   if (mod == "RF" || mod == "RFd") {
     argstmp[["x"]] = NULL
     argstmp$mtry = 1
@@ -237,6 +243,7 @@ setMethod('BIOMOD.options.default', signature(mod = 'character', typ = 'characte
   if (mod == "XGBOOST") { 
     argstmp$nrounds = 4
     argstmp$verbose = 0
+    argstmp$objective = XGBOOSTobjective
   }
   
   argstmp[["..."]] = NULL
@@ -532,9 +539,9 @@ setMethod('BIOMOD.options.dataset', signature(strategy = 'character'),
             if (strategy %in% c("default", "bigboss") || (strategy == "user.defined" && user.base == "bigboss")) {
               if (strategy == "bigboss" || (strategy == "user.defined" && user.base == "bigboss")) {
                 # data(OptionsBigboss) # internal data is readily available
-                typ.bigboss <- ifelse(typ == "binary", "binary", "nonbinary")
+                # typ.bigboss <- ifelse(typ == "binary", "binary", "nonbinary")
                 
-                val <- OptionsBigboss@options[[paste0(c(mod, typ.bigboss, pkg, fun), collapse = ".")]]@args.values[['_allData_allRun']]
+                val <- OptionsBigboss@options[[paste0(c(mod, pkg, fun), collapse = ".")]]@args.values[['_allData_allRun']]
                 for (ii in names(val)) {
                   if (ii != "formula") { argstmp[[ii]] <- val[[ii]] }
                 }

@@ -123,7 +123,7 @@ biomod2 the parameter values pre-defined by biomod2 team."><!-- mathjax --><scri
     <div id="format">
     <h2>Format</h2>
     <p>A <code><a href="BIOMOD.models.options.html">BIOMOD.models.options</a></code> object with some changed values :</p>
-<dl><dt><code>ANN.binary.nnet.nnet</code></dt>
+<dl><dt><code>ANN.nnet.nnet</code></dt>
 <dd><p></p><ul><li><p><code>size = 5</code></p></li>
 <li><p><code>decay = 0.1</code></p></li>
 <li><p><code>trace = FALSE</code></p></li>
@@ -131,29 +131,26 @@ biomod2 the parameter values pre-defined by biomod2 team."><!-- mathjax --><scri
 <li><p><code>maxit = 200</code></p></li>
 </ul><p></p></dd>
 
-   <dt><code>CTA.binary.rpart.rpart</code></dt>
-<dd><p></p><ul><li><p><code>method = 'class'</code></p></li>
-<li><p><code>control = list(xval = 5, minbucket = 5, minsplit = 5, cp = 0.001, maxdepth = 10)</code></p></li>
+   <dt><code>CTA.rpart.rpart</code></dt>
+<dd><p></p><ul><li><p><code>control = list(xval = 5, minbucket = 5, minsplit = 5, cp = 0.001, maxdepth = 10)</code></p></li>
 <li><p><code>cost = NULL</code></p></li>
 </ul><p></p></dd>
 
-   <dt><code>FDA.binary.mda.fda</code></dt>
-<dd><p></p><ul><li><p><code>method = 'mars'</code></p></li>
-</ul><p></p></dd>
-
-   <dt><code>GAM.binary.gam.gam</code></dt>
+   <dt><code>FDA.mda.fda</code></dt>
 <dd><p></p></dd>
 
-   <dt><code>GAM.binary.mgcv.bam</code></dt>
+   <dt><code>GAM.gam.gam</code></dt>
 <dd><p></p></dd>
 
-   <dt><code>GAM.binary.mgcv.gam</code></dt>
-<dd><p></p><ul><li><p><code>family = binomial(link = 'logit')</code></p></li>
-<li><p><code>method = 'GCV.Cp'</code></p></li>
+   <dt><code>GAM.mgcv.bam</code></dt>
+<dd><p></p></dd>
+
+   <dt><code>GAM.mgcv.gam</code></dt>
+<dd><p></p><ul><li><p><code>method = 'GCV.Cp'</code></p></li>
 <li><p><code>control = list(epsilon = 1e-06, trace = FALSE, maxit = 100)</code></p></li>
 </ul><p></p></dd>
 
-   <dt><code>GBM.binary.gbm.gbm</code></dt>
+   <dt><code>GBM.gbm.gbm</code></dt>
 <dd><p></p><ul><li><p><code>n.trees = 2500</code></p></li>
 <li><p><code>interaction.depth = 7</code></p></li>
 <li><p><code>n.minobsinnode = 5</code></p></li>
@@ -163,15 +160,13 @@ biomod2 the parameter values pre-defined by biomod2 team."><!-- mathjax --><scri
 <li><p><code>n.cores = 1</code></p></li>
 </ul><p></p></dd>
 
-   <dt><code>GLM.binary.stats.glm</code></dt>
-<dd><p></p><ul><li><p><code>family = binomial(link = 'logit')</code></p></li>
-<li><p><code>mustart = 0.5</code></p></li>
+   <dt><code>GLM.stats.glm</code></dt>
+<dd><p></p><ul><li><p><code>mustart = 0.5</code></p></li>
 <li><p><code>control = glm.control(maxit = 50)</code></p></li>
 </ul><p></p></dd>
 
-   <dt><code>MARS.binary.earth.earth</code></dt>
-<dd><p></p><ul><li><p><code>glm = list(family = binomial(link = 'logit'))</code></p></li>
-<li><p><code>ncross = 0</code></p></li>
+   <dt><code>MARS.earth.earth</code></dt>
+<dd><p></p><ul><li><p><code>ncross = 0</code></p></li>
 <li><p><code>nk = NULL</code></p></li>
 <li><p><code>penalty = 2</code></p></li>
 <li><p><code>thresh = 0.001</code></p></li>
@@ -179,11 +174,19 @@ biomod2 the parameter values pre-defined by biomod2 team."><!-- mathjax --><scri
 <li><p><code>pmethod = 'backward'</code></p></li>
 </ul><p></p></dd>
 
-   <dt><code>MAXENT.binary.MAXENT.MAXENT</code></dt>
+   <dt><code>MAXENT.MAXENT.MAXENT</code></dt>
 <dd><p></p><ul><li><p><code>path_to_maxent.jar = '.'</code></p></li>
 </ul><p></p></dd>
 
-   <dt><code>RF.binary.randomForest.randomForest</code></dt>
+   <dt><code>RF.randomForest.randomForest</code></dt>
+<dd><p></p><ul><li><p><code>ntree = 500</code></p></li>
+<li><p><code>mtry = 2</code></p></li>
+<li><p><code>sampsize = NULL</code></p></li>
+<li><p><code>nodesize = 5</code></p></li>
+<li><p><code>maxnodes = NULL</code></p></li>
+</ul><p></p></dd>
+
+   <dt><code>RFd.randomForest.randomForest</code></dt>
 <dd><p></p><ul><li><p><code>type = 'classification'</code></p></li>
 <li><p><code>ntree = 500</code></p></li>
 <li><p><code>mtry = 2</code></p></li>
@@ -193,25 +196,14 @@ biomod2 the parameter values pre-defined by biomod2 team."><!-- mathjax --><scri
 <li><p><code>maxnodes = NULL</code></p></li>
 </ul><p></p></dd>
 
-   <dt><code>RFd.binary.randomForest.randomForest</code></dt>
-<dd><p></p><ul><li><p><code>type = 'classification'</code></p></li>
-<li><p><code>ntree = 500</code></p></li>
-<li><p><code>mtry = 2</code></p></li>
-<li><p><code>strata = factor(c(0, 1))</code></p></li>
-<li><p><code>sampsize = NULL</code></p></li>
-<li><p><code>nodesize = 5</code></p></li>
-<li><p><code>maxnodes = NULL</code></p></li>
-</ul><p></p></dd>
-
-   <dt><code>SRE.binary.biomod2.bm_SRE</code></dt>
+   <dt><code>SRE.biomod2.bm_SRE</code></dt>
 <dd><p></p><ul><li><p><code>do.extrem = TRUE</code></p></li>
 </ul><p></p></dd>
 
-   <dt><code>XGBOOST.binary.xgboost.xgboost</code></dt>
+   <dt><code>XGBOOST.xgboost.xgboost</code></dt>
 <dd><p></p><ul><li><p><code>params = list(max_depth = 2, eta = 1)</code></p></li>
 <li><p><code>nthread = 2</code></p></li>
 <li><p><code>nrounds = 4</code></p></li>
-<li><p><code>objective = 'binary:logistic'</code></p></li>
 </ul><p></p></dd>
 
 
@@ -225,7 +217,7 @@ biomod2 the parameter values pre-defined by biomod2 team."><!-- mathjax --><scri
 
 
       <footer><div class="copyright">
-  <p></p><p>Developed by <a href="http://www.will.chez-alice.fr/" class="external-link">Wilfried Thuiller</a>, Damien Georges, <a href="https://mayagueguen.github.io" class="external-link">Maya Gueguen</a>, Robin Engler, Frank Breiner, Bruno Lafourcade, Remi Patin, Helene Blancheteau.</p>
+  <p></p><p>Developed by <a href="https://mayagueguen.github.io" class="external-link">Maya Guéguen</a>, Hélène Blancheteau, <a href="http://www.will.chez-alice.fr/" class="external-link">Wilfried Thuiller</a>.</p>
 </div>
 
 <div class="pkgdown">
