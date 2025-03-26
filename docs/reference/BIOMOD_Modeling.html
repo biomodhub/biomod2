@@ -143,7 +143,7 @@ metrics (see Details).</p>
 <span>  metric.eval <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"KAPPA"</span>, <span class="st">"TSS"</span>, <span class="st">"ROC"</span><span class="op">)</span>,</span>
 <span>  var.import <span class="op">=</span> <span class="fl">0</span>,</span>
 <span>  weights <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  prevalence <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  prevalence <span class="op">=</span> <span class="fl">0.5</span>,</span>
 <span>  scale.models <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  nb.cpu <span class="op">=</span> <span class="fl">1</span>,</span>
 <span>  seed.val <span class="op">=</span> <span class="cn">NULL</span>,</span>
@@ -445,17 +445,12 @@ created in the current working directory :</p><ol><li><p>a <em>models</em> folde
   <dt>weights &amp; prevalence</dt>
 <dd><p>More or less weight can be given to some specific observations. <br> Automatically created
   <code>weights</code> will be <code>integer</code> values to prevent some modeling issues. <br><em>Note that <code>MAXENT</code>, <code>MAXNET</code>, <code>RF</code>, <code>RFd</code> and <code>SRE</code> models
-  do not take weights into account.</em></p><ul><li><p>If <code>weights = prevalence = NULL</code>, each observation (presence or absence) will
-    have the same weight, no matter the total number of presences and absences.</p></li>
-<li><p>If <code>prevalence = 0.5</code>, presences and absences will be weighted equally
+  do not take weights into account.</em></p><ul><li><p>If <code>prevalence = 0.5</code> (the default), presences and absences will be weighted equally
     (<em>i.e. the weighted sum of presences equals the weighted sum of absences</em>).</p></li>
 <li><p>If <code>prevalence</code> is set below (<em>above</em>) <code>0.5</code>, more weight will be
     given to absences (<em>presences</em>).</p></li>
 <li><p>If <code>weights</code> is defined, <code>prevalence</code> argument will be ignored
     (<em>EXCEPT for <code>MAXENT</code></em>).</p></li>
-<li><p>If pseudo-absences have been generated (<code>PA.nb.rep &gt; 0</code> in
-    <code><a href="BIOMOD_FormatingData.html">BIOMOD_FormatingData</a></code>), weights are by default calculated such that
-    <code>prevalence = 0.5</code>. ##TODO C'EST FAUX</p></li>
 </ul></dd>
 
 

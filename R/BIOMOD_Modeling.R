@@ -251,17 +251,12 @@
 ##'   \emph{Note that \code{MAXENT}, \code{MAXNET}, \code{RF}, \code{RFd} and \code{SRE} models 
 ##'   do not take weights into account.}
 ##'   \itemize{
-##'     \item If \code{weights = prevalence = NULL}, each observation (presence or absence) will 
-##'     have the same weight, no matter the total number of presences and absences.
-##'     \item If \code{prevalence = 0.5}, presences and absences will be weighted equally 
+##'     \item If \code{prevalence = 0.5} (the default), presences and absences will be weighted equally 
 ##'     (\emph{i.e. the weighted sum of presences equals the weighted sum of absences}). 
 ##'     \item If \code{prevalence} is set below (\emph{above}) \code{0.5}, more weight will be 
 ##'     given to absences (\emph{presences}).
 ##'     \item If \code{weights} is defined, \code{prevalence} argument will be ignored 
 ##'     (\emph{EXCEPT for \code{MAXENT}}).
-##'     \item If pseudo-absences have been generated (\code{PA.nb.rep > 0} in 
-##'     \code{\link{BIOMOD_FormatingData}}), weights are by default calculated such that 
-##'     \code{prevalence = 0.5}. ##TODO C'EST FAUX
 ##'   }}
 ##'   
 ##'   \item{scale.models}{A binomial GLM is created to scale predictions from 0 to 1. \cr
@@ -398,7 +393,7 @@ BIOMOD_Modeling <- function(bm.format,
                             metric.eval = c('KAPPA', 'TSS', 'ROC'),
                             var.import = 0,
                             weights = NULL,
-                            prevalence = NULL,
+                            prevalence = 0.5,
                             scale.models = FALSE,
                             nb.cpu = 1,
                             seed.val = NULL,
@@ -691,10 +686,12 @@ BIOMOD_Modeling <- function(bm.format,
     .fun_testIf01(TRUE, "prevalence", prevalence)
   } else {
     prevalence = 0.5
+    warning("Prevalence have been set to 0.5.")
   }
   
   ## 6. Check weights arguments -----------------------------------------------
   if (is.null(weights)) {
+
     if (!is.null(prevalence) && bm.format@data.type != "ordinal") {
       cat("\n\t> Automatic weights creation to rise a", prevalence, "prevalence")
       data.sp <- as.numeric(bm.format@data.species)
