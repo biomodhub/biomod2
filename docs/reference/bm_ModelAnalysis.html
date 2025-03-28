@@ -119,8 +119,7 @@
 <span>  <span class="va">bm.mod</span>,</span>
 <span>  models.chosen <span class="op">=</span> <span class="st">"all"</span>,</span>
 <span>  do.plot <span class="op">=</span> <span class="cn">TRUE</span>,</span>
-<span>  color.by <span class="op">=</span> <span class="st">"full.name"</span>,</span>
-<span>  do.Rpredicted <span class="op">=</span> <span class="cn">FALSE</span></span>
+<span>  color.by <span class="op">=</span> <span class="st">"full.name"</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -139,15 +138,11 @@
 
 
 <dt id="arg-do-plot">do.plot<a class="anchor" aria-label="anchor" href="#arg-do-plot"></a></dt>
-<dd><p>a <code>logical</code>, print the plot or not</p></dd>
+<dd><p>a <code>logical</code>, print the plots or not</p></dd>
 
 
 <dt id="arg-color-by">color.by<a class="anchor" aria-label="anchor" href="#arg-color-by"></a></dt>
 <dd><p>a <code>character</code> between "full.name", "species", "PA", "RUN" or "algo"</p></dd>
-
-
-<dt id="arg-do-rpredicted">do.Rpredicted<a class="anchor" aria-label="anchor" href="#arg-do-rpredicted"></a></dt>
-<dd><p>a <code>logical</code> : do Rpredicted have to be computed or no ?</p></dd>
 
 </dl></div>
     <div id="value">
@@ -161,7 +156,8 @@
 </ol></div>
     <div id="details">
     <h2>Details</h2>
-    <p>Only the models coherent with a residuals analysis will be selected for some plots.</p>
+    <p>All the plots will be made for the models, independently to the different models assumptions.
+It is up to the user to interpret the graphs in the light of the model assumptions.</p>
     </div>
     <div id="author">
     <h2>Author</h2>

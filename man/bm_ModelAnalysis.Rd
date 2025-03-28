@@ -8,8 +8,7 @@ bm_ModelAnalysis(
   bm.mod,
   models.chosen = "all",
   do.plot = TRUE,
-  color.by = "full.name",
-  do.Rpredicted = FALSE
+  color.by = "full.name"
 )
 }
 \arguments{
@@ -19,11 +18,9 @@ bm_ModelAnalysis(
 \code{all} or a sub-selection of model names that can be obtained with the 
 \code{\link{get_built_models}} function}
 
-\item{do.plot}{a \code{logical}, print the plot or not}
+\item{do.plot}{a \code{logical}, print the plots or not}
 
 \item{color.by}{a \code{character} between "full.name", "species", "PA", "RUN" or "algo"}
-
-\item{do.Rpredicted}{a \code{logical} : do Rpredicted have to be computed or no ?}
 }
 \value{
 \enumerate{
@@ -38,7 +35,8 @@ bm_ModelAnalysis(
 This function return differents graphs to help analyse the single models.
 }
 \details{
-Only the models coherent with a residuals analysis will be selected for some plots.
+All the plots will be made for the models, independently to the different models assumptions. 
+It is up to the user to interpret the graphs in the light of the model assumptions.
 }
 \author{
 Hélène Blancheteau
