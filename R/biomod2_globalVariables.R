@@ -133,3 +133,5 @@ utils::globalVariables(names = c("vali", "n", "Source", "Target", "color", "stra
                                  "count.level", "count.value", "group.value", "perc.level", "perc.value",
                                  "type.df"))
 
+## bm_ModelAnalysis
+utils::globalVariables(names = c("palette"))

@@ -74,7 +74,9 @@ Suggests:
     tidyterra,
     ggtext,
     ggalluvial,
-    R.utils
+    R.utils,
+    paletteer,
+    patchwork
 License: GPL-3
 RoxygenNote: 7.3.2
 Encoding: UTF-8

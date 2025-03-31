@@ -246,7 +246,7 @@ bm_ModelAnalysis <- function(bm.mod,
 
   if (do.plot){
     if(!bm.mod@data.type %in% c("binary", "ordinal")){print(plot_Rscore)}
-    print(plot_outliers + plot_qqplot + plot_hist + plot_fitted + plot_annotation(tag_levels = 'A',
+    print(plot_outliers + plot_qqplot + plot_hist + plot_fitted + patchwork::plot_annotation(tag_levels = 'A',
                                                                                   tag_prefix = "(",
                                                                                   tag_suffix = ")") )
   }
