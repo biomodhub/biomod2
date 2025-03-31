@@ -208,65 +208,59 @@ argument :</p><dl><dt>default</dt>
     <div id="note">
     <h2>Note</h2>
     <p><code>MAXENT</code> being the only external model (not called through a <code>R</code> package),
-default parameters, and their values, are the following :</p>
-<ul><li><p><code>path_to_maxent.jar = getwd()</code> : a <code>character</code> corresponding to path to
-  <code>maxent.jar</code> file</p></li>
-<li><p><code>memory_allocated = 512</code> : an <code>integer</code> corresponding to the amount of
-  memory (in Mo) reserved for <code>java</code> to run <code>MAXENT</code>, must be either <code>64</code>,
+default parameters, and their values, are the following : <br><br></p>
+<table class="table table"><tr><td><strong>FLAG</strong></td><td><strong>default</strong></td><td><strong>Description</strong></td></tr><tr><td><code>path_to_maxent.jar</code></td><td>getwd()</td><td>a <code>character</code> corresponding to path to
+  <code>maxent.jar</code> file</td></tr><tr><td><code>memory_allocated</code></td><td>512</td><td>an <code>integer</code> corresponding to the amount of memory
+  (in Mo) reserved for <code>java</code> to run <code>MAXENT</code>, must be either <code>64</code>,
   <code>128</code>, <code>256</code>, <code>512</code>, <code>1024</code>... or <code>NULL</code> to use default <code>java</code>
-  memory limitation parameter</p></li>
-<li><p><code>initial_heap_size = NULL</code> : a <code>character</code> corresponding to initial heap
+  memory limitation parameter</td></tr><tr><td><code>initial_heap_size</code></td><td>NULL</td><td>a <code>character</code> corresponding to initial heap
   space (shared memory space) allocated to <code>java</code> (argument <code>-Xms</code> when calling
   <code>java</code>), must be either <code>1024K</code>, <code>4096M</code>, <code>10G</code> ... or <code>NULL</code> to
   use default <code>java</code> parameter. Used in <code><a href="BIOMOD_Projection.html">BIOMOD_Projection</a></code> but not in
-  <code><a href="BIOMOD_Modeling.html">BIOMOD_Modeling</a></code>.</p></li>
-<li><p><code>max_heap_size = NULL</code> : a <code>character</code> corresponding to maximum heap
+  <code><a href="BIOMOD_Modeling.html">BIOMOD_Modeling</a></code>.</td></tr><tr><td><code>max_heap_size</code></td><td>NULL</td><td>a <code>character</code> corresponding to maximum heap
   space (shared memory space) allocated to <code>java</code> (argument <code>-Xmx</code> when calling
   <code>java</code>), must be either <code>1024K</code>, <code>4096M</code>, <code>10G</code> ... or <code>NULL</code> to
   use default <code>java</code> parameter, and must be larger than <code>initial_heap_size</code>. Used
-  in <code><a href="BIOMOD_Projection.html">BIOMOD_Projection</a></code> but not in <code><a href="BIOMOD_Modeling.html">BIOMOD_Modeling</a></code>.</p></li>
-<li><p><code>background_data_dir = 'default'</code> : a <code>character</code> corresponding to path
+  in <code><a href="BIOMOD_Projection.html">BIOMOD_Projection</a></code> but not in <code><a href="BIOMOD_Modeling.html">BIOMOD_Modeling</a></code>.</td></tr><tr><td><code>background_data_dir</code></td><td>'default'</td><td>a <code>character</code> corresponding to path
   to folder where explanatory variables are stored as <code>ASCII</code> files (raster format).
   If specified, <code>MAXENT</code> will generate its own background data from rasters of
   explanatory variables (<code>'default'</code> value). Otherwise <span class="pkg">biomod2</span> pseudo-absences
-  will be used (see <code><a href="BIOMOD_FormatingData.html">BIOMOD_FormatingData</a></code>).</p></li>
-<li><p><code>visible = FALSE</code> : a <code>logical</code> value defining whether <code>MAXENT</code>
-  user interface is to be used or not</p></li>
-<li><p><code>linear = TRUE</code> : a <code>logical</code> value defining whether linear features are
-  to be used or not</p></li>
-<li><p><code>quadratic = TRUE</code> : a <code>logical</code> value defining whether quadratic features are
-  to be used or not</p></li>
-<li><p><code>product = TRUE</code> : a <code>logical</code> value defining whether product features are
-  to be used or not</p></li>
-<li><p><code>threshold = TRUE</code> : a <code>logical</code> value defining whether threshold features are
-  to be used or not</p></li>
-<li><p><code>hinge = TRUE</code> : a <code>logical</code> value defining whether hinge features are
-  to be used or not</p></li>
-<li><p><code>l2lqthreshold = 10</code> : an <code>integer</code> corresponding to the number of
-  samples at which quadratic features start being used</p></li>
-<li><p><code>lq2lqptthreshold = 80</code> : an <code>integer</code> corresponding to the number of
-  samples at which product and threshold features start being used</p></li>
-<li><p><code>hingethreshold = 15</code> : an <code>integer</code> corresponding to the number of
-  samples at which hinge features start being used</p></li>
-<li><p><code>beta_lqp = -1.0</code> : a <code>numeric</code> corresponding to the regularization
+  will be used (see <code><a href="BIOMOD_FormatingData.html">BIOMOD_FormatingData</a></code>).</td></tr><tr><td><code>visible</code></td><td>FALSE</td><td>a <code>logical</code> value defining whether <code>MAXENT</code>
+  user interface is to be used or not</td></tr><tr><td><code>linear</code></td><td>TRUE</td><td>a <code>logical</code> value defining whether linear features are
+  to be used or not</td></tr><tr><td><code>quadratic</code></td><td>TRUE</td><td>a <code>logical</code> value defining whether quadratic features are
+  to be used or not</td></tr><tr><td><code>product</code></td><td>TRUE</td><td>a <code>logical</code> value defining whether product features are
+  to be used or not</td></tr><tr><td><code>threshold</code></td><td>TRUE</td><td>a <code>logical</code> value defining whether threshold features are
+  to be used or not</td></tr><tr><td><code>hinge</code></td><td>TRUE</td><td>a <code>logical</code> value defining whether hinge features are
+  to be used or not</td></tr><tr><td><code>l2lqthreshold</code></td><td>10</td><td>an <code>integer</code> corresponding to the number of
+  samples at which quadratic features start being used</td></tr><tr><td><code>lq2lqptthreshold</code></td><td>80</td><td>an <code>integer</code> corresponding to the number of
+  samples at which product and threshold features start being used</td></tr><tr><td><code>hingethreshold</code></td><td>15</td><td>an <code>integer</code> corresponding to the number of
+  samples at which hinge features start being used</td></tr><tr><td><code>beta_lqp</code></td><td>-1.0</td><td>a <code>numeric</code> corresponding to the regularization
   parameter to be applied to all linear, quadratic and product features (<em>negative value
-  enables automatic setting</em>)</p></li>
-<li><p><code>beta_threshold = -1.0</code> : a <code>numeric</code> corresponding to the regularization
+  enables automatic setting</em>)</td></tr><tr><td><code>beta_threshold</code></td><td>-1.0</td><td>a <code>numeric</code> corresponding to the regularization
   parameter to be applied to all threshold features (<em>negative value enables automatic
-  setting</em>)</p></li>
-<li><p><code>beta_hinge = -1.0</code> : a <code>numeric</code> corresponding to the regularization
+  setting</em>)</td></tr><tr><td><code>beta_hinge</code></td><td>-1.0</td><td>a <code>numeric</code> corresponding to the regularization
   parameter to be applied to all hinge features (<em>negative value enables automatic
-  setting</em>)</p></li>
-<li><p><code>beta_categorical = -1.0</code> : a <code>numeric</code> corresponding to the regularization
+  setting</em>)</td></tr><tr><td><code>beta_categorical</code></td><td>-1.0</td><td>a <code>numeric</code> corresponding to the regularization
   parameter to be applied to all categorical features (<em>negative value enables automatic
-  setting</em>)</p></li>
-<li><p><code>betamultiplier = 1</code> : a <code>numeric</code> corresponding to the number by which
+  setting</em>)</td></tr><tr><td><code>betamultiplier</code></td><td>1</td><td>a <code>numeric</code> corresponding to the number by which
   multiply all automatic regularization parameters (<em>higher number gives a more
-  spread-out distribution</em>)</p></li>
-<li><p><code>defaultprevalence = 0.5</code> : a <code>numeric</code> corresponding to the default
+  spread-out distribution</em>)</td></tr><tr><td><code>defaultprevalence</code></td><td>0.5</td><td>a <code>numeric</code> corresponding to the default
   prevalence of the modelled species (<em>probability of presence at ordinary occurrence
-  points</em>)</p></li>
-</ul></div>
+  points</em>)</td></tr><tr><td><code>togglelayerselected</code></td><td>NULL</td><td>a <code>character</code> defining the prefix to be used
+  to REMOVE environmental layers whose names begin with this prefix (<em>all selected by
+  default</em>)</td></tr><tr><td><code>maximumbackground</code></td><td>10000</td><td>an <code>integer</code> corresponding to the maximum
+  number of pixels to be selected randomly among background points if larger than this number</td></tr><tr><td><code>maximumiterations</code></td><td>500</td><td>an <code>integer</code> corresponding to the maximum number
+  of iterations for training</td></tr><tr><td><code>convergencethreshold</code></td><td>0.00005</td><td>a <code>numeric</code> corresponding to the drop in
+  log loss per iteration below which the training will be stopped</td></tr><tr><td><code>autofeature</code></td><td>TRUE</td><td>a <code>logical</code> value defining whether feature classes
+  to be used will automatically be selected based on number of training samples or not</td></tr><tr><td><code>jackknife</code></td><td>FALSE</td><td>a <code>logical</code> value defining whether variables'
+  importance is to be measured or not. If selected, training will be done with each
+  environmental variable first omitted then used in isolation.</td></tr><tr><td><code>writeclampgrid</code></td><td>FALSE</td><td>a <code>logical</code> value defining whether clamping mask
+  is to be saved or not (<em>absolute difference between prediction values with and without
+  clamping</em>)</td></tr><tr><td><code>writemess</code></td><td>FALSE</td><td>a <code>logical</code> value defining whether multidimensional
+  environmental similarity surface (MESS) is to be saved or not (<em>degree of novelness of
+  environmental conditions; and which variable is the most out of range at each point</em>)</td></tr><tr><td><code>logfile</code></td><td>'maxent.log'</td><td>a <code>character</code> corresponding to file name in which
+  debugging information will be written</td></tr><tr><td><code>verbose</code></td><td>FALSE</td><td>a <code>logical</code> value defining whether detailed diagnostics
+  for debugging should be given or not</td></tr></table></div>
     <div id="see-also">
     <h2>See also</h2>
     <div class="dont-index"><p><code><a href="ModelsTable.html">ModelsTable</a></code>, <code><a href="OptionsBigboss.html">OptionsBigboss</a></code>,

@@ -905,6 +905,7 @@ setMethod('predict2', signature(object = 'MAXENT_biomod2_model', newdata = "Spat
                      "\"", list.files(path = object@model_output_dir, pattern = ".lambdas$", full.names = TRUE), "\" ",
                      "\"", temp_workdir, "\" ",
                      "\"", file.path(temp_workdir, "projMaxent.asc"), "\" ",
+                     " writemess=", object@model_options@args.values[[dataset]]$writemess,
                      " doclamp=false visible=false autorun nowarnings notooltips")
             system(command = maxent.command, wait = TRUE, intern = TRUE)
             
@@ -1004,6 +1005,7 @@ setMethod('predict2', signature(object = 'MAXENT_biomod2_model', newdata = "data
                      "\"", list.files(path = object@model_output_dir, pattern = ".lambdas$", full.names = TRUE), "\" ",
                      "\"", m_predictFile, "\" ",
                      "\"", file.path(temp_workdir, "projMaxent.asc") , "\" ",
+                     " writemess=", object@model_options@args.values[[dataset]]$writemess,
                      "doclamp=false visible=false autorun nowarnings notooltips")
             system(command = maxent.command, wait = TRUE, intern = TRUE)
             

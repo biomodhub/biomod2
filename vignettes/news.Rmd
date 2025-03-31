@@ -17,6 +17,7 @@ vignette: >
 ##### Bugfix
 
 - 4.3-2-1 :
+  + add `togglelayerselected`, `maximumbackground`, `maximumiterations`, `convergencethreshold`, `autofeature`, `jackknife`, `writeclampgrid`, `writemess`, `logfile` and `verbose` parameters in `MAXENT` parameters
   + fix `.check_calib.lines_names` for `BIOMOD.formated.data.PA` object in `bm_CrossValidation_user.defined`
   + merge `binary` and `nonbinary` models into `OptionsBigboss`
   + set `data.type = 'binary'` by default in `bm_ModelingOptions`

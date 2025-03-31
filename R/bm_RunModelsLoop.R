@@ -416,9 +416,10 @@ bm_RunModel <- function(model, run.name
         paste0(" outputdirectory=\"", MWD$m_outdir, "\""),
         paste0(" outputformat=logistic "), 
         ifelse(length(categorical_var), paste0(" togglelayertype=", categorical_var, collapse = " "), ""),
+        ifelse(!is.null(bm.opt.val$togglelayerselected), paste0(" togglelayerselected=\"", bm.opt.val$togglelayerselected, "\""), ""),
         " redoifexists")
       vec_x <- names(bm.opt.val)[which(!(names(bm.opt.val) %in% c("path_to_maxent.jar", "memory_allocated", "initial_heap_size",
-                                                                  "max_heap_size", "background_data_dir")))]
+                                                                  "max_heap_size", "background_data_dir", "togglelayerselected")))]
       maxent.args <- c(maxent.args, sapply(vec_x, function(xx) {
         paste0(" ", xx, "=", bm.opt.val[[xx]])
       }))
@@ -454,7 +455,6 @@ bm_RunModel <- function(model, run.name
         # for MAXENT predictions are calculated in the same time than models building to save time.
         cat("\n Getting predictions...")
         g.pred <- try(round(as.numeric(read.csv(MWD$m_outputFile)[, 3]) * 1000))
-        ##TODO MAXENT predictions always between 0 and 1000 ??
         
         if (var.import > 0) {
           cat("\n Getting predictor contributions...")

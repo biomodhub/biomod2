@@ -129,6 +129,7 @@ setMethod('BIOMOD.options.default', signature(mod = 'character', typ = 'characte
                                    initial_heap_size = NULL,
                                    max_heap_size = NULL,
                                    background_data_dir = 'default',
+                                   ## since forever :
                                    visible = FALSE,
                                    linear = TRUE,
                                    quadratic = TRUE,
@@ -143,7 +144,18 @@ setMethod('BIOMOD.options.default', signature(mod = 'character', typ = 'characte
                                    beta_lqp = -1.0,
                                    beta_hinge = -1.0,
                                    betamultiplier = 1,
-                                   defaultprevalence = 0.5)
+                                   defaultprevalence = 0.5,
+                                   ## newly added :
+                                   togglelayerselected = NULL,
+                                   maximumbackground = 10000,
+                                   maximumiterations = 500,
+                                   convergencethreshold = 0.00005,
+                                   autofeature = TRUE,
+                                   jackknife = FALSE,
+                                   writeclampgrid = FALSE,
+                                   writemess = FALSE,
+                                   logfile = 'maxent.log',
+                                   verbose = FALSE)
               
               BOM <- new(
                 'BIOMOD.options.default',

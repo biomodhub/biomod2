@@ -63,73 +63,100 @@
 ##' 
 ##' 
 ##' @note \code{MAXENT} being the only external model (not called through a \code{R} package), 
-##' default parameters, and their values, are the following :
+##' default parameters, and their values, are the following : \cr \cr
 ##' 
-##' \itemize{
-##'   \item \code{path_to_maxent.jar = getwd()} : a \code{character} corresponding to path to 
-##'   \code{maxent.jar} file
-##'   \item \code{memory_allocated = 512} : an \code{integer} corresponding to the amount of 
-##'   memory (in Mo) reserved for \code{java} to run \code{MAXENT}, must be either \code{64}, 
-##'   \code{128}, \code{256}, \code{512}, \code{1024}... or \code{NULL} to use default \code{java}
-##'   memory limitation parameter
+##' \tabular{ccl}{
+##'   \strong{FLAG} \tab \strong{default} \tab \strong{Description}  \cr
 ##'   
-##'   \item \code{initial_heap_size = NULL} : a \code{character} corresponding to initial heap 
+##'   \code{path_to_maxent.jar} \tab getwd() \tab a \code{character} corresponding to path to 
+##'   \code{maxent.jar} file \cr
+##'   \code{memory_allocated} \tab 512 \tab an \code{integer} corresponding to the amount of memory 
+##'   (in Mo) reserved for \code{java} to run \code{MAXENT}, must be either \code{64}, 
+##'   \code{128}, \code{256}, \code{512}, \code{1024}... or \code{NULL} to use default \code{java}
+##'   memory limitation parameter \cr
+##'   
+##'   \code{initial_heap_size} \tab NULL \tab a \code{character} corresponding to initial heap 
 ##'   space (shared memory space) allocated to \code{java} (argument \code{-Xms} when calling 
 ##'   \code{java}), must be either \code{1024K}, \code{4096M}, \code{10G} ... or \code{NULL} to 
 ##'   use default \code{java} parameter. Used in \code{\link{BIOMOD_Projection}} but not in 
-##'   \code{\link{BIOMOD_Modeling}}.
-##'   \item \code{max_heap_size = NULL} : a \code{character} corresponding to maximum heap 
+##'   \code{\link{BIOMOD_Modeling}}. \cr
+##'   \code{max_heap_size} \tab NULL \tab a \code{character} corresponding to maximum heap 
 ##'   space (shared memory space) allocated to \code{java} (argument \code{-Xmx} when calling 
 ##'   \code{java}), must be either \code{1024K}, \code{4096M}, \code{10G} ... or \code{NULL} to 
 ##'   use default \code{java} parameter, and must be larger than \code{initial_heap_size}. Used 
-##'   in \code{\link{BIOMOD_Projection}} but not in \code{\link{BIOMOD_Modeling}}.
+##'   in \code{\link{BIOMOD_Projection}} but not in \code{\link{BIOMOD_Modeling}}. \cr
 ##'   
-##'   \item \code{background_data_dir = 'default'} : a \code{character} corresponding to path 
+##'   \code{background_data_dir} \tab 'default' \tab a \code{character} corresponding to path 
 ##'   to folder where explanatory variables are stored as \code{ASCII} files (raster format). 
 ##'   If specified, \code{MAXENT} will generate its own background data from rasters of 
 ##'   explanatory variables (\code{'default'} value). Otherwise \pkg{biomod2} pseudo-absences
-##'   will be used (see \code{\link{BIOMOD_FormatingData}}).
-##'   \item \code{visible = FALSE} : a \code{logical} value defining whether \code{MAXENT} 
-##'   user interface is to be used or not
+##'   will be used (see \code{\link{BIOMOD_FormatingData}}). \cr
+##'   \code{visible} \tab FALSE \tab a \code{logical} value defining whether \code{MAXENT} 
+##'   user interface is to be used or not \cr
 ##'   
-##'   \item \code{linear = TRUE} : a \code{logical} value defining whether linear features are 
-##'   to be used or not
-##'   \item \code{quadratic = TRUE} : a \code{logical} value defining whether quadratic features are 
-##'   to be used or not
-##'   \item \code{product = TRUE} : a \code{logical} value defining whether product features are 
-##'   to be used or not
-##'   \item \code{threshold = TRUE} : a \code{logical} value defining whether threshold features are 
-##'   to be used or not
-##'   \item \code{hinge = TRUE} : a \code{logical} value defining whether hinge features are 
-##'   to be used or not
+##'   \code{linear} \tab TRUE \tab a \code{logical} value defining whether linear features are 
+##'   to be used or not \cr
+##'   \code{quadratic} \tab TRUE \tab a \code{logical} value defining whether quadratic features are 
+##'   to be used or not \cr
+##'   \code{product} \tab TRUE \tab a \code{logical} value defining whether product features are 
+##'   to be used or not \cr
+##'   \code{threshold} \tab TRUE \tab a \code{logical} value defining whether threshold features are 
+##'   to be used or not \cr
+##'   \code{hinge} \tab TRUE \tab a \code{logical} value defining whether hinge features are 
+##'   to be used or not \cr
 ##'   
-##'   \item \code{l2lqthreshold = 10} : an \code{integer} corresponding to the number of 
-##'   samples at which quadratic features start being used
-##'   \item \code{lq2lqptthreshold = 80} : an \code{integer} corresponding to the number of 
-##'   samples at which product and threshold features start being used
-##'   \item \code{hingethreshold = 15} : an \code{integer} corresponding to the number of 
-##'   samples at which hinge features start being used
+##'   \code{l2lqthreshold} \tab 10 \tab an \code{integer} corresponding to the number of 
+##'   samples at which quadratic features start being used \cr
+##'   \code{lq2lqptthreshold} \tab 80 \tab an \code{integer} corresponding to the number of 
+##'   samples at which product and threshold features start being used \cr
+##'   \code{hingethreshold} \tab 15 \tab an \code{integer} corresponding to the number of 
+##'   samples at which hinge features start being used \cr
 ##'   
-##'   \item \code{beta_lqp = -1.0} : a \code{numeric} corresponding to the regularization 
+##'   \code{beta_lqp} \tab -1.0 \tab a \code{numeric} corresponding to the regularization 
 ##'   parameter to be applied to all linear, quadratic and product features (\emph{negative value 
-##'   enables automatic setting})
-##'   \item \code{beta_threshold = -1.0} : a \code{numeric} corresponding to the regularization 
+##'   enables automatic setting}) \cr
+##'   \code{beta_threshold} \tab -1.0 \tab a \code{numeric} corresponding to the regularization 
 ##'   parameter to be applied to all threshold features (\emph{negative value enables automatic 
-##'   setting})
-##'   \item \code{beta_hinge = -1.0} : a \code{numeric} corresponding to the regularization 
+##'   setting}) \cr
+##'   \code{beta_hinge} \tab -1.0 \tab a \code{numeric} corresponding to the regularization 
 ##'   parameter to be applied to all hinge features (\emph{negative value enables automatic 
-##'   setting})
-##'   \item \code{beta_categorical = -1.0} : a \code{numeric} corresponding to the regularization 
+##'   setting}) \cr
+##'   \code{beta_categorical} \tab -1.0 \tab a \code{numeric} corresponding to the regularization 
 ##'   parameter to be applied to all categorical features (\emph{negative value enables automatic 
-##'   setting})
+##'   setting}) \cr
 ##'   
-##'   \item \code{betamultiplier = 1} : a \code{numeric} corresponding to the number by which 
+##'   \code{betamultiplier} \tab 1 \tab a \code{numeric} corresponding to the number by which 
 ##'   multiply all automatic regularization parameters (\emph{higher number gives a more 
-##'   spread-out distribution})
+##'   spread-out distribution}) \cr
 ##'   
-##'   \item \code{defaultprevalence = 0.5} : a \code{numeric} corresponding to the default 
+##'   \code{defaultprevalence} \tab 0.5 \tab a \code{numeric} corresponding to the default 
 ##'   prevalence of the modelled species (\emph{probability of presence at ordinary occurrence 
-##'   points})
+##'   points}) \cr
+##'   
+##'   \code{togglelayerselected} \tab NULL \tab a \code{character} defining the prefix to be used 
+##'   to REMOVE environmental layers whose names begin with this prefix (\emph{all selected by 
+##'   default}) \cr
+##'   \code{maximumbackground} \tab 10000 \tab an \code{integer} corresponding to the maximum 
+##'   number of pixels to be selected randomly among background points if larger than this number \cr
+##'   \code{maximumiterations} \tab 500 \tab an \code{integer} corresponding to the maximum number 
+##'   of iterations for training \cr
+##'   \code{convergencethreshold} \tab 0.00005 \tab a \code{numeric} corresponding to the drop in 
+##'   log loss per iteration below which the training will be stopped \cr
+##'   \code{autofeature} \tab TRUE \tab a \code{logical} value defining whether feature classes 
+##'   to be used will automatically be selected based on number of training samples or not \cr
+##'   \code{jackknife} \tab FALSE \tab a \code{logical} value defining whether variables' 
+##'   importance is to be measured or not. If selected, training will be done with each 
+##'   environmental variable first omitted then used in isolation. \cr
+##'   \code{writeclampgrid} \tab FALSE \tab a \code{logical} value defining whether clamping mask 
+##'   is to be saved or not (\emph{absolute difference between prediction values with and without 
+##'   clamping}) \cr
+##'   \code{writemess} \tab FALSE \tab a \code{logical} value defining whether multidimensional 
+##'   environmental similarity surface (MESS) is to be saved or not (\emph{degree of novelness of 
+##'   environmental conditions; and which variable is the most out of range at each point}) \cr
+##'   \code{logfile} \tab 'maxent.log' \tab a \code{character} corresponding to file name in which 
+##'   debugging information will be written \cr
+##'   \code{verbose} \tab FALSE \tab a \code{logical} value defining whether detailed diagnostics 
+##'   for debugging should be given or not \cr
 ##' }
 ##' 
 ##'
