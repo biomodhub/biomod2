@@ -20,23 +20,92 @@ bm_ModelAnalysis(
 
 \item{do.plot}{a \code{logical}, print the plots or not}
 
-\item{color.by}{a \code{character} between "full.name", "species", "PA", "RUN" or "algo"}
+\item{color.by}{a \code{character} between "full.name", "species", "PA", "RUN" or "algo" 
+to select the color parameter of the plots.}
 }
 \value{
+A list with: 
 \enumerate{
-  \item a plot residuals ~ observations to detect outliers
-  \item a histogramm of the residuals 
-  \item a qqplot of the residuals
-  \item plot residuals ~ fitted
-  \item a plot of the different Rsquared available (Rsquared, Rsquared_aj, Psquared)
+  \item a dataframe with the observation data, the fitted values and the residuals for all models
+  \item a dataframe with the compilation of the R scores
+  \item A to E plots (see details)
 }
 }
 \description{
-This function return differents graphs to help analyse the single models.
+This function return several graphs to help analyse the single models.
 }
 \details{
-All the plots will be made for the models, independently to the different models assumptions. 
+All the plots will be made for all the models, independently to the different models assumptions. 
 It is up to the user to interpret the graphs in the light of the model assumptions.
+
+\enumerate{
+  \item Plot A: residuals ~ observations number. This plot helps to detect one or several outliers.
+  The x-axis only helps to find the outlier number. 
+  \item Plot B and C: These are two representation of the distribution of the residuals. If your residuals must follow a normal distribution, 
+  the points should follow the black line in the Q-Q plot and present a gaussian distribution on the histogram. 
+  \item Plot D residuals ~ fitted values. This plot helps to detect an heteroscedasticity of the residuals. 
+  \item Plot E : a plot of the different Rsquared values available (Rsquared, Rsquared_aj).
+   An big gap between the calibration and validation values can be the sign of an overfitting.
+}
+}
+\examples{
+library(terra)
+
+# Load species occurrences (6 species available)
+data(DataSpecies)
+head(DataSpecies)
+
+# Select the name of the studied species
+myRespName <- 'VulpesVulpes'
+
+# Get corresponding presence/absence data
+myResp <- as.numeric(DataSpecies[, myRespName])
+
+# Get corresponding XY coordinates
+myRespXY <- DataSpecies[, c('X_WGS84', 'Y_WGS84')]
+
+# Load environmental variables extracted from BIOCLIM (bio_3, bio_4, bio_7, bio_11 & bio_12)
+data(bioclim_current)
+myExpl <- terra::rast(bioclim_current)
+
+# Transform binary data as count data
+poissonDistri <- rpois(sum(myResp), 10)
+myResp[myResp == 1] <- poissonDistri
+
+# ---------------------------------------------------------------
+file.out <- paste0(myRespName, "/", myRespName, ".AllModels.models.out")
+if (file.exists(file.out)) {
+  myBiomodModelOut <- get(load(file.out))
+} else {
+
+  # Format Data with true absences
+  myBiomodData <- BIOMOD_FormatingData(resp.name = myRespName,
+                                       resp.var = myResp,
+                                       resp.xy = myRespXY,
+                                       expl.var = myExpl)
+
+  # Model single models
+  myBiomodModelOut <- BIOMOD_Modeling(bm.format = myBiomodData,
+                                      modeling.id = 'AllModels',
+                                      models = c('GAM', 'GLM', 'MARS'),
+                                      CV.strategy = 'random',
+                                      CV.nb.rep = 2,
+                                      CV.perc = 0.8,
+                                      OPT.strategy = 'bigboss',
+                                      metric.eval = c('Rsquared', 'Rsquared_aj'),
+                                      seed.val = 42)
+}
+
+
+# ---------------------------------------------------------------
+# bm_ModelAnalysis
+analysis <- bm_ModelAnalysis(myBiomodModelOut, color.by = "RUN")
+
+plot(analysis$plotA)
+
+unlink(myRespName, recursive = TRUE)
+
+
 }
 \author{
 Hélène Blancheteau
