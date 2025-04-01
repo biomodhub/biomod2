@@ -1006,7 +1006,7 @@ setMethod('predict2', signature(object = 'MAXENT_biomod2_model', newdata = "data
                      "\"", m_predictFile, "\" ",
                      "\"", file.path(temp_workdir, "projMaxent.asc") , "\" ",
                      " writemess=", object@model_options@args.values[[dataset]]$writemess,
-                     "doclamp=false visible=false autorun nowarnings notooltips")
+                     " doclamp=false visible=false autorun nowarnings notooltips")
             system(command = maxent.command, wait = TRUE, intern = TRUE)
             
             
