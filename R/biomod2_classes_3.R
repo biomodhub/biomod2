@@ -70,12 +70,12 @@
 ##' @param filtered.by (\emph{optional, default} \code{NULL}) \cr 
 ##' A \code{vector} containing evaluation metric selected to filter single models to build the 
 ##' ensemble models, must be among \code{POD}, \code{FAR}, \code{POFD}, \code{SR}, 
-##' \code{ACCURACY}, \code{BIAS}, \code{ROC}, \code{TSS}, \code{KAPPA}, \code{OR}, \code{ORSS}, 
+##' \code{ACCURACY}, \code{BIAS}, \code{AUC_ROC}, \code{AUC_PRG}, \code{TSS}, \code{KAPPA}, \code{OR}, \code{ORSS}, 
 ##' \code{CSI}, \code{ETS}, \code{BOYCE}, \code{MPA}
 ##' 
 ##' @param metric.eval (\emph{optional, default} \code{NULL}) \cr 
 ##' A \code{vector} containing evaluation metric to be kept, must be among \code{POD}, 
-##' \code{FAR}, \code{POFD}, \code{SR}, \code{ACCURACY}, \code{BIAS}, \code{ROC}, \code{TSS}, 
+##' \code{FAR}, \code{POFD}, \code{SR}, \code{ACCURACY}, \code{BIAS}, \code{AUC_ROC}, \code{AUC_PRG}, \code{TSS}, 
 ##' \code{KAPPA}, \code{OR}, \code{ORSS}, \code{CSI}, \code{ETS}, \code{BOYCE}, \code{MPA}
 ##' @param expl.var (\emph{optional, default} \code{NULL}) \cr 
 ##' A \code{vector} containing explanatory variables to be kept, that can be obtained with the 
@@ -84,11 +84,11 @@
 ##' @param metric.binary (\emph{optional, default} \code{NULL}) \cr 
 ##' A \code{vector} containing evaluation metric selected to transform predictions into binary 
 ##' values, must be among \code{POD}, \code{FAR}, \code{POFD}, \code{SR}, \code{ACCURACY}, 
-##' \code{BIAS}, \code{ROC}, \code{TSS}, \code{KAPPA}, \code{OR}, \code{ORSS}, \code{CSI}, 
+##' \code{BIAS}, \code{AUC_ROC}, \code{AUC_PRG}, \code{TSS}, \code{KAPPA}, \code{OR}, \code{ORSS}, \code{CSI}, 
 ##' \code{ETS}, \code{BOYCE}, \code{MPA}
 ##' @param metric.filter (\emph{optional, default} \code{NULL}) \cr 
 ##' A \code{vector} containing evaluation metric to filter predictions, must be among \code{POD}, 
-##' \code{FAR}, \code{POFD}, \code{SR}, \code{ACCURACY}, \code{BIAS}, \code{ROC}, \code{TSS}, 
+##' \code{FAR}, \code{POFD}, \code{SR}, \code{ACCURACY}, \code{BIAS}, \code{AUC_ROC}, \code{AUC_PRG}, \code{TSS}, 
 ##' \code{KAPPA}, \code{OR}, \code{ORSS}, \code{CSI}, \code{ETS}, \code{BOYCE}, \code{MPA}
 ##' 
 ##' @param model.as.col (\emph{optional, default} \code{FALSE}) \cr
@@ -373,7 +373,7 @@ setMethod('get_eval_data', signature('BIOMOD.formated.data'), function(obj) {
 ##'                                     CV.nb.rep = 2,
 ##'                                     CV.perc = 0.8,
 ##'                                     OPT.strategy = 'bigboss',
-##'                                     metric.eval = c('TSS', 'ROC'),
+##'                                     metric.eval = c('TSS', 'AUC_ROC'),
 ##'                                     var.import = 3,
 ##'                                     seed.val = 42)
 ##' myBiomodModelOut
@@ -736,7 +736,7 @@ setMethod("get_variables_importance", "BIOMOD.models.out",
 ##'                                       CV.nb.rep = 2,
 ##'                                       CV.perc = 0.8,
 ##'                                       OPT.strategy = 'bigboss',
-##'                                       metric.eval = c('TSS', 'ROC'),
+##'                                       metric.eval = c('TSS', 'AUC_ROC'),
 ##'                                       var.import = 3,
 ##'                                       seed.val = 42)
 ##' }
@@ -1210,7 +1210,7 @@ setMethod("get_predictions", "BIOMOD.projection.out",
 ##'                                       CV.nb.rep = 2,
 ##'                                       CV.perc = 0.8,
 ##'                                       OPT.strategy = 'bigboss',
-##'                                       metric.eval = c('TSS', 'ROC'),
+##'                                       metric.eval = c('TSS', 'AUC_ROC'),
 ##'                                       var.import = 3,
 ##'                                       seed.val = 42)
 ##' }
@@ -1224,7 +1224,7 @@ setMethod("get_predictions", "BIOMOD.projection.out",
 ##'                                       em.algo = c('EMmean', 'EMca'),
 ##'                                       metric.select = c('TSS'),
 ##'                                       metric.select.thresh = c(0.7),
-##'                                       metric.eval = c('TSS', 'ROC'),
+##'                                       metric.eval = c('TSS', 'AUC_ROC'),
 ##'                                       var.import = 3,
 ##'                                       seed.val = 42)
 ##' myBiomodEM

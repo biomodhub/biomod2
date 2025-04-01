@@ -27,7 +27,7 @@ bm_CalculateStatAbun(metric.eval, obs, fit, k)
 }
 \arguments{
 \item{metric.eval}{a \code{character} corresponding to the evaluation metric to be used, must 
-be either \code{ROC}, \code{TSS}, \code{KAPPA}, \code{ACCURACY}, \code{BIAS}, \code{POD}, 
+be either \code{AUC_ROC}, \code{AUC_PRG}, \code{TSS}, \code{KAPPA}, \code{ACCURACY}, \code{BIAS}, \code{POD}, 
 \code{FAR}, \code{POFD}, \code{SR}, \code{CSI}, \code{ETS}, \code{OR}, \code{ORSS}, 
 \code{BOYCE}, \code{MPA} (\emph{binary data}), 
 \code{RMSE}, \code{MAE}, \code{MSE}, \code{Rsquared}, \code{Rsquared_aj}, \code{Max_error} 
@@ -96,7 +96,8 @@ Optimal value of each method can be obtained with the \code{\link{get_optim_valu
   }
   \item{complex}{
   \itemize{
-    \item \code{ROC} : Relative operating characteristic
+    \item \code{AUC_ROC} : Area Under Curve of Relative operating characteristic
+    \item \code{AUC_PRG} : Area Under Curve of Precision-Recall-Gain curve
     \item \code{TSS} : True skill statistic (Hanssen and Kuipers discriminant, Peirce's 
     skill score)
     \item \code{KAPPA} : Cohen's Kappa (Heidke skill score)

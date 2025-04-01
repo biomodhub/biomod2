@@ -65,7 +65,7 @@
 ##' function
 ##' 
 ##' @param metric.eval a \code{vector} containing evaluation metric names to be used, must 
-##' be among \code{ROC}, \code{TSS}, \code{KAPPA}, \code{ACCURACY}, \code{BIAS}, \code{POD}, 
+##' be among \code{AUC_ROC}, \code{AUC_PRG}, \code{TSS}, \code{KAPPA}, \code{ACCURACY}, \code{BIAS}, \code{POD}, 
 ##' \code{FAR}, \code{POFD}, \code{SR}, \code{CSI}, \code{ETS}, \code{OR}, \code{ORSS}, 
 ##' \code{BOYCE}, \code{MPA} (\emph{binary data}), 
 ##' \code{RMSE}, \code{MAE}, \code{MSE}, \code{Rsquared}, \code{Rsquared_aj}, \code{Max_error} 
@@ -196,7 +196,8 @@
 ##'     }
 ##'     \item{complex}{
 ##'     \itemize{
-##'       \item \code{ROC} : Relative operating characteristic
+##'       \item \code{AUC_ROC} : Area Under Curve of Relative operating characteristic
+##'       \item \code{AUC_PRG} : Area Under Curve of Precision-Recall-Gain curve
 ##'       \item \code{TSS} : True skill statistic (Hanssen and Kuipers discriminant, Peirce's 
 ##'       skill score)
 ##'       \item \code{KAPPA} : Cohen's Kappa (Heidke skill score)
@@ -330,7 +331,7 @@
 ##'                                     CV.nb.rep = 2,
 ##'                                     CV.perc = 0.8,
 ##'                                     OPT.strategy = 'bigboss',
-##'                                     metric.eval = c('TSS','ROC'),
+##'                                     metric.eval = c('TSS','AUC_ROC'),
 ##'                                     var.import = 2,
 ##'                                     seed.val = 42)
 ##' myBiomodModelOut
@@ -390,7 +391,7 @@ BIOMOD_Modeling <- function(bm.format,
                             OPT.user.val = NULL,
                             OPT.user.base = 'bigboss',
                             OPT.user = NULL,
-                            metric.eval = c('KAPPA', 'TSS', 'ROC'),
+                            metric.eval = c('KAPPA', 'TSS', 'AUC_ROC'),
                             var.import = 0,
                             weights = NULL,
                             prevalence = 0.5,
@@ -743,9 +744,16 @@ BIOMOD_Modeling <- function(bm.format,
   
   ## 7. Check metric.eval arguments -------------------------------------------
   metric.eval <- unique(metric.eval)
+  
+  if (any(grepl("^ROC", metric.eval))){
+    warning("The metric 'ROC' will be switch to 'AUC_ROC'.")
+    metric.eval <- sub("^ROC", "AUC_ROC", metric.eval)
+    metric.eval <- unique(metric.eval)
+  }
+  
   if (bm.format@data.type == "binary") {
     avail.eval.meth.list <- c('TSS', 'KAPPA', 'ACCURACY', 'BIAS', 'POD', 'FAR', 'POFD'
-                              , 'SR', 'CSI', 'ETS', 'HK', 'HSS', 'OR', 'ORSS', 'ROC'
+                              , 'SR', 'CSI', 'ETS', 'HK', 'HSS', 'OR', 'ORSS', 'AUC_ROC', 'AUC_PRG'
                               , 'BOYCE', 'MPA')
   } else if (bm.format@data.type == "ordinal") {
     avail.eval.meth.list <- c('Accuracy', 'Recall', 'Precision', 'F1')

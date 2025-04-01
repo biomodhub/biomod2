@@ -20,7 +20,7 @@
 ##' @param metric.binary (\emph{optional, default} \code{NULL}) \cr 
 ##' A \code{vector} containing evaluation metric selected to transform predictions into binary 
 ##' values, must be among \code{POD}, \code{FAR}, \code{POFD}, \code{SR}, \code{ACCURACY}, 
-##' \code{BIAS}, \code{ROC}, \code{TSS}, \code{KAPPA}, \code{OR}, \code{ORSS}, \code{CSI}, 
+##' \code{BIAS}, \code{AUC_ROC}, \code{AUC_PRG}, \code{TSS}, \code{KAPPA}, \code{OR}, \code{ORSS}, \code{CSI}, 
 ##' \code{ETS}, \code{BOYCE}, \code{MPA}
 ##' 
 ##' @return
@@ -120,7 +120,7 @@
 ##'                                       CV.nb.rep = 2,
 ##'                                       CV.perc = 0.8,
 ##'                                       OPT.strategy = 'bigboss',
-##'                                       metric.eval = c('TSS', 'ROC'),
+##'                                       metric.eval = c('TSS', 'AUC_ROC'),
 ##'                                       var.import = 3,
 ##'                                       seed.val = 42)
 ##' }

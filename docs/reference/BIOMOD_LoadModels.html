@@ -18,7 +18,7 @@ or BIOMOD_EnsembleModeling functions."><!-- mathjax --><script src="https://cdnj
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">biomod2</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">4.3-2-1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">4.3-2-2</span>
       </span>
     </div>
 
@@ -188,7 +188,7 @@ A <code>character</code> containing merged algorithm to be loaded, must be among
 <dt id="arg-filtered-by">filtered.by<a class="anchor" aria-label="anchor" href="#arg-filtered-by"></a></dt>
 <dd><p>(<em>optional, default</em> <code>NULL</code>) <br>
 A <code>vector</code> containing evaluation metric selected to filter single models to build the
-ensemble models, must be among <code>ROC</code>, <code>TSS</code>, <code>KAPPA</code>, <code>ACCURACY</code>,
+ensemble models, must be among <code>AUC_ROC</code>, <code>AUC_PRG</code>, <code>TSS</code>, <code>KAPPA</code>, <code>ACCURACY</code>,
 <code>BIAS</code>, <code>POD</code>, <code>FAR</code>, <code>POFD</code>, <code>SR</code>, <code>CSI</code>, <code>ETS</code>,
 <code>OR</code>, <code>ORSS</code>, <code>BOYCE</code>, <code>MPA</code> (<em>binary data</em>),
 <code>RMSE</code>, <code>MAE</code>, <code>MSE</code>, <code>Rsquared</code>, <code>Rsquared_aj</code>, <code>Max_error</code>
@@ -271,7 +271,7 @@ subselection of models can be done using the additional arguments (<code>full.na
 <span>                                      CV.nb.rep <span class="op">=</span> <span class="fl">2</span>,</span>
 <span>                                      CV.perc <span class="op">=</span> <span class="fl">0.8</span>,</span>
 <span>                                      OPT.strategy <span class="op">=</span> <span class="st">'bigboss'</span>,</span>
-<span>                                      metric.eval <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">'TSS'</span>,<span class="st">'ROC'</span><span class="op">)</span>,</span>
+<span>                                      metric.eval <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">'TSS'</span>,<span class="st">'AUC_ROC'</span><span class="op">)</span>,</span>
 <span>                                      var.import <span class="op">=</span> <span class="fl">3</span>,</span>
 <span>                                      seed.val <span class="op">=</span> <span class="fl">42</span><span class="op">)</span></span>
 <span><span class="op">}</span></span>

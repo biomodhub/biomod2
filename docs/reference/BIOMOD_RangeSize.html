@@ -20,7 +20,7 @@ time scales or environmental scenarios for example)."><!-- mathjax --><script sr
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">biomod2</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">4.3-2-1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">4.3-2-2</span>
       </span>
     </div>
 
@@ -153,7 +153,7 @@ of the (ensemble) species distribution model(s)</p></dd>
 <dd><p>(<em>optional, default</em> <code>NULL</code>) <br>
 A <code>vector</code> containing evaluation metric selected to transform predictions into binary
 values, must be among <code>POD</code>, <code>FAR</code>, <code>POFD</code>, <code>SR</code>, <code>ACCURACY</code>,
-<code>BIAS</code>, <code>ROC</code>, <code>TSS</code>, <code>KAPPA</code>, <code>OR</code>, <code>ORSS</code>, <code>CSI</code>,
+<code>BIAS</code>, <code>AUC_ROC</code>, <code>AUC_PRG</code>, <code>TSS</code>, <code>KAPPA</code>, <code>OR</code>, <code>ORSS</code>, <code>CSI</code>,
 <code>ETS</code>, <code>BOYCE</code>, <code>MPA</code></p></dd>
 
 </dl></div>
@@ -258,7 +258,7 @@ values, must be among <code>POD</code>, <code>FAR</code>, <code>POFD</code>, <co
 <span>                                      CV.nb.rep <span class="op">=</span> <span class="fl">2</span>,</span>
 <span>                                      CV.perc <span class="op">=</span> <span class="fl">0.8</span>,</span>
 <span>                                      OPT.strategy <span class="op">=</span> <span class="st">'bigboss'</span>,</span>
-<span>                                      metric.eval <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">'TSS'</span>, <span class="st">'ROC'</span><span class="op">)</span>,</span>
+<span>                                      metric.eval <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">'TSS'</span>, <span class="st">'AUC_ROC'</span><span class="op">)</span>,</span>
 <span>                                      var.import <span class="op">=</span> <span class="fl">3</span>,</span>
 <span>                                      seed.val <span class="op">=</span> <span class="fl">42</span><span class="op">)</span></span>
 <span><span class="op">}</span></span>

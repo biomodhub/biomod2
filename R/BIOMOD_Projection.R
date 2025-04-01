@@ -34,7 +34,7 @@
 ##' into binary values based on models evaluation scores obtained with the 
 ##' \code{\link{BIOMOD_Modeling}} function. Must be among \code{all} (same evaluation metrics than 
 ##' those of \code{bm.mod}) or \code{POD}, \code{FAR}, \code{POFD}, \code{SR}, \code{ACCURACY}, 
-##' \code{BIAS}, \code{ROC}, \code{TSS}, \code{KAPPA}, \code{OR}, \code{ORSS}, \code{CSI}, 
+##' \code{BIAS}, \code{AUC_ROC}, \code{AUC_PRG}, \code{TSS}, \code{KAPPA}, \code{OR}, \code{ORSS}, \code{CSI}, 
 ##' \code{ETS}, \code{BOYCE}, \code{MPA}
 ##' \cr \emph{Note that this is for binary data only.}
 ##' @param metric.filter (\emph{optional, default} \code{NULL}) \cr 
@@ -42,7 +42,7 @@
 ##' into filtered values based on models evaluation scores obtained with the 
 ##' \code{\link{BIOMOD_Modeling}} function. Must be among \code{all} (same evaluation metrics than 
 ##' those of \code{bm.mod}) or \code{POD}, \code{FAR}, \code{POFD}, \code{SR}, \code{ACCURACY}, 
-##' \code{BIAS}, \code{ROC}, \code{TSS}, \code{KAPPA}, \code{OR}, \code{ORSS}, \code{CSI}, 
+##' \code{BIAS}, \code{AUC_ROC}, \code{AUC_PRG}, \code{TSS}, \code{KAPPA}, \code{OR}, \code{ORSS}, \code{CSI}, 
 ##' \code{ETS}, \code{BOYCE}, \code{MPA}
 ##' \cr \emph{Note that this is for binary data only.}
 ##' 
@@ -180,7 +180,7 @@
 ##'                                       CV.nb.rep = 2,
 ##'                                       CV.perc = 0.8,
 ##'                                       OPT.strategy = 'bigboss',
-##'                                       metric.eval = c('TSS','ROC'),
+##'                                       metric.eval = c('TSS','AUC_ROC'),
 ##'                                       var.import = 3,
 ##'                                       seed.val = 42)
 ##' }

@@ -21,7 +21,7 @@ conditions (see Details)."><!-- mathjax --><script src="https://cdnjs.cloudflare
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">biomod2</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">4.3-2-1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">4.3-2-2</span>
       </span>
     </div>
 
@@ -132,7 +132,7 @@ conditions (see Details).</p>
 <span>  metric.select.thresh <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  metric.select.table <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  metric.select.dataset <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  metric.eval <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"KAPPA"</span>, <span class="st">"TSS"</span>, <span class="st">"ROC"</span><span class="op">)</span>,</span>
+<span>  metric.eval <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"KAPPA"</span>, <span class="st">"TSS"</span>, <span class="st">"AUC_ROC"</span><span class="op">)</span>,</span>
 <span>  var.import <span class="op">=</span> <span class="fl">0</span>,</span>
 <span>  EMci.alpha <span class="op">=</span> <span class="fl">0.05</span>,</span>
 <span>  EMwmean.decay <span class="op">=</span> <span class="st">"proportional"</span>,</span>
@@ -172,7 +172,7 @@ must be among <code>EMmean</code>, <code>EMmedian</code>, <code>EMcv</code>, <co
 <dt id="arg-metric-select">metric.select<a class="anchor" aria-label="anchor" href="#arg-metric-select"></a></dt>
 <dd><p>a <code>vector</code> containing evaluation metric names to be used to select
 single models based on their evaluation scores, must be among <code>user.defined</code> or
-<code>ROC</code>, <code>TSS</code>, <code>KAPPA</code>, <code>ACCURACY</code>, <code>BIAS</code>, <code>POD</code>,
+<code>AUC_ROC</code>, <code>AUC_PRG</code>, <code>TSS</code>, <code>KAPPA</code>, <code>ACCURACY</code>, <code>BIAS</code>, <code>POD</code>,
 <code>FAR</code>, <code>POFD</code>, <code>SR</code>, <code>CSI</code>, <code>ETS</code>, <code>OR</code>, <code>ORSS</code>,
 <code>BOYCE</code>, <code>MPA</code> (<em>binary data</em>),
 <code>RMSE</code>, <code>MAE</code>, <code>MSE</code>, <code>Rsquared</code>, <code>Rsquared_aj</code>, <code>Max_error</code>
@@ -203,7 +203,7 @@ models, must be among <code>calibration</code>, <code>validation</code>, <code>e
 
 <dt id="arg-metric-eval">metric.eval<a class="anchor" aria-label="anchor" href="#arg-metric-eval"></a></dt>
 <dd><p>a <code>vector</code> containing evaluation metric names to be used, must
-be among <code>ROC</code>, <code>TSS</code>, <code>KAPPA</code>, <code>ACCURACY</code>, <code>BIAS</code>, <code>POD</code>,
+be among <code>AUC_ROC</code>, <code>AUC_PRG</code>, <code>TSS</code>, <code>KAPPA</code>, <code>ACCURACY</code>, <code>BIAS</code>, <code>POD</code>,
 <code>FAR</code>, <code>POFD</code>, <code>SR</code>, <code>CSI</code>, <code>ETS</code>, <code>OR</code>, <code>ORSS</code>,
 <code>BOYCE</code>, <code>MPA</code> (<em>binary data</em>),
 <code>RMSE</code>, <code>MAE</code>, <code>MSE</code>, <code>Rsquared</code>, <code>Rsquared_aj</code>, <code>Max_error</code>
@@ -457,7 +457,7 @@ respectively). <br><br><br></p>
 <span>                                      CV.nb.rep <span class="op">=</span> <span class="fl">2</span>,</span>
 <span>                                      CV.perc <span class="op">=</span> <span class="fl">0.8</span>,</span>
 <span>                                      OPT.strategy <span class="op">=</span> <span class="st">'bigboss'</span>,</span>
-<span>                                      metric.eval <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">'TSS'</span>, <span class="st">'ROC'</span><span class="op">)</span>,</span>
+<span>                                      metric.eval <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">'TSS'</span>, <span class="st">'AUC_ROC'</span><span class="op">)</span>,</span>
 <span>                                      var.import <span class="op">=</span> <span class="fl">3</span>,</span>
 <span>                                      seed.val <span class="op">=</span> <span class="fl">42</span><span class="op">)</span></span>
 <span><span class="op">}</span></span>
@@ -470,7 +470,7 @@ respectively). <br><br><br></p>
 <span>                                      em.algo <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">'EMmean'</span>, <span class="st">'EMca'</span><span class="op">)</span>,</span>
 <span>                                      metric.select <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">'TSS'</span><span class="op">)</span>,</span>
 <span>                                      metric.select.thresh <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.7</span><span class="op">)</span>,</span>
-<span>                                      metric.eval <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">'TSS'</span>, <span class="st">'ROC'</span><span class="op">)</span>,</span>
+<span>                                      metric.eval <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">'TSS'</span>, <span class="st">'AUC_ROC'</span><span class="op">)</span>,</span>
 <span>                                      var.import <span class="op">=</span> <span class="fl">3</span>,</span>
 <span>                                      seed.val <span class="op">=</span> <span class="fl">42</span><span class="op">)</span></span>
 <span><span class="va">myBiomodEM</span></span>

@@ -23,7 +23,7 @@ BIOMOD_Modeling(
   OPT.user.val = NULL,
   OPT.user.base = "bigboss",
   OPT.user = NULL,
-  metric.eval = c("KAPPA", "TSS", "ROC"),
+  metric.eval = c("KAPPA", "TSS", "AUC_ROC"),
   var.import = 0,
   weights = NULL,
   prevalence = 0.5,
@@ -103,7 +103,7 @@ A \code{\link{BIOMOD.models.options}} object returned by the \code{\link{bm_Mode
 function}
 
 \item{metric.eval}{a \code{vector} containing evaluation metric names to be used, must 
-be among \code{ROC}, \code{TSS}, \code{KAPPA}, \code{ACCURACY}, \code{BIAS}, \code{POD}, 
+be among \code{AUC_ROC}, \code{AUC_PRG}, \code{TSS}, \code{KAPPA}, \code{ACCURACY}, \code{BIAS}, \code{POD}, 
 \code{FAR}, \code{POFD}, \code{SR}, \code{CSI}, \code{ETS}, \code{OR}, \code{ORSS}, 
 \code{BOYCE}, \code{MPA} (\emph{binary data}), 
 \code{RMSE}, \code{MAE}, \code{MSE}, \code{Rsquared}, \code{Rsquared_aj}, \code{Max_error} 
@@ -241,7 +241,8 @@ metrics (see Details).
     }
     \item{complex}{
     \itemize{
-      \item \code{ROC} : Relative operating characteristic
+      \item \code{AUC_ROC} : Area Under Curve of Relative operating characteristic
+      \item \code{AUC_PRG} : Area Under Curve of Precision-Recall-Gain curve
       \item \code{TSS} : True skill statistic (Hanssen and Kuipers discriminant, Peirce's 
       skill score)
       \item \code{KAPPA} : Cohen's Kappa (Heidke skill score)
@@ -356,7 +357,7 @@ myBiomodModelOut <- BIOMOD_Modeling(bm.format = myBiomodData,
                                     CV.nb.rep = 2,
                                     CV.perc = 0.8,
                                     OPT.strategy = 'bigboss',
-                                    metric.eval = c('TSS','ROC'),
+                                    metric.eval = c('TSS','AUC_ROC'),
                                     var.import = 2,
                                     seed.val = 42)
 myBiomodModelOut
