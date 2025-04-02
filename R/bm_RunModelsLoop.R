@@ -498,7 +498,7 @@ bm_RunModel <- function(model, run.name
   ## scale or not predictions -------------------------------------------------
   if (scale.models && !inherits(g.pred, 'try-error') && data.type == "binary") {
     cat("\n\tModel scaling...")
-    if (on_0_1000) { g.pred <- on_0_1000 / 1000 }
+    if (on_0_1000) { g.pred <- g.pred / 1000 }
     model.bm@scaling_model <- try(.scaling_model(data.to.rescale = g.pred, data.ref = data_sp, weights = weights.vec))
     ## with weights
     g.pred <- try(predict(model.bm, data_env, on_0_1000 = on_0_1000, seedval = seed.val, temp_workdir = temp_workdir))

@@ -32,7 +32,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">biomod2</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">4.3-2-1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">4.3-2-2</span>
       </span>
     </div>
 
@@ -307,7 +307,7 @@ webpage</a>.</p>
 <span>                                    CV.perc <span class="op">=</span> <span class="fl">0.8</span>,</span>
 <span>                                    OPT.strategy <span class="op">=</span> <span class="st">'bigboss'</span>,</span>
 <span>                                    var.import <span class="op">=</span> <span class="fl">3</span>,</span>
-<span>                                    metric.eval <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">'TSS'</span>,<span class="st">'ROC'</span><span class="op">)</span><span class="op">)</span></span>
+<span>                                    metric.eval <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">'TSS'</span>,<span class="st">'AUC_ROC'</span><span class="op">)</span><span class="op">)</span></span>
 <span>                                    <span class="co"># seed.val = 123)</span></span>
 <span>                                    <span class="co"># nb.cpu = 8)</span></span>
 <span><span class="va">myBiomodModelOut</span></span>
@@ -348,7 +348,7 @@ webpage</a>.</p>
 <span>                                      em.algo <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">'EMmean'</span>, <span class="st">'EMcv'</span>, <span class="st">'EMci'</span>, <span class="st">'EMmedian'</span>, <span class="st">'EMca'</span>, <span class="st">'EMwmean'</span><span class="op">)</span>,</span>
 <span>                                      metric.select <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">'TSS'</span><span class="op">)</span>,</span>
 <span>                                      metric.select.thresh <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.7</span><span class="op">)</span>,</span>
-<span>                                      metric.eval <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">'TSS'</span>, <span class="st">'ROC'</span><span class="op">)</span>,</span>
+<span>                                      metric.eval <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">'TSS'</span>, <span class="st">'AUC_ROC'</span><span class="op">)</span>,</span>
 <span>                                      var.import <span class="op">=</span> <span class="fl">3</span>,</span>
 <span>                                      EMci.alpha <span class="op">=</span> <span class="fl">0.05</span>,</span>
 <span>                                      EMwmean.decay <span class="op">=</span> <span class="st">'proportional'</span><span class="op">)</span></span>
@@ -440,13 +440,11 @@ webpage</a>.</p>
 <span>                                              metric.binary <span class="op">=</span> <span class="st">'TSS'</span>,</span>
 <span>                                              build.clamping.mask <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
 <span></span>
-<span><span class="co"># Load current and future binary projections</span></span>
-<span><span class="va">CurrentProj</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/getters.out.html">get_predictions</a></span><span class="op">(</span><span class="va">myBiomodProj</span>, metric.binary <span class="op">=</span> <span class="st">"TSS"</span><span class="op">)</span></span>
-<span><span class="va">FutureProj</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/getters.out.html">get_predictions</a></span><span class="op">(</span><span class="va">myBiomodProjectionFuture</span>, metric.binary <span class="op">=</span> <span class="st">"TSS"</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Compute differences</span></span>
-<span><span class="va">myBiomodRangeSize</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/BIOMOD_RangeSize.html">BIOMOD_RangeSize</a></span><span class="op">(</span>proj.current <span class="op">=</span> <span class="va">CurrentProj</span>, </span>
-<span>                                      proj.future <span class="op">=</span> <span class="va">FutureProj</span><span class="op">)</span></span>
+<span><span class="va">myBiomodRangeSize</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/BIOMOD_RangeSize.html">BIOMOD_RangeSize</a></span><span class="op">(</span>proj.current <span class="op">=</span> <span class="va">myBiomodProj</span>, </span>
+<span>                                      proj.future <span class="op">=</span> <span class="va">myBiomodProjectionFuture</span>,</span>
+<span>                                      metric.binary <span class="op">=</span> <span class="st">'TSS'</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">myBiomodRangeSize</span><span class="op">$</span><span class="va">Compt.By.Models</span></span>
 <span><span class="fu"><a href="https://rspatial.github.io/terra/reference/plot.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">myBiomodRangeSize</span><span class="op">$</span><span class="va">Diff.By.Pixel</span><span class="op">)</span></span>
@@ -457,8 +455,7 @@ webpage</a>.</p>
 <span>                      do.perc <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>                      do.maps <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>                      do.mean <span class="op">=</span> <span class="cn">TRUE</span>,</span>
-<span>                      do.plot <span class="op">=</span> <span class="cn">TRUE</span>,</span>
-<span>                      row.names <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Species"</span>, <span class="st">"Dataset"</span>, <span class="st">"Run"</span>, <span class="st">"Algo"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<span>                      do.plot <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
 </div>
 </div>
   </div>

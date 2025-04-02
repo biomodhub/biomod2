@@ -157,7 +157,7 @@ myBiomodModelOut <- BIOMOD_Modeling(bm.format = myBiomodData,
                                     CV.perc = 0.8,
                                     OPT.strategy = 'bigboss',
                                     var.import = 3,
-                                    metric.eval = c('TSS','ROC'))
+                                    metric.eval = c('TSS','AUC_ROC'))
                                     # seed.val = 123)
                                     # nb.cpu = 8)
 myBiomodModelOut
@@ -198,7 +198,7 @@ myBiomodEM <- BIOMOD_EnsembleModeling(bm.mod = myBiomodModelOut,
                                       em.algo = c('EMmean', 'EMcv', 'EMci', 'EMmedian', 'EMca', 'EMwmean'),
                                       metric.select = c('TSS'),
                                       metric.select.thresh = c(0.7),
-                                      metric.eval = c('TSS', 'ROC'),
+                                      metric.eval = c('TSS', 'AUC_ROC'),
                                       var.import = 3,
                                       EMci.alpha = 0.05,
                                       EMwmean.decay = 'proportional')
@@ -288,13 +288,11 @@ myBiomodProjectionFuture <- BIOMOD_Projection(bm.mod = myBiomodModelOut,
                                               metric.binary = 'TSS',
                                               build.clamping.mask = TRUE)
 
-# Load current and future binary projections
-CurrentProj <- get_predictions(myBiomodProj, metric.binary = "TSS")
-FutureProj <- get_predictions(myBiomodProjectionFuture, metric.binary = "TSS")
 
 # Compute differences
-myBiomodRangeSize <- BIOMOD_RangeSize(proj.current = CurrentProj, 
-                                      proj.future = FutureProj)
+myBiomodRangeSize <- BIOMOD_RangeSize(proj.current = myBiomodProj, 
+                                      proj.future = myBiomodProjectionFuture,
+                                      metric.binary = 'TSS')
 
 myBiomodRangeSize$Compt.By.Models
 plot(myBiomodRangeSize$Diff.By.Pixel)
@@ -305,6 +303,5 @@ gg = bm_PlotRangeSize(bm.range = myBiomodRangeSize,
                       do.perc = TRUE,
                       do.maps = TRUE,
                       do.mean = TRUE,
-                      do.plot = TRUE,
-                      row.names = c("Species", "Dataset", "Run", "Algo"))
+                      do.plot = TRUE)
 ```
