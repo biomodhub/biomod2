@@ -29,7 +29,7 @@
 ##' \code{\link{bm_ModelingOptions}} function
 ##' 
 ##' @param metric.eval a \code{vector} containing evaluation metric names to be used, must 
-##' be among \code{AUC_ROC}, \code{AUC_PRG}, \code{TSS}, \code{KAPPA}, \code{ACCURACY}, \code{BIAS}, \code{POD}, 
+##' be among \code{AUCroc}, \code{AUCprg}, \code{TSS}, \code{KAPPA}, \code{ACCURACY}, \code{BIAS}, \code{POD}, 
 ##' \code{FAR}, \code{POFD}, \code{SR}, \code{CSI}, \code{ETS}, \code{OR}, \code{ORSS}, 
 ##' \code{BOYCE}, \code{MPA} (\emph{binary data}), 
 ##' \code{RMSE}, \code{MAE}, \code{MSE}, \code{Rsquared}, \code{Rsquared_aj}, \code{Max_error} 
@@ -223,7 +223,7 @@ bm_RunModelsLoop <- function(bm.format,
 bm_RunModel <- function(model, run.name
                         , dir.name = '.', modeling.id = ''
                         , Data, bm.options, calib.lines.vec, eval.data = NULL
-                        , metric.eval = c('AUC_ROC', 'TSS', 'KAPPA'), var.import = 0
+                        , metric.eval = c('AUCroc', 'TSS', 'KAPPA'), var.import = 0
                         , weights.vec, scale.models = FALSE
                         , nb.cpu = 1, seed.val = NULL, do.progress = TRUE)
 {
@@ -713,7 +713,7 @@ bm_RunModel <- function(model, run.name
   ## 3. Check metric.eval arguments -------------------------------------------
   metric.eval <- unique(metric.eval)
   avail.eval.meth.list <- c('TSS', 'KAPPA', 'ACCURACY', 'BIAS', 'POD', 'FAR', 'POFD'
-                            , 'SR', 'CSI', 'ETS', 'HK', 'HSS', 'OR', 'ORSS', 'AUC_ROC', "AUC_PRG"
+                            , 'SR', 'CSI', 'ETS', 'HK', 'HSS', 'OR', 'ORSS', 'AUCroc', "AUCprg"
                             , 'BOYCE', 'MPA'
                             , 'RMSE', 'MSE', 'MAE', 'Rsquared', 'Rsquared_aj', 'Max_error'
                             , 'Accuracy', 'Recall', 'Precision', 'F1')

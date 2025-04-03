@@ -307,7 +307,7 @@ webpage</a>.</p>
 <span>                                    CV.perc <span class="op">=</span> <span class="fl">0.8</span>,</span>
 <span>                                    OPT.strategy <span class="op">=</span> <span class="st">'bigboss'</span>,</span>
 <span>                                    var.import <span class="op">=</span> <span class="fl">3</span>,</span>
-<span>                                    metric.eval <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">'TSS'</span>,<span class="st">'AUC_ROC'</span><span class="op">)</span><span class="op">)</span></span>
+<span>                                    metric.eval <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">'TSS'</span>,<span class="st">'AUCroc'</span><span class="op">)</span><span class="op">)</span></span>
 <span>                                    <span class="co"># seed.val = 123)</span></span>
 <span>                                    <span class="co"># nb.cpu = 8)</span></span>
 <span><span class="va">myBiomodModelOut</span></span>
@@ -348,7 +348,7 @@ webpage</a>.</p>
 <span>                                      em.algo <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">'EMmean'</span>, <span class="st">'EMcv'</span>, <span class="st">'EMci'</span>, <span class="st">'EMmedian'</span>, <span class="st">'EMca'</span>, <span class="st">'EMwmean'</span><span class="op">)</span>,</span>
 <span>                                      metric.select <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">'TSS'</span><span class="op">)</span>,</span>
 <span>                                      metric.select.thresh <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.7</span><span class="op">)</span>,</span>
-<span>                                      metric.eval <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">'TSS'</span>, <span class="st">'AUC_ROC'</span><span class="op">)</span>,</span>
+<span>                                      metric.eval <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">'TSS'</span>, <span class="st">'AUCroc'</span><span class="op">)</span>,</span>
 <span>                                      var.import <span class="op">=</span> <span class="fl">3</span>,</span>
 <span>                                      EMci.alpha <span class="op">=</span> <span class="fl">0.05</span>,</span>
 <span>                                      EMwmean.decay <span class="op">=</span> <span class="st">'proportional'</span><span class="op">)</span></span>

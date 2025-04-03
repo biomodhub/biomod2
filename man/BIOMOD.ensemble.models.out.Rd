@@ -112,7 +112,7 @@ if (file.exists(file.out)) {
                                       CV.nb.rep = 2,
                                       CV.perc = 0.8,
                                       OPT.strategy = 'bigboss',
-                                      metric.eval = c('TSS', 'AUC_ROC'),
+                                      metric.eval = c('TSS', 'AUCroc'),
                                       var.import = 3,
                                       seed.val = 42)
 }
@@ -126,7 +126,7 @@ myBiomodEM <- BIOMOD_EnsembleModeling(bm.mod = myBiomodModelOut,
                                       em.algo = c('EMmean', 'EMca'),
                                       metric.select = c('TSS'),
                                       metric.select.thresh = c(0.7),
-                                      metric.eval = c('TSS', 'AUC_ROC'),
+                                      metric.eval = c('TSS', 'AUCroc'),
                                       var.import = 3,
                                       seed.val = 42)
 myBiomodEM

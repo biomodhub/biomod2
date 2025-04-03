@@ -54,7 +54,7 @@ A \code{character} containing merged algorithm to be loaded, must be among \code
 
 \item{filtered.by}{(\emph{optional, default} \code{NULL}) \cr 
 A \code{vector} containing evaluation metric selected to filter single models to build the 
-ensemble models, must be among \code{AUC_ROC}, \code{AUC_PRG}, \code{TSS}, \code{KAPPA}, \code{ACCURACY}, 
+ensemble models, must be among \code{AUCroc}, \code{AUCprg}, \code{TSS}, \code{KAPPA}, \code{ACCURACY}, 
 \code{BIAS}, \code{POD}, \code{FAR}, \code{POFD}, \code{SR}, \code{CSI}, \code{ETS}, 
 \code{OR}, \code{ORSS}, \code{BOYCE}, \code{MPA} (\emph{binary data}), 
 \code{RMSE}, \code{MAE}, \code{MSE}, \code{Rsquared}, \code{Rsquared_aj}, \code{Max_error} 
@@ -122,7 +122,7 @@ if (file.exists(file.out)) {
                                       CV.nb.rep = 2,
                                       CV.perc = 0.8,
                                       OPT.strategy = 'bigboss',
-                                      metric.eval = c('TSS','AUC_ROC'),
+                                      metric.eval = c('TSS','AUCroc'),
                                       var.import = 3,
                                       seed.val = 42)
 }

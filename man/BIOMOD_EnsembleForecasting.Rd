@@ -53,7 +53,7 @@ A \code{vector} containing evaluation metric names to be used to transform predi
 into binary values based on models evaluation scores obtained with the 
 \code{\link{BIOMOD_EnsembleModeling}} function. Must be among \code{all} (same evaluation 
 metrics than those of \code{bm.mod}) or \code{POD}, \code{FAR}, \code{POFD}, \code{SR}, 
-\code{ACCURACY}, \code{BIAS}, \code{AUC_ROC}, \code{AUC_PRG}, \code{TSS}, \code{KAPPA}, \code{OR}, \code{ORSS}, 
+\code{ACCURACY}, \code{BIAS}, \code{AUCroc}, \code{AUCprg}, \code{TSS}, \code{KAPPA}, \code{OR}, \code{ORSS}, 
 \code{CSI}, \code{ETS}, \code{BOYCE}, \code{MPA}
 \cr \emph{Note that this is for binary data only.}}
 
@@ -62,7 +62,7 @@ A \code{vector} containing evaluation metric names to be used to transform predi
 into filtered values based on models evaluation scores obtained with the 
 \code{\link{BIOMOD_EnsembleModeling}} function. Must be among \code{all} (same evaluation 
 metrics than those of \code{bm.mod}) or \code{POD}, \code{FAR}, \code{POFD}, \code{SR}, 
-\code{ACCURACY}, \code{BIAS}, \code{AUC_ROC}, \code{AUC_PRG}, \code{TSS}, \code{KAPPA}, \code{OR}, \code{ORSS}, 
+\code{ACCURACY}, \code{BIAS}, \code{AUCroc}, \code{AUCprg}, \code{TSS}, \code{KAPPA}, \code{OR}, \code{ORSS}, 
 \code{CSI}, \code{ETS}, \code{BOYCE}, \code{MPA}
 \cr \emph{Note that this is for binary data only.}}
 
@@ -172,7 +172,7 @@ if (file.exists(file.out)) {
                                       CV.nb.rep = 2,
                                       CV.perc = 0.8,
                                       OPT.strategy = 'bigboss',
-                                      metric.eval = c('TSS', 'AUC_ROC'),
+                                      metric.eval = c('TSS', 'AUCroc'),
                                       var.import = 3,
                                       seed.val = 42)
 }
@@ -204,7 +204,7 @@ if (file.exists(file.EM)) {
                                         em.algo = c('EMmean', 'EMca'),
                                         metric.select = c('TSS'),
                                         metric.select.thresh = c(0.7),
-                                        metric.eval = c('TSS', 'AUC_ROC'),
+                                        metric.eval = c('TSS', 'AUCroc'),
                                         var.import = 3,
                                         seed.val = 42)
 }

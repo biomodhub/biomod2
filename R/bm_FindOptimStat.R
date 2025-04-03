@@ -14,7 +14,7 @@
 ##'
 ##'
 ##' @param metric.eval a \code{character} corresponding to the evaluation metric to be used, must 
-##' be either \code{AUC_ROC}, \code{AUC_PRG}, \code{TSS}, \code{KAPPA}, \code{ACCURACY}, \code{BIAS}, \code{POD}, 
+##' be either \code{AUCroc}, \code{AUCprg}, \code{TSS}, \code{KAPPA}, \code{ACCURACY}, \code{BIAS}, \code{POD}, 
 ##' \code{FAR}, \code{POFD}, \code{SR}, \code{CSI}, \code{ETS}, \code{OR}, \code{ORSS}, 
 ##' \code{BOYCE}, \code{MPA} (\emph{binary data}), 
 ##' \code{RMSE}, \code{MAE}, \code{MSE}, \code{Rsquared}, \code{Rsquared_aj}, \code{Max_error} 
@@ -74,8 +74,8 @@
 ##'   }
 ##'   \item{complex}{
 ##'   \itemize{
-##'     \item \code{AUC_ROC} : Area Under Curve of Relative operating characteristic
-##'     \item \code{AUC_PRG} : Area Under Curve of Precision-Recall-Gain curve
+##'     \item \code{AUCroc} : Area Under Curve of Relative operating characteristic
+##'     \item \code{AUCprg} : Area Under Curve of Precision-Recall-Gain curve
 ##'     \item \code{TSS} : True skill statistic (Hanssen and Kuipers discriminant, Peirce's 
 ##'     skill score)
 ##'     \item \code{KAPPA} : Cohen's Kappa (Heidke skill score)
@@ -219,7 +219,7 @@ bm_FindOptimStat <- function(metric.eval = 'TSS',
   abundance_metrics <- c("RMSE", "MSE", "MAE", "AIC","Rsquared", "Rsquared_aj"
                          , "Max_error", "Accuracy", "Recall", "Precision", "F1")
   
-  if (!(metric.eval %in% c('AUC_ROC', "AUC_PRG", abundance_metrics))) ## BINARY METRICS OTHER THAN AUC -----------
+  if (!(metric.eval %in% c('AUCroc', "AUCprg", abundance_metrics))) ## BINARY METRICS OTHER THAN AUC -----------
   {
     if (!(metric.eval %in% c('BOYCE', 'MPA'))) ## BINARY METRICS OTHER THAN BOYCE, MPA ------------
     {
@@ -282,7 +282,7 @@ bm_FindOptimStat <- function(metric.eval = 'TSS',
       specificity <- EVAL$specificity * 100
     }
     
-  } else if (metric.eval == 'AUC_ROC') ## ROC ---------------------------------------------------------
+  } else if (metric.eval == 'AUCroc') ## ROC ---------------------------------------------------------
   {
     roc1 <- roc(obs, fit, percent = TRUE, direction = "<", levels = c(0, 1))
     roc1.out <- coords(roc1, "best", ret = c("threshold", "sens", "spec")
@@ -295,7 +295,7 @@ bm_FindOptimStat <- function(metric.eval = 'TSS',
     specificity <- as.numeric(roc1.out["specificity"])
     sensitivity <- as.numeric(roc1.out["sensitivity"])
   
-  } else if (metric.eval == 'AUC_PRG') ## PRG ---------------------------------------------------------
+  } else if (metric.eval == 'AUCprg') ## PRG ---------------------------------------------------------
   {
     prg1 <- create_prg_curve(labels = obs, pos_scores = fit)
     prg1.out <- best_point_prg(prg1)
@@ -376,8 +376,8 @@ get_optim_value <- function(metric.eval)
          , 'SR' = 1
          , 'ACCURACY' = 1
          , 'BIAS' = 1
-         , 'AUC_ROC' = 1
-         , 'AUC_PRG' = 1
+         , 'AUCroc' = 1
+         , 'AUCprg' = 1
          , 'TSS' = 1
          , 'KAPPA' = 1
          , 'OR' = 1000000
@@ -853,7 +853,7 @@ calc_auprg = function(prg_curve) {
 
 #######################################################################################################
 
-#Best stat for AUC_PRG
+#Best stat for AUCprg
 
 # This functions calculates the optimized point of the PRG curves 
 # Author : Helene Blancheteau

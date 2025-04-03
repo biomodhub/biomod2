@@ -30,7 +30,7 @@ bm_RunModel(
   bm.options,
   calib.lines.vec,
   eval.data = NULL,
-  metric.eval = c("AUC_ROC", "TSS", "KAPPA"),
+  metric.eval = c("AUCroc", "TSS", "KAPPA"),
   var.import = 0,
   weights.vec,
   scale.models = FALSE,
@@ -62,7 +62,7 @@ obtained with the \code{\link{bm_CrossValidation}} function}
 \code{\link{bm_ModelingOptions}} function}
 
 \item{metric.eval}{a \code{vector} containing evaluation metric names to be used, must 
-be among \code{AUC_ROC}, \code{AUC_PRG}, \code{TSS}, \code{KAPPA}, \code{ACCURACY}, \code{BIAS}, \code{POD}, 
+be among \code{AUCroc}, \code{AUCprg}, \code{TSS}, \code{KAPPA}, \code{ACCURACY}, \code{BIAS}, \code{POD}, 
 \code{FAR}, \code{POFD}, \code{SR}, \code{CSI}, \code{ETS}, \code{OR}, \code{ORSS}, 
 \code{BOYCE}, \code{MPA} (\emph{binary data}), 
 \code{RMSE}, \code{MAE}, \code{MSE}, \code{Rsquared}, \code{Rsquared_aj}, \code{Max_error} 

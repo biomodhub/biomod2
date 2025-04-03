@@ -13,7 +13,7 @@ BIOMOD_EnsembleModeling(
   metric.select.thresh = NULL,
   metric.select.table = NULL,
   metric.select.dataset = NULL,
-  metric.eval = c("KAPPA", "TSS", "AUC_ROC"),
+  metric.eval = c("KAPPA", "TSS", "AUCroc"),
   var.import = 0,
   EMci.alpha = 0.05,
   EMwmean.decay = "proportional",
@@ -40,7 +40,7 @@ must be among \code{EMmean}, \code{EMmedian}, \code{EMcv}, \code{EMci},
 
 \item{metric.select}{a \code{vector} containing evaluation metric names to be used to select 
 single models based on their evaluation scores, must be among \code{user.defined} or 
-\code{AUC_ROC}, \code{AUC_PRG}, \code{TSS}, \code{KAPPA}, \code{ACCURACY}, \code{BIAS}, \code{POD}, 
+\code{AUCroc}, \code{AUCprg}, \code{TSS}, \code{KAPPA}, \code{ACCURACY}, \code{BIAS}, \code{POD}, 
 \code{FAR}, \code{POFD}, \code{SR}, \code{CSI}, \code{ETS}, \code{OR}, \code{ORSS}, 
 \code{BOYCE}, \code{MPA} (\emph{binary data}), 
 \code{RMSE}, \code{MAE}, \code{MSE}, \code{Rsquared}, \code{Rsquared_aj}, \code{Max_error} 
@@ -63,7 +63,7 @@ A \code{character} defining which dataset should be used to filter and/or weight
 models, must be among \code{calibration}, \code{validation}, \code{evaluation}}
 
 \item{metric.eval}{a \code{vector} containing evaluation metric names to be used, must 
-be among \code{AUC_ROC}, \code{AUC_PRG}, \code{TSS}, \code{KAPPA}, \code{ACCURACY}, \code{BIAS}, \code{POD}, 
+be among \code{AUCroc}, \code{AUCprg}, \code{TSS}, \code{KAPPA}, \code{ACCURACY}, \code{BIAS}, \code{POD}, 
 \code{FAR}, \code{POFD}, \code{SR}, \code{CSI}, \code{ETS}, \code{OR}, \code{ORSS}, 
 \code{BOYCE}, \code{MPA} (\emph{binary data}), 
 \code{RMSE}, \code{MAE}, \code{MSE}, \code{Rsquared}, \code{Rsquared_aj}, \code{Max_error} 
@@ -300,7 +300,7 @@ if (file.exists(file.out)) {
                                       CV.nb.rep = 2,
                                       CV.perc = 0.8,
                                       OPT.strategy = 'bigboss',
-                                      metric.eval = c('TSS', 'AUC_ROC'),
+                                      metric.eval = c('TSS', 'AUCroc'),
                                       var.import = 3,
                                       seed.val = 42)
 }
@@ -313,7 +313,7 @@ myBiomodEM <- BIOMOD_EnsembleModeling(bm.mod = myBiomodModelOut,
                                       em.algo = c('EMmean', 'EMca'),
                                       metric.select = c('TSS'),
                                       metric.select.thresh = c(0.7),
-                                      metric.eval = c('TSS', 'AUC_ROC'),
+                                      metric.eval = c('TSS', 'AUCroc'),
                                       var.import = 3,
                                       seed.val = 42)
 myBiomodEM

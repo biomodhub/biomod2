@@ -17,8 +17,8 @@ vignette: >
 ##### Bugfix
 
 - 4.3-2-1 : 
-  + change the name of the metric `ROC` to `AUC_ROC`. It will switch automatically if you use `ROC`.
-  + add the metric `AUC_PRG` : Area Under Curve of the Precision-Recall-Gain curve. 
+  + change the name of the metric `ROC` to `AUCroc`. It will switch automatically if you use `ROC`.
+  + add the metric `AUCprg` : Area Under Curve of the Precision-Recall-Gain curve. 
 
 - 4.3-2-1 :
   + add `togglelayerselected`, `maximumbackground`, `maximumiterations`, `convergencethreshold`, `autofeature`, `jackknife`, `writeclampgrid`, `writemess`, `logfile` and `verbose` parameters in `MAXENT` parameters
