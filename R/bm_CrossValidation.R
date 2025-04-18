@@ -768,10 +768,10 @@ setMethod('bm_CrossValidation_block', signature(bm.format = "BIOMOD.formated.dat
                 calib.lines[tmp == 0, i] <- blocks[[2]] != i     
               }
             } else { ## There is no absences values
-              blocks <- ENMeval::get.block(tab.coord[tmp  >= median(tmp), ], tab.coord[tmp < median(tmp), ])
+              blocks <- ENMeval::get.block(tab.coord[tmp  > median(tmp), ], tab.coord[tmp <= median(tmp), ])
               for (i in 1:4) {
-                calib.lines[tmp  >= median(tmp), i] <- blocks[[1]] != i
-                calib.lines[tmp < median(tmp), i] <- blocks[[2]] != i     
+                calib.lines[tmp  > median(tmp), i] <- blocks[[1]] != i
+                calib.lines[tmp <= median(tmp), i] <- blocks[[2]] != i     
               }
             }
             colnames(calib.lines) <- paste0('_RUN', 1:ncol(calib.lines))

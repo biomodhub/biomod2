@@ -221,8 +221,8 @@ setGeneric("BIOMOD.formated.data", def = function(sp, env, ...) { standardGeneri
     
     if (!is.null(data.type)){
       if (presumed.data.type != data.type){
-        cat("\n\t The data.type doesn't seem to correspond to your data. It will be switch to", presumed.data.type)
-        data.type <- presumed.data.type
+        warning("The data.type doesn't seem to correspond to your data. Don't you want to use '", presumed.data.type, "' instead ?")
+        #data.type <- presumed.data.type
       }
     } else {
       data.type <- presumed.data.type

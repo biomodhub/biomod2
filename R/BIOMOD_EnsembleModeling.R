@@ -874,6 +874,9 @@ BIOMOD_EnsembleModeling <- function(bm.mod,
         metric.select.thresh <- metric.select.thresh[which(metric.select != 'MPA')]
         metric.select <- metric.select[which(metric.select != 'MPA')]
       }
+      if (any(duplicated(metric.select))){
+        stop("You cannot use the same metric twice in 'metric.select'.")
+      }
     }
   }
   

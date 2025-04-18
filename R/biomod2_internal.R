@@ -1060,7 +1060,7 @@ rast.has.values <- function(x)
     if (identical(as.numeric(element), c(0, 1)) | identical(as.numeric(element), 1)) {
       data.type <- "binary"
     } else {
-      if (identical(as.numeric(as.integer(element)), element)) {
+      if (identical(as.numeric(as.integer(element)), as.numeric(element))) {
         data.type <- "count"
       } else {
         data.type <- ifelse(!any(resp.var > 1), "relative", "abundance")
