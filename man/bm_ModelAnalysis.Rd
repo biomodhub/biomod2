@@ -82,7 +82,8 @@ if (file.exists(file.out)) {
   myBiomodData <- BIOMOD_FormatingData(resp.name = myRespName,
                                        resp.var = myResp,
                                        resp.xy = myRespXY,
-                                       expl.var = myExpl)
+                                       expl.var = myExpl,
+                                       data.type = 'count')
 
   # Model single models
   myBiomodModelOut <- BIOMOD_Modeling(bm.format = myBiomodData,

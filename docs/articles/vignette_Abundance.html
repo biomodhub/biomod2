@@ -32,7 +32,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">biomod2</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">4.3-2-1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">4.3-2-2</span>
       </span>
     </div>
 
@@ -249,20 +249,14 @@ parameters<a class="anchor" aria-label="anchor" href="#prepare-data-parameters">
 &amp; explanatory variables)<a class="anchor" aria-label="anchor" href="#format-data-observations-explanatory-variables"></a>
 </h4>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># Format Data with true absences</span></span>
-<span><span class="va">myBiomodData</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/BIOMOD_FormatingData.html">BIOMOD_FormatingData</a></span><span class="op">(</span>resp.var <span class="op">=</span> <span class="va">myResp</span>,</span>
-<span>                                     expl.var <span class="op">=</span> <span class="va">myExpl</span>,</span>
-<span>                                     resp.xy <span class="op">=</span> <span class="va">myRespXY</span>,</span>
-<span>                                     resp.name <span class="op">=</span> <span class="va">myRespName</span><span class="op">)</span></span>
-<span><span class="va">myBiomodData</span></span>
-<span><span class="fu"><a href="https://rspatial.github.io/terra/reference/plot.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">myBiomodData</span><span class="op">)</span></span>
-<span></span>
-<span><span class="co">#Or</span></span>
+<code class="sourceCode R"><span><span class="co"># Format Data with count datatype</span></span>
 <span><span class="va">myBiomodData</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/BIOMOD_FormatingData.html">BIOMOD_FormatingData</a></span><span class="op">(</span>resp.var <span class="op">=</span> <span class="va">myResp</span>,</span>
 <span>                                     expl.var <span class="op">=</span> <span class="va">myExpl</span>,</span>
 <span>                                     resp.xy <span class="op">=</span> <span class="va">myRespXY</span>,</span>
 <span>                                     resp.name <span class="op">=</span> <span class="va">myRespName</span>,</span>
-<span>                                     data.type <span class="op">=</span> <span class="st">"count"</span><span class="op">)</span></span></code></pre></div>
+<span>                                     data.type <span class="op">=</span> <span class="st">'count'</span><span class="op">)</span></span>
+<span><span class="va">myBiomodData</span></span>
+<span><span class="fu"><a href="https://rspatial.github.io/terra/reference/plot.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">myBiomodData</span><span class="op">)</span></span></code></pre></div>
 <p>As usual, it also possible to add evaluation data. However, no
 pseudo-absences extraction is possible with abundance data.</p>
 </div>

@@ -90,20 +90,14 @@ myResp[myResp == 1] <- poissonDistri
 #### <i class="fa-solid fa-align-center"></i> Format data (observations & explanatory variables)
 
 ```R
-# Format Data with true absences
-myBiomodData <- BIOMOD_FormatingData(resp.var = myResp,
-                                     expl.var = myExpl,
-                                     resp.xy = myRespXY,
-                                     resp.name = myRespName)
-myBiomodData
-plot(myBiomodData)
-
-#Or
+# Format Data with count datatype
 myBiomodData <- BIOMOD_FormatingData(resp.var = myResp,
                                      expl.var = myExpl,
                                      resp.xy = myRespXY,
                                      resp.name = myRespName,
-                                     data.type = "count")
+                                     data.type = 'count')
+myBiomodData
+plot(myBiomodData)
 
 ```
 
