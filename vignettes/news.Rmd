@@ -16,7 +16,8 @@ vignette: >
 
 ##### Bugfix
 
-- 4.3-2-1 : 
+- 4.3-2-3 : fix `data.type` in `bm_ModelingOptions`
+- 4.3-2-2 : 
   + change the name of the metric `ROC` to `AUCroc`. It will switch automatically if you use `ROC`.
   + add the metric `AUCprg` : Area Under Curve of the Precision-Recall-Gain curve. 
 
