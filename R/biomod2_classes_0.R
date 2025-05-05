@@ -79,7 +79,7 @@ setGeneric("BIOMOD.options.default", def = function(mod, typ, pkg, fun) { standa
   .fun_testIfIn(TRUE, "mod", mod, avail.models.list)
   
   ## check if type is supported
-  avail.types.list <- c('binary', 'abundance', 'count', 'ordinal', 'relative', 'nonbinary')
+  avail.types.list <- c('binary', 'abundance', 'count', 'ordinal', 'relative')
   .fun_testIfIn(TRUE, "typ", typ, avail.types.list)
   
   if (mod != 'MAXENT') {

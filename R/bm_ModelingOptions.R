@@ -322,9 +322,9 @@ bm_ModelingOptions <- function(data.type = "binary"
         ## For each kept model : get corresponding options
         BOD.list <- foreach(ii = 1:nrow(tab.model)) %do%
           {
-            name_model <- paste0(model, ".", data.type, ".", tab.model$package[ii], ".", tab.model$func[ii])
             val.ii <- NULL
             if (strategy == "user.defined") {
+              name_model <- paste0(model, ".", data.type.ModelsTable, ".", tab.model$package[ii], ".", tab.model$func[ii])
               val.ii <- user.val[[name_model]]
             }
             BOD <- BIOMOD.options.dataset(mod = model
@@ -363,13 +363,13 @@ bm_ModelingOptions <- function(data.type = "binary"
                                            , bm.format = NULL, calib.lines = NULL)
 {
   ## check if type is supported
-  avail.types.list <- c('binary', 'count', 'relative', 'abundance', 'ordinal', 'nonbinary')
+  avail.types.list <- c('binary', 'count', 'relative', 'abundance', 'ordinal')
   .fun_testIfIn(TRUE, "data.type", data.type, avail.types.list)
   
   ## Check data.type coherence 
   if (!is.null(bm.format)) {
-    if ((data.type == "nonbinary" && bm.format@data.type == "binary") ||
-        (data.type != "nonbinary" && bm.format@data.type != data.type)) {
+    if ((data.type %in% c('count', 'relative', 'abundance', 'ordinal') && bm.format@data.type == "binary") ||
+        (bm.format@data.type != data.type)) {
       stop("\n data.type should match the data.type of your bm.format")
     } 
   } 
