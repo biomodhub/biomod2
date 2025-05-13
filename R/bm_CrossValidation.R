@@ -376,7 +376,7 @@ bm_CrossValidation <- function(bm.format,
     .fun_testIfIn(TRUE, "balance", balance, c("presences","absences"))
     ind.NA  <- which(is.na(bm.format@data.species))
     tmp  <- bm.format@data.species
-    if (bm.format@data.type != "ordinal") {
+    if (!(bm.format@data.type %in% c("ordinal", "multiclass"))){
       tmp[ind.NA] <- 0
     } else {
       tmp <- as.numeric(tmp)
@@ -578,7 +578,7 @@ setMethod('bm_CrossValidation_random', signature(bm.format = "BIOMOD.formated.da
               calib.lines <- matrix(rep(TRUE, length(bm.format@data.species)), ncol = 1)
               colnames(calib.lines) <- '_allRun'
             } else {
-              if (bm.format@data.type == "ordinal") {
+              if (bm.format@data.type %in% c("ordinal", "multiclass")) {
                 calib.lines <- .sample_class(data.sp = bm.format@data.species,
                                              data.split = perc,
                                              nb.rep = nb.rep,
@@ -657,7 +657,7 @@ setMethod('bm_CrossValidation_kfold', signature(bm.format = "BIOMOD.formated.dat
             ind.NA  <- which(is.na(bm.format@data.species))
             tmp  <- bm.format@data.species
             
-            if (bm.format@data.type != "ordinal") {
+            if (!(bm.format@data.type %in% c("ordinal", "multiclass"))) {
               tmp[ind.NA] <- 0
             } else {
               tmp <- as.numeric(tmp)
@@ -753,7 +753,7 @@ setMethod('bm_CrossValidation_block', signature(bm.format = "BIOMOD.formated.dat
             
             ind.NA  <- which(is.na(bm.format@data.species))
             tmp  <- bm.format@data.species
-            if (bm.format@data.type != "ordinal") {
+            if (!(bm.format@data.type %in% c("ordinal", "multiclass"))) {
               tmp[ind.NA] <- 0
             } else {
               tmp <- as.numeric(tmp)

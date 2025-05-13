@@ -19,7 +19,7 @@
 ##' \code{BOYCE}, \code{MPA} (\emph{binary data}), 
 ##' \code{RMSE}, \code{MAE}, \code{MSE}, \code{Rsquared}, \code{Rsquared_aj}, \code{Max_error} 
 ##' (\emph{abundance / count / relative data}), 
-##' \code{Accuracy}, \code{Recall}, \code{Precision}, \code{F1} (\emph{ordinal data})
+##' \code{Accuracy}, \code{Recall}, \code{Precision}, \code{F1} (\emph{multiclass/ordinal data})
 ##' @param obs a \code{vector} of observed values (binary, \code{0} or \code{1})
 ##' @param fit a \code{vector} of fitted values (continuous)
 ##' @param nb.thresh an \code{integer} corresponding to the number of thresholds to be 
@@ -102,7 +102,7 @@
 ##'     \item \code{Max_error} : Maximum error
 ##'   }
 ##'   }
-##'   \item{ordinal data}{
+##'   \item{multiclass/ordinal data}{
 ##'   \itemize{
 ##'     \item \code{Accuracy} : Accuracy
 ##'     \item \code{Recall} : Macro average Recall

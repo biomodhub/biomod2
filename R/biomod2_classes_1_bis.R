@@ -309,9 +309,13 @@
     datasets <- c("Initial dataset", datasets[-length(datasets)])
     data.df$dataset <- factor(data.df$dataset, datasets)
     
-    if (x@data.type == "ordinal"){
-      labels_ordinal <- levels(x@data.species)
-    } else {labels_ordinal <- waiver() }
+    if (x@data.type %in% c("ordinal", "multiclass")){
+      labels_factor <- levels(x@data.species)
+      breaks_factor <- 1:length(labels_factor)
+    } else {
+      labels_factor <- waiver()
+      breaks_factor <- waiver()
+    }
     
     if(plot.output == "facet"){
       base_g <-  ggplot(data.df)
@@ -327,9 +331,11 @@
                        size = resp),
                    shape = 18)+ #size = point.size
         facet_wrap(~dataset)+
-        scale_size(range =c(0.5,3), 
-                  labels = labels_ordinal
-                   )+
+        scale_size(
+          range =c(0.5,3), 
+          labels = labels_factor,
+          breaks = breaks_factor
+        )+
         scale_color_manual(
           NULL,
           breaks = data_breaks,
@@ -343,7 +349,8 @@
           labels = data_labels,
           na.value = data_background)+
         scale_alpha(
-          labels = labels_ordinal
+          labels = labels_factor,
+          breaks = breaks_factor
         )+
         xlab(NULL)+ ylab(NULL)+
         guides(color = guide_legend(override.aes = list(size = 3)))+
