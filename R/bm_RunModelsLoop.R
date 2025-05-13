@@ -551,6 +551,28 @@ bm_RunModel <- function(model, run.name
               seedval = seed.val, 
               temp_workdir = temp_workdir)
     )
+    
+    if (data.type == "ordinal") {
+      if (model %in% c("GLM", "GAM", "XGBOOST")) {
+        limits <- model.bm@thresholds_ordinal
+        nblevels <- length(levels(data_sp))
+        g.pred.eval[g.pred.eval < 1] <- 1
+        g.pred.eval[g.pred.eval > nblevels] <- nblevels
+        
+        for (j in 1:(nblevels - 1)) {
+          g.pred.eval[g.pred.eval <= j + limits[j] & g.pred.eval >= j ] <- j
+          g.pred.eval[g.pred.eval > j + limits[j] & g.pred.eval < j + 1 ] <- j + 1
+        }
+        levels <- 1:nblevels
+        names(levels) <- levels(data_sp)
+        g.pred.eval <- factor(g.pred.eval, levels = levels, ordered = TRUE)
+        
+      } else {
+        g.pred.eval <- factor(g.pred.eval, levels = levels(data_sp), ordered = TRUE)
+      }
+    } else {
+      g.pred.eval <- as.numeric(g.pred.eval) 
+    }
   }
   
   ## SAVE predictions ---------------------------------------------------------

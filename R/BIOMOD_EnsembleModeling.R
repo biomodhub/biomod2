@@ -623,7 +623,13 @@ BIOMOD_EnsembleModeling <- function(bm.mod,
                   eval_pred.bm <- predict(model.bm, newdata = eval.expl, seedval = seed.val)
                   
                   if (bm.mod@data.type == "ordinal" && algo != 'EMcv') {
+                    nblevels <- length(levels(obs))
+                    eval_pred.bm[eval_pred.bm < 1] <- 1
+                    eval_pred.bm[eval_pred.bm > nblevels] <- nblevels
                     eval_pred.bm <- round(eval_pred.bm)
+                    levels <- 1:nblevels
+                    names(levels) <- levels(obs)
+                    eval_pred.bm <- factor(eval_pred.bm, levels = levels, ordered = TRUE)
                   }
                   ListOut$pred.eval <- eval_pred.bm
                   assign(pred.bm.name, eval_pred.bm)
@@ -639,6 +645,8 @@ BIOMOD_EnsembleModeling <- function(bm.mod,
                     if (bm.mod@data.type == "ordinal") {
                       levels <- 1:length(levels(obs))
                       names(levels) <- levels(obs)
+                      pred.bm[pred.bm < 1] <- 1
+                      pred.bm[pred.bm > nblevels] <- length(levels(obs))
                       pred.bm <- factor(pred.bm, levels = levels, ordered = TRUE)
                     }
                     
@@ -696,10 +704,18 @@ BIOMOD_EnsembleModeling <- function(bm.mod,
                     
                     if (exists('eval_pred.bm')) {
                       ## EVALUATION DATASET -------------------------------------------------------
+                      if (bm.mod@data.type == "binary") {eval_pred.bm <- eval_pred.bm *1000} #(999 * on_1_1000 + 1)
+                      
+                      if (bm.mod@data.type == "ordinal") {
+                        levels <- 1:nblevels
+                        names(levels) <- levels(obs)
+                        eval.obs <- factor(eval.obs, levels = levels, ordered = TRUE)
+                      }
+                      
                       stat.evaluation <- foreach(xx = metric.eval, .combine = "rbind") %do% {
                         bm_FindOptimStat(metric.eval = xx,
                                          obs = eval.obs,
-                                         fit = eval_pred.bm * 1000,
+                                         fit = eval_pred.bm,
                                          threshold = cross.validation["cutoff", xx],
                                          k = k)
                       }

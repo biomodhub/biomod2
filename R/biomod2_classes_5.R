@@ -201,6 +201,7 @@ setMethod('predict2', signature(object = 'biomod2_ensemble_model', newdata = "Sp
               newdata <- subset(newdata, object@model)
             } else {
               newdata <- .get_formal_predictions(object, newdata, on_0_1000 = on_0_1000, seedval = seedval)
+              #newdata <- apply(newdata, as.numeric) ## ? normalement pas utile ?
             }
             
             out <- predfun(newdata, 
@@ -261,6 +262,7 @@ setMethod('predict2', signature(object = 'biomod2_ensemble_model', newdata = "da
               newdata <- newdata[ , object@model, drop = FALSE]
             } else {
               newdata <- .get_formal_predictions(object, newdata, on_0_1000 = on_0_1000, seedval = seedval)
+              newdata <- apply(newdata, 2, as.numeric) ## problem with MARS
             }
             
             out <- predfun(newdata,

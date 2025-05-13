@@ -164,7 +164,7 @@ setClass("BIOMOD.formated.data",
                         data.mask = 'list',
                         has.data.eval = 'logical',
                         eval.coord = 'data.frame',
-                        eval.data.species = 'numeric',
+                        eval.data.species = 'ANY',
                         eval.data.env.var = 'data.frame',
                         has.filter.raster = 'logical',
                         biomod2.version = 'character',
@@ -344,8 +344,6 @@ setMethod('BIOMOD.formated.data', signature(sp = 'numeric', env = 'data.frame'),
             }
             
             if (is.null(eval.sp)) { ## NO EVALUATION DATA
-              cat("\n      ! No data has been set aside for modeling evaluation")
-              
               BFD <- new(
                 'BIOMOD.formated.data',
                 data.type = data.type,
@@ -359,7 +357,10 @@ setMethod('BIOMOD.formated.data', signature(sp = 'numeric', env = 'data.frame'),
                 has.filter.raster = filter.raster,
                 biomod2.version = as.character(packageVersion("biomod2"))
               )
+              
             } else { ## EVALUATION DATA
+              cat("\n      ! Data has been set aside for modeling evaluation")
+              
               BFDeval <- BIOMOD.formated.data(
                 sp = eval.sp,
                 env = eval.env,
@@ -1129,16 +1130,24 @@ setMethod('show', signature('BIOMOD.formated.data'),
             
             if (object@has.data.eval) {
               cat("\n\nEvaluation data :", fill = .Options$width)
-              cat("\n\t",
-                  sum(object@eval.data.species, na.rm = TRUE),
-                  'presences, ',
-                  sum(object@eval.data.species == 0, na.rm = TRUE),
-                  'true absences and ',
-                  sum(is.na(object@eval.data.species), na.rm = TRUE),
-                  'undefined points in dataset',
-                  fill = .Options$width)
-              cat("\n\n", fill = .Options$width)
-              print(summary(object@eval.data.env.var))
+              if (object@data.type == "binary") {
+                cat("\n\t",
+                    sum(object@eval.data.species, na.rm = TRUE),
+                    'presences, ',
+                    sum(object@eval.data.species == 0, na.rm = TRUE),
+                    'true absences and ',
+                    sum(is.na(object@eval.data.species), na.rm = TRUE),
+                    'undefined points in dataset',
+                    fill = .Options$width)
+              } else {
+                cat("\n\t",
+                    length(object@eval.data.species),
+                    'points, with a range from',
+                    min(object@eval.data.species, na.rm = TRUE),
+                    'to',
+                    max(object@eval.data.species, na.rm = TRUE),
+                    fill = .Options$width)
+              }
             }
             
             if(inherits(object, "BIOMOD.formated.data.PA")){
@@ -1249,19 +1258,29 @@ setMethod('summary', signature(object = 'BIOMOD.formated.data'),
                                    "run" = NA,
                                    "Points" = length(object@data.species),
                                    "Min" = min(object@data.species, na.rm = T),
-                                   "Max" = max(object@data.species, na.rm = T),
-                                   "Transformation"  = "Untouched")
+                                   "Max" = max(object@data.species, na.rm = T))
             }
             
             if (object@has.data.eval) {
-              output <- rbind(output,
-                              data.frame("dataset" = "evaluation",
-                                         "run" = NA,
-                                         "PA" = NA,
-                                         "Presences" =  length(which(object@eval.data.species == 1)),
-                                         "True_Absences" = length(which(object@eval.data.species == 0)),
-                                         "Pseudo_Absences" = 0,
-                                         "Undefined" = length(which(is.na(object@eval.data.species)))))
+              if (object@data.type == "binary") {
+                output <- rbind(output,
+                                data.frame("dataset" = "evaluation",
+                                           "run" = NA,
+                                           "PA" = NA,
+                                           "Presences" =  length(which(object@eval.data.species == 1)),
+                                           "True_Absences" = length(which(object@eval.data.species == 0)),
+                                           "Pseudo_Absences" = 0,
+                                           "Undefined" = length(which(is.na(object@eval.data.species)))))
+              } else {
+                output <- rbind(output,
+                                data.frame("dataset" = "evaluation",
+                                           "run" = NA,
+                                           "Points" = length(object@eval.data.species),
+                                           "Min" = min(object@eval.data.species, na.rm = T),
+                                           "Max" = max(object@eval.data.species, na.rm = T)
+                                           ))
+              }
+              
             }
             
             PA <- run <- NA
