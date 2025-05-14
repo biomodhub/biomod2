@@ -8,7 +8,7 @@
 ##' @description Parameterize and/or tune \pkg{biomod2}'s single models options.
 ##'
 ##' @param data.type a \code{character} corresponding to the data type to be used, must be either 
-##' \code{binary}, \code{count}, \code{relative}, \code{abundance}, \code{ordinal}
+##' \code{binary}, \code{count}, \code{relative}, \code{abundance}, \code{multiclass}, \code{ordinal}
 ##' @param models a \code{vector} containing model names to be computed, must be among 
 ##' \code{ANN}, \code{CTA}, \code{FDA}, \code{GAM}, \code{GBM}, \code{GLM}, \code{MARS}, 
 ##' \code{MAXENT}, \code{MAXNET}, \code{RF}, \code{RFd}, \code{SRE}, \code{XGBOOST}
@@ -285,6 +285,8 @@ bm_ModelingOptions <- function(data.type = "binary"
       models <- c('ANN', 'CTA', 'FDA', 'GAM', 'GBM', 'GLM', 'MARS', 'MAXENT', 'MAXNET', 'RF', 'RFd', 'SRE', 'XGBOOST')
     } else if (data.type == "ordinal"){
       models <- c('CTA', 'FDA', 'GAM', 'GLM', 'MARS', 'RF', 'XGBOOST')
+    } else if (data.type == "multiclass") {
+      models <- c('CTA', 'FDA', 'MARS', 'RF', 'XGBOOST')
     } else {
       models <- c('CTA', 'GAM', 'GBM', 'GLM', 'MARS', 'RF', 'XGBOOST')
     }
@@ -363,12 +365,12 @@ bm_ModelingOptions <- function(data.type = "binary"
                                            , bm.format = NULL, calib.lines = NULL)
 {
   ## check if type is supported
-  avail.types.list <- c('binary', 'count', 'relative', 'abundance', 'ordinal')
+  avail.types.list <- c('binary', 'count', 'relative', 'abundance', 'ordinal', 'multiclass')
   .fun_testIfIn(TRUE, "data.type", data.type, avail.types.list)
   
   ## Check data.type coherence 
   if (!is.null(bm.format)) {
-    if ((data.type %in% c('count', 'relative', 'abundance', 'ordinal') && bm.format@data.type == "binary") ||
+    if ((data.type %in% c('count', 'relative', 'abundance', 'ordinal', 'multiclass') && bm.format@data.type == "binary") ||
         (bm.format@data.type != data.type)) {
       stop("\n data.type should match the data.type of your bm.format")
     } 
@@ -380,6 +382,8 @@ bm_ModelingOptions <- function(data.type = "binary"
                            , 'GBM', 'GLM', 'MARS', 'MAXENT', 'MAXNET', 'RF', 'RFd', 'SRE', 'XGBOOST')
   } else if (data.type == "ordinal") {
     avail.models.list <- c('CTA', 'FDA', 'GAM', 'GAM.gam.gam', 'GAM.mgcv.bam', 'GAM.mgcv.gam', 'GLM', 'MARS', 'RF', 'XGBOOST')
+  } else if (data.type == "multiclass") {
+    avail.models.list <- c('CTA', 'FDA', 'MARS', 'RF', 'XGBOOST')
   } else {
     avail.models.list <- c('CTA', 'GAM','GAM.gam.gam', 'GAM.mgcv.bam', 'GAM.mgcv.gam', 'GBM', 'GLM', 'MARS', 'RF', 'XGBOOST')
   }

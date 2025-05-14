@@ -255,6 +255,10 @@ bm_PlotResponseCurves <- function(bm.out
             proj.tmp <- predict(mod, newdata = new.env.r.tmp, on_0_1000 = on_0_1000
                                 , do_check = FALSE, temp_workdir = temp_workdir, seedval = NULL)
             
+            if(bm.out@data.type == "multiclass" && grepl("XGBOOST", mod.name)) {
+              proj.tmp <- .numeric2factor(proj.tmp, get_formal_data(bm.out, 'resp.var'))
+            }
+            
             res = data.frame(pts.tmp, proj.tmp)
             colnames(res) = c(vari, mod.name)
             
@@ -311,6 +315,10 @@ bm_PlotResponseCurves <- function(bm.out
             
             proj.tmp <- predict(mod, newdata = new.env.r.tmp, on_0_1000 = on_0_1000
                                 , do_check = FALSE, temp_workdir = temp_workdir, seedval = NULL)
+            
+            if(bm.out@data.type == "multiclass" && grepl("XGBOOST", mod.name)) {
+              proj.tmp <- .numeric2factor(proj.tmp, get_formal_data(bm.out, 'resp.var'))
+            }
             
             res = data.frame(pts.tmp1, pts.tmp2, proj.tmp)
             colnames(res) = c(vari1, vari2, mod.name)

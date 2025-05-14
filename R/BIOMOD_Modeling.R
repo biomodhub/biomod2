@@ -70,7 +70,7 @@
 ##' \code{BOYCE}, \code{MPA} (\emph{binary data}), 
 ##' \code{RMSE}, \code{MAE}, \code{MSE}, \code{Rsquared}, \code{Rsquared_aj}, \code{Max_error} 
 ##' (\emph{abundance / count / relative data}), 
-##' \code{Accuracy}, \code{Recall}, \code{Precision}, \code{F1} (\emph{ordinal data})
+##' \code{Accuracy}, \code{Recall}, \code{Precision}, \code{F1} (\emph{multiclass / ordinal data})
 ##' @param var.import (\emph{optional, default} \code{NULL}) \cr 
 ##' An \code{integer} corresponding to the number of permutations to be done for each variable to 
 ##' estimate variable importance
@@ -145,6 +145,7 @@
 ##'     \tab \strong{GLM} \tab \strong{MARS} \tab \strong{MAXENT} \tab \strong{MAXNET} 
 ##'     \tab \strong{RF} \tab \strong{RFd} \tab \strong{SRE} \tab \strong{XGBOOST} \cr
 ##'    binary \tab x \tab x \tab x \tab x \tab x \tab x \tab x \tab x \tab x \tab x \tab x \tab x \tab x \cr
+##'    multiclass \tab  \tab x \tab x \tab  \tab  \tab  \tab x \tab  \tab  \tab x \tab  \tab  \tab x \cr
 ##'    ordinal \tab  \tab x \tab x \tab x \tab  \tab x \tab x \tab  \tab  \tab x \tab  \tab  \tab x \cr
 ##'    abundance / count / relative \tab  \tab x \tab  \tab x \tab x \tab x \tab x \tab  \tab  \tab x \tab  \tab  \tab x
 ##'   }
@@ -224,7 +225,7 @@
 ##'       \item \code{Max_error} : Maximum error
 ##'     }
 ##'     }
-##'     \item{ordinal data}{
+##'     \item{multiclass/ordinal data}{
 ##'     \itemize{
 ##'       \item \code{Accuracy} : Accuracy
 ##'       \item \code{Recall} : Macro average Recall
@@ -528,6 +529,7 @@ BIOMOD_Modeling <- function(bm.format,
   ## 4. Print modeling summary in console ---------------------------------------------------------
   .BIOMOD_Modeling.summary(bm.format, calib.lines, models, models.pa, CV.do.full.models)
   
+  
   ## 5. Run models with loop over PA --------------------------------------------------------------
   mod.out <- bm_RunModelsLoop(bm.format = bm.format,
                               modeling.id = models.out@modeling.id,
@@ -617,6 +619,8 @@ BIOMOD_Modeling <- function(bm.format,
     avail.models.list <- c('ANN', 'CTA', 'FDA', 'GAM', 'GBM', 'GLM', 'MARS', 'MAXENT', 'MAXNET', 'RF','RFd', 'SRE', 'XGBOOST')
   } else if (bm.format@data.type == "ordinal") {
     avail.models.list <- c('CTA', 'FDA', 'GAM', 'GLM', 'MARS', 'RF', 'XGBOOST')
+  } else if (bm.format@data.type == "multiclass") {
+    avail.models.list <- c('CTA', 'FDA', 'MARS', 'RF', 'XGBOOST')
   } else {
     avail.models.list <- c('CTA', 'GAM', 'GBM', 'GLM', 'MARS', 'RF', 'XGBOOST')
   }
@@ -693,7 +697,7 @@ BIOMOD_Modeling <- function(bm.format,
   ## 6. Check weights arguments -----------------------------------------------
   if (is.null(weights)) {
 
-    if (!is.null(prevalence) && bm.format@data.type != "ordinal") {
+    if (!is.null(prevalence) && !(bm.format@data.type %in% c("ordinal", "multiclass"))) {
       cat("\n\t> Automatic weights creation to rise a", prevalence, "prevalence")
       data.sp <- as.numeric(bm.format@data.species)
       if (inherits(bm.format, "BIOMOD.formated.data.PA")) {
@@ -755,7 +759,7 @@ BIOMOD_Modeling <- function(bm.format,
     avail.eval.meth.list <- c('TSS', 'KAPPA', 'ACCURACY', 'BIAS', 'POD', 'FAR', 'POFD'
                               , 'SR', 'CSI', 'ETS', 'HK', 'HSS', 'OR', 'ORSS', 'AUCroc', 'AUCprg'
                               , 'BOYCE', 'MPA')
-  } else if (bm.format@data.type == "ordinal") {
+  } else if (bm.format@data.type %in% c("multiclass", "ordinal")) {
     avail.eval.meth.list <- c('Accuracy', 'Recall', 'Precision', 'F1')
   } else {
     avail.eval.meth.list <- c('RMSE', 'MSE', 'MAE', 'Rsquared', 'Rsquared_aj', 'Max_error')

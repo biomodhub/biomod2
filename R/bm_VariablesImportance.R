@@ -114,11 +114,18 @@ bm_VariablesImportance <- function(bm.model,
             temp_workdir = temp.workdir,
             seedval = seed.val)
   )
+  
   if (inherits(ref, "try-error")) { stop("Unable to make model prediction") }
   
   if (model_type == "ordinal") {
     if (!(bm.model@model_name %in% c("GLM", "GAM", "XGBOOST"))) { ## keep numeric values for these 3 models
       ref <- as.numeric(factor(ref, ordered = TRUE))
+    }
+  }
+  
+  if (model_type == "multiclass") {
+    if (!(bm.model@model_name == "XGBOOST")) { 
+      ref <- as.numeric(factor(ref))
     }
   }
   
@@ -139,7 +146,12 @@ bm_VariablesImportance <- function(bm.model,
           shuffled.pred <- as.numeric(factor(shuffled.pred, ordered = TRUE))
         }
       }
-      method_cor <- ifelse(model_type != "ordinal", "pearson", "spearman")
+      if (model_type == "multiclass") {
+        if (!(bm.model@model_name == "XGBOOST")) { 
+          shuffled.pred <- as.numeric(factor(shuffled.pred))
+        }
+      }
+      method_cor <- ifelse(model_type %in% c("ordinal", "multiclass"), "pearson", "spearman")
       out_vr <- 1 - max(round(
         cor(x = ref, y = shuffled.pred, use = "pairwise.complete.obs", method = method_cor)
         , digits = 6), 0, na.rm = TRUE)

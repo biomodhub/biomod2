@@ -758,6 +758,7 @@ setMethod("get_variables_importance", "BIOMOD.models.out",
 ##' @importFrom grDevices colorRampPalette colors dev.new gray rainbow
 ##' @importFrom graphics layout legend par points polygon text
 ##' @importFrom ggplot2 scale_colour_viridis_c scale_fill_viridis_c
+##' @importFrom viridis scale_fill_viridis
 ##' 
 NULL
 
@@ -841,6 +842,12 @@ setMethod('plot', signature(x = 'BIOMOD.projection.out', y = "missing"),
                 limits <- NULL
               }
               
+              discrete <- FALSE
+              if (x@data.type == "multiclass"){
+                limits <- NULL
+                discrete <- TRUE
+              }
+              
               # if(x@data.type == "ordinal"){
               #   breaks = 1:maxi
               #   labels = c("a","b","c","d")
@@ -853,14 +860,14 @@ setMethod('plot', signature(x = 'BIOMOD.projection.out', y = "missing"),
                 g <- ggplot() +
                   tidyterra::geom_spatraster(data = proj,
                                              maxcell = maxcell) +
-                  scale_fill_viridis_c(NULL, limits = limits) +
+                  scale_fill_viridis(NULL, limits = limits, discrete = discrete, na.translate = F) +
                   facet_wrap(~lyr)
               } else if (plot.output == "list") {
                 g <- lapply(names(proj), function(thislayer){
                   ggplot() +
                     tidyterra::geom_spatraster(data = subset(proj, thislayer),
                                                maxcell = maxcell) +
-                    scale_fill_viridis_c(NULL, limits = limits) +
+                    scale_fill_viridis(NULL, limits = limits, discrete = discrete, na.translate = F) +
                     ggtitle(thislayer)
                 })
               }
@@ -877,13 +884,13 @@ setMethod('plot', signature(x = 'BIOMOD.projection.out', y = "missing"),
               if (plot.output == "facet") {
                 g <- ggplot(plot.df)+
                   geom_point(aes(x = x, y = y, color = pred), size = size) +
-                  scale_colour_viridis_c(NULL, limits = limits) +
+                  scale_colour_viridis(NULL, limits = limits, discrete = discrete) +
                   facet_wrap(~full.name)
               } else if (plot.output == "list"){
                 g <- lapply(unique(plot.df$full.name), function(thislayer) {
                   ggplot(subset(plot.df, plot.df$full.name == thislayer)) +
                     geom_point(aes(x = x, y = y, color = pred), size = size) +
-                    scale_colour_viridis_c(NULL, limits = limits) +
+                    scale_colour_viridis_c(NULL, limits = limits, discrete = discrete) +
                     ggtitle(thislayer)
                 })
               }
