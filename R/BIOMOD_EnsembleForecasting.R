@@ -700,7 +700,7 @@ BIOMOD_EnsembleForecasting <- function(bm.em,
   
   ## 12.on_0_1000 --------------------------------
   on_0_1000 <- ifelse(is.null(args$on_0_1000), TRUE, args$on_0_1000)
-  if (bm.em@data.type  %in% c("count", "abundance", "ordinal")) { on_0_1000 <- FALSE }
+  if (bm.em@data.type  %in% c("count", "abundance", "ordinal", "multiclass")) { on_0_1000 <- FALSE }
   
   return(list(bm.em = bm.em,
               bm.proj = bm.proj,

@@ -1125,3 +1125,19 @@ rast.has.values <- function(x)
   
   return(list(limits = limits, fit_factor = fit_factor))
 }
+
+## Used in predict of EMmode-biomod2-model
+.find_mode <- function(x) {
+  if (all(is.na(x))) {return(NA)}
+  freq_table <- table(x, useNA = "no")
+  mode <- names(freq_table[freq_table == max(freq_table)])
+  return(mode[1]) #If double, we take the first one ?? 
+}
+
+## Used in predict of EMfreq-biomod2-model
+.find_freq_mode <- function(x) {
+  if (all(is.na(x))) {return(NA)}
+  freq_table <- table(x, useNA = "no")
+  freq <- as.numeric(max(freq_table)/length(x))
+  return(freq)
+}

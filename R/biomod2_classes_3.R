@@ -525,7 +525,7 @@ setMethod("get_formal_data", "BIOMOD.models.out",
             } else if (subinfo == 'resp.var') {
               return(get_formal_data(obj)@data.species)
             } else if (subinfo == 'eval.resp.var') {
-              return(as.numeric(get_formal_data(obj)@eval.data.species))
+              return(get_formal_data(obj)@eval.data.species)
             } else if (subinfo == 'eval.expl.var') {
               return(as.data.frame(get_formal_data(obj)@eval.data.env.var))
             } else { stop("Unknown subinfo tag")}
@@ -843,7 +843,7 @@ setMethod('plot', signature(x = 'BIOMOD.projection.out', y = "missing"),
               }
               
               discrete <- FALSE
-              if (x@data.type == "multiclass"){
+              if (x@data.type == "multiclass" && !(all(grepl("EMfreq", names(proj))))){
                 limits <- NULL
                 discrete <- TRUE
               }
@@ -860,14 +860,14 @@ setMethod('plot', signature(x = 'BIOMOD.projection.out', y = "missing"),
                 g <- ggplot() +
                   tidyterra::geom_spatraster(data = proj,
                                              maxcell = maxcell) +
-                  scale_fill_viridis(NULL, limits = limits, discrete = discrete, na.translate = F) +
+                  scale_fill_viridis(NULL, limits = limits, discrete = discrete, na.value = "transparent") +
                   facet_wrap(~lyr)
               } else if (plot.output == "list") {
                 g <- lapply(names(proj), function(thislayer){
                   ggplot() +
                     tidyterra::geom_spatraster(data = subset(proj, thislayer),
                                                maxcell = maxcell) +
-                    scale_fill_viridis(NULL, limits = limits, discrete = discrete, na.translate = F) +
+                    scale_fill_viridis(NULL, limits = limits, discrete = discrete, na.value = "transparent") +
                     ggtitle(thislayer)
                 })
               }

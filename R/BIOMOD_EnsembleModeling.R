@@ -21,7 +21,7 @@
 ##' \code{PA+run}
 ##' @param em.algo a \code{vector} corresponding to the ensemble models that will be computed, 
 ##' must be among \code{EMmean}, \code{EMmedian}, \code{EMcv}, \code{EMci}, 
-##' \code{EMca}, \code{EMwmean}
+##' \code{EMca}, \code{EMwmean}, \code{EMmode}, \code{EMfreq}
 ##' 
 ##' @param metric.select a \code{vector} containing evaluation metric names to be used to select 
 ##' single models based on their evaluation scores, must be among \code{user.defined} or 
@@ -228,6 +228,18 @@
 ##'   is high where the species is observed (which might not be a good feature of the model). 
 ##'   \emph{The lower is the score, the better are the models.} 
 ##'   }
+##'   
+##'   \item{EMmode}{mode of the predictions over the selected models \cr
+##'   
+##'   For multiclass and ordinal data, EMmode will return the most frequent class found for each point.
+##'   This is the only \emph{ensemble} model that will return categorical data and not numeric values.  
+##'   
+##'   \item{EMfreq}{mode frequency of the predictions over the selected models \cr
+##'   
+##'   For multiclass and ordinal data, EMfreq will return the frequency of the mode found for each point.
+##'   This is a way of assessing the uncertainty between models: the higher the frequency, the lower the uncertainty.
+##'   
+##'   
 ##' }
 ##' 
 ##' 
@@ -443,14 +455,13 @@ BIOMOD_EnsembleModeling <- function(bm.mod,
       
       obs <- obs[which(kept_cells == TRUE)]
       expl <- expl[which(kept_cells == TRUE), , drop = FALSE]
-      obs[is.na(obs)] <- ifelse(bm.mod@data.type == "ordinal", NA, 0)
+      obs[is.na(obs)] <- ifelse(bm.mod@data.type %in% c("ordinal", "multiclass"), NA, 0)
       
       ## get needed models predictions ----------------------------------------
       needed_predictions <- .get_needed_predictions(bm.mod, em.by, models.kept
                                                     , metric.select, metric.select.thresh
                                                     , metric.select.user, metric.select.table
                                                     , metric.select.dataset, nb.cpu)
-      
       
       
       ## LOOP over evaluation metrics -----------------------------------------
@@ -587,9 +598,16 @@ BIOMOD_EnsembleModeling <- function(bm.mod,
               dir.create(dirname(pred.bm.outfile), showWarnings = FALSE, recursive = TRUE)
               ind.sel <- which(needed_predictions$predictions$full.name %in% model.bm@model)
               pred.newdata <- needed_predictions$predictions[ind.sel, c("full.name", "points", "pred")]
-              pred.newdata <- tapply(X = as.numeric(pred.newdata$pred)
+              if (bm.mod@data.type == "multiclass"){
+                pred.newdata <- tapply(X = pred.newdata$pred
+                                       , INDEX = list(pred.newdata$points, pred.newdata$full.name)
+                                       , FUN = function(x){as.character(x[1])})
+              } else {
+                pred.newdata <- tapply(X = as.numeric(pred.newdata$pred)
                                      , INDEX = list(pred.newdata$points, pred.newdata$full.name)
                                      , FUN = mean) ##TODO attention impact sur les autres datatypes ?
+              }
+              
               pred.newdata <- as.data.frame(pred.newdata)
               
               ## store models prediction on the hard drive
@@ -599,6 +617,7 @@ BIOMOD_EnsembleModeling <- function(bm.mod,
                                      , data_as_formal_predictions = TRUE
                                      , on_0_1000 = on_1_1000
                                      , seedval = seed.val))
+              
               
               if (inherits(pred.bm, "try-error")) {
                 ## keep the name of uncompleted models
@@ -610,8 +629,13 @@ BIOMOD_EnsembleModeling <- function(bm.mod,
                 if (bm.mod@data.type == "ordinal" && algo != 'EMcv') {
                   pred.bm <- round(pred.bm) # stay in numeric to be similar to EMcv
                 } 
+                
+                if (algo == 'EMmode') {
+                  pred.bm <- factor(pred.bm, levels = levels(obs))
+                }
+                
                 ListOut$model <- model_name
-                ListOut$pred <- pred.bm
+                ListOut$pred <- as.numeric(pred.bm) #To be in the same format
                 assign(pred.bm.name, pred.bm)
                 save(list = pred.bm.name, file = pred.bm.outfile, compress = TRUE)
                 rm(list = pred.bm.name)
@@ -621,7 +645,7 @@ BIOMOD_EnsembleModeling <- function(bm.mod,
                   pred.bm.eval.outfile <- paste0(pred.bm.outfile,"Eval")
                   pred.bm.name <- paste0(model_name, ".predictionsEval")
                   eval_pred.bm <- predict(model.bm, newdata = eval.expl, seedval = seed.val)
-                  
+
                   if (bm.mod@data.type == "ordinal" && algo != 'EMcv') {
                     nblevels <- length(levels(obs))
                     eval_pred.bm[eval_pred.bm < 1] <- 1
@@ -631,7 +655,12 @@ BIOMOD_EnsembleModeling <- function(bm.mod,
                     names(levels) <- levels(obs)
                     eval_pred.bm <- factor(eval_pred.bm, levels = levels, ordered = TRUE)
                   }
-                  ListOut$pred.eval <- eval_pred.bm
+                  
+                  if (algo == 'EMmode') {
+                    eval_pred.bm <- factor(eval_pred.bm, labels = levels(obs))
+                  }
+                  
+                  ListOut$pred.eval <- as.numeric(eval_pred.bm)
                   assign(pred.bm.name, eval_pred.bm)
                   save(list = pred.bm.name, file = pred.bm.eval.outfile, compress = TRUE)
                   rm(list = pred.bm.name)
@@ -639,7 +668,7 @@ BIOMOD_EnsembleModeling <- function(bm.mod,
                 
                 ## D. Ensemble model evaluations ------------------------------
                 if (length(metric.eval) > 0) {
-                  if (!(algo %in% c('EMcv', 'EMciInf', 'EMciSup'))) {
+                  if (!(algo %in% c('EMcv', 'EMciInf', 'EMciSup', 'EMfreq'))) {
                     cat("\n\t\t\tEvaluating Model stuff...")
                     
                     if (bm.mod@data.type == "ordinal") {
@@ -649,6 +678,7 @@ BIOMOD_EnsembleModeling <- function(bm.mod,
                       pred.bm[pred.bm > nblevels] <- length(levels(obs))
                       pred.bm <- factor(pred.bm, levels = levels, ordered = TRUE)
                     }
+                    
                     
                     if (em.by == "PA+run") {
                       ## select the same evaluation data than formal models
@@ -700,7 +730,7 @@ BIOMOD_EnsembleModeling <- function(bm.mod,
                       colnames(cross.validation)[which(colnames(cross.validation) == "best.stat")] <- "calibration"
                       cross.validation$validation <- NA
                     }
-                    
+
                     
                     if (exists('eval_pred.bm')) {
                       ## EVALUATION DATASET -------------------------------------------------------
@@ -831,8 +861,8 @@ BIOMOD_EnsembleModeling <- function(bm.mod,
   # 3. check argument em.algo ----------------------------------------------
   em.avail.old <- c('prob.mean', 'prob.cv', 'prob.ci',
                     'prob.median', 'committee.averaging', 'prob.mean.weight')
-  em.avail.check <- c('EMmean', 'EMcv', 'EMci', 'EMmedian', 'EMca', 'EMwmean')
-  em.avail <- c('EMmean', 'EMcv', 'EMciInf', 'EMciSup', 'EMmedian', 'EMca', 'EMwmean')
+  em.avail.check <- c('EMmean', 'EMcv', 'EMci', 'EMmedian', 'EMca', 'EMwmean', 'EMmode', 'EMfreq')
+  em.avail <- c('EMmean', 'EMcv', 'EMciInf', 'EMciSup', 'EMmedian', 'EMca', 'EMwmean', 'EMmode', 'EMfreq')
   if (missing(em.algo)) {
     em.algo <- 'EMmean'
     cat("\n! setting em.algo to its default value c('EMmean')")
@@ -848,6 +878,14 @@ BIOMOD_EnsembleModeling <- function(bm.mod,
       cat ("\n\t EMca is not available with",bm.mod@data.type, "data")
       em.algo <- em.algo[-which(em.algo == "EMca")]
     }
+    if (!(bm.mod@data.type %in% c("ordinal", "multiclass")) & any(grepl("mode|freq", em.algo))){
+      cat ("\n\t EMmode and EMfreq are not available with",bm.mod@data.type, "data")
+      em.algo <- em.algo[-which(em.algo == "EMmode")]
+      em.algo <- em.algo[-which(em.algo == "EMfreq")]
+    }
+    if (bm.mod@data.type == "multiclass" && any(!grepl("mode|freq", em.algo))){
+      stop("\n\t Only EMmode and EMfreq are available with multiclass data")
+    }
   }
   
   em.algo.long <- c('EMmean' = 'Mean of probabilities', 
@@ -856,14 +894,18 @@ BIOMOD_EnsembleModeling <- function(bm.mod,
                     'EMciSup' = 'Confidence Interval (Sup)', 
                     'EMmedian' = 'Median of probabilities',
                     'EMca' = 'Committee averaging', 
-                    'EMwmean' = 'Probabilities weighting mean')
+                    'EMwmean' = 'Probabilities weighting mean',
+                    'EMmode' = 'Mode of the categorical response',
+                    'EMfreq' = 'Frequency of the mode')
   em.algo.class <- c('EMmean' = 'EMmean', 
                      'EMcv' = 'EMcv', 
                      'EMciInf' = 'EMci',
                      'EMciSup' = 'EMci', 
                      'EMmedian' = 'EMmedian',
                      'EMca' = 'EMca', 
-                     'EMwmean' = 'EMwmean')
+                     'EMwmean' = 'EMwmean',
+                     'EMmode' = 'EMmode',
+                     'EMfreq' = 'EMfreq')
   
   ## 4. Check metric.select ---------------------------------------------------
   metric.select.user = FALSE
@@ -971,7 +1013,7 @@ BIOMOD_EnsembleModeling <- function(bm.mod,
     avail.eval.meth.list <- c('TSS', 'KAPPA', 'ACCURACY', 'BIAS', 'POD', 'FAR', 'POFD'
                               , 'SR', 'CSI', 'ETS', 'HK', 'HSS', 'OR', 'ORSS', 'AUCroc', 'AUCprg'
                               , 'BOYCE', 'MPA')
-  } else if (bm.mod@data.type == "ordinal"){
+  } else if (bm.mod@data.type %in% c("ordinal", "multiclass")){
     avail.eval.meth.list <- c("Accuracy", "Recall", "Precision", "F1")
   } else {
     avail.eval.meth.list <- c('RMSE','MSE',"MAE","Rsquared","Rsquared_aj","Max_error")
