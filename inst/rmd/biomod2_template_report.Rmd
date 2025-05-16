@@ -59,6 +59,7 @@ bm.calib = get_calib_lines(bm.mod)
 ```{r get-dataset-info, echo=FALSE, eval=hasBmForm, results='hide'}
 hasPA = inherits(bm.form, "BIOMOD.formated.data.PA")
 hasDataEval = ifelse("has.data.eval" %in% slotNames(bm.form), bm.form@has.data.eval, FALSE)
+isBinary = (bm.form@data.type == "binary")
 
 # form.summ = summary(bm.form, calib.lines = bm.calib) ## TODO CORRECT
 form.summ = data.frame("dataset" = "initial",
@@ -74,6 +75,7 @@ nb.0 = form.summ$True_Absences[which(form.summ$dataset == "initial")]
 nb.NA = form.summ$Pseudo_Absences[which(form.summ$dataset == "calibration" &
                                           form.summ$run == "allRun" &
                                           form.summ$PA == "PA1")]
+nb.points = length(bm.form@data.species)
 ```
 
 ```{r load-projection-files, echo=FALSE, eval=hasBmMod, warning=FALSE, results='hide'}
@@ -138,7 +140,11 @@ if (any(!is.na(c(ind.mod, ind.ens)))) {
 
 ## <font style="color:`r color1`;"><i class="fa-solid fa-list-check"></i> Formated data</font>
 
-The `r sp.name` species dataset contains `r nb.1` presences and `r nb.0` true absences. 
+The `r sp.name` species dataset contains `r nb.points` points.
+
+```{r cond-isBinary, echo=FALSE, results='asis', eval=isBinary}
+cat('The', sp.name, ' species dataset contains ', nb.1, 'presences and ', nb.0, ' true absences.') 
+```
 
 ```{r cond-hasPA, echo=FALSE, results='asis', eval=hasPA}
 cat('
@@ -152,13 +158,14 @@ Pseudo-absences have been drawn from the'
 print(bm.form)
 ```
 
-```{r data-summary, echo=FALSE}
+```{r data-summary, echo=FALSE, eval = isBinary}
 tab = knitr::kable(form.summ, format = "html")
 kable_styling(tab, bootstrap_options = "hover")
 ```
 
 ```{r data-plot, echo=FALSE, message=FALSE, fig.align='center', fig.height=10, fig.width=10}
-form.plot = plot(bm.form, calib.lines = bm.calib, plot.type = "raster")
+form.plot = plot(bm.form, calib.lines = bm.calib,
+                 plot.type = ifelse(bm.form@data.type == "binary", "raster", "points"))
 ```
 
 </br></br>
@@ -245,7 +252,11 @@ for (mod.i in mod.sel) {
                              , do.bivariate = FALSE
                              , do.plot = FALSE
                              , do.progress = FALSE)
-  pp = pp$plot + ylim(0, 1) + guides(color = guide_legend(ncol = 3))
+  if(bm.mod@data.type == "binary"){
+    pp = pp$plot + ylim(0, 1) + guides(color = guide_legend(ncol = 3))
+  } else {
+    pp <- pp$plot
+  }
   print(pp)
 }
 

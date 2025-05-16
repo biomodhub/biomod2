@@ -229,6 +229,7 @@
 
   ## 3.1 Raster plot --------------------------------------------------------
   if(plot.type == "raster"){
+    print(full.df.vect)
 
     rast.plot <- foreach(this_dataset = unique(full.df.vect$dataset), .combine = 'c') %do% {
       this_rast  <-
@@ -236,8 +237,9 @@
                          full.df.vect$dataset == this_dataset), 
                   plot_mask[[this_dataset]],
                   field = "resp", by = "part", fun = mean, background = 0)
+      print(this_rast)
       if (this_dataset == "Initial dataset"){
-        names(this_rast) <- this_dataset
+        names(this_rast) <- paste(names(this_rast), "Data", sep = "_")
       } else {
         names(this_rast) <- paste(this_dataset, c("calibration","validation"), sep = "_")
       }
@@ -246,7 +248,7 @@
     
     data_colors <- c("#004488")
     if(plot.eval){
-      data_colors <- c(data.color,"#994455")
+      data_colors <- c("#994455", data_colors,)
     }
     if(!is.null(calib.lines)){
       nb_run <- ncol(calib.lines)

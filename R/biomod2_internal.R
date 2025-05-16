@@ -1072,14 +1072,18 @@ rast.has.values <- function(x)
 }
 
 ## used in bm_RunModelsLoop
-.numeric2factor <- function(pred, obs)
+.numeric2factor <- function(pred, obs, ordered = FALSE)
 {
   nblevels <- length(levels(obs))
   pred <- round(pred)
   pred[pred > nblevels] <- nblevels
   pred[pred < 1] <- 1
-  newlevels <- levels(obs)[sort(unique(pred))]
-  pred <- factor(pred, labels = newlevels, ordered = TRUE)
+  if (inherits(pred, "SpatRaster")){
+    pred <- terra::subst(pred, 1:length(levels(obs)), levels(obs))
+  } else {
+    newlevels <- levels(obs)[sort(unique(pred))]
+    pred <- factor(pred, labels = newlevels, ordered = ordered)
+  }
   return(pred)
 }
 

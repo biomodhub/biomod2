@@ -348,17 +348,28 @@ BIOMOD_Projection <- function(bm.mod,
         
       } else if (bm.mod@data.type %in% c("ordinal", "multiclass")) {
         data_sp <- get_formal_data(bm.mod, subinfo = "resp.var")
-        nblevels <- length(levels(data_sp))
-        if (length(grep("GAM$|GLM$|XGBOOST|MARS$", mod.name)) == 1) {
-          pred.tmp[pred.tmp < 1] <- 1
-          pred.tmp[pred.tmp > nblevels] <- nblevels
-          pred.tmp <- round(as.numeric(pred.tmp))
-          if (inherits(pred.tmp, "SpatRaster")){
-            pred.tmp <- terra::subst(pred.tmp, 1:length(levels(data_sp)), levels(data_sp))
-          } else {
+        #nblevels <- length(levels(data_sp))
+        if (length(grep("GAM$|GLM$|XGBOOST$", mod.name)) == 1) {
+          # pred.tmp[pred.tmp < 1] <- 1
+          # pred.tmp[pred.tmp > nblevels] <- nblevels
+          # pred.tmp <- round(as.numeric(pred.tmp))
+          # if (inherits(pred.tmp, "SpatRaster")){
+          #   pred.tmp <- terra::subst(pred.tmp, 1:length(levels(data_sp)), levels(data_sp))
+          # } else {
+          #   pred.tmp <- factor(pred.tmp, labels = levels(data_sp))
+          # }
+          pred.tmp <- .numeric2factor(pred.tmp, data_sp, ordered = (bm.mod@data.type == "ordinal"))
+        } else if ((length(grep("MARS$", mod.name)) == 1)){
+          if (!inherits(pred.tmp, "SpatRaster")){
             pred.tmp <- factor(pred.tmp, levels = levels(data_sp))
+          } else {
+            pred.tmp <- terra::subst(pred.tmp, 1:length(levels(data_sp)), levels(data_sp))
           }
-        } 
+        } else {
+          if (!inherits(pred.tmp, "SpatRaster")){
+            pred.tmp <- factor(pred.tmp, labels = levels(data_sp))
+          }
+        }
       }
       
       

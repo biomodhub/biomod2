@@ -315,8 +315,13 @@ BIOMOD_EnsembleForecasting <- function(bm.em,
     unlink(file.path(bm.em@dir.name, bm.em@sp.name, paste0("proj_", tmp_dir))
            , recursive = TRUE, force = TRUE)
   }
+
   if (!proj_is_raster) {
-    formal_pred <- tapply(X = formal_pred$pred, INDEX = list(formal_pred$points, formal_pred$full.name), FUN = mean)
+    if (bm.em@data.type == "multiclass"){
+      formal_pred <- tapply(X = formal_pred$pred, INDEX = list(formal_pred$points, formal_pred$full.name), FUN = function(x){as.character(x[1])})
+    } else {
+      formal_pred <- tapply(X = formal_pred$pred, INDEX = list(formal_pred$points, formal_pred$full.name), FUN = mean)
+    }
     formal_pred <- as.data.frame(formal_pred[, models.needed])
   }
   
@@ -339,7 +344,7 @@ BIOMOD_EnsembleForecasting <- function(bm.em,
                         , filename = filename
                         , mod.name = em.name
                         , na.rm = na.rm)
-      
+
       ## cleaning 
       if (bm.em@data.type %in% c("count", "abundance")) {
         ef.tmp[ef.tmp < 0] <- 0

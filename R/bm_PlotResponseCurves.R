@@ -388,7 +388,15 @@ bm_PlotResponseCurves <- function(bm.out
     gg <- gg + labs(title = main)
   }
   
-  if (do.plot){ print(gg) }
+  if (do.plot){ 
+    # if (bm.out@data.type == "multiclass"){
+    #   levels <- mod@levels_factor
+    #   cat("\nThe levels are represent as : ")
+    #   for (i in 1:length(levels)){
+    #     cat("\n\t ", i, " : ", levels[i])
+    #   }
+    # }
+    print(gg) }
   return(list(tab = ggdat, plot = invisible(gg)))
 }
 

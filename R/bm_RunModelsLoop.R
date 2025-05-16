@@ -370,6 +370,9 @@ bm_RunModel <- function(model, run.name
       #   rownames(model.sp) <- rownames(bm.opt.val$expl.var)
       #   model.bm@extremal_conditions = model.sp
       # }
+      if (data.type %in% c("ordinal", "multiclass")){
+        model.bm@levels_factor <- levels(data_sp)
+      }
     }
     
     ## POSTLIMINAR --------------------------------------------------
@@ -517,20 +520,14 @@ bm_RunModel <- function(model, run.name
   }
   
   ## Find good format of prediction for ordinal
-  if (data.type == "ordinal") {
+  if (data.type %in% c("ordinal", "multiclass")) {
     if (model %in% c("GLM", "GAM", "XGBOOST")) {
       # optimized_pred <- .threshold_ordinal(fit = g.pred, obs = data_sp, metric.eval = "Accuracy")
       # g.pred <- optimized_pred$fit_factor
       # model.bm@thresholds_ordinal <- optimized_pred$limits
-      g.pred <- .numeric2factor(g.pred, data_sp)
+      g.pred <- .numeric2factor(g.pred, data_sp, ordered = ifelse(data.type == "ordinal", TRUE, FALSE))
     } else {
-      g.pred <- factor(g.pred, levels = levels(data_sp), ordered = TRUE)
-    }
-  } else if (data.type == "multiclass"){
-    if (model %in% c("XGBOOST")) {
-      g.pred <- .numeric2factor(g.pred, data_sp)
-    } else {
-      g.pred <- factor(g.pred, levels = levels(data_sp))
+      g.pred <- factor(g.pred, levels = levels(data_sp), ordered = ifelse(data.type == "ordinal", TRUE, FALSE))
     }
   } else {
     g.pred <- as.numeric(g.pred) 
@@ -557,17 +554,11 @@ bm_RunModel <- function(model, run.name
               temp_workdir = temp_workdir)
     )
     
-    if (data.type == "ordinal") {
+    if (data.type %in% c("ordinal", "multiclass")) {
       if (model %in% c("GLM", "GAM", "XGBOOST")) {
-        g.pred.eval <- .numeric2factor(g.pred.eval, data_sp)
+        g.pred.eval <- .numeric2factor(g.pred.eval, data_sp, ordered = ifelse(data.type == "ordinal", TRUE, FALSE))
       } 
-      g.pred.eval <- factor(g.pred.eval, levels = levels(data_sp), ordered = TRUE)
-    } else if (data.type == "multiclass"){
-      if (model %in% c("XGBOOST")) {
-        g.pred.eval <- .numeric2factor(g.pred.eval, data_sp)
-      } else {
-        g.pred.eval <- factor(g.pred.eval, levels = levels(data_sp))
-      }
+      g.pred.eval <- factor(g.pred.eval, levels = levels(data_sp), ordered = ifelse(data.type == "ordinal", TRUE, FALSE))
     } else {
       g.pred.eval <- as.numeric(g.pred.eval) 
     }

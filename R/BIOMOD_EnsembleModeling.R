@@ -590,6 +590,10 @@ BIOMOD_EnsembleModeling <- function(bm.mod,
                 model.bm@penalization_scores <- models.kept.scores.tmp
               }
               
+              if (bm.mod@data.type %in% c("ordinal", "multiclass")){
+                model.bm@levels_factor <- levels(obs)
+              }
+              
               ## C. Ensemble model predictions --------------------------------
               
               ## create the suitable directory architecture

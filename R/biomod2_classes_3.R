@@ -847,14 +847,7 @@ setMethod('plot', signature(x = 'BIOMOD.projection.out', y = "missing"),
                 limits <- NULL
                 discrete <- TRUE
               }
-              
-              # if(x@data.type == "ordinal"){
-              #   breaks = 1:maxi
-              #   labels = c("a","b","c","d")
-              # } else {
-              #   breaks = waiver()
-              #   labels = waiver() 
-              # }
+            
               
               if (plot.output == "facet") {
                 g <- ggplot() +
@@ -880,6 +873,11 @@ setMethod('plot', signature(x = 'BIOMOD.projection.out', y = "missing"),
               } else {
                 limits <- NULL
               }
+              discrete <- FALSE
+              if (x@data.type == "multiclass" && !(all(grepl("EMfreq", names(proj))))){
+                limits <- NULL
+                discrete <- TRUE
+              }
               plot.df <- merge(proj, coord, by = c("points"))
               if (plot.output == "facet") {
                 g <- ggplot(plot.df)+
@@ -890,7 +888,7 @@ setMethod('plot', signature(x = 'BIOMOD.projection.out', y = "missing"),
                 g <- lapply(unique(plot.df$full.name), function(thislayer) {
                   ggplot(subset(plot.df, plot.df$full.name == thislayer)) +
                     geom_point(aes(x = x, y = y, color = pred), size = size) +
-                    scale_colour_viridis_c(NULL, limits = limits, discrete = discrete) +
+                    scale_colour_viridis(NULL, limits = limits, discrete = discrete) +
                     ggtitle(thislayer)
                 })
               }
