@@ -69,8 +69,9 @@ There are 5 different data types :
 | binary        | Numeric (or factor) response with only 0 and 1| binomial       |
 | abundance     | Positive numeric response                     | gaussian       |
 | count         | Positive integer response                     | poisson        |
+| multiclass    | Factor response (More than 2 factors)         | classification |
 | ordinal       | Ordered factor response                       | classification |
-| relative      | Numeric response between 0 and 1               | beta           |
+| relative      | Numeric response between 0 and 1              | beta           |
 
 
 Here we will build count data, by transforming our available binary data :
@@ -164,7 +165,7 @@ However, not all models are available. We have :
 The metrics are also different obviously. For the moment, we have implemented :
 `RMSE`, `MSE`, `MAE`, `Max_error`, `Rsquared` and `Rsquared_aj` (see `?BIOMOD_Modeling`)  
 
-For ordinal data, we have `Accuracy`, `Recall`, `Precision` and `F1`.  
+For multiclass and ordinal data, we have `Accuracy`, `Recall`, `Precision` and `F1`.  
  
 
 ```R
@@ -203,11 +204,14 @@ bm_PlotResponseCurves(bm.out = myBiomodModelOut,
 
 #### <i class="fa-solid fa-cubes"></i> Ensemble models
 
+Two new ensemble models have been added: `EMmode` and `EMfreq` (for the mode of the response and the frequency of that mode) for `multiclass` and `ordinal` datatypes. 
+
 **! Warning !** The selection of single models for the ensemble modeling is different for the metrics `RMSE`, `MSE`, `MAE` and `Max_error`.
 
 For example, with `RMSE`, `biomod2` will select the best model and all the models with a `RMSE` under the best value + the threshold you give (here 2). 
 
 E.g. if the best model have a `RMSE` of `1.85`, `BIOMOD_EnsembleModeling` will select all the models with a `RMSE` under `1.85 + 2`.
+
 
 ```R
 # Model ensemble models
