@@ -63,7 +63,7 @@ Class created by \code{\link{BIOMOD_Modeling}} and \code{\link{bm_RunModel}}
 
 \item{\code{scaling_model}}{the corresponding scaled model object}
 
-\item{\code{thresholds_ordinal}}{the optimized limits for the different ordinal categories}
+\item{\code{levels_factor}}{the levels of the original data for ordinal and multiclass}
 
 \item{\code{dir_name}}{a \code{character} corresponding to the modeling folder}
 

@@ -199,7 +199,6 @@
   data_shape <- c(shape_fit,
                   shape_eval,
                   rep(shape_fit,length(colnames(calib.lines)) ))
-  data_alpha <- c()
   data_background <- "#FFFFFF00"
   
   

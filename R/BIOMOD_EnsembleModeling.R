@@ -232,13 +232,14 @@
 ##'   \item{EMmode}{mode of the predictions over the selected models \cr
 ##'   
 ##'   For multiclass and ordinal data, EMmode will return the most frequent class found for each point.
-##'   This is the only \emph{ensemble} model that will return categorical data and not numeric values.  
+##'   This is the only \emph{ensemble} model that will return categorical data and not numeric values.
+##'   }  
 ##'   
 ##'   \item{EMfreq}{mode frequency of the predictions over the selected models \cr
 ##'   
 ##'   For multiclass and ordinal data, EMfreq will return the frequency of the mode found for each point.
 ##'   This is a way of assessing the uncertainty between models: the higher the frequency, the lower the uncertainty.
-##'   
+##'   }
 ##'   
 ##' }
 ##' 

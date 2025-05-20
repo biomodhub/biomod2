@@ -108,7 +108,7 @@ be among \code{AUCroc}, \code{AUCprg}, \code{TSS}, \code{KAPPA}, \code{ACCURACY}
 \code{BOYCE}, \code{MPA} (\emph{binary data}), 
 \code{RMSE}, \code{MAE}, \code{MSE}, \code{Rsquared}, \code{Rsquared_aj}, \code{Max_error} 
 (\emph{abundance / count / relative data}), 
-\code{Accuracy}, \code{Recall}, \code{Precision}, \code{F1} (\emph{ordinal data})}
+\code{Accuracy}, \code{Recall}, \code{Precision}, \code{F1} (\emph{multiclass / ordinal data})}
 
 \item{var.import}{(\emph{optional, default} \code{NULL}) \cr 
 An \code{integer} corresponding to the number of permutations to be done for each variable to 
@@ -190,6 +190,7 @@ metrics (see Details).
     \tab \strong{GLM} \tab \strong{MARS} \tab \strong{MAXENT} \tab \strong{MAXNET} 
     \tab \strong{RF} \tab \strong{RFd} \tab \strong{SRE} \tab \strong{XGBOOST} \cr
    binary \tab x \tab x \tab x \tab x \tab x \tab x \tab x \tab x \tab x \tab x \tab x \tab x \tab x \cr
+   multiclass \tab  \tab x \tab x \tab  \tab  \tab  \tab x \tab  \tab  \tab x \tab  \tab  \tab x \cr
    ordinal \tab  \tab x \tab x \tab x \tab  \tab x \tab x \tab  \tab  \tab x \tab  \tab  \tab x \cr
    abundance / count / relative \tab  \tab x \tab  \tab x \tab x \tab x \tab x \tab  \tab  \tab x \tab  \tab  \tab x
   }
@@ -269,7 +270,7 @@ metrics (see Details).
       \item \code{Max_error} : Maximum error
     }
     }
-    \item{ordinal data}{
+    \item{multiclass/ordinal data}{
     \itemize{
       \item \code{Accuracy} : Accuracy
       \item \code{Recall} : Macro average Recall

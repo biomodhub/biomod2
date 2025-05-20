@@ -73,10 +73,10 @@ Suggests:
     rmarkdown,
     tidyterra,
     ggtext,
-    ggalluvial,
+    patchwork,
     R.utils,
     paletteer,
-    patchwork
+    viridis
 License: GPL-3
 RoxygenNote: 7.3.2
 Encoding: UTF-8

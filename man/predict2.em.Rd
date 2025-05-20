@@ -16,6 +16,10 @@
 \alias{predict2.EMca_biomod2_model.data.frame}
 \alias{predict2.EMwmean_biomod2_model.SpatRaster}
 \alias{predict2.EMwmean_biomod2_model.data.frame}
+\alias{predict2.EMmode_biomod2_model.SpatRaster}
+\alias{predict2.EMmode_biomod2_model.data.frame}
+\alias{predict2.EMfreq_biomod2_model.SpatRaster}
+\alias{predict2.EMfreq_biomod2_model.data.frame}
 \alias{predict2,biomod2_ensemble_model,SpatRaster-method}
 \alias{predict2,biomod2_ensemble_model,data.frame-method}
 \alias{predict2,EMmean_biomod2_model,SpatRaster-method}
@@ -30,6 +34,10 @@
 \alias{predict2,EMca_biomod2_model,data.frame-method}
 \alias{predict2,EMwmean_biomod2_model,SpatRaster-method}
 \alias{predict2,EMwmean_biomod2_model,data.frame-method}
+\alias{predict2,EMmode_biomod2_model,SpatRaster-method}
+\alias{predict2,EMmode_biomod2_model,data.frame-method}
+\alias{predict2,EMfreq_biomod2_model,SpatRaster-method}
+\alias{predict2,EMfreq_biomod2_model,data.frame-method}
 \title{Functions to get predictions from \code{\link{biomod2_ensemble_model}} objects}
 \usage{
 \S4method{predict2}{biomod2_ensemble_model,SpatRaster}(object, newdata, predfun, seedval = NULL, ...)
@@ -59,6 +67,14 @@
 \S4method{predict2}{EMwmean_biomod2_model,SpatRaster}(object, newdata, data_as_formal_predictions = FALSE, ...)
 
 \S4method{predict2}{EMwmean_biomod2_model,data.frame}(object, newdata, data_as_formal_predictions = FALSE, ...)
+
+\S4method{predict2}{EMmode_biomod2_model,SpatRaster}(object, newdata, ...)
+
+\S4method{predict2}{EMmode_biomod2_model,data.frame}(object, newdata, ...)
+
+\S4method{predict2}{EMfreq_biomod2_model,SpatRaster}(object, newdata, ...)
+
+\S4method{predict2}{EMfreq_biomod2_model,data.frame}(object, newdata, ...)
 }
 \arguments{
 \item{object}{a \code{\link{biomod2_ensemble_model}} object}

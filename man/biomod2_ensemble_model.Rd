@@ -10,6 +10,8 @@
 \alias{EMci_biomod2_model-class}
 \alias{EMca_biomod2_model-class}
 \alias{EMwmean_biomod2_model-class}
+\alias{EMmode_biomod2_model-class}
+\alias{EMfreq_biomod2_model-class}
 \alias{show,biomod2_ensemble_model-method}
 \title{Ensemble model output object class (when running \code{BIOMOD_EnsembleModeling()})}
 \usage{
@@ -34,6 +36,8 @@ Class created by \code{\link{BIOMOD_EnsembleModeling}}
   \item \code{EMci_biomod2_model} : \code{model_class} is \code{EMci}
   \item \code{EMca_biomod2_model} : \code{model_class} is \code{EMca}
   \item \code{EMwmean_biomod2_model} : \code{model_class} is \code{EMwmean}
+  \item \code{EMmode_biomod2_model} : \code{model_class} is \code{EMmode}
+  \item \code{EMfreq_biomod2_model} : \code{model_class} is \code{EMfreq}
 }
 }
 \section{Slots}{
@@ -75,6 +79,8 @@ showClass("EMcv_biomod2_model")
 showClass("EMci_biomod2_model")
 showClass("EMca_biomod2_model")
 showClass("EMwmean_biomod2_model")
+showClass("EMmode_biomod2_model")
+showClass("EMfreq_biomod2_model")
 
 
 }

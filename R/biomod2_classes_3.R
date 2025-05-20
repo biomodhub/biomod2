@@ -758,7 +758,6 @@ setMethod("get_variables_importance", "BIOMOD.models.out",
 ##' @importFrom grDevices colorRampPalette colors dev.new gray rainbow
 ##' @importFrom graphics layout legend par points polygon text
 ##' @importFrom ggplot2 scale_colour_viridis_c scale_fill_viridis_c
-##' @importFrom viridis scale_fill_viridis
 ##' 
 NULL
 
@@ -857,7 +856,7 @@ setMethod('plot', signature(x = 'BIOMOD.projection.out', y = "missing"),
                   tidyterra::geom_spatraster(data = proj,
                                              maxcell = maxcell) +
                   #scale_fill_viridis(NULL, limits = limits, discrete = discrete, na.value = "transparent") +
-                  do.call(scale_fill_viridis, args_scale_fill) +
+                  do.call(viridis::scale_fill_viridis, args_scale_fill) +
                   facet_wrap(~lyr)
               } else if (plot.output == "list") {
                 g <- lapply(names(proj), function(thislayer){
@@ -865,7 +864,7 @@ setMethod('plot', signature(x = 'BIOMOD.projection.out', y = "missing"),
                     tidyterra::geom_spatraster(data = subset(proj, thislayer),
                                                maxcell = maxcell) +
                     #scale_fill_viridis(NULL, limits = limits, discrete = discrete, na.value = "transparent") +
-                    do.call(scale_fill_viridis, args_scale_fill) +
+                    do.call(viridis::scale_fill_viridis, args_scale_fill) +
                     ggtitle(thislayer)
                 })
               }
@@ -890,14 +889,14 @@ setMethod('plot', signature(x = 'BIOMOD.projection.out', y = "missing"),
                 g <- ggplot(plot.df)+
                   geom_point(aes(x = x, y = y, color = pred), size = size) +
                   # scale_colour_viridis(NULL, limits = limits, discrete = discrete) +
-                  do.call(scale_fill_viridis, args_scale_fill) +
+                  do.call(viridis::scale_fill_viridis, args_scale_fill) +
                   facet_wrap(~full.name)
               } else if (plot.output == "list"){
                 g <- lapply(unique(plot.df$full.name), function(thislayer) {
                   ggplot(subset(plot.df, plot.df$full.name == thislayer)) +
                     geom_point(aes(x = x, y = y, color = pred), size = size) +
                     # scale_colour_viridis(NULL, limits = limits, discrete = discrete) +
-                    do.call(scale_fill_viridis, args_scale_fill) +
+                    do.call(viridis::scale_fill_viridis, args_scale_fill) +
                     ggtitle(thislayer)
                 })
               }

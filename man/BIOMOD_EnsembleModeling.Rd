@@ -36,7 +36,7 @@ the ensemble models, must be among \code{all}, \code{algo}, \code{PA}, \code{PA+
 
 \item{em.algo}{a \code{vector} corresponding to the ensemble models that will be computed, 
 must be among \code{EMmean}, \code{EMmedian}, \code{EMcv}, \code{EMci}, 
-\code{EMca}, \code{EMwmean}}
+\code{EMca}, \code{EMwmean}, \code{EMmode}, \code{EMfreq}}
 
 \item{metric.select}{a \code{vector} containing evaluation metric names to be used to select 
 single models based on their evaluation scores, must be among \code{user.defined} or 
@@ -253,6 +253,19 @@ respectively). \cr \cr \cr
   is high where the species is observed (which might not be a good feature of the model). 
   \emph{The lower is the score, the better are the models.} 
   }
+  
+  \item{EMmode}{mode of the predictions over the selected models \cr
+  
+  For multiclass and ordinal data, EMmode will return the most frequent class found for each point.
+  This is the only \emph{ensemble} model that will return categorical data and not numeric values.
+  }  
+  
+  \item{EMfreq}{mode frequency of the predictions over the selected models \cr
+  
+  For multiclass and ordinal data, EMfreq will return the frequency of the mode found for each point.
+  This is a way of assessing the uncertainty between models: the higher the frequency, the lower the uncertainty.
+  }
+  
 }
 }
 \examples{
