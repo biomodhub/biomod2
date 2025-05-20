@@ -340,6 +340,7 @@ BIOMOD_Projection <- function(bm.mod,
                           filename = filename, omit.na = omit.na, 
                           temp_workdir = temp_workdir, seedval = seed.val, 
                           overwrite = overwrite, mod.name = mod.name)
+
       
       ## Cleaning 
       if (bm.mod@data.type %in% c("count", "abundance")) {
@@ -367,7 +368,8 @@ BIOMOD_Projection <- function(bm.mod,
           }
         } else {
           if (!inherits(pred.tmp, "SpatRaster")){
-            pred.tmp <- factor(pred.tmp, labels = levels(data_sp))
+            pred.tmp <- factor(pred.tmp, levels = 1:length(levels(data_sp)), labels = levels(data_sp),
+                               ordered = ifelse(bm.mod@data.type == "ordinal", TRUE, FALSE))
           }
         }
       }

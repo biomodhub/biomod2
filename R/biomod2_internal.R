@@ -157,6 +157,9 @@
 
 .check_formating_resp.var.bin <- function(resp.var, is.eval = FALSE)
 {
+  if (is.factor(resp.var)){
+    resp.var <- as.numeric(as.character(resp.var)) 
+  }
   if (length(which(!(resp.var %in% c(0, 1, NA)))) > 0) {
     cat("\n      ! ", ifelse(is.eval, "Evaluation",""), "Response variable have non-binary values that will be converted into 0 (resp <=0) or 1 (resp > 0).")
     resp.var[which(resp.var > 0)] <- 1

@@ -602,7 +602,8 @@ BIOMOD_EnsembleModeling <- function(bm.mod,
               dir.create(dirname(pred.bm.outfile), showWarnings = FALSE, recursive = TRUE)
               ind.sel <- which(needed_predictions$predictions$full.name %in% model.bm@model)
               pred.newdata <- needed_predictions$predictions[ind.sel, c("full.name", "points", "pred")]
-              if (bm.mod@data.type == "multiclass"){
+              if (bm.mod@data.type == "multiclass" | 
+                  (bm.mod@data.type == "multiclass" && algo %in% c('EMmode', 'EMfreq'))){
                 pred.newdata <- tapply(X = pred.newdata$pred
                                        , INDEX = list(pred.newdata$points, pred.newdata$full.name)
                                        , FUN = function(x){as.character(x[1])})
@@ -613,7 +614,7 @@ BIOMOD_EnsembleModeling <- function(bm.mod,
               }
               
               pred.newdata <- as.data.frame(pred.newdata)
-              
+
               ## store models prediction on the hard drive
               on_1_1000 <- ifelse(bm.mod@data.type == "binary", TRUE, FALSE)
               pred.bm <- try(predict(model.bm
@@ -621,8 +622,7 @@ BIOMOD_EnsembleModeling <- function(bm.mod,
                                      , data_as_formal_predictions = TRUE
                                      , on_0_1000 = on_1_1000
                                      , seedval = seed.val))
-              
-              
+
               if (inherits(pred.bm, "try-error")) {
                 ## keep the name of uncompleted models
                 cat("\n   ! Note : ", model_name, "failed!\n")
@@ -630,12 +630,17 @@ BIOMOD_EnsembleModeling <- function(bm.mod,
                 return(ListOut) ## end of function.
               } else {
                 ## find good format of prediction for ordinal
-                if (bm.mod@data.type == "ordinal" && algo != 'EMcv') {
-                  pred.bm <- round(pred.bm) # stay in numeric to be similar to EMcv
+                if (bm.mod@data.type == "ordinal" && !(algo %in% c('EMcv', 'EMfreq', 'EMmode'))) {
+                  pred.bm <- round(pred.bm)
+                  pred.bm <- factor(pred.bm, levels = 1:length(levels(obs)), labels = levels(obs))
                 } 
                 
                 if (algo == 'EMmode') {
-                  pred.bm <- factor(pred.bm, levels = levels(obs))
+                  if(bm.mod@data.type == "multiclass"){
+                    pred.bm <- factor(pred.bm, levels = levels(obs))
+                  } else { ## ordinal
+                    pred.bm <- factor(pred.bm, levels = 1:length(levels(obs)), labels = levels(obs))
+                  }
                 }
                 
                 ListOut$model <- model_name
@@ -650,19 +655,15 @@ BIOMOD_EnsembleModeling <- function(bm.mod,
                   pred.bm.name <- paste0(model_name, ".predictionsEval")
                   eval_pred.bm <- predict(model.bm, newdata = eval.expl, seedval = seed.val)
 
-                  if (bm.mod@data.type == "ordinal" && algo != 'EMcv') {
-                    nblevels <- length(levels(obs))
-                    eval_pred.bm[eval_pred.bm < 1] <- 1
-                    eval_pred.bm[eval_pred.bm > nblevels] <- nblevels
+                  if (bm.mod@data.type == "ordinal" && !(algo %in% c('EMcv', 'EMfreq', 'EMmode'))) {
                     eval_pred.bm <- round(eval_pred.bm)
-                    levels <- 1:nblevels
-                    names(levels) <- levels(obs)
-                    eval_pred.bm <- factor(eval_pred.bm, levels = levels, ordered = TRUE)
+                    eval_pred.bm <- factor(eval_pred.bm, levels = 1:length(levels(obs)), labels = levels(obs))
                   }
                   
                   if (algo == 'EMmode') {
-                    eval_pred.bm <- factor(eval_pred.bm, labels = levels(obs))
+                    eval_pred.bm <- factor(eval_pred.bm, levels = 1:length(levels(obs)), labels = levels(obs))
                   }
+
                   
                   ListOut$pred.eval <- as.numeric(eval_pred.bm)
                   assign(pred.bm.name, eval_pred.bm)
@@ -674,15 +675,6 @@ BIOMOD_EnsembleModeling <- function(bm.mod,
                 if (length(metric.eval) > 0) {
                   if (!(algo %in% c('EMcv', 'EMciInf', 'EMciSup', 'EMfreq'))) {
                     cat("\n\t\t\tEvaluating Model stuff...")
-                    
-                    if (bm.mod@data.type == "ordinal") {
-                      levels <- 1:length(levels(obs))
-                      names(levels) <- levels(obs)
-                      pred.bm[pred.bm < 1] <- 1
-                      pred.bm[pred.bm > nblevels] <- length(levels(obs))
-                      pred.bm <- factor(pred.bm, levels = levels, ordered = TRUE)
-                    }
-                    
                     
                     if (em.by == "PA+run") {
                       ## select the same evaluation data than formal models
@@ -739,12 +731,6 @@ BIOMOD_EnsembleModeling <- function(bm.mod,
                     if (exists('eval_pred.bm')) {
                       ## EVALUATION DATASET -------------------------------------------------------
                       if (bm.mod@data.type == "binary") {eval_pred.bm <- eval_pred.bm *1000} #(999 * on_1_1000 + 1)
-                      
-                      if (bm.mod@data.type == "ordinal") {
-                        levels <- 1:nblevels
-                        names(levels) <- levels(obs)
-                        eval.obs <- factor(eval.obs, levels = levels, ordered = TRUE)
-                      }
                       
                       stat.evaluation <- foreach(xx = metric.eval, .combine = "rbind") %do% {
                         bm_FindOptimStat(metric.eval = xx,
@@ -883,9 +869,12 @@ BIOMOD_EnsembleModeling <- function(bm.mod,
       em.algo <- em.algo[-which(em.algo == "EMca")]
     }
     if (!(bm.mod@data.type %in% c("ordinal", "multiclass")) & any(grepl("mode|freq", em.algo))){
-      cat ("\n\t EMmode and EMfreq are not available with",bm.mod@data.type, "data")
+      cat ("\n\t EMmode and EMfreq are not available with ", bm.mod@data.type, " data")
       em.algo <- em.algo[-which(em.algo == "EMmode")]
       em.algo <- em.algo[-which(em.algo == "EMfreq")]
+      if (length(em.algo) == 0){
+        stop("\n\t EMmode and EMfreq are not available with ", bm.mod@data.type, " data.")
+      }
     }
     if (bm.mod@data.type == "multiclass" && any(!grepl("mode|freq", em.algo))){
       stop("\n\t Only EMmode and EMfreq are available with multiclass data")

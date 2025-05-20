@@ -326,7 +326,7 @@ bm_ModelingOptions <- function(data.type = "binary"
           {
             val.ii <- NULL
             if (strategy == "user.defined") {
-              name_model <- paste0(model, ".", data.type.ModelsTable, ".", tab.model$package[ii], ".", tab.model$func[ii])
+              name_model <- paste0(model, ".", data.type, ".", tab.model$package[ii], ".", tab.model$func[ii])
               val.ii <- user.val[[name_model]]
             }
             BOD <- BIOMOD.options.dataset(mod = model
@@ -406,7 +406,7 @@ bm_ModelingOptions <- function(data.type = "binary"
     .fun_testIfIn(TRUE, "user.base", user.base, avail.user.base)
     
     .fun_testIfInherits(TRUE, "user.val", user.val, c("list"))
-    avail.options.list <- paste0(ModelsTable$model, ".", ModelsTable$type, ".", ModelsTable$package, ".", ModelsTable$func)
+    avail.options.list <- paste0(ModelsTable$model, ".", data.type, ".", ModelsTable$package, ".", ModelsTable$func)
     .fun_testIfIn(TRUE, "names(user.val)", names(user.val), avail.options.list)
     ## THEN can be directly arguments (all the same for all data) or a list with one set for each dataset (AllData_AllRun, ...)
   }

@@ -842,10 +842,13 @@ setMethod('plot', signature(x = 'BIOMOD.projection.out', y = "missing"),
                 limits <- NULL
               }
               
-              discrete <- FALSE
-              if (x@data.type == "multiclass" && !(all(grepl("EMfreq", names(proj))))){
-                limits <- NULL
-                discrete <- TRUE
+              if (x@data.type %in% c("multiclass", "ordinal") && !(all(grepl("EMfreq|EMcv", names(proj))))){
+                if (any(grepl("EMfreq|EMcv", names(proj)))){ # But EMmode, EMmean, ... before 
+                  proj <- c(proj[[!grepl("EMfreq|EMcv", names(proj))]], proj[[grepl("EMfreq|EMcv", names(proj))]])
+                }
+                args_scale_fill <- list(NULL, limits = NULL, discrete = TRUE, na.translate = FALSE)
+              } else {
+                args_scale_fill <- list(NULL, limits = limits, discrete = FALSE)
               }
             
               
@@ -853,14 +856,16 @@ setMethod('plot', signature(x = 'BIOMOD.projection.out', y = "missing"),
                 g <- ggplot() +
                   tidyterra::geom_spatraster(data = proj,
                                              maxcell = maxcell) +
-                  scale_fill_viridis(NULL, limits = limits, discrete = discrete, na.value = "transparent") +
+                  #scale_fill_viridis(NULL, limits = limits, discrete = discrete, na.value = "transparent") +
+                  do.call(scale_fill_viridis, args_scale_fill) +
                   facet_wrap(~lyr)
               } else if (plot.output == "list") {
                 g <- lapply(names(proj), function(thislayer){
                   ggplot() +
                     tidyterra::geom_spatraster(data = subset(proj, thislayer),
                                                maxcell = maxcell) +
-                    scale_fill_viridis(NULL, limits = limits, discrete = discrete, na.value = "transparent") +
+                    #scale_fill_viridis(NULL, limits = limits, discrete = discrete, na.value = "transparent") +
+                    do.call(scale_fill_viridis, args_scale_fill) +
                     ggtitle(thislayer)
                 })
               }
@@ -873,22 +878,26 @@ setMethod('plot', signature(x = 'BIOMOD.projection.out', y = "missing"),
               } else {
                 limits <- NULL
               }
-              discrete <- FALSE
-              if (x@data.type == "multiclass" && !(all(grepl("EMfreq", names(proj))))){
-                limits <- NULL
-                discrete <- TRUE
+              
+              if (x@data.type %in% c("multiclass", "ordinal") && !(all(grepl("EMfreq|EMcv", names(proj))))){
+                args_scale_fill <- list(NULL, limits = NULL, discrete = TRUE, na.translate = FALSE)
+              } else {
+                args_scale_fill <- list(NULL, limits = limits, discrete = FALSE)
               }
+              
               plot.df <- merge(proj, coord, by = c("points"))
               if (plot.output == "facet") {
                 g <- ggplot(plot.df)+
                   geom_point(aes(x = x, y = y, color = pred), size = size) +
-                  scale_colour_viridis(NULL, limits = limits, discrete = discrete) +
+                  # scale_colour_viridis(NULL, limits = limits, discrete = discrete) +
+                  do.call(scale_fill_viridis, args_scale_fill) +
                   facet_wrap(~full.name)
               } else if (plot.output == "list"){
                 g <- lapply(unique(plot.df$full.name), function(thislayer) {
                   ggplot(subset(plot.df, plot.df$full.name == thislayer)) +
                     geom_point(aes(x = x, y = y, color = pred), size = size) +
-                    scale_colour_viridis(NULL, limits = limits, discrete = discrete) +
+                    # scale_colour_viridis(NULL, limits = limits, discrete = discrete) +
+                    do.call(scale_fill_viridis, args_scale_fill) +
                     ggtitle(thislayer)
                 })
               }
